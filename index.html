@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PREDATOR: HIVE WARRIORS - v5.0 APEX PREDATOR EXPANSION 3D</title>
+  <meta name="description" content="Jeu de guerre 3D style Dynasty Warriors d'affrontement épique entre Yautja et hordes de Xenomorphes.">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+  <div id="canvas-container"></div>
+  <div id="thermal-overlay" class="hidden"></div>
+  <div id="cloak-overlay" class="hidden"></div>
+  <div id="screen-flash"></div>
+
+  <!-- 360 HOLO WEAPON WHEEL OVERLAY -->
+  <div id="weapon-wheel-overlay" class="hidden">
+    <div class="wheel-center-title">ROUE HOLO-TACTIQUE 360° [R]</div>
+    <div id="wheel-items-container"></div>
+  </div>
+
+  <div id="ui-layer">
+
+    <!-- MAIN MENU SCREEN -->
+    <div id="main-menu" class="ui-screen active">
+      <div class="menu-background-gradient"></div>
+      <div class="menu-content">
+        <div class="logo-box">
+          <div class="yautja-glyph-banner">⚡ ᚛᚜ ⚡ PREDATOR ⚡ ᚛᚜ ⚡</div>
+          <h1 class="game-title">HIVE WARRIORS</h1>
+          <p class="subtitle">v5.0 APEX PREDATOR EXPANSION • YAUTJA CITADEL 3D</p>
+        </div>
+
+        <div class="menu-actions">
+          <button id="btn-start-game" class="btn-primary">
+            <span class="btn-icon">⚔️</span>
+            <span class="btn-text">COMMENCER LA CHASSE (SOLO)</span>
+          </button>
+
+          <button id="btn-open-citadel" class="btn-secondary">
+            <span class="btn-icon">🏰</span>
+            <span class="btn-text">VISITER LA CITADELLE YAUTJA 3D</span>
+          </button>
+
+          <button id="btn-open-story" class="btn-secondary">
+            <span class="btn-icon">📜</span>
+            <span class="btn-text">MODE CAMPAGNE SCÉNARISÉE</span>
+          </button>
+
+          <button id="btn-open-coop" class="btn-secondary">
+            <span class="btn-icon">👥</span>
+            <span class="btn-text">MODE COOP 2 JOUEURS (ÉCRAN SÉPARÉ)</span>
+          </button>
+
+          <button id="btn-open-sandbox" class="btn-secondary">
+            <span class="btn-icon">🛠️</span>
+            <span class="btn-text">ÉDITEUR SANDBOX BATAILLE</span>
+          </button>
+
+          <button id="btn-open-forge" class="btn-secondary">
+            <span class="btn-icon">🛡️</span>
+            <span class="btn-text">LA FORGE YAUTJA</span>
+          </button>
+
+          <button id="btn-open-trophies" class="btn-secondary">
+            <span class="btn-icon">💀</span>
+            <span class="btn-text">SALLE DES TROPHÉES</span>
+          </button>
+
+          <button id="btn-open-options" class="btn-secondary">
+            <span class="btn-icon">⚙️</span>
+            <span class="btn-text">OPTIONS & COMMANDES</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHARACTER SELECTION SCREEN -->
+    <div id="char-select-menu" class="ui-screen hidden">
+      <div class="screen-header">
+        <h2>SÉLECTION DU CHASSEUR YAUTJA</h2>
+        <p>Choisissez votre guerrier pour purger la ruche Xenomorphe</p>
+      </div>
+
+      <div class="char-select-container">
+        <div class="char-info-card glass-panel">
+          <div class="char-class-badge" id="char-class-tag">GUERRIER ÉQUILIBRÉ</div>
+          <h3 id="char-name">JUNGLE HUNTER</h3>
+          <p id="char-desc" class="char-lore-text">Le prédateur classique des forêts tropicales.</p>
+
+          <div class="stat-bars">
+            <div class="stat-row">
+              <span>Santé / Armure</span>
+              <div class="stat-bar-bg"><div id="stat-hp" class="stat-bar-fill" style="width: 80%;"></div></div>
+            </div>
+            <div class="stat-row">
+              <span>Vitesse de Déplacement</span>
+              <div class="stat-bar-bg"><div id="stat-speed" class="stat-bar-fill" style="width: 75%;"></div></div>
+            </div>
+            <div class="stat-row">
+              <span>Puissance Melee</span>
+              <div class="stat-bar-bg"><div id="stat-damage" class="stat-bar-fill" style="width: 85%;"></div></div>
+            </div>
+            <div class="stat-row">
+              <span>Énergie Plasma</span>
+              <div class="stat-bar-bg"><div id="stat-plasma" class="stat-bar-fill" style="width: 90%;"></div></div>
+            </div>
+          </div>
+
+          <div class="loadout-box">
+            <h4>ÉQUIPEMENT DU CHASSEUR</h4>
+            <div class="weapon-tag" id="char-weapon-primary">🔪 Lames de Poignet Doubles</div>
+            <div class="weapon-tag" id="char-weapon-special">💥 Canon Plasma Épaule Multi-Tirs</div>
+            <div class="weapon-tag" id="char-ability-unique">✨ Musou: Surcharge Plasma Dévastatrice</div>
+          </div>
+
+          <button id="btn-confirm-char" class="btn-primary full-width">CONFIRMER CE CHASSEUR</button>
+        </div>
+
+        <div class="char-carousel-selector">
+          <div class="carousel-list" id="char-list-buttons"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEVEL SELECTION SCREEN -->
+    <div id="level-select-menu" class="ui-screen hidden">
+      <div class="screen-header">
+        <h2>CHOIX DU CHAMP DE BATAILLE</h2>
+        <p>Sélectionnez le terrain d'affrontement contre les hordes de la ruche</p>
+      </div>
+
+      <div class="levels-grid" id="levels-grid-container"></div>
+
+      <div class="level-select-footer">
+        <button id="btn-back-to-char" class="btn-secondary">◄ RETOUR CHASSEURS</button>
+        <button id="btn-launch-mission" class="btn-primary">PRÉPARER LE LOADOUT TACTIQUE ►</button>
+      </div>
+    </div>
+
+    <!-- PRE-MISSION TACTICAL LOADOUT PREPARATION SCREEN -->
+    <div id="loadout-prep-screen" class="ui-screen hidden">
+      <div class="screen-header">
+        <h2>🎒 ARMURERIE TACTIQUE : PRÉPARATION DU LOADOUT</h2>
+        <p>Sélectionnez votre équipement avant le déploiement sur le champ de bataille</p>
+      </div>
+
+      <div class="loadout-grid-container">
+        <!-- Primary Weapon -->
+        <div class="loadout-section glass-panel">
+          <h3>1. ARME PRINCIPALE (SÉLECTIONNEZ 1)</h3>
+          <div class="loadout-options">
+            <button class="loadout-btn loadout-primary-btn selected" data-item="wristblades">🔪 Dual Wristblades</button>
+            <button class="loadout-btn loadout-primary-btn" data-item="combistick">🗡️ Combistick Spear</button>
+            <button class="loadout-btn loadout-primary-btn" data-item="katana">⚔️ Samurai Katana</button>
+            <button class="loadout-btn loadout-primary-btn" data-item="alpha_sickle">🦴 Alpha Bone Sickle</button>
+          </div>
+        </div>
+
+        <!-- Secondary Weapon -->
+        <div class="loadout-section glass-panel">
+          <h3>2. ARME SECONDAIRE [TAB] (SÉLECTIONNEZ 1)</h3>
+          <div class="loadout-options">
+            <button class="loadout-btn loadout-secondary-btn selected" data-item="smart_disc">🛸 Smart-Disc Laser Rotor</button>
+            <button class="loadout-btn loadout-secondary-btn" data-item="shuriken">☸️ 6-Blade Shuriken</button>
+            <button class="loadout-btn loadout-secondary-btn" data-item="compound_bow">🏹 Yautja Compound Bow</button>
+            <button class="loadout-btn loadout-secondary-btn" data-item="plasma_whip">🐍 Vertebrae Plasma Whip</button>
+          </div>
+        </div>
+
+        <!-- Gadgets (Max 2) -->
+        <div class="loadout-section glass-panel full-grid">
+          <h3>3. GADGETS TACTIQUES (CHOISIR 2 MAX)</h3>
+          <div class="loadout-options">
+            <button class="loadout-btn loadout-gadget-btn selected" data-item="medicomp">💉 Medicomp Bio-Gel [Z]</button>
+            <button class="loadout-btn loadout-gadget-btn selected" data-item="bear_trap">🪤 Steel Bear Trap [T]</button>
+            <button class="loadout-btn loadout-gadget-btn" data-item="acid_solvent">🧪 Solvant d'Acide [B]</button>
+            <button class="loadout-btn loadout-gadget-btn" data-item="nuke">☢️ Auto-Destruction Nuke [N]</button>
+            <button class="loadout-btn loadout-gadget-btn" data-item="mines">💣 Mines à Plasma [C]</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="loadout-footer">
+        <button id="btn-confirm-loadout" class="btn-primary">DÉPLOYER LA CHASSE ►</button>
+      </div>
+    </div>
+
+    <!-- IN-GAME HUD -->
+    <div id="in-game-hud" class="ui-screen hidden">
+      <div class="hud-top-left glass-panel">
+        <div class="player-avatar-box">
+          <div id="hud-avatar-icon">👽</div>
+        </div>
+        <div class="player-stats-column">
+          <div class="hud-name-row">
+            <span id="hud-player-name">JUNGLE HUNTER</span>
+            <span id="hud-honor-rank" class="rank-badge">RANG: CHASSEUR ÉLITE</span>
+          </div>
+
+          <div class="hud-bar-container hp-bar-bg">
+            <div id="hud-hp-fill" class="bar-fill hp-fill" style="width: 100%;"></div>
+            <span id="hud-hp-text" class="bar-label">1000 / 1000 HP</span>
+          </div>
+
+          <div class="hud-bar-container plasma-bar-bg">
+            <div id="hud-plasma-fill" class="bar-fill plasma-fill" style="width: 100%;"></div>
+            <span id="hud-plasma-text" class="bar-label">ÉNERGIE PLASMA: 100%</span>
+          </div>
+
+          <div class="hud-bar-container musou-bar-bg">
+            <div id="hud-musou-fill" class="bar-fill musou-fill" style="width: 0%;"></div>
+            <span id="hud-musou-text" class="bar-label">SURCHARGE MUSOU [Q / ESPACE]</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hud-top-right">
+        <div class="minimap-card glass-panel">
+          <div class="minimap-header">
+            <span id="hud-level-name">PYRAMIDE ANTARCTIQUE</span>
+            <span id="hud-wave-counter">VAGUE 1/5</span>
+          </div>
+          <canvas id="minimap-canvas" width="160" height="160"></canvas>
+          <div class="minimap-legend">
+            <span>🟢 Yautja</span>
+            <span>🔴 Xenomorphe</span>
+            <span>👑 Boss</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="combo-display" class="combo-box hidden">
+        <div id="combo-count">0</div>
+        <div class="combo-title">COMBOS HITS !</div>
+      </div>
+
+      <!-- FACEHUGGER QTE STRUGGLE PROMPT -->
+      <div id="facehugger-qte-prompt" class="execution-box hidden">
+        <div class="pulse-key" style="border-color:#ff1a1a; color:#ff1a1a;">MARTELEZ [ E ] !</div>
+        <div class="execution-text" style="color:#ff4d4d;">ARRACHEZ LE FACEHUGGER !</div>
+      </div>
+
+      <div id="execution-prompt" class="execution-box hidden">
+        <div class="pulse-key">[ E ]</div>
+        <div class="execution-text">EXÉCUTION TROPHÉE !</div>
+      </div>
+
+      <div id="ability-announcement" class="announcement-banner hidden"></div>
+
+      <div class="hud-bottom-center" id="hud-equipped-slots-container">
+        <div class="ability-slot" id="slot-wheel">
+          <div class="slot-key">R / CLIC 3</div>
+          <div class="slot-label">ROUE WEAPONS 360°</div>
+        </div>
+        <div class="ability-slot" id="slot-swap">
+          <div class="slot-key">TAB</div>
+          <div class="slot-label" id="hud-weapon-label">ARME: PRINCIPALE</div>
+        </div>
+        <div class="ability-slot highlight-musou" id="slot-musou">
+          <div class="slot-key">Q / ESPACE</div>
+          <div class="slot-label">SURCHARGE MUSOU</div>
+        </div>
+      </div>
+
+      <div class="hud-bottom-right glass-panel">
+        <div class="ko-box">
+          <div class="ko-label">XENOMORPHES ÉLIMINÉS</div>
+          <div id="hud-ko-count" class="ko-number">0</div>
+        </div>
+        <div class="honor-score-box">
+          <span>HONNEUR: </span>
+          <span id="hud-honor-score">0 PTS</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHOTO MODE HUD -->
+    <div id="photo-mode-hud" class="ui-screen hidden">
+      <div class="photo-hud-banner glass-panel">
+        <h3>📸 MODE PHOTO CINÉMATIQUE 3D</h3>
+        <div class="photo-actions">
+          <button id="btn-snap-photo" class="btn-primary">📸 PRENDRE CAPTURE D'ÉCRAN (PNG)</button>
+          <button id="btn-exit-photo" class="btn-secondary">✕ QUITTER MODE PHOTO</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SANDBOX EDITOR MODAL -->
+    <div id="sandbox-modal" class="ui-screen hidden">
+      <div class="glass-panel modal-card">
+        <div class="modal-header">
+          <h2>🛠️ ÉDITEUR DE BATAILLE SANDBOX</h2>
+          <button id="btn-close-sandbox" class="btn-close">✕</button>
+        </div>
+        <div class="sandbox-body">
+          <div class="sandbox-row">
+            <label for="slider-sandbox-count">Nombre de Xenomorphes Simultanés: <strong id="val-sandbox-count">60</strong></label>
+            <input type="range" id="slider-sandbox-count" min="10" max="200" value="60">
+          </div>
+          <button id="btn-launch-sandbox" class="btn-primary full-width" style="margin-top:20px;">LANCER L'ARÈNE SUR MESURE</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- FORGE SHOP MODAL -->
+    <div id="forge-modal" class="ui-screen hidden">
+      <div class="glass-panel modal-card">
+        <div class="modal-header">
+          <h2>🛡️ LA FORGE YAUTJA & ARMURERIE</h2>
+          <button id="btn-close-forge" class="btn-close">✕</button>
+        </div>
+        <div class="forge-shop-body">
+          <h3>AMÉLIORATIONS DES STATISTIQUES</h3>
+          <div class="upgrade-row">
+            <span>Santé & Renfort d'Armure (+200 HP)</span>
+            <button id="btn-buy-hp" class="btn-secondary">3500 PTS HONNEUR</button>
+          </div>
+          <div class="upgrade-row">
+            <span>Puissance des Taillades (+25% Dégâts)</span>
+            <button id="btn-buy-dmg" class="btn-secondary">3500 PTS HONNEUR</button>
+          </div>
+
+          <h3 style="margin-top:20px;">COULEUR DU LASER PLASMA</h3>
+          <div class="laser-colors-row">
+            <button class="laser-btn" style="background:#00d2ff;" id="btn-laser-cyan">Cyan</button>
+            <button class="laser-btn" style="background:#ff1a1a;" id="btn-laser-red">Rouge Berserker</button>
+            <button class="laser-btn" style="background:#39ff14;" id="btn-laser-green">Vert Émeraude</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TROPHY ROOM MODAL -->
+    <div id="trophy-modal" class="ui-screen hidden">
+      <div class="glass-panel modal-card">
+        <div class="modal-header">
+          <h2>💀 SALLE DES TROPHÉES YAUTJA</h2>
+          <button id="btn-close-trophies" class="btn-close">✕</button>
+        </div>
+
+        <div class="trophy-stats-grid">
+          <div class="trophy-stat-card">
+            <span class="stat-num" id="trophy-total-kos">0</span>
+            <span class="stat-name">Total Xenomorphes Tués</span>
+          </div>
+          <div class="trophy-stat-card">
+            <span class="stat-num" id="trophy-skulls-collected">0</span>
+            <span class="stat-name">Crânes d'Élites Récoltés</span>
+          </div>
+          <div class="trophy-stat-card">
+            <span class="stat-num" id="trophy-highest-combo">0</span>
+            <span class="stat-name">Combo Maximal</span>
+          </div>
+        </div>
+
+        <div class="trophies-list" id="trophies-container"></div>
+      </div>
+    </div>
+
+    <!-- OPTIONS / CONTROLS MODAL -->
+    <div id="options-modal" class="ui-screen hidden">
+      <div class="glass-panel modal-card">
+        <div class="modal-header">
+          <h2>⚙️ COMMANDES & OPTIONS DU JEU</h2>
+          <button id="btn-close-options" class="btn-close">✕</button>
+        </div>
+        <div class="options-body">
+          <h3>CONTRÔLES CLAVIER & SOURIS</h3>
+          <div class="controls-grid">
+            <div class="control-row"><span class="key">R / CLIC 3</span><span>Ouvrir la Roue Holo-Tactique 360°</span></div>
+            <div class="control-row"><span class="key">E</span><span>QTE Lutte Facehugger / Exécution Trophée</span></div>
+            <div class="control-row"><span class="key">T</span><span>Piège à Loup Yautja Steel Bear Trap</span></div>
+            <div class="control-row"><span class="key">N</span><span>Auto-Destruction Nucléaire</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MISSION COMPLETE / GAME OVER SCREEN -->
+    <div id="game-over-screen" class="ui-screen hidden">
+      <div class="glass-panel modal-card end-game-card">
+        <h1 id="end-title">VICTOIRE GLORIEUSE !</h1>
+        <p id="end-subtitle">La Ruche Xenomorphe a été complètement anéantie dans l'honneur Yautja.</p>
+
+        <div class="end-stats">
+          <div class="end-stat-item">
+            <span class="label">Xenomorphes Éliminés:</span>
+            <span id="end-ko-count" class="value">0</span>
+          </div>
+          <div class="end-stat-item">
+            <span class="label">Points d'Honneur Gagnés:</span>
+            <span id="end-honor-pts" class="value">0</span>
+          </div>
+          <div class="end-stat-item">
+            <span class="label">Crânes de Trophée:</span>
+            <span id="end-trophies" class="value">0</span>
+          </div>
+        </div>
+
+        <div class="end-actions">
+          <button id="btn-replay" class="btn-primary">RECOMMENCER LA CHASSE</button>
+          <button id="btn-menu-return" class="btn-secondary">MENU PRINCIPAL</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
