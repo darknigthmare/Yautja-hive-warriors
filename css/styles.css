@@ -1,4 +1,4 @@
-/* PREDATOR: HIVE WARRIORS - Sci-Fi Styling System (v8.0 Yautja Apex Legend) */
+/* PREDATOR: HIVE WARRIORS - Sci-Fi Styling System (v11.0 God-Tier Apex Primordial) */
 
 :root {
   --yautja-red: #ff1a1a;
@@ -38,6 +38,64 @@ html, body {
   width: 100%;
   height: 100%;
   z-index: 1;
+}
+
+/* FIRST-PERSON BIO-MASK COCKPIT VIEW OVERLAY */
+#first-person-mask-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+  pointer-events: none;
+  border: 45px solid rgba(12, 16, 22, 0.94);
+  border-radius: 40px;
+  box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.95), inset 0 0 40px rgba(0, 210, 255, 0.25);
+}
+
+.bio-mask-hud-frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mask-reticle-triangle {
+  color: var(--yautja-red);
+  font-size: 1.8rem;
+  text-shadow: 0 0 10px var(--yautja-red-glow);
+  animation: reticlePulse 1.2s infinite alternate ease-in-out;
+}
+
+@keyframes reticlePulse {
+  0% { transform: scale(1); opacity: 0.7; }
+  100% { transform: scale(1.15); opacity: 1; }
+}
+
+.mask-targeting-bracket {
+  position: absolute;
+  font-size: 3.5rem;
+  color: var(--plasma-blue);
+  opacity: 0.6;
+}
+
+.mask-targeting-bracket.left { left: 42%; }
+.mask-targeting-bracket.right { right: 42%; }
+
+.mask-telemetry {
+  position: absolute;
+  bottom: 12%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.8rem;
+  letter-spacing: 3px;
+  color: var(--plasma-blue);
+  text-shadow: 0 0 8px var(--plasma-blue-glow);
 }
 
 /* 4 BIO-MASK VISION MODES OVERLAYS */

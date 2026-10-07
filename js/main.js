@@ -1,4 +1,4 @@
-/* PREDATOR: HIVE WARRIORS - Main Game Router (v10.0 Apex Titan Omniverse) */
+/* PREDATOR: HIVE WARRIORS - Main Game Router (v11.0 God-Tier Apex Primordial) */
 
 import * as THREE from 'three';
 import { EngineRenderer } from './engine/Renderer.js';
@@ -68,6 +68,7 @@ class GameApp {
     this.player2 = null;
     this.isCoOp = false;
     this.activeLoadout = null;
+    this.isFirstPerson = false;
 
     this.projectiles = [];
     this.isPlaying = false;
@@ -213,6 +214,27 @@ class GameApp {
       this.keys[e.code] = true;
 
       if (!this.isPlaying || this.isPaused) return;
+
+      // First-Person Bio-Mask View Toggle [I Key]
+      if (e.code === 'KeyI' && this.player) {
+        this.isFirstPerson = !this.isFirstPerson;
+        const fpsOverlay = document.getElementById('first-person-mask-overlay');
+        if (this.isFirstPerson) {
+          fpsOverlay.classList.remove('hidden');
+          this.player.headMesh.visible = false;
+          this.ui.showAnnouncement('🎭 VUE PREMIÈRE PERSONNE BIO-MASQUE ACTIVÉE');
+        } else {
+          fpsOverlay.classList.add('hidden');
+          this.player.headMesh.visible = true;
+          this.ui.showAnnouncement('🎭 VUE TROISIÈME PERSONNE RESTAURÉE');
+        }
+      }
+
+      // Prowl Roosting Perch Mode [J Key]
+      if (e.code === 'KeyJ' && this.player) {
+        const isPerched = this.player.togglePerch();
+        this.ui.showAnnouncement(isPerched ? '🌲 AFFÛT PERCHÉ EN HAUTEUR : DOMINANCE VERTICALE' : '⚡ PLONGEON D\'ASSASSINAT FURTIF AU SOL !');
+      }
 
       // Feral Hex-Shield [C Key]
       if (e.code === 'KeyC' && this.player) {
@@ -644,9 +666,21 @@ class GameApp {
     this.skimmer.update(delta, this.player, this.horde, this.keys);
     this.orbital.update(delta);
 
-    const camTarget = this.player.position.clone().add(new THREE.Vector3(0, 10, 16));
-    this.renderer.camera.position.lerp(camTarget, 5 * delta);
-    this.renderer.camera.lookAt(this.player.position.clone().add(new THREE.Vector3(0, 2, 0)));
+    // Camera positioning: First-Person Bio-Mask vs 3rd Person
+    if (this.isFirstPerson) {
+      const eyePos = this.player.position.clone().add(new THREE.Vector3(0, 3.6, 0.2));
+      this.renderer.camera.position.lerp(eyePos, 15 * delta);
+      const lookTarget = eyePos.clone().add(new THREE.Vector3(
+        Math.sin(this.player.rotationY) * 10,
+        0,
+        Math.cos(this.player.rotationY) * 10
+      ));
+      this.renderer.camera.lookAt(lookTarget);
+    } else {
+      const camTarget = this.player.position.clone().add(new THREE.Vector3(0, 10, 16));
+      this.renderer.camera.position.lerp(camTarget, 5 * delta);
+      this.renderer.camera.lookAt(this.player.position.clone().add(new THREE.Vector3(0, 2, 0)));
+    }
 
     for (let i = this.projectiles.length - 1; i >= 0; i--) {
       const p = this.projectiles[i];

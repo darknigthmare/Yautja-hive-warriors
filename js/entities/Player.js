@@ -1,4 +1,4 @@
-/* Playable Yautja 3D Mesh Generator & State Controller (Titan 1:1 Lore Edition) */
+/* Playable Yautja 3D Mesh Generator & State Controller (Primordial 1:1 Lore Edition) */
 
 import * as THREE from 'three';
 
@@ -38,6 +38,7 @@ export class Player {
     this.isHybridMutated = false;
     this.isClanBranded = false;
     this.isBlocking = false;
+    this.isPerched = false;
     this.warhornBuffTimer = 0;
 
     // Pounce Leap State
@@ -178,6 +179,21 @@ export class Player {
     return laserGroup;
   }
 
+  togglePerch() {
+    this.isPerched = !this.isPerched;
+    if (this.isPerched) {
+      // Perch high atop canopy/pillars (12 meters above arena)
+      this.position.y = 12.0;
+      this.audioEngine.playSlash();
+    } else {
+      // Dive assassination plunge!
+      this.position.y = 0;
+      this.audioEngine.playPounceImpact();
+    }
+    this.mesh.position.copy(this.position);
+    return this.isPerched;
+  }
+
   toggleShieldBlock() {
     this.isBlocking = !this.isBlocking;
     if (this.shieldMesh) {
@@ -198,22 +214,6 @@ export class Player {
     this.warhornBuffTimer = 10.0;
     this.audioEngine.playWarhorn();
     return true;
-  }
-
-  fireSmartDiscRicochet() {
-    this.audioEngine.playDiscWhistle();
-    const origin = this.position.clone().add(new THREE.Vector3(1.2, 1.8, 0.8));
-    const forward = new THREE.Vector3(Math.sin(this.rotationY), 0, Math.cos(this.rotationY)).normalize();
-
-    return {
-      position: origin,
-      direction: forward,
-      damage: 280,
-      speed: 40,
-      ricochetsLeft: 5,
-      isReturning: false,
-      startPlayerPos: this.position.clone()
-    };
   }
 
   brandClanMark() {
@@ -293,9 +293,9 @@ export class Player {
   }
 
   triggerFacehuggerLatch() {
-    if (this.isBlocking) {
+    if (this.isBlocking || this.isPerched) {
       this.audioEngine.playShieldBlock();
-      return; // Hex-Shield blocks Facehuggers 100%!
+      return;
     }
     this.isFacehuggerLatched = true;
     this.qteStrugglePresses = 0;
@@ -380,7 +380,7 @@ export class Player {
   }
 
   move(dir, delta) {
-    if (this.isFacehuggerLatched) return;
+    if (this.isFacehuggerLatched || this.isPerched) return;
 
     if (dir.lengthSq() > 0) {
       dir.normalize();
@@ -456,7 +456,7 @@ export class Player {
     const origin = this.position.clone().add(new THREE.Vector3(0, 2.5, 0));
     const forward = new THREE.Vector3(
       Math.sin(this.rotationY),
-      0,
+      this.isPerched ? -0.4 : 0, // Aim downwards when perched!
       Math.cos(this.rotationY)
     ).normalize();
 
@@ -483,9 +483,9 @@ export class Player {
   }
 
   takeDamage(amount) {
-    if (this.isBlocking) {
+    if (this.isBlocking || this.isPerched) {
       this.audioEngine.playShieldBlock();
-      return this.hp; // 100% blocked by Feral Hex-Shield!
+      return this.hp;
     }
     if (this.isHybridMutated) return this.hp;
     if (this.isCloaked) amount *= 0.5;

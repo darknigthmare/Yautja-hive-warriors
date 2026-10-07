@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PREDATOR: HIVE WARRIORS - v10.0 APEX TITAN OMNIVERSE 3D</title>
+  <title>PREDATOR: HIVE WARRIORS - v11.0 GOD-TIER APEX PRIMORDIAL 3D</title>
   <meta name="description" content="Jeu de guerre 3D style Dynasty Warriors d'affrontement épique entre Yautja et hordes de Xenomorphes.">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,6 +21,16 @@
 </head>
 <body>
   <div id="canvas-container"></div>
+
+  <!-- FIRST-PERSON BIO-MASK COCKPIT VIEW OVERLAY -->
+  <div id="first-person-mask-overlay" class="hidden">
+    <div class="bio-mask-hud-frame">
+      <div class="mask-reticle-triangle">▲</div>
+      <div class="mask-targeting-bracket left">[</div>
+      <div class="mask-targeting-bracket right">]</div>
+      <div class="mask-telemetry">YAUTJA PRIME COMM-LINK ONLINE</div>
+    </div>
+  </div>
 
   <!-- 4 BIO-MASK VISION MODES OVERLAYS -->
   <div id="thermal-overlay" class="hidden"></div>
@@ -55,7 +65,7 @@
         <div class="logo-box">
           <div class="yautja-glyph-banner">⚡ ᚛᚜ ⚡ PREDATOR ⚡ ᚛᚜ ⚡</div>
           <h1 class="game-title">HIVE WARRIORS</h1>
-          <p class="subtitle">v10.0 APEX TITAN OMNIVERSE • 1:1 CANON LORE MASTERWORK</p>
+          <p class="subtitle">v11.0 GOD-TIER APEX PRIMORDIAL • 1:1 CANON LORE EXPANSION</p>
         </div>
 
         <div class="menu-actions">
@@ -282,6 +292,14 @@
       <div id="ability-announcement" class="announcement-banner hidden"></div>
 
       <div class="hud-bottom-center" id="hud-equipped-slots-container">
+        <div class="ability-slot" id="slot-fps">
+          <div class="slot-key">I</div>
+          <div class="slot-label">VUE FPS BIO-MASQUE</div>
+        </div>
+        <div class="ability-slot" id="slot-perch">
+          <div class="slot-key">J</div>
+          <div class="slot-label">PERCHOIR HAUT</div>
+        </div>
         <div class="ability-slot" id="slot-shield">
           <div class="slot-key">C</div>
           <div class="slot-label">FERAL SHIELD</div>
@@ -293,18 +311,6 @@
         <div class="ability-slot" id="slot-hounds">
           <div class="slot-key">H</div>
           <div class="slot-label">HELL-HOUNDS</div>
-        </div>
-        <div class="ability-slot" id="slot-mimicry">
-          <div class="slot-key">Y</div>
-          <div class="slot-label">VOICE LURE</div>
-        </div>
-        <div class="ability-slot" id="slot-needler">
-          <div class="slot-key">G</div>
-          <div class="slot-label">NEEDLER DART</div>
-        </div>
-        <div class="ability-slot" id="slot-leap">
-          <div class="slot-key">SHIFT + ESPACE</div>
-          <div class="slot-label">POUNCE LEAP</div>
         </div>
         <div class="ability-slot" id="slot-vision">
           <div class="slot-key">V</div>
@@ -440,6 +446,8 @@
         <div class="options-body">
           <h3>CONTRÔLES CLAVIER & SOURIS</h3>
           <div class="controls-grid">
+            <div class="control-row"><span class="key">I</span><span>Bascule Vue Première Personne Cockpit Bio-Masque</span></div>
+            <div class="control-row"><span class="key">J</span><span>Perchoir en Hauteur & Affût Perché (Prowl Roosting)</span></div>
             <div class="control-row"><span class="key">C</span><span>Bouclier Hexagonal Feral Predator (Prey 2022)</span></div>
             <div class="control-row"><span class="key">K</span><span>Cor de Guerre Clan Warhorn (+50% Dégâts & Vitesse)</span></div>
             <div class="control-row"><span class="key">H</span><span>Déployer la Meute de Hell-Hounds (Predators 2010)</span></div>

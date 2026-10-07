@@ -1,4 +1,4 @@
-/* Xenomorph Swarm Engine, Ovimorph Eggs, Facehugger Latching & Dismemberment 2.0 */
+/* Xenomorph Swarm Engine 3.0 - Crusher, Praetorian, Ovimorph Eggs & Gore */
 
 import * as THREE from 'three';
 
@@ -13,16 +13,10 @@ export class XenomorphHorde {
     this.acidPools = [];
     this.deadCount = 0;
 
-    this.eggMat = new THREE.MeshStandardMaterial({
-      color: 0x3d3522,
-      roughness: 0.7,
-      metalness: 0.1
-    });
-    this.eggPetalMat = new THREE.MeshStandardMaterial({
-      color: 0x5a2d1d,
-      roughness: 0.5,
-      metalness: 0.2
-    });
+    this.eggMat = new THREE.MeshStandardMaterial({ color: 0x3d3522, roughness: 0.7, metalness: 0.1 });
+    this.eggPetalMat = new THREE.MeshStandardMaterial({ color: 0x5a2d1d, roughness: 0.5, metalness: 0.2 });
+    this.crusherMat = new THREE.MeshStandardMaterial({ color: 0x151b24, roughness: 0.2, metalness: 0.9 });
+    this.praetorianMat = new THREE.MeshStandardMaterial({ color: 0x0f141c, roughness: 0.3, metalness: 0.85 });
   }
 
   setGoreEngine(goreEngine) {
@@ -32,8 +26,14 @@ export class XenomorphHorde {
   spawnWave(count, playerPos) {
     this.clearWave();
 
-    // Spawn 4-6 Interactive Ovimorph Eggs across arena!
     this.spawnOvimorphEggs(playerPos, 5);
+
+    // Spawn 1 Crusher Titan
+    this.spawnCrusher(playerPos);
+
+    // Spawn 2 Praetorian Royal Guards
+    this.spawnPraetorian(playerPos, -15);
+    this.spawnPraetorian(playerPos, 15);
 
     for (let i = 0; i < count; i++) {
       const isFacehugger = Math.random() < 0.2;
@@ -61,6 +61,68 @@ export class XenomorphHorde {
     }
   }
 
+  spawnCrusher(playerPos) {
+    const group = new THREE.Group();
+    // Massive Quadruped Battering Ram Body
+    const body = new THREE.Mesh(new THREE.BoxGeometry(2.5, 2.2, 4.0), this.crusherMat);
+    body.position.y = 2.0;
+    group.add(body);
+
+    // Bulletproof Massive Armored Head Crest
+    const crest = new THREE.Mesh(new THREE.ConeGeometry(2.2, 3.5, 6), this.crusherMat);
+    crest.rotation.x = Math.PI / 2.3;
+    crest.position.set(0, 2.8, 2.5);
+    group.add(crest);
+
+    group.position.set(playerPos.x, 0, playerPos.z - 35);
+    this.scene.add(group);
+
+    this.aliens.push({
+      mesh: group,
+      type: 'crusher',
+      hp: 750,
+      maxHp: 750,
+      speed: 16,
+      damage: 60,
+      radius: 2.8,
+      isCharging: false,
+      chargeTimer: 3.0
+    });
+  }
+
+  spawnPraetorian(playerPos, offsetX = 0) {
+    const group = new THREE.Group();
+    // 4-meter tall Royal Guard
+    const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.5, 2.8, 8), this.praetorianMat);
+    torso.position.y = 2.4;
+    group.add(torso);
+
+    const head = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.5, 2.2, 8), this.praetorianMat);
+    head.rotation.x = Math.PI / 2;
+    head.position.set(0, 3.8, 0.6);
+    group.add(head);
+
+    // Crown crest
+    const crown = new THREE.Mesh(new THREE.ConeGeometry(1.2, 1.8, 5), this.praetorianMat);
+    crown.rotation.x = Math.PI / 2.5;
+    crown.position.set(0, 4.2, -0.4);
+    group.add(crown);
+
+    group.position.set(playerPos.x + offsetX, 0, playerPos.z - 28);
+    this.scene.add(group);
+
+    this.aliens.push({
+      mesh: group,
+      type: 'praetorian',
+      hp: 480,
+      maxHp: 480,
+      speed: 13,
+      damage: 40,
+      radius: 1.8,
+      spitCooldown: 2.0
+    });
+  }
+
   spawnOvimorphEggs(playerPos, count = 5) {
     for (let i = 0; i < count; i++) {
       const angle = (i / count) * Math.PI * 2 + Math.random() * 0.5;
@@ -71,13 +133,11 @@ export class XenomorphHorde {
       const eggGroup = new THREE.Group();
       eggGroup.position.set(x, 0, z);
 
-      // Egg base bulb
       const base = new THREE.Mesh(new THREE.SphereGeometry(0.8, 10, 10), this.eggMat);
       base.scale.set(0.9, 1.3, 0.9);
       base.position.y = 0.9;
       eggGroup.add(base);
 
-      // 4 Petals
       const petals = [];
       for (let p = 0; p < 4; p++) {
         const petal = new THREE.Mesh(new THREE.ConeGeometry(0.3, 0.7, 5), this.eggPetalMat);
@@ -132,7 +192,7 @@ export class XenomorphHorde {
 
   createChestbursterMesh() {
     const group = new THREE.Group();
-    const mat = new THREE.MeshStandardMaterial({ color: 0xd4a373, roughness: 0.4, metalness: 0.1 }); // Pale flesh
+    const mat = new THREE.MeshStandardMaterial({ color: 0xd4a373, roughness: 0.4, metalness: 0.1 });
 
     const body = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.05, 1.0, 6), mat);
     body.rotation.x = Math.PI / 2;
@@ -149,12 +209,11 @@ export class XenomorphHorde {
   checkMeleeHits(attack) {
     const hits = [];
 
-    // Check hit on aliens
     for (let i = this.aliens.length - 1; i >= 0; i--) {
       const a = this.aliens[i];
       const dist = a.mesh.position.distanceTo(attack.origin);
 
-      if (dist <= attack.radius) {
+      if (dist <= attack.radius + (a.radius || 1.0)) {
         a.hp -= attack.damage;
         const killed = a.hp <= 0;
 
@@ -169,8 +228,7 @@ export class XenomorphHorde {
             this.goreEngine.spawnDismemberment(a.mesh.position, attack.type || 'wristblades');
           }
 
-          // Rare chance of Chestburster eruption on dead alien host
-          if (Math.random() < 0.15) {
+          if (Math.random() < 0.15 && a.type !== 'crusher') {
             this.spawnChestburster(a.mesh.position);
           }
 
@@ -182,7 +240,6 @@ export class XenomorphHorde {
       }
     }
 
-    // Check hit on Ovimorph Eggs
     for (let i = this.eggs.length - 1; i >= 0; i--) {
       const egg = this.eggs[i];
       if (egg.mesh.position.distanceTo(attack.origin) <= attack.radius + 1.0) {
@@ -224,19 +281,17 @@ export class XenomorphHorde {
   }
 
   update(delta, player) {
-    // 1. Ovimorph Egg proximity sensing & hatching
+    // 1. Ovimorph Egg proximity
     this.eggs.forEach(egg => {
       if (!egg.hatched && egg.mesh.position.distanceTo(player.position) < 7.0) {
         if (!egg.isOpen) {
           egg.isOpen = true;
-          // Animate petals opening
           egg.petals.forEach(p => {
             p.rotation.x *= 2.2;
             p.rotation.z *= 2.2;
           });
           this.audioEngine.playXenoHiss();
 
-          // Hatch Facehugger in 0.8s
           setTimeout(() => {
             if (this.scene) {
               const facehugger = this.createAlienMesh(true);
@@ -260,7 +315,7 @@ export class XenomorphHorde {
       }
     });
 
-    // 2. Chestbursters chase player rapidly
+    // 2. Chestbursters
     for (let i = this.chestbursters.length - 1; i >= 0; i--) {
       const cb = this.chestbursters[i];
       const dir = player.position.clone().sub(cb.mesh.position);
@@ -274,7 +329,7 @@ export class XenomorphHorde {
       }
     }
 
-    // 3. Acid pools damage logic
+    // 3. Acid pools
     for (let i = this.acidPools.length - 1; i >= 0; i--) {
       const pool = this.acidPools[i];
       pool.life -= delta;
@@ -287,7 +342,7 @@ export class XenomorphHorde {
       }
     }
 
-    // 4. Xenomorph Horde Swarm AI & Facehugger Latching
+    // 4. Horde AI (Crusher, Praetorian, Warriors, Facehuggers)
     this.aliens.forEach(a => {
       if (a.isLatched) return;
 
@@ -295,7 +350,22 @@ export class XenomorphHorde {
       dir.y = 0;
       const dist = dir.length();
 
-      if (dist > 1.2) {
+      if (a.type === 'crusher') {
+        // Crusher Battering Ram Charge
+        a.chargeTimer -= delta;
+        if (a.chargeTimer <= 0) {
+          a.isCharging = true;
+          a.speed = 22; // Charge speed!
+          this.audioEngine.playXenoHiss();
+          setTimeout(() => {
+            a.isCharging = false;
+            a.speed = 12;
+            a.chargeTimer = 4.0;
+          }, 2000);
+        }
+      }
+
+      if (dist > (a.radius || 1.2)) {
         dir.normalize();
         a.mesh.position.addScaledVector(dir, a.speed * delta);
         a.mesh.rotation.y = Math.atan2(dir.x, dir.z);
