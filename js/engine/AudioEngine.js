@@ -1184,4 +1184,79 @@ export class AudioEngine {
     osc.start(now);
     osc.stop(now + 1.2);
   }
+
+  playEngineerFluteHorn() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // 1. Eerie primordial flute resonance (Prometheus 2012)
+    const flute = this.ctx.createOscillator();
+    const fluteGain = this.ctx.createGain();
+    flute.type = 'sine';
+    flute.frequency.setValueAtTime(587.33, now); // D5
+    flute.frequency.linearRampToValueAtTime(523.25, now + 0.8); // C5
+    flute.frequency.linearRampToValueAtTime(440.00, now + 1.6); // A4
+    fluteGain.gain.setValueAtTime(0.5, now);
+    fluteGain.gain.linearRampToValueAtTime(0.01, now + 2.2);
+    flute.connect(fluteGain);
+    fluteGain.connect(this.ctx.destination);
+    flute.start(now);
+    flute.stop(now + 2.2);
+
+    // 2. Monolithic cosmic horn drone
+    const drone = this.ctx.createOscillator();
+    const droneGain = this.ctx.createGain();
+    drone.type = 'sawtooth';
+    drone.frequency.setValueAtTime(85, now);
+    drone.frequency.exponentialRampToValueAtTime(42, now + 2.2);
+    droneGain.gain.setValueAtTime(0.7, now);
+    droneGain.gain.linearRampToValueAtTime(0.01, now + 2.2);
+    drone.connect(droneGain);
+    droneGain.connect(this.ctx.destination);
+    drone.start(now);
+    drone.stop(now + 2.2);
+  }
+
+  playAPCTurretBurst() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Twin 20mm autocannon bursts (4 heavy impacts)
+    for (let i = 0; i < 4; i++) {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      const shotTime = now + i * 0.08;
+
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(340, shotTime);
+      osc.frequency.exponentialRampToValueAtTime(55, shotTime + 0.06);
+
+      gain.gain.setValueAtTime(0.6, shotTime);
+      gain.gain.linearRampToValueAtTime(0.01, shotTime + 0.06);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(shotTime);
+      osc.stop(shotTime + 0.06);
+    }
+  }
+
+  playPlasmaScytheSwing() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(1400, now);
+    osc.frequency.exponentialRampToValueAtTime(260, now + 0.35);
+
+    gain.gain.setValueAtTime(0.75, now);
+    gain.gain.linearRampToValueAtTime(0.01, now + 0.35);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.35);
+  }
 }

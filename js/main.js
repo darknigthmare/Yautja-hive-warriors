@@ -27,6 +27,7 @@ import { BadBloodManager } from './entities/BadBloodEncounter.js';
 import { HellHoundsManager } from './entities/HellHounds.js';
 import { DropPodEntrance } from './entities/DropPodEntrance.js';
 import { CheyenneDropship } from './entities/CheyenneDropship.js';
+import { APCVehicle } from './entities/APCVehicle.js';
 import { EnvironmentManager } from './entities/Environment.js';
 import { CHARACTERS_DATA } from './data/charactersData.js';
 
@@ -56,6 +57,9 @@ class GameApp {
     this.hellHounds = new HellHoundsManager(this.renderer.scene, this.audio);
     this.dropPod = new DropPodEntrance(this.renderer.scene, this.audio, this.particles);
     this.dropship = new CheyenneDropship(this.renderer.scene, this.audio, this.particles);
+    this.apc = new APCVehicle(this.renderer.scene, this.audio, this.particles);
+    this.pathogenPools = [];
+    this.pathogenCooldown = 0;
 
     this.weaponWheel = new WeaponWheel((weaponId) => {
       this.ui.showAnnouncement(`ARME SÉLECTIONNÉE: ${weaponId.toUpperCase()}`);
@@ -269,6 +273,11 @@ class GameApp {
       // Segmented Spine Whip [Digit 1 or Shift + Left Click] (AVP: Requiem 2007)
       if ((e.code === 'Digit1' || e.code === 'Numpad1') && this.player) {
         this.performSpineWhip();
+      }
+
+      // Engineer Black Pathogen Mutagen Urn Bombardment [Digit 2] (Prometheus 2012)
+      if ((e.code === 'Digit2' || e.code === 'Numpad2') && this.player) {
+        this.triggerPathogenUrnStrike();
       }
 
       // Collapsible 6-Blade Shuriken [L Key] (AVP 2004 Celtic / Scar Lore)
@@ -784,6 +793,60 @@ class GameApp {
     }
   }
 
+  triggerPathogenUrnStrike() {
+    if (this.pathogenCooldown > 0 || !this.player) return;
+    this.pathogenCooldown = 15.0;
+
+    this.audio.playEngineerFluteHorn();
+    this.ui.showAnnouncement('🏺 BOMBARDEMENT PATHOGÈNE NOIR DES INGÉNIEURS (PROMETHEUS) DÉPLOYÉ !');
+
+    const centerPos = this.player.position.clone();
+    const forward = new THREE.Vector3(Math.sin(this.player.rotationY), 0, Math.cos(this.player.rotationY)).normalize();
+
+    // Drop 3 Black Urn canisters from orbit
+    for (let u = 0; u < 3; u++) {
+      setTimeout(() => {
+        const urnPos = centerPos.clone()
+          .addScaledVector(forward, 10 + u * 6)
+          .add(new THREE.Vector3((u - 1) * 6, 0, 0));
+
+        // Create dark obsidian urn mesh
+        const urnGeo = new THREE.CylinderGeometry(0.35, 0.45, 1.8, 8);
+        const urnMat = new THREE.MeshStandardMaterial({
+          color: 0x09090b,
+          roughness: 0.1,
+          metalness: 0.95
+        });
+        const urnMesh = new THREE.Mesh(urnGeo, urnMat);
+        urnMesh.position.set(urnPos.x, 0.9, urnPos.z);
+        this.renderer.scene.add(urnMesh);
+
+        // Pathogen liquid black pool
+        const poolGeo = new THREE.CircleGeometry(4.2, 16);
+        poolGeo.rotateX(-Math.PI / 2);
+        const poolMat = new THREE.MeshBasicMaterial({
+          color: 0x050505,
+          transparent: true,
+          opacity: 0.88,
+          depthWrite: false
+        });
+        const poolMesh = new THREE.Mesh(poolGeo, poolMat);
+        poolMesh.position.set(urnPos.x, 0.03, urnPos.z);
+        this.renderer.scene.add(poolMesh);
+
+        this.particles.emitSparks(urnPos, 20);
+
+        this.pathogenPools.push({
+          urnMesh,
+          poolMesh,
+          pos: urnPos.clone(),
+          life: 8.5,
+          damage: 95
+        });
+      }, u * 400);
+    }
+  }
+
   executeMusouOverload() {
     this.ui.showAnnouncement('⚡ SURCHARGE MUSOU PLASMA ENCLENCHÉE ! ONDES DE CHOC & TEMPETE CYCLONIQUE');
     this.audio.playOmniPlasmaStorm();
@@ -946,8 +1009,27 @@ class GameApp {
     this.hellHounds.update(delta, this.player, this.horde);
     this.synthetics.update(delta, this.player, this.horde);
     this.dropship.update(delta, this.horde);
+    this.apc.update(delta, this.horde);
     this.skimmer.update(delta, this.player, this.horde, this.keys);
     this.orbital.update(delta);
+
+    // Update Engineer Black Pathogen Pools (Prometheus 2012)
+    if (this.pathogenCooldown > 0) this.pathogenCooldown -= delta;
+    for (let i = this.pathogenPools.length - 1; i >= 0; i--) {
+      const p = this.pathogenPools[i];
+      p.life -= delta;
+      if (this.horde) {
+        this.horde.checkMeleeHits({ origin: p.pos, radius: 4.2, damage: p.damage * delta, type: 'pathogen' });
+      }
+      if (this.synthetics) {
+        this.synthetics.checkHits({ origin: p.pos, radius: 4.2, damage: p.damage * delta });
+      }
+      if (p.life <= 0) {
+        this.renderer.scene.remove(p.urnMesh);
+        this.renderer.scene.remove(p.poolMesh);
+        this.pathogenPools.splice(i, 1);
+      }
+    }
 
     // Camera positioning: First-Person Bio-Mask vs 3rd Person
     if (this.isFirstPerson) {
@@ -1123,6 +1205,10 @@ class GameApp {
         if (this.waveIndex === 3) {
           this.badBlood.spawnAmbush(this.player.position);
           this.ui.showAnnouncement('⚠️ ALERTE : EMBUSCADE D\'UN YAUTJA RENÉGAT "BAD BLOOD" !');
+          this.apc.spawn(this.player.position.clone().add(new THREE.Vector3(-18, 0, -10)));
+          setTimeout(() => {
+            this.ui.showAnnouncement('🛡️ RENFORT BLINDÉ : BLINDÉ USCM M577 APC EN POSITION DE TIR !');
+          }, 1800);
         }
       } else if (!this.bosses.activeBoss) {
         this.bosses.spawnBoss(this.ui.selectedLevel.bossType, this.player.position.clone().add(new THREE.Vector3(0, 0, -25)));
@@ -1247,6 +1333,11 @@ class GameApp {
     this.hellHounds.dismissPack();
     this.dropPod.clear();
     this.dropship.clear();
+    this.apc.clear();
+    for (const pool of this.pathogenPools) {
+      if (pool.mesh) this.scene.remove(pool.mesh);
+    }
+    this.pathogenPools = [];
 
     this.ui.recordEndSession(this.horde.deadCount, this.sessionSkulls, this.score);
 
