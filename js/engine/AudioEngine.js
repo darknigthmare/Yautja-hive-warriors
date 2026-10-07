@@ -1,4 +1,4 @@
-/* Web Audio API Sound Synthesizer Engine 5.0 - Apex Titan Lore Audio */
+/* Web Audio API Sound Synthesizer Engine 6.0 - Transcendent Lore Audio */
 
 export class AudioEngine {
   constructor() {
@@ -15,11 +15,73 @@ export class AudioEngine {
     this.ctx = new AudioCtx();
   }
 
+  playDropPodImpact() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(140, now);
+    osc.frequency.exponentialRampToValueAtTime(25, now + 1.2);
+
+    gain.gain.setValueAtTime(0.9, now);
+    gain.gain.linearRampToValueAtTime(0.01, now + 1.2);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 1.2);
+  }
+
+  playDropshipFlyby() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Twin jet turbine engine roar
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(220, now);
+    osc.frequency.linearRampToValueAtTime(480, now + 1.5);
+    osc.frequency.linearRampToValueAtTime(120, now + 3.0);
+
+    gain.gain.setValueAtTime(0.5, now);
+    gain.gain.linearRampToValueAtTime(0.01, now + 3.0);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 3.0);
+  }
+
+  playLaserScalpel() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(3600, now);
+    osc.frequency.linearRampToValueAtTime(1800, now + 0.5);
+
+    gain.gain.setValueAtTime(0.2, now);
+    gain.gain.linearRampToValueAtTime(0.01, now + 0.5);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.5);
+  }
+
   playWarhorn() {
     if (!this.ctx || this.isMuted) return;
     const now = this.ctx.currentTime;
 
-    // Deep primordial hunting horn sound
     const osc1 = this.ctx.createOscillator();
     const osc2 = this.ctx.createOscillator();
     const gain = this.ctx.createGain();
@@ -30,7 +92,7 @@ export class AudioEngine {
     osc1.frequency.linearRampToValueAtTime(80, now + 2.5);
 
     osc2.type = 'triangle';
-    osc2.frequency.setValueAtTime(142, now); // Fifth harmonic
+    osc2.frequency.setValueAtTime(142, now);
     osc2.frequency.linearRampToValueAtTime(172, now + 1.2);
     osc2.frequency.linearRampToValueAtTime(120, now + 2.5);
 

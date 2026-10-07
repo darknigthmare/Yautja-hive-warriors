@@ -1,4 +1,4 @@
-/* 3D Yautja Mothership Citadel Room 2.0 - Engineer Skull & Holographic Codex Terminal */
+/* 3D Yautja Mothership Citadel Room 3.0 - Laser Trophy Cleaning & Polishing Station */
 
 import * as THREE from 'three';
 
@@ -11,7 +11,6 @@ export class YautjaCitadel {
   }
 
   buildCitadelRoom(skullCount = 0) {
-    // Clear old room
     while (this.citadelGroup.children.length > 0) {
       this.citadelGroup.remove(this.citadelGroup.children[0]);
     }
@@ -20,8 +19,9 @@ export class YautjaCitadel {
     const floorMat = new THREE.MeshStandardMaterial({ color: 0x0a0f18, metalness: 0.9, roughness: 0.1 });
     const pedestalMat = new THREE.MeshStandardMaterial({ color: 0x3a4556, metalness: 0.85, roughness: 0.3 });
     const skullMat = new THREE.MeshStandardMaterial({ color: 0xddddcc, roughness: 0.4 });
-    const engineerMat = new THREE.MeshStandardMaterial({ color: 0xc8d1dc, roughness: 0.25, metalness: 0.2 }); // Pale statue flesh
+    const engineerMat = new THREE.MeshStandardMaterial({ color: 0xc8d1dc, roughness: 0.25, metalness: 0.2 });
     const queenCrownMat = new THREE.MeshStandardMaterial({ color: 0x1a1a24, metalness: 0.9, roughness: 0.2 });
+    const laserMat = new THREE.MeshBasicMaterial({ color: 0x00d2ff, transparent: true, opacity: 0.8 });
 
     // Floor
     const floor = new THREE.Mesh(new THREE.CylinderGeometry(24, 24, 1, 16), floorMat);
@@ -63,17 +63,25 @@ export class YautjaCitadel {
     queenCrown.position.set(-8, 3.2, 0);
     this.citadelGroup.add(queenCrown);
 
-    // 3. CENTRAL HOLOGRAPHIC CODEX TERMINAL
-    const terminalBase = new THREE.Mesh(new THREE.CylinderGeometry(1.0, 1.4, 1.6, 8), pedestalMat);
-    terminalBase.position.set(0, 0.8, 0);
-    this.citadelGroup.add(terminalBase);
+    // 3. CENTERPIECE 3: LASER TROPHY CLEANING & POLISHING STATION (Predator 2 Lore)
+    const stationPedestal = new THREE.Mesh(new THREE.BoxGeometry(2.4, 1.6, 3.2), pedestalMat);
+    stationPedestal.position.set(8, 0.8, 0);
+    this.citadelGroup.add(stationPedestal);
 
-    const holoPillar = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.8, 0.8, 2.0, 16),
-      new THREE.MeshBasicMaterial({ color: 0x00d2ff, transparent: true, opacity: 0.35, wireframe: true })
-    );
-    holoPillar.position.set(0, 2.4, 0);
-    this.citadelGroup.add(holoPillar);
+    // Polishing Beam Arm
+    const stationArm = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 1.8, 6), wallMat);
+    stationArm.position.set(8, 2.3, 0);
+    stationArm.rotation.z = Math.PI / 4;
+    this.citadelGroup.add(stationArm);
+
+    // Sizzling Blue Laser Beam Polishing an Elite Skull
+    const laserBeam = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 1.2, 6), laserMat);
+    laserBeam.position.set(8.4, 2.0, 0);
+    this.citadelGroup.add(laserBeam);
+
+    const polishedSkull = new THREE.Mesh(new THREE.SphereGeometry(0.45, 10, 10), skullMat);
+    polishedSkull.position.set(8.4, 1.9, 0);
+    this.citadelGroup.add(polishedSkull);
 
     // Standard Prey Skulls on Outer Pedestals
     const displayCount = Math.min(12, Math.max(4, skullCount));
@@ -91,7 +99,6 @@ export class YautjaCitadel {
 
   createEngineerSkull(mat) {
     const group = new THREE.Group();
-    // Broad, aristocratic humanoid cranium (Prometheus Engineer)
     const cranium = new THREE.Mesh(new THREE.SphereGeometry(0.65, 12, 12), mat);
     cranium.scale.set(0.9, 1.2, 1.0);
     group.add(cranium);
@@ -105,7 +112,6 @@ export class YautjaCitadel {
 
   createQueenCrownMesh(mat) {
     const group = new THREE.Group();
-    // Massive flared chitinous crest
     const crest = new THREE.Mesh(new THREE.ConeGeometry(1.4, 2.8, 5), mat);
     crest.rotation.x = Math.PI / 2.5;
     group.add(crest);

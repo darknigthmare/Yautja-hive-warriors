@@ -1,4 +1,4 @@
-/* PREDATOR: HIVE WARRIORS - Main Game Router (v11.0 God-Tier Apex Primordial) */
+/* PREDATOR: HIVE WARRIORS - Main Game Router (v12.0 Apex Transcendent Edition) */
 
 import * as THREE from 'three';
 import { EngineRenderer } from './engine/Renderer.js';
@@ -25,6 +25,8 @@ import { ColonialMarinesManager } from './entities/ColonialMarines.js';
 import { SyntheticsManager } from './entities/Synthetics.js';
 import { BadBloodManager } from './entities/BadBloodEncounter.js';
 import { HellHoundsManager } from './entities/HellHounds.js';
+import { DropPodEntrance } from './entities/DropPodEntrance.js';
+import { CheyenneDropship } from './entities/CheyenneDropship.js';
 import { EnvironmentManager } from './entities/Environment.js';
 import { CHARACTERS_DATA } from './data/charactersData.js';
 
@@ -52,6 +54,8 @@ class GameApp {
     this.synthetics = new SyntheticsManager(this.renderer.scene, this.audio, this.particles);
     this.badBlood = new BadBloodManager(this.renderer.scene, this.audio);
     this.hellHounds = new HellHoundsManager(this.renderer.scene, this.audio);
+    this.dropPod = new DropPodEntrance(this.renderer.scene, this.audio, this.particles);
+    this.dropship = new CheyenneDropship(this.renderer.scene, this.audio, this.particles);
 
     this.weaponWheel = new WeaponWheel((weaponId) => {
       this.ui.showAnnouncement(`ARME SÉLECTIONNÉE: ${weaponId.toUpperCase()}`);
@@ -102,7 +106,7 @@ class GameApp {
       this.audio.init();
       this.citadel.buildCitadelRoom(this.ui.trophyStats.skulls);
       this.citadel.show();
-      this.ui.showAnnouncement('🏰 CITADELLE YAUTJA: CRÂNE DE L\'INGÉNIEUR & CODEX');
+      this.ui.showAnnouncement('🏰 CITADELLE YAUTJA: STATION DE POLISSAGE DES TROPHÉES AU LASER');
     });
 
     document.getElementById('btn-open-story').addEventListener('click', () => {
@@ -463,6 +467,11 @@ class GameApp {
       this.player2 = null;
     }
 
+    // Trigger Cinematic Yautja Orbital Drop Pod Entrance!
+    this.dropPod.triggerDrop(this.player.position, () => {
+      this.ui.showAnnouncement('🚀 CAPSULE D\'INSERTION YAUTJA : SAS ÉJECTÉ ! LA CHASSE COMMENCE !');
+    });
+
     this.skimmer.spawnAt(this.player.position.clone().add(new THREE.Vector3(5, 0, 5)));
     this.allies.spawnSquad(this.player.position, 3);
     this.marines.spawnSquad(this.player.position, 4);
@@ -663,6 +672,7 @@ class GameApp {
 
     this.hellHounds.update(delta, this.player, this.horde);
     this.synthetics.update(delta, this.player, this.horde);
+    this.dropship.update(delta);
     this.skimmer.update(delta, this.player, this.horde, this.keys);
     this.orbital.update(delta);
 
@@ -672,7 +682,7 @@ class GameApp {
       this.renderer.camera.position.lerp(eyePos, 15 * delta);
       const lookTarget = eyePos.clone().add(new THREE.Vector3(
         Math.sin(this.player.rotationY) * 10,
-        0,
+        this.player.isPerched ? -4 : 0,
         Math.cos(this.player.rotationY) * 10
       ));
       this.renderer.camera.lookAt(lookTarget);
@@ -713,6 +723,12 @@ class GameApp {
         this.horde.spawnWave(20 + this.waveIndex * 10, this.player.position);
         this.ui.showAnnouncement(`VAGUE ${this.waveIndex} APPROCHE !`);
 
+        // Cheyenne Dropship Airstrike Support on Wave 2 & 4!
+        if (this.waveIndex === 2 || this.waveIndex === 4) {
+          this.dropship.triggerAirstrike(this.player.position, this.horde);
+          this.ui.showAnnouncement('✈️ DROPSHIP CHEYENNE UD-4L DÉPLOYÉ : SALVE DE ROQUETTES 70MM !');
+        }
+
         if (this.waveIndex === 3) {
           this.badBlood.spawnAmbush(this.player.position);
           this.ui.showAnnouncement('⚠️ ALERTE : EMBUSCADE D\'UN YAUTJA RENÉGAT "BAD BLOOD" !');
@@ -746,6 +762,8 @@ class GameApp {
     this.marines.clearSquad();
     this.synthetics.clearSquad();
     this.hellHounds.dismissPack();
+    this.dropPod.clear();
+    this.dropship.clear();
 
     this.ui.recordEndSession(this.horde.deadCount, this.sessionSkulls, this.score);
 
