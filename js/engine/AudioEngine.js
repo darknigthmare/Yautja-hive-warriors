@@ -853,4 +853,133 @@ export class AudioEngine {
     sub.start(now);
     sub.stop(now + 1.8);
   }
+
+  playCombiStickThrow() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // High velocity aerodynamic metallic spear whistling whoosh
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(2400, now);
+    osc.frequency.exponentialRampToValueAtTime(320, now + 0.35);
+
+    gain.gain.setValueAtTime(0.7, now);
+    gain.gain.linearRampToValueAtTime(0.01, now + 0.35);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.35);
+  }
+
+  playCombiStickImpale() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // 1. Visceral flesh crunch
+    const impactOsc = this.ctx.createOscillator();
+    const impactGain = this.ctx.createGain();
+    impactOsc.type = 'sawtooth';
+    impactOsc.frequency.setValueAtTime(360, now);
+    impactOsc.frequency.exponentialRampToValueAtTime(45, now + 0.25);
+    impactGain.gain.setValueAtTime(0.9, now);
+    impactGain.gain.linearRampToValueAtTime(0.01, now + 0.25);
+    impactOsc.connect(impactGain);
+    impactGain.connect(this.ctx.destination);
+    impactOsc.start(now);
+    impactOsc.stop(now + 0.25);
+
+    // 2. Resonant vibrating steel blade ring
+    const ringOsc = this.ctx.createOscillator();
+    const ringGain = this.ctx.createGain();
+    ringOsc.type = 'sine';
+    ringOsc.frequency.setValueAtTime(1450, now);
+    ringOsc.frequency.exponentialRampToValueAtTime(820, now + 0.65);
+    ringGain.gain.setValueAtTime(0.65, now);
+    ringGain.gain.exponentialRampToValueAtTime(0.01, now + 0.65);
+    ringOsc.connect(ringGain);
+    ringGain.connect(this.ctx.destination);
+    ringOsc.start(now);
+    ringOsc.stop(now + 0.65);
+  }
+
+  playTargetLockPing() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Iconic 1987 Bio-Mask Tri-Laser Lock 3-chirp staccato chime
+    const freqs = [2400, 2850, 3400];
+    freqs.forEach((freq, idx) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      const t = now + idx * 0.055;
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, t);
+      osc.frequency.exponentialRampToValueAtTime(freq * 1.08, t + 0.04);
+
+      gain.gain.setValueAtTime(0.4, t);
+      gain.gain.linearRampToValueAtTime(0.01, t + 0.04);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(t);
+      osc.stop(t + 0.04);
+    });
+  }
+
+  playPredalienRegurgitate() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Guttural visceral retch & embryonic discharge
+    const osc1 = this.ctx.createOscillator();
+    const gain1 = this.ctx.createGain();
+    osc1.type = 'sawtooth';
+    osc1.frequency.setValueAtTime(180, now);
+    osc1.frequency.linearRampToValueAtTime(65, now + 0.6);
+    gain1.gain.setValueAtTime(0.85, now);
+    gain1.gain.linearRampToValueAtTime(0.01, now + 0.6);
+    osc1.connect(gain1);
+    gain1.connect(this.ctx.destination);
+    osc1.start(now);
+    osc1.stop(now + 0.6);
+
+    // Wet bubbling sound
+    const bubble = this.ctx.createOscillator();
+    const bubbleGain = this.ctx.createGain();
+    bubble.type = 'sine';
+    bubble.frequency.setValueAtTime(320, now);
+    bubble.frequency.exponentialRampToValueAtTime(110, now + 0.5);
+    bubbleGain.gain.setValueAtTime(0.6, now);
+    bubbleGain.gain.linearRampToValueAtTime(0.01, now + 0.5);
+    bubble.connect(bubbleGain);
+    bubbleGain.connect(this.ctx.destination);
+    bubble.start(now);
+    bubble.stop(now + 0.5);
+  }
+
+  playSyntheticShortCircuit() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Electrical stutter and servo glitch
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(750, now);
+    osc.frequency.setValueAtTime(1400, now + 0.08);
+    osc.frequency.setValueAtTime(320, now + 0.16);
+    osc.frequency.setValueAtTime(950, now + 0.24);
+
+    gain.gain.setValueAtTime(0.5, now);
+    gain.gain.linearRampToValueAtTime(0.01, now + 0.35);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.35);
+  }
 }

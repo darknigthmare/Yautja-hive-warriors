@@ -43,6 +43,8 @@ export class Player {
     this.warhornBuffTimer = 0;
     this.empCooldown = 0;
     this.cloakShimmerTimer = 0;
+    this.combiStickCooldown = 0;
+    this.targetLockEnemy = null;
 
     // Pounce Leap State
     this.isLeaping = false;
@@ -180,6 +182,51 @@ export class Player {
     }
 
     return laserGroup;
+  }
+
+  updateLaserLock(worldTargetPos) {
+    if (!this.laserGroup) return;
+
+    if (worldTargetPos) {
+      const localTarget = this.mesh.worldToLocal(worldTargetPos.clone());
+      for (let i = 0; i < this.laserGroup.children.length; i++) {
+        const line = this.laserGroup.children[i];
+        const posAttr = line.geometry.attributes.position;
+        const angle = (i / 3) * Math.PI * 2;
+        // The three dots converge at target with small triangle delta
+        posAttr.setXYZ(1, localTarget.x + Math.cos(angle) * 0.12, localTarget.y + Math.sin(angle) * 0.12, localTarget.z);
+        posAttr.needsUpdate = true;
+      }
+    } else {
+      for (let i = 0; i < this.laserGroup.children.length; i++) {
+        const line = this.laserGroup.children[i];
+        const posAttr = line.geometry.attributes.position;
+        posAttr.setXYZ(1, 0, 1.8, 25);
+        posAttr.needsUpdate = true;
+      }
+    }
+  }
+
+  throwCombiStick() {
+    if (this.combiStickCooldown > 0 || this.isFacehuggerLatched) return null;
+    this.combiStickCooldown = 3.5;
+    this.audioEngine.playCombiStickThrow();
+
+    const forward = new THREE.Vector3(
+      Math.sin(this.rotationY),
+      this.isPerched ? -0.35 : 0,
+      Math.cos(this.rotationY)
+    ).normalize();
+
+    const startPos = this.position.clone().add(new THREE.Vector3(0, 2.2, 0)).addScaledVector(forward, 1.2);
+
+    return {
+      startPos: startPos,
+      direction: forward,
+      speed: 65,
+      damage: 480,
+      pierceRemaining: 4
+    };
   }
 
   togglePerch() {
@@ -668,6 +715,10 @@ export class Player {
 
     if (this.empCooldown > 0) {
       this.empCooldown = Math.max(0, this.empCooldown - delta);
+    }
+
+    if (this.combiStickCooldown > 0) {
+      this.combiStickCooldown = Math.max(0, this.combiStickCooldown - delta);
     }
 
     if (this.isCloaked) {

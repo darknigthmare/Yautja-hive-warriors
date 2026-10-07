@@ -344,6 +344,10 @@ class GameApp {
       }
 
       if (e.code === 'KeyP' && this.player) {
+        this.throwCombiStick();
+      }
+
+      if (e.code === 'KeyO' && this.player) {
         this.photoMode.toggle(this.player.position);
       }
 
@@ -631,6 +635,70 @@ class GameApp {
     this.ui.showAnnouncement('🥏 SMART-DISC YAUTJA LANCÉ EN ARC BOOMERANG !');
   }
 
+  throwCombiStick() {
+    if (!this.player) return;
+    const data = this.player.throwCombiStick();
+    if (!data) return;
+
+    // 1:1 Canon Combi-Stick Telescopic Javelin Mesh (Predator 2 Lore)
+    const spearGroup = new THREE.Group();
+    // Central titanium-bronze shaft
+    const shaftGeo = new THREE.CylinderGeometry(0.045, 0.045, 3.2, 8);
+    const shaftMat = new THREE.MeshStandardMaterial({
+      color: 0x334155,
+      metalness: 0.95,
+      roughness: 0.2
+    });
+    const shaft = new THREE.Mesh(shaftGeo, shaftMat);
+    spearGroup.add(shaft);
+
+    // Front elongated chrome spearhead
+    const bladeGeo = new THREE.ConeGeometry(0.12, 0.8, 4);
+    const bladeMat = new THREE.MeshStandardMaterial({
+      color: 0xe2e8f0,
+      metalness: 0.98,
+      roughness: 0.1
+    });
+    const frontBlade = new THREE.Mesh(bladeGeo, bladeMat);
+    frontBlade.position.y = 1.8;
+    spearGroup.add(frontBlade);
+
+    // Rear counter-blade spearhead
+    const rearBlade = new THREE.Mesh(bladeGeo, bladeMat);
+    rearBlade.position.y = -1.8;
+    rearBlade.rotation.x = Math.PI;
+    spearGroup.add(rearBlade);
+
+    // Luminous plasma energy core rings
+    const ringGeo = new THREE.TorusGeometry(0.07, 0.02, 6, 16);
+    const ringMat = new THREE.MeshBasicMaterial({ color: 0x00d2ff });
+    const ring1 = new THREE.Mesh(ringGeo, ringMat);
+    ring1.rotation.x = Math.PI / 2;
+    ring1.position.y = 0.5;
+    spearGroup.add(ring1);
+    const ring2 = new THREE.Mesh(ringGeo, ringMat);
+    ring2.rotation.x = Math.PI / 2;
+    ring2.position.y = -0.5;
+    spearGroup.add(ring2);
+
+    // Orient spear towards throw trajectory
+    spearGroup.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), data.direction);
+    spearGroup.position.copy(data.startPos);
+    this.renderer.scene.add(spearGroup);
+
+    this.projectiles.push({
+      mesh: spearGroup,
+      isCombiStick: true,
+      direction: data.direction,
+      speed: data.speed,
+      damage: data.damage,
+      pierceRemaining: data.pierceRemaining,
+      life: 2.0
+    });
+
+    this.ui.showAnnouncement('🔱 JAVELOT COMBI-STICK PROPULSÉ : PERFORATION MULTI-CIBLES !');
+  }
+
   executeMusouOverload() {
     this.ui.showAnnouncement('⚡ SURCHARGE MUSOU PLASMA ENCLENCHÉE ! ONDES DE CHOC & TEMPETE CYCLONIQUE');
     this.audio.playOmniPlasmaStorm();
@@ -846,6 +914,35 @@ class GameApp {
           this.projectiles.splice(i, 1);
           this.audio.playShieldBlock();
         }
+      } else if (p.isCombiStick) {
+        p.mesh.position.addScaledVector(p.direction, p.speed * delta);
+
+        const hits = this.horde.checkMeleeHits({ origin: p.mesh.position, radius: 2.2, damage: p.damage });
+        if (hits.length > 0) {
+          hits.forEach(() => {
+            this.audio.playCombiStickImpale();
+            this.particles.emitSparks(p.mesh.position, 8);
+          });
+          this.registerHits(hits);
+          p.pierceRemaining -= hits.length;
+        }
+
+        if (this.bosses.activeBoss && p.mesh.position.distanceTo(this.bosses.activeBoss.mesh.position) <= 4.0) {
+          this.bosses.takeDamage(p.damage);
+          this.audio.playCombiStickImpale();
+          p.pierceRemaining--;
+        }
+
+        const synHits = this.synthetics.checkHits({ origin: p.mesh.position, radius: 2.5, damage: p.damage });
+        if (synHits.length > 0) {
+          p.pierceRemaining -= synHits.length;
+          this.audio.playCombiStickImpale();
+        }
+
+        if (p.pierceRemaining <= 0 || p.life <= 0) {
+          this.renderer.scene.remove(p.mesh);
+          this.projectiles.splice(i, 1);
+        }
       } else {
         p.mesh.position.addScaledVector(p.direction, p.speed * delta);
 
@@ -864,9 +961,10 @@ class GameApp {
     this.marines.update(delta, this.player, this.horde);
     this.allies.update(delta, this.player.position, this.horde);
     this.horde.update(delta, this.player);
-    this.bosses.update(delta, this.player);
+    this.bosses.update(delta, this.player, this.horde);
     this.gore.update(delta);
     this.particles.update(delta, this.renderer.camera);
+    this.updateTargetLockReticle();
 
     // USCM M314 Motion Tracker Proximity Sonar Ping
     let nearestDist = Infinity;
@@ -931,6 +1029,98 @@ class GameApp {
 
     if (this.player.hp <= 0) {
       this.endGame(false);
+    }
+  }
+
+  updateTargetLockReticle() {
+    if (!this.player || !this.isPlaying) return;
+
+    const reticleEl = document.getElementById('hud-tri-target-lock');
+    const infoEl = document.getElementById('hud-target-info');
+    if (!reticleEl || !infoEl) return;
+
+    let bestTarget = null;
+    let minDistance = 35.0; // Max lock range 35m
+
+    const playerForward = new THREE.Vector3(
+      Math.sin(this.player.rotationY),
+      0,
+      Math.cos(this.player.rotationY)
+    ).normalize();
+
+    // 1. Check Boss first
+    if (this.bosses.activeBoss) {
+      const bossPos = this.bosses.activeBoss.mesh.position;
+      const toBoss = bossPos.clone().sub(this.player.position);
+      const d = toBoss.length();
+      toBoss.y = 0;
+      toBoss.normalize();
+      if (d < minDistance && playerForward.dot(toBoss) > 0.45) {
+        minDistance = d;
+        const name = this.bosses.activeBoss.type === 'predalien_queen' ? 'PREDALIEN QUEEN' :
+                     this.bosses.activeBoss.type === 'empress_matriarch' ? 'EMPRESS MATRIARCH' : 'REINE XENOMORPHE';
+        bestTarget = { pos: bossPos.clone().add(new THREE.Vector3(0, 3, 0)), dist: d, name };
+      }
+    }
+
+    // 2. Check Xenomorph horde
+    if (this.horde && this.horde.aliens) {
+      for (let a of this.horde.aliens) {
+        const toAlien = a.mesh.position.clone().sub(this.player.position);
+        const d = toAlien.length();
+        toAlien.y = 0;
+        toAlien.normalize();
+        if (d < minDistance && playerForward.dot(toAlien) > 0.5) {
+          minDistance = d;
+          const name = a.type === 'crusher' ? 'CRUSHER TITAN' :
+                       a.type === 'praetorian' ? 'PRAETORIAN' :
+                       a.type === 'spitter' ? 'SPITTER' : 'XENOMORPH DRONE';
+          bestTarget = { pos: a.mesh.position.clone().add(new THREE.Vector3(0, 1.4, 0)), dist: d, name };
+        }
+      }
+    }
+
+    // 3. Check Synthetics
+    if (this.synthetics && this.synthetics.androids) {
+      for (let syn of this.synthetics.androids) {
+        const toSyn = syn.mesh.position.clone().sub(this.player.position);
+        const d = toSyn.length();
+        toSyn.y = 0;
+        toSyn.normalize();
+        if (d < minDistance && playerForward.dot(toSyn) > 0.5) {
+          minDistance = d;
+          bestTarget = { pos: syn.mesh.position.clone().add(new THREE.Vector3(0, 1.6, 0)), dist: d, name: 'ANDROÏDE W-Y' };
+        }
+      }
+    }
+
+    if (bestTarget) {
+      this.player.updateLaserLock(bestTarget.pos);
+
+      // Play lock chime if newly acquired target
+      if (!this.lockedTargetPos || this.lockedTargetPos.distanceTo(bestTarget.pos) > 4.0) {
+        this.audio.playTargetLockPing();
+        this.lockedTargetPos = bestTarget.pos.clone();
+      }
+
+      // Project 3D target coordinates to 2D screen coordinates
+      const screenCoord = bestTarget.pos.clone().project(this.renderer.camera);
+      // Check if target is in front of camera
+      if (screenCoord.z < 1.0) {
+        const screenX = (screenCoord.x * 0.5 + 0.5) * window.innerWidth;
+        const screenY = (-(screenCoord.y * 0.5) + 0.5) * window.innerHeight;
+
+        reticleEl.style.left = `${screenX}px`;
+        reticleEl.style.top = `${screenY}px`;
+        infoEl.innerText = `TRI-LOCK: ${bestTarget.dist.toFixed(1)}m - ${bestTarget.name}`;
+        reticleEl.classList.remove('hidden');
+      } else {
+        reticleEl.classList.add('hidden');
+      }
+    } else {
+      this.player.updateLaserLock(null);
+      this.lockedTargetPos = null;
+      reticleEl.classList.add('hidden');
     }
   }
 

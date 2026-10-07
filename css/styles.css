@@ -1013,3 +1013,56 @@ html, body {
   border-bottom: 1px solid var(--glass-border);
   padding-bottom: 12px;
 }
+
+/* 1987 Tri-Laser Target Lock Reticle */
+.tri-laser-reticle {
+  position: absolute;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  width: 60px;
+  height: 60px;
+  z-index: 95;
+  transition: opacity 0.15s ease-out;
+}
+
+.tri-dot {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: #ff1a1a;
+  box-shadow: 0 0 10px #ff0000, 0 0 20px #ff3333;
+}
+
+.tri-dot.dot-1 {
+  top: 5px;
+  left: 26px;
+}
+
+.tri-dot.dot-2 {
+  bottom: 8px;
+  left: 6px;
+}
+
+.tri-dot.dot-3 {
+  bottom: 8px;
+  right: 6px;
+}
+
+.target-info-tag {
+  position: absolute;
+  top: 65px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-family: 'Share Tech Mono', monospace, sans-serif;
+  font-size: 0.75rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  color: #ff3333;
+  background: rgba(10, 0, 0, 0.75);
+  border: 1px solid rgba(255, 26, 26, 0.6);
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-shadow: 0 0 5px #ff0000;
+}
