@@ -266,6 +266,11 @@ class GameApp {
         this.ui.showAnnouncement(`📻 LEURRE VOCAL AUDIO MIMICRY DIFFUSÉ : ${taunt}`);
       }
 
+      // Collapsible 6-Blade Shuriken [L Key] (AVP 2004 Celtic / Scar Lore)
+      if (e.code === 'KeyL' && this.player) {
+        this.throwShuriken();
+      }
+
       // Gauntlet EMP Overcharge Pulse [U Key]
       if (e.code === 'KeyU' && this.player) {
         if (this.player.triggerGauntletEMP(this.horde, this.synthetics)) {
@@ -393,7 +398,11 @@ class GameApp {
       if (e.button === 0) this.performLightAttack();
       if (e.button === 2) {
         e.preventDefault();
-        this.performHeavyAttack();
+        if (this.keys['ShiftLeft'] || this.keys['ShiftRight']) {
+          this.performPowerGloveSlam();
+        } else {
+          this.performHeavyAttack();
+        }
       }
     });
 
@@ -699,6 +708,63 @@ class GameApp {
     this.ui.showAnnouncement('🔱 JAVELOT COMBI-STICK PROPULSÉ : PERFORATION MULTI-CIBLES !');
   }
 
+  throwShuriken() {
+    if (!this.player) return;
+    const data = this.player.throwShuriken();
+    if (!data) return;
+
+    // 1:1 Canon Collapsible 6-Bladed Shuriken (AVP 2004 Celtic / Scar Lore)
+    const shurikenGroup = new THREE.Group();
+    // Central hexagonal core hub
+    const coreGeo = new THREE.CylinderGeometry(0.35, 0.35, 0.1, 6);
+    const coreMat = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.95, roughness: 0.15 });
+    const core = new THREE.Mesh(coreGeo, coreMat);
+    shurikenGroup.add(core);
+
+    // 6 curved crescent steel blades
+    const bladeMat = new THREE.MeshStandardMaterial({ color: 0xf1f5f9, metalness: 0.98, roughness: 0.05 });
+    for (let b = 0; b < 6; b++) {
+      const bladeGeo = new THREE.BoxGeometry(0.12, 0.04, 1.1);
+      const blade = new THREE.Mesh(bladeGeo, bladeMat);
+      const angle = (b / 6) * Math.PI * 2;
+      blade.position.set(Math.sin(angle) * 0.7, 0, Math.cos(angle) * 0.7);
+      blade.rotation.y = angle + 0.35; // Curved aerodynamic slant
+      shurikenGroup.add(blade);
+    }
+
+    // Glowing energy razor perimeter ring
+    const ringGeo = new THREE.TorusGeometry(1.2, 0.03, 6, 24);
+    const ringMat = new THREE.MeshBasicMaterial({ color: 0x00d2ff });
+    const ring = new THREE.Mesh(ringGeo, ringMat);
+    ring.rotation.x = Math.PI / 2;
+    shurikenGroup.add(ring);
+
+    shurikenGroup.position.copy(data.startPos);
+    this.renderer.scene.add(shurikenGroup);
+
+    this.projectiles.push({
+      mesh: shurikenGroup,
+      isShuriken: true,
+      direction: data.direction,
+      speed: data.speed,
+      damage: data.damage,
+      pierceRemaining: 6,
+      radius: data.radius,
+      life: 1.8
+    });
+
+    this.ui.showAnnouncement('🥏 SHURIKEN HEXA-LAMES YAUTJA DÉPLOYÉ : DÉCOUPE CIRCULAIRE 360° !');
+  }
+
+  performPowerGloveSlam() {
+    if (!this.player) return;
+    if (this.player.triggerPowerGloveSlam(this.horde, this.synthetics, this.bosses)) {
+      this.particles.emitSparks(this.player.position, 25);
+      this.particles.spawnPlasmaScorch(this.player.position);
+      this.ui.showAnnouncement('⚡ FRAPPE GANTELET KINETIC POWER GLOVE : ONDE DE CHOC GÉOLOGIQUE 12M !');
+    }
+  }
+
   executeMusouOverload() {
     this.ui.showAnnouncement('⚡ SURCHARGE MUSOU PLASMA ENCLENCHÉE ! ONDES DE CHOC & TEMPETE CYCLONIQUE');
     this.audio.playOmniPlasmaStorm();
@@ -860,7 +926,7 @@ class GameApp {
 
     this.hellHounds.update(delta, this.player, this.horde);
     this.synthetics.update(delta, this.player, this.horde);
-    this.dropship.update(delta);
+    this.dropship.update(delta, this.horde);
     this.skimmer.update(delta, this.player, this.horde, this.keys);
     this.orbital.update(delta);
 
@@ -937,6 +1003,34 @@ class GameApp {
         if (synHits.length > 0) {
           p.pierceRemaining -= synHits.length;
           this.audio.playCombiStickImpale();
+        }
+
+        if (p.pierceRemaining <= 0 || p.life <= 0) {
+          this.renderer.scene.remove(p.mesh);
+          this.projectiles.splice(i, 1);
+        }
+      } else if (p.isShuriken) {
+        p.mesh.position.addScaledVector(p.direction, p.speed * delta);
+        p.mesh.rotation.y += 35 * delta;
+
+        const hits = this.horde.checkMeleeHits({ origin: p.mesh.position, radius: p.radius || 3.0, damage: p.damage });
+        if (hits.length > 0) {
+          this.audio.playShurikenSlice();
+          this.particles.emitSparks(p.mesh.position, 8);
+          this.registerHits(hits);
+          p.pierceRemaining -= hits.length;
+        }
+
+        if (this.bosses.activeBoss && p.mesh.position.distanceTo(this.bosses.activeBoss.mesh.position) <= 4.0) {
+          this.bosses.takeDamage(p.damage);
+          this.audio.playShurikenSlice();
+          p.pierceRemaining--;
+        }
+
+        const synHits = this.synthetics.checkHits({ origin: p.mesh.position, radius: 2.8, damage: p.damage });
+        if (synHits.length > 0) {
+          p.pierceRemaining -= synHits.length;
+          this.audio.playShurikenSlice();
         }
 
         if (p.pierceRemaining <= 0 || p.life <= 0) {

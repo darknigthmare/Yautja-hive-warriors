@@ -49,6 +49,7 @@ export class XenomorphHorde {
         playerPos.z + Math.sin(angle) * radius
       );
 
+      const isWallStalker = !isFacehugger && Math.random() < 0.25;
       this.scene.add(alien);
       this.aliens.push({
         mesh: alien,
@@ -58,7 +59,10 @@ export class XenomorphHorde {
         speed: isFacehugger ? 17 : 11,
         damage: isFacehugger ? 15 : 25,
         radius: isFacehugger ? 0.6 : 1.1,
-        isLatched: false
+        isLatched: false,
+        isWallStalker: isWallStalker,
+        wallClimbPhase: isWallStalker ? 'climbing' : 'grounded',
+        perchHeight: 8.0 + Math.random() * 4.0
       });
     }
   }
@@ -425,6 +429,47 @@ export class XenomorphHorde {
       const dir = player.position.clone().sub(a.mesh.position);
       dir.y = 0;
       const dist = dir.length();
+
+      // Wall-Climbing & Ceiling Drop Ambush AI (Alien 1979 / Aliens 1986 Lore)
+      if (a.isWallStalker) {
+        if (a.wallClimbPhase === 'climbing') {
+          a.mesh.position.y += 6.5 * delta;
+          a.mesh.rotation.x = -Math.PI * 0.4;
+          if (a.mesh.position.y >= a.perchHeight) {
+            a.mesh.position.y = a.perchHeight;
+            a.wallClimbPhase = 'perched';
+            a.mesh.rotation.x = Math.PI; // Upside down clinging to ceiling
+          }
+          return;
+        } else if (a.wallClimbPhase === 'perched') {
+          // Stalk ceiling towards player
+          if (dist > 8.0) {
+            const stalkDir = dir.clone().normalize();
+            a.mesh.position.addScaledVector(stalkDir, 5.0 * delta);
+          }
+          // Surprise drop attack when close enough
+          if (dist <= 10.0) {
+            a.wallClimbPhase = 'dropping';
+            this.audioEngine.playXenoHiss();
+          }
+          return;
+        } else if (a.wallClimbPhase === 'dropping') {
+          a.mesh.position.y -= 26.0 * delta; // Plunge straight down
+          a.mesh.rotation.x = 0;
+          const dropDir = dir.clone().normalize();
+          a.mesh.position.addScaledVector(dropDir, 8.0 * delta);
+
+          if (a.mesh.position.y <= 0) {
+            a.mesh.position.y = 0;
+            a.wallClimbPhase = 'grounded';
+            a.isWallStalker = false;
+            if (dist <= 3.5) {
+              player.takeDamage(35);
+            }
+          }
+          return;
+        }
+      }
 
       // Praetorian Royal Acid Spit Attack (medium range: 8m to 20m)
       if (a.type === 'praetorian') {

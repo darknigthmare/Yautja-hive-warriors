@@ -44,6 +44,8 @@ export class Player {
     this.empCooldown = 0;
     this.cloakShimmerTimer = 0;
     this.combiStickCooldown = 0;
+    this.shurikenCooldown = 0;
+    this.powerGloveCooldown = 0;
     this.targetLockEnemy = null;
 
     // Pounce Leap State
@@ -227,6 +229,72 @@ export class Player {
       damage: 480,
       pierceRemaining: 4
     };
+  }
+
+  throwShuriken() {
+    if (this.shurikenCooldown > 0 || this.isFacehuggerLatched) return null;
+    this.shurikenCooldown = 4.0;
+    this.audioEngine.playShurikenOpen();
+
+    const forward = new THREE.Vector3(
+      Math.sin(this.rotationY),
+      this.isPerched ? -0.2 : 0,
+      Math.cos(this.rotationY)
+    ).normalize();
+
+    const startPos = this.position.clone().add(new THREE.Vector3(0, 2.0, 0)).addScaledVector(forward, 1.2);
+
+    return {
+      startPos: startPos,
+      direction: forward,
+      speed: 42,
+      damage: 550,
+      maxRange: 32,
+      radius: 3.2
+    };
+  }
+
+  triggerPowerGloveSlam(horde, synthetics, bosses) {
+    if (this.powerGloveCooldown > 0 || this.isFacehuggerLatched) return false;
+    this.powerGloveCooldown = 6.0;
+
+    this.audioEngine.playPowerGloveSlam();
+
+    // Visual ground slam punch animation
+    this.rightArm.rotation.x = -Math.PI * 0.85;
+    this.position.y = 0;
+    setTimeout(() => {
+      this.rightArm.rotation.x = 0;
+    }, 450);
+
+    const slamAttack = { origin: this.position, radius: 12.0, damage: 450, type: 'heavy' };
+
+    // 1. Pulverize Xenomorphs in 12m radius & knock back
+    if (horde) {
+      horde.checkMeleeHits(slamAttack);
+      horde.aliens.forEach(a => {
+        if (a.mesh.position.distanceTo(this.position) <= 12.0) {
+          const knockDir = a.mesh.position.clone().sub(this.position).normalize();
+          a.mesh.position.addScaledVector(knockDir, 7.5);
+          a.mesh.position.y = 2.5; // Lifted into air
+          setTimeout(() => { a.mesh.position.y = 0; }, 320);
+        }
+      });
+    }
+
+    // 2. Damage synthetics
+    if (synthetics) {
+      synthetics.checkHits(slamAttack);
+    }
+
+    // 3. Stun/damage active boss
+    if (bosses && bosses.activeBoss) {
+      if (bosses.activeBoss.mesh.position.distanceTo(this.position) <= 12.0) {
+        bosses.takeDamage(550);
+      }
+    }
+
+    return true;
   }
 
   togglePerch() {
@@ -719,6 +787,14 @@ export class Player {
 
     if (this.combiStickCooldown > 0) {
       this.combiStickCooldown = Math.max(0, this.combiStickCooldown - delta);
+    }
+
+    if (this.shurikenCooldown > 0) {
+      this.shurikenCooldown = Math.max(0, this.shurikenCooldown - delta);
+    }
+
+    if (this.powerGloveCooldown > 0) {
+      this.powerGloveCooldown = Math.max(0, this.powerGloveCooldown - delta);
     }
 
     if (this.isCloaked) {

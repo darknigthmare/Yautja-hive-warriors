@@ -982,4 +982,93 @@ export class AudioEngine {
     osc.start(now);
     osc.stop(now + 0.35);
   }
+
+  playShurikenOpen() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Razor-sharp mechanical blade snap-open
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(3200, now);
+    osc.frequency.exponentialRampToValueAtTime(1400, now + 0.12);
+
+    gain.gain.setValueAtTime(0.7, now);
+    gain.gain.linearRampToValueAtTime(0.01, now + 0.12);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.12);
+  }
+
+  playShurikenSlice() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // High velocity aerodynamic razor-blade ring
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(1800, now);
+    osc.frequency.exponentialRampToValueAtTime(750, now + 0.28);
+
+    gain.gain.setValueAtTime(0.65, now);
+    gain.gain.linearRampToValueAtTime(0.01, now + 0.28);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.28);
+  }
+
+  playPowerGloveSlam() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // 1. Hydraulic release punch
+    const hyd = this.ctx.createOscillator();
+    const hydGain = this.ctx.createGain();
+    hyd.type = 'square';
+    hyd.frequency.setValueAtTime(880, now);
+    hyd.frequency.exponentialRampToValueAtTime(120, now + 0.3);
+    hydGain.gain.setValueAtTime(0.8, now);
+    hydGain.gain.linearRampToValueAtTime(0.01, now + 0.3);
+    hyd.connect(hydGain);
+    hydGain.connect(this.ctx.destination);
+    hyd.start(now);
+    hyd.stop(now + 0.3);
+
+    // 2. Earth-shattering tectonic sub-bass detonation
+    const sub = this.ctx.createOscillator();
+    const subGain = this.ctx.createGain();
+    sub.type = 'sine';
+    sub.frequency.setValueAtTime(70, now);
+    sub.frequency.exponentialRampToValueAtTime(18, now + 1.2);
+    subGain.gain.setValueAtTime(1.0, now);
+    subGain.gain.linearRampToValueAtTime(0.01, now + 1.2);
+    sub.connect(subGain);
+    subGain.connect(this.ctx.destination);
+    sub.start(now);
+    sub.stop(now + 1.2);
+  }
+
+  playNapalmBarrage() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Roaring chemical blast
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(260, now);
+    osc.frequency.exponentialRampToValueAtTime(45, now + 1.5);
+    gain.gain.setValueAtTime(0.85, now);
+    gain.gain.linearRampToValueAtTime(0.01, now + 1.5);
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 1.5);
+  }
 }
