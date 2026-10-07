@@ -3,11 +3,12 @@
 import * as THREE from 'three';
 
 export class Player {
-  constructor(scene, charData, audioEngine, isPlayer2 = false) {
+  constructor(scene, charData, audioEngine, isPlayer2 = false, particles = null) {
     this.scene = scene;
     this.data = charData;
     this.audioEngine = audioEngine;
     this.isPlayer2 = isPlayer2;
+    this.particles = particles;
 
     // Stats
     this.hp = charData.stats.hp;
@@ -236,6 +237,20 @@ export class Player {
       direction: forward,
       damage: 180,
       speed: 65
+    };
+  }
+
+  throwSmartDisc() {
+    this.audioEngine.playSmartDiscHum();
+    const origin = this.position.clone().add(new THREE.Vector3(0.8, 1.8, 0.4));
+    const forward = new THREE.Vector3(Math.sin(this.rotationY), 0, Math.cos(this.rotationY)).normalize();
+    const right = new THREE.Vector3(-forward.z, 0, forward.x);
+
+    return {
+      startPos: origin.clone(),
+      apexPos: origin.clone().addScaledVector(forward, 28).addScaledVector(right, 7),
+      damage: 320,
+      speed: 40
     };
   }
 
@@ -571,6 +586,12 @@ export class Player {
     if (this.isHybridMutated) return this.hp;
     if (this.isCloaked) amount *= 0.5;
     this.hp = Math.max(0, this.hp - amount);
+
+    // Luminescent neon green Yautja bio-blood splatter
+    if (this.particles && amount > 2) {
+      this.particles.emitYautjaPhosphorBlood(this.position, Math.min(20, Math.floor(amount * 0.4)));
+    }
+
     return this.hp;
   }
 

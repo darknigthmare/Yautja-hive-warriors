@@ -7,6 +7,7 @@ export class BossManager {
     this.scene = scene;
     this.audioEngine = audioEngine;
     this.activeBoss = null;
+    this.acidSpitProjectiles = [];
   }
 
   spawnBoss(type, spawnPos) {
@@ -83,8 +84,81 @@ export class BossManager {
     }
   }
 
+  triggerTailWhip(player) {
+    if (!this.activeBoss) return;
+    this.audioEngine.playQueenTailWhip();
+
+    // 360 spin animation of the Queen body
+    const initialRot = this.activeBoss.mesh.rotation.y;
+    let spin = 0;
+    const spinAnim = setInterval(() => {
+      spin += 0.4;
+      this.activeBoss.mesh.rotation.y += 0.4;
+      if (spin >= Math.PI * 2) {
+        clearInterval(spinAnim);
+        this.activeBoss.mesh.rotation.y = initialRot;
+      }
+    }, 20);
+
+    const dist = this.activeBoss.mesh.position.distanceTo(player.position);
+    if (dist <= 8.5) {
+      if (player.isBlocking) {
+        player.audioEngine.playShieldBlock();
+      } else {
+        player.takeDamage(120);
+        // Knockback player violently
+        const pushDir = player.position.clone().sub(this.activeBoss.mesh.position).normalize();
+        player.position.addScaledVector(pushDir, 6.0);
+        player.mesh.position.copy(player.position);
+      }
+    }
+  }
+
+  spitAcidMortar(player) {
+    if (!this.activeBoss) return;
+    this.audioEngine.playQueenAcidSpit();
+
+    const origin = this.activeBoss.mesh.position.clone().add(new THREE.Vector3(0, 4.0, 0));
+    const target = player.position.clone();
+    const spitDir = target.clone().sub(origin).normalize();
+
+    const acidGeo = new THREE.SphereGeometry(0.4, 8, 8);
+    const acidMat = new THREE.MeshBasicMaterial({ color: 0x39ff14 });
+    const acidMesh = new THREE.Mesh(acidGeo, acidMat);
+    acidMesh.position.copy(origin);
+    this.scene.add(acidMesh);
+
+    this.acidSpitProjectiles.push({
+      mesh: acidMesh,
+      velocity: spitDir.multiplyScalar(22).add(new THREE.Vector3(0, 8, 0)),
+      gravity: -24,
+      damage: 75,
+      life: 2.5
+    });
+  }
+
   update(delta, player) {
     if (!this.activeBoss) return;
+
+    // Update Queen acid spit projectiles
+    for (let i = this.acidSpitProjectiles.length - 1; i >= 0; i--) {
+      const proj = this.acidSpitProjectiles[i];
+      proj.life -= delta;
+      proj.velocity.y += proj.gravity * delta;
+      proj.mesh.position.addScaledVector(proj.velocity, delta);
+
+      if (proj.mesh.position.distanceTo(player.position) < 2.2) {
+        player.takeDamage(proj.damage);
+        this.scene.remove(proj.mesh);
+        this.acidSpitProjectiles.splice(i, 1);
+        continue;
+      }
+
+      if (proj.mesh.position.y <= 0.1 || proj.life <= 0) {
+        this.scene.remove(proj.mesh);
+        this.acidSpitProjectiles.splice(i, 1);
+      }
+    }
 
     if (this.activeBoss.isStunned) {
       this.activeBoss.stunTimer -= delta;
@@ -94,10 +168,31 @@ export class BossManager {
       return;
     }
 
-    // Boss AI Movement
+    // Cooldown management for attacks
+    if (!this.activeBoss.tailWhipCooldown) this.activeBoss.tailWhipCooldown = 3.5;
+    if (!this.activeBoss.spitCooldown) this.activeBoss.spitCooldown = 4.0;
+
+    this.activeBoss.tailWhipCooldown -= delta;
+    this.activeBoss.spitCooldown -= delta;
+
     const dir = player.position.clone().sub(this.activeBoss.mesh.position);
     dir.y = 0;
-    if (dir.length() > 3.0) {
+    const dist = dir.length();
+
+    // 1. Long range: Acid Mortar Spit
+    if (dist > 9.0 && dist < 35.0 && this.activeBoss.spitCooldown <= 0) {
+      this.activeBoss.spitCooldown = 4.5;
+      this.spitAcidMortar(player);
+    }
+
+    // 2. Medium-close range: Tail Whip 360
+    if (dist <= 8.5 && this.activeBoss.tailWhipCooldown <= 0) {
+      this.activeBoss.tailWhipCooldown = 4.0;
+      this.triggerTailWhip(player);
+    }
+
+    // 3. Movement
+    if (dist > 3.0) {
       dir.normalize();
       this.activeBoss.mesh.position.addScaledVector(dir, 7.5 * delta);
       this.activeBoss.mesh.rotation.y = Math.atan2(dir.x, dir.z);

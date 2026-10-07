@@ -319,8 +319,12 @@ class GameApp {
       }
 
       if (e.code === 'KeyB' && this.player) {
-        if (this.player.useAcidSolvent(this.horde)) {
-          this.ui.showAnnouncement('🧪 FIOLE DE SOLVANT D\'ACIDE DÉPLOYÉE: SOL PURIFIÉ !');
+        if (this.player.acidSolventCharges > 0 && this.horde.acidPools.length > 0) {
+          if (this.player.useAcidSolvent(this.horde)) {
+            this.ui.showAnnouncement('🧪 FIOLE DE SOLVANT D\'ACIDE DÉPLOYÉE: SOL PURIFIÉ !');
+          }
+        } else {
+          this.throwSmartDisc();
         }
       }
 
@@ -469,11 +473,11 @@ class GameApp {
     if (this.player) this.renderer.scene.remove(this.player.mesh);
     if (this.player2) this.renderer.scene.remove(this.player2.mesh);
 
-    this.player = new Player(this.renderer.scene, this.ui.selectedChar, this.audio, false);
+    this.player = new Player(this.renderer.scene, this.ui.selectedChar, this.audio, false, this.particles);
     this.forge.applyStatsToPlayer(this.player);
 
     if (this.isCoOp) {
-      this.player2 = new Player(this.renderer.scene, CHARACTERS_DATA[1], this.audio, true);
+      this.player2 = new Player(this.renderer.scene, CHARACTERS_DATA[1], this.audio, true, this.particles);
     } else {
       this.player2 = null;
     }
@@ -581,6 +585,46 @@ class GameApp {
       life: 1.8
     });
     this.ui.showAnnouncement('🎯 DARD FLECHETTE NEEDLER PROPULSÉ !');
+  }
+
+  throwSmartDisc() {
+    if (!this.player) return;
+    const discData = this.player.throwSmartDisc();
+    if (!discData) return;
+
+    // Build Circular Razor-Sharp Smart-Disc Mesh
+    const discGroup = new THREE.Group();
+    const discGeo = new THREE.CylinderGeometry(0.65, 0.65, 0.06, 16);
+    const discMat = new THREE.MeshStandardMaterial({
+      color: 0x94a3b8,
+      metalness: 0.95,
+      roughness: 0.1
+    });
+    const discMesh = new THREE.Mesh(discGeo, discMat);
+    discMesh.rotation.x = Math.PI / 2;
+    discGroup.add(discMesh);
+
+    // Glowing Razor Edge
+    const edgeGeo = new THREE.TorusGeometry(0.66, 0.03, 8, 24);
+    const edgeMat = new THREE.MeshBasicMaterial({ color: 0x00ffff });
+    const edgeMesh = new THREE.Mesh(edgeGeo, edgeMat);
+    discGroup.add(edgeMesh);
+
+    discGroup.position.copy(discData.startPos);
+    this.renderer.scene.add(discGroup);
+
+    this.projectiles.push({
+      mesh: discGroup,
+      isSmartDisc: true,
+      startPos: discData.startPos,
+      apexPos: discData.apexPos,
+      damage: discData.damage,
+      progress: 0,
+      speed: 1.35, // 1.35x per second -> ~0.74s roundtrip
+      life: 1.6
+    });
+
+    this.ui.showAnnouncement('🥏 SMART-DISC YAUTJA LANCÉ EN ARC BOOMERANG !');
   }
 
   executeMusouOverload() {
@@ -706,14 +750,47 @@ class GameApp {
     for (let i = this.projectiles.length - 1; i >= 0; i--) {
       const p = this.projectiles[i];
       p.life -= delta;
-      p.mesh.position.addScaledVector(p.direction, p.speed * delta);
 
-      const hits = this.horde.checkMeleeHits({ origin: p.mesh.position, radius: 2.2, damage: p.damage });
-      if (hits.length > 0 || p.life <= 0) {
-        this.particles.emitSparks(p.mesh.position, 10);
-        this.renderer.scene.remove(p.mesh);
-        this.projectiles.splice(i, 1);
-        if (hits.length > 0) this.registerHits(hits);
+      if (p.isSmartDisc) {
+        p.progress += p.speed * delta;
+        p.mesh.rotation.z += 25 * delta; // Rapid slicing gyro-spin
+
+        // Quadratic Bezier Curve from start -> apex -> player current position!
+        const t = Math.min(1.0, p.progress);
+        const playerCurrentHand = this.player.position.clone().add(new THREE.Vector3(0.8, 1.8, 0.4));
+        const p0 = p.startPos;
+        const p1 = p.apexPos;
+        const p2 = playerCurrentHand;
+
+        const currentPos = new THREE.Vector3(
+          (1 - t) * (1 - t) * p0.x + 2 * (1 - t) * t * p1.x + t * t * p2.x,
+          (1 - t) * (1 - t) * p0.y + 2 * (1 - t) * t * p1.y + t * t * p2.y,
+          (1 - t) * (1 - t) * p0.z + 2 * (1 - t) * t * p1.z + t * t * p2.z
+        );
+        p.mesh.position.copy(currentPos);
+
+        const hits = this.horde.checkMeleeHits({ origin: p.mesh.position, radius: 2.8, damage: p.damage });
+        if (hits.length > 0) {
+          this.particles.emitSparks(p.mesh.position, 6);
+          this.registerHits(hits);
+        }
+
+        if (p.progress >= 1.0 || p.life <= 0) {
+          // Returned to player hand
+          this.renderer.scene.remove(p.mesh);
+          this.projectiles.splice(i, 1);
+          this.audio.playShieldBlock();
+        }
+      } else {
+        p.mesh.position.addScaledVector(p.direction, p.speed * delta);
+
+        const hits = this.horde.checkMeleeHits({ origin: p.mesh.position, radius: 2.2, damage: p.damage });
+        if (hits.length > 0 || p.life <= 0) {
+          this.particles.emitSparks(p.mesh.position, 10);
+          this.renderer.scene.remove(p.mesh);
+          this.projectiles.splice(i, 1);
+          if (hits.length > 0) this.registerHits(hits);
+        }
       }
     }
 

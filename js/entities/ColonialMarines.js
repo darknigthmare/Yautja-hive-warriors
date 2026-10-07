@@ -93,9 +93,24 @@ export class ColonialMarinesManager {
         } else {
           // Fire Pulse Rifle / Smartgun!
           if (Math.random() < 0.05) {
-            this.audioEngine.playPlasmaShot();
+            this.audioEngine.playPulseRifleBurst ? this.audioEngine.playPulseRifleBurst() : this.audioEngine.playPlasmaShot();
             if (targetPos === player.position) {
               player.takeDamage(m.damage * 0.1);
+            }
+          }
+
+          // USCM M40 25mm Grenade Launcher Secondary Fire
+          if (!m.grenadeCooldown) m.grenadeCooldown = 5.0;
+          m.grenadeCooldown -= delta;
+          if (m.grenadeCooldown <= 0) {
+            m.grenadeCooldown = 6.0 + Math.random() * 3.0;
+            this.audioEngine.playM40GrenadeBlast();
+
+            // Explosive AOE at target position
+            const grenadeAOE = { origin: targetPos, radius: 6.5, damage: 160 };
+            horde.checkMeleeHits(grenadeAOE);
+            if (targetPos === player.position) {
+              player.takeDamage(45);
             }
           }
         }

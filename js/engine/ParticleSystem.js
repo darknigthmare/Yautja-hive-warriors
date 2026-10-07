@@ -12,7 +12,8 @@ export class ParticleSystem {
     this.bloodGeo = new THREE.SphereGeometry(0.12, 4, 4);
 
     this.acidMat = new THREE.MeshBasicMaterial({ color: 0x39ff14 });
-    this.yautjaBloodMat = new THREE.MeshBasicMaterial({ color: 0x00ff66 });
+    // Luminescent neon phosphorescent bio-fluid with high emission
+    this.yautjaBloodMat = new THREE.MeshBasicMaterial({ color: 0x1aff00 });
     this.sparkMat = new THREE.MeshBasicMaterial({ color: 0x00ffff });
   }
 
@@ -41,6 +42,58 @@ export class ParticleSystem {
         maxLife: 0.6
       });
     }
+  }
+
+  emitYautjaPhosphorBlood(pos, count = 15) {
+    for (let i = 0; i < count; i++) {
+      const dropGeo = new THREE.SphereGeometry(0.14, 5, 5);
+      const mesh = new THREE.Mesh(dropGeo, this.yautjaBloodMat);
+      mesh.position.copy(pos).add(new THREE.Vector3(
+        (Math.random() - 0.5) * 0.5,
+        1.5 + (Math.random() - 0.5) * 0.5,
+        (Math.random() - 0.5) * 0.5
+      ));
+      this.scene.add(mesh);
+
+      const vel = new THREE.Vector3(
+        (Math.random() - 0.5) * 14,
+        Math.random() * 6 + 2,
+        (Math.random() - 0.5) * 14
+      );
+
+      this.particles.push({
+        mesh: mesh,
+        velocity: vel,
+        life: 0.8,
+        maxLife: 0.8,
+        isYautjaGlow: true
+      });
+    }
+
+    // Leave a persistent glowing green bio-splatter stain on the terrain
+    const stainGeo = new THREE.CircleGeometry(0.4 + Math.random() * 0.3, 8);
+    stainGeo.rotateX(-Math.PI / 2);
+    const stainMat = new THREE.MeshBasicMaterial({
+      color: 0x22ff00,
+      transparent: true,
+      opacity: 0.85
+    });
+    const stain = new THREE.Mesh(stainGeo, stainMat);
+    stain.position.set(pos.x + (Math.random() - 0.5) * 0.8, 0.03, pos.z + (Math.random() - 0.5) * 0.8);
+    this.scene.add(stain);
+
+    setTimeout(() => {
+      let op = 0.85;
+      const fade = setInterval(() => {
+        op -= 0.05;
+        if (op <= 0) {
+          clearInterval(fade);
+          this.scene.remove(stain);
+        } else {
+          stain.material.opacity = op;
+        }
+      }, 100);
+    }, 8000);
   }
 
   emitSparks(pos, count = 10) {
