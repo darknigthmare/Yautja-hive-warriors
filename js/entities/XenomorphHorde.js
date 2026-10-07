@@ -400,9 +400,41 @@ export class XenomorphHorde {
     this.aliens.forEach(a => {
       if (a.isLatched) return;
 
+      // Netgun Entangled State
+      if (a.isNetEntangled) {
+        a.netTimer -= delta;
+        a.hp -= 25 * delta; // Razor wire cuts deep!
+        a.mesh.rotation.y += Math.sin(Date.now() * 0.05) * 0.05;
+        if (a.netTimer <= 0) {
+          a.isNetEntangled = false;
+        }
+        return; // Completely immobilized
+      }
+
+      // Stunned State (Crusher or Praetorian)
+      if (a.isStunned) {
+        a.stunTimer -= delta;
+        a.mesh.rotation.z = Math.sin(Date.now() * 0.02) * 0.1;
+        if (a.stunTimer <= 0) {
+          a.isStunned = false;
+          a.mesh.rotation.z = 0;
+        }
+        return;
+      }
+
       const dir = player.position.clone().sub(a.mesh.position);
       dir.y = 0;
       const dist = dir.length();
+
+      // Praetorian Royal Acid Spit Attack (medium range: 8m to 20m)
+      if (a.type === 'praetorian') {
+        a.spitCooldown -= delta;
+        if (a.spitCooldown <= 0 && dist >= 8.0 && dist <= 20.0) {
+          a.spitCooldown = 3.5;
+          this.audioEngine.playXenoHiss();
+          this.spawnAcidSplash(a.mesh.position, player.position);
+        }
+      }
 
       if (a.type === 'crusher') {
         // Crusher Battering Ram Charge
@@ -417,6 +449,21 @@ export class XenomorphHorde {
             a.chargeTimer = 4.0;
           }, 2000);
         }
+
+        // If charging against player with Feral Shield raised -> STUN CRUSHER!
+        if (a.isCharging && dist <= a.radius + 1.2 && player.isBlocking) {
+          a.isCharging = false;
+          a.isStunned = true;
+          a.stunTimer = 5.0; // 5-second stun window for execution!
+          player.audioEngine.playShieldBlock();
+          return;
+        }
+      }
+
+      // Check if low HP sub-boss enters execution stun
+      if ((a.type === 'crusher' || a.type === 'praetorian') && a.hp <= a.maxHp * 0.25 && !a.isStunned) {
+        a.isStunned = true;
+        a.stunTimer = 6.0;
       }
 
       if (dist > (a.radius || 1.2)) {

@@ -132,6 +132,42 @@ export class ParticleSystem {
     });
   }
 
+  spawnPlasmaScorch(pos) {
+    const scorchGeo = new THREE.CircleGeometry(1.2 + Math.random() * 0.5, 12);
+    scorchGeo.rotateX(-Math.PI / 2);
+    const scorchMat = new THREE.MeshBasicMaterial({
+      color: 0x00d2ff, // Plasma blue molten glow
+      transparent: true,
+      opacity: 0.85
+    });
+    const scorch = new THREE.Mesh(scorchGeo, scorchMat);
+    scorch.position.set(pos.x, 0.02, pos.z);
+    this.scene.add(scorch);
+
+    // Inner black carbonized core
+    const coreGeo = new THREE.CircleGeometry(0.7, 8);
+    coreGeo.rotateX(-Math.PI / 2);
+    const coreMat = new THREE.MeshBasicMaterial({ color: 0x050810, transparent: true, opacity: 0.9 });
+    const core = new THREE.Mesh(coreGeo, coreMat);
+    core.position.set(pos.x, 0.025, pos.z);
+    this.scene.add(core);
+
+    setTimeout(() => {
+      let op = 0.85;
+      const fade = setInterval(() => {
+        op -= 0.04;
+        if (op <= 0) {
+          clearInterval(fade);
+          this.scene.remove(scorch);
+          this.scene.remove(core);
+        } else {
+          scorch.material.opacity = op;
+          core.material.opacity = op;
+        }
+      }, 100);
+    }, 7000);
+  }
+
   update(delta, camera) {
     // Update 3D Physics Particles
     for (let i = this.particles.length - 1; i >= 0; i--) {

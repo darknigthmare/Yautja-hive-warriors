@@ -254,6 +254,57 @@ export class Player {
     };
   }
 
+  fireNetgun(horde, synthetics) {
+    this.audioEngine.playNetgunLaunch();
+    const origin = this.position.clone().add(new THREE.Vector3(0.5, 2.0, 0.4));
+    const forward = new THREE.Vector3(Math.sin(this.rotationY), 0, Math.cos(this.rotationY)).normalize();
+
+    // Find nearest target in forward cone (up to 22m)
+    let bestTarget = null;
+    let minAngle = Math.PI / 3;
+
+    if (horde) {
+      horde.aliens.forEach(a => {
+        const toAlien = a.mesh.position.clone().sub(this.position);
+        toAlien.y = 0;
+        const dist = toAlien.length();
+        if (dist <= 22.0) {
+          toAlien.normalize();
+          const angle = Math.acos(Math.max(-1, Math.min(1, forward.dot(toAlien))));
+          if (angle < minAngle) {
+            minAngle = angle;
+            bestTarget = a;
+          }
+        }
+      });
+    }
+
+    if (bestTarget) {
+      bestTarget.isNetEntangled = true;
+      bestTarget.netTimer = 4.0;
+      this.audioEngine.playNetWireTighten();
+
+      // Create visual expanding wire net mesh over the trapped target
+      const netGeo = new THREE.SphereGeometry(bestTarget.radius ? bestTarget.radius * 1.3 : 1.4, 10, 10);
+      const netMat = new THREE.MeshBasicMaterial({
+        color: 0xcccccc,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.95
+      });
+      const netMesh = new THREE.Mesh(netGeo, netMat);
+      netMesh.position.copy(bestTarget.mesh.position).add(new THREE.Vector3(0, 1.2, 0));
+      this.scene.add(netMesh);
+
+      setTimeout(() => {
+        this.scene.remove(netMesh);
+      }, 4000);
+      return true;
+    }
+
+    return false;
+  }
+
   triggerGauntletEMP(horde, synthetics) {
     if (this.empCooldown > 0) return false;
     this.empCooldown = 12.0; // 12 second cooldown

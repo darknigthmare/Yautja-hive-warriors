@@ -275,9 +275,13 @@ class GameApp {
         }
       }
 
-      // Gauntlet Flechette Needler [G Key]
+      // Netgun Entanglement & Gauntlet Flechette Needler [G Key]
       if (e.code === 'KeyG' && this.player) {
-        this.fireFlechetteNeedler();
+        if (this.player.fireNetgun(this.horde, this.synthetics)) {
+          this.ui.showAnnouncement('🕸️ LANCE-FILET NETGUN DÉPLOYÉ : CIBLE ENTOURÉE DE FIL DE DIAMANT TRANCHANT !');
+        } else {
+          this.fireFlechetteNeedler();
+        }
       }
 
       // Pounce Leap [Shift + Space]
@@ -638,6 +642,7 @@ class GameApp {
   }
 
   checkTrophyExecution() {
+    // 1. Boss Execution (Queen, Empress, Predalien)
     if (this.bosses.activeBoss && this.bosses.activeBoss.isStunned) {
       this.player.executeSpineRip();
 
@@ -650,6 +655,33 @@ class GameApp {
 
       this.ui.showAnnouncement('💀 SPINE RIP EXÉCUTÉ ! RANG ELITE CONSACRÉ AU SANG ACIDE');
       this.ui.showExecutionPrompt(false);
+      return;
+    }
+
+    // 2. Sub-Boss Execution (Crusher Titan or Praetorian Royal Guard)
+    for (let i = this.horde.aliens.length - 1; i >= 0; i--) {
+      const a = this.horde.aliens[i];
+      if ((a.type === 'crusher' || a.type === 'praetorian') && a.isStunned) {
+        if (a.mesh.position.distanceTo(this.player.position) <= 5.5) {
+          this.player.executeSpineRip();
+          this.sessionSkulls++;
+          this.score += a.type === 'crusher' ? 1200 : 800;
+          this.player.hp = Math.min(this.player.maxHp, this.player.hp + 300);
+
+          if (this.gore) {
+            this.gore.spawnDismemberment(a.mesh.position, 'spine_rip');
+          }
+          this.horde.spawnAcidPool(a.mesh.position);
+          this.renderer.scene.remove(a.mesh);
+          this.horde.aliens.splice(i, 1);
+          this.horde.deadCount++;
+
+          const title = a.type === 'crusher' ? 'TITAN CRUSHER' : 'GARDE ROYAL PRÉTORIEN';
+          this.ui.showAnnouncement(`💀 DÉCAPITATION TROPHÉE : CRÂNE DE ${title} ARRACHÉ !`);
+          this.ui.showExecutionPrompt(false);
+          return;
+        }
+      }
     }
   }
 
@@ -787,6 +819,7 @@ class GameApp {
         const hits = this.horde.checkMeleeHits({ origin: p.mesh.position, radius: 2.2, damage: p.damage });
         if (hits.length > 0 || p.life <= 0) {
           this.particles.emitSparks(p.mesh.position, 10);
+          this.particles.spawnPlasmaScorch(p.mesh.position);
           this.renderer.scene.remove(p.mesh);
           this.projectiles.splice(i, 1);
           if (hits.length > 0) this.registerHits(hits);
@@ -821,7 +854,15 @@ class GameApp {
     }
 
     const boss = this.bosses.activeBoss;
-    this.ui.showExecutionPrompt(boss && boss.isStunned);
+    let subBossStunnedNearby = false;
+    this.horde.aliens.forEach(a => {
+      if ((a.type === 'crusher' || a.type === 'praetorian') && a.isStunned) {
+        if (a.mesh.position.distanceTo(this.player.position) <= 5.5) {
+          subBossStunnedNearby = true;
+        }
+      }
+    });
+    this.ui.showExecutionPrompt((boss && boss.isStunned) || subBossStunnedNearby);
 
     if (this.horde.aliens.length < 8 && !this.bosses.activeBoss) {
       if (this.waveIndex < this.totalWaves) {
