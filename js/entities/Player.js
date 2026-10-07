@@ -366,12 +366,27 @@ export class Player {
   triggerVoiceMimicry(horde) {
     this.audioEngine.playVoiceMimicry();
     const lurePoint = this.position.clone();
+
+    const tauntLines = [
+      '"OVER HERE..." (1987)',
+      '"WANT SOME CANDY?" (1990)',
+      '"ANYTIME..." (1987)',
+      'RIRE SARDONIQUE DE BILLY (1987)'
+    ];
+    const pickedTaunt = tauntLines[Math.floor(Math.random() * tauntLines.length)];
+
     horde.aliens.forEach(a => {
       if (a.mesh.position.distanceTo(lurePoint) < 30) {
-        a.mesh.position.addScaledVector(lurePoint.clone().sub(a.mesh.position).normalize(), 2.5);
+        a.mesh.position.addScaledVector(lurePoint.clone().sub(a.mesh.position).normalize(), 4.0);
+        // Momentary disorientation
+        a.speed = Math.max(3, a.speed * 0.5);
+        setTimeout(() => {
+          a.speed = a.type === 'facehugger' ? 17 : (a.type === 'crusher' ? 12 : 11);
+        }, 2500);
       }
     });
-    return true;
+
+    return pickedTaunt;
   }
 
   cycleVisionMode() {

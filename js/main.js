@@ -262,8 +262,8 @@ class GameApp {
 
       // Audio Mimicry Voice Lure [Y Key]
       if (e.code === 'KeyY' && this.player) {
-        this.player.triggerVoiceMimicry(this.horde);
-        this.ui.showAnnouncement('📻 LEURRE VOCAL D\'IMITATION DIFFUSÉ : "OVER HERE..."');
+        const taunt = this.player.triggerVoiceMimicry(this.horde);
+        this.ui.showAnnouncement(`📻 LEURRE VOCAL AUDIO MIMICRY DIFFUSÉ : ${taunt}`);
       }
 
       // Gauntlet EMP Overcharge Pulse [U Key]
@@ -632,10 +632,43 @@ class GameApp {
   }
 
   executeMusouOverload() {
-    this.ui.showAnnouncement('⚡ SURCHARGE MUSOU PLASMA ENCLENCHÉE !');
+    this.ui.showAnnouncement('⚡ SURCHARGE MUSOU PLASMA ENCLENCHÉE ! ONDES DE CHOC & TEMPETE CYCLONIQUE');
+    this.audio.playOmniPlasmaStorm();
+
+    // 8 Omni-directional rotating high-energy plasma beams
+    const stormGroup = new THREE.Group();
+    stormGroup.position.copy(this.player.position).add(new THREE.Vector3(0, 2.0, 0));
+    const beamMat = new THREE.MeshBasicMaterial({ color: 0x00ffff, transparent: true, opacity: 0.9 });
+
+    for (let b = 0; b < 8; b++) {
+      const beamGeo = new THREE.CylinderGeometry(0.12, 0.12, 35, 6);
+      beamGeo.rotateZ(Math.PI / 2);
+      const beam = new THREE.Mesh(beamGeo, beamMat);
+      beam.rotation.y = (b / 8) * Math.PI * 2;
+      beam.position.set(Math.cos(beam.rotation.y) * 17.5, 0, Math.sin(beam.rotation.y) * 17.5);
+      stormGroup.add(beam);
+    }
+    this.renderer.scene.add(stormGroup);
+
+    // Animate intense storm rotation and beam pulse
+    let spinAngle = 0;
+    const stormAnim = setInterval(() => {
+      spinAngle += 0.25;
+      stormGroup.rotation.y = spinAngle;
+      stormGroup.scale.multiplyScalar(1.02);
+      beamMat.opacity -= 0.045;
+      if (beamMat.opacity <= 0) {
+        clearInterval(stormAnim);
+        this.renderer.scene.remove(stormGroup);
+      }
+    }, 30);
+
     const attack = { origin: this.player.position, damage: 1000, radius: 35 };
     const hits = this.horde.checkMeleeHits(attack);
     this.registerHits(hits);
+
+    // Spawn massive plasma scorched ground decal at center
+    this.particles.spawnPlasmaScorch(this.player.position);
 
     if (this.bosses.activeBoss) this.bosses.takeDamage(1200);
     if (this.badBlood.isActive) this.badBlood.takeDamage(1200);

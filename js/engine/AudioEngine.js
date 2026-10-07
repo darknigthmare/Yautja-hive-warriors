@@ -799,4 +799,58 @@ export class AudioEngine {
     osc.start(now);
     osc.stop(now + 0.4);
   }
+
+  playSentryGunBurst() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+    // Rapid staccato heavy caliber gunfire
+    for (let i = 0; i < 4; i++) {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      const shotTime = now + i * 0.07;
+
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(420, shotTime);
+      osc.frequency.exponentialRampToValueAtTime(70, shotTime + 0.05);
+
+      gain.gain.setValueAtTime(0.5, shotTime);
+      gain.gain.linearRampToValueAtTime(0.01, shotTime + 0.05);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(shotTime);
+      osc.stop(shotTime + 0.05);
+    }
+  }
+
+  playOmniPlasmaStorm() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Massive electrical crackle cascade
+    const osc1 = this.ctx.createOscillator();
+    const gain1 = this.ctx.createGain();
+    osc1.type = 'sawtooth';
+    osc1.frequency.setValueAtTime(1800, now);
+    osc1.frequency.exponentialRampToValueAtTime(120, now + 1.5);
+    gain1.gain.setValueAtTime(0.8, now);
+    gain1.gain.linearRampToValueAtTime(0.01, now + 1.5);
+    osc1.connect(gain1);
+    gain1.connect(this.ctx.destination);
+    osc1.start(now);
+    osc1.stop(now + 1.5);
+
+    // Deep sub-bass thunder detonator
+    const sub = this.ctx.createOscillator();
+    const subGain = this.ctx.createGain();
+    sub.type = 'sine';
+    sub.frequency.setValueAtTime(85, now);
+    sub.frequency.exponentialRampToValueAtTime(20, now + 1.8);
+    subGain.gain.setValueAtTime(0.95, now);
+    subGain.gain.linearRampToValueAtTime(0.01, now + 1.8);
+    sub.connect(subGain);
+    subGain.connect(this.ctx.destination);
+    sub.start(now);
+    sub.stop(now + 1.8);
+  }
 }

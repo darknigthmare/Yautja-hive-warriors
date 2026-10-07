@@ -83,6 +83,16 @@ export class YautjaCitadel {
     polishedSkull.position.set(8.4, 1.9, 0);
     this.citadelGroup.add(polishedSkull);
 
+    // 4. CENTERPIECE 4: TYRANNOSAURUS REX PREHISTORIC SKULL (Predator 2 Lore 1990)
+    const trexPedestal = new THREE.Mesh(new THREE.CylinderGeometry(2.2, 2.8, 2.2, 8), pedestalMat);
+    trexPedestal.position.set(0, 1.1, 8);
+    this.citadelGroup.add(trexPedestal);
+
+    const trexSkull = this.createTRexSkull(skullMat);
+    trexSkull.position.set(0, 3.2, 8);
+    trexSkull.scale.set(1.8, 1.8, 1.8);
+    this.citadelGroup.add(trexSkull);
+
     // Standard Prey Skulls on Outer Pedestals
     const displayCount = Math.min(12, Math.max(4, skullCount));
     for (let i = 0; i < displayCount; i++) {
@@ -95,6 +105,38 @@ export class YautjaCitadel {
       skull.position.set(Math.cos(angle) * 14, 2.1, Math.sin(angle) * 14);
       this.citadelGroup.add(skull);
     }
+  }
+
+  createTRexSkull(mat) {
+    const group = new THREE.Group();
+
+    // Massive elongated carnivore cranium
+    const cranium = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.8, 2.4), mat);
+    cranium.position.set(0, 0.3, 0.4);
+    group.add(cranium);
+
+    // Upper Snout & Eye Sockets
+    const snout = new THREE.Mesh(new THREE.ConeGeometry(0.65, 1.6, 6), mat);
+    snout.rotation.x = Math.PI / 2;
+    snout.position.set(0, 0.1, 1.8);
+    group.add(snout);
+
+    // Lower Mandible Jaw with Teeth
+    const jaw = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.35, 2.0), mat);
+    jaw.position.set(0, -0.4, 0.8);
+    jaw.rotation.x = 0.15; // Slightly open menacing roar
+    group.add(jaw);
+
+    // Serrated Fangs
+    const toothMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.3 });
+    for (let t = -3; t <= 3; t++) {
+      const tooth = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.22, 4), toothMat);
+      tooth.rotation.x = Math.PI;
+      tooth.position.set(0.3 * (t % 2 === 0 ? 1 : -1), 0.05, 0.6 + Math.abs(t) * 0.3);
+      group.add(tooth);
+    }
+
+    return group;
   }
 
   createEngineerSkull(mat) {
