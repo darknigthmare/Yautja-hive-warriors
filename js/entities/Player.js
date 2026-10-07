@@ -1,4 +1,4 @@
-/* Playable Yautja 3D Mesh Generator & State Controller (1:1 Canon Lore Edition) */
+/* Playable Yautja 3D Mesh Generator & State Controller (Grandmaster 1:1 Lore Edition) */
 
 import * as THREE from 'three';
 
@@ -36,6 +36,7 @@ export class Player {
     this.isMusouActive = false;
     this.isSecondaryWeapon = false;
     this.isHybridMutated = false;
+    this.isClanBranded = false;
 
     // Pounce Leap State
     this.isLeaping = false;
@@ -72,9 +73,18 @@ export class Player {
     chestArmor.position.y = 2.4;
     group.add(chestArmor);
 
-    const head = new THREE.Mesh(new THREE.SphereGeometry(0.65, 12, 12), maskMat);
-    head.position.set(0, 3.6, 0.1);
-    group.add(head);
+    // Bio-Mask Head
+    this.headMesh = new THREE.Mesh(new THREE.SphereGeometry(0.65, 12, 12), maskMat);
+    this.headMesh.position.set(0, 3.6, 0.1);
+    group.add(this.headMesh);
+
+    // Clan Acid Mark Glyph on Forehead (AVP 2004 Lore - lightning bolt)
+    const clanMarkGeo = new THREE.PlaneGeometry(0.25, 0.35);
+    const clanMarkMat = new THREE.MeshBasicMaterial({ color: 0x39ff14, side: THREE.DoubleSide });
+    this.clanMarkMesh = new THREE.Mesh(clanMarkGeo, clanMarkMat);
+    this.clanMarkMesh.position.set(0, 3.8, 0.68);
+    this.clanMarkMesh.visible = false;
+    group.add(this.clanMarkMesh);
 
     const dreadMat = new THREE.MeshStandardMaterial({ color: colors.dreads, roughness: 0.9 });
     for (let i = -4; i <= 4; i++) {
@@ -106,9 +116,15 @@ export class Player {
     this.rightArm.position.set(1.2, 2.2, 0);
     group.add(this.rightArm);
 
-    const gauntlet = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.8, 0.5), armorMat);
-    gauntlet.position.set(1.2, 1.8, 0);
-    group.add(gauntlet);
+    // Left Gauntlet (Needler Flechette Dart Launcher)
+    const leftGauntlet = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.8, 0.5), armorMat);
+    leftGauntlet.position.set(-1.2, 1.8, 0);
+    group.add(leftGauntlet);
+
+    // Right Gauntlet (Wristblades)
+    const rightGauntlet = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.8, 0.5), armorMat);
+    rightGauntlet.position.set(1.2, 1.8, 0);
+    group.add(rightGauntlet);
 
     const bladeMat = new THREE.MeshStandardMaterial({ color: 0xdddddd, metalness: 0.95, roughness: 0.1 });
     this.blade1 = new THREE.Mesh(new THREE.BoxGeometry(0.08, 1.4, 0.02), bladeMat);
@@ -157,6 +173,39 @@ export class Player {
     return laserGroup;
   }
 
+  brandClanMark() {
+    this.isClanBranded = true;
+    if (this.clanMarkMesh) {
+      this.clanMarkMesh.visible = true;
+    }
+    this.audioEngine.playClanMarkSizzle();
+  }
+
+  fireFlechetteNeedler() {
+    this.audioEngine.playFlechetteDart();
+    const origin = this.position.clone().add(new THREE.Vector3(-1.2, 2.0, 0.5));
+    const forward = new THREE.Vector3(Math.sin(this.rotationY), 0, Math.cos(this.rotationY)).normalize();
+
+    return {
+      position: origin,
+      direction: forward,
+      damage: 180,
+      speed: 65
+    };
+  }
+
+  triggerVoiceMimicry(horde) {
+    this.audioEngine.playVoiceMimicry();
+    // Distract nearby Xenomorphs to turn toward lure point for 4 seconds
+    const lurePoint = this.position.clone();
+    horde.aliens.forEach(a => {
+      if (a.mesh.position.distanceTo(lurePoint) < 30) {
+        a.mesh.position.addScaledVector(lurePoint.clone().sub(a.mesh.position).normalize(), 2.5);
+      }
+    });
+    return true;
+  }
+
   cycleVisionMode() {
     this.visionMode = (this.visionMode + 1) % 4;
     this.audioEngine.playVisionSwitch(this.visionMode);
@@ -166,7 +215,7 @@ export class Player {
   pounceLeap() {
     if (this.isLeaping) return false;
     this.isLeaping = true;
-    this.leapVelocityY = 18; // Super leap height!
+    this.leapVelocityY = 18;
     this.audioEngine.playSlash();
     return true;
   }
@@ -174,8 +223,8 @@ export class Player {
   executeSpineRip() {
     this.audioEngine.playSpineRip();
     this.audioEngine.playYautjaRoar();
+    this.brandClanMark();
 
-    // Spawn held spine & skull trophy in Yautja's right hand
     const spineGroup = new THREE.Group();
     const boneMat = new THREE.MeshStandardMaterial({ color: 0xddddcc, roughness: 0.5 });
     const bloodMat = new THREE.MeshBasicMaterial({ color: 0x880000 });
@@ -184,7 +233,6 @@ export class Player {
     skull.position.y = 1.6;
     spineGroup.add(skull);
 
-    // Connected vertebrae column
     for (let v = 0; v < 8; v++) {
       const vert = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.18, 6), v % 2 === 0 ? boneMat : bloodMat);
       vert.position.y = 1.4 - v * 0.2;
@@ -192,7 +240,7 @@ export class Player {
     }
 
     this.rightArm.add(spineGroup);
-    this.rightArm.rotation.x = -Math.PI * 0.8; // Hold high in the air!
+    this.rightArm.rotation.x = -Math.PI * 0.8;
 
     setTimeout(() => {
       this.rightArm.remove(spineGroup);
@@ -232,8 +280,8 @@ export class Player {
   useMedicomp() {
     if (this.medicompCharges <= 0) return false;
     this.medicompCharges--;
-    this.hp = Math.min(this.maxHp, this.hp + 350);
-    this.audioEngine.playSkullSnap();
+    this.hp = Math.min(this.maxHp, this.hp + 450);
+    this.audioEngine.playMedicompCauterize();
     return true;
   }
 
@@ -397,7 +445,6 @@ export class Player {
       this.takeDamage(40 * delta);
     }
 
-    // Pounce Leap vertical gravity physics
     if (this.isLeaping) {
       this.leapVelocityY -= 36 * delta;
       this.position.y += this.leapVelocityY * delta;
@@ -407,7 +454,6 @@ export class Player {
         this.isLeaping = false;
         this.audioEngine.playPounceImpact();
 
-        // Seismic ground pound damage on landing!
         if (horde) {
           horde.checkMeleeHits({
             origin: this.position,

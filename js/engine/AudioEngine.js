@@ -1,4 +1,4 @@
-/* Web Audio API Sound Synthesizer Engine 3.0 - 1:1 Canon Lore Sounds */
+/* Web Audio API Sound Synthesizer Engine 4.0 - Grandmaster Lore Sounds */
 
 export class AudioEngine {
   constructor() {
@@ -13,6 +13,110 @@ export class AudioEngine {
     if (this.ctx) return;
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
     this.ctx = new AudioCtx();
+  }
+
+  playVoiceMimicry() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Radio static hiss burst
+    const noiseBuffer = this.ctx.createBuffer(1, this.ctx.sampleRate * 0.8, this.ctx.sampleRate);
+    const output = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < noiseBuffer.length; i++) {
+      output[i] = (Math.random() * 2 - 1) * 0.2;
+    }
+    const whiteNoise = this.ctx.createBufferSource();
+    whiteNoise.buffer = noiseBuffer;
+    const noiseFilter = this.ctx.createBiquadFilter();
+    noiseFilter.type = 'bandpass';
+    noiseFilter.frequency.value = 1200;
+    whiteNoise.connect(noiseFilter);
+    noiseFilter.connect(this.ctx.destination);
+    whiteNoise.start(now);
+
+    // Eerie recorded voice formant frequencies ("Over here...")
+    const formants = [450, 700, 350, 220];
+    formants.forEach((f, idx) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(f, now + idx * 0.18);
+      osc.frequency.linearRampToValueAtTime(f * 0.85, now + idx * 0.18 + 0.15);
+
+      gain.gain.setValueAtTime(0.3, now + idx * 0.18);
+      gain.gain.linearRampToValueAtTime(0.01, now + idx * 0.18 + 0.15);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(now + idx * 0.18);
+      osc.stop(now + idx * 0.18 + 0.15);
+    });
+  }
+
+  playFlechetteDart() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(1800, now);
+    osc.frequency.exponentialRampToValueAtTime(200, now + 0.08);
+
+    gain.gain.setValueAtTime(0.4, now);
+    gain.gain.linearRampToValueAtTime(0.01, now + 0.08);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.08);
+  }
+
+  playMedicompCauterize() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Intense chemical sizzling
+    for (let i = 0; i < 3; i++) {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(2500 + Math.random() * 800, now + i * 0.1);
+      osc.frequency.linearRampToValueAtTime(800, now + i * 0.1 + 0.25);
+
+      gain.gain.setValueAtTime(0.25, now + i * 0.1);
+      gain.gain.linearRampToValueAtTime(0.01, now + i * 0.1 + 0.25);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(now + i * 0.1);
+      osc.stop(now + i * 0.1 + 0.25);
+    }
+  }
+
+  playClanMarkSizzle() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(3200, now);
+    osc.frequency.linearRampToValueAtTime(1200, now + 0.6);
+
+    gain.gain.setValueAtTime(0.4, now);
+    gain.gain.linearRampToValueAtTime(0.01, now + 0.6);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.6);
   }
 
   startThermalHum() {
@@ -66,7 +170,6 @@ export class AudioEngine {
     if (!this.ctx || this.isMuted) return;
     const now = this.ctx.currentTime;
 
-    // Iconic 1987 electronic mock-laugh pitch pattern (descending repetitive staccato burst)
     const tones = [380, 360, 340, 320, 300, 280, 260, 240, 220, 200, 180, 160];
     tones.forEach((freq, idx) => {
       const t = now + idx * 0.15;
@@ -92,7 +195,6 @@ export class AudioEngine {
     if (!this.ctx || this.isMuted) return;
     const now = this.ctx.currentTime;
 
-    // Series of wet bone fractures
     for (let i = 0; i < 5; i++) {
       const t = now + i * 0.12;
       const osc = this.ctx.createOscillator();

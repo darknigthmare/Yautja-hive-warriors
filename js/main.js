@@ -1,4 +1,4 @@
-/* PREDATOR: HIVE WARRIORS - Main Game Router (v8.0 Yautja Apex Legend) */
+/* PREDATOR: HIVE WARRIORS - Main Game Router (v9.0 Apex Grandmaster Edition) */
 
 import * as THREE from 'three';
 import { EngineRenderer } from './engine/Renderer.js';
@@ -23,6 +23,7 @@ import { YautjaSkimmer } from './entities/YautjaSkimmer.js';
 import { YautjaCitadel } from './entities/YautjaCitadel.js';
 import { ColonialMarinesManager } from './entities/ColonialMarines.js';
 import { BadBloodManager } from './entities/BadBloodEncounter.js';
+import { HellHoundsManager } from './entities/HellHounds.js';
 import { EnvironmentManager } from './entities/Environment.js';
 import { CHARACTERS_DATA } from './data/charactersData.js';
 
@@ -48,6 +49,7 @@ class GameApp {
     this.skimmer = new YautjaSkimmer(this.renderer.scene, this.audio);
     this.marines = new ColonialMarinesManager(this.renderer.scene, this.audio);
     this.badBlood = new BadBloodManager(this.renderer.scene, this.audio);
+    this.hellHounds = new HellHoundsManager(this.renderer.scene, this.audio);
 
     this.weaponWheel = new WeaponWheel((weaponId) => {
       this.ui.showAnnouncement(`ARME SÉLECTIONNÉE: ${weaponId.toUpperCase()}`);
@@ -210,6 +212,23 @@ class GameApp {
 
       if (!this.isPlaying || this.isPaused) return;
 
+      // Hell-Hounds Companion Pack [H Key]
+      if (e.code === 'KeyH' && this.player) {
+        this.hellHounds.summonPack(this.player.position, 2);
+        this.ui.showAnnouncement('🐕 MEUTE DE CHIENS DE CHASSE HELL-HOUNDS DÉPLOYÉE !');
+      }
+
+      // Audio Mimicry Voice Lure [Y Key]
+      if (e.code === 'KeyY' && this.player) {
+        this.player.triggerVoiceMimicry(this.horde);
+        this.ui.showAnnouncement('📻 LEURRE VOCAL D\'IMITATION DIFFUSÉ : "OVER HERE..."');
+      }
+
+      // Gauntlet Flechette Needler [G Key]
+      if (e.code === 'KeyG' && this.player) {
+        this.fireFlechetteNeedler();
+      }
+
       // Pounce Leap [Shift + Space]
       if (e.code === 'Space' && (this.keys['ShiftLeft'] || this.keys['ShiftRight']) && this.player) {
         if (this.player.pounceLeap()) {
@@ -256,7 +275,7 @@ class GameApp {
 
       if (e.code === 'KeyZ' && this.player) {
         if (this.player.useMedicomp()) {
-          this.ui.showAnnouncement('💉 INJECTION MEDICOMP BIO-GEL: SANTÉ RESTAURÉE !');
+          this.ui.showAnnouncement('💉 MEDICOMP CAUTÉRISATION VISCÉRALE: BLINDAGE RESTAURÉ !');
         }
       }
 
@@ -370,7 +389,6 @@ class GameApp {
         nukeModal.classList.add('hidden');
         this.nukeCountingDown = false;
 
-        // Massive 10,000 damage explosion wipe!
         const hits = this.horde.checkMeleeHits({ origin: this.player.position, radius: 70, damage: 10000 });
         this.registerHits(hits);
         if (this.bosses.activeBoss) this.bosses.takeDamage(10000);
@@ -484,6 +502,28 @@ class GameApp {
     });
   }
 
+  fireFlechetteNeedler() {
+    if (!this.player) return;
+    const dartData = this.player.fireFlechetteNeedler();
+    if (!dartData) return;
+
+    const geo = new THREE.CylinderGeometry(0.04, 0.04, 0.8, 6);
+    const mat = new THREE.MeshBasicMaterial({ color: 0xcccccc });
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.rotation.x = Math.PI / 2;
+    mesh.position.copy(dartData.position);
+    this.renderer.scene.add(mesh);
+
+    this.projectiles.push({
+      mesh: mesh,
+      direction: dartData.direction,
+      damage: dartData.damage,
+      speed: dartData.speed,
+      life: 1.8
+    });
+    this.ui.showAnnouncement('🎯 DARD FLECHETTE NEEDLER PROPULSÉ !');
+  }
+
   executeMusouOverload() {
     this.ui.showAnnouncement('⚡ SURCHARGE MUSOU PLASMA ENCLENCHÉE !');
     const attack = { origin: this.player.position, damage: 1000, radius: 35 };
@@ -496,7 +536,6 @@ class GameApp {
 
   checkTrophyExecution() {
     if (this.bosses.activeBoss && this.bosses.activeBoss.isStunned) {
-      // 1:1 Lore Spine Rip Execution!
       this.player.executeSpineRip();
 
       this.sessionSkulls++;
@@ -506,7 +545,7 @@ class GameApp {
       this.renderer.scene.remove(this.bosses.activeBoss.mesh);
       this.bosses.activeBoss = null;
 
-      this.ui.showAnnouncement('💀 COLONNE VERTÉBRALE ARRACHÉE (SPINE RIP) ! TROPHÉE ÉPIQUE');
+      this.ui.showAnnouncement('💀 SPINE RIP EXÉCUTÉ ! RANG ELITE CONSACRÉ AU SANG ACIDE');
       this.ui.showExecutionPrompt(false);
     }
   }
@@ -552,7 +591,6 @@ class GameApp {
 
     if (this.photoMode.isActive) return;
 
-    // Facehugger QTE HUD prompt update
     const qtePrompt = document.getElementById('facehugger-qte-prompt');
     if (qtePrompt) {
       if (this.player.isFacehuggerLatched) {
@@ -584,6 +622,7 @@ class GameApp {
       this.renderer.cameraP2.lookAt(this.player2.position.clone().add(new THREE.Vector3(0, 2, 0)));
     }
 
+    this.hellHounds.update(delta, this.player, this.horde);
     this.skimmer.update(delta, this.player, this.horde, this.keys);
     this.orbital.update(delta);
 
@@ -622,7 +661,6 @@ class GameApp {
         this.horde.spawnWave(20 + this.waveIndex * 10, this.player.position);
         this.ui.showAnnouncement(`VAGUE ${this.waveIndex} APPROCHE !`);
 
-        // Bad Blood rogue ambush on wave 3!
         if (this.waveIndex === 3) {
           this.badBlood.spawnAmbush(this.player.position);
           this.ui.showAnnouncement('⚠️ ALERTE : EMBUSCADE D\'UN YAUTJA RENÉGAT "BAD BLOOD" !');
@@ -654,6 +692,7 @@ class GameApp {
     this.audio.stopThermalHum();
     this.allies.clearSquad();
     this.marines.clearSquad();
+    this.hellHounds.dismissPack();
 
     this.ui.recordEndSession(this.horde.deadCount, this.sessionSkulls, this.score);
 
