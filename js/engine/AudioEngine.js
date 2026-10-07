@@ -1071,4 +1071,117 @@ export class AudioEngine {
     osc.start(now);
     osc.stop(now + 1.5);
   }
+
+  playSpineWhipCrack() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // 1. Supersonic whip tip crack
+    const osc1 = this.ctx.createOscillator();
+    const gain1 = this.ctx.createGain();
+    osc1.type = 'triangle';
+    osc1.frequency.setValueAtTime(4500, now);
+    osc1.frequency.exponentialRampToValueAtTime(800, now + 0.08);
+
+    gain1.gain.setValueAtTime(0.85, now);
+    gain1.gain.linearRampToValueAtTime(0.01, now + 0.08);
+
+    osc1.connect(gain1);
+    gain1.connect(this.ctx.destination);
+    osc1.start(now);
+    osc1.stop(now + 0.08);
+
+    // 2. Segmented bone vertebrae swish
+    const osc2 = this.ctx.createOscillator();
+    const gain2 = this.ctx.createGain();
+    osc2.type = 'sawtooth';
+    osc2.frequency.setValueAtTime(1100, now + 0.02);
+    osc2.frequency.exponentialRampToValueAtTime(220, now + 0.25);
+
+    gain2.gain.setValueAtTime(0.55, now + 0.02);
+    gain2.gain.linearRampToValueAtTime(0.01, now + 0.25);
+
+    osc2.connect(gain2);
+    gain2.connect(this.ctx.destination);
+    osc2.start(now + 0.02);
+    osc2.stop(now + 0.25);
+  }
+
+  playBoilerDetonation() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Pressurized acid pustule bursting
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(480, now);
+    osc.frequency.exponentialRampToValueAtTime(35, now + 0.8);
+
+    gain.gain.setValueAtTime(0.9, now);
+    gain.gain.linearRampToValueAtTime(0.01, now + 0.8);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.8);
+
+    // High frequency sizzle
+    const sizzle = this.ctx.createOscillator();
+    const sizzleGain = this.ctx.createGain();
+    sizzle.type = 'square';
+    sizzle.frequency.setValueAtTime(2200, now);
+    sizzle.frequency.linearRampToValueAtTime(600, now + 0.7);
+
+    sizzleGain.gain.setValueAtTime(0.5, now);
+    sizzleGain.gain.linearRampToValueAtTime(0.01, now + 0.7);
+
+    sizzle.connect(sizzleGain);
+    sizzleGain.connect(this.ctx.destination);
+    sizzle.start(now);
+    sizzle.stop(now + 0.7);
+  }
+
+  playEmbryoHeartbeat() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Double biological thud (Lub-Dub)
+    [0, 0.18].forEach(offset => {
+      const t = now + offset;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(65, t);
+      osc.frequency.exponentialRampToValueAtTime(25, t + 0.14);
+
+      gain.gain.setValueAtTime(0.95, t);
+      gain.gain.linearRampToValueAtTime(0.01, t + 0.14);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(t);
+      osc.stop(t + 0.14);
+    });
+  }
+
+  playCryoVentHiss() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // High pressure freezing cryo gas discharge
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(3200, now);
+    osc.frequency.exponentialRampToValueAtTime(450, now + 1.2);
+
+    gain.gain.setValueAtTime(0.65, now);
+    gain.gain.linearRampToValueAtTime(0.01, now + 1.2);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 1.2);
+  }
 }

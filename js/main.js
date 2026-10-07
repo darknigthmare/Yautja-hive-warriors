@@ -266,6 +266,11 @@ class GameApp {
         this.ui.showAnnouncement(`📻 LEURRE VOCAL AUDIO MIMICRY DIFFUSÉ : ${taunt}`);
       }
 
+      // Segmented Spine Whip [Digit 1 or Shift + Left Click] (AVP: Requiem 2007)
+      if ((e.code === 'Digit1' || e.code === 'Numpad1') && this.player) {
+        this.performSpineWhip();
+      }
+
       // Collapsible 6-Blade Shuriken [L Key] (AVP 2004 Celtic / Scar Lore)
       if (e.code === 'KeyL' && this.player) {
         this.throwShuriken();
@@ -395,7 +400,13 @@ class GameApp {
         e.preventDefault();
         this.weaponWheel.toggle();
       }
-      if (e.button === 0) this.performLightAttack();
+      if (e.button === 0) {
+        if (this.keys['ShiftLeft'] || this.keys['ShiftRight']) {
+          this.performSpineWhip();
+        } else {
+          this.performLightAttack();
+        }
+      }
       if (e.button === 2) {
         e.preventDefault();
         if (this.keys['ShiftLeft'] || this.keys['ShiftRight']) {
@@ -762,6 +773,14 @@ class GameApp {
       this.particles.emitSparks(this.player.position, 25);
       this.particles.spawnPlasmaScorch(this.player.position);
       this.ui.showAnnouncement('⚡ FRAPPE GANTELET KINETIC POWER GLOVE : ONDE DE CHOC GÉOLOGIQUE 12M !');
+    }
+  }
+
+  performSpineWhip() {
+    if (!this.player) return;
+    if (this.player.triggerSpineWhipSlash(this.horde, this.synthetics, this.bosses)) {
+      this.particles.emitSparks(this.player.position, 12);
+      this.ui.showAnnouncement('🐍 FOUET SEGMENTÉ RAZOR-WHIP (AVP-R) : BALAYAGE 10M & DÉMEMBREMENT !');
     }
   }
 

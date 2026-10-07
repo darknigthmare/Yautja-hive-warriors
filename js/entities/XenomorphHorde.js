@@ -39,7 +39,8 @@ export class XenomorphHorde {
 
     for (let i = 0; i < count; i++) {
       const isFacehugger = Math.random() < 0.2;
-      const alien = this.createAlienMesh(isFacehugger);
+      const isBoiler = !isFacehugger && Math.random() < 0.22;
+      const alien = this.createAlienMesh(isFacehugger, isBoiler);
 
       const angle = Math.random() * Math.PI * 2;
       const radius = 25 + Math.random() * 20;
@@ -49,15 +50,15 @@ export class XenomorphHorde {
         playerPos.z + Math.sin(angle) * radius
       );
 
-      const isWallStalker = !isFacehugger && Math.random() < 0.25;
+      const isWallStalker = !isFacehugger && !isBoiler && Math.random() < 0.25;
       this.scene.add(alien);
       this.aliens.push({
         mesh: alien,
-        type: isFacehugger ? 'facehugger' : 'warrior',
-        hp: isFacehugger ? 40 : 120,
-        maxHp: isFacehugger ? 40 : 120,
-        speed: isFacehugger ? 17 : 11,
-        damage: isFacehugger ? 15 : 25,
+        type: isFacehugger ? 'facehugger' : (isBoiler ? 'boiler' : 'warrior'),
+        hp: isFacehugger ? 40 : (isBoiler ? 80 : 120),
+        maxHp: isFacehugger ? 40 : (isBoiler ? 80 : 120),
+        speed: isFacehugger ? 17 : (isBoiler ? 14 : 11),
+        damage: isFacehugger ? 15 : (isBoiler ? 50 : 25),
         radius: isFacehugger ? 0.6 : 1.1,
         isLatched: false,
         isWallStalker: isWallStalker,
@@ -165,10 +166,10 @@ export class XenomorphHorde {
     }
   }
 
-  createAlienMesh(isFacehugger) {
+  createAlienMesh(isFacehugger, isBoiler = false) {
     const group = new THREE.Group();
     const mat = new THREE.MeshStandardMaterial({
-      color: isFacehugger ? 0x8a7355 : 0x11161d,
+      color: isFacehugger ? 0x8a7355 : (isBoiler ? 0x243528 : 0x11161d),
       roughness: 0.3,
       metalness: 0.7
     });
@@ -191,6 +192,18 @@ export class XenomorphHorde {
       const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.3, 1.6, 8), mat);
       torso.position.y = 1.2;
       group.add(torso);
+
+      if (isBoiler) {
+        // Encrusted with pulsating luminescent yellow-green acid pustules
+        const boilMat = new THREE.MeshBasicMaterial({ color: 0xccff00 });
+        for (let b = 0; b < 6; b++) {
+          const boil = new THREE.Mesh(new THREE.SphereGeometry(0.18, 6, 6), boilMat);
+          boil.name = 'boil';
+          const bAngle = (b / 6) * Math.PI * 2;
+          boil.position.set(Math.cos(bAngle) * 0.35, 1.3 + (b % 2) * 0.4, Math.sin(bAngle) * 0.35 + 0.2);
+          group.add(boil);
+        }
+      }
     }
 
     return group;
@@ -235,18 +248,22 @@ export class XenomorphHorde {
         });
 
         if (killed) {
-          if (this.goreEngine) {
-            this.goreEngine.spawnDismemberment(a.mesh.position, attack.type || 'wristblades');
-          }
+          if (a.type === 'boiler') {
+            this.detonateBoiler(a, attack.origin);
+          } else {
+            if (this.goreEngine) {
+              this.goreEngine.spawnDismemberment(a.mesh.position, attack.type || 'wristblades');
+            }
 
-          if (Math.random() < 0.15 && a.type !== 'crusher') {
-            this.spawnChestburster(a.mesh.position);
-          }
+            if (Math.random() < 0.15 && a.type !== 'crusher') {
+              this.spawnChestburster(a.mesh.position);
+            }
 
-          this.spawnAcidPool(a.mesh.position);
-          this.scene.remove(a.mesh);
-          this.aliens.splice(i, 1);
-          this.deadCount++;
+            this.spawnAcidPool(a.mesh.position);
+            this.scene.remove(a.mesh);
+            this.aliens.splice(i, 1);
+            this.deadCount++;
+          }
         }
       }
     }
@@ -511,6 +528,17 @@ export class XenomorphHorde {
         a.stunTimer = 6.0;
       }
 
+      // Boiler suicide kamikaze charge
+      if (a.type === 'boiler') {
+        a.mesh.children.forEach(c => {
+          if (c.name === 'boil') c.scale.setScalar(1.0 + Math.sin(Date.now() * 0.018) * 0.25);
+        });
+        if (dist <= 3.2) {
+          this.detonateBoiler(a, player);
+          return;
+        }
+      }
+
       if (dist > (a.radius || 1.2)) {
         dir.normalize();
         a.mesh.position.addScaledVector(dir, a.speed * delta);
@@ -525,6 +553,34 @@ export class XenomorphHorde {
         }
       }
     });
+  }
+
+  detonateBoiler(boiler, targetOrPos) {
+    if (this.audioEngine && this.audioEngine.playBoilerDetonation) {
+      this.audioEngine.playBoilerDetonation();
+    }
+    const pos = boiler.mesh.position.clone();
+    this.scene.remove(boiler.mesh);
+    const idx = this.aliens.indexOf(boiler);
+    if (idx !== -1) this.aliens.splice(idx, 1);
+    this.deadCount++;
+
+    const targetPos = (targetOrPos && targetOrPos.position) ? targetOrPos.position : (targetOrPos || pos);
+
+    // Blast damage in 8.0m radius
+    if (targetOrPos && targetOrPos.takeDamage) {
+      if (targetPos.distanceTo(pos) <= 8.0) {
+        if (targetOrPos.isBlocking) {
+          targetOrPos.audioEngine.playShieldBlock();
+        } else {
+          targetOrPos.takeDamage(75);
+        }
+      }
+    }
+
+    // 5 flying acid droplets and large acid pool
+    this.spawnAcidSplash(pos, targetPos);
+    this.spawnAcidPool(pos);
   }
 
   clearWave() {

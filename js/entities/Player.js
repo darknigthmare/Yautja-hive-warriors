@@ -46,6 +46,7 @@ export class Player {
     this.combiStickCooldown = 0;
     this.shurikenCooldown = 0;
     this.powerGloveCooldown = 0;
+    this.spineWhipCooldown = 0;
     this.targetLockEnemy = null;
 
     // Pounce Leap State
@@ -291,6 +292,52 @@ export class Player {
     if (bosses && bosses.activeBoss) {
       if (bosses.activeBoss.mesh.position.distanceTo(this.position) <= 12.0) {
         bosses.takeDamage(550);
+      }
+    }
+
+    return true;
+  }
+
+  triggerSpineWhipSlash(horde, synthetics, bosses) {
+    if (this.spineWhipCooldown > 0 || this.isFacehuggerLatched) return false;
+    this.spineWhipCooldown = 3.5;
+
+    this.audioEngine.playSpineWhipCrack();
+
+    // Visual whip lash sweep
+    this.leftArm.rotation.x = -Math.PI * 0.5;
+    this.leftArm.rotation.y = -Math.PI * 0.4;
+    setTimeout(() => {
+      this.leftArm.rotation.x = 0;
+      this.leftArm.rotation.y = 0;
+    }, 380);
+
+    const whipAttack = { origin: this.position, radius: 10.5, damage: 420, type: 'spine_whip' };
+
+    // 1. Slash and reel in Xenomorphs
+    if (horde) {
+      horde.checkMeleeHits(whipAttack);
+      horde.aliens.forEach(a => {
+        const toPlayer = this.position.clone().sub(a.mesh.position);
+        const dist = toPlayer.length();
+        if (dist <= 10.5 && dist > 2.0) {
+          // Reel enemy towards the hunter!
+          toPlayer.y = 0;
+          toPlayer.normalize();
+          a.mesh.position.addScaledVector(toPlayer, 4.5);
+        }
+      });
+    }
+
+    // 2. Synthetics
+    if (synthetics) {
+      synthetics.checkHits(whipAttack);
+    }
+
+    // 3. Boss
+    if (bosses && bosses.activeBoss) {
+      if (bosses.activeBoss.mesh.position.distanceTo(this.position) <= 10.5) {
+        bosses.takeDamage(480);
       }
     }
 
@@ -795,6 +842,10 @@ export class Player {
 
     if (this.powerGloveCooldown > 0) {
       this.powerGloveCooldown = Math.max(0, this.powerGloveCooldown - delta);
+    }
+
+    if (this.spineWhipCooldown > 0) {
+      this.spineWhipCooldown = Math.max(0, this.spineWhipCooldown - delta);
     }
 
     if (this.isCloaked) {
