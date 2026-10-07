@@ -1,4 +1,4 @@
-/* Playable Yautja 3D Mesh Generator & State Controller (Grandmaster 1:1 Lore Edition) */
+/* Playable Yautja 3D Mesh Generator & State Controller (Titan 1:1 Lore Edition) */
 
 import * as THREE from 'three';
 
@@ -37,6 +37,8 @@ export class Player {
     this.isSecondaryWeapon = false;
     this.isHybridMutated = false;
     this.isClanBranded = false;
+    this.isBlocking = false;
+    this.warhornBuffTimer = 0;
 
     // Pounce Leap State
     this.isLeaping = false;
@@ -116,12 +118,15 @@ export class Player {
     this.rightArm.position.set(1.2, 2.2, 0);
     group.add(this.rightArm);
 
-    // Left Gauntlet (Needler Flechette Dart Launcher)
-    const leftGauntlet = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.8, 0.5), armorMat);
-    leftGauntlet.position.set(-1.2, 1.8, 0);
-    group.add(leftGauntlet);
+    // Left Forearm: Feral Hexagonal Bone Shield (Prey 2022)
+    const shieldGeo = new THREE.CylinderGeometry(1.2, 1.2, 0.08, 6);
+    const shieldMat = new THREE.MeshStandardMaterial({ color: 0x2b231d, metalness: 0.9, roughness: 0.3 });
+    this.shieldMesh = new THREE.Mesh(shieldGeo, shieldMat);
+    this.shieldMesh.position.set(-0.2, -0.2, 0.6);
+    this.shieldMesh.rotation.x = Math.PI / 2;
+    this.shieldMesh.visible = false;
+    this.leftArm.add(this.shieldMesh);
 
-    // Right Gauntlet (Wristblades)
     const rightGauntlet = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.8, 0.5), armorMat);
     rightGauntlet.position.set(1.2, 1.8, 0);
     group.add(rightGauntlet);
@@ -173,6 +178,44 @@ export class Player {
     return laserGroup;
   }
 
+  toggleShieldBlock() {
+    this.isBlocking = !this.isBlocking;
+    if (this.shieldMesh) {
+      this.shieldMesh.visible = this.isBlocking;
+    }
+    if (this.isBlocking) {
+      this.audioEngine.playShieldBlock();
+      this.leftArm.rotation.x = -Math.PI * 0.4;
+      this.leftArm.position.x = -0.6;
+    } else {
+      this.leftArm.rotation.x = 0;
+      this.leftArm.position.x = -1.2;
+    }
+    return this.isBlocking;
+  }
+
+  soundWarhorn() {
+    this.warhornBuffTimer = 10.0;
+    this.audioEngine.playWarhorn();
+    return true;
+  }
+
+  fireSmartDiscRicochet() {
+    this.audioEngine.playDiscWhistle();
+    const origin = this.position.clone().add(new THREE.Vector3(1.2, 1.8, 0.8));
+    const forward = new THREE.Vector3(Math.sin(this.rotationY), 0, Math.cos(this.rotationY)).normalize();
+
+    return {
+      position: origin,
+      direction: forward,
+      damage: 280,
+      speed: 40,
+      ricochetsLeft: 5,
+      isReturning: false,
+      startPlayerPos: this.position.clone()
+    };
+  }
+
   brandClanMark() {
     this.isClanBranded = true;
     if (this.clanMarkMesh) {
@@ -196,7 +239,6 @@ export class Player {
 
   triggerVoiceMimicry(horde) {
     this.audioEngine.playVoiceMimicry();
-    // Distract nearby Xenomorphs to turn toward lure point for 4 seconds
     const lurePoint = this.position.clone();
     horde.aliens.forEach(a => {
       if (a.mesh.position.distanceTo(lurePoint) < 30) {
@@ -251,6 +293,10 @@ export class Player {
   }
 
   triggerFacehuggerLatch() {
+    if (this.isBlocking) {
+      this.audioEngine.playShieldBlock();
+      return; // Hex-Shield blocks Facehuggers 100%!
+    }
     this.isFacehuggerLatched = true;
     this.qteStrugglePresses = 0;
     this.audioEngine.playXenoHiss();
@@ -338,7 +384,8 @@ export class Player {
 
     if (dir.lengthSq() > 0) {
       dir.normalize();
-      const moveDistance = this.moveSpeed * delta;
+      const speedMult = this.warhornBuffTimer > 0 ? 1.4 : 1.0;
+      const moveDistance = this.moveSpeed * speedMult * delta;
       this.position.addScaledVector(dir, moveDistance);
 
       const targetAngle = Math.atan2(dir.x, dir.z);
@@ -371,10 +418,11 @@ export class Player {
     this.rightArm.rotation.y = 0.4;
 
     const baseDmg = this.isSecondaryWeapon ? this.meleeDamage * 1.3 : this.meleeDamage;
+    const buff = this.warhornBuffTimer > 0 ? 1.5 : 1.0;
 
     return {
       type: 'light',
-      damage: baseDmg * (1 + this.attackComboStep * 0.2),
+      damage: baseDmg * (1 + this.attackComboStep * 0.2) * buff,
       radius: this.isSecondaryWeapon ? 4.5 : 3.5,
       angle: Math.PI * 0.6
     };
@@ -389,10 +437,11 @@ export class Player {
     this.audioEngine.playYautjaRoar();
 
     this.mesh.rotation.y += Math.PI * 2;
+    const buff = this.warhornBuffTimer > 0 ? 1.5 : 1.0;
 
     return {
       type: 'heavy',
-      damage: this.meleeDamage * 2.5,
+      damage: this.meleeDamage * 2.5 * buff,
       radius: 6.0,
       angle: Math.PI * 2
     };
@@ -434,6 +483,10 @@ export class Player {
   }
 
   takeDamage(amount) {
+    if (this.isBlocking) {
+      this.audioEngine.playShieldBlock();
+      return this.hp; // 100% blocked by Feral Hex-Shield!
+    }
     if (this.isHybridMutated) return this.hp;
     if (this.isCloaked) amount *= 0.5;
     this.hp = Math.max(0, this.hp - amount);
@@ -441,6 +494,10 @@ export class Player {
   }
 
   update(delta, horde = null) {
+    if (this.warhornBuffTimer > 0) {
+      this.warhornBuffTimer -= delta;
+    }
+
     if (this.isFacehuggerLatched) {
       this.takeDamage(40 * delta);
     }

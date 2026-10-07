@@ -1,4 +1,4 @@
-/* PREDATOR: HIVE WARRIORS - Main Game Router (v9.0 Apex Grandmaster Edition) */
+/* PREDATOR: HIVE WARRIORS - Main Game Router (v10.0 Apex Titan Omniverse) */
 
 import * as THREE from 'three';
 import { EngineRenderer } from './engine/Renderer.js';
@@ -22,6 +22,7 @@ import { YautjaAlliesManager } from './entities/YautjaAllies.js';
 import { YautjaSkimmer } from './entities/YautjaSkimmer.js';
 import { YautjaCitadel } from './entities/YautjaCitadel.js';
 import { ColonialMarinesManager } from './entities/ColonialMarines.js';
+import { SyntheticsManager } from './entities/Synthetics.js';
 import { BadBloodManager } from './entities/BadBloodEncounter.js';
 import { HellHoundsManager } from './entities/HellHounds.js';
 import { EnvironmentManager } from './entities/Environment.js';
@@ -48,6 +49,7 @@ class GameApp {
     this.allies = new YautjaAlliesManager(this.renderer.scene, this.audio);
     this.skimmer = new YautjaSkimmer(this.renderer.scene, this.audio);
     this.marines = new ColonialMarinesManager(this.renderer.scene, this.audio);
+    this.synthetics = new SyntheticsManager(this.renderer.scene, this.audio, this.particles);
     this.badBlood = new BadBloodManager(this.renderer.scene, this.audio);
     this.hellHounds = new HellHoundsManager(this.renderer.scene, this.audio);
 
@@ -211,6 +213,18 @@ class GameApp {
       this.keys[e.code] = true;
 
       if (!this.isPlaying || this.isPaused) return;
+
+      // Feral Hex-Shield [C Key]
+      if (e.code === 'KeyC' && this.player) {
+        const isBlock = this.player.toggleShieldBlock();
+        this.ui.showAnnouncement(isBlock ? '🛡️ BOUCLIER HEXAGONAL FERAL DÉPLOYÉ (PARADE 100%)' : '🛡️ BOUCLIER RÉTRACTÉ');
+      }
+
+      // Clan Warhorn [K Key]
+      if (e.code === 'KeyK' && this.player) {
+        this.player.soundWarhorn();
+        this.ui.showAnnouncement('📯 COR DE GUERRE ANCESTRAL DU CLAN : FRAPPE +50% & VITESSE !');
+      }
 
       // Hell-Hounds Companion Pack [H Key]
       if (e.code === 'KeyH' && this.player) {
@@ -430,6 +444,7 @@ class GameApp {
     this.skimmer.spawnAt(this.player.position.clone().add(new THREE.Vector3(5, 0, 5)));
     this.allies.spawnSquad(this.player.position, 3);
     this.marines.spawnSquad(this.player.position, 4);
+    this.synthetics.spawnSquad(this.player.position, 3);
     this.horde.spawnWave(25, this.player.position);
 
     this.audio.startBackgroundMusic();
@@ -453,6 +468,7 @@ class GameApp {
     const hits = this.horde.checkMeleeHits(attack);
     if (hits.length > 0) this.registerHits(hits);
     this.weather.checkExplosions(this.player.position, 4.0, this.horde, this.particles);
+    this.synthetics.checkHits(attack);
 
     if (this.badBlood.isActive && this.badBlood.badBlood) {
       if (this.badBlood.badBlood.mesh.position.distanceTo(this.player.position) <= attack.radius) {
@@ -472,6 +488,7 @@ class GameApp {
     const hits = this.horde.checkMeleeHits(attack);
     if (hits.length > 0) this.registerHits(hits);
     this.weather.checkExplosions(this.player.position, 6.0, this.horde, this.particles);
+    this.synthetics.checkHits(attack);
 
     if (this.badBlood.isActive && this.badBlood.badBlood) {
       if (this.badBlood.badBlood.mesh.position.distanceTo(this.player.position) <= attack.radius) {
@@ -623,6 +640,7 @@ class GameApp {
     }
 
     this.hellHounds.update(delta, this.player, this.horde);
+    this.synthetics.update(delta, this.player, this.horde);
     this.skimmer.update(delta, this.player, this.horde, this.keys);
     this.orbital.update(delta);
 
@@ -692,6 +710,7 @@ class GameApp {
     this.audio.stopThermalHum();
     this.allies.clearSquad();
     this.marines.clearSquad();
+    this.synthetics.clearSquad();
     this.hellHounds.dismissPack();
 
     this.ui.recordEndSession(this.horde.deadCount, this.sessionSkulls, this.score);

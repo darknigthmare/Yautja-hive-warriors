@@ -1,4 +1,4 @@
-/* Web Audio API Sound Synthesizer Engine 4.0 - Grandmaster Lore Sounds */
+/* Web Audio API Sound Synthesizer Engine 5.0 - Apex Titan Lore Audio */
 
 export class AudioEngine {
   constructor() {
@@ -15,11 +15,83 @@ export class AudioEngine {
     this.ctx = new AudioCtx();
   }
 
+  playWarhorn() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Deep primordial hunting horn sound
+    const osc1 = this.ctx.createOscillator();
+    const osc2 = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc1.type = 'sawtooth';
+    osc1.frequency.setValueAtTime(95, now);
+    osc1.frequency.linearRampToValueAtTime(115, now + 1.2);
+    osc1.frequency.linearRampToValueAtTime(80, now + 2.5);
+
+    osc2.type = 'triangle';
+    osc2.frequency.setValueAtTime(142, now); // Fifth harmonic
+    osc2.frequency.linearRampToValueAtTime(172, now + 1.2);
+    osc2.frequency.linearRampToValueAtTime(120, now + 2.5);
+
+    gain.gain.setValueAtTime(0.7, now);
+    gain.gain.linearRampToValueAtTime(0.01, now + 2.5);
+
+    osc1.connect(gain);
+    osc2.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc1.start(now);
+    osc2.start(now);
+    osc1.stop(now + 2.5);
+    osc2.stop(now + 2.5);
+  }
+
+  playShieldBlock() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(1400, now);
+    osc.frequency.exponentialRampToValueAtTime(180, now + 0.12);
+
+    gain.gain.setValueAtTime(0.6, now);
+    gain.gain.linearRampToValueAtTime(0.01, now + 0.15);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.15);
+  }
+
+  playDiscWhistle() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(2200, now);
+    osc.frequency.linearRampToValueAtTime(3200, now + 0.2);
+    osc.frequency.linearRampToValueAtTime(1800, now + 0.4);
+
+    gain.gain.setValueAtTime(0.35, now);
+    gain.gain.linearRampToValueAtTime(0.01, now + 0.4);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.4);
+  }
+
   playVoiceMimicry() {
     if (!this.ctx || this.isMuted) return;
     const now = this.ctx.currentTime;
 
-    // Radio static hiss burst
     const noiseBuffer = this.ctx.createBuffer(1, this.ctx.sampleRate * 0.8, this.ctx.sampleRate);
     const output = noiseBuffer.getChannelData(0);
     for (let i = 0; i < noiseBuffer.length; i++) {
@@ -34,7 +106,6 @@ export class AudioEngine {
     noiseFilter.connect(this.ctx.destination);
     whiteNoise.start(now);
 
-    // Eerie recorded voice formant frequencies ("Over here...")
     const formants = [450, 700, 350, 220];
     formants.forEach((f, idx) => {
       const osc = this.ctx.createOscillator();
@@ -79,7 +150,6 @@ export class AudioEngine {
     if (!this.ctx || this.isMuted) return;
     const now = this.ctx.currentTime;
 
-    // Intense chemical sizzling
     for (let i = 0; i < 3; i++) {
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
