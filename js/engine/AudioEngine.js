@@ -619,4 +619,65 @@ export class AudioEngine {
       this.bgOsc = null;
     }
   }
+
+  playGauntletEMP() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // High electrical crackle + booming electromagnetic pulse wave
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(3200, now);
+    osc.frequency.exponentialRampToValueAtTime(60, now + 0.6);
+
+    gain.gain.setValueAtTime(0.7, now);
+    gain.gain.linearRampToValueAtTime(0.01, now + 0.6);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.6);
+
+    // Secondary sub-bass discharge rumble
+    const subOsc = this.ctx.createOscillator();
+    const subGain = this.ctx.createGain();
+    subOsc.type = 'sine';
+    subOsc.frequency.setValueAtTime(110, now);
+    subOsc.frequency.exponentialRampToValueAtTime(25, now + 0.8);
+    subGain.gain.setValueAtTime(0.8, now);
+    subGain.gain.linearRampToValueAtTime(0.01, now + 0.8);
+    subOsc.connect(subGain);
+    subGain.connect(this.ctx.destination);
+    subOsc.start(now);
+    subOsc.stop(now + 0.8);
+  }
+
+  playMotionTrackerPing(distance = 15) {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Authentic USCM M314 sonar ping: higher pitch & sharper blip as targets close in
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    const normalizedDist = Math.max(0.1, Math.min(1.0, distance / 25.0));
+    const freq = 1200 + (1.0 - normalizedDist) * 900; // 1200Hz to 2100Hz
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(freq, now);
+    osc.frequency.exponentialRampToValueAtTime(freq * 0.8, now + 0.08);
+
+    const volume = 0.25 + (1.0 - normalizedDist) * 0.25;
+    gain.gain.setValueAtTime(volume, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.08);
+  }
 }

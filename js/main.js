@@ -86,6 +86,8 @@ class GameApp {
     this.comboTimer = 0;
     this.announcedMilestones = {};
     this.nukeCountingDown = false;
+    this.motionTrackerTimer = 0;
+    this.closestEnemyDist = Infinity;
 
     this.keys = {};
     this.setupEventListeners();
@@ -262,6 +264,15 @@ class GameApp {
       if (e.code === 'KeyY' && this.player) {
         this.player.triggerVoiceMimicry(this.horde);
         this.ui.showAnnouncement('📻 LEURRE VOCAL D\'IMITATION DIFFUSÉ : "OVER HERE..."');
+      }
+
+      // Gauntlet EMP Overcharge Pulse [U Key]
+      if (e.code === 'KeyU' && this.player) {
+        if (this.player.triggerGauntletEMP(this.horde, this.synthetics)) {
+          this.ui.showAnnouncement('⚡ DÉCHARGE EMP DE POIGNET : ANDROÏDES COURT-CIRCUITÉS & XÉNOS PARALYSÉS !');
+        } else {
+          this.ui.showAnnouncement('⏳ EMP EN RECHARGE CONDENSATEUR...');
+        }
       }
 
       // Gauntlet Flechette Needler [G Key]
@@ -713,6 +724,24 @@ class GameApp {
     this.bosses.update(delta, this.player);
     this.gore.update(delta);
     this.particles.update(delta, this.renderer.camera);
+
+    // USCM M314 Motion Tracker Proximity Sonar Ping
+    let nearestDist = Infinity;
+    this.horde.aliens.forEach(a => {
+      const d = a.mesh.position.distanceTo(this.player.position);
+      if (d < nearestDist) nearestDist = d;
+    });
+    this.closestEnemyDist = nearestDist;
+
+    if (nearestDist < 25.0) {
+      // Cadence accelerates as enemies close in: from 1.2s at 25m down to 0.18s at 3m
+      const pingInterval = 0.18 + (nearestDist / 25.0) * 0.9;
+      this.motionTrackerTimer += delta;
+      if (this.motionTrackerTimer >= pingInterval) {
+        this.motionTrackerTimer = 0;
+        this.audio.playMotionTrackerPing(nearestDist);
+      }
+    }
 
     const boss = this.bosses.activeBoss;
     this.ui.showExecutionPrompt(boss && boss.isStunned);

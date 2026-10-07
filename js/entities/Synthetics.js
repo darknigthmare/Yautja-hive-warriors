@@ -98,6 +98,17 @@ export class SyntheticsManager {
     for (let i = this.androids.length - 1; i >= 0; i--) {
       const syn = this.androids[i];
 
+      // EMP Overcharge Stun Check
+      if (syn.isEMPStunned) {
+        syn.empStunTimer -= delta;
+        syn.mesh.rotation.z = Math.sin(Date.now() * 0.05) * 0.15; // Jittering malfunction glitch
+        if (syn.empStunTimer <= 0) {
+          syn.isEMPStunned = false;
+          syn.mesh.rotation.z = 0;
+        }
+        continue; // Fully disabled while rebooting circuits
+      }
+
       // Target nearest Xenomorph first, or Yautja if close
       let targetPos = null;
       let isXeno = false;

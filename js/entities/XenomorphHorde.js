@@ -11,8 +11,10 @@ export class XenomorphHorde {
     this.eggs = [];
     this.chestbursters = [];
     this.acidPools = [];
+    this.acidSplashes = [];
     this.deadCount = 0;
 
+    this.acidSplashMat = new THREE.MeshBasicMaterial({ color: 0x39ff14 });
     this.eggMat = new THREE.MeshStandardMaterial({ color: 0x3d3522, roughness: 0.7, metalness: 0.1 });
     this.eggPetalMat = new THREE.MeshStandardMaterial({ color: 0x5a2d1d, roughness: 0.5, metalness: 0.2 });
     this.crusherMat = new THREE.MeshStandardMaterial({ color: 0x151b24, roughness: 0.2, metalness: 0.9 });
@@ -217,6 +219,11 @@ export class XenomorphHorde {
         a.hp -= attack.damage;
         const killed = a.hp <= 0;
 
+        // Reactive Acid Splashback Physics (slashing xenos sprays pressurized molecular acid back at attacker)
+        if (attack.origin) {
+          this.spawnAcidSplash(a.mesh.position, attack.origin);
+        }
+
         hits.push({
           pos: a.mesh.position.clone(),
           damage: attack.damage,
@@ -255,6 +262,31 @@ export class XenomorphHorde {
     }
 
     return hits;
+  }
+
+  spawnAcidSplash(originPos, targetPos) {
+    const splashDir = targetPos.clone().sub(originPos).normalize();
+    // Add realistic arc and spread
+    for (let s = 0; s < 3; s++) {
+      const spread = splashDir.clone().add(new THREE.Vector3(
+        (Math.random() - 0.5) * 0.4,
+        0.3 + Math.random() * 0.3,
+        (Math.random() - 0.5) * 0.4
+      )).normalize();
+
+      const dropGeo = new THREE.SphereGeometry(0.12, 6, 6);
+      const dropMesh = new THREE.Mesh(dropGeo, this.acidSplashMat);
+      dropMesh.position.copy(originPos).add(new THREE.Vector3(0, 1.2, 0));
+      this.scene.add(dropMesh);
+
+      this.acidSplashes.push({
+        mesh: dropMesh,
+        vel: spread.multiplyScalar(16 + Math.random() * 6),
+        gravity: -28,
+        life: 0.9,
+        damage: 18
+      });
+    }
   }
 
   spawnChestburster(pos) {
@@ -342,6 +374,28 @@ export class XenomorphHorde {
       }
     }
 
+    // 3b. Reactive Acid Splashback Droplets Flying
+    for (let i = this.acidSplashes.length - 1; i >= 0; i--) {
+      const splash = this.acidSplashes[i];
+      splash.life -= delta;
+      splash.vel.y += splash.gravity * delta;
+      splash.mesh.position.addScaledVector(splash.vel, delta);
+
+      // Check collision with player
+      if (splash.mesh.position.distanceTo(player.position) < 1.6) {
+        player.takeDamage(splash.damage);
+        this.scene.remove(splash.mesh);
+        this.acidSplashes.splice(i, 1);
+        continue;
+      }
+
+      // Check floor collision or life expiry
+      if (splash.mesh.position.y <= 0.05 || splash.life <= 0) {
+        this.scene.remove(splash.mesh);
+        this.acidSplashes.splice(i, 1);
+      }
+    }
+
     // 4. Horde AI (Crusher, Praetorian, Warriors, Facehuggers)
     this.aliens.forEach(a => {
       if (a.isLatched) return;
@@ -390,5 +444,7 @@ export class XenomorphHorde {
     this.chestbursters = [];
     this.acidPools.forEach(p => this.scene.remove(p.mesh));
     this.acidPools = [];
+    this.acidSplashes.forEach(s => this.scene.remove(s.mesh));
+    this.acidSplashes = [];
   }
 }

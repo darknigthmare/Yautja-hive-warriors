@@ -40,6 +40,8 @@ export class Player {
     this.isBlocking = false;
     this.isPerched = false;
     this.warhornBuffTimer = 0;
+    this.empCooldown = 0;
+    this.cloakShimmerTimer = 0;
 
     // Pounce Leap State
     this.isLeaping = false;
@@ -237,6 +239,64 @@ export class Player {
     };
   }
 
+  triggerGauntletEMP(horde, synthetics) {
+    if (this.empCooldown > 0) return false;
+    this.empCooldown = 12.0; // 12 second cooldown
+    this.audioEngine.playGauntletEMP();
+
+    const empRadius = 18.0;
+
+    // 1. Stun and short-circuit Weyland-Yutani synthetics
+    if (synthetics) {
+      synthetics.androids.forEach(syn => {
+        if (syn.mesh.position.distanceTo(this.position) <= empRadius) {
+          syn.isEMPStunned = true;
+          syn.empStunTimer = 5.0; // 5 second complete shutdown
+          synthetics.emitWhiteSyntheticBlood(syn.mesh.position);
+          syn.hp -= 90; // High electrical damage to circuitry
+        }
+      });
+    }
+
+    // 2. Shock and paralyze Xenomorph horde
+    if (horde) {
+      horde.aliens.forEach(a => {
+        if (a.mesh.position.distanceTo(this.position) <= empRadius) {
+          a.hp -= 75;
+          a.speed = Math.max(2, a.speed * 0.3); // Severe nerve disruption
+          setTimeout(() => {
+            a.speed = a.type === 'facehugger' ? 17 : (a.type === 'crusher' ? 12 : 11);
+          }, 4000);
+        }
+      });
+    }
+
+    // Create EMP shockwave visual sphere
+    const empGeo = new THREE.SphereGeometry(1, 16, 16);
+    const empMat = new THREE.MeshBasicMaterial({
+      color: 0x00ffff,
+      transparent: true,
+      opacity: 0.8,
+      wireframe: true
+    });
+    const shockwaveMesh = new THREE.Mesh(empGeo, empMat);
+    shockwaveMesh.position.copy(this.position).add(new THREE.Vector3(0, 1.5, 0));
+    this.scene.add(shockwaveMesh);
+
+    let scale = 1.0;
+    const expandAnim = setInterval(() => {
+      scale += 2.2;
+      shockwaveMesh.scale.set(scale, scale, scale);
+      shockwaveMesh.material.opacity -= 0.08;
+      if (shockwaveMesh.material.opacity <= 0 || scale >= empRadius) {
+        clearInterval(expandAnim);
+        this.scene.remove(shockwaveMesh);
+      }
+    }, 30);
+
+    return true;
+  }
+
   triggerVoiceMimicry(horde) {
     this.audioEngine.playVoiceMimicry();
     const lurePoint = this.position.clone();
@@ -370,11 +430,32 @@ export class Player {
 
   toggleCloak() {
     this.isCloaked = !this.isCloaked;
-    const opacity = this.isCloaked ? 0.25 : 1.0;
+    const opacity = this.isCloaked ? 0.22 : 1.0;
     const transparent = this.isCloaked;
 
-    this.skinMaterials.forEach(m => { m.transparent = transparent; m.opacity = opacity; });
-    this.armorMaterials.forEach(m => { m.transparent = transparent; m.opacity = opacity; });
+    this.skinMaterials.forEach(m => {
+      m.transparent = transparent;
+      m.opacity = opacity;
+      if (this.isCloaked) {
+        m.roughness = 0.1;
+        m.metalness = 0.95;
+      } else {
+        m.roughness = 0.7;
+        m.metalness = 0.1;
+      }
+    });
+
+    this.armorMaterials.forEach(m => {
+      m.transparent = transparent;
+      m.opacity = opacity;
+      if (this.isCloaked) {
+        m.roughness = 0.05;
+        m.metalness = 0.98;
+      } else {
+        m.roughness = 0.3;
+        m.metalness = 0.8;
+      }
+    });
 
     return this.isCloaked;
   }
@@ -496,6 +577,17 @@ export class Player {
   update(delta, horde = null) {
     if (this.warhornBuffTimer > 0) {
       this.warhornBuffTimer -= delta;
+    }
+
+    if (this.empCooldown > 0) {
+      this.empCooldown = Math.max(0, this.empCooldown - delta);
+    }
+
+    if (this.isCloaked) {
+      this.cloakShimmerTimer += delta * 4;
+      const shimmer = 0.2 + Math.sin(this.cloakShimmerTimer) * 0.08;
+      this.skinMaterials.forEach(m => { m.opacity = shimmer; });
+      this.armorMaterials.forEach(m => { m.opacity = shimmer; });
     }
 
     if (this.isFacehuggerLatched) {
