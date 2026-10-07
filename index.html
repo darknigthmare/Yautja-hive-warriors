@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PREDATOR: HIVE WARRIORS - v5.0 APEX PREDATOR EXPANSION 3D</title>
+  <title>PREDATOR: HIVE WARRIORS - v7.0 APEX OVERLORD EDITION 3D</title>
   <meta name="description" content="Jeu de guerre 3D style Dynasty Warriors d'affrontement épique entre Yautja et hordes de Xenomorphes.">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -40,7 +40,7 @@
         <div class="logo-box">
           <div class="yautja-glyph-banner">⚡ ᚛᚜ ⚡ PREDATOR ⚡ ᚛᚜ ⚡</div>
           <h1 class="game-title">HIVE WARRIORS</h1>
-          <p class="subtitle">v5.0 APEX PREDATOR EXPANSION • YAUTJA CITADEL 3D</p>
+          <p class="subtitle">v7.0 APEX OVERLORD EDITION • 1:1 CANON LORE ENGINE</p>
         </div>
 
         <div class="menu-actions">
@@ -51,17 +51,22 @@
 
           <button id="btn-open-citadel" class="btn-secondary">
             <span class="btn-icon">🏰</span>
-            <span class="btn-text">VISITER LA CITADELLE YAUTJA 3D</span>
+            <span class="btn-text">CITADELLE YAUTJA 3D (QG TROPHÉES)</span>
+          </button>
+
+          <button id="btn-open-codex" class="btn-secondary">
+            <span class="btn-icon">📜</span>
+            <span class="btn-text">CODEX LORE & ENCYCLOPÉDIE AVP</span>
           </button>
 
           <button id="btn-open-story" class="btn-secondary">
-            <span class="btn-icon">📜</span>
-            <span class="btn-text">MODE CAMPAGNE SCÉNARISÉE</span>
+            <span class="btn-icon">📖</span>
+            <span class="btn-text">CAMPAGNE SCÉNARISÉE</span>
           </button>
 
           <button id="btn-open-coop" class="btn-secondary">
             <span class="btn-icon">👥</span>
-            <span class="btn-text">MODE COOP 2 JOUEURS (ÉCRAN SÉPARÉ)</span>
+            <span class="btn-text">MODE COOP 2 JOUEURS (ÉCRAN SPLITÉ)</span>
           </button>
 
           <button id="btn-open-sandbox" class="btn-secondary">
@@ -283,6 +288,25 @@
         <div class="honor-score-box">
           <span>HONNEUR: </span>
           <span id="hud-honor-score">0 PTS</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CODEX LORE MODAL -->
+    <div id="codex-modal" class="ui-screen hidden">
+      <div class="glass-panel modal-card codex-card">
+        <div class="modal-header">
+          <h2>📜 CODEX & ENCYCLOPÉDIE CANON AVP</h2>
+          <button id="btn-close-codex" class="btn-close">✕</button>
+        </div>
+        <div class="codex-nav-tabs">
+          <button class="codex-tab-btn active" data-tab="ranks">Rangs Yautja</button>
+          <button class="codex-tab-btn" data-tab="code">Code d'Honneur</button>
+          <button class="codex-tab-btn" data-tab="xenomorphs">Castes Xenomorphes</button>
+          <button class="codex-tab-btn" data-tab="engineers">Ingénieurs Prometheus</button>
+        </div>
+        <div class="codex-body" id="codex-content-container">
+          <!-- Populated dynamically via LoreCodex.js -->
         </div>
       </div>
     </div>

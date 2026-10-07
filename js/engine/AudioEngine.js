@@ -1,9 +1,11 @@
-/* Web Audio API Sound Synthesizer Engine (Yautja Mandibles Clicker) */
+/* Web Audio API Sound Synthesizer Engine 2.0 - Thermal Hum, Roar Reverb & Pulse Rifle */
 
 export class AudioEngine {
   constructor() {
     this.ctx = null;
     this.bgOsc = null;
+    this.thermalOsc = null;
+    this.thermalGain = null;
     this.isMuted = false;
   }
 
@@ -13,11 +15,34 @@ export class AudioEngine {
     this.ctx = new AudioCtx();
   }
 
+  startThermalHum() {
+    if (!this.ctx || this.thermalOsc) return;
+    this.thermalOsc = this.ctx.createOscillator();
+    this.thermalGain = this.ctx.createGain();
+
+    this.thermalOsc.type = 'sawtooth';
+    this.thermalOsc.frequency.setValueAtTime(110, this.ctx.currentTime); // 110Hz bio-mask resonance
+
+    this.thermalGain.gain.setValueAtTime(0.04, this.ctx.currentTime);
+
+    this.thermalOsc.connect(this.thermalGain);
+    this.thermalGain.connect(this.ctx.destination);
+
+    this.thermalOsc.start();
+  }
+
+  stopThermalHum() {
+    if (this.thermalOsc) {
+      this.thermalOsc.stop();
+      this.thermalOsc = null;
+      this.thermalGain = null;
+    }
+  }
+
   playYautjaClick() {
     if (!this.ctx || this.isMuted) return;
     const now = this.ctx.currentTime;
 
-    // Series of rapid high-pitched clicks simulating Yautja mandibles
     for (let i = 0; i < 4; i++) {
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
@@ -41,23 +66,50 @@ export class AudioEngine {
     if (!this.ctx || this.isMuted) return;
     const now = this.ctx.currentTime;
 
+    // Deep roar bass with pitch drop
     const osc = this.ctx.createOscillator();
     const gain = this.ctx.createGain();
 
     osc.type = 'sawtooth';
-    osc.frequency.setValueAtTime(140, now);
-    osc.frequency.linearRampToValueAtTime(60, now + 0.8);
+    osc.frequency.setValueAtTime(160, now);
+    osc.frequency.linearRampToValueAtTime(50, now + 1.1);
 
-    gain.gain.setValueAtTime(0.6, now);
-    gain.gain.linearRampToValueAtTime(0.01, now + 0.8);
+    gain.gain.setValueAtTime(0.7, now);
+    gain.gain.linearRampToValueAtTime(0.01, now + 1.1);
 
     osc.connect(gain);
     gain.connect(this.ctx.destination);
 
     osc.start(now);
-    osc.stop(now + 0.8);
+    osc.stop(now + 1.1);
 
+    // Mandibles click overlay
     this.playYautjaClick();
+  }
+
+  playPulseRifleBurst() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Rapid 3-round burst
+    for (let i = 0; i < 3; i++) {
+      const t = now + i * 0.09;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(750, t);
+      osc.frequency.exponentialRampToValueAtTime(140, t + 0.06);
+
+      gain.gain.setValueAtTime(0.35, t);
+      gain.gain.linearRampToValueAtTime(0.01, t + 0.06);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(t);
+      osc.stop(t + 0.06);
+    }
   }
 
   playSlash() {
@@ -226,7 +278,7 @@ export class AudioEngine {
     const gain = this.ctx.createGain();
 
     this.bgOsc.type = 'triangle';
-    this.bgOsc.frequency.setValueAtTime(55, this.ctx.currentTime); // Deep battle hum bass
+    this.bgOsc.frequency.setValueAtTime(55, this.ctx.currentTime);
 
     gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
 

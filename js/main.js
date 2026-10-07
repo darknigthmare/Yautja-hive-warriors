@@ -1,9 +1,10 @@
-/* PREDATOR: HIVE WARRIORS - Main Game Router (v6.0 Omni-Warrior Edition) */
+/* PREDATOR: HIVE WARRIORS - Main Game Router (v7.0 Apex Overlord Edition) */
 
 import * as THREE from 'three';
 import { EngineRenderer } from './engine/Renderer.js';
 import { AudioEngine } from './engine/AudioEngine.js';
 import { ParticleSystem } from './engine/ParticleSystem.js';
+import { GoreEngine } from './engine/GoreEngine.js';
 import { OrbitalStrikeManager } from './engine/OrbitalStrike.js';
 import { StoryCampaignManager } from './engine/StoryCampaign.js';
 import { WeatherSystem } from './engine/WeatherSystem.js';
@@ -13,6 +14,7 @@ import { SandboxEditor } from './ui/SandboxEditor.js';
 import { PhotoMode } from './ui/PhotoMode.js';
 import { LoadoutScreen } from './ui/LoadoutScreen.js';
 import { WeaponWheel } from './ui/WeaponWheel.js';
+import { LoreCodexManager } from './ui/LoreCodex.js';
 import { Player } from './entities/Player.js';
 import { XenomorphHorde } from './entities/XenomorphHorde.js';
 import { BossManager } from './entities/Bosses.js';
@@ -29,6 +31,7 @@ class GameApp {
     this.renderer = new EngineRenderer(this.container);
     this.audio = new AudioEngine();
     this.particles = new ParticleSystem(this.renderer.scene);
+    this.gore = new GoreEngine(this.renderer.scene);
     this.orbital = new OrbitalStrikeManager(this.renderer.scene, this.audio);
     this.campaign = new StoryCampaignManager(this.ui);
     this.weather = new WeatherSystem(this.renderer.scene);
@@ -36,8 +39,9 @@ class GameApp {
     this.ui = new UIManager();
     this.photoMode = new PhotoMode(this.renderer, this.renderer.scene, this.renderer.camera);
     this.citadel = new YautjaCitadel(this.renderer.scene);
+    this.codex = new LoreCodexManager();
     this.env = new EnvironmentManager(this.renderer.scene);
-    this.horde = new XenomorphHorde(this.renderer.scene, this.audio);
+    this.horde = new XenomorphHorde(this.renderer.scene, this.audio, this.gore);
     this.bosses = new BossManager(this.renderer.scene, this.audio);
     this.allies = new YautjaAlliesManager(this.renderer.scene, this.audio);
     this.skimmer = new YautjaSkimmer(this.renderer.scene, this.audio);
@@ -90,7 +94,7 @@ class GameApp {
       this.audio.init();
       this.citadel.buildCitadelRoom(this.ui.trophyStats.skulls);
       this.citadel.show();
-      this.ui.showAnnouncement('🏰 BIENVENUE DANS LA CITADELLE YAUTJA 3D');
+      this.ui.showAnnouncement('🏰 CITADELLE YAUTJA: PIÉDESTAL DE L\'INGÉNIEUR & CODEX');
     });
 
     document.getElementById('btn-open-story').addEventListener('click', () => {
@@ -266,6 +270,11 @@ class GameApp {
       if (e.code === 'KeyV' && this.player) {
         const active = this.player.toggleThermal();
         this.audio.playYautjaClick();
+        if (active) {
+          this.audio.startThermalHum();
+        } else {
+          this.audio.stopThermalHum();
+        }
         this.ui.thermalOverlay.className = active ? '' : 'hidden';
       }
 
@@ -321,6 +330,7 @@ class GameApp {
     this.env.buildLevelEnvironment(this.ui.selectedLevel);
     this.renderer.updateLevelEnvironment(this.ui.selectedLevel);
     this.weather.spawnGasPipes(6);
+    this.gore.clear();
 
     if (this.player) this.renderer.scene.remove(this.player.mesh);
     if (this.player2) this.renderer.scene.remove(this.player2.mesh);
@@ -336,7 +346,7 @@ class GameApp {
 
     this.skimmer.spawnAt(this.player.position.clone().add(new THREE.Vector3(5, 0, 5)));
     this.allies.spawnSquad(this.player.position, 3);
-    this.marines.spawnSquad(this.player.position, 4); // USCM Colonial Marines Faction!
+    this.marines.spawnSquad(this.player.position, 4);
     this.horde.spawnWave(25, this.player.position);
 
     this.audio.startBackgroundMusic();
@@ -513,10 +523,11 @@ class GameApp {
       }
     }
 
-    this.marines.update(delta, this.player, this.horde); // USCM Faction AI!
+    this.marines.update(delta, this.player, this.horde);
     this.allies.update(delta, this.player.position, this.horde);
     this.horde.update(delta, this.player);
     this.bosses.update(delta, this.player);
+    this.gore.update(delta);
     this.particles.update(delta, this.renderer.camera);
 
     const boss = this.bosses.activeBoss;
@@ -551,6 +562,7 @@ class GameApp {
   endGame(isVictory) {
     this.isPlaying = false;
     this.audio.stopBackgroundMusic();
+    this.audio.stopThermalHum();
     this.allies.clearSquad();
     this.marines.clearSquad();
 
