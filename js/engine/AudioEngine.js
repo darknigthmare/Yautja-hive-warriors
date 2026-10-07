@@ -1,4 +1,4 @@
-/* Web Audio API Sound Synthesizer Engine 2.0 - Thermal Hum, Roar Reverb & Pulse Rifle */
+/* Web Audio API Sound Synthesizer Engine 3.0 - 1:1 Canon Lore Sounds */
 
 export class AudioEngine {
   constructor() {
@@ -21,7 +21,7 @@ export class AudioEngine {
     this.thermalGain = this.ctx.createGain();
 
     this.thermalOsc.type = 'sawtooth';
-    this.thermalOsc.frequency.setValueAtTime(110, this.ctx.currentTime); // 110Hz bio-mask resonance
+    this.thermalOsc.frequency.setValueAtTime(110, this.ctx.currentTime);
 
     this.thermalGain.gain.setValueAtTime(0.04, this.ctx.currentTime);
 
@@ -37,6 +37,100 @@ export class AudioEngine {
       this.thermalOsc = null;
       this.thermalGain = null;
     }
+  }
+
+  playVisionSwitch(modeIndex = 0) {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    const freqs = [600, 1200, 1800, 900];
+    const freq = freqs[modeIndex % freqs.length];
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(freq, now);
+    osc.frequency.exponentialRampToValueAtTime(freq * 1.5, now + 0.08);
+
+    gain.gain.setValueAtTime(0.35, now);
+    gain.gain.linearRampToValueAtTime(0.01, now + 0.12);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.12);
+  }
+
+  playPredatorLaughCountdown() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Iconic 1987 electronic mock-laugh pitch pattern (descending repetitive staccato burst)
+    const tones = [380, 360, 340, 320, 300, 280, 260, 240, 220, 200, 180, 160];
+    tones.forEach((freq, idx) => {
+      const t = now + idx * 0.15;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(freq, t);
+      osc.frequency.exponentialRampToValueAtTime(freq * 0.8, t + 0.1);
+
+      gain.gain.setValueAtTime(0.4, t);
+      gain.gain.linearRampToValueAtTime(0.01, t + 0.12);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(t);
+      osc.stop(t + 0.12);
+    });
+  }
+
+  playSpineRip() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Series of wet bone fractures
+    for (let i = 0; i < 5; i++) {
+      const t = now + i * 0.12;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(450 - i * 50, t);
+      osc.frequency.exponentialRampToValueAtTime(80, t + 0.09);
+
+      gain.gain.setValueAtTime(0.6, t);
+      gain.gain.linearRampToValueAtTime(0.01, t + 0.1);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(t);
+      osc.stop(t + 0.1);
+    }
+  }
+
+  playPounceImpact() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(180, now);
+    osc.frequency.exponentialRampToValueAtTime(30, now + 0.5);
+
+    gain.gain.setValueAtTime(0.8, now);
+    gain.gain.linearRampToValueAtTime(0.01, now + 0.5);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.5);
   }
 
   playYautjaClick() {
@@ -66,7 +160,6 @@ export class AudioEngine {
     if (!this.ctx || this.isMuted) return;
     const now = this.ctx.currentTime;
 
-    // Deep roar bass with pitch drop
     const osc = this.ctx.createOscillator();
     const gain = this.ctx.createGain();
 
@@ -83,7 +176,6 @@ export class AudioEngine {
     osc.start(now);
     osc.stop(now + 1.1);
 
-    // Mandibles click overlay
     this.playYautjaClick();
   }
 
@@ -91,7 +183,6 @@ export class AudioEngine {
     if (!this.ctx || this.isMuted) return;
     const now = this.ctx.currentTime;
 
-    // Rapid 3-round burst
     for (let i = 0; i < 3; i++) {
       const t = now + i * 0.09;
       const osc = this.ctx.createOscillator();

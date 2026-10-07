@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PREDATOR: HIVE WARRIORS - v7.0 APEX OVERLORD EDITION 3D</title>
+  <title>PREDATOR: HIVE WARRIORS - v8.0 YAUTJA APEX LEGEND 3D</title>
   <meta name="description" content="Jeu de guerre 3D style Dynasty Warriors d'affrontement épique entre Yautja et hordes de Xenomorphes.">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,9 +21,24 @@
 </head>
 <body>
   <div id="canvas-container"></div>
+
+  <!-- 4 BIO-MASK VISION MODES OVERLAYS -->
   <div id="thermal-overlay" class="hidden"></div>
+  <div id="em-overlay" class="hidden"></div>
+  <div id="tech-overlay" class="hidden"></div>
+  <div id="uv-overlay" class="hidden"></div>
+
   <div id="cloak-overlay" class="hidden"></div>
   <div id="screen-flash"></div>
+
+  <!-- 1987 WRIST COMPUTER NUKE COUNTDOWN OVERLAY -->
+  <div id="nuke-countdown-overlay" class="hidden">
+    <div class="nuke-glyphs-box">
+      <div class="yautja-glyphs">᚛᚜ ᚠᚡ ᚢᚣ ᚤᚥ ᚦᚧ</div>
+      <div class="nuke-timer" id="nuke-timer-seconds">6</div>
+      <div class="nuke-warning">AUTO-DESTRUCTION RITUELLE 1987</div>
+    </div>
+  </div>
 
   <!-- 360 HOLO WEAPON WHEEL OVERLAY -->
   <div id="weapon-wheel-overlay" class="hidden">
@@ -40,7 +55,7 @@
         <div class="logo-box">
           <div class="yautja-glyph-banner">⚡ ᚛᚜ ⚡ PREDATOR ⚡ ᚛᚜ ⚡</div>
           <h1 class="game-title">HIVE WARRIORS</h1>
-          <p class="subtitle">v7.0 APEX OVERLORD EDITION • 1:1 CANON LORE ENGINE</p>
+          <p class="subtitle">v8.0 YAUTJA APEX LEGEND • 1:1 CANON LORE EXPANSION</p>
         </div>
 
         <div class="menu-actions">
@@ -212,7 +227,7 @@
         <div class="player-stats-column">
           <div class="hud-name-row">
             <span id="hud-player-name">JUNGLE HUNTER</span>
-            <span id="hud-honor-rank" class="rank-badge">RANG: CHASSEUR ÉLITE</span>
+            <span id="hud-vision-tag" class="rank-badge" style="color:#00d2ff;">VISION : THERMIQUE</span>
           </div>
 
           <div class="hud-bar-container hp-bar-bg">
@@ -258,14 +273,23 @@
         <div class="execution-text" style="color:#ff4d4d;">ARRACHEZ LE FACEHUGGER !</div>
       </div>
 
+      <!-- SPINE RIP EXECUTION PROMPT -->
       <div id="execution-prompt" class="execution-box hidden">
         <div class="pulse-key">[ E ]</div>
-        <div class="execution-text">EXÉCUTION TROPHÉE !</div>
+        <div class="execution-text">ARRÊTEZ LA COLONNE VERTÉBRALE (SPINE RIP) !</div>
       </div>
 
       <div id="ability-announcement" class="announcement-banner hidden"></div>
 
       <div class="hud-bottom-center" id="hud-equipped-slots-container">
+        <div class="ability-slot" id="slot-leap">
+          <div class="slot-key">SHIFT + ESPACE</div>
+          <div class="slot-label">POUNCE LEAP</div>
+        </div>
+        <div class="ability-slot" id="slot-vision">
+          <div class="slot-key">V</div>
+          <div class="slot-label">4 MODES VISION</div>
+        </div>
         <div class="ability-slot" id="slot-wheel">
           <div class="slot-key">R / CLIC 3</div>
           <div class="slot-label">ROUE WEAPONS 360°</div>
@@ -404,10 +428,12 @@
         <div class="options-body">
           <h3>CONTRÔLES CLAVIER & SOURIS</h3>
           <div class="controls-grid">
+            <div class="control-row"><span class="key">V</span><span>Cycler les 4 Modes de Vision du Bio-Masque</span></div>
+            <div class="control-row"><span class="key">SHIFT + ESPACE</span><span>Super-Saut Pounce Leap avec Onde de Choc</span></div>
             <div class="control-row"><span class="key">R / CLIC 3</span><span>Ouvrir la Roue Holo-Tactique 360°</span></div>
-            <div class="control-row"><span class="key">E</span><span>QTE Lutte Facehugger / Exécution Trophée</span></div>
+            <div class="control-row"><span class="key">E</span><span>QTE Lutte Facehugger / Exécution Spine Rip</span></div>
             <div class="control-row"><span class="key">T</span><span>Piège à Loup Yautja Steel Bear Trap</span></div>
-            <div class="control-row"><span class="key">N</span><span>Auto-Destruction Nucléaire</span></div>
+            <div class="control-row"><span class="key">N</span><span>Auto-Destruction Nucléaire 1987</span></div>
           </div>
         </div>
       </div>

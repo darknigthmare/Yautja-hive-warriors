@@ -1,4 +1,4 @@
-/* PREDATOR: HIVE WARRIORS - Main Game Router (v7.0 Apex Overlord Edition) */
+/* PREDATOR: HIVE WARRIORS - Main Game Router (v8.0 Yautja Apex Legend) */
 
 import * as THREE from 'three';
 import { EngineRenderer } from './engine/Renderer.js';
@@ -22,6 +22,7 @@ import { YautjaAlliesManager } from './entities/YautjaAllies.js';
 import { YautjaSkimmer } from './entities/YautjaSkimmer.js';
 import { YautjaCitadel } from './entities/YautjaCitadel.js';
 import { ColonialMarinesManager } from './entities/ColonialMarines.js';
+import { BadBloodManager } from './entities/BadBloodEncounter.js';
 import { EnvironmentManager } from './entities/Environment.js';
 import { CHARACTERS_DATA } from './data/charactersData.js';
 
@@ -46,6 +47,7 @@ class GameApp {
     this.allies = new YautjaAlliesManager(this.renderer.scene, this.audio);
     this.skimmer = new YautjaSkimmer(this.renderer.scene, this.audio);
     this.marines = new ColonialMarinesManager(this.renderer.scene, this.audio);
+    this.badBlood = new BadBloodManager(this.renderer.scene, this.audio);
 
     this.weaponWheel = new WeaponWheel((weaponId) => {
       this.ui.showAnnouncement(`ARME SÉLECTIONNÉE: ${weaponId.toUpperCase()}`);
@@ -74,6 +76,7 @@ class GameApp {
     this.comboHits = 0;
     this.comboTimer = 0;
     this.announcedMilestones = {};
+    this.nukeCountingDown = false;
 
     this.keys = {};
     this.setupEventListeners();
@@ -94,7 +97,7 @@ class GameApp {
       this.audio.init();
       this.citadel.buildCitadelRoom(this.ui.trophyStats.skulls);
       this.citadel.show();
-      this.ui.showAnnouncement('🏰 CITADELLE YAUTJA: PIÉDESTAL DE L\'INGÉNIEUR & CODEX');
+      this.ui.showAnnouncement('🏰 CITADELLE YAUTJA: CRÂNE DE L\'INGÉNIEUR & CODEX');
     });
 
     document.getElementById('btn-open-story').addEventListener('click', () => {
@@ -207,6 +210,19 @@ class GameApp {
 
       if (!this.isPlaying || this.isPaused) return;
 
+      // Pounce Leap [Shift + Space]
+      if (e.code === 'Space' && (this.keys['ShiftLeft'] || this.keys['ShiftRight']) && this.player) {
+        if (this.player.pounceLeap()) {
+          this.ui.showAnnouncement('⚡ SUPER-SAUT POUNCE LEAP DÉPLOYÉ !');
+        }
+      }
+
+      // 4 Bio-Mask Vision Modes [V Key]
+      if (e.code === 'KeyV' && this.player) {
+        const mode = this.player.cycleVisionMode();
+        this.updateVisionOverlays(mode);
+      }
+
       if (e.code === 'KeyR') {
         this.weaponWheel.toggle();
       }
@@ -227,11 +243,9 @@ class GameApp {
         }
       }
 
-      if (e.code === 'KeyN' && this.player) {
-        const nukeAttack = this.player.triggerNukeSelfDestruct();
-        const hits = this.horde.checkMeleeHits({ origin: this.player.position, radius: nukeAttack.radius, damage: nukeAttack.damage });
-        this.registerHits(hits);
-        this.ui.showAnnouncement('☢️ AUTO-DESTRUCTION NUCLÉAIRE DÉCLENCHÉE !');
+      // 1987 Wrist Computer Nuke Countdown [N Key]
+      if (e.code === 'KeyN' && this.player && !this.nukeCountingDown) {
+        this.triggerNukeCountdownSequence();
       }
 
       if (e.code === 'KeyB' && this.player) {
@@ -267,30 +281,19 @@ class GameApp {
         document.getElementById('hud-weapon-label').innerText = isSec ? 'ARME: SECONDAIRE' : 'ARME: PRINCIPALE';
       }
 
-      if (e.code === 'KeyV' && this.player) {
-        const active = this.player.toggleThermal();
-        this.audio.playYautjaClick();
-        if (active) {
-          this.audio.startThermalHum();
-        } else {
-          this.audio.stopThermalHum();
-        }
-        this.ui.thermalOverlay.className = active ? '' : 'hidden';
-      }
-
       if (e.code === 'KeyF' && this.player) {
         const active = this.player.toggleCloak();
         this.audio.playYautjaClick();
         this.ui.cloakOverlay.className = active ? '' : 'hidden';
       }
 
-      if ((e.code === 'Space' || e.code === 'KeyQ') && this.player) {
-        if (this.player.triggerMusouOverload()) {
+      if ((e.code === 'Space' && !this.keys['ShiftLeft'] && !this.keys['ShiftRight']) || e.code === 'KeyQ') {
+        if (this.player && this.player.triggerMusouOverload()) {
           this.executeMusouOverload();
         }
       }
 
-      if (e.code === 'ShiftLeft') {
+      if (e.code === 'ShiftLeft' && !this.keys['Space']) {
         this.firePlasmaCannon();
       }
     });
@@ -313,6 +316,68 @@ class GameApp {
     });
 
     window.addEventListener('contextmenu', e => e.preventDefault());
+  }
+
+  updateVisionOverlays(mode) {
+    const thermal = document.getElementById('thermal-overlay');
+    const em = document.getElementById('em-overlay');
+    const tech = document.getElementById('tech-overlay');
+    const uv = document.getElementById('uv-overlay');
+    const tag = document.getElementById('hud-vision-tag');
+
+    [thermal, em, tech, uv].forEach(el => el.classList.add('hidden'));
+
+    if (mode === 1) {
+      thermal.classList.remove('hidden');
+      tag.innerText = 'VISION : THERMIQUE IR';
+      tag.style.color = '#ff4d4d';
+      this.audio.startThermalHum();
+    } else if (mode === 2) {
+      em.classList.remove('hidden');
+      tag.innerText = 'VISION : ÉLECTROMAGNÉTIQUE XENO';
+      tag.style.color = '#00d2ff';
+      this.audio.stopThermalHum();
+    } else if (mode === 3) {
+      tech.classList.remove('hidden');
+      tag.innerText = 'VISION : TECH WIREFRAME SCAN';
+      tag.style.color = '#39ff14';
+      this.audio.stopThermalHum();
+    } else {
+      uv.classList.remove('hidden');
+      tag.innerText = 'VISION : NATURELLE ULTRAVIOLETTE';
+      tag.style.color = '#ffaa00';
+      this.audio.stopThermalHum();
+    }
+  }
+
+  triggerNukeCountdownSequence() {
+    this.nukeCountingDown = true;
+    const nukeModal = document.getElementById('nuke-countdown-overlay');
+    const timerText = document.getElementById('nuke-timer-seconds');
+    nukeModal.classList.remove('hidden');
+
+    this.player.triggerNukeSelfDestruct();
+
+    let timeLeft = 6;
+    timerText.innerText = timeLeft;
+
+    const interval = setInterval(() => {
+      timeLeft--;
+      if (timerText) timerText.innerText = timeLeft;
+
+      if (timeLeft <= 0) {
+        clearInterval(interval);
+        nukeModal.classList.add('hidden');
+        this.nukeCountingDown = false;
+
+        // Massive 10,000 damage explosion wipe!
+        const hits = this.horde.checkMeleeHits({ origin: this.player.position, radius: 70, damage: 10000 });
+        this.registerHits(hits);
+        if (this.bosses.activeBoss) this.bosses.takeDamage(10000);
+        if (this.badBlood.isActive) this.badBlood.takeDamage(10000);
+        this.ui.showAnnouncement('☢️ ANNIHILATION NUCLÉAIRE PURIFICATRICE ACCOMPLIE !');
+      }
+    }, 1000);
   }
 
   startMission() {
@@ -370,6 +435,14 @@ class GameApp {
     const hits = this.horde.checkMeleeHits(attack);
     if (hits.length > 0) this.registerHits(hits);
     this.weather.checkExplosions(this.player.position, 4.0, this.horde, this.particles);
+
+    if (this.badBlood.isActive && this.badBlood.badBlood) {
+      if (this.badBlood.badBlood.mesh.position.distanceTo(this.player.position) <= attack.radius) {
+        if (this.badBlood.takeDamage(attack.damage)) {
+          this.ui.showAnnouncement('💀 BAD BLOOD ÉLIMINÉ DANS L\'HONNEUR !');
+        }
+      }
+    }
   }
 
   performHeavyAttack() {
@@ -381,6 +454,14 @@ class GameApp {
     const hits = this.horde.checkMeleeHits(attack);
     if (hits.length > 0) this.registerHits(hits);
     this.weather.checkExplosions(this.player.position, 6.0, this.horde, this.particles);
+
+    if (this.badBlood.isActive && this.badBlood.badBlood) {
+      if (this.badBlood.badBlood.mesh.position.distanceTo(this.player.position) <= attack.radius) {
+        if (this.badBlood.takeDamage(attack.damage)) {
+          this.ui.showAnnouncement('💀 BAD BLOOD ÉLIMINÉ DANS L\'HONNEUR !');
+        }
+      }
+    }
   }
 
   firePlasmaCannon() {
@@ -410,21 +491,22 @@ class GameApp {
     this.registerHits(hits);
 
     if (this.bosses.activeBoss) this.bosses.takeDamage(1200);
+    if (this.badBlood.isActive) this.badBlood.takeDamage(1200);
   }
 
   checkTrophyExecution() {
     if (this.bosses.activeBoss && this.bosses.activeBoss.isStunned) {
-      this.audio.playSkullSnap();
-      this.audio.playYautjaRoar();
+      // 1:1 Lore Spine Rip Execution!
+      this.player.executeSpineRip();
 
       this.sessionSkulls++;
-      this.score += 2000;
-      this.player.hp = Math.min(this.player.maxHp, this.player.hp + 400);
+      this.score += 2500;
+      this.player.hp = Math.min(this.player.maxHp, this.player.hp + 500);
 
       this.renderer.scene.remove(this.bosses.activeBoss.mesh);
       this.bosses.activeBoss = null;
 
-      this.ui.showAnnouncement('💀 TROPHÉE ARRACHÉ ! SANTÉ RESTAURÉE');
+      this.ui.showAnnouncement('💀 COLONNE VERTÉBRALE ARRACHÉE (SPINE RIP) ! TROPHÉE ÉPIQUE');
       this.ui.showExecutionPrompt(false);
     }
   }
@@ -486,7 +568,7 @@ class GameApp {
     if (this.keys['KeyA']) moveDirP1.x -= 1;
     if (this.keys['KeyD']) moveDirP1.x += 1;
     this.player.move(moveDirP1, delta);
-    this.player.update(delta);
+    this.player.update(delta, this.horde);
 
     if (this.isCoOp && this.player2) {
       const moveDirP2 = new THREE.Vector3();
@@ -495,7 +577,7 @@ class GameApp {
       if (this.keys['ArrowLeft']) moveDirP2.x -= 1;
       if (this.keys['ArrowRight']) moveDirP2.x += 1;
       this.player2.move(moveDirP2, delta);
-      this.player2.update(delta);
+      this.player2.update(delta, this.horde);
 
       const cam2Target = this.player2.position.clone().add(new THREE.Vector3(0, 10, 16));
       this.renderer.cameraP2.position.lerp(cam2Target, 5 * delta);
@@ -523,6 +605,7 @@ class GameApp {
       }
     }
 
+    this.badBlood.update(delta, this.player);
     this.marines.update(delta, this.player, this.horde);
     this.allies.update(delta, this.player.position, this.horde);
     this.horde.update(delta, this.player);
@@ -538,6 +621,12 @@ class GameApp {
         this.waveIndex++;
         this.horde.spawnWave(20 + this.waveIndex * 10, this.player.position);
         this.ui.showAnnouncement(`VAGUE ${this.waveIndex} APPROCHE !`);
+
+        // Bad Blood rogue ambush on wave 3!
+        if (this.waveIndex === 3) {
+          this.badBlood.spawnAmbush(this.player.position);
+          this.ui.showAnnouncement('⚠️ ALERTE : EMBUSCADE D\'UN YAUTJA RENÉGAT "BAD BLOOD" !');
+        }
       } else if (!this.bosses.activeBoss) {
         this.bosses.spawnBoss(this.ui.selectedLevel.bossType, this.player.position.clone().add(new THREE.Vector3(0, 0, -25)));
         this.ui.showAnnouncement('⚠️ ALERTE BOSS: LA REINE XENOMORPHE APPARAÎT !');

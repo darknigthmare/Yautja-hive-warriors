@@ -1,4 +1,4 @@
-/* Playable Yautja 3D Mesh Generator & State Controller (Facehugger QTE System) */
+/* Playable Yautja 3D Mesh Generator & State Controller (1:1 Canon Lore Edition) */
 
 import * as THREE from 'three';
 
@@ -28,11 +28,18 @@ export class Player {
     this.isAttacking = false;
     this.attackComboStep = 0;
     this.attackTimer = 0;
-    this.isThermal = false;
+
+    // 4 Bio-Mask Vision Modes (0: Normal, 1: Thermal IR, 2: EM Xeno, 3: Tech Scan)
+    this.visionMode = 0;
+
     this.isCloaked = false;
     this.isMusouActive = false;
     this.isSecondaryWeapon = false;
     this.isHybridMutated = false;
+
+    // Pounce Leap State
+    this.isLeaping = false;
+    this.leapVelocityY = 0;
 
     // QTE Facehugger Struggle State
     this.isFacehuggerLatched = false;
@@ -150,6 +157,51 @@ export class Player {
     return laserGroup;
   }
 
+  cycleVisionMode() {
+    this.visionMode = (this.visionMode + 1) % 4;
+    this.audioEngine.playVisionSwitch(this.visionMode);
+    return this.visionMode;
+  }
+
+  pounceLeap() {
+    if (this.isLeaping) return false;
+    this.isLeaping = true;
+    this.leapVelocityY = 18; // Super leap height!
+    this.audioEngine.playSlash();
+    return true;
+  }
+
+  executeSpineRip() {
+    this.audioEngine.playSpineRip();
+    this.audioEngine.playYautjaRoar();
+
+    // Spawn held spine & skull trophy in Yautja's right hand
+    const spineGroup = new THREE.Group();
+    const boneMat = new THREE.MeshStandardMaterial({ color: 0xddddcc, roughness: 0.5 });
+    const bloodMat = new THREE.MeshBasicMaterial({ color: 0x880000 });
+
+    const skull = new THREE.Mesh(new THREE.SphereGeometry(0.35, 8, 8), boneMat);
+    skull.position.y = 1.6;
+    spineGroup.add(skull);
+
+    // Connected vertebrae column
+    for (let v = 0; v < 8; v++) {
+      const vert = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.18, 6), v % 2 === 0 ? boneMat : bloodMat);
+      vert.position.y = 1.4 - v * 0.2;
+      spineGroup.add(vert);
+    }
+
+    this.rightArm.add(spineGroup);
+    this.rightArm.rotation.x = -Math.PI * 0.8; // Hold high in the air!
+
+    setTimeout(() => {
+      this.rightArm.remove(spineGroup);
+      this.rightArm.rotation.x = 0;
+    }, 3500);
+
+    return true;
+  }
+
   triggerFacehuggerLatch() {
     this.isFacehuggerLatched = true;
     this.qteStrugglePresses = 0;
@@ -165,7 +217,7 @@ export class Player {
       this.isFacehuggerLatched = false;
       this.qteStrugglePresses = 0;
       this.audioEngine.playYautjaRoar();
-      return true; // Successfully ripped off Facehugger!
+      return true;
     }
     return false;
   }
@@ -195,7 +247,7 @@ export class Player {
   }
 
   triggerNukeSelfDestruct() {
-    this.audioEngine.playMusouBlast();
+    this.audioEngine.playPredatorLaughCountdown();
     return { damage: 10000, radius: 60 };
   }
 
@@ -222,11 +274,6 @@ export class Player {
     return this.isSecondaryWeapon;
   }
 
-  toggleThermal() {
-    this.isThermal = !this.isThermal;
-    return this.isThermal;
-  }
-
   toggleCloak() {
     this.isCloaked = !this.isCloaked;
     const opacity = this.isCloaked ? 0.25 : 1.0;
@@ -239,7 +286,7 @@ export class Player {
   }
 
   move(dir, delta) {
-    if (this.isFacehuggerLatched) return; // Frozen while struggling!
+    if (this.isFacehuggerLatched) return;
 
     if (dir.lengthSq() > 0) {
       dir.normalize();
@@ -345,9 +392,32 @@ export class Player {
     return this.hp;
   }
 
-  update(delta) {
+  update(delta, horde = null) {
     if (this.isFacehuggerLatched) {
-      this.takeDamage(40 * delta); // Facehugger suffocates player!
+      this.takeDamage(40 * delta);
+    }
+
+    // Pounce Leap vertical gravity physics
+    if (this.isLeaping) {
+      this.leapVelocityY -= 36 * delta;
+      this.position.y += this.leapVelocityY * delta;
+
+      if (this.position.y <= 0) {
+        this.position.y = 0;
+        this.isLeaping = false;
+        this.audioEngine.playPounceImpact();
+
+        // Seismic ground pound damage on landing!
+        if (horde) {
+          horde.checkMeleeHits({
+            origin: this.position,
+            radius: 8.5,
+            damage: this.meleeDamage * 2.0,
+            type: 'heavy'
+          });
+        }
+      }
+      this.mesh.position.copy(this.position);
     }
 
     if (this.isAttacking) {
