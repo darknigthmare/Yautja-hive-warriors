@@ -55,11 +55,40 @@ export class ColonialMarinesManager {
     helmet.position.set(0, 3.2, 0);
     group.add(helmet);
 
-    // Weapon (Smartgun or Pulse Rifle)
+    // Weapon (M56 Smartgun or M240 Incinerator Flamethrower - Aliens 1986 Canon 1:1)
     const gunMat = new THREE.MeshStandardMaterial({ color: 0x111111, metalness: 0.9, roughness: 0.1 });
     const gun = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.3, 1.4), gunMat);
     gun.position.set(0.6, 2.0, 0.6);
     group.add(gun);
+
+    if (!isSmartgunner) {
+      // M240 Flamethrower Pressurized Fuel Canister (Under-barrel)
+      const canisterMat = new THREE.MeshStandardMaterial({ color: 0xb91c1c, roughness: 0.4 });
+      const canister = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.6, 8), canisterMat);
+      canister.rotation.x = Math.PI / 2;
+      canister.position.set(0.6, 1.8, 0.5);
+      group.add(canister);
+
+      // Pilot Flame Igniter Tip
+      const flameMat = new THREE.MeshBasicMaterial({ color: 0xff5500 });
+      const nozzle = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.25, 6), flameMat);
+      nozzle.rotation.x = Math.PI / 2;
+      nozzle.position.set(0.6, 2.0, 1.4);
+      group.add(nozzle);
+    } else {
+      // M56 Smartgun Steadicam Articulated Arm & Headset Sight
+      const steadyArmMat = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.8 });
+      const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.9, 6), steadyArmMat);
+      arm.position.set(0.35, 1.6, 0.2);
+      arm.rotation.z = Math.PI / 4;
+      group.add(arm);
+
+      // Eye-mounted Targeting Headset
+      const eyeMat = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+      const sight = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.08, 0.15), eyeMat);
+      sight.position.set(0.2, 3.1, 0.35);
+      group.add(sight);
+    }
 
     return group;
   }
@@ -93,18 +122,39 @@ export class ColonialMarinesManager {
           m.mesh.position.addScaledVector(dir, m.speed * delta);
           m.mesh.rotation.y = Math.atan2(dir.x, dir.z);
         } else {
-          // Fire Pulse Rifle / Smartgun!
-          if (Math.random() < 0.08) {
-            this.audioEngine.playPulseRifleBurst ? this.audioEngine.playPulseRifleBurst() : this.audioEngine.playPlasmaShot();
-            if (targetPos === player.position) {
-              player.takeDamage(m.damage * 0.1);
-            } else {
-              // Deal kinetic damage to the targeted Xenomorph
-              horde.aliens.forEach(a => {
-                if (a.mesh.position.distanceTo(targetPos) <= 2.5) {
-                  a.hp -= m.damage;
-                }
-              });
+          // Fire M56 Smartgun or M240 Incinerator Flamethrower!
+          if (m.type === 'flametrooper') {
+            if (Math.random() < 0.14) {
+              if (this.audioEngine.playFlamethrowerBurn) {
+                this.audioEngine.playFlamethrowerBurn();
+              } else {
+                this.audioEngine.playAcidSizzle();
+              }
+              if (targetPos === player.position) {
+                player.takeDamage(m.damage * 0.15);
+              } else {
+                // Persistent burn AOE covering xenos
+                horde.aliens.forEach(a => {
+                  if (a.mesh.position.distanceTo(targetPos) <= 4.0) {
+                    a.hp -= m.damage * 1.2;
+                  }
+                });
+              }
+            }
+          } else {
+            // M56 Smartgun tracking fire
+            if (Math.random() < 0.09) {
+              this.audioEngine.playPulseRifleBurst ? this.audioEngine.playPulseRifleBurst() : this.audioEngine.playPlasmaShot();
+              if (targetPos === player.position) {
+                player.takeDamage(m.damage * 0.1);
+              } else {
+                // Deal kinetic damage to the targeted Xenomorph
+                horde.aliens.forEach(a => {
+                  if (a.mesh.position.distanceTo(targetPos) <= 2.5) {
+                    a.hp -= m.damage;
+                  }
+                });
+              }
             }
           }
 

@@ -2038,5 +2038,47 @@ export class AudioEngine {
     hissOsc.start(now + 0.15);
     hissOsc.stop(now + 0.65);
   }
+
+  playFlamethrowerBurn() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Pressurized burning roar of M240 Incinerator napalm stream
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(110, now);
+    osc.frequency.linearRampToValueAtTime(180, now + 0.18);
+    osc.frequency.linearRampToValueAtTime(70, now + 0.35);
+
+    gain.gain.setValueAtTime(0.45, now);
+    gain.gain.linearRampToValueAtTime(0.01, now + 0.35);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.35);
+  }
+
+  playHoundSnarl() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Guttural predatory snarl of Yautja hunting hound
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(85, now);
+    osc.frequency.linearRampToValueAtTime(140, now + 0.12);
+    osc.frequency.linearRampToValueAtTime(60, now + 0.28);
+
+    gain.gain.setValueAtTime(0.5, now);
+    gain.gain.linearRampToValueAtTime(0.01, now + 0.28);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.28);
+  }
 }
 

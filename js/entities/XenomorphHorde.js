@@ -881,8 +881,8 @@ export class XenomorphHorde {
         }
       }
 
-      // Check if low HP sub-boss enters execution stun
-      if ((a.type === 'crusher' || a.type === 'praetorian') && a.hp <= a.maxHp * 0.25 && !a.isStunned) {
+      // Check if low HP sub-boss enters execution stun (Crusher, Praetorian, Grid Alien)
+      if ((a.type === 'crusher' || a.type === 'praetorian' || a.type === 'grid_alien') && a.hp <= a.maxHp * 0.25 && !a.isStunned) {
         a.isStunned = true;
         a.stunTimer = 6.0;
       }

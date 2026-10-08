@@ -27,10 +27,14 @@ export class GoreEngine {
   }
 
   spawnDismemberment(pos, weaponType = 'wristblades') {
-    const partsCount = weaponType === 'heavy' || weaponType === 'smart_disc' ? 3 : 2;
+    const isHeavyCut = weaponType === 'heavy' || weaponType === 'smart_disc' || weaponType === 'bone_scythe' || weaponType === 'spine_rip';
+    const partsCount = isHeavyCut ? 3 : 2;
 
     for (let i = 0; i < partsCount; i++) {
-      const partType = i === 0 ? 'head' : (i === 1 ? 'arm' : 'tail');
+      let partType = 'head';
+      if (i === 1) partType = 'arm';
+      else if (i === 2) partType = isHeavyCut && Math.random() < 0.5 ? 'torso_bisected' : 'tail';
+
       const mesh = this.createPartMesh(partType);
       mesh.position.copy(pos);
       mesh.position.y += 0.8 + Math.random() * 0.5;
@@ -71,7 +75,13 @@ export class GoreEngine {
       head.rotation.x = Math.PI / 2;
       group.add(head);
 
-      // Acid gore stump
+      // Pharyngeal Inner Jaw extending from severed head
+      const innerJawMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.9, roughness: 0.1 });
+      const innerJaw = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.06, 0.4), innerJawMat);
+      innerJaw.position.set(0, 0, 0.7);
+      group.add(innerJaw);
+
+      // Sizzling acid neck gore stump
       const stump = new THREE.Mesh(
         new THREE.CircleGeometry(0.2, 8),
         this.acidGlowMat
@@ -85,14 +95,38 @@ export class GoreEngine {
       );
       arm.rotation.z = Math.PI / 3;
       group.add(arm);
+
+      // Claws on forearm
+      const clawMat = new THREE.MeshStandardMaterial({ color: 0x0a0e14, metalness: 0.95 });
+      for (let c = 0; c < 3; c++) {
+        const claw = new THREE.Mesh(new THREE.ConeGeometry(0.025, 0.18, 4), clawMat);
+        claw.position.set(-0.35 + c * 0.04, -0.4, 0);
+        group.add(claw);
+      }
+    } else if (type === 'torso_bisected') {
+      // Bisected alien torso with exposed ribs and glowing acid viscera
+      const halfTorso = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.25, 0.9, 8), this.xenoFleshMat);
+      group.add(halfTorso);
+
+      const viscera = new THREE.Mesh(new THREE.CircleGeometry(0.3, 8), this.acidGlowMat);
+      viscera.position.y = -0.45;
+      viscera.rotation.x = Math.PI / 2;
+      group.add(viscera);
     } else {
-      // Tail
-      const tail = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.06, 0.02, 1.4, 6),
-        this.xenoFleshMat
-      );
-      tail.rotation.x = Math.PI / 4;
-      group.add(tail);
+      // Articulated Segmented Tail with Diamond Stinger
+      const tailGroup = new THREE.Group();
+      for (let t = 0; t < 4; t++) {
+        const seg = new THREE.Mesh(new THREE.CylinderGeometry(0.07 - t * 0.012, 0.05 - t * 0.012, 0.35, 6), this.xenoFleshMat);
+        seg.position.set(0, 0, t * 0.32);
+        seg.rotation.x = Math.PI / 2 + t * 0.08;
+        tailGroup.add(seg);
+      }
+      const stinger = new THREE.Mesh(new THREE.ConeGeometry(0.07, 0.3, 4), this.xenoFleshMat);
+      stinger.position.set(0, 0, 1.35);
+      stinger.rotation.x = Math.PI / 2;
+      tailGroup.add(stinger);
+
+      group.add(tailGroup);
     }
 
     return group;

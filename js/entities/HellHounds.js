@@ -121,11 +121,17 @@ export class HellHoundsManager {
           hound.mesh.position.addScaledVector(dir, hound.speed * delta);
           hound.mesh.rotation.y = Math.atan2(dir.x, dir.z);
         } else {
-          // Bite & maul attack!
+          // Bite & maul attack with pounce arc!
           if (hound.attackCooldown <= 0) {
-            hound.attackCooldown = 0.6;
+            hound.attackCooldown = 0.85;
             this.audioEngine.playSlash();
-            target.hp -= hound.damage;
+            if (this.audioEngine.playHoundSnarl) {
+              this.audioEngine.playHoundSnarl();
+            }
+            hound.mesh.position.y = 1.2; // Quick pounce leap
+            setTimeout(() => { if (hound.mesh) hound.mesh.position.y = 0; }, 180);
+
+            target.hp -= hound.damage * 1.5;
             if (target.hp <= 0) {
               // Target slain by hound
               const hit = { pos: target.mesh.position.clone(), damage: hound.damage, killed: true };

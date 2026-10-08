@@ -140,6 +140,24 @@ export class BossManager {
       stinger.rotation.x = -Math.PI / 2;
       stinger.position.set(0, 0.8 * scale, -4.5 * scale);
       group.add(stinger);
+
+      // Elongated Slender Humanoid-Engineer Limbs & Claws (Romulus 2024 Canon)
+      const limbMat = new THREE.MeshStandardMaterial({ color: 0xd8d4c7, roughness: 0.5, metalness: 0.1 });
+      [-1, 1].forEach(side => {
+        const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.12 * scale, 0.08 * scale, 3.2 * scale, 6), limbMat);
+        arm.position.set(side * 1.4 * scale, 2.2 * scale, 0.4 * scale);
+        arm.rotation.z = side * 0.35;
+        arm.rotation.x = 0.2;
+        group.add(arm);
+
+        // Long skeletal talons
+        for (let f = 0; f < 4; f++) {
+          const claw = new THREE.Mesh(new THREE.ConeGeometry(0.04 * scale, 0.45 * scale, 4), limbMat);
+          claw.position.set(side * 1.8 * scale + (f - 1.5) * 0.08 * scale, 0.5 * scale, 0.6 * scale);
+          claw.rotation.x = Math.PI / 3;
+          group.add(claw);
+        }
+      });
     }
 
     if (isPredalien) {
@@ -373,8 +391,22 @@ export class BossManager {
       this.regurgitateChestbursters(player, horde);
     }
 
+    // The Offspring Signature Attack: Sonic Shriek & Rapid Grapple (Romulus 2024 Lore)
+    if (this.activeBoss.type === 'the_offspring') {
+      if (!this.activeBoss.shriekCooldown) this.activeBoss.shriekCooldown = 4.0;
+      this.activeBoss.shriekCooldown -= delta;
+      if (this.activeBoss.shriekCooldown <= 0 && dist <= 16.0) {
+        this.activeBoss.shriekCooldown = 5.5;
+        this.audioEngine.playOffspringShriek();
+        if (dist <= 10.0) {
+          player.takeDamage(60);
+          player.energy = Math.max(0, (player.energy || 100) - 25); // Drains energy
+        }
+      }
+    }
+
     // Queen/Empress Long range: Acid Mortar Spit
-    if (dist > 9.0 && dist < 35.0 && this.activeBoss.spitCooldown <= 0) {
+    if (dist > 9.0 && dist < 35.0 && this.activeBoss.spitCooldown <= 0 && this.activeBoss.type !== 'the_offspring') {
       this.activeBoss.spitCooldown = 4.5;
       this.spitAcidMortar(player);
     }
@@ -388,10 +420,11 @@ export class BossManager {
     // Movement
     if (dist > 3.0) {
       dir.normalize();
-      this.activeBoss.mesh.position.addScaledVector(dir, 7.5 * delta);
+      const moveSpeed = this.activeBoss.type === 'the_offspring' ? 10.5 : (this.activeBoss.type === 'empress_matriarch' ? 8.5 : 7.5);
+      this.activeBoss.mesh.position.addScaledVector(dir, moveSpeed * delta);
       this.activeBoss.mesh.rotation.y = Math.atan2(dir.x, dir.z);
     } else {
-      player.takeDamage(45 * delta);
+      player.takeDamage((this.activeBoss.type === 'the_offspring' ? 65 : 45) * delta);
     }
   }
 }

@@ -1208,17 +1208,23 @@ class GameApp {
     // 2. Sub-Boss Execution (Crusher Titan or Praetorian Royal Guard)
     for (let i = this.horde.aliens.length - 1; i >= 0; i--) {
       const a = this.horde.aliens[i];
-      if ((a.type === 'crusher' || a.type === 'praetorian') && a.isStunned) {
+      if ((a.type === 'crusher' || a.type === 'praetorian' || a.type === 'grid_alien') && a.isStunned) {
         if (a.mesh.position.distanceTo(this.player.position) <= 5.5) {
           this.player.executeSpineRip();
           this.sessionSkulls++;
 
-          let tName = a.type === 'crusher' ? 'Bouclier Frontal Blindé de Crusher Titan' : 'Couronne Royale Éburnéenne de Prétorien';
-          let tHonor = a.type === 'crusher' ? 1200 : 900;
+          let tName = a.type === 'crusher'
+            ? 'Bouclier Frontal Blindé de Crusher Titan'
+            : (a.type === 'grid_alien'
+              ? 'Crâne Gravé au Quadrillage Acide de Grid Alien (AVP 2004)'
+              : 'Couronne Royale Éburnéenne de Prétorien');
+          let tHonor = a.type === 'crusher' ? 1200 : (a.type === 'grid_alien' ? 1400 : 900);
           this.player.recordTrophy(tName, tHonor);
 
           if (a.type === 'praetorian') {
             this.player.royalJellyFlasks += 1; // Praetorian drops 1 Royal Jelly flask!
+          } else if (a.type === 'grid_alien') {
+            this.player.royalJellyFlasks += 1;
           }
 
           this.score += tHonor;
@@ -1619,7 +1625,7 @@ class GameApp {
     const boss = this.bosses.activeBoss;
     let subBossStunnedNearby = false;
     this.horde.aliens.forEach(a => {
-      if ((a.type === 'crusher' || a.type === 'praetorian') && a.isStunned) {
+      if ((a.type === 'crusher' || a.type === 'praetorian' || a.type === 'grid_alien') && a.isStunned) {
         if (a.mesh.position.distanceTo(this.player.position) <= 5.5) {
           subBossStunnedNearby = true;
         }
