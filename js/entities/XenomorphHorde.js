@@ -37,6 +37,9 @@ export class XenomorphHorde {
     this.spawnPraetorian(playerPos, -15);
     this.spawnPraetorian(playerPos, 15);
 
+    // Spawn 1 Grid Alien Alpha (AVP 2004 Nethead)
+    this.spawnGridAlien(playerPos);
+
     for (let i = 0; i < count; i++) {
       const isFacehugger = Math.random() < 0.2;
       const isBoiler = !isFacehugger && Math.random() < 0.22;
@@ -131,6 +134,52 @@ export class XenomorphHorde {
       damage: 40,
       radius: 1.8,
       spitCooldown: 2.0
+    });
+  }
+
+  spawnGridAlien(playerPos) {
+    const group = new THREE.Group();
+    const xenoMat = new THREE.MeshStandardMaterial({ color: 0x0a0e14, roughness: 0.25, metalness: 0.85 });
+    const gridScarMat = new THREE.MeshBasicMaterial({ color: 0x39ff14 }); // Glowing neon acid burn scars
+
+    // Head dome
+    const head = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.38, 1.8, 8), xenoMat);
+    head.rotation.x = Math.PI / 2;
+    head.position.set(0, 2.2, 0.5);
+    group.add(head);
+
+    // Grid lattice scars on the head (Celtic Predator Netgun scars - AVP 2004)
+    for (let g = 0; g < 7; g++) {
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(0.32, 0.02, 4, 16), gridScarMat);
+      ring.position.set(0, 2.2, 0.1 + g * 0.2);
+      group.add(ring);
+    }
+    // Longitudinal scar lines
+    for (let l = 0; l < 4; l++) {
+      const line = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.02, 1.4), gridScarMat);
+      const angle = (l / 4) * Math.PI * 2;
+      line.position.set(Math.cos(angle) * 0.3, 2.2 + Math.sin(angle) * 0.3, 0.7);
+      group.add(line);
+    }
+
+    // Torso
+    const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.35, 1.8, 8), xenoMat);
+    torso.position.y = 1.3;
+    group.add(torso);
+
+    group.position.set(playerPos.x + 12, 0, playerPos.z - 30);
+    this.scene.add(group);
+
+    this.aliens.push({
+      mesh: group,
+      type: 'grid_alien',
+      hp: 420,
+      maxHp: 420,
+      speed: 15,
+      damage: 45,
+      radius: 1.6,
+      isNetgunImmune: true,
+      spurtCooldown: 0
     });
   }
 
@@ -267,6 +316,11 @@ export class XenomorphHorde {
         // Reactive Acid Splashback Physics (slashing xenos sprays pressurized molecular acid back at attacker)
         if (attack.origin) {
           this.spawnAcidSplash(a.mesh.position, attack.origin);
+        }
+
+        // Grid Alien's grid-lattice scars squirt pressurized acid pools when struck!
+        if (a.type === 'grid_alien') {
+          this.spawnAcidPool(a.mesh.position);
         }
 
         hits.push({
@@ -451,13 +505,18 @@ export class XenomorphHorde {
 
       // Netgun Entangled State
       if (a.isNetEntangled) {
-        a.netTimer -= delta;
-        a.hp -= 25 * delta; // Razor wire cuts deep!
-        a.mesh.rotation.y += Math.sin(Date.now() * 0.05) * 0.05;
-        if (a.netTimer <= 0) {
+        if (a.isNetgunImmune) {
+          // Grid Alien (Nethead) has already melted and broken Celtic's net in AVP 2004!
           a.isNetEntangled = false;
+        } else {
+          a.netTimer -= delta;
+          a.hp -= 25 * delta; // Razor wire cuts deep!
+          a.mesh.rotation.y += Math.sin(Date.now() * 0.05) * 0.05;
+          if (a.netTimer <= 0) {
+            a.isNetEntangled = false;
+          }
+          return; // Completely immobilized
         }
-        return; // Completely immobilized
       }
 
       // Stunned State (Crusher or Praetorian)

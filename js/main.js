@@ -29,6 +29,7 @@ import { DropPodEntrance } from './entities/DropPodEntrance.js';
 import { CheyenneDropship } from './entities/CheyenneDropship.js';
 import { APCVehicle } from './entities/APCVehicle.js';
 import { SentryGun } from './entities/SentryGun.js';
+import { FalconDrone } from './entities/FalconDrone.js';
 import { EnvironmentManager } from './entities/Environment.js';
 import { CHARACTERS_DATA } from './data/charactersData.js';
 
@@ -60,6 +61,7 @@ class GameApp {
     this.dropship = new CheyenneDropship(this.renderer.scene, this.audio, this.particles);
     this.apc = new APCVehicle(this.renderer.scene, this.audio, this.particles);
     this.sentryGun = new SentryGun(this.renderer.scene, this.audio, this.particles);
+    this.falconDrone = new FalconDrone(this.renderer.scene, this.audio, this.particles);
     this.pathogenPools = [];
     this.pathogenCooldown = 0;
 
@@ -290,6 +292,11 @@ class GameApp {
       // UA 571-C Automated Remote Sentry Gun [Digit 4] (Aliens 1986 Special Edition)
       if ((e.code === 'Digit4' || e.code === 'Numpad4') && this.player) {
         this.deploySentryGun();
+      }
+
+      // Falconer Biomechanical Falcon Drone [Digit 5] (Predators 2010 Canon 1:1)
+      if ((e.code === 'Digit5' || e.code === 'Numpad5') && this.player) {
+        this.launchFalconDrone();
       }
 
       // Collapsible 6-Blade Shuriken [L Key] (AVP 2004 Celtic / Scar Lore)
@@ -925,6 +932,12 @@ class GameApp {
     this.ui.showAnnouncement('🤖 TOURELLE AUTOMATIQUE USCM UA 571-C DÉPLOYÉE (500 COUPS 10MM CASSETTE) !');
   }
 
+  launchFalconDrone() {
+    if (!this.player) return;
+    this.falconDrone.launch(this.player.position);
+    this.ui.showAnnouncement('🦅 DRONE FAUCON FALCONER DÉPLOYÉ : PATROUILLE AÉRIENNE & PIQUÉ DE PRÉCISION !');
+  }
+
   executeMusouOverload() {
     this.ui.showAnnouncement('⚡ SURCHARGE MUSOU PLASMA ENCLENCHÉE ! ONDES DE CHOC & TEMPETE CYCLONIQUE');
     this.audio.playOmniPlasmaStorm();
@@ -1089,6 +1102,7 @@ class GameApp {
     this.dropship.update(delta, this.horde);
     this.apc.update(delta, this.horde);
     this.sentryGun.update(delta, this.horde);
+    this.falconDrone.update(delta, this.player.position, this.horde);
     this.skimmer.update(delta, this.player, this.horde, this.keys);
     this.orbital.update(delta);
 
@@ -1440,6 +1454,7 @@ class GameApp {
     this.dropship.clear();
     this.apc.clear();
     this.sentryGun.clear();
+    this.falconDrone.clear();
     for (const pool of this.pathogenPools) {
       if (pool.mesh) this.scene.remove(pool.mesh);
     }
