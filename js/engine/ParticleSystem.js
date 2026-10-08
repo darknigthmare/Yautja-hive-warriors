@@ -117,6 +117,31 @@ export class ParticleSystem {
     }
   }
 
+  emitGoldRageSparks(pos, count = 20) {
+    const goldMat = new THREE.MeshBasicMaterial({ color: 0xffaa00 });
+    const geo = new THREE.SphereGeometry(0.12, 4, 4);
+    for (let i = 0; i < count; i++) {
+      const mesh = new THREE.Mesh(geo, goldMat);
+      mesh.position.copy(pos).add(new THREE.Vector3(
+        (Math.random() - 0.5) * 1.5,
+        1.0 + Math.random() * 2.0,
+        (Math.random() - 0.5) * 1.5
+      ));
+      this.scene.add(mesh);
+      const vel = new THREE.Vector3(
+        (Math.random() - 0.5) * 10,
+        Math.random() * 12 + 4,
+        (Math.random() - 0.5) * 10
+      );
+      this.particles.push({
+        mesh: mesh,
+        velocity: vel,
+        life: 0.8,
+        maxLife: 0.8
+      });
+    }
+  }
+
   spawnDamagePopup(pos, damageAmount, isCrit = false) {
     const div = document.createElement('div');
     div.className = `damage-popup ${isCrit ? 'crit' : ''}`;

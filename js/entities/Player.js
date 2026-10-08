@@ -51,6 +51,15 @@ export class Player {
     this.boneScytheCooldown = 0;
     this.compoundBowCooldown = 0;
     this.holoDecoyCooldown = 0;
+    this.plasmaGlaiveCooldown = 0;
+    this.isPlasmaGlaiveActive = false;
+    this.plasmaGlaiveDuration = 0;
+    this.plasmaGlaiveMesh = null;
+    this.royalJellyFlasks = 1;
+    this.isBerserkerActive = false;
+    this.berserkerTimer = 0;
+    this.berserkerHeartbeatTimer = 0;
+    this.trophiesCollected = [];
     this.targetLockEnemy = null;
     this.visorAcidBurn = 0;
     this.wristNukeHoloMesh = null;
@@ -156,6 +165,45 @@ export class Player {
     this.secWeaponMesh.position.set(-1.2, 1.8, 0.6);
     this.secWeaponMesh.visible = false;
     group.add(this.secWeaponMesh);
+
+    // Dual-Bladed Plasma Glaive / Naginata (AVP Clan Patriarch / Concrete Jungle Lore)
+    const glaiveGroup = new THREE.Group();
+    const shaftMat = new THREE.MeshStandardMaterial({ color: 0x3d3124, roughness: 0.5, metalness: 0.85 });
+    const plasmaBladeMat = new THREE.MeshStandardMaterial({
+      color: 0x00ffff,
+      emissive: 0x00d2ff,
+      emissiveIntensity: 1.2,
+      roughness: 0.1,
+      metalness: 0.95
+    });
+
+    const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 3.4, 8), shaftMat);
+    glaiveGroup.add(shaft);
+
+    const bladeTop = new THREE.Mesh(new THREE.BoxGeometry(0.06, 1.2, 0.22), plasmaBladeMat);
+    bladeTop.position.y = 1.9;
+    glaiveGroup.add(bladeTop);
+
+    const bladeBottom = new THREE.Mesh(new THREE.BoxGeometry(0.06, 1.2, 0.22), plasmaBladeMat);
+    bladeBottom.position.y = -1.9;
+    glaiveGroup.add(bladeBottom);
+
+    // Energy rings around center grip
+    const ringGeo = new THREE.TorusGeometry(0.09, 0.02, 6, 16);
+    const ring1 = new THREE.Mesh(ringGeo, plasmaBladeMat);
+    ring1.rotation.x = Math.PI / 2;
+    ring1.position.y = 0.4;
+    glaiveGroup.add(ring1);
+    const ring2 = new THREE.Mesh(ringGeo, plasmaBladeMat);
+    ring2.rotation.x = Math.PI / 2;
+    ring2.position.y = -0.4;
+    glaiveGroup.add(ring2);
+
+    glaiveGroup.position.set(1.4, 1.8, 0.4);
+    glaiveGroup.rotation.x = Math.PI / 2;
+    glaiveGroup.visible = false;
+    group.add(glaiveGroup);
+    this.plasmaGlaiveMesh = glaiveGroup;
 
     const legGeo = new THREE.CylinderGeometry(0.35, 0.25, 1.8, 8);
     this.leftLeg = new THREE.Mesh(legGeo, skinMat);
@@ -832,6 +880,40 @@ export class Player {
     }, 15000);
   }
 
+  triggerPlasmaGlaive(horde, synthetics, bosses) {
+    if (this.plasmaGlaiveCooldown > 0 || this.isPlasmaGlaiveActive || this.isFacehuggerLatched) return false;
+    this.plasmaGlaiveCooldown = 13.0;
+    this.isPlasmaGlaiveActive = true;
+    this.plasmaGlaiveDuration = 3.6;
+    if (this.plasmaGlaiveMesh) this.plasmaGlaiveMesh.visible = true;
+    this.audioEngine.playPlasmaGlaiveSpin();
+    return true;
+  }
+
+  consumeRoyalJelly() {
+    if (this.royalJellyFlasks <= 0 || this.isBerserkerActive || this.isFacehuggerLatched) return false;
+    this.royalJellyFlasks--;
+    this.isBerserkerActive = true;
+    this.berserkerTimer = 12.0;
+    this.hp = Math.min(this.maxHp, this.hp + 250);
+    this.visorAcidBurn = 0;
+    this.audioEngine.playBerserkerRoar();
+    return true;
+  }
+
+  recordTrophy(trophyName, honorPoints) {
+    const trophy = {
+      name: trophyName,
+      honor: honorPoints,
+      timestamp: new Date().toLocaleTimeString()
+    };
+    this.trophiesCollected.push(trophy);
+    if (this.audioEngine && this.audioEngine.playTrophyClaim) {
+      this.audioEngine.playTrophyClaim();
+    }
+    return trophy;
+  }
+
   toggleWeaponSwap() {
     this.isSecondaryWeapon = !this.isSecondaryWeapon;
     this.secWeaponMesh.visible = this.isSecondaryWeapon;
@@ -877,7 +959,7 @@ export class Player {
 
     if (dir.lengthSq() > 0) {
       dir.normalize();
-      const speedMult = this.warhornBuffTimer > 0 ? 1.4 : 1.0;
+      const speedMult = (this.warhornBuffTimer > 0 ? 1.4 : 1.0) * (this.isBerserkerActive ? 1.45 : 1.0);
       const moveDistance = this.moveSpeed * speedMult * delta;
       this.position.addScaledVector(dir, moveDistance);
 
@@ -980,11 +1062,19 @@ export class Player {
       this.audioEngine.playShieldBlock();
       return this.hp;
     }
+    if (this.isPlasmaGlaiveActive) {
+      this.audioEngine.playPlasmaGlaiveStrike();
+      return this.hp; // Plasma Glaive cyclone barrier completely deflects frontal attacks!
+    }
     if (this.isHybridMutated) return this.hp;
+    if (this.isBerserkerActive) {
+      amount *= 0.5; // 50% damage reduction in Berserker Rage
+      isAcid = false; // Immune to acid burns in Berserker Rage
+    }
     if (this.isCloaked) amount *= 0.5;
     this.hp = Math.max(0, this.hp - amount);
 
-    if (isAcid) {
+    if (isAcid && !this.isBerserkerActive) {
       this.inflictVisorAcidBurn();
     }
 
@@ -1043,6 +1133,59 @@ export class Player {
 
     if (this.holoDecoyCooldown > 0) {
       this.holoDecoyCooldown = Math.max(0, this.holoDecoyCooldown - delta);
+    }
+
+    if (this.plasmaGlaiveCooldown > 0) {
+      this.plasmaGlaiveCooldown = Math.max(0, this.plasmaGlaiveCooldown - delta);
+    }
+
+    if (this.isPlasmaGlaiveActive) {
+      this.plasmaGlaiveDuration -= delta;
+      if (this.plasmaGlaiveMesh) {
+        this.plasmaGlaiveMesh.rotation.z += delta * 32.0;
+      }
+
+      if (horde) {
+        horde.checkMeleeHits({
+          origin: this.position,
+          radius: 4.8,
+          damage: 160 * delta * 5,
+          type: 'plasma'
+        });
+
+        // Vaporize any zero-G acid globules within whirl barrier
+        if (horde.zeroGAcidGlobules) {
+          for (let g = horde.zeroGAcidGlobules.length - 1; g >= 0; g--) {
+            const glob = horde.zeroGAcidGlobules[g];
+            if (glob && glob.mesh && glob.mesh.position.distanceTo(this.position) <= 5.0) {
+              if (this.audioEngine) this.audioEngine.playAcidGlobuleHiss();
+              horde.scene.remove(glob.mesh);
+              horde.zeroGAcidGlobules.splice(g, 1);
+            }
+          }
+        }
+      }
+
+      if (this.plasmaGlaiveDuration <= 0) {
+        this.isPlasmaGlaiveActive = false;
+        if (this.plasmaGlaiveMesh) this.plasmaGlaiveMesh.visible = false;
+      }
+    }
+
+    if (this.isBerserkerActive) {
+      this.berserkerTimer -= delta;
+      this.hp = Math.min(this.maxHp, this.hp + 28 * delta);
+      this.visorAcidBurn = 0;
+
+      this.berserkerHeartbeatTimer -= delta;
+      if (this.berserkerHeartbeatTimer <= 0) {
+        this.berserkerHeartbeatTimer = 0.85;
+        this.audioEngine.playBerserkerHeartbeat();
+      }
+
+      if (this.berserkerTimer <= 0) {
+        this.isBerserkerActive = false;
+      }
     }
 
     if (this.isCloaked) {

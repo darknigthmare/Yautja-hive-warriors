@@ -315,6 +315,27 @@ class GameApp {
         this.deployHoloDecoy();
       }
 
+      // Yautja Dual-Bladed Plasma Glaive Cyclone [Digit 9] (AVP Patriarch / Concrete Jungle)
+      if ((e.code === 'Digit9' || e.code === 'Numpad9') && this.player) {
+        if (this.player.triggerPlasmaGlaive(this.horde, this.synthetics, this.bosses)) {
+          this.ui.showAnnouncement('⚡ TOURBILLON DE PLASMA GLAIVE ACTIVÉ : CYCLONE DÉFLECTEUR 360° !');
+        } else {
+          this.ui.showAnnouncement('⏳ PLASMA GLAIVE EN RECHARGE...');
+        }
+      }
+
+      // Royal Jelly Berserker Rage Stimulant [Digit 0] (Aliens: Genocide / AvP 1999)
+      if ((e.code === 'Digit0' || e.code === 'Numpad0') && this.player) {
+        if (this.player.consumeRoyalJelly()) {
+          this.ui.showAnnouncement('👑 GELÉE ROYALE CONSOMMÉE : FUREUR BERSERKER YAUTJA ACTIVÉE (+45% VIT, +100% DÉGÂTS) !');
+          this.particles.emitGoldRageSparks(this.player.position, 25);
+        } else if (this.player.isBerserkerActive) {
+          this.ui.showAnnouncement('🔥 RAGE BERSERKER DÉJÀ ACTIVE !');
+        } else {
+          this.ui.showAnnouncement('❌ AUCUNE FLASQUE DE GELÉE ROYALE DISPONIBLE');
+        }
+      }
+
       // Collapsible 6-Blade Shuriken [L Key] (AVP 2004 Celtic / Scar Lore)
       if (e.code === 'KeyL' && this.player) {
         this.throwShuriken();
@@ -1067,18 +1088,31 @@ class GameApp {
   }
 
   checkTrophyExecution() {
-    // 1. Boss Execution (Queen, Empress, Predalien)
+    // 1. Boss Execution (Queen, The Offspring, Predalien)
     if (this.bosses.activeBoss && this.bosses.activeBoss.isStunned) {
       this.player.executeSpineRip();
 
+      const bType = this.bosses.activeBoss.type || 'queen';
+      let tName = 'Crâne & Épine Dorsale de Reine Xénomorphe (AvP 2004)';
+      let tHonor = 2500;
+      if (bType === 'offspring') {
+        tName = 'Embryon Z-01 et Mâchoire Hybride The Offspring (Romulus 2024)';
+        tHonor = 3500;
+      } else if (bType === 'predalien') {
+        tName = 'Mandibule de Predalien Prédateur-Hybride (AVP-R 2007)';
+        tHonor = 3000;
+      }
+
+      this.player.recordTrophy(tName, tHonor);
+      this.player.royalJellyFlasks += 2; // Queen grants 2 Royal Jelly flasks!
       this.sessionSkulls++;
-      this.score += 2500;
+      this.score += tHonor;
       this.player.hp = Math.min(this.player.maxHp, this.player.hp + 500);
 
       this.renderer.scene.remove(this.bosses.activeBoss.mesh);
       this.bosses.activeBoss = null;
 
-      this.ui.showAnnouncement('💀 SPINE RIP EXÉCUTÉ ! RANG ELITE CONSACRÉ AU SANG ACIDE');
+      this.ui.showAnnouncement(`🏆 TROPHÉE LÉGENDAIRE RÉCOLTÉ : ${tName} (+${tHonor} HONNEUR, +2 GELÉES ROYALES) !`);
       this.ui.showExecutionPrompt(false);
       return;
     }
@@ -1090,7 +1124,16 @@ class GameApp {
         if (a.mesh.position.distanceTo(this.player.position) <= 5.5) {
           this.player.executeSpineRip();
           this.sessionSkulls++;
-          this.score += a.type === 'crusher' ? 1200 : 800;
+
+          let tName = a.type === 'crusher' ? 'Bouclier Frontal Blindé de Crusher Titan' : 'Couronne Royale Éburnéenne de Prétorien';
+          let tHonor = a.type === 'crusher' ? 1200 : 900;
+          this.player.recordTrophy(tName, tHonor);
+
+          if (a.type === 'praetorian') {
+            this.player.royalJellyFlasks += 1; // Praetorian drops 1 Royal Jelly flask!
+          }
+
+          this.score += tHonor;
           this.player.hp = Math.min(this.player.maxHp, this.player.hp + 300);
 
           if (this.gore) {
@@ -1101,8 +1144,7 @@ class GameApp {
           this.horde.aliens.splice(i, 1);
           this.horde.deadCount++;
 
-          const title = a.type === 'crusher' ? 'TITAN CRUSHER' : 'GARDE ROYAL PRÉTORIEN';
-          this.ui.showAnnouncement(`💀 DÉCAPITATION TROPHÉE : CRÂNE DE ${title} ARRACHÉ !`);
+          this.ui.showAnnouncement(`🏆 TROPHÉE DE CHASSE : ${tName} (+${tHonor} HONNEUR) !`);
           this.ui.showExecutionPrompt(false);
           return;
         }
@@ -1509,6 +1551,32 @@ class GameApp {
         acidOverlay.style.opacity = Math.min(1.0, this.player.visorAcidBurn);
       } else {
         acidOverlay.classList.add('hidden');
+      }
+    }
+
+    // Berserker Rage Screen Glow Overlay Update (Aliens: Genocide Lore)
+    const rageOverlay = document.getElementById('berserker-rage-overlay');
+    if (rageOverlay) {
+      if (this.player && this.player.isBerserkerActive) {
+        rageOverlay.classList.remove('hidden');
+      } else {
+        rageOverlay.classList.add('hidden');
+      }
+    }
+
+    // Update HUD slots for Plasma Glaive and Royal Jelly
+    const glaiveSlot = document.getElementById('slot-glaive');
+    if (glaiveSlot && this.player) {
+      glaiveSlot.classList.toggle('active', this.player.isPlasmaGlaiveActive);
+      glaiveSlot.classList.toggle('cooldown', this.player.plasmaGlaiveCooldown > 0);
+    }
+
+    const jellySlot = document.getElementById('slot-jelly');
+    if (jellySlot && this.player) {
+      jellySlot.classList.toggle('active', this.player.isBerserkerActive);
+      const label = jellySlot.querySelector('.slot-label');
+      if (label) {
+        label.innerText = `GELÉE ROYALE (${this.player.royalJellyFlasks})`;
       }
     }
 

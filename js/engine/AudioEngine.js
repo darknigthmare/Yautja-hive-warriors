@@ -1680,5 +1680,137 @@ export class AudioEngine {
       osc.stop(t + 0.16);
     });
   }
+
+  playPlasmaGlaiveSpin() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Dual-Bladed Plasma Glaive / Naginata High-Frequency Cyclone Whirl
+    const osc1 = this.ctx.createOscillator();
+    const osc2 = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc1.type = 'sawtooth';
+    osc1.frequency.setValueAtTime(420, now);
+    osc1.frequency.linearRampToValueAtTime(780, now + 0.3);
+    osc1.frequency.linearRampToValueAtTime(510, now + 0.6);
+
+    osc2.type = 'sine';
+    osc2.frequency.setValueAtTime(840, now);
+    osc2.frequency.linearRampToValueAtTime(1560, now + 0.3);
+    osc2.frequency.linearRampToValueAtTime(1020, now + 0.6);
+
+    gain.gain.setValueAtTime(0.65, now);
+    gain.gain.linearRampToValueAtTime(0.01, now + 0.65);
+
+    osc1.connect(gain);
+    osc2.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc1.start(now);
+    osc2.start(now);
+    osc1.stop(now + 0.65);
+    osc2.stop(now + 0.65);
+  }
+
+  playPlasmaGlaiveStrike() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(960, now);
+    osc.frequency.exponentialRampToValueAtTime(120, now + 0.25);
+
+    gain.gain.setValueAtTime(0.8, now);
+    gain.gain.linearRampToValueAtTime(0.01, now + 0.25);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.25);
+  }
+
+  playBerserkerRoar() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Primal Yautja Ogyr Berserker War Cry stimulated by Royal Jelly
+    const osc1 = this.ctx.createOscillator();
+    const osc2 = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc1.type = 'sawtooth';
+    osc1.frequency.setValueAtTime(75, now);
+    osc1.frequency.linearRampToValueAtTime(160, now + 0.5);
+    osc1.frequency.linearRampToValueAtTime(60, now + 1.4);
+
+    osc2.type = 'triangle';
+    osc2.frequency.setValueAtTime(110, now);
+    osc2.frequency.linearRampToValueAtTime(240, now + 0.5);
+    osc2.frequency.linearRampToValueAtTime(90, now + 1.4);
+
+    gain.gain.setValueAtTime(0.9, now);
+    gain.gain.linearRampToValueAtTime(0.01, now + 1.4);
+
+    osc1.connect(gain);
+    osc2.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc1.start(now);
+    osc2.start(now);
+    osc1.stop(now + 1.4);
+    osc2.stop(now + 1.4);
+  }
+
+  playBerserkerHeartbeat() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Deep organic twin-pulse heartbeat thump
+    [0, 0.14].forEach(offset => {
+      const t = now + offset;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(58, t);
+      osc.frequency.exponentialRampToValueAtTime(28, t + 0.12);
+
+      gain.gain.setValueAtTime(0.7, t);
+      gain.gain.linearRampToValueAtTime(0.01, t + 0.12);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(t);
+      osc.stop(t + 0.12);
+    });
+  }
+
+  playTrophyClaim() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Ceremonial Yautja Honor Trophy Claim gong
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(330, now);
+    osc.frequency.exponentialRampToValueAtTime(165, now + 1.8);
+
+    gain.gain.setValueAtTime(0.75, now);
+    gain.gain.linearRampToValueAtTime(0.01, now + 1.8);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 1.8);
+  }
 }
 
