@@ -59,6 +59,12 @@ export class SyntheticsManager {
     torso.position.y = 1.8;
     group.add(torso);
 
+    // Weyland-Yutani Yellow Winged Corporate Logo (Aliens 1986 Canon 1:1)
+    const logoMat = new THREE.MeshBasicMaterial({ color: 0xeab308 });
+    const wyLogo = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.14, 0.04), logoMat);
+    wyLogo.position.set(0, 2.05, 0.28);
+    group.add(wyLogo);
+
     // Synthetic android head
     const head = new THREE.Mesh(new THREE.SphereGeometry(0.35, 10, 10), this.armorMat);
     head.name = 'head';

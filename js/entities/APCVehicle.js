@@ -88,7 +88,7 @@ export class APCVehicle {
     group.add(turretGroup);
     this.turretMesh = turretGroup;
 
-    // Headlights
+    // Headlights & High-Intensity Forward Spotlights (Aliens 1986 LV-426 atmosphere)
     const lightMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
     const hl1 = new THREE.Mesh(new THREE.SphereGeometry(0.2, 6, 6), lightMat);
     hl1.position.set(-1.4, 2.0, 4.6);
@@ -96,6 +96,15 @@ export class APCVehicle {
     const hl2 = new THREE.Mesh(new THREE.SphereGeometry(0.2, 6, 6), lightMat);
     hl2.position.set(1.4, 2.0, 4.6);
     group.add(hl2);
+
+    // USCM Stenciled Insignia Plate on Flank (Military identification)
+    const decalMat = new THREE.MeshBasicMaterial({ color: 0x94a3b8 });
+    const plateL = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.4, 1.8), decalMat);
+    plateL.position.set(-2.12, 2.2, 0);
+    group.add(plateL);
+    const plateR = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.4, 1.8), decalMat);
+    plateR.position.set(2.12, 2.2, 0);
+    group.add(plateR);
 
     group.position.copy(pos);
     this.scene.add(group);

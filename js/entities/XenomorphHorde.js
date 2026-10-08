@@ -306,13 +306,27 @@ export class XenomorphHorde {
     });
 
     if (isFacehugger) {
+      // Central Arachnid Sac Body
       const body = new THREE.Mesh(new THREE.SphereGeometry(0.35, 8, 8), mat);
-      body.position.y = 0.3;
+      body.position.y = 0.25;
+      body.scale.set(1.2, 0.6, 1.4);
       group.add(body);
 
-      const tail = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.02, 0.8, 6), mat);
-      tail.position.set(0, 0.3, -0.4);
-      tail.rotation.x = -Math.PI / 4;
+      // 8 Articulated Knuckled Arachnid Digits / Fingers (Alien 1979 1:1 Anatomy)
+      for (let f = 0; f < 8; f++) {
+        const side = f < 4 ? -1 : 1;
+        const idx = f % 4;
+        const finger = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.02, 0.65, 5), mat);
+        finger.position.set(side * (0.35 + idx * 0.08), 0.2, (idx - 1.5) * 0.22);
+        finger.rotation.z = side * 0.75;
+        finger.rotation.y = (idx - 1.5) * 0.2;
+        group.add(finger);
+      }
+
+      // Prehensile Strangling Whip Tail
+      const tail = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.02, 1.2, 6), mat);
+      tail.position.set(0, 0.25, -0.65);
+      tail.rotation.x = -Math.PI / 3.5;
       group.add(tail);
     } else if (isNeomorph) {
       // Alien: Covenant 2017 Canon Neomorph Bloodburster Anatomy

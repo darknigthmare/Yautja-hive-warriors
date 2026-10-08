@@ -45,7 +45,7 @@ export class YautjaAlliesManager {
         group.add(dread);
       }
 
-      // Left Shoulder Mounted Plasma Caster Cannon
+      // Left Shoulder Mounted Plasma Caster Cannon with Tri-Laser
       const casterBase = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.3, 0.3), armorMat);
       casterBase.position.set(-0.85, 3.0, -0.2);
       group.add(casterBase);
@@ -53,6 +53,26 @@ export class YautjaAlliesManager {
       casterBarrel.rotation.x = Math.PI / 2;
       casterBarrel.position.set(-0.85, 3.15, 0.1);
       group.add(casterBarrel);
+
+      // Tri-Laser pointer dot
+      const triDot = new THREE.Mesh(new THREE.SphereGeometry(0.04, 4, 4), laserMat);
+      triDot.position.set(-0.85, 3.15, 0.45);
+      group.add(triDot);
+
+      // Left Hand Combi-Stick Telescopic Spear (Clan Honor Guard Traditional Polearm)
+      const spearMat = new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.9, roughness: 0.2 });
+      const spear = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 3.2, 6), spearMat);
+      spear.position.set(-1.1, 2.0, 0.2);
+      spear.rotation.x = 0.2;
+      group.add(spear);
+
+      // Spear tips (both ends)
+      [-1.6, 1.6].forEach(tipY => {
+        const tip = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.5, 4), bladeMat);
+        tip.position.set(-1.1, 2.0 + tipY, 0.2);
+        tip.rotation.x = tipY > 0 ? 0 : Math.PI;
+        group.add(tip);
+      });
 
       // Right Arm with Dual Extensible Wristblades
       const rArm = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.18, 1.4, 6), skinMat);

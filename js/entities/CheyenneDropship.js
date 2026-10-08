@@ -40,7 +40,14 @@ export class CheyenneDropship {
     cockpit.position.set(0, 1.4, 7.5);
     shipGroup.add(cockpit);
 
-    // Twin Wing Rocket Pods
+    // 25mm Nose Gatling Autocannon Turret (Under-cockpit)
+    const turretMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.95 });
+    const noseGun = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 1.8, 6), turretMat);
+    noseGun.rotation.x = Math.PI / 2;
+    noseGun.position.set(0, 0.4, 8.2);
+    shipGroup.add(noseGun);
+
+    // Twin Wing Rocket Pods with Missile Tubes
     const leftPod = new THREE.Mesh(new THREE.BoxGeometry(3.5, 0.8, 4.0), hullMat);
     leftPod.position.set(-4.0, 1.2, 0);
     shipGroup.add(leftPod);
@@ -48,6 +55,14 @@ export class CheyenneDropship {
     const rightPod = new THREE.Mesh(new THREE.BoxGeometry(3.5, 0.8, 4.0), hullMat);
     rightPod.position.set(4.0, 1.2, 0);
     shipGroup.add(rightPod);
+
+    // Twin Canting Vertical Tail Fins / Stabilizers
+    [-2.2, 2.2].forEach(side => {
+      const fin = new THREE.Mesh(new THREE.BoxGeometry(0.2, 3.2, 2.4), hullMat);
+      fin.position.set(side, 3.2, -5.5);
+      fin.rotation.z = side > 0 ? -0.2 : 0.2;
+      shipGroup.add(fin);
+    });
 
     // Twin Rear Jet Thrusters
     const t1 = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 0.9, 1.5, 8), thrusterMat);

@@ -44,8 +44,34 @@ export class DropPodEntrance {
     cap.position.y = 6.4;
     podGroup.add(cap);
 
+    // 4 Directional Retro-Braking Thrusters (Hydraulic Stabilization)
+    const thrusterMat = new THREE.MeshBasicMaterial({ color: 0x00ffff });
+    for (let t = 0; t < 4; t++) {
+      const angle = (t / 4) * Math.PI * 2;
+      const retro = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.35, 0.6, 6), metalMat);
+      retro.position.set(Math.cos(angle) * 1.7, 4.8, Math.sin(angle) * 1.7);
+      retro.rotation.z = Math.cos(angle) * 0.4;
+      retro.rotation.x = Math.sin(angle) * 0.4;
+      podGroup.add(retro);
+
+      const retroGlow = new THREE.Mesh(new THREE.SphereGeometry(0.18, 6, 6), thrusterMat);
+      retroGlow.position.set(Math.cos(angle) * 1.9, 4.6, Math.sin(angle) * 1.9);
+      podGroup.add(retroGlow);
+    }
+
+    // Glowing Yautja Clan Mark Glyph on Hatch
+    const glyphMat = new THREE.MeshBasicMaterial({ color: 0x39ff14 });
+    const glyph1 = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.8, 0.05), glyphMat);
+    glyph1.position.set(0, 3.4, 0.2);
+    const glyph2 = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.12, 0.05), glyphMat);
+    glyph2.position.set(0, 3.4, 0.2);
+
     // Blowout Hatch Door
-    this.doorMesh = new THREE.Mesh(new THREE.BoxGeometry(1.6, 3.2, 0.3), metalMat);
+    this.doorMesh = new THREE.Group();
+    const doorPlate = new THREE.Mesh(new THREE.BoxGeometry(1.6, 3.2, 0.3), metalMat);
+    this.doorMesh.add(doorPlate);
+    this.doorMesh.add(glyph1);
+    this.doorMesh.add(glyph2);
     this.doorMesh.position.set(0, 3.0, 1.8);
     podGroup.add(this.doorMesh);
 

@@ -200,6 +200,12 @@ export class SentryGun {
     this.audioEngine.playSentryGunBurst();
     sentry.flashLight.intensity = 4.5;
 
+    // Eject spent 10mm explosive-tip caseless/brass sparks on lateral side
+    if (this.particles) {
+      const ejectPos = sentry.group.position.clone().add(new THREE.Vector3(0.3, 1.2, 0));
+      this.particles.emitSparks(ejectPos, roundsToFire * 3);
+    }
+
     // Deal damage to target and small splash
     if (target && target.mesh) {
       const damageTotal = roundsToFire * 42; // Up to 210 burst damage!

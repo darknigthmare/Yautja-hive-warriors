@@ -63,6 +63,19 @@ export class YautjaCitadel {
     queenCrown.position.set(-8, 3.2, 0);
     this.citadelGroup.add(queenCrown);
 
+    // 2B. CANON RELIC: RAPHAEL ADOLINI 1715 FLINTLOCK PISTOL (Predator 2 1990 / Prey 2022)
+    const pistolPedestal = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 1.1, 1.8, 8), pedestalMat);
+    pistolPedestal.position.set(-5, 0.9, -5);
+    this.citadelGroup.add(pistolPedestal);
+
+    const pistolCase = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.6, 0.8), new THREE.MeshBasicMaterial({ color: 0x00ffff, transparent: true, opacity: 0.25, wireframe: true }));
+    pistolCase.position.set(-5, 2.1, -5);
+    this.citadelGroup.add(pistolCase);
+
+    const flintlock = this.createFlintlockPistol();
+    flintlock.position.set(-5, 2.1, -5);
+    this.citadelGroup.add(flintlock);
+
     // 3. CENTERPIECE 3: LASER TROPHY CLEANING & POLISHING STATION (Predator 2 Lore)
     const stationPedestal = new THREE.Mesh(new THREE.BoxGeometry(2.4, 1.6, 3.2), pedestalMat);
     stationPedestal.position.set(8, 0.8, 0);
@@ -157,6 +170,36 @@ export class YautjaCitadel {
     const crest = new THREE.Mesh(new THREE.ConeGeometry(1.4, 2.8, 5), mat);
     crest.rotation.x = Math.PI / 2.5;
     group.add(crest);
+    return group;
+  }
+
+  createFlintlockPistol() {
+    const group = new THREE.Group();
+    const woodMat = new THREE.MeshStandardMaterial({ color: 0x451a03, roughness: 0.7 });
+    const brassMat = new THREE.MeshStandardMaterial({ color: 0xd97706, metalness: 0.9, roughness: 0.2 });
+    const steelMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.95, roughness: 0.15 });
+
+    // Curved Wooden Stock Grip
+    const stock = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.2, 0.5), woodMat);
+    stock.rotation.x = -Math.PI / 6;
+    group.add(stock);
+
+    // Octagonal Steel Barrel
+    const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.05, 0.7, 8), steelMat);
+    barrel.rotation.x = Math.PI / 2;
+    barrel.position.set(0, 0.1, 0.35);
+    group.add(barrel);
+
+    // Brass Lockplate & Hammer Flint
+    const lockplate = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.08, 0.2), brassMat);
+    lockplate.position.set(0, 0.08, 0.1);
+    group.add(lockplate);
+
+    const hammer = new THREE.Mesh(new THREE.ConeGeometry(0.03, 0.12, 4), steelMat);
+    hammer.position.set(0.07, 0.16, 0.05);
+    hammer.rotation.z = -0.4;
+    group.add(hammer);
+
     return group;
   }
 
