@@ -1259,4 +1259,113 @@ export class AudioEngine {
     osc.start(now);
     osc.stop(now + 0.35);
   }
+
+  playFlechetteVolleyLaunch() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // 3 rapid pneumatic spring twangs & whistling darts (Prey 2022 Feral Predator)
+    for (let i = 0; i < 3; i++) {
+      const launchTime = now + i * 0.06;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(800 + i * 200, launchTime);
+      osc.frequency.exponentialRampToValueAtTime(180, launchTime + 0.12);
+
+      gain.gain.setValueAtTime(0.6, launchTime);
+      gain.gain.linearRampToValueAtTime(0.01, launchTime + 0.12);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(launchTime);
+      osc.stop(launchTime + 0.12);
+    }
+  }
+
+  playFlechetteImpale() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Heavy bone piercing thud
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(280, now);
+    osc.frequency.exponentialRampToValueAtTime(45, now + 0.15);
+
+    gain.gain.setValueAtTime(0.8, now);
+    gain.gain.linearRampToValueAtTime(0.01, now + 0.15);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.15);
+  }
+
+  playSentryGunBurst() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // UA 571-C iconic rapid 10mm caseless burst (Aliens 1986 canon)
+    for (let i = 0; i < 5; i++) {
+      const shotTime = now + i * 0.055;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(450, shotTime);
+      osc.frequency.exponentialRampToValueAtTime(60, shotTime + 0.04);
+
+      gain.gain.setValueAtTime(0.45, shotTime);
+      gain.gain.linearRampToValueAtTime(0.01, shotTime + 0.04);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(shotTime);
+      osc.stop(shotTime + 0.04);
+    }
+  }
+
+  playSentryGunEmpty() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Metallic dry-fire solenoid click
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(1200, now);
+    osc.frequency.exponentialRampToValueAtTime(80, now + 0.03);
+
+    gain.gain.setValueAtTime(0.5, now);
+    gain.gain.linearRampToValueAtTime(0.01, now + 0.03);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.03);
+  }
+
+  playNeomorphScreech() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Feral bloodburster high-pitched shriek (Alien: Covenant 2017)
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(900, now);
+    osc.frequency.linearRampToValueAtTime(1600, now + 0.2);
+    osc.frequency.exponentialRampToValueAtTime(320, now + 0.65);
+
+    gain.gain.setValueAtTime(0.65, now);
+    gain.gain.linearRampToValueAtTime(0.01, now + 0.65);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.65);
+  }
 }

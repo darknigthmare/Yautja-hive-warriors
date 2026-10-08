@@ -47,6 +47,7 @@ export class Player {
     this.shurikenCooldown = 0;
     this.powerGloveCooldown = 0;
     this.spineWhipCooldown = 0;
+    this.flechetteCooldown = 0;
     this.targetLockEnemy = null;
 
     // Pounce Leap State
@@ -643,6 +644,25 @@ export class Player {
     return true;
   }
 
+  triggerFlechetteVolley(targetEnemy = null) {
+    if (this.flechetteCooldown > 0 || this.isFacehuggerLatched) return null;
+    this.flechetteCooldown = 5.0;
+
+    this.audioEngine.playFlechetteVolleyLaunch();
+
+    const forward = new THREE.Vector3(Math.sin(this.rotationY), 0, Math.cos(this.rotationY)).normalize();
+    const origin = this.position.clone().add(new THREE.Vector3(0, 2.0, 0));
+
+    return {
+      origin,
+      forward,
+      target: targetEnemy,
+      count: 3,
+      damage: 190,
+      speed: 46
+    };
+  }
+
   triggerNukeSelfDestruct() {
     this.audioEngine.playPredatorLaughCountdown();
     return { damage: 10000, radius: 60 };
@@ -846,6 +866,10 @@ export class Player {
 
     if (this.spineWhipCooldown > 0) {
       this.spineWhipCooldown = Math.max(0, this.spineWhipCooldown - delta);
+    }
+
+    if (this.flechetteCooldown > 0) {
+      this.flechetteCooldown = Math.max(0, this.flechetteCooldown - delta);
     }
 
     if (this.isCloaked) {

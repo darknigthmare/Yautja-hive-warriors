@@ -28,6 +28,7 @@ import { HellHoundsManager } from './entities/HellHounds.js';
 import { DropPodEntrance } from './entities/DropPodEntrance.js';
 import { CheyenneDropship } from './entities/CheyenneDropship.js';
 import { APCVehicle } from './entities/APCVehicle.js';
+import { SentryGun } from './entities/SentryGun.js';
 import { EnvironmentManager } from './entities/Environment.js';
 import { CHARACTERS_DATA } from './data/charactersData.js';
 
@@ -58,6 +59,7 @@ class GameApp {
     this.dropPod = new DropPodEntrance(this.renderer.scene, this.audio, this.particles);
     this.dropship = new CheyenneDropship(this.renderer.scene, this.audio, this.particles);
     this.apc = new APCVehicle(this.renderer.scene, this.audio, this.particles);
+    this.sentryGun = new SentryGun(this.renderer.scene, this.audio, this.particles);
     this.pathogenPools = [];
     this.pathogenCooldown = 0;
 
@@ -278,6 +280,16 @@ class GameApp {
       // Engineer Black Pathogen Mutagen Urn Bombardment [Digit 2] (Prometheus 2012)
       if ((e.code === 'Digit2' || e.code === 'Numpad2') && this.player) {
         this.triggerPathogenUrnStrike();
+      }
+
+      // Laser-Guided Flechette Volley [Digit 3] (Prey 2022 Feral Predator)
+      if ((e.code === 'Digit3' || e.code === 'Numpad3') && this.player) {
+        this.triggerLaserGuidedFlechettes();
+      }
+
+      // UA 571-C Automated Remote Sentry Gun [Digit 4] (Aliens 1986 Special Edition)
+      if ((e.code === 'Digit4' || e.code === 'Numpad4') && this.player) {
+        this.deploySentryGun();
       }
 
       // Collapsible 6-Blade Shuriken [L Key] (AVP 2004 Celtic / Scar Lore)
@@ -847,6 +859,72 @@ class GameApp {
     }
   }
 
+  triggerLaserGuidedFlechettes() {
+    if (!this.player) return;
+    const data = this.player.triggerFlechetteVolley(this.targetLockEnemy);
+    if (!data) return;
+
+    // Launch 3 aerodynamic flechette bolts (Prey 2022 Feral Predator Canon 1:1)
+    const shaftMat = new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.8, roughness: 0.3 });
+    const tipMat = new THREE.MeshStandardMaterial({ color: 0xf1f5f9, metalness: 0.98, roughness: 0.1 });
+    const finMat = new THREE.MeshBasicMaterial({ color: 0x00d2ff });
+
+    for (let f = 0; f < data.count; f++) {
+      const flechetteGroup = new THREE.Group();
+
+      // Shaft
+      const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 1.1, 6), shaftMat);
+      shaft.rotation.x = Math.PI / 2;
+      flechetteGroup.add(shaft);
+
+      // Razor arrowhead
+      const tip = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.35, 4), tipMat);
+      tip.rotation.x = Math.PI / 2;
+      tip.position.z = 0.65;
+      flechetteGroup.add(tip);
+
+      // Stabilizer fins
+      for (let w = 0; w < 3; w++) {
+        const fin = new THREE.Mesh(new THREE.BoxGeometry(0.015, 0.15, 0.25), finMat);
+        fin.rotation.z = (w / 3) * Math.PI * 2;
+        fin.position.z = -0.4;
+        flechetteGroup.add(fin);
+      }
+
+      // Fan-out initial trajectory
+      const spreadAngle = (f - 1) * 0.25;
+      const initialDir = data.forward.clone().applyAxisAngle(new THREE.Vector3(0, 1, 0), spreadAngle).normalize();
+
+      flechetteGroup.position.copy(data.origin).add(new THREE.Vector3((f - 1) * 0.4, 0, 0));
+      flechetteGroup.lookAt(flechetteGroup.position.clone().add(initialDir));
+      this.renderer.scene.add(flechetteGroup);
+
+      this.projectiles.push({
+        mesh: flechetteGroup,
+        isGuidedFlechette: true,
+        direction: initialDir,
+        target: data.target,
+        speed: data.speed,
+        damage: data.damage,
+        life: 2.2
+      });
+    }
+
+    this.ui.showAnnouncement('🎯 VOLÉE DE 3 FLÉCHETTES À GUIDAGE LASER PROPULSÉE (PREY 2022) !');
+  }
+
+  deploySentryGun() {
+    if (!this.player) return;
+    const facing = new THREE.Vector3(Math.sin(this.player.rotationY), 0, Math.cos(this.player.rotationY)).normalize();
+    const deployPos = this.player.position.clone().addScaledVector(facing, 2.5);
+    deployPos.y = 0;
+
+    this.sentryGun.deploySentry(deployPos, facing);
+    this.particles.emitSparks(deployPos, 15);
+    this.audio.playShieldBlock();
+    this.ui.showAnnouncement('🤖 TOURELLE AUTOMATIQUE USCM UA 571-C DÉPLOYÉE (500 COUPS 10MM CASSETTE) !');
+  }
+
   executeMusouOverload() {
     this.ui.showAnnouncement('⚡ SURCHARGE MUSOU PLASMA ENCLENCHÉE ! ONDES DE CHOC & TEMPETE CYCLONIQUE');
     this.audio.playOmniPlasmaStorm();
@@ -1010,6 +1088,7 @@ class GameApp {
     this.synthetics.update(delta, this.player, this.horde);
     this.dropship.update(delta, this.horde);
     this.apc.update(delta, this.horde);
+    this.sentryGun.update(delta, this.horde);
     this.skimmer.update(delta, this.player, this.horde, this.keys);
     this.orbital.update(delta);
 
@@ -1138,6 +1217,26 @@ class GameApp {
           this.renderer.scene.remove(p.mesh);
           this.projectiles.splice(i, 1);
         }
+      } else if (p.isGuidedFlechette) {
+        // Dynamic homing steering towards target or laser reticle
+        if (p.target && p.target.mesh && p.target.hp > 0) {
+          const targetPos = p.target.mesh.position.clone().add(new THREE.Vector3(0, 1.2, 0));
+          const steerDir = targetPos.sub(p.mesh.position).normalize();
+          p.direction.lerp(steerDir, 9.0 * delta).normalize();
+        }
+        p.mesh.position.addScaledVector(p.direction, p.speed * delta);
+        p.mesh.lookAt(p.mesh.position.clone().add(p.direction));
+
+        const hits = this.horde.checkMeleeHits({ origin: p.mesh.position, radius: 1.8, damage: p.damage });
+        if (hits.length > 0 || p.life <= 0) {
+          if (hits.length > 0) {
+            this.audio.playFlechetteImpale();
+            this.particles.emitSparks(p.mesh.position, 8);
+            this.registerHits(hits);
+          }
+          this.renderer.scene.remove(p.mesh);
+          this.projectiles.splice(i, 1);
+        }
       } else {
         p.mesh.position.addScaledVector(p.direction, p.speed * delta);
 
@@ -1200,6 +1299,12 @@ class GameApp {
         if (this.waveIndex === 2 || this.waveIndex === 4) {
           this.dropship.triggerAirstrike(this.player.position, this.horde);
           this.ui.showAnnouncement('✈️ DROPSHIP CHEYENNE UD-4L DÉPLOYÉ : SALVE DE ROQUETTES 70MM !');
+          if (this.waveIndex === 2) {
+            setTimeout(() => {
+              this.sentryGun.deploySentry(this.player.position.clone().add(new THREE.Vector3(3.5, 0, 2)));
+              this.ui.showAnnouncement('📦 LARGAGE TACTIQUE : TOURELLE SENTINELLE UA 571-C DÉPLOYÉE EN APPUI !');
+            }, 2500);
+          }
         }
 
         if (this.waveIndex === 3) {
@@ -1334,6 +1439,7 @@ class GameApp {
     this.dropPod.clear();
     this.dropship.clear();
     this.apc.clear();
+    this.sentryGun.clear();
     for (const pool of this.pathogenPools) {
       if (pool.mesh) this.scene.remove(pool.mesh);
     }

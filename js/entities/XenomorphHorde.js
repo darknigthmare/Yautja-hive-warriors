@@ -40,7 +40,8 @@ export class XenomorphHorde {
     for (let i = 0; i < count; i++) {
       const isFacehugger = Math.random() < 0.2;
       const isBoiler = !isFacehugger && Math.random() < 0.22;
-      const alien = this.createAlienMesh(isFacehugger, isBoiler);
+      const isNeomorph = !isFacehugger && !isBoiler && Math.random() < 0.25;
+      const alien = this.createAlienMesh(isFacehugger, isBoiler, isNeomorph);
 
       const angle = Math.random() * Math.PI * 2;
       const radius = 25 + Math.random() * 20;
@@ -50,20 +51,23 @@ export class XenomorphHorde {
         playerPos.z + Math.sin(angle) * radius
       );
 
-      const isWallStalker = !isFacehugger && !isBoiler && Math.random() < 0.25;
+      const isWallStalker = !isFacehugger && !isBoiler && !isNeomorph && Math.random() < 0.25;
       this.scene.add(alien);
       this.aliens.push({
         mesh: alien,
-        type: isFacehugger ? 'facehugger' : (isBoiler ? 'boiler' : 'warrior'),
-        hp: isFacehugger ? 40 : (isBoiler ? 80 : 120),
-        maxHp: isFacehugger ? 40 : (isBoiler ? 80 : 120),
-        speed: isFacehugger ? 17 : (isBoiler ? 14 : 11),
-        damage: isFacehugger ? 15 : (isBoiler ? 50 : 25),
-        radius: isFacehugger ? 0.6 : 1.1,
+        type: isFacehugger ? 'facehugger' : (isBoiler ? 'boiler' : (isNeomorph ? 'neomorph' : 'warrior')),
+        hp: isFacehugger ? 40 : (isBoiler ? 80 : (isNeomorph ? 95 : 120)),
+        maxHp: isFacehugger ? 40 : (isBoiler ? 80 : (isNeomorph ? 95 : 120)),
+        speed: isFacehugger ? 17 : (isBoiler ? 14 : (isNeomorph ? 19 : 11)),
+        damage: isFacehugger ? 15 : (isBoiler ? 50 : (isNeomorph ? 35 : 25)),
+        radius: isFacehugger ? 0.6 : (isNeomorph ? 0.9 : 1.1),
         isLatched: false,
         isWallStalker: isWallStalker,
         wallClimbPhase: isWallStalker ? 'climbing' : 'grounded',
-        perchHeight: 8.0 + Math.random() * 4.0
+        perchHeight: 8.0 + Math.random() * 4.0,
+        leapCooldown: isNeomorph ? 2.0 + Math.random() * 2.0 : 0,
+        isLeaping: false,
+        leapVelY: 0
       });
     }
   }
@@ -166,12 +170,12 @@ export class XenomorphHorde {
     }
   }
 
-  createAlienMesh(isFacehugger, isBoiler = false) {
+  createAlienMesh(isFacehugger, isBoiler = false, isNeomorph = false) {
     const group = new THREE.Group();
     const mat = new THREE.MeshStandardMaterial({
-      color: isFacehugger ? 0x8a7355 : (isBoiler ? 0x243528 : 0x11161d),
-      roughness: 0.3,
-      metalness: 0.7
+      color: isFacehugger ? 0x8a7355 : (isBoiler ? 0x243528 : (isNeomorph ? 0xf0ece1 : 0x11161d)),
+      roughness: isNeomorph ? 0.2 : 0.3,
+      metalness: isNeomorph ? 0.05 : 0.7
     });
 
     if (isFacehugger) {
@@ -183,6 +187,30 @@ export class XenomorphHorde {
       tail.position.set(0, 0.3, -0.4);
       tail.rotation.x = -Math.PI / 4;
       group.add(tail);
+    } else if (isNeomorph) {
+      // Alien: Covenant 2017 Canon Neomorph Bloodburster Anatomy
+      // Smooth bulbous pointed cranium (no biomechanical tubes)
+      const head = new THREE.Mesh(new THREE.ConeGeometry(0.24, 1.5, 8), mat);
+      head.rotation.x = Math.PI / 2 + 0.2;
+      head.position.set(0, 1.4, 0.3);
+      group.add(head);
+
+      const jaw = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.15, 0.4), mat);
+      jaw.position.set(0, 1.25, 0.6);
+      group.add(jaw);
+
+      const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.18, 1.5, 8), mat);
+      torso.position.y = 1.0;
+      torso.rotation.x = 0.3;
+      group.add(torso);
+
+      // Sharp dorsal spine quills along the back
+      for (let s = 0; s < 4; s++) {
+        const spine = new THREE.Mesh(new THREE.ConeGeometry(0.04, 0.3, 4), mat);
+        spine.rotation.x = -Math.PI / 3;
+        spine.position.set(0, 1.3 - s * 0.22, -0.15 - s * 0.08);
+        group.add(spine);
+      }
     } else {
       const head = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.3, 1.4, 8), mat);
       head.rotation.x = Math.PI / 2;
@@ -535,6 +563,44 @@ export class XenomorphHorde {
         });
         if (dist <= 3.2) {
           this.detonateBoiler(a, player);
+          return;
+        }
+      }
+
+      // Neomorph Bloodburster Acrobatic Pounce & Evasive Flanking (Alien: Covenant 2017)
+      if (a.type === 'neomorph') {
+        if (a.leapCooldown > 0) a.leapCooldown -= delta;
+
+        // Evasive lateral strafe
+        const strafe = new THREE.Vector3(-dir.z, 0, dir.x).normalize();
+        a.mesh.position.addScaledVector(strafe, Math.sin(Date.now() * 0.007) * 4.0 * delta);
+
+        if (!a.isLeaping && dist <= 12.0 && a.leapCooldown <= 0) {
+          a.isLeaping = true;
+          a.leapVelY = 13.0;
+          a.leapCooldown = 4.5;
+          if (this.audioEngine && this.audioEngine.playNeomorphScreech) {
+            this.audioEngine.playNeomorphScreech();
+          }
+        }
+
+        if (a.isLeaping) {
+          a.leapVelY -= 32.0 * delta;
+          a.mesh.position.y += a.leapVelY * delta;
+          a.mesh.rotation.x = -0.5;
+
+          if (a.mesh.position.y <= 0) {
+            a.mesh.position.y = 0;
+            a.isLeaping = false;
+            a.mesh.rotation.x = 0;
+            if (dist <= 3.0) {
+              if (player.isBlocking) {
+                player.audioEngine.playShieldBlock();
+              } else {
+                player.takeDamage(35);
+              }
+            }
+          }
           return;
         }
       }
