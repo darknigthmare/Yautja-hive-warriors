@@ -55,7 +55,8 @@ export class XenomorphHorde {
       const isBoiler = !isFacehugger && Math.random() < 0.22;
       const isNeomorph = !isFacehugger && !isBoiler && Math.random() < 0.22;
       const isPraetomorph = !isFacehugger && !isBoiler && !isNeomorph && Math.random() < 0.25;
-      const alien = this.createAlienMesh(isFacehugger, isBoiler, isNeomorph, isPraetomorph);
+      const isRedSwarm = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && Math.random() < 0.32;
+      const alien = this.createAlienMesh(isFacehugger, isBoiler, isNeomorph, isPraetomorph, isRedSwarm);
 
       const angle = Math.random() * Math.PI * 2;
       const radius = 25 + Math.random() * 20;
@@ -65,15 +66,15 @@ export class XenomorphHorde {
         playerPos.z + Math.sin(angle) * radius
       );
 
-      const isWallStalker = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && Math.random() < 0.25;
+      const isWallStalker = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && !isRedSwarm && Math.random() < 0.25;
       this.scene.add(alien);
       this.aliens.push({
         mesh: alien,
-        type: isFacehugger ? 'facehugger' : (isBoiler ? 'boiler' : (isNeomorph ? 'neomorph' : (isPraetomorph ? 'praetomorph' : 'warrior'))),
-        hp: isFacehugger ? 40 : (isBoiler ? 80 : (isNeomorph ? 95 : (isPraetomorph ? 160 : 120))),
-        maxHp: isFacehugger ? 40 : (isBoiler ? 80 : (isNeomorph ? 95 : (isPraetomorph ? 160 : 120))),
-        speed: isFacehugger ? 17 : (isBoiler ? 14 : (isNeomorph ? 19 : (isPraetomorph ? 16 : 11))),
-        damage: isFacehugger ? 15 : (isBoiler ? 50 : (isNeomorph ? 35 : (isPraetomorph ? 42 : 25))),
+        type: isFacehugger ? 'facehugger' : (isBoiler ? 'boiler' : (isNeomorph ? 'neomorph' : (isPraetomorph ? 'praetomorph' : (isRedSwarm ? 'red_warrior' : 'warrior')))),
+        hp: isFacehugger ? 40 : (isBoiler ? 80 : (isNeomorph ? 95 : (isPraetomorph ? 160 : (isRedSwarm ? 140 : 120)))),
+        maxHp: isFacehugger ? 40 : (isBoiler ? 80 : (isNeomorph ? 95 : (isPraetomorph ? 160 : (isRedSwarm ? 140 : 120)))),
+        speed: isFacehugger ? 17 : (isBoiler ? 14 : (isNeomorph ? 19 : (isPraetomorph ? 16 : (isRedSwarm ? 15.5 : 11)))),
+        damage: isFacehugger ? 15 : (isBoiler ? 50 : (isNeomorph ? 35 : (isPraetomorph ? 42 : (isRedSwarm ? 34 : 25)))),
         radius: isFacehugger ? 0.6 : (isNeomorph ? 0.9 : (isPraetomorph ? 1.3 : 1.1)),
         isLatched: false,
         isWallStalker: isWallStalker,
@@ -230,12 +231,12 @@ export class XenomorphHorde {
     }
   }
 
-  createAlienMesh(isFacehugger, isBoiler = false, isNeomorph = false, isPraetomorph = false) {
+  createAlienMesh(isFacehugger, isBoiler = false, isNeomorph = false, isPraetomorph = false, isRedSwarm = false) {
     const group = new THREE.Group();
     const mat = new THREE.MeshStandardMaterial({
-      color: isFacehugger ? 0x8a7355 : (isBoiler ? 0x243528 : (isNeomorph ? 0xf0ece1 : (isPraetomorph ? 0x14181f : 0x11161d))),
-      roughness: isNeomorph ? 0.2 : (isPraetomorph ? 0.15 : 0.3),
-      metalness: isNeomorph ? 0.05 : (isPraetomorph ? 0.95 : 0.7)
+      color: isFacehugger ? 0x8a7355 : (isBoiler ? 0x243528 : (isNeomorph ? 0xf0ece1 : (isPraetomorph ? 0x14181f : (isRedSwarm ? 0xb81414 : 0x11161d)))),
+      roughness: isNeomorph ? 0.2 : (isPraetomorph ? 0.15 : (isRedSwarm ? 0.25 : 0.3)),
+      metalness: isNeomorph ? 0.05 : (isPraetomorph ? 0.95 : (isRedSwarm ? 0.82 : 0.7))
     });
 
     if (isFacehugger) {
@@ -803,6 +804,24 @@ export class XenomorphHorde {
             }
           }
           return;
+        }
+      }
+
+      // Red Xenomorph Hive Civil War Infighting (Aliens: Genocide 1991)
+      if (a.type === 'red_warrior') {
+        for (let j = 0; j < this.aliens.length; j++) {
+          const other = this.aliens[j];
+          if (other !== a && other.type !== 'red_warrior' && other.type !== 'facehugger') {
+            const xDist = a.mesh.position.distanceTo(other.mesh.position);
+            if (xDist <= 3.2) {
+              other.hp -= 40 * delta;
+              a.hp -= 25 * delta;
+              if (Math.random() < 0.04 && this.audioEngine && this.audioEngine.playRedSwarmHiss) {
+                this.audioEngine.playRedSwarmHiss();
+              }
+              break;
+            }
+          }
         }
       }
 

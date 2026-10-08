@@ -404,7 +404,10 @@ class GameApp {
       }
 
       if (e.code === 'KeyB' && this.player) {
-        if (this.player.acidSolventCharges > 0 && this.horde.acidPools.length > 0) {
+        const activeDisc = this.projectiles.find(p => p.isSmartDisc && p.life > 0.1);
+        if (activeDisc) {
+          this.triggerSmartDiscRicochet(activeDisc);
+        } else if (this.player.acidSolventCharges > 0 && this.horde.acidPools.length > 0) {
           if (this.player.useAcidSolvent(this.horde)) {
             this.ui.showAnnouncement('🧪 FIOLE DE SOLVANT D\'ACIDE DÉPLOYÉE: SOL PURIFIÉ !');
           }
@@ -415,7 +418,8 @@ class GameApp {
 
       if (e.code === 'KeyZ' && this.player) {
         if (this.player.useMedicomp()) {
-          this.ui.showAnnouncement('💉 MEDICOMP CAUTÉRISATION VISCÉRALE: BLINDAGE RESTAURÉ !');
+          this.particles.emitMedicompSteam(this.player.position, 24);
+          this.ui.showAnnouncement('💉 MEDICOMP CAUTÉRISATION VISCÉRALE: SOIN 450 HP & BIO-VAPEUR ANTISEPTIQUE !');
         }
       }
 
@@ -734,6 +738,33 @@ class GameApp {
     });
 
     this.ui.showAnnouncement('🥏 SMART-DISC YAUTJA LANCÉ EN ARC BOOMERANG !');
+  }
+
+  triggerSmartDiscRicochet(disc) {
+    if (!disc || !disc.mesh) return;
+
+    let closestEnemy = null;
+    let minD = 26.0;
+    this.horde.aliens.forEach(a => {
+      const d = a.mesh.position.distanceTo(disc.mesh.position);
+      if (d < minD && a.hp > 0) {
+        minD = d;
+        closestEnemy = a;
+      }
+    });
+
+    if (closestEnemy) {
+      disc.startPos = disc.mesh.position.clone();
+      disc.apexPos = closestEnemy.mesh.position.clone().add(new THREE.Vector3(0, 1.2, 0));
+      disc.progress = 0;
+      disc.life = 1.4;
+      disc.damage += 140; // Consecutive ricochet slices deal escalating kinetic damage!
+      this.particles.emitSparks(disc.mesh.position, 12);
+      if (this.audio && this.audio.playSmartDiscRicochet) {
+        this.audio.playSmartDiscRicochet();
+      }
+      this.ui.showAnnouncement('🎯 SMART-DISC RICOCHET GUIDÉ AU LASER : CIBLE TRANCHÉE (PREDATOR 2) !');
+    }
   }
 
   throwCombiStick() {

@@ -1071,7 +1071,15 @@ export class Player {
       amount *= 0.5; // 50% damage reduction in Berserker Rage
       isAcid = false; // Immune to acid burns in Berserker Rage
     }
-    if (this.isCloaked) amount *= 0.5;
+    if (this.isCloaked) {
+      amount *= 0.5;
+      if (this.particles && this.particles.emitCloakSparkFlicker) {
+        this.particles.emitCloakSparkFlicker(this.position, 14);
+      }
+      if (this.audioEngine && this.audioEngine.playCloakFlicker) {
+        this.audioEngine.playCloakFlicker();
+      }
+    }
     this.hp = Math.max(0, this.hp - amount);
 
     if (isAcid && !this.isBerserkerActive) {

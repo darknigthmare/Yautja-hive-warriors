@@ -142,6 +142,56 @@ export class ParticleSystem {
     }
   }
 
+  emitMedicompSteam(pos, count = 22) {
+    const steamMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.65 });
+    const geo = new THREE.SphereGeometry(0.18, 6, 6);
+    for (let i = 0; i < count; i++) {
+      const mesh = new THREE.Mesh(geo, steamMat);
+      mesh.position.copy(pos).add(new THREE.Vector3(
+        (Math.random() - 0.5) * 0.8,
+        1.2 + Math.random() * 0.8,
+        (Math.random() - 0.5) * 0.8
+      ));
+      this.scene.add(mesh);
+      const vel = new THREE.Vector3(
+        (Math.random() - 0.5) * 2.5,
+        Math.random() * 4.5 + 2.0,
+        (Math.random() - 0.5) * 2.5
+      );
+      this.particles.push({
+        mesh: mesh,
+        velocity: vel,
+        life: 1.1,
+        maxLife: 1.1
+      });
+    }
+  }
+
+  emitCloakSparkFlicker(pos, count = 15) {
+    const sparkMat = new THREE.MeshBasicMaterial({ color: 0x00ffff });
+    const geo = new THREE.SphereGeometry(0.08, 4, 4);
+    for (let i = 0; i < count; i++) {
+      const mesh = new THREE.Mesh(geo, sparkMat);
+      mesh.position.copy(pos).add(new THREE.Vector3(
+        (Math.random() - 0.5) * 1.2,
+        0.5 + Math.random() * 2.5,
+        (Math.random() - 0.5) * 1.2
+      ));
+      this.scene.add(mesh);
+      const vel = new THREE.Vector3(
+        (Math.random() - 0.5) * 12,
+        (Math.random() - 0.5) * 12,
+        (Math.random() - 0.5) * 12
+      );
+      this.particles.push({
+        mesh: mesh,
+        velocity: vel,
+        life: 0.35,
+        maxLife: 0.35
+      });
+    }
+  }
+
   spawnDamagePopup(pos, damageAmount, isCrit = false) {
     const div = document.createElement('div');
     div.className = `damage-popup ${isCrit ? 'crit' : ''}`;
