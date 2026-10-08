@@ -64,6 +64,7 @@ class GameApp {
     this.falconDrone = new FalconDrone(this.renderer.scene, this.audio, this.particles);
     this.pathogenPools = [];
     this.pathogenCooldown = 0;
+    this.holoDecoys = [];
 
     this.weaponWheel = new WeaponWheel((weaponId) => {
       this.ui.showAnnouncement(`ARME SÉLECTIONNÉE: ${weaponId.toUpperCase()}`);
@@ -302,6 +303,16 @@ class GameApp {
       // Alpha Predator Primordial Dragon Bone Scythe [Digit 6] (NECA / Hunting Grounds Lore)
       if ((e.code === 'Digit6' || e.code === 'Numpad6') && this.player) {
         this.performBoneScytheCleave();
+      }
+
+      // Yautja Charged Compound Bow [Digit 7] (Concrete Jungle / Dark Horse)
+      if ((e.code === 'Digit7' || e.code === 'Numpad7') && this.player) {
+        this.fireCompoundBow();
+      }
+
+      // Holographic Decoy Gauntlet Pulse [Digit 8] (Hunting Grounds Canon)
+      if ((e.code === 'Digit8' || e.code === 'Numpad8') && this.player) {
+        this.deployHoloDecoy();
       }
 
       // Collapsible 6-Blade Shuriken [L Key] (AVP 2004 Celtic / Scar Lore)
@@ -951,6 +962,51 @@ class GameApp {
     }
   }
 
+  fireCompoundBow() {
+    if (!this.player) return;
+    const arrowData = this.player.fireCompoundBow();
+    if (!arrowData) return;
+
+    // 3D Charged Hunting Arrow with luminous cyan plasma head
+    const arrowGroup = new THREE.Group();
+    const shaftMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.8, roughness: 0.2 });
+    const tipMat = new THREE.MeshBasicMaterial({ color: 0x00ffff });
+
+    const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 1.8, 6), shaftMat);
+    shaft.rotation.x = Math.PI / 2;
+    arrowGroup.add(shaft);
+
+    const tip = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.5, 4), tipMat);
+    tip.rotation.x = Math.PI / 2;
+    tip.position.z = 1.0;
+    arrowGroup.add(tip);
+
+    arrowGroup.position.copy(arrowData.origin);
+    arrowGroup.lookAt(arrowGroup.position.clone().add(arrowData.direction));
+    this.renderer.scene.add(arrowGroup);
+
+    this.projectiles.push({
+      mesh: arrowGroup,
+      isChargedArrow: true,
+      direction: arrowData.direction,
+      speed: arrowData.speed,
+      damage: arrowData.damage,
+      pierceRemaining: arrowData.pierceRemaining,
+      life: arrowData.life
+    });
+
+    this.ui.showAnnouncement('🏹 ARC COMPOSÉ YAUTJA : FLÈCHE PLASMA HYPER-VÉLOCITÉ PERÇANTE DÉCOCHÉE !');
+  }
+
+  deployHoloDecoy() {
+    if (!this.player) return;
+    const decoy = this.player.deployHoloDecoy(this.renderer.scene);
+    if (!decoy) return;
+
+    this.holoDecoys.push(decoy);
+    this.ui.showAnnouncement('⚡ LEURRE HOLOGRAPHIQUE ACTIVÉ : ATTENTION DE LA RUCHE DÉTOURNÉE !');
+  }
+
   executeMusouOverload() {
     this.ui.showAnnouncement('⚡ SURCHARGE MUSOU PLASMA ENCLENCHÉE ! ONDES DE CHOC & TEMPETE CYCLONIQUE');
     this.audio.playOmniPlasmaStorm();
@@ -1137,6 +1193,36 @@ class GameApp {
       }
     }
 
+    // Update Holographic Decoys (Hunting Grounds Canon)
+    for (let i = this.holoDecoys.length - 1; i >= 0; i--) {
+      const d = this.holoDecoys[i];
+      d.life -= delta;
+      d.mesh.position.addScaledVector(d.direction, d.speed * delta);
+      d.mesh.children.forEach(c => {
+        if (c.material) c.material.opacity = 0.4 + Math.sin(Date.now() * 0.03) * 0.25;
+      });
+
+      // Lure horde aggro towards decoy
+      if (this.horde && this.horde.aliens) {
+        this.horde.aliens.forEach(a => {
+          if (a && a.mesh && a.mesh.position.distanceTo(d.mesh.position) < 18.0) {
+            const lureDir = d.mesh.position.clone().sub(a.mesh.position).normalize();
+            a.mesh.position.addScaledVector(lureDir, 3.5 * delta);
+          }
+        });
+      }
+
+      if (d.life <= 0) {
+        this.audio.playHoloDecoyDetonate();
+        this.particles.emitSparks(d.mesh.position, 25);
+        if (this.horde) {
+          this.horde.checkMeleeHits({ origin: d.mesh.position, radius: 8.0, damage: 280, type: 'heavy' });
+        }
+        this.renderer.scene.remove(d.mesh);
+        this.holoDecoys.splice(i, 1);
+      }
+    }
+
     // Camera positioning: First-Person Bio-Mask vs 3rd Person
     if (this.isFirstPerson) {
       const eyePos = this.player.position.clone().add(new THREE.Vector3(0, 3.6, 0.2));
@@ -1261,6 +1347,33 @@ class GameApp {
             this.particles.emitSparks(p.mesh.position, 8);
             this.registerHits(hits);
           }
+          this.renderer.scene.remove(p.mesh);
+          this.projectiles.splice(i, 1);
+        }
+      } else if (p.isChargedArrow) {
+        p.mesh.position.addScaledVector(p.direction, p.speed * delta);
+
+        const hits = this.horde.checkMeleeHits({ origin: p.mesh.position, radius: 2.2, damage: p.damage });
+        if (hits.length > 0) {
+          this.audio.playArrowPinImpact();
+          this.particles.emitSparks(p.mesh.position, 10);
+          this.registerHits(hits);
+          p.pierceRemaining -= hits.length;
+        }
+
+        if (this.bosses.activeBoss && p.mesh.position.distanceTo(this.bosses.activeBoss.mesh.position) <= 4.0) {
+          this.bosses.takeDamage(p.damage);
+          this.audio.playArrowPinImpact();
+          p.pierceRemaining--;
+        }
+
+        const synHits = this.synthetics.checkHits({ origin: p.mesh.position, radius: 2.2, damage: p.damage });
+        if (synHits.length > 0) {
+          p.pierceRemaining -= synHits.length;
+          this.audio.playArrowPinImpact();
+        }
+
+        if (p.pierceRemaining <= 0 || p.life <= 0) {
           this.renderer.scene.remove(p.mesh);
           this.projectiles.splice(i, 1);
         }
@@ -1473,6 +1586,10 @@ class GameApp {
       if (pool.mesh) this.scene.remove(pool.mesh);
     }
     this.pathogenPools = [];
+    for (const d of this.holoDecoys) {
+      if (d.mesh) this.scene.remove(d.mesh);
+    }
+    this.holoDecoys = [];
 
     this.ui.recordEndSession(this.horde.deadCount, this.sessionSkulls, this.score);
 

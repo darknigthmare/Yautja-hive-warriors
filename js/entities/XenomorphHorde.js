@@ -43,8 +43,9 @@ export class XenomorphHorde {
     for (let i = 0; i < count; i++) {
       const isFacehugger = Math.random() < 0.2;
       const isBoiler = !isFacehugger && Math.random() < 0.22;
-      const isNeomorph = !isFacehugger && !isBoiler && Math.random() < 0.25;
-      const alien = this.createAlienMesh(isFacehugger, isBoiler, isNeomorph);
+      const isNeomorph = !isFacehugger && !isBoiler && Math.random() < 0.22;
+      const isPraetomorph = !isFacehugger && !isBoiler && !isNeomorph && Math.random() < 0.25;
+      const alien = this.createAlienMesh(isFacehugger, isBoiler, isNeomorph, isPraetomorph);
 
       const angle = Math.random() * Math.PI * 2;
       const radius = 25 + Math.random() * 20;
@@ -54,21 +55,21 @@ export class XenomorphHorde {
         playerPos.z + Math.sin(angle) * radius
       );
 
-      const isWallStalker = !isFacehugger && !isBoiler && !isNeomorph && Math.random() < 0.25;
+      const isWallStalker = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && Math.random() < 0.25;
       this.scene.add(alien);
       this.aliens.push({
         mesh: alien,
-        type: isFacehugger ? 'facehugger' : (isBoiler ? 'boiler' : (isNeomorph ? 'neomorph' : 'warrior')),
-        hp: isFacehugger ? 40 : (isBoiler ? 80 : (isNeomorph ? 95 : 120)),
-        maxHp: isFacehugger ? 40 : (isBoiler ? 80 : (isNeomorph ? 95 : 120)),
-        speed: isFacehugger ? 17 : (isBoiler ? 14 : (isNeomorph ? 19 : 11)),
-        damage: isFacehugger ? 15 : (isBoiler ? 50 : (isNeomorph ? 35 : 25)),
-        radius: isFacehugger ? 0.6 : (isNeomorph ? 0.9 : 1.1),
+        type: isFacehugger ? 'facehugger' : (isBoiler ? 'boiler' : (isNeomorph ? 'neomorph' : (isPraetomorph ? 'praetomorph' : 'warrior'))),
+        hp: isFacehugger ? 40 : (isBoiler ? 80 : (isNeomorph ? 95 : (isPraetomorph ? 160 : 120))),
+        maxHp: isFacehugger ? 40 : (isBoiler ? 80 : (isNeomorph ? 95 : (isPraetomorph ? 160 : 120))),
+        speed: isFacehugger ? 17 : (isBoiler ? 14 : (isNeomorph ? 19 : (isPraetomorph ? 16 : 11))),
+        damage: isFacehugger ? 15 : (isBoiler ? 50 : (isNeomorph ? 35 : (isPraetomorph ? 42 : 25))),
+        radius: isFacehugger ? 0.6 : (isNeomorph ? 0.9 : (isPraetomorph ? 1.3 : 1.1)),
         isLatched: false,
         isWallStalker: isWallStalker,
         wallClimbPhase: isWallStalker ? 'climbing' : 'grounded',
         perchHeight: 8.0 + Math.random() * 4.0,
-        leapCooldown: isNeomorph ? 2.0 + Math.random() * 2.0 : 0,
+        leapCooldown: (isNeomorph || isPraetomorph) ? 2.0 + Math.random() * 2.0 : 0,
         isLeaping: false,
         leapVelY: 0
       });
@@ -219,12 +220,12 @@ export class XenomorphHorde {
     }
   }
 
-  createAlienMesh(isFacehugger, isBoiler = false, isNeomorph = false) {
+  createAlienMesh(isFacehugger, isBoiler = false, isNeomorph = false, isPraetomorph = false) {
     const group = new THREE.Group();
     const mat = new THREE.MeshStandardMaterial({
-      color: isFacehugger ? 0x8a7355 : (isBoiler ? 0x243528 : (isNeomorph ? 0xf0ece1 : 0x11161d)),
-      roughness: isNeomorph ? 0.2 : 0.3,
-      metalness: isNeomorph ? 0.05 : 0.7
+      color: isFacehugger ? 0x8a7355 : (isBoiler ? 0x243528 : (isNeomorph ? 0xf0ece1 : (isPraetomorph ? 0x14181f : 0x11161d))),
+      roughness: isNeomorph ? 0.2 : (isPraetomorph ? 0.15 : 0.3),
+      metalness: isNeomorph ? 0.05 : (isPraetomorph ? 0.95 : 0.7)
     });
 
     if (isFacehugger) {
@@ -259,6 +260,25 @@ export class XenomorphHorde {
         spine.rotation.x = -Math.PI / 3;
         spine.position.set(0, 1.3 - s * 0.22, -0.15 - s * 0.08);
         group.add(spine);
+      }
+    } else if (isPraetomorph) {
+      // Alien: Covenant 2017 Canon Praetomorph Anatomy (David's Biomechanical Apex Creation)
+      const head = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.35, 1.8, 8), mat);
+      head.rotation.x = Math.PI / 2;
+      head.position.set(0, 1.9, 0.5);
+      group.add(head);
+
+      const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.24, 1.8, 8), mat);
+      torso.position.y = 1.25;
+      group.add(torso);
+
+      // Long aggressive segmented tail
+      const tailMat = new THREE.MeshStandardMaterial({ color: 0x0f1217, roughness: 0.2, metalness: 0.9 });
+      for (let t = 0; t < 5; t++) {
+        const seg = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.05, 0.6, 6), tailMat);
+        seg.position.set(0, 0.9 - t * 0.15, -0.4 - t * 0.4);
+        seg.rotation.x = -0.4;
+        group.add(seg);
       }
     } else {
       const head = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.3, 1.4, 8), mat);
@@ -657,6 +677,40 @@ export class XenomorphHorde {
                 player.audioEngine.playShieldBlock();
               } else {
                 player.takeDamage(35);
+              }
+            }
+          }
+          return;
+        }
+      }
+
+      // Praetomorph Hyper-Aggressive Hunter (Alien: Covenant 2017)
+      if (a.type === 'praetomorph') {
+        if (a.leapCooldown > 0) a.leapCooldown -= delta;
+        if (!a.isLeaping && dist <= 14.0 && a.leapCooldown <= 0) {
+          a.isLeaping = true;
+          a.leapVelY = 15.0;
+          a.leapCooldown = 5.0;
+          if (this.audioEngine && this.audioEngine.playPraetomorphHiss) {
+            this.audioEngine.playPraetomorphHiss();
+          }
+        }
+        if (a.isLeaping) {
+          a.leapVelY -= 36.0 * delta;
+          a.mesh.position.y += a.leapVelY * delta;
+          a.mesh.rotation.x = -0.4;
+          const leapDir = dir.clone().normalize();
+          a.mesh.position.addScaledVector(leapDir, 16.0 * delta);
+
+          if (a.mesh.position.y <= 0) {
+            a.mesh.position.y = 0;
+            a.isLeaping = false;
+            a.mesh.rotation.x = 0;
+            if (dist <= 3.5) {
+              if (player.isBlocking) {
+                player.audioEngine.playShieldBlock();
+              } else {
+                player.takeDamage(45);
               }
             }
           }

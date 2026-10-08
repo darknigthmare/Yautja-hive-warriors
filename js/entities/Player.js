@@ -49,6 +49,8 @@ export class Player {
     this.spineWhipCooldown = 0;
     this.flechetteCooldown = 0;
     this.boneScytheCooldown = 0;
+    this.compoundBowCooldown = 0;
+    this.holoDecoyCooldown = 0;
     this.targetLockEnemy = null;
 
     // Pounce Leap State
@@ -712,6 +714,64 @@ export class Player {
     return true;
   }
 
+  fireCompoundBow() {
+    if (this.compoundBowCooldown > 0 || this.isFacehuggerLatched) return null;
+    this.compoundBowCooldown = 4.2;
+
+    this.audioEngine.playCompoundBowFire();
+
+    const forward = new THREE.Vector3(Math.sin(this.rotationY), 0, Math.cos(this.rotationY)).normalize();
+    const origin = this.position.clone().add(new THREE.Vector3(0, 2.2, 0));
+
+    return {
+      origin,
+      direction: forward,
+      speed: 62,
+      damage: 520,
+      pierceRemaining: 5,
+      life: 2.2
+    };
+  }
+
+  deployHoloDecoy(scene) {
+    if (this.holoDecoyCooldown > 0 || this.isFacehuggerLatched) return null;
+    this.holoDecoyCooldown = 16.0;
+
+    this.audioEngine.playHoloDecoyDeploy();
+
+    // Create Holographic Cyan Translucent Clone Mesh
+    const decoyGroup = new THREE.Group();
+    decoyGroup.position.copy(this.position);
+    decoyGroup.rotation.y = this.rotationY;
+
+    const holoMat = new THREE.MeshBasicMaterial({
+      color: 0x00ffff,
+      transparent: true,
+      opacity: 0.6,
+      wireframe: true
+    });
+
+    const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.65, 0.45, 1.9, 8), holoMat);
+    torso.position.y = 1.9;
+    decoyGroup.add(torso);
+
+    const head = new THREE.Mesh(new THREE.SphereGeometry(0.5, 8, 8), holoMat);
+    head.position.set(0, 3.2, 0);
+    decoyGroup.add(head);
+
+    scene.add(decoyGroup);
+
+    const forward = new THREE.Vector3(Math.sin(this.rotationY), 0, Math.cos(this.rotationY)).normalize();
+
+    return {
+      mesh: decoyGroup,
+      direction: forward,
+      speed: 7.5,
+      life: 6.0,
+      detonated: false
+    };
+  }
+
   triggerNukeSelfDestruct() {
     this.audioEngine.playPredatorLaughCountdown();
     return { damage: 10000, radius: 60 };
@@ -923,6 +983,14 @@ export class Player {
 
     if (this.boneScytheCooldown > 0) {
       this.boneScytheCooldown = Math.max(0, this.boneScytheCooldown - delta);
+    }
+
+    if (this.compoundBowCooldown > 0) {
+      this.compoundBowCooldown = Math.max(0, this.compoundBowCooldown - delta);
+    }
+
+    if (this.holoDecoyCooldown > 0) {
+      this.holoDecoyCooldown = Math.max(0, this.holoDecoyCooldown - delta);
     }
 
     if (this.isCloaked) {
