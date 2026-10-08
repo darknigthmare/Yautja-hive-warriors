@@ -935,6 +935,132 @@ html, body {
   border-radius: 6px;
 }
 
+/* DYNASTY WARRIORS BATTLEFIELD MORALE GAUGE (Jauge de Moral du Champ de Bataille) */
+.battlefield-morale-panel {
+  position: absolute;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 480px;
+  padding: 10px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 12;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 210, 255, 0.4);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.75);
+}
+
+.morale-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.clan-label { color: var(--plasma-blue); }
+.hive-label { color: #ff3333; }
+.morale-title {
+  color: var(--yautja-gold);
+  font-size: 0.75rem;
+  text-shadow: 0 0 8px rgba(255, 183, 3, 0.6);
+}
+
+.morale-bar-track {
+  position: relative;
+  width: 100%;
+  height: 12px;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 6px;
+  overflow: hidden;
+  display: flex;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.morale-bar-fill {
+  height: 100%;
+  transition: width 0.35s ease-out;
+}
+
+.clan-fill {
+  background: linear-gradient(90deg, #00d2ff 0%, #0088ff 100%);
+  box-shadow: inset 0 0 8px rgba(0, 210, 255, 0.8);
+}
+
+.hive-fill {
+  background: linear-gradient(90deg, #ff1a1a 0%, #990000 100%);
+  box-shadow: inset 0 0 8px rgba(255, 26, 26, 0.8);
+}
+
+.morale-center-notch {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  background: #ffffff;
+  transform: translateX(-50%);
+  z-index: 2;
+  box-shadow: 0 0 6px #ffffff;
+}
+
+/* TRUE MUSOU AWAKENING FULL-SCREEN OVERLAY */
+.true-musou-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 30;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle, rgba(0, 210, 255, 0.25) 0%, rgba(3, 8, 16, 0.85) 80%);
+  backdrop-filter: blur(4px);
+  animation: musouFlash 0.3s ease-out;
+}
+
+@keyframes musouFlash {
+  0% { opacity: 0; transform: scale(1.1); }
+  50% { opacity: 1; }
+  100% { opacity: 1; transform: scale(1.0); }
+}
+
+.musou-kanji-banner {
+  font-size: 3.2rem;
+  font-weight: 900;
+  letter-spacing: 12px;
+  color: #ffb703;
+  text-shadow: 0 0 30px #ffb703, 0 0 10px #ffffff;
+  margin-bottom: 12px;
+  font-family: serif, var(--font-main);
+}
+
+.musou-callout-text {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: 4px;
+  text-shadow: 0 0 20px var(--plasma-blue);
+  background: linear-gradient(90deg, #ffffff 0%, var(--plasma-blue) 50%, #ffffff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-align: center;
+}
+
+.musou-sub-text {
+  font-size: 1.1rem;
+  letter-spacing: 3px;
+  color: #00d2ff;
+  margin-top: 8px;
+  text-shadow: 0 0 12px rgba(0, 210, 255, 0.8);
+}
+
 .combo-box {
   position: absolute;
   left: 40px;
@@ -950,6 +1076,19 @@ html, body {
 .combo-title {
   font-size: 1.1rem;
   color: var(--yautja-red);
+}
+
+.combo-chain-tag {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--plasma-blue);
+  background: rgba(0, 210, 255, 0.15);
+  border: 1px solid var(--plasma-blue);
+  padding: 4px 10px;
+  border-radius: 4px;
+  margin-top: 6px;
+  display: inline-block;
+  letter-spacing: 1px;
 }
 
 .execution-box {

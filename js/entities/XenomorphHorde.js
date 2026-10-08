@@ -29,6 +29,7 @@ export class XenomorphHorde {
     this.eggPetalMat = new THREE.MeshStandardMaterial({ color: 0x5a2d1d, roughness: 0.5, metalness: 0.2 });
     this.crusherMat = new THREE.MeshStandardMaterial({ color: 0x151b24, roughness: 0.2, metalness: 0.9 });
     this.praetorianMat = new THREE.MeshStandardMaterial({ color: 0x0f141c, roughness: 0.3, metalness: 0.85 });
+    this.officerMat = new THREE.MeshStandardMaterial({ color: 0x220505, roughness: 0.15, metalness: 0.95 });
   }
 
   setGoreEngine(goreEngine) {
@@ -38,7 +39,7 @@ export class XenomorphHorde {
   spawnWave(count, playerPos) {
     this.clearWave();
 
-    this.spawnOvimorphEggs(playerPos, 5);
+    this.spawnOvimorphEggs(playerPos, 6);
 
     // Spawn 1 Crusher Titan
     this.spawnCrusher(playerPos);
@@ -50,23 +51,29 @@ export class XenomorphHorde {
     // Spawn 1 Grid Alien Alpha (AVP 2004 Nethead)
     this.spawnGridAlien(playerPos);
 
-    for (let i = 0; i < count; i++) {
-      const isFacehugger = Math.random() < 0.2;
-      const isBoiler = !isFacehugger && Math.random() < 0.22;
+    // Dynasty Warriors Musou: Spawn 2 Hive Gate Captains / Spire Officers (Capitaines de Ruche)
+    this.spawnHiveOfficer(playerPos, -22, 'CAPITAINE DE LA PORTE NORD');
+    this.spawnHiveOfficer(playerPos, 22, 'CAPITAINE DU COUVOIR ROYAL');
+
+    // Massive Musou Swarm Density: at least 45 to 80 aliens
+    const totalCount = Math.max(count, 45);
+    for (let i = 0; i < totalCount; i++) {
+      const isFacehugger = Math.random() < 0.18;
+      const isBoiler = !isFacehugger && Math.random() < 0.20;
       const isNeomorph = !isFacehugger && !isBoiler && Math.random() < 0.22;
       const isPraetomorph = !isFacehugger && !isBoiler && !isNeomorph && Math.random() < 0.25;
       const isRedSwarm = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && Math.random() < 0.32;
       const alien = this.createAlienMesh(isFacehugger, isBoiler, isNeomorph, isPraetomorph, isRedSwarm);
 
       const angle = Math.random() * Math.PI * 2;
-      const radius = 25 + Math.random() * 20;
+      const radius = 22 + Math.random() * 25;
       alien.position.set(
         playerPos.x + Math.cos(angle) * radius,
         0,
         playerPos.z + Math.sin(angle) * radius
       );
 
-      const isWallStalker = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && !isRedSwarm && Math.random() < 0.25;
+      const isWallStalker = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && !isRedSwarm && Math.random() < 0.22;
       this.scene.add(alien);
       this.aliens.push({
         mesh: alien,
@@ -82,9 +89,59 @@ export class XenomorphHorde {
         perchHeight: 8.0 + Math.random() * 4.0,
         leapCooldown: (isNeomorph || isPraetomorph) ? 2.0 + Math.random() * 2.0 : 0,
         isLeaping: false,
-        leapVelY: 0
+        leapVelY: 0,
+        isAirborne: false,
+        airborneVelY: 0,
+        airborneVelHoriz: new THREE.Vector3()
       });
     }
+  }
+
+  spawnHiveOfficer(playerPos, offsetX = 0, title = 'CAPITAINE DE RUCHE') {
+    const group = new THREE.Group();
+    // 1.35x Musou Officer Stature with Blood-Red Carapace and Heavy Dorsal Pipes
+    const mat = this.officerMat;
+    const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.4, 2.2, 8), mat);
+    torso.position.y = 1.6;
+    group.add(torso);
+
+    const head = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.45, 2.0, 8), mat);
+    head.rotation.x = Math.PI / 2;
+    head.position.set(0, 2.6, 0.7);
+    group.add(head);
+
+    // Glowing Officer Crest Crown
+    const crestMat = new THREE.MeshBasicMaterial({ color: 0xff1a1a });
+    const crest = new THREE.Mesh(new THREE.ConeGeometry(0.7, 1.2, 5), crestMat);
+    crest.rotation.x = Math.PI / 2.3;
+    crest.position.set(0, 2.9, -0.3);
+    group.add(crest);
+
+    // 4 Dorsal Exhaust Spikes
+    for (let p = 0; p < 4; p++) {
+      const pipe = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.04, 1.1, 6), mat);
+      pipe.position.set((p % 2 === 0 ? -0.35 : 0.35), 2.1 + (p > 1 ? 0.4 : 0), -0.4 - (p > 1 ? 0.2 : 0));
+      pipe.rotation.x = -Math.PI / 4;
+      group.add(pipe);
+    }
+
+    group.position.set(playerPos.x + offsetX, 0, playerPos.z - 30);
+    this.scene.add(group);
+
+    this.aliens.push({
+      mesh: group,
+      type: 'officer',
+      officerTitle: title,
+      isOfficer: true,
+      hp: 350,
+      maxHp: 350,
+      speed: 13.5,
+      damage: 38,
+      radius: 1.6,
+      isAirborne: false,
+      airborneVelY: 0,
+      airborneVelHoriz: new THREE.Vector3()
+    });
   }
 
   spawnCrusher(playerPos) {
@@ -354,10 +411,26 @@ export class XenomorphHorde {
           this.spawnAcidPool(a.mesh.position);
         }
 
+        // Dynasty Warriors Musou Launcher & Knockback Physics
+        if (!killed && attack.origin) {
+          const knockDir = a.mesh.position.clone().sub(attack.origin).setY(0).normalize();
+          if (knockDir.lengthSq() < 0.001) knockDir.set(0, 0, 1);
+
+          if (attack.isLauncher) {
+            a.isAirborne = true;
+            a.airborneVelY = attack.launchVelY || 18.0;
+            a.airborneVelHoriz = knockDir.clone().multiplyScalar(Math.min(attack.knockback || 6.0, 12.0));
+          } else if (attack.knockback) {
+            a.mesh.position.addScaledVector(knockDir, attack.knockback);
+          }
+        }
+
         hits.push({
           pos: a.mesh.position.clone(),
           damage: attack.damage,
-          killed: killed
+          killed: killed,
+          isOfficer: a.isOfficer || false,
+          officerTitle: a.officerTitle || null
         });
 
         if (killed) {
@@ -368,7 +441,7 @@ export class XenomorphHorde {
               this.goreEngine.spawnDismemberment(a.mesh.position, attack.type || 'wristblades');
             }
 
-            if (Math.random() < 0.15 && a.type !== 'crusher') {
+            if (Math.random() < 0.15 && a.type !== 'crusher' && !a.isOfficer) {
               this.spawnChestburster(a.mesh.position);
             }
 
@@ -608,9 +681,31 @@ export class XenomorphHorde {
       }
     }
 
-    // 4. Horde AI (Crusher, Praetorian, Warriors, Facehuggers)
+    // 4. Horde AI (Crusher, Praetorian, Warriors, Facehuggers, Officers)
     this.aliens.forEach(a => {
       if (a.isLatched) return;
+
+      // Airborne Juggling Physics (Dynasty Warriors Musou C2/C5 Launchers)
+      if (a.isAirborne) {
+        a.airborneVelY -= 36.0 * delta; // Gravity
+        a.mesh.position.y += a.airborneVelY * delta;
+        if (a.airborneVelHoriz) {
+          a.mesh.position.addScaledVector(a.airborneVelHoriz, delta);
+        }
+        // Ragdoll spin in mid-air
+        a.mesh.rotation.x += 8.0 * delta;
+        a.mesh.rotation.z += 5.0 * delta;
+
+        // Ground impact
+        if (a.mesh.position.y <= 0) {
+          a.mesh.position.y = 0;
+          a.isAirborne = false;
+          a.airborneVelY = 0;
+          a.mesh.rotation.x = 0;
+          a.mesh.rotation.z = 0;
+        }
+        return; // Helpless while airborne in juggle arc
+      }
 
       // Netgun Entangled State
       if (a.isNetEntangled) {

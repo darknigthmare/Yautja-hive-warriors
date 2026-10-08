@@ -67,7 +67,7 @@
         <div class="logo-box">
           <div class="yautja-glyph-banner">⚡ ᚛᚜ ⚡ PREDATOR ⚡ ᚛᚜ ⚡</div>
           <h1 class="game-title">HIVE WARRIORS</h1>
-          <p class="subtitle">v11.0 GOD-TIER APEX PRIMORDIAL • 1:1 CANON LORE EXPANSION</p>
+          <p class="subtitle">v28.0 APEX MUSOU DYNASTY 3D • C1-C6 CHARGE COMBOS & MORALE GAUGE</p>
         </div>
 
         <div class="menu-actions">
@@ -259,6 +259,20 @@
         </div>
       </div>
 
+      <!-- DYNASTY WARRIORS BATTLEFIELD MORALE GAUGE (Jauge de Moral du Champ de Bataille) -->
+      <div id="battlefield-morale-container" class="battlefield-morale-panel glass-panel">
+        <div class="morale-header-row">
+          <span class="morale-faction clan-label">🛡️ CLAN YAUTJA : <span id="morale-clan-val">50</span>%</span>
+          <span class="morale-title">MORAL DU CHAMP DE BATAILLE</span>
+          <span class="morale-faction hive-label"><span id="morale-hive-val">50</span>% : RUCHE XÉNO 💀</span>
+        </div>
+        <div class="morale-bar-track">
+          <div id="morale-clan-fill" class="morale-bar-fill clan-fill" style="width: 50%;"></div>
+          <div id="morale-hive-fill" class="morale-bar-fill hive-fill" style="width: 50%;"></div>
+          <div class="morale-center-notch"></div>
+        </div>
+      </div>
+
       <div class="hud-top-right">
         <div class="minimap-card glass-panel">
           <div class="minimap-header">
@@ -274,9 +288,18 @@
         </div>
       </div>
 
+      <!-- MUSOU COMBO STRING INDICATOR & AIRBORNE JUGGLE -->
       <div id="combo-display" class="combo-box hidden">
         <div id="combo-count">0</div>
         <div class="combo-title">COMBOS HITS !</div>
+        <div id="combo-chain-indicator" class="combo-chain-tag">NORMAL COMBO</div>
+      </div>
+
+      <!-- TRUE MUSOU AWAKENING FULL-SCREEN BANNER -->
+      <div id="true-musou-banner" class="true-musou-overlay hidden">
+        <div class="musou-kanji-banner">無双奥義 • 真・大殺戮</div>
+        <div class="musou-callout-text">VRAIE ATTAQUE MUSOU : DÉVASTATION DU CLAN APEX !</div>
+        <div class="musou-sub-text">RAYONNEMENT ÉLECTRO-CINÉTIQUE 360° TOTAL</div>
       </div>
 
       <!-- FACEHUGGER QTE STRUGGLE PROMPT -->

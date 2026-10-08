@@ -92,11 +92,12 @@ class GameApp {
     this.score = 0;
     this.sessionSkulls = 0;
     this.comboHits = 0;
-    this.comboTimer = 0;
     this.announcedMilestones = {};
     this.nukeCountingDown = false;
     this.motionTrackerTimer = 0;
     this.closestEnemyDist = Infinity;
+    this.battlefieldMorale = 50.0; // 0 to 100% (50 = balanced tug-of-war)
+    this.trueMusouActive = false;
 
     this.keys = {};
     this.setupEventListeners();
@@ -604,7 +605,11 @@ class GameApp {
     this.allies.spawnSquad(this.player.position, 3);
     this.marines.spawnSquad(this.player.position, 4);
     this.synthetics.spawnSquad(this.player.position, 3);
-    this.horde.spawnWave(25, this.player.position);
+    this.horde.spawnWave(55, this.player.position);
+
+    // Initialize Battlefield Morale to 50%
+    this.battlefieldMorale = 50.0;
+    this.shiftBattlefieldMorale(0);
 
     this.audio.startBackgroundMusic();
     this.ui.showScreen(this.ui.inGameHud);
@@ -629,6 +634,13 @@ class GameApp {
     this.weather.checkExplosions(this.player.position, 4.0, this.horde, this.particles);
     this.synthetics.checkHits(attack);
 
+    // Update Combo Chain Tag
+    const tagElem = document.getElementById('combo-chain-indicator');
+    if (tagElem) {
+      tagElem.innerText = `SÉRIE LÉGÈRE : ÉTAPE ${this.player.comboStep}/5`;
+      tagElem.style.color = '#00d2ff';
+    }
+
     if (this.badBlood.isActive && this.badBlood.badBlood) {
       if (this.badBlood.badBlood.mesh.position.distanceTo(this.player.position) <= attack.radius) {
         if (this.badBlood.takeDamage(attack.damage)) {
@@ -648,6 +660,16 @@ class GameApp {
     if (hits.length > 0) this.registerHits(hits);
     this.weather.checkExplosions(this.player.position, 6.0, this.horde, this.particles);
     this.synthetics.checkHits(attack);
+
+    // Dynasty Warriors Musou C1-C6 Charge Finisher Announcement
+    if (this.player.currentChargeName) {
+      this.ui.showAnnouncement(`⚡ FINISHER CHARGÉ : ${this.player.currentChargeName} !`);
+      const tagElem = document.getElementById('combo-chain-indicator');
+      if (tagElem) {
+        tagElem.innerText = `FINISHER : ${this.player.currentChargeName}`;
+        tagElem.style.color = '#ffb703';
+      }
+    }
 
     if (this.badBlood.isActive && this.badBlood.badBlood) {
       if (this.badBlood.badBlood.mesh.position.distanceTo(this.player.position) <= attack.radius) {
@@ -1076,20 +1098,30 @@ class GameApp {
   }
 
   executeMusouOverload() {
-    this.ui.showAnnouncement('⚡ SURCHARGE MUSOU PLASMA ENCLENCHÉE ! ONDES DE CHOC & TEMPETE CYCLONIQUE');
+    this.ui.showAnnouncement('⚡ VRAIE ATTAQUE MUSOU : DÉVASTATION DU CLAN APEX !');
     this.audio.playOmniPlasmaStorm();
+
+    // Show True Musou Calligraphy Banner
+    const banner = document.getElementById('true-musou-banner');
+    if (banner) {
+      banner.classList.remove('hidden');
+      setTimeout(() => banner.classList.add('hidden'), 2200);
+    }
+
+    // Shift Battlefield Morale toward Clan (+20%)
+    this.shiftBattlefieldMorale(20);
 
     // 8 Omni-directional rotating high-energy plasma beams
     const stormGroup = new THREE.Group();
     stormGroup.position.copy(this.player.position).add(new THREE.Vector3(0, 2.0, 0));
-    const beamMat = new THREE.MeshBasicMaterial({ color: 0x00ffff, transparent: true, opacity: 0.9 });
+    const beamMat = new THREE.MeshBasicMaterial({ color: 0x00ffff, transparent: true, opacity: 0.95 });
 
-    for (let b = 0; b < 8; b++) {
-      const beamGeo = new THREE.CylinderGeometry(0.12, 0.12, 35, 6);
+    for (let b = 0; b < 12; b++) {
+      const beamGeo = new THREE.CylinderGeometry(0.14, 0.14, 42, 6);
       beamGeo.rotateZ(Math.PI / 2);
       const beam = new THREE.Mesh(beamGeo, beamMat);
-      beam.rotation.y = (b / 8) * Math.PI * 2;
-      beam.position.set(Math.cos(beam.rotation.y) * 17.5, 0, Math.sin(beam.rotation.y) * 17.5);
+      beam.rotation.y = (b / 12) * Math.PI * 2;
+      beam.position.set(Math.cos(beam.rotation.y) * 21.0, 0, Math.sin(beam.rotation.y) * 21.0);
       stormGroup.add(beam);
     }
     this.renderer.scene.add(stormGroup);
@@ -1097,25 +1129,32 @@ class GameApp {
     // Animate intense storm rotation and beam pulse
     let spinAngle = 0;
     const stormAnim = setInterval(() => {
-      spinAngle += 0.25;
+      spinAngle += 0.28;
       stormGroup.rotation.y = spinAngle;
-      stormGroup.scale.multiplyScalar(1.02);
-      beamMat.opacity -= 0.045;
+      stormGroup.scale.multiplyScalar(1.025);
+      beamMat.opacity -= 0.04;
       if (beamMat.opacity <= 0) {
         clearInterval(stormAnim);
         this.renderer.scene.remove(stormGroup);
       }
     }, 30);
 
-    const attack = { origin: this.player.position, damage: 1000, radius: 35 };
+    const attack = {
+      origin: this.player.position,
+      damage: 1200,
+      radius: 40,
+      isLauncher: true,
+      launchVelY: 28.0,
+      knockback: 18.0
+    };
     const hits = this.horde.checkMeleeHits(attack);
     this.registerHits(hits);
 
     // Spawn massive plasma scorched ground decal at center
     this.particles.spawnPlasmaScorch(this.player.position);
 
-    if (this.bosses.activeBoss) this.bosses.takeDamage(1200);
-    if (this.badBlood.isActive) this.badBlood.takeDamage(1200);
+    if (this.bosses.activeBoss) this.bosses.takeDamage(1500);
+    if (this.badBlood.isActive) this.badBlood.takeDamage(1500);
   }
 
   checkTrophyExecution() {
@@ -1183,12 +1222,43 @@ class GameApp {
     }
   }
 
+  shiftBattlefieldMorale(deltaClan) {
+    this.battlefieldMorale = Math.max(0, Math.min(100, this.battlefieldMorale + deltaClan));
+    const clanFill = document.getElementById('morale-clan-fill');
+    const hiveFill = document.getElementById('morale-hive-fill');
+    const clanVal = document.getElementById('morale-clan-val');
+    const hiveVal = document.getElementById('morale-hive-val');
+
+    if (clanFill && hiveFill) {
+      const clanPct = Math.round(this.battlefieldMorale);
+      const hivePct = 100 - clanPct;
+      clanFill.style.width = `${clanPct}%`;
+      hiveFill.style.width = `${hivePct}%`;
+      if (clanVal) clanVal.innerText = clanPct;
+      if (hiveVal) hiveVal.innerText = hivePct;
+    }
+  }
+
   registerHits(hits) {
     hits.forEach(h => {
       this.comboHits++;
       this.comboTimer = 2.5;
       this.score += h.killed ? 150 : 25;
       this.player.musouEnergy = Math.min(this.player.maxMusouEnergy, this.player.musouEnergy + (h.killed ? 6 : 2));
+
+      // Shift Morale: Kills favor Yautja Clan
+      if (h.killed) {
+        if (h.isOfficer) {
+          // Defeating an officer swings battlefield morale dramatically!
+          this.shiftBattlefieldMorale(12.0);
+          if (this.audio && this.audio.playOfficerDefeatedGong) {
+            this.audio.playOfficerDefeatedGong();
+          }
+          this.ui.showAnnouncement(`⚔️ OFFICIER TERRASSÉ : ${h.officerTitle || 'CAPITAINE DE RUCHE'} ÉLIMINÉ ! MORAL DU CLAN +12% !`);
+        } else {
+          this.shiftBattlefieldMorale(0.4);
+        }
+      }
 
       if (h.pos) {
         this.particles.emitBlood(h.pos, 8, true);
@@ -1207,14 +1277,18 @@ class GameApp {
       { count: 100, msg: '100 KOS - GUERRIER SANGUINAIRE !' },
       { count: 250, msg: '250 KOS - MAÎTRE DU CARNAGE !' },
       { count: 500, msg: '500 KOS - FLÉAU DE LA RUCHE !' },
-      { count: 1000, msg: '1000 KOS - LÉGENDE DU CLAN YAUTJA !' }
+      { count: 1000, msg: '1000 KOS - VÉRITABLE GUERRIER DES TROIS ROYAUMES DU CLAN !' }
     ];
 
     milestones.forEach(m => {
       if (kos >= m.count && !this.announcedMilestones[m.count]) {
         this.announcedMilestones[m.count] = true;
-        this.ui.showAnnouncement(m.msg);
-        this.audio.playAnnouncerTone();
+        this.ui.showAnnouncement(`🏆 ${m.count} VICTIMES ! ${m.msg}`);
+        if (this.audio && this.audio.playMusouKOCallout) {
+          this.audio.playMusouKOCallout();
+        } else {
+          this.audio.playAnnouncerTone();
+        }
       }
     });
   }
@@ -1532,11 +1606,11 @@ class GameApp {
     });
     this.ui.showExecutionPrompt((boss && boss.isStunned) || subBossStunnedNearby);
 
-    if (this.horde.aliens.length < 8 && !this.bosses.activeBoss) {
+    if (this.horde.aliens.length < 10 && !this.bosses.activeBoss) {
       if (this.waveIndex < this.totalWaves) {
         this.waveIndex++;
-        this.horde.spawnWave(20 + this.waveIndex * 10, this.player.position);
-        this.ui.showAnnouncement(`VAGUE ${this.waveIndex} APPROCHE !`);
+        this.horde.spawnWave(45 + this.waveIndex * 15, this.player.position);
+        this.ui.showAnnouncement(`VAGUE ${this.waveIndex} APPROCHE ! FORCES DE LA RUCHE DÉPLOYÉES !`);
 
         // Cheyenne Dropship Airstrike Support on Wave 2 & 4!
         if (this.waveIndex === 2 || this.waveIndex === 4) {
@@ -1569,7 +1643,17 @@ class GameApp {
       if (this.comboTimer <= 0) {
         this.comboHits = 0;
         this.ui.showCombo(0);
+        const tagElem = document.getElementById('combo-chain-indicator');
+        if (tagElem) {
+          tagElem.innerText = 'NORMAL COMBO';
+          tagElem.style.color = '#00d2ff';
+        }
       }
+    }
+
+    // Dynamic Tug-of-War Morale update (Alien pressure slowly regains ground if Yautja is idle)
+    if (this.battlefieldMorale > 25.0) {
+      this.shiftBattlefieldMorale(-0.15 * delta);
     }
 
     this.ui.updateHUD(this.player, this.horde, this.bosses, this.waveIndex, this.totalWaves, this.score);

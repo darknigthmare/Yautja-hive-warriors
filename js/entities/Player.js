@@ -61,6 +61,8 @@ export class Player {
     this.berserkerHeartbeatTimer = 0;
     this.trophiesCollected = [];
     this.targetLockEnemy = null;
+    this.comboResetTimer = 0;
+    this.currentChargeName = null;
     this.visorAcidBurn = 0;
     this.wristNukeHoloMesh = null;
 
@@ -984,40 +986,145 @@ export class Player {
   lightAttack() {
     if (this.isAttacking || this.isFacehuggerLatched) return null;
     this.isAttacking = true;
-    this.attackComboStep = (this.attackComboStep % 3) + 1;
-    this.attackTimer = 0.3;
+    this.attackComboStep = (this.attackComboStep % 5) + 1;
+    this.attackTimer = 0.28;
+    this.comboResetTimer = 1.4;
 
     this.audioEngine.playSlash();
 
-    this.rightArm.rotation.x = -Math.PI * 0.6;
-    this.rightArm.rotation.y = 0.4;
+    // Distinct arm postures for 5-tier light string
+    const s = this.attackComboStep;
+    if (s === 1) {
+      this.rightArm.rotation.x = -Math.PI * 0.55;
+      this.rightArm.rotation.y = 0.45;
+    } else if (s === 2) {
+      this.rightArm.rotation.x = -Math.PI * 0.4;
+      this.rightArm.rotation.y = -0.55;
+    } else if (s === 3) {
+      this.rightArm.rotation.x = -Math.PI * 0.65;
+      this.rightArm.rotation.y = 0.2;
+    } else if (s === 4) {
+      this.rightArm.rotation.x = -Math.PI * 0.35;
+      this.rightArm.rotation.y = -0.3;
+    } else {
+      this.rightArm.rotation.x = -Math.PI * 0.75;
+      this.rightArm.rotation.y = 0.6;
+    }
 
     const baseDmg = this.isSecondaryWeapon ? this.meleeDamage * 1.3 : this.meleeDamage;
-    const buff = this.warhornBuffTimer > 0 ? 1.5 : 1.0;
+    const buff = (this.warhornBuffTimer > 0 ? 1.5 : 1.0) * (this.isBerserkerActive ? 2.0 : 1.0);
 
     return {
       type: 'light',
-      damage: baseDmg * (1 + this.attackComboStep * 0.2) * buff,
-      radius: this.isSecondaryWeapon ? 4.5 : 3.5,
-      angle: Math.PI * 0.6
+      step: this.attackComboStep,
+      damage: baseDmg * (1 + this.attackComboStep * 0.18) * buff,
+      radius: this.isSecondaryWeapon ? 4.8 : 3.8,
+      angle: Math.PI * 0.65
     };
   }
 
   heavyAttack() {
     if (this.isAttacking || this.isFacehuggerLatched) return null;
     this.isAttacking = true;
-    this.attackTimer = 0.5;
 
-    this.audioEngine.playSlash();
-    this.audioEngine.playYautjaRoar();
+    const step = this.attackComboStep;
+    const baseDmg = this.isSecondaryWeapon ? this.meleeDamage * 1.3 : this.meleeDamage;
+    const buff = (this.warhornBuffTimer > 0 ? 1.5 : 1.0) * (this.isBerserkerActive ? 2.0 : 1.0);
 
-    this.mesh.rotation.y += Math.PI * 2;
-    const buff = this.warhornBuffTimer > 0 ? 1.5 : 1.0;
+    let chargeType = 'c1';
+    let chargeName = 'C1 - DISLOCATION CINÉTIQUE (GUARD-BREAK)';
+    let dmgMult = 2.0;
+    let radius = 7.0;
+    let knockback = 9.0;
+    let isLauncher = false;
+    let launchVelY = 0;
+    let isStun = false;
+    let stunDuration = 0;
+
+    if (step === 0) {
+      // C1: Concussive Guard Break / Launcher thrust
+      this.attackTimer = 0.42;
+      this.audioEngine.playSlash();
+      this.rightArm.rotation.x = -Math.PI * 0.7;
+      chargeType = 'c1';
+      chargeName = 'C1 - DISLOCATION CINÉTIQUE';
+      dmgMult = 2.0;
+      radius = 7.0;
+      knockback = 9.5;
+    } else if (step === 1) {
+      // C2: Vertical Blade Uppercut (Airborne Juggle Launcher)
+      this.attackTimer = 0.45;
+      this.audioEngine.playLauncherWhoosh();
+      this.rightArm.rotation.x = -Math.PI * 0.9;
+      chargeType = 'c2';
+      chargeName = 'C2 - PROJECTION AÉRIENNE JUGGLE';
+      dmgMult = 2.6;
+      radius = 5.2;
+      isLauncher = true;
+      launchVelY = 19.0;
+    } else if (step === 2) {
+      // C3: Hundred-Claw Flurry Stun Barrage
+      this.attackTimer = 0.55;
+      this.audioEngine.playSlash();
+      this.audioEngine.playYautjaClick();
+      chargeType = 'c3';
+      chargeName = 'C3 - RAFALE CENT-LAMES ÉTOURDISSANTE';
+      dmgMult = 3.5;
+      radius = 6.0;
+      isStun = true;
+      stunDuration = 3.2;
+      knockback = 3.5;
+    } else if (step === 3) {
+      // C4: Tornado Crowd-Clearing Cleave
+      this.attackTimer = 0.52;
+      this.audioEngine.playSlash();
+      this.audioEngine.playYautjaRoar();
+      this.mesh.rotation.y += Math.PI * 2;
+      chargeType = 'c4';
+      chargeName = 'C4 - BALAYAGE TORNADE DÉVASTATEUR';
+      dmgMult = 4.4;
+      radius = 9.8;
+      knockback = 15.0;
+    } else if (step === 4) {
+      // C5: Geyser Celestial Plasma Vortex (Massive Aerial Catapult)
+      this.attackTimer = 0.62;
+      this.audioEngine.playLauncherWhoosh();
+      this.audioEngine.playPlasmaShot();
+      chargeType = 'c5';
+      chargeName = 'C5 - VORTEX CÉLESTE PLASMA GEYSER';
+      dmgMult = 5.5;
+      radius = 11.5;
+      isLauncher = true;
+      launchVelY = 25.0;
+    } else {
+      // C6: Apex Seismic Shockwave Cataclysm
+      this.attackTimer = 0.78;
+      this.audioEngine.playC6CataclysmBoom();
+      this.audioEngine.playYautjaRoar();
+      chargeType = 'c6';
+      chargeName = 'C6 - CATACLYSME SISMIQUE APEX';
+      dmgMult = 7.2;
+      radius = 16.5;
+      knockback = 18.0;
+      isLauncher = true;
+      launchVelY = 17.0;
+    }
+
+    // Reset combo string after any Charge finisher
+    this.attackComboStep = 0;
+    this.comboResetTimer = 0;
+    this.currentChargeName = chargeName;
 
     return {
-      type: 'heavy',
-      damage: this.meleeDamage * 2.5 * buff,
-      radius: 6.0,
+      type: chargeType,
+      name: chargeName,
+      damage: baseDmg * dmgMult * buff,
+      radius: radius,
+      knockback: knockback,
+      isLauncher: isLauncher,
+      launchVelY: launchVelY,
+      isStun: isStun,
+      stunDuration: stunDuration,
       angle: Math.PI * 2
     };
   }
