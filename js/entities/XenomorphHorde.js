@@ -12,9 +12,19 @@ export class XenomorphHorde {
     this.chestbursters = [];
     this.acidPools = [];
     this.acidSplashes = [];
+    this.zeroGAcidGlobules = [];
     this.deadCount = 0;
 
     this.acidSplashMat = new THREE.MeshBasicMaterial({ color: 0x39ff14 });
+    this.zeroGAcidMat = new THREE.MeshStandardMaterial({
+      color: 0x39ff14,
+      emissive: 0x22aa00,
+      transparent: true,
+      opacity: 0.82,
+      roughness: 0.2,
+      metalness: 0.1
+    });
+    this.zeroGAcidCoreMat = new THREE.MeshBasicMaterial({ color: 0xccff00 });
     this.eggMat = new THREE.MeshStandardMaterial({ color: 0x3d3522, roughness: 0.7, metalness: 0.1 });
     this.eggPetalMat = new THREE.MeshStandardMaterial({ color: 0x5a2d1d, roughness: 0.5, metalness: 0.2 });
     this.crusherMat = new THREE.MeshStandardMaterial({ color: 0x151b24, roughness: 0.2, metalness: 0.9 });
@@ -362,6 +372,11 @@ export class XenomorphHorde {
             }
 
             this.spawnAcidPool(a.mesh.position);
+            // Spawn 1-2 Zero-G Floating Acid Globules (Alien: Romulus 2024 Lore)
+            const globCount = Math.floor(1 + Math.random() * 2);
+            for (let g = 0; g < globCount; g++) {
+              this.spawnZeroGAcidGlobule(a.mesh.position);
+            }
             this.scene.remove(a.mesh);
             this.aliens.splice(i, 1);
             this.deadCount++;
@@ -435,6 +450,33 @@ export class XenomorphHorde {
     this.acidPools.push({ mesh: pool, life: 10 });
   }
 
+  spawnZeroGAcidGlobule(pos) {
+    const group = new THREE.Group();
+    const radius = 0.22 + Math.random() * 0.18;
+    const sphere = new THREE.Mesh(new THREE.SphereGeometry(radius, 12, 12), this.zeroGAcidMat);
+    group.add(sphere);
+
+    const core = new THREE.Mesh(new THREE.SphereGeometry(radius * 0.45, 8, 8), this.zeroGAcidCoreMat);
+    group.add(core);
+
+    const spawnY = Math.max(0.8, Math.min(3.2, (pos.y || 0) + 1.2 + (Math.random() - 0.5) * 1.0));
+    group.position.set(
+      pos.x + (Math.random() - 0.5) * 1.5,
+      spawnY,
+      pos.z + (Math.random() - 0.5) * 1.5
+    );
+
+    this.scene.add(group);
+    this.zeroGAcidGlobules.push({
+      mesh: group,
+      baseY: group.position.y,
+      floatTime: Math.random() * Math.PI * 2,
+      driftVel: new THREE.Vector3((Math.random() - 0.5) * 1.2, (Math.random() - 0.5) * 0.3, (Math.random() - 0.5) * 1.2),
+      life: 14.0,
+      radius: radius
+    });
+  }
+
   update(delta, player) {
     // 1. Ovimorph Egg proximity
     this.eggs.forEach(egg => {
@@ -489,7 +531,7 @@ export class XenomorphHorde {
       const pool = this.acidPools[i];
       pool.life -= delta;
       if (pool.mesh.position.distanceTo(player.position) < 1.8) {
-        player.takeDamage(15 * delta);
+        player.takeDamage(15 * delta, true);
       }
       if (pool.life <= 0) {
         this.scene.remove(pool.mesh);
@@ -506,7 +548,7 @@ export class XenomorphHorde {
 
       // Check collision with player
       if (splash.mesh.position.distanceTo(player.position) < 1.6) {
-        player.takeDamage(splash.damage);
+        player.takeDamage(splash.damage, true);
         this.scene.remove(splash.mesh);
         this.acidSplashes.splice(i, 1);
         continue;
@@ -516,6 +558,52 @@ export class XenomorphHorde {
       if (splash.mesh.position.y <= 0.05 || splash.life <= 0) {
         this.scene.remove(splash.mesh);
         this.acidSplashes.splice(i, 1);
+      }
+    }
+
+    // 3c. Zero-G Floating Acid Globules (Alien: Romulus 2024 Lore)
+    for (let i = this.zeroGAcidGlobules.length - 1; i >= 0; i--) {
+      const glob = this.zeroGAcidGlobules[i];
+      glob.life -= delta;
+      glob.floatTime += delta * 2.2;
+      glob.mesh.position.y = glob.baseY + Math.sin(glob.floatTime) * 0.35;
+      glob.mesh.position.addScaledVector(glob.driftVel, delta);
+      if (glob.mesh.children[0]) {
+        glob.mesh.children[0].scale.setScalar(1.0 + Math.sin(glob.floatTime * 3) * 0.12);
+      }
+
+      const pDist = glob.mesh.position.distanceTo(player.position);
+      if (pDist <= 1.4) {
+        if (player.isBlocking) {
+          player.audioEngine.playShieldBlock();
+        } else {
+          player.takeDamage(24, true);
+          if (this.audioEngine && this.audioEngine.playAcidGlobuleHiss) {
+            this.audioEngine.playAcidGlobuleHiss();
+          }
+        }
+        this.scene.remove(glob.mesh);
+        this.zeroGAcidGlobules.splice(i, 1);
+        continue;
+      }
+
+      // Check collision with nearby aliens
+      for (let j = 0; j < this.aliens.length; j++) {
+        const al = this.aliens[j];
+        if (al.mesh.position.distanceTo(glob.mesh.position) < 1.3) {
+          al.hp -= 140; // Molecular acid dissolving xenomorph carapace
+          if (this.audioEngine && this.audioEngine.playAcidGlobuleHiss) {
+            this.audioEngine.playAcidGlobuleHiss();
+          }
+          this.scene.remove(glob.mesh);
+          this.zeroGAcidGlobules.splice(i, 1);
+          break;
+        }
+      }
+
+      if (glob.life <= 0) {
+        this.scene.remove(glob.mesh);
+        this.zeroGAcidGlobules.splice(i, 1);
       }
     }
 
@@ -773,5 +861,7 @@ export class XenomorphHorde {
     this.acidPools = [];
     this.acidSplashes.forEach(s => this.scene.remove(s.mesh));
     this.acidSplashes = [];
+    this.zeroGAcidGlobules.forEach(g => this.scene.remove(g.mesh));
+    this.zeroGAcidGlobules = [];
   }
 }

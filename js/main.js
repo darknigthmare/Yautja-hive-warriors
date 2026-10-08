@@ -323,6 +323,12 @@ class GameApp {
       // Gauntlet EMP Overcharge Pulse [U Key]
       if (e.code === 'KeyU' && this.player) {
         if (this.player.triggerGauntletEMP(this.horde, this.synthetics)) {
+          if (this.horde && this.horde.zeroGAcidGlobules) {
+            this.horde.zeroGAcidGlobules.forEach(g => {
+              const repelDir = g.mesh.position.clone().sub(this.player.position).normalize();
+              g.driftVel.copy(repelDir).multiplyScalar(18);
+            });
+          }
           this.ui.showAnnouncement('⚡ DÉCHARGE EMP DE POIGNET : ANDROÏDES COURT-CIRCUITÉS & XÉNOS PARALYSÉS !');
         } else {
           this.ui.showAnnouncement('⏳ EMP EN RECHARGE CONDENSATEUR...');
@@ -511,10 +517,20 @@ class GameApp {
       timeLeft--;
       if (timerText) timerText.innerText = timeLeft;
 
+      // Authentic 1987 Billy's mimicry sardonic laugh right before detonation
+      if (timeLeft === 2) {
+        if (this.audio && this.audio.playBillyLaugh) {
+          this.audio.playBillyLaugh();
+        }
+      }
+
       if (timeLeft <= 0) {
         clearInterval(interval);
         nukeModal.classList.add('hidden');
         this.nukeCountingDown = false;
+        if (this.player && this.player.clearNukeHoloMesh) {
+          this.player.clearNukeHoloMesh();
+        }
 
         const hits = this.horde.checkMeleeHits({ origin: this.player.position, radius: 70, damage: 10000 });
         this.registerHits(hits);
@@ -1243,6 +1259,20 @@ class GameApp {
       const p = this.projectiles[i];
       p.life -= delta;
 
+      // Alien: Romulus Zero-G Acid Globule Vaporization
+      if (this.horde && this.horde.zeroGAcidGlobules) {
+        for (let g = this.horde.zeroGAcidGlobules.length - 1; g >= 0; g--) {
+          const glob = this.horde.zeroGAcidGlobules[g];
+          if (glob && glob.mesh && glob.mesh.position.distanceTo(p.mesh.position) <= 2.2) {
+            this.particles.emitSparks(glob.mesh.position, 8);
+            if (this.audio && this.audio.playAcidGlobuleHiss) this.audio.playAcidGlobuleHiss();
+            this.renderer.scene.remove(glob.mesh);
+            this.horde.zeroGAcidGlobules.splice(g, 1);
+            break;
+          }
+        }
+      }
+
       if (p.isSmartDisc) {
         p.progress += p.speed * delta;
         p.mesh.rotation.z += 25 * delta; // Rapid slicing gyro-spin
@@ -1471,6 +1501,17 @@ class GameApp {
 
     this.ui.updateHUD(this.player, this.horde, this.bosses, this.waveIndex, this.totalWaves, this.score);
 
+    // Visor Acid Corrosion HUD Overlay Update (Alien: Romulus 2024)
+    const acidOverlay = document.getElementById('acid-corrosion-overlay');
+    if (acidOverlay) {
+      if (this.player && this.player.visorAcidBurn > 0.05) {
+        acidOverlay.classList.remove('hidden');
+        acidOverlay.style.opacity = Math.min(1.0, this.player.visorAcidBurn);
+      } else {
+        acidOverlay.classList.add('hidden');
+      }
+    }
+
     if (this.player.hp <= 0) {
       this.endGame(false);
     }
@@ -1590,6 +1631,9 @@ class GameApp {
       if (d.mesh) this.scene.remove(d.mesh);
     }
     this.holoDecoys = [];
+    if (this.player && this.player.clearNukeHoloMesh) {
+      this.player.clearNukeHoloMesh();
+    }
 
     this.ui.recordEndSession(this.horde.deadCount, this.sessionSkulls, this.score);
 

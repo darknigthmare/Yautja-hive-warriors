@@ -52,6 +52,8 @@ export class Player {
     this.compoundBowCooldown = 0;
     this.holoDecoyCooldown = 0;
     this.targetLockEnemy = null;
+    this.visorAcidBurn = 0;
+    this.wristNukeHoloMesh = null;
 
     // Pounce Leap State
     this.isLeaping = false;
@@ -634,8 +636,17 @@ export class Player {
     if (this.medicompCharges <= 0) return false;
     this.medicompCharges--;
     this.hp = Math.min(this.maxHp, this.hp + 450);
+    this.visorAcidBurn = 0; // Medical bio-gel instantly neutralizes acid corrosion
     this.audioEngine.playMedicompCauterize();
     return true;
+  }
+
+  inflictVisorAcidBurn() {
+    if (this.isBlocking || this.isPerched) return;
+    this.visorAcidBurn = 1.0;
+    if (this.audioEngine) {
+      this.audioEngine.playVisorAcidBurn();
+    }
   }
 
   useAcidSolvent(horde) {
@@ -774,7 +785,36 @@ export class Player {
 
   triggerNukeSelfDestruct() {
     this.audioEngine.playPredatorLaughCountdown();
+
+    // 3D Holographic Yautja Glyphs Ring over left gauntlet (1987 canon)
+    if (!this.wristNukeHoloMesh && this.leftArm) {
+      const holoGroup = new THREE.Group();
+      const ringGeo = new THREE.TorusGeometry(0.55, 0.03, 8, 24);
+      const ringMat = new THREE.MeshBasicMaterial({ color: 0xff0033, wireframe: true, transparent: true, opacity: 0.85 });
+      const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+      ringMesh.rotation.x = Math.PI / 2;
+      holoGroup.add(ringMesh);
+
+      // 3 Glowing Yautja glyph prisms
+      for (let g = 0; g < 3; g++) {
+        const glyph = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.25, 3), new THREE.MeshBasicMaterial({ color: 0xff1144 }));
+        const angle = (g / 3) * Math.PI * 2;
+        glyph.position.set(Math.cos(angle) * 0.45, 0.08, Math.sin(angle) * 0.45);
+        holoGroup.add(glyph);
+      }
+      holoGroup.position.set(0, -0.6, 0.35);
+      this.leftArm.add(holoGroup);
+      this.wristNukeHoloMesh = holoGroup;
+    }
+
     return { damage: 10000, radius: 60 };
+  }
+
+  clearNukeHoloMesh() {
+    if (this.wristNukeHoloMesh && this.leftArm) {
+      this.leftArm.remove(this.wristNukeHoloMesh);
+      this.wristNukeHoloMesh = null;
+    }
   }
 
   triggerHybridMetamorphosis() {
@@ -935,7 +975,7 @@ export class Player {
     return true;
   }
 
-  takeDamage(amount) {
+  takeDamage(amount, isAcid = false) {
     if (this.isBlocking || this.isPerched) {
       this.audioEngine.playShieldBlock();
       return this.hp;
@@ -943,6 +983,10 @@ export class Player {
     if (this.isHybridMutated) return this.hp;
     if (this.isCloaked) amount *= 0.5;
     this.hp = Math.max(0, this.hp - amount);
+
+    if (isAcid) {
+      this.inflictVisorAcidBurn();
+    }
 
     // Luminescent neon green Yautja bio-blood splatter
     if (this.particles && amount > 2) {
@@ -953,6 +997,14 @@ export class Player {
   }
 
   update(delta, horde = null) {
+    if (this.visorAcidBurn > 0) {
+      this.visorAcidBurn = Math.max(0, this.visorAcidBurn - delta * 0.35);
+    }
+
+    if (this.wristNukeHoloMesh) {
+      this.wristNukeHoloMesh.rotation.y += delta * 4.5;
+    }
+
     if (this.warhornBuffTimer > 0) {
       this.warhornBuffTimer -= delta;
     }
