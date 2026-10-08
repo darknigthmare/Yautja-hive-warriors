@@ -63,6 +63,41 @@ export class BossManager {
     head.position.set(0, 3.5 * scale, 0.5);
     group.add(head);
 
+    // 1:1 Canon Xenomorph Queen / Empress Flared Armored Head Crest (Aliens 1986 / AvP 2004)
+    if (!isOffspring) {
+      const crownMat = new THREE.MeshStandardMaterial({
+        color: isPredalien ? 0x4a3b2c : (isEmpress ? 0x3b1254 : 0x0a0e14),
+        metalness: 0.85,
+        roughness: 0.2
+      });
+      // Flared hexagonal crown fan
+      const crownGeo = new THREE.ConeGeometry(2.4 * scale, 3.8 * scale, 6);
+      const crown = new THREE.Mesh(crownGeo, crownMat);
+      crown.rotation.x = Math.PI / 2.3;
+      crown.position.set(0, 4.3 * scale, -1.8 * scale);
+      group.add(crown);
+
+      // 4 Heavy Dorsal Biomechanical Exhaust Siphons
+      for (let s = 0; s < 4; s++) {
+        const pipe = new THREE.Mesh(new THREE.CylinderGeometry(0.12 * scale, 0.08 * scale, 2.2 * scale, 6), crownMat);
+        pipe.position.set((s % 2 === 0 ? -0.7 : 0.7) * scale, 3.2 * scale + (s > 1 ? 0.6 : 0) * scale, -1.2 * scale - (s > 1 ? 0.4 : 0) * scale);
+        pipe.rotation.x = -Math.PI / 4;
+        group.add(pipe);
+      }
+
+      // Secondary Smaller Chest Arms (Queen Anatomical Characteristic)
+      const secArmGeo = new THREE.CylinderGeometry(0.08 * scale, 0.06 * scale, 1.2 * scale, 5);
+      const armL = new THREE.Mesh(secArmGeo, crownMat);
+      armL.position.set(-0.5 * scale, 2.3 * scale, 0.9 * scale);
+      armL.rotation.set(0.6, 0, -0.4);
+      group.add(armL);
+
+      const armR = new THREE.Mesh(secArmGeo, crownMat);
+      armR.position.set(0.5 * scale, 2.3 * scale, 0.9 * scale);
+      armR.rotation.set(0.6, 0, 0.4);
+      group.add(armR);
+    }
+
     const torsoGeo = new THREE.CylinderGeometry(1.0 * scale, 0.8 * scale, 4.0 * scale, 8);
     const torso = new THREE.Mesh(torsoGeo, mat);
     torso.position.y = 2.0 * scale;

@@ -1163,14 +1163,17 @@ class GameApp {
       this.player.executeSpineRip();
 
       const bType = this.bosses.activeBoss.type || 'queen';
-      let tName = 'Crâne & Épine Dorsale de Reine Xénomorphe (AvP 2004)';
+      let tName = 'Couronne Chitinense & Colonne Vertébrale de Reine Matriarche (Aliens 1986 / AvP 2004)';
       let tHonor = 2500;
-      if (bType === 'offspring') {
-        tName = 'Embryon Z-01 et Mâchoire Hybride The Offspring (Romulus 2024)';
+      if (bType === 'the_offspring') {
+        tName = 'Mandibule Hybride & Vertèbres Z-01 de The Offspring (Romulus 2024)';
         tHonor = 3500;
-      } else if (bType === 'predalien') {
-        tName = 'Mandibule de Predalien Prédateur-Hybride (AVP-R 2007)';
+      } else if (bType === 'predalien_queen') {
+        tName = 'Mandibules Quadruples & Crâne Hybride de Reine Prédalienne (AVP-R 2007)';
         tHonor = 3000;
+      } else if (bType === 'empress_matriarch') {
+        tName = 'Ailes Vestigiales & Épine Royale d\'Impératrice de Ruche (Dark Horse Comics)';
+        tHonor = 4000;
       }
 
       this.player.recordTrophy(tName, tHonor);
@@ -1178,6 +1181,9 @@ class GameApp {
       this.sessionSkulls++;
       this.score += tHonor;
       this.player.hp = Math.min(this.player.maxHp, this.player.hp + 500);
+
+      // Decisive Battlefield Morale Victory (+35%)
+      this.shiftBattlefieldMorale(35.0);
 
       this.renderer.scene.remove(this.bosses.activeBoss.mesh);
       this.bosses.activeBoss = null;
@@ -1206,6 +1212,9 @@ class GameApp {
           this.score += tHonor;
           this.player.hp = Math.min(this.player.maxHp, this.player.hp + 300);
 
+          // Sub-Boss Execution Morale Swing (+18%)
+          this.shiftBattlefieldMorale(18.0);
+
           if (this.gore) {
             this.gore.spawnDismemberment(a.mesh.position, 'spine_rip');
           }
@@ -1214,7 +1223,7 @@ class GameApp {
           this.horde.aliens.splice(i, 1);
           this.horde.deadCount++;
 
-          this.ui.showAnnouncement(`🏆 TROPHÉE DE CHASSE : ${tName} (+${tHonor} HONNEUR) !`);
+          this.ui.showAnnouncement(`🏆 TROPHÉE DE CHASSE : ${tName} (+${tHonor} HONNEUR, MORAL +18%) !`);
           this.ui.showExecutionPrompt(false);
           return;
         }
@@ -1633,8 +1642,17 @@ class GameApp {
           }, 1800);
         }
       } else if (!this.bosses.activeBoss) {
-        this.bosses.spawnBoss(this.ui.selectedLevel.bossType, this.player.position.clone().add(new THREE.Vector3(0, 0, -25)));
-        this.ui.showAnnouncement('⚠️ ALERTE BOSS: LA REINE XENOMORPHE APPARAÎT !');
+        const bType = this.ui.selectedLevel.bossType;
+        this.bosses.spawnBoss(bType, this.player.position.clone().add(new THREE.Vector3(0, 0, -25)));
+        
+        let bossTitle = 'REINE MATRIARCHE KAINDE AMEDHA (ALIENS 1986)';
+        if (bType === 'the_offspring') bossTitle = 'HYBRIDE GÉNOTYPIQUE THE OFFSPRING (ROMULUS 2024)';
+        else if (bType === 'predalien_queen') bossTitle = 'REINE PRÉDALIENNE ABOMINATION DU CLAN (AVP-R 2007)';
+        else if (bType === 'empress_matriarch') bossTitle = 'IMPÉRATRICE VOLANTE DE LA RUCHE PRIMORDIALE (DARK HORSE)';
+
+        this.ui.showAnnouncement(`👑 SURGISSEMENT DU BOSS APEX : ${bossTitle} !`);
+        // Shift Morale towards Hive (-25%) upon Apex Boss appearance
+        this.shiftBattlefieldMorale(-25.0);
       }
     }
 
