@@ -2003,5 +2003,40 @@ export class AudioEngine {
     osc.start(now);
     osc.stop(now + 0.25);
   }
+
+  playDropPodImpact() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Seismic kinetic detonation of orbital insertion capsule
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(140, now);
+    osc.frequency.exponentialRampToValueAtTime(24, now + 0.85);
+
+    gain.gain.setValueAtTime(0.95, now);
+    gain.gain.linearRampToValueAtTime(0.01, now + 0.85);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.85);
+
+    // Hydraulic decompression hiss of explosive blowout hatch
+    const hissOsc = this.ctx.createOscillator();
+    const hissGain = this.ctx.createGain();
+    hissOsc.type = 'square';
+    hissOsc.frequency.setValueAtTime(800, now + 0.15);
+    hissOsc.frequency.exponentialRampToValueAtTime(120, now + 0.65);
+
+    hissGain.gain.setValueAtTime(0.5, now + 0.15);
+    hissGain.gain.linearRampToValueAtTime(0.01, now + 0.65);
+
+    hissOsc.connect(hissGain);
+    hissGain.connect(this.ctx.destination);
+    hissOsc.start(now + 0.15);
+    hissOsc.stop(now + 0.65);
+  }
 }
 
