@@ -94,10 +94,17 @@ export class ColonialMarinesManager {
           m.mesh.rotation.y = Math.atan2(dir.x, dir.z);
         } else {
           // Fire Pulse Rifle / Smartgun!
-          if (Math.random() < 0.05) {
+          if (Math.random() < 0.08) {
             this.audioEngine.playPulseRifleBurst ? this.audioEngine.playPulseRifleBurst() : this.audioEngine.playPlasmaShot();
             if (targetPos === player.position) {
               player.takeDamage(m.damage * 0.1);
+            } else {
+              // Deal kinetic damage to the targeted Xenomorph
+              horde.aliens.forEach(a => {
+                if (a.mesh.position.distanceTo(targetPos) <= 2.5) {
+                  a.hp -= m.damage;
+                }
+              });
             }
           }
 
