@@ -58,12 +58,14 @@ export class XenomorphHorde {
     // Massive Musou Swarm Density: at least 45 to 80 aliens
     const totalCount = Math.max(count, 45);
     for (let i = 0; i < totalCount; i++) {
-      const isFacehugger = Math.random() < 0.18;
-      const isBoiler = !isFacehugger && Math.random() < 0.20;
-      const isNeomorph = !isFacehugger && !isBoiler && Math.random() < 0.22;
-      const isPraetomorph = !isFacehugger && !isBoiler && !isNeomorph && Math.random() < 0.25;
-      const isRedSwarm = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && Math.random() < 0.32;
-      const alien = this.createAlienMesh(isFacehugger, isBoiler, isNeomorph, isPraetomorph, isRedSwarm);
+      const isFacehugger = Math.random() < 0.16;
+      const isBoiler = !isFacehugger && Math.random() < 0.16;
+      const isNeomorph = !isFacehugger && !isBoiler && Math.random() < 0.16;
+      const isPraetomorph = !isFacehugger && !isBoiler && !isNeomorph && Math.random() < 0.18;
+      const isRedSwarm = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && Math.random() < 0.22;
+      const isSpitter = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && !isRedSwarm && Math.random() < 0.25;
+      const isRunner = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && !isRedSwarm && !isSpitter && Math.random() < 0.30;
+      const alien = this.createAlienMesh(isFacehugger, isBoiler, isNeomorph, isPraetomorph, isRedSwarm, isSpitter, isRunner);
 
       const angle = Math.random() * Math.PI * 2;
       const radius = 22 + Math.random() * 25;
@@ -73,21 +75,27 @@ export class XenomorphHorde {
         playerPos.z + Math.sin(angle) * radius
       );
 
-      const isWallStalker = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && !isRedSwarm && Math.random() < 0.22;
+      const isWallStalker = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && !isRedSwarm && !isSpitter && !isRunner && Math.random() < 0.22;
       this.scene.add(alien);
+      const aType = isFacehugger ? 'facehugger' : (isBoiler ? 'boiler' : (isNeomorph ? 'neomorph' : (isPraetomorph ? 'praetomorph' : (isRedSwarm ? 'red_warrior' : (isSpitter ? 'spitter' : (isRunner ? 'runner' : 'warrior'))))));
+      const aHp = isFacehugger ? 40 : (isBoiler ? 80 : (isNeomorph ? 95 : (isPraetomorph ? 160 : (isRedSwarm ? 140 : (isSpitter ? 110 : (isRunner ? 85 : 120))))));
+      const aSpeed = isFacehugger ? 17 : (isBoiler ? 14 : (isNeomorph ? 19 : (isPraetomorph ? 16 : (isRedSwarm ? 15.5 : (isSpitter ? 12 : (isRunner ? 21.0 : 11))))));
+      const aDmg = isFacehugger ? 15 : (isBoiler ? 50 : (isNeomorph ? 35 : (isPraetomorph ? 42 : (isRedSwarm ? 34 : (isSpitter ? 30 : (isRunner ? 28 : 25))))));
+
       this.aliens.push({
         mesh: alien,
-        type: isFacehugger ? 'facehugger' : (isBoiler ? 'boiler' : (isNeomorph ? 'neomorph' : (isPraetomorph ? 'praetomorph' : (isRedSwarm ? 'red_warrior' : 'warrior')))),
-        hp: isFacehugger ? 40 : (isBoiler ? 80 : (isNeomorph ? 95 : (isPraetomorph ? 160 : (isRedSwarm ? 140 : 120)))),
-        maxHp: isFacehugger ? 40 : (isBoiler ? 80 : (isNeomorph ? 95 : (isPraetomorph ? 160 : (isRedSwarm ? 140 : 120)))),
-        speed: isFacehugger ? 17 : (isBoiler ? 14 : (isNeomorph ? 19 : (isPraetomorph ? 16 : (isRedSwarm ? 15.5 : 11)))),
-        damage: isFacehugger ? 15 : (isBoiler ? 50 : (isNeomorph ? 35 : (isPraetomorph ? 42 : (isRedSwarm ? 34 : 25)))),
-        radius: isFacehugger ? 0.6 : (isNeomorph ? 0.9 : (isPraetomorph ? 1.3 : 1.1)),
+        type: aType,
+        hp: aHp,
+        maxHp: aHp,
+        speed: aSpeed,
+        damage: aDmg,
+        radius: isFacehugger ? 0.6 : (isNeomorph ? 0.9 : (isPraetomorph ? 1.3 : (isRunner ? 0.85 : 1.1))),
         isLatched: false,
         isWallStalker: isWallStalker,
         wallClimbPhase: isWallStalker ? 'climbing' : 'grounded',
         perchHeight: 8.0 + Math.random() * 4.0,
         leapCooldown: (isNeomorph || isPraetomorph) ? 2.0 + Math.random() * 2.0 : 0,
+        spitCooldown: isSpitter ? 2.5 + Math.random() * 2.0 : 0,
         isLeaping: false,
         leapVelY: 0,
         isAirborne: false,
@@ -288,12 +296,13 @@ export class XenomorphHorde {
     }
   }
 
-  createAlienMesh(isFacehugger, isBoiler = false, isNeomorph = false, isPraetomorph = false, isRedSwarm = false) {
+  createAlienMesh(isFacehugger, isBoiler = false, isNeomorph = false, isPraetomorph = false, isRedSwarm = false, isSpitter = false, isRunner = false) {
     const group = new THREE.Group();
+    const xenoColor = isFacehugger ? 0x8a7355 : (isBoiler ? 0x243528 : (isNeomorph ? 0xf0ece1 : (isPraetomorph ? 0x14181f : (isRedSwarm ? 0xb81414 : (isSpitter ? 0x103a20 : (isRunner ? 0x7c4722 : 0x11161d))))));
     const mat = new THREE.MeshStandardMaterial({
-      color: isFacehugger ? 0x8a7355 : (isBoiler ? 0x243528 : (isNeomorph ? 0xf0ece1 : (isPraetomorph ? 0x14181f : (isRedSwarm ? 0xb81414 : 0x11161d)))),
-      roughness: isNeomorph ? 0.2 : (isPraetomorph ? 0.15 : (isRedSwarm ? 0.25 : 0.3)),
-      metalness: isNeomorph ? 0.05 : (isPraetomorph ? 0.95 : (isRedSwarm ? 0.82 : 0.7))
+      color: xenoColor,
+      roughness: isNeomorph ? 0.2 : (isPraetomorph ? 0.15 : (isRedSwarm ? 0.25 : (isRunner ? 0.4 : 0.3))),
+      metalness: isNeomorph ? 0.05 : (isPraetomorph ? 0.95 : (isRedSwarm ? 0.82 : (isRunner ? 0.5 : 0.7)))
     });
 
     if (isFacehugger) {
@@ -388,6 +397,23 @@ export class XenomorphHorde {
       stinger.rotation.x = -Math.PI / 2;
       stinger.position.set(0, 0.4, -2.0);
       group.add(stinger);
+
+      if (isSpitter) {
+        // Encrusted with acidic glands & crest spines (Aliens: Colonial Marines / AvP)
+        const acidGlandMat = new THREE.MeshBasicMaterial({ color: 0x39ff14 });
+        for (let g = 0; g < 4; g++) {
+          const gland = new THREE.Mesh(new THREE.SphereGeometry(0.12, 6, 6), acidGlandMat);
+          gland.position.set((g % 2 === 0 ? -0.25 : 0.25), 1.9, 0.2 + g * 0.25);
+          group.add(gland);
+        }
+      }
+
+      if (isRunner) {
+        // Alien 3 Ox / Dog quadruped runner morphology
+        torso.rotation.x = 0.55;
+        torso.position.y = 0.85;
+        head.position.set(0, 1.1, 1.1);
+      }
 
       if (isBoiler) {
         // Encrusted with pulsating luminescent yellow-green acid pustules
@@ -817,6 +843,17 @@ export class XenomorphHorde {
           a.spitCooldown = 3.5;
           this.audioEngine.playXenoHiss();
           this.spawnAcidSplash(a.mesh.position, player.position);
+        }
+      }
+
+      // Spitter Long-Range Acid Artillery AI (Aliens: Colonial Marines Lore)
+      if (a.type === 'spitter') {
+        a.spitCooldown -= delta;
+        if (a.spitCooldown <= 0 && dist >= 7.0 && dist <= 26.0) {
+          a.spitCooldown = 3.2;
+          this.audioEngine.playXenoHiss();
+          this.spawnAcidSplash(a.mesh.position, player.position);
+          this.spawnAcidPool(a.mesh.position);
         }
       }
 

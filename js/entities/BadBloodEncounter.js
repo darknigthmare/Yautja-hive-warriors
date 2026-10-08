@@ -92,6 +92,19 @@ export class BadBloodManager {
     dir.y = 0;
     const dist = dir.length();
 
+    // Plasma Caster Cannon shot at medium distance (6m - 18m)
+    if (!bb.plasmaTimer) bb.plasmaTimer = 3.0;
+    bb.plasmaTimer -= delta;
+    if (dist >= 6.0 && dist <= 18.0 && bb.plasmaTimer <= 0) {
+      bb.plasmaTimer = 4.2;
+      this.audioEngine.playPlasmaShot();
+      if (!player.isBlocking) {
+        player.takeDamage(55);
+      } else {
+        player.audioEngine.playShieldBlock();
+      }
+    }
+
     if (dist > 2.2) {
       dir.normalize();
       bb.mesh.position.addScaledVector(dir, bb.speed * delta);
@@ -116,6 +129,7 @@ export class BadBloodManager {
       this.scene.remove(this.badBlood.mesh);
       this.badBlood = null;
       this.isActive = false;
+      this.audioEngine.playYautjaRoar();
       return true; // Killed Bad Blood!
     }
     return false;

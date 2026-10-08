@@ -644,7 +644,13 @@ class GameApp {
     if (this.badBlood.isActive && this.badBlood.badBlood) {
       if (this.badBlood.badBlood.mesh.position.distanceTo(this.player.position) <= attack.radius) {
         if (this.badBlood.takeDamage(attack.damage)) {
-          this.ui.showAnnouncement('💀 BAD BLOOD ÉLIMINÉ DANS L\'HONNEUR !');
+          const tName = 'Masque Souillé & Crâne Décapité de Bad Blood Renégat (Dark Horse Comics 1993)';
+          const tHonor = 2200;
+          this.player.recordTrophy(tName, tHonor);
+          this.sessionSkulls++;
+          this.score += tHonor;
+          this.shiftBattlefieldMorale(20.0);
+          this.ui.showAnnouncement(`💀 BAD BLOOD EXÉCUTÉ DANS LE SANG ! ${tName} (+${tHonor} HONNEUR, MORAL +20%) !`);
         }
       }
     }
@@ -674,7 +680,13 @@ class GameApp {
     if (this.badBlood.isActive && this.badBlood.badBlood) {
       if (this.badBlood.badBlood.mesh.position.distanceTo(this.player.position) <= attack.radius) {
         if (this.badBlood.takeDamage(attack.damage)) {
-          this.ui.showAnnouncement('💀 BAD BLOOD ÉLIMINÉ DANS L\'HONNEUR !');
+          const tName = 'Masque Souillé & Crâne Décapité de Bad Blood Renégat (Dark Horse Comics 1993)';
+          const tHonor = 2200;
+          this.player.recordTrophy(tName, tHonor);
+          this.sessionSkulls++;
+          this.score += tHonor;
+          this.shiftBattlefieldMorale(20.0);
+          this.ui.showAnnouncement(`💀 BAD BLOOD EXÉCUTÉ DANS LE SANG ! ${tName} (+${tHonor} HONNEUR, MORAL +20%) !`);
         }
       }
     }
