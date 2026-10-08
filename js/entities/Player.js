@@ -665,6 +665,24 @@ export class Player {
     this.isFacehuggerLatched = true;
     this.qteStrugglePresses = 0;
     this.audioEngine.playXenoHiss();
+
+    // 3D Arachnoid Facehugger clamped over Bio-Mask Head
+    if (!this.latchedHuggerMesh && this.headMesh) {
+      const huggerGroup = new THREE.Group();
+      const huggerMat = new THREE.MeshStandardMaterial({ color: 0x8a7355, roughness: 0.6 });
+      const body = new THREE.Mesh(new THREE.SphereGeometry(0.35, 6, 6), huggerMat);
+      body.position.set(0, 0, 0.45);
+      huggerGroup.add(body);
+
+      // Tail curled around hunter's throat
+      const tail = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.02, 1.2, 5), huggerMat);
+      tail.position.set(0, -0.4, 0.2);
+      tail.rotation.x = -Math.PI / 3;
+      huggerGroup.add(tail);
+
+      this.headMesh.add(huggerGroup);
+      this.latchedHuggerMesh = huggerGroup;
+    }
   }
 
   struggleQTE() {
@@ -676,6 +694,11 @@ export class Player {
       this.isFacehuggerLatched = false;
       this.qteStrugglePresses = 0;
       this.audioEngine.playYautjaRoar();
+
+      if (this.latchedHuggerMesh && this.headMesh) {
+        this.headMesh.remove(this.latchedHuggerMesh);
+        this.latchedHuggerMesh = null;
+      }
       return true;
     }
     return false;
