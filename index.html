@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PREDATOR: HIVE WARRIORS - v5.0 APEX PREDATOR EXPANSION 3D</title>
+  <title>PREDATOR: HIVE WARRIORS - v27.0 APEX PRIMAL CHRONICLES 3D</title>
   <meta name="description" content="Jeu de guerre 3D style Dynasty Warriors d'affrontement épique entre Yautja et hordes de Xenomorphes.">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,9 +21,36 @@
 </head>
 <body>
   <div id="canvas-container"></div>
+
+  <!-- FIRST-PERSON BIO-MASK COCKPIT VIEW OVERLAY -->
+  <div id="first-person-mask-overlay" class="hidden">
+    <div class="bio-mask-hud-frame">
+      <div class="mask-reticle-triangle">▲</div>
+      <div class="mask-targeting-bracket left">[</div>
+      <div class="mask-targeting-bracket right">]</div>
+      <div class="mask-telemetry">YAUTJA PRIME COMM-LINK ONLINE</div>
+    </div>
+  </div>
+
+  <!-- 4 BIO-MASK VISION MODES OVERLAYS -->
   <div id="thermal-overlay" class="hidden"></div>
+  <div id="em-overlay" class="hidden"></div>
+  <div id="tech-overlay" class="hidden"></div>
+  <div id="uv-overlay" class="hidden"></div>
+
   <div id="cloak-overlay" class="hidden"></div>
+  <div id="acid-corrosion-overlay" class="hidden"></div>
+  <div id="berserker-rage-overlay" class="hidden"></div>
   <div id="screen-flash"></div>
+
+  <!-- 1987 WRIST COMPUTER NUKE COUNTDOWN OVERLAY -->
+  <div id="nuke-countdown-overlay" class="hidden">
+    <div class="nuke-glyphs-box">
+      <div class="yautja-glyphs">᚛᚜ ᚠᚡ ᚢᚣ ᚤᚥ ᚦᚧ</div>
+      <div class="nuke-timer" id="nuke-timer-seconds">6</div>
+      <div class="nuke-warning">AUTO-DESTRUCTION RITUELLE 1987</div>
+    </div>
+  </div>
 
   <!-- 360 HOLO WEAPON WHEEL OVERLAY -->
   <div id="weapon-wheel-overlay" class="hidden">
@@ -40,7 +67,7 @@
         <div class="logo-box">
           <div class="yautja-glyph-banner">⚡ ᚛᚜ ⚡ PREDATOR ⚡ ᚛᚜ ⚡</div>
           <h1 class="game-title">HIVE WARRIORS</h1>
-          <p class="subtitle">v5.0 APEX PREDATOR EXPANSION • YAUTJA CITADEL 3D</p>
+          <p class="subtitle">v29.0 APEX CANON LORE & DYNASTY MUSOU HARMONIZATION • 1:1 YAUTJA RUNES & KAINDE AMEDHA CASTES</p>
         </div>
 
         <div class="menu-actions">
@@ -51,17 +78,22 @@
 
           <button id="btn-open-citadel" class="btn-secondary">
             <span class="btn-icon">🏰</span>
-            <span class="btn-text">VISITER LA CITADELLE YAUTJA 3D</span>
+            <span class="btn-text">CITADELLE YAUTJA 3D (QG TROPHÉES)</span>
+          </button>
+
+          <button id="btn-open-codex" class="btn-secondary">
+            <span class="btn-icon">📜</span>
+            <span class="btn-text">CODEX LORE & ENCYCLOPÉDIE AVP</span>
           </button>
 
           <button id="btn-open-story" class="btn-secondary">
-            <span class="btn-icon">📜</span>
-            <span class="btn-text">MODE CAMPAGNE SCÉNARISÉE</span>
+            <span class="btn-icon">📖</span>
+            <span class="btn-text">CAMPAGNE SCÉNARISÉE</span>
           </button>
 
           <button id="btn-open-coop" class="btn-secondary">
             <span class="btn-icon">👥</span>
-            <span class="btn-text">MODE COOP 2 JOUEURS (ÉCRAN SÉPARÉ)</span>
+            <span class="btn-text">MODE COOP 2 JOUEURS (ÉCRAN SPLITÉ)</span>
           </button>
 
           <button id="btn-open-sandbox" class="btn-secondary">
@@ -207,7 +239,7 @@
         <div class="player-stats-column">
           <div class="hud-name-row">
             <span id="hud-player-name">JUNGLE HUNTER</span>
-            <span id="hud-honor-rank" class="rank-badge">RANG: CHASSEUR ÉLITE</span>
+            <span id="hud-vision-tag" class="rank-badge" style="color:#00d2ff;">VISION : THERMIQUE</span>
           </div>
 
           <div class="hud-bar-container hp-bar-bg">
@@ -227,6 +259,20 @@
         </div>
       </div>
 
+      <!-- DYNASTY WARRIORS BATTLEFIELD MORALE GAUGE (Jauge de Moral du Champ de Bataille) -->
+      <div id="battlefield-morale-container" class="battlefield-morale-panel glass-panel">
+        <div class="morale-header-row">
+          <span class="morale-faction clan-label">🛡️ CLAN YAUTJA : <span id="morale-clan-val">50</span>%</span>
+          <span class="morale-title">ÉQUILIBRE DE L'HONNEUR (GV'SHI)</span>
+          <span class="morale-faction hive-label"><span id="morale-hive-val">50</span>% : RUCHE KAINDE AMEDHA 💀</span>
+        </div>
+        <div class="morale-bar-track">
+          <div id="morale-clan-fill" class="morale-bar-fill clan-fill" style="width: 50%;"></div>
+          <div id="morale-hive-fill" class="morale-bar-fill hive-fill" style="width: 50%;"></div>
+          <div class="morale-center-notch"></div>
+        </div>
+      </div>
+
       <div class="hud-top-right">
         <div class="minimap-card glass-panel">
           <div class="minimap-header">
@@ -236,15 +282,24 @@
           <canvas id="minimap-canvas" width="160" height="160"></canvas>
           <div class="minimap-legend">
             <span>🟢 Yautja</span>
-            <span>🔴 Xenomorphe</span>
-            <span>👑 Boss</span>
+            <span>🔴 Kainde Amedha</span>
+            <span>👑 Matriarche</span>
           </div>
         </div>
       </div>
 
+      <!-- MUSOU COMBO STRING INDICATOR & AIRBORNE JUGGLE -->
       <div id="combo-display" class="combo-box hidden">
         <div id="combo-count">0</div>
         <div class="combo-title">COMBOS HITS !</div>
+        <div id="combo-chain-indicator" class="combo-chain-tag">NORMAL COMBO</div>
+      </div>
+
+      <!-- TRUE MUSOU AWAKENING FULL-SCREEN BANNER (YAUTJA CANON CUNEIFORM RUNES) -->
+      <div id="true-musou-banner" class="true-musou-overlay hidden">
+        <div class="musou-kanji-banner">᚛᚜ ⚡ ᛏᚺᛖᛁ-ᛞᛖ ⚡ ᚛᚜ • ᚛᚜ ᚲ'ᚺᚢᛚ-ᚹᚨᚺ ᚛᚜</div>
+        <div class="musou-callout-text">VRAIE SURCHARGE YAUTJA : DÉVASTATION DU GRAND CLAN APEX !</div>
+        <div class="musou-sub-text">PURGE TOTALE KAINDE AMEDHA • RAYONNEMENT ÉLECTRO-CINÉTIQUE 360°</div>
       </div>
 
       <!-- FACEHUGGER QTE STRUGGLE PROMPT -->
@@ -253,25 +308,110 @@
         <div class="execution-text" style="color:#ff4d4d;">ARRACHEZ LE FACEHUGGER !</div>
       </div>
 
+      <!-- SPINE RIP EXECUTION PROMPT -->
       <div id="execution-prompt" class="execution-box hidden">
         <div class="pulse-key">[ E ]</div>
-        <div class="execution-text">EXÉCUTION TROPHÉE !</div>
+        <div class="execution-text">ARRÊTEZ LA COLONNE VERTÉBRALE (SPINE RIP) !</div>
       </div>
 
       <div id="ability-announcement" class="announcement-banner hidden"></div>
 
+      <!-- 1987 CANON TRI-LASER TARGET LOCK RETICLE -->
+      <div id="hud-tri-target-lock" class="tri-laser-reticle hidden">
+        <div class="tri-dot dot-1"></div>
+        <div class="tri-dot dot-2"></div>
+        <div class="tri-dot dot-3"></div>
+        <div class="target-info-tag" id="hud-target-info">LOCK: 12.4m - DRONE</div>
+      </div>
+
       <div class="hud-bottom-center" id="hud-equipped-slots-container">
-        <div class="ability-slot" id="slot-wheel">
-          <div class="slot-key">R / CLIC 3</div>
-          <div class="slot-label">ROUE WEAPONS 360°</div>
+        <div class="ability-slot" id="slot-fps">
+          <div class="slot-key">I</div>
+          <div class="slot-label">VUE FPS BIO-MASQUE</div>
+        </div>
+        <div class="ability-slot" id="slot-perch">
+          <div class="slot-key">J</div>
+          <div class="slot-label">PERCHOIR HAUT</div>
+        </div>
+        <div class="ability-slot" id="slot-shield">
+          <div class="slot-key">C</div>
+          <div class="slot-label">FERAL SHIELD</div>
+        </div>
+        <div class="ability-slot" id="slot-combistick">
+          <div class="slot-key">P</div>
+          <div class="slot-label">COMBI-STICK</div>
+        </div>
+        <div class="ability-slot" id="slot-shuriken">
+          <div class="slot-key">L</div>
+          <div class="slot-label">SHURIKEN</div>
+        </div>
+        <div class="ability-slot" id="slot-whip">
+          <div class="slot-key">1</div>
+          <div class="slot-label">SPINE-WHIP</div>
+        </div>
+        <div class="ability-slot" id="slot-pathogen">
+          <div class="slot-key">2</div>
+          <div class="slot-label">BLACK-GOO</div>
+        </div>
+        <div class="ability-slot" id="slot-flechette">
+          <div class="slot-key">3</div>
+          <div class="slot-label">FLECHETTE</div>
+        </div>
+        <div class="ability-slot" id="slot-sentry">
+          <div class="slot-key">4</div>
+          <div class="slot-label">SENTRY-GUN</div>
+        </div>
+        <div class="ability-slot" id="slot-falcon">
+          <div class="slot-key">5</div>
+          <div class="slot-label">FALCON-DRONE</div>
+        </div>
+        <div class="ability-slot" id="slot-scythe">
+          <div class="slot-key">6</div>
+          <div class="slot-label">BONE-SCYTHE</div>
+        </div>
+        <div class="ability-slot" id="slot-bow">
+          <div class="slot-key">7</div>
+          <div class="slot-label">COMPOUND-BOW</div>
+        </div>
+        <div class="ability-slot" id="slot-decoy">
+          <div class="slot-key">8</div>
+          <div class="slot-label">HOLO-DECOY</div>
+        </div>
+        <div class="ability-slot" id="slot-glaive">
+          <div class="slot-key">9</div>
+          <div class="slot-label">PLASMA GLAIVE</div>
+        </div>
+        <div class="ability-slot" id="slot-jelly">
+          <div class="slot-key">0</div>
+          <div class="slot-label">GELÉE ROYALE</div>
+        </div>
+        <div class="ability-slot" id="slot-emp">
+          <div class="slot-key">U</div>
+          <div class="slot-label">GAUNTLET EMP</div>
+        </div>
+        <div class="ability-slot" id="slot-disc">
+          <div class="slot-key">B</div>
+          <div class="slot-label">SMART-DISC</div>
+        </div>
+        <div class="ability-slot" id="slot-netgun">
+          <div class="slot-key">G</div>
+          <div class="slot-label">NETGUN</div>
+        </div>
+        <div class="ability-slot" id="slot-warhorn">
+          <div class="slot-key">K</div>
+          <div class="slot-label">WARHORN</div>
+        </div>
+        <div class="ability-slot" id="slot-hounds">
+          <div class="slot-key">H</div>
+          <div class="slot-label">HELL-HOUNDS</div>
+        </div>
+        <div class="ability-slot" id="slot-vision">
+          <div class="slot-key">V</div>
+          <div class="slot-label">4 MODES VISION</div>
         </div>
         <div class="ability-slot" id="slot-swap">
           <div class="slot-key">TAB</div>
           <div class="slot-label" id="hud-weapon-label">ARME: PRINCIPALE</div>
-        </div>
-        <div class="ability-slot highlight-musou" id="slot-musou">
-          <div class="slot-key">Q / ESPACE</div>
-          <div class="slot-label">SURCHARGE MUSOU</div>
         </div>
       </div>
 
@@ -283,6 +423,25 @@
         <div class="honor-score-box">
           <span>HONNEUR: </span>
           <span id="hud-honor-score">0 PTS</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CODEX LORE MODAL -->
+    <div id="codex-modal" class="ui-screen hidden">
+      <div class="glass-panel modal-card codex-card">
+        <div class="modal-header">
+          <h2>📜 CODEX & ENCYCLOPÉDIE CANON AVP</h2>
+          <button id="btn-close-codex" class="btn-close">✕</button>
+        </div>
+        <div class="codex-nav-tabs">
+          <button class="codex-tab-btn active" data-tab="ranks">Rangs Yautja</button>
+          <button class="codex-tab-btn" data-tab="code">Code d'Honneur</button>
+          <button class="codex-tab-btn" data-tab="xenomorphs">Castes Xenomorphes</button>
+          <button class="codex-tab-btn" data-tab="engineers">Ingénieurs Prometheus</button>
+        </div>
+        <div class="codex-body" id="codex-content-container">
+          <!-- Populated dynamically via LoreCodex.js -->
         </div>
       </div>
     </div>
@@ -379,11 +538,46 @@
         </div>
         <div class="options-body">
           <h3>CONTRÔLES CLAVIER & SOURIS</h3>
-          <div class="controls-grid">
+            <div class="control-row"><span class="key">CLIC GAUCHE</span><span>Attaque Légère (Série de 5 coups d'arts martiaux Yautja)</span></div>
+            <div class="control-row"><span class="key">CLIC DROIT</span><span>Finisher Chargé C1 à C6 (Ki'cte, S'yuit-de Launcher, Dahdt-ne Stun, Guan-thwei, Thwei-mhi, Prah'khe)</span></div>
+            <div class="control-row"><span class="key">Q / ESPACE</span><span>Vraie Surcharge Yautja 360° (True Musou Awakening : Rayonnement Électro-Cinétique 40m)</span></div>
+            <div class="control-row"><span class="key">MORAL (GV'SHI)</span><span>Jauge de Moral en haut au centre : Équilibre Clan Yautja vs Ruche Kainde Amedha</span></div>
+            <div class="control-row"><span class="key">I</span><span>Bascule Vue Première Personne Cockpit Bio-Masque</span></div>
+            <div class="control-row"><span class="key">J</span><span>Perchoir en Hauteur & Affût Perché (Prowl Roosting)</span></div>
+            <div class="control-row"><span class="key">C</span><span>Bouclier Hexagonal Feral Predator (Prey 2022)</span></div>
+            <div class="control-row"><span class="key">U</span><span>Décharge EMP de Poignet (Court-circuite les Androïdes, paralyse les Xénos)</span></div>
+            <div class="control-row"><span class="key">B</span><span>Lancer Smart-Disc Boomerang Tranchant (Predator 2 1990) / Solvant Acide</span></div>
+            <div class="control-row"><span class="key">K</span><span>Cor de Guerre Clan Warhorn (+50% Dégâts & Vitesse)</span></div>
+            <div class="control-row"><span class="key">H</span><span>Déployer la Meute de Hell-Hounds (Predators 2010)</span></div>
+            <div class="control-row"><span class="key">Y</span><span>Leurre Vocal d'Imitation ("Over here..." 1987)</span></div>
+            <div class="control-row"><span class="key">G</span><span>Lance-Filet Netgun (Entrave en fil de diamant) / Fléchettes Needler</span></div>
+            <div class="control-row"><span class="key">V</span><span>Cycler les 4 Modes de Vision du Bio-Masque</span></div>
+            <div class="control-row"><span class="key">SHIFT + ESPACE</span><span>Super-Saut Pounce Leap avec Onde de Choc</span></div>
             <div class="control-row"><span class="key">R / CLIC 3</span><span>Ouvrir la Roue Holo-Tactique 360°</span></div>
-            <div class="control-row"><span class="key">E</span><span>QTE Lutte Facehugger / Exécution Trophée</span></div>
-            <div class="control-row"><span class="key">T</span><span>Piège à Loup Yautja Steel Bear Trap</span></div>
-            <div class="control-row"><span class="key">N</span><span>Auto-Destruction Nucléaire</span></div>
+            <div class="control-row"><span class="key">E</span><span>QTE Lutte Facehugger / Spine Rip (Reine, Prétorien & Crusher étourdis)</span></div>
+            <div class="control-row"><span class="key">P</span><span>Javelot Combi-Stick Télescopique (Perforation multi-cibles 1:1 Predator 2)</span></div>
+            <div class="control-row"><span class="key">L</span><span>Shuriken Hexa-Lames Rétractable 360° (Découpe multi-cibles AVP 2004)</span></div>
+            <div class="control-row"><span class="key">1 / SHIFT + CLIC GAUCHE</span><span>Fouet Segmenté Razor-Whip (Balayage 10m & Rapprochement AVP-R 2007)</span></div>
+            <div class="control-row"><span class="key">2</span><span>Frappe d'Urnes de Pathogène Noir des Ingénieurs (Accélérateur A0-3959X.31–15 Prometheus 2012)</span></div>
+            <div class="control-row"><span class="key">3</span><span>Volée de 3 Fléchettes à Guidage Laser (Prey 2022 Feral Predator)</span></div>
+            <div class="control-row"><span class="key">4</span><span>Déploiement Tourelle Automatique UA 571-C (500 Coups 10mm Aliens 1986)</span></div>
+            <div class="control-row"><span class="key">5</span><span>Déploiement Drone Faucon Falconer (Patrouille Aérienne & Piqué Predators 2010)</span></div>
+            <div class="control-row"><span class="key">6</span><span>Faux d'Os Primordiale de l'Alpha Predator (Balayage Circulaire 360° 7.5m NECA Lore)</span></div>
+            <div class="control-row"><span class="key">7</span><span>Arc Composé Yautja : Flèche Plasma Hyper-Vélocité Perçante (Concrete Jungle)</span></div>
+            <div class="control-row"><span class="key">8</span><span>Leurre Holographique Gauntlet Clone : Détourne l'Attention & Détonne EMP</span></div>
+            <div class="control-row"><span class="key">9</span><span>Tourbillon de Plasma Glaive Dual-Blade (Patriarche AVP / Concrete Jungle) : Cyclone Déflecteur 360°</span></div>
+            <div class="control-row"><span class="key">0</span><span>Gelée Royale d'Apex (Aliens: Genocide / AvP 1999) : Rage Berserker Yautja (+45% Vit, +100% Dégâts)</span></div>
+            <div class="control-row"><span class="key">TROPHÉES [E]</span><span>Récolte Rituelle de Trophées Légendaires sur les Boss & Sous-Boss Exécutés (Spine Rip)</span></div>
+            <div class="control-row"><span class="key">PRAETOMORPH</span><span>Création d'Apex de David 8 (Alien: Covenant 2017) : Charge Aérienne & Queue Tranchante</span></div>
+            <div class="control-row"><span class="key">ROMULUS LORE</span><span>Boss "The Offspring" (Hybride Z-01 2024) sur la Station Renaissance</span></div>
+            <div class="control-row"><span class="key">LORE ELITE</span><span>Grid Alien Alpha (Nethead AVP 2004) : Immunisé au Filet & Projections d'Acide</span></div>
+            <div class="control-row"><span class="key">VAGUE 3</span><span>Déploiement du Blindé USCM M577 APC avec Tourelle Jumelée 20mm Autonome</span></div>
+            <div class="control-row"><span class="key">SHIFT + CLIC DROIT</span><span>Frappe Gantelet Kinetic Power Glove (Onde de choc 12m AVP-R 2007)</span></div>
+            <div class="control-row"><span class="key">B (EN VOL)</span><span>Smart-Disc Ricochet Guidé au Laser : Décapite en chaîne jusqu'à 3 cibles (Predator 2 1990)</span></div>
+            <div class="control-row"><span class="key">Z</span><span>Médicomp Cautérisation : Soin 450 HP, Vapeur Antiseptique & Purge d'Acide</span></div>
+            <div class="control-row"><span class="key">RED SWARM</span><span>Incursion du Clan Écarlate (Aliens: Genocide 1991) : Guerre Civile entre Xenos Noirs & Rouges</span></div>
+            <div class="control-row"><span class="key">CLOAK FAIL</span><span>Interférence Électrique du Camouflage Optique (Étincelles & Glitch lors de dégâts 1987)</span></div>
+            <div class="control-row"><span class="key">N</span><span>Auto-Destruction 1987 : Anneau Holographique 3D au Gantelet & Rire Sardite de Billy</span></div>
           </div>
         </div>
       </div>

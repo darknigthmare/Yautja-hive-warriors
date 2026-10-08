@@ -132,11 +132,53 @@ export class EnvironmentManager {
   }
 
   buildHiveProps() {
-    const resinMat = new THREE.MeshStandardMaterial({ color: 0x2e0811, roughness: 0.3, metalness: 0.7 });
+    const resinMat = new THREE.MeshStandardMaterial({ color: 0x1f060c, roughness: 0.35, metalness: 0.75 });
+    const cocoonMat = new THREE.MeshStandardMaterial({ color: 0x3d141e, roughness: 0.6, metalness: 0.2 });
     const eggMat = new THREE.MeshStandardMaterial({ color: 0x5a1825, roughness: 0.5 });
 
-    // Biomechanical Resin Pillars & Alien Eggs
-    for (let i = 0; i < 30; i++) {
+    // 1. Biomechanical Ribbed Resin Pillars (Aliens 1986 Hive Nest)
+    for (let p = 0; p < 12; p++) {
+      const angle = (p / 12) * Math.PI * 2;
+      const radius = 28 + Math.random() * 18;
+      const px = Math.cos(angle) * radius;
+      const pz = Math.sin(angle) * radius;
+
+      const pillarGroup = new THREE.Group();
+      const col = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.8, 14, 8), resinMat);
+      col.position.y = 7;
+      pillarGroup.add(col);
+
+      // Rib arches protruding from column
+      for (let r = 0; r < 5; r++) {
+        const rib = new THREE.Mesh(new THREE.TorusGeometry(1.6, 0.22, 6, 12, Math.PI), resinMat);
+        rib.rotation.x = Math.PI / 2;
+        rib.rotation.z = r * 0.7;
+        rib.position.y = 2.5 + r * 2.2;
+        pillarGroup.add(rib);
+      }
+
+      pillarGroup.position.set(px, 0, pz);
+      this.scene.add(pillarGroup);
+      this.envObjects.push(pillarGroup);
+    }
+
+    // 2. Wall Resin Cocoons with Torso Shapes (Hosts entombed in secretion)
+    for (let c = 0; c < 10; c++) {
+      const x = (Math.random() - 0.5) * 85;
+      const z = (Math.random() - 0.5) * 85;
+      if (Math.abs(x) < 12 && Math.abs(z) < 12) continue;
+
+      const cocoonGeo = new THREE.CylinderGeometry(0.7, 0.4, 2.4, 8);
+      const cocoon = new THREE.Mesh(cocoonGeo, cocoonMat);
+      cocoon.position.set(x, 1.2, z);
+      cocoon.rotation.x = (Math.random() - 0.5) * 0.4;
+      cocoon.rotation.z = (Math.random() - 0.5) * 0.4;
+      this.scene.add(cocoon);
+      this.envObjects.push(cocoon);
+    }
+
+    // 3. Alien Ovimorph Eggs
+    for (let i = 0; i < 24; i++) {
       const x = (Math.random() - 0.5) * 100;
       const z = (Math.random() - 0.5) * 100;
       if (Math.abs(x) < 8 && Math.abs(z) < 8) continue;

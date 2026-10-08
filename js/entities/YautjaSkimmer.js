@@ -14,6 +14,8 @@ export class YautjaSkimmer {
     this.speed = 32;
 
     this.scene.add(this.mesh);
+    this.mountCooldown = 0;
+    this.cannonCooldown = 0;
   }
 
   buildSkimmerMesh() {
@@ -57,10 +59,14 @@ export class YautjaSkimmer {
   }
 
   update(delta, player, horde, keys) {
+    if (this.mountCooldown > 0) this.mountCooldown -= delta;
+    if (this.cannonCooldown > 0) this.cannonCooldown -= delta;
+
     if (!this.isMounted) {
       // Check player mounting range
-      if (player && player.position.distanceTo(this.position) < 3.5 && keys['KeyG']) {
+      if (player && player.position.distanceTo(this.position) < 4.0 && keys['KeyG'] && this.mountCooldown <= 0) {
         this.isMounted = true;
+        this.mountCooldown = 0.5;
         player.mesh.visible = false; // Hide walking mesh when inside vehicle
       }
       return;
@@ -84,16 +90,30 @@ export class YautjaSkimmer {
       player.position.copy(this.position); // Keep player synced
 
       // Ramming Xenomorphs at high speed!
-      const ramAttack = { origin: this.position, radius: 3.5, damage: 300 };
+      const ramAttack = { origin: this.position, radius: 3.5, damage: 320 };
       const hits = horde.checkMeleeHits(ramAttack);
       if (hits.length > 0) {
         this.audioEngine.playSlash();
       }
     }
 
+    // Vehicle Dual Plasma Cannons (Space or Shift while mounted)
+    if ((keys['Space'] || keys['ShiftLeft']) && this.cannonCooldown <= 0) {
+      this.cannonCooldown = 0.28;
+      this.audioEngine.playPlasmaShot();
+      const fwd = new THREE.Vector3(Math.sin(this.rotationY), 0, Math.cos(this.rotationY)).normalize();
+      const fireAttack = {
+        origin: this.position.clone().addScaledVector(fwd, 4.0),
+        radius: 4.5,
+        damage: 260
+      };
+      horde.checkMeleeHits(fireAttack);
+    }
+
     // Dismount Key (G)
-    if (keys['KeyG']) {
+    if (keys['KeyG'] && this.mountCooldown <= 0) {
       this.isMounted = false;
+      this.mountCooldown = 0.5;
       player.mesh.visible = true;
     }
   }
