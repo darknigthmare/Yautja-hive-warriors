@@ -51,9 +51,9 @@ export class XenomorphHorde {
     // Spawn 1 Grid Alien Alpha (AVP 2004 Nethead)
     this.spawnGridAlien(playerPos);
 
-    // Dynasty Warriors Musou: Spawn 2 Hive Gate Captains / Spire Officers (Capitaines de Ruche)
-    this.spawnHiveOfficer(playerPos, -22, 'CAPITAINE DE LA PORTE NORD');
-    this.spawnHiveOfficer(playerPos, 22, 'CAPITAINE DU COUVOIR ROYAL');
+    // Dynasty Warriors Musou: Spawn 2 Hive Spire Captains / Node Guards (Gardes de Nœud & Sentinelles du Couvoir)
+    this.spawnHiveOfficer(playerPos, -22, 'SENTINELLE DU NŒUD PRIMAIRE (SPIRE GUARD)');
+    this.spawnHiveOfficer(playerPos, 22, 'GARDE SANGUINAIRE DU COUVOIR ROYAL (HIVE CASTE OFFICER)');
 
     // Massive Musou Swarm Density: at least 45 to 80 aliens
     const totalCount = Math.max(count, 45);
@@ -97,7 +97,7 @@ export class XenomorphHorde {
     }
   }
 
-  spawnHiveOfficer(playerPos, offsetX = 0, title = 'CAPITAINE DE RUCHE') {
+  spawnHiveOfficer(playerPos, offsetX = 0, title = 'GARDE DE NŒUD KAINDE AMEDHA') {
     const group = new THREE.Group();
     // 1.35x Musou Officer Stature with Blood-Red Carapace and Heavy Dorsal Pipes
     const mat = this.officerMat;

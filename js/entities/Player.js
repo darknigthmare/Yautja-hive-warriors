@@ -1042,67 +1042,67 @@ export class Player {
     let stunDuration = 0;
 
     if (step === 0) {
-      // C1: Concussive Guard Break / Launcher thrust
+      // C1: Concussive Guard Break / Launcher thrust (Ki'cte Gauntlet strike)
       this.attackTimer = 0.42;
       this.audioEngine.playSlash();
       this.rightArm.rotation.x = -Math.PI * 0.7;
       chargeType = 'c1';
-      chargeName = 'C1 - DISLOCATION CINÉTIQUE';
+      chargeName = "C1 - KI'CTE CINÉTIQUE (BRISE-GARDE)";
       dmgMult = 2.0;
       radius = 7.0;
       knockback = 9.5;
     } else if (step === 1) {
-      // C2: Vertical Blade Uppercut (Airborne Juggle Launcher)
+      // C2: Vertical Blade Uppercut (Airborne Juggle Launcher - S'yuit-de Upper thrust)
       this.attackTimer = 0.45;
       this.audioEngine.playLauncherWhoosh();
       this.rightArm.rotation.x = -Math.PI * 0.9;
       chargeType = 'c2';
-      chargeName = 'C2 - PROJECTION AÉRIENNE JUGGLE';
+      chargeName = "C2 - PROJECTION CÉLESTE S'YUIT-DE (JUGGLE)";
       dmgMult = 2.6;
       radius = 5.2;
       isLauncher = true;
       launchVelY = 19.0;
     } else if (step === 2) {
-      // C3: Hundred-Claw Flurry Stun Barrage
+      // C3: Hundred-Claw Flurry Stun Barrage (Dahdt-ne Hundred Claws)
       this.attackTimer = 0.55;
       this.audioEngine.playSlash();
       this.audioEngine.playYautjaClick();
       chargeType = 'c3';
-      chargeName = 'C3 - RAFALE CENT-LAMES ÉTOURDISSANTE';
+      chargeName = "C3 - RAFALE CENT-GRIFFES DAHDT-NE (STUN)";
       dmgMult = 3.5;
       radius = 6.0;
       isStun = true;
       stunDuration = 3.2;
       knockback = 3.5;
     } else if (step === 3) {
-      // C4: Tornado Crowd-Clearing Cleave
+      // C4: Tornado Crowd-Clearing Cleave (Guan-thwei Whirlwind)
       this.attackTimer = 0.52;
       this.audioEngine.playSlash();
       this.audioEngine.playYautjaRoar();
       this.mesh.rotation.y += Math.PI * 2;
       chargeType = 'c4';
-      chargeName = 'C4 - BALAYAGE TORNADE DÉVASTATEUR';
+      chargeName = "C4 - TORNADE DÉMEMBRANTE GUAN-THWEI (300°)";
       dmgMult = 4.4;
       radius = 9.8;
       knockback = 15.0;
     } else if (step === 4) {
-      // C5: Geyser Celestial Plasma Vortex (Massive Aerial Catapult)
+      // C5: Geyser Celestial Plasma Vortex (Thwei-mhi Celestial Geyser)
       this.attackTimer = 0.62;
       this.audioEngine.playLauncherWhoosh();
       this.audioEngine.playPlasmaShot();
       chargeType = 'c5';
-      chargeName = 'C5 - VORTEX CÉLESTE PLASMA GEYSER';
+      chargeName = "C5 - VORTEX CÉLESTE THWEI-MHI (GEYSER)";
       dmgMult = 5.5;
       radius = 11.5;
       isLauncher = true;
       launchVelY = 25.0;
     } else {
-      // C6: Apex Seismic Shockwave Cataclysm
+      // C6: Apex Seismic Shockwave Cataclysm (Prah'khe Apex Slam)
       this.attackTimer = 0.78;
       this.audioEngine.playC6CataclysmBoom();
       this.audioEngine.playYautjaRoar();
       chargeType = 'c6';
-      chargeName = 'C6 - CATACLYSME SISMIQUE APEX';
+      chargeName = "C6 - CATACLYSME SISMIQUE PRAH'KHE (360°)";
       dmgMult = 7.2;
       radius = 16.5;
       knockback = 18.0;

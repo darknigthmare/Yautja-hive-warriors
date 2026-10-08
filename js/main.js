@@ -1254,7 +1254,7 @@ class GameApp {
           if (this.audio && this.audio.playOfficerDefeatedGong) {
             this.audio.playOfficerDefeatedGong();
           }
-          this.ui.showAnnouncement(`⚔️ OFFICIER TERRASSÉ : ${h.officerTitle || 'CAPITAINE DE RUCHE'} ÉLIMINÉ ! MORAL DU CLAN +12% !`);
+          this.ui.showAnnouncement(`⚔️ OFFICIER VAINCU : ${h.officerTitle || 'GARDE DE NŒUD KAINDE AMEDHA'} PURGÉ ! ÉQUILIBRE DU CLAN +12% !`);
         } else {
           this.shiftBattlefieldMorale(0.4);
         }
@@ -1273,17 +1273,17 @@ class GameApp {
   checkAnnouncerMilestones() {
     const kos = this.horde.deadCount;
     const milestones = [
-      { count: 50, msg: '50 KOS - CHASSEUR D\'ÉLITE !' },
-      { count: 100, msg: '100 KOS - GUERRIER SANGUINAIRE !' },
-      { count: 250, msg: '250 KOS - MAÎTRE DU CARNAGE !' },
-      { count: 500, msg: '500 KOS - FLÉAU DE LA RUCHE !' },
-      { count: 1000, msg: '1000 KOS - VÉRITABLE GUERRIER DES TROIS ROYAUMES DU CLAN !' }
+      { count: 50, msg: "50 KOS - JEUNE GUERRIER EN INITIATION (YOUNG BLOOD) !" },
+      { count: 100, msg: "100 KOS - CHASSEUR BALAFRÉ DANS LE SANG (BLOODED WARRIOR) !" },
+      { count: 250, msg: "250 KOS - MAÎTRE CHASSEUR D'ÉLITE DU CLAN (ELITE HUNTER) !" },
+      { count: 500, msg: "500 KOS - CHEF DE GUERRE DU GRAND CLAN (CLAN LEADER) !" },
+      { count: 1000, msg: "1000 KOS - LÉGENDE VIVANTE DES ANCIENS APEX (ANCIENT YAUTJA) !" }
     ];
 
     milestones.forEach(m => {
       if (kos >= m.count && !this.announcedMilestones[m.count]) {
         this.announcedMilestones[m.count] = true;
-        this.ui.showAnnouncement(`🏆 ${m.count} VICTIMES ! ${m.msg}`);
+        this.ui.showAnnouncement(`🏆 ${m.count} TROPHÉES ! ${m.msg}`);
         if (this.audio && this.audio.playMusouKOCallout) {
           this.audio.playMusouKOCallout();
         } else {
