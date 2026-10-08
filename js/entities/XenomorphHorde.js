@@ -354,9 +354,40 @@ export class XenomorphHorde {
       head.position.set(0, 1.8, 0.4);
       group.add(head);
 
+      // Pharyngeal Inner Jaw Teeth (Alien 1979 / Aliens 1986 H.R. Giger Lore)
+      const innerJawMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.95, roughness: 0.1 });
+      const innerJaw = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.05, 0.35, 6), innerJawMat);
+      innerJaw.rotation.x = Math.PI / 2;
+      innerJaw.position.set(0, 1.72, 1.15);
+      group.add(innerJaw);
+
       const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.3, 1.6, 8), mat);
       torso.position.y = 1.2;
       group.add(torso);
+
+      // 4 Curved Dorsal Biomechanical Exhaust Pipes (H.R. Giger Canon)
+      for (let p = 0; p < 4; p++) {
+        const pipe = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.03, 0.9, 5), mat);
+        const pX = (p % 2 === 0 ? -0.22 : 0.22);
+        const pY = 1.5 + (p > 1 ? 0.3 : 0);
+        const pZ = -0.25 - (p > 1 ? 0.15 : 0);
+        pipe.position.set(pX, pY, pZ);
+        pipe.rotation.x = -Math.PI / 3.5;
+        group.add(pipe);
+      }
+
+      // Segmented Prehensile Tail with Razor Blade Stinger
+      const tailMat = mat;
+      for (let t = 0; t < 5; t++) {
+        const tSeg = new THREE.Mesh(new THREE.CylinderGeometry(0.06 - t * 0.008, 0.045 - t * 0.006, 0.45, 5), tailMat);
+        tSeg.position.set(0, 0.8 - t * 0.1, -0.35 - t * 0.32);
+        tSeg.rotation.x = -0.55 + t * 0.12;
+        group.add(tSeg);
+      }
+      const stinger = new THREE.Mesh(new THREE.ConeGeometry(0.07, 0.35, 4), innerJawMat);
+      stinger.rotation.x = -Math.PI / 2;
+      stinger.position.set(0, 0.4, -2.0);
+      group.add(stinger);
 
       if (isBoiler) {
         // Encrusted with pulsating luminescent yellow-green acid pustules

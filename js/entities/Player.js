@@ -158,10 +158,16 @@ export class Player {
     group.add(rightGauntlet);
 
     const bladeMat = new THREE.MeshStandardMaterial({ color: 0xdddddd, metalness: 0.95, roughness: 0.1 });
-    this.blade1 = new THREE.Mesh(new THREE.BoxGeometry(0.08, 1.4, 0.02), bladeMat);
-    this.blade1.position.set(1.3, 1.8, 0.8);
+    // Dual parallel extensible wristblades (1:1 Canon Predator 1987)
+    this.blade1 = new THREE.Mesh(new THREE.BoxGeometry(0.06, 1.4, 0.02), bladeMat);
+    this.blade1.position.set(1.23, 1.8, 0.8);
     this.blade1.rotation.x = Math.PI / 2;
     group.add(this.blade1);
+
+    this.blade2 = new THREE.Mesh(new THREE.BoxGeometry(0.06, 1.4, 0.02), bladeMat);
+    this.blade2.position.set(1.37, 1.8, 0.8);
+    this.blade2.rotation.x = Math.PI / 2;
+    group.add(this.blade2);
 
     this.secWeaponMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.6, 0.05, 12), bladeMat);
     this.secWeaponMesh.position.set(-1.2, 1.8, 0.6);
@@ -920,6 +926,7 @@ export class Player {
     this.isSecondaryWeapon = !this.isSecondaryWeapon;
     this.secWeaponMesh.visible = this.isSecondaryWeapon;
     this.blade1.visible = !this.isSecondaryWeapon;
+    if (this.blade2) this.blade2.visible = !this.isSecondaryWeapon;
     this.audioEngine.playWeaponSwap();
     return this.isSecondaryWeapon;
   }
