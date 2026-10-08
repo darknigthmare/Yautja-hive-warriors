@@ -60,5 +60,17 @@ export const LEVELS_DATA = [
     skyColor: 0x080d05,
     waves: 5,
     bossType: 'praetorian'
+  },
+  {
+    id: 'romulus_station',
+    name: 'STATION RENAISSANCE (ALIEN: ROMULUS)',
+    desc: 'Station spatiale en dérive orbitale, laboratoires Z-01 et baie cryogénique.',
+    theme: 'romulus_station',
+    floorColor: 0x0f172a,
+    wallColor: 0x1e293b,
+    fogColor: 0x090d16,
+    skyColor: 0x030712,
+    waves: 6,
+    bossType: 'the_offspring'
   }
 ];

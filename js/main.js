@@ -299,6 +299,11 @@ class GameApp {
         this.launchFalconDrone();
       }
 
+      // Alpha Predator Primordial Dragon Bone Scythe [Digit 6] (NECA / Hunting Grounds Lore)
+      if ((e.code === 'Digit6' || e.code === 'Numpad6') && this.player) {
+        this.performBoneScytheCleave();
+      }
+
       // Collapsible 6-Blade Shuriken [L Key] (AVP 2004 Celtic / Scar Lore)
       if (e.code === 'KeyL' && this.player) {
         this.throwShuriken();
@@ -938,6 +943,14 @@ class GameApp {
     this.ui.showAnnouncement('🦅 DRONE FAUCON FALCONER DÉPLOYÉ : PATROUILLE AÉRIENNE & PIQUÉ DE PRÉCISION !');
   }
 
+  performBoneScytheCleave() {
+    if (!this.player) return;
+    if (this.player.performBoneScytheCleave(this.horde, this.synthetics, this.bosses)) {
+      this.particles.emitSparks(this.player.position, 20);
+      this.ui.showAnnouncement('⚔️ FAUX D\'OS PRIMORDIALE DE L\'ALPHA PREDATOR : BALAYAGE CIRCULAIRE 360° 7.5M !');
+    }
+  }
+
   executeMusouOverload() {
     this.ui.showAnnouncement('⚡ SURCHARGE MUSOU PLASMA ENCLENCHÉE ! ONDES DE CHOC & TEMPETE CYCLONIQUE');
     this.audio.playOmniPlasmaStorm();
@@ -1418,6 +1431,7 @@ class GameApp {
       // Play lock chime if newly acquired target
       if (!this.lockedTargetPos || this.lockedTargetPos.distanceTo(bestTarget.pos) > 4.0) {
         this.audio.playTargetLockPing();
+        this.audio.playRomulusSmartAimPing();
         this.lockedTargetPos = bestTarget.pos.clone();
       }
 
@@ -1430,7 +1444,7 @@ class GameApp {
 
         reticleEl.style.left = `${screenX}px`;
         reticleEl.style.top = `${screenY}px`;
-        infoEl.innerText = `TRI-LOCK: ${bestTarget.dist.toFixed(1)}m - ${bestTarget.name}`;
+        infoEl.innerText = `TRI-LOCK: ${bestTarget.dist.toFixed(1)}m - ${bestTarget.name} // WEY-YU F44AA [98.4%]`;
         reticleEl.classList.remove('hidden');
       } else {
         reticleEl.classList.add('hidden');

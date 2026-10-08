@@ -48,6 +48,7 @@ export class Player {
     this.powerGloveCooldown = 0;
     this.spineWhipCooldown = 0;
     this.flechetteCooldown = 0;
+    this.boneScytheCooldown = 0;
     this.targetLockEnemy = null;
 
     // Pounce Leap State
@@ -663,6 +664,54 @@ export class Player {
     };
   }
 
+  performBoneScytheCleave(horde, synthetics, bosses) {
+    if (this.boneScytheCooldown > 0 || this.isFacehuggerLatched) return false;
+    this.boneScytheCooldown = 5.5;
+
+    this.audioEngine.playBoneScytheCleave();
+    this.audioEngine.playYautjaRoar();
+
+    this.mesh.rotation.y += Math.PI * 2;
+    this.rightArm.rotation.x = -Math.PI * 0.7;
+    setTimeout(() => {
+      this.rightArm.rotation.x = 0;
+    }, 450);
+
+    const cleaveRadius = 7.5;
+    const cleaveDamage = 480;
+
+    if (horde) {
+      horde.checkMeleeHits({
+        origin: this.position,
+        radius: cleaveRadius,
+        damage: cleaveDamage,
+        type: 'heavy'
+      });
+      horde.aliens.forEach(a => {
+        if (a && a.mesh && a.mesh.position.distanceTo(this.position) <= cleaveRadius) {
+          const knockDir = a.mesh.position.clone().sub(this.position).normalize();
+          a.mesh.position.addScaledVector(knockDir, 4.5);
+        }
+      });
+    }
+
+    if (synthetics) {
+      synthetics.checkHits({
+        origin: this.position,
+        radius: cleaveRadius,
+        damage: cleaveDamage
+      });
+    }
+
+    if (bosses && bosses.activeBoss) {
+      if (bosses.activeBoss.mesh.position.distanceTo(this.position) <= cleaveRadius) {
+        bosses.takeDamage(cleaveDamage);
+      }
+    }
+
+    return true;
+  }
+
   triggerNukeSelfDestruct() {
     this.audioEngine.playPredatorLaughCountdown();
     return { damage: 10000, radius: 60 };
@@ -870,6 +919,10 @@ export class Player {
 
     if (this.flechetteCooldown > 0) {
       this.flechetteCooldown = Math.max(0, this.flechetteCooldown - delta);
+    }
+
+    if (this.boneScytheCooldown > 0) {
+      this.boneScytheCooldown = Math.max(0, this.boneScytheCooldown - delta);
     }
 
     if (this.isCloaked) {

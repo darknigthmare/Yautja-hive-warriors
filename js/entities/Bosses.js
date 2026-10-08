@@ -23,8 +23,9 @@ export class BossManager {
     const isImperial = type === 'imperial_queen';
     const isEmpress = type === 'empress_matriarch';
     const isPredalienQueen = type === 'predalien_queen';
+    const isOffspring = type === 'the_offspring';
 
-    const hp = isImperial ? 8000 : (isEmpress ? 6000 : (isPredalienQueen ? 5000 : 3000));
+    const hp = isImperial ? 8000 : (isEmpress ? 6000 : (isPredalienQueen ? 5000 : (isOffspring ? 4500 : 3000)));
 
     this.activeBoss = {
       type: type,
@@ -36,19 +37,24 @@ export class BossManager {
       phase: 1
     };
 
-    this.audioEngine.playYautjaRoar();
+    if (isOffspring) {
+      this.audioEngine.playOffspringShriek();
+    } else {
+      this.audioEngine.playYautjaRoar();
+    }
   }
 
   createBossMesh(type) {
     const group = new THREE.Group();
     const isEmpress = type === 'empress_matriarch';
     const isPredalien = type === 'predalien_queen';
-    const scale = isEmpress ? 2.5 : (type === 'imperial_queen' ? 2.8 : 2.0);
+    const isOffspring = type === 'the_offspring';
+    const scale = isEmpress ? 2.5 : (type === 'imperial_queen' ? 2.8 : (isOffspring ? 2.2 : 2.0));
 
     const mat = new THREE.MeshStandardMaterial({
-      color: isPredalien ? 0x5a4632 : (isEmpress ? 0x2b0d3d : 0x11161d),
-      metalness: 0.8,
-      roughness: 0.25
+      color: isOffspring ? 0xe2dfd2 : (isPredalien ? 0x5a4632 : (isEmpress ? 0x2b0d3d : 0x11161d)),
+      metalness: isOffspring ? 0.1 : 0.8,
+      roughness: isOffspring ? 0.35 : 0.25
     });
 
     // Elongated Alien Cranium
@@ -61,6 +67,45 @@ export class BossManager {
     const torso = new THREE.Mesh(torsoGeo, mat);
     torso.position.y = 2.0 * scale;
     group.add(torso);
+
+    if (isOffspring) {
+      // Canon 1:1 The Offspring Anatomy (Alien: Romulus 2024)
+      // Pale albaster humanoid face with black void eyes & pharyngeal inner jaw
+      const faceMat = new THREE.MeshStandardMaterial({ color: 0xe8e5dc, roughness: 0.4, metalness: 0.05 });
+      const face = new THREE.Mesh(new THREE.SphereGeometry(0.7 * scale, 12, 12), faceMat);
+      face.position.set(0, 3.8 * scale, 1.2 * scale);
+      face.scale.set(0.8, 1.2, 0.9);
+      group.add(face);
+
+      // Sunken black void eyes
+      const eyeMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
+      const eyeL = new THREE.Mesh(new THREE.SphereGeometry(0.12 * scale, 6, 6), eyeMat);
+      eyeL.position.set(-0.25 * scale, 4.0 * scale, 1.8 * scale);
+      group.add(eyeL);
+
+      const eyeR = new THREE.Mesh(new THREE.SphereGeometry(0.12 * scale, 6, 6), eyeMat);
+      eyeR.position.set(0.25 * scale, 4.0 * scale, 1.8 * scale);
+      group.add(eyeR);
+
+      // Pharyngeal Inner Jaw extending from humanoid mouth
+      const jawMat = new THREE.MeshStandardMaterial({ color: 0x18181b, metalness: 0.9, roughness: 0.2 });
+      const jaw = new THREE.Mesh(new THREE.BoxGeometry(0.25 * scale, 0.2 * scale, 1.3 * scale), jawMat);
+      jaw.position.set(0, 3.4 * scale, 2.0 * scale);
+      group.add(jaw);
+
+      // Segmented Biomechanical Stinger Tail
+      const tailMat = new THREE.MeshStandardMaterial({ color: 0x27272a, roughness: 0.3, metalness: 0.8 });
+      for (let t = 0; t < 7; t++) {
+        const seg = new THREE.Mesh(new THREE.CylinderGeometry(0.18 * scale, 0.14 * scale, 0.7 * scale, 6), tailMat);
+        seg.position.set(0, 1.5 * scale - t * 0.25 * scale, -1.2 * scale - t * 0.5 * scale);
+        seg.rotation.x = -Math.PI / 3 + t * 0.15;
+        group.add(seg);
+      }
+      const stinger = new THREE.Mesh(new THREE.ConeGeometry(0.16 * scale, 0.8 * scale, 4), tailMat);
+      stinger.rotation.x = -Math.PI / 2;
+      stinger.position.set(0, 0.8 * scale, -4.5 * scale);
+      group.add(stinger);
+    }
 
     if (isPredalien) {
       // Canon 1:1 Predalien Anatomy (AVP Requiem 2007)
