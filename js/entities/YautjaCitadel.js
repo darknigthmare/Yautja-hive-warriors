@@ -53,6 +53,7 @@ export class YautjaCitadel {
     engineerSkull.position.set(0, 3.2, -8);
     engineerSkull.scale.set(1.6, 1.6, 1.6);
     this.citadelGroup.add(engineerSkull);
+    this.engineerSkull = engineerSkull;
 
     // 2. CENTERPIECE 2: XENOMORPH QUEEN CROWN TROPHY
     const queenPedestal = new THREE.Mesh(new THREE.CylinderGeometry(1.4, 1.8, 2.4, 8), pedestalMat);
@@ -62,6 +63,7 @@ export class YautjaCitadel {
     const queenCrown = this.createQueenCrownMesh(queenCrownMat);
     queenCrown.position.set(-8, 3.2, 0);
     this.citadelGroup.add(queenCrown);
+    this.queenCrown = queenCrown;
 
     // 2B. CANON RELIC: RAPHAEL ADOLINI 1715 FLINTLOCK PISTOL (Predator 2 1990 / Prey 2022)
     const pistolPedestal = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 1.1, 1.8, 8), pedestalMat);
@@ -75,6 +77,7 @@ export class YautjaCitadel {
     const flintlock = this.createFlintlockPistol();
     flintlock.position.set(-5, 2.1, -5);
     this.citadelGroup.add(flintlock);
+    this.flintlock = flintlock;
 
     // 3. CENTERPIECE 3: LASER TROPHY CLEANING & POLISHING STATION (Predator 2 Lore)
     const stationPedestal = new THREE.Mesh(new THREE.BoxGeometry(2.4, 1.6, 3.2), pedestalMat);
@@ -86,15 +89,18 @@ export class YautjaCitadel {
     stationArm.position.set(8, 2.3, 0);
     stationArm.rotation.z = Math.PI / 4;
     this.citadelGroup.add(stationArm);
+    this.stationArm = stationArm;
 
     // Sizzling Blue Laser Beam Polishing an Elite Skull
     const laserBeam = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 1.2, 6), laserMat);
     laserBeam.position.set(8.4, 2.0, 0);
     this.citadelGroup.add(laserBeam);
+    this.laserBeam = laserBeam;
 
     const polishedSkull = new THREE.Mesh(new THREE.SphereGeometry(0.45, 10, 10), skullMat);
     polishedSkull.position.set(8.4, 1.9, 0);
     this.citadelGroup.add(polishedSkull);
+    this.polishedSkull = polishedSkull;
 
     // 4. CENTERPIECE 4: TYRANNOSAURUS REX PREHISTORIC SKULL (Predator 2 Lore 1990)
     const trexPedestal = new THREE.Mesh(new THREE.CylinderGeometry(2.2, 2.8, 2.2, 8), pedestalMat);
@@ -105,6 +111,7 @@ export class YautjaCitadel {
     trexSkull.position.set(0, 3.2, 8);
     trexSkull.scale.set(1.8, 1.8, 1.8);
     this.citadelGroup.add(trexSkull);
+    this.trexSkull = trexSkull;
 
     // Standard Prey Skulls on Outer Pedestals
     const displayCount = Math.min(12, Math.max(4, skullCount));
@@ -210,4 +217,30 @@ export class YautjaCitadel {
   hide() {
     this.citadelGroup.visible = false;
   }
+
+  update(delta) {
+    if (!this.citadelGroup.visible) return;
+
+    // Slow cinematic turntable showcase rotations
+    if (this.engineerSkull) this.engineerSkull.rotation.y += 0.22 * delta;
+    if (this.queenCrown) this.queenCrown.rotation.y += 0.28 * delta;
+    if (this.trexSkull) this.trexSkull.rotation.y += 0.18 * delta;
+
+    // Levitation and rotation of Raphael Adolini 1715 flintlock pistol
+    if (this.flintlock) {
+      this.flintlock.position.y = 2.1 + Math.sin(Date.now() * 0.0025) * 0.06;
+      this.flintlock.rotation.y += 0.35 * delta;
+    }
+
+    // Oscillating trophy cleaning laser arm sweep
+    const sweepAngle = Math.PI / 4 + Math.sin(Date.now() * 0.0035) * 0.22;
+    if (this.stationArm) {
+      this.stationArm.rotation.z = sweepAngle;
+    }
+    if (this.laserBeam) {
+      this.laserBeam.position.x = 8.0 + Math.sin(sweepAngle) * 0.55;
+      this.laserBeam.material.opacity = 0.55 + Math.random() * 0.4;
+    }
+  }
 }
+

@@ -313,6 +313,103 @@ export class BossManager {
       damage: 75,
       life: 2.5
     });
+
+    if (this.audioEngine.playAcidMortarWhistle) {
+      this.audioEngine.playAcidMortarWhistle();
+    }
+  }
+
+  triggerTailSkewer(player) {
+    if (!this.activeBoss) return;
+    if (this.audioEngine.playQueenTailSkewer) {
+      this.audioEngine.playQueenTailSkewer();
+    } else {
+      this.audioEngine.playQueenTailWhip();
+    }
+
+    // High-speed lunging jab animation forward
+    const initialZ = this.activeBoss.mesh.position.z;
+    const jabDir = player.position.clone().sub(this.activeBoss.mesh.position).normalize();
+    jabDir.y = 0;
+
+    let jabStep = 0;
+    const jabAnim = setInterval(() => {
+      jabStep++;
+      if (jabStep < 5) {
+        this.activeBoss.mesh.position.addScaledVector(jabDir, 0.8);
+      } else if (jabStep < 10) {
+        this.activeBoss.mesh.position.addScaledVector(jabDir, -0.8);
+      } else {
+        clearInterval(jabAnim);
+      }
+    }, 25);
+
+    const dist = this.activeBoss.mesh.position.distanceTo(player.position);
+    if (dist <= 7.0) {
+      if (player.isBlocking) {
+        if (player.audioEngine && player.audioEngine.playShieldBlock) player.audioEngine.playShieldBlock();
+      } else {
+        player.takeDamage(85);
+        // Brutal impalement pushback
+        const skewerPush = player.position.clone().sub(this.activeBoss.mesh.position).normalize();
+        player.position.addScaledVector(skewerPush, 8.5);
+        player.mesh.position.copy(player.position);
+      }
+    }
+  }
+
+  triggerEmpressGale(player, horde) {
+    if (!this.activeBoss) return;
+    if (this.audioEngine.playThunderClap) {
+      this.audioEngine.playThunderClap();
+    }
+
+    // Expanding biomechanical gale shockwave ring
+    const ringGeo = new THREE.RingGeometry(1.5, 3.0, 32);
+    ringGeo.rotateX(-Math.PI / 2);
+    const ringMat = new THREE.MeshBasicMaterial({
+      color: 0x9333ea,
+      transparent: true,
+      opacity: 0.85,
+      side: THREE.DoubleSide
+    });
+    const ring = new THREE.Mesh(ringGeo, ringMat);
+    ring.position.copy(this.activeBoss.mesh.position);
+    ring.position.y = 0.4;
+    this.scene.add(ring);
+
+    let scale = 1.0;
+    const ringAnim = setInterval(() => {
+      scale += 0.9;
+      ring.scale.set(scale, 1, scale);
+      ring.material.opacity -= 0.08;
+      if (ring.material.opacity <= 0) {
+        clearInterval(ringAnim);
+        this.scene.remove(ring);
+      }
+    }, 25);
+
+    // Blast player
+    const dist = this.activeBoss.mesh.position.distanceTo(player.position);
+    if (dist <= 13.0) {
+      player.takeDamage(70);
+      const pushDir = player.position.clone().sub(this.activeBoss.mesh.position).normalize();
+      player.position.addScaledVector(pushDir, 9.0);
+      player.mesh.position.copy(player.position);
+    }
+
+    // Blast away all nearby Xenomorphs
+    if (horde && horde.aliens) {
+      horde.aliens.forEach(a => {
+        if (!a || !a.mesh) return;
+        const d = a.mesh.position.distanceTo(this.activeBoss.mesh.position);
+        if (d <= 14.0) {
+          const push = a.mesh.position.clone().sub(this.activeBoss.mesh.position).normalize();
+          a.mesh.position.addScaledVector(push, 8.0);
+          a.hp -= 80;
+        }
+      });
+    }
   }
 
   update(delta, player, horde = null) {
@@ -374,10 +471,14 @@ export class BossManager {
 
     // Cooldown management for attacks
     if (!this.activeBoss.tailWhipCooldown) this.activeBoss.tailWhipCooldown = 3.5;
+    if (!this.activeBoss.tailSkewerCooldown) this.activeBoss.tailSkewerCooldown = 5.0;
+    if (!this.activeBoss.galeFlapCooldown) this.activeBoss.galeFlapCooldown = 6.0;
     if (!this.activeBoss.spitCooldown) this.activeBoss.spitCooldown = 4.0;
     if (!this.activeBoss.regurgitateCooldown) this.activeBoss.regurgitateCooldown = 5.0;
 
     this.activeBoss.tailWhipCooldown -= delta;
+    this.activeBoss.tailSkewerCooldown -= delta;
+    this.activeBoss.galeFlapCooldown -= delta;
     this.activeBoss.spitCooldown -= delta;
     this.activeBoss.regurgitateCooldown -= delta;
 
@@ -400,15 +501,27 @@ export class BossManager {
         this.audioEngine.playOffspringShriek();
         if (dist <= 10.0) {
           player.takeDamage(60);
-          player.energy = Math.max(0, (player.energy || 100) - 25); // Drains energy
+          player.plasmaEnergy = Math.max(0, (player.plasmaEnergy || 100) - 25); // Drains plasma energy
         }
       }
+    }
+
+    // Empress Matriarch Signature Gale Shockwave Knockback (Aliens: Rogue Lore)
+    if (this.activeBoss.type === 'empress_matriarch' && dist <= 13.0 && this.activeBoss.galeFlapCooldown <= 0) {
+      this.activeBoss.galeFlapCooldown = 6.5;
+      this.triggerEmpressGale(player, horde);
     }
 
     // Queen/Empress Long range: Acid Mortar Spit
     if (dist > 9.0 && dist < 35.0 && this.activeBoss.spitCooldown <= 0 && this.activeBoss.type !== 'the_offspring') {
       this.activeBoss.spitCooldown = 4.5;
       this.spitAcidMortar(player);
+    }
+
+    // Queen Caudal Tail Skewer Thrust (Aliens 1986 Bishop Impalement Lore)
+    if ((this.activeBoss.type === 'xenomorph_queen' || this.activeBoss.type === 'imperial_queen' || this.activeBoss.type === 'predalien_queen') && dist <= 7.0 && this.activeBoss.tailSkewerCooldown <= 0) {
+      this.activeBoss.tailSkewerCooldown = 5.5;
+      this.triggerTailSkewer(player);
     }
 
     // Medium-close range: Tail Whip 360

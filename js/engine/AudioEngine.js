@@ -2080,5 +2080,126 @@ export class AudioEngine {
     osc.start(now);
     osc.stop(now + 0.28);
   }
+
+  playAcidMortarWhistle() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // High-pitched ballistic mortar whistle
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(1350, now);
+    osc.frequency.exponentialRampToValueAtTime(260, now + 0.65);
+
+    gain.gain.setValueAtTime(0.35, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.65);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.65);
+  }
+
+  playThunderClap() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Sharp lightning crack noise burst
+    const crackOsc = this.ctx.createOscillator();
+    const crackGain = this.ctx.createGain();
+    crackOsc.type = 'sawtooth';
+    crackOsc.frequency.setValueAtTime(800, now);
+    crackOsc.frequency.exponentialRampToValueAtTime(80, now + 0.15);
+
+    crackGain.gain.setValueAtTime(0.8, now);
+    crackGain.gain.linearRampToValueAtTime(0.01, now + 0.15);
+
+    crackOsc.connect(crackGain);
+    crackGain.connect(this.ctx.destination);
+    crackOsc.start(now);
+    crackOsc.stop(now + 0.15);
+
+    // Deep subterranean resonant thunder rumble
+    const boomOsc = this.ctx.createOscillator();
+    const boomGain = this.ctx.createGain();
+    boomOsc.type = 'sine';
+    boomOsc.frequency.setValueAtTime(55, now + 0.05);
+    boomOsc.frequency.exponentialRampToValueAtTime(22, now + 1.8);
+
+    boomGain.gain.setValueAtTime(0.85, now + 0.05);
+    boomGain.gain.linearRampToValueAtTime(0.01, now + 1.8);
+
+    boomOsc.connect(boomGain);
+    boomGain.connect(this.ctx.destination);
+    boomOsc.start(now + 0.05);
+    boomOsc.stop(now + 1.8);
+  }
+
+  playPyramidStoneShift() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Massive subterranean megalith stone friction grinding (AvP 2004)
+    const osc1 = this.ctx.createOscillator();
+    const osc2 = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc1.type = 'sawtooth';
+    osc1.frequency.setValueAtTime(52, now);
+    osc1.frequency.linearRampToValueAtTime(65, now + 1.2);
+    osc1.frequency.linearRampToValueAtTime(45, now + 2.5);
+
+    osc2.type = 'triangle';
+    osc2.frequency.setValueAtTime(58, now);
+    osc2.frequency.linearRampToValueAtTime(72, now + 1.2);
+    osc2.frequency.linearRampToValueAtTime(48, now + 2.5);
+
+    gain.gain.setValueAtTime(0.7, now);
+    gain.gain.linearRampToValueAtTime(0.01, now + 2.5);
+
+    osc1.connect(gain);
+    osc2.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc1.start(now);
+    osc2.start(now);
+    osc1.stop(now + 2.5);
+    osc2.stop(now + 2.5);
+  }
+
+  playQueenTailSkewer() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // High velocity aerodynamic whip snap + flesh impalement thump
+    const whipOsc = this.ctx.createOscillator();
+    const whipGain = this.ctx.createGain();
+    whipOsc.type = 'triangle';
+    whipOsc.frequency.setValueAtTime(950, now);
+    whipOsc.frequency.exponentialRampToValueAtTime(140, now + 0.22);
+
+    whipGain.gain.setValueAtTime(0.85, now);
+    whipGain.gain.linearRampToValueAtTime(0.01, now + 0.22);
+
+    whipOsc.connect(whipGain);
+    whipGain.connect(this.ctx.destination);
+    whipOsc.start(now);
+    whipOsc.stop(now + 0.22);
+
+    const thumpOsc = this.ctx.createOscillator();
+    const thumpGain = this.ctx.createGain();
+    thumpOsc.type = 'sawtooth';
+    thumpOsc.frequency.setValueAtTime(180, now + 0.05);
+    thumpOsc.frequency.exponentialRampToValueAtTime(35, now + 0.35);
+
+    thumpGain.gain.setValueAtTime(0.9, now + 0.05);
+    thumpGain.gain.linearRampToValueAtTime(0.01, now + 0.35);
+
+    thumpOsc.connect(thumpGain);
+    thumpGain.connect(this.ctx.destination);
+    thumpOsc.start(now + 0.05);
+    thumpOsc.stop(now + 0.35);
+  }
 }
 

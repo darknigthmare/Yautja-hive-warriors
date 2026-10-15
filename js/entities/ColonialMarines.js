@@ -75,6 +75,21 @@ export class ColonialMarinesManager {
       nozzle.rotation.x = Math.PI / 2;
       nozzle.position.set(0.6, 2.0, 1.4);
       group.add(nozzle);
+
+      // 3D Animated M240 Napalm Flame Jet Stream (Cone projecting forward)
+      const jetGeo = new THREE.ConeGeometry(0.9, 4.8, 8);
+      jetGeo.rotateX(-Math.PI / 2);
+      const jetMat = new THREE.MeshBasicMaterial({
+        color: 0xff3700,
+        transparent: true,
+        opacity: 0.85,
+        blending: THREE.AdditiveBlending
+      });
+      const flameJet = new THREE.Mesh(jetGeo, jetMat);
+      flameJet.position.set(0.6, 2.0, 3.8);
+      flameJet.visible = false;
+      group.add(flameJet);
+      group.userData.flameJet = flameJet;
     } else {
       // M56 Smartgun Steadicam Articulated Arm & Headset Sight
       const steadyArmMat = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.8 });
@@ -88,6 +103,21 @@ export class ColonialMarinesManager {
       const sight = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.08, 0.15), eyeMat);
       sight.position.set(0.2, 3.1, 0.35);
       group.add(sight);
+
+      // Real-Time M56 Smartgun Tactical Red Laser Sight Beam
+      const laserGeo = new THREE.CylinderGeometry(0.018, 0.018, 8.0, 4);
+      laserGeo.rotateX(Math.PI / 2);
+      const laserMat = new THREE.MeshBasicMaterial({
+        color: 0xff0033,
+        transparent: true,
+        opacity: 0.85,
+        blending: THREE.AdditiveBlending
+      });
+      const laserBeam = new THREE.Mesh(laserGeo, laserMat);
+      laserBeam.position.set(0.6, 2.0, 5.0);
+      laserBeam.visible = false;
+      group.add(laserBeam);
+      group.userData.laserBeam = laserBeam;
     }
 
     return group;
@@ -114,17 +144,37 @@ export class ColonialMarinesManager {
         nearestDist = m.mesh.position.distanceTo(player.position);
       }
 
+      const flameJet = m.mesh.userData.flameJet;
+      const laserBeam = m.mesh.userData.laserBeam;
+
       if (targetPos) {
         const dir = targetPos.clone().sub(m.mesh.position);
         dir.y = 0;
-        if (dir.length() > 6) {
+        const currentDist = dir.length();
+
+        if (currentDist > 6) {
           dir.normalize();
           m.mesh.position.addScaledVector(dir, m.speed * delta);
           m.mesh.rotation.y = Math.atan2(dir.x, dir.z);
+
+          if (flameJet) flameJet.visible = false;
+          if (laserBeam) laserBeam.visible = false;
         } else {
+          m.mesh.rotation.y = Math.atan2(dir.x, dir.z);
+
           // Fire M56 Smartgun or M240 Incinerator Flamethrower!
           if (m.type === 'flametrooper') {
-            if (Math.random() < 0.14) {
+            if (flameJet) {
+              flameJet.visible = true;
+              flameJet.scale.set(
+                0.85 + Math.random() * 0.35,
+                0.85 + Math.random() * 0.35,
+                0.9 + Math.random() * 0.25
+              );
+              flameJet.material.opacity = 0.6 + Math.random() * 0.35;
+            }
+
+            if (Math.random() < 0.16) {
               if (this.audioEngine.playFlamethrowerBurn) {
                 this.audioEngine.playFlamethrowerBurn();
               } else {
@@ -142,8 +192,13 @@ export class ColonialMarinesManager {
               }
             }
           } else {
-            // M56 Smartgun tracking fire
-            if (Math.random() < 0.09) {
+            // M56 Smartgun tracking fire with red laser targeting
+            if (laserBeam) {
+              laserBeam.visible = true;
+              laserBeam.material.opacity = 0.7 + Math.random() * 0.3;
+            }
+
+            if (Math.random() < 0.11) {
               this.audioEngine.playPulseRifleBurst ? this.audioEngine.playPulseRifleBurst() : this.audioEngine.playPlasmaShot();
               if (targetPos === player.position) {
                 player.takeDamage(m.damage * 0.1);
@@ -173,6 +228,9 @@ export class ColonialMarinesManager {
             }
           }
         }
+      } else {
+        if (flameJet) flameJet.visible = false;
+        if (laserBeam) laserBeam.visible = false;
       }
     });
 

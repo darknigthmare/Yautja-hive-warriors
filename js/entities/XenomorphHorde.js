@@ -469,7 +469,8 @@ export class XenomorphHorde {
       const dist = a.mesh.position.distanceTo(attack.origin);
 
       if (dist <= attack.radius + (a.radius || 1.0)) {
-        a.hp -= attack.damage;
+        const damageDealt = a.isTargetPainted ? attack.damage * 1.25 : attack.damage;
+        a.hp -= damageDealt;
         const killed = a.hp <= 0;
 
         // Reactive Acid Splashback Physics (slashing xenos sprays pressurized molecular acid back at attacker)

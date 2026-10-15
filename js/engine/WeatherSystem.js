@@ -7,12 +7,250 @@ export class WeatherSystem {
     this.scene = scene;
     this.pipes = [];
     this.weatherType = 'none';
+    this.weatherParticles = null;
+    this.particlePositions = null;
+    this.particleVelocities = null;
+    this.particleCount = 0;
+    this.lightningTimer = 4.0;
+    this.timeAccumulator = 0;
 
     this.pipeMat = new THREE.MeshStandardMaterial({ color: 0xffaa00, metalness: 0.8 });
   }
 
   setWeather(type) {
+    if (this.weatherParticles) {
+      this.scene.remove(this.weatherParticles);
+      if (this.weatherParticles.geometry) this.weatherParticles.geometry.dispose();
+      if (this.weatherParticles.material) this.weatherParticles.material.dispose();
+      this.weatherParticles = null;
+    }
+
     this.weatherType = type;
+    this.lightningTimer = 5.0 + Math.random() * 5.0;
+
+    if (type === 'rain' || type === 'storm') {
+      this.initRain(type === 'storm');
+    } else if (type === 'zero_g_cryo') {
+      this.initZeroGCryo();
+    } else if (type === 'toxic_spores') {
+      this.initToxicSpores();
+    } else if (type === 'humid_mist') {
+      this.initHumidMist();
+    }
+  }
+
+  initRain(isStorm = false) {
+    this.particleCount = isStorm ? 1600 : 1000;
+    const geo = new THREE.BufferGeometry();
+    const positions = new Float32Array(this.particleCount * 3);
+    this.particleVelocities = [];
+
+    for (let i = 0; i < this.particleCount; i++) {
+      positions[i * 3] = (Math.random() - 0.5) * 80;
+      positions[i * 3 + 1] = Math.random() * 35;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 80;
+
+      this.particleVelocities.push({
+        y: -(isStorm ? 62 : 48) - Math.random() * 12,
+        x: isStorm ? -6.0 : 0
+      });
+    }
+
+    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    this.particlePositions = positions;
+
+    const mat = new THREE.PointsMaterial({
+      color: isStorm ? 0x93c5fd : 0x60a5fa,
+      size: 0.28,
+      transparent: true,
+      opacity: isStorm ? 0.75 : 0.6,
+      blending: THREE.AdditiveBlending
+    });
+
+    this.weatherParticles = new THREE.Points(geo, mat);
+    this.scene.add(this.weatherParticles);
+  }
+
+  initZeroGCryo() {
+    this.particleCount = 600;
+    const geo = new THREE.BufferGeometry();
+    const positions = new Float32Array(this.particleCount * 3);
+    this.particleVelocities = [];
+
+    for (let i = 0; i < this.particleCount; i++) {
+      positions[i * 3] = (Math.random() - 0.5) * 70;
+      positions[i * 3 + 1] = 0.5 + Math.random() * 20;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 70;
+
+      this.particleVelocities.push({
+        vy: (Math.random() - 0.5) * 0.8,
+        vx: (Math.random() - 0.5) * 0.6,
+        vz: (Math.random() - 0.5) * 0.6,
+        freq: 0.5 + Math.random() * 1.5
+      });
+    }
+
+    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    this.particlePositions = positions;
+
+    const mat = new THREE.PointsMaterial({
+      color: 0x99f6e4,
+      size: 0.4,
+      transparent: true,
+      opacity: 0.7,
+      blending: THREE.AdditiveBlending
+    });
+
+    this.weatherParticles = new THREE.Points(geo, mat);
+    this.scene.add(this.weatherParticles);
+  }
+
+  initToxicSpores() {
+    this.particleCount = 750;
+    const geo = new THREE.BufferGeometry();
+    const positions = new Float32Array(this.particleCount * 3);
+    this.particleVelocities = [];
+
+    for (let i = 0; i < this.particleCount; i++) {
+      positions[i * 3] = (Math.random() - 0.5) * 75;
+      positions[i * 3 + 1] = 0.2 + Math.random() * 22;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 75;
+
+      this.particleVelocities.push({
+        vy: 0.8 + Math.random() * 1.4,
+        drift: (Math.random() - 0.5) * 1.8
+      });
+    }
+
+    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    this.particlePositions = positions;
+
+    const mat = new THREE.PointsMaterial({
+      color: 0xa3e635,
+      size: 0.35,
+      transparent: true,
+      opacity: 0.65,
+      blending: THREE.AdditiveBlending
+    });
+
+    this.weatherParticles = new THREE.Points(geo, mat);
+    this.scene.add(this.weatherParticles);
+  }
+
+  initHumidMist() {
+    this.particleCount = 450;
+    const geo = new THREE.BufferGeometry();
+    const positions = new Float32Array(this.particleCount * 3);
+    this.particleVelocities = [];
+
+    for (let i = 0; i < this.particleCount; i++) {
+      positions[i * 3] = (Math.random() - 0.5) * 80;
+      positions[i * 3 + 1] = 0.3 + Math.random() * 4.5;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 80;
+
+      this.particleVelocities.push({
+        vx: (Math.random() - 0.5) * 0.4,
+        vz: (Math.random() - 0.5) * 0.4
+      });
+    }
+
+    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    this.particlePositions = positions;
+
+    const mat = new THREE.PointsMaterial({
+      color: 0xcbd5e1,
+      size: 0.7,
+      transparent: true,
+      opacity: 0.35,
+      blending: THREE.AdditiveBlending
+    });
+
+    this.weatherParticles = new THREE.Points(geo, mat);
+    this.scene.add(this.weatherParticles);
+  }
+
+  update(delta, playerPos, renderer, audioEngine) {
+    if (!this.weatherParticles || !this.particlePositions) return;
+
+    this.timeAccumulator += delta;
+    const pos = this.particlePositions;
+    const center = playerPos || new THREE.Vector3(0, 0, 0);
+
+    if (this.weatherType === 'rain' || this.weatherType === 'storm') {
+      const isStorm = this.weatherType === 'storm';
+
+      // Lightning Thunderstorm loop
+      if (isStorm) {
+        this.lightningTimer -= delta;
+        if (this.lightningTimer <= 0) {
+          this.lightningTimer = 6.0 + Math.random() * 8.0;
+          if (renderer && renderer.triggerLightningFlash) {
+            renderer.triggerLightningFlash(0xd8ecff, 4.8);
+          }
+          if (audioEngine && audioEngine.playThunderClap) {
+            audioEngine.playThunderClap();
+          }
+        }
+      }
+
+      for (let i = 0; i < this.particleCount; i++) {
+        const vel = this.particleVelocities[i];
+        pos[i * 3 + 1] += vel.y * delta;
+        pos[i * 3] += vel.x * delta;
+
+        if (pos[i * 3 + 1] <= 0) {
+          pos[i * 3 + 1] = 32 + Math.random() * 5;
+          pos[i * 3] = center.x + (Math.random() - 0.5) * 80;
+          pos[i * 3 + 2] = center.z + (Math.random() - 0.5) * 80;
+        }
+      }
+    } else if (this.weatherType === 'zero_g_cryo') {
+      for (let i = 0; i < this.particleCount; i++) {
+        const vel = this.particleVelocities[i];
+        pos[i * 3] += Math.sin(this.timeAccumulator * vel.freq + i) * 0.8 * delta;
+        pos[i * 3 + 1] += vel.vy * delta;
+        pos[i * 3 + 2] += Math.cos(this.timeAccumulator * vel.freq + i) * 0.8 * delta;
+
+        if (pos[i * 3 + 1] < 0.2) pos[i * 3 + 1] = 20;
+        if (pos[i * 3 + 1] > 22) pos[i * 3 + 1] = 0.5;
+      }
+    } else if (this.weatherType === 'toxic_spores') {
+      for (let i = 0; i < this.particleCount; i++) {
+        const vel = this.particleVelocities[i];
+        pos[i * 3 + 1] += vel.vy * delta;
+        pos[i * 3] += Math.sin(this.timeAccumulator * 1.5 + i) * vel.drift * delta;
+        pos[i * 3 + 2] += Math.cos(this.timeAccumulator * 1.5 + i) * vel.drift * delta;
+
+        if (pos[i * 3 + 1] > 24) {
+          pos[i * 3 + 1] = 0.2;
+          pos[i * 3] = center.x + (Math.random() - 0.5) * 75;
+          pos[i * 3 + 2] = center.z + (Math.random() - 0.5) * 75;
+        }
+      }
+    } else if (this.weatherType === 'humid_mist') {
+      for (let i = 0; i < this.particleCount; i++) {
+        const vel = this.particleVelocities[i];
+        pos[i * 3] += vel.vx * delta;
+        pos[i * 3 + 2] += vel.vz * delta;
+
+        // Wrap around player radius
+        if (Math.abs(pos[i * 3] - center.x) > 42) pos[i * 3] = center.x - Math.sign(pos[i * 3] - center.x) * 40;
+        if (Math.abs(pos[i * 3 + 2] - center.z) > 42) pos[i * 3 + 2] = center.z - Math.sign(pos[i * 3 + 2] - center.z) * 40;
+      }
+    }
+
+    this.weatherParticles.geometry.attributes.position.needsUpdate = true;
+  }
+
+  clear() {
+    if (this.weatherParticles) {
+      this.scene.remove(this.weatherParticles);
+      if (this.weatherParticles.geometry) this.weatherParticles.geometry.dispose();
+      if (this.weatherParticles.material) this.weatherParticles.material.dispose();
+      this.weatherParticles = null;
+    }
+    this.pipes.forEach(p => this.scene.remove(p.mesh));
+    this.pipes = [];
   }
 
   spawnGasPipes(count = 6) {

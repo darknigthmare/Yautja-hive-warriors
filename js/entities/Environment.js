@@ -6,11 +6,21 @@ export class EnvironmentManager {
   constructor(scene) {
     this.scene = scene;
     this.envObjects = [];
+    this.modularSlabs = [];
+    this.slabShiftTimer = 0;
+    this.slabShiftCycle = 16.0; // Shifting cycle every 16s (AvP 2004 subterranean realignment)
+    this.isSlabMoving = false;
+    this.slabMoveProgress = 0;
+    this.slabMoveDuration = 3.2;
+    this.slabShiftToggle = false;
   }
 
   clearEnvironment() {
     this.envObjects.forEach(obj => this.scene.remove(obj));
     this.envObjects = [];
+    this.modularSlabs = [];
+    this.slabShiftTimer = 0;
+    this.isSlabMoving = false;
   }
 
   buildLevelEnvironment(levelConfig) {
@@ -205,24 +215,41 @@ export class EnvironmentManager {
     const slabGeo = new THREE.BoxGeometry(10, 8, 2.5);
     const glyphMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8 });
 
-    const slabPositions = [
-      [-22, 4, -14], [22, 4, 14], [-14, 4, 22], [14, 4, -22]
+    // Slabs with home positions and dynamic shift offsets (sliding across corridors)
+    const slabConfigs = [
+      { home: [-24, 4, -14], shift: [12, 0, 0] },
+      { home: [24, 4, 14], shift: [-12, 0, 0] },
+      { home: [-14, 4, 24], shift: [0, 0, -12] },
+      { home: [14, 4, -24], shift: [0, 0, 12] },
+      { home: [-8, 4, 0], shift: [0, 0, 10] },
+      { home: [8, 4, 0], shift: [0, 0, -10] }
     ];
 
-    slabPositions.forEach(p => {
+    this.modularSlabs = [];
+
+    slabConfigs.forEach(cfg => {
       const slabGroup = new THREE.Group();
       const wall = new THREE.Mesh(slabGeo, stoneMat);
       wall.castShadow = true;
       slabGroup.add(wall);
 
-      // Embedded glowing Yautja hunting glyphs on slab face
-      const glyph = new THREE.Mesh(new THREE.BoxGeometry(0.3, 1.4, 0.05), glyphMat);
-      glyph.position.set(0, 0, 1.3);
-      slabGroup.add(glyph);
+      // Embedded glowing Yautja hunting glyphs on both slab faces
+      [-1.3, 1.3].forEach(z => {
+        const glyph = new THREE.Mesh(new THREE.BoxGeometry(0.3, 1.4, 0.05), glyphMat);
+        glyph.position.set(0, 0, z);
+        slabGroup.add(glyph);
+      });
 
-      slabGroup.position.set(...p);
+      slabGroup.position.set(...cfg.home);
       this.scene.add(slabGroup);
       this.envObjects.push(slabGroup);
+
+      this.modularSlabs.push({
+        mesh: slabGroup,
+        homePos: new THREE.Vector3(...cfg.home),
+        shiftOffset: new THREE.Vector3(...cfg.shift),
+        dir: new THREE.Vector3(...cfg.shift).normalize()
+      });
     });
   }
 
@@ -281,4 +308,62 @@ export class EnvironmentManager {
       this.envObjects.push(beacon);
     }
   }
+
+  update(delta, horde, audioEngine) {
+    if (!this.modularSlabs || this.modularSlabs.length === 0) return;
+
+    this.slabShiftTimer += delta;
+
+    // Trigger labyrinth stone shift every cycle
+    if (!this.isSlabMoving && this.slabShiftTimer >= this.slabShiftCycle) {
+      this.isSlabMoving = true;
+      this.slabMoveProgress = 0;
+      this.slabShiftToggle = !this.slabShiftToggle;
+      if (audioEngine && audioEngine.playPyramidStoneShift) {
+        audioEngine.playPyramidStoneShift();
+      }
+    }
+
+    if (this.isSlabMoving) {
+      this.slabMoveProgress += delta / this.slabMoveDuration;
+      const t = Math.sin(Math.min(1.0, this.slabMoveProgress) * (Math.PI / 2));
+      const factor = this.slabShiftToggle ? t : (1.0 - t);
+
+      this.modularSlabs.forEach(slab => {
+        // Smoothly interpolate position
+        slab.mesh.position.copy(slab.homePos).addScaledVector(slab.shiftOffset, factor);
+
+        // Check crushing collision against Xenomorph horde caught in sliding path
+        if (horde && horde.aliens) {
+          for (let i = horde.aliens.length - 1; i >= 0; i--) {
+            const alien = horde.aliens[i];
+            if (!alien || !alien.mesh) continue;
+
+            const dist = alien.mesh.position.distanceTo(slab.mesh.position);
+            if (dist < 5.4) {
+              // Crush and knock back
+              alien.mesh.position.addScaledVector(slab.dir, (this.slabShiftToggle ? 1 : -1) * 12.0 * delta);
+              alien.hp -= 320 * delta;
+
+              if (alien.hp <= 0) {
+                if (horde.goreEngine) {
+                  horde.goreEngine.spawnDismemberment(alien.mesh.position, 'heavy');
+                }
+                horde.spawnAcidPool(alien.mesh.position);
+                this.scene.remove(alien.mesh);
+                horde.aliens.splice(i, 1);
+                horde.deadCount++;
+              }
+            }
+          }
+        }
+      });
+
+      if (this.slabMoveProgress >= 1.0) {
+        this.isSlabMoving = false;
+        this.slabShiftTimer = 0;
+      }
+    }
+  }
 }
+

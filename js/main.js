@@ -95,9 +95,16 @@ class GameApp {
     this.announcedMilestones = {};
     this.nukeCountingDown = false;
     this.motionTrackerTimer = 0;
-    this.closestEnemyDist = Infinity;
     this.battlefieldMorale = 50.0; // 0 to 100% (50 = balanced tug-of-war)
     this.trueMusouActive = false;
+
+    // Musou Dynamic Camera & Screen Impact
+    this.cameraShakeIntensity = 0;
+    this.cameraShakeTimer = 0;
+    this.cameraFovTimer = 0;
+    this.cameraFovDuration = 0;
+    this.targetCameraFov = 60;
+    this.baseFov = 60;
 
     this.keys = {};
     this.setupEventListeners();
@@ -581,6 +588,7 @@ class GameApp {
     this.citadel.hide();
     this.env.buildLevelEnvironment(this.ui.selectedLevel);
     this.renderer.updateLevelEnvironment(this.ui.selectedLevel);
+    this.weather.setWeather(this.ui.selectedLevel.weatherType || 'none');
     this.weather.spawnGasPipes(6);
     this.gore.clear();
 
@@ -644,6 +652,7 @@ class GameApp {
     if (this.badBlood.isActive && this.badBlood.badBlood) {
       if (this.badBlood.badBlood.mesh.position.distanceTo(this.player.position) <= attack.radius) {
         if (this.badBlood.takeDamage(attack.damage)) {
+          this.gore.spawnYautjaSeveredHead(this.badBlood.badBlood.mesh.position);
           const tName = 'Masque Souillé & Crâne Décapité de Bad Blood Renégat (Dark Horse Comics 1993)';
           const tHonor = 2200;
           this.player.recordTrophy(tName, tHonor);
@@ -667,7 +676,7 @@ class GameApp {
     this.weather.checkExplosions(this.player.position, 6.0, this.horde, this.particles);
     this.synthetics.checkHits(attack);
 
-    // Dynasty Warriors Musou C1-C6 Charge Finisher Announcement
+    // Dynasty Warriors Musou C1-C6 Charge Finisher Announcement & Camera Punch
     if (this.player.currentChargeName) {
       this.ui.showAnnouncement(`⚡ FINISHER CHARGÉ : ${this.player.currentChargeName} !`);
       const tagElem = document.getElementById('combo-chain-indicator');
@@ -675,11 +684,16 @@ class GameApp {
         tagElem.innerText = `FINISHER : ${this.player.currentChargeName}`;
         tagElem.style.color = '#ffb703';
       }
+
+      const isC6 = this.player.currentChargeName.includes('C6');
+      this.triggerCameraShake(isC6 ? 1.2 : 0.6, isC6 ? 0.45 : 0.25);
+      this.triggerCameraFovSurge(isC6 ? 68 : 64, isC6 ? 0.5 : 0.3);
     }
 
     if (this.badBlood.isActive && this.badBlood.badBlood) {
       if (this.badBlood.badBlood.mesh.position.distanceTo(this.player.position) <= attack.radius) {
         if (this.badBlood.takeDamage(attack.damage)) {
+          this.gore.spawnYautjaSeveredHead(this.badBlood.badBlood.mesh.position);
           const tName = 'Masque Souillé & Crâne Décapité de Bad Blood Renégat (Dark Horse Comics 1993)';
           const tHonor = 2200;
           this.player.recordTrophy(tName, tHonor);
@@ -1113,6 +1127,10 @@ class GameApp {
     this.ui.showAnnouncement('⚡ VRAIE ATTAQUE MUSOU : DÉVASTATION DU CLAN APEX !');
     this.audio.playOmniPlasmaStorm();
 
+    // Intense Musou Camera Shockwave & Elastic FOV Surge
+    this.triggerCameraShake(1.6, 0.7);
+    this.triggerCameraFovSurge(74, 1.4);
+
     // Show True Musou Calligraphy Banner
     const banner = document.getElementById('true-musou-banner');
     if (banner) {
@@ -1167,6 +1185,17 @@ class GameApp {
 
     if (this.bosses.activeBoss) this.bosses.takeDamage(1500);
     if (this.badBlood.isActive) this.badBlood.takeDamage(1500);
+  }
+
+  triggerCameraShake(intensity = 0.8, duration = 0.35) {
+    this.cameraShakeIntensity = intensity;
+    this.cameraShakeTimer = duration;
+  }
+
+  triggerCameraFovSurge(targetFov = 72, duration = 0.6) {
+    this.targetCameraFov = targetFov;
+    this.cameraFovTimer = duration;
+    this.cameraFovDuration = duration;
   }
 
   checkTrophyExecution() {
@@ -1364,6 +1393,10 @@ class GameApp {
     this.falconDrone.update(delta, this.player.position, this.horde);
     this.skimmer.update(delta, this.player, this.horde, this.keys);
     this.orbital.update(delta);
+    if (this.weather) this.weather.update(delta, this.player ? this.player.position : null, this.renderer, this.audio);
+    if (this.env) this.env.update(delta, this.horde, this.audio);
+    if (this.renderer) this.renderer.update(delta);
+    if (this.citadel) this.citadel.update(delta);
 
     // Update Engineer Black Pathogen Pools (Prometheus 2012)
     if (this.pathogenCooldown > 0) this.pathogenCooldown -= delta;
@@ -1427,6 +1460,26 @@ class GameApp {
       const camTarget = this.player.position.clone().add(new THREE.Vector3(0, 10, 16));
       this.renderer.camera.position.lerp(camTarget, 5 * delta);
       this.renderer.camera.lookAt(this.player.position.clone().add(new THREE.Vector3(0, 2, 0)));
+    }
+
+    // Apply Musou Camera Shake
+    if (this.cameraShakeTimer > 0) {
+      this.cameraShakeTimer -= delta;
+      const shakeAmt = this.cameraShakeIntensity * Math.min(1.0, this.cameraShakeTimer / 0.35);
+      this.renderer.camera.position.x += (Math.random() - 0.5) * shakeAmt;
+      this.renderer.camera.position.y += (Math.random() - 0.5) * shakeAmt;
+      this.renderer.camera.position.z += (Math.random() - 0.5) * shakeAmt;
+    }
+
+    // Apply Musou FOV Surge & Elastic Snapback
+    if (this.cameraFovTimer > 0) {
+      this.cameraFovTimer -= delta;
+      const t = Math.max(0, this.cameraFovTimer / (this.cameraFovDuration || 0.6));
+      this.renderer.camera.fov = THREE.MathUtils.lerp(this.baseFov, this.targetCameraFov, Math.sin(t * Math.PI));
+      this.renderer.camera.updateProjectionMatrix();
+    } else if (this.renderer.camera.fov !== this.baseFov) {
+      this.renderer.camera.fov = this.baseFov;
+      this.renderer.camera.updateProjectionMatrix();
     }
 
     for (let i = this.projectiles.length - 1; i >= 0; i--) {
