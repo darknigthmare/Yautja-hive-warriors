@@ -18,6 +18,11 @@ export class EnvironmentManager {
     this.supplyCaches = [];
     this.blastDoors = [];
     this.resinPustules = [];
+    this.acidTrenches = [];
+    this.spaceJockeyPlatform = null;
+    this.cargoCrane = null;
+    this.cryoMedBays = [];
+    this.eggNurseries = [];
   }
 
   clearEnvironment() {
@@ -33,6 +38,20 @@ export class EnvironmentManager {
     this.blastDoors = [];
     this.resinPustules.forEach(p => this.scene.remove(p.mesh));
     this.resinPustules = [];
+    this.acidTrenches.forEach(t => this.scene.remove(t.group));
+    this.acidTrenches = [];
+    if (this.spaceJockeyPlatform) {
+      this.scene.remove(this.spaceJockeyPlatform.group);
+      this.spaceJockeyPlatform = null;
+    }
+    if (this.cargoCrane) {
+      this.scene.remove(this.cargoCrane.group);
+      this.cargoCrane = null;
+    }
+    this.cryoMedBays.forEach(c => this.scene.remove(c.mesh));
+    this.cryoMedBays = [];
+    this.eggNurseries.forEach(e => this.scene.remove(e.group));
+    this.eggNurseries = [];
     this.slabShiftTimer = 0;
     this.isSlabMoving = false;
   }
@@ -122,6 +141,26 @@ export class EnvironmentManager {
     // Chantier 8: Living Biomechanical Wall Resin & Acid Pustules
     if (theme === 'hive_world' || theme === 'romulus_station') {
       this.buildBiomechanicalWallResin();
+    }
+
+    // === v41.0 10-CHANTIER EXPANSION (Level Design Systems) ===
+    // Chantier 1: Subterranean Acid Trenches & Caustic Canals (Hadley's Hope / Romulus 1:1)
+    this.buildAcidTrenches();
+
+    // Chantier 3: Derelict Juggernaut Space Jockey Chamber & Telescope Dais (Alien 1979 / Prometheus)
+    this.buildSpaceJockeyDais();
+
+    // Chantier 4: Cryo-Surgical Med-Bay Pods & Embryo Purge (Prometheus / Romulus)
+    this.buildCryoMedBays(2);
+
+    // Chantier 5: Overhead Industrial Cargo Crane & 5-Ton Container Drop (Aliens 1986)
+    if (theme === 'colony' || theme === 'romulus_station' || theme === 'la_rooftops' || theme === 'pyramid') {
+      this.buildCargoCrane();
+    }
+
+    // Chantier 9: Hive Egg Clusters & Royal Guard Praetorian Barricades (Aliens 1986 / Romulus)
+    if (theme === 'hive_world' || theme === 'romulus_station' || theme === 'pyramid') {
+      this.buildEggNurseries();
     }
   }
 
@@ -346,63 +385,62 @@ export class EnvironmentManager {
     }
   }
 
-  update(delta, horde, audioEngine) {
-    if (!this.modularSlabs || this.modularSlabs.length === 0) return;
+  update(delta, horde, audioEngine, player) {
+    // 1. Pyramid Shifting Labyrinth Walls (AvP 2004)
+    if (this.modularSlabs && this.modularSlabs.length > 0) {
+      this.slabShiftTimer += delta;
 
-    this.slabShiftTimer += delta;
-
-    // Trigger labyrinth stone shift every cycle
-    if (!this.isSlabMoving && this.slabShiftTimer >= this.slabShiftCycle) {
-      this.isSlabMoving = true;
-      this.slabMoveProgress = 0;
-      this.slabShiftToggle = !this.slabShiftToggle;
-      if (audioEngine && audioEngine.playPyramidStoneShift) {
-        audioEngine.playPyramidStoneShift();
+      // Trigger labyrinth stone shift every cycle
+      if (!this.isSlabMoving && this.slabShiftTimer >= this.slabShiftCycle) {
+        this.isSlabMoving = true;
+        this.slabMoveProgress = 0;
+        this.slabShiftToggle = !this.slabShiftToggle;
+        if (audioEngine && audioEngine.playPyramidStoneShift) {
+          audioEngine.playPyramidStoneShift();
+        }
       }
-    }
 
-    if (this.isSlabMoving) {
-      this.slabMoveProgress += delta / this.slabMoveDuration;
-      const t = Math.sin(Math.min(1.0, this.slabMoveProgress) * (Math.PI / 2));
-      const factor = this.slabShiftToggle ? t : (1.0 - t);
+      if (this.isSlabMoving) {
+        this.slabMoveProgress += delta / this.slabMoveDuration;
+        const t = Math.sin(Math.min(1.0, this.slabMoveProgress) * (Math.PI / 2));
+        const factor = this.slabShiftToggle ? t : (1.0 - t);
 
-      this.modularSlabs.forEach(slab => {
-        // Smoothly interpolate position
-        slab.mesh.position.copy(slab.homePos).addScaledVector(slab.shiftOffset, factor);
+        this.modularSlabs.forEach(slab => {
+          slab.mesh.position.copy(slab.homePos).addScaledVector(slab.shiftOffset, factor);
 
-        // Check crushing collision against Xenomorph horde caught in sliding path
-        if (horde && horde.aliens) {
-          for (let i = horde.aliens.length - 1; i >= 0; i--) {
-            const alien = horde.aliens[i];
-            if (!alien || !alien.mesh) continue;
+          // Check crushing collision against Xenomorph horde caught in sliding path
+          if (horde && horde.aliens) {
+            for (let i = horde.aliens.length - 1; i >= 0; i--) {
+              const alien = horde.aliens[i];
+              if (!alien || !alien.mesh) continue;
 
-            const dist = alien.mesh.position.distanceTo(slab.mesh.position);
-            if (dist < 5.4) {
-              // Crush and knock back
-              alien.mesh.position.addScaledVector(slab.dir, (this.slabShiftToggle ? 1 : -1) * 12.0 * delta);
-              alien.hp -= 320 * delta;
+              const dist = alien.mesh.position.distanceTo(slab.mesh.position);
+              if (dist < 5.4) {
+                alien.mesh.position.addScaledVector(slab.dir, (this.slabShiftToggle ? 1 : -1) * 12.0 * delta);
+                alien.hp -= 320 * delta;
 
-              if (alien.hp <= 0) {
-                if (horde.goreEngine) {
-                  horde.goreEngine.spawnDismemberment(alien.mesh.position, 'heavy');
+                if (alien.hp <= 0) {
+                  if (horde.goreEngine) {
+                    horde.goreEngine.spawnDismemberment(alien.mesh.position, 'heavy');
+                  }
+                  horde.spawnAcidPool(alien.mesh.position);
+                  this.scene.remove(alien.mesh);
+                  horde.aliens.splice(i, 1);
+                  horde.deadCount++;
                 }
-                horde.spawnAcidPool(alien.mesh.position);
-                this.scene.remove(alien.mesh);
-                horde.aliens.splice(i, 1);
-                horde.deadCount++;
               }
             }
           }
-        }
-      });
+        });
 
-      if (this.slabMoveProgress >= 1.0) {
-        this.isSlabMoving = false;
-        this.slabShiftTimer = 0;
+        if (this.slabMoveProgress >= 1.0) {
+          this.isSlabMoving = false;
+          this.slabShiftTimer = 0;
+        }
       }
     }
 
-    // Update Transformers Electrical Core Glow
+    // 2. Transformers Electrical Core Glow
     this.transformers.forEach(t => {
       if (!t.isDestroyed && t.coreMesh) {
         t.flickerTimer = (t.flickerTimer || 0) + delta * 8;
@@ -410,7 +448,7 @@ export class EnvironmentManager {
       }
     });
 
-    // Update Supply Cache Beacon Pulse
+    // 3. Supply Cache Beacon Pulse
     this.supplyCaches.forEach(c => {
       if (!c.isOpened && c.beaconMesh) {
         c.beaconTimer = (c.beaconTimer || 0) + delta * 6;
@@ -418,22 +456,21 @@ export class EnvironmentManager {
       }
     });
 
-    // Update Living Resin Pustules
+    // 4. Living Resin Pustules
     for (let i = this.resinPustules.length - 1; i >= 0; i--) {
       const p = this.resinPustules[i];
       p.breathTimer = (p.breathTimer || 0) + delta * 3.5;
       const s = 1.0 + Math.sin(p.breathTimer) * 0.18;
       p.mesh.scale.set(s, s * 1.2, s);
 
-      // Check proximity trigger (within 2.4m of player or alien)
       let triggered = false;
-      if (player && player.position.distanceTo(p.pos) <= 2.4) {
+      if (player && player.position && player.position.distanceTo(p.pos) <= 2.4) {
         triggered = true;
-        player.takeDamage(18, true); // Acid burn
+        if (player.takeDamage) player.takeDamage(18, true);
       }
       if (!triggered && horde && horde.aliens) {
         for (let a of horde.aliens) {
-          if (a.hp > 0 && a.mesh.position.distanceTo(p.pos) <= 2.4) {
+          if (a.hp > 0 && a.mesh && a.mesh.position.distanceTo(p.pos) <= 2.4) {
             triggered = true;
             a.hp -= 45;
             break;
@@ -448,6 +485,161 @@ export class EnvironmentManager {
         this.resinPustules.splice(i, 1);
       }
     }
+
+    // 5. Chantier 1: Subterranean Acid Trenches Bubble & Caustic Melt
+    for (const trench of this.acidTrenches) {
+      if (trench.acidMesh) {
+        trench.bubbleTimer = (trench.bubbleTimer || 0) + delta * 2.5;
+        trench.acidMesh.position.y = trench.baseY + Math.sin(trench.bubbleTimer) * 0.08;
+      }
+
+      // Check player inside caustic acid trench
+      if (player && player.position) {
+        const px = player.position.x;
+        const pz = player.position.z;
+        if (px >= trench.minX && px <= trench.maxX && pz >= trench.minZ && pz <= trench.maxZ) {
+          let onBridge = false;
+          for (const b of trench.bridges) {
+            if (px >= b.minX && px <= b.maxX && pz >= b.minZ && pz <= b.maxZ) {
+              onBridge = true;
+              break;
+            }
+          }
+          if (!onBridge && player.position.y <= -0.5) {
+            player.takeDamage(26 * delta, true);
+            if (player.inflictVisorAcidBurn) player.inflictVisorAcidBurn();
+            trench.soundCooldown = (trench.soundCooldown || 0) - delta;
+            if (trench.soundCooldown <= 0) {
+              trench.soundCooldown = 1.2;
+              if (audioEngine && audioEngine.playAcidTrenchBubble) {
+                audioEngine.playAcidTrenchBubble();
+              }
+            }
+          }
+        }
+      }
+
+      // Check aliens caught in caustic acid trench
+      if (horde && horde.aliens) {
+        for (let a of horde.aliens) {
+          if (!a || a.hp <= 0 || !a.mesh) continue;
+          const ax = a.mesh.position.x;
+          const az = a.mesh.position.z;
+          if (ax >= trench.minX && ax <= trench.maxX && az >= trench.minZ && az <= trench.maxZ) {
+            let onBridge = false;
+            for (const b of trench.bridges) {
+              if (ax >= b.minX && ax <= b.maxX && az >= b.minZ && az <= b.maxZ) {
+                onBridge = true;
+                break;
+              }
+            }
+            if (!onBridge && a.mesh.position.y <= -0.5) {
+              a.hp -= 85 * delta;
+              if (Math.random() < 0.05 && audioEngine && audioEngine.playAcidTrenchBubble) {
+                audioEngine.playAcidTrenchBubble();
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // 6. Chantier 3: Space Jockey Dais & Architect's Omni-Scan Presence
+    if (this.spaceJockeyPlatform && player && player.position) {
+      const p = this.spaceJockeyPlatform;
+      const dx = player.position.x - p.pos.x;
+      const dz = player.position.z - p.pos.z;
+      const distSq = dx * dx + dz * dz;
+
+      if (distSq <= p.radius * p.radius) {
+        if (!p.hasTriggeredHum) {
+          p.hasTriggeredHum = true;
+          if (audioEngine && audioEngine.playDerelictHum) {
+            audioEngine.playDerelictHum();
+          }
+        }
+        // Architect's Tactical Resonance: +15 Plasma Energy / sec while standing on dais
+        if (player.plasmaEnergy < player.maxPlasmaEnergy) {
+          player.plasmaEnergy = Math.min(player.maxPlasmaEnergy, player.plasmaEnergy + 15 * delta);
+        }
+        // Rotate Engineer celestial rings
+        if (p.rings) {
+          p.rings.rotation.y += delta * 0.4;
+        }
+      } else {
+        p.hasTriggeredHum = false;
+      }
+    }
+
+    // 7. Chantier 5: Overhead Industrial Cargo Crane Fall Physics
+    if (this.cargoCrane && this.cargoCrane.isDropping) {
+      const crane = this.cargoCrane;
+      crane.fallVelocity += 28.0 * delta;
+      crane.container.position.y -= crane.fallVelocity * delta;
+
+      if (crane.container.position.y <= 1.9) {
+        crane.container.position.y = 1.9;
+        crane.isDropping = false;
+        crane.isDropped = true;
+
+        if (audioEngine && audioEngine.playHeavySlamImpact) {
+          audioEngine.playHeavySlamImpact();
+        }
+        if (window.gameInstance && window.gameInstance.triggerCameraShake) {
+          window.gameInstance.triggerCameraShake(0.85, 0.4);
+        }
+
+        // 1500 Crush Damage in drop zone [12, 20] x [-3, 3]
+        if (horde && horde.aliens) {
+          for (let i = horde.aliens.length - 1; i >= 0; i--) {
+            const a = horde.aliens[i];
+            if (!a || !a.mesh) continue;
+            if (Math.abs(a.mesh.position.x - crane.pos.x) <= 3.6 && Math.abs(a.mesh.position.z - crane.pos.z) <= 2.8) {
+              a.hp -= 1500;
+              if (horde.goreEngine) horde.goreEngine.spawnDismemberment(a.mesh.position, 'heavy');
+              horde.spawnAcidPool(a.mesh.position);
+              this.scene.remove(a.mesh);
+              horde.aliens.splice(i, 1);
+              horde.deadCount++;
+            }
+          }
+        }
+      }
+    }
+
+    // 8. Chantier 9: Hive Egg Clusters Proximity & Hatching
+    for (const nursery of this.eggNurseries) {
+      if (player && player.position) {
+        const dist = player.position.distanceTo(nursery.pos);
+        // If uncloaked player approaches within 7.5m, dormant eggs awaken and open
+        if (dist <= 7.5 && (!player.isCloaked || dist <= 3.2)) {
+          nursery.eggs.forEach(egg => {
+            if (!egg.isHatched && !egg.isDestroyed) {
+              egg.isHatched = true;
+              if (egg.petals) {
+                egg.petals.forEach(pt => { pt.rotation.z += 0.6; });
+              }
+              if (audioEngine && audioEngine.playFacehuggerLatch) {
+                audioEngine.playFacehuggerLatch();
+              }
+              // Spawn aggressive facehugger from hatched egg
+              if (horde && horde.spawnAlien) {
+                const spawnPos = egg.mesh.position.clone().add(new THREE.Vector3(0, 0.6, 0));
+                horde.spawnAlien('facehugger', spawnPos);
+              }
+            }
+          });
+        }
+      }
+    }
+
+    // 9. Chantier 4: Cryo-Surgical Med-Bay Pod Diagnostics Glow
+    this.cryoMedBays.forEach(pod => {
+      if (pod.glowMesh) {
+        pod.glowTimer = (pod.glowTimer || 0) + delta * 3.0;
+        pod.glowMesh.material.opacity = pod.isUsed ? 0.15 : (0.4 + Math.sin(pod.glowTimer) * 0.25);
+      }
+    });
   }
 
   /* Chantier 1: Elevated Industrial Catwalks & Gantry Ramps (Hadley's Hope / Romulus 1:1 Lore) */
@@ -531,18 +723,52 @@ export class EnvironmentManager {
   }
 
   getElevationAt(x, z) {
+    // 1. Space Jockey Elevated Dais
+    if (this.spaceJockeyPlatform) {
+      const p = this.spaceJockeyPlatform;
+      const dx = x - p.pos.x;
+      const dz = z - p.pos.z;
+      if (dx * dx + dz * dz <= p.radius * p.radius) {
+        return p.height; // +2.2m elevated Engineer dais
+      }
+    }
+
+    // 2. Dropped Weyland-Yutani Cargo Container Top
+    if (this.cargoCrane && this.cargoCrane.isDropped) {
+      const c = this.cargoCrane;
+      if (Math.abs(x - c.pos.x) <= 3.3 && Math.abs(z - c.pos.z) <= 2.2) {
+        return 3.8; // On top of crushed container
+      }
+    }
+
+    // 3. Elevated Industrial Catwalks & Access Ramps
     for (const c of this.catwalks) {
-      // Check platform surface
       if (x >= c.minX && x <= c.maxX && z >= c.minZ && z <= c.maxZ) {
         return c.height;
       }
-      // Check ramp slope
       const r = c.ramp;
       if (x >= r.minX && x <= r.maxX && z >= r.minZ && z <= r.maxZ) {
         const factor = Math.abs(z - r.bottomZ) / Math.abs(r.topZ - r.bottomZ);
         return Math.max(0, Math.min(r.height, factor * r.height));
       }
     }
+
+    // 4. Subterranean Caustic Acid Trenches (-1.5m unless on metal bridge)
+    for (const trench of this.acidTrenches) {
+      if (x >= trench.minX && x <= trench.maxX && z >= trench.minZ && z <= trench.maxZ) {
+        let onBridge = false;
+        for (const b of trench.bridges) {
+          if (x >= b.minX && x <= b.maxX && z >= b.minZ && z <= b.maxZ) {
+            onBridge = true;
+            break;
+          }
+        }
+        if (!onBridge) {
+          return trench.depth || -1.5;
+        }
+      }
+    }
+
     return 0;
   }
 
@@ -841,6 +1067,451 @@ export class EnvironmentManager {
         breathTimer: Math.random() * Math.PI * 2
       });
     }
+  }
+
+  /* === v41.0 10-CHANTIER EXPANSION LEVEL DESIGN METHODS === */
+
+  /* Chantier 1: Subterranean Acid Trenches & Caustic Canals (Hadley's Hope / Romulus 1:1) */
+  buildAcidTrenches() {
+    const acidMat = new THREE.MeshStandardMaterial({
+      color: 0x84cc16,
+      emissive: 0x3f6212,
+      roughness: 0.1,
+      metalness: 0.2,
+      transparent: true,
+      opacity: 0.88
+    });
+    const rimMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.85, roughness: 0.3 });
+    const gratingMat = new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.9, roughness: 0.4 });
+    const stripeMat = new THREE.MeshBasicMaterial({ color: 0xfacc15 });
+
+    const trenchConfigs = [
+      { z: 28, minX: -45, maxX: 45, width: 6.0, depth: -1.5 },
+      { z: -28, minX: -45, maxX: 45, width: 6.0, depth: -1.5 }
+    ];
+
+    trenchConfigs.forEach(cfg => {
+      const group = new THREE.Group();
+      const halfW = cfg.width / 2;
+
+      // Caustic boiling acid liquid surface
+      const acidGeo = new THREE.PlaneGeometry(cfg.maxX - cfg.minX, cfg.width);
+      acidGeo.rotateX(-Math.PI / 2);
+      const acidMesh = new THREE.Mesh(acidGeo, acidMat);
+      acidMesh.position.set(0, cfg.depth + 0.15, cfg.z);
+      group.add(acidMesh);
+
+      // Reinforced trench rim curbs with hazard chevrons
+      [-halfW - 0.2, halfW + 0.2].forEach(oz => {
+        const curb = new THREE.Mesh(new THREE.BoxGeometry(cfg.maxX - cfg.minX, 0.4, 0.4), rimMat);
+        curb.position.set(0, 0.2, cfg.z + oz);
+        group.add(curb);
+
+        const chevron = new THREE.Mesh(new THREE.BoxGeometry(cfg.maxX - cfg.minX, 0.1, 0.42), stripeMat);
+        chevron.position.set(0, 0.36, cfg.z + oz);
+        group.add(chevron);
+      });
+
+      // 2 Industrial Metal Grating Bridges crossing the trench
+      const bridges = [];
+      [-16, 16].forEach(bx => {
+        const bridgeGeo = new THREE.BoxGeometry(4.5, 0.35, cfg.width + 0.8);
+        const bridge = new THREE.Mesh(bridgeGeo, gratingMat);
+        bridge.position.set(bx, 0.18, cfg.z);
+        group.add(bridge);
+
+        // Bridge safety guard rails
+        [-2.25, 2.25].forEach(ox => {
+          const rail = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, cfg.width + 0.8, 6), rimMat);
+          rail.rotation.x = Math.PI / 2;
+          rail.position.set(bx + ox, 1.2, cfg.z);
+          group.add(rail);
+        });
+
+        bridges.push({
+          minX: bx - 2.25,
+          maxX: bx + 2.25,
+          minZ: cfg.z - halfW - 0.4,
+          maxZ: cfg.z + halfW + 0.4
+        });
+      });
+
+      this.scene.add(group);
+      this.envObjects.push(group);
+
+      this.acidTrenches.push({
+        group: group,
+        acidMesh: acidMesh,
+        baseY: cfg.depth + 0.15,
+        bubbleTimer: Math.random() * Math.PI,
+        soundCooldown: 0,
+        minX: cfg.minX,
+        maxX: cfg.maxX,
+        minZ: cfg.z - halfW,
+        maxZ: cfg.z + halfW,
+        depth: cfg.depth,
+        bridges: bridges
+      });
+    });
+  }
+
+  /* Chantier 3: Derelict Juggernaut Space Jockey Chamber & Telescope Dais (Alien 1979 / Prometheus) */
+  buildSpaceJockeyDais() {
+    const group = new THREE.Group();
+    const daisPos = new THREE.Vector3(0, 0, -42);
+    group.position.copy(daisPos);
+
+    const stoneMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.65, metalness: 0.35 });
+    const cuneiformMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8 });
+    const fossilMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.8, metalness: 0.2 });
+
+    // Multi-tiered elevated circular dais (height +2.2m)
+    const baseCyl = new THREE.Mesh(new THREE.CylinderGeometry(8.0, 8.8, 1.2, 24), stoneMat);
+    baseCyl.position.y = 0.6;
+    baseCyl.receiveShadow = true;
+    group.add(baseCyl);
+
+    const upperCyl = new THREE.Mesh(new THREE.CylinderGeometry(7.2, 7.6, 1.0, 24), stoneMat);
+    upperCyl.position.y = 1.7;
+    upperCyl.receiveShadow = true;
+    group.add(upperCyl);
+
+    // Glowing Engineer Celestial Rings (rotate in update)
+    const ringsGroup = new THREE.Group();
+    const ringMesh1 = new THREE.Mesh(new THREE.TorusGeometry(6.2, 0.08, 6, 32), cuneiformMat);
+    ringMesh1.rotation.x = Math.PI / 2;
+    ringMesh1.position.y = 2.22;
+    ringsGroup.add(ringMesh1);
+
+    const ringMesh2 = new THREE.Mesh(new THREE.TorusGeometry(4.4, 0.06, 6, 24), cuneiformMat);
+    ringMesh2.rotation.x = Math.PI / 2;
+    ringMesh2.position.y = 2.22;
+    ringsGroup.add(ringMesh2);
+    group.add(ringsGroup);
+
+    // Monumental Fossilized Space Jockey Pilot Chair & Ribbed Helmet/Telescope
+    const chairBase = new THREE.Mesh(new THREE.CylinderGeometry(1.4, 1.8, 1.8, 12), fossilMat);
+    chairBase.position.y = 2.8;
+    group.add(chairBase);
+
+    // Pilot Ribbed Spine & Fossilized Engineer Torso
+    const torso = new THREE.Mesh(new THREE.BoxGeometry(1.8, 2.4, 1.6), fossilMat);
+    torso.position.set(0, 4.2, 0);
+    group.add(torso);
+
+    // Iconic Biomechanical Elephantine Trunk / Helmet
+    const head = new THREE.Mesh(new THREE.SphereGeometry(1.0, 10, 10), fossilMat);
+    head.scale.set(0.9, 1.3, 1.4);
+    head.position.set(0, 5.2, 0.6);
+    group.add(head);
+
+    const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.18, 2.2, 8), fossilMat);
+    trunk.position.set(0, 4.2, 1.6);
+    trunk.rotation.x = -Math.PI / 3;
+    group.add(trunk);
+
+    // Massive Telescope / Planetary Orrery Cannon (Pointing 40° skyward)
+    const cannon = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 1.1, 7.5, 12), fossilMat);
+    cannon.position.set(0, 6.2, -1.8);
+    cannon.rotation.x = Math.PI / 4.5;
+    group.add(cannon);
+
+    this.scene.add(group);
+    this.envObjects.push(group);
+
+    this.spaceJockeyPlatform = {
+      group: group,
+      pos: daisPos,
+      radius: 8.0,
+      height: 2.2,
+      rings: ringsGroup,
+      hasTriggeredHum: false
+    };
+  }
+
+  /* Chantier 4: Cryo-Surgical Med-Bay Pods & Embryo Purge (Prometheus / Romulus) */
+  buildCryoMedBays(count = 2) {
+    const podPositions = [
+      { x: -38, z: 0, rotY: Math.PI / 2 },
+      { x: 38, z: 0, rotY: -Math.PI / 2 }
+    ];
+
+    const compositeMat = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.25, metalness: 0.8 });
+    const glassMat = new THREE.MeshStandardMaterial({
+      color: 0x38bdf8,
+      roughness: 0.1,
+      metalness: 0.9,
+      transparent: true,
+      opacity: 0.45
+    });
+    const glowMat = new THREE.MeshBasicMaterial({ color: 0x06b6d4, transparent: true, opacity: 0.5 });
+
+    podPositions.slice(0, count).forEach(pos => {
+      const group = new THREE.Group();
+      group.position.set(pos.x, 0, pos.z);
+      group.rotation.y = pos.rotY;
+
+      // Base pedestal
+      const pedestal = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.5, 3.2), compositeMat);
+      pedestal.position.y = 0.25;
+      group.add(pedestal);
+
+      // Medical stasis bed & Autodoc frame
+      const frame = new THREE.Mesh(new THREE.BoxGeometry(2.0, 1.4, 2.8), compositeMat);
+      frame.position.set(0, 1.0, 0);
+      group.add(frame);
+
+      // Cylindrical transparent cryo stasis chamber hood
+      const hood = new THREE.Mesh(new THREE.CylinderGeometry(0.9, 0.9, 2.4, 12), glassMat);
+      hood.rotation.x = Math.PI / 2;
+      hood.position.set(0, 1.6, 0);
+      group.add(hood);
+
+      // Surgical laser scanner ring armature
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(1.05, 0.08, 6, 20), compositeMat);
+      ring.position.set(0, 1.6, 0);
+      group.add(ring);
+
+      // Holographic diagnostic console beacon
+      const consoleMesh = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.2, 0.4), compositeMat);
+      consoleMesh.position.set(1.4, 1.2, 0);
+      group.add(consoleMesh);
+
+      const holoGlow = new THREE.Mesh(new THREE.SphereGeometry(0.35, 8, 8), glowMat);
+      holoGlow.position.set(1.4, 2.0, 0);
+      group.add(holoGlow);
+
+      this.scene.add(group);
+      this.envObjects.push(group);
+
+      this.cryoMedBays.push({
+        mesh: group,
+        glowMesh: holoGlow,
+        pos: new THREE.Vector3(pos.x, 0, pos.z),
+        isUsed: false,
+        cooldownTimer: 0,
+        glowTimer: 0
+      });
+    });
+  }
+
+  checkCryoMedBayInteraction(playerPos, player, ui, audioEngine) {
+    for (const pod of this.cryoMedBays) {
+      if (pod.isUsed) continue;
+      if (playerPos.distanceTo(pod.pos) <= 3.8) {
+        pod.isUsed = true;
+        pod.glowMesh.material.color.setHex(0x64748b);
+
+        // 1. Purge Facehugger Embryo Incubation
+        if (player.isChestbursterInfected) {
+          player.isChestbursterInfected = false;
+          player.chestbursterTimer = 0;
+          if (ui && ui.showAnnouncement) {
+            ui.showAnnouncement("⚡ AUTODOC W-Y : EMBRYON XÉNOMORPHE PURGÉ & ÉRADICATÉ !");
+          }
+        } else {
+          if (ui && ui.showAnnouncement) {
+            ui.showAnnouncement("⚕️ AUTODOC W-Y : DÉCONTAMINATION CRYO & RÉGÉNÉRATION (+120 HP)");
+          }
+        }
+
+        // 2. Restore 120 HP & Cleanse Acid
+        player.hp = Math.min(player.maxHp, player.hp + 120);
+        player.visorAcidBurn = 0;
+
+        if (audioEngine && audioEngine.playMedicompCauterize) {
+          audioEngine.playMedicompCauterize();
+        }
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /* Chantier 5: Overhead Industrial Cargo Crane & 5-Ton Container Drop (Aliens 1986) */
+  buildCargoCrane() {
+    const cranePos = new THREE.Vector3(16, 11, 0);
+    const group = new THREE.Group();
+
+    const metalMat = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.9, roughness: 0.25 });
+    const cableMat = new THREE.MeshStandardMaterial({ color: 0x64748b, metalness: 0.95 });
+    const containerMat = new THREE.MeshStandardMaterial({ color: 0xeab308, roughness: 0.4, metalness: 0.5 });
+    const stripeMat = new THREE.MeshBasicMaterial({ color: 0x0f172a });
+
+    // Ceiling Gantry Crane Rails & Truss Structure
+    const railX = new THREE.Mesh(new THREE.BoxGeometry(32, 0.8, 1.2), metalMat);
+    railX.position.set(16, 11, 0);
+    group.add(railX);
+
+    // Crane Trolley / Winch Housing
+    const trolley = new THREE.Mesh(new THREE.BoxGeometry(3.2, 1.2, 3.2), metalMat);
+    trolley.position.set(16, 10.4, 0);
+    group.add(trolley);
+
+    // Suspended High-Tensile Steel Winch Cable (Shootable Hitbox: y=6.0 to 10.0)
+    const cable = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 4.8, 8), cableMat);
+    cable.position.set(16, 8.0, 0);
+    group.add(cable);
+
+    // 5-Ton Weyland-Yutani Yellow Heavy Cargo Container (Suspended at y = 5.5m)
+    const containerGroup = new THREE.Group();
+    containerGroup.position.set(16, 5.5, 0);
+
+    const box = new THREE.Mesh(new THREE.BoxGeometry(6.6, 3.8, 4.4), containerMat);
+    box.castShadow = true;
+    box.receiveShadow = true;
+    containerGroup.add(box);
+
+    // Hazard Stripes & Ribs
+    for (let r = -2.6; r <= 2.6; r += 1.3) {
+      const rib = new THREE.Mesh(new THREE.BoxGeometry(0.12, 3.82, 4.42), stripeMat);
+      rib.position.set(r, 0, 0);
+      containerGroup.add(rib);
+    }
+
+    group.add(containerGroup);
+
+    this.scene.add(group);
+    this.envObjects.push(group);
+
+    this.cargoCrane = {
+      group: group,
+      container: containerGroup,
+      cableMesh: cable,
+      pos: new THREE.Vector3(16, 0, 0),
+      isDropping: false,
+      isDropped: false,
+      fallVelocity: 0,
+      cableHp: 90
+    };
+  }
+
+  checkCraneCableHit(attackPos, radius, damage, audioEngine, particles, horde) {
+    if (!this.cargoCrane || this.cargoCrane.isDropping || this.cargoCrane.isDropped) return false;
+
+    // Cable hitbox around (16, 8.0, 0)
+    const cablePos = new THREE.Vector3(16, 8.0, 0);
+    if (attackPos.distanceTo(cablePos) <= radius + 1.8) {
+      this.cargoCrane.cableHp -= damage;
+      if (particles) particles.emitSparks(cablePos, 15);
+
+      if (this.cargoCrane.cableHp <= 0) {
+        this.cargoCrane.isDropping = true;
+        this.cargoCrane.cableMesh.visible = false;
+
+        if (audioEngine && audioEngine.playCargoCraneCableSnap) {
+          audioEngine.playCargoCraneCableSnap();
+        }
+        if (particles) particles.emitSparks(cablePos, 35);
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /* Chantier 9: Hive Egg Clusters & Royal Guard Praetorian Barricades (Aliens 1986 / Romulus) */
+  buildEggNurseries() {
+    const nurseryPos = new THREE.Vector3(-30, 0, -26);
+    const group = new THREE.Group();
+    group.position.copy(nurseryPos);
+
+    const resinMat = new THREE.MeshStandardMaterial({ color: 0x1f060c, roughness: 0.35, metalness: 0.8 });
+    const eggMat = new THREE.MeshStandardMaterial({
+      color: 0x4d3826,
+      roughness: 0.55,
+      metalness: 0.2
+    });
+    const yolkMat = new THREE.MeshBasicMaterial({ color: 0x84cc16 });
+
+    // Enclosing circular resin rampart
+    for (let r = 0; r < 12; r++) {
+      const angle = (r / 12) * Math.PI * 2;
+      const rx = Math.cos(angle) * 4.2;
+      const rz = Math.sin(angle) * 4.2;
+      const barricade = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.9, 1.8, 6), resinMat);
+      barricade.position.set(rx, 0.9, rz);
+      group.add(barricade);
+    }
+
+    // 8 Biomechanical Ovomorph Eggs in cluster
+    const eggs = [];
+    for (let e = 0; e < 8; e++) {
+      const angle = (e / 8) * Math.PI * 2;
+      const rad = 1.2 + (e % 2) * 1.4;
+      const ex = Math.cos(angle) * rad;
+      const ez = Math.sin(angle) * rad;
+
+      const eggGroup = new THREE.Group();
+      eggGroup.position.set(ex, 0, ez);
+
+      const baseEgg = new THREE.Mesh(new THREE.SphereGeometry(0.65, 8, 8), eggMat);
+      baseEgg.scale.set(0.9, 1.3, 0.9);
+      baseEgg.position.y = 0.75;
+      eggGroup.add(baseEgg);
+
+      // 4 Petal lips
+      const petals = [];
+      for (let p = 0; p < 4; p++) {
+        const pAngle = (p / 4) * Math.PI * 2;
+        const petal = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.35, 0.15), eggMat);
+        petal.position.set(Math.cos(pAngle) * 0.25, 1.5, Math.sin(pAngle) * 0.25);
+        eggGroup.add(petal);
+        petals.push(petal);
+      }
+
+      // Internal glowing yolk
+      const yolk = new THREE.Mesh(new THREE.SphereGeometry(0.25, 6, 6), yolkMat);
+      yolk.position.y = 1.2;
+      eggGroup.add(yolk);
+
+      group.add(eggGroup);
+
+      eggs.push({
+        mesh: eggGroup,
+        petals: petals,
+        pos: nurseryPos.clone().add(new THREE.Vector3(ex, 0, ez)),
+        isHatched: false,
+        isDestroyed: false,
+        hp: 60
+      });
+    }
+
+    this.scene.add(group);
+    this.envObjects.push(group);
+
+    this.eggNurseries.push({
+      group: group,
+      pos: nurseryPos,
+      eggs: eggs
+    });
+  }
+
+  checkEggClusterHits(attackPos, radius, damage, audioEngine, particles, horde) {
+    let hitCount = 0;
+    for (const nursery of this.eggNurseries) {
+      for (const egg of nursery.eggs) {
+        if (egg.isDestroyed || egg.isHatched) continue;
+        if (attackPos.distanceTo(egg.pos) <= radius + 0.8) {
+          egg.hp -= damage;
+          if (particles && particles.emitAlienBloodSpurt) {
+            particles.emitAlienBloodSpurt(egg.pos, 10);
+          }
+
+          if (egg.hp <= 0) {
+            egg.isDestroyed = true;
+            egg.mesh.visible = false;
+            hitCount++;
+            if (audioEngine && audioEngine.playAcidSizzle) {
+              audioEngine.playAcidSizzle();
+            }
+            if (horde && horde.spawnAcidPool) {
+              horde.spawnAcidPool(egg.pos);
+            }
+          }
+        }
+      }
+    }
+    return hitCount;
   }
 }
 

@@ -2793,7 +2793,148 @@ export class AudioEngine {
       osc.stop(now + idx * 0.08 + 0.18);
     });
   }
+
+  // 12. Muffled Visceral Stealth Assassination (Predator 1987 / Prey 2022)
+  playStealthAssassination() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Suppressed blade impale
+    const bladeOsc = this.ctx.createOscillator();
+    const bladeGain = this.ctx.createGain();
+    bladeOsc.type = 'triangle';
+    bladeOsc.frequency.setValueAtTime(320, now);
+    bladeOsc.frequency.exponentialRampToValueAtTime(60, now + 0.18);
+    bladeGain.gain.setValueAtTime(0.85, now);
+    bladeGain.gain.exponentialRampToValueAtTime(0.01, now + 0.22);
+    bladeOsc.connect(bladeGain);
+    bladeGain.connect(this.ctx.destination);
+    bladeOsc.start(now);
+    bladeOsc.stop(now + 0.22);
+
+    // Visceral crunch / tear
+    const bufSize = Math.floor(this.ctx.sampleRate * 0.25);
+    const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (this.ctx.sampleRate * 0.08));
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buf;
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(800, now);
+    const nGain = this.ctx.createGain();
+    nGain.gain.setValueAtTime(0.7, now);
+    nGain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+    noise.connect(filter);
+    filter.connect(nGain);
+    nGain.connect(this.ctx.destination);
+    noise.start(now);
+  }
+
+  // 13. Chestburster Embryo Incubation Warning EKG Beep
+  playChestbursterIncubationBeep(tempo = 1.0) {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(980, now);
+    osc.frequency.setValueAtTime(1320, now + 0.04);
+
+    gain.gain.setValueAtTime(0.4, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.12);
+  }
+
+  // 14. Industrial Cargo Crane Cable Snap & Impact Crash
+  playCargoCraneCableSnap() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Cable snap whiplash
+    const snapOsc = this.ctx.createOscillator();
+    const snapGain = this.ctx.createGain();
+    snapOsc.type = 'sawtooth';
+    snapOsc.frequency.setValueAtTime(1800, now);
+    snapOsc.frequency.exponentialRampToValueAtTime(180, now + 0.12);
+    snapGain.gain.setValueAtTime(0.9, now);
+    snapGain.gain.exponentialRampToValueAtTime(0.01, now + 0.14);
+    snapOsc.connect(snapGain);
+    snapGain.connect(this.ctx.destination);
+    snapOsc.start(now);
+    snapOsc.stop(now + 0.14);
+
+    // Heavy 5-ton container ground smash
+    const smashOsc = this.ctx.createOscillator();
+    const smashGain = this.ctx.createGain();
+    smashOsc.type = 'square';
+    smashOsc.frequency.setValueAtTime(90, now + 0.08);
+    smashOsc.frequency.exponentialRampToValueAtTime(25, now + 0.85);
+    smashGain.gain.setValueAtTime(0.95, now + 0.08);
+    smashGain.gain.exponentialRampToValueAtTime(0.01, now + 0.9);
+    smashOsc.connect(smashGain);
+    smashGain.connect(this.ctx.destination);
+    smashOsc.start(now + 0.08);
+    smashOsc.stop(now + 0.9);
+  }
+
+  // 15. Space Jockey Derelict Biomechanical Cosmic Drone
+  playDerelictHum() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+    const osc1 = this.ctx.createOscillator();
+    const osc2 = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc1.type = 'sine';
+    osc1.frequency.setValueAtTime(55, now);
+    osc1.frequency.linearRampToValueAtTime(65, now + 1.2);
+    osc1.frequency.linearRampToValueAtTime(50, now + 2.4);
+
+    osc2.type = 'triangle';
+    osc2.frequency.setValueAtTime(110.5, now);
+    osc2.frequency.linearRampToValueAtTime(112, now + 2.4);
+
+    gain.gain.setValueAtTime(0.5, now);
+    gain.gain.linearRampToValueAtTime(0.01, now + 2.5);
+
+    osc1.connect(gain);
+    osc2.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc1.start(now);
+    osc2.start(now);
+    osc1.stop(now + 2.5);
+    osc2.stop(now + 2.5);
+  }
+
+  // 16. Caustic Acid Trench Boiling & Effervescent Fume Bubble
+  playAcidTrenchBubble() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+    for (let b = 0; b < 3; b++) {
+      const bOsc = this.ctx.createOscillator();
+      const bGain = this.ctx.createGain();
+      bOsc.type = 'sine';
+      bOsc.frequency.setValueAtTime(260 + Math.random() * 200, now + b * 0.08);
+      bOsc.frequency.exponentialRampToValueAtTime(600 + Math.random() * 300, now + b * 0.08 + 0.06);
+      bGain.gain.setValueAtTime(0.35, now + b * 0.08);
+      bGain.gain.exponentialRampToValueAtTime(0.01, now + b * 0.08 + 0.07);
+      bOsc.connect(bGain);
+      bGain.connect(this.ctx.destination);
+      bOsc.start(now + b * 0.08);
+      bOsc.stop(now + b * 0.08 + 0.07);
+    }
+  }
 }
+
 
 
 

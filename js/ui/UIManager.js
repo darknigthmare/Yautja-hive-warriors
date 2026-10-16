@@ -1,5 +1,6 @@
 /* User Interface Manager & Minimap Renderer */
 
+import * as THREE from 'three';
 import { CHARACTERS_DATA } from '../data/charactersData.js';
 import { LEVELS_DATA } from '../data/levelsData.js';
 
@@ -483,5 +484,79 @@ export class UIManager {
     if (window.confetti && kos > 20) {
       window.confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
     }
+  }
+
+  /* Chantier 10: Bio-Mask Target Lock Telemetry & Weakpoint Scanning Reticle */
+  updateTargetLockTelemetry(target, camera, player, visionMode = 0) {
+    const reticleElem = document.getElementById('hud-tri-target-lock');
+    if (!reticleElem) return;
+
+    if (!target || !target.mesh || target.hp <= 0 || !camera) {
+      reticleElem.classList.add('hidden');
+      return;
+    }
+
+    // Project 3D enemy world position to 2D screen coordinates
+    const targetPos = target.mesh.position.clone();
+    targetPos.y += (target.height || 1.4) * 0.7;
+
+    const projected = targetPos.clone().project(camera);
+    if (projected.z > 1.0) {
+      // Behind camera view frustum
+      reticleElem.classList.add('hidden');
+      return;
+    }
+
+    const screenX = (projected.x * 0.5 + 0.5) * window.innerWidth;
+    const screenY = (-(projected.y * 0.5) + 0.5) * window.innerHeight;
+
+    reticleElem.style.left = `${screenX}px`;
+    reticleElem.style.top = `${screenY}px`;
+    reticleElem.classList.remove('hidden');
+
+    // Genus & Threat Classification
+    let genus = 'GENUS : XX121 GUERRIER XÉNOMORPHE';
+    let weakpoint = 'FAIBLESSE : DÔME CRÂNIEN (-40% ARMURE)';
+    let threat = 'ÉLEVÉE';
+
+    if (target.type === 'queen') {
+      genus = 'GENUS : REINE GESTANTE MATRIARCH';
+      weakpoint = 'FAIBLESSE : SAC D\'INOCULATION & ÉCUSSON CERVICAL';
+      threat = 'EXTRÊME / NIVEAU OMEGA';
+    } else if (target.type === 'praetorian') {
+      genus = 'GENUS : GARDE ROYALE PRAETORIEN';
+      weakpoint = 'FAIBLESSE : TUBES RESPIRATOIRES DORSAL';
+      threat = 'LÉTALE';
+    } else if (target.type === 'crusher') {
+      genus = 'GENUS : BROYEUR BLINDÉ (CRUSHER)';
+      weakpoint = 'FAIBLESSE : FLANC & ARTICULATIONS POSTÉRIEURES';
+      threat = 'MAXIMALE';
+    } else if (target.type === 'facehugger') {
+      genus = 'GENUS : ARACHNIDE PARASITE (FACEHUGGER)';
+      weakpoint = 'FAIBLESSE : CORPUS EMBRYONNAIRE VITAL';
+      threat = 'IMMÉDIATE';
+    } else if (target.type === 'grid_alien') {
+      genus = 'GENUS : ALIEN BALAFRÉ (GRID CELTIC NEMESIS)';
+      weakpoint = 'FAIBLESSE : CICATRICES CARAPACE (BRÈCHES FIBREUSES)';
+      threat = 'APEX';
+    } else if (target.type === 'spitter') {
+      genus = 'GENUS : CRACHEUR D\'ACIDE SPITTER';
+      weakpoint = 'FAIBLESSE : POCHES GASTRIQUES ACIDIFIÉES';
+      threat = 'DISTANCE HAUTE';
+    } else if (target.type === 'red_warrior') {
+      genus = 'GENUS : GUERRIER KAINDE AMEDHA ÉCARLATE';
+      weakpoint = 'FAIBLESSE : ÉCORCE CHITINEUSE CHAUFFÉE';
+      threat = 'FRENZY';
+    }
+
+    const dist = player && player.position ? player.position.distanceTo(target.mesh.position).toFixed(1) : '12.0';
+
+    const genusElem = document.getElementById('hud-telemetry-genus');
+    const statsElem = document.getElementById('hud-telemetry-stats');
+    const weakpointElem = document.getElementById('hud-telemetry-weakpoint');
+
+    if (genusElem) genusElem.innerText = genus;
+    if (statsElem) statsElem.innerText = `DISTANCE : ${dist}M | MENACE : ${threat}`;
+    if (weakpointElem) weakpointElem.innerText = weakpoint;
   }
 }

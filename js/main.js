@@ -412,6 +412,8 @@ class GameApp {
           if (this.player.struggleQTE()) {
             this.ui.showAnnouncement('💥 FACEHUGGER ARRACHÉ AVEC SUCCÈS !');
           }
+        } else if (this.env && this.env.checkCryoMedBayInteraction(this.player.position, this.player, this.ui, this.audio)) {
+          // Handled Weyland-Yutani Autodoc Med-Bay stasis decontamination & embryo purge!
         } else if (this.env && this.env.checkSupplyInteraction(this.player.position, this.player, this.ui, this.audio)) {
           // Handled USCM supply cache opening!
         } else {
@@ -732,6 +734,34 @@ class GameApp {
     this.weather.checkExplosions(this.player.position, 4.0, this.horde, this.particles);
     this.synthetics.checkHits(attack);
 
+    // Chantier 2: Predator Cloak Thermal Distortion & Backstab Stealth Execution (Predator 1987 / Prey 2022)
+    if (this.player.isCloaked && hits.length > 0) {
+      const playerForward = new THREE.Vector3(Math.sin(this.player.rotationY), 0, Math.cos(this.player.rotationY)).normalize();
+      hits.forEach(hitEnemy => {
+        if (hitEnemy && hitEnemy.mesh) {
+          const toEnemy = hitEnemy.mesh.position.clone().sub(this.player.position).normalize();
+          if (playerForward.dot(toEnemy) > 0.3) {
+            hitEnemy.hp -= attack.damage * 2.5; // Additional 2.5x stealth execution damage (total 3.5x)
+            if (this.audio && this.audio.playStealthAssassination) {
+              this.audio.playStealthAssassination();
+            }
+            this.player.recordTrophy('Exécution Silencieuse de Proie par Poignardage Dorsal', 150);
+            this.score += 150;
+            this.ui.showAnnouncement("⚡ ASSASSINAT SILENCIEUX - EXÉCUTION D'HONNEUR (+150 HONNEUR) !");
+            if (this.particles && this.particles.emitAlienBloodSpurt) {
+              this.particles.emitAlienBloodSpurt(hitEnemy.mesh.position, 16);
+            }
+          }
+        }
+      });
+    }
+
+    // Environmental Hazard Interactions
+    if (this.env) {
+      this.env.checkCraneCableHit(this.player.position, 3.8, attack.damage, this.audio, this.particles, this.horde);
+      this.env.checkEggClusterHits(this.player.position, 3.8, attack.damage, this.audio, this.particles, this.horde);
+    }
+
     // Update Combo Chain Tag
     const tagElem = document.getElementById('combo-chain-indicator');
     if (tagElem) {
@@ -767,6 +797,12 @@ class GameApp {
     if (hits.length > 0) this.registerHits(hits);
     this.weather.checkExplosions(this.player.position, 6.0, this.horde, this.particles);
     this.synthetics.checkHits(attack);
+
+    // Environmental Hazard Interactions
+    if (this.env) {
+      this.env.checkCraneCableHit(this.player.position, 4.8, attack.damage, this.audio, this.particles, this.horde);
+      this.env.checkEggClusterHits(this.player.position, 4.8, attack.damage, this.audio, this.particles, this.horde);
+    }
 
     // Dynasty Warriors Musou C1-C6 Charge Finisher Announcement & Camera Punch
     if (this.player.currentChargeName) {
@@ -1688,6 +1724,8 @@ class GameApp {
         if (this.env) {
           this.env.checkTransformerHits(p.mesh.position, 2.2, this.synthetics, this.horde, this.audio, this.particles);
           this.env.checkBlastDoorHits(p.mesh.position, 2.2, p.damage, this.audio, this.particles);
+          this.env.checkCraneCableHit(p.mesh.position, 2.2, p.damage, this.audio, this.particles, this.horde);
+          this.env.checkEggClusterHits(p.mesh.position, 2.2, p.damage, this.audio, this.particles, this.horde);
         }
 
         const hits = this.horde.checkMeleeHits({ origin: p.mesh.position, radius: 2.8, damage: p.damage });
@@ -2060,9 +2098,14 @@ class GameApp {
       toBoss.normalize();
       if (d < minDistance && playerForward.dot(toBoss) > 0.45) {
         minDistance = d;
-        const name = this.bosses.activeBoss.type === 'predalien_queen' ? 'PREDALIEN QUEEN' :
-                     this.bosses.activeBoss.type === 'empress_matriarch' ? 'EMPRESS MATRIARCH' : 'REINE XENOMORPHE';
-        bestTarget = { pos: bossPos.clone().add(new THREE.Vector3(0, 3, 0)), dist: d, name };
+        const name = this.bosses.activeBoss.type === 'predalien_queen' ? 'PREDALIEN QUEEN MATRIARCH' :
+                     this.bosses.activeBoss.type === 'empress_matriarch' ? 'EMPRESS MATRIARCH IMPERIAL' : 'REINE XÉNOMORPHE';
+        bestTarget = {
+          pos: bossPos.clone().add(new THREE.Vector3(0, 3, 0)),
+          dist: d,
+          name,
+          weakpoint: "FAIBLESSE : SAC D'INOCULATION & ÉCUSSON CERVICAL (3.5X)"
+        };
       }
     }
 
@@ -2075,10 +2118,34 @@ class GameApp {
         toAlien.normalize();
         if (d < minDistance && playerForward.dot(toAlien) > 0.5) {
           minDistance = d;
-          const name = a.type === 'crusher' ? 'CRUSHER TITAN' :
-                       a.type === 'praetorian' ? 'PRAETORIAN' :
-                       a.type === 'spitter' ? 'SPITTER' : 'XENOMORPH DRONE';
-          bestTarget = { pos: a.mesh.position.clone().add(new THREE.Vector3(0, 1.4, 0)), dist: d, name };
+          let name = 'XENOMORPH DRONE';
+          let weakpoint = 'FAIBLESSE : DÔME CRÂNIEN (-40% ARMURE)';
+          if (a.type === 'crusher') {
+            name = 'BROYEUR CRUSHER TITAN';
+            weakpoint = 'FAIBLESSE : ABDOMEN VENTRAL & ARTICULATIONS';
+          } else if (a.type === 'praetorian') {
+            name = 'GARDE ROYALE PRAETORIEN';
+            weakpoint = 'FAIBLESSE : CONDUITS RESPIRATOIRES DORSAL';
+          } else if (a.type === 'spitter') {
+            name = 'CRACHEUR D\'ACIDE SPITTER';
+            weakpoint = 'FAIBLESSE : POCHES GASTRIQUES ACIDIFIÉES';
+          } else if (a.type === 'facehugger') {
+            name = 'ARACHNIDE FACEHUGGER';
+            weakpoint = 'FAIBLESSE : CORPUS EMBRYONNAIRE VITAL';
+          } else if (a.type === 'grid_alien') {
+            name = 'ALIEN BALAFRÉ (GRID NEMESIS)';
+            weakpoint = 'FAIBLESSE : CICATRICES CHITINEUSES FIBREUSES';
+          } else if (a.type === 'red_warrior') {
+            name = 'GUERRIER KAINDE AMEDHA ÉCARLATE';
+            weakpoint = 'FAIBLESSE : ÉCORCE CHITINEUSE CHAUFFÉE';
+          }
+
+          bestTarget = {
+            pos: a.mesh.position.clone().add(new THREE.Vector3(0, 1.4, 0)),
+            dist: d,
+            name,
+            weakpoint
+          };
         }
       }
     }
@@ -2092,7 +2159,12 @@ class GameApp {
         toSyn.normalize();
         if (d < minDistance && playerForward.dot(toSyn) > 0.5) {
           minDistance = d;
-          bestTarget = { pos: syn.mesh.position.clone().add(new THREE.Vector3(0, 1.6, 0)), dist: d, name: 'ANDROÏDE W-Y' };
+          bestTarget = {
+            pos: syn.mesh.position.clone().add(new THREE.Vector3(0, 1.6, 0)),
+            dist: d,
+            name: 'ANDROÏDE WEYLAND-YUTANI 8800',
+            weakpoint: 'FAIBLESSE : CELLULE D\'ALIMENTATION THORACIQUE'
+          };
         }
       }
     }
@@ -2116,7 +2188,19 @@ class GameApp {
 
         reticleEl.style.left = `${screenX}px`;
         reticleEl.style.top = `${screenY}px`;
-        infoEl.innerText = `TRI-LOCK: ${bestTarget.dist.toFixed(1)}m - ${bestTarget.name} // WEY-YU F44AA [98.4%]`;
+
+        const genusEl = document.getElementById('hud-telemetry-genus');
+        const statsEl = document.getElementById('hud-telemetry-stats');
+        const weakpointEl = document.getElementById('hud-telemetry-weakpoint');
+
+        if (genusEl && statsEl && weakpointEl) {
+          genusEl.innerText = `GENUS : ${bestTarget.name}`;
+          statsEl.innerText = `DISTANCE : ${bestTarget.dist.toFixed(1)}M | MENACE : ÉLEVÉE`;
+          weakpointEl.innerText = bestTarget.weakpoint;
+        } else {
+          infoEl.innerText = `TRI-LOCK: ${bestTarget.dist.toFixed(1)}m - ${bestTarget.name}`;
+        }
+
         reticleEl.classList.remove('hidden');
       } else {
         reticleEl.classList.add('hidden');

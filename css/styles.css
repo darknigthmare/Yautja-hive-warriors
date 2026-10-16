@@ -1208,15 +1208,44 @@ html, body {
   padding-bottom: 12px;
 }
 
-/* 1987 Tri-Laser Target Lock Reticle */
+/* Chantier 10: 1987 Tri-Laser & Bio-Mask Target Lock Telemetry Reticle */
 .tri-laser-reticle {
   position: absolute;
   pointer-events: none;
   transform: translate(-50%, -50%);
-  width: 60px;
-  height: 60px;
+  width: 76px;
+  height: 76px;
   z-index: 95;
-  transition: opacity 0.15s ease-out;
+  transition: opacity 0.12s ease-out;
+}
+
+.tri-bracket {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: #ff2222;
+  border-style: solid;
+  pointer-events: none;
+}
+
+.tri-bracket.top-bracket {
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 2px 2px 0 0;
+  transform: translateX(-50%) rotate(-45deg);
+}
+
+.tri-bracket.left-bracket {
+  bottom: 6px;
+  left: 2px;
+  border-width: 0 0 2px 2px;
+}
+
+.tri-bracket.right-bracket {
+  bottom: 6px;
+  right: 2px;
+  border-width: 0 2px 2px 0;
 }
 
 .tri-dot {
@@ -1229,36 +1258,61 @@ html, body {
 }
 
 .tri-dot.dot-1 {
-  top: 5px;
-  left: 26px;
+  top: 14px;
+  left: 34px;
 }
 
 .tri-dot.dot-2 {
-  bottom: 8px;
-  left: 6px;
+  bottom: 16px;
+  left: 12px;
 }
 
 .tri-dot.dot-3 {
-  bottom: 8px;
-  right: 6px;
+  bottom: 16px;
+  right: 12px;
 }
 
 .target-info-tag {
   position: absolute;
-  top: 65px;
+  top: 80px;
   left: 50%;
   transform: translateX(-50%);
   white-space: nowrap;
   font-family: 'Share Tech Mono', monospace, sans-serif;
-  font-size: 0.75rem;
-  font-weight: bold;
   letter-spacing: 1px;
   color: #ff3333;
-  background: rgba(10, 0, 0, 0.75);
-  border: 1px solid rgba(255, 26, 26, 0.6);
-  padding: 2px 8px;
+  background: rgba(8, 2, 2, 0.88);
+  border: 1px solid rgba(255, 34, 34, 0.7);
+  box-shadow: 0 0 12px rgba(255, 0, 0, 0.4);
+  padding: 4px 10px;
   border-radius: 4px;
-  text-shadow: 0 0 5px #ff0000;
+  text-shadow: 0 0 6px #ff0000;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: center;
+}
+
+.telemetry-genus {
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  color: #ff6666;
+}
+
+.telemetry-stats {
+  font-size: 0.65rem;
+  color: #e2e8f0;
+}
+
+.telemetry-weakpoint {
+  font-size: 0.62rem;
+  font-weight: bold;
+  color: #fbbf24;
+  letter-spacing: 0.8px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.2);
+  padding-top: 2px;
+  margin-top: 2px;
 }
 
 /* Chantier 10: Musou Officer Defeat Banner & Vanguard Morale Frenzy */

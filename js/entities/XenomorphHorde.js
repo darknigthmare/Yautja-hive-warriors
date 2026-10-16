@@ -981,6 +981,28 @@ export class XenomorphHorde {
         }
       }
 
+      // Chantier 6: Yautja Netgun Wall-Pinning & Diamond-Wire Guillotine Tension (Predator 2 Canon)
+      if (a.isPinned) {
+        a.pinTimer = (a.pinTimer || 6.0) - delta;
+        a.hp -= 48 * delta; // Diamond-wire tension slices deep into chitin!
+        if (this.particles && this.particles.emitAlienBloodSpurt && Math.random() < 0.12) {
+          this.particles.emitAlienBloodSpurt(a.mesh.position, 6);
+        }
+        if (a.pinTimer <= 0 || a.hp <= 0) {
+          a.isPinned = false;
+        }
+        return; // Fixed against wall
+      }
+
+      // Chantier 7: Alpha Predator Primordial Hemotoxic Bleed (Prey 2022 / Alpha Canon)
+      if (a.bleedTimer > 0) {
+        a.bleedTimer -= delta;
+        a.hp -= (a.bleedDps || 50.0) * delta;
+        if (this.particles && this.particles.emitAlienBloodSpurt && Math.random() < 0.08) {
+          this.particles.emitAlienBloodSpurt(a.mesh.position, 4);
+        }
+      }
+
       // Stunned State (Crusher or Praetorian)
       if (a.isStunned) {
         a.stunTimer -= delta;

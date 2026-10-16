@@ -86,6 +86,11 @@ export class Player {
     this.qteStrugglePresses = 0;
     this.qteRequiredPresses = 5;
 
+    // Chantier 4: Facehugger Chestburster Incubation Infection State (Alien 1979 / Romulus)
+    this.isChestbursterInfected = false;
+    this.chestbursterTimer = 0;
+    this.chestbursterWarningBeepTimer = 0;
+
     // Chantier 6: Plasma Caster Charging State (Predator 1987 / AVP 2004)
     this.isChargingPlasma = false;
     this.plasmaChargeTime = 0;
@@ -626,6 +631,12 @@ export class Player {
         target.isNetEntangled = true;
         target.netTimer = 4.5;
 
+        // Chantier 6: Yautja Netgun Wall-Pinning & Diamond-Wire Guillotine Tension (Predator 2 Canon)
+        if (target.mesh && (Math.abs(target.mesh.position.x) >= 63 || Math.abs(target.mesh.position.z) >= 63 || target.mesh.position.distanceTo(new THREE.Vector3(0, 0, 0)) >= 64)) {
+          target.isPinned = true;
+          target.pinTimer = 6.0;
+        }
+
         // Visual expanding/tightening diamond-mesh net group
         const netGroup = new THREE.Group();
         const rad = target.radius ? target.radius * 1.35 : 1.5;
@@ -940,6 +951,9 @@ export class Player {
         if (a && a.mesh && a.mesh.position.distanceTo(this.position) <= cleaveRadius) {
           const knockDir = a.mesh.position.clone().sub(this.position).normalize();
           a.mesh.position.addScaledVector(knockDir, 4.5);
+          // Chantier 7: Alpha Predator Primordial Dragon Bone Sickle Bleed Cleave
+          a.bleedTimer = 4.0;
+          a.bleedDps = 50.0;
         }
       });
     }
@@ -1783,6 +1797,25 @@ export class Player {
 
     if (this.plasmaEnergy < this.maxPlasmaEnergy) {
       this.plasmaEnergy = Math.min(this.maxPlasmaEnergy, this.plasmaEnergy + 15 * delta);
+    }
+
+    // Chantier 4: Facehugger Chestburster Embryo Incubation Warning & Fatal Eruption
+    if (this.isChestbursterInfected) {
+      this.chestbursterTimer -= delta;
+      const beepInterval = Math.max(0.4, (this.chestbursterTimer / 35.0) * 2.5);
+      this.chestbursterWarningBeepTimer = (this.chestbursterWarningBeepTimer || 0) + delta;
+      if (this.chestbursterWarningBeepTimer >= beepInterval) {
+        this.chestbursterWarningBeepTimer = 0;
+        const tempo = 1.0 + (1.0 - Math.max(0, this.chestbursterTimer / 35.0)) * 2.0;
+        if (this.audioEngine && this.audioEngine.playChestbursterIncubationBeep) {
+          this.audioEngine.playChestbursterIncubationBeep(tempo);
+        }
+      }
+
+      if (this.chestbursterTimer <= 0) {
+        this.isChestbursterInfected = false;
+        this.takeDamage(99999); // Fatal thoracic eruption!
+      }
     }
   }
 }
