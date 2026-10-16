@@ -1569,4 +1569,205 @@ html, body {
   color: #94a3b8;
 }
 
+/* Chantier 10: Cinematic Honor Duel Letterbox */
+.duel-letterbox {
+  position: fixed;
+  left: 0;
+  width: 100vw;
+  height: 10vh;
+  background: #000;
+  z-index: 100;
+  pointer-events: none;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.duel-letterbox.top-bar {
+  top: 0;
+}
+
+.duel-letterbox.bottom-bar {
+  bottom: 0;
+}
+
+/* Chantier 10: Clashing Blades 3-Stage QTE Prompt */
+.clashing-blades-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(15, 10, 10, 0.88);
+  border: 2px solid #ef4444;
+  box-shadow: 0 0 25px rgba(239, 68, 68, 0.6), inset 0 0 15px rgba(220, 38, 38, 0.4);
+  padding: 20px 32px;
+  border-radius: 8px;
+  text-align: center;
+  z-index: 105;
+  pointer-events: none;
+  animation: clash-pulse 1s infinite alternate;
+}
+
+@keyframes clash-pulse {
+  from { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 20px rgba(239, 68, 68, 0.5); }
+  to { transform: translate(-50%, -50%) scale(1.03); box-shadow: 0 0 35px rgba(239, 68, 68, 0.8); }
+}
+
+.duel-stage-title {
+  color: #fca5a5;
+  font-size: 0.85rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.duel-key-circle {
+  width: 60px;
+  height: 60px;
+  line-height: 60px;
+  border-radius: 50%;
+  margin: 0 auto 10px auto;
+  background: #dc2626;
+  color: #fff;
+  font-size: 1.6rem;
+  font-weight: 900;
+  border: 3px solid #fecaca;
+  box-shadow: 0 0 15px #ef4444;
+  animation: key-throb 0.4s infinite alternate;
+}
+
+@keyframes key-throb {
+  from { transform: scale(0.95); }
+  to { transform: scale(1.08); }
+}
+
+.duel-action-label {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #fef08a;
+  letter-spacing: 1.5px;
+  margin-bottom: 12px;
+  text-shadow: 0 0 10px rgba(254, 240, 138, 0.5);
+}
+
+.duel-timer-track {
+  width: 220px;
+  height: 6px;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 3px;
+  overflow: hidden;
+  margin: 0 auto 8px auto;
+  border: 1px solid rgba(239, 68, 68, 0.5);
+}
+
+.duel-timer-fill {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #ef4444, #f59e0b);
+  transition: width 0.05s linear;
+}
+
+.duel-sub-hint {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  letter-spacing: 1px;
+}
+
+/* Chantier 3: Trax-Net Tracker Overlay */
+.trax-net-overlay-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 92;
+}
+
+.trax-net-bracket {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: opacity 0.1s ease;
+}
+
+.trax-net-diamond {
+  width: 32px;
+  height: 32px;
+  border: 2px solid #06b6d4;
+  transform: rotate(45deg);
+  box-shadow: 0 0 12px #06b6d4, inset 0 0 8px rgba(6, 182, 212, 0.4);
+  animation: trax-spin 4s linear infinite;
+}
+
+@keyframes trax-spin {
+  0% { transform: rotate(45deg); }
+  50% { transform: rotate(225deg); }
+  100% { transform: rotate(405deg); }
+}
+
+.trax-net-tag {
+  margin-top: 8px;
+  background: rgba(8, 20, 25, 0.85);
+  border: 1px solid #06b6d4;
+  padding: 3px 8px;
+  border-radius: 3px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.trax-title {
+  color: #67e8f9;
+  font-size: 0.72rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.trax-meta {
+  color: #a5f3fc;
+  font-size: 0.62rem;
+  font-family: monospace;
+}
+
+/* Chantier 5: Sentry Gun Proximity HUD Prompt */
+.sentry-hud-prompt {
+  position: absolute;
+  bottom: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid #38bdf8;
+  box-shadow: 0 0 16px rgba(56, 189, 248, 0.4);
+  padding: 10px 20px;
+  border-radius: 6px;
+  z-index: 94;
+  text-align: center;
+  pointer-events: none;
+}
+
+.sentry-prompt-header {
+  color: #7dd3fc;
+  font-size: 0.82rem;
+  font-weight: bold;
+  letter-spacing: 1.5px;
+}
+
+.sentry-prompt-ammo {
+  color: #38bdf8;
+  font-size: 1.2rem;
+  font-weight: 900;
+  font-family: monospace;
+  margin: 4px 0;
+  text-shadow: 0 0 8px rgba(56, 189, 248, 0.6);
+}
+
+.sentry-prompt-actions {
+  display: flex;
+  gap: 16px;
+  font-size: 0.75rem;
+  color: #cbd5e1;
+  font-family: monospace;
+}
+
+
 

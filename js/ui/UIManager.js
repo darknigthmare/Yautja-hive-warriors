@@ -559,4 +559,55 @@ export class UIManager {
     if (statsElem) statsElem.innerText = `DISTANCE : ${dist}M | MENACE : ${threat}`;
     if (weakpointElem) weakpointElem.innerText = weakpoint;
   }
+
+  /* Chantier 3: Trax-Net Micro-Beacon Dart Gun Wall-Penetrating Tracker HUD */
+  updateTraxNetTelemetry(taggedTargets, camera, player) {
+    const container = document.getElementById('trax-net-container');
+    if (!container) return;
+
+    if (!taggedTargets || taggedTargets.length === 0 || !camera) {
+      container.innerHTML = '';
+      return;
+    }
+
+    let html = '';
+    taggedTargets.forEach(target => {
+      if (!target || !target.mesh || target.hp <= 0) return;
+      const pos = target.mesh.position.clone();
+      pos.y += (target.height || 1.5) * 0.5;
+
+      const projected = pos.clone().project(camera);
+      if (projected.z > 1.0) return; // Behind camera
+
+      const screenX = (projected.x * 0.5 + 0.5) * window.innerWidth;
+      const screenY = (-(projected.y * 0.5) + 0.5) * window.innerHeight;
+      const dist = player && player.position ? player.position.distanceTo(target.mesh.position).toFixed(1) : '10.0';
+      const timeLeft = target.traxTimer ? target.traxTimer.toFixed(1) : '20.0';
+
+      html += `
+        <div class="trax-net-bracket" style="left: ${screenX}px; top: ${screenY}px;">
+          <div class="trax-net-diamond"></div>
+          <div class="trax-net-tag">
+            <span class="trax-title">🎯 TRAX-NET // ${timeLeft}s</span>
+            <span class="trax-meta">${dist}m | VULNÉRABILITÉ +25%</span>
+          </div>
+        </div>
+      `;
+    });
+    container.innerHTML = html;
+  }
+
+  /* Chantier 5: Sentry Gun Reload & Calibration Proximity Prompt */
+  updateSentryProximityPrompt(isNear, sentry) {
+    const promptElem = document.getElementById('sentry-proximity-prompt');
+    if (!promptElem) return;
+    if (isNear && sentry && sentry.isDeployed) {
+      promptElem.classList.remove('hidden');
+      const ammoElem = document.getElementById('sentry-prompt-ammo');
+      if (ammoElem) ammoElem.innerText = `${sentry.ammo} / ${sentry.maxAmmo || 500} RDS`;
+    } else {
+      promptElem.classList.add('hidden');
+    }
+  }
 }
+

@@ -2933,7 +2933,177 @@ export class AudioEngine {
       bOsc.stop(now + b * 0.08 + 0.07);
     }
   }
+
+  // === v42.0 PROCEDURAL AUDIO SYNTHESIZERS ===
+
+  // 17. Emergency Atmospheric Decompression Airlock Vacuum Roar (Alien 1979 / Aliens 1986)
+  playDecompressionWhoosh() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Buffer-based white noise wind generator with sweeping low-pass filter
+    const bufferSize = this.ctx.sampleRate * 2.0;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = Math.random() * 2 - 1;
+    }
+
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(1200, now);
+    filter.frequency.exponentialRampToValueAtTime(180, now + 1.8);
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.9, now);
+    gain.gain.linearRampToValueAtTime(0.7, now + 1.0);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 2.0);
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    noise.start(now);
+    noise.stop(now + 2.0);
+
+    // Deep sub-bass vortex rumble
+    const sub = this.ctx.createOscillator();
+    const subGain = this.ctx.createGain();
+    sub.type = 'sawtooth';
+    sub.frequency.setValueAtTime(80, now);
+    sub.frequency.exponentialRampToValueAtTime(25, now + 1.8);
+
+    subGain.gain.setValueAtTime(0.65, now);
+    subGain.gain.exponentialRampToValueAtTime(0.01, now + 1.8);
+
+    sub.connect(subGain);
+    subGain.connect(this.ctx.destination);
+    sub.start(now);
+    sub.stop(now + 1.8);
+  }
+
+  // 18. Trax-Net Micro-Beacon Tracking Chirp (AVP 2 / Concrete Jungle)
+  playTraxNetBeep() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(2400, now);
+    osc.frequency.linearRampToValueAtTime(3200, now + 0.05);
+
+    gain.gain.setValueAtTime(0.4, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.08);
+  }
+
+  // 19. Catwalk Structural Concrete & Steel Shear Pillar Collapse (Aliens 1986 / AvP 2004)
+  playPillarCollapse() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Screeching metallic shear
+    const screech = this.ctx.createOscillator();
+    const sGain = this.ctx.createGain();
+    screech.type = 'sawtooth';
+    screech.frequency.setValueAtTime(850, now);
+    screech.frequency.exponentialRampToValueAtTime(110, now + 0.6);
+
+    sGain.gain.setValueAtTime(0.75, now);
+    sGain.gain.exponentialRampToValueAtTime(0.01, now + 0.65);
+    screech.connect(sGain);
+    sGain.connect(this.ctx.destination);
+    screech.start(now);
+    screech.stop(now + 0.65);
+
+    // Deep seismic impact crash
+    const crash = this.ctx.createOscillator();
+    const cGain = this.ctx.createGain();
+    crash.type = 'triangle';
+    crash.frequency.setValueAtTime(140, now + 0.1);
+    crash.frequency.exponentialRampToValueAtTime(28, now + 1.2);
+
+    cGain.gain.setValueAtTime(0.9, now + 0.1);
+    cGain.gain.exponentialRampToValueAtTime(0.01, now + 1.2);
+    crash.connect(cGain);
+    cGain.connect(this.ctx.destination);
+    crash.start(now + 0.1);
+    crash.stop(now + 1.2);
+  }
+
+  // 20. Plasma Glaive High-Speed Rotary Energy Whirl (Aliens: Fireteam Elite / Xenogenesis)
+  playPlasmaGlaiveWhirl() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+    const osc1 = this.ctx.createOscillator();
+    const osc2 = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc1.type = 'sawtooth';
+    osc1.frequency.setValueAtTime(180, now);
+    osc1.frequency.linearRampToValueAtTime(360, now + 0.15);
+    osc1.frequency.linearRampToValueAtTime(180, now + 0.3);
+
+    osc2.type = 'sine';
+    osc2.frequency.setValueAtTime(360, now);
+    osc2.frequency.linearRampToValueAtTime(720, now + 0.15);
+    osc2.frequency.linearRampToValueAtTime(360, now + 0.3);
+
+    gain.gain.setValueAtTime(0.55, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+
+    osc1.connect(gain);
+    osc2.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc1.start(now);
+    osc2.start(now);
+    osc1.stop(now + 0.35);
+    osc2.stop(now + 0.35);
+  }
+
+  // 21. High-Pressure Steam Conduit Rupture & Scalding Spray Hiss (Alien 3 / Aliens 1986)
+  playSteamJetHiss() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const bufferSize = this.ctx.sampleRate * 0.8;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = Math.random() * 2 - 1;
+    }
+
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(3400, now);
+    filter.Q.setValueAtTime(3.5, now);
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.7, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.8);
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    noise.start(now);
+    noise.stop(now + 0.8);
+  }
 }
+
 
 
 

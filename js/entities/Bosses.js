@@ -325,6 +325,11 @@ export class BossManager {
         player.mesh.position.copy(player.position);
       }
     }
+
+    // Demolish nearby Catwalk Support Pillars (Chantier 4: Queen's Rampage)
+    if (typeof window !== 'undefined' && window.gameInstance && window.gameInstance.env && window.gameInstance.env.damageCatwalkPillars) {
+      window.gameInstance.env.damageCatwalkPillars(this.activeBoss.mesh.position, 9.5, 160, this.audioEngine, window.gameInstance.particles);
+    }
   }
 
   spitAcidMortar(player) {
@@ -444,6 +449,11 @@ export class BossManager {
           a.hp -= 80;
         }
       });
+    }
+
+    // Demolish Catwalk Support Pillars across the shockwave zone
+    if (typeof window !== 'undefined' && window.gameInstance && window.gameInstance.env && window.gameInstance.env.damageCatwalkPillars) {
+      window.gameInstance.env.damageCatwalkPillars(this.activeBoss.mesh.position, 14.0, 200, this.audioEngine, window.gameInstance.particles);
     }
   }
 
@@ -571,6 +581,10 @@ export class BossManager {
       const moveSpeed = this.activeBoss.type === 'the_offspring' ? 10.5 : (this.activeBoss.type === 'empress_matriarch' ? 8.5 : 7.5);
       this.activeBoss.mesh.position.addScaledVector(dir, moveSpeed * delta);
       this.activeBoss.mesh.rotation.y = Math.atan2(dir.x, dir.z);
+      // Trample and crush Catwalk Pillars on contact (Chantier 4)
+      if (typeof window !== 'undefined' && window.gameInstance && window.gameInstance.env && window.gameInstance.env.damageCatwalkPillars) {
+        window.gameInstance.env.damageCatwalkPillars(this.activeBoss.mesh.position, 4.0, 90 * delta, this.audioEngine, window.gameInstance.particles);
+      }
     } else {
       player.takeDamage((this.activeBoss.type === 'the_offspring' ? 65 : 45) * delta);
     }

@@ -239,6 +239,13 @@ class GameApp {
 
       if (!this.isPlaying || this.isPaused) return;
 
+      // Chantier 10: Bad Blood Honor Duel Clashing Blades QTE Input Interception
+      if (this.badBlood && this.badBlood.isDueling) {
+        if (this.badBlood.handleDuelInput(e.code, this.player, this.ui, this.gore, this.particles, this)) {
+          return;
+        }
+      }
+
       // First-Person Bio-Mask View Toggle [I Key]
       if (e.code === 'KeyI' && this.player) {
         this.isFirstPerson = !this.isFirstPerson;
@@ -404,7 +411,16 @@ class GameApp {
       }
 
       if (e.code === 'KeyR') {
-        this.weaponWheel.toggle();
+        const nearSentry = this.sentryGun && this.sentryGun.isDeployed && this.player && this.player.position.distanceTo(this.sentryGun.mesh.position) < 3.5;
+        if (nearSentry) {
+          const rotY = this.player.mesh ? this.player.mesh.rotation.y : this.player.rotationY;
+          if (this.sentryGun.calibrateDirection(this.player.position, rotY)) {
+            if (this.audio && this.audio.playSentrySpinUp) this.audio.playSentrySpinUp();
+            this.ui.showAnnouncement('🧭 SENTINELLE UA 571-C : ARC DE TIR CALIBRÉ VERS VOTRE VISÉE !');
+          }
+        } else {
+          this.weaponWheel.toggle();
+        }
       }
 
       if (e.code === 'KeyE' && this.player) {
@@ -412,12 +428,29 @@ class GameApp {
           if (this.player.struggleQTE()) {
             this.ui.showAnnouncement('💥 FACEHUGGER ARRACHÉ AVEC SUCCÈS !');
           }
+        } else if (this.sentryGun && this.sentryGun.reloadSentry(this.player.position, 250)) {
+          if (this.audio && this.audio.playSentrySpinUp) this.audio.playSentrySpinUp();
+          this.ui.showAnnouncement('🔋 SENTINELLE UA 571-C : CHARGEUR RECHARGÉ (+250 RDS) !');
+        } else if (this.env && this.env.checkAirlockConsoleInteraction(this.player.position, this.ui, this.audio, this.particles)) {
+          // Handled Emergency Atmospheric Decompression Airlock!
+        } else if (this.env && this.env.checkCocoonInteraction(this.player.position, this.player, this.horde, this.ui, this.audio, this.particles)) {
+          // Handled Chrysalis Cocoon harvesting or Lurker ambush!
         } else if (this.env && this.env.checkCryoMedBayInteraction(this.player.position, this.player, this.ui, this.audio)) {
           // Handled Weyland-Yutani Autodoc Med-Bay stasis decontamination & embryo purge!
         } else if (this.env && this.env.checkSupplyInteraction(this.player.position, this.player, this.ui, this.audio)) {
           // Handled USCM supply cache opening!
         } else {
           this.checkTrophyExecution();
+        }
+      }
+
+      // Chantier 3: Trax-Net Micro-Beacon Dart Gun [X Key] (AvP Extinction / Dark Horse)
+      if (e.code === 'KeyX' && this.player) {
+        const tagged = this.player.fireTraxNetDart(this.horde, this.synthetics, this.bosses);
+        if (tagged) {
+          this.ui.showAnnouncement('🎯 BALISE TRAX-NET VERROUILLÉE (+25% DÉGÂTS, TÉLÉMÉTRIE MURALE 25S) !');
+        } else {
+          this.ui.showAnnouncement('⏳ LANCEUR TRAX-NET EN RECHARGE OU AUCUNE CIBLE');
         }
       }
 
@@ -552,11 +585,21 @@ class GameApp {
       if (e.button === 2) {
         e.preventDefault();
         if (this.keys['ShiftLeft'] || this.keys['ShiftRight']) {
-          if (this.player) this.player.usedShiftModifier = true;
-          this.performPowerGloveSlam();
+          if (this.player) {
+            this.player.usedShiftModifier = true;
+            // Chantier 6: Plasma Glaive Spin Shield & Kinetic Reflection
+            this.player.toggleWhirlShield(true);
+            this.ui.showAnnouncement('🛡️ BOUCLIER TOURNANT DE PLASMA GLAIVE DÉPLOYÉ (DÉVIATION 90% & RÉFLEXION ACIDE) !');
+          }
         } else {
           this.performHeavyAttack();
         }
+      }
+    });
+
+    window.addEventListener('mouseup', (e) => {
+      if (e.button === 2 && this.player && this.player.isWhirlShieldActive) {
+        this.player.toggleWhirlShield(false);
       }
     });
 
@@ -760,6 +803,7 @@ class GameApp {
     if (this.env) {
       this.env.checkCraneCableHit(this.player.position, 3.8, attack.damage, this.audio, this.particles, this.horde);
       this.env.checkEggClusterHits(this.player.position, 3.8, attack.damage, this.audio, this.particles, this.horde);
+      this.env.checkSteamConduitHits(this.player.position, 3.8, attack.damage, this.audio, this.particles);
     }
 
     // Update Combo Chain Tag
@@ -802,6 +846,7 @@ class GameApp {
     if (this.env) {
       this.env.checkCraneCableHit(this.player.position, 4.8, attack.damage, this.audio, this.particles, this.horde);
       this.env.checkEggClusterHits(this.player.position, 4.8, attack.damage, this.audio, this.particles, this.horde);
+      this.env.checkSteamConduitHits(this.player.position, 4.8, attack.damage, this.audio, this.particles);
     }
 
     // Dynasty Warriors Musou C1-C6 Charge Finisher Announcement & Camera Punch
@@ -1726,6 +1771,7 @@ class GameApp {
           this.env.checkBlastDoorHits(p.mesh.position, 2.2, p.damage, this.audio, this.particles);
           this.env.checkCraneCableHit(p.mesh.position, 2.2, p.damage, this.audio, this.particles, this.horde);
           this.env.checkEggClusterHits(p.mesh.position, 2.2, p.damage, this.audio, this.particles, this.horde);
+          this.env.checkSteamConduitHits(p.mesh.position, 2.2, p.damage, this.audio, this.particles);
         }
 
         const hits = this.horde.checkMeleeHits({ origin: p.mesh.position, radius: 2.8, damage: p.damage });
@@ -1909,7 +1955,7 @@ class GameApp {
       }
     }
 
-    this.badBlood.update(delta, this.player);
+    this.badBlood.update(delta, this.player, this.ui, this.gore, this.particles, this);
     this.marines.update(delta, this.player, this.horde);
     this.allies.update(delta, this.player.position, this.horde);
     this.horde.update(delta, this.player);
@@ -1917,6 +1963,17 @@ class GameApp {
     this.gore.update(delta);
     this.particles.update(delta, this.renderer.camera);
     this.updateTargetLockReticle();
+
+    // Sentry Gun Proximity HUD Prompt (Chantier 5)
+    const isNearSentry = this.sentryGun && this.sentryGun.isDeployed && this.player && this.player.position.distanceTo(this.sentryGun.mesh.position) < 3.5;
+    this.ui.updateSentryProximityPrompt(isNearSentry, this.sentryGun);
+
+    // Trax-Net Wall-Penetrating Tracker HUD (Chantier 3)
+    const traxTargets = [];
+    if (this.horde && this.horde.aliens) traxTargets.push(...this.horde.aliens.filter(a => a && a.isTraxTagged));
+    if (this.synthetics && this.synthetics.units) traxTargets.push(...this.synthetics.units.filter(s => s && s.isTraxTagged));
+    if (this.bosses && this.bosses.activeBoss && this.bosses.activeBoss.isTraxTagged) traxTargets.push(this.bosses.activeBoss);
+    this.ui.updateTraxNetTelemetry(traxTargets, this.renderer.camera, this.player);
 
     // USCM M314 Motion Tracker Proximity Sonar Ping
     let nearestDist = Infinity;

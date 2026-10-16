@@ -76,6 +76,9 @@ export class Player {
     this.parryTimer = 0;
     this.hasParryRiposte = false;
     this.riposteTimer = 0;
+    this.traxNetCooldown = 0;
+    this.isWhirlShieldActive = false;
+    this.whirlShieldTimer = 0;
 
     // Pounce Leap State
     this.isLeaping = false;
@@ -597,6 +600,66 @@ export class Player {
       damage: 340,
       speed: 42
     };
+  }
+
+  /* Chantier 3: Trax-Net Micro-Beacon Dart Gun (AVP 2 / Concrete Jungle Lore) */
+  fireTraxNetDart(horde, synthetics, bosses) {
+    if (this.traxNetCooldown > 0 || this.isFacehuggerLatched) return null;
+    this.traxNetCooldown = 14.0; // 14s tactical cooldown
+
+    if (this.audioEngine && this.audioEngine.playTraxNetBeep) {
+      this.audioEngine.playTraxNetBeep();
+    }
+
+    const forward = new THREE.Vector3(Math.sin(this.rotationY), 0, Math.cos(this.rotationY)).normalize();
+    let bestTarget = null;
+    let bestDist = 36.0;
+
+    // Check boss
+    if (bosses && bosses.activeBoss) {
+      const bDist = this.position.distanceTo(bosses.activeBoss.mesh.position);
+      if (bDist <= bestDist) {
+        bestTarget = bosses.activeBoss;
+        bestDist = bDist;
+      }
+    }
+
+    // Check horde
+    if (!bestTarget && horde && horde.aliens) {
+      for (const a of horde.aliens) {
+        if (!a || a.hp <= 0 || !a.mesh) continue;
+        const toA = a.mesh.position.clone().sub(this.position).normalize();
+        if (forward.dot(toA) > 0.35) {
+          const d = this.position.distanceTo(a.mesh.position);
+          if (d < bestDist) {
+            bestDist = d;
+            bestTarget = a;
+          }
+        }
+      }
+    }
+
+    if (bestTarget) {
+      bestTarget.isTraxTagged = true;
+      bestTarget.traxTimer = 25.0; // 25s wall-penetrating lock & +25% dmg vulnerability
+      return { success: true, target: bestTarget };
+    }
+
+    return { success: false };
+  }
+
+  /* Chantier 6: Plasma Glaive Rotary Spin Shield (Aliens: Fireteam Elite / Xenogenesis) */
+  toggleWhirlShield(active = null) {
+    if (active === null) {
+      this.isWhirlShieldActive = !this.isWhirlShieldActive;
+    } else {
+      this.isWhirlShieldActive = active;
+    }
+
+    if (this.isWhirlShieldActive && this.audioEngine && this.audioEngine.playPlasmaGlaiveWhirl) {
+      this.audioEngine.playPlasmaGlaiveWhirl();
+    }
+    return this.isWhirlShieldActive;
   }
 
   fireNetgun(horde, synthetics) {
@@ -1536,6 +1599,13 @@ export class Player {
       this.audioEngine.playShieldBlock();
       return this.hp;
     }
+    if (this.isWhirlShieldActive) {
+      amount *= 0.10; // 90% frontal damage deflection (Aliens: Fireteam Elite rotary naginata spin)
+      if (this.particles) this.particles.emitSparks(this.position, 12);
+      if (this.audioEngine && this.audioEngine.playPlasmaGlaiveWhirl) {
+        this.audioEngine.playPlasmaGlaiveWhirl();
+      }
+    }
     if (this.isPlasmaGlaiveActive) {
       this.audioEngine.playPlasmaGlaiveStrike();
       return this.hp; // Plasma Glaive cyclone barrier completely deflects frontal attacks!
@@ -1797,6 +1867,22 @@ export class Player {
 
     if (this.plasmaEnergy < this.maxPlasmaEnergy) {
       this.plasmaEnergy = Math.min(this.maxPlasmaEnergy, this.plasmaEnergy + 15 * delta);
+    }
+
+    if (this.traxNetCooldown > 0) {
+      this.traxNetCooldown = Math.max(0, this.traxNetCooldown - delta);
+    }
+
+    if (this.isWhirlShieldActive) {
+      this.whirlShieldTimer = (this.whirlShieldTimer || 0) + delta;
+      if (this.plasmaEnergy > 0) {
+        this.plasmaEnergy = Math.max(0, this.plasmaEnergy - 12 * delta);
+        if (this.plasmaGlaiveMesh) {
+          this.plasmaGlaiveMesh.rotation.z += delta * 28.0;
+        }
+      } else {
+        this.isWhirlShieldActive = false;
+      }
     }
 
     // Chantier 4: Facehugger Chestburster Embryo Incubation Warning & Fatal Eruption

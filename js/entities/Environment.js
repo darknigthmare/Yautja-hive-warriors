@@ -23,6 +23,9 @@ export class EnvironmentManager {
     this.cargoCrane = null;
     this.cryoMedBays = [];
     this.eggNurseries = [];
+    this.decompressionAirlock = null;
+    this.steamConduits = [];
+    this.chrysalisCocoons = [];
   }
 
   clearEnvironment() {
@@ -52,6 +55,14 @@ export class EnvironmentManager {
     this.cryoMedBays = [];
     this.eggNurseries.forEach(e => this.scene.remove(e.group));
     this.eggNurseries = [];
+    if (this.decompressionAirlock) {
+      this.scene.remove(this.decompressionAirlock.group);
+      this.decompressionAirlock = null;
+    }
+    this.steamConduits.forEach(c => this.scene.remove(c.group));
+    this.steamConduits = [];
+    this.chrysalisCocoons.forEach(c => this.scene.remove(c.mesh));
+    this.chrysalisCocoons = [];
     this.slabShiftTimer = 0;
     this.isSlabMoving = false;
   }
@@ -161,6 +172,22 @@ export class EnvironmentManager {
     // Chantier 9: Hive Egg Clusters & Royal Guard Praetorian Barricades (Aliens 1986 / Romulus)
     if (theme === 'hive_world' || theme === 'romulus_station' || theme === 'pyramid') {
       this.buildEggNurseries();
+    }
+
+    // === v42.0 10-CHANTIER EXPANSION (Level Design Systems) ===
+    // Chantier 1: Emergency Atmospheric Decompression Airlock (Alien 1979 / Aliens 1986)
+    if (theme === 'colony' || theme === 'romulus_station' || theme === 'la_rooftops' || theme === 'pyramid') {
+      this.buildDecompressionAirlock();
+    }
+
+    // Chantier 7: High-Pressure Industrial Steam Conduit Ruptures (Alien 3 / Aliens 1986)
+    if (theme === 'colony' || theme === 'romulus_station' || theme === 'la_rooftops') {
+      this.buildSteamConduits(6);
+    }
+
+    // Chantier 9: Xenomorph Chrysalis Moulting Cocoons & Ceiling Traps (Alien: Romulus / Alien 1979)
+    if (theme === 'hive_world' || theme === 'romulus_station' || theme === 'pyramid') {
+      this.buildChrysalisCocoons(8);
     }
   }
 
@@ -638,6 +665,103 @@ export class EnvironmentManager {
       if (pod.glowMesh) {
         pod.glowTimer = (pod.glowTimer || 0) + delta * 3.0;
         pod.glowMesh.material.opacity = pod.isUsed ? 0.15 : (0.4 + Math.sin(pod.glowTimer) * 0.25);
+      }
+    });
+
+    // 10. Chantier 1 (v42): Emergency Atmospheric Decompression Airlock Suction Vortex
+    if (this.decompressionAirlock && this.decompressionAirlock.isOpen) {
+      const airlock = this.decompressionAirlock;
+      airlock.timer -= delta;
+      if (airlock.sirenMesh) {
+        airlock.sirenMesh.rotation.y += delta * 12.0;
+      }
+
+      const breachPos = airlock.pos.clone().add(new THREE.Vector3(0, 1.5, 0));
+      const suctionRadius = 24.0;
+
+      // Suction on Xenomorphs
+      if (horde && horde.aliens) {
+        for (let i = horde.aliens.length - 1; i >= 0; i--) {
+          const a = horde.aliens[i];
+          if (!a || !a.mesh) continue;
+          const dist = a.mesh.position.distanceTo(breachPos);
+          if (dist <= suctionRadius) {
+            const pullDir = breachPos.clone().sub(a.mesh.position).normalize();
+            a.mesh.position.addScaledVector(pullDir, 18.0 * delta);
+
+            // Ejected into outer space void!
+            if (dist <= 3.4 && a.mesh.position.z >= 65.0) {
+              if (horde.goreEngine) horde.goreEngine.spawnDismemberment(a.mesh.position, 'heavy');
+              this.scene.remove(a.mesh);
+              horde.aliens.splice(i, 1);
+              horde.deadCount++;
+              if (window.gameInstance) {
+                window.gameInstance.score += 50;
+              }
+            }
+          }
+        }
+      }
+
+      // Suction on Player
+      if (player && player.position) {
+        const pDist = player.position.distanceTo(breachPos);
+        if (pDist <= 18.0) {
+          const pullDir = breachPos.clone().sub(player.position).normalize();
+          player.position.addScaledVector(pullDir, 6.0 * delta);
+          player.mesh.position.copy(player.position);
+        }
+      }
+
+      if (airlock.timer <= 0) {
+        airlock.isOpen = false;
+        airlock.doorL.position.x = -2.2;
+        airlock.doorR.position.x = 2.2;
+        if (airlock.sirenMesh) airlock.sirenMesh.material.color.setHex(0x334155);
+      }
+    }
+
+    // 11. Chantier 7 (v42): Steam Conduits Scalding Thermal Jet
+    this.steamConduits.forEach(c => {
+      if (c.isRuptured) {
+        c.steamTimer -= delta;
+        if (c.steamMesh) {
+          c.steamMesh.visible = true;
+          c.steamMesh.scale.set(
+            1.0 + Math.sin(Date.now() * 0.02) * 0.25,
+            1.0 + Math.cos(Date.now() * 0.02) * 0.25,
+            1.0 + Math.sin(Date.now() * 0.015) * 0.3
+          );
+        }
+
+        // Damage aliens in 6m jet cone
+        if (horde && horde.aliens) {
+          horde.aliens.forEach(a => {
+            if (a && a.hp > 0 && a.mesh && a.mesh.position.distanceTo(c.pos) <= 6.0) {
+              a.hp -= 35 * delta;
+              a.speed = Math.max(3, a.speed * 0.7);
+            }
+          });
+        }
+
+        // Damage player in 6m jet cone
+        if (player && player.position && player.position.distanceTo(c.pos) <= 6.0) {
+          player.takeDamage(16 * delta, false);
+          if (player.inflictVisorAcidBurn) player.inflictVisorAcidBurn();
+        }
+
+        if (c.steamTimer <= 0) {
+          c.isRuptured = false;
+          if (c.steamMesh) c.steamMesh.visible = false;
+        }
+      }
+    });
+
+    // 12. Chantier 9 (v42): Xenomorph Chrysalis Cocoons
+    this.chrysalisCocoons.forEach(c => {
+      if (!c.isHarvested && !c.isTriggered && c.mesh) {
+        c.breathTimer = (c.breathTimer || 0) + delta * 2.5;
+        c.mesh.scale.set(1.0, 1.0 + Math.sin(c.breathTimer) * 0.08, 1.0);
       }
     });
   }
@@ -1513,6 +1637,308 @@ export class EnvironmentManager {
     }
     return hitCount;
   }
+
+  /* === v42.0 10-CHANTIER EXPANSION LEVEL DESIGN METHODS === */
+
+  /* Chantier 1: Emergency Atmospheric Decompression Airlock (Alien 1979 / Aliens 1986) */
+  buildDecompressionAirlock() {
+    const group = new THREE.Group();
+    const airlockPos = new THREE.Vector3(0, 0, 68);
+    group.position.copy(airlockPos);
+
+    const metalMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.9, roughness: 0.2 });
+    const blastMat = new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.95, roughness: 0.15 });
+    const stripeMat = new THREE.MeshBasicMaterial({ color: 0xfacc15 });
+    const sirenMat = new THREE.MeshBasicMaterial({ color: 0x334155 });
+
+    // Outer Bulkhead Reinforced Frame
+    const frameL = new THREE.Mesh(new THREE.BoxGeometry(1.2, 7.5, 1.8), metalMat);
+    frameL.position.set(-4.6, 3.75, 0);
+    group.add(frameL);
+
+    const frameR = new THREE.Mesh(new THREE.BoxGeometry(1.2, 7.5, 1.8), metalMat);
+    frameR.position.set(4.6, 3.75, 0);
+    group.add(frameR);
+
+    const frameTop = new THREE.Mesh(new THREE.BoxGeometry(10.4, 1.2, 1.8), metalMat);
+    frameTop.position.set(0, 7.0, 0);
+    group.add(frameTop);
+
+    // Double Sliding Titanium Blast Doors
+    const doorL = new THREE.Mesh(new THREE.BoxGeometry(4.2, 6.2, 0.5), blastMat);
+    doorL.position.set(-2.1, 3.1, 0);
+    group.add(doorL);
+
+    const doorR = new THREE.Mesh(new THREE.BoxGeometry(4.2, 6.2, 0.5), blastMat);
+    doorR.position.set(2.1, 3.1, 0);
+    group.add(doorR);
+
+    // Hazard Stripes
+    const stripe = new THREE.Mesh(new THREE.BoxGeometry(8.4, 0.3, 0.52), stripeMat);
+    stripe.position.set(0, 3.1, 0);
+    group.add(stripe);
+
+    // Emergency Rotating Strobe Siren Beacon
+    const siren = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.25, 0.45, 8), sirenMat);
+    siren.position.set(0, 7.8, 0);
+    group.add(siren);
+
+    // Manual Hydraulic Override Lever Console (at x = 3.8m, z = -1.8m relative)
+    const consoleGroup = new THREE.Group();
+    consoleGroup.position.set(3.8, 0, -1.8);
+
+    const consolePedestal = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.3, 0.6), metalMat);
+    consolePedestal.position.y = 0.65;
+    consoleGroup.add(consolePedestal);
+
+    const lever = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.7, 6), stripeMat);
+    lever.position.set(0, 1.4, 0);
+    lever.rotation.z = Math.PI / 4;
+    consoleGroup.add(lever);
+
+    group.add(consoleGroup);
+
+    this.scene.add(group);
+    this.envObjects.push(group);
+
+    this.decompressionAirlock = {
+      group: group,
+      pos: airlockPos,
+      doorL: doorL,
+      doorR: doorR,
+      sirenMesh: siren,
+      consolePos: airlockPos.clone().add(new THREE.Vector3(3.8, 1.2, -1.8)),
+      isOpen: false,
+      timer: 0,
+      cooldown: 0
+    };
+  }
+
+  checkAirlockConsoleInteraction(playerPos, audioEngine, ui) {
+    if (!this.decompressionAirlock) return false;
+    const airlock = this.decompressionAirlock;
+    if (airlock.isOpen || airlock.cooldown > 0) return false;
+
+    if (playerPos.distanceTo(airlock.consolePos) <= 3.4) {
+      this.triggerAirlockDecompression(audioEngine, ui);
+      return true;
+    }
+    return false;
+  }
+
+  triggerAirlockDecompression(audioEngine, ui) {
+    if (!this.decompressionAirlock || this.decompressionAirlock.isOpen) return;
+    const airlock = this.decompressionAirlock;
+    airlock.isOpen = true;
+    airlock.timer = 6.0; // 6 seconds decompression window
+    airlock.cooldown = 20.0;
+
+    // Slide blast doors open
+    airlock.doorL.position.x = -4.5;
+    airlock.doorR.position.x = 4.5;
+    if (airlock.sirenMesh) {
+      airlock.sirenMesh.material.color.setHex(0xff0000);
+    }
+
+    if (audioEngine && audioEngine.playDecompressionWhoosh) {
+      audioEngine.playDecompressionWhoosh();
+    }
+    if (ui && ui.showAnnouncement) {
+      ui.showAnnouncement('⚠️ DÉPRESSURISATION D\'URGENCE DU SAS PRINCIPAL ACTIVÉE ! VORTEX ATMOSPHÉRIQUE ACTIF !');
+    }
+    if (window.gameInstance && window.gameInstance.triggerCameraShake) {
+      window.gameInstance.triggerCameraShake(0.65, 0.4);
+    }
+  }
+
+  /* Chantier 7: High-Pressure Industrial Steam Conduit Ruptures (Alien 3 / Aliens 1986) */
+  buildSteamConduits(count = 6) {
+    const pipeCoords = [
+      { x: -28, y: 2.5, z: -67, rotY: 0 },
+      { x: 28, y: 2.5, z: -67, rotY: 0 },
+      { x: -67, y: 2.5, z: -18, rotY: Math.PI / 2 },
+      { x: -67, y: 2.5, z: 18, rotY: Math.PI / 2 },
+      { x: 67, y: 2.5, z: -18, rotY: -Math.PI / 2 },
+      { x: 67, y: 2.5, z: 18, rotY: -Math.PI / 2 }
+    ];
+
+    const copperMat = new THREE.MeshStandardMaterial({ color: 0xb45309, metalness: 0.9, roughness: 0.25 });
+    const valveMat = new THREE.MeshBasicMaterial({ color: 0xd97706 });
+    const steamMat = new THREE.MeshBasicMaterial({
+      color: 0xf1f5f9,
+      transparent: true,
+      opacity: 0.65
+    });
+
+    pipeCoords.slice(0, count).forEach(coord => {
+      const group = new THREE.Group();
+      group.position.set(coord.x, coord.y, coord.z);
+      group.rotation.y = coord.rotY;
+
+      // Wall-mounted horizontal steam pipe segment
+      const pipe = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 5.5, 8), copperMat);
+      pipe.rotation.z = Math.PI / 2;
+      group.add(pipe);
+
+      // Red pressure relief valve wheel
+      const valve = new THREE.Mesh(new THREE.TorusGeometry(0.35, 0.05, 6, 12), valveMat);
+      valve.position.set(0, 0, 0.3);
+      group.add(valve);
+
+      // Scalding directional steam cone mesh (hidden until ruptured)
+      const steamGeo = new THREE.ConeGeometry(2.2, 6.0, 8);
+      steamGeo.rotateX(-Math.PI / 2);
+      const steamMesh = new THREE.Mesh(steamGeo, steamMat);
+      steamMesh.position.set(0, 0, 3.2);
+      steamMesh.visible = false;
+      group.add(steamMesh);
+
+      this.scene.add(group);
+      this.envObjects.push(group);
+
+      this.steamConduits.push({
+        group: group,
+        steamMesh: steamMesh,
+        pos: new THREE.Vector3(coord.x, coord.y, coord.z),
+        valvePos: new THREE.Vector3(coord.x, coord.y, coord.z),
+        isRuptured: false,
+        steamTimer: 0,
+        hp: 40
+      });
+    });
+  }
+
+  checkSteamConduitHits(attackPos, radius, damage, audioEngine, particles) {
+    let triggered = false;
+    for (const c of this.steamConduits) {
+      if (c.isRuptured) continue;
+      if (attackPos.distanceTo(c.valvePos) <= radius + 1.2) {
+        c.hp -= damage;
+        if (particles) particles.emitSparks(c.valvePos, 12);
+
+        if (c.hp <= 0) {
+          c.isRuptured = true;
+          c.steamTimer = 8.0;
+          triggered = true;
+
+          if (audioEngine && audioEngine.playSteamJetHiss) {
+            audioEngine.playSteamJetHiss();
+          }
+        }
+      }
+    }
+    return triggered;
+  }
+
+  /* Chantier 9: Xenomorph Chrysalis Moulting Cocoons & Ceiling Traps (Alien: Romulus / Alien 1979) */
+  buildChrysalisCocoons(count = 8) {
+    const cocoonMat = new THREE.MeshStandardMaterial({
+      color: 0x18181b,
+      roughness: 0.35,
+      metalness: 0.75
+    });
+    const tendrilMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.6 });
+
+    for (let i = 0; i < count; i++) {
+      const angle = (i / count) * Math.PI * 2;
+      const radius = 35 + (i % 2) * 12;
+      const cx = Math.cos(angle) * radius;
+      const cz = Math.sin(angle) * radius;
+      const cy = 3.6;
+
+      const group = new THREE.Group();
+      group.position.set(cx, cy, cz);
+
+      // Hanging fibrous resin tendril
+      const tendril = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.08, 2.2, 6), tendrilMat);
+      tendril.position.y = 1.1;
+      group.add(tendril);
+
+      // Molted chitin chrysalis carapace
+      const cocoon = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.25, 2.4, 8), cocoonMat);
+      cocoon.scale.set(1.0, 1.2, 0.8);
+      group.add(cocoon);
+
+      this.scene.add(group);
+      this.envObjects.push(group);
+
+      this.chrysalisCocoons.push({
+        mesh: group,
+        pos: new THREE.Vector3(cx, cy, cz),
+        isHarvested: false,
+        isTriggered: false,
+        breathTimer: Math.random() * Math.PI * 2,
+        isAmbush: Math.random() < 0.5
+      });
+    }
+  }
+
+  checkCocoonInteraction(playerPos, horde, audioEngine, ui, particles) {
+    for (const c of this.chrysalisCocoons) {
+      if (c.isHarvested || c.isTriggered) continue;
+      if (playerPos.distanceTo(c.pos) <= 3.2) {
+        if (c.isAmbush) {
+          c.isTriggered = true;
+          c.mesh.visible = false;
+          if (audioEngine && audioEngine.playXenoHiss) {
+            audioEngine.playXenoHiss();
+          }
+          if (horde && horde.spawnAlien) {
+            horde.spawnAlien('lurker', c.pos.clone().setY(0));
+          }
+          if (ui && ui.showAnnouncement) {
+            ui.showAnnouncement('⚠️ EMBUSCADE : UN LURKER JAILLIT D\'UN COCON DE MUE SUSPENDU !');
+          }
+          return 'ambush';
+        } else {
+          c.isHarvested = true;
+          c.mesh.visible = false;
+          if (audioEngine && audioEngine.playMedicompCauterize) {
+            audioEngine.playMedicompCauterize();
+          }
+          if (ui && ui.showAnnouncement) {
+            ui.showAnnouncement('🔬 RECHERCHE BIOMÉCANIQUE : MUE DE CHITINE PRÉLEVÉE (+30 HONNEUR) !');
+          }
+          if (window.gameInstance) {
+            window.gameInstance.score += 30;
+          }
+          return 'harvest';
+        }
+      }
+    }
+    return null;
+  }
+
+  /* Chantier 4: Catwalk Structural Pillars Demolition (Aliens 1986 / AvP 2004) */
+  damageCatwalkPillars(hitPos, radius, damage, audioEngine, particles) {
+    let collapsed = false;
+    for (const c of this.catwalks) {
+      if (c.isCollapsed) continue;
+      const centerPos = new THREE.Vector3((c.minX + c.maxX) / 2, c.height / 2, (c.minZ + c.maxZ) / 2);
+      if (hitPos.distanceTo(centerPos) <= radius + 5.0) {
+        c.pillarHp = (c.pillarHp || 320) - damage;
+        if (particles) particles.emitSparks(centerPos, 20);
+
+        if (c.pillarHp <= 0) {
+          c.isCollapsed = true;
+          c.height = 1.0; // Collapsed to floor angle
+          collapsed = true;
+
+          if (audioEngine && audioEngine.playPillarCollapse) {
+            audioEngine.playPillarCollapse();
+          }
+          if (window.gameInstance && window.gameInstance.triggerCameraShake) {
+            window.gameInstance.triggerCameraShake(0.85, 0.45);
+          }
+          if (window.gameInstance && window.gameInstance.ui) {
+            window.gameInstance.ui.showAnnouncement('💥 PILIERS DE PASSERELLE DÉTRUITS : EFFONDREMENT DE SECTION INDUSTRIELLE !');
+          }
+        }
+      }
+    }
+    return collapsed;
+  }
 }
+
 
 

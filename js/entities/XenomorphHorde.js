@@ -501,7 +501,7 @@ export class XenomorphHorde {
           }
         }
 
-        const damageDealt = a.isTargetPainted ? attack.damage * 1.25 : attack.damage;
+        const damageDealt = (a.isTargetPainted || a.isTraxTagged) ? attack.damage * 1.25 : attack.damage;
         a.hp -= damageDealt;
         const killed = a.hp <= 0;
 
@@ -1000,6 +1000,65 @@ export class XenomorphHorde {
         a.hp -= (a.bleedDps || 50.0) * delta;
         if (this.particles && this.particles.emitAlienBloodSpurt && Math.random() < 0.08) {
           this.particles.emitAlienBloodSpurt(a.mesh.position, 4);
+        }
+      }
+
+      // Chantier 3 (v42): Trax-Net Micro-Beacon Pulse
+      if (a.isTraxTagged) {
+        a.traxTimer -= delta;
+        a.traxBeepTimer = (a.traxBeepTimer || 0) + delta;
+        if (a.traxBeepTimer >= 1.2) {
+          a.traxBeepTimer = 0;
+          if (this.particles && this.particles.emitSparks) {
+            this.particles.emitSparks(a.mesh.position.clone().add(new THREE.Vector3(0, 1.2, 0)), 3);
+          }
+        }
+        if (a.traxTimer <= 0) {
+          a.isTraxTagged = false;
+        }
+      }
+
+      // Chantier 2 (v42): Subterranean Trench & Vent Flanking AI (Aliens 1986 / Isolation)
+      if (player && player.position && player.position.y >= 3.0 && (a.type === 'drone' || a.type === 'warrior') && !a.isFlanking && Math.random() < 0.006) {
+        a.isFlanking = true;
+        a.flankPhase = 'diving';
+        a.flankTimer = 3.2;
+      }
+
+      if (a.isFlanking) {
+        if (a.flankPhase === 'diving') {
+          a.mesh.position.y -= 8.0 * delta;
+          if (a.mesh.position.y <= -2.0) {
+            a.mesh.visible = false;
+            a.flankPhase = 'submerged';
+          }
+          return;
+        } else if (a.flankPhase === 'submerged') {
+          a.flankTimer -= delta;
+          if (a.flankTimer <= 0) {
+            a.flankPhase = 'emerging';
+            const behindPlayer = player.position.clone().add(new THREE.Vector3(
+              (Math.random() - 0.5) * 4.0,
+              0,
+              4.0
+            ));
+            a.mesh.position.copy(behindPlayer);
+            a.mesh.position.y = -2.0;
+            a.mesh.visible = true;
+            this.audioEngine.playXenoHiss();
+          }
+          return;
+        } else if (a.flankPhase === 'emerging') {
+          a.mesh.position.y += 10.0 * delta;
+          if (a.mesh.position.y >= player.position.y) {
+            a.mesh.position.y = player.position.y;
+            a.isFlanking = false;
+            const distToP = a.mesh.position.distanceTo(player.position);
+            if (distToP <= 3.5) {
+              player.takeDamage(42, false, a);
+            }
+          }
+          return;
         }
       }
 
