@@ -113,6 +113,10 @@ export class YautjaCitadel {
     this.citadelGroup.add(trexSkull);
     this.trexSkull = trexSkull;
 
+    // 5. CENTERPIECE 5: HOLOGRAPHIC GALAXY STAR MAP (Predator 2 & Predators 2010 Lore)
+    const galaxyMap = this.createHolographicGalaxyMap();
+    this.citadelGroup.add(galaxyMap);
+
     // Standard Prey Skulls on Outer Pedestals
     const displayCount = Math.min(12, Math.max(4, skullCount));
     for (let i = 0; i < displayCount; i++) {
@@ -125,6 +129,118 @@ export class YautjaCitadel {
       skull.position.set(Math.cos(angle) * 14, 2.1, Math.sin(angle) * 14);
       this.citadelGroup.add(skull);
     }
+  }
+
+  createHolographicGalaxyMap() {
+    const group = new THREE.Group();
+    group.position.set(0, 0, 0);
+
+    // Dark titanium pedestal with glowing stepped base
+    const plinthMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.9, roughness: 0.2 });
+    const plinth = new THREE.Mesh(new THREE.CylinderGeometry(2.2, 2.8, 0.8, 8), plinthMat);
+    plinth.position.y = 0.4;
+    group.add(plinth);
+
+    // Glowing emitter ring on plinth
+    const emitterRingMat = new THREE.MeshBasicMaterial({ color: 0x00e5ff });
+    const emitterRing = new THREE.Mesh(new THREE.RingGeometry(1.4, 1.8, 16), emitterRingMat);
+    emitterRing.rotation.x = -Math.PI / 2;
+    emitterRing.position.y = 0.82;
+    group.add(emitterRing);
+
+    // Light projector cone beam extending upward
+    const beamMat = new THREE.MeshBasicMaterial({
+      color: 0x00d2ff,
+      transparent: true,
+      opacity: 0.18,
+      side: THREE.DoubleSide
+    });
+    const beam = new THREE.Mesh(new THREE.ConeGeometry(2.4, 3.8, 16, 1, true), beamMat);
+    beam.position.y = 2.7;
+    group.add(beam);
+    this.holoBeam = beam;
+
+    // Center of holographic globe
+    const globeCenter = new THREE.Vector3(0, 4.6, 0);
+    const globeGroup = new THREE.Group();
+    globeGroup.position.copy(globeCenter);
+    group.add(globeGroup);
+    this.holoGlobe = globeGroup;
+
+    // 1. Central Core Singularity
+    const coreMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.9 });
+    const core = new THREE.Mesh(new THREE.SphereGeometry(0.2, 10, 10), coreMat);
+    globeGroup.add(core);
+
+    // 2. Wireframe Celestial Sphere (The Known Galaxy)
+    const sphereMat = new THREE.MeshBasicMaterial({
+      color: 0x00e5ff,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.35
+    });
+    const sphere = new THREE.Mesh(new THREE.IcosahedronGeometry(2.4, 2), sphereMat);
+    globeGroup.add(sphere);
+    this.holoSphere = sphere;
+
+    // 3. Three Tilted Gyroscopic Orbit Rings
+    this.holoRings = [];
+    const ringColors = [0x00ffff, 0x38bdf8, 0x818cf8];
+    const ringTilts = [
+      new THREE.Euler(Math.PI / 6, 0, 0),
+      new THREE.Euler(-Math.PI / 4, Math.PI / 3, 0),
+      new THREE.Euler(0, -Math.PI / 3, Math.PI / 5)
+    ];
+    for (let r = 0; r < 3; r++) {
+      const ringMesh = new THREE.Mesh(
+        new THREE.TorusGeometry(2.1 + r * 0.25, 0.018, 4, 32),
+        new THREE.MeshBasicMaterial({ color: ringColors[r], transparent: true, opacity: 0.7 })
+      );
+      ringMesh.rotation.copy(ringTilts[r]);
+      globeGroup.add(ringMesh);
+      this.holoRings.push(ringMesh);
+    }
+
+    // 4. Five Legendary Planetary Hunting Reserves
+    this.holoPlanets = [];
+    const planetsData = [
+      { name: 'Yautja Prime', color: 0xf59e0b, radius: 2.1, speed: 0.55, size: 0.22, tilt: 0.2 },
+      { name: 'LV-426 Acheron', color: 0x06b6d4, radius: 1.6, speed: 0.75, size: 0.18, tilt: -0.4 },
+      { name: 'Xenomorph Prime', color: 0x22c55e, radius: 2.3, speed: 0.42, size: 0.26, tilt: 0.6 },
+      { name: 'Earth 1715', color: 0x3b82f6, radius: 1.2, speed: 0.95, size: 0.16, tilt: -0.1 },
+      { name: 'Station Renaissance', color: 0xa855f7, radius: 1.85, speed: 0.62, size: 0.15, tilt: 0.8 }
+    ];
+
+    planetsData.forEach((p, idx) => {
+      const pGroup = new THREE.Group();
+      const pMat = new THREE.MeshBasicMaterial({ color: p.color });
+      const pMesh = new THREE.Mesh(new THREE.SphereGeometry(p.size, 8, 8), pMat);
+      pGroup.add(pMesh);
+
+      // Planetary beacon aura
+      const auraMat = new THREE.MeshBasicMaterial({ color: p.color, transparent: true, opacity: 0.4, wireframe: true });
+      const aura = new THREE.Mesh(new THREE.SphereGeometry(p.size * 1.5, 6, 6), auraMat);
+      pGroup.add(aura);
+
+      // Orbital indicator ring
+      const orbitLine = new THREE.Mesh(
+        new THREE.RingGeometry(p.radius - 0.01, p.radius + 0.01, 32),
+        new THREE.MeshBasicMaterial({ color: p.color, transparent: true, opacity: 0.25, side: THREE.DoubleSide })
+      );
+      orbitLine.rotation.x = Math.PI / 2 + p.tilt;
+      globeGroup.add(orbitLine);
+
+      globeGroup.add(pGroup);
+      this.holoPlanets.push({
+        group: pGroup,
+        radius: p.radius,
+        speed: p.speed,
+        angle: (idx / planetsData.length) * Math.PI * 2,
+        tilt: p.tilt
+      });
+    });
+
+    return group;
   }
 
   createTRexSkull(mat) {
@@ -240,6 +356,30 @@ export class YautjaCitadel {
     if (this.laserBeam) {
       this.laserBeam.position.x = 8.0 + Math.sin(sweepAngle) * 0.55;
       this.laserBeam.material.opacity = 0.55 + Math.random() * 0.4;
+    }
+
+    // Holographic Galaxy Star Map Celestial Globe Animation (Chantier 9)
+    if (this.holoSphere) {
+      this.holoSphere.rotation.y += 0.25 * delta;
+      this.holoSphere.rotation.x += 0.12 * delta;
+    }
+    if (this.holoRings) {
+      this.holoRings.forEach((r, idx) => {
+        r.rotation.z += (0.2 + idx * 0.15) * delta;
+      });
+    }
+    if (this.holoPlanets) {
+      this.holoPlanets.forEach(p => {
+        p.angle += p.speed * delta;
+        p.group.position.set(
+          Math.cos(p.angle) * p.radius,
+          Math.sin(p.angle) * p.radius * Math.sin(p.tilt),
+          Math.sin(p.angle) * p.radius * Math.cos(p.tilt)
+        );
+      });
+    }
+    if (this.holoBeam) {
+      this.holoBeam.material.opacity = 0.14 + Math.sin(Date.now() * 0.004) * 0.06;
     }
   }
 }

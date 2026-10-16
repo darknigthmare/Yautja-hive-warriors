@@ -244,17 +244,52 @@ export class BossManager {
       });
     }
 
-    // Spawn a live Chestburster directly into horde
+    // Spawn a live Chestburster directly into horde with scurry audio
     if (horde && horde.spawnChestburster) {
       setTimeout(() => {
         horde.spawnChestburster(origin);
+        if (this.audioEngine && this.audioEngine.playChestbursterScurry) {
+          this.audioEngine.playChestbursterScurry();
+        }
       }, 350);
     }
   }
 
-  takeDamage(amount) {
+  triggerPregnantBurstFrenzy(horde) {
+    if (!this.activeBoss || !this.activeBoss.mesh) return;
+    const origin = this.activeBoss.mesh.position.clone().add(new THREE.Vector3(0, 2.5, 0));
+
+    if (this.audioEngine && this.audioEngine.playPredalienRegurgitate) {
+      this.audioEngine.playPredalienRegurgitate();
+    }
+    if (this.audioEngine && this.audioEngine.playChestbursterScurry) {
+      this.audioEngine.playChestbursterScurry();
+    }
+
+    if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
+      window.gameInstance.ui.showAnnouncement('⚠️ PRÉDALIENNE EN FUREUR GESTANTE : ÉRUPTION DE COUVÉE VIRULENTE (AVP-R) !');
+    }
+
+    // Violent chestburster brood eruption
+    if (horde && horde.spawnChestburster) {
+      for (let c = 0; c < 3; c++) {
+        setTimeout(() => {
+          const spawnPos = origin.clone().add(new THREE.Vector3((Math.random() - 0.5) * 3, 0, (Math.random() - 0.5) * 3));
+          horde.spawnChestburster(spawnPos);
+        }, c * 250);
+      }
+    }
+  }
+
+  takeDamage(amount, horde = null) {
     if (!this.activeBoss) return;
     this.activeBoss.hp -= amount;
+
+    // Predalien Pregnant Belly-Burst Frenzy at < 45% HP (AVP Requiem Lore)
+    if (this.activeBoss.type === 'predalien_queen' && this.activeBoss.hp <= this.activeBoss.maxHp * 0.45 && !this.activeBoss.pregnantBurstTriggered) {
+      this.activeBoss.pregnantBurstTriggered = true;
+      this.triggerPregnantBurstFrenzy(horde || (window.gameInstance ? window.gameInstance.horde : null));
+    }
 
     if (this.activeBoss.hp <= this.activeBoss.maxHp * 0.3 && !this.activeBoss.isStunned) {
       this.activeBoss.isStunned = true;

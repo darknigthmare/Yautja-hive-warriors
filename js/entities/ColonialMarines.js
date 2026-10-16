@@ -60,6 +60,7 @@ export class ColonialMarinesManager {
     const gun = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.3, 1.4), gunMat);
     gun.position.set(0.6, 2.0, 0.6);
     group.add(gun);
+    group.userData.gun = gun;
 
     if (!isSmartgunner) {
       // M240 Flamethrower Pressurized Fuel Canister (Under-barrel)
@@ -192,21 +193,43 @@ export class ColonialMarinesManager {
               }
             }
           } else {
-            // M56 Smartgun tracking fire with red laser targeting
+            // M56 Smartgun tracking fire with red laser targeting (Vasquez / Drake - Aliens 1986 Canon)
             if (laserBeam) {
               laserBeam.visible = true;
-              laserBeam.material.opacity = 0.7 + Math.random() * 0.3;
+              laserBeam.material.opacity = 0.75 + Math.random() * 0.25;
             }
 
-            if (Math.random() < 0.11) {
-              this.audioEngine.playPulseRifleBurst ? this.audioEngine.playPulseRifleBurst() : this.audioEngine.playPlasmaShot();
+            // Steadicam weapon recoil kickback animation
+            if (m.mesh.userData.gun) {
+              m.mesh.userData.gun.position.z = 0.6 - (Math.random() * 0.08);
+            }
+
+            if (Math.random() < 0.22) {
+              if (this.audioEngine.playSmartgunBurst) {
+                this.audioEngine.playSmartgunBurst();
+              } else if (this.audioEngine.playPulseRifleBurst) {
+                this.audioEngine.playPulseRifleBurst();
+              }
+
+              // Occasional tactical callout (Vasquez / Drake 1:1 Lore)
+              if (!m.voiceTimer) m.voiceTimer = 0;
+              m.voiceTimer += delta;
+              if (m.voiceTimer > 8.0) {
+                m.voiceTimer = 0;
+                const shouts = ["LET'S ROCK !!", "EAT THIS !", "FIRE IN THE HOLE !", "HOLD THE PERIMETER !"];
+                const shout = shouts[Math.floor(Math.random() * shouts.length)];
+                if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
+                  window.gameInstance.ui.showAnnouncement(`🔊 USCM SMARTGUNNER : "${shout}"`);
+                }
+              }
+
               if (targetPos === player.position) {
-                player.takeDamage(m.damage * 0.1);
+                player.takeDamage(m.damage * 0.12);
               } else {
                 // Deal kinetic damage to the targeted Xenomorph
                 horde.aliens.forEach(a => {
-                  if (a.mesh.position.distanceTo(targetPos) <= 2.5) {
-                    a.hp -= m.damage;
+                  if (a.mesh.position.distanceTo(targetPos) <= 2.8) {
+                    a.hp -= m.damage * 1.15;
                   }
                 });
               }

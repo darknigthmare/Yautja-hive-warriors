@@ -2310,6 +2310,185 @@ export class AudioEngine {
     chokeOsc.start(now + 0.1);
     chokeOsc.stop(now + 0.45);
   }
+
+  playEggPetalPeel() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Organic leathery membrane peeling slurp + escaping spore hiss
+    const peelOsc = this.ctx.createOscillator();
+    const peelGain = this.ctx.createGain();
+    peelOsc.type = 'sawtooth';
+    peelOsc.frequency.setValueAtTime(320, now);
+    peelOsc.frequency.linearRampToValueAtTime(140, now + 0.35);
+
+    peelGain.gain.setValueAtTime(0.5, now);
+    peelGain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+
+    peelOsc.connect(peelGain);
+    peelGain.connect(this.ctx.destination);
+    peelOsc.start(now);
+    peelOsc.stop(now + 0.35);
+
+    // Spore gas release
+    const hissOsc = this.ctx.createOscillator();
+    const hissGain = this.ctx.createGain();
+    hissOsc.type = 'square';
+    hissOsc.frequency.setValueAtTime(3400, now + 0.1);
+    hissOsc.frequency.linearRampToValueAtTime(1800, now + 0.5);
+
+    hissGain.gain.setValueAtTime(0.3, now + 0.1);
+    hissGain.gain.linearRampToValueAtTime(0.01, now + 0.5);
+
+    hissOsc.connect(hissGain);
+    hissGain.connect(this.ctx.destination);
+    hissOsc.start(now + 0.1);
+    hissOsc.stop(now + 0.5);
+  }
+
+  playCryoShatter() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // High crystalline glass impact crack followed by deep fracturing resonant rumble
+    const crackOsc = this.ctx.createOscillator();
+    const crackGain = this.ctx.createGain();
+    crackOsc.type = 'sawtooth';
+    crackOsc.frequency.setValueAtTime(4500, now);
+    crackOsc.frequency.exponentialRampToValueAtTime(800, now + 0.12);
+
+    crackGain.gain.setValueAtTime(0.9, now);
+    crackGain.gain.linearRampToValueAtTime(0.01, now + 0.15);
+
+    crackOsc.connect(crackGain);
+    crackGain.connect(this.ctx.destination);
+    crackOsc.start(now);
+    crackOsc.stop(now + 0.15);
+
+    const shatterOsc = this.ctx.createOscillator();
+    const shatterGain = this.ctx.createGain();
+    shatterOsc.type = 'triangle';
+    shatterOsc.frequency.setValueAtTime(180, now + 0.05);
+    shatterOsc.frequency.exponentialRampToValueAtTime(40, now + 0.4);
+
+    shatterGain.gain.setValueAtTime(0.7, now + 0.05);
+    shatterGain.gain.linearRampToValueAtTime(0.01, now + 0.4);
+
+    shatterOsc.connect(shatterGain);
+    shatterGain.connect(this.ctx.destination);
+    shatterOsc.start(now + 0.05);
+    shatterOsc.stop(now + 0.4);
+  }
+
+  playPlasmaChargeUp() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Rising capacitor charge whine from 400Hz to 2800Hz
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(400, now);
+    osc.frequency.exponentialRampToValueAtTime(2900, now + 0.65);
+
+    gain.gain.setValueAtTime(0.1, now);
+    gain.gain.linearRampToValueAtTime(0.5, now + 0.55);
+    gain.gain.linearRampToValueAtTime(0.01, now + 0.65);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.65);
+  }
+
+  playSmartgunBurst() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Heavy mechanical servo whirr + double caseless 10mm explosive thump
+    const servoOsc = this.ctx.createOscillator();
+    const servoGain = this.ctx.createGain();
+    servoOsc.type = 'sawtooth';
+    servoOsc.frequency.setValueAtTime(750, now);
+    servoOsc.frequency.linearRampToValueAtTime(1200, now + 0.08);
+
+    servoGain.gain.setValueAtTime(0.25, now);
+    servoGain.gain.linearRampToValueAtTime(0.01, now + 0.08);
+
+    servoOsc.connect(servoGain);
+    servoGain.connect(this.ctx.destination);
+    servoOsc.start(now);
+    servoOsc.stop(now + 0.08);
+
+    const shotOsc = this.ctx.createOscillator();
+    const shotGain = this.ctx.createGain();
+    shotOsc.type = 'triangle';
+    shotOsc.frequency.setValueAtTime(280, now + 0.02);
+    shotOsc.frequency.exponentialRampToValueAtTime(60, now + 0.16);
+
+    shotGain.gain.setValueAtTime(0.85, now + 0.02);
+    shotGain.gain.linearRampToValueAtTime(0.01, now + 0.16);
+
+    shotOsc.connect(shotGain);
+    shotGain.connect(this.ctx.destination);
+    shotOsc.start(now + 0.02);
+    shotOsc.stop(now + 0.16);
+  }
+
+  playChestbursterScurry() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // High infant shriek + skittering claws
+    const shriekOsc = this.ctx.createOscillator();
+    const shriekGain = this.ctx.createGain();
+    shriekOsc.type = 'sawtooth';
+    shriekOsc.frequency.setValueAtTime(1800, now);
+    shriekOsc.frequency.linearRampToValueAtTime(2800, now + 0.15);
+    shriekOsc.frequency.exponentialRampToValueAtTime(600, now + 0.3);
+
+    shriekGain.gain.setValueAtTime(0.6, now);
+    shriekGain.gain.linearRampToValueAtTime(0.01, now + 0.3);
+
+    shriekOsc.connect(shriekGain);
+    shriekGain.connect(this.ctx.destination);
+    shriekOsc.start(now);
+    shriekOsc.stop(now + 0.3);
+  }
+
+  playSpitterAcidMortar() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Rising wet phlegm lob sound + descending ballistic whistle
+    const lobOsc = this.ctx.createOscillator();
+    const lobGain = this.ctx.createGain();
+    lobOsc.type = 'triangle';
+    lobOsc.frequency.setValueAtTime(160, now);
+    lobOsc.frequency.linearRampToValueAtTime(450, now + 0.18);
+
+    lobGain.gain.setValueAtTime(0.7, now);
+    lobGain.gain.linearRampToValueAtTime(0.01, now + 0.2);
+
+    lobOsc.connect(lobGain);
+    lobGain.connect(this.ctx.destination);
+    lobOsc.start(now);
+    lobOsc.stop(now + 0.2);
+
+    const whistleOsc = this.ctx.createOscillator();
+    const whistleGain = this.ctx.createGain();
+    whistleOsc.type = 'sine';
+    whistleOsc.frequency.setValueAtTime(950, now + 0.1);
+    whistleOsc.frequency.exponentialRampToValueAtTime(350, now + 0.45);
+
+    whistleGain.gain.setValueAtTime(0.4, now + 0.1);
+    whistleGain.gain.linearRampToValueAtTime(0.01, now + 0.45);
+
+    whistleOsc.connect(whistleGain);
+    whistleGain.connect(this.ctx.destination);
+    whistleOsc.start(now + 0.1);
+    whistleOsc.stop(now + 0.45);
+  }
 }
 
 

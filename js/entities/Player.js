@@ -81,6 +81,10 @@ export class Player {
     this.qteStrugglePresses = 0;
     this.qteRequiredPresses = 5;
 
+    // Chantier 6: Plasma Caster Charging State (Predator 1987 / AVP 2004)
+    this.isChargingPlasma = false;
+    this.plasmaChargeTime = 0;
+
     this.mesh = this.buildYautjaMesh();
     this.scene.add(this.mesh);
 
@@ -326,6 +330,9 @@ export class Player {
   updateLaserLock(worldTargetPos) {
     if (!this.laserGroup) return;
 
+    // Convergence delta based on charge state (converges into single point when charging)
+    const convergence = this.isChargingPlasma ? Math.max(0.015, 0.12 * (1.0 - Math.min(1.0, this.plasmaChargeTime / 0.6))) : 0.12;
+
     if (worldTargetPos) {
       const localTarget = this.mesh.worldToLocal(worldTargetPos.clone());
       for (let i = 0; i < this.laserGroup.children.length; i++) {
@@ -333,14 +340,15 @@ export class Player {
         const posAttr = line.geometry.attributes.position;
         const angle = (i / 3) * Math.PI * 2;
         // The three dots converge at target with small triangle delta
-        posAttr.setXYZ(1, localTarget.x + Math.cos(angle) * 0.12, localTarget.y + Math.sin(angle) * 0.12, localTarget.z);
+        posAttr.setXYZ(1, localTarget.x + Math.cos(angle) * convergence, localTarget.y + Math.sin(angle) * convergence, localTarget.z);
         posAttr.needsUpdate = true;
       }
     } else {
       for (let i = 0; i < this.laserGroup.children.length; i++) {
         const line = this.laserGroup.children[i];
         const posAttr = line.geometry.attributes.position;
-        posAttr.setXYZ(1, 0, 1.8, 25);
+        const angle = (i / 3) * Math.PI * 2;
+        posAttr.setXYZ(1, Math.cos(angle) * convergence * 5, 1.8 + Math.sin(angle) * convergence * 5, 25);
         posAttr.needsUpdate = true;
       }
     }
@@ -570,46 +578,73 @@ export class Player {
     const origin = this.position.clone().add(new THREE.Vector3(0.5, 2.0, 0.4));
     const forward = new THREE.Vector3(Math.sin(this.rotationY), 0, Math.cos(this.rotationY)).normalize();
 
-    // Find nearest target in forward cone (up to 22m)
-    let bestTarget = null;
-    let minAngle = Math.PI / 3;
+    // Multi-target forward cone scan (up to 3 targets within 24m)
+    const targets = [];
+    const minAngle = Math.PI / 2.8;
 
-    if (horde) {
+    if (horde && horde.aliens) {
       horde.aliens.forEach(a => {
+        if (a.isNetEntangled || a.isNetgunImmune) return;
         const toAlien = a.mesh.position.clone().sub(this.position);
         toAlien.y = 0;
         const dist = toAlien.length();
-        if (dist <= 22.0) {
+        if (dist <= 24.0) {
           toAlien.normalize();
           const angle = Math.acos(Math.max(-1, Math.min(1, forward.dot(toAlien))));
-          if (angle < minAngle) {
-            minAngle = angle;
-            bestTarget = a;
+          if (angle < minAngle && targets.length < 3) {
+            targets.push(a);
           }
         }
       });
     }
 
-    if (bestTarget) {
-      bestTarget.isNetEntangled = true;
-      bestTarget.netTimer = 4.0;
+    if (targets.length > 0) {
       this.audioEngine.playNetWireTighten();
 
-      // Create visual expanding wire net mesh over the trapped target
-      const netGeo = new THREE.SphereGeometry(bestTarget.radius ? bestTarget.radius * 1.3 : 1.4, 10, 10);
-      const netMat = new THREE.MeshBasicMaterial({
-        color: 0xcccccc,
-        wireframe: true,
-        transparent: true,
-        opacity: 0.95
-      });
-      const netMesh = new THREE.Mesh(netGeo, netMat);
-      netMesh.position.copy(bestTarget.mesh.position).add(new THREE.Vector3(0, 1.2, 0));
-      this.scene.add(netMesh);
+      targets.forEach((target, idx) => {
+        target.isNetEntangled = true;
+        target.netTimer = 4.5;
 
-      setTimeout(() => {
-        this.scene.remove(netMesh);
-      }, 4000);
+        // Visual expanding/tightening diamond-mesh net group
+        const netGroup = new THREE.Group();
+        const rad = target.radius ? target.radius * 1.35 : 1.5;
+        const netGeo = new THREE.SphereGeometry(rad, 10, 10);
+        const netMat = new THREE.MeshBasicMaterial({
+          color: 0x67e8f9, // Electric cyan diamond-wire
+          wireframe: true,
+          transparent: true,
+          opacity: 0.95
+        });
+        const netMesh = new THREE.Mesh(netGeo, netMat);
+        netGroup.add(netMesh);
+
+        // 4 weighted tungsten corner anchors (Predator 2 Canon)
+        const anchorMat = new THREE.MeshStandardMaterial({ color: 0x1f2937, metalness: 0.95 });
+        for (let a = 0; a < 4; a++) {
+          const anchor = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.15, 0.3), anchorMat);
+          const aAngle = (a / 4) * Math.PI * 2;
+          anchor.position.set(Math.cos(aAngle) * rad, Math.sin(aAngle) * 0.4, Math.sin(aAngle) * rad);
+          netGroup.add(anchor);
+        }
+
+        netGroup.position.copy(target.mesh.position).add(new THREE.Vector3(0, 1.2, 0));
+        this.scene.add(netGroup);
+
+        // Wire tightening animation interval
+        let netLife = 4.5;
+        const netAnim = setInterval(() => {
+          netLife -= 0.1;
+          if (target.mesh && target.isNetEntangled) {
+            netGroup.position.copy(target.mesh.position).add(new THREE.Vector3(0, 1.2, 0));
+            netGroup.scale.multiplyScalar(0.995); // Visible constriction tension
+          }
+          if (netLife <= 0 || !target.isNetEntangled) {
+            clearInterval(netAnim);
+            this.scene.remove(netGroup);
+          }
+        }, 100);
+      });
+
       return true;
     }
 
@@ -1262,11 +1297,15 @@ export class Player {
     };
   }
 
-  firePlasmaShot() {
-    if (this.plasmaEnergy < this.data.stats.plasmaEnergyCost || this.isFacehuggerLatched) return null;
-    this.plasmaEnergy -= this.data.stats.plasmaEnergyCost;
+  firePlasmaShot(isCharged = false) {
+    const energyCost = isCharged ? 35 : this.data.stats.plasmaEnergyCost;
+    if (this.plasmaEnergy < energyCost || this.isFacehuggerLatched) return null;
+    this.plasmaEnergy -= energyCost;
 
     this.audioEngine.playPlasmaShot();
+    if (isCharged && this.audioEngine.playC6CataclysmBoom) {
+      this.audioEngine.playC6CataclysmBoom();
+    }
 
     const origin = this.position.clone().add(new THREE.Vector3(0, 2.5, 0));
     const forward = new THREE.Vector3(
@@ -1278,8 +1317,9 @@ export class Player {
     return {
       position: origin,
       direction: forward,
-      damage: this.plasmaDamage,
-      speed: 45
+      damage: isCharged ? this.plasmaDamage * 3.4 : this.plasmaDamage,
+      speed: isCharged ? 52 : 45,
+      isCharged: isCharged
     };
   }
 

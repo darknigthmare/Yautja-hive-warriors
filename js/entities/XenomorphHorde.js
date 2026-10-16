@@ -13,6 +13,7 @@ export class XenomorphHorde {
     this.acidPools = [];
     this.acidSplashes = [];
     this.zeroGAcidGlobules = [];
+    this.spitterMortars = [];
     this.deadCount = 0;
 
     this.acidSplashMat = new THREE.MeshBasicMaterial({ color: 0x39ff14 });
@@ -270,18 +271,35 @@ export class XenomorphHorde {
       const eggGroup = new THREE.Group();
       eggGroup.position.set(x, 0, z);
 
-      const base = new THREE.Mesh(new THREE.SphereGeometry(0.8, 10, 10), this.eggMat);
-      base.scale.set(0.9, 1.3, 0.9);
-      base.position.y = 0.9;
+      // Leathery veined egg sac base
+      const baseMat = new THREE.MeshStandardMaterial({
+        color: 0x332a1e,
+        roughness: 0.85,
+        metalness: 0.15
+      });
+      const base = new THREE.Mesh(new THREE.SphereGeometry(0.85, 12, 12), baseMat);
+      base.scale.set(0.95, 1.35, 0.95);
+      base.position.y = 1.0;
       eggGroup.add(base);
 
+      // Inner pulsating bioluminescent yolk core (Alien 1979 Kane's scan)
+      const yolkMat = new THREE.MeshBasicMaterial({
+        color: 0x84cc16,
+        transparent: true,
+        opacity: 0.85
+      });
+      const yolkCore = new THREE.Mesh(new THREE.SphereGeometry(0.42, 8, 8), yolkMat);
+      yolkCore.position.y = 1.25;
+      eggGroup.add(yolkCore);
+
       const petals = [];
+      const lipMat = new THREE.MeshStandardMaterial({ color: 0x5b232c, roughness: 0.45 });
       for (let p = 0; p < 4; p++) {
-        const petal = new THREE.Mesh(new THREE.ConeGeometry(0.3, 0.7, 5), this.eggPetalMat);
+        const petal = new THREE.Mesh(new THREE.ConeGeometry(0.32, 0.75, 6), lipMat);
         const petalAngle = (p / 4) * Math.PI * 2;
-        petal.position.set(Math.cos(petalAngle) * 0.35, 1.8, Math.sin(petalAngle) * 0.35);
-        petal.rotation.z = Math.cos(petalAngle) * 0.2;
-        petal.rotation.x = Math.sin(petalAngle) * 0.2;
+        petal.position.set(Math.cos(petalAngle) * 0.38, 1.95, Math.sin(petalAngle) * 0.38);
+        petal.rotation.z = Math.cos(petalAngle) * 0.22;
+        petal.rotation.x = Math.sin(petalAngle) * 0.22;
         eggGroup.add(petal);
         petals.push(petal);
       }
@@ -289,7 +307,10 @@ export class XenomorphHorde {
       this.scene.add(eggGroup);
       this.eggs.push({
         mesh: eggGroup,
+        baseMesh: base,
+        yolkMesh: yolkCore,
         petals,
+        phase: Math.random() * Math.PI * 2,
         isOpen: false,
         hatched: false
       });
@@ -469,6 +490,17 @@ export class XenomorphHorde {
       const dist = a.mesh.position.distanceTo(attack.origin);
 
       if (dist <= attack.radius + (a.radius || 1.0)) {
+        // Chantier 4: Flash-Frozen Instant Shatter (Alien: Romulus 2024 / Alien 3 Canon)
+        if (a.isFlashFrozen) {
+          a.hp = 0; // Shattered into frozen chitin shards!
+          if (this.audioEngine && this.audioEngine.playCryoShatter) {
+            this.audioEngine.playCryoShatter();
+          }
+          if (this.particles && this.particles.emitSparks) {
+            this.particles.emitSparks(a.mesh.position, 28);
+          }
+        }
+
         const damageDealt = a.isTargetPainted ? attack.damage * 1.25 : attack.damage;
         a.hp -= damageDealt;
         const killed = a.hp <= 0;
@@ -623,37 +655,126 @@ export class XenomorphHorde {
     });
   }
 
+  /* Chantier 10: Xenomorph Spitter & Acid Mortar Battery (Aliens: Colonial Marines / Fireteam Elite Lore) */
+  launchSpitterMortar(originPos, targetPos, player) {
+    const group = new THREE.Group();
+    const spawnPos = originPos.clone().add(new THREE.Vector3(0, 1.8, 0));
+    group.position.copy(spawnPos);
+
+    // Glowing acidic mortar payload
+    const outerGeo = new THREE.SphereGeometry(0.38, 10, 10);
+    const outerMat = new THREE.MeshBasicMaterial({ color: 0x39ff14, transparent: true, opacity: 0.85 });
+    const outerSphere = new THREE.Mesh(outerGeo, outerMat);
+    group.add(outerSphere);
+
+    const innerGeo = new THREE.SphereGeometry(0.2, 8, 8);
+    const innerMat = new THREE.MeshBasicMaterial({ color: 0xccff00 });
+    const innerSphere = new THREE.Mesh(innerGeo, innerMat);
+    group.add(innerSphere);
+
+    // Trailing satellite acid droplets
+    for (let d = 0; d < 4; d++) {
+      const drop = new THREE.Mesh(new THREE.SphereGeometry(0.08, 6, 6), outerMat);
+      drop.position.set((Math.random() - 0.5) * 0.35, -0.2 - d * 0.12, (Math.random() - 0.5) * 0.35);
+      group.add(drop);
+    }
+    this.scene.add(group);
+
+    // Telegraph hazard indicator on ground at target zone
+    const target = targetPos.clone().add(new THREE.Vector3((Math.random() - 0.5) * 2.2, 0.04, (Math.random() - 0.5) * 2.2));
+    target.y = 0.04;
+    const ringGeo = new THREE.RingGeometry(0.8, 2.4, 24);
+    ringGeo.rotateX(-Math.PI / 2);
+    const ringMat = new THREE.MeshBasicMaterial({ color: 0xff2200, transparent: true, opacity: 0.55, side: THREE.DoubleSide });
+    const indicatorMesh = new THREE.Mesh(ringGeo, ringMat);
+    indicatorMesh.position.copy(target);
+    this.scene.add(indicatorMesh);
+
+    // Ballistic trajectory: t = 1.8s
+    const t = 1.8;
+    const gravity = 22.0;
+    const dx = target.x - spawnPos.x;
+    const dz = target.z - spawnPos.z;
+    const vx = dx / t;
+    const vz = dz / t;
+    const vy = (target.y - spawnPos.y + 0.5 * gravity * t * t) / t;
+    const vel = new THREE.Vector3(vx, vy, vz);
+
+    if (this.audioEngine && this.audioEngine.playSpitterAcidMortar) {
+      this.audioEngine.playSpitterAcidMortar();
+    }
+
+    this.spitterMortars.push({
+      mesh: group,
+      indicatorMesh: indicatorMesh,
+      vel: vel,
+      gravity: gravity,
+      life: 4.0,
+      targetPos: target,
+      playerRef: player
+    });
+  }
+
   update(delta, player) {
-    // 1. Ovimorph Egg proximity
+    // 1. Ovimorph Egg proximity & Breathing Animation (Alien 1979 / Romulus 2024 Canon)
     this.eggs.forEach(egg => {
-      if (!egg.hatched && egg.mesh.position.distanceTo(player.position) < 7.0) {
+      // Eerie organic breathing pulsation
+      if (!egg.hatched && egg.baseMesh) {
+        const breathe = 1.0 + Math.sin(Date.now() * 0.0035 + egg.phase) * 0.06;
+        egg.baseMesh.scale.set(0.95 * breathe, 1.35 / breathe, 0.95 * breathe);
+        if (egg.yolkMesh) {
+          egg.yolkMesh.material.opacity = 0.6 + Math.sin(Date.now() * 0.005 + egg.phase) * 0.35;
+        }
+      }
+
+      if (!egg.hatched && egg.mesh.position.distanceTo(player.position) < 8.0) {
         if (!egg.isOpen) {
           egg.isOpen = true;
+          // Splay the 4 leathery petals open
           egg.petals.forEach(p => {
-            p.rotation.x *= 2.2;
-            p.rotation.z *= 2.2;
+            p.rotation.x *= 3.2;
+            p.rotation.z *= 3.2;
           });
-          this.audioEngine.playXenoHiss();
+
+          if (this.audioEngine && this.audioEngine.playEggPetalPeel) {
+            this.audioEngine.playEggPetalPeel();
+          } else {
+            this.audioEngine.playXenoHiss();
+          }
+
+          // Release organic spore gas haze
+          if (this.particles && this.particles.emitSparks) {
+            this.particles.emitSparks(egg.mesh.position, 14);
+          }
 
           setTimeout(() => {
             if (this.scene) {
               const facehugger = this.createAlienMesh(true);
               facehugger.position.copy(egg.mesh.position);
-              facehugger.position.y = 0.5;
+              facehugger.position.y = 1.2;
               this.scene.add(facehugger);
+
+              // Direction towards player for explosive spring leap
+              const jumpDir = player.position.clone().sub(egg.mesh.position);
+              jumpDir.y = 0;
+              jumpDir.normalize().multiplyScalar(15.0);
+
               this.aliens.push({
                 mesh: facehugger,
                 type: 'facehugger',
-                hp: 40,
-                maxHp: 40,
-                speed: 17,
+                hp: 45,
+                maxHp: 45,
+                speed: 18,
                 damage: 15,
                 radius: 0.6,
-                isLatched: false
+                isLatched: false,
+                isAirborne: true,
+                airborneVelY: 13.0, // Springs upwards out of the egg!
+                airborneVelHoriz: jumpDir
               });
               egg.hatched = true;
             }
-          }, 800);
+          }, 650);
         }
       }
     });
@@ -753,6 +874,52 @@ export class XenomorphHorde {
       }
     }
 
+    // 3d. Spitter Parabolic Acid Mortar Batteries (Aliens: Colonial Marines Lore)
+    for (let i = this.spitterMortars.length - 1; i >= 0; i--) {
+      const m = this.spitterMortars[i];
+      m.life -= delta;
+      m.vel.y -= m.gravity * delta;
+      m.mesh.position.addScaledVector(m.vel, delta);
+      m.mesh.rotation.x += 10 * delta;
+      m.mesh.rotation.y += 7 * delta;
+
+      // Pulse hazard indicator ring
+      if (m.indicatorMesh) {
+        const pulse = 1.0 + Math.sin(Date.now() * 0.015) * 0.18;
+        m.indicatorMesh.scale.set(pulse, pulse, 1);
+      }
+
+      // Detonation on impact
+      if (m.mesh.position.y <= 0.25 || m.life <= 0) {
+        if (this.audioEngine) {
+          if (this.audioEngine.playAcidBurn) this.audioEngine.playAcidBurn();
+          if (this.audioEngine.playXenoHiss) this.audioEngine.playXenoHiss();
+        }
+        // Explosive acid spray
+        this.spawnAcidSplash(m.mesh.position, m.mesh.position.clone().add(new THREE.Vector3(0, 3, 0)));
+
+        // Large 5.5m Corrodent Acid Pool
+        this.spawnAcidPool(m.mesh.position);
+        this.spawnAcidPool(m.mesh.position.clone().add(new THREE.Vector3(1.4, 0, 0)));
+        this.spawnAcidPool(m.mesh.position.clone().add(new THREE.Vector3(-1.4, 0, 0)));
+        this.spawnAcidPool(m.mesh.position.clone().add(new THREE.Vector3(0, 0, 1.4)));
+        this.spawnAcidPool(m.mesh.position.clone().add(new THREE.Vector3(0, 0, -1.4)));
+
+        // Splash damage to player
+        if (player && m.mesh.position.distanceTo(player.position) < 3.8) {
+          if (player.isBlocking) {
+            player.audioEngine.playShieldBlock();
+          } else {
+            player.takeDamage(36, true);
+          }
+        }
+
+        this.scene.remove(m.mesh);
+        if (m.indicatorMesh) this.scene.remove(m.indicatorMesh);
+        this.spitterMortars.splice(i, 1);
+      }
+    }
+
     // 4. Horde AI (Crusher, Praetorian, Warriors, Facehuggers, Officers)
     this.aliens.forEach(a => {
       if (a.isLatched) return;
@@ -779,6 +946,15 @@ export class XenomorphHorde {
         return; // Helpless while airborne in juggle arc
       }
 
+      // Flash-Frozen Solid State (Cryo Nitrogen Pipe Rupture - Alien: Romulus 2024)
+      if (a.isFlashFrozen) {
+        a.frozenTimer -= delta;
+        if (a.frozenTimer <= 0) {
+          a.isFlashFrozen = false;
+        }
+        return; // Completely frozen solid
+      }
+
       // Netgun Entangled State
       if (a.isNetEntangled) {
         if (a.isNetgunImmune) {
@@ -786,9 +962,19 @@ export class XenomorphHorde {
           a.isNetEntangled = false;
         } else {
           a.netTimer -= delta;
-          a.hp -= 25 * delta; // Razor wire cuts deep!
+          a.hp -= 38 * delta; // Razor wire cuts deep into chitin!
           a.mesh.rotation.y += Math.sin(Date.now() * 0.05) * 0.05;
-          if (a.netTimer <= 0) {
+
+          // Electrical sparks arcing across diamond net wires
+          a.netSparkTimer = (a.netSparkTimer || 0) + delta;
+          if (a.netSparkTimer >= 0.22) {
+            a.netSparkTimer = 0;
+            if (this.particles && this.particles.emitSparks) {
+              this.particles.emitSparks(a.mesh.position, 4);
+            }
+          }
+
+          if (a.netTimer <= 0 || a.hp <= 0) {
             a.isNetEntangled = false;
           }
           return; // Completely immobilized
@@ -864,11 +1050,9 @@ export class XenomorphHorde {
       // Spitter Long-Range Acid Artillery AI (Aliens: Colonial Marines Lore)
       if (a.type === 'spitter') {
         a.spitCooldown -= delta;
-        if (a.spitCooldown <= 0 && dist >= 7.0 && dist <= 26.0) {
-          a.spitCooldown = 3.2;
-          this.audioEngine.playXenoHiss();
-          this.spawnAcidSplash(a.mesh.position, player.position);
-          this.spawnAcidPool(a.mesh.position);
+        if (a.spitCooldown <= 0 && dist >= 8.0 && dist <= 36.0) {
+          a.spitCooldown = 3.6 + Math.random() * 1.5;
+          this.launchSpitterMortar(a.mesh.position, player.position, player);
         }
       }
 
@@ -1060,5 +1244,10 @@ export class XenomorphHorde {
     this.acidSplashes = [];
     this.zeroGAcidGlobules.forEach(g => this.scene.remove(g.mesh));
     this.zeroGAcidGlobules = [];
+    this.spitterMortars.forEach(m => {
+      this.scene.remove(m.mesh);
+      if (m.indicatorMesh) this.scene.remove(m.indicatorMesh);
+    });
+    this.spitterMortars = [];
   }
 }

@@ -469,13 +469,28 @@ class GameApp {
         }
       }
 
-      if (e.code === 'ShiftLeft' && !this.keys['Space']) {
-        this.firePlasmaCannon();
+      if (e.code === 'ShiftLeft' && !this.keys['Space'] && this.player) {
+        if (!this.player.isChargingPlasma) {
+          this.player.isChargingPlasma = true;
+          this.player.plasmaChargeTime = 0;
+          if (this.audio && this.audio.playPlasmaChargeUp) {
+            this.audio.playPlasmaChargeUp();
+          }
+        }
       }
     });
 
     window.addEventListener('keyup', (e) => {
       this.keys[e.code] = false;
+
+      if (e.code === 'ShiftLeft' && this.player && this.player.isChargingPlasma) {
+        const isCharged = this.player.plasmaChargeTime >= 0.55;
+        this.player.isChargingPlasma = false;
+        this.firePlasmaCannon(isCharged);
+        if (isCharged) {
+          this.ui.showAnnouncement('💥 TIR PLASMA SURCHARGÉ DÉCHAÎNÉ : VAPORISATION 10M !');
+        }
+      }
     });
 
     window.addEventListener('mousedown', (e) => {
@@ -734,23 +749,32 @@ class GameApp {
     }
   }
 
-  firePlasmaCannon() {
+  firePlasmaCannon(isCharged = false) {
     if (!this.player) return;
-    const projData = this.player.firePlasmaShot();
+    const projData = this.player.firePlasmaShot(isCharged);
     if (!projData) return;
 
-    const geo = new THREE.SphereGeometry(0.5, 12, 12);
-    const mat = new THREE.MeshBasicMaterial({ color: this.player.laserColorHex || 0x00d2ff });
+    const radius = isCharged ? 1.2 : 0.5;
+    const geo = new THREE.SphereGeometry(radius, 14, 14);
+    const mat = new THREE.MeshBasicMaterial({ color: isCharged ? 0xffffff : (this.player.laserColorHex || 0x00d2ff) });
     const mesh = new THREE.Mesh(geo, mat);
+
+    if (isCharged) {
+      const coronaGeo = new THREE.SphereGeometry(1.65, 10, 10);
+      const coronaMat = new THREE.MeshBasicMaterial({ color: 0x00e5ff, transparent: true, opacity: 0.65 });
+      mesh.add(new THREE.Mesh(coronaGeo, coronaMat));
+    }
+
     mesh.position.copy(projData.position);
     this.renderer.scene.add(mesh);
 
     this.projectiles.push({
       mesh: mesh,
+      isSuperCharged: isCharged,
       direction: projData.direction,
       damage: projData.damage,
-      speed: 45,
-      life: 2.5
+      speed: isCharged ? 52 : 45,
+      life: 2.6
     });
   }
 
@@ -1622,11 +1646,14 @@ class GameApp {
       } else if (p.isCombiStick) {
         p.mesh.position.addScaledVector(p.direction, p.speed * delta);
 
-        const hits = this.horde.checkMeleeHits({ origin: p.mesh.position, radius: 2.2, damage: p.damage });
+        const hits = this.horde.checkMeleeHits({ origin: p.mesh.position, radius: 2.2, damage: p.damage, type: 'combistick' });
         if (hits.length > 0) {
-          hits.forEach(() => {
+          hits.forEach((h) => {
             this.audio.playCombiStickImpale();
             this.particles.emitSparks(p.mesh.position, 8);
+            if (h.killed && this.gore && this.gore.spawnWallPinnedPart) {
+              this.gore.spawnWallPinnedPart(p.mesh.position, p.direction, 'combistick');
+            }
           });
           this.registerHits(hits);
           p.pierceRemaining -= hits.length;
@@ -1686,11 +1713,16 @@ class GameApp {
         p.mesh.position.addScaledVector(p.direction, p.speed * delta);
         p.mesh.lookAt(p.mesh.position.clone().add(p.direction));
 
-        const hits = this.horde.checkMeleeHits({ origin: p.mesh.position, radius: 1.8, damage: p.damage });
+        const hits = this.horde.checkMeleeHits({ origin: p.mesh.position, radius: 1.8, damage: p.damage, type: 'flechette' });
         if (hits.length > 0 || p.life <= 0) {
           if (hits.length > 0) {
             this.audio.playFlechetteImpale();
             this.particles.emitSparks(p.mesh.position, 8);
+            hits.forEach((h) => {
+              if (h.killed && this.gore && this.gore.spawnWallPinnedPart && Math.random() < 0.5) {
+                this.gore.spawnWallPinnedPart(p.mesh.position, p.direction, 'arrow');
+              }
+            });
             this.registerHits(hits);
           }
           this.renderer.scene.remove(p.mesh);
@@ -1699,10 +1731,15 @@ class GameApp {
       } else if (p.isChargedArrow) {
         p.mesh.position.addScaledVector(p.direction, p.speed * delta);
 
-        const hits = this.horde.checkMeleeHits({ origin: p.mesh.position, radius: 2.2, damage: p.damage });
+        const hits = this.horde.checkMeleeHits({ origin: p.mesh.position, radius: 2.2, damage: p.damage, type: 'arrow' });
         if (hits.length > 0) {
           this.audio.playArrowPinImpact();
           this.particles.emitSparks(p.mesh.position, 10);
+          hits.forEach((h) => {
+            if (h.killed && this.gore && this.gore.spawnWallPinnedPart) {
+              this.gore.spawnWallPinnedPart(p.mesh.position, p.direction, 'arrow');
+            }
+          });
           this.registerHits(hits);
           p.pierceRemaining -= hits.length;
         }
@@ -1726,13 +1763,30 @@ class GameApp {
       } else {
         p.mesh.position.addScaledVector(p.direction, p.speed * delta);
 
-        const hits = this.horde.checkMeleeHits({ origin: p.mesh.position, radius: 2.2, damage: p.damage });
-        if (hits.length > 0 || p.life <= 0) {
-          this.particles.emitSparks(p.mesh.position, 10);
-          this.particles.spawnPlasmaScorch(p.mesh.position);
-          this.renderer.scene.remove(p.mesh);
-          this.projectiles.splice(i, 1);
-          if (hits.length > 0) this.registerHits(hits);
+        if (p.isSuperCharged) {
+          p.mesh.rotation.x += 12 * delta;
+          p.mesh.rotation.y += 12 * delta;
+          if (this.particles) this.particles.emitSparks(p.mesh.position, 2);
+
+          const hits = this.horde.checkMeleeHits({ origin: p.mesh.position, radius: 8.5, damage: p.damage, type: 'heavy' });
+          if (hits.length > 0 || p.life <= 0) {
+            this.particles.emitSparks(p.mesh.position, 35);
+            this.particles.spawnPlasmaScorch(p.mesh.position);
+            this.triggerCameraShake(1.0, 0.45);
+            if (this.audio && this.audio.playC6CataclysmBoom) this.audio.playC6CataclysmBoom();
+            this.renderer.scene.remove(p.mesh);
+            this.projectiles.splice(i, 1);
+            if (hits.length > 0) this.registerHits(hits);
+          }
+        } else {
+          const hits = this.horde.checkMeleeHits({ origin: p.mesh.position, radius: 2.2, damage: p.damage });
+          if (hits.length > 0 || p.life <= 0) {
+            this.particles.emitSparks(p.mesh.position, 10);
+            this.particles.spawnPlasmaScorch(p.mesh.position);
+            this.renderer.scene.remove(p.mesh);
+            this.projectiles.splice(i, 1);
+            if (hits.length > 0) this.registerHits(hits);
+          }
         }
       }
     }
@@ -1827,6 +1881,13 @@ class GameApp {
           tagElem.style.color = '#00d2ff';
         }
       }
+    }
+
+    // Update Plasma Caster Charging State & Tri-Laser Convergence (Predator 1987)
+    if (this.player && this.player.isChargingPlasma) {
+      this.player.plasmaChargeTime += delta;
+      const targetPos = this.player.targetLockEnemy && this.player.targetLockEnemy.mesh ? this.player.targetLockEnemy.mesh.position : null;
+      this.player.updateLaserLock(targetPos);
     }
 
     // Dynamic Tug-of-War Morale update (Alien pressure slowly regains ground if Yautja is idle)

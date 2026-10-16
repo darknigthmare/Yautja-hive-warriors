@@ -257,14 +257,17 @@ export class WeatherSystem {
     this.pipes.forEach(p => this.scene.remove(p.mesh));
     this.pipes = [];
 
-    const bandMat = new THREE.MeshBasicMaterial({ color: 0x111111 }); // Black hazard stripes
+    const methaneMat = new THREE.MeshStandardMaterial({ color: 0xef4444, metalness: 0.8, roughness: 0.3 }); // Red Methane
+    const cryoMat = new THREE.MeshStandardMaterial({ color: 0x38bdf8, metalness: 0.9, roughness: 0.15 }); // Cyan Cryo Nitrogen
     const flangeMat = new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.9, roughness: 0.2 });
+    const frostMat = new THREE.MeshBasicMaterial({ color: 0xe0f2fe });
 
     for (let i = 0; i < count; i++) {
+      const isCryo = i % 2 === 0;
       const group = new THREE.Group();
 
       const geo = new THREE.CylinderGeometry(0.5, 0.5, 6, 8);
-      const mainPipe = new THREE.Mesh(geo, this.pipeMat);
+      const mainPipe = new THREE.Mesh(geo, isCryo ? cryoMat : methaneMat);
       group.add(mainPipe);
 
       // Flange rings at top, center and bottom
@@ -274,9 +277,9 @@ export class WeatherSystem {
         group.add(flange);
       });
 
-      // Hazard warning black bands
+      // Hazard warning bands (Frost white for cryo, black for methane)
       [-1.3, 1.3].forEach(y => {
-        const band = new THREE.Mesh(new THREE.CylinderGeometry(0.52, 0.52, 0.35, 8), bandMat);
+        const band = new THREE.Mesh(new THREE.CylinderGeometry(0.52, 0.52, 0.35, 8), isCryo ? frostMat : new THREE.MeshBasicMaterial({ color: 0x111111 }));
         band.position.y = y;
         group.add(band);
       });
@@ -286,6 +289,7 @@ export class WeatherSystem {
 
       this.pipes.push({
         mesh: group,
+        type: isCryo ? 'cryo' : 'methane',
         hp: 50,
         pos: group.position.clone()
       });
@@ -296,37 +300,89 @@ export class WeatherSystem {
     for (let i = this.pipes.length - 1; i >= 0; i--) {
       const pipe = this.pipes[i];
       if (attackPos.distanceTo(pipe.pos) < radius) {
-        // Trigger fiery methane / gas explosion fireball!
-        particleSystem.emitSparks(pipe.pos, 45);
-
-        // Visual expanding orange-red fireball
-        const fireballGeo = new THREE.SphereGeometry(2.0, 10, 10);
-        const fireballMat = new THREE.MeshBasicMaterial({
-          color: 0xff3300,
-          transparent: true,
-          opacity: 0.85
-        });
-        const fireball = new THREE.Mesh(fireballGeo, fireballMat);
-        fireball.position.copy(pipe.pos);
-        this.scene.add(fireball);
-
-        let scale = 1.0;
-        const fireAnim = setInterval(() => {
-          scale += 0.8;
-          fireball.scale.set(scale, scale, scale);
-          fireball.material.opacity -= 0.12;
-          if (fireball.material.opacity <= 0) {
-            clearInterval(fireAnim);
-            this.scene.remove(fireball);
+        if (pipe.type === 'cryo') {
+          // Sub-Zero Liquid Nitrogen Blast (Alien: Romulus 2024 / Alien 3 Canon)
+          if (this.audioEngine && this.audioEngine.playCryoVentHiss) {
+            this.audioEngine.playCryoVentHiss();
           }
-        }, 30);
 
-        this.scene.remove(pipe.mesh);
-        this.pipes.splice(i, 1);
+          particleSystem.emitSparks(pipe.pos, 35);
 
-        // Wipe nearby Xenomorphs in 15m radius
-        const expAttack = { origin: pipe.pos, radius: 15, damage: 850 };
-        horde.checkMeleeHits(expAttack);
+          // Expanding Frost Vapor Sphere
+          const cryoCloudGeo = new THREE.SphereGeometry(2.5, 12, 12);
+          const cryoCloudMat = new THREE.MeshBasicMaterial({
+            color: 0x93c5fd,
+            transparent: true,
+            opacity: 0.85,
+            blending: THREE.AdditiveBlending
+          });
+          const cryoCloud = new THREE.Mesh(cryoCloudGeo, cryoCloudMat);
+          cryoCloud.position.copy(pipe.pos);
+          this.scene.add(cryoCloud);
+
+          let scale = 1.0;
+          const cryoAnim = setInterval(() => {
+            scale += 0.9;
+            cryoCloud.scale.set(scale, scale, scale);
+            cryoCloud.material.opacity -= 0.1;
+            if (cryoCloud.material.opacity <= 0) {
+              clearInterval(cryoAnim);
+              this.scene.remove(cryoCloud);
+            }
+          }, 35);
+
+          this.scene.remove(pipe.mesh);
+          this.pipes.splice(i, 1);
+
+          // Flash-Freeze all Xenomorphs in 9.5m radius
+          if (horde && horde.aliens) {
+            horde.aliens.forEach(a => {
+              if (a.mesh.position.distanceTo(pipe.pos) <= 9.5) {
+                a.isFlashFrozen = true;
+                a.frozenTimer = 6.0;
+                a.mesh.traverse(child => {
+                  if (child.isMesh && child.material) {
+                    child.material = child.material.clone();
+                    child.material.color.setHex(0xa5f3fc); // Frosted ice statue
+                    child.material.roughness = 0.1;
+                  }
+                });
+              }
+            });
+          }
+        } else {
+          // Methane Fireball Explosion
+          particleSystem.emitSparks(pipe.pos, 45);
+
+          // Visual expanding orange-red fireball
+          const fireballGeo = new THREE.SphereGeometry(2.0, 10, 10);
+          const fireballMat = new THREE.MeshBasicMaterial({
+            color: 0xff3300,
+            transparent: true,
+            opacity: 0.85
+          });
+          const fireball = new THREE.Mesh(fireballGeo, fireballMat);
+          fireball.position.copy(pipe.pos);
+          this.scene.add(fireball);
+
+          let scale = 1.0;
+          const fireAnim = setInterval(() => {
+            scale += 0.8;
+            fireball.scale.set(scale, scale, scale);
+            fireball.material.opacity -= 0.12;
+            if (fireball.material.opacity <= 0) {
+              clearInterval(fireAnim);
+              this.scene.remove(fireball);
+            }
+          }, 30);
+
+          this.scene.remove(pipe.mesh);
+          this.pipes.splice(i, 1);
+
+          // Wipe nearby Xenomorphs in 15m radius
+          const expAttack = { origin: pipe.pos, radius: 15, damage: 850 };
+          horde.checkMeleeHits(expAttack);
+        }
       }
     }
   }
