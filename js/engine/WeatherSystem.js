@@ -6,6 +6,7 @@ export class WeatherSystem {
   constructor(scene) {
     this.scene = scene;
     this.pipes = [];
+    this.steamVents = [];
     this.weatherType = 'none';
     this.weatherParticles = null;
     this.particlePositions = null;
@@ -169,12 +170,12 @@ export class WeatherSystem {
     this.scene.add(this.weatherParticles);
   }
 
-  update(delta, playerPos, renderer, audioEngine) {
-    if (!this.weatherParticles || !this.particlePositions) return;
-
+  update(delta, playerPos, renderer, audioEngine, horde) {
     this.timeAccumulator += delta;
-    const pos = this.particlePositions;
-    const center = playerPos || new THREE.Vector3(0, 0, 0);
+
+    if (this.weatherParticles && this.particlePositions) {
+      const pos = this.particlePositions;
+      const center = playerPos || new THREE.Vector3(0, 0, 0);
 
     if (this.weatherType === 'rain' || this.weatherType === 'storm') {
       const isStorm = this.weatherType === 'storm';
@@ -239,7 +240,51 @@ export class WeatherSystem {
       }
     }
 
-    this.weatherParticles.geometry.attributes.position.needsUpdate = true;
+    if (this.weatherParticles && this.weatherParticles.geometry) {
+      this.weatherParticles.geometry.attributes.position.needsUpdate = true;
+    }
+  }
+
+    // Chantier 2: Update Geothermal High-Pressure Steam Geysers
+    for (let i = 0; i < this.steamVents.length; i++) {
+      const v = this.steamVents[i];
+      if (!v.isErupting) {
+        v.cycleTimer -= delta;
+        if (v.cycleTimer <= 0) {
+          v.isErupting = true;
+          v.eruptDuration = 2.4;
+          v.cycleTimer = 5.0 + Math.random() * 4.5;
+          if (audioEngine && audioEngine.playSteamVentHiss) {
+            audioEngine.playSteamVentHiss();
+          }
+        }
+      } else {
+        v.eruptDuration -= delta;
+        const progress = v.eruptDuration / 2.4;
+        v.steamMesh.material.opacity = Math.sin((1.0 - progress) * Math.PI) * 0.75;
+        const puff = 1.0 + Math.sin(progress * 16) * 0.15;
+        v.steamMesh.scale.set(puff, 1.0 + (1.0 - progress) * 0.35, puff);
+
+        // Scald & Launch Xenomorphs
+        if (horde && horde.aliens) {
+          horde.aliens.forEach(a => {
+            if (a.hp > 0 && a.mesh.position.distanceTo(v.pos) <= 2.5) {
+              a.hp -= 95 * delta;
+              if (a.type === 'facehugger') a.hp = 0;
+              if (!a.isAirborne && Math.random() < 0.25) {
+                a.isAirborne = true;
+                a.airborneVelY = 14.0;
+              }
+            }
+          });
+        }
+
+        if (v.eruptDuration <= 0) {
+          v.isErupting = false;
+          v.steamMesh.material.opacity = 0;
+        }
+      }
+    }
   }
 
   clear() {
@@ -251,6 +296,52 @@ export class WeatherSystem {
     }
     this.pipes.forEach(p => this.scene.remove(p.mesh));
     this.pipes = [];
+    this.steamVents.forEach(v => this.scene.remove(v.group));
+    this.steamVents = [];
+  }
+
+  /* Chantier 2: Geothermal High-Pressure Steam Geysers & Thermal Vents */
+  spawnSteamVents(count = 5) {
+    this.steamVents.forEach(v => this.scene.remove(v.group));
+    this.steamVents = [];
+
+    const ventMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.85, roughness: 0.3 });
+    const grateMat = new THREE.MeshBasicMaterial({ color: 0xf59e0b, wireframe: true });
+    const steamMat = new THREE.MeshBasicMaterial({ color: 0xf1f5f9, transparent: true, opacity: 0, side: THREE.DoubleSide });
+
+    for (let i = 0; i < count; i++) {
+      const group = new THREE.Group();
+      const angle = (i / count) * Math.PI * 2 + Math.random() * 0.4;
+      const radius = 16 + Math.random() * 22;
+      const x = Math.cos(angle) * radius;
+      const z = Math.sin(angle) * radius;
+      group.position.set(x, 0.05, z);
+
+      // Scorched metal circular collar
+      const rim = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 1.8, 0.2, 12), ventMat);
+      group.add(rim);
+
+      // Glowing heat grate
+      const grate = new THREE.Mesh(new THREE.CircleGeometry(1.4, 8), grateMat);
+      grate.rotation.x = -Math.PI / 2;
+      grate.position.y = 0.11;
+      group.add(grate);
+
+      // High-pressure steam plume cone
+      const plume = new THREE.Mesh(new THREE.ConeGeometry(1.6, 8.5, 12, 1, true), steamMat.clone());
+      plume.position.y = 4.25;
+      group.add(plume);
+
+      this.scene.add(group);
+      this.steamVents.push({
+        group: group,
+        steamMesh: plume,
+        pos: new THREE.Vector3(x, 0, z),
+        cycleTimer: 1.5 + Math.random() * 5.0,
+        isErupting: false,
+        eruptDuration: 0
+      });
+    }
   }
 
   spawnGasPipes(count = 6) {
@@ -385,5 +476,16 @@ export class WeatherSystem {
         }
       }
     }
+  }
+
+  clear() {
+    if (this.weatherParticles) {
+      this.scene.remove(this.weatherParticles);
+      if (this.weatherParticles.geometry) this.weatherParticles.geometry.dispose();
+      if (this.weatherParticles.material) this.weatherParticles.material.dispose();
+      this.weatherParticles = null;
+    }
+    this.pipes.forEach(p => this.scene.remove(p.mesh));
+    this.pipes = [];
   }
 }

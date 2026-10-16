@@ -2489,6 +2489,159 @@ export class AudioEngine {
     whistleOsc.start(now + 0.1);
     whistleOsc.stop(now + 0.45);
   }
+
+  /* Chantier 7: Web Audio Synthesizers for v39.0 Expansion */
+
+  // 1. Iaijutsu Ultrasonic Steel Slice (Predators Hanzo / Yautja Dah'dt'de ceremonial katana)
+  playIaijutsuSlice() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // High unsheathing scrape
+    const scrapeOsc = this.ctx.createOscillator();
+    const scrapeGain = this.ctx.createGain();
+    scrapeOsc.type = 'sawtooth';
+    scrapeOsc.frequency.setValueAtTime(3200, now);
+    scrapeOsc.frequency.exponentialRampToValueAtTime(1400, now + 0.08);
+    scrapeGain.gain.setValueAtTime(0.5, now);
+    scrapeGain.gain.exponentialRampToValueAtTime(0.01, now + 0.09);
+    scrapeOsc.connect(scrapeGain);
+    scrapeGain.connect(this.ctx.destination);
+    scrapeOsc.start(now);
+    scrapeOsc.stop(now + 0.09);
+
+    // Resonant singing steel blade tone
+    const singOsc = this.ctx.createOscillator();
+    const singGain = this.ctx.createGain();
+    singOsc.type = 'sine';
+    singOsc.frequency.setValueAtTime(880, now + 0.02);
+    singOsc.frequency.exponentialRampToValueAtTime(440, now + 0.55);
+    singGain.gain.setValueAtTime(0.65, now + 0.02);
+    singGain.gain.exponentialRampToValueAtTime(0.005, now + 0.55);
+    singOsc.connect(singGain);
+    singGain.connect(this.ctx.destination);
+    singOsc.start(now + 0.02);
+    singOsc.stop(now + 0.55);
+  }
+
+  // 2. High-Pressure Geothermal Steam Geyser Vent
+  playSteamVentHiss() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+    const bufSize = Math.floor(this.ctx.sampleRate * 0.45);
+    const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (this.ctx.sampleRate * 0.25));
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buf;
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(2400, now);
+    filter.Q.setValueAtTime(3.0, now);
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.75, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.ctx.destination);
+    noise.start(now);
+  }
+
+  // 3. USCM Radio Chirp & Phosphorus Flare Pop
+  playRadioDistressBeacon() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Squelch pop
+    const popOsc = this.ctx.createOscillator();
+    const popGain = this.ctx.createGain();
+    popOsc.type = 'sine';
+    popOsc.frequency.setValueAtTime(1400, now);
+    popOsc.frequency.exponentialRampToValueAtTime(240, now + 0.06);
+    popGain.gain.setValueAtTime(0.7, now);
+    popGain.gain.exponentialRampToValueAtTime(0.01, now + 0.06);
+    popOsc.connect(popGain);
+    popGain.connect(this.ctx.destination);
+    popOsc.start(now);
+    popOsc.stop(now + 0.06);
+
+    // High radio beacon two-tone chirp
+    [0.08, 0.16].forEach((delay, idx) => {
+      const chirp = this.ctx.createOscillator();
+      const cGain = this.ctx.createGain();
+      chirp.type = 'square';
+      chirp.frequency.setValueAtTime(idx === 0 ? 1760 : 2349, now + delay);
+      cGain.gain.setValueAtTime(0.25, now + delay);
+      cGain.gain.exponentialRampToValueAtTime(0.01, now + delay + 0.06);
+      chirp.connect(cGain);
+      cGain.connect(this.ctx.destination);
+      chirp.start(now + delay);
+      chirp.stop(now + delay + 0.06);
+    });
+  }
+
+  // 4. Yautja Anti-Gravity Field Pulsing Hum
+  playAntiGravHum() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(95, now);
+    osc.frequency.linearRampToValueAtTime(160, now + 0.25);
+    osc.frequency.linearRampToValueAtTime(80, now + 0.6);
+
+    gain.gain.setValueAtTime(0.65, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.65);
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.65);
+  }
+
+  // 5. Molecular Acid Sizzling into Metallic Decking
+  playAcidFloorHiss() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+    const bufSize = Math.floor(this.ctx.sampleRate * 0.35);
+    const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * (i % 8 === 0 ? 1.0 : 0.3);
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buf;
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'highpass';
+    filter.frequency.setValueAtTime(3200, now);
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.45, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.ctx.destination);
+    noise.start(now);
+  }
+
+  // 6. Boss Phase Shift / Enrage Cavernous Roar
+  playBossPhaseRoar() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(110, now);
+    osc.frequency.exponentialRampToValueAtTime(55, now + 0.8);
+
+    gain.gain.setValueAtTime(0.85, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.95);
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.95);
+  }
 }
 
 

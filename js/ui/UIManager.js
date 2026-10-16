@@ -133,7 +133,7 @@ export class UIManager {
     });
   }
 
-  updateHUD(player, horde, bossManager, waveIndex, totalWaves, score) {
+  updateHUD(player, horde, bossManager, waveIndex, totalWaves, score, factions = {}) {
     // Player HP
     const hpPct = Math.max(0, (player.hp / player.maxHp) * 100);
     this.hudHpFill.style.width = `${hpPct}%`;
@@ -155,11 +155,67 @@ export class UIManager {
     this.hudLevelName.innerText = this.selectedLevel.name;
     this.hudWaveCounter.innerText = `VAGUE ${waveIndex}/${totalWaves}`;
 
-    // Render Minimap
-    this.renderMinimap(player, horde, bossManager);
+    // Chantier 1: Grand Musou Boss Health Gauge
+    const bossContainer = document.getElementById('hud-boss-container');
+    if (bossContainer) {
+      if (bossManager && bossManager.activeBoss && bossManager.activeBoss.hp > 0) {
+        bossContainer.classList.remove('hidden');
+        const b = bossManager.activeBoss;
+        const bPct = Math.max(0, Math.min(100, (b.hp / b.maxHp) * 100));
+
+        const bossFill = document.getElementById('hud-boss-hp-fill');
+        const bossText = document.getElementById('hud-boss-hp-text');
+        const bossName = document.getElementById('hud-boss-name');
+        const bossIcon = document.getElementById('hud-boss-icon');
+        const bossBadge = document.getElementById('hud-boss-badge');
+
+        if (bossFill) bossFill.style.width = `${bPct}%`;
+        if (bossText) bossText.innerText = `${Math.ceil(b.hp)} / ${b.maxHp} HP (${Math.ceil(bPct)}%)`;
+
+        let title = 'REINE XÉNOMORPHE DE LA RUCHE';
+        let icon = '👑';
+        if (b.type === 'empress_matriarch') {
+          title = 'MATRIARCHE VOLANTE EMPRESS (ALIENS: ROGUE)';
+          icon = '🦇';
+        } else if (b.type === 'imperial_queen') {
+          title = 'REINE IMPÉRIALE DE LA RUCHE (GENOCIDE)';
+          icon = '👑';
+        } else if (b.type === 'the_offspring') {
+          title = 'HYBRIDE MAUDIT Z-01 : THE OFFSPRING (ROMULUS)';
+          icon = '🧬';
+        } else if (b.type === 'predalien_queen') {
+          title = 'ABOMINATION PREDALIEN MATRIARCHE (AVP: REQUIEM)';
+          icon = '💀';
+        }
+
+        if (bossName) bossName.innerText = title;
+        if (bossIcon) bossIcon.innerText = icon;
+
+        if (bossBadge) {
+          if (b.isStunned) {
+            bossBadge.innerText = '💥 ÉTOURDI — EXÉCUTION SPIDERIP [E] !';
+            bossBadge.style.color = '#ff3300';
+            bossBadge.style.borderColor = '#ff3300';
+          } else if (bPct < 45) {
+            bossBadge.innerText = b.type === 'predalien_queen' ? '🩸 FRÉNÉSIE DE PONTE ACTIVE !' : '🔥 ÉTAT ENRAGÉ DÉCHAÎNÉ (<45%) !';
+            bossBadge.style.color = '#ef4444';
+            bossBadge.style.borderColor = '#ef4444';
+          } else {
+            bossBadge.innerText = 'PHASE 1 : GESTANTE ACTIVE';
+            bossBadge.style.color = '#fef08a';
+            bossBadge.style.borderColor = '#facc15';
+          }
+        }
+      } else {
+        bossContainer.classList.add('hidden');
+      }
+    }
+
+    // Chantier 8: Render Multi-Faction Minimap
+    this.renderMinimap(player, horde, bossManager, factions);
   }
 
-  renderMinimap(player, horde, bossManager) {
+  renderMinimap(player, horde, bossManager, factions = {}) {
     if (!this.minimapCtx) return;
     const ctx = this.minimapCtx;
     const w = this.minimapCanvas.width;
@@ -171,35 +227,119 @@ export class UIManager {
     const cx = w / 2;
     const cy = h / 2;
 
-    // Draw Xenomorph Horde Dots
+    // 1. Draw Xenomorph Horde Dots (Red)
     ctx.fillStyle = '#ff1a1a';
     horde.aliens.forEach(xeno => {
       const relX = (xeno.mesh.position.x - player.position.x) * scale;
       const relZ = (xeno.mesh.position.z - player.position.z) * scale;
       if (Math.abs(relX) < cx && Math.abs(relZ) < cy) {
         ctx.beginPath();
-        ctx.arc(cx + relX, cy + relZ, 2.5, 0, Math.PI * 2);
+        ctx.arc(cx + relX, cy + relZ, xeno.isOfficer ? 3.5 : 2.0, 0, Math.PI * 2);
         ctx.fill();
       }
     });
 
-    // Draw Active Boss Dot
+    // 2. USCM Colonial Marines (Cobalt Blue)
+    if (factions.marines && factions.marines.squad) {
+      ctx.fillStyle = '#3b82f6';
+      factions.marines.squad.forEach(m => {
+        if (m.hp > 0 && m.mesh) {
+          const relX = (m.mesh.position.x - player.position.x) * scale;
+          const relZ = (m.mesh.position.z - player.position.z) * scale;
+          if (Math.abs(relX) < cx && Math.abs(relZ) < cy) {
+            ctx.beginPath();
+            ctx.arc(cx + relX, cy + relZ, 2.5, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+      });
+    }
+
+    // 3. Yautja Clan Allies (Cyan)
+    if (factions.allies && factions.allies.squad) {
+      ctx.fillStyle = '#06b6d4';
+      factions.allies.squad.forEach(a => {
+        if (a.hp > 0 && a.mesh) {
+          const relX = (a.mesh.position.x - player.position.x) * scale;
+          const relZ = (a.mesh.position.z - player.position.z) * scale;
+          if (Math.abs(relX) < cx && Math.abs(relZ) < cy) {
+            ctx.beginPath();
+            ctx.arc(cx + relX, cy + relZ, 3.0, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+      });
+    }
+
+    // 4. Weyland-Yutani Synthetics (Clinical White)
+    if (factions.synthetics && factions.synthetics.synthetics) {
+      ctx.fillStyle = '#f8fafc';
+      factions.synthetics.synthetics.forEach(s => {
+        if (s.hp > 0 && s.mesh) {
+          const relX = (s.mesh.position.x - player.position.x) * scale;
+          const relZ = (s.mesh.position.z - player.position.z) * scale;
+          if (Math.abs(relX) < cx && Math.abs(relZ) < cy) {
+            ctx.beginPath();
+            ctx.arc(cx + relX, cy + relZ, 2.2, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+      });
+    }
+
+    // 5. Bad Blood Renegade Yautja (Crimson & Purple pulsating skull)
+    if (factions.badBlood && factions.badBlood.isActive && factions.badBlood.badBlood) {
+      const bb = factions.badBlood.badBlood;
+      const relX = (bb.mesh.position.x - player.position.x) * scale;
+      const relZ = (bb.mesh.position.z - player.position.z) * scale;
+      if (Math.abs(relX) < cx && Math.abs(relZ) < cy) {
+        ctx.fillStyle = '#dc2626';
+        ctx.beginPath();
+        ctx.arc(cx + relX, cy + relZ, 5.0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#c084fc';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+    }
+
+    // 6. Draw Active Boss Dot (Gold with glowing aura ring)
     if (bossManager.activeBoss) {
       const boss = bossManager.activeBoss;
       const relX = (boss.mesh.position.x - player.position.x) * scale;
       const relZ = (boss.mesh.position.z - player.position.z) * scale;
 
-      ctx.fillStyle = '#ffb703';
-      ctx.beginPath();
-      ctx.arc(cx + relX, cy + relZ, 6, 0, Math.PI * 2);
-      ctx.fill();
+      if (Math.abs(relX) < cx && Math.abs(relZ) < cy) {
+        // Outer pulsing ring
+        const pulse = 7.0 + Math.sin(Date.now() * 0.008) * 2.0;
+        ctx.strokeStyle = '#f59e0b';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(cx + relX, cy + relZ, pulse, 0, Math.PI * 2);
+        ctx.stroke();
+
+        ctx.fillStyle = '#fbbf24';
+        ctx.beginPath();
+        ctx.arc(cx + relX, cy + relZ, 5.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
     }
 
-    // Draw Player Dot (Green)
-    ctx.fillStyle = '#39ff14';
+    // 7. Draw Player Dot (Green) & Direction Cone
+    ctx.fillStyle = '#22c55e';
     ctx.beginPath();
     ctx.arc(cx, cy, 4, 0, Math.PI * 2);
     ctx.fill();
+
+    // Direction arrow
+    const pRot = player.rotationY || 0;
+    const dirLen = 8;
+    ctx.strokeStyle = '#22c55e';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + Math.sin(pRot) * dirLen, cy + Math.cos(pRot) * dirLen);
+    ctx.stroke();
   }
 
   showCombo(count) {

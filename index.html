@@ -273,6 +273,23 @@
         </div>
       </div>
 
+      <!-- Chantier 1: Grand Musou Boss Health Gauge & Phase Badges -->
+      <div id="hud-boss-container" class="boss-hud-container hidden">
+        <div class="boss-header-row">
+          <span id="hud-boss-icon" class="boss-icon">👑</span>
+          <div class="boss-info-col">
+            <div class="boss-title-row">
+              <span id="hud-boss-name" class="boss-name">REINE XÉNOMORPHE IMPÉRIALE</span>
+              <span id="hud-boss-badge" class="boss-state-badge">PHASE 1 : GESTANTE</span>
+            </div>
+            <div class="boss-bar-bg">
+              <div id="hud-boss-hp-fill" class="boss-hp-fill" style="width: 100%;"></div>
+              <span id="hud-boss-hp-text" class="boss-hp-label">8000 / 8000 HP (100%)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="hud-top-right">
         <div class="minimap-card glass-panel">
           <div class="minimap-header">
@@ -281,9 +298,11 @@
           </div>
           <canvas id="minimap-canvas" width="160" height="160"></canvas>
           <div class="minimap-legend">
-            <span>🟢 Yautja</span>
-            <span>🔴 Kainde Amedha</span>
-            <span>👑 Matriarche</span>
+            <span>🟢 Clan</span>
+            <span>🔴 Xéno</span>
+            <span>🔵 USCM</span>
+            <span>⚪ Synth</span>
+            <span>💀 BadBlood</span>
           </div>
         </div>
       </div>

@@ -1215,19 +1215,51 @@ export class XenomorphHorde {
 
     const targetPos = (targetOrPos && targetOrPos.position) ? targetOrPos.position : (targetOrPos || pos);
 
-    // Blast damage in 8.0m radius
+    // Expanding fluorescent green rupture shockwave
+    const shockGeo = new THREE.SphereGeometry(1.8, 12, 12);
+    const shockMat = new THREE.MeshBasicMaterial({ color: 0x39ff14, transparent: true, opacity: 0.85, wireframe: true });
+    const shockMesh = new THREE.Mesh(shockGeo, shockMat);
+    shockMesh.position.copy(pos).add(new THREE.Vector3(0, 1.0, 0));
+    this.scene.add(shockMesh);
+
+    let shockScale = 1.0;
+    const sAnim = setInterval(() => {
+      shockScale += 0.55;
+      shockMesh.scale.set(shockScale, shockScale, shockScale);
+      shockMesh.material.opacity -= 0.12;
+      if (shockMesh.material.opacity <= 0) {
+        clearInterval(sAnim);
+        this.scene.remove(shockMesh);
+      }
+    }, 30);
+
+    // Blast damage in 8.5m radius to player
     if (targetOrPos && targetOrPos.takeDamage) {
-      if (targetPos.distanceTo(pos) <= 8.0) {
+      if (targetPos.distanceTo(pos) <= 8.5) {
         if (targetOrPos.isBlocking) {
           targetOrPos.audioEngine.playShieldBlock();
         } else {
-          targetOrPos.takeDamage(75);
+          targetOrPos.takeDamage(75, true);
         }
       }
     }
 
-    // 5 flying acid droplets and large acid pool
+    // Friendly-fire molecular dissolution of adjacent Xenomorphs
+    this.aliens.forEach(otherAlien => {
+      if (otherAlien.hp > 0 && otherAlien.mesh.position.distanceTo(pos) <= 8.0) {
+        otherAlien.hp -= 320;
+      }
+    });
+
+    // Deep caustic floor slag decal (Chantier 6)
+    if (this.goreEngine && this.goreEngine.spawnAcidSlagDecal) {
+      this.goreEngine.spawnAcidSlagDecal(pos, 3.2, this.audioEngine);
+    }
+
+    // 8 flying acid droplets and large acid pool
     this.spawnAcidSplash(pos, targetPos);
+    this.spawnAcidSplash(pos, pos.clone().add(new THREE.Vector3(3, 0, 0)));
+    this.spawnAcidSplash(pos, pos.clone().add(new THREE.Vector3(-3, 0, 0)));
     this.spawnAcidPool(pos);
   }
 

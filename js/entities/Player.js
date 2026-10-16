@@ -58,6 +58,8 @@ export class Player {
     this.compoundBowCooldown = 0;
     this.holoDecoyCooldown = 0;
     this.plasmaGlaiveCooldown = 0;
+    this.iaijutsuCooldown = 0;
+    this.antiGravCooldown = 0;
     this.isPlasmaGlaiveActive = false;
     this.plasmaGlaiveDuration = 0;
     this.plasmaGlaiveMesh = null;
@@ -1057,6 +1059,125 @@ export class Player {
     return true;
   }
 
+  /* Chantier 3: Yautja Ceremonial Katana Dah'dt'de Iaijutsu Ultrasonic Slash (Predators 2010 Canon) */
+  performIaijutsuSlash(horde, synthetics, bosses, particles) {
+    if (this.iaijutsuCooldown > 0 || this.isFacehuggerLatched) return null;
+    this.iaijutsuCooldown = 3.5;
+
+    if (this.audioEngine && this.audioEngine.playIaijutsuSlice) {
+      this.audioEngine.playIaijutsuSlice();
+    }
+
+    const fwd = new THREE.Vector3(Math.sin(this.rotationY), 0, Math.cos(this.rotationY)).normalize();
+    const dashDist = 8.5;
+    const startPos = this.position.clone();
+    const endPos = this.position.clone().addScaledVector(fwd, dashDist);
+
+    // Instant forward dash
+    this.position.copy(endPos);
+    this.mesh.position.copy(endPos);
+
+    // Crescent light blade sweep mesh
+    const arcGeo = new THREE.TorusGeometry(3.2, 0.08, 4, 24, Math.PI / 1.3);
+    const arcMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.9 });
+    const arcMesh = new THREE.Mesh(arcGeo, arcMat);
+    arcMesh.position.copy(startPos.clone().add(endPos).multiplyScalar(0.5)).add(new THREE.Vector3(0, 1.4, 0));
+    arcMesh.rotation.x = Math.PI / 2;
+    arcMesh.rotation.z = -this.rotationY;
+    this.scene.add(arcMesh);
+
+    let fadeTimer = 0.25;
+    const fadeAnim = setInterval(() => {
+      fadeTimer -= 0.05;
+      arcMesh.material.opacity = fadeTimer / 0.25;
+      if (fadeTimer <= 0) {
+        clearInterval(fadeAnim);
+        this.scene.remove(arcMesh);
+      }
+    }, 50);
+
+    // Corridor strike hit check
+    const midPoint = startPos.clone().add(endPos).multiplyScalar(0.5);
+    const strikeAttack = {
+      origin: midPoint,
+      radius: 5.5,
+      damage: 420,
+      type: 'heavy'
+    };
+
+    const hits = horde.checkMeleeHits(strikeAttack);
+    if (synthetics) synthetics.checkHits(strikeAttack);
+    if (bosses && bosses.activeBoss && bosses.activeBoss.mesh.position.distanceTo(midPoint) <= 6.0) {
+      bosses.takeDamage(420);
+    }
+
+    if (particles) {
+      particles.emitSparks(endPos, 20);
+    }
+
+    return hits;
+  }
+
+  /* Chantier 5: Yautja Anti-Grav Disruptor & Levitation Field (AvP / Concrete Jungle Canon) */
+  deployAntiGravDisruptor(horde, synthetics, particles) {
+    if (this.antiGravCooldown > 0 || this.isFacehuggerLatched) return false;
+    this.antiGravCooldown = 14.0;
+
+    if (this.audioEngine && this.audioEngine.playAntiGravHum) {
+      this.audioEngine.playAntiGravHum();
+    }
+
+    const pos = this.position.clone().add(new THREE.Vector3(0, 1.2, 0));
+    const group = new THREE.Group();
+    group.position.copy(pos);
+
+    // Gravity core
+    const coreGeo = new THREE.SphereGeometry(0.45, 10, 10);
+    const coreMat = new THREE.MeshBasicMaterial({ color: 0x818cf8, wireframe: true });
+    const coreMesh = new THREE.Mesh(coreGeo, coreMat);
+    group.add(coreMesh);
+
+    // Distorted gravity wave rings
+    const ringGeo = new THREE.RingGeometry(1.5, 6.0, 16);
+    ringGeo.rotateX(-Math.PI / 2);
+    const ringMat = new THREE.MeshBasicMaterial({ color: 0xa78bfa, transparent: true, opacity: 0.6, side: THREE.DoubleSide });
+    const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+    group.add(ringMesh);
+
+    this.scene.add(group);
+
+    // Levitate and suspend Xenomorphs within 12.0m radius
+    const radius = 12.0;
+    if (horde && horde.aliens) {
+      horde.aliens.forEach(a => {
+        if (a.hp > 0 && a.mesh.position.distanceTo(this.position) <= radius) {
+          a.isAirborne = true;
+          a.airborneVelY = 4.2; // Float up!
+          a.speed *= 0.2; // Severely slowed
+        }
+      });
+    }
+
+    let duration = 4.5;
+    const interval = setInterval(() => {
+      duration -= 0.1;
+      coreMesh.rotation.y += 0.25;
+      ringMesh.rotation.z += 0.15;
+      const pulse = 1.0 + Math.sin(duration * 10) * 0.25;
+      coreMesh.scale.set(pulse, pulse, pulse);
+
+      if (duration <= 0) {
+        clearInterval(interval);
+        this.scene.remove(group);
+      }
+    }, 100);
+
+    if (particles) {
+      particles.emitSparks(pos, 25);
+    }
+    return true;
+  }
+
   consumeRoyalJelly() {
     if (this.royalJellyFlasks <= 0 || this.isBerserkerActive || this.isFacehuggerLatched) return false;
     this.royalJellyFlasks--;
@@ -1425,6 +1546,14 @@ export class Player {
 
     if (this.plasmaGlaiveCooldown > 0) {
       this.plasmaGlaiveCooldown = Math.max(0, this.plasmaGlaiveCooldown - delta);
+    }
+
+    if (this.iaijutsuCooldown > 0) {
+      this.iaijutsuCooldown = Math.max(0, this.iaijutsuCooldown - delta);
+    }
+
+    if (this.antiGravCooldown > 0) {
+      this.antiGravCooldown = Math.max(0, this.antiGravCooldown - delta);
     }
 
     if (this.isPlasmaGlaiveActive) {

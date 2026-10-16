@@ -1323,3 +1323,99 @@ html, body {
   0% { box-shadow: 0 0 10px #ffd700, inset 0 0 8px #ffaa00; filter: brightness(1.1); }
   100% { box-shadow: 0 0 25px #ff7700, inset 0 0 18px #ff3700; filter: brightness(1.5); }
 }
+
+/* Chantier 1: Grand Musou Boss Health Gauge */
+.boss-hud-container {
+  position: absolute;
+  top: 72px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 580px;
+  max-width: 90vw;
+  background: rgba(15, 6, 8, 0.9);
+  border: 1.5px solid #dc2626;
+  border-radius: 8px;
+  padding: 8px 16px;
+  box-shadow: 0 0 20px rgba(220, 38, 38, 0.45), inset 0 0 15px rgba(220, 38, 38, 0.2);
+  z-index: 50;
+  pointer-events: none;
+  animation: bossHudGlow 2.5s infinite alternate ease-in-out;
+}
+
+@keyframes bossHudGlow {
+  0% { box-shadow: 0 0 15px rgba(220, 38, 38, 0.35); }
+  100% { box-shadow: 0 0 28px rgba(239, 68, 68, 0.7); }
+}
+
+.boss-header-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.boss-icon {
+  font-size: 2rem;
+  filter: drop-shadow(0 0 8px #ef4444);
+}
+
+.boss-info-col {
+  flex: 1;
+}
+
+.boss-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.boss-name {
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: #fca5a5;
+  text-shadow: 0 0 8px #ef4444;
+  font-size: 1.05rem;
+}
+
+.boss-state-badge {
+  font-size: 0.75rem;
+  font-weight: bold;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: rgba(220, 38, 38, 0.3);
+  color: #fef08a;
+  border: 1px solid #facc15;
+  letter-spacing: 1px;
+}
+
+.boss-bar-bg {
+  position: relative;
+  width: 100%;
+  height: 18px;
+  background: rgba(0, 0, 0, 0.75);
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid rgba(239, 68, 68, 0.6);
+}
+
+.boss-hp-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #991b1b, #ef4444, #f87171);
+  transition: width 0.15s ease-out;
+  box-shadow: 0 0 10px #ef4444;
+}
+
+.boss-hp-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-family: monospace;
+  font-weight: bold;
+  color: #ffffff;
+  text-shadow: 1px 1px 2px #000;
+}
+

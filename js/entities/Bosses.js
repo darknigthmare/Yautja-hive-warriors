@@ -575,4 +575,15 @@ export class BossManager {
       player.takeDamage((this.activeBoss.type === 'the_offspring' ? 65 : 45) * delta);
     }
   }
+
+  clear() {
+    if (this.activeBoss) {
+      this.scene.remove(this.activeBoss.mesh);
+      this.activeBoss = null;
+    }
+    this.acidSpitProjectiles.forEach(p => this.scene.remove(p.mesh));
+    this.acidSpitProjectiles = [];
+    this.embryoProjectiles.forEach(p => this.scene.remove(p.mesh));
+    this.embryoProjectiles = [];
+  }
 }

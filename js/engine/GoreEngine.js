@@ -8,6 +8,7 @@ export class GoreEngine {
     this.severedParts = [];
     this.acidGibs = [];
     this.pinnedParts = [];
+    this.acidSlagDecals = [];
 
     // Materials
     this.xenoFleshMat = new THREE.MeshStandardMaterial({
@@ -353,6 +354,84 @@ export class GoreEngine {
       }
     }
 
+  /* Chantier 6: Molecular Acid Metallic Floor Corrosion & Slag Decals */
+  spawnAcidSlagDecal(pos, radius = 2.4, audioEngine = null) {
+    const group = new THREE.Group();
+    group.position.set(pos.x, 0.03, pos.z);
+
+    // Deep caustic crater on metallic floor
+    const craterGeo = new THREE.RingGeometry(0.2, radius, 16);
+    craterGeo.rotateX(-Math.PI / 2);
+    const craterMat = new THREE.MeshStandardMaterial({
+      color: 0x080c10,
+      roughness: 0.95,
+      metalness: 0.7
+    });
+    const crater = new THREE.Mesh(craterGeo, craterMat);
+    group.add(crater);
+
+    // Sizzling acid fluorescent erosion veins
+    const veinGeo = new THREE.RingGeometry(0.1, radius * 0.75, 12);
+    veinGeo.rotateX(-Math.PI / 2);
+    const vein = new THREE.Mesh(veinGeo, this.acidGlowMat);
+    vein.position.y = 0.01;
+    group.add(vein);
+
+    // Rising vapor wisps
+    const wisps = [];
+    const wispMat = new THREE.MeshBasicMaterial({ color: 0x84cc16, transparent: true, opacity: 0.5 });
+    for (let w = 0; w < 3; w++) {
+      const wisp = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.12, 1.6, 6), wispMat);
+      const angle = (w / 3) * Math.PI * 2;
+      wisp.position.set(Math.cos(angle) * (radius * 0.4), 0.8, Math.sin(angle) * (radius * 0.4));
+      group.add(wisp);
+      wisps.push(wisp);
+    }
+
+    this.scene.add(group);
+    this.acidSlagDecals.push({
+      group: group,
+      vein: vein,
+      wisps: wisps,
+      life: 18.0
+    });
+
+    if (audioEngine && audioEngine.playAcidFloorHiss) {
+      audioEngine.playAcidFloorHiss();
+    }
+  }
+
+  update(delta) {
+    // Update flying severed body parts
+    for (let i = this.severedParts.length - 1; i >= 0; i--) {
+      const part = this.severedParts[i];
+      part.life -= delta;
+
+      if (!part.onGround) {
+        part.velocity.y -= 25 * delta; // Gravity
+        part.mesh.position.addScaledVector(part.velocity, delta);
+        part.mesh.rotation.x += part.rotSpeed.x * delta;
+        part.mesh.rotation.y += part.rotSpeed.y * delta;
+        part.mesh.rotation.z += part.rotSpeed.z * delta;
+
+        if (part.mesh.position.y <= 0.2) {
+          part.mesh.position.y = 0.2;
+          part.onGround = true;
+          part.velocity.set(0, 0, 0);
+          if (part.isYautja) {
+            this.spawnYautjaBloodSplatter(part.mesh.position);
+          } else {
+            this.spawnAcidSplatter(part.mesh.position);
+          }
+        }
+      }
+
+      if (part.life <= 0) {
+        this.scene.remove(part.mesh);
+        this.severedParts.splice(i, 1);
+      }
+    }
+
     // Update acid splatter & melting corpses dissipation
     for (let i = this.acidGibs.length - 1; i >= 0; i--) {
       const gib = this.acidGibs[i];
@@ -376,6 +455,25 @@ export class GoreEngine {
         this.pinnedParts.splice(i, 1);
       }
     }
+
+    // Update molecular acid floor slag decals (Chantier 6)
+    for (let i = this.acidSlagDecals.length - 1; i >= 0; i--) {
+      const slag = this.acidSlagDecals[i];
+      slag.life -= delta;
+      if (slag.vein && slag.vein.material) {
+        slag.vein.material.opacity = Math.min(0.85, slag.life / 18.0) * (0.6 + Math.sin(Date.now() * 0.009) * 0.2);
+      }
+      if (slag.wisps) {
+        slag.wisps.forEach((w, wIdx) => {
+          w.rotation.y += delta * 2;
+          w.position.y = 0.8 + Math.sin(Date.now() * 0.004 + wIdx) * 0.25;
+        });
+      }
+      if (slag.life <= 0) {
+        this.scene.remove(slag.group);
+        this.acidSlagDecals.splice(i, 1);
+      }
+    }
   }
 
   clear() {
@@ -388,5 +486,7 @@ export class GoreEngine {
     this.acidGibs = [];
     this.pinnedParts.forEach(p => this.scene.remove(p.group));
     this.pinnedParts = [];
+    this.acidSlagDecals.forEach(s => this.scene.remove(s.group));
+    this.acidSlagDecals = [];
   }
 }

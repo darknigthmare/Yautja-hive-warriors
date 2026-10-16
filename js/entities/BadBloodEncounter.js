@@ -39,7 +39,6 @@ export class BadBloodManager {
     const group = new THREE.Group();
     const armorMat = new THREE.MeshStandardMaterial({ color: 0x221111, metalness: 0.8, roughness: 0.3 }); // Dark crimson armor
     const skinMat = new THREE.MeshStandardMaterial({ color: 0x5a4835, roughness: 0.6 });
-    const bladeMat = new THREE.MeshStandardMaterial({ color: 0xff3333, metalness: 0.95 });
 
     const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.95, 0.65, 2.3, 8), skinMat);
     torso.position.y = 2.2;
@@ -165,5 +164,13 @@ export class BadBloodManager {
       return true; // Killed Bad Blood!
     }
     return false;
+  }
+
+  clear() {
+    if (this.badBlood) {
+      this.scene.remove(this.badBlood.mesh);
+      this.badBlood = null;
+    }
+    this.isActive = false;
   }
 }

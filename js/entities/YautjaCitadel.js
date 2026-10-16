@@ -117,6 +117,10 @@ export class YautjaCitadel {
     const galaxyMap = this.createHolographicGalaxyMap();
     this.citadelGroup.add(galaxyMap);
 
+    // 6. CENTERPIECE 6: ELDER RITUAL OSTEOGLYPH INSCRIPTION SHRINE (AvP 2004 / Prey 2022 Lore)
+    const shrine = this.createRitualInscriptionShrine();
+    this.citadelGroup.add(shrine);
+
     // Standard Prey Skulls on Outer Pedestals
     const displayCount = Math.min(12, Math.max(4, skullCount));
     for (let i = 0; i < displayCount; i++) {
@@ -129,6 +133,59 @@ export class YautjaCitadel {
       skull.position.set(Math.cos(angle) * 14, 2.1, Math.sin(angle) * 14);
       this.citadelGroup.add(skull);
     }
+  }
+
+  createRitualInscriptionShrine() {
+    const group = new THREE.Group();
+    group.position.set(-6, 0, 6);
+
+    const altarMat = new THREE.MeshStandardMaterial({ color: 0x11161d, roughness: 0.9, metalness: 0.2 });
+    const bronzeMat = new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.3, metalness: 0.85 });
+    const skullMat = new THREE.MeshStandardMaterial({ color: 0x1a202c, roughness: 0.2, metalness: 0.9 });
+    const glyphMat = new THREE.MeshBasicMaterial({ color: 0xf59e0b });
+    const beamMat = new THREE.MeshBasicMaterial({ color: 0xff7700, transparent: true, opacity: 0.8 });
+
+    // Obsidian altar block
+    const altar = new THREE.Mesh(new THREE.BoxGeometry(2.4, 1.4, 1.8), altarMat);
+    altar.position.y = 0.7;
+    group.add(altar);
+
+    // Bronze skull cradle
+    const cradle = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.7, 0.3, 8), bronzeMat);
+    cradle.position.y = 1.55;
+    group.add(cradle);
+
+    // Xenomorph Warrior skull on cradle
+    const xenoSkull = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.28, 1.2, 8), skullMat);
+    xenoSkull.rotation.x = Math.PI / 2.3;
+    xenoSkull.position.set(0, 1.8, 0.2);
+    group.add(xenoSkull);
+
+    // Burning cuneiform Yautja clan glyphs on forehead
+    this.shrineGlyphs = [];
+    for (let g = 0; g < 3; g++) {
+      const glyph = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.12, 0.02), glyphMat);
+      glyph.position.set(-0.08 + g * 0.08, 1.95, 0.55);
+      glyph.rotation.x = -Math.PI / 6;
+      group.add(glyph);
+      this.shrineGlyphs.push(glyph);
+    }
+
+    // Overhead plasma burning stylus armature
+    const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 1.2, 6), bronzeMat);
+    arm.position.set(0.4, 2.5, 0.4);
+    arm.rotation.z = -Math.PI / 5;
+    group.add(arm);
+    this.shrineArm = arm;
+
+    // Sizzling plasma engraving needle
+    const needle = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.7, 6), beamMat);
+    needle.position.set(0.05, 2.05, 0.55);
+    needle.rotation.x = Math.PI / 6;
+    group.add(needle);
+    this.shrineNeedle = needle;
+
+    return group;
   }
 
   createHolographicGalaxyMap() {
@@ -380,6 +437,20 @@ export class YautjaCitadel {
     }
     if (this.holoBeam) {
       this.holoBeam.material.opacity = 0.14 + Math.sin(Date.now() * 0.004) * 0.06;
+    }
+
+    // Elder Ritual Inscription Stylus & Glyphs Animation (Chantier 10)
+    if (this.shrineArm && this.shrineNeedle) {
+      const scribeAngle = -Math.PI / 5 + Math.sin(Date.now() * 0.006) * 0.12;
+      this.shrineArm.rotation.z = scribeAngle;
+      this.shrineNeedle.position.x = 0.05 + Math.sin(Date.now() * 0.006) * 0.08;
+      this.shrineNeedle.material.opacity = 0.45 + Math.random() * 0.55;
+    }
+    if (this.shrineGlyphs) {
+      const glow = 0.65 + Math.sin(Date.now() * 0.005) * 0.35;
+      this.shrineGlyphs.forEach((g, gIdx) => {
+        g.scale.set(1.0, 1.0 + Math.sin(Date.now() * 0.008 + gIdx) * 0.15, 1.0);
+      });
     }
   }
 }

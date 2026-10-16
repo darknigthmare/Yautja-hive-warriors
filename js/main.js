@@ -319,9 +319,18 @@ class GameApp {
         this.fireCompoundBow();
       }
 
-      // Holographic Decoy Gauntlet Pulse [Digit 8] (Hunting Grounds Canon)
+      // Holographic Decoy Gauntlet Pulse [Digit 8] / Anti-Grav Disruptor [Shift + Digit 8]
       if ((e.code === 'Digit8' || e.code === 'Numpad8') && this.player) {
-        this.deployHoloDecoy();
+        if (this.keys['ShiftLeft'] || this.keys['ShiftRight']) {
+          this.player.usedShiftModifier = true;
+          if (this.player.deployAntiGravDisruptor(this.horde, this.synthetics, this.particles)) {
+            this.ui.showAnnouncement('🌌 DISRUPTEUR ANTI-GRAV YAUTJA DÉPLOYÉ : CHAMP DE LÉVITATION ZÉRO-G (12M) !');
+          } else {
+            this.ui.showAnnouncement('⏳ DISRUPTEUR ANTI-GRAV EN RECHARGE...');
+          }
+        } else {
+          this.deployHoloDecoy();
+        }
       }
 
       // Yautja Dual-Bladed Plasma Glaive Cyclone [Digit 9] (AVP Patriarch / Concrete Jungle)
@@ -367,15 +376,22 @@ class GameApp {
 
       // Netgun Entanglement & Gauntlet Flechette Needler [G Key]
       if (e.code === 'KeyG' && this.player) {
-        if (this.player.fireNetgun(this.horde, this.synthetics)) {
-          this.ui.showAnnouncement('🕸️ LANCE-FILET NETGUN DÉPLOYÉ : CIBLE ENTOURÉE DE FIL DE DIAMANT TRANCHANT !');
+        const distToSkimmer = this.skimmer ? this.player.position.distanceTo(this.skimmer.position) : 999;
+        if (this.skimmer && (this.skimmer.isMounted || distToSkimmer < 4.5)) {
+          // Boarding or exiting the Yautja Skimmer vehicle
+          this.skimmer.mountCooldown = 0;
         } else {
-          this.fireFlechetteNeedler();
+          if (this.player.fireNetgun(this.horde, this.synthetics)) {
+            this.ui.showAnnouncement('🕸️ LANCE-FILET NETGUN DÉPLOYÉ : CIBLE ENTOURÉE DE FIL DE DIAMANT TRANCHANT !');
+          } else {
+            this.fireFlechetteNeedler();
+          }
         }
       }
 
       // Pounce Leap [Shift + Space]
       if (e.code === 'Space' && (this.keys['ShiftLeft'] || this.keys['ShiftRight']) && this.player) {
+        this.player.usedShiftModifier = true;
         if (this.player.pounceLeap()) {
           this.ui.showAnnouncement('⚡ SUPER-SAUT POUNCE LEAP DÉPLOYÉ !');
         }
@@ -473,6 +489,7 @@ class GameApp {
         if (!this.player.isChargingPlasma) {
           this.player.isChargingPlasma = true;
           this.player.plasmaChargeTime = 0;
+          this.player.usedShiftModifier = false;
           if (this.audio && this.audio.playPlasmaChargeUp) {
             this.audio.playPlasmaChargeUp();
           }
@@ -484,11 +501,15 @@ class GameApp {
       this.keys[e.code] = false;
 
       if (e.code === 'ShiftLeft' && this.player && this.player.isChargingPlasma) {
-        const isCharged = this.player.plasmaChargeTime >= 0.55;
+        const usedMod = this.player.usedShiftModifier;
         this.player.isChargingPlasma = false;
-        this.firePlasmaCannon(isCharged);
-        if (isCharged) {
-          this.ui.showAnnouncement('💥 TIR PLASMA SURCHARGÉ DÉCHAÎNÉ : VAPORISATION 10M !');
+        this.player.usedShiftModifier = false;
+        if (!usedMod) {
+          const isCharged = this.player.plasmaChargeTime >= 0.55;
+          const fired = this.firePlasmaCannon(isCharged);
+          if (fired && isCharged) {
+            this.ui.showAnnouncement('💥 TIR PLASMA SURCHARGÉ DÉCHAÎNÉ : VAPORISATION 10M !');
+          }
         }
       }
     });
@@ -501,7 +522,18 @@ class GameApp {
       }
       if (e.button === 0) {
         if (this.keys['ShiftLeft'] || this.keys['ShiftRight']) {
-          this.performSpineWhip();
+          if (this.player) this.player.usedShiftModifier = true;
+          if (this.activeLoadout && this.activeLoadout.primary === 'katana') {
+            const hits = this.player.performIaijutsuSlash(this.horde, this.synthetics, this.bosses, this.particles);
+            if (hits) {
+              this.registerHits(hits);
+              this.ui.showAnnouncement('⚔️ TRANCHANT ULTRASONIQUE IAIJUTSU DAH\'DT\'DE : DÉCOUPAGE TOTAL !');
+            } else {
+              this.ui.showAnnouncement('⏳ IAIJUTSU EN RECHARGE...');
+            }
+          } else {
+            this.performSpineWhip();
+          }
         } else {
           this.performLightAttack();
         }
@@ -509,6 +541,7 @@ class GameApp {
       if (e.button === 2) {
         e.preventDefault();
         if (this.keys['ShiftLeft'] || this.keys['ShiftRight']) {
+          if (this.player) this.player.usedShiftModifier = true;
           this.performPowerGloveSlam();
         } else {
           this.performHeavyAttack();
@@ -614,7 +647,14 @@ class GameApp {
     this.renderer.updateLevelEnvironment(this.ui.selectedLevel);
     this.weather.setWeather(this.ui.selectedLevel.weatherType || 'none');
     this.weather.spawnGasPipes(6);
+    this.weather.spawnSteamVents(5);
     this.gore.clear();
+    this.bosses.clear();
+    this.badBlood.clear();
+    if (this.skimmer) {
+      this.skimmer.isMounted = false;
+      this.skimmer.mountCooldown = 0.5;
+    }
 
     if (this.player) this.renderer.scene.remove(this.player.mesh);
     if (this.player2) this.renderer.scene.remove(this.player2.mesh);
@@ -750,9 +790,14 @@ class GameApp {
   }
 
   firePlasmaCannon(isCharged = false) {
-    if (!this.player) return;
+    if (!this.player) return false;
     const projData = this.player.firePlasmaShot(isCharged);
-    if (!projData) return;
+    if (!projData) {
+      if (this.player.plasmaEnergy < (isCharged ? 35 : 20)) {
+        this.ui.showAnnouncement('⚠️ ÉNERGIE PLASMA INSUFFISANTE POUR LE TIR !');
+      }
+      return false;
+    }
 
     const radius = isCharged ? 1.2 : 0.5;
     const geo = new THREE.SphereGeometry(radius, 14, 14);
@@ -776,6 +821,7 @@ class GameApp {
       speed: isCharged ? 52 : 45,
       life: 2.6
     });
+    return true;
   }
 
   fireFlechetteNeedler() {
@@ -1478,7 +1524,7 @@ class GameApp {
     this.falconDrone.update(delta, this.player.position, this.horde);
     this.skimmer.update(delta, this.player, this.horde, this.keys);
     this.orbital.update(delta);
-    if (this.weather) this.weather.update(delta, this.player ? this.player.position : null, this.renderer, this.audio);
+    if (this.weather) this.weather.update(delta, this.player ? this.player.position : null, this.renderer, this.audio, this.horde);
     if (this.env) this.env.update(delta, this.horde, this.audio);
     if (this.renderer) this.renderer.update(delta);
     if (this.citadel) this.citadel.update(delta);
@@ -1906,7 +1952,12 @@ class GameApp {
       }
     }
 
-    this.ui.updateHUD(this.player, this.horde, this.bosses, this.waveIndex, this.totalWaves, this.score);
+    this.ui.updateHUD(this.player, this.horde, this.bosses, this.waveIndex, this.totalWaves, this.score, {
+      badBlood: this.badBlood,
+      marines: this.marines,
+      allies: this.allies,
+      synthetics: this.synthetics
+    });
 
     // Visor Acid Corrosion HUD Overlay Update (Alien: Romulus 2024)
     const acidOverlay = document.getElementById('acid-corrosion-overlay');
@@ -2056,12 +2107,20 @@ class GameApp {
     this.apc.clear();
     this.sentryGun.clear();
     this.falconDrone.clear();
+    if (this.bosses) this.bosses.clear();
+    if (this.badBlood) this.badBlood.clear();
+    if (this.weather) this.weather.clear();
+    if (this.skimmer) {
+      this.skimmer.isMounted = false;
+      this.skimmer.mountCooldown = 0.5;
+    }
+    if (this.player && this.player.mesh) this.player.mesh.visible = true;
     for (const pool of this.pathogenPools) {
-      if (pool.mesh) this.scene.remove(pool.mesh);
+      if (pool.mesh) this.renderer.scene.remove(pool.mesh);
     }
     this.pathogenPools = [];
     for (const d of this.holoDecoys) {
-      if (d.mesh) this.scene.remove(d.mesh);
+      if (d.mesh) this.renderer.scene.remove(d.mesh);
     }
     this.holoDecoys = [];
     if (this.player && this.player.clearNukeHoloMesh) {
