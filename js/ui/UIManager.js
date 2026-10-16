@@ -58,8 +58,8 @@ export class UIManager {
   }
 
   showScreen(screenElement) {
-    [this.mainMenu, this.charSelectMenu, this.levelSelectMenu, this.inGameHud, this.trophyModal, this.optionsModal, this.gameOverScreen].forEach(s => {
-      if (s) s.classList.add('hidden');
+    document.querySelectorAll('.ui-screen').forEach(s => {
+      s.classList.add('hidden');
     });
     if (screenElement) screenElement.classList.remove('hidden');
   }
@@ -230,6 +230,21 @@ export class UIManager {
     setTimeout(() => {
       this.announcementBanner.classList.add('hidden');
     }, 2500);
+  }
+
+  showOfficerDefeatedBanner(officerTitle = 'PRAETORIAN ROYAL GUARD') {
+    if (!this.officerBanner) {
+      this.officerBanner = document.getElementById('officer-defeated-banner');
+      this.officerNameEl = document.getElementById('musou-officer-name');
+    }
+    if (this.officerBanner) {
+      if (this.officerNameEl) this.officerNameEl.innerText = officerTitle.toUpperCase();
+      this.officerBanner.classList.remove('hidden');
+      if (this.officerTimeout) clearTimeout(this.officerTimeout);
+      this.officerTimeout = setTimeout(() => {
+        this.officerBanner.classList.add('hidden');
+      }, 2800);
+    }
   }
 
   flashScreen(type) {

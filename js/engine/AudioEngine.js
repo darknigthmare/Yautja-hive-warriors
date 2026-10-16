@@ -2201,5 +2201,115 @@ export class AudioEngine {
     thumpOsc.start(now + 0.05);
     thumpOsc.stop(now + 0.35);
   }
+
+  playFeralShieldDeploy() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Metallic expansion slide + energy lock snap (Prey 2022)
+    const slideOsc = this.ctx.createOscillator();
+    const slideGain = this.ctx.createGain();
+    slideOsc.type = 'sawtooth';
+    slideOsc.frequency.setValueAtTime(320, now);
+    slideOsc.frequency.exponentialRampToValueAtTime(1200, now + 0.12);
+
+    slideGain.gain.setValueAtTime(0.55, now);
+    slideGain.gain.linearRampToValueAtTime(0.01, now + 0.15);
+
+    slideOsc.connect(slideGain);
+    slideGain.connect(this.ctx.destination);
+    slideOsc.start(now);
+    slideOsc.stop(now + 0.15);
+
+    const lockOsc = this.ctx.createOscillator();
+    const lockGain = this.ctx.createGain();
+    lockOsc.type = 'triangle';
+    lockOsc.frequency.setValueAtTime(1600, now + 0.1);
+    lockOsc.frequency.exponentialRampToValueAtTime(400, now + 0.28);
+
+    lockGain.gain.setValueAtTime(0.7, now + 0.1);
+    lockGain.gain.linearRampToValueAtTime(0.01, now + 0.28);
+
+    lockOsc.connect(lockGain);
+    lockGain.connect(this.ctx.destination);
+    lockOsc.start(now + 0.1);
+    lockOsc.stop(now + 0.28);
+  }
+
+  playSmartDiscRotor() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // High frequency spinning gyroscopic mono-blade Doppler rotor hum (Predator 2 1990)
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(1450, now);
+    osc.frequency.linearRampToValueAtTime(1650, now + 0.1);
+    osc.frequency.linearRampToValueAtTime(1300, now + 0.22);
+
+    gain.gain.setValueAtTime(0.25, now);
+    gain.gain.linearRampToValueAtTime(0.01, now + 0.22);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.22);
+  }
+
+  playSyntheticMilkySpurt() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Pressurized hydraulic coolant burst (Bishop Aliens 1986)
+    const spurtOsc = this.ctx.createOscillator();
+    const spurtGain = this.ctx.createGain();
+    spurtOsc.type = 'sawtooth';
+    spurtOsc.frequency.setValueAtTime(450, now);
+    spurtOsc.frequency.exponentialRampToValueAtTime(95, now + 0.2);
+
+    spurtGain.gain.setValueAtTime(0.45, now);
+    spurtGain.gain.linearRampToValueAtTime(0.01, now + 0.2);
+
+    spurtOsc.connect(spurtGain);
+    spurtGain.connect(this.ctx.destination);
+    spurtOsc.start(now);
+    spurtOsc.stop(now + 0.2);
+  }
+
+  playFacehuggerLatch() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Wet organic choke screech & muscular tail tightening
+    const screechOsc = this.ctx.createOscillator();
+    const screechGain = this.ctx.createGain();
+    screechOsc.type = 'sawtooth';
+    screechOsc.frequency.setValueAtTime(1250, now);
+    screechOsc.frequency.linearRampToValueAtTime(750, now + 0.25);
+
+    screechGain.gain.setValueAtTime(0.65, now);
+    screechGain.gain.linearRampToValueAtTime(0.01, now + 0.3);
+
+    screechOsc.connect(screechGain);
+    screechGain.connect(this.ctx.destination);
+    screechOsc.start(now);
+    screechOsc.stop(now + 0.3);
+
+    const chokeOsc = this.ctx.createOscillator();
+    const chokeGain = this.ctx.createGain();
+    chokeOsc.type = 'triangle';
+    chokeOsc.frequency.setValueAtTime(120, now + 0.1);
+    chokeOsc.frequency.exponentialRampToValueAtTime(45, now + 0.45);
+
+    chokeGain.gain.setValueAtTime(0.6, now + 0.1);
+    chokeGain.gain.linearRampToValueAtTime(0.01, now + 0.45);
+
+    chokeOsc.connect(chokeGain);
+    chokeGain.connect(this.ctx.destination);
+    chokeOsc.start(now + 0.1);
+    chokeOsc.stop(now + 0.45);
+  }
 }
+
 

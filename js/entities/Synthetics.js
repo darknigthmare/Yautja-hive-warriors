@@ -103,16 +103,30 @@ export class SyntheticsManager {
   }
 
   emitWhiteSyntheticBlood(pos) {
-    for (let i = 0; i < 8; i++) {
-      const drop = new THREE.Mesh(new THREE.SphereGeometry(0.1, 6, 6), this.whiteBloodMat);
+    if (this.audioEngine && this.audioEngine.playSyntheticMilkySpurt) {
+      this.audioEngine.playSyntheticMilkySpurt();
+    }
+
+    for (let i = 0; i < 10; i++) {
+      const drop = new THREE.Mesh(new THREE.SphereGeometry(0.12, 6, 6), this.whiteBloodMat);
       drop.position.copy(pos).add(new THREE.Vector3(
-        (Math.random() - 0.5) * 0.5,
-        (Math.random() - 0.5) * 0.4,
-        (Math.random() - 0.5) * 0.5
+        (Math.random() - 0.5) * 0.6,
+        (Math.random() - 0.5) * 0.4 + 0.3,
+        (Math.random() - 0.5) * 0.6
       ));
       this.scene.add(drop);
-      setTimeout(() => this.scene.remove(drop), 900);
+      setTimeout(() => this.scene.remove(drop), 1200);
     }
+
+    // Milky white coolant puddle on the floor (Bishop Aliens 1986 Canon 1:1)
+    const puddle = new THREE.Mesh(
+      new THREE.CircleGeometry(0.7 + Math.random() * 0.5, 8),
+      this.whiteBloodMat
+    );
+    puddle.rotation.x = -Math.PI / 2;
+    puddle.position.set(pos.x + (Math.random() - 0.5) * 0.8, 0.03, pos.z + (Math.random() - 0.5) * 0.8);
+    this.scene.add(puddle);
+    setTimeout(() => this.scene.remove(puddle), 9000);
   }
 
   bisectSynthetic(syn) {
@@ -273,6 +287,12 @@ export class SyntheticsManager {
       if (syn.mesh.position.distanceTo(attack.origin) <= attack.radius) {
         syn.hp -= attack.damage;
         this.emitWhiteSyntheticBlood(syn.mesh.position);
+
+        if (attack.type === 'emp' || attack.type === 'plasma' || attack.damage >= 180) {
+          syn.isEMPStunned = true;
+          syn.empStunTimer = 3.5;
+          if (this.particles) this.particles.emitSparks(syn.mesh.position, 14);
+        }
 
         if (syn.hp <= 0) {
           if (!syn.isBisected) {

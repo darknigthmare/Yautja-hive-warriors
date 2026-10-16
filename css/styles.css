@@ -831,6 +831,13 @@ html, body {
 #in-game-hud {
   padding: 20px;
   justify-content: space-between;
+  pointer-events: none;
+}
+
+#in-game-hud button,
+#in-game-hud .glass-panel,
+#in-game-hud .radar-box {
+  pointer-events: auto;
 }
 
 .hud-top-left {
@@ -1252,4 +1259,67 @@ html, body {
   padding: 2px 8px;
   border-radius: 4px;
   text-shadow: 0 0 5px #ff0000;
+}
+
+/* Chantier 10: Musou Officer Defeat Banner & Vanguard Morale Frenzy */
+.musou-officer-banner {
+  position: absolute;
+  top: 18%;
+  left: 50%;
+  transform: translateX(-50%) scale(1);
+  background: linear-gradient(180deg, rgba(30, 20, 5, 0.95) 0%, rgba(10, 8, 4, 0.98) 100%);
+  border: 2px solid #ffd700;
+  box-shadow: 0 0 25px rgba(255, 215, 0, 0.6), inset 0 0 15px rgba(255, 215, 0, 0.3);
+  padding: 16px 45px;
+  border-radius: 8px;
+  text-align: center;
+  z-index: 100;
+  pointer-events: none;
+  animation: musouBannerPulse 2.8s ease-out forwards;
+}
+
+.musou-officer-title {
+  color: #ffcc00;
+  font-family: 'Share Tech Mono', monospace, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  text-shadow: 0 0 8px #ffaa00;
+  margin-bottom: 4px;
+}
+
+.musou-officer-name {
+  color: #ffffff;
+  font-size: 1.8rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-shadow: 0 0 12px #ff4400, 0 0 20px #ff0000;
+  text-transform: uppercase;
+}
+
+.musou-officer-sub {
+  color: #a3e635;
+  font-family: 'Share Tech Mono', monospace, sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 1.5px;
+  margin-top: 6px;
+  text-shadow: 0 0 6px #65a30d;
+}
+
+@keyframes musouBannerPulse {
+  0% { transform: translateX(-50%) scale(0.6); opacity: 0; }
+  15% { transform: translateX(-50%) scale(1.08); opacity: 1; }
+  25% { transform: translateX(-50%) scale(1.0); opacity: 1; }
+  85% { transform: translateX(-50%) scale(1.0); opacity: 1; }
+  100% { transform: translateX(-50%) scale(0.95); opacity: 0; }
+}
+
+.morale-frenzy {
+  animation: frenzyPulse 1s infinite alternate !important;
+}
+
+@keyframes frenzyPulse {
+  0% { box-shadow: 0 0 10px #ffd700, inset 0 0 8px #ffaa00; filter: brightness(1.1); }
+  100% { box-shadow: 0 0 25px #ff7700, inset 0 0 18px #ff3700; filter: brightness(1.5); }
 }

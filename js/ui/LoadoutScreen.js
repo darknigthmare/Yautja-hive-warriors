@@ -51,6 +51,7 @@ export class LoadoutScreen {
     const btnConfirm = document.getElementById('btn-confirm-loadout');
     if (btnConfirm) {
       btnConfirm.addEventListener('click', () => {
+        if (this.screen) this.screen.classList.add('hidden');
         this.onConfirmLoadout({
           primary: this.selectedPrimary,
           secondary: this.selectedSecondary,

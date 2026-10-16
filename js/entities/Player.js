@@ -21,7 +21,13 @@ export class Player {
     this.musouEnergy = 0;
     this.maxMusouEnergy = 100;
     this.medicompCharges = 3;
+    this.medicompHealAmount = 450;
     this.acidSolventCharges = 2;
+    this.bearTrapCharges = 2;
+    this.attackCooldownFactor = 1.0;
+    this.meleeReachMultiplier = 1.0;
+    this.meleeArcMultiplier = 1.0;
+    this.tacticalLoadout = null;
 
     // States
     this.position = new THREE.Vector3(isPlayer2 ? 4 : 0, 0, 0);
@@ -85,6 +91,54 @@ export class Player {
     this.radius = 1.2;
   }
 
+  applyTacticalLoadout(loadout) {
+    if (!loadout) return;
+    this.tacticalLoadout = loadout;
+
+    // 1. Primary Weapon Perks
+    if (loadout.primary === 'wristblades') {
+      this.meleeDamage *= 1.15;
+      this.attackCooldownFactor = 0.82; // Faster slicing recovery
+    } else if (loadout.primary === 'combistick') {
+      this.meleeReachMultiplier = 1.35;
+      this.meleeDamage *= 1.25;
+    } else if (loadout.primary === 'katana') {
+      this.moveSpeed *= 1.18;
+      this.meleeArcMultiplier = 1.35;
+    } else if (loadout.primary === 'alpha_sickle') {
+      this.meleeDamage *= 1.38;
+      this.dismembermentBoost = 1.5;
+    }
+
+    // 2. Secondary Weapon Perks
+    if (loadout.secondary === 'smart_disc') {
+      this.smartDiscSpeedMult = 1.3;
+    } else if (loadout.secondary === 'shuriken') {
+      this.shurikenPierceBonus = 4;
+    } else if (loadout.secondary === 'compound_bow') {
+      this.bowDamageMult = 1.4;
+    } else if (loadout.secondary === 'plasma_whip') {
+      this.whipStunDuration = 2.5;
+    }
+
+    // 3. Gadgets Perks
+    if (loadout.gadgets && Array.isArray(loadout.gadgets)) {
+      if (loadout.gadgets.includes('medicomp')) {
+        this.medicompCharges += 2; // Total 5 charges
+        this.medicompHealAmount = 550;
+      }
+      if (loadout.gadgets.includes('bear_trap')) {
+        this.bearTrapCharges = (this.bearTrapCharges || 2) + 2;
+      }
+      if (loadout.gadgets.includes('acid_solvent')) {
+        this.acidSolventCharges += 3; // Total 5 charges
+      }
+      if (loadout.gadgets.includes('nuke')) {
+        this.nukeBlastBonus = true;
+      }
+    }
+  }
+
   buildYautjaMesh() {
     const group = new THREE.Group();
     const colors = this.data.colors;
@@ -144,13 +198,33 @@ export class Player {
     this.rightArm.position.set(1.2, 2.2, 0);
     group.add(this.rightArm);
 
-    // Left Forearm: Feral Hexagonal Bone Shield (Prey 2022)
-    const shieldGeo = new THREE.CylinderGeometry(1.2, 1.2, 0.08, 6);
-    const shieldMat = new THREE.MeshStandardMaterial({ color: 0x2b231d, metalness: 0.9, roughness: 0.3 });
-    this.shieldMesh = new THREE.Mesh(shieldGeo, shieldMat);
-    this.shieldMesh.position.set(-0.2, -0.2, 0.6);
-    this.shieldMesh.rotation.x = Math.PI / 2;
-    this.shieldMesh.visible = false;
+    // Left Forearm: Feral Biometric Expanding Bone Fan Shield (Prey 2022 Canon 1:1)
+    const shieldGroup = new THREE.Group();
+    const shieldMat = new THREE.MeshStandardMaterial({ color: 0x3d3024, roughness: 0.4, metalness: 0.75 });
+    const shieldRimMat = new THREE.MeshBasicMaterial({ color: 0x00d2ff, side: THREE.DoubleSide });
+
+    // Central biometric hexagonal boss plate
+    const centerPlate = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 0.09, 6), shieldMat);
+    shieldGroup.add(centerPlate);
+
+    // 6 Interlocking fan-folding osteo-plates
+    for (let f = 0; f < 6; f++) {
+      const angle = (f / 6) * Math.PI * 2;
+      const blade = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.06, 0.4), shieldMat);
+      blade.position.set(Math.cos(angle) * 0.7, 0, Math.sin(angle) * 0.7);
+      blade.rotation.y = angle;
+      shieldGroup.add(blade);
+    }
+
+    // Glowing cyan plasma cutting edge perimeter rim
+    const energyRim = new THREE.Mesh(new THREE.RingGeometry(1.2, 1.3, 6), shieldRimMat);
+    energyRim.rotation.x = Math.PI / 2;
+    shieldGroup.add(energyRim);
+
+    shieldGroup.position.set(-0.2, -0.2, 0.6);
+    shieldGroup.rotation.x = Math.PI / 2;
+    shieldGroup.visible = false;
+    this.shieldMesh = shieldGroup;
     this.leftArm.add(this.shieldMesh);
 
     const rightGauntlet = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.8, 0.5), armorMat);
@@ -425,9 +499,22 @@ export class Player {
     this.isBlocking = !this.isBlocking;
     if (this.shieldMesh) {
       this.shieldMesh.visible = this.isBlocking;
+      if (this.isBlocking) {
+        this.shieldMesh.scale.set(0.2, 0.2, 0.2);
+        let s = 0.2;
+        const expandAnim = setInterval(() => {
+          s += 0.25;
+          if (this.shieldMesh) this.shieldMesh.scale.set(s, s, s);
+          if (s >= 1.0) clearInterval(expandAnim);
+        }, 20);
+      }
     }
     if (this.isBlocking) {
-      this.audioEngine.playShieldBlock();
+      if (this.audioEngine.playFeralShieldDeploy) {
+        this.audioEngine.playFeralShieldDeploy();
+      } else {
+        this.audioEngine.playShieldBlock();
+      }
       this.leftArm.rotation.x = -Math.PI * 0.4;
       this.leftArm.position.x = -0.6;
     } else {
@@ -664,9 +751,13 @@ export class Player {
     }
     this.isFacehuggerLatched = true;
     this.qteStrugglePresses = 0;
-    this.audioEngine.playXenoHiss();
+    if (this.audioEngine.playFacehuggerLatch) {
+      this.audioEngine.playFacehuggerLatch();
+    } else {
+      this.audioEngine.playXenoHiss();
+    }
 
-    // 3D Arachnoid Facehugger clamped over Bio-Mask Head
+    // 3D Arachnoid Facehugger clamped over Bio-Mask Head with 8 skeletal digits
     if (!this.latchedHuggerMesh && this.headMesh) {
       const huggerGroup = new THREE.Group();
       const huggerMat = new THREE.MeshStandardMaterial({ color: 0x8a7355, roughness: 0.6 });
@@ -674,8 +765,17 @@ export class Player {
       body.position.set(0, 0, 0.45);
       huggerGroup.add(body);
 
-      // Tail curled around hunter's throat
-      const tail = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.02, 1.2, 5), huggerMat);
+      // 8 Articulated arachnoid clamping finger digits
+      for (let f = 0; f < 8; f++) {
+        const angle = (f / 8) * Math.PI * 2;
+        const finger = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.015, 0.45, 4), huggerMat);
+        finger.position.set(Math.cos(angle) * 0.32, Math.sin(angle) * 0.32, 0.35);
+        finger.rotation.z = angle + Math.PI / 2;
+        huggerGroup.add(finger);
+      }
+
+      // Muscular tail curled around hunter's throat
+      const tail = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.02, 1.2, 5), huggerMat);
       tail.position.set(0, -0.4, 0.2);
       tail.rotation.x = -Math.PI / 3;
       huggerGroup.add(tail);
@@ -694,6 +794,7 @@ export class Player {
       this.isFacehuggerLatched = false;
       this.qteStrugglePresses = 0;
       this.audioEngine.playYautjaRoar();
+      if (this.audioEngine.playAcidSizzle) this.audioEngine.playAcidSizzle();
 
       if (this.latchedHuggerMesh && this.headMesh) {
         this.headMesh.remove(this.latchedHuggerMesh);
@@ -714,7 +815,7 @@ export class Player {
   useMedicomp() {
     if (this.medicompCharges <= 0) return false;
     this.medicompCharges--;
-    this.hp = Math.min(this.maxHp, this.hp + 450);
+    this.hp = Math.min(this.maxHp, this.hp + (this.medicompHealAmount || 450));
     this.visorAcidBurn = 0; // Medical bio-gel instantly neutralizes acid corrosion
     this.audioEngine.playMedicompCauterize();
     return true;
@@ -1017,7 +1118,7 @@ export class Player {
     if (this.isAttacking || this.isFacehuggerLatched) return null;
     this.isAttacking = true;
     this.attackComboStep = (this.attackComboStep % 5) + 1;
-    this.attackTimer = 0.28;
+    this.attackTimer = 0.28 * (this.attackCooldownFactor || 1.0);
     this.comboResetTimer = 1.4;
 
     this.audioEngine.playSlash();
@@ -1048,8 +1149,8 @@ export class Player {
       type: 'light',
       step: this.attackComboStep,
       damage: baseDmg * (1 + this.attackComboStep * 0.18) * buff,
-      radius: this.isSecondaryWeapon ? 4.8 : 3.8,
-      angle: Math.PI * 0.65
+      radius: (this.isSecondaryWeapon ? 4.8 : 3.8) * (this.meleeReachMultiplier || 1.0),
+      angle: (Math.PI * 0.65) * (this.meleeArcMultiplier || 1.0)
     };
   }
 
@@ -1144,6 +1245,8 @@ export class Player {
     this.attackComboStep = 0;
     this.comboResetTimer = 0;
     this.currentChargeName = chargeName;
+    this.attackTimer *= (this.attackCooldownFactor || 1.0);
+    radius *= (this.meleeReachMultiplier || 1.0);
 
     return {
       type: chargeType,

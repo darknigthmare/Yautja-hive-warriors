@@ -30,7 +30,11 @@ export const LORE_ENTRIES = {
   code: [
     {
       title: 'LA PROIE VALEUREUSE',
-      desc: 'Ne chasser que les créatures capables de se défendre. Tuer des enfants, des infirmes ou des proies enceintes est un crime impardonnable puni de mort.'
+      desc: 'Ne chasser que les créatures capables de se défendre. Tuer des enfants, des infirmes ou des proies sans défense est un crime impardonnable puni de mort.'
+    },
+    {
+      title: 'L\'ÉPARGNE DES PROIES GRAVIDES (PREDATOR 2 / AVP 2004)',
+      desc: 'Tout hôte portant la vie est épargné (comme l\'inspectrice Leona Cantrell dans Predator 2 ou Lex Woods dans AVP 2004). Le scanner bio-médical du masque détecte instantanément l\'embryon.'
     },
     {
       title: 'LE RESPECT DES VAINQUEURS',
@@ -39,6 +43,10 @@ export const LORE_ENTRIES = {
     {
       title: 'L\'AUTO-DESTRUCTION RITUELLE',
       desc: 'En cas de défaite imminente ou de capture, le Yautja doit activer l\'ordinateur de poignet [Touche N] afin d\'anéantir sa technologie et de mourir dans une explosion atomique purificatrice.'
+    },
+    {
+      title: 'TRAQUE DES BAD BLOODS (DARK HORSE 1993)',
+      desc: 'Les traîtres de la race Yautja ayant assassiné leurs frères de sang sont pourchassés par les Enforcers du Clan Apex. Leurs crânes souillés sont décapités sans pitié.'
     }
   ],
   xenomorphs: [
@@ -59,8 +67,16 @@ export const LORE_ENTRIES = {
       desc: 'L\'ossature de la horde. Carapace chitineuse sombre, crâne strié ou lisse, sang d\'acide moléculaire hautement corrosif et seconde mâchoire extensible.'
     },
     {
+      title: 'PRAETORIAN (GARDE PRÉTORIEN CUIRASSÉ)',
+      desc: 'Garde royale stérile de 3.5m à collerette blindée, sécrétant des phéromones de régulation de caste avant l\'émergence d\'une nouvelle Reine.'
+    },
+    {
       title: 'PREDALIEN (HYBRIDE YAUTJA-XENO)',
       desc: 'Créature abominable née de l\'implantation d\'un Facehugger sur un Yautja. Hérite des mandibules, des dreadlocks sensorielles et de la force titanesque du prédateur.'
+    },
+    {
+      title: 'THE OFFSPRING (ALIEN: ROMULUS 2024)',
+      desc: 'Abomination biomécanique humanoïde hybride née de l\'injection du composé Z-01 dans le fœtus de Kay sur Renaissance Station. Dents pharyngées et force surnaturelle.'
     },
     {
       title: 'REINE XENOMORPHE & MATRIARCHE',
@@ -71,6 +87,14 @@ export const LORE_ENTRIES = {
     {
       title: 'LES INGÉNIEURS (PILOTES / SPACE JOCKEYS)',
       desc: 'Espèce humanoïde antédiluvienne (LV-223 / LV-426 / Prometheus). Créateurs du Pathogène Noir (Chemical A0-3959X.31_15) à l\'origine des mutations primaires Xenomorphes. Leurs crânes imposants sont les plus prestigieux trophées de la citadelle Yautja.'
+    },
+    {
+      title: 'WEYLAND-YUTANI SPECIAL ORDER 937',
+      desc: '\"Priority One: Ensure return of organism for analysis. All other considerations secondary. Crew expendable.\" Directive corporative secrète guidant les synthétiques d\'assaut.'
+    },
+    {
+      title: 'FERAL BONE SHIELD & CUT BLADE (PREY 2022)',
+      desc: 'Armement tribal primordial de la sous-espèce Feral : bouclier extensible à lamelles d\'os absorbant les tirs et cut blade à double tranchant en obsidienne polie.'
     }
   ]
 };

@@ -11,6 +11,7 @@ export class CheyenneDropship {
     this.isFlying = false;
     this.flightProgress = 0;
     this.napalmPools = [];
+    this.microRockets = [];
   }
 
   triggerAirstrike(playerPos, horde) {
@@ -87,7 +88,21 @@ export class CheyenneDropship {
       this.audioEngine.playDropshipFlyby();
     }
 
-    // 1. Initial 70mm Rocket barrage halfway through flyby
+    // 1. Staggered 70mm Micro-Rocket Pod Salvos (6 High-Velocity Kinetic Missiles)
+    for (let r = 0; r < 6; r++) {
+      setTimeout(() => {
+        if (!this.isFlying || !this.shipMesh) return;
+        const podX = r % 2 === 0 ? -4.0 : 4.0;
+        const target = new THREE.Vector3(
+          playerPos.x + (Math.random() - 0.5) * 22,
+          0,
+          playerPos.z + (Math.random() - 0.5) * 22
+        );
+        this.fireMicroRocket(podX, target, horde);
+      }, 400 + r * 160);
+    }
+
+    // 2. Heavy Cluster Bombardment Shockwave midway through flyby
     setTimeout(() => {
       if (horde) {
         horde.checkMeleeHits({
@@ -97,9 +112,9 @@ export class CheyenneDropship {
           type: 'heavy'
         });
       }
-    }, 1200);
+    }, 1300);
 
-    // 2. Napalm Carpet Bombing Run: 4 Incendiary Canisters dropped sequentially
+    // 3. Napalm Carpet Bombing Run: 4 Incendiary Canisters dropped sequentially
     for (let b = 0; b < 4; b++) {
       setTimeout(() => {
         const dropX = playerPos.x + (b - 1.5) * 8.0;
@@ -107,6 +122,52 @@ export class CheyenneDropship {
         this.spawnNapalmInferno(new THREE.Vector3(dropX, 0.05, dropZ), horde);
       }, 700 + b * 450);
     }
+  }
+
+  fireMicroRocket(podXOffset, targetPos, horde) {
+    if (!this.shipMesh) return;
+
+    const startPos = this.shipMesh.position.clone().add(new THREE.Vector3(podXOffset, 0.8, 1.0));
+    const rocketGroup = new THREE.Group();
+
+    // Missile Body
+    const bodyMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.9, roughness: 0.3 });
+    const body = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 1.4, 6), bodyMat);
+    body.rotation.x = Math.PI / 2;
+    rocketGroup.add(body);
+
+    // High-Explosive Warhead Tip
+    const tipMat = new THREE.MeshBasicMaterial({ color: 0xff3b30 });
+    const tip = new THREE.Mesh(new THREE.ConeGeometry(0.15, 0.45, 6), tipMat);
+    tip.rotation.x = Math.PI / 2;
+    tip.position.set(0, 0, 0.8);
+    rocketGroup.add(tip);
+
+    // Blazing Rocket Exhaust Plume
+    const exhaustMat = new THREE.MeshBasicMaterial({ color: 0xffcc00 });
+    const exhaust = new THREE.Mesh(new THREE.ConeGeometry(0.13, 0.6, 6), exhaustMat);
+    exhaust.rotation.x = -Math.PI / 2;
+    exhaust.position.set(0, 0, -0.9);
+    rocketGroup.add(exhaust);
+
+    rocketGroup.position.copy(startPos);
+    rocketGroup.lookAt(targetPos);
+    this.scene.add(rocketGroup);
+
+    if (this.audioEngine && this.audioEngine.playLauncherWhoosh) {
+      this.audioEngine.playLauncherWhoosh();
+    } else if (this.audioEngine && this.audioEngine.playFlechetteVolleyLaunch) {
+      this.audioEngine.playFlechetteVolleyLaunch();
+    }
+
+    const dir = targetPos.clone().sub(startPos).normalize();
+    this.microRockets.push({
+      mesh: rocketGroup,
+      dir,
+      target: targetPos.clone(),
+      speed: 52.0,
+      life: 2.5
+    });
   }
 
   spawnNapalmInferno(pos, horde) {
@@ -204,6 +265,56 @@ export class CheyenneDropship {
         this.napalmPools.splice(i, 1);
       }
     }
+
+    // 3. In-Flight 70mm Micro-Rockets Physics & Ground Impacts
+    for (let r = this.microRockets.length - 1; r >= 0; r--) {
+      const rock = this.microRockets[r];
+      rock.life -= delta;
+      rock.mesh.position.addScaledVector(rock.dir, rock.speed * delta);
+
+      // Smoke and fiery propulsion trail
+      if (this.particles) {
+        this.particles.emitSparks(rock.mesh.position, 2);
+      }
+
+      // Ground impact or proximity detonation
+      const distToGround = rock.mesh.position.y;
+      const distToTarget = rock.mesh.position.distanceTo(rock.target);
+
+      if (distToGround <= 0.3 || distToTarget <= 1.8 || rock.life <= 0) {
+        // High-explosive detonation
+        const impactPos = rock.mesh.position.clone();
+        impactPos.y = 0.2;
+
+        if (this.audioEngine) {
+          if (this.audioEngine.playM40GrenadeBlast) {
+            this.audioEngine.playM40GrenadeBlast();
+          } else if (this.audioEngine.playC6CataclysmBoom) {
+            this.audioEngine.playC6CataclysmBoom();
+          }
+        }
+
+        if (this.particles) {
+          this.particles.emitSparks(impactPos, 22);
+        }
+
+        if (horde) {
+          horde.checkMeleeHits({
+            origin: impactPos,
+            radius: 5.5,
+            damage: 340,
+            type: 'heavy'
+          });
+
+          if (horde.goreEngine && horde.goreEngine.spawnDismemberment) {
+            horde.goreEngine.spawnDismemberment(impactPos, 'heavy');
+          }
+        }
+
+        this.scene.remove(rock.mesh);
+        this.microRockets.splice(r, 1);
+      }
+    }
   }
 
   clear() {
@@ -217,5 +328,10 @@ export class CheyenneDropship {
       this.scene.remove(p.coreMesh);
     });
     this.napalmPools = [];
+
+    this.microRockets.forEach(r => {
+      this.scene.remove(r.mesh);
+    });
+    this.microRockets = [];
   }
 }

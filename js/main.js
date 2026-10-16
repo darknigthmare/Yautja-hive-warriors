@@ -41,10 +41,10 @@ class GameApp {
     this.particles = new ParticleSystem(this.renderer.scene);
     this.gore = new GoreEngine(this.renderer.scene);
     this.orbital = new OrbitalStrikeManager(this.renderer.scene, this.audio);
+    this.ui = new UIManager();
     this.campaign = new StoryCampaignManager(this.ui);
     this.weather = new WeatherSystem(this.renderer.scene);
     this.forge = new ForgeShop(this.audio);
-    this.ui = new UIManager();
     this.photoMode = new PhotoMode(this.renderer, this.renderer.scene, this.renderer.camera);
     this.citadel = new YautjaCitadel(this.renderer.scene);
     this.codex = new LoreCodexManager();
@@ -97,6 +97,7 @@ class GameApp {
     this.motionTrackerTimer = 0;
     this.battlefieldMorale = 50.0; // 0 to 100% (50 = balanced tug-of-war)
     this.trueMusouActive = false;
+    this.vanguardFrenzyActive = false;
 
     // Musou Dynamic Camera & Screen Impact
     this.cameraShakeIntensity = 0;
@@ -583,9 +584,17 @@ class GameApp {
     this.comboHits = 0;
     this.horde.deadCount = 0;
     this.announcedMilestones = {};
-    this.totalWaves = this.ui.selectedLevel.waves;
 
     this.citadel.hide();
+    this.ui.showScreen(this.ui.inGameHud);
+    const loadoutModal = document.getElementById('loadout-prep-screen');
+    if (loadoutModal) loadoutModal.classList.add('hidden');
+
+    if (!this.ui.selectedLevel) {
+      this.ui.selectedLevel = LEVELS_DATA[0];
+    }
+    this.totalWaves = this.ui.selectedLevel.waves;
+
     this.env.buildLevelEnvironment(this.ui.selectedLevel);
     this.renderer.updateLevelEnvironment(this.ui.selectedLevel);
     this.weather.setWeather(this.ui.selectedLevel.weatherType || 'none');
@@ -597,6 +606,19 @@ class GameApp {
 
     this.player = new Player(this.renderer.scene, this.ui.selectedChar, this.audio, false, this.particles);
     this.forge.applyStatsToPlayer(this.player);
+
+    // Chantier 9: Apply Tactical Armory Loadout Synergy
+    if (!this.activeLoadout) {
+      this.activeLoadout = {
+        primary: 'wristblades',
+        secondary: 'smart_disc',
+        gadgets: ['medicomp', 'bear_trap']
+      };
+    }
+    this.player.applyTacticalLoadout(this.activeLoadout);
+    const primName = (this.activeLoadout.primary || 'WRISTBLADES').toUpperCase();
+    const secName = (this.activeLoadout.secondary || 'SMART_DISC').toUpperCase();
+    this.ui.showAnnouncement(`🎒 LOADOUT ARMURERIE ACTIVÉ : [${primName}] + [${secName}]`);
 
     if (this.isCoOp) {
       this.player2 = new Player(this.renderer.scene, CHARACTERS_DATA[1], this.audio, true, this.particles);
@@ -636,6 +658,10 @@ class GameApp {
     const attack = this.player.lightAttack();
     if (!attack) return;
 
+    if (this.vanguardFrenzyActive) {
+      attack.damage *= 1.35;
+    }
+
     attack.origin = this.player.position;
     const hits = this.horde.checkMeleeHits(attack);
     if (hits.length > 0) this.registerHits(hits);
@@ -668,7 +694,9 @@ class GameApp {
   performHeavyAttack() {
     if (!this.player) return;
     const attack = this.player.heavyAttack();
-    if (!attack) return;
+    if (this.vanguardFrenzyActive) {
+      attack.damage *= 1.35;
+    }
 
     attack.origin = this.player.position;
     const hits = this.horde.checkMeleeHits(attack);
@@ -781,7 +809,7 @@ class GameApp {
       apexPos: discData.apexPos,
       damage: discData.damage,
       progress: 0,
-      speed: 1.35, // 1.35x per second -> ~0.74s roundtrip
+      speed: 1.35 * (this.player.smartDiscSpeedMult || 1.0), // 1.35x base -> faster with loadout perk
       life: 1.6
     });
 
@@ -919,7 +947,7 @@ class GameApp {
       direction: data.direction,
       speed: data.speed,
       damage: data.damage,
-      pierceRemaining: 6,
+      pierceRemaining: 6 + (this.player.shurikenPierceBonus || 0),
       radius: data.radius,
       life: 1.8
     });
@@ -1229,6 +1257,13 @@ class GameApp {
       this.renderer.scene.remove(this.bosses.activeBoss.mesh);
       this.bosses.activeBoss = null;
 
+      if (this.ui.showOfficerDefeatedBanner) {
+        this.ui.showOfficerDefeatedBanner(tName);
+      }
+      if (this.audio && this.audio.playOfficerDefeatedGong) {
+        this.audio.playOfficerDefeatedGong();
+      }
+      this.triggerCameraShake(1.2, 0.6);
       this.ui.showAnnouncement(`🏆 TROPHÉE LÉGENDAIRE RÉCOLTÉ : ${tName} (+${tHonor} HONNEUR, +2 GELÉES ROYALES) !`);
       this.ui.showExecutionPrompt(false);
       return;
@@ -1270,6 +1305,13 @@ class GameApp {
           this.horde.aliens.splice(i, 1);
           this.horde.deadCount++;
 
+          if (this.ui.showOfficerDefeatedBanner) {
+            this.ui.showOfficerDefeatedBanner(tName);
+          }
+          if (this.audio && this.audio.playOfficerDefeatedGong) {
+            this.audio.playOfficerDefeatedGong();
+          }
+          this.triggerCameraShake(0.9, 0.5);
           this.ui.showAnnouncement(`🏆 TROPHÉE DE CHASSE : ${tName} (+${tHonor} HONNEUR, MORAL +18%) !`);
           this.ui.showExecutionPrompt(false);
           return;
@@ -1292,6 +1334,19 @@ class GameApp {
       hiveFill.style.width = `${hivePct}%`;
       if (clanVal) clanVal.innerText = clanPct;
       if (hiveVal) hiveVal.innerText = hivePct;
+
+      // Chantier 10: Vanguard Berserker Frenzy Threshold at 80%+
+      if (clanPct >= 80 && !this.vanguardFrenzyActive) {
+        this.vanguardFrenzyActive = true;
+        clanFill.classList.add('morale-frenzy');
+        if (this.audio && this.audio.playWarhorn) this.audio.playWarhorn();
+        if (this.audio && this.audio.playMoraleShiftPing) this.audio.playMoraleShiftPing();
+        this.ui.showAnnouncement('🔥 FUREUR DE L\'AVANT-GARDE DU CLAN (MORAL >= 80%) : +25% VITESSE & +35% DÉGÂTS !');
+      } else if (clanPct < 75 && this.vanguardFrenzyActive) {
+        this.vanguardFrenzyActive = false;
+        clanFill.classList.remove('morale-frenzy');
+        this.ui.showAnnouncement('⚠️ ÉQUILIBRE DU CLAN NORMALISÉ : PRESSION XENOMORPHE ACCRUE');
+      }
     }
   }
 
@@ -1310,7 +1365,13 @@ class GameApp {
           if (this.audio && this.audio.playOfficerDefeatedGong) {
             this.audio.playOfficerDefeatedGong();
           }
-          this.ui.showAnnouncement(`⚔️ OFFICIER VAINCU : ${h.officerTitle || 'GARDE DE NŒUD KAINDE AMEDHA'} PURGÉ ! ÉQUILIBRE DU CLAN +12% !`);
+          const title = h.officerTitle || 'PRAETORIAN ROYAL GUARD';
+          if (this.ui.showOfficerDefeatedBanner) {
+            this.ui.showOfficerDefeatedBanner(title);
+          } else {
+            this.ui.showAnnouncement(`⚔️ OFFICIER VAINCU : ${title} PURGÉ ! ÉQUILIBRE DU CLAN +12% !`);
+          }
+          this.triggerCameraShake(0.8, 0.45);
         } else {
           this.shiftBattlefieldMorale(0.4);
         }
@@ -1388,7 +1449,7 @@ class GameApp {
     this.hellHounds.update(delta, this.player, this.horde);
     this.synthetics.update(delta, this.player, this.horde);
     this.dropship.update(delta, this.horde);
-    this.apc.update(delta, this.horde);
+    this.apc.update(delta, this.horde, this.bosses);
     this.sentryGun.update(delta, this.horde);
     this.falconDrone.update(delta, this.player.position, this.horde);
     this.skimmer.update(delta, this.player, this.horde, this.keys);
@@ -1504,6 +1565,13 @@ class GameApp {
         p.progress += p.speed * delta;
         p.mesh.rotation.z += 25 * delta; // Rapid slicing gyro-spin
 
+        // Chantier 4: Periodic high-frequency gyro slicing rotor hum
+        p.rotorTimer = (p.rotorTimer || 0) + delta;
+        if (p.rotorTimer >= 0.22) {
+          p.rotorTimer = 0;
+          if (this.audio && this.audio.playSmartDiscRotor) this.audio.playSmartDiscRotor();
+        }
+
         // Quadratic Bezier Curve from start -> apex -> player current position!
         const t = Math.min(1.0, p.progress);
         const playerCurrentHand = this.player.position.clone().add(new THREE.Vector3(0.8, 1.8, 0.4));
@@ -1521,7 +1589,28 @@ class GameApp {
         const hits = this.horde.checkMeleeHits({ origin: p.mesh.position, radius: 2.8, damage: p.damage });
         if (hits.length > 0) {
           this.particles.emitSparks(p.mesh.position, 6);
+          if (this.gore && this.gore.spawnDismemberment) {
+            this.gore.spawnDismemberment(p.mesh.position, 'smart_disc');
+          }
           this.registerHits(hits);
+        }
+
+        if (this.bosses && this.bosses.activeBoss && p.mesh.position.distanceTo(this.bosses.activeBoss.mesh.position) <= 4.0) {
+          this.bosses.takeDamage(p.damage);
+          this.particles.emitSparks(p.mesh.position, 8);
+          if (this.gore && this.gore.spawnDismemberment) {
+            this.gore.spawnDismemberment(p.mesh.position, 'smart_disc');
+          }
+        }
+
+        if (this.synthetics) {
+          const synHits = this.synthetics.checkHits({ origin: p.mesh.position, radius: 2.8, damage: p.damage });
+          if (synHits.length > 0) {
+            this.particles.emitSparks(p.mesh.position, 6);
+            if (this.gore && this.gore.spawnDismemberment) {
+              this.gore.spawnDismemberment(p.mesh.position, 'smart_disc');
+            }
+          }
         }
 
         if (p.progress >= 1.0 || p.life <= 0) {
@@ -1743,6 +1832,17 @@ class GameApp {
     // Dynamic Tug-of-War Morale update (Alien pressure slowly regains ground if Yautja is idle)
     if (this.battlefieldMorale > 25.0) {
       this.shiftBattlefieldMorale(-0.15 * delta);
+    }
+
+    // Chantier 10: Vanguard Berserker Frenzy Golden Aura
+    if (this.vanguardFrenzyActive && this.player) {
+      this.frenzyAuraTimer = (this.frenzyAuraTimer || 0) + delta;
+      if (this.frenzyAuraTimer >= 0.35) {
+        this.frenzyAuraTimer = 0;
+        if (this.particles && this.particles.emitGoldRageSparks) {
+          this.particles.emitGoldRageSparks(this.player.position, 3);
+        }
+      }
     }
 
     this.ui.updateHUD(this.player, this.horde, this.bosses, this.waveIndex, this.totalWaves, this.score);

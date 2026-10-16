@@ -58,13 +58,14 @@ export class EngineRenderer {
   }
 
   updateLevelEnvironment(levelConfig) {
-    this.currentSkyColor = levelConfig.skyColor;
-    this.currentFogColor = levelConfig.fogColor;
+    if (!levelConfig) return;
+    this.currentSkyColor = levelConfig.skyColor !== undefined ? levelConfig.skyColor : 0x050a10;
+    this.currentFogColor = levelConfig.fogColor !== undefined ? levelConfig.fogColor : 0x0a1015;
     this.currentFogDensity = levelConfig.fogDensity !== undefined ? levelConfig.fogDensity : 0.015;
 
-    this.scene.background = new THREE.Color(levelConfig.skyColor);
+    this.scene.background = new THREE.Color(this.currentSkyColor);
     this.scene.fog = new THREE.FogExp2(this.currentFogColor, this.currentFogDensity);
-    this.dirLight.color.setHex(levelConfig.skyColor);
+    if (this.dirLight) this.dirLight.color.setHex(this.currentSkyColor);
   }
 
   triggerLightningFlash(color = 0xd8ecff, intensity = 4.8) {
