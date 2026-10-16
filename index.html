@@ -32,11 +32,12 @@
     </div>
   </div>
 
-  <!-- 4 BIO-MASK VISION MODES OVERLAYS -->
+  <!-- 5 BIO-MASK VISION MODES OVERLAYS -->
   <div id="thermal-overlay" class="hidden"></div>
   <div id="em-overlay" class="hidden"></div>
   <div id="tech-overlay" class="hidden"></div>
   <div id="uv-overlay" class="hidden"></div>
+  <div id="sonar-overlay" class="hidden"></div>
 
   <div id="cloak-overlay" class="hidden"></div>
   <div id="acid-corrosion-overlay" class="hidden"></div>
@@ -400,6 +401,19 @@
         </div>
       </div>
 
+      <!-- SMART-DISC REMOTE GUIDANCE HUD (Chantier 3) -->
+      <div id="smartdisc-guidance-hud" class="smartdisc-guidance-overlay hidden">
+        <div class="guidance-reticle"></div>
+        <div class="guidance-header">SMART-DISC // TÉLÉGUIDAGE LASER ACTIF</div>
+        <div class="guidance-hint">[SHIFT+B] DÉSACTIVER // CIBLE VERROUILLÉE</div>
+      </div>
+
+      <!-- FALLEN MARINE SCAVENGE PROMPT (Chantier 4) -->
+      <div id="marine-scavenge-prompt" class="marine-scavenge-box hidden">
+        <div class="scavenge-key">[ E ]</div>
+        <div class="scavenge-text">FOUILLER LE CORPS DU MARINE USCM (MUNITIONS & SOIN)</div>
+      </div>
+
       <div class="hud-bottom-center" id="hud-equipped-slots-container">
         <div class="ability-slot" id="slot-fps">
           <div class="slot-key">I</div>
@@ -483,7 +497,7 @@
         </div>
         <div class="ability-slot" id="slot-vision">
           <div class="slot-key">V</div>
-          <div class="slot-label">4 MODES VISION</div>
+          <div class="slot-label">5 MODES VISION</div>
         </div>
         <div class="ability-slot" id="slot-trax">
           <div class="slot-key">X</div>
@@ -492,6 +506,10 @@
         <div class="ability-slot" id="slot-whirl">
           <div class="slot-key">⇧+RMB</div>
           <div class="slot-label">WHIRL-SHIELD</div>
+        </div>
+        <div class="ability-slot" id="slot-tripwire">
+          <div class="slot-key">Y</div>
+          <div class="slot-label">TRIPWIRE-MINE</div>
         </div>
         <div class="ability-slot" id="slot-swap">
           <div class="slot-key">TAB</div>

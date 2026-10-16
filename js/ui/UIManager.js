@@ -609,5 +609,27 @@ export class UIManager {
       promptElem.classList.add('hidden');
     }
   }
+
+  /* Chantier 3 (v43): Smart-Disc Remote Laser Guidance HUD */
+  updateSmartDiscGuidance(isGuiding) {
+    const hud = document.getElementById('smartdisc-guidance-hud');
+    if (!hud) return;
+    if (isGuiding) {
+      hud.classList.remove('hidden');
+    } else {
+      hud.classList.add('hidden');
+    }
+  }
+
+  /* Chantier 4 (v43): Fallen Marine Scavenge Proximity Prompt */
+  updateMarineScavengePrompt(isNear, marine) {
+    const prompt = document.getElementById('marine-scavenge-prompt');
+    if (!prompt) return;
+    if (isNear && marine && !marine.isScavenged) {
+      prompt.classList.remove('hidden');
+    } else {
+      prompt.classList.add('hidden');
+    }
+  }
 }
 

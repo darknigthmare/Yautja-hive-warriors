@@ -285,10 +285,18 @@ class GameApp {
         this.ui.showAnnouncement('🐕 MEUTE DE CHIENS DE CHASSE HELL-HOUNDS DÉPLOYÉE !');
       }
 
-      // Audio Mimicry Voice Lure [Y Key]
+      // Audio Mimicry Voice Lure [Shift + Y] / Yautja Thermal Plasma Tripwire Mine [Y Key] (Chantier 9)
       if (e.code === 'KeyY' && this.player) {
-        const taunt = this.player.triggerVoiceMimicry(this.horde);
-        this.ui.showAnnouncement(`📻 LEURRE VOCAL AUDIO MIMICRY DIFFUSÉ : ${taunt}`);
+        if (this.keys['ShiftLeft'] || this.keys['ShiftRight']) {
+          const taunt = this.player.triggerVoiceMimicry(this.horde);
+          this.ui.showAnnouncement(`📻 LEURRE VOCAL AUDIO MIMICRY DIFFUSÉ : ${taunt}`);
+        } else {
+          if (this.player.deployTripwireMine(this.renderer.scene, this.particles)) {
+            this.ui.showAnnouncement('🕸️ MINE TRIPWIRE PLASMA YAUTJA DÉPLOYÉE (3 FAISCEAUX LASER) !');
+          } else {
+            this.ui.showAnnouncement('⏳ MINE EN RECHARGE OU MAXIMUM DE 3 MINES ATTEINT');
+          }
+        }
       }
 
       // Segmented Spine Whip [Digit 1 or Shift + Left Click] (AVP: Requiem 2007)
@@ -435,6 +443,8 @@ class GameApp {
           // Handled Emergency Atmospheric Decompression Airlock!
         } else if (this.env && this.env.checkCocoonInteraction(this.player.position, this.player, this.horde, this.ui, this.audio, this.particles)) {
           // Handled Chrysalis Cocoon harvesting or Lurker ambush!
+        } else if (this.env && this.env.checkMarineScavengeInteraction(this.player.position, this.player, this.sentryGun, this.ui, this.audio)) {
+          // Handled USCM Marine salvage!
         } else if (this.env && this.env.checkCryoMedBayInteraction(this.player.position, this.player, this.ui, this.audio)) {
           // Handled Weyland-Yutani Autodoc Med-Bay stasis decontamination & embryo purge!
         } else if (this.env && this.env.checkSupplyInteraction(this.player.position, this.player, this.ui, this.audio)) {
@@ -465,10 +475,23 @@ class GameApp {
         this.triggerNukeCountdownSequence();
       }
 
+      // Smart-Disc Throw & Chantier 3 (v43): Remote Guidance Mode Toggle [Ctrl/Shift + B]
       if (e.code === 'KeyB' && this.player) {
         const activeDisc = this.projectiles.find(p => p.isSmartDisc && p.life > 0.1);
         if (activeDisc) {
-          this.triggerSmartDiscRicochet(activeDisc);
+          if (this.keys['ShiftLeft'] || this.keys['ShiftRight'] || this.keys['ControlLeft']) {
+            if (this.player.isSmartDiscGuiding) {
+              this.player.stopSmartDiscRemoteGuidance();
+              this.ui.updateSmartDiscGuidance(false);
+              this.ui.showAnnouncement('🎯 TÉLÉGUIDAGE SMART-DISC DÉSACTIVÉ : RETOUR EN MAIN');
+            } else {
+              this.player.startSmartDiscRemoteGuidance(activeDisc);
+              this.ui.updateSmartDiscGuidance(true);
+              this.ui.showAnnouncement('🎯 TÉLÉGUIDAGE SMART-DISC ACTIVÉ : ORIENTATION LASER CONTINUE !');
+            }
+          } else {
+            this.triggerSmartDiscRicochet(activeDisc);
+          }
         } else if (this.player.acidSolventCharges > 0 && this.horde.acidPools.length > 0) {
           if (this.player.useAcidSolvent(this.horde)) {
             this.ui.showAnnouncement('🧪 FIOLE DE SOLVANT D\'ACIDE DÉPLOYÉE: SOL PURIFIÉ !');
@@ -611,27 +634,33 @@ class GameApp {
     const em = document.getElementById('em-overlay');
     const tech = document.getElementById('tech-overlay');
     const uv = document.getElementById('uv-overlay');
+    const sonar = document.getElementById('sonar-overlay');
     const tag = document.getElementById('hud-vision-tag');
 
-    [thermal, em, tech, uv].forEach(el => el.classList.add('hidden'));
+    [thermal, em, tech, uv, sonar].forEach(el => { if (el) el.classList.add('hidden'); });
 
     if (mode === 1) {
-      thermal.classList.remove('hidden');
+      if (thermal) thermal.classList.remove('hidden');
       tag.innerText = 'VISION : THERMIQUE IR';
       tag.style.color = '#ff4d4d';
       this.audio.startThermalHum();
     } else if (mode === 2) {
-      em.classList.remove('hidden');
+      if (em) em.classList.remove('hidden');
       tag.innerText = 'VISION : ÉLECTROMAGNÉTIQUE XENO';
       tag.style.color = '#00d2ff';
       this.audio.stopThermalHum();
     } else if (mode === 3) {
-      tech.classList.remove('hidden');
+      if (tech) tech.classList.remove('hidden');
       tag.innerText = 'VISION : TECH WIREFRAME SCAN';
       tag.style.color = '#39ff14';
       this.audio.stopThermalHum();
+    } else if (mode === 4) {
+      if (sonar) sonar.classList.remove('hidden');
+      tag.innerText = 'VISION : RÉSONANCE ACOUSTIQUE SONAR';
+      tag.style.color = '#38bdf8';
+      this.audio.stopThermalHum();
     } else {
-      uv.classList.remove('hidden');
+      if (uv) uv.classList.remove('hidden');
       tag.innerText = 'VISION : NATURELLE ULTRAVIOLETTE';
       tag.style.color = '#ffaa00';
       this.audio.stopThermalHum();
@@ -804,6 +833,9 @@ class GameApp {
       this.env.checkCraneCableHit(this.player.position, 3.8, attack.damage, this.audio, this.particles, this.horde);
       this.env.checkEggClusterHits(this.player.position, 3.8, attack.damage, this.audio, this.particles, this.horde);
       this.env.checkSteamConduitHits(this.player.position, 3.8, attack.damage, this.audio, this.particles);
+      this.env.checkOvipositorHit(this.player.position, 3.8, attack.damage, this.audio, this.particles, this.horde, this.bosses);
+      this.env.checkNitrogenTankHits(this.player.position, 3.8, attack.damage, this.audio, this.particles);
+      this.env.checkWebbingDamage(this.player.position, 3.8, attack.damage, this.particles);
     }
 
     // Update Combo Chain Tag
@@ -847,6 +879,9 @@ class GameApp {
       this.env.checkCraneCableHit(this.player.position, 4.8, attack.damage, this.audio, this.particles, this.horde);
       this.env.checkEggClusterHits(this.player.position, 4.8, attack.damage, this.audio, this.particles, this.horde);
       this.env.checkSteamConduitHits(this.player.position, 4.8, attack.damage, this.audio, this.particles);
+      this.env.checkOvipositorHit(this.player.position, 4.8, attack.damage, this.audio, this.particles, this.horde, this.bosses);
+      this.env.checkNitrogenTankHits(this.player.position, 4.8, attack.damage, this.audio, this.particles);
+      this.env.checkWebbingDamage(this.player.position, 4.8, attack.damage, this.particles);
     }
 
     // Dynasty Warriors Musou C1-C6 Charge Finisher Announcement & Camera Punch
@@ -1772,6 +1807,9 @@ class GameApp {
           this.env.checkCraneCableHit(p.mesh.position, 2.2, p.damage, this.audio, this.particles, this.horde);
           this.env.checkEggClusterHits(p.mesh.position, 2.2, p.damage, this.audio, this.particles, this.horde);
           this.env.checkSteamConduitHits(p.mesh.position, 2.2, p.damage, this.audio, this.particles);
+          this.env.checkOvipositorHit(p.mesh.position, 2.2, p.damage, this.audio, this.particles, this.horde, this.bosses);
+          this.env.checkNitrogenTankHits(p.mesh.position, 2.2, p.damage, this.audio, this.particles);
+          this.env.checkWebbingDamage(p.mesh.position, 2.2, p.damage, this.particles);
         }
 
         const hits = this.horde.checkMeleeHits({ origin: p.mesh.position, radius: 2.8, damage: p.damage });
@@ -1974,6 +2012,17 @@ class GameApp {
     if (this.synthetics && this.synthetics.units) traxTargets.push(...this.synthetics.units.filter(s => s && s.isTraxTagged));
     if (this.bosses && this.bosses.activeBoss && this.bosses.activeBoss.isTraxTagged) traxTargets.push(this.bosses.activeBoss);
     this.ui.updateTraxNetTelemetry(traxTargets, this.renderer.camera, this.player);
+
+    // Chantier 3 (v43): Smart-Disc Telemetric Remote Guidance Update
+    if (this.player && this.player.isSmartDiscGuiding && this.player.guidedSmartDisc) {
+      const cameraDir = new THREE.Vector3();
+      this.renderer.camera.getWorldDirection(cameraDir);
+      this.player.updateSmartDiscRemoteGuidance(delta, cameraDir);
+    }
+
+    // Chantier 4 (v43): Fallen Marine Scavenge Proximity Prompt
+    const nearMarine = this.env && this.env.fallenMarines && this.env.fallenMarines.find(m => !m.isScavenged && this.player && this.player.position.distanceTo(m.pos) <= 2.8);
+    this.ui.updateMarineScavengePrompt(!!nearMarine, nearMarine);
 
     // USCM M314 Motion Tracker Proximity Sonar Ping
     let nearestDist = Infinity;

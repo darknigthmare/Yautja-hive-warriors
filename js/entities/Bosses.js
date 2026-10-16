@@ -563,22 +563,26 @@ export class BossManager {
       this.spitAcidMortar(player);
     }
 
+    // Chantier 1 (v43): Queen Enrage Mode upon Ovipositor Severance
+    const speedMult = this.activeBoss.isEnraged ? 1.4 : 1.0;
+
     // Queen Caudal Tail Skewer Thrust (Aliens 1986 Bishop Impalement Lore)
     if ((this.activeBoss.type === 'xenomorph_queen' || this.activeBoss.type === 'imperial_queen' || this.activeBoss.type === 'predalien_queen') && dist <= 7.0 && this.activeBoss.tailSkewerCooldown <= 0) {
-      this.activeBoss.tailSkewerCooldown = 5.5;
+      this.activeBoss.tailSkewerCooldown = this.activeBoss.isEnraged ? 2.8 : 5.5;
       this.triggerTailSkewer(player);
     }
 
     // Medium-close range: Tail Whip 360
     if (dist <= 8.5 && this.activeBoss.tailWhipCooldown <= 0) {
-      this.activeBoss.tailWhipCooldown = 4.0;
+      this.activeBoss.tailWhipCooldown = this.activeBoss.isEnraged ? 2.2 : 4.0;
       this.triggerTailWhip(player);
     }
 
     // Movement
     if (dist > 3.0) {
       dir.normalize();
-      const moveSpeed = this.activeBoss.type === 'the_offspring' ? 10.5 : (this.activeBoss.type === 'empress_matriarch' ? 8.5 : 7.5);
+      let baseSpeed = this.activeBoss.type === 'the_offspring' ? 10.5 : (this.activeBoss.type === 'empress_matriarch' ? 8.5 : 7.5);
+      const moveSpeed = baseSpeed * speedMult;
       this.activeBoss.mesh.position.addScaledVector(dir, moveSpeed * delta);
       this.activeBoss.mesh.rotation.y = Math.atan2(dir.x, dir.z);
       // Trample and crush Catwalk Pillars on contact (Chantier 4)
@@ -586,7 +590,26 @@ export class BossManager {
         window.gameInstance.env.damageCatwalkPillars(this.activeBoss.mesh.position, 4.0, 90 * delta, this.audioEngine, window.gameInstance.particles);
       }
     } else {
-      player.takeDamage((this.activeBoss.type === 'the_offspring' ? 65 : 45) * delta);
+      player.takeDamage((this.activeBoss.type === 'the_offspring' ? 65 : 45) * delta * speedMult);
+    }
+
+    // Chantier 5 (v43): Praetorian Royal Shield Phalanx Queen Bodyguard Protocol
+    if (horde && horde.aliens) {
+      horde.aliens.forEach(a => {
+        if (!a || a.hp <= 0 || !a.mesh || a.type !== 'praetorian') return;
+        a.isPhalanxGuarding = true;
+        // Position Praetorian directly between player and Queen to form an armored shield wall
+        const shieldPos = this.activeBoss.mesh.position.clone().lerp(player.position, 0.42);
+        shieldPos.y = 0;
+        const shieldDir = shieldPos.sub(a.mesh.position);
+        if (shieldDir.length() > 1.2) {
+          shieldDir.normalize();
+          a.mesh.position.addScaledVector(shieldDir, 8.5 * delta);
+        }
+        // Face player with armored cranial crest
+        const toPlayer = player.position.clone().sub(a.mesh.position).normalize();
+        a.mesh.rotation.y = Math.atan2(toPlayer.x, toPlayer.z);
+      });
     }
   }
 

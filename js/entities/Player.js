@@ -78,6 +78,11 @@ export class Player {
     this.riposteTimer = 0;
     this.traxNetCooldown = 0;
     this.isWhirlShieldActive = false;
+    // v43.0 Systems
+    this.tripwireMines = [];
+    this.tripwireMineCooldown = 0;
+    this.isSmartDiscGuiding = false;
+    this.guidedSmartDisc = null;
     this.whirlShieldTimer = 0;
 
     // Pounce Leap State
@@ -831,7 +836,7 @@ export class Player {
   }
 
   cycleVisionMode() {
-    this.visionMode = (this.visionMode + 1) % 4;
+    this.visionMode = (this.visionMode + 1) % 5;
     this.audioEngine.playVisionSwitch(this.visionMode);
     return this.visionMode;
   }
@@ -1903,5 +1908,165 @@ export class Player {
         this.takeDamage(99999); // Fatal thoracic eruption!
       }
     }
+
+    // Chantier 9 (v43): Yautja Tripwire Mine Cooldown & Proximity Update
+    if (this.tripwireMineCooldown > 0) {
+      this.tripwireMineCooldown = Math.max(0, this.tripwireMineCooldown - delta);
+    }
+    this.updateTripwireMines(delta, horde, synthetics, window.gameInstance ? window.gameInstance.particles : null);
+  }
+
+  /* =========================================================================
+     v43.0 APEX WEAPON SYSTEMS (Prey / AVP 2 / Predator 2 Canon)
+     ========================================================================= */
+
+  /* Chantier 9: Yautja Thermal Plasma Mine / Proximity Tri-Beam Tripwire */
+  deployTripwireMine(scene, particles) {
+    if (this.tripwireMineCooldown > 0 || this.tripwireMines.length >= 3) return false;
+    this.tripwireMineCooldown = 4.5;
+
+    const minePos = this.position.clone();
+    minePos.y = 0.1;
+
+    const group = new THREE.Group();
+    group.position.copy(minePos);
+
+    // Triangular Yautja Mine Body
+    const bodyMat = new THREE.MeshStandardMaterial({ color: 0x1c1917, metalness: 0.9, roughness: 0.2 });
+    const coreMat = new THREE.MeshBasicMaterial({ color: 0xef4444 });
+
+    const base = new THREE.Mesh(new THREE.ConeGeometry(0.35, 0.18, 3), bodyMat);
+    group.add(base);
+
+    const core = new THREE.Mesh(new THREE.SphereGeometry(0.08, 6, 6), coreMat);
+    core.position.y = 0.12;
+    group.add(core);
+
+    // 3 Tri-Beam Red Lasers radiating outwards (7.5m length)
+    const beamMat = new THREE.MeshBasicMaterial({ color: 0xff0000, transparent: true, opacity: 0.85 });
+    const beams = [];
+    for (let b = 0; b < 3; b++) {
+      const angle = (b / 3) * Math.PI * 2;
+      const beamGeo = new THREE.CylinderGeometry(0.02, 0.02, 7.5, 4);
+      beamGeo.rotateX(Math.PI / 2);
+      const beamMesh = new THREE.Mesh(beamGeo, beamMat);
+      beamMesh.position.set(Math.sin(angle) * 3.75, 0.1, Math.cos(angle) * 3.75);
+      beamMesh.rotation.y = angle;
+      group.add(beamMesh);
+      beams.push({ angle, dir: new THREE.Vector3(Math.sin(angle), 0, Math.cos(angle)) });
+    }
+
+    scene.add(group);
+    if (this.audioEngine && this.audioEngine.playYautjaClick) {
+      this.audioEngine.playYautjaClick();
+    }
+
+    this.tripwireMines.push({
+      group,
+      pos: minePos,
+      beams,
+      armTimer: 1.0,
+      isArmed: false
+    });
+
+    return true;
+  }
+
+  updateTripwireMines(delta, horde, synthetics, particles) {
+    for (let i = this.tripwireMines.length - 1; i >= 0; i--) {
+      const mine = this.tripwireMines[i];
+      if (!mine.isArmed) {
+        mine.armTimer -= delta;
+        if (mine.armTimer <= 0) mine.isArmed = true;
+        continue;
+      }
+
+      // Check proximity trigger against enemies (7.0m trigger radius)
+      let triggered = false;
+      let triggerPos = null;
+
+      if (horde && horde.aliens) {
+        for (const a of horde.aliens) {
+          if (!a || a.hp <= 0 || !a.mesh) continue;
+          if (a.mesh.position.distanceTo(mine.pos) <= 7.0) {
+            triggered = true;
+            triggerPos = a.mesh.position;
+            break;
+          }
+        }
+      }
+
+      if (!triggered && synthetics && synthetics.units) {
+        for (const s of synthetics.units) {
+          if (!s || s.hp <= 0 || !s.mesh) continue;
+          if (s.mesh.position.distanceTo(mine.pos) <= 7.0) {
+            triggered = true;
+            triggerPos = s.mesh.position;
+            break;
+          }
+        }
+      }
+
+      if (triggered) {
+        // Detonate Plasma Tripwire Mine!
+        if (this.audioEngine && this.audioEngine.playM40GrenadeBlast) {
+          this.audioEngine.playM40GrenadeBlast();
+        }
+        if (particles && particles.emitSparks) {
+          particles.emitSparks(mine.pos, 35);
+        }
+
+        // Deal 550 area plasma damage in 7.5m radius
+        if (horde) {
+          horde.checkMeleeHits({
+            origin: mine.pos,
+            radius: 7.5,
+            damage: 550,
+            type: 'heavy'
+          });
+        }
+        if (synthetics) {
+          synthetics.checkHits({
+            origin: mine.pos,
+            radius: 7.5,
+            damage: 550
+          });
+        }
+
+        if (window.gameInstance && window.gameInstance.triggerCameraShake) {
+          window.gameInstance.triggerCameraShake(0.7, 0.3);
+        }
+
+        if (window.gameInstance && window.gameInstance.ui) {
+          window.gameInstance.ui.showAnnouncement('💥 MINE TRIPWIRE PLASMA YAUTJA DÉTONÉE : DÉFLAGRATION 550 DÉGÂTS !');
+        }
+
+        window.gameInstance.renderer.scene.remove(mine.group);
+        this.tripwireMines.splice(i, 1);
+      }
+    }
+  }
+
+  /* Chantier 3: Smart-Disc Remote Laser Guidance & Telemetric Hover (Predator 2 / AVP 2010) */
+  startSmartDiscRemoteGuidance(disc) {
+    this.isSmartDiscGuiding = true;
+    this.guidedSmartDisc = disc;
+    if (this.audioEngine && this.audioEngine.playSmartDiscHoverHum) {
+      this.audioEngine.playSmartDiscHoverHum();
+    }
+  }
+
+  updateSmartDiscRemoteGuidance(delta, cameraForward) {
+    if (!this.isSmartDiscGuiding || !this.guidedSmartDisc || !this.guidedSmartDisc.mesh) return;
+    const disc = this.guidedSmartDisc;
+    // Steer disc along camera orientation
+    const steerDir = cameraForward.clone().normalize();
+    disc.mesh.position.addScaledVector(steerDir, 24.0 * delta);
+    disc.mesh.rotation.y += delta * 35.0; // Rapid gyroscopic spin
+  }
+
+  stopSmartDiscRemoteGuidance() {
+    this.isSmartDiscGuiding = false;
+    this.guidedSmartDisc = null;
   }
 }

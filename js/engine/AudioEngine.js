@@ -3102,6 +3102,214 @@ export class AudioEngine {
     noise.start(now);
     noise.stop(now + 0.8);
   }
+
+  /* =========================================================================
+     v43.0 APEX SYNTHESIZERS (Aliens 1986 / Predator 2 / Prey / AvP Canon)
+     ========================================================================= */
+
+  // 22. Queen Ovipositor Peristaltic Contraction & Egg-Laying Squelch (Aliens 1986)
+  playOvipositorPump() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    const filter = this.ctx.createBiquadFilter();
+
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(65, now);
+    osc.frequency.exponentialRampToValueAtTime(140, now + 0.2);
+    osc.frequency.exponentialRampToValueAtTime(45, now + 0.6);
+
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(280, now);
+    filter.frequency.linearRampToValueAtTime(550, now + 0.2);
+    filter.frequency.linearRampToValueAtTime(180, now + 0.6);
+
+    gain.gain.setValueAtTime(0.75, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.65);
+
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.65);
+  }
+
+  // 23. Queen Ovipositor Rupture & Visceral Acidic Detonation (Aliens 1986)
+  playOvipositorRupture() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Heavy biological explosion noise
+    const bufferSize = this.ctx.sampleRate * 1.2;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = Math.random() * 2 - 1;
+    }
+
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(1200, now);
+    filter.frequency.exponentialRampToValueAtTime(120, now + 1.1);
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.95, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 1.2);
+
+    // Tearing screech
+    const screech = this.ctx.createOscillator();
+    const sGain = this.ctx.createGain();
+    screech.type = 'sawtooth';
+    screech.frequency.setValueAtTime(800, now);
+    screech.frequency.linearRampToValueAtTime(280, now + 0.5);
+    sGain.gain.setValueAtTime(0.5, now);
+    sGain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+
+    screech.connect(sGain);
+    sGain.connect(this.ctx.destination);
+    screech.start(now);
+    screech.stop(now + 0.5);
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    noise.start(now);
+    noise.stop(now + 1.2);
+  }
+
+  // 24. Atmospheric Condenser Ion Storm Surge & Lightning Rod Strike (Alien 3 / Fiorina 161)
+  playIonStormCharge() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Rising high-voltage ionization frequency sweep
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(220, now);
+    osc.frequency.exponentialRampToValueAtTime(3600, now + 0.8);
+
+    gain.gain.setValueAtTime(0.3, now);
+    gain.gain.linearRampToValueAtTime(0.8, now + 0.8);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 1.2);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 1.2);
+
+    // Crackling thunderclap discharge
+    setTimeout(() => {
+      if (!this.ctx || this.isMuted) return;
+      const cNow = this.ctx.currentTime;
+      const tOsc = this.ctx.createOscillator();
+      const tGain = this.ctx.createGain();
+      tOsc.type = 'sawtooth';
+      tOsc.frequency.setValueAtTime(80, cNow);
+      tOsc.frequency.exponentialRampToValueAtTime(25, cNow + 0.9);
+      tGain.gain.setValueAtTime(1.0, cNow);
+      tGain.gain.exponentialRampToValueAtTime(0.01, cNow + 0.9);
+      tOsc.connect(tGain);
+      tGain.connect(this.ctx.destination);
+      tOsc.start(cNow);
+      tOsc.stop(cNow + 0.9);
+    }, 750);
+  }
+
+  // 25. Smart-Disc Telemetric Remote Hover Whine (Predator 2 / AVP 2010)
+  playSmartDiscHoverHum() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(1150, now);
+    osc.frequency.linearRampToValueAtTime(1600, now + 0.2);
+    osc.frequency.linearRampToValueAtTime(1150, now + 0.4);
+
+    gain.gain.setValueAtTime(0.4, now);
+    gain.gain.linearRampToValueAtTime(0.01, now + 0.45);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.45);
+  }
+
+  // 26. Liquid Nitrogen Flash Freeze Deluge & Crystalline Crackle (Alien: Resurrection 1997)
+  playLiquidNitrogenBlast() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const bufferSize = this.ctx.sampleRate * 0.9;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = Math.random() * 2 - 1;
+    }
+
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'highpass';
+    filter.frequency.setValueAtTime(2400, now);
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.85, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.9);
+
+    // High crystalline tinkle
+    const chime = this.ctx.createOscillator();
+    const cGain = this.ctx.createGain();
+    chime.type = 'sine';
+    chime.frequency.setValueAtTime(4200, now);
+    chime.frequency.exponentialRampToValueAtTime(1800, now + 0.4);
+    cGain.gain.setValueAtTime(0.45, now);
+    cGain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+
+    chime.connect(cGain);
+    cGain.connect(this.ctx.destination);
+    chime.start(now);
+    chime.stop(now + 0.4);
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    noise.start(now);
+    noise.stop(now + 0.9);
+  }
+
+  // 27. Bio-Resin Webbing Stretch & Adhesive Tear (Aliens 1986)
+  playWebbingSquish() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(320, now);
+    osc.frequency.linearRampToValueAtTime(140, now + 0.25);
+
+    gain.gain.setValueAtTime(0.5, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.28);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.28);
+  }
 }
 
 

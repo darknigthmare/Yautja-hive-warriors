@@ -490,18 +490,29 @@ export class XenomorphHorde {
       const dist = a.mesh.position.distanceTo(attack.origin);
 
       if (dist <= attack.radius + (a.radius || 1.0)) {
-        // Chantier 4: Flash-Frozen Instant Shatter (Alien: Romulus 2024 / Alien 3 Canon)
-        if (a.isFlashFrozen) {
-          a.hp = 0; // Shattered into frozen chitin shards!
-          if (this.audioEngine && this.audioEngine.playCryoShatter) {
-            this.audioEngine.playCryoShatter();
-          }
+        // Chantier 7 (v43): Liquid Nitrogen Frozen 3x Critical Shatter
+        let damageDealt = (a.isTargetPainted || a.isTraxTagged) ? attack.damage * 1.25 : attack.damage;
+        if (a.isFrozen) {
+          damageDealt *= 3.0; // 3x shattering critical damage!
           if (this.particles && this.particles.emitSparks) {
-            this.particles.emitSparks(a.mesh.position, 28);
+            this.particles.emitSparks(a.mesh.position, 25);
           }
         }
 
-        const damageDealt = (a.isTargetPainted || a.isTraxTagged) ? attack.damage * 1.25 : attack.damage;
+        // Chantier 5 (v43): Praetorian Royal Shield Phalanx Frontal Deflection
+        if (a.type === 'praetorian' && a.isPhalanxGuarding && attack.origin) {
+          const forward = new THREE.Vector3(Math.sin(a.mesh.rotation.y), 0, Math.cos(a.mesh.rotation.y));
+          const toAttack = attack.origin.clone().sub(a.mesh.position).setY(0).normalize();
+          const dot = forward.dot(toAttack);
+          if (dot > 0.3) {
+            // Hit directly on armored cranial crest: 85% deflection!
+            damageDealt *= 0.15;
+            if (this.particles && this.particles.emitSparks) {
+              this.particles.emitSparks(a.mesh.position, 18);
+            }
+          }
+        }
+
         a.hp -= damageDealt;
         const killed = a.hp <= 0;
 
@@ -979,6 +990,22 @@ export class XenomorphHorde {
           }
           return; // Completely immobilized
         }
+      }
+
+      // Chantier 7 (v43): Liquid Nitrogen Flash-Frozen Solid State
+      if (a.isFrozen) {
+        a.freezeTimer = (a.freezeTimer || 4.5) - delta;
+        if (a.freezeTimer <= 0) {
+          a.isFrozen = false;
+          if (a.mesh && a.mesh.traverse) {
+            a.mesh.traverse(child => {
+              if (child.isMesh && child.material && child.origColor !== undefined) {
+                child.material.color.setHex(child.origColor);
+              }
+            });
+          }
+        }
+        return; // Completely frozen in place!
       }
 
       // Chantier 6: Yautja Netgun Wall-Pinning & Diamond-Wire Guillotine Tension (Predator 2 Canon)

@@ -1769,5 +1769,113 @@ html, body {
   font-family: monospace;
 }
 
+/* Chantier 6: Bio-Mask Vision Mode 5 - High-Frequency Sonar / Acoustic Resonance Overlay */
+#sonar-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 45;
+  background: radial-gradient(circle at center, rgba(14, 165, 233, 0.12) 0%, rgba(2, 6, 23, 0.45) 100%);
+  box-shadow: inset 0 0 100px rgba(56, 189, 248, 0.4);
+  mix-blend-mode: screen;
+}
+
+#sonar-overlay::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 200px;
+  height: 200px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 2px solid rgba(56, 189, 248, 0.6);
+  animation: sonar-ripple 2s infinite ease-out;
+}
+
+@keyframes sonar-ripple {
+  0% { width: 40px; height: 40px; opacity: 0.9; }
+  100% { width: 900px; height: 900px; opacity: 0; border-width: 1px; }
+}
+
+/* Chantier 3: Smart-Disc Remote Guidance Telemetric HUD */
+.smartdisc-guidance-overlay {
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 95;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.guidance-reticle {
+  width: 80px;
+  height: 80px;
+  border: 2px dashed #38bdf8;
+  border-radius: 50%;
+  box-shadow: 0 0 20px #0284c7;
+  animation: disc-reticle-spin 3s linear infinite;
+}
+
+@keyframes disc-reticle-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.guidance-header {
+  margin-top: 10px;
+  color: #38bdf8;
+  font-size: 0.85rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-shadow: 0 0 10px rgba(56, 189, 248, 0.7);
+}
+
+.guidance-hint {
+  font-size: 0.68rem;
+  color: #bae6fd;
+  font-family: monospace;
+}
+
+/* Chantier 4: Fallen Marine Scavenge Proximity Box */
+.marine-scavenge-box {
+  position: absolute;
+  bottom: 110px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(20, 24, 20, 0.9);
+  border: 1px solid #4ade80;
+  box-shadow: 0 0 18px rgba(74, 222, 128, 0.4);
+  padding: 8px 18px;
+  border-radius: 6px;
+  z-index: 94;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.scavenge-key {
+  background: #166534;
+  color: #fff;
+  font-weight: 900;
+  font-size: 0.95rem;
+  padding: 3px 10px;
+  border-radius: 4px;
+  border: 1px solid #86efac;
+}
+
+.scavenge-text {
+  color: #bbf7d0;
+  font-size: 0.78rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+
 
 

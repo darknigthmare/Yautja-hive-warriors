@@ -26,6 +26,15 @@ export class EnvironmentManager {
     this.decompressionAirlock = null;
     this.steamConduits = [];
     this.chrysalisCocoons = [];
+    // v43.0 Systems
+    this.queenOvipositor = null;
+    this.lightningRods = [];
+    this.ionStormTimer = 0;
+    this.activeLightningBolt = null;
+    this.fallenMarines = [];
+    this.nitrogenTanks = [];
+    this.activeFreezeZones = [];
+    this.resinWebbings = [];
   }
 
   clearEnvironment() {
@@ -63,6 +72,24 @@ export class EnvironmentManager {
     this.steamConduits = [];
     this.chrysalisCocoons.forEach(c => this.scene.remove(c.mesh));
     this.chrysalisCocoons = [];
+    if (this.queenOvipositor) {
+      this.scene.remove(this.queenOvipositor.group);
+      this.queenOvipositor = null;
+    }
+    this.lightningRods.forEach(r => this.scene.remove(r.group));
+    this.lightningRods = [];
+    if (this.activeLightningBolt) {
+      this.scene.remove(this.activeLightningBolt);
+      this.activeLightningBolt = null;
+    }
+    this.fallenMarines.forEach(m => this.scene.remove(m.group));
+    this.fallenMarines = [];
+    this.nitrogenTanks.forEach(n => this.scene.remove(n.group));
+    this.nitrogenTanks = [];
+    this.activeFreezeZones.forEach(z => this.scene.remove(z.mesh));
+    this.activeFreezeZones = [];
+    this.resinWebbings.forEach(w => this.scene.remove(w.mesh));
+    this.resinWebbings = [];
     this.slabShiftTimer = 0;
     this.isSlabMoving = false;
   }
@@ -189,6 +216,22 @@ export class EnvironmentManager {
     if (theme === 'hive_world' || theme === 'romulus_station' || theme === 'pyramid') {
       this.buildChrysalisCocoons(8);
     }
+
+    // === v43.0 10-CHANTIER EXPANSION (Level Design & Interactive Hazards) ===
+    // Chantier 1: Queen Ovipositor Egg Sack & Live Egg Laying Chamber (Aliens 1986)
+    this.buildQueenOvipositor();
+
+    // Chantier 2: Atmospheric Condenser Lightning Rods & Ion Storm Arcs (Alien 3 / Fiorina 161)
+    this.buildLightningRods();
+
+    // Chantier 4: Fallen USCM Colonial Marine Casualties & Salvage (Aliens 1986)
+    this.buildFallenMarines();
+
+    // Chantier 7: Liquid Nitrogen Fire Suppression Overhead Deluge System (Alien: Resurrection 1997)
+    this.buildLiquidNitrogenTanks();
+
+    // Chantier 10: Queen Bio-Resin Webbing Barricades & Acid Adhesion (Aliens 1986)
+    this.buildResinWebbings();
   }
 
   buildTempleProps(stoneMat) {
@@ -764,6 +807,103 @@ export class EnvironmentManager {
         c.mesh.scale.set(1.0, 1.0 + Math.sin(c.breathTimer) * 0.08, 1.0);
       }
     });
+
+    // 13. Chantier 1 (v43): Queen Ovipositor Peristaltic Pumping & Live Egg Laying (Aliens 1986)
+    if (this.queenOvipositor && !this.queenOvipositor.isSevered) {
+      const ovi = this.queenOvipositor;
+      ovi.pumpTimer += delta;
+      // Peristaltic breath undulation
+      if (ovi.group) {
+        const pulse = Math.sin(ovi.pumpTimer * 3.0) * 0.06;
+        ovi.group.scale.set(1.0 + pulse, 1.0 - pulse * 0.5, 1.0 + pulse * 1.2);
+      }
+
+      if (ovi.pumpTimer >= ovi.pumpInterval) {
+        ovi.pumpTimer = 0;
+        if (audioEngine && audioEngine.playOvipositorPump) {
+          audioEngine.playOvipositorPump();
+        }
+
+        // Lay a live Ovomorph Egg behind the ovipositor chute
+        if (horde && horde.spawnAlien) {
+          const eggSpawnPos = new THREE.Vector3(
+            ovi.pos.x + (Math.random() - 0.5) * 4.0,
+            0,
+            ovi.pos.z - 4.5 + (Math.random() - 0.5) * 3.0
+          );
+          // Spawn egg cluster or facehugger
+          horde.spawnAlien('facehugger', eggSpawnPos);
+          if (window.gameInstance && window.gameInstance.ui) {
+            window.gameInstance.ui.showAnnouncement('🥚 LA REINE POND EN DIRECT : ÉRUPTION D\'OVOMORPHE VIVANT !');
+          }
+        }
+      }
+    }
+
+    // 14. Chantier 2 (v43): Atmospheric Condenser Lightning Surge & Lightning Rods (Alien 3)
+    this.ionStormTimer += delta;
+    if (this.ionStormTimer >= 22.0) {
+      this.ionStormTimer = 0;
+      this.triggerLightningStrike(audioEngine, window.gameInstance ? window.gameInstance.particles : null, horde, player);
+    }
+
+    // Decay active lightning bolt beam
+    if (this.activeLightningBolt) {
+      this.activeLightningBolt.timer -= delta;
+      if (this.activeLightningBolt.timer <= 0) {
+        this.scene.remove(this.activeLightningBolt.mesh);
+        this.activeLightningBolt = null;
+      }
+    }
+
+    // 15. Chantier 7 (v43): Liquid Nitrogen Freeze Zones & Deep Shatter Status
+    for (let i = this.activeFreezeZones.length - 1; i >= 0; i--) {
+      const zone = this.activeFreezeZones[i];
+      zone.timer -= delta;
+      if (zone.mesh) {
+        zone.mesh.material.opacity = Math.max(0.1, (zone.timer / 8.5) * 0.65);
+      }
+
+      // Freeze all Xenomorphs in zone
+      if (horde && horde.aliens) {
+        horde.aliens.forEach(a => {
+          if (!a || !a.mesh || a.hp <= 0) return;
+          if (a.mesh.position.distanceTo(zone.pos) <= zone.radius) {
+            a.isFrozen = true;
+            a.freezeTimer = 4.5;
+            a.speed = 0;
+            if (a.mesh.traverse) {
+              a.mesh.traverse(child => {
+                if (child.isMesh && child.material && !child.origColor) {
+                  child.origColor = child.material.color.getHex();
+                  child.material.color.setHex(0x93c5fd); // Crystalline ice blue
+                }
+              });
+            }
+          }
+        });
+      }
+
+      if (zone.timer <= 0) {
+        this.scene.remove(zone.mesh);
+        this.activeFreezeZones.splice(i, 1);
+      }
+    }
+
+    // 16. Chantier 10 (v43): Bio-Resin Webbing Player Viscosity Slow
+    if (player && player.position) {
+      for (const web of this.resinWebbings) {
+        if (!web.isDestroyed && player.position.distanceTo(web.pos) <= web.radius) {
+          player.speedMultiplier = 0.45; // 55% speed reduction
+          web.soundTimer = (web.soundTimer || 0) - delta;
+          if (web.soundTimer <= 0) {
+            web.soundTimer = 1.0;
+            if (audioEngine && audioEngine.playWebbingSquish) audioEngine.playWebbingSquish();
+          }
+          break;
+        }
+      }
+    }
   }
 
   /* Chantier 1: Elevated Industrial Catwalks & Gantry Ramps (Hadley's Hope / Romulus 1:1 Lore) */
@@ -1937,6 +2077,391 @@ export class EnvironmentManager {
       }
     }
     return collapsed;
+  }
+
+  /* =========================================================================
+     v43.0 APEX LEVEL DESIGN & INTERACTIVE HAZARD SYSTEMS
+     ========================================================================= */
+
+  /* Chantier 1: Queen Ovipositor Egg Sack & Live Egg Laying Chamber (Aliens 1986) */
+  buildQueenOvipositor() {
+    const oviPos = new THREE.Vector3(0, 3.2, -32);
+    const group = new THREE.Group();
+    group.position.copy(oviPos);
+
+    const sackMat = new THREE.MeshStandardMaterial({
+      color: 0x3f1212,
+      roughness: 0.3,
+      metalness: 0.2,
+      transparent: true,
+      opacity: 0.88
+    });
+
+    const tendonMat = new THREE.MeshStandardMaterial({
+      color: 0x1f060c,
+      roughness: 0.6,
+      metalness: 0.4
+    });
+
+    // 4 Segmented organic ellipsoid lobes of the egg sack
+    const lobes = [
+      { r: 2.2, l: 4.8, z: 0 },
+      { r: 1.8, l: 4.2, z: -3.8 },
+      { r: 1.4, l: 3.6, z: -7.2 },
+      { r: 0.9, l: 2.6, z: -10.0 } // Laying chute
+    ];
+
+    lobes.forEach(l => {
+      const geo = new THREE.SphereGeometry(l.r, 12, 12);
+      geo.scale(1, 0.8, l.l / (l.r * 2));
+      const mesh = new THREE.Mesh(geo, sackMat);
+      mesh.position.set(0, 0, l.z);
+      group.add(mesh);
+    });
+
+    // 6 Resinous Tendons anchoring sack to high ceiling
+    for (let t = 0; t < 6; t++) {
+      const angle = (t / 6) * Math.PI * 2;
+      const tGeo = new THREE.CylinderGeometry(0.08, 0.16, 12, 6);
+      const tMesh = new THREE.Mesh(tGeo, tendonMat);
+      tMesh.position.set(Math.cos(angle) * 3.5, 6.0, -4.0 + Math.sin(angle) * 3.5);
+      tMesh.rotation.z = Math.cos(angle) * 0.35;
+      tMesh.rotation.x = Math.sin(angle) * 0.35;
+      group.add(tMesh);
+    }
+
+    this.scene.add(group);
+    this.queenOvipositor = {
+      group,
+      pos: oviPos,
+      hp: 1200,
+      maxHp: 1200,
+      pumpTimer: 0,
+      pumpInterval: 12.0,
+      isSevered: false
+    };
+  }
+
+  checkOvipositorHit(pos, radius, damage, audioEngine, particles, horde, bosses) {
+    if (!this.queenOvipositor || this.queenOvipositor.isSevered) return false;
+    const ovi = this.queenOvipositor;
+    if (pos.distanceTo(ovi.pos) <= radius + 5.0) {
+      ovi.hp -= damage;
+      if (particles) particles.emitAlienBloodSpurt(ovi.pos, 15);
+
+      if (ovi.hp <= 0) {
+        ovi.isSevered = true;
+        ovi.group.position.y = 0.5; // Collapses to floor
+        if (audioEngine && audioEngine.playOvipositorRupture) {
+          audioEngine.playOvipositorRupture();
+        }
+        if (particles) particles.emitAlienBloodSpurt(ovi.pos, 50);
+
+        // Severance damages Queen and enrages her!
+        if (bosses && bosses.activeBoss) {
+          bosses.takeDamage(600);
+          bosses.activeBoss.isEnraged = true;
+        }
+
+        if (window.gameInstance && window.gameInstance.ui) {
+          window.gameInstance.ui.showAnnouncement('💥 OVIPOSITEUR DE LA REINE SECTIONNÉ ! RUPTURE VISCÉRALE (+600 DÉGÂTS, REINE ENRAGÉE) !');
+        }
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /* Chantier 2: Atmospheric Condenser Lightning Rods & Ion Storm Arcs (Alien 3) */
+  buildLightningRods() {
+    const rodMat = new THREE.MeshStandardMaterial({ color: 0xb45309, metalness: 0.95, roughness: 0.15 }); // Weathered Copper
+    const baseMat = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.8, roughness: 0.4 });
+
+    const rodPositions = [
+      new THREE.Vector3(-42, 0, -42),
+      new THREE.Vector3(42, 0, -42),
+      new THREE.Vector3(-42, 0, 42),
+      new THREE.Vector3(42, 0, 42)
+    ];
+
+    rodPositions.forEach(p => {
+      const group = new THREE.Group();
+      group.position.copy(p);
+
+      // Base pedestal
+      const base = new THREE.Mesh(new THREE.CylinderGeometry(1.4, 1.8, 3, 8), baseMat);
+      base.position.y = 1.5;
+      group.add(base);
+
+      // 18m Copper Arrester Mast
+      const mast = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.35, 18, 8), rodMat);
+      mast.position.y = 10.5;
+      group.add(mast);
+
+      // Spiked Crown Spike Array
+      for (let s = 0; s < 4; s++) {
+        const spike = new THREE.Mesh(new THREE.ConeGeometry(0.08, 1.5, 4), rodMat);
+        const a = (s / 4) * Math.PI * 2;
+        spike.position.set(Math.cos(a) * 0.4, 19.8, Math.sin(a) * 0.4);
+        spike.rotation.z = Math.cos(a) * 0.3;
+        group.add(spike);
+      }
+
+      this.scene.add(group);
+      this.lightningRods.push({ group, pos: p });
+    });
+  }
+
+  triggerLightningStrike(audioEngine, particles, horde, player) {
+    if (audioEngine && audioEngine.playIonStormCharge) {
+      audioEngine.playIonStormCharge();
+    }
+
+    // Pick random rod or center arena
+    const targetRod = this.lightningRods[Math.floor(Math.random() * this.lightningRods.length)];
+    const strikePos = targetRod ? targetRod.pos.clone().setY(0) : new THREE.Vector3(0, 0, 0);
+
+    // Visual Lightning Bolt Mesh (Cyan emissive jagged bolt)
+    const boltGeo = new THREE.CylinderGeometry(0.2, 0.4, 25, 6);
+    const boltMat = new THREE.MeshBasicMaterial({ color: 0x67e8f9, transparent: true, opacity: 0.95 });
+    const bolt = new THREE.Mesh(boltGeo, boltMat);
+    bolt.position.set(strikePos.x, 12.5, strikePos.z);
+    this.scene.add(bolt);
+
+    this.activeLightningBolt = { mesh: bolt, timer: 0.35 };
+
+    if (particles && particles.emitSparks) {
+      particles.emitSparks(strikePos, 40);
+    }
+
+    // Stun and damage Xenomorphs in 10m radial arc
+    if (horde && horde.aliens) {
+      horde.aliens.forEach(a => {
+        if (!a || a.hp <= 0 || !a.mesh) return;
+        if (a.mesh.position.distanceTo(strikePos) <= 10.0) {
+          a.hp -= 320;
+          a.isStunned = true;
+          a.stunTimer = 3.5;
+        }
+      });
+    }
+
+    // If player is cloaked and within 12m, electromagnetic pulse forcibly disables cloak
+    if (player && player.position && player.position.distanceTo(strikePos) <= 12.0) {
+      if (player.isCloaked) {
+        player.toggleCloak();
+        if (window.gameInstance && window.gameInstance.ui) {
+          window.gameInstance.ui.showAnnouncement('⚡ SURTENSION ÉLECTROMAGNÉTIQUE : CAMOUFLAGE COURT-CIRCUITÉ !');
+        }
+      }
+    }
+  }
+
+  /* Chantier 4: Fallen USCM Colonial Marine Casualties & Salvage (Aliens 1986) */
+  buildFallenMarines() {
+    const armorMat = new THREE.MeshStandardMaterial({ color: 0x3f4f3c, roughness: 0.7 }); // Camo Armor
+    const skinMat = new THREE.MeshStandardMaterial({ color: 0xca8a04, roughness: 0.8 });
+
+    const marineSpawns = [
+      new THREE.Vector3(-18, 0, 14),
+      new THREE.Vector3(22, 0, -16),
+      new THREE.Vector3(0, 0, 36),
+      new THREE.Vector3(-34, 0, -22),
+      new THREE.Vector3(34, 0, 26)
+    ];
+
+    marineSpawns.forEach((p, idx) => {
+      const group = new THREE.Group();
+      group.position.copy(p);
+
+      // Torso prone on ground
+      const torso = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.4, 1.4), armorMat);
+      torso.position.y = 0.2;
+      group.add(torso);
+
+      // M10 Helmet
+      const helmet = new THREE.Mesh(new THREE.SphereGeometry(0.3, 8, 8), armorMat);
+      helmet.position.set(0, 0.25, 0.8);
+      group.add(helmet);
+
+      // Spent M41A Pulse Rifle beside body
+      const rifle = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.2, 0.9), new THREE.MeshStandardMaterial({ color: 0x1c1917, metalness: 0.9 }));
+      rifle.position.set(0.6, 0.1, 0.2);
+      rifle.rotation.y = 0.3;
+      group.add(rifle);
+
+      this.scene.add(group);
+      this.fallenMarines.push({
+        group,
+        pos: p,
+        isScavenged: false,
+        name: `Caporal USCM Section ${idx + 1}`
+      });
+    });
+  }
+
+  checkMarineScavengeInteraction(playerPos, player, sentryGun, ui, audioEngine) {
+    for (const m of this.fallenMarines) {
+      if (m.isScavenged) continue;
+      if (playerPos.distanceTo(m.pos) <= 2.8) {
+        m.isScavenged = true;
+        // Dim marine mesh
+        m.group.traverse(child => {
+          if (child.isMesh && child.material) child.material.opacity = 0.5;
+        });
+
+        if (sentryGun && sentryGun.isDeployed) {
+          sentryGun.reloadSentry(playerPos, 150);
+        }
+
+        if (player) {
+          player.hp = Math.min(player.maxHp, player.hp + 45);
+        }
+
+        if (audioEngine && audioEngine.playSupplyPickup) {
+          audioEngine.playSupplyPickup();
+        }
+
+        if (window.gameInstance) {
+          window.gameInstance.score += 100;
+        }
+
+        if (ui && ui.showAnnouncement) {
+          ui.showAnnouncement('🎖️ DÉPOUILLE DU MARINE USCM FOUILLÉE : +150 MUNITIONS SENTINELLE, MEDIKIT (+45 PV), DOG-TAGS (+100 HONNEUR) !');
+        }
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /* Chantier 7: Liquid Nitrogen Fire Suppression Overhead Deluge System (Alien: Resurrection 1997) */
+  buildLiquidNitrogenTanks() {
+    const tankMat = new THREE.MeshStandardMaterial({ color: 0x2563eb, metalness: 0.9, roughness: 0.2 }); // Cryo Blue
+    const pipeMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.8, roughness: 0.3 });
+
+    const tankPositions = [
+      new THREE.Vector3(-25, 7.5, 20),
+      new THREE.Vector3(25, 7.5, 20),
+      new THREE.Vector3(0, 7.5, -20)
+    ];
+
+    tankPositions.forEach(p => {
+      const group = new THREE.Group();
+      group.position.copy(p);
+
+      // Horizontal cryogenic cylinder
+      const tank = new THREE.Mesh(new THREE.CylinderGeometry(0.9, 0.9, 4.5, 12), tankMat);
+      tank.rotation.z = Math.PI / 2;
+      group.add(tank);
+
+      // Hanging pull-chain & discharge nozzle
+      const nozzle = new THREE.Mesh(new THREE.ConeGeometry(0.4, 0.8, 8), pipeMat);
+      nozzle.rotation.x = Math.PI;
+      nozzle.position.y = -0.6;
+      group.add(nozzle);
+
+      const chain = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 2.8, 6), pipeMat);
+      chain.position.set(0.6, -1.8, 0);
+      group.add(chain);
+
+      this.scene.add(group);
+      this.nitrogenTanks.push({
+        group,
+        pos: p,
+        isRuptured: false
+      });
+    });
+  }
+
+  checkNitrogenTankHits(pos, radius, damage, audioEngine, particles) {
+    for (const t of this.nitrogenTanks) {
+      if (t.isRuptured) continue;
+      if (pos.distanceTo(t.pos) <= radius + 3.2) {
+        t.isRuptured = true;
+        if (audioEngine && audioEngine.playLiquidNitrogenBlast) {
+          audioEngine.playLiquidNitrogenBlast();
+        }
+
+        // Spawn cryogenic floor deluge zone
+        const floorPos = t.pos.clone().setY(0.1);
+        const zoneGeo = new THREE.CircleGeometry(9.0, 24);
+        zoneGeo.rotateX(-Math.PI / 2);
+        const zoneMat = new THREE.MeshBasicMaterial({
+          color: 0x93c5fd,
+          transparent: true,
+          opacity: 0.65,
+          side: THREE.DoubleSide
+        });
+        const zoneMesh = new THREE.Mesh(zoneGeo, zoneMat);
+        zoneMesh.position.copy(floorPos);
+        this.scene.add(zoneMesh);
+
+        this.activeFreezeZones.push({
+          mesh: zoneMesh,
+          pos: floorPos,
+          radius: 9.0,
+          timer: 8.5
+        });
+
+        if (window.gameInstance && window.gameInstance.ui) {
+          window.gameInstance.ui.showAnnouncement('❄️ DÉLUGE CRYOGÉNIQUE À L\'AZOTE LIQUIDE DÉCLENCHÉ : XÉNOS GIVRÉS (DÉGÂTS CRITIQUES 3X) !');
+        }
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /* Chantier 10: Queen Bio-Resin Webbing Barricades & Acid Adhesion (Aliens 1986) */
+  buildResinWebbings() {
+    const webMat = new THREE.MeshStandardMaterial({
+      color: 0x2e1018,
+      roughness: 0.4,
+      metalness: 0.5,
+      transparent: true,
+      opacity: 0.8
+    });
+
+    const webSpawns = [
+      { pos: new THREE.Vector3(-8, 2, -24), w: 6, h: 4 },
+      { pos: new THREE.Vector3(8, 2, -24), w: 6, h: 4 },
+      { pos: new THREE.Vector3(-14, 2, -30), w: 5, h: 4 },
+      { pos: new THREE.Vector3(14, 2, -30), w: 5, h: 4 }
+    ];
+
+    webSpawns.forEach(w => {
+      const geo = new THREE.BoxGeometry(w.w, w.h, 0.4);
+      const mesh = new THREE.Mesh(geo, webMat);
+      mesh.position.copy(w.pos);
+      this.scene.add(mesh);
+
+      this.resinWebbings.push({
+        mesh,
+        pos: w.pos,
+        radius: 3.5,
+        hp: 200,
+        isDestroyed: false
+      });
+    });
+  }
+
+  checkWebbingDamage(pos, radius, damage, particles) {
+    for (const w of this.resinWebbings) {
+      if (w.isDestroyed) continue;
+      if (pos.distanceTo(w.pos) <= radius + 3.0) {
+        w.hp -= damage;
+        if (particles && particles.emitAlienBloodSpurt) {
+          particles.emitAlienBloodSpurt(w.pos, 8);
+        }
+        if (w.hp <= 0) {
+          w.isDestroyed = true;
+          this.scene.remove(w.mesh);
+          return true;
+        }
+      }
+    }
+    return false;
   }
 }
 
