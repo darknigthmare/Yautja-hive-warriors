@@ -211,6 +211,51 @@ export class UIManager {
       }
     }
 
+    // Chantier 10: Hive Bio-Acoustic Danger & Pressure Meter (Aliens 1986 / Romulus)
+    const pContainer = document.getElementById('hud-hive-pressure-container');
+    if (pContainer && horde) {
+      let nearestDist = 999;
+      if (horde.aliens && horde.aliens.length > 0) {
+        horde.aliens.forEach(a => {
+          if (a.hp > 0) {
+            const d = a.mesh.position.distanceTo(player.position);
+            if (d < nearestDist) nearestDist = d;
+          }
+        });
+      }
+
+      const countFactor = Math.min(60, (horde.aliens.length / 35) * 60);
+      const proxFactor = Math.max(0, (28 - Math.min(28, nearestDist)) / 28) * 40;
+      const pressure = Math.min(100, Math.ceil(countFactor + proxFactor));
+
+      const pFill = document.getElementById('hive-pressure-fill');
+      const pVal = document.getElementById('hive-pressure-val');
+      const pTag = document.getElementById('hive-pressure-tag');
+      const pWarn = document.getElementById('hive-pressure-warning');
+
+      if (pFill) pFill.style.width = `${pressure}%`;
+      if (pVal) pVal.innerText = `${pressure}%`;
+
+      if (pTag && pWarn) {
+        if (pressure >= 80) {
+          pTag.innerText = 'DANGER CRITIQUE';
+          pTag.className = 'pressure-badge badge-danger';
+          pWarn.innerText = 'EMBUSCADE EN MASSE IMMINENTE !';
+          pWarn.style.color = '#ef4444';
+        } else if (pressure >= 45) {
+          pTag.innerText = 'VIGILANCE ACCRUE';
+          pTag.className = 'pressure-badge badge-warning';
+          pWarn.innerText = 'ACTIVITÉ RUCHE INTENSE';
+          pWarn.style.color = '#f59e0b';
+        } else {
+          pTag.innerText = 'CALME';
+          pTag.className = 'pressure-badge badge-calm';
+          pWarn.innerText = 'ÉCHO BIO-RADAR STABLE';
+          pWarn.style.color = '#34d399';
+        }
+      }
+    }
+
     // Chantier 8: Render Multi-Faction Minimap
     this.renderMinimap(player, horde, bossManager, factions);
   }

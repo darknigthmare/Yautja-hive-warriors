@@ -1419,3 +1419,100 @@ html, body {
   text-shadow: 1px 1px 2px #000;
 }
 
+/* Chantier 10: Hive Bio-Acoustic Danger & Pressure Meter */
+.hive-pressure-panel {
+  position: absolute;
+  top: 96px;
+  left: 20px;
+  width: 290px;
+  background: rgba(10, 15, 24, 0.88);
+  border: 1px solid rgba(57, 255, 20, 0.45);
+  box-shadow: 0 0 15px rgba(57, 255, 20, 0.15);
+  border-radius: 8px;
+  padding: 8px 12px;
+  backdrop-filter: blur(6px);
+  z-index: 10;
+}
+
+.hive-pressure-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.pressure-title {
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  font-size: 0.72rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  color: #a7f3d0;
+}
+
+.pressure-badge {
+  font-size: 0.65rem;
+  font-weight: bold;
+  padding: 1px 6px;
+  border-radius: 3px;
+  letter-spacing: 1px;
+}
+
+.badge-calm {
+  background: rgba(16, 185, 129, 0.25);
+  color: #34d399;
+  border: 1px solid #10b981;
+}
+
+.badge-warning {
+  background: rgba(245, 158, 11, 0.25);
+  color: #fbbf24;
+  border: 1px solid #f59e0b;
+}
+
+.badge-danger {
+  background: rgba(239, 68, 68, 0.35);
+  color: #f87171;
+  border: 1px solid #ef4444;
+  animation: pulse-danger 0.8s infinite alternate;
+}
+
+@keyframes pulse-danger {
+  from { opacity: 0.8; transform: scale(1); }
+  to { opacity: 1; transform: scale(1.05); }
+}
+
+.hive-pressure-track {
+  position: relative;
+  width: 100%;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid rgba(57, 255, 20, 0.3);
+}
+
+.hive-pressure-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981, #facc15, #ef4444);
+  transition: width 0.2s ease-out;
+}
+
+.pressure-threshold-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #ef4444;
+}
+
+.hive-pressure-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+  font-size: 0.68rem;
+  font-family: monospace;
+  color: #94a3b8;
+}
+
+

@@ -73,6 +73,9 @@ export class Player {
     this.currentChargeName = null;
     this.visorAcidBurn = 0;
     this.wristNukeHoloMesh = null;
+    this.parryTimer = 0;
+    this.hasParryRiposte = false;
+    this.riposteTimer = 0;
 
     // Pounce Leap State
     this.isLeaping = false;
@@ -520,6 +523,7 @@ export class Player {
       }
     }
     if (this.isBlocking) {
+      this.parryTimer = 0.35; // 350ms Perfect Parry timing window (Prey 2022 Canon)
       if (this.audioEngine.playFeralShieldDeploy) {
         this.audioEngine.playFeralShieldDeploy();
       } else {
@@ -561,17 +565,32 @@ export class Player {
     };
   }
 
-  throwSmartDisc() {
+  throwSmartDisc(horde) {
     this.audioEngine.playSmartDiscHum();
     const origin = this.position.clone().add(new THREE.Vector3(0.8, 1.8, 0.4));
     const forward = new THREE.Vector3(Math.sin(this.rotationY), 0, Math.cos(this.rotationY)).normalize();
     const right = new THREE.Vector3(-forward.z, 0, forward.x);
 
+    // Multi-target forward scan for automated chain homing waypoints (Predator 2 Canon)
+    const targets = [];
+    if (horde && horde.aliens) {
+      const candidates = horde.aliens
+        .filter(a => a.hp > 0 && a.mesh.position.distanceTo(origin) <= 32.0)
+        .sort((a, b) => a.mesh.position.distanceTo(origin) - b.mesh.position.distanceTo(origin));
+      for (let c of candidates) {
+        const toAlien = c.mesh.position.clone().sub(origin).normalize();
+        if (forward.dot(toAlien) > 0.15 && targets.length < 4) {
+          targets.push(c.mesh.position.clone().add(new THREE.Vector3(0, 1.2, 0)));
+        }
+      }
+    }
+
     return {
       startPos: origin.clone(),
       apexPos: origin.clone().addScaledVector(forward, 28).addScaledVector(right, 7),
-      damage: 320,
-      speed: 40
+      waypoints: targets,
+      damage: 340,
+      speed: 42
     };
   }
 
@@ -1266,6 +1285,15 @@ export class Player {
       this.rightLeg.rotation.x *= 0.8;
     }
 
+    // Verticality: Adjust elevation smoothly when traversing catwalks and ramps
+    if (!this.isLeaping && !this.isPerched) {
+      let groundY = 0;
+      if (window.gameInstance && window.gameInstance.env && window.gameInstance.env.getElevationAt) {
+        groundY = window.gameInstance.env.getElevationAt(this.position.x, this.position.z);
+      }
+      this.position.y = THREE.MathUtils.lerp(this.position.y, groundY, 18 * delta);
+    }
+
     this.mesh.position.copy(this.position);
     this.mesh.rotation.y = this.rotationY;
   }
@@ -1458,8 +1486,39 @@ export class Player {
     return true;
   }
 
-  takeDamage(amount, isAcid = false) {
+  takeDamage(amount, isAcid = false, attacker = null) {
     if (this.isBlocking || this.isPerched) {
+      if (this.parryTimer > 0) {
+        // Chantier 2: PERFECT PARRY DEFLECTION (Prey 2022 / Concrete Jungle Canon 1:1)
+        this.parryTimer = 0;
+        this.hasParryRiposte = true;
+        this.riposteTimer = 2.2; // 2.2s window to unleash lethal riposte
+
+        if (this.audioEngine && this.audioEngine.playParryClang) {
+          this.audioEngine.playParryClang();
+        } else {
+          this.audioEngine.playShieldBlock();
+        }
+
+        if (this.particles) {
+          this.particles.emitSparks(this.position.clone().add(new THREE.Vector3(0, 1.6, 0)), 32);
+        }
+
+        if (attacker) {
+          attacker.isStunned = true;
+          attacker.stunTimer = 3.0;
+          if (attacker.mesh) {
+            const pushDir = attacker.mesh.position.clone().sub(this.position).normalize();
+            attacker.mesh.position.addScaledVector(pushDir, 5.5);
+          }
+        }
+
+        if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
+          window.gameInstance.ui.showAnnouncement('🛡️ PARRY PARFAIT ! RIPOSTE GUAN-THWEI DISPONIBLE [CLIC GAUCHE] !');
+        }
+        return this.hp;
+      }
+
       this.audioEngine.playShieldBlock();
       return this.hp;
     }
@@ -1493,6 +1552,66 @@ export class Player {
     }
 
     return this.hp;
+  }
+
+  /* Chantier 2: Guan-Thwei Lethal Counter-Riposte (Concrete Jungle / Dark Horse Canon) */
+  performGuanThweiRiposte(horde, synthetics, bosses, particles) {
+    this.hasParryRiposte = false;
+    this.riposteTimer = 0;
+
+    if (this.audioEngine && this.audioEngine.playIaijutsuSlice) {
+      this.audioEngine.playIaijutsuSlice();
+    } else {
+      this.audioEngine.playSlash();
+    }
+
+    // 360° Amber/Golden crescent shockwave
+    const waveGeo = new THREE.RingGeometry(1.2, 6.5, 24);
+    waveGeo.rotateX(-Math.PI / 2);
+    const waveMat = new THREE.MeshBasicMaterial({
+      color: 0xf59e0b,
+      transparent: true,
+      opacity: 0.95,
+      side: THREE.DoubleSide
+    });
+    const waveMesh = new THREE.Mesh(waveGeo, waveMat);
+    waveMesh.position.copy(this.position).add(new THREE.Vector3(0, 1.2, 0));
+    this.scene.add(waveMesh);
+
+    let fade = 0.25;
+    const fAnim = setInterval(() => {
+      fade -= 0.05;
+      waveMesh.scale.multiplyScalar(1.08);
+      waveMesh.material.opacity = fade / 0.25;
+      if (fade <= 0) {
+        clearInterval(fAnim);
+        this.scene.remove(waveMesh);
+      }
+    }, 40);
+
+    if (particles) {
+      particles.emitSparks(this.position.clone().add(new THREE.Vector3(0, 1.4, 0)), 32);
+    }
+
+    const attack = {
+      origin: this.position,
+      radius: 7.2,
+      damage: 550,
+      type: 'heavy'
+    };
+
+    let hits = [];
+    if (horde && horde.checkMeleeHits) {
+      hits = horde.checkMeleeHits(attack);
+    }
+    if (synthetics && synthetics.checkHits) {
+      synthetics.checkHits(attack);
+    }
+    if (bosses && bosses.activeBoss && bosses.activeBoss.mesh.position.distanceTo(this.position) <= 7.5) {
+      bosses.takeDamage(550);
+    }
+
+    return hits;
   }
 
   update(delta, horde = null) {
@@ -1616,12 +1735,28 @@ export class Player {
       this.takeDamage(40 * delta);
     }
 
+    if (this.parryTimer > 0) {
+      this.parryTimer = Math.max(0, this.parryTimer - delta);
+    }
+
+    if (this.riposteTimer > 0) {
+      this.riposteTimer = Math.max(0, this.riposteTimer - delta);
+      if (this.riposteTimer <= 0) {
+        this.hasParryRiposte = false;
+      }
+    }
+
     if (this.isLeaping) {
+      let groundY = 0;
+      if (window.gameInstance && window.gameInstance.env && window.gameInstance.env.getElevationAt) {
+        groundY = window.gameInstance.env.getElevationAt(this.position.x, this.position.z);
+      }
+
       this.leapVelocityY -= 36 * delta;
       this.position.y += this.leapVelocityY * delta;
 
-      if (this.position.y <= 0) {
-        this.position.y = 0;
+      if (this.position.y <= groundY) {
+        this.position.y = groundY;
         this.isLeaping = false;
         this.audioEngine.playPounceImpact();
 

@@ -32,72 +32,107 @@ export class SyntheticsManager {
     this.clearSquad();
 
     for (let i = 0; i < count; i++) {
-      const mesh = this.createSyntheticMesh();
+      const isWorkingJoe = i % 2 === 1; // Alternate Weyland-Yutani Combat Synth and Seegson Working Joe
+      const mesh = this.createSyntheticMesh(isWorkingJoe);
       const angle = (i / count) * Math.PI * 2;
       mesh.position.set(pos.x + Math.cos(angle) * 16, 0, pos.z + Math.sin(angle) * 16);
       this.scene.add(mesh);
 
       this.androids.push({
         mesh,
-        hp: 280,
-        maxHp: 280,
-        speed: 9,
-        damage: 22,
+        type: isWorkingJoe ? 'working_joe' : 'weyland_combat',
+        hp: isWorkingJoe ? 340 : 280,
+        maxHp: isWorkingJoe ? 340 : 280,
+        speed: isWorkingJoe ? 7.5 : 9,
+        damage: isWorkingJoe ? 34 : 22,
         shootCooldown: 0,
         isBisected: false,
-        crawlLife: 0
+        crawlLife: 0,
+        voiceCooldown: 0
       });
     }
   }
 
-  createSyntheticMesh() {
+  /* Chantier 7: Seegson Working Joe & Weyland Combat Synthetic (Alien: Isolation / Aliens Canon) */
+  createSyntheticMesh(isWorkingJoe = false) {
     const group = new THREE.Group();
 
-    // Torso with Weyland logo casing
-    const torso = new THREE.Mesh(new THREE.BoxGeometry(0.9, 1.4, 0.5), this.armorMat);
+    const suitMat = isWorkingJoe 
+      ? new THREE.MeshStandardMaterial({ color: 0x1c1917, roughness: 0.85 }) // Seegson Dark Overalls
+      : this.armorMat;
+    const skinMat = isWorkingJoe
+      ? new THREE.MeshStandardMaterial({ color: 0xddd6fe, roughness: 0.6 }) // Rubberized synthetic pale skin
+      : this.armorMat;
+
+    // Torso with corporate logo casing
+    const torso = new THREE.Mesh(new THREE.BoxGeometry(0.9, 1.4, 0.5), suitMat);
     torso.name = 'torso';
     torso.position.y = 1.8;
     group.add(torso);
 
-    // Weyland-Yutani Yellow Winged Corporate Logo (Aliens 1986 Canon 1:1)
-    const logoMat = new THREE.MeshBasicMaterial({ color: 0xeab308 });
-    const wyLogo = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.14, 0.04), logoMat);
-    wyLogo.position.set(0, 2.05, 0.28);
-    group.add(wyLogo);
+    if (!isWorkingJoe) {
+      // Weyland-Yutani Yellow Winged Corporate Logo (Aliens 1986 Canon 1:1)
+      const logoMat = new THREE.MeshBasicMaterial({ color: 0xeab308 });
+      const wyLogo = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.14, 0.04), logoMat);
+      wyLogo.position.set(0, 2.05, 0.28);
+      group.add(wyLogo);
+    } else {
+      // Seegson Blue triangular insignia (Alien: Isolation Canon)
+      const seegsonMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8 });
+      const patch = new THREE.Mesh(new THREE.ConeGeometry(0.18, 0.22, 3), seegsonMat);
+      patch.position.set(0.25, 2.1, 0.28);
+      group.add(patch);
+    }
 
     // Synthetic android head
-    const head = new THREE.Mesh(new THREE.SphereGeometry(0.35, 10, 10), this.armorMat);
+    const head = new THREE.Mesh(new THREE.SphereGeometry(0.35, 10, 10), skinMat);
     head.name = 'head';
     head.position.set(0, 2.8, 0);
     group.add(head);
 
-    // Glowing optic eye visor
-    const visor = new THREE.Mesh(
-      new THREE.BoxGeometry(0.4, 0.08, 0.1),
-      new THREE.MeshBasicMaterial({ color: 0x00d2ff })
-    );
-    visor.name = 'visor';
-    visor.position.set(0, 2.8, 0.32);
-    group.add(visor);
+    if (isWorkingJoe) {
+      // Round glowing amber eyes (Alien: Isolation Canon)
+      [-0.12, 0.12].forEach(ox => {
+        const eye = new THREE.Mesh(new THREE.SphereGeometry(0.06, 6, 6), new THREE.MeshBasicMaterial({ color: 0xf59e0b }));
+        eye.position.set(ox, 2.85, 0.32);
+        group.add(eye);
+      });
+    } else {
+      // Glowing optic eye visor
+      const visor = new THREE.Mesh(
+        new THREE.BoxGeometry(0.4, 0.08, 0.1),
+        new THREE.MeshBasicMaterial({ color: 0x00d2ff })
+      );
+      visor.name = 'visor';
+      visor.position.set(0, 2.8, 0.32);
+      group.add(visor);
+    }
 
     // Limbs sub-group
     const legsGroup = new THREE.Group();
     legsGroup.name = 'legs';
     const legGeo = new THREE.CylinderGeometry(0.12, 0.1, 1.3, 6);
-    const leftLeg = new THREE.Mesh(legGeo, this.bodyMat);
+    const leftLeg = new THREE.Mesh(legGeo, suitMat);
     leftLeg.position.set(-0.3, 0.8, 0);
     legsGroup.add(leftLeg);
 
-    const rightLeg = new THREE.Mesh(legGeo, this.bodyMat);
+    const rightLeg = new THREE.Mesh(legGeo, suitMat);
     rightLeg.position.set(0.3, 0.8, 0);
     legsGroup.add(rightLeg);
     group.add(legsGroup);
 
-    // Pulse Pistol
-    const gun = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.2, 0.6), this.bodyMat);
-    gun.name = 'gun';
-    gun.position.set(0.6, 1.8, 0.4);
-    group.add(gun);
+    // Weapon (Pulse Gun for Weyland-Yutani / Heavy Hydraulic Pliers Baton for Working Joe)
+    if (isWorkingJoe) {
+      const baton = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.07, 1.1, 6), new THREE.MeshStandardMaterial({ color: 0xd97706, metalness: 0.8 }));
+      baton.rotation.x = Math.PI / 4;
+      baton.position.set(0.6, 1.8, 0.4);
+      group.add(baton);
+    } else {
+      const gun = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.2, 0.6), this.bodyMat);
+      gun.name = 'gun';
+      gun.position.set(0.6, 1.8, 0.4);
+      group.add(gun);
+    }
 
     return group;
   }
@@ -257,7 +292,8 @@ export class SyntheticsManager {
       dir.y = 0;
       const dist = dir.length();
 
-      const stopDist = syn.isBisected ? 6.0 : 10.0;
+      const isJoe = syn.type === 'working_joe';
+      const stopDist = syn.isBisected ? 6.0 : (isJoe ? 2.2 : 10.0);
 
       if (dist > stopDist) {
         dir.normalize();
@@ -265,15 +301,46 @@ export class SyntheticsManager {
         syn.mesh.rotation.y = Math.atan2(dir.x, dir.z);
       } else {
         syn.mesh.rotation.y = Math.atan2(dir.x, dir.z);
-        // Shoot pulse weapon
-        syn.shootCooldown -= delta;
-        if (syn.shootCooldown <= 0) {
-          syn.shootCooldown = syn.isBisected ? 2.2 : 1.2;
-          this.audioEngine.playPulseRifleBurst();
-          if (isXeno) {
-            horde.checkMeleeHits({ origin: targetPos, radius: 1.5, damage: syn.damage });
-          } else {
-            player.takeDamage(syn.damage * 0.4);
+
+        if (isJoe && !syn.isBisected) {
+          // Seegson Working Joe Relentless Melee & Industrial Grapple (Alien: Isolation Canon)
+          syn.shootCooldown -= delta;
+          if (syn.shootCooldown <= 0) {
+            syn.shootCooldown = 1.35;
+            if (isXeno) {
+              horde.checkMeleeHits({ origin: targetPos, radius: 2.2, damage: syn.damage * 1.5 });
+              if (this.audioEngine.playSlash) this.audioEngine.playSlash();
+            } else {
+              player.takeDamage(syn.damage, false, syn);
+              if (this.audioEngine.playWorkingJoeVoice) this.audioEngine.playWorkingJoeVoice();
+
+              syn.voiceTimer = (syn.voiceTimer || 0) + 1;
+              if (syn.voiceTimer % 3 === 1) {
+                const quotes = [
+                  "What are you doing?",
+                  "Tut tut, you shouldn't be here.",
+                  "Let's resolve this calmly.",
+                  "You are becoming an inconvenience.",
+                  "Always run, never walk."
+                ];
+                const quote = quotes[Math.floor(Math.random() * quotes.length)];
+                if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
+                  window.gameInstance.ui.showAnnouncement(`🔊 SEEGSON WORKING JOE : "${quote}"`);
+                }
+              }
+            }
+          }
+        } else {
+          // Shoot pulse weapon
+          syn.shootCooldown -= delta;
+          if (syn.shootCooldown <= 0) {
+            syn.shootCooldown = syn.isBisected ? 2.2 : 1.2;
+            this.audioEngine.playPulseRifleBurst();
+            if (isXeno) {
+              horde.checkMeleeHits({ origin: targetPos, radius: 1.5, damage: syn.damage });
+            } else {
+              player.takeDamage(syn.damage * 0.4, false, syn);
+            }
           }
         }
       }

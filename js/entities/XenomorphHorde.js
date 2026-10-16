@@ -1030,7 +1030,7 @@ export class XenomorphHorde {
             a.wallClimbPhase = 'grounded';
             a.isWallStalker = false;
             if (dist <= 3.5) {
-              player.takeDamage(35);
+              player.takeDamage(35, false, a);
             }
           }
           return;
@@ -1124,11 +1124,7 @@ export class XenomorphHorde {
             a.isLeaping = false;
             a.mesh.rotation.x = 0;
             if (dist <= 3.0) {
-              if (player.isBlocking) {
-                player.audioEngine.playShieldBlock();
-              } else {
-                player.takeDamage(35);
-              }
+              player.takeDamage(35, false, a);
             }
           }
           return;
@@ -1158,11 +1154,7 @@ export class XenomorphHorde {
             a.isLeaping = false;
             a.mesh.rotation.x = 0;
             if (dist <= 3.5) {
-              if (player.isBlocking) {
-                player.audioEngine.playShieldBlock();
-              } else {
-                player.takeDamage(45);
-              }
+              player.takeDamage(45, false, a);
             }
           }
           return;
@@ -1197,7 +1189,7 @@ export class XenomorphHorde {
           a.isLatched = true;
           this.scene.remove(a.mesh);
         } else {
-          player.takeDamage(a.damage * delta);
+          player.takeDamage(a.damage * delta, false, a);
         }
       }
     });

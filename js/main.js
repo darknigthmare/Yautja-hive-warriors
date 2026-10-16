@@ -412,6 +412,8 @@ class GameApp {
           if (this.player.struggleQTE()) {
             this.ui.showAnnouncement('💥 FACEHUGGER ARRACHÉ AVEC SUCCÈS !');
           }
+        } else if (this.env && this.env.checkSupplyInteraction(this.player.position, this.player, this.ui, this.audio)) {
+          // Handled USCM supply cache opening!
         } else {
           this.checkTrophyExecution();
         }
@@ -535,7 +537,14 @@ class GameApp {
             this.performSpineWhip();
           }
         } else {
-          this.performLightAttack();
+          if (this.player && this.player.hasParryRiposte) {
+            const hits = this.player.performGuanThweiRiposte(this.horde, this.synthetics, this.bosses, this.particles);
+            this.registerHits(hits);
+            this.ui.showAnnouncement('⚔️ CONTRE-RIPOSTE GUAN-THWEI : CISAILLEMENT DÉCAPITANT DÉCHAÎNÉ !');
+            this.triggerCameraShake(0.85, 0.35);
+          } else {
+            this.performLightAttack();
+          }
         }
       }
       if (e.button === 2) {
@@ -848,7 +857,7 @@ class GameApp {
 
   throwSmartDisc() {
     if (!this.player) return;
-    const discData = this.player.throwSmartDisc();
+    const discData = this.player.throwSmartDisc(this.horde);
     if (!discData) return;
 
     // Build Circular Razor-Sharp Smart-Disc Mesh
@@ -877,13 +886,17 @@ class GameApp {
       isSmartDisc: true,
       startPos: discData.startPos,
       apexPos: discData.apexPos,
+      waypoints: discData.waypoints || [],
       damage: discData.damage,
       progress: 0,
       speed: 1.35 * (this.player.smartDiscSpeedMult || 1.0), // 1.35x base -> faster with loadout perk
-      life: 1.6
+      life: 1.8
     });
 
-    this.ui.showAnnouncement('🥏 SMART-DISC YAUTJA LANCÉ EN ARC BOOMERANG !');
+    const isHoming = discData.waypoints && discData.waypoints.length > 0;
+    this.ui.showAnnouncement(isHoming 
+      ? `🥏 SMART-DISC YAUTJA : VERROUILLAGE HOMING MULTI-CIBLES (${discData.waypoints.length} CIBLES) !` 
+      : '🥏 SMART-DISC YAUTJA LANCÉ EN ARC BOOMERANG !');
   }
 
   triggerSmartDiscRicochet(disc) {
@@ -1454,6 +1467,10 @@ class GameApp {
     });
 
     this.ui.showCombo(this.comboHits);
+    if (this.env && this.player) {
+      this.env.checkTransformerHits(this.player.position, 3.8, this.synthetics, this.horde, this.audio, this.particles);
+      this.env.checkBlastDoorHits(this.player.position, 3.8, 140, this.audio, this.particles);
+    }
     this.checkAnnouncerMilestones();
   }
 
@@ -1525,7 +1542,7 @@ class GameApp {
     this.skimmer.update(delta, this.player, this.horde, this.keys);
     this.orbital.update(delta);
     if (this.weather) this.weather.update(delta, this.player ? this.player.position : null, this.renderer, this.audio, this.horde);
-    if (this.env) this.env.update(delta, this.horde, this.audio);
+    if (this.env) this.env.update(delta, this.horde, this.audio, this.player);
     if (this.renderer) this.renderer.update(delta);
     if (this.citadel) this.citadel.update(delta);
 
@@ -1642,19 +1659,36 @@ class GameApp {
           if (this.audio && this.audio.playSmartDiscRotor) this.audio.playSmartDiscRotor();
         }
 
-        // Quadratic Bezier Curve from start -> apex -> player current position!
-        const t = Math.min(1.0, p.progress);
+        // Multi-Target Waypoint Chain or Quadratic Bezier Curve (Predator 2 Canon)
+        let currentPos;
         const playerCurrentHand = this.player.position.clone().add(new THREE.Vector3(0.8, 1.8, 0.4));
-        const p0 = p.startPos;
-        const p1 = p.apexPos;
-        const p2 = playerCurrentHand;
 
-        const currentPos = new THREE.Vector3(
-          (1 - t) * (1 - t) * p0.x + 2 * (1 - t) * t * p1.x + t * t * p2.x,
-          (1 - t) * (1 - t) * p0.y + 2 * (1 - t) * t * p1.y + t * t * p2.y,
-          (1 - t) * (1 - t) * p0.z + 2 * (1 - t) * t * p1.z + t * t * p2.z
-        );
+        if (p.waypoints && p.waypoints.length > 0) {
+          const pts = [p.startPos, ...p.waypoints, playerCurrentHand];
+          const totalSegments = pts.length - 1;
+          const scaledT = Math.min(0.999, p.progress) * totalSegments;
+          const segIdx = Math.floor(scaledT);
+          const segT = scaledT - segIdx;
+          const pA = pts[segIdx];
+          const pB = pts[segIdx + 1];
+          currentPos = pA.clone().lerp(pB, segT);
+        } else {
+          const t = Math.min(1.0, p.progress);
+          const p0 = p.startPos;
+          const p1 = p.apexPos;
+          const p2 = playerCurrentHand;
+          currentPos = new THREE.Vector3(
+            (1 - t) * (1 - t) * p0.x + 2 * (1 - t) * t * p1.x + t * t * p2.x,
+            (1 - t) * (1 - t) * p0.y + 2 * (1 - t) * t * p1.y + t * t * p2.y,
+            (1 - t) * (1 - t) * p0.z + 2 * (1 - t) * t * p1.z + t * t * p2.z
+          );
+        }
         p.mesh.position.copy(currentPos);
+
+        if (this.env) {
+          this.env.checkTransformerHits(p.mesh.position, 2.2, this.synthetics, this.horde, this.audio, this.particles);
+          this.env.checkBlastDoorHits(p.mesh.position, 2.2, p.damage, this.audio, this.particles);
+        }
 
         const hits = this.horde.checkMeleeHits({ origin: p.mesh.position, radius: 2.8, damage: p.damage });
         if (hits.length > 0) {

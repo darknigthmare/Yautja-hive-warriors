@@ -2642,6 +2642,158 @@ export class AudioEngine {
     osc.start(now);
     osc.stop(now + 0.95);
   }
+
+  // 7. Perfect Parry Shield Clang & Kinetic Deflection (Prey 2022 / Concrete Jungle Canon)
+  playParryClang() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // High metal impact snap
+    const snapOsc = this.ctx.createOscillator();
+    const snapGain = this.ctx.createGain();
+    snapOsc.type = 'square';
+    snapOsc.frequency.setValueAtTime(2800, now);
+    snapOsc.frequency.exponentialRampToValueAtTime(800, now + 0.05);
+    snapGain.gain.setValueAtTime(0.8, now);
+    snapGain.gain.exponentialRampToValueAtTime(0.01, now + 0.06);
+    snapOsc.connect(snapGain);
+    snapGain.connect(this.ctx.destination);
+    snapOsc.start(now);
+    snapOsc.stop(now + 0.06);
+
+    // Resonant ringing brass/bone shield chime
+    const ringOsc = this.ctx.createOscillator();
+    const ringGain = this.ctx.createGain();
+    ringOsc.type = 'triangle';
+    ringOsc.frequency.setValueAtTime(1320, now);
+    ringOsc.frequency.exponentialRampToValueAtTime(660, now + 0.65);
+    ringGain.gain.setValueAtTime(0.7, now);
+    ringGain.gain.exponentialRampToValueAtTime(0.005, now + 0.65);
+    ringOsc.connect(ringGain);
+    ringGain.connect(this.ctx.destination);
+    ringOsc.start(now);
+    ringOsc.stop(now + 0.65);
+  }
+
+  // 8. High-Voltage Industrial Electrical Arc & Transformer Shockwave
+  playElectricalArc() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Modulated plasma buzz
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(120, now);
+    osc.frequency.linearRampToValueAtTime(420, now + 0.15);
+    osc.frequency.linearRampToValueAtTime(80, now + 0.4);
+
+    gain.gain.setValueAtTime(0.75, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.45);
+
+    // High crackle noise burst
+    const bufSize = Math.floor(this.ctx.sampleRate * 0.3);
+    const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * (Math.random() < 0.2 ? 1.0 : 0.15);
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buf;
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(1800, now);
+    const nGain = this.ctx.createGain();
+    nGain.gain.setValueAtTime(0.6, now);
+    nGain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+    noise.connect(filter);
+    filter.connect(nGain);
+    nGain.connect(this.ctx.destination);
+    noise.start(now);
+  }
+
+  // 9. USCM M290 Supply Cache Pneumatic Decompression
+  playSupplyCacheOpen() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Pneumatic gas hiss
+    const bufSize = Math.floor(this.ctx.sampleRate * 0.5);
+    const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (this.ctx.sampleRate * 0.25));
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buf;
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(1200, now);
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.65, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.ctx.destination);
+    noise.start(now);
+
+    // Heavy hydraulic latch click
+    const click = this.ctx.createOscillator();
+    const cGain = this.ctx.createGain();
+    click.type = 'sine';
+    click.frequency.setValueAtTime(320, now + 0.15);
+    click.frequency.exponentialRampToValueAtTime(70, now + 0.28);
+    cGain.gain.setValueAtTime(0.7, now + 0.15);
+    cGain.gain.exponentialRampToValueAtTime(0.01, now + 0.28);
+    click.connect(cGain);
+    cGain.connect(this.ctx.destination);
+    click.start(now + 0.15);
+    click.stop(now + 0.28);
+  }
+
+  // 10. Heavy Hydraulic Blast Door Steel Grinding
+  playHydraulicDoorGrind() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(80, now);
+    osc.frequency.linearRampToValueAtTime(110, now + 0.4);
+    osc.frequency.linearRampToValueAtTime(65, now + 0.8);
+
+    gain.gain.setValueAtTime(0.55, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.85);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.85);
+  }
+
+  // 11. Seegson Working Joe Synthesizer Chime
+  playWorkingJoeVoice() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+    [440, 554, 659].forEach((f, idx) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(f, now + idx * 0.08);
+      gain.gain.setValueAtTime(0.25, now + idx * 0.08);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.08 + 0.18);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(now + idx * 0.08);
+      osc.stop(now + idx * 0.08 + 0.18);
+    });
+  }
 }
+
 
 
