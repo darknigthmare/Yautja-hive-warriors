@@ -114,6 +114,17 @@ export class Player {
     this.m41aGrenadeCharges = 4;
     this.m41aGrenadeCooldown = 0;
     this.activeM41AGrenades = [];
+    // v48.0 Systems (Scout Ship Orbital Beam, M77 Gauss Railgun, Modular Legendary Bio-Masks)
+    this.scoutBeamCooldown = 0;
+    this.activeScoutBeam = null;
+    this.m77GaussAmmo = 12;
+    this.m77GaussCooldown = 0;
+    this.bioMaskIndex = 0;
+    this.bioMaskName = 'JUNGLE HUNTER (1987)';
+    this.baseMoveSpeed = this.moveSpeed;
+    this.baseMeleeDamage = this.meleeDamage;
+    this.basePlasmaDamage = this.plasmaDamage;
+    this.bioMaskCrestGroup = null;
 
     // Pounce Leap State
     this.isLeaping = false;
@@ -2949,6 +2960,299 @@ export class Player {
         }
       }
     }
+  }
+
+  /* === CHANTIER 1 (v48): Yautja Scout Ship Stratospheric Thermal Beam Strike (AVP 2004 / Concrete Jungle) === */
+  triggerScoutShipBeam(ui = null) {
+    if (this.scoutBeamCooldown > 0 || this.activeScoutBeam) {
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement(`⏳ VAISSEAU ÉCLAIREUR YAUTJA EN RECHARGE ORBITALE (${Math.ceil(this.scoutBeamCooldown)}S)...`);
+      }
+      return false;
+    }
+
+    this.scoutBeamCooldown = 32.0 * (this.bioMaskIndex === 3 ? 0.7 : 1.0); // Wolf Bio-Mask reduces cooldown by 30%
+
+    if (this.audioEngine && this.audioEngine.playScoutShipOrbitalBeam) {
+      this.audioEngine.playScoutShipOrbitalBeam();
+    }
+
+    if (ui && ui.showAnnouncement) {
+      ui.showAnnouncement('🛸 FRAPPE ORBITALE DU VAISSEAU ÉCLAIREUR YAUTJA (AVP 2004) : FAISCEAU THERMIQUE STRATOSPHÉRIQUE (850 DÉGÂTS/S) !');
+    }
+
+    const forward = new THREE.Vector3(Math.sin(this.rotationY), 0, Math.cos(this.rotationY)).normalize();
+    const startPos = this.position.clone().addScaledVector(forward, 6.0);
+    startPos.y = 0;
+
+    const beamGroup = new THREE.Group();
+    beamGroup.position.copy(startPos);
+
+    // Outer plasma sheath (4.5m diameter, 40m tall)
+    const outerGeo = new THREE.CylinderGeometry(2.25, 2.25, 42.0, 16);
+    const outerMat = new THREE.MeshBasicMaterial({ color: 0x00f2fe, transparent: true, opacity: 0.45 });
+    const outerMesh = new THREE.Mesh(outerGeo, outerMat);
+    outerMesh.position.y = 21.0;
+    beamGroup.add(outerMesh);
+
+    // White-hot inner core
+    const coreGeo = new THREE.CylinderGeometry(0.95, 0.95, 42.0, 12);
+    const coreMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.92 });
+    const coreMesh = new THREE.Mesh(coreGeo, coreMat);
+    coreMesh.position.y = 21.0;
+    beamGroup.add(coreMesh);
+
+    // Ground scorch ring
+    const ringGeo = new THREE.RingGeometry(1.2, 2.8, 24);
+    ringGeo.rotateX(-Math.PI / 2);
+    const ringMat = new THREE.MeshBasicMaterial({ color: 0xf97316, side: THREE.DoubleSide });
+    const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+    ringMesh.position.y = 0.08;
+    beamGroup.add(ringMesh);
+
+    this.scene.add(beamGroup);
+
+    this.activeScoutBeam = {
+      group: beamGroup,
+      pos: startPos,
+      dir: forward,
+      timer: 5.0,
+      slagTimer: 0
+    };
+
+    return true;
+  }
+
+  updateScoutShipBeam(delta, horde, bosses, synthetics, particles) {
+    if (this.scoutBeamCooldown > 0) {
+      this.scoutBeamCooldown = Math.max(0, this.scoutBeamCooldown - delta);
+    }
+    if (this.m77GaussCooldown > 0) {
+      this.m77GaussCooldown = Math.max(0, this.m77GaussCooldown - delta);
+    }
+
+    if (!this.activeScoutBeam) return;
+    const beam = this.activeScoutBeam;
+    beam.timer -= delta;
+    beam.slagTimer -= delta;
+
+    // Sweep forward at 7.5m/s
+    beam.pos.addScaledVector(beam.dir, 7.5 * delta);
+    beam.group.position.copy(beam.pos);
+    beam.group.rotation.y += 4.5 * delta;
+
+    // Leave glowing molten slag decals along the path
+    if (beam.slagTimer <= 0) {
+      beam.slagTimer = 0.25;
+      const slagGeo = new THREE.CircleGeometry(2.1, 12);
+      slagGeo.rotateX(-Math.PI / 2);
+      const slagMat = new THREE.MeshBasicMaterial({ color: 0xea580c, transparent: true, opacity: 0.75 });
+      const slag = new THREE.Mesh(slagGeo, slagMat);
+      slag.position.set(beam.pos.x, 0.03, beam.pos.z);
+      this.scene.add(slag);
+      setTimeout(() => this.scene.remove(slag), 4500);
+    }
+
+    // Incinerate Xenomorphs within 3.2m radius (850 thermal dmg/s)
+    if (horde && horde.aliens) {
+      for (let i = horde.aliens.length - 1; i >= 0; i--) {
+        const a = horde.aliens[i];
+        if (!a || a.hp <= 0 || !a.mesh) continue;
+        if (a.mesh.position.distanceTo(beam.pos) <= 3.4) {
+          a.hp -= 850 * delta;
+          if (particles && particles.emitSparks && Math.random() < 0.35) {
+            particles.emitSparks(a.mesh.position, 5);
+          }
+          if (a.hp <= 0) {
+            if (horde.goreEngine) horde.goreEngine.spawnDismemberment(a.mesh.position, 'plasma');
+            this.scene.remove(a.mesh);
+            horde.aliens.splice(i, 1);
+            horde.deadCount++;
+            if (window.gameInstance) {
+              window.gameInstance.comboHits++;
+              window.gameInstance.score += 180;
+            }
+          }
+        }
+      }
+    }
+
+    // Damage active boss
+    if (bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
+      if (bosses.activeBoss.mesh.position.distanceTo(beam.pos) <= 4.5) {
+        bosses.takeDamage(650 * delta, horde);
+      }
+    }
+
+    // Damage enemy synthetics
+    if (synthetics && synthetics.androids) {
+      synthetics.androids.forEach(syn => {
+        if (syn.mesh && syn.mesh.position.distanceTo(beam.pos) <= 3.4) {
+          syn.hp -= 850 * delta;
+        }
+      });
+    }
+
+    if (beam.timer <= 0) {
+      this.scene.remove(beam.group);
+      this.activeScoutBeam = null;
+    }
+  }
+
+  /* === CHANTIER 3 (v48): USCM M77 Gauss / Railgun Hypersonic Rifle (Aliens: Colonial Marines / Dark Horse) === */
+  fireM77GaussRifle(horde, bosses, synthetics, environment, particles, ui = null) {
+    if (this.m77GaussCooldown > 0) return false;
+    if (this.m77GaussAmmo <= 0) {
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('⚠️ FUSIL HYPERSONIQUE M77 GAUSS : MUNITIONS URANIUM APPAUVRI ÉPUISÉES (0/12) !');
+      }
+      return false;
+    }
+
+    this.m77GaussAmmo--;
+    this.m77GaussCooldown = 1.35;
+
+    if (this.audioEngine && this.audioEngine.playM77GaussRailgunFire) {
+      this.audioEngine.playM77GaussRailgunFire();
+    }
+
+    const forward = new THREE.Vector3(Math.sin(this.rotationY), 0, Math.cos(this.rotationY)).normalize();
+    const origin = this.position.clone().add(new THREE.Vector3(0, 1.8, 0));
+
+    // 45m Hypersonic Linear Railgun Beam + 6 Blue Ionization Shock Rings
+    const railGroup = new THREE.Group();
+    const beamGeo = new THREE.CylinderGeometry(0.08, 0.08, 45.0, 8);
+    beamGeo.rotateX(Math.PI / 2);
+    const beamMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.95 });
+    const beamMesh = new THREE.Mesh(beamGeo, beamMat);
+    beamMesh.position.copy(origin).addScaledVector(forward, 22.5);
+    beamMesh.lookAt(origin.clone().addScaledVector(forward, 45.0));
+    railGroup.add(beamMesh);
+
+    for (let r = 1; r <= 6; r++) {
+      const ringGeo = new THREE.TorusGeometry(0.45 + r * 0.08, 0.04, 6, 16);
+      const ringMat = new THREE.MeshBasicMaterial({ color: 0x00f2fe, transparent: true, opacity: 0.85 });
+      const ring = new THREE.Mesh(ringGeo, ringMat);
+      ring.position.copy(origin).addScaledVector(forward, r * 6.5);
+      ring.lookAt(origin.clone().addScaledVector(forward, 45.0));
+      railGroup.add(ring);
+    }
+
+    this.scene.add(railGroup);
+    setTimeout(() => this.scene.remove(railGroup), 220);
+
+    // Pierce up to 15 enemies in a 45m line (550 armor-piercing damage, ignores 100% ballistic armor)
+    let piercedCount = 0;
+    if (horde && horde.aliens) {
+      for (let i = horde.aliens.length - 1; i >= 0; i--) {
+        if (piercedCount >= 15) break;
+        const a = horde.aliens[i];
+        if (!a || a.hp <= 0 || !a.mesh) continue;
+        const toEnemy = a.mesh.position.clone().sub(this.position);
+        toEnemy.y = 0;
+        const dist = toEnemy.length();
+        if (dist <= 45.0) {
+          const proj = toEnemy.dot(forward);
+          const perpDist = Math.sqrt(Math.max(0, dist * dist - proj * proj));
+          if (proj > 0 && perpDist <= (a.radius || 1.2) + 0.95) {
+            a.hp -= 550;
+            piercedCount++;
+            if (particles && particles.emitSparks) {
+              particles.emitSparks(a.mesh.position, 8);
+            }
+            if (a.hp <= 0) {
+              if (horde.goreEngine) horde.goreEngine.spawnDismemberment(a.mesh.position, 'heavy');
+              horde.spawnAcidPool(a.mesh.position);
+              this.scene.remove(a.mesh);
+              horde.aliens.splice(i, 1);
+              horde.deadCount++;
+              if (window.gameInstance) {
+                window.gameInstance.comboHits++;
+                window.gameInstance.score += 190;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // Pierce active boss
+    if (bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
+      const toBoss = bosses.activeBoss.mesh.position.clone().sub(this.position);
+      toBoss.y = 0;
+      const dist = toBoss.length();
+      if (dist <= 45.0 && toBoss.normalize().dot(forward) > 0.88) {
+        bosses.takeDamage(550, horde);
+        piercedCount++;
+      }
+    }
+
+    if (ui && ui.showAnnouncement) {
+      ui.showAnnouncement(`⚡ TIR HYPERSONIQUE M77 GAUSS (MACH 7) : ${piercedCount} CIBLES TRANSPERCÉES ! (${this.m77GaussAmmo}/12)`);
+    }
+
+    return true;
+  }
+
+  /* === CHANTIER 7 (v48): Modular Legendary Yautja Bio-Masks (1987, Celtic, Scar, Wolf, Berserker, Feral) === */
+  cycleLegendaryBioMask(ui = null) {
+    const masks = [
+      { name: 'JUNGLE HUNTER (1987)', color: 0x94a3b8, desc: '+15% RÉGÉN. PLASMA', speedMult: 1.0, meleeMult: 1.0, plasmaMult: 1.0 },
+      { name: 'CELTIC (AVP 2004)', color: 0x64748b, desc: '+25% RÉSISTANCE ACIDE & MÊLÉE', speedMult: 0.96, meleeMult: 1.15, plasmaMult: 1.0 },
+      { name: 'SCAR BLOODED (AVP 2004)', color: 0x78716c, desc: '+30% DÉGÂTS PLASMA CASTER', speedMult: 1.02, meleeMult: 1.05, plasmaMult: 1.3 },
+      { name: 'WOLF ELITE (AVP-R 2007)', color: 0x475569, desc: '-30% RECHARGE GADGETS & FRAPPE ORBITALE', speedMult: 1.05, meleeMult: 1.15, plasmaMult: 1.15 },
+      { name: 'BERSERKER MR. BLACK (2010)', color: 0x18181b, desc: '+35% DÉGÂTS MÊLÉE & MACHOIRE D\'OS', speedMult: 1.05, meleeMult: 1.35, plasmaMult: 1.1 },
+      { name: 'FERAL BONE MASK (PREY 2022)', color: 0xd6d3d1, desc: '+20% VITESSE DE CHASSE & BOND', speedMult: 1.2, meleeMult: 1.2, plasmaMult: 0.9 }
+    ];
+
+    this.bioMaskIndex = (this.bioMaskIndex + 1) % masks.length;
+    const selected = masks[this.bioMaskIndex];
+    this.bioMaskName = selected.name;
+
+    // Apply passive stat modifiers
+    this.moveSpeed = this.baseMoveSpeed * selected.speedMult;
+    this.meleeDamage = this.baseMeleeDamage * selected.meleeMult;
+    this.plasmaDamage = this.basePlasmaDamage * selected.plasmaMult;
+
+    // Update 3D Bio-Mask appearance on Player Head
+    if (this.headMesh && this.headMesh.material) {
+      this.headMesh.material.color.setHex(selected.color);
+    }
+
+    // Add/update distinctive 3D crest or jawbone details on the head
+    if (this.bioMaskCrestGroup) {
+      this.mesh.remove(this.bioMaskCrestGroup);
+    }
+    this.bioMaskCrestGroup = new THREE.Group();
+
+    if (this.bioMaskIndex === 4) {
+      // Berserker Mr. Black Bone Jawbone
+      const jawMat = new THREE.MeshStandardMaterial({ color: 0xe7e5e4, roughness: 0.5 });
+      const jaw = new THREE.Mesh(new THREE.BoxGeometry(0.75, 0.35, 0.5), jawMat);
+      jaw.position.set(0, 3.32, 0.48);
+      this.bioMaskCrestGroup.add(jaw);
+    } else if (this.bioMaskIndex === 1) {
+      // Celtic braided ridge
+      const ridgeMat = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.95, roughness: 0.15 });
+      const ridge = new THREE.Mesh(new THREE.BoxGeometry(0.95, 0.25, 0.45), ridgeMat);
+      ridge.position.set(0, 3.85, 0.42);
+      this.bioMaskCrestGroup.add(ridge);
+    } else if (this.bioMaskIndex === 2 && this.clanMarkMesh) {
+      // Scar glowing acid blood mark visible
+      this.clanMarkMesh.visible = true;
+    }
+
+    this.mesh.add(this.bioMaskCrestGroup);
+
+    if (this.audioEngine && this.audioEngine.playBioMaskSwitchClick) {
+      this.audioEngine.playBioMaskSwitchClick();
+    }
+
+    if (ui && ui.showAnnouncement) {
+      ui.showAnnouncement(`🎭 BIO-MASQUE ÉQUIPÉ : ${selected.name} (${selected.desc}) !`);
+    }
+
+    return selected;
   }
 }
 

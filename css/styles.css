@@ -2404,6 +2404,54 @@ html, body {
   color: #ffedd5;
 }
 
+/* === CHANTIER 4 (v48): Fiorina 161 Molten Lead Foundry Valve Prompt === */
+.foundry-valve-box {
+  position: absolute;
+  bottom: 155px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(45, 16, 8, 0.94);
+  border: 2px solid #f97316;
+  box-shadow: 0 0 24px rgba(249, 115, 22, 0.7);
+  padding: 8px 20px;
+  border-radius: 6px;
+  z-index: 94;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  pointer-events: none;
+}
+
+.foundry-key {
+  background: #ea580c;
+  color: #fff;
+  font-weight: 900;
+  font-size: 1.0rem;
+  padding: 4px 12px;
+  border-radius: 4px;
+  border: 1px solid #fdba74;
+}
+
+.foundry-valve-text {
+  color: #ffedd5;
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+}
+
+/* v48.0 Ability Slots */
+#slot-scout-beam .slot-key,
+#slot-m77-gauss .slot-key,
+#slot-bishop-squad .slot-key {
+  border-color: #38bdf8;
+  color: #38bdf8;
+}
+#slot-biomask .slot-key {
+  border-color: #eab308;
+  color: #facc15;
+}
+
+
 
 
 

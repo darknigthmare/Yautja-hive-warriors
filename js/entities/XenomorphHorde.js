@@ -57,6 +57,9 @@ export class XenomorphHorde {
     this.mantaMat = new THREE.MeshStandardMaterial({ color: 0x1e152a, roughness: 0.35, metalness: 0.8 });
     this.mantaWingMat = new THREE.MeshStandardMaterial({ color: 0x2e1065, roughness: 0.45, metalness: 0.6, transparent: true, opacity: 0.88, side: THREE.DoubleSide });
 
+    // Chantier 6 (v48): The King Alien / Rogue Titan Material (Aliens: Rogue / Kenner Canon 1:1)
+    this.rogueKingMat = new THREE.MeshStandardMaterial({ color: 0x3b0711, roughness: 0.18, metalness: 0.92 });
+
     this.microSwarms = [];
     this.cyberSpineDarts = [];
     this.royalFacehuggers = [];
@@ -102,6 +105,9 @@ export class XenomorphHorde {
     // Chantier 7 (v47): Spawn 2 Flying Xenomorph Manta Swarmers (Aliens Arcade / Kenner / Marvel)
     this.spawnMantaSwarmer(playerPos.clone().add(new THREE.Vector3(-20, 10, -20)), playerPos);
     this.spawnMantaSwarmer(playerPos.clone().add(new THREE.Vector3(20, 10, 20)), playerPos);
+
+    // Chantier 6 (v48): Spawn 1 King Alien / Rogue Titan (Aliens: Rogue / Kenner 1:1 Canon)
+    this.spawnRogueKingTitan(playerPos);
 
     // Dynasty Warriors Musou: Spawn 2 Hive Spire Captains / Node Guards (Gardes de Nœud & Sentinelles du Couvoir)
     this.spawnHiveOfficer(playerPos, -22, 'SENTINELLE DU NŒUD PRIMAIRE (SPIRE GUARD)');
@@ -237,6 +243,84 @@ export class XenomorphHorde {
       isStunned: false,
       stunTimer: 0,
       isBallisticArmored: true, // 50% ballistic armor
+      isAirborne: false,
+      airborneVelY: 0,
+      airborneVelHoriz: new THREE.Vector3()
+    });
+  }
+
+  /* Chantier 6 (v48): The King Alien / Rogue Titan (Aliens: Rogue / Kenner 1994 Canon 1:1) */
+  spawnRogueKingTitan(playerPos) {
+    const group = new THREE.Group();
+    const scale = 2.3;
+    const mat = this.rogueKingMat;
+    const hornMat = new THREE.MeshStandardMaterial({ color: 0x09090b, metalness: 0.95, roughness: 0.12 });
+    const veinMat = new THREE.MeshStandardMaterial({ color: 0xdc2626, emissive: 0x7f1d1d, roughness: 0.25 });
+
+    // Massive Muscular Torso
+    const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.75 * scale, 0.52 * scale, 2.5 * scale, 8), mat);
+    torso.position.y = 1.6 * scale;
+    group.add(torso);
+
+    // Jagged Royal Crown Cranium
+    const head = new THREE.Mesh(new THREE.BoxGeometry(0.85 * scale, 0.65 * scale, 2.4 * scale), mat);
+    head.position.set(0, 2.9 * scale, 0.5 * scale);
+    group.add(head);
+
+    // 5 Jagged Crimson-Black Royal Crown Horns (Aliens: Rogue King Silhouette)
+    for (let h = -2; h <= 2; h++) {
+      const horn = new THREE.Mesh(new THREE.ConeGeometry(0.28 * scale, 2.2 * scale, 5), hornMat);
+      horn.position.set(h * 0.42 * scale, 3.4 * scale + Math.cos(h * 0.5) * 0.25 * scale, -0.8 * scale);
+      horn.rotation.x = Math.PI / 2.6;
+      horn.rotation.z = -h * 0.22;
+      group.add(horn);
+    }
+
+    // Double Crusher Pincer Claws (Left & Right Heavy Forearms)
+    [-1, 1].forEach(side => {
+      const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.26 * scale, 0.18 * scale, 1.8 * scale, 6), mat);
+      arm.position.set(side * 1.15 * scale, 1.9 * scale, 0.5 * scale);
+      arm.rotation.z = side * 0.35;
+      arm.rotation.x = 0.45;
+      group.add(arm);
+
+      const pincerTop = new THREE.Mesh(new THREE.ConeGeometry(0.18 * scale, 0.95 * scale, 4), hornMat);
+      pincerTop.position.set(side * 1.45 * scale, 1.4 * scale, 1.1 * scale);
+      pincerTop.rotation.x = Math.PI / 2.2;
+      group.add(pincerTop);
+
+      const pincerBot = new THREE.Mesh(new THREE.ConeGeometry(0.15 * scale, 0.85 * scale, 4), veinMat);
+      pincerBot.position.set(side * 1.45 * scale, 1.15 * scale, 1.05 * scale);
+      pincerBot.rotation.x = Math.PI / 1.9;
+      group.add(pincerBot);
+    });
+
+    // Heavy Armored Tail with Royal Mace Stinger
+    for (let t = 0; t < 6; t++) {
+      const tSeg = new THREE.Mesh(new THREE.CylinderGeometry((0.16 - t * 0.015) * scale, (0.13 - t * 0.015) * scale, 0.55 * scale, 6), mat);
+      tSeg.position.set(0, (1.1 - t * 0.14) * scale, (-0.5 - t * 0.42) * scale);
+      tSeg.rotation.x = -0.45 + t * 0.08;
+      group.add(tSeg);
+    }
+
+    group.position.set(playerPos.x + 24, 0, playerPos.z - 28);
+    this.scene.add(group);
+
+    this.aliens.push({
+      mesh: group,
+      type: 'rogue_king',
+      isRogueKing: true,
+      isOfficer: true,
+      officerTitle: 'THE KING ALIEN / ROGUE TITAN (ALIENS: ROGUE)',
+      hp: 3200,
+      maxHp: 3200,
+      speed: 13.5,
+      damage: 85,
+      radius: 2.6,
+      kingRoarCooldown: 6.0,
+      isStunned: false,
+      stunTimer: 0,
+      isBallisticArmored: true,
       isAirborne: false,
       airborneVelY: 0,
       airborneVelHoriz: new THREE.Vector3()
@@ -2109,10 +2193,30 @@ export class XenomorphHorde {
         }
       }
 
-      // Check if low HP sub-boss enters execution stun (Crusher, Praetorian, Grid Alien, Marvel Alpha)
-      if ((a.type === 'crusher' || a.type === 'praetorian' || a.type === 'grid_alien' || a.isMarvelAlpha) && a.hp <= a.maxHp * 0.22 && !a.isStunned) {
+      // Chantier 6 (v48): The King Alien / Rogue Titan Dominance Roar & Crusher Slam (Aliens: Rogue)
+      if (a.isRogueKing) {
+        a.kingRoarCooldown -= delta;
+        if (a.kingRoarCooldown <= 0 && dist <= 26.0) {
+          a.kingRoarCooldown = 8.0;
+          if (this.audioEngine && this.audioEngine.playRogueKingRoar) {
+            this.audioEngine.playRogueKingRoar();
+          }
+          if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
+            window.gameInstance.ui.showAnnouncement('👑 RUGISSEMENT DE SUPRÉMATIE DU KING ALIEN ROGUE : HORDE EN FRÉNÉSIE (+35% VITESSE) !');
+          }
+          this.aliens.forEach(other => {
+            if (other !== a && other.mesh && other.mesh.position.distanceTo(a.mesh.position) <= 24.0) {
+              other.isEnraged = true;
+              other.enragedTimer = 7.0;
+            }
+          });
+        }
+      }
+
+      // Check if low HP sub-boss enters execution stun (Crusher, Praetorian, Grid Alien, Marvel Alpha, Deacon, Rogue King)
+      if ((a.type === 'crusher' || a.type === 'praetorian' || a.type === 'grid_alien' || a.isMarvelAlpha || a.isDeacon || a.isRogueKing) && a.hp <= a.maxHp * 0.22 && !a.isStunned) {
         a.isStunned = true;
-        a.stunTimer = 7.0;
+        a.stunTimer = 7.5;
       }
 
       // Boiler suicide kamikaze charge

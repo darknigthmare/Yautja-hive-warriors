@@ -20,6 +20,7 @@ export class BossManager {
     mesh.position.copy(spawnPos);
     this.scene.add(mesh);
 
+    const isMatriarchTitan = type === 'predalien_matriarch_titan';
     const isImperial = type === 'imperial_queen';
     const isEmpress = type === 'empress_matriarch';
     const isPredalienQueen = type === 'predalien_queen';
@@ -27,7 +28,7 @@ export class BossManager {
     const isOffspring = type === 'the_offspring';
     const isTrilobite = type === 'trilobite_prime';
 
-    const hp = isImperial ? 8000 : (isTrilobite ? 7000 : (isPredalienAbomination ? 6500 : (isEmpress ? 6000 : (isPredalienQueen ? 5000 : (isOffspring ? 4500 : 3000)))));
+    const hp = isMatriarchTitan ? 10000 : (isImperial ? 8000 : (isTrilobite ? 7000 : (isPredalienAbomination ? 6500 : (isEmpress ? 6000 : (isPredalienQueen ? 5000 : (isOffspring ? 4500 : 3000))))));
 
     this.activeBoss = {
       type: type,
@@ -40,7 +41,11 @@ export class BossManager {
       spineRipAvailable: false
     };
 
-    if (isTrilobite && this.audioEngine.playTrilobiteTentacleConstrict) {
+    if (isMatriarchTitan) {
+      if (this.audioEngine.playPredalienBellyVomit) this.audioEngine.playPredalienBellyVomit();
+      if (this.audioEngine.playRogueKingRoar) this.audioEngine.playRogueKingRoar();
+      if (this.audioEngine.playYautjaRoar) this.audioEngine.playYautjaRoar();
+    } else if (isTrilobite && this.audioEngine.playTrilobiteTentacleConstrict) {
       this.audioEngine.playTrilobiteTentacleConstrict();
       if (this.audioEngine.playYautjaRoar) this.audioEngine.playYautjaRoar();
     } else if (isOffspring) {
@@ -172,16 +177,17 @@ export class BossManager {
     }
 
     const group = new THREE.Group();
+    const isMatriarchTitan = type === 'predalien_matriarch_titan';
     const isEmpress = type === 'empress_matriarch';
-    const isPredalien = type === 'predalien_queen' || type === 'predalien_abomination';
-    const isAbomination = type === 'predalien_abomination';
+    const isPredalien = type === 'predalien_queen' || type === 'predalien_abomination' || isMatriarchTitan;
+    const isAbomination = type === 'predalien_abomination' || isMatriarchTitan;
     const isOffspring = type === 'the_offspring';
-    const scale = type === 'imperial_queen' ? 2.8 : (isEmpress ? 2.5 : (isAbomination ? 2.4 : (type === 'predalien_queen' ? 2.1 : (isOffspring ? 2.2 : 2.0))));
+    const scale = isMatriarchTitan ? 3.0 : (type === 'imperial_queen' ? 2.8 : (isEmpress ? 2.5 : (isAbomination ? 2.4 : (type === 'predalien_queen' ? 2.1 : (isOffspring ? 2.2 : 2.0)))));
 
     const mat = new THREE.MeshStandardMaterial({
-      color: isOffspring ? 0xe2dfd2 : (isAbomination ? 0x524330 : (isPredalien ? 0x5a4632 : (isEmpress ? 0x2b0d3d : 0x11161d))),
-      metalness: isOffspring ? 0.1 : (isAbomination ? 0.75 : 0.8),
-      roughness: isOffspring ? 0.35 : (isAbomination ? 0.3 : 0.25)
+      color: isOffspring ? 0xe2dfd2 : (isMatriarchTitan ? 0x6b4c28 : (isAbomination ? 0x524330 : (isPredalien ? 0x5a4632 : (isEmpress ? 0x2b0d3d : 0x11161d)))),
+      metalness: isOffspring ? 0.1 : (isMatriarchTitan ? 0.85 : (isAbomination ? 0.75 : 0.8)),
+      roughness: isOffspring ? 0.35 : (isMatriarchTitan ? 0.22 : (isAbomination ? 0.3 : 0.25))
     });
 
     // Elongated Alien Cranium
@@ -190,12 +196,12 @@ export class BossManager {
     head.position.set(0, 3.5 * scale, 0.5);
     group.add(head);
 
-    // 1:1 Canon Xenomorph Queen / Empress Flared Armored Head Crest (Aliens 1986 / AvP 2004)
+    // 1:1 Canon Xenomorph Queen / Empress Flared Armored Head Crest (Aliens 1986 / AvP 2004 / AvP Extinction)
     if (!isOffspring) {
       const crownMat = new THREE.MeshStandardMaterial({
-        color: isPredalien ? 0x4a3b2c : (isEmpress ? 0x3b1254 : 0x0a0e14),
-        metalness: 0.85,
-        roughness: 0.2
+        color: isMatriarchTitan ? 0xb45309 : (isPredalien ? 0x4a3b2c : (isEmpress ? 0x3b1254 : 0x0a0e14)),
+        metalness: isMatriarchTitan ? 0.92 : 0.85,
+        roughness: isMatriarchTitan ? 0.15 : 0.2
       });
       // Flared hexagonal crown fan
       const crownGeo = new THREE.ConeGeometry(2.4 * scale, 3.8 * scale, 6);
@@ -288,7 +294,7 @@ export class BossManager {
     }
 
     if (isPredalien) {
-      // Canon 1:1 Predalien Anatomy (AVP Requiem 2007)
+      // Canon 1:1 Predalien Anatomy (AVP Requiem 2007 / AvP Extinction Matriarch Titan)
       // 1. Four articulable Yautja mandibles on the jaws
       const mandibleMat = new THREE.MeshStandardMaterial({ color: 0x92400e, roughness: 0.4, metalness: 0.2 });
       const mandibleGeo = new THREE.ConeGeometry(0.18 * scale, 0.9 * scale, 5);
@@ -316,7 +322,7 @@ export class BossManager {
       // 2. Thick Yautja Dreadlocks crown trailing behind the biomechanical skull
       const dreadMat = new THREE.MeshStandardMaterial({ color: 0x1c1917, roughness: 0.85 });
       const ringMat = new THREE.MeshStandardMaterial({ color: 0xd97706, metalness: 0.9, roughness: 0.2 });
-      const dreadCount = isAbomination ? 6 : 4;
+      const dreadCount = isMatriarchTitan ? 8 : (isAbomination ? 6 : 4);
       for (let d = -dreadCount; d <= dreadCount; d++) {
         const dread = new THREE.Mesh(new THREE.CylinderGeometry(0.08 * scale, 0.05 * scale, 2.6 * scale, 6), dreadMat);
         const ang = (d / dreadCount) * Math.PI * 0.45;
@@ -325,14 +331,14 @@ export class BossManager {
         dread.rotation.z = ang * 0.35;
         group.add(dread);
 
-        if (isAbomination && Math.abs(d) % 2 === 0) {
+        if ((isAbomination || isMatriarchTitan) && Math.abs(d) % 2 === 0) {
           const ring = new THREE.Mesh(new THREE.TorusGeometry(0.09 * scale, 0.02 * scale, 4, 8), ringMat);
           ring.position.set(Math.sin(ang) * 0.85 * scale, 3.1 * scale, -1.0 * scale - Math.cos(ang) * 0.35 * scale);
           group.add(ring);
         }
       }
 
-      // 3. Swollen Pregnant Biomechanical Belly Organ (AVP-R Chet Canon)
+      // 3. Swollen Pregnant Biomechanical Belly Organ (AVP-R Chet / Matriarch Twin Brood Sacs)
       if (isAbomination || isPredalien) {
         const bellyMat = new THREE.MeshStandardMaterial({
           color: 0x65a30d,
@@ -342,10 +348,20 @@ export class BossManager {
           transparent: true,
           opacity: 0.85
         });
-        const belly = new THREE.Mesh(new THREE.SphereGeometry(0.85 * scale, 10, 10), bellyMat);
-        belly.position.set(0, 1.8 * scale, 0.65 * scale);
-        belly.scale.set(0.9, 1.25, 1.05);
-        group.add(belly);
+        if (isMatriarchTitan) {
+          // Twin glowing brood sacs for Predalien Matriarch Titan
+          [-0.45, 0.45].forEach(bx => {
+            const sac = new THREE.Mesh(new THREE.SphereGeometry(0.75 * scale, 10, 10), bellyMat);
+            sac.position.set(bx * scale, 1.85 * scale, 0.72 * scale);
+            sac.scale.set(0.85, 1.3, 1.1);
+            group.add(sac);
+          });
+        } else {
+          const belly = new THREE.Mesh(new THREE.SphereGeometry(0.85 * scale, 10, 10), bellyMat);
+          belly.position.set(0, 1.8 * scale, 0.65 * scale);
+          belly.scale.set(0.9, 1.25, 1.05);
+          group.add(belly);
+        }
       }
     }
 
@@ -494,21 +510,30 @@ export class BossManager {
     this.activeBoss.hp -= amount;
 
     // Predalien Pregnant Belly-Burst Frenzy at < 45% HP (AVP Requiem Lore)
-    if ((this.activeBoss.type === 'predalien_queen' || this.activeBoss.type === 'predalien_abomination') && this.activeBoss.hp <= this.activeBoss.maxHp * 0.45 && !this.activeBoss.pregnantBurstTriggered) {
+    if ((this.activeBoss.type === 'predalien_queen' || this.activeBoss.type === 'predalien_abomination' || this.activeBoss.type === 'predalien_matriarch_titan') && this.activeBoss.hp <= this.activeBoss.maxHp * 0.45 && !this.activeBoss.pregnantBurstTriggered) {
       this.activeBoss.pregnantBurstTriggered = true;
       this.triggerPregnantBurstFrenzy(horde || (window.gameInstance ? window.gameInstance.horde : null));
     }
 
-    // Phase 2 for Predalien Abomination at 65% HP
-    if (this.activeBoss.type === 'predalien_abomination' && this.activeBoss.hp <= this.activeBoss.maxHp * 0.65 && this.activeBoss.phase === 1) {
+    // Phase 2 for Predalien Abomination / Matriarch Titan at 65% HP
+    if ((this.activeBoss.type === 'predalien_abomination' || this.activeBoss.type === 'predalien_matriarch_titan') && this.activeBoss.hp <= this.activeBoss.maxHp * 0.65 && this.activeBoss.phase === 1) {
       this.activeBoss.phase = 2;
       if (window.gameInstance && window.gameInstance.ui) {
-        window.gameInstance.ui.showAnnouncement('⚠️ PHASE 2 : L\'ABOMINATION PRÉDALIENNE CRACHE SON ACIDITÉ GESTANTE (AVP-R) !');
+        window.gameInstance.ui.showAnnouncement('⚠️ PHASE 2 : LA MATRIARCHE PRÉDALIENNE ENTRE EN TRANSE ROYALE ET LIBÈRE SES BROOD SACS !');
       }
     }
 
-    // Custom Spine Rip Stun Threshold at 20% HP
-    if (this.activeBoss.type === 'trilobite_prime') {
+    // Custom Spine Rip Stun Threshold at 18% / 20% HP
+    if (this.activeBoss.type === 'predalien_matriarch_titan') {
+      if (this.activeBoss.hp <= this.activeBoss.maxHp * 0.18 && !this.activeBoss.isStunned && !this.activeBoss.spineRipAvailable) {
+        this.activeBoss.isStunned = true;
+        this.activeBoss.stunTimer = 15.0;
+        this.activeBoss.spineRipAvailable = true;
+        if (window.gameInstance && window.gameInstance.ui) {
+          window.gameInstance.ui.showAnnouncement('💀 EXÉCUTION SUPRÊME : APPUYEZ SUR [E] POUR ARRACHER LA COURONNE IMPÉRIALE DE LA MATRIARCHE TITAN PRÉDALIENNE !');
+        }
+      }
+    } else if (this.activeBoss.type === 'trilobite_prime') {
       if (this.activeBoss.hp <= this.activeBoss.maxHp * 0.20 && !this.activeBoss.isStunned && !this.activeBoss.spineRipAvailable) {
         this.activeBoss.isStunned = true;
         this.activeBoss.stunTimer = 14.0;
@@ -531,6 +556,60 @@ export class BossManager {
         this.activeBoss.isStunned = true;
         this.activeBoss.stunTimer = 6.0;
       }
+    }
+  }
+
+  triggerMatriarchRoyalSlam(player, horde) {
+    if (!this.activeBoss) return;
+    if (this.audioEngine && this.audioEngine.playRogueKingRoar) {
+      this.audioEngine.playRogueKingRoar();
+    } else if (this.audioEngine && this.audioEngine.playThunderClap) {
+      this.audioEngine.playThunderClap();
+    }
+
+    if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
+      window.gameInstance.ui.showAnnouncement('💥 BOND ROYAL TITAN (AVP EXTINCTION) : ONDE DE CHOC DE 14M (135 DÉGÂTS) !');
+    }
+
+    // Golden-amber biomechanical shockwave ring
+    const ringGeo = new THREE.RingGeometry(1.5, 3.2, 32);
+    ringGeo.rotateX(-Math.PI / 2);
+    const ringMat = new THREE.MeshBasicMaterial({
+      color: 0xd97706,
+      transparent: true,
+      opacity: 0.9,
+      side: THREE.DoubleSide
+    });
+    const ring = new THREE.Mesh(ringGeo, ringMat);
+    ring.position.copy(this.activeBoss.mesh.position);
+    ring.position.y = 0.35;
+    this.scene.add(ring);
+
+    let scale = 1.0;
+    const ringAnim = setInterval(() => {
+      scale += 1.05;
+      ring.scale.set(scale, 1, scale);
+      ring.material.opacity -= 0.08;
+      if (ring.material.opacity <= 0) {
+        clearInterval(ringAnim);
+        this.scene.remove(ring);
+      }
+    }, 25);
+
+    const dist = this.activeBoss.mesh.position.distanceTo(player.position);
+    if (dist <= 14.0) {
+      if (player.isBlocking) {
+        if (player.audioEngine && player.audioEngine.playShieldBlock) player.audioEngine.playShieldBlock();
+      } else {
+        player.takeDamage(135);
+        const pushDir = player.position.clone().sub(this.activeBoss.mesh.position).normalize();
+        player.position.addScaledVector(pushDir, 10.0);
+        player.mesh.position.copy(player.position);
+      }
+    }
+
+    if (horde && horde.spawnChestburster) {
+      horde.spawnChestburster(this.activeBoss.mesh.position.clone().add(new THREE.Vector3(2.2, 0, 2.2)));
     }
   }
 
@@ -860,13 +939,23 @@ export class BossManager {
       }
     }
 
-    // Predalien Signature Attack: Chestburster Regurgitation / Pressurized Belly Vomit (AVP: Requiem Lore)
-    if ((this.activeBoss.type === 'predalien_queen' || this.activeBoss.type === 'predalien_abomination') && dist > 4.5 && dist < 32.0 && this.activeBoss.regurgitateCooldown <= 0) {
-      this.activeBoss.regurgitateCooldown = this.activeBoss.type === 'predalien_abomination' ? 5.2 : 6.5;
-      if (this.activeBoss.type === 'predalien_abomination') {
+    // Predalien Signature Attack: Chestburster Regurgitation / Pressurized Belly Vomit (AVP: Requiem / Extinction Lore)
+    if ((this.activeBoss.type === 'predalien_queen' || this.activeBoss.type === 'predalien_abomination' || this.activeBoss.type === 'predalien_matriarch_titan') && dist > 4.5 && dist < 32.0 && this.activeBoss.regurgitateCooldown <= 0) {
+      this.activeBoss.regurgitateCooldown = this.activeBoss.type === 'predalien_matriarch_titan' ? 4.5 : (this.activeBoss.type === 'predalien_abomination' ? 5.2 : 6.5);
+      if (this.activeBoss.type === 'predalien_abomination' || this.activeBoss.type === 'predalien_matriarch_titan') {
         this.regurgitateBellyVomit(player, horde);
       } else {
         this.regurgitateChestbursters(player, horde);
+      }
+    }
+
+    // Predalien Matriarch Titan Royal Leap Slam (AvP Extinction 14m Shockwave)
+    if (this.activeBoss.type === 'predalien_matriarch_titan') {
+      if (!this.activeBoss.royalSlamCooldown) this.activeBoss.royalSlamCooldown = 5.5;
+      this.activeBoss.royalSlamCooldown -= delta;
+      if (dist <= 14.0 && this.activeBoss.royalSlamCooldown <= 0) {
+        this.activeBoss.royalSlamCooldown = 7.0;
+        this.triggerMatriarchRoyalSlam(player, horde);
       }
     }
 

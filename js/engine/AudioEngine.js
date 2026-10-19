@@ -4434,6 +4434,247 @@ export class AudioEngine {
     crackOsc.start(now);
     crackOsc.stop(now + 0.25);
   }
+
+  /* === v48.0 10-CHANTIER EXPANSION: 8 NEW PROCEDURAL SYNTHESIZERS (METHODS 58-65) === */
+
+  // 58. Yautja Scout Ship Stratospheric Thermal Beam Strike (AVP 2004 / Concrete Jungle)
+  playScoutShipOrbitalBeam() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Descending stratospheric ion lock-on whine (920Hz -> 62Hz)
+    const lockOsc = this.ctx.createOscillator();
+    const lockGain = this.ctx.createGain();
+    lockOsc.type = 'sawtooth';
+    lockOsc.frequency.setValueAtTime(920, now);
+    lockOsc.frequency.exponentialRampToValueAtTime(62, now + 0.85);
+
+    lockGain.gain.setValueAtTime(0.75, now);
+    lockGain.gain.exponentialRampToValueAtTime(0.01, now + 0.9);
+
+    lockOsc.connect(lockGain);
+    lockGain.connect(this.ctx.destination);
+    lockOsc.start(now);
+    lockOsc.stop(now + 0.9);
+
+    // Sustained deep sub-bass thermal plasma roar
+    const subOsc = this.ctx.createOscillator();
+    const subGain = this.ctx.createGain();
+    subOsc.type = 'sine';
+    subOsc.frequency.setValueAtTime(54, now + 0.15);
+    subOsc.frequency.linearRampToValueAtTime(38, now + 1.4);
+
+    subGain.gain.setValueAtTime(0.9, now + 0.15);
+    subGain.gain.exponentialRampToValueAtTime(0.01, now + 1.4);
+
+    subOsc.connect(subGain);
+    subGain.connect(this.ctx.destination);
+    subOsc.start(now + 0.15);
+    subOsc.stop(now + 1.4);
+  }
+
+  // 59. USCM M77 Gauss / Railgun Hypersonic Mach 7 Discharge (Aliens: Colonial Marines / Dark Horse)
+  playM77GaussRailgunFire() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Magnetic capacitor discharge snap (3100Hz -> 120Hz)
+    const railOsc = this.ctx.createOscillator();
+    const railGain = this.ctx.createGain();
+    railOsc.type = 'square';
+    railOsc.frequency.setValueAtTime(3100, now);
+    railOsc.frequency.exponentialRampToValueAtTime(120, now + 0.28);
+
+    railGain.gain.setValueAtTime(0.85, now);
+    railGain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+
+    railOsc.connect(railGain);
+    railGain.connect(this.ctx.destination);
+    railOsc.start(now);
+    railOsc.stop(now + 0.3);
+
+    // Hypersonic air-splitting boom
+    const boomOsc = this.ctx.createOscillator();
+    const boomGain = this.ctx.createGain();
+    boomOsc.type = 'sawtooth';
+    boomOsc.frequency.setValueAtTime(220, now + 0.02);
+    boomOsc.frequency.exponentialRampToValueAtTime(28, now + 0.45);
+
+    boomGain.gain.setValueAtTime(0.9, now + 0.02);
+    boomGain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+
+    boomOsc.connect(boomGain);
+    boomGain.connect(this.ctx.destination);
+    boomOsc.start(now + 0.02);
+    boomOsc.stop(now + 0.45);
+  }
+
+  // 60. Fiorina 161 Molten Lead Foundry Pour & Steam Sizzle (Alien 3 1992)
+  playMoltenLeadPour() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Heavy liquid metal torrent rumble (92Hz)
+    const pourOsc = this.ctx.createOscillator();
+    const pourGain = this.ctx.createGain();
+    pourOsc.type = 'triangle';
+    pourOsc.frequency.setValueAtTime(92, now);
+    pourOsc.frequency.linearRampToValueAtTime(64, now + 1.1);
+
+    pourGain.gain.setValueAtTime(0.8, now);
+    pourGain.gain.exponentialRampToValueAtTime(0.01, now + 1.1);
+
+    pourOsc.connect(pourGain);
+    pourGain.connect(this.ctx.destination);
+    pourOsc.start(now);
+    pourOsc.stop(now + 1.1);
+
+    // Incandescent 1200C steam hiss
+    const bufferSize = this.ctx.sampleRate * 0.8;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = Math.random() * 2 - 1;
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(1950, now);
+    filter.Q.setValueAtTime(2.5, now);
+
+    const nGain = this.ctx.createGain();
+    nGain.gain.setValueAtTime(0.65, now);
+    nGain.gain.exponentialRampToValueAtTime(0.01, now + 0.8);
+
+    noise.connect(filter);
+    filter.connect(nGain);
+    nGain.connect(this.ctx.destination);
+    noise.start(now);
+    noise.stop(now + 0.8);
+  }
+
+  // 61. Reprogrammed Weyland-Yutani Combat Synthetic "Bishop Protocol" Telemetry Beep (Aliens 1986)
+  playAndroidAllyVoiceBeep() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const freqs = [1240, 1620, 2080];
+    freqs.forEach((f, idx) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(f, now + idx * 0.07);
+
+      gain.gain.setValueAtTime(0.45, now + idx * 0.07);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.07 + 0.06);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(now + idx * 0.07);
+      osc.stop(now + idx * 0.07 + 0.06);
+    });
+  }
+
+  // 62. The King Alien / Rogue Titan Abyssal Dominance Roar (Aliens: Rogue / Kenner Canon)
+  playRogueKingRoar() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Abyssal guttural sub-bass roar (58Hz -> 34Hz)
+    const bassOsc = this.ctx.createOscillator();
+    const bassGain = this.ctx.createGain();
+    bassOsc.type = 'sawtooth';
+    bassOsc.frequency.setValueAtTime(58, now);
+    bassOsc.frequency.linearRampToValueAtTime(84, now + 0.35);
+    bassOsc.frequency.exponentialRampToValueAtTime(34, now + 1.1);
+
+    bassGain.gain.setValueAtTime(0.9, now);
+    bassGain.gain.exponentialRampToValueAtTime(0.01, now + 1.1);
+
+    bassOsc.connect(bassGain);
+    bassGain.connect(this.ctx.destination);
+    bassOsc.start(now);
+    bassOsc.stop(now + 1.1);
+
+    // Metallic royal screech harmonic
+    const screechOsc = this.ctx.createOscillator();
+    const screechGain = this.ctx.createGain();
+    screechOsc.type = 'square';
+    screechOsc.frequency.setValueAtTime(480, now + 0.1);
+    screechOsc.frequency.linearRampToValueAtTime(920, now + 0.45);
+    screechOsc.frequency.exponentialRampToValueAtTime(190, now + 0.95);
+
+    screechGain.gain.setValueAtTime(0.55, now + 0.1);
+    screechGain.gain.exponentialRampToValueAtTime(0.01, now + 0.95);
+
+    screechOsc.connect(screechGain);
+    screechGain.connect(this.ctx.destination);
+    screechOsc.start(now + 0.1);
+    screechOsc.stop(now + 0.95);
+  }
+
+  // 63. Yautja Legendary Bio-Mask Pneumatic Lock & Optical Calibration Click
+  playBioMaskSwitchClick() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Pneumatic seal lock click
+    const clickOsc = this.ctx.createOscillator();
+    const clickGain = this.ctx.createGain();
+    clickOsc.type = 'triangle';
+    clickOsc.frequency.setValueAtTime(420, now);
+    clickOsc.frequency.exponentialRampToValueAtTime(1480, now + 0.14);
+
+    clickGain.gain.setValueAtTime(0.65, now);
+    clickGain.gain.exponentialRampToValueAtTime(0.01, now + 0.16);
+
+    clickOsc.connect(clickGain);
+    clickGain.connect(this.ctx.destination);
+    clickOsc.start(now);
+    clickOsc.stop(now + 0.16);
+  }
+
+  // 64. LV-426 Pyroclastic Volcanic Ash Storm Thunder & Static Discharge
+  playVolcanicAshThunder() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const rumble = this.ctx.createOscillator();
+    const rGain = this.ctx.createGain();
+    rumble.type = 'sawtooth';
+    rumble.frequency.setValueAtTime(72, now);
+    rumble.frequency.exponentialRampToValueAtTime(24, now + 1.2);
+
+    rGain.gain.setValueAtTime(0.75, now);
+    rGain.gain.exponentialRampToValueAtTime(0.01, now + 1.2);
+
+    rumble.connect(rGain);
+    rGain.connect(this.ctx.destination);
+    rumble.start(now);
+    rumble.stop(now + 1.2);
+  }
+
+  // 65. Cinematic Bullet-Time Trophy Execution Time-Dilation Whoosh
+  playExecutionBulletTimeWhoosh() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const whoosh = this.ctx.createOscillator();
+    const wGain = this.ctx.createGain();
+    whoosh.type = 'sine';
+    whoosh.frequency.setValueAtTime(340, now);
+    whoosh.frequency.exponentialRampToValueAtTime(38, now + 0.75);
+
+    wGain.gain.setValueAtTime(0.85, now);
+    wGain.gain.exponentialRampToValueAtTime(0.01, now + 0.75);
+
+    whoosh.connect(wGain);
+    wGain.connect(this.ctx.destination);
+    whoosh.start(now);
+    whoosh.stop(now + 0.75);
+  }
 }
 
 

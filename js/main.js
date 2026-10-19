@@ -106,6 +106,9 @@ class GameApp {
     this.cameraFovDuration = 0;
     this.targetCameraFov = 60;
     this.baseFov = 60;
+    // v48.0 Bullet-Time Camera & Endless Musou Mode
+    this.bulletTimeTimer = 0;
+    this.isEndlessMode = true; // Endless Musou Mode "Survival of the Worthy" enabled by default with toggle [Shift+M]
 
     this.keys = {};
     this.setupEventListeners();
@@ -329,20 +332,24 @@ class GameApp {
         this.performBoneScytheCleave();
       }
 
-      // Yautja Charged Compound Bow [Digit 7] (Concrete Jungle / Dark Horse)
+      // Yautja Charged Compound Bow [Digit 7] / Chantier 3 (v48): USCM M77 Gauss Railgun Rifle [Shift + Digit 7]
       if ((e.code === 'Digit7' || e.code === 'Numpad7') && this.player) {
-        this.fireCompoundBow();
+        if (this.keys['ShiftLeft'] || this.keys['ShiftRight']) {
+          this.player.usedShiftModifier = true;
+          this.player.fireM77GaussRifle(this.horde, this.bosses, this.synthetics, this.env, this.particles, this.ui);
+        } else {
+          this.fireCompoundBow();
+        }
       }
 
-      // Holographic Decoy Gauntlet Pulse [Digit 8] / Anti-Grav Disruptor [Shift + Digit 8]
+      // Holographic Decoy [Digit 8] / Chantier 5 (v48): Bishop Reprogrammed Android Squad & Anti-Grav Disruptor [Shift + Digit 8]
       if ((e.code === 'Digit8' || e.code === 'Numpad8') && this.player) {
         if (this.keys['ShiftLeft'] || this.keys['ShiftRight']) {
           this.player.usedShiftModifier = true;
-          if (this.player.deployAntiGravDisruptor(this.horde, this.synthetics, this.particles)) {
-            this.ui.showAnnouncement('🌌 DISRUPTEUR ANTI-GRAV YAUTJA DÉPLOYÉ : CHAMP DE LÉVITATION ZÉRO-G (12M) !');
-          } else {
-            this.ui.showAnnouncement('⏳ DISRUPTEUR ANTI-GRAV EN RECHARGE...');
+          if (this.env && this.env.deployReprogrammedAndroidSquad) {
+            this.env.deployReprogrammedAndroidSquad(this.player, this.audio, this.ui);
           }
+          this.player.deployAntiGravDisruptor(this.horde, this.synthetics, this.particles);
         } else {
           this.deployHoloDecoy();
         }
@@ -431,10 +438,15 @@ class GameApp {
         }
       }
 
-      // 4 Bio-Mask Vision Modes [V Key]
+      // 4 Bio-Mask Vision Modes [V Key] / Chantier 7 (v48): Modular Legendary Yautja Bio-Masks [Shift + V]
       if (e.code === 'KeyV' && this.player) {
-        const mode = this.player.cycleVisionMode();
-        this.updateVisionOverlays(mode);
+        if (this.keys['ShiftLeft'] || this.keys['ShiftRight']) {
+          this.player.usedShiftModifier = true;
+          this.player.cycleLegendaryBioMask(this.ui);
+        } else {
+          const mode = this.player.cycleVisionMode();
+          this.updateVisionOverlays(mode);
+        }
       }
 
       if (e.code === 'KeyR') {
@@ -455,6 +467,8 @@ class GameApp {
           if (this.player.struggleQTE()) {
             this.ui.showAnnouncement('💥 FACEHUGGER ARRACHÉ AVEC SUCCÈS !');
           }
+        } else if (this.env && this.env.checkFoundryValveInteraction && this.env.checkFoundryValveInteraction(this.player, this.audio, this.ui)) {
+          // Handled Fiorina 161 Molten Lead Foundry 12-Ton Pouring Vat (Alien 3 1992)!
         } else if (this.env && this.env.checkSmartgunInteraction(this.player.position, this.player, this.ui, this.audio)) {
           // Handled USCM M56 Smartgun Turret mounting / dismounting!
         } else if (this.env && this.env.checkCraneConsoleInteraction(this.player.position, this.player, this.ui, this.audio, this.particles, this.horde, this.bosses, this.synthetics)) {
@@ -553,9 +567,18 @@ class GameApp {
         }
       }
 
+      // Chantier 1 (v48): Yautja Scout Ship Stratospheric Thermal Beam Strike [M Key] / Chantier 10 (v48): Endless Musou Mode Toggle [Shift + M]
       if (e.code === 'KeyM' && this.player) {
-        this.player.triggerHybridMetamorphosis();
-        this.ui.showAnnouncement('🧬 MÉTAMORPHOSE ADN HYBRIDE ACTIVÉE !');
+        if (this.keys['ShiftLeft'] || this.keys['ShiftRight']) {
+          this.player.usedShiftModifier = true;
+          this.isEndlessMode = !this.isEndlessMode;
+          this.ui.showAnnouncement(this.isEndlessMode
+            ? '♾️ MODE SURVIE INFINIE "SURVIVAL OF THE WORTHY" ACTIVÉ : VAGUES MUTAGÈNES ILLIMITÉES !'
+            : '🏁 MODE CAMPAGNE STANDARD RESTAURÉ (5 VAGUES)');
+        } else {
+          this.player.triggerScoutShipBeam(this.ui);
+          this.player.triggerHybridMetamorphosis();
+        }
       }
 
       if (e.code === 'KeyP' && this.player) {
@@ -1514,14 +1537,25 @@ class GameApp {
   }
 
   checkTrophyExecution() {
-    // 1. Boss Execution (Queen, The Offspring, Predalien)
+    // 1. Boss Execution (Queen, The Offspring, Predalien, Matriarch Titan)
     if (this.bosses.activeBoss && this.bosses.activeBoss.isStunned) {
       this.player.executeSpineRip();
+
+      // Chantier 9 (v48): Bullet-Time 360° Trophy Execution Camera
+      this.bulletTimeTimer = 1.6;
+      if (this.audio && this.audio.playExecutionBulletTimeWhoosh) {
+        this.audio.playExecutionBulletTimeWhoosh();
+      }
+      this.triggerCameraFovSurge(48, 1.5);
 
       const bType = this.bosses.activeBoss.type || 'queen';
       let tName = 'Couronne Chitinense & Colonne Vertébrale de Reine Matriarche (Aliens 1986 / AvP 2004)';
       let tHonor = 2500;
-      if (bType === 'the_offspring') {
+      if (bType === 'predalien_matriarch_titan') {
+        tName = 'Couronne Impériale & Quadruples Mandibules de Matriarche Titan Prédalienne (Mythique)';
+        tHonor = 5000;
+        this.player.royalJellyFlasks += 4;
+      } else if (bType === 'the_offspring') {
         tName = 'Mandibule Hybride & Vertèbres Z-01 de The Offspring (Romulus 2024)';
         tHonor = 3500;
       } else if (bType === 'predalien_abomination') {
@@ -1564,30 +1598,43 @@ class GameApp {
       return;
     }
 
-    // 2. Sub-Boss Execution (Crusher Titan, Praetorian Royal Guard, Grid Alien, Marvel Alpha, Deacon Titan)
+    // 2. Sub-Boss Execution (Crusher Titan, Praetorian Royal Guard, Grid Alien, Marvel Alpha, Deacon Titan, Rogue King)
     for (let i = this.horde.aliens.length - 1; i >= 0; i--) {
       const a = this.horde.aliens[i];
-      if ((a.type === 'crusher' || a.type === 'praetorian' || a.type === 'grid_alien' || a.isMarvelAlpha || a.isDeacon) && a.isStunned) {
+      if ((a.type === 'crusher' || a.type === 'praetorian' || a.type === 'grid_alien' || a.isMarvelAlpha || a.isDeacon || a.isRogueKing) && a.isStunned) {
         if (a.mesh.position.distanceTo(this.player.position) <= 5.8) {
           this.player.executeSpineRip();
           this.sessionSkulls++;
 
-          let tName = a.isDeacon
-            ? 'Crâne Pointu Cobalt & Mâchoire Pharyngienne de Deacon Titan (Prometheus 2012)'
-            : (a.isMarvelAlpha
-              ? "Crâne Barbelé Argenté & Colonne Primordiale de l'Alpha Marvel (Epsilon Apex 1:1)"
-              : (a.type === 'crusher'
-                ? 'Bouclier Frontal Blindé de Crusher Titan'
-                : (a.type === 'grid_alien'
-                  ? 'Crâne Gravé au Quadrillage Acide de Grid Alien (AVP 2004)'
-                  : 'Couronne Royale Éburnéenne de Prétorien')));
-          let tHonor = a.isDeacon ? 3500 : (a.isMarvelAlpha ? 3500 : (a.type === 'crusher' ? 1200 : (a.type === 'grid_alien' ? 1400 : 900)));
-          if (a.isDeacon && this.audio && this.audio.playDeaconSpineRip) {
+          // Chantier 9 (v48): Bullet-Time 360° Trophy Execution Camera
+          this.bulletTimeTimer = 1.4;
+          if (this.audio && this.audio.playExecutionBulletTimeWhoosh) {
+            this.audio.playExecutionBulletTimeWhoosh();
+          }
+          this.triggerCameraFovSurge(50, 1.3);
+
+          let tName = a.isRogueKing
+            ? 'Crâne Couronné Dentelé du King Alien Rogue (Légendaire)'
+            : (a.isDeacon
+              ? 'Crâne Pointu Cobalt & Mâchoire Pharyngienne de Deacon Titan (Prometheus 2012)'
+              : (a.isMarvelAlpha
+                ? "Crâne Barbelé Argenté & Colonne Primordiale de l'Alpha Marvel (Epsilon Apex 1:1)"
+                : (a.type === 'crusher'
+                  ? 'Bouclier Frontal Blindé de Crusher Titan'
+                  : (a.type === 'grid_alien'
+                    ? 'Crâne Gravé au Quadrillage Acide de Grid Alien (AVP 2004)'
+                    : 'Couronne Royale Éburnéenne de Prétorien'))));
+          let tHonor = a.isRogueKing ? 4000 : (a.isDeacon ? 3500 : (a.isMarvelAlpha ? 3500 : (a.type === 'crusher' ? 1200 : (a.type === 'grid_alien' ? 1400 : 900))));
+          if (a.isRogueKing && this.audio && this.audio.playRogueKingRoar) {
+            this.audio.playRogueKingRoar();
+          } else if (a.isDeacon && this.audio && this.audio.playDeaconSpineRip) {
             this.audio.playDeaconSpineRip();
           }
           this.player.recordTrophy(tName, tHonor);
 
-          if (a.isDeacon) {
+          if (a.isRogueKing) {
+            this.player.royalJellyFlasks += 3;
+          } else if (a.isDeacon) {
             this.player.royalJellyFlasks += 2;
           } else if (a.isMarvelAlpha) {
             this.player.royalJellyFlasks += 2; // Marvel Alpha awards 2 Royal Jelly flasks!
@@ -1602,7 +1649,7 @@ class GameApp {
           this.player.hp = Math.min(this.player.maxHp, this.player.hp + 400);
 
           // Sub-Boss Execution Morale Swing (+18% to +25%)
-          this.shiftBattlefieldMorale(a.isMarvelAlpha ? 25.0 : 18.0);
+          this.shiftBattlefieldMorale((a.isMarvelAlpha || a.isRogueKing) ? 25.0 : 18.0);
 
           if (this.gore) {
             this.gore.spawnDismemberment(a.mesh.position, 'spine_rip');
@@ -1780,6 +1827,12 @@ class GameApp {
 
     if (this.photoMode.isActive) return;
 
+    // Chantier 9 (v48): Bullet-Time 360° Trophy Execution Time-Dilation (0.28x Slow-Motion)
+    if (this.bulletTimeTimer > 0) {
+      this.bulletTimeTimer -= delta;
+      delta *= 0.28;
+    }
+
     const qtePrompt = document.getElementById('facehugger-qte-prompt');
     if (qtePrompt) {
       if (this.player.isFacehuggerLatched) {
@@ -1807,13 +1860,27 @@ class GameApp {
       this.player.updateM41AGrenades(delta, this.horde, this.bosses, this.synthetics, this.env, this.particles);
     }
 
-    // Chantier 6 & 9 (v47): Cooling Tower Cryo-Vent & Engineer Mutagen Puddles
+    // Chantier 1 (v48): Yautja Scout Ship Stratospheric Thermal Beam Strike
+    if (this.player && this.player.updateScoutShipBeam) {
+      this.player.updateScoutShipBeam(delta, this.horde, this.bosses, this.synthetics, this.particles);
+    }
+
+    // Chantier 6 & 9 (v47) + Chantier 4, 5 & 9 (v48): Cryo-Vent, Mutagen Puddles, Molten Lead Foundry, Bishop Androids & Volcanic Ash Storm
     if (this.env) {
       if (this.env.updateCoolingTowerCryoVent) {
         this.env.updateCoolingTowerCryoVent(delta, this.player, this.horde, this.bosses, this.particles, this.audio);
       }
       if (this.env.updateMutagenPuddles) {
         this.env.updateMutagenPuddles(delta, this.player, this.horde, this.audio);
+      }
+      if (this.env.updateMoltenLeadFoundry) {
+        this.env.updateMoltenLeadFoundry(delta, this.player, this.horde, this.bosses, this.particles);
+      }
+      if (this.env.updateReprogrammedAndroids) {
+        this.env.updateReprogrammedAndroids(delta, this.player, this.horde, this.bosses, this.audio, this.particles);
+      }
+      if (this.env.updateVolcanicAshStorm) {
+        this.env.updateVolcanicAshStorm(delta, this.player, this.audio, this.ui);
       }
     }
 
@@ -2279,7 +2346,7 @@ class GameApp {
     const boss = this.bosses.activeBoss;
     let subBossStunnedNearby = false;
     this.horde.aliens.forEach(a => {
-      if ((a.type === 'crusher' || a.type === 'praetorian' || a.type === 'grid_alien' || a.isDeacon) && a.isStunned) {
+      if ((a.type === 'crusher' || a.type === 'praetorian' || a.type === 'grid_alien' || a.isDeacon || a.isRogueKing) && a.isStunned) {
         if (a.mesh.position.distanceTo(this.player.position) <= 5.5) {
           subBossStunnedNearby = true;
         }
@@ -2296,7 +2363,7 @@ class GameApp {
     }
     this.ui.showExecutionPrompt((boss && boss.isStunned) || subBossStunnedNearby || syntheticHarvestNearby);
 
-    // v46.0 & v47.0 Proximity Prompts & Telemetry
+    // v46.0, v47.0 & v48.0 Proximity Prompts & Telemetry
     if (this.env && this.player) {
       const isNearSmartgun = this.env.mountedSmartgun && this.player.position.distanceTo(this.env.mountedSmartgun.pos) <= 3.2;
       this.ui.updateSmartgunPrompt(isNearSmartgun, this.player.isMountedSmartgun, this.env.mountedSmartgun);
@@ -2307,15 +2374,22 @@ class GameApp {
       const isNearCryoVent = this.env.coolingTowerCryoVent && this.player.position.distanceTo(this.env.coolingTowerCryoVent.consolePos) <= 3.2;
       this.ui.updateCryoVentPrompt(isNearCryoVent, this.env.coolingTowerCryoVent);
 
+      const isNearFoundry = this.env.moltenFoundry && this.player.position.distanceTo(this.env.moltenFoundry.valvePos) <= 4.5;
+      if (this.ui.updateFoundryValvePrompt) {
+        this.ui.updateFoundryValvePrompt(isNearFoundry, this.env.moltenFoundry);
+      }
+
       const isInsideDerelict = this.env.derelictChamber && this.player.position.distanceTo(this.env.derelictChamber.center) <= this.env.derelictChamber.radius;
       this.ui.updateDerelictHud(isInsideDerelict);
     }
 
     if (this.horde.aliens.length < 10 && !this.bosses.activeBoss) {
-      if (this.waveIndex < this.totalWaves) {
+      if (this.waveIndex < this.totalWaves || this.isEndlessMode) {
         this.waveIndex++;
         this.horde.spawnWave(45 + this.waveIndex * 15, this.player.position);
-        this.ui.showAnnouncement(`VAGUE ${this.waveIndex} APPROCHE ! FORCES DE LA RUCHE DÉPLOYÉES !`);
+        this.ui.showAnnouncement(this.waveIndex > this.totalWaves
+          ? `♾️ VAGUE SURVIE INFINIE ${this.waveIndex} ("SURVIVAL OF THE WORTHY") DÉPLOYÉE !`
+          : `VAGUE ${this.waveIndex} APPROCHE ! FORCES DE LA RUCHE DÉPLOYÉES !`);
 
         // Cheyenne Dropship Airstrike Support on Wave 2 & 4!
         if (this.waveIndex === 2 || this.waveIndex === 4) {
@@ -2337,17 +2411,28 @@ class GameApp {
             this.ui.showAnnouncement('🛡️ RENFORT BLINDÉ : BLINDÉ USCM M577 APC EN POSITION DE TIR !');
           }, 1800);
         }
+
+        // Spawn Predalien Matriarch Titan (10,000 HP) on Wave 5 and every 3 waves in Endless Mode
+        if (this.waveIndex === 5 || (this.waveIndex > 5 && this.waveIndex % 3 === 0)) {
+          const bType = this.waveIndex === 5 ? 'predalien_matriarch_titan' : (this.ui.selectedLevel.bossType || 'predalien_matriarch_titan');
+          if (this.env && !this.env.reactorMeltdownActive && this.waveIndex === 5) {
+            this.env.triggerReactorMeltdown(this.ui, this.audio);
+          }
+          this.bosses.spawnBoss(bType, this.player.position.clone().add(new THREE.Vector3(0, 0, -25)));
+          this.ui.showAnnouncement('👑 SURGISSEMENT DU BOSS SUPRÊME : MATRIARCHE TITAN PRÉDALIENNE IMPÉRIALE (10 000 PV) !');
+          this.shiftBattlefieldMorale(-25.0);
+        }
       } else if (!this.bosses.activeBoss) {
-        let bType = this.ui.selectedLevel.bossType;
+        let bType = this.ui.selectedLevel.bossType || 'predalien_matriarch_titan';
         if (this.waveIndex === 5 || bType === 'predalien_abomination') {
-          bType = 'predalien_abomination';
+          bType = 'predalien_matriarch_titan';
           if (this.env && !this.env.reactorMeltdownActive) {
             this.env.triggerReactorMeltdown(this.ui, this.audio);
           }
         }
         this.bosses.spawnBoss(bType, this.player.position.clone().add(new THREE.Vector3(0, 0, -25)));
         
-        let bossTitle = 'REINE MATRIARCHE KAINDE AMEDHA (ALIENS 1986)';
+        let bossTitle = 'MATRIARCHE TITAN PRÉDALIENNE IMPÉRIALE (AVP EXTINCTION / AVP-R)';
         if (bType === 'the_offspring') bossTitle = 'HYBRIDE GÉNOTYPIQUE THE OFFSPRING (ROMULUS 2024)';
         else if (bType === 'trilobite_prime') bossTitle = 'TRILOBITE CÉPHALOPODE PRIME (PROMETHEUS 2012)';
         else if (bType === 'predalien_abomination') bossTitle = 'ABOMINATION PRÉDALIENNE GESTANTE (AVP-R 2007 CHET)';

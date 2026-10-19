@@ -714,5 +714,29 @@ export class UIManager {
       prompt.classList.add('hidden');
     }
   }
+
+  /* === CHANTIER 4 (v48): Fiorina 161 Molten Lead Foundry Valve Prompt === */
+  updateFoundryValvePrompt(isNear, foundry) {
+    const prompt = document.getElementById('foundry-valve-prompt');
+    if (!prompt) return;
+    if (isNear && foundry) {
+      prompt.classList.remove('hidden');
+      const textElem = prompt.querySelector('.foundry-valve-text');
+      if (textElem) {
+        if (foundry.isPouring) {
+          textElem.innerText = `COULÉE EN COURS : 12 TONNES DE PLOMB 1200°C (${Math.ceil(foundry.pourTimer)}S)`;
+          prompt.style.borderColor = '#ff5500';
+        } else if (foundry.cooldown > 0) {
+          textElem.innerText = `CREUSET EN RECHARGE THERMIQUE (${Math.ceil(foundry.cooldown)}S)`;
+          prompt.style.borderColor = '#64748b';
+        } else {
+          textElem.innerText = `[E] DÉVERSER 12 TONNES DE PLOMB EN FUSION 1200°C (CANAL 14M, 280 DÉGÂTS/S)`;
+          prompt.style.borderColor = '#f97316';
+        }
+      }
+    } else {
+      prompt.classList.add('hidden');
+    }
+  }
 }
 

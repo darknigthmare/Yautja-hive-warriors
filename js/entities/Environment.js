@@ -60,6 +60,15 @@ export class EnvironmentManager {
     this.coolingTowerCryoVent = null;
     this.engineerUrns = [];
     this.mutagenPuddles = [];
+    // v48.0 Systems
+    this.moltenFoundry = null;
+    this.alliedAndroids = [];
+    this.volcanicStorm = {
+      active: false,
+      timer: 18.0,
+      duration: 0,
+      ashSystem: null
+    };
   }
 
   clearEnvironment() {
@@ -175,6 +184,24 @@ export class EnvironmentManager {
     this.engineerUrns = [];
     this.mutagenPuddles.forEach(p => this.scene.remove(p.mesh));
     this.mutagenPuddles = [];
+
+    // v48.0 Cleanups
+    if (this.moltenFoundry) {
+      this.scene.remove(this.moltenFoundry.group);
+      if (this.moltenFoundry.pourMesh) this.scene.remove(this.moltenFoundry.pourMesh);
+      if (this.moltenFoundry.poolMesh) this.scene.remove(this.moltenFoundry.poolMesh);
+      this.moltenFoundry = null;
+    }
+    this.alliedAndroids.forEach(a => this.scene.remove(a.mesh));
+    this.alliedAndroids = [];
+    if (this.volcanicStorm && this.volcanicStorm.ashSystem) {
+      this.scene.remove(this.volcanicStorm.ashSystem);
+      this.volcanicStorm.ashSystem = null;
+    }
+    if (this.volcanicStorm) {
+      this.volcanicStorm.active = false;
+      this.volcanicStorm.timer = 18.0;
+    }
 
     this.reactorMeltdownActive = false;
     this.reactorMeltdownTimer = 180.0;
@@ -366,6 +393,10 @@ export class EnvironmentManager {
 
     // Chantier 9: Engineer Ceramic Urns & Black Mutagen Z-01 Puddles (Prometheus 2012)
     this.buildEngineerUrnClusters();
+
+    // === v48.0 10-CHANTIER EXPANSION (Fiorina 161 Molten Lead Foundry Vat & Containment Channel) ===
+    // Chantier 4: Fiorina "Fury" 161 Molten Lead Foundry & Pouring Vat (Alien 3 1992 Canon 1:1)
+    this.buildFiorinaMoltenLeadFoundry();
   }
 
   buildTempleProps(stoneMat) {
@@ -4599,6 +4630,401 @@ export class EnvironmentManager {
       if (pud.life <= 0) {
         this.scene.remove(pud.mesh);
         this.mutagenPuddles.splice(p, 1);
+      }
+    }
+  }
+
+  /* === CHANTIER 4 (v48): Fiorina "Fury" 161 Molten Lead Foundry & Pouring Vat (Alien 3 1992 Canon 1:1) === */
+  buildFiorinaMoltenLeadFoundry() {
+    const group = new THREE.Group();
+    const pos = new THREE.Vector3(28, 0, -24);
+    group.position.copy(pos);
+
+    const rustIronMat = new THREE.MeshStandardMaterial({ color: 0x3f2318, roughness: 0.75, metalness: 0.85 });
+    const moltenMat = new THREE.MeshStandardMaterial({
+      color: 0xff5500,
+      emissive: 0xea580c,
+      roughness: 0.2,
+      metalness: 0.4
+    });
+    const valveMat = new THREE.MeshStandardMaterial({ color: 0xdc2626, roughness: 0.3, metalness: 0.8 });
+
+    // 1. Industrial Gantry Supports (2 Heavy Pillars holding the overhead crucible)
+    [-3.5, 3.5].forEach(gx => {
+      const pillar = new THREE.Mesh(new THREE.BoxGeometry(0.9, 8.5, 0.9), rustIronMat);
+      pillar.position.set(gx, 4.25, 0);
+      group.add(pillar);
+    });
+    const crossBeam = new THREE.Mesh(new THREE.BoxGeometry(8.2, 0.8, 1.1), rustIronMat);
+    crossBeam.position.set(0, 8.2, 0);
+    group.add(crossBeam);
+
+    // 2. Suspended 12-Ton Crucible Cauldron (filled with glowing 1200°C molten lead)
+    const vat = new THREE.Mesh(new THREE.CylinderGeometry(2.1, 1.6, 3.2, 12), rustIronMat);
+    vat.position.set(0, 6.2, 0);
+    group.add(vat);
+
+    const moltenTop = new THREE.Mesh(new THREE.CircleGeometry(1.95, 12), moltenMat);
+    moltenTop.rotation.x = -Math.PI / 2;
+    moltenTop.position.set(0, 7.82, 0);
+    group.add(moltenTop);
+
+    // 3. Floor Containment Mold Channel (14m long x 4.5m wide)
+    const channelWallMat = new THREE.MeshStandardMaterial({ color: 0x27272a, roughness: 0.8, metalness: 0.6 });
+    [-2.4, 2.4].forEach(wx => {
+      const curb = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.55, 14.0), channelWallMat);
+      curb.position.set(wx, 0.275, 4.5);
+      group.add(curb);
+    });
+
+    // 4. Interactive Purge Valve Pedestal & Red Wheel at (28, 0, -19.5)
+    const ped = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.35, 1.3, 8), rustIronMat);
+    ped.position.set(-3.2, 0.65, 3.5);
+    group.add(ped);
+
+    const wheel = new THREE.Mesh(new THREE.TorusGeometry(0.32, 0.05, 6, 12), valveMat);
+    wheel.position.set(-3.2, 1.35, 3.5);
+    group.add(wheel);
+
+    this.scene.add(group);
+    this.envObjects.push(group);
+
+    this.moltenFoundry = {
+      group,
+      pos,
+      valvePos: new THREE.Vector3(pos.x - 3.2, 0, pos.z + 3.5),
+      channelCenter: new THREE.Vector3(pos.x, 0, pos.z + 4.5),
+      vatMesh: vat,
+      wheelMesh: wheel,
+      isPouring: false,
+      pourTimer: 0,
+      cooldown: 0,
+      pourMesh: null,
+      poolMesh: null
+    };
+  }
+
+  checkFoundryValveInteraction(player, audioEngine, ui) {
+    if (!this.moltenFoundry || !player) return false;
+    const f = this.moltenFoundry;
+
+    if (player.position.distanceTo(f.valvePos) <= 4.5) {
+      if (f.isPouring) {
+        if (ui && ui.showAnnouncement) ui.showAnnouncement('🔥 FONDERIE FIORINA 161 : COULÉE DE PLOMB EN FUSION (1200°C) EN COURS !');
+        return true;
+      }
+      if (f.cooldown > 0) {
+        if (ui && ui.showAnnouncement) ui.showAnnouncement(`⏳ CREUSET DE PLOMB EN RECHARGE THERMIQUE (${Math.ceil(f.cooldown)}S)...`);
+        return true;
+      }
+
+      f.isPouring = true;
+      f.pourTimer = 12.0; // 12 seconds of 1200°C molten lead cascade
+      f.cooldown = 28.0;
+
+      if (audioEngine && audioEngine.playMoltenLeadPour) {
+        audioEngine.playMoltenLeadPour();
+      }
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('🔥 FONDERIE FIORINA 161 (ALIEN 3) : DÉVERSEMENT DE 12 TONNES DE PLOMB EN FUSION (280 DÉGÂTS/S) !');
+      }
+
+      // Tilt vat & create vertical molten cascade + incandescent floor channel pool
+      f.vatMesh.rotation.x = 0.42;
+
+      const streamGeo = new THREE.CylinderGeometry(0.65, 1.15, 6.0, 10);
+      const streamMat = new THREE.MeshBasicMaterial({ color: 0xff6600, transparent: true, opacity: 0.92 });
+      f.pourMesh = new THREE.Mesh(streamGeo, streamMat);
+      f.pourMesh.position.set(f.pos.x, 3.0, f.pos.z + 1.5);
+      this.scene.add(f.pourMesh);
+
+      const poolGeo = new THREE.PlaneGeometry(4.4, 13.6);
+      poolGeo.rotateX(-Math.PI / 2);
+      const poolMat = new THREE.MeshStandardMaterial({
+        color: 0xff4500,
+        emissive: 0xea580c,
+        roughness: 0.15,
+        metalness: 0.5,
+        transparent: true,
+        opacity: 0.94
+      });
+      f.poolMesh = new THREE.Mesh(poolGeo, poolMat);
+      f.poolMesh.position.set(f.channelCenter.x, 0.08, f.channelCenter.z);
+      this.scene.add(f.poolMesh);
+
+      return true;
+    }
+    return false;
+  }
+
+  updateMoltenLeadFoundry(delta, player, horde, bosses, particles) {
+    if (!this.moltenFoundry) return;
+    const f = this.moltenFoundry;
+
+    if (f.cooldown > 0 && !f.isPouring) {
+      f.cooldown = Math.max(0, f.cooldown - delta);
+    }
+
+    if (f.isPouring) {
+      f.pourTimer -= delta;
+      f.wheelMesh.rotation.z += 5.0 * delta;
+
+      if (f.pourMesh) {
+        f.pourMesh.scale.x = 0.9 + Math.sin(Date.now() * 0.025) * 0.15;
+        f.pourMesh.scale.z = 0.9 + Math.cos(Date.now() * 0.025) * 0.15;
+      }
+
+      // 280 thermal dmg/s inside the 14m x 4.5m containment channel
+      if (horde && horde.aliens) {
+        for (let i = horde.aliens.length - 1; i >= 0; i--) {
+          const a = horde.aliens[i];
+          if (!a || a.hp <= 0 || !a.mesh) continue;
+          const dx = Math.abs(a.mesh.position.x - f.channelCenter.x);
+          const dz = Math.abs(a.mesh.position.z - f.channelCenter.z);
+          if (dx <= 2.5 && dz <= 7.0) {
+            a.hp -= 280 * delta;
+            if (particles && particles.emitSparks && Math.random() < 0.25) {
+              particles.emitSparks(a.mesh.position, 4);
+            }
+            if (a.hp <= 0) {
+              if (horde.goreEngine) horde.goreEngine.spawnDismemberment(a.mesh.position, 'plasma');
+              this.scene.remove(a.mesh);
+              horde.aliens.splice(i, 1);
+              horde.deadCount++;
+              if (window.gameInstance) {
+                window.gameInstance.comboHits++;
+                window.gameInstance.score += 120;
+              }
+            }
+          }
+        }
+      }
+
+      // Boss thermal shock damage (Alien 3 Dragon thermal shock!)
+      if (bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
+        const bPos = bosses.activeBoss.mesh.position;
+        const dx = Math.abs(bPos.x - f.channelCenter.x);
+        const dz = Math.abs(bPos.z - f.channelCenter.z);
+        if (dx <= 3.2 && dz <= 7.5) {
+          bosses.takeDamage(280 * delta, horde);
+        }
+      }
+
+      if (f.pourTimer <= 0) {
+        f.isPouring = false;
+        f.vatMesh.rotation.x = 0;
+        if (f.pourMesh) {
+          this.scene.remove(f.pourMesh);
+          f.pourMesh = null;
+        }
+        if (f.poolMesh) {
+          this.scene.remove(f.poolMesh);
+          f.poolMesh = null;
+        }
+      }
+    }
+  }
+
+  /* === CHANTIER 5 (v48): Reprogrammed Weyland-Yutani Combat Synthetic Squad ("Bishop Protocol" - Aliens 1986 / AvP Extinction) === */
+  deployReprogrammedAndroidSquad(player, audioEngine, ui) {
+    if (!player) return false;
+
+    if (this.alliedAndroids.length > 0) {
+      this.alliedAndroids.forEach(a => this.scene.remove(a.mesh));
+      this.alliedAndroids = [];
+    }
+
+    if (audioEngine && audioEngine.playAndroidAllyVoiceBeep) {
+      audioEngine.playAndroidAllyVoiceBeep();
+    }
+    if (ui && ui.showAnnouncement) {
+      ui.showAnnouncement('🤖 PROTOCOLE BISHOP [SHIFT+8] : 2 SYNTHÉTIQUES REPROGRAMMÉS DÉPLOYÉS (APPUI M41A & SOIN BIONIQUE +25 PV/S) !');
+    }
+
+    const armorMat = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.25, metalness: 0.85 });
+    const cyanVisorMat = new THREE.MeshBasicMaterial({ color: 0x00f2fe });
+    const gunMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.3, metalness: 0.9 });
+
+    [-2.8, 2.8].forEach((offsetX, idx) => {
+      const group = new THREE.Group();
+
+      const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.26, 1.35, 8), armorMat);
+      torso.position.y = 1.1;
+      group.add(torso);
+
+      const head = new THREE.Mesh(new THREE.SphereGeometry(0.24, 10, 10), armorMat);
+      head.position.y = 1.95;
+      group.add(head);
+
+      const visor = new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.1, 0.22), cyanVisorMat);
+      visor.position.set(0, 1.96, 0.16);
+      group.add(visor);
+
+      const rifle = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.16, 0.85), gunMat);
+      rifle.position.set(0.28, 1.25, 0.35);
+      group.add(rifle);
+
+      const spawnPos = player.position.clone().add(new THREE.Vector3(offsetX, 0, -2.0));
+      group.position.copy(spawnPos);
+      this.scene.add(group);
+
+      this.alliedAndroids.push({
+        mesh: group,
+        offset: new THREE.Vector3(offsetX, 0, -2.2),
+        hp: 650,
+        maxHp: 650,
+        lifeTimer: 45.0,
+        fireCooldown: 0.25 * (idx + 1)
+      });
+    });
+
+    return true;
+  }
+
+  updateReprogrammedAndroids(delta, player, horde, bosses, audioEngine, particles) {
+    if (!this.alliedAndroids || this.alliedAndroids.length === 0 || !player) return;
+
+    for (let i = this.alliedAndroids.length - 1; i >= 0; i--) {
+      const ally = this.alliedAndroids[i];
+      ally.lifeTimer -= delta;
+
+      if (ally.lifeTimer <= 0 || ally.hp <= 0) {
+        this.scene.remove(ally.mesh);
+        this.alliedAndroids.splice(i, 1);
+        continue;
+      }
+
+      // Follow player in tactical flank formation
+      const targetPos = player.position.clone().add(ally.offset);
+      targetPos.y = 0;
+      const moveDir = targetPos.sub(ally.mesh.position);
+      if (moveDir.length() > 1.2) {
+        moveDir.normalize();
+        ally.mesh.position.addScaledVector(moveDir, 11.5 * delta);
+      }
+
+      // Bionic Field Repair: heal player +12.5 HP/s per synthetic (25 HP/s total for 2 synthetics) within 6m
+      if (ally.mesh.position.distanceTo(player.position) <= 6.5 && player.hp < player.maxHp) {
+        player.hp = Math.min(player.maxHp, player.hp + 12.5 * delta);
+      }
+
+      // Covering Fire with M41A Pulse Rifle (65 dmg/s per synthetic)
+      ally.fireCooldown -= delta;
+      if (ally.fireCooldown <= 0) {
+        ally.fireCooldown = 0.35;
+        let nearestTarget = null;
+        let nearestDist = 28.0;
+
+        if (horde && horde.aliens) {
+          horde.aliens.forEach(a => {
+            if (a && a.hp > 0 && a.mesh) {
+              const d = a.mesh.position.distanceTo(ally.mesh.position);
+              if (d < nearestDist) {
+                nearestDist = d;
+                nearestTarget = a;
+              }
+            }
+          });
+        }
+
+        if (nearestTarget && nearestTarget.mesh) {
+          const toTarget = nearestTarget.mesh.position.clone().sub(ally.mesh.position).normalize();
+          ally.mesh.rotation.y = Math.atan2(toTarget.x, toTarget.z);
+          nearestTarget.hp -= 24;
+
+          // Cyan pulse tracer
+          const tracerGeo = new THREE.CylinderGeometry(0.03, 0.03, 1.8, 4);
+          tracerGeo.rotateX(Math.PI / 2);
+          const tracer = new THREE.Mesh(tracerGeo, new THREE.MeshBasicMaterial({ color: 0x00f2fe }));
+          tracer.position.copy(ally.mesh.position).add(new THREE.Vector3(0, 1.25, 0)).addScaledVector(toTarget, 1.2);
+          tracer.lookAt(nearestTarget.mesh.position);
+          this.scene.add(tracer);
+          setTimeout(() => this.scene.remove(tracer), 45);
+
+          if (nearestTarget.hp <= 0 && horde) {
+            const idx = horde.aliens.indexOf(nearestTarget);
+            if (idx !== -1) {
+              if (horde.goreEngine) horde.goreEngine.spawnDismemberment(nearestTarget.mesh.position, 'plasma');
+              this.scene.remove(nearestTarget.mesh);
+              horde.aliens.splice(idx, 1);
+              horde.deadCount++;
+              if (window.gameInstance) window.gameInstance.score += 65;
+            }
+          }
+        } else if (bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
+          const bPos = bosses.activeBoss.mesh.position;
+          if (bPos.distanceTo(ally.mesh.position) <= 30.0) {
+            const toBoss = bPos.clone().sub(ally.mesh.position).normalize();
+            ally.mesh.rotation.y = Math.atan2(toBoss.x, toBoss.z);
+            bosses.takeDamage(22, horde);
+          }
+        }
+      }
+    }
+  }
+
+  /* === CHANTIER 9 (v48): LV-426 Pyroclastic Volcanic Ash Storms & Static Plasma Recharge (Aliens 1986 Acheron) === */
+  updateVolcanicAshStorm(delta, player, audioEngine, ui) {
+    if (!this.volcanicStorm) return;
+    const vs = this.volcanicStorm;
+
+    if (!vs.active) {
+      vs.timer -= delta;
+      if (vs.timer <= 0) {
+        vs.active = true;
+        vs.duration = 14.0;
+        vs.timer = 26.0;
+
+        if (audioEngine && audioEngine.playVolcanicAshThunder) {
+          audioEngine.playVolcanicAshThunder();
+        }
+        if (ui && ui.showAnnouncement) {
+          ui.showAnnouncement('🌋 TEMPÊTE PYROCLASTIQUE LV-426 (ACHERON) : FOUDRE STATIQUE (+10 ÉNERGIE PLASMA/S) !');
+        }
+
+        // Create falling glowing ember/ash particle cloud
+        if (!vs.ashSystem) {
+          const count = 220;
+          const positions = new Float32Array(count * 3);
+          for (let i = 0; i < count; i++) {
+            positions[i * 3] = (Math.random() - 0.5) * 90;
+            positions[i * 3 + 1] = Math.random() * 18;
+            positions[i * 3 + 2] = (Math.random() - 0.5) * 90;
+          }
+          const geo = new THREE.BufferGeometry();
+          geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+          const mat = new THREE.PointsMaterial({ color: 0xf97316, size: 0.28, transparent: true, opacity: 0.75 });
+          vs.ashSystem = new THREE.Points(geo, mat);
+          this.scene.add(vs.ashSystem);
+        }
+      }
+    } else {
+      vs.duration -= delta;
+
+      // Electrostatic ambient charge boosts Yautja Plasma Energy by +10/s
+      if (player) {
+        player.plasmaEnergy = Math.min(player.maxPlasmaEnergy || 100, (player.plasmaEnergy || 0) + 10.0 * delta);
+      }
+
+      if (vs.ashSystem) {
+        const posAttr = vs.ashSystem.geometry.attributes.position;
+        for (let i = 0; i < posAttr.count; i++) {
+          let y = posAttr.getY(i) - 6.5 * delta;
+          let x = posAttr.getX(i) + 4.0 * delta;
+          if (y < 0) y = 18.0;
+          if (x > 45) x = -45;
+          posAttr.setY(i, y);
+          posAttr.setX(i, x);
+        }
+        posAttr.needsUpdate = true;
+      }
+
+      if (vs.duration <= 0) {
+        vs.active = false;
+        if (vs.ashSystem) {
+          this.scene.remove(vs.ashSystem);
+          vs.ashSystem = null;
+        }
       }
     }
   }
