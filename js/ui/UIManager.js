@@ -547,6 +547,18 @@ export class UIManager {
       genus = 'GENUS : GUERRIER KAINDE AMEDHA ÉCARLATE';
       weakpoint = 'FAIBLESSE : ÉCORCE CHITINEUSE CHAUFFÉE';
       threat = 'FRENZY';
+    } else if (target.isMarvelAlpha || target.type === 'marvel_alpha') {
+      genus = 'GENUS : ALPHA EPSILON APEX (MARVEL CANON)';
+      weakpoint = 'FAIBLESSE : FAUX DORSALES & ÉPINE CENTRALE';
+      threat = 'COMMANDEMENT / APEX CRITIQUE';
+    } else if (target.type === 'cryo_xeno') {
+      genus = 'GENUS : XÉNOMORPHE CRYO-SUBZÉRO (LV-695)';
+      weakpoint = 'FAIBLESSE : CRISTAUX DE GIVRE (VULNÉRABLE AU PLASMA)';
+      threat = 'GLACIALE / RALENTISSEMENT';
+    } else if (target.type === 'cyber_xeno') {
+      genus = 'GENUS : CYBORG XÉNOMORPHE STEEL TEAM (W-Y ICARUS)';
+      weakpoint = 'FAIBLESSE : HARNAIS TITANE & DIODE OPTIQUE';
+      threat = 'BALISTIQUE / ARTIFICIELLE';
     }
 
     const dist = player && player.position ? player.position.distanceTo(target.mesh.position).toFixed(1) : '12.0';

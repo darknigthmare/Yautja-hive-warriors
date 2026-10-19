@@ -84,6 +84,9 @@ export class Player {
     this.isSmartDiscGuiding = false;
     this.guidedSmartDisc = null;
     this.whirlShieldTimer = 0;
+    // v44.0 Systems
+    this.isFlamerActive = false;
+    this.flamerAudioTimer = 0;
 
     // Pounce Leap State
     this.isLeaping = false;
@@ -2068,5 +2071,114 @@ export class Player {
   stopSmartDiscRemoteGuidance() {
     this.isSmartDiscGuiding = false;
     this.guidedSmartDisc = null;
+  }
+
+  /* Chantier 7: Yautja Burner / Incinerator Plasma Flamer Mode (AvP Lore / Dark Horse Canon 1:1) */
+  togglePlasmaFlamer() {
+    this.isFlamerActive = !this.isFlamerActive;
+    if (this.isFlamerActive && this.audioEngine && this.audioEngine.playPlasmaFlamerStream) {
+      this.audioEngine.playPlasmaFlamerStream();
+    }
+    return this.isFlamerActive;
+  }
+
+  firePlasmaFlamer(delta, horde, environment, particles) {
+    if (!this.isFlamerActive || this.plasmaEnergy < 5.0 || this.isFacehuggerLatched) {
+      this.isFlamerActive = false;
+      return false;
+    }
+
+    // Drain 25 plasma energy per second
+    this.plasmaEnergy = Math.max(0, this.plasmaEnergy - 25.0 * delta);
+
+    // Continuous audio loop
+    this.flamerAudioTimer = (this.flamerAudioTimer || 0) + delta;
+    if (this.flamerAudioTimer >= 0.32) {
+      this.flamerAudioTimer = 0;
+      if (this.audioEngine && this.audioEngine.playPlasmaFlamerStream) {
+        this.audioEngine.playPlasmaFlamerStream();
+      }
+    }
+
+    const origin = this.position.clone().add(new THREE.Vector3(0, 2.2, 0));
+    const forward = new THREE.Vector3(
+      Math.sin(this.rotationY),
+      this.isPerched ? -0.4 : 0,
+      Math.cos(this.rotationY)
+    ).normalize();
+
+    // Visual flame particle jet
+    if (particles && particles.emitSparks) {
+      const flamePos = origin.clone().addScaledVector(forward, 2.5 + Math.random() * 4.0);
+      flamePos.x += (Math.random() - 0.5) * 1.4;
+      flamePos.y += (Math.random() - 0.5) * 1.0;
+      flamePos.z += (Math.random() - 0.5) * 1.4;
+      particles.emitSparks(flamePos, 6);
+    }
+
+    // Deal 110 dmg/s in 8.5m cone (dot > 0.65)
+    if (horde && horde.aliens) {
+      for (let i = horde.aliens.length - 1; i >= 0; i--) {
+        const a = horde.aliens[i];
+        if (!a || a.hp <= 0 || !a.mesh) continue;
+        const toAlien = a.mesh.position.clone().sub(origin);
+        const dist = toAlien.length();
+        if (dist <= 8.5) {
+          toAlien.normalize();
+          const dot = forward.dot(toAlien);
+          if (dot > 0.62) {
+            a.hp -= 110.0 * delta;
+            // Catch fire effect: spark spurts
+            if (particles && particles.emitSparks && Math.random() < 0.25) {
+              particles.emitSparks(a.mesh.position, 4);
+            }
+            if (a.hp <= 0) {
+              if (horde.goreEngine) horde.goreEngine.spawnDismemberment(a.mesh.position, 'heavy');
+              horde.spawnAcidPool(a.mesh.position);
+              this.scene.remove(a.mesh);
+              horde.aliens.splice(i, 1);
+              horde.deadCount++;
+              if (window.gameInstance) {
+                window.gameInstance.comboHits++;
+                window.gameInstance.score += 75;
+              }
+            }
+          }
+        }
+      }
+
+      // Obliterate Micro-Xenomorph Swarms caught in flame cone
+      if (horde.microSwarms) {
+        for (let s = horde.microSwarms.length - 1; s >= 0; s--) {
+          const swarm = horde.microSwarms[s];
+          if (swarm.isDead) continue;
+          if (swarm.group.position.distanceTo(origin) <= 7.5) {
+            swarm.hp -= 250.0 * delta; // Super-effective against micro swarms!
+            if (swarm.hp <= 0) {
+              swarm.isDead = true;
+              this.scene.remove(swarm.group);
+              horde.microSwarms.splice(s, 1);
+              if (window.gameInstance && window.gameInstance.ui) {
+                window.gameInstance.ui.showAnnouncement('🔥 ESSAIM DE MICRO-XÉNOS INCINÉRÉ PAR LE BRÛLEUR PLASMA !');
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // Burn away Queen bio-resin webbings
+    if (environment && environment.checkWebbingDamage) {
+      const burnHitPos = origin.clone().addScaledVector(forward, 4.0);
+      environment.checkWebbingDamage(burnHitPos, 3.5, 120.0 * delta, particles);
+    }
+
+    // Damage cryo specimen tubes
+    if (environment && environment.checkCryoTubeHits) {
+      const burnHitPos = origin.clone().addScaledVector(forward, 4.0);
+      environment.checkCryoTubeHits(burnHitPos, 3.0, 100.0 * delta, this.audioEngine, particles, horde);
+    }
+
+    return true;
   }
 }

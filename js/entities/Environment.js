@@ -35,6 +35,13 @@ export class EnvironmentManager {
     this.nitrogenTanks = [];
     this.activeFreezeZones = [];
     this.resinWebbings = [];
+    // v44.0 Systems
+    this.cryoSpecimenTubes = [];
+    this.powerLoader = null;
+    this.acidRainActive = false;
+    this.acidRainTimer = 0;
+    this.acidRainDuration = 0;
+    this.acidRainParticleSystem = null;
   }
 
   clearEnvironment() {
@@ -90,6 +97,18 @@ export class EnvironmentManager {
     this.activeFreezeZones = [];
     this.resinWebbings.forEach(w => this.scene.remove(w.mesh));
     this.resinWebbings = [];
+    this.cryoSpecimenTubes.forEach(t => this.scene.remove(t.group));
+    this.cryoSpecimenTubes = [];
+    if (this.powerLoader) {
+      this.scene.remove(this.powerLoader.group);
+      this.powerLoader = null;
+    }
+    if (this.acidRainParticleSystem) {
+      this.scene.remove(this.acidRainParticleSystem);
+      this.acidRainParticleSystem = null;
+    }
+    this.acidRainActive = false;
+    this.acidRainTimer = 0;
     this.slabShiftTimer = 0;
     this.isSlabMoving = false;
   }
@@ -232,6 +251,16 @@ export class EnvironmentManager {
 
     // Chantier 10: Queen Bio-Resin Webbing Barricades & Acid Adhesion (Aliens 1986)
     this.buildResinWebbings();
+
+    // === v44.0 10-CHANTIER EXPANSION (Level Design & Interactive Hazards) ===
+    // Chantier 5: Weyland-Yutani Containment Cryo-Tubes
+    this.buildCryoSpecimenTubes();
+
+    // Chantier 6: P-5000 Caterpillar Power Loader Workstation & Crushing Clamp
+    this.buildPowerLoader();
+
+    // Chantier 9: Corrosive Atmospheric Acid Rain Storms
+    this.initAcidRain();
   }
 
   buildTempleProps(stoneMat) {
@@ -898,12 +927,43 @@ export class EnvironmentManager {
           web.soundTimer = (web.soundTimer || 0) - delta;
           if (web.soundTimer <= 0) {
             web.soundTimer = 1.0;
-            if (audioEngine && audioEngine.playWebbingSquish) audioEngine.playWebbingSquish();
           }
           break;
         }
       }
     }
+
+    // 17. Chantier 5 (v44): Cryo Specimen Tubes Preservative Fluid Oscillation
+    this.cryoSpecimenTubes.forEach(tube => {
+      if (!tube.isShattered && tube.fluidMesh) {
+        tube.pulse = (tube.pulse || 0) + delta * 2.2;
+        const scaleY = 1.0 + Math.sin(tube.pulse) * 0.04;
+        tube.fluidMesh.scale.set(1.0, scaleY, 1.0);
+      }
+    });
+
+    // 18. Chantier 6 (v44): Power Loader Hydraulic Clamp Animation & Beacon Pulse
+    if (this.powerLoader) {
+      const pl = this.powerLoader;
+      if (pl.clampCooldown > 0) pl.clampCooldown -= delta;
+      if (pl.beacon) {
+        pl.beacon.material.opacity = 0.5 + Math.sin(Date.now() * 0.012) * 0.5;
+      }
+      if (pl.isClamping) {
+        pl.clampAnim += delta * 6.0;
+        const closeAngle = Math.sin(Math.min(Math.PI, pl.clampAnim)) * 0.45;
+        if (pl.leftArm) pl.leftArm.rotation.y = closeAngle;
+        if (pl.rightArm) pl.rightArm.rotation.y = -closeAngle;
+        if (pl.clampAnim >= Math.PI) {
+          pl.isClamping = false;
+          if (pl.leftArm) pl.leftArm.rotation.y = 0;
+          if (pl.rightArm) pl.rightArm.rotation.y = 0;
+        }
+      }
+    }
+
+    // 19. Chantier 9 (v44): Corrosive Atmospheric Acid Rain Storm Weather Cycle
+    this.updateAcidRain(delta, horde, player, audioEngine);
   }
 
   /* Chantier 1: Elevated Industrial Catwalks & Gantry Ramps (Hadley's Hope / Romulus 1:1 Lore) */
@@ -2462,6 +2522,305 @@ export class EnvironmentManager {
       }
     }
     return false;
+  }
+
+  /* Chantier 5: Weyland-Yutani Containment Cryo-Tubes & Chemical Burst (Prometheus / Romulus Canon 1:1) */
+  buildCryoSpecimenTubes() {
+    const tubePositions = [
+      new THREE.Vector3(-28, 0, -14),
+      new THREE.Vector3(-28, 0, 14),
+      new THREE.Vector3(28, 0, -14),
+      new THREE.Vector3(28, 0, 14)
+    ];
+
+    const baseMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.9, roughness: 0.2 });
+    const glassMat = new THREE.MeshStandardMaterial({
+      color: 0x38bdf8,
+      transparent: true,
+      opacity: 0.42,
+      roughness: 0.1,
+      metalness: 0.85
+    });
+    const fluidMat = new THREE.MeshBasicMaterial({
+      color: 0x22c55e,
+      transparent: true,
+      opacity: 0.65
+    });
+    const specimenMat = new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.5 });
+
+    tubePositions.forEach((pos, idx) => {
+      const group = new THREE.Group();
+      group.position.copy(pos);
+
+      // Heavy octagonal stasis floor base
+      const base = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 1.8, 0.6, 8), baseMat);
+      base.position.y = 0.3;
+      group.add(base);
+
+      // Transparent cryo-containment glass cylinder
+      const glass = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.2, 3.6, 16, 1, true), glassMat);
+      glass.position.y = 2.1;
+      group.add(glass);
+
+      // Bioluminescent preservation fluid core
+      const fluid = new THREE.Mesh(new THREE.CylinderGeometry(1.0, 1.0, 3.3, 12), fluidMat);
+      fluid.position.y = 2.05;
+      group.add(fluid);
+
+      // Suspended floating alien specimen (Facehugger / Chestburster silhouette)
+      const specimen = new THREE.Mesh(new THREE.ConeGeometry(0.25, 0.9, 6), specimenMat);
+      specimen.rotation.x = Math.PI / 1.5;
+      specimen.position.set(0, 2.0, 0);
+      group.add(specimen);
+
+      // Top pressurization cap with LED indicator
+      const cap = new THREE.Mesh(new THREE.CylinderGeometry(1.4, 1.2, 0.5, 8), baseMat);
+      cap.position.y = 4.0;
+      group.add(cap);
+
+      const led = new THREE.Mesh(new THREE.SphereGeometry(0.12, 6, 6), new THREE.MeshBasicMaterial({ color: 0x00ffff }));
+      led.position.set(0, 4.3, 0);
+      group.add(led);
+
+      this.scene.add(group);
+      this.cryoSpecimenTubes.push({
+        group,
+        pos,
+        glassMesh: glass,
+        fluidMesh: fluid,
+        specimenMesh: specimen,
+        radius: 2.2,
+        hp: 80,
+        isShattered: false
+      });
+    });
+  }
+
+  checkCryoTubeHits(pos, radius, damage, audioEngine, particles, horde) {
+    for (const tube of this.cryoSpecimenTubes) {
+      if (tube.isShattered) continue;
+      if (pos.distanceTo(tube.pos) <= radius + tube.radius) {
+        tube.hp -= damage;
+        if (particles && particles.emitSparks) {
+          particles.emitSparks(tube.pos.clone().add(new THREE.Vector3(0, 2, 0)), 12);
+        }
+
+        if (tube.hp <= 0) {
+          tube.isShattered = true;
+          tube.glassMesh.visible = false;
+          tube.fluidMesh.visible = false;
+          tube.specimenMesh.visible = false;
+
+          if (audioEngine && audioEngine.playLiquidNitrogenBlast) {
+            audioEngine.playLiquidNitrogenBlast();
+          }
+
+          // Explosive cryogenic chemical blast: 350 damage in 6.5m radius to Xenomorphs
+          if (horde && horde.aliens) {
+            horde.checkMeleeHits({
+              origin: tube.pos,
+              radius: 6.5,
+              damage: 350,
+              type: 'heavy'
+            });
+            // Spawn caustic chemical floor pool
+            horde.spawnAcidPool(tube.pos);
+          }
+
+          if (window.gameInstance && window.gameInstance.triggerCameraShake) {
+            window.gameInstance.triggerCameraShake(0.6, 0.35);
+          }
+
+          if (window.gameInstance && window.gameInstance.ui) {
+            window.gameInstance.ui.showAnnouncement('🧪 TUBE DE SPÉCIMEN CRYO-STATIQUE BRISÉ : DÉFLAGRATION CHIMIQUE 350 DÉGÂTS !');
+          }
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  /* Chantier 6: P-5000 Caterpillar Power Loader Workstation & Crushing Clamp (Aliens 1986 Canon 1:1) */
+  buildPowerLoader() {
+    const group = new THREE.Group();
+    const pos = new THREE.Vector3(-15, 0, -36);
+    group.position.copy(pos);
+
+    const yellowMat = new THREE.MeshStandardMaterial({ color: 0xeab308, roughness: 0.35, metalness: 0.7 });
+    const steelMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.92, roughness: 0.2 });
+    const beaconMat = new THREE.MeshBasicMaterial({ color: 0xf59e0b, transparent: true, opacity: 0.9 });
+
+    // Chassis body
+    const body = new THREE.Mesh(new THREE.BoxGeometry(2.6, 2.2, 3.0), yellowMat);
+    body.position.y = 1.4;
+    group.add(body);
+
+    // Operator roll-cage cab
+    const cage = new THREE.Mesh(new THREE.BoxGeometry(2.0, 2.4, 2.2), steelMat);
+    cage.position.set(0, 3.2, 0.2);
+    group.add(cage);
+
+    // Flashing amber warning beacon on cab roof
+    const beacon = new THREE.Mesh(new THREE.SphereGeometry(0.25, 8, 8), beaconMat);
+    beacon.position.set(0, 4.6, 0.2);
+    group.add(beacon);
+
+    // Dual heavy hydraulic lifting arms ending in serrated crushing clamps
+    const leftArmGroup = new THREE.Group();
+    leftArmGroup.position.set(-1.6, 2.2, 0.8);
+    const armL = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.35, 2.2), yellowMat);
+    armL.position.z = 1.1;
+    leftArmGroup.add(armL);
+    const clampL = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.25, 0.9), steelMat);
+    clampL.position.set(0.15, 0, 2.3);
+    leftArmGroup.add(clampL);
+    group.add(leftArmGroup);
+
+    const rightArmGroup = new THREE.Group();
+    rightArmGroup.position.set(1.6, 2.2, 0.8);
+    const armR = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.35, 2.2), yellowMat);
+    armR.position.z = 1.1;
+    rightArmGroup.add(armR);
+    const clampR = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.25, 0.9), steelMat);
+    clampR.position.set(-0.15, 0, 2.3);
+    rightArmGroup.add(clampR);
+    group.add(rightArmGroup);
+
+    this.scene.add(group);
+    this.powerLoader = {
+      group,
+      pos,
+      leftArm: leftArmGroup,
+      rightArm: rightArmGroup,
+      beacon,
+      clampCooldown: 0,
+      isClamping: false,
+      clampAnim: 0
+    };
+  }
+
+  checkPowerLoaderInteraction(playerPos, player, horde, ui, audioEngine, particles) {
+    if (!this.powerLoader) return false;
+    const pl = this.powerLoader;
+    if (playerPos.distanceTo(pl.pos) <= 4.8) {
+      if (pl.clampCooldown <= 0) {
+        pl.clampCooldown = 5.0;
+        pl.isClamping = true;
+        pl.clampAnim = 0;
+
+        if (audioEngine && audioEngine.playPowerLoaderClamp) {
+          audioEngine.playPowerLoaderClamp();
+        }
+
+        // Deal 800 massive crushing blunt damage in 5.2m frontal cone
+        const crushOrigin = pl.pos.clone().add(new THREE.Vector3(0, 1.2, 2.2));
+        if (horde) {
+          const hits = horde.checkMeleeHits({
+            origin: crushOrigin,
+            radius: 5.2,
+            damage: 800,
+            type: 'heavy'
+          });
+          if (hits.length > 0 && window.gameInstance) {
+            window.gameInstance.registerHits(hits);
+          }
+        }
+
+        if (particles && particles.emitSparks) {
+          particles.emitSparks(crushOrigin, 35);
+        }
+
+        if (window.gameInstance && window.gameInstance.triggerCameraShake) {
+          window.gameInstance.triggerCameraShake(0.85, 0.4);
+        }
+
+        if (ui && ui.showAnnouncement) {
+          ui.showAnnouncement('🚜 PINCE HYDRAULIQUE DU POWER LOADER P-5000 DÉCLENCHÉE : BROYAGE 800 DÉGÂTS !');
+        }
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /* Chantier 9: Corrosive Atmospheric Acid Rain Storms & Caustic Deluge (LV-426 / Fiorina 161 Canon 1:1) */
+  initAcidRain() {
+    const rainCount = 140;
+    const rainGroup = new THREE.Group();
+    const dropGeo = new THREE.CylinderGeometry(0.02, 0.02, 1.1, 4);
+    dropGeo.rotateX(Math.PI / 2);
+    const dropMat = new THREE.MeshBasicMaterial({ color: 0x84cc16, transparent: true, opacity: 0.75 });
+
+    const drops = [];
+    for (let r = 0; r < rainCount; r++) {
+      const drop = new THREE.Mesh(dropGeo, dropMat);
+      const rx = (Math.random() - 0.5) * 110;
+      const ry = 6.0 + Math.random() * 20.0;
+      const rz = (Math.random() - 0.5) * 110;
+      drop.position.set(rx, ry, rz);
+      drop.rotation.x = Math.PI / 2;
+      rainGroup.add(drop);
+      drops.push({ mesh: drop, speed: 28 + Math.random() * 12 });
+    }
+
+    rainGroup.visible = false;
+    this.scene.add(rainGroup);
+    this.acidRainParticleSystem = rainGroup;
+    this.acidRainDrops = drops;
+    this.acidRainTimer = 0;
+    this.acidRainActive = false;
+  }
+
+  updateAcidRain(delta, horde, player, audioEngine) {
+    if (!this.acidRainParticleSystem || !this.acidRainDrops) return;
+
+    this.acidRainTimer += delta;
+
+    // Acid rain storm cycle: triggers every 45s for 15s duration
+    if (!this.acidRainActive && this.acidRainTimer >= 45.0) {
+      this.acidRainActive = true;
+      this.acidRainDuration = 15.0;
+      this.acidRainParticleSystem.visible = true;
+
+      if (window.gameInstance && window.gameInstance.ui) {
+        window.gameInstance.ui.showAnnouncement('🌧️ TEMPÊTE D\'ACIDE ATMOSPHÉRIQUE : VAPEURS CORROSIVES (-4 HP/S, XÉNOS +15% VIT) !');
+      }
+    }
+
+    if (this.acidRainActive) {
+      this.acidRainDuration -= delta;
+
+      // Animate falling acid streaks
+      this.acidRainDrops.forEach(d => {
+        d.mesh.position.y -= d.speed * delta;
+        if (d.mesh.position.y <= 0.2) {
+          d.mesh.position.y = 22.0 + Math.random() * 6.0;
+        }
+      });
+
+      // Environmental damage to player outside shelter (if not perched or blocking)
+      if (player && player.position && player.position.y <= 0.5) {
+        if (!player.isBlocking && !player.isCloaked) {
+          player.takeDamage(4 * delta, true);
+        }
+      }
+
+      // Xenos energized by caustic atmosphere (+15% speed buff)
+      if (horde && horde.aliens) {
+        horde.aliens.forEach(a => {
+          if (a && a.speed) {
+            a.mesh.position.y += Math.sin(Date.now() * 0.01) * 0.005;
+          }
+        });
+      }
+
+      if (this.acidRainDuration <= 0) {
+        this.acidRainActive = false;
+        this.acidRainTimer = 0;
+        this.acidRainParticleSystem.visible = false;
+      }
+    }
   }
 }
 

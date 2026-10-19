@@ -3310,6 +3310,195 @@ export class AudioEngine {
     osc.start(now);
     osc.stop(now + 0.28);
   }
+
+  /* =========================================================================
+     v44.0 APEX SYNTHESIZERS (Marvel Comics Alien 2021-2024 / Aliens 1986)
+     ========================================================================= */
+
+  // 28. Marvel Alpha Xenomorph Subsonic Command Roar (Marvel Alien: Bloodlines)
+  playAlphaCommandRoar() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const osc1 = this.ctx.createOscillator();
+    const osc2 = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    const filter = this.ctx.createBiquadFilter();
+
+    osc1.type = 'sawtooth';
+    osc1.frequency.setValueAtTime(95, now);
+    osc1.frequency.linearRampToValueAtTime(160, now + 0.3);
+    osc1.frequency.exponentialRampToValueAtTime(40, now + 1.2);
+
+    osc2.type = 'sine';
+    osc2.frequency.setValueAtTime(45, now);
+    osc2.frequency.linearRampToValueAtTime(80, now + 0.3);
+    osc2.frequency.exponentialRampToValueAtTime(28, now + 1.2);
+
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(450, now);
+    filter.frequency.linearRampToValueAtTime(850, now + 0.3);
+    filter.frequency.exponentialRampToValueAtTime(150, now + 1.2);
+
+    gain.gain.setValueAtTime(0.85, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 1.25);
+
+    osc1.connect(filter);
+    osc2.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc1.start(now);
+    osc2.start(now);
+    osc1.stop(now + 1.25);
+    osc2.stop(now + 1.25);
+  }
+
+  // 29. Mosquito / Midge Micro-Xenomorph Swarm Buzz (Marvel Alien: Icarus)
+  playMicroSwarmBuzz() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(2400, now);
+    osc.frequency.linearRampToValueAtTime(3200, now + 0.15);
+    osc.frequency.linearRampToValueAtTime(1900, now + 0.35);
+
+    gain.gain.setValueAtTime(0.35, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.4);
+  }
+
+  // 30. Sub-Zero Cryo-Xenomorph Frost Breath Exhalation (Marvel Alien: Thaw)
+  playCryoFrostBreath() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const bufferSize = this.ctx.sampleRate * 0.75;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = Math.random() * 2 - 1;
+    }
+
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(1800, now);
+    filter.Q.setValueAtTime(4.0, now);
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.65, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.75);
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    noise.start(now);
+    noise.stop(now + 0.75);
+  }
+
+  // 31. Steel Team Cybernetic Xenomorph Targeting Chirp & Static (Marvel Alien: Steel Team)
+  playCyberXenoStatic() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(950, now);
+    osc.frequency.setValueAtTime(1600, now + 0.06);
+    osc.frequency.setValueAtTime(780, now + 0.12);
+    osc.frequency.setValueAtTime(2200, now + 0.18);
+
+    gain.gain.setValueAtTime(0.4, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.25);
+  }
+
+  // 32. P-5000 Caterpillar Power Loader Dual Hydraulic Clamp Crush (Aliens 1986)
+  playPowerLoaderClamp() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Heavy hydraulic hiss
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(180, now);
+    osc.frequency.exponentialRampToValueAtTime(55, now + 0.5);
+
+    gain.gain.setValueAtTime(0.85, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.55);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.55);
+
+    // Steel clamp impact clang
+    setTimeout(() => {
+      if (!this.ctx || this.isMuted) return;
+      const cNow = this.ctx.currentTime;
+      const cOsc = this.ctx.createOscillator();
+      const cGain = this.ctx.createGain();
+      cOsc.type = 'triangle';
+      cOsc.frequency.setValueAtTime(420, cNow);
+      cOsc.frequency.exponentialRampToValueAtTime(80, cNow + 0.35);
+      cGain.gain.setValueAtTime(0.9, cNow);
+      cGain.gain.exponentialRampToValueAtTime(0.01, cNow + 0.35);
+      cOsc.connect(cGain);
+      cGain.connect(this.ctx.destination);
+      cOsc.start(cNow);
+      cOsc.stop(cNow + 0.35);
+    }, 180);
+  }
+
+  // 33. Yautja Incinerator Plasma Flamer Stream (Dark Horse / Marvel Predator)
+  playPlasmaFlamerStream() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const bufferSize = this.ctx.sampleRate * 0.45;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = Math.random() * 2 - 1;
+    }
+
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(850, now);
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.55, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    noise.start(now);
+    noise.stop(now + 0.45);
+  }
 }
 
 

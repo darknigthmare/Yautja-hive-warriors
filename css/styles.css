@@ -1876,6 +1876,111 @@ html, body {
   letter-spacing: 1px;
 }
 
+/* Chantier 6 (v44): Caterpillar Power Loader Workstation Proximity Prompt */
+.power-loader-box {
+  position: absolute;
+  bottom: 110px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(30, 24, 10, 0.92);
+  border: 2px solid #eab308;
+  box-shadow: 0 0 22px rgba(234, 179, 8, 0.55), inset 0 0 10px rgba(234, 179, 8, 0.2);
+  padding: 8px 20px;
+  border-radius: 6px;
+  z-index: 94;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  pointer-events: none;
+  animation: loaderPulse 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes loaderPulse {
+  from { border-color: #eab308; box-shadow: 0 0 16px rgba(234, 179, 8, 0.4); }
+  to { border-color: #facc15; box-shadow: 0 0 28px rgba(250, 204, 21, 0.7); }
+}
+
+.loader-key {
+  background: #ca8a04;
+  color: #000;
+  font-weight: 900;
+  font-size: 1.0rem;
+  padding: 4px 12px;
+  border-radius: 4px;
+  border: 1px solid #fef08a;
+}
+
+.loader-text {
+  color: #fef08a;
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  text-shadow: 0 0 8px rgba(234, 179, 8, 0.6);
+}
+
+/* Chantier 7 (v44): Flamer Slot Styling */
+#slot-flamer .slot-key {
+  border-color: #f97316;
+  color: #fb923c;
+}
+#slot-flamer .slot-label {
+  color: #fed7aa;
+}
+
+/* Chantier 10 (v44): Marvel Alpha Eldritch Hallucination Vignette Overlay */
+.hallucination-vignette {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 99;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(120, 0, 30, 0.25) 0%, rgba(20, 0, 10, 0.88) 100%);
+  border: 12px solid rgba(220, 38, 38, 0.6);
+  box-shadow: inset 0 0 140px rgba(185, 28, 28, 0.7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 12px;
+  animation: eldritchPsychPulse 0.4s ease-in-out infinite alternate;
+}
+
+@keyframes eldritchPsychPulse {
+  0% { transform: scale(1.0); filter: hue-rotate(0deg) contrast(1.1); }
+  100% { transform: scale(1.015); filter: hue-rotate(25deg) contrast(1.3); }
+}
+
+.hallucination-title {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: #ff2255;
+  letter-spacing: 6px;
+  text-shadow: 0 0 25px #ff0044, 0 0 50px #880022;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.hallucination-sub {
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: #fecdd3;
+  letter-spacing: 3px;
+  text-shadow: 0 0 12px rgba(244, 63, 94, 0.8);
+}
+
+.hallucination-eyes {
+  font-size: 3.5rem;
+  letter-spacing: 24px;
+  animation: eyeBlink 1.5s infinite;
+}
+
+@keyframes eyeBlink {
+  0%, 100% { opacity: 1; transform: scaleY(1); }
+  50% { opacity: 0.2; transform: scaleY(0.1); }
+}
+
 
 
 

@@ -31,6 +31,14 @@ export class XenomorphHorde {
     this.crusherMat = new THREE.MeshStandardMaterial({ color: 0x151b24, roughness: 0.2, metalness: 0.9 });
     this.praetorianMat = new THREE.MeshStandardMaterial({ color: 0x0f141c, roughness: 0.3, metalness: 0.85 });
     this.officerMat = new THREE.MeshStandardMaterial({ color: 0x220505, roughness: 0.15, metalness: 0.95 });
+    // Marvel Comics Canon Materials (v44.0)
+    this.alphaMat = new THREE.MeshStandardMaterial({ color: 0xd9e2ec, roughness: 0.12, metalness: 0.95 }); // Epsilon Apex Silver Carapace
+    this.cryoMat = new THREE.MeshStandardMaterial({ color: 0x93c5fd, roughness: 0.1, metalness: 0.65, transparent: true, opacity: 0.88 }); // Sub-Zero LV-695 Translucent Ice Chitin
+    this.cyberMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.25, metalness: 0.98 }); // Steel Team Weyland-Yutani Titanium Cyber Plating
+    this.microSwarmMat = new THREE.MeshBasicMaterial({ color: 0x0f172a }); // Midge Micro-Xenomorph Chitin
+
+    this.microSwarms = [];
+    this.cyberSpineDarts = [];
   }
 
   setGoreEngine(goreEngine) {
@@ -52,6 +60,12 @@ export class XenomorphHorde {
     // Spawn 1 Grid Alien Alpha (AVP 2004 Nethead)
     this.spawnGridAlien(playerPos);
 
+    // Marvel Comics Canon: Spawn 1 Marvel Alpha Apex Predator (Epsilon Apex 1:1)
+    this.spawnMarvelAlpha(playerPos);
+
+    // Marvel Comics Canon: Spawn 1 Airborne Micro-Xenomorph Swarm (Midge / Mosquito Cloud)
+    this.spawnMicroSwarm(playerPos);
+
     // Dynasty Warriors Musou: Spawn 2 Hive Spire Captains / Node Guards (Gardes de Nœud & Sentinelles du Couvoir)
     this.spawnHiveOfficer(playerPos, -22, 'SENTINELLE DU NŒUD PRIMAIRE (SPIRE GUARD)');
     this.spawnHiveOfficer(playerPos, 22, 'GARDE SANGUINAIRE DU COUVOIR ROYAL (HIVE CASTE OFFICER)');
@@ -59,14 +73,16 @@ export class XenomorphHorde {
     // Massive Musou Swarm Density: at least 45 to 80 aliens
     const totalCount = Math.max(count, 45);
     for (let i = 0; i < totalCount; i++) {
-      const isFacehugger = Math.random() < 0.16;
-      const isBoiler = !isFacehugger && Math.random() < 0.16;
-      const isNeomorph = !isFacehugger && !isBoiler && Math.random() < 0.16;
-      const isPraetomorph = !isFacehugger && !isBoiler && !isNeomorph && Math.random() < 0.18;
-      const isRedSwarm = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && Math.random() < 0.22;
-      const isSpitter = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && !isRedSwarm && Math.random() < 0.25;
-      const isRunner = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && !isRedSwarm && !isSpitter && Math.random() < 0.30;
-      const alien = this.createAlienMesh(isFacehugger, isBoiler, isNeomorph, isPraetomorph, isRedSwarm, isSpitter, isRunner);
+      const isFacehugger = Math.random() < 0.13;
+      const isBoiler = !isFacehugger && Math.random() < 0.13;
+      const isNeomorph = !isFacehugger && !isBoiler && Math.random() < 0.13;
+      const isPraetomorph = !isFacehugger && !isBoiler && !isNeomorph && Math.random() < 0.14;
+      const isRedSwarm = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && Math.random() < 0.16;
+      const isSpitter = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && !isRedSwarm && Math.random() < 0.17;
+      const isCryoXeno = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && !isRedSwarm && !isSpitter && Math.random() < 0.19;
+      const isCyberXeno = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && !isRedSwarm && !isSpitter && !isCryoXeno && Math.random() < 0.21;
+      const isRunner = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && !isRedSwarm && !isSpitter && !isCryoXeno && !isCyberXeno && Math.random() < 0.25;
+      const alien = this.createAlienMesh(isFacehugger, isBoiler, isNeomorph, isPraetomorph, isRedSwarm, isSpitter, isRunner, isCryoXeno, isCyberXeno);
 
       const angle = Math.random() * Math.PI * 2;
       const radius = 22 + Math.random() * 25;
@@ -76,12 +92,12 @@ export class XenomorphHorde {
         playerPos.z + Math.sin(angle) * radius
       );
 
-      const isWallStalker = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && !isRedSwarm && !isSpitter && !isRunner && Math.random() < 0.22;
+      const isWallStalker = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && !isRedSwarm && !isSpitter && !isRunner && !isCryoXeno && !isCyberXeno && Math.random() < 0.22;
       this.scene.add(alien);
-      const aType = isFacehugger ? 'facehugger' : (isBoiler ? 'boiler' : (isNeomorph ? 'neomorph' : (isPraetomorph ? 'praetomorph' : (isRedSwarm ? 'red_warrior' : (isSpitter ? 'spitter' : (isRunner ? 'runner' : 'warrior'))))));
-      const aHp = isFacehugger ? 40 : (isBoiler ? 80 : (isNeomorph ? 95 : (isPraetomorph ? 160 : (isRedSwarm ? 140 : (isSpitter ? 110 : (isRunner ? 85 : 120))))));
-      const aSpeed = isFacehugger ? 17 : (isBoiler ? 14 : (isNeomorph ? 19 : (isPraetomorph ? 16 : (isRedSwarm ? 15.5 : (isSpitter ? 12 : (isRunner ? 21.0 : 11))))));
-      const aDmg = isFacehugger ? 15 : (isBoiler ? 50 : (isNeomorph ? 35 : (isPraetomorph ? 42 : (isRedSwarm ? 34 : (isSpitter ? 30 : (isRunner ? 28 : 25))))));
+      const aType = isFacehugger ? 'facehugger' : (isBoiler ? 'boiler' : (isNeomorph ? 'neomorph' : (isPraetomorph ? 'praetomorph' : (isRedSwarm ? 'red_warrior' : (isSpitter ? 'spitter' : (isCryoXeno ? 'cryo_xeno' : (isCyberXeno ? 'cyber_xeno' : (isRunner ? 'runner' : 'warrior'))))))));
+      const aHp = isFacehugger ? 40 : (isBoiler ? 80 : (isNeomorph ? 95 : (isPraetomorph ? 160 : (isRedSwarm ? 140 : (isSpitter ? 110 : (isCryoXeno ? 175 : (isCyberXeno ? 220 : (isRunner ? 85 : 120))))))));
+      const aSpeed = isFacehugger ? 17 : (isBoiler ? 14 : (isNeomorph ? 19 : (isPraetomorph ? 16 : (isRedSwarm ? 15.5 : (isSpitter ? 12 : (isCryoXeno ? 14.5 : (isCyberXeno ? 13.0 : (isRunner ? 21.0 : 11))))))));
+      const aDmg = isFacehugger ? 15 : (isBoiler ? 50 : (isNeomorph ? 35 : (isPraetomorph ? 42 : (isRedSwarm ? 34 : (isSpitter ? 30 : (isCryoXeno ? 38 : (isCyberXeno ? 44 : (isRunner ? 28 : 25))))))));
 
       this.aliens.push({
         mesh: alien,
@@ -90,13 +106,17 @@ export class XenomorphHorde {
         maxHp: aHp,
         speed: aSpeed,
         damage: aDmg,
-        radius: isFacehugger ? 0.6 : (isNeomorph ? 0.9 : (isPraetomorph ? 1.3 : (isRunner ? 0.85 : 1.1))),
+        radius: isFacehugger ? 0.6 : (isNeomorph ? 0.9 : (isPraetomorph ? 1.3 : (isRunner ? 0.85 : 1.15))),
         isLatched: false,
         isWallStalker: isWallStalker,
         wallClimbPhase: isWallStalker ? 'climbing' : 'grounded',
         perchHeight: 8.0 + Math.random() * 4.0,
         leapCooldown: (isNeomorph || isPraetomorph) ? 2.0 + Math.random() * 2.0 : 0,
         spitCooldown: isSpitter ? 2.5 + Math.random() * 2.0 : 0,
+        frostBreathCooldown: isCryoXeno ? 3.5 + Math.random() * 2.0 : 0,
+        cyberDartCooldown: isCyberXeno ? 4.0 + Math.random() * 2.0 : 0,
+        isCryoImmune: isCryoXeno,
+        hasCyberPlating: isCyberXeno,
         isLeaping: false,
         leapVelY: 0,
         isAirborne: false,
@@ -104,6 +124,149 @@ export class XenomorphHorde {
         airborneVelHoriz: new THREE.Vector3()
       });
     }
+  }
+
+  /* Chantier 1: Marvel Alpha Xenomorph Apex Predator (Marvel Comics Alien 2021-2022 Canon 1:1) */
+  spawnMarvelAlpha(playerPos) {
+    const group = new THREE.Group();
+    const mat = this.alphaMat;
+    const barbMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.95, roughness: 0.1 });
+
+    // 3.8m Tall Stature
+    const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.65, 0.45, 2.6, 8), mat);
+    torso.position.y = 1.8;
+    group.add(torso);
+
+    // Elongated Barbed Dome Cranium
+    const head = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.5, 2.4, 8), mat);
+    head.rotation.x = Math.PI / 2;
+    head.position.set(0, 3.0, 0.8);
+    group.add(head);
+
+    // Barbed Cranial Crest Spines (Marvel Canon)
+    for (let b = 0; b < 6; b++) {
+      const barb = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.45, 4), barbMat);
+      barb.rotation.x = -Math.PI / 3;
+      barb.position.set((b % 2 === 0 ? -0.22 : 0.22), 3.3 + (b * 0.08), 0.2 - (b * 0.35));
+      group.add(barb);
+    }
+
+    // Glowing Crimson Sensory Slits
+    const redEyeMat = new THREE.MeshBasicMaterial({ color: 0xff0044 });
+    const eyeL = new THREE.Mesh(new THREE.SphereGeometry(0.07, 6, 6), redEyeMat);
+    eyeL.position.set(-0.24, 2.9, 1.6);
+    group.add(eyeL);
+    const eyeR = new THREE.Mesh(new THREE.SphereGeometry(0.07, 6, 6), redEyeMat);
+    eyeR.position.set(0.24, 2.9, 1.6);
+    group.add(eyeR);
+
+    // 4 Articulated Dorsal Razor Scythes (Organic Scythe Blades)
+    for (let s = 0; s < 4; s++) {
+      const scythe = new THREE.Mesh(new THREE.ConeGeometry(0.12, 1.9, 4), mat);
+      const isLeft = s % 2 === 0;
+      scythe.position.set(isLeft ? -0.55 : 0.55, 2.5 + (s > 1 ? 0.6 : 0), -0.4 - (s > 1 ? 0.3 : 0));
+      scythe.rotation.x = -Math.PI / 3.2;
+      scythe.rotation.z = isLeft ? -0.45 : 0.45;
+      group.add(scythe);
+    }
+
+    // Segmented Silver-Chitin Tail with Barbed Stinger
+    for (let t = 0; t < 6; t++) {
+      const tSeg = new THREE.Mesh(new THREE.CylinderGeometry(0.09 - t * 0.01, 0.07 - t * 0.01, 0.55, 6), mat);
+      tSeg.position.set(0, 1.1 - t * 0.14, -0.4 - t * 0.38);
+      tSeg.rotation.x = -0.5 + t * 0.1;
+      group.add(tSeg);
+    }
+    const alphaStinger = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.55, 4), barbMat);
+    alphaStinger.rotation.x = -Math.PI / 2;
+    alphaStinger.position.set(0, 0.5, -2.7);
+    group.add(alphaStinger);
+
+    group.position.set(playerPos.x - 18, 0, playerPos.z - 30);
+    this.scene.add(group);
+
+    this.aliens.push({
+      mesh: group,
+      type: 'marvel_alpha',
+      isMarvelAlpha: true,
+      isOfficer: true,
+      officerTitle: 'ALPHA APEX EPSILON (MARVEL CANON)',
+      hp: 1800,
+      maxHp: 1800,
+      speed: 15.0,
+      damage: 65,
+      radius: 2.3,
+      commandRoarCooldown: 5.0,
+      isStunned: false,
+      stunTimer: 0,
+      isBallisticArmored: true, // 50% ballistic armor
+      isAirborne: false,
+      airborneVelY: 0,
+      airborneVelHoriz: new THREE.Vector3()
+    });
+  }
+
+  /* Chantier 2: Mosquito / Midge Micro-Xenomorph Swarm (Marvel Comics Alien: Thaw Canon 1:1) */
+  spawnMicroSwarm(playerPos) {
+    const swarmGroup = new THREE.Group();
+    const wingMat = new THREE.MeshBasicMaterial({ color: 0x94a3b8, transparent: true, opacity: 0.6, side: THREE.DoubleSide });
+    const microUnits = [];
+
+    // Cloud of 12 airborne winged micro-xenomorphs
+    for (let u = 0; u < 12; u++) {
+      const unitGroup = new THREE.Group();
+
+      // Micro thorax
+      const thorax = new THREE.Mesh(new THREE.SphereGeometry(0.12, 6, 6), this.microSwarmMat);
+      unitGroup.add(thorax);
+
+      // Barbed elongated cranium
+      const head = new THREE.Mesh(new THREE.ConeGeometry(0.07, 0.3, 5), this.microSwarmMat);
+      head.rotation.x = Math.PI / 2;
+      head.position.z = 0.18;
+      unitGroup.add(head);
+
+      // Translucent vibrating insectoid wings
+      const wingL = new THREE.Mesh(new THREE.PlaneGeometry(0.24, 0.12), wingMat);
+      wingL.position.set(-0.14, 0.08, 0);
+      wingL.rotation.y = 0.3;
+      unitGroup.add(wingL);
+
+      const wingR = new THREE.Mesh(new THREE.PlaneGeometry(0.24, 0.12), wingMat);
+      wingR.position.set(0.14, 0.08, 0);
+      wingR.rotation.y = -0.3;
+      unitGroup.add(wingR);
+
+      // Spread inside cloud sphere
+      const ang = (u / 12) * Math.PI * 2;
+      const r = 0.6 + (u % 3) * 0.45;
+      unitGroup.position.set(Math.cos(ang) * r, 0.2 + (u % 4) * 0.35, Math.sin(ang) * r);
+      swarmGroup.add(unitGroup);
+
+      microUnits.push({
+        group: unitGroup,
+        wingL,
+        wingR,
+        basePos: unitGroup.position.clone(),
+        flutterOffset: Math.random() * Math.PI * 2
+      });
+    }
+
+    swarmGroup.position.set(playerPos.x + 8, 2.0, playerPos.z + 8);
+    this.scene.add(swarmGroup);
+
+    this.microSwarms.push({
+      group: swarmGroup,
+      units: microUnits,
+      hp: 150,
+      maxHp: 150,
+      damage: 8,
+      orbitAngle: 0,
+      orbitRadius: 2.4,
+      orbitSpeed: 3.5,
+      buzzTimer: 0,
+      isDead: false
+    });
   }
 
   spawnHiveOfficer(playerPos, offsetX = 0, title = 'GARDE DE NŒUD KAINDE AMEDHA') {
@@ -317,13 +480,15 @@ export class XenomorphHorde {
     }
   }
 
-  createAlienMesh(isFacehugger, isBoiler = false, isNeomorph = false, isPraetomorph = false, isRedSwarm = false, isSpitter = false, isRunner = false) {
+  createAlienMesh(isFacehugger, isBoiler = false, isNeomorph = false, isPraetomorph = false, isRedSwarm = false, isSpitter = false, isRunner = false, isCryoXeno = false, isCyberXeno = false) {
     const group = new THREE.Group();
-    const xenoColor = isFacehugger ? 0x8a7355 : (isBoiler ? 0x243528 : (isNeomorph ? 0xf0ece1 : (isPraetomorph ? 0x14181f : (isRedSwarm ? 0xb81414 : (isSpitter ? 0x103a20 : (isRunner ? 0x7c4722 : 0x11161d))))));
+    const xenoColor = isFacehugger ? 0x8a7355 : (isBoiler ? 0x243528 : (isNeomorph ? 0xf0ece1 : (isPraetomorph ? 0x14181f : (isRedSwarm ? 0xb81414 : (isSpitter ? 0x103a20 : (isCryoXeno ? 0x93c5fd : (isCyberXeno ? 0x334155 : (isRunner ? 0x7c4722 : 0x11161d)))))))));
     const mat = new THREE.MeshStandardMaterial({
       color: xenoColor,
-      roughness: isNeomorph ? 0.2 : (isPraetomorph ? 0.15 : (isRedSwarm ? 0.25 : (isRunner ? 0.4 : 0.3))),
-      metalness: isNeomorph ? 0.05 : (isPraetomorph ? 0.95 : (isRedSwarm ? 0.82 : (isRunner ? 0.5 : 0.7)))
+      roughness: isNeomorph ? 0.2 : (isPraetomorph ? 0.15 : (isRedSwarm ? 0.25 : (isCryoXeno ? 0.1 : (isCyberXeno ? 0.25 : (isRunner ? 0.4 : 0.3))))),
+      metalness: isNeomorph ? 0.05 : (isPraetomorph ? 0.95 : (isRedSwarm ? 0.82 : (isCryoXeno ? 0.65 : (isCyberXeno ? 0.95 : (isRunner ? 0.5 : 0.7))))),
+      transparent: isCryoXeno,
+      opacity: isCryoXeno ? 0.88 : 1.0
     });
 
     if (isFacehugger) {
@@ -461,6 +626,36 @@ export class XenomorphHorde {
           group.add(boil);
         }
       }
+
+      if (isCryoXeno) {
+        // Sub-zero frost crystal accretion clusters along head and shoulders (Marvel LV-695 Canon)
+        const iceSpikeMat = new THREE.MeshStandardMaterial({ color: 0xe0f2fe, roughness: 0.1, metalness: 0.75 });
+        for (let ic = 0; ic < 5; ic++) {
+          const iceSpike = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.4, 4), iceSpikeMat);
+          iceSpike.rotation.x = -Math.PI / 3.5;
+          iceSpike.position.set((ic % 2 === 0 ? -0.18 : 0.18), 1.95 + ic * 0.05, 0.4 - ic * 0.25);
+          group.add(iceSpike);
+        }
+      }
+
+      if (isCyberXeno) {
+        // Steel Team Weyland-Yutani cybernetic titanium jaw harness & targeting optic laser
+        const cyberPlateMat = new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.98, roughness: 0.2 });
+        const jawHarness = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.2, 0.35), cyberPlateMat);
+        jawHarness.position.set(0, 1.7, 0.9);
+        group.add(jawHarness);
+
+        // Optic targeting diode on head
+        const diodeMat = new THREE.MeshBasicMaterial({ color: 0xff0022 });
+        const diode = new THREE.Mesh(new THREE.SphereGeometry(0.05, 6, 6), diodeMat);
+        diode.position.set(0.12, 1.95, 0.95);
+        group.add(diode);
+
+        // Cybernetic back spine battery
+        const pack = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.5, 0.2), cyberPlateMat);
+        pack.position.set(0, 1.4, -0.4);
+        group.add(pack);
+      }
     }
 
     return group;
@@ -511,10 +706,26 @@ export class XenomorphHorde {
               this.particles.emitSparks(a.mesh.position, 18);
             }
           }
+        // Chantier 1 (v44): Marvel Alpha Epsilon Apex Ballistic Armor (-50% damage from light attacks)
+        if (a.isBallisticArmored && attack.type !== 'heavy' && attack.type !== 'plasma' && attack.type !== 'spine_rip') {
+          damageDealt *= 0.5;
+          if (this.particles && this.particles.emitSparks) {
+            this.particles.emitSparks(a.mesh.position, 12);
+          }
+        }
+        // Chantier 4 (v44): Steel Team Cybernetic Plating (-35% projectile damage)
+        if (a.hasCyberPlating && attack.type !== 'heavy' && attack.type !== 'plasma') {
+          damageDealt *= 0.65;
         }
 
         a.hp -= damageDealt;
         const killed = a.hp <= 0;
+
+        // Marvel Alpha Stun Threshold for Legendary Spine Rip Execution
+        if (a.isMarvelAlpha && a.hp <= a.maxHp * 0.20 && !a.isStunned) {
+          a.isStunned = true;
+          a.stunTimer = 8.0;
+        }
 
         // Reactive Acid Splashback Physics (slashing xenos sprays pressurized molecular acid back at attacker)
         if (attack.origin) {
@@ -585,6 +796,29 @@ export class XenomorphHorde {
           damage: attack.damage,
           killed: true
         });
+      }
+    }
+
+    // Chantier 2 (v44): Micro-Xenomorph Swarm Dispersal / Incineration
+    for (let s = this.microSwarms.length - 1; s >= 0; s--) {
+      const swarm = this.microSwarms[s];
+      if (swarm.isDead) continue;
+      if (swarm.group.position.distanceTo(attack.origin) <= attack.radius + 3.2) {
+        swarm.hp -= attack.damage;
+        if (this.particles && this.particles.emitSparks) {
+          this.particles.emitSparks(swarm.group.position, 14);
+        }
+        if (swarm.hp <= 0) {
+          swarm.isDead = true;
+          this.scene.remove(swarm.group);
+          this.microSwarms.splice(s, 1);
+          hits.push({
+            pos: swarm.group.position.clone(),
+            damage: attack.damage,
+            killed: true,
+            isOfficer: false
+          });
+        }
       }
     }
 
@@ -931,6 +1165,62 @@ export class XenomorphHorde {
       }
     }
 
+    // 3e. Chantier 2 (v44): Micro-Xenomorph Swarm Orbit & Parasitic Acid Bite (Marvel Comics Canon)
+    for (let s = this.microSwarms.length - 1; s >= 0; s--) {
+      const swarm = this.microSwarms[s];
+      if (swarm.isDead) continue;
+      swarm.orbitAngle += swarm.orbitSpeed * delta;
+      const heightOsc = Math.sin(Date.now() * 0.005) * 0.45;
+      const targetX = player.position.x + Math.cos(swarm.orbitAngle) * swarm.orbitRadius;
+      const targetZ = player.position.z + Math.sin(swarm.orbitAngle) * swarm.orbitRadius;
+      const targetY = player.position.y + 1.8 + heightOsc;
+      swarm.group.position.lerp(new THREE.Vector3(targetX, targetY, targetZ), 6.0 * delta);
+
+      // Rapid insectoid flutter wing animation
+      swarm.units.forEach(u => {
+        const flap = Math.sin(Date.now() * 0.045 + u.flutterOffset) * 0.65;
+        u.wingL.rotation.z = flap;
+        u.wingR.rotation.z = -flap;
+      });
+
+      // High-frequency buzzing audio
+      swarm.buzzTimer = (swarm.buzzTimer || 0) + delta;
+      if (swarm.buzzTimer >= 1.5) {
+        swarm.buzzTimer = 0;
+        if (this.audioEngine && this.audioEngine.playMicroSwarmBuzz) {
+          this.audioEngine.playMicroSwarmBuzz();
+        }
+      }
+
+      // Caustic micro-bite chip damage
+      if (swarm.group.position.distanceTo(player.position) <= 3.2) {
+        if (!player.isBlocking) {
+          player.takeDamage(swarm.damage * delta, true);
+        }
+      }
+    }
+
+    // 3f. Chantier 4 (v44): Cybernetic Spine Darts Flight Physics
+    for (let d = this.cyberSpineDarts.length - 1; d >= 0; d--) {
+      const dart = this.cyberSpineDarts[d];
+      dart.life -= delta;
+      dart.mesh.position.addScaledVector(dart.vel, delta);
+      if (dart.mesh.position.distanceTo(player.position) <= 1.8) {
+        if (player.isBlocking) {
+          player.audioEngine.playShieldBlock();
+        } else {
+          player.takeDamage(dart.damage, false);
+        }
+        this.scene.remove(dart.mesh);
+        this.cyberSpineDarts.splice(d, 1);
+        continue;
+      }
+      if (dart.life <= 0 || dart.mesh.position.y <= 0.1) {
+        this.scene.remove(dart.mesh);
+        this.cyberSpineDarts.splice(d, 1);
+      }
+    }
+
     // 4. Horde AI (Crusher, Praetorian, Warriors, Facehuggers, Officers)
     this.aliens.forEach(a => {
       if (a.isLatched) return;
@@ -1164,6 +1454,71 @@ export class XenomorphHorde {
         }
       }
 
+      // Chantier 1 (v44): Marvel Alpha Apex Predator Command Roar & Enrage Pack (Marvel Alien 2021)
+      if (a.isMarvelAlpha) {
+        a.commandRoarCooldown -= delta;
+        if (a.commandRoarCooldown <= 0) {
+          a.commandRoarCooldown = 8.5;
+          if (this.audioEngine && this.audioEngine.playAlphaCommandRoar) {
+            this.audioEngine.playAlphaCommandRoar();
+          }
+          if (window.gameInstance && window.gameInstance.ui) {
+            window.gameInstance.ui.showAnnouncement('👑 RUGISSEMENT D\'ORDRE DE L\'ALPHA MARVEL : MEUTE ENRAGÉE (+50% VIT) !');
+          }
+          this.aliens.forEach(other => {
+            if (other !== a && other.mesh && other.mesh.position.distanceTo(a.mesh.position) <= 22.0) {
+              other.isEnraged = true;
+              other.enragedTimer = 6.0;
+            }
+          });
+        }
+      }
+
+      // Chantier 3 (v44): Cryo-Xenomorph Sub-Zero Frost Breath Cone (Marvel Alien: Thaw LV-695)
+      if (a.type === 'cryo_xeno') {
+        a.frostBreathCooldown -= delta;
+        if (a.frostBreathCooldown <= 0 && dist >= 4.0 && dist <= 14.0) {
+          a.frostBreathCooldown = 4.5;
+          if (this.audioEngine && this.audioEngine.playCryoFrostBreath) {
+            this.audioEngine.playCryoFrostBreath();
+          }
+          if (player.takeDamage) {
+            player.takeDamage(24, false, a);
+            player.cryoSlowTimer = 3.5;
+            if (window.gameInstance && window.gameInstance.ui) {
+              window.gameInstance.ui.showAnnouncement('❄️ SOUFFLE GLACIAL DU CRYO-XÉNO LV-695 : VITESSE RÉDUITE DE 50% !');
+            }
+          }
+        }
+      }
+
+      // Chantier 4 (v44): Steel Team Cybernetic Xenomorph Spine Dart Volley (Marvel Alien: Icarus)
+      if (a.type === 'cyber_xeno') {
+        a.cyberDartCooldown -= delta;
+        if (a.cyberDartCooldown <= 0 && dist >= 6.0 && dist <= 24.0) {
+          a.cyberDartCooldown = 4.2;
+          if (this.audioEngine && this.audioEngine.playCyberXenoStatic) {
+            this.audioEngine.playCyberXenoStatic();
+          }
+          const dartGeo = new THREE.CylinderGeometry(0.04, 0.04, 0.8, 5);
+          dartGeo.rotateX(Math.PI / 2);
+          const dartMat = new THREE.MeshBasicMaterial({ color: 0xff1133 });
+          const dartMesh = new THREE.Mesh(dartGeo, dartMat);
+          const spawnPos = a.mesh.position.clone().add(new THREE.Vector3(0, 1.8, 0));
+          dartMesh.position.copy(spawnPos);
+          const dartDir = player.position.clone().add(new THREE.Vector3(0, 1.2, 0)).sub(spawnPos).normalize();
+          dartMesh.lookAt(spawnPos.clone().add(dartDir));
+          this.scene.add(dartMesh);
+
+          this.cyberSpineDarts.push({
+            mesh: dartMesh,
+            vel: dartDir.multiplyScalar(28.0),
+            damage: 28,
+            life: 2.5
+          });
+        }
+      }
+
       if (a.type === 'crusher') {
         // Crusher Battering Ram Charge
         a.chargeTimer -= delta;
@@ -1188,10 +1543,10 @@ export class XenomorphHorde {
         }
       }
 
-      // Check if low HP sub-boss enters execution stun (Crusher, Praetorian, Grid Alien)
-      if ((a.type === 'crusher' || a.type === 'praetorian' || a.type === 'grid_alien') && a.hp <= a.maxHp * 0.25 && !a.isStunned) {
+      // Check if low HP sub-boss enters execution stun (Crusher, Praetorian, Grid Alien, Marvel Alpha)
+      if ((a.type === 'crusher' || a.type === 'praetorian' || a.type === 'grid_alien' || a.isMarvelAlpha) && a.hp <= a.maxHp * 0.22 && !a.isStunned) {
         a.isStunned = true;
-        a.stunTimer = 6.0;
+        a.stunTimer = 7.0;
       }
 
       // Boiler suicide kamikaze charge
@@ -1381,5 +1736,9 @@ export class XenomorphHorde {
       if (m.indicatorMesh) this.scene.remove(m.indicatorMesh);
     });
     this.spitterMortars = [];
+    this.microSwarms.forEach(s => this.scene.remove(s.group));
+    this.microSwarms = [];
+    this.cyberSpineDarts.forEach(d => this.scene.remove(d.mesh));
+    this.cyberSpineDarts = [];
   }
 }

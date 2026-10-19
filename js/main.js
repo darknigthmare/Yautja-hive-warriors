@@ -357,15 +357,21 @@ class GameApp {
         }
       }
 
-      // Royal Jelly Berserker Rage Stimulant [Digit 0] (Aliens: Genocide / AvP 1999)
+      // Royal Jelly Berserker Rage Stimulant [Digit 0] / Chantier 7: Yautja Burner Plasma Flamer Mode [Shift + Digit 0]
       if ((e.code === 'Digit0' || e.code === 'Numpad0') && this.player) {
-        if (this.player.consumeRoyalJelly()) {
-          this.ui.showAnnouncement('👑 GELÉE ROYALE CONSOMMÉE : FUREUR BERSERKER YAUTJA ACTIVÉE (+45% VIT, +100% DÉGÂTS) !');
-          this.particles.emitGoldRageSparks(this.player.position, 25);
-        } else if (this.player.isBerserkerActive) {
-          this.ui.showAnnouncement('🔥 RAGE BERSERKER DÉJÀ ACTIVE !');
+        if (this.keys['ShiftLeft'] || this.keys['ShiftRight']) {
+          this.player.usedShiftModifier = true;
+          const flamerActive = this.player.togglePlasmaFlamer();
+          this.ui.showAnnouncement(flamerActive ? '🔥 BRÛLEUR PLASMA INCINÉRATEUR ACTIVÉ (CÔNE NAPALM SOUTENU) !' : '🔥 BRÛLEUR PLASMA RÉTRACTÉ');
         } else {
-          this.ui.showAnnouncement('❌ AUCUNE FLASQUE DE GELÉE ROYALE DISPONIBLE');
+          if (this.player.consumeRoyalJelly()) {
+            this.ui.showAnnouncement('👑 GELÉE ROYALE CONSOMMÉE : FUREUR BERSERKER YAUTJA ACTIVÉE (+45% VIT, +100% DÉGÂTS) !');
+            this.particles.emitGoldRageSparks(this.player.position, 25);
+          } else if (this.player.isBerserkerActive) {
+            this.ui.showAnnouncement('🔥 RAGE BERSERKER DÉJÀ ACTIVE !');
+          } else {
+            this.ui.showAnnouncement('❌ AUCUNE FLASQUE DE GELÉE ROYALE DISPONIBLE');
+          }
         }
       }
 
@@ -449,6 +455,8 @@ class GameApp {
           // Handled Weyland-Yutani Autodoc Med-Bay stasis decontamination & embryo purge!
         } else if (this.env && this.env.checkSupplyInteraction(this.player.position, this.player, this.ui, this.audio)) {
           // Handled USCM supply cache opening!
+        } else if (this.env && this.env.checkPowerLoaderInteraction(this.player.position, this.player, this.horde, this.ui, this.audio, this.particles)) {
+          // Handled Caterpillar Power Loader crushing clamp!
         } else {
           this.checkTrophyExecution();
         }
@@ -1468,33 +1476,38 @@ class GameApp {
       return;
     }
 
-    // 2. Sub-Boss Execution (Crusher Titan or Praetorian Royal Guard)
+    // 2. Sub-Boss Execution (Crusher Titan, Praetorian Royal Guard, Grid Alien, Marvel Alpha)
     for (let i = this.horde.aliens.length - 1; i >= 0; i--) {
       const a = this.horde.aliens[i];
-      if ((a.type === 'crusher' || a.type === 'praetorian' || a.type === 'grid_alien') && a.isStunned) {
-        if (a.mesh.position.distanceTo(this.player.position) <= 5.5) {
+      if ((a.type === 'crusher' || a.type === 'praetorian' || a.type === 'grid_alien' || a.isMarvelAlpha) && a.isStunned) {
+        if (a.mesh.position.distanceTo(this.player.position) <= 5.8) {
           this.player.executeSpineRip();
           this.sessionSkulls++;
 
-          let tName = a.type === 'crusher'
-            ? 'Bouclier Frontal Blindé de Crusher Titan'
-            : (a.type === 'grid_alien'
-              ? 'Crâne Gravé au Quadrillage Acide de Grid Alien (AVP 2004)'
-              : 'Couronne Royale Éburnéenne de Prétorien');
-          let tHonor = a.type === 'crusher' ? 1200 : (a.type === 'grid_alien' ? 1400 : 900);
+          let tName = a.isMarvelAlpha
+            ? "Crâne Barbelé Argenté & Colonne Primordiale de l'Alpha Marvel (Epsilon Apex 1:1)"
+            : (a.type === 'crusher'
+              ? 'Bouclier Frontal Blindé de Crusher Titan'
+              : (a.type === 'grid_alien'
+                ? 'Crâne Gravé au Quadrillage Acide de Grid Alien (AVP 2004)'
+                : 'Couronne Royale Éburnéenne de Prétorien'));
+          let tHonor = a.isMarvelAlpha ? 3500 : (a.type === 'crusher' ? 1200 : (a.type === 'grid_alien' ? 1400 : 900));
           this.player.recordTrophy(tName, tHonor);
 
-          if (a.type === 'praetorian') {
+          if (a.isMarvelAlpha) {
+            this.player.royalJellyFlasks += 2; // Marvel Alpha awards 2 Royal Jelly flasks!
+            this.triggerMarvelAlphaHallucination();
+          } else if (a.type === 'praetorian') {
             this.player.royalJellyFlasks += 1; // Praetorian drops 1 Royal Jelly flask!
           } else if (a.type === 'grid_alien') {
             this.player.royalJellyFlasks += 1;
           }
 
           this.score += tHonor;
-          this.player.hp = Math.min(this.player.maxHp, this.player.hp + 300);
+          this.player.hp = Math.min(this.player.maxHp, this.player.hp + 400);
 
-          // Sub-Boss Execution Morale Swing (+18%)
-          this.shiftBattlefieldMorale(18.0);
+          // Sub-Boss Execution Morale Swing (+18% to +25%)
+          this.shiftBattlefieldMorale(a.isMarvelAlpha ? 25.0 : 18.0);
 
           if (this.gore) {
             this.gore.spawnDismemberment(a.mesh.position, 'spine_rip');
@@ -1517,6 +1530,22 @@ class GameApp {
         }
       }
     }
+  }
+
+  /* Chantier 10: Marvel Alpha Spine Trophy Execution & Eldritch Hallucination Pulse (Marvel Alien 2021) */
+  triggerMarvelAlphaHallucination() {
+    const overlay = document.getElementById('hallucination-overlay');
+    if (overlay) {
+      overlay.classList.remove('hidden');
+      setTimeout(() => {
+        overlay.classList.add('hidden');
+      }, 4500);
+    }
+    if (this.audio && this.audio.playAlphaCommandRoar) {
+      this.audio.playAlphaCommandRoar();
+    }
+    this.triggerCameraFovSurge(82, 1.2);
+    this.triggerCameraShake(1.3, 0.6);
   }
 
   shiftBattlefieldMorale(deltaClan) {
@@ -1634,6 +1663,11 @@ class GameApp {
     if (this.keys['KeyD']) moveDirP1.x += 1;
     this.player.move(moveDirP1, delta);
     this.player.update(delta, this.horde);
+
+    // Chantier 7 (v44): Sustained Yautja Burner / Incinerator Plasma Flamer Mode
+    if (this.player.isFlamerActive) {
+      this.player.firePlasmaFlamer(delta, this.horde, this.env, this.particles);
+    }
 
     if (this.isCoOp && this.player2) {
       const moveDirP2 = new THREE.Vector3();
@@ -1810,6 +1844,7 @@ class GameApp {
           this.env.checkOvipositorHit(p.mesh.position, 2.2, p.damage, this.audio, this.particles, this.horde, this.bosses);
           this.env.checkNitrogenTankHits(p.mesh.position, 2.2, p.damage, this.audio, this.particles);
           this.env.checkWebbingDamage(p.mesh.position, 2.2, p.damage, this.particles);
+          this.env.checkCryoTubeHits(p.mesh.position, 2.2, p.damage, this.audio, this.particles, this.horde);
         }
 
         const hits = this.horde.checkMeleeHits({ origin: p.mesh.position, radius: 2.8, damage: p.damage });
@@ -2023,6 +2058,17 @@ class GameApp {
     // Chantier 4 (v43): Fallen Marine Scavenge Proximity Prompt
     const nearMarine = this.env && this.env.fallenMarines && this.env.fallenMarines.find(m => !m.isScavenged && this.player && this.player.position.distanceTo(m.pos) <= 2.8);
     this.ui.updateMarineScavengePrompt(!!nearMarine, nearMarine);
+
+    // Chantier 6 (v44): Caterpillar Power Loader Workstation Proximity Prompt
+    const isNearLoader = this.env && this.env.powerLoader && this.player && this.player.position.distanceTo(this.env.powerLoader.pos) < 4.8;
+    const loaderPrompt = document.getElementById('power-loader-prompt');
+    if (loaderPrompt) {
+      if (isNearLoader && this.env.powerLoader.clampCooldown <= 0) {
+        loaderPrompt.classList.remove('hidden');
+      } else {
+        loaderPrompt.classList.add('hidden');
+      }
+    }
 
     // USCM M314 Motion Tracker Proximity Sonar Ping
     let nearestDist = Infinity;
