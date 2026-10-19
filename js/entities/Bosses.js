@@ -23,9 +23,10 @@ export class BossManager {
     const isImperial = type === 'imperial_queen';
     const isEmpress = type === 'empress_matriarch';
     const isPredalienQueen = type === 'predalien_queen';
+    const isPredalienAbomination = type === 'predalien_abomination';
     const isOffspring = type === 'the_offspring';
 
-    const hp = isImperial ? 8000 : (isEmpress ? 6000 : (isPredalienQueen ? 5000 : (isOffspring ? 4500 : 3000)));
+    const hp = isImperial ? 8000 : (isPredalienAbomination ? 6500 : (isEmpress ? 6000 : (isPredalienQueen ? 5000 : (isOffspring ? 4500 : 3000))));
 
     this.activeBoss = {
       type: type,
@@ -34,11 +35,15 @@ export class BossManager {
       maxHp: hp,
       isStunned: false,
       stunTimer: 0,
-      phase: 1
+      phase: 1,
+      spineRipAvailable: false
     };
 
     if (isOffspring) {
       this.audioEngine.playOffspringShriek();
+    } else if (isPredalienAbomination && this.audioEngine.playPredalienBellyVomit) {
+      this.audioEngine.playPredalienBellyVomit();
+      if (this.audioEngine.playYautjaRoar) this.audioEngine.playYautjaRoar();
     } else {
       this.audioEngine.playYautjaRoar();
     }
@@ -47,14 +52,15 @@ export class BossManager {
   createBossMesh(type) {
     const group = new THREE.Group();
     const isEmpress = type === 'empress_matriarch';
-    const isPredalien = type === 'predalien_queen';
+    const isPredalien = type === 'predalien_queen' || type === 'predalien_abomination';
+    const isAbomination = type === 'predalien_abomination';
     const isOffspring = type === 'the_offspring';
-    const scale = isEmpress ? 2.5 : (type === 'imperial_queen' ? 2.8 : (isOffspring ? 2.2 : 2.0));
+    const scale = type === 'imperial_queen' ? 2.8 : (isEmpress ? 2.5 : (isAbomination ? 2.4 : (type === 'predalien_queen' ? 2.1 : (isOffspring ? 2.2 : 2.0))));
 
     const mat = new THREE.MeshStandardMaterial({
-      color: isOffspring ? 0xe2dfd2 : (isPredalien ? 0x5a4632 : (isEmpress ? 0x2b0d3d : 0x11161d)),
-      metalness: isOffspring ? 0.1 : 0.8,
-      roughness: isOffspring ? 0.35 : 0.25
+      color: isOffspring ? 0xe2dfd2 : (isAbomination ? 0x524330 : (isPredalien ? 0x5a4632 : (isEmpress ? 0x2b0d3d : 0x11161d))),
+      metalness: isOffspring ? 0.1 : (isAbomination ? 0.75 : 0.8),
+      roughness: isOffspring ? 0.35 : (isAbomination ? 0.3 : 0.25)
     });
 
     // Elongated Alien Cranium
@@ -188,13 +194,37 @@ export class BossManager {
 
       // 2. Thick Yautja Dreadlocks crown trailing behind the biomechanical skull
       const dreadMat = new THREE.MeshStandardMaterial({ color: 0x1c1917, roughness: 0.85 });
-      for (let d = -4; d <= 4; d++) {
+      const ringMat = new THREE.MeshStandardMaterial({ color: 0xd97706, metalness: 0.9, roughness: 0.2 });
+      const dreadCount = isAbomination ? 6 : 4;
+      for (let d = -dreadCount; d <= dreadCount; d++) {
         const dread = new THREE.Mesh(new THREE.CylinderGeometry(0.08 * scale, 0.05 * scale, 2.6 * scale, 6), dreadMat);
-        const ang = (d / 4) * Math.PI * 0.45;
+        const ang = (d / dreadCount) * Math.PI * 0.45;
         dread.position.set(Math.sin(ang) * 0.85 * scale, 3.3 * scale, -1.0 * scale - Math.cos(ang) * 0.35 * scale);
         dread.rotation.x = -0.55;
         dread.rotation.z = ang * 0.35;
         group.add(dread);
+
+        if (isAbomination && Math.abs(d) % 2 === 0) {
+          const ring = new THREE.Mesh(new THREE.TorusGeometry(0.09 * scale, 0.02 * scale, 4, 8), ringMat);
+          ring.position.set(Math.sin(ang) * 0.85 * scale, 3.1 * scale, -1.0 * scale - Math.cos(ang) * 0.35 * scale);
+          group.add(ring);
+        }
+      }
+
+      // 3. Swollen Pregnant Biomechanical Belly Organ (AVP-R Chet Canon)
+      if (isAbomination || isPredalien) {
+        const bellyMat = new THREE.MeshStandardMaterial({
+          color: 0x65a30d,
+          emissive: 0x3f6212,
+          roughness: 0.25,
+          metalness: 0.15,
+          transparent: true,
+          opacity: 0.85
+        });
+        const belly = new THREE.Mesh(new THREE.SphereGeometry(0.85 * scale, 10, 10), bellyMat);
+        belly.position.set(0, 1.8 * scale, 0.65 * scale);
+        belly.scale.set(0.9, 1.25, 1.05);
+        group.add(belly);
       }
     }
 
@@ -281,19 +311,96 @@ export class BossManager {
     }
   }
 
+  regurgitateBellyVomit(player, horde) {
+    if (!this.activeBoss) return;
+    if (this.audioEngine && this.audioEngine.playPredalienBellyVomit) {
+      this.audioEngine.playPredalienBellyVomit();
+    } else if (this.audioEngine && this.audioEngine.playPredalienRegurgitate) {
+      this.audioEngine.playPredalienRegurgitate();
+    }
+
+    if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
+      window.gameInstance.ui.showAnnouncement('⚠️ DÉGORGEMENT GESTANT (AVP-R) : GERBE D\'ACIDE CORROSIF ET DOUBLE ÉCLOSION !');
+    }
+
+    const origin = this.activeBoss.mesh.position.clone().add(new THREE.Vector3(0, 3.2, 0));
+    const target = player.position.clone();
+    const dir = target.clone().sub(origin).normalize();
+
+    // Launch 3 streams of pressurized acidic bile
+    for (let i = 0; i < 3; i++) {
+      const spreadDir = dir.clone().add(new THREE.Vector3(
+        (Math.random() - 0.5) * 0.35,
+        0.2 + Math.random() * 0.15,
+        (Math.random() - 0.5) * 0.35
+      )).normalize();
+
+      const vomitGeo = new THREE.SphereGeometry(0.38, 8, 8);
+      const vomitMat = new THREE.MeshStandardMaterial({
+        color: 0x84cc16,
+        emissive: 0x4d7c0f,
+        roughness: 0.15,
+        metalness: 0.1
+      });
+      const vomitMesh = new THREE.Mesh(vomitGeo, vomitMat);
+      vomitMesh.position.copy(origin);
+      this.scene.add(vomitMesh);
+
+      this.embryoProjectiles.push({
+        mesh: vomitMesh,
+        velocity: spreadDir.multiplyScalar(22),
+        gravity: -19,
+        damage: 45,
+        life: 3.5,
+        isBellyVomit: true
+      });
+    }
+
+    // Spawn 2 chestbursters on impact with delay
+    setTimeout(() => {
+      if (horde && horde.spawnChestburster) {
+        horde.spawnChestburster(target.clone().add(new THREE.Vector3(1.2, 0, 1.2)));
+        horde.spawnChestburster(target.clone().add(new THREE.Vector3(-1.2, 0, -1.2)));
+        if (this.audioEngine && this.audioEngine.playChestbursterScurry) {
+          this.audioEngine.playChestbursterScurry();
+        }
+      }
+    }, 450);
+  }
+
   takeDamage(amount, horde = null) {
     if (!this.activeBoss) return;
     this.activeBoss.hp -= amount;
 
     // Predalien Pregnant Belly-Burst Frenzy at < 45% HP (AVP Requiem Lore)
-    if (this.activeBoss.type === 'predalien_queen' && this.activeBoss.hp <= this.activeBoss.maxHp * 0.45 && !this.activeBoss.pregnantBurstTriggered) {
+    if ((this.activeBoss.type === 'predalien_queen' || this.activeBoss.type === 'predalien_abomination') && this.activeBoss.hp <= this.activeBoss.maxHp * 0.45 && !this.activeBoss.pregnantBurstTriggered) {
       this.activeBoss.pregnantBurstTriggered = true;
       this.triggerPregnantBurstFrenzy(horde || (window.gameInstance ? window.gameInstance.horde : null));
     }
 
-    if (this.activeBoss.hp <= this.activeBoss.maxHp * 0.3 && !this.activeBoss.isStunned) {
-      this.activeBoss.isStunned = true;
-      this.activeBoss.stunTimer = 6.0;
+    // Phase 2 for Predalien Abomination at 65% HP
+    if (this.activeBoss.type === 'predalien_abomination' && this.activeBoss.hp <= this.activeBoss.maxHp * 0.65 && this.activeBoss.phase === 1) {
+      this.activeBoss.phase = 2;
+      if (window.gameInstance && window.gameInstance.ui) {
+        window.gameInstance.ui.showAnnouncement('⚠️ PHASE 2 : L\'ABOMINATION PRÉDALIENNE CRACHE SON ACIDITÉ GESTANTE (AVP-R) !');
+      }
+    }
+
+    // Custom Spine Rip Stun Threshold at 20% HP
+    if (this.activeBoss.type === 'predalien_abomination') {
+      if (this.activeBoss.hp <= this.activeBoss.maxHp * 0.20 && !this.activeBoss.isStunned && !this.activeBoss.spineRipAvailable) {
+        this.activeBoss.isStunned = true;
+        this.activeBoss.stunTimer = 12.0;
+        this.activeBoss.spineRipAvailable = true;
+        if (window.gameInstance && window.gameInstance.ui) {
+          window.gameInstance.ui.showAnnouncement('💀 EXÉCUTION SPÉCIALE : APPUYEZ SUR [E] POUR DÉCAPITER L\'ABOMINATION PRÉDALIENNE !');
+        }
+      }
+    } else {
+      if (this.activeBoss.hp <= this.activeBoss.maxHp * 0.3 && !this.activeBoss.isStunned) {
+        this.activeBoss.isStunned = true;
+        this.activeBoss.stunTimer = 6.0;
+      }
     }
   }
 
@@ -531,10 +638,14 @@ export class BossManager {
     dir.y = 0;
     const dist = dir.length();
 
-    // Predalien Signature Attack: Chestburster Regurgitation (AVP: Requiem Lore)
-    if (this.activeBoss.type === 'predalien_queen' && dist > 5.0 && dist < 28.0 && this.activeBoss.regurgitateCooldown <= 0) {
-      this.activeBoss.regurgitateCooldown = 6.5;
-      this.regurgitateChestbursters(player, horde);
+    // Predalien Signature Attack: Chestburster Regurgitation / Pressurized Belly Vomit (AVP: Requiem Lore)
+    if ((this.activeBoss.type === 'predalien_queen' || this.activeBoss.type === 'predalien_abomination') && dist > 4.5 && dist < 32.0 && this.activeBoss.regurgitateCooldown <= 0) {
+      this.activeBoss.regurgitateCooldown = this.activeBoss.type === 'predalien_abomination' ? 5.2 : 6.5;
+      if (this.activeBoss.type === 'predalien_abomination') {
+        this.regurgitateBellyVomit(player, horde);
+      } else {
+        this.regurgitateChestbursters(player, horde);
+      }
     }
 
     // The Offspring Signature Attack: Sonic Shriek & Rapid Grapple (Romulus 2024 Lore)
@@ -567,7 +678,7 @@ export class BossManager {
     const speedMult = this.activeBoss.isEnraged ? 1.4 : 1.0;
 
     // Queen Caudal Tail Skewer Thrust (Aliens 1986 Bishop Impalement Lore)
-    if ((this.activeBoss.type === 'xenomorph_queen' || this.activeBoss.type === 'imperial_queen' || this.activeBoss.type === 'predalien_queen') && dist <= 7.0 && this.activeBoss.tailSkewerCooldown <= 0) {
+    if ((this.activeBoss.type === 'xenomorph_queen' || this.activeBoss.type === 'imperial_queen' || this.activeBoss.type === 'predalien_queen' || this.activeBoss.type === 'predalien_abomination') && dist <= 7.5 && this.activeBoss.tailSkewerCooldown <= 0) {
       this.activeBoss.tailSkewerCooldown = this.activeBoss.isEnraged ? 2.8 : 5.5;
       this.triggerTailSkewer(player);
     }

@@ -39,6 +39,7 @@ export class XenomorphHorde {
 
     this.microSwarms = [];
     this.cyberSpineDarts = [];
+    this.royalFacehuggers = [];
   }
 
   setGoreEngine(goreEngine) {
@@ -65,6 +66,10 @@ export class XenomorphHorde {
 
     // Marvel Comics Canon: Spawn 1 Airborne Micro-Xenomorph Swarm (Midge / Mosquito Cloud)
     this.spawnMicroSwarm(playerPos);
+
+    // Chantier 4 (v45): Spawn 2 Royal Gliding Facehuggers in High Ambush Perches (Alien 3 / Isolation Lore)
+    this.spawnRoyalFacehugger(playerPos.clone().add(new THREE.Vector3(-18, 12, -16)), playerPos);
+    this.spawnRoyalFacehugger(playerPos.clone().add(new THREE.Vector3(18, 12, 16)), playerPos);
 
     // Dynasty Warriors Musou: Spawn 2 Hive Spire Captains / Node Guards (Gardes de Nœud & Sentinelles du Couvoir)
     this.spawnHiveOfficer(playerPos, -22, 'SENTINELLE DU NŒUD PRIMAIRE (SPIRE GUARD)');
@@ -378,6 +383,68 @@ export class XenomorphHorde {
     });
   }
 
+  /* Chantier 4 (v45): Armored Winged Royal Facehugger Gliding Ambush (Alien 3 / Isolation Lore) */
+  spawnRoyalFacehugger(spawnPos, targetPlayer = null) {
+    const mesh = this.createAlienMesh(false, false, false, false, false, false, false, false, false, true);
+    mesh.position.copy(spawnPos);
+    this.scene.add(mesh);
+
+    if (this.audioEngine && this.audioEngine.playRoyalFacehuggerShriek) {
+      this.audioEngine.playRoyalFacehuggerShriek();
+    }
+
+    this.royalFacehuggers.push({
+      mesh,
+      hp: 140,
+      maxHp: 140,
+      isGliding: true,
+      glideSpeed: 15.0,
+      isLatched: false,
+      latchTimer: 5.0,
+      struggleCount: 0,
+      struggleMax: 8,
+      flutterPhase: 0
+    });
+  }
+
+  struggleRoyalFacehugger(player) {
+    for (let i = this.royalFacehuggers.length - 1; i >= 0; i--) {
+      const rf = this.royalFacehuggers[i];
+      if (rf.isLatched) {
+        rf.struggleCount++;
+        if (window.gameInstance && window.gameInstance.ui) {
+          window.gameInstance.ui.showAnnouncement(`⚠️ LUTTE CONTRE LE PARASITE ROYAL : [ESPACE] (${rf.struggleCount}/${rf.struggleMax}) !`);
+        }
+        if (this.audioEngine && this.audioEngine.playGauntletGrapple) {
+          this.audioEngine.playGauntletGrapple();
+        }
+
+        if (rf.struggleCount >= rf.struggleMax) {
+          if (this.goreEngine && this.goreEngine.spawnDismemberment) {
+            this.goreEngine.spawnDismemberment(rf.mesh.position, 'heavy');
+          }
+          this.spawnAcidPool(player.position);
+          this.scene.remove(rf.mesh);
+          this.royalFacehuggers.splice(i, 1);
+          player.isRoyalFacehuggerLatched = false;
+
+          if (this.audioEngine && this.audioEngine.playHeavySlamImpact) {
+            this.audioEngine.playHeavySlamImpact();
+          }
+          if (window.gameInstance) {
+            window.gameInstance.score += 350;
+            if (window.gameInstance.ui) {
+              window.gameInstance.ui.showAnnouncement('⚔️ PARASITE ROYAL ARRACHÉ DU BIO-MASQUE ET BROYÉ (+350 PTS) !');
+            }
+          }
+          return true;
+        }
+        return true;
+      }
+    }
+    return false;
+  }
+
   spawnGridAlien(playerPos) {
     const group = new THREE.Group();
     const xenoMat = new THREE.MeshStandardMaterial({ color: 0x0a0e14, roughness: 0.25, metalness: 0.85 });
@@ -480,8 +547,52 @@ export class XenomorphHorde {
     }
   }
 
-  createAlienMesh(isFacehugger, isBoiler = false, isNeomorph = false, isPraetomorph = false, isRedSwarm = false, isSpitter = false, isRunner = false, isCryoXeno = false, isCyberXeno = false) {
+  createAlienMesh(isFacehugger, isBoiler = false, isNeomorph = false, isPraetomorph = false, isRedSwarm = false, isSpitter = false, isRunner = false, isCryoXeno = false, isCyberXeno = false, isRoyalFacehugger = false) {
     const group = new THREE.Group();
+
+    if (isRoyalFacehugger) {
+      const royalMat = new THREE.MeshStandardMaterial({ color: 0x4a3820, roughness: 0.35, metalness: 0.85 });
+      const wingMat = new THREE.MeshStandardMaterial({ color: 0x78350f, roughness: 0.6, transparent: true, opacity: 0.82, side: THREE.DoubleSide });
+
+      // Armored Arachnid Body Sac
+      const body = new THREE.Mesh(new THREE.SphereGeometry(0.48, 8, 8), royalMat);
+      body.position.y = 0.35;
+      body.scale.set(1.3, 0.7, 1.5);
+      group.add(body);
+
+      // Chitinous carapace dorsal shield
+      const shield = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.15, 0.9), royalMat);
+      shield.position.set(0, 0.55, 0);
+      group.add(shield);
+
+      // 8 Articulated Knuckled Fingers
+      for (let f = 0; f < 8; f++) {
+        const side = f < 4 ? -1 : 1;
+        const idx = f % 4;
+        const finger = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.025, 0.85, 5), royalMat);
+        finger.position.set(side * (0.45 + idx * 0.1), 0.25, (idx - 1.5) * 0.28);
+        finger.rotation.z = side * 0.8;
+        finger.rotation.y = (idx - 1.5) * 0.22;
+        group.add(finger);
+      }
+
+      // Leathery Gliding Wing Membranes (Patagium connecting knuckle digits on both flanks)
+      [-1, 1].forEach(side => {
+        const patagium = new THREE.Mesh(new THREE.PlaneGeometry(1.2, 0.9), wingMat);
+        patagium.rotation.x = -Math.PI / 2;
+        patagium.rotation.z = side * 0.2;
+        patagium.position.set(side * 0.85, 0.22, 0);
+        group.add(patagium);
+      });
+
+      // Serrated Armored Tail
+      const tail = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.03, 1.6, 6), royalMat);
+      tail.position.set(0, 0.3, -0.85);
+      tail.rotation.x = -Math.PI / 3.2;
+      group.add(tail);
+      return group;
+    }
+
     const xenoColor = isFacehugger ? 0x8a7355 : (isBoiler ? 0x243528 : (isNeomorph ? 0xf0ece1 : (isPraetomorph ? 0x14181f : (isRedSwarm ? 0xb81414 : (isSpitter ? 0x103a20 : (isCryoXeno ? 0x93c5fd : (isCyberXeno ? 0x334155 : (isRunner ? 0x7c4722 : 0x11161d)))))))));
     const mat = new THREE.MeshStandardMaterial({
       color: xenoColor,
@@ -706,6 +817,8 @@ export class XenomorphHorde {
               this.particles.emitSparks(a.mesh.position, 18);
             }
           }
+        }
+
         // Chantier 1 (v44): Marvel Alpha Epsilon Apex Ballistic Armor (-50% damage from light attacks)
         if (a.isBallisticArmored && attack.type !== 'heavy' && attack.type !== 'plasma' && attack.type !== 'spine_rip') {
           damageDealt *= 0.5;
@@ -1035,6 +1148,52 @@ export class XenomorphHorde {
         cb.mesh.rotation.y = Math.atan2(dir.x, dir.z);
       } else {
         player.takeDamage(cb.damage * delta);
+      }
+    }
+
+    // 2b. Chantier 4 (v45): Royal Gliding Facehuggers Physics & Mask Latching
+    for (let i = this.royalFacehuggers.length - 1; i >= 0; i--) {
+      const rf = this.royalFacehuggers[i];
+      rf.flutterPhase = (rf.flutterPhase || 0) + delta * 22.0;
+      rf.mesh.rotation.z = Math.sin(rf.flutterPhase) * 0.18;
+
+      if (rf.isGliding) {
+        const targetHead = player.position.clone().add(new THREE.Vector3(0, 1.8, 0));
+        const glideDir = targetHead.clone().sub(rf.mesh.position);
+        const distToPlayer = glideDir.length();
+
+        if (distToPlayer > 1.3) {
+          glideDir.normalize();
+          rf.mesh.position.addScaledVector(glideDir, rf.glideSpeed * delta);
+          rf.mesh.rotation.y = Math.atan2(glideDir.x, glideDir.z);
+          rf.mesh.rotation.x = -0.35;
+        } else {
+          // Latch onto player mask!
+          rf.isGliding = false;
+          rf.isLatched = true;
+          player.isRoyalFacehuggerLatched = true;
+          if (this.audioEngine && this.audioEngine.playRoyalFacehuggerShriek) {
+            this.audioEngine.playRoyalFacehuggerShriek();
+          }
+          if (window.gameInstance && window.gameInstance.ui) {
+            window.gameInstance.ui.showAnnouncement('⚠️ EMBUSCADE AÉRIENNE : PARASITE ROYAL AGGRIPÉ AU BIO-MASQUE ! MITRAILLEZ [ESPACE] (0/8) !');
+          }
+        }
+      } else if (rf.isLatched) {
+        rf.mesh.position.copy(player.position).add(new THREE.Vector3(0, 1.8, 0.35));
+        rf.mesh.rotation.y = player.rotationY || 0;
+        rf.latchTimer -= delta;
+
+        if (rf.latchTimer <= 0) {
+          player.takeDamage(150);
+          player.visorAcidBurn = 1.0;
+          this.scene.remove(rf.mesh);
+          this.royalFacehuggers.splice(i, 1);
+          player.isRoyalFacehuggerLatched = false;
+          if (window.gameInstance && window.gameInstance.ui) {
+            window.gameInstance.ui.showAnnouncement('☠️ PERFORATION CAUSTIQUE DU PARASITE ROYAL : DÉGÂTS CRITIQUES (-150 HP) !');
+          }
+        }
       }
     }
 
@@ -1740,5 +1899,7 @@ export class XenomorphHorde {
     this.microSwarms = [];
     this.cyberSpineDarts.forEach(d => this.scene.remove(d.mesh));
     this.cyberSpineDarts = [];
+    this.royalFacehuggers.forEach(r => this.scene.remove(r.mesh));
+    this.royalFacehuggers = [];
   }
 }

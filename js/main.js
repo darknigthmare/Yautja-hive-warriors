@@ -442,6 +442,14 @@ class GameApp {
           if (this.player.struggleQTE()) {
             this.ui.showAnnouncement('💥 FACEHUGGER ARRACHÉ AVEC SUCCÈS !');
           }
+        } else if (this.env && this.env.checkAPCInteraction(this.player.position, this.player, this.ui, this.audio)) {
+          // Handled USCM M577 APC mounting / dismounting!
+        } else if (this.env && this.env.checkReactorConsoleInteraction(this.player.position, this.player, this.ui, this.audio)) {
+          // Handled Colony Reactor meltdown / coolant core purge!
+        } else if (this.env && this.env.checkElectricGridInteraction(this.player.position, this.player, this.ui, this.audio, this.particles, this.horde)) {
+          // Handled High-Voltage Electric Floor Grid activation!
+        } else if (this.env && this.env.checkDeconInteraction(this.player.position, this.player, this.ui, this.audio, this.particles)) {
+          // Handled Med-Lab Decontamination Airlock purge & restoration!
         } else if (this.sentryGun && this.sentryGun.reloadSentry(this.player.position, 250)) {
           if (this.audio && this.audio.playSentrySpinUp) this.audio.playSentrySpinUp();
           this.ui.showAnnouncement('🔋 SENTINELLE UA 571-C : CHARGEUR RECHARGÉ (+250 RDS) !');
@@ -541,10 +549,32 @@ class GameApp {
         document.getElementById('hud-weapon-label').innerText = isSec ? 'ARME: SECONDAIRE' : 'ARME: PRINCIPALE';
       }
 
-      if (e.code === 'KeyF' && this.player) {
-        const active = this.player.toggleCloak();
-        this.audio.playYautjaClick();
-        this.ui.cloakOverlay.className = active ? '' : 'hidden';
+      // Chantier 7 (v45): Yautja Ki'cte Gauntlet Grapple & Seismic Counter-Throw [KeyF / KeyG] (Concrete Jungle / Prey)
+      if ((e.code === 'KeyF' || e.code === 'KeyG') && this.player) {
+        const grappled = this.player.performGauntletGrapple(this.horde, this.bosses, this.ui, this.particles, this.env);
+        if (!grappled && e.code === 'KeyF') {
+          const active = this.player.toggleCloak();
+          this.audio.playYautjaClick();
+          this.ui.cloakOverlay.className = active ? '' : 'hidden';
+        }
+      }
+
+      // Chantier 5 (v45): Yautja Pure Energy Plasma Pistol 3-Bolt Burst [KeyP or Shift+Digit4] (AVP: Requiem 2007)
+      if ((e.code === 'KeyP' || (e.code === 'Digit4' && (this.keys['ShiftLeft'] || this.keys['ShiftRight']))) && this.player) {
+        if (this.keys['ShiftLeft'] || this.keys['ShiftRight']) this.player.usedShiftModifier = true;
+        const fired = this.player.firePlasmaPistol(this.horde, this.bosses, this.particles, this.env);
+        if (fired) {
+          this.ui.showAnnouncement('⚡ RAFALE PISTOLET PLASMA TRIPLETTE (AVP-R) : 3x95 DÉGÂTS D\'ÉNERGIE PURE !');
+        } else {
+          this.ui.showAnnouncement('⚠️ ÉNERGIE PLASMA INSUFFISANTE (12 REQUIS) OU RECHARGE EN COURS');
+        }
+      }
+
+      // Chantier 4 (v45): Struggle Against Latched Royal Facehugger
+      if (e.code === 'Space' && this.player && this.player.isRoyalFacehuggerLatched) {
+        if (this.horde && this.horde.struggleRoyalFacehugger(this.player)) {
+          return;
+        }
       }
 
       if ((e.code === 'Space' && !this.keys['ShiftLeft'] && !this.keys['ShiftRight']) || e.code === 'KeyQ') {
@@ -1444,6 +1474,10 @@ class GameApp {
       if (bType === 'the_offspring') {
         tName = 'Mandibule Hybride & Vertèbres Z-01 de The Offspring (Romulus 2024)';
         tHonor = 3500;
+      } else if (bType === 'predalien_abomination') {
+        tName = 'Crâne d\'Hybride Yautja-Xénomorphe & Mandibules Monstrueuses (AVP-R Chet Canon)';
+        tHonor = 4000;
+        this.player.royalJellyFlasks += 3;
       } else if (bType === 'predalien_queen') {
         tName = 'Mandibules Quadruples & Crâne Hybride de Reine Prédalienne (AVP-R 2007)';
         tHonor = 3000;
@@ -2070,6 +2104,46 @@ class GameApp {
       }
     }
 
+    // Chantier 2 (v45): Drivable USCM M577 APC Proximity Prompt
+    const isNearAPC = this.env && this.env.drivableAPC && this.player && this.player.position.distanceTo(this.env.drivableAPC.pos) < 4.8;
+    const apcPrompt = document.getElementById('apc-mount-prompt');
+    if (apcPrompt) {
+      if (isNearAPC) apcPrompt.classList.remove('hidden');
+      else apcPrompt.classList.add('hidden');
+    }
+
+    // Chantier 3 (v45): Reactor Meltdown Console Proximity Prompt
+    const isNearReactor = this.env && this.env.reactorConsole && this.player && this.player.position.distanceTo(this.env.reactorConsole.pos) < 4.2;
+    const reactorPrompt = document.getElementById('reactor-console-prompt');
+    if (reactorPrompt) {
+      if (isNearReactor) reactorPrompt.classList.remove('hidden');
+      else reactorPrompt.classList.add('hidden');
+    }
+
+    // Chantier 6 (v45): Electric Floor Grid Breaker Proximity Prompt
+    const isNearGrid = this.env && this.env.electricFloorGrids && this.player && this.env.electricFloorGrids.some(g => !g.isActive && this.player.position.distanceTo(g.pos) < 5.0);
+    const gridPrompt = document.getElementById('electric-grid-prompt');
+    if (gridPrompt) {
+      if (isNearGrid) gridPrompt.classList.remove('hidden');
+      else gridPrompt.classList.add('hidden');
+    }
+
+    // Chantier 9 (v45): Med-Lab Decontamination Airlock Proximity Prompt
+    const isNearDecon = this.env && this.env.deconAirlock && this.player && this.player.position.distanceTo(this.env.deconAirlock.pos) < 3.8;
+    const deconPrompt = document.getElementById('decon-airlock-prompt');
+    if (deconPrompt) {
+      if (isNearDecon && this.env.deconAirlock.cooldown <= 0) deconPrompt.classList.remove('hidden');
+      else deconPrompt.classList.add('hidden');
+    }
+
+    // Chantier 7 (v45): Ki'cte Gauntlet Grapple Availability Prompt
+    const isNearGrappleTarget = this.player && this.player.grappleCooldown <= 0 && this.horde && this.horde.aliens && this.horde.aliens.some(a => a && a.hp > 0 && a.mesh && a.mesh.position.distanceTo(this.player.position) <= 3.5);
+    const grapplePrompt = document.getElementById('grapple-prompt');
+    if (grapplePrompt) {
+      if (isNearGrappleTarget) grapplePrompt.classList.remove('hidden');
+      else grapplePrompt.classList.add('hidden');
+    }
+
     // USCM M314 Motion Tracker Proximity Sonar Ping
     let nearestDist = Infinity;
     this.horde.aliens.forEach(a => {
@@ -2126,11 +2200,18 @@ class GameApp {
           }, 1800);
         }
       } else if (!this.bosses.activeBoss) {
-        const bType = this.ui.selectedLevel.bossType;
+        let bType = this.ui.selectedLevel.bossType;
+        if (this.waveIndex === 5 || bType === 'predalien_abomination') {
+          bType = 'predalien_abomination';
+          if (this.env && !this.env.reactorMeltdownActive) {
+            this.env.triggerReactorMeltdown(this.ui, this.audio);
+          }
+        }
         this.bosses.spawnBoss(bType, this.player.position.clone().add(new THREE.Vector3(0, 0, -25)));
         
         let bossTitle = 'REINE MATRIARCHE KAINDE AMEDHA (ALIENS 1986)';
         if (bType === 'the_offspring') bossTitle = 'HYBRIDE GÉNOTYPIQUE THE OFFSPRING (ROMULUS 2024)';
+        else if (bType === 'predalien_abomination') bossTitle = 'ABOMINATION PRÉDALIENNE GESTANTE (AVP-R 2007 CHET)';
         else if (bType === 'predalien_queen') bossTitle = 'REINE PRÉDALIENNE ABOMINATION DU CLAN (AVP-R 2007)';
         else if (bType === 'empress_matriarch') bossTitle = 'IMPÉRATRICE VOLANTE DE LA RUCHE PRIMORDIALE (DARK HORSE)';
 

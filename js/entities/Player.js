@@ -87,6 +87,15 @@ export class Player {
     // v44.0 Systems
     this.isFlamerActive = false;
     this.flamerAudioTimer = 0;
+    // v45.0 Systems
+    this.isPlasmaPistolMode = false;
+    this.plasmaPistolCooldown = 0;
+    this.grappleCooldown = 0;
+    this.isGrappling = false;
+    this.grappleTimer = 0;
+    this.isMountedAPC = false;
+    this.apcRef = null;
+    this.isRoyalFacehuggerLatched = false;
 
     // Pounce Leap State
     this.isLeaping = false;
@@ -1767,6 +1776,21 @@ export class Player {
       this.antiGravCooldown = Math.max(0, this.antiGravCooldown - delta);
     }
 
+    if (this.plasmaPistolCooldown > 0) {
+      this.plasmaPistolCooldown = Math.max(0, this.plasmaPistolCooldown - delta);
+    }
+
+    if (this.grappleCooldown > 0) {
+      this.grappleCooldown = Math.max(0, this.grappleCooldown - delta);
+    }
+
+    if (this.isGrappling) {
+      this.grappleTimer -= delta;
+      if (this.grappleTimer <= 0) {
+        this.isGrappling = false;
+      }
+    }
+
     if (this.isPlasmaGlaiveActive) {
       this.plasmaGlaiveDuration -= delta;
       if (this.plasmaGlaiveMesh) {
@@ -2178,6 +2202,185 @@ export class Player {
       const burnHitPos = origin.clone().addScaledVector(forward, 4.0);
       environment.checkCryoTubeHits(burnHitPos, 3.0, 100.0 * delta, this.audioEngine, particles, horde);
     }
+
+    return true;
+  }
+
+  /* === CHANTIER 5 (v45): Yautja Pure Energy Plasma Pistol Mode (AVP: Requiem Wolf / Predator 2) === */
+  firePlasmaPistol(horde, bosses, particles, environment) {
+    if (this.plasmaEnergy < 12 || this.plasmaPistolCooldown > 0) return false;
+
+    this.plasmaEnergy -= 12;
+    this.plasmaPistolCooldown = 0.42;
+
+    if (this.audioEngine && this.audioEngine.playPlasmaPistolBurst) {
+      this.audioEngine.playPlasmaPistolBurst();
+    }
+
+    const forward = new THREE.Vector3(
+      Math.sin(this.rotationY),
+      this.isPerched ? -0.35 : 0,
+      Math.cos(this.rotationY)
+    ).normalize();
+
+    const origin = this.position.clone().add(new THREE.Vector3(0.4, 1.8, 0.3));
+
+    // Emit 3 rapid ionized azure/violet plasma burst sparks
+    for (let b = 0; b < 3; b++) {
+      setTimeout(() => {
+        const boltOrigin = origin.clone().addScaledVector(forward, 1.5 + b * 0.4);
+        if (particles && particles.emitSparks) {
+          particles.emitSparks(boltOrigin, 5);
+        }
+
+        // Raycast hit check along trajectory
+        let hitTarget = false;
+        const boltPos = origin.clone().addScaledVector(forward, 24.0);
+
+        // Check boss hit
+        if (bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
+          const bossDist = bosses.activeBoss.mesh.position.distanceTo(origin);
+          if (bossDist <= 28.0) {
+            const toBoss = bosses.activeBoss.mesh.position.clone().sub(origin).normalize();
+            if (forward.dot(toBoss) > 0.88) {
+              const isCrit = Math.random() < 0.45;
+              const dmg = 95 * (isCrit ? 3.0 : 1.0);
+              bosses.takeDamage(dmg, horde);
+              hitTarget = true;
+              if (particles && particles.emitSparks) particles.emitSparks(bosses.activeBoss.mesh.position, 8);
+              if (isCrit && window.gameInstance && window.gameInstance.ui) {
+                window.gameInstance.ui.showAnnouncement('💥 TIR CRITIQUE PISTOLET PLASMA (AVP-R) : 285 DÉGÂTS D\'ÉNERGIE PURE !');
+              }
+            }
+          }
+        }
+
+        // Check horde hits
+        if (!hitTarget && horde && horde.aliens) {
+          for (let i = horde.aliens.length - 1; i >= 0; i--) {
+            const a = horde.aliens[i];
+            if (!a || a.hp <= 0 || !a.mesh) continue;
+            const toAlien = a.mesh.position.clone().sub(origin);
+            const dist = toAlien.length();
+            if (dist <= 26.0) {
+              toAlien.normalize();
+              if (forward.dot(toAlien) > 0.88) {
+                const isCrit = Math.random() < 0.5;
+                const dmg = 95 * (isCrit ? 3.0 : 1.0);
+                a.hp -= dmg;
+                hitTarget = true;
+
+                if (particles && particles.emitSparks) particles.emitSparks(a.mesh.position, 6);
+
+                if (a.hp <= 0) {
+                  if (horde.goreEngine) horde.goreEngine.spawnDismemberment(a.mesh.position, 'heavy');
+                  horde.spawnAcidPool(a.mesh.position);
+                  this.scene.remove(a.mesh);
+                  horde.aliens.splice(i, 1);
+                  horde.deadCount++;
+                  if (window.gameInstance) {
+                    window.gameInstance.comboHits++;
+                    window.gameInstance.score += 85;
+                  }
+                }
+                break;
+              }
+            }
+          }
+        }
+
+        // Trigger electric floor grid if bolt lands on it
+        if (environment && environment.checkElectricGridInteraction) {
+          environment.checkElectricGridInteraction(boltPos, this, window.gameInstance ? window.gameInstance.ui : null, this.audioEngine, particles, horde);
+        }
+      }, b * 85);
+    }
+
+    return true;
+  }
+
+  /* === CHANTIER 7 (v45): Yautja Ki'cte Gauntlet Grapple & Seismic Counter-Throw (Concrete Jungle / Prey) === */
+  performGauntletGrapple(horde, bosses, ui, particles, environment) {
+    if (this.grappleCooldown > 0) return false;
+
+    // Scan for nearest Xenomorph within 3.5m
+    let targetAlien = null;
+    let targetIndex = -1;
+    let minDist = 3.6;
+
+    if (horde && horde.aliens) {
+      for (let i = 0; i < horde.aliens.length; i++) {
+        const a = horde.aliens[i];
+        if (!a || a.hp <= 0 || !a.mesh) continue;
+        const d = this.position.distanceTo(a.mesh.position);
+        if (d < minDist) {
+          minDist = d;
+          targetAlien = a;
+          targetIndex = i;
+        }
+      }
+    }
+
+    if (!targetAlien) return false;
+
+    this.grappleCooldown = 4.0;
+    this.isGrappling = true;
+    this.grappleTimer = 0.5;
+
+    if (this.audioEngine && this.audioEngine.playGauntletGrapple) {
+      this.audioEngine.playGauntletGrapple();
+    }
+
+    // Execution lift animation: lift target xeno overhead
+    targetAlien.mesh.position.y = 2.4;
+
+    setTimeout(() => {
+      // Seismic slam into floor
+      targetAlien.mesh.position.y = 0;
+      targetAlien.hp -= 260;
+
+      if (this.audioEngine && this.audioEngine.playHeavySlamImpact) {
+        this.audioEngine.playHeavySlamImpact();
+      }
+
+      if (particles && particles.emitSparks) {
+        particles.emitSparks(targetAlien.mesh.position, 12);
+      }
+
+      // Radial Seismic Shockwave (5.0m radius, 180 dmg, knocks down surrounding xenos)
+      const slamCenter = targetAlien.mesh.position.clone();
+      if (horde && horde.aliens) {
+        horde.aliens.forEach(otherAlien => {
+          if (!otherAlien || otherAlien.hp <= 0 || !otherAlien.mesh || otherAlien === targetAlien) return;
+          const dist = otherAlien.mesh.position.distanceTo(slamCenter);
+          if (dist <= 5.2) {
+            otherAlien.hp -= 180;
+            const pushDir = otherAlien.mesh.position.clone().sub(slamCenter).normalize();
+            otherAlien.mesh.position.addScaledVector(pushDir, 5.5);
+            otherAlien.isStunned = true;
+            otherAlien.stunTimer = 2.5;
+          }
+        });
+      }
+
+      // Check kill on target
+      if (targetAlien.hp <= 0 && horde && horde.aliens) {
+        if (horde.goreEngine) horde.goreEngine.spawnDismemberment(targetAlien.mesh.position, 'heavy');
+        horde.spawnAcidPool(targetAlien.mesh.position);
+        this.scene.remove(targetAlien.mesh);
+        const idx = horde.aliens.indexOf(targetAlien);
+        if (idx !== -1) horde.aliens.splice(idx, 1);
+        horde.deadCount++;
+        if (window.gameInstance) {
+          window.gameInstance.comboHits += 2;
+          window.gameInstance.score += 200;
+        }
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('🥋 PRISE KI\'CTE : PROJECTION SISMIQUE D\'ÉCRASEMENT AU SOL (180 DÉGÂTS RADIAUX) !');
+      }
+    }, 220);
 
     return true;
   }

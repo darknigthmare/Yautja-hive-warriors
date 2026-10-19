@@ -184,6 +184,9 @@ export class UIManager {
         } else if (b.type === 'the_offspring') {
           title = 'HYBRIDE MAUDIT Z-01 : THE OFFSPRING (ROMULUS)';
           icon = '🧬';
+        } else if (b.type === 'predalien_abomination') {
+          title = 'ABOMINATION PRÉDALIENNE GESTANTE (AVP: REQUIEM CHET)';
+          icon = '☣️';
         } else if (b.type === 'predalien_queen') {
           title = 'ABOMINATION PREDALIEN MATRIARCHE (AVP: REQUIEM)';
           icon = '💀';
@@ -194,13 +197,21 @@ export class UIManager {
 
         if (bossBadge) {
           if (b.isStunned) {
-            bossBadge.innerText = '💥 ÉTOURDI — EXÉCUTION SPIDERIP [E] !';
+            bossBadge.innerText = (b.type === 'predalien_abomination') ? '💀 EXÉCUTION DÉCAPITANTE [E] : ARRACHEZ LE CRÂNE HYBRIDE !' : '💥 ÉTOURDI — EXÉCUTION SPIDERIP [E] !';
             bossBadge.style.color = '#ff3300';
             bossBadge.style.borderColor = '#ff3300';
+          } else if (bPct < 25 && b.type === 'predalien_abomination') {
+            bossBadge.innerText = '💀 SEUIL CRITIQUE D\'ÉPUISEMENT (<25%)';
+            bossBadge.style.color = '#f97316';
+            bossBadge.style.borderColor = '#f97316';
           } else if (bPct < 45) {
-            bossBadge.innerText = b.type === 'predalien_queen' ? '🩸 FRÉNÉSIE DE PONTE ACTIVE !' : '🔥 ÉTAT ENRAGÉ DÉCHAÎNÉ (<45%) !';
+            bossBadge.innerText = (b.type === 'predalien_abomination' || b.type === 'predalien_queen') ? '🩸 FUREUR GESTANTE : CRACHAT D\'ACIDE & COUVÉE !' : '🔥 ÉTAT ENRAGÉ DÉCHAÎNÉ (<45%) !';
             bossBadge.style.color = '#ef4444';
             bossBadge.style.borderColor = '#ef4444';
+          } else if (bPct < 65 && b.type === 'predalien_abomination') {
+            bossBadge.innerText = '⚠️ PHASE 2 : DÉGORGEMENT D\'ACIDE CORROSIF';
+            bossBadge.style.color = '#84cc16';
+            bossBadge.style.borderColor = '#84cc16';
           } else {
             bossBadge.innerText = 'PHASE 1 : GESTANTE ACTIVE';
             bossBadge.style.color = '#fef08a';

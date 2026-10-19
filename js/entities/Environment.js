@@ -42,6 +42,14 @@ export class EnvironmentManager {
     this.acidRainTimer = 0;
     this.acidRainDuration = 0;
     this.acidRainParticleSystem = null;
+    // v45.0 Systems
+    this.drivableAPC = null;
+    this.reactorConsole = null;
+    this.reactorMeltdownActive = false;
+    this.reactorMeltdownTimer = 180.0;
+    this.reactorAlarmCooldown = 0;
+    this.electricFloorGrids = [];
+    this.deconAirlock = null;
   }
 
   clearEnvironment() {
@@ -109,6 +117,23 @@ export class EnvironmentManager {
     }
     this.acidRainActive = false;
     this.acidRainTimer = 0;
+    // v45.0 Cleanups
+    if (this.drivableAPC) {
+      this.scene.remove(this.drivableAPC.group);
+      this.drivableAPC = null;
+    }
+    if (this.reactorConsole) {
+      this.scene.remove(this.reactorConsole.group);
+      this.reactorConsole = null;
+    }
+    this.electricFloorGrids.forEach(g => this.scene.remove(g.group));
+    this.electricFloorGrids = [];
+    if (this.deconAirlock) {
+      this.scene.remove(this.deconAirlock.group);
+      this.deconAirlock = null;
+    }
+    this.reactorMeltdownActive = false;
+    this.reactorMeltdownTimer = 180.0;
     this.slabShiftTimer = 0;
     this.isSlabMoving = false;
   }
@@ -261,6 +286,19 @@ export class EnvironmentManager {
 
     // Chantier 9: Corrosive Atmospheric Acid Rain Storms
     this.initAcidRain();
+
+    // === v45.0 10-CHANTIER EXPANSION (Vehicles, Level Traps & Reactor Core) ===
+    // Chantier 2: Drivable USCM M577 Armored Personnel Carrier (Aliens 1986)
+    this.buildDrivableAPC();
+
+    // Chantier 3: Colony Reactor Meltdown & Cooling Console (Hadley's Hope)
+    this.buildReactorMeltdownConsole();
+
+    // Chantier 6: High-Voltage Discharging Electric Floor Grids
+    this.buildElectricFloorGrids();
+
+    // Chantier 9: Weyland-Yutani Med-Lab Decontamination Airlock
+    this.buildDecontaminationAirlock();
   }
 
   buildTempleProps(stoneMat) {
@@ -964,6 +1002,24 @@ export class EnvironmentManager {
 
     // 19. Chantier 9 (v44): Corrosive Atmospheric Acid Rain Storm Weather Cycle
     this.updateAcidRain(delta, horde, player, audioEngine);
+
+    // 20. Chantier 2 (v45): Drivable USCM M577 APC Vehicle Physics & Autocannon
+    if (this.drivableAPC) {
+      this.updateDrivableAPC(delta, player, horde, audioEngine, particles);
+    }
+
+    // 21. Chantier 3 (v45): Colony Reactor Meltdown Countdown & Klaxon Sirens
+    if (this.reactorMeltdownActive) {
+      this.updateReactorMeltdown(delta, player, horde, audioEngine, particles);
+    }
+
+    // 22. Chantier 6 (v45): High-Voltage Discharging Electric Floor Grids
+    this.updateElectricFloorGrids(delta, horde, audioEngine, particles);
+
+    // 23. Chantier 9 (v45): Weyland-Yutani Med-Lab Decontamination Airlock
+    if (this.deconAirlock) {
+      this.updateDeconAirlock(delta, player, audioEngine, particles);
+    }
   }
 
   /* Chantier 1: Elevated Industrial Catwalks & Gantry Ramps (Hadley's Hope / Romulus 1:1 Lore) */
@@ -2819,6 +2875,669 @@ export class EnvironmentManager {
         this.acidRainActive = false;
         this.acidRainTimer = 0;
         this.acidRainParticleSystem.visible = false;
+      }
+    }
+  }
+
+  /* === CHANTIER 2 (v45): Drivable USCM M577 Armored Personnel Carrier (Aliens 1986 Canon 1:1) === */
+  buildDrivableAPC() {
+    const group = new THREE.Group();
+    const pos = new THREE.Vector3(25, 0, -32);
+    group.position.copy(pos);
+
+    const armorMat = new THREE.MeshStandardMaterial({
+      color: 0x3b4738, // Olive-drab USCM armor
+      metalness: 0.85,
+      roughness: 0.35
+    });
+
+    const wheelMat = new THREE.MeshStandardMaterial({
+      color: 0x18181b,
+      metalness: 0.2,
+      roughness: 0.8
+    });
+
+    // 1. Heavy Sloped Main Chassis (Length: 8.8m, Width: 4.2m, Height: 2.2m)
+    const hullGeo = new THREE.BoxGeometry(4.2, 2.0, 8.8);
+    const hull = new THREE.Mesh(hullGeo, armorMat);
+    hull.position.y = 1.8;
+    group.add(hull);
+
+    // Front sloped glacis plate
+    const frontGlacis = new THREE.Mesh(new THREE.ConeGeometry(2.4, 2.8, 4), armorMat);
+    frontGlacis.rotation.x = Math.PI / 2;
+    frontGlacis.position.set(0, 1.6, 5.0);
+    group.add(frontGlacis);
+
+    // 2. Eight Massive All-Terrain Wheels with Suspension
+    const wheelGeo = new THREE.CylinderGeometry(0.85, 0.85, 0.7, 12);
+    wheelGeo.rotateZ(Math.PI / 2);
+    const wheels = [];
+
+    const wheelPositions = [-2.8, -0.9, 1.0, 2.9];
+    wheelPositions.forEach(zOffset => {
+      const wl = new THREE.Mesh(wheelGeo, wheelMat);
+      wl.position.set(-2.3, 0.85, zOffset);
+      group.add(wl);
+      wheels.push(wl);
+
+      const wr = new THREE.Mesh(wheelGeo, wheelMat);
+      wr.position.set(2.3, 0.85, zOffset);
+      group.add(wr);
+      wheels.push(wr);
+    });
+
+    // 3. Pivoting Roof-Mounted Dual 20mm Autocannon Turret (Boyars Twin Cannon)
+    const turretGroup = new THREE.Group();
+    turretGroup.position.set(0, 3.0, -1.2);
+
+    const turretBase = new THREE.Mesh(new THREE.CylinderGeometry(0.9, 1.1, 0.6, 8), armorMat);
+    turretGroup.add(turretBase);
+
+    const barrelGeo = new THREE.CylinderGeometry(0.08, 0.08, 2.8, 6);
+    barrelGeo.rotateX(Math.PI / 2);
+    const barrelMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.95 });
+
+    const barrel1 = new THREE.Mesh(barrelGeo, barrelMat);
+    barrel1.position.set(-0.35, 0.25, 1.4);
+    turretGroup.add(barrel1);
+
+    const barrel2 = new THREE.Mesh(barrelGeo, barrelMat);
+    barrel2.position.set(0.35, 0.25, 1.4);
+    turretGroup.add(barrel2);
+
+    // Dual Muzzle Flashes
+    const flashGeo = new THREE.ConeGeometry(0.18, 0.6, 6);
+    flashGeo.rotateX(-Math.PI / 2);
+    const flashMat = new THREE.MeshBasicMaterial({ color: 0xffe600, transparent: true, opacity: 0.95 });
+
+    const flash1 = new THREE.Mesh(flashGeo, flashMat);
+    flash1.position.set(-0.35, 0.25, 3.0);
+    flash1.visible = false;
+    turretGroup.add(flash1);
+
+    const flash2 = new THREE.Mesh(flashGeo, flashMat);
+    flash2.position.set(0.35, 0.25, 3.0);
+    flash2.visible = false;
+    turretGroup.add(flash2);
+
+    group.add(turretGroup);
+
+    // Roof Warning Beacon (Aliens 1986 Lore)
+    const beaconBase = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.22, 0.2, 8), armorMat);
+    beaconBase.position.set(0, 2.9, 2.2);
+    group.add(beaconBase);
+
+    const beacon = new THREE.Mesh(new THREE.SphereGeometry(0.2, 8, 8), new THREE.MeshBasicMaterial({ color: 0xff9100, transparent: true, opacity: 0.85 }));
+    beacon.position.set(0, 3.1, 2.2);
+    group.add(beacon);
+
+    // Stenciled Insignia
+    const stencilMat = new THREE.MeshBasicMaterial({ color: 0x94a3b8 });
+    const stencilL = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.35, 1.6), stencilMat);
+    stencilL.position.set(-2.12, 2.1, 0);
+    group.add(stencilL);
+
+    this.scene.add(group);
+    this.drivableAPC = {
+      group,
+      pos,
+      speed: 0,
+      maxSpeed: 18.0,
+      rotationY: 0,
+      armor: 1500,
+      maxArmor: 1500,
+      isMounted: false,
+      wheels,
+      turret: turretGroup,
+      flash1,
+      flash2,
+      flashTimer: 0,
+      beacon,
+      fireCooldown: 0,
+      ramCooldown: 0,
+      tracers: []
+    };
+  }
+
+  checkAPCInteraction(playerPos, player, ui, audioEngine) {
+    if (!this.drivableAPC) return false;
+    const apc = this.drivableAPC;
+    const dist = playerPos.distanceTo(apc.pos);
+
+    if (dist <= 4.6) {
+      if (!apc.isMounted) {
+        apc.isMounted = true;
+        player.isMountedAPC = true;
+        player.apcRef = apc;
+        if (ui && ui.showAnnouncement) {
+          ui.showAnnouncement('🚜 BLINDÉ M577 APC USCM PILOTÉ : [Z/Q/S/D] CONDUITE, [ESPACE/CLIC] CANON 20MM (600 CPM), [E] QUITTER !');
+        }
+        if (audioEngine && audioEngine.playAPCAutocannon) {
+          audioEngine.playAPCAutocannon();
+        }
+      } else {
+        apc.isMounted = false;
+        player.isMountedAPC = false;
+        player.apcRef = null;
+        const dismountPos = apc.pos.clone().add(new THREE.Vector3(3.4, 0, 0));
+        player.position.copy(dismountPos);
+        if (player.mesh) player.mesh.position.copy(dismountPos);
+        if (ui && ui.showAnnouncement) {
+          ui.showAnnouncement('🚜 DÉBARQUEMENT DU BLINDÉ M577 APC EFFECTUÉ.');
+        }
+      }
+      return true;
+    }
+    return false;
+  }
+
+  updateDrivableAPC(delta, player, horde, audioEngine, particles) {
+    const apc = this.drivableAPC;
+    if (!apc) return;
+
+    if (apc.beacon) {
+      apc.beacon.rotation.y += 8.0 * delta;
+      apc.beacon.material.opacity = 0.5 + Math.sin(Date.now() * 0.01) * 0.4;
+    }
+
+    if (apc.flashTimer > 0) {
+      apc.flashTimer -= delta;
+      if (apc.flashTimer <= 0) {
+        if (apc.flash1) apc.flash1.visible = false;
+        if (apc.flash2) apc.flash2.visible = false;
+      }
+    }
+
+    // Tracers physics
+    for (let t = apc.tracers.length - 1; t >= 0; t--) {
+      const tr = apc.tracers[t];
+      tr.life -= delta;
+      tr.mesh.position.addScaledVector(tr.dir, tr.speed * delta);
+      if (tr.life <= 0 || tr.mesh.position.distanceTo(tr.target) <= 1.5) {
+        if (particles && particles.emitSparks) {
+          particles.emitSparks(tr.mesh.position, 6);
+        }
+        this.scene.remove(tr.mesh);
+        apc.tracers.splice(t, 1);
+      }
+    }
+
+    if (!apc.isMounted) return;
+
+    const keys = (window.gameInstance && window.gameInstance.keys) ? window.gameInstance.keys : {};
+
+    // Throttle / Reverse
+    if (keys['KeyW'] || keys['ArrowUp']) {
+      apc.speed = Math.min(apc.speed + 14.0 * delta, apc.maxSpeed);
+    } else if (keys['KeyS'] || keys['ArrowDown']) {
+      apc.speed = Math.max(apc.speed - 12.0 * delta, -7.0);
+    } else {
+      apc.speed *= 0.93;
+    }
+
+    // Steering
+    const isMoving = Math.abs(apc.speed) > 0.4;
+    if (isMoving) {
+      const turnDir = apc.speed >= 0 ? 1 : -1;
+      if (keys['KeyA'] || keys['ArrowLeft'] || keys['KeyQ']) {
+        apc.rotationY += 1.8 * delta * turnDir;
+      }
+      if (keys['KeyD'] || keys['ArrowRight']) {
+        apc.rotationY -= 1.8 * delta * turnDir;
+      }
+    }
+
+    // Movement forward
+    const fwd = new THREE.Vector3(Math.sin(apc.rotationY), 0, Math.cos(apc.rotationY));
+    apc.pos.addScaledVector(fwd, apc.speed * delta);
+    apc.pos.x = Math.max(-54, Math.min(54, apc.pos.x));
+    apc.pos.z = Math.max(-54, Math.min(54, apc.pos.z));
+
+    apc.group.position.copy(apc.pos);
+    apc.group.rotation.y = apc.rotationY;
+
+    // Wheel rotation animation
+    const wheelSpin = apc.speed * delta * 2.8;
+    apc.wheels.forEach(w => {
+      w.rotation.x += wheelSpin;
+    });
+
+    // Lock player to APC cabin
+    if (player) {
+      player.position.copy(apc.pos);
+      if (player.mesh) {
+        player.mesh.position.copy(apc.pos);
+        player.mesh.position.y = 2.0;
+        player.rotationY = apc.rotationY;
+      }
+    }
+
+    // Ramming collisions against Xenomorphs (400 blunt dmg)
+    if (Math.abs(apc.speed) >= 2.5 && horde && horde.aliens) {
+      apc.ramCooldown = (apc.ramCooldown || 0) - delta;
+      for (let i = horde.aliens.length - 1; i >= 0; i--) {
+        const a = horde.aliens[i];
+        if (!a || a.hp <= 0 || !a.mesh) continue;
+        if (a.mesh.position.distanceTo(apc.pos) <= 4.2) {
+          a.hp -= 400;
+          const knockDir = fwd.clone().add(new THREE.Vector3((Math.random() - 0.5) * 0.5, 0.3, (Math.random() - 0.5) * 0.5)).normalize();
+          a.mesh.position.addScaledVector(knockDir, 7.5);
+
+          if (audioEngine && audioEngine.playHeavySlamImpact && apc.ramCooldown <= 0) {
+            audioEngine.playHeavySlamImpact();
+            apc.ramCooldown = 0.25;
+          }
+          if (particles && particles.emitSparks) {
+            particles.emitSparks(a.mesh.position, 8);
+          }
+
+          if (a.hp <= 0) {
+            if (horde.goreEngine) horde.goreEngine.spawnDismemberment(a.mesh.position, 'heavy');
+            horde.spawnAcidPool(a.mesh.position);
+            this.scene.remove(a.mesh);
+            horde.aliens.splice(i, 1);
+            horde.deadCount++;
+            if (window.gameInstance) {
+              window.gameInstance.comboHits++;
+              window.gameInstance.score += 150;
+            }
+          }
+        }
+      }
+    }
+
+    // Turret aiming & rapid firing (600 RPM autocannon)
+    if (apc.fireCooldown > 0) apc.fireCooldown -= delta;
+    if (keys['Space'] || (window.gameInstance && window.gameInstance.isLeftMouseDown)) {
+      if (apc.fireCooldown <= 0) {
+        apc.fireCooldown = 0.1;
+        this.fireAPCCannon(horde, window.gameInstance ? window.gameInstance.bosses : null, audioEngine, particles);
+      }
+    }
+  }
+
+  fireAPCCannon(horde, bosses, audioEngine, particles) {
+    const apc = this.drivableAPC;
+    if (!apc) return;
+
+    if (audioEngine && audioEngine.playAPCAutocannon) {
+      audioEngine.playAPCAutocannon();
+    }
+
+    apc.flashTimer = 0.08;
+    if (apc.flash1) apc.flash1.visible = true;
+    if (apc.flash2) apc.flash2.visible = true;
+
+    // Target scanning directly in front of APC or nearest enemy
+    const fwd = new THREE.Vector3(Math.sin(apc.rotationY), 0, Math.cos(apc.rotationY));
+    const origin = apc.pos.clone().add(new THREE.Vector3(0, 3.2, 0)).addScaledVector(fwd, 2.5);
+    const targetPos = origin.clone().addScaledVector(fwd, 32.0);
+
+    // Spawn 20mm Tracer
+    const tracerGeo = new THREE.CylinderGeometry(0.04, 0.04, 1.2, 4);
+    tracerGeo.rotateX(Math.PI / 2);
+    const tracerMat = new THREE.MeshBasicMaterial({ color: 0xffe600 });
+    const tracerMesh = new THREE.Mesh(tracerGeo, tracerMat);
+    tracerMesh.position.copy(origin);
+    this.scene.add(tracerMesh);
+
+    apc.tracers.push({
+      mesh: tracerMesh,
+      dir: fwd.clone(),
+      target: targetPos,
+      speed: 120.0,
+      life: 0.6
+    });
+
+    // Explosive splash damage (75 dmg in 3.2m radius along forward vector)
+    const hitCenter = origin.clone().addScaledVector(fwd, 12.0 + Math.random() * 8.0);
+    if (particles && particles.emitSparks) {
+      particles.emitSparks(hitCenter, 6);
+    }
+
+    if (bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
+      if (bosses.activeBoss.mesh.position.distanceTo(hitCenter) <= 6.0) {
+        bosses.takeDamage(75);
+      }
+    }
+
+    if (horde && horde.aliens) {
+      for (let i = horde.aliens.length - 1; i >= 0; i--) {
+        const a = horde.aliens[i];
+        if (!a || a.hp <= 0 || !a.mesh) continue;
+        if (a.mesh.position.distanceTo(hitCenter) <= 4.0) {
+          a.hp -= 75;
+          if (a.hp <= 0) {
+            if (horde.goreEngine) horde.goreEngine.spawnDismemberment(a.mesh.position, 'heavy');
+            horde.spawnAcidPool(a.mesh.position);
+            this.scene.remove(a.mesh);
+            horde.aliens.splice(i, 1);
+            horde.deadCount++;
+          }
+        }
+      }
+    }
+  }
+
+  /* === CHANTIER 3 (v45): Hadley's Hope Colony Reactor Meltdown Protocol === */
+  buildReactorMeltdownConsole() {
+    const group = new THREE.Group();
+    const pos = new THREE.Vector3(0, 0, -50);
+    group.position.copy(pos);
+
+    const metalMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.85, roughness: 0.3 });
+    const consoleGeo = new THREE.BoxGeometry(4.5, 2.8, 1.8);
+    const consoleMesh = new THREE.Mesh(consoleGeo, metalMat);
+    consoleMesh.position.y = 1.4;
+    group.add(consoleMesh);
+
+    // Glowing Coolant Core Chambers (3 conduits)
+    const coreMat = new THREE.MeshBasicMaterial({ color: 0x06b6d4, transparent: true, opacity: 0.85 });
+    for (let c = -1; c <= 1; c++) {
+      const conduit = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.35, 2.2, 8), coreMat);
+      conduit.position.set(c * 1.2, 1.6, 0.4);
+      group.add(conduit);
+    }
+
+    // Emergency Warning Strobe
+    const strobe = new THREE.Mesh(new THREE.SphereGeometry(0.25, 8, 8), new THREE.MeshBasicMaterial({ color: 0xef4444 }));
+    strobe.position.set(0, 3.0, 0);
+    group.add(strobe);
+
+    this.scene.add(group);
+    this.reactorConsole = {
+      group,
+      pos,
+      strobe
+    };
+  }
+
+  checkReactorConsoleInteraction(playerPos, player, ui, audioEngine) {
+    if (!this.reactorConsole) return false;
+    if (playerPos.distanceTo(this.reactorConsole.pos) <= 4.2) {
+      if (this.reactorMeltdownActive) {
+        // Coolant core purge - stabilize meltdown!
+        this.reactorMeltdownActive = false;
+        this.reactorMeltdownTimer = 180.0;
+        const banner = document.getElementById('reactor-meltdown-banner');
+        if (banner) banner.classList.add('hidden');
+        if (ui && ui.showAnnouncement) {
+          ui.showAnnouncement('✅ SYSTÈMES DE REFROIDISSEMENT DU RÉACTEUR PURGÉS : SURCHARGE ÉVITÉE !');
+        }
+        if (audioEngine && audioEngine.playSteamVentHiss) {
+          audioEngine.playSteamVentHiss();
+        }
+      } else {
+        this.triggerReactorMeltdown(ui, audioEngine);
+      }
+      return true;
+    }
+    return false;
+  }
+
+  triggerReactorMeltdown(ui, audioEngine) {
+    this.reactorMeltdownActive = true;
+    this.reactorMeltdownTimer = 180.0;
+    this.reactorAlarmCooldown = 0;
+    const banner = document.getElementById('reactor-meltdown-banner');
+    if (banner) banner.classList.remove('hidden');
+
+    if (ui && ui.showAnnouncement) {
+      ui.showAnnouncement('⚠️ ALERTE ROUGE : SURCHARGE DU RÉACTEUR DE HADLEY\'S HOPE DÉCLENCHÉE (50 MT) !');
+    }
+    if (audioEngine && audioEngine.playReactorAlarm) {
+      audioEngine.playReactorAlarm();
+    }
+  }
+
+  updateReactorMeltdown(delta, player, horde, audioEngine, particles) {
+    this.reactorMeltdownTimer -= delta;
+
+    // Pulse console warning strobe
+    if (this.reactorConsole && this.reactorConsole.strobe) {
+      this.reactorConsole.strobe.material.color.setHex(Math.sin(Date.now() * 0.015) > 0 ? 0xff0000 : 0x000000);
+    }
+
+    // Periodic klaxon siren
+    this.reactorAlarmCooldown -= delta;
+    if (this.reactorAlarmCooldown <= 0) {
+      this.reactorAlarmCooldown = 3.6;
+      if (audioEngine && audioEngine.playReactorAlarm) {
+        audioEngine.playReactorAlarm();
+      }
+    }
+
+    // High pressure steam vents around reactor
+    if (particles && particles.emitSmoke && Math.random() < 0.3) {
+      const steamPos = this.reactorConsole.pos.clone().add(new THREE.Vector3((Math.random() - 0.5) * 6, 2.5, (Math.random() - 0.5) * 4));
+      particles.emitSmoke(steamPos, 4);
+    }
+
+    // Update banner
+    const min = Math.floor(Math.max(0, this.reactorMeltdownTimer) / 60);
+    const sec = Math.floor(Math.max(0, this.reactorMeltdownTimer) % 60).toString().padStart(2, '0');
+    const bannerText = document.getElementById('reactor-timer-text');
+    if (bannerText) {
+      bannerText.textContent = `0${min}:${sec} AVANT VAPORISATION THERMONUCLÉAIRE (50 MT)`;
+    }
+
+    // Thermonuclear meltdown failure
+    if (this.reactorMeltdownTimer <= 0) {
+      this.reactorMeltdownActive = false;
+      if (player) player.takeDamage(99999);
+      if (window.gameInstance && window.gameInstance.ui) {
+        window.gameInstance.ui.showAnnouncement('💥 DÉTONATION THERMONUCLÉAIRE DU RÉACTEUR (50 MT) : HADLEY\'S HOPE VAPORISÉE !');
+      }
+    }
+  }
+
+  /* === CHANTIER 6 (v45): High-Voltage Discharging Electric Floor Grids === */
+  buildElectricFloorGrids() {
+    const gridPositions = [new THREE.Vector3(-18, 0.04, 0), new THREE.Vector3(18, 0.04, 0)];
+    const gridMat = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.9, roughness: 0.3 });
+    const stripeMat = new THREE.MeshBasicMaterial({ color: 0xeab308 });
+    const blueTeslaMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8 });
+
+    gridPositions.forEach((pos, idx) => {
+      const group = new THREE.Group();
+      group.position.copy(pos);
+
+      // 8x8m steel mesh grid
+      const mesh = new THREE.Mesh(new THREE.PlaneGeometry(8, 8), gridMat);
+      mesh.rotation.x = -Math.PI / 2;
+      group.add(mesh);
+
+      // Warning hazard border
+      const border = new THREE.Mesh(new THREE.RingGeometry(3.9, 4.3, 4), stripeMat);
+      border.rotation.x = -Math.PI / 2;
+      border.rotation.z = Math.PI / 4;
+      group.add(border);
+
+      // 4 Corner Tesla Insulator Coils
+      const corners = [[-3.8, -3.8], [3.8, -3.8], [-3.8, 3.8], [3.8, 3.8]];
+      corners.forEach(c => {
+        const coil = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.22, 1.2, 6), blueTeslaMat);
+        coil.position.set(c[0], 0.6, c[1]);
+        group.add(coil);
+      });
+
+      this.scene.add(group);
+      this.electricFloorGrids.push({
+        group,
+        pos,
+        index: idx,
+        isActive: false,
+        activeTimer: 0,
+        mesh
+      });
+    });
+  }
+
+  checkElectricGridInteraction(playerPos, player, ui, audioEngine, particles, horde) {
+    for (let i = 0; i < this.electricFloorGrids.length; i++) {
+      const grid = this.electricFloorGrids[i];
+      if (playerPos.distanceTo(grid.pos) <= 5.5) {
+        if (!grid.isActive) {
+          this.electrifyGrid(i, audioEngine, particles, horde);
+          if (ui && ui.showAnnouncement) {
+            ui.showAnnouncement('⚡ GRILLE HAUTE-TENSION DÉCHARGÉE (15 kV) : 280 DÉGÂTS D\'ÉLECTROCUTION ET PARALYSIE !');
+          }
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  electrifyGrid(index, audioEngine, particles, horde) {
+    const grid = this.electricFloorGrids[index];
+    if (!grid) return;
+
+    grid.isActive = true;
+    grid.activeTimer = 6.0;
+
+    if (audioEngine && audioEngine.playElectricFloorHum) {
+      audioEngine.playElectricFloorHum();
+    }
+
+    if (particles && particles.emitSparks) {
+      for (let s = 0; s < 6; s++) {
+        const sparkPos = grid.pos.clone().add(new THREE.Vector3((Math.random() - 0.5) * 6, 0.4, (Math.random() - 0.5) * 6));
+        particles.emitSparks(sparkPos, 8);
+      }
+    }
+
+    // Shock all xenomorphs on grid
+    if (horde && horde.aliens) {
+      horde.aliens.forEach(a => {
+        if (a && a.hp > 0 && a.mesh && a.mesh.position.distanceTo(grid.pos) <= 4.6) {
+          a.hp -= 280;
+          a.isStunned = true;
+          a.stunTimer = 4.0;
+        }
+      });
+    }
+  }
+
+  updateElectricFloorGrids(delta, horde, audioEngine, particles) {
+    this.electricFloorGrids.forEach(grid => {
+      if (grid.isActive) {
+        grid.activeTimer -= delta;
+
+        // Visual electric flash
+        if (grid.mesh) {
+          grid.mesh.material.color.setHex(Math.random() > 0.4 ? 0x38bdf8 : 0x1e293b);
+        }
+
+        if (particles && particles.emitSparks && Math.random() < 0.4) {
+          const arcPos = grid.pos.clone().add(new THREE.Vector3((Math.random() - 0.5) * 7, 0.3, (Math.random() - 0.5) * 7));
+          particles.emitSparks(arcPos, 5);
+        }
+
+        // Continual shock damage to any xeno stepping into grid
+        if (horde && horde.aliens) {
+          horde.aliens.forEach(a => {
+            if (a && a.hp > 0 && a.mesh && a.mesh.position.distanceTo(grid.pos) <= 4.6) {
+              a.hp -= 70 * delta;
+              a.isStunned = true;
+              a.stunTimer = 1.5;
+            }
+          });
+        }
+
+        if (grid.activeTimer <= 0) {
+          grid.isActive = false;
+          if (grid.mesh) grid.mesh.material.color.setHex(0x334155);
+        }
+      }
+    });
+  }
+
+  /* === CHANTIER 9 (v45): Weyland-Yutani Med-Lab Decontamination Airlock === */
+  buildDecontaminationAirlock() {
+    const group = new THREE.Group();
+    const pos = new THREE.Vector3(0, 0, 42);
+    group.position.copy(pos);
+
+    const metalMat = new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.8, roughness: 0.25 });
+    const glassMat = new THREE.MeshStandardMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.45, roughness: 0.1 });
+
+    // Chamber frame (4x4x4m)
+    const frameGeo = new THREE.BoxGeometry(4.2, 3.8, 4.2);
+    const frame = new THREE.Mesh(frameGeo, metalMat);
+    frame.position.y = 1.9;
+    group.add(frame);
+
+    // Glass walls
+    const glass = new THREE.Mesh(new THREE.BoxGeometry(3.6, 3.4, 3.6), glassMat);
+    glass.position.y = 1.9;
+    group.add(glass);
+
+    // Antiseptic spray nozzle ring
+    const nozzleMat = new THREE.MeshBasicMaterial({ color: 0x06b6d4 });
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(1.2, 0.08, 6, 12), nozzleMat);
+    ring.rotation.x = Math.PI / 2;
+    ring.position.y = 3.4;
+    group.add(ring);
+
+    this.scene.add(group);
+    this.deconAirlock = {
+      group,
+      pos,
+      cooldown: 0,
+      isActive: false,
+      timer: 0
+    };
+  }
+
+  checkDeconInteraction(playerPos, player, ui, audioEngine, particles) {
+    if (!this.deconAirlock) return false;
+    const decon = this.deconAirlock;
+
+    if (playerPos.distanceTo(decon.pos) <= 3.8) {
+      if (decon.cooldown <= 0 && !decon.isActive) {
+        decon.isActive = true;
+        decon.timer = 4.0;
+        decon.cooldown = 40.0;
+
+        if (audioEngine && audioEngine.playSteamVentHiss) {
+          audioEngine.playSteamVentHiss();
+        }
+
+        // Bio-hazard purge & restoration
+        if (player) {
+          player.visorAcidBurn = 0;
+          player.speedMultiplier = 1.0;
+          player.hp = Math.min(player.maxHp, player.hp + 250);
+          player.plasmaEnergy = Math.min(player.maxPlasmaEnergy, (player.plasmaEnergy || 100) + 50);
+        }
+
+        if (ui && ui.showAnnouncement) {
+          ui.showAnnouncement('🧪 SAS DE DÉCONTAMINATION ACTIVÉ : INFECTIONS PURGÉES, ACIDE NETTOYÉ (+250 HP, +50 ÉNERGIE) !');
+        }
+
+        return true;
+      }
+    }
+    return false;
+  }
+
+  updateDeconAirlock(delta, player, audioEngine, particles) {
+    const decon = this.deconAirlock;
+    if (!decon) return;
+
+    if (decon.cooldown > 0) decon.cooldown -= delta;
+
+    if (decon.isActive) {
+      decon.timer -= delta;
+      // Emit antiseptic spray particles
+      if (particles && particles.emitSmoke && Math.random() < 0.4) {
+        const sprayPos = decon.pos.clone().add(new THREE.Vector3((Math.random() - 0.5) * 2, 2.5, (Math.random() - 0.5) * 2));
+        particles.emitSmoke(sprayPos, 5);
+      }
+      if (decon.timer <= 0) {
+        decon.isActive = false;
       }
     }
   }

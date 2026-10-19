@@ -1981,6 +1981,252 @@ html, body {
   50% { opacity: 0.2; transform: scaleY(0.1); }
 }
 
+/* === v45.0 10-CHANTIER EXPANSION STYLES === */
+
+/* Chantier 3: Reactor Meltdown Banner */
+.reactor-meltdown-banner {
+  position: absolute;
+  top: 75px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(40, 10, 10, 0.94);
+  border: 2px solid #ef4444;
+  box-shadow: 0 0 35px rgba(239, 68, 68, 0.75), inset 0 0 15px rgba(239, 68, 68, 0.35);
+  padding: 10px 28px;
+  border-radius: 8px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  pointer-events: none;
+  animation: reactorPulse 1.0s ease-in-out infinite alternate;
+}
+
+@keyframes reactorPulse {
+  from { border-color: #ef4444; box-shadow: 0 0 25px rgba(239, 68, 68, 0.6); }
+  to { border-color: #f97316; box-shadow: 0 0 45px rgba(249, 115, 22, 0.95); }
+}
+
+.reactor-warning-icon {
+  font-size: 2.2rem;
+  animation: iconShake 0.4s infinite;
+}
+
+@keyframes iconShake {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-8deg); }
+  75% { transform: rotate(8deg); }
+}
+
+.reactor-title {
+  color: #fca5a5;
+  font-size: 0.85rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.reactor-timer {
+  color: #fee2e2;
+  font-size: 1.15rem;
+  font-weight: 900;
+  letter-spacing: 2.5px;
+  font-family: 'Courier New', Courier, monospace;
+  text-shadow: 0 0 10px #ef4444;
+}
+
+/* Chantier 2: M577 APC Mount Prompt */
+.apc-mount-box {
+  position: absolute;
+  bottom: 110px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(20, 32, 20, 0.93);
+  border: 2px solid #65a30d;
+  box-shadow: 0 0 24px rgba(101, 163, 13, 0.6);
+  padding: 8px 20px;
+  border-radius: 6px;
+  z-index: 94;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  pointer-events: none;
+}
+
+.apc-key {
+  background: #4d7c0f;
+  color: #fff;
+  font-weight: 900;
+  font-size: 1.0rem;
+  padding: 4px 12px;
+  border-radius: 4px;
+  border: 1px solid #a3e635;
+}
+
+.apc-text {
+  color: #bef264;
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+}
+
+/* Chantier 3: Reactor Console Prompt */
+.reactor-console-box {
+  position: absolute;
+  bottom: 110px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(30, 15, 15, 0.93);
+  border: 2px solid #ef4444;
+  box-shadow: 0 0 24px rgba(239, 68, 68, 0.6);
+  padding: 8px 20px;
+  border-radius: 6px;
+  z-index: 94;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  pointer-events: none;
+}
+
+.reactor-key {
+  background: #dc2626;
+  color: #fff;
+  font-weight: 900;
+  font-size: 1.0rem;
+  padding: 4px 12px;
+  border-radius: 4px;
+  border: 1px solid #fca5a5;
+}
+
+.reactor-text {
+  color: #fecaca;
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+}
+
+/* Chantier 6: Electric Grid Prompt */
+.electric-grid-box {
+  position: absolute;
+  bottom: 110px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(10, 25, 45, 0.93);
+  border: 2px solid #38bdf8;
+  box-shadow: 0 0 24px rgba(56, 189, 248, 0.6);
+  padding: 8px 20px;
+  border-radius: 6px;
+  z-index: 94;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  pointer-events: none;
+}
+
+.grid-key {
+  background: #0284c7;
+  color: #fff;
+  font-weight: 900;
+  font-size: 1.0rem;
+  padding: 4px 12px;
+  border-radius: 4px;
+  border: 1px solid #bae6fd;
+}
+
+.grid-text {
+  color: #e0f2fe;
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+}
+
+/* Chantier 9: Decontamination Airlock Prompt */
+.decon-airlock-box {
+  position: absolute;
+  bottom: 110px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(10, 35, 35, 0.93);
+  border: 2px solid #14b8a6;
+  box-shadow: 0 0 24px rgba(20, 184, 166, 0.6);
+  padding: 8px 20px;
+  border-radius: 6px;
+  z-index: 94;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  pointer-events: none;
+}
+
+.decon-key {
+  background: #0d9488;
+  color: #fff;
+  font-weight: 900;
+  font-size: 1.0rem;
+  padding: 4px 12px;
+  border-radius: 4px;
+  border: 1px solid #99f6e4;
+}
+
+.decon-text {
+  color: #ccfbf1;
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+}
+
+/* Chantier 7: Ki'cte Grapple Prompt */
+.grapple-box {
+  position: absolute;
+  bottom: 155px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(45, 15, 10, 0.93);
+  border: 2px solid #f97316;
+  box-shadow: 0 0 24px rgba(249, 115, 22, 0.6);
+  padding: 6px 18px;
+  border-radius: 6px;
+  z-index: 94;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.grapple-key {
+  background: #ea580c;
+  color: #fff;
+  font-weight: 900;
+  font-size: 0.95rem;
+  padding: 3px 10px;
+  border-radius: 4px;
+  border: 1px solid #fed7aa;
+}
+
+.grapple-text {
+  color: #ffedd5;
+  font-size: 0.8rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+}
+
+/* Slots styling for Plasma Pistol & Grapple */
+#slot-plasma-pistol .slot-key {
+  border-color: #38bdf8;
+  color: #7dd3fc;
+}
+#slot-plasma-pistol .slot-label {
+  color: #e0f2fe;
+}
+
+#slot-grapple .slot-key {
+  border-color: #f97316;
+  color: #fb923c;
+}
+#slot-grapple .slot-label {
+  color: #ffedd5;
+}
+
 
 
 
