@@ -442,6 +442,10 @@ class GameApp {
           if (this.player.struggleQTE()) {
             this.ui.showAnnouncement('💥 FACEHUGGER ARRACHÉ AVEC SUCCÈS !');
           }
+        } else if (this.env && this.env.checkSmartgunInteraction(this.player.position, this.player, this.ui, this.audio)) {
+          // Handled USCM M56 Smartgun Turret mounting / dismounting!
+        } else if (this.env && this.env.checkCraneConsoleInteraction(this.player.position, this.player, this.ui, this.audio, this.particles, this.horde, this.bosses, this.synthetics)) {
+          // Handled USCM Cargo Crane 10-Ton Container drop!
         } else if (this.env && this.env.checkAPCInteraction(this.player.position, this.player, this.ui, this.audio)) {
           // Handled USCM M577 APC mounting / dismounting!
         } else if (this.env && this.env.checkReactorConsoleInteraction(this.player.position, this.player, this.ui, this.audio)) {
@@ -486,9 +490,19 @@ class GameApp {
         }
       }
 
-      // 1987 Wrist Computer Nuke Countdown [N Key]
-      if (e.code === 'KeyN' && this.player && !this.nukeCountingDown) {
-        this.triggerNukeCountdownSequence();
+      // Chantier 5 (v46): Yautja Neurotoxin Canister [N Key] / 1987 Wrist Computer Nuke Countdown [Shift + N Key]
+      if (e.code === 'KeyN' && this.player) {
+        if (this.keys['ShiftLeft'] || this.keys['ShiftRight']) {
+          if (!this.nukeCountingDown) {
+            this.triggerNukeCountdownSequence();
+          }
+        } else {
+          if (this.player.throwNeurotoxinCanister(this.horde, this.bosses, this.synthetics, this.ui, this.particles, this.env)) {
+            // Canister thrown!
+          } else {
+            this.ui.showAnnouncement('⏳ CARTOUCHE DE NEUROTOXINE EN RECHARGE (30S)...');
+          }
+        }
       }
 
       // Smart-Disc Throw & Chantier 3 (v43): Remote Guidance Mode Toggle [Ctrl/Shift + B]
@@ -533,8 +547,17 @@ class GameApp {
         this.throwCombiStick();
       }
 
+      // Chantier 4 (v46): Yautja Cyber-Hunt Bionic Exosuit [O Key] / Photo Mode [Shift + O Key]
       if (e.code === 'KeyO' && this.player) {
-        this.photoMode.toggle(this.player.position);
+        if (this.keys['ShiftLeft'] || this.keys['ShiftRight']) {
+          this.photoMode.toggle(this.player.position);
+        } else {
+          if (this.player.activateCyberExosuit(this.ui, this.particles)) {
+            // Exosuit active!
+          } else {
+            this.ui.showAnnouncement('⏳ EXOSQUELETTE BIONIQUE EN RECHARGE (45S)...');
+          }
+        }
       }
 
       if (e.code === 'KeyX' && this.player) {
@@ -575,6 +598,11 @@ class GameApp {
         if (this.horde && this.horde.struggleRoyalFacehugger(this.player)) {
           return;
         }
+      }
+
+      // Chantier 4 (v46): Exosuit Ground Slam Repulsor Shockwave
+      if (e.code === 'Space' && this.player && this.player.isExosuitActive) {
+        this.player.performGroundSlam(this.horde, this.bosses, this.synthetics, this.ui, this.particles, this.env);
       }
 
       if ((e.code === 'Space' && !this.keys['ShiftLeft'] && !this.keys['ShiftRight']) || e.code === 'KeyQ') {
@@ -619,6 +647,10 @@ class GameApp {
         this.weaponWheel.toggle();
       }
       if (e.button === 0) {
+        if (this.player && this.player.isMountedSmartgun) {
+          this.env.fireSmartgun(this.player, this.horde, this.bosses, this.synthetics, this.audio, this.particles, this.ui);
+          return;
+        }
         if (this.keys['ShiftLeft'] || this.keys['ShiftRight']) {
           if (this.player) this.player.usedShiftModifier = true;
           if (this.activeLoadout && this.activeLoadout.primary === 'katana') {
@@ -1564,6 +1596,43 @@ class GameApp {
         }
       }
     }
+
+    // 3. Chantier 10 (v46): Weyland-Yutani Combat Synthetic & Seegson Android CPU Trophy (+1800 Honor)
+    if (this.synthetics && this.synthetics.androids) {
+      for (let i = this.synthetics.androids.length - 1; i >= 0; i--) {
+        const syn = this.synthetics.androids[i];
+        if (!syn || !syn.mesh) continue;
+        if ((syn.isBisected || syn.isEMPStunned || syn.hp <= 120) && syn.mesh.position.distanceTo(this.player.position) <= 4.2) {
+          this.player.executeSpineRip();
+          this.sessionSkulls++;
+          const isJoe = syn.type === 'working_joe';
+          const tName = isJoe
+            ? "Unité Logique & Yeux Ambrés Seegson Working Joe (Alien: Isolation)"
+            : "Cœur Cybernétique & Unité Logique Hyperdyne Systems Weyland-Yutani (Aliens 1986 / Isolation)";
+          const tHonor = 1800;
+          this.player.recordTrophy(tName, tHonor);
+          this.score += tHonor;
+          this.player.plasmaEnergy = Math.min(this.player.maxPlasmaEnergy, (this.player.plasmaEnergy || 100) + 40);
+          this.player.hp = Math.min(this.player.maxHp, this.player.hp + 200);
+
+          this.synthetics.emitWhiteSyntheticBlood(syn.mesh.position);
+          this.renderer.scene.remove(syn.mesh);
+          this.synthetics.androids.splice(i, 1);
+          this.shiftBattlefieldMorale(15.0);
+
+          if (this.ui.showOfficerDefeatedBanner) {
+            this.ui.showOfficerDefeatedBanner(tName);
+          }
+          if (this.audio && this.audio.playOfficerDefeatedGong) {
+            this.audio.playOfficerDefeatedGong();
+          }
+          this.triggerCameraShake(0.85, 0.4);
+          this.ui.showAnnouncement(`🏆 TROPHÉE CYBERNÉTIQUE ARRACHÉ : ${tName} (+${tHonor} HONNEUR, +40 ÉNERGIE) !`);
+          this.ui.showExecutionPrompt(false);
+          return;
+        }
+      }
+    }
   }
 
   /* Chantier 10: Marvel Alpha Spine Trophy Execution & Eldritch Hallucination Pulse (Marvel Alien 2021) */
@@ -1649,6 +1718,7 @@ class GameApp {
     if (this.env && this.player) {
       this.env.checkTransformerHits(this.player.position, 3.8, this.synthetics, this.horde, this.audio, this.particles);
       this.env.checkBlastDoorHits(this.player.position, 3.8, 140, this.audio, this.particles);
+      this.env.checkFuelLineDamage(this.player.position, 3.8, 75, this.audio, this.particles, this.ui);
     }
     this.checkAnnouncerMilestones();
   }
@@ -2171,7 +2241,28 @@ class GameApp {
         }
       }
     });
-    this.ui.showExecutionPrompt((boss && boss.isStunned) || subBossStunnedNearby);
+
+    let syntheticHarvestNearby = false;
+    if (this.synthetics && this.synthetics.androids) {
+      this.synthetics.androids.forEach(syn => {
+        if ((syn.isBisected || syn.isEMPStunned || syn.hp <= 120) && syn.mesh.position.distanceTo(this.player.position) <= 4.2) {
+          syntheticHarvestNearby = true;
+        }
+      });
+    }
+    this.ui.showExecutionPrompt((boss && boss.isStunned) || subBossStunnedNearby || syntheticHarvestNearby);
+
+    // v46.0 Proximity Prompts & Telemetry
+    if (this.env && this.player) {
+      const isNearSmartgun = this.env.mountedSmartgun && this.player.position.distanceTo(this.env.mountedSmartgun.pos) <= 3.2;
+      this.ui.updateSmartgunPrompt(isNearSmartgun, this.player.isMountedSmartgun, this.env.mountedSmartgun);
+
+      const isNearCrane = this.env.craneConsole && this.player.position.distanceTo(this.env.craneConsole.pos) <= 3.2;
+      this.ui.updateCargoCranePrompt(isNearCrane, this.env.craneConsole);
+
+      const isInsideDerelict = this.env.derelictChamber && this.player.position.distanceTo(this.env.derelictChamber.center) <= this.env.derelictChamber.radius;
+      this.ui.updateDerelictHud(isInsideDerelict);
+    }
 
     if (this.horde.aliens.length < 10 && !this.bosses.activeBoss) {
       if (this.waveIndex < this.totalWaves) {

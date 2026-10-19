@@ -3836,6 +3836,292 @@ export class AudioEngine {
     noise.start(now);
     noise.stop(now + 0.35);
   }
+
+  // 42. USCM M56 Smartgun 1200 RPM Sustained Fire (Aliens 1986 Vasquez/Drake)
+  playSmartgunSustainedFire() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // High cyclic mechanical piston strike (10x28mm caseless)
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(320, now);
+    osc.frequency.exponentialRampToValueAtTime(55, now + 0.05);
+
+    gain.gain.setValueAtTime(0.8, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.05);
+
+    // Muzzle blast noise burst
+    const bufferSize = this.ctx.sampleRate * 0.045;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = Math.random() * 2 - 1;
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(1400, now);
+    filter.Q.setValueAtTime(1.8, now);
+
+    const blastGain = this.ctx.createGain();
+    blastGain.gain.setValueAtTime(0.65, now);
+    blastGain.gain.exponentialRampToValueAtTime(0.01, now + 0.045);
+
+    noise.connect(filter);
+    filter.connect(blastGain);
+    blastGain.connect(this.ctx.destination);
+    noise.start(now);
+    noise.stop(now + 0.045);
+  }
+
+  // 43. Derelict Ship Blue Laser Mist Disruption (Alien 1979 Kane's Descent)
+  playLaserMistDisruption() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(2400, now);
+    osc.frequency.linearRampToValueAtTime(3600, now + 0.12);
+    osc.frequency.exponentialRampToValueAtTime(800, now + 0.45);
+
+    gain.gain.setValueAtTime(0.01, now);
+    gain.gain.linearRampToValueAtTime(0.45, now + 0.05);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(2200, now);
+    filter.Q.setValueAtTime(6.0, now);
+
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.45);
+  }
+
+  // 44. Weyland-Yutani Combat Synthetic Milky White Blood Spurt (Alien 1979 / Isolation)
+  playSyntheticMilkSpurt() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Pressurized hydraulic glycol hiss
+    const bufferSize = this.ctx.sampleRate * 0.45;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = Math.random() * 2 - 1;
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(850, now);
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.6, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.ctx.destination);
+    noise.start(now);
+    noise.stop(now + 0.45);
+
+    // Synthetic servo short-circuit sizzle
+    const sizzleOsc = this.ctx.createOscillator();
+    const sizzleGain = this.ctx.createGain();
+    sizzleOsc.type = 'sawtooth';
+    sizzleOsc.frequency.setValueAtTime(480, now + 0.05);
+    sizzleOsc.frequency.linearRampToValueAtTime(120, now + 0.35);
+
+    sizzleGain.gain.setValueAtTime(0.35, now + 0.05);
+    sizzleGain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+
+    sizzleOsc.connect(sizzleGain);
+    sizzleGain.connect(this.ctx.destination);
+    sizzleOsc.start(now + 0.05);
+    sizzleOsc.stop(now + 0.35);
+  }
+
+  // 45. Yautja Cyber-Hunt Bionic Exosuit Deploy & Forcefield Hum (Concrete Jungle / The Predator)
+  playCyberExosuitDeploy() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // High torque hydraulic servo spin up
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(90, now);
+    osc.frequency.linearRampToValueAtTime(540, now + 0.4);
+
+    gain.gain.setValueAtTime(0.7, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.65);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.65);
+
+    // Resonant electromagnetic forcefield pulse
+    const shieldOsc = this.ctx.createOscillator();
+    const shieldGain = this.ctx.createGain();
+    shieldOsc.type = 'sine';
+    shieldOsc.frequency.setValueAtTime(180, now + 0.15);
+    shieldOsc.frequency.linearRampToValueAtTime(80, now + 0.7);
+
+    shieldGain.gain.setValueAtTime(0.5, now + 0.15);
+    shieldGain.gain.exponentialRampToValueAtTime(0.01, now + 0.7);
+
+    shieldOsc.connect(shieldGain);
+    shieldGain.connect(this.ctx.destination);
+    shieldOsc.start(now + 0.15);
+    shieldOsc.stop(now + 0.7);
+  }
+
+  // 46. Yautja Neurotoxin Gas Canister Spray (Predator 2 / Hunting Grounds)
+  playNeurotoxinHiss() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const bufferSize = this.ctx.sampleRate * 0.65;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = Math.random() * 2 - 1;
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(1100, now);
+    filter.Q.setValueAtTime(3.0, now);
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.01, now);
+    gain.gain.linearRampToValueAtTime(0.55, now + 0.1);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.65);
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.ctx.destination);
+    noise.start(now);
+    noise.stop(now + 0.65);
+  }
+
+  // 47. Colonial JP-4 Fuel Line Rupture Spray (Aliens 1986 Hadley's Hope)
+  playFuelLeakSpray() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const bufferSize = this.ctx.sampleRate * 0.5;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = Math.random() * 2 - 1;
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(550, now);
+    filter.Q.setValueAtTime(1.5, now);
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.65, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.ctx.destination);
+    noise.start(now);
+    noise.stop(now + 0.5);
+  }
+
+  // 48. Chameleon Stalker Optical Cloak & Silent Hiss (Aliens: Rogue)
+  playStalkerChameleonHiss() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(950, now);
+    osc.frequency.exponentialRampToValueAtTime(220, now + 0.35);
+
+    gain.gain.setValueAtTime(0.4, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'highpass';
+    filter.frequency.setValueAtTime(600, now);
+
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.35);
+  }
+
+  // 49. Exosuit Jet Leap Ground Slam Shockwave
+  playGroundSlamImpact() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Detonating sub-bass floor slam
+    const subOsc = this.ctx.createOscillator();
+    const subGain = this.ctx.createGain();
+    subOsc.type = 'sine';
+    subOsc.frequency.setValueAtTime(110, now);
+    subOsc.frequency.exponentialRampToValueAtTime(18, now + 0.6);
+
+    subGain.gain.setValueAtTime(1.0, now);
+    subGain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+
+    subOsc.connect(subGain);
+    subGain.connect(this.ctx.destination);
+    subOsc.start(now);
+    subOsc.stop(now + 0.6);
+
+    // Compressed air shockwave blast
+    const bufferSize = this.ctx.sampleRate * 0.4;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = Math.random() * 2 - 1;
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(320, now);
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.85, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.ctx.destination);
+    noise.start(now);
+    noise.stop(now + 0.4);
+  }
 }
 
 

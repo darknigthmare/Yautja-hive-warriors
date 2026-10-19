@@ -50,6 +50,11 @@ export class EnvironmentManager {
     this.reactorAlarmCooldown = 0;
     this.electricFloorGrids = [];
     this.deconAirlock = null;
+    // v46.0 Systems
+    this.mountedSmartgun = null;
+    this.derelictChamber = null;
+    this.fuelLines = [];
+    this.craneConsole = null;
   }
 
   clearEnvironment() {
@@ -131,6 +136,25 @@ export class EnvironmentManager {
     if (this.deconAirlock) {
       this.scene.remove(this.deconAirlock.group);
       this.deconAirlock = null;
+    }
+    // v46.0 Cleanups
+    if (this.mountedSmartgun) {
+      this.scene.remove(this.mountedSmartgun.group);
+      this.mountedSmartgun = null;
+    }
+    if (this.derelictChamber) {
+      this.scene.remove(this.derelictChamber.group);
+      this.derelictChamber = null;
+    }
+    this.fuelLines.forEach(fl => {
+      this.scene.remove(fl.group);
+      if (fl.fireMesh) this.scene.remove(fl.fireMesh);
+      if (fl.puddleMesh) this.scene.remove(fl.puddleMesh);
+    });
+    this.fuelLines = [];
+    if (this.craneConsole) {
+      this.scene.remove(this.craneConsole.group);
+      this.craneConsole = null;
     }
     this.reactorMeltdownActive = false;
     this.reactorMeltdownTimer = 180.0;
@@ -299,6 +323,19 @@ export class EnvironmentManager {
 
     // Chantier 9: Weyland-Yutani Med-Lab Decontamination Airlock
     this.buildDecontaminationAirlock();
+
+    // === v46.0 10-CHANTIER EXPANSION (Smartgun Turret, Derelict LV-426, JP-4 Fuel Lines & Cargo Crane Console) ===
+    // Chantier 1: Heavy Mounted USCM M56 Smartgun Turret (Aliens 1986 Vasquez & Drake)
+    this.buildMountedSmartgun();
+
+    // Chantier 2: Derelict LV-426 Interior Chamber with 0.45g Low Gravity & Blue Laser Mist Plane (Alien 1979)
+    this.buildDerelictChamber();
+
+    // Chantier 6: Colonial JP-4 Industrial Fuel Lines & Ignition Flame Wall (Aliens 1986)
+    this.buildFuelLines();
+
+    // Chantier 9: USCM Cargo Crane Operator Console for 10-Ton Container Drop
+    this.buildCargoCraneConsole();
   }
 
   buildTempleProps(stoneMat) {
@@ -1019,6 +1056,21 @@ export class EnvironmentManager {
     // 23. Chantier 9 (v45): Weyland-Yutani Med-Lab Decontamination Airlock
     if (this.deconAirlock) {
       this.updateDeconAirlock(delta, player, audioEngine, particles);
+    }
+
+    // 24. Chantier 1 (v46): Heavy Mounted USCM M56 Smartgun Turret
+    if (this.mountedSmartgun) {
+      this.updateSmartgun(delta, player);
+    }
+
+    // 25. Chantier 2 (v46): Derelict LV-426 Low Gravity & Blue Laser Mist Plane
+    if (this.derelictChamber) {
+      this.updateDerelictChamber(delta, player, horde, audioEngine, particles, window.gameInstance ? window.gameInstance.ui : null);
+    }
+
+    // 26. Chantier 6 (v46): Colonial JP-4 Fuel Lines & Flame Wall
+    if (this.fuelLines && this.fuelLines.length > 0) {
+      this.updateFuelLines(delta, player, horde, window.gameInstance ? window.gameInstance.synthetics : null, particles, audioEngine);
     }
   }
 
@@ -3541,7 +3593,649 @@ export class EnvironmentManager {
       }
     }
   }
+
+  /* === CHANTIER 1 (v46): USCM M56 Smartgun Heavy Tripod Turret (Aliens 1986 Vasquez & Drake) === */
+  buildMountedSmartgun() {
+    const group = new THREE.Group();
+    const pos = new THREE.Vector3(0, 0, -15);
+    group.position.copy(pos);
+
+    const metalDark = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.9, roughness: 0.2 });
+    const metalGrey = new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.85, roughness: 0.3 });
+    const greenOptic = new THREE.MeshBasicMaterial({ color: 0x10b981 });
+    const hazardMat = new THREE.MeshStandardMaterial({ color: 0xeab308, roughness: 0.4 });
+
+    // 1. Heavy Tripod Legs
+    for (let i = 0; i < 3; i++) {
+      const legAngle = (i / 3) * Math.PI * 2;
+      const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.08, 1.4, 6), metalDark);
+      leg.position.set(Math.sin(legAngle) * 0.55, 0.55, Math.cos(legAngle) * 0.55);
+      leg.rotation.x = Math.cos(legAngle) * 0.45;
+      leg.rotation.z = -Math.sin(legAngle) * 0.45;
+      group.add(leg);
+
+      const foot = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.06, 0.22), metalGrey);
+      foot.position.set(Math.sin(legAngle) * 0.88, 0.03, Math.cos(legAngle) * 0.88);
+      group.add(foot);
+    }
+
+    // Center Pintle Post
+    const pintle = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.14, 1.1, 8), metalDark);
+    pintle.position.y = 0.55;
+    group.add(pintle);
+
+    // 2. Yaw Pivot Group (Rotates with player aim)
+    const pivotGroup = new THREE.Group();
+    pivotGroup.position.y = 1.15;
+    group.add(pivotGroup);
+
+    // Steadicam Articulated Arm Assembly & Hydraulic Pistons
+    const armGeo = new THREE.BoxGeometry(0.14, 0.18, 0.7);
+    const arm = new THREE.Mesh(armGeo, metalGrey);
+    arm.position.set(-0.25, 0.1, -0.15);
+    arm.rotation.y = 0.25;
+    pivotGroup.add(arm);
+
+    // M56 Smartgun Receiver Body
+    const receiver = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.32, 1.4), metalDark);
+    receiver.position.set(0, 0.12, 0.2);
+    pivotGroup.add(receiver);
+
+    // Twin Heavy Slotted Cooling Barrel (10x28mm Caseless)
+    const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 1.1, 8), metalGrey);
+    barrel.rotation.x = Math.PI / 2;
+    barrel.position.set(0, 0.12, 1.25);
+    pivotGroup.add(barrel);
+
+    // Slotted Muzzle Brake Compensator
+    const brake = new THREE.Mesh(new THREE.CylinderGeometry(0.085, 0.085, 0.22, 8), metalDark);
+    brake.rotation.x = Math.PI / 2;
+    brake.position.set(0, 0.12, 1.85);
+    pivotGroup.add(brake);
+
+    // Heavy Cylindrical Ammo Drum (500 Rounds)
+    const drum = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.24, 0.28, 12), hazardMat);
+    drum.rotation.z = Math.PI / 2;
+    drum.position.set(0.26, 0.02, 0.1);
+    pivotGroup.add(drum);
+
+    // Infrared Head-Mounted Video Targeting Display Screen
+    const hudScreen = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.16, 0.04), greenOptic);
+    hudScreen.position.set(-0.16, 0.35, -0.2);
+    hudScreen.rotation.y = 0.2;
+    pivotGroup.add(hudScreen);
+
+    // Handlebar Dual Grips with Fire Triggers
+    const gripCross = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.5, 6), metalDark);
+    gripCross.rotation.z = Math.PI / 2;
+    gripCross.position.set(0, 0.12, -0.48);
+    pivotGroup.add(gripCross);
+
+    this.scene.add(group);
+    this.envObjects.push(group);
+
+    this.mountedSmartgun = {
+      group,
+      pos,
+      pivotGroup,
+      isMounted: false,
+      ammo: 600,
+      maxAmmo: 600,
+      fireCooldown: 0,
+      heat: 0,
+      maxHeat: 100,
+      overheated: false,
+      cooldownRate: 35
+    };
+  }
+
+  checkSmartgunInteraction(playerPos, player, ui, audioEngine) {
+    if (!this.mountedSmartgun) return false;
+    const gun = this.mountedSmartgun;
+
+    if (playerPos.distanceTo(gun.pos) <= 3.2) {
+      gun.isMounted = !gun.isMounted;
+      if (player) {
+        player.isMountedSmartgun = gun.isMounted;
+        player.smartgunTurretRef = gun.isMounted ? gun : null;
+      }
+
+      if (gun.isMounted) {
+        if (player) {
+          player.position.set(gun.pos.x, 0, gun.pos.z - 1.35);
+          if (player.mesh) player.mesh.position.copy(player.position);
+        }
+        if (audioEngine && audioEngine.playSmartgunSustainedFire) {
+          audioEngine.playSmartgunSustainedFire();
+        }
+        if (ui && ui.showAnnouncement) {
+          ui.showAnnouncement('🎯 TOURELLE M56 SMARTGUN MONTÉE (1200 CPM, 10x28MM SANS ÉTUI) - [CLIC GAUCHE / ESPACE] POUR TIRER, [E] POUR DÉMONTER !');
+        }
+      } else {
+        if (ui && ui.showAnnouncement) {
+          ui.showAnnouncement('🎯 TOURELLE M56 SMARTGUN DÉMONTÉE.');
+        }
+      }
+      return true;
+    }
+    return false;
+  }
+
+  updateSmartgun(delta, player) {
+    if (!this.mountedSmartgun) return;
+    const gun = this.mountedSmartgun;
+
+    if (gun.fireCooldown > 0) gun.fireCooldown -= delta;
+    if (gun.heat > 0) gun.heat = Math.max(0, gun.heat - gun.cooldownRate * delta);
+    if (gun.overheated && gun.heat < 25) gun.overheated = false;
+
+    if (gun.isMounted && player) {
+      // Lock player behind gun
+      player.position.set(gun.pos.x, 0, gun.pos.z - 1.35);
+      if (player.mesh) {
+        player.mesh.position.copy(player.position);
+        gun.pivotGroup.rotation.y = player.mesh.rotation.y;
+      }
+    }
+  }
+
+  fireSmartgun(player, horde, bosses, synthetics, audioEngine, particles, ui) {
+    if (!this.mountedSmartgun || !this.mountedSmartgun.isMounted) return false;
+    const gun = this.mountedSmartgun;
+
+    if (gun.fireCooldown > 0 || gun.overheated) return false;
+    if (gun.ammo <= 0) {
+      if (ui && ui.showAnnouncement) ui.showAnnouncement('⚠️ TOURELLE SMARTGUN : MUNITIONS ÉPUISÉES (0/600) !');
+      return false;
+    }
+
+    gun.fireCooldown = 0.05; // 1200 RPM
+    gun.ammo--;
+    gun.heat += 1.4;
+    if (gun.heat >= gun.maxHeat) {
+      gun.overheated = true;
+      if (ui && ui.showAnnouncement) ui.showAnnouncement('🔥 SURCHAUFFE DU CANON M56 SMARTGUN ! REFROIDISSEMENT REQUIS...');
+    }
+
+    if (audioEngine && audioEngine.playSmartgunSustainedFire) {
+      audioEngine.playSmartgunSustainedFire();
+    }
+
+    // Origin and forward vector
+    const forward = new THREE.Vector3(0, 0, 1).applyAxisAngle(new THREE.Vector3(0, 1, 0), gun.pivotGroup.rotation.y);
+    const origin = gun.pos.clone().add(new THREE.Vector3(0, 1.25, 0)).addScaledVector(forward, 1.85);
+
+    // Bullet tracer
+    const endPos = origin.clone().addScaledVector(forward, 45.0);
+    const tracerGeo = new THREE.CylinderGeometry(0.04, 0.04, 2.2, 4);
+    tracerGeo.rotateX(Math.PI / 2);
+    const tracerMat = new THREE.MeshBasicMaterial({ color: 0xfef08a });
+    const tracer = new THREE.Mesh(tracerGeo, tracerMat);
+    tracer.position.copy(origin).addScaledVector(forward, 1.1);
+    tracer.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), forward);
+    this.scene.add(tracer);
+    setTimeout(() => this.scene.remove(tracer), 45);
+
+    // Muzzle sparks
+    if (particles && particles.emitSparks) {
+      particles.emitSparks(origin, 4);
+    }
+
+    // Check hit on active boss
+    if (bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
+      const bPos = bosses.activeBoss.mesh.position;
+      const toB = bPos.clone().sub(origin);
+      if (toB.length() <= 45.0 && forward.dot(toB.normalize()) > 0.92) {
+        bosses.activeBoss.hp -= 48;
+        if (particles && particles.emitSparks) particles.emitSparks(bPos, 5);
+      }
+    }
+
+    // Check hit on horde
+    if (horde && horde.aliens) {
+      for (let i = horde.aliens.length - 1; i >= 0; i--) {
+        const a = horde.aliens[i];
+        if (!a || a.hp <= 0 || !a.mesh) continue;
+        const toA = a.mesh.position.clone().sub(origin);
+        const dist = toA.length();
+        if (dist <= 45.0 && forward.dot(toA.normalize()) > 0.91) {
+          a.hp -= 52; // Heavy 10x28mm impact
+          if (particles && particles.emitSparks) particles.emitSparks(a.mesh.position, 4);
+
+          if (a.hp <= 0) {
+            if (horde.goreEngine) horde.goreEngine.spawnDismemberment(a.mesh.position, 'heavy');
+            horde.spawnAcidPool(a.mesh.position);
+            this.scene.remove(a.mesh);
+            horde.aliens.splice(i, 1);
+            horde.deadCount++;
+            if (window.gameInstance) {
+              window.gameInstance.comboHits++;
+              window.gameInstance.score += 75;
+            }
+          }
+          break; // Single target hit per bullet
+        }
+      }
+    }
+
+    // Check hit on synthetics
+    if (synthetics && synthetics.androids) {
+      for (let i = synthetics.androids.length - 1; i >= 0; i--) {
+        const syn = synthetics.androids[i];
+        if (!syn || syn.hp <= 0 || !syn.mesh) continue;
+        const toSyn = syn.mesh.position.clone().sub(origin);
+        if (toSyn.length() <= 45.0 && forward.dot(toSyn.normalize()) > 0.91) {
+          syn.hp -= 45;
+          synthetics.emitWhiteSyntheticBlood(syn.mesh.position);
+          if (syn.hp <= 110 && !syn.isBisected) {
+            synthetics.bisectSynthetic(syn);
+          }
+          break;
+        }
+      }
+    }
+
+    return true;
+  }
+
+  /* === CHANTIER 2 (v46): Derelict LV-426 Chamber with 0.45g Low Gravity & Blue Laser Mist Plane (Alien 1979) === */
+  buildDerelictChamber() {
+    const group = new THREE.Group();
+    const center = new THREE.Vector3(-42, 0, -22);
+    group.position.copy(center);
+
+    const boneChitin = new THREE.MeshStandardMaterial({
+      color: 0x0f172a,
+      roughness: 0.35,
+      metalness: 0.75
+    });
+
+    // 5 Giant Biomechanical Ribbed Arches (Giger 1:1)
+    for (let i = 0; i < 5; i++) {
+      const zOffset = (i - 2) * 5.5;
+      const archGroup = new THREE.Group();
+      archGroup.position.set(0, 0, zOffset);
+
+      // Left curved rib
+      const ribL = new THREE.Mesh(new THREE.TorusGeometry(8.5, 0.45, 8, 16, Math.PI * 0.55), boneChitin);
+      ribL.position.set(-3.5, 0, 0);
+      ribL.rotation.z = -Math.PI * 0.05;
+      archGroup.add(ribL);
+
+      // Right curved rib
+      const ribR = new THREE.Mesh(new THREE.TorusGeometry(8.5, 0.45, 8, 16, Math.PI * 0.55), boneChitin);
+      ribR.position.set(3.5, 0, 0);
+      ribR.rotation.y = Math.PI;
+      ribR.rotation.z = -Math.PI * 0.05;
+      archGroup.add(ribR);
+
+      group.add(archGroup);
+    }
+
+    // Blue Photosensitive Laser Mist Plane (y = 0.45m)
+    const laserGeo = new THREE.PlaneGeometry(28, 28);
+    laserGeo.rotateX(-Math.PI / 2);
+    const laserMat = new THREE.MeshStandardMaterial({
+      color: 0x00e5ff,
+      emissive: 0x0088cc,
+      transparent: true,
+      opacity: 0.45,
+      roughness: 0.1,
+      metalness: 0.1,
+      side: THREE.DoubleSide
+    });
+    const laserMistMesh = new THREE.Mesh(laserGeo, laserMat);
+    laserMistMesh.position.set(0, 0.45, 0);
+    group.add(laserMistMesh);
+
+    // Laser Projector Beacons along the Perimeter
+    const beaconMat = new THREE.MeshBasicMaterial({ color: 0x00f2fe });
+    for (let b = 0; b < 6; b++) {
+      const angle = (b / 6) * Math.PI * 2;
+      const beacon = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.2, 0.8, 6), boneChitin);
+      beacon.position.set(Math.sin(angle) * 12.5, 0.4, Math.cos(angle) * 12.5);
+      group.add(beacon);
+
+      const lens = new THREE.Mesh(new THREE.SphereGeometry(0.08, 6, 6), beaconMat);
+      lens.position.set(Math.sin(angle) * 12.5, 0.8, Math.cos(angle) * 12.5);
+      group.add(lens);
+    }
+
+    this.scene.add(group);
+    this.envObjects.push(group);
+
+    this.derelictChamber = {
+      group,
+      center,
+      radius: 18.0,
+      laserMistMesh,
+      laserPlaneY: 0.45,
+      wasInside: false,
+      mistTrippedTimer: 0
+    };
+  }
+
+  updateDerelictChamber(delta, player, horde, audioEngine, particles, ui) {
+    if (!this.derelictChamber) return;
+    const der = this.derelictChamber;
+
+    // Laser Mist breathing shimmer
+    if (der.laserMistMesh) {
+      der.laserMistMesh.material.opacity = 0.38 + Math.sin(Date.now() * 0.003) * 0.12;
+    }
+
+    if (der.mistTrippedTimer > 0) der.mistTrippedTimer -= delta;
+
+    if (player) {
+      const dist = player.position.distanceTo(der.center);
+      const isInside = dist <= der.radius;
+
+      if (isInside) {
+        // Apply 0.45g Low Gravity (Alien 1979 LV-426 Nostromo Atmosphere)
+        player.gravityMultiplier = 0.45;
+
+        if (!der.wasInside) {
+          der.wasInside = true;
+          if (ui && ui.showAnnouncement) {
+            ui.showAnnouncement('🌌 DERELICT LV-426 : GRAVITÉ FAIBLE 0.45G ACTIVÉE & NAPPE LASER BLEUE SENSIBLE (ALIEN 1979) !');
+          }
+        }
+
+        // Crossing / wading through the blue laser mist plane (y = 0.45m)
+        if (player.position.y <= 0.65 && der.mistTrippedTimer <= 0) {
+          der.mistTrippedTimer = 3.5;
+          if (audioEngine && audioEngine.playLaserMistDisruption) {
+            audioEngine.playLaserMistDisruption();
+          }
+          if (particles && particles.emitSparks) {
+            particles.emitSparks(player.position.clone().add(new THREE.Vector3(0, 0.45, 0)), 12);
+          }
+          if (ui && ui.showAnnouncement) {
+            ui.showAnnouncement('⚠️ PERTURBATION DU PLAN LASER BLEU DU DERELICT : COUVOIR EN ALERTE !');
+          }
+
+          // Trigger nearby dormant Ovimorph eggs in chamber
+          if (horde && horde.eggs) {
+            horde.eggs.forEach(egg => {
+              if (egg.mesh && egg.mesh.position.distanceTo(der.center) <= der.radius + 6.0 && !egg.hatched) {
+                egg.phase = Math.PI; // Accelerates hatch
+              }
+            });
+          }
+        }
+      } else {
+        if (der.wasInside) {
+          der.wasInside = false;
+          player.gravityMultiplier = 1.0; // Restore standard gravity
+          if (ui && ui.showAnnouncement) {
+            ui.showAnnouncement('🌌 SORTIE DU DERELICT : GRAVITÉ NORMALE RESTAURÉE (1.0G).');
+          }
+        }
+      }
+    }
+  }
+
+  /* === CHANTIER 6 (v46): Colonial JP-4 Industrial Fuel Lines & Flame Wall (Aliens 1986) === */
+  buildFuelLines() {
+    const yellowMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, roughness: 0.35, metalness: 0.8 });
+    const valveMat = new THREE.MeshStandardMaterial({ color: 0xdc2626, roughness: 0.2 });
+    const metalMat = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.9, roughness: 0.2 });
+
+    const pipeConfigs = [
+      { start: new THREE.Vector3(-24, 0.45, 30), end: new THREE.Vector3(24, 0.45, 30), length: 48, axis: 'x' },
+      { start: new THREE.Vector3(30, 0.45, -24), end: new THREE.Vector3(30, 0.45, 24), length: 48, axis: 'z' }
+    ];
+
+    pipeConfigs.forEach(cfg => {
+      const group = new THREE.Group();
+      const center = cfg.start.clone().lerp(cfg.end, 0.5);
+      group.position.copy(center);
+
+      // Main JP-4 Fuel Pipe (0.28m diameter)
+      const pipeGeo = new THREE.CylinderGeometry(0.14, 0.14, cfg.length, 8);
+      if (cfg.axis === 'x') pipeGeo.rotateZ(Math.PI / 2);
+      else pipeGeo.rotateX(Math.PI / 2);
+
+      const pipe = new THREE.Mesh(pipeGeo, yellowMat);
+      group.add(pipe);
+
+      // Flanges & High-Pressure Valves along conduit
+      for (let f = -cfg.length * 0.4; f <= cfg.length * 0.4; f += 8.0) {
+        const flange = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.15, 8), metalMat);
+        if (cfg.axis === 'x') {
+          flange.rotation.z = Math.PI / 2;
+          flange.position.set(f, 0, 0);
+        } else {
+          flange.rotation.x = Math.PI / 2;
+          flange.position.set(0, 0, f);
+        }
+        group.add(flange);
+
+        // Emergency shutoff red wheel
+        const wheel = new THREE.Mesh(new THREE.TorusGeometry(0.16, 0.03, 6, 8), valveMat);
+        wheel.rotation.x = Math.PI / 2;
+        wheel.position.set(cfg.axis === 'x' ? f : 0, 0.28, cfg.axis === 'z' ? f : 0);
+        group.add(wheel);
+      }
+
+      this.scene.add(group);
+      this.envObjects.push(group);
+
+      this.fuelLines.push({
+        group,
+        center,
+        cfg,
+        hp: 75,
+        isRuptured: false,
+        isIgnited: false,
+        fireTimer: 0,
+        puddleMesh: null,
+        fireMesh: null
+      });
+    });
+  }
+
+  checkFuelLineDamage(attackPos, radius, damage, audioEngine, particles, ui) {
+    let hit = false;
+    this.fuelLines.forEach(fl => {
+      if (fl.isIgnited) return;
+
+      const dist = attackPos.distanceTo(fl.center);
+      if (dist <= radius + (fl.cfg.length * 0.5)) {
+        fl.hp -= damage;
+        if (particles && particles.emitSparks) {
+          particles.emitSparks(attackPos, 8);
+        }
+
+        if (fl.hp <= 0 && !fl.isRuptured) {
+          fl.isRuptured = true;
+          hit = true;
+
+          if (audioEngine && audioEngine.playFuelLeakSpray) {
+            audioEngine.playFuelLeakSpray();
+          }
+
+          // Spawn Fuel Puddle Decal on Floor
+          const pGeo = new THREE.PlaneGeometry(fl.cfg.axis === 'x' ? fl.cfg.length * 0.8 : 4.5, fl.cfg.axis === 'z' ? fl.cfg.length * 0.8 : 4.5);
+          pGeo.rotateX(-Math.PI / 2);
+          const pMat = new THREE.MeshStandardMaterial({
+            color: 0x0f172a,
+            roughness: 0.1,
+            metalness: 0.9,
+            transparent: true,
+            opacity: 0.85
+          });
+          fl.puddleMesh = new THREE.Mesh(pGeo, pMat);
+          fl.puddleMesh.position.set(fl.center.x, 0.03, fl.center.z);
+          this.scene.add(fl.puddleMesh);
+
+          if (ui && ui.showAnnouncement) {
+            ui.showAnnouncement('⚠️ CONDUIT JP-4 ÉVENTRÉ : FUITE D\'HYDROCARBURE PRESSURISÉE INFLAMMABLE !');
+          }
+        } else if (fl.isRuptured && !fl.isIgnited && damage > 10) {
+          // Ignite into roaring fire wall!
+          this.igniteFuelLine(fl, audioEngine, particles, ui);
+          hit = true;
+        }
+      }
+    });
+    return hit;
+  }
+
+  igniteFuelLine(fl, audioEngine, particles, ui) {
+    if (!fl || fl.isIgnited) return;
+    fl.isIgnited = true;
+    fl.fireTimer = 22.0;
+
+    if (audioEngine && audioEngine.playPlasmaBurnerFlame) {
+      audioEngine.playPlasmaBurnerFlame();
+    } else if (audioEngine && audioEngine.playFlamethrowerRoar) {
+      audioEngine.playFlamethrowerRoar();
+    }
+
+    // Flame Wall Mesh
+    const fGeo = new THREE.BoxGeometry(fl.cfg.axis === 'x' ? fl.cfg.length * 0.85 : 3.5, 2.8, fl.cfg.axis === 'z' ? fl.cfg.length * 0.85 : 3.5);
+    const fMat = new THREE.MeshBasicMaterial({
+      color: 0xff4400,
+      transparent: true,
+      opacity: 0.65
+    });
+    fl.fireMesh = new THREE.Mesh(fGeo, fMat);
+    fl.fireMesh.position.set(fl.center.x, 1.4, fl.center.z);
+    this.scene.add(fl.fireMesh);
+
+    if (ui && ui.showAnnouncement) {
+      ui.showAnnouncement('🔥 CONDUIT JP-4 ENFLAMMÉ : MUR DE FEU HADLEY\'S HOPE ACTIF (160 DÉGÂTS/S RADIAUX) !');
+    }
+  }
+
+  updateFuelLines(delta, player, horde, synthetics, particles, audioEngine) {
+    this.fuelLines.forEach(fl => {
+      if (fl.isRuptured && !fl.isIgnited) {
+        // Fuel spray particles
+        if (particles && particles.emitSmoke && Math.random() < 0.25) {
+          particles.emitSmoke(fl.center.clone().add(new THREE.Vector3((Math.random() - 0.5) * 6, 0.5, (Math.random() - 0.5) * 6)), 3);
+        }
+      }
+
+      if (fl.isIgnited) {
+        fl.fireTimer -= delta;
+
+        // Flicker fire mesh
+        if (fl.fireMesh) {
+          fl.fireMesh.scale.y = 1.0 + Math.sin(Date.now() * 0.02) * 0.25;
+          fl.fireMesh.material.opacity = 0.55 + Math.sin(Date.now() * 0.03) * 0.15;
+        }
+
+        // Deal 160 fire damage/s to all aliens in fire zone
+        if (horde && horde.aliens) {
+          for (let i = horde.aliens.length - 1; i >= 0; i--) {
+            const a = horde.aliens[i];
+            if (!a || a.hp <= 0 || !a.mesh) continue;
+            if (a.mesh.position.distanceTo(fl.center) <= (fl.cfg.length * 0.45)) {
+              a.hp -= 160 * delta;
+              if (particles && particles.emitSparks && Math.random() < 0.3) {
+                particles.emitSparks(a.mesh.position, 3);
+              }
+              if (a.hp <= 0) {
+                if (horde.goreEngine) horde.goreEngine.spawnDismemberment(a.mesh.position, 'heavy');
+                this.scene.remove(a.mesh);
+                horde.aliens.splice(i, 1);
+                horde.deadCount++;
+              }
+            }
+          }
+        }
+
+        // Deal fire damage to synthetics
+        if (synthetics && synthetics.androids) {
+          synthetics.androids.forEach(syn => {
+            if (syn.mesh.position.distanceTo(fl.center) <= (fl.cfg.length * 0.45)) {
+              syn.hp -= 120 * delta;
+            }
+          });
+        }
+
+        // Friendly fire on player if stepping inside
+        if (player && player.position.distanceTo(fl.center) <= 3.2) {
+          if (!player.isExosuitActive) {
+            player.takeDamage(65 * delta, false);
+          }
+        }
+
+        if (fl.fireTimer <= 0) {
+          fl.isIgnited = false;
+          if (fl.fireMesh) {
+            this.scene.remove(fl.fireMesh);
+            fl.fireMesh = null;
+          }
+        }
+      }
+    });
+  }
+
+  /* === CHANTIER 9 (v46): USCM Cargo Crane Operator Console & 10-Ton Container Drop === */
+  buildCargoCraneConsole() {
+    const group = new THREE.Group();
+    const pos = new THREE.Vector3(16, 0, 8);
+    group.position.copy(pos);
+
+    const metalMat = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.9, roughness: 0.25 });
+    const yellowMat = new THREE.MeshStandardMaterial({ color: 0xeab308, roughness: 0.35 });
+    const screenMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8 });
+
+    // Console Desk Pedestal
+    const base = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.1, 0.8), yellowMat);
+    base.position.y = 0.55;
+    group.add(base);
+
+    // Terminal Monitor
+    const screen = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.45, 0.08), screenMat);
+    screen.position.set(0, 1.25, -0.15);
+    screen.rotation.x = -0.35;
+    group.add(screen);
+
+    // Hydraulic Crane Release Lever
+    const lever = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.4, 6), metalMat);
+    lever.position.set(0.3, 1.2, 0.1);
+    lever.rotation.x = 0.4;
+    group.add(lever);
+
+    this.scene.add(group);
+    this.envObjects.push(group);
+
+    this.craneConsole = {
+      group,
+      pos,
+      isUsed: false
+    };
+  }
+
+  checkCraneConsoleInteraction(playerPos, player, ui, audioEngine, particles, horde, bosses, synthetics) {
+    if (!this.craneConsole || this.craneConsole.isUsed) return false;
+    const consoleObj = this.craneConsole;
+
+    if (playerPos.distanceTo(consoleObj.pos) <= 3.2) {
+      if (this.cargoCrane && !this.cargoCrane.isDropping && !this.cargoCrane.isDropped) {
+        consoleObj.isUsed = true;
+        this.cargoCrane.isDropping = true;
+        this.cargoCrane.cableMesh.visible = false;
+
+        if (audioEngine && audioEngine.playCargoCraneCableSnap) {
+          audioEngine.playCargoCraneCableSnap();
+        }
+
+        if (ui && ui.showAnnouncement) {
+          ui.showAnnouncement('🏗️ TREUIL ÉLECTROMAGNÉTIQUE DÉSACTIVÉ : LARGAGE DU CONTENEUR DE 10 TONNES !');
+        }
+
+        return true;
+      }
+    }
+    return false;
+  }
 }
+
 
 
 

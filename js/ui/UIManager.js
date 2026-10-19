@@ -654,5 +654,44 @@ export class UIManager {
       prompt.classList.add('hidden');
     }
   }
+
+  /* === CHANTIER 1 (v46): USCM M56 Smartgun Turret Proximity & Mount Prompt === */
+  updateSmartgunPrompt(isNear, isMounted, smartgun) {
+    const prompt = document.getElementById('smartgun-turret-prompt');
+    if (!prompt) return;
+    if (isNear || isMounted) {
+      prompt.classList.remove('hidden');
+      const textElem = prompt.querySelector('.smartgun-text');
+      if (textElem && smartgun) {
+        textElem.innerText = isMounted
+          ? `TOURELLE M56 ACTIVE // [CLIC GAUCHE] TIRER (${smartgun.ammo}/${smartgun.maxAmmo} RDS) | [E] DÉMONTER`
+          : `MONTER LA TOURELLE M56 SMARTGUN (${smartgun.ammo}/${smartgun.maxAmmo} RDS)`;
+      }
+    } else {
+      prompt.classList.add('hidden');
+    }
+  }
+
+  /* === CHANTIER 9 (v46): USCM Cargo Crane Operator Console Prompt === */
+  updateCargoCranePrompt(isNear, craneConsole) {
+    const prompt = document.getElementById('cargo-crane-prompt');
+    if (!prompt) return;
+    if (isNear && craneConsole && !craneConsole.isUsed) {
+      prompt.classList.remove('hidden');
+    } else {
+      prompt.classList.add('hidden');
+    }
+  }
+
+  /* === CHANTIER 2 (v46): Derelict LV-426 Low Gravity & Laser Mist HUD Banner === */
+  updateDerelictHud(isInside) {
+    const banner = document.getElementById('derelict-atmosphere-hud');
+    if (!banner) return;
+    if (isInside) {
+      banner.classList.remove('hidden');
+    } else {
+      banner.classList.add('hidden');
+    }
+  }
 }
 

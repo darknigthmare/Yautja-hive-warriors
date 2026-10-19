@@ -37,6 +37,21 @@ export class XenomorphHorde {
     this.cyberMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.25, metalness: 0.98 }); // Steel Team Weyland-Yutani Titanium Cyber Plating
     this.microSwarmMat = new THREE.MeshBasicMaterial({ color: 0x0f172a }); // Midge Micro-Xenomorph Chitin
 
+    // Chantier 7 (v46): Chameleon Stalker Optical Cloak Materials (Aliens: Rogue)
+    this.chameleonMat = new THREE.MeshStandardMaterial({
+      color: 0x0f172a,
+      roughness: 0.05,
+      metalness: 0.95,
+      transparent: true,
+      opacity: 0.18
+    });
+    this.chameleonRevealedMat = new THREE.MeshStandardMaterial({
+      color: 0x0284c7,
+      emissive: 0x00f2fe,
+      roughness: 0.2,
+      metalness: 0.8
+    });
+
     this.microSwarms = [];
     this.cyberSpineDarts = [];
     this.royalFacehuggers = [];
@@ -70,6 +85,10 @@ export class XenomorphHorde {
     // Chantier 4 (v45): Spawn 2 Royal Gliding Facehuggers in High Ambush Perches (Alien 3 / Isolation Lore)
     this.spawnRoyalFacehugger(playerPos.clone().add(new THREE.Vector3(-18, 12, -16)), playerPos);
     this.spawnRoyalFacehugger(playerPos.clone().add(new THREE.Vector3(18, 12, 16)), playerPos);
+
+    // Chantier 7 (v46): Spawn 2 Chameleon Stalker Xenomorphs with Active Camouflage (Aliens: Rogue)
+    this.spawnChameleonStalker(playerPos);
+    this.spawnChameleonStalker(playerPos);
 
     // Dynasty Warriors Musou: Spawn 2 Hive Spire Captains / Node Guards (Gardes de Nœud & Sentinelles du Couvoir)
     this.spawnHiveOfficer(playerPos, -22, 'SENTINELLE DU NŒUD PRIMAIRE (SPIRE GUARD)');
@@ -208,6 +227,76 @@ export class XenomorphHorde {
       isAirborne: false,
       airborneVelY: 0,
       airborneVelHoriz: new THREE.Vector3()
+    });
+  }
+
+  /* Chantier 7 (v46): Chameleon Stalker Xenomorph with Active Camouflage (Aliens: Rogue Canon 1:1) */
+  spawnChameleonStalker(playerPos) {
+    const group = new THREE.Group();
+    const mat = this.chameleonMat;
+
+    // Torso (Agile predatory physique)
+    const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.22, 1.8, 8), mat);
+    torso.position.y = 1.2;
+    torso.rotation.x = 0.35;
+    group.add(torso);
+
+    // Elongated Sleek Translucent Cranial Dome
+    const head = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.32, 1.8, 8), mat);
+    head.rotation.x = Math.PI / 2;
+    head.position.set(0, 1.9, 0.5);
+    group.add(head);
+
+    // Barbed Dorsal Exhaust Tubes
+    [-0.2, 0.2].forEach(ox => {
+      const tube = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.08, 0.7, 6), mat);
+      tube.position.set(ox, 1.7, -0.2);
+      tube.rotation.x = -0.55;
+      group.add(tube);
+    });
+
+    // Articulated Chitinous Claws
+    [-0.5, 0.5].forEach(ox => {
+      const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.06, 1.1, 6), mat);
+      arm.position.set(ox, 1.3, 0.2);
+      arm.rotation.x = 0.45;
+      group.add(arm);
+    });
+
+    // Flexible Chitin Tail with Barbed Stalker Blade
+    for (let t = 0; t < 5; t++) {
+      const tSeg = new THREE.Mesh(new THREE.CylinderGeometry(0.07 - t * 0.01, 0.05 - t * 0.01, 0.45, 6), mat);
+      tSeg.position.set(0, 0.7 - t * 0.1, -0.3 - t * 0.3);
+      tSeg.rotation.x = -0.4;
+      group.add(tSeg);
+    }
+
+    const angle = Math.random() * Math.PI * 2;
+    const radius = 24 + Math.random() * 8;
+    group.position.set(
+      playerPos.x + Math.cos(angle) * radius,
+      0,
+      playerPos.z + Math.sin(angle) * radius
+    );
+    this.scene.add(group);
+
+    this.aliens.push({
+      mesh: group,
+      type: 'chameleon_stalker',
+      isChameleon: true,
+      hp: 420,
+      maxHp: 420,
+      speed: 13.5,
+      damage: 45,
+      radius: 1.6,
+      pounceCooldown: 3.5,
+      cloakFlickerTimer: 0,
+      flankAngle: (Math.random() - 0.5) * Math.PI,
+      isAirborne: false,
+      airborneVelY: 0,
+      airborneVelHoriz: new THREE.Vector3(),
+      isStunned: false,
+      stunTimer: 0
     });
   }
 
@@ -593,7 +682,7 @@ export class XenomorphHorde {
       return group;
     }
 
-    const xenoColor = isFacehugger ? 0x8a7355 : (isBoiler ? 0x243528 : (isNeomorph ? 0xf0ece1 : (isPraetomorph ? 0x14181f : (isRedSwarm ? 0xb81414 : (isSpitter ? 0x103a20 : (isCryoXeno ? 0x93c5fd : (isCyberXeno ? 0x334155 : (isRunner ? 0x7c4722 : 0x11161d)))))))));
+    const xenoColor = isFacehugger ? 0x8a7355 : (isBoiler ? 0x243528 : (isNeomorph ? 0xf0ece1 : (isPraetomorph ? 0x14181f : (isRedSwarm ? 0xb81414 : (isSpitter ? 0x103a20 : (isCryoXeno ? 0x93c5fd : (isCyberXeno ? 0x334155 : (isRunner ? 0x7c4722 : 0x11161d))))))));
     const mat = new THREE.MeshStandardMaterial({
       color: xenoColor,
       roughness: isNeomorph ? 0.2 : (isPraetomorph ? 0.15 : (isRedSwarm ? 0.25 : (isCryoXeno ? 0.1 : (isCyberXeno ? 0.25 : (isRunner ? 0.4 : 0.3))))),
@@ -1402,6 +1491,10 @@ export class XenomorphHorde {
           a.airborneVelY = 0;
           a.mesh.rotation.x = 0;
           a.mesh.rotation.z = 0;
+          if (a.isChameleon && player && a.mesh.position.distanceTo(player.position) <= 2.8) {
+            player.takeDamage(90, false, a);
+            if (this.audioEngine && this.audioEngine.playSlash) this.audioEngine.playSlash();
+          }
         }
         return; // Helpless while airborne in juggle arc
       }
@@ -1647,6 +1740,39 @@ export class XenomorphHorde {
             if (window.gameInstance && window.gameInstance.ui) {
               window.gameInstance.ui.showAnnouncement('❄️ SOUFFLE GLACIAL DU CRYO-XÉNO LV-695 : VITESSE RÉDUITE DE 50% !');
             }
+          }
+        }
+      }
+
+      // Chantier 7 (v46): Chameleon Stalker Optical Cloak & Flank Ambush (Aliens: Rogue)
+      if (a.isChameleon) {
+        if (a.cloakFlickerTimer > 0) a.cloakFlickerTimer -= delta;
+        if (a.pounceCooldown > 0) a.pounceCooldown -= delta;
+
+        // EM Vision reveals cloaked xeno with high-contrast electric cyan highlights!
+        const isEMVision = player && player.visionMode === 2;
+        const revealed = isEMVision || a.cloakFlickerTimer > 0;
+        a.mesh.traverse(child => {
+          if (child.isMesh) {
+            child.material = revealed ? this.chameleonRevealedMat : this.chameleonMat;
+          }
+        });
+
+        // Pounce attack from blind spot
+        if (dist <= 13.0 && a.pounceCooldown <= 0 && !a.isStunned) {
+          a.pounceCooldown = 4.5;
+          if (this.audioEngine && this.audioEngine.playStalkerChameleonHiss) {
+            this.audioEngine.playStalkerChameleonHiss();
+          }
+
+          a.isAirborne = true;
+          a.airborneVelY = 8.0;
+          const pounceDir = player.position.clone().sub(a.mesh.position).normalize();
+          a.airborneVelHoriz = pounceDir.multiplyScalar(22.0);
+          a.cloakFlickerTimer = 3.2; // Camouflage flickers on attack
+
+          if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
+            window.gameInstance.ui.showAnnouncement('🦎 BOND D\'EMBUSCADE DU CHAMELEON STALKER (90 DÉGÂTS) ! VISION EM [V] CONSEILLÉE !');
           }
         }
       }

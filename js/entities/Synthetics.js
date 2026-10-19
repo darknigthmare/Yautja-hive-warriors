@@ -138,8 +138,12 @@ export class SyntheticsManager {
   }
 
   emitWhiteSyntheticBlood(pos) {
-    if (this.audioEngine && this.audioEngine.playSyntheticMilkySpurt) {
-      this.audioEngine.playSyntheticMilkySpurt();
+    if (this.audioEngine) {
+      if (this.audioEngine.playSyntheticMilkSpurt) {
+        this.audioEngine.playSyntheticMilkSpurt();
+      } else if (this.audioEngine.playSyntheticMilkySpurt) {
+        this.audioEngine.playSyntheticMilkySpurt();
+      }
     }
 
     for (let i = 0; i < 10; i++) {
@@ -246,6 +250,16 @@ export class SyntheticsManager {
 
         if (Math.random() < 0.04) {
           this.emitWhiteSyntheticBlood(syn.mesh.position);
+        }
+
+        // Crawling ankle grab check on player
+        if (player && syn.mesh.position.distanceTo(player.position) <= 2.2 && !player.isSyntheticAnkleGrabbed) {
+          player.isSyntheticAnkleGrabbed = true;
+          player.ankleGrabTimer = 3.5;
+          this.emitWhiteSyntheticBlood(syn.mesh.position);
+          if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
+            window.gameInstance.ui.showAnnouncement('⚠️ ANDROÏDE SECTIONNÉ GRIPPE VOS CHEVILLES ! MOBILITÉ -80% (FRAPPEZ OU EXÉCUTEZ [E]) !');
+          }
         }
 
         if (syn.crawlLife <= 0 || syn.hp <= 0) {

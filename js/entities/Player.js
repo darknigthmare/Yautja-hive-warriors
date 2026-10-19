@@ -96,6 +96,17 @@ export class Player {
     this.isMountedAPC = false;
     this.apcRef = null;
     this.isRoyalFacehuggerLatched = false;
+    // v46.0 Systems
+    this.isExosuitActive = false;
+    this.exosuitTimer = 0;
+    this.exosuitCooldown = 0;
+    this.exosuitMesh = null;
+    this.neurotoxinCooldown = 0;
+    this.gravityMultiplier = 1.0;
+    this.isMountedSmartgun = false;
+    this.smartgunTurretRef = null;
+    this.isSyntheticAnkleGrabbed = false;
+    this.ankleGrabTimer = 0;
 
     // Pounce Leap State
     this.isLeaping = false;
@@ -332,6 +343,16 @@ export class Player {
 
     this.skinMaterials = [skinMat];
     this.armorMaterials = [armorMat, maskMat];
+
+    // Chantier 4 (v46): Yautja Cyber-Hunt Bionic Exosuit Magnetic Forcefield & Cage
+    const exosuitGroup = new THREE.Group();
+    const exoMat = new THREE.MeshBasicMaterial({ color: 0x00f2fe, wireframe: true, transparent: true, opacity: 0.65 });
+    const exoPlates = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.0, 3.8, 8, 4, true), exoMat);
+    exoPlates.position.y = 2.0;
+    exosuitGroup.add(exoPlates);
+    exosuitGroup.visible = false;
+    group.add(exosuitGroup);
+    this.exosuitMesh = exosuitGroup;
 
     return group;
   }
@@ -1357,11 +1378,13 @@ export class Player {
   }
 
   move(dir, delta) {
-    if (this.isFacehuggerLatched || this.isPerched) return;
+    if (this.isFacehuggerLatched || this.isPerched || this.isMountedSmartgun) return;
 
     if (dir.lengthSq() > 0) {
       dir.normalize();
-      const speedMult = (this.warhornBuffTimer > 0 ? 1.4 : 1.0) * (this.isBerserkerActive ? 1.45 : 1.0);
+      let speedMult = (this.warhornBuffTimer > 0 ? 1.4 : 1.0) * (this.isBerserkerActive ? 1.45 : 1.0);
+      if (this.isExosuitActive) speedMult *= 1.25;
+      if (this.isSyntheticAnkleGrabbed) speedMult *= 0.2;
       const moveDistance = this.moveSpeed * speedMult * delta;
       this.position.addScaledVector(dir, moveDistance);
 
@@ -1628,6 +1651,13 @@ export class Player {
       return this.hp; // Plasma Glaive cyclone barrier completely deflects frontal attacks!
     }
     if (this.isHybridMutated) return this.hp;
+    if (this.isExosuitActive) {
+      amount *= 0.15; // 85% damage reduction from Cyber-Hunt Bionic Exosuit!
+      isAcid = false; // Acid immunity from magnetic forcefield
+      if (this.particles && this.particles.emitSparks) {
+        this.particles.emitSparks(this.position.clone().add(new THREE.Vector3(0, 1.4, 0)), 8);
+      }
+    }
     if (this.isBerserkerActive) {
       amount *= 0.5; // 50% damage reduction in Berserker Rage
       isAcid = false; // Immune to acid burns in Berserker Rage
@@ -1862,13 +1892,40 @@ export class Player {
       }
     }
 
+    // Exosuit & Neurotoxin Timers (v46.0)
+    if (this.exosuitCooldown > 0) this.exosuitCooldown -= delta;
+    if (this.isExosuitActive) {
+      this.exosuitTimer -= delta;
+      if (this.exosuitMesh) {
+        this.exosuitMesh.visible = true;
+        this.exosuitMesh.rotation.y += delta * 3.0;
+      }
+      if (this.exosuitTimer <= 0) {
+        this.isExosuitActive = false;
+        if (this.exosuitMesh) this.exosuitMesh.visible = false;
+        if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
+          window.gameInstance.ui.showAnnouncement('🦾 EXOSQUELETTE BIONIQUE DÉSACTIVÉ : RECHARGE COMMENCÉE (45S).');
+        }
+      }
+    }
+
+    if (this.neurotoxinCooldown > 0) this.neurotoxinCooldown -= delta;
+
+    if (this.isSyntheticAnkleGrabbed) {
+      this.ankleGrabTimer -= delta;
+      if (this.ankleGrabTimer <= 0) {
+        this.isSyntheticAnkleGrabbed = false;
+      }
+    }
+
     if (this.isLeaping) {
       let groundY = 0;
       if (window.gameInstance && window.gameInstance.env && window.gameInstance.env.getElevationAt) {
         groundY = window.gameInstance.env.getElevationAt(this.position.x, this.position.z);
       }
 
-      this.leapVelocityY -= 36 * delta;
+      const grav = 36 * (this.gravityMultiplier !== undefined ? this.gravityMultiplier : 1.0);
+      this.leapVelocityY -= grav * delta;
       this.position.y += this.leapVelocityY * delta;
 
       if (this.position.y <= groundY) {
@@ -2384,4 +2441,179 @@ export class Player {
 
     return true;
   }
+
+  /* === CHANTIER 4 (v46): Yautja Bionic Cyber-Hunt Exosuit (Concrete Jungle / The Predator / Marvel) === */
+  activateCyberExosuit(ui, particles) {
+    if (this.exosuitCooldown > 0) return false;
+
+    this.isExosuitActive = true;
+    this.exosuitTimer = 12.0;
+    this.exosuitCooldown = 45.0;
+
+    if (this.exosuitMesh) {
+      this.exosuitMesh.visible = true;
+    }
+
+    if (this.audioEngine && this.audioEngine.playCyberExosuitDeploy) {
+      this.audioEngine.playCyberExosuitDeploy();
+    }
+
+    if (particles && particles.emitSparks) {
+      particles.emitSparks(this.position.clone().add(new THREE.Vector3(0, 1.8, 0)), 32);
+    }
+
+    if (ui && ui.showAnnouncement) {
+      ui.showAnnouncement('🦾 EXOSQUELETTE BIONIQUE CYBER-CHASSE DÉPLOYÉ (BOUCLIER MAGNÉTIQUE 85%, IMMUNITÉ ACIDE, +25% VIT) !');
+    }
+
+    return true;
+  }
+
+  performGroundSlam(horde, bosses, synthetics, ui, particles, environment) {
+    this.isLeaping = true;
+    this.leapVelocityY = 18.0;
+
+    if (this.audioEngine && this.audioEngine.playGroundSlamImpact) {
+      this.audioEngine.playGroundSlamImpact();
+    }
+
+    setTimeout(() => {
+      const slamCenter = this.position.clone();
+      const radius = 10.5;
+
+      // Heavy Radial Shockwave (350 dmg, 3s stun, massive pushback)
+      if (horde && horde.aliens) {
+        for (let i = horde.aliens.length - 1; i >= 0; i--) {
+          const a = horde.aliens[i];
+          if (!a || a.hp <= 0 || !a.mesh) continue;
+          const dist = a.mesh.position.distanceTo(slamCenter);
+          if (dist <= radius) {
+            a.hp -= 350;
+            const pushDir = a.mesh.position.clone().sub(slamCenter).normalize();
+            a.mesh.position.addScaledVector(pushDir, 7.5);
+            a.isStunned = true;
+            a.stunTimer = 3.0;
+
+            if (particles && particles.emitSparks) {
+              particles.emitSparks(a.mesh.position, 6);
+            }
+
+            if (a.hp <= 0) {
+              if (horde.goreEngine) horde.goreEngine.spawnDismemberment(a.mesh.position, 'heavy');
+              horde.spawnAcidPool(a.mesh.position);
+              this.scene.remove(a.mesh);
+              horde.aliens.splice(i, 1);
+              horde.deadCount++;
+              if (window.gameInstance) {
+                window.gameInstance.comboHits += 2;
+                window.gameInstance.score += 150;
+              }
+            }
+          }
+        }
+      }
+
+      // Damage synthetics in radius
+      if (synthetics && synthetics.androids) {
+        synthetics.androids.forEach(syn => {
+          if (syn.mesh.position.distanceTo(slamCenter) <= radius) {
+            syn.hp -= 280;
+            syn.isEMPStunned = true;
+            syn.empStunTimer = 3.5;
+            synthetics.emitWhiteSyntheticBlood(syn.mesh.position);
+            if (syn.hp <= 110 && !syn.isBisected) {
+              synthetics.bisectSynthetic(syn);
+            }
+          }
+        });
+      }
+
+      // Damage active boss
+      if (bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
+        if (bosses.activeBoss.mesh.position.distanceTo(slamCenter) <= radius) {
+          bosses.activeBoss.hp -= 300;
+          if (particles && particles.emitSparks) particles.emitSparks(bosses.activeBoss.mesh.position, 12);
+        }
+      }
+
+      if (particles && particles.emitSparks) {
+        particles.emitSparks(slamCenter, 36);
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('💥 IMPACT RÉPULSEUR CYBERNÉTIQUE : CRATÈRE SISMIQUE & ONDE DE CHOC DÉTONANTE (350 DÉGÂTS) !');
+      }
+    }, 280);
+
+    return true;
+  }
+
+  /* === CHANTIER 5 (v46): Yautja Neurotoxin Gas Canister Spray (Predator 2 / Hunting Grounds) === */
+  throwNeurotoxinCanister(horde, bosses, synthetics, ui, particles, environment) {
+    if (this.neurotoxinCooldown > 0) return false;
+
+    this.neurotoxinCooldown = 30.0;
+
+    if (this.audioEngine && this.audioEngine.playNeurotoxinHiss) {
+      this.audioEngine.playNeurotoxinHiss();
+    }
+
+    const forward = new THREE.Vector3(0, 0, 1).applyAxisAngle(new THREE.Vector3(0, 1, 0), this.rotationY);
+    const center = this.position.clone().addScaledVector(forward, 12.0);
+    center.y = 0.4;
+
+    // Expanding Purple Aerosol Gas Cloud Mesh
+    const cloudGeo = new THREE.SphereGeometry(6.0, 12, 12);
+    const cloudMat = new THREE.MeshBasicMaterial({
+      color: 0xa855f7,
+      transparent: true,
+      opacity: 0.42
+    });
+    const cloudMesh = new THREE.Mesh(cloudGeo, cloudMat);
+    cloudMesh.position.copy(center);
+    this.scene.add(cloudMesh);
+
+    let gasLife = 8.0;
+    const gasInterval = setInterval(() => {
+      gasLife -= 0.5;
+      cloudMesh.scale.multiplyScalar(1.02);
+      cloudMat.opacity = Math.max(0.05, cloudMat.opacity - 0.02);
+
+      // Slow down and damage Xenomorphs in cloud
+      if (horde && horde.aliens) {
+        horde.aliens.forEach(a => {
+          if (!a || a.hp <= 0 || !a.mesh) return;
+          if (a.mesh.position.distanceTo(center) <= 7.5) {
+            a.hp -= 15; // 30 dmg per second
+            a.speed = Math.max(2.5, a.speed * 0.7); // 70% slow down
+            if (Math.random() < 0.2 && particles && particles.emitSmoke) {
+              particles.emitSmoke(a.mesh.position, 2);
+            }
+          }
+        });
+      }
+
+      // Slow synthetics in cloud
+      if (synthetics && synthetics.androids) {
+        synthetics.androids.forEach(syn => {
+          if (syn.mesh.position.distanceTo(center) <= 7.5) {
+            syn.hp -= 10;
+            syn.speed = Math.max(1.8, syn.speed * 0.7);
+          }
+        });
+      }
+
+      if (gasLife <= 0) {
+        clearInterval(gasInterval);
+        this.scene.remove(cloudMesh);
+      }
+    }, 500);
+
+    if (ui && ui.showAnnouncement) {
+      ui.showAnnouncement('🧪 CARTOUCHE DE NEUROTOXINE YAUTJA DÉPLOYÉE : BRUME AÉROSOL HYPNOTIQUE (RALENTISSEMENT 70%) !');
+    }
+
+    return true;
+  }
 }
+
