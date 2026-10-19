@@ -4122,6 +4122,318 @@ export class AudioEngine {
     noise.start(now);
     noise.stop(now + 0.4);
   }
+
+  // 50. Giant Trilobite Cephalopod Tentacle Constriction & Visceral Squeeze (Prometheus 2012)
+  playTrilobiteTentacleConstrict() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Muscular deep flesh contraction (65Hz -> 145Hz -> 38Hz)
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(65, now);
+    osc.frequency.linearRampToValueAtTime(145, now + 0.25);
+    osc.frequency.exponentialRampToValueAtTime(38, now + 0.65);
+
+    gain.gain.setValueAtTime(0.7, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.65);
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(320, now);
+    filter.Q.setValueAtTime(4.0, now);
+
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.65);
+
+    // Wet suction release
+    const bufferSize = this.ctx.sampleRate * 0.35;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = Math.random() * 2 - 1;
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const nFilter = this.ctx.createBiquadFilter();
+    nFilter.type = 'lowpass';
+    nFilter.frequency.setValueAtTime(650, now + 0.1);
+
+    const nGain = this.ctx.createGain();
+    nGain.gain.setValueAtTime(0.45, now + 0.1);
+    nGain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+
+    noise.connect(nFilter);
+    nFilter.connect(nGain);
+    nGain.connect(this.ctx.destination);
+    noise.start(now + 0.1);
+    noise.stop(now + 0.45);
+  }
+
+  // 51. The Deacon Titan Pointed Head Snap & Decoupled Pharyngeal Jaw (Prometheus 2012)
+  playDeaconJawHiss() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Pointed skull jaw snap
+    const snapOsc = this.ctx.createOscillator();
+    const snapGain = this.ctx.createGain();
+    snapOsc.type = 'triangle';
+    snapOsc.frequency.setValueAtTime(880, now);
+    snapOsc.frequency.exponentialRampToValueAtTime(110, now + 0.12);
+
+    snapGain.gain.setValueAtTime(0.85, now);
+    snapGain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+
+    snapOsc.connect(snapGain);
+    snapGain.connect(this.ctx.destination);
+    snapOsc.start(now);
+    snapOsc.stop(now + 0.12);
+
+    // High frequency ancient primordial hiss
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(2600, now + 0.05);
+    osc.frequency.exponentialRampToValueAtTime(950, now + 0.55);
+
+    gain.gain.setValueAtTime(0.5, now + 0.05);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.55);
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(2200, now);
+    filter.Q.setValueAtTime(5.0, now);
+
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now + 0.05);
+    osc.stop(now + 0.55);
+  }
+
+  // 52. Ancient Yautja Plasma Scythe Resonant Cleave (AvP Extinction 2003)
+  playPlasmaScytheCleave() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Resonant ion plasma blade hum
+    const humOsc = this.ctx.createOscillator();
+    const humGain = this.ctx.createGain();
+    humOsc.type = 'sawtooth';
+    humOsc.frequency.setValueAtTime(140, now);
+    humOsc.frequency.linearRampToValueAtTime(520, now + 0.18);
+    humOsc.frequency.exponentialRampToValueAtTime(95, now + 0.45);
+
+    humGain.gain.setValueAtTime(0.8, now);
+    humGain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+
+    const humFilter = this.ctx.createBiquadFilter();
+    humFilter.type = 'bandpass';
+    humFilter.frequency.setValueAtTime(480, now);
+    humFilter.Q.setValueAtTime(3.5, now);
+
+    humOsc.connect(humFilter);
+    humFilter.connect(humGain);
+    humGain.connect(this.ctx.destination);
+    humOsc.start(now);
+    humOsc.stop(now + 0.45);
+
+    // High energy arc sweep crackle
+    const sweepOsc = this.ctx.createOscillator();
+    const sweepGain = this.ctx.createGain();
+    sweepOsc.type = 'sine';
+    sweepOsc.frequency.setValueAtTime(1800, now);
+    sweepOsc.frequency.exponentialRampToValueAtTime(350, now + 0.35);
+
+    sweepGain.gain.setValueAtTime(0.55, now);
+    sweepGain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+
+    sweepOsc.connect(sweepGain);
+    sweepGain.connect(this.ctx.destination);
+    sweepOsc.start(now);
+    sweepOsc.stop(now + 0.35);
+  }
+
+  // 53. USCM M41A Underbarrel 30mm HEDP Grenade Launch & Detonation (Aliens 1986 Hicks)
+  playM41AGrenadeLaunch() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Distinct heavy pneumatic "thunk" (140Hz -> 32Hz)
+    const thunkOsc = this.ctx.createOscillator();
+    const thunkGain = this.ctx.createGain();
+    thunkOsc.type = 'sine';
+    thunkOsc.frequency.setValueAtTime(145, now);
+    thunkOsc.frequency.exponentialRampToValueAtTime(32, now + 0.18);
+
+    thunkGain.gain.setValueAtTime(0.9, now);
+    thunkGain.gain.exponentialRampToValueAtTime(0.01, now + 0.18);
+
+    thunkOsc.connect(thunkGain);
+    thunkGain.connect(this.ctx.destination);
+    thunkOsc.start(now);
+    thunkOsc.stop(now + 0.18);
+
+    // Whistling aerodynamic arc
+    const whistleOsc = this.ctx.createOscillator();
+    const whistleGain = this.ctx.createGain();
+    whistleOsc.type = 'triangle';
+    whistleOsc.frequency.setValueAtTime(920, now + 0.05);
+    whistleOsc.frequency.exponentialRampToValueAtTime(380, now + 0.35);
+
+    whistleGain.gain.setValueAtTime(0.35, now + 0.05);
+    whistleGain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+
+    whistleOsc.connect(whistleGain);
+    whistleGain.connect(this.ctx.destination);
+    whistleOsc.start(now + 0.05);
+    whistleOsc.stop(now + 0.35);
+  }
+
+  // 54. Atmospheric Condenser Cryo-Vent Flush Valve (Alien 3 / Fiorina 161)
+  playCryoVentFlush() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const bufferSize = this.ctx.sampleRate * 0.65;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = Math.random() * 2 - 1;
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(1400, now);
+    filter.frequency.exponentialRampToValueAtTime(420, now + 0.65);
+    filter.Q.setValueAtTime(2.2, now);
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.01, now);
+    gain.gain.linearRampToValueAtTime(0.85, now + 0.08);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.65);
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.ctx.destination);
+    noise.start(now);
+    noise.stop(now + 0.65);
+  }
+
+  // 55. Manta Swarmer Flying Xenomorph Supersonic Dive Screech (Kenner / Marvel 2023)
+  playMantaDiveScreech() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(3200, now);
+    osc.frequency.exponentialRampToValueAtTime(980, now + 0.45);
+
+    gain.gain.setValueAtTime(0.65, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'highpass';
+    filter.frequency.setValueAtTime(800, now);
+
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.45);
+  }
+
+  // 56. Engineer Black Mutagen Ceramic Urn Shatter & Sizzle (Prometheus 2012)
+  playEngineerUrnDetonation() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Ceramic impact crack
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(1250, now);
+    osc.frequency.exponentialRampToValueAtTime(140, now + 0.12);
+
+    gain.gain.setValueAtTime(0.8, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.12);
+
+    // Chemical black goo bubbling & sizzling hiss
+    const bufferSize = this.ctx.sampleRate * 0.55;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = Math.random() * 2 - 1;
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(1850, now);
+    filter.Q.setValueAtTime(4.0, now);
+
+    const nGain = this.ctx.createGain();
+    nGain.gain.setValueAtTime(0.6, now + 0.05);
+    nGain.gain.exponentialRampToValueAtTime(0.01, now + 0.55);
+
+    noise.connect(filter);
+    filter.connect(nGain);
+    nGain.connect(this.ctx.destination);
+    noise.start(now + 0.05);
+    noise.stop(now + 0.55);
+  }
+
+  // 57. The Deacon Primordial Spine Extraction Gong (Prometheus / Lore)
+  playDeaconSpineRip() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Sub-harmonic resonant gong (78Hz fundamental)
+    const fundamental = this.ctx.createOscillator();
+    const fGain = this.ctx.createGain();
+    fundamental.type = 'sine';
+    fundamental.frequency.setValueAtTime(78, now);
+    fundamental.frequency.exponentialRampToValueAtTime(26, now + 1.2);
+
+    fGain.gain.setValueAtTime(0.95, now);
+    fGain.gain.exponentialRampToValueAtTime(0.01, now + 1.2);
+
+    fundamental.connect(fGain);
+    fGain.connect(this.ctx.destination);
+    fundamental.start(now);
+    fundamental.stop(now + 1.2);
+
+    // Visceral bone cracking layer
+    const crackOsc = this.ctx.createOscillator();
+    const crackGain = this.ctx.createGain();
+    crackOsc.type = 'sawtooth';
+    crackOsc.frequency.setValueAtTime(540, now);
+    crackOsc.frequency.exponentialRampToValueAtTime(90, now + 0.25);
+
+    crackGain.gain.setValueAtTime(0.7, now);
+    crackGain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+
+    crackOsc.connect(crackGain);
+    crackGain.connect(this.ctx.destination);
+    crackOsc.start(now);
+    crackOsc.stop(now + 0.25);
+  }
 }
 
 

@@ -2352,6 +2352,59 @@ html, body {
   color: #f3e8ff;
 }
 
+/* === CHANTIER 6 (v47): Weyland-Yutani Atmospheric Cooling Tower Cryo-Vent Prompt === */
+.cryo-vent-box {
+  position: absolute;
+  bottom: 110px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(12, 28, 48, 0.94);
+  border: 2px solid #38bdf8;
+  box-shadow: 0 0 24px rgba(56, 189, 248, 0.65);
+  padding: 8px 20px;
+  border-radius: 6px;
+  z-index: 94;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  pointer-events: none;
+}
+
+.cryo-key {
+  background: #0284c7;
+  color: #fff;
+  font-weight: 900;
+  font-size: 1.0rem;
+  padding: 4px 12px;
+  border-radius: 4px;
+  border: 1px solid #7dd3fc;
+}
+
+.cryo-vent-text {
+  color: #e0f2fe;
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+}
+
+/* Plasma Scythe & M41A Grenade Ability Slots */
+#slot-plasma-scythe .slot-key {
+  border-color: #00f2fe;
+  color: #00f2fe;
+}
+#slot-plasma-scythe .slot-label {
+  color: #e0f2fe;
+}
+
+#slot-m41a-grenade .slot-key {
+  border-color: #f97316;
+  color: #fb923c;
+}
+#slot-m41a-grenade .slot-label {
+  color: #ffedd5;
+}
+
+
 
 
 

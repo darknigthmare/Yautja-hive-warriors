@@ -52,9 +52,15 @@ export class XenomorphHorde {
       metalness: 0.8
     });
 
+    // Chantier 4 & 7 (v47): The Deacon Titan & Flying Manta Swarmer Materials (Prometheus & Marvel/Kenner)
+    this.deaconMat = new THREE.MeshStandardMaterial({ color: 0x1e3a8a, roughness: 0.22, metalness: 0.88 });
+    this.mantaMat = new THREE.MeshStandardMaterial({ color: 0x1e152a, roughness: 0.35, metalness: 0.8 });
+    this.mantaWingMat = new THREE.MeshStandardMaterial({ color: 0x2e1065, roughness: 0.45, metalness: 0.6, transparent: true, opacity: 0.88, side: THREE.DoubleSide });
+
     this.microSwarms = [];
     this.cyberSpineDarts = [];
     this.royalFacehuggers = [];
+    this.mantaSwarmers = [];
   }
 
   setGoreEngine(goreEngine) {
@@ -89,6 +95,13 @@ export class XenomorphHorde {
     // Chantier 7 (v46): Spawn 2 Chameleon Stalker Xenomorphs with Active Camouflage (Aliens: Rogue)
     this.spawnChameleonStalker(playerPos);
     this.spawnChameleonStalker(playerPos);
+
+    // Chantier 4 (v47): Spawn 1 Deacon Titan (Prometheus 2012 Canon)
+    this.spawnDeaconTitan(playerPos);
+
+    // Chantier 7 (v47): Spawn 2 Flying Xenomorph Manta Swarmers (Aliens Arcade / Kenner / Marvel)
+    this.spawnMantaSwarmer(playerPos.clone().add(new THREE.Vector3(-20, 10, -20)), playerPos);
+    this.spawnMantaSwarmer(playerPos.clone().add(new THREE.Vector3(20, 10, 20)), playerPos);
 
     // Dynasty Warriors Musou: Spawn 2 Hive Spire Captains / Node Guards (Gardes de Nœud & Sentinelles du Couvoir)
     this.spawnHiveOfficer(playerPos, -22, 'SENTINELLE DU NŒUD PRIMAIRE (SPIRE GUARD)');
@@ -297,6 +310,168 @@ export class XenomorphHorde {
       airborneVelHoriz: new THREE.Vector3(),
       isStunned: false,
       stunTimer: 0
+    });
+  }
+
+  /* Chantier 4 (v47): The Deacon Titan (Prometheus 2012 Primordial Engineer Alien Canon) */
+  spawnDeaconTitan(playerPos) {
+    const group = new THREE.Group();
+    const deaconMat = this.deaconMat;
+    const teethMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.15, metalness: 0.1 });
+    const innerJawMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.3, metalness: 0.85 });
+
+    // 1. Torso & Muscular Primordial Spine
+    const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.65, 0.42, 2.6, 8), deaconMat);
+    torso.position.y = 1.6;
+    torso.rotation.x = 0.35;
+    group.add(torso);
+
+    // Dorsal rib ridges (No biomechanical tubes - smooth biological body)
+    for (let r = 0; r < 5; r++) {
+      const rib = new THREE.Mesh(new THREE.TorusGeometry(0.55 - r * 0.05, 0.08, 6, 12), deaconMat);
+      rib.rotation.x = Math.PI / 2;
+      rib.position.set(0, 1.3 + r * 0.25, -0.15 - r * 0.08);
+      rib.scale.set(1.1, 0.5, 0.9);
+      group.add(rib);
+    }
+
+    // 2. Pointed Conical Cranium (Prometheus 2012 1:1 Anatomy)
+    const head = new THREE.Mesh(new THREE.ConeGeometry(0.38, 2.4, 8), deaconMat);
+    head.rotation.x = Math.PI / 2 + 0.15;
+    head.position.set(0, 2.4, 0.7);
+    group.add(head);
+
+    // Humanoid outer mouth & decoupled pharyngeal inner jaw
+    const outerJaw = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.28, 0.65), deaconMat);
+    outerJaw.position.set(0, 2.05, 1.25);
+    group.add(outerJaw);
+
+    // Inner Pharyngeal Jaw with human-like white enamel teeth
+    const innerJaw = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.18, 0.85), innerJawMat);
+    innerJaw.position.set(0, 2.05, 1.55);
+    group.add(innerJaw);
+
+    // Humanoid teeth row
+    for (let t = -3; t <= 3; t++) {
+      const tooth = new THREE.Mesh(new THREE.BoxGeometry(0.028, 0.06, 0.035), teethMat);
+      tooth.position.set(t * 0.032, 2.12, 1.9);
+      group.add(tooth);
+
+      const toothLower = new THREE.Mesh(new THREE.BoxGeometry(0.028, 0.06, 0.035), teethMat);
+      toothLower.position.set(t * 0.032, 1.98, 1.9);
+      group.add(toothLower);
+    }
+
+    // 3. Quadrupedal Heavy Limbs
+    [-0.65, 0.65].forEach(side => {
+      const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.1, 2.2, 6), deaconMat);
+      arm.position.set(side, 1.3, 0.6);
+      arm.rotation.x = 0.45;
+      arm.rotation.z = side * 0.2;
+      group.add(arm);
+
+      const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.12, 2.4, 6), deaconMat);
+      leg.position.set(side * 0.9, 1.0, -0.6);
+      leg.rotation.x = -0.3;
+      group.add(leg);
+    });
+
+    const angle = Math.random() * Math.PI * 2;
+    const radius = 28 + Math.random() * 8;
+    group.position.set(
+      playerPos.x + Math.cos(angle) * radius,
+      0,
+      playerPos.z + Math.sin(angle) * radius
+    );
+    this.scene.add(group);
+
+    if (this.audioEngine && this.audioEngine.playDeaconJawHiss) {
+      this.audioEngine.playDeaconJawHiss();
+    }
+
+    this.aliens.push({
+      mesh: group,
+      type: 'deacon_titan',
+      isDeacon: true,
+      hp: 2400,
+      maxHp: 2400,
+      speed: 16.5,
+      damage: 65,
+      radius: 2.2,
+      chompCooldown: 2.5,
+      tackleCooldown: 4.5,
+      isStunned: false,
+      stunTimer: 0,
+      canBeTrophyHarvested: false,
+      isAirborne: false,
+      airborneVelY: 0
+    });
+  }
+
+  /* Chantier 7 (v47): Flying Xenomorph Manta Swarmer (Aliens Arcade / Kenner / Marvel Comics) */
+  spawnMantaSwarmer(spawnPos, targetPlayer = null) {
+    const group = new THREE.Group();
+    const bodyMat = this.mantaMat;
+    const wingMat = this.mantaWingMat;
+    const barbMat = new THREE.MeshStandardMaterial({ color: 0x9333ea, metalness: 0.9, roughness: 0.2 });
+
+    // 1. Sleek Aerodynamic Fuselage
+    const body = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.28, 2.2, 8), bodyMat);
+    body.rotation.x = Math.PI / 2;
+    body.position.y = 0;
+    group.add(body);
+
+    // Pointed cranial aerodynamic snout
+    const head = new THREE.Mesh(new THREE.ConeGeometry(0.22, 1.1, 6), bodyMat);
+    head.rotation.x = -Math.PI / 2;
+    head.position.set(0, 0, 1.4);
+    group.add(head);
+
+    // 2. Wide Aerodynamic Manta Bat-Wings (Span ~ 4.6m)
+    const wingL = new THREE.Mesh(new THREE.PlaneGeometry(2.3, 1.4), wingMat);
+    wingL.rotation.x = -Math.PI / 2;
+    wingL.position.set(-1.3, 0.05, 0);
+    group.add(wingL);
+
+    const wingR = new THREE.Mesh(new THREE.PlaneGeometry(2.3, 1.4), wingMat);
+    wingR.rotation.x = -Math.PI / 2;
+    wingR.position.set(1.3, 0.05, 0);
+    group.add(wingR);
+
+    // 3. Serrated Whip Stinger Tail
+    for (let t = 0; t < 5; t++) {
+      const seg = new THREE.Mesh(new THREE.CylinderGeometry(0.06 - t * 0.01, 0.04 - t * 0.01, 0.5, 5), bodyMat);
+      seg.position.set(0, -0.05 - t * 0.04, -1.2 - t * 0.4);
+      seg.rotation.x = 0.2;
+      group.add(seg);
+    }
+    const stinger = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.45, 4), barbMat);
+    stinger.position.set(0, -0.25, -3.2);
+    stinger.rotation.x = Math.PI / 2;
+    group.add(stinger);
+
+    group.userData.wingL = wingL;
+    group.userData.wingR = wingR;
+
+    group.position.copy(spawnPos);
+    this.scene.add(group);
+
+    if (this.audioEngine && this.audioEngine.playMantaDiveScreech) {
+      this.audioEngine.playMantaDiveScreech();
+    }
+
+    this.mantaSwarmers.push({
+      mesh: group,
+      hp: 320,
+      maxHp: 320,
+      speed: 15.0,
+      diveSpeed: 26.0,
+      damage: 65,
+      divePhase: 'cruising',
+      cruiseAltitude: 8.5 + Math.random() * 3.5,
+      diveCooldown: 3.5 + Math.random() * 2.5,
+      diveTarget: new THREE.Vector3(),
+      flutterPhase: Math.random() * Math.PI * 2
     });
   }
 
@@ -1469,6 +1644,83 @@ export class XenomorphHorde {
       }
     }
 
+    // 3g. Chantier 7 (v47): Flying Xenomorph Manta Swarmers 3D Airspace Flight AI (Aliens Arcade / Kenner / Marvel)
+    for (let m = this.mantaSwarmers.length - 1; m >= 0; m--) {
+      const manta = this.mantaSwarmers[m];
+      if (manta.hp <= 0) {
+        if (this.goreEngine && this.goreEngine.spawnDismemberment) {
+          this.goreEngine.spawnDismemberment(manta.mesh.position, 'heavy');
+        }
+        this.spawnAcidSplash(manta.mesh.position, manta.mesh.position);
+        this.scene.remove(manta.mesh);
+        this.mantaSwarmers.splice(m, 1);
+        this.deadCount++;
+        if (window.gameInstance) window.gameInstance.score += 450;
+        continue;
+      }
+
+      // Wing flutter animation
+      manta.flutterPhase += delta * 18.0;
+      const flap = Math.sin(manta.flutterPhase) * 0.65;
+      if (manta.mesh.userData.wingL) manta.mesh.userData.wingL.rotation.z = flap;
+      if (manta.mesh.userData.wingR) manta.mesh.userData.wingR.rotation.z = -flap;
+
+      if (manta.divePhase === 'cruising') {
+        manta.diveCooldown -= delta;
+        // Fly around player at high altitude
+        const toPlayer = player.position.clone().sub(manta.mesh.position);
+        toPlayer.y = 0;
+        const distHoriz = toPlayer.length();
+
+        if (distHoriz > 12.0) {
+          toPlayer.normalize();
+          manta.mesh.position.addScaledVector(toPlayer, manta.speed * delta);
+        }
+        // Maintain cruise altitude
+        manta.mesh.position.y += (manta.cruiseAltitude - manta.mesh.position.y) * 3.0 * delta;
+
+        // Orient toward flight direction
+        manta.mesh.rotation.y = Math.atan2(toPlayer.x, toPlayer.z);
+
+        if (manta.diveCooldown <= 0 && distHoriz <= 24.0) {
+          manta.divePhase = 'diving';
+          manta.diveTarget.copy(player.position);
+          if (this.audioEngine && this.audioEngine.playMantaDiveScreech) {
+            this.audioEngine.playMantaDiveScreech();
+          }
+        }
+      } else if (manta.divePhase === 'diving') {
+        // High-speed supersonic dive attack
+        const diveDir = manta.diveTarget.clone().sub(manta.mesh.position).normalize();
+        manta.mesh.position.addScaledVector(diveDir, manta.diveSpeed * delta);
+        manta.mesh.rotation.x = 0.55; // Pitch down
+
+        // Hit player check
+        if (manta.mesh.position.distanceTo(player.position) <= 2.8) {
+          if (player.isBlocking) {
+            if (player.audioEngine && player.audioEngine.playShieldBlock) player.audioEngine.playShieldBlock();
+          } else {
+            player.takeDamage(manta.damage);
+          }
+          manta.divePhase = 'zooming_up';
+          manta.diveCooldown = 4.5 + Math.random() * 2.0;
+        } else if (manta.mesh.position.y <= 0.8) {
+          // Reached floor, pull up
+          manta.divePhase = 'zooming_up';
+          manta.diveCooldown = 4.5 + Math.random() * 2.0;
+        }
+      } else if (manta.divePhase === 'zooming_up') {
+        // Sweep back up to cruising altitude
+        manta.mesh.position.y += 14.0 * delta;
+        manta.mesh.rotation.x = -0.4; // Pitch up
+        if (manta.mesh.position.y >= manta.cruiseAltitude) {
+          manta.mesh.position.y = manta.cruiseAltitude;
+          manta.mesh.rotation.x = 0;
+          manta.divePhase = 'cruising';
+        }
+      }
+    }
+
     // 4. Horde AI (Crusher, Praetorian, Warriors, Facehuggers, Officers)
     this.aliens.forEach(a => {
       if (a.isLatched) return;
@@ -1631,12 +1883,41 @@ export class XenomorphHorde {
         }
       }
 
-      // Stunned State (Crusher or Praetorian)
+      // Chantier 4 (v47): Deacon Titan Primordial Boss AI (Prometheus 2012)
+      if (a.isDeacon) {
+        if (a.hp <= a.maxHp * 0.22 && !a.isStunned && !a.canBeTrophyHarvested) {
+          a.isStunned = true;
+          a.stunTimer = 12.0;
+          a.canBeTrophyHarvested = true;
+          if (window.gameInstance && window.gameInstance.ui) {
+            window.gameInstance.ui.showAnnouncement('💀 TITAN PRIMORDIAL DÉSTABILISÉ : APPUYEZ SUR [E] POUR ARRACHER LE CRÂNE DU DEACON !');
+          }
+        }
+
+        if (!a.isStunned) {
+          a.chompCooldown = (a.chompCooldown || 0) - delta;
+          const pDist = a.mesh.position.distanceTo(player.position);
+          if (pDist <= 3.8 && a.chompCooldown <= 0) {
+            a.chompCooldown = 3.2;
+            if (this.audioEngine && this.audioEngine.playDeaconJawHiss) {
+              this.audioEngine.playDeaconJawHiss();
+            }
+            if (player.isBlocking) {
+              player.audioEngine.playShieldBlock();
+            } else {
+              player.takeDamage(85);
+            }
+          }
+        }
+      }
+
+      // Stunned State (Crusher or Praetorian or Deacon)
       if (a.isStunned) {
         a.stunTimer -= delta;
         a.mesh.rotation.z = Math.sin(Date.now() * 0.02) * 0.1;
         if (a.stunTimer <= 0) {
           a.isStunned = false;
+          a.canBeTrophyHarvested = false;
           a.mesh.rotation.z = 0;
         }
         return;
@@ -2027,5 +2308,7 @@ export class XenomorphHorde {
     this.cyberSpineDarts = [];
     this.royalFacehuggers.forEach(r => this.scene.remove(r.mesh));
     this.royalFacehuggers = [];
+    this.mantaSwarmers.forEach(m => this.scene.remove(m.mesh));
+    this.mantaSwarmers = [];
   }
 }

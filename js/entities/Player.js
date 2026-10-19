@@ -107,6 +107,13 @@ export class Player {
     this.smartgunTurretRef = null;
     this.isSyntheticAnkleGrabbed = false;
     this.ankleGrabTimer = 0;
+    // v47.0 Weapon Systems
+    this.isPlasmaScytheActive = false;
+    this.plasmaScytheMesh = null;
+    this.plasmaScytheCooldown = 0;
+    this.m41aGrenadeCharges = 4;
+    this.m41aGrenadeCooldown = 0;
+    this.activeM41AGrenades = [];
 
     // Pounce Leap State
     this.isLeaping = false;
@@ -2614,6 +2621,334 @@ export class Player {
     }
 
     return true;
+  }
+
+  /* === CHANTIER 2 (v47): Ancient Yautja Plasma Scythe (AvP Extinction 2003 Canon) === */
+  buildPlasmaScytheMesh() {
+    const group = new THREE.Group();
+    const shaftMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.9, roughness: 0.25 });
+    const emitterMat = new THREE.MeshStandardMaterial({ color: 0xd97706, metalness: 0.95, roughness: 0.15 });
+    const plasmaMat = new THREE.MeshStandardMaterial({
+      color: 0x00f2fe,
+      emissive: 0x0284c7,
+      transparent: true,
+      opacity: 0.88,
+      roughness: 0.1,
+      metalness: 0.2
+    });
+
+    // 2.4m Haft Polearm
+    const haft = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 2.4, 8), shaftMat);
+    haft.position.y = 1.0;
+    group.add(haft);
+
+    // Emitter Socket Collar
+    const collar = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.06, 0.35, 6), emitterMat);
+    collar.position.y = 2.1;
+    group.add(collar);
+
+    // Curved Crescent Plasma Blade (AvP Extinction Scythe)
+    const bladeGeo = new THREE.RingGeometry(0.5, 0.9, 16, 1, 0, Math.PI * 0.7);
+    const blade = new THREE.Mesh(bladeGeo, plasmaMat);
+    blade.position.set(0.45, 2.0, 0);
+    blade.rotation.z = -Math.PI / 3;
+    group.add(blade);
+
+    // Secondary reverse spike
+    const spike = new THREE.Mesh(new THREE.ConeGeometry(0.05, 0.4, 4), shaftMat);
+    spike.position.set(-0.15, 2.15, 0);
+    spike.rotation.z = Math.PI / 3;
+    group.add(spike);
+
+    group.position.set(0.65, 0.4, 0.4);
+    group.rotation.x = 0.2;
+    return group;
+  }
+
+  togglePlasmaScythe(ui = null) {
+    this.isPlasmaScytheActive = !this.isPlasmaScytheActive;
+    if (this.isPlasmaScytheActive) {
+      if (!this.plasmaScytheMesh) {
+        this.plasmaScytheMesh = this.buildPlasmaScytheMesh();
+        this.mesh.add(this.plasmaScytheMesh);
+      }
+      this.plasmaScytheMesh.visible = true;
+
+      if (this.audioEngine && this.audioEngine.playPlasmaScytheCleave) {
+        this.audioEngine.playPlasmaScytheCleave();
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('⚡ FAUX PLASMA ANCESTRALE YAUTJA ÉQUIPÉE (AVP EXTINCTION) : TRANCHANT IONIQUE 360° !');
+      }
+    } else {
+      if (this.plasmaScytheMesh) {
+        this.plasmaScytheMesh.visible = false;
+      }
+    }
+    return this.isPlasmaScytheActive;
+  }
+
+  performPlasmaScytheSlash(horde, bosses, synthetics, environment, particles) {
+    if (this.plasmaEnergy < 25.0) {
+      if (this.audioEngine && this.audioEngine.playGauntletGrapple) {
+        this.audioEngine.playGauntletGrapple();
+      }
+      return false;
+    }
+
+    this.plasmaEnergy -= 25.0;
+
+    if (this.audioEngine && this.audioEngine.playPlasmaScytheCleave) {
+      this.audioEngine.playPlasmaScytheCleave();
+    }
+
+    // 360 spin animation of the player avatar
+    let spin = 0;
+    const spinAnim = setInterval(() => {
+      spin += 0.55;
+      this.mesh.rotation.y += 0.55;
+      if (spin >= Math.PI * 2) {
+        clearInterval(spinAnim);
+        this.mesh.rotation.y = this.rotationY;
+      }
+    }, 20);
+
+    // Visual expanding ion energy ring
+    const ringGeo = new THREE.RingGeometry(1.0, 5.5, 32);
+    ringGeo.rotateX(-Math.PI / 2);
+    const ringMat = new THREE.MeshBasicMaterial({
+      color: 0x00f2fe,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0.85
+    });
+    const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+    ringMesh.position.copy(this.position);
+    ringMesh.position.y = 1.0;
+    this.scene.add(ringMesh);
+
+    let scale = 1.0;
+    const ringInterval = setInterval(() => {
+      scale += 0.45;
+      ringMesh.scale.set(scale, 1, scale);
+      ringMesh.material.opacity -= 0.12;
+      if (ringMesh.material.opacity <= 0) {
+        clearInterval(ringInterval);
+        this.scene.remove(ringMesh);
+      }
+    }, 25);
+
+    const cleaveRadius = 5.5 * (this.meleeReachMultiplier || 1.0);
+    const cleaveDmg = 380;
+
+    // Cleave all Xenomorphs within 360° reach
+    if (horde && horde.aliens) {
+      for (let i = horde.aliens.length - 1; i >= 0; i--) {
+        const a = horde.aliens[i];
+        if (!a || a.hp <= 0 || !a.mesh) continue;
+        const d = a.mesh.position.distanceTo(this.position);
+        if (d <= cleaveRadius) {
+          a.hp -= cleaveDmg;
+          if (particles && particles.emitSparks) {
+            particles.emitSparks(a.mesh.position, 6);
+          }
+          if (a.hp <= 0) {
+            if (horde.goreEngine && horde.goreEngine.spawnDismemberment) {
+              horde.goreEngine.spawnDismemberment(a.mesh.position, 'heavy');
+            }
+            horde.spawnAcidPool(a.mesh.position);
+            this.scene.remove(a.mesh);
+            horde.aliens.splice(i, 1);
+            horde.deadCount++;
+            if (window.gameInstance) {
+              window.gameInstance.comboHits = (window.gameInstance.comboHits || 0) + 1;
+              window.gameInstance.score += 150;
+            }
+          }
+        }
+      }
+    }
+
+    // Cleave active boss if within range
+    if (bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
+      const bDist = bosses.activeBoss.mesh.position.distanceTo(this.position);
+      if (bDist <= (cleaveRadius + 1.5)) {
+        bosses.takeDamage(cleaveDmg * 0.85, horde);
+      }
+    }
+
+    // Cleave synthetics
+    if (synthetics && synthetics.androids) {
+      synthetics.androids.forEach(syn => {
+        if (syn.mesh.position.distanceTo(this.position) <= cleaveRadius) {
+          syn.hp -= cleaveDmg;
+        }
+      });
+    }
+
+    // Cleave destructible Engineer urns in environment
+    if (environment && environment.checkUrnDamage) {
+      environment.checkUrnDamage(this.position, cleaveRadius, cleaveDmg, this.audioEngine);
+    }
+
+    return true;
+  }
+
+  /* === CHANTIER 5 (v47): USCM M41A Underbarrel U1 Grenade Launcher (Aliens 1986 Canon) === */
+  fireM41AGrenade(ui = null) {
+    if (this.m41aGrenadeCharges <= 0 || this.m41aGrenadeCooldown > 0) {
+      return false;
+    }
+
+    this.m41aGrenadeCharges--;
+    this.m41aGrenadeCooldown = 1.6;
+
+    if (this.audioEngine && this.audioEngine.playM41AGrenadeLaunch) {
+      this.audioEngine.playM41AGrenadeLaunch();
+    }
+
+    const forward = new THREE.Vector3(
+      Math.sin(this.rotationY),
+      0.15,
+      Math.cos(this.rotationY)
+    ).normalize();
+
+    const origin = this.position.clone().add(new THREE.Vector3(0, 1.6, 0)).addScaledVector(forward, 1.0);
+
+    // 30mm HEDP explosive grenade projectile
+    const gGeo = new THREE.CylinderGeometry(0.08, 0.08, 0.32, 8);
+    gGeo.rotateX(Math.PI / 2);
+    const gMat = new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.9, roughness: 0.2 });
+    const gMesh = new THREE.Mesh(gGeo, gMat);
+    gMesh.position.copy(origin);
+    this.scene.add(gMesh);
+
+    this.activeM41AGrenades.push({
+      mesh: gMesh,
+      velocity: forward.clone().multiplyScalar(28.0).add(new THREE.Vector3(0, 4.5, 0)),
+      gravity: -24.0,
+      damage: 420,
+      radius: 7.5,
+      life: 3.0
+    });
+
+    if (ui && ui.showAnnouncement) {
+      ui.showAnnouncement(`💥 GRENADE 30MM HEDP M41A LANCÉE ! RESTANT : ${this.m41aGrenadeCharges}`);
+    }
+
+    return true;
+  }
+
+  updateM41AGrenades(delta, horde, bosses, synthetics, environment, particles) {
+    if (this.m41aGrenadeCooldown > 0) {
+      this.m41aGrenadeCooldown -= delta;
+    }
+
+    for (let i = this.activeM41AGrenades.length - 1; i >= 0; i--) {
+      const g = this.activeM41AGrenades[i];
+      g.life -= delta;
+      g.velocity.y += g.gravity * delta;
+      g.mesh.position.addScaledVector(g.velocity, delta);
+
+      // Trailing smoke
+      if (particles && particles.emitSmoke && Math.random() < 0.3) {
+        particles.emitSmoke(g.mesh.position, 2);
+      }
+
+      let shouldDetonate = g.mesh.position.y <= 0.2 || g.life <= 0;
+
+      // Check collision with enemies
+      if (!shouldDetonate && horde && horde.aliens) {
+        for (let a = 0; a < horde.aliens.length; a++) {
+          if (horde.aliens[a].mesh && g.mesh.position.distanceTo(horde.aliens[a].mesh.position) <= 1.4) {
+            shouldDetonate = true;
+            break;
+          }
+        }
+      }
+
+      if (shouldDetonate) {
+        const detPos = g.mesh.position.clone();
+        this.scene.remove(g.mesh);
+        this.activeM41AGrenades.splice(i, 1);
+
+        if (this.audioEngine && this.audioEngine.playHeavySlamImpact) {
+          this.audioEngine.playHeavySlamImpact();
+        }
+
+        // Explosive blast fireball mesh
+        const fbGeo = new THREE.SphereGeometry(1.6, 12, 12);
+        const fbMat = new THREE.MeshBasicMaterial({ color: 0xf97316, transparent: true, opacity: 0.85, wireframe: true });
+        const fbMesh = new THREE.Mesh(fbGeo, fbMat);
+        fbMesh.position.copy(detPos);
+        this.scene.add(fbMesh);
+
+        let fbScale = 1.0;
+        const fbInterval = setInterval(() => {
+          fbScale += 0.6;
+          fbMesh.scale.set(fbScale, fbScale, fbScale);
+          fbMesh.material.opacity -= 0.14;
+          if (fbMesh.material.opacity <= 0) {
+            clearInterval(fbInterval);
+            this.scene.remove(fbMesh);
+          }
+        }, 25);
+
+        // Sparks & blast particles
+        if (particles && particles.emitSparks) {
+          particles.emitSparks(detPos, 14);
+        }
+
+        // Blast damage to horde
+        if (horde && horde.aliens) {
+          for (let j = horde.aliens.length - 1; j >= 0; j--) {
+            const al = horde.aliens[j];
+            if (!al || al.hp <= 0 || !al.mesh) continue;
+            const d = al.mesh.position.distanceTo(detPos);
+            if (d <= g.radius) {
+              al.hp -= g.damage;
+              const push = al.mesh.position.clone().sub(detPos).normalize();
+              al.mesh.position.addScaledVector(push, 4.5);
+              if (al.hp <= 0) {
+                if (horde.goreEngine && horde.goreEngine.spawnDismemberment) {
+                  horde.goreEngine.spawnDismemberment(al.mesh.position, 'heavy');
+                }
+                horde.spawnAcidPool(al.mesh.position);
+                this.scene.remove(al.mesh);
+                horde.aliens.splice(j, 1);
+                horde.deadCount++;
+                if (window.gameInstance) {
+                  window.gameInstance.comboHits = (window.gameInstance.comboHits || 0) + 1;
+                  window.gameInstance.score += 180;
+                }
+              }
+            }
+          }
+        }
+
+        // Blast damage to boss
+        if (bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
+          if (bosses.activeBoss.mesh.position.distanceTo(detPos) <= g.radius) {
+            bosses.takeDamage(g.damage * 0.9, horde);
+          }
+        }
+
+        // Blast damage to synthetics
+        if (synthetics && synthetics.androids) {
+          synthetics.androids.forEach(syn => {
+            if (syn.mesh.position.distanceTo(detPos) <= g.radius) {
+              syn.hp -= g.damage;
+            }
+          });
+        }
+
+        // Detonate destructible urns in blast
+        if (environment && environment.checkUrnDamage) {
+          environment.checkUrnDamage(detPos, g.radius, g.damage, this.audioEngine);
+        }
+      }
+    }
   }
 }
 

@@ -25,8 +25,9 @@ export class BossManager {
     const isPredalienQueen = type === 'predalien_queen';
     const isPredalienAbomination = type === 'predalien_abomination';
     const isOffspring = type === 'the_offspring';
+    const isTrilobite = type === 'trilobite_prime';
 
-    const hp = isImperial ? 8000 : (isPredalienAbomination ? 6500 : (isEmpress ? 6000 : (isPredalienQueen ? 5000 : (isOffspring ? 4500 : 3000))));
+    const hp = isImperial ? 8000 : (isTrilobite ? 7000 : (isPredalienAbomination ? 6500 : (isEmpress ? 6000 : (isPredalienQueen ? 5000 : (isOffspring ? 4500 : 3000)))));
 
     this.activeBoss = {
       type: type,
@@ -39,7 +40,10 @@ export class BossManager {
       spineRipAvailable: false
     };
 
-    if (isOffspring) {
+    if (isTrilobite && this.audioEngine.playTrilobiteTentacleConstrict) {
+      this.audioEngine.playTrilobiteTentacleConstrict();
+      if (this.audioEngine.playYautjaRoar) this.audioEngine.playYautjaRoar();
+    } else if (isOffspring) {
       this.audioEngine.playOffspringShriek();
     } else if (isPredalienAbomination && this.audioEngine.playPredalienBellyVomit) {
       this.audioEngine.playPredalienBellyVomit();
@@ -49,7 +53,124 @@ export class BossManager {
     }
   }
 
+  buildTrilobiteMesh(scale = 2.6) {
+    const group = new THREE.Group();
+
+    // Pale leathery cephalopod texture with subtle translucency (Prometheus 2012)
+    const mantleMat = new THREE.MeshStandardMaterial({
+      color: 0xe5e2da,
+      roughness: 0.55,
+      metalness: 0.05
+    });
+    const foldMat = new THREE.MeshStandardMaterial({
+      color: 0xcdc9bd,
+      roughness: 0.65,
+      metalness: 0.08
+    });
+    const visceralMat = new THREE.MeshStandardMaterial({
+      color: 0x9f1239,
+      roughness: 0.35,
+      metalness: 0.2
+    });
+    const suckerMat = new THREE.MeshStandardMaterial({
+      color: 0xf43f5e,
+      roughness: 0.25,
+      metalness: 0.1
+    });
+    const beakMat = new THREE.MeshStandardMaterial({
+      color: 0x18181b,
+      roughness: 0.2,
+      metalness: 0.85
+    });
+
+    // 1. Central Mantle Dome (flattened bulbous cephalopod body)
+    const mantle = new THREE.Mesh(new THREE.SphereGeometry(1.5 * scale, 16, 14), mantleMat);
+    mantle.scale.set(1.4, 0.75, 1.6);
+    mantle.position.y = 1.6 * scale;
+    group.add(mantle);
+
+    // Ribbed dorsal folds across the mantle
+    for (let r = 0; r < 5; r++) {
+      const fold = new THREE.Mesh(new THREE.TorusGeometry((1.2 - r * 0.15) * scale, 0.12 * scale, 6, 16), foldMat);
+      fold.rotation.x = Math.PI / 2;
+      fold.position.set(0, (1.8 + r * 0.12) * scale, (-0.6 + r * 0.35) * scale);
+      fold.scale.set(1.3, 0.6, 1.0);
+      group.add(fold);
+    }
+
+    // 2. Underside Oral Beak & Sphincter Cavity
+    const sphincter = new THREE.Mesh(new THREE.TorusGeometry(0.55 * scale, 0.18 * scale, 8, 16), visceralMat);
+    sphincter.rotation.x = Math.PI / 2;
+    sphincter.position.set(0, 0.9 * scale, 0.2 * scale);
+    group.add(sphincter);
+
+    // Quad-Keratin Beak Teeth (Radial biting mandibles inside mouth)
+    for (let b = 0; b < 4; b++) {
+      const ang = (b / 4) * Math.PI * 2;
+      const tooth = new THREE.Mesh(new THREE.ConeGeometry(0.08 * scale, 0.38 * scale, 4), beakMat);
+      tooth.position.set(Math.cos(ang) * 0.35 * scale, 0.9 * scale, 0.2 * scale + Math.sin(ang) * 0.35 * scale);
+      tooth.rotation.z = -Math.cos(ang) * 0.7;
+      tooth.rotation.x = Math.sin(ang) * 0.7;
+      group.add(tooth);
+    }
+
+    // 3. 7 Articulated Muscular Cephalopod Tentacles (Prometheus 2012 1:1 Canon)
+    const tentacles = [];
+    const tentacleAngles = [0, 0.9, 1.8, 2.7, 3.6, 4.5, 5.4]; // 7 distinct radial tentacle roots
+
+    tentacleAngles.forEach((ang, tIdx) => {
+      const tentRoot = new THREE.Group();
+      const rootX = Math.cos(ang) * 1.3 * scale;
+      const rootZ = Math.sin(ang) * 1.4 * scale;
+      tentRoot.position.set(rootX, 1.2 * scale, rootZ);
+
+      const segments = [];
+      let parentGroup = tentRoot;
+      const numSegments = 5;
+
+      for (let s = 0; s < numSegments; s++) {
+        const segGroup = new THREE.Group();
+        const segRadius = (0.24 - s * 0.035) * scale;
+        const segLength = (1.5 - s * 0.12) * scale;
+
+        const segMesh = new THREE.Mesh(new THREE.CylinderGeometry(segRadius * 0.8, segRadius, segLength, 8), mantleMat);
+        segMesh.position.y = -segLength / 2;
+        segGroup.add(segMesh);
+
+        // Suction cup rings along the underside
+        for (let u = 0; u < 2; u++) {
+          const sucker = new THREE.Mesh(new THREE.TorusGeometry(segRadius * 0.35, segRadius * 0.1, 4, 8), suckerMat);
+          sucker.position.set(0, -segLength * (0.3 + u * 0.4), segRadius * 0.75);
+          sucker.rotation.x = Math.PI / 2;
+          segGroup.add(sucker);
+        }
+
+        if (s === 0) {
+          segGroup.rotation.y = ang;
+          segGroup.rotation.z = 0.55;
+        } else {
+          segGroup.position.y = -segLength;
+          segGroup.rotation.z = -0.15;
+        }
+
+        parentGroup.add(segGroup);
+        parentGroup = segGroup;
+        segments.push(segGroup);
+      }
+
+      group.add(tentRoot);
+      tentacles.push({ root: tentRoot, segments });
+    });
+
+    group.userData.tentacles = tentacles;
+    return group;
+  }
+
   createBossMesh(type) {
+    if (type === 'trilobite_prime') {
+      return this.buildTrilobiteMesh(2.6);
+    }
+
     const group = new THREE.Group();
     const isEmpress = type === 'empress_matriarch';
     const isPredalien = type === 'predalien_queen' || type === 'predalien_abomination';
@@ -387,7 +508,16 @@ export class BossManager {
     }
 
     // Custom Spine Rip Stun Threshold at 20% HP
-    if (this.activeBoss.type === 'predalien_abomination') {
+    if (this.activeBoss.type === 'trilobite_prime') {
+      if (this.activeBoss.hp <= this.activeBoss.maxHp * 0.20 && !this.activeBoss.isStunned && !this.activeBoss.spineRipAvailable) {
+        this.activeBoss.isStunned = true;
+        this.activeBoss.stunTimer = 14.0;
+        this.activeBoss.spineRipAvailable = true;
+        if (window.gameInstance && window.gameInstance.ui) {
+          window.gameInstance.ui.showAnnouncement('💀 EXÉCUTION MYTHIQUE : APPUYEZ SUR [E] POUR TRANCHER LE TENTACULE PRIMORDIAL DU TRILOBITE !');
+        }
+      }
+    } else if (this.activeBoss.type === 'predalien_abomination') {
       if (this.activeBoss.hp <= this.activeBoss.maxHp * 0.20 && !this.activeBoss.isStunned && !this.activeBoss.spineRipAvailable) {
         this.activeBoss.isStunned = true;
         this.activeBoss.stunTimer = 12.0;
@@ -401,6 +531,70 @@ export class BossManager {
         this.activeBoss.isStunned = true;
         this.activeBoss.stunTimer = 6.0;
       }
+    }
+  }
+
+  triggerTrilobiteConstrict(player) {
+    if (!this.activeBoss) return;
+    if (this.audioEngine && this.audioEngine.playTrilobiteTentacleConstrict) {
+      this.audioEngine.playTrilobiteTentacleConstrict();
+    }
+
+    if (window.gameInstance && window.gameInstance.ui) {
+      window.gameInstance.ui.showAnnouncement('⚠️ CONSTRICTION DU TRILOBITE (PROMETHEUS) : ÉTREINTE DES 7 TENTACULES !');
+    }
+
+    const dist = this.activeBoss.mesh.position.distanceTo(player.position);
+    if (dist <= 15.0) {
+      if (player.isBlocking) {
+        if (player.audioEngine && player.audioEngine.playShieldBlock) player.audioEngine.playShieldBlock();
+      } else {
+        player.takeDamage(95);
+        // Drag player violently toward the oral beak sphincter
+        const pullDir = this.activeBoss.mesh.position.clone().sub(player.position).normalize();
+        pullDir.y = 0;
+        player.position.addScaledVector(pullDir, Math.min(dist * 0.65, 8.0));
+        player.mesh.position.copy(player.position);
+      }
+    }
+  }
+
+  spitMutagenSludge(player) {
+    if (!this.activeBoss) return;
+    if (this.audioEngine && this.audioEngine.playEngineerUrnDetonation) {
+      this.audioEngine.playEngineerUrnDetonation();
+    }
+
+    const origin = this.activeBoss.mesh.position.clone().add(new THREE.Vector3(0, 2.0, 0));
+    const target = player.position.clone();
+    const dir = target.clone().sub(origin).normalize();
+
+    for (let i = 0; i < 3; i++) {
+      const spread = dir.clone().add(new THREE.Vector3(
+        (Math.random() - 0.5) * 0.35,
+        0.3 + Math.random() * 0.15,
+        (Math.random() - 0.5) * 0.35
+      )).normalize();
+
+      const geo = new THREE.SphereGeometry(0.42, 8, 8);
+      const mat = new THREE.MeshStandardMaterial({
+        color: 0x09090b,
+        emissive: 0x064e3b,
+        roughness: 0.15,
+        metalness: 0.9
+      });
+      const mesh = new THREE.Mesh(geo, mat);
+      mesh.position.copy(origin);
+      this.scene.add(mesh);
+
+      this.acidSpitProjectiles.push({
+        mesh: mesh,
+        velocity: spread.multiplyScalar(21),
+        gravity: -22,
+        damage: 80,
+        life: 3.0,
+        isMutagen: true
+      });
     }
   }
 
@@ -634,9 +828,37 @@ export class BossManager {
     this.activeBoss.spitCooldown -= delta;
     this.activeBoss.regurgitateCooldown -= delta;
 
+    // Trilobite Cephalopod Prime Tentacle Undulation Animation (Prometheus 2012)
+    if (this.activeBoss.type === 'trilobite_prime' && this.activeBoss.mesh.userData && this.activeBoss.mesh.userData.tentacles) {
+      const time = Date.now() * 0.003;
+      this.activeBoss.mesh.userData.tentacles.forEach((tent, tIdx) => {
+        tent.segments.forEach((seg, sIdx) => {
+          seg.rotation.z = Math.sin(time + tIdx * 0.9 + sIdx * 0.5) * 0.28;
+          seg.rotation.x = Math.cos(time * 0.75 + tIdx * 0.6 + sIdx * 0.4) * 0.22;
+        });
+      });
+    }
+
     const dir = player.position.clone().sub(this.activeBoss.mesh.position);
     dir.y = 0;
     const dist = dir.length();
+
+    // Trilobite Prime Signature Constriction & Mutagen Spray (Prometheus 2012 Lore)
+    if (this.activeBoss.type === 'trilobite_prime') {
+      if (!this.activeBoss.constrictCooldown) this.activeBoss.constrictCooldown = 4.5;
+      this.activeBoss.constrictCooldown -= delta;
+      if (dist <= 15.0 && this.activeBoss.constrictCooldown <= 0) {
+        this.activeBoss.constrictCooldown = 6.5;
+        this.triggerTrilobiteConstrict(player);
+      }
+
+      if (!this.activeBoss.sludgeCooldown) this.activeBoss.sludgeCooldown = 4.0;
+      this.activeBoss.sludgeCooldown -= delta;
+      if (dist > 7.0 && dist < 32.0 && this.activeBoss.sludgeCooldown <= 0) {
+        this.activeBoss.sludgeCooldown = 5.5;
+        this.spitMutagenSludge(player);
+      }
+    }
 
     // Predalien Signature Attack: Chestburster Regurgitation / Pressurized Belly Vomit (AVP: Requiem Lore)
     if ((this.activeBoss.type === 'predalien_queen' || this.activeBoss.type === 'predalien_abomination') && dist > 4.5 && dist < 32.0 && this.activeBoss.regurgitateCooldown <= 0) {
@@ -692,7 +914,7 @@ export class BossManager {
     // Movement
     if (dist > 3.0) {
       dir.normalize();
-      let baseSpeed = this.activeBoss.type === 'the_offspring' ? 10.5 : (this.activeBoss.type === 'empress_matriarch' ? 8.5 : 7.5);
+      let baseSpeed = this.activeBoss.type === 'the_offspring' ? 10.5 : (this.activeBoss.type === 'trilobite_prime' ? 6.5 : (this.activeBoss.type === 'empress_matriarch' ? 8.5 : 7.5));
       const moveSpeed = baseSpeed * speedMult;
       this.activeBoss.mesh.position.addScaledVector(dir, moveSpeed * delta);
       this.activeBoss.mesh.rotation.y = Math.atan2(dir.x, dir.z);
@@ -701,7 +923,7 @@ export class BossManager {
         window.gameInstance.env.damageCatwalkPillars(this.activeBoss.mesh.position, 4.0, 90 * delta, this.audioEngine, window.gameInstance.particles);
       }
     } else {
-      player.takeDamage((this.activeBoss.type === 'the_offspring' ? 65 : 45) * delta * speedMult);
+      player.takeDamage((this.activeBoss.type === 'the_offspring' ? 65 : (this.activeBoss.type === 'trilobite_prime' ? 70 : 45)) * delta * speedMult);
     }
 
     // Chantier 5 (v43): Praetorian Royal Shield Phalanx Queen Bodyguard Protocol

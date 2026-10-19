@@ -693,5 +693,26 @@ export class UIManager {
       banner.classList.add('hidden');
     }
   }
+
+  /* === CHANTIER 6 (v47): Weyland-Yutani Atmospheric Cooling Tower Cryo-Vent Purge Prompt === */
+  updateCryoVentPrompt(isNear, cryoVent) {
+    const prompt = document.getElementById('cryo-vent-prompt');
+    if (!prompt) return;
+    if (isNear && cryoVent) {
+      prompt.classList.remove('hidden');
+      const textElem = prompt.querySelector('.cryo-vent-text');
+      if (textElem) {
+        if (cryoVent.cooldown > 0) {
+          textElem.innerText = `PURGE EN RECHARGE CRYOGÉNIQUE (${Math.ceil(cryoVent.cooldown)}S)`;
+          prompt.style.borderColor = '#64748b';
+        } else {
+          textElem.innerText = `[E] PURGE D'AZOTE LIQUIDE (ZONE 18M, SHATTER X3)`;
+          prompt.style.borderColor = '#38bdf8';
+        }
+      }
+    } else {
+      prompt.classList.add('hidden');
+    }
+  }
 }
 

@@ -55,6 +55,11 @@ export class EnvironmentManager {
     this.derelictChamber = null;
     this.fuelLines = [];
     this.craneConsole = null;
+    // v47.0 Systems
+    this.engineerRuins = null;
+    this.coolingTowerCryoVent = null;
+    this.engineerUrns = [];
+    this.mutagenPuddles = [];
   }
 
   clearEnvironment() {
@@ -156,6 +161,21 @@ export class EnvironmentManager {
       this.scene.remove(this.craneConsole.group);
       this.craneConsole = null;
     }
+    // v47.0 Cleanups
+    if (this.engineerRuins) {
+      this.scene.remove(this.engineerRuins.group);
+      this.engineerRuins = null;
+    }
+    if (this.coolingTowerCryoVent) {
+      this.scene.remove(this.coolingTowerCryoVent.group);
+      if (this.coolingTowerCryoVent.fogMesh) this.scene.remove(this.coolingTowerCryoVent.fogMesh);
+      this.coolingTowerCryoVent = null;
+    }
+    this.engineerUrns.forEach(u => this.scene.remove(u.group));
+    this.engineerUrns = [];
+    this.mutagenPuddles.forEach(p => this.scene.remove(p.mesh));
+    this.mutagenPuddles = [];
+
     this.reactorMeltdownActive = false;
     this.reactorMeltdownTimer = 180.0;
     this.slabShiftTimer = 0;
@@ -336,6 +356,16 @@ export class EnvironmentManager {
 
     // Chantier 9: USCM Cargo Crane Operator Console for 10-Ton Container Drop
     this.buildCargoCraneConsole();
+
+    // === v47.0 10-CHANTIER EXPANSION (Engineer City Ruins, Cryo-Vent Cooling Tower, Mutagen Urns) ===
+    // Chantier 3: Planet 4 Engineer City Ruins (Prometheus / Covenant)
+    this.buildEngineerCityRuins();
+
+    // Chantier 6: Weyland-Yutani Atmospheric Cooling Tower Cryo-Vent Purge (Alien 3 / Fiorina 161)
+    this.buildCoolingTowerCryoVent();
+
+    // Chantier 9: Engineer Ceramic Urns & Black Mutagen Z-01 Puddles (Prometheus 2012)
+    this.buildEngineerUrnClusters();
   }
 
   buildTempleProps(stoneMat) {
@@ -4233,6 +4263,344 @@ export class EnvironmentManager {
       }
     }
     return false;
+  }
+
+  /* === CHANTIER 3 (v47): Planet 4 Engineer City Ruins (Prometheus / Alien: Covenant) === */
+  buildEngineerCityRuins() {
+    const group = new THREE.Group();
+    const basaltMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.8, metalness: 0.2 });
+    const stoneTrimMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.7, metalness: 0.25 });
+    const runeMat = new THREE.MeshBasicMaterial({ color: 0x10b981 });
+
+    // Monumental 6m Carved Engineer Heads (Planet 4 Necropolis Plaza)
+    [-24, 24].forEach((posX) => {
+      const headGroup = new THREE.Group();
+      headGroup.position.set(posX, 0, -32);
+
+      // Basalt Pedestal
+      const plinth = new THREE.Mesh(new THREE.BoxGeometry(4.2, 2.2, 4.2), basaltMat);
+      plinth.position.y = 1.1;
+      headGroup.add(plinth);
+
+      // Carved Stoic Engineer Cranium & Classical Face
+      const headMesh = new THREE.Mesh(new THREE.SphereGeometry(2.4, 12, 12), basaltMat);
+      headMesh.position.y = 4.5;
+      headMesh.scale.set(0.9, 1.35, 1.05);
+      headGroup.add(headMesh);
+
+      // Strong sculpted Engineer brow and nose
+      const nose = new THREE.Mesh(new THREE.BoxGeometry(0.35, 1.1, 0.45), stoneTrimMat);
+      nose.position.set(0, 4.5, 2.2);
+      headGroup.add(nose);
+
+      // Heavy jawline
+      const jaw = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.9, 1.2), basaltMat);
+      jaw.position.set(0, 3.2, 1.6);
+      headGroup.add(jaw);
+
+      group.add(headGroup);
+    });
+
+    // Basalt Obelisks with Cuneiform Biomechanical Glyphs
+    const obeliskPositions = [
+      [-36, 0, 10], [36, 0, 10], [-18, 0, 36], [18, 0, 36]
+    ];
+    obeliskPositions.forEach(pos => {
+      const ob = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 1.3, 10.0, 4), basaltMat);
+      ob.position.set(pos[0], 5.0, pos[2]);
+      ob.rotation.y = Math.PI / 4;
+      group.add(ob);
+
+      // Glowing hieroglyph rings
+      for (let r = 0; r < 3; r++) {
+        const rune = new THREE.Mesh(new THREE.TorusGeometry(0.85 - r * 0.1, 0.03, 4, 12), runeMat);
+        rune.rotation.x = Math.PI / 2;
+        rune.position.set(pos[0], 3.0 + r * 2.2, pos[2]);
+        group.add(rune);
+      }
+    });
+
+    this.scene.add(group);
+    this.envObjects.push(group);
+    this.engineerRuins = { group };
+  }
+
+  /* === CHANTIER 6 (v47): Weyland-Yutani Atmospheric Cooling Tower Cryo-Vent Purge (Alien 3 / Fiorina 161) === */
+  buildCoolingTowerCryoVent() {
+    const group = new THREE.Group();
+    const towerPos = new THREE.Vector3(0, 0, -38);
+    group.position.copy(towerPos);
+
+    const steelMat = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.85, roughness: 0.3 });
+    const frostMat = new THREE.MeshStandardMaterial({ color: 0x93c5fd, metalness: 0.6, roughness: 0.15 });
+    const cautionMat = new THREE.MeshStandardMaterial({ color: 0xeab308, roughness: 0.4 });
+    const ventMat = new THREE.MeshStandardMaterial({ color: 0x0284c7, emissive: 0x0369a1, roughness: 0.2 });
+
+    // Colossal Cooling Stack Cylinder (14m tall)
+    const stack = new THREE.Mesh(new THREE.CylinderGeometry(5.2, 6.0, 14, 16), steelMat);
+    stack.position.y = 7.0;
+    group.add(stack);
+
+    // Industrial Cryo Exhaust Grating Ring
+    const grate = new THREE.Mesh(new THREE.CylinderGeometry(5.4, 5.4, 1.6, 16), ventMat);
+    grate.position.y = 12.5;
+    group.add(grate);
+
+    // Liquid Nitrogen Conduit Pipes
+    [-3.2, 3.2].forEach(ox => {
+      const pipe = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.35, 12, 8), frostMat);
+      pipe.position.set(ox, 6.0, 4.5);
+      group.add(pipe);
+    });
+
+    // Manual Cryo-Purge Pedestal Console (6m in front of tower at z = 6)
+    const consoleBase = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.1, 0.8), cautionMat);
+    consoleBase.position.set(0, 0.55, 6.0);
+    group.add(consoleBase);
+
+    const lever = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.45, 6), frostMat);
+    lever.position.set(0, 1.25, 6.0);
+    lever.rotation.x = -0.35;
+    group.add(lever);
+
+    this.scene.add(group);
+    this.envObjects.push(group);
+
+    this.coolingTowerCryoVent = {
+      group,
+      pos: towerPos,
+      consolePos: new THREE.Vector3(towerPos.x, 0, towerPos.z + 6.0),
+      isFlushing: false,
+      flushTimer: 0,
+      cooldown: 0,
+      radius: 18.0,
+      fogMesh: null,
+      lever
+    };
+  }
+
+  checkCryoVentInteraction(playerPos, player, ui, audioEngine, horde, bosses) {
+    if (!this.coolingTowerCryoVent) return false;
+    const vent = this.coolingTowerCryoVent;
+
+    if (vent.cooldown > 0) return false;
+
+    if (playerPos.distanceTo(vent.consolePos) <= 3.2) {
+      vent.isFlushing = true;
+      vent.flushTimer = 5.0;
+      vent.cooldown = 24.0;
+      vent.lever.rotation.x = 0.45;
+
+      if (audioEngine && audioEngine.playCryoVentFlush) {
+        audioEngine.playCryoVentFlush();
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('❄️ PURGE CRYOGÉNIQUE DE LA TOUR : DÉLUGE D\'AZOTE LIQUIDE ACTIF (ZONE 18M, DÉGÂTS X3 SHATTER) !');
+      }
+
+      // Create expanding frosty deluge fog mesh
+      if (!vent.fogMesh) {
+        const fogGeo = new THREE.CylinderGeometry(vent.radius, vent.radius, 2.5, 24);
+        const fogMat = new THREE.MeshStandardMaterial({
+          color: 0xbae6fd,
+          emissive: 0x38bdf8,
+          transparent: true,
+          opacity: 0.65,
+          roughness: 0.1
+        });
+        vent.fogMesh = new THREE.Mesh(fogGeo, fogMat);
+        vent.fogMesh.position.set(vent.pos.x, 1.25, vent.pos.z + 4.0);
+        this.scene.add(vent.fogMesh);
+      }
+
+      return true;
+    }
+    return false;
+  }
+
+  updateCoolingTowerCryoVent(delta, player, horde, bosses, particles, audioEngine) {
+    if (!this.coolingTowerCryoVent) return;
+    const vent = this.coolingTowerCryoVent;
+
+    if (vent.cooldown > 0) {
+      vent.cooldown -= delta;
+      if (vent.cooldown <= 0) {
+        vent.lever.rotation.x = -0.35;
+      }
+    }
+
+    if (vent.isFlushing) {
+      vent.flushTimer -= delta;
+
+      // Pulse fog mesh
+      if (vent.fogMesh) {
+        vent.fogMesh.material.opacity = 0.45 + Math.sin(Date.now() * 0.01) * 0.2;
+      }
+
+      // Flash-freeze all Xenomorphs in 18m radius
+      if (horde && horde.aliens) {
+        horde.aliens.forEach(a => {
+          if (!a || a.hp <= 0 || !a.mesh) return;
+          if (a.mesh.position.distanceTo(vent.pos) <= vent.radius) {
+            a.isFrozen = true;
+            a.freezeTimer = 6.0;
+            a.isFlashFrozen = true;
+            a.frozenTimer = 6.0;
+            if (a.mesh.traverse) {
+              a.mesh.traverse(child => {
+                if (child.isMesh && child.material && child.material.color) {
+                  if (child.origColor === undefined) child.origColor = child.material.color.getHex();
+                  child.material.color.setHex(0x93c5fd);
+                }
+              });
+            }
+          }
+        });
+      }
+
+      // Frost particles
+      if (particles && particles.emitSparks && Math.random() < 0.3) {
+        particles.emitSparks(vent.pos.clone().add(new THREE.Vector3((Math.random() - 0.5) * 12, 1.0, (Math.random() - 0.5) * 12)), 4);
+      }
+
+      if (vent.flushTimer <= 0) {
+        vent.isFlushing = false;
+        if (vent.fogMesh) {
+          this.scene.remove(vent.fogMesh);
+          vent.fogMesh = null;
+        }
+      }
+    }
+  }
+
+  /* === CHANTIER 9 (v47): Engineer Ceramic Urns & Black Mutagen Z-01 Puddles (Prometheus 2012) === */
+  buildEngineerUrnClusters() {
+    const urnMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.85, metalness: 0.1 });
+    const capMat = new THREE.MeshStandardMaterial({ color: 0x09090b, roughness: 0.4, metalness: 0.8 });
+    const clusterCenters = [
+      new THREE.Vector3(-14, 0, -18),
+      new THREE.Vector3(14, 0, -18),
+      new THREE.Vector3(-22, 0, 14),
+      new THREE.Vector3(22, 0, 14)
+    ];
+
+    clusterCenters.forEach(center => {
+      const count = 3 + Math.floor(Math.random() * 2);
+      for (let i = 0; i < count; i++) {
+        const group = new THREE.Group();
+        const offsetX = (Math.random() - 0.5) * 2.8;
+        const offsetZ = (Math.random() - 0.5) * 2.8;
+        const pos = center.clone().add(new THREE.Vector3(offsetX, 0, offsetZ));
+        group.position.copy(pos);
+
+        // Cylindrical tapered urn base
+        const base = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.22, 1.1, 8), urnMat);
+        base.position.y = 0.55;
+        group.add(base);
+
+        // Bulbous urn belly
+        const belly = new THREE.Mesh(new THREE.SphereGeometry(0.42, 8, 8), urnMat);
+        belly.position.y = 0.65;
+        belly.scale.set(1.0, 1.25, 1.0);
+        group.add(belly);
+
+        // Hermetic sealed top cap
+        const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.22, 0.25, 8), capMat);
+        cap.position.y = 1.18;
+        group.add(cap);
+
+        this.scene.add(group);
+        this.envObjects.push(group);
+
+        this.engineerUrns.push({
+          group,
+          pos,
+          hp: 40,
+          isDestroyed: false
+        });
+      }
+    });
+  }
+
+  checkUrnDamage(hitPos, hitRadius, damage, audioEngine) {
+    for (let i = this.engineerUrns.length - 1; i >= 0; i--) {
+      const urn = this.engineerUrns[i];
+      if (urn.isDestroyed) continue;
+
+      if (urn.pos.distanceTo(hitPos) <= (hitRadius + 0.8)) {
+        urn.hp -= damage;
+        if (urn.hp <= 0) {
+          urn.isDestroyed = true;
+          this.scene.remove(urn.group);
+
+          if (audioEngine && audioEngine.playEngineerUrnDetonation) {
+            audioEngine.playEngineerUrnDetonation();
+          }
+
+          // Spawn viscous Black Mutagen Z-01 Puddle
+          this.spawnMutagenPuddle(urn.pos);
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  spawnMutagenPuddle(pos) {
+    const pGeo = new THREE.CircleGeometry(2.4, 16);
+    pGeo.rotateX(-Math.PI / 2);
+    const pMat = new THREE.MeshStandardMaterial({
+      color: 0x020617,
+      emissive: 0x052e16,
+      roughness: 0.1,
+      metalness: 0.95
+    });
+    const pMesh = new THREE.Mesh(pGeo, pMat);
+    pMesh.position.set(pos.x, 0.04, pos.z);
+    this.scene.add(pMesh);
+
+    this.mutagenPuddles.push({
+      mesh: pMesh,
+      pos: pos.clone(),
+      life: 22.0,
+      radius: 2.4
+    });
+  }
+
+  updateMutagenPuddles(delta, player, horde, audioEngine) {
+    for (let p = this.mutagenPuddles.length - 1; p >= 0; p--) {
+      const pud = this.mutagenPuddles[p];
+      pud.life -= delta;
+
+      // Damage player if stepping inside (unless exosuit is active)
+      if (player && player.position.distanceTo(pud.pos) <= pud.radius) {
+        if (!player.isExosuitActive) {
+          player.takeDamage(45 * delta, true);
+        }
+      }
+
+      // Mutagenic Berserk Acceleration for Xenomorphs
+      if (horde && horde.aliens) {
+        horde.aliens.forEach(a => {
+          if (!a || a.hp <= 0 || !a.mesh) return;
+          if (a.mesh.position.distanceTo(pud.pos) <= pud.radius) {
+            if (!a.isMutagenBerserk) {
+              a.isMutagenBerserk = true;
+              a.speed *= 1.35;
+              if (audioEngine && audioEngine.playXenoHiss && Math.random() < 0.1) {
+                audioEngine.playXenoHiss();
+              }
+            }
+          }
+        });
+      }
+
+      if (pud.life <= 0) {
+        this.scene.remove(pud.mesh);
+        this.mutagenPuddles.splice(p, 1);
+      }
+    }
   }
 }
 
