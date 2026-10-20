@@ -264,10 +264,23 @@ class GameApp {
         }
       }
 
-      // Prowl Roosting Perch Mode [J Key]
+      // Lucas QA Audit #4: Tactical Hunter Shadow Dash [Alt Key] (I-Frames & Cloaked After-Image)
+      if ((e.code === 'AltLeft' || e.code === 'AltRight') && this.player && !e.repeat) {
+        if (!this.keys['KeyM']) {
+          e.preventDefault();
+          this.player.performHunterShadowDash(this.particles, this.audio);
+        }
+      }
+
+      // Prowl Roosting Perch Mode [J Key] / Chantier 1 (v50.0): Yautja Infiltration Dropship Carpet-Bombing [Shift + J]
       if (e.code === 'KeyJ' && this.player) {
-        const isPerched = this.player.togglePerch();
-        this.ui.showAnnouncement(isPerched ? '🌲 AFFÛT PERCHÉ EN HAUTEUR : DOMINANCE VERTICALE' : '⚡ PLONGEON D\'ASSASSINAT FURTIF AU SOL !');
+        if (this.keys['ShiftLeft'] || this.keys['ShiftRight']) {
+          this.player.usedShiftModifier = true;
+          this.player.callInfiltrationDropshipBombing(this.horde, this.bosses, this.particles, this.audio, this.ui);
+        } else {
+          const isPerched = this.player.togglePerch();
+          this.ui.showAnnouncement(isPerched ? '🌲 AFFÛT PERCHÉ EN HAUTEUR : DOMINANCE VERTICALE' : '⚡ PLONGEON D\'ASSASSINAT FURTIF AU SOL !');
+        }
       }
 
       // Feral Hex-Shield [C Key]
@@ -307,6 +320,12 @@ class GameApp {
         e.preventDefault();
         const helpOverlay = document.getElementById('qa-tactical-help-overlay');
         if (helpOverlay) helpOverlay.classList.toggle('hidden');
+      }
+
+      // Chantier 9 (v50.0): Toggle Persistent Yautja Clan Honor Vault Modal [F2 Key]
+      if (e.code === 'F2') {
+        e.preventDefault();
+        this.toggleClanHonorVaultModal();
       }
 
       // Segmented Spine Whip [Digit 1] / Chantier 1 (v49.0): Yautja Heavy Gravity Maul [Shift + Digit 1]
@@ -517,6 +536,10 @@ class GameApp {
           // Handled USM Auriga Flooded Hydro-Cryo Basin 50,000V Breaker (Alien Resurrection 1997)!
         } else if (this.env && this.env.checkAncientShrineInteraction && this.env.checkAncientShrineInteraction(this.player, this.audio, this.ui)) {
           // Handled Ancient Yautja Shrine of the Ancients Divine Blessing!
+        } else if (this.env && this.env.checkRailCannonInteraction && this.env.checkRailCannonInteraction(this.player, this.audio, this.ui, this.horde, this.bosses, this.particles)) {
+          // Handled Weyland-Yutani Coastal Defense 155mm Rail-Cannon Artillery Turret!
+        } else if (this.env && this.env.checkCryoPodInteraction && this.env.checkCryoPodInteraction(this.player, this.audio, this.ui, this.horde, this.bosses, this.particles)) {
+          // Handled Weyland-Yutani Cryo-Stasis Laboratory Specimen Pod Shatter!
         } else if (this.env && this.env.checkPowerLoaderInteraction(this.player.position, this.player, this.horde, this.ui, this.audio, this.particles)) {
           // Handled Caterpillar Power Loader crushing clamp!
         } else {
@@ -759,9 +782,14 @@ class GameApp {
         if (this.keys['ShiftLeft'] || this.keys['ShiftRight']) {
           if (this.player) {
             this.player.usedShiftModifier = true;
-            // Chantier 6: Plasma Glaive Spin Shield & Kinetic Reflection
-            this.player.toggleWhirlShield(true);
-            this.ui.showAnnouncement('🛡️ BOUCLIER TOURNANT DE PLASMA GLAIVE DÉPLOYÉ (DÉVIATION 90% & RÉFLEXION ACIDE) !');
+            if (this.keys['Space']) {
+              // Chantier 6 (v50.0): Dual Plasma Casters Concentrated Overcharge Beam
+              this.player.fireDualPlasmaOverchargeBeam(this.horde, this.bosses, this.synthetics, this.particles, this.audio, this.ui);
+            } else {
+              // Chantier 6: Plasma Glaive Spin Shield & Kinetic Reflection
+              this.player.toggleWhirlShield(true);
+              this.ui.showAnnouncement('🛡️ BOUCLIER TOURNANT DE PLASMA GLAIVE DÉPLOYÉ (DÉVIATION 90% & RÉFLEXION ACIDE) !');
+            }
           }
         } else {
           this.performHeavyAttack();
@@ -1613,6 +1641,7 @@ class GameApp {
       }
 
       this.player.recordTrophy(tName, tHonor);
+      this.saveClanHonorVault(tName, tHonor);
       this.player.royalJellyFlasks += 2; // Queen grants 2 Royal Jelly flasks!
       this.sessionSkulls++;
       this.score += tHonor;
@@ -1620,6 +1649,11 @@ class GameApp {
 
       // Decisive Battlefield Morale Victory (+35%)
       this.shiftBattlefieldMorale(35.0);
+
+      // Sofia QA Audit #5: Apex Pheromone Repulsion Fear Wave (Drones flee in panic)
+      if (this.horde && this.horde.triggerFearPulse) {
+        this.horde.triggerFearPulse(this.player.position, 24.0, 4.5);
+      }
 
       this.renderer.scene.remove(this.bosses.activeBoss.mesh);
       this.bosses.activeBoss = null;
@@ -1633,13 +1667,18 @@ class GameApp {
       this.triggerCameraShake(1.2, 0.6);
       this.ui.showAnnouncement(`🏆 TROPHÉE LÉGENDAIRE RÉCOLTÉ : ${tName} (+${tHonor} HONNEUR, +2 GELÉES ROYALES) !`);
       this.ui.showExecutionPrompt(false);
+
+      // Chantier 10 (v50.0): Sacred Blood Ritual Epilogue & Mothership Orbit Extraction
+      if (this.waveIndex >= 5) {
+        this.triggerSacredBloodRitualEpilogue();
+      }
       return;
     }
 
-    // 2. Sub-Boss Execution (Crusher Titan, Praetorian, Grid Alien, Marvel Alpha, Deacon, Rogue King, Raven, Ancient Predalien)
+    // 2. Sub-Boss Execution (Crusher Titan, Praetorian, Grid Alien, Marvel Alpha, Deacon, Rogue King, Raven, Ancient Predalien, Gestating Matriarch)
     for (let i = this.horde.aliens.length - 1; i >= 0; i--) {
       const a = this.horde.aliens[i];
-      if ((a.type === 'crusher' || a.type === 'praetorian' || a.type === 'grid_alien' || a.isMarvelAlpha || a.isDeacon || a.isRogueKing || a.isRaven || a.isAncientPredalien) && a.isStunned) {
+      if ((a.type === 'crusher' || a.type === 'praetorian' || a.type === 'grid_alien' || a.isMarvelAlpha || a.isDeacon || a.isRogueKing || a.isRaven || a.isAncientPredalien || a.isGestatingMatriarch) && a.isStunned) {
         if (a.mesh.position.distanceTo(this.player.position) <= 5.8) {
           this.player.executeSpineRip();
           this.sessionSkulls++;
@@ -1649,25 +1688,32 @@ class GameApp {
           if (this.audio && this.audio.playExecutionBulletTimeWhoosh) {
             this.audio.playExecutionBulletTimeWhoosh();
           }
+          if (this.audio && this.audio.playChitinDismembermentSnap) {
+            this.audio.playChitinDismembermentSnap();
+          }
           this.triggerCameraFovSurge(50, 1.3);
 
-          let tName = a.isAncientPredalien
-            ? 'Relique Fossilisée & Mandibules Ancestrales de l\'Ancient Predalien Elder (Primal Hunt)'
-            : (a.isRaven
-              ? 'Crâne d\'Obsidienne & Ailes Chitineuses du Xenomorph Raven (Colonial Marines)'
-              : (a.isRogueKing
-                ? 'Crâne Couronné Dentelé du King Alien Rogue (Légendaire)'
-                : (a.isDeacon
-                  ? 'Crâne Pointu Cobalt & Mâchoire Pharyngienne de Deacon Titan (Prometheus 2012)'
-                  : (a.isMarvelAlpha
-                    ? "Crâne Barbelé Argenté & Colonne Primordiale de l'Alpha Marvel (Epsilon Apex 1:1)"
-                    : (a.type === 'crusher'
-                      ? 'Bouclier Frontal Blindé de Crusher Titan'
-                      : (a.type === 'grid_alien'
-                        ? 'Crâne Gravé au Quadrillage Acide de Grid Alien (AVP 2004)'
-                        : 'Couronne Royale Éburnéenne de Prétorien'))))));
-          let tHonor = a.isAncientPredalien ? 4500 : (a.isRaven ? 3800 : (a.isRogueKing ? 4000 : (a.isDeacon ? 3500 : (a.isMarvelAlpha ? 3500 : (a.type === 'crusher' ? 1200 : (a.type === 'grid_alien' ? 1400 : 900))))));
-          if (a.isAncientPredalien && this.audio && this.audio.playAncientPredalienAwaken) {
+          let tName = a.isGestatingMatriarch
+            ? 'Ovipositeur Biomécanique & Couronne de Matriarche Gestante (Aliens 1986 / Infestation)'
+            : (a.isAncientPredalien
+              ? 'Relique Fossilisée & Mandibules Ancestrales de l\'Ancient Predalien Elder (Primal Hunt)'
+              : (a.isRaven
+                ? 'Crâne d\'Obsidienne & Ailes Chitineuses du Xenomorph Raven (Colonial Marines)'
+                : (a.isRogueKing
+                  ? 'Crâne Couronné Dentelé du King Alien Rogue (Légendaire)'
+                  : (a.isDeacon
+                    ? 'Crâne Pointu Cobalt & Mâchoire Pharyngienne de Deacon Titan (Prometheus 2012)'
+                    : (a.isMarvelAlpha
+                      ? "Crâne Barbelé Argenté & Colonne Primordiale de l'Alpha Marvel (Epsilon Apex 1:1)"
+                      : (a.type === 'crusher'
+                        ? 'Bouclier Frontal Blindé de Crusher Titan'
+                        : (a.type === 'grid_alien'
+                          ? 'Crâne Gravé au Quadrillage Acide de Grid Alien (AVP 2004)'
+                          : 'Couronne Royale Éburnéenne de Prétorien')))))));
+          let tHonor = a.isGestatingMatriarch ? 4800 : (a.isAncientPredalien ? 4500 : (a.isRaven ? 3800 : (a.isRogueKing ? 4000 : (a.isDeacon ? 3500 : (a.isMarvelAlpha ? 3500 : (a.type === 'crusher' ? 1200 : (a.type === 'grid_alien' ? 1400 : 900)))))));
+          if (a.isGestatingMatriarch && this.audio && this.audio.playMatriarchEggLayingSquish) {
+            this.audio.playMatriarchEggLayingSquish();
+          } else if (a.isAncientPredalien && this.audio && this.audio.playAncientPredalienAwaken) {
             this.audio.playAncientPredalienAwaken();
           } else if (a.isRaven && this.audio && this.audio.playRavenXenoShriek) {
             this.audio.playRavenXenoShriek();
@@ -1677,8 +1723,11 @@ class GameApp {
             this.audio.playDeaconSpineRip();
           }
           this.player.recordTrophy(tName, tHonor);
+          this.saveClanHonorVault(tName, tHonor);
 
-          if (a.isAncientPredalien) {
+          if (a.isGestatingMatriarch) {
+            this.player.royalJellyFlasks += 3;
+          } else if (a.isAncientPredalien) {
             this.player.royalJellyFlasks += 3;
           } else if (a.isRaven) {
             this.player.royalJellyFlasks += 2;
@@ -1699,7 +1748,12 @@ class GameApp {
           this.player.hp = Math.min(this.player.maxHp, this.player.hp + 400);
 
           // Sub-Boss Execution Morale Swing (+18% to +25%)
-          this.shiftBattlefieldMorale((a.isMarvelAlpha || a.isRogueKing || a.isRaven || a.isAncientPredalien) ? 25.0 : 18.0);
+          this.shiftBattlefieldMorale((a.isMarvelAlpha || a.isRogueKing || a.isRaven || a.isAncientPredalien || a.isGestatingMatriarch) ? 25.0 : 18.0);
+
+          // Sofia QA Audit #5: Apex Pheromone Repulsion (Minor Drones flee in panic)
+          if (this.horde && this.horde.triggerFearPulse) {
+            this.horde.triggerFearPulse(this.player.position, 16.0, 3.8);
+          }
 
           if (this.gore) {
             this.gore.spawnDismemberment(a.mesh.position, 'spine_rip');
@@ -1905,6 +1959,17 @@ class GameApp {
     this.player.move(moveDirP1, delta);
     this.player.update(delta, this.horde);
 
+    // Karim QA Audit #3: Dynamic Surface Footstep Synthesizer (Metal Catwalk, Water Basin, Ash)
+    if (moveDirP1.lengthSq() > 0.01 && this.audio && this.audio.playFootstepSurface) {
+      let surf = 'metal';
+      if (this.env && this.env.aurigaBasin) {
+        const dx = Math.abs(this.player.position.x - this.env.aurigaBasin.pos.x);
+        const dz = Math.abs(this.player.position.z - this.env.aurigaBasin.pos.z);
+        if (dx <= 9.0 && dz <= 7.0) surf = 'water';
+      }
+      this.audio.playFootstepSurface(surf);
+    }
+
     // Chantier 7 (v44): Sustained Yautja Burner / Incinerator Plasma Flamer Mode
     if (this.player.isFlamerActive) {
       this.player.firePlasmaFlamer(delta, this.horde, this.env, this.particles);
@@ -1923,6 +1988,11 @@ class GameApp {
     // Chantier 5 (v49.0): Tracker Predator Biomechanical Sonic Trap Mine Countdown & Acoustic Implosion
     if (this.player && this.player.updateSonicTraps) {
       this.player.updateSonicTraps(delta, this.horde, this.bosses, this.particles);
+    }
+
+    // Chantier 6 (v50.0): Dual Plasma Casters Concentrated Overcharge Beam & Napalm Clusters
+    if (this.player && this.player.updateDualPlasmaBeam) {
+      this.player.updateDualPlasmaBeam(delta, this.horde, this.bosses, this.particles);
     }
 
     // QA Audit #3 (Karim): Critical Low Health Bio-Telemetry Heartbeat Beep
@@ -1963,6 +2033,13 @@ class GameApp {
       }
       if (this.env.updateAncientShrine) {
         this.env.updateAncientShrine(delta, this.player, this.horde);
+      }
+      // v50.0 Interactive Systems (155mm Coastal Rail-Cannon, Cryo-Stasis Lab)
+      if (this.env.updateCoastalRailCannon) {
+        this.env.updateCoastalRailCannon(delta, this.horde, this.bosses, this.audio, this.particles);
+      }
+      if (this.env.updateCryoStasisSector) {
+        this.env.updateCryoStasisSector(delta, this.player, this.horde, this.particles);
       }
     }
 
@@ -2477,12 +2554,35 @@ class GameApp {
         else shrinePrompt.classList.add('hidden');
       }
 
+      // Chantier 2 (v50.0): Coastal Defense 155mm Rail-Cannon Terminal Proximity Prompt
+      const isNearCannon = this.env.coastalRailCannon && this.player.position.distanceTo(this.env.coastalRailCannon.terminalPos) <= 4.2;
+      const cannonPrompt = document.getElementById('rail-cannon-prompt');
+      if (cannonPrompt) {
+        if (isNearCannon && this.env.coastalRailCannon.cooldown <= 0) cannonPrompt.classList.remove('hidden');
+        else cannonPrompt.classList.add('hidden');
+      }
+
+      // Chantier 4 (v50.0): Cryo-Stasis Laboratory Specimen Pod Proximity Prompt
+      const isNearCryoLab = this.env.cryoStasisSector && this.player.position.distanceTo(this.env.cryoStasisSector.consolePos) <= 4.2;
+      const cryoLabPrompt = document.getElementById('cryo-stasis-pod-prompt');
+      if (cryoLabPrompt) {
+        if (isNearCryoLab && this.env.cryoStasisSector.cooldown <= 0) cryoLabPrompt.classList.remove('hidden');
+        else cryoLabPrompt.classList.add('hidden');
+      }
+
       const isInsideDerelict = this.env.derelictChamber && this.player.position.distanceTo(this.env.derelictChamber.center) <= this.env.derelictChamber.radius;
       this.ui.updateDerelictHud(isInsideDerelict);
 
       // QA Audit #2 (Elena): Diegetic Wrist Gauntlet Telemetry Update
       if (this.ui.updateDiegeticWristTelemetry) {
         this.ui.updateDiegeticWristTelemetry(this.player, this.env, this.isEndlessMode);
+      }
+
+      // Marc QA Audit #1: Dynamic Circular Combat Reticle Charge Update
+      const reticleCharge = document.getElementById('reticle-charge-circle');
+      if (reticleCharge && this.player) {
+        const chargePct = this.player.isChargingPlasma ? Math.min(1.0, this.player.plasmaChargeTime / 0.55) : 0;
+        reticleCharge.style.strokeDashoffset = `${100 - chargePct * 100}`;
       }
     }
 
@@ -2820,6 +2920,100 @@ class GameApp {
     document.getElementById('end-subtitle').innerText = isVictory ? 'La ruche Xenomorphe a été complètement anéantie dans l\'honneur Yautja.' : 'Votre Yautja est tombé au combat face à la ruche.';
 
     this.ui.showScreen(this.ui.gameOverScreen);
+  }
+
+  /* === CHANTIER 9 (v50.0): Persistent Clan Honor Vault & Trophy Armory LocalStorage === */
+  saveClanHonorVault(trophyName = null, honorAdded = 0) {
+    try {
+      const key = 'YAUTJA_CLAN_HONOR_VAULT';
+      let data = JSON.parse(localStorage.getItem(key)) || {
+        lifetimeHonor: 0,
+        lifetimeSkulls: 0,
+        highestCombo: 0,
+        maxWave: 1,
+        trophies: []
+      };
+      data.lifetimeHonor += honorAdded;
+      data.lifetimeSkulls = (data.lifetimeSkulls || 0) + 1;
+      data.highestCombo = Math.max(data.highestCombo || 0, this.comboHits || 0);
+      data.maxWave = Math.max(data.maxWave || 1, this.waveIndex || 1);
+      if (trophyName && !data.trophies.includes(trophyName)) {
+        data.trophies.push(trophyName);
+      }
+      localStorage.setItem(key, JSON.stringify(data));
+    } catch (e) {}
+  }
+
+  toggleClanHonorVaultModal() {
+    const modal = document.getElementById('clan-honor-vault-modal');
+    if (!modal) return;
+    const isHidden = modal.classList.toggle('hidden');
+    if (!isHidden) {
+      const key = 'YAUTJA_CLAN_HONOR_VAULT';
+      let data = null;
+      try {
+        data = JSON.parse(localStorage.getItem(key));
+      } catch (e) {}
+      data = data || {
+        lifetimeHonor: this.score || 0,
+        lifetimeSkulls: this.sessionSkulls || 0,
+        highestCombo: this.comboHits || 0,
+        maxWave: this.waveIndex || 1,
+        trophies: this.player ? (this.player.trophies || []) : []
+      };
+
+      const honorElem = document.getElementById('vault-lifetime-honor');
+      if (honorElem) honorElem.innerText = `${(data.lifetimeHonor || this.score || 0).toLocaleString()} PTS`;
+      const skullsElem = document.getElementById('vault-lifetime-skulls');
+      if (skullsElem) skullsElem.innerText = `${data.lifetimeSkulls || this.sessionSkulls || 0} CRÂNES`;
+      const comboElem = document.getElementById('vault-highest-combo');
+      if (comboElem) comboElem.innerText = `${Math.max(data.highestCombo || 0, this.comboHits || 0)} HITS`;
+      const waveElem = document.getElementById('vault-max-wave');
+      if (waveElem) waveElem.innerText = `VAGUE ${Math.max(data.maxWave || 1, this.waveIndex || 1)}`;
+
+      const listElem = document.getElementById('vault-trophies-list');
+      if (listElem) {
+        listElem.innerHTML = '';
+        const allTrophies = (data.trophies && data.trophies.length > 0) ? data.trophies : [
+          'Couronne Chitinense de Reine Matriarche',
+          'Crâne d\'Obsidienne du Raven (Colonial Marines)',
+          'Relique de l\'Ancient Predalien Elder (Primal Hunt)'
+        ];
+        allTrophies.forEach(t => {
+          const item = document.createElement('div');
+          item.className = 'vault-trophy-item';
+          item.innerText = `🏆 ${t}`;
+          listElem.appendChild(item);
+        });
+      }
+    }
+  }
+
+  /* === CHANTIER 10 (v50.0): Sacred Blood Ritual & Mothership Orbit Extraction Sequence === */
+  triggerSacredBloodRitualEpilogue() {
+    if (this.sacredBloodRitualTriggered) return;
+    this.sacredBloodRitualTriggered = true;
+
+    if (this.audio && this.audio.playClanBloodRitualChant) {
+      this.audio.playClanBloodRitualChant();
+    }
+
+    const overlay = document.getElementById('sacred-blood-ritual-overlay');
+    if (overlay) {
+      overlay.classList.remove('hidden');
+      setTimeout(() => overlay.classList.add('hidden'), 7000);
+    }
+
+    if (this.player && this.player.clanMarkMesh) {
+      this.player.clanMarkMesh.visible = true;
+    }
+
+    this.shiftBattlefieldMorale(50.0);
+    this.saveClanHonorVault('RITUEL DU SANG SACRÉ YAUTJA (AVP 2004 APEX CANON)', 10000);
+
+    if (this.ui && this.ui.showAnnouncement) {
+      this.ui.showAnnouncement('👑 RITUEL DU SANG SACRÉ GRAVÉ : MAÎTRE DU GRAND CLAN APEX ! EXTRACTION ORBITALE CONFIRMÉE !');
+    }
   }
 
   animate() {

@@ -1127,15 +1127,23 @@ html, body {
 
 .announcement-banner {
   position: absolute;
-  top: 25%;
+  top: 24%;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(255, 26, 26, 0.85);
+  background: linear-gradient(135deg, rgba(220, 20, 20, 0.92), rgba(120, 10, 10, 0.95));
   color: #ffffff;
-  padding: 12px 40px;
+  padding: 12px 42px;
   font-size: 1.4rem;
   font-weight: 900;
+  letter-spacing: 2px;
+  text-transform: uppercase;
   border-radius: 6px;
+  border: 1px solid rgba(255, 90, 90, 0.7);
+  box-shadow: 0 0 25px rgba(255, 40, 40, 0.65), inset 0 0 15px rgba(255, 200, 200, 0.2);
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
+  z-index: 1200;
+  transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .hud-bottom-center {
@@ -2641,6 +2649,185 @@ html, body {
   font-weight: 800;
   font-size: 0.68rem;
   margin-right: 4px;
+}
+
+/* === MARC QA AUDIT #1: DYNAMIC CIRCULAR COMBAT RETICLE HUD === */
+.combat-reticle-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 64px;
+  height: 64px;
+  pointer-events: none;
+  z-index: 100;
+}
+
+.reticle-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.reticle-bg-circle {
+  fill: none;
+  stroke: rgba(0, 210, 255, 0.15);
+  stroke-width: 2.5;
+}
+
+.reticle-progress-circle {
+  fill: none;
+  stroke: #00d2ff;
+  stroke-width: 3.5;
+  transition: stroke-dashoffset 0.08s linear;
+  filter: drop-shadow(0 0 6px #00d2ff);
+}
+
+.reticle-dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 4px;
+  height: 4px;
+  background: #ff0000;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #ff0000;
+}
+
+/* === CHANTIER 9 (v50.0): PERSISTENT CLAN HONOR VAULT MODAL === */
+.vault-card {
+  max-width: 880px !important;
+  width: 92% !important;
+  background: rgba(10, 15, 24, 0.96) !important;
+  border: 1px solid rgba(245, 158, 11, 0.6) !important;
+  box-shadow: 0 0 40px rgba(245, 158, 11, 0.3) !important;
+}
+
+.vault-stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-top: 15px;
+  margin-bottom: 20px;
+}
+
+.vault-stat-box {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-radius: 6px;
+  padding: 10px;
+  text-align: center;
+}
+
+.vault-stat-label {
+  font-size: 0.62rem;
+  color: #94a3b8;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.vault-stat-value {
+  font-size: 1.15rem;
+  color: #fbbf24;
+  font-weight: 900;
+  margin-top: 4px;
+  text-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+}
+
+.vault-trophies-header {
+  font-size: 0.85rem;
+  font-weight: 900;
+  color: #f59e0b;
+  border-bottom: 1px solid rgba(245, 158, 11, 0.3);
+  padding-bottom: 6px;
+  margin-bottom: 12px;
+}
+
+.vault-trophies-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  max-height: 240px;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+.vault-trophy-item {
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  border-left: 3px solid #f59e0b;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  color: #f1f5f9;
+}
+
+/* === CHANTIER 10 (v50.0): SACRED BLOOD RITUAL & EXTRACTION OVERLAY === */
+.sacred-ritual-banner {
+  position: absolute;
+  top: 18%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.92);
+  border: 2px solid #ef4444;
+  box-shadow: 0 0 45px rgba(239, 68, 68, 0.6);
+  padding: 24px 45px;
+  border-radius: 12px;
+  text-align: center;
+  z-index: 1200;
+  pointer-events: none;
+  animation: ritualPulse 2s infinite ease-in-out;
+}
+
+@keyframes ritualPulse {
+  0% { transform: translateX(-50%) scale(0.98); box-shadow: 0 0 30px rgba(239, 68, 68, 0.4); }
+  50% { transform: translateX(-50%) scale(1.02); box-shadow: 0 0 60px rgba(239, 68, 68, 0.8); }
+  100% { transform: translateX(-50%) scale(0.98); box-shadow: 0 0 30px rgba(239, 68, 68, 0.4); }
+}
+
+.ritual-glyph {
+  font-size: 2.2rem;
+  color: #ef4444;
+  text-shadow: 0 0 16px #ef4444;
+  margin-bottom: 8px;
+}
+
+.ritual-title {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #fca5a5;
+  letter-spacing: 2px;
+  margin: 0;
+}
+
+.ritual-sub {
+  font-size: 0.8rem;
+  color: #cbd5e1;
+  margin-top: 8px;
+  letter-spacing: 1px;
+}
+
+/* v50.0 Ability Slots */
+#slot-shadow-dash .slot-key {
+  border-color: #38bdf8;
+  color: #38bdf8;
+}
+#slot-dropship-bombing .slot-key {
+  border-color: #f97316;
+  color: #fb923c;
+}
+#slot-dual-plasma .slot-key {
+  border-color: #00f2fe;
+  color: #00f2fe;
+}
+.slot-vault-btn {
+  border-color: #eab308 !important;
+  cursor: pointer;
+}
+.slot-vault-btn .slot-key {
+  color: #facc15 !important;
+  background: rgba(234, 179, 8, 0.2) !important;
 }
 
 

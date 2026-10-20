@@ -63,11 +63,15 @@ export class XenomorphHorde {
     // Chantier 2 & 6 (v49): Xenomorph Raven (Obsidian Carapace) & Ancient Predalien Elder (Primal Hunt Fossilized Chitin)
     this.ravenMat = new THREE.MeshStandardMaterial({ color: 0x090d16, roughness: 0.08, metalness: 0.98 });
     this.ancientPredalienMat = new THREE.MeshStandardMaterial({ color: 0x9c8f7a, roughness: 0.38, metalness: 0.65 });
+    // Chantier 5 (v50): Gestating Alpha Hive Matriarch & Ovipositor Material (Aliens 1986 / Infestation)
+    this.gestatingMatriarchMat = new THREE.MeshStandardMaterial({ color: 0x080c14, roughness: 0.12, metalness: 0.96 });
+    this.ovipositorMat = new THREE.MeshStandardMaterial({ color: 0x78350f, emissive: 0x9a3412, emissiveIntensity: 0.45, roughness: 0.3, transparent: true, opacity: 0.85 });
 
     this.microSwarms = [];
     this.cyberSpineDarts = [];
     this.royalFacehuggers = [];
     this.mantaSwarmers = [];
+    this.biomechanicalEggs = [];
   }
 
   setGoreEngine(goreEngine) {
@@ -118,6 +122,9 @@ export class XenomorphHorde {
 
     // Chantier 6 (v49): Spawn 1 Ancient Predalien Elder (Aliens vs. Predator 2: Primal Hunt 2002 Canon 1:1)
     this.spawnAncientPredalienElder(playerPos);
+
+    // Chantier 5 (v50): Spawn 1 Gestating Alpha Hive Matriarch with Live Ovipositor Egg Laying (Aliens 1986 / Infestation)
+    this.spawnGestatingMatriarch(playerPos);
 
     // Dynasty Warriors Musou: Spawn 2 Hive Spire Captains / Node Guards (Gardes de Nœud & Sentinelles du Couvoir)
     this.spawnHiveOfficer(playerPos, -22, 'SENTINELLE DU NŒUD PRIMAIRE (SPIRE GUARD)');
@@ -469,6 +476,103 @@ export class XenomorphHorde {
       isAirborne: false,
       airborneVelY: 0,
       airborneVelHoriz: new THREE.Vector3()
+    });
+  }
+
+  /* === CHANTIER 5 (v50.0): Gestating Alpha Female Hive Matriarch Sub-Boss with Live Egg Laying (Aliens 1986 / Infestation) === */
+  spawnGestatingMatriarch(playerPos) {
+    const group = new THREE.Group();
+    const mat = this.gestatingMatriarchMat;
+    const oviMat = this.ovipositorMat;
+
+    // Muscular hunched carapace torso
+    const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.85, 0.65, 3.2, 8), mat);
+    torso.position.y = 2.4;
+    torso.rotation.x = 0.45;
+    group.add(torso);
+
+    // Fluted Royal Cranial Crest with crimson vein ridges
+    const crownGeo = new THREE.BoxGeometry(2.4, 0.5, 3.2);
+    const crown = new THREE.Mesh(crownGeo, mat);
+    crown.position.set(0, 3.8, -0.6);
+    crown.rotation.x = -0.35;
+    group.add(crown);
+
+    // Twin Barbed Scythe Claws
+    [-1.5, 1.5].forEach(ax => {
+      const scythe = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.22, 2.8, 6), mat);
+      scythe.position.set(ax, 2.6, 1.2);
+      scythe.rotation.x = Math.PI / 3;
+      scythe.rotation.z = ax > 0 ? -0.4 : 0.4;
+      group.add(scythe);
+    });
+
+    // Massive Pulsating Biomechanical Ovipositor Sac (3.8m long)
+    const ovi = new THREE.Mesh(new THREE.CylinderGeometry(0.9, 1.5, 3.8, 10), oviMat);
+    ovi.position.set(0, 1.4, -2.5);
+    ovi.rotation.x = -Math.PI / 4;
+    group.add(ovi);
+
+    // Spawn 28m away from player
+    const angle = Math.random() * Math.PI * 2;
+    group.position.set(
+      playerPos.x + Math.sin(angle) * 28.0,
+      0,
+      playerPos.z + Math.cos(angle) * 28.0
+    );
+    group.scale.set(2.4, 2.4, 2.4);
+
+    this.scene.add(group);
+    this.aliens.push({
+      mesh: group,
+      ovipositorMesh: ovi,
+      type: 'gestating_matriarch',
+      isGestatingMatriarch: true,
+      isOfficer: true,
+      officerTitle: 'MATRIARCHE GESTANTE DE LA RUCHE (ALIENS 1986)',
+      hp: 4200,
+      maxHp: 4200,
+      speed: 12.5,
+      damage: 85,
+      radius: 2.6,
+      eggLayCooldown: 6.5,
+      isBallisticArmored: true,
+      isStunned: false,
+      stunTimer: 0,
+      isAirborne: false,
+      airborneVelY: 0,
+      airborneVelHoriz: new THREE.Vector3()
+    });
+  }
+
+  spawnBiomechanicalEgg(pos) {
+    const eggGroup = new THREE.Group();
+    const eggMat = new THREE.MeshStandardMaterial({ color: 0x451a03, roughness: 0.6, metalness: 0.2 });
+    const petalMat = new THREE.MeshStandardMaterial({ color: 0x78350f, roughness: 0.4 });
+
+    const eggBase = new THREE.Mesh(new THREE.SphereGeometry(0.75, 8, 8), eggMat);
+    eggBase.scale.set(1.0, 1.4, 1.0);
+    eggBase.position.y = 0.9;
+    eggGroup.add(eggBase);
+
+    // 4 opening petals
+    for (let p = 0; p < 4; p++) {
+      const petal = new THREE.Mesh(new THREE.ConeGeometry(0.3, 0.8, 4), petalMat);
+      const pAngle = (p / 4) * Math.PI * 2;
+      petal.position.set(Math.sin(pAngle) * 0.45, 1.7, Math.cos(pAngle) * 0.45);
+      petal.rotation.x = Math.sin(pAngle) * 0.4;
+      petal.rotation.z = -Math.cos(pAngle) * 0.4;
+      eggGroup.add(petal);
+    }
+
+    eggGroup.position.copy(pos);
+    eggGroup.position.y = 0;
+    this.scene.add(eggGroup);
+
+    this.biomechanicalEggs.push({
+      mesh: eggGroup,
+      hp: 180,
+      hatchTimer: 4.0
     });
   }
 
@@ -2156,6 +2260,17 @@ export class XenomorphHorde {
       dir.y = 0;
       const dist = dir.length();
 
+      // Sofia QA Audit #5: Apex Pheromone Repulsion (Drones flee from defeated officer/boss)
+      if (a.isFeared && a.fearTimer > 0) {
+        a.fearTimer -= delta;
+        if (a.fearDir) {
+          a.mesh.position.addScaledVector(a.fearDir, delta * 9.5);
+          a.mesh.lookAt(a.mesh.position.clone().add(a.fearDir));
+        }
+        if (a.fearTimer <= 0) a.isFeared = false;
+        return;
+      }
+
       // Wall-Climbing & Ceiling Drop Ambush AI (Alien 1979 / Aliens 1986 Lore)
       if (a.isWallStalker) {
         if (a.wallClimbPhase === 'climbing') {
@@ -2389,8 +2504,33 @@ export class XenomorphHorde {
         }
       }
 
-      // Check if low HP sub-boss enters execution stun (Crusher, Praetorian, Grid Alien, Marvel Alpha, Deacon, Rogue King, Raven, Ancient Predalien)
-      if ((a.type === 'crusher' || a.type === 'praetorian' || a.type === 'grid_alien' || a.isMarvelAlpha || a.isDeacon || a.isRogueKing || a.isRaven || a.isAncientPredalien) && a.hp <= a.maxHp * 0.22 && !a.isStunned) {
+      // Chantier 5 (v50.0): Gestating Alpha Female Hive Matriarch Ovipositor Live Egg Laying (Aliens 1986)
+      if (a.isGestatingMatriarch && !a.isStunned) {
+        a.eggLayCooldown -= delta;
+        if (a.ovipositorMesh) {
+          const pulse = 1.0 + Math.sin(Date.now() * 0.008) * 0.15;
+          a.ovipositorMesh.scale.set(pulse, 1.0, pulse);
+        }
+        if (a.eggLayCooldown <= 0) {
+          a.eggLayCooldown = 7.5;
+          if (this.audioEngine && this.audioEngine.playMatriarchEggLayingSquish) {
+            this.audioEngine.playMatriarchEggLayingSquish();
+          }
+          // Lay 2 active biomechanical eggs behind her
+          const backward = new THREE.Vector3(0, 0, -1).applyEuler(a.mesh.rotation);
+          const eggPos1 = a.mesh.position.clone().add(backward.clone().multiplyScalar(3.2)).add(new THREE.Vector3(-1.2, 0, 0));
+          const eggPos2 = a.mesh.position.clone().add(backward.clone().multiplyScalar(3.2)).add(new THREE.Vector3(1.2, 0, 0));
+          this.spawnBiomechanicalEgg(eggPos1);
+          this.spawnBiomechanicalEgg(eggPos2);
+
+          if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
+            window.gameInstance.ui.showAnnouncement('🥚 PONTE D\'ŒUFS BIOMÉCANIQUES PAR LA MATRIARCHE ! DÉTRUISEZ-LES AVANT ÉCLOSION (4S) !');
+          }
+        }
+      }
+
+      // Check if low HP sub-boss enters execution stun (Crusher, Praetorian, Grid Alien, Marvel Alpha, Deacon, Rogue King, Raven, Ancient Predalien, Gestating Matriarch)
+      if ((a.type === 'crusher' || a.type === 'praetorian' || a.type === 'grid_alien' || a.isMarvelAlpha || a.isDeacon || a.isRogueKing || a.isRaven || a.isAncientPredalien || a.isGestatingMatriarch) && a.hp <= a.maxHp * 0.22 && !a.isStunned) {
         a.isStunned = true;
         a.stunTimer = 8.0;
       }
@@ -2520,6 +2660,46 @@ export class XenomorphHorde {
         }
       }
     });
+
+    // Chantier 5 (v50.0): Update Active Biomechanical Eggs Laid by Gestating Matriarch
+    for (let i = this.biomechanicalEggs.length - 1; i >= 0; i--) {
+      const egg = this.biomechanicalEggs[i];
+      egg.hatchTimer -= delta;
+      const pulse = 1.0 + Math.sin(Date.now() * 0.012) * 0.14;
+      egg.mesh.scale.set(pulse, 1.0, pulse);
+
+      if (egg.hp <= 0) {
+        if (this.audioEngine && this.audioEngine.playXenoDeath) this.audioEngine.playXenoDeath();
+        this.spawnAcidPool(egg.mesh.position);
+        this.scene.remove(egg.mesh);
+        this.biomechanicalEggs.splice(i, 1);
+        if (window.gameInstance) window.gameInstance.score += 90;
+        continue;
+      }
+
+      if (egg.hatchTimer <= 0) {
+        const hatchPos = egg.mesh.position.clone();
+        this.scene.remove(egg.mesh);
+        this.biomechanicalEggs.splice(i, 1);
+        this.spawnRoyalFacehugger(hatchPos);
+        if (this.audioEngine && this.audioEngine.playXenoHiss) this.audioEngine.playXenoHiss();
+      }
+    }
+  }
+
+  // Sofia QA Audit #5: Apex Pheromone Repulsion Fear Wave (Pacing & Tactical Respiration)
+  triggerFearPulse(origin, radius = 14.0, duration = 3.5) {
+    if (!this.aliens) return;
+    this.aliens.forEach(a => {
+      if (!a || a.hp <= 0 || !a.mesh || a.isOfficer || a.isGestatingMatriarch || a.isRaven || a.isAncientPredalien || a.isRogueKing) return;
+      const dist = a.mesh.position.distanceTo(origin);
+      if (dist <= radius) {
+        a.isFeared = true;
+        a.fearTimer = duration;
+        a.fearDir = a.mesh.position.clone().sub(origin).normalize();
+        a.fearDir.y = 0;
+      }
+    });
   }
 
   detonateBoiler(boiler, targetOrPos) {
@@ -2608,5 +2788,7 @@ export class XenomorphHorde {
     this.royalFacehuggers = [];
     this.mantaSwarmers.forEach(m => this.scene.remove(m.mesh));
     this.mantaSwarmers = [];
+    this.biomechanicalEggs.forEach(e => this.scene.remove(e.mesh));
+    this.biomechanicalEggs = [];
   }
 }

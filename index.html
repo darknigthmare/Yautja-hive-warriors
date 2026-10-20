@@ -533,6 +533,27 @@
         </div>
       </div>
 
+      <!-- WEYLAND-YUTANI 155MM COASTAL RAIL-CANNON PROMPT (Chantier 2 v50) -->
+      <div id="rail-cannon-prompt" class="foundry-valve-box hidden">
+        <div class="foundry-key">[ E ]</div>
+        <div class="foundry-valve-text">CANON DE SIÈGE 155MM (TIR ARTILLERIE URANIUM APPAUVRI, 1800 DMG, CRATÈRE 12M)</div>
+      </div>
+
+      <!-- WEYLAND-YUTANI CRYO-STASIS SPECIMEN POD PROMPT (Chantier 4 v50) -->
+      <div id="cryo-stasis-pod-prompt" class="cryo-vent-box hidden">
+        <div class="cryo-key">[ E ]</div>
+        <div class="cryo-vent-text">BRIS CRYO-STASE : EXPULSION AZOTE LIQUIDE (ZONE 15M, CONGÉLATION 6S, SOIN 200 PV)</div>
+      </div>
+
+      <!-- MARC QA AUDIT #1: DYNAMIC CIRCULAR COMBAT RETICLE HUD -->
+      <div id="dynamic-combat-reticle" class="combat-reticle-overlay">
+        <svg class="reticle-svg" viewBox="0 0 100 100">
+          <circle class="reticle-bg-circle" cx="50" cy="50" r="32" />
+          <circle id="reticle-charge-circle" class="reticle-progress-circle" cx="50" cy="50" r="32" stroke-dasharray="200" stroke-dashoffset="200" />
+        </svg>
+        <div class="reticle-dot"></div>
+      </div>
+
       <div class="hud-bottom-center" id="hud-equipped-slots-container">
         <div class="ability-slot" id="slot-fps">
           <div class="slot-key">I</div>
@@ -686,9 +707,25 @@
           <div class="slot-key">⇧+T</div>
           <div class="slot-label">PIÈGE SONIQUE</div>
         </div>
+        <div class="ability-slot" id="slot-shadow-dash">
+          <div class="slot-key">ALT</div>
+          <div class="slot-label">SHADOW DASH</div>
+        </div>
+        <div class="ability-slot" id="slot-dropship-bombing">
+          <div class="slot-key">⇧+J</div>
+          <div class="slot-label">TAPIS BOMBES</div>
+        </div>
+        <div class="ability-slot" id="slot-dual-plasma">
+          <div class="slot-key">⇧+␣+RMB</div>
+          <div class="slot-label">DOUBLE RAYON</div>
+        </div>
         <div class="ability-slot slot-help-btn" id="slot-tactical-help" onclick="document.getElementById('qa-tactical-help-overlay').classList.toggle('hidden')">
           <div class="slot-key">F1</div>
           <div class="slot-label">AIDE TOUCHES</div>
+        </div>
+        <div class="ability-slot slot-vault-btn" id="slot-vault" onclick="window.game && window.game.toggleClanHonorVaultModal()">
+          <div class="slot-key">F2</div>
+          <div class="slot-label">PANTHÉON</div>
         </div>
         <div class="ability-slot" id="slot-swap">
           <div class="slot-key">TAB</div>
@@ -750,6 +787,47 @@
             <div class="tactical-item"><span class="tactical-key">F1</span> Basculer cet Affichage Tactique</div>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- CHANTIER 9 (v50.0): PERSISTENT CLAN HONOR VAULT & TROPHY ARMORY MODAL [F2] -->
+    <div id="clan-honor-vault-modal" class="ui-screen hidden">
+      <div class="glass-panel modal-card vault-card">
+        <div class="modal-header">
+          <h2>🏛️ PANTHÉON DE CHASSE DU GRAND CLAN // TROPHÉES & RELIQUES [F2]</h2>
+          <button id="btn-close-vault" class="btn-close" onclick="document.getElementById('clan-honor-vault-modal').classList.add('hidden')">✕</button>
+        </div>
+        <div class="vault-stats-row">
+          <div class="vault-stat-box">
+            <div class="vault-stat-label">HONNEUR CUMULÉ</div>
+            <div id="vault-lifetime-honor" class="vault-stat-value">0 PTS</div>
+          </div>
+          <div class="vault-stat-box">
+            <div class="vault-stat-label">CRÂNES RÉCOLTÉS</div>
+            <div id="vault-lifetime-skulls" class="vault-stat-value">0 CRÂNES</div>
+          </div>
+          <div class="vault-stat-box">
+            <div class="vault-stat-label">RECORD COMBO</div>
+            <div id="vault-highest-combo" class="vault-stat-value">0 HITS</div>
+          </div>
+          <div class="vault-stat-box">
+            <div class="vault-stat-label">VAGUE ULTIME</div>
+            <div id="vault-max-wave" class="vault-stat-value">VAGUE 1</div>
+          </div>
+        </div>
+        <div class="vault-trophies-header">🏆 RELIQUES & TROPHÉES DE CHASSE PERSISTANTS</div>
+        <div id="vault-trophies-list" class="vault-trophies-grid">
+          <!-- Populated dynamically via main.js toggleClanHonorVaultModal() -->
+        </div>
+      </div>
+    </div>
+
+    <!-- CHANTIER 10 (v50.0): SACRED BLOOD RITUAL & EXTRACTION OVERLAY -->
+    <div id="sacred-blood-ritual-overlay" class="sacred-ritual-banner hidden">
+      <div class="ritual-content">
+        <div class="ritual-glyph">⚡ ᚛ ᚜ ⚡</div>
+        <h1 class="ritual-title">🩸 RITUEL DU SANG SACRÉ ACCOMPLI</h1>
+        <div class="ritual-sub">LE SYMBOLE DU CLAN EST GRAVÉ DANS LA CHITINE • EXTRACTION ORBITALE PAR LE VAISSEAU-MÈRE EN COURS</div>
       </div>
     </div>
 

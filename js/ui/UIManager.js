@@ -38,6 +38,9 @@ export class UIManager {
     this.comboCount = document.getElementById('combo-count');
     this.executionPrompt = document.getElementById('execution-prompt');
     this.announcementBanner = document.getElementById('ability-announcement');
+    this.announcementQueue = [];
+    this.isShowingAnnouncement = false;
+    this.announcementTimeout = null;
 
     // Minimap
     this.minimapCanvas = document.getElementById('minimap-canvas');
@@ -422,11 +425,42 @@ export class UIManager {
   }
 
   showAnnouncement(msg) {
-    this.announcementBanner.innerText = msg;
-    this.announcementBanner.classList.remove('hidden');
-    setTimeout(() => {
-      this.announcementBanner.classList.add('hidden');
-    }, 2500);
+    if (!msg) return;
+    this.announcementQueue.push(msg);
+    if (!this.isShowingAnnouncement) {
+      this.processAnnouncementQueue();
+    }
+  }
+
+  processAnnouncementQueue() {
+    if (this.announcementQueue.length === 0) {
+      this.isShowingAnnouncement = false;
+      return;
+    }
+    this.isShowingAnnouncement = true;
+    const nextMsg = this.announcementQueue.shift();
+    if (this.announcementBanner) {
+      this.announcementBanner.innerText = nextMsg;
+      this.announcementBanner.classList.remove('hidden');
+      this.announcementBanner.style.opacity = '1';
+      this.announcementBanner.style.transform = 'translateX(-50%) scale(1.04)';
+      
+      if (this.announcementTimeout) clearTimeout(this.announcementTimeout);
+      this.announcementTimeout = setTimeout(() => {
+        if (this.announcementBanner) {
+          this.announcementBanner.style.opacity = '0';
+          this.announcementBanner.style.transform = 'translateX(-50%) scale(0.96)';
+          setTimeout(() => {
+            if (this.announcementBanner) this.announcementBanner.classList.add('hidden');
+            this.processAnnouncementQueue();
+          }, 240);
+        } else {
+          this.processAnnouncementQueue();
+        }
+      }, 2200);
+    } else {
+      this.isShowingAnnouncement = false;
+    }
   }
 
   showOfficerDefeatedBanner(officerTitle = 'PRAETORIAN ROYAL GUARD') {

@@ -9,6 +9,8 @@ export class AudioEngine {
     this.thermalGain = null;
     this.isMuted = false;
     this.lastHitmarkerTime = 0;
+    this.lastFootstepTime = 0;
+    this.reverbConvolver = null;
   }
 
   init() {
@@ -23,6 +25,81 @@ export class AudioEngine {
     this.masterCompressor.attack.setValueAtTime(0.003, this.ctx.currentTime);
     this.masterCompressor.release.setValueAtTime(0.15, this.ctx.currentTime);
     this.masterCompressor.connect(this.ctx.destination);
+
+    // QA Audit #3 (Karim): Procedural Industrial Reverb Convolver Node
+    try {
+      const rate = this.ctx.sampleRate;
+      const length = rate * 1.8;
+      const impulse = this.ctx.createBuffer(2, length, rate);
+      const left = impulse.getChannelData(0);
+      const right = impulse.getChannelData(1);
+      for (let i = 0; i < length; i++) {
+        const decay = Math.exp(-i / (rate * 0.45));
+        left[i] = (Math.random() * 2 - 1) * decay;
+        right[i] = (Math.random() * 2 - 1) * decay;
+      }
+      this.reverbConvolver = this.ctx.createConvolver();
+      this.reverbConvolver.buffer = impulse;
+      this.reverbGain = this.ctx.createGain();
+      this.reverbGain.gain.setValueAtTime(0.18, this.ctx.currentTime);
+      this.reverbConvolver.connect(this.reverbGain);
+      this.reverbGain.connect(this.masterCompressor);
+    } catch (e) {
+      this.reverbConvolver = null;
+    }
+  }
+
+  // Dynamic surface footsteps (Metal catwalk, Water basin, Rock/Ash)
+  playFootstepSurface(surface = 'metal') {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+    if (now - this.lastFootstepTime < 0.28) return;
+    this.lastFootstepTime = now;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    if (surface === 'water') {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(180 + Math.random() * 60, now);
+      osc.frequency.exponentialRampToValueAtTime(70, now + 0.12);
+      gain.gain.setValueAtTime(0.15, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+    } else if (surface === 'grid') {
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(320 + Math.random() * 80, now);
+      osc.frequency.exponentialRampToValueAtTime(90, now + 0.08);
+      gain.gain.setValueAtTime(0.12, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+    } else {
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(120 + Math.random() * 30, now);
+      osc.frequency.exponentialRampToValueAtTime(45, now + 0.09);
+      gain.gain.setValueAtTime(0.16, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.09);
+    }
+
+    osc.connect(gain);
+    gain.connect(this.getOut());
+    osc.start(now);
+    osc.stop(now + 0.12);
+  }
+
+  // Lucas QA Audit #4: Tactical Hunter Shadow Dash Whoosh
+  playHunterShadowDash() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(540, now);
+    osc.frequency.exponentialRampToValueAtTime(80, now + 0.26);
+    gain.gain.setValueAtTime(0.42, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.26);
+    osc.connect(gain);
+    gain.connect(this.getOut());
+    osc.start(now);
+    osc.stop(now + 0.26);
   }
 
   getOut() {
@@ -4916,6 +4993,237 @@ export class AudioEngine {
       gain.connect(this.getOut());
       osc.start(now);
       osc.stop(now + 1.4);
+    });
+  }
+
+  /* === V50.0 PROCEDURAL SOUND SYNTHESIZERS (Chantier 8 - Methods 74 to 81) === */
+
+  // 74. Yautja Stealth Dropship Swoop & Tactical Plasma Carpet-Bombing (AVP 2004 / Predators 2010)
+  playYautjaDropshipSwoop() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Heavy anti-gravity turbine whoosh
+    const turbine = this.ctx.createOscillator();
+    const tGain = this.ctx.createGain();
+    turbine.type = 'sawtooth';
+    turbine.frequency.setValueAtTime(65, now);
+    turbine.frequency.exponentialRampToValueAtTime(380, now + 0.6);
+    turbine.frequency.exponentialRampToValueAtTime(45, now + 2.2);
+
+    tGain.gain.setValueAtTime(0.01, now);
+    tGain.gain.linearRampToValueAtTime(0.7, now + 0.6);
+    tGain.gain.exponentialRampToValueAtTime(0.01, now + 2.2);
+
+    turbine.connect(tGain);
+    tGain.connect(this.getOut());
+    turbine.start(now);
+    turbine.stop(now + 2.2);
+
+    // Carpet cluster bomblets falling & detonating
+    for (let i = 0; i < 6; i++) {
+      const bTime = now + 0.4 + i * 0.18;
+      const bOsc = this.ctx.createOscillator();
+      const bGain = this.ctx.createGain();
+      bOsc.type = 'triangle';
+      bOsc.frequency.setValueAtTime(480, bTime);
+      bOsc.frequency.exponentialRampToValueAtTime(35, bTime + 0.35);
+
+      bGain.gain.setValueAtTime(0.55, bTime);
+      bGain.gain.exponentialRampToValueAtTime(0.01, bTime + 0.35);
+
+      bOsc.connect(bGain);
+      bGain.connect(this.getOut());
+      bOsc.start(bTime);
+      bOsc.stop(bTime + 0.35);
+    }
+  }
+
+  // 75. Weyland-Yutani 155mm Coastal Defense Rail-Cannon Seismic Boom (Fireteam Elite)
+  playWY155mmRailCannonFire() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // High-voltage capacitor charging pitch
+    const coil = this.ctx.createOscillator();
+    const coilGain = this.ctx.createGain();
+    coil.type = 'sine';
+    coil.frequency.setValueAtTime(220, now);
+    coil.frequency.exponentialRampToValueAtTime(2400, now + 0.3);
+    coilGain.gain.setValueAtTime(0.4, now);
+    coilGain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+    coil.connect(coilGain);
+    coilGain.connect(this.getOut());
+    coil.start(now);
+    coil.stop(now + 0.3);
+
+    // Massive 155mm concussive artillery detonation
+    const blastTime = now + 0.28;
+    const boom = this.ctx.createOscillator();
+    const boomGain = this.ctx.createGain();
+    boom.type = 'sawtooth';
+    boom.frequency.setValueAtTime(140, blastTime);
+    boom.frequency.exponentialRampToValueAtTime(22, blastTime + 1.6);
+
+    boomGain.gain.setValueAtTime(0.95, blastTime);
+    boomGain.gain.exponentialRampToValueAtTime(0.01, blastTime + 1.6);
+
+    boom.connect(boomGain);
+    boomGain.connect(this.getOut());
+    boom.start(blastTime);
+    boom.stop(blastTime + 1.6);
+  }
+
+  // 76. Royal Facehugger Struggle & Wristblade Decapitation Counter (Alien 3 / AVP)
+  playRoyalFacehuggerDecapitation() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Visceral biological hiss
+    const hiss = this.ctx.createOscillator();
+    const hGain = this.ctx.createGain();
+    hiss.type = 'sawtooth';
+    hiss.frequency.setValueAtTime(1200, now);
+    hiss.frequency.linearRampToValueAtTime(350, now + 0.45);
+    hGain.gain.setValueAtTime(0.65, now);
+    hGain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+    hiss.connect(hGain);
+    hGain.connect(this.getOut());
+    hiss.start(now);
+    hiss.stop(now + 0.45);
+
+    // Razor blade metal severing & chitin crunch
+    const blade = this.ctx.createOscillator();
+    const bGain = this.ctx.createGain();
+    blade.type = 'triangle';
+    blade.frequency.setValueAtTime(880, now + 0.12);
+    blade.frequency.exponentialRampToValueAtTime(120, now + 0.38);
+    bGain.gain.setValueAtTime(0.8, now + 0.12);
+    bGain.gain.exponentialRampToValueAtTime(0.01, now + 0.38);
+    blade.connect(bGain);
+    bGain.connect(this.getOut());
+    blade.start(now + 0.12);
+    blade.stop(now + 0.38);
+  }
+
+  // 77. Weyland-Yutani Cryo-Stasis Pod Shatter & Liquid Nitrogen Flush (Alien: Resurrection)
+  playCryoStasisPodShatter() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Pressurized glass explosion
+    const glass = this.ctx.createOscillator();
+    const gGain = this.ctx.createGain();
+    glass.type = 'sawtooth';
+    glass.frequency.setValueAtTime(1800, now);
+    glass.frequency.exponentialRampToValueAtTime(140, now + 0.28);
+    gGain.gain.setValueAtTime(0.7, now);
+    gGain.gain.exponentialRampToValueAtTime(0.01, now + 0.28);
+    glass.connect(gGain);
+    gGain.connect(this.getOut());
+    glass.start(now);
+    glass.stop(now + 0.28);
+
+    // Liquid nitrogen cryo-flush hiss
+    const flush = this.ctx.createOscillator();
+    const fGain = this.ctx.createGain();
+    flush.type = 'sine';
+    flush.frequency.setValueAtTime(820, now + 0.1);
+    flush.frequency.linearRampToValueAtTime(260, now + 0.9);
+    fGain.gain.setValueAtTime(0.45, now + 0.1);
+    fGain.gain.exponentialRampToValueAtTime(0.01, now + 0.9);
+    flush.connect(fGain);
+    fGain.connect(this.getOut());
+    flush.start(now + 0.1);
+    flush.stop(now + 0.9);
+  }
+
+  // 78. Gestating Alpha Hive Matriarch Ovipositor Dynamic Egg Laying Squish (Aliens 1986)
+  playMatriarchEggLayingSquish() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const squish = this.ctx.createOscillator();
+    const sGain = this.ctx.createGain();
+    squish.type = 'triangle';
+    squish.frequency.setValueAtTime(95, now);
+    squish.frequency.exponentialRampToValueAtTime(240, now + 0.18);
+    squish.frequency.exponentialRampToValueAtTime(60, now + 0.42);
+
+    sGain.gain.setValueAtTime(0.65, now);
+    sGain.gain.exponentialRampToValueAtTime(0.01, now + 0.42);
+
+    squish.connect(sGain);
+    sGain.connect(this.getOut());
+    squish.start(now);
+    squish.stop(now + 0.42);
+  }
+
+  // 79. Dual Plasma Casters Concentrated Overcharge Beam (AVP-R Wolf Predator)
+  playDualPlasmaOverchargeBeam() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Twin harmonic plasma oscillators phase-locked
+    [320, 640].forEach((freq, idx) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = idx === 0 ? 'sawtooth' : 'triangle';
+      osc.frequency.setValueAtTime(freq, now);
+      osc.frequency.linearRampToValueAtTime(freq * 1.65, now + 1.2);
+      osc.frequency.exponentialRampToValueAtTime(80, now + 2.5);
+
+      gain.gain.setValueAtTime(0.55, now);
+      gain.gain.linearRampToValueAtTime(0.85, now + 0.8);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 2.5);
+
+      osc.connect(gain);
+      gain.connect(this.getOut());
+      osc.start(now);
+      osc.stop(now + 2.5);
+    });
+  }
+
+  // 80. Dynamic Chitin Carapace Surgical Dismemberment Fracture (Predator 1987 / Concrete Jungle)
+  playChitinDismembermentSnap() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const snap = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    snap.type = 'triangle';
+    snap.frequency.setValueAtTime(950, now);
+    snap.frequency.exponentialRampToValueAtTime(75, now + 0.22);
+    gain.gain.setValueAtTime(0.85, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.22);
+
+    snap.connect(gain);
+    gain.connect(this.getOut());
+    snap.start(now);
+    snap.stop(now + 0.22);
+  }
+
+  // 81. Sacred Blood Ritual Chant & Mothership Orbit Extraction Fanfare (AVP 2004 / 1987)
+  playClanBloodRitualChant() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Guttural Yautja throat drone & ancient bronze bell chords
+    [55, 110, 164.8, 246.9, 329.6].forEach((f, idx) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = idx < 2 ? 'sawtooth' : 'triangle';
+      osc.frequency.setValueAtTime(f, now);
+      osc.frequency.linearRampToValueAtTime(f * 1.03, now + 3.2);
+
+      gain.gain.setValueAtTime(0.01, now);
+      gain.gain.linearRampToValueAtTime(0.32, now + 0.8);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 3.2);
+
+      osc.connect(gain);
+      gain.connect(this.getOut());
+      osc.start(now);
+      osc.stop(now + 3.2);
     });
   }
 }

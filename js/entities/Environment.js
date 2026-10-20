@@ -74,6 +74,10 @@ export class EnvironmentManager {
     this.activeSAMMissiles = [];
     this.aurigaBasin = null;
     this.ancientShrine = null;
+    // v50.0 Systems (WY 155mm Coastal Rail-Cannon, Cryo-Stasis Laboratory Sector)
+    this.coastalRailCannon = null;
+    this.activeRailShells = [];
+    this.cryoStasisSector = null;
   }
 
   clearEnvironment() {
@@ -223,6 +227,18 @@ export class EnvironmentManager {
     if (this.ancientShrine) {
       this.scene.remove(this.ancientShrine.group);
       this.ancientShrine = null;
+    }
+
+    // v50.0 Cleanups
+    if (this.coastalRailCannon) {
+      this.scene.remove(this.coastalRailCannon.group);
+      this.coastalRailCannon = null;
+    }
+    this.activeRailShells.forEach(s => this.scene.remove(s.mesh));
+    this.activeRailShells = [];
+    if (this.cryoStasisSector) {
+      this.scene.remove(this.cryoStasisSector.group);
+      this.cryoStasisSector = null;
     }
 
     this.reactorMeltdownActive = false;
@@ -429,6 +445,13 @@ export class EnvironmentManager {
 
     // Chantier 9: Ancient Yautja Shrine of the Ancients & Sacrificial Braziers (AVP: Extinction)
     this.buildShrineOfTheAncients();
+
+    // === v50.0 10-CHANTIER EXPANSION (WY 155mm Coastal Rail-Cannon, Cryo-Stasis Laboratory Sector) ===
+    // Chantier 2: Weyland-Yutani Coastal Defense 155mm Rail-Cannon Artillery Turret
+    this.buildCoastalRailCannon();
+
+    // Chantier 4: Weyland-Yutani Cryo-Stasis Research Laboratory Sector & Breakable Specimen Pods
+    this.buildCryoStasisSector();
   }
 
   buildTempleProps(stoneMat) {
@@ -5479,6 +5502,382 @@ export class EnvironmentManager {
         s.blessingActive = false;
       }
     }
+  }
+
+  /* === CHANTIER 2 (v50.0): Weyland-Yutani Coastal Defense 155mm Rail-Cannon (Aliens: Fireteam Elite) === */
+  buildCoastalRailCannon() {
+    const group = new THREE.Group();
+    const pos = new THREE.Vector3(28, 0, -22);
+    group.position.copy(pos);
+
+    const bunkerMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.7, metalness: 0.5 });
+    const gunmetalMat = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.85, roughness: 0.25 });
+    const coilMat = new THREE.MeshBasicMaterial({ color: 0x00d2ff });
+    const hazardMat = new THREE.MeshStandardMaterial({ color: 0xfbbf24, roughness: 0.4 });
+
+    // Fortified Octagonal Bunker Platform
+    const bunker = new THREE.Mesh(new THREE.CylinderGeometry(4.2, 5.0, 1.8, 8), bunkerMat);
+    bunker.position.y = 0.9;
+    group.add(bunker);
+
+    // Hazard warning ring
+    const hazardRing = new THREE.Mesh(new THREE.RingGeometry(3.6, 4.4, 8), hazardMat);
+    hazardRing.rotation.x = -Math.PI / 2;
+    hazardRing.position.y = 1.82;
+    group.add(hazardRing);
+
+    // Rotating Turret Ring & Head
+    const turretHead = new THREE.Group();
+    turretHead.position.set(0, 2.2, 0);
+
+    const housing = new THREE.Mesh(new THREE.BoxGeometry(2.8, 1.8, 3.2), gunmetalMat);
+    turretHead.add(housing);
+
+    // Twin 155mm Magnetic Accelerator Rail Barrels (8.5m long)
+    const barrelGeo = new THREE.CylinderGeometry(0.24, 0.28, 8.5, 8);
+    barrelGeo.rotateX(Math.PI / 2);
+    [-0.55, 0.55].forEach(bx => {
+      const barrel = new THREE.Mesh(barrelGeo, gunmetalMat);
+      barrel.position.set(bx, 0.3, 4.2);
+      turretHead.add(barrel);
+
+      // 4 Accelerator Magnetic Coils per barrel
+      for (let c = 1; c <= 4; c++) {
+        const coil = new THREE.Mesh(new THREE.TorusGeometry(0.38, 0.06, 6, 12), coilMat);
+        coil.position.set(bx, 0.3, c * 1.8);
+        turretHead.add(coil);
+      }
+    });
+
+    group.add(turretHead);
+
+    // Diegetic Control Console Pedestal
+    const consoleGroup = new THREE.Group();
+    const consoleMesh = new THREE.Mesh(
+      new THREE.BoxGeometry(1.2, 1.4, 0.9),
+      new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.9, roughness: 0.2 })
+    );
+    consoleMesh.position.set(0, 0.7, 3.8);
+    consoleGroup.add(consoleMesh);
+
+    const screenMesh = new THREE.Mesh(
+      new THREE.PlaneGeometry(0.8, 0.5),
+      new THREE.MeshBasicMaterial({ color: 0x00d2ff, side: THREE.DoubleSide })
+    );
+    screenMesh.position.set(0, 1.15, 4.26);
+    screenMesh.rotation.x = -0.3;
+    consoleGroup.add(screenMesh);
+    group.add(consoleGroup);
+
+    // Sofia QA Audit #5: Vertical Translucent Cyan Targeting Beacon Pillar
+    const beacon = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.14, 0.14, 14.0, 8),
+      new THREE.MeshBasicMaterial({ color: 0x00d2ff, transparent: true, opacity: 0.75 })
+    );
+    beacon.position.y = 7.0;
+    group.add(beacon);
+
+    this.scene.add(group);
+    this.envObjects.push(group);
+
+    this.coastalRailCannon = {
+      group,
+      pos,
+      terminalPos: new THREE.Vector3(pos.x, 0, pos.z + 3.8),
+      turretHead,
+      cooldown: 0,
+      targetAngle: 0
+    };
+  }
+
+  checkRailCannonInteraction(player, audioEngine, ui, horde, bosses, particles) {
+    if (!this.coastalRailCannon || !player) return false;
+    const can = this.coastalRailCannon;
+
+    if (player.position.distanceTo(can.terminalPos) <= 4.2) {
+      if (can.cooldown > 0) {
+        if (ui && ui.showAnnouncement) {
+          ui.showAnnouncement(`⏳ CANON DE SIÈGE 155MM EN RECHARGE CONDENSATEUR (${Math.ceil(can.cooldown)}S)...`);
+        }
+        return true;
+      }
+
+      can.cooldown = 24.0;
+
+      // Acquire target with highest density of enemies or active boss
+      let targetPos = new THREE.Vector3(0, 0, 0);
+      if (bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
+        targetPos = bosses.activeBoss.mesh.position.clone();
+      } else if (horde && horde.aliens && horde.aliens.length > 0) {
+        let maxCluster = 0;
+        horde.aliens.forEach(a => {
+          if (!a || a.hp <= 0 || !a.mesh) return;
+          let count = 0;
+          horde.aliens.forEach(other => {
+            if (other && other.mesh && a.mesh.position.distanceTo(other.mesh.position) <= 8.0) count++;
+          });
+          if (count > maxCluster) {
+            maxCluster = count;
+            targetPos = a.mesh.position.clone();
+          }
+        });
+      }
+
+      // Rotate turret towards target
+      const toTarget = targetPos.clone().sub(can.pos);
+      can.targetAngle = Math.atan2(toTarget.x, toTarget.z);
+      can.turretHead.rotation.y = can.targetAngle;
+
+      if (audioEngine && audioEngine.playWY155mmRailCannonFire) {
+        audioEngine.playWY155mmRailCannonFire();
+      }
+
+      // Spawn massive 155mm depleted-uranium rail projectile
+      const shellGeo = new THREE.CylinderGeometry(0.26, 0.32, 2.2, 8);
+      shellGeo.rotateX(Math.PI / 2);
+      const shellMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8 });
+      const shellMesh = new THREE.Mesh(shellGeo, shellMat);
+      shellMesh.position.copy(can.pos).add(new THREE.Vector3(0, 2.5, 0));
+      shellMesh.lookAt(targetPos);
+      this.scene.add(shellMesh);
+
+      const shellDir = targetPos.clone().sub(shellMesh.position).normalize();
+      this.activeRailShells.push({
+        mesh: shellMesh,
+        direction: shellDir,
+        targetPos: targetPos.clone(),
+        speed: 95.0,
+        life: 2.5,
+        radius: 12.0,
+        damage: 1800
+      });
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('💥 CANON DE SIÈGE WEYLAND-YUTANI 155MM DÉCLENCHÉ : OBUS CHARGÉ EN URANIUM APPAUVRI !');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  updateCoastalRailCannon(delta, horde, bosses, audioEngine, particles) {
+    if (!this.coastalRailCannon) return;
+    const can = this.coastalRailCannon;
+    if (can.cooldown > 0) can.cooldown = Math.max(0, can.cooldown - delta);
+
+    for (let i = this.activeRailShells.length - 1; i >= 0; i--) {
+      const s = this.activeRailShells[i];
+      s.life -= delta;
+      s.mesh.position.addScaledVector(s.direction, s.speed * delta);
+
+      if (particles && particles.emitSparks && Math.random() < 0.4) {
+        particles.emitSparks(s.mesh.position, 3);
+      }
+
+      const distToTarget = s.mesh.position.distanceTo(s.targetPos);
+      if (distToTarget <= 3.5 || s.mesh.position.y <= 0.2 || s.life <= 0) {
+        const impactPos = s.mesh.position.clone();
+        impactPos.y = 0.2;
+        this.scene.remove(s.mesh);
+        this.activeRailShells.splice(i, 1);
+
+        if (particles && particles.emitSparks) particles.emitSparks(impactPos, 35);
+        if (particles && particles.spawnPlasmaScorch) particles.spawnPlasmaScorch(impactPos);
+
+        // Crater explosion visual shockwave
+        const craterGeo = new THREE.RingGeometry(1.2, s.radius, 32);
+        craterGeo.rotateX(-Math.PI / 2);
+        const craterMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.9, side: THREE.DoubleSide });
+        const craterMesh = new THREE.Mesh(craterGeo, craterMat);
+        craterMesh.position.copy(impactPos);
+        this.scene.add(craterMesh);
+
+        let cScale = 1.0;
+        const cInterval = setInterval(() => {
+          cScale += 0.25;
+          craterMesh.scale.set(cScale, 1, cScale);
+          craterMat.opacity -= 0.08;
+          if (craterMat.opacity <= 0) {
+            clearInterval(cInterval);
+            this.scene.remove(craterMesh);
+          }
+        }, 25);
+
+        // Heavy crater blast damage
+        if (horde && horde.aliens) {
+          for (let j = horde.aliens.length - 1; j >= 0; j--) {
+            const a = horde.aliens[j];
+            if (!a || a.hp <= 0 || !a.mesh) continue;
+            const d = a.mesh.position.distanceTo(impactPos);
+            if (d <= s.radius) {
+              a.hp -= s.damage;
+              a.isFrontalShielded = false; // Shatters Crusher/Raven shields!
+              if (a.hp <= 0) {
+                if (horde.goreEngine) horde.goreEngine.spawnDismemberment(a.mesh.position, 'heavy');
+                horde.spawnAcidPool(a.mesh.position);
+                this.scene.remove(a.mesh);
+                horde.aliens.splice(j, 1);
+                horde.deadCount++;
+                if (window.gameInstance) window.gameInstance.score += 260;
+              }
+            }
+          }
+        }
+
+        if (bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
+          if (bosses.activeBoss.mesh.position.distanceTo(impactPos) <= s.radius + 3.0) {
+            bosses.takeDamage(s.damage * 0.85, horde);
+          }
+        }
+      }
+    }
+  }
+
+  /* === CHANTIER 4 (v50.0): Weyland-Yutani Cryo-Stasis Research Laboratory Sector & Breakable Specimen Pods === */
+  buildCryoStasisSector() {
+    const group = new THREE.Group();
+    const pos = new THREE.Vector3(-18, 0, -28);
+    group.position.copy(pos);
+
+    const metalMat = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.9, roughness: 0.2 });
+    const glassMat = new THREE.MeshStandardMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.45, roughness: 0.1 });
+    const mistMat = new THREE.MeshBasicMaterial({ color: 0x67e8f9, transparent: true, opacity: 0.7 });
+
+    // Raised laboratory platform
+    const platform = new THREE.Mesh(new THREE.BoxGeometry(14, 0.6, 8), metalMat);
+    platform.position.y = 0.3;
+    group.add(platform);
+
+    // 3 Cylindrical Cryo-Stasis Pods
+    const pods = [];
+    [-4.5, 0, 4.5].forEach((px, idx) => {
+      const podGroup = new THREE.Group();
+      podGroup.position.set(px, 0.6, 0);
+
+      // Base & Top Ring
+      const ringGeo = new THREE.CylinderGeometry(1.2, 1.3, 0.5, 12);
+      const baseMesh = new THREE.Mesh(ringGeo, metalMat);
+      baseMesh.position.y = 0.25;
+      podGroup.add(baseMesh);
+
+      const topMesh = new THREE.Mesh(ringGeo, metalMat);
+      topMesh.position.y = 3.65;
+      podGroup.add(topMesh);
+
+      // Glass Cylinder
+      const glass = new THREE.Mesh(new THREE.CylinderGeometry(1.1, 1.1, 3.0, 12), glassMat);
+      glass.position.y = 1.95;
+      podGroup.add(glass);
+
+      // Glowing cryo mist core
+      const mistCore = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.7, 2.6, 8), mistMat);
+      mistCore.position.y = 1.95;
+      podGroup.add(mistCore);
+
+      group.add(podGroup);
+      pods.push({ mesh: podGroup, glass, mistCore, isBroken: false });
+    });
+
+    // Console Breaker Pedestal
+    const consolePedestal = new THREE.Mesh(new THREE.BoxGeometry(1.1, 1.3, 0.8), metalMat);
+    consolePedestal.position.set(0, 0.95, 2.8);
+    group.add(consolePedestal);
+
+    // Sofia QA Audit #5: Vertical Translucent Ice-Blue Beacon Pillar
+    const beacon = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.14, 0.14, 14.0, 8),
+      new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.75 })
+    );
+    beacon.position.y = 7.0;
+    group.add(beacon);
+
+    this.scene.add(group);
+    this.envObjects.push(group);
+
+    this.cryoStasisSector = {
+      group,
+      pos,
+      consolePos: new THREE.Vector3(pos.x, 0, pos.z + 2.8),
+      pods,
+      cooldown: 0,
+      freezePulseTimer: 0
+    };
+  }
+
+  checkCryoPodInteraction(player, audioEngine, ui, horde, bosses, particles) {
+    if (!this.cryoStasisSector || !player) return false;
+    const sec = this.cryoStasisSector;
+
+    if (player.position.distanceTo(sec.consolePos) <= 4.2) {
+      if (sec.cooldown > 0) {
+        if (ui && ui.showAnnouncement) {
+          ui.showAnnouncement(`⏳ LABORATOIRE CRYO-STASE EN REPRESSURISATION (${Math.ceil(sec.cooldown)}S)...`);
+        }
+        return true;
+      }
+
+      sec.cooldown = 28.0;
+
+      if (audioEngine && audioEngine.playCryoStasisPodShatter) {
+        audioEngine.playCryoStasisPodShatter();
+      }
+
+      // Flash cryo-mist explosion particles
+      if (particles && particles.emitSparks) {
+        particles.emitSparks(sec.pos, 30);
+      }
+
+      // Freeze all Xenomorphs in 15m radius for 6.0 seconds
+      const freezeRadius = 15.0;
+      let frozenCount = 0;
+
+      if (horde && horde.aliens) {
+        for (let i = horde.aliens.length - 1; i >= 0; i--) {
+          const a = horde.aliens[i];
+          if (!a || a.hp <= 0 || !a.mesh) continue;
+          if (a.mesh.position.distanceTo(sec.pos) <= freezeRadius) {
+            a.isStunned = true;
+            a.stunTimer = Math.max(a.stunTimer || 0, 6.0);
+            a.hp -= 240;
+            frozenCount++;
+            if (a.mesh.material && a.mesh.material.color) {
+              a.mesh.material.color.setHex(0x67e8f9); // Ice blue frozen tint
+            }
+          }
+        }
+      }
+
+      // Cleanse acid pools in the laboratory
+      if (horde && horde.acidPools) {
+        for (let i = horde.acidPools.length - 1; i >= 0; i--) {
+          if (horde.acidPools[i].mesh.position.distanceTo(sec.pos) <= freezeRadius) {
+            this.scene.remove(horde.acidPools[i].mesh);
+            horde.acidPools.splice(i, 1);
+          }
+        }
+      }
+
+      // Antiseptic nitrogen heal for Yautja (+200 HP)
+      player.hp = Math.min(player.maxHp, player.hp + 200);
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement(`❄️ BRIS CRYO-STASE WEYLAND-YUTANI : DÉLESTAGE AZOTE LIQUIDE 15M (${frozenCount} XÉNOS CONGELÉS 6S, SOIN 200 PV) !`);
+      }
+      return true;
+    }
+    return false;
+  }
+
+  updateCryoStasisSector(delta, player, horde, particles) {
+    if (!this.cryoStasisSector) return;
+    const sec = this.cryoStasisSector;
+    if (sec.cooldown > 0) sec.cooldown = Math.max(0, sec.cooldown - delta);
+
+    // Subtle breathing pulse of cryo mist cores
+    sec.pods.forEach((p, idx) => {
+      const pulse = 1.0 + Math.sin(Date.now() * 0.003 + idx) * 0.08;
+      p.mistCore.scale.set(pulse, 1, pulse);
+    });
   }
 }
 

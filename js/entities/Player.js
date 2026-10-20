@@ -131,6 +131,16 @@ export class Player {
     this.seegsonBoltCooldown = 0;
     this.sonicTrapCooldown = 0;
     this.activeSonicTraps = [];
+    // v50.0 Systems (Hunter Shadow Dash I-Frames, Dropship Carpet-Bombing, Dual Plasma Overcharge Beam)
+    this.shadowDashCooldown = 0;
+    this.isShadowDashing = false;
+    this.shadowDashTimer = 0;
+    this.dropshipBombingCooldown = 0;
+    this.activeDropshipBombs = [];
+    this.isDualPlasmaBeamActive = false;
+    this.dualPlasmaBeamTimer = 0;
+    this.dualPlasmaBeamCooldown = 0;
+    this.dualPlasmaMeshGroup = null;
 
     // Pounce Leap State
     this.isLeaping = false;
@@ -3551,6 +3561,292 @@ export class Player {
       ui.showAnnouncement(`🔩 SEEGSON BOLT GUN (TUNGSTÈNE HAUTE TENSION) : ${hitTarget ? 'IMPACT CAUTÉRISANT (680 DMG)' : 'TIR À VIDE'} (${this.seegsonBoltAmmo}/10)`);
     }
     return true;
+  }
+
+  /* === LUCAS QA AUDIT #4: Tactical Hunter Shadow Dash (I-Frames & Cloaked After-Image) === */
+  performHunterShadowDash(particles = null, audio = null) {
+    if (this.shadowDashCooldown > 0) return false;
+    this.shadowDashCooldown = 1.8;
+    this.isShadowDashing = true;
+    this.shadowDashTimer = 0.35;
+    this.isInvulnerable = true;
+
+    if (audio && audio.playHunterShadowDash) {
+      audio.playHunterShadowDash();
+    }
+
+    const forward = new THREE.Vector3(Math.sin(this.rotationY), 0, Math.cos(this.rotationY)).normalize();
+    this.position.addScaledVector(forward, 6.5);
+    if (this.mesh) this.mesh.position.copy(this.position);
+
+    // Spawn transient optical cloaked after-image mesh
+    const afterImage = this.mesh.clone();
+    afterImage.position.copy(this.position).sub(forward.clone().multiplyScalar(3.0));
+    afterImage.traverse(c => {
+      if (c.isMesh && c.material) {
+        c.material = new THREE.MeshBasicMaterial({
+          color: 0x00d2ff,
+          transparent: true,
+          opacity: 0.55,
+          wireframe: true
+        });
+      }
+    });
+    this.scene.add(afterImage);
+
+    let op = 0.55;
+    const fade = setInterval(() => {
+      op -= 0.11;
+      afterImage.traverse(c => {
+        if (c.isMesh && c.material) c.material.opacity = Math.max(0, op);
+      });
+      if (op <= 0) {
+        clearInterval(fade);
+        this.scene.remove(afterImage);
+      }
+    }, 35);
+
+    if (particles && particles.emitSparks) {
+      particles.emitSparks(this.position, 12);
+    }
+
+    return true;
+  }
+
+  /* === CHANTIER 1 (v50.0): Yautja Stealth Infiltration Dropship Carpet-Bombing Protocol ([Shift + J]) === */
+  callInfiltrationDropshipBombing(horde, bosses, particles, audio, ui = null) {
+    if (this.dropshipBombingCooldown > 0) return false;
+    this.dropshipBombingCooldown = 28.0;
+
+    if (audio && audio.playYautjaDropshipSwoop) {
+      audio.playYautjaDropshipSwoop();
+    }
+
+    const forward = new THREE.Vector3(Math.sin(this.rotationY), 0, Math.cos(this.rotationY)).normalize();
+    const startPos = this.position.clone();
+
+    // Swooping 3D Yautja Stealth Infiltration Dropship
+    const dropshipGroup = new THREE.Group();
+    const hullMat = new THREE.MeshStandardMaterial({
+      color: 0x0f172a,
+      emissive: 0x0284c7,
+      emissiveIntensity: 0.6,
+      metalness: 0.95,
+      roughness: 0.1,
+      transparent: true,
+      opacity: 0.75
+    });
+
+    const hull = new THREE.Mesh(new THREE.ConeGeometry(2.4, 7.5, 5), hullMat);
+    hull.rotation.x = Math.PI / 2;
+    dropshipGroup.add(hull);
+
+    // Delta Wings
+    const wingGeo = new THREE.BoxGeometry(8.5, 0.2, 3.2);
+    const wings = new THREE.Mesh(wingGeo, hullMat);
+    wings.position.set(0, 0, -1.2);
+    dropshipGroup.add(wings);
+
+    const shipStart = startPos.clone().sub(forward.clone().multiplyScalar(24.0));
+    shipStart.y = 12.0;
+    dropshipGroup.position.copy(shipStart);
+    dropshipGroup.lookAt(shipStart.clone().add(forward).add(new THREE.Vector3(0, -0.15, 0)));
+    this.scene.add(dropshipGroup);
+
+    // Dropship flyover animation
+    let flyDist = 0;
+    const flyInterval = setInterval(() => {
+      flyDist += 3.2;
+      dropshipGroup.position.addScaledVector(forward, 3.2);
+      dropshipGroup.position.y += Math.sin(flyDist * 0.05) * 0.4;
+      if (flyDist >= 68.0) {
+        clearInterval(flyInterval);
+        this.scene.remove(dropshipGroup);
+      }
+    }, 25);
+
+    // Drop 6 plasma cluster bomblets along 25m corridor
+    for (let b = 1; b <= 6; b++) {
+      setTimeout(() => {
+        const bombPos = startPos.clone().add(forward.clone().multiplyScalar(b * 4.2));
+        bombPos.y = 0.2;
+
+        // Plasma napalm fireball explosion
+        const fireGeo = new THREE.SphereGeometry(2.4, 12, 12);
+        const fireMat = new THREE.MeshBasicMaterial({ color: 0x00f2fe, transparent: true, opacity: 0.9 });
+        const fireMesh = new THREE.Mesh(fireGeo, fireMat);
+        fireMesh.position.copy(bombPos);
+        this.scene.add(fireMesh);
+
+        let fScale = 1.0;
+        const fInterval = setInterval(() => {
+          fScale += 0.4;
+          fireMesh.scale.set(fScale, fScale, fScale);
+          fireMat.opacity -= 0.12;
+          if (fireMat.opacity <= 0) {
+            clearInterval(fInterval);
+            this.scene.remove(fireMesh);
+          }
+        }, 30);
+
+        if (particles && particles.emitSparks) particles.emitSparks(bombPos, 22);
+
+        // Persistent 8-second burning plasma napalm patch
+        this.activeDropshipBombs.push({
+          pos: bombPos.clone(),
+          radius: 4.8,
+          dps: 180,
+          timer: 8.0
+        });
+
+        // Instant corridor blast damage
+        if (horde && horde.aliens) {
+          for (let j = horde.aliens.length - 1; j >= 0; j--) {
+            const a = horde.aliens[j];
+            if (!a || a.hp <= 0 || !a.mesh) continue;
+            if (a.mesh.position.distanceTo(bombPos) <= 4.8) {
+              a.hp -= 420;
+              if (a.hp <= 0) {
+                if (horde.goreEngine) horde.goreEngine.spawnDismemberment(a.mesh.position, 'plasma');
+                this.scene.remove(a.mesh);
+                horde.aliens.splice(j, 1);
+                horde.deadCount++;
+              }
+            }
+          }
+        }
+
+        if (bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
+          if (bosses.activeBoss.mesh.position.distanceTo(bombPos) <= 5.5) {
+            bosses.takeDamage(380, horde);
+          }
+        }
+      }, b * 150);
+    }
+
+    if (ui && ui.showAnnouncement) {
+      ui.showAnnouncement('🛸 NAVETTE INFILTRATRICE YAUTJA : RASE-MOTTE & TAPIS DE BOMBES PLASMA (25M) !');
+    }
+    return true;
+  }
+
+  /* === CHANTIER 6 (v50.0): Dual Plasma Casters Concentrated Overcharge Beam ([Shift + RMB / Shift+Space+RMB]) === */
+  fireDualPlasmaOverchargeBeam(horde, bosses, synthetics, particles, audio, ui = null) {
+    if (this.dualPlasmaBeamCooldown > 0 || (this.plasmaEnergy || 0) < 35) return false;
+    this.dualPlasmaBeamCooldown = 16.0;
+    this.plasmaEnergy = Math.max(0, (this.plasmaEnergy || 100) - 35);
+    this.isDualPlasmaBeamActive = true;
+    this.dualPlasmaBeamTimer = 3.0;
+
+    if (audio && audio.playDualPlasmaOverchargeBeam) {
+      audio.playDualPlasmaOverchargeBeam();
+    }
+
+    // Build synchronized twin beam 3D meshes extending from left and right shoulder cannons
+    const beamGroup = new THREE.Group();
+    const beamMat = new THREE.MeshBasicMaterial({ color: 0x00f2fe, transparent: true, opacity: 0.95 });
+
+    [-1.1, 1.1].forEach(bx => {
+      const bGeo = new THREE.CylinderGeometry(0.18, 0.24, 38.0, 8);
+      bGeo.rotateX(Math.PI / 2);
+      const bMesh = new THREE.Mesh(bGeo, beamMat);
+      bMesh.position.set(bx, 3.4, 19.0);
+      beamGroup.add(bMesh);
+    });
+
+    this.mesh.add(beamGroup);
+    this.dualPlasmaMeshGroup = beamGroup;
+
+    if (ui && ui.showAnnouncement) {
+      ui.showAnnouncement('⚡ SURCHARGE JUMELÉE DES CANONS PLASMA : RAYON THERMIQUE CONCENTRÉ (920 DMG/S) !');
+    }
+    return true;
+  }
+
+  updateDualPlasmaBeam(delta, horde, bosses, particles) {
+    if (this.shadowDashCooldown > 0) this.shadowDashCooldown = Math.max(0, this.shadowDashCooldown - delta);
+    if (this.shadowDashTimer > 0) {
+      this.shadowDashTimer -= delta;
+      if (this.shadowDashTimer <= 0) {
+        this.isShadowDashing = false;
+        this.isInvulnerable = false;
+      }
+    }
+    if (this.dropshipBombingCooldown > 0) this.dropshipBombingCooldown = Math.max(0, this.dropshipBombingCooldown - delta);
+    if (this.dualPlasmaBeamCooldown > 0) this.dualPlasmaBeamCooldown = Math.max(0, this.dualPlasmaBeamCooldown - delta);
+
+    // Update active persistent napalm fire patches
+    for (let i = this.activeDropshipBombs.length - 1; i >= 0; i--) {
+      const p = this.activeDropshipBombs[i];
+      p.timer -= delta;
+      if (horde && horde.aliens) {
+        for (let j = horde.aliens.length - 1; j >= 0; j--) {
+          const a = horde.aliens[j];
+          if (!a || a.hp <= 0 || !a.mesh) continue;
+          if (a.mesh.position.distanceTo(p.pos) <= p.radius) {
+            a.hp -= p.dps * delta;
+            if (a.hp <= 0) {
+              if (horde.goreEngine) horde.goreEngine.spawnDismemberment(a.mesh.position, 'plasma');
+              this.scene.remove(a.mesh);
+              horde.aliens.splice(j, 1);
+              horde.deadCount++;
+            }
+          }
+        }
+      }
+      if (p.timer <= 0) this.activeDropshipBombs.splice(i, 1);
+    }
+
+    if (this.isDualPlasmaBeamActive) {
+      this.dualPlasmaBeamTimer -= delta;
+      const forward = new THREE.Vector3(Math.sin(this.rotationY), 0, Math.cos(this.rotationY)).normalize();
+      const origin = this.position.clone().add(new THREE.Vector3(0, 2.5, 0));
+
+      if (particles && particles.emitSparks) {
+        particles.emitSparks(origin.clone().add(forward.clone().multiplyScalar(8.0)), 4);
+      }
+
+      // Continuous 920 dmg/s thermal ray
+      if (horde && horde.aliens) {
+        for (let i = horde.aliens.length - 1; i >= 0; i--) {
+          const a = horde.aliens[i];
+          if (!a || a.hp <= 0 || !a.mesh) continue;
+          const toXeno = a.mesh.position.clone().sub(this.position);
+          toXeno.y = 0;
+          const dist = toXeno.length();
+          if (dist <= 38.0) {
+            const proj = toXeno.dot(forward);
+            const perpDist = Math.sqrt(Math.max(0, dist * dist - proj * proj));
+            if (proj > 0 && perpDist <= (a.radius || 1.2) + 1.2) {
+              a.hp -= 920 * delta;
+              a.isFrontalShielded = false; // Melts frontal shields!
+              if (a.hp <= 0) {
+                if (horde.goreEngine) horde.goreEngine.spawnDismemberment(a.mesh.position, 'plasma');
+                this.scene.remove(a.mesh);
+                horde.aliens.splice(i, 1);
+                horde.deadCount++;
+              }
+            }
+          }
+        }
+      }
+
+      if (bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
+        const toBoss = bosses.activeBoss.mesh.position.clone().sub(this.position);
+        toBoss.y = 0;
+        if (toBoss.length() <= 38.0 && toBoss.normalize().dot(forward) > 0.82) {
+          bosses.takeDamage(920 * delta, horde);
+        }
+      }
+
+      if (this.dualPlasmaBeamTimer <= 0) {
+        this.isDualPlasmaBeamActive = false;
+        if (this.dualPlasmaMeshGroup && this.dualPlasmaMeshGroup.parent) {
+          this.dualPlasmaMeshGroup.parent.remove(this.dualPlasmaMeshGroup);
+          this.dualPlasmaMeshGroup = null;
+        }
+      }
+    }
   }
 }
 
