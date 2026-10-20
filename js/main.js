@@ -302,9 +302,21 @@ class GameApp {
         }
       }
 
-      // Segmented Spine Whip [Digit 1 or Shift + Left Click] (AVP: Requiem 2007)
+      // QA Audit #1 Fix: Toggle Tactical Keybind Reference Overlay [F1 Key]
+      if (e.code === 'F1') {
+        e.preventDefault();
+        const helpOverlay = document.getElementById('qa-tactical-help-overlay');
+        if (helpOverlay) helpOverlay.classList.toggle('hidden');
+      }
+
+      // Segmented Spine Whip [Digit 1] / Chantier 1 (v49.0): Yautja Heavy Gravity Maul [Shift + Digit 1]
       if ((e.code === 'Digit1' || e.code === 'Numpad1') && this.player) {
-        this.performSpineWhip();
+        if (this.keys['ShiftLeft'] || this.keys['ShiftRight']) {
+          this.player.usedShiftModifier = true;
+          this.player.performMaulEarthshaker(this.horde, this.bosses, this.synthetics, this.env, this.particles, this.ui);
+        } else {
+          this.performSpineWhip();
+        }
       }
 
       // Engineer Black Pathogen Mutagen Urn Bombardment [Digit 2] (Prometheus 2012)
@@ -312,9 +324,14 @@ class GameApp {
         this.triggerPathogenUrnStrike();
       }
 
-      // Laser-Guided Flechette Volley [Digit 3] (Prey 2022 Feral Predator)
+      // Laser-Guided Flechette Volley [Digit 3] / Chantier 7 (v49.0): Seegson High-Voltage Bolt Gun [Shift + Digit 3]
       if ((e.code === 'Digit3' || e.code === 'Numpad3') && this.player) {
-        this.triggerLaserGuidedFlechettes();
+        if (this.keys['ShiftLeft'] || this.keys['ShiftRight']) {
+          this.player.usedShiftModifier = true;
+          this.player.fireSeegsonBoltGun(this.horde, this.bosses, this.synthetics, this.particles, this.ui);
+        } else {
+          this.triggerLaserGuidedFlechettes();
+        }
       }
 
       // UA 571-C Automated Remote Sentry Gun [Digit 4] (Aliens 1986 Special Edition)
@@ -496,6 +513,10 @@ class GameApp {
           // Handled USCM supply cache opening!
         } else if (this.env && this.env.checkCryoVentInteraction && this.env.checkCryoVentInteraction(this.player.position, this.player, this.ui, this.audio, this.horde, this.bosses)) {
           // Handled Weyland-Yutani Atmospheric Cooling Tower Cryo-Vent Purge (Alien 3 / Fiorina 161)!
+        } else if (this.env && this.env.checkAurigaBreakerInteraction && this.env.checkAurigaBreakerInteraction(this.player, this.audio, this.ui)) {
+          // Handled USM Auriga Flooded Hydro-Cryo Basin 50,000V Breaker (Alien Resurrection 1997)!
+        } else if (this.env && this.env.checkAncientShrineInteraction && this.env.checkAncientShrineInteraction(this.player, this.audio, this.ui)) {
+          // Handled Ancient Yautja Shrine of the Ancients Divine Blessing!
         } else if (this.env && this.env.checkPowerLoaderInteraction(this.player.position, this.player, this.horde, this.ui, this.audio, this.particles)) {
           // Handled Caterpillar Power Loader crushing clamp!
         } else {
@@ -503,18 +524,29 @@ class GameApp {
         }
       }
 
-      // Chantier 3: Trax-Net Micro-Beacon Dart Gun [X Key] (AvP Extinction / Dark Horse)
+      // QA Audit #4 Fix: Deduplicated KeyX — [X] Trax-Net Dart / [Shift + X] Orbital Plasma Strike
       if (e.code === 'KeyX' && this.player) {
-        const tagged = this.player.fireTraxNetDart(this.horde, this.synthetics, this.bosses);
-        if (tagged) {
-          this.ui.showAnnouncement('🎯 BALISE TRAX-NET VERROUILLÉE (+25% DÉGÂTS, TÉLÉMÉTRIE MURALE 25S) !');
+        if (this.keys['ShiftLeft'] || this.keys['ShiftRight']) {
+          this.player.usedShiftModifier = true;
+          if (this.orbital.triggerStrike(this.player.position, this.horde, this.bosses, this.particles)) {
+            this.ui.showAnnouncement('🚀 FRAPPE PLASMA ORBITALE DÉCLENCHÉE !');
+          }
         } else {
-          this.ui.showAnnouncement('⏳ LANCEUR TRAX-NET EN RECHARGE OU AUCUNE CIBLE');
+          const tagged = this.player.fireTraxNetDart(this.horde, this.synthetics, this.bosses);
+          if (tagged) {
+            this.ui.showAnnouncement('🎯 BALISE TRAX-NET VERROUILLÉE (+25% DÉGÂTS, TÉLÉMÉTRIE MURALE 25S) !');
+          } else {
+            this.ui.showAnnouncement('⏳ LANCEUR TRAX-NET EN RECHARGE OU AUCUNE CIBLE');
+          }
         }
       }
 
+      // [T] Yautja Steel Bear Trap / Chantier 5 (v49.0): [Shift + T] Tracker Predator Sonic Trap Mine
       if (e.code === 'KeyT' && this.player) {
-        if (this.player.deployBearTrap(this.horde)) {
+        if (this.keys['ShiftLeft'] || this.keys['ShiftRight']) {
+          this.player.usedShiftModifier = true;
+          this.player.deploySonicTrapMine(this.ui);
+        } else if (this.player.deployBearTrap(this.horde)) {
           this.ui.showAnnouncement('🪤 PIÈGE À LOUP YAUTJA STEEL BEAR TRAP DÉPLOYÉ !');
         }
       }
@@ -567,7 +599,7 @@ class GameApp {
         }
       }
 
-      // Chantier 1 (v48): Yautja Scout Ship Stratospheric Thermal Beam Strike [M Key] / Chantier 10 (v48): Endless Musou Mode Toggle [Shift + M]
+      // QA Audit #4 Fix: Deduplicated KeyM — [M] Scout Ship Beam / [Alt + M] Hybrid Metamorphosis / [Shift + M] Endless Mode
       if (e.code === 'KeyM' && this.player) {
         if (this.keys['ShiftLeft'] || this.keys['ShiftRight']) {
           this.player.usedShiftModifier = true;
@@ -575,14 +607,26 @@ class GameApp {
           this.ui.showAnnouncement(this.isEndlessMode
             ? '♾️ MODE SURVIE INFINIE "SURVIVAL OF THE WORTHY" ACTIVÉ : VAGUES MUTAGÈNES ILLIMITÉES !'
             : '🏁 MODE CAMPAGNE STANDARD RESTAURÉ (5 VAGUES)');
+        } else if (this.keys['AltLeft'] || this.keys['AltRight']) {
+          this.player.triggerHybridMetamorphosis();
         } else {
           this.player.triggerScoutShipBeam(this.ui);
-          this.player.triggerHybridMetamorphosis();
         }
       }
 
+      // QA Audit #4 Fix: Deduplicated KeyP — [P] Combi-Stick Throw / [Shift + P] or [Shift + 4] Plasma Pistol 3-Bolt Burst
       if (e.code === 'KeyP' && this.player) {
-        this.throwCombiStick();
+        if (this.keys['ShiftLeft'] || this.keys['ShiftRight']) {
+          this.player.usedShiftModifier = true;
+          const fired = this.player.firePlasmaPistol(this.horde, this.bosses, this.particles, this.env);
+          if (fired) {
+            this.ui.showAnnouncement('⚡ RAFALE PISTOLET PLASMA TRIPLETTE (AVP-R) : 3x95 DÉGÂTS D\'ÉNERGIE PURE !');
+          } else {
+            this.ui.showAnnouncement('⚠️ ÉNERGIE PLASMA INSUFFISANTE (12 REQUIS) OU RECHARGE EN COURS');
+          }
+        } else {
+          this.throwCombiStick();
+        }
       }
 
       // Chantier 4 (v46): Yautja Cyber-Hunt Bionic Exosuit [O Key] / Photo Mode [Shift + O Key]
@@ -595,12 +639,6 @@ class GameApp {
           } else {
             this.ui.showAnnouncement('⏳ EXOSQUELETTE BIONIQUE EN RECHARGE (45S)...');
           }
-        }
-      }
-
-      if (e.code === 'KeyX' && this.player) {
-        if (this.orbital.triggerStrike(this.player.position, this.horde, this.bosses, this.particles)) {
-          this.ui.showAnnouncement('🚀 FRAPPE PLASMA ORBITALE DÉCLENCHÉE !');
         }
       }
 
@@ -620,9 +658,9 @@ class GameApp {
         }
       }
 
-      // Chantier 5 (v45): Yautja Pure Energy Plasma Pistol 3-Bolt Burst [KeyP or Shift+Digit4] (AVP: Requiem 2007)
-      if ((e.code === 'KeyP' || (e.code === 'Digit4' && (this.keys['ShiftLeft'] || this.keys['ShiftRight']))) && this.player) {
-        if (this.keys['ShiftLeft'] || this.keys['ShiftRight']) this.player.usedShiftModifier = true;
+      // Chantier 5 (v45): Yautja Pure Energy Plasma Pistol 3-Bolt Burst [Shift+Digit4] (AVP: Requiem 2007)
+      if (e.code === 'Digit4' && (this.keys['ShiftLeft'] || this.keys['ShiftRight']) && this.player) {
+        this.player.usedShiftModifier = true;
         const fired = this.player.firePlasmaPistol(this.horde, this.bosses, this.particles, this.env);
         if (fired) {
           this.ui.showAnnouncement('⚡ RAFALE PISTOLET PLASMA TRIPLETTE (AVP-R) : 3x95 DÉGÂTS D\'ÉNERGIE PURE !');
@@ -1598,10 +1636,10 @@ class GameApp {
       return;
     }
 
-    // 2. Sub-Boss Execution (Crusher Titan, Praetorian Royal Guard, Grid Alien, Marvel Alpha, Deacon Titan, Rogue King)
+    // 2. Sub-Boss Execution (Crusher Titan, Praetorian, Grid Alien, Marvel Alpha, Deacon, Rogue King, Raven, Ancient Predalien)
     for (let i = this.horde.aliens.length - 1; i >= 0; i--) {
       const a = this.horde.aliens[i];
-      if ((a.type === 'crusher' || a.type === 'praetorian' || a.type === 'grid_alien' || a.isMarvelAlpha || a.isDeacon || a.isRogueKing) && a.isStunned) {
+      if ((a.type === 'crusher' || a.type === 'praetorian' || a.type === 'grid_alien' || a.isMarvelAlpha || a.isDeacon || a.isRogueKing || a.isRaven || a.isAncientPredalien) && a.isStunned) {
         if (a.mesh.position.distanceTo(this.player.position) <= 5.8) {
           this.player.executeSpineRip();
           this.sessionSkulls++;
@@ -1613,26 +1651,38 @@ class GameApp {
           }
           this.triggerCameraFovSurge(50, 1.3);
 
-          let tName = a.isRogueKing
-            ? 'Crâne Couronné Dentelé du King Alien Rogue (Légendaire)'
-            : (a.isDeacon
-              ? 'Crâne Pointu Cobalt & Mâchoire Pharyngienne de Deacon Titan (Prometheus 2012)'
-              : (a.isMarvelAlpha
-                ? "Crâne Barbelé Argenté & Colonne Primordiale de l'Alpha Marvel (Epsilon Apex 1:1)"
-                : (a.type === 'crusher'
-                  ? 'Bouclier Frontal Blindé de Crusher Titan'
-                  : (a.type === 'grid_alien'
-                    ? 'Crâne Gravé au Quadrillage Acide de Grid Alien (AVP 2004)'
-                    : 'Couronne Royale Éburnéenne de Prétorien'))));
-          let tHonor = a.isRogueKing ? 4000 : (a.isDeacon ? 3500 : (a.isMarvelAlpha ? 3500 : (a.type === 'crusher' ? 1200 : (a.type === 'grid_alien' ? 1400 : 900))));
-          if (a.isRogueKing && this.audio && this.audio.playRogueKingRoar) {
+          let tName = a.isAncientPredalien
+            ? 'Relique Fossilisée & Mandibules Ancestrales de l\'Ancient Predalien Elder (Primal Hunt)'
+            : (a.isRaven
+              ? 'Crâne d\'Obsidienne & Ailes Chitineuses du Xenomorph Raven (Colonial Marines)'
+              : (a.isRogueKing
+                ? 'Crâne Couronné Dentelé du King Alien Rogue (Légendaire)'
+                : (a.isDeacon
+                  ? 'Crâne Pointu Cobalt & Mâchoire Pharyngienne de Deacon Titan (Prometheus 2012)'
+                  : (a.isMarvelAlpha
+                    ? "Crâne Barbelé Argenté & Colonne Primordiale de l'Alpha Marvel (Epsilon Apex 1:1)"
+                    : (a.type === 'crusher'
+                      ? 'Bouclier Frontal Blindé de Crusher Titan'
+                      : (a.type === 'grid_alien'
+                        ? 'Crâne Gravé au Quadrillage Acide de Grid Alien (AVP 2004)'
+                        : 'Couronne Royale Éburnéenne de Prétorien'))))));
+          let tHonor = a.isAncientPredalien ? 4500 : (a.isRaven ? 3800 : (a.isRogueKing ? 4000 : (a.isDeacon ? 3500 : (a.isMarvelAlpha ? 3500 : (a.type === 'crusher' ? 1200 : (a.type === 'grid_alien' ? 1400 : 900))))));
+          if (a.isAncientPredalien && this.audio && this.audio.playAncientPredalienAwaken) {
+            this.audio.playAncientPredalienAwaken();
+          } else if (a.isRaven && this.audio && this.audio.playRavenXenoShriek) {
+            this.audio.playRavenXenoShriek();
+          } else if (a.isRogueKing && this.audio && this.audio.playRogueKingRoar) {
             this.audio.playRogueKingRoar();
           } else if (a.isDeacon && this.audio && this.audio.playDeaconSpineRip) {
             this.audio.playDeaconSpineRip();
           }
           this.player.recordTrophy(tName, tHonor);
 
-          if (a.isRogueKing) {
+          if (a.isAncientPredalien) {
+            this.player.royalJellyFlasks += 3;
+          } else if (a.isRaven) {
+            this.player.royalJellyFlasks += 2;
+          } else if (a.isRogueKing) {
             this.player.royalJellyFlasks += 3;
           } else if (a.isDeacon) {
             this.player.royalJellyFlasks += 2;
@@ -1649,7 +1699,7 @@ class GameApp {
           this.player.hp = Math.min(this.player.maxHp, this.player.hp + 400);
 
           // Sub-Boss Execution Morale Swing (+18% to +25%)
-          this.shiftBattlefieldMorale((a.isMarvelAlpha || a.isRogueKing) ? 25.0 : 18.0);
+          this.shiftBattlefieldMorale((a.isMarvelAlpha || a.isRogueKing || a.isRaven || a.isAncientPredalien) ? 25.0 : 18.0);
 
           if (this.gore) {
             this.gore.spawnDismemberment(a.mesh.position, 'spine_rip');
@@ -1764,6 +1814,11 @@ class GameApp {
       this.score += h.killed ? 150 : 25;
       this.player.musouEnergy = Math.min(this.player.maxMusouEnergy, this.player.musouEnergy + (h.killed ? 6 : 2));
 
+      // QA Audit #3 (Karim): Diegetic Yautja targeting computer hitmarker feedback
+      if (this.audio && this.audio.playDiegeticHitmarker) {
+        this.audio.playDiegeticHitmarker(h.killed || h.isOfficer);
+      }
+
       // Shift Morale: Kills favor Yautja Clan
       if (h.killed) {
         if (h.isOfficer) {
@@ -1865,7 +1920,25 @@ class GameApp {
       this.player.updateScoutShipBeam(delta, this.horde, this.bosses, this.synthetics, this.particles);
     }
 
-    // Chantier 6 & 9 (v47) + Chantier 4, 5 & 9 (v48): Cryo-Vent, Mutagen Puddles, Molten Lead Foundry, Bishop Androids & Volcanic Ash Storm
+    // Chantier 5 (v49.0): Tracker Predator Biomechanical Sonic Trap Mine Countdown & Acoustic Implosion
+    if (this.player && this.player.updateSonicTraps) {
+      this.player.updateSonicTraps(delta, this.horde, this.bosses, this.particles);
+    }
+
+    // QA Audit #3 (Karim): Critical Low Health Bio-Telemetry Heartbeat Beep
+    if (this.player && this.player.hp > 0 && this.player.hp <= (this.player.maxHp || 1000) * 0.25) {
+      this.lowHealthBeepTimer = (this.lowHealthBeepTimer || 0) + delta;
+      if (this.lowHealthBeepTimer >= 1.25) {
+        this.lowHealthBeepTimer = 0;
+        if (this.audio && this.audio.playCriticalLowHealthBeep) {
+          this.audio.playCriticalLowHealthBeep();
+        }
+      }
+    } else {
+      this.lowHealthBeepTimer = 0;
+    }
+
+    // Chantier 6 & 9 (v47) + Chantier 4, 5 & 9 (v48) + Chantier 3, 4 & 9 (v49) Interactive Stations
     if (this.env) {
       if (this.env.updateCoolingTowerCryoVent) {
         this.env.updateCoolingTowerCryoVent(delta, this.player, this.horde, this.bosses, this.particles, this.audio);
@@ -1881,6 +1954,15 @@ class GameApp {
       }
       if (this.env.updateVolcanicAshStorm) {
         this.env.updateVolcanicAshStorm(delta, this.player, this.audio, this.ui);
+      }
+      if (this.env.updateUSCMMissileBattery) {
+        this.env.updateUSCMMissileBattery(delta, this.horde, this.bosses, this.audio, this.particles);
+      }
+      if (this.env.updateAurigaFloodedBasin) {
+        this.env.updateAurigaFloodedBasin(delta, this.player, this.horde, this.bosses, this.particles);
+      }
+      if (this.env.updateAncientShrine) {
+        this.env.updateAncientShrine(delta, this.player, this.horde);
       }
     }
 
@@ -2346,8 +2428,8 @@ class GameApp {
     const boss = this.bosses.activeBoss;
     let subBossStunnedNearby = false;
     this.horde.aliens.forEach(a => {
-      if ((a.type === 'crusher' || a.type === 'praetorian' || a.type === 'grid_alien' || a.isDeacon || a.isRogueKing) && a.isStunned) {
-        if (a.mesh.position.distanceTo(this.player.position) <= 5.5) {
+      if ((a.type === 'crusher' || a.type === 'praetorian' || a.type === 'grid_alien' || a.isDeacon || a.isRogueKing || a.isRaven || a.isAncientPredalien) && a.isStunned) {
+        if (a.mesh.position.distanceTo(this.player.position) <= 5.8) {
           subBossStunnedNearby = true;
         }
       }
@@ -2363,7 +2445,7 @@ class GameApp {
     }
     this.ui.showExecutionPrompt((boss && boss.isStunned) || subBossStunnedNearby || syntheticHarvestNearby);
 
-    // v46.0, v47.0 & v48.0 Proximity Prompts & Telemetry
+    // v46.0, v47.0, v48.0 & v49.0 Proximity Prompts & Diegetic Telemetry
     if (this.env && this.player) {
       const isNearSmartgun = this.env.mountedSmartgun && this.player.position.distanceTo(this.env.mountedSmartgun.pos) <= 3.2;
       this.ui.updateSmartgunPrompt(isNearSmartgun, this.player.isMountedSmartgun, this.env.mountedSmartgun);
@@ -2379,13 +2461,43 @@ class GameApp {
         this.ui.updateFoundryValvePrompt(isNearFoundry, this.env.moltenFoundry);
       }
 
+      // Chantier 4 (v49): USM Auriga Flooded Basin 50,000V Breaker Proximity Prompt
+      const isNearAuriga = this.env.aurigaBasin && this.player.position.distanceTo(this.env.aurigaBasin.breakerPos) <= 4.2;
+      const aurigaPrompt = document.getElementById('auriga-breaker-prompt');
+      if (aurigaPrompt) {
+        if (isNearAuriga && !this.env.aurigaBasin.isElectrified && this.env.aurigaBasin.cooldown <= 0) aurigaPrompt.classList.remove('hidden');
+        else aurigaPrompt.classList.add('hidden');
+      }
+
+      // Chantier 9 (v49): Ancient Yautja Shrine of the Ancients Proximity Prompt
+      const isNearShrine = this.env.ancientShrine && this.player.position.distanceTo(this.env.ancientShrine.pos) <= 4.5;
+      const shrinePrompt = document.getElementById('ancient-shrine-prompt');
+      if (shrinePrompt) {
+        if (isNearShrine && this.env.ancientShrine.cooldown <= 0) shrinePrompt.classList.remove('hidden');
+        else shrinePrompt.classList.add('hidden');
+      }
+
       const isInsideDerelict = this.env.derelictChamber && this.player.position.distanceTo(this.env.derelictChamber.center) <= this.env.derelictChamber.radius;
       this.ui.updateDerelictHud(isInsideDerelict);
+
+      // QA Audit #2 (Elena): Diegetic Wrist Gauntlet Telemetry Update
+      if (this.ui.updateDiegeticWristTelemetry) {
+        this.ui.updateDiegeticWristTelemetry(this.player, this.env, this.isEndlessMode);
+      }
     }
 
     if (this.horde.aliens.length < 10 && !this.bosses.activeBoss) {
       if (this.waveIndex < this.totalWaves || this.isEndlessMode) {
         this.waveIndex++;
+
+        // QA Audit #5 (Sofia): Tactical Wave Munition Dropship Resupply
+        if (this.player) {
+          this.player.m41aGrenadeCharges = Math.min(6, (this.player.m41aGrenadeCharges || 0) + 2);
+          this.player.m77GaussAmmo = Math.min(12, (this.player.m77GaussAmmo || 0) + 4);
+          this.player.seegsonBoltAmmo = Math.min(10, (this.player.seegsonBoltAmmo || 0) + 3);
+          this.player.medicompCharges = Math.min(5, (this.player.medicompCharges || 0) + 1);
+        }
+
         this.horde.spawnWave(45 + this.waveIndex * 15, this.player.position);
         this.ui.showAnnouncement(this.waveIndex > this.totalWaves
           ? `♾️ VAGUE SURVIE INFINIE ${this.waveIndex} ("SURVIVAL OF THE WORTHY") DÉPLOYÉE !`

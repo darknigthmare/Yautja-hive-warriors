@@ -69,6 +69,11 @@ export class EnvironmentManager {
       duration: 0,
       ashSystem: null
     };
+    // v49.0 Systems (USCM M579 SAM Battery, USM Auriga Flooded Basin, Shrine of the Ancients)
+    this.uscmMissileBattery = null;
+    this.activeSAMMissiles = [];
+    this.aurigaBasin = null;
+    this.ancientShrine = null;
   }
 
   clearEnvironment() {
@@ -201,6 +206,23 @@ export class EnvironmentManager {
     if (this.volcanicStorm) {
       this.volcanicStorm.active = false;
       this.volcanicStorm.timer = 18.0;
+    }
+
+    // v49.0 Cleanups
+    if (this.uscmMissileBattery) {
+      this.scene.remove(this.uscmMissileBattery.group);
+      this.uscmMissileBattery = null;
+    }
+    this.activeSAMMissiles.forEach(m => this.scene.remove(m.mesh));
+    this.activeSAMMissiles = [];
+    if (this.aurigaBasin) {
+      this.scene.remove(this.aurigaBasin.group);
+      if (this.aurigaBasin.arcMesh) this.scene.remove(this.aurigaBasin.arcMesh);
+      this.aurigaBasin = null;
+    }
+    if (this.ancientShrine) {
+      this.scene.remove(this.ancientShrine.group);
+      this.ancientShrine = null;
     }
 
     this.reactorMeltdownActive = false;
@@ -397,6 +419,16 @@ export class EnvironmentManager {
     // === v48.0 10-CHANTIER EXPANSION (Fiorina 161 Molten Lead Foundry Vat & Containment Channel) ===
     // Chantier 4: Fiorina "Fury" 161 Molten Lead Foundry & Pouring Vat (Alien 3 1992 Canon 1:1)
     this.buildFiorinaMoltenLeadFoundry();
+
+    // === v49.0 10-CHANTIER EXPANSION (USCM M579 SAM Battery, USM Auriga Flooded Basin, Shrine of the Ancients) ===
+    // Chantier 3: USCM M579 "Aguilar" Guided Missile Battery & Anti-Air Radar (Aliens / Fireteam Elite)
+    this.buildUSCMMissileBattery();
+
+    // Chantier 4: USM Auriga Flooded Hydro-Cryo Basin & 50,000V Breaker (Alien: Resurrection 1997)
+    this.buildAurigaFloodedBasin();
+
+    // Chantier 9: Ancient Yautja Shrine of the Ancients & Sacrificial Braziers (AVP: Extinction)
+    this.buildShrineOfTheAncients();
   }
 
   buildTempleProps(stoneMat) {
@@ -5025,6 +5057,426 @@ export class EnvironmentManager {
           this.scene.remove(vs.ashSystem);
           vs.ashSystem = null;
         }
+      }
+    }
+  }
+
+  /* === CHANTIER 3 (v49): USCM M579 "Aguilar" Guided SAM Missile Battery & Radar (Aliens / Fireteam Elite) === */
+  buildUSCMMissileBattery() {
+    const group = new THREE.Group();
+    const pos = new THREE.Vector3(-26, 0, -24);
+    group.position.copy(pos);
+
+    const oliveMat = new THREE.MeshStandardMaterial({ color: 0x364531, roughness: 0.55, metalness: 0.75 });
+    const darkSteelMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.3, metalness: 0.9 });
+    const beaconMat = new THREE.MeshBasicMaterial({ color: 0x22c55e, transparent: true, opacity: 0.45 });
+
+    // Armored Tripod Pedestal Base
+    const base = new THREE.Mesh(new THREE.CylinderGeometry(1.4, 1.8, 1.1, 8), darkSteelMat);
+    base.position.y = 0.55;
+    group.add(base);
+
+    // Rotating Turret Head with Twin 6-Tube Missile Pods + Radar Dish
+    const turretHead = new THREE.Group();
+    turretHead.position.y = 1.65;
+
+    [-1.1, 1.1].forEach(px => {
+      const pod = new THREE.Mesh(new THREE.BoxGeometry(0.85, 0.95, 1.8), oliveMat);
+      pod.position.set(px, 0.2, 0);
+      turretHead.add(pod);
+    });
+
+    const radarDish = new THREE.Mesh(new THREE.CylinderGeometry(0.75, 0.2, 0.25, 12), darkSteelMat);
+    radarDish.rotation.x = Math.PI / 3;
+    radarDish.position.set(0, 1.05, -0.35);
+    turretHead.add(radarDish);
+
+    group.add(turretHead);
+
+    // QA Audit #5 Fix: Vertical Diegetic Tactical Beacon Pillar
+    const beacon = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 12.0, 8), beaconMat);
+    beacon.position.y = 6.0;
+    group.add(beacon);
+
+    this.scene.add(group);
+    this.envObjects.push(group);
+
+    this.uscmMissileBattery = {
+      group,
+      pos,
+      turretHead,
+      radarDish,
+      fireCooldown: 2.5
+    };
+  }
+
+  updateUSCMMissileBattery(delta, horde, bosses, audioEngine, particles) {
+    if (!this.uscmMissileBattery) return;
+    const bat = this.uscmMissileBattery;
+
+    if (bat.radarDish) {
+      bat.radarDish.rotation.y += 3.2 * delta;
+    }
+
+    bat.fireCooldown -= delta;
+    if (bat.fireCooldown <= 0) {
+      bat.fireCooldown = 3.2;
+
+      // Prioritize Airborne Manta Swarmers, Royal Facehuggers, Raven Xenomorphs, then nearest Alien/Boss
+      let targetMesh = null;
+      let targetEntity = null;
+      let isMantaTarget = false;
+
+      if (horde && horde.mantaSwarmers && horde.mantaSwarmers.length > 0) {
+        const m = horde.mantaSwarmers[0];
+        if (m && m.mesh) {
+          targetMesh = m.mesh;
+          targetEntity = m;
+          isMantaTarget = true;
+        }
+      }
+
+      if (!targetMesh && horde && horde.aliens) {
+        let bestDist = 42.0;
+        horde.aliens.forEach(a => {
+          if (a && a.hp > 0 && a.mesh) {
+            const d = a.mesh.position.distanceTo(bat.pos);
+            const priorityDist = (a.isRaven || a.isRogueKing || a.isAncientPredalien) ? d * 0.45 : d;
+            if (priorityDist < bestDist) {
+              bestDist = priorityDist;
+              targetMesh = a.mesh;
+              targetEntity = a;
+            }
+          }
+        });
+      }
+
+      if (!targetMesh && bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
+        if (bosses.activeBoss.mesh.position.distanceTo(bat.pos) <= 45.0) {
+          targetMesh = bosses.activeBoss.mesh;
+          targetEntity = bosses.activeBoss;
+        }
+      }
+
+      if (targetMesh) {
+        const toTarget = targetMesh.position.clone().sub(bat.pos).normalize();
+        bat.turretHead.rotation.y = Math.atan2(toTarget.x, toTarget.z);
+
+        if (audioEngine && audioEngine.playUSCMMissileLaunch) {
+          audioEngine.playUSCMMissileLaunch();
+        }
+
+        const mGeo = new THREE.CylinderGeometry(0.08, 0.12, 0.9, 6);
+        mGeo.rotateX(Math.PI / 2);
+        const mMat = new THREE.MeshBasicMaterial({ color: 0xf97316 });
+        const mMesh = new THREE.Mesh(mGeo, mMat);
+        mMesh.position.copy(bat.pos).add(new THREE.Vector3(0, 2.2, 0));
+        this.scene.add(mMesh);
+
+        this.activeSAMMissiles.push({
+          mesh: mMesh,
+          targetMesh,
+          targetEntity,
+          isMantaTarget,
+          speed: 32.0,
+          life: 3.0
+        });
+      }
+    }
+
+    // Update Homing SAM Missiles
+    for (let i = this.activeSAMMissiles.length - 1; i >= 0; i--) {
+      const ms = this.activeSAMMissiles[i];
+      ms.life -= delta;
+
+      if (!ms.targetMesh || ms.life <= 0) {
+        this.scene.remove(ms.mesh);
+        this.activeSAMMissiles.splice(i, 1);
+        continue;
+      }
+
+      const dir = ms.targetMesh.position.clone().sub(ms.mesh.position).normalize();
+      ms.mesh.position.addScaledVector(dir, ms.speed * delta);
+      ms.mesh.lookAt(ms.targetMesh.position);
+
+      if (ms.mesh.position.distanceTo(ms.targetMesh.position) <= 1.8) {
+        if (particles && particles.emitSparks) {
+          particles.emitSparks(ms.mesh.position, 10);
+        }
+        if (ms.isMantaTarget && horde && horde.mantaSwarmers) {
+          const idx = horde.mantaSwarmers.indexOf(ms.targetEntity);
+          if (idx !== -1) {
+            this.scene.remove(ms.targetMesh);
+            horde.mantaSwarmers.splice(idx, 1);
+          }
+        } else if (ms.targetEntity && ms.targetEntity.hp !== undefined) {
+          ms.targetEntity.hp -= 340;
+          if (ms.targetEntity.hp <= 0 && horde && horde.aliens) {
+            const idx = horde.aliens.indexOf(ms.targetEntity);
+            if (idx !== -1) {
+              if (horde.goreEngine) horde.goreEngine.spawnDismemberment(ms.targetMesh.position, 'heavy');
+              this.scene.remove(ms.targetMesh);
+              horde.aliens.splice(idx, 1);
+              horde.deadCount++;
+            }
+          }
+        }
+        this.scene.remove(ms.mesh);
+        this.activeSAMMissiles.splice(i, 1);
+      }
+    }
+  }
+
+  /* === CHANTIER 4 (v49): USM Auriga Flooded Hydro-Cryo Basin & 50,000V Breaker (Alien: Resurrection 1997) === */
+  buildAurigaFloodedBasin() {
+    const group = new THREE.Group();
+    const pos = new THREE.Vector3(0, 0, 26);
+    group.position.copy(pos);
+
+    const waterGeo = new THREE.PlaneGeometry(18.0, 14.0);
+    waterGeo.rotateX(-Math.PI / 2);
+    const waterMat = new THREE.MeshStandardMaterial({
+      color: 0x0284c7,
+      emissive: 0x0369a1,
+      roughness: 0.1,
+      metalness: 0.85,
+      transparent: true,
+      opacity: 0.72
+    });
+    const waterMesh = new THREE.Mesh(waterGeo, waterMat);
+    waterMesh.position.y = 0.06;
+    group.add(waterMesh);
+
+    // Containment Rim Curbs
+    const rimMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.5, metalness: 0.8 });
+    [-9.2, 9.2].forEach(rx => {
+      const curb = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.45, 14.4), rimMat);
+      curb.position.set(rx, 0.22, 0);
+      group.add(curb);
+    });
+
+    // 50,000V Hydro-Electric Breaker Console at (0, 0, 18.5)
+    const consoleMesh = new THREE.Mesh(new THREE.BoxGeometry(0.9, 1.5, 0.7), rimMat);
+    consoleMesh.position.set(0, 0.75, -7.5);
+    group.add(consoleMesh);
+
+    const beaconMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.45 });
+    const beacon = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 10.0, 8), beaconMat);
+    beacon.position.set(0, 5.0, -7.5);
+    group.add(beacon);
+
+    this.scene.add(group);
+    this.envObjects.push(group);
+
+    this.aurigaBasin = {
+      group,
+      pos,
+      breakerPos: new THREE.Vector3(pos.x, 0, pos.z - 7.5),
+      waterMesh,
+      isElectrified: false,
+      shockTimer: 0,
+      cooldown: 0,
+      arcMesh: null
+    };
+  }
+
+  checkAurigaBreakerInteraction(player, audioEngine, ui) {
+    if (!this.aurigaBasin || !player) return false;
+    const b = this.aurigaBasin;
+
+    if (player.position.distanceTo(b.breakerPos) <= 4.2) {
+      if (b.isElectrified) {
+        if (ui && ui.showAnnouncement) ui.showAnnouncement('⚡ BASSIN USM AURIGA : SURTENSION HYDRO-ÉLECTRIQUE 50 000V DÉJÀ EN COURS !');
+        return true;
+      }
+      if (b.cooldown > 0) {
+        if (ui && ui.showAnnouncement) ui.showAnnouncement(`⏳ DISJONCTEUR USM AURIGA EN RECHARGE (${Math.ceil(b.cooldown)}S)...`);
+        return true;
+      }
+
+      b.isElectrified = true;
+      b.shockTimer = 8.0;
+      b.cooldown = 22.0;
+      b.waterMesh.material.emissive.setHex(0x00f2fe);
+
+      if (audioEngine && audioEngine.playAurigaHydroElectroShock) {
+        audioEngine.playAurigaHydroElectroShock();
+      }
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('⚡ SECTEUR INONDÉ USM AURIGA (ALIEN RESURRECTION) : DÉCHARGE 50 000V DANS L\'EAU (320 DÉGÂTS/S & STUN) !');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  updateAurigaFloodedBasin(delta, player, horde, bosses, particles) {
+    if (!this.aurigaBasin) return;
+    const b = this.aurigaBasin;
+
+    if (b.cooldown > 0 && !b.isElectrified) {
+      b.cooldown = Math.max(0, b.cooldown - delta);
+    }
+
+    // Check Xenomorphs inside the 18m x 14m flooded basin
+    if (horde && horde.aliens) {
+      for (let i = horde.aliens.length - 1; i >= 0; i--) {
+        const a = horde.aliens[i];
+        if (!a || a.hp <= 0 || !a.mesh) continue;
+        const dx = Math.abs(a.mesh.position.x - b.pos.x);
+        const dz = Math.abs(a.mesh.position.z - b.pos.z);
+        if (dx <= 9.0 && dz <= 7.0) {
+          // Water drag slows terrestrial movement
+          a.mesh.position.y = 0;
+          if (b.isElectrified) {
+            a.hp -= 320 * delta;
+            a.isStunned = true;
+            a.stunTimer = Math.max(a.stunTimer || 0, 1.5);
+            if (particles && particles.emitSparks && Math.random() < 0.25) {
+              particles.emitSparks(a.mesh.position, 4);
+            }
+            if (a.hp <= 0) {
+              if (horde.goreEngine) horde.goreEngine.spawnDismemberment(a.mesh.position, 'plasma');
+              this.scene.remove(a.mesh);
+              horde.aliens.splice(i, 1);
+              horde.deadCount++;
+              if (window.gameInstance) window.gameInstance.score += 130;
+            }
+          }
+        }
+      }
+    }
+
+    if (b.isElectrified) {
+      b.shockTimer -= delta;
+      if (b.shockTimer <= 0) {
+        b.isElectrified = false;
+        b.waterMesh.material.emissive.setHex(0x0369a1);
+      }
+    }
+  }
+
+  /* === CHANTIER 9 (v49): Ancient Yautja Shrine of the Ancients & Divine Blessings (AVP: Extinction) === */
+  buildShrineOfTheAncients() {
+    const group = new THREE.Group();
+    const pos = new THREE.Vector3(-28, 0, 24);
+    group.position.copy(pos);
+
+    const obsidianMat = new THREE.MeshStandardMaterial({ color: 0x18181b, roughness: 0.25, metalness: 0.85 });
+    const goldMat = new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.2, metalness: 0.95 });
+    const flameMat = new THREE.MeshBasicMaterial({ color: 0xf59e0b, transparent: true, opacity: 0.85 });
+
+    // Stepped Pyramid Pedestal
+    const step1 = new THREE.Mesh(new THREE.CylinderGeometry(2.8, 3.4, 0.6, 6), obsidianMat);
+    step1.position.y = 0.3;
+    group.add(step1);
+
+    const altar = new THREE.Mesh(new THREE.CylinderGeometry(1.4, 1.8, 1.5, 6), goldMat);
+    altar.position.y = 1.35;
+    group.add(altar);
+
+    // Twin Plasma Braziers
+    [-2.0, 2.0].forEach(bx => {
+      const brazier = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.25, 2.2, 6), obsidianMat);
+      brazier.position.set(bx, 1.1, 0.8);
+      group.add(brazier);
+
+      const flame = new THREE.Mesh(new THREE.ConeGeometry(0.38, 0.95, 6), flameMat);
+      flame.position.set(bx, 2.55, 0.8);
+      group.add(flame);
+    });
+
+    // Golden Vertical Beacon Pillar (QA Audit #5)
+    const beacon = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 13.0, 8), flameMat);
+    beacon.position.y = 6.5;
+    group.add(beacon);
+
+    this.scene.add(group);
+    this.envObjects.push(group);
+
+    this.ancientShrine = {
+      group,
+      pos,
+      blessingActive: false,
+      blessingIndex: 0,
+      blessingTimer: 0,
+      cooldown: 0
+    };
+  }
+
+  checkAncientShrineInteraction(player, audioEngine, ui) {
+    if (!this.ancientShrine || !player) return false;
+    const s = this.ancientShrine;
+
+    if (player.position.distanceTo(s.pos) <= 4.5) {
+      if (s.cooldown > 0) {
+        if (ui && ui.showAnnouncement) {
+          ui.showAnnouncement(`⏳ AUTEL DES ANCIENS EN COMMUNION ASTRALE (${Math.ceil(s.cooldown)}S)...`);
+        }
+        return true;
+      }
+
+      const blessings = [
+        { name: "BÉNÉDICTION DE KOS'KANTI", desc: 'ÉNERGIE PLASMA & MUNITIONS COLONIALES RESTAURÉES AU MAXIMUM (30S)' },
+        { name: 'FUREUR DE PAYA (DIEU GUERRIER)', desc: 'DÉGÂTS MÊLÉE/PLASMA +50% & RÉGÉNÉRATION +35 PV/S (30S)' },
+        { name: 'SOUFFLE DE CETANU (DIEU DE LA MORT)', desc: 'AURA D\'ANNIHILATION 9M (160 DÉGÂTS/S AUX XÉNOMORPHES PROCHES)' }
+      ];
+
+      s.blessingIndex = (s.blessingIndex + 1) % blessings.length;
+      const chosen = blessings[s.blessingIndex];
+      s.blessingActive = true;
+      s.blessingTimer = 30.0;
+      s.cooldown = 35.0;
+
+      // Immediate restoration gift from the Ancients
+      player.plasmaEnergy = player.maxPlasmaEnergy || 100;
+      player.m77GaussAmmo = 12;
+      player.m41aGrenadeCharges = 4;
+      player.seegsonBoltAmmo = 10;
+
+      if (audioEngine && audioEngine.playAncientShrineBlessing) {
+        audioEngine.playAncientShrineBlessing();
+      }
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement(`⛩️ AUTEL DES ANCIENS : ${chosen.name} — ${chosen.desc} !`);
+      }
+      return true;
+    }
+    return false;
+  }
+
+  updateAncientShrine(delta, player, horde) {
+    if (!this.ancientShrine || !player) return;
+    const s = this.ancientShrine;
+
+    if (s.cooldown > 0) s.cooldown = Math.max(0, s.cooldown - delta);
+
+    if (s.blessingActive) {
+      s.blessingTimer -= delta;
+
+      if (s.blessingIndex === 0) {
+        // Kos'kanti: Infinite Plasma Energy
+        player.plasmaEnergy = player.maxPlasmaEnergy || 100;
+      } else if (s.blessingIndex === 1) {
+        // Paya: +35 HP/s regeneration
+        player.hp = Math.min(player.maxHp, player.hp + 35.0 * delta);
+      } else if (s.blessingIndex === 2 && horde && horde.aliens) {
+        // Cetanu: 9m Death Aura (160 dmg/s)
+        for (let i = horde.aliens.length - 1; i >= 0; i--) {
+          const a = horde.aliens[i];
+          if (a && a.hp > 0 && a.mesh && a.mesh.position.distanceTo(player.position) <= 9.0) {
+            a.hp -= 160 * delta;
+            if (a.hp <= 0) {
+              this.scene.remove(a.mesh);
+              horde.aliens.splice(i, 1);
+              horde.deadCount++;
+            }
+          }
+        }
+      }
+
+      if (s.blessingTimer <= 0) {
+        s.blessingActive = false;
       }
     }
   }

@@ -60,6 +60,10 @@ export class XenomorphHorde {
     // Chantier 6 (v48): The King Alien / Rogue Titan Material (Aliens: Rogue / Kenner Canon 1:1)
     this.rogueKingMat = new THREE.MeshStandardMaterial({ color: 0x3b0711, roughness: 0.18, metalness: 0.92 });
 
+    // Chantier 2 & 6 (v49): Xenomorph Raven (Obsidian Carapace) & Ancient Predalien Elder (Primal Hunt Fossilized Chitin)
+    this.ravenMat = new THREE.MeshStandardMaterial({ color: 0x090d16, roughness: 0.08, metalness: 0.98 });
+    this.ancientPredalienMat = new THREE.MeshStandardMaterial({ color: 0x9c8f7a, roughness: 0.38, metalness: 0.65 });
+
     this.microSwarms = [];
     this.cyberSpineDarts = [];
     this.royalFacehuggers = [];
@@ -108,6 +112,12 @@ export class XenomorphHorde {
 
     // Chantier 6 (v48): Spawn 1 King Alien / Rogue Titan (Aliens: Rogue / Kenner 1:1 Canon)
     this.spawnRogueKingTitan(playerPos);
+
+    // Chantier 2 (v49): Spawn 1 Xenomorph Raven / Praetorian Raven (Aliens: Colonial Marines / Fireteam Elite Canon 1:1)
+    this.spawnRavenXenomorph(playerPos);
+
+    // Chantier 6 (v49): Spawn 1 Ancient Predalien Elder (Aliens vs. Predator 2: Primal Hunt 2002 Canon 1:1)
+    this.spawnAncientPredalienElder(playerPos);
 
     // Dynasty Warriors Musou: Spawn 2 Hive Spire Captains / Node Guards (Gardes de Nœud & Sentinelles du Couvoir)
     this.spawnHiveOfficer(playerPos, -22, 'SENTINELLE DU NŒUD PRIMAIRE (SPIRE GUARD)');
@@ -321,6 +331,141 @@ export class XenomorphHorde {
       isStunned: false,
       stunTimer: 0,
       isBallisticArmored: true,
+      isAirborne: false,
+      airborneVelY: 0,
+      airborneVelHoriz: new THREE.Vector3()
+    });
+  }
+
+  /* Chantier 2 (v49): Xenomorph Raven / Praetorian Raven (Aliens: Colonial Marines / Fireteam Elite Canon 1:1) */
+  spawnRavenXenomorph(playerPos) {
+    const group = new THREE.Group();
+    const scale = 2.1;
+    const mat = this.ravenMat;
+    const featherMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.95, roughness: 0.1, side: THREE.DoubleSide });
+    const eyeMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8 });
+
+    // Armored Obsidian Torso
+    const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.65 * scale, 0.45 * scale, 2.3 * scale, 8), mat);
+    torso.position.y = 1.55 * scale;
+    group.add(torso);
+
+    // Hooked Beak-Crest Cranium (Raven Silhouette)
+    const head = new THREE.Mesh(new THREE.ConeGeometry(0.55 * scale, 2.5 * scale, 6), mat);
+    head.rotation.x = -Math.PI / 2.1;
+    head.position.set(0, 2.8 * scale, 0.4 * scale);
+    group.add(head);
+
+    // Scarred Socket Eye (ACM Sewer Raven Battle Scar)
+    const scarEye = new THREE.Mesh(new THREE.SphereGeometry(0.09 * scale, 6, 6), eyeMat);
+    scarEye.position.set(-0.22 * scale, 2.85 * scale, 1.35 * scale);
+    group.add(scarEye);
+
+    // Feathered Chitinous Obsidian Wings (Left & Right)
+    [-1, 1].forEach(side => {
+      const wingGroup = new THREE.Group();
+      wingGroup.position.set(side * 0.65 * scale, 2.1 * scale, -0.2 * scale);
+      for (let f = 0; f < 5; f++) {
+        const blade = new THREE.Mesh(new THREE.BoxGeometry(1.4 * scale, 0.14 * scale, 0.35 * scale), featherMat);
+        blade.position.set(side * (0.7 + f * 0.18) * scale, (0.3 - f * 0.22) * scale, -f * 0.12 * scale);
+        blade.rotation.z = side * (-0.25 + f * 0.14);
+        wingGroup.add(blade);
+      }
+      group.add(wingGroup);
+    });
+
+    // Scythe Talons
+    [-1, 1].forEach(side => {
+      const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.18 * scale, 0.12 * scale, 1.6 * scale, 6), mat);
+      arm.position.set(side * 0.95 * scale, 1.7 * scale, 0.55 * scale);
+      arm.rotation.x = 0.6;
+      group.add(arm);
+    });
+
+    group.position.set(playerPos.x - 24, 0, playerPos.z + 26);
+    this.scene.add(group);
+
+    this.aliens.push({
+      mesh: group,
+      type: 'xeno_raven',
+      isRaven: true,
+      isOfficer: true,
+      officerTitle: 'XENOMORPH RAVEN OBSIDIAN (COLONIAL MARINES)',
+      hp: 2400,
+      maxHp: 2400,
+      speed: 15.2,
+      damage: 72,
+      radius: 2.2,
+      ravenShriekCooldown: 5.5,
+      isFrontalShielded: true, // Deflects 85% frontal ranged attacks until shattered by Maul or flanked
+      isBallisticArmored: true,
+      isStunned: false,
+      stunTimer: 0,
+      isAirborne: false,
+      airborneVelY: 0,
+      airborneVelHoriz: new THREE.Vector3()
+    });
+  }
+
+  /* Chantier 6 (v49): Ancient Predalien Elder (Aliens vs. Predator 2: Primal Hunt 2002 Canon 1:1) */
+  spawnAncientPredalienElder(playerPos) {
+    const group = new THREE.Group();
+    const scale = 2.25;
+    const mat = this.ancientPredalienMat;
+    const relicMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, metalness: 0.95, roughness: 0.15 });
+    const mandibleMat = new THREE.MeshStandardMaterial({ color: 0x78350f, roughness: 0.45 });
+
+    // Calcified Fossilized Torso
+    const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.72 * scale, 0.5 * scale, 2.4 * scale, 8), mat);
+    torso.position.y = 1.6 * scale;
+    group.add(torso);
+
+    // Elder Crown Cranium
+    const head = new THREE.Mesh(new THREE.BoxGeometry(0.82 * scale, 0.65 * scale, 2.3 * scale), mat);
+    head.position.set(0, 2.85 * scale, 0.45 * scale);
+    group.add(head);
+
+    // 4 Ancient Calcified Yautja Mandibles
+    [[-0.45, 2.75], [0.45, 2.75], [-0.38, 2.5], [0.38, 2.5]].forEach(([mx, my]) => {
+      const mand = new THREE.Mesh(new THREE.ConeGeometry(0.14 * scale, 0.75 * scale, 5), mandibleMat);
+      mand.position.set(mx * scale, my * scale, 1.55 * scale);
+      mand.rotation.x = 0.35;
+      mand.rotation.z = mx < 0 ? -0.45 : 0.45;
+      group.add(mand);
+    });
+
+    // 6 Elder Dreadlocks with Golden Clan Relics (Primal Hunt Sarcophagus Guardian)
+    for (let d = -3; d <= 3; d++) {
+      if (d === 0) continue;
+      const dread = new THREE.Mesh(new THREE.CylinderGeometry(0.07 * scale, 0.04 * scale, 2.1 * scale, 6), mandibleMat);
+      dread.position.set(d * 0.24 * scale, 2.65 * scale, -0.75 * scale);
+      dread.rotation.x = -0.5;
+      group.add(dread);
+
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(0.08 * scale, 0.02 * scale, 4, 8), relicMat);
+      ring.position.set(d * 0.24 * scale, 2.55 * scale, -0.75 * scale);
+      group.add(ring);
+    }
+
+    group.position.set(playerPos.x + 26, 0, playerPos.z + 24);
+    this.scene.add(group);
+
+    this.aliens.push({
+      mesh: group,
+      type: 'ancient_predalien',
+      isAncientPredalien: true,
+      isOfficer: true,
+      officerTitle: 'ANCIENT PREDALIEN ELDER (AVP2: PRIMAL HUNT)',
+      hp: 3600,
+      maxHp: 3600,
+      speed: 13.8,
+      damage: 78,
+      radius: 2.4,
+      regenActive: true, // Regenerates +35 HP/s until cauterized by thermal/plasma
+      elderRoarCooldown: 7.0,
+      isBallisticArmored: true,
+      isStunned: false,
+      stunTimer: 0,
       isAirborne: false,
       airborneVelY: 0,
       airborneVelHoriz: new THREE.Vector3()
@@ -2213,10 +2358,59 @@ export class XenomorphHorde {
         }
       }
 
-      // Check if low HP sub-boss enters execution stun (Crusher, Praetorian, Grid Alien, Marvel Alpha, Deacon, Rogue King)
-      if ((a.type === 'crusher' || a.type === 'praetorian' || a.type === 'grid_alien' || a.isMarvelAlpha || a.isDeacon || a.isRogueKing) && a.hp <= a.maxHp * 0.22 && !a.isStunned) {
+      // Chantier 2 (v49): Xenomorph Raven Obsidian Carapace Shriek & Wing Buffet (Aliens: Colonial Marines)
+      if (a.isRaven) {
+        a.ravenShriekCooldown -= delta;
+        if (a.ravenShriekCooldown <= 0 && dist <= 20.0) {
+          a.ravenShriekCooldown = 6.5;
+          if (this.audioEngine && this.audioEngine.playRavenXenoShriek) {
+            this.audioEngine.playRavenXenoShriek();
+          }
+          if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
+            window.gameInstance.ui.showAnnouncement('🦅 HURLEMENT DU XENOMORPH RAVEN (CARAPACE D\'OBSIDIENNE FRONTALE) : CONTOURNEZ OU UTILISEZ LA MASSE MAUL [SHIFT+1] !');
+          }
+        }
+      }
+
+      // Chantier 6 (v49): Ancient Predalien Elder Fossilized Chitin Regeneration & Sarcophagus Roar (AVP2: Primal Hunt)
+      if (a.isAncientPredalien) {
+        if (a.regenActive && a.hp > 0 && a.hp < a.maxHp && !a.isStunned) {
+          a.hp = Math.min(a.maxHp, a.hp + 35.0 * delta);
+        }
+        a.elderRoarCooldown -= delta;
+        if (a.elderRoarCooldown <= 0 && dist <= 24.0) {
+          a.elderRoarCooldown = 8.5;
+          if (this.audioEngine && this.audioEngine.playAncientPredalienAwaken) {
+            this.audioEngine.playAncientPredalienAwaken();
+          }
+          if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
+            window.gameInstance.ui.showAnnouncement('🦴 ÉVEIL DE L\'ANCIENT PREDALIEN ELDER (PRIMAL HUNT) : RÉGÉNÉRATION DE CHITINE ANCESTRALE ACTIVE !');
+          }
+        }
+      }
+
+      // Check if low HP sub-boss enters execution stun (Crusher, Praetorian, Grid Alien, Marvel Alpha, Deacon, Rogue King, Raven, Ancient Predalien)
+      if ((a.type === 'crusher' || a.type === 'praetorian' || a.type === 'grid_alien' || a.isMarvelAlpha || a.isDeacon || a.isRogueKing || a.isRaven || a.isAncientPredalien) && a.hp <= a.maxHp * 0.22 && !a.isStunned) {
         a.isStunned = true;
-        a.stunTimer = 7.5;
+        a.stunTimer = 8.0;
+      }
+
+      // QA Audit #4 Fix: 3D Diegetic Stun Execution Halo above stunned sub-bosses for instant Spine Rip [E] visibility
+      if (a.isStunned && a.mesh) {
+        if (!a.stunHaloMesh) {
+          const haloGeo = new THREE.RingGeometry(0.9, 1.35, 24);
+          haloGeo.rotateX(-Math.PI / 2);
+          const haloMat = new THREE.MeshBasicMaterial({ color: 0xffb703, side: THREE.DoubleSide, transparent: true, opacity: 0.9 });
+          a.stunHaloMesh = new THREE.Mesh(haloGeo, haloMat);
+          a.stunHaloMesh.position.set(0, 4.6, 0);
+          a.mesh.add(a.stunHaloMesh);
+        }
+        a.stunHaloMesh.rotation.z += 3.5 * delta;
+        const pulse = 1.0 + Math.sin(Date.now() * 0.012) * 0.18;
+        a.stunHaloMesh.scale.set(pulse, 1, pulse);
+      } else if (!a.isStunned && a.stunHaloMesh && a.mesh) {
+        a.mesh.remove(a.stunHaloMesh);
+        a.stunHaloMesh = null;
       }
 
       // Boiler suicide kamikaze charge

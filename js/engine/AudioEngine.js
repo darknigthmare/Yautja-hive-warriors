@@ -3,16 +3,30 @@
 export class AudioEngine {
   constructor() {
     this.ctx = null;
+    this.masterCompressor = null;
     this.bgOsc = null;
     this.thermalOsc = null;
     this.thermalGain = null;
     this.isMuted = false;
+    this.lastHitmarkerTime = 0;
   }
 
   init() {
     if (this.ctx) return;
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
     this.ctx = new AudioCtx();
+    // QA Audit #3 Fix: Master DynamicsCompressorNode to prevent digital clipping during 60+ Xenomorph Musou battles
+    this.masterCompressor = this.ctx.createDynamicsCompressor();
+    this.masterCompressor.threshold.setValueAtTime(-12, this.ctx.currentTime);
+    this.masterCompressor.knee.setValueAtTime(18, this.ctx.currentTime);
+    this.masterCompressor.ratio.setValueAtTime(8, this.ctx.currentTime);
+    this.masterCompressor.attack.setValueAtTime(0.003, this.ctx.currentTime);
+    this.masterCompressor.release.setValueAtTime(0.15, this.ctx.currentTime);
+    this.masterCompressor.connect(this.ctx.destination);
+  }
+
+  getOut() {
+    return this.masterCompressor || (this.ctx ? this.ctx.destination : null);
   }
 
   playDropPodImpact() {
@@ -4671,9 +4685,238 @@ export class AudioEngine {
     wGain.gain.exponentialRampToValueAtTime(0.01, now + 0.75);
 
     whoosh.connect(wGain);
-    wGain.connect(this.ctx.destination);
+    wGain.connect(this.getOut());
     whoosh.start(now);
     whoosh.stop(now + 0.75);
+  }
+
+  /* ============================================================================
+   * v49.0 — 8 NEW PROCEDURAL SYNTHESIZERS (METHODS 66 TO 73) + QA #3 SFX FIXES
+   * ============================================================================ */
+
+  // QA #3 Fix: Diegetic Yautja Bio-Mask Hitmarker Chime + Low-Health Medical Alert
+  playDiegeticHitmarker(isCritical = false) {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+    if (now - this.lastHitmarkerTime < 0.045) return; // Anti-spam throttle
+    this.lastHitmarkerTime = now;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = isCritical ? 'triangle' : 'sine';
+    osc.frequency.setValueAtTime(isCritical ? 1850 : 1280, now);
+    osc.frequency.exponentialRampToValueAtTime(isCritical ? 620 : 480, now + 0.055);
+
+    gain.gain.setValueAtTime(isCritical ? 0.35 : 0.22, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.055);
+
+    osc.connect(gain);
+    gain.connect(this.getOut());
+    osc.start(now);
+    osc.stop(now + 0.055);
+  }
+
+  playCriticalLowHealthBeep() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    [0, 0.14].forEach((offset, idx) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(idx === 0 ? 960 : 720, now + offset);
+
+      gain.gain.setValueAtTime(0.18, now + offset);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + offset + 0.09);
+
+      osc.connect(gain);
+      gain.connect(this.getOut());
+      osc.start(now + offset);
+      osc.stop(now + offset + 0.09);
+    });
+  }
+
+  // 66. Yautja Heavy Gravity Maul Earthshaker Slam (Predator: Concrete Jungle / AVP)
+  playMaulGravitySlam() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const sub = this.ctx.createOscillator();
+    const sGain = this.ctx.createGain();
+    sub.type = 'sawtooth';
+    sub.frequency.setValueAtTime(165, now);
+    sub.frequency.exponentialRampToValueAtTime(22, now + 0.65);
+
+    sGain.gain.setValueAtTime(0.9, now);
+    sGain.gain.exponentialRampToValueAtTime(0.01, now + 0.65);
+
+    sub.connect(sGain);
+    sGain.connect(this.getOut());
+    sub.start(now);
+    sub.stop(now + 0.65);
+
+    const metallic = this.ctx.createOscillator();
+    const mGain = this.ctx.createGain();
+    metallic.type = 'square';
+    metallic.frequency.setValueAtTime(520, now);
+    metallic.frequency.exponentialRampToValueAtTime(95, now + 0.32);
+
+    mGain.gain.setValueAtTime(0.45, now);
+    mGain.gain.exponentialRampToValueAtTime(0.01, now + 0.32);
+
+    metallic.connect(mGain);
+    mGain.connect(this.getOut());
+    metallic.start(now);
+    metallic.stop(now + 0.32);
+  }
+
+  // 67. Xenomorph Raven Obsidian Carapace Shriek & Wing Buffet (Aliens: Colonial Marines / Fireteam Elite)
+  playRavenXenoShriek() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const shriek = this.ctx.createOscillator();
+    const shGain = this.ctx.createGain();
+    shriek.type = 'sawtooth';
+    shriek.frequency.setValueAtTime(680, now);
+    shriek.frequency.linearRampToValueAtTime(1520, now + 0.22);
+    shriek.frequency.exponentialRampToValueAtTime(290, now + 0.72);
+
+    shGain.gain.setValueAtTime(0.65, now);
+    shGain.gain.exponentialRampToValueAtTime(0.01, now + 0.72);
+
+    shriek.connect(shGain);
+    shGain.connect(this.getOut());
+    shriek.start(now);
+    shriek.stop(now + 0.72);
+  }
+
+  // 68. USCM M579 "Aguilar" Guided SAM Missile Launch Whoosh (Aliens / Fireteam Elite)
+  playUSCMMissileLaunch() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const rocket = this.ctx.createOscillator();
+    const rGain = this.ctx.createGain();
+    rocket.type = 'sawtooth';
+    rocket.frequency.setValueAtTime(280, now);
+    rocket.frequency.exponentialRampToValueAtTime(880, now + 0.25);
+    rocket.frequency.exponentialRampToValueAtTime(190, now + 0.6);
+
+    rGain.gain.setValueAtTime(0.55, now);
+    rGain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+
+    rocket.connect(rGain);
+    rGain.connect(this.getOut());
+    rocket.start(now);
+    rocket.stop(now + 0.6);
+  }
+
+  // 69. USM Auriga Flooded Basin 50,000V Hydro-Electric Shock Discharge (Alien: Resurrection 1997)
+  playAurigaHydroElectroShock() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    for (let i = 0; i < 4; i++) {
+      const arc = this.ctx.createOscillator();
+      const aGain = this.ctx.createGain();
+      arc.type = 'square';
+      arc.frequency.setValueAtTime(140 + i * 210, now + i * 0.08);
+      arc.frequency.exponentialRampToValueAtTime(65, now + i * 0.08 + 0.25);
+
+      aGain.gain.setValueAtTime(0.45, now + i * 0.08);
+      aGain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.08 + 0.25);
+
+      arc.connect(aGain);
+      aGain.connect(this.getOut());
+      arc.start(now + i * 0.08);
+      arc.stop(now + i * 0.08 + 0.25);
+    }
+  }
+
+  // 70. Tracker Predator Biomechanical Sonic Trap Resonance & Implosion (Predators 2010)
+  playSonicTrapImplosion() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const pulse = this.ctx.createOscillator();
+    const pGain = this.ctx.createGain();
+    pulse.type = 'sine';
+    pulse.frequency.setValueAtTime(520, now);
+    pulse.frequency.exponentialRampToValueAtTime(28, now + 0.68);
+
+    pGain.gain.setValueAtTime(0.85, now);
+    pGain.gain.exponentialRampToValueAtTime(0.01, now + 0.68);
+
+    pulse.connect(pGain);
+    pGain.connect(this.getOut());
+    pulse.start(now);
+    pulse.stop(now + 0.68);
+  }
+
+  // 71. Ancient Predalien Elder Sarcophagus Awakening Roar (AVP 2: Primal Hunt 2002)
+  playAncientPredalienAwaken() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const growl = this.ctx.createOscillator();
+    const gGain = this.ctx.createGain();
+    growl.type = 'sawtooth';
+    growl.frequency.setValueAtTime(115, now);
+    growl.frequency.linearRampToValueAtTime(240, now + 0.35);
+    growl.frequency.exponentialRampToValueAtTime(36, now + 1.15);
+
+    gGain.gain.setValueAtTime(0.82, now);
+    gGain.gain.exponentialRampToValueAtTime(0.01, now + 1.15);
+
+    growl.connect(gGain);
+    gGain.connect(this.getOut());
+    growl.start(now);
+    growl.stop(now + 1.15);
+  }
+
+  // 72. Seegson High-Voltage Industrial Bolt Gun Capacitor & Tungsten Spike (Alien: Isolation 2014)
+  playSeegsonBoltGunFire() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Capacitor whine + heavy pneumatic tungsten punch
+    const cap = this.ctx.createOscillator();
+    const cGain = this.ctx.createGain();
+    cap.type = 'triangle';
+    cap.frequency.setValueAtTime(420, now);
+    cap.frequency.exponentialRampToValueAtTime(1950, now + 0.14);
+    cap.frequency.exponentialRampToValueAtTime(85, now + 0.38);
+
+    cGain.gain.setValueAtTime(0.75, now);
+    cGain.gain.exponentialRampToValueAtTime(0.01, now + 0.38);
+
+    cap.connect(cGain);
+    cGain.connect(this.getOut());
+    cap.start(now);
+    cap.stop(now + 0.38);
+  }
+
+  // 73. Shrine of the Ancients Sacrificial Altar Choir & Brass Gong (AVP: Extinction)
+  playAncientShrineBlessing() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    [110, 164.8, 220, 329.6].forEach((freq) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, now);
+      osc.frequency.exponentialRampToValueAtTime(freq * 1.02, now + 1.4);
+
+      gain.gain.setValueAtTime(0.28, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 1.4);
+
+      osc.connect(gain);
+      gain.connect(this.getOut());
+      osc.start(now);
+      osc.stop(now + 1.4);
+    });
   }
 }
 

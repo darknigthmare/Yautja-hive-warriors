@@ -125,6 +125,12 @@ export class Player {
     this.baseMeleeDamage = this.meleeDamage;
     this.basePlasmaDamage = this.plasmaDamage;
     this.bioMaskCrestGroup = null;
+    // v49.0 Systems (Yautja Heavy Maul, Tracker Sonic Trap Mine, Seegson Bolt Gun)
+    this.maulCooldown = 0;
+    this.seegsonBoltAmmo = 10;
+    this.seegsonBoltCooldown = 0;
+    this.sonicTrapCooldown = 0;
+    this.activeSonicTraps = [];
 
     // Pounce Leap State
     this.isLeaping = false;
@@ -3254,5 +3260,298 @@ export class Player {
 
     return selected;
   }
+
+  /* === CHANTIER 1 (v49.0): Yautja Heavy Maul / Sledgehammer & Seismic Earthshaker ([Shift+1] / Concrete Jungle / Hunting Grounds) === */
+  performMaulEarthshaker(horde, bosses, synthetics, environment, particles, ui = null) {
+    if (this.maulCooldown > 0) return false;
+    this.maulCooldown = 14.0;
+
+    if (this.audioEngine && this.audioEngine.playMaulGravitySlam) {
+      this.audioEngine.playMaulGravitySlam();
+    }
+
+    // Build transient 3D Yautja Gravity Maul & radial golden-cyan shockwave ring
+    const forward = new THREE.Vector3(Math.sin(this.rotationY), 0, Math.cos(this.rotationY)).normalize();
+    const slamPos = this.position.clone().add(forward.clone().multiplyScalar(2.6));
+    slamPos.y = 0.15;
+
+    const maulGroup = new THREE.Group();
+    const shaft = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.1, 0.12, 3.8, 8),
+      new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.9, roughness: 0.25 })
+    );
+    shaft.rotation.x = Math.PI / 3;
+    shaft.position.set(0, 1.4, -0.6);
+    maulGroup.add(shaft);
+
+    const head = new THREE.Mesh(
+      new THREE.BoxGeometry(1.6, 0.9, 1.1),
+      new THREE.MeshStandardMaterial({ color: 0xd97706, emissive: 0xf59e0b, emissiveIntensity: 0.8, metalness: 0.85, roughness: 0.2 })
+    );
+    head.position.set(0, 0.55, 0.4);
+    maulGroup.add(head);
+
+    const ringGeo = new THREE.RingGeometry(0.6, 1.6, 28);
+    ringGeo.rotateX(-Math.PI / 2);
+    const ringMat = new THREE.MeshBasicMaterial({ color: 0xf59e0b, side: THREE.DoubleSide, transparent: true, opacity: 0.9 });
+    const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+    ringMesh.position.y = 0.1;
+    maulGroup.add(ringMesh);
+
+    maulGroup.position.copy(slamPos);
+    this.scene.add(maulGroup);
+
+    let ringScale = 1.0;
+    const ringInterval = setInterval(() => {
+      ringScale += 0.75;
+      ringMesh.scale.set(ringScale, 1, ringScale);
+      ringMat.opacity -= 0.09;
+      if (ringMat.opacity <= 0) {
+        clearInterval(ringInterval);
+        this.scene.remove(maulGroup);
+      }
+    }, 28);
+
+    if (particles && particles.emitSparks) {
+      particles.emitSparks(slamPos, 24);
+    }
+
+    let hitCount = 0;
+    const radius = 6.5;
+    const damage = 620 * (this.meleeDamage / (this.baseMeleeDamage || 120));
+
+    if (horde && horde.aliens) {
+      for (let i = horde.aliens.length - 1; i >= 0; i--) {
+        const a = horde.aliens[i];
+        if (!a || a.hp <= 0 || !a.mesh) continue;
+        const d = a.mesh.position.distanceTo(slamPos);
+        if (d <= radius) {
+          // Shatters Crusher & Raven frontal chitinous shields permanently!
+          // QA Audit #4 (balance): the slam only opens an execution stun once the sub-boss is below 35% HP.
+          if (a.isFrontalShielded) {
+            a.isFrontalShielded = false;
+            if (a.maxHp && a.hp <= a.maxHp * 0.35) {
+              a.isStunned = true;
+              a.stunTimer = Math.max(a.stunTimer || 0, 5.5);
+            }
+          }
+          a.hp -= damage;
+          a.mesh.position.y += 1.4; // Launch airborne briefly
+          setTimeout(() => {
+            if (a && a.mesh && !a.isFlying) a.mesh.position.y = 0;
+          }, 320);
+          hitCount++;
+
+          if (a.hp <= 0) {
+            if (horde.goreEngine) horde.goreEngine.spawnDismemberment(a.mesh.position, 'heavy');
+            horde.spawnAcidPool(a.mesh.position);
+            this.scene.remove(a.mesh);
+            horde.aliens.splice(i, 1);
+            horde.deadCount++;
+            if (window.gameInstance) {
+              window.gameInstance.comboHits++;
+              window.gameInstance.score += 210;
+            }
+          }
+        }
+      }
+    }
+
+    if (bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
+      if (bosses.activeBoss.mesh.position.distanceTo(slamPos) <= radius + 1.5) {
+        bosses.takeDamage(damage * 0.85, horde);
+        hitCount++;
+      }
+    }
+
+    if (ui && ui.showAnnouncement) {
+      ui.showAnnouncement(`🔨 MARTEAU GRAVITATIONNEL YAUTJA : ONDE SISMIQUE (${hitCount} CIBLES FRACASSÉES / BOUCLIERS BRISÉS) !`);
+    }
+    return true;
+  }
+
+  /* === CHANTIER 5 (v49.0): Tracker Predator Biomechanical Sonic Trap Mine ([Shift+T] / Predators 2010 / AVP 2010) === */
+  deploySonicTrapMine(ui = null) {
+    if (this.sonicTrapCooldown > 0) return false;
+    this.sonicTrapCooldown = 18.0;
+
+    const trapGroup = new THREE.Group();
+    const core = new THREE.Mesh(
+      new THREE.OctahedronGeometry(0.55, 1),
+      new THREE.MeshStandardMaterial({ color: 0x1e293b, emissive: 0x06b6d4, emissiveIntensity: 1.4, metalness: 0.9, roughness: 0.2 })
+    );
+    core.position.y = 0.6;
+    trapGroup.add(core);
+
+    const waveRingGeo = new THREE.RingGeometry(0.8, 1.2, 24);
+    waveRingGeo.rotateX(-Math.PI / 2);
+    const waveRingMat = new THREE.MeshBasicMaterial({ color: 0x22d3ee, side: THREE.DoubleSide, transparent: true, opacity: 0.75 });
+    const waveRing = new THREE.Mesh(waveRingGeo, waveRingMat);
+    waveRing.position.y = 0.12;
+    trapGroup.add(waveRing);
+
+    trapGroup.position.copy(this.position);
+    trapGroup.position.y = 0;
+    this.scene.add(trapGroup);
+
+    this.activeSonicTraps.push({
+      mesh: trapGroup,
+      core,
+      waveRing,
+      position: trapGroup.position.clone(),
+      timer: 3.0,
+      radius: 16.0
+    });
+
+    if (ui && ui.showAnnouncement) {
+      ui.showAnnouncement(`🔊 PIÈGE SONIQUE TRACKER DÉPLOYÉ : ATTRACTION ACOUSTIQUE (16M) AVANT IMPLOSION !`);
+    }
+    return true;
+  }
+
+  updateSonicTraps(delta, horde, bosses, particles) {
+    if (this.maulCooldown > 0) this.maulCooldown = Math.max(0, this.maulCooldown - delta);
+    if (this.seegsonBoltCooldown > 0) this.seegsonBoltCooldown = Math.max(0, this.seegsonBoltCooldown - delta);
+    if (this.sonicTrapCooldown > 0) this.sonicTrapCooldown = Math.max(0, this.sonicTrapCooldown - delta);
+
+    for (let i = this.activeSonicTraps.length - 1; i >= 0; i--) {
+      const trap = this.activeSonicTraps[i];
+      trap.timer -= delta;
+      trap.core.rotation.y += delta * 6.0;
+      const pulse = 1.0 + Math.sin(trap.timer * 14.0) * 3.5;
+      trap.waveRing.scale.set(pulse, 1, pulse);
+
+      // Pull nearby Xenomorphs toward the acoustic lure
+      if (horde && horde.aliens) {
+        for (let j = 0; j < horde.aliens.length; j++) {
+          const a = horde.aliens[j];
+          if (!a || a.hp <= 0 || !a.mesh) continue;
+          const d = a.mesh.position.distanceTo(trap.position);
+          if (d <= trap.radius && d > 1.2) {
+            const pullDir = trap.position.clone().sub(a.mesh.position).normalize();
+            a.mesh.position.addScaledVector(pullDir, delta * 9.5);
+          }
+        }
+      }
+
+      if (trap.timer <= 0) {
+        if (this.audioEngine && this.audioEngine.playSonicTrapImplosion) {
+          this.audioEngine.playSonicTrapImplosion();
+        }
+        if (particles && particles.emitSparks) {
+          particles.emitSparks(trap.position, 22);
+        }
+
+        if (horde && horde.aliens) {
+          for (let j = horde.aliens.length - 1; j >= 0; j--) {
+            const a = horde.aliens[j];
+            if (!a || a.hp <= 0 || !a.mesh) continue;
+            if (a.mesh.position.distanceTo(trap.position) <= 9.5) {
+              a.hp -= 520;
+              // Acoustic concussion stuns drones only (sub-bosses >= 1500 HP keep their execution threshold intact)
+              if (!a.maxHp || a.maxHp < 1500) {
+                a.isStunned = true;
+                a.stunTimer = Math.max(a.stunTimer || 0, 4.0);
+              }
+              if (a.hp <= 0) {
+                if (horde.goreEngine) horde.goreEngine.spawnDismemberment(a.mesh.position, 'heavy');
+                horde.spawnAcidPool(a.mesh.position);
+                this.scene.remove(a.mesh);
+                horde.aliens.splice(j, 1);
+                horde.deadCount++;
+              }
+            }
+          }
+        }
+
+        if (bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
+          if (bosses.activeBoss.mesh.position.distanceTo(trap.position) <= 10.5) {
+            bosses.takeDamage(420, horde);
+          }
+        }
+
+        this.scene.remove(trap.mesh);
+        this.activeSonicTraps.splice(i, 1);
+      }
+    }
+  }
+
+  /* === CHANTIER 7 (v49.0): Seegson High-Voltage Industrial Bolt Gun ([Shift+3] / Alien: Isolation 2014) === */
+  fireSeegsonBoltGun(horde, bosses, synthetics, particles, ui = null) {
+    if (this.seegsonBoltCooldown > 0 || this.seegsonBoltAmmo <= 0) return false;
+    this.seegsonBoltCooldown = 1.6;
+    this.seegsonBoltAmmo--;
+
+    if (this.audioEngine && this.audioEngine.playSeegsonBoltGunFire) {
+      this.audioEngine.playSeegsonBoltGunFire();
+    }
+
+    const forward = new THREE.Vector3(Math.sin(this.rotationY), 0, Math.cos(this.rotationY)).normalize();
+    const startPos = this.position.clone().add(new THREE.Vector3(0, 2.3, 0));
+
+    // Incandescent orange-white tungsten spike beam
+    const spikeGeo = new THREE.CylinderGeometry(0.06, 0.06, 38.0, 8);
+    spikeGeo.rotateX(Math.PI / 2);
+    const spikeMat = new THREE.MeshBasicMaterial({ color: 0xfb923c, transparent: true, opacity: 0.95 });
+    const spikeMesh = new THREE.Mesh(spikeGeo, spikeMat);
+    spikeMesh.position.copy(startPos).add(forward.clone().multiplyScalar(19.0));
+    spikeMesh.lookAt(startPos.clone().add(forward.clone().multiplyScalar(38.0)));
+    this.scene.add(spikeMesh);
+
+    setTimeout(() => {
+      if (spikeMesh.parent) this.scene.remove(spikeMesh);
+    }, 180);
+
+    let hitTarget = false;
+    if (horde && horde.aliens) {
+      for (let i = horde.aliens.length - 1; i >= 0; i--) {
+        const a = horde.aliens[i];
+        if (!a || a.hp <= 0 || !a.mesh) continue;
+        const toEnemy = a.mesh.position.clone().sub(this.position);
+        toEnemy.y = 0;
+        const dist = toEnemy.length();
+        if (dist <= 38.0) {
+          const proj = toEnemy.dot(forward);
+          const perpDist = Math.sqrt(Math.max(0, dist * dist - proj * proj));
+          if (proj > 0 && perpDist <= (a.radius || 1.2) + 0.85) {
+            a.hp -= 680;
+            // Cauterizes Ancient Predalien Elder regeneration and bypasses frontal armor!
+            a.regenActive = false;
+            a.isFrontalShielded = false;
+            hitTarget = true;
+            if (particles && particles.emitSparks) {
+              particles.emitSparks(a.mesh.position, 14);
+            }
+            if (a.hp <= 0) {
+              if (horde.goreEngine) horde.goreEngine.spawnDismemberment(a.mesh.position, 'heavy');
+              this.scene.remove(a.mesh);
+              horde.aliens.splice(i, 1);
+              horde.deadCount++;
+              if (window.gameInstance) {
+                window.gameInstance.comboHits++;
+                window.gameInstance.score += 240;
+              }
+            }
+            break; // Single ultra-high-impact tungsten bolt
+          }
+        }
+      }
+    }
+
+    if (!hitTarget && bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
+      const toBoss = bosses.activeBoss.mesh.position.clone().sub(this.position);
+      toBoss.y = 0;
+      if (toBoss.length() <= 38.0 && toBoss.normalize().dot(forward) > 0.86) {
+        bosses.takeDamage(680, horde);
+        hitTarget = true;
+      }
+    }
+
+    if (ui && ui.showAnnouncement) {
+      ui.showAnnouncement(`🔩 SEEGSON BOLT GUN (TUNGSTÈNE HAUTE TENSION) : ${hitTarget ? 'IMPACT CAUTÉRISANT (680 DMG)' : 'TIR À VIDE'} (${this.seegsonBoltAmmo}/10)`);
+    }
+    return true;
+  }
 }
+
 

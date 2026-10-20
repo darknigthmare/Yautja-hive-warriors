@@ -498,6 +498,41 @@
         <div class="foundry-valve-text">OUVRIR LA VANNE DE COULÉE : 12 TONNES DE PLOMB EN FUSION 1200°C (ALIEN 3)</div>
       </div>
 
+      <!-- USM AURIGA FLOODED BASIN 50,000V BREAKER PROMPT (Chantier 4 v49) -->
+      <div id="auriga-breaker-prompt" class="foundry-valve-box hidden">
+        <div class="foundry-key">[ E ]</div>
+        <div class="foundry-valve-text">SURTENSION HYDRO-ÉLECTRIQUE USM AURIGA (50 000V DANS L'EAU, 320 DÉGÂTS/S & STUN)</div>
+      </div>
+
+      <!-- ANCIENT YAUTJA SHRINE OF THE ANCIENTS PROMPT (Chantier 9 v49) -->
+      <div id="ancient-shrine-prompt" class="foundry-valve-box hidden">
+        <div class="foundry-key">[ E ]</div>
+        <div class="foundry-valve-text">PRIÈRE SACRÉE À L'AUTEL DES ANCIENS : BÉNÉDICTION DIVINE (KOS'KANTI / PAYA / CETANU)</div>
+      </div>
+
+      <!-- QA AUDIT #2 (Elena): DIEGETIC YAUTJA WRIST GAUNTLET TELEMETRY HUD -->
+      <div id="diegetic-wrist-gauntlet-hud" class="wrist-gauntlet-panel">
+        <div class="wrist-header">
+          <span class="wrist-title">YAUTJA GAUNTLET // K'VATH-VHE</span>
+          <span id="wrist-matrix-glyphs" class="wrist-glyphs">⋈ ⋉ : ⋐ ⋑</span>
+        </div>
+        <div class="wrist-body">
+          <div class="wrist-row">
+            <span class="wrist-label">MASQUE :</span>
+            <span id="wrist-mask-name" class="wrist-value">JUNGLE HUNTER (1987)</span>
+          </div>
+          <div class="wrist-row">
+            <span class="wrist-label">BÉNÉDICTION :</span>
+            <span id="wrist-blessing-tag" class="wrist-value-highlight">AUCUNE BÉNÉDICTION</span>
+          </div>
+          <div class="wrist-ammo-cluster">
+            <span id="wrist-ammo-gauss" class="wrist-chip">M77: 12/12</span>
+            <span id="wrist-ammo-bolt" class="wrist-chip">BOLT: 10/10</span>
+            <span id="wrist-ammo-grenades" class="wrist-chip">HEDP: 4/6</span>
+          </div>
+        </div>
+      </div>
+
       <div class="hud-bottom-center" id="hud-equipped-slots-container">
         <div class="ability-slot" id="slot-fps">
           <div class="slot-key">I</div>
@@ -639,6 +674,22 @@
           <div class="slot-key">⇧+V</div>
           <div class="slot-label">6 BIO-MASQUES</div>
         </div>
+        <div class="ability-slot" id="slot-maul">
+          <div class="slot-key">⇧+1</div>
+          <div class="slot-label">MASSE GRAVITÉ</div>
+        </div>
+        <div class="ability-slot" id="slot-seegson-bolt">
+          <div class="slot-key">⇧+3</div>
+          <div class="slot-label">FUSIL À CLOUS</div>
+        </div>
+        <div class="ability-slot" id="slot-sonic-trap">
+          <div class="slot-key">⇧+T</div>
+          <div class="slot-label">PIÈGE SONIQUE</div>
+        </div>
+        <div class="ability-slot slot-help-btn" id="slot-tactical-help" onclick="document.getElementById('qa-tactical-help-overlay').classList.toggle('hidden')">
+          <div class="slot-key">F1</div>
+          <div class="slot-label">AIDE TOUCHES</div>
+        </div>
         <div class="ability-slot" id="slot-swap">
           <div class="slot-key">TAB</div>
           <div class="slot-label" id="hud-weapon-label">ARME: PRINCIPALE</div>
@@ -653,6 +704,51 @@
         <div class="honor-score-box">
           <span>HONNEUR: </span>
           <span id="hud-honor-score">0 PTS</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- QA AUDIT #1 (Marc - UI/UX Lead): TACTICAL KEYBIND & ARSENAL REFERENCE OVERLAY -->
+    <div id="qa-tactical-help-overlay" class="ui-screen hidden">
+      <div class="glass-panel modal-card tactical-help-card">
+        <div class="modal-header">
+          <h2>🎯 DOSSIER TACTIQUE DU CLAN YAUTJA // COMMANDES [F1]</h2>
+          <button id="btn-close-tactical-help" class="btn-close" onclick="document.getElementById('qa-tactical-help-overlay').classList.add('hidden')">✕</button>
+        </div>
+        <div class="tactical-help-grid">
+          <div class="tactical-help-col">
+            <div class="tactical-category">⚔️ ARSENAL MÊLÉE & PROTOCOLES APEX</div>
+            <div class="tactical-item"><span class="tactical-key">LMB</span> Claws / Lames de Poignet / Frappe Légère</div>
+            <div class="tactical-item"><span class="tactical-key">RMB</span> Frappe Lourde Décapitante / Coup de Pied</div>
+            <div class="tactical-item"><span class="tactical-key">⇧ + LMB</span> Spine Whip (Fouet de Vertèbres) / Iaijutsu</div>
+            <div class="tactical-item"><span class="tactical-key">⇧ + RMB</span> Whirl-Shield (Bouclier Tournant Glaive)</div>
+            <div class="tactical-item"><span class="tactical-key">⇧ + 1</span> Masse Gravitationnelle Maul (Onde Sismique)</div>
+            <div class="tactical-item"><span class="tactical-key">⇧ + 6</span> Faux d'Énergie Plasma Primordiale (Scythe)</div>
+            <div class="tactical-item"><span class="tactical-key">F / G</span> Prise Électro-Cinétique Ki'cte & Projection</div>
+            <div class="tactical-item"><span class="tactical-key">SPACE / Q</span> Attaque Musou Surchargée (Overload)</div>
+          </div>
+          <div class="tactical-help-col">
+            <div class="tactical-category">⚡ SYSTÈMES BALISTIQUES & ÉNERGÉTIQUES</div>
+            <div class="tactical-item"><span class="tactical-key">SHIFT (Maintenir)</span> Canon Plasma Épaule (Tri-Laser)</div>
+            <div class="tactical-item"><span class="tactical-key">P</span> Lancer de Combi-Stick Extensible</div>
+            <div class="tactical-item"><span class="tactical-key">⇧ + P</span> Pistolet Plasma Triplette (AVP-R)</div>
+            <div class="tactical-item"><span class="tactical-key">⇧ + 3</span> Fusil à Clous Industriel Seegson (Tungstène)</div>
+            <div class="tactical-item"><span class="tactical-key">⇧ + 7</span> Fusil Railgun Hyper-Vélocité M77 Gauss</div>
+            <div class="tactical-item"><span class="tactical-key">⇧ + 9</span> Grenade 30mm HEDP USCM M41A</div>
+            <div class="tactical-item"><span class="tactical-key">⇧ + 0</span> Brûleur Plasma Incinérateur Continu</div>
+            <div class="tactical-item"><span class="tactical-key">X</span> Balise Trax-Net / <span class="tactical-key">⇧ + X</span> Frappe Orbitale</div>
+          </div>
+          <div class="tactical-help-col">
+            <div class="tactical-category">🛡️ GADGETS, RELIQUES & DIÉGÉTIQUE</div>
+            <div class="tactical-item"><span class="tactical-key">V</span> 5 Modes de Vision Bio-Masque</div>
+            <div class="tactical-item"><span class="tactical-key">⇧ + V</span> Cycle des 6 Bio-Masques Légendaires</div>
+            <div class="tactical-item"><span class="tactical-key">T</span> Piège à Loup / <span class="tactical-key">⇧ + T</span> Piège Sonique Tracker</div>
+            <div class="tactical-item"><span class="tactical-key">M</span> Faisceau Scout / <span class="tactical-key">⇧ + M</span> Mode Infini</div>
+            <div class="tactical-item"><span class="tactical-key">E</span> Exécution Trophée / Stations & Interrupteurs</div>
+            <div class="tactical-item"><span class="tactical-key">Z</span> Trousse de Cautérisation Medicomp (+450 HP)</div>
+            <div class="tactical-item"><span class="tactical-key">N</span> Neurotoxine / <span class="tactical-key">⇧ + N</span> Autodestruction 1987</div>
+            <div class="tactical-item"><span class="tactical-key">F1</span> Basculer cet Affichage Tactique</div>
+          </div>
         </div>
       </div>
     </div>

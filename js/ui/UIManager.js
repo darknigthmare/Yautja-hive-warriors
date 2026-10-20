@@ -738,5 +738,49 @@ export class UIManager {
       prompt.classList.add('hidden');
     }
   }
-}
 
+  /* === QA AUDIT #2 (Elena - Diegetic Yautja Immersion): Wrist Gauntlet Telemetry HUD === */
+  updateDiegeticWristTelemetry(player, env, isEndless = false) {
+    const hud = document.getElementById('diegetic-wrist-gauntlet-hud');
+    if (!hud || !player) return;
+
+    const maskElem = document.getElementById('wrist-mask-name');
+    if (maskElem) {
+      maskElem.innerText = player.bioMaskName || 'JUNGLE HUNTER (1987)';
+    }
+
+    const blessingElem = document.getElementById('wrist-blessing-tag');
+    if (blessingElem) {
+      if (env && env.ancientShrine && env.ancientShrine.blessingActive) {
+        const names = ["KOS'KANTI (ENERGIE)", "FUREUR PAYA (+50% DMG)", "SOUFFLE CETANU (AURA)"];
+        const bName = names[env.ancientShrine.blessingIndex] || 'ACTIVE';
+        blessingElem.innerText = `${bName} (${Math.ceil(env.ancientShrine.blessingTimer)}S)`;
+        blessingElem.style.color = '#38bdf8';
+      } else {
+        blessingElem.innerText = 'AUCUNE BÃ‰NÃ‰DICTION';
+        blessingElem.style.color = '#64748b';
+      }
+    }
+
+    const glyphsElem = document.getElementById('wrist-matrix-glyphs');
+    if (glyphsElem) {
+      // Yautja red countdown matrix glyph sequence (Predator 1987 Wrist Computer Lore)
+      const glyphChars = ['â‹ˆ', 'â‹‰', 'â‹Š', 'â‹', 'â‹‘', 'â‹’', 'â‹“', 'â‹”', 'â‹•', 'â‹–', 'â‹—', 'âŸ¢', 'âŸ£', 'âŸ¤', 'âŸ¥'];
+      const tick = Math.floor(Date.now() / 140);
+      const g1 = glyphChars[tick % glyphChars.length];
+      const g2 = glyphChars[(tick + 3) % glyphChars.length];
+      const g3 = glyphChars[(tick + 7) % glyphChars.length];
+      const g4 = glyphChars[(tick + 11) % glyphChars.length];
+      glyphsElem.innerText = `${g1} ${g2} : ${g3} ${g4}`;
+    }
+
+    const ammoGauss = document.getElementById('wrist-ammo-gauss');
+    if (ammoGauss) ammoGauss.innerText = `M77: ${player.m77GaussAmmo ?? 12}/12`;
+
+    const ammoBolt = document.getElementById('wrist-ammo-bolt');
+    if (ammoBolt) ammoBolt.innerText = `BOLT: ${player.seegsonBoltAmmo ?? 10}/10`;
+
+    const ammoGrenade = document.getElementById('wrist-ammo-grenades');
+    if (ammoGrenade) ammoGrenade.innerText = `HEDP: ${player.m41aGrenadeCharges ?? 4}/6`;
+  }
+}
