@@ -186,11 +186,23 @@ export class Player {
     this.poleVaultVelocityY = 0;
     this.poleVaultCooldown = 0;
 
+    // === v53.0 CHANTIERS 3, 4, 6 & 10: Chest Roar, Cyclone Whirl, Cloak Flicker, Enkidu Armor ===
+    this.chestRoarCooldown = 0;
+    this.chestRoarBuffTimer = 0;
+    this.cycloneWhirlCooldown = 0;
+    this.isCycloneWhirling = false;
+    this.cycloneWhirlTimer = 0;
+    this.cloakFlickerTimer = 0;
+    this.hasEnkiduArmor = false;
+    this.acidResistance = 0.0;
+    this.gauntletCooldownReduction = 1.0;
+
     this.forgeUpgrades = {
       barbedCombiStick: false,
       serratedSmartDisc: false,
       overchargedCoil: false,
-      masterWristblades: false
+      masterWristblades: false,
+      enkiduBattleplate: false
     };
     this.loadClanForgeUpgrades();
   }
@@ -1762,6 +1774,10 @@ export class Player {
       if (this.audioEngine && this.audioEngine.playCloakFlicker) {
         this.audioEngine.playCloakFlicker();
       }
+      this.triggerCloakFlicker(this.audioEngine, this.particles);
+    }
+    if (isAcid && this.hasEnkiduArmor) {
+      amount *= (1.0 - (this.acidResistance || 0.40));
     }
     this.hp = Math.max(0, this.hp - amount);
 
@@ -3985,6 +4001,37 @@ export class Player {
         }
       }
     }
+
+    // === v53.0 CHANTIERS 3, 4 & 6: Chest Roar Buff, Cyclone Whirl & Cloak Flicker ===
+    if (this.chestRoarCooldown > 0) this.chestRoarCooldown -= delta;
+    if (this.chestRoarBuffTimer > 0) {
+      this.chestRoarBuffTimer -= delta;
+      this.attackCooldownFactor = 0.70;
+    } else if (this.attackCooldownFactor === 0.70) {
+      this.attackCooldownFactor = 1.0;
+    }
+
+    if (this.cycloneWhirlCooldown > 0) this.cycloneWhirlCooldown -= delta;
+    if (this.cycloneWhirlTimer > 0) {
+      this.cycloneWhirlTimer -= delta;
+      if (this.mesh) {
+        this.mesh.rotation.y += delta * 25.0; // Rapid whirlwind spin visual
+      }
+      if (this.cycloneWhirlTimer <= 0) {
+        this.isCycloneWhirling = false;
+      }
+    }
+
+    if (this.cloakFlickerTimer > 0) {
+      this.cloakFlickerTimer -= delta;
+      if (this.mesh) {
+        const flicker = Math.sin(Date.now() * 0.05) > 0;
+        this.mesh.visible = flicker;
+      }
+      if (this.cloakFlickerTimer <= 0 && this.mesh) {
+        this.mesh.visible = true;
+      }
+    }
   }
 
   /* === CHANTIER 1 (v51.0): Clan Weapon Forge Persistent Upgrades === */
@@ -3996,6 +4043,12 @@ export class Player {
         this.forgeUpgrades = { ...this.forgeUpgrades, ...parsed };
         if (this.forgeUpgrades.masterWristblades) {
           this.parryWindowDuration = 0.58;
+        }
+        if (this.forgeUpgrades.enkiduBattleplate) {
+          this.hasEnkiduArmor = true;
+          this.acidResistance = 0.40;
+          this.gauntletCooldownReduction = 0.80;
+          this.maxHp = (this.data && this.data.stats && this.data.stats.maxHp ? this.data.stats.maxHp : 1000) + 250;
         }
       }
     } catch (e) {
@@ -4116,6 +4169,107 @@ export class Player {
       ui.showAnnouncement('🔱 SAUT À LA PERCHE COMBI-STICK : PROPULSION AÉRIENNE 9M !');
     }
     return true;
+  }
+
+  /* === CHANTIER 4 & LUCAS QA (v53.0): Predator Chest-Thumping Martial Challenge Roar [H] === */
+  performPredatorChestThumpRoar(horde, bosses, synthetics, audio, particles, ui) {
+    if (this.chestRoarCooldown > 0 || this.isFacehuggerLatched) return false;
+    this.chestRoarCooldown = 18.0 * (this.gauntletCooldownReduction || 1.0);
+    this.chestRoarBuffTimer = 8.0;
+
+    if (audio && audio.playPredatorChestThumpRoar) {
+      audio.playPredatorChestThumpRoar();
+    } else if (audio && audio.playWarhornBlast) {
+      audio.playWarhornBlast();
+    }
+
+    if (particles && particles.emitGoldRageSparks) {
+      particles.emitGoldRageSparks(this.position, 28);
+    }
+
+    // Stun normal xenos in 14m radius for 2.2 seconds
+    if (horde && horde.aliens) {
+      horde.aliens.forEach(a => {
+        if (a && a.mesh && a.mesh.position.distanceTo(this.position) <= 14.0) {
+          if (!a.isOfficer && a.type !== 'crusher' && a.type !== 'praetorian') {
+            a.isStunned = true;
+            a.stunTimer = Math.max(a.stunTimer || 0, 2.2);
+          }
+        }
+      });
+    }
+
+    if (ui && ui.showAnnouncement) {
+      ui.showAnnouncement('🔥 RUGISSEMENT DE DÉFI PECTORAL YAUTJA [H] : HORDE PÉTRIFIÉE (2.2S) & FUREUR MARTIALE (+30% CADENCE) !');
+    }
+    return true;
+  }
+
+  /* === CHANTIER 3 & LUCAS QA (v53.0): Combi-Stick 360° Cyclone Whirlblade Attack === */
+  performCombistickCycloneWhirl(horde, bosses, synthetics, audio, particles, ui) {
+    if (this.cycloneWhirlCooldown > 0 || this.isFacehuggerLatched) return false;
+    this.cycloneWhirlCooldown = 5.0 * (this.gauntletCooldownReduction || 1.0);
+    this.isCycloneWhirling = true;
+    this.cycloneWhirlTimer = 0.45;
+
+    if (audio && audio.playCombistickCycloneWhirl) {
+      audio.playCombistickCycloneWhirl();
+    } else if (audio && audio.playIaijutsuSlice) {
+      audio.playIaijutsuSlice();
+    }
+
+    if (particles && particles.emitSparks) {
+      particles.emitSparks(this.position, 22);
+    }
+
+    const attack = {
+      origin: this.position,
+      radius: 5.5,
+      damage: 420,
+      type: 'combistick',
+      knockback: 12.0
+    };
+
+    if (horde) {
+      horde.checkMeleeHits(attack);
+      horde.aliens.forEach(a => {
+        if (a && a.mesh && a.mesh.position.distanceTo(this.position) <= 5.5) {
+          const push = a.mesh.position.clone().sub(this.position).setY(0).normalize().multiplyScalar(10.0);
+          a.mesh.position.add(push);
+        }
+      });
+      if (horde.mantaSwarmers) {
+        horde.mantaSwarmers.forEach(m => {
+          if (m && m.mesh && m.mesh.position.distanceTo(this.position) <= 6.5) {
+            m.hp -= 420;
+          }
+        });
+      }
+    }
+
+    if (bosses && bosses.activeBoss && bosses.activeBoss.mesh.position.distanceTo(this.position) <= 5.5) {
+      bosses.takeDamage(420);
+    }
+    if (synthetics) {
+      synthetics.checkHits(attack);
+    }
+
+    if (ui && ui.showAnnouncement) {
+      ui.showAnnouncement('🌀 MOULINET CYCLONE COMBI-STICK 360° : BALAYAGE DÉVASTATEUR (420 DÉGÂTS, 5.5M) !');
+    }
+    return true;
+  }
+
+  /* === CHANTIER 6 (v53.0): Optical Cloak Electromagnetic Flicker Feedback === */
+  triggerCloakFlicker(audio, particles) {
+    if (!this.isCloaked) return;
+    this.cloakFlickerTimer = 0.85;
+    if (audio && audio.playOpticalCloakFlickerEMP) {
+      audio.playOpticalCloakFlickerEMP();
+    }
+    if (particles && particles.emitSparks) {
+      particles.emitSparks(this.position, 8);
+    }
   }
 }
 

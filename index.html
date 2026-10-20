@@ -50,12 +50,25 @@
   </div>
   <div id="screen-flash"></div>
 
-  <!-- 1987 WRIST COMPUTER NUKE COUNTDOWN OVERLAY -->
+  <!-- CHANTIER 1 & ELENA QA (v53.0): 1987 WRIST COMPUTER NUKE COUNTDOWN & KEYPAD OVERLAY -->
   <div id="nuke-countdown-overlay" class="hidden">
-    <div class="nuke-glyphs-box">
-      <div class="yautja-glyphs">᚛᚜ ᚠᚡ ᚢᚣ ᚤᚥ ᚦᚧ</div>
-      <div class="nuke-timer" id="nuke-timer-seconds">6</div>
-      <div class="nuke-warning">AUTO-DESTRUCTION RITUELLE 1987</div>
+    <div class="nuke-wrist-panel">
+      <div class="wrist-casing-header">
+        <span class="wrist-led pulse-red"></span>
+        <span class="wrist-title">CLAVIER DE GANTELET // AUTO-DESTRUCTION THERMONUCLÉAIRE 1987</span>
+      </div>
+      <div class="nuke-lcd-display">
+        <div class="lcd-glyph-track" id="nuke-input-glyphs">᚛ ᚠ ᚢ ᚦ</div>
+        <div class="nuke-timer" id="nuke-timer-seconds">6</div>
+        <div class="nuke-status-bar" id="nuke-status-text">SÉQUENCE SACRÉE INITIALISÉE • COMPTE À REBOURS ACTIF</div>
+      </div>
+      <div class="wrist-keypad-grid">
+        <button class="wrist-key" onclick="window.game && window.game.inputNukeKeypad('᚛')">᚛</button>
+        <button class="wrist-key" onclick="window.game && window.game.inputNukeKeypad('᚜')">᚜</button>
+        <button class="wrist-key" onclick="window.game && window.game.inputNukeKeypad('ᚠ')">ᚠ</button>
+        <button class="wrist-key" onclick="window.game && window.game.inputNukeKeypad('ᚡ')">ᚡ</button>
+      </div>
+      <button class="btn-abort-nuke" onclick="window.game && window.game.abortNukeCountdown()">ANNULER L'AUTO-DESTRUCTION [SHIFT+N]</button>
     </div>
   </div>
 
@@ -782,6 +795,14 @@
           <div class="slot-key">⇧+Y</div>
           <div class="slot-label">LEURRE VOCAL</div>
         </div>
+        <div class="ability-slot" id="slot-chest-roar" onclick="window.game && window.game.player && window.game.player.performPredatorChestThumpRoar(window.game.horde, window.game.bosses, window.game.synthetics, window.game.audio, window.game.particles, window.game.ui)">
+          <div class="slot-key">H</div>
+          <div class="slot-label">DÉFI PECTORAL</div>
+        </div>
+        <div class="ability-slot" id="slot-cyclone-whirl" onclick="window.game && window.game.player && window.game.player.performCombistickCycloneWhirl(window.game.horde, window.game.bosses, window.game.synthetics, window.game.audio, window.game.particles, window.game.ui)">
+          <div class="slot-key">⇧+CLIC</div>
+          <div class="slot-label">CYCLONE COMBI</div>
+        </div>
         <div class="ability-slot" id="slot-swap" onclick="window.game && window.game.toggleWeaponWheel()">
           <div class="slot-key">TAB</div>
           <div class="slot-label" id="hud-weapon-label">ROUE DES ARMES</div>
@@ -921,6 +942,12 @@
             <div class="forge-title">LAMES DE POIGNET MAÎTRE DLEX</div>
             <div class="forge-desc">Alliage de parade renforcé : fenêtre de déviation [F] portée à 0.58s et contre-attaque dévastatrice x4.0.</div>
             <button id="btn-forge-wristblades" class="btn-forge">FORGER (3000 PTS + 5 GELÉES)</button>
+          </div>
+          <div class="forge-item-card">
+            <div class="forge-icon">🛡️</div>
+            <div class="forge-title">CUIRASSE ANCESTRALE ENKIDU DLEX</div>
+            <div class="forge-desc">Blindage lourd cérémoniel gravé de runes : +250 PV max, 40% de résistance aux acides corrosifs et -20% temps de recharge des aptitudes.</div>
+            <button id="btn-forge-enkidu" class="btn-forge">FORGER (3000 PTS + 5 GELÉES)</button>
           </div>
         </div>
       </div>

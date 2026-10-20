@@ -297,10 +297,15 @@ class GameApp {
         this.ui.showAnnouncement('📯 COR DE GUERRE ANCESTRAL DU CLAN : FRAPPE +50% & VITESSE !');
       }
 
-      // Hell-Hounds Companion Pack [H Key]
+      // Chantier 4 & Lucas QA (v53.0): Chest-Thumping Challenge Roar [H Key] / Hell-Hounds Pack [Shift + H]
       if (e.code === 'KeyH' && this.player) {
-        this.hellHounds.summonPack(this.player.position, 2);
-        this.ui.showAnnouncement('🐕 MEUTE DE CHIENS DE CHASSE HELL-HOUNDS DÉPLOYÉE !');
+        if (this.keys['ShiftLeft'] || this.keys['ShiftRight']) {
+          this.player.usedShiftModifier = true;
+          this.hellHounds.summonPack(this.player.position, 2);
+          this.ui.showAnnouncement('🐕 MEUTE DE CHIENS DE CHASSE HELL-HOUNDS DÉPLOYÉE !');
+        } else {
+          this.player.performPredatorChestThumpRoar(this.horde, this.bosses, this.synthetics, this.audio, this.particles, this.ui);
+        }
       }
 
       // Audio Mimicry Voice Lure [Shift + Y] / Yautja Thermal Plasma Tripwire Mine [Y Key] (Chantier 5 & Elena QA)
@@ -566,6 +571,8 @@ class GameApp {
           // Handled Space Jockey Dais Sacred Engineer Sarcophagus Awakening!
         } else if (this.env && this.env.checkPowerLoaderInteraction(this.player.position, this.player, this.horde, this.ui, this.audio, this.particles)) {
           // Handled Caterpillar Power Loader crushing clamp!
+        } else if (this.checkCatwalkPlungingExecution()) {
+          // Handled Catwalk Plunging Execution Drop (v53.0)!
         } else {
           this.checkTrophyExecution();
         }
@@ -871,39 +878,139 @@ class GameApp {
     this.nukeCountingDown = true;
     const nukeModal = document.getElementById('nuke-countdown-overlay');
     const timerText = document.getElementById('nuke-timer-seconds');
-    nukeModal.classList.remove('hidden');
+    if (nukeModal) nukeModal.classList.remove('hidden');
 
     this.player.triggerNukeSelfDestruct();
 
-    let timeLeft = 6;
-    timerText.innerText = timeLeft;
+    this.nukeTimeLeft = 6;
+    if (timerText) timerText.innerText = this.nukeTimeLeft;
 
-    const interval = setInterval(() => {
-      timeLeft--;
-      if (timerText) timerText.innerText = timeLeft;
+    if (this.nukeInterval) clearInterval(this.nukeInterval);
+    this.nukeInterval = setInterval(() => {
+      this.nukeTimeLeft--;
+      if (timerText) timerText.innerText = this.nukeTimeLeft;
 
       // Authentic 1987 Billy's mimicry sardonic laugh right before detonation
-      if (timeLeft === 2) {
-        if (this.audio && this.audio.playBillyLaugh) {
+      if (this.nukeTimeLeft === 2) {
+        if (this.audio && this.audio.playPredatorManicLaugh) {
+          this.audio.playPredatorManicLaugh();
+        } else if (this.audio && this.audio.playBillyLaugh) {
           this.audio.playBillyLaugh();
         }
       }
 
-      if (timeLeft <= 0) {
-        clearInterval(interval);
-        nukeModal.classList.add('hidden');
+      if (this.nukeTimeLeft <= 0) {
+        clearInterval(this.nukeInterval);
+        this.nukeInterval = null;
+        if (nukeModal) nukeModal.classList.add('hidden');
         this.nukeCountingDown = false;
         if (this.player && this.player.clearNukeHoloMesh) {
           this.player.clearNukeHoloMesh();
         }
 
-        const hits = this.horde.checkMeleeHits({ origin: this.player.position, radius: 70, damage: 10000 });
+        const hits = this.horde.checkMeleeHits({ origin: this.player.position, radius: 90, damage: 10000 });
         this.registerHits(hits);
         if (this.bosses.activeBoss) this.bosses.takeDamage(10000);
         if (this.badBlood.isActive) this.badBlood.takeDamage(10000);
-        this.ui.showAnnouncement('☢️ ANNIHILATION NUCLÉAIRE PURIFICATRICE ACCOMPLIE !');
+        this.triggerCameraShake(3.0, 2.5);
+        this.ui.showAnnouncement('☢️ ANNIHILATION THERMONUCLÉAIRE PURIFICATRICE 1987 ACCOMPLIE !');
       }
     }, 1000);
+  }
+
+  inputNukeKeypad(glyph) {
+    if (this.audio && this.audio.playWristNukeKeypadBeep) {
+      this.audio.playWristNukeKeypadBeep();
+    }
+    const glyphTrack = document.getElementById('nuke-input-glyphs');
+    if (glyphTrack) {
+      glyphTrack.innerText = `${glyphTrack.innerText.slice(2)} ${glyph}`;
+    }
+    if (this.nukeCountingDown && this.nukeTimeLeft > 1) {
+      this.nukeTimeLeft--;
+      const timerText = document.getElementById('nuke-timer-seconds');
+      if (timerText) timerText.innerText = this.nukeTimeLeft;
+    }
+  }
+
+  abortNukeCountdown() {
+    if (!this.nukeCountingDown) return;
+    if (this.nukeInterval) {
+      clearInterval(this.nukeInterval);
+      this.nukeInterval = null;
+    }
+    this.nukeCountingDown = false;
+    document.getElementById('nuke-countdown-overlay')?.classList.add('hidden');
+    if (this.player && this.player.clearNukeHoloMesh) {
+      this.player.clearNukeHoloMesh();
+    }
+    if (this.audio && this.audio.playShieldBlock) {
+      this.audio.playShieldBlock();
+    }
+    if (this.ui && this.ui.showAnnouncement) {
+      this.ui.showAnnouncement('🛑 AUTO-DESTRUCTION RITUELLE AVORTÉE ! SYSTÈMES ARMÉS RESTAURÉS.');
+    }
+  }
+
+  /* === CHANTIER 8 (v53.0): High Catwalk Plunging Execution Drop === */
+  checkCatwalkPlungingExecution() {
+    if (!this.player || this.player.position.y < 3.5) return false;
+    let target = null;
+    let minDist = 7.0;
+
+    if (this.bosses && this.bosses.activeBoss) {
+      const bPos = this.bosses.activeBoss.mesh.position;
+      const dHoriz = new THREE.Vector2(this.player.position.x - bPos.x, this.player.position.z - bPos.z).length();
+      if (dHoriz <= 6.5 && bPos.y <= 1.5) {
+        target = this.bosses.activeBoss;
+        minDist = dHoriz;
+      }
+    }
+
+    if (!target && this.horde && this.horde.aliens) {
+      this.horde.aliens.forEach(a => {
+        if (!a || a.hp <= 0) return;
+        const aPos = a.mesh.position;
+        const dHoriz = new THREE.Vector2(this.player.position.x - aPos.x, this.player.position.z - aPos.z).length();
+        if (dHoriz < minDist && aPos.y <= 1.5) {
+          minDist = dHoriz;
+          target = a;
+        }
+      });
+    }
+
+    if (!target) return false;
+
+    const targetPos = target.mesh ? target.mesh.position.clone() : target.position.clone();
+    this.player.position.copy(targetPos);
+    this.player.position.y = 0;
+    if (this.player.mesh) this.player.mesh.position.copy(this.player.position);
+
+    if (this.audio && this.audio.playCombiStickImpale) {
+      this.audio.playCombiStickImpale();
+    }
+    if (this.audio && this.audio.playGroundSlamImpact) {
+      this.audio.playGroundSlamImpact();
+    }
+    if (this.particles && this.particles.emitSparks) {
+      this.particles.emitSparks(targetPos, 35);
+    }
+    this.triggerCameraShake(1.5, 0.45);
+
+    if (target.takeDamage) {
+      target.takeDamage(850);
+    } else {
+      target.hp -= 850;
+    }
+
+    if (this.horde) {
+      this.horde.checkMeleeHits({ origin: targetPos, radius: 4.5, damage: 300, type: 'heavy' });
+    }
+
+    if (this.ui && this.ui.showAnnouncement) {
+      this.ui.showAnnouncement('⚡ PLONGEON D\'EMBUSCADE VERTICALE : ASSASSINAT DEPUIS LES PASSERELLES (850 DMG) !');
+    }
+    return true;
   }
 
   startMission() {
@@ -2090,6 +2197,10 @@ class GameApp {
       if (this.env.updateSubterraneanVents) {
         this.env.updateSubterraneanVents(delta, this.horde, this.particles, this.audio);
       }
+      // Chantier 5 & Sofia QA (v53.0): Weyland-Yutani Breakable Specimen Stasis Vats & Cryo Clouds
+      if (this.env.updateStasisTanks) {
+        this.env.updateStasisTanks(delta, this.player, this.horde, this.audio, this.particles);
+      }
     }
 
     if (this.isCoOp && this.player2) {
@@ -2822,6 +2933,18 @@ class GameApp {
       poleVaultSlot.classList.toggle('active', this.player.isPoleVaulting);
     }
 
+    // Chantier 4 & Lucas QA (v53.0): Chest Roar & Cyclone Whirl Slots
+    const chestSlot = document.getElementById('slot-chest-roar');
+    if (chestSlot && this.player) {
+      chestSlot.classList.toggle('cooldown', this.player.chestRoarCooldown > 0);
+      chestSlot.classList.toggle('active', this.player.chestRoarBuffTimer > 0);
+    }
+    const cycloneSlot = document.getElementById('slot-cyclone-whirl');
+    if (cycloneSlot && this.player) {
+      cycloneSlot.classList.toggle('cooldown', this.player.cycloneWhirlCooldown > 0);
+      cycloneSlot.classList.toggle('active', this.player.isCycloneWhirling);
+    }
+
     if (this.player.hp <= 0) {
       this.endGame(false);
     }
@@ -3125,7 +3248,8 @@ class GameApp {
       { id: 'btn-forge-combistick', key: 'barbedCombiStick', costHonor: 1500, costJelly: 2 },
       { id: 'btn-forge-smartdisc', key: 'serratedSmartDisc', costHonor: 2000, costJelly: 3 },
       { id: 'btn-forge-plasmacaster', key: 'overchargedCoil', costHonor: 2500, costJelly: 4 },
-      { id: 'btn-forge-wristblades', key: 'masterWristblades', costHonor: 3000, costJelly: 5 }
+      { id: 'btn-forge-wristblades', key: 'masterWristblades', costHonor: 3000, costJelly: 5 },
+      { id: 'btn-forge-enkidu', key: 'enkiduBattleplate', costHonor: 3000, costJelly: 5 }
     ];
 
     upgrades.forEach(u => {

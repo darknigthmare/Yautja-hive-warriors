@@ -114,6 +114,9 @@ export class XenomorphHorde {
     this.spawnMantaSwarmer(playerPos.clone().add(new THREE.Vector3(-20, 10, -20)), playerPos);
     this.spawnMantaSwarmer(playerPos.clone().add(new THREE.Vector3(20, 10, 20)), playerPos);
 
+    // Chantier 2 & Sofia QA (v53.0): Spawn 1 Flying Praetorian Harpy (Aliens: Earth War / Capcom AvP Arcade)
+    this.spawnWingedPraetorianHarpy(playerPos.clone().add(new THREE.Vector3(22, 12, -22)));
+
     // Chantier 6 (v48): Spawn 1 King Alien / Rogue Titan (Aliens: Rogue / Kenner 1:1 Canon)
     this.spawnRogueKingTitan(playerPos);
 
@@ -805,6 +808,68 @@ export class XenomorphHorde {
       diveCooldown: 3.5 + Math.random() * 2.5,
       diveTarget: new THREE.Vector3(),
       flutterPhase: Math.random() * Math.PI * 2
+    });
+  }
+
+  /* === CHANTIER 2 & SOFIA QA (v53.0): Flying Praetorian Harpy (Aliens: Earth War / Capcom AvP Arcade) === */
+  spawnWingedPraetorianHarpy(spawnPos) {
+    const group = new THREE.Group();
+    const bodyMat = new THREE.MeshStandardMaterial({ color: 0x1f1635, roughness: 0.22, metalness: 0.92 });
+    const wingMat = new THREE.MeshStandardMaterial({ color: 0x4c1d95, roughness: 0.45, metalness: 0.65, transparent: true, opacity: 0.85, side: THREE.DoubleSide });
+
+    // Armored Praetorian Flier Fuselage
+    const body = new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.48, 3.4, 8), bodyMat);
+    body.rotation.x = Math.PI / 2;
+    group.add(body);
+
+    // Flared Aerodynamic Cranial Crest
+    const crest = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.22, 1.5), bodyMat);
+    crest.position.set(0, 0.38, 1.3);
+    crest.rotation.x = -0.32;
+    group.add(crest);
+
+    // Quadruple Leathery Membrane Wings (Span ~ 6.2m)
+    const wingL = new THREE.Mesh(new THREE.PlaneGeometry(3.1, 1.8), wingMat);
+    wingL.rotation.x = -Math.PI / 2;
+    wingL.position.set(-1.8, 0.1, 0.2);
+    group.add(wingL);
+
+    const wingR = new THREE.Mesh(new THREE.PlaneGeometry(3.1, 1.8), wingMat);
+    wingR.rotation.x = -Math.PI / 2;
+    wingR.position.set(1.8, 0.1, 0.2);
+    group.add(wingR);
+
+    // Barbed Spined Tail
+    for (let t = 0; t < 6; t++) {
+      const seg = new THREE.Mesh(new THREE.CylinderGeometry(0.09 - t * 0.01, 0.06 - t * 0.01, 0.6, 6), bodyMat);
+      seg.position.set(0, -0.06 - t * 0.05, -1.8 - t * 0.5);
+      seg.rotation.x = 0.25;
+      group.add(seg);
+    }
+
+    group.userData.wingL = wingL;
+    group.userData.wingR = wingR;
+
+    group.position.copy(spawnPos);
+    this.scene.add(group);
+
+    if (this.audioEngine && this.audioEngine.playXenoWingFlapDive) {
+      this.audioEngine.playXenoWingFlapDive();
+    }
+
+    this.mantaSwarmers.push({
+      mesh: group,
+      hp: 1200,
+      maxHp: 1200,
+      isPraetorianHarpy: true,
+      speed: 13.0,
+      diveSpeed: 24.0,
+      damage: 120,
+      divePhase: 'cruising',
+      cruiseAltitude: 9.5,
+      diveCooldown: 4.0,
+      diveTarget: new THREE.Vector3(),
+      flutterPhase: 0
     });
   }
 
@@ -1532,6 +1597,32 @@ export class XenomorphHorde {
       }
     }
 
+    // Chantier 2 & Sofia QA (v53.0): Flying Xenomorph Manta & Harpy Melee Interception
+    if (this.mantaSwarmers) {
+      for (let m = this.mantaSwarmers.length - 1; m >= 0; m--) {
+        const manta = this.mantaSwarmers[m];
+        if (manta && manta.mesh && manta.mesh.position.distanceTo(attack.origin) <= attack.radius + 2.5) {
+          manta.hp -= attack.damage;
+          hits.push({
+            pos: manta.mesh.position.clone(),
+            damage: attack.damage,
+            killed: manta.hp <= 0,
+            isFlying: true
+          });
+          if (this.particles && this.particles.emitSparks) {
+            this.particles.emitSparks(manta.mesh.position, 14);
+          }
+          if (manta.hp <= 0) {
+            if (this.goreEngine) this.goreEngine.spawnDismemberment(manta.mesh.position, attack.type || 'heavy');
+            this.spawnAcidPool(manta.mesh.position);
+            this.scene.remove(manta.mesh);
+            this.mantaSwarmers.splice(m, 1);
+            this.deadCount++;
+          }
+        }
+      }
+    }
+
     return hits;
   }
 
@@ -2027,6 +2118,11 @@ export class XenomorphHorde {
         const diveDir = manta.diveTarget.clone().sub(manta.mesh.position).normalize();
         manta.mesh.position.addScaledVector(diveDir, manta.diveSpeed * delta);
         manta.mesh.rotation.x = 0.55; // Pitch down
+
+        // Chantier 2 & Sofia QA (v53.0): Aerial Acid Spray Bombardment during dive
+        if (Math.random() < 0.12 && this.spawnAcidSplash) {
+          this.spawnAcidSplash(manta.mesh.position, manta.mesh.position.clone().add(new THREE.Vector3((Math.random() - 0.5) * 3, -1, (Math.random() - 0.5) * 3)));
+        }
 
         // Hit player check
         if (manta.mesh.position.distanceTo(player.position) <= 2.8) {

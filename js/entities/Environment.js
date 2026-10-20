@@ -85,6 +85,9 @@ export class EnvironmentManager {
     this.hydraulicCargoLift = null;
     this.subterraneanVents = [];
     this.activeDropPods = [];
+    // v53.0 Systems (Weyland-Yutani Breakable Specimen Stasis Vats & Cryo Coolant Freezing Zones)
+    this.stasisSpecimenTanks = [];
+    this.activeCryoCoolantClouds = [];
   }
 
   clearEnvironment() {
@@ -265,6 +268,12 @@ export class EnvironmentManager {
     this.subterraneanVents = [];
     this.activeDropPods.forEach(p => this.scene.remove(p.mesh));
     this.activeDropPods = [];
+
+    // v53.0 Cleanups
+    this.stasisSpecimenTanks.forEach(t => this.scene.remove(t.group));
+    this.stasisSpecimenTanks = [];
+    this.activeCryoCoolantClouds.forEach(c => this.scene.remove(c.mesh));
+    this.activeCryoCoolantClouds = [];
 
     this.reactorMeltdownActive = false;
     this.reactorMeltdownTimer = 180.0;
@@ -491,6 +500,10 @@ export class EnvironmentManager {
 
     // Chantier 6: Subterranean Xeno Infiltration Vents & Floor Hatches
     this.buildSubterraneanVents();
+
+    // === v53.0 10-CHANTIER EXPANSION (Weyland-Yutani Breakable Specimen Stasis Vats & Cryo Cloud Freezing) ===
+    // Chantier 5: Weyland-Yutani Specimen Stasis Tanks & Cryogenic Rupture Zones
+    this.buildSpecimenStasisTanks();
   }
 
   buildTempleProps(stoneMat) {
@@ -6318,6 +6331,158 @@ export class EnvironmentManager {
 
     if (ui && ui.showAnnouncement) {
       ui.showAnnouncement('📦 CAPSULE DE RAVITAILLEMENT ORBITALE LIVRÉE : MUNITIONS LOURDES, GELÉE ET SOINS DISPONIBLES !');
+    }
+  }
+
+  /* === CHANTIER 5 & SOFIA QA (v53.0): Weyland-Yutani Breakable Specimen Stasis Vats & Cryo Clouds === */
+  buildSpecimenStasisTanks() {
+    this.stasisSpecimenTanks = [];
+    const tankPositions = [
+      new THREE.Vector3(-18, 0, 18),
+      new THREE.Vector3(18, 0, 18),
+      new THREE.Vector3(-18, 0, -18),
+      new THREE.Vector3(18, 0, -18)
+    ];
+
+    const metalMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.85, roughness: 0.25 });
+    const glassMat = new THREE.MeshStandardMaterial({
+      color: 0x06b6d4,
+      emissive: 0x0891b2,
+      emissiveIntensity: 0.45,
+      transparent: true,
+      opacity: 0.6,
+      roughness: 0.1,
+      metalness: 0.1
+    });
+    const specimenMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.5 });
+
+    tankPositions.forEach((pos, idx) => {
+      const group = new THREE.Group();
+      group.position.copy(pos);
+
+      // Steel Base Pedestal
+      const base = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.4, 0.6, 16), metalMat);
+      base.position.y = 0.3;
+      group.add(base);
+
+      // Translucent Cylindrical Cryo Glass Vat (3.2m height)
+      const vat = new THREE.Mesh(new THREE.CylinderGeometry(0.95, 0.95, 3.2, 16), glassMat);
+      vat.position.y = 2.2;
+      group.add(vat);
+
+      // Steel Reinforced Top Cap
+      const cap = new THREE.Mesh(new THREE.CylinderGeometry(1.3, 1.05, 0.5, 16), metalMat);
+      cap.position.y = 3.9;
+      group.add(cap);
+
+      // Floating Suspended Specimen Mesh inside (preserved Facehugger or Embryo)
+      const spec = new THREE.Mesh(new THREE.SphereGeometry(0.35, 8, 8), specimenMat);
+      spec.scale.set(1.0, 1.5, 0.6);
+      spec.position.y = 2.2;
+      group.add(spec);
+
+      this.scene.add(group);
+      this.stasisSpecimenTanks.push({
+        id: idx,
+        group,
+        pos: pos.clone(),
+        hp: 220,
+        maxHp: 220,
+        isShattered: false,
+        specimenMesh: spec
+      });
+    });
+  }
+
+  checkStasisTankHits(attack, audio, particles, horde) {
+    if (!this.stasisSpecimenTanks || !attack || !attack.origin) return;
+    this.stasisSpecimenTanks.forEach(tank => {
+      if (tank.isShattered) return;
+      const dist = tank.pos.distanceTo(attack.origin);
+      if (dist <= attack.radius + 1.2) {
+        tank.hp -= attack.damage;
+        if (particles && particles.emitSparks) {
+          particles.emitSparks(tank.pos.clone().add(new THREE.Vector3(0, 2.0, 0)), 12);
+        }
+
+        if (tank.hp <= 0) {
+          tank.isShattered = true;
+          this.scene.remove(tank.group);
+
+          if (audio && audio.playCryoVatShatter) {
+            audio.playCryoVatShatter();
+          }
+
+          if (particles && particles.emitExplosion) {
+            particles.emitExplosion(tank.pos.clone().add(new THREE.Vector3(0, 1.5, 0)), 28);
+          }
+
+          // Create active cryogenic nitrogen freeze zone (lasts 6.5s)
+          const cloudGeo = new THREE.CylinderGeometry(5.2, 5.2, 1.2, 16);
+          const cloudMat = new THREE.MeshBasicMaterial({
+            color: 0x38bdf8,
+            transparent: true,
+            opacity: 0.55,
+            wireframe: true
+          });
+          const cloudMesh = new THREE.Mesh(cloudGeo, cloudMat);
+          cloudMesh.position.copy(tank.pos);
+          cloudMesh.position.y = 0.6;
+          this.scene.add(cloudMesh);
+
+          this.activeCryoCoolantClouds.push({
+            pos: tank.pos.clone(),
+            mesh: cloudMesh,
+            timer: 6.5,
+            radius: 5.2
+          });
+
+          // Release aggressive Facehugger into horde!
+          if (horde && horde.spawnFacehugger) {
+            horde.spawnFacehugger(tank.pos.clone().add(new THREE.Vector3(0, 0.5, 0)));
+          }
+        }
+      }
+    });
+  }
+
+  updateStasisTanks(delta, player, horde, audio, particles) {
+    // 1. Gently oscillate floating preserved specimens
+    if (this.stasisSpecimenTanks) {
+      this.stasisSpecimenTanks.forEach(tank => {
+        if (!tank.isShattered && tank.specimenMesh) {
+          tank.specimenMesh.position.y = 2.2 + Math.sin(Date.now() * 0.003 + tank.id) * 0.12;
+          tank.specimenMesh.rotation.y += delta * 0.5;
+        }
+      });
+    }
+
+    // 2. Update Cryo Freezing Clouds
+    if (this.activeCryoCoolantClouds) {
+      for (let i = this.activeCryoCoolantClouds.length - 1; i >= 0; i--) {
+        const cloud = this.activeCryoCoolantClouds[i];
+        cloud.timer -= delta;
+        cloud.mesh.rotation.y += delta * 1.5;
+        cloud.mesh.material.opacity = Math.max(0, (cloud.timer / 6.5) * 0.55);
+
+        // Slow down and damage any Xenomorph inside
+        if (horde && horde.aliens) {
+          horde.aliens.forEach(a => {
+            if (a && a.mesh && a.mesh.position.distanceTo(cloud.pos) <= cloud.radius) {
+              a.isFrozen = true;
+              a.hp -= 85 * delta;
+              if (particles && particles.emitSparks && Math.random() < 0.05) {
+                particles.emitSparks(a.mesh.position, 2);
+              }
+            }
+          });
+        }
+
+        if (cloud.timer <= 0) {
+          this.scene.remove(cloud.mesh);
+          this.activeCryoCoolantClouds.splice(i, 1);
+        }
+      }
     }
   }
 }

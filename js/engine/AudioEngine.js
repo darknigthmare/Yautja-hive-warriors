@@ -5769,6 +5769,264 @@ export class AudioEngine {
     osc.start(now);
     osc.stop(now + 0.9);
   }
+
+  /* === CHANTIER 9 & KARIM QA (v53.0): 8 Nouveaux Synthétiseurs Procéduraux (Méthodes 98 à 105) === */
+
+  // 98. Yautja Wrist Computer Keypad Cuneiform Glyph Input Beep (1987 Canon)
+  playWristNukeKeypadBeep() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(1850 + Math.random() * 250, now);
+    osc.frequency.exponentialRampToValueAtTime(920, now + 0.08);
+
+    gain.gain.setValueAtTime(0.4, now);
+    gain.gain.exponentialRampToValueAtTime(0.005, now + 0.08);
+
+    osc.connect(gain);
+    gain.connect(this.getOut());
+    osc.start(now);
+    osc.stop(now + 0.08);
+  }
+
+  // 99. Predator Sardonic Billy Mimicry Laugh Echo (Predator 1987 Canon 1:1)
+  playPredatorManicLaugh() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Series of 5 rapid descending, staccato FM laughing bursts
+    for (let i = 0; i < 5; i++) {
+      const t = now + i * 0.16;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      const lfo = this.ctx.createOscillator();
+      const lfoGain = this.ctx.createGain();
+
+      osc.type = 'sawtooth';
+      const baseFreq = 480 - i * 45;
+      osc.frequency.setValueAtTime(baseFreq, t);
+      osc.frequency.linearRampToValueAtTime(baseFreq - 60, t + 0.13);
+
+      // Tremolo / flutter modulation
+      lfo.frequency.setValueAtTime(32, t);
+      lfoGain.gain.setValueAtTime(40, t);
+      lfo.connect(osc.frequency);
+      lfo.start(t);
+      lfo.stop(t + 0.13);
+
+      gain.gain.setValueAtTime(0.55, t);
+      gain.gain.exponentialRampToValueAtTime(0.01, t + 0.13);
+
+      osc.connect(gain);
+      gain.connect(this.getOut());
+      osc.start(t);
+      osc.stop(t + 0.13);
+    }
+  }
+
+  // 100. Predator Chest-Thumping Martial Challenge Roar (Predators 2010 / Hunting Grounds)
+  playPredatorChestThumpRoar() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Double heavy pectoral thumping impact (62Hz & 54Hz)
+    [0, 0.22].forEach((offset, idx) => {
+      const t = now + offset;
+      const sub = this.ctx.createOscillator();
+      const subGain = this.ctx.createGain();
+      sub.type = 'sine';
+      sub.frequency.setValueAtTime(idx === 0 ? 68 : 52, t);
+      sub.frequency.exponentialRampToValueAtTime(34, t + 0.18);
+
+      subGain.gain.setValueAtTime(0.85, t);
+      subGain.gain.exponentialRampToValueAtTime(0.01, t + 0.18);
+
+      sub.connect(subGain);
+      subGain.connect(this.getOut());
+      sub.start(t);
+      sub.stop(t + 0.18);
+    });
+
+    // Bone-chilling guttural challenge roar beginning at t + 0.44
+    const roarStart = now + 0.44;
+    const roarOsc = this.ctx.createOscillator();
+    const roarGain = this.ctx.createGain();
+    const roarLfo = this.ctx.createOscillator();
+    const roarLfoGain = this.ctx.createGain();
+
+    roarOsc.type = 'sawtooth';
+    roarOsc.frequency.setValueAtTime(145, roarStart);
+    roarOsc.frequency.linearRampToValueAtTime(220, roarStart + 0.35);
+    roarOsc.frequency.exponentialRampToValueAtTime(75, roarStart + 1.25);
+
+    roarLfo.frequency.setValueAtTime(24, roarStart);
+    roarLfoGain.gain.setValueAtTime(65, roarStart);
+    roarLfo.connect(roarOsc.frequency);
+    roarLfo.start(roarStart);
+    roarLfo.stop(roarStart + 1.25);
+
+    roarGain.gain.setValueAtTime(0.75, roarStart);
+    roarGain.gain.exponentialRampToValueAtTime(0.01, roarStart + 1.25);
+
+    roarOsc.connect(roarGain);
+    roarGain.connect(this.getOut());
+    roarOsc.start(roarStart);
+    roarOsc.stop(roarStart + 1.25);
+  }
+
+  // 101. Combi-Stick 360° Cyclone Whirlblade Wind Slicing Swoosh
+  playCombistickCycloneWhirl() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Dual layered supersonic aerodynamic whoosh
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(240, now);
+    osc.frequency.exponentialRampToValueAtTime(880, now + 0.14);
+    osc.frequency.exponentialRampToValueAtTime(160, now + 0.38);
+
+    gain.gain.setValueAtTime(0.7, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.38);
+
+    osc.connect(gain);
+    gain.connect(this.getOut());
+    osc.start(now);
+    osc.stop(now + 0.38);
+
+    // Resonant metallic edge ring
+    const ring = this.ctx.createOscillator();
+    const ringGain = this.ctx.createGain();
+    ring.type = 'triangle';
+    ring.frequency.setValueAtTime(1420, now);
+    ring.frequency.exponentialRampToValueAtTime(940, now + 0.35);
+
+    ringGain.gain.setValueAtTime(0.45, now);
+    ringGain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+
+    ring.connect(ringGain);
+    ringGain.connect(this.getOut());
+    ring.start(now);
+    ring.stop(now + 0.35);
+  }
+
+  // 102. Yautja Optical Cloak Electromagnetic Flicker & Acid Distortion
+  playOpticalCloakFlickerEMP() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const buzz = this.ctx.createOscillator();
+    const buzzGain = this.ctx.createGain();
+    buzz.type = 'sawtooth';
+    buzz.frequency.setValueAtTime(4200, now);
+    buzz.frequency.linearRampToValueAtTime(320, now + 0.22);
+
+    buzzGain.gain.setValueAtTime(0.5, now);
+    buzzGain.gain.exponentialRampToValueAtTime(0.01, now + 0.22);
+
+    buzz.connect(buzzGain);
+    buzzGain.connect(this.getOut());
+    buzz.start(now);
+    buzz.stop(now + 0.22);
+  }
+
+  // 103. Flying Xenomorph Bat-Morph Wing Flap & Hypersonic Dive-Bomb Scream
+  playXenoWingFlapDive() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Low membrane wing flap
+    const flap = this.ctx.createOscillator();
+    const flapGain = this.ctx.createGain();
+    flap.type = 'sine';
+    flap.frequency.setValueAtTime(95, now);
+    flap.frequency.linearRampToValueAtTime(180, now + 0.12);
+    flap.frequency.exponentialRampToValueAtTime(60, now + 0.32);
+
+    flapGain.gain.setValueAtTime(0.7, now);
+    flapGain.gain.exponentialRampToValueAtTime(0.01, now + 0.32);
+
+    flap.connect(flapGain);
+    flapGain.connect(this.getOut());
+    flap.start(now);
+    flap.stop(now + 0.32);
+
+    // High frequency diving whistle
+    const whistle = this.ctx.createOscillator();
+    const whistleGain = this.ctx.createGain();
+    whistle.type = 'sawtooth';
+    whistle.frequency.setValueAtTime(1600, now);
+    whistle.frequency.exponentialRampToValueAtTime(620, now + 0.45);
+
+    whistleGain.gain.setValueAtTime(0.4, now);
+    whistleGain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+
+    whistle.connect(whistleGain);
+    whistleGain.connect(this.getOut());
+    whistle.start(now);
+    whistle.stop(now + 0.45);
+  }
+
+  // 104. Weyland-Yutani Stasis Specimen Tank Shatter & Cryo-Vapor Explosive Decompression
+  playCryoVatShatter() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Glass fracture snap
+    const glass = this.ctx.createOscillator();
+    const glassGain = this.ctx.createGain();
+    glass.type = 'square';
+    glass.frequency.setValueAtTime(3400, now);
+    glass.frequency.exponentialRampToValueAtTime(750, now + 0.09);
+
+    glassGain.gain.setValueAtTime(0.85, now);
+    glassGain.gain.exponentialRampToValueAtTime(0.01, now + 0.09);
+
+    glass.connect(glassGain);
+    glassGain.connect(this.getOut());
+    glass.start(now);
+    glass.stop(now + 0.09);
+
+    // Liquid nitrogen cryo decompression roar
+    const roar = this.ctx.createOscillator();
+    const roarGain = this.ctx.createGain();
+    roar.type = 'triangle';
+    roar.frequency.setValueAtTime(650, now);
+    roar.frequency.linearRampToValueAtTime(220, now + 0.45);
+
+    roarGain.gain.setValueAtTime(0.65, now);
+    roarGain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+
+    roar.connect(roarGain);
+    roarGain.connect(this.getOut());
+    roar.start(now);
+    roar.stop(now + 0.45);
+  }
+
+  // 105. Plasma Glaive High-Voltage Electrocution Arc (400V Carbonization)
+  playPlasmaGlaiveElectrocution() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const arc = this.ctx.createOscillator();
+    const arcGain = this.ctx.createGain();
+    arc.type = 'sawtooth';
+    arc.frequency.setValueAtTime(840, now);
+    arc.frequency.linearRampToValueAtTime(1420, now + 0.15);
+    arc.frequency.linearRampToValueAtTime(420, now + 0.35);
+
+    arcGain.gain.setValueAtTime(0.6, now);
+    arcGain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+
+    arc.connect(arcGain);
+    arcGain.connect(this.getOut());
+    arc.start(now);
+    arc.stop(now + 0.35);
+  }
 }
 
 
