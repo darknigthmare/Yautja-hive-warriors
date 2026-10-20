@@ -20,6 +20,7 @@ export class BossManager {
     mesh.position.copy(spawnPos);
     this.scene.add(mesh);
 
+    const isRogueKing = type === 'rogue_king_prime';
     const isEngineer = type === 'awakened_engineer';
     const isMatriarchTitan = type === 'predalien_matriarch_titan';
     const isImperial = type === 'imperial_queen';
@@ -29,7 +30,7 @@ export class BossManager {
     const isOffspring = type === 'the_offspring';
     const isTrilobite = type === 'trilobite_prime';
 
-    const hp = isMatriarchTitan ? 10000 : (isEngineer ? 8500 : (isImperial ? 8000 : (isTrilobite ? 7000 : (isPredalienAbomination ? 6500 : (isEmpress ? 6000 : (isPredalienQueen ? 5000 : (isOffspring ? 4500 : 3000)))))));
+    const hp = isMatriarchTitan ? 10000 : (isRogueKing ? 9500 : (isEngineer ? 8500 : (isImperial ? 8000 : (isTrilobite ? 7000 : (isPredalienAbomination ? 6500 : (isEmpress ? 6000 : (isPredalienQueen ? 5000 : (isOffspring ? 4500 : 3000))))))));
 
     this.activeBoss = {
       type: type,
@@ -43,10 +44,17 @@ export class BossManager {
       hasPhaseShield: false,
       phaseShieldHp: 1800,
       vortexCooldown: 5.0,
-      stompCooldown: 3.5
+      stompCooldown: 3.5,
+      chargeCooldown: 4.5,
+      pheromoneCooldown: 6.0,
+      isCharging: false,
+      chargeTimer: 0
     };
 
-    if (isEngineer) {
+    if (isRogueKing) {
+      if (this.audioEngine.playRogueKingEarthquakeRoar) this.audioEngine.playRogueKingEarthquakeRoar();
+      if (this.audioEngine.playYautjaRoar) this.audioEngine.playYautjaRoar();
+    } else if (isEngineer) {
       if (this.audioEngine.playEngineerAwakeningRoar) this.audioEngine.playEngineerAwakeningRoar();
       if (this.audioEngine.playYautjaRoar) this.audioEngine.playYautjaRoar();
     } else if (isMatriarchTitan) {
@@ -330,7 +338,106 @@ export class BossManager {
     return group;
   }
 
+  /* === CHANTIER 2 (v52.0): Rogue King Xenomorph Prime Boss Mesh (Aliens: Rogue 1993 Lore) === */
+  buildRogueKingMesh(scale = 3.2) {
+    const group = new THREE.Group();
+
+    // Dark lustrous obsidian biomechanical chitin
+    const bodyMat = new THREE.MeshStandardMaterial({
+      color: 0x090d14,
+      metalness: 0.92,
+      roughness: 0.16
+    });
+
+    // Barbed Horn & Crest Material
+    const hornMat = new THREE.MeshStandardMaterial({
+      color: 0x1e293b,
+      metalness: 0.95,
+      roughness: 0.12
+    });
+
+    // 1. Massive Armored Skull & Flared Horned Crown
+    const headGeo = new THREE.BoxGeometry(1.3 * scale, 0.9 * scale, 3.8 * scale);
+    const head = new THREE.Mesh(headGeo, bodyMat);
+    head.position.set(0, 3.6 * scale, 0.6 * scale);
+    group.add(head);
+
+    // Flared Hexagonal King Crown
+    const crownGeo = new THREE.ConeGeometry(2.6 * scale, 4.0 * scale, 6);
+    const crown = new THREE.Mesh(crownGeo, hornMat);
+    crown.rotation.x = Math.PI / 2.25;
+    crown.position.set(0, 4.4 * scale, -1.9 * scale);
+    group.add(crown);
+
+    // 4 Backward-Curving Heavy Horns on Crown
+    const hornAngles = [-0.8, -0.28, 0.28, 0.8];
+    hornAngles.forEach((ang, idx) => {
+      const hornGeo = new THREE.ConeGeometry(0.18 * scale, 1.8 * scale, 6);
+      const horn = new THREE.Mesh(hornGeo, hornMat);
+      horn.position.set(ang * scale, 4.8 * scale + (idx === 1 || idx === 2 ? 0.3 * scale : 0), -2.2 * scale - (idx === 1 || idx === 2 ? 0.4 * scale : 0));
+      horn.rotation.set(-0.8, 0, ang * 0.35);
+      group.add(horn);
+    });
+
+    // 6 Massive Dorsal Exhaust Siphons
+    for (let s = 0; s < 6; s++) {
+      const pipeGeo = new THREE.CylinderGeometry(0.14 * scale, 0.09 * scale, 2.5 * scale, 6);
+      const pipe = new THREE.Mesh(pipeGeo, hornMat);
+      const side = s % 2 === 0 ? -0.75 : 0.75;
+      const row = Math.floor(s / 2);
+      pipe.position.set(side * scale, (3.4 - row * 0.45) * scale, (-1.0 - row * 0.45) * scale);
+      pipe.rotation.x = -Math.PI / 4;
+      pipe.rotation.z = side * -0.2;
+      group.add(pipe);
+    }
+
+    // 2. Colossal Muscular Torso
+    const torso = new THREE.Mesh(new THREE.CylinderGeometry(1.1 * scale, 0.85 * scale, 4.2 * scale, 8), bodyMat);
+    torso.position.y = 2.1 * scale;
+    group.add(torso);
+
+    // 3. Four Arms (2 Heavy Primary + 2 Smaller Secondary)
+    const armGeo = new THREE.CylinderGeometry(0.18 * scale, 0.12 * scale, 2.2 * scale, 6);
+    const armL = new THREE.Mesh(armGeo, bodyMat);
+    armL.position.set(-1.1 * scale, 2.6 * scale, 0.6 * scale);
+    armL.rotation.set(0.4, 0, -0.4);
+    group.add(armL);
+
+    const armR = new THREE.Mesh(armGeo, bodyMat);
+    armR.position.set(1.1 * scale, 2.6 * scale, 0.6 * scale);
+    armR.rotation.set(0.4, 0, 0.4);
+    group.add(armR);
+
+    // 4. Heavy Legs
+    const legGeo = new THREE.CylinderGeometry(0.26 * scale, 0.18 * scale, 2.4 * scale, 6);
+    const legL = new THREE.Mesh(legGeo, bodyMat);
+    legL.position.set(-0.6 * scale, 1.1 * scale, -0.3 * scale);
+    group.add(legL);
+    const legR = new THREE.Mesh(legGeo, bodyMat);
+    legR.position.set(0.6 * scale, 1.1 * scale, -0.3 * scale);
+    group.add(legR);
+
+    // 5. Tail ending in Trident Scythe Blade
+    const tailGroup = new THREE.Group();
+    tailGroup.position.set(0, 1.4 * scale, -1.8 * scale);
+    const tail = new THREE.Mesh(new THREE.CylinderGeometry(0.16 * scale, 0.08 * scale, 4.5 * scale, 6), bodyMat);
+    tail.rotation.x = Math.PI / 2.5;
+    tailGroup.add(tail);
+
+    const scytheGeo = new THREE.ConeGeometry(0.4 * scale, 1.5 * scale, 4);
+    const scythe = new THREE.Mesh(scytheGeo, hornMat);
+    scythe.position.set(0, -1.2 * scale, -3.8 * scale);
+    scythe.rotation.x = -Math.PI / 3;
+    tailGroup.add(scythe);
+    group.add(tailGroup);
+
+    return group;
+  }
+
   createBossMesh(type) {
+    if (type === 'rogue_king_prime') {
+      return this.buildRogueKingMesh(3.2);
+    }
     if (type === 'awakened_engineer') {
       return this.buildEngineerTitanMesh(2.7);
     }
@@ -721,7 +828,27 @@ export class BossManager {
     }
 
     // Custom Spine Rip Stun Threshold at 18% / 20% HP
-    if (this.activeBoss.type === 'awakened_engineer') {
+    if (this.activeBoss.type === 'rogue_king_prime') {
+      if (this.activeBoss.hp <= this.activeBoss.maxHp * 0.45 && this.activeBoss.phase === 1) {
+        this.activeBoss.phase = 2;
+        this.activeBoss.isEnraged = true;
+        if (this.audioEngine && this.audioEngine.playRogueKingEarthquakeRoar) {
+          this.audioEngine.playRogueKingEarthquakeRoar();
+        }
+        if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
+          window.gameInstance.ui.showAnnouncement('👑 PHASE 2 : LE ROI XÉNOMORPHE ENTRE EN RAGE SANGUINAIRE !');
+        }
+      }
+
+      if (this.activeBoss.hp <= this.activeBoss.maxHp * 0.20 && !this.activeBoss.isStunned && !this.activeBoss.spineRipAvailable) {
+        this.activeBoss.isStunned = true;
+        this.activeBoss.stunTimer = 15.0;
+        this.activeBoss.spineRipAvailable = true;
+        if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
+          window.gameInstance.ui.showAnnouncement('💀 EXÉCUTION ROYALE : APPUYEZ SUR [E] POUR ARRACHER LA COURONNE CORNUE DU ROI XÉNOMORPHE !');
+        }
+      }
+    } else if (this.activeBoss.type === 'awakened_engineer') {
       if (this.activeBoss.hp <= this.activeBoss.maxHp * 0.20 && !this.activeBoss.isStunned && !this.activeBoss.spineRipAvailable) {
         this.activeBoss.isStunned = true;
         this.activeBoss.stunTimer = 15.0;
@@ -1227,6 +1354,70 @@ export class BossManager {
       if (this.activeBoss.mesh.userData && this.activeBoss.mesh.userData.phaseShield && this.activeBoss.hasPhaseShield) {
         this.activeBoss.mesh.userData.phaseShield.rotation.y += 1.5 * delta;
         this.activeBoss.mesh.userData.phaseShield.rotation.x += 0.8 * delta;
+      }
+    } else if (this.activeBoss.type === 'rogue_king_prime') {
+      // Chantier 2 (v52.0): Rogue King Xenomorph Prime Charge, Pheromone Frenzy & Scythe Cleave
+      if (!this.activeBoss.chargeCooldown) this.activeBoss.chargeCooldown = 4.5;
+      this.activeBoss.chargeCooldown -= delta;
+
+      if (this.activeBoss.isCharging) {
+        this.activeBoss.chargeTimer -= delta;
+        const cFwd = this.activeBoss.chargeDir || dir.clone().normalize();
+        this.activeBoss.mesh.position.addScaledVector(cFwd, 22.0 * delta);
+
+        if (dist <= 4.2) {
+          player.takeDamage(380);
+          const push = cFwd.clone().normalize();
+          player.position.addScaledVector(push, 14.0);
+          if (player.mesh) player.mesh.position.copy(player.position);
+          this.activeBoss.isCharging = false;
+          if (this.audioEngine && this.audioEngine.playRogueKingBatteringRam) {
+            this.audioEngine.playRogueKingBatteringRam();
+          }
+        }
+
+        if (this.activeBoss.chargeTimer <= 0) {
+          this.activeBoss.isCharging = false;
+        }
+      } else if (dist > 7.0 && dist < 38.0 && this.activeBoss.chargeCooldown <= 0) {
+        this.activeBoss.chargeCooldown = 7.5;
+        this.activeBoss.isCharging = true;
+        this.activeBoss.chargeTimer = 1.6;
+        this.activeBoss.chargeDir = dir.clone().normalize();
+        this.activeBoss.mesh.lookAt(this.activeBoss.mesh.position.clone().add(this.activeBoss.chargeDir));
+        if (this.audioEngine && this.audioEngine.playRogueKingEarthquakeRoar) {
+          this.audioEngine.playRogueKingEarthquakeRoar();
+        }
+        if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
+          window.gameInstance.ui.showAnnouncement('💥 CHARGE BÉLIER DU ROI XÉNOMORPHE DÉCHAÎNÉ ! ÉCARTEZ-VOUS !');
+        }
+      }
+
+      // Pheromone Frenzy Wave (every 8.5s)
+      if (!this.activeBoss.pheromoneCooldown) this.activeBoss.pheromoneCooldown = 6.0;
+      this.activeBoss.pheromoneCooldown -= delta;
+      if (this.activeBoss.pheromoneCooldown <= 0) {
+        this.activeBoss.pheromoneCooldown = 9.0;
+        if (this.audioEngine && this.audioEngine.playAlienQueenPheromoneFrenzy) {
+          this.audioEngine.playAlienQueenPheromoneFrenzy();
+        }
+        if (horde && horde.aliens) {
+          horde.aliens.forEach(a => {
+            if (a && a.hp > 0 && a.mesh && a.mesh.position.distanceTo(this.activeBoss.mesh.position) <= 24.0) {
+              a.isPheromoneEnraged = true;
+              a.enrageTimer = 6.0;
+            }
+          });
+        }
+        if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
+          window.gameInstance.ui.showAnnouncement('🧪 FRÉNÉSIE PHÉROMONALE DU ROI XÉNO : ESSAIMS SURVOLTÉS (+40% VITESSE) !');
+        }
+      }
+
+      // Tail Scythe Cleave in close range
+      if (dist <= 6.5 && this.activeBoss.tailWhipCooldown <= 0) {
+        this.activeBoss.tailWhipCooldown = 3.2;
+        this.triggerTailWhip(player);
       }
     } else if ((this.activeBoss.type === 'predalien_queen' || this.activeBoss.type === 'predalien_abomination' || this.activeBoss.type === 'predalien_matriarch_titan') && dist > 4.5 && dist < 32.0 && this.activeBoss.regurgitateCooldown <= 0) {
       this.activeBoss.regurgitateCooldown = this.activeBoss.type === 'predalien_matriarch_titan' ? 4.5 : (this.activeBoss.type === 'predalien_abomination' ? 5.2 : 6.5);

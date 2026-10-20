@@ -3158,6 +3158,224 @@ html, body {
   border-top: 2px solid #10b981;
 }
 
+/* === v52.0 APEX SOVEREIGN STYLES === */
+.slot-bridge-btn {
+  border-color: #38bdf8 !important;
+  cursor: pointer;
+}
+.slot-bridge-btn .slot-key {
+  color: #7dd3fc !important;
+  background: rgba(56, 189, 248, 0.25) !important;
+}
+
+#slot-pole-vault .slot-key {
+  border-color: #fb923c;
+  color: #fed7aa;
+}
+
+/* Colossal Boss Multi-Segment Health Bar */
+.colossal-boss-panel {
+  position: absolute;
+  top: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 580px;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.94), rgba(3, 7, 18, 0.98));
+  border: 2px solid #ef4444;
+  box-shadow: 0 0 35px rgba(239, 68, 68, 0.45);
+  border-radius: 8px;
+  padding: 10px 18px;
+  z-index: 1500;
+  pointer-events: none;
+}
+
+.colossal-boss-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.boss-title-text {
+  font-size: 1.05rem;
+  font-weight: 900;
+  color: #f87171;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.boss-phase-badge {
+  background: rgba(239, 68, 68, 0.25);
+  color: #fca5a5;
+  border: 1px solid #ef4444;
+  padding: 2px 10px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.colossal-boss-bar-track {
+  position: relative;
+  width: 100%;
+  height: 14px;
+  background: rgba(30, 41, 59, 0.85);
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid rgba(239, 68, 68, 0.5);
+}
+
+.colossal-boss-fill {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #ef4444, #dc2626);
+  transition: width 0.15s ease-out;
+}
+
+.bar-notch {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: rgba(15, 23, 42, 0.85);
+}
+.notch-1 { left: 33.3%; }
+.notch-2 { left: 66.6%; }
+
+.colossal-boss-sub {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px;
+  font-size: 0.75rem;
+  color: #94a3b8;
+  font-family: monospace;
+}
+
+/* Mothership Command Bridge Modal [F4] */
+.bridge-card {
+  max-width: 950px;
+  width: 92%;
+  border: 2px solid #38bdf8;
+  box-shadow: 0 0 50px rgba(56, 189, 248, 0.35);
+  background: linear-gradient(180deg, rgba(8, 14, 26, 0.96), rgba(3, 7, 18, 0.98));
+}
+
+.bridge-holo-globe {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  margin: 0 auto 20px auto;
+  border-radius: 50%;
+  border: 1px dashed rgba(56, 189, 248, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 0 30px rgba(56, 189, 248, 0.25);
+}
+
+.globe-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid #38bdf8;
+}
+
+.ring-1 {
+  width: 140px;
+  height: 140px;
+  animation: globeRotate 8s linear infinite;
+}
+
+.ring-2 {
+  width: 100px;
+  height: 100px;
+  border-style: dotted;
+  animation: globeRotateReverse 6s linear infinite;
+}
+
+@keyframes globeRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes globeRotateReverse {
+  0% { transform: rotate(360deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.globe-label {
+  position: absolute;
+  bottom: -22px;
+  font-size: 0.75rem;
+  font-weight: 900;
+  color: #7dd3fc;
+  letter-spacing: 1.5px;
+  white-space: nowrap;
+}
+
+.bridge-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin-top: 25px;
+}
+
+.bridge-action-card {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.bridge-action-card:hover {
+  transform: translateY(-3px);
+  border-color: #38bdf8;
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+}
+
+.bridge-icon {
+  font-size: 2.2rem;
+  margin-bottom: 8px;
+}
+
+.bridge-action-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #f8fafc;
+  margin-bottom: 6px;
+  letter-spacing: 1px;
+}
+
+.bridge-action-desc {
+  font-size: 0.82rem;
+  color: #94a3b8;
+  margin-bottom: 14px;
+  flex-grow: 1;
+}
+
+.btn-bridge {
+  background: linear-gradient(135deg, #0284c7, #0369a1);
+  color: #ffffff;
+  font-weight: 900;
+  padding: 9px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.btn-bridge:hover {
+  filter: brightness(1.2);
+  transform: scale(1.02);
+}
+
 
 
 

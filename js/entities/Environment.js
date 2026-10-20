@@ -81,6 +81,10 @@ export class EnvironmentManager {
     // v51.0 Systems (Pressurized Acid Geysers, Engineer Sarcophagus Stasis Crypt)
     this.pressurizedAcidGeysers = [];
     this.engineerSarcophagus = null;
+    // v52.0 Systems (Hydraulic Cargo Lift, Subterranean Infiltration Vents, Active Resupply Pods)
+    this.hydraulicCargoLift = null;
+    this.subterraneanVents = [];
+    this.activeDropPods = [];
   }
 
   clearEnvironment() {
@@ -251,6 +255,16 @@ export class EnvironmentManager {
       this.scene.remove(this.engineerSarcophagus.group);
       this.engineerSarcophagus = null;
     }
+
+    // v52.0 Cleanups
+    if (this.hydraulicCargoLift) {
+      this.scene.remove(this.hydraulicCargoLift.group);
+      this.hydraulicCargoLift = null;
+    }
+    this.subterraneanVents.forEach(v => this.scene.remove(v.group));
+    this.subterraneanVents = [];
+    this.activeDropPods.forEach(p => this.scene.remove(p.mesh));
+    this.activeDropPods = [];
 
     this.reactorMeltdownActive = false;
     this.reactorMeltdownTimer = 180.0;
@@ -470,6 +484,13 @@ export class EnvironmentManager {
 
     // Chantier 10: Space Jockey Dais Sacred Engineer Stasis Crypt Sarcophagus (Prometheus 2012)
     this.buildEngineerSarcophagus();
+
+    // === v52.0 10-CHANTIER EXPANSION (Hydraulic Cargo Lift, Subterranean Infiltration Vents) ===
+    // Chantier 5: USCM Industrial Hydraulic Cargo Lift Elevator (Hadley's Hope)
+    this.buildHydraulicCargoLift();
+
+    // Chantier 6: Subterranean Xeno Infiltration Vents & Floor Hatches
+    this.buildSubterraneanVents();
   }
 
   buildTempleProps(stoneMat) {
@@ -6118,6 +6139,186 @@ export class EnvironmentManager {
       return true;
     }
     return false;
+  }
+
+  /* === CHANTIER 5 & SOFIA QA (v52.0): USCM Industrial Hydraulic Cargo Lift Elevator (Hadley's Hope) === */
+  buildHydraulicCargoLift() {
+    const group = new THREE.Group();
+    const pos = new THREE.Vector3(0, 0, 0);
+    group.position.copy(pos);
+
+    const metalMat = new THREE.MeshStandardMaterial({
+      color: 0x1f2937,
+      metalness: 0.88,
+      roughness: 0.25
+    });
+
+    const hazardMat = new THREE.MeshBasicMaterial({ color: 0xfacc15 });
+
+    // 4 Corner Steel Hydraulic Guide Columns (7m height)
+    const colGeo = new THREE.CylinderGeometry(0.18, 0.18, 7.0, 8);
+    const colOffsets = [
+      { x: -2.3, z: -2.3 },
+      { x: 2.3, z: -2.3 },
+      { x: -2.3, z: 2.3 },
+      { x: 2.3, z: 2.3 }
+    ];
+
+    colOffsets.forEach(c => {
+      const col = new THREE.Mesh(colGeo, metalMat);
+      col.position.set(c.x, 3.5, c.z);
+      group.add(col);
+    });
+
+    // Hydraulic Piston Cylinder in Center
+    const pistonGeo = new THREE.CylinderGeometry(0.35, 0.35, 6.0, 10);
+    const piston = new THREE.Mesh(pistonGeo, metalMat);
+    piston.position.set(0, 2.5, 0);
+    group.add(piston);
+
+    // Movable Platform
+    const platform = new THREE.Group();
+    const slabGeo = new THREE.BoxGeometry(4.6, 0.35, 4.6);
+    const slab = new THREE.Mesh(slabGeo, metalMat);
+    slab.position.y = 0.18;
+    platform.add(slab);
+
+    // Perimeter Hazard Warning Border
+    const borderGeo = new THREE.BoxGeometry(4.8, 0.1, 0.2);
+    const borderN = new THREE.Mesh(borderGeo, hazardMat);
+    borderN.position.set(0, 0.36, -2.3);
+    platform.add(borderN);
+    const borderS = new THREE.Mesh(borderGeo, hazardMat);
+    borderS.position.set(0, 0.36, 2.3);
+    platform.add(borderS);
+
+    group.add(platform);
+    this.scene.add(group);
+
+    this.hydraulicCargoLift = {
+      group,
+      platform,
+      pos,
+      currentY: 0,
+      targetY: 0,
+      isUp: false,
+      speed: 3.2
+    };
+  }
+
+  checkHydraulicLiftInteraction(playerPos, player, ui, audioEngine) {
+    if (!this.hydraulicCargoLift || !player) return false;
+    const lift = this.hydraulicCargoLift;
+
+    if (playerPos.distanceTo(lift.pos) <= 4.2) {
+      lift.isUp = !lift.isUp;
+      lift.targetY = lift.isUp ? 5.5 : 0;
+
+      if (audioEngine && audioEngine.playHeavyHydraulicGate) {
+        audioEngine.playHeavyHydraulicGate();
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement(lift.isUp
+          ? '🏗️ MONTE-CHARGE HYDRAULIQUE USCM : ASCENSION NIVEAU SUPÉRIEUR (+5.5M) !'
+          : '🏗️ MONTE-CHARGE HYDRAULIQUE USCM : DESCENTE NIVEAU SOL !');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  updateHydraulicCargoLift(delta, player) {
+    if (!this.hydraulicCargoLift) return;
+    const lift = this.hydraulicCargoLift;
+
+    if (Math.abs(lift.currentY - lift.targetY) > 0.05) {
+      const dir = Math.sign(lift.targetY - lift.currentY);
+      lift.currentY += dir * lift.speed * delta;
+      lift.platform.position.y = lift.currentY;
+
+      // Carry player vertically if standing on the lift platform
+      if (player && Math.abs(player.position.x - lift.pos.x) <= 2.3 && Math.abs(player.position.z - lift.pos.z) <= 2.3) {
+        player.position.y = lift.currentY;
+        if (player.mesh) player.mesh.position.y = lift.currentY;
+      }
+    }
+  }
+
+  /* === CHANTIER 6 (v52.0): Subterranean Infiltration Vents & Floor Hatches === */
+  buildSubterraneanVents() {
+    const ventLocs = [
+      { x: -18, z: -14 },
+      { x: 18, z: 14 },
+      { x: -12, z: 22 },
+      { x: 12, z: -22 }
+    ];
+
+    const grateMat = new THREE.MeshStandardMaterial({
+      color: 0x111827,
+      metalness: 0.95,
+      roughness: 0.2
+    });
+
+    ventLocs.forEach(v => {
+      const group = new THREE.Group();
+      const pos = new THREE.Vector3(v.x, 0, v.z);
+      group.position.copy(pos);
+
+      const grate = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.15, 2.4), grateMat);
+      grate.position.y = 0.08;
+      group.add(grate);
+
+      this.scene.add(group);
+      this.subterraneanVents.push({
+        group,
+        pos,
+        cooldown: 8.0 + Math.random() * 8.0
+      });
+    });
+  }
+
+  updateSubterraneanVents(delta, horde, particles, audioEngine) {
+    if (!this.subterraneanVents) return;
+
+    this.subterraneanVents.forEach(v => {
+      v.cooldown -= delta;
+      if (v.cooldown <= 0) {
+        v.cooldown = 14.0 + Math.random() * 10.0;
+        if (particles && particles.emitSparks) {
+          particles.emitSparks(v.pos, 14);
+        }
+        if (audioEngine && audioEngine.playAcidTrenchSteamHiss) {
+          audioEngine.playAcidTrenchSteamHiss();
+        }
+      }
+    });
+  }
+
+  /* === CHANTIER 7 (v52.0): Orbital Drop Pod Tactical Resupply (Predators 2010 Lore) === */
+  spawnOrbitalDropPodResupply(targetPos, player, horde, audio, particles, ui) {
+    if (audio && audio.playDropPodAtmosphericEntry) {
+      audio.playDropPodAtmosphericEntry();
+    }
+
+    // Impact blast on landing
+    if (particles && particles.emitSparks) {
+      particles.emitSparks(targetPos, 40);
+    }
+
+    if (player) {
+      player.m41aGrenadeCharges = 6;
+      player.m77GaussAmmo = 12;
+      player.seegsonBoltAmmo = 10;
+      player.royalJellyFlasks = (player.royalJellyFlasks || 0) + 3;
+      player.medicompCharges = Math.min(5, (player.medicompCharges || 0) + 2);
+      player.plasmaEnergy = 100;
+      player.hp = Math.min(player.maxHp, player.hp + 400);
+    }
+
+    if (ui && ui.showAnnouncement) {
+      ui.showAnnouncement('📦 CAPSULE DE RAVITAILLEMENT ORBITALE LIVRÉE : MUNITIONS LOURDES, GELÉE ET SOINS DISPONIBLES !');
+    }
   }
 }
 

@@ -84,5 +84,19 @@ export const LEVELS_DATA = [
     skyColor: 0x030712,
     waves: 6,
     bossType: 'the_offspring'
+  },
+  {
+    id: 'charon_rogue_base',
+    name: 'BASE SCIENTIFIQUE CHARON (ALIENS: ROGUE 1993)',
+    desc: 'Complexe fortifié du Dr Ernst Kleist où le titanesque Rogue King Xenomorph Prime a été génétiquement façonné.',
+    theme: 'space_station',
+    floorColor: 0x141824,
+    wallColor: 0x222a3d,
+    fogColor: 0x0d121f,
+    fogDensity: 0.018,
+    weatherType: 'none',
+    skyColor: 0x040814,
+    waves: 6,
+    bossType: 'rogue_king_prime'
   }
 ];

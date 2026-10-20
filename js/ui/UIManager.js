@@ -193,6 +193,15 @@ export class UIManager {
         } else if (b.type === 'predalien_queen') {
           title = 'ABOMINATION PREDALIEN MATRIARCHE (AVP: REQUIEM)';
           icon = '💀';
+        } else if (b.type === 'rogue_king_prime') {
+          title = 'ROGUE KING XENOMORPH PRIME (ALIENS: ROGUE 1993)';
+          icon = '👑';
+        } else if (b.type === 'awakened_engineer') {
+          title = 'INGÉNIEUR MALA\'KAK ÉVEILLÉ (PROMETHEUS 2012)';
+          icon = '🏛️';
+        } else if (b.type === 'predalien_matriarch_titan') {
+          title = 'MATRIARCHE TITAN PRÉDALIENNE IMPÉRIALE (AVP EXTINCTION)';
+          icon = '👑';
         }
 
         if (bossName) bossName.innerText = title;
@@ -200,7 +209,7 @@ export class UIManager {
 
         if (bossBadge) {
           if (b.isStunned) {
-            bossBadge.innerText = (b.type === 'predalien_abomination') ? '💀 EXÉCUTION DÉCAPITANTE [E] : ARRACHEZ LE CRÂNE HYBRIDE !' : '💥 ÉTOURDI — EXÉCUTION SPIDERIP [E] !';
+            bossBadge.innerText = (b.type === 'predalien_abomination') ? '💀 EXÉCUTION DÉCAPITANTE [E] : ARRACHEZ LE CRÂNE HYBRIDE !' : (b.type === 'rogue_king_prime' ? '👑 ÉTOURDI — ARRACHEZ LA COURONNE CORNUE [E] !' : '💥 ÉTOURDI — EXÉCUTION SPIDERIP [E] !');
             bossBadge.style.color = '#ff3300';
             bossBadge.style.borderColor = '#ff3300';
           } else if (bPct < 25 && b.type === 'predalien_abomination') {
@@ -208,7 +217,7 @@ export class UIManager {
             bossBadge.style.color = '#f97316';
             bossBadge.style.borderColor = '#f97316';
           } else if (bPct < 45) {
-            bossBadge.innerText = (b.type === 'predalien_abomination' || b.type === 'predalien_queen') ? '🩸 FUREUR GESTANTE : CRACHAT D\'ACIDE & COUVÉE !' : '🔥 ÉTAT ENRAGÉ DÉCHAÎNÉ (<45%) !';
+            bossBadge.innerText = (b.type === 'predalien_abomination' || b.type === 'predalien_queen') ? '🩸 FUREUR GESTANTE : CRACHAT D\'ACIDE & COUVÉE !' : (b.type === 'rogue_king_prime' ? '⚡ FUREUR DU ROI XÉNO : CHARGES DÉVASTATRICES & ONDE PHÉROMONE !' : '🔥 ÉTAT ENRAGÉ DÉCHAÎNÉ (<45%) !');
             bossBadge.style.color = '#ef4444';
             bossBadge.style.borderColor = '#ef4444';
           } else if (bPct < 65 && b.type === 'predalien_abomination') {
@@ -216,13 +225,67 @@ export class UIManager {
             bossBadge.style.color = '#84cc16';
             bossBadge.style.borderColor = '#84cc16';
           } else {
-            bossBadge.innerText = 'PHASE 1 : GESTANTE ACTIVE';
+            bossBadge.innerText = b.type === 'rogue_king_prime' ? 'PHASE 1 : BÉLIER CARAPACE LOURDE' : 'PHASE 1 : GESTANTE ACTIVE';
             bossBadge.style.color = '#fef08a';
             bossBadge.style.borderColor = '#facc15';
           }
         }
       } else {
         bossContainer.classList.add('hidden');
+      }
+    }
+
+    // Chantier 10 & Marc QA (v52.0): Colossal Boss Multi-Segment Health HUD
+    const colossalHud = document.getElementById('colossal-boss-hud');
+    if (colossalHud) {
+      if (bossManager && bossManager.activeBoss && bossManager.activeBoss.hp > 0) {
+        colossalHud.classList.remove('hidden');
+        const b = bossManager.activeBoss;
+        const bPct = Math.max(0, Math.min(100, (b.hp / b.maxHp) * 100));
+        const fillEl = document.getElementById('colossal-boss-bar-fill');
+        const titleEl = document.getElementById('colossal-boss-title');
+        const phaseEl = document.getElementById('colossal-boss-phase');
+        const hpTextEl = document.getElementById('colossal-boss-hp-text');
+        const armorEl = document.getElementById('colossal-boss-armor-status');
+
+        if (fillEl) fillEl.style.width = `${bPct}%`;
+        if (hpTextEl) hpTextEl.innerText = `${Math.ceil(b.hp)} / ${b.maxHp} PV (${Math.ceil(bPct)}%)`;
+
+        let bTitle = 'REINE XÉNOMORPHE';
+        if (b.type === 'rogue_king_prime') bTitle = 'ROGUE KING XENOMORPH PRIME (ALIENS: ROGUE)';
+        else if (b.type === 'awakened_engineer') bTitle = 'INGÉNIEUR MALA\'KAK ÉVEILLÉ (PROMETHEUS)';
+        else if (b.type === 'predalien_matriarch_titan') bTitle = 'MATRIARCHE TITAN PRÉDALIENNE IMPÉRIALE';
+        else if (b.type === 'the_offspring') bTitle = 'HYBRIDE THE OFFSPRING (ROMULUS)';
+        else if (b.type === 'trilobite_prime') bTitle = 'TRILOBITE CÉPHALOPODE PRIME (PROMETHEUS)';
+        else if (b.type === 'predalien_queen') bTitle = 'REINE PRÉDALIENNE (AVP: REQUIEM)';
+
+        if (titleEl) titleEl.innerText = bTitle;
+
+        if (phaseEl) {
+          if (b.isStunned) {
+            phaseEl.innerText = 'ÉTOURDI - EXÉCUTION [E]';
+            phaseEl.style.borderColor = '#ff3300';
+            phaseEl.style.color = '#ff3300';
+          } else if (bPct < 25) {
+            phaseEl.innerText = 'PHASE 3 : SEUIL CRITIQUE';
+            phaseEl.style.borderColor = '#ef4444';
+            phaseEl.style.color = '#ef4444';
+          } else if (bPct < 50) {
+            phaseEl.innerText = 'PHASE 2 : FUREUR ENRAGÉE';
+            phaseEl.style.borderColor = '#f97316';
+            phaseEl.style.color = '#f97316';
+          } else {
+            phaseEl.innerText = 'PHASE 1 : CARAPACE INTACTE';
+            phaseEl.style.borderColor = '#00ffff';
+            phaseEl.style.color = '#00ffff';
+          }
+        }
+
+        if (armorEl) {
+          armorEl.innerText = bPct > 50 ? 'BLINDAGE CHITINEUX : INTACT' : (bPct > 20 ? 'BLINDAGE CHITINEUX : FRACTURÉ (-30%)' : 'BLINDAGE : DÉTRUIT (VULNÉRABLE)');
+        }
+      } else {
+        colossalHud.classList.add('hidden');
       }
     }
 

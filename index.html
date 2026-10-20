@@ -447,6 +447,30 @@
         <div class="apc-text">OUVRIR LA CRYPTE DE STASE // ÉVEILLER LE PILOTE INGÉNIEUR MALA'KAK</div>
       </div>
 
+      <!-- CHANTIER 10 & MARC QA (v52.0): COLOSSAL BOSS MULTI-SEGMENT HEALTH BAR -->
+      <div id="colossal-boss-hud" class="colossal-boss-panel hidden">
+        <div class="colossal-boss-header">
+          <span class="boss-skull-icon">💀</span>
+          <span id="colossal-boss-title" class="boss-title-text">ROGUE KING XENOMORPH PRIME</span>
+          <span id="colossal-boss-phase" class="boss-phase-badge">PHASE 1</span>
+        </div>
+        <div class="colossal-boss-bar-track">
+          <div id="colossal-boss-bar-fill" class="colossal-boss-fill"></div>
+          <div class="bar-notch notch-1"></div>
+          <div class="bar-notch notch-2"></div>
+        </div>
+        <div class="colossal-boss-sub">
+          <span id="colossal-boss-hp-text">9500 / 9500 PV</span>
+          <span id="colossal-boss-armor-status">BLINDAGE CHITINEUX : INTACT</span>
+        </div>
+      </div>
+
+      <!-- CHANTIER 5 & SOFIA QA (v52.0): HYDRAULIC CARGO LIFT PROMPT -->
+      <div id="hydraulic-lift-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">ACTIONNER LE MONTE-CHARGE HYDRAULIQUE USCM (NIVEAU SOL / PASSERELLE +5.5M)</div>
+      </div>
+
       <!-- CHANTIER 4 & LUCAS QA (v51.0): COUNTER-RIPOSTE READY BADGE -->
       <div id="counter-riposte-badge" class="counter-riposte-banner hidden">
         ⚡ RIPOSTE GUAN-THWEI PRÊTE : [CLIC GAUCHE] x4 DÉGÂTS CRITIQUES !
@@ -742,6 +766,14 @@
           <div class="slot-key">F3</div>
           <div class="slot-label">FORGE CLAN</div>
         </div>
+        <div class="ability-slot slot-bridge-btn" id="slot-mothership-bridge" onclick="window.game && window.game.toggleMothershipBridgeModal()">
+          <div class="slot-key">F4</div>
+          <div class="slot-label">PASSERELLE</div>
+        </div>
+        <div class="ability-slot" id="slot-pole-vault" onclick="window.game && window.game.player && window.game.player.performCombistickPoleVault(window.game.horde, window.game.bosses, window.game.audio, window.game.particles, window.game.ui)">
+          <div class="slot-key">⇧+␣</div>
+          <div class="slot-label">SAUT PERCHE</div>
+        </div>
         <div class="ability-slot" id="slot-wristblade-parry" onclick="window.game && window.game.player && window.game.player.performWristbladeParry(window.game.audio, window.game.particles, window.game.ui)">
           <div class="slot-key">F</div>
           <div class="slot-label">PARADE DLEX</div>
@@ -959,6 +991,42 @@
       <div class="apc-hud-footer">
         <div class="apc-stat">BLINDAGE CHÂSSIS : 100% (TITANE RENFORCÉ)</div>
         <div class="apc-stat">COMMANDES : [ESPACE / CLIC] TIR CONTINU | [Z/Q/S/D] CHENILLES | [E] DÉBARQUER</div>
+      </div>
+    </div>
+
+    <!-- CHANTIER 3 & ELENA QA (v52.0): MOTHERSHIP BRIDGE & PLANETARY COMMAND WAR ROOM [F4] -->
+    <div id="mothership-bridge-modal" class="ui-screen hidden">
+      <div class="glass-panel modal-card bridge-card">
+        <div class="modal-header">
+          <h2>🛸 PASSERELLE DU VAISSEAU-MÈRE YAUTJA // COMMANDEMENT ORBITAL [F4]</h2>
+          <button id="btn-close-bridge" class="btn-close" onclick="document.getElementById('mothership-bridge-modal').classList.add('hidden')">✕</button>
+        </div>
+        <div class="bridge-holo-globe">
+          <div class="globe-ring ring-1"></div>
+          <div class="globe-ring ring-2"></div>
+          <div class="globe-scan-line"></div>
+          <div class="globe-label">PLANÈTE LV-1201 // ZONE DE CHASSE CONFINÉE</div>
+        </div>
+        <div class="bridge-actions-grid">
+          <div class="bridge-action-card">
+            <div class="bridge-icon">⚡</div>
+            <div class="bridge-action-title">BARRAGE PLANÉTAIRE ORBITAL</div>
+            <div class="bridge-action-desc">Tir de saturation au plasma lourd depuis l'orbite balayant l'ensemble de l'arène (1400 dégâts bruts).</div>
+            <button id="btn-orbital-barrage" class="btn-bridge" onclick="window.game && window.game.callPlanetaryOrbitalBarrage()">ORDONNER LE BARRAGE (4000 HONNEUR)</button>
+          </div>
+          <div class="bridge-action-card">
+            <div class="bridge-icon">📦</div>
+            <div class="bridge-action-title">CAPSULE DE RAVITAILLEMENT ORBITALE</div>
+            <div class="bridge-action-desc">Largage d'urgence d'une capsule Drop Pod contenant munitions lourdes, charges Medicomp et Gelée Royale.</div>
+            <button id="btn-drop-pod-resupply" class="btn-bridge" onclick="window.game && window.game.callOrbitalDropPodResupply()">LARGUER LA CAPSULE (2500 HONNEUR)</button>
+          </div>
+          <div class="bridge-action-card">
+            <div class="bridge-icon">👑</div>
+            <div class="bridge-action-title">RITUEL DU CONSEIL DES ANCIENS</div>
+            <div class="bridge-action-desc">Invocation de la grâce clanique ancestrale : régénération instantanée de 100% des PV et purge complète des acides.</div>
+            <button id="btn-elders-blessing" class="btn-bridge" onclick="window.game && window.game.callEldersEmergencyBlessing()">RITUEL ANCESTRAL (3000 HONNEUR)</button>
+          </div>
+        </div>
       </div>
     </div>
 

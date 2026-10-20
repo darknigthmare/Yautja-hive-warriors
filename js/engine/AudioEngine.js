@@ -5510,6 +5510,265 @@ export class AudioEngine {
     sub.start(now);
     sub.stop(now + 0.55);
   }
+
+  // 90. Bio-Mask Multispectral Vision Mode Electronic Switch (Predator 1987 / AVP 2010)
+  playBioMaskVisionCycle() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(1400, now);
+    osc.frequency.exponentialRampToValueAtTime(380, now + 0.16);
+
+    gain.gain.setValueAtTime(0.5, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.16);
+
+    const f = this.ctx.createBiquadFilter();
+    f.type = 'bandpass';
+    f.frequency.setValueAtTime(900, now);
+    f.Q.setValueAtTime(4.0, now);
+
+    osc.connect(f);
+    f.connect(gain);
+    gain.connect(this.getOut());
+    osc.start(now);
+    osc.stop(now + 0.16);
+
+    // Subtle calibration hum
+    const hum = this.ctx.createOscillator();
+    const hGain = this.ctx.createGain();
+    hum.type = 'sine';
+    hum.frequency.setValueAtTime(180, now + 0.05);
+    hum.frequency.linearRampToValueAtTime(320, now + 0.22);
+    hGain.gain.setValueAtTime(0.01, now + 0.05);
+    hGain.gain.linearRampToValueAtTime(0.3, now + 0.12);
+    hGain.gain.exponentialRampToValueAtTime(0.01, now + 0.22);
+
+    hum.connect(hGain);
+    hGain.connect(this.getOut());
+    hum.start(now + 0.05);
+    hum.stop(now + 0.22);
+  }
+
+  // 91. Rogue King Xenomorph Prime Earthquake Roar (Aliens: Rogue / Charon Project Lore)
+  playRogueKingEarthquakeRoar() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Sub-bass tectonic rumble (42Hz)
+    const sub = this.ctx.createOscillator();
+    const subGain = this.ctx.createGain();
+    sub.type = 'sine';
+    sub.frequency.setValueAtTime(58, now);
+    sub.frequency.exponentialRampToValueAtTime(28, now + 2.2);
+
+    subGain.gain.setValueAtTime(0.95, now);
+    subGain.gain.exponentialRampToValueAtTime(0.01, now + 2.2);
+
+    sub.connect(subGain);
+    subGain.connect(this.getOut());
+    sub.start(now);
+    sub.stop(now + 2.2);
+
+    // Guttural primordial roar (dual detuned saw)
+    [84, 126].forEach((f, idx) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(f, now);
+      osc.frequency.linearRampToValueAtTime(f * 1.5, now + 0.6);
+      osc.frequency.exponentialRampToValueAtTime(36, now + 2.0);
+
+      gain.gain.setValueAtTime(0.01, now);
+      gain.gain.linearRampToValueAtTime(idx === 0 ? 0.8 : 0.55, now + 0.3);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 2.0);
+
+      const filter = this.ctx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(340, now);
+      filter.Q.setValueAtTime(2.5, now);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.getOut());
+      osc.start(now);
+      osc.stop(now + 2.0);
+    });
+  }
+
+  // 92. Rogue King Battering Ram Carapace Impact (Aliens: Rogue)
+  playRogueKingBatteringRam() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(160, now);
+    osc.frequency.exponentialRampToValueAtTime(24, now + 0.35);
+
+    gain.gain.setValueAtTime(0.95, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+
+    osc.connect(gain);
+    gain.connect(this.getOut());
+    osc.start(now);
+    osc.stop(now + 0.35);
+
+    // Debris burst noise
+    const bufSize = Math.floor(this.ctx.sampleRate * 0.25);
+    const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufSize * 0.3));
+
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buf;
+    const nFilter = this.ctx.createBiquadFilter();
+    nFilter.type = 'lowpass';
+    nFilter.frequency.setValueAtTime(650, now);
+    const nGain = this.ctx.createGain();
+    nGain.gain.setValueAtTime(0.85, now);
+    nGain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+
+    noise.connect(nFilter);
+    nFilter.connect(nGain);
+    nGain.connect(this.getOut());
+    noise.start(now);
+    noise.stop(now + 0.25);
+  }
+
+  // 93. Mothership Planetary Orbital Barrage Thunder (Predator: Dark Ages / AVP 2004)
+  playPlanetaryOrbitalBarrage() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    [110, 220, 440].forEach((freq, idx) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = idx === 0 ? 'sine' : 'sawtooth';
+      osc.frequency.setValueAtTime(freq, now + idx * 0.1);
+      osc.frequency.exponentialRampToValueAtTime(30, now + 2.5);
+
+      gain.gain.setValueAtTime(0.7 / (idx + 1), now + idx * 0.1);
+      gain.gain.exponentialRampToValueAtTime(0.005, now + 2.5);
+
+      osc.connect(gain);
+      gain.connect(this.getOut());
+      osc.start(now + idx * 0.1);
+      osc.stop(now + 2.5);
+    });
+  }
+
+  // 94. Yautja Orbital Drop Pod Hypersonic Atmospheric Entry & Impact (Predators 2010)
+  playDropPodAtmosphericEntry() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Hypersonic descent whine
+    const whine = this.ctx.createOscillator();
+    const wGain = this.ctx.createGain();
+    whine.type = 'sawtooth';
+    whine.frequency.setValueAtTime(2800, now);
+    whine.frequency.exponentialRampToValueAtTime(140, now + 0.85);
+
+    wGain.gain.setValueAtTime(0.05, now);
+    wGain.gain.linearRampToValueAtTime(0.75, now + 0.7);
+    wGain.gain.exponentialRampToValueAtTime(0.01, now + 0.85);
+
+    whine.connect(wGain);
+    wGain.connect(this.getOut());
+    whine.start(now);
+    whine.stop(now + 0.85);
+
+    // Ground impact detonation
+    const impact = this.ctx.createOscillator();
+    const iGain = this.ctx.createGain();
+    impact.type = 'sine';
+    impact.frequency.setValueAtTime(180, now + 0.78);
+    impact.frequency.exponentialRampToValueAtTime(25, now + 1.6);
+    iGain.gain.setValueAtTime(0.95, now + 0.78);
+    iGain.gain.exponentialRampToValueAtTime(0.01, now + 1.6);
+
+    impact.connect(iGain);
+    iGain.connect(this.getOut());
+    impact.start(now + 0.78);
+    impact.stop(now + 1.6);
+  }
+
+  // 95. Heavy Dual Plasma Burner Thermal Sizzle & Carapace Melting
+  playHeavyPlasmaBurnSizzle() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(750, now);
+    osc.frequency.linearRampToValueAtTime(1100, now + 0.15);
+    osc.frequency.exponentialRampToValueAtTime(220, now + 0.45);
+
+    gain.gain.setValueAtTime(0.6, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+
+    osc.connect(gain);
+    gain.connect(this.getOut());
+    osc.start(now);
+    osc.stop(now + 0.45);
+  }
+
+  // 96. Combi-Stick Pole Vault Leap & Kinetic Spring Pop (Predator 2 / Hunting Grounds)
+  playPredatorCombistickVault() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Metallic spring tension pop
+    const pop = this.ctx.createOscillator();
+    const pGain = this.ctx.createGain();
+    pop.type = 'triangle';
+    pop.frequency.setValueAtTime(240, now);
+    pop.frequency.exponentialRampToValueAtTime(880, now + 0.12);
+    pop.frequency.exponentialRampToValueAtTime(120, now + 0.28);
+
+    pGain.gain.setValueAtTime(0.75, now);
+    pGain.gain.exponentialRampToValueAtTime(0.01, now + 0.28);
+
+    pop.connect(pGain);
+    pGain.connect(this.getOut());
+    pop.start(now);
+    pop.stop(now + 0.28);
+  }
+
+  // 97. Alien Queen & Rogue King Pheromone Frenzy Screech (Aliens: Rogue)
+  playAlienQueenPheromoneFrenzy() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(2600, now);
+    osc.frequency.linearRampToValueAtTime(3400, now + 0.25);
+    osc.frequency.exponentialRampToValueAtTime(600, now + 0.9);
+
+    // Vibrato modulation
+    const lfo = this.ctx.createOscillator();
+    const lfoGain = this.ctx.createGain();
+    lfo.frequency.setValueAtTime(18, now);
+    lfoGain.gain.setValueAtTime(250, now);
+    lfo.connect(osc.frequency);
+    lfo.start(now);
+    lfo.stop(now + 0.9);
+
+    gain.gain.setValueAtTime(0.65, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.9);
+
+    osc.connect(gain);
+    gain.connect(this.getOut());
+    osc.start(now);
+    osc.stop(now + 0.9);
+  }
 }
 
 

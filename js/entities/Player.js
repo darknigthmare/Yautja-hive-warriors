@@ -181,6 +181,11 @@ export class Player {
     this.mimicryCooldown = 0;
     this.activeDecoyBeacon = null;
 
+    // === v52.0 CHANTIER 4: Combi-Stick Pole Vault Leap & Slam Drop (Predator 2 / Hunting Grounds) ===
+    this.isPoleVaulting = false;
+    this.poleVaultVelocityY = 0;
+    this.poleVaultCooldown = 0;
+
     this.forgeUpgrades = {
       barbedCombiStick: false,
       serratedSmartDisc: false,
@@ -3923,6 +3928,63 @@ export class Player {
         this.activeDecoyBeacon = null;
       }
     }
+
+    // === v52.0 CHANTIER 4: Pole Vault Vertical Physics & Crater Slam ===
+    if (this.poleVaultCooldown > 0) this.poleVaultCooldown -= delta;
+    if (this.isPoleVaulting) {
+      this.poleVaultVelocityY -= 48.0 * delta;
+      this.position.y += this.poleVaultVelocityY * delta;
+      if (this.mesh) this.mesh.position.y = this.position.y;
+
+      if (this.position.y <= 0) {
+        this.position.y = 0;
+        this.isPoleVaulting = false;
+        this.poleVaultVelocityY = 0;
+        if (this.mesh) this.mesh.position.y = 0;
+
+        const slamPos = this.position.clone();
+        if (audio && audio.playGroundSlamImpact) {
+          audio.playGroundSlamImpact();
+        }
+        if (particles && particles.emitSparks) {
+          particles.emitSparks(slamPos, 36);
+        }
+
+        const slamRadius = 7.5;
+        let killedCount = 0;
+
+        if (horde && horde.aliens) {
+          for (let i = horde.aliens.length - 1; i >= 0; i--) {
+            const a = horde.aliens[i];
+            if (!a || a.hp <= 0 || !a.mesh) continue;
+            if (a.mesh.position.distanceTo(slamPos) <= slamRadius) {
+              a.hp -= 580;
+              a.isStunned = true;
+              a.stunTimer = Math.max(a.stunTimer || 0, 2.5);
+              const knock = a.mesh.position.clone().sub(slamPos).normalize();
+              a.mesh.position.addScaledVector(knock, 6.5);
+              if (a.hp <= 0) {
+                if (horde.goreEngine) horde.goreEngine.spawnDismemberment(a.mesh.position, 'heavy');
+                this.scene.remove(a.mesh);
+                horde.aliens.splice(i, 1);
+                horde.deadCount++;
+                killedCount++;
+              }
+            }
+          }
+        }
+
+        if (bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
+          if (bosses.activeBoss.mesh.position.distanceTo(slamPos) <= slamRadius + 1.5) {
+            bosses.takeDamage(480, horde);
+          }
+        }
+
+        if (ui && ui.showAnnouncement) {
+          ui.showAnnouncement(`💥 PLONGEON ÉCRASANT AU COMBI-STICK : ONDE SISMIQUE 7.5M (${killedCount} ÉLIMINATIONS, 580 DÉGÂTS) !`);
+        }
+      }
+    }
   }
 
   /* === CHANTIER 1 (v51.0): Clan Weapon Forge Persistent Upgrades === */
@@ -4029,6 +4091,29 @@ export class Player {
 
     if (ui && ui.showAnnouncement) {
       ui.showAnnouncement('📻 LEURRE VOCAL YAUTJA DÉPLOYÉ [Y] : ESSAIMS ENTRAÎNÉS DANS LE PIÈGE !');
+    }
+    return true;
+  }
+
+  /* === CHANTIER 4 & LUCAS QA (v52.0): Combi-Stick Pole Vault Leap & Crater Slam Drop [Shift + Space] === */
+  performCombistickPoleVault(horde, bosses, audio, particles, ui) {
+    if (this.poleVaultCooldown > 0 || this.isPoleVaulting) return false;
+    this.poleVaultCooldown = 6.0;
+    this.isPoleVaulting = true;
+    this.poleVaultVelocityY = 22.0;
+
+    if (audio && audio.playPredatorCombistickVault) {
+      audio.playPredatorCombistickVault();
+    } else if (audio && audio.playIaijutsuSlice) {
+      audio.playIaijutsuSlice();
+    }
+
+    if (particles && particles.emitSparks) {
+      particles.emitSparks(this.position, 18);
+    }
+
+    if (ui && ui.showAnnouncement) {
+      ui.showAnnouncement('🔱 SAUT À LA PERCHE COMBI-STICK : PROPULSION AÉRIENNE 9M !');
     }
     return true;
   }

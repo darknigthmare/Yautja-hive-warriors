@@ -2660,9 +2660,15 @@ export class XenomorphHorde {
         }
       }
 
+      if (a.isPheromoneEnraged && a.enrageTimer > 0) {
+        a.enrageTimer -= delta;
+        if (a.enrageTimer <= 0) a.isPheromoneEnraged = false;
+      }
+
       if (dist > (a.radius || 1.2)) {
         dir.normalize();
-        a.mesh.position.addScaledVector(dir, a.speed * delta);
+        const pSpeedMult = (a.isPheromoneEnraged && a.enrageTimer > 0) ? 1.4 : 1.0;
+        a.mesh.position.addScaledVector(dir, a.speed * delta * pSpeedMult);
         a.mesh.rotation.y = Math.atan2(dir.x, dir.z);
       } else {
         if (a.type === 'facehugger' && !player.isFacehuggerLatched) {

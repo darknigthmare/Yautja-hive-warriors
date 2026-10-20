@@ -335,6 +335,12 @@ class GameApp {
         this.toggleClanForgeModal();
       }
 
+      // Chantier 3 & Elena QA (v52.0): Mothership Tactical Command Bridge [F4 Key]
+      if (e.code === 'F4') {
+        e.preventDefault();
+        this.toggleMothershipBridgeModal();
+      }
+
       // Segmented Spine Whip [Digit 1] / Chantier 1 (v49.0): Yautja Heavy Gravity Maul [Shift + Digit 1]
       if ((e.code === 'Digit1' || e.code === 'Numpad1') && this.player) {
         if (this.keys['ShiftLeft'] || this.keys['ShiftRight']) {
@@ -473,10 +479,16 @@ class GameApp {
         }
       }
 
-      // Pounce Leap [Shift + Space]
+      // Pounce Leap [Shift + Space] / Chantier 4 & Lucas QA (v52.0): Combi-Stick Pole Vault Leap
       if (e.code === 'Space' && (this.keys['ShiftLeft'] || this.keys['ShiftRight']) && this.player) {
         this.player.usedShiftModifier = true;
-        if (this.player.pounceLeap()) {
+        if (this.player.activeWeapon === 'combistick' || this.player.poleVaultCooldown <= 0) {
+          if (this.player.performCombistickPoleVault(this.horde, this.bosses, this.audio, this.particles, this.ui)) {
+            // Vault leaping initiated!
+          } else if (this.player.pounceLeap()) {
+            this.ui.showAnnouncement('⚡ SUPER-SAUT POUNCE LEAP DÉPLOYÉ !');
+          }
+        } else if (this.player.pounceLeap()) {
           this.ui.showAnnouncement('⚡ SUPER-SAUT POUNCE LEAP DÉPLOYÉ !');
         }
       }
@@ -488,6 +500,7 @@ class GameApp {
           this.player.cycleLegendaryBioMask(this.ui);
         } else {
           const mode = this.player.cycleVisionMode();
+          if (this.audio && this.audio.playBioMaskVisionCycle) this.audio.playBioMaskVisionCycle();
           this.updateVisionOverlays(mode);
         }
       }
@@ -510,6 +523,8 @@ class GameApp {
           if (this.player.struggleQTE()) {
             this.ui.showAnnouncement('💥 FACEHUGGER ARRACHÉ AVEC SUCCÈS !');
           }
+        } else if (this.env && this.env.checkHydraulicLiftInteraction && this.env.checkHydraulicLiftInteraction(this.player.position, this.player, this.ui, this.audio)) {
+          // Handled USCM Hydraulic Cargo Lift platform activation (v52.0)!
         } else if (this.env && this.env.checkFoundryValveInteraction && this.env.checkFoundryValveInteraction(this.player, this.audio, this.ui)) {
           // Handled Fiorina 161 Molten Lead Foundry 12-Ton Pouring Vat (Alien 3 1992)!
         } else if (this.env && this.env.checkSmartgunInteraction(this.player.position, this.player, this.ui, this.audio)) {
@@ -1651,6 +1666,11 @@ class GameApp {
         tHonor = 6000;
         this.player.royalJellyFlasks += 5;
         if (this.audio && this.audio.playEngineerBioArmorShatter) this.audio.playEngineerBioArmorShatter();
+      } else if (bType === 'rogue_king_prime') {
+        tName = 'Couronne Cornue & Mandibules du Rogue King Xenomorph Prime (Aliens: Rogue 1993)';
+        tHonor = 7500;
+        this.player.royalJellyFlasks += 5;
+        if (this.audio && this.audio.playRogueKingEarthquakeRoar) this.audio.playRogueKingEarthquakeRoar();
       }
 
       this.player.recordTrophy(tName, tHonor);
@@ -2062,6 +2082,13 @@ class GameApp {
       // v51.0 Chantier 7: Pressurized Acid Geysers
       if (this.env.updatePressurizedAcidGeysers) {
         this.env.updatePressurizedAcidGeysers(delta, this.player, this.horde, this.bosses, this.audio, this.particles);
+      }
+      // Chantier 5 & Sofia QA (v52.0): Hydraulic Cargo Lift & Subterranean Infiltration Vents
+      if (this.env.updateHydraulicCargoLift) {
+        this.env.updateHydraulicCargoLift(delta, this.player);
+      }
+      if (this.env.updateSubterraneanVents) {
+        this.env.updateSubterraneanVents(delta, this.horde, this.particles, this.audio);
       }
     }
 
@@ -2625,6 +2652,14 @@ class GameApp {
           riposteBadge.classList.add('hidden');
         }
       }
+
+      // Chantier 5 & Sofia QA (v52.0): Hydraulic Cargo Lift Proximity Prompt
+      const isNearLift = this.env.hydraulicCargoLift && this.player && this.player.position.distanceTo(this.env.hydraulicCargoLift.switchPos) <= 4.2;
+      const liftPrompt = document.getElementById('hydraulic-lift-prompt');
+      if (liftPrompt) {
+        if (isNearLift) liftPrompt.classList.remove('hidden');
+        else liftPrompt.classList.add('hidden');
+      }
     }
 
     if (this.horde.aliens.length < 10 && !this.bosses.activeBoss) {
@@ -2691,6 +2726,8 @@ class GameApp {
         else if (bType === 'predalien_abomination') bossTitle = 'ABOMINATION PRÉDALIENNE GESTANTE (AVP-R 2007 CHET)';
         else if (bType === 'predalien_queen') bossTitle = 'REINE PRÉDALIENNE ABOMINATION DU CLAN (AVP-R 2007)';
         else if (bType === 'empress_matriarch') bossTitle = 'IMPÉRATRICE VOLANTE DE LA RUCHE PRIMORDIALE (DARK HORSE)';
+        else if (bType === 'rogue_king_prime') bossTitle = 'ROGUE KING XENOMORPH PRIME (ALIENS: ROGUE 1993)';
+        else if (bType === 'awakened_engineer') bossTitle = 'INGÉNIEUR MALA\'KAK ÉVEILLÉ (PROMETHEUS 2012)';
 
         this.ui.showAnnouncement(`👑 SURGISSEMENT DU BOSS APEX : ${bossTitle} !`);
         // Shift Morale towards Hive (-25%) upon Apex Boss appearance
@@ -2778,6 +2815,13 @@ class GameApp {
       }
     }
 
+    // Chantier 4 & Lucas QA (v52.0): Combi-Stick Pole Vault Ability Slot
+    const poleVaultSlot = document.getElementById('slot-pole-vault');
+    if (poleVaultSlot && this.player) {
+      poleVaultSlot.classList.toggle('cooldown', this.player.poleVaultCooldown > 0);
+      poleVaultSlot.classList.toggle('active', this.player.isPoleVaulting);
+    }
+
     if (this.player.hp <= 0) {
       this.endGame(false);
     }
@@ -2809,12 +2853,14 @@ class GameApp {
       if (d < minDistance && playerForward.dot(toBoss) > 0.45) {
         minDistance = d;
         const name = this.bosses.activeBoss.type === 'predalien_queen' ? 'PREDALIEN QUEEN MATRIARCH' :
-                     this.bosses.activeBoss.type === 'empress_matriarch' ? 'EMPRESS MATRIARCH IMPERIAL' : 'REINE XÉNOMORPHE';
+                     this.bosses.activeBoss.type === 'empress_matriarch' ? 'EMPRESS MATRIARCH IMPERIAL' :
+                     this.bosses.activeBoss.type === 'rogue_king_prime' ? 'ROGUE KING XENOMORPH PRIME' :
+                     this.bosses.activeBoss.type === 'awakened_engineer' ? 'MALA\'KAK ENGINEER' : 'REINE XÉNOMORPHE';
         bestTarget = {
           pos: bossPos.clone().add(new THREE.Vector3(0, 3, 0)),
           dist: d,
           name,
-          weakpoint: "FAIBLESSE : SAC D'INOCULATION & ÉCUSSON CERVICAL (3.5X)"
+          weakpoint: this.bosses.activeBoss.type === 'rogue_king_prime' ? "FAIBLESSE : PLAQUES DORSALES & BASE DES CORNES CRÂNIENNES (3.0X)" : "FAIBLESSE : SAC D'INOCULATION & ÉCUSSON CERVICAL (3.5X)"
         };
       }
     }
@@ -3150,6 +3196,132 @@ class GameApp {
       this.ui.showAnnouncement(`🎯 SÉLECTION DE COMBAT : ${name}`);
     }
     this.toggleWeaponWheel(false);
+  }
+
+  /* === CHANTIER 3 & ELENA QA (v52.0): Mothership Tactical Command Bridge [F4] === */
+  toggleMothershipBridgeModal() {
+    const modal = document.getElementById('mothership-bridge-modal');
+    if (!modal) return;
+    const isHidden = modal.classList.toggle('hidden');
+    if (!isHidden) {
+      if (this.audio && this.audio.playBioMaskVisionCycle) {
+        this.audio.playBioMaskVisionCycle();
+      }
+      this.refreshMothershipBridgeUI();
+    }
+  }
+
+  refreshMothershipBridgeUI() {
+    const currentHonor = this.score || 0;
+    const btnBarrage = document.getElementById('btn-orbital-barrage');
+    const btnResupply = document.getElementById('btn-drop-pod-resupply');
+    const btnBlessing = document.getElementById('btn-elders-blessing');
+
+    if (btnBarrage) {
+      btnBarrage.disabled = currentHonor < 4000;
+      btnBarrage.style.opacity = currentHonor < 4000 ? '0.5' : '1.0';
+    }
+    if (btnResupply) {
+      btnResupply.disabled = currentHonor < 2500;
+      btnResupply.style.opacity = currentHonor < 2500 ? '0.5' : '1.0';
+    }
+    if (btnBlessing) {
+      btnBlessing.disabled = currentHonor < 3000;
+      btnBlessing.style.opacity = currentHonor < 3000 ? '0.5' : '1.0';
+    }
+  }
+
+  callPlanetaryOrbitalBarrage() {
+    const cost = 4000;
+    if ((this.score || 0) < cost) {
+      if (this.ui && this.ui.showAnnouncement) {
+        this.ui.showAnnouncement('⚠️ HONNEUR INSUFFISANT POUR LE BARRAGE PLANÉTAIRE (4000 REQUIS) !');
+      }
+      return;
+    }
+    this.score -= cost;
+    this.refreshMothershipBridgeUI();
+    document.getElementById('mothership-bridge-modal')?.classList.add('hidden');
+
+    if (this.audio && this.audio.playPlanetaryOrbitalBarrage) {
+      this.audio.playPlanetaryOrbitalBarrage();
+    }
+    this.triggerCameraShake(2.5, 2.0);
+
+    // Saturation strike dealing 1400 damage across the arena
+    if (this.horde) {
+      const hits = this.horde.checkMeleeHits({ origin: this.player ? this.player.position : new THREE.Vector3(0, 0, 0), radius: 60, damage: 1400, type: 'plasma' });
+      this.registerHits(hits);
+    }
+    if (this.bosses && this.bosses.activeBoss) {
+      this.bosses.takeDamage(1400);
+    }
+    if (this.badBlood && this.badBlood.isActive) {
+      this.badBlood.takeDamage(1400);
+    }
+    if (this.synthetics) {
+      this.synthetics.checkHits({ origin: this.player ? this.player.position : new THREE.Vector3(0, 0, 0), radius: 60, damage: 1400 });
+    }
+    if (this.particles && this.particles.emitExplosion) {
+      for (let i = 0; i < 8; i++) {
+        const rx = (Math.random() - 0.5) * 50;
+        const rz = (Math.random() - 0.5) * 50;
+        this.particles.emitExplosion(new THREE.Vector3(rx, 0, rz), 25);
+      }
+    }
+    if (this.ui && this.ui.showAnnouncement) {
+      this.ui.showAnnouncement('🚀 BARRAGE PLANÉTAIRE ORBITAL DÉPLOYÉ : 1400 DÉGÂTS DE SATURATION !');
+    }
+  }
+
+  callOrbitalDropPodResupply() {
+    const cost = 2500;
+    if ((this.score || 0) < cost) {
+      if (this.ui && this.ui.showAnnouncement) {
+        this.ui.showAnnouncement('⚠️ HONNEUR INSUFFISANT POUR LA CAPSULE ORBITALE (2500 REQUIS) !');
+      }
+      return;
+    }
+    this.score -= cost;
+    this.refreshMothershipBridgeUI();
+    document.getElementById('mothership-bridge-modal')?.classList.add('hidden');
+
+    if (this.env && this.env.spawnOrbitalDropPodResupply) {
+      const dropPos = this.player ? this.player.position.clone().add(new THREE.Vector3((Math.random() - 0.5) * 8, 0, (Math.random() - 0.5) * 8)) : new THREE.Vector3(0, 0, 0);
+      this.env.spawnOrbitalDropPodResupply(dropPos, this.audio, this.particles, this.ui);
+    }
+  }
+
+  callEldersEmergencyBlessing() {
+    const cost = 3000;
+    if ((this.score || 0) < cost) {
+      if (this.ui && this.ui.showAnnouncement) {
+        this.ui.showAnnouncement('⚠️ HONNEUR INSUFFISANT POUR LE RITUEL DES ANCIENS (3000 REQUIS) !');
+      }
+      return;
+    }
+    this.score -= cost;
+    this.refreshMothershipBridgeUI();
+    document.getElementById('mothership-bridge-modal')?.classList.add('hidden');
+
+    if (this.player) {
+      this.player.hp = this.player.maxHp;
+      this.player.isFacehuggerLatched = false;
+      this.player.isCorrosiveAcidBurned = false;
+      this.player.acidBurnTimer = 0;
+      this.player.medicompCharges = Math.min(5, (this.player.medicompCharges || 0) + 3);
+      this.player.energy = this.player.maxEnergy;
+    }
+
+    if (this.audio && this.audio.playWarhornBlast) {
+      this.audio.playWarhornBlast();
+    }
+    if (this.particles && this.particles.emitSparks) {
+      this.particles.emitSparks(this.player.position, 40);
+    }
+    if (this.ui && this.ui.showAnnouncement) {
+      this.ui.showAnnouncement('👑 BÉNÉDICTION DU CONSEIL DES ANCIENS : SANTÉ RESTAURÉE À 100% & PURIFICATION !');
+    }
   }
 
   animate() {
