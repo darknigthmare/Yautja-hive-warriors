@@ -441,6 +441,17 @@
         <div class="apc-text">MONTER / PILOTER LE BLINDÉ M577 APC (CANON 20MM DUAL BOYARS)</div>
       </div>
 
+      <!-- CHANTIER 10 (v51.0): ENGINEER STASIS CRYPT PROMPT -->
+      <div id="engineer-crypt-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">OUVRIR LA CRYPTE DE STASE // ÉVEILLER LE PILOTE INGÉNIEUR MALA'KAK</div>
+      </div>
+
+      <!-- CHANTIER 4 & LUCAS QA (v51.0): COUNTER-RIPOSTE READY BADGE -->
+      <div id="counter-riposte-badge" class="counter-riposte-banner hidden">
+        ⚡ RIPOSTE GUAN-THWEI PRÊTE : [CLIC GAUCHE] x4 DÉGÂTS CRITIQUES !
+      </div>
+
       <!-- REACTOR CONSOLE PROMPT (Chantier 3) -->
       <div id="reactor-console-prompt" class="reactor-console-box hidden">
         <div class="reactor-key">[ E ]</div>
@@ -727,9 +738,21 @@
           <div class="slot-key">F2</div>
           <div class="slot-label">PANTHÉON</div>
         </div>
-        <div class="ability-slot" id="slot-swap">
+        <div class="ability-slot slot-forge-btn" id="slot-forge" onclick="window.game && window.game.toggleClanForgeModal()">
+          <div class="slot-key">F3</div>
+          <div class="slot-label">FORGE CLAN</div>
+        </div>
+        <div class="ability-slot" id="slot-wristblade-parry" onclick="window.game && window.game.player && window.game.player.performWristbladeParry(window.game.audio, window.game.particles, window.game.ui)">
+          <div class="slot-key">F</div>
+          <div class="slot-label">PARADE DLEX</div>
+        </div>
+        <div class="ability-slot" id="slot-vocal-mimicry" onclick="window.game && window.game.player && window.game.player.triggerVoiceMimicryDecoy(window.game.horde, window.game.audio, window.game.ui, window.game.particles)">
+          <div class="slot-key">⇧+Y</div>
+          <div class="slot-label">LEURRE VOCAL</div>
+        </div>
+        <div class="ability-slot" id="slot-swap" onclick="window.game && window.game.toggleWeaponWheel()">
           <div class="slot-key">TAB</div>
-          <div class="slot-label" id="hud-weapon-label">ARME: PRINCIPALE</div>
+          <div class="slot-label" id="hud-weapon-label">ROUE DES ARMES</div>
         </div>
       </div>
 
@@ -828,6 +851,114 @@
         <div class="ritual-glyph">⚡ ᚛ ᚜ ⚡</div>
         <h1 class="ritual-title">🩸 RITUEL DU SANG SACRÉ ACCOMPLI</h1>
         <div class="ritual-sub">LE SYMBOLE DU CLAN EST GRAVÉ DANS LA CHITINE • EXTRACTION ORBITALE PAR LE VAISSEAU-MÈRE EN COURS</div>
+      </div>
+    </div>
+
+    <!-- CHANTIER 1 (v51.0): CLAN WEAPON FORGE & SACRED SHRINE MODAL [F3] -->
+    <div id="clan-armory-forge-modal" class="ui-screen hidden">
+      <div class="glass-panel modal-card forge-card">
+        <div class="modal-header">
+          <h2>⚒️ FORGE SACRÉE DU CLAN // ARSENAL ANCESTRAL YAUTJA [F3]</h2>
+          <button id="btn-close-forge" class="btn-close" onclick="document.getElementById('clan-armory-forge-modal').classList.add('hidden')">✕</button>
+        </div>
+        <div class="forge-stats-bar">
+          <div class="forge-stat-pill">HONNEUR : <span id="forge-honor-balance">0 PTS</span></div>
+          <div class="forge-stat-pill">GELÉE ROYALE : <span id="forge-jelly-balance">0 FIOLES</span></div>
+        </div>
+        <div class="forge-grid">
+          <div class="forge-item-card">
+            <div class="forge-icon">🔱</div>
+            <div class="forge-title">COMBI-STICK BARBELÉ DLEX</div>
+            <div class="forge-desc">Lame dentelée en titane Dlex infligeant un saignement continu (+25% dégâts au lancer).</div>
+            <button id="btn-forge-combistick" class="btn-forge">FORGER (1500 PTS + 2 GELÉES)</button>
+          </div>
+          <div class="forge-item-card">
+            <div class="forge-icon">🥏</div>
+            <div class="forge-title">DISQUE INTELLIGENT DENTELÉ</div>
+            <div class="forge-desc">Gyroscopes supersoniques traversant jusqu'à 6 cibles avec sifflement chirurgical de rasoir.</div>
+            <button id="btn-forge-smartdisc" class="btn-forge">FORGER (2000 PTS + 3 GELÉES)</button>
+          </div>
+          <div class="forge-item-card">
+            <div class="forge-icon">⚡</div>
+            <div class="forge-title">BOBINE SURCHARGÉE PLASMACASTER</div>
+            <div class="forge-desc">Condensateurs magnétiques supraconducteurs : -25% de coût d'énergie et ionisation thermique.</div>
+            <button id="btn-forge-plasmacaster" class="btn-forge">FORGER (2500 PTS + 4 GELÉES)</button>
+          </div>
+          <div class="forge-item-card">
+            <div class="forge-icon">⚔️</div>
+            <div class="forge-title">LAMES DE POIGNET MAÎTRE DLEX</div>
+            <div class="forge-desc">Alliage de parade renforcé : fenêtre de déviation [F] portée à 0.58s et contre-attaque dévastatrice x4.0.</div>
+            <button id="btn-forge-wristblades" class="btn-forge">FORGER (3000 PTS + 5 GELÉES)</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHANTIER 6 & MARC QA (v51.0): YAUTJA RADIAL WEAPON WHEEL [TAB] -->
+    <div id="yautja-radial-weapon-wheel" class="weapon-wheel-overlay hidden">
+      <div class="wheel-center-reticle">
+        <div class="wheel-center-title">ROUE DES ARMES</div>
+        <div class="wheel-center-sub">RALENTI TACTIQUE</div>
+      </div>
+      <div class="wheel-slices-container">
+        <div class="wheel-slice slice-1" onclick="window.game && window.game.selectWeaponSlice(1, 'LAMES DE POIGNET & MASSE SISMIQUE')">
+          <div class="wheel-slice-key">1 / ⇧+1</div>
+          <div class="wheel-slice-icon">⚔️</div>
+          <div class="wheel-slice-label">LAMES / MASSE</div>
+        </div>
+        <div class="wheel-slice slice-2" onclick="window.game && window.game.selectWeaponSlice(2, 'COMBI-STICK EXTENSIBLE')">
+          <div class="wheel-slice-key">P</div>
+          <div class="wheel-slice-icon">🔱</div>
+          <div class="wheel-slice-label">COMBI-STICK</div>
+        </div>
+        <div class="wheel-slice slice-3" onclick="window.game && window.game.selectWeaponSlice(3, 'SMART-DISC GUIDÉ')">
+          <div class="wheel-slice-key">C</div>
+          <div class="wheel-slice-icon">🥏</div>
+          <div class="wheel-slice-label">SMART-DISC</div>
+        </div>
+        <div class="wheel-slice slice-4" onclick="window.game && window.game.selectWeaponSlice(4, 'CANON PLASMA & DOUBLE RAYON')">
+          <div class="wheel-slice-key">LMB / ⇧+␣</div>
+          <div class="wheel-slice-icon">⚡</div>
+          <div class="wheel-slice-label">PLASMACASTER</div>
+        </div>
+        <div class="wheel-slice slice-5" onclick="window.game && window.game.selectWeaponSlice(5, 'BALISE TRAX-NET & PIÈGES')">
+          <div class="wheel-slice-key">X / T</div>
+          <div class="wheel-slice-icon">🕸️</div>
+          <div class="wheel-slice-label">TRAX-NET / PIÈGE</div>
+        </div>
+        <div class="wheel-slice slice-6" onclick="window.game && window.game.selectWeaponSlice(6, 'FUSIL M41A & CANON M77')">
+          <div class="wheel-slice-key">2 / ⇧+3</div>
+          <div class="wheel-slice-icon">🔫</div>
+          <div class="wheel-slice-label">BALISTIQUE USCM</div>
+        </div>
+        <div class="wheel-slice slice-7" onclick="window.game && window.game.selectWeaponSlice(7, 'LEURRE VOCAL MIMICRY')">
+          <div class="wheel-slice-key">⇧+Y</div>
+          <div class="wheel-slice-icon">📻</div>
+          <div class="wheel-slice-label">LEURRE VOCAL</div>
+        </div>
+        <div class="wheel-slice slice-8" onclick="window.game && window.game.selectWeaponSlice(8, 'FRAPPE AÉRIENNE DROPSHIP')">
+          <div class="wheel-slice-key">⇧+J</div>
+          <div class="wheel-slice-icon">✈️</div>
+          <div class="wheel-slice-label">DROPSHIP BOMB</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHANTIER 2 & SOFIA QA (v51.0): USCM M577 APC COCKPIT OVERLAY -->
+    <div id="apc-cockpit-overlay" class="apc-cockpit-screen hidden">
+      <div class="apc-crt-scanlines"></div>
+      <div class="apc-hud-header">
+        <div class="apc-hud-title">USCM M577 APC // POSTE DE TIR TOURELLE 20MM BOYARS</div>
+        <div class="apc-hud-status">SYSTÈME ARMEMENT : PRÊT (CADENCE 600 CPM)</div>
+      </div>
+      <div class="apc-targeting-reticle">
+        <div class="reticle-bracket-l"></div>
+        <div class="reticle-bracket-r"></div>
+        <div class="reticle-crosshair"></div>
+      </div>
+      <div class="apc-hud-footer">
+        <div class="apc-stat">BLINDAGE CHÂSSIS : 100% (TITANE RENFORCÉ)</div>
+        <div class="apc-stat">COMMANDES : [ESPACE / CLIC] TIR CONTINU | [Z/Q/S/D] CHENILLES | [E] DÉBARQUER</div>
       </div>
     </div>
 

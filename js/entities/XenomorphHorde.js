@@ -2271,6 +2271,20 @@ export class XenomorphHorde {
         return;
       }
 
+      // Elena QA Audit #2 & Chantier 5: Vocal Mimicry Decoy Diversion (Predator 1987)
+      if (a.decoyTimer > 0 && a.decoyTarget) {
+        a.decoyTimer -= delta;
+        const decoyDir = a.decoyTarget.clone().sub(a.mesh.position);
+        decoyDir.y = 0;
+        const dLen = decoyDir.length();
+        if (dLen > 1.2) {
+          decoyDir.normalize();
+          a.mesh.position.addScaledVector(decoyDir, delta * 7.5);
+          a.mesh.lookAt(a.mesh.position.clone().add(decoyDir));
+        }
+        return;
+      }
+
       // Wall-Climbing & Ceiling Drop Ambush AI (Alien 1979 / Aliens 1986 Lore)
       if (a.isWallStalker) {
         if (a.wallClimbPhase === 'climbing') {

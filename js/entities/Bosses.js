@@ -20,6 +20,7 @@ export class BossManager {
     mesh.position.copy(spawnPos);
     this.scene.add(mesh);
 
+    const isEngineer = type === 'awakened_engineer';
     const isMatriarchTitan = type === 'predalien_matriarch_titan';
     const isImperial = type === 'imperial_queen';
     const isEmpress = type === 'empress_matriarch';
@@ -28,7 +29,7 @@ export class BossManager {
     const isOffspring = type === 'the_offspring';
     const isTrilobite = type === 'trilobite_prime';
 
-    const hp = isMatriarchTitan ? 10000 : (isImperial ? 8000 : (isTrilobite ? 7000 : (isPredalienAbomination ? 6500 : (isEmpress ? 6000 : (isPredalienQueen ? 5000 : (isOffspring ? 4500 : 3000))))));
+    const hp = isMatriarchTitan ? 10000 : (isEngineer ? 8500 : (isImperial ? 8000 : (isTrilobite ? 7000 : (isPredalienAbomination ? 6500 : (isEmpress ? 6000 : (isPredalienQueen ? 5000 : (isOffspring ? 4500 : 3000)))))));
 
     this.activeBoss = {
       type: type,
@@ -38,10 +39,17 @@ export class BossManager {
       isStunned: false,
       stunTimer: 0,
       phase: 1,
-      spineRipAvailable: false
+      spineRipAvailable: false,
+      hasPhaseShield: false,
+      phaseShieldHp: 1800,
+      vortexCooldown: 5.0,
+      stompCooldown: 3.5
     };
 
-    if (isMatriarchTitan) {
+    if (isEngineer) {
+      if (this.audioEngine.playEngineerAwakeningRoar) this.audioEngine.playEngineerAwakeningRoar();
+      if (this.audioEngine.playYautjaRoar) this.audioEngine.playYautjaRoar();
+    } else if (isMatriarchTitan) {
       if (this.audioEngine.playPredalienBellyVomit) this.audioEngine.playPredalienBellyVomit();
       if (this.audioEngine.playRogueKingRoar) this.audioEngine.playRogueKingRoar();
       if (this.audioEngine.playYautjaRoar) this.audioEngine.playYautjaRoar();
@@ -171,7 +179,161 @@ export class BossManager {
     return group;
   }
 
+  /* === CHANTIER 3 (v51.0): Mala'kak Awakened Engineer Titan Boss Mesh (Prometheus 2012 / Fire & Stone) === */
+  buildEngineerTitanMesh(scale = 2.7) {
+    const group = new THREE.Group();
+
+    // Biomechanical pressure suit materials (dark ribbed obsidian alloy)
+    const suitMat = new THREE.MeshStandardMaterial({
+      color: 0x1f242c,
+      metalness: 0.88,
+      roughness: 0.25
+    });
+
+    // Pale alabaster marble flesh material (Prometheus Mala'kak phenotype)
+    const skinMat = new THREE.MeshStandardMaterial({
+      color: 0xdde0e6,
+      metalness: 0.1,
+      roughness: 0.45
+    });
+
+    // Flexible corrugated breathing hose material
+    const pipeMat = new THREE.MeshStandardMaterial({
+      color: 0x11141a,
+      metalness: 0.95,
+      roughness: 0.15
+    });
+
+    // Gravitational resonance staff alloy
+    const staffMat = new THREE.MeshStandardMaterial({
+      color: 0x334155,
+      metalness: 0.92,
+      roughness: 0.2
+    });
+
+    // Glowing Gravimetric Core Orb
+    const coreMat = new THREE.MeshStandardMaterial({
+      color: 0x38bdf8,
+      emissive: 0x0284c7,
+      emissiveIntensity: 1.4,
+      metalness: 0.2,
+      roughness: 0.1,
+      transparent: true,
+      opacity: 0.95
+    });
+
+    // 1. Muscular Torso & Ribbed Abdominal Armor
+    const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.7 * scale, 0.5 * scale, 1.8 * scale, 10), suitMat);
+    torso.position.y = 2.4 * scale;
+    group.add(torso);
+
+    // Ribbed chest plates
+    for (let r = 0; r < 5; r++) {
+      const rib = new THREE.Mesh(new THREE.TorusGeometry(0.55 * scale - r * 0.03 * scale, 0.04 * scale, 6, 12, Math.PI), pipeMat);
+      rib.position.set(0, 2.7 * scale - r * 0.18 * scale, 0.25 * scale);
+      rib.rotation.x = Math.PI / 2;
+      group.add(rib);
+    }
+
+    // 2. Head with Classical Sculpted Face & Bald Cranium
+    const head = new THREE.Mesh(new THREE.SphereGeometry(0.38 * scale, 14, 14), skinMat);
+    head.position.set(0, 3.55 * scale, 0.08 * scale);
+    head.scale.set(0.9, 1.15, 0.95);
+    group.add(head);
+
+    // Dark void eyes
+    const eyeMat = new THREE.MeshBasicMaterial({ color: 0x05070a });
+    const eyeL = new THREE.Mesh(new THREE.SphereGeometry(0.06 * scale, 6, 6), eyeMat);
+    eyeL.position.set(-0.12 * scale, 3.65 * scale, 0.38 * scale);
+    group.add(eyeL);
+    const eyeR = new THREE.Mesh(new THREE.SphereGeometry(0.06 * scale, 6, 6), eyeMat);
+    eyeR.position.set(0.12 * scale, 3.65 * scale, 0.38 * scale);
+    group.add(eyeR);
+
+    // 3. Iconic Biomechanical Elephantine Breathing Trunk / Helmet Hose
+    const trunkSegments = 7;
+    for (let i = 0; i < trunkSegments; i++) {
+      const tProgress = i / trunkSegments;
+      const tGeo = new THREE.CylinderGeometry((0.1 - tProgress * 0.03) * scale, (0.09 - tProgress * 0.03) * scale, 0.18 * scale, 8);
+      const tMesh = new THREE.Mesh(tGeo, pipeMat);
+      const angle = Math.PI * 0.45 * tProgress;
+      tMesh.position.set(0, 3.4 * scale - i * 0.14 * scale, 0.35 * scale + Math.sin(angle) * 0.22 * scale);
+      tMesh.rotation.x = 0.35 - tProgress * 0.7;
+      group.add(tMesh);
+    }
+
+    // 4. Massive Shoulders and Pauldrons
+    const pauldronGeo = new THREE.SphereGeometry(0.42 * scale, 8, 8);
+    const pauldronL = new THREE.Mesh(pauldronGeo, suitMat);
+    pauldronL.position.set(-0.85 * scale, 3.0 * scale, 0);
+    group.add(pauldronL);
+    const pauldronR = new THREE.Mesh(pauldronGeo, suitMat);
+    pauldronR.position.set(0.85 * scale, 3.0 * scale, 0);
+    group.add(pauldronR);
+
+    // 5. Massive Armored Legs
+    const legGeo = new THREE.CylinderGeometry(0.24 * scale, 0.18 * scale, 1.6 * scale, 8);
+    const legL = new THREE.Mesh(legGeo, suitMat);
+    legL.position.set(-0.35 * scale, 0.8 * scale, 0);
+    group.add(legL);
+    const legR = new THREE.Mesh(legGeo, suitMat);
+    legR.position.set(0.35 * scale, 0.8 * scale, 0);
+    group.add(legR);
+
+    // 6. Right Arm Holding Gravitational Resonance Staff
+    const armR = new THREE.Mesh(new THREE.CylinderGeometry(0.18 * scale, 0.15 * scale, 1.4 * scale, 8), suitMat);
+    armR.position.set(0.85 * scale, 2.2 * scale, 0.3 * scale);
+    armR.rotation.x = -0.4;
+    group.add(armR);
+
+    // The Gravitational Resonance Staff (3.6m tall)
+    const staffGroup = new THREE.Group();
+    staffGroup.position.set(0.95 * scale, 1.9 * scale, 0.85 * scale);
+
+    const staffShaft = new THREE.Mesh(new THREE.CylinderGeometry(0.06 * scale, 0.05 * scale, 3.8 * scale, 8), staffMat);
+    staffGroup.add(staffShaft);
+
+    // Staff top concentric gravimetric rings
+    const ring1 = new THREE.Mesh(new THREE.TorusGeometry(0.25 * scale, 0.03 * scale, 6, 16), staffMat);
+    ring1.position.y = 1.7 * scale;
+    ring1.rotation.x = Math.PI / 2;
+    staffGroup.add(ring1);
+
+    const ring2 = new THREE.Mesh(new THREE.TorusGeometry(0.18 * scale, 0.025 * scale, 6, 16), staffMat);
+    ring2.position.y = 1.7 * scale;
+    ring2.rotation.y = Math.PI / 2;
+    staffGroup.add(ring2);
+
+    // Central Pulsating Gravimetric Singularity Orb
+    const orb = new THREE.Mesh(new THREE.SphereGeometry(0.14 * scale, 12, 12), coreMat);
+    orb.position.y = 1.7 * scale;
+    staffGroup.add(orb);
+
+    group.add(staffGroup);
+    group.userData.staffGroup = staffGroup;
+    group.userData.staffOrb = orb;
+
+    // 7. Biomechanical Phase Shield (Translucent cyan dodecahedron)
+    const shieldGeo = new THREE.DodecahedronGeometry(2.4 * scale, 1);
+    const shieldMat = new THREE.MeshBasicMaterial({
+      color: 0x00e5ff,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.4
+    });
+    const phaseShield = new THREE.Mesh(shieldGeo, shieldMat);
+    phaseShield.position.y = 2.2 * scale;
+    phaseShield.visible = false;
+    group.add(phaseShield);
+    group.userData.phaseShield = phaseShield;
+
+    return group;
+  }
+
   createBossMesh(type) {
+    if (type === 'awakened_engineer') {
+      return this.buildEngineerTitanMesh(2.7);
+    }
     if (type === 'trilobite_prime') {
       return this.buildTrilobiteMesh(2.6);
     }
@@ -507,7 +669,42 @@ export class BossManager {
 
   takeDamage(amount, horde = null) {
     if (!this.activeBoss) return;
+
+    // Chantier 3 (v51.0): Mala'kak Awakened Engineer Biomechanical Phase Shield
+    if (this.activeBoss.type === 'awakened_engineer' && this.activeBoss.phase === 2 && this.activeBoss.hasPhaseShield) {
+      this.activeBoss.phaseShieldHp -= amount;
+      if (this.activeBoss.phaseShieldHp <= 0) {
+        this.activeBoss.hasPhaseShield = false;
+        if (this.activeBoss.mesh.userData && this.activeBoss.mesh.userData.phaseShield) {
+          this.activeBoss.mesh.userData.phaseShield.visible = false;
+        }
+        if (this.audioEngine && this.audioEngine.playEngineerBioArmorShatter) {
+          this.audioEngine.playEngineerBioArmorShatter();
+        }
+        if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
+          window.gameInstance.ui.showAnnouncement('🛡️ BOUCLIER BIOMÉCANIQUE DE L\'INGÉNIEUR BRISÉ !');
+        }
+      }
+      amount *= 0.4; // 60% absorbed by phase shield
+    }
+
     this.activeBoss.hp -= amount;
+
+    // Engineer Phase 2 trigger at 50% HP
+    if (this.activeBoss.type === 'awakened_engineer' && this.activeBoss.hp <= this.activeBoss.maxHp * 0.5 && this.activeBoss.phase === 1) {
+      this.activeBoss.phase = 2;
+      this.activeBoss.hasPhaseShield = true;
+      this.activeBoss.phaseShieldHp = 2000;
+      if (this.activeBoss.mesh.userData && this.activeBoss.mesh.userData.phaseShield) {
+        this.activeBoss.mesh.userData.phaseShield.visible = true;
+      }
+      if (this.audioEngine && this.audioEngine.playEngineerGravityStaffBlast) {
+        this.audioEngine.playEngineerGravityStaffBlast();
+      }
+      if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
+        window.gameInstance.ui.showAnnouncement('⚡ PHASE 2 : L\'INGÉNIEUR DÉPLOIE SON CHAMP GRAVITATIONNEL ET SON BOUCLIER !');
+      }
+    }
 
     // Predalien Pregnant Belly-Burst Frenzy at < 45% HP (AVP Requiem Lore)
     if ((this.activeBoss.type === 'predalien_queen' || this.activeBoss.type === 'predalien_abomination' || this.activeBoss.type === 'predalien_matriarch_titan') && this.activeBoss.hp <= this.activeBoss.maxHp * 0.45 && !this.activeBoss.pregnantBurstTriggered) {
@@ -524,7 +721,16 @@ export class BossManager {
     }
 
     // Custom Spine Rip Stun Threshold at 18% / 20% HP
-    if (this.activeBoss.type === 'predalien_matriarch_titan') {
+    if (this.activeBoss.type === 'awakened_engineer') {
+      if (this.activeBoss.hp <= this.activeBoss.maxHp * 0.20 && !this.activeBoss.isStunned && !this.activeBoss.spineRipAvailable) {
+        this.activeBoss.isStunned = true;
+        this.activeBoss.stunTimer = 15.0;
+        this.activeBoss.spineRipAvailable = true;
+        if (window.gameInstance && window.gameInstance.ui) {
+          window.gameInstance.ui.showAnnouncement('💀 EXÉCUTION MYTHIQUE : APPUYEZ SUR [E] POUR DÉCAPITER L\'INGÉNIEUR ET ARRACHER SON BIO-MASQUE !');
+        }
+      }
+    } else if (this.activeBoss.type === 'predalien_matriarch_titan') {
       if (this.activeBoss.hp <= this.activeBoss.maxHp * 0.18 && !this.activeBoss.isStunned && !this.activeBoss.spineRipAvailable) {
         this.activeBoss.isStunned = true;
         this.activeBoss.stunTimer = 15.0;
@@ -556,6 +762,69 @@ export class BossManager {
         this.activeBoss.isStunned = true;
         this.activeBoss.stunTimer = 6.0;
       }
+    }
+  }
+
+  /* === CHANTIER 3 (v51.0): Engineer Gravitational Vortex & Seismic Stomp === */
+  triggerEngineerGravitationalVortex(player, horde) {
+    if (!this.activeBoss || !this.activeBoss.mesh) return;
+    const origin = this.activeBoss.mesh.position.clone();
+
+    if (this.audioEngine && this.audioEngine.playEngineerGravityStaffBlast) {
+      this.audioEngine.playEngineerGravityStaffBlast();
+    }
+
+    if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
+      window.gameInstance.ui.showAnnouncement('🌌 VORTEX GRAVITATIONNEL DE L\'INGÉNIEUR : ATTRACTION ET ÉCRASEMENT DES FORMES DE VIE !');
+    }
+
+    // Pull and damage player
+    const dist = origin.distanceTo(player.position);
+    if (dist <= 26.0) {
+      const pullDir = origin.clone().sub(player.position).normalize();
+      pullDir.y = 0;
+      player.position.addScaledVector(pullDir, Math.min(dist * 0.7, 12.0));
+      if (player.mesh) player.mesh.position.copy(player.position);
+      player.takeDamage(140);
+    }
+
+    // Pull and crush nearby aliens
+    if (horde && horde.aliens) {
+      for (let i = horde.aliens.length - 1; i >= 0; i--) {
+        const a = horde.aliens[i];
+        if (!a || a.hp <= 0 || !a.mesh) continue;
+        const d = origin.distanceTo(a.mesh.position);
+        if (d <= 22.0) {
+          const aPull = origin.clone().sub(a.mesh.position).normalize();
+          aPull.y = 0;
+          a.mesh.position.addScaledVector(aPull, 8.5);
+          a.hp -= 220;
+          if (a.hp <= 0) {
+            if (horde.goreEngine) horde.goreEngine.spawnDismemberment(a.mesh.position, 'heavy');
+            this.scene.remove(a.mesh);
+            horde.aliens.splice(i, 1);
+            horde.deadCount++;
+          }
+        }
+      }
+    }
+  }
+
+  triggerEngineerSeismicStomp(player) {
+    if (!this.activeBoss || !this.activeBoss.mesh) return;
+    const origin = this.activeBoss.mesh.position.clone();
+
+    if (this.audioEngine && this.audioEngine.playGroundSlamImpact) {
+      this.audioEngine.playGroundSlamImpact();
+    }
+
+    const dist = origin.distanceTo(player.position);
+    if (dist <= 8.5) {
+      player.takeDamage(180);
+      const pushDir = player.position.clone().sub(origin).normalize();
+      pushDir.y = 0;
+      player.position.addScaledVector(pushDir, 11.0);
+      if (player.mesh) player.mesh.position.copy(player.position);
     }
   }
 
@@ -940,7 +1209,26 @@ export class BossManager {
     }
 
     // Predalien Signature Attack: Chestburster Regurgitation / Pressurized Belly Vomit (AVP: Requiem / Extinction Lore)
-    if ((this.activeBoss.type === 'predalien_queen' || this.activeBoss.type === 'predalien_abomination' || this.activeBoss.type === 'predalien_matriarch_titan') && dist > 4.5 && dist < 32.0 && this.activeBoss.regurgitateCooldown <= 0) {
+    if (this.activeBoss.type === 'awakened_engineer') {
+      if (!this.activeBoss.vortexCooldown) this.activeBoss.vortexCooldown = 5.0;
+      this.activeBoss.vortexCooldown -= delta;
+      if (this.activeBoss.vortexCooldown <= 0) {
+        this.activeBoss.vortexCooldown = 7.5;
+        this.triggerEngineerGravitationalVortex(player, horde);
+      }
+
+      if (!this.activeBoss.stompCooldown) this.activeBoss.stompCooldown = 3.5;
+      this.activeBoss.stompCooldown -= delta;
+      if (dist <= 7.5 && this.activeBoss.stompCooldown <= 0) {
+        this.activeBoss.stompCooldown = 4.8;
+        this.triggerEngineerSeismicStomp(player);
+      }
+
+      if (this.activeBoss.mesh.userData && this.activeBoss.mesh.userData.phaseShield && this.activeBoss.hasPhaseShield) {
+        this.activeBoss.mesh.userData.phaseShield.rotation.y += 1.5 * delta;
+        this.activeBoss.mesh.userData.phaseShield.rotation.x += 0.8 * delta;
+      }
+    } else if ((this.activeBoss.type === 'predalien_queen' || this.activeBoss.type === 'predalien_abomination' || this.activeBoss.type === 'predalien_matriarch_titan') && dist > 4.5 && dist < 32.0 && this.activeBoss.regurgitateCooldown <= 0) {
       this.activeBoss.regurgitateCooldown = this.activeBoss.type === 'predalien_matriarch_titan' ? 4.5 : (this.activeBoss.type === 'predalien_abomination' ? 5.2 : 6.5);
       if (this.activeBoss.type === 'predalien_abomination' || this.activeBoss.type === 'predalien_matriarch_titan') {
         this.regurgitateBellyVomit(player, horde);

@@ -108,6 +108,8 @@ class GameApp {
     this.baseFov = 60;
     // v48.0 Bullet-Time Camera & Endless Musou Mode
     this.bulletTimeTimer = 0;
+    // v51.0 Tactical Weapon Wheel Time Dilation
+    this.isTimeDilated = false;
     this.isEndlessMode = true; // Endless Musou Mode "Survival of the Worthy" enabled by default with toggle [Shift+M]
 
     this.keys = {};
@@ -301,11 +303,10 @@ class GameApp {
         this.ui.showAnnouncement('🐕 MEUTE DE CHIENS DE CHASSE HELL-HOUNDS DÉPLOYÉE !');
       }
 
-      // Audio Mimicry Voice Lure [Shift + Y] / Yautja Thermal Plasma Tripwire Mine [Y Key] (Chantier 9)
+      // Audio Mimicry Voice Lure [Shift + Y] / Yautja Thermal Plasma Tripwire Mine [Y Key] (Chantier 5 & Elena QA)
       if (e.code === 'KeyY' && this.player) {
         if (this.keys['ShiftLeft'] || this.keys['ShiftRight']) {
-          const taunt = this.player.triggerVoiceMimicry(this.horde);
-          this.ui.showAnnouncement(`📻 LEURRE VOCAL AUDIO MIMICRY DIFFUSÉ : ${taunt}`);
+          this.player.triggerVoiceMimicryDecoy(this.horde, this.audio, this.ui, this.particles);
         } else {
           if (this.player.deployTripwireMine(this.renderer.scene, this.particles)) {
             this.ui.showAnnouncement('🕸️ MINE TRIPWIRE PLASMA YAUTJA DÉPLOYÉE (3 FAISCEAUX LASER) !');
@@ -326,6 +327,12 @@ class GameApp {
       if (e.code === 'F2') {
         e.preventDefault();
         this.toggleClanHonorVaultModal();
+      }
+
+      // Chantier 1 (v51.0): Toggle Sacred Clan Weapon Forge Modal [F3 Key]
+      if (e.code === 'F3') {
+        e.preventDefault();
+        this.toggleClanForgeModal();
       }
 
       // Segmented Spine Whip [Digit 1] / Chantier 1 (v49.0): Yautja Heavy Gravity Maul [Shift + Digit 1]
@@ -540,6 +547,8 @@ class GameApp {
           // Handled Weyland-Yutani Coastal Defense 155mm Rail-Cannon Artillery Turret!
         } else if (this.env && this.env.checkCryoPodInteraction && this.env.checkCryoPodInteraction(this.player, this.audio, this.ui, this.horde, this.bosses, this.particles)) {
           // Handled Weyland-Yutani Cryo-Stasis Laboratory Specimen Pod Shatter!
+        } else if (this.env && this.env.checkEngineerSarcophagusInteraction && this.env.checkEngineerSarcophagusInteraction(this.player.position, this.bosses, this.ui, this.audio, this.particles)) {
+          // Handled Space Jockey Dais Sacred Engineer Sarcophagus Awakening!
         } else if (this.env && this.env.checkPowerLoaderInteraction(this.player.position, this.player, this.horde, this.ui, this.audio, this.particles)) {
           // Handled Caterpillar Power Loader crushing clamp!
         } else {
@@ -667,18 +676,17 @@ class GameApp {
 
       if (e.code === 'Tab' && this.player) {
         e.preventDefault();
-        const isSec = this.player.toggleWeaponSwap();
-        document.getElementById('hud-weapon-label').innerText = isSec ? 'ARME: SECONDAIRE' : 'ARME: PRINCIPALE';
+        this.toggleWeaponWheel();
       }
 
-      // Chantier 7 (v45): Yautja Ki'cte Gauntlet Grapple & Seismic Counter-Throw [KeyF / KeyG] (Concrete Jungle / Prey)
-      if ((e.code === 'KeyF' || e.code === 'KeyG') && this.player) {
-        const grappled = this.player.performGauntletGrapple(this.horde, this.bosses, this.ui, this.particles, this.env);
-        if (!grappled && e.code === 'KeyF') {
-          const active = this.player.toggleCloak();
-          this.audio.playYautjaClick();
-          this.ui.cloakOverlay.className = active ? '' : 'hidden';
-        }
+      // Chantier 4 & Lucas QA (v51.0): Dedicated Wristblade Parry Deflection [KeyF] (AVP 2010 / Hunting Grounds)
+      if (e.code === 'KeyF' && this.player) {
+        this.player.performWristbladeParry(this.audio, this.particles, this.ui);
+      }
+
+      // Chantier 7 (v45): Yautja Ki'cte Gauntlet Grapple & Seismic Counter-Throw [KeyG] (Concrete Jungle / Prey)
+      if (e.code === 'KeyG' && this.player) {
+        this.player.performGauntletGrapple(this.horde, this.bosses, this.ui, this.particles, this.env);
       }
 
       // Chantier 5 (v45): Yautja Pure Energy Plasma Pistol 3-Bolt Burst [Shift+Digit4] (AVP: Requiem 2007)
@@ -1638,6 +1646,11 @@ class GameApp {
         tName = 'Tentacule Biologique Musculeux de Trilobite Prime (Prometheus 2012)';
         tHonor = 3000;
         if (this.audio && this.audio.playTrilobiteTentacleConstrict) this.audio.playTrilobiteTentacleConstrict();
+      } else if (bType === 'awakened_engineer') {
+        tName = 'Bio-Masque d\'Éléphant & Vertèbres d\'Ingénieur Mala\'kak (Prometheus / Fire & Stone)';
+        tHonor = 6000;
+        this.player.royalJellyFlasks += 5;
+        if (this.audio && this.audio.playEngineerBioArmorShatter) this.audio.playEngineerBioArmorShatter();
       }
 
       this.player.recordTrophy(tName, tHonor);
@@ -1942,6 +1955,11 @@ class GameApp {
       delta *= 0.28;
     }
 
+    // Chantier 6 (v51.0): Tactical Weapon Wheel Time Dilation (0.15x Slow-Motion)
+    if (this.isTimeDilated) {
+      delta *= 0.15;
+    }
+
     const qtePrompt = document.getElementById('facehugger-qte-prompt');
     if (qtePrompt) {
       if (this.player.isFacehuggerLatched) {
@@ -2040,6 +2058,10 @@ class GameApp {
       }
       if (this.env.updateCryoStasisSector) {
         this.env.updateCryoStasisSector(delta, this.player, this.horde, this.particles);
+      }
+      // v51.0 Chantier 7: Pressurized Acid Geysers
+      if (this.env.updatePressurizedAcidGeysers) {
+        this.env.updatePressurizedAcidGeysers(delta, this.player, this.horde, this.bosses, this.audio, this.particles);
       }
     }
 
@@ -2584,6 +2606,25 @@ class GameApp {
         const chargePct = this.player.isChargingPlasma ? Math.min(1.0, this.player.plasmaChargeTime / 0.55) : 0;
         reticleCharge.style.strokeDashoffset = `${100 - chargePct * 100}`;
       }
+
+      // Chantier 10 (v51.0): Engineer Sarcophagus Awakening Prompt
+      const isNearCrypt = this.env.engineerSarcophagus && !this.env.engineerSarcophagus.isAwakened && this.player && this.player.position.distanceTo(this.env.engineerSarcophagus.pos) <= 5.2;
+      const cryptPrompt = document.getElementById('engineer-crypt-prompt');
+      if (cryptPrompt) {
+        if (isNearCrypt) cryptPrompt.classList.remove('hidden');
+        else cryptPrompt.classList.add('hidden');
+      }
+
+      // Chantier 4 & Lucas QA: Counter-Riposte Ready Badge
+      const riposteBadge = document.getElementById('counter-riposte-badge');
+      if (riposteBadge) {
+        if (this.player && this.player.isCounterRiposteReady && this.player.counterRiposteTimer > 0) {
+          riposteBadge.classList.remove('hidden');
+          riposteBadge.innerText = `⚡ RIPOSTE GUAN-THWEI PRÊTE : ${this.player.counterRiposteTimer.toFixed(1)}S (x4 DÉGÂTS)`;
+        } else {
+          riposteBadge.classList.add('hidden');
+        }
+      }
     }
 
     if (this.horde.aliens.length < 10 && !this.bosses.activeBoss) {
@@ -3014,6 +3055,101 @@ class GameApp {
     if (this.ui && this.ui.showAnnouncement) {
       this.ui.showAnnouncement('👑 RITUEL DU SANG SACRÉ GRAVÉ : MAÎTRE DU GRAND CLAN APEX ! EXTRACTION ORBITALE CONFIRMÉE !');
     }
+  }
+
+  /* === CHANTIER 1 (v51.0): Clan Weapon Forge Interactive Modal [F3] === */
+  toggleClanForgeModal() {
+    const modal = document.getElementById('clan-armory-forge-modal');
+    if (!modal) return;
+    const isHidden = modal.classList.toggle('hidden');
+    if (!isHidden) {
+      this.refreshClanForgeUI();
+    }
+  }
+
+  refreshClanForgeUI() {
+    if (!this.player) return;
+    this.player.loadClanForgeUpgrades();
+    const honorEl = document.getElementById('forge-honor-balance');
+    if (honorEl) honorEl.innerText = `${(this.score || 0).toLocaleString()} PTS`;
+    const jellyEl = document.getElementById('forge-jelly-balance');
+    if (jellyEl) jellyEl.innerText = `${this.player.royalJellyFlasks || 0} FIOLES`;
+
+    const upgrades = [
+      { id: 'btn-forge-combistick', key: 'barbedCombiStick', costHonor: 1500, costJelly: 2 },
+      { id: 'btn-forge-smartdisc', key: 'serratedSmartDisc', costHonor: 2000, costJelly: 3 },
+      { id: 'btn-forge-plasmacaster', key: 'overchargedCoil', costHonor: 2500, costJelly: 4 },
+      { id: 'btn-forge-wristblades', key: 'masterWristblades', costHonor: 3000, costJelly: 5 }
+    ];
+
+    upgrades.forEach(u => {
+      const btn = document.getElementById(u.id);
+      if (btn) {
+        const isForged = this.player.forgeUpgrades && this.player.forgeUpgrades[u.key];
+        if (isForged) {
+          btn.innerText = 'FORGÉ (ACTIF)';
+          btn.disabled = true;
+          btn.classList.add('btn-forged');
+        } else {
+          btn.innerText = `FORGER (${u.costHonor} PTS + ${u.costJelly} GELÉES)`;
+          btn.disabled = false;
+          btn.classList.remove('btn-forged');
+          btn.onclick = () => this.purchaseClanForgeUpgrade(u.key, u.costHonor, u.costJelly);
+        }
+      }
+    });
+  }
+
+  purchaseClanForgeUpgrade(key, costHonor, costJelly) {
+    if ((this.score || 0) < costHonor || (this.player.royalJellyFlasks || 0) < costJelly) {
+      if (this.ui && this.ui.showAnnouncement) {
+        this.ui.showAnnouncement('⚠️ RESSOURCES INSUFFISANTES POUR CETTE FORGE SACRÉE !');
+      }
+      return;
+    }
+
+    this.score -= costHonor;
+    this.player.royalJellyFlasks -= costJelly;
+    this.player.forgeUpgrades[key] = true;
+
+    try {
+      localStorage.setItem('yautja_clan_forge', JSON.stringify(this.player.forgeUpgrades));
+    } catch (e) {}
+
+    this.player.loadClanForgeUpgrades();
+
+    if (this.audio && this.audio.playClanForgeHammerClang) {
+      this.audio.playClanForgeHammerClang();
+    }
+
+    if (this.ui && this.ui.showAnnouncement) {
+      this.ui.showAnnouncement('⚒️ FORGE SACRÉE DU CLAN : AMÉLIORATION RITUELLE GRAVÉE DANS L\'ARSENAL !');
+    }
+    this.refreshClanForgeUI();
+  }
+
+  /* === CHANTIER 6 & MARC QA (v51.0): Radial Weapon Wheel [Tab] === */
+  toggleWeaponWheel(show = null) {
+    const wheel = document.getElementById('yautja-radial-weapon-wheel');
+    if (!wheel) return;
+    const shouldShow = show !== null ? show : wheel.classList.contains('hidden');
+    if (shouldShow) {
+      wheel.classList.remove('hidden');
+      this.isTimeDilated = true;
+    } else {
+      wheel.classList.add('hidden');
+      this.isTimeDilated = false;
+    }
+  }
+
+  selectWeaponSlice(index, name) {
+    if (this.audio && this.audio.playWristbladeClash) {
+      this.audio.playWristbladeClash();
+    }
+    if (this.ui && this.ui.showAnnouncement) {
+      this.ui.showAnnouncement(`🎯 SÉLECTION DE COMBAT : ${name}`);
+    }
+    this.toggleWeaponWheel(false);
   }
 
   animate() {

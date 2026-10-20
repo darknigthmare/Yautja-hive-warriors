@@ -78,6 +78,9 @@ export class EnvironmentManager {
     this.coastalRailCannon = null;
     this.activeRailShells = [];
     this.cryoStasisSector = null;
+    // v51.0 Systems (Pressurized Acid Geysers, Engineer Sarcophagus Stasis Crypt)
+    this.pressurizedAcidGeysers = [];
+    this.engineerSarcophagus = null;
   }
 
   clearEnvironment() {
@@ -239,6 +242,14 @@ export class EnvironmentManager {
     if (this.cryoStasisSector) {
       this.scene.remove(this.cryoStasisSector.group);
       this.cryoStasisSector = null;
+    }
+
+    // v51.0 Cleanups
+    this.pressurizedAcidGeysers.forEach(g => this.scene.remove(g.group));
+    this.pressurizedAcidGeysers = [];
+    if (this.engineerSarcophagus) {
+      this.scene.remove(this.engineerSarcophagus.group);
+      this.engineerSarcophagus = null;
     }
 
     this.reactorMeltdownActive = false;
@@ -452,6 +463,13 @@ export class EnvironmentManager {
 
     // Chantier 4: Weyland-Yutani Cryo-Stasis Research Laboratory Sector & Breakable Specimen Pods
     this.buildCryoStasisSector();
+
+    // === v51.0 10-CHANTIER EXPANSION (Pressurized Acid Geysers, Engineer Sarcophagus Stasis Crypt) ===
+    // Chantier 7: Pressurized Acid Geysers & Eruptive Fumaroles (Alien 3 / AVP Extinction)
+    this.buildPressurizedAcidGeysers();
+
+    // Chantier 10: Space Jockey Dais Sacred Engineer Stasis Crypt Sarcophagus (Prometheus 2012)
+    this.buildEngineerSarcophagus();
   }
 
   buildTempleProps(stoneMat) {
@@ -3174,20 +3192,25 @@ export class EnvironmentManager {
     const dist = playerPos.distanceTo(apc.pos);
 
     if (dist <= 4.6) {
+      const cockpitOverlay = document.getElementById('apc-cockpit-overlay');
       if (!apc.isMounted) {
         apc.isMounted = true;
         player.isMountedAPC = true;
         player.apcRef = apc;
+        if (cockpitOverlay) cockpitOverlay.classList.remove('hidden');
         if (ui && ui.showAnnouncement) {
           ui.showAnnouncement('🚜 BLINDÉ M577 APC USCM PILOTÉ : [Z/Q/S/D] CONDUITE, [ESPACE/CLIC] CANON 20MM (600 CPM), [E] QUITTER !');
         }
-        if (audioEngine && audioEngine.playAPCAutocannon) {
+        if (audioEngine && audioEngine.playM577APCTurretFire) {
+          audioEngine.playM577APCTurretFire();
+        } else if (audioEngine && audioEngine.playAPCAutocannon) {
           audioEngine.playAPCAutocannon();
         }
       } else {
         apc.isMounted = false;
         player.isMountedAPC = false;
         player.apcRef = null;
+        if (cockpitOverlay) cockpitOverlay.classList.add('hidden');
         const dismountPos = apc.pos.clone().add(new THREE.Vector3(3.4, 0, 0));
         player.position.copy(dismountPos);
         if (player.mesh) player.mesh.position.copy(dismountPos);
@@ -3329,7 +3352,9 @@ export class EnvironmentManager {
     const apc = this.drivableAPC;
     if (!apc) return;
 
-    if (audioEngine && audioEngine.playAPCAutocannon) {
+    if (audioEngine && audioEngine.playM577APCTurretFire) {
+      audioEngine.playM577APCTurretFire();
+    } else if (audioEngine && audioEngine.playAPCAutocannon) {
       audioEngine.playAPCAutocannon();
     }
 
@@ -5878,6 +5903,221 @@ export class EnvironmentManager {
       const pulse = 1.0 + Math.sin(Date.now() * 0.003 + idx) * 0.08;
       p.mistCore.scale.set(pulse, 1, pulse);
     });
+  }
+
+  /* === CHANTIER 7 (v51.0): Pressurized Acid Geysers & Eruptive Fumaroles (Alien 3 / AVP Extinction) === */
+  buildPressurizedAcidGeysers() {
+    const geyserPositions = [
+      { x: -14, z: 16 },
+      { x: -18, z: 6 },
+      { x: 14, z: 12 },
+      { x: 18, z: 22 },
+      { x: -8, z: -18 },
+      { x: 8, z: -24 }
+    ];
+
+    const grateMat = new THREE.MeshStandardMaterial({
+      color: 0x1f2937,
+      metalness: 0.9,
+      roughness: 0.2
+    });
+
+    const acidCoreMat = new THREE.MeshBasicMaterial({
+      color: 0x39ff14,
+      transparent: true,
+      opacity: 0.75
+    });
+
+    geyserPositions.forEach(p => {
+      const group = new THREE.Group();
+      const pos = new THREE.Vector3(p.x, 0, p.z);
+      group.position.copy(pos);
+
+      // Heavy industrial circular rim
+      const rim = new THREE.Mesh(new THREE.CylinderGeometry(1.3, 1.4, 0.35, 12), grateMat);
+      rim.position.y = 0.18;
+      group.add(rim);
+
+      // Crossbars grating
+      const barGeo = new THREE.BoxGeometry(2.4, 0.1, 0.12);
+      for (let b = 0; b < 4; b++) {
+        const bar = new THREE.Mesh(barGeo, grateMat);
+        bar.position.y = 0.34;
+        bar.rotation.y = (b / 4) * Math.PI;
+        group.add(bar);
+      }
+
+      // Toxic Acid Core Pool inside
+      const pool = new THREE.Mesh(new THREE.CylinderGeometry(1.0, 1.0, 0.1, 12), acidCoreMat);
+      pool.position.y = 0.12;
+      group.add(pool);
+
+      this.scene.add(group);
+      this.pressurizedAcidGeysers.push({
+        group,
+        pos,
+        pool,
+        isErupting: false,
+        eruptTimer: 0,
+        cooldown: 2.0 + Math.random() * 5.0
+      });
+    });
+  }
+
+  updatePressurizedAcidGeysers(delta, player, horde, bosses, audioEngine, particles) {
+    if (!this.pressurizedAcidGeysers) return;
+
+    this.pressurizedAcidGeysers.forEach(g => {
+      if (g.isErupting) {
+        g.eruptTimer -= delta;
+
+        // Boiling green pulse
+        g.pool.scale.set(1.0 + Math.sin(Date.now() * 0.02) * 0.2, 1, 1.0 + Math.cos(Date.now() * 0.02) * 0.2);
+
+        // Acid Steam Damage in 3.6m radius
+        const radius = 3.6;
+
+        if (player && player.position.distanceTo(g.pos) <= radius) {
+          if (!player.isCloaked && !player.isShadowDashing) {
+            player.takeDamage(22 * delta, true);
+          }
+        }
+
+        if (horde && horde.aliens) {
+          for (let i = horde.aliens.length - 1; i >= 0; i--) {
+            const a = horde.aliens[i];
+            if (!a || a.hp <= 0 || !a.mesh) continue;
+            if (a.mesh.position.distanceTo(g.pos) <= radius) {
+              a.hp -= 340 * delta;
+              if (a.hp <= 0) {
+                if (horde.goreEngine) horde.goreEngine.spawnDismemberment(a.mesh.position, 'acid');
+                this.scene.remove(a.mesh);
+                horde.aliens.splice(i, 1);
+                horde.deadCount++;
+              }
+            }
+          }
+        }
+
+        if (bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
+          if (bosses.activeBoss.mesh.position.distanceTo(g.pos) <= radius + 1.5) {
+            bosses.takeDamage(240 * delta, horde);
+          }
+        }
+
+        if (g.eruptTimer <= 0) {
+          g.isErupting = false;
+          g.cooldown = 6.0 + Math.random() * 6.0;
+        }
+      } else {
+        g.cooldown -= delta;
+
+        // Proximity trigger (2.6m) or random eruption
+        const isNearPlayer = player && player.position.distanceTo(g.pos) <= 2.6;
+        let isNearAlien = false;
+        if (horde && horde.aliens) {
+          for (const a of horde.aliens) {
+            if (a && a.mesh && a.mesh.position.distanceTo(g.pos) <= 2.6) {
+              isNearAlien = true;
+              break;
+            }
+          }
+        }
+
+        if (g.cooldown <= 0 || ((isNearPlayer || isNearAlien) && g.cooldown <= 2.0)) {
+          g.isErupting = true;
+          g.eruptTimer = 3.2;
+          if (audioEngine && audioEngine.playAcidTrenchSteamHiss) {
+            audioEngine.playAcidTrenchSteamHiss();
+          }
+          if (particles && particles.emitSparks) {
+            particles.emitSparks(g.pos, 16);
+          }
+        }
+      }
+    });
+  }
+
+  /* === CHANTIER 10 (v51.0): Sacred Engineer Stasis Crypt Sarcophagus (Prometheus 2012) === */
+  buildEngineerSarcophagus() {
+    const group = new THREE.Group();
+    const pos = new THREE.Vector3(-26, 0, 24);
+    group.position.copy(pos);
+
+    // Biomechanical megalithic plinth
+    const plinthMat = new THREE.MeshStandardMaterial({
+      color: 0x181c24,
+      metalness: 0.78,
+      roughness: 0.32
+    });
+    const plinth = new THREE.Mesh(new THREE.BoxGeometry(4.4, 0.9, 6.8), plinthMat);
+    plinth.position.y = 0.45;
+    group.add(plinth);
+
+    // Carved crypt casket
+    const casketMat = new THREE.MeshStandardMaterial({
+      color: 0x272e3b,
+      metalness: 0.85,
+      roughness: 0.25
+    });
+    const casket = new THREE.Mesh(new THREE.BoxGeometry(2.6, 1.4, 5.0), casketMat);
+    casket.position.y = 1.4;
+    group.add(casket);
+
+    // Glowing cyan stasis crystal lid
+    const lidMat = new THREE.MeshStandardMaterial({
+      color: 0x38bdf8,
+      emissive: 0x0284c7,
+      emissiveIntensity: 1.1,
+      metalness: 0.1,
+      roughness: 0.15,
+      transparent: true,
+      opacity: 0.82
+    });
+    const lid = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.25, 4.6), lidMat);
+    lid.position.y = 2.15;
+    group.add(lid);
+
+    // Sculpted elephantine biomechanical relief hose on casket
+    const reliefGeo = new THREE.TorusGeometry(1.0, 0.12, 6, 16, Math.PI);
+    const relief = new THREE.Mesh(reliefGeo, plinthMat);
+    relief.position.set(0, 2.2, 0.2);
+    relief.rotation.x = Math.PI / 2;
+    group.add(relief);
+
+    this.scene.add(group);
+    this.engineerSarcophagus = {
+      group,
+      pos,
+      isAwakened: false
+    };
+  }
+
+  checkEngineerSarcophagusInteraction(playerPos, bosses, ui, audioEngine, particles) {
+    if (!this.engineerSarcophagus || this.engineerSarcophagus.isAwakened) return false;
+    const crypt = this.engineerSarcophagus;
+
+    if (playerPos.distanceTo(crypt.pos) <= 5.2) {
+      crypt.isAwakened = true;
+
+      if (bosses) {
+        bosses.spawnBoss('awakened_engineer', crypt.pos.clone().add(new THREE.Vector3(0, 0, -4.0)));
+      }
+
+      if (audioEngine && audioEngine.playEngineerAwakeningRoar) {
+        audioEngine.playEngineerAwakeningRoar();
+      }
+
+      if (particles && particles.emitSparks) {
+        particles.emitSparks(crypt.pos, 48);
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('🌌 CRYPTE DES INGÉNIEURS OUVERTE : LE MAÎTRE DES RUINES MALA\'KAK S\'EST ÉVEILLÉ !');
+      }
+      return true;
+    }
+    return false;
   }
 }
 

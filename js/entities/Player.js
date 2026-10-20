@@ -168,6 +168,26 @@ export class Player {
     this.mesh.add(this.laserGroup);
 
     this.radius = 1.2;
+
+    // === v51.0 CHANTIERS 1, 4 & 5 (Parry & Riposte, Voice Mimicry Decoy & Clan Weapon Forge) ===
+    this.isParrying = false;
+    this.parryTimer = 0;
+    this.parryCooldown = 0;
+    this.parryWindowDuration = 0.42;
+    this.isCounterRiposteReady = false;
+    this.counterRiposteTimer = 0;
+    this.parryVisualMesh = null;
+
+    this.mimicryCooldown = 0;
+    this.activeDecoyBeacon = null;
+
+    this.forgeUpgrades = {
+      barbedCombiStick: false,
+      serratedSmartDisc: false,
+      overchargedCoil: false,
+      masterWristblades: false
+    };
+    this.loadClanForgeUpgrades();
   }
 
   applyTacticalLoadout(loadout) {
@@ -1638,6 +1658,39 @@ export class Player {
   }
 
   takeDamage(amount, isAcid = false, attacker = null) {
+    // Chantier 4 & Lucas QA (v51.0): Dedicated Active Wristblade Parry Deflection [F]
+    if (this.isParrying && this.parryTimer > 0) {
+      this.isParrying = false;
+      this.parryTimer = 0;
+      this.hasParryRiposte = true;
+      this.isCounterRiposteReady = true;
+      this.riposteTimer = (this.forgeUpgrades && this.forgeUpgrades.masterWristblades) ? 4.5 : 3.2;
+
+      if (this.audioEngine && this.audioEngine.playParryClang) {
+        this.audioEngine.playParryClang();
+      } else if (this.audioEngine && this.audioEngine.playShieldBlock) {
+        this.audioEngine.playShieldBlock();
+      }
+
+      if (this.particles) {
+        this.particles.emitSparks(this.position.clone().add(new THREE.Vector3(0, 1.6, 0)), 36);
+      }
+
+      if (attacker) {
+        attacker.isStunned = true;
+        attacker.stunTimer = 3.2;
+        if (attacker.mesh) {
+          const pushDir = attacker.mesh.position.clone().sub(this.position).normalize();
+          attacker.mesh.position.addScaledVector(pushDir, 6.0);
+        }
+      }
+
+      if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
+        window.gameInstance.ui.showAnnouncement('⚔️ PARADE DLEX PARFAITE [F] ! CONTRE-RIPOSTE ÉCLAIR (x4 DÉGÂTS CRITIQUES) !');
+      }
+      return this.hp;
+    }
+
     if (this.isBlocking || this.isPerched) {
       if (this.parryTimer > 0) {
         // Chantier 2: PERFECT PARRY DEFLECTION (Prey 2022 / Concrete Jungle Canon 1:1)
@@ -3847,6 +3900,137 @@ export class Player {
         }
       }
     }
+
+    // === v51.0 Timers (Parry Window & Decoy Beacon) ===
+    if (this.parryCooldown > 0) this.parryCooldown -= delta;
+    if (this.parryTimer > 0) {
+      this.parryTimer -= delta;
+      if (this.parryTimer <= 0) {
+        this.isParrying = false;
+        if (this.parryVisualMesh) this.parryVisualMesh.visible = false;
+      }
+    }
+
+    if (this.mimicryCooldown > 0) this.mimicryCooldown -= delta;
+    if (this.activeDecoyBeacon) {
+      this.activeDecoyBeacon.timer -= delta;
+      this.activeDecoyBeacon.mesh.rotation.y += 4.0 * delta;
+      const s = 1.0 + Math.sin(Date.now() * 0.012) * 0.25;
+      this.activeDecoyBeacon.mesh.scale.set(s, s, s);
+
+      if (this.activeDecoyBeacon.timer <= 0) {
+        this.scene.remove(this.activeDecoyBeacon.mesh);
+        this.activeDecoyBeacon = null;
+      }
+    }
+  }
+
+  /* === CHANTIER 1 (v51.0): Clan Weapon Forge Persistent Upgrades === */
+  loadClanForgeUpgrades() {
+    try {
+      const saved = localStorage.getItem('yautja_clan_forge');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        this.forgeUpgrades = { ...this.forgeUpgrades, ...parsed };
+        if (this.forgeUpgrades.masterWristblades) {
+          this.parryWindowDuration = 0.58;
+        }
+      }
+    } catch (e) {
+      console.warn('Failed to load forge upgrades:', e);
+    }
+  }
+
+  /* === CHANTIER 4 & LUCAS QA (v51.0): Dedicated Wristblade Parry Action [F] (AVP 2010 / Hunting Grounds) === */
+  performWristbladeParry(audioEngine, particles, ui) {
+    if (this.parryCooldown > 0) return false;
+
+    this.isParrying = true;
+    this.parryTimer = (this.forgeUpgrades && this.forgeUpgrades.masterWristblades) ? 0.58 : 0.42;
+    this.parryCooldown = 1.1;
+
+    if (audioEngine && audioEngine.playWristbladeClash) {
+      audioEngine.playWristbladeClash();
+    } else if (audioEngine && audioEngine.playShieldBlock) {
+      audioEngine.playShieldBlock();
+    }
+
+    if (!this.parryVisualMesh) {
+      const arcGeo = new THREE.RingGeometry(0.8, 1.4, 16, 1, 0, Math.PI);
+      const arcMat = new THREE.MeshBasicMaterial({
+        color: 0x00e5ff,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 0.8
+      });
+      this.parryVisualMesh = new THREE.Mesh(arcGeo, arcMat);
+      this.parryVisualMesh.rotation.x = Math.PI / 2;
+      this.parryVisualMesh.position.set(0, 1.6, 1.1);
+      this.mesh.add(this.parryVisualMesh);
+    } else {
+      this.parryVisualMesh.visible = true;
+    }
+
+    if (particles && particles.emitSparks) {
+      particles.emitSparks(this.position.clone().add(new THREE.Vector3(0, 1.6, 1.0)), 14);
+    }
+
+    if (ui && ui.showAnnouncement) {
+      ui.showAnnouncement('⚔️ PARADE DLEX ACTIVE [F] : DÉVIEZ L\'ATTAQUE ENNEMIE !');
+    }
+    return true;
+  }
+
+  /* === CHANTIER 5 & ELENA QA (v51.0): Yautja Vocal Mimicry Decoy System [Y] (Predator 1987) === */
+  triggerVoiceMimicryDecoy(horde, audioEngine, ui, particles) {
+    if (this.mimicryCooldown > 0) return false;
+    this.mimicryCooldown = 14.0;
+
+    if (audioEngine && audioEngine.playYautjaMimicryPlayback) {
+      audioEngine.playYautjaMimicryPlayback();
+    }
+
+    const forward = new THREE.Vector3(Math.sin(this.rotationY), 0, Math.cos(this.rotationY));
+    const decoyPos = this.position.clone().addScaledVector(forward, 7.0);
+
+    const beaconGeo = new THREE.OctahedronGeometry(0.7, 1);
+    const beaconMat = new THREE.MeshBasicMaterial({
+      color: 0x38bdf8,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.85
+    });
+    const beaconMesh = new THREE.Mesh(beaconGeo, beaconMat);
+    beaconMesh.position.copy(decoyPos);
+    beaconMesh.position.y = 1.0;
+    this.scene.add(beaconMesh);
+
+    this.activeDecoyBeacon = {
+      mesh: beaconMesh,
+      pos: decoyPos,
+      timer: 5.5
+    };
+
+    if (particles && particles.emitSparks) {
+      particles.emitSparks(decoyPos, 16);
+    }
+
+    if (horde && horde.aliens) {
+      let divertedCount = 0;
+      horde.aliens.forEach(a => {
+        if (!a || a.hp <= 0 || a.isBoss || a.isOfficer) return;
+        if (a.mesh && a.mesh.position.distanceTo(decoyPos) <= 24.0) {
+          a.decoyTarget = decoyPos.clone();
+          a.decoyTimer = 5.5;
+          divertedCount++;
+        }
+      });
+    }
+
+    if (ui && ui.showAnnouncement) {
+      ui.showAnnouncement('📻 LEURRE VOCAL YAUTJA DÉPLOYÉ [Y] : ESSAIMS ENTRAÎNÉS DANS LE PIÈGE !');
+    }
+    return true;
   }
 }
 
