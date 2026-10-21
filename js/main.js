@@ -574,6 +574,26 @@ class GameApp {
           // Handled Caterpillar Power Loader crushing clamp!
         } else if (this.env && this.env.checkCrucifiedPredatorInteraction && this.env.checkCrucifiedPredatorInteraction(this.player, this.ui, this.audio, this.particles)) {
           // Handled Classic Predator Crucifixion Liberation & 1987 Plasma Unlock (Predators 2010)!
+        } else if (this.env && this.env.checkMudPitInteraction && this.env.checkMudPitInteraction(this.player, this.ui, this.audio, this.particles)) {
+          // Handled Mud Camouflage Riverbank Viscous Squelch (Predator 1987)!
+        } else if (this.env && this.env.checkValVerdeRadioInteraction && this.env.checkValVerdeRadioInteraction(this.player.position, this.ui, this.audio, this.horde)) {
+          // Handled Downed Huey Military Radio Static & Ambush Broadcast (Predator 1987)!
+        } else if (this.env && this.env.checkPyramidAltarInteraction && this.env.checkPyramidAltarInteraction(this.player, this.ui, this.audio, this.particles)) {
+          // Handled Antarctic Pyramid Ancient Caster Altar Blessing (AVP 2004)!
+        } else if (this.env && this.env.checkRomulusZeroGInteraction && this.env.checkRomulusZeroGInteraction(this.player, this.ui, this.audio, this.particles, this.horde)) {
+          // Handled Romulus Renaissance Station Zero-G Chamber Decompression (Alien: Romulus 2024)!
+        } else if (this.env && this.env.checkRookConsoleInteraction && this.env.checkRookConsoleInteraction(this.player, this.ui, this.audio)) {
+          // Handled Science Officer Rook Synthetic Android Console (Alien: Romulus 2024)!
+        } else if (this.env && this.env.checkRoyalJellyHarvestInteraction && this.env.checkRoyalJellyHarvestInteraction(this.player, this.ui, this.audio, this.particles)) {
+          // Handled Xenomorph Prime Royal Jelly Resin Node Harvesting (Aliens: Earth War)!
+        } else if (this.env && this.env.checkCryptReliquaryInteraction && this.env.checkCryptReliquaryInteraction(this.player, this.ui, this.audio)) {
+          // Handled Gunnison Cemetery Crypt Reliquary Vault (AVP: Requiem 2007)!
+        } else if (this.env && this.env.checkNeuralInhibitorInteraction && this.env.checkNeuralInhibitorInteraction(this.player, this.horde, this.ui, this.audio)) {
+          // Handled Charon Base Ultrasonic Neural Inhibitor Pylon (Aliens: Rogue 1993)!
+        } else if (this.env && this.env.checkBoulderDeadfallInteraction && this.env.checkBoulderDeadfallInteraction(this.player, this.audio, this.horde, this.bosses, this.particles, this.ui)) {
+          // Handled Game Preserve Suspended Boulder Deadfall Trap (Predators 2010)!
+        } else if (this.env && this.env.checkDutchLogTrapTrigger && this.env.checkDutchLogTrapTrigger(this.player.position, false, this.audio, this.horde, this.bosses, this.particles, this.ui)) {
+          // Handled Val Verde Major Dutch Schaefer Counterweight Log Trap (Predator 1987)!
         } else if (this.env && this.env.checkScoutShipConsoleInteraction && this.env.checkScoutShipConsoleInteraction(this.player.position, this.ui, this.audio, this.horde, this.player)) {
           // Handled Crashed Scout Ship Telemetry Scan (AVP: Requiem 2007)!
         } else if (this.env && this.env.checkCharonLabConsoleInteraction && this.env.checkCharonLabConsoleInteraction(this.player.position, this.horde, this.ui, this.audio)) {
@@ -1176,6 +1196,21 @@ class GameApp {
       if (this.env.checkAmmoniaPipeDamage) {
         this.env.checkAmmoniaPipeDamage(attack, this.audio, this.particles, this.horde);
       }
+      if (this.env.checkWaterTowerDamage) {
+        this.env.checkWaterTowerDamage(attack, this.audio, this.particles, this.horde, this.synthetics);
+      }
+      if (this.env.checkGunnisonPowerPoleDamage) {
+        this.env.checkGunnisonPowerPoleDamage(attack.origin, attack.damage, this.audio, this.horde, this.particles, this.ui);
+      }
+      if (this.env.checkBoulderDeadfallDamage) {
+        this.env.checkBoulderDeadfallDamage(attack.origin, attack.damage, this.audio, this.horde, this.bosses, this.particles, this.ui);
+      }
+      if (this.env.checkDutchLogTrapTrigger) {
+        this.env.checkDutchLogTrapTrigger(attack.origin, true, this.audio, this.horde, this.bosses, this.particles, this.ui);
+      }
+      if (this.env.checkHVACChillerDamage) {
+        this.env.checkHVACChillerDamage(attack.origin, attack.damage, this.audio, this.horde, this.particles, this.ui);
+      }
     }
 
     // Update Combo Chain Tag
@@ -1230,6 +1265,21 @@ class GameApp {
       }
       if (this.env.checkAmmoniaPipeDamage) {
         this.env.checkAmmoniaPipeDamage(attack, this.audio, this.particles, this.horde);
+      }
+      if (this.env.checkWaterTowerDamage) {
+        this.env.checkWaterTowerDamage(attack, this.audio, this.particles, this.horde, this.synthetics);
+      }
+      if (this.env.checkGunnisonPowerPoleDamage) {
+        this.env.checkGunnisonPowerPoleDamage(attack.origin, attack.damage, this.audio, this.horde, this.particles, this.ui);
+      }
+      if (this.env.checkBoulderDeadfallDamage) {
+        this.env.checkBoulderDeadfallDamage(attack.origin, attack.damage, this.audio, this.horde, this.bosses, this.particles, this.ui);
+      }
+      if (this.env.checkDutchLogTrapTrigger) {
+        this.env.checkDutchLogTrapTrigger(attack.origin, true, this.audio, this.horde, this.bosses, this.particles, this.ui);
+      }
+      if (this.env.checkHVACChillerDamage) {
+        this.env.checkHVACChillerDamage(attack.origin, attack.damage, this.audio, this.horde, this.particles, this.ui);
       }
     }
 
@@ -2483,6 +2533,21 @@ class GameApp {
           if (this.env.checkAmmoniaPipeDamage) {
             this.env.checkAmmoniaPipeDamage({ origin: p.mesh.position, radius: 2.2, damage: p.damage }, this.audio, this.particles, this.horde);
           }
+          if (this.env.checkWaterTowerDamage) {
+            this.env.checkWaterTowerDamage({ origin: p.mesh.position, radius: 2.2, damage: p.damage }, this.audio, this.particles, this.horde, this.synthetics);
+          }
+          if (this.env.checkGunnisonPowerPoleDamage) {
+            this.env.checkGunnisonPowerPoleDamage(p.mesh.position, p.damage, this.audio, this.horde, this.particles, this.ui);
+          }
+          if (this.env.checkBoulderDeadfallDamage) {
+            this.env.checkBoulderDeadfallDamage(p.mesh.position, p.damage, this.audio, this.horde, this.bosses, this.particles, this.ui);
+          }
+          if (this.env.checkDutchLogTrapTrigger) {
+            this.env.checkDutchLogTrapTrigger(p.mesh.position, true, this.audio, this.horde, this.bosses, this.particles, this.ui);
+          }
+          if (this.env.checkHVACChillerDamage) {
+            this.env.checkHVACChillerDamage(p.mesh.position, p.damage, this.audio, this.horde, this.particles, this.ui);
+          }
         }
 
         const hits = this.horde.checkMeleeHits({ origin: p.mesh.position, radius: 2.8, damage: p.damage });
@@ -2637,6 +2702,24 @@ class GameApp {
         }
       } else {
         p.mesh.position.addScaledVector(p.direction, p.speed * delta);
+
+        if (this.env) {
+          if (this.env.checkWaterTowerDamage) {
+            this.env.checkWaterTowerDamage({ origin: p.mesh.position, radius: 2.2, damage: p.damage }, this.audio, this.particles, this.horde, this.synthetics);
+          }
+          if (this.env.checkGunnisonPowerPoleDamage) {
+            this.env.checkGunnisonPowerPoleDamage(p.mesh.position, p.damage, this.audio, this.horde, this.particles, this.ui);
+          }
+          if (this.env.checkBoulderDeadfallDamage) {
+            this.env.checkBoulderDeadfallDamage(p.mesh.position, p.damage, this.audio, this.horde, this.bosses, this.particles, this.ui);
+          }
+          if (this.env.checkDutchLogTrapTrigger) {
+            this.env.checkDutchLogTrapTrigger(p.mesh.position, true, this.audio, this.horde, this.bosses, this.particles, this.ui);
+          }
+          if (this.env.checkHVACChillerDamage) {
+            this.env.checkHVACChillerDamage(p.mesh.position, p.damage, this.audio, this.horde, this.particles, this.ui);
+          }
+        }
 
         if (p.isSuperCharged) {
           p.mesh.rotation.x += 12 * delta;
@@ -2880,9 +2963,18 @@ class GameApp {
       const vertEl = document.getElementById('wrist-verticality-hud');
       if (vertEl && this.player) {
         const alt = Math.max(0, this.player.position.y).toFixed(1);
-        const isElevated = this.player.isPerched || this.player.position.y >= 5.0;
-        vertEl.innerText = `ALTITUDE: +${alt}m // ${isElevated ? 'AFFÛT EN HAUTEUR : DÉGÂTS SNIPER +35% 🎯' : 'AU SOL'}`;
-        vertEl.style.color = isElevated ? '#38bdf8' : '#94a3b8';
+        const isElevated = this.player.isPerched || this.player.position.y >= 2.0;
+        const isExtremeHeight = this.player.position.y >= 7.0;
+        if (isExtremeHeight) {
+          vertEl.innerText = `ALTITUDE: +${alt}m // AFFÛT EXTRÊME DE FAÇADE : DÉGÂTS SNIPER +50% ⚡`;
+          vertEl.style.color = '#f59e0b';
+        } else if (isElevated) {
+          vertEl.innerText = `ALTITUDE: +${alt}m // AFFÛT TACTIQUE EN HAUTEUR : DÉGÂTS SNIPER +35% 🎯`;
+          vertEl.style.color = '#38bdf8';
+        } else {
+          vertEl.innerText = `ALTITUDE: +${alt}m // AU SOL`;
+          vertEl.style.color = '#94a3b8';
+        }
       }
 
       // v56.0 Level Design Proximity Prompts
@@ -2912,6 +3004,78 @@ class GameApp {
       if (crucPrompt) {
         if (isNearCrucified) crucPrompt.classList.remove('hidden');
         else crucPrompt.classList.add('hidden');
+      }
+
+      // v56.5 Sector Overhaul Proximity Prompts
+      const isNearRadio = this.env.valVerdeProps && this.player && this.player.position.distanceTo(this.env.valVerdeProps.radioPos) <= 4.2;
+      const radioPrompt = document.getElementById('valverde-radio-prompt');
+      if (radioPrompt) {
+        if (isNearRadio) radioPrompt.classList.remove('hidden');
+        else radioPrompt.classList.add('hidden');
+      }
+
+      const isNearMud = this.env.mudPits && this.player && this.env.mudPits.some(p => p.pos.distanceTo(this.player.position) <= p.radius);
+      const mudPrompt = document.getElementById('mud-pit-prompt');
+      if (mudPrompt) {
+        if (isNearMud) mudPrompt.classList.remove('hidden');
+        else mudPrompt.classList.add('hidden');
+      }
+
+      const isNearAltar = this.env.pyramidSacrificial && this.player && this.player.position.distanceTo(this.env.pyramidSacrificial.daisPos) <= 4.5;
+      const altarPrompt = document.getElementById('pyramid-altar-prompt');
+      if (altarPrompt) {
+        if (isNearAltar) altarPrompt.classList.remove('hidden');
+        else altarPrompt.classList.add('hidden');
+      }
+
+      const isNearZeroG = this.env.romulusStationExpansion && this.player && this.player.position.distanceTo(this.env.romulusStationExpansion.consolePos) <= 4.2;
+      const zeroGPrompt = document.getElementById('romulus-zerog-prompt');
+      if (zeroGPrompt) {
+        if (isNearZeroG) zeroGPrompt.classList.remove('hidden');
+        else zeroGPrompt.classList.add('hidden');
+      }
+
+      const isNearRook = this.env.romulusStationExpansion && this.player && this.player.position.distanceTo(this.env.romulusStationExpansion.rookPos) <= 4.2;
+      const rookPrompt = document.getElementById('rook-console-prompt');
+      if (rookPrompt) {
+        if (isNearRook) rookPrompt.classList.remove('hidden');
+        else rookPrompt.classList.add('hidden');
+      }
+
+      const isNearJelly = this.env.harvestableRoyalJelly && this.player && this.env.harvestableRoyalJelly.some(n => !n.isHarvested && n.pos.distanceTo(this.player.position) <= 3.8);
+      const jellyPrompt = document.getElementById('royal-jelly-node-prompt');
+      if (jellyPrompt) {
+        if (isNearJelly) jellyPrompt.classList.remove('hidden');
+        else jellyPrompt.classList.add('hidden');
+      }
+
+      // v57.0 Sector Overhaul Proximity Prompts
+      const isNearCrypt = this.env.cryptReliquaryVault && !this.env.cryptReliquaryVault.isOpened && this.player && this.player.position.distanceTo(this.env.cryptReliquaryVault.pos) <= 3.8;
+      const cryptReliquaryPrompt = document.getElementById('crypt-reliquary-prompt');
+      if (cryptReliquaryPrompt) {
+        if (isNearCrypt) cryptReliquaryPrompt.classList.remove('hidden');
+        else cryptReliquaryPrompt.classList.add('hidden');
+      }
+
+      const isNearInhibitor = this.env.neuralInhibitors && this.player && this.env.neuralInhibitors.some(p => p.pos.distanceTo(this.player.position) <= 4.2);
+      const inhibitorPrompt = document.getElementById('neural-inhibitor-prompt');
+      if (inhibitorPrompt) {
+        if (isNearInhibitor) inhibitorPrompt.classList.remove('hidden');
+        else inhibitorPrompt.classList.add('hidden');
+      }
+
+      const isNearBoulder = this.env.boulderTraps && this.player && this.env.boulderTraps.some(t => !t.isDropped && t.pegPos.distanceTo(this.player.position) <= 3.8);
+      const boulderPrompt = document.getElementById('boulder-trap-prompt');
+      if (boulderPrompt) {
+        if (isNearBoulder) boulderPrompt.classList.remove('hidden');
+        else boulderPrompt.classList.add('hidden');
+      }
+
+      const isNearDutchLog = this.env.dutchLogTrap && !this.env.dutchLogTrap.isTriggered && this.player && this.player.position.distanceTo(this.env.dutchLogTrap.triggerPos) <= 3.8;
+      const dutchLogPrompt = document.getElementById('dutch-log-trap-prompt');
+      if (dutchLogPrompt) {
+        if (isNearDutchLog) dutchLogPrompt.classList.remove('hidden');
+        else dutchLogPrompt.classList.add('hidden');
       }
     }
 

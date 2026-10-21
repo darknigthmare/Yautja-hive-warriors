@@ -104,6 +104,31 @@ export class EnvironmentManager {
     this.collapsibleFloorGrates = [];
     this.tacticalCoverObstacles = [];
     this.huntingBoughs = [];
+    // v56.5 Master Level Design Sector Overhauls
+    this.valVerdeProps = null;
+    this.laRooftopExpansion = null;
+    this.pyramidSacrificial = null;
+    this.romulusStationExpansion = null;
+    this.hiveWorldExpansion = null;
+    this.mudPits = [];
+    this.harvestableRoyalJelly = [];
+    this.scytheTraps = [];
+    this.activeWaterDeluge = null;
+    this.zeroGActiveTimer = 0;
+    // v57.0 Master Level Design 1:1 Overhaul
+    this.gunnisonExpansion = null;
+    this.charonExpansion = null;
+    this.gamePreserveExpansion = null;
+    this.gunnisonPowerPole = null;
+    this.activePowerArcs = [];
+    this.neuralInhibitors = [];
+    this.boulderTraps = [];
+    this.dutchLogTrap = null;
+    this.hvacChillers = [];
+    this.activeFreonClouds = [];
+    this.cryptReliquaryVault = null;
+    this.windowCradle = null;
+    this.sandbagBunker = null;
   }
 
   clearEnvironment() {
@@ -347,6 +372,82 @@ export class EnvironmentManager {
     this.tacticalCoverObstacles = [];
     this.huntingBoughs = [];
 
+    // v56.5 Sector Overhaul Cleanups
+    if (this.valVerdeProps && this.valVerdeProps.group) {
+      this.scene.remove(this.valVerdeProps.group);
+      this.valVerdeProps = null;
+    }
+    if (this.laRooftopExpansion && this.laRooftopExpansion.group) {
+      this.scene.remove(this.laRooftopExpansion.group);
+      this.laRooftopExpansion = null;
+    }
+    if (this.pyramidSacrificial && this.pyramidSacrificial.group) {
+      this.scene.remove(this.pyramidSacrificial.group);
+      this.pyramidSacrificial = null;
+    }
+    if (this.romulusStationExpansion && this.romulusStationExpansion.group) {
+      this.scene.remove(this.romulusStationExpansion.group);
+      this.romulusStationExpansion = null;
+    }
+    if (this.hiveWorldExpansion && this.hiveWorldExpansion.group) {
+      this.scene.remove(this.hiveWorldExpansion.group);
+      this.hiveWorldExpansion = null;
+    }
+    this.mudPits = [];
+    this.harvestableRoyalJelly = [];
+    this.scytheTraps = [];
+    if (this.activeWaterDeluge && this.activeWaterDeluge.mesh) {
+      this.scene.remove(this.activeWaterDeluge.mesh);
+      this.activeWaterDeluge = null;
+    }
+    this.zeroGActiveTimer = 0;
+
+    // v57.0 Level Design Cleanups
+    if (this.gunnisonExpansion && this.gunnisonExpansion.group) {
+      this.scene.remove(this.gunnisonExpansion.group);
+      this.gunnisonExpansion = null;
+    }
+    if (this.charonExpansion && this.charonExpansion.group) {
+      this.scene.remove(this.charonExpansion.group);
+      this.charonExpansion = null;
+    }
+    if (this.gamePreserveExpansion && this.gamePreserveExpansion.group) {
+      this.scene.remove(this.gamePreserveExpansion.group);
+      this.gamePreserveExpansion = null;
+    }
+    if (this.gunnisonPowerPole && this.gunnisonPowerPole.group) {
+      this.scene.remove(this.gunnisonPowerPole.group);
+      this.gunnisonPowerPole = null;
+    }
+    this.activePowerArcs.forEach(a => {
+      if (a.mesh) this.scene.remove(a.mesh);
+    });
+    this.activePowerArcs = [];
+    this.neuralInhibitors.forEach(n => {
+      if (n.group) this.scene.remove(n.group);
+    });
+    this.neuralInhibitors = [];
+    this.boulderTraps.forEach(b => {
+      if (b.group) this.scene.remove(b.group);
+      if (b.boulderMesh) this.scene.remove(b.boulderMesh);
+    });
+    this.boulderTraps = [];
+    if (this.dutchLogTrap && this.dutchLogTrap.group) {
+      this.scene.remove(this.dutchLogTrap.group);
+      this.dutchLogTrap = null;
+    }
+    this.hvacChillers.forEach(h => {
+      if (h.group) this.scene.remove(h.group);
+    });
+    this.hvacChillers = [];
+    this.activeFreonClouds.forEach(f => {
+      if (f.mesh) this.scene.remove(f.mesh);
+    });
+    this.activeFreonClouds = [];
+    this.cryptReliquaryVault = null;
+    this.windowCradle = null;
+    this.sandbagBunker = null;
+
     this.reactorMeltdownActive = false;
     this.reactorMeltdownTimer = 180.0;
     this.slabShiftTimer = 0;
@@ -403,26 +504,37 @@ export class EnvironmentManager {
     const theme = levelConfig.theme || levelConfig.environmentType || 'jungle';
     const levelId = levelConfig.id || '';
 
-    if (levelId === 'gunnison_forest' || theme === 'rain_forest') {
+    if (levelId === 'val_verde_jungle') {
+      this.buildJungleProps();
+      this.buildValVerdeProps();
+    } else if (levelId === 'gunnison_forest' || theme === 'rain_forest') {
       this.buildCrashedScoutShipProps();
+      this.buildGunnisonForestExpansionProps();
       this.buildJungleProps();
     } else if (levelId === 'charon_rogue_base' || theme === 'space_station') {
       this.buildCharonGeneticsLabProps();
+      this.buildCharonBaseExpansionProps();
       this.buildColonyProps();
     } else if (levelId === 'game_preserve_planet') {
       this.buildGamePreserveProps();
+      this.buildGamePreserveExpansionProps();
       this.buildJungleProps();
     } else if (theme === 'pyramid' || theme === 'temple') {
       this.buildTempleProps(wallMat);
       this.buildModularPyramidWalls(wallMat);
+      this.buildPyramidSacrificialProps();
     } else if (theme === 'jungle') {
       this.buildJungleProps();
+      this.buildValVerdeProps();
     } else if (theme === 'hive_world' || theme === 'hive') {
       this.buildHiveProps();
+      this.buildHiveWorldExpansionProps();
     } else if (theme === 'romulus_station') {
       this.buildRomulusCryoProps();
+      this.buildRomulusStationExpansionProps();
     } else if (theme === 'la_rooftops') {
       this.buildLARooftopProps();
+      this.buildLARooftopExpansionProps();
     } else if (theme === 'colony') {
       this.buildColonyProps();
     }
@@ -1588,6 +1700,112 @@ export class EnvironmentManager {
             return -2.2;
           }
         }
+      }
+    }
+
+    // 8. LA Rooftops Helipad (+4.5m) and Access Ramp
+    if (this.laRooftopExpansion && this.laRooftopExpansion.helipadPos) {
+      const hx = x - this.laRooftopExpansion.helipadPos.x;
+      const hz = z - this.laRooftopExpansion.helipadPos.z;
+      if (hx * hx + hz * hz <= 7.0 * 7.0) {
+        return 4.5;
+      }
+      if (Math.abs(hx) <= 2.6 && z >= -14 && z <= -7) {
+        const factor = (z - (-14)) / 7.0;
+        return factor * 4.5;
+      }
+    }
+
+    // 9. Antarctic Pyramid Sacrificial Caster Dais (+2.2m)
+    if (this.pyramidSacrificial && this.pyramidSacrificial.daisPos) {
+      const dx = x - this.pyramidSacrificial.daisPos.x;
+      const dz = z - this.pyramidSacrificial.daisPos.z;
+      if (dx * dx + dz * dz <= 5.5 * 5.5) {
+        return 2.2;
+      }
+    }
+
+    // 10. Val Verde Downed Huey Fuselage Top (+3.2m)
+    if (this.valVerdeProps && this.valVerdeProps.wreckPos) {
+      const wx = x - this.valVerdeProps.wreckPos.x;
+      const wz = z - this.valVerdeProps.wreckPos.z;
+      if (Math.abs(wx) <= 2.6 && Math.abs(wz) <= 5.0) {
+        return 3.2;
+      }
+    }
+
+    // 11. Hive World Hardened Chitin Webbing Bridges (+4.5m)
+    if (this.hiveWorldExpansion && this.hiveWorldExpansion.bridges) {
+      for (const br of this.hiveWorldExpansion.bridges) {
+        if (x >= br.minX && x <= br.maxX && z >= br.minZ && z <= br.maxZ) {
+          return 4.5;
+        }
+      }
+    }
+
+    // 12. Gunnison Gothic Cemetery Crypt & Mausoleum (+3.2m)
+    if (this.gunnisonExpansion && this.gunnisonExpansion.mausoleumPos) {
+      const mx = x - this.gunnisonExpansion.mausoleumPos.x;
+      const mz = z - this.gunnisonExpansion.mausoleumPos.z;
+      if (Math.abs(mx) <= 4.2 && Math.abs(mz) <= 3.2) {
+        return 3.2;
+      }
+      // West access steps
+      if (x >= 17 && x <= 20 && Math.abs(z - (-20)) <= 2.2) {
+        const factor = (x - 17) / 3.0;
+        return factor * 3.2;
+      }
+    }
+
+    // 13. Charon Science Upper Mezzanine Gantry (+4.2m)
+    if (this.charonExpansion && this.charonExpansion.gantryPos) {
+      if (Math.abs(x) <= 12.0 && z >= -28.5 && z <= -23.5) {
+        return 4.2;
+      }
+      // West access ramp
+      if (x >= -16 && x <= -12 && z >= -27 && z <= -25) {
+        const factor = (x - (-16)) / 4.0;
+        return factor * 4.2;
+      }
+    }
+
+    // 14. Game Preserve Super Predator Hunting Perch (+5.2m)
+    if (this.gamePreserveExpansion && this.gamePreserveExpansion.perchPos) {
+      const px = x - this.gamePreserveExpansion.perchPos.x;
+      const pz = z - this.gamePreserveExpansion.perchPos.z;
+      if (Math.abs(px) <= 3.5 && Math.abs(pz) <= 3.5) {
+        return 5.2;
+      }
+      // Ladder incline
+      if (Math.abs(x - 20) <= 1.5 && z >= 15 && z <= 18.5) {
+        const factor = (z - 15) / 3.5;
+        return factor * 5.2;
+      }
+    }
+
+    // 15. LA Rooftops Suspended Window-Washing Cradle (+7.5m)
+    if (this.windowCradle && this.windowCradle.cradlePos) {
+      if (Math.abs(x) <= 3.0 && z >= 26.5 && z <= 29.5) {
+        return 7.5;
+      }
+      // Connecting gangway
+      if (Math.abs(x) <= 1.2 && z >= 22.5 && z <= 26.5) {
+        const factor = (z - 22.5) / 4.0;
+        return 4.5 + factor * 3.0;
+      }
+    }
+
+    // 16. Val Verde Guerrilla Sandbag Dugout Bunker (+2.4m)
+    if (this.sandbagBunker && this.sandbagBunker.pos) {
+      const bx = x - this.sandbagBunker.pos.x;
+      const bz = z - this.sandbagBunker.pos.z;
+      if (Math.abs(bx) <= 3.2 && Math.abs(bz) <= 2.6) {
+        return 2.4;
+      }
+      // Rear steps
+      if (x >= 13 && x <= 15 && Math.abs(z - (-14)) <= 1.8) {
+        const factor = (x - 13) / 2.0;
+        return factor * 2.4;
       }
     }
 
@@ -7883,6 +8101,1359 @@ export class EnvironmentManager {
     });
   }
 
+  /* === SECTOR 1 & SOFIA LEVEL DESIGN (v56.5): Val Verde Jungle Downed Huey & Mud Pits (Predator 1987) === */
+  buildValVerdeProps() {
+    const group = new THREE.Group();
+    const camoMat = new THREE.MeshStandardMaterial({ color: 0x22301c, metalness: 0.6, roughness: 0.5 });
+    const metalMat = new THREE.MeshStandardMaterial({ color: 0x181e19, metalness: 0.9, roughness: 0.2 });
+    const glassMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.35 });
+    const mudMat = new THREE.MeshStandardMaterial({ color: 0x1b130c, roughness: 0.25, metalness: 0.1 });
+
+    // 1. Downed UH-1 Huey Helicopter Fuselage embedded between trees
+    const wreckPos = new THREE.Vector3(-18, 0, 14);
+    const heliGroup = new THREE.Group();
+    heliGroup.position.copy(wreckPos);
+    heliGroup.rotation.set(0.25, -Math.PI / 4, 0.45); // Tilted crash pose
+
+    // Main cabin fuselage
+    const body = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 1.8, 8.5, 12), camoMat);
+    body.rotation.z = Math.PI / 2;
+    body.position.y = 1.8;
+    body.castShadow = true;
+    heliGroup.add(body);
+
+    // Broken tail boom
+    const tail = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.9, 5.0, 8), camoMat);
+    tail.rotation.z = Math.PI / 2 + 0.35;
+    tail.position.set(-5.5, 2.2, 0);
+    heliGroup.add(tail);
+
+    // Cockpit nose and broken windshield
+    const nose = new THREE.Mesh(new THREE.SphereGeometry(1.7, 8, 8), glassMat);
+    nose.scale.set(1.4, 0.9, 0.9);
+    nose.position.set(4.2, 1.8, 0);
+    heliGroup.add(nose);
+
+    // Main rotor hub with one bent blade embedded in trunk
+    const mast = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 1.6, 8), metalMat);
+    mast.position.set(0, 3.8, 0);
+    heliGroup.add(mast);
+
+    const blade = new THREE.Mesh(new THREE.BoxGeometry(7.5, 0.08, 0.45), metalMat);
+    blade.position.set(3.2, 4.4, 0);
+    blade.rotation.y = 0.4;
+    heliGroup.add(blade);
+
+    // Cockpit military VHF radio transceiver console
+    const radioMesh = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.5, 0.4), metalMat);
+    radioMesh.position.set(3.2, 1.8, 0.4);
+    const radioLed = new THREE.Mesh(new THREE.SphereGeometry(0.08, 6, 6), new THREE.MeshBasicMaterial({ color: 0x22c55e }));
+    radioLed.position.set(3.2, 2.1, 0.4);
+    heliGroup.add(radioMesh);
+    heliGroup.add(radioLed);
+
+    group.add(heliGroup);
+
+    // 2. Mud Camouflage Riverbanks (Dutch 1987)
+    this.mudPits = [];
+    const mudCoords = [
+      new THREE.Vector3(12, 0.15, -16),
+      new THREE.Vector3(18, 0.15, -8),
+      new THREE.Vector3(8, 0.15, -22)
+    ];
+
+    mudCoords.forEach((mPos, idx) => {
+      const pitGeo = new THREE.CylinderGeometry(3.6, 4.2, 0.3, 16);
+      const pitMesh = new THREE.Mesh(pitGeo, mudMat);
+      pitMesh.position.copy(mPos);
+      pitMesh.receiveShadow = true;
+      group.add(pitMesh);
+
+      // Reeds & riverbank foliage around edges
+      for (let r = 0; r < 8; r++) {
+        const a = (r / 8) * Math.PI * 2;
+        const reed = new THREE.Mesh(new THREE.ConeGeometry(0.08, 1.8, 4), new THREE.MeshStandardMaterial({ color: 0x1f2e14 }));
+        reed.position.set(mPos.x + Math.cos(a) * 3.8, 0.9, mPos.z + Math.sin(a) * 3.8);
+        group.add(reed);
+      }
+
+      this.mudPits.push({
+        id: idx,
+        pos: mPos.clone(),
+        radius: 3.8
+      });
+    });
+
+    // 3. Major Alan "Dutch" Schaefer's Counterweight Log Trap at [-14, 0, -8]
+    const logTrapPos = new THREE.Vector3(-14, 0, -8);
+    const logGroup = new THREE.Group();
+    logGroup.position.copy(logTrapPos);
+
+    const logTrunk = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.5, 6.2, 10), new THREE.MeshStandardMaterial({ color: 0x3d2012, roughness: 0.95 }));
+    logTrunk.rotation.z = Math.PI / 2;
+    logTrunk.position.y = 3.8;
+    logTrunk.castShadow = true;
+    logGroup.add(logTrunk);
+
+    // Suspended liana vines
+    [-2.6, 2.6].forEach(vx => {
+      const vLine = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 4.0, 4), new THREE.MeshStandardMaterial({ color: 0x1f3d1a }));
+      vLine.position.set(vx, 5.8, 0);
+      logGroup.add(vLine);
+    });
+
+    // Wooden release peg at [-14, 1.2, -8]
+    const releasePeg = new THREE.Mesh(new THREE.BoxGeometry(0.4, 1.2, 0.4), new THREE.MeshStandardMaterial({ color: 0x3d2012, roughness: 0.95 }));
+    releasePeg.position.set(0, 1.2, 0);
+    logGroup.add(releasePeg);
+    group.add(logGroup);
+
+    this.dutchLogTrap = {
+      group: logGroup,
+      logMesh: logTrunk,
+      pos: logTrapPos.clone(),
+      triggerPos: logTrapPos.clone().add(new THREE.Vector3(0, 1.2, 0)),
+      isTriggered: false,
+      swingAngle: 0
+    };
+
+    // 4. Guerrilla Sandbag Munitions Bunker at [18, 0, -14] (+2.4m roof elevation)
+    const bunkerPos = new THREE.Vector3(18, 0, -14);
+    const bunkerGroup = new THREE.Group();
+    bunkerGroup.position.copy(bunkerPos);
+
+    const sandbagMat = new THREE.MeshStandardMaterial({ color: 0x78716c, roughness: 0.9 });
+    const bunkerWalls = new THREE.Mesh(new THREE.BoxGeometry(6.4, 2.4, 5.2), sandbagMat);
+    bunkerWalls.position.y = 1.2;
+    bunkerWalls.receiveShadow = true;
+    bunkerGroup.add(bunkerWalls);
+
+    // Roof corrugated slab
+    const roofSlab = new THREE.Mesh(new THREE.BoxGeometry(6.8, 0.2, 5.6), metalMat);
+    roofSlab.position.y = 2.4;
+    roofSlab.receiveShadow = true;
+    bunkerGroup.add(roofSlab);
+
+    // Rear sandbag steps
+    for (let s = 0; s < 3; s++) {
+      const step = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.8 * (s + 1), 2.2), sandbagMat);
+      step.position.set(-3.6 - s * 0.7, (0.8 * (s + 1)) / 2, 0);
+      bunkerGroup.add(step);
+    }
+
+    group.add(bunkerGroup);
+    this.sandbagBunker = { pos: bunkerPos.clone() };
+
+    this.scene.add(group);
+    this.envObjects.push(group);
+
+    this.valVerdeProps = {
+      group,
+      wreckPos,
+      radioPos: wreckPos.clone().add(new THREE.Vector3(3.2, 1.8, 0.4)),
+      radioCooldown: 0
+    };
+  }
+
+  checkValVerdeRadioInteraction(playerPos, ui, audio, horde) {
+    if (!this.valVerdeProps || !playerPos) return false;
+    const v = this.valVerdeProps;
+    if (v.radioPos.distanceTo(playerPos) <= 4.2) {
+      if (v.radioCooldown > 0) {
+        if (ui && ui.showAnnouncement) {
+          ui.showAnnouncement(`⏳ ÉMETTEUR RADIO EN RECHARGE (${Math.ceil(v.radioCooldown)}S)`);
+        }
+        return true;
+      }
+      v.radioCooldown = 35.0;
+      if (audio && audio.playHueyRadioStatic) audio.playHueyRadioStatic();
+
+      let luredCount = 0;
+      if (horde && horde.aliens) {
+        horde.aliens.forEach(alien => {
+          if (alien && alien.mesh && alien.hp > 0 && alien.mesh.position.distanceTo(v.wreckPos) <= 35.0) {
+            alien.hp -= 80;
+            alien.isStunned = true;
+            alien.stunTimer = 3.2;
+            alien.mesh.position.addScaledVector(v.wreckPos.clone().sub(alien.mesh.position).normalize(), 6.0);
+            luredCount++;
+          }
+        });
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement(`📻 SOS ÉMIS SUR FRÉQUENCE MILITAIRE (PREDATOR 1987) : ${luredCount} XÉNOS ATTIRÉS DANS L'EMBUSCADE !`, "success");
+      }
+      return true;
+    }
+    return false;
+  }
+
+  checkMudPitInteraction(player, ui, audio, particles) {
+    if (!this.mudPits || !player || !player.position) return false;
+    for (let i = 0; i < this.mudPits.length; i++) {
+      const pit = this.mudPits[i];
+      if (player.position.distanceTo(pit.pos) <= pit.radius) {
+        if (player.applyMudCamouflage) {
+          player.applyMudCamouflage(25.0);
+        }
+        if (audio && audio.playMudCoatSquelch) audio.playMudCoatSquelch();
+        if (particles && particles.emitAlienBloodSpurt) {
+          particles.emitAlienBloodSpurt(player.position.clone().add(new THREE.Vector3(0, 1.0, 0)), 12);
+        }
+        if (ui && ui.showAnnouncement) {
+          ui.showAnnouncement('🌿 CAMOUFLAGE DE BOUE THERMIQUE (PREDATOR 1987) : SIGNATURE MASQUÉE, DÉGÂTS FURTIFS +40% (25S) !', 'success');
+        }
+        return true;
+      }
+    }
+    return false;
+  }
+
+  checkDutchLogTrapTrigger(playerPos, isDamage, audio, horde, bosses, particles, ui) {
+    if (!this.dutchLogTrap || this.dutchLogTrap.isTriggered || !playerPos) return false;
+    if (playerPos.distanceTo(this.dutchLogTrap.triggerPos) <= (isDamage ? 4.5 : 3.8)) {
+      this.dutchLogTrap.isTriggered = true;
+      if (audio && audio.playDutchLogTrapSwing) audio.playDutchLogTrapSwing();
+
+      let hitCount = 0;
+      if (horde && horde.aliens) {
+        horde.aliens.forEach(alien => {
+          if (alien && alien.mesh && alien.hp > 0 && alien.mesh.position.distanceTo(this.dutchLogTrap.pos) <= 12.0) {
+            alien.hp -= 580;
+            alien.isStunned = true;
+            alien.stunTimer = 4.0;
+            alien.mesh.position.addScaledVector(alien.mesh.position.clone().sub(this.dutchLogTrap.pos).normalize(), 12.0);
+            hitCount++;
+            if (particles && particles.emitAlienBloodSpurt) {
+              particles.emitAlienBloodSpurt(alien.mesh.position, 16);
+            }
+          }
+        });
+      }
+
+      if (bosses && bosses.activeBosses) {
+        bosses.activeBosses.forEach(boss => {
+          if (boss && boss.mesh && boss.hp > 0 && boss.mesh.position.distanceTo(this.dutchLogTrap.pos) <= 12.0) {
+            boss.hp -= 420;
+            boss.isStunned = true;
+            boss.stunTimer = 2.5;
+          }
+        });
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement(`🌲 PIÈGE À TRONC DE DUTCH DÉCLENCHÉ (PREDATOR 1987) : BALANCIER DÉVASTATEUR (${hitCount} XÉNOS PROJETÉS, 580 DMG) !`, 'warning');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  /* === SECTOR 2 & SOFIA LEVEL DESIGN (v56.5): LA Rooftops Helipad, Water Tower & Spire (Predator 2 1990) === */
+  buildLARooftopExpansionProps() {
+    const group = new THREE.Group();
+    const concreteMat = new THREE.MeshStandardMaterial({ color: 0x3f3f46, roughness: 0.85, metalness: 0.15 });
+    const woodMat = new THREE.MeshStandardMaterial({ color: 0x543d2b, roughness: 0.9 });
+    const metalMat = new THREE.MeshStandardMaterial({ color: 0x27272a, metalness: 0.9, roughness: 0.2 });
+    const neonMat = new THREE.MeshBasicMaterial({ color: 0xfacc15 });
+    const verdigrisMat = new THREE.MeshStandardMaterial({ color: 0x0d9488, metalness: 0.7, roughness: 0.4 });
+
+    // 1. Central Elevated Helipad Platform (radius 7m, elevation +4.5m)
+    const helipadPos = new THREE.Vector3(0, 0, 0);
+    const helipadGroup = new THREE.Group();
+    helipadGroup.position.copy(helipadPos);
+
+    const deck = new THREE.Mesh(new THREE.CylinderGeometry(7.0, 7.4, 4.5, 24), concreteMat);
+    deck.position.y = 2.25;
+    deck.receiveShadow = true;
+    helipadGroup.add(deck);
+
+    // Helipad 'H' letter marking on floor
+    const hBar1 = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.05, 5.0), neonMat);
+    hBar1.position.set(-1.8, 4.52, 0);
+    const hBar2 = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.05, 5.0), neonMat);
+    hBar2.position.set(1.8, 4.52, 0);
+    const hCross = new THREE.Mesh(new THREE.BoxGeometry(3.6, 0.05, 0.8), neonMat);
+    hCross.position.set(0, 4.52, 0);
+    helipadGroup.add(hBar1);
+    helipadGroup.add(hBar2);
+    helipadGroup.add(hCross);
+
+    // Access ramp from south (z = -14 to -7)
+    const ramp = new THREE.Mesh(new THREE.BoxGeometry(4.8, 0.3, 7.2), concreteMat);
+    ramp.position.set(0, 2.25, -10.5);
+    ramp.rotation.x = Math.atan2(4.5, 7.0);
+    helipadGroup.add(ramp);
+
+    // 8 perimeter yellow caution beacon lights
+    for (let b = 0; b < 8; b++) {
+      const a = (b / 8) * Math.PI * 2;
+      const lightMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.6, 8), metalMat);
+      lightMesh.position.set(Math.cos(a) * 6.8, 4.8, Math.sin(a) * 6.8);
+      const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.16, 6, 6), neonMat);
+      bulb.position.set(Math.cos(a) * 6.8, 5.2, Math.sin(a) * 6.8);
+      helipadGroup.add(lightMesh);
+      helipadGroup.add(bulb);
+    }
+
+    group.add(helipadGroup);
+
+    // 2. Rupturable Cedar Water Tower at [-25, 0, 22]
+    const towerPos = new THREE.Vector3(-25, 0, 22);
+    const towerGroup = new THREE.Group();
+    towerGroup.position.copy(towerPos);
+
+    // 4 timber legs
+    for (let s = 0; s < 4; s++) {
+      const a = (s / 4) * Math.PI * 2 + Math.PI / 4;
+      const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.35, 4.8, 6), metalMat);
+      leg.position.set(Math.cos(a) * 2.2, 2.4, Math.sin(a) * 2.2);
+      towerGroup.add(leg);
+    }
+
+    // Wooden vat (radius 2.5m, height 4.2m)
+    const vat = new THREE.Mesh(new THREE.CylinderGeometry(2.5, 2.5, 4.2, 16), woodMat);
+    vat.position.y = 6.6;
+    towerGroup.add(vat);
+
+    // Steel bands
+    for (let h = 0; h < 3; h++) {
+      const band = new THREE.Mesh(new THREE.TorusGeometry(2.55, 0.08, 6, 16), metalMat);
+      band.rotation.x = Math.PI / 2;
+      band.position.y = 5.2 + h * 1.3;
+      towerGroup.add(band);
+    }
+
+    // Conical timber roof
+    const roof = new THREE.Mesh(new THREE.ConeGeometry(2.9, 1.8, 16), woodMat);
+    roof.position.y = 9.6;
+    towerGroup.add(roof);
+
+    group.add(towerGroup);
+
+    // 3. Eastern Columbia Spire & Lightning Rod at [28, 0, -26]
+    const spireGroup = new THREE.Group();
+    spireGroup.position.set(28, 0, -26);
+    const spireBase = new THREE.Mesh(new THREE.BoxGeometry(4.5, 12, 4.5), verdigrisMat);
+    spireBase.position.y = 6;
+    spireGroup.add(spireBase);
+    const spireCone = new THREE.Mesh(new THREE.ConeGeometry(2.2, 9, 8), verdigrisMat);
+    spireCone.position.y = 16.5;
+    spireGroup.add(spireCone);
+    const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 4.5, 6), metalMat);
+    rod.position.y = 23;
+    spireGroup.add(rod);
+    group.add(spireGroup);
+
+    // 4. Suspended Facade Window-Washing Cradle at [0, 7.5, 28] (+7.5m altitude)
+    const cradleGroup = new THREE.Group();
+    cradleGroup.position.set(0, 7.5, 28);
+
+    const cradleFloor = new THREE.Mesh(new THREE.BoxGeometry(5.8, 0.25, 2.4), metalMat);
+    cradleGroup.add(cradleFloor);
+
+    // Safety rails
+    for (let c = 0; c < 4; c++) {
+      const post = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 1.2, 4), metalMat);
+      post.position.set(c < 2 ? -2.7 : 2.7, 0.6, c % 2 === 0 ? -1.0 : 1.0);
+      cradleGroup.add(post);
+    }
+
+    // Suspension cables
+    [-2.6, 2.6].forEach(cx => {
+      const cable = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 14.0, 4), metalMat);
+      cable.position.set(cx, 7.0, 0);
+      cradleGroup.add(cable);
+    });
+
+    // Connecting gangway from helipad/roof (+4.5m) to cradle (+7.5m)
+    const gangway = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.2, 4.4), concreteMat);
+    gangway.position.set(0, 6.0, 24.5);
+    gangway.rotation.x = Math.atan2(3.0, 4.0);
+    gangway.receiveShadow = true;
+    group.add(gangway);
+
+    group.add(cradleGroup);
+    this.windowCradle = { cradlePos: new THREE.Vector3(0, 7.5, 28) };
+
+    // 5. Industrial Rooftop HVAC Chiller Units at [-16, 0, -18]
+    this.hvacChillers = [];
+    const hvacGroup = new THREE.Group();
+    hvacGroup.position.set(-16, 0, -18);
+
+    const hvacBox = new THREE.Mesh(new THREE.BoxGeometry(4.2, 2.4, 3.2), metalMat);
+    hvacBox.position.y = 1.2;
+    hvacBox.castShadow = true;
+    hvacGroup.add(hvacBox);
+
+    // Spinning aluminum condenser fan
+    const fanGeo = new THREE.BoxGeometry(1.6, 0.08, 0.25);
+    const fanMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.8 });
+    const fanMesh = new THREE.Mesh(fanGeo, fanMat);
+    fanMesh.position.set(0, 2.45, 0);
+    hvacGroup.add(fanMesh);
+
+    group.add(hvacGroup);
+    this.hvacChillers.push({
+      group: hvacGroup,
+      fan: fanMesh,
+      pos: new THREE.Vector3(-16, 1.2, -18),
+      isRuptured: false,
+      hp: 120
+    });
+
+    this.scene.add(group);
+    this.envObjects.push(group);
+
+    this.laRooftopExpansion = {
+      group,
+      helipadPos,
+      towerGroup,
+      towerPos,
+      towerHp: 120,
+      isTowerRuptured: false
+    };
+  }
+
+  checkHVACChillerDamage(hitPos, dmg, audio, horde, particles, ui) {
+    if (!this.hvacChillers || !hitPos) return false;
+    for (const hvac of this.hvacChillers) {
+      if (!hvac.isRuptured && hitPos.distanceTo(hvac.pos) <= 3.8) {
+        hvac.isRuptured = true;
+        if (audio && audio.playHVACFreonBurst) audio.playHVACFreonBurst();
+
+        // Spawn expanding freon coolant cloud
+        const cloudGeo = new THREE.SphereGeometry(6.5, 12, 12);
+        const cloudMat = new THREE.MeshBasicMaterial({ color: 0xe0f2fe, transparent: true, opacity: 0.65 });
+        const cloud = new THREE.Mesh(cloudGeo, cloudMat);
+        cloud.position.copy(hvac.pos);
+        this.scene.add(cloud);
+
+        this.activeFreonClouds.push({
+          mesh: cloud,
+          pos: hvac.pos.clone(),
+          timer: 12.0
+        });
+
+        // Slow down xenos in freon cloud by 70%
+        let frozen = 0;
+        if (horde && horde.aliens) {
+          horde.aliens.forEach(alien => {
+            if (alien && alien.mesh && alien.hp > 0 && alien.mesh.position.distanceTo(hvac.pos) <= 10.0) {
+              alien.isFrozen = true;
+              alien.speedMult = 0.3;
+              frozen++;
+            }
+          });
+        }
+
+        if (ui && ui.showAnnouncement) {
+          ui.showAnnouncement(`❄️ UNITÉ HVAC FREON RUPTURÉE (PREDATOR 2) : ÉCRAN DE BRUME GLACIALE (-70% VITESSE SUR ${frozen} XÉNOS) !`, 'success');
+        }
+        return true;
+      }
+    }
+    return false;
+  }
+
+  checkWaterTowerDamage(attack, audio, particles, horde, synthetics) {
+    if (!this.laRooftopExpansion || !attack || !attack.origin) return;
+    const t = this.laRooftopExpansion;
+    if (t.isTowerRuptured) return;
+
+    if (t.towerPos.distanceTo(attack.origin) <= (attack.radius || 2.0) + 3.8) {
+      t.towerHp -= (attack.damage || 60);
+      if (t.towerHp <= 0) {
+        t.isTowerRuptured = true;
+        this.scene.remove(t.towerGroup);
+
+        if (audio && audio.playWaterTowerDeluge) audio.playWaterTowerDeluge();
+
+        // Expansive flood mesh
+        const waterGeo = new THREE.CircleGeometry(14.0, 24);
+        waterGeo.rotateX(-Math.PI / 2);
+        const waterMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.65 });
+        const waterMesh = new THREE.Mesh(waterGeo, waterMat);
+        waterMesh.position.set(t.towerPos.x, 0.12, t.towerPos.z);
+        this.scene.add(waterMesh);
+
+        this.activeWaterDeluge = {
+          mesh: waterMesh,
+          pos: t.towerPos.clone(),
+          radius: 14.0,
+          timer: 8.0
+        };
+
+        // Wash away and stagger xenos, electrocute synthetics
+        if (horde && horde.aliens) {
+          horde.aliens.forEach(alien => {
+            if (alien && alien.mesh && alien.mesh.position.distanceTo(t.towerPos) <= 14.0) {
+              alien.hp -= 220;
+              alien.isStunned = true;
+              alien.stunTimer = 4.0;
+              alien.mesh.position.addScaledVector(alien.mesh.position.clone().sub(t.towerPos).normalize(), 8.0);
+            }
+          });
+        }
+        if (synthetics && synthetics.activeSynthetics) {
+          synthetics.activeSynthetics.forEach(syn => {
+            if (syn && syn.mesh && syn.mesh.position.distanceTo(t.towerPos) <= 14.0) {
+              syn.hp -= 350;
+              if (particles && particles.emitSparks) particles.emitSparks(syn.mesh.position, 16);
+            }
+          });
+        }
+      }
+    }
+  }
+
+  /* === SECTOR 3 & SOFIA LEVEL DESIGN (v56.5): Antarctic Pyramid Sacrificial Altar & Traps (AVP 2004) === */
+  buildPyramidSacrificialProps() {
+    const group = new THREE.Group();
+    const stoneMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.8, metalness: 0.25 });
+    const runeMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8 });
+    const bladeMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.95, roughness: 0.1 });
+
+    // 1. Central Sacrificial Caster Dais [0, 0, 0] (+2.2m)
+    const daisPos = new THREE.Vector3(0, 0, 0);
+    const dais = new THREE.Mesh(new THREE.CylinderGeometry(5.5, 6.0, 2.2, 8), stoneMat);
+    dais.position.y = 1.1;
+    dais.receiveShadow = true;
+    group.add(dais);
+
+    // 3 Caster Pedestals with triangular dial locks
+    for (let p = 0; p < 3; p++) {
+      const a = (p / 3) * Math.PI * 2;
+      const ped = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.65, 1.4, 6), stoneMat);
+      ped.position.set(Math.cos(a) * 3.2, 2.9, Math.sin(a) * 3.2);
+      const dial = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.1, 0.35), runeMat);
+      dial.position.set(Math.cos(a) * 3.2, 3.65, Math.sin(a) * 3.2);
+      group.add(ped);
+      group.add(dial);
+    }
+
+    // 2. Obsidian Scythe Wall Traps
+    this.scytheTraps = [];
+    const trapPositions = [
+      new THREE.Vector3(-18, 0, 0),
+      new THREE.Vector3(18, 0, 0)
+    ];
+
+    trapPositions.forEach((pos, idx) => {
+      const trapGroup = new THREE.Group();
+      trapGroup.position.copy(pos);
+
+      // Floor pressure stone plate
+      const plate = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.15, 2.4), stoneMat);
+      plate.position.y = 0.08;
+      trapGroup.add(plate);
+
+      // Crescent obsidian scythe blade
+      const blade = new THREE.Mesh(new THREE.TorusGeometry(1.8, 0.15, 6, 12, Math.PI), bladeMat);
+      blade.rotation.x = Math.PI / 2;
+      blade.position.y = 1.6;
+      trapGroup.add(blade);
+
+      group.add(trapGroup);
+
+      this.scytheTraps.push({
+        id: idx,
+        pos: pos.clone(),
+        bladeMesh: blade,
+        cooldown: 0
+      });
+    });
+
+    this.scene.add(group);
+    this.envObjects.push(group);
+
+    this.pyramidSacrificial = {
+      group,
+      daisPos,
+      altarCooldown: 0
+    };
+  }
+
+  checkPyramidAltarInteraction(player, ui, audio, particles) {
+    if (!this.pyramidSacrificial || !player || !player.position) return false;
+    const p = this.pyramidSacrificial;
+    if (player.position.distanceTo(p.daisPos) <= 4.5) {
+      if (p.altarCooldown > 0) {
+        if (ui && ui.showAnnouncement) {
+          ui.showAnnouncement(`⏳ AUTEL DU CLAN EN RECHARGE (${Math.ceil(p.altarCooldown)}S)`);
+        }
+        return true;
+      }
+      p.altarCooldown = 40.0;
+      if (audio && audio.playPyramidStoneShift) audio.playPyramidStoneShift();
+
+      player.plasmaEnergy = player.maxPlasmaEnergy || 100;
+      player.plasmaChargeMultiplier = 0.70; // 30% faster charge
+
+      if (particles && particles.emitSparks) {
+        particles.emitSparks(player.position.clone().add(new THREE.Vector3(0, 1.5, 0)), 24);
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('⚜️ BÉNÉDICTION DES ANCIENS D\'AVP 2004 : RÉSERVES PLASMA 100%, CHARGE ACCÉLÉRÉE (+30% CADENCE 30S) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  checkPyramidScytheTraps(playerPos, horde, audio, particles) {
+    if (!this.scytheTraps) return;
+    this.scytheTraps.forEach(trap => {
+      if (trap.cooldown > 0) return;
+      let triggered = false;
+
+      if (playerPos && playerPos.distanceTo(trap.pos) <= 2.2) {
+        triggered = true;
+      }
+      if (!triggered && horde && horde.aliens) {
+        for (let i = 0; i < horde.aliens.length; i++) {
+          const a = horde.aliens[i];
+          if (a && a.mesh && a.mesh.position.distanceTo(trap.pos) <= 2.2) {
+            triggered = true;
+            break;
+          }
+        }
+      }
+
+      if (triggered) {
+        trap.cooldown = 4.5;
+        if (audio && audio.playPyramidScytheTrap) audio.playPyramidScytheTrap();
+
+        if (trap.bladeMesh) {
+          trap.bladeMesh.rotation.z += Math.PI;
+        }
+
+        // Damage all enemies in corridor sweep
+        if (horde && horde.aliens) {
+          horde.aliens.forEach(alien => {
+            if (alien && alien.mesh && alien.mesh.position.distanceTo(trap.pos) <= 4.2) {
+              alien.hp -= 450;
+              if (particles && particles.emitAlienBloodSpurt) {
+                particles.emitAlienBloodSpurt(alien.mesh.position, 16);
+              }
+            }
+          });
+        }
+      }
+    });
+  }
+
+  /* === SECTOR 4 & SOFIA LEVEL DESIGN (v56.5): Romulus Station Zero-G Chamber & Rook Terminal (Romulus 2024) === */
+  buildRomulusStationExpansionProps() {
+    const group = new THREE.Group();
+    const metalMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.9, roughness: 0.2 });
+    const amberMat = new THREE.MeshBasicMaterial({ color: 0xf59e0b });
+
+    // 1. Central Zero-G Acid Decompression Airlock [0, 0, 0]
+    const airlockPos = new THREE.Vector3(0, 0, 0);
+    const hatch = new THREE.Mesh(new THREE.CylinderGeometry(5.2, 5.5, 0.4, 24), metalMat);
+    hatch.position.y = 0.2;
+    hatch.receiveShadow = true;
+    group.add(hatch);
+
+    // 4 Magnetic locking clamps
+    for (let c = 0; c < 4; c++) {
+      const a = (c / 4) * Math.PI * 2;
+      const clamp = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.9, 1.4), metalMat);
+      clamp.position.set(Math.cos(a) * 4.8, 0.65, Math.sin(a) * 4.8);
+      group.add(clamp);
+    }
+
+    const consoleMesh = new THREE.Mesh(new THREE.BoxGeometry(0.9, 1.4, 0.7), metalMat);
+    consoleMesh.position.set(4.5, 1.2, 0);
+    const consoleScreen = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.5, 0.05), amberMat);
+    consoleScreen.position.set(4.5, 1.5, 0.36);
+    group.add(consoleMesh);
+    group.add(consoleScreen);
+
+    // 2. Science Officer Rook Synthetic Android Wall Mount at [-22, 1.8, -14]
+    const rookPos = new THREE.Vector3(-22, 1.8, -14);
+    const rookGroup = new THREE.Group();
+    rookGroup.position.copy(rookPos);
+
+    const rookTorso = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.2, 0.5), metalMat);
+    rookGroup.add(rookTorso);
+    const rookHead = new THREE.Mesh(new THREE.SphereGeometry(0.35, 8, 8), new THREE.MeshStandardMaterial({ color: 0xd4d4d8 }));
+    rookHead.position.set(0, 0.9, 0);
+    rookGroup.add(rookHead);
+
+    // Dangling milky cyber-cabling
+    for (let w = 0; w < 4; w++) {
+      const wire = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 1.4, 6), new THREE.MeshBasicMaterial({ color: 0xffffff }));
+      wire.position.set((w - 1.5) * 0.15, -0.7, 0);
+      rookGroup.add(wire);
+    }
+
+    group.add(rookGroup);
+
+    // 3. Z-01 Prometheus Centrifuge at [20, 0, 18]
+    const centrifugeGroup = new THREE.Group();
+    centrifugeGroup.position.set(20, 0, 18);
+    const cBase = new THREE.Mesh(new THREE.CylinderGeometry(1.8, 2.2, 1.6, 12), metalMat);
+    cBase.position.y = 0.8;
+    centrifugeGroup.add(cBase);
+
+    const rotorArm = new THREE.Group();
+    rotorArm.position.y = 1.8;
+    for (let v = 0; v < 4; v++) {
+      const a = (v / 4) * Math.PI * 2;
+      const vial = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.8, 8), amberMat);
+      vial.position.set(Math.cos(a) * 1.2, 0, Math.sin(a) * 1.2);
+      rotorArm.add(vial);
+    }
+    centrifugeGroup.add(rotorArm);
+    group.add(centrifugeGroup);
+
+    this.scene.add(group);
+    this.envObjects.push(group);
+
+    this.romulusStationExpansion = {
+      group,
+      airlockPos,
+      consolePos: new THREE.Vector3(4.5, 1.2, 0),
+      rookPos,
+      centrifugeRotor: rotorArm,
+      zeroGCooldown: 0,
+      rookCooldown: 0
+    };
+  }
+
+  checkRomulusZeroGInteraction(player, ui, audio, particles, horde) {
+    if (!this.romulusStationExpansion || !player || !player.position) return false;
+    const r = this.romulusStationExpansion;
+    if (player.position.distanceTo(r.consolePos) <= 4.2) {
+      if (r.zeroGCooldown > 0) {
+        if (ui && ui.showAnnouncement) {
+          ui.showAnnouncement(`⏳ SAS DÉPRESSURISATION EN RECHARGE (${Math.ceil(r.zeroGCooldown)}S)`);
+        }
+        return true;
+      }
+      r.zeroGCooldown = 45.0;
+      this.zeroGActiveTimer = 8.0;
+
+      if (audio && audio.playZeroGGravityToggle) audio.playZeroGGravityToggle();
+
+      // Suspend ground enemies in zero-g for 6 seconds
+      let affected = 0;
+      if (horde && horde.aliens) {
+        horde.aliens.forEach(alien => {
+          if (alien && alien.mesh && alien.mesh.position.distanceTo(r.airlockPos) <= 28.0) {
+            alien.mesh.position.y = 2.4;
+            alien.isStunned = true;
+            alien.stunTimer = 6.0;
+            affected++;
+          }
+        });
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement(`🪐 DÉPRESSURISATION GRAVITATIONNELLE ZÉRO-G (ROMULUS) : ${affected} XÉNOS EN SUSPENSION LÉVITANTE (6S) !`, "warning");
+      }
+      return true;
+    }
+    return false;
+  }
+
+  checkRookConsoleInteraction(player, ui, audio) {
+    if (!this.romulusStationExpansion || !player || !player.position) return false;
+    const r = this.romulusStationExpansion;
+    if (player.position.distanceTo(r.rookPos) <= 4.2) {
+      if (r.rookCooldown > 0) {
+        if (ui && ui.showAnnouncement) {
+          ui.showAnnouncement(`⏳ CONSOLE DE ROOK EN ATTENTE DE SIGNAL (${Math.ceil(r.rookCooldown)}S)`);
+        }
+        return true;
+      }
+      r.rookCooldown = 60.0;
+      if (audio && audio.playSyntheticWhiteFluidLeak) audio.playSyntheticWhiteFluidLeak();
+
+      player.medicompCharges = Math.min(6, (player.medicompCharges || 0) + 2);
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('🤖 OFFICIER ROOK (ALIEN: ROMULUS) : ACCÈS DÉVERROUILLÉ (+2 COMPRESSES DE SOIN MEDICOMP) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  /* === SECTOR 5 & SOFIA LEVEL DESIGN (v56.5): Xenomorph Prime Royal Jelly Glands & Bridges (Earth War Canon) === */
+  buildHiveWorldExpansionProps() {
+    const group = new THREE.Group();
+    const resinMat = new THREE.MeshStandardMaterial({ color: 0x140508, roughness: 0.35, metalness: 0.8 });
+    const amberGlandMat = new THREE.MeshStandardMaterial({
+      color: 0xf59e0b,
+      roughness: 0.15,
+      emissive: 0xd97706,
+      emissiveIntensity: 0.6
+    });
+
+    // 1. Hardened Chitin Webbing Bridges spanning acid pits at +4.5m
+    const bridge1 = new THREE.Mesh(new THREE.BoxGeometry(6.4, 0.4, 50.0), resinMat);
+    bridge1.position.set(0, 4.5, 0);
+    bridge1.receiveShadow = true;
+    group.add(bridge1);
+
+    const bridge2 = new THREE.Mesh(new THREE.BoxGeometry(50.0, 0.4, 6.4), resinMat);
+    bridge2.position.set(0, 4.5, 0);
+    bridge2.receiveShadow = true;
+    group.add(bridge2);
+
+    const bridges = [
+      { minX: -3.2, maxX: 3.2, minZ: -25.0, maxZ: 25.0 },
+      { minX: -25.0, maxX: 25.0, minZ: -3.2, maxZ: 3.2 }
+    ];
+
+    // 2. Harvestable Royal Jelly Resin Nodes on walls
+    this.harvestableRoyalJelly = [];
+    const glandPositions = [
+      new THREE.Vector3(-18, 2.2, 18),
+      new THREE.Vector3(18, 2.2, -18),
+      new THREE.Vector3(-24, 2.2, -14),
+      new THREE.Vector3(24, 2.2, 14)
+    ];
+
+    glandPositions.forEach((pos, idx) => {
+      const glandGroup = new THREE.Group();
+      glandGroup.position.copy(pos);
+
+      const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.85, 12, 12), amberGlandMat);
+      glandGroup.add(bulb);
+
+      const light = new THREE.PointLight(0xf59e0b, 1.2, 8.0);
+      light.position.set(0, 0, 0);
+      glandGroup.add(light);
+
+      group.add(glandGroup);
+
+      this.harvestableRoyalJelly.push({
+        id: idx,
+        group: glandGroup,
+        pos: pos.clone(),
+        light,
+        isHarvested: false
+      });
+    });
+
+    this.scene.add(group);
+    this.envObjects.push(group);
+
+    this.hiveWorldExpansion = {
+      group,
+      bridges
+    };
+  }
+
+  checkRoyalJellyHarvestInteraction(player, ui, audio, particles) {
+    if (!this.harvestableRoyalJelly || !player || !player.position) return false;
+    for (let i = 0; i < this.harvestableRoyalJelly.length; i++) {
+      const node = this.harvestableRoyalJelly[i];
+      if (!node.isHarvested && player.position.distanceTo(node.pos) <= 3.8) {
+        node.isHarvested = true;
+        this.scene.remove(node.group);
+
+        if (audio && audio.playRoyalJellyHarvest) audio.playRoyalJellyHarvest();
+
+        player.royalJellyFlasks = (player.royalJellyFlasks || 0) + 2;
+        player.hp = Math.min(player.maxHp || 1000, player.hp + 350);
+
+        if (particles && particles.emitAlienBloodSpurt) {
+          particles.emitAlienBloodSpurt(node.pos, 20);
+        }
+
+        if (ui && ui.showAnnouncement) {
+          ui.showAnnouncement('🍯 GELÉE ROYALE PURIFIÉE RÉCOLTÉE (ALIENS: EARTH WAR) : +2 FIOLES ROYALES, SANTÉ RESTAURÉE (+350 HP) !', 'success');
+        }
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /* === SECTOR 6 & SOFIA LEVEL DESIGN (v57.0): Gunnison Forest Gothic Cemetery Crypt & Downed Power Pole (AVP: Requiem 2007) === */
+  buildGunnisonForestExpansionProps() {
+    const group = new THREE.Group();
+    const stoneMat = new THREE.MeshStandardMaterial({ color: 0x272e36, roughness: 0.9, metalness: 0.1 });
+    const woodMat = new THREE.MeshStandardMaterial({ color: 0x3d2b1f, roughness: 0.95 });
+    const metalMat = new THREE.MeshStandardMaterial({ color: 0x1f2937, metalness: 0.9, roughness: 0.2 });
+    const puddleMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.1, metalness: 0.8, transparent: true, opacity: 0.75 });
+
+    // 1. Gothic Stone Crypt & Mausoleum at [24, 0, -20] (+3.2m elevation)
+    const mausoleumPos = new THREE.Vector3(24, 0, -20);
+    const cryptGroup = new THREE.Group();
+    cryptGroup.position.copy(mausoleumPos);
+
+    // Foundation & heavy stone walls
+    const mainBuilding = new THREE.Mesh(new THREE.BoxGeometry(8.4, 3.2, 6.4), stoneMat);
+    mainBuilding.position.y = 1.6;
+    mainBuilding.castShadow = true;
+    mainBuilding.receiveShadow = true;
+    cryptGroup.add(mainBuilding);
+
+    // Stone battlements / crenels on roof (+3.2m platform)
+    for (let c = 0; c < 4; c++) {
+      const crenel1 = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.7, 0.5), stoneMat);
+      crenel1.position.set(-3.0 + c * 2.0, 3.55, 3.0);
+      cryptGroup.add(crenel1);
+      const crenel2 = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.7, 0.5), stoneMat);
+      crenel2.position.set(-3.0 + c * 2.0, 3.55, -3.0);
+      cryptGroup.add(crenel2);
+    }
+
+    // West stone stairs leading from ground (y=0) to roof (+3.2m)
+    for (let s = 0; s < 5; s++) {
+      const step = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.65 * (s + 1), 4.2), stoneMat);
+      step.position.set(-4.6 - s * 0.7, (0.65 * (s + 1)) / 2, 0);
+      step.receiveShadow = true;
+      cryptGroup.add(step);
+    }
+
+    // Wrought iron crypt gate on south side
+    const gateFrame = new THREE.Mesh(new THREE.BoxGeometry(2.4, 2.6, 0.3), metalMat);
+    gateFrame.position.set(0, 1.3, 3.25);
+    cryptGroup.add(gateFrame);
+
+    // USCM / National Guard Reliquary Munitions Locker inside gate
+    const lockerGeo = new THREE.BoxGeometry(1.6, 0.9, 0.9);
+    const lockerMat = new THREE.MeshStandardMaterial({ color: 0x14532d, metalness: 0.85, roughness: 0.3 });
+    const locker = new THREE.Mesh(lockerGeo, lockerMat);
+    locker.position.set(0, 0.45, 2.2);
+    cryptGroup.add(locker);
+
+    // Gravestones scattered in cemetery
+    for (let g = 0; g < 6; g++) {
+      const tombstone = new THREE.Mesh(new THREE.BoxGeometry(0.6, 1.4, 0.25), stoneMat);
+      tombstone.position.set(6.0 + (g % 3) * 3.0, 0.7, -4.0 + Math.floor(g / 3) * 5.0);
+      tombstone.rotation.y = (Math.random() - 0.5) * 0.4;
+      cryptGroup.add(tombstone);
+    }
+
+    group.add(cryptGroup);
+
+    // 2. Downed High-Voltage Electric Utility Pole at [0, 0, 16]
+    const polePos = new THREE.Vector3(0, 0, 16);
+    const poleGroup = new THREE.Group();
+    poleGroup.position.copy(polePos);
+
+    // Splintered timber pole angled at 45 degrees
+    const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.32, 8.5, 8), woodMat);
+    pole.position.set(1.8, 3.2, 0);
+    pole.rotation.z = 0.55;
+    poleGroup.add(pole);
+
+    // Crossarm with insulators
+    const crossarm = new THREE.Mesh(new THREE.BoxGeometry(3.2, 0.2, 0.2), woodMat);
+    crossarm.position.set(3.8, 6.2, 0);
+    crossarm.rotation.z = 0.55;
+    poleGroup.add(crossarm);
+
+    // Transformer metal canister
+    const transformer = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.55, 1.4, 12), metalMat);
+    transformer.position.set(3.4, 5.2, 0.5);
+    poleGroup.add(transformer);
+
+    // Flooded rain puddle around pole
+    const puddle = new THREE.Mesh(new THREE.CylinderGeometry(7.5, 7.5, 0.05, 16), puddleMat);
+    puddle.position.y = 0.03;
+    poleGroup.add(puddle);
+
+    // Severed dangling high-voltage live wires
+    const wireMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8 });
+    for (let w = 0; w < 3; w++) {
+      const wire = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 5.0, 4), wireMat);
+      wire.position.set(2.8 + w * 0.7, 2.5, (w - 1) * 0.6);
+      wire.rotation.z = 0.2;
+      poleGroup.add(wire);
+    }
+
+    group.add(poleGroup);
+
+    this.scene.add(group);
+    this.envObjects.push(group);
+
+    this.gunnisonExpansion = {
+      group,
+      mausoleumPos,
+      polePos
+    };
+
+    this.cryptReliquaryVault = {
+      pos: mausoleumPos.clone().add(new THREE.Vector3(0, 0.45, 2.2)),
+      isOpened: false
+    };
+
+    this.gunnisonPowerPole = {
+      group: poleGroup,
+      pos: polePos.clone(),
+      isTriggered: false,
+      hp: 100
+    };
+  }
+
+  checkCryptReliquaryInteraction(player, ui, audio) {
+    if (!this.cryptReliquaryVault || !player || !player.position || this.cryptReliquaryVault.isOpened) return false;
+    if (player.position.distanceTo(this.cryptReliquaryVault.pos) <= 3.8) {
+      this.cryptReliquaryVault.isOpened = true;
+      if (audio && audio.playCryptReliquaryOpen) audio.playCryptReliquaryOpen();
+
+      player.plasmaEnergy = 100;
+      player.armor = Math.min(player.maxArmor || 600, player.armor + 300);
+      player.medicompVials = (player.medicompVials || 0) + 2;
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('⚰️ COFFRE RELIQUAIRE DU CIMETIÈRE DE GUNNISON OUVERT : ÉNERGIE PLASMA 100%, BLINDAGE +300, 2 FIOLES MEDICOMP !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  checkGunnisonPowerPoleDamage(hitPos, dmg, audio, horde, particles, ui) {
+    if (!this.gunnisonPowerPole || this.gunnisonPowerPole.isTriggered || !hitPos) return false;
+    if (hitPos.distanceTo(this.gunnisonPowerPole.pos) <= 5.0) {
+      this.gunnisonPowerPole.isTriggered = true;
+
+      if (audio && audio.playGunnisonPowerArc) audio.playGunnisonPowerArc();
+
+      // Spawn electrical discharge mesh
+      const arcGeo = new THREE.CylinderGeometry(8.0, 8.0, 0.2, 16);
+      const arcMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.85, wireframe: true });
+      const arcMesh = new THREE.Mesh(arcGeo, arcMat);
+      arcMesh.position.set(this.gunnisonPowerPole.pos.x, 0.2, this.gunnisonPowerPole.pos.z);
+      this.scene.add(arcMesh);
+
+      const arcLight = new THREE.PointLight(0x38bdf8, 3.5, 18.0);
+      arcLight.position.set(this.gunnisonPowerPole.pos.x, 2.5, this.gunnisonPowerPole.pos.z);
+      this.scene.add(arcLight);
+
+      this.activePowerArcs.push({
+        mesh: arcMesh,
+        light: arcLight,
+        pos: this.gunnisonPowerPole.pos.clone(),
+        timer: 6.0
+      });
+
+      // Electrocute enemies in 15m radius
+      let shocked = 0;
+      if (horde && horde.aliens) {
+        horde.aliens.forEach(alien => {
+          if (alien && alien.mesh && alien.hp > 0 && alien.mesh.position.distanceTo(this.gunnisonPowerPole.pos) <= 15.0) {
+            alien.hp -= 420;
+            alien.isStunned = true;
+            alien.stunTimer = 4.0;
+            shocked++;
+            if (particles && particles.emitSparks) {
+              particles.emitSparks(alien.mesh.position, 8);
+            }
+          }
+        });
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement(`⚡ COURT-CIRCUIT DU POTEAU ÉLECTRIQUE (GUNNISON) : ARC 10 000V DÉCHARGÉ (${shocked} XÉNOS ÉLECTROCUTÉS, 420 DMG, 4S STUN) !`, 'warning');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  /* === SECTOR 7 & SOFIA LEVEL DESIGN (v57.0): Charon Base Mezzanine Gantry & Neural Inhibitors (Aliens: Rogue 1993) === */
+  buildCharonBaseExpansionProps() {
+    const group = new THREE.Group();
+    const gratingMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.95, roughness: 0.25 });
+    const yellowMat = new THREE.MeshBasicMaterial({ color: 0xfacc15 });
+    const pylonMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.9, roughness: 0.2 });
+    const ringMat = new THREE.MeshBasicMaterial({ color: 0x34d399 });
+
+    // 1. Upper Mezzanine Observation Gantry at [0, 4.2, -26] (+4.2m elevation)
+    const gantryPos = new THREE.Vector3(0, 4.2, -26);
+    const gantry = new THREE.Mesh(new THREE.BoxGeometry(24.0, 0.4, 5.0), gratingMat);
+    gantry.position.copy(gantryPos);
+    gantry.receiveShadow = true;
+    group.add(gantry);
+
+    // Hazard stripes along front curb
+    const curb = new THREE.Mesh(new THREE.BoxGeometry(24.0, 0.25, 0.2), yellowMat);
+    curb.position.set(0, 4.4, -23.6);
+    group.add(curb);
+
+    // Handrails
+    const rail = new THREE.Mesh(new THREE.BoxGeometry(24.0, 0.08, 0.08), gratingMat);
+    rail.position.set(0, 5.2, -23.6);
+    group.add(rail);
+
+    // West access ramp from ground [x=-16, z=-26] up to gantry [x=-12, z=-26]
+    const ramp = new THREE.Mesh(new THREE.BoxGeometry(4.4, 0.3, 3.2), gratingMat);
+    ramp.position.set(-14.0, 2.1, -26.0);
+    ramp.rotation.z = -Math.atan2(4.2, 4.0);
+    group.add(ramp);
+
+    // 2. Dual Weyland-Yutani Neural Inhibitor Resonator Pylons at [-14, 0, 8] and [14, 0, 8]
+    this.neuralInhibitors = [];
+    const pylonCoords = [
+      new THREE.Vector3(-14, 0, 8),
+      new THREE.Vector3(14, 0, 8)
+    ];
+
+    pylonCoords.forEach((pPos, idx) => {
+      const pGroup = new THREE.Group();
+      pGroup.position.copy(pPos);
+
+      // Central pillar
+      const pillar = new THREE.Mesh(new THREE.CylinderGeometry(0.65, 0.85, 4.8, 12), pylonMat);
+      pillar.position.y = 2.4;
+      pGroup.add(pillar);
+
+      // 4 toroidal resonance rings
+      const rings = [];
+      for (let r = 0; r < 4; r++) {
+        const ring = new THREE.Mesh(new THREE.TorusGeometry(1.1, 0.12, 6, 16), ringMat);
+        ring.rotation.x = Math.PI / 2;
+        ring.position.y = 1.2 + r * 0.9;
+        pGroup.add(ring);
+        rings.push(ring);
+      }
+
+      // Beacon light
+      const pLight = new THREE.PointLight(0x34d399, 1.8, 9.0);
+      pLight.position.set(0, 4.8, 0);
+      pGroup.add(pLight);
+
+      group.add(pGroup);
+
+      this.neuralInhibitors.push({
+        id: idx,
+        group: pGroup,
+        pos: pPos.clone(),
+        rings,
+        light: pLight,
+        cooldown: 0
+      });
+    });
+
+    this.scene.add(group);
+    this.envObjects.push(group);
+
+    this.charonExpansion = {
+      group,
+      gantryPos
+    };
+  }
+
+  checkNeuralInhibitorInteraction(player, horde, ui, audio) {
+    if (!this.neuralInhibitors || this.neuralInhibitors.length === 0 || !player || !player.position) return false;
+    for (const pylon of this.neuralInhibitors) {
+      if (player.position.distanceTo(pylon.pos) <= 4.2) {
+        if (pylon.cooldown > 0) {
+          if (ui && ui.showAnnouncement) {
+            ui.showAnnouncement(`⏳ PYLÔNE INHIBITEUR EN RECHARGE (${Math.ceil(pylon.cooldown)}S)`);
+          }
+          return true;
+        }
+        pylon.cooldown = 42.0;
+
+        if (audio && audio.playNeuralInhibitorHum) audio.playNeuralInhibitorHum();
+
+        // Slow down and disorient all xenomorphs across arena for 16 seconds
+        let inhibitedCount = 0;
+        if (horde && horde.aliens) {
+          horde.aliens.forEach(alien => {
+            if (alien && alien.hp > 0) {
+              alien.isInhibited = true;
+              alien.inhibitedTimer = 16.0;
+              alien.speedMult = 0.4;
+              inhibitedCount++;
+            }
+          });
+        }
+
+        if (ui && ui.showAnnouncement) {
+          ui.showAnnouncement(`🧠 INHIBITEURS NEURONAUX CHARON ACTIVÉS (ALIENS: ROGUE) : ONDES ULTRASONIQUES (-60% VITESSE, CRACHAT ACIDE BLOQUÉ 16S SUR ${inhibitedCount} XÉNOS) !`, 'warning');
+        }
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /* === SECTOR 8 & SOFIA LEVEL DESIGN (v57.0): Game Preserve Hunting Perch & Boulder Deadfall Traps (Predators 2010) === */
+  buildGamePreserveExpansionProps() {
+    const group = new THREE.Group();
+    const woodMat = new THREE.MeshStandardMaterial({ color: 0x3d2012, roughness: 0.95 });
+    const stoneMat = new THREE.MeshStandardMaterial({ color: 0x47382e, roughness: 0.9 });
+    const vineMat = new THREE.MeshStandardMaterial({ color: 0x1f3d1a, roughness: 0.8 });
+    const runeMat = new THREE.MeshBasicMaterial({ color: 0xef4444 });
+
+    // 1. Super Predator Hunting Perch Platform at [20, 0, 22] (+5.2m altitude)
+    const perchPos = new THREE.Vector3(20, 0, 22);
+    const perchGroup = new THREE.Group();
+    perchGroup.position.copy(perchPos);
+
+    // Massive redwood tree trunk
+    const trunk = new THREE.Mesh(new THREE.CylinderGeometry(2.2, 2.6, 16.0, 12), woodMat);
+    trunk.position.y = 8.0;
+    trunk.castShadow = true;
+    perchGroup.add(trunk);
+
+    // Octagonal hunting platform at +5.2m (radius 4.2m)
+    const platform = new THREE.Mesh(new THREE.CylinderGeometry(4.2, 4.4, 0.4, 8), woodMat);
+    platform.position.y = 5.2;
+    platform.receiveShadow = true;
+    perchGroup.add(platform);
+
+    // Bone handrails and trophy skull spikes
+    for (let s = 0; s < 8; s++) {
+      const a = (s / 8) * Math.PI * 2;
+      const post = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.12, 1.2, 6), woodMat);
+      post.position.set(Math.cos(a) * 4.0, 5.8, Math.sin(a) * 4.0);
+      perchGroup.add(post);
+    }
+
+    // Timber ladder incline from ground [20, 0, 15] to platform [20, 5.2, 18.5]
+    const ladder = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.3, 4.2), woodMat);
+    ladder.position.set(0, 2.6, -5.25);
+    ladder.rotation.x = Math.atan2(5.2, 3.5);
+    perchGroup.add(ladder);
+
+    group.add(perchGroup);
+
+    // 2. Suspended Boulder Deadfall Traps at [-16, 0, 6] and [14, 0, -14]
+    this.boulderTraps = [];
+    const trapConfigs = [
+      { id: 1, pos: new THREE.Vector3(-16, 0, 6) },
+      { id: 2, pos: new THREE.Vector3(14, 0, -14) }
+    ];
+
+    trapConfigs.forEach(cfg => {
+      const trapGroup = new THREE.Group();
+      trapGroup.position.copy(cfg.pos);
+
+      // Heavy timber A-frame gallows (height 9m)
+      const beamL = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.25, 9.2, 6), woodMat);
+      beamL.position.set(-2.0, 4.6, 0);
+      beamL.rotation.z = 0.2;
+      trapGroup.add(beamL);
+
+      const beamR = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.25, 9.2, 6), woodMat);
+      beamR.position.set(2.0, 4.6, 0);
+      beamR.rotation.z = -0.2;
+      trapGroup.add(beamR);
+
+      const crossbar = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.25, 4.4, 6), woodMat);
+      crossbar.position.set(0, 8.8, 0);
+      crossbar.rotation.z = Math.PI / 2;
+      trapGroup.add(crossbar);
+
+      // Suspended 3-Ton Sandstone Boulder at y=7.4m
+      const boulder = new THREE.Mesh(new THREE.DodecahedronGeometry(1.7, 1), stoneMat);
+      boulder.position.set(0, 7.4, 0);
+      boulder.castShadow = true;
+      trapGroup.add(boulder);
+
+      // Vine rope suspension
+      const rope = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 1.8, 4), vineMat);
+      rope.position.set(0, 8.2, 0);
+      trapGroup.add(rope);
+
+      // Release peg at ground
+      const peg = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 1.2, 6), runeMat);
+      peg.position.set(0, 0.6, -2.0);
+      trapGroup.add(peg);
+
+      group.add(trapGroup);
+
+      this.boulderTraps.push({
+        id: cfg.id,
+        group: trapGroup,
+        boulderMesh: boulder,
+        ropeMesh: rope,
+        pos: cfg.pos.clone(),
+        pegPos: cfg.pos.clone().add(new THREE.Vector3(0, 0.6, -2.0)),
+        isDropped: false,
+        dropY: 7.4,
+        isDropping: false
+      });
+    });
+
+    this.scene.add(group);
+    this.envObjects.push(group);
+
+    this.gamePreserveExpansion = {
+      group,
+      perchPos
+    };
+  }
+
+  checkBoulderDeadfallDamage(hitPos, dmg, audio, horde, bosses, particles, ui) {
+    if (!this.boulderTraps || !hitPos) return false;
+    for (const trap of this.boulderTraps) {
+      if (!trap.isDropped && !trap.isDropping && hitPos.distanceTo(trap.pegPos) <= 4.2) {
+        this.triggerBoulderDrop(trap, audio, horde, bosses, particles, ui);
+        return true;
+      }
+    }
+    return false;
+  }
+
+  checkBoulderDeadfallInteraction(player, audio, horde, bosses, particles, ui) {
+    if (!this.boulderTraps || !player || !player.position) return false;
+    for (const trap of this.boulderTraps) {
+      if (!trap.isDropped && !trap.isDropping && player.position.distanceTo(trap.pegPos) <= 3.8) {
+        this.triggerBoulderDrop(trap, audio, horde, bosses, particles, ui);
+        return true;
+      }
+    }
+    return false;
+  }
+
+  triggerBoulderDrop(trap, audio, horde, bosses, particles, ui) {
+    trap.isDropping = true;
+    if (trap.ropeMesh) trap.group.remove(trap.ropeMesh);
+
+    if (audio && audio.playBoulderDeadfallCrash) audio.playBoulderDeadfallCrash();
+
+    // Instant impact resolution
+    let crushedCount = 0;
+    if (horde && horde.aliens) {
+      horde.aliens.forEach(alien => {
+        if (alien && alien.mesh && alien.hp > 0 && alien.mesh.position.distanceTo(trap.pos) <= 8.5) {
+          alien.hp -= 650;
+          alien.isStunned = true;
+          alien.stunTimer = 4.5;
+          crushedCount++;
+          if (particles && particles.emitSparks) {
+            particles.emitSparks(alien.mesh.position, 12);
+          }
+        }
+      });
+    }
+
+    if (bosses && bosses.activeBosses) {
+      bosses.activeBosses.forEach(boss => {
+        if (boss && boss.mesh && boss.hp > 0 && boss.mesh.position.distanceTo(trap.pos) <= 9.0) {
+          boss.hp -= 500;
+          boss.isStunned = true;
+          boss.stunTimer = 3.0;
+        }
+      });
+    }
+
+    trap.boulderMesh.position.y = 1.4; // Boulder comes to rest on earth as heavy cover
+    trap.isDropped = true;
+    trap.isDropping = false;
+
+    if (ui && ui.showAnnouncement) {
+      ui.showAnnouncement(`🪨 ÉBOULEMENT DE ROCHERS DÉCLENCHÉ (PREDATORS 2010) : 3 TONNES ÉCRASENT LES HORDES (${crushedCount} XÉNOS PULVÉRISÉS, 650 DMG) !`, 'success');
+    }
+  }
+
   /* === v56.0 Master Level Design Combined Update Helper === */
   updateLevelDesignV56(delta, player, horde, bosses, audio, particles, ui) {
     this.updateEnvironmentV55(delta, player, horde, audio, particles, ui);
@@ -7905,6 +9476,110 @@ export class EnvironmentManager {
     // Gently rotate crashed scout ship telemetry sphere
     if (this.crashedScoutShip && this.crashedScoutShip.holoMesh) {
       this.crashedScoutShip.holoMesh.rotation.y += delta * 1.2;
+    }
+
+    // Val Verde radio cooldown update
+    if (this.valVerdeProps && this.valVerdeProps.radioCooldown > 0) {
+      this.valVerdeProps.radioCooldown -= delta;
+    }
+
+    // LA Rooftops active water deluge update
+    if (this.activeWaterDeluge) {
+      this.activeWaterDeluge.timer -= delta;
+      if (this.activeWaterDeluge.timer <= 0) {
+        this.scene.remove(this.activeWaterDeluge.mesh);
+        this.activeWaterDeluge = null;
+      }
+    }
+
+    // Pyramid sacrificial altar cooldown and scythe traps check
+    if (this.pyramidSacrificial && this.pyramidSacrificial.altarCooldown > 0) {
+      this.pyramidSacrificial.altarCooldown -= delta;
+    }
+    if (this.scytheTraps) {
+      this.scytheTraps.forEach(t => {
+        if (t.cooldown > 0) t.cooldown -= delta;
+      });
+      this.checkPyramidScytheTraps(player ? player.position : null, horde, audio, particles);
+    }
+
+    // Romulus station zero-G centrifuge rotation and timer update
+    if (this.romulusStationExpansion) {
+      if (this.romulusStationExpansion.centrifugeRotor) {
+        this.romulusStationExpansion.centrifugeRotor.rotation.y += delta * 3.5;
+      }
+      if (this.romulusStationExpansion.zeroGCooldown > 0) {
+        this.romulusStationExpansion.zeroGCooldown -= delta;
+      }
+      if (this.romulusStationExpansion.rookCooldown > 0) {
+        this.romulusStationExpansion.rookCooldown -= delta;
+      }
+    }
+    if (this.zeroGActiveTimer > 0) {
+      this.zeroGActiveTimer -= delta;
+    }
+
+    // Hive world harvestable royal jelly nodes light pulse
+    if (this.harvestableRoyalJelly) {
+      this.harvestableRoyalJelly.forEach(node => {
+        if (!node.isHarvested && node.light) {
+          node.light.intensity = 1.0 + Math.sin(Date.now() * 0.004 + node.id) * 0.4;
+        }
+      });
+    }
+
+    // v57.0 Active power arcs update (Gunnison)
+    if (this.activePowerArcs && this.activePowerArcs.length > 0) {
+      for (let a = this.activePowerArcs.length - 1; a >= 0; a--) {
+        const arc = this.activePowerArcs[a];
+        arc.timer -= delta;
+        if (arc.light) arc.light.intensity = 2.0 + Math.random() * 2.5;
+        if (arc.timer <= 0) {
+          if (arc.mesh) this.scene.remove(arc.mesh);
+          if (arc.light) this.scene.remove(arc.light);
+          this.activePowerArcs.splice(a, 1);
+        }
+      }
+    }
+
+    // v57.0 Neural inhibitors cooldown & coil rotation (Charon)
+    if (this.neuralInhibitors && this.neuralInhibitors.length > 0) {
+      this.neuralInhibitors.forEach(p => {
+        if (p.cooldown > 0) p.cooldown -= delta;
+        if (p.rings) {
+          p.rings.forEach((r, i) => {
+            r.rotation.z += delta * (i % 2 === 0 ? 2.5 : -2.5);
+          });
+        }
+      });
+    }
+
+    // v57.0 Dutch Log Trap pendulum animation (Val Verde)
+    if (this.dutchLogTrap && this.dutchLogTrap.isTriggered && this.dutchLogTrap.swingAngle < Math.PI / 2) {
+      this.dutchLogTrap.swingAngle += delta * 4.2;
+      this.dutchLogTrap.logMesh.rotation.x = Math.sin(this.dutchLogTrap.swingAngle) * 0.95;
+    }
+
+    // v57.0 HVAC Chillers fan animation (LA Rooftops)
+    if (this.hvacChillers && this.hvacChillers.length > 0) {
+      this.hvacChillers.forEach(h => {
+        if (!h.isRuptured && h.fan) {
+          h.fan.rotation.y += delta * 14.0;
+        }
+      });
+    }
+
+    // v57.0 Active Freon Coolant Clouds update
+    if (this.activeFreonClouds && this.activeFreonClouds.length > 0) {
+      for (let f = this.activeFreonClouds.length - 1; f >= 0; f--) {
+        const cloud = this.activeFreonClouds[f];
+        cloud.timer -= delta;
+        cloud.mesh.scale.multiplyScalar(1.0 + delta * 0.04);
+        if (cloud.timer <= 0) {
+          if (cloud.mesh) this.scene.remove(cloud.mesh);
+          this.activeFreonClouds.splice(f, 1);
+        }
+      }
     }
   }
 }

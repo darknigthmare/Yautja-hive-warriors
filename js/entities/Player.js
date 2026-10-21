@@ -230,6 +230,8 @@ export class Player {
     this.hasDlexTargetingHUD = false;
     this.orbitalScanTimer = 0;
     this.critChanceBonus = 0;
+    this.mudCamouflageTimer = 0;
+    this.isMudCamouflaged = false;
     this.loadClanForgeUpgrades();
   }
 
@@ -507,9 +509,10 @@ export class Player {
     this.combiStickCooldown = 3.5;
     this.audioEngine.playCombiStickThrow();
 
+    const isElevated = this.isPerched || this.position.y >= 2.0;
     const forward = new THREE.Vector3(
       Math.sin(this.rotationY),
-      this.isPerched ? -0.35 : 0,
+      isElevated ? -0.32 : 0,
       Math.cos(this.rotationY)
     ).normalize();
 
@@ -529,9 +532,10 @@ export class Player {
     this.shurikenCooldown = 4.0;
     this.audioEngine.playShurikenOpen();
 
+    const isElevated = this.isPerched || this.position.y >= 2.0;
     const forward = new THREE.Vector3(
       Math.sin(this.rotationY),
-      this.isPerched ? -0.2 : 0,
+      isElevated ? -0.22 : 0,
       Math.cos(this.rotationY)
     ).normalize();
 
@@ -1557,11 +1561,12 @@ export class Player {
 
     const baseDmg = this.isSecondaryWeapon ? this.meleeDamage * 1.3 : this.meleeDamage;
     const buff = (this.warhornBuffTimer > 0 ? 1.5 : 1.0) * (this.isBerserkerActive ? 2.0 : 1.0);
+    const mudMult = this.isMudCamouflaged ? 1.40 : 1.0;
 
     return {
       type: 'light',
       step: this.attackComboStep,
-      damage: baseDmg * (1 + this.attackComboStep * 0.18) * buff,
+      damage: baseDmg * (1 + this.attackComboStep * 0.18) * buff * mudMult,
       radius: (this.isSecondaryWeapon ? 4.8 : 3.8) * (this.meleeReachMultiplier || 1.0),
       angle: (Math.PI * 0.65) * (this.meleeArcMultiplier || 1.0)
     };
@@ -1661,10 +1666,12 @@ export class Player {
     this.attackTimer *= (this.attackCooldownFactor || 1.0);
     radius *= (this.meleeReachMultiplier || 1.0);
 
+    const mudMult = this.isMudCamouflaged ? 1.40 : 1.0;
+
     return {
       type: chargeType,
       name: chargeName,
-      damage: baseDmg * dmgMult * buff,
+      damage: baseDmg * dmgMult * buff * mudMult,
       radius: radius,
       knockback: knockback,
       isLauncher: isLauncher,
@@ -1689,9 +1696,13 @@ export class Player {
     }
 
     const origin = this.position.clone().add(new THREE.Vector3(0, 2.5, 0));
+    const isElevated = this.isPerched || this.position.y >= 2.0;
+    const isExtremeHeight = this.position.y >= 7.0;
+    const pitchDown = isElevated ? (isExtremeHeight ? -0.55 : (this.position.y >= 4.0 ? -0.42 : -0.28)) : 0;
+
     const forward = new THREE.Vector3(
       Math.sin(this.rotationY),
-      (this.isPerched || this.position.y >= 5.0) ? -0.4 : 0, // Aim downwards when perched!
+      pitchDown,
       Math.cos(this.rotationY)
     ).normalize();
 
@@ -1705,8 +1716,8 @@ export class Player {
       dmg *= 1.20;
       spd *= 1.20;
     }
-    if (this.isPerched || this.position.y >= 5.0) {
-      dmg *= 1.35; // +35% elevated sniping damage
+    if (isElevated) {
+      dmg *= isExtremeHeight ? 1.50 : 1.35; // +35% elevated sniping damage, +50% extreme altitude sniping
     }
     if (this.orbitalScanTimer > 0) {
       dmg *= 1.25; // +25% critical scan boost
@@ -2369,9 +2380,10 @@ export class Player {
     }
 
     const origin = this.position.clone().add(new THREE.Vector3(0, 2.2, 0));
+    const isElevated = this.isPerched || this.position.y >= 2.0;
     const forward = new THREE.Vector3(
       Math.sin(this.rotationY),
-      this.isPerched ? -0.4 : 0,
+      isElevated ? -0.38 : 0,
       Math.cos(this.rotationY)
     ).normalize();
 
@@ -2461,9 +2473,10 @@ export class Player {
       this.audioEngine.playPlasmaPistolBurst();
     }
 
+    const isElevated = this.isPerched || this.position.y >= 2.0;
     const forward = new THREE.Vector3(
       Math.sin(this.rotationY),
-      this.isPerched ? -0.35 : 0,
+      isElevated ? -0.32 : 0,
       Math.cos(this.rotationY)
     ).normalize();
 
@@ -4128,7 +4141,18 @@ export class Player {
         this.critChanceBonus = 0;
       }
     }
+    if (this.mudCamouflageTimer > 0) {
+      this.mudCamouflageTimer -= delta;
+      if (this.mudCamouflageTimer <= 0) {
+        this.isMudCamouflaged = false;
+      }
+    }
     this.isOnBough = (this.position && this.position.y >= 5.0);
+  }
+
+  applyMudCamouflage(duration = 25.0) {
+    this.mudCamouflageTimer = duration;
+    this.isMudCamouflaged = true;
   }
 
   unlockClassic1987Plasma() {

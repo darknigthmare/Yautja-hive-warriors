@@ -6719,6 +6719,530 @@ export class AudioEngine {
     roarOsc.start(now + 0.08);
     roarOsc.stop(now + 0.45);
   }
+
+  // 130. Thermal Mud Camouflage Viscous Squelch (Predator 1987 Dutch Lore)
+  playMudCoatSquelch() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(140, now);
+    osc.frequency.exponentialRampToValueAtTime(45, now + 0.25);
+    gain.gain.setValueAtTime(0.7, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+
+    const bufSize = Math.floor(this.ctx.sampleRate * 0.25);
+    const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufSize * 0.3));
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buf;
+    const nFilter = this.ctx.createBiquadFilter();
+    nFilter.type = 'lowpass';
+    nFilter.frequency.setValueAtTime(600, now);
+    const nGain = this.ctx.createGain();
+    nGain.gain.setValueAtTime(0.6, now);
+    nGain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+
+    osc.connect(gain);
+    gain.connect(this.getOut());
+    noise.connect(nFilter);
+    nFilter.connect(nGain);
+    nGain.connect(this.getOut());
+
+    osc.start(now);
+    osc.stop(now + 0.25);
+    noise.start(now);
+    noise.stop(now + 0.25);
+  }
+
+  // 131. Ruptured Cedar Water Tower Crash & Torrential Deluge (Predator 2 1990)
+  playWaterTowerDeluge() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Timber cracking snap
+    const snap = this.ctx.createOscillator();
+    const sGain = this.ctx.createGain();
+    snap.type = 'sawtooth';
+    snap.frequency.setValueAtTime(320, now);
+    snap.frequency.exponentialRampToValueAtTime(80, now + 0.08);
+    sGain.gain.setValueAtTime(0.8, now);
+    sGain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+    snap.connect(sGain);
+    sGain.connect(this.getOut());
+    snap.start(now);
+    snap.stop(now + 0.08);
+
+    // Cascading water rush noise
+    const bufSize = Math.floor(this.ctx.sampleRate * 0.85);
+    const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufSize * 0.45));
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buf;
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(1100, now);
+    filter.frequency.exponentialRampToValueAtTime(350, now + 0.85);
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.75, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.85);
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.getOut());
+    noise.start(now);
+    noise.stop(now + 0.85);
+  }
+
+  // 132. Pyramid Obsidian Scythe Wall Trap Sweep (AVP 2004)
+  playPyramidScytheTrap() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(1200, now);
+    osc.frequency.exponentialRampToValueAtTime(180, now + 0.22);
+    gain.gain.setValueAtTime(0.7, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.22);
+
+    osc.connect(gain);
+    gain.connect(this.getOut());
+    osc.start(now);
+    osc.stop(now + 0.22);
+  }
+
+  // 133. Renaissance Station Zero-G Acid Decompression & Gravity Surge (Alien: Romulus 2024)
+  playZeroGGravityToggle() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const sub = this.ctx.createOscillator();
+    const sGain = this.ctx.createGain();
+    sub.type = 'sine';
+    sub.frequency.setValueAtTime(65, now);
+    sub.frequency.exponentialRampToValueAtTime(140, now + 0.45);
+    sGain.gain.setValueAtTime(0.75, now);
+    sGain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+
+    sub.connect(sGain);
+    sGain.connect(this.getOut());
+    sub.start(now);
+    sub.stop(now + 0.45);
+  }
+
+  // 134. Royal Jelly Resin Node Harvesting Shimmer (Aliens: Earth War Canon)
+  playRoyalJellyHarvest() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Organic suction tear
+    const osc1 = this.ctx.createOscillator();
+    const g1 = this.ctx.createGain();
+    osc1.type = 'triangle';
+    osc1.frequency.setValueAtTime(190, now);
+    osc1.frequency.exponentialRampToValueAtTime(75, now + 0.15);
+    g1.gain.setValueAtTime(0.65, now);
+    g1.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+    osc1.connect(g1);
+    g1.connect(this.getOut());
+    osc1.start(now);
+    osc1.stop(now + 0.15);
+
+    // Bioluminescent crystal chime
+    const osc2 = this.ctx.createOscillator();
+    const g2 = this.ctx.createGain();
+    osc2.type = 'sine';
+    osc2.frequency.setValueAtTime(2100, now + 0.08);
+    osc2.frequency.exponentialRampToValueAtTime(3200, now + 0.35);
+    g2.gain.setValueAtTime(0.0, now);
+    g2.gain.setValueAtTime(0.55, now + 0.08);
+    g2.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+    osc2.connect(g2);
+    g2.connect(this.getOut());
+    osc2.start(now + 0.08);
+    osc2.stop(now + 0.35);
+  }
+
+  // 135. Downed Huey VHF Military Radio Transceiver Static (Predator 1987)
+  playHueyRadioStatic() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const bufSize = Math.floor(this.ctx.sampleRate * 0.45);
+    const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * (i % 4 === 0 ? 0.9 : 0.2) * Math.exp(-i / (bufSize * 0.5));
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buf;
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(1750, now);
+    filter.Q.setValueAtTime(3.5, now);
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.65, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.getOut());
+    noise.start(now);
+    noise.stop(now + 0.45);
+  }
+
+  // 136. Downed Gunnison Power Utility Transformer High-Voltage Arc (AVP: Requiem 2007)
+  playGunnisonPowerArc() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // 60Hz base hum + harsh 240Hz/480Hz harmonics
+    const osc = this.ctx.createOscillator();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(60, now);
+    osc.frequency.setValueAtTime(120, now + 0.08);
+    osc.frequency.setValueAtTime(60, now + 0.2);
+
+    const oscGain = this.ctx.createGain();
+    oscGain.gain.setValueAtTime(0.7, now);
+    oscGain.gain.exponentialRampToValueAtTime(0.01, now + 0.65);
+
+    // High frequency electric crackle burst
+    const bufSize = Math.floor(this.ctx.sampleRate * 0.65);
+    const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) {
+      const spike = Math.random() > 0.94 ? 1.0 : 0.05;
+      data[i] = (Math.random() * 2 - 1) * spike;
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buf;
+
+    const noiseFilter = this.ctx.createBiquadFilter();
+    noiseFilter.type = 'highpass';
+    noiseFilter.frequency.setValueAtTime(2400, now);
+
+    const noiseGain = this.ctx.createGain();
+    noiseGain.gain.setValueAtTime(0.85, now);
+    noiseGain.gain.exponentialRampToValueAtTime(0.01, now + 0.65);
+
+    osc.connect(oscGain);
+    oscGain.connect(this.getOut());
+    noise.connect(noiseFilter);
+    noiseFilter.connect(noiseGain);
+    noiseGain.connect(this.getOut());
+
+    osc.start(now);
+    osc.stop(now + 0.65);
+    noise.start(now);
+    noise.stop(now + 0.65);
+  }
+
+  // 137. Charon Base Neural Inhibitor Ultrasonic Resonance (Aliens: Rogue 1993)
+  playNeuralInhibitorHum() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Dual detuned sine wave harmonic sweep
+    const osc1 = this.ctx.createOscillator();
+    const osc2 = this.ctx.createOscillator();
+    osc1.type = 'sine';
+    osc2.type = 'sine';
+    osc1.frequency.setValueAtTime(280, now);
+    osc1.frequency.exponentialRampToValueAtTime(560, now + 0.4);
+    osc1.frequency.exponentialRampToValueAtTime(440, now + 1.2);
+
+    osc2.frequency.setValueAtTime(284, now);
+    osc2.frequency.exponentialRampToValueAtTime(568, now + 0.4);
+    osc2.frequency.exponentialRampToValueAtTime(444, now + 1.2);
+
+    // High frequency carrier tone (binaural dampener effect)
+    const ultra = this.ctx.createOscillator();
+    ultra.type = 'triangle';
+    ultra.frequency.setValueAtTime(3200, now);
+
+    const mainGain = this.ctx.createGain();
+    mainGain.gain.setValueAtTime(0.01, now);
+    mainGain.gain.linearRampToValueAtTime(0.55, now + 0.15);
+    mainGain.gain.exponentialRampToValueAtTime(0.01, now + 1.25);
+
+    const ultraGain = this.ctx.createGain();
+    ultraGain.gain.setValueAtTime(0.12, now);
+    ultraGain.gain.exponentialRampToValueAtTime(0.01, now + 1.1);
+
+    osc1.connect(mainGain);
+    osc2.connect(mainGain);
+    ultra.connect(ultraGain);
+    mainGain.connect(this.getOut());
+    ultraGain.connect(this.getOut());
+
+    osc1.start(now);
+    osc2.start(now);
+    ultra.start(now);
+    osc1.stop(now + 1.25);
+    osc2.stop(now + 1.25);
+    ultra.stop(now + 1.25);
+  }
+
+  // 138. Super Predator Suspended Boulder Deadfall Crash (Predators 2010)
+  playBoulderDeadfallCrash() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Vine rope snapping twang
+    const snapOsc = this.ctx.createOscillator();
+    snapOsc.type = 'triangle';
+    snapOsc.frequency.setValueAtTime(740, now);
+    snapOsc.frequency.exponentialRampToValueAtTime(160, now + 0.08);
+
+    const snapGain = this.ctx.createGain();
+    snapGain.gain.setValueAtTime(0.8, now);
+    snapGain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+
+    snapOsc.connect(snapGain);
+    snapGain.connect(this.getOut());
+    snapOsc.start(now);
+    snapOsc.stop(now + 0.08);
+
+    // Deep seismic sub-bass earth impact at +0.25s
+    const impactTime = now + 0.22;
+    const subOsc = this.ctx.createOscillator();
+    subOsc.type = 'sine';
+    subOsc.frequency.setValueAtTime(110, impactTime);
+    subOsc.frequency.exponentialRampToValueAtTime(34, impactTime + 0.55);
+
+    const subGain = this.ctx.createGain();
+    subGain.gain.setValueAtTime(0.95, impactTime);
+    subGain.gain.exponentialRampToValueAtTime(0.01, impactTime + 0.7);
+
+    subOsc.connect(subGain);
+    subGain.connect(this.getOut());
+    subOsc.start(impactTime);
+    subOsc.stop(impactTime + 0.7);
+
+    // Stone shatter debris crunch
+    const bufSize = Math.floor(this.ctx.sampleRate * 0.5);
+    const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufSize * 0.35));
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buf;
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(650, impactTime);
+    filter.Q.setValueAtTime(2.0, impactTime);
+
+    const noiseGain = this.ctx.createGain();
+    noiseGain.gain.setValueAtTime(0.7, impactTime);
+    noiseGain.gain.exponentialRampToValueAtTime(0.01, impactTime + 0.5);
+
+    noise.connect(filter);
+    filter.connect(noiseGain);
+    noiseGain.connect(this.getOut());
+    noise.start(impactTime);
+    noise.stop(impactTime + 0.5);
+  }
+
+  // 139. Dutch's Heavy Counterweight Log Trap Swing & Impact (Predator 1987)
+  playDutchLogTrapSwing() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Wood pin release click
+    const clickOsc = this.ctx.createOscillator();
+    clickOsc.type = 'square';
+    clickOsc.frequency.setValueAtTime(950, now);
+    clickOsc.frequency.exponentialRampToValueAtTime(200, now + 0.05);
+
+    const clickGain = this.ctx.createGain();
+    clickGain.gain.setValueAtTime(0.6, now);
+    clickGain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+
+    clickOsc.connect(clickGain);
+    clickGain.connect(this.getOut());
+    clickOsc.start(now);
+    clickOsc.stop(now + 0.05);
+
+    // Massive timber whoosh
+    const whooshBufSize = Math.floor(this.ctx.sampleRate * 0.4);
+    const whooshBuf = this.ctx.createBuffer(1, whooshBufSize, this.ctx.sampleRate);
+    const whooshData = whooshBuf.getChannelData(0);
+    for (let i = 0; i < whooshBufSize; i++) {
+      whooshData[i] = (Math.random() * 2 - 1) * Math.sin((i / whooshBufSize) * Math.PI);
+    }
+    const whooshNoise = this.ctx.createBufferSource();
+    whooshNoise.buffer = whooshBuf;
+
+    const whooshFilter = this.ctx.createBiquadFilter();
+    whooshFilter.type = 'bandpass';
+    whooshFilter.frequency.setValueAtTime(180, now + 0.05);
+    whooshFilter.frequency.linearRampToValueAtTime(360, now + 0.25);
+    whooshFilter.frequency.linearRampToValueAtTime(140, now + 0.45);
+
+    const whooshGain = this.ctx.createGain();
+    whooshGain.gain.setValueAtTime(0.85, now + 0.05);
+    whooshGain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+
+    whooshNoise.connect(whooshFilter);
+    whooshFilter.connect(whooshGain);
+    whooshGain.connect(this.getOut());
+    whooshNoise.start(now + 0.05);
+    whooshNoise.stop(now + 0.45);
+
+    // Bone-splintering trunk impact at +0.28s
+    const impactTime = now + 0.28;
+    const thudOsc = this.ctx.createOscillator();
+    thudOsc.type = 'sawtooth';
+    thudOsc.frequency.setValueAtTime(90, impactTime);
+    thudOsc.frequency.exponentialRampToValueAtTime(38, impactTime + 0.35);
+
+    const thudGain = this.ctx.createGain();
+    thudGain.gain.setValueAtTime(0.9, impactTime);
+    thudGain.gain.exponentialRampToValueAtTime(0.01, impactTime + 0.35);
+
+    thudOsc.connect(thudGain);
+    thudGain.connect(this.getOut());
+    thudOsc.start(impactTime);
+    thudOsc.stop(impactTime + 0.35);
+  }
+
+  // 140. Gunnison Cemetery Crypt Reliquary Opening (AVP: Requiem 2007)
+  playCryptReliquaryOpen() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Granite friction grind
+    const grindBufSize = Math.floor(this.ctx.sampleRate * 0.6);
+    const grindBuf = this.ctx.createBuffer(1, grindBufSize, this.ctx.sampleRate);
+    const grindData = grindBuf.getChannelData(0);
+    for (let i = 0; i < grindBufSize; i++) {
+      grindData[i] = (Math.random() * 2 - 1) * Math.exp(-i / (grindBufSize * 0.7));
+    }
+    const grindNoise = this.ctx.createBufferSource();
+    grindNoise.buffer = grindBuf;
+
+    const grindFilter = this.ctx.createBiquadFilter();
+    grindFilter.type = 'bandpass';
+    grindFilter.frequency.setValueAtTime(320, now);
+    grindFilter.frequency.linearRampToValueAtTime(540, now + 0.4);
+    grindFilter.Q.setValueAtTime(4.0, now);
+
+    const grindGain = this.ctx.createGain();
+    grindGain.gain.setValueAtTime(0.65, now);
+    grindGain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+
+    // Rusty iron latch chime
+    const latchOsc = this.ctx.createOscillator();
+    latchOsc.type = 'sine';
+    latchOsc.frequency.setValueAtTime(1150, now);
+    latchOsc.frequency.exponentialRampToValueAtTime(420, now + 0.18);
+
+    const latchGain = this.ctx.createGain();
+    latchGain.gain.setValueAtTime(0.5, now);
+    latchGain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+
+    grindNoise.connect(grindFilter);
+    grindFilter.connect(grindGain);
+    grindGain.connect(this.getOut());
+    latchOsc.connect(latchGain);
+    latchGain.connect(this.getOut());
+
+    grindNoise.start(now);
+    grindNoise.stop(now + 0.6);
+    latchOsc.start(now);
+    latchOsc.stop(now + 0.2);
+  }
+
+  // 141. Los Angeles Rooftop HVAC Freon Coolant Rupture (Predator 2 1990)
+  playHVACFreonBurst() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Piercing metal puncture ping
+    const pingOsc = this.ctx.createOscillator();
+    pingOsc.type = 'triangle';
+    pingOsc.frequency.setValueAtTime(1400, now);
+    pingOsc.frequency.exponentialRampToValueAtTime(550, now + 0.08);
+
+    const pingGain = this.ctx.createGain();
+    pingGain.gain.setValueAtTime(0.7, now);
+    pingGain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+
+    pingOsc.connect(pingGain);
+    pingGain.connect(this.getOut());
+    pingOsc.start(now);
+    pingOsc.stop(now + 0.08);
+
+    // High velocity escaping freon gas jet
+    const gasBufSize = Math.floor(this.ctx.sampleRate * 0.8);
+    const gasBuf = this.ctx.createBuffer(1, gasBufSize, this.ctx.sampleRate);
+    const gasData = gasBuf.getChannelData(0);
+    for (let i = 0; i < gasBufSize; i++) {
+      gasData[i] = (Math.random() * 2 - 1) * Math.exp(-i / (gasBufSize * 0.8));
+    }
+    const gasNoise = this.ctx.createBufferSource();
+    gasNoise.buffer = gasBuf;
+
+    const gasFilter = this.ctx.createBiquadFilter();
+    gasFilter.type = 'highpass';
+    gasFilter.frequency.setValueAtTime(1900, now);
+
+    const gasGain = this.ctx.createGain();
+    gasGain.gain.setValueAtTime(0.85, now + 0.02);
+    gasGain.gain.exponentialRampToValueAtTime(0.01, now + 0.8);
+
+    gasNoise.connect(gasFilter);
+    gasFilter.connect(gasGain);
+    gasGain.connect(this.getOut());
+    gasNoise.start(now + 0.02);
+    gasNoise.stop(now + 0.8);
+  }
+
+  // 142. Super Predator High Canopy Hunting Perch Wind Buffeting (Predators 2010)
+  playHuntingPerchWindGust() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const windBufSize = Math.floor(this.ctx.sampleRate * 0.95);
+    const windBuf = this.ctx.createBuffer(1, windBufSize, this.ctx.sampleRate);
+    const windData = windBuf.getChannelData(0);
+    for (let i = 0; i < windBufSize; i++) {
+      windData[i] = (Math.random() * 2 - 1) * Math.sin((i / windBufSize) * Math.PI);
+    }
+    const windNoise = this.ctx.createBufferSource();
+    windNoise.buffer = windBuf;
+
+    const windFilter = this.ctx.createBiquadFilter();
+    windFilter.type = 'bandpass';
+    windFilter.frequency.setValueAtTime(320, now);
+    windFilter.frequency.linearRampToValueAtTime(480, now + 0.45);
+    windFilter.frequency.linearRampToValueAtTime(260, now + 0.95);
+    windFilter.Q.setValueAtTime(2.5, now);
+
+    const windGain = this.ctx.createGain();
+    windGain.gain.setValueAtTime(0.45, now);
+    windGain.gain.exponentialRampToValueAtTime(0.01, now + 0.95);
+
+    windNoise.connect(windFilter);
+    windFilter.connect(windGain);
+    windGain.connect(this.getOut());
+    windNoise.start(now);
+    windNoise.stop(now + 0.95);
+  }
 }
 
 
