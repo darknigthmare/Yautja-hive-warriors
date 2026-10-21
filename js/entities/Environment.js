@@ -161,6 +161,13 @@ export class EnvironmentManager {
     this.smartDiscGirder = null;
     this.neonTransformer = null;
     this.activeMeatLockerCryo = null;
+    this.subwayCar666 = null;
+    this.owlfCommandVan = null;
+    this.cartelPenthouse = null;
+    this.poleVaultPad = null;
+    this.fireEscapeStairs = null;
+    this.boilingTarKettle = null;
+    this.activeTarPuddles = [];
   }
 
   clearEnvironment() {
@@ -597,6 +604,36 @@ export class EnvironmentManager {
     if (this.activeMeatLockerCryo) {
       if (this.activeMeatLockerCryo.mesh) this.scene.remove(this.activeMeatLockerCryo.mesh);
       this.activeMeatLockerCryo = null;
+    }
+    if (this.subwayCar666 && this.subwayCar666.group) {
+      this.scene.remove(this.subwayCar666.group);
+      this.subwayCar666 = null;
+    }
+    if (this.owlfCommandVan && this.owlfCommandVan.group) {
+      this.scene.remove(this.owlfCommandVan.group);
+      this.owlfCommandVan = null;
+    }
+    if (this.cartelPenthouse && this.cartelPenthouse.group) {
+      this.scene.remove(this.cartelPenthouse.group);
+      this.cartelPenthouse = null;
+    }
+    if (this.poleVaultPad && this.poleVaultPad.group) {
+      this.scene.remove(this.poleVaultPad.group);
+      this.poleVaultPad = null;
+    }
+    if (this.fireEscapeStairs && this.fireEscapeStairs.group) {
+      this.scene.remove(this.fireEscapeStairs.group);
+      this.fireEscapeStairs = null;
+    }
+    if (this.boilingTarKettle && this.boilingTarKettle.group) {
+      this.scene.remove(this.boilingTarKettle.group);
+      this.boilingTarKettle = null;
+    }
+    if (this.activeTarPuddles && this.activeTarPuddles.length > 0) {
+      this.activeTarPuddles.forEach(p => {
+        if (p.mesh) this.scene.remove(p.mesh);
+      });
+      this.activeTarPuddles = [];
     }
 
     this.reactorMeltdownActive = false;
@@ -2062,6 +2099,38 @@ export class EnvironmentManager {
       const lz = z - (-32.0);
       if (lx * lx + lz * lz <= 5.0 * 5.0) {
         return 1.5;
+      }
+    }
+
+    // 28. Subway Metro Transit Car #666 & Elevated Track Spur (+3.6m) (Predator 2 1990)
+    if (this.subwayCar666 && this.subwayCar666.pos) {
+      if (x >= -36.0 && x <= -12.0 && z >= -38.5 && z <= -33.5) {
+        return 3.6;
+      }
+    }
+
+    // 29. OWLF Surveillance Command Van Roof (+3.2m) (Predator 2 1990)
+    if (this.owlfCommandVan && this.owlfCommandVan.pos) {
+      const vx = x - (-28.0);
+      const vz = z - 8.0;
+      if (Math.abs(vx) <= 3.8 && Math.abs(vz) <= 2.2) {
+        return 3.2;
+      }
+    }
+
+    // 30. El Scorpio's Colombian Cartel Penthouse (+3.8m) (Predator 2 1990)
+    if (this.cartelPenthouse && this.cartelPenthouse.pos) {
+      const px = x - 32.0;
+      const pz = z - 18.0;
+      if (Math.abs(px) <= 4.5 && Math.abs(pz) <= 4.5) {
+        return 3.8;
+      }
+    }
+
+    // 31. Tenement Fire Escape Balconies (+2.5m and +5.0m) (Predator 2 1990)
+    if (this.fireEscapeStairs && this.fireEscapeStairs.pos) {
+      if (x >= 18.0 && x <= 24.0 && z >= 8.5 && z <= 11.5) {
+        return x < 21.0 ? 2.5 : 5.0;
       }
     }
 
@@ -9987,6 +10056,238 @@ export class EnvironmentManager {
       isRetrieved: false
     };
 
+    // 14. Subway Metro Transit Car #666 (The Strobe-Lit Train Massacre) [-24, 0, -36] (+3.6m)
+    const subwayGroup = new THREE.Group();
+    subwayGroup.position.set(-24, 0, -36);
+
+    // Elevated concrete spur pier pillars
+    for (let p = 0; p < 3; p++) {
+      const pier = new THREE.Mesh(new THREE.BoxGeometry(2.0, 3.6, 2.0), concreteMat);
+      pier.position.set(-8.0 + p * 8.0, 1.8, 0);
+      subwayGroup.add(pier);
+    }
+
+    // Steel spur track rails
+    const rail1 = new THREE.Mesh(new THREE.BoxGeometry(24.0, 0.2, 0.2), metalMat);
+    rail1.position.set(0, 3.6, -1.0);
+    subwayGroup.add(rail1);
+    const rail2 = new THREE.Mesh(new THREE.BoxGeometry(24.0, 0.2, 0.2), metalMat);
+    rail2.position.set(0, 3.6, 1.0);
+    subwayGroup.add(rail2);
+
+    // Stainless steel subway transit carriage (Length 18m, Width 3.6m, Height 3.4m)
+    const carMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.9, roughness: 0.25 });
+    const carBody = new THREE.Mesh(new THREE.BoxGeometry(18.0, 3.4, 3.6), carMat);
+    carBody.position.y = 5.3;
+    carBody.castShadow = true;
+    subwayGroup.add(carBody);
+
+    // Red MTA warning stripe
+    const stripe = new THREE.Mesh(new THREE.BoxGeometry(18.05, 0.4, 3.65), new THREE.MeshBasicMaterial({ color: 0xdc2626 }));
+    stripe.position.y = 4.8;
+    subwayGroup.add(stripe);
+
+    // Flickering interior strobe light
+    const strobeLight = new THREE.PointLight(0xffffff, 2.5, 12.0);
+    strobeLight.position.set(3.0, 5.8, 0);
+    subwayGroup.add(strobeLight);
+
+    // Jerry Lambert's Machete and Desert Eagle on the carriage floor
+    const macheteBlade = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.04, 0.12), metalMat);
+    macheteBlade.position.set(3.0, 3.8, 0.4);
+    subwayGroup.add(macheteBlade);
+
+    const desertEagle = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.2, 0.08), metalMat);
+    desertEagle.position.set(3.4, 3.8, 0.2);
+    subwayGroup.add(desertEagle);
+
+    group.add(subwayGroup);
+    this.subwayCar666 = {
+      group: subwayGroup,
+      pos: new THREE.Vector3(-21, 3.8, -36),
+      light: strobeLight,
+      strobeTimer: 0,
+      isClaimed: false
+    };
+
+    // 15. Peter Keyes's OWLF Surveillance Command Trailer [-28, 0, 8] (+3.2m)
+    const owlfGroup = new THREE.Group();
+    owlfGroup.position.set(-28, 0, 8);
+
+    const vanMat = new THREE.MeshStandardMaterial({ color: 0x27272a, roughness: 0.8, metalness: 0.2 });
+    const vanBody = new THREE.Mesh(new THREE.BoxGeometry(7.0, 3.2, 3.4), vanMat);
+    vanBody.position.y = 1.6;
+    vanBody.receiveShadow = true;
+    vanBody.castShadow = true;
+    owlfGroup.add(vanBody);
+
+    // Spinning parabolic microwave radar dish on van roof
+    const dishMat = new THREE.MeshStandardMaterial({ color: 0x52525b, metalness: 0.8 });
+    const radarDish = new THREE.Mesh(new THREE.SphereGeometry(1.2, 8, 8, 0, Math.PI), dishMat);
+    radarDish.position.set(-1.5, 3.8, 0);
+    radarDish.rotation.z = Math.PI / 4;
+    owlfGroup.add(radarDish);
+
+    // Workstation table with UV telemetry monitors
+    const monDesk = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.8, 1.0), metalMat);
+    monDesk.position.set(3.0, 0.4, 0);
+    owlfGroup.add(monDesk);
+
+    const crtScreen = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.6, 0.5), new THREE.MeshBasicMaterial({ color: 0x22c55e }));
+    crtScreen.position.set(3.0, 1.1, 0);
+    owlfGroup.add(crtScreen);
+
+    const uvLight = new THREE.PointLight(0x22c55e, 2.0, 8.0);
+    uvLight.position.set(3.0, 1.4, 0);
+    owlfGroup.add(uvLight);
+
+    group.add(owlfGroup);
+    this.owlfCommandVan = {
+      group: owlfGroup,
+      pos: new THREE.Vector3(-25, 1.2, 8),
+      radarDish: radarDish,
+      isScanned: false
+    };
+
+    // 16. El Scorpio's Colombian Cartel Penthouse Drug Lab [32, 0, 18] (+3.8m)
+    const cartelGroup = new THREE.Group();
+    cartelGroup.position.set(32, 0, 18);
+
+    // Elevated marble floor platform
+    const marbleMat = new THREE.MeshStandardMaterial({ color: 0x18181b, roughness: 0.3, metalness: 0.4 });
+    const pFloor = new THREE.Mesh(new THREE.BoxGeometry(9.0, 0.4, 9.0), marbleMat);
+    pFloor.position.y = 3.8;
+    pFloor.receiveShadow = true;
+    cartelGroup.add(pFloor);
+
+    // Overturned leather sofa
+    const sofaMat = new THREE.MeshStandardMaterial({ color: 0x451a03, roughness: 0.8 });
+    const sofa = new THREE.Mesh(new THREE.BoxGeometry(2.6, 0.8, 1.2), sofaMat);
+    sofa.position.set(-2.0, 4.4, 1.5);
+    sofa.rotation.z = 0.35;
+    cartelGroup.add(sofa);
+
+    // Desk with gold dual Uzis & ammunition cash crates
+    const goldDesk = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.8, 1.0), woodMat);
+    goldDesk.position.set(1.5, 4.2, 0);
+    cartelGroup.add(goldDesk);
+
+    const goldMat = new THREE.MeshStandardMaterial({ color: 0xfbbf24, metalness: 0.95, roughness: 0.1 });
+    const uzi1 = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.25, 0.08), goldMat);
+    uzi1.position.set(1.2, 4.7, 0.2);
+    cartelGroup.add(uzi1);
+    const uzi2 = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.25, 0.08), goldMat);
+    uzi2.position.set(1.8, 4.7, -0.2);
+    cartelGroup.add(uzi2);
+
+    const amberPentLight = new THREE.PointLight(0xf59e0b, 1.8, 8.0);
+    amberPentLight.position.set(0, 5.5, 0);
+    cartelGroup.add(amberPentLight);
+
+    group.add(cartelGroup);
+    this.cartelPenthouse = {
+      group: cartelGroup,
+      pos: new THREE.Vector3(32, 3.8, 18),
+      isLooted: false
+    };
+
+    // 17. City Hunter's Combi-Stick Pole-Vault Catapult Launch Pad [12, 4.5, -6]
+    const vaultPadGroup = new THREE.Group();
+    vaultPadGroup.position.set(12, 4.5, -6);
+
+    const padDeck = new THREE.Mesh(new THREE.BoxGeometry(3.6, 0.1, 4.2), new THREE.MeshBasicMaterial({ color: 0xfacc15 }));
+    padDeck.rotation.y = Math.atan2(16, -20);
+    vaultPadGroup.add(padDeck);
+
+    // Spring chevron stripes
+    const chevron = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.12, 3.6), new THREE.MeshBasicMaterial({ color: 0x09090b }));
+    chevron.rotation.y = padDeck.rotation.y;
+    vaultPadGroup.add(chevron);
+
+    group.add(vaultPadGroup);
+    this.poleVaultPad = {
+      group: vaultPadGroup,
+      pos: new THREE.Vector3(12, 4.5, -6),
+      targetPos: new THREE.Vector3(28, 12.0, -26)
+    };
+
+    // 18. Tenement Fire Escape Metal Stairwells [21, 0, 10]
+    const stairsGroup = new THREE.Group();
+    stairsGroup.position.set(21, 0, 10);
+
+    // Platform 1 (+2.5m)
+    const plat1 = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.15, 2.4), metalMat);
+    plat1.position.set(-1.5, 2.5, 0);
+    stairsGroup.add(plat1);
+
+    // Platform 2 (+5.0m)
+    const plat2 = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.15, 2.4), metalMat);
+    plat2.position.set(1.5, 5.0, 0);
+    stairsGroup.add(plat2);
+
+    // Steel stair ramps
+    const ramp1 = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.15, 3.5), metalMat);
+    ramp1.position.set(-1.5, 1.25, 1.8);
+    ramp1.rotation.x = Math.atan2(2.5, 3.5);
+    stairsGroup.add(ramp1);
+
+    group.add(stairsGroup);
+    this.fireEscapeStairs = {
+      group: stairsGroup,
+      pos: new THREE.Vector3(21, 0, 10)
+    };
+
+    // 19. Roofer's Boiling Tar Kettle & Propane Burner [-12, 0, 14]
+    const tarGroup = new THREE.Group();
+    tarGroup.position.set(-12, 0, 14);
+
+    // Heavy iron cauldron
+    const cauldron = new THREE.Mesh(new THREE.CylinderGeometry(0.9, 0.7, 1.4, 12), metalMat);
+    cauldron.position.y = 0.9;
+    tarGroup.add(cauldron);
+
+    // Bubbling black pitch surface
+    const tarSurface = new THREE.Mesh(new THREE.CircleGeometry(0.85, 12), new THREE.MeshBasicMaterial({ color: 0x0a0a0a }));
+    tarSurface.rotation.x = -Math.PI / 2;
+    tarSurface.position.y = 1.55;
+    tarGroup.add(tarSurface);
+
+    // Blue propane flame
+    const propaneFlame = new THREE.Mesh(new THREE.ConeGeometry(0.3, 0.5, 8), new THREE.MeshBasicMaterial({ color: 0x0284c7 }));
+    propaneFlame.position.y = 0.25;
+    tarGroup.add(propaneFlame);
+
+    const flameLight = new THREE.PointLight(0x0284c7, 2.2, 6.0);
+    flameLight.position.set(0, 0.5, 0);
+    tarGroup.add(flameLight);
+
+    group.add(tarGroup);
+    this.boilingTarKettle = {
+      group: tarGroup,
+      pos: new THREE.Vector3(-12, 1.0, 14),
+      isSpilled: false
+    };
+
+    // 20. Ramon Vega Penthouse Slashing & Hanging Execution Joists [30, 0, 30]
+    const execGroup = new THREE.Group();
+    execGroup.position.set(30, 0, 30);
+
+    const beam = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.4, 8.0), metalMat);
+    beam.position.y = 4.8;
+    execGroup.add(beam);
+
+    for (let h = 0; h < 2; h++) {
+      const chain = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 2.2, 4), metalMat);
+      chain.position.set(0, 3.6, -2.0 + h * 4.0);
+      execGroup.add(chain);
+
+      const victim = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.35, 1.6, 6), meatMat);
+      victim.position.set(0, 2.2, -2.0 + h * 4.0);
+      execGroup.add(victim);
+    }
+
+    group.add(execGroup);
+
     this.scene.add(group);
     this.envObjects.push(group);
 
@@ -10362,6 +10663,150 @@ export class EnvironmentManager {
 
       if (ui && ui.showAnnouncement) {
         ui.showAnnouncement(`⚡ TRANSFORMATEUR NÉON 109°F SURCHARGÉ (PREDATOR 2 1990) : DÉCHARGE ÉLECTRIQUE 10 000V (380 DMG SUR ${electrocuted} XÉNOS) !`, "warning");
+      }
+      return true;
+    }
+    return false;
+  }
+
+  checkSubwayTrainMassacreInteraction(player, ui, audio) {
+    if (!this.subwayCar666 || !player || !player.position || this.subwayCar666.isClaimed) return false;
+    if (player.position.distanceTo(this.subwayCar666.pos) <= 4.2) {
+      this.subwayCar666.isClaimed = true;
+      if (audio && audio.playSubwayStrobeMassacre) audio.playSubwayStrobeMassacre();
+
+      if (player.recordTrophy) {
+        player.recordTrophy("MACHETTE & DESERT EAGLE DE JERRY LAMBERT (MÉTRO #666)", 2000);
+      }
+      if (player.applyJerryLastStand) {
+        player.applyJerryLastStand(30.0);
+      }
+      player.m77GaussAmmo = Math.min(12, (player.m77GaussAmmo || 0) + 4);
+      if (window.gameInstance) {
+        window.gameInstance.score += 2000;
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement("🚇 RAME DE MÉTRO #666 (PREDATOR 2 1990) : 'VOUS VOULEZ DU GÂTEAU ?' (+2000 HONNEUR, CADENCE x1.5 & CONTRE-ATTAQUES 30S) !", "success");
+      }
+      return true;
+    }
+    return false;
+  }
+
+  checkOWLFVanConsoleInteraction(player, ui, audio) {
+    if (!this.owlfCommandVan || !player || !player.position || this.owlfCommandVan.isScanned) return false;
+    if (player.position.distanceTo(this.owlfCommandVan.pos) <= 4.2) {
+      this.owlfCommandVan.isScanned = true;
+      if (audio && audio.playOWLFSurveillanceScan) audio.playOWLFSurveillanceScan();
+
+      if (player.applyOWLFUltravioletScan) {
+        player.applyOWLFUltravioletScan(40.0);
+      }
+      if (window.gameInstance) {
+        window.gameInstance.score += 1500;
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement("📡 FOURGON DE SURVEILLANCE OWLF DE PETER KEYES (PREDATOR 2 1990) : TÉLÉMÉTRIE ULTRAVIOLET ACTIVE (SCAN MURAL 40S, +1500 SCORE) !", "success");
+      }
+      return true;
+    }
+    return false;
+  }
+
+  checkCartelPenthouseLoot(player, ui, audio) {
+    if (!this.cartelPenthouse || !player || !player.position || this.cartelPenthouse.isLooted) return false;
+    if (player.position.distanceTo(this.cartelPenthouse.pos) <= 4.2) {
+      this.cartelPenthouse.isLooted = true;
+      if (audio && audio.playCartelMac10Burst) audio.playCartelMac10Burst();
+
+      player.m41aGrenadeCharges = Math.min(6, (player.m41aGrenadeCharges || 0) + 6);
+      player.guidedFlechetteAmmo = Math.min(12, (player.guidedFlechetteAmmo || 0) + 6);
+      if (window.gameInstance) {
+        window.gameInstance.score += 2000;
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement("💰 PENTHOUSE DU CARTEL D'EL SCORPIO (PREDATOR 2 1990) : BUTIN & UZIS EN OR (+6 GRENADES, +6 FLÉCHETTES GUIDÉES, +2000 SCORE) !", "success");
+      }
+      return true;
+    }
+    return false;
+  }
+
+  checkPoleVaultLaunchPad(player, ui, audio, horde, bosses, particles) {
+    if (!this.poleVaultPad || !player || !player.position) return false;
+    if (player.position.distanceTo(this.poleVaultPad.pos) <= 3.8) {
+      if (audio && audio.playCombiVaultWhoosh) audio.playCombiVaultWhoosh();
+
+      // Launch player high into the air toward Eastern Columbia Spire platform!
+      player.position.copy(this.poleVaultPad.targetPos);
+      if (player.mesh) player.mesh.position.copy(player.position);
+      player.poleVaultCooldown = 5.0;
+
+      // Crater seismic slam upon landing
+      let slamHits = 0;
+      if (horde && horde.aliens) {
+        horde.aliens.forEach(alien => {
+          if (alien && alien.mesh && alien.hp > 0 && alien.mesh.position.distanceTo(this.poleVaultPad.targetPos) <= 8.0) {
+            alien.hp -= 650;
+            alien.isStunned = true;
+            alien.stunTimer = 4.0;
+            slamHits++;
+            if (particles && particles.emitAlienBloodSpurt) {
+              particles.emitAlienBloodSpurt(alien.mesh.position, 16);
+            }
+          }
+        });
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement(`🚀 SAUT À LA PERCHE COMBI-STICK (PREDATOR 2 1990) : CATAPULTAGE VERS L'EASTERN COLUMBIA (650 DMG SUR ${slamHits} CIBLES) !`, "warning");
+      }
+      return true;
+    }
+    return false;
+  }
+
+  checkBoilingTarSpillDamage(hitPos, dmg, audio, horde, bosses, particles, ui) {
+    if (!this.boilingTarKettle || this.boilingTarKettle.isSpilled || !hitPos) return false;
+    if (hitPos.distanceTo(this.boilingTarKettle.pos) <= 4.0) {
+      this.boilingTarKettle.isSpilled = true;
+      if (audio && audio.playBoilingTarSpill) audio.playBoilingTarSpill();
+
+      // Spawn large puddle of black boiling tar on floor
+      const tarGeo = new THREE.CircleGeometry(10.0, 16);
+      tarGeo.rotateX(-Math.PI / 2);
+      const tarMat = new THREE.MeshBasicMaterial({ color: 0x09090b, transparent: true, opacity: 0.88 });
+      const tarPuddle = new THREE.Mesh(tarGeo, tarMat);
+      tarPuddle.position.set(this.boilingTarKettle.pos.x, 0.08, this.boilingTarKettle.pos.z);
+      this.scene.add(tarPuddle);
+
+      this.activeTarPuddles.push({
+        mesh: tarPuddle,
+        pos: this.boilingTarKettle.pos.clone(),
+        timer: 14.0
+      });
+
+      let glued = 0;
+      if (horde && horde.aliens) {
+        horde.aliens.forEach(alien => {
+          if (alien && alien.mesh && alien.hp > 0 && alien.mesh.position.distanceTo(this.boilingTarKettle.pos) <= 10.0) {
+            alien.hp -= 320;
+            alien.speedMult = 0.15;
+            alien.isStunned = true;
+            alien.stunTimer = 5.0;
+            glued++;
+            if (particles && particles.emitSparks) {
+              particles.emitSparks(alien.mesh.position, 12);
+            }
+          }
+        });
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement(`🔥 CHAUDIÈRE DE GOUDRON BOUILLANT RENVERSÉE (PREDATOR 2 1990) : BITUME 300°C (${glued} XÉNOS ENGLUÉS & BRÛLÉS, -85% VITESSE) !`, "warning");
       }
       return true;
     }
@@ -11427,6 +11872,33 @@ export class EnvironmentManager {
     }
     if (this.smartDiscGirder && !this.smartDiscGirder.isRetrieved && this.smartDiscGirder.discMesh) {
       this.smartDiscGirder.discMesh.rotation.z += delta * 8.0;
+    }
+    if (this.subwayCar666 && this.subwayCar666.light) {
+      this.subwayCar666.strobeTimer += delta;
+      if (Math.random() > 0.65) {
+        this.subwayCar666.light.intensity = Math.random() > 0.5 ? 3.5 : 0.0;
+      }
+    }
+    if (this.owlfCommandVan && this.owlfCommandVan.radarDish) {
+      this.owlfCommandVan.radarDish.rotation.y += delta * 3.0;
+    }
+    if (this.activeTarPuddles && this.activeTarPuddles.length > 0) {
+      for (let t = this.activeTarPuddles.length - 1; t >= 0; t--) {
+        const p = this.activeTarPuddles[t];
+        p.timer -= delta;
+        if (horde && horde.aliens) {
+          horde.aliens.forEach(alien => {
+            if (alien && alien.mesh && alien.hp > 0 && alien.mesh.position.distanceTo(p.pos) <= 10.0) {
+              alien.hp -= delta * 110;
+              alien.speedMult = 0.2;
+            }
+          });
+        }
+        if (p.timer <= 0) {
+          if (p.mesh) this.scene.remove(p.mesh);
+          this.activeTarPuddles.splice(t, 1);
+        }
+      }
     }
   }
 }

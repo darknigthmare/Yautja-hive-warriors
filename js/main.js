@@ -626,6 +626,14 @@ class GameApp {
           // Handled Lieutenant Mike Harrigan's LAPD SWAT Cruiser Barricade (Predator 2 1990)!
         } else if (this.env && this.env.checkSmartDiscGirderInteraction && this.env.checkSmartDiscGirderInteraction(this.player, this.ui, this.audio)) {
           // Handled City Hunter's Dislodged Smart-Disc Girder Retrieval (Predator 2 1990)!
+        } else if (this.env && this.env.checkSubwayTrainMassacreInteraction && this.env.checkSubwayTrainMassacreInteraction(this.player, this.ui, this.audio)) {
+          // Handled Subway Metro Car #666 Strobe Light Massacre (Predator 2 1990)!
+        } else if (this.env && this.env.checkOWLFVanConsoleInteraction && this.env.checkOWLFVanConsoleInteraction(this.player, this.ui, this.audio)) {
+          // Handled Peter Keyes's OWLF Mobile Surveillance Trailer (Predator 2 1990)!
+        } else if (this.env && this.env.checkCartelPenthouseLoot && this.env.checkCartelPenthouseLoot(this.player, this.ui, this.audio)) {
+          // Handled El Scorpio's Colombian Cartel Penthouse Drug Lab (Predator 2 1990)!
+        } else if (this.env && this.env.checkPoleVaultLaunchPad && this.env.checkPoleVaultLaunchPad(this.player, this.ui, this.audio, this.horde, this.bosses, this.particles)) {
+          // Handled Combi-Stick Pole-Vault Catapult Launch to Eastern Columbia (Predator 2 1990)!
         } else if (this.env && this.env.checkScoutShipConsoleInteraction && this.env.checkScoutShipConsoleInteraction(this.player.position, this.ui, this.audio, this.horde, this.player)) {
           // Handled Crashed Scout Ship Telemetry Scan (AVP: Requiem 2007)!
         } else if (this.env && this.env.checkCharonLabConsoleInteraction && this.env.checkCharonLabConsoleInteraction(this.player.position, this.horde, this.ui, this.audio)) {
@@ -1252,6 +1260,9 @@ class GameApp {
       if (this.env.checkNeonTransformerOverload) {
         this.env.checkNeonTransformerOverload(attack.origin, attack.damage, this.audio, this.horde, this.bosses, this.particles, this.ui);
       }
+      if (this.env.checkBoilingTarSpillDamage) {
+        this.env.checkBoilingTarSpillDamage(attack.origin, attack.damage, this.audio, this.horde, this.bosses, this.particles, this.ui);
+      }
     }
 
     // Update Combo Chain Tag
@@ -1330,6 +1341,9 @@ class GameApp {
       }
       if (this.env.checkNeonTransformerOverload) {
         this.env.checkNeonTransformerOverload(attack.origin, attack.damage, this.audio, this.horde, this.bosses, this.particles, this.ui);
+      }
+      if (this.env.checkBoilingTarSpillDamage) {
+        this.env.checkBoilingTarSpillDamage(attack.origin, attack.damage, this.audio, this.horde, this.bosses, this.particles, this.ui);
       }
     }
 
@@ -2607,6 +2621,9 @@ class GameApp {
           if (this.env.checkNeonTransformerOverload) {
             this.env.checkNeonTransformerOverload(p.mesh.position, p.damage, this.audio, this.horde, this.bosses, this.particles, this.ui);
           }
+          if (this.env.checkBoilingTarSpillDamage) {
+            this.env.checkBoilingTarSpillDamage(p.mesh.position, p.damage, this.audio, this.horde, this.bosses, this.particles, this.ui);
+          }
         }
 
         const hits = this.horde.checkMeleeHits({ origin: p.mesh.position, radius: 2.8, damage: p.damage });
@@ -2786,6 +2803,9 @@ class GameApp {
           }
           if (this.env.checkNeonTransformerOverload) {
             this.env.checkNeonTransformerOverload(p.mesh.position, p.damage, this.audio, this.horde, this.bosses, this.particles, this.ui);
+          }
+          if (this.env.checkBoilingTarSpillDamage) {
+            this.env.checkBoilingTarSpillDamage(p.mesh.position, p.damage, this.audio, this.horde, this.bosses, this.particles, this.ui);
           }
         }
 
@@ -3259,6 +3279,34 @@ class GameApp {
       if (smartDiscPrompt) {
         if (isNearSmartDisc) smartDiscPrompt.classList.remove('hidden');
         else smartDiscPrompt.classList.add('hidden');
+      }
+
+      const isNearSubway = this.env.subwayCar666 && !this.env.subwayCar666.isClaimed && this.player && this.player.position.distanceTo(this.env.subwayCar666.pos) <= 4.2;
+      const subwayPrompt = document.getElementById('subway-massacre-prompt');
+      if (subwayPrompt) {
+        if (isNearSubway) subwayPrompt.classList.remove('hidden');
+        else subwayPrompt.classList.add('hidden');
+      }
+
+      const isNearOWLF = this.env.owlfCommandVan && !this.env.owlfCommandVan.isScanned && this.player && this.player.position.distanceTo(this.env.owlfCommandVan.pos) <= 4.2;
+      const owlfPrompt = document.getElementById('owlf-van-prompt');
+      if (owlfPrompt) {
+        if (isNearOWLF) owlfPrompt.classList.remove('hidden');
+        else owlfPrompt.classList.add('hidden');
+      }
+
+      const isNearCartel = this.env.cartelPenthouse && !this.env.cartelPenthouse.isLooted && this.player && this.player.position.distanceTo(this.env.cartelPenthouse.pos) <= 4.2;
+      const cartelPrompt = document.getElementById('cartel-penthouse-prompt');
+      if (cartelPrompt) {
+        if (isNearCartel) cartelPrompt.classList.remove('hidden');
+        else cartelPrompt.classList.add('hidden');
+      }
+
+      const isNearVaultPad = this.env.poleVaultPad && this.player && this.player.position.distanceTo(this.env.poleVaultPad.pos) <= 3.8;
+      const vaultPadPrompt = document.getElementById('pole-vault-pad-prompt');
+      if (vaultPadPrompt) {
+        if (isNearVaultPad) vaultPadPrompt.classList.remove('hidden');
+        else vaultPadPrompt.classList.add('hidden');
       }
     }
 

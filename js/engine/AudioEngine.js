@@ -8014,6 +8014,245 @@ export class AudioEngine {
     popOsc.start(now);
     popOsc.stop(now + 0.1);
   }
+
+  // 161. Subway Metro Car #666 Strobe Light Train Massacre & Pneumatic Brakes (Predator 2 1990)
+  playSubwayStrobeMassacre() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Compressed pneumatic air-brake hiss
+    const bufSize = Math.floor(this.ctx.sampleRate * 0.7);
+    const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * (0.8 + Math.random() * 0.2);
+    }
+    const hissNoise = this.ctx.createBufferSource();
+    hissNoise.buffer = buf;
+    const hissFilter = this.ctx.createBiquadFilter();
+    hissFilter.type = 'highpass';
+    hissFilter.frequency.setValueAtTime(2800, now);
+
+    const hissGain = this.ctx.createGain();
+    hissGain.gain.setValueAtTime(0.7, now);
+    hissGain.gain.exponentialRampToValueAtTime(0.01, now + 0.7);
+
+    hissNoise.connect(hissFilter);
+    hissFilter.connect(hissGain);
+    hissGain.connect(this.getOut());
+    hissNoise.start(now);
+    hissNoise.stop(now + 0.7);
+
+    // Rapid strobe relay clicks
+    for (let i = 0; i < 4; i++) {
+      const clickOsc = this.ctx.createOscillator();
+      clickOsc.type = 'square';
+      clickOsc.frequency.setValueAtTime(2200 - i * 150, now + 0.12 * i);
+      const clickGain = this.ctx.createGain();
+      clickGain.gain.setValueAtTime(0.4, now + 0.12 * i);
+      clickGain.gain.exponentialRampToValueAtTime(0.01, now + 0.12 * i + 0.04);
+      clickOsc.connect(clickGain);
+      clickGain.connect(this.getOut());
+      clickOsc.start(now + 0.12 * i);
+      clickOsc.stop(now + 0.12 * i + 0.04);
+    }
+
+    // Heavy Desert Eagle gunshot crack echo
+    const gunOsc = this.ctx.createOscillator();
+    gunOsc.type = 'triangle';
+    gunOsc.frequency.setValueAtTime(950, now + 0.1);
+    gunOsc.frequency.exponentialRampToValueAtTime(90, now + 0.35);
+    const gunGain = this.ctx.createGain();
+    gunGain.gain.setValueAtTime(0.85, now + 0.1);
+    gunGain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+    gunOsc.connect(gunGain);
+    gunGain.connect(this.getOut());
+    gunOsc.start(now + 0.1);
+    gunOsc.stop(now + 0.45);
+  }
+
+  // 162. OWLF Surveillance Van Ultraviolet Radar Sweep & CRT Whine (Predator 2 1990)
+  playOWLFSurveillanceScan() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // 15.7kHz CRT television flyback harmonic whine
+    const crtOsc = this.ctx.createOscillator();
+    crtOsc.type = 'sine';
+    crtOsc.frequency.setValueAtTime(12500, now);
+    const crtGain = this.ctx.createGain();
+    crtGain.gain.setValueAtTime(0.2, now);
+    crtGain.gain.exponentialRampToValueAtTime(0.01, now + 0.8);
+    crtOsc.connect(crtGain);
+    crtGain.connect(this.getOut());
+    crtOsc.start(now);
+    crtOsc.stop(now + 0.8);
+
+    // UV microwave radar sweep chirp
+    const sweepOsc = this.ctx.createOscillator();
+    sweepOsc.type = 'sawtooth';
+    sweepOsc.frequency.setValueAtTime(800, now);
+    sweepOsc.frequency.exponentialRampToValueAtTime(3600, now + 0.4);
+    sweepOsc.frequency.exponentialRampToValueAtTime(1400, now + 0.8);
+
+    const sweepFilter = this.ctx.createBiquadFilter();
+    sweepFilter.type = 'bandpass';
+    sweepFilter.frequency.setValueAtTime(2400, now);
+    sweepFilter.Q.setValueAtTime(4.0, now);
+
+    const sweepGain = this.ctx.createGain();
+    sweepGain.gain.setValueAtTime(0.01, now);
+    sweepGain.gain.linearRampToValueAtTime(0.65, now + 0.15);
+    sweepGain.gain.exponentialRampToValueAtTime(0.01, now + 0.85);
+
+    sweepOsc.connect(sweepFilter);
+    sweepFilter.connect(sweepGain);
+    sweepGain.connect(this.getOut());
+    sweepOsc.start(now);
+    sweepOsc.stop(now + 0.85);
+  }
+
+  // 163. El Scorpio Colombian Cartel Mac-10 1200 RPM Submachine Burst (Predator 2 1990)
+  playCartelMac10Burst() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Rapid 6-shot automatic burst
+    for (let b = 0; b < 6; b++) {
+      const shotTime = now + b * 0.055;
+      const shotOsc = this.ctx.createOscillator();
+      shotOsc.type = 'sawtooth';
+      shotOsc.frequency.setValueAtTime(1600, shotTime);
+      shotOsc.frequency.exponentialRampToValueAtTime(220, shotTime + 0.045);
+
+      const shotGain = this.ctx.createGain();
+      shotGain.gain.setValueAtTime(0.65, shotTime);
+      shotGain.gain.exponentialRampToValueAtTime(0.01, shotTime + 0.05);
+
+      shotOsc.connect(shotGain);
+      shotGain.connect(this.getOut());
+      shotOsc.start(shotTime);
+      shotOsc.stop(shotTime + 0.05);
+    }
+  }
+
+  // 164. Roofer's Boiling Black Tar Kettle Tip & Sticky Splatter (Predator 2 1990)
+  playBoilingTarSpill() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Heavy iron cauldron metallic clank
+    const clankOsc = this.ctx.createOscillator();
+    clankOsc.type = 'triangle';
+    clankOsc.frequency.setValueAtTime(480, now);
+    clankOsc.frequency.exponentialRampToValueAtTime(110, now + 0.15);
+
+    const clankGain = this.ctx.createGain();
+    clankGain.gain.setValueAtTime(0.8, now);
+    clankGain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+
+    clankOsc.connect(clankGain);
+    clankGain.connect(this.getOut());
+    clankOsc.start(now);
+    clankOsc.stop(now + 0.2);
+
+    // Thick boiling pitch viscous bubbling splash
+    const bufSize = Math.floor(this.ctx.sampleRate * 0.8);
+    const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * (i % 5 === 0 ? 0.9 : 0.08);
+    }
+    const tarNoise = this.ctx.createBufferSource();
+    tarNoise.buffer = buf;
+    const tarFilter = this.ctx.createBiquadFilter();
+    tarFilter.type = 'lowpass';
+    tarFilter.frequency.setValueAtTime(650, now);
+
+    const tarGain = this.ctx.createGain();
+    tarGain.gain.setValueAtTime(0.75, now + 0.05);
+    tarGain.gain.exponentialRampToValueAtTime(0.01, now + 0.85);
+
+    tarNoise.connect(tarFilter);
+    tarFilter.connect(tarGain);
+    tarGain.connect(this.getOut());
+    tarNoise.start(now + 0.05);
+    tarNoise.stop(now + 0.85);
+  }
+
+  // 165. Tenement Fire Escape Galvanized Steel Grating Clank (Predator 2 1990)
+  playFireEscapeGrateClank() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Metallic bar resonance
+    const barOsc1 = this.ctx.createOscillator();
+    const barOsc2 = this.ctx.createOscillator();
+    barOsc1.type = 'triangle';
+    barOsc2.type = 'sine';
+    barOsc1.frequency.setValueAtTime(740, now);
+    barOsc2.frequency.setValueAtTime(1180, now);
+
+    const barGain = this.ctx.createGain();
+    barGain.gain.setValueAtTime(0.6, now);
+    barGain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+
+    barOsc1.connect(barGain);
+    barOsc2.connect(barGain);
+    barGain.connect(this.getOut());
+    barOsc1.start(now);
+    barOsc2.start(now);
+    barOsc1.stop(now + 0.35);
+    barOsc2.stop(now + 0.35);
+  }
+
+  // 166. City Hunter Combi-Stick Pole-Vault High-Altitude Catapult Launch (Predator 2 1990)
+  playCombiVaultWhoosh() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Telescoping shaft pneumatic spring release
+    const popOsc = this.ctx.createOscillator();
+    popOsc.type = 'triangle';
+    popOsc.frequency.setValueAtTime(320, now);
+    popOsc.frequency.exponentialRampToValueAtTime(1250, now + 0.08);
+
+    const popGain = this.ctx.createGain();
+    popGain.gain.setValueAtTime(0.85, now);
+    popGain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+
+    popOsc.connect(popGain);
+    popGain.connect(this.getOut());
+    popOsc.start(now);
+    popOsc.stop(now + 0.1);
+
+    // Powerful wind buffeting whoosh
+    const bufSize = Math.floor(this.ctx.sampleRate * 0.9);
+    const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.sin((i / bufSize) * Math.PI);
+    }
+    const windNoise = this.ctx.createBufferSource();
+    windNoise.buffer = buf;
+    const windFilter = this.ctx.createBiquadFilter();
+    windFilter.type = 'bandpass';
+    windFilter.frequency.setValueAtTime(420, now);
+    windFilter.frequency.linearRampToValueAtTime(950, now + 0.4);
+    windFilter.frequency.linearRampToValueAtTime(260, now + 0.9);
+    windFilter.Q.setValueAtTime(2.5, now);
+
+    const windGain = this.ctx.createGain();
+    windGain.gain.setValueAtTime(0.01, now);
+    windGain.gain.linearRampToValueAtTime(0.9, now + 0.25);
+    windGain.gain.exponentialRampToValueAtTime(0.01, now + 0.9);
+
+    windNoise.connect(windFilter);
+    windFilter.connect(windGain);
+    windGain.connect(this.getOut());
+    windNoise.start(now);
+    windNoise.stop(now + 0.9);
+  }
 }
 
 

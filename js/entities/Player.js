@@ -241,6 +241,10 @@ export class Player {
     this.isVoodooSightActive = false;
     this.flintlockKineticBuffTimer = 0;
     this.isFlintlockKineticActive = false;
+    this.jerryLastStandTimer = 0;
+    this.isJerryLastStandActive = false;
+    this.owlfUltravioletScanTimer = 0;
+    this.isOWLFUltravioletActive = false;
     this.loadClanForgeUpgrades();
   }
 
@@ -4181,7 +4185,25 @@ export class Player {
       this.flintlockKineticBuffTimer -= delta;
       if (this.flintlockKineticBuffTimer <= 0) this.isFlintlockKineticActive = false;
     }
+    if (this.jerryLastStandTimer > 0) {
+      this.jerryLastStandTimer -= delta;
+      if (this.jerryLastStandTimer <= 0) this.isJerryLastStandActive = false;
+    }
+    if (this.owlfUltravioletScanTimer > 0) {
+      this.owlfUltravioletScanTimer -= delta;
+      if (this.owlfUltravioletScanTimer <= 0) this.isOWLFUltravioletActive = false;
+    }
     this.isOnBough = (this.position && this.position.y >= 5.0);
+  }
+
+  applyJerryLastStand(duration = 30.0) {
+    this.jerryLastStandTimer = duration;
+    this.isJerryLastStandActive = true;
+  }
+
+  applyOWLFUltravioletScan(duration = 40.0) {
+    this.owlfUltravioletScanTimer = duration;
+    this.isOWLFUltravioletActive = true;
   }
 
   applyLightningAura(duration = 20.0) {
