@@ -94,6 +94,16 @@ export class EnvironmentManager {
     this.plasmaRechargeTerminals = [];
     // v55.0 Systems (Flooded Water Drainage Puddles & Cloaking Disruption)
     this.floodedWaterPuddles = [];
+    // v56.0 Master Level Design Systems (Crashed Scout Ship, Charon Labs, Game Preserve, Fixed UA 571-C Sentry, Ammonia Pipes, Collapsible Grates, Tactical Covers)
+    this.crashedScoutShip = null;
+    this.charonGeneticsLab = null;
+    this.gamePreserveCamp = null;
+    this.fixedSentryEmplacements = [];
+    this.ammoniaCoolantPipes = [];
+    this.activeAmmoniaClouds = [];
+    this.collapsibleFloorGrates = [];
+    this.tacticalCoverObstacles = [];
+    this.huntingBoughs = [];
   }
 
   clearEnvironment() {
@@ -302,6 +312,41 @@ export class EnvironmentManager {
     });
     this.floodedWaterPuddles = [];
 
+    // v56.0 Level Design Cleanups
+    if (this.crashedScoutShip && this.crashedScoutShip.group) {
+      this.scene.remove(this.crashedScoutShip.group);
+      this.crashedScoutShip = null;
+    }
+    if (this.charonGeneticsLab && this.charonGeneticsLab.group) {
+      this.scene.remove(this.charonGeneticsLab.group);
+      this.charonGeneticsLab = null;
+    }
+    if (this.gamePreserveCamp && this.gamePreserveCamp.group) {
+      this.scene.remove(this.gamePreserveCamp.group);
+      this.gamePreserveCamp = null;
+    }
+    this.fixedSentryEmplacements.forEach(s => {
+      if (s.group) this.scene.remove(s.group);
+    });
+    this.fixedSentryEmplacements = [];
+    this.ammoniaCoolantPipes.forEach(p => {
+      if (p.mesh) this.scene.remove(p.mesh);
+    });
+    this.ammoniaCoolantPipes = [];
+    this.activeAmmoniaClouds.forEach(c => {
+      if (c.mesh) this.scene.remove(c.mesh);
+    });
+    this.activeAmmoniaClouds = [];
+    this.collapsibleFloorGrates.forEach(g => {
+      if (g.mesh) this.scene.remove(g.mesh);
+    });
+    this.collapsibleFloorGrates = [];
+    this.tacticalCoverObstacles.forEach(c => {
+      if (c.mesh) this.scene.remove(c.mesh);
+    });
+    this.tacticalCoverObstacles = [];
+    this.huntingBoughs = [];
+
     this.reactorMeltdownActive = false;
     this.reactorMeltdownTimer = 180.0;
     this.slabShiftTimer = 0;
@@ -356,11 +401,21 @@ export class EnvironmentManager {
 
     // Decorative Environment Props matching level themes
     const theme = levelConfig.theme || levelConfig.environmentType || 'jungle';
+    const levelId = levelConfig.id || '';
 
-    if (theme === 'pyramid' || theme === 'temple') {
+    if (levelId === 'gunnison_forest' || theme === 'rain_forest') {
+      this.buildCrashedScoutShipProps();
+      this.buildJungleProps();
+    } else if (levelId === 'charon_rogue_base' || theme === 'space_station') {
+      this.buildCharonGeneticsLabProps();
+      this.buildColonyProps();
+    } else if (levelId === 'game_preserve_planet') {
+      this.buildGamePreserveProps();
+      this.buildJungleProps();
+    } else if (theme === 'pyramid' || theme === 'temple') {
       this.buildTempleProps(wallMat);
       this.buildModularPyramidWalls(wallMat);
-    } else if (theme === 'jungle' || theme === 'rain_forest') {
+    } else if (theme === 'jungle') {
       this.buildJungleProps();
     } else if (theme === 'hive_world' || theme === 'hive') {
       this.buildHiveProps();
@@ -541,6 +596,12 @@ export class EnvironmentManager {
     // === v55.0 10-CHANTIER EXPANSION (Flooded Water Drainage Puddles & Cloaking Disruption) ===
     // Chantier 4 & Sofia QA: Flooded Drainage Puddles (Predator 1987 / Prey 2022)
     this.buildFloodedPuddles();
+
+    // === v56.0 MASTER LEVEL DESIGN SYSTEMS (UA 571-C Sentry, Ammonia Coolant, Collapsible Grates, Tactical Covers) ===
+    this.buildFixedSentryEmplacements();
+    this.buildAmmoniaCoolantPipes();
+    this.buildCollapsibleFloorGrates();
+    this.buildTacticalCoverObstacles();
   }
 
   buildTempleProps(stoneMat) {
@@ -561,28 +622,118 @@ export class EnvironmentManager {
   }
 
   buildJungleProps() {
-    const trunkMat = new THREE.MeshStandardMaterial({ color: 0x2e1e0f, roughness: 0.9 });
-    const leafMat = new THREE.MeshStandardMaterial({ color: 0x0e3814, roughness: 0.6 });
+    const trunkMat = new THREE.MeshStandardMaterial({
+      color: 0x24180f, // Ancient wet bark
+      roughness: 0.9,
+      metalness: 0.1
+    });
+    const leafMat = new THREE.MeshStandardMaterial({
+      color: 0x0a2e12, // Deep tropical rainforest canopy
+      roughness: 0.55
+    });
+    const vineMat = new THREE.MeshStandardMaterial({
+      color: 0x143317,
+      roughness: 0.8
+    });
+    const boughMat = new THREE.MeshStandardMaterial({
+      color: 0x1f140c,
+      roughness: 0.85
+    });
 
-    // Tropical Trees
-    for (let i = 0; i < 25; i++) {
-      const x = (Math.random() - 0.5) * 100;
-      const z = (Math.random() - 0.5) * 100;
-      if (Math.abs(x) < 10 && Math.abs(z) < 10) continue;
+    this.huntingBoughs = [];
 
-      const trunkGeo = new THREE.CylinderGeometry(0.8, 1.4, 18, 8);
-      const trunk = new THREE.Mesh(trunkGeo, trunkMat);
-      trunk.position.set(x, 9, z);
+    // 16 Massive Ancient Trees with Buttress Roots & Climbable Hunting Boughs
+    const treePositions = [
+      new THREE.Vector3(-32, 0, -28),
+      new THREE.Vector3(-18, 0, -38),
+      new THREE.Vector3(12, 0, -32),
+      new THREE.Vector3(34, 0, -22),
+      new THREE.Vector3(-38, 0, 8),
+      new THREE.Vector3(38, 0, 14),
+      new THREE.Vector3(-28, 0, 32),
+      new THREE.Vector3(-12, 0, 38),
+      new THREE.Vector3(14, 0, 34),
+      new THREE.Vector3(32, 0, 28),
+      new THREE.Vector3(-42, 0, -8),
+      new THREE.Vector3(42, 0, -6),
+      new THREE.Vector3(-20, 0, 0),
+      new THREE.Vector3(20, 0, 0),
+      new THREE.Vector3(0, 0, -36),
+      new THREE.Vector3(0, 0, 36)
+    ];
+
+    treePositions.forEach((pos, idx) => {
+      const treeGroup = new THREE.Group();
+      treeGroup.position.copy(pos);
+
+      // Flared buttress root base
+      const rootBase = new THREE.Mesh(new THREE.ConeGeometry(2.4, 4.0, 7), trunkMat);
+      rootBase.position.y = 2.0;
+      treeGroup.add(rootBase);
+
+      // Main towering trunk
+      const trunk = new THREE.Mesh(new THREE.CylinderGeometry(1.1, 1.6, 20, 8), trunkMat);
+      trunk.position.y = 10;
       trunk.castShadow = true;
-      this.scene.add(trunk);
-      this.envObjects.push(trunk);
+      treeGroup.add(trunk);
 
-      const canopyGeo = new THREE.ConeGeometry(5, 10, 8);
-      const canopy = new THREE.Mesh(canopyGeo, leafMat);
-      canopy.position.set(x, 18, z);
-      this.scene.add(canopy);
-      this.envObjects.push(canopy);
-    }
+      // Massive Horizontal Hunting Bough (Predator Perch Platform at +6.8m or +10.2m)
+      const boughHeight = idx % 2 === 0 ? 6.8 : 10.2;
+      const boughAngle = (idx * 1.35) % (Math.PI * 2);
+      const boughLength = 7.5;
+
+      const boughGroup = new THREE.Group();
+      boughGroup.position.set(0, boughHeight, 0);
+      boughGroup.rotation.y = boughAngle;
+
+      const boughMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.75, boughLength, 6), boughMat);
+      boughMesh.rotation.z = Math.PI / 2;
+      boughMesh.position.x = boughLength / 2;
+      boughMesh.castShadow = true;
+      boughMesh.receiveShadow = true;
+      boughGroup.add(boughMesh);
+
+      // Hanging moss / lianas dangling from branch
+      for (let v = 0; v < 3; v++) {
+        const vine = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.03, 3.2, 4), vineMat);
+        vine.position.set(2.0 + v * 2.0, -1.6, (Math.random() - 0.5) * 0.4);
+        boughGroup.add(vine);
+      }
+
+      treeGroup.add(boughGroup);
+
+      // Store hunting bough world position for sniper mantling & perching
+      const boughWorldPos = pos.clone().add(new THREE.Vector3(
+        Math.cos(boughAngle) * (boughLength * 0.5),
+        boughHeight + 0.6,
+        Math.sin(boughAngle) * (boughLength * 0.5)
+      ));
+      this.huntingBoughs.push({
+        id: idx,
+        pos: boughWorldPos,
+        height: boughHeight
+      });
+
+      // Upper canopy foliage dome
+      const canopy = new THREE.Mesh(new THREE.DodecahedronGeometry(5.5, 1), leafMat);
+      canopy.position.y = 21;
+      treeGroup.add(canopy);
+
+      this.scene.add(treeGroup);
+      this.envObjects.push(treeGroup);
+    });
+
+    // 2. Fallen Giant Hollow Log Bridge
+    const logGroup = new THREE.Group();
+    logGroup.position.set(-8, 0.8, -12);
+    logGroup.rotation.y = Math.PI / 3;
+    const log = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.4, 14, 8), trunkMat);
+    log.rotation.z = Math.PI / 2;
+    log.castShadow = true;
+    log.receiveShadow = true;
+    logGroup.add(log);
+    this.scene.add(logGroup);
+    this.envObjects.push(logGroup);
   }
 
   buildColonyProps() {
@@ -1402,6 +1553,40 @@ export class EnvironmentManager {
         }
         if (!onBridge) {
           return trench.depth || -1.5;
+        }
+      }
+    }
+
+    // 5. Crashed Scout Ship Elevated Sniper Deck (AVP: Requiem 2007)
+    if (this.crashedScoutShip && this.crashedScoutShip.consolePos) {
+      const c = this.crashedScoutShip.consolePos;
+      const dx = x - c.x;
+      const dz = z - c.z;
+      if (dx * dx + dz * dz <= 4.2 * 4.2) {
+        return 5.8;
+      }
+    }
+
+    // 6. Ancient Banyan Hunting Boughs (3D Vertical Sniper Perch)
+    if (this.huntingBoughs && this.huntingBoughs.length > 0) {
+      for (const b of this.huntingBoughs) {
+        const dx = x - b.pos.x;
+        const dz = z - b.pos.z;
+        if (dx * dx + dz * dz <= 2.6 * 2.6) {
+          return b.height;
+        }
+      }
+    }
+
+    // 7. Collapsible Floor Grates (-2.2m subterranean acid drop if collapsed)
+    if (this.collapsibleFloorGrates && this.collapsibleFloorGrates.length > 0) {
+      for (const g of this.collapsibleFloorGrates) {
+        if (g.isCollapsed) {
+          const dx = x - g.pos.x;
+          const dz = z - g.pos.z;
+          if (dx * dx + dz * dz <= 2.5 * 2.5) {
+            return -2.2;
+          }
         }
       }
     }
@@ -6919,6 +7104,808 @@ export class EnvironmentManager {
   updateEnvironmentV55(delta, player, horde, audio, particles, ui) {
     this.updateEnvironmentV54(delta, player, horde, audio, particles);
     this.updateFloodedPuddles(delta, player, audio, particles, ui);
+  }
+
+  /* === CHANTIER 1 & SOFIA LEVEL DESIGN (v56.0): Crashed Yautja Scout Ship Wreckage (AVP: Requiem 2007) === */
+  buildCrashedScoutShipProps() {
+    const group = new THREE.Group();
+    const pos = new THREE.Vector3(-20, 0, 18);
+    group.position.copy(pos);
+
+    // Yautja Starship Gunmetal Hull Alloy
+    const hullMat = new THREE.MeshStandardMaterial({
+      color: 0x1f262e,
+      roughness: 0.35,
+      metalness: 0.88
+    });
+    const runeMat = new THREE.MeshBasicMaterial({ color: 0x00e5ff });
+    const dirtMat = new THREE.MeshStandardMaterial({ color: 0x1e150f, roughness: 0.95 });
+
+    // 1. Crater Excavation Rim
+    const crater = new THREE.Mesh(new THREE.TorusGeometry(12.0, 1.8, 8, 24), dirtMat);
+    crater.rotation.x = Math.PI / 2;
+    crater.position.y = 0.2;
+    group.add(crater);
+
+    // 2. Main Saucer Hull Fragment (Embedded at 22-degree tilt)
+    const hullGroup = new THREE.Group();
+    hullGroup.rotation.z = 0.38; // Tilted into earth
+    hullGroup.rotation.y = -Math.PI / 4;
+
+    const mainHull = new THREE.Mesh(new THREE.CylinderGeometry(6.5, 8.5, 3.2, 16), hullMat);
+    mainHull.position.y = 2.5;
+    mainHull.castShadow = true;
+    hullGroup.add(mainHull);
+
+    // Conical Forward Prow
+    const prow = new THREE.Mesh(new THREE.ConeGeometry(5.5, 6.0, 8), hullMat);
+    prow.rotation.x = Math.PI / 2;
+    prow.position.set(0, 2.5, 6.5);
+    hullGroup.add(prow);
+
+    // Glowing Yautja Telemetry Runes along hull flanks
+    [-1, 1].forEach(side => {
+      const runeStrip = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.4, 6.0), runeMat);
+      runeStrip.position.set(side * 6.8, 2.5, 1.0);
+      hullGroup.add(runeStrip);
+    });
+
+    group.add(hullGroup);
+
+    // 3. Elevated Sniper Observation Deck (+5.8m high with access ramp)
+    const deckMat = new THREE.MeshStandardMaterial({ color: 0x111827, metalness: 0.9, roughness: 0.3 });
+    const deckMesh = new THREE.Mesh(new THREE.BoxGeometry(4.5, 0.4, 4.5), deckMat);
+    deckMesh.position.set(2.0, 5.8, -1.0);
+    deckMesh.receiveShadow = true;
+    group.add(deckMesh);
+
+    // Access Ramp
+    const rampMesh = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.3, 7.5), deckMat);
+    rampMesh.position.set(2.0, 2.9, 4.2);
+    rampMesh.rotation.x = 0.72;
+    group.add(rampMesh);
+
+    // 4. Ship Telemetry Orbital Scan Console
+    const consoleGeo = new THREE.BoxGeometry(1.2, 1.2, 0.8);
+    const consoleMat = new THREE.MeshStandardMaterial({ color: 0x090d16, metalness: 0.9 });
+    const consoleMesh = new THREE.Mesh(consoleGeo, consoleMat);
+    consoleMesh.position.set(2.0, 6.6, -2.5);
+    group.add(consoleMesh);
+
+    const holoSpyGeo = new THREE.SphereGeometry(0.4, 8, 8);
+    const holoSpy = new THREE.Mesh(holoSpyGeo, runeMat);
+    holoSpy.position.set(2.0, 7.5, -2.5);
+    group.add(holoSpy);
+
+    // Pulsing cyan point light
+    const shipLight = new THREE.PointLight(0x00e5ff, 1.8, 9.0);
+    shipLight.position.set(pos.x + 2.0, 7.0, pos.z - 2.5);
+    this.scene.add(shipLight);
+
+    // Shattered Facehugger Stasis Vials strewn about
+    const glassMat = new THREE.MeshBasicMaterial({ color: 0x34d399, transparent: true, opacity: 0.4 });
+    for (let v = 0; v < 4; v++) {
+      const vial = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.35, 1.2, 8), glassMat);
+      vial.rotation.z = Math.PI / 2.2;
+      vial.position.set(-6.0 + v * 3.5, 0.3, -5.0 + (v % 2) * 3.0);
+      group.add(vial);
+    }
+
+    this.scene.add(group);
+    this.envObjects.push(group);
+
+    this.crashedScoutShip = {
+      group,
+      pos: pos.clone(),
+      consolePos: pos.clone().add(new THREE.Vector3(2.0, 5.8, -2.5)),
+      light: shipLight,
+      holoMesh: holoSpy,
+      isScanActive: false,
+      scanCooldown: 0
+    };
+  }
+
+  checkScoutShipConsoleInteraction(playerPos, ui, audio, horde, player) {
+    if (!this.crashedScoutShip || !playerPos) return false;
+    const s = this.crashedScoutShip;
+    if (s.consolePos.distanceTo(playerPos) <= 4.2) {
+      if (s.scanCooldown > 0) {
+        if (ui && ui.showAnnouncement) {
+          ui.showAnnouncement(`⏳ SCANNER DU VAISSEAU EN RECHARGE (${Math.ceil(s.scanCooldown)}S)`);
+        }
+        return true;
+      }
+      s.scanCooldown = 35.0;
+      if (audio) {
+        if (audio.playScoutShipOrbitalPing) audio.playScoutShipOrbitalPing();
+        else if (audio.playWristComputerBeep) audio.playWristComputerBeep();
+      }
+
+      if (player) {
+        player.orbitalScanTimer = 25.0;
+        player.critChanceBonus = 0.25;
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement("🛰️ TÉLÉMÉTRIE VAISSEAU CRASHÉ : SCAN ORBITAL CONFIRMÉ (+25% CRITIQUES, DÉTECTION ÉTENDUE 25S) !", "success");
+      }
+      return true;
+    }
+    return false;
+  }
+
+  /* === CHANTIER 2 & SOFIA LEVEL DESIGN (v56.0): Base Charon Genetic Incubators & Pheromone Console (Aliens: Rogue) === */
+  buildCharonGeneticsLabProps() {
+    const group = new THREE.Group();
+    const pos = new THREE.Vector3(-24, 0, -12);
+    group.position.copy(pos);
+
+    const metalMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.85, roughness: 0.25 });
+    const brothMat = new THREE.MeshStandardMaterial({
+      color: 0x10b981,
+      roughness: 0.1,
+      metalness: 0.5,
+      transparent: true,
+      opacity: 0.65
+    });
+    const embryoMat = new THREE.MeshStandardMaterial({ color: 0x064e3b, roughness: 0.5 });
+
+    // 4 Gigantic Glass Genetic Incubator Cylinders
+    const vatPositions = [
+      new THREE.Vector3(-5, 0, -4),
+      new THREE.Vector3(5, 0, -4),
+      new THREE.Vector3(-5, 0, 4),
+      new THREE.Vector3(5, 0, 4)
+    ];
+
+    const vats = [];
+    vatPositions.forEach((vPos, idx) => {
+      const vatGroup = new THREE.Group();
+      vatGroup.position.copy(vPos);
+
+      // Metal Base & Top Caps
+      const base = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 1.8, 0.8, 16), metalMat);
+      base.position.y = 0.4;
+      vatGroup.add(base);
+
+      const topCap = new THREE.Mesh(new THREE.CylinderGeometry(1.5, 1.5, 0.6, 16), metalMat);
+      topCap.position.y = 5.2;
+      vatGroup.add(topCap);
+
+      // Mutagen Broth Fluid Column
+      const broth = new THREE.Mesh(new THREE.CylinderGeometry(1.4, 1.4, 4.4, 16), brothMat);
+      broth.position.y = 2.8;
+      vatGroup.add(broth);
+
+      // Suspended Rogue King Embryo Silhouette
+      const embryo = new THREE.Mesh(new THREE.SphereGeometry(0.7, 8, 8), embryoMat);
+      embryo.scale.set(1.0, 1.6, 1.0);
+      embryo.position.y = 2.8;
+      vatGroup.add(embryo);
+
+      group.add(vatGroup);
+      vats.push({ group: vatGroup, embryo, broth, pos: pos.clone().add(vPos) });
+    });
+
+    // Central Diagnostic Holographic Console (Dr. Ernst Kleist)
+    const consolePillar = new THREE.Mesh(new THREE.BoxGeometry(1.6, 1.2, 1.6), metalMat);
+    consolePillar.position.set(0, 0.6, 0);
+    group.add(consolePillar);
+
+    const dnaHoloMat = new THREE.MeshBasicMaterial({ color: 0x34d399, wireframe: true });
+    const dnaHolo = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 1.8, 8), dnaHoloMat);
+    dnaHolo.position.set(0, 2.1, 0);
+    group.add(dnaHolo);
+
+    const labLight = new THREE.PointLight(0x10b981, 1.6, 8.0);
+    labLight.position.set(pos.x, 2.5, pos.z);
+    this.scene.add(labLight);
+
+    this.scene.add(group);
+    this.envObjects.push(group);
+
+    this.charonGeneticsLab = {
+      group,
+      pos: pos.clone(),
+      consolePos: pos.clone().add(new THREE.Vector3(0, 0, 0)),
+      vats,
+      dnaHolo,
+      light: labLight,
+      pheromoneCooldown: 0
+    };
+  }
+
+  checkCharonLabConsoleInteraction(playerPos, horde, ui, audio) {
+    if (!this.charonGeneticsLab || !playerPos) return false;
+    const lab = this.charonGeneticsLab;
+    if (lab.consolePos.distanceTo(playerPos) <= 4.2) {
+      if (lab.pheromoneCooldown > 0) {
+        if (ui && ui.showAnnouncement) {
+          ui.showAnnouncement(`⏳ DIFFUSEUR DE PHÉROMONES EN CHARGE (${Math.ceil(lab.pheromoneCooldown)}S)`);
+        }
+        return true;
+      }
+      lab.pheromoneCooldown = 38.0;
+
+      if (audio) {
+        if (audio.playCharonPheromoneHiss) audio.playCharonPheromoneHiss();
+        else if (audio.playAlienQueenPheromoneHiss) audio.playAlienQueenPheromoneHiss();
+      }
+
+      // Cause minor aliens in 24m to frenzy and damage each other
+      let frenzied = 0;
+      if (horde && horde.aliens) {
+        horde.aliens.forEach(alien => {
+          if (alien && alien.mesh && alien.mesh.position.distanceTo(lab.pos) <= 24.0) {
+            alien.hp -= 160;
+            alien.isStunned = true;
+            alien.stunTimer = 4.0;
+            frenzied++;
+          }
+        });
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement(`🧬 PHÉROMONES DU DR KLEIST LIBÉRÉES : ${frenzied} XÉNOS FRAPPÉS DE DÉMENCE (STUN 4S, 160 DMG) !`, "warning");
+      }
+      return true;
+    }
+    return false;
+  }
+
+  /* === CHANTIER 3 & SOFIA LEVEL DESIGN (v56.0): Mr. Black Game Preserve Camp & Crucified Totem (Predators 2010) === */
+  buildGamePreserveProps() {
+    const group = new THREE.Group();
+    const woodMat = new THREE.MeshStandardMaterial({ color: 0x3f2212, roughness: 0.95 });
+    const boneMat = new THREE.MeshStandardMaterial({ color: 0xd6cebe, roughness: 0.5 });
+    const armorMat = new THREE.MeshStandardMaterial({ color: 0x1f2421, metalness: 0.8, roughness: 0.35 });
+
+    // 1. Centerpiece Crucified Classic Predator Totem Pole [0, 0, 0]
+    const centerGroup = new THREE.Group();
+    const post = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.45, 7.5, 8), woodMat);
+    post.position.y = 3.75;
+    post.castShadow = true;
+    centerGroup.add(post);
+
+    const crossbeam = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.25, 4.2, 8), woodMat);
+    crossbeam.rotation.z = Math.PI / 2;
+    crossbeam.position.y = 5.2;
+    centerGroup.add(crossbeam);
+
+    // Bound Classic Jungle Hunter Armored Torso
+    const boundTorso = new THREE.Mesh(new THREE.BoxGeometry(0.9, 1.4, 0.6), armorMat);
+    boundTorso.position.set(0, 4.6, 0.35);
+    centerGroup.add(boundTorso);
+
+    const boundMask = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.7, 0.5), armorMat);
+    boundMask.position.set(0, 5.5, 0.4);
+    centerGroup.add(boundMask);
+
+    group.add(centerGroup);
+
+    // 2. Flayed Carcasses on Tripod Stakes
+    const tripodPositions = [
+      new THREE.Vector3(-22, 0, -18),
+      new THREE.Vector3(22, 0, 18),
+      new THREE.Vector3(-18, 0, 22),
+      new THREE.Vector3(22, 0, -18)
+    ];
+
+    tripodPositions.forEach(tPos => {
+      const tripodGroup = new THREE.Group();
+      tripodGroup.position.copy(tPos);
+
+      // 3 crossing timber spars
+      for (let s = 0; s < 3; s++) {
+        const spar = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.16, 5.8, 6), woodMat);
+        const a = (s / 3) * Math.PI * 2;
+        spar.position.set(Math.cos(a) * 0.8, 2.7, Math.sin(a) * 0.8);
+        spar.rotation.set(Math.sin(a) * 0.28, 0, -Math.cos(a) * 0.28);
+        tripodGroup.add(spar);
+      }
+
+      // Dangling flayed victim silhouette
+      const carcass = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.15, 2.0, 6), boneMat);
+      carcass.position.set(0, 2.2, 0);
+      tripodGroup.add(carcass);
+
+      group.add(tripodGroup);
+    });
+
+    // 3. Spiked Skull Perimeter Boundary Stakes
+    for (let k = 0; k < 12; k++) {
+      const angle = (k / 12) * Math.PI * 2;
+      const dist = 32 + (k % 3) * 6.0;
+      const stakeX = Math.cos(angle) * dist;
+      const stakeZ = Math.sin(angle) * dist;
+
+      const stake = new THREE.Mesh(new THREE.ConeGeometry(0.18, 3.2, 6), woodMat);
+      stake.position.set(stakeX, 1.6, stakeZ);
+      stake.rotation.x = (Math.random() - 0.5) * 0.2;
+      stake.rotation.z = (Math.random() - 0.5) * 0.2;
+      group.add(stake);
+
+      const skull = new THREE.Mesh(new THREE.SphereGeometry(0.35, 6, 6), boneMat);
+      skull.position.set(stakeX, 3.1, stakeZ);
+      group.add(skull);
+    }
+
+    this.scene.add(group);
+    this.envObjects.push(group);
+
+    this.gamePreserveCamp = {
+      group,
+      totemPos: new THREE.Vector3(0, 0, 0),
+      isReleased: false,
+      centerGroup,
+      boundTorso,
+      boundMask
+    };
+  }
+
+  checkCrucifiedPredatorInteraction(player, ui, audio, particles) {
+    if (!this.gamePreserveCamp || !player || this.gamePreserveCamp.isReleased) return false;
+    const playerPos = player.position;
+    if (!playerPos) return false;
+    const dist = playerPos.distanceTo(this.gamePreserveCamp.totemPos);
+    if (dist <= 4.8) {
+      this.gamePreserveCamp.isReleased = true;
+      if (this.gamePreserveCamp.boundTorso) {
+        this.gamePreserveCamp.boundTorso.rotation.x = Math.PI / 6;
+        this.gamePreserveCamp.boundTorso.position.y = 2.2;
+      }
+      if (this.gamePreserveCamp.boundMask) {
+        this.gamePreserveCamp.boundMask.position.y = 3.0;
+      }
+
+      if (audio) {
+        if (audio.playCrucifiedPredatorRelease) audio.playCrucifiedPredatorRelease();
+        else if (audio.playPredatorChestThumpRoar) audio.playPredatorChestThumpRoar();
+      }
+
+      if (particles && particles.emitAlienBloodSpurt) {
+        particles.emitAlienBloodSpurt(new THREE.Vector3(0, 4.5, 0.4), 22);
+      }
+
+      if (player.unlockClassic1987Plasma) {
+        player.unlockClassic1987Plasma();
+      }
+      if (player.recordTrophy) {
+        player.recordTrophy('Dague Cérémonielle & Gratitude du Classic Jungle Hunter Crucifié (Predators 2010)', 2500);
+      }
+      player.royalJellyFlasks = (player.royalJellyFlasks || 0) + 3;
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('⚜️ RITUEL D\'HONNEUR : CLASSIC PREDATOR LIBÉRÉ (PREDATORS 2010) ! CANON PLASMA 1987 DOUBLE-BURST OCTROYÉ (+2500 HONNEUR, +3 GELÉES) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  /* === CHANTIER 5 & SOFIA LEVEL DESIGN (v56.0): Fixed UA 571-C Automated Sentry Tripods (Aliens 1986) === */
+  buildFixedSentryEmplacements() {
+    this.fixedSentryEmplacements = [];
+
+    const sentryPositions = [
+      new THREE.Vector3(-28, 0, 0),
+      new THREE.Vector3(28, 0, 0)
+    ];
+
+    const metalMat = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.85, roughness: 0.3 });
+    const barrelMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.95, roughness: 0.15 });
+    const drumMat = new THREE.MeshStandardMaterial({ color: 0x166534, metalness: 0.6 });
+    const laserMat = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+
+    sentryPositions.forEach((pos, idx) => {
+      const group = new THREE.Group();
+      group.position.copy(pos);
+
+      // Heavy Ballistic Tripod (3 splayed legs)
+      for (let leg = 0; leg < 3; leg++) {
+        const legAngle = (leg / 3) * Math.PI * 2;
+        const legMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 1.8, 6), metalMat);
+        legMesh.position.set(Math.cos(legAngle) * 0.65, 0.75, Math.sin(legAngle) * 0.65);
+        legMesh.rotation.set(Math.sin(legAngle) * 0.5, 0, -Math.cos(legAngle) * 0.5);
+        group.add(legMesh);
+      }
+
+      // Swiveling Turret Head Group
+      const turretHead = new THREE.Group();
+      turretHead.position.y = 1.5;
+
+      const receiver = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.45, 1.0), metalMat);
+      turretHead.add(receiver);
+
+      // Dual 10mm M40 Barrels
+      [-0.14, 0.14].forEach(bx => {
+        const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 1.4, 8), barrelMat);
+        barrel.rotation.x = Math.PI / 2;
+        barrel.position.set(bx, 0.05, 0.85);
+        turretHead.add(barrel);
+      });
+
+      // 500-Round Drum Magazine
+      const drum = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.35, 0.3, 12), drumMat);
+      drum.position.set(0.35, -0.1, -0.15);
+      turretHead.add(drum);
+
+      // Targeting Laser Diode
+      const laserDiode = new THREE.Mesh(new THREE.SphereGeometry(0.06, 6, 6), laserMat);
+      laserDiode.position.set(0, 0.25, 0.5);
+      turretHead.add(laserDiode);
+
+      group.add(turretHead);
+      this.scene.add(group);
+      this.envObjects.push(group);
+
+      this.fixedSentryEmplacements.push({
+        id: idx,
+        group,
+        turretHead,
+        pos: pos.clone(),
+        ammo: 250,
+        maxAmmo: 250,
+        isOnline: true,
+        shootCooldown: 0,
+        range: 28.0,
+        target: null
+      });
+    });
+  }
+
+  updateFixedSentries(delta, horde, audio, particles) {
+    if (!this.fixedSentryEmplacements) return;
+
+    this.fixedSentryEmplacements.forEach(sentry => {
+      if (!sentry.isOnline || sentry.ammo <= 0) return;
+
+      sentry.shootCooldown -= delta;
+
+      // Find nearest target within range
+      let nearestAlien = null;
+      let minDist = sentry.range;
+
+      if (horde && horde.aliens) {
+        horde.aliens.forEach(alien => {
+          if (alien && alien.mesh && alien.hp > 0) {
+            const d = sentry.pos.distanceTo(alien.mesh.position);
+            if (d < minDist) {
+              minDist = d;
+              nearestAlien = alien;
+            }
+          }
+        });
+      }
+
+      if (nearestAlien) {
+        const toAlien = nearestAlien.mesh.position.clone().sub(sentry.pos);
+        sentry.turretHead.rotation.y = Math.atan2(toAlien.x, toAlien.z);
+
+        if (sentry.shootCooldown <= 0) {
+          sentry.shootCooldown = 0.18; // High rate of fire
+          sentry.ammo = Math.max(0, sentry.ammo - 2);
+
+          if (audio) {
+            if (audio.playFixedSentryBurst) audio.playFixedSentryBurst();
+            else if (audio.playPulseRifleBurst && Math.random() < 0.35) audio.playPulseRifleBurst();
+          }
+
+          nearestAlien.hp -= 48;
+
+          if (particles && particles.emitSparks) {
+            particles.emitSparks(nearestAlien.mesh.position, 4);
+          }
+        }
+      }
+    });
+  }
+
+  checkFixedSentryInteraction(playerPos, audio, ui) {
+    if (!this.fixedSentryEmplacements) return false;
+
+    for (let i = 0; i < this.fixedSentryEmplacements.length; i++) {
+      const s = this.fixedSentryEmplacements[i];
+      if (s.pos.distanceTo(playerPos) <= 3.8) {
+        s.ammo = s.maxAmmo;
+        s.isOnline = true;
+        if (audio) {
+          if (audio.playFixedSentryReload) audio.playFixedSentryReload();
+          else if (audio.playPulseRifleBurst) audio.playPulseRifleBurst();
+        }
+        if (ui && ui.showAnnouncement) {
+          ui.showAnnouncement('🔋 SENTINELLE UA 571-C FIXE : BANDE DE 250 CARTOUCHES RÉARMÉE !', 'success');
+        }
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /* === CHANTIER 6 & SOFIA LEVEL DESIGN (v56.0): Rupturable Ammonia Frost Coolant Pipes === */
+  buildAmmoniaCoolantPipes() {
+    this.ammoniaCoolantPipes = [];
+    this.activeAmmoniaClouds = [];
+
+    const pipePositions = [
+      new THREE.Vector3(-35, 3.5, -15),
+      new THREE.Vector3(-35, 3.5, 15),
+      new THREE.Vector3(35, 3.5, -15),
+      new THREE.Vector3(35, 3.5, 15),
+      new THREE.Vector3(0, 4.5, -35),
+      new THREE.Vector3(0, 4.5, 35)
+    ];
+
+    const pipeMat = new THREE.MeshStandardMaterial({ color: 0x0284c7, metalness: 0.85, roughness: 0.3 });
+    const bandMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8 });
+
+    pipePositions.forEach((pos, idx) => {
+      const group = new THREE.Group();
+      group.position.copy(pos);
+
+      const isZAxis = Math.abs(pos.x) > 30;
+      const pipeGeo = new THREE.CylinderGeometry(0.3, 0.3, 14.0, 12);
+      const pipeMesh = new THREE.Mesh(pipeGeo, pipeMat);
+      if (isZAxis) pipeMesh.rotation.x = Math.PI / 2;
+      else pipeMesh.rotation.z = Math.PI / 2;
+      pipeMesh.castShadow = true;
+      group.add(pipeMesh);
+
+      // Warning hazard bands
+      [-4.0, 0, 4.0].forEach(offset => {
+        const band = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.32, 0.4, 12), bandMat);
+        if (isZAxis) {
+          band.rotation.x = Math.PI / 2;
+          band.position.z = offset;
+        } else {
+          band.rotation.z = Math.PI / 2;
+          band.position.x = offset;
+        }
+        group.add(band);
+      });
+
+      this.scene.add(group);
+      this.envObjects.push(group);
+
+      this.ammoniaCoolantPipes.push({
+        id: idx,
+        group,
+        pos: pos.clone(),
+        hp: 90,
+        isRuptured: false
+      });
+    });
+  }
+
+  checkAmmoniaPipeDamage(attack, audio, particles, horde) {
+    if (!this.ammoniaCoolantPipes || !attack || !attack.origin) return;
+
+    this.ammoniaCoolantPipes.forEach(pipe => {
+      if (pipe.isRuptured) return;
+      if (pipe.pos.distanceTo(attack.origin) <= (attack.radius || 2.0) + 2.5) {
+        pipe.hp -= (attack.damage || 50);
+        if (pipe.hp <= 0) {
+          pipe.isRuptured = true;
+
+          if (audio) {
+            if (audio.playAmmoniaPipeHissFrost) audio.playAmmoniaPipeHissFrost();
+            else if (audio.playLiquidNitrogenBlast) audio.playLiquidNitrogenBlast();
+          }
+
+          // Spawn expansive frost freezing cloud
+          const frostGeo = new THREE.SphereGeometry(6.5, 12, 12);
+          const frostMat = new THREE.MeshBasicMaterial({
+            color: 0xbae6fd,
+            transparent: true,
+            opacity: 0.65,
+            wireframe: false
+          });
+          const frostMesh = new THREE.Mesh(frostGeo, frostMat);
+          frostMesh.position.set(pipe.pos.x, 1.5, pipe.pos.z);
+          this.scene.add(frostMesh);
+
+          this.activeAmmoniaClouds.push({
+            mesh: frostMesh,
+            pos: new THREE.Vector3(pipe.pos.x, 1.5, pipe.pos.z),
+            radius: 6.5,
+            timer: 9.0
+          });
+        }
+      }
+    });
+  }
+
+  updateAmmoniaClouds(delta, horde, particles) {
+    if (!this.activeAmmoniaClouds) return;
+
+    for (let i = this.activeAmmoniaClouds.length - 1; i >= 0; i--) {
+      const cloud = this.activeAmmoniaClouds[i];
+      cloud.timer -= delta;
+      cloud.mesh.rotation.y += delta * 1.5;
+      cloud.mesh.material.opacity = Math.max(0, (cloud.timer / 9.0) * 0.65);
+
+      // Freeze and damage Xenomorphs in radius
+      if (horde && horde.aliens) {
+        horde.aliens.forEach(alien => {
+          if (alien && alien.mesh && alien.mesh.position.distanceTo(cloud.pos) <= cloud.radius) {
+            alien.isFrozen = true;
+            alien.hp -= 70 * delta;
+            if (particles && particles.emitSparks && Math.random() < 0.08) {
+              particles.emitSparks(alien.mesh.position, 2);
+            }
+          }
+        });
+      }
+
+      if (cloud.timer <= 0) {
+        this.scene.remove(cloud.mesh);
+        this.activeAmmoniaClouds.splice(i, 1);
+      }
+    }
+  }
+
+  /* === CHANTIER 7 & SOFIA LEVEL DESIGN (v56.0): Collapsible Perforated Steel Floor Grates === */
+  buildCollapsibleFloorGrates() {
+    this.collapsibleFloorGrates = [];
+
+    const grateConfigs = [
+      new THREE.Vector3(-14, 0.06, 0),
+      new THREE.Vector3(14, 0.06, 0),
+      new THREE.Vector3(0, 0.06, -16),
+      new THREE.Vector3(0, 0.06, 16)
+    ];
+
+    const grateMat = new THREE.MeshStandardMaterial({
+      color: 0x475569,
+      metalness: 0.9,
+      roughness: 0.4,
+      wireframe: true
+    });
+    const rimMat = new THREE.MeshStandardMaterial({ color: 0xeab308, roughness: 0.5 }); // Hazard yellow
+
+    grateConfigs.forEach((pos, idx) => {
+      const group = new THREE.Group();
+      group.position.copy(pos);
+
+      // Warning rim
+      const rim = new THREE.Mesh(new THREE.BoxGeometry(5.2, 0.12, 5.2), rimMat);
+      group.add(rim);
+
+      // Inner perforated mesh
+      const mesh = new THREE.Mesh(new THREE.BoxGeometry(4.8, 0.08, 4.8), grateMat);
+      mesh.position.y = 0.04;
+      group.add(mesh);
+
+      this.scene.add(group);
+      this.envObjects.push(group);
+
+      this.collapsibleFloorGrates.push({
+        id: idx,
+        group,
+        mesh,
+        pos: pos.clone(),
+        radius: 2.8,
+        hp: 350,
+        isCollapsed: false
+      });
+    });
+  }
+
+  checkCollapsibleGrates(playerPos, horde, bosses, audio, particles) {
+    if (!this.collapsibleFloorGrates) return;
+
+    this.collapsibleFloorGrates.forEach(grate => {
+      if (grate.isCollapsed) return;
+
+      let occupants = 0;
+      let hasCrusherOrHeavy = false;
+
+      if (horde && horde.aliens) {
+        horde.aliens.forEach(alien => {
+          if (alien && alien.mesh && alien.mesh.position.distanceTo(grate.pos) <= grate.radius) {
+            occupants++;
+            if (alien.type === 'crusher' || alien.type === 'praetorian') {
+              hasCrusherOrHeavy = true;
+            }
+          }
+        });
+      }
+
+      // Check if collapsed by heavy weight
+      if (hasCrusherOrHeavy || occupants >= 4) {
+        grate.isCollapsed = true;
+        this.scene.remove(grate.group);
+
+        if (audio) {
+          if (audio.playFloorGrateCollapse) audio.playFloorGrateCollapse();
+          else if (audio.playCryoVatShatter) audio.playCryoVatShatter();
+        }
+        if (particles && particles.emitExplosion) particles.emitExplosion(grate.pos, 18);
+
+        // Plunge all standing enemies into acid trench!
+        if (horde && horde.aliens) {
+          horde.aliens.forEach(alien => {
+            if (alien && alien.mesh && alien.mesh.position.distanceTo(grate.pos) <= grate.radius) {
+              alien.hp -= 800; // Crushing plunge!
+              if (particles && particles.emitAlienBloodSpurt) {
+                particles.emitAlienBloodSpurt(alien.mesh.position, 20);
+              }
+            }
+          });
+        }
+      }
+    });
+  }
+
+  /* === CHANTIER 8 & SOFIA LEVEL DESIGN (v56.0): M30 Ballistic Cargo Crates & Tactical Half-Cover === */
+  buildTacticalCoverObstacles() {
+    this.tacticalCoverObstacles = [];
+
+    const cratePositions = [
+      new THREE.Vector3(-10, 1.1, -8),
+      new THREE.Vector3(10, 1.1, 8),
+      new THREE.Vector3(-12, 1.1, 14),
+      new THREE.Vector3(12, 1.1, -14),
+      new THREE.Vector3(-26, 1.1, -24),
+      new THREE.Vector3(26, 1.1, 24)
+    ];
+
+    const crateMat = new THREE.MeshStandardMaterial({
+      color: 0x334155, // USCM reinforced ballistic steel
+      metalness: 0.85,
+      roughness: 0.35
+    });
+    const stencilMat = new THREE.MeshBasicMaterial({ color: 0xf59e0b }); // Stencil yellow
+
+    cratePositions.forEach((pos, idx) => {
+      const group = new THREE.Group();
+      group.position.copy(pos);
+
+      const box = new THREE.Mesh(new THREE.BoxGeometry(3.2, 2.2, 1.8), crateMat);
+      box.castShadow = true;
+      box.receiveShadow = true;
+      group.add(box);
+
+      // USCM Cargo Stencil Line
+      const stencil = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.25, 0.04), stencilMat);
+      stencil.position.set(0, 0.3, 0.92);
+      group.add(stencil);
+
+      this.scene.add(group);
+      this.envObjects.push(group);
+
+      this.tacticalCoverObstacles.push({
+        id: idx,
+        group,
+        pos: pos.clone(),
+        size: new THREE.Vector3(3.2, 2.2, 1.8)
+      });
+    });
+  }
+
+  /* === v56.0 Master Level Design Combined Update Helper === */
+  updateLevelDesignV56(delta, player, horde, bosses, audio, particles, ui) {
+    this.updateEnvironmentV55(delta, player, horde, audio, particles, ui);
+    this.updateFixedSentries(delta, horde, audio, particles);
+    this.updateAmmoniaClouds(delta, horde, particles);
+    this.checkCollapsibleGrates(player ? player.position : null, horde, bosses, audio, particles);
+
+    // Gently rotate holographic DNA strands in Charon lab
+    if (this.charonGeneticsLab && this.charonGeneticsLab.dnaHolo) {
+      this.charonGeneticsLab.dnaHolo.rotation.y += delta * 0.8;
+      if (this.charonGeneticsLab.vats) {
+        this.charonGeneticsLab.vats.forEach(v => {
+          if (v.embryo) {
+            v.embryo.position.y = 2.8 + Math.sin(Date.now() * 0.003 + v.pos.x) * 0.15;
+          }
+        });
+      }
+    }
+
+    // Gently rotate crashed scout ship telemetry sphere
+    if (this.crashedScoutShip && this.crashedScoutShip.holoMesh) {
+      this.crashedScoutShip.holoMesh.rotation.y += delta * 1.2;
+    }
   }
 }
 

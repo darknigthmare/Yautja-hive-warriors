@@ -572,6 +572,14 @@ class GameApp {
           // Handled Space Jockey Dais Sacred Engineer Sarcophagus Awakening!
         } else if (this.env && this.env.checkPowerLoaderInteraction(this.player.position, this.player, this.horde, this.ui, this.audio, this.particles)) {
           // Handled Caterpillar Power Loader crushing clamp!
+        } else if (this.env && this.env.checkCrucifiedPredatorInteraction && this.env.checkCrucifiedPredatorInteraction(this.player, this.ui, this.audio, this.particles)) {
+          // Handled Classic Predator Crucifixion Liberation & 1987 Plasma Unlock (Predators 2010)!
+        } else if (this.env && this.env.checkScoutShipConsoleInteraction && this.env.checkScoutShipConsoleInteraction(this.player.position, this.ui, this.audio, this.horde, this.player)) {
+          // Handled Crashed Scout Ship Telemetry Scan (AVP: Requiem 2007)!
+        } else if (this.env && this.env.checkCharonLabConsoleInteraction && this.env.checkCharonLabConsoleInteraction(this.player.position, this.horde, this.ui, this.audio)) {
+          // Handled Base Charon Mutagen Pheromone Dispersion (Aliens: Rogue 1993)!
+        } else if (this.env && this.env.checkFixedSentryInteraction && this.env.checkFixedSentryInteraction(this.player.position, this.audio, this.ui)) {
+          // Handled Fixed UA 571-C Sentry 250-Round Drum Reload (Aliens 1986)!
         } else if (this.checkCatwalkPlungingExecution()) {
           // Handled Catwalk Plunging Execution Drop (v53.0)!
         } else {
@@ -1165,6 +1173,9 @@ class GameApp {
       if (this.env.checkStasisTankHits) {
         this.env.checkStasisTankHits(attack, this.audio, this.particles, this.horde);
       }
+      if (this.env.checkAmmoniaPipeDamage) {
+        this.env.checkAmmoniaPipeDamage(attack, this.audio, this.particles, this.horde);
+      }
     }
 
     // Update Combo Chain Tag
@@ -1216,6 +1227,9 @@ class GameApp {
       }
       if (this.env.checkStasisTankHits) {
         this.env.checkStasisTankHits(attack, this.audio, this.particles, this.horde);
+      }
+      if (this.env.checkAmmoniaPipeDamage) {
+        this.env.checkAmmoniaPipeDamage(attack, this.audio, this.particles, this.horde);
       }
     }
 
@@ -2244,8 +2258,10 @@ class GameApp {
       if (this.env.updateStasisTanks) {
         this.env.updateStasisTanks(delta, this.player, this.horde, this.audio, this.particles);
       }
-      // Chantier 3, 4 & 5 (v55.0): JP-4 Explosive Fuel Barrels, WY Plasma Terminals & Flooded Water Puddles
-      if (this.env.updateEnvironmentV55) {
+      // Chantier 3, 4, 5 & v56.0 Master Level Design Systems
+      if (this.env.updateLevelDesignV56) {
+        this.env.updateLevelDesignV56(delta, this.player, this.horde, this.bosses, this.audio, this.particles, this.ui);
+      } else if (this.env.updateEnvironmentV55) {
         this.env.updateEnvironmentV55(delta, this.player, this.horde, this.audio, this.particles, this.ui);
       } else if (this.env.updateEnvironmentV54) {
         this.env.updateEnvironmentV54(delta, this.player, this.horde, this.audio, this.particles);
@@ -2464,6 +2480,9 @@ class GameApp {
           this.env.checkNitrogenTankHits(p.mesh.position, 2.2, p.damage, this.audio, this.particles);
           this.env.checkWebbingDamage(p.mesh.position, 2.2, p.damage, this.particles);
           this.env.checkCryoTubeHits(p.mesh.position, 2.2, p.damage, this.audio, this.particles, this.horde);
+          if (this.env.checkAmmoniaPipeDamage) {
+            this.env.checkAmmoniaPipeDamage({ origin: p.mesh.position, radius: 2.2, damage: p.damage }, this.audio, this.particles, this.horde);
+          }
         }
 
         const hits = this.horde.checkMeleeHits({ origin: p.mesh.position, radius: 2.8, damage: p.damage });
@@ -2855,6 +2874,44 @@ class GameApp {
       if (liftPrompt) {
         if (isNearLift) liftPrompt.classList.remove('hidden');
         else liftPrompt.classList.add('hidden');
+      }
+
+      // Marc QA (v56.0): Verticality Telemetry & Hunting Bough Altitude HUD
+      const vertEl = document.getElementById('wrist-verticality-hud');
+      if (vertEl && this.player) {
+        const alt = Math.max(0, this.player.position.y).toFixed(1);
+        const isElevated = this.player.isPerched || this.player.position.y >= 5.0;
+        vertEl.innerText = `ALTITUDE: +${alt}m // ${isElevated ? 'AFFÛT EN HAUTEUR : DÉGÂTS SNIPER +35% 🎯' : 'AU SOL'}`;
+        vertEl.style.color = isElevated ? '#38bdf8' : '#94a3b8';
+      }
+
+      // v56.0 Level Design Proximity Prompts
+      const isNearScoutShip = this.env.crashedScoutShip && this.player && this.player.position.distanceTo(this.env.crashedScoutShip.consolePos) <= 4.2;
+      const scoutPrompt = document.getElementById('scout-ship-prompt');
+      if (scoutPrompt) {
+        if (isNearScoutShip) scoutPrompt.classList.remove('hidden');
+        else scoutPrompt.classList.add('hidden');
+      }
+
+      const isNearCharonLab = this.env.charonGeneticsLab && this.player && this.player.position.distanceTo(this.env.charonGeneticsLab.consolePos) <= 4.2;
+      const charonPrompt = document.getElementById('charon-lab-prompt');
+      if (charonPrompt) {
+        if (isNearCharonLab) charonPrompt.classList.remove('hidden');
+        else charonPrompt.classList.add('hidden');
+      }
+
+      const isNearFixedSentry = this.env.fixedSentryEmplacements && this.player && this.env.fixedSentryEmplacements.some(s => s.pos.distanceTo(this.player.position) <= 3.8);
+      const sentryPrompt = document.getElementById('fixed-sentry-prompt');
+      if (sentryPrompt) {
+        if (isNearFixedSentry) sentryPrompt.classList.remove('hidden');
+        else sentryPrompt.classList.add('hidden');
+      }
+
+      const isNearCrucified = this.env.gamePreserveCamp && !this.env.gamePreserveCamp.isReleased && this.player && this.player.position.distanceTo(this.env.gamePreserveCamp.totemPos) <= 4.8;
+      const crucPrompt = document.getElementById('crucified-predator-prompt');
+      if (crucPrompt) {
+        if (isNearCrucified) crucPrompt.classList.remove('hidden');
+        else crucPrompt.classList.add('hidden');
       }
     }
 
@@ -3337,7 +3394,8 @@ class GameApp {
       { id: 'btn-forge-enkidu', key: 'enkiduBattleplate', costHonor: 3000, costJelly: 5 },
       { id: 'btn-forge-burner-coil', key: 'burnerPlasmaCoil', costHonor: 3500, costJelly: 6 },
       { id: 'btn-forge-cauterizing', key: 'cauterizingWristblade', costHonor: 3200, costJelly: 5 },
-      { id: 'btn-forge-ceramic-armor', key: 'ceramicThermalArmor', costHonor: 3600, costJelly: 5 }
+      { id: 'btn-forge-ceramic-armor', key: 'ceramicThermalArmor', costHonor: 3600, costJelly: 5 },
+      { id: 'btn-forge-dlex-targeting', key: 'dlexTargetingHUD', costHonor: 4000, costJelly: 6 }
     ];
 
     upgrades.forEach(u => {

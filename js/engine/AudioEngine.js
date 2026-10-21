@@ -6500,6 +6500,225 @@ export class AudioEngine {
     osc.start(now);
     osc.stop(now + 0.18);
   }
+
+  // 122. Crashed Scout Ship Orbital Telemetry Sonar Ping (AVP: Requiem 2007)
+  playScoutShipOrbitalPing() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(440, now);
+    osc.frequency.exponentialRampToValueAtTime(110, now + 0.65);
+    gain.gain.setValueAtTime(0.75, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.65);
+
+    // High crystalline shimmer overtone
+    const shimmer = this.ctx.createOscillator();
+    const sGain = this.ctx.createGain();
+    shimmer.type = 'sine';
+    shimmer.frequency.setValueAtTime(3520, now);
+    shimmer.frequency.exponentialRampToValueAtTime(1760, now + 0.4);
+    sGain.gain.setValueAtTime(0.25, now);
+    sGain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+
+    osc.connect(gain);
+    gain.connect(this.getOut());
+    shimmer.connect(sGain);
+    sGain.connect(this.getOut());
+
+    osc.start(now);
+    osc.stop(now + 0.65);
+    shimmer.start(now);
+    shimmer.stop(now + 0.4);
+  }
+
+  // 123. Base Charon Genetic Lab Mutagen Pheromone Dispersal (Aliens: Rogue 1993)
+  playCharonPheromoneHiss() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const bufferSize = Math.floor(this.ctx.sampleRate * 0.75);
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (this.ctx.sampleRate * 0.28));
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(1400, now);
+    filter.Q.setValueAtTime(2.5, now);
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.65, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.75);
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.getOut());
+
+    noise.start(now);
+    noise.stop(now + 0.75);
+  }
+
+  // 124. Fixed UA 571-C Automated Sentry Tripod 250-Round Drum Reload (Aliens 1986)
+  playFixedSentryReload() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // First heavy latch click
+    const osc1 = this.ctx.createOscillator();
+    const g1 = this.ctx.createGain();
+    osc1.type = 'triangle';
+    osc1.frequency.setValueAtTime(280, now);
+    osc1.frequency.exponentialRampToValueAtTime(80, now + 0.08);
+    g1.gain.setValueAtTime(0.7, now);
+    g1.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+    osc1.connect(g1);
+    g1.connect(this.getOut());
+    osc1.start(now);
+    osc1.stop(now + 0.08);
+
+    // Second mechanical battery lock click
+    const osc2 = this.ctx.createOscillator();
+    const g2 = this.ctx.createGain();
+    osc2.type = 'square';
+    osc2.frequency.setValueAtTime(540, now + 0.12);
+    osc2.frequency.exponentialRampToValueAtTime(140, now + 0.22);
+    g2.gain.setValueAtTime(0.0, now);
+    g2.gain.setValueAtTime(0.65, now + 0.12);
+    g2.gain.exponentialRampToValueAtTime(0.01, now + 0.22);
+    osc2.connect(g2);
+    g2.connect(this.getOut());
+    osc2.start(now + 0.12);
+    osc2.stop(now + 0.22);
+  }
+
+  // 125. Fixed UA 571-C Automated Sentry 10mm High-Rate Burst Fire (Aliens 1986)
+  playFixedSentryBurst() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    for (let i = 0; i < 3; i++) {
+      const t = now + i * 0.055;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(180, t);
+      osc.frequency.exponentialRampToValueAtTime(55, t + 0.045);
+      gain.gain.setValueAtTime(0.55, t);
+      gain.gain.exponentialRampToValueAtTime(0.01, t + 0.045);
+      osc.connect(gain);
+      gain.connect(this.getOut());
+      osc.start(t);
+      osc.stop(t + 0.045);
+    }
+  }
+
+  // 126. Ruptured Ammonia Coolant Pipe Sub-Zero Frost Hiss (Alien: Isolation)
+  playAmmoniaPipeHissFrost() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const bufferSize = Math.floor(this.ctx.sampleRate * 0.6);
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * (i % 6 === 0 ? 0.9 : 0.25) * Math.exp(-i / (bufferSize * 0.4));
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'highpass';
+    filter.frequency.setValueAtTime(2600, now);
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.7, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.getOut());
+
+    noise.start(now);
+    noise.stop(now + 0.6);
+  }
+
+  // 127. Collapsible Floor Grate Structural Shear & Acid Plunge (Aliens 1986 / Alien 3)
+  playFloorGrateCollapse() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(240, now);
+    osc.frequency.exponentialRampToValueAtTime(45, now + 0.35);
+    gain.gain.setValueAtTime(0.8, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+
+    osc.connect(gain);
+    gain.connect(this.getOut());
+    osc.start(now);
+    osc.stop(now + 0.35);
+  }
+
+  // 128. Jungle Bough Canopy Leap & Air Whoosh (Predator 1987 / Prey 2022)
+  playBoughJumpWhoosh() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(190, now);
+    osc.frequency.exponentialRampToValueAtTime(65, now + 0.28);
+    gain.gain.setValueAtTime(0.55, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.28);
+
+    osc.connect(gain);
+    gain.connect(this.getOut());
+    osc.start(now);
+    osc.stop(now + 0.28);
+  }
+
+  // 129. Crucified Classic Predator Cord Slicing & Guttural Honor Release (Predators 2010)
+  playCrucifiedPredatorRelease() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Sharp dlex cutting ping
+    const bladeOsc = this.ctx.createOscillator();
+    const bladeGain = this.ctx.createGain();
+    bladeOsc.type = 'sine';
+    bladeOsc.frequency.setValueAtTime(1450, now);
+    bladeOsc.frequency.exponentialRampToValueAtTime(620, now + 0.12);
+    bladeGain.gain.setValueAtTime(0.7, now);
+    bladeGain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+    bladeOsc.connect(bladeGain);
+    bladeGain.connect(this.getOut());
+    bladeOsc.start(now);
+    bladeOsc.stop(now + 0.12);
+
+    // Deep guttural Yautja honor vocalization
+    const roarOsc = this.ctx.createOscillator();
+    const roarGain = this.ctx.createGain();
+    roarOsc.type = 'sawtooth';
+    roarOsc.frequency.setValueAtTime(115, now + 0.08);
+    roarOsc.frequency.exponentialRampToValueAtTime(58, now + 0.45);
+    roarGain.gain.setValueAtTime(0.0, now);
+    roarGain.gain.setValueAtTime(0.65, now + 0.08);
+    roarGain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+    roarOsc.connect(roarGain);
+    roarGain.connect(this.getOut());
+    roarOsc.start(now + 0.08);
+    roarOsc.stop(now + 0.45);
+  }
 }
 
 

@@ -223,8 +223,13 @@ export class Player {
       enkiduBattleplate: false,
       burnerPlasmaCoil: false,
       cauterizingWristblade: false,
-      ceramicThermalArmor: false
+      ceramicThermalArmor: false,
+      dlexTargetingHUD: false
     };
+    this.hasClassic1987Plasma = false;
+    this.hasDlexTargetingHUD = false;
+    this.orbitalScanTimer = 0;
+    this.critChanceBonus = 0;
     this.loadClanForgeUpgrades();
   }
 
@@ -634,12 +639,19 @@ export class Player {
   togglePerch() {
     this.isPerched = !this.isPerched;
     if (this.isPerched) {
-      // Perch high atop canopy/pillars (12 meters above arena)
+      // Perch high atop canopy/hunting boughs (12 meters above arena)
       this.position.y = 12.0;
-      this.audioEngine.playSlash();
+      if (this.audioEngine && this.audioEngine.playBoughJumpWhoosh) {
+        this.audioEngine.playBoughJumpWhoosh();
+      } else {
+        this.audioEngine.playSlash();
+      }
     } else {
       // Dive assassination plunge!
       this.position.y = 0;
+      if (this.audioEngine && this.audioEngine.playBoughJumpWhoosh) {
+        this.audioEngine.playBoughJumpWhoosh();
+      }
       this.audioEngine.playPounceImpact();
     }
     this.mesh.position.copy(this.position);
@@ -1664,7 +1676,10 @@ export class Player {
   }
 
   firePlasmaShot(isCharged = false) {
-    const energyCost = isCharged ? 35 : this.data.stats.plasmaEnergyCost;
+    let energyCost = isCharged ? 35 : this.data.stats.plasmaEnergyCost;
+    if (this.hasDlexTargetingHUD) {
+      energyCost = Math.round(energyCost * 0.75); // 25% energy reduction
+    }
     if (this.plasmaEnergy < energyCost || this.isFacehuggerLatched) return null;
     this.plasmaEnergy -= energyCost;
 
@@ -1676,15 +1691,32 @@ export class Player {
     const origin = this.position.clone().add(new THREE.Vector3(0, 2.5, 0));
     const forward = new THREE.Vector3(
       Math.sin(this.rotationY),
-      this.isPerched ? -0.4 : 0, // Aim downwards when perched!
+      (this.isPerched || this.position.y >= 5.0) ? -0.4 : 0, // Aim downwards when perched!
       Math.cos(this.rotationY)
     ).normalize();
+
+    let dmg = isCharged ? this.plasmaDamage * 3.4 : this.plasmaDamage;
+    let spd = isCharged ? 52 : 45;
+
+    if (this.hasDlexTargetingHUD) {
+      dmg *= 1.15;
+    }
+    if (this.hasClassic1987Plasma) {
+      dmg *= 1.20;
+      spd *= 1.20;
+    }
+    if (this.isPerched || this.position.y >= 5.0) {
+      dmg *= 1.35; // +35% elevated sniping damage
+    }
+    if (this.orbitalScanTimer > 0) {
+      dmg *= 1.25; // +25% critical scan boost
+    }
 
     return {
       position: origin,
       direction: forward,
-      damage: isCharged ? this.plasmaDamage * 3.4 : this.plasmaDamage,
-      speed: isCharged ? 52 : 45,
+      damage: dmg,
+      speed: spd,
       isCharged: isCharged
     };
   }
@@ -4088,6 +4120,20 @@ export class Player {
     // === v55.0 Timers (Water Cloak Disruption, Sniper Tri-Laser) ===
     if (this.waterCloakCooldown > 0) this.waterCloakCooldown -= delta;
     if (this.sniperCooldown > 0) this.sniperCooldown -= delta;
+
+    // === v56.0 Level Design Sniping & Telemetry Timers ===
+    if (this.orbitalScanTimer > 0) {
+      this.orbitalScanTimer -= delta;
+      if (this.orbitalScanTimer <= 0) {
+        this.critChanceBonus = 0;
+      }
+    }
+    this.isOnBough = (this.position && this.position.y >= 5.0);
+  }
+
+  unlockClassic1987Plasma() {
+    this.hasClassic1987Plasma = true;
+    this.plasmaChargeMultiplier = 0.70;
   }
 
   /* === CHANTIER 1 (v51.0): Clan Weapon Forge Persistent Upgrades === */
@@ -4114,6 +4160,9 @@ export class Player {
         }
         if (this.forgeUpgrades.ceramicThermalArmor) {
           this.hasCeramicThermalArmor = true;
+        }
+        if (this.forgeUpgrades.dlexTargetingHUD) {
+          this.hasDlexTargetingHUD = true;
         }
       }
     } catch (e) {

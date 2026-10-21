@@ -3682,6 +3682,22 @@ html, body {
   color: #fecaca;
 }
 
+/* === CHANTIER 7 & MARC QA (v56.0): Verticality Telemetry & Hunting Bough Altitude HUD === */
+.wrist-verticality-card {
+  margin-top: 6px;
+  background: rgba(15, 23, 42, 0.88);
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.25);
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-family: 'Share Tech Mono', monospace, sans-serif;
+  font-size: 0.74rem;
+  letter-spacing: 1px;
+  color: #94a3b8;
+  text-shadow: 0 0 6px rgba(56, 189, 248, 0.5);
+  transition: all 0.25s ease-in-out;
+}
+
 
 
 
