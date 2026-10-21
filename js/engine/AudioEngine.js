@@ -7497,6 +7497,244 @@ export class AudioEngine {
     noise.start(now);
     noise.stop(now + 0.95);
   }
+
+  // 149. Major Alan Dutch Schaefer's Canyon Challenge Roar ("KILL ME! I'M HERE!") (Predator 1987)
+  playDutchChallengeRoar() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Dual vocal formant oscillators
+    const osc1 = this.ctx.createOscillator();
+    const osc2 = this.ctx.createOscillator();
+    osc1.type = 'sawtooth';
+    osc2.type = 'triangle';
+    osc1.frequency.setValueAtTime(115, now);
+    osc1.frequency.linearRampToValueAtTime(165, now + 0.35);
+    osc1.frequency.exponentialRampToValueAtTime(85, now + 1.35);
+
+    osc2.frequency.setValueAtTime(118, now);
+    osc2.frequency.linearRampToValueAtTime(168, now + 0.35);
+    osc2.frequency.exponentialRampToValueAtTime(88, now + 1.35);
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(450, now);
+    filter.frequency.linearRampToValueAtTime(620, now + 0.35);
+    filter.frequency.linearRampToValueAtTime(320, now + 1.35);
+    filter.Q.setValueAtTime(3.2, now);
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.01, now);
+    gain.gain.linearRampToValueAtTime(0.85, now + 0.2);
+    gain.gain.setValueAtTime(0.8, now + 0.85);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 1.4);
+
+    osc1.connect(filter);
+    osc2.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.getOut());
+
+    osc1.start(now);
+    osc2.start(now);
+    osc1.stop(now + 1.4);
+    osc2.stop(now + 1.4);
+  }
+
+  // 150. Mac's Perimeter Magnesium Illumination Flare Pop & Sizzle (Predator 1987)
+  playMagnesiumFlarePop() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Percussion cap launch pop
+    const popOsc = this.ctx.createOscillator();
+    popOsc.type = 'triangle';
+    popOsc.frequency.setValueAtTime(850, now);
+    popOsc.frequency.exponentialRampToValueAtTime(110, now + 0.05);
+
+    const popGain = this.ctx.createGain();
+    popGain.gain.setValueAtTime(0.85, now);
+    popGain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+
+    popOsc.connect(popGain);
+    popGain.connect(this.getOut());
+    popOsc.start(now);
+    popOsc.stop(now + 0.05);
+
+    // Sizzling 3000°C magnesium burn hiss
+    const bufSize = Math.floor(this.ctx.sampleRate * 0.95);
+    const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * (0.7 + Math.random() * 0.3);
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buf;
+
+    const noiseFilter = this.ctx.createBiquadFilter();
+    noiseFilter.type = 'highpass';
+    noiseFilter.frequency.setValueAtTime(2600, now + 0.04);
+
+    const noiseGain = this.ctx.createGain();
+    noiseGain.gain.setValueAtTime(0.75, now + 0.04);
+    noiseGain.gain.exponentialRampToValueAtTime(0.01, now + 0.95);
+
+    noise.connect(noiseFilter);
+    noiseFilter.connect(noiseGain);
+    noiseGain.connect(this.getOut());
+    noise.start(now + 0.04);
+    noise.stop(now + 0.95);
+  }
+
+  // 151. Dutch's Primitive Workbench Explosive Tip Jungle Arrow Crafting (Predator 1987)
+  playExplosiveArrowCraft() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Wood notch whittling friction
+    const bufSize = Math.floor(this.ctx.sampleRate * 0.28);
+    const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * (i % 4 === 0 ? 0.8 : 0.1);
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buf;
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(1400, now);
+    filter.Q.setValueAtTime(4.0, now);
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.55, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.28);
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.getOut());
+    noise.start(now);
+    noise.stop(now + 0.28);
+
+    // Detonator cap metallic tap at +0.18s
+    const tapOsc = this.ctx.createOscillator();
+    tapOsc.type = 'sine';
+    tapOsc.frequency.setValueAtTime(2700, now + 0.18);
+    tapOsc.frequency.exponentialRampToValueAtTime(950, now + 0.28);
+
+    const tapGain = this.ctx.createGain();
+    tapGain.gain.setValueAtTime(0.45, now + 0.18);
+    tapGain.gain.exponentialRampToValueAtTime(0.01, now + 0.32);
+
+    tapOsc.connect(tapGain);
+    tapGain.connect(this.getOut());
+    tapOsc.start(now + 0.18);
+    tapOsc.stop(now + 0.32);
+  }
+
+  // 152. River Water Wading & Mud Rapids Splashing (Predator 1987)
+  playRiverWaterWadeSquelch() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const bufSize = Math.floor(this.ctx.sampleRate * 0.4);
+    const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.sin((i / bufSize) * Math.PI);
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buf;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(340, now);
+    filter.frequency.linearRampToValueAtTime(780, now + 0.2);
+    filter.frequency.linearRampToValueAtTime(280, now + 0.4);
+    filter.Q.setValueAtTime(2.2, now);
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.5, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.getOut());
+    noise.start(now);
+    noise.stop(now + 0.4);
+  }
+
+  // 153. Jungle Hunter Fluorescent Green Blood Drip & Chemical Sizzle (Predator 1987)
+  playYautjaGreenBloodDrip() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Phosphorescent chemical bubble sizzle
+    const bufSize = Math.floor(this.ctx.sampleRate * 0.5);
+    const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) {
+      const bubble = Math.random() > 0.92 ? 0.9 : 0.05;
+      data[i] = (Math.random() * 2 - 1) * bubble;
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buf;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'highpass';
+    filter.frequency.setValueAtTime(3200, now);
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.65, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.getOut());
+    noise.start(now);
+    noise.stop(now + 0.5);
+
+    // Viscous liquid droplet drop tone
+    const dripOsc = this.ctx.createOscillator();
+    dripOsc.type = 'sine';
+    dripOsc.frequency.setValueAtTime(1450, now);
+    dripOsc.frequency.exponentialRampToValueAtTime(420, now + 0.15);
+
+    const dripGain = this.ctx.createGain();
+    dripGain.gain.setValueAtTime(0.4, now);
+    dripGain.gain.exponentialRampToValueAtTime(0.01, now + 0.18);
+
+    dripOsc.connect(dripGain);
+    dripGain.connect(this.getOut());
+    dripOsc.start(now);
+    dripOsc.stop(now + 0.18);
+  }
+
+  // 154. Ancient Banyan Canopy Bough Creaking under Yautja Stalking (Predator 1987)
+  playCanopyBoughCreak() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const osc = this.ctx.createOscillator();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(95, now);
+    osc.frequency.linearRampToValueAtTime(125, now + 0.25);
+    osc.frequency.exponentialRampToValueAtTime(70, now + 0.65);
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(260, now);
+    filter.Q.setValueAtTime(4.0, now);
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.01, now);
+    gain.gain.linearRampToValueAtTime(0.45, now + 0.15);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.65);
+
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.getOut());
+    osc.start(now);
+    osc.stop(now + 0.65);
+  }
 }
 
 

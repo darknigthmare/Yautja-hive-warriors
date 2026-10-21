@@ -140,6 +140,16 @@ export class EnvironmentManager {
     this.punjiStakeTraps = [];
     this.rebelFuelBarrels = [];
     this.activeValVerdeFireZones = [];
+    // v59.0 Master 1:1 Predator 1 (1987) Val Verde Apex Systems
+    this.canopyBoughHighways = [];
+    this.dutchChallengeRock = null;
+    this.dutchWorkbench = null;
+    this.annaHostageCage = null;
+    this.macPerimeterTripwire = null;
+    this.wildBoarRoastSpit = null;
+    this.yautjaCraterLocus = null;
+    this.riverRapidsPath = null;
+    this.activeIlluminationFlare = null;
   }
 
   clearEnvironment() {
@@ -500,6 +510,45 @@ export class EnvironmentManager {
       if (f.mesh) this.scene.remove(f.mesh);
     });
     this.activeValVerdeFireZones = [];
+
+    // v59.0 Val Verde Apex Cleanups
+    this.canopyBoughHighways.forEach(b => {
+      if (b.mesh) this.scene.remove(b.mesh);
+    });
+    this.canopyBoughHighways = [];
+    if (this.dutchChallengeRock && this.dutchChallengeRock.group) {
+      this.scene.remove(this.dutchChallengeRock.group);
+      this.dutchChallengeRock = null;
+    }
+    if (this.dutchWorkbench && this.dutchWorkbench.group) {
+      this.scene.remove(this.dutchWorkbench.group);
+      this.dutchWorkbench = null;
+    }
+    if (this.annaHostageCage && this.annaHostageCage.group) {
+      this.scene.remove(this.annaHostageCage.group);
+      this.annaHostageCage = null;
+    }
+    if (this.macPerimeterTripwire && this.macPerimeterTripwire.group) {
+      this.scene.remove(this.macPerimeterTripwire.group);
+      this.macPerimeterTripwire = null;
+    }
+    if (this.wildBoarRoastSpit && this.wildBoarRoastSpit.group) {
+      this.scene.remove(this.wildBoarRoastSpit.group);
+      this.wildBoarRoastSpit = null;
+    }
+    if (this.yautjaCraterLocus && this.yautjaCraterLocus.group) {
+      this.scene.remove(this.yautjaCraterLocus.group);
+      this.yautjaCraterLocus = null;
+    }
+    if (this.riverRapidsPath && this.riverRapidsPath.group) {
+      this.scene.remove(this.riverRapidsPath.group);
+      this.riverRapidsPath = null;
+    }
+    if (this.activeIlluminationFlare && this.activeIlluminationFlare.mesh) {
+      this.scene.remove(this.activeIlluminationFlare.mesh);
+      if (this.activeIlluminationFlare.light) this.scene.remove(this.activeIlluminationFlare.light);
+      this.activeIlluminationFlare = null;
+    }
 
     this.reactorMeltdownActive = false;
     this.reactorMeltdownTimer = 180.0;
@@ -1897,6 +1946,34 @@ export class EnvironmentManager {
     if (this.rebelFuelDepot && this.rebelFuelDepot.shackPos) {
       if (x >= 0 && x <= 4.5 && z >= 8 && z <= 12.5) {
         return 2.6;
+      }
+    }
+
+    // 21. Canopy Bough Highway & Vine Tightrope Bridges (+6.8m) (Predator 1987)
+    if (this.canopyBoughHighways && this.canopyBoughHighways.length > 0) {
+      for (const bridge of this.canopyBoughHighways) {
+        if (x >= bridge.minX && x <= bridge.maxX && z >= bridge.minZ && z <= bridge.maxZ) {
+          return 6.8;
+        }
+      }
+    }
+
+    // 22. Dutch's Challenge Rock (+1.8m) (Predator 1987)
+    if (this.dutchChallengeRock && this.dutchChallengeRock.pos) {
+      const dx = x - this.dutchChallengeRock.pos.x;
+      const dz = z - this.dutchChallengeRock.pos.z;
+      if (dx * dx + dz * dz <= 2.2 * 2.2) {
+        return 1.8;
+      }
+    }
+
+    // 23. Jungle Hunter Self-Destruct Blast Crater Rim (+1.2m) (Predator 1987)
+    if (this.yautjaCraterLocus && this.yautjaCraterLocus.pos) {
+      const dx = x - this.yautjaCraterLocus.pos.x;
+      const dz = z - this.yautjaCraterLocus.pos.z;
+      const distSq = dx * dx + dz * dz;
+      if (distSq >= 4.0 * 4.0 && distSq <= 7.2 * 7.2) {
+        return 1.2;
       }
     }
 
@@ -8660,6 +8737,245 @@ export class EnvironmentManager {
       poolPos: new THREE.Vector3(26.5, 0, -8)
     };
 
+    // 12. Canopy Bough Highway & Vine Tightrope Bridges (+6.8m elevation)
+    const canopyMat = new THREE.MeshStandardMaterial({ color: 0x3d2012, roughness: 0.9 });
+    this.canopyBoughHighways = [
+      { minX: -22, maxX: 2, minZ: -38, maxZ: 2 },
+      { minX: -2, maxX: 22, minZ: -38, maxZ: 2 },
+      { minX: -2, maxX: 22, minZ: -2, maxZ: 38 },
+      { minX: -22, maxX: 2, minZ: -2, maxZ: 38 }
+    ];
+
+    // Bridge 1 (West to North): [-20, 6.8, 0] to [0, 6.8, -36]
+    const b1 = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.25, 41.0), canopyMat);
+    b1.position.set(-10, 6.8, -18);
+    b1.rotation.y = Math.atan2(20, -36);
+    b1.castShadow = true;
+    b1.receiveShadow = true;
+    group.add(b1);
+
+    // Bridge 2 (North to East): [0, 6.8, -36] to [20, 6.8, 0]
+    const b2 = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.25, 41.0), canopyMat);
+    b2.position.set(10, 6.8, -18);
+    b2.rotation.y = Math.atan2(-20, -36);
+    b2.castShadow = true;
+    b2.receiveShadow = true;
+    group.add(b2);
+
+    // Bridge 3 (East to South): [20, 6.8, 0] to [0, 6.8, 36]
+    const b3 = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.25, 41.0), canopyMat);
+    b3.position.set(10, 6.8, 18);
+    b3.rotation.y = Math.atan2(20, 36);
+    b3.castShadow = true;
+    b3.receiveShadow = true;
+    group.add(b3);
+
+    // Bridge 4 (South to West): [0, 6.8, 36] to [-20, 6.8, 0]
+    const b4 = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.25, 41.0), canopyMat);
+    b4.position.set(-10, 6.8, 18);
+    b4.rotation.y = Math.atan2(-20, 36);
+    b4.castShadow = true;
+    b4.receiveShadow = true;
+    group.add(b4);
+
+    // 13. Dutch's Shouting Challenge Rock ("KILL ME! I'M HERE!") [-10, 0, 18] (+1.8m)
+    const challengeGroup = new THREE.Group();
+    challengeGroup.position.set(-10, 0, 18);
+
+    const chalRock = new THREE.Mesh(new THREE.CylinderGeometry(2.2, 2.6, 1.8, 8), stoneMat);
+    chalRock.position.y = 0.9;
+    chalRock.castShadow = true;
+    chalRock.receiveShadow = true;
+    challengeGroup.add(chalRock);
+
+    // Burning torch stuck into rock
+    const torchWood = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 1.6, 4), woodMat);
+    torchWood.position.set(0.6, 2.2, 0.4);
+    torchWood.rotation.z = 0.2;
+    challengeGroup.add(torchWood);
+
+    const torchFlame = new THREE.Mesh(new THREE.ConeGeometry(0.18, 0.5, 6), fireMat);
+    torchFlame.position.set(0.8, 3.1, 0.4);
+    challengeGroup.add(torchFlame);
+
+    const torchLight = new THREE.PointLight(0xf59e0b, 1.8, 9.0);
+    torchLight.position.set(0.8, 3.2, 0.4);
+    challengeGroup.add(torchLight);
+
+    group.add(challengeGroup);
+    this.dutchChallengeRock = {
+      group: challengeGroup,
+      pos: new THREE.Vector3(-10, 1.8, 18),
+      cooldown: 0
+    };
+
+    // 14. Dutch's Primitive Weapon Workbench (Explosive Tip Jungle Arrows) [-6, 0, 26]
+    const benchGroup = new THREE.Group();
+    benchGroup.position.set(-6, 0, 26);
+
+    const benchTable = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.8, 1.2), woodMat);
+    benchTable.position.y = 0.4;
+    benchTable.castShadow = true;
+    benchGroup.add(benchTable);
+
+    // Carved ash bows and gunpowder warheads on table
+    const bowMesh = new THREE.Mesh(new THREE.TorusGeometry(0.45, 0.03, 4, 12, Math.PI), woodMat);
+    bowMesh.position.set(0, 0.85, 0);
+    bowMesh.rotation.x = Math.PI / 2;
+    benchGroup.add(bowMesh);
+
+    group.add(benchGroup);
+    this.dutchWorkbench = {
+      group: benchGroup,
+      pos: new THREE.Vector3(-6, 0.8, 26),
+      isCrafted: false
+    };
+
+    // 15. Anna Gonsalves's Bamboo Hostage Holding Cage & Rebel Maps [4, 0, 14]
+    const annaGroup = new THREE.Group();
+    annaGroup.position.set(4, 0, 14);
+
+    // Bamboo cage structure (2.2m x 2.2m x 2.4m)
+    for (let c = 0; c < 8; c++) {
+      const a = (c / 8) * Math.PI * 2;
+      const bar = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 2.4, 4), woodMat);
+      bar.position.set(Math.cos(a) * 1.1, 1.2, Math.sin(a) * 1.1);
+      annaGroup.add(bar);
+    }
+    const cageRoof = new THREE.Mesh(new THREE.ConeGeometry(1.4, 0.6, 8), woodMat);
+    cageRoof.position.y = 2.6;
+    annaGroup.add(cageRoof);
+
+    // Map table with guerrilla reconnaissance charts
+    const mapTable = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.8, 1.0), woodMat);
+    mapTable.position.set(2.4, 0.4, 0);
+    annaGroup.add(mapTable);
+
+    const mapPaper = new THREE.Mesh(new THREE.PlaneGeometry(1.2, 0.8), new THREE.MeshBasicMaterial({ color: 0xfef08a }));
+    mapPaper.position.set(2.4, 0.82, 0);
+    mapPaper.rotation.x = -Math.PI / 2;
+    annaGroup.add(mapPaper);
+
+    group.add(annaGroup);
+    this.annaHostageCage = {
+      group: annaGroup,
+      pos: new THREE.Vector3(4, 0.8, 14),
+      mapPos: new THREE.Vector3(6.4, 0.8, 14),
+      isScanned: false
+    };
+
+    // 16. Mac's Perimeter Magnesium Illumination Flare & Claymore Tripwire [12, 0, -18]
+    const macGroup = new THREE.Group();
+    macGroup.position.set(12, 0, -18);
+
+    // Green US tripwire between roots
+    const tripwire = new THREE.Mesh(new THREE.BoxGeometry(4.2, 0.02, 0.02), new THREE.MeshBasicMaterial({ color: 0x22c55e }));
+    tripwire.position.y = 0.25;
+    macGroup.add(tripwire);
+
+    // M18A1 Claymore Mine
+    const claymore = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.35, 0.15), camoMat);
+    claymore.position.set(-1.8, 0.2, 0);
+    macGroup.add(claymore);
+
+    // M127A1 White Flare Rocket Tube
+    const flareTube = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.6, 6), metalMat);
+    flareTube.position.set(1.8, 0.3, 0);
+    flareTube.rotation.z = -0.35;
+    macGroup.add(flareTube);
+
+    group.add(macGroup);
+    this.macPerimeterTripwire = {
+      group: macGroup,
+      pos: new THREE.Vector3(12, 0.3, -18),
+      isTriggered: false
+    };
+
+    // 17. Wild Javelina Roasting Spit (Survival Ration) [10, 0, 2]
+    const spitGroup = new THREE.Group();
+    spitGroup.position.set(10, 0, 2);
+
+    const spitPost1 = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 1.4, 4), woodMat);
+    spitPost1.position.set(-1.0, 0.7, 0);
+    spitGroup.add(spitPost1);
+    const spitPost2 = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 1.4, 4), woodMat);
+    spitPost2.position.set(1.0, 0.7, 0);
+    spitGroup.add(spitPost2);
+
+    const spitBar = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 2.4, 4), metalMat);
+    spitBar.rotation.z = Math.PI / 2;
+    spitBar.position.y = 1.2;
+    spitGroup.add(spitBar);
+
+    // Roasted meat carcass
+    const roastMeat = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.32, 1.2, 8), new THREE.MeshStandardMaterial({ color: 0x713f12, roughness: 0.85 }));
+    roastMeat.rotation.z = Math.PI / 2;
+    roastMeat.position.y = 1.2;
+    spitGroup.add(roastMeat);
+
+    // Embers
+    const embers = new THREE.Mesh(new THREE.CircleGeometry(0.8, 8), new THREE.MeshBasicMaterial({ color: 0xd97706 }));
+    embers.rotation.x = -Math.PI / 2;
+    embers.position.y = 0.03;
+    spitGroup.add(embers);
+
+    group.add(spitGroup);
+    this.wildBoarRoastSpit = {
+      group: spitGroup,
+      pos: new THREE.Vector3(10, 0.8, 2),
+      isConsumed: false
+    };
+
+    // 18. Jungle Hunter Laughing Nuclear Blast Crater & Luminescent Blood Locus [36, 0, 28]
+    const craterGroup = new THREE.Group();
+    craterGroup.position.set(36, 0, 28);
+
+    // Charred blast torus crater rim (elevation +1.2m)
+    const craterRim = new THREE.Mesh(new THREE.TorusGeometry(5.8, 1.2, 8, 20), new THREE.MeshStandardMaterial({ color: 0x18181b, roughness: 0.95 }));
+    craterRim.rotation.x = Math.PI / 2;
+    craterRim.position.y = 0.6;
+    craterRim.castShadow = true;
+    craterGroup.add(craterRim);
+
+    // Scorched blackened crater depression
+    const scorchBed = new THREE.Mesh(new THREE.CircleGeometry(5.2, 16), new THREE.MeshStandardMaterial({ color: 0x09090b, roughness: 0.98 }));
+    scorchBed.rotation.x = -Math.PI / 2;
+    scorchBed.position.y = 0.02;
+    craterGroup.add(scorchBed);
+
+    // Splatters of fluorescent green glowing Yautja blood
+    const greenBloodMat = new THREE.MeshBasicMaterial({ color: 0x22c55e });
+    for (let b = 0; b < 6; b++) {
+      const bloodPuddle = new THREE.Mesh(new THREE.CircleGeometry(0.6 + (b % 3) * 0.3, 8), greenBloodMat);
+      bloodPuddle.rotation.x = -Math.PI / 2;
+      bloodPuddle.position.set((Math.random() - 0.5) * 4.5, 0.04, (Math.random() - 0.5) * 4.5);
+      craterGroup.add(bloodPuddle);
+    }
+
+    const bloodLight = new THREE.PointLight(0x22c55e, 2.2, 8.0);
+    bloodLight.position.set(0, 1.0, 0);
+    craterGroup.add(bloodLight);
+
+    group.add(craterGroup);
+    this.yautjaCraterLocus = {
+      group: craterGroup,
+      pos: new THREE.Vector3(36, 0.8, 28),
+      isAnalyzed: false
+    };
+
+    // 19. Mountain River Rapids Dynamic Water Current Mesh
+    const riverGeo = new THREE.PlaneGeometry(8.0, 65.0);
+    const riverMesh = new THREE.Mesh(riverGeo, waterMat);
+    riverMesh.rotation.x = -Math.PI / 2;
+    riverMesh.rotation.z = Math.atan2(20, -45);
+    riverMesh.position.set(8.0, 0.06, -20.0);
+    group.add(riverMesh);
+
+    this.riverRapidsPath = {
+      group: riverMesh,
+      pos: new THREE.Vector3(8, 0, -20)
+    };
+
     this.scene.add(group);
     this.envObjects.push(group);
 
@@ -8923,6 +9239,200 @@ export class EnvironmentManager {
         }
       });
     });
+  }
+
+  /* === VAL VERDE (PREDATOR 1987) APEX INTERACTION & SURVIVAL SYSTEMS (v59.0) === */
+
+  checkDutchChallengeRoar(player, ui, audio, horde) {
+    if (!this.dutchChallengeRock || !player || !player.position) return false;
+    const rock = this.dutchChallengeRock;
+    if (player.position.distanceTo(rock.pos) <= 4.2) {
+      if (rock.cooldown > 0) {
+        if (ui && ui.showAnnouncement) {
+          ui.showAnnouncement(`⏳ DÉFI DE DUTCH EN RECHARGE (${Math.ceil(rock.cooldown)}S)`);
+        }
+        return true;
+      }
+      rock.cooldown = 45.0;
+      if (audio && audio.playDutchChallengeRoar) audio.playDutchChallengeRoar();
+
+      // Grant +40% Musou Overload Energy
+      player.musouEnergy = Math.min(100, (player.musouEnergy || 0) + 40);
+
+      // Enrage & lure all xenos across the entire map towards Dutch's rock
+      let luredCount = 0;
+      if (horde && horde.aliens) {
+        horde.aliens.forEach(alien => {
+          if (alien && alien.mesh && alien.hp > 0) {
+            alien.speed = (alien.speed || 4.0) * 1.35;
+            alien.targetPos = rock.pos.clone();
+            luredCount++;
+          }
+        });
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement("📢 DÉFI DE DUTCH : 'KILL ME! I'M HERE!' (PREDATOR 1987) — RUGISSEMENT DANS LA CANOPÉE (+40% MUSOU, HORDE ENRAGÉE ATTIRÉE) !", "success");
+      }
+      return true;
+    }
+    return false;
+  }
+
+  checkExplosiveArrowsInteraction(player, ui, audio) {
+    if (!this.dutchWorkbench || !player || !player.position || this.dutchWorkbench.isCrafted) return false;
+    if (player.position.distanceTo(this.dutchWorkbench.pos) <= 4.2) {
+      this.dutchWorkbench.isCrafted = true;
+      if (audio && audio.playExplosiveArrowCraft) audio.playExplosiveArrowCraft();
+
+      player.explosiveArrowCharges = Math.min(8, (player.explosiveArrowCharges || 0) + 6);
+      player.m41aGrenadeCharges = Math.min(6, (player.m41aGrenadeCharges || 0) + 3);
+      if (window.gameInstance) {
+        window.gameInstance.score += 1500;
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement("🏹 ÉTABLI DE DUTCH (PREDATOR 1987) : FLÈCHES EXPLOSIVES EN FRÊNE FABRIQUÉES (+6 TIRS EXPLOSIFS, +1500 SCORE) !", "success");
+      }
+      return true;
+    }
+    return false;
+  }
+
+  checkRebelMapsInteraction(player, ui, audio) {
+    if (!this.annaHostageCage || !player || !player.position || this.annaHostageCage.isScanned) return false;
+    if (player.position.distanceTo(this.annaHostageCage.mapPos) <= 4.2) {
+      this.annaHostageCage.isScanned = true;
+      if (audio && audio.playHueyRadioStatic) audio.playHueyRadioStatic();
+
+      player.rebelMapScannerTimer = 35.0;
+      if (window.gameInstance) {
+        window.gameInstance.score += 1000;
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement("🗺️ CARTES TACTIQUES DES GUÉRILLEROS (PREDATOR 1987) : CARTOGRAPHIE ACTIVE (RADAR SCAN 35S, +1000 SCORE) !", "success");
+      }
+      return true;
+    }
+    return false;
+  }
+
+  checkFlareTripwireTrigger(hitPos, audio, horde, bosses, particles, ui) {
+    if (!this.macPerimeterTripwire || this.macPerimeterTripwire.isTriggered || !hitPos) return false;
+    if (hitPos.distanceTo(this.macPerimeterTripwire.pos) <= 4.5) {
+      this.macPerimeterTripwire.isTriggered = true;
+      if (audio && audio.playMagnesiumFlarePop) audio.playMagnesiumFlarePop();
+
+      // Launch high-altitude magnesium flare (3000°C white illumination)
+      const flareLight = new THREE.PointLight(0xffffff, 5.0, 45.0);
+      flareLight.position.set(this.macPerimeterTripwire.pos.x, 14.0, this.macPerimeterTripwire.pos.z);
+      this.scene.add(flareLight);
+
+      const flareMesh = new THREE.Mesh(new THREE.SphereGeometry(0.35, 8, 8), new THREE.MeshBasicMaterial({ color: 0xffffff }));
+      flareMesh.position.copy(flareLight.position);
+      this.scene.add(flareMesh);
+
+      this.activeIlluminationFlare = {
+        light: flareLight,
+        mesh: flareMesh,
+        timer: 18.0
+      };
+
+      // M18A1 Claymore directional blast (480 DMG, 14m)
+      let claymoreHits = 0;
+      if (horde && horde.aliens) {
+        horde.aliens.forEach(alien => {
+          if (alien && alien.mesh && alien.hp > 0 && alien.mesh.position.distanceTo(this.macPerimeterTripwire.pos) <= 14.0) {
+            alien.hp -= 480;
+            alien.isStunned = true;
+            alien.stunTimer = 3.5;
+            alien.mesh.position.addScaledVector(alien.mesh.position.clone().sub(this.macPerimeterTripwire.pos).normalize(), 8.0);
+            claymoreHits++;
+            if (particles && particles.emitSparks) {
+              particles.emitSparks(alien.mesh.position, 16);
+            }
+          }
+        });
+      }
+
+      if (bosses && bosses.activeBosses) {
+        bosses.activeBosses.forEach(boss => {
+          if (boss && boss.mesh && boss.hp > 0 && boss.mesh.position.distanceTo(this.macPerimeterTripwire.pos) <= 14.0) {
+            boss.hp -= 350;
+            boss.isStunned = true;
+            boss.stunTimer = 2.0;
+          }
+        });
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement(`💥 PIÈGE DE PÉRIMÈTRE DE MAC (PREDATOR 1987) : FUSÉE ÉCLAIRANTE MAGNÉSIUM & CLAYMORE (480 DMG SUR ${claymoreHits} CIBLES) !`, "warning");
+      }
+      return true;
+    }
+    return false;
+  }
+
+  checkRoastingSpitInteraction(player, ui, audio) {
+    if (!this.wildBoarRoastSpit || !player || !player.position || this.wildBoarRoastSpit.isConsumed) return false;
+    if (player.position.distanceTo(this.wildBoarRoastSpit.pos) <= 4.2) {
+      this.wildBoarRoastSpit.isConsumed = true;
+      if (audio && audio.playHealthPickup) audio.playHealthPickup();
+
+      player.hp = Math.min(player.maxHp || 1000, player.hp + 300);
+      player.stamina = player.maxStamina || 100;
+      if (window.gameInstance) {
+        window.gameInstance.score += 800;
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement("🍖 RÔTI DE JAVELINA DE GUÉRILLA (PREDATOR 1987) : RATION DE SURVIE (+300 PV, ENDURANCE MAX, +800 SCORE) !", "success");
+      }
+      return true;
+    }
+    return false;
+  }
+
+  checkGlowingBloodInteraction(player, ui, audio) {
+    if (!this.yautjaCraterLocus || !player || !player.position || this.yautjaCraterLocus.isAnalyzed) return false;
+    if (player.position.distanceTo(this.yautjaCraterLocus.pos) <= 5.0) {
+      this.yautjaCraterLocus.isAnalyzed = true;
+      if (audio && audio.playYautjaGreenBloodDrip) audio.playYautjaGreenBloodDrip();
+
+      if (player.recordTrophy) {
+        player.recordTrophy("SANG VERT DE JUNGLE HUNTER (CRATÈRE D'AUTODESTRUCTION)", 2500);
+      }
+      if (window.gameInstance) {
+        window.gameInstance.score += 2500;
+      }
+      player.plasmaOverchargeTimer = 30.0;
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement("🧪 SANG PHOSPHORESCENT DE JUNGLE HUNTER (PREDATOR 1987) : ANALYSE ADN RÉUSSIE (+2500 HONNEUR, SURCHARGE PLASMA 30S) !", "success");
+      }
+      return true;
+    }
+    return false;
+  }
+
+  checkRiverWaterWading(playerPos, player, audio, delta) {
+    if (!this.riverRapidsPath || !playerPos || !player) return;
+    const dx = playerPos.x - 8.0;
+    const dz = playerPos.z - (-20.0);
+    // River segment runs through x: [0, 16], z: [-45, 5]
+    if (Math.abs(dx * 0.45 - dz * 0.2) <= 3.8 && Math.abs(dz) <= 28.0) {
+      if (!player.isWadingRiver) {
+        player.isWadingRiver = true;
+        if (audio && audio.playRiverWaterWadeSquelch) audio.playRiverWaterWadeSquelch();
+      }
+      // Rapid cooling of weapon heat
+      if (player.weaponHeat && player.weaponHeat > 0) {
+        player.weaponHeat = Math.max(0, player.weaponHeat - delta * 35.0);
+      }
+    } else {
+      player.isWadingRiver = false;
+    }
   }
 
   /* === SECTOR 2 & SOFIA LEVEL DESIGN (v56.5): LA Rooftops Helipad, Water Tower & Spire (Predator 2 1990) === */
@@ -10178,6 +10688,37 @@ export class EnvironmentManager {
           this.activeValVerdeFireZones.splice(f, 1);
         }
       }
+    }
+
+    // v59.0 Master 1:1 Val Verde Predator 1 (1987) Dynamic Systems
+    if (this.dutchChallengeRock && this.dutchChallengeRock.cooldown > 0) {
+      this.dutchChallengeRock.cooldown -= delta;
+    }
+    if (this.activeIlluminationFlare) {
+      const flare = this.activeIlluminationFlare;
+      flare.timer -= delta;
+      if (flare.light) {
+        flare.light.intensity = 4.0 + Math.random() * 1.5;
+        flare.light.position.y = Math.max(2.5, flare.light.position.y - delta * 0.45);
+        if (flare.mesh) flare.mesh.position.copy(flare.light.position);
+      }
+      if (flare.timer <= 0) {
+        if (flare.light) this.scene.remove(flare.light);
+        if (flare.mesh) this.scene.remove(flare.mesh);
+        this.activeIlluminationFlare = null;
+      }
+    }
+    if (this.macPerimeterTripwire && !this.macPerimeterTripwire.isTriggered && horde && horde.aliens) {
+      for (let a = 0; a < horde.aliens.length; a++) {
+        const alien = horde.aliens[a];
+        if (alien && alien.mesh && alien.hp > 0 && alien.mesh.position.distanceTo(this.macPerimeterTripwire.pos) <= 2.2) {
+          this.checkFlareTripwireTrigger(this.macPerimeterTripwire.pos, audio, horde, bosses, particles, ui);
+          break;
+        }
+      }
+    }
+    if (player && player.position) {
+      this.checkRiverWaterWading(player.position, player, audio, delta);
     }
   }
 }

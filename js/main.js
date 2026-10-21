@@ -600,6 +600,16 @@ class GameApp {
           // Handled Captain Jim Hopper's Skinned Berets Satchel (Predator 1987)!
         } else if (this.env && this.env.checkOldPainlessInteraction && this.env.checkOldPainlessInteraction(this.player, this.ui, this.audio, this.horde, this.particles)) {
           // Handled Blain Cooper's M134 Minigun "Old Painless" Deforestation Roar (Predator 1987)!
+        } else if (this.env && this.env.checkDutchChallengeRoar && this.env.checkDutchChallengeRoar(this.player, this.ui, this.audio, this.horde)) {
+          // Handled Dutch's Challenge Roar ("KILL ME! I'M HERE!") (Predator 1987)!
+        } else if (this.env && this.env.checkExplosiveArrowsInteraction && this.env.checkExplosiveArrowsInteraction(this.player, this.ui, this.audio)) {
+          // Handled Dutch's Primitive Workbench Explosive Arrows Crafting (Predator 1987)!
+        } else if (this.env && this.env.checkRebelMapsInteraction && this.env.checkRebelMapsInteraction(this.player, this.ui, this.audio)) {
+          // Handled Anna's Guerrilla Tactical Reconnaissance Maps (Predator 1987)!
+        } else if (this.env && this.env.checkRoastingSpitInteraction && this.env.checkRoastingSpitInteraction(this.player, this.ui, this.audio)) {
+          // Handled Wild Javelina Roasting Spit Survival Ration (Predator 1987)!
+        } else if (this.env && this.env.checkGlowingBloodInteraction && this.env.checkGlowingBloodInteraction(this.player, this.ui, this.audio)) {
+          // Handled Jungle Hunter Nuclear Blast Crater Glowing Blood Locus (Predator 1987)!
         } else if (this.env && this.env.checkScoutShipConsoleInteraction && this.env.checkScoutShipConsoleInteraction(this.player.position, this.ui, this.audio, this.horde, this.player)) {
           // Handled Crashed Scout Ship Telemetry Scan (AVP: Requiem 2007)!
         } else if (this.env && this.env.checkCharonLabConsoleInteraction && this.env.checkCharonLabConsoleInteraction(this.player.position, this.horde, this.ui, this.audio)) {
@@ -1220,6 +1230,9 @@ class GameApp {
       if (this.env.checkRebelFuelBarrelsDamage) {
         this.env.checkRebelFuelBarrelsDamage(attack.origin, attack.damage, this.audio, this.horde, this.bosses, this.particles, this.ui);
       }
+      if (this.env.checkFlareTripwireTrigger) {
+        this.env.checkFlareTripwireTrigger(attack.origin, this.audio, this.horde, this.bosses, this.particles, this.ui);
+      }
     }
 
     // Update Combo Chain Tag
@@ -1292,6 +1305,9 @@ class GameApp {
       }
       if (this.env.checkRebelFuelBarrelsDamage) {
         this.env.checkRebelFuelBarrelsDamage(attack.origin, attack.damage, this.audio, this.horde, this.bosses, this.particles, this.ui);
+      }
+      if (this.env.checkFlareTripwireTrigger) {
+        this.env.checkFlareTripwireTrigger(attack.origin, this.audio, this.horde, this.bosses, this.particles, this.ui);
       }
     }
 
@@ -2563,6 +2579,9 @@ class GameApp {
           if (this.env.checkRebelFuelBarrelsDamage) {
             this.env.checkRebelFuelBarrelsDamage(p.mesh.position, p.damage, this.audio, this.horde, this.bosses, this.particles, this.ui);
           }
+          if (this.env.checkFlareTripwireTrigger) {
+            this.env.checkFlareTripwireTrigger(p.mesh.position, this.audio, this.horde, this.bosses, this.particles, this.ui);
+          }
         }
 
         const hits = this.horde.checkMeleeHits({ origin: p.mesh.position, radius: 2.8, damage: p.damage });
@@ -2736,6 +2755,9 @@ class GameApp {
           }
           if (this.env.checkRebelFuelBarrelsDamage) {
             this.env.checkRebelFuelBarrelsDamage(p.mesh.position, p.damage, this.audio, this.horde, this.bosses, this.particles, this.ui);
+          }
+          if (this.env.checkFlareTripwireTrigger) {
+            this.env.checkFlareTripwireTrigger(p.mesh.position, this.audio, this.horde, this.bosses, this.particles, this.ui);
           }
         }
 
@@ -3116,6 +3138,42 @@ class GameApp {
       if (painlessPrompt) {
         if (isNearOldPainless) painlessPrompt.classList.remove('hidden');
         else painlessPrompt.classList.add('hidden');
+      }
+
+      // v59.0 Predator 1 (1987) Val Verde Apex Proximity Prompts
+      const isNearDutchChallenge = this.env.dutchChallengeRock && this.player && this.player.position.distanceTo(this.env.dutchChallengeRock.pos) <= 4.2;
+      const dutchChallengePrompt = document.getElementById('dutch-challenge-prompt');
+      if (dutchChallengePrompt) {
+        if (isNearDutchChallenge) dutchChallengePrompt.classList.remove('hidden');
+        else dutchChallengePrompt.classList.add('hidden');
+      }
+
+      const isNearWorkbench = this.env.dutchWorkbench && !this.env.dutchWorkbench.isCrafted && this.player && this.player.position.distanceTo(this.env.dutchWorkbench.pos) <= 4.2;
+      const workbenchPrompt = document.getElementById('dutch-workbench-prompt');
+      if (workbenchPrompt) {
+        if (isNearWorkbench) workbenchPrompt.classList.remove('hidden');
+        else workbenchPrompt.classList.add('hidden');
+      }
+
+      const isNearAnnaMaps = this.env.annaHostageCage && !this.env.annaHostageCage.isScanned && this.player && this.player.position.distanceTo(this.env.annaHostageCage.mapPos) <= 4.2;
+      const annaMapsPrompt = document.getElementById('anna-maps-prompt');
+      if (annaMapsPrompt) {
+        if (isNearAnnaMaps) annaMapsPrompt.classList.remove('hidden');
+        else annaMapsPrompt.classList.add('hidden');
+      }
+
+      const isNearWildBoar = this.env.wildBoarRoastSpit && !this.env.wildBoarRoastSpit.isConsumed && this.player && this.player.position.distanceTo(this.env.wildBoarRoastSpit.pos) <= 4.2;
+      const wildBoarPrompt = document.getElementById('wild-boar-prompt');
+      if (wildBoarPrompt) {
+        if (isNearWildBoar) wildBoarPrompt.classList.remove('hidden');
+        else wildBoarPrompt.classList.add('hidden');
+      }
+
+      const isNearGlowingBlood = this.env.yautjaCraterLocus && !this.env.yautjaCraterLocus.isAnalyzed && this.player && this.player.position.distanceTo(this.env.yautjaCraterLocus.pos) <= 5.0;
+      const glowingBloodPrompt = document.getElementById('glowing-blood-prompt');
+      if (glowingBloodPrompt) {
+        if (isNearGlowingBlood) glowingBloodPrompt.classList.remove('hidden');
+        else glowingBloodPrompt.classList.add('hidden');
       }
     }
 
