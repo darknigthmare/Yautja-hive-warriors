@@ -276,6 +276,19 @@
             <div id="hud-musou-fill" class="bar-fill musou-fill" style="width: 0%;"></div>
             <span id="hud-musou-text" class="bar-label">SURCHARGE MUSOU [Q / ESPACE]</span>
           </div>
+
+          <!-- Chantier 5 & Marc UI QA (v54.0): Yautja Biometric ECG Holoscan & Z-01 Embryo Monitor -->
+          <div id="wrist-ecg-holoscan" class="wrist-ecg-card">
+            <div class="ecg-row-header">
+              <span class="ecg-icon">💓</span>
+              <span class="ecg-title">BIOMÉTRIE :</span>
+              <span id="wrist-ecg-bpm" class="ecg-bpm">72 BPM</span>
+              <span id="wrist-blooded-badge" class="badge-unblooded">INITIÉ</span>
+            </div>
+            <div class="ecg-status-row">
+              <span id="wrist-embryo-scan" class="embryo-clean">AUCUN CORPUS PARASITE DÉTECTÉ</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -803,6 +816,14 @@
           <div class="slot-key">⇧+CLIC</div>
           <div class="slot-label">CYCLONE COMBI</div>
         </div>
+        <div class="ability-slot" id="slot-smart-disc-multi" onclick="window.game && window.game.player && window.game.player.performSmartDiscMultiLock(window.game.horde, window.game.bosses, window.game.synthetics, window.game.audio, window.game.particles, window.game.ui)">
+          <div class="slot-key">⇧+B</div>
+          <div class="slot-label">MULTI-DISC</div>
+        </div>
+        <div class="ability-slot" id="slot-burner-cannon" onclick="window.game && window.game.player && window.game.player.fireBurnerHeavyPlasma(window.game.horde, window.game.bosses, window.game.synthetics, window.game.particles, window.game.audio, window.game.ui)">
+          <div class="slot-key">⇧+0</div>
+          <div class="slot-label">BURNER HEAVY</div>
+        </div>
         <div class="ability-slot" id="slot-swap" onclick="window.game && window.game.toggleWeaponWheel()">
           <div class="slot-key">TAB</div>
           <div class="slot-label" id="hud-weapon-label">ROUE DES ARMES</div>
@@ -948,6 +969,18 @@
             <div class="forge-title">CUIRASSE ANCESTRALE ENKIDU DLEX</div>
             <div class="forge-desc">Blindage lourd cérémoniel gravé de runes : +250 PV max, 40% de résistance aux acides corrosifs et -20% temps de recharge des aptitudes.</div>
             <button id="btn-forge-enkidu" class="btn-forge">FORGER (3000 PTS + 5 GELÉES)</button>
+          </div>
+          <div class="forge-item-card">
+            <div class="forge-icon">🔥</div>
+            <div class="forge-title">BOBINE SURPUISSANCE BURNER</div>
+            <div class="forge-desc">Condensateur plasma lourd surchauffé : débloque la frappe Burner [⇧+0] (680 dmg direct + 340 splash sur 6.2m).</div>
+            <button id="btn-forge-burner-coil" class="btn-forge">FORGER (3500 PTS + 6 GELÉES)</button>
+          </div>
+          <div class="forge-item-card">
+            <div class="forge-icon">⚜️</div>
+            <div class="forge-title">LAMES CAUTÉRISANTES AU SANG ACIDE</div>
+            <div class="forge-desc">Finition thermique au sang d'Aliens décapités : +30% dégâts de mêlée et neutralisation immédiate de l'acide caustique.</div>
+            <button id="btn-forge-cauterizing" class="btn-forge">FORGER (3200 PTS + 5 GELÉES)</button>
           </div>
         </div>
       </div>

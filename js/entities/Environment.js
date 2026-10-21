@@ -88,6 +88,10 @@ export class EnvironmentManager {
     // v53.0 Systems (Weyland-Yutani Breakable Specimen Stasis Vats & Cryo Coolant Freezing Zones)
     this.stasisSpecimenTanks = [];
     this.activeCryoCoolantClouds = [];
+    // v54.0 Systems (Explosive JP-4 Fuel Barrels & WY Plasma Recharge Terminals)
+    this.explosiveBarrels = [];
+    this.activeBarrelFireZones = [];
+    this.plasmaRechargeTerminals = [];
   }
 
   clearEnvironment() {
@@ -274,6 +278,21 @@ export class EnvironmentManager {
     this.stasisSpecimenTanks = [];
     this.activeCryoCoolantClouds.forEach(c => this.scene.remove(c.mesh));
     this.activeCryoCoolantClouds = [];
+
+    // v54.0 Cleanups
+    this.explosiveBarrels.forEach(b => {
+      if (b.group) this.scene.remove(b.group);
+    });
+    this.explosiveBarrels = [];
+    this.activeBarrelFireZones.forEach(f => {
+      if (f.mesh) this.scene.remove(f.mesh);
+    });
+    this.activeBarrelFireZones = [];
+    this.plasmaRechargeTerminals.forEach(t => {
+      if (t.group) this.scene.remove(t.group);
+      if (t.light) this.scene.remove(t.light);
+    });
+    this.plasmaRechargeTerminals = [];
 
     this.reactorMeltdownActive = false;
     this.reactorMeltdownTimer = 180.0;
@@ -504,6 +523,12 @@ export class EnvironmentManager {
     // === v53.0 10-CHANTIER EXPANSION (Weyland-Yutani Breakable Specimen Stasis Vats & Cryo Cloud Freezing) ===
     // Chantier 5: Weyland-Yutani Specimen Stasis Tanks & Cryogenic Rupture Zones
     this.buildSpecimenStasisTanks();
+
+    // === v54.0 10-CHANTIER EXPANSION (JP-4 Explosive Barrels & Plasma Recharge Stations) ===
+    // Chantier 3 & Sofia QA: JP-4 Fuel Barrels Destructible Hazards
+    this.buildExplosiveBarrels();
+    // Chantier 4: Weyland-Yutani Plasma Capacitor Recharge Terminals
+    this.buildPlasmaRechargeTerminals();
   }
 
   buildTempleProps(stoneMat) {
@@ -6484,6 +6509,336 @@ export class EnvironmentManager {
         }
       }
     }
+  }
+
+  /* === CHANTIER 3 & SOFIA QA (v54.0): Destructible JP-4 Fuel Barrels & Incendiary Fire Zones === */
+  buildExplosiveBarrels() {
+    this.explosiveBarrels = [];
+    this.activeBarrelFireZones = [];
+
+    const barrelPositions = [
+      new THREE.Vector3(-24, 0, 14),
+      new THREE.Vector3(-21, 0, 17),
+      new THREE.Vector3(24, 0, -14),
+      new THREE.Vector3(21, 0, -17),
+      new THREE.Vector3(0, 0, 26),
+      new THREE.Vector3(3, 0, 28),
+      new THREE.Vector3(-14, 0, -26),
+      new THREE.Vector3(16, 0, 22)
+    ];
+
+    barrelPositions.forEach((pos, idx) => {
+      const group = new THREE.Group();
+      group.position.copy(pos);
+
+      // Main barrel cylinder (Yellow industrial Weyland-Yutani hazard drum)
+      const barrelGeo = new THREE.CylinderGeometry(0.65, 0.65, 1.6, 16);
+      const barrelMat = new THREE.MeshStandardMaterial({
+        color: 0xdf9b00, // Industrial hazard yellow
+        roughness: 0.5,
+        metalness: 0.6
+      });
+      const barrelMesh = new THREE.Mesh(barrelGeo, barrelMat);
+      barrelMesh.position.y = 0.8;
+      barrelMesh.castShadow = true;
+      group.add(barrelMesh);
+
+      // Black hazard stripes band
+      const stripeGeo = new THREE.CylinderGeometry(0.66, 0.66, 0.4, 16);
+      const stripeMat = new THREE.MeshStandardMaterial({
+        color: 0x111111,
+        roughness: 0.8,
+        metalness: 0.2
+      });
+      const stripeMesh = new THREE.Mesh(stripeGeo, stripeMat);
+      stripeMesh.position.y = 0.8;
+      group.add(stripeMesh);
+
+      // Reinforcing steel ribs
+      const ribGeo = new THREE.TorusGeometry(0.66, 0.04, 8, 16);
+      ribGeo.rotateX(Math.PI / 2);
+      const ribMat = new THREE.MeshStandardMaterial({ color: 0x222222, metalness: 0.8 });
+      const rib1 = new THREE.Mesh(ribGeo, ribMat);
+      rib1.position.y = 0.35;
+      group.add(rib1);
+      const rib2 = new THREE.Mesh(ribGeo, ribMat);
+      rib2.position.y = 1.25;
+      group.add(rib2);
+
+      // Red inflammable cap
+      const capGeo = new THREE.CylinderGeometry(0.2, 0.2, 0.1, 12);
+      const capMat = new THREE.MeshStandardMaterial({ color: 0xcc1100, roughness: 0.4 });
+      const cap = new THREE.Mesh(capGeo, capMat);
+      cap.position.set(0.25, 1.65, 0);
+      group.add(cap);
+
+      this.scene.add(group);
+      this.explosiveBarrels.push({
+        id: idx,
+        group,
+        pos: pos.clone(),
+        hp: 75,
+        maxHp: 75,
+        isDetonated: false
+      });
+    });
+  }
+
+  checkBarrelHits(attack, audio, particles, horde, player, synthetics) {
+    if (!this.explosiveBarrels || !attack || !attack.origin) return;
+
+    this.explosiveBarrels.forEach(barrel => {
+      if (barrel.isDetonated) return;
+
+      const barrelCenter = barrel.pos.clone().add(new THREE.Vector3(0, 0.8, 0));
+      const dist = barrelCenter.distanceTo(attack.origin);
+      if (dist <= (attack.radius || 1.5) + 0.9) {
+        barrel.hp -= (attack.damage || 50);
+
+        if (particles && particles.emitSparks) {
+          particles.emitSparks(barrelCenter, 6);
+        }
+
+        if (barrel.hp <= 0) {
+          barrel.isDetonated = true;
+          this.scene.remove(barrel.group);
+
+          // Detonation sound & particles
+          if (audio) {
+            if (audio.playBurnerHeavyPlasmaBlast) {
+              audio.playBurnerHeavyPlasmaBlast();
+            } else if (audio.playM40GrenadeBlast) {
+              audio.playM40GrenadeBlast();
+            }
+            if (audio.playAcidBrandingSizzle) {
+              audio.playAcidBrandingSizzle();
+            }
+          }
+
+          if (particles && particles.emitExplosion) {
+            particles.emitExplosion(barrelCenter, 30);
+          }
+
+          const blastRadius = 6.5;
+          const blastDamage = 650;
+
+          // Damage Xenomorphs in radius
+          if (horde && horde.aliens) {
+            horde.aliens.forEach(alien => {
+              if (alien && alien.mesh) {
+                const d = alien.mesh.position.distanceTo(barrel.pos);
+                if (d <= blastRadius) {
+                  const falloff = 1 - (d / blastRadius);
+                  alien.hp -= blastDamage * (0.5 + 0.5 * falloff);
+                  if (particles && particles.emitAlienBloodSpurt) {
+                    particles.emitAlienBloodSpurt(alien.mesh.position, 12);
+                  }
+                }
+              }
+            });
+          }
+
+          // Damage synthetics if present
+          if (synthetics && Array.isArray(synthetics)) {
+            synthetics.forEach(syn => {
+              if (syn && syn.mesh) {
+                const d = syn.mesh.position.distanceTo(barrel.pos);
+                if (d <= blastRadius) {
+                  syn.hp -= blastDamage * 0.8;
+                }
+              }
+            });
+          }
+
+          // Damage player if caught in blast
+          if (player && player.position) {
+            const pDist = player.position.distanceTo(barrel.pos);
+            if (pDist <= 5.5) {
+              player.takeDamage(120 * (1 - pDist / 5.5), 'JP-4 Fuel Barrel Blast');
+            }
+          }
+
+          // Spawn persistent fire puddle zone (8 seconds duration)
+          const fireGeo = new THREE.CylinderGeometry(4.2, 4.2, 0.15, 24);
+          const fireMat = new THREE.MeshBasicMaterial({
+            color: 0xff4400,
+            transparent: true,
+            opacity: 0.65,
+            wireframe: false
+          });
+          const fireMesh = new THREE.Mesh(fireGeo, fireMat);
+          fireMesh.position.set(barrel.pos.x, 0.1, barrel.pos.z);
+          this.scene.add(fireMesh);
+
+          this.activeBarrelFireZones.push({
+            pos: barrel.pos.clone(),
+            radius: 4.2,
+            timer: 8.0,
+            mesh: fireMesh
+          });
+        }
+      }
+    });
+  }
+
+  updateExplosiveBarrels(delta, player, horde, particles) {
+    if (!this.activeBarrelFireZones) return;
+
+    for (let i = this.activeBarrelFireZones.length - 1; i >= 0; i--) {
+      const zone = this.activeBarrelFireZones[i];
+      zone.timer -= delta;
+      zone.mesh.rotation.y += delta * 1.8;
+      zone.mesh.material.opacity = Math.max(0, (zone.timer / 8.0) * 0.65);
+
+      // Periodic burning to horde
+      if (horde && horde.aliens) {
+        horde.aliens.forEach(alien => {
+          if (alien && alien.mesh && alien.mesh.position.distanceTo(zone.pos) <= zone.radius) {
+            alien.hp -= 95 * delta;
+            if (particles && particles.emitSparks && Math.random() < 0.08) {
+              particles.emitSparks(alien.mesh.position, 2);
+            }
+          }
+        });
+      }
+
+      // Burning to player if reckless
+      if (player && player.position && player.position.distanceTo(zone.pos) <= zone.radius) {
+        player.takeDamage(15 * delta, 'JP-4 Residual Fire Puddle');
+      }
+
+      if (zone.timer <= 0) {
+        this.scene.remove(zone.mesh);
+        this.activeBarrelFireZones.splice(i, 1);
+      }
+    }
+  }
+
+  /* === CHANTIER 4 & SOFIA QA (v54.0): Weyland-Yutani Plasma Capacitor Recharge Terminals === */
+  buildPlasmaRechargeTerminals() {
+    this.plasmaRechargeTerminals = [];
+
+    const terminalPositions = [
+      new THREE.Vector3(-32, 0, 0),
+      new THREE.Vector3(32, 0, 0)
+    ];
+
+    terminalPositions.forEach((pos, idx) => {
+      const group = new THREE.Group();
+      group.position.copy(pos);
+
+      // Station Base Pillar
+      const baseGeo = new THREE.BoxGeometry(2.0, 2.6, 1.4);
+      const baseMat = new THREE.MeshStandardMaterial({
+        color: 0x24272c, // Weyland-Yutani dark carbon alloy
+        roughness: 0.35,
+        metalness: 0.75
+      });
+      const baseMesh = new THREE.Mesh(baseGeo, baseMat);
+      baseMesh.position.y = 1.3;
+      baseMesh.castShadow = true;
+      group.add(baseMesh);
+
+      // Glowing high-energy plasma capacitor coils
+      const coilGeo = new THREE.CylinderGeometry(0.35, 0.35, 1.6, 16);
+      const coilMat = new THREE.MeshBasicMaterial({
+        color: 0x00e5ff // Vibrant cyan plasma energy
+      });
+      const coilMesh = new THREE.Mesh(coilGeo, coilMat);
+      coilMesh.position.set(0, 1.5, 0.4);
+      group.add(coilMesh);
+
+      // Upper holographic terminal screen
+      const screenGeo = new THREE.BoxGeometry(1.2, 0.6, 0.08);
+      const screenMat = new THREE.MeshBasicMaterial({
+        color: 0x00ffff,
+        wireframe: true
+      });
+      const screenMesh = new THREE.Mesh(screenGeo, screenMat);
+      screenMesh.position.set(0, 2.4, 0.55);
+      screenMesh.rotation.x = -Math.PI / 8;
+      group.add(screenMesh);
+
+      // Pulsing cyan point light
+      const light = new THREE.PointLight(0x00e5ff, 1.8, 7.0);
+      light.position.set(pos.x, 2.0, pos.z + 0.8);
+      this.scene.add(light);
+
+      this.scene.add(group);
+      this.plasmaRechargeTerminals.push({
+        id: idx,
+        group,
+        light,
+        coilMesh,
+        pos: pos.clone(),
+        cooldown: 0,
+        maxCooldown: 32.0,
+        isAvailable: true
+      });
+    });
+  }
+
+  checkPlasmaTerminalInteraction(playerPos, player, audio, ui, particles) {
+    if (!this.plasmaRechargeTerminals || !playerPos) return false;
+
+    for (let i = 0; i < this.plasmaRechargeTerminals.length; i++) {
+      const term = this.plasmaRechargeTerminals[i];
+      const dist = term.pos.distanceTo(playerPos);
+      if (dist <= 3.8 && term.isAvailable) {
+        // Recharge plasma to 100%
+        player.plasmaEnergy = player.maxPlasmaEnergy || 100;
+        if (typeof player.overheatLevel !== 'undefined') player.overheatLevel = 0;
+
+        term.isAvailable = false;
+        term.cooldown = term.maxCooldown;
+        term.coilMesh.material.color.setHex(0x553311); // Dim amber while cooling down
+        term.light.color.setHex(0xffaa22);
+        term.light.intensity = 0.5;
+
+        if (audio) {
+          if (audio.playBurnerHeavyPlasmaBlast) audio.playBurnerHeavyPlasmaBlast();
+          if (audio.playWristComputerBeep) audio.playWristComputerBeep();
+        }
+
+        if (particles && particles.emitSparks) {
+          particles.emitSparks(term.pos.clone().add(new THREE.Vector3(0, 1.8, 0)), 20);
+        }
+
+        if (ui && ui.showNotification) {
+          ui.showNotification("⚡ WY CAPACITOR DÉCHARGÉ: RÉSERVE PLASMA 100% RESTAURÉE (CD 32s)", "success");
+        }
+        return true;
+      }
+    }
+    return false;
+  }
+
+  updatePlasmaTerminals(delta) {
+    if (!this.plasmaRechargeTerminals) return;
+
+    this.plasmaRechargeTerminals.forEach(term => {
+      if (!term.isAvailable) {
+        term.cooldown -= delta;
+        if (term.cooldown <= 0) {
+          term.isAvailable = true;
+          term.cooldown = 0;
+          term.coilMesh.material.color.setHex(0x00e5ff); // Back to cyan
+          term.light.color.setHex(0x00e5ff);
+          term.light.intensity = 1.8;
+        }
+      } else {
+        // Subtle plasma coil pulsing
+        const pulse = 1.6 + Math.sin(Date.now() * 0.005 + term.id) * 0.4;
+        term.light.intensity = pulse;
+      }
+    });
+  }
+
+  /* === v54.0 Combined Environment Update Helper === */
+  updateEnvironmentV54(delta, player, horde, audio, particles) {
+    this.updateStasisTanks(delta, player, horde, audio, particles);
+    this.updateExplosiveBarrels(delta, player, horde, particles);
+    this.updatePlasmaTerminals(delta);
   }
 }
 

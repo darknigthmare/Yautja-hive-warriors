@@ -197,12 +197,24 @@ export class Player {
     this.acidResistance = 0.0;
     this.gauntletCooldownReduction = 1.0;
 
+    // === v54.0 CHANTIERS 1, 2, 7, 8 & 10: Blooded Sacred Mark, Smart-Disc Multi-Lock, Burner Cannon, Trophy Chain ===
+    this.isBloodedWarrior = false;
+    this.bloodedDamageResistance = 0.85;
+    this.smartDiscMultiLockCooldown = 0;
+    this.burnerCooldown = 0;
+    this.trophyChainRattleTimer = 0;
+    this.hasBurnerCoil = false;
+    this.hasCauterizingWristblade = false;
+    this.bloodMarkMesh = null;
+
     this.forgeUpgrades = {
       barbedCombiStick: false,
       serratedSmartDisc: false,
       overchargedCoil: false,
       masterWristblades: false,
-      enkiduBattleplate: false
+      enkiduBattleplate: false,
+      burnerPlasmaCoil: false,
+      cauterizingWristblade: false
     };
     this.loadClanForgeUpgrades();
   }
@@ -1778,6 +1790,10 @@ export class Player {
     }
     if (isAcid && this.hasEnkiduArmor) {
       amount *= (1.0 - (this.acidResistance || 0.40));
+    }
+    // Chantier 1 & Elena QA (v54.0): Blooded Warrior Sacred Mark 15% Damage Reduction
+    if (this.isBloodedWarrior) {
+      amount *= (this.bloodedDamageResistance || 0.85);
     }
     this.hp = Math.max(0, this.hp - amount);
 
@@ -4032,6 +4048,11 @@ export class Player {
         this.mesh.visible = true;
       }
     }
+
+    // === v54.0 Timers (Smart-Disc Multi-Lock, Burner Cannon, Trophy Chain) ===
+    if (this.smartDiscMultiLockCooldown > 0) this.smartDiscMultiLockCooldown -= delta;
+    if (this.burnerCooldown > 0) this.burnerCooldown -= delta;
+    if (this.trophyChainRattleTimer > 0) this.trophyChainRattleTimer -= delta;
   }
 
   /* === CHANTIER 1 (v51.0): Clan Weapon Forge Persistent Upgrades === */
@@ -4049,6 +4070,12 @@ export class Player {
           this.acidResistance = 0.40;
           this.gauntletCooldownReduction = 0.80;
           this.maxHp = (this.data && this.data.stats && this.data.stats.maxHp ? this.data.stats.maxHp : 1000) + 250;
+        }
+        if (this.forgeUpgrades.burnerPlasmaCoil) {
+          this.hasBurnerCoil = true;
+        }
+        if (this.forgeUpgrades.cauterizingWristblade) {
+          this.hasCauterizingWristblade = true;
         }
       }
     } catch (e) {
@@ -4269,6 +4296,156 @@ export class Player {
     }
     if (particles && particles.emitSparks) {
       particles.emitSparks(this.position, 8);
+    }
+  }
+
+  /* === CHANTIER 1 & ELENA QA (v54.0): Blooded Warrior Sacred Acid Mark Ritual (AVP 2004) === */
+  triggerSacredBloodMarkRitual(audio, particles, ui) {
+    if (this.isBloodedWarrior) return;
+    this.isBloodedWarrior = true;
+    this.bloodedDamageResistance = 0.85; // 15% passive damage reduction
+
+    if (audio && audio.playAcidBrandingSizzle) {
+      audio.playAcidBrandingSizzle();
+    }
+
+    if (particles && particles.emitAcidSmoke) {
+      particles.emitAcidSmoke(this.position.clone().add(new THREE.Vector3(0, 3.4, 0.4)), 18);
+    }
+
+    // Attach neon green glowing sacred blood mark decal on bio-mask cranium
+    if (this.headMesh && !this.bloodMarkMesh) {
+      const markGeo = new THREE.PlaneGeometry(0.24, 0.28);
+      const markMat = new THREE.MeshBasicMaterial({
+        color: 0x22c55e,
+        transparent: true,
+        opacity: 0.9,
+        side: THREE.DoubleSide
+      });
+      this.bloodMarkMesh = new THREE.Mesh(markGeo, markMat);
+      this.bloodMarkMesh.position.set(0, 0.22, 0.58);
+      this.headMesh.add(this.bloodMarkMesh);
+    }
+
+    if (ui && ui.showAnnouncement) {
+      ui.showAnnouncement('👑 RITUEL SACRÉ DU GUERRIER INITIÉ ("BLOODED") : RUNE GRAVÉE AU FER ET AU SANG (-15% DÉGÂTS SUBIS) !');
+    }
+  }
+
+  /* === CHANTIER 2 & LUCAS QA (v54.0): Smart-Disc Multi-Target Lock Ricochet Trajectory === */
+  performSmartDiscMultiLock(horde, bosses, synthetics, audio, particles, ui) {
+    if (this.smartDiscMultiLockCooldown > 0 || this.isFacehuggerLatched) return false;
+    this.smartDiscMultiLockCooldown = 8.0 * (this.gauntletCooldownReduction || 1.0);
+
+    const forward = new THREE.Vector3(Math.sin(this.rotationY), 0, Math.cos(this.rotationY)).normalize();
+    const targets = [];
+
+    // Find up to 5 valid targets in front of player within 32m
+    if (bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
+      const toBoss = bosses.activeBoss.mesh.position.clone().sub(this.position);
+      if (toBoss.length() <= 32.0 && forward.dot(toBoss.clone().normalize()) > 0.25) {
+        targets.push(bosses.activeBoss);
+      }
+    }
+
+    if (horde && horde.aliens) {
+      for (let a of horde.aliens) {
+        if (!a || a.hp <= 0 || !a.mesh) continue;
+        const toAlien = a.mesh.position.clone().sub(this.position);
+        if (toAlien.length() <= 32.0 && forward.dot(toAlien.clone().normalize()) > 0.25) {
+          targets.push(a);
+          if (targets.length >= 5) break;
+        }
+      }
+    }
+
+    if (targets.length === 0) {
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('⚠️ SMART-DISC MULTI-CIBLES : AUCUNE PROIE DANS L\'ARC DE VERROUILLAGE (32M) !');
+      }
+      return false;
+    }
+
+    if (audio && audio.playSmartDiscTargetLockSweep) {
+      audio.playSmartDiscTargetLockSweep();
+    }
+
+    let totalHits = 0;
+    targets.forEach((tgt, idx) => {
+      setTimeout(() => {
+        const tgtPos = tgt.mesh ? tgt.mesh.position.clone() : tgt.position.clone();
+        if (tgt.takeDamage) {
+          tgt.takeDamage(380);
+        } else {
+          tgt.hp -= 380;
+        }
+        totalHits++;
+
+        if (audio && audio.playShurikenSlice) {
+          audio.playShurikenSlice();
+        }
+        if (particles && particles.emitSparks) {
+          particles.emitSparks(tgtPos, 16);
+        }
+        if (horde && horde.goreEngine && horde.goreEngine.spawnDismemberment) {
+          horde.goreEngine.spawnDismemberment(tgtPos, 'smart_disc');
+        }
+      }, idx * 90);
+    });
+
+    if (ui && ui.showAnnouncement) {
+      ui.showAnnouncement(`🥏 SMART-DISC RICOCHET MULTI-CIBLES : ${targets.length} PROIES VERROUILLÉES & DÉCAPITÉES EN CHAÎNE !`);
+    }
+    return true;
+  }
+
+  /* === CHANTIER 7 (v54.0): Burner Heavy Concentrated Plasma Cannon Blast (Aliens: Genocide) === */
+  fireBurnerHeavyPlasma(horde, bosses, synthetics, particles, audio, ui) {
+    if (this.burnerCooldown > 0 || (this.plasmaEnergy || 0) < 30 || this.isFacehuggerLatched) return false;
+    this.burnerCooldown = 3.5 * (this.gauntletCooldownReduction || 1.0);
+    this.plasmaEnergy = Math.max(0, (this.plasmaEnergy || 100) - 30);
+
+    if (audio && audio.playBurnerHeavyPlasmaBlast) {
+      audio.playBurnerHeavyPlasmaBlast();
+    }
+
+    const forward = new THREE.Vector3(Math.sin(this.rotationY), 0, Math.cos(this.rotationY)).normalize();
+    const impactPos = this.position.clone().addScaledVector(forward, 16.0);
+    impactPos.y = 0.5;
+
+    if (particles && particles.emitExplosion) {
+      particles.emitExplosion(impactPos, 32);
+    }
+    if (particles && particles.spawnPlasmaScorch) {
+      particles.spawnPlasmaScorch(impactPos);
+    }
+
+    const blastRadius = this.hasBurnerCoil ? 6.2 : 4.5;
+    const directDmg = 680;
+    const splashDmg = 340;
+
+    if (horde) {
+      horde.checkMeleeHits({ origin: impactPos, radius: blastRadius, damage: directDmg, type: 'plasma' });
+    }
+    if (bosses && bosses.activeBoss && bosses.activeBoss.mesh.position.distanceTo(impactPos) <= blastRadius + 1.5) {
+      bosses.takeDamage(directDmg);
+    }
+    if (synthetics) {
+      synthetics.checkHits({ origin: impactPos, radius: blastRadius, damage: splashDmg });
+    }
+
+    if (ui && ui.showAnnouncement) {
+      ui.showAnnouncement('🔥 CANON BURNER LOURD DÉCHARGÉ : CONFLAGRATION THERMIQUE DE MASSE (680 DMG) !');
+    }
+    return true;
+  }
+
+  /* === CHANTIER 8 (v54.0): Trophy Chain Reactive Bone Chime === */
+  triggerTrophyChainRattle(audio) {
+    if (this.trophyChainRattleTimer > 0) return;
+    this.trophyChainRattleTimer = 1.2;
+    if (audio && audio.playTrophyChainRattle) {
+      audio.playTrophyChainRattle();
     }
   }
 }

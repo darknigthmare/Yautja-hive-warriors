@@ -431,12 +431,11 @@ class GameApp {
         }
       }
 
-      // Royal Jelly Berserker Rage Stimulant [Digit 0] / Chantier 7: Yautja Burner Plasma Flamer Mode [Shift + Digit 0]
+      // Royal Jelly Berserker Rage Stimulant [Digit 0] / Chantier 8 (v54.0): Burner Heavy Plasma Blast [Shift + Digit 0]
       if ((e.code === 'Digit0' || e.code === 'Numpad0') && this.player) {
         if (this.keys['ShiftLeft'] || this.keys['ShiftRight']) {
           this.player.usedShiftModifier = true;
-          const flamerActive = this.player.togglePlasmaFlamer();
-          this.ui.showAnnouncement(flamerActive ? '🔥 BRÛLEUR PLASMA INCINÉRATEUR ACTIVÉ (CÔNE NAPALM SOUTENU) !' : '🔥 BRÛLEUR PLASMA RÉTRACTÉ');
+          this.player.fireBurnerHeavyPlasma(this.horde, this.bosses, this.synthetics, this.particles, this.audio, this.ui);
         } else {
           if (this.player.consumeRoyalJelly()) {
             this.ui.showAnnouncement('👑 GELÉE ROYALE CONSOMMÉE : FUREUR BERSERKER YAUTJA ACTIVÉE (+45% VIT, +100% DÉGÂTS) !');
@@ -528,6 +527,8 @@ class GameApp {
           if (this.player.struggleQTE()) {
             this.ui.showAnnouncement('💥 FACEHUGGER ARRACHÉ AVEC SUCCÈS !');
           }
+        } else if (this.env && this.env.checkPlasmaTerminalInteraction && this.env.checkPlasmaTerminalInteraction(this.player.position, this.player, this.audio, this.ui, this.particles)) {
+          // Handled Weyland-Yutani Plasma Capacitor Recharge Terminal (v54.0)!
         } else if (this.env && this.env.checkHydraulicLiftInteraction && this.env.checkHydraulicLiftInteraction(this.player.position, this.player, this.ui, this.audio)) {
           // Handled USCM Hydraulic Cargo Lift platform activation (v52.0)!
         } else if (this.env && this.env.checkFoundryValveInteraction && this.env.checkFoundryValveInteraction(this.player, this.audio, this.ui)) {
@@ -620,11 +621,16 @@ class GameApp {
         }
       }
 
-      // Smart-Disc Throw & Chantier 3 (v43): Remote Guidance Mode Toggle [Ctrl/Shift + B]
+      // Smart-Disc Throw & Chantier 7 (v54.0): Multi-Lock Ricochet [Shift + B] / Remote Guidance [Ctrl + B]
       if (e.code === 'KeyB' && this.player) {
+        if (this.keys['ShiftLeft'] || this.keys['ShiftRight']) {
+          this.player.usedShiftModifier = true;
+          this.player.performSmartDiscMultiLock(this.horde, this.bosses, this.synthetics, this.audio, this.particles, this.ui);
+          return;
+        }
         const activeDisc = this.projectiles.find(p => p.isSmartDisc && p.life > 0.1);
         if (activeDisc) {
-          if (this.keys['ShiftLeft'] || this.keys['ShiftRight'] || this.keys['ControlLeft']) {
+          if (this.keys['ControlLeft'] || this.keys['ControlRight']) {
             if (this.player.isSmartDiscGuiding) {
               this.player.stopSmartDiscRemoteGuidance();
               this.ui.updateSmartDiscGuidance(false);
@@ -1143,6 +1149,12 @@ class GameApp {
       this.env.checkOvipositorHit(this.player.position, 3.8, attack.damage, this.audio, this.particles, this.horde, this.bosses);
       this.env.checkNitrogenTankHits(this.player.position, 3.8, attack.damage, this.audio, this.particles);
       this.env.checkWebbingDamage(this.player.position, 3.8, attack.damage, this.particles);
+      if (this.env.checkBarrelHits) {
+        this.env.checkBarrelHits(attack, this.audio, this.particles, this.horde, this.player, this.synthetics);
+      }
+      if (this.env.checkStasisTankHits) {
+        this.env.checkStasisTankHits(attack, this.audio, this.particles, this.horde);
+      }
     }
 
     // Update Combo Chain Tag
@@ -1189,6 +1201,12 @@ class GameApp {
       this.env.checkOvipositorHit(this.player.position, 4.8, attack.damage, this.audio, this.particles, this.horde, this.bosses);
       this.env.checkNitrogenTankHits(this.player.position, 4.8, attack.damage, this.audio, this.particles);
       this.env.checkWebbingDamage(this.player.position, 4.8, attack.damage, this.particles);
+      if (this.env.checkBarrelHits) {
+        this.env.checkBarrelHits(attack, this.audio, this.particles, this.horde, this.player, this.synthetics);
+      }
+      if (this.env.checkStasisTankHits) {
+        this.env.checkStasisTankHits(attack, this.audio, this.particles, this.horde);
+      }
     }
 
     // Dynasty Warriors Musou C1-C6 Charge Finisher Announcement & Camera Punch
@@ -1787,6 +1805,11 @@ class GameApp {
       this.score += tHonor;
       this.player.hp = Math.min(this.player.maxHp, this.player.hp + 500);
 
+      // Chantier 1 & Elena Immersion QA (v54.0): Cautérisation Rituelle du Sang Acide (Sacred Blood Mark Ritual)
+      if (this.player.triggerSacredBloodMarkRitual) {
+        this.player.triggerSacredBloodMarkRitual(this.audio, this.particles, this.ui);
+      }
+
       // Decisive Battlefield Morale Victory (+35%)
       this.shiftBattlefieldMorale(35.0);
 
@@ -1886,6 +1909,11 @@ class GameApp {
 
           this.score += tHonor;
           this.player.hp = Math.min(this.player.maxHp, this.player.hp + 400);
+
+          // Chantier 1 & Elena Immersion QA (v54.0): Cautérisation Rituelle du Sang Acide (Sacred Blood Mark Ritual)
+          if (this.player.triggerSacredBloodMarkRitual) {
+            this.player.triggerSacredBloodMarkRitual(this.audio, this.particles, this.ui);
+          }
 
           // Sub-Boss Execution Morale Swing (+18% to +25%)
           this.shiftBattlefieldMorale((a.isMarvelAlpha || a.isRogueKing || a.isRaven || a.isAncientPredalien || a.isGestatingMatriarch) ? 25.0 : 18.0);
@@ -2200,6 +2228,46 @@ class GameApp {
       // Chantier 5 & Sofia QA (v53.0): Weyland-Yutani Breakable Specimen Stasis Vats & Cryo Clouds
       if (this.env.updateStasisTanks) {
         this.env.updateStasisTanks(delta, this.player, this.horde, this.audio, this.particles);
+      }
+      // Chantier 3 & 4 (v54.0): JP-4 Explosive Fuel Barrels & WY Plasma Recharge Terminals
+      if (this.env.updateEnvironmentV54) {
+        this.env.updateEnvironmentV54(delta, this.player, this.horde, this.audio, this.particles);
+      }
+    }
+
+    // Chantier 5 & Marc UI QA (v54.0): Yautja Biometric ECG Holoscan & Z-01 Embryo Monitor
+    if (this.player) {
+      const bpmElem = document.getElementById('wrist-ecg-bpm');
+      if (bpmElem) {
+        const hpRatio = this.player.hp / (this.player.maxHp || 1000);
+        const bpm = Math.round(72 + (1 - hpRatio) * 85 + (this.player.isSprinting ? 28 : 0));
+        bpmElem.innerText = `${bpm} BPM`;
+        bpmElem.style.color = bpm > 130 ? '#ef4444' : (bpm > 100 ? '#f59e0b' : '#38bdf8');
+      }
+      const bloodedBadge = document.getElementById('wrist-blooded-badge');
+      if (bloodedBadge) {
+        if (this.player.isBloodedWarrior) {
+          bloodedBadge.innerText = 'GUERRIER MARQUÉ (BLOODED) ⚜️';
+          bloodedBadge.className = 'badge-blooded';
+        } else {
+          bloodedBadge.innerText = 'INITIÉ';
+          bloodedBadge.className = 'badge-unblooded';
+        }
+      }
+      const embryoElem = document.getElementById('wrist-embryo-scan');
+      if (embryoElem) {
+        if (this.player.isChestbursterImplanted) {
+          embryoElem.innerText = '⚠️ ALERTE EMBRYON Z-01 EN INCUBATION VISCÉRALE !';
+          embryoElem.className = 'embryo-warning';
+        } else {
+          embryoElem.innerText = 'AUCUN CORPUS PARASITE DÉTECTÉ';
+          embryoElem.className = 'embryo-clean';
+        }
+      }
+
+      // Trophy chain rattle sound when dashing or sprinting (Karim Audio QA)
+      if (this.player.isSprinting && Math.random() < 0.08) {
+        this.player.triggerTrophyChainRattle(this.audio);
       }
     }
 
@@ -3249,7 +3317,9 @@ class GameApp {
       { id: 'btn-forge-smartdisc', key: 'serratedSmartDisc', costHonor: 2000, costJelly: 3 },
       { id: 'btn-forge-plasmacaster', key: 'overchargedCoil', costHonor: 2500, costJelly: 4 },
       { id: 'btn-forge-wristblades', key: 'masterWristblades', costHonor: 3000, costJelly: 5 },
-      { id: 'btn-forge-enkidu', key: 'enkiduBattleplate', costHonor: 3000, costJelly: 5 }
+      { id: 'btn-forge-enkidu', key: 'enkiduBattleplate', costHonor: 3000, costJelly: 5 },
+      { id: 'btn-forge-burner-coil', key: 'burnerPlasmaCoil', costHonor: 3500, costJelly: 6 },
+      { id: 'btn-forge-cauterizing', key: 'cauterizingWristblade', costHonor: 3200, costJelly: 5 }
     ];
 
     upgrades.forEach(u => {

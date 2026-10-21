@@ -1467,6 +1467,23 @@ export class XenomorphHorde {
           }
         }
 
+        // Crusher Titan Frontal Crest Ricochet & Heavy Armor (Aliens: Colonial Marines)
+        if (a.type === 'crusher' && attack.origin) {
+          const forward = new THREE.Vector3(Math.sin(a.mesh.rotation.y), 0, Math.cos(a.mesh.rotation.y));
+          const toAttack = attack.origin.clone().sub(a.mesh.position).setY(0).normalize();
+          const dot = forward.dot(toAttack);
+          if (dot > 0.25) {
+            // Massive cranial plate ricochet!
+            damageDealt *= 0.20;
+            if (this.audioEngine && this.audioEngine.playCrusherArmorRicochet) {
+              this.audioEngine.playCrusherArmorRicochet();
+            }
+            if (this.particles && this.particles.emitSparks) {
+              this.particles.emitSparks(a.mesh.position, 22);
+            }
+          }
+        }
+
         // Chantier 5 (v43): Praetorian Royal Shield Phalanx Frontal Deflection
         if (a.type === 'praetorian' && a.isPhalanxGuarding && attack.origin) {
           const forward = new THREE.Vector3(Math.sin(a.mesh.rotation.y), 0, Math.cos(a.mesh.rotation.y));
@@ -1746,8 +1763,12 @@ export class XenomorphHorde {
     const vy = (target.y - spawnPos.y + 0.5 * gravity * t * t) / t;
     const vel = new THREE.Vector3(vx, vy, vz);
 
-    if (this.audioEngine && this.audioEngine.playSpitterAcidMortar) {
-      this.audioEngine.playSpitterAcidMortar();
+    if (this.audioEngine) {
+      if (this.audioEngine.playSpitterAcidMortarWhistle) {
+        this.audioEngine.playSpitterAcidMortarWhistle();
+      } else if (this.audioEngine.playSpitterAcidMortar) {
+        this.audioEngine.playSpitterAcidMortar();
+      }
     }
 
     this.spitterMortars.push({
@@ -1782,10 +1803,14 @@ export class XenomorphHorde {
             p.rotation.z *= 3.2;
           });
 
-          if (this.audioEngine && this.audioEngine.playEggPetalPeel) {
-            this.audioEngine.playEggPetalPeel();
-          } else {
-            this.audioEngine.playXenoHiss();
+          if (this.audioEngine) {
+            if (this.audioEngine.playFacehuggerEggHatchChirp) {
+              this.audioEngine.playFacehuggerEggHatchChirp();
+            } else if (this.audioEngine.playEggPetalPeel) {
+              this.audioEngine.playEggPetalPeel();
+            } else {
+              this.audioEngine.playXenoHiss();
+            }
           }
 
           // Release organic spore gas haze
@@ -1984,7 +2009,8 @@ export class XenomorphHorde {
       // Detonation on impact
       if (m.mesh.position.y <= 0.25 || m.life <= 0) {
         if (this.audioEngine) {
-          if (this.audioEngine.playAcidBurn) this.audioEngine.playAcidBurn();
+          if (this.audioEngine.playAcidBrandingSizzle) this.audioEngine.playAcidBrandingSizzle();
+          else if (this.audioEngine.playAcidBurn) this.audioEngine.playAcidBurn();
           if (this.audioEngine.playXenoHiss) this.audioEngine.playXenoHiss();
         }
         // Explosive acid spray
@@ -2558,7 +2584,14 @@ export class XenomorphHorde {
           a.isCharging = false;
           a.isStunned = true;
           a.stunTimer = 5.0; // 5-second stun window for execution!
-          player.audioEngine.playShieldBlock();
+          if (player.audioEngine && player.audioEngine.playCrusherArmorRicochet) {
+            player.audioEngine.playCrusherArmorRicochet();
+          } else if (player.audioEngine) {
+            player.audioEngine.playShieldBlock();
+          }
+          if (player.audioEngine && player.audioEngine.playShieldBlock) {
+            player.audioEngine.playShieldBlock();
+          }
           return;
         }
       }

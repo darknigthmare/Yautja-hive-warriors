@@ -6027,6 +6027,225 @@ export class AudioEngine {
     arc.start(now);
     arc.stop(now + 0.35);
   }
+
+  /* === CHANTIER 9 & KARIM QA (v54.0): 8 Nouveaux Synthétiseurs Procéduraux (Méthodes 106 à 113) === */
+
+  // 106. Acid Blood Branding Sizzle & Mask Cauterization (AVP 2004 Blooded Warrior Ritual)
+  playAcidBrandingSizzle() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // High frequency white noise hiss with bandpass sizzle
+    const bufferSize = this.ctx.sampleRate * 0.9;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.45));
+    }
+
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(3200, now);
+    filter.frequency.exponentialRampToValueAtTime(1400, now + 0.85);
+    filter.Q.setValueAtTime(4.5, now);
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.7, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.88);
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.getOut());
+    noise.start(now);
+  }
+
+  // 107. Yautja Biometric Double Heartbeat & Chest Resonance (ECG Holoscan)
+  playYautjaBiometricHeartbeat() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Systolic & diastolic dual sub-bass thud
+    [0, 0.16].forEach((offset, idx) => {
+      const t = now + offset;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(idx === 0 ? 54 : 42, t);
+      osc.frequency.exponentialRampToValueAtTime(26, t + 0.14);
+
+      gain.gain.setValueAtTime(0.75, t);
+      gain.gain.exponentialRampToValueAtTime(0.01, t + 0.14);
+
+      osc.connect(gain);
+      gain.connect(this.getOut());
+      osc.start(t);
+      osc.stop(t + 0.14);
+    });
+  }
+
+  // 108. Burner Heavy Concentrated Plasma Cannon Blast (Aliens: Genocide 1991 Canon)
+  playBurnerHeavyPlasmaBlast() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Supersonic electrical discharge burst
+    const snap = this.ctx.createOscillator();
+    const snapGain = this.ctx.createGain();
+    snap.type = 'square';
+    snap.frequency.setValueAtTime(2400, now);
+    snap.frequency.exponentialRampToValueAtTime(380, now + 0.08);
+
+    snapGain.gain.setValueAtTime(0.85, now);
+    snapGain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+
+    snap.connect(snapGain);
+    snapGain.connect(this.getOut());
+    snap.start(now);
+    snap.stop(now + 0.08);
+
+    // Deep resonant thermal plasma detonation
+    const boom = this.ctx.createOscillator();
+    const boomGain = this.ctx.createGain();
+    boom.type = 'sawtooth';
+    boom.frequency.setValueAtTime(160, now);
+    boom.frequency.exponentialRampToValueAtTime(32, now + 0.55);
+
+    boomGain.gain.setValueAtTime(0.9, now);
+    boomGain.gain.exponentialRampToValueAtTime(0.01, now + 0.55);
+
+    boom.connect(boomGain);
+    boomGain.connect(this.getOut());
+    boom.start(now);
+    boom.stop(now + 0.55);
+  }
+
+  // 109. Yautja Trophy Vertebrae & Skull Chain Rattle (Authentic Bone Chime)
+  playTrophyChainRattle() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // 4 quick micro-clicks of hollow bone impact
+    for (let i = 0; i < 4; i++) {
+      const t = now + i * 0.045;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(1800 + i * 220 + Math.random() * 100, t);
+      osc.frequency.exponentialRampToValueAtTime(800, t + 0.035);
+
+      gain.gain.setValueAtTime(0.35, t);
+      gain.gain.exponentialRampToValueAtTime(0.005, t + 0.035);
+
+      osc.connect(gain);
+      gain.connect(this.getOut());
+      osc.start(t);
+      osc.stop(t + 0.035);
+    }
+  }
+
+  // 110. Crusher Titan Frontal Armor Chitin Ricochet (Heavy Ballistic Deflection)
+  playCrusherArmorRicochet() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const ping = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    ping.type = 'sawtooth';
+    ping.frequency.setValueAtTime(3400, now);
+    ping.frequency.exponentialRampToValueAtTime(1100, now + 0.06);
+
+    gain.gain.setValueAtTime(0.8, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.06);
+
+    ping.connect(gain);
+    gain.connect(this.getOut());
+    ping.start(now);
+    ping.stop(now + 0.06);
+
+    // Deep metallic ringing resonance
+    const ring = this.ctx.createOscillator();
+    const ringGain = this.ctx.createGain();
+    ring.type = 'sine';
+    ring.frequency.setValueAtTime(560, now);
+    ring.frequency.exponentialRampToValueAtTime(220, now + 0.45);
+
+    ringGain.gain.setValueAtTime(0.55, now);
+    ringGain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+
+    ring.connect(ringGain);
+    ringGain.connect(this.getOut());
+    ring.start(now);
+    ring.stop(now + 0.45);
+  }
+
+  // 111. Smart-Disc Multi-Target Lock Telemetry Sweep (Concrete Jungle / P2)
+  playSmartDiscTargetLockSweep() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Triple rising electronic chirp (1200 -> 1600 -> 2100Hz)
+    [0, 0.06, 0.12].forEach((offset, idx) => {
+      const t = now + offset;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(1200 + idx * 450, t);
+      osc.frequency.linearRampToValueAtTime(1400 + idx * 450, t + 0.045);
+
+      gain.gain.setValueAtTime(0.4, t);
+      gain.gain.exponentialRampToValueAtTime(0.01, t + 0.045);
+
+      osc.connect(gain);
+      gain.connect(this.getOut());
+      osc.start(t);
+      osc.stop(t + 0.045);
+    });
+  }
+
+  // 112. Spitter Alien Parabolic Acid Mortar Whistle & Impact (Aliens: Colonial Marines)
+  playSpitterAcidMortarWhistle() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // High descending whistle of incoming mortar
+    const whistle = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    whistle.type = 'sawtooth';
+    whistle.frequency.setValueAtTime(2800, now);
+    whistle.frequency.exponentialRampToValueAtTime(450, now + 0.75);
+
+    gain.gain.setValueAtTime(0.5, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.75);
+
+    whistle.connect(gain);
+    gain.connect(this.getOut());
+    whistle.start(now);
+    whistle.stop(now + 0.75);
+  }
+
+  // 113. Facehugger Ovimorph Egg Hatch & Skittering Chirp (Alien 1979 Canon)
+  playFacehuggerEggHatchChirp() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const chirp = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    chirp.type = 'sawtooth';
+    chirp.frequency.setValueAtTime(950, now);
+    chirp.frequency.linearRampToValueAtTime(2600, now + 0.09);
+    chirp.frequency.exponentialRampToValueAtTime(800, now + 0.22);
+
+    gain.gain.setValueAtTime(0.65, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.22);
+
+    chirp.connect(gain);
+    gain.connect(this.getOut());
+    chirp.start(now);
+    chirp.stop(now + 0.22);
+  }
 }
 
 
