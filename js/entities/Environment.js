@@ -92,6 +92,8 @@ export class EnvironmentManager {
     this.explosiveBarrels = [];
     this.activeBarrelFireZones = [];
     this.plasmaRechargeTerminals = [];
+    // v55.0 Systems (Flooded Water Drainage Puddles & Cloaking Disruption)
+    this.floodedWaterPuddles = [];
   }
 
   clearEnvironment() {
@@ -293,6 +295,12 @@ export class EnvironmentManager {
       if (t.light) this.scene.remove(t.light);
     });
     this.plasmaRechargeTerminals = [];
+
+    // v55.0 Cleanups
+    this.floodedWaterPuddles.forEach(p => {
+      if (p.mesh) this.scene.remove(p.mesh);
+    });
+    this.floodedWaterPuddles = [];
 
     this.reactorMeltdownActive = false;
     this.reactorMeltdownTimer = 180.0;
@@ -529,6 +537,10 @@ export class EnvironmentManager {
     this.buildExplosiveBarrels();
     // Chantier 4: Weyland-Yutani Plasma Capacitor Recharge Terminals
     this.buildPlasmaRechargeTerminals();
+
+    // === v55.0 10-CHANTIER EXPANSION (Flooded Water Drainage Puddles & Cloaking Disruption) ===
+    // Chantier 4 & Sofia QA: Flooded Drainage Puddles (Predator 1987 / Prey 2022)
+    this.buildFloodedPuddles();
   }
 
   buildTempleProps(stoneMat) {
@@ -6839,6 +6851,74 @@ export class EnvironmentManager {
     this.updateStasisTanks(delta, player, horde, audio, particles);
     this.updateExplosiveBarrels(delta, player, horde, particles);
     this.updatePlasmaTerminals(delta);
+  }
+
+  /* === CHANTIER 4 & SOFIA QA (v55.0): Flooded Water Puddles & Cloaking Field Disruption === */
+  buildFloodedPuddles() {
+    this.floodedWaterPuddles = [];
+
+    const puddleConfigs = [
+      { pos: new THREE.Vector3(-15, 0.05, -10), radius: 5.5 },
+      { pos: new THREE.Vector3(18, 0.05, 12), radius: 6.2 },
+      { pos: new THREE.Vector3(-8, 0.05, 24), radius: 4.8 },
+      { pos: new THREE.Vector3(22, 0.05, -20), radius: 5.8 }
+    ];
+
+    puddleConfigs.forEach((cfg, idx) => {
+      const geo = new THREE.CylinderGeometry(cfg.radius, cfg.radius, 0.06, 24);
+      const mat = new THREE.MeshStandardMaterial({
+        color: 0x0369a1, // Murky reflective water
+        roughness: 0.1,
+        metalness: 0.85,
+        transparent: true,
+        opacity: 0.72
+      });
+      const mesh = new THREE.Mesh(geo, mat);
+      mesh.position.copy(cfg.pos);
+      this.scene.add(mesh);
+
+      this.floodedWaterPuddles.push({
+        id: idx,
+        pos: cfg.pos.clone(),
+        radius: cfg.radius,
+        mesh
+      });
+    });
+  }
+
+  updateFloodedPuddles(delta, player, audio, particles, ui) {
+    if (!this.floodedWaterPuddles || !player || !player.position) return;
+
+    let isInAnyWater = false;
+
+    for (let i = 0; i < this.floodedWaterPuddles.length; i++) {
+      const puddle = this.floodedWaterPuddles[i];
+      const dist = player.position.distanceTo(puddle.pos);
+
+      // Water surface gentle shimmer
+      puddle.mesh.rotation.y += delta * 0.2;
+
+      if (dist <= puddle.radius) {
+        isInAnyWater = true;
+
+        if (player.isCloaked && player.triggerWaterCloakDisruption) {
+          player.triggerWaterCloakDisruption(audio, particles, ui);
+        }
+
+        if (player.isMoving && particles && particles.emitSparks && Math.random() < 0.1) {
+          particles.emitSparks(player.position.clone().add(new THREE.Vector3(0, 0.1, 0)), 3);
+        }
+        break;
+      }
+    }
+
+    player.isWaterSubmerged = isInAnyWater;
+  }
+
+  /* === v55.0 Combined Environment Update Helper === */
+  updateEnvironmentV55(delta, player, horde, audio, particles, ui) {
+    this.updateEnvironmentV54(delta, player, horde, audio, particles);
+    this.updateFloodedPuddles(delta, player, audio, particles, ui);
   }
 }
 

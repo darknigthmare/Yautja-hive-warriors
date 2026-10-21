@@ -98,5 +98,19 @@ export const LEVELS_DATA = [
     skyColor: 0x040814,
     waves: 6,
     bossType: 'rogue_king_prime'
+  },
+  {
+    id: 'game_preserve_planet',
+    name: 'RÉSERVE DE CHASSE DE MR. BLACK (PREDATORS 2010)',
+    desc: 'Jungle extraterrestre sauvage contrôlée par le clan Super Predator Berserker, parsemée de totems d\'écorcheurs et de pièges mortels.',
+    theme: 'temple',
+    floorColor: 0x241711,
+    wallColor: 0x38271e,
+    fogColor: 0x1f0d06,
+    fogDensity: 0.019,
+    weatherType: 'none',
+    skyColor: 0x150702,
+    waves: 6,
+    bossType: 'berserker_super_predator'
   }
 ];

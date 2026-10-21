@@ -29,8 +29,9 @@ export class BossManager {
     const isPredalienAbomination = type === 'predalien_abomination';
     const isOffspring = type === 'the_offspring';
     const isTrilobite = type === 'trilobite_prime';
+    const isBerserker = type === 'berserker_super_predator';
 
-    const hp = isMatriarchTitan ? 10000 : (isRogueKing ? 9500 : (isEngineer ? 8500 : (isImperial ? 8000 : (isTrilobite ? 7000 : (isPredalienAbomination ? 6500 : (isEmpress ? 6000 : (isPredalienQueen ? 5000 : (isOffspring ? 4500 : 3000))))))));
+    const hp = isMatriarchTitan ? 10000 : (isRogueKing ? 9500 : (isBerserker ? 8800 : (isEngineer ? 8500 : (isImperial ? 8000 : (isTrilobite ? 7000 : (isPredalienAbomination ? 6500 : (isEmpress ? 6000 : (isPredalienQueen ? 5000 : (isOffspring ? 4500 : 3000)))))))));
 
     this.activeBoss = {
       type: type,
@@ -338,6 +339,105 @@ export class BossManager {
     return group;
   }
 
+  /* === CHANTIER 7 (v55.0): Bad Blood Berserker Super Predator Boss Mesh (Predators 2010 Mr. Black Canon) === */
+  buildBerserkerPredatorMesh(scale = 2.6) {
+    const group = new THREE.Group();
+
+    // Reptilian scaly skin material
+    const skinMat = new THREE.MeshStandardMaterial({
+      color: 0x333b26, // Dark olive-moss mottled reptilian flesh
+      roughness: 0.65,
+      metalness: 0.25
+    });
+
+    // Dark gunmetal armor material
+    const armorMat = new THREE.MeshStandardMaterial({
+      color: 0x1f2421,
+      roughness: 0.35,
+      metalness: 0.85
+    });
+
+    // Bone jawbone material
+    const boneMat = new THREE.MeshStandardMaterial({
+      color: 0xe2ded2, // Carved bleached Xenomorph mandible
+      roughness: 0.45,
+      metalness: 0.15
+    });
+
+    // 1. Muscular Torso & Spiked Cuirass
+    const torso = new THREE.Mesh(new THREE.BoxGeometry(1.4 * scale, 1.8 * scale, 1.0 * scale), armorMat);
+    torso.position.y = 2.4 * scale;
+    group.add(torso);
+
+    // 2. Distinctive Mr. Black Bio-Mask
+    const head = new THREE.Mesh(new THREE.BoxGeometry(0.85 * scale, 1.1 * scale, 0.9 * scale), armorMat);
+    head.position.set(0, 3.6 * scale, 0.2 * scale);
+    group.add(head);
+
+    // Flayed Xenomorph Lower Jawbone attached to chin
+    const jawbone = new THREE.Mesh(new THREE.TorusGeometry(0.48 * scale, 0.1 * scale, 6, 12, Math.PI), boneMat);
+    jawbone.rotation.x = Math.PI / 2;
+    jawbone.position.set(0, 3.25 * scale, 0.45 * scale);
+    group.add(jawbone);
+
+    // Red Tri-Laser Eye Visor
+    const eyeMat = new THREE.MeshBasicMaterial({ color: 0xff0033 });
+    const eyeLens = new THREE.Mesh(new THREE.BoxGeometry(0.55 * scale, 0.12 * scale, 0.08 * scale), eyeMat);
+    eyeLens.position.set(0, 3.65 * scale, 0.68 * scale);
+    group.add(eyeLens);
+
+    // 3. Thick Crimson & Charcoal Dreadlocks
+    const dreadMat = new THREE.MeshStandardMaterial({ color: 0x1a0505, roughness: 0.8 });
+    for (let d = 0; d < 14; d++) {
+      const dread = new THREE.Mesh(new THREE.CylinderGeometry(0.06 * scale, 0.04 * scale, 1.6 * scale, 5), dreadMat);
+      const angle = (d / 14) * Math.PI - Math.PI / 2;
+      dread.position.set(Math.cos(angle) * 0.45 * scale, 3.4 * scale, -0.45 * scale);
+      dread.rotation.set(-0.6, 0, Math.sin(angle) * 0.4);
+      group.add(dread);
+    }
+
+    // 4. Shoulder Rotary Gatling Plasma Caster
+    const gunGroup = new THREE.Group();
+    gunGroup.position.set(-0.75 * scale, 3.5 * scale, -0.2 * scale);
+    const gunBase = new THREE.Mesh(new THREE.BoxGeometry(0.35 * scale, 0.35 * scale, 0.6 * scale), armorMat);
+    gunGroup.add(gunBase);
+    const barrelMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.9 });
+    for (let b = 0; b < 3; b++) {
+      const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.04 * scale, 0.04 * scale, 0.8 * scale, 6), barrelMat);
+      barrel.rotation.x = Math.PI / 2;
+      const bAngle = (b / 3) * Math.PI * 2;
+      barrel.position.set(Math.cos(bAngle) * 0.08 * scale, Math.sin(bAngle) * 0.08 * scale, 0.4 * scale);
+      gunGroup.add(barrel);
+    }
+    group.add(gunGroup);
+
+    // 5. Right Arm with Colossal Extended Wristblade
+    const armR = new THREE.Mesh(new THREE.BoxGeometry(0.35 * scale, 1.4 * scale, 0.4 * scale), skinMat);
+    armR.position.set(0.95 * scale, 2.5 * scale, 0.2 * scale);
+    group.add(armR);
+
+    const bladeMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.95, roughness: 0.1 });
+    const wristblade = new THREE.Mesh(new THREE.BoxGeometry(0.12 * scale, 0.04 * scale, 2.8 * scale), bladeMat);
+    wristblade.position.set(1.05 * scale, 1.8 * scale, 1.5 * scale);
+    group.add(wristblade);
+
+    // Left Arm
+    const armL = new THREE.Mesh(new THREE.BoxGeometry(0.35 * scale, 1.4 * scale, 0.4 * scale), skinMat);
+    armL.position.set(-0.95 * scale, 2.5 * scale, 0.2 * scale);
+    group.add(armL);
+
+    // 6. Heavy Legs & Greaves
+    const legL = new THREE.Mesh(new THREE.CylinderGeometry(0.24 * scale, 0.18 * scale, 1.8 * scale, 6), armorMat);
+    legL.position.set(-0.45 * scale, 0.9 * scale, 0);
+    group.add(legL);
+
+    const legR = new THREE.Mesh(new THREE.CylinderGeometry(0.24 * scale, 0.18 * scale, 1.8 * scale, 6), armorMat);
+    legR.position.set(0.45 * scale, 0.9 * scale, 0);
+    group.add(legR);
+
+    return group;
+  }
+
   /* === CHANTIER 2 (v52.0): Rogue King Xenomorph Prime Boss Mesh (Aliens: Rogue 1993 Lore) === */
   buildRogueKingMesh(scale = 3.2) {
     const group = new THREE.Group();
@@ -443,6 +543,9 @@ export class BossManager {
     }
     if (type === 'trilobite_prime') {
       return this.buildTrilobiteMesh(2.6);
+    }
+    if (type === 'berserker_super_predator') {
+      return this.buildBerserkerPredatorMesh(2.6);
     }
 
     const group = new THREE.Group();
@@ -1354,6 +1457,49 @@ export class BossManager {
       if (this.activeBoss.mesh.userData && this.activeBoss.mesh.userData.phaseShield && this.activeBoss.hasPhaseShield) {
         this.activeBoss.mesh.userData.phaseShield.rotation.y += 1.5 * delta;
         this.activeBoss.mesh.userData.phaseShield.rotation.x += 0.8 * delta;
+      }
+    } else if (this.activeBoss.type === 'berserker_super_predator') {
+      // Chantier 7 (v55.0): Bad Blood Berserker Super Predator AI (Predators 2010 Mr. Black)
+      if (!this.activeBoss.gatlingCooldown) this.activeBoss.gatlingCooldown = 4.0;
+      this.activeBoss.gatlingCooldown -= delta;
+
+      if (!this.activeBoss.roarCooldown) this.activeBoss.roarCooldown = 6.0;
+      this.activeBoss.roarCooldown -= delta;
+
+      // Rotate towards player
+      if (dist > 0.1) {
+        this.activeBoss.mesh.lookAt(player.position.x, this.activeBoss.mesh.position.y, player.position.z);
+      }
+
+      // 1. Long range: Rotary Plasma Gatling Bursts
+      if (dist > 8.0 && dist <= 38.0 && this.activeBoss.gatlingCooldown <= 0) {
+        this.activeBoss.gatlingCooldown = 4.5;
+        if (this.audioEngine && this.audioEngine.playBurnerHeavyPlasmaBlast) {
+          this.audioEngine.playBurnerHeavyPlasmaBlast();
+        }
+        for (let b = 0; b < 3; b++) {
+          setTimeout(() => {
+            if (this.activeBoss && player) {
+              const pDir = player.position.clone().sub(this.activeBoss.mesh.position).normalize();
+              this.spawnAcidSpit(this.activeBoss.mesh.position.clone().add(new THREE.Vector3(0, 3.2, 0)), pDir);
+            }
+          }, b * 150);
+        }
+        if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
+          window.gameInstance.ui.showAnnouncement('🔴 GATLING PLASMA DU SUPER PREDATOR BERSERKER EN RAFALE !', 'warning');
+        }
+      }
+
+      // 2. Melee range: War Roar & Heavy Serrated Wristblade Cleave
+      if (dist <= 6.5 && this.activeBoss.roarCooldown <= 0) {
+        this.activeBoss.roarCooldown = 5.5;
+        if (this.audioEngine && this.audioEngine.playBadBloodBerserkerRoar) {
+          this.audioEngine.playBadBloodBerserkerRoar();
+        }
+        player.takeDamage(420, false, this.activeBoss);
+        if (window.gameInstance && window.gameInstance.particles && window.gameInstance.particles.emitSparks) {
+          window.gameInstance.particles.emitSparks(player.position.clone().add(new THREE.Vector3(0, 1.4, 0)), 24);
+        }
       }
     } else if (this.activeBoss.type === 'rogue_king_prime') {
       // Chantier 2 (v52.0): Rogue King Xenomorph Prime Charge, Pheromone Frenzy & Scythe Cleave

@@ -207,6 +207,14 @@ export class Player {
     this.hasCauterizingWristblade = false;
     this.bloodMarkMesh = null;
 
+    // === v55.0 CHANTIERS 1, 2, 5 & 10: Water Cloak Disruption, Sniper Tri-Laser, Netgun Constriction, Ceramic Chitin ===
+    this.isWaterSubmerged = false;
+    this.waterCloakCooldown = 0;
+    this.isSniperMode = false;
+    this.sniperChargeTimer = 0;
+    this.sniperCooldown = 0;
+    this.hasCeramicThermalArmor = false;
+
     this.forgeUpgrades = {
       barbedCombiStick: false,
       serratedSmartDisc: false,
@@ -214,7 +222,8 @@ export class Player {
       masterWristblades: false,
       enkiduBattleplate: false,
       burnerPlasmaCoil: false,
-      cauterizingWristblade: false
+      cauterizingWristblade: false,
+      ceramicThermalArmor: false
     };
     this.loadClanForgeUpgrades();
   }
@@ -853,10 +862,18 @@ export class Player {
           if (target.mesh && target.isNetEntangled) {
             netGroup.position.copy(target.mesh.position).add(new THREE.Vector3(0, 1.2, 0));
             netGroup.scale.multiplyScalar(0.995); // Visible constriction tension
+            // Chantier 2 (v55.0): Razor Wire Progressive Constriction Slicing (Predator 2 Canon)
+            target.hp -= 8.5; // Progressive slicing through chitin & flesh
+            if (this.particles && this.particles.emitAlienBloodSpurt && Math.random() < 0.25) {
+              this.particles.emitAlienBloodSpurt(target.mesh.position, 2);
+            }
           }
-          if (netLife <= 0 || !target.isNetEntangled) {
+          if (netLife <= 0 || !target.isNetEntangled || (target.hp && target.hp <= 0)) {
             clearInterval(netAnim);
             this.scene.remove(netGroup);
+            if (this.audioEngine && this.audioEngine.playNetgunConstrictionSlice) {
+              this.audioEngine.playNetgunConstrictionSlice();
+            }
           }
         }, 100);
       });
@@ -1790,6 +1807,20 @@ export class Player {
     }
     if (isAcid && this.hasEnkiduArmor) {
       amount *= (1.0 - (this.acidResistance || 0.40));
+    }
+    // Chantier 10 (v54.0): Cauterizing Wristblade 30% Acid Reduction
+    if (isAcid && this.hasCauterizingWristblade) {
+      amount *= 0.70;
+    }
+    // Chantier 10 (v55.0): Ceramic Thermal Chitin Weave 50% Acid Deflection & Shielding
+    if (isAcid && this.hasCeramicThermalArmor) {
+      amount *= 0.50;
+      if (this.audioEngine && this.audioEngine.playCeramicArmorDeflection) {
+        this.audioEngine.playCeramicArmorDeflection();
+      }
+      if (this.particles && this.particles.emitSparks) {
+        this.particles.emitSparks(this.position.clone().add(new THREE.Vector3(0, 1.2, 0)), 8);
+      }
     }
     // Chantier 1 & Elena QA (v54.0): Blooded Warrior Sacred Mark 15% Damage Reduction
     if (this.isBloodedWarrior) {
@@ -4053,6 +4084,10 @@ export class Player {
     if (this.smartDiscMultiLockCooldown > 0) this.smartDiscMultiLockCooldown -= delta;
     if (this.burnerCooldown > 0) this.burnerCooldown -= delta;
     if (this.trophyChainRattleTimer > 0) this.trophyChainRattleTimer -= delta;
+
+    // === v55.0 Timers (Water Cloak Disruption, Sniper Tri-Laser) ===
+    if (this.waterCloakCooldown > 0) this.waterCloakCooldown -= delta;
+    if (this.sniperCooldown > 0) this.sniperCooldown -= delta;
   }
 
   /* === CHANTIER 1 (v51.0): Clan Weapon Forge Persistent Upgrades === */
@@ -4076,6 +4111,9 @@ export class Player {
         }
         if (this.forgeUpgrades.cauterizingWristblade) {
           this.hasCauterizingWristblade = true;
+        }
+        if (this.forgeUpgrades.ceramicThermalArmor) {
+          this.hasCeramicThermalArmor = true;
         }
       }
     } catch (e) {
@@ -4447,6 +4485,154 @@ export class Player {
     if (audio && audio.playTrophyChainRattle) {
       audio.playTrophyChainRattle();
     }
+  }
+
+  /* === CHANTIER 1 & ELENA QA (v55.0): Water Cloaking Disruption & Electrical Short-Circuit === */
+  triggerWaterCloakDisruption(audio, particles, ui) {
+    if (this.waterCloakCooldown > 0) return;
+    this.waterCloakCooldown = 2.0;
+
+    if (this.isCloaked) {
+      this.isCloaked = false;
+      this.cloakFlickerTimer = 1.2;
+
+      if (audio && audio.playWaterCloakShortCircuit) {
+        audio.playWaterCloakShortCircuit();
+      }
+      if (particles && particles.emitSparks) {
+        particles.emitSparks(this.position.clone().add(new THREE.Vector3(0, 1.2, 0)), 28);
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement("⚡ IMMERSION AQUATIQUE : CAMOUFLAGE COURT-CIRCUITÉ PAR L'EAU (PREDATOR 1987) !", "warning");
+      }
+    }
+  }
+
+  /* === CHANTIER 5 & LUCAS QA (v55.0): Sniper Plasma Tri-Laser Focus Mode ([Z] / [Clic Molette]) === */
+  toggleSniperPlasmaMode(camera, audio, ui) {
+    this.isSniperMode = !this.isSniperMode;
+
+    if (camera) {
+      camera.fov = this.isSniperMode ? 32 : 60;
+      camera.updateProjectionMatrix();
+    }
+
+    if (this.isSniperMode) {
+      if (audio && audio.playSniperPlasmaTriLaserHum) {
+        audio.playSniperPlasmaTriLaserHum();
+      }
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('🎯 MODE SNIPER TRI-LASER ACTIVÉ : ZOOM LONGUE PORTÉE & LANCE PLASMA PERFORANTE !');
+      }
+    } else {
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('🎯 MODE SNIPER DÉSACTIVÉ : CHAMP DE VISION STANDARD RESTAURÉ');
+      }
+    }
+
+    const reticle = document.getElementById('tri-laser-sniper-reticle');
+    if (reticle) {
+      if (this.isSniperMode) {
+        reticle.classList.remove('hidden');
+      } else {
+        reticle.classList.add('hidden');
+      }
+    }
+
+    return this.isSniperMode;
+  }
+
+  fireSniperPlasmaLance(horde, bosses, synthetics, particles, audio, ui) {
+    if (this.sniperCooldown > 0) return false;
+    if (this.plasmaEnergy < 35) {
+      if (ui && ui.showAnnouncement) ui.showAnnouncement('❌ ÉNERGIE PLASMA INSUFFISANTE POUR LE TIR SNIPER (35 REQUIS) !');
+      return false;
+    }
+
+    this.plasmaEnergy -= 35;
+    this.sniperCooldown = 3.8;
+
+    if (audio) {
+      if (audio.playBurnerHeavyPlasmaBlast) audio.playBurnerHeavyPlasmaBlast();
+      if (audio.playSniperPlasmaTriLaserHum) audio.playSniperPlasmaTriLaserHum();
+    }
+
+    const forward = new THREE.Vector3(Math.sin(this.rotationY), 0, Math.cos(this.rotationY)).normalize();
+    const range = 42.0;
+    const lanceDamage = 1200;
+
+    // Direct linear piercing beam
+    const beamStart = this.position.clone().add(new THREE.Vector3(0, 1.8, 0));
+    const beamEnd = beamStart.clone().addScaledVector(forward, range);
+
+    if (particles && particles.emitExplosion) {
+      particles.emitExplosion(beamEnd, 24);
+    }
+    if (particles && particles.emitSparks) {
+      for (let step = 1; step <= 8; step++) {
+        const p = beamStart.clone().addScaledVector(forward, step * 5.0);
+        particles.emitSparks(p, 6);
+      }
+    }
+
+    let hitsCount = 0;
+
+    // Check piercing hits against horde along line
+    if (horde && horde.aliens) {
+      horde.aliens.forEach(alien => {
+        if (alien && alien.mesh) {
+          const toAlien = alien.mesh.position.clone().sub(beamStart);
+          const projDist = toAlien.dot(forward);
+          if (projDist > 0 && projDist <= range) {
+            const perp = toAlien.clone().subScaledVector(forward, projDist);
+            if (perp.length() <= 1.8) {
+              alien.hp -= lanceDamage;
+              hitsCount++;
+              if (particles && particles.emitAlienBloodSpurt) {
+                particles.emitAlienBloodSpurt(alien.mesh.position, 16);
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Check piercing hit on boss
+    if (bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
+      const toBoss = bosses.activeBoss.mesh.position.clone().sub(beamStart);
+      const projDist = toBoss.dot(forward);
+      if (projDist > 0 && projDist <= range) {
+        const perp = toBoss.clone().subScaledVector(forward, projDist);
+        if (perp.length() <= 3.2) {
+          bosses.takeDamage(lanceDamage);
+          hitsCount++;
+        }
+      }
+    }
+
+    // Check piercing hit on synthetics
+    if (synthetics && synthetics.androids) {
+      synthetics.androids.forEach(syn => {
+        if (syn && syn.mesh) {
+          const toSyn = syn.mesh.position.clone().sub(beamStart);
+          const projDist = toSyn.dot(forward);
+          if (projDist > 0 && projDist <= range) {
+            const perp = toSyn.clone().subScaledVector(forward, projDist);
+            if (perp.length() <= 1.8) {
+              syn.hp -= lanceDamage;
+              hitsCount++;
+            }
+          }
+        }
+      });
+    }
+
+    if (ui && ui.showAnnouncement) {
+      ui.showAnnouncement(`⚡ LANCE PLASMA SNIPER PERFORANTE : ${hitsCount} CIBLES TRANSPERCÉES (1200 DÉGÂTS CRITIQUES) !`);
+    }
+
+    return true;
   }
 }
 

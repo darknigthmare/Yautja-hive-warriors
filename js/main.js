@@ -652,10 +652,16 @@ class GameApp {
         }
       }
 
+      // Medicomp Visceral Cauterization [KeyZ] / Chantier 5 (v55.0): Sniper Plasma Tri-Laser Focus Mode [Shift + KeyZ]
       if (e.code === 'KeyZ' && this.player) {
-        if (this.player.useMedicomp()) {
+        if (this.keys['ShiftLeft'] || this.keys['ShiftRight']) {
+          this.player.usedShiftModifier = true;
+          this.player.toggleSniperPlasmaMode(this.renderer.camera, this.audio, this.ui);
+        } else if (this.player.useMedicomp()) {
           this.particles.emitMedicompSteam(this.player.position, 24);
           this.ui.showAnnouncement('💉 MEDICOMP CAUTÉRISATION VISCÉRALE: SOIN 450 HP & BIO-VAPEUR ANTISEPTIQUE !');
+        } else {
+          this.player.toggleSniperPlasmaMode(this.renderer.camera, this.audio, this.ui);
         }
       }
 
@@ -815,6 +821,10 @@ class GameApp {
       }
       if (e.button === 2) {
         e.preventDefault();
+        if (this.player && this.player.isSniperMode) {
+          this.player.fireSniperPlasmaLance(this.horde, this.bosses, this.synthetics, this.particles, this.audio, this.ui);
+          return;
+        }
         if (this.keys['ShiftLeft'] || this.keys['ShiftRight']) {
           if (this.player) {
             this.player.usedShiftModifier = true;
@@ -1796,6 +1806,11 @@ class GameApp {
         tHonor = 7500;
         this.player.royalJellyFlasks += 5;
         if (this.audio && this.audio.playRogueKingEarthquakeRoar) this.audio.playRogueKingEarthquakeRoar();
+      } else if (bType === 'berserker_super_predator') {
+        tName = "Masque d'Écorcheur & Mandibule Xéno de Super Predator Berserker (Predators 2010)";
+        tHonor = 8000;
+        this.player.royalJellyFlasks += 4;
+        if (this.audio && this.audio.playBadBloodBerserkerRoar) this.audio.playBadBloodBerserkerRoar();
       }
 
       this.player.recordTrophy(tName, tHonor);
@@ -2229,8 +2244,10 @@ class GameApp {
       if (this.env.updateStasisTanks) {
         this.env.updateStasisTanks(delta, this.player, this.horde, this.audio, this.particles);
       }
-      // Chantier 3 & 4 (v54.0): JP-4 Explosive Fuel Barrels & WY Plasma Recharge Terminals
-      if (this.env.updateEnvironmentV54) {
+      // Chantier 3, 4 & 5 (v55.0): JP-4 Explosive Fuel Barrels, WY Plasma Terminals & Flooded Water Puddles
+      if (this.env.updateEnvironmentV55) {
+        this.env.updateEnvironmentV55(delta, this.player, this.horde, this.audio, this.particles, this.ui);
+      } else if (this.env.updateEnvironmentV54) {
         this.env.updateEnvironmentV54(delta, this.player, this.horde, this.audio, this.particles);
       }
     }
@@ -3319,7 +3336,8 @@ class GameApp {
       { id: 'btn-forge-wristblades', key: 'masterWristblades', costHonor: 3000, costJelly: 5 },
       { id: 'btn-forge-enkidu', key: 'enkiduBattleplate', costHonor: 3000, costJelly: 5 },
       { id: 'btn-forge-burner-coil', key: 'burnerPlasmaCoil', costHonor: 3500, costJelly: 6 },
-      { id: 'btn-forge-cauterizing', key: 'cauterizingWristblade', costHonor: 3200, costJelly: 5 }
+      { id: 'btn-forge-cauterizing', key: 'cauterizingWristblade', costHonor: 3200, costJelly: 5 },
+      { id: 'btn-forge-ceramic-armor', key: 'ceramicThermalArmor', costHonor: 3600, costJelly: 5 }
     ];
 
     upgrades.forEach(u => {

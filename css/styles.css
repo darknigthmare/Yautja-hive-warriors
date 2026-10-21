@@ -3603,6 +3603,85 @@ html, body {
   color: #fed7aa;
 }
 
+/* === CHANTIER 6 & MARC QA (v55.0): Sniper Plasma Tri-Laser Focus Reticle === */
+.sniper-tri-laser-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 260px;
+  height: 260px;
+  pointer-events: none;
+  z-index: 120;
+}
+
+.sniper-tri-crosshair {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.sniper-bracket {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border: 2px solid rgba(239, 68, 68, 0.7);
+}
+.bracket-tl { top: 0; left: 0; border-right: none; border-bottom: none; }
+.bracket-tr { top: 0; right: 0; border-left: none; border-bottom: none; }
+.bracket-bl { bottom: 0; left: 0; border-right: none; border-top: none; }
+.bracket-br { bottom: 0; right: 0; border-left: none; border-top: none; }
+
+.sniper-dot {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: #ff1100;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #ff1100, 0 0 20px #ef4444;
+  animation: pulse-tri-dot 1.2s infinite ease-in-out;
+}
+.dot-top { top: 38px; left: 127px; }
+.dot-left { top: 172px; left: 58px; }
+.dot-right { top: 172px; right: 58px; }
+
+@keyframes pulse-tri-dot {
+  0%, 100% { transform: scale(1.0); opacity: 0.8; }
+  50% { transform: scale(1.4); opacity: 1.0; }
+}
+
+.sniper-center-diamond {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(45deg);
+  width: 14px;
+  height: 14px;
+  border: 2px solid #ef4444;
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.9);
+}
+
+.sniper-telemetry-readout {
+  position: absolute;
+  bottom: -28px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 1.5px;
+  color: #fca5a5;
+  text-shadow: 0 0 8px #ef4444;
+  white-space: nowrap;
+}
+
+#slot-sniper-mode .slot-key {
+  border-color: #ef4444;
+  color: #f87171;
+}
+#slot-sniper-mode .slot-label {
+  color: #fecaca;
+}
+
 
 
 

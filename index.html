@@ -606,6 +606,21 @@
         <div class="cryo-vent-text">BRIS CRYO-STASE : EXPULSION AZOTE LIQUIDE (ZONE 15M, CONGÉLATION 6S, SOIN 200 PV)</div>
       </div>
 
+      <!-- Chantier 6 & Marc QA (v55.0): Sniper Plasma Tri-Laser Focus Reticle -->
+      <div id="tri-laser-sniper-reticle" class="sniper-tri-laser-overlay hidden">
+        <div class="sniper-tri-crosshair">
+          <div class="sniper-bracket bracket-tl"></div>
+          <div class="sniper-bracket bracket-tr"></div>
+          <div class="sniper-bracket bracket-bl"></div>
+          <div class="sniper-bracket bracket-br"></div>
+          <div class="sniper-dot dot-top"></div>
+          <div class="sniper-dot dot-left"></div>
+          <div class="sniper-dot dot-right"></div>
+          <div class="sniper-center-diamond"></div>
+          <div class="sniper-telemetry-readout">TRI-BEAM AP-LANCE // CHARGE READY</div>
+        </div>
+      </div>
+
       <!-- MARC QA AUDIT #1: DYNAMIC CIRCULAR COMBAT RETICLE HUD -->
       <div id="dynamic-combat-reticle" class="combat-reticle-overlay">
         <svg class="reticle-svg" viewBox="0 0 100 100">
@@ -824,6 +839,10 @@
           <div class="slot-key">⇧+0</div>
           <div class="slot-label">BURNER HEAVY</div>
         </div>
+        <div class="ability-slot" id="slot-sniper-mode" onclick="window.game && window.game.player && window.game.player.toggleSniperPlasmaMode(window.game.renderer.camera, window.game.audio, window.game.ui)">
+          <div class="slot-key">Z</div>
+          <div class="slot-label">SNIPER TRI-LASER</div>
+        </div>
         <div class="ability-slot" id="slot-swap" onclick="window.game && window.game.toggleWeaponWheel()">
           <div class="slot-key">TAB</div>
           <div class="slot-label" id="hud-weapon-label">ROUE DES ARMES</div>
@@ -981,6 +1000,12 @@
             <div class="forge-title">LAMES CAUTÉRISANTES AU SANG ACIDE</div>
             <div class="forge-desc">Finition thermique au sang d'Aliens décapités : +30% dégâts de mêlée et neutralisation immédiate de l'acide caustique.</div>
             <button id="btn-forge-cauterizing" class="btn-forge">FORGER (3200 PTS + 5 GELÉES)</button>
+          </div>
+          <div class="forge-item-card">
+            <div class="forge-icon">🛡️</div>
+            <div class="forge-title">TISSAGE CHITINIQUE CÉRAMIQUE THERMIQUE</div>
+            <div class="forge-desc">Plaquage composite céramique réfractaire : -50% de dégâts d'acide, déviation balistique active et neutralisation des brûlures.</div>
+            <button id="btn-forge-ceramic-armor" class="btn-forge">FORGER (3600 PTS + 5 GELÉES)</button>
           </div>
         </div>
       </div>

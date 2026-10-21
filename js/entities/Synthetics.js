@@ -368,6 +368,9 @@ export class SyntheticsManager {
       if (syn.mesh.position.distanceTo(attack.origin) <= attack.radius) {
         syn.hp -= attack.damage;
         this.emitWhiteSyntheticBlood(syn.mesh.position);
+        if (this.audioEngine && this.audioEngine.playSyntheticWhiteFluidLeak && Math.random() < 0.45) {
+          this.audioEngine.playSyntheticWhiteFluidLeak();
+        }
 
         if (attack.type === 'emp' || attack.type === 'plasma' || attack.damage >= 180) {
           syn.isEMPStunned = true;

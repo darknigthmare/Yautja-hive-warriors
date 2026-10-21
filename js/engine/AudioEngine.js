@@ -6246,6 +6246,260 @@ export class AudioEngine {
     chirp.start(now);
     chirp.stop(now + 0.22);
   }
+
+  // 114. Water Cloak Short-Circuit Spark & Fizz (Predator 1987 / Prey 2022 Lore)
+  playWaterCloakShortCircuit() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Electrical crackle & water hiss
+    const bufferSize = this.ctx.sampleRate * 0.45;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (this.ctx.sampleRate * 0.12));
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(3200, now);
+    filter.frequency.linearRampToValueAtTime(1400, now + 0.4);
+    filter.Q.value = 4.0;
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.7, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+
+    // Rapid discharge zap
+    const osc = this.ctx.createOscillator();
+    const oscGain = this.ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(120, now);
+    osc.frequency.linearRampToValueAtTime(45, now + 0.3);
+    oscGain.gain.setValueAtTime(0.5, now);
+    oscGain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.getOut());
+
+    osc.connect(oscGain);
+    oscGain.connect(this.getOut());
+
+    noise.start(now);
+    osc.start(now);
+    osc.stop(now + 0.3);
+  }
+
+  // 115. Netgun Mechanical Constriction & Razor Wire Slice (Predator 2 1990 Canon)
+  playNetgunConstrictionSlice() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Metallic ratchet winch clicks
+    for (let i = 0; i < 4; i++) {
+      const clickTime = now + i * 0.07;
+      const osc = this.ctx.createOscillator();
+      const clickGain = this.ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(2200 + i * 400, clickTime);
+      clickGain.gain.setValueAtTime(0.4, clickTime);
+      clickGain.gain.exponentialRampToValueAtTime(0.001, clickTime + 0.04);
+      osc.connect(clickGain);
+      clickGain.connect(this.getOut());
+      osc.start(clickTime);
+      osc.stop(clickTime + 0.04);
+    }
+
+    // High tension wire slice
+    const sliceOsc = this.ctx.createOscillator();
+    const sliceGain = this.ctx.createGain();
+    sliceOsc.type = 'sawtooth';
+    sliceOsc.frequency.setValueAtTime(1800, now + 0.28);
+    sliceOsc.frequency.linearRampToValueAtTime(650, now + 0.6);
+    sliceGain.gain.setValueAtTime(0.01, now);
+    sliceGain.gain.setValueAtTime(0.65, now + 0.28);
+    sliceGain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+
+    sliceOsc.connect(sliceGain);
+    sliceGain.connect(this.getOut());
+    sliceOsc.start(now + 0.28);
+    sliceOsc.stop(now + 0.6);
+  }
+
+  // 116. Weyland-Yutani Synthetic White Milk Fluid Leak & Relay Failure (Alien 1979 / Aliens 1986 Lore)
+  playSyntheticWhiteFluidLeak() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Pneumatic pressure hiss
+    const bufferSize = this.ctx.sampleRate * 0.35;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (this.ctx.sampleRate * 0.15));
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(2400, now);
+    filter.frequency.exponentialRampToValueAtTime(600, now + 0.35);
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.55, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+
+    // Stuttering cybernetic servo buzz
+    const buzz = this.ctx.createOscillator();
+    const buzzGain = this.ctx.createGain();
+    buzz.type = 'square';
+    buzz.frequency.setValueAtTime(95, now);
+    buzzGain.gain.setValueAtTime(0.3, now);
+    buzzGain.gain.exponentialRampToValueAtTime(0.01, now + 0.28);
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.getOut());
+
+    buzz.connect(buzzGain);
+    buzzGain.connect(this.getOut());
+
+    noise.start(now);
+    buzz.start(now);
+    buzz.stop(now + 0.28);
+  }
+
+  // 117. Sniper Plasma Tri-Laser Harmonic Resonance Hum (AVP: Requiem / Predators 2010 Canon)
+  playSniperPlasmaTriLaserHum() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const freqs = [880, 1760, 2640];
+    freqs.forEach((f, idx) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(f, now);
+      osc.frequency.linearRampToValueAtTime(f * 1.05, now + 0.4);
+
+      gain.gain.setValueAtTime(0.18 / (idx + 1), now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+
+      osc.connect(gain);
+      gain.connect(this.getOut());
+      osc.start(now);
+      osc.stop(now + 0.4);
+    });
+  }
+
+  // 118. Bad Blood Berserker Predator Roar & War Snarl (Predators 2010 Mr. Black Canon)
+  playBadBloodBerserkerRoar() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Sub-bass guttural chest rumble
+    const sub = this.ctx.createOscillator();
+    const subGain = this.ctx.createGain();
+    sub.type = 'sawtooth';
+    sub.frequency.setValueAtTime(62, now);
+    sub.frequency.linearRampToValueAtTime(44, now + 0.65);
+    subGain.gain.setValueAtTime(0.75, now);
+    subGain.gain.exponentialRampToValueAtTime(0.01, now + 0.65);
+
+    // Ferocious dual formant growl
+    const growl = this.ctx.createOscillator();
+    const growlGain = this.ctx.createGain();
+    growl.type = 'sawtooth';
+    growl.frequency.setValueAtTime(260, now);
+    growl.frequency.linearRampToValueAtTime(140, now + 0.6);
+    growlGain.gain.setValueAtTime(0.6, now);
+    growlGain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+
+    sub.connect(subGain);
+    subGain.connect(this.getOut());
+
+    growl.connect(growlGain);
+    growlGain.connect(this.getOut());
+
+    sub.start(now);
+    sub.stop(now + 0.65);
+    growl.start(now);
+    growl.stop(now + 0.6);
+  }
+
+  // 119. Alien Queen Bio-Pheromone Hiss Echo (Aliens 1986 Canon)
+  playAlienQueenPheromoneHiss() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const bufferSize = this.ctx.sampleRate * 0.7;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (this.ctx.sampleRate * 0.25));
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(1800, now);
+    filter.frequency.exponentialRampToValueAtTime(400, now + 0.7);
+    filter.Q.value = 2.5;
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.65, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.7);
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.getOut());
+    noise.start(now);
+  }
+
+  // 120. USCM M41A Pulse Rifle Empty Chamber Strike (Aliens 1986 Canon)
+  playPulseRifleEmptyClick() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    [0, 0.06].forEach(offset => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(1400, now + offset);
+      osc.frequency.exponentialRampToValueAtTime(300, now + offset + 0.03);
+      gain.gain.setValueAtTime(0.5, now + offset);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + offset + 0.03);
+
+      osc.connect(gain);
+      gain.connect(this.getOut());
+      osc.start(now + offset);
+      osc.stop(now + offset + 0.03);
+    });
+  }
+
+  // 121. Ceramic Thermal Armor Caustic Acid Deflection (Dark Horse Comics Canon)
+  playCeramicArmorDeflection() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(380, now);
+    osc.frequency.exponentialRampToValueAtTime(95, now + 0.18);
+    gain.gain.setValueAtTime(0.7, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.18);
+
+    osc.connect(gain);
+    gain.connect(this.getOut());
+    osc.start(now);
+    osc.stop(now + 0.18);
+  }
 }
 
 
