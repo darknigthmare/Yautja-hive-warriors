@@ -7243,6 +7243,260 @@ export class AudioEngine {
     windNoise.start(now);
     windNoise.stop(now + 0.95);
   }
+
+  // 143. Billy Sole's Courage Machete Draw & Jungle Chant (Predator 1987)
+  playBillySoleChant() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Resonant guttural warrior chant tone
+    const chantOsc = this.ctx.createOscillator();
+    chantOsc.type = 'sawtooth';
+    chantOsc.frequency.setValueAtTime(145, now);
+    chantOsc.frequency.linearRampToValueAtTime(165, now + 0.35);
+    chantOsc.frequency.exponentialRampToValueAtTime(110, now + 0.9);
+
+    const chantFilter = this.ctx.createBiquadFilter();
+    chantFilter.type = 'bandpass';
+    chantFilter.frequency.setValueAtTime(380, now);
+    chantFilter.Q.setValueAtTime(4.5, now);
+
+    const chantGain = this.ctx.createGain();
+    chantGain.gain.setValueAtTime(0.01, now);
+    chantGain.gain.linearRampToValueAtTime(0.65, now + 0.15);
+    chantGain.gain.exponentialRampToValueAtTime(0.01, now + 0.9);
+
+    chantOsc.connect(chantFilter);
+    chantFilter.connect(chantGain);
+    chantGain.connect(this.getOut());
+    chantOsc.start(now);
+    chantOsc.stop(now + 0.9);
+
+    // Machete steel blade ring
+    const bladeOsc = this.ctx.createOscillator();
+    bladeOsc.type = 'sine';
+    bladeOsc.frequency.setValueAtTime(2450, now);
+    bladeOsc.frequency.exponentialRampToValueAtTime(1200, now + 0.55);
+
+    const bladeGain = this.ctx.createGain();
+    bladeGain.gain.setValueAtTime(0.55, now);
+    bladeGain.gain.exponentialRampToValueAtTime(0.01, now + 0.55);
+
+    bladeOsc.connect(bladeGain);
+    bladeGain.connect(this.getOut());
+    bladeOsc.start(now);
+    bladeOsc.stop(now + 0.55);
+  }
+
+  // 144. Captain Jim Hopper's Skinned Berets Satchel & Dog Tags (Predator 1987)
+  playHopperSatchelOpen() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Nylon satchel zipper slide
+    const zipBufSize = Math.floor(this.ctx.sampleRate * 0.35);
+    const zipBuf = this.ctx.createBuffer(1, zipBufSize, this.ctx.sampleRate);
+    const zipData = zipBuf.getChannelData(0);
+    for (let i = 0; i < zipBufSize; i++) {
+      zipData[i] = (Math.random() * 2 - 1) * (i % 6 === 0 ? 0.9 : 0.15);
+    }
+    const zipNoise = this.ctx.createBufferSource();
+    zipNoise.buffer = zipBuf;
+
+    const zipFilter = this.ctx.createBiquadFilter();
+    zipFilter.type = 'bandpass';
+    zipFilter.frequency.setValueAtTime(2200, now);
+    zipFilter.Q.setValueAtTime(3.0, now);
+
+    const zipGain = this.ctx.createGain();
+    zipGain.gain.setValueAtTime(0.65, now);
+    zipGain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+
+    zipNoise.connect(zipFilter);
+    zipFilter.connect(zipGain);
+    zipGain.connect(this.getOut());
+    zipNoise.start(now);
+    zipNoise.stop(now + 0.35);
+
+    // Metallic dog tags clink at +0.12s
+    [3100, 4200].forEach((freq, idx) => {
+      const tagOsc = this.ctx.createOscillator();
+      tagOsc.type = 'triangle';
+      tagOsc.frequency.setValueAtTime(freq, now + 0.12 + idx * 0.06);
+
+      const tagGain = this.ctx.createGain();
+      tagGain.gain.setValueAtTime(0.4, now + 0.12 + idx * 0.06);
+      tagGain.gain.exponentialRampToValueAtTime(0.01, now + 0.28 + idx * 0.06);
+
+      tagOsc.connect(tagGain);
+      tagGain.connect(this.getOut());
+      tagOsc.start(now + 0.12 + idx * 0.06);
+      tagOsc.stop(now + 0.28 + idx * 0.06);
+    });
+  }
+
+  // 145. Blain's M134 Minigun "Old Painless" 6000 RPM Deforestation Roar (Predator 1987)
+  playOldPainlessRoar() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Electric motor spool-up whine
+    const spoolOsc = this.ctx.createOscillator();
+    spoolOsc.type = 'sawtooth';
+    spoolOsc.frequency.setValueAtTime(110, now);
+    spoolOsc.frequency.exponentialRampToValueAtTime(650, now + 0.18);
+
+    const spoolGain = this.ctx.createGain();
+    spoolGain.gain.setValueAtTime(0.5, now);
+    spoolGain.gain.linearRampToValueAtTime(0.8, now + 0.18);
+    spoolGain.gain.exponentialRampToValueAtTime(0.01, now + 0.85);
+
+    spoolOsc.connect(spoolGain);
+    spoolGain.connect(this.getOut());
+    spoolOsc.start(now);
+    spoolOsc.stop(now + 0.85);
+
+    // Brutal high-velocity 6000 RPM rotary vulcan roar (rapid stutter noise pulses)
+    const bufSize = Math.floor(this.ctx.sampleRate * 0.75);
+    const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    const pulseRate = Math.floor(this.ctx.sampleRate / 80); // 80 Hz cyclic rate
+    for (let i = 0; i < bufSize; i++) {
+      const inPulse = (i % pulseRate) < (pulseRate * 0.35);
+      data[i] = (Math.random() * 2 - 1) * (inPulse ? 0.95 : 0.08);
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buf;
+
+    const noiseFilter = this.ctx.createBiquadFilter();
+    noiseFilter.type = 'lowpass';
+    noiseFilter.frequency.setValueAtTime(1400, now + 0.15);
+
+    const noiseGain = this.ctx.createGain();
+    noiseGain.gain.setValueAtTime(0.01, now);
+    noiseGain.gain.linearRampToValueAtTime(0.95, now + 0.18);
+    noiseGain.gain.setValueAtTime(0.9, now + 0.65);
+    noiseGain.gain.exponentialRampToValueAtTime(0.01, now + 0.85);
+
+    noise.connect(noiseFilter);
+    noiseFilter.connect(noiseGain);
+    noiseGain.connect(this.getOut());
+    noise.start(now + 0.15);
+    noise.stop(now + 0.85);
+  }
+
+  // 146. Rebel Fuel Depot & Gasoline Barrels Chain Explosion (Predator 1987)
+  playRebelFuelDepotExplosion() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Sub-bass concussive blast
+    const subOsc = this.ctx.createOscillator();
+    subOsc.type = 'sine';
+    subOsc.frequency.setValueAtTime(95, now);
+    subOsc.frequency.exponentialRampToValueAtTime(28, now + 0.65);
+
+    const subGain = this.ctx.createGain();
+    subGain.gain.setValueAtTime(1.0, now);
+    subGain.gain.exponentialRampToValueAtTime(0.01, now + 0.75);
+
+    subOsc.connect(subGain);
+    subGain.connect(this.getOut());
+    subOsc.start(now);
+    subOsc.stop(now + 0.75);
+
+    // Explosive fireball rumble
+    const bufSize = Math.floor(this.ctx.sampleRate * 0.85);
+    const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufSize * 0.45));
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buf;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(450, now);
+    filter.frequency.linearRampToValueAtTime(180, now + 0.7);
+
+    const noiseGain = this.ctx.createGain();
+    noiseGain.gain.setValueAtTime(0.9, now);
+    noiseGain.gain.exponentialRampToValueAtTime(0.01, now + 0.85);
+
+    noise.connect(filter);
+    filter.connect(noiseGain);
+    noiseGain.connect(this.getOut());
+    noise.start(now);
+    noise.stop(now + 0.85);
+  }
+
+  // 147. Sharpened Punji Bamboo Stake Impalement & Flesh Puncture (Predator 1987)
+  playPunjiStakeImpale() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Bamboo splinter snap
+    const snapOsc = this.ctx.createOscillator();
+    snapOsc.type = 'triangle';
+    snapOsc.frequency.setValueAtTime(820, now);
+    snapOsc.frequency.exponentialRampToValueAtTime(180, now + 0.06);
+
+    const snapGain = this.ctx.createGain();
+    snapGain.gain.setValueAtTime(0.75, now);
+    snapGain.gain.exponentialRampToValueAtTime(0.01, now + 0.06);
+
+    snapOsc.connect(snapGain);
+    snapGain.connect(this.getOut());
+    snapOsc.start(now);
+    snapOsc.stop(now + 0.06);
+
+    // Heavy puncturing thud
+    const thudOsc = this.ctx.createOscillator();
+    thudOsc.type = 'sawtooth';
+    thudOsc.frequency.setValueAtTime(130, now + 0.04);
+    thudOsc.frequency.exponentialRampToValueAtTime(45, now + 0.25);
+
+    const thudGain = this.ctx.createGain();
+    thudGain.gain.setValueAtTime(0.85, now + 0.04);
+    thudGain.gain.exponentialRampToValueAtTime(0.01, now + 0.28);
+
+    thudOsc.connect(thudGain);
+    thudGain.connect(this.getOut());
+    thudOsc.start(now + 0.04);
+    thudOsc.stop(now + 0.28);
+  }
+
+  // 148. Val Verde Mountain River Cascading Waterfall Rush (Predator 1987)
+  playWaterfallCascadingRoar() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const bufSize = Math.floor(this.ctx.sampleRate * 0.95);
+    const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * (0.6 + Math.sin(i * 0.002) * 0.3);
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buf;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(540, now);
+    filter.Q.setValueAtTime(1.8, now);
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.01, now);
+    gain.gain.linearRampToValueAtTime(0.5, now + 0.15);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.95);
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.getOut());
+    noise.start(now);
+    noise.stop(now + 0.95);
+  }
 }
 
 

@@ -232,6 +232,8 @@ export class Player {
     this.critChanceBonus = 0;
     this.mudCamouflageTimer = 0;
     this.isMudCamouflaged = false;
+    this.billyCourageTimer = 0;
+    this.isBillyCourageActive = false;
     this.loadClanForgeUpgrades();
   }
 
@@ -1562,11 +1564,12 @@ export class Player {
     const baseDmg = this.isSecondaryWeapon ? this.meleeDamage * 1.3 : this.meleeDamage;
     const buff = (this.warhornBuffTimer > 0 ? 1.5 : 1.0) * (this.isBerserkerActive ? 2.0 : 1.0);
     const mudMult = this.isMudCamouflaged ? 1.40 : 1.0;
+    const billyMult = this.isBillyCourageActive ? 1.50 : 1.0;
 
     return {
       type: 'light',
       step: this.attackComboStep,
-      damage: baseDmg * (1 + this.attackComboStep * 0.18) * buff * mudMult,
+      damage: baseDmg * (1 + this.attackComboStep * 0.18) * buff * mudMult * billyMult,
       radius: (this.isSecondaryWeapon ? 4.8 : 3.8) * (this.meleeReachMultiplier || 1.0),
       angle: (Math.PI * 0.65) * (this.meleeArcMultiplier || 1.0)
     };
@@ -1667,11 +1670,12 @@ export class Player {
     radius *= (this.meleeReachMultiplier || 1.0);
 
     const mudMult = this.isMudCamouflaged ? 1.40 : 1.0;
+    const billyMult = this.isBillyCourageActive ? 1.50 : 1.0;
 
     return {
       type: chargeType,
       name: chargeName,
-      damage: baseDmg * dmgMult * buff * mudMult,
+      damage: baseDmg * dmgMult * buff * mudMult * billyMult,
       radius: radius,
       knockback: knockback,
       isLauncher: isLauncher,
@@ -4147,7 +4151,18 @@ export class Player {
         this.isMudCamouflaged = false;
       }
     }
+    if (this.billyCourageTimer > 0) {
+      this.billyCourageTimer -= delta;
+      if (this.billyCourageTimer <= 0) {
+        this.isBillyCourageActive = false;
+      }
+    }
     this.isOnBough = (this.position && this.position.y >= 5.0);
+  }
+
+  applyBillyCourage(duration = 30.0) {
+    this.billyCourageTimer = duration;
+    this.isBillyCourageActive = true;
   }
 
   applyMudCamouflage(duration = 25.0) {

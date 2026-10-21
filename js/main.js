@@ -594,6 +594,12 @@ class GameApp {
           // Handled Game Preserve Suspended Boulder Deadfall Trap (Predators 2010)!
         } else if (this.env && this.env.checkDutchLogTrapTrigger && this.env.checkDutchLogTrapTrigger(this.player.position, false, this.audio, this.horde, this.bosses, this.particles, this.ui)) {
           // Handled Val Verde Major Dutch Schaefer Counterweight Log Trap (Predator 1987)!
+        } else if (this.env && this.env.checkBillyMacheteInteraction && this.env.checkBillyMacheteInteraction(this.player, this.ui, this.audio)) {
+          // Handled Billy Sole's Courage Machete Draw on Fallen Log (Predator 1987)!
+        } else if (this.env && this.env.checkHopperSatchelInteraction && this.env.checkHopperSatchelInteraction(this.player, this.ui, this.audio)) {
+          // Handled Captain Jim Hopper's Skinned Berets Satchel (Predator 1987)!
+        } else if (this.env && this.env.checkOldPainlessInteraction && this.env.checkOldPainlessInteraction(this.player, this.ui, this.audio, this.horde, this.particles)) {
+          // Handled Blain Cooper's M134 Minigun "Old Painless" Deforestation Roar (Predator 1987)!
         } else if (this.env && this.env.checkScoutShipConsoleInteraction && this.env.checkScoutShipConsoleInteraction(this.player.position, this.ui, this.audio, this.horde, this.player)) {
           // Handled Crashed Scout Ship Telemetry Scan (AVP: Requiem 2007)!
         } else if (this.env && this.env.checkCharonLabConsoleInteraction && this.env.checkCharonLabConsoleInteraction(this.player.position, this.horde, this.ui, this.audio)) {
@@ -1211,6 +1217,9 @@ class GameApp {
       if (this.env.checkHVACChillerDamage) {
         this.env.checkHVACChillerDamage(attack.origin, attack.damage, this.audio, this.horde, this.particles, this.ui);
       }
+      if (this.env.checkRebelFuelBarrelsDamage) {
+        this.env.checkRebelFuelBarrelsDamage(attack.origin, attack.damage, this.audio, this.horde, this.bosses, this.particles, this.ui);
+      }
     }
 
     // Update Combo Chain Tag
@@ -1280,6 +1289,9 @@ class GameApp {
       }
       if (this.env.checkHVACChillerDamage) {
         this.env.checkHVACChillerDamage(attack.origin, attack.damage, this.audio, this.horde, this.particles, this.ui);
+      }
+      if (this.env.checkRebelFuelBarrelsDamage) {
+        this.env.checkRebelFuelBarrelsDamage(attack.origin, attack.damage, this.audio, this.horde, this.bosses, this.particles, this.ui);
       }
     }
 
@@ -2548,6 +2560,9 @@ class GameApp {
           if (this.env.checkHVACChillerDamage) {
             this.env.checkHVACChillerDamage(p.mesh.position, p.damage, this.audio, this.horde, this.particles, this.ui);
           }
+          if (this.env.checkRebelFuelBarrelsDamage) {
+            this.env.checkRebelFuelBarrelsDamage(p.mesh.position, p.damage, this.audio, this.horde, this.bosses, this.particles, this.ui);
+          }
         }
 
         const hits = this.horde.checkMeleeHits({ origin: p.mesh.position, radius: 2.8, damage: p.damage });
@@ -2718,6 +2733,9 @@ class GameApp {
           }
           if (this.env.checkHVACChillerDamage) {
             this.env.checkHVACChillerDamage(p.mesh.position, p.damage, this.audio, this.horde, this.particles, this.ui);
+          }
+          if (this.env.checkRebelFuelBarrelsDamage) {
+            this.env.checkRebelFuelBarrelsDamage(p.mesh.position, p.damage, this.audio, this.horde, this.bosses, this.particles, this.ui);
           }
         }
 
@@ -3076,6 +3094,28 @@ class GameApp {
       if (dutchLogPrompt) {
         if (isNearDutchLog) dutchLogPrompt.classList.remove('hidden');
         else dutchLogPrompt.classList.add('hidden');
+      }
+
+      // v58.0 Predator 1 (1987) Val Verde Proximity Prompts
+      const isNearBilly = this.env.billyLogBridge && !this.env.billyLogBridge.isClaimed && this.player && this.player.position.distanceTo(this.env.billyLogBridge.machetePos) <= 4.2;
+      const billyPrompt = document.getElementById('billy-machete-prompt');
+      if (billyPrompt) {
+        if (isNearBilly) billyPrompt.classList.remove('hidden');
+        else billyPrompt.classList.add('hidden');
+      }
+
+      const isNearHopper = this.env.hopperExecutionSite && !this.env.hopperExecutionSite.isClaimed && this.player && this.player.position.distanceTo(this.env.hopperExecutionSite.satchelPos) <= 4.2;
+      const hopperPrompt = document.getElementById('hopper-satchel-prompt');
+      if (hopperPrompt) {
+        if (isNearHopper) hopperPrompt.classList.remove('hidden');
+        else hopperPrompt.classList.add('hidden');
+      }
+
+      const isNearOldPainless = this.env.oldPainlessClearing && this.player && this.player.position.distanceTo(this.env.oldPainlessClearing.gunPos) <= 4.2;
+      const painlessPrompt = document.getElementById('old-painless-prompt');
+      if (painlessPrompt) {
+        if (isNearOldPainless) painlessPrompt.classList.remove('hidden');
+        else painlessPrompt.classList.add('hidden');
       }
     }
 

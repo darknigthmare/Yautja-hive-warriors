@@ -129,6 +129,17 @@ export class EnvironmentManager {
     this.cryptReliquaryVault = null;
     this.windowCradle = null;
     this.sandbagBunker = null;
+    // v58.0 Master 1:1 Predator 1 (1987) Val Verde Systems
+    this.billyLogBridge = null;
+    this.hopperExecutionSite = null;
+    this.guerrillaWatchtower = null;
+    this.rebelFuelDepot = null;
+    this.oldPainlessClearing = null;
+    this.dutchBonfireCamp = null;
+    this.valVerdeWaterfall = null;
+    this.punjiStakeTraps = [];
+    this.rebelFuelBarrels = [];
+    this.activeValVerdeFireZones = [];
   }
 
   clearEnvironment() {
@@ -447,6 +458,48 @@ export class EnvironmentManager {
     this.cryptReliquaryVault = null;
     this.windowCradle = null;
     this.sandbagBunker = null;
+
+    // v58.0 Val Verde Cleanups
+    if (this.billyLogBridge && this.billyLogBridge.group) {
+      this.scene.remove(this.billyLogBridge.group);
+      this.billyLogBridge = null;
+    }
+    if (this.hopperExecutionSite && this.hopperExecutionSite.group) {
+      this.scene.remove(this.hopperExecutionSite.group);
+      this.hopperExecutionSite = null;
+    }
+    if (this.guerrillaWatchtower && this.guerrillaWatchtower.group) {
+      this.scene.remove(this.guerrillaWatchtower.group);
+      this.guerrillaWatchtower = null;
+    }
+    if (this.rebelFuelDepot && this.rebelFuelDepot.group) {
+      this.scene.remove(this.rebelFuelDepot.group);
+      this.rebelFuelDepot = null;
+    }
+    if (this.oldPainlessClearing && this.oldPainlessClearing.group) {
+      this.scene.remove(this.oldPainlessClearing.group);
+      this.oldPainlessClearing = null;
+    }
+    if (this.dutchBonfireCamp && this.dutchBonfireCamp.group) {
+      this.scene.remove(this.dutchBonfireCamp.group);
+      this.dutchBonfireCamp = null;
+    }
+    if (this.valVerdeWaterfall && this.valVerdeWaterfall.group) {
+      this.scene.remove(this.valVerdeWaterfall.group);
+      this.valVerdeWaterfall = null;
+    }
+    this.punjiStakeTraps.forEach(p => {
+      if (p.group) this.scene.remove(p.group);
+    });
+    this.punjiStakeTraps = [];
+    this.rebelFuelBarrels.forEach(b => {
+      if (b.group) this.scene.remove(b.group);
+    });
+    this.rebelFuelBarrels = [];
+    this.activeValVerdeFireZones.forEach(f => {
+      if (f.mesh) this.scene.remove(f.mesh);
+    });
+    this.activeValVerdeFireZones = [];
 
     this.reactorMeltdownActive = false;
     this.reactorMeltdownTimer = 180.0;
@@ -1806,6 +1859,44 @@ export class EnvironmentManager {
       if (x >= 13 && x <= 15 && Math.abs(z - (-14)) <= 1.8) {
         const factor = (x - 13) / 2.0;
         return factor * 2.4;
+      }
+    }
+
+    // 17. Billy Sole's Fallen Giant Log Bridge (+4.0m) (Predator 1987)
+    if (this.billyLogBridge && this.billyLogBridge.pos) {
+      if (x >= -14 && x <= 10 && z >= -27.5 && z <= -24.5) {
+        return 4.0;
+      }
+    }
+
+    // 18. Guerrilla Sniper Watchtower Platform (+5.5m) (Predator 1987)
+    if (this.guerrillaWatchtower && this.guerrillaWatchtower.pos) {
+      if (Math.abs(x - 8) <= 2.2 && Math.abs(z - 6) <= 2.2) {
+        return 5.5;
+      }
+      // Access ladder incline
+      if (Math.abs(x - 8) <= 1.2 && z >= 1.0 && z <= 4.2) {
+        const factor = (z - 1.0) / 3.2;
+        return factor * 5.5;
+      }
+    }
+
+    // 19. Cascading River Waterfall Rocky Cliff Ledge (+6.2m) (Predator 1987)
+    if (this.valVerdeWaterfall && this.valVerdeWaterfall.pos) {
+      if (x >= 28 && x <= 36 && z >= -12 && z <= -4) {
+        return 6.2;
+      }
+      // Rocky trail ramp
+      if (x >= 23 && x <= 28 && z >= -10 && z <= -6) {
+        const factor = (x - 23) / 5.0;
+        return factor * 6.2;
+      }
+    }
+
+    // 20. Rebel Communications Shack Roof (+2.6m) (Predator 1987)
+    if (this.rebelFuelDepot && this.rebelFuelDepot.shackPos) {
+      if (x >= 0 && x <= 4.5 && z >= 8 && z <= 12.5) {
+        return 2.6;
       }
     }
 
@@ -8244,6 +8335,331 @@ export class EnvironmentManager {
     group.add(bunkerGroup);
     this.sandbagBunker = { pos: bunkerPos.clone() };
 
+    // 5. Billy Sole's Fallen Giant Log Bridge across Gorge [-2, 0, -26] (+4.0m elevation)
+    const woodMat = new THREE.MeshStandardMaterial({ color: 0x3d2012, roughness: 0.95 });
+    const mossMat = new THREE.MeshStandardMaterial({ color: 0x223d14, roughness: 0.95 });
+    const stoneMat = new THREE.MeshStandardMaterial({ color: 0x38342f, roughness: 0.9 });
+    const fleshMat = new THREE.MeshStandardMaterial({ color: 0x882218, roughness: 0.6 });
+    const waterMat = new THREE.MeshStandardMaterial({ color: 0x38bdf8, roughness: 0.1, metalness: 0.8, transparent: true, opacity: 0.75 });
+    const fireMat = new THREE.MeshBasicMaterial({ color: 0xf59e0b });
+    const barrelRedMat = new THREE.MeshStandardMaterial({ color: 0xb91c1c, metalness: 0.85, roughness: 0.3 });
+    const goldBrassMat = new THREE.MeshStandardMaterial({ color: 0xd97706, metalness: 0.9, roughness: 0.2 });
+
+    const gorgeGroup = new THREE.Group();
+    gorgeGroup.position.set(-2, 0, -26);
+
+    // Deep rocky ravine bed (jagged boulders at y=0)
+    for (let r = 0; r < 8; r++) {
+      const boulder = new THREE.Mesh(new THREE.DodecahedronGeometry(1.4 + (r % 3) * 0.4, 1), stoneMat);
+      boulder.position.set(-10 + r * 3.0, 0.7, (Math.random() - 0.5) * 2.8);
+      gorgeGroup.add(boulder);
+    }
+
+    // Colossal moss-covered fallen log (radius 0.9m, length 24m) spanning x: -14 to 10 at y: 4.0m
+    const fallenLog = new THREE.Mesh(new THREE.CylinderGeometry(0.9, 1.1, 24.0, 12), mossMat);
+    fallenLog.rotation.z = Math.PI / 2;
+    fallenLog.position.set(0, 4.0, 0);
+    fallenLog.castShadow = true;
+    fallenLog.receiveShadow = true;
+    gorgeGroup.add(fallenLog);
+
+    // Billy Sole's Ceremonial Machete embedded into top of log
+    const macheteBlade = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.85, 0.18), metalMat);
+    macheteBlade.position.set(0, 5.0, 0);
+    gorgeGroup.add(macheteBlade);
+
+    const macheteHilt = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.35, 6), woodMat);
+    macheteHilt.position.set(0, 5.5, 0);
+    gorgeGroup.add(macheteHilt);
+
+    group.add(gorgeGroup);
+    this.billyLogBridge = {
+      group: gorgeGroup,
+      pos: new THREE.Vector3(-2, 4.0, -26),
+      machetePos: new THREE.Vector3(-2, 4.0, -26),
+      isClaimed: false
+    };
+
+    // 6. Captain Jim Hopper's Skinned Berets Execution Site [28, 0, 18]
+    const hopperGroup = new THREE.Group();
+    hopperGroup.position.set(28, 0, 18);
+
+    // 3 Skinned soldiers dangling upside down from hemp ropes at +6.5m
+    const ropeMat = new THREE.MeshStandardMaterial({ color: 0x785331, roughness: 0.95 });
+    [-4.5, 0, 4.5].forEach(hx => {
+      // Hemp rope
+      const rope = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 3.2, 4), ropeMat);
+      rope.position.set(hx, 6.2, 0);
+      hopperGroup.add(rope);
+
+      // Inverted butchered torso
+      const bodyTorso = new THREE.Mesh(new THREE.BoxGeometry(0.7, 1.3, 0.45), fleshMat);
+      bodyTorso.position.set(hx, 4.4, 0);
+      bodyTorso.rotation.z = Math.PI;
+      hopperGroup.add(bodyTorso);
+
+      // Inverted head
+      const bodyHead = new THREE.Mesh(new THREE.SphereGeometry(0.28, 6, 6), fleshMat);
+      bodyHead.position.set(hx, 3.5, 0);
+      hopperGroup.add(bodyHead);
+
+      // Blood pool on ground beneath
+      const bloodPuddle = new THREE.Mesh(new THREE.CircleGeometry(1.4, 8), new THREE.MeshStandardMaterial({ color: 0x4a0404, roughness: 0.2 }));
+      bloodPuddle.rotation.x = -Math.PI / 2;
+      bloodPuddle.position.set(hx, 0.03, 0);
+      hopperGroup.add(bloodPuddle);
+    });
+
+    // Hopper's Special Forces Military Satchel on a rock
+    const satchelRock = new THREE.Mesh(new THREE.DodecahedronGeometry(0.8, 1), stoneMat);
+    satchelRock.position.set(0, 0.4, 2.5);
+    hopperGroup.add(satchelRock);
+
+    const satchelMesh = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.5, 0.5), camoMat);
+    satchelMesh.position.set(0, 0.85, 2.5);
+    hopperGroup.add(satchelMesh);
+
+    group.add(hopperGroup);
+    this.hopperExecutionSite = {
+      group: hopperGroup,
+      pos: new THREE.Vector3(28, 0, 18),
+      satchelPos: new THREE.Vector3(28, 0.85, 20.5),
+      isClaimed: false
+    };
+
+    // 7. Guerrilla Sniper Watchtower at [8, 0, 6] (+5.5m elevation)
+    const towerGroup = new THREE.Group();
+    towerGroup.position.set(8, 0, 6);
+
+    // 4 Heavy timber pilings (height 6.2m)
+    [-1.8, 1.8].forEach(tx => {
+      [-1.8, 1.8].forEach(tz => {
+        const post = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.28, 6.2, 6), woodMat);
+        post.position.set(tx, 3.1, tz);
+        towerGroup.add(post);
+      });
+    });
+
+    // Elevated Sniper Platform at +5.5m (4.2m x 4.2m)
+    const platform = new THREE.Mesh(new THREE.BoxGeometry(4.2, 0.35, 4.2), woodMat);
+    platform.position.y = 5.5;
+    platform.receiveShadow = true;
+    towerGroup.add(platform);
+
+    // Sandbag parapet around platform
+    const parapetN = new THREE.Mesh(new THREE.BoxGeometry(4.2, 0.8, 0.4), new THREE.MeshStandardMaterial({ color: 0x78716c }));
+    parapetN.position.set(0, 6.0, 2.0);
+    towerGroup.add(parapetN);
+    const parapetS = new THREE.Mesh(new THREE.BoxGeometry(4.2, 0.8, 0.4), new THREE.MeshStandardMaterial({ color: 0x78716c }));
+    parapetS.position.set(0, 6.0, -2.0);
+    towerGroup.add(parapetS);
+
+    // Wooden climbing ladder incline from ground (z=-2.6) to platform
+    const ladder = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.2, 4.0), woodMat);
+    ladder.position.set(0, 2.75, -2.6);
+    ladder.rotation.x = Math.atan2(5.5, 3.2);
+    towerGroup.add(ladder);
+
+    group.add(towerGroup);
+    this.guerrillaWatchtower = {
+      group: towerGroup,
+      pos: new THREE.Vector3(8, 0, 6),
+      platformPos: new THREE.Vector3(8, 5.5, 6)
+    };
+
+    // 8. Rebel Fuel Depot & Communications Shack at [14, 0, 4]
+    const depotGroup = new THREE.Group();
+    depotGroup.position.set(14, 0, 4);
+
+    // 4 Red explosive fuel barrels
+    this.rebelFuelBarrels = [];
+    const barrelCoords = [
+      new THREE.Vector3(-1.2, 0.9, -1.2),
+      new THREE.Vector3(1.2, 0.9, -1.2),
+      new THREE.Vector3(-1.2, 0.9, 1.2),
+      new THREE.Vector3(1.2, 0.9, 1.2)
+    ];
+
+    barrelCoords.forEach((bPos, idx) => {
+      const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.65, 0.65, 1.8, 12), barrelRedMat);
+      barrel.position.copy(bPos);
+      barrel.castShadow = true;
+      depotGroup.add(barrel);
+      this.rebelFuelBarrels.push({
+        id: idx,
+        pos: new THREE.Vector3(14 + bPos.x, bPos.y, 4 + bPos.z),
+        hp: 80,
+        isBlown: false
+      });
+    });
+
+    // Rebel Communications Shack at [2, 0, 10]
+    const shackGroup = new THREE.Group();
+    shackGroup.position.set(2, 0, 10);
+
+    const shackWalls = new THREE.Mesh(new THREE.BoxGeometry(4.5, 2.6, 4.5), woodMat);
+    shackWalls.position.y = 1.3;
+    shackWalls.receiveShadow = true;
+    shackGroup.add(shackWalls);
+
+    // Corrugated tin roof (+2.6m elevation)
+    const shackRoof = new THREE.Mesh(new THREE.BoxGeometry(5.0, 0.15, 5.0), metalMat);
+    shackRoof.position.y = 2.6;
+    shackGroup.add(shackRoof);
+
+    // Ham radio antenna
+    const antenna = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 4.2, 6), metalMat);
+    antenna.position.set(1.8, 4.6, 1.8);
+    shackGroup.add(antenna);
+
+    group.add(depotGroup);
+    group.add(shackGroup);
+
+    this.rebelFuelDepot = {
+      depotGroup,
+      shackGroup,
+      pos: new THREE.Vector3(14, 0, 4),
+      shackPos: new THREE.Vector3(2, 0, 10),
+      isBlown: false
+    };
+
+    // 9. Blain Cooper's "Old Painless" Deforested Clearing [-28, 0, -10]
+    const painlessGroup = new THREE.Group();
+    painlessGroup.position.set(-28, 0, -10);
+
+    // Dozens of sheared tree stumps and deforested logs
+    for (let st = 0; st < 7; st++) {
+      const a = (st / 7) * Math.PI * 2;
+      const stump = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.7, 1.2 + (st % 2) * 0.6, 8), woodMat);
+      stump.position.set(Math.cos(a) * (4.5 + (st % 3) * 1.5), 0.6, Math.sin(a) * (4.5 + (st % 3) * 1.5));
+      painlessGroup.add(stump);
+    }
+
+    // Spent brass shell casings
+    for (let c = 0; c < 12; c++) {
+      const casing = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.25, 4), goldBrassMat);
+      casing.rotation.set(Math.PI / 2, c * 1.1, c * 0.8);
+      casing.position.set((Math.random() - 0.5) * 6.0, 0.04, (Math.random() - 0.5) * 6.0);
+      painlessGroup.add(casing);
+    }
+
+    // Blain's M134 Minigun "Old Painless" resting on a log
+    const minigunGroup = new THREE.Group();
+    minigunGroup.position.set(0, 0.6, 0);
+
+    const gunBarrels = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 1.6, 8), metalMat);
+    gunBarrels.rotation.z = Math.PI / 2;
+    minigunGroup.add(gunBarrels);
+
+    const gunChamber = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.35, 0.35), metalMat);
+    gunChamber.position.set(-0.9, 0, 0);
+    minigunGroup.add(gunChamber);
+
+    const ammoPack = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.8, 0.5), camoMat);
+    ammoPack.position.set(-1.4, 0, 0);
+    minigunGroup.add(ammoPack);
+
+    painlessGroup.add(minigunGroup);
+    group.add(painlessGroup);
+
+    this.oldPainlessClearing = {
+      group: painlessGroup,
+      pos: new THREE.Vector3(-28, 0, -10),
+      gunPos: new THREE.Vector3(-28, 0.6, -10),
+      cooldown: 0
+    };
+
+    // 10. Dutch's Signal Bonfire & Punji Pit Trap [-8, 0, 24]
+    const dutchCampGroup = new THREE.Group();
+    dutchCampGroup.position.set(-8, 0, 24);
+
+    // Roaring Signal Bonfire
+    const fireWood = new THREE.Mesh(new THREE.ConeGeometry(0.9, 1.1, 6), woodMat);
+    fireWood.position.y = 0.5;
+    dutchCampGroup.add(fireWood);
+
+    const fireFlames = new THREE.Mesh(new THREE.ConeGeometry(0.7, 1.8, 8), fireMat);
+    fireFlames.position.y = 1.2;
+    dutchCampGroup.add(fireFlames);
+
+    const bonfireLight = new THREE.PointLight(0xf59e0b, 2.4, 14.0);
+    bonfireLight.position.set(0, 1.4, 0);
+    dutchCampGroup.add(bonfireLight);
+
+    // Mud root dugout shelter
+    const rootDugout = new THREE.Mesh(new THREE.CylinderGeometry(2.4, 3.2, 2.2, 6, 1, true, 0, Math.PI), mudMat);
+    rootDugout.position.set(-2.5, 1.1, 0);
+    rootDugout.rotation.y = Math.PI / 2;
+    dutchCampGroup.add(rootDugout);
+
+    // Sharpened Punji Bamboo Pit Trap at [-8, 0, 20]
+    const punjiGroup = new THREE.Group();
+    punjiGroup.position.set(0, 0, -4.0);
+
+    for (let p = 0; p < 8; p++) {
+      const a = (p / 8) * Math.PI * 2;
+      const stake = new THREE.Mesh(new THREE.ConeGeometry(0.08, 1.2, 4), woodMat);
+      stake.position.set(Math.cos(a) * 1.1, 0.55, Math.sin(a) * 1.1);
+      stake.rotation.x = (Math.random() - 0.5) * 0.3;
+      punjiGroup.add(stake);
+    }
+
+    const leafCover = new THREE.Mesh(new THREE.CircleGeometry(1.8, 8), new THREE.MeshStandardMaterial({ color: 0x1f3d1a, roughness: 0.9 }));
+    leafCover.rotation.x = -Math.PI / 2;
+    leafCover.position.y = 0.15;
+    punjiGroup.add(leafCover);
+
+    dutchCampGroup.add(punjiGroup);
+    group.add(dutchCampGroup);
+
+    this.dutchBonfireCamp = {
+      group: dutchCampGroup,
+      pos: new THREE.Vector3(-8, 0, 24),
+      light: bonfireLight
+    };
+
+    this.punjiStakeTraps.push({
+      group: punjiGroup,
+      pos: new THREE.Vector3(-8, 0, 20),
+      radius: 3.5,
+      isSprung: false
+    });
+
+    // 11. Mountain River Cascading Waterfall & Rocky Cliff at [32, 0, -8] (+6.2m elevation)
+    const waterfallGroup = new THREE.Group();
+    waterfallGroup.position.set(32, 0, -8);
+
+    // High natural granite cliff face (height 6.2m)
+    const cliff = new THREE.Mesh(new THREE.BoxGeometry(8.5, 6.2, 8.5), stoneMat);
+    cliff.position.y = 3.1;
+    cliff.castShadow = true;
+    cliff.receiveShadow = true;
+    waterfallGroup.add(cliff);
+
+    // Waterfall cascading water sheet
+    const waterSheet = new THREE.Mesh(new THREE.PlaneGeometry(4.2, 6.0), waterMat);
+    waterSheet.position.set(-4.3, 3.0, 0);
+    waterSheet.rotation.y = -Math.PI / 2;
+    waterfallGroup.add(waterSheet);
+
+    // Rocky river plunge pool at base
+    const pool = new THREE.Mesh(new THREE.CylinderGeometry(5.2, 5.6, 0.2, 16), waterMat);
+    pool.position.set(-5.5, 0.1, 0);
+    waterfallGroup.add(pool);
+
+    // Natural rocky trail ramp ascending from ground to cliff top
+    const rockyRamp = new THREE.Mesh(new THREE.BoxGeometry(5.2, 0.4, 3.2), stoneMat);
+    rockyRamp.position.set(-6.8, 3.1, 0);
+    rockyRamp.rotation.z = -Math.atan2(6.2, 5.0);
+    waterfallGroup.add(rockyRamp);
+
+    group.add(waterfallGroup);
+    this.valVerdeWaterfall = {
+      group: waterfallGroup,
+      pos: new THREE.Vector3(32, 6.2, -8),
+      poolPos: new THREE.Vector3(26.5, 0, -8)
+    };
+
     this.scene.add(group);
     this.envObjects.push(group);
 
@@ -8348,6 +8764,165 @@ export class EnvironmentManager {
       return true;
     }
     return false;
+  }
+
+  checkBillyMacheteInteraction(player, ui, audio) {
+    if (!this.billyLogBridge || !player || !player.position || this.billyLogBridge.isClaimed) return false;
+    if (player.position.distanceTo(this.billyLogBridge.machetePos) <= 4.2) {
+      this.billyLogBridge.isClaimed = true;
+      if (audio && audio.playBillySoleChant) audio.playBillySoleChant();
+
+      if (player.applyBillyCourage) {
+        player.applyBillyCourage(30.0);
+      }
+      if (window.gameInstance) {
+        window.gameInstance.score += 2000;
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement("🗡️ COURAGE INÉBRANLABLE DE BILLY SOLE (PREDATOR 1987) : DÉGÂTS MÊLÉE +50%, IMMUNITÉ CHOC (30S), +2000 HONNEUR !", "success");
+      }
+      return true;
+    }
+    return false;
+  }
+
+  checkHopperSatchelInteraction(player, ui, audio) {
+    if (!this.hopperExecutionSite || !player || !player.position || this.hopperExecutionSite.isClaimed) return false;
+    if (player.position.distanceTo(this.hopperExecutionSite.satchelPos) <= 4.2) {
+      this.hopperExecutionSite.isClaimed = true;
+      if (audio && audio.playHopperSatchelOpen) audio.playHopperSatchelOpen();
+
+      player.m41aGrenadeCharges = Math.min(6, (player.m41aGrenadeCharges || 0) + 4);
+      player.medicompCharges = Math.min(6, (player.medicompCharges || 0) + 3);
+      player.armor = Math.min(player.maxArmor || 600, player.armor + 350);
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement("🎒 SACOCHE MILITAIRE DU CAPITAINE JIM HOPPER (PREDATOR 1987) : +4 GRENADES, +3 MEDICOMP, BLINDAGE +350 !", "success");
+      }
+      return true;
+    }
+    return false;
+  }
+
+  checkOldPainlessInteraction(player, ui, audio, horde, particles) {
+    if (!this.oldPainlessClearing || !player || !player.position) return false;
+    const p = this.oldPainlessClearing;
+    if (player.position.distanceTo(p.gunPos) <= 4.2) {
+      if (p.cooldown > 0) {
+        if (ui && ui.showAnnouncement) {
+          ui.showAnnouncement(`⏳ OLD PAINLESS EN REFROIDISSEMENT (${Math.ceil(p.cooldown)}S)`);
+        }
+        return true;
+      }
+      p.cooldown = 45.0;
+
+      if (audio && audio.playOldPainlessRoar) audio.playOldPainlessRoar();
+
+      // Suppressive 360-degree rotary vulcan storm shredding all surrounding enemies in 25m
+      let shredded = 0;
+      if (horde && horde.aliens) {
+        horde.aliens.forEach(alien => {
+          if (alien && alien.mesh && alien.hp > 0 && alien.mesh.position.distanceTo(p.pos) <= 25.0) {
+            alien.hp -= 450;
+            alien.isStunned = true;
+            alien.stunTimer = 4.0;
+            shredded++;
+            if (particles && particles.emitSparks) {
+              particles.emitSparks(alien.mesh.position, 12);
+            }
+          }
+        });
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement(`🔥 MITRAILLEUSE M134 'OLD PAINLESS' DÉCHAÎNÉE (PREDATOR 1987) : RAFALE 6000 RPM (450 DMG SUR ${shredded} XÉNOS) !`, "warning");
+      }
+      return true;
+    }
+    return false;
+  }
+
+  checkRebelFuelBarrelsDamage(hitPos, dmg, audio, horde, bosses, particles, ui) {
+    if (!this.rebelFuelDepot || this.rebelFuelDepot.isBlown || !hitPos) return false;
+    if (hitPos.distanceTo(this.rebelFuelDepot.pos) <= 4.5) {
+      this.rebelFuelDepot.isBlown = true;
+      if (audio && audio.playRebelFuelDepotExplosion) audio.playRebelFuelDepotExplosion();
+
+      // Spawn fiery explosion fireball
+      const fireGeo = new THREE.SphereGeometry(8.5, 12, 12);
+      const fireMesh = new THREE.Mesh(fireGeo, new THREE.MeshBasicMaterial({ color: 0xf97316, transparent: true, opacity: 0.85 }));
+      fireMesh.position.copy(this.rebelFuelDepot.pos);
+      this.scene.add(fireMesh);
+
+      const fireLight = new THREE.PointLight(0xf97316, 4.0, 22.0);
+      fireLight.position.copy(this.rebelFuelDepot.pos);
+      this.scene.add(fireLight);
+
+      this.activeValVerdeFireZones.push({
+        mesh: fireMesh,
+        light: fireLight,
+        pos: this.rebelFuelDepot.pos.clone(),
+        timer: 10.0
+      });
+
+      // Eradicate enemies in 16m
+      let blownCount = 0;
+      if (horde && horde.aliens) {
+        horde.aliens.forEach(alien => {
+          if (alien && alien.mesh && alien.hp > 0 && alien.mesh.position.distanceTo(this.rebelFuelDepot.pos) <= 16.0) {
+            alien.hp -= 550;
+            alien.isStunned = true;
+            alien.stunTimer = 4.5;
+            blownCount++;
+            if (particles && particles.emitSparks) {
+              particles.emitSparks(alien.mesh.position, 16);
+            }
+          }
+        });
+      }
+
+      if (bosses && bosses.activeBosses) {
+        bosses.activeBosses.forEach(boss => {
+          if (boss && boss.mesh && boss.hp > 0 && boss.mesh.position.distanceTo(this.rebelFuelDepot.pos) <= 16.0) {
+            boss.hp -= 400;
+            boss.isStunned = true;
+            boss.stunTimer = 2.5;
+          }
+        });
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement(`💥 DÉPÔT DE CARBURANT DE GUÉRILLA PULVÉRISÉ (PREDATOR 1987) : BRASIER 16M (${blownCount} XÉNOS CALCINÉS, 550 DMG) !`, "warning");
+      }
+      return true;
+    }
+    return false;
+  }
+
+  checkPunjiPitTrapTrigger(horde, audio, particles, ui) {
+    if (!this.punjiStakeTraps || this.punjiStakeTraps.length === 0 || !horde || !horde.aliens) return;
+    this.punjiStakeTraps.forEach(trap => {
+      if (trap.isSprung) return;
+      horde.aliens.forEach(alien => {
+        if (!trap.isSprung && alien && alien.mesh && alien.hp > 0 && alien.mesh.position.distanceTo(trap.pos) <= trap.radius) {
+          trap.isSprung = true;
+          if (audio && audio.playPunjiStakeImpale) audio.playPunjiStakeImpale();
+
+          alien.hp -= 520;
+          alien.isStunned = true;
+          alien.stunTimer = 5.0;
+
+          if (particles && particles.emitAlienBloodSpurt) {
+            particles.emitAlienBloodSpurt(alien.mesh.position, 20);
+          }
+
+          if (ui && ui.showAnnouncement) {
+            ui.showAnnouncement("🎋 PIÈGE À PIEUX PUNJI EN BAMBOU DE DUTCH DÉCLENCHÉ (PREDATOR 1987) : EMPALEMENT (520 DMG, IMMOBILISÉ 5S) !", "success");
+          }
+        }
+      });
+    });
   }
 
   /* === SECTOR 2 & SOFIA LEVEL DESIGN (v56.5): LA Rooftops Helipad, Water Tower & Spire (Predator 2 1990) === */
@@ -9578,6 +10153,29 @@ export class EnvironmentManager {
         if (cloud.timer <= 0) {
           if (cloud.mesh) this.scene.remove(cloud.mesh);
           this.activeFreonClouds.splice(f, 1);
+        }
+      }
+    }
+
+    // v58.0 Master 1:1 Val Verde Predator 1 (1987) Dynamic Systems
+    if (this.dutchBonfireCamp && this.dutchBonfireCamp.light) {
+      this.dutchBonfireCamp.light.intensity = 2.0 + Math.random() * 0.9;
+    }
+    if (this.oldPainlessClearing && this.oldPainlessClearing.cooldown > 0) {
+      this.oldPainlessClearing.cooldown -= delta;
+    }
+    if (this.punjiStakeTraps && this.punjiStakeTraps.length > 0) {
+      this.checkPunjiPitTrapTrigger(horde, audio, particles, ui);
+    }
+    if (this.activeValVerdeFireZones && this.activeValVerdeFireZones.length > 0) {
+      for (let f = this.activeValVerdeFireZones.length - 1; f >= 0; f--) {
+        const fire = this.activeValVerdeFireZones[f];
+        fire.timer -= delta;
+        if (fire.light) fire.light.intensity = 2.5 + Math.random() * 2.0;
+        if (fire.timer <= 0) {
+          if (fire.mesh) this.scene.remove(fire.mesh);
+          if (fire.light) this.scene.remove(fire.light);
+          this.activeValVerdeFireZones.splice(f, 1);
         }
       }
     }
