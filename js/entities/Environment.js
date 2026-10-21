@@ -150,6 +150,17 @@ export class EnvironmentManager {
     this.yautjaCraterLocus = null;
     this.riverRapidsPath = null;
     this.activeIlluminationFlare = null;
+    // v60.0 Master 1:1 Predator 2 (1990) LA Rooftops Systems
+    this.easternColumbiaSpire = null;
+    this.meatLockerFacility = null;
+    this.kingWillieAltar = null;
+    this.dannyBoyNetgun = null;
+    this.lostTribeShipDais = null;
+    this.cityHunterSurgery = null;
+    this.harriganCruiser = null;
+    this.smartDiscGirder = null;
+    this.neonTransformer = null;
+    this.activeMeatLockerCryo = null;
   }
 
   clearEnvironment() {
@@ -548,6 +559,44 @@ export class EnvironmentManager {
       this.scene.remove(this.activeIlluminationFlare.mesh);
       if (this.activeIlluminationFlare.light) this.scene.remove(this.activeIlluminationFlare.light);
       this.activeIlluminationFlare = null;
+    }
+
+    // v60.0 Predator 2 Rooftop Cleanups
+    if (this.easternColumbiaSpire && this.easternColumbiaSpire.group) {
+      this.scene.remove(this.easternColumbiaSpire.group);
+      this.easternColumbiaSpire = null;
+    }
+    if (this.meatLockerFacility && this.meatLockerFacility.group) {
+      this.scene.remove(this.meatLockerFacility.group);
+      this.meatLockerFacility = null;
+    }
+    if (this.kingWillieAltar && this.kingWillieAltar.group) {
+      this.scene.remove(this.kingWillieAltar.group);
+      this.kingWillieAltar = null;
+    }
+    if (this.dannyBoyNetgun && this.dannyBoyNetgun.group) {
+      this.scene.remove(this.dannyBoyNetgun.group);
+      this.dannyBoyNetgun = null;
+    }
+    if (this.lostTribeShipDais && this.lostTribeShipDais.group) {
+      this.scene.remove(this.lostTribeShipDais.group);
+      this.lostTribeShipDais = null;
+    }
+    if (this.cityHunterSurgery && this.cityHunterSurgery.group) {
+      this.scene.remove(this.cityHunterSurgery.group);
+      this.cityHunterSurgery = null;
+    }
+    if (this.harriganCruiser && this.harriganCruiser.group) {
+      this.scene.remove(this.harriganCruiser.group);
+      this.harriganCruiser = null;
+    }
+    if (this.smartDiscGirder && this.smartDiscGirder.group) {
+      this.scene.remove(this.smartDiscGirder.group);
+      this.smartDiscGirder = null;
+    }
+    if (this.activeMeatLockerCryo) {
+      if (this.activeMeatLockerCryo.mesh) this.scene.remove(this.activeMeatLockerCryo.mesh);
+      this.activeMeatLockerCryo = null;
     }
 
     this.reactorMeltdownActive = false;
@@ -1974,6 +2023,45 @@ export class EnvironmentManager {
       const distSq = dx * dx + dz * dz;
       if (distSq >= 4.0 * 4.0 && distSq <= 7.2 * 7.2) {
         return 1.2;
+      }
+    }
+
+    // 24. Eastern Columbia Spire & Gargoyle Balcony (+12.0m) (Predator 2 1990)
+    if (this.easternColumbiaSpire && this.easternColumbiaSpire.pos) {
+      const dx = x - 28.0;
+      const dz = z - (-26.0);
+      if (Math.abs(dx) <= 3.2 && Math.abs(dz) <= 3.2) {
+        return 12.0;
+      }
+      // Access ladder incline from roof to balcony
+      if (Math.abs(dx) <= 1.2 && z >= -25.0 && z <= -21.0) {
+        const factor = (z - (-21.0)) / -4.0;
+        return factor * 12.0;
+      }
+    }
+
+    // 25. OWLF Meat Locker Overhead Conveyor Catwalk (+5.2m) (Predator 2 1990)
+    if (this.meatLockerFacility && this.meatLockerFacility.pos) {
+      if (x >= -34.0 && x <= -22.0 && z >= -15.0 && z <= -9.0) {
+        return 5.2;
+      }
+    }
+
+    // 26. King Willie's Voodoo Cistern Platform (+2.8m) (Predator 2 1990)
+    if (this.kingWillieAltar && this.kingWillieAltar.pos) {
+      const kx = x - 18.0;
+      const kz = z - 24.0;
+      if (kx * kx + kz * kz <= 3.0 * 3.0) {
+        return 2.8;
+      }
+    }
+
+    // 27. Lost Tribe Mother Ship Docking Hatch Dais (+1.5m) (Predator 2 1990)
+    if (this.lostTribeShipDais && this.lostTribeShipDais.pos) {
+      const lx = x - 0.0;
+      const lz = z - (-32.0);
+      if (lx * lx + lz * lz <= 5.0 * 5.0) {
+        return 1.5;
       }
     }
 
@@ -9517,19 +9605,49 @@ export class EnvironmentManager {
 
     group.add(towerGroup);
 
-    // 3. Eastern Columbia Spire & Lightning Rod at [28, 0, -26]
+    // 3. Eastern Columbia Spire, Gargoyle Perch & Lightning Rod at [28, 0, -26] (+12.0m)
     const spireGroup = new THREE.Group();
     spireGroup.position.set(28, 0, -26);
     const spireBase = new THREE.Mesh(new THREE.BoxGeometry(4.5, 12, 4.5), verdigrisMat);
     spireBase.position.y = 6;
     spireGroup.add(spireBase);
+
+    // Gargoyle Balcony Platform (+12.0m)
+    const gargoylePlatform = new THREE.Mesh(new THREE.BoxGeometry(4.8, 0.4, 4.8), verdigrisMat);
+    gargoylePlatform.position.y = 12.0;
+    spireGroup.add(gargoylePlatform);
+
+    // Art Deco Eagle Gargoyle projecting toward the storm
+    const eagle = new THREE.Mesh(new THREE.ConeGeometry(0.9, 2.2, 4), verdigrisMat);
+    eagle.position.set(0, 12.4, 2.6);
+    eagle.rotation.x = Math.PI / 3;
+    spireGroup.add(eagle);
+
+    // Access ladder on north face
+    const ladder = new THREE.Mesh(new THREE.BoxGeometry(0.8, 12.0, 0.1), metalMat);
+    ladder.position.set(0, 6.0, 2.3);
+    spireGroup.add(ladder);
+
     const spireCone = new THREE.Mesh(new THREE.ConeGeometry(2.2, 9, 8), verdigrisMat);
     spireCone.position.y = 16.5;
     spireGroup.add(spireCone);
     const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 4.5, 6), metalMat);
     rod.position.y = 23;
     spireGroup.add(rod);
+
+    // Crackling blue electrical corona glow at rod tip
+    const coronaLight = new THREE.PointLight(0x38bdf8, 2.2, 14.0);
+    coronaLight.position.set(0, 23.5, 0);
+    spireGroup.add(coronaLight);
+
     group.add(spireGroup);
+    this.easternColumbiaSpire = {
+      group: spireGroup,
+      pos: new THREE.Vector3(28, 12.0, -26),
+      rodPos: new THREE.Vector3(28, 23.0, -26),
+      light: coronaLight,
+      cooldown: 0
+    };
 
     // 4. Suspended Facade Window-Washing Cradle at [0, 7.5, 28] (+7.5m altitude)
     const cradleGroup = new THREE.Group();
@@ -9587,6 +9705,287 @@ export class EnvironmentManager {
       isRuptured: false,
       hp: 120
     });
+
+    // 6. OWLF Slaughterhouse Meat Locker Facility & Conveyor Hooks [-28, 0, -12]
+    const meatMat = new THREE.MeshStandardMaterial({ color: 0x881337, roughness: 0.65 });
+    const brickMat = new THREE.MeshStandardMaterial({ color: 0x7c2d12, roughness: 0.95 });
+    const copperMat = new THREE.MeshStandardMaterial({ color: 0xb45309, metalness: 0.7, roughness: 0.3 });
+    const neonPinkMat = new THREE.MeshBasicMaterial({ color: 0xec4899 });
+    const neonAmberMat = new THREE.MeshBasicMaterial({ color: 0xf59e0b });
+    const boneMat = new THREE.MeshStandardMaterial({ color: 0xfef08a, roughness: 0.7 });
+    const policeBlackMat = new THREE.MeshStandardMaterial({ color: 0x18181b, roughness: 0.4, metalness: 0.6 });
+    const policeWhiteMat = new THREE.MeshStandardMaterial({ color: 0xf4f4f5, roughness: 0.4 });
+
+    const meatGroup = new THREE.Group();
+    meatGroup.position.set(-28, 0, -12);
+
+    const meatBldg = new THREE.Mesh(new THREE.BoxGeometry(9.0, 5.2, 12.0), metalMat);
+    meatBldg.position.y = 2.6;
+    meatBldg.receiveShadow = true;
+    meatGroup.add(meatBldg);
+
+    // Overhead I-beam meat rail (+4.8m)
+    const rail = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.3, 10.0), metalMat);
+    rail.position.set(0, 4.8, 0);
+    meatGroup.add(rail);
+
+    // 6 Hanging Beef Carcasses on steel hooks
+    for (let c = 0; c < 6; c++) {
+      const cz = -4.0 + c * 1.6;
+      const hook = new THREE.Mesh(new THREE.TorusGeometry(0.18, 0.03, 4, 8, Math.PI), metalMat);
+      hook.position.set(0, 4.4, cz);
+      meatGroup.add(hook);
+
+      const beef = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.55, 2.2, 8), meatMat);
+      beef.position.set(0, 3.1, cz);
+      meatGroup.add(beef);
+    }
+
+    // Cryo valve console
+    const valveStand = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 1.2, 6), metalMat);
+    valveStand.position.set(2.0, 0.6, 0);
+    meatGroup.add(valveStand);
+
+    const valveWheel = new THREE.Mesh(new THREE.TorusGeometry(0.25, 0.04, 4, 12), neonMat);
+    valveWheel.position.set(2.0, 1.2, 0);
+    meatGroup.add(valveWheel);
+
+    group.add(meatGroup);
+    this.meatLockerFacility = {
+      group: meatGroup,
+      pos: new THREE.Vector3(-28, 0, -12),
+      valvePos: new THREE.Vector3(-26, 1.2, -12),
+      isRuptured: false,
+      cooldown: 0
+    };
+
+    // 7. King Willie's Jamaican Voodoo Rooftop Altar & Polished Skull [18, 0, 24]
+    const voodooGroup = new THREE.Group();
+    voodooGroup.position.set(18, 0, 24);
+
+    const cistern = new THREE.Mesh(new THREE.CylinderGeometry(3.0, 3.2, 2.8, 12), brickMat);
+    cistern.position.y = 1.4;
+    cistern.receiveShadow = true;
+    voodooGroup.add(cistern);
+
+    const chalkCircle = new THREE.Mesh(new THREE.RingGeometry(1.8, 2.4, 16), new THREE.MeshBasicMaterial({ color: 0xfef08a, side: THREE.DoubleSide }));
+    chalkCircle.rotation.x = -Math.PI / 2;
+    chalkCircle.position.y = 2.82;
+    voodooGroup.add(chalkCircle);
+
+    const plinth = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.8, 0.7), metalMat);
+    plinth.position.y = 3.2;
+    voodooGroup.add(plinth);
+
+    const skull = new THREE.Mesh(new THREE.SphereGeometry(0.24, 8, 8), boneMat);
+    skull.position.set(0, 3.75, 0);
+    voodooGroup.add(skull);
+
+    for (let cn = 0; cn < 6; cn++) {
+      const a = (cn / 6) * Math.PI * 2;
+      const candle = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.35, 6), new THREE.MeshBasicMaterial({ color: 0xd97706 }));
+      candle.position.set(Math.cos(a) * 1.5, 2.98, Math.sin(a) * 1.5);
+      voodooGroup.add(candle);
+    }
+
+    const voodooLight = new THREE.PointLight(0xf59e0b, 1.8, 7.0);
+    voodooLight.position.set(0, 3.8, 0);
+    voodooGroup.add(voodooLight);
+
+    group.add(voodooGroup);
+    this.kingWillieAltar = {
+      group: voodooGroup,
+      pos: new THREE.Vector3(18, 2.8, 24),
+      isClaimed: false
+    };
+
+    // 8. Danny Boy Archuleta's Netgun Concrete Wall Embedment [-10, 0, 32]
+    const dannyGroup = new THREE.Group();
+    dannyGroup.position.set(-10, 0, 32);
+
+    const pWall = new THREE.Mesh(new THREE.BoxGeometry(5.0, 2.8, 0.6), concreteMat);
+    pWall.position.y = 1.4;
+    dannyGroup.add(pWall);
+
+    const netMesh = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 2.0, 6, 6), new THREE.MeshBasicMaterial({ color: 0x38bdf8 }));
+    netMesh.position.set(0, 1.4, 0.32);
+    dannyGroup.add(netMesh);
+
+    const spearTip = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.7, 4), metalMat);
+    spearTip.rotation.x = Math.PI / 2;
+    spearTip.position.set(0.4, 1.6, 0.35);
+    dannyGroup.add(spearTip);
+
+    group.add(dannyGroup);
+    this.dannyBoyNetgun = {
+      group: dannyGroup,
+      pos: new THREE.Vector3(-10, 1.4, 32),
+      isClaimed: false
+    };
+
+    // 9. Subterranean Lost Tribe Mother Ship Docking Hatch & Trophy Dais [0, 0, -32]
+    const tribeGroup = new THREE.Group();
+    tribeGroup.position.set(0, 0, -32);
+
+    const hatchDais = new THREE.Mesh(new THREE.CylinderGeometry(5.0, 5.4, 1.5, 16), metalMat);
+    hatchDais.position.y = 0.75;
+    tribeGroup.add(hatchDais);
+
+    const shutterRing = new THREE.Mesh(new THREE.TorusGeometry(4.2, 0.25, 6, 16), verdigrisMat);
+    shutterRing.rotation.x = Math.PI / 2;
+    shutterRing.position.y = 1.52;
+    tribeGroup.add(shutterRing);
+
+    const obsPed = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.4, 1.2), new THREE.MeshStandardMaterial({ color: 0x09090b, roughness: 0.2 }));
+    obsPed.position.set(0, 2.2, 0);
+    tribeGroup.add(obsPed);
+
+    const craniumMat = new THREE.MeshStandardMaterial({ color: 0x1c1917, roughness: 0.3, metalness: 0.8 });
+    const dome = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.28, 1.4, 8), craniumMat);
+    dome.rotation.x = Math.PI / 2;
+    dome.position.set(0, 3.0, 0.2);
+    tribeGroup.add(dome);
+
+    const casket = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.2, 0.35), copperMat);
+    casket.position.set(0, 2.92, -0.4);
+    tribeGroup.add(casket);
+
+    const clanLight = new THREE.PointLight(0x06b6d4, 2.4, 9.0);
+    clanLight.position.set(0, 3.2, 0);
+    tribeGroup.add(clanLight);
+
+    group.add(tribeGroup);
+    this.lostTribeShipDais = {
+      group: tribeGroup,
+      pos: new THREE.Vector3(0, 1.5, -32),
+      isClaimed: false
+    };
+
+    // 10. City Hunter's Penthouse Emergency Medi-Kit Cauterization Station [-20, 0, 6]
+    const surgGroup = new THREE.Group();
+    surgGroup.position.set(-20, 0, 6);
+
+    const skylight = new THREE.Mesh(new THREE.BoxGeometry(4.2, 0.2, 4.2), metalMat);
+    skylight.position.y = 0.1;
+    surgGroup.add(skylight);
+
+    const medCrate = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.8, 1.0), concreteMat);
+    medCrate.position.set(0, 0.4, 0);
+    surgGroup.add(medCrate);
+
+    const kitCase = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.25, 0.7), copperMat);
+    kitCase.position.set(0, 0.9, 0);
+    surgGroup.add(kitCase);
+
+    const blueSolvent = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.3, 6), new THREE.MeshBasicMaterial({ color: 0x06b6d4 }));
+    blueSolvent.position.set(0.3, 1.05, 0);
+    surgGroup.add(blueSolvent);
+
+    const blueLight = new THREE.PointLight(0x06b6d4, 1.8, 6.0);
+    blueLight.position.set(0, 1.2, 0);
+    surgGroup.add(blueLight);
+
+    group.add(surgGroup);
+    this.cityHunterSurgery = {
+      group: surgGroup,
+      pos: new THREE.Vector3(-20, 1.0, 6),
+      isUsed: false
+    };
+
+    // 11. Giant 1990 L.A. Heat Wave Neon Signs & Transformer [-35, 2, 0]
+    const neonGroup = new THREE.Group();
+    neonGroup.position.set(-35, 0, 0);
+
+    const truss = new THREE.Mesh(new THREE.BoxGeometry(1.0, 14.0, 16.0), metalMat);
+    truss.position.y = 7.0;
+    neonGroup.add(truss);
+
+    const amberBoard = new THREE.Mesh(new THREE.BoxGeometry(0.3, 3.2, 14.0), new THREE.MeshBasicMaterial({ color: 0x09090b }));
+    amberBoard.position.set(0.6, 11.5, 0);
+    neonGroup.add(amberBoard);
+
+    const neon109 = new THREE.Mesh(new THREE.BoxGeometry(0.35, 1.8, 11.0), neonAmberMat);
+    neon109.position.set(0.65, 11.5, 0);
+    neonGroup.add(neon109);
+
+    const pinkBoard = new THREE.Mesh(new THREE.BoxGeometry(0.35, 1.6, 9.0), neonPinkMat);
+    pinkBoard.position.set(0.65, 7.5, 0);
+    neonGroup.add(pinkBoard);
+
+    const transBox = new THREE.Mesh(new THREE.BoxGeometry(1.8, 2.2, 1.4), metalMat);
+    transBox.position.set(1.2, 1.1, 0);
+    neonGroup.add(transBox);
+
+    group.add(neonGroup);
+    this.neonTransformer = {
+      group: neonGroup,
+      pos: new THREE.Vector3(-35, 2.0, 0),
+      isOverloaded: false
+    };
+
+    // 12. Lieutenant Mike Harrigan's LAPD SWAT Cruiser Barricade [22, 0, 6]
+    const cruiserGroup = new THREE.Group();
+    cruiserGroup.position.set(22, 0, 6);
+
+    const carBody = new THREE.Mesh(new THREE.BoxGeometry(2.4, 1.1, 5.0), policeBlackMat);
+    carBody.position.y = 0.75;
+    cruiserGroup.add(carBody);
+
+    const carRoof = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.8, 2.4), policeWhiteMat);
+    carRoof.position.set(0, 1.6, -0.2);
+    cruiserGroup.add(carRoof);
+
+    const blueBar = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.15, 0.25), new THREE.MeshBasicMaterial({ color: 0x3b82f6 }));
+    blueBar.position.set(-0.5, 2.1, -0.2);
+    cruiserGroup.add(blueBar);
+
+    const redBar = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.15, 0.25), new THREE.MeshBasicMaterial({ color: 0xef4444 }));
+    redBar.position.set(0.5, 2.1, -0.2);
+    cruiserGroup.add(redBar);
+
+    const blueLight = new THREE.PointLight(0x3b82f6, 2.0, 10.0);
+    blueLight.position.set(-0.5, 2.2, -0.2);
+    cruiserGroup.add(blueLight);
+
+    const redLight = new THREE.PointLight(0xef4444, 2.0, 10.0);
+    redLight.position.set(0.5, 2.2, -0.2);
+    cruiserGroup.add(redLight);
+
+    group.add(cruiserGroup);
+    this.harriganCruiser = {
+      group: cruiserGroup,
+      pos: new THREE.Vector3(22, 1.2, 6),
+      isLooted: false,
+      lightBlue: blueLight,
+      lightRed: redLight,
+      lightTimer: 0
+    };
+
+    // 13. City Hunter's Dislodged Smart-Disc in the Steel Girder [-4, 0, -14]
+    const girderGroup = new THREE.Group();
+    girderGroup.position.set(-4, 0, -14);
+
+    const girder = new THREE.Mesh(new THREE.BoxGeometry(0.6, 4.5, 0.6), metalMat);
+    girder.position.y = 2.25;
+    girderGroup.add(girder);
+
+    const discMat = new THREE.MeshStandardMaterial({ color: 0xd97706, metalness: 0.95, roughness: 0.1 });
+    const disc = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.45, 0.06, 16), discMat);
+    disc.rotation.x = Math.PI / 2;
+    disc.position.set(0, 1.6, 0.32);
+    girderGroup.add(disc);
+
+    const discLight = new THREE.PointLight(0xf59e0b, 1.6, 5.0);
+    discLight.position.set(0, 1.6, 0.4);
+    girderGroup.add(discLight);
+
+    group.add(girderGroup);
+    this.smartDiscGirder = {
+      group: girderGroup,
+      discMesh: disc,
+      pos: new THREE.Vector3(-4, 1.6, -14),
+      isRetrieved: false
+    };
 
     this.scene.add(group);
     this.envObjects.push(group);
@@ -9691,6 +10090,282 @@ export class EnvironmentManager {
         }
       }
     }
+  }
+
+  /* === PREDATOR 2 (1990) LOS ANGELES ROOFTOPS APEX INTERACTION SYSTEMS (v60.0) === */
+
+  checkEasternColumbiaLightning(player, ui, audio, horde, bosses, particles) {
+    if (!this.easternColumbiaSpire || !player || !player.position) return false;
+    const spire = this.easternColumbiaSpire;
+    if (player.position.distanceTo(spire.pos) <= 5.0) {
+      if (spire.cooldown > 0) {
+        if (ui && ui.showAnnouncement) {
+          ui.showAnnouncement(`⏳ FLÈCHE DE L'EASTERN COLUMBIA EN RECHARGE (${Math.ceil(spire.cooldown)}S)`);
+        }
+        return true;
+      }
+      spire.cooldown = 45.0;
+      if (audio && audio.playEasternColumbiaLightningStrike) audio.playEasternColumbiaLightningStrike();
+
+      // Supercharge player energy & stats
+      player.plasmaEnergy = 100;
+      player.musouEnergy = 100;
+      if (player.applyLightningAura) {
+        player.applyLightningAura(20.0);
+      }
+
+      // Massive lightning arc discharging down to the surrounding roof
+      let shockHits = 0;
+      if (horde && horde.aliens) {
+        horde.aliens.forEach(alien => {
+          if (alien && alien.mesh && alien.hp > 0 && alien.mesh.position.distanceTo(spire.pos) <= 24.0) {
+            alien.hp -= 420;
+            alien.isStunned = true;
+            alien.stunTimer = 3.5;
+            shockHits++;
+            if (particles && particles.emitSparks) {
+              particles.emitSparks(alien.mesh.position, 16);
+            }
+          }
+        });
+      }
+
+      if (bosses && bosses.activeBosses) {
+        bosses.activeBosses.forEach(boss => {
+          if (boss && boss.mesh && boss.hp > 0 && boss.mesh.position.distanceTo(spire.pos) <= 24.0) {
+            boss.hp -= 350;
+            boss.isStunned = true;
+            boss.stunTimer = 2.5;
+          }
+        });
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement(`⚡ FOUDRE DE L'EASTERN COLUMBIA (PREDATOR 2 1990) : CANALISATION COMBI-STICK (+100% PLASMA, MUSOU MAX, AURA ÉLECTRIQUE 20S, ${shockHits} CIBLES FOUDROYÉES) !`, "warning");
+      }
+      return true;
+    }
+    return false;
+  }
+
+  checkMeatLockerCryoValve(player, ui, audio, horde, bosses, particles) {
+    if (!this.meatLockerFacility || !player || !player.position) return false;
+    const f = this.meatLockerFacility;
+    if (player.position.distanceTo(f.valvePos) <= 4.2) {
+      if (f.cooldown > 0) {
+        if (ui && ui.showAnnouncement) {
+          ui.showAnnouncement(`⏳ AZOTE LIQUIDE OWLF EN PRESSURISATION (${Math.ceil(f.cooldown)}S)`);
+        }
+        return true;
+      }
+      f.cooldown = 40.0;
+      if (audio && audio.playSlaughterhouseCryoBlast) audio.playSlaughterhouseCryoBlast();
+
+      // Spawn massive expanding cryogenic cloud
+      const cloudGeo = new THREE.SphereGeometry(12.0, 16, 16);
+      const cloudMat = new THREE.MeshBasicMaterial({ color: 0x93c5fd, transparent: true, opacity: 0.65 });
+      const cloud = new THREE.Mesh(cloudGeo, cloudMat);
+      cloud.position.copy(f.pos).setY(2.5);
+      this.scene.add(cloud);
+
+      this.activeMeatLockerCryo = {
+        mesh: cloud,
+        pos: f.pos.clone(),
+        timer: 10.0
+      };
+
+      let frozenCount = 0;
+      if (horde && horde.aliens) {
+        horde.aliens.forEach(alien => {
+          if (alien && alien.mesh && alien.hp > 0 && alien.mesh.position.distanceTo(f.pos) <= 18.0) {
+            alien.hp -= 280;
+            alien.isFrozen = true;
+            alien.speedMult = 0.2;
+            alien.isStunned = true;
+            alien.stunTimer = 6.0;
+            frozenCount++;
+          }
+        });
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement(`❄️ VALVE D'AZOTE LIQUIDE DE L'ABATTOIR OWLF (PREDATOR 2 1990) : DÉLUGE CRYOGÉNIQUE (${frozenCount} XÉNOS GELÉS, 280 DMG, STUN 6S) !`, "success");
+      }
+      return true;
+    }
+    return false;
+  }
+
+  checkKingWillieAltarInteraction(player, ui, audio) {
+    if (!this.kingWillieAltar || !player || !player.position || this.kingWillieAltar.isClaimed) return false;
+    if (player.position.distanceTo(this.kingWillieAltar.pos) <= 4.2) {
+      this.kingWillieAltar.isClaimed = true;
+      if (audio && audio.playKingWillieChant) audio.playKingWillieChant();
+
+      if (player.recordTrophy) {
+        player.recordTrophy("CRÂNE POLI DE KING WILLIE (VOODOO POSSE 1990)", 2500);
+      }
+      if (player.applyVoodooSight) {
+        player.applyVoodooSight(35.0);
+      }
+      if (window.gameInstance) {
+        window.gameInstance.score += 2500;
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement("💀 AUTEL VOODOO DE KING WILLIE (PREDATOR 2 1990) : 'ON NE PEUT PAS VOIR LES YEUX DU DÉMON...' (+2500 HONNEUR, VISION THERMIQUE ÉTENDUE 35S) !", "success");
+      }
+      return true;
+    }
+    return false;
+  }
+
+  checkDannyBoyNetgunInteraction(player, ui, audio) {
+    if (!this.dannyBoyNetgun || !player || !player.position || this.dannyBoyNetgun.isClaimed) return false;
+    if (player.position.distanceTo(this.dannyBoyNetgun.pos) <= 4.2) {
+      this.dannyBoyNetgun.isClaimed = true;
+      if (audio && audio.playNetgunConstrictionSlice) audio.playNetgunConstrictionSlice();
+
+      player.traxNetAmmo = Math.min(10, (player.traxNetAmmo || 0) + 4);
+      player.combistickAmmo = Math.min(6, (player.combistickAmmo || 0) + 2);
+      if (window.gameInstance) {
+        window.gameInstance.score += 1200;
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement("🕸️ FILET MICROCÂBLE DE DANNY BOY (PREDATOR 2 1990) : HARPON ET FILETS RÉCUPÉRÉS (+4 FILETS, +2 HARPONS, +1200 SCORE) !", "success");
+      }
+      return true;
+    }
+    return false;
+  }
+
+  checkLostTribeTrophyInteraction(player, ui, audio) {
+    if (!this.lostTribeShipDais || !player || !player.position || this.lostTribeShipDais.isClaimed) return false;
+    if (player.position.distanceTo(this.lostTribeShipDais.pos) <= 4.5) {
+      this.lostTribeShipDais.isClaimed = true;
+      if (audio && audio.playLostTribeElderChime) audio.playLostTribeElderChime();
+
+      if (player.recordTrophy) {
+        player.recordTrophy("CRÂNE DE DRONE XÉNOMORPHE 1990 (LOST TRIBE MOTHER SHIP)", 3000);
+      }
+      if (player.applyFlintlockKineticBuff) {
+        player.applyFlintlockKineticBuff(30.0);
+      }
+      if (window.gameInstance) {
+        window.gameInstance.score += 3000;
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement("🛸 VAISSEAU-MÈRE DU LOST TRIBE & ANCIEN GREYBACK (PREDATOR 2 1990) : 'TAKE IT.' (+3000 HONNEUR, PISTOLET ADOLINI 1715, IMPACT x2 30S) !", "success");
+      }
+      return true;
+    }
+    return false;
+  }
+
+  checkCityHunterSurgeryInteraction(player, ui, audio) {
+    if (!this.cityHunterSurgery || !player || !player.position || this.cityHunterSurgery.isUsed) return false;
+    if (player.position.distanceTo(this.cityHunterSurgery.pos) <= 4.2) {
+      this.cityHunterSurgery.isUsed = true;
+      if (audio && audio.playCityHunterCauterization) audio.playCityHunterCauterization();
+
+      player.hp = Math.min(player.maxHp || 1000, player.hp + 400);
+      player.armor = player.maxArmor || 600;
+      player.medicompCharges = Math.min(6, (player.medicompCharges || 0) + 3);
+      player.isBleeding = false;
+      player.bleedTimer = 0;
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement("💉 CHIRURGIE D'URGENCE DU CITY HUNTER (PREDATOR 2 1990) : CAUTÉRISATION AU SOLVANT BLEU (+400 PV, BLINDAGE 100%, +3 MEDICOMP) !", "success");
+      }
+      return true;
+    }
+    return false;
+  }
+
+  checkHarriganCruiserLoot(player, ui, audio) {
+    if (!this.harriganCruiser || !player || !player.position || this.harriganCruiser.isLooted) return false;
+    if (player.position.distanceTo(this.harriganCruiser.pos) <= 4.2) {
+      this.harriganCruiser.isLooted = true;
+      if (audio && audio.playHopperSatchelOpen) audio.playHopperSatchelOpen();
+
+      player.m41aGrenadeCharges = Math.min(6, (player.m41aGrenadeCharges || 0) + 5);
+      player.seegsonBoltAmmo = Math.min(12, (player.seegsonBoltAmmo || 0) + 4);
+      player.armor = Math.min(player.maxArmor || 600, player.armor + 350);
+      if (window.gameInstance) {
+        window.gameInstance.score += 1000;
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement("🚔 BARRICADE SWAT DU LIEUTENANT HARRIGAN (PREDATOR 2 1990) : ARMERIE DE COMBAT URBAIN (+5 GRENADES, +4 SLUGS, +350 BLINDAGE) !", "success");
+      }
+      return true;
+    }
+    return false;
+  }
+
+  checkSmartDiscGirderInteraction(player, ui, audio) {
+    if (!this.smartDiscGirder || !player || !player.position || this.smartDiscGirder.isRetrieved) return false;
+    if (player.position.distanceTo(this.smartDiscGirder.pos) <= 4.2) {
+      this.smartDiscGirder.isRetrieved = true;
+      if (this.smartDiscGirder.discMesh) {
+        this.smartDiscGirder.discMesh.visible = false;
+      }
+      if (audio && audio.playSmartDiscHoverHum) audio.playSmartDiscHoverHum();
+
+      player.smartDiscCooldown = 0;
+      player.smartDiscCharges = Math.min(4, (player.smartDiscCharges || 0) + 2);
+      if (window.gameInstance) {
+        window.gameInstance.score += 1000;
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement("💿 SMART-DISC ENCLAVÉ DANS LA POUTRELLE (PREDATOR 2 1990) : DISQUE GYROSCOPIQUE RÉCUPÉRÉ (DISQUE PRÊT, +2 CHARGES, +1000 SCORE) !", "success");
+      }
+      return true;
+    }
+    return false;
+  }
+
+  checkNeonTransformerOverload(hitPos, dmg, audio, horde, bosses, particles, ui) {
+    if (!this.neonTransformer || this.neonTransformer.isOverloaded || !hitPos) return false;
+    if (hitPos.distanceTo(this.neonTransformer.pos) <= 4.5) {
+      this.neonTransformer.isOverloaded = true;
+      if (audio && audio.playNeonTransformerOverload) audio.playNeonTransformerOverload();
+
+      // Arc shockwave 15m
+      let electrocuted = 0;
+      if (horde && horde.aliens) {
+        horde.aliens.forEach(alien => {
+          if (alien && alien.mesh && alien.hp > 0 && alien.mesh.position.distanceTo(this.neonTransformer.pos) <= 15.0) {
+            alien.hp -= 380;
+            alien.isStunned = true;
+            alien.stunTimer = 3.5;
+            electrocuted++;
+            if (particles && particles.emitSparks) {
+              particles.emitSparks(alien.mesh.position, 16);
+            }
+          }
+        });
+      }
+
+      if (bosses && bosses.activeBosses) {
+        bosses.activeBosses.forEach(boss => {
+          if (boss && boss.mesh && boss.hp > 0 && boss.mesh.position.distanceTo(this.neonTransformer.pos) <= 15.0) {
+            boss.hp -= 280;
+            boss.isStunned = true;
+            boss.stunTimer = 2.0;
+          }
+        });
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement(`⚡ TRANSFORMATEUR NÉON 109°F SURCHARGÉ (PREDATOR 2 1990) : DÉCHARGE ÉLECTRIQUE 10 000V (380 DMG SUR ${electrocuted} XÉNOS) !`, "warning");
+      }
+      return true;
+    }
+    return false;
   }
 
   /* === SECTOR 3 & SOFIA LEVEL DESIGN (v56.5): Antarctic Pyramid Sacrificial Altar & Traps (AVP 2004) === */
@@ -10719,6 +11394,39 @@ export class EnvironmentManager {
     }
     if (player && player.position) {
       this.checkRiverWaterWading(player.position, player, audio, delta);
+    }
+
+    // v60.0 Master 1:1 Predator 2 (1990) LA Rooftops Systems
+    if (this.easternColumbiaSpire) {
+      if (this.easternColumbiaSpire.cooldown > 0) {
+        this.easternColumbiaSpire.cooldown -= delta;
+      }
+      if (this.easternColumbiaSpire.light) {
+        this.easternColumbiaSpire.light.intensity = 1.8 + Math.random() * 1.6;
+      }
+    }
+    if (this.meatLockerFacility && this.meatLockerFacility.cooldown > 0) {
+      this.meatLockerFacility.cooldown -= delta;
+    }
+    if (this.activeMeatLockerCryo) {
+      const cryo = this.activeMeatLockerCryo;
+      cryo.timer -= delta;
+      if (cryo.mesh) {
+        cryo.mesh.scale.multiplyScalar(1.0 + delta * 0.08);
+      }
+      if (cryo.timer <= 0) {
+        if (cryo.mesh) this.scene.remove(cryo.mesh);
+        this.activeMeatLockerCryo = null;
+      }
+    }
+    if (this.harriganCruiser && this.harriganCruiser.lightBlue && this.harriganCruiser.lightRed) {
+      this.harriganCruiser.lightTimer += delta * 6.0;
+      const strobe = Math.sin(this.harriganCruiser.lightTimer) > 0;
+      this.harriganCruiser.lightBlue.intensity = strobe ? 3.0 : 0.2;
+      this.harriganCruiser.lightRed.intensity = strobe ? 0.2 : 3.0;
+    }
+    if (this.smartDiscGirder && !this.smartDiscGirder.isRetrieved && this.smartDiscGirder.discMesh) {
+      this.smartDiscGirder.discMesh.rotation.z += delta * 8.0;
     }
   }
 }

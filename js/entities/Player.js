@@ -234,6 +234,13 @@ export class Player {
     this.isMudCamouflaged = false;
     this.billyCourageTimer = 0;
     this.isBillyCourageActive = false;
+    // v60.0 Predator 2 (1990) Rooftops Systems
+    this.lightningAuraTimer = 0;
+    this.isLightningAuraActive = false;
+    this.voodooSightTimer = 0;
+    this.isVoodooSightActive = false;
+    this.flintlockKineticBuffTimer = 0;
+    this.isFlintlockKineticActive = false;
     this.loadClanForgeUpgrades();
   }
 
@@ -1565,11 +1572,13 @@ export class Player {
     const buff = (this.warhornBuffTimer > 0 ? 1.5 : 1.0) * (this.isBerserkerActive ? 2.0 : 1.0);
     const mudMult = this.isMudCamouflaged ? 1.40 : 1.0;
     const billyMult = this.isBillyCourageActive ? 1.50 : 1.0;
+    const lightningMult = this.isLightningAuraActive ? 1.35 : 1.0;
+    const flintlockMult = this.isFlintlockKineticActive ? 1.40 : 1.0;
 
     return {
       type: 'light',
       step: this.attackComboStep,
-      damage: baseDmg * (1 + this.attackComboStep * 0.18) * buff * mudMult * billyMult,
+      damage: baseDmg * (1 + this.attackComboStep * 0.18) * buff * mudMult * billyMult * lightningMult * flintlockMult,
       radius: (this.isSecondaryWeapon ? 4.8 : 3.8) * (this.meleeReachMultiplier || 1.0),
       angle: (Math.PI * 0.65) * (this.meleeArcMultiplier || 1.0)
     };
@@ -1671,11 +1680,13 @@ export class Player {
 
     const mudMult = this.isMudCamouflaged ? 1.40 : 1.0;
     const billyMult = this.isBillyCourageActive ? 1.50 : 1.0;
+    const lightningMult = this.isLightningAuraActive ? 1.35 : 1.0;
+    const flintlockMult = this.isFlintlockKineticActive ? 1.40 : 1.0;
 
     return {
       type: chargeType,
       name: chargeName,
-      damage: baseDmg * dmgMult * buff * mudMult * billyMult,
+      damage: baseDmg * dmgMult * buff * mudMult * billyMult * lightningMult * flintlockMult,
       radius: radius,
       knockback: knockback,
       isLauncher: isLauncher,
@@ -4157,7 +4168,35 @@ export class Player {
         this.isBillyCourageActive = false;
       }
     }
+    // v60.0 Predator 2 (1990) Buff Timers
+    if (this.lightningAuraTimer > 0) {
+      this.lightningAuraTimer -= delta;
+      if (this.lightningAuraTimer <= 0) this.isLightningAuraActive = false;
+    }
+    if (this.voodooSightTimer > 0) {
+      this.voodooSightTimer -= delta;
+      if (this.voodooSightTimer <= 0) this.isVoodooSightActive = false;
+    }
+    if (this.flintlockKineticBuffTimer > 0) {
+      this.flintlockKineticBuffTimer -= delta;
+      if (this.flintlockKineticBuffTimer <= 0) this.isFlintlockKineticActive = false;
+    }
     this.isOnBough = (this.position && this.position.y >= 5.0);
+  }
+
+  applyLightningAura(duration = 20.0) {
+    this.lightningAuraTimer = duration;
+    this.isLightningAuraActive = true;
+  }
+
+  applyVoodooSight(duration = 35.0) {
+    this.voodooSightTimer = duration;
+    this.isVoodooSightActive = true;
+  }
+
+  applyFlintlockKineticBuff(duration = 30.0) {
+    this.flintlockKineticBuffTimer = duration;
+    this.isFlintlockKineticActive = true;
   }
 
   applyBillyCourage(duration = 30.0) {

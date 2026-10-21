@@ -7735,6 +7735,285 @@ export class AudioEngine {
     osc.start(now);
     osc.stop(now + 0.65);
   }
+
+  // 155. Eastern Columbia Spire Lightning Rod Strike & Thunder Detonation (Predator 2 1990)
+  playEasternColumbiaLightningStrike() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Sub-bass thunder detonation rumble
+    const thunderOsc = this.ctx.createOscillator();
+    thunderOsc.type = 'sawtooth';
+    thunderOsc.frequency.setValueAtTime(52, now);
+    thunderOsc.frequency.exponentialRampToValueAtTime(28, now + 1.2);
+
+    const thunderFilter = this.ctx.createBiquadFilter();
+    thunderFilter.type = 'lowpass';
+    thunderFilter.frequency.setValueAtTime(140, now);
+    thunderFilter.frequency.linearRampToValueAtTime(80, now + 1.2);
+
+    const thunderGain = this.ctx.createGain();
+    thunderGain.gain.setValueAtTime(1.0, now);
+    thunderGain.gain.exponentialRampToValueAtTime(0.01, now + 1.4);
+
+    thunderOsc.connect(thunderFilter);
+    thunderFilter.connect(thunderGain);
+    thunderGain.connect(this.getOut());
+    thunderOsc.start(now);
+    thunderOsc.stop(now + 1.4);
+
+    // High voltage arc crackle burst
+    const bufSize = Math.floor(this.ctx.sampleRate * 0.45);
+    const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * (i % 6 === 0 ? 0.95 : 0.08);
+    }
+    const arcNoise = this.ctx.createBufferSource();
+    arcNoise.buffer = buf;
+    const arcFilter = this.ctx.createBiquadFilter();
+    arcFilter.type = 'highpass';
+    arcFilter.frequency.setValueAtTime(3400, now);
+
+    const arcGain = this.ctx.createGain();
+    arcGain.gain.setValueAtTime(0.85, now);
+    arcGain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+
+    arcNoise.connect(arcFilter);
+    arcFilter.connect(arcGain);
+    arcGain.connect(this.getOut());
+    arcNoise.start(now);
+    arcNoise.stop(now + 0.45);
+  }
+
+  // 156. OWLF Slaughterhouse Liquid Nitrogen Cryo Spray & Frost Burst (Predator 2 1990)
+  playSlaughterhouseCryoBlast() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // High pressure cryogenic gas hiss
+    const bufSize = Math.floor(this.ctx.sampleRate * 0.95);
+    const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * (0.8 + Math.random() * 0.2);
+    }
+    const cryoNoise = this.ctx.createBufferSource();
+    cryoNoise.buffer = buf;
+    const cryoFilter = this.ctx.createBiquadFilter();
+    cryoFilter.type = 'bandpass';
+    cryoFilter.frequency.setValueAtTime(2200, now);
+    cryoFilter.frequency.linearRampToValueAtTime(1400, now + 0.95);
+    cryoFilter.Q.setValueAtTime(3.0, now);
+
+    const cryoGain = this.ctx.createGain();
+    cryoGain.gain.setValueAtTime(0.85, now);
+    cryoGain.gain.exponentialRampToValueAtTime(0.01, now + 0.95);
+
+    cryoNoise.connect(cryoFilter);
+    cryoFilter.connect(cryoGain);
+    cryoGain.connect(this.getOut());
+    cryoNoise.start(now);
+    cryoNoise.stop(now + 0.95);
+
+    // Frost snap crackle
+    const snapOsc = this.ctx.createOscillator();
+    snapOsc.type = 'sine';
+    snapOsc.frequency.setValueAtTime(3800, now + 0.1);
+    snapOsc.frequency.exponentialRampToValueAtTime(900, now + 0.25);
+
+    const snapGain = this.ctx.createGain();
+    snapGain.gain.setValueAtTime(0.5, now + 0.1);
+    snapGain.gain.exponentialRampToValueAtTime(0.01, now + 0.28);
+
+    snapOsc.connect(snapGain);
+    snapGain.connect(this.getOut());
+    snapOsc.start(now + 0.1);
+    snapOsc.stop(now + 0.28);
+  }
+
+  // 157. King Willie's Jamaican Voodoo Drums & Whispering Chant Resonance (Predator 2 1990)
+  playKingWillieChant() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Resonant tribal voodoo sub-drum pulse
+    const drumOsc = this.ctx.createOscillator();
+    drumOsc.type = 'sine';
+    drumOsc.frequency.setValueAtTime(68, now);
+    drumOsc.frequency.exponentialRampToValueAtTime(38, now + 0.45);
+
+    const drumGain = this.ctx.createGain();
+    drumGain.gain.setValueAtTime(0.9, now);
+    drumGain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+
+    drumOsc.connect(drumGain);
+    drumGain.connect(this.getOut());
+    drumOsc.start(now);
+    drumOsc.stop(now + 0.5);
+
+    // Second echo drum pulse
+    const drum2 = this.ctx.createOscillator();
+    drum2.type = 'triangle';
+    drum2.frequency.setValueAtTime(82, now + 0.25);
+    drum2.frequency.exponentialRampToValueAtTime(44, now + 0.65);
+
+    const gain2 = this.ctx.createGain();
+    gain2.gain.setValueAtTime(0.65, now + 0.25);
+    gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.7);
+
+    drum2.connect(gain2);
+    gain2.connect(this.getOut());
+    drum2.start(now + 0.25);
+    drum2.stop(now + 0.7);
+
+    // Bone fetish clicks
+    const bufSize = Math.floor(this.ctx.sampleRate * 0.15);
+    const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * (i % 8 === 0 ? 0.7 : 0.05);
+    }
+    const click = this.ctx.createBufferSource();
+    click.buffer = buf;
+    const clickFilter = this.ctx.createBiquadFilter();
+    clickFilter.type = 'highpass';
+    clickFilter.frequency.setValueAtTime(4500, now + 0.1);
+
+    const clickGain = this.ctx.createGain();
+    clickGain.gain.setValueAtTime(0.4, now + 0.1);
+    clickGain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+
+    click.connect(clickFilter);
+    clickFilter.connect(clickGain);
+    clickGain.connect(this.getOut());
+    click.start(now + 0.1);
+    click.stop(now + 0.25);
+  }
+
+  // 158. Lost Tribe Mother Ship Ceremonial Elder Gong & Flintlock Snap (Predator 2 1990)
+  playLostTribeElderChime() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Resonant bronze bell / ceremonial clan gong
+    const gongOsc1 = this.ctx.createOscillator();
+    const gongOsc2 = this.ctx.createOscillator();
+    gongOsc1.type = 'sine';
+    gongOsc2.type = 'sine';
+    gongOsc1.frequency.setValueAtTime(245, now);
+    gongOsc2.frequency.setValueAtTime(392, now); // Perfect fifth harmonic
+
+    const gongGain = this.ctx.createGain();
+    gongGain.gain.setValueAtTime(0.8, now);
+    gongGain.gain.exponentialRampToValueAtTime(0.01, now + 1.8);
+
+    gongOsc1.connect(gongGain);
+    gongOsc2.connect(gongGain);
+    gongGain.connect(this.getOut());
+
+    gongOsc1.start(now);
+    gongOsc2.start(now);
+    gongOsc1.stop(now + 1.8);
+    gongOsc2.stop(now + 1.8);
+
+    // Raphael Adolini 1715 Flintlock cocking click
+    const lockOsc = this.ctx.createOscillator();
+    lockOsc.type = 'triangle';
+    lockOsc.frequency.setValueAtTime(1600, now + 0.45);
+    lockOsc.frequency.exponentialRampToValueAtTime(420, now + 0.55);
+
+    const lockGain = this.ctx.createGain();
+    lockGain.gain.setValueAtTime(0.5, now + 0.45);
+    lockGain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+
+    lockOsc.connect(lockGain);
+    lockGain.connect(this.getOut());
+    lockOsc.start(now + 0.45);
+    lockOsc.stop(now + 0.6);
+  }
+
+  // 159. City Hunter Penthouse Medi-Kit Cauterization Sizzle & Agony Growl (Predator 2 1990)
+  playCityHunterCauterization() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Chemical blue powder sizzle & burn
+    const bufSize = Math.floor(this.ctx.sampleRate * 0.7);
+    const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * (0.5 + Math.random() * 0.5);
+    }
+    const sizzle = this.ctx.createBufferSource();
+    sizzle.buffer = buf;
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(2600, now);
+    filter.Q.setValueAtTime(3.5, now);
+
+    const sizzleGain = this.ctx.createGain();
+    sizzleGain.gain.setValueAtTime(0.7, now);
+    sizzleGain.gain.exponentialRampToValueAtTime(0.01, now + 0.7);
+
+    sizzle.connect(filter);
+    filter.connect(sizzleGain);
+    sizzleGain.connect(this.getOut());
+    sizzle.start(now);
+    sizzle.stop(now + 0.7);
+
+    // Low guttural pain roar
+    const roarOsc = this.ctx.createOscillator();
+    roarOsc.type = 'sawtooth';
+    roarOsc.frequency.setValueAtTime(90, now + 0.1);
+    roarOsc.frequency.linearRampToValueAtTime(140, now + 0.35);
+    roarOsc.frequency.exponentialRampToValueAtTime(65, now + 0.85);
+
+    const roarGain = this.ctx.createGain();
+    roarGain.gain.setValueAtTime(0.01, now + 0.1);
+    roarGain.gain.linearRampToValueAtTime(0.65, now + 0.25);
+    roarGain.gain.exponentialRampToValueAtTime(0.01, now + 0.9);
+
+    roarOsc.connect(roarGain);
+    roarGain.connect(this.getOut());
+    roarOsc.start(now + 0.1);
+    roarOsc.stop(now + 0.9);
+  }
+
+  // 160. L.A. Heat Wave Neon Transformer Overload & Arc Flash (Predator 2 1990)
+  playNeonTransformerOverload() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // 60Hz transformer electrical buzz
+    const buzzOsc = this.ctx.createOscillator();
+    buzzOsc.type = 'sawtooth';
+    buzzOsc.frequency.setValueAtTime(60, now);
+
+    const buzzGain = this.ctx.createGain();
+    buzzGain.gain.setValueAtTime(0.7, now);
+    buzzGain.gain.exponentialRampToValueAtTime(0.01, now + 0.65);
+
+    buzzOsc.connect(buzzGain);
+    buzzGain.connect(this.getOut());
+    buzzOsc.start(now);
+    buzzOsc.stop(now + 0.65);
+
+    // Neon glass shatter pop
+    const popOsc = this.ctx.createOscillator();
+    popOsc.type = 'triangle';
+    popOsc.frequency.setValueAtTime(3200, now);
+    popOsc.frequency.exponentialRampToValueAtTime(800, now + 0.08);
+
+    const popGain = this.ctx.createGain();
+    popGain.gain.setValueAtTime(0.8, now);
+    popGain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+
+    popOsc.connect(popGain);
+    popGain.connect(this.getOut());
+    popOsc.start(now);
+    popOsc.stop(now + 0.1);
+  }
 }
 
 

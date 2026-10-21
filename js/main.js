@@ -610,6 +610,22 @@ class GameApp {
           // Handled Wild Javelina Roasting Spit Survival Ration (Predator 1987)!
         } else if (this.env && this.env.checkGlowingBloodInteraction && this.env.checkGlowingBloodInteraction(this.player, this.ui, this.audio)) {
           // Handled Jungle Hunter Nuclear Blast Crater Glowing Blood Locus (Predator 1987)!
+        } else if (this.env && this.env.checkEasternColumbiaLightning && this.env.checkEasternColumbiaLightning(this.player, this.ui, this.audio, this.horde, this.bosses, this.particles)) {
+          // Handled Eastern Columbia Spire Lightning Rod Supercharge (Predator 2 1990)!
+        } else if (this.env && this.env.checkMeatLockerCryoValve && this.env.checkMeatLockerCryoValve(this.player, this.ui, this.audio, this.horde, this.bosses, this.particles)) {
+          // Handled OWLF Slaughterhouse Cryogenic Deluge (Predator 2 1990)!
+        } else if (this.env && this.env.checkKingWillieAltarInteraction && this.env.checkKingWillieAltarInteraction(this.player, this.ui, this.audio)) {
+          // Handled King Willie's Voodoo Rooftop Altar & Polished Skull (Predator 2 1990)!
+        } else if (this.env && this.env.checkDannyBoyNetgunInteraction && this.env.checkDannyBoyNetgunInteraction(this.player, this.ui, this.audio)) {
+          // Handled Danny Boy's Netgun Wire Concrete Wall Embedment (Predator 2 1990)!
+        } else if (this.env && this.env.checkLostTribeTrophyInteraction && this.env.checkLostTribeTrophyInteraction(this.player, this.ui, this.audio)) {
+          // Handled Lost Tribe Mother Ship Trophy Dais & Raphael Adolini 1715 Flintlock (Predator 2 1990)!
+        } else if (this.env && this.env.checkCityHunterSurgeryInteraction && this.env.checkCityHunterSurgeryInteraction(this.player, this.ui, this.audio)) {
+          // Handled City Hunter's Penthouse Emergency Medi-Kit Cauterization (Predator 2 1990)!
+        } else if (this.env && this.env.checkHarriganCruiserLoot && this.env.checkHarriganCruiserLoot(this.player, this.ui, this.audio)) {
+          // Handled Lieutenant Mike Harrigan's LAPD SWAT Cruiser Barricade (Predator 2 1990)!
+        } else if (this.env && this.env.checkSmartDiscGirderInteraction && this.env.checkSmartDiscGirderInteraction(this.player, this.ui, this.audio)) {
+          // Handled City Hunter's Dislodged Smart-Disc Girder Retrieval (Predator 2 1990)!
         } else if (this.env && this.env.checkScoutShipConsoleInteraction && this.env.checkScoutShipConsoleInteraction(this.player.position, this.ui, this.audio, this.horde, this.player)) {
           // Handled Crashed Scout Ship Telemetry Scan (AVP: Requiem 2007)!
         } else if (this.env && this.env.checkCharonLabConsoleInteraction && this.env.checkCharonLabConsoleInteraction(this.player.position, this.horde, this.ui, this.audio)) {
@@ -1233,6 +1249,9 @@ class GameApp {
       if (this.env.checkFlareTripwireTrigger) {
         this.env.checkFlareTripwireTrigger(attack.origin, this.audio, this.horde, this.bosses, this.particles, this.ui);
       }
+      if (this.env.checkNeonTransformerOverload) {
+        this.env.checkNeonTransformerOverload(attack.origin, attack.damage, this.audio, this.horde, this.bosses, this.particles, this.ui);
+      }
     }
 
     // Update Combo Chain Tag
@@ -1308,6 +1327,9 @@ class GameApp {
       }
       if (this.env.checkFlareTripwireTrigger) {
         this.env.checkFlareTripwireTrigger(attack.origin, this.audio, this.horde, this.bosses, this.particles, this.ui);
+      }
+      if (this.env.checkNeonTransformerOverload) {
+        this.env.checkNeonTransformerOverload(attack.origin, attack.damage, this.audio, this.horde, this.bosses, this.particles, this.ui);
       }
     }
 
@@ -2582,6 +2604,9 @@ class GameApp {
           if (this.env.checkFlareTripwireTrigger) {
             this.env.checkFlareTripwireTrigger(p.mesh.position, this.audio, this.horde, this.bosses, this.particles, this.ui);
           }
+          if (this.env.checkNeonTransformerOverload) {
+            this.env.checkNeonTransformerOverload(p.mesh.position, p.damage, this.audio, this.horde, this.bosses, this.particles, this.ui);
+          }
         }
 
         const hits = this.horde.checkMeleeHits({ origin: p.mesh.position, radius: 2.8, damage: p.damage });
@@ -2758,6 +2783,9 @@ class GameApp {
           }
           if (this.env.checkFlareTripwireTrigger) {
             this.env.checkFlareTripwireTrigger(p.mesh.position, this.audio, this.horde, this.bosses, this.particles, this.ui);
+          }
+          if (this.env.checkNeonTransformerOverload) {
+            this.env.checkNeonTransformerOverload(p.mesh.position, p.damage, this.audio, this.horde, this.bosses, this.particles, this.ui);
           }
         }
 
@@ -3174,6 +3202,63 @@ class GameApp {
       if (glowingBloodPrompt) {
         if (isNearGlowingBlood) glowingBloodPrompt.classList.remove('hidden');
         else glowingBloodPrompt.classList.add('hidden');
+      }
+
+      // v60.0 Predator 2 (1990) TOITS DE LOS ANGELES Proximity Prompts
+      const isNearColumbia = this.env.easternColumbiaSpire && this.player && this.player.position.distanceTo(this.env.easternColumbiaSpire.pos) <= 5.0;
+      const columbiaPrompt = document.getElementById('eastern-columbia-prompt');
+      if (columbiaPrompt) {
+        if (isNearColumbia) columbiaPrompt.classList.remove('hidden');
+        else columbiaPrompt.classList.add('hidden');
+      }
+
+      const isNearMeatLocker = this.env.meatLockerFacility && this.player && this.player.position.distanceTo(this.env.meatLockerFacility.valvePos) <= 4.2;
+      const meatLockerPrompt = document.getElementById('meat-locker-prompt');
+      if (meatLockerPrompt) {
+        if (isNearMeatLocker) meatLockerPrompt.classList.remove('hidden');
+        else meatLockerPrompt.classList.add('hidden');
+      }
+
+      const isNearKingWillie = this.env.kingWillieAltar && !this.env.kingWillieAltar.isClaimed && this.player && this.player.position.distanceTo(this.env.kingWillieAltar.pos) <= 4.2;
+      const kingWilliePrompt = document.getElementById('king-willie-prompt');
+      if (kingWilliePrompt) {
+        if (isNearKingWillie) kingWilliePrompt.classList.remove('hidden');
+        else kingWilliePrompt.classList.add('hidden');
+      }
+
+      const isNearDannyNetgun = this.env.dannyBoyNetgun && !this.env.dannyBoyNetgun.isClaimed && this.player && this.player.position.distanceTo(this.env.dannyBoyNetgun.pos) <= 4.2;
+      const dannyNetgunPrompt = document.getElementById('danny-netgun-prompt');
+      if (dannyNetgunPrompt) {
+        if (isNearDannyNetgun) dannyNetgunPrompt.classList.remove('hidden');
+        else dannyNetgunPrompt.classList.add('hidden');
+      }
+
+      const isNearLostTribe = this.env.lostTribeShipDais && !this.env.lostTribeShipDais.isClaimed && this.player && this.player.position.distanceTo(this.env.lostTribeShipDais.pos) <= 4.5;
+      const lostTribePrompt = document.getElementById('lost-tribe-prompt');
+      if (lostTribePrompt) {
+        if (isNearLostTribe) lostTribePrompt.classList.remove('hidden');
+        else lostTribePrompt.classList.add('hidden');
+      }
+
+      const isNearSurgery = this.env.cityHunterSurgery && !this.env.cityHunterSurgery.isUsed && this.player && this.player.position.distanceTo(this.env.cityHunterSurgery.pos) <= 4.2;
+      const surgeryPrompt = document.getElementById('city-hunter-surgery-prompt');
+      if (surgeryPrompt) {
+        if (isNearSurgery) surgeryPrompt.classList.remove('hidden');
+        else surgeryPrompt.classList.add('hidden');
+      }
+
+      const isNearCruiser = this.env.harriganCruiser && !this.env.harriganCruiser.isLooted && this.player && this.player.position.distanceTo(this.env.harriganCruiser.pos) <= 4.2;
+      const cruiserPrompt = document.getElementById('harrigan-cruiser-prompt');
+      if (cruiserPrompt) {
+        if (isNearCruiser) cruiserPrompt.classList.remove('hidden');
+        else cruiserPrompt.classList.add('hidden');
+      }
+
+      const isNearSmartDisc = this.env.smartDiscGirder && !this.env.smartDiscGirder.isRetrieved && this.player && this.player.position.distanceTo(this.env.smartDiscGirder.pos) <= 4.2;
+      const smartDiscPrompt = document.getElementById('smart-disc-girder-prompt');
+      if (smartDiscPrompt) {
+        if (isNearSmartDisc) smartDiscPrompt.classList.remove('hidden');
+        else smartDiscPrompt.classList.add('hidden');
       }
     }
 
