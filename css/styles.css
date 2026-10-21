@@ -831,6 +831,13 @@ html, body {
 #in-game-hud {
   padding: 20px;
   justify-content: space-between;
+  pointer-events: none;
+}
+
+#in-game-hud button,
+#in-game-hud .glass-panel,
+#in-game-hud .radar-box {
+  pointer-events: auto;
 }
 
 .hud-top-left {
@@ -1120,49 +1127,96 @@ html, body {
 
 .announcement-banner {
   position: absolute;
-  top: 25%;
+  top: 24%;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(255, 26, 26, 0.85);
+  background: linear-gradient(135deg, rgba(220, 20, 20, 0.92), rgba(120, 10, 10, 0.95));
   color: #ffffff;
-  padding: 12px 40px;
+  padding: 12px 42px;
   font-size: 1.4rem;
   font-weight: 900;
+  letter-spacing: 2px;
+  text-transform: uppercase;
   border-radius: 6px;
+  border: 1px solid rgba(255, 90, 90, 0.7);
+  box-shadow: 0 0 25px rgba(255, 40, 40, 0.65), inset 0 0 15px rgba(255, 200, 200, 0.2);
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
+  z-index: 1200;
+  transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .hud-bottom-center {
   position: absolute;
-  bottom: 25px;
+  bottom: 8px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 82vw;
+  max-height: 105px;
+  overflow-y: auto;
+  gap: 4px 6px;
+  padding: 4px 10px;
+  background: rgba(10, 15, 24, 0.65);
+  border: 1px solid rgba(0, 210, 255, 0.2);
+  border-radius: 8px;
+  backdrop-filter: blur(4px);
+  z-index: 100;
+}
+
+.hud-bottom-center::-webkit-scrollbar {
+  width: 4px;
+}
+.hud-bottom-center::-webkit-scrollbar-thumb {
+  background: rgba(0, 210, 255, 0.4);
+  border-radius: 2px;
 }
 
 .ability-slot {
-  background: rgba(12, 16, 24, 0.85);
-  border: 1px solid rgba(0, 210, 255, 0.3);
-  padding: 8px 12px;
-  border-radius: 6px;
+  background: rgba(12, 16, 24, 0.88);
+  border: 1px solid rgba(0, 210, 255, 0.25);
+  padding: 3px 6px;
+  border-radius: 4px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
+  min-width: 58px;
+  transition: all 0.15s ease;
+}
+
+.ability-slot:hover {
+  border-color: #00d2ff;
+  box-shadow: 0 0 6px rgba(0, 210, 255, 0.4);
+  transform: translateY(-1px);
+}
+
+.slot-help-btn {
+  border-color: #f59e0b !important;
+  cursor: pointer;
+}
+.slot-help-btn .slot-key {
+  color: #fbbf24 !important;
+  background: rgba(245, 158, 11, 0.2) !important;
 }
 
 .slot-key {
-  font-size: 0.85rem;
+  font-size: 0.72rem;
   font-weight: 800;
   color: var(--plasma-blue);
   background: rgba(0, 210, 255, 0.15);
-  padding: 2px 8px;
-  border-radius: 4px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  line-height: 1.1;
 }
 
 .slot-label {
-  font-size: 0.65rem;
+  font-size: 0.55rem;
   color: #cbd5e1;
+  text-align: center;
+  white-space: nowrap;
 }
 
 .hud-bottom-right {
@@ -1201,15 +1255,44 @@ html, body {
   padding-bottom: 12px;
 }
 
-/* 1987 Tri-Laser Target Lock Reticle */
+/* Chantier 10: 1987 Tri-Laser & Bio-Mask Target Lock Telemetry Reticle */
 .tri-laser-reticle {
   position: absolute;
   pointer-events: none;
   transform: translate(-50%, -50%);
-  width: 60px;
-  height: 60px;
+  width: 76px;
+  height: 76px;
   z-index: 95;
-  transition: opacity 0.15s ease-out;
+  transition: opacity 0.12s ease-out;
+}
+
+.tri-bracket {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: #ff2222;
+  border-style: solid;
+  pointer-events: none;
+}
+
+.tri-bracket.top-bracket {
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 2px 2px 0 0;
+  transform: translateX(-50%) rotate(-45deg);
+}
+
+.tri-bracket.left-bracket {
+  bottom: 6px;
+  left: 2px;
+  border-width: 0 0 2px 2px;
+}
+
+.tri-bracket.right-bracket {
+  bottom: 6px;
+  right: 2px;
+  border-width: 0 2px 2px 0;
 }
 
 .tri-dot {
@@ -1222,34 +1305,2402 @@ html, body {
 }
 
 .tri-dot.dot-1 {
-  top: 5px;
-  left: 26px;
+  top: 14px;
+  left: 34px;
 }
 
 .tri-dot.dot-2 {
-  bottom: 8px;
-  left: 6px;
+  bottom: 16px;
+  left: 12px;
 }
 
 .tri-dot.dot-3 {
-  bottom: 8px;
-  right: 6px;
+  bottom: 16px;
+  right: 12px;
 }
 
 .target-info-tag {
   position: absolute;
-  top: 65px;
+  top: 80px;
   left: 50%;
   transform: translateX(-50%);
   white-space: nowrap;
   font-family: 'Share Tech Mono', monospace, sans-serif;
-  font-size: 0.75rem;
-  font-weight: bold;
   letter-spacing: 1px;
   color: #ff3333;
-  background: rgba(10, 0, 0, 0.75);
-  border: 1px solid rgba(255, 26, 26, 0.6);
+  background: rgba(8, 2, 2, 0.88);
+  border: 1px solid rgba(255, 34, 34, 0.7);
+  box-shadow: 0 0 12px rgba(255, 0, 0, 0.4);
+  padding: 4px 10px;
+  border-radius: 4px;
+  text-shadow: 0 0 6px #ff0000;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: center;
+}
+
+.telemetry-genus {
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  color: #ff6666;
+}
+
+.telemetry-stats {
+  font-size: 0.65rem;
+  color: #e2e8f0;
+}
+
+.telemetry-weakpoint {
+  font-size: 0.62rem;
+  font-weight: bold;
+  color: #fbbf24;
+  letter-spacing: 0.8px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.2);
+  padding-top: 2px;
+  margin-top: 2px;
+}
+
+/* Chantier 10: Musou Officer Defeat Banner & Vanguard Morale Frenzy */
+.musou-officer-banner {
+  position: absolute;
+  top: 18%;
+  left: 50%;
+  transform: translateX(-50%) scale(1);
+  background: linear-gradient(180deg, rgba(30, 20, 5, 0.95) 0%, rgba(10, 8, 4, 0.98) 100%);
+  border: 2px solid #ffd700;
+  box-shadow: 0 0 25px rgba(255, 215, 0, 0.6), inset 0 0 15px rgba(255, 215, 0, 0.3);
+  padding: 16px 45px;
+  border-radius: 8px;
+  text-align: center;
+  z-index: 100;
+  pointer-events: none;
+  animation: musouBannerPulse 2.8s ease-out forwards;
+}
+
+.musou-officer-title {
+  color: #ffcc00;
+  font-family: 'Share Tech Mono', monospace, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  text-shadow: 0 0 8px #ffaa00;
+  margin-bottom: 4px;
+}
+
+.musou-officer-name {
+  color: #ffffff;
+  font-size: 1.8rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-shadow: 0 0 12px #ff4400, 0 0 20px #ff0000;
+  text-transform: uppercase;
+}
+
+.musou-officer-sub {
+  color: #a3e635;
+  font-family: 'Share Tech Mono', monospace, sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 1.5px;
+  margin-top: 6px;
+  text-shadow: 0 0 6px #65a30d;
+}
+
+@keyframes musouBannerPulse {
+  0% { transform: translateX(-50%) scale(0.6); opacity: 0; }
+  15% { transform: translateX(-50%) scale(1.08); opacity: 1; }
+  25% { transform: translateX(-50%) scale(1.0); opacity: 1; }
+  85% { transform: translateX(-50%) scale(1.0); opacity: 1; }
+  100% { transform: translateX(-50%) scale(0.95); opacity: 0; }
+}
+
+.morale-frenzy {
+  animation: frenzyPulse 1s infinite alternate !important;
+}
+
+@keyframes frenzyPulse {
+  0% { box-shadow: 0 0 10px #ffd700, inset 0 0 8px #ffaa00; filter: brightness(1.1); }
+  100% { box-shadow: 0 0 25px #ff7700, inset 0 0 18px #ff3700; filter: brightness(1.5); }
+}
+
+/* Chantier 1: Grand Musou Boss Health Gauge */
+.boss-hud-container {
+  position: absolute;
+  top: 72px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 580px;
+  max-width: 90vw;
+  background: rgba(15, 6, 8, 0.9);
+  border: 1.5px solid #dc2626;
+  border-radius: 8px;
+  padding: 8px 16px;
+  box-shadow: 0 0 20px rgba(220, 38, 38, 0.45), inset 0 0 15px rgba(220, 38, 38, 0.2);
+  z-index: 50;
+  pointer-events: none;
+  animation: bossHudGlow 2.5s infinite alternate ease-in-out;
+}
+
+@keyframes bossHudGlow {
+  0% { box-shadow: 0 0 15px rgba(220, 38, 38, 0.35); }
+  100% { box-shadow: 0 0 28px rgba(239, 68, 68, 0.7); }
+}
+
+.boss-header-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.boss-icon {
+  font-size: 2rem;
+  filter: drop-shadow(0 0 8px #ef4444);
+}
+
+.boss-info-col {
+  flex: 1;
+}
+
+.boss-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.boss-name {
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: #fca5a5;
+  text-shadow: 0 0 8px #ef4444;
+  font-size: 1.05rem;
+}
+
+.boss-state-badge {
+  font-size: 0.75rem;
+  font-weight: bold;
   padding: 2px 8px;
   border-radius: 4px;
-  text-shadow: 0 0 5px #ff0000;
+  background: rgba(220, 38, 38, 0.3);
+  color: #fef08a;
+  border: 1px solid #facc15;
+  letter-spacing: 1px;
 }
+
+.boss-bar-bg {
+  position: relative;
+  width: 100%;
+  height: 18px;
+  background: rgba(0, 0, 0, 0.75);
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid rgba(239, 68, 68, 0.6);
+}
+
+.boss-hp-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #991b1b, #ef4444, #f87171);
+  transition: width 0.15s ease-out;
+  box-shadow: 0 0 10px #ef4444;
+}
+
+.boss-hp-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-family: monospace;
+  font-weight: bold;
+  color: #ffffff;
+  text-shadow: 1px 1px 2px #000;
+}
+
+/* Chantier 10: Hive Bio-Acoustic Danger & Pressure Meter */
+.hive-pressure-panel {
+  position: absolute;
+  top: 96px;
+  left: 20px;
+  width: 290px;
+  background: rgba(10, 15, 24, 0.88);
+  border: 1px solid rgba(57, 255, 20, 0.45);
+  box-shadow: 0 0 15px rgba(57, 255, 20, 0.15);
+  border-radius: 8px;
+  padding: 8px 12px;
+  backdrop-filter: blur(6px);
+  z-index: 10;
+}
+
+.hive-pressure-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.pressure-title {
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  font-size: 0.72rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  color: #a7f3d0;
+}
+
+.pressure-badge {
+  font-size: 0.65rem;
+  font-weight: bold;
+  padding: 1px 6px;
+  border-radius: 3px;
+  letter-spacing: 1px;
+}
+
+.badge-calm {
+  background: rgba(16, 185, 129, 0.25);
+  color: #34d399;
+  border: 1px solid #10b981;
+}
+
+.badge-warning {
+  background: rgba(245, 158, 11, 0.25);
+  color: #fbbf24;
+  border: 1px solid #f59e0b;
+}
+
+.badge-danger {
+  background: rgba(239, 68, 68, 0.35);
+  color: #f87171;
+  border: 1px solid #ef4444;
+  animation: pulse-danger 0.8s infinite alternate;
+}
+
+@keyframes pulse-danger {
+  from { opacity: 0.8; transform: scale(1); }
+  to { opacity: 1; transform: scale(1.05); }
+}
+
+.hive-pressure-track {
+  position: relative;
+  width: 100%;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid rgba(57, 255, 20, 0.3);
+}
+
+.hive-pressure-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981, #facc15, #ef4444);
+  transition: width 0.2s ease-out;
+}
+
+.pressure-threshold-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #ef4444;
+}
+
+.hive-pressure-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+  font-size: 0.68rem;
+  font-family: monospace;
+  color: #94a3b8;
+}
+
+/* Chantier 10: Cinematic Honor Duel Letterbox */
+.duel-letterbox {
+  position: fixed;
+  left: 0;
+  width: 100vw;
+  height: 10vh;
+  background: #000;
+  z-index: 100;
+  pointer-events: none;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.duel-letterbox.top-bar {
+  top: 0;
+}
+
+.duel-letterbox.bottom-bar {
+  bottom: 0;
+}
+
+/* Chantier 10: Clashing Blades 3-Stage QTE Prompt */
+.clashing-blades-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(15, 10, 10, 0.88);
+  border: 2px solid #ef4444;
+  box-shadow: 0 0 25px rgba(239, 68, 68, 0.6), inset 0 0 15px rgba(220, 38, 38, 0.4);
+  padding: 20px 32px;
+  border-radius: 8px;
+  text-align: center;
+  z-index: 105;
+  pointer-events: none;
+  animation: clash-pulse 1s infinite alternate;
+}
+
+@keyframes clash-pulse {
+  from { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 20px rgba(239, 68, 68, 0.5); }
+  to { transform: translate(-50%, -50%) scale(1.03); box-shadow: 0 0 35px rgba(239, 68, 68, 0.8); }
+}
+
+.duel-stage-title {
+  color: #fca5a5;
+  font-size: 0.85rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.duel-key-circle {
+  width: 60px;
+  height: 60px;
+  line-height: 60px;
+  border-radius: 50%;
+  margin: 0 auto 10px auto;
+  background: #dc2626;
+  color: #fff;
+  font-size: 1.6rem;
+  font-weight: 900;
+  border: 3px solid #fecaca;
+  box-shadow: 0 0 15px #ef4444;
+  animation: key-throb 0.4s infinite alternate;
+}
+
+@keyframes key-throb {
+  from { transform: scale(0.95); }
+  to { transform: scale(1.08); }
+}
+
+.duel-action-label {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #fef08a;
+  letter-spacing: 1.5px;
+  margin-bottom: 12px;
+  text-shadow: 0 0 10px rgba(254, 240, 138, 0.5);
+}
+
+.duel-timer-track {
+  width: 220px;
+  height: 6px;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 3px;
+  overflow: hidden;
+  margin: 0 auto 8px auto;
+  border: 1px solid rgba(239, 68, 68, 0.5);
+}
+
+.duel-timer-fill {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #ef4444, #f59e0b);
+  transition: width 0.05s linear;
+}
+
+.duel-sub-hint {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  letter-spacing: 1px;
+}
+
+/* Chantier 3: Trax-Net Tracker Overlay */
+.trax-net-overlay-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 92;
+}
+
+.trax-net-bracket {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: opacity 0.1s ease;
+}
+
+.trax-net-diamond {
+  width: 32px;
+  height: 32px;
+  border: 2px solid #06b6d4;
+  transform: rotate(45deg);
+  box-shadow: 0 0 12px #06b6d4, inset 0 0 8px rgba(6, 182, 212, 0.4);
+  animation: trax-spin 4s linear infinite;
+}
+
+@keyframes trax-spin {
+  0% { transform: rotate(45deg); }
+  50% { transform: rotate(225deg); }
+  100% { transform: rotate(405deg); }
+}
+
+.trax-net-tag {
+  margin-top: 8px;
+  background: rgba(8, 20, 25, 0.85);
+  border: 1px solid #06b6d4;
+  padding: 3px 8px;
+  border-radius: 3px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.trax-title {
+  color: #67e8f9;
+  font-size: 0.72rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.trax-meta {
+  color: #a5f3fc;
+  font-size: 0.62rem;
+  font-family: monospace;
+}
+
+/* Chantier 5: Sentry Gun Proximity HUD Prompt */
+.sentry-hud-prompt {
+  position: absolute;
+  bottom: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid #38bdf8;
+  box-shadow: 0 0 16px rgba(56, 189, 248, 0.4);
+  padding: 10px 20px;
+  border-radius: 6px;
+  z-index: 94;
+  text-align: center;
+  pointer-events: none;
+}
+
+.sentry-prompt-header {
+  color: #7dd3fc;
+  font-size: 0.82rem;
+  font-weight: bold;
+  letter-spacing: 1.5px;
+}
+
+.sentry-prompt-ammo {
+  color: #38bdf8;
+  font-size: 1.2rem;
+  font-weight: 900;
+  font-family: monospace;
+  margin: 4px 0;
+  text-shadow: 0 0 8px rgba(56, 189, 248, 0.6);
+}
+
+.sentry-prompt-actions {
+  display: flex;
+  gap: 16px;
+  font-size: 0.75rem;
+  color: #cbd5e1;
+  font-family: monospace;
+}
+
+/* Chantier 6: Bio-Mask Vision Mode 5 - High-Frequency Sonar / Acoustic Resonance Overlay */
+#sonar-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 45;
+  background: radial-gradient(circle at center, rgba(14, 165, 233, 0.12) 0%, rgba(2, 6, 23, 0.45) 100%);
+  box-shadow: inset 0 0 100px rgba(56, 189, 248, 0.4);
+  mix-blend-mode: screen;
+}
+
+#sonar-overlay::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 200px;
+  height: 200px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 2px solid rgba(56, 189, 248, 0.6);
+  animation: sonar-ripple 2s infinite ease-out;
+}
+
+@keyframes sonar-ripple {
+  0% { width: 40px; height: 40px; opacity: 0.9; }
+  100% { width: 900px; height: 900px; opacity: 0; border-width: 1px; }
+}
+
+/* Chantier 3: Smart-Disc Remote Guidance Telemetric HUD */
+.smartdisc-guidance-overlay {
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 95;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.guidance-reticle {
+  width: 80px;
+  height: 80px;
+  border: 2px dashed #38bdf8;
+  border-radius: 50%;
+  box-shadow: 0 0 20px #0284c7;
+  animation: disc-reticle-spin 3s linear infinite;
+}
+
+@keyframes disc-reticle-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.guidance-header {
+  margin-top: 10px;
+  color: #38bdf8;
+  font-size: 0.85rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-shadow: 0 0 10px rgba(56, 189, 248, 0.7);
+}
+
+.guidance-hint {
+  font-size: 0.68rem;
+  color: #bae6fd;
+  font-family: monospace;
+}
+
+/* Chantier 4: Fallen Marine Scavenge Proximity Box */
+.marine-scavenge-box {
+  position: absolute;
+  bottom: 110px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(20, 24, 20, 0.9);
+  border: 1px solid #4ade80;
+  box-shadow: 0 0 18px rgba(74, 222, 128, 0.4);
+  padding: 8px 18px;
+  border-radius: 6px;
+  z-index: 94;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.scavenge-key {
+  background: #166534;
+  color: #fff;
+  font-weight: 900;
+  font-size: 0.95rem;
+  padding: 3px 10px;
+  border-radius: 4px;
+  border: 1px solid #86efac;
+}
+
+.scavenge-text {
+  color: #bbf7d0;
+  font-size: 0.78rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+/* Chantier 6 (v44): Caterpillar Power Loader Workstation Proximity Prompt */
+.power-loader-box {
+  position: absolute;
+  bottom: 110px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(30, 24, 10, 0.92);
+  border: 2px solid #eab308;
+  box-shadow: 0 0 22px rgba(234, 179, 8, 0.55), inset 0 0 10px rgba(234, 179, 8, 0.2);
+  padding: 8px 20px;
+  border-radius: 6px;
+  z-index: 94;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  pointer-events: none;
+  animation: loaderPulse 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes loaderPulse {
+  from { border-color: #eab308; box-shadow: 0 0 16px rgba(234, 179, 8, 0.4); }
+  to { border-color: #facc15; box-shadow: 0 0 28px rgba(250, 204, 21, 0.7); }
+}
+
+.loader-key {
+  background: #ca8a04;
+  color: #000;
+  font-weight: 900;
+  font-size: 1.0rem;
+  padding: 4px 12px;
+  border-radius: 4px;
+  border: 1px solid #fef08a;
+}
+
+.loader-text {
+  color: #fef08a;
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  text-shadow: 0 0 8px rgba(234, 179, 8, 0.6);
+}
+
+/* Chantier 7 (v44): Flamer Slot Styling */
+#slot-flamer .slot-key {
+  border-color: #f97316;
+  color: #fb923c;
+}
+#slot-flamer .slot-label {
+  color: #fed7aa;
+}
+
+/* Chantier 10 (v44): Marvel Alpha Eldritch Hallucination Vignette Overlay */
+.hallucination-vignette {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 99;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(120, 0, 30, 0.25) 0%, rgba(20, 0, 10, 0.88) 100%);
+  border: 12px solid rgba(220, 38, 38, 0.6);
+  box-shadow: inset 0 0 140px rgba(185, 28, 28, 0.7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 12px;
+  animation: eldritchPsychPulse 0.4s ease-in-out infinite alternate;
+}
+
+@keyframes eldritchPsychPulse {
+  0% { transform: scale(1.0); filter: hue-rotate(0deg) contrast(1.1); }
+  100% { transform: scale(1.015); filter: hue-rotate(25deg) contrast(1.3); }
+}
+
+.hallucination-title {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: #ff2255;
+  letter-spacing: 6px;
+  text-shadow: 0 0 25px #ff0044, 0 0 50px #880022;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.hallucination-sub {
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: #fecdd3;
+  letter-spacing: 3px;
+  text-shadow: 0 0 12px rgba(244, 63, 94, 0.8);
+}
+
+.hallucination-eyes {
+  font-size: 3.5rem;
+  letter-spacing: 24px;
+  animation: eyeBlink 1.5s infinite;
+}
+
+@keyframes eyeBlink {
+  0%, 100% { opacity: 1; transform: scaleY(1); }
+  50% { opacity: 0.2; transform: scaleY(0.1); }
+}
+
+/* === v45.0 10-CHANTIER EXPANSION STYLES === */
+
+/* Chantier 3: Reactor Meltdown Banner */
+.reactor-meltdown-banner {
+  position: absolute;
+  top: 75px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(40, 10, 10, 0.94);
+  border: 2px solid #ef4444;
+  box-shadow: 0 0 35px rgba(239, 68, 68, 0.75), inset 0 0 15px rgba(239, 68, 68, 0.35);
+  padding: 10px 28px;
+  border-radius: 8px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  pointer-events: none;
+  animation: reactorPulse 1.0s ease-in-out infinite alternate;
+}
+
+@keyframes reactorPulse {
+  from { border-color: #ef4444; box-shadow: 0 0 25px rgba(239, 68, 68, 0.6); }
+  to { border-color: #f97316; box-shadow: 0 0 45px rgba(249, 115, 22, 0.95); }
+}
+
+.reactor-warning-icon {
+  font-size: 2.2rem;
+  animation: iconShake 0.4s infinite;
+}
+
+@keyframes iconShake {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-8deg); }
+  75% { transform: rotate(8deg); }
+}
+
+.reactor-title {
+  color: #fca5a5;
+  font-size: 0.85rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.reactor-timer {
+  color: #fee2e2;
+  font-size: 1.15rem;
+  font-weight: 900;
+  letter-spacing: 2.5px;
+  font-family: 'Courier New', Courier, monospace;
+  text-shadow: 0 0 10px #ef4444;
+}
+
+/* Chantier 2: M577 APC Mount Prompt */
+.apc-mount-box {
+  position: absolute;
+  bottom: 110px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(20, 32, 20, 0.93);
+  border: 2px solid #65a30d;
+  box-shadow: 0 0 24px rgba(101, 163, 13, 0.6);
+  padding: 8px 20px;
+  border-radius: 6px;
+  z-index: 94;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  pointer-events: none;
+}
+
+.apc-key {
+  background: #4d7c0f;
+  color: #fff;
+  font-weight: 900;
+  font-size: 1.0rem;
+  padding: 4px 12px;
+  border-radius: 4px;
+  border: 1px solid #a3e635;
+}
+
+.apc-text {
+  color: #bef264;
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+}
+
+/* Chantier 3: Reactor Console Prompt */
+.reactor-console-box {
+  position: absolute;
+  bottom: 110px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(30, 15, 15, 0.93);
+  border: 2px solid #ef4444;
+  box-shadow: 0 0 24px rgba(239, 68, 68, 0.6);
+  padding: 8px 20px;
+  border-radius: 6px;
+  z-index: 94;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  pointer-events: none;
+}
+
+.reactor-key {
+  background: #dc2626;
+  color: #fff;
+  font-weight: 900;
+  font-size: 1.0rem;
+  padding: 4px 12px;
+  border-radius: 4px;
+  border: 1px solid #fca5a5;
+}
+
+.reactor-text {
+  color: #fecaca;
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+}
+
+/* Chantier 6: Electric Grid Prompt */
+.electric-grid-box {
+  position: absolute;
+  bottom: 110px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(10, 25, 45, 0.93);
+  border: 2px solid #38bdf8;
+  box-shadow: 0 0 24px rgba(56, 189, 248, 0.6);
+  padding: 8px 20px;
+  border-radius: 6px;
+  z-index: 94;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  pointer-events: none;
+}
+
+.grid-key {
+  background: #0284c7;
+  color: #fff;
+  font-weight: 900;
+  font-size: 1.0rem;
+  padding: 4px 12px;
+  border-radius: 4px;
+  border: 1px solid #bae6fd;
+}
+
+.grid-text {
+  color: #e0f2fe;
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+}
+
+/* Chantier 9: Decontamination Airlock Prompt */
+.decon-airlock-box {
+  position: absolute;
+  bottom: 110px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(10, 35, 35, 0.93);
+  border: 2px solid #14b8a6;
+  box-shadow: 0 0 24px rgba(20, 184, 166, 0.6);
+  padding: 8px 20px;
+  border-radius: 6px;
+  z-index: 94;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  pointer-events: none;
+}
+
+.decon-key {
+  background: #0d9488;
+  color: #fff;
+  font-weight: 900;
+  font-size: 1.0rem;
+  padding: 4px 12px;
+  border-radius: 4px;
+  border: 1px solid #99f6e4;
+}
+
+.decon-text {
+  color: #ccfbf1;
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+}
+
+/* Chantier 7: Ki'cte Grapple Prompt */
+.grapple-box {
+  position: absolute;
+  bottom: 155px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(45, 15, 10, 0.93);
+  border: 2px solid #f97316;
+  box-shadow: 0 0 24px rgba(249, 115, 22, 0.6);
+  padding: 6px 18px;
+  border-radius: 6px;
+  z-index: 94;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.grapple-key {
+  background: #ea580c;
+  color: #fff;
+  font-weight: 900;
+  font-size: 0.95rem;
+  padding: 3px 10px;
+  border-radius: 4px;
+  border: 1px solid #fed7aa;
+}
+
+.grapple-text {
+  color: #ffedd5;
+  font-size: 0.8rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+}
+
+/* Slots styling for Plasma Pistol & Grapple */
+#slot-plasma-pistol .slot-key {
+  border-color: #38bdf8;
+  color: #7dd3fc;
+}
+#slot-plasma-pistol .slot-label {
+  color: #e0f2fe;
+}
+
+#slot-grapple .slot-key {
+  border-color: #f97316;
+  color: #fb923c;
+}
+#slot-grapple .slot-label {
+  color: #ffedd5;
+}
+
+/* === CHANTIER 1 (v46): M56 Smartgun Turret Prompt === */
+.smartgun-turret-box {
+  position: absolute;
+  bottom: 110px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.94);
+  border: 2px solid #10b981;
+  box-shadow: 0 0 24px rgba(16, 185, 129, 0.65);
+  padding: 8px 20px;
+  border-radius: 6px;
+  z-index: 94;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  pointer-events: none;
+}
+
+.smartgun-key {
+  background: #059669;
+  color: #fff;
+  font-weight: 900;
+  font-size: 1.0rem;
+  padding: 4px 12px;
+  border-radius: 4px;
+  border: 1px solid #6ee7b7;
+}
+
+.smartgun-text {
+  color: #a7f3d0;
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+}
+
+/* === CHANTIER 9 (v46): USCM Cargo Crane Operator Console Prompt === */
+.cargo-crane-box {
+  position: absolute;
+  bottom: 110px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(30, 25, 10, 0.94);
+  border: 2px solid #eab308;
+  box-shadow: 0 0 24px rgba(234, 179, 8, 0.65);
+  padding: 8px 20px;
+  border-radius: 6px;
+  z-index: 94;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  pointer-events: none;
+}
+
+.crane-key {
+  background: #ca8a04;
+  color: #fff;
+  font-weight: 900;
+  font-size: 1.0rem;
+  padding: 4px 12px;
+  border-radius: 4px;
+  border: 1px solid #fde047;
+}
+
+.crane-text {
+  color: #fef08a;
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+}
+
+/* === CHANTIER 2 (v46): Derelict LV-426 Low Gravity Banner === */
+.derelict-hud-banner {
+  position: absolute;
+  top: 85px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(8, 20, 36, 0.92);
+  border: 2px solid #00f2fe;
+  box-shadow: 0 0 28px rgba(0, 242, 254, 0.55);
+  padding: 8px 24px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  z-index: 92;
+  pointer-events: none;
+  animation: pulse-border 2.5s infinite;
+}
+
+.derelict-icon {
+  font-size: 1.8rem;
+  filter: drop-shadow(0 0 8px #00f2fe);
+}
+
+.derelict-title {
+  color: #38bdf8;
+  font-weight: 900;
+  font-size: 0.95rem;
+  letter-spacing: 2px;
+}
+
+.derelict-sub {
+  color: #bae6fd;
+  font-size: 0.75rem;
+  letter-spacing: 1.2px;
+  margin-top: 2px;
+}
+
+/* Exosuit & Neurotoxin Ability Slots */
+#slot-exosuit .slot-key {
+  border-color: #00f2fe;
+  color: #38bdf8;
+}
+#slot-exosuit .slot-label {
+  color: #e0f2fe;
+}
+
+#slot-neurotoxin .slot-key {
+  border-color: #c084fc;
+  color: #d8b4fe;
+}
+#slot-neurotoxin .slot-label {
+  color: #f3e8ff;
+}
+
+/* === CHANTIER 6 (v47): Weyland-Yutani Atmospheric Cooling Tower Cryo-Vent Prompt === */
+.cryo-vent-box {
+  position: absolute;
+  bottom: 110px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(12, 28, 48, 0.94);
+  border: 2px solid #38bdf8;
+  box-shadow: 0 0 24px rgba(56, 189, 248, 0.65);
+  padding: 8px 20px;
+  border-radius: 6px;
+  z-index: 94;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  pointer-events: none;
+}
+
+.cryo-key {
+  background: #0284c7;
+  color: #fff;
+  font-weight: 900;
+  font-size: 1.0rem;
+  padding: 4px 12px;
+  border-radius: 4px;
+  border: 1px solid #7dd3fc;
+}
+
+.cryo-vent-text {
+  color: #e0f2fe;
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+}
+
+/* Plasma Scythe & M41A Grenade Ability Slots */
+#slot-plasma-scythe .slot-key {
+  border-color: #00f2fe;
+  color: #00f2fe;
+}
+#slot-plasma-scythe .slot-label {
+  color: #e0f2fe;
+}
+
+#slot-m41a-grenade .slot-key {
+  border-color: #f97316;
+  color: #fb923c;
+}
+#slot-m41a-grenade .slot-label {
+  color: #ffedd5;
+}
+
+/* === CHANTIER 4 (v48): Fiorina 161 Molten Lead Foundry Valve Prompt === */
+.foundry-valve-box {
+  position: absolute;
+  bottom: 155px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(45, 16, 8, 0.94);
+  border: 2px solid #f97316;
+  box-shadow: 0 0 24px rgba(249, 115, 22, 0.7);
+  padding: 8px 20px;
+  border-radius: 6px;
+  z-index: 94;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  pointer-events: none;
+}
+
+.foundry-key {
+  background: #ea580c;
+  color: #fff;
+  font-weight: 900;
+  font-size: 1.0rem;
+  padding: 4px 12px;
+  border-radius: 4px;
+  border: 1px solid #fdba74;
+}
+
+.foundry-valve-text {
+  color: #ffedd5;
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+}
+
+/* v48.0 Ability Slots */
+#slot-scout-beam .slot-key,
+#slot-m77-gauss .slot-key,
+#slot-bishop-squad .slot-key {
+  border-color: #38bdf8;
+  color: #38bdf8;
+}
+#slot-biomask .slot-key {
+  border-color: #eab308;
+  color: #facc15;
+}
+
+/* v49.0 Ability Slots & Diegetic Telemetry */
+#slot-maul .slot-key {
+  border-color: #f59e0b;
+  color: #fbbf24;
+}
+#slot-seegson-bolt .slot-key {
+  border-color: #fb923c;
+  color: #fdba74;
+}
+#slot-sonic-trap .slot-key {
+  border-color: #06b6d4;
+  color: #22d3ee;
+}
+
+/* QA Audit #2 (Elena): Diegetic Yautja Wrist Gauntlet HUD */
+.wrist-gauntlet-panel {
+  position: absolute;
+  top: 90px;
+  left: 20px;
+  background: rgba(15, 23, 42, 0.82);
+  border: 1px solid rgba(239, 68, 68, 0.5);
+  border-left: 4px solid #ef4444;
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.25), inset 0 0 8px rgba(239, 68, 68, 0.15);
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-family: 'Courier New', Courier, monospace;
+  color: #f87171;
+  z-index: 100;
+  min-width: 210px;
+  backdrop-filter: blur(6px);
+  pointer-events: none;
+}
+
+.wrist-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(239, 68, 68, 0.35);
+  padding-bottom: 4px;
+  margin-bottom: 6px;
+}
+
+.wrist-title {
+  font-size: 0.65rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+  color: #fca5a5;
+}
+
+.wrist-glyphs {
+  font-size: 0.85rem;
+  font-weight: 900;
+  color: #ef4444;
+  text-shadow: 0 0 8px #ef4444;
+  letter-spacing: 2px;
+}
+
+.wrist-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.wrist-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.62rem;
+}
+
+.wrist-label {
+  color: #94a3b8;
+  font-weight: 700;
+}
+
+.wrist-value {
+  color: #e2e8f0;
+  font-weight: 800;
+}
+
+.wrist-value-highlight {
+  color: #38bdf8;
+  font-weight: 800;
+}
+
+.wrist-ammo-cluster {
+  display: flex;
+  gap: 5px;
+  margin-top: 4px;
+}
+
+.wrist-chip {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-size: 0.58rem;
+  color: #fecaca;
+  font-weight: 700;
+}
+
+/* QA Audit #1 (Marc): Tactical Keybind Reference Modal */
+.tactical-help-card {
+  max-width: 960px !important;
+  width: 94% !important;
+  border: 1px solid rgba(0, 210, 255, 0.6) !important;
+  box-shadow: 0 0 35px rgba(0, 210, 255, 0.3) !important;
+  background: rgba(10, 15, 26, 0.96) !important;
+}
+
+.tactical-help-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 15px;
+}
+
+.tactical-help-col {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(0, 210, 255, 0.2);
+  border-radius: 6px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tactical-category {
+  font-size: 0.78rem;
+  font-weight: 900;
+  color: #38bdf8;
+  border-bottom: 1px solid rgba(56, 189, 248, 0.3);
+  padding-bottom: 6px;
+  margin-bottom: 4px;
+}
+
+.tactical-item {
+  font-size: 0.72rem;
+  color: #e2e8f0;
+  line-height: 1.35;
+}
+
+.tactical-key {
+  display: inline-block;
+  background: rgba(0, 210, 255, 0.2);
+  color: #38bdf8;
+  border: 1px solid rgba(0, 210, 255, 0.4);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-weight: 800;
+  font-size: 0.68rem;
+  margin-right: 4px;
+}
+
+/* === MARC QA AUDIT #1: DYNAMIC CIRCULAR COMBAT RETICLE HUD === */
+.combat-reticle-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 64px;
+  height: 64px;
+  pointer-events: none;
+  z-index: 100;
+}
+
+.reticle-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.reticle-bg-circle {
+  fill: none;
+  stroke: rgba(0, 210, 255, 0.15);
+  stroke-width: 2.5;
+}
+
+.reticle-progress-circle {
+  fill: none;
+  stroke: #00d2ff;
+  stroke-width: 3.5;
+  transition: stroke-dashoffset 0.08s linear;
+  filter: drop-shadow(0 0 6px #00d2ff);
+}
+
+.reticle-dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 4px;
+  height: 4px;
+  background: #ff0000;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #ff0000;
+}
+
+/* === CHANTIER 9 (v50.0): PERSISTENT CLAN HONOR VAULT MODAL === */
+.vault-card {
+  max-width: 880px !important;
+  width: 92% !important;
+  background: rgba(10, 15, 24, 0.96) !important;
+  border: 1px solid rgba(245, 158, 11, 0.6) !important;
+  box-shadow: 0 0 40px rgba(245, 158, 11, 0.3) !important;
+}
+
+.vault-stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-top: 15px;
+  margin-bottom: 20px;
+}
+
+.vault-stat-box {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-radius: 6px;
+  padding: 10px;
+  text-align: center;
+}
+
+.vault-stat-label {
+  font-size: 0.62rem;
+  color: #94a3b8;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.vault-stat-value {
+  font-size: 1.15rem;
+  color: #fbbf24;
+  font-weight: 900;
+  margin-top: 4px;
+  text-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+}
+
+.vault-trophies-header {
+  font-size: 0.85rem;
+  font-weight: 900;
+  color: #f59e0b;
+  border-bottom: 1px solid rgba(245, 158, 11, 0.3);
+  padding-bottom: 6px;
+  margin-bottom: 12px;
+}
+
+.vault-trophies-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  max-height: 240px;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+.vault-trophy-item {
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  border-left: 3px solid #f59e0b;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  color: #f1f5f9;
+}
+
+/* === CHANTIER 10 (v50.0): SACRED BLOOD RITUAL & EXTRACTION OVERLAY === */
+.sacred-ritual-banner {
+  position: absolute;
+  top: 18%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.92);
+  border: 2px solid #ef4444;
+  box-shadow: 0 0 45px rgba(239, 68, 68, 0.6);
+  padding: 24px 45px;
+  border-radius: 12px;
+  text-align: center;
+  z-index: 1200;
+  pointer-events: none;
+  animation: ritualPulse 2s infinite ease-in-out;
+}
+
+@keyframes ritualPulse {
+  0% { transform: translateX(-50%) scale(0.98); box-shadow: 0 0 30px rgba(239, 68, 68, 0.4); }
+  50% { transform: translateX(-50%) scale(1.02); box-shadow: 0 0 60px rgba(239, 68, 68, 0.8); }
+  100% { transform: translateX(-50%) scale(0.98); box-shadow: 0 0 30px rgba(239, 68, 68, 0.4); }
+}
+
+.ritual-glyph {
+  font-size: 2.2rem;
+  color: #ef4444;
+  text-shadow: 0 0 16px #ef4444;
+  margin-bottom: 8px;
+}
+
+.ritual-title {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #fca5a5;
+  letter-spacing: 2px;
+  margin: 0;
+}
+
+.ritual-sub {
+  font-size: 0.8rem;
+  color: #cbd5e1;
+  margin-top: 8px;
+  letter-spacing: 1px;
+}
+
+/* v50.0 Ability Slots */
+#slot-shadow-dash .slot-key {
+  border-color: #38bdf8;
+  color: #38bdf8;
+}
+#slot-dropship-bombing .slot-key {
+  border-color: #f97316;
+  color: #fb923c;
+}
+#slot-dual-plasma .slot-key {
+  border-color: #00f2fe;
+  color: #00f2fe;
+}
+.slot-vault-btn {
+  border-color: #eab308 !important;
+  cursor: pointer;
+}
+.slot-vault-btn .slot-key {
+  color: #facc15 !important;
+  background: rgba(234, 179, 8, 0.2) !important;
+}
+
+/* === v51.0 APEX TRANSCENDENCE STYLES === */
+.slot-forge-btn {
+  border-color: #f59e0b !important;
+  cursor: pointer;
+}
+.slot-forge-btn .slot-key {
+  color: #fde047 !important;
+  background: rgba(245, 158, 11, 0.25) !important;
+}
+
+#slot-wristblade-parry .slot-key {
+  border-color: #00e5ff;
+  color: #00e5ff;
+}
+
+#slot-vocal-mimicry .slot-key {
+  border-color: #a855f7;
+  color: #c084fc;
+}
+
+/* Counter-Riposte Active HUD Badge */
+.counter-riposte-banner {
+  position: absolute;
+  top: 18%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, rgba(234, 179, 8, 0.92), rgba(180, 83, 9, 0.95));
+  color: #ffffff;
+  padding: 10px 32px;
+  border-radius: 6px;
+  font-size: 1.15rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  border: 1px solid #fef08a;
+  box-shadow: 0 0 25px rgba(250, 204, 21, 0.7);
+  text-shadow: 0 0 8px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
+  z-index: 1300;
+  animation: ripostePulse 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes ripostePulse {
+  0% { transform: translateX(-50%) scale(1.0); box-shadow: 0 0 15px rgba(250, 204, 21, 0.6); }
+  100% { transform: translateX(-50%) scale(1.05); box-shadow: 0 0 30px rgba(250, 204, 21, 0.9); }
+}
+
+/* Clan Weapon Forge Modal */
+.forge-card {
+  max-width: 900px;
+  width: 90%;
+  border: 2px solid #f59e0b;
+  box-shadow: 0 0 45px rgba(245, 158, 11, 0.35);
+  background: linear-gradient(180deg, rgba(17, 24, 39, 0.96), rgba(8, 10, 15, 0.98));
+}
+
+.forge-stats-bar {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+  justify-content: center;
+}
+
+.forge-stat-pill {
+  background: rgba(30, 41, 59, 0.85);
+  border: 1px solid rgba(245, 158, 11, 0.5);
+  padding: 8px 24px;
+  border-radius: 20px;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #94a3b8;
+}
+
+.forge-stat-pill span {
+  color: #facc15;
+}
+
+.forge-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.forge-item-card {
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.forge-item-card:hover {
+  transform: translateY(-3px);
+  border-color: #f59e0b;
+}
+
+.forge-icon {
+  font-size: 2.2rem;
+  margin-bottom: 8px;
+}
+
+.forge-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #f8fafc;
+  margin-bottom: 6px;
+}
+
+.forge-desc {
+  font-size: 0.82rem;
+  color: #94a3b8;
+  margin-bottom: 14px;
+  flex-grow: 1;
+}
+
+.btn-forge {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #0f172a;
+  font-weight: 900;
+  padding: 9px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.btn-forge:hover:not(:disabled) {
+  filter: brightness(1.2);
+  transform: scale(1.02);
+}
+
+.btn-forged {
+  background: rgba(34, 197, 94, 0.2) !important;
+  color: #4ade80 !important;
+  border: 1px solid #22c55e !important;
+  cursor: default !important;
+}
+
+/* Yautja Radial Tactical Weapon Wheel [Tab] */
+.weapon-wheel-overlay {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle, rgba(15, 23, 42, 0.65) 0%, rgba(3, 7, 18, 0.9) 100%);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2500;
+  pointer-events: auto;
+}
+
+.wheel-center-reticle {
+  position: absolute;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  border: 2px dashed rgba(245, 158, 11, 0.6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-shadow: 0 0 25px rgba(245, 158, 11, 0.25);
+  pointer-events: none;
+}
+
+.wheel-center-title {
+  color: #facc15;
+  font-size: 0.95rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.wheel-center-sub {
+  color: #38bdf8;
+  font-size: 0.72rem;
+  letter-spacing: 1px;
+  margin-top: 4px;
+}
+
+.wheel-slices-container {
+  position: relative;
+  width: 620px;
+  height: 620px;
+  border-radius: 50%;
+}
+
+.wheel-slice {
+  position: absolute;
+  width: 160px;
+  padding: 12px 10px;
+  background: rgba(17, 24, 39, 0.88);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+}
+
+.wheel-slice:hover {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.3), rgba(30, 41, 59, 0.95));
+  border-color: #facc15;
+  transform: scale(1.1);
+  box-shadow: 0 0 20px rgba(250, 204, 21, 0.6);
+}
+
+.wheel-slice-key {
+  font-size: 0.7rem;
+  font-weight: 900;
+  color: #38bdf8;
+  letter-spacing: 1px;
+}
+
+.wheel-slice-icon {
+  font-size: 1.8rem;
+  margin: 4px 0;
+}
+
+.wheel-slice-label {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #f8fafc;
+  letter-spacing: 1px;
+}
+
+/* 8 Radial Slices Positioning (Circular 360) */
+.slice-1 { top: 15px; left: 230px; }
+.slice-2 { top: 90px; right: 25px; }
+.slice-3 { top: 250px; right: 0px; }
+.slice-4 { bottom: 90px; right: 25px; }
+.slice-5 { bottom: 15px; left: 230px; }
+.slice-6 { bottom: 90px; left: 25px; }
+.slice-7 { top: 250px; left: 0px; }
+.slice-8 { top: 90px; left: 25px; }
+
+/* USCM M577 APC Cockpit Overlay */
+.apc-cockpit-screen {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1800;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 18px solid rgba(15, 23, 18, 0.95);
+  box-shadow: inset 0 0 80px rgba(16, 185, 129, 0.25);
+}
+
+.apc-crt-scanlines {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+  background-size: 100% 3px, 6px 100%;
+  pointer-events: none;
+}
+
+.apc-hud-header {
+  background: rgba(6, 78, 59, 0.75);
+  padding: 8px 30px;
+  color: #34d399;
+  font-family: 'Courier New', monospace;
+  font-weight: 900;
+  font-size: 0.95rem;
+  letter-spacing: 2px;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 2px solid #10b981;
+}
+
+.apc-targeting-reticle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 140px;
+  height: 140px;
+  border: 1px dashed rgba(52, 211, 153, 0.7);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reticle-crosshair {
+  width: 14px;
+  height: 14px;
+  border: 2px solid #34d399;
+  border-radius: 50%;
+}
+
+.reticle-bracket-l {
+  position: absolute;
+  left: -12px;
+  width: 8px;
+  height: 24px;
+  border-left: 2px solid #34d399;
+}
+
+.reticle-bracket-r {
+  position: absolute;
+  right: -12px;
+  width: 8px;
+  height: 24px;
+  border-right: 2px solid #34d399;
+}
+
+.apc-hud-footer {
+  background: rgba(6, 78, 59, 0.75);
+  padding: 8px 30px;
+  color: #34d399;
+  font-family: 'Courier New', monospace;
+  font-weight: 800;
+  font-size: 0.85rem;
+  letter-spacing: 1.5px;
+  display: flex;
+  justify-content: space-between;
+  border-top: 2px solid #10b981;
+}
+
+/* === v52.0 APEX SOVEREIGN STYLES === */
+.slot-bridge-btn {
+  border-color: #38bdf8 !important;
+  cursor: pointer;
+}
+.slot-bridge-btn .slot-key {
+  color: #7dd3fc !important;
+  background: rgba(56, 189, 248, 0.25) !important;
+}
+
+#slot-pole-vault .slot-key {
+  border-color: #fb923c;
+  color: #fed7aa;
+}
+
+/* Colossal Boss Multi-Segment Health Bar */
+.colossal-boss-panel {
+  position: absolute;
+  top: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 580px;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.94), rgba(3, 7, 18, 0.98));
+  border: 2px solid #ef4444;
+  box-shadow: 0 0 35px rgba(239, 68, 68, 0.45);
+  border-radius: 8px;
+  padding: 10px 18px;
+  z-index: 1500;
+  pointer-events: none;
+}
+
+.colossal-boss-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.boss-title-text {
+  font-size: 1.05rem;
+  font-weight: 900;
+  color: #f87171;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.boss-phase-badge {
+  background: rgba(239, 68, 68, 0.25);
+  color: #fca5a5;
+  border: 1px solid #ef4444;
+  padding: 2px 10px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.colossal-boss-bar-track {
+  position: relative;
+  width: 100%;
+  height: 14px;
+  background: rgba(30, 41, 59, 0.85);
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid rgba(239, 68, 68, 0.5);
+}
+
+.colossal-boss-fill {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #ef4444, #dc2626);
+  transition: width 0.15s ease-out;
+}
+
+.bar-notch {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: rgba(15, 23, 42, 0.85);
+}
+.notch-1 { left: 33.3%; }
+.notch-2 { left: 66.6%; }
+
+.colossal-boss-sub {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px;
+  font-size: 0.75rem;
+  color: #94a3b8;
+  font-family: monospace;
+}
+
+/* Mothership Command Bridge Modal [F4] */
+.bridge-card {
+  max-width: 950px;
+  width: 92%;
+  border: 2px solid #38bdf8;
+  box-shadow: 0 0 50px rgba(56, 189, 248, 0.35);
+  background: linear-gradient(180deg, rgba(8, 14, 26, 0.96), rgba(3, 7, 18, 0.98));
+}
+
+.bridge-holo-globe {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  margin: 0 auto 20px auto;
+  border-radius: 50%;
+  border: 1px dashed rgba(56, 189, 248, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 0 30px rgba(56, 189, 248, 0.25);
+}
+
+.globe-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid #38bdf8;
+}
+
+.ring-1 {
+  width: 140px;
+  height: 140px;
+  animation: globeRotate 8s linear infinite;
+}
+
+.ring-2 {
+  width: 100px;
+  height: 100px;
+  border-style: dotted;
+  animation: globeRotateReverse 6s linear infinite;
+}
+
+@keyframes globeRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes globeRotateReverse {
+  0% { transform: rotate(360deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.globe-label {
+  position: absolute;
+  bottom: -22px;
+  font-size: 0.75rem;
+  font-weight: 900;
+  color: #7dd3fc;
+  letter-spacing: 1.5px;
+  white-space: nowrap;
+}
+
+.bridge-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin-top: 25px;
+}
+
+.bridge-action-card {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.bridge-action-card:hover {
+  transform: translateY(-3px);
+  border-color: #38bdf8;
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+}
+
+.bridge-icon {
+  font-size: 2.2rem;
+  margin-bottom: 8px;
+}
+
+.bridge-action-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #f8fafc;
+  margin-bottom: 6px;
+  letter-spacing: 1px;
+}
+
+.bridge-action-desc {
+  font-size: 0.82rem;
+  color: #94a3b8;
+  margin-bottom: 14px;
+  flex-grow: 1;
+}
+
+.btn-bridge {
+  background: linear-gradient(135deg, #0284c7, #0369a1);
+  color: #ffffff;
+  font-weight: 900;
+  padding: 9px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.btn-bridge:hover {
+  filter: brightness(1.2);
+  transform: scale(1.02);
+}
+
+/* === CHANTIER 1 & ELENA QA (v53.0): 1987 WRIST COMPUTER NUKE KEYPAD STYLES === */
+.nuke-wrist-panel {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(15, 5, 5, 0.94);
+  border: 3px solid #dc2626;
+  border-radius: 12px;
+  box-shadow: 0 0 45px rgba(220, 38, 38, 0.8), inset 0 0 25px rgba(185, 28, 28, 0.4);
+  padding: 24px 32px;
+  width: 480px;
+  max-width: 90vw;
+  text-align: center;
+  z-index: 250;
+  backdrop-filter: blur(8px);
+}
+
+.wrist-casing-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.wrist-led.pulse-red {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ff0000;
+  box-shadow: 0 0 12px #ff0000;
+  animation: led-blink 0.4s infinite alternate;
+}
+
+@keyframes led-blink {
+  from { opacity: 0.3; transform: scale(0.85); }
+  to { opacity: 1.0; transform: scale(1.2); }
+}
+
+.wrist-title {
+  color: #f87171;
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.nuke-lcd-display {
+  background: #110505;
+  border: 2px solid #991b1b;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 20px;
+  box-shadow: inset 0 0 15px rgba(239, 68, 68, 0.3);
+}
+
+.lcd-glyph-track {
+  font-size: 2.2rem;
+  letter-spacing: 12px;
+  color: #ef4444;
+  text-shadow: 0 0 14px #ef4444;
+  margin-bottom: 8px;
+  font-weight: 900;
+}
+
+.nuke-timer {
+  font-size: 3.8rem;
+  font-weight: 900;
+  color: #ff2222;
+  text-shadow: 0 0 20px #ff0000;
+  line-height: 1;
+  margin-bottom: 6px;
+  font-family: monospace;
+}
+
+.nuke-status-bar {
+  font-size: 0.75rem;
+  color: #fca5a5;
+  letter-spacing: 1.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.wrist-keypad-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.wrist-key {
+  background: linear-gradient(180deg, #2a0e0e, #1a0505);
+  border: 2px solid #ef4444;
+  border-radius: 8px;
+  color: #fca5a5;
+  font-size: 1.6rem;
+  padding: 12px 0;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+  transition: all 0.15s ease;
+}
+
+.wrist-key:hover {
+  background: #dc2626;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 0 18px #ef4444;
+}
+
+.wrist-key:active {
+  transform: translateY(1px);
+}
+
+.btn-abort-nuke {
+  background: rgba(185, 28, 28, 0.25);
+  border: 1px solid #ef4444;
+  color: #fca5a5;
+  padding: 8px 18px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  letter-spacing: 1.5px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.btn-abort-nuke:hover {
+  background: #dc2626;
+  color: #ffffff;
+}
+
+/* === CHANTIER 5 & MARC UI QA (v54.0): Yautja Biometric ECG Holoscan & Z-01 Embryo Monitor === */
+.wrist-ecg-card {
+  margin-top: 8px;
+  background: rgba(10, 18, 28, 0.88);
+  border: 1px solid rgba(0, 229, 255, 0.45);
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.25);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-family: 'Share Tech Mono', monospace, sans-serif;
+  letter-spacing: 1px;
+}
+
+.ecg-row-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.76rem;
+  color: #a5f3fc;
+}
+
+.ecg-bpm {
+  color: #38bdf8;
+  font-weight: 900;
+  text-shadow: 0 0 6px #0284c7;
+}
+
+.badge-unblooded {
+  margin-left: auto;
+  background: rgba(100, 116, 139, 0.4);
+  border: 1px solid #94a3b8;
+  color: #cbd5e1;
+  font-size: 0.65rem;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-weight: 800;
+}
+
+.badge-blooded {
+  margin-left: auto;
+  background: rgba(34, 197, 94, 0.25);
+  border: 1px solid #22c55e;
+  color: #4ade80;
+  font-size: 0.65rem;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-weight: 900;
+  text-shadow: 0 0 8px #22c55e;
+  animation: pulse-blooded 2s infinite ease-in-out;
+}
+
+@keyframes pulse-blooded {
+  0%, 100% { box-shadow: 0 0 6px rgba(34, 197, 94, 0.4); }
+  50% { box-shadow: 0 0 16px rgba(34, 197, 94, 0.9); }
+}
+
+.ecg-status-row {
+  margin-top: 4px;
+  font-size: 0.70rem;
+}
+
+.embryo-clean {
+  color: #22c55e;
+  font-weight: 700;
+}
+
+.embryo-warning {
+  color: #ef4444;
+  font-weight: 900;
+  text-shadow: 0 0 8px #ef4444;
+  animation: blink-warning 0.8s infinite alternate;
+}
+
+@keyframes blink-warning {
+  from { opacity: 0.4; }
+  to { opacity: 1.0; }
+}
+
+/* v54.0 Ability Slots */
+#slot-smart-disc-multi .slot-key {
+  border-color: #38bdf8;
+  color: #38bdf8;
+}
+#slot-smart-disc-multi .slot-label {
+  color: #bae6fd;
+}
+
+#slot-burner-cannon .slot-key {
+  border-color: #f97316;
+  color: #fb923c;
+}
+#slot-burner-cannon .slot-label {
+  color: #fed7aa;
+}
+
+/* === CHANTIER 6 & MARC QA (v55.0): Sniper Plasma Tri-Laser Focus Reticle === */
+.sniper-tri-laser-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 260px;
+  height: 260px;
+  pointer-events: none;
+  z-index: 120;
+}
+
+.sniper-tri-crosshair {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.sniper-bracket {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border: 2px solid rgba(239, 68, 68, 0.7);
+}
+.bracket-tl { top: 0; left: 0; border-right: none; border-bottom: none; }
+.bracket-tr { top: 0; right: 0; border-left: none; border-bottom: none; }
+.bracket-bl { bottom: 0; left: 0; border-right: none; border-top: none; }
+.bracket-br { bottom: 0; right: 0; border-left: none; border-top: none; }
+
+.sniper-dot {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: #ff1100;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #ff1100, 0 0 20px #ef4444;
+  animation: pulse-tri-dot 1.2s infinite ease-in-out;
+}
+.dot-top { top: 38px; left: 127px; }
+.dot-left { top: 172px; left: 58px; }
+.dot-right { top: 172px; right: 58px; }
+
+@keyframes pulse-tri-dot {
+  0%, 100% { transform: scale(1.0); opacity: 0.8; }
+  50% { transform: scale(1.4); opacity: 1.0; }
+}
+
+.sniper-center-diamond {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(45deg);
+  width: 14px;
+  height: 14px;
+  border: 2px solid #ef4444;
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.9);
+}
+
+.sniper-telemetry-readout {
+  position: absolute;
+  bottom: -28px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 1.5px;
+  color: #fca5a5;
+  text-shadow: 0 0 8px #ef4444;
+  white-space: nowrap;
+}
+
+#slot-sniper-mode .slot-key {
+  border-color: #ef4444;
+  color: #f87171;
+}
+#slot-sniper-mode .slot-label {
+  color: #fecaca;
+}
+
+/* === CHANTIER 7 & MARC QA (v56.0): Verticality Telemetry & Hunting Bough Altitude HUD === */
+.wrist-verticality-card {
+  margin-top: 6px;
+  background: rgba(15, 23, 42, 0.88);
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.25);
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-family: 'Share Tech Mono', monospace, sans-serif;
+  font-size: 0.74rem;
+  letter-spacing: 1px;
+  color: #94a3b8;
+  text-shadow: 0 0 6px rgba(56, 189, 248, 0.5);
+  transition: all 0.25s ease-in-out;
+}
+
+
+
+
+
+
+

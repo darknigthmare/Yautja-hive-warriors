@@ -25,11 +25,43 @@ export class FalconDrone {
     this.diveTimer = 0;
     this.fireCooldown = 0;
 
+    this.paintedTarget = null;
+    this.paintTimer = 0;
+    this.paintScanCooldown = 0;
+    this.paintBeam = null;
+    this.paintReticle = null;
+
     this.buildDroneMesh();
   }
 
   buildDroneMesh() {
     this.mesh = new THREE.Group();
+
+    // Tactical Target Painting Recon Laser (Falconer Predator Lore - Predators 2010)
+    const beamGeo = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(0, 0, 0),
+      new THREE.Vector3(0, -10, 0)
+    ]);
+    const beamMat = new THREE.LineBasicMaterial({
+      color: 0x00d2ff,
+      transparent: true,
+      opacity: 0.85
+    });
+    this.paintBeam = new THREE.Line(beamGeo, beamMat);
+    this.paintBeam.visible = false;
+    this.scene.add(this.paintBeam);
+
+    const reticleGeo = new THREE.RingGeometry(0.85, 1.1, 16);
+    reticleGeo.rotateX(-Math.PI / 2);
+    const reticleMat = new THREE.MeshBasicMaterial({
+      color: 0x00d2ff,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0.85
+    });
+    this.paintReticle = new THREE.Mesh(reticleGeo, reticleMat);
+    this.paintReticle.visible = false;
+    this.scene.add(this.paintReticle);
 
     const titaniumMat = new THREE.MeshStandardMaterial({
       color: 0x1e293b,
@@ -197,24 +229,97 @@ export class FalconDrone {
       ).normalize();
       this.mesh.lookAt(this.mesh.position.clone().add(forwardDir));
 
-      // Scan for potential dive targets
-      if (horde && horde.aliens && horde.aliens.length > 0 && this.fireCooldown <= 0) {
-        let nearestAlien = null;
-        let nearestDist = 35.0;
-        horde.aliens.forEach(a => {
-          if (a && a.mesh && a.hp > 0) {
-            const d = a.mesh.position.distanceTo(playerPos);
-            if (d < nearestDist) {
-              nearestDist = d;
-              nearestAlien = a;
-            }
-          }
-        });
+      // Scan for priority targets to mark with recon painting laser
+      this.paintScanCooldown -= delta;
+      if (horde && horde.aliens && horde.aliens.length > 0) {
+        if (!this.paintedTarget && this.paintScanCooldown <= 0) {
+          this.paintScanCooldown = 2.5;
+          let bestTarget = null;
+          let bestPriority = -1;
 
-        if (nearestAlien && Math.random() < 0.6) {
-          this.initiateDive(nearestAlien);
+          horde.aliens.forEach(a => {
+            if (a && a.mesh && a.hp > 0) {
+              const d = a.mesh.position.distanceTo(playerPos);
+              if (d < 30.0) {
+                const priority = (a.isOfficer ? 100 : 0) + (a.hp > 200 ? 50 : 10) - d;
+                if (priority > bestPriority) {
+                  bestPriority = priority;
+                  bestTarget = a;
+                }
+              }
+            }
+          });
+
+          if (bestTarget) {
+            this.paintTarget(bestTarget);
+          }
+        }
+
+        // Scan for potential dive targets
+        if (this.fireCooldown <= 0) {
+          let nearestAlien = null;
+          let nearestDist = 35.0;
+          horde.aliens.forEach(a => {
+            if (a && a.mesh && a.hp > 0) {
+              const d = a.mesh.position.distanceTo(playerPos);
+              if (d < nearestDist) {
+                nearestDist = d;
+                nearestAlien = a;
+              }
+            }
+          });
+
+          if (nearestAlien && Math.random() < 0.6) {
+            this.initiateDive(nearestAlien);
+          }
         }
       }
+    }
+
+    // Update Real-Time Target Painting Laser Beam & Reticle
+    if (this.paintedTarget && this.paintedTarget.mesh && this.paintedTarget.hp > 0) {
+      this.paintTimer -= delta;
+      if (this.paintTimer > 0) {
+        const droneBeak = this.mesh.position.clone();
+        const targetCenter = this.paintedTarget.mesh.position.clone().add(new THREE.Vector3(0, 1.2, 0));
+
+        if (this.paintBeam) {
+          this.paintBeam.visible = true;
+          const posAttr = this.paintBeam.geometry.attributes.position;
+          posAttr.setXYZ(0, droneBeak.x, droneBeak.y, droneBeak.z);
+          posAttr.setXYZ(1, targetCenter.x, targetCenter.y, targetCenter.z);
+          posAttr.needsUpdate = true;
+        }
+
+        if (this.paintReticle) {
+          this.paintReticle.visible = true;
+          this.paintReticle.position.copy(this.paintedTarget.mesh.position);
+          this.paintReticle.position.y = 0.08;
+          this.paintReticle.rotation.z += 4.5 * delta;
+        }
+
+        this.paintedTarget.isTargetPainted = true;
+      } else {
+        this.clearPaintedTarget();
+      }
+    } else {
+      this.clearPaintedTarget();
+    }
+  }
+
+  paintTarget(target) {
+    if (!target || !target.mesh) return;
+    this.paintedTarget = target;
+    this.paintTimer = 4.5;
+    target.isTargetPainted = true;
+  }
+
+  clearPaintedTarget() {
+    if (this.paintBeam) this.paintBeam.visible = false;
+    if (this.paintReticle) this.paintReticle.visible = false;
+    if (this.paintedTarget) {
+      this.paintedTarget.isTargetPainted = false;
+      this.paintedTarget = null;
     }
   }
 
@@ -222,6 +327,7 @@ export class FalconDrone {
     this.isDiving = true;
     this.diveTarget = target;
     this.diveTimer = 2.0;
+    this.paintTarget(target);
     this.audioEngine.playFalconDiveScreech();
   }
 
@@ -234,7 +340,8 @@ export class FalconDrone {
     }
 
     if (target && target.mesh) {
-      target.hp -= 150;
+      const dmg = target.isTargetPainted ? 200 : 150;
+      target.hp -= dmg;
       if (this.particles) {
         this.particles.emitSparks(target.mesh.position, 15);
       }
@@ -259,5 +366,6 @@ export class FalconDrone {
     this.mesh.visible = false;
     this.isDiving = false;
     this.diveTarget = null;
+    this.clearPaintedTarget();
   }
 }

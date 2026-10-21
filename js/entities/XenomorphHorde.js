@@ -13,6 +13,7 @@ export class XenomorphHorde {
     this.acidPools = [];
     this.acidSplashes = [];
     this.zeroGAcidGlobules = [];
+    this.spitterMortars = [];
     this.deadCount = 0;
 
     this.acidSplashMat = new THREE.MeshBasicMaterial({ color: 0x39ff14 });
@@ -30,6 +31,47 @@ export class XenomorphHorde {
     this.crusherMat = new THREE.MeshStandardMaterial({ color: 0x151b24, roughness: 0.2, metalness: 0.9 });
     this.praetorianMat = new THREE.MeshStandardMaterial({ color: 0x0f141c, roughness: 0.3, metalness: 0.85 });
     this.officerMat = new THREE.MeshStandardMaterial({ color: 0x220505, roughness: 0.15, metalness: 0.95 });
+    // Marvel Comics Canon Materials (v44.0)
+    this.alphaMat = new THREE.MeshStandardMaterial({ color: 0xd9e2ec, roughness: 0.12, metalness: 0.95 }); // Epsilon Apex Silver Carapace
+    this.cryoMat = new THREE.MeshStandardMaterial({ color: 0x93c5fd, roughness: 0.1, metalness: 0.65, transparent: true, opacity: 0.88 }); // Sub-Zero LV-695 Translucent Ice Chitin
+    this.cyberMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.25, metalness: 0.98 }); // Steel Team Weyland-Yutani Titanium Cyber Plating
+    this.microSwarmMat = new THREE.MeshBasicMaterial({ color: 0x0f172a }); // Midge Micro-Xenomorph Chitin
+
+    // Chantier 7 (v46): Chameleon Stalker Optical Cloak Materials (Aliens: Rogue)
+    this.chameleonMat = new THREE.MeshStandardMaterial({
+      color: 0x0f172a,
+      roughness: 0.05,
+      metalness: 0.95,
+      transparent: true,
+      opacity: 0.18
+    });
+    this.chameleonRevealedMat = new THREE.MeshStandardMaterial({
+      color: 0x0284c7,
+      emissive: 0x00f2fe,
+      roughness: 0.2,
+      metalness: 0.8
+    });
+
+    // Chantier 4 & 7 (v47): The Deacon Titan & Flying Manta Swarmer Materials (Prometheus & Marvel/Kenner)
+    this.deaconMat = new THREE.MeshStandardMaterial({ color: 0x1e3a8a, roughness: 0.22, metalness: 0.88 });
+    this.mantaMat = new THREE.MeshStandardMaterial({ color: 0x1e152a, roughness: 0.35, metalness: 0.8 });
+    this.mantaWingMat = new THREE.MeshStandardMaterial({ color: 0x2e1065, roughness: 0.45, metalness: 0.6, transparent: true, opacity: 0.88, side: THREE.DoubleSide });
+
+    // Chantier 6 (v48): The King Alien / Rogue Titan Material (Aliens: Rogue / Kenner Canon 1:1)
+    this.rogueKingMat = new THREE.MeshStandardMaterial({ color: 0x3b0711, roughness: 0.18, metalness: 0.92 });
+
+    // Chantier 2 & 6 (v49): Xenomorph Raven (Obsidian Carapace) & Ancient Predalien Elder (Primal Hunt Fossilized Chitin)
+    this.ravenMat = new THREE.MeshStandardMaterial({ color: 0x090d16, roughness: 0.08, metalness: 0.98 });
+    this.ancientPredalienMat = new THREE.MeshStandardMaterial({ color: 0x9c8f7a, roughness: 0.38, metalness: 0.65 });
+    // Chantier 5 (v50): Gestating Alpha Hive Matriarch & Ovipositor Material (Aliens 1986 / Infestation)
+    this.gestatingMatriarchMat = new THREE.MeshStandardMaterial({ color: 0x080c14, roughness: 0.12, metalness: 0.96 });
+    this.ovipositorMat = new THREE.MeshStandardMaterial({ color: 0x78350f, emissive: 0x9a3412, emissiveIntensity: 0.45, roughness: 0.3, transparent: true, opacity: 0.85 });
+
+    this.microSwarms = [];
+    this.cyberSpineDarts = [];
+    this.royalFacehuggers = [];
+    this.mantaSwarmers = [];
+    this.biomechanicalEggs = [];
   }
 
   setGoreEngine(goreEngine) {
@@ -51,6 +93,42 @@ export class XenomorphHorde {
     // Spawn 1 Grid Alien Alpha (AVP 2004 Nethead)
     this.spawnGridAlien(playerPos);
 
+    // Marvel Comics Canon: Spawn 1 Marvel Alpha Apex Predator (Epsilon Apex 1:1)
+    this.spawnMarvelAlpha(playerPos);
+
+    // Marvel Comics Canon: Spawn 1 Airborne Micro-Xenomorph Swarm (Midge / Mosquito Cloud)
+    this.spawnMicroSwarm(playerPos);
+
+    // Chantier 4 (v45): Spawn 2 Royal Gliding Facehuggers in High Ambush Perches (Alien 3 / Isolation Lore)
+    this.spawnRoyalFacehugger(playerPos.clone().add(new THREE.Vector3(-18, 12, -16)), playerPos);
+    this.spawnRoyalFacehugger(playerPos.clone().add(new THREE.Vector3(18, 12, 16)), playerPos);
+
+    // Chantier 7 (v46): Spawn 2 Chameleon Stalker Xenomorphs with Active Camouflage (Aliens: Rogue)
+    this.spawnChameleonStalker(playerPos);
+    this.spawnChameleonStalker(playerPos);
+
+    // Chantier 4 (v47): Spawn 1 Deacon Titan (Prometheus 2012 Canon)
+    this.spawnDeaconTitan(playerPos);
+
+    // Chantier 7 (v47): Spawn 2 Flying Xenomorph Manta Swarmers (Aliens Arcade / Kenner / Marvel)
+    this.spawnMantaSwarmer(playerPos.clone().add(new THREE.Vector3(-20, 10, -20)), playerPos);
+    this.spawnMantaSwarmer(playerPos.clone().add(new THREE.Vector3(20, 10, 20)), playerPos);
+
+    // Chantier 2 & Sofia QA (v53.0): Spawn 1 Flying Praetorian Harpy (Aliens: Earth War / Capcom AvP Arcade)
+    this.spawnWingedPraetorianHarpy(playerPos.clone().add(new THREE.Vector3(22, 12, -22)));
+
+    // Chantier 6 (v48): Spawn 1 King Alien / Rogue Titan (Aliens: Rogue / Kenner 1:1 Canon)
+    this.spawnRogueKingTitan(playerPos);
+
+    // Chantier 2 (v49): Spawn 1 Xenomorph Raven / Praetorian Raven (Aliens: Colonial Marines / Fireteam Elite Canon 1:1)
+    this.spawnRavenXenomorph(playerPos);
+
+    // Chantier 6 (v49): Spawn 1 Ancient Predalien Elder (Aliens vs. Predator 2: Primal Hunt 2002 Canon 1:1)
+    this.spawnAncientPredalienElder(playerPos);
+
+    // Chantier 5 (v50): Spawn 1 Gestating Alpha Hive Matriarch with Live Ovipositor Egg Laying (Aliens 1986 / Infestation)
+    this.spawnGestatingMatriarch(playerPos);
+
     // Dynasty Warriors Musou: Spawn 2 Hive Spire Captains / Node Guards (Gardes de Nœud & Sentinelles du Couvoir)
     this.spawnHiveOfficer(playerPos, -22, 'SENTINELLE DU NŒUD PRIMAIRE (SPIRE GUARD)');
     this.spawnHiveOfficer(playerPos, 22, 'GARDE SANGUINAIRE DU COUVOIR ROYAL (HIVE CASTE OFFICER)');
@@ -58,14 +136,16 @@ export class XenomorphHorde {
     // Massive Musou Swarm Density: at least 45 to 80 aliens
     const totalCount = Math.max(count, 45);
     for (let i = 0; i < totalCount; i++) {
-      const isFacehugger = Math.random() < 0.16;
-      const isBoiler = !isFacehugger && Math.random() < 0.16;
-      const isNeomorph = !isFacehugger && !isBoiler && Math.random() < 0.16;
-      const isPraetomorph = !isFacehugger && !isBoiler && !isNeomorph && Math.random() < 0.18;
-      const isRedSwarm = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && Math.random() < 0.22;
-      const isSpitter = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && !isRedSwarm && Math.random() < 0.25;
-      const isRunner = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && !isRedSwarm && !isSpitter && Math.random() < 0.30;
-      const alien = this.createAlienMesh(isFacehugger, isBoiler, isNeomorph, isPraetomorph, isRedSwarm, isSpitter, isRunner);
+      const isFacehugger = Math.random() < 0.13;
+      const isBoiler = !isFacehugger && Math.random() < 0.13;
+      const isNeomorph = !isFacehugger && !isBoiler && Math.random() < 0.13;
+      const isPraetomorph = !isFacehugger && !isBoiler && !isNeomorph && Math.random() < 0.14;
+      const isRedSwarm = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && Math.random() < 0.16;
+      const isSpitter = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && !isRedSwarm && Math.random() < 0.17;
+      const isCryoXeno = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && !isRedSwarm && !isSpitter && Math.random() < 0.19;
+      const isCyberXeno = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && !isRedSwarm && !isSpitter && !isCryoXeno && Math.random() < 0.21;
+      const isRunner = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && !isRedSwarm && !isSpitter && !isCryoXeno && !isCyberXeno && Math.random() < 0.25;
+      const alien = this.createAlienMesh(isFacehugger, isBoiler, isNeomorph, isPraetomorph, isRedSwarm, isSpitter, isRunner, isCryoXeno, isCyberXeno);
 
       const angle = Math.random() * Math.PI * 2;
       const radius = 22 + Math.random() * 25;
@@ -75,12 +155,12 @@ export class XenomorphHorde {
         playerPos.z + Math.sin(angle) * radius
       );
 
-      const isWallStalker = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && !isRedSwarm && !isSpitter && !isRunner && Math.random() < 0.22;
+      const isWallStalker = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && !isRedSwarm && !isSpitter && !isRunner && !isCryoXeno && !isCyberXeno && Math.random() < 0.22;
       this.scene.add(alien);
-      const aType = isFacehugger ? 'facehugger' : (isBoiler ? 'boiler' : (isNeomorph ? 'neomorph' : (isPraetomorph ? 'praetomorph' : (isRedSwarm ? 'red_warrior' : (isSpitter ? 'spitter' : (isRunner ? 'runner' : 'warrior'))))));
-      const aHp = isFacehugger ? 40 : (isBoiler ? 80 : (isNeomorph ? 95 : (isPraetomorph ? 160 : (isRedSwarm ? 140 : (isSpitter ? 110 : (isRunner ? 85 : 120))))));
-      const aSpeed = isFacehugger ? 17 : (isBoiler ? 14 : (isNeomorph ? 19 : (isPraetomorph ? 16 : (isRedSwarm ? 15.5 : (isSpitter ? 12 : (isRunner ? 21.0 : 11))))));
-      const aDmg = isFacehugger ? 15 : (isBoiler ? 50 : (isNeomorph ? 35 : (isPraetomorph ? 42 : (isRedSwarm ? 34 : (isSpitter ? 30 : (isRunner ? 28 : 25))))));
+      const aType = isFacehugger ? 'facehugger' : (isBoiler ? 'boiler' : (isNeomorph ? 'neomorph' : (isPraetomorph ? 'praetomorph' : (isRedSwarm ? 'red_warrior' : (isSpitter ? 'spitter' : (isCryoXeno ? 'cryo_xeno' : (isCyberXeno ? 'cyber_xeno' : (isRunner ? 'runner' : 'warrior'))))))));
+      const aHp = isFacehugger ? 40 : (isBoiler ? 80 : (isNeomorph ? 95 : (isPraetomorph ? 160 : (isRedSwarm ? 140 : (isSpitter ? 110 : (isCryoXeno ? 175 : (isCyberXeno ? 220 : (isRunner ? 85 : 120))))))));
+      const aSpeed = isFacehugger ? 17 : (isBoiler ? 14 : (isNeomorph ? 19 : (isPraetomorph ? 16 : (isRedSwarm ? 15.5 : (isSpitter ? 12 : (isCryoXeno ? 14.5 : (isCyberXeno ? 13.0 : (isRunner ? 21.0 : 11))))))));
+      const aDmg = isFacehugger ? 15 : (isBoiler ? 50 : (isNeomorph ? 35 : (isPraetomorph ? 42 : (isRedSwarm ? 34 : (isSpitter ? 30 : (isCryoXeno ? 38 : (isCyberXeno ? 44 : (isRunner ? 28 : 25))))))));
 
       this.aliens.push({
         mesh: alien,
@@ -89,13 +169,17 @@ export class XenomorphHorde {
         maxHp: aHp,
         speed: aSpeed,
         damage: aDmg,
-        radius: isFacehugger ? 0.6 : (isNeomorph ? 0.9 : (isPraetomorph ? 1.3 : (isRunner ? 0.85 : 1.1))),
+        radius: isFacehugger ? 0.6 : (isNeomorph ? 0.9 : (isPraetomorph ? 1.3 : (isRunner ? 0.85 : 1.15))),
         isLatched: false,
         isWallStalker: isWallStalker,
         wallClimbPhase: isWallStalker ? 'climbing' : 'grounded',
         perchHeight: 8.0 + Math.random() * 4.0,
         leapCooldown: (isNeomorph || isPraetomorph) ? 2.0 + Math.random() * 2.0 : 0,
         spitCooldown: isSpitter ? 2.5 + Math.random() * 2.0 : 0,
+        frostBreathCooldown: isCryoXeno ? 3.5 + Math.random() * 2.0 : 0,
+        cyberDartCooldown: isCyberXeno ? 4.0 + Math.random() * 2.0 : 0,
+        isCryoImmune: isCryoXeno,
+        hasCyberPlating: isCyberXeno,
         isLeaping: false,
         leapVelY: 0,
         isAirborne: false,
@@ -103,6 +187,753 @@ export class XenomorphHorde {
         airborneVelHoriz: new THREE.Vector3()
       });
     }
+  }
+
+  /* Chantier 1: Marvel Alpha Xenomorph Apex Predator (Marvel Comics Alien 2021-2022 Canon 1:1) */
+  spawnMarvelAlpha(playerPos) {
+    const group = new THREE.Group();
+    const mat = this.alphaMat;
+    const barbMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.95, roughness: 0.1 });
+
+    // 3.8m Tall Stature
+    const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.65, 0.45, 2.6, 8), mat);
+    torso.position.y = 1.8;
+    group.add(torso);
+
+    // Elongated Barbed Dome Cranium
+    const head = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.5, 2.4, 8), mat);
+    head.rotation.x = Math.PI / 2;
+    head.position.set(0, 3.0, 0.8);
+    group.add(head);
+
+    // Barbed Cranial Crest Spines (Marvel Canon)
+    for (let b = 0; b < 6; b++) {
+      const barb = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.45, 4), barbMat);
+      barb.rotation.x = -Math.PI / 3;
+      barb.position.set((b % 2 === 0 ? -0.22 : 0.22), 3.3 + (b * 0.08), 0.2 - (b * 0.35));
+      group.add(barb);
+    }
+
+    // Glowing Crimson Sensory Slits
+    const redEyeMat = new THREE.MeshBasicMaterial({ color: 0xff0044 });
+    const eyeL = new THREE.Mesh(new THREE.SphereGeometry(0.07, 6, 6), redEyeMat);
+    eyeL.position.set(-0.24, 2.9, 1.6);
+    group.add(eyeL);
+    const eyeR = new THREE.Mesh(new THREE.SphereGeometry(0.07, 6, 6), redEyeMat);
+    eyeR.position.set(0.24, 2.9, 1.6);
+    group.add(eyeR);
+
+    // 4 Articulated Dorsal Razor Scythes (Organic Scythe Blades)
+    for (let s = 0; s < 4; s++) {
+      const scythe = new THREE.Mesh(new THREE.ConeGeometry(0.12, 1.9, 4), mat);
+      const isLeft = s % 2 === 0;
+      scythe.position.set(isLeft ? -0.55 : 0.55, 2.5 + (s > 1 ? 0.6 : 0), -0.4 - (s > 1 ? 0.3 : 0));
+      scythe.rotation.x = -Math.PI / 3.2;
+      scythe.rotation.z = isLeft ? -0.45 : 0.45;
+      group.add(scythe);
+    }
+
+    // Segmented Silver-Chitin Tail with Barbed Stinger
+    for (let t = 0; t < 6; t++) {
+      const tSeg = new THREE.Mesh(new THREE.CylinderGeometry(0.09 - t * 0.01, 0.07 - t * 0.01, 0.55, 6), mat);
+      tSeg.position.set(0, 1.1 - t * 0.14, -0.4 - t * 0.38);
+      tSeg.rotation.x = -0.5 + t * 0.1;
+      group.add(tSeg);
+    }
+    const alphaStinger = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.55, 4), barbMat);
+    alphaStinger.rotation.x = -Math.PI / 2;
+    alphaStinger.position.set(0, 0.5, -2.7);
+    group.add(alphaStinger);
+
+    group.position.set(playerPos.x - 18, 0, playerPos.z - 30);
+    this.scene.add(group);
+
+    this.aliens.push({
+      mesh: group,
+      type: 'marvel_alpha',
+      isMarvelAlpha: true,
+      isOfficer: true,
+      officerTitle: 'ALPHA APEX EPSILON (MARVEL CANON)',
+      hp: 1800,
+      maxHp: 1800,
+      speed: 15.0,
+      damage: 65,
+      radius: 2.3,
+      commandRoarCooldown: 5.0,
+      isStunned: false,
+      stunTimer: 0,
+      isBallisticArmored: true, // 50% ballistic armor
+      isAirborne: false,
+      airborneVelY: 0,
+      airborneVelHoriz: new THREE.Vector3()
+    });
+  }
+
+  /* Chantier 6 (v48): The King Alien / Rogue Titan (Aliens: Rogue / Kenner 1994 Canon 1:1) */
+  spawnRogueKingTitan(playerPos) {
+    const group = new THREE.Group();
+    const scale = 2.3;
+    const mat = this.rogueKingMat;
+    const hornMat = new THREE.MeshStandardMaterial({ color: 0x09090b, metalness: 0.95, roughness: 0.12 });
+    const veinMat = new THREE.MeshStandardMaterial({ color: 0xdc2626, emissive: 0x7f1d1d, roughness: 0.25 });
+
+    // Massive Muscular Torso
+    const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.75 * scale, 0.52 * scale, 2.5 * scale, 8), mat);
+    torso.position.y = 1.6 * scale;
+    group.add(torso);
+
+    // Jagged Royal Crown Cranium
+    const head = new THREE.Mesh(new THREE.BoxGeometry(0.85 * scale, 0.65 * scale, 2.4 * scale), mat);
+    head.position.set(0, 2.9 * scale, 0.5 * scale);
+    group.add(head);
+
+    // 5 Jagged Crimson-Black Royal Crown Horns (Aliens: Rogue King Silhouette)
+    for (let h = -2; h <= 2; h++) {
+      const horn = new THREE.Mesh(new THREE.ConeGeometry(0.28 * scale, 2.2 * scale, 5), hornMat);
+      horn.position.set(h * 0.42 * scale, 3.4 * scale + Math.cos(h * 0.5) * 0.25 * scale, -0.8 * scale);
+      horn.rotation.x = Math.PI / 2.6;
+      horn.rotation.z = -h * 0.22;
+      group.add(horn);
+    }
+
+    // Double Crusher Pincer Claws (Left & Right Heavy Forearms)
+    [-1, 1].forEach(side => {
+      const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.26 * scale, 0.18 * scale, 1.8 * scale, 6), mat);
+      arm.position.set(side * 1.15 * scale, 1.9 * scale, 0.5 * scale);
+      arm.rotation.z = side * 0.35;
+      arm.rotation.x = 0.45;
+      group.add(arm);
+
+      const pincerTop = new THREE.Mesh(new THREE.ConeGeometry(0.18 * scale, 0.95 * scale, 4), hornMat);
+      pincerTop.position.set(side * 1.45 * scale, 1.4 * scale, 1.1 * scale);
+      pincerTop.rotation.x = Math.PI / 2.2;
+      group.add(pincerTop);
+
+      const pincerBot = new THREE.Mesh(new THREE.ConeGeometry(0.15 * scale, 0.85 * scale, 4), veinMat);
+      pincerBot.position.set(side * 1.45 * scale, 1.15 * scale, 1.05 * scale);
+      pincerBot.rotation.x = Math.PI / 1.9;
+      group.add(pincerBot);
+    });
+
+    // Heavy Armored Tail with Royal Mace Stinger
+    for (let t = 0; t < 6; t++) {
+      const tSeg = new THREE.Mesh(new THREE.CylinderGeometry((0.16 - t * 0.015) * scale, (0.13 - t * 0.015) * scale, 0.55 * scale, 6), mat);
+      tSeg.position.set(0, (1.1 - t * 0.14) * scale, (-0.5 - t * 0.42) * scale);
+      tSeg.rotation.x = -0.45 + t * 0.08;
+      group.add(tSeg);
+    }
+
+    group.position.set(playerPos.x + 24, 0, playerPos.z - 28);
+    this.scene.add(group);
+
+    this.aliens.push({
+      mesh: group,
+      type: 'rogue_king',
+      isRogueKing: true,
+      isOfficer: true,
+      officerTitle: 'THE KING ALIEN / ROGUE TITAN (ALIENS: ROGUE)',
+      hp: 3200,
+      maxHp: 3200,
+      speed: 13.5,
+      damage: 85,
+      radius: 2.6,
+      kingRoarCooldown: 6.0,
+      isStunned: false,
+      stunTimer: 0,
+      isBallisticArmored: true,
+      isAirborne: false,
+      airborneVelY: 0,
+      airborneVelHoriz: new THREE.Vector3()
+    });
+  }
+
+  /* Chantier 2 (v49): Xenomorph Raven / Praetorian Raven (Aliens: Colonial Marines / Fireteam Elite Canon 1:1) */
+  spawnRavenXenomorph(playerPos) {
+    const group = new THREE.Group();
+    const scale = 2.1;
+    const mat = this.ravenMat;
+    const featherMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.95, roughness: 0.1, side: THREE.DoubleSide });
+    const eyeMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8 });
+
+    // Armored Obsidian Torso
+    const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.65 * scale, 0.45 * scale, 2.3 * scale, 8), mat);
+    torso.position.y = 1.55 * scale;
+    group.add(torso);
+
+    // Hooked Beak-Crest Cranium (Raven Silhouette)
+    const head = new THREE.Mesh(new THREE.ConeGeometry(0.55 * scale, 2.5 * scale, 6), mat);
+    head.rotation.x = -Math.PI / 2.1;
+    head.position.set(0, 2.8 * scale, 0.4 * scale);
+    group.add(head);
+
+    // Scarred Socket Eye (ACM Sewer Raven Battle Scar)
+    const scarEye = new THREE.Mesh(new THREE.SphereGeometry(0.09 * scale, 6, 6), eyeMat);
+    scarEye.position.set(-0.22 * scale, 2.85 * scale, 1.35 * scale);
+    group.add(scarEye);
+
+    // Feathered Chitinous Obsidian Wings (Left & Right)
+    [-1, 1].forEach(side => {
+      const wingGroup = new THREE.Group();
+      wingGroup.position.set(side * 0.65 * scale, 2.1 * scale, -0.2 * scale);
+      for (let f = 0; f < 5; f++) {
+        const blade = new THREE.Mesh(new THREE.BoxGeometry(1.4 * scale, 0.14 * scale, 0.35 * scale), featherMat);
+        blade.position.set(side * (0.7 + f * 0.18) * scale, (0.3 - f * 0.22) * scale, -f * 0.12 * scale);
+        blade.rotation.z = side * (-0.25 + f * 0.14);
+        wingGroup.add(blade);
+      }
+      group.add(wingGroup);
+    });
+
+    // Scythe Talons
+    [-1, 1].forEach(side => {
+      const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.18 * scale, 0.12 * scale, 1.6 * scale, 6), mat);
+      arm.position.set(side * 0.95 * scale, 1.7 * scale, 0.55 * scale);
+      arm.rotation.x = 0.6;
+      group.add(arm);
+    });
+
+    group.position.set(playerPos.x - 24, 0, playerPos.z + 26);
+    this.scene.add(group);
+
+    this.aliens.push({
+      mesh: group,
+      type: 'xeno_raven',
+      isRaven: true,
+      isOfficer: true,
+      officerTitle: 'XENOMORPH RAVEN OBSIDIAN (COLONIAL MARINES)',
+      hp: 2400,
+      maxHp: 2400,
+      speed: 15.2,
+      damage: 72,
+      radius: 2.2,
+      ravenShriekCooldown: 5.5,
+      isFrontalShielded: true, // Deflects 85% frontal ranged attacks until shattered by Maul or flanked
+      isBallisticArmored: true,
+      isStunned: false,
+      stunTimer: 0,
+      isAirborne: false,
+      airborneVelY: 0,
+      airborneVelHoriz: new THREE.Vector3()
+    });
+  }
+
+  /* Chantier 6 (v49): Ancient Predalien Elder (Aliens vs. Predator 2: Primal Hunt 2002 Canon 1:1) */
+  spawnAncientPredalienElder(playerPos) {
+    const group = new THREE.Group();
+    const scale = 2.25;
+    const mat = this.ancientPredalienMat;
+    const relicMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, metalness: 0.95, roughness: 0.15 });
+    const mandibleMat = new THREE.MeshStandardMaterial({ color: 0x78350f, roughness: 0.45 });
+
+    // Calcified Fossilized Torso
+    const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.72 * scale, 0.5 * scale, 2.4 * scale, 8), mat);
+    torso.position.y = 1.6 * scale;
+    group.add(torso);
+
+    // Elder Crown Cranium
+    const head = new THREE.Mesh(new THREE.BoxGeometry(0.82 * scale, 0.65 * scale, 2.3 * scale), mat);
+    head.position.set(0, 2.85 * scale, 0.45 * scale);
+    group.add(head);
+
+    // 4 Ancient Calcified Yautja Mandibles
+    [[-0.45, 2.75], [0.45, 2.75], [-0.38, 2.5], [0.38, 2.5]].forEach(([mx, my]) => {
+      const mand = new THREE.Mesh(new THREE.ConeGeometry(0.14 * scale, 0.75 * scale, 5), mandibleMat);
+      mand.position.set(mx * scale, my * scale, 1.55 * scale);
+      mand.rotation.x = 0.35;
+      mand.rotation.z = mx < 0 ? -0.45 : 0.45;
+      group.add(mand);
+    });
+
+    // 6 Elder Dreadlocks with Golden Clan Relics (Primal Hunt Sarcophagus Guardian)
+    for (let d = -3; d <= 3; d++) {
+      if (d === 0) continue;
+      const dread = new THREE.Mesh(new THREE.CylinderGeometry(0.07 * scale, 0.04 * scale, 2.1 * scale, 6), mandibleMat);
+      dread.position.set(d * 0.24 * scale, 2.65 * scale, -0.75 * scale);
+      dread.rotation.x = -0.5;
+      group.add(dread);
+
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(0.08 * scale, 0.02 * scale, 4, 8), relicMat);
+      ring.position.set(d * 0.24 * scale, 2.55 * scale, -0.75 * scale);
+      group.add(ring);
+    }
+
+    group.position.set(playerPos.x + 26, 0, playerPos.z + 24);
+    this.scene.add(group);
+
+    this.aliens.push({
+      mesh: group,
+      type: 'ancient_predalien',
+      isAncientPredalien: true,
+      isOfficer: true,
+      officerTitle: 'ANCIENT PREDALIEN ELDER (AVP2: PRIMAL HUNT)',
+      hp: 3600,
+      maxHp: 3600,
+      speed: 13.8,
+      damage: 78,
+      radius: 2.4,
+      regenActive: true, // Regenerates +35 HP/s until cauterized by thermal/plasma
+      elderRoarCooldown: 7.0,
+      isBallisticArmored: true,
+      isStunned: false,
+      stunTimer: 0,
+      isAirborne: false,
+      airborneVelY: 0,
+      airborneVelHoriz: new THREE.Vector3()
+    });
+  }
+
+  /* === CHANTIER 5 (v50.0): Gestating Alpha Female Hive Matriarch Sub-Boss with Live Egg Laying (Aliens 1986 / Infestation) === */
+  spawnGestatingMatriarch(playerPos) {
+    const group = new THREE.Group();
+    const mat = this.gestatingMatriarchMat;
+    const oviMat = this.ovipositorMat;
+
+    // Muscular hunched carapace torso
+    const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.85, 0.65, 3.2, 8), mat);
+    torso.position.y = 2.4;
+    torso.rotation.x = 0.45;
+    group.add(torso);
+
+    // Fluted Royal Cranial Crest with crimson vein ridges
+    const crownGeo = new THREE.BoxGeometry(2.4, 0.5, 3.2);
+    const crown = new THREE.Mesh(crownGeo, mat);
+    crown.position.set(0, 3.8, -0.6);
+    crown.rotation.x = -0.35;
+    group.add(crown);
+
+    // Twin Barbed Scythe Claws
+    [-1.5, 1.5].forEach(ax => {
+      const scythe = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.22, 2.8, 6), mat);
+      scythe.position.set(ax, 2.6, 1.2);
+      scythe.rotation.x = Math.PI / 3;
+      scythe.rotation.z = ax > 0 ? -0.4 : 0.4;
+      group.add(scythe);
+    });
+
+    // Massive Pulsating Biomechanical Ovipositor Sac (3.8m long)
+    const ovi = new THREE.Mesh(new THREE.CylinderGeometry(0.9, 1.5, 3.8, 10), oviMat);
+    ovi.position.set(0, 1.4, -2.5);
+    ovi.rotation.x = -Math.PI / 4;
+    group.add(ovi);
+
+    // Spawn 28m away from player
+    const angle = Math.random() * Math.PI * 2;
+    group.position.set(
+      playerPos.x + Math.sin(angle) * 28.0,
+      0,
+      playerPos.z + Math.cos(angle) * 28.0
+    );
+    group.scale.set(2.4, 2.4, 2.4);
+
+    this.scene.add(group);
+    this.aliens.push({
+      mesh: group,
+      ovipositorMesh: ovi,
+      type: 'gestating_matriarch',
+      isGestatingMatriarch: true,
+      isOfficer: true,
+      officerTitle: 'MATRIARCHE GESTANTE DE LA RUCHE (ALIENS 1986)',
+      hp: 4200,
+      maxHp: 4200,
+      speed: 12.5,
+      damage: 85,
+      radius: 2.6,
+      eggLayCooldown: 6.5,
+      isBallisticArmored: true,
+      isStunned: false,
+      stunTimer: 0,
+      isAirborne: false,
+      airborneVelY: 0,
+      airborneVelHoriz: new THREE.Vector3()
+    });
+  }
+
+  spawnBiomechanicalEgg(pos) {
+    const eggGroup = new THREE.Group();
+    const eggMat = new THREE.MeshStandardMaterial({ color: 0x451a03, roughness: 0.6, metalness: 0.2 });
+    const petalMat = new THREE.MeshStandardMaterial({ color: 0x78350f, roughness: 0.4 });
+
+    const eggBase = new THREE.Mesh(new THREE.SphereGeometry(0.75, 8, 8), eggMat);
+    eggBase.scale.set(1.0, 1.4, 1.0);
+    eggBase.position.y = 0.9;
+    eggGroup.add(eggBase);
+
+    // 4 opening petals
+    for (let p = 0; p < 4; p++) {
+      const petal = new THREE.Mesh(new THREE.ConeGeometry(0.3, 0.8, 4), petalMat);
+      const pAngle = (p / 4) * Math.PI * 2;
+      petal.position.set(Math.sin(pAngle) * 0.45, 1.7, Math.cos(pAngle) * 0.45);
+      petal.rotation.x = Math.sin(pAngle) * 0.4;
+      petal.rotation.z = -Math.cos(pAngle) * 0.4;
+      eggGroup.add(petal);
+    }
+
+    eggGroup.position.copy(pos);
+    eggGroup.position.y = 0;
+    this.scene.add(eggGroup);
+
+    this.biomechanicalEggs.push({
+      mesh: eggGroup,
+      hp: 180,
+      hatchTimer: 4.0
+    });
+  }
+
+  /* Chantier 7 (v46): Chameleon Stalker Xenomorph with Active Camouflage (Aliens: Rogue Canon 1:1) */
+  spawnChameleonStalker(playerPos) {
+    const group = new THREE.Group();
+    const mat = this.chameleonMat;
+
+    // Torso (Agile predatory physique)
+    const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.22, 1.8, 8), mat);
+    torso.position.y = 1.2;
+    torso.rotation.x = 0.35;
+    group.add(torso);
+
+    // Elongated Sleek Translucent Cranial Dome
+    const head = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.32, 1.8, 8), mat);
+    head.rotation.x = Math.PI / 2;
+    head.position.set(0, 1.9, 0.5);
+    group.add(head);
+
+    // Barbed Dorsal Exhaust Tubes
+    [-0.2, 0.2].forEach(ox => {
+      const tube = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.08, 0.7, 6), mat);
+      tube.position.set(ox, 1.7, -0.2);
+      tube.rotation.x = -0.55;
+      group.add(tube);
+    });
+
+    // Articulated Chitinous Claws
+    [-0.5, 0.5].forEach(ox => {
+      const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.06, 1.1, 6), mat);
+      arm.position.set(ox, 1.3, 0.2);
+      arm.rotation.x = 0.45;
+      group.add(arm);
+    });
+
+    // Flexible Chitin Tail with Barbed Stalker Blade
+    for (let t = 0; t < 5; t++) {
+      const tSeg = new THREE.Mesh(new THREE.CylinderGeometry(0.07 - t * 0.01, 0.05 - t * 0.01, 0.45, 6), mat);
+      tSeg.position.set(0, 0.7 - t * 0.1, -0.3 - t * 0.3);
+      tSeg.rotation.x = -0.4;
+      group.add(tSeg);
+    }
+
+    const angle = Math.random() * Math.PI * 2;
+    const radius = 24 + Math.random() * 8;
+    group.position.set(
+      playerPos.x + Math.cos(angle) * radius,
+      0,
+      playerPos.z + Math.sin(angle) * radius
+    );
+    this.scene.add(group);
+
+    this.aliens.push({
+      mesh: group,
+      type: 'chameleon_stalker',
+      isChameleon: true,
+      hp: 420,
+      maxHp: 420,
+      speed: 13.5,
+      damage: 45,
+      radius: 1.6,
+      pounceCooldown: 3.5,
+      cloakFlickerTimer: 0,
+      flankAngle: (Math.random() - 0.5) * Math.PI,
+      isAirborne: false,
+      airborneVelY: 0,
+      airborneVelHoriz: new THREE.Vector3(),
+      isStunned: false,
+      stunTimer: 0
+    });
+  }
+
+  /* Chantier 4 (v47): The Deacon Titan (Prometheus 2012 Primordial Engineer Alien Canon) */
+  spawnDeaconTitan(playerPos) {
+    const group = new THREE.Group();
+    const deaconMat = this.deaconMat;
+    const teethMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.15, metalness: 0.1 });
+    const innerJawMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.3, metalness: 0.85 });
+
+    // 1. Torso & Muscular Primordial Spine
+    const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.65, 0.42, 2.6, 8), deaconMat);
+    torso.position.y = 1.6;
+    torso.rotation.x = 0.35;
+    group.add(torso);
+
+    // Dorsal rib ridges (No biomechanical tubes - smooth biological body)
+    for (let r = 0; r < 5; r++) {
+      const rib = new THREE.Mesh(new THREE.TorusGeometry(0.55 - r * 0.05, 0.08, 6, 12), deaconMat);
+      rib.rotation.x = Math.PI / 2;
+      rib.position.set(0, 1.3 + r * 0.25, -0.15 - r * 0.08);
+      rib.scale.set(1.1, 0.5, 0.9);
+      group.add(rib);
+    }
+
+    // 2. Pointed Conical Cranium (Prometheus 2012 1:1 Anatomy)
+    const head = new THREE.Mesh(new THREE.ConeGeometry(0.38, 2.4, 8), deaconMat);
+    head.rotation.x = Math.PI / 2 + 0.15;
+    head.position.set(0, 2.4, 0.7);
+    group.add(head);
+
+    // Humanoid outer mouth & decoupled pharyngeal inner jaw
+    const outerJaw = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.28, 0.65), deaconMat);
+    outerJaw.position.set(0, 2.05, 1.25);
+    group.add(outerJaw);
+
+    // Inner Pharyngeal Jaw with human-like white enamel teeth
+    const innerJaw = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.18, 0.85), innerJawMat);
+    innerJaw.position.set(0, 2.05, 1.55);
+    group.add(innerJaw);
+
+    // Humanoid teeth row
+    for (let t = -3; t <= 3; t++) {
+      const tooth = new THREE.Mesh(new THREE.BoxGeometry(0.028, 0.06, 0.035), teethMat);
+      tooth.position.set(t * 0.032, 2.12, 1.9);
+      group.add(tooth);
+
+      const toothLower = new THREE.Mesh(new THREE.BoxGeometry(0.028, 0.06, 0.035), teethMat);
+      toothLower.position.set(t * 0.032, 1.98, 1.9);
+      group.add(toothLower);
+    }
+
+    // 3. Quadrupedal Heavy Limbs
+    [-0.65, 0.65].forEach(side => {
+      const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.1, 2.2, 6), deaconMat);
+      arm.position.set(side, 1.3, 0.6);
+      arm.rotation.x = 0.45;
+      arm.rotation.z = side * 0.2;
+      group.add(arm);
+
+      const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.12, 2.4, 6), deaconMat);
+      leg.position.set(side * 0.9, 1.0, -0.6);
+      leg.rotation.x = -0.3;
+      group.add(leg);
+    });
+
+    const angle = Math.random() * Math.PI * 2;
+    const radius = 28 + Math.random() * 8;
+    group.position.set(
+      playerPos.x + Math.cos(angle) * radius,
+      0,
+      playerPos.z + Math.sin(angle) * radius
+    );
+    this.scene.add(group);
+
+    if (this.audioEngine && this.audioEngine.playDeaconJawHiss) {
+      this.audioEngine.playDeaconJawHiss();
+    }
+
+    this.aliens.push({
+      mesh: group,
+      type: 'deacon_titan',
+      isDeacon: true,
+      hp: 2400,
+      maxHp: 2400,
+      speed: 16.5,
+      damage: 65,
+      radius: 2.2,
+      chompCooldown: 2.5,
+      tackleCooldown: 4.5,
+      isStunned: false,
+      stunTimer: 0,
+      canBeTrophyHarvested: false,
+      isAirborne: false,
+      airborneVelY: 0
+    });
+  }
+
+  /* Chantier 7 (v47): Flying Xenomorph Manta Swarmer (Aliens Arcade / Kenner / Marvel Comics) */
+  spawnMantaSwarmer(spawnPos, targetPlayer = null) {
+    const group = new THREE.Group();
+    const bodyMat = this.mantaMat;
+    const wingMat = this.mantaWingMat;
+    const barbMat = new THREE.MeshStandardMaterial({ color: 0x9333ea, metalness: 0.9, roughness: 0.2 });
+
+    // 1. Sleek Aerodynamic Fuselage
+    const body = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.28, 2.2, 8), bodyMat);
+    body.rotation.x = Math.PI / 2;
+    body.position.y = 0;
+    group.add(body);
+
+    // Pointed cranial aerodynamic snout
+    const head = new THREE.Mesh(new THREE.ConeGeometry(0.22, 1.1, 6), bodyMat);
+    head.rotation.x = -Math.PI / 2;
+    head.position.set(0, 0, 1.4);
+    group.add(head);
+
+    // 2. Wide Aerodynamic Manta Bat-Wings (Span ~ 4.6m)
+    const wingL = new THREE.Mesh(new THREE.PlaneGeometry(2.3, 1.4), wingMat);
+    wingL.rotation.x = -Math.PI / 2;
+    wingL.position.set(-1.3, 0.05, 0);
+    group.add(wingL);
+
+    const wingR = new THREE.Mesh(new THREE.PlaneGeometry(2.3, 1.4), wingMat);
+    wingR.rotation.x = -Math.PI / 2;
+    wingR.position.set(1.3, 0.05, 0);
+    group.add(wingR);
+
+    // 3. Serrated Whip Stinger Tail
+    for (let t = 0; t < 5; t++) {
+      const seg = new THREE.Mesh(new THREE.CylinderGeometry(0.06 - t * 0.01, 0.04 - t * 0.01, 0.5, 5), bodyMat);
+      seg.position.set(0, -0.05 - t * 0.04, -1.2 - t * 0.4);
+      seg.rotation.x = 0.2;
+      group.add(seg);
+    }
+    const stinger = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.45, 4), barbMat);
+    stinger.position.set(0, -0.25, -3.2);
+    stinger.rotation.x = Math.PI / 2;
+    group.add(stinger);
+
+    group.userData.wingL = wingL;
+    group.userData.wingR = wingR;
+
+    group.position.copy(spawnPos);
+    this.scene.add(group);
+
+    if (this.audioEngine && this.audioEngine.playMantaDiveScreech) {
+      this.audioEngine.playMantaDiveScreech();
+    }
+
+    this.mantaSwarmers.push({
+      mesh: group,
+      hp: 320,
+      maxHp: 320,
+      speed: 15.0,
+      diveSpeed: 26.0,
+      damage: 65,
+      divePhase: 'cruising',
+      cruiseAltitude: 8.5 + Math.random() * 3.5,
+      diveCooldown: 3.5 + Math.random() * 2.5,
+      diveTarget: new THREE.Vector3(),
+      flutterPhase: Math.random() * Math.PI * 2
+    });
+  }
+
+  /* === CHANTIER 2 & SOFIA QA (v53.0): Flying Praetorian Harpy (Aliens: Earth War / Capcom AvP Arcade) === */
+  spawnWingedPraetorianHarpy(spawnPos) {
+    const group = new THREE.Group();
+    const bodyMat = new THREE.MeshStandardMaterial({ color: 0x1f1635, roughness: 0.22, metalness: 0.92 });
+    const wingMat = new THREE.MeshStandardMaterial({ color: 0x4c1d95, roughness: 0.45, metalness: 0.65, transparent: true, opacity: 0.85, side: THREE.DoubleSide });
+
+    // Armored Praetorian Flier Fuselage
+    const body = new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.48, 3.4, 8), bodyMat);
+    body.rotation.x = Math.PI / 2;
+    group.add(body);
+
+    // Flared Aerodynamic Cranial Crest
+    const crest = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.22, 1.5), bodyMat);
+    crest.position.set(0, 0.38, 1.3);
+    crest.rotation.x = -0.32;
+    group.add(crest);
+
+    // Quadruple Leathery Membrane Wings (Span ~ 6.2m)
+    const wingL = new THREE.Mesh(new THREE.PlaneGeometry(3.1, 1.8), wingMat);
+    wingL.rotation.x = -Math.PI / 2;
+    wingL.position.set(-1.8, 0.1, 0.2);
+    group.add(wingL);
+
+    const wingR = new THREE.Mesh(new THREE.PlaneGeometry(3.1, 1.8), wingMat);
+    wingR.rotation.x = -Math.PI / 2;
+    wingR.position.set(1.8, 0.1, 0.2);
+    group.add(wingR);
+
+    // Barbed Spined Tail
+    for (let t = 0; t < 6; t++) {
+      const seg = new THREE.Mesh(new THREE.CylinderGeometry(0.09 - t * 0.01, 0.06 - t * 0.01, 0.6, 6), bodyMat);
+      seg.position.set(0, -0.06 - t * 0.05, -1.8 - t * 0.5);
+      seg.rotation.x = 0.25;
+      group.add(seg);
+    }
+
+    group.userData.wingL = wingL;
+    group.userData.wingR = wingR;
+
+    group.position.copy(spawnPos);
+    this.scene.add(group);
+
+    if (this.audioEngine && this.audioEngine.playXenoWingFlapDive) {
+      this.audioEngine.playXenoWingFlapDive();
+    }
+
+    this.mantaSwarmers.push({
+      mesh: group,
+      hp: 1200,
+      maxHp: 1200,
+      isPraetorianHarpy: true,
+      speed: 13.0,
+      diveSpeed: 24.0,
+      damage: 120,
+      divePhase: 'cruising',
+      cruiseAltitude: 9.5,
+      diveCooldown: 4.0,
+      diveTarget: new THREE.Vector3(),
+      flutterPhase: 0
+    });
+  }
+
+  /* Chantier 2: Mosquito / Midge Micro-Xenomorph Swarm (Marvel Comics Alien: Thaw Canon 1:1) */
+  spawnMicroSwarm(playerPos) {
+    const swarmGroup = new THREE.Group();
+    const wingMat = new THREE.MeshBasicMaterial({ color: 0x94a3b8, transparent: true, opacity: 0.6, side: THREE.DoubleSide });
+    const microUnits = [];
+
+    // Cloud of 12 airborne winged micro-xenomorphs
+    for (let u = 0; u < 12; u++) {
+      const unitGroup = new THREE.Group();
+
+      // Micro thorax
+      const thorax = new THREE.Mesh(new THREE.SphereGeometry(0.12, 6, 6), this.microSwarmMat);
+      unitGroup.add(thorax);
+
+      // Barbed elongated cranium
+      const head = new THREE.Mesh(new THREE.ConeGeometry(0.07, 0.3, 5), this.microSwarmMat);
+      head.rotation.x = Math.PI / 2;
+      head.position.z = 0.18;
+      unitGroup.add(head);
+
+      // Translucent vibrating insectoid wings
+      const wingL = new THREE.Mesh(new THREE.PlaneGeometry(0.24, 0.12), wingMat);
+      wingL.position.set(-0.14, 0.08, 0);
+      wingL.rotation.y = 0.3;
+      unitGroup.add(wingL);
+
+      const wingR = new THREE.Mesh(new THREE.PlaneGeometry(0.24, 0.12), wingMat);
+      wingR.position.set(0.14, 0.08, 0);
+      wingR.rotation.y = -0.3;
+      unitGroup.add(wingR);
+
+      // Spread inside cloud sphere
+      const ang = (u / 12) * Math.PI * 2;
+      const r = 0.6 + (u % 3) * 0.45;
+      unitGroup.position.set(Math.cos(ang) * r, 0.2 + (u % 4) * 0.35, Math.sin(ang) * r);
+      swarmGroup.add(unitGroup);
+
+      microUnits.push({
+        group: unitGroup,
+        wingL,
+        wingR,
+        basePos: unitGroup.position.clone(),
+        flutterOffset: Math.random() * Math.PI * 2
+      });
+    }
+
+    swarmGroup.position.set(playerPos.x + 8, 2.0, playerPos.z + 8);
+    this.scene.add(swarmGroup);
+
+    this.microSwarms.push({
+      group: swarmGroup,
+      units: microUnits,
+      hp: 150,
+      maxHp: 150,
+      damage: 8,
+      orbitAngle: 0,
+      orbitRadius: 2.4,
+      orbitSpeed: 3.5,
+      buzzTimer: 0,
+      isDead: false
+    });
   }
 
   spawnHiveOfficer(playerPos, offsetX = 0, title = 'GARDE DE NŒUD KAINDE AMEDHA') {
@@ -214,6 +1045,68 @@ export class XenomorphHorde {
     });
   }
 
+  /* Chantier 4 (v45): Armored Winged Royal Facehugger Gliding Ambush (Alien 3 / Isolation Lore) */
+  spawnRoyalFacehugger(spawnPos, targetPlayer = null) {
+    const mesh = this.createAlienMesh(false, false, false, false, false, false, false, false, false, true);
+    mesh.position.copy(spawnPos);
+    this.scene.add(mesh);
+
+    if (this.audioEngine && this.audioEngine.playRoyalFacehuggerShriek) {
+      this.audioEngine.playRoyalFacehuggerShriek();
+    }
+
+    this.royalFacehuggers.push({
+      mesh,
+      hp: 140,
+      maxHp: 140,
+      isGliding: true,
+      glideSpeed: 15.0,
+      isLatched: false,
+      latchTimer: 5.0,
+      struggleCount: 0,
+      struggleMax: 8,
+      flutterPhase: 0
+    });
+  }
+
+  struggleRoyalFacehugger(player) {
+    for (let i = this.royalFacehuggers.length - 1; i >= 0; i--) {
+      const rf = this.royalFacehuggers[i];
+      if (rf.isLatched) {
+        rf.struggleCount++;
+        if (window.gameInstance && window.gameInstance.ui) {
+          window.gameInstance.ui.showAnnouncement(`⚠️ LUTTE CONTRE LE PARASITE ROYAL : [ESPACE] (${rf.struggleCount}/${rf.struggleMax}) !`);
+        }
+        if (this.audioEngine && this.audioEngine.playGauntletGrapple) {
+          this.audioEngine.playGauntletGrapple();
+        }
+
+        if (rf.struggleCount >= rf.struggleMax) {
+          if (this.goreEngine && this.goreEngine.spawnDismemberment) {
+            this.goreEngine.spawnDismemberment(rf.mesh.position, 'heavy');
+          }
+          this.spawnAcidPool(player.position);
+          this.scene.remove(rf.mesh);
+          this.royalFacehuggers.splice(i, 1);
+          player.isRoyalFacehuggerLatched = false;
+
+          if (this.audioEngine && this.audioEngine.playHeavySlamImpact) {
+            this.audioEngine.playHeavySlamImpact();
+          }
+          if (window.gameInstance) {
+            window.gameInstance.score += 350;
+            if (window.gameInstance.ui) {
+              window.gameInstance.ui.showAnnouncement('⚔️ PARASITE ROYAL ARRACHÉ DU BIO-MASQUE ET BROYÉ (+350 PTS) !');
+            }
+          }
+          return true;
+        }
+        return true;
+      }
+    }
+    return false;
+  }
+
   spawnGridAlien(playerPos) {
     const group = new THREE.Group();
     const xenoMat = new THREE.MeshStandardMaterial({ color: 0x0a0e14, roughness: 0.25, metalness: 0.85 });
@@ -270,18 +1163,35 @@ export class XenomorphHorde {
       const eggGroup = new THREE.Group();
       eggGroup.position.set(x, 0, z);
 
-      const base = new THREE.Mesh(new THREE.SphereGeometry(0.8, 10, 10), this.eggMat);
-      base.scale.set(0.9, 1.3, 0.9);
-      base.position.y = 0.9;
+      // Leathery veined egg sac base
+      const baseMat = new THREE.MeshStandardMaterial({
+        color: 0x332a1e,
+        roughness: 0.85,
+        metalness: 0.15
+      });
+      const base = new THREE.Mesh(new THREE.SphereGeometry(0.85, 12, 12), baseMat);
+      base.scale.set(0.95, 1.35, 0.95);
+      base.position.y = 1.0;
       eggGroup.add(base);
 
+      // Inner pulsating bioluminescent yolk core (Alien 1979 Kane's scan)
+      const yolkMat = new THREE.MeshBasicMaterial({
+        color: 0x84cc16,
+        transparent: true,
+        opacity: 0.85
+      });
+      const yolkCore = new THREE.Mesh(new THREE.SphereGeometry(0.42, 8, 8), yolkMat);
+      yolkCore.position.y = 1.25;
+      eggGroup.add(yolkCore);
+
       const petals = [];
+      const lipMat = new THREE.MeshStandardMaterial({ color: 0x5b232c, roughness: 0.45 });
       for (let p = 0; p < 4; p++) {
-        const petal = new THREE.Mesh(new THREE.ConeGeometry(0.3, 0.7, 5), this.eggPetalMat);
+        const petal = new THREE.Mesh(new THREE.ConeGeometry(0.32, 0.75, 6), lipMat);
         const petalAngle = (p / 4) * Math.PI * 2;
-        petal.position.set(Math.cos(petalAngle) * 0.35, 1.8, Math.sin(petalAngle) * 0.35);
-        petal.rotation.z = Math.cos(petalAngle) * 0.2;
-        petal.rotation.x = Math.sin(petalAngle) * 0.2;
+        petal.position.set(Math.cos(petalAngle) * 0.38, 1.95, Math.sin(petalAngle) * 0.38);
+        petal.rotation.z = Math.cos(petalAngle) * 0.22;
+        petal.rotation.x = Math.sin(petalAngle) * 0.22;
         eggGroup.add(petal);
         petals.push(petal);
       }
@@ -289,30 +1199,93 @@ export class XenomorphHorde {
       this.scene.add(eggGroup);
       this.eggs.push({
         mesh: eggGroup,
+        baseMesh: base,
+        yolkMesh: yolkCore,
         petals,
+        phase: Math.random() * Math.PI * 2,
         isOpen: false,
         hatched: false
       });
     }
   }
 
-  createAlienMesh(isFacehugger, isBoiler = false, isNeomorph = false, isPraetomorph = false, isRedSwarm = false, isSpitter = false, isRunner = false) {
+  createAlienMesh(isFacehugger, isBoiler = false, isNeomorph = false, isPraetomorph = false, isRedSwarm = false, isSpitter = false, isRunner = false, isCryoXeno = false, isCyberXeno = false, isRoyalFacehugger = false) {
     const group = new THREE.Group();
-    const xenoColor = isFacehugger ? 0x8a7355 : (isBoiler ? 0x243528 : (isNeomorph ? 0xf0ece1 : (isPraetomorph ? 0x14181f : (isRedSwarm ? 0xb81414 : (isSpitter ? 0x103a20 : (isRunner ? 0x7c4722 : 0x11161d))))));
+
+    if (isRoyalFacehugger) {
+      const royalMat = new THREE.MeshStandardMaterial({ color: 0x4a3820, roughness: 0.35, metalness: 0.85 });
+      const wingMat = new THREE.MeshStandardMaterial({ color: 0x78350f, roughness: 0.6, transparent: true, opacity: 0.82, side: THREE.DoubleSide });
+
+      // Armored Arachnid Body Sac
+      const body = new THREE.Mesh(new THREE.SphereGeometry(0.48, 8, 8), royalMat);
+      body.position.y = 0.35;
+      body.scale.set(1.3, 0.7, 1.5);
+      group.add(body);
+
+      // Chitinous carapace dorsal shield
+      const shield = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.15, 0.9), royalMat);
+      shield.position.set(0, 0.55, 0);
+      group.add(shield);
+
+      // 8 Articulated Knuckled Fingers
+      for (let f = 0; f < 8; f++) {
+        const side = f < 4 ? -1 : 1;
+        const idx = f % 4;
+        const finger = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.025, 0.85, 5), royalMat);
+        finger.position.set(side * (0.45 + idx * 0.1), 0.25, (idx - 1.5) * 0.28);
+        finger.rotation.z = side * 0.8;
+        finger.rotation.y = (idx - 1.5) * 0.22;
+        group.add(finger);
+      }
+
+      // Leathery Gliding Wing Membranes (Patagium connecting knuckle digits on both flanks)
+      [-1, 1].forEach(side => {
+        const patagium = new THREE.Mesh(new THREE.PlaneGeometry(1.2, 0.9), wingMat);
+        patagium.rotation.x = -Math.PI / 2;
+        patagium.rotation.z = side * 0.2;
+        patagium.position.set(side * 0.85, 0.22, 0);
+        group.add(patagium);
+      });
+
+      // Serrated Armored Tail
+      const tail = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.03, 1.6, 6), royalMat);
+      tail.position.set(0, 0.3, -0.85);
+      tail.rotation.x = -Math.PI / 3.2;
+      group.add(tail);
+      return group;
+    }
+
+    const xenoColor = isFacehugger ? 0x8a7355 : (isBoiler ? 0x243528 : (isNeomorph ? 0xf0ece1 : (isPraetomorph ? 0x14181f : (isRedSwarm ? 0xb81414 : (isSpitter ? 0x103a20 : (isCryoXeno ? 0x93c5fd : (isCyberXeno ? 0x334155 : (isRunner ? 0x7c4722 : 0x11161d))))))));
     const mat = new THREE.MeshStandardMaterial({
       color: xenoColor,
-      roughness: isNeomorph ? 0.2 : (isPraetomorph ? 0.15 : (isRedSwarm ? 0.25 : (isRunner ? 0.4 : 0.3))),
-      metalness: isNeomorph ? 0.05 : (isPraetomorph ? 0.95 : (isRedSwarm ? 0.82 : (isRunner ? 0.5 : 0.7)))
+      roughness: isNeomorph ? 0.2 : (isPraetomorph ? 0.15 : (isRedSwarm ? 0.25 : (isCryoXeno ? 0.1 : (isCyberXeno ? 0.25 : (isRunner ? 0.4 : 0.3))))),
+      metalness: isNeomorph ? 0.05 : (isPraetomorph ? 0.95 : (isRedSwarm ? 0.82 : (isCryoXeno ? 0.65 : (isCyberXeno ? 0.95 : (isRunner ? 0.5 : 0.7))))),
+      transparent: isCryoXeno,
+      opacity: isCryoXeno ? 0.88 : 1.0
     });
 
     if (isFacehugger) {
+      // Central Arachnid Sac Body
       const body = new THREE.Mesh(new THREE.SphereGeometry(0.35, 8, 8), mat);
-      body.position.y = 0.3;
+      body.position.y = 0.25;
+      body.scale.set(1.2, 0.6, 1.4);
       group.add(body);
 
-      const tail = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.02, 0.8, 6), mat);
-      tail.position.set(0, 0.3, -0.4);
-      tail.rotation.x = -Math.PI / 4;
+      // 8 Articulated Knuckled Arachnid Digits / Fingers (Alien 1979 1:1 Anatomy)
+      for (let f = 0; f < 8; f++) {
+        const side = f < 4 ? -1 : 1;
+        const idx = f % 4;
+        const finger = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.02, 0.65, 5), mat);
+        finger.position.set(side * (0.35 + idx * 0.08), 0.2, (idx - 1.5) * 0.22);
+        finger.rotation.z = side * 0.75;
+        finger.rotation.y = (idx - 1.5) * 0.2;
+        group.add(finger);
+      }
+
+      // Prehensile Strangling Whip Tail
+      const tail = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.02, 1.2, 6), mat);
+      tail.position.set(0, 0.25, -0.65);
+      tail.rotation.x = -Math.PI / 3.5;
       group.add(tail);
     } else if (isNeomorph) {
       // Alien: Covenant 2017 Canon Neomorph Bloodburster Anatomy
@@ -426,6 +1399,36 @@ export class XenomorphHorde {
           group.add(boil);
         }
       }
+
+      if (isCryoXeno) {
+        // Sub-zero frost crystal accretion clusters along head and shoulders (Marvel LV-695 Canon)
+        const iceSpikeMat = new THREE.MeshStandardMaterial({ color: 0xe0f2fe, roughness: 0.1, metalness: 0.75 });
+        for (let ic = 0; ic < 5; ic++) {
+          const iceSpike = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.4, 4), iceSpikeMat);
+          iceSpike.rotation.x = -Math.PI / 3.5;
+          iceSpike.position.set((ic % 2 === 0 ? -0.18 : 0.18), 1.95 + ic * 0.05, 0.4 - ic * 0.25);
+          group.add(iceSpike);
+        }
+      }
+
+      if (isCyberXeno) {
+        // Steel Team Weyland-Yutani cybernetic titanium jaw harness & targeting optic laser
+        const cyberPlateMat = new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.98, roughness: 0.2 });
+        const jawHarness = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.2, 0.35), cyberPlateMat);
+        jawHarness.position.set(0, 1.7, 0.9);
+        group.add(jawHarness);
+
+        // Optic targeting diode on head
+        const diodeMat = new THREE.MeshBasicMaterial({ color: 0xff0022 });
+        const diode = new THREE.Mesh(new THREE.SphereGeometry(0.05, 6, 6), diodeMat);
+        diode.position.set(0.12, 1.95, 0.95);
+        group.add(diode);
+
+        // Cybernetic back spine battery
+        const pack = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.5, 0.2), cyberPlateMat);
+        pack.position.set(0, 1.4, -0.4);
+        group.add(pack);
+      }
     }
 
     return group;
@@ -455,8 +1458,66 @@ export class XenomorphHorde {
       const dist = a.mesh.position.distanceTo(attack.origin);
 
       if (dist <= attack.radius + (a.radius || 1.0)) {
-        a.hp -= attack.damage;
+        // Chantier 7 (v43): Liquid Nitrogen Frozen 3x Critical Shatter
+        let damageDealt = (a.isTargetPainted || a.isTraxTagged) ? attack.damage * 1.25 : attack.damage;
+        if (a.isFrozen) {
+          damageDealt *= 3.0; // 3x shattering critical damage!
+          if (this.particles && this.particles.emitSparks) {
+            this.particles.emitSparks(a.mesh.position, 25);
+          }
+        }
+
+        // Crusher Titan Frontal Crest Ricochet & Heavy Armor (Aliens: Colonial Marines)
+        if (a.type === 'crusher' && attack.origin) {
+          const forward = new THREE.Vector3(Math.sin(a.mesh.rotation.y), 0, Math.cos(a.mesh.rotation.y));
+          const toAttack = attack.origin.clone().sub(a.mesh.position).setY(0).normalize();
+          const dot = forward.dot(toAttack);
+          if (dot > 0.25) {
+            // Massive cranial plate ricochet!
+            damageDealt *= 0.20;
+            if (this.audioEngine && this.audioEngine.playCrusherArmorRicochet) {
+              this.audioEngine.playCrusherArmorRicochet();
+            }
+            if (this.particles && this.particles.emitSparks) {
+              this.particles.emitSparks(a.mesh.position, 22);
+            }
+          }
+        }
+
+        // Chantier 5 (v43): Praetorian Royal Shield Phalanx Frontal Deflection
+        if (a.type === 'praetorian' && a.isPhalanxGuarding && attack.origin) {
+          const forward = new THREE.Vector3(Math.sin(a.mesh.rotation.y), 0, Math.cos(a.mesh.rotation.y));
+          const toAttack = attack.origin.clone().sub(a.mesh.position).setY(0).normalize();
+          const dot = forward.dot(toAttack);
+          if (dot > 0.3) {
+            // Hit directly on armored cranial crest: 85% deflection!
+            damageDealt *= 0.15;
+            if (this.particles && this.particles.emitSparks) {
+              this.particles.emitSparks(a.mesh.position, 18);
+            }
+          }
+        }
+
+        // Chantier 1 (v44): Marvel Alpha Epsilon Apex Ballistic Armor (-50% damage from light attacks)
+        if (a.isBallisticArmored && attack.type !== 'heavy' && attack.type !== 'plasma' && attack.type !== 'spine_rip') {
+          damageDealt *= 0.5;
+          if (this.particles && this.particles.emitSparks) {
+            this.particles.emitSparks(a.mesh.position, 12);
+          }
+        }
+        // Chantier 4 (v44): Steel Team Cybernetic Plating (-35% projectile damage)
+        if (a.hasCyberPlating && attack.type !== 'heavy' && attack.type !== 'plasma') {
+          damageDealt *= 0.65;
+        }
+
+        a.hp -= damageDealt;
         const killed = a.hp <= 0;
+
+        // Marvel Alpha Stun Threshold for Legendary Spine Rip Execution
+        if (a.isMarvelAlpha && a.hp <= a.maxHp * 0.20 && !a.isStunned) {
+          a.isStunned = true;
+          a.stunTimer = 8.0;
+        }
 
         // Reactive Acid Splashback Physics (slashing xenos sprays pressurized molecular acid back at attacker)
         if (attack.origin) {
@@ -527,6 +1588,55 @@ export class XenomorphHorde {
           damage: attack.damage,
           killed: true
         });
+      }
+    }
+
+    // Chantier 2 (v44): Micro-Xenomorph Swarm Dispersal / Incineration
+    for (let s = this.microSwarms.length - 1; s >= 0; s--) {
+      const swarm = this.microSwarms[s];
+      if (swarm.isDead) continue;
+      if (swarm.group.position.distanceTo(attack.origin) <= attack.radius + 3.2) {
+        swarm.hp -= attack.damage;
+        if (this.particles && this.particles.emitSparks) {
+          this.particles.emitSparks(swarm.group.position, 14);
+        }
+        if (swarm.hp <= 0) {
+          swarm.isDead = true;
+          this.scene.remove(swarm.group);
+          this.microSwarms.splice(s, 1);
+          hits.push({
+            pos: swarm.group.position.clone(),
+            damage: attack.damage,
+            killed: true,
+            isOfficer: false
+          });
+        }
+      }
+    }
+
+    // Chantier 2 & Sofia QA (v53.0): Flying Xenomorph Manta & Harpy Melee Interception
+    if (this.mantaSwarmers) {
+      for (let m = this.mantaSwarmers.length - 1; m >= 0; m--) {
+        const manta = this.mantaSwarmers[m];
+        if (manta && manta.mesh && manta.mesh.position.distanceTo(attack.origin) <= attack.radius + 2.5) {
+          manta.hp -= attack.damage;
+          hits.push({
+            pos: manta.mesh.position.clone(),
+            damage: attack.damage,
+            killed: manta.hp <= 0,
+            isFlying: true
+          });
+          if (this.particles && this.particles.emitSparks) {
+            this.particles.emitSparks(manta.mesh.position, 14);
+          }
+          if (manta.hp <= 0) {
+            if (this.goreEngine) this.goreEngine.spawnDismemberment(manta.mesh.position, attack.type || 'heavy');
+            this.spawnAcidPool(manta.mesh.position);
+            this.scene.remove(manta.mesh);
+            this.mantaSwarmers.splice(m, 1);
+            this.deadCount++;
+          }
+        }
       }
     }
 
@@ -608,37 +1718,134 @@ export class XenomorphHorde {
     });
   }
 
+  /* Chantier 10: Xenomorph Spitter & Acid Mortar Battery (Aliens: Colonial Marines / Fireteam Elite Lore) */
+  launchSpitterMortar(originPos, targetPos, player) {
+    const group = new THREE.Group();
+    const spawnPos = originPos.clone().add(new THREE.Vector3(0, 1.8, 0));
+    group.position.copy(spawnPos);
+
+    // Glowing acidic mortar payload
+    const outerGeo = new THREE.SphereGeometry(0.38, 10, 10);
+    const outerMat = new THREE.MeshBasicMaterial({ color: 0x39ff14, transparent: true, opacity: 0.85 });
+    const outerSphere = new THREE.Mesh(outerGeo, outerMat);
+    group.add(outerSphere);
+
+    const innerGeo = new THREE.SphereGeometry(0.2, 8, 8);
+    const innerMat = new THREE.MeshBasicMaterial({ color: 0xccff00 });
+    const innerSphere = new THREE.Mesh(innerGeo, innerMat);
+    group.add(innerSphere);
+
+    // Trailing satellite acid droplets
+    for (let d = 0; d < 4; d++) {
+      const drop = new THREE.Mesh(new THREE.SphereGeometry(0.08, 6, 6), outerMat);
+      drop.position.set((Math.random() - 0.5) * 0.35, -0.2 - d * 0.12, (Math.random() - 0.5) * 0.35);
+      group.add(drop);
+    }
+    this.scene.add(group);
+
+    // Telegraph hazard indicator on ground at target zone
+    const target = targetPos.clone().add(new THREE.Vector3((Math.random() - 0.5) * 2.2, 0.04, (Math.random() - 0.5) * 2.2));
+    target.y = 0.04;
+    const ringGeo = new THREE.RingGeometry(0.8, 2.4, 24);
+    ringGeo.rotateX(-Math.PI / 2);
+    const ringMat = new THREE.MeshBasicMaterial({ color: 0xff2200, transparent: true, opacity: 0.55, side: THREE.DoubleSide });
+    const indicatorMesh = new THREE.Mesh(ringGeo, ringMat);
+    indicatorMesh.position.copy(target);
+    this.scene.add(indicatorMesh);
+
+    // Ballistic trajectory: t = 1.8s
+    const t = 1.8;
+    const gravity = 22.0;
+    const dx = target.x - spawnPos.x;
+    const dz = target.z - spawnPos.z;
+    const vx = dx / t;
+    const vz = dz / t;
+    const vy = (target.y - spawnPos.y + 0.5 * gravity * t * t) / t;
+    const vel = new THREE.Vector3(vx, vy, vz);
+
+    if (this.audioEngine) {
+      if (this.audioEngine.playSpitterAcidMortarWhistle) {
+        this.audioEngine.playSpitterAcidMortarWhistle();
+      } else if (this.audioEngine.playSpitterAcidMortar) {
+        this.audioEngine.playSpitterAcidMortar();
+      }
+    }
+
+    this.spitterMortars.push({
+      mesh: group,
+      indicatorMesh: indicatorMesh,
+      vel: vel,
+      gravity: gravity,
+      life: 4.0,
+      targetPos: target,
+      playerRef: player
+    });
+  }
+
   update(delta, player) {
-    // 1. Ovimorph Egg proximity
+    // 1. Ovimorph Egg proximity & Breathing Animation (Alien 1979 / Romulus 2024 Canon)
     this.eggs.forEach(egg => {
-      if (!egg.hatched && egg.mesh.position.distanceTo(player.position) < 7.0) {
+      // Eerie organic breathing pulsation
+      if (!egg.hatched && egg.baseMesh) {
+        const breathe = 1.0 + Math.sin(Date.now() * 0.0035 + egg.phase) * 0.06;
+        egg.baseMesh.scale.set(0.95 * breathe, 1.35 / breathe, 0.95 * breathe);
+        if (egg.yolkMesh) {
+          egg.yolkMesh.material.opacity = 0.6 + Math.sin(Date.now() * 0.005 + egg.phase) * 0.35;
+        }
+      }
+
+      if (!egg.hatched && egg.mesh.position.distanceTo(player.position) < 8.0) {
         if (!egg.isOpen) {
           egg.isOpen = true;
+          // Splay the 4 leathery petals open
           egg.petals.forEach(p => {
-            p.rotation.x *= 2.2;
-            p.rotation.z *= 2.2;
+            p.rotation.x *= 3.2;
+            p.rotation.z *= 3.2;
           });
-          this.audioEngine.playXenoHiss();
+
+          if (this.audioEngine) {
+            if (this.audioEngine.playFacehuggerEggHatchChirp) {
+              this.audioEngine.playFacehuggerEggHatchChirp();
+            } else if (this.audioEngine.playEggPetalPeel) {
+              this.audioEngine.playEggPetalPeel();
+            } else {
+              this.audioEngine.playXenoHiss();
+            }
+          }
+
+          // Release organic spore gas haze
+          if (this.particles && this.particles.emitSparks) {
+            this.particles.emitSparks(egg.mesh.position, 14);
+          }
 
           setTimeout(() => {
             if (this.scene) {
               const facehugger = this.createAlienMesh(true);
               facehugger.position.copy(egg.mesh.position);
-              facehugger.position.y = 0.5;
+              facehugger.position.y = 1.2;
               this.scene.add(facehugger);
+
+              // Direction towards player for explosive spring leap
+              const jumpDir = player.position.clone().sub(egg.mesh.position);
+              jumpDir.y = 0;
+              jumpDir.normalize().multiplyScalar(15.0);
+
               this.aliens.push({
                 mesh: facehugger,
                 type: 'facehugger',
-                hp: 40,
-                maxHp: 40,
-                speed: 17,
+                hp: 45,
+                maxHp: 45,
+                speed: 18,
                 damage: 15,
                 radius: 0.6,
-                isLatched: false
+                isLatched: false,
+                isAirborne: true,
+                airborneVelY: 13.0, // Springs upwards out of the egg!
+                airborneVelHoriz: jumpDir
               });
               egg.hatched = true;
             }
-          }, 800);
+          }, 650);
         }
       }
     });
@@ -654,6 +1861,52 @@ export class XenomorphHorde {
         cb.mesh.rotation.y = Math.atan2(dir.x, dir.z);
       } else {
         player.takeDamage(cb.damage * delta);
+      }
+    }
+
+    // 2b. Chantier 4 (v45): Royal Gliding Facehuggers Physics & Mask Latching
+    for (let i = this.royalFacehuggers.length - 1; i >= 0; i--) {
+      const rf = this.royalFacehuggers[i];
+      rf.flutterPhase = (rf.flutterPhase || 0) + delta * 22.0;
+      rf.mesh.rotation.z = Math.sin(rf.flutterPhase) * 0.18;
+
+      if (rf.isGliding) {
+        const targetHead = player.position.clone().add(new THREE.Vector3(0, 1.8, 0));
+        const glideDir = targetHead.clone().sub(rf.mesh.position);
+        const distToPlayer = glideDir.length();
+
+        if (distToPlayer > 1.3) {
+          glideDir.normalize();
+          rf.mesh.position.addScaledVector(glideDir, rf.glideSpeed * delta);
+          rf.mesh.rotation.y = Math.atan2(glideDir.x, glideDir.z);
+          rf.mesh.rotation.x = -0.35;
+        } else {
+          // Latch onto player mask!
+          rf.isGliding = false;
+          rf.isLatched = true;
+          player.isRoyalFacehuggerLatched = true;
+          if (this.audioEngine && this.audioEngine.playRoyalFacehuggerShriek) {
+            this.audioEngine.playRoyalFacehuggerShriek();
+          }
+          if (window.gameInstance && window.gameInstance.ui) {
+            window.gameInstance.ui.showAnnouncement('⚠️ EMBUSCADE AÉRIENNE : PARASITE ROYAL AGGRIPÉ AU BIO-MASQUE ! MITRAILLEZ [ESPACE] (0/8) !');
+          }
+        }
+      } else if (rf.isLatched) {
+        rf.mesh.position.copy(player.position).add(new THREE.Vector3(0, 1.8, 0.35));
+        rf.mesh.rotation.y = player.rotationY || 0;
+        rf.latchTimer -= delta;
+
+        if (rf.latchTimer <= 0) {
+          player.takeDamage(150);
+          player.visorAcidBurn = 1.0;
+          this.scene.remove(rf.mesh);
+          this.royalFacehuggers.splice(i, 1);
+          player.isRoyalFacehuggerLatched = false;
+          if (window.gameInstance && window.gameInstance.ui) {
+            window.gameInstance.ui.showAnnouncement('☠️ PERFORATION CAUSTIQUE DU PARASITE ROYAL : DÉGÂTS CRITIQUES (-150 HP) !');
+          }
+        }
       }
     }
 
@@ -738,6 +1991,191 @@ export class XenomorphHorde {
       }
     }
 
+    // 3d. Spitter Parabolic Acid Mortar Batteries (Aliens: Colonial Marines Lore)
+    for (let i = this.spitterMortars.length - 1; i >= 0; i--) {
+      const m = this.spitterMortars[i];
+      m.life -= delta;
+      m.vel.y -= m.gravity * delta;
+      m.mesh.position.addScaledVector(m.vel, delta);
+      m.mesh.rotation.x += 10 * delta;
+      m.mesh.rotation.y += 7 * delta;
+
+      // Pulse hazard indicator ring
+      if (m.indicatorMesh) {
+        const pulse = 1.0 + Math.sin(Date.now() * 0.015) * 0.18;
+        m.indicatorMesh.scale.set(pulse, pulse, 1);
+      }
+
+      // Detonation on impact
+      if (m.mesh.position.y <= 0.25 || m.life <= 0) {
+        if (this.audioEngine) {
+          if (this.audioEngine.playAcidBrandingSizzle) this.audioEngine.playAcidBrandingSizzle();
+          else if (this.audioEngine.playAcidBurn) this.audioEngine.playAcidBurn();
+          if (this.audioEngine.playXenoHiss) this.audioEngine.playXenoHiss();
+        }
+        // Explosive acid spray
+        this.spawnAcidSplash(m.mesh.position, m.mesh.position.clone().add(new THREE.Vector3(0, 3, 0)));
+
+        // Large 5.5m Corrodent Acid Pool
+        this.spawnAcidPool(m.mesh.position);
+        this.spawnAcidPool(m.mesh.position.clone().add(new THREE.Vector3(1.4, 0, 0)));
+        this.spawnAcidPool(m.mesh.position.clone().add(new THREE.Vector3(-1.4, 0, 0)));
+        this.spawnAcidPool(m.mesh.position.clone().add(new THREE.Vector3(0, 0, 1.4)));
+        this.spawnAcidPool(m.mesh.position.clone().add(new THREE.Vector3(0, 0, -1.4)));
+
+        // Splash damage to player
+        if (player && m.mesh.position.distanceTo(player.position) < 3.8) {
+          if (player.isBlocking) {
+            player.audioEngine.playShieldBlock();
+          } else {
+            player.takeDamage(36, true);
+          }
+        }
+
+        this.scene.remove(m.mesh);
+        if (m.indicatorMesh) this.scene.remove(m.indicatorMesh);
+        this.spitterMortars.splice(i, 1);
+      }
+    }
+
+    // 3e. Chantier 2 (v44): Micro-Xenomorph Swarm Orbit & Parasitic Acid Bite (Marvel Comics Canon)
+    for (let s = this.microSwarms.length - 1; s >= 0; s--) {
+      const swarm = this.microSwarms[s];
+      if (swarm.isDead) continue;
+      swarm.orbitAngle += swarm.orbitSpeed * delta;
+      const heightOsc = Math.sin(Date.now() * 0.005) * 0.45;
+      const targetX = player.position.x + Math.cos(swarm.orbitAngle) * swarm.orbitRadius;
+      const targetZ = player.position.z + Math.sin(swarm.orbitAngle) * swarm.orbitRadius;
+      const targetY = player.position.y + 1.8 + heightOsc;
+      swarm.group.position.lerp(new THREE.Vector3(targetX, targetY, targetZ), 6.0 * delta);
+
+      // Rapid insectoid flutter wing animation
+      swarm.units.forEach(u => {
+        const flap = Math.sin(Date.now() * 0.045 + u.flutterOffset) * 0.65;
+        u.wingL.rotation.z = flap;
+        u.wingR.rotation.z = -flap;
+      });
+
+      // High-frequency buzzing audio
+      swarm.buzzTimer = (swarm.buzzTimer || 0) + delta;
+      if (swarm.buzzTimer >= 1.5) {
+        swarm.buzzTimer = 0;
+        if (this.audioEngine && this.audioEngine.playMicroSwarmBuzz) {
+          this.audioEngine.playMicroSwarmBuzz();
+        }
+      }
+
+      // Caustic micro-bite chip damage
+      if (swarm.group.position.distanceTo(player.position) <= 3.2) {
+        if (!player.isBlocking) {
+          player.takeDamage(swarm.damage * delta, true);
+        }
+      }
+    }
+
+    // 3f. Chantier 4 (v44): Cybernetic Spine Darts Flight Physics
+    for (let d = this.cyberSpineDarts.length - 1; d >= 0; d--) {
+      const dart = this.cyberSpineDarts[d];
+      dart.life -= delta;
+      dart.mesh.position.addScaledVector(dart.vel, delta);
+      if (dart.mesh.position.distanceTo(player.position) <= 1.8) {
+        if (player.isBlocking) {
+          player.audioEngine.playShieldBlock();
+        } else {
+          player.takeDamage(dart.damage, false);
+        }
+        this.scene.remove(dart.mesh);
+        this.cyberSpineDarts.splice(d, 1);
+        continue;
+      }
+      if (dart.life <= 0 || dart.mesh.position.y <= 0.1) {
+        this.scene.remove(dart.mesh);
+        this.cyberSpineDarts.splice(d, 1);
+      }
+    }
+
+    // 3g. Chantier 7 (v47): Flying Xenomorph Manta Swarmers 3D Airspace Flight AI (Aliens Arcade / Kenner / Marvel)
+    for (let m = this.mantaSwarmers.length - 1; m >= 0; m--) {
+      const manta = this.mantaSwarmers[m];
+      if (manta.hp <= 0) {
+        if (this.goreEngine && this.goreEngine.spawnDismemberment) {
+          this.goreEngine.spawnDismemberment(manta.mesh.position, 'heavy');
+        }
+        this.spawnAcidSplash(manta.mesh.position, manta.mesh.position);
+        this.scene.remove(manta.mesh);
+        this.mantaSwarmers.splice(m, 1);
+        this.deadCount++;
+        if (window.gameInstance) window.gameInstance.score += 450;
+        continue;
+      }
+
+      // Wing flutter animation
+      manta.flutterPhase += delta * 18.0;
+      const flap = Math.sin(manta.flutterPhase) * 0.65;
+      if (manta.mesh.userData.wingL) manta.mesh.userData.wingL.rotation.z = flap;
+      if (manta.mesh.userData.wingR) manta.mesh.userData.wingR.rotation.z = -flap;
+
+      if (manta.divePhase === 'cruising') {
+        manta.diveCooldown -= delta;
+        // Fly around player at high altitude
+        const toPlayer = player.position.clone().sub(manta.mesh.position);
+        toPlayer.y = 0;
+        const distHoriz = toPlayer.length();
+
+        if (distHoriz > 12.0) {
+          toPlayer.normalize();
+          manta.mesh.position.addScaledVector(toPlayer, manta.speed * delta);
+        }
+        // Maintain cruise altitude
+        manta.mesh.position.y += (manta.cruiseAltitude - manta.mesh.position.y) * 3.0 * delta;
+
+        // Orient toward flight direction
+        manta.mesh.rotation.y = Math.atan2(toPlayer.x, toPlayer.z);
+
+        if (manta.diveCooldown <= 0 && distHoriz <= 24.0) {
+          manta.divePhase = 'diving';
+          manta.diveTarget.copy(player.position);
+          if (this.audioEngine && this.audioEngine.playMantaDiveScreech) {
+            this.audioEngine.playMantaDiveScreech();
+          }
+        }
+      } else if (manta.divePhase === 'diving') {
+        // High-speed supersonic dive attack
+        const diveDir = manta.diveTarget.clone().sub(manta.mesh.position).normalize();
+        manta.mesh.position.addScaledVector(diveDir, manta.diveSpeed * delta);
+        manta.mesh.rotation.x = 0.55; // Pitch down
+
+        // Chantier 2 & Sofia QA (v53.0): Aerial Acid Spray Bombardment during dive
+        if (Math.random() < 0.12 && this.spawnAcidSplash) {
+          this.spawnAcidSplash(manta.mesh.position, manta.mesh.position.clone().add(new THREE.Vector3((Math.random() - 0.5) * 3, -1, (Math.random() - 0.5) * 3)));
+        }
+
+        // Hit player check
+        if (manta.mesh.position.distanceTo(player.position) <= 2.8) {
+          if (player.isBlocking) {
+            if (player.audioEngine && player.audioEngine.playShieldBlock) player.audioEngine.playShieldBlock();
+          } else {
+            player.takeDamage(manta.damage);
+          }
+          manta.divePhase = 'zooming_up';
+          manta.diveCooldown = 4.5 + Math.random() * 2.0;
+        } else if (manta.mesh.position.y <= 0.8) {
+          // Reached floor, pull up
+          manta.divePhase = 'zooming_up';
+          manta.diveCooldown = 4.5 + Math.random() * 2.0;
+        }
+      } else if (manta.divePhase === 'zooming_up') {
+        // Sweep back up to cruising altitude
+        manta.mesh.position.y += 14.0 * delta;
+        manta.mesh.rotation.x = -0.4; // Pitch up
+        if (manta.mesh.position.y >= manta.cruiseAltitude) {
+          manta.mesh.position.y = manta.cruiseAltitude;
+          manta.mesh.rotation.x = 0;
+          manta.divePhase = 'cruising';
+        }
+      }
+    }
+
     // 4. Horde AI (Crusher, Praetorian, Warriors, Facehuggers, Officers)
     this.aliens.forEach(a => {
       if (a.isLatched) return;
@@ -760,8 +2198,21 @@ export class XenomorphHorde {
           a.airborneVelY = 0;
           a.mesh.rotation.x = 0;
           a.mesh.rotation.z = 0;
+          if (a.isChameleon && player && a.mesh.position.distanceTo(player.position) <= 2.8) {
+            player.takeDamage(90, false, a);
+            if (this.audioEngine && this.audioEngine.playSlash) this.audioEngine.playSlash();
+          }
         }
         return; // Helpless while airborne in juggle arc
+      }
+
+      // Flash-Frozen Solid State (Cryo Nitrogen Pipe Rupture - Alien: Romulus 2024)
+      if (a.isFlashFrozen) {
+        a.frozenTimer -= delta;
+        if (a.frozenTimer <= 0) {
+          a.isFlashFrozen = false;
+        }
+        return; // Completely frozen solid
       }
 
       // Netgun Entangled State
@@ -771,21 +2222,157 @@ export class XenomorphHorde {
           a.isNetEntangled = false;
         } else {
           a.netTimer -= delta;
-          a.hp -= 25 * delta; // Razor wire cuts deep!
+          a.hp -= 38 * delta; // Razor wire cuts deep into chitin!
           a.mesh.rotation.y += Math.sin(Date.now() * 0.05) * 0.05;
-          if (a.netTimer <= 0) {
+
+          // Electrical sparks arcing across diamond net wires
+          a.netSparkTimer = (a.netSparkTimer || 0) + delta;
+          if (a.netSparkTimer >= 0.22) {
+            a.netSparkTimer = 0;
+            if (this.particles && this.particles.emitSparks) {
+              this.particles.emitSparks(a.mesh.position, 4);
+            }
+          }
+
+          if (a.netTimer <= 0 || a.hp <= 0) {
             a.isNetEntangled = false;
           }
           return; // Completely immobilized
         }
       }
 
-      // Stunned State (Crusher or Praetorian)
+      // Chantier 7 (v43): Liquid Nitrogen Flash-Frozen Solid State
+      if (a.isFrozen) {
+        a.freezeTimer = (a.freezeTimer || 4.5) - delta;
+        if (a.freezeTimer <= 0) {
+          a.isFrozen = false;
+          if (a.mesh && a.mesh.traverse) {
+            a.mesh.traverse(child => {
+              if (child.isMesh && child.material && child.origColor !== undefined) {
+                child.material.color.setHex(child.origColor);
+              }
+            });
+          }
+        }
+        return; // Completely frozen in place!
+      }
+
+      // Chantier 6: Yautja Netgun Wall-Pinning & Diamond-Wire Guillotine Tension (Predator 2 Canon)
+      if (a.isPinned) {
+        a.pinTimer = (a.pinTimer || 6.0) - delta;
+        a.hp -= 48 * delta; // Diamond-wire tension slices deep into chitin!
+        if (this.particles && this.particles.emitAlienBloodSpurt && Math.random() < 0.12) {
+          this.particles.emitAlienBloodSpurt(a.mesh.position, 6);
+        }
+        if (a.pinTimer <= 0 || a.hp <= 0) {
+          a.isPinned = false;
+        }
+        return; // Fixed against wall
+      }
+
+      // Chantier 7: Alpha Predator Primordial Hemotoxic Bleed (Prey 2022 / Alpha Canon)
+      if (a.bleedTimer > 0) {
+        a.bleedTimer -= delta;
+        a.hp -= (a.bleedDps || 50.0) * delta;
+        if (this.particles && this.particles.emitAlienBloodSpurt && Math.random() < 0.08) {
+          this.particles.emitAlienBloodSpurt(a.mesh.position, 4);
+        }
+      }
+
+      // Chantier 3 (v42): Trax-Net Micro-Beacon Pulse
+      if (a.isTraxTagged) {
+        a.traxTimer -= delta;
+        a.traxBeepTimer = (a.traxBeepTimer || 0) + delta;
+        if (a.traxBeepTimer >= 1.2) {
+          a.traxBeepTimer = 0;
+          if (this.particles && this.particles.emitSparks) {
+            this.particles.emitSparks(a.mesh.position.clone().add(new THREE.Vector3(0, 1.2, 0)), 3);
+          }
+        }
+        if (a.traxTimer <= 0) {
+          a.isTraxTagged = false;
+        }
+      }
+
+      // Chantier 2 (v42): Subterranean Trench & Vent Flanking AI (Aliens 1986 / Isolation)
+      if (player && player.position && player.position.y >= 3.0 && (a.type === 'drone' || a.type === 'warrior') && !a.isFlanking && Math.random() < 0.006) {
+        a.isFlanking = true;
+        a.flankPhase = 'diving';
+        a.flankTimer = 3.2;
+      }
+
+      if (a.isFlanking) {
+        if (a.flankPhase === 'diving') {
+          a.mesh.position.y -= 8.0 * delta;
+          if (a.mesh.position.y <= -2.0) {
+            a.mesh.visible = false;
+            a.flankPhase = 'submerged';
+          }
+          return;
+        } else if (a.flankPhase === 'submerged') {
+          a.flankTimer -= delta;
+          if (a.flankTimer <= 0) {
+            a.flankPhase = 'emerging';
+            const behindPlayer = player.position.clone().add(new THREE.Vector3(
+              (Math.random() - 0.5) * 4.0,
+              0,
+              4.0
+            ));
+            a.mesh.position.copy(behindPlayer);
+            a.mesh.position.y = -2.0;
+            a.mesh.visible = true;
+            this.audioEngine.playXenoHiss();
+          }
+          return;
+        } else if (a.flankPhase === 'emerging') {
+          a.mesh.position.y += 10.0 * delta;
+          if (a.mesh.position.y >= player.position.y) {
+            a.mesh.position.y = player.position.y;
+            a.isFlanking = false;
+            const distToP = a.mesh.position.distanceTo(player.position);
+            if (distToP <= 3.5) {
+              player.takeDamage(42, false, a);
+            }
+          }
+          return;
+        }
+      }
+
+      // Chantier 4 (v47): Deacon Titan Primordial Boss AI (Prometheus 2012)
+      if (a.isDeacon) {
+        if (a.hp <= a.maxHp * 0.22 && !a.isStunned && !a.canBeTrophyHarvested) {
+          a.isStunned = true;
+          a.stunTimer = 12.0;
+          a.canBeTrophyHarvested = true;
+          if (window.gameInstance && window.gameInstance.ui) {
+            window.gameInstance.ui.showAnnouncement('💀 TITAN PRIMORDIAL DÉSTABILISÉ : APPUYEZ SUR [E] POUR ARRACHER LE CRÂNE DU DEACON !');
+          }
+        }
+
+        if (!a.isStunned) {
+          a.chompCooldown = (a.chompCooldown || 0) - delta;
+          const pDist = a.mesh.position.distanceTo(player.position);
+          if (pDist <= 3.8 && a.chompCooldown <= 0) {
+            a.chompCooldown = 3.2;
+            if (this.audioEngine && this.audioEngine.playDeaconJawHiss) {
+              this.audioEngine.playDeaconJawHiss();
+            }
+            if (player.isBlocking) {
+              player.audioEngine.playShieldBlock();
+            } else {
+              player.takeDamage(85);
+            }
+          }
+        }
+      }
+
+      // Stunned State (Crusher or Praetorian or Deacon)
       if (a.isStunned) {
         a.stunTimer -= delta;
         a.mesh.rotation.z = Math.sin(Date.now() * 0.02) * 0.1;
         if (a.stunTimer <= 0) {
           a.isStunned = false;
+          a.canBeTrophyHarvested = false;
           a.mesh.rotation.z = 0;
         }
         return;
@@ -794,6 +2381,31 @@ export class XenomorphHorde {
       const dir = player.position.clone().sub(a.mesh.position);
       dir.y = 0;
       const dist = dir.length();
+
+      // Sofia QA Audit #5: Apex Pheromone Repulsion (Drones flee from defeated officer/boss)
+      if (a.isFeared && a.fearTimer > 0) {
+        a.fearTimer -= delta;
+        if (a.fearDir) {
+          a.mesh.position.addScaledVector(a.fearDir, delta * 9.5);
+          a.mesh.lookAt(a.mesh.position.clone().add(a.fearDir));
+        }
+        if (a.fearTimer <= 0) a.isFeared = false;
+        return;
+      }
+
+      // Elena QA Audit #2 & Chantier 5: Vocal Mimicry Decoy Diversion (Predator 1987)
+      if (a.decoyTimer > 0 && a.decoyTarget) {
+        a.decoyTimer -= delta;
+        const decoyDir = a.decoyTarget.clone().sub(a.mesh.position);
+        decoyDir.y = 0;
+        const dLen = decoyDir.length();
+        if (dLen > 1.2) {
+          decoyDir.normalize();
+          a.mesh.position.addScaledVector(decoyDir, delta * 7.5);
+          a.mesh.lookAt(a.mesh.position.clone().add(decoyDir));
+        }
+        return;
+      }
 
       // Wall-Climbing & Ceiling Drop Ambush AI (Alien 1979 / Aliens 1986 Lore)
       if (a.isWallStalker) {
@@ -829,7 +2441,7 @@ export class XenomorphHorde {
             a.wallClimbPhase = 'grounded';
             a.isWallStalker = false;
             if (dist <= 3.5) {
-              player.takeDamage(35);
+              player.takeDamage(35, false, a);
             }
           }
           return;
@@ -849,11 +2461,107 @@ export class XenomorphHorde {
       // Spitter Long-Range Acid Artillery AI (Aliens: Colonial Marines Lore)
       if (a.type === 'spitter') {
         a.spitCooldown -= delta;
-        if (a.spitCooldown <= 0 && dist >= 7.0 && dist <= 26.0) {
-          a.spitCooldown = 3.2;
-          this.audioEngine.playXenoHiss();
-          this.spawnAcidSplash(a.mesh.position, player.position);
-          this.spawnAcidPool(a.mesh.position);
+        if (a.spitCooldown <= 0 && dist >= 8.0 && dist <= 36.0) {
+          a.spitCooldown = 3.6 + Math.random() * 1.5;
+          this.launchSpitterMortar(a.mesh.position, player.position, player);
+        }
+      }
+
+      // Chantier 1 (v44): Marvel Alpha Apex Predator Command Roar & Enrage Pack (Marvel Alien 2021)
+      if (a.isMarvelAlpha) {
+        a.commandRoarCooldown -= delta;
+        if (a.commandRoarCooldown <= 0) {
+          a.commandRoarCooldown = 8.5;
+          if (this.audioEngine && this.audioEngine.playAlphaCommandRoar) {
+            this.audioEngine.playAlphaCommandRoar();
+          }
+          if (window.gameInstance && window.gameInstance.ui) {
+            window.gameInstance.ui.showAnnouncement('👑 RUGISSEMENT D\'ORDRE DE L\'ALPHA MARVEL : MEUTE ENRAGÉE (+50% VIT) !');
+          }
+          this.aliens.forEach(other => {
+            if (other !== a && other.mesh && other.mesh.position.distanceTo(a.mesh.position) <= 22.0) {
+              other.isEnraged = true;
+              other.enragedTimer = 6.0;
+            }
+          });
+        }
+      }
+
+      // Chantier 3 (v44): Cryo-Xenomorph Sub-Zero Frost Breath Cone (Marvel Alien: Thaw LV-695)
+      if (a.type === 'cryo_xeno') {
+        a.frostBreathCooldown -= delta;
+        if (a.frostBreathCooldown <= 0 && dist >= 4.0 && dist <= 14.0) {
+          a.frostBreathCooldown = 4.5;
+          if (this.audioEngine && this.audioEngine.playCryoFrostBreath) {
+            this.audioEngine.playCryoFrostBreath();
+          }
+          if (player.takeDamage) {
+            player.takeDamage(24, false, a);
+            player.cryoSlowTimer = 3.5;
+            if (window.gameInstance && window.gameInstance.ui) {
+              window.gameInstance.ui.showAnnouncement('❄️ SOUFFLE GLACIAL DU CRYO-XÉNO LV-695 : VITESSE RÉDUITE DE 50% !');
+            }
+          }
+        }
+      }
+
+      // Chantier 7 (v46): Chameleon Stalker Optical Cloak & Flank Ambush (Aliens: Rogue)
+      if (a.isChameleon) {
+        if (a.cloakFlickerTimer > 0) a.cloakFlickerTimer -= delta;
+        if (a.pounceCooldown > 0) a.pounceCooldown -= delta;
+
+        // EM Vision reveals cloaked xeno with high-contrast electric cyan highlights!
+        const isEMVision = player && player.visionMode === 2;
+        const revealed = isEMVision || a.cloakFlickerTimer > 0;
+        a.mesh.traverse(child => {
+          if (child.isMesh) {
+            child.material = revealed ? this.chameleonRevealedMat : this.chameleonMat;
+          }
+        });
+
+        // Pounce attack from blind spot
+        if (dist <= 13.0 && a.pounceCooldown <= 0 && !a.isStunned) {
+          a.pounceCooldown = 4.5;
+          if (this.audioEngine && this.audioEngine.playStalkerChameleonHiss) {
+            this.audioEngine.playStalkerChameleonHiss();
+          }
+
+          a.isAirborne = true;
+          a.airborneVelY = 8.0;
+          const pounceDir = player.position.clone().sub(a.mesh.position).normalize();
+          a.airborneVelHoriz = pounceDir.multiplyScalar(22.0);
+          a.cloakFlickerTimer = 3.2; // Camouflage flickers on attack
+
+          if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
+            window.gameInstance.ui.showAnnouncement('🦎 BOND D\'EMBUSCADE DU CHAMELEON STALKER (90 DÉGÂTS) ! VISION EM [V] CONSEILLÉE !');
+          }
+        }
+      }
+
+      // Chantier 4 (v44): Steel Team Cybernetic Xenomorph Spine Dart Volley (Marvel Alien: Icarus)
+      if (a.type === 'cyber_xeno') {
+        a.cyberDartCooldown -= delta;
+        if (a.cyberDartCooldown <= 0 && dist >= 6.0 && dist <= 24.0) {
+          a.cyberDartCooldown = 4.2;
+          if (this.audioEngine && this.audioEngine.playCyberXenoStatic) {
+            this.audioEngine.playCyberXenoStatic();
+          }
+          const dartGeo = new THREE.CylinderGeometry(0.04, 0.04, 0.8, 5);
+          dartGeo.rotateX(Math.PI / 2);
+          const dartMat = new THREE.MeshBasicMaterial({ color: 0xff1133 });
+          const dartMesh = new THREE.Mesh(dartGeo, dartMat);
+          const spawnPos = a.mesh.position.clone().add(new THREE.Vector3(0, 1.8, 0));
+          dartMesh.position.copy(spawnPos);
+          const dartDir = player.position.clone().add(new THREE.Vector3(0, 1.2, 0)).sub(spawnPos).normalize();
+          dartMesh.lookAt(spawnPos.clone().add(dartDir));
+          this.scene.add(dartMesh);
+
+          this.cyberSpineDarts.push({
+            mesh: dartMesh,
+            vel: dartDir.multiplyScalar(28.0),
+            damage: 28,
+            life: 2.5
+          });
         }
       }
 
@@ -876,15 +2584,116 @@ export class XenomorphHorde {
           a.isCharging = false;
           a.isStunned = true;
           a.stunTimer = 5.0; // 5-second stun window for execution!
-          player.audioEngine.playShieldBlock();
+          if (player.audioEngine && player.audioEngine.playCrusherArmorRicochet) {
+            player.audioEngine.playCrusherArmorRicochet();
+          } else if (player.audioEngine) {
+            player.audioEngine.playShieldBlock();
+          }
+          if (player.audioEngine && player.audioEngine.playShieldBlock) {
+            player.audioEngine.playShieldBlock();
+          }
           return;
         }
       }
 
-      // Check if low HP sub-boss enters execution stun (Crusher, Praetorian, Grid Alien)
-      if ((a.type === 'crusher' || a.type === 'praetorian' || a.type === 'grid_alien') && a.hp <= a.maxHp * 0.25 && !a.isStunned) {
+      // Chantier 6 (v48): The King Alien / Rogue Titan Dominance Roar & Crusher Slam (Aliens: Rogue)
+      if (a.isRogueKing) {
+        a.kingRoarCooldown -= delta;
+        if (a.kingRoarCooldown <= 0 && dist <= 26.0) {
+          a.kingRoarCooldown = 8.0;
+          if (this.audioEngine && this.audioEngine.playRogueKingRoar) {
+            this.audioEngine.playRogueKingRoar();
+          }
+          if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
+            window.gameInstance.ui.showAnnouncement('👑 RUGISSEMENT DE SUPRÉMATIE DU KING ALIEN ROGUE : HORDE EN FRÉNÉSIE (+35% VITESSE) !');
+          }
+          this.aliens.forEach(other => {
+            if (other !== a && other.mesh && other.mesh.position.distanceTo(a.mesh.position) <= 24.0) {
+              other.isEnraged = true;
+              other.enragedTimer = 7.0;
+            }
+          });
+        }
+      }
+
+      // Chantier 2 (v49): Xenomorph Raven Obsidian Carapace Shriek & Wing Buffet (Aliens: Colonial Marines)
+      if (a.isRaven) {
+        a.ravenShriekCooldown -= delta;
+        if (a.ravenShriekCooldown <= 0 && dist <= 20.0) {
+          a.ravenShriekCooldown = 6.5;
+          if (this.audioEngine && this.audioEngine.playRavenXenoShriek) {
+            this.audioEngine.playRavenXenoShriek();
+          }
+          if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
+            window.gameInstance.ui.showAnnouncement('🦅 HURLEMENT DU XENOMORPH RAVEN (CARAPACE D\'OBSIDIENNE FRONTALE) : CONTOURNEZ OU UTILISEZ LA MASSE MAUL [SHIFT+1] !');
+          }
+        }
+      }
+
+      // Chantier 6 (v49): Ancient Predalien Elder Fossilized Chitin Regeneration & Sarcophagus Roar (AVP2: Primal Hunt)
+      if (a.isAncientPredalien) {
+        if (a.regenActive && a.hp > 0 && a.hp < a.maxHp && !a.isStunned) {
+          a.hp = Math.min(a.maxHp, a.hp + 35.0 * delta);
+        }
+        a.elderRoarCooldown -= delta;
+        if (a.elderRoarCooldown <= 0 && dist <= 24.0) {
+          a.elderRoarCooldown = 8.5;
+          if (this.audioEngine && this.audioEngine.playAncientPredalienAwaken) {
+            this.audioEngine.playAncientPredalienAwaken();
+          }
+          if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
+            window.gameInstance.ui.showAnnouncement('🦴 ÉVEIL DE L\'ANCIENT PREDALIEN ELDER (PRIMAL HUNT) : RÉGÉNÉRATION DE CHITINE ANCESTRALE ACTIVE !');
+          }
+        }
+      }
+
+      // Chantier 5 (v50.0): Gestating Alpha Female Hive Matriarch Ovipositor Live Egg Laying (Aliens 1986)
+      if (a.isGestatingMatriarch && !a.isStunned) {
+        a.eggLayCooldown -= delta;
+        if (a.ovipositorMesh) {
+          const pulse = 1.0 + Math.sin(Date.now() * 0.008) * 0.15;
+          a.ovipositorMesh.scale.set(pulse, 1.0, pulse);
+        }
+        if (a.eggLayCooldown <= 0) {
+          a.eggLayCooldown = 7.5;
+          if (this.audioEngine && this.audioEngine.playMatriarchEggLayingSquish) {
+            this.audioEngine.playMatriarchEggLayingSquish();
+          }
+          // Lay 2 active biomechanical eggs behind her
+          const backward = new THREE.Vector3(0, 0, -1).applyEuler(a.mesh.rotation);
+          const eggPos1 = a.mesh.position.clone().add(backward.clone().multiplyScalar(3.2)).add(new THREE.Vector3(-1.2, 0, 0));
+          const eggPos2 = a.mesh.position.clone().add(backward.clone().multiplyScalar(3.2)).add(new THREE.Vector3(1.2, 0, 0));
+          this.spawnBiomechanicalEgg(eggPos1);
+          this.spawnBiomechanicalEgg(eggPos2);
+
+          if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
+            window.gameInstance.ui.showAnnouncement('🥚 PONTE D\'ŒUFS BIOMÉCANIQUES PAR LA MATRIARCHE ! DÉTRUISEZ-LES AVANT ÉCLOSION (4S) !');
+          }
+        }
+      }
+
+      // Check if low HP sub-boss enters execution stun (Crusher, Praetorian, Grid Alien, Marvel Alpha, Deacon, Rogue King, Raven, Ancient Predalien, Gestating Matriarch)
+      if ((a.type === 'crusher' || a.type === 'praetorian' || a.type === 'grid_alien' || a.isMarvelAlpha || a.isDeacon || a.isRogueKing || a.isRaven || a.isAncientPredalien || a.isGestatingMatriarch) && a.hp <= a.maxHp * 0.22 && !a.isStunned) {
         a.isStunned = true;
-        a.stunTimer = 6.0;
+        a.stunTimer = 8.0;
+      }
+
+      // QA Audit #4 Fix: 3D Diegetic Stun Execution Halo above stunned sub-bosses for instant Spine Rip [E] visibility
+      if (a.isStunned && a.mesh) {
+        if (!a.stunHaloMesh) {
+          const haloGeo = new THREE.RingGeometry(0.9, 1.35, 24);
+          haloGeo.rotateX(-Math.PI / 2);
+          const haloMat = new THREE.MeshBasicMaterial({ color: 0xffb703, side: THREE.DoubleSide, transparent: true, opacity: 0.9 });
+          a.stunHaloMesh = new THREE.Mesh(haloGeo, haloMat);
+          a.stunHaloMesh.position.set(0, 4.6, 0);
+          a.mesh.add(a.stunHaloMesh);
+        }
+        a.stunHaloMesh.rotation.z += 3.5 * delta;
+        const pulse = 1.0 + Math.sin(Date.now() * 0.012) * 0.18;
+        a.stunHaloMesh.scale.set(pulse, 1, pulse);
+      } else if (!a.isStunned && a.stunHaloMesh && a.mesh) {
+        a.mesh.remove(a.stunHaloMesh);
+        a.stunHaloMesh = null;
       }
 
       // Boiler suicide kamikaze charge
@@ -925,11 +2734,7 @@ export class XenomorphHorde {
             a.isLeaping = false;
             a.mesh.rotation.x = 0;
             if (dist <= 3.0) {
-              if (player.isBlocking) {
-                player.audioEngine.playShieldBlock();
-              } else {
-                player.takeDamage(35);
-              }
+              player.takeDamage(35, false, a);
             }
           }
           return;
@@ -959,11 +2764,7 @@ export class XenomorphHorde {
             a.isLeaping = false;
             a.mesh.rotation.x = 0;
             if (dist <= 3.5) {
-              if (player.isBlocking) {
-                player.audioEngine.playShieldBlock();
-              } else {
-                player.takeDamage(45);
-              }
+              player.takeDamage(45, false, a);
             }
           }
           return;
@@ -988,9 +2789,15 @@ export class XenomorphHorde {
         }
       }
 
+      if (a.isPheromoneEnraged && a.enrageTimer > 0) {
+        a.enrageTimer -= delta;
+        if (a.enrageTimer <= 0) a.isPheromoneEnraged = false;
+      }
+
       if (dist > (a.radius || 1.2)) {
         dir.normalize();
-        a.mesh.position.addScaledVector(dir, a.speed * delta);
+        const pSpeedMult = (a.isPheromoneEnraged && a.enrageTimer > 0) ? 1.4 : 1.0;
+        a.mesh.position.addScaledVector(dir, a.speed * delta * pSpeedMult);
         a.mesh.rotation.y = Math.atan2(dir.x, dir.z);
       } else {
         if (a.type === 'facehugger' && !player.isFacehuggerLatched) {
@@ -998,8 +2805,48 @@ export class XenomorphHorde {
           a.isLatched = true;
           this.scene.remove(a.mesh);
         } else {
-          player.takeDamage(a.damage * delta);
+          player.takeDamage(a.damage * delta, false, a);
         }
+      }
+    });
+
+    // Chantier 5 (v50.0): Update Active Biomechanical Eggs Laid by Gestating Matriarch
+    for (let i = this.biomechanicalEggs.length - 1; i >= 0; i--) {
+      const egg = this.biomechanicalEggs[i];
+      egg.hatchTimer -= delta;
+      const pulse = 1.0 + Math.sin(Date.now() * 0.012) * 0.14;
+      egg.mesh.scale.set(pulse, 1.0, pulse);
+
+      if (egg.hp <= 0) {
+        if (this.audioEngine && this.audioEngine.playXenoDeath) this.audioEngine.playXenoDeath();
+        this.spawnAcidPool(egg.mesh.position);
+        this.scene.remove(egg.mesh);
+        this.biomechanicalEggs.splice(i, 1);
+        if (window.gameInstance) window.gameInstance.score += 90;
+        continue;
+      }
+
+      if (egg.hatchTimer <= 0) {
+        const hatchPos = egg.mesh.position.clone();
+        this.scene.remove(egg.mesh);
+        this.biomechanicalEggs.splice(i, 1);
+        this.spawnRoyalFacehugger(hatchPos);
+        if (this.audioEngine && this.audioEngine.playXenoHiss) this.audioEngine.playXenoHiss();
+      }
+    }
+  }
+
+  // Sofia QA Audit #5: Apex Pheromone Repulsion Fear Wave (Pacing & Tactical Respiration)
+  triggerFearPulse(origin, radius = 14.0, duration = 3.5) {
+    if (!this.aliens) return;
+    this.aliens.forEach(a => {
+      if (!a || a.hp <= 0 || !a.mesh || a.isOfficer || a.isGestatingMatriarch || a.isRaven || a.isAncientPredalien || a.isRogueKing) return;
+      const dist = a.mesh.position.distanceTo(origin);
+      if (dist <= radius) {
+        a.isFeared = true;
+        a.fearTimer = duration;
+        a.fearDir = a.mesh.position.clone().sub(origin).normalize();
+        a.fearDir.y = 0;
       }
     });
   }
@@ -1016,19 +2863,51 @@ export class XenomorphHorde {
 
     const targetPos = (targetOrPos && targetOrPos.position) ? targetOrPos.position : (targetOrPos || pos);
 
-    // Blast damage in 8.0m radius
+    // Expanding fluorescent green rupture shockwave
+    const shockGeo = new THREE.SphereGeometry(1.8, 12, 12);
+    const shockMat = new THREE.MeshBasicMaterial({ color: 0x39ff14, transparent: true, opacity: 0.85, wireframe: true });
+    const shockMesh = new THREE.Mesh(shockGeo, shockMat);
+    shockMesh.position.copy(pos).add(new THREE.Vector3(0, 1.0, 0));
+    this.scene.add(shockMesh);
+
+    let shockScale = 1.0;
+    const sAnim = setInterval(() => {
+      shockScale += 0.55;
+      shockMesh.scale.set(shockScale, shockScale, shockScale);
+      shockMesh.material.opacity -= 0.12;
+      if (shockMesh.material.opacity <= 0) {
+        clearInterval(sAnim);
+        this.scene.remove(shockMesh);
+      }
+    }, 30);
+
+    // Blast damage in 8.5m radius to player
     if (targetOrPos && targetOrPos.takeDamage) {
-      if (targetPos.distanceTo(pos) <= 8.0) {
+      if (targetPos.distanceTo(pos) <= 8.5) {
         if (targetOrPos.isBlocking) {
           targetOrPos.audioEngine.playShieldBlock();
         } else {
-          targetOrPos.takeDamage(75);
+          targetOrPos.takeDamage(75, true);
         }
       }
     }
 
-    // 5 flying acid droplets and large acid pool
+    // Friendly-fire molecular dissolution of adjacent Xenomorphs
+    this.aliens.forEach(otherAlien => {
+      if (otherAlien.hp > 0 && otherAlien.mesh.position.distanceTo(pos) <= 8.0) {
+        otherAlien.hp -= 320;
+      }
+    });
+
+    // Deep caustic floor slag decal (Chantier 6)
+    if (this.goreEngine && this.goreEngine.spawnAcidSlagDecal) {
+      this.goreEngine.spawnAcidSlagDecal(pos, 3.2, this.audioEngine);
+    }
+
+    // 8 flying acid droplets and large acid pool
     this.spawnAcidSplash(pos, targetPos);
+    this.spawnAcidSplash(pos, pos.clone().add(new THREE.Vector3(3, 0, 0)));
+    this.spawnAcidSplash(pos, pos.clone().add(new THREE.Vector3(-3, 0, 0)));
     this.spawnAcidPool(pos);
   }
 
@@ -1045,5 +2924,20 @@ export class XenomorphHorde {
     this.acidSplashes = [];
     this.zeroGAcidGlobules.forEach(g => this.scene.remove(g.mesh));
     this.zeroGAcidGlobules = [];
+    this.spitterMortars.forEach(m => {
+      this.scene.remove(m.mesh);
+      if (m.indicatorMesh) this.scene.remove(m.indicatorMesh);
+    });
+    this.spitterMortars = [];
+    this.microSwarms.forEach(s => this.scene.remove(s.group));
+    this.microSwarms = [];
+    this.cyberSpineDarts.forEach(d => this.scene.remove(d.mesh));
+    this.cyberSpineDarts = [];
+    this.royalFacehuggers.forEach(r => this.scene.remove(r.mesh));
+    this.royalFacehuggers = [];
+    this.mantaSwarmers.forEach(m => this.scene.remove(m.mesh));
+    this.mantaSwarmers = [];
+    this.biomechanicalEggs.forEach(e => this.scene.remove(e.mesh));
+    this.biomechanicalEggs = [];
   }
 }

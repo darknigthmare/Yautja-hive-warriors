@@ -9,6 +9,8 @@ export const LEVELS_DATA = [
     floorColor: 0x1f291e,
     wallColor: 0x0f1710,
     fogColor: 0x0a1015,
+    fogDensity: 0.022,
+    weatherType: 'rain',
     skyColor: 0x050a10,
     waves: 5,
     bossType: 'predalien_queen'
@@ -21,6 +23,8 @@ export const LEVELS_DATA = [
     floorColor: 0x120d18,
     wallColor: 0x22152e,
     fogColor: 0x1a0a2a,
+    fogDensity: 0.026,
+    weatherType: 'toxic_spores',
     skyColor: 0x0d0317,
     waves: 6,
     bossType: 'empress_matriarch'
@@ -33,6 +37,8 @@ export const LEVELS_DATA = [
     floorColor: 0x1a222d,
     wallColor: 0x334155,
     fogColor: 0x0f172a,
+    fogDensity: 0.012,
+    weatherType: 'none',
     skyColor: 0x020617,
     waves: 5,
     bossType: 'xenomorph_queen'
@@ -45,6 +51,8 @@ export const LEVELS_DATA = [
     floorColor: 0x262626,
     wallColor: 0x404040,
     fogColor: 0x171717,
+    fogDensity: 0.020,
+    weatherType: 'storm',
     skyColor: 0x0a0a0a,
     waves: 5,
     bossType: 'predalien'
@@ -57,6 +65,8 @@ export const LEVELS_DATA = [
     floorColor: 0x2d3a22,
     wallColor: 0x1a2512,
     fogColor: 0x0f170a,
+    fogDensity: 0.024,
+    weatherType: 'humid_mist',
     skyColor: 0x080d05,
     waves: 5,
     bossType: 'praetorian'
@@ -69,8 +79,38 @@ export const LEVELS_DATA = [
     floorColor: 0x0f172a,
     wallColor: 0x1e293b,
     fogColor: 0x090d16,
+    fogDensity: 0.018,
+    weatherType: 'zero_g_cryo',
     skyColor: 0x030712,
     waves: 6,
     bossType: 'the_offspring'
+  },
+  {
+    id: 'charon_rogue_base',
+    name: 'BASE SCIENTIFIQUE CHARON (ALIENS: ROGUE 1993)',
+    desc: 'Complexe fortifié du Dr Ernst Kleist où le titanesque Rogue King Xenomorph Prime a été génétiquement façonné.',
+    theme: 'space_station',
+    floorColor: 0x141824,
+    wallColor: 0x222a3d,
+    fogColor: 0x0d121f,
+    fogDensity: 0.018,
+    weatherType: 'none',
+    skyColor: 0x040814,
+    waves: 6,
+    bossType: 'rogue_king_prime'
+  },
+  {
+    id: 'game_preserve_planet',
+    name: 'RÉSERVE DE CHASSE DE MR. BLACK (PREDATORS 2010)',
+    desc: 'Jungle extraterrestre sauvage contrôlée par le clan Super Predator Berserker, parsemée de totems d\'écorcheurs et de pièges mortels.',
+    theme: 'temple',
+    floorColor: 0x241711,
+    wallColor: 0x38271e,
+    fogColor: 0x1f0d06,
+    fogDensity: 0.019,
+    weatherType: 'none',
+    skyColor: 0x150702,
+    waves: 6,
+    bossType: 'berserker_super_predator'
   }
 ];

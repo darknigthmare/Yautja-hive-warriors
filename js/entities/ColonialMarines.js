@@ -8,6 +8,11 @@ export class ColonialMarinesManager {
     this.audioEngine = audioEngine;
     this.marines = [];
     this.sentryGun = null;
+    this.distressBeacon = null;
+    this.beaconTriggered = false;
+    this.airSupportPending = false;
+    this.airSupportTimer = 0;
+    this.strafeCenter = null;
   }
 
   spawnSquad(playerPos, count = 4) {
@@ -60,6 +65,7 @@ export class ColonialMarinesManager {
     const gun = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.3, 1.4), gunMat);
     gun.position.set(0.6, 2.0, 0.6);
     group.add(gun);
+    group.userData.gun = gun;
 
     if (!isSmartgunner) {
       // M240 Flamethrower Pressurized Fuel Canister (Under-barrel)
@@ -75,6 +81,21 @@ export class ColonialMarinesManager {
       nozzle.rotation.x = Math.PI / 2;
       nozzle.position.set(0.6, 2.0, 1.4);
       group.add(nozzle);
+
+      // 3D Animated M240 Napalm Flame Jet Stream (Cone projecting forward)
+      const jetGeo = new THREE.ConeGeometry(0.9, 4.8, 8);
+      jetGeo.rotateX(-Math.PI / 2);
+      const jetMat = new THREE.MeshBasicMaterial({
+        color: 0xff3700,
+        transparent: true,
+        opacity: 0.85,
+        blending: THREE.AdditiveBlending
+      });
+      const flameJet = new THREE.Mesh(jetGeo, jetMat);
+      flameJet.position.set(0.6, 2.0, 3.8);
+      flameJet.visible = false;
+      group.add(flameJet);
+      group.userData.flameJet = flameJet;
     } else {
       // M56 Smartgun Steadicam Articulated Arm & Headset Sight
       const steadyArmMat = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.8 });
@@ -88,6 +109,21 @@ export class ColonialMarinesManager {
       const sight = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.08, 0.15), eyeMat);
       sight.position.set(0.2, 3.1, 0.35);
       group.add(sight);
+
+      // Real-Time M56 Smartgun Tactical Red Laser Sight Beam
+      const laserGeo = new THREE.CylinderGeometry(0.018, 0.018, 8.0, 4);
+      laserGeo.rotateX(Math.PI / 2);
+      const laserMat = new THREE.MeshBasicMaterial({
+        color: 0xff0033,
+        transparent: true,
+        opacity: 0.85,
+        blending: THREE.AdditiveBlending
+      });
+      const laserBeam = new THREE.Mesh(laserGeo, laserMat);
+      laserBeam.position.set(0.6, 2.0, 5.0);
+      laserBeam.visible = false;
+      group.add(laserBeam);
+      group.userData.laserBeam = laserBeam;
     }
 
     return group;
@@ -114,17 +150,37 @@ export class ColonialMarinesManager {
         nearestDist = m.mesh.position.distanceTo(player.position);
       }
 
+      const flameJet = m.mesh.userData.flameJet;
+      const laserBeam = m.mesh.userData.laserBeam;
+
       if (targetPos) {
         const dir = targetPos.clone().sub(m.mesh.position);
         dir.y = 0;
-        if (dir.length() > 6) {
+        const currentDist = dir.length();
+
+        if (currentDist > 6) {
           dir.normalize();
           m.mesh.position.addScaledVector(dir, m.speed * delta);
           m.mesh.rotation.y = Math.atan2(dir.x, dir.z);
+
+          if (flameJet) flameJet.visible = false;
+          if (laserBeam) laserBeam.visible = false;
         } else {
+          m.mesh.rotation.y = Math.atan2(dir.x, dir.z);
+
           // Fire M56 Smartgun or M240 Incinerator Flamethrower!
           if (m.type === 'flametrooper') {
-            if (Math.random() < 0.14) {
+            if (flameJet) {
+              flameJet.visible = true;
+              flameJet.scale.set(
+                0.85 + Math.random() * 0.35,
+                0.85 + Math.random() * 0.35,
+                0.9 + Math.random() * 0.25
+              );
+              flameJet.material.opacity = 0.6 + Math.random() * 0.35;
+            }
+
+            if (Math.random() < 0.16) {
               if (this.audioEngine.playFlamethrowerBurn) {
                 this.audioEngine.playFlamethrowerBurn();
               } else {
@@ -142,16 +198,43 @@ export class ColonialMarinesManager {
               }
             }
           } else {
-            // M56 Smartgun tracking fire
-            if (Math.random() < 0.09) {
-              this.audioEngine.playPulseRifleBurst ? this.audioEngine.playPulseRifleBurst() : this.audioEngine.playPlasmaShot();
+            // M56 Smartgun tracking fire with red laser targeting (Vasquez / Drake - Aliens 1986 Canon)
+            if (laserBeam) {
+              laserBeam.visible = true;
+              laserBeam.material.opacity = 0.75 + Math.random() * 0.25;
+            }
+
+            // Steadicam weapon recoil kickback animation
+            if (m.mesh.userData.gun) {
+              m.mesh.userData.gun.position.z = 0.6 - (Math.random() * 0.08);
+            }
+
+            if (Math.random() < 0.22) {
+              if (this.audioEngine.playSmartgunBurst) {
+                this.audioEngine.playSmartgunBurst();
+              } else if (this.audioEngine.playPulseRifleBurst) {
+                this.audioEngine.playPulseRifleBurst();
+              }
+
+              // Occasional tactical callout (Vasquez / Drake 1:1 Lore)
+              if (!m.voiceTimer) m.voiceTimer = 0;
+              m.voiceTimer += delta;
+              if (m.voiceTimer > 8.0) {
+                m.voiceTimer = 0;
+                const shouts = ["LET'S ROCK !!", "EAT THIS !", "FIRE IN THE HOLE !", "HOLD THE PERIMETER !"];
+                const shout = shouts[Math.floor(Math.random() * shouts.length)];
+                if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
+                  window.gameInstance.ui.showAnnouncement(`🔊 USCM SMARTGUNNER : "${shout}"`);
+                }
+              }
+
               if (targetPos === player.position) {
-                player.takeDamage(m.damage * 0.1);
+                player.takeDamage(m.damage * 0.12);
               } else {
                 // Deal kinetic damage to the targeted Xenomorph
                 horde.aliens.forEach(a => {
-                  if (a.mesh.position.distanceTo(targetPos) <= 2.5) {
-                    a.hp -= m.damage;
+                  if (a.mesh.position.distanceTo(targetPos) <= 2.8) {
+                    a.hp -= m.damage * 1.15;
                   }
                 });
               }
@@ -173,8 +256,41 @@ export class ColonialMarinesManager {
             }
           }
         }
+      } else {
+        if (flameJet) flameJet.visible = false;
+        if (laserBeam) laserBeam.visible = false;
       }
     });
+
+    // Chantier 4: USCM Distress Beacon & Aerial Gunship Support
+    const aliveCount = this.marines.filter(m => m.hp > 0).length;
+    if (aliveCount > 0 && aliveCount <= 2 && !this.beaconTriggered) {
+      this.beaconTriggered = true;
+      const leadMarine = this.marines.find(m => m.hp > 0);
+      if (leadMarine) {
+        this.deployDistressBeacon(leadMarine.mesh.position.clone());
+      }
+    }
+
+    if (this.distressBeacon) {
+      this.distressBeacon.life -= delta;
+      if (this.distressBeacon.smokeMesh) {
+        this.distressBeacon.smokeMesh.rotation.y += delta * 4;
+        this.distressBeacon.smokeMesh.material.opacity = 0.4 + Math.sin(Date.now() * 0.01) * 0.25;
+      }
+      if (this.distressBeacon.life <= 0) {
+        this.scene.remove(this.distressBeacon.mesh);
+        this.distressBeacon = null;
+      }
+    }
+
+    if (this.airSupportPending) {
+      this.airSupportTimer -= delta;
+      if (this.airSupportTimer <= 0) {
+        this.airSupportPending = false;
+        this.triggerGunshipStrafe(horde);
+      }
+    }
 
     // Update USCM UA 571-C Sentry Gun Autonomous Target Scanning & Firing
     if (this.sentryGun && this.sentryGun.ammo > 0) {
@@ -265,6 +381,94 @@ export class ColonialMarinesManager {
     return group;
   }
 
+  deployDistressBeacon(pos) {
+    const group = new THREE.Group();
+    group.position.copy(pos);
+
+    // Red flare canister
+    const canGeo = new THREE.CylinderGeometry(0.08, 0.08, 0.35, 6);
+    const canMat = new THREE.MeshStandardMaterial({ color: 0xef4444, metalness: 0.9, roughness: 0.2 });
+    const canister = new THREE.Mesh(canGeo, canMat);
+    canister.position.y = 0.17;
+    group.add(canister);
+
+    // Glowing flare tip
+    const tip = new THREE.Mesh(new THREE.SphereGeometry(0.12, 6, 6), new THREE.MeshBasicMaterial({ color: 0xff2200 }));
+    tip.position.y = 0.36;
+    group.add(tip);
+
+    // Crimson volumetric smoke column
+    const smokeGeo = new THREE.CylinderGeometry(1.2, 0.4, 6.0, 8, 1, true);
+    const smokeMat = new THREE.MeshBasicMaterial({ color: 0xdc2626, transparent: true, opacity: 0.5, side: THREE.DoubleSide });
+    const smokeMesh = new THREE.Mesh(smokeGeo, smokeMat);
+    smokeMesh.position.y = 3.2;
+    group.add(smokeMesh);
+
+    this.scene.add(group);
+    this.distressBeacon = {
+      mesh: group,
+      smokeMesh: smokeMesh,
+      pos: pos,
+      life: 8.0
+    };
+
+    if (this.audioEngine && this.audioEngine.playRadioDistressBeacon) {
+      this.audioEngine.playRadioDistressBeacon();
+    }
+
+    if (window.game && window.game.ui) {
+      window.game.ui.showAnnouncement('📻 USCM : "IN THE PIPE, FIVE BY FIVE ! BALISE DE DÉTRESSE VERROUILLÉE ! APPUI AÉRIEN IMMINENT !"');
+    }
+
+    this.airSupportPending = true;
+    this.airSupportTimer = 2.4;
+    this.strafeCenter = pos.clone();
+  }
+
+  triggerGunshipStrafe(horde) {
+    if (!this.strafeCenter) return;
+    const center = this.strafeCenter;
+
+    for (let s = 0; s < 8; s++) {
+      setTimeout(() => {
+        const offset = new THREE.Vector3((Math.random() - 0.5) * 16, 0, (Math.random() - 0.5) * 16);
+        const impactPos = center.clone().add(offset);
+        impactPos.y = 0.1;
+
+        if (this.audioEngine) {
+          if (this.audioEngine.playM40GrenadeBlast) this.audioEngine.playM40GrenadeBlast();
+        }
+
+        // 30mm explosive kinetic blast
+        const blastGeo = new THREE.SphereGeometry(2.4, 8, 8);
+        const blastMat = new THREE.MeshBasicMaterial({ color: 0xffaa00, transparent: true, opacity: 0.85 });
+        const blastMesh = new THREE.Mesh(blastGeo, blastMat);
+        blastMesh.position.copy(impactPos).add(new THREE.Vector3(0, 0.8, 0));
+        this.scene.add(blastMesh);
+
+        let scale = 1.0;
+        const bAnim = setInterval(() => {
+          scale += 0.4;
+          blastMesh.scale.set(scale, scale, scale);
+          blastMesh.material.opacity -= 0.18;
+          if (blastMesh.material.opacity <= 0) {
+            clearInterval(bAnim);
+            this.scene.remove(blastMesh);
+          }
+        }, 30);
+
+        if (horde && horde.checkMeleeHits) {
+          horde.checkMeleeHits({
+            origin: impactPos,
+            radius: 5.5,
+            damage: 340,
+            type: 'heavy'
+          });
+        }
+      }, s * 140);
+    }
+  }
+
   clearSquad() {
     this.marines.forEach(m => this.scene.remove(m.mesh));
     this.marines = [];
@@ -272,5 +476,11 @@ export class ColonialMarinesManager {
       this.scene.remove(this.sentryGun.mesh);
       this.sentryGun = null;
     }
+    if (this.distressBeacon) {
+      this.scene.remove(this.distressBeacon.mesh);
+      this.distressBeacon = null;
+    }
+    this.beaconTriggered = false;
+    this.airSupportPending = false;
   }
 }
