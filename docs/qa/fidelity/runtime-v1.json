@@ -1,0 +1,1287 @@
+{
+  "status": "passed",
+  "startedAt": "2026-10-25T08:25:21.134Z",
+  "automated": true,
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "conditions": "Frozen production build; actual loaded GLB materials and animation. Controlled close-up cameras, world actors/rain hidden for presentation. Game units, not a physical scale certification.",
+  "errors": [],
+  "failedRequests": [],
+  "externalRequests": [],
+  "captures": [
+    {
+      "name": "city_hunter-right-wrist-front",
+      "path": "/workspace/qa/fidelity-20261025/final-v1/final-v1-city_hunter-right-wrist-front.png",
+      "frame": {
+        "role": "rightForeArm",
+        "secondRole": "rightHand",
+        "offset": [
+          0.92,
+          0.24,
+          1
+        ]
+      },
+      "camera": [
+        0.12439886158921631,
+        2.810065582293012,
+        6.037307266605119
+      ],
+      "target": [
+        -0.7956011384107837,
+        2.5700655822930116,
+        5.037307266605119
+      ],
+      "render": {
+        "frame": 39,
+        "calls": 35,
+        "triangles": 323381,
+        "points": 0,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 81,
+        "textures": 56
+      },
+      "programs": 16
+    },
+    {
+      "name": "city_hunter-right-wrist-back",
+      "path": "/workspace/qa/fidelity-20261025/final-v1/final-v1-city_hunter-right-wrist-back.png",
+      "frame": {
+        "role": "rightForeArm",
+        "secondRole": "rightHand",
+        "offset": [
+          -0.88,
+          0.28,
+          -1
+        ]
+      },
+      "camera": [
+        -1.6756011384107836,
+        2.850065582293012,
+        4.037307266605119
+      ],
+      "target": [
+        -0.7956011384107837,
+        2.5700655822930116,
+        5.037307266605119
+      ],
+      "render": {
+        "frame": 40,
+        "calls": 35,
+        "triangles": 323381,
+        "points": 0,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 81,
+        "textures": 56
+      },
+      "programs": 16
+    },
+    {
+      "name": "city_hunter-left-gauntlet",
+      "path": "/workspace/qa/fidelity-20261025/final-v1/final-v1-city_hunter-left-gauntlet.png",
+      "frame": {
+        "role": "leftForeArm",
+        "secondRole": "leftHand",
+        "offset": [
+          -0.8,
+          0.24,
+          0.92
+        ]
+      },
+      "camera": [
+        -0.21862086477540887,
+        2.8315458082763456,
+        4.639624277035708
+      ],
+      "target": [
+        0.5813791352245912,
+        2.591545808276346,
+        3.7196242770357077
+      ],
+      "render": {
+        "frame": 41,
+        "calls": 32,
+        "triangles": 320160,
+        "points": 0,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 81,
+        "textures": 56
+      },
+      "programs": 16
+    },
+    {
+      "name": "city_hunter-mane-back",
+      "path": "/workspace/qa/fidelity-20261025/final-v1/final-v1-city_hunter-mane-back.png",
+      "frame": {
+        "role": "head",
+        "offset": [
+          1.26,
+          0.315,
+          -1.8
+        ],
+        "targetShift": [
+          0,
+          -0.45,
+          -0.2
+        ]
+      },
+      "camera": [
+        1.2136346000244111,
+        3.38267573510709,
+        2.20748507457364
+      ],
+      "target": [
+        -0.04636539997558888,
+        3.0676757351070902,
+        4.00748507457364
+      ],
+      "render": {
+        "frame": 42,
+        "calls": 35,
+        "triangles": 323381,
+        "points": 0,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 81,
+        "textures": 56
+      },
+      "programs": 16
+    },
+    {
+      "name": "city_hunter-mane-profile",
+      "path": "/workspace/qa/fidelity-20261025/final-v1/final-v1-city_hunter-mane-profile.png",
+      "frame": {
+        "role": "head",
+        "offset": [
+          1.8,
+          0.1575,
+          -0.225
+        ],
+        "targetShift": [
+          0,
+          -0.45,
+          -0.2
+        ]
+      },
+      "camera": [
+        1.7536346000244112,
+        3.2251757351070904,
+        3.7824850745736396
+      ],
+      "target": [
+        -0.04636539997558888,
+        3.0676757351070902,
+        4.00748507457364
+      ],
+      "render": {
+        "frame": 43,
+        "calls": 41,
+        "triangles": 337813,
+        "points": 0,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 81,
+        "textures": 65
+      },
+      "programs": 16
+    },
+    {
+      "name": "city_hunter-real-fps",
+      "path": "/workspace/qa/fidelity-20261025/final-v1/final-v1-city_hunter-real-fps.png",
+      "enabled": true,
+      "headVisible": false,
+      "importedVisible": 0,
+      "hairActive": false,
+      "hp": 850,
+      "camera": [
+        3.9740518819376966e-7,
+        3.53928651180155,
+        4.399999860059995
+      ],
+      "target": null
+    },
+    {
+      "name": "jungle_hunter-right-wrist-front",
+      "path": "/workspace/qa/fidelity-20261025/final-v1/final-v1-jungle_hunter-right-wrist-front.png",
+      "frame": {
+        "role": "rightForeArm",
+        "secondRole": "rightHand",
+        "offset": [
+          0.92,
+          0.24,
+          1
+        ]
+      },
+      "camera": [
+        0.3198373887078607,
+        2.7159882513932088,
+        5.183148530033445
+      ],
+      "target": [
+        -0.6001626112921393,
+        2.475988251393209,
+        4.183148530033445
+      ],
+      "render": {
+        "frame": 48,
+        "calls": 13,
+        "triangles": 219295,
+        "points": 0,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 62,
+        "textures": 53
+      },
+      "programs": 14
+    },
+    {
+      "name": "jungle_hunter-right-wrist-back",
+      "path": "/workspace/qa/fidelity-20261025/final-v1/final-v1-jungle_hunter-right-wrist-back.png",
+      "frame": {
+        "role": "rightForeArm",
+        "secondRole": "rightHand",
+        "offset": [
+          -0.88,
+          0.28,
+          -1
+        ]
+      },
+      "camera": [
+        -1.4801626112921393,
+        2.755988251393209,
+        3.183148530033445
+      ],
+      "target": [
+        -0.6001626112921393,
+        2.475988251393209,
+        4.183148530033445
+      ],
+      "render": {
+        "frame": 49,
+        "calls": 14,
+        "triangles": 270579,
+        "points": 0,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 62,
+        "textures": 55
+      },
+      "programs": 15
+    },
+    {
+      "name": "jungle_hunter-left-gauntlet",
+      "path": "/workspace/qa/fidelity-20261025/final-v1/final-v1-jungle_hunter-left-gauntlet.png",
+      "frame": {
+        "role": "leftForeArm",
+        "secondRole": "leftHand",
+        "offset": [
+          -0.8,
+          0.24,
+          0.92
+        ]
+      },
+      "camera": [
+        -0.23119806834689105,
+        2.8146378943277064,
+        5.054664250436611
+      ],
+      "target": [
+        0.568801931653109,
+        2.574637894327706,
+        4.134664250436611
+      ],
+      "render": {
+        "frame": 50,
+        "calls": 11,
+        "triangles": 219183,
+        "points": 0,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 62,
+        "textures": 55
+      },
+      "programs": 15
+    },
+    {
+      "name": "jungle_hunter-mane-back",
+      "path": "/workspace/qa/fidelity-20261025/final-v1/final-v1-jungle_hunter-mane-back.png",
+      "frame": {
+        "role": "head",
+        "offset": [
+          1.26,
+          0.315,
+          -1.8
+        ],
+        "targetShift": [
+          0,
+          -0.45,
+          -0.2
+        ]
+      },
+      "camera": [
+        1.2213750372136516,
+        3.4481408841886063,
+        2.0903959370931267
+      ],
+      "target": [
+        -0.038624962786348395,
+        3.1331408841886064,
+        3.8903959370931265
+      ],
+      "render": {
+        "frame": 51,
+        "calls": 16,
+        "triangles": 270905,
+        "points": 0,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 62,
+        "textures": 56
+      },
+      "programs": 16
+    },
+    {
+      "name": "jungle_hunter-mane-profile",
+      "path": "/workspace/qa/fidelity-20261025/final-v1/final-v1-jungle_hunter-mane-profile.png",
+      "frame": {
+        "role": "head",
+        "offset": [
+          1.8,
+          0.1575,
+          -0.225
+        ],
+        "targetShift": [
+          0,
+          -0.45,
+          -0.2
+        ]
+      },
+      "camera": [
+        1.7613750372136516,
+        3.2906408841886066,
+        3.6653959370931264
+      ],
+      "target": [
+        -0.038624962786348395,
+        3.1331408841886064,
+        3.8903959370931265
+      ],
+      "render": {
+        "frame": 52,
+        "calls": 22,
+        "triangles": 285337,
+        "points": 0,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 62,
+        "textures": 56
+      },
+      "programs": 16
+    },
+    {
+      "name": "big-chap-full-profile",
+      "path": "/workspace/qa/fidelity-20261025/final-v1/final-v1-big-chap-full-profile.png",
+      "frame": {
+        "target": [
+          5,
+          1.95,
+          4.2
+        ],
+        "offset": [
+          6,
+          1.3,
+          0.05
+        ]
+      },
+      "camera": [
+        11,
+        3.25,
+        4.25
+      ],
+      "target": [
+        5,
+        1.95,
+        4.2
+      ],
+      "render": {
+        "frame": 54,
+        "calls": 16,
+        "triangles": 232283,
+        "points": 0,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 63,
+        "textures": 60
+      },
+      "programs": 16
+    },
+    {
+      "name": "big-chap-feet-profile",
+      "path": "/workspace/qa/fidelity-20261025/final-v1/final-v1-big-chap-feet-profile.png",
+      "frame": {
+        "target": [
+          5,
+          0.58,
+          4.2
+        ],
+        "offset": [
+          2.7,
+          0.35,
+          0.2
+        ]
+      },
+      "camera": [
+        7.7,
+        0.9299999999999999,
+        4.4
+      ],
+      "target": [
+        5,
+        0.58,
+        4.2
+      ],
+      "render": {
+        "frame": 55,
+        "calls": 16,
+        "triangles": 232283,
+        "points": 0,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 63,
+        "textures": 60
+      },
+      "programs": 16
+    },
+    {
+      "name": "big-chap-feet-front",
+      "path": "/workspace/qa/fidelity-20261025/final-v1/final-v1-big-chap-feet-front.png",
+      "frame": {
+        "target": [
+          5,
+          0.58,
+          4.2
+        ],
+        "offset": [
+          0.1,
+          0.6,
+          3
+        ]
+      },
+      "camera": [
+        5.1,
+        1.18,
+        7.2
+      ],
+      "target": [
+        5,
+        0.58,
+        4.2
+      ],
+      "render": {
+        "frame": 56,
+        "calls": 10,
+        "triangles": 217851,
+        "points": 0,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 63,
+        "textures": 60
+      },
+      "programs": 16
+    },
+    {
+      "name": "big-chap-feet-opposite",
+      "path": "/workspace/qa/fidelity-20261025/final-v1/final-v1-big-chap-feet-opposite.png",
+      "frame": {
+        "target": [
+          5,
+          0.58,
+          4.2
+        ],
+        "offset": [
+          -2.7,
+          0.35,
+          0.2
+        ]
+      },
+      "camera": [
+        2.3,
+        0.9299999999999999,
+        4.4
+      ],
+      "target": [
+        5,
+        0.58,
+        4.2
+      ],
+      "render": {
+        "frame": 57,
+        "calls": 10,
+        "triangles": 231515,
+        "points": 0,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 63,
+        "textures": 60
+      },
+      "programs": 16
+    },
+    {
+      "name": "big-chap-idle-feet-profile",
+      "path": "/workspace/qa/fidelity-20261025/final-v1/final-v1-big-chap-idle-feet-profile.png",
+      "frame": {
+        "target": [
+          5,
+          0.58,
+          4.2
+        ],
+        "offset": [
+          2.7,
+          0.35,
+          0.2
+        ]
+      },
+      "camera": [
+        7.7,
+        0.9299999999999999,
+        4.4
+      ],
+      "target": [
+        5,
+        0.58,
+        4.2
+      ],
+      "render": {
+        "frame": 58,
+        "calls": 16,
+        "triangles": 232283,
+        "points": 0,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 63,
+        "textures": 60
+      },
+      "programs": 16
+    },
+    {
+      "name": "big-chap-idle-feet-opposite",
+      "path": "/workspace/qa/fidelity-20261025/final-v1/final-v1-big-chap-idle-feet-opposite.png",
+      "frame": {
+        "target": [
+          5,
+          0.58,
+          4.2
+        ],
+        "offset": [
+          -2.7,
+          0.35,
+          0.2
+        ]
+      },
+      "camera": [
+        2.3,
+        0.9299999999999999,
+        4.4
+      ],
+      "target": [
+        5,
+        0.58,
+        4.2
+      ],
+      "render": {
+        "frame": 59,
+        "calls": 10,
+        "triangles": 231515,
+        "points": 0,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 63,
+        "textures": 60
+      },
+      "programs": 16
+    },
+    {
+      "name": "wolf-front",
+      "path": "/workspace/qa/fidelity-20261025/final-v1/final-v1-wolf-front.png",
+      "frame": {
+        "role": "head",
+        "offset": [
+          0,
+          0.03,
+          1.6
+        ]
+      },
+      "camera": [
+        0,
+        4.05,
+        5.82
+      ],
+      "target": [
+        0,
+        4.02,
+        4.22
+      ],
+      "render": {
+        "frame": 61,
+        "calls": 29,
+        "triangles": 123300,
+        "points": 0,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 108,
+        "textures": 60
+      },
+      "programs": 15
+    },
+    {
+      "name": "wolf-three-quarter",
+      "path": "/workspace/qa/fidelity-20261025/final-v1/final-v1-wolf-three-quarter.png",
+      "frame": {
+        "role": "head",
+        "offset": [
+          1.1,
+          0.1,
+          1.35
+        ]
+      },
+      "camera": [
+        1.1,
+        4.119999999999999,
+        5.57
+      ],
+      "target": [
+        0,
+        4.02,
+        4.22
+      ],
+      "render": {
+        "frame": 62,
+        "calls": 29,
+        "triangles": 123300,
+        "points": 0,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 108,
+        "textures": 60
+      },
+      "programs": 15
+    },
+    {
+      "name": "wolf-profile",
+      "path": "/workspace/qa/fidelity-20261025/final-v1/final-v1-wolf-profile.png",
+      "frame": {
+        "role": "head",
+        "offset": [
+          1.6,
+          0.04,
+          0.08
+        ]
+      },
+      "camera": [
+        1.6,
+        4.06,
+        4.3
+      ],
+      "target": [
+        0,
+        4.02,
+        4.22
+      ],
+      "render": {
+        "frame": 63,
+        "calls": 35,
+        "triangles": 137732,
+        "points": 0,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 108,
+        "textures": 60
+      },
+      "programs": 15
+    },
+    {
+      "name": "wolf_predator-real-fps",
+      "path": "/workspace/qa/fidelity-20261025/final-v1/final-v1-wolf_predator-real-fps.png",
+      "enabled": true,
+      "headVisible": false,
+      "importedVisible": 0,
+      "hairActive": false,
+      "hp": 1150,
+      "camera": [
+        4.894437128029217e-7,
+        3.9949999912734295,
+        4.399999969409769
+      ],
+      "target": null
+    },
+    {
+      "name": "apc-stowed",
+      "path": "/workspace/qa/fidelity-20261025/final-v1/final-v1-apc-stowed.png",
+      "frame": {
+        "target": [
+          0,
+          1.8,
+          -15.8
+        ],
+        "offset": [
+          10,
+          6,
+          12
+        ]
+      },
+      "camera": [
+        10,
+        7.8,
+        -3.8000000000000007
+      ],
+      "target": [
+        0,
+        1.8,
+        -15.8
+      ],
+      "render": {
+        "frame": 65,
+        "calls": 22,
+        "triangles": 48398,
+        "points": 0,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 121,
+        "textures": 63
+      },
+      "programs": 15
+    },
+    {
+      "name": "apc-half",
+      "path": "/workspace/qa/fidelity-20261025/final-v1/final-v1-apc-half.png",
+      "frame": {
+        "target": [
+          0,
+          1.8,
+          -15.8
+        ],
+        "offset": [
+          10,
+          6,
+          12
+        ]
+      },
+      "camera": [
+        10,
+        7.8,
+        -3.8000000000000007
+      ],
+      "target": [
+        0,
+        1.8,
+        -15.8
+      ],
+      "render": {
+        "frame": 66,
+        "calls": 22,
+        "triangles": 48398,
+        "points": 0,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 121,
+        "textures": 63
+      },
+      "programs": 15
+    },
+    {
+      "name": "apc-deployed",
+      "path": "/workspace/qa/fidelity-20261025/final-v1/final-v1-apc-deployed.png",
+      "frame": {
+        "target": [
+          0,
+          1.8,
+          -15.8
+        ],
+        "offset": [
+          10,
+          6,
+          12
+        ]
+      },
+      "camera": [
+        10,
+        7.8,
+        -3.8000000000000007
+      ],
+      "target": [
+        0,
+        1.8,
+        -15.8
+      ],
+      "render": {
+        "frame": 67,
+        "calls": 22,
+        "triangles": 48398,
+        "points": 0,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 121,
+        "textures": 63
+      },
+      "programs": 15
+    },
+    {
+      "name": "apc-rear",
+      "path": "/workspace/qa/fidelity-20261025/final-v1/final-v1-apc-rear.png",
+      "frame": {
+        "target": [
+          0,
+          1.8,
+          -15.8
+        ],
+        "offset": [
+          7,
+          5,
+          -12
+        ]
+      },
+      "camera": [
+        7,
+        6.8,
+        -27.8
+      ],
+      "target": [
+        0,
+        1.8,
+        -15.8
+      ],
+      "render": {
+        "frame": 68,
+        "calls": 28,
+        "triangles": 62830,
+        "points": 0,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 121,
+        "textures": 63
+      },
+      "programs": 15
+    },
+    {
+      "name": "apc-side",
+      "path": "/workspace/qa/fidelity-20261025/final-v1/final-v1-apc-side.png",
+      "frame": {
+        "target": [
+          0,
+          1.8,
+          -15.8
+        ],
+        "offset": [
+          13,
+          4,
+          0
+        ]
+      },
+      "camera": [
+        13,
+        5.8,
+        -15.8
+      ],
+      "target": [
+        0,
+        1.8,
+        -15.8
+      ],
+      "render": {
+        "frame": 69,
+        "calls": 28,
+        "triangles": 62830,
+        "points": 0,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 121,
+        "textures": 63
+      },
+      "programs": 15
+    }
+  ],
+  "characters": [
+    {
+      "id": "city_hunter",
+      "visual": "imported",
+      "mask": "attached",
+      "mechanisms": "ready",
+      "rightGauntlet": {
+        "state": "ready",
+        "error": null,
+        "diagnostics": {
+          "sourceSha256": "0e297a50400f885f06595f2fb59c85aed5118517a03c140f0f3aefa5288b564b",
+          "rigidBone": "RightForeArm",
+          "triangles": 3221,
+          "vertices": 3254,
+          "addedDrawCalls": 0,
+          "maximumRestError": 1.2846736031780347e-7,
+          "texture": "original actor PBR materials borrowed; source UVs and triangle indices copied unchanged",
+          "fullWristbladeSeparation": false,
+          "parts": [
+            {
+              "name": "model_part2",
+              "maximumRestError": 1.2631951421843195e-7
+            },
+            {
+              "name": "model_part8",
+              "maximumRestError": 1.2846736031780347e-7
+            },
+            {
+              "name": "model_part9",
+              "maximumRestError": 1.2846736031780347e-7
+            }
+          ]
+        },
+        "controller": {
+          "enabled": true,
+          "disposed": false,
+          "fullWristbladeSeparation": false
+        }
+      },
+      "mane": {
+        "id": "city-hunter-measured-free-mane-v1",
+        "meshName": "model_part17",
+        "sourceSha256": "0e297a50400f885f06595f2fb59c85aed5118517a03c140f0f3aefa5288b564b",
+        "sourceGeometryUnchanged": true,
+        "selectedVertices": 3190,
+        "weightedVertices": 2303,
+        "anchoredVertices": 887,
+        "sourceVertices": 91075,
+        "freeEnds": 10,
+        "addedBones": 40,
+        "simulatedSegments": 30,
+        "weldedSideBundlesUnchanged": true
+      },
+      "articulationStats": {
+        "dreadlocks": 12,
+        "simulatedSegments": 38,
+        "wristbladeActuators": 0,
+        "gauntletHinges": 0
+      },
+      "articulationState": {
+        "disposed": false,
+        "detailLevel": 0,
+        "hairActive": true,
+        "wristblades": [],
+        "gauntlets": []
+      },
+      "footGrounding": {
+        "status": "applied",
+        "sourceSha256": "0e297a50400f885f06595f2fb59c85aed5118517a03c140f0f3aefa5288b564b",
+        "motionGain": 0.2,
+        "maxOffset": 0.15,
+        "restMinimumY": 1.0651243170655978e-15,
+        "regions": [
+          {
+            "regionId": "model_part0",
+            "supportVertices": 36,
+            "referencedVertices": 9194,
+            "restError": 2.4841240175987878e-15,
+            "coverageError": 1.131807918442113e-15
+          },
+          {
+            "regionId": "model_part4",
+            "supportVertices": 36,
+            "referencedVertices": 8860,
+            "restError": 2.2898349882893854e-15,
+            "coverageError": 1.0210439046088652e-15
+          }
+        ],
+        "offsetY": 1.7269226813813155e-15,
+        "minimumYBeforeOffset": -1.7269226813813155e-15,
+        "minimumYAfterOffset": 0,
+        "maxObservedAbsoluteOffset": 0.05297222700379109,
+        "refusals": 0,
+        "lastError": null,
+        "lastRejectedOffsetY": null
+      },
+      "hp": 850,
+      "maxHp": 850,
+      "asset": {
+        "key": "city_hunter",
+        "url": "/models/city-hunter-body-corrected.glb",
+        "biomask": {
+          "key": "city_hunter_biomask",
+          "url": "/models/city-hunter-biomask.glb"
+        }
+      },
+      "maskRevision": null,
+      "bones": {
+        "hips": "Hips",
+        "head": "Head",
+        "neck": "neck",
+        "leftArm": "LeftArm",
+        "rightArm": "RightArm",
+        "leftForeArm": "LeftForeArm",
+        "rightForeArm": "RightForeArm",
+        "leftHand": "LeftHand",
+        "rightHand": "RightHand",
+        "leftLeg": "LeftUpLeg",
+        "rightLeg": "RightUpLeg",
+        "leftLowerLeg": "LeftLeg",
+        "rightLowerLeg": "RightLeg",
+        "leftFoot": "LeftFoot",
+        "rightFoot": "RightFoot"
+      },
+      "skeletonBoneCounts": [
+        24,
+        24,
+        24,
+        24,
+        24,
+        24,
+        24,
+        24,
+        24,
+        24,
+        24,
+        24,
+        24,
+        24,
+        24,
+        64,
+        24,
+        24,
+        24,
+        6,
+        6
+      ]
+    },
+    {
+      "id": "jungle_hunter",
+      "visual": "imported",
+      "mask": "attached",
+      "mechanisms": "none",
+      "rightGauntlet": {
+        "state": "none",
+        "error": null,
+        "diagnostics": null,
+        "controller": null
+      },
+      "mane": null,
+      "articulationStats": null,
+      "articulationState": null,
+      "footGrounding": null,
+      "hp": 1000,
+      "maxHp": 1000,
+      "asset": {
+        "key": "jungle_hunter",
+        "url": "/models/jungle-hunter-rigged.glb",
+        "biomask": {
+          "key": "jungle_hunter_biomask",
+          "url": "/models/jungle-hunter-biomask.glb"
+        }
+      },
+      "maskRevision": null,
+      "bones": {
+        "hips": "Hips",
+        "head": "Head",
+        "neck": "neck",
+        "leftArm": "LeftArm",
+        "rightArm": "RightArm",
+        "leftForeArm": "LeftForeArm",
+        "rightForeArm": "RightForeArm",
+        "leftHand": "LeftHand",
+        "rightHand": "RightHand",
+        "leftLeg": "LeftUpLeg",
+        "rightLeg": "RightUpLeg",
+        "leftLowerLeg": "LeftLeg",
+        "rightLowerLeg": "RightLeg",
+        "leftFoot": "LeftFoot",
+        "rightFoot": "RightFoot"
+      },
+      "skeletonBoneCounts": [
+        24
+      ]
+    },
+    {
+      "id": "wolf_predator",
+      "visual": "procedural",
+      "mask": "none",
+      "mechanisms": "none",
+      "rightGauntlet": {
+        "state": "none",
+        "error": null,
+        "diagnostics": null,
+        "controller": null
+      },
+      "mane": null,
+      "articulationStats": null,
+      "articulationState": null,
+      "footGrounding": null,
+      "hp": 1150,
+      "maxHp": 1150,
+      "asset": {},
+      "maskRevision": "wolf-biomask-reference-sculpt-v1",
+      "bones": {},
+      "skeletonBoneCounts": []
+    }
+  ],
+  "indexSha256": "397cdbf1276d3c1ef45312b5431083d11e4e94452846f7b04ed47a21bb72e5c3",
+  "checkpoint": "apc-side",
+  "workflows": [
+    {
+      "id": "city_hunter",
+      "kind": "actual-KeyI-first-person",
+      "enabled": true,
+      "headVisible": false,
+      "importedVisible": 0,
+      "hairActive": false,
+      "hp": 850,
+      "camera": [
+        3.9740518819376966e-7,
+        3.53928651180155,
+        4.399999860059995
+      ],
+      "target": null
+    },
+    {
+      "id": "wolf_predator",
+      "kind": "actual-KeyI-first-person",
+      "enabled": true,
+      "headVisible": false,
+      "importedVisible": 0,
+      "hairActive": false,
+      "hp": 1150,
+      "camera": [
+        4.894437128029217e-7,
+        3.9949999912734295,
+        4.399999969409769
+      ],
+      "target": null
+    }
+  ],
+  "creature": {
+    "state": "ready",
+    "source": "generated-rigged",
+    "position": [
+      5,
+      0,
+      4.2
+    ],
+    "height": 3.9536638259887695,
+    "triangles": 205259,
+    "boneCounts": [
+      37
+    ],
+    "phase": 0.5890486225480862,
+    "foot": {
+      "id": "big-chap-measured-ankles-v1-20261025",
+      "articulatedJoints": 4,
+      "supportVertices": 1953,
+      "ankleIK": false,
+      "method": "source-clip-measured-ankle-toe-skin",
+      "clip": "run",
+      "moving": true,
+      "angles": [
+        [
+          -0.030976153138423612,
+          -0.0000639723099453704
+        ],
+        [
+          -0.18,
+          0.03553924858681068
+        ]
+      ],
+      "minFootYBefore": -0.0060886635719276105,
+      "minFootYAfter": 0.005000000000000001,
+      "visualWorldOffsetY": 0.011088663571927612,
+      "limited": false,
+      "contact": true,
+      "feet": [
+        {
+          "name": "left",
+          "minY": 1.405445226050276
+        },
+        {
+          "name": "right",
+          "minY": -0.0060886635719276105
+        }
+      ]
+    },
+    "ankleBones": 4,
+    "tail": {
+      "id": "big-chap-v2-geodesic-tail-chain-20261024",
+      "boneCount": 9,
+      "weightedVertices": 28590,
+      "envelopeBuckets": 257,
+      "sourceGeometryUnchanged": true,
+      "privateActorBones": true,
+      "lastGroundMinimum": 0.022001259495498006,
+      "lastSolverIterations": 2,
+      "maxGroundCorrectionRadians": 0.13503923908247134,
+      "groundLimited": false,
+      "phase": 0.5890486225480862
+    }
+  },
+  "apc": {
+    "position": [
+      0,
+      0,
+      -15.8
+    ],
+    "deployment": 0,
+    "rail": {
+      "stowedZ": -4.95,
+      "stowedHeight": 0.9,
+      "deployedZ": -2.3,
+      "height": 2.65,
+      "cornerZ": -4.45,
+      "cornerRadius": 0.5
+    },
+    "hp": 2500
+  },
+  "apcWorkflow": {
+    "stowedDisplacement": 0.5176013112068176,
+    "deployedDisplacement": 0,
+    "airborneDisplacement": 0,
+    "navigation": {
+      "halfWidth": 2.52,
+      "halfDepth": 5.8,
+      "height": 2.48,
+      "owner": "apc"
+    },
+    "ownedNavigation": 1
+  },
+  "cleanup": {
+    "playing": false,
+    "player": null,
+    "aliens": 0,
+    "pods": 0,
+    "apc": null,
+    "apcNavigation": 0,
+    "memory": {
+      "geometries": 54,
+      "textures": 63
+    },
+    "programs": 12
+  },
+  "completedAt": "2026-10-25T08:26:56.485Z"
+}

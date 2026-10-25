@@ -1,0 +1,192 @@
+{
+  "status": "passed_locally_waiting_publication",
+  "date": "2026-10-25",
+  "baseline_commit": "8e343fa36cb8f536dfa80ee2c8a7869a670afb12",
+  "baseline_index_sha256": "8683a627c08e1c2647913aa29dc375df8cdde08c69da18895981de2b5c5fae6f",
+  "automated": true,
+  "human_testers": 0,
+  "fidelity_1_to_1_verified": false,
+  "meshy_credits_spent": 0,
+  "build": {
+    "success": true,
+    "index_sha256": "cb19eded36c19e20a5c50b94daad56d1d8550cf1c9ddff08df6d0167d7a03910",
+    "source_manifest_sha256": "b91f13167902defdf12e3fc42e9604dd02ef8c6e5369b2ba61cf5cef59bdc349",
+    "frozen_source_files": 92,
+    "source_glb_unchanged": true,
+    "static_files": 29,
+    "models": 12,
+    "bundles": 5,
+    "source_manifest": "fidelity/frozen-source-v2.json",
+    "artifact_manifest": "fidelity/frozen-artifacts-v2.json",
+    "artifact_manifest_sha256": "fe244b768b7334f468b5970eabc323bb5f4752275d3d07cfa91f74296dff3f27"
+  },
+  "cpu": {
+    "status": "passed",
+    "passed": 386,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "duration_ms": 207323.054789,
+    "index_sha256": "cb19eded36c19e20a5c50b94daad56d1d8550cf1c9ddff08df6d0167d7a03910",
+    "command": "node --max-old-space-size=2048 --test --test-concurrency=1 tests/*.test.js tests/browser-cleanup.test.mjs",
+    "log": "fidelity/cpu-v2.txt",
+    "log_sha256": "b445e0dd9fbee3dc3eb8fe2ee399c1cf96ce2c1d7dddb7d968f0060435853cd8"
+  },
+  "browser": {
+    "final_regression": {
+      "status": "passed",
+      "index_sha256": "cb19eded36c19e20a5c50b94daad56d1d8550cf1c9ddff08df6d0167d7a03910",
+      "passed": 15,
+      "failed": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "duration_ms": 511777.366625,
+      "command": "node --max-old-space-size=2048 --test --test-concurrency=1 tests/browser.test.mjs tests/gameplay.test.mjs tests/render-browser.test.mjs",
+      "log": "fidelity/browser-v2.txt",
+      "log_sha256": "5f70bfe617e01a6a6ef3b55edf18ed776a06c192aca752a8953e21e562ca5c23"
+    },
+    "final_runtime": {
+      "status": "passed",
+      "index_sha256": "cb19eded36c19e20a5c50b94daad56d1d8550cf1c9ddff08df6d0167d7a03910",
+      "report": "fidelity/runtime-v2.json",
+      "geometry_report": "fidelity/runtime-v1.json",
+      "geometry_report_index_sha256": "397cdbf1276d3c1ef45312b5431083d11e4e94452846f7b04ed47a21bb72e5c3",
+      "geometry_unchanged_between_v1_v2": true,
+      "production_captures": 26,
+      "errors": 0,
+      "failed_requests": 0,
+      "external_requests": 0,
+      "apc_unreachable_target_regression": "passed_on_actual_horde",
+      "note": "V2 repeats the frozen-index, insertion, real City rig, APC target selection and cleanup checks. V1 screenshots cover unchanged visual surfaces."
+    }
+  },
+  "changes": {
+    "city_mane": {
+      "existing_chains": 2,
+      "new_free_ends": 10,
+      "new_bones": 40,
+      "weighted_vertices": 2303,
+      "anchored_vertices": 887,
+      "simulated_segments_total": 38,
+      "source_triangles_added": 0
+    },
+    "city_right_gauntlet": {
+      "rigid_native_panels": 3,
+      "vertices": 3254,
+      "triangles": 3221,
+      "draw_calls_added": 0,
+      "complete_wristblades_separated": false
+    },
+    "big_chap_ankles": {
+      "new_bones": 4,
+      "skeleton_bones_with_tail": 37,
+      "reviewed_vertices": 8138,
+      "weighted_vertices": 5081,
+      "support_vertices": 1953,
+      "tested_walk_run_poses": 66,
+      "source_triangles_added": 0,
+      "planted_foot_ik": false
+    },
+    "wolf_biomask": {
+      "reference_photos": 4,
+      "studs": 12,
+      "hero_triangles": 169560,
+      "hero_meshes": 47
+    },
+    "apc": {
+      "reference_photos": 3,
+      "rear_stowage": true,
+      "deployment_seconds": 2.2,
+      "triangles_including_hidden_flash": 35854,
+      "meshes_including_hidden_flash": 14,
+      "navigation_radius": 7.0,
+      "collision_actor_height_default": 3.8
+    }
+  },
+  "review_axes": [
+    "shapes_and_surfaces",
+    "playability_and_transitions",
+    "contacts_and_navigation",
+    "runtime_and_resources",
+    "provenance_and_ownership"
+  ],
+  "pilot_evidence": {
+    "baseline": {
+      "captures": 39,
+      "index_sha256": "8683a627c08e1c2647913aa29dc375df8cdde08c69da18895981de2b5c5fae6f"
+    },
+    "right_gauntlet": {
+      "captures": 5,
+      "errors": 0,
+      "rest_changed_pixels": 281,
+      "compared_pixels": 935000
+    },
+    "city_mane": {
+      "captures": 9,
+      "model_errors": 0,
+      "failed_requests": 0,
+      "raw_dev_report_status": "failed",
+      "induced_hmr_console_errors": 4,
+      "note": "Development live-reload was deliberately blocked during parallel edits. The raw failed report is retained; final production preview is checked separately."
+    },
+    "big_chap": {
+      "captures": 32,
+      "errors": 0,
+      "independent_review": "go_with_source_anatomy_limits"
+    },
+    "wolf": {
+      "captures": 8,
+      "errors": 0,
+      "independent_review": "go_as_procedural_reference_interpretation"
+    },
+    "apc": {
+      "captures": 8,
+      "errors": 0
+    }
+  },
+  "remaining_limits": [
+    "Native City/Jungle wristblades remain fused. A local City extraction was rejected with 94 open boundary edges; no incomplete separation was enabled.",
+    "City articulation adds ten free ends rather than ten complete separated strands. Large welded hair bundles and the source face remain approximate.",
+    "Big Chap retains simplified boot-like feet/claws, source skull and hand anatomy. No planted-foot IK, slope solver or horizontal anti-slide is claimed.",
+    "Wolf remains procedural; mask crown, muzzle, surface wear, body armor and scalp roots are not a measured film reconstruction.",
+    "APC stow dimensions, rail radius and angular stops are locally reconstructed. Collision volumes are simplified and standing actors default to height 3.8 game units. No suspension/interior/Cheyenne embarkation was added.",
+    "Five other Yautja bodies remain outside the previously approved City generation budget. No paid generation was launched."
+  ],
+  "publication": {
+    "status": "ready_for_verified_deployment",
+    "canonical_url": "https://yautja-hive-warriors.vercel.app",
+    "git_branch": "codex/validated-gameplay-20261025",
+    "previous_canonical_index_sha256": "8683a627c08e1c2647913aa29dc375df8cdde08c69da18895981de2b5c5fae6f"
+  },
+  "prior_build": {
+    "index_sha256": "397cdbf1276d3c1ef45312b5431083d11e4e94452846f7b04ed47a21bb72e5c3",
+    "cpu": {
+      "status": "passed",
+      "passed": 385,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "duration_ms": 230044.496436,
+      "index_sha256": "397cdbf1276d3c1ef45312b5431083d11e4e94452846f7b04ed47a21bb72e5c3",
+      "command": "node --max-old-space-size=2048 --test --test-concurrency=1 tests/*.test.js tests/browser-cleanup.test.mjs",
+      "log": "fidelity/cpu-v1.txt",
+      "log_sha256": "5cdbb7a77f75c7cf82debb8cbcbaaf7e5f3847717979abd3fbeb6b66b96621a8"
+    },
+    "runtime": {
+      "status": "passed",
+      "captures": 26,
+      "errors": 0,
+      "failed_requests": 0,
+      "external_requests": 0,
+      "report": "fidelity/runtime-v1.json"
+    },
+    "rejected_before_publication": "Closer target below APC elevation stop prevented fire at a reachable enemy; fixed and retested in v2."
+  },
+  "independent_review": {
+    "status": "go_with_documented_limits",
+    "axes": 5,
+    "report": "fidelity/review.json",
+    "summary": "fidelity/review.md",
+    "human_testers": 0
+  }
+}

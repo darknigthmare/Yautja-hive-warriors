@@ -1,0 +1,255 @@
+{
+  "status": "passed-focused-qa",
+  "automated": true,
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "realDeviceFpsCertified": false,
+  "baselineIndexSha256": "8683a627c08e1c2647913aa29dc375df8cdde08c69da18895981de2b5c5fae6f",
+  "geometryReviewIndexSha256": "397cdbf1276d3c1ef45312b5431083d11e4e94452846f7b04ed47a21bb72e5c3",
+  "finalWorkflowIndexSha256": "cb19eded36c19e20a5c50b94daad56d1d8550cf1c9ddff08df6d0167d7a03910",
+  "geometryCaptures": 26,
+  "browserErrors": [],
+  "failedAssetRequests": [],
+  "externalRequests": [],
+  "axes": [
+    {
+      "axis": "shape-surfaces-mechanisms",
+      "status": "passed-with-source-art-limits",
+      "verified": [
+        "City rigid original housing retains rest surface and PBR; fused native blades left static",
+        "City actual 12 chains / 38 segments, ten new distal regions",
+        "Big Chap actual 37 bones / four ankle-toe joints / nine tail joints, continuous seams and unchanged idle silhouette",
+        "Wolf reference-specific brow/lenses/crown/muzzle/PBR",
+        "APC rear return rail, carriage and full-gun elevation"
+      ],
+      "limits": [
+        "No 1:1 certification; source Meshy anatomy and topology remain simplified",
+        "City broad welded mane bundles and fused wristblades are not fully independent",
+        "Big Chap boot-like sole/claws remain approximate; no planted-foot IK",
+        "Wolf body/hair procedural; mask surface/proportions approximate",
+        "APC licensed-miniature references and locally reconstructed dimensions"
+      ]
+    },
+    {
+      "axis": "gameplay-state-transitions",
+      "status": "passed-focused-workflows",
+      "cityStates": {
+        "visual": "imported",
+        "mask": "attached",
+        "gauntlet": "ready",
+        "articulation": {
+          "dreadlocks": 12,
+          "simulatedSegments": 38,
+          "wristbladeActuators": 0,
+          "gauntletHinges": 0
+        },
+        "footStatus": "applied"
+      },
+      "realKeyboardFpsChecks": [
+        {
+          "id": "city_hunter",
+          "kind": "actual-KeyI-first-person",
+          "enabled": true,
+          "headVisible": false,
+          "importedVisible": 0,
+          "hairActive": false,
+          "hp": 850,
+          "camera": [
+            3.9740518819376966e-07,
+            3.53928651180155,
+            4.399999860059995
+          ],
+          "target": null
+        },
+        {
+          "id": "wolf_predator",
+          "kind": "actual-KeyI-first-person",
+          "enabled": true,
+          "headVisible": false,
+          "importedVisible": 0,
+          "hairActive": false,
+          "hp": 1150,
+          "camera": [
+            4.894437128029217e-07,
+            3.9949999912734295,
+            4.399999969409769
+          ],
+          "target": null
+        }
+      ],
+      "apcTargetOrder": {
+        "beforeDeployment": 0,
+        "afterReachable": 1,
+        "afterAllDead": 1,
+        "closeArc": false,
+        "farArc": true,
+        "shots": [
+          {
+            "origin": [
+              12,
+              0,
+              2.1999999999999993
+            ],
+            "damage": 240,
+            "radius": 3.5,
+            "type": "heavy"
+          }
+        ],
+        "farPosition": [
+          12,
+          0,
+          2.1999999999999993
+        ],
+        "deadPosition": [
+          0.5,
+          0,
+          -13.8
+        ],
+        "cooldown": 1.1,
+        "navOwners": 1
+      },
+      "scope": "Coordinator runs the broader 15-case browser regression after this focused pass."
+    },
+    {
+      "axis": "contact-collision-navigation",
+      "status": "passed",
+      "apcRuntime": {
+        "stowedDisplacement": 0.5176013112068176,
+        "deployedDisplacement": 0,
+        "airborneDisplacement": 0,
+        "navigation": {
+          "halfWidth": 2.52,
+          "halfDepth": 5.8,
+          "height": 2.48,
+          "owner": "apc"
+        },
+        "ownedNavigation": 1
+      },
+      "bigChapFootContact": {
+        "id": "big-chap-measured-ankles-v1-20261025",
+        "articulatedJoints": 4,
+        "supportVertices": 1953,
+        "ankleIK": false,
+        "method": "source-clip-measured-ankle-toe-skin",
+        "clip": "run",
+        "moving": true,
+        "angles": [
+          [
+            -0.030976153138423612,
+            -6.39723099453704e-05
+          ],
+          [
+            -0.18,
+            0.03553924858681068
+          ]
+        ],
+        "minFootYBefore": -0.0060886635719276105,
+        "minFootYAfter": 0.005000000000000001,
+        "visualWorldOffsetY": 0.011088663571927612,
+        "limited": false,
+        "contact": true,
+        "feet": [
+          {
+            "name": "left",
+            "minY": 1.405445226050276
+          },
+          {
+            "name": "right",
+            "minY": -0.0060886635719276105
+          }
+        ]
+      },
+      "discoveredAndFixed": "APC originally sliced only the foot plane; now clips the full vertical standing slab and projects the actual moving piece outline."
+    },
+    {
+      "axis": "runtime-budget",
+      "status": "passed-with-measurement-limits",
+      "fixedViewTriangleCounts": {
+        "city": [
+          323381,
+          323381
+        ],
+        "jungle": [
+          270905,
+          270905
+        ],
+        "bigChap": [
+          232283,
+          232283
+        ],
+        "apc": [
+          40122,
+          48398
+        ]
+      },
+      "fixedViewDrawCalls": {
+        "city": [
+          35,
+          35
+        ],
+        "jungle": [
+          16,
+          16
+        ],
+        "bigChap": [
+          16,
+          16
+        ],
+        "apc": [
+          22,
+          22
+        ]
+      },
+      "nodeHeapCeilingMiB": 2048,
+      "gpuConcurrency": 1,
+      "limits": "Counters and actor lifecycle checks are not a certification of real hardware FPS or indefinite memory stability."
+    },
+    {
+      "axis": "ownership-failure-reproducibility",
+      "status": "passed-reviewed-and-tested",
+      "cleanupV1": {
+        "playing": false,
+        "player": null,
+        "aliens": 0,
+        "pods": 0,
+        "apc": null,
+        "apcNavigation": 0,
+        "memory": {
+          "geometries": 54,
+          "textures": 63
+        },
+        "programs": 12
+      },
+      "cleanupV2": {
+        "playing": false,
+        "player": null,
+        "aliens": 0,
+        "pods": 0,
+        "apc": null,
+        "apcNavigation": 0
+      },
+      "sourceValidation": "Exact source SHA/fingerprints; measured disjoint regions, fixed collars, cached preparations, private actor bones/controllers, borrowed PBR not disposed.",
+      "reviewArtifacts": [
+        "../INDEPENDENT-REVIEW.md",
+        "../source-provenance.json",
+        "../render-budget-comparison.json",
+        "../ankle-pilot-independent-pixel-diff.json"
+      ]
+    }
+  ],
+  "retainedNonProductionFailures": [
+    {
+      "kind": "development-pilot",
+      "detail": "Four raw Vite HMR websocket/client errors made the mane development pilot report fail its zero-errors assertion; same integrated production-preview code has zero errors."
+    },
+    {
+      "kind": "qa-fixture",
+      "detail": "Initial v2 fixture passed Player as APC.update second argument; APC.update requires (delta,horde). Failure retained as final-v2/fixture-signature-error.json. Corrected actual Horde rerun passed without a production change."
+    },
+    {
+      "kind": "qa-fixture",
+      "detail": "Initial baseline fixture assumed Player adapter exposed skeletons; corrected traversal gathers primitive bone counts. Failure retained in baseline-fixture-error-1.json."
+    }
+  ],
+  "publicationStatus": "Await coordinator regression and deployment. Prepared HTTPS smoke has not been run against final deployment."
+}

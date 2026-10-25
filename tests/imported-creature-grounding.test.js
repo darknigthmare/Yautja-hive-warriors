@@ -32,7 +32,7 @@ function minimum(mesh, ranges) {
 function make(clip = 'run', enabled = true) {
   const actor = new THREE.Group(); actor.userData.visualProfile = { standingHeight: 3.9536638259887695 };
   const adapter = createImportedCreature(actor, templates[clip], { ...entry, creatureRig: {
-    ...entry.creatureRig, clips: { [clip]: clip }, tailRig: BIG_CHAP_TAIL_RIG,
+    ...entry.creatureRig, clips: { [clip]: clip }, tailRig: BIG_CHAP_TAIL_RIG, ankleRig: undefined,
     footGrounding: enabled ? BIG_CHAP_FOOT_GROUNDING : undefined
   } });
   actor.add(adapter.root);

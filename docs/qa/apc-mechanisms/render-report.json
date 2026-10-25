@@ -1,0 +1,160 @@
+{
+  "date": "2026-10-25",
+  "scope": "Controlled model scene; real meshes/materials, local reconstruction checked against three licensed NECA photographs; no film 1:1 certification or hardware frame-rate claim",
+  "errors": [],
+  "captures": [
+    {
+      "name": "apc-quarter",
+      "triangles": 35808,
+      "calls": 14,
+      "carriage": [
+        0,
+        2.65,
+        -2.3
+      ],
+      "carriageRotationX": 0,
+      "turretYaw": 0,
+      "gunElevation": 0
+    },
+    {
+      "name": "apc-service-flank",
+      "view": [
+        -1.12,
+        0.25,
+        0.05
+      ],
+      "triangles": 35808,
+      "calls": 14,
+      "carriage": [
+        0,
+        2.65,
+        -2.3
+      ],
+      "carriageRotationX": 0,
+      "turretYaw": 0,
+      "gunElevation": 0
+    },
+    {
+      "name": "apc-rear-deployed",
+      "view": [
+        0.8,
+        0.38,
+        -1
+      ],
+      "triangles": 35808,
+      "calls": 14,
+      "carriage": [
+        0,
+        2.65,
+        -2.3
+      ],
+      "carriageRotationX": 0,
+      "turretYaw": 0,
+      "gunElevation": 0
+    },
+    {
+      "name": "apc-rear-stowed",
+      "view": [
+        0.8,
+        0.38,
+        -1
+      ],
+      "deployment": 0,
+      "triangles": 35808,
+      "calls": 14,
+      "carriage": [
+        0,
+        0.8999999999999999,
+        -4.95
+      ],
+      "carriageRotationX": -1.5707963267948966,
+      "turretYaw": 0,
+      "gunElevation": 0
+    },
+    {
+      "name": "apc-rear-rising",
+      "view": [
+        0.8,
+        0.38,
+        -1
+      ],
+      "deployment": 0.25,
+      "triangles": 35808,
+      "calls": 14,
+      "carriage": [
+        0,
+        1.9463495408493618,
+        -4.95
+      ],
+      "carriageRotationX": -1.5707963267948966,
+      "turretYaw": 0,
+      "gunElevation": 0
+    },
+    {
+      "name": "apc-rear-corner",
+      "view": [
+        0.8,
+        0.38,
+        -1
+      ],
+      "deployment": 0.375,
+      "triangles": 35808,
+      "calls": 14,
+      "carriage": [
+        0,
+        2.448216037696357,
+        -4.851331776539916
+      ],
+      "carriageRotationX": -0.9317477042468099,
+      "turretYaw": 0,
+      "gunElevation": 0
+    },
+    {
+      "name": "apc-roof-travel",
+      "view": [
+        0.8,
+        0.38,
+        -1
+      ],
+      "deployment": 0.625,
+      "triangles": 35808,
+      "calls": 14,
+      "carriage": [
+        0,
+        2.65,
+        -3.869524311274043
+      ],
+      "carriageRotationX": 0,
+      "turretYaw": 0,
+      "gunElevation": 0
+    },
+    {
+      "name": "apc-elevated",
+      "view": [
+        0.8,
+        0.33,
+        1
+      ],
+      "aim": [
+        8,
+        12,
+        20
+      ],
+      "triangles": 35856,
+      "calls": 15,
+      "carriage": [
+        0,
+        2.65,
+        -2.3
+      ],
+      "carriageRotationX": 0,
+      "turretYaw": 0.344443587394299,
+      "gunElevation": 0.3393536433045292
+    }
+  ],
+  "sourceFiles": {
+    "js/graphics/APCModel.js": "0ba2c4158a7af99e354ca6e4f6ceaa37168ab2371be87d91c3d420c10da7b067",
+    "js/graphics/SupportModels.js": "b993b23cbeaf5baaad708223075b804142e9517428de84887e0b215203d7d7f7"
+  },
+  "controllerRegressionAfterCapture": "Only APCVehicle target selection and its CPU regression test changed after these captures. Model geometry, materials, rail, transforms and camera scene remained identical."
+}

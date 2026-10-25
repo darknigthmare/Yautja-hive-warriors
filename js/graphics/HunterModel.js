@@ -4,6 +4,7 @@ import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.j
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { createSurfaceMaterial } from './SurfaceLibrary.js';
 import { sculptLoft, taperedSweep, fittedPlate, gauss } from './HunterSculpt.js';
+import { attachWolfBiomask } from './WolfBiomask.js';
 
 const v = (x, y, z) => new THREE.Vector3(x, y, z);
 
@@ -200,51 +201,54 @@ export function buildHunterModel(owner) {
   const head = owner.headMesh;
   const skullProfiles = [[-0.27, 0.075, 0.075], [-0.24, 0.14, 0.13], [-0.12, 0.19, 0.16], [0.06, 0.2, 0.175], [0.21, 0.17, 0.15], [0.29, 0.075, 0.07], [0.315, 0.004, 0.004]];
   add(head, sculptLoft(skullProfiles, { radial: 64, longitudinal: 48 }), skin, [0, 0, -0.025]);
-  const maskProfiles = [[-0.28, 0.075, 0.135], [-0.24, 0.125, 0.185], [-0.15, 0.19, 0.18], [-0.055, 0.25, 0.18], [0.065, 0.265, 0.175], [0.17, 0.235, 0.157], [0.275, 0.14, 0.11], [0.31, 0.025, 0.035]];
-  const maskGeometry = fittedPlate(maskProfiles, {
-    radial: 64, longitudinal: 48, arcLength: Math.PI * 1.14, thickness: 0.009,
-    sculpt(x, y, z, theta) {
-      const front = Math.max(0, Math.cos(theta));
-      const brow = gauss(y, 0.07, 0.025) * (0.018 + gauss(Math.abs(x), 0.14, 0.1) * 0.021);
-      const bridgeRecess = gauss(x, 0, 0.036) * gauss(y, -0.015, 0.09) * 0.008;
-      const cheek = gauss(Math.abs(x), 0.16, 0.038) * gauss(y, -0.1, 0.07) * 0.043;
-      const muzzle = gauss(y, -0.205, 0.05) * Math.exp(-((x / 0.11) ** 6)) * 0.044;
-      const foreheadGroove = gauss(Math.abs(x), 0.14, 0.009) * gauss(y, 0.19, 0.07) * 0.006;
-      return [x, y, z + front ** 3 * (brow + cheek + muzzle - bridgeRecess - foreheadGroove)];
-    }
-  });
-  add(head, maskGeometry, mask, [0, 0, 0.025]).name = 'sculpted-biomask';
-  const maskFront = frontProjector(maskGeometry);
-  for (const side of [-1, 1]) {
-    // Black inset lenses are narrow parts of the brow, without glowing eye strips.
-    const eyePoints = [], eyeUV = [], eyeIndices = [];
-    for (let row = 0; row < 2; row++) for (let column = 0; column <= 12; column++) {
-      const x = side * 0.11 + (column / 12 - 0.5) * 0.14;
-      const y = 0.025 + side * (x - side * 0.11) * 0.035 + (row ? 0.006 : -0.005);
-      const projected = maskFront.point(x, y, 0.003) || [x, y, 0.2]; projected[2] += 0.025;
-      eyePoints.push(...projected); eyeUV.push(column / 12, row);
-      if (!row && column < 12) eyeIndices.push(column, column + 1, column + 13, column + 1, column + 14, column + 13);
-    }
-    const eyeGeometry = new THREE.BufferGeometry(); eyeGeometry.setAttribute('position', new THREE.Float32BufferAttribute(eyePoints, 3)); eyeGeometry.setAttribute('uv', new THREE.Float32BufferAttribute(eyeUV, 2)); eyeGeometry.setIndex(eyeIndices); eyeGeometry.computeVertexNormals();
-    add(head, eyeGeometry, dark);
-    for (let vent = 0; vent < 4; vent++) {
-      const points = [];
-      for (let step = 0; step <= 4; step++) {
-        const x = side * (0.045 + vent * 0.022 + step * 0.00075), y = -0.16 - step * 0.013;
-        const point = maskFront.point(x, y, 0.003);
-        if (point) { point[2] += 0.025; points.push(point); }
+  if (wolf) {
+    attachWolfBiomask(head, { mask, dark });
+  } else {
+    const maskProfiles = [[-0.28, 0.075, 0.135], [-0.24, 0.125, 0.185], [-0.15, 0.19, 0.18], [-0.055, 0.25, 0.18], [0.065, 0.265, 0.175], [0.17, 0.235, 0.157], [0.275, 0.14, 0.11], [0.31, 0.025, 0.035]];
+    const maskGeometry = fittedPlate(maskProfiles, {
+      radial: 64, longitudinal: 48, arcLength: Math.PI * 1.14, thickness: 0.009,
+      sculpt(x, y, z, theta) {
+        const front = Math.max(0, Math.cos(theta));
+        const brow = gauss(y, 0.07, 0.025) * (0.018 + gauss(Math.abs(x), 0.14, 0.1) * 0.021);
+        const bridgeRecess = gauss(x, 0, 0.036) * gauss(y, -0.015, 0.09) * 0.008;
+        const cheek = gauss(Math.abs(x), 0.16, 0.038) * gauss(y, -0.1, 0.07) * 0.043;
+        const muzzle = gauss(y, -0.205, 0.05) * Math.exp(-((x / 0.11) ** 6)) * 0.044;
+        const foreheadGroove = gauss(Math.abs(x), 0.14, 0.009) * gauss(y, 0.19, 0.07) * 0.006;
+        return [x, y, z + front ** 3 * (brow + cheek + muzzle - bridgeRecess - foreheadGroove)];
       }
-      if (points.length > 1) tube(head, dark, points, 0.0035, 6, 5);
+    });
+    add(head, maskGeometry, mask, [0, 0, 0.025]).name = 'sculpted-biomask';
+    const maskFront = frontProjector(maskGeometry);
+    for (const side of [-1, 1]) {
+      // Black inset lenses are narrow parts of the brow, without glowing eye strips.
+      const eyePoints = [], eyeUV = [], eyeIndices = [];
+      for (let row = 0; row < 2; row++) for (let column = 0; column <= 12; column++) {
+        const x = side * 0.11 + (column / 12 - 0.5) * 0.14;
+        const y = 0.025 + side * (x - side * 0.11) * 0.035 + (row ? 0.006 : -0.005);
+        const projected = maskFront.point(x, y, 0.003) || [x, y, 0.2]; projected[2] += 0.025;
+        eyePoints.push(...projected); eyeUV.push(column / 12, row);
+        if (!row && column < 12) eyeIndices.push(column, column + 1, column + 13, column + 1, column + 14, column + 13);
+      }
+      const eyeGeometry = new THREE.BufferGeometry(); eyeGeometry.setAttribute('position', new THREE.Float32BufferAttribute(eyePoints, 3)); eyeGeometry.setAttribute('uv', new THREE.Float32BufferAttribute(eyeUV, 2)); eyeGeometry.setIndex(eyeIndices); eyeGeometry.computeVertexNormals();
+      add(head, eyeGeometry, dark);
+      for (let vent = 0; vent < 4; vent++) {
+        const points = [];
+        for (let step = 0; step <= 4; step++) {
+          const x = side * (0.045 + vent * 0.022 + step * 0.00075), y = -0.16 - step * 0.013;
+          const point = maskFront.point(x, y, 0.003);
+          if (point) { point[2] += 0.025; points.push(point); }
+        }
+        if (points.length > 1) tube(head, dark, points, 0.0035, 6, 5);
+      }
+      if (primitive) {
+        add(head, taperedSweep([[side * 0.11, -0.16, 0.16], [side * 0.22, -0.22, 0.18], [side * 0.17, -0.31, 0.25]], [0.035, 0.03, 0.002], { longitudinal: 18, radial: 10 }), bone);
+      }
+      if (samurai || heavy) {
+        add(head, taperedSweep([[side * 0.13, 0.19, -0.07], [side * 0.23, 0.31, -0.02], [side * 0.28, 0.43, 0.04]], [0.032, 0.023, 0.002], { longitudinal: 18, radial: 10 }), mask);
+      }
     }
-    if (primitive) {
-      add(head, taperedSweep([[side * 0.11, -0.16, 0.16], [side * 0.22, -0.22, 0.18], [side * 0.17, -0.31, 0.25]], [0.035, 0.03, 0.002], { longitudinal: 18, radial: 10 }), bone);
-    }
-    if (samurai || heavy) {
-      add(head, taperedSweep([[side * 0.13, 0.19, -0.07], [side * 0.23, 0.31, -0.02], [side * 0.28, 0.43, 0.04]], [0.032, 0.023, 0.002], { longitudinal: 18, radial: 10 }), mask);
-    }
+    maskFront.dispose();
   }
-  maskFront.dispose();
-  if (wolf) for (const side of [-1, 1]) tube(head, dark, [[side * 0.035, 0.21, 0.16], [side * 0.06, 0.11, 0.2], [side * 0.1, -0.02, 0.218]], 0.0035, 12, 5);
   for (let i = 0; i < 24; i++) {
     const angle = Math.PI * 0.2 + i / 23 * Math.PI * 1.6;
     const x = Math.sin(angle), z = Math.cos(angle);

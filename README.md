@@ -2,7 +2,7 @@
 
 Jeu d'action 3D dans le navigateur, réalisé avec Three.js et Vite. Six environnements avec territoires reliés, chasse libre, campagne de cinq chapitres, coopération locale à deux joueurs, forge et arène personnalisée.
 
-La reprise du 25 octobre développe l'architecture des secteurs, le leurre détaillé du personnage et les effets de gantelet/trophée, puis corrige la victoire après exécution et plusieurs états de coopération. Voir le [bilan et les captures](docs/qa/development/README.md), le [rapport de validation](docs/qa/development-validation.json) et [la branche Git publiée](docs/GIT-PUBLICATION.md). La fidélité exacte 1:1 reste non établie.
+La dernière passe ajoute dix extrémités de mèches articulées et un gantelet rigide au City Hunter, de vraies articulations cheville/orteils au Big Chap, un masque Wolf spécifique et le rangement arrière de la tourelle M577. Voir les [comparaisons et limites](docs/qa/fidelity/README.md), le [rapport de validation](docs/qa/fidelity-validation.json) et [la branche Git publiée](docs/GIT-PUBLICATION.md). La fidélité exacte 1:1 reste non établie. L'[architecture des secteurs et les effets de personnage](docs/qa/development/README.md) décrivent la passe précédente.
 
 Version publiée : [yautja-hive-warriors.vercel.app](https://yautja-hive-warriors.vercel.app), build `8683a627…`. Les fichiers et le fonctionnement HTTPS sont vérifiés dans le rapport de reprise.
 

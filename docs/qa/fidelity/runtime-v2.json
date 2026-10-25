@@ -1,0 +1,71 @@
+{
+  "status": "passed",
+  "startedAt": "2026-10-25T08:33:03.221Z",
+  "automated": true,
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "scope": "Final workflow-only verification after APC target-selection fix; geometry comparisons remain final-v1/index397cdbf1276d3c1ef45312b5431083d11e4e94452846f7b04ed47a21bb72e5c3.",
+  "errors": [],
+  "failedRequests": [],
+  "externalRequests": [],
+  "indexSha256": "cb19eded36c19e20a5c50b94daad56d1d8550cf1c9ddff08df6d0167d7a03910",
+  "insertionBefore": {
+    "isActive": true,
+    "playerVisible": false,
+    "hp": 850
+  },
+  "character": {
+    "visual": "imported",
+    "mask": "attached",
+    "rightGauntlet": "ready",
+    "stats": {
+      "dreadlocks": 12,
+      "simulatedSegments": 38,
+      "wristbladeActuators": 0,
+      "gauntletHinges": 0
+    },
+    "footStatus": "applied",
+    "visible": true,
+    "hp": 850
+  },
+  "apc": {
+    "beforeDeployment": 0,
+    "afterReachable": 1,
+    "afterAllDead": 1,
+    "closeArc": false,
+    "farArc": true,
+    "shots": [
+      {
+        "origin": [
+          12,
+          0,
+          2.1999999999999993
+        ],
+        "damage": 240,
+        "radius": 3.5,
+        "type": "heavy"
+      }
+    ],
+    "farPosition": [
+      12,
+      0,
+      2.1999999999999993
+    ],
+    "deadPosition": [
+      0.5,
+      0,
+      -13.8
+    ],
+    "cooldown": 1.1,
+    "navOwners": 1
+  },
+  "cleanup": {
+    "playing": false,
+    "player": null,
+    "aliens": 0,
+    "pods": 0,
+    "apc": null,
+    "apcNavigation": 0
+  },
+  "completedAt": "2026-10-25T08:33:24.360Z"
+}

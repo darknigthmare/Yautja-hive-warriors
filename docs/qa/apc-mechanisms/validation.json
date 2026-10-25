@@ -1,0 +1,309 @@
+{
+  "date": "2026-10-25",
+  "automated": true,
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "newMeshyCredits": 0,
+  "model": {
+    "trianglesIncludingHiddenFlash": 35854,
+    "meshesIncludingHiddenFlash": 14,
+    "deployedVisibleBounds": {
+      "min": [
+        -2.512500047683716,
+        0.0024999999441206455,
+        -5.059999942779541
+      ],
+      "max": [
+        2.512500047683716,
+        3.9176013112068175,
+        5.065834045410156
+      ],
+      "size": [
+        5.025000095367432,
+        3.915101311262697,
+        10.125833988189697
+      ]
+    },
+    "stowedVisibleBounds": {
+      "min": [
+        -2.512500047683716,
+        0.0024999999441206455,
+        -6.217601311206818
+      ],
+      "max": [
+        2.512500047683716,
+        2.7339999675750732,
+        5.065834045410156
+      ],
+      "size": [
+        5.025000095367432,
+        2.7314999676309526,
+        11.283435356616973
+      ]
+    },
+    "allPoseEnvelope": {
+      "min": [
+        -2.512500047683716,
+        0.0024999999441206455,
+        -6.411326920241963
+      ],
+      "max": [
+        2.512500047683716,
+        4.923815135373371,
+        5.065834045410156
+      ]
+    },
+    "navigation": {
+      "centerZ": -0.7,
+      "halfWidth": 2.52,
+      "halfDepth": 5.8,
+      "height": 2.48,
+      "radius": 7
+    },
+    "visibleSceneTrianglesWithFloor": 35808,
+    "visibleSceneDrawCallsWithFloor": 14
+  },
+  "mechanics": {
+    "rail": {
+      "stowedZ": -4.95,
+      "stowedHeight": 0.9,
+      "deployedZ": -2.3,
+      "height": 2.65,
+      "cornerZ": -4.45,
+      "cornerRadius": 0.5
+    },
+    "travel": 4.185398163397448,
+    "deploymentSeconds": 2.2,
+    "elevationRadians": {
+      "min": -0.2617993877991494,
+      "max": 0.7853981633974483
+    },
+    "damage": 240,
+    "damageRadius": 3.5,
+    "reloadSeconds": 1.1,
+    "recoilDistance": 0.15,
+    "poses": [
+      {
+        "deployment": 0,
+        "carriage": [
+          0,
+          0.8999999999999999,
+          -4.95
+        ],
+        "rotationX": -1.5707963267948966
+      },
+      {
+        "deployment": 0.125,
+        "carriage": [
+          0,
+          1.4231747704246809,
+          -4.95
+        ],
+        "rotationX": -1.5707963267948966
+      },
+      {
+        "deployment": 0.25,
+        "carriage": [
+          0,
+          1.9463495408493618,
+          -4.95
+        ],
+        "rotationX": -1.5707963267948966
+      },
+      {
+        "deployment": 0.375,
+        "carriage": [
+          0,
+          2.448216037696357,
+          -4.851331776539916
+        ],
+        "rotationX": -0.9317477042468099
+      },
+      {
+        "deployment": 0.5,
+        "carriage": [
+          0,
+          2.65,
+          -4.392699081698725
+        ],
+        "rotationX": 0
+      },
+      {
+        "deployment": 0.625,
+        "carriage": [
+          0,
+          2.65,
+          -3.869524311274043
+        ],
+        "rotationX": 0
+      },
+      {
+        "deployment": 0.75,
+        "carriage": [
+          0,
+          2.65,
+          -3.3463495408493618
+        ],
+        "rotationX": 0
+      },
+      {
+        "deployment": 0.875,
+        "carriage": [
+          0,
+          2.65,
+          -2.823174770424681
+        ],
+        "rotationX": 0
+      },
+      {
+        "deployment": 1,
+        "carriage": [
+          0,
+          2.65,
+          -2.3
+        ],
+        "rotationX": 0
+      }
+    ],
+    "collision": "Actor vertical slab clips the oriented shoe, housing and recoiling barrels; its true convex horizontal projection resolves actor-circle contacts. Default standing height3.8, optional explicit low-actor height.",
+    "defaultActorHeight": 3.8,
+    "runningStrip": "Beveled rectangular guides with visible steel strip; roller bottoms meet strip at straight roof/rear sections. Rigid shoe follows rail tangent over corner."
+  },
+  "references": {
+    "type": "Licensed miniature photographs; not film prop scans or orthographic measurements",
+    "sources": [
+      {
+        "page": "https://necaonline.com/2015/11/cinemachines-die-cast-collectibles-series-1-assortment/",
+        "url": "https://necaonline.com/wp-content/uploads/2015/11/1300x-M577.jpg",
+        "bytes": 123281,
+        "sha256": "a36ea706eea8a0c55d7d30714b1eed18fc628b8a9311dbc9fa9686fd5a45cf8e",
+        "viewed": true,
+        "observations": [
+          "Angular low hull and recessed nose bay",
+          "Solid wheel covers",
+          "Rear turret and longitudinal rail"
+        ]
+      },
+      {
+        "page": "https://necaonline.com/2015/11/cinemachines-die-cast-collectibles-series-1-assortment/",
+        "url": "https://necaonline.com/wp-content/uploads/2015/11/1300x-M577_2-.jpg",
+        "bytes": 144194,
+        "sha256": "135a0ec9b04bcd63897b29fcb732e49309dea1be08b96c1af490d4a92ea7a06c",
+        "viewed": true,
+        "observations": [
+          "Opposite flank has two service grilles instead of another access door",
+          "Rear rail continues down behind the bulkhead",
+          "Compact twin muzzle tubes and dark yaw bearing"
+        ]
+      },
+      {
+        "page": "https://necaonline.com/2015/11/cinemachines-die-cast-collectibles-series-1-assortment/",
+        "url": "https://necaonline.com/wp-content/uploads/2015/11/1300x-M577_3-.jpg",
+        "bytes": 112141,
+        "sha256": "d80a49965ad986e5b926cc8dbb16ca35ea5ab688d0d835ada988969c47f53b0a",
+        "viewed": true,
+        "observations": [
+          "Complete armored gun housing elevates together with the two barrels",
+          "Turret is near the rear axle; forward armor deck remains long and low"
+        ]
+      }
+    ]
+  },
+  "checks": {
+    "dedicatedPassed": 11,
+    "legacySupportPassed": 18,
+    "failed": 0,
+    "railPosesForGeometryAndContinuity": 257,
+    "railPosesForEnvelope": 129,
+    "firingDirectionsForEnvelope": 32,
+    "firingElevationsForEnvelope": 3,
+    "sourceFiles": {
+      "js/graphics/APCModel.js": "0ba2c4158a7af99e354ca6e4f6ceaa37168ab2371be87d91c3d420c10da7b067",
+      "js/entities/APCVehicle.js": "f005ae6499923672010cc7d309c5df1a4373ee963dd1fdf2a677484b4afbbf0f",
+      "tests/apc-detail.test.js": "d4bef9924707c6d902e6ccba622b50a50e0f9a891296703a9ab7b785edfdbb3e"
+    },
+    "renderErrors": [],
+    "captures": [
+      "apc-quarter.png",
+      "apc-service-flank.png",
+      "apc-rear-deployed.png",
+      "apc-rear-stowed.png",
+      "apc-rear-rising.png",
+      "apc-rear-corner.png",
+      "apc-roof-travel.png",
+      "apc-elevated.png"
+    ],
+    "visuallyReviewedCaptures": [
+      "apc-quarter.png",
+      "apc-service-flank.png",
+      "apc-rear-deployed.png",
+      "apc-rear-stowed.png",
+      "apc-rear-rising.png",
+      "apc-rear-corner.png",
+      "apc-roof-travel.png",
+      "apc-elevated.png"
+    ],
+    "verticalContactFixtures": [
+      "Standing Yautja rootY0 behind the stowed gun blocks even when foot plane has no geometry",
+      "Same rear position releases after deployment",
+      "Feet above complete stowed gun clear it",
+      "At partial lift, height0.5 actor clears below whereas height3.8 blocks",
+      "Three vehicle orientations and repeated-contact stability"
+    ],
+    "artifactSha256": {
+      "apc-elevated.png": "d1a50a1272b91bd0ec5ed63b9357c1668c7fc3447c67cf670caa377a52b16cb9",
+      "apc-quarter.png": "05fd043845b69d4ce20322939d39de96d5224901ad920b35d200a1ec964baabd",
+      "apc-rear-corner.png": "c2a36814602d64c2f8f6425c8c0054d3fdea3302dac94dd4697684965f66fe75",
+      "apc-rear-deployed.png": "af470161802c1b64b0ab1fec876b5e1c7a98d305a6b0f3be0fe91bd0adf5cead",
+      "apc-rear-rising.png": "a41bd9cf3fab4806c2de8ba9ac84b745cf8fed1d7aade59ff426e1ac9171dc60",
+      "apc-rear-stowed.png": "23a9618d09b57497658acf3c6653a8a5588cd0bcfd02828f01aea06c0ad1fda1",
+      "apc-roof-travel.png": "72abbcfefb600e869443c1293db7a156b79d7bd7b31f7fe6583185145189e4ee",
+      "apc-service-flank.png": "258d4f48aa72cc47f1087f6a1d0d7ee9f0517334c86cd56f226f1a49eacdd26e"
+    },
+    "elevationClearance": {
+      "directions": 32,
+      "elevations": 13,
+      "realVerticesChecked": 3164928,
+      "minimumGunY": 2.8904732215847244,
+      "commandDeckMaximumY": 2.66,
+      "passed": true
+    },
+    "symmetricHousingRoofRaysPassed": 2,
+    "unreachableNearestTargetRegression": {
+      "nearUnreachable": [
+        3.5,
+        0,
+        -3
+      ],
+      "nearestReachable": [
+        12,
+        0,
+        18
+      ],
+      "furtherReachable": [
+        -15,
+        0,
+        20
+      ],
+      "result": "Burst and real muzzle axis stay on nearest reachable target; nearer unreachable enemy does not suppress support; reload and damage unchanged"
+    },
+    "independentVisualReview": {
+      "reviewer": "QA agent; not a human playtester",
+      "references": [
+        "NECA1300x-M577",
+        "NECAM577-2",
+        "NECAM577-3"
+      ],
+      "capturesReviewed": 8,
+      "result": "Visible improvement accepted: rectangular rails and running strips, rear stow and corner travel, elevating housing and distinct service flank. Exact proportions, finish, engravings and mechanical measurements remain interpreted."
+    }
+  },
+  "limitations": [
+    "Rail radius, stowed dimensions, timing and hinge limits are local mechanical reconstruction; exact film measurements unavailable",
+    "Interior, rolling suspension, passenger bay and mechanically damaged subparts remain simplified",
+    "Collision uses oriented component bounds clipped by the actor vertical interval and projected horizontally, not triangle-mesh physics",
+    "Controlled renders and automated tests do not establish human playtest results or hardware frame rate",
+    "The rail shoe is rigid; individual corner rollers are not separately articulated bogies. Dimensions remain local reconstruction."
+  ],
+  "status": "model_and_mechanisms_passed"
+}

@@ -35,7 +35,7 @@ function makeAdapter(clip = 'run', parent = null, { tail = true } = {}) {
   parent?.add(actor);
   const retained = new Set();
   const adapter = createImportedCreature(actor, clipTemplates[clip], {
-    ...entry, creatureRig: { ...entry.creatureRig, clips: { [clip]: clip }, tailRig: tail ? BIG_CHAP_TAIL_RIG : undefined, footGrounding: undefined }
+    ...entry, creatureRig: { ...entry.creatureRig, clips: { [clip]: clip }, tailRig: tail ? BIG_CHAP_TAIL_RIG : undefined, footGrounding: undefined, ankleRig: undefined }
   }, retained);
   actor.add(adapter.root); actor._importedCreatureAdapter = adapter;
   return { actor, adapter, retained, mesh: adapter.model.getObjectByName('char1') };

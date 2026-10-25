@@ -4,6 +4,7 @@ import { clone as cloneSkeleton } from 'three/addons/utils/SkeletonUtils.js';
 import { getCorrectedCreatureTemplate } from './CreatureSkinCorrections.js';
 import { prepareImportedTailTemplate, createImportedTailController } from './ImportedTailRig.js';
 import { createImportedCreatureGrounding } from './ImportedCreatureGrounding.js';
+import { prepareImportedAnkleTemplate, createImportedAnkleController } from './ImportedAnkleRig.js';
 
 const COMPONENTS = ['getX', 'getY', 'getZ', 'getW'];
 const LOCOMOTION_ROLES = ['leftLeg', 'rightLeg', 'leftArm', 'rightArm'];
@@ -168,7 +169,8 @@ export function createImportedCreature(actor, gltf, entry = {}, retained = new S
   const config = entry.creatureRig ?? {};
   const prepared = getCorrectedCreatureTemplate(gltf, config.skinCorrections);
   const articulated = prepareImportedTailTemplate(prepared.template, config.tailRig, { sourceSha256: entry.sha256 });
-  const template = articulated.template, inspected = inspectTemplate(template);
+  const ankled = prepareImportedAnkleTemplate(articulated.template, config.ankleRig, { sourceSha256: entry.sha256 });
+  const template = ankled.template, inspected = inspectTemplate(template);
   const forwardAxis = config.forwardAxis ?? '+z';
   const yaw = { '+z': 0, '-z': Math.PI, '+x': -Math.PI / 2, '-x': Math.PI / 2 }[forwardAxis];
   if (yaw === undefined) fail('forwardAxis must be +z, -z, +x or -x');
@@ -187,10 +189,11 @@ export function createImportedCreature(actor, gltf, entry = {}, retained = new S
       node.frustumCulled = false;
     }
   });
-  let mixer = null, disposed = false, activeAction = null;
+  let mixer = null, disposed = false, activeAction = null, ankleRig = null;
   const dispose = () => {
     if (disposed) return;
     disposed = true;
+    ankleRig?.dispose();
     mixer?.stopAllAction(); mixer?.uncacheRoot(model);
     skeletons.forEach(skeleton => skeleton.dispose());
     root.visible = false;
@@ -241,7 +244,8 @@ export function createImportedCreature(actor, gltf, entry = {}, retained = new S
     orientation.position.set(-center.x * scale, -bounds.min.y * scale, -center.z * scale);
     root.updateMatrixWorld(true);
     const tailRig = createImportedTailController(root, model, articulated.tail);
-    const footGrounding = createImportedCreatureGrounding(root, orientation, model, config.footGrounding, { sourceSha256: entry.sha256 });
+    ankleRig = createImportedAnkleController(root, orientation, model, ankled.ankles);
+    const footGrounding = ankleRig ? null : createImportedCreatureGrounding(root, orientation, model, config.footGrounding, { sourceSha256: entry.sha256 });
     inspected.resources.forEach(resource => retained.add(resource));
     const deltaQ = new THREE.Quaternion();
     const restoreRest = () => {
@@ -252,6 +256,7 @@ export function createImportedCreature(actor, gltf, entry = {}, retained = new S
     const setDetailLevel = level => {
       if (disposed) return;
       root.visible = level === 0;
+      ankleRig?.setDetailLevel(level);
       for (const mesh of Object.values(actor._creatureRig ?? {})) mesh.visible = level !== 0;
       actor.userData.visualSource = level === 0 ? 'generated-rigged' : 'procedural';
     };
@@ -279,14 +284,16 @@ export function createImportedCreature(actor, gltf, entry = {}, retained = new S
       for (const item of motionRest) { item.node.position.x = item.x; item.node.position.z = item.z; }
       root.updateMatrixWorld(true); skeletons.forEach(skeleton => skeleton.update());
       footGrounding?.update();
+      ankleRig?.update(action?.getClip().name, moving);
       tailRig?.update(phase, moving);
     };
-    return { root, model, bones, skeletons, tailRig, footGrounding, update, setDetailLevel, dispose,
+    return { root, model, bones, skeletons, tailRig, footGrounding, ankleRig, update, setDetailLevel, dispose,
       diagnostics: { triangles: inspected.triangles, drawCalls: inspected.drawCalls, height, normalizationScale: scale,
         forwardAxis, rootMotion: 'in-place', motionRootBone: centerBone.name,
         locomotion: moveClip?.name ?? 'calibrated-bones', idle: idleClip?.name ?? null,
         ...(tailRig ? { tailRig: tailRig.diagnostics } : {}),
         ...(footGrounding ? { footGrounding: footGrounding.diagnostics } : {}),
+        ...(ankleRig ? { ankleRig: ankleRig.diagnostics } : {}),
         ...(prepared.diagnostics ? { skinCorrections: prepared.diagnostics } : {}) } };
   } catch (error) { dispose(); throw error; }
 }

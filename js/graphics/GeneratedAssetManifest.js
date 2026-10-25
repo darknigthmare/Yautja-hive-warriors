@@ -3,10 +3,12 @@
 import { CITY_HUNTER_RIG } from './CityHunterRig.js';
 import { BIG_CHAP_TAIL_RIG } from './BigChapTailCalibration.js';
 import { BIG_CHAP_FOOT_GROUNDING } from './BigChapFootCalibration.js';
+import { CITY_HUNTER_MANE_RIG } from './CityHunterManeCalibration.js';
+import { BIG_CHAP_ANKLE_RIG } from './BigChapAnkleCalibration.js';
 
 export const GENERATED_ASSETS = Object.freeze({
   "city_hunter": {
-    "characterRig": CITY_HUNTER_RIG,
+    "characterRig": { ...CITY_HUNTER_RIG, maneRig: CITY_HUNTER_MANE_RIG },
     "status": "verified",
     "type": "character",
     "url": "/models/city-hunter-body-corrected.glb",
@@ -20,7 +22,7 @@ export const GENERATED_ASSETS = Object.freeze({
       "in_game_verified": true,
       "fidelity_1_to_1_verified": false
     },
-    "assembly_note": "Corrected standalone body with measured anatomical skin and LeftArm rest pivot; separate opaque mask and two weighted hair chains. Short visual gait with bounded closest-foot height compensation; no IK or anti-slide. Original left console plate opens on a locally modelled hinge and electronics; wristblades and right gauntlet remain static. Source clips editing-only.",
+    "assembly_note": "Corrected standalone body with measured anatomical skin and LeftArm rest pivot; separate opaque mask, two existing weighted hair chains and ten measured free hair ends with forty additional joints. Welded side bundles stay fixed. Short visual gait with bounded closest-foot height compensation; no IK or anti-slide. Original left console plate opens on a local hinge/electronics; three true right-gauntlet panels stay rigid on the forearm. Fused wristblades remain static. Source clips editing-only.",
     "sourceSha256": "bd962ad79d5034d6ac5c0d7fc03e185433d0784808ffc868e597c7656e6725e7",
     "preparedGeometry": true
   },
@@ -3309,6 +3311,7 @@ export const GENERATED_ASSETS = Object.freeze({
     "source_task_id": "01a16539-7fa8-7571-9421-468148325510",
     "creatureRig": {
       "tailRig": BIG_CHAP_TAIL_RIG,
+      "ankleRig": BIG_CHAP_ANKLE_RIG,
       "footGrounding": BIG_CHAP_FOOT_GROUNDING,
       "forwardAxis": "+z",
       "clips": {
@@ -6816,6 +6819,6 @@ export const GENERATED_ASSETS = Object.freeze({
       "in_game_verified": true,
       "fidelity_1_to_1_verified": false
     },
-    "assembly_note": "Raw provider rig plus calibrated local skin repair. A measured 28,590-vertex tail region uses nine private weighted joints and bounded floor contact. Lower legs/feet follow calf bones to bypass misplaced ankle pivots, with measured bounded visual height compensation preserving airborne frames; no ankle IK or horizontal anti-slide. Source GLB, rest surfaces, UVs and textures unchanged."
+    "assembly_note": "Raw provider rig plus calibrated local skin repair. A measured 28,590-vertex tail uses nine private weighted joints and bounded floor contact. Four additional measured ankle/toe joints articulate 5,081 vertices within the 8,138 reviewed lower-leg/foot vertices, preserving rigid collars and UV seams. Real clip rotations drive bounded joint motion; 1,953 exact supports provide visual contact compensation while preserving airborne phases. No planted-foot IK or horizontal anti-slide; foot anatomy remains simplified. Source GLB, rest surfaces, UVs and textures unchanged."
   }
 });

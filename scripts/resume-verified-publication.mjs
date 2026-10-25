@@ -8,17 +8,21 @@ import { copyFile, readFile, readdir, stat, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const VERIFIED_SHA = '8683a627c08e1c2647913aa29dc375df8cdde08c69da18895981de2b5c5fae6f';
-const PREVIOUS_PUBLIC_SHA = '9fdd19169a75d324dbde0e77bddbac90167e81ca19bfb06880084246a4bad6d6';
-const MANIFEST_SHA = 'da553b8ca45340e81b7c522ec1d6616f89c2f19aead7b26153ea458495271649';
+const VERIFIED_SHA = 'cb19eded36c19e20a5c50b94daad56d1d8550cf1c9ddff08df6d0167d7a03910';
+const VERIFIED_CPU_PASSED = 386;
+const PREVIOUS_PUBLIC_SHA = '8683a627c08e1c2647913aa29dc375df8cdde08c69da18895981de2b5c5fae6f';
+const MANIFEST_SHA = 'fe244b768b7334f468b5970eabc323bb5f4752275d3d07cfa91f74296dff3f27';
 const CONFIG_SHA = 'fff4229af49c3a7397bd4aed332a50e94f7856a0366cfab2c2e2478a779b409b';
 const LINK_SHA = '77454d4ed9af5d8736994c6061dadc515966445cabaa602b75ee4482fffb8505';
 const ORIGIN = 'https://yautja-hive-warriors.vercel.app';
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const qa = '/workspace/qa/development-20261025';
-const qaReportPath = repo + '/docs/qa/development-validation.json';
+const qa = '/workspace/qa/fidelity-20261025';
+const qaReportPath = repo + '/docs/qa/fidelity-validation.json';
 const stage = qa + '/vercel-static-prebuilt-v2';
 const cli = qa + '/vercel-cli.sh';
+assert.match(VERIFIED_SHA, /^[a-f0-9]{64}$/, 'Publication script is not pinned to a reviewed build');
+assert.match(MANIFEST_SHA, /^[a-f0-9]{64}$/, 'Publication script has no frozen manifest');
+assert.ok(VERIFIED_CPU_PASSED >= 360, 'Pin the exact successful final CPU count');
 const argv = process.argv.slice(2);
 const options = { deploy: false, promote: false, deployment: null, waitMs: 180000, checkOnly: false };
 for (let index = 0; index < argv.length; index++) {
@@ -57,7 +61,7 @@ async function listFiles(directory, prefix = '') {
 let artifact;
 async function validateLocal() {
   assert.equal(await hashFile(stage + '/frozen-artifacts.json'), MANIFEST_SHA, 'Frozen manifest changed');
-  assert.equal(await hashFile(qa + '/vercel-local-artifacts.json'), MANIFEST_SHA, 'Active HTTP verification manifest must still be v2');
+  assert.equal(await hashFile(qa + '/vercel-local-artifacts.json'), MANIFEST_SHA, 'Active HTTP verification manifest must match the frozen fidelity candidate');
   assert.equal(await hashFile(stage + '/.vercel/output/config.json'), CONFIG_SHA, 'Frozen headers/routes changed');
   assert.equal(await hashFile(stage + '/.vercel/project.json'), LINK_SHA, 'Frozen project link changed');
   artifact = await jsonFile(stage + '/frozen-artifacts.json');
@@ -83,11 +87,22 @@ async function validateGlobalQa(required = false) {
   const checks = {
     final_status: ['passed_locally_waiting_publication', 'published_and_verified'].includes(validation.status),
     final_build: validation.build?.success === true && validation.build?.index_sha256 === VERIFIED_SHA,
-    cpu: validation.cpu?.passed === 360 && validation.cpu?.failed === 0
-      && validation.cpu?.final_environment?.status === 'passed',
+    cpu: VERIFIED_CPU_PASSED >= 360 && validation.cpu?.passed === VERIFIED_CPU_PASSED
+      && validation.cpu?.status === 'passed' && validation.cpu?.failed === 0
+      && validation.cpu?.skipped === 0 && validation.cpu?.cancelled === 0
+      && validation.cpu?.index_sha256 === VERIFIED_SHA,
     regression_browser: validation.browser?.final_regression?.status === 'passed'
-      && validation.browser?.final_regression?.index_sha256 === VERIFIED_SHA,
-    runtime_browser: validation.browser?.final_runtime?.status === 'passed',
+      && validation.browser?.final_regression?.index_sha256 === VERIFIED_SHA
+      && validation.browser?.final_regression?.passed === 15
+      && validation.browser?.final_regression?.failed === 0
+      && validation.browser?.final_regression?.skipped === 0
+      && validation.browser?.final_regression?.cancelled === 0,
+    runtime_browser: validation.browser?.final_runtime?.status === 'passed'
+      && validation.browser?.final_runtime?.index_sha256 === VERIFIED_SHA
+      && validation.browser?.final_runtime?.errors === 0
+      && validation.browser?.final_runtime?.failed_requests === 0
+      && validation.browser?.final_runtime?.external_requests === 0
+      && validation.browser?.final_runtime?.apc_unreachable_target_regression === 'passed_on_actual_horde',
   };
   const pendingChecks = Object.keys(checks).filter(key => !checks[key]);
   const result = { source: qaReportPath, status: validation.status, passed: pendingChecks.length === 0,
@@ -164,7 +179,7 @@ try {
         const submission = JSON.parse(result.text || '{}');
         if (result.exitCode !== 0 || submission.status === 'error') {
           const message = submission.message ?? 'Deployment submission failed; see saved CLI log';
-          report.status = /api-deployments-free-per-day/.test(message) ? 'v2_publication_blocked_by_vercel_daily_deployment_quota' : 'candidate_submission_failed';
+          report.status = /api-deployments-free-per-day/.test(message) ? 'publication_blocked_by_vercel_daily_deployment_quota' : 'candidate_submission_failed';
           report.error_code = /api-deployments-free-per-day/.test(message) ? 'api-deployments-free-per-day' : 'submission_failed';
           report.error_message = message; report.submission_evidence = [result.stdoutPath, result.stderrPath];
           report.canonical_after = await publicSnapshot(); await save();

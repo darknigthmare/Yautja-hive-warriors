@@ -13,6 +13,9 @@ import { installCityHunterMechanisms } from '../graphics/CityHunterMechanisms.js
 import { CITY_HUNTER_CONSOLE } from '../graphics/CityHunterMechanismsCalibration.js';
 import { getHunterGadgetEffects } from '../graphics/HunterGadgetEffects.js';
 import { createHunterHologram } from '../graphics/HunterHologram.js';
+import { prepareImportedManeTemplate } from '../graphics/ImportedManeRig.js';
+import { installCityHunterRightGauntlet } from '../graphics/CityHunterRightGauntlet.js';
+import { CITY_HUNTER_RIGHT_GAUNTLET } from '../graphics/CityHunterRightGauntletCalibration.js';
 
 const REQUIRED_RIG_BONES = ['hips', 'head', 'leftArm', 'rightArm', 'leftForeArm', 'rightForeArm', 'leftHand', 'rightHand', 'leftLeg', 'rightLeg', 'leftFoot', 'rightFoot'];
 const REQUIRED_ACCESSORIES = ['blade1', 'blade2', 'shieldMesh', 'secWeaponMesh', 'plasmaGlaiveMesh', 'clanMarkMesh'];
@@ -58,6 +61,8 @@ export class Player {
     this.generatedBiomaskState = 'none';
     this.generatedMechanismsState = 'none';
     this.generatedMechanismsError = null;
+    this.generatedRightGauntletState = 'none';
+    this.generatedRightGauntletError = null;
     this.loadout = { primary: 'wristblades', secondary: 'smart_disc', gadgets: ['medicomp', 'bear_trap'] };
     this.activeWeapon = 'wristblades';
     this.weaponProfile = { damage: 1, reach: 3.8, timing: 1 };
@@ -155,6 +160,7 @@ export class Player {
     if (this._importedCharacter) return true;
     let adapter = null;
     let mechanisms = null;
+    let rightGauntlet = null;
     let disposeComposition = null;
     let disposePreparation = null;
     try {
@@ -166,7 +172,8 @@ export class Player {
       this.generatedVisualState = 'loading'; this.generatedVisualError = null;
       const bodyTemplate = await library.loadGeneratedAsset(assetKey);
       if (this._disposed || generation !== this._generatedVisualGeneration) return false;
-      const preparation = prepareImportedParts(bodyTemplate, rig, { sourceSha256: entry.sha256 });
+      const mane = prepareImportedManeTemplate(bodyTemplate, rig.maneRig, { sourceSha256: entry.sha256 });
+      const preparation = prepareImportedParts(mane.template, rig, { sourceSha256: entry.sha256 });
       disposePreparation = preparation.dispose;
       if (rig.requirePreparation === true) {
         const checks = [
@@ -204,8 +211,11 @@ export class Player {
       // The old rendered fallback may currently be grounded below its actor.
       // Import calibration and its laser baseline always start at visual Y0.
       this.locomotion.resetVisualOffset();
+      const baseArticulation = preparation.articulationDescriptor;
+      const articulation = mane.articulation ? { ...(baseArticulation ?? { version: 1 }),
+        dreadlocks: [...(baseArticulation?.dreadlocks ?? []), ...mane.articulation.dreadlocks] } : baseArticulation;
       const createAdapter = source => createImportedCharacter(this, source, { ...rig, sourceSha256: entry.sha256,
-        articulation: preparation.articulationDescriptor, requireHeadPartition: true, animateWhenUncontrolled: false });
+        articulation, requireHeadPartition: true, animateWhenUncontrolled: false });
       try { adapter = createAdapter(gltf); }
       catch (error) {
         if (!biomask) throw error;
@@ -227,6 +237,16 @@ export class Player {
         });
         if (!bodyHeadCanHide) throw new Error('Generated body head cannot be hidden independently of its biomask');
       }
+      // Rigid armour is calibrated in the same rest pose as the adapter.
+      adapter.update(0, false);
+      if (assetKey === 'city_hunter' && entry.sha256 === CITY_HUNTER_RIGHT_GAUNTLET.sourceSha256) {
+        try {
+          rightGauntlet = installCityHunterRightGauntlet(adapter, { sourceSha256: entry.sha256 });
+          this.generatedRightGauntletState = 'ready'; this.generatedRightGauntletError = null;
+        } catch (error) {
+          this.generatedRightGauntletState = 'unavailable'; this.generatedRightGauntletError = error.message;
+        }
+      }
       if (assetKey === 'city_hunter' && entry.sha256 === CITY_HUNTER_CONSOLE.sourceSha256) {
         try {
           mechanisms = installCityHunterMechanisms(adapter, { sourceSha256: entry.sha256 });
@@ -236,9 +256,9 @@ export class Player {
           this.generatedMechanismsState = 'unavailable'; this.generatedMechanismsError = error.message;
         }
       }
-      const imported = { adapter, mechanisms, biomask, transforms, cameraEyeHeight: rig.cameraEyeHeight,
+      const imported = { adapter, mechanisms, rightGauntlet, biomask, transforms, cameraEyeHeight: rig.cameraEyeHeight,
         bakedWristblades: rig.bakedWristblades?.calibrated === true && rig.bakedWristblades.mode === 'static',
-        preparationDiagnostics: preparation.diagnostics,
+        preparationDiagnostics: { ...preparation.diagnostics, ...(mane.diagnostics ? { mane: mane.diagnostics } : {}) },
         laserBaseY: this.laserGroup.position.y,
         laserStarts: [], records: [], latest: new Map(), hidden: new Map(),
         skinMaterials: this.skinMaterials, armorMaterials: this.armorMaterials };
@@ -285,7 +305,7 @@ export class Player {
       return true;
     } catch (error) {
       if (this._importedCharacter?.adapter === adapter) this._removeImportedCharacter();
-      else { mechanisms?.dispose(); adapter?.dispose(); }
+      else { mechanisms?.dispose(); rightGauntlet?.dispose(); adapter?.dispose(); }
       if (!this._disposed && generation === this._generatedVisualGeneration) {
         this.generatedVisualState = 'procedural'; this.generatedVisualError = error.message;
         this.generatedBiomaskState = 'none'; this.generatedBiomaskError = null;
@@ -354,6 +374,7 @@ export class Player {
     this.skinMaterials = imported.skinMaterials; this.armorMaterials = imported.armorMaterials;
     for (const material of [...imported.adapter.materials, ...(imported.mechanisms?.materials ?? [])]) this._uncloakedSurfaces?.delete(material);
     imported.mechanisms?.dispose();
+    imported.rightGauntlet?.dispose();
     imported.adapter.dispose(); this._importedCharacter = null;
     this._gadgetEffects?.rebind();
     this._syncWristbladeVisuals();
@@ -361,6 +382,7 @@ export class Player {
     this.generatedVisualState = 'procedural';
     this.generatedBiomaskState = 'none'; this.generatedBiomaskError = null;
     this.generatedMechanismsState = 'none'; this.generatedMechanismsError = null;
+    this.generatedRightGauntletState = 'none'; this.generatedRightGauntletError = null;
     if (!this._disposed) this.scene.dispatchEvent({ type: 'visual-ready' });
   }
 

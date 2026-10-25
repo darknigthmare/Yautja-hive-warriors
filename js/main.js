@@ -910,12 +910,11 @@ class GameApp {
 
   spawnAPCSupport(position) {
     this.clearAPCSupport();
-    this.env.resolveMovement(position, 5.7);
+    this.env.resolveMovement(position, this.apc.navigationRadius);
     this.apc.spawn(position);
     // The navigation system must see the same carrier that stops characters;
     // otherwise ground enemies repeatedly walk into its visible hull.
-    this._apcNavigationCollider = { x: position.x, z: position.z + 0.08, halfWidth: 2.52, halfDepth: 4.84, height: 2.48, rotation: 0, owner: 'apc',
-      resolveMovement: (actorPosition, actorRadius) => this.apc.resolveMovement(actorPosition, actorRadius) };
+    this._apcNavigationCollider = this.apc.getNavigationCollider();
     this.env.colliders.push(this._apcNavigationCollider);
   }
 
