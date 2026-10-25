@@ -4,37 +4,37 @@ export const CAMPAIGN_CHAPTERS = [
   {
     chapter: 1,
     title: 'CHAPITRE I: INFILTRATION EN COLONIE',
-    objective: 'Éliminez 30 Xenomorphes en restant sous camouflage optique',
+    objective: 'Traversez la forêt de Gunnison et terrassez la Reine Prédalienne.',
     targetKos: 30,
-    levelId: 'weyland_colony'
+    levelId: 'gunnison_forest'
   },
   {
     chapter: 2,
     title: 'CHAPITRE II: LA JUNGLE MORTELLE',
-    objective: 'Traversez la jungle de Val Verde et terrassez le Predalien Brute',
+    objective: 'Repoussez les vagues de Val Verde et terrassez le Prétorien.',
     targetKos: 50,
     levelId: 'val_verde_jungle'
   },
   {
     chapter: 3,
     title: 'CHAPITRE III: LES SECRETS DE LA PYRAMIDE',
-    objective: 'Infiltrez les tréfonds de la pyramide d\'Antarctique',
+    objective: 'Infiltrez la pyramide d\'Antarctique et éliminez sa Reine.',
     targetKos: 80,
-    levelId: 'antactic_temple'
+    levelId: 'antarctic_pyramid'
   },
   {
     chapter: 4,
     title: 'CHAPITRE IV: L\'ASSAUT DU CŒUR DE LA RUCHE',
-    objective: 'Survivez à la marée infinie et détruisez les nids d\'œufs',
+    objective: 'Survivez aux assauts de Xenomorph Prime et abattez l\'Impératrice.',
     targetKos: 120,
-    levelId: 'hive_lair'
+    levelId: 'xenomorph_prime'
   },
   {
     chapter: 5,
     title: 'CHAPITRE V: LE DUEL SACRÉ CONTRE LA REINE',
-    objective: 'Exécutez la Reine Impériale pour sceller votre place au Clan',
+    objective: 'Sécurisez la station Renaissance et affrontez The Offspring.',
     targetKos: 200,
-    levelId: 'endless_horde'
+    levelId: 'romulus_station'
   }
 ];
 
@@ -51,6 +51,11 @@ export class StoryCampaignManager {
     return CAMPAIGN_CHAPTERS[0];
   }
 
+  reset() {
+    this.currentChapterIndex = 0;
+    this.isActive = false;
+  }
+
   getCurrentChapter() {
     return CAMPAIGN_CHAPTERS[this.currentChapterIndex];
   }
@@ -59,14 +64,18 @@ export class StoryCampaignManager {
     if (!this.isActive) return null;
     const current = this.getCurrentChapter();
 
-    if (kos >= current.targetKos) {
-      if (this.currentChapterIndex < CAMPAIGN_CHAPTERS.length - 1) {
-        this.currentChapterIndex++;
-        return { completed: true, nextChapter: this.getCurrentChapter() };
-      } else {
-        return { victory: true };
-      }
-    }
+    if (Number.isFinite(kos) && kos >= current.targetKos) return this.completeChapter();
     return null;
+  }
+
+  // The game calls this only after winning the current chapter's boss encounter.
+  completeChapter() {
+    if (!this.isActive) return null;
+    if (this.currentChapterIndex < CAMPAIGN_CHAPTERS.length - 1) {
+      this.currentChapterIndex++;
+      return { completed: true, nextChapter: this.getCurrentChapter() };
+    }
+    this.isActive = false;
+    return { victory: true };
   }
 }

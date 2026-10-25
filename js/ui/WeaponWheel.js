@@ -32,7 +32,8 @@ export class WeaponWheel {
       const x = Math.cos(angle) * radius;
       const y = Math.sin(angle) * radius;
 
-      const item = document.createElement('div');
+      const item = document.createElement('button');
+      item.type = 'button';
       item.className = 'wheel-item';
       item.style.left = `calc(50% + ${x}px)`;
       item.style.top = `calc(50% + ${y}px)`;
@@ -49,12 +50,17 @@ export class WeaponWheel {
 
   open() {
     this.isOpen = true;
-    if (this.overlay) this.overlay.classList.remove('hidden');
+    if (this.overlay) {
+      this.overlay.classList.remove('hidden');
+      this.overlay.setAttribute('aria-hidden', 'false');
+      this.overlay.querySelector('button')?.focus();
+    }
   }
 
   close() {
     this.isOpen = false;
-    if (this.overlay) this.overlay.classList.add('hidden');
+    if (this.overlay) { this.overlay.classList.add('hidden'); this.overlay.setAttribute('aria-hidden', 'true'); }
+    if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
   }
 
   toggle() {

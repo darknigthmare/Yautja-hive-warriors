@@ -3,24 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PREDATOR: HIVE WARRIORS - v27.0 APEX PRIMAL CHRONICLES 3D</title>
+  <title>HIVE WARRIORS — La chasse commence</title>
   <meta name="description" content="Jeu de guerre 3D style Dynasty Warriors d'affrontement épique entre Yautja et hordes de Xenomorphes.">
   <link rel="stylesheet" href="css/styles.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
-  <script type="importmap">
-    {
-      "imports": {
-        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
-      }
-    }
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta name="theme-color" content="#090f13">
 </head>
 <body>
-  <div id="canvas-container"></div>
+  <div id="canvas-container" aria-label="Champ de bataille en trois dimensions"></div>
+  <div id="global-status" role="status" aria-live="polite" class="hidden"></div>
 
   <!-- FIRST-PERSON BIO-MASK COCKPIT VIEW OVERLAY -->
   <div id="first-person-mask-overlay" class="hidden">
@@ -65,50 +56,52 @@
       <div class="menu-background-gradient"></div>
       <div class="menu-content">
         <div class="logo-box">
-          <div class="yautja-glyph-banner">⚡ ᚛᚜ ⚡ PREDATOR ⚡ ᚛᚜ ⚡</div>
-          <h1 class="game-title">HIVE WARRIORS</h1>
-          <p class="subtitle">v29.0 APEX CANON LORE & DYNASTY MUSOU HARMONIZATION • 1:1 YAUTJA RUNES & KAINDE AMEDHA CASTES</p>
+          <div class="yautja-glyph-banner">YAUTJA // PROTOCOLE DE CHASSE</div>
+          <h1 class="game-title">HIVE<br><span>WARRIORS</span></h1>
+          <p class="menu-eyebrow">LE CLAN VOUS ATTEND</p><p class="subtitle">Une planète hostile. Une ruche sans fin.<br>Choisissez votre chasseur et imposez votre loi.</p>
+          <div class="menu-intel"><span>01 <b>CHOISISSEZ</b></span><span>02 <b>ÉQUIPEZ</b></span><span>03 <b>CHASSEZ</b></span></div>
+          <p class="desktop-hint">Clavier & souris · ZQSD / WASD pour se déplacer · Échap pour la pause</p><p class="mobile-notice">Jeu conçu pour clavier et souris. Sur mobile, explorez les chasseurs et les arènes ; jouez sur ordinateur.</p>
         </div>
 
         <div class="menu-actions">
           <button id="btn-start-game" class="btn-primary">
             <span class="btn-icon">⚔️</span>
-            <span class="btn-text">COMMENCER LA CHASSE (SOLO)</span>
+            <span class="btn-text">CHASSE LIBRE <small>JOUER EN SOLO →</small></span>
           </button>
 
           <button id="btn-open-citadel" class="btn-secondary">
             <span class="btn-icon">🏰</span>
-            <span class="btn-text">CITADELLE YAUTJA 3D (QG TROPHÉES)</span>
+            <span class="btn-text">CITADELLE</span>
           </button>
 
           <button id="btn-open-codex" class="btn-secondary">
             <span class="btn-icon">📜</span>
-            <span class="btn-text">CODEX LORE & ENCYCLOPÉDIE AVP</span>
+            <span class="btn-text">CODEX DU CLAN</span>
           </button>
 
           <button id="btn-open-story" class="btn-secondary">
             <span class="btn-icon">📖</span>
-            <span class="btn-text">CAMPAGNE SCÉNARISÉE</span>
+            <span class="btn-text">CAMPAGNE</span>
           </button>
 
           <button id="btn-open-coop" class="btn-secondary">
             <span class="btn-icon">👥</span>
-            <span class="btn-text">MODE COOP 2 JOUEURS (ÉCRAN SPLITÉ)</span>
+            <span class="btn-text">COOP LOCALE <small>2 JOUEURS</small></span>
           </button>
 
           <button id="btn-open-sandbox" class="btn-secondary">
             <span class="btn-icon">🛠️</span>
-            <span class="btn-text">ÉDITEUR SANDBOX BATAILLE</span>
+            <span class="btn-text">ARÈNE LIBRE</span>
           </button>
 
           <button id="btn-open-forge" class="btn-secondary">
             <span class="btn-icon">🛡️</span>
-            <span class="btn-text">LA FORGE YAUTJA</span>
+            <span class="btn-text">LA FORGE</span>
           </button>
 
           <button id="btn-open-trophies" class="btn-secondary">
             <span class="btn-icon">💀</span>
-            <span class="btn-text">SALLE DES TROPHÉES</span>
+            <span class="btn-text">TROPHÉES</span>
           </button>
 
           <button id="btn-open-options" class="btn-secondary">
@@ -122,8 +115,8 @@
     <!-- CHARACTER SELECTION SCREEN -->
     <div id="char-select-menu" class="ui-screen hidden">
       <div class="screen-header">
-        <h2>SÉLECTION DU CHASSEUR YAUTJA</h2>
-        <p>Choisissez votre guerrier pour purger la ruche Xenomorphe</p>
+        <span class="step-label">01 / PRÉPARATION</span><h2>CHOISISSEZ VOTRE CHASSEUR</h2>
+        <p>Une signature, un arsenal, une manière de chasser.</p><button id="btn-back-to-menu" class="btn-text-link">← Menu principal</button>
       </div>
 
       <div class="char-select-container">
@@ -170,7 +163,7 @@
     <!-- LEVEL SELECTION SCREEN -->
     <div id="level-select-menu" class="ui-screen hidden">
       <div class="screen-header">
-        <h2>CHOIX DU CHAMP DE BATAILLE</h2>
+        <span class="step-label">02 / INSERTION</span><h2>CHOISISSEZ VOTRE TERRAIN</h2>
         <p>Sélectionnez le terrain d'affrontement contre les hordes de la ruche</p>
       </div>
 
@@ -185,8 +178,8 @@
     <!-- PRE-MISSION TACTICAL LOADOUT PREPARATION SCREEN -->
     <div id="loadout-prep-screen" class="ui-screen hidden">
       <div class="screen-header">
-        <h2>🎒 ARMURERIE TACTIQUE : PRÉPARATION DU LOADOUT</h2>
-        <p>Sélectionnez votre équipement avant le déploiement sur le champ de bataille</p>
+        <span class="step-label">03 / ARMURERIE</span><h2>PRÉPAREZ VOTRE CHASSE</h2>
+        <p>Choisissez une arme principale, une secondaire et deux gadgets maximum.</p>
       </div>
 
       <div class="loadout-grid-container">
@@ -216,22 +209,24 @@
         <div class="loadout-section glass-panel full-grid">
           <h3>3. GADGETS TACTIQUES (CHOISIR 2 MAX)</h3>
           <div class="loadout-options">
-            <button class="loadout-btn loadout-gadget-btn selected" data-item="medicomp">💉 Medicomp Bio-Gel [Z]</button>
+            <button class="loadout-btn loadout-gadget-btn selected" data-item="medicomp">💉 Médicomp [Z / W AZERTY]</button>
             <button class="loadout-btn loadout-gadget-btn selected" data-item="bear_trap">🪤 Steel Bear Trap [T]</button>
-            <button class="loadout-btn loadout-gadget-btn" data-item="acid_solvent">🧪 Solvant d'Acide [B]</button>
+            <button class="loadout-btn loadout-gadget-btn" data-item="acid_solvent">🧪 Solvant d'Acide</button>
             <button class="loadout-btn loadout-gadget-btn" data-item="nuke">☢️ Auto-Destruction Nuke [N]</button>
-            <button class="loadout-btn loadout-gadget-btn" data-item="mines">💣 Mines à Plasma [C]</button>
+
           </div>
         </div>
       </div>
 
-      <div class="loadout-footer">
+      <p id="loadout-feedback" class="selection-feedback" role="status" aria-live="polite">2 gadgets sélectionnés sur 2</p>
+      <div class="loadout-footer"><button id="btn-back-to-levels" class="btn-secondary">← RETOUR AUX ARÈNES</button>
         <button id="btn-confirm-loadout" class="btn-primary">DÉPLOYER LA CHASSE ►</button>
       </div>
     </div>
 
     <!-- IN-GAME HUD -->
     <div id="in-game-hud" class="ui-screen hidden">
+      <button id="btn-pause-game" class="hud-pause-button" aria-label="Mettre la partie en pause">Ⅱ <span>PAUSE · ÉCHAP</span></button>
       <div class="hud-top-left glass-panel">
         <div class="player-avatar-box">
           <div id="hud-avatar-icon">👽</div>
@@ -254,7 +249,7 @@
 
           <div class="hud-bar-container musou-bar-bg">
             <div id="hud-musou-fill" class="bar-fill musou-fill" style="width: 0%;"></div>
-            <span id="hud-musou-text" class="bar-label">SURCHARGE MUSOU [Q / ESPACE]</span>
+            <span id="hud-musou-text" class="bar-label">SURCHARGE MUSOU [ESPACE]</span>
           </div>
         </div>
       </div>
@@ -279,13 +274,25 @@
             <span id="hud-level-name">PYRAMIDE ANTARCTIQUE</span>
             <span id="hud-wave-counter">VAGUE 1/5</span>
           </div>
-          <canvas id="minimap-canvas" width="160" height="160"></canvas>
+          <canvas id="minimap-canvas" width="224" height="224" role="img" aria-label="Carte des ennemis à proximité"></canvas>
           <div class="minimap-legend">
-            <span>🟢 Yautja</span>
-            <span>🔴 Kainde Amedha</span>
-            <span>👑 Matriarche</span>
+            <span class="map-key map-key-player">Vous</span>
+            <span class="map-key map-key-enemy">Ennemis</span>
+            <span class="map-key map-key-objective">Objectif</span>
+            <span class="map-key map-key-gate">Porte fermée</span>
           </div>
         </div>
+          <div id="battlefield-objective" class="battlefield-objective glass-panel hidden">
+            <div class="battlefield-sector-heading">
+              <span id="battlefield-sector-name"></span>
+              <span id="battlefield-sector-count"></span>
+            </div>
+            <div id="battlefield-sector-progress" class="battlefield-sector-progress" aria-label="Progression des zones"></div>
+            <p id="battlefield-objective-text" class="battlefield-objective-text" role="status" aria-live="polite" aria-atomic="true"></p>
+            <p id="battlefield-navigation" class="battlefield-navigation"></p>
+            <p id="battlefield-interaction" class="battlefield-interaction hidden">[ E ] Activer le relais</p>
+            <p id="battlefield-grace" class="battlefield-grace hidden">Insertion sécurisée · préparez votre attaque</p>
+          </div>
       </div>
 
       <!-- MUSOU COMBO STRING INDICATOR & AIRBORNE JUGGLE -->
@@ -314,7 +321,14 @@
         <div class="execution-text">ARRÊTEZ LA COLONNE VERTÉBRALE (SPINE RIP) !</div>
       </div>
 
-      <div id="ability-announcement" class="announcement-banner hidden"></div>
+      <div id="ability-announcement" class="announcement-banner hidden" role="status" aria-live="polite"></div>
+
+      <div id="insertion-status" class="insertion-status hidden" role="status" aria-live="polite">
+        <span class="insertion-kicker">DÉPLOIEMENT</span>
+        <strong id="insertion-title">INSERTION ORBITALE</strong>
+        <span id="insertion-detail">Capsule en approche · Commandes après la sortie</span>
+        <span class="insertion-progress-track" aria-hidden="true"><span id="insertion-progress"></span></span>
+      </div>
 
       <!-- 1987 CANON TRI-LASER TARGET LOCK RETICLE -->
       <div id="hud-tri-target-lock" class="tri-laser-reticle hidden">
@@ -432,7 +446,7 @@
       <div class="glass-panel modal-card codex-card">
         <div class="modal-header">
           <h2>📜 CODEX & ENCYCLOPÉDIE CANON AVP</h2>
-          <button id="btn-close-codex" class="btn-close">✕</button>
+          <button aria-label="Fermer et revenir" id="btn-close-codex" class="btn-close">✕</button>
         </div>
         <div class="codex-nav-tabs">
           <button class="codex-tab-btn active" data-tab="ranks">Rangs Yautja</button>
@@ -449,10 +463,11 @@
     <!-- PHOTO MODE HUD -->
     <div id="photo-mode-hud" class="ui-screen hidden">
       <div class="photo-hud-banner glass-panel">
-        <h3>📸 MODE PHOTO CINÉMATIQUE 3D</h3>
+        <h3>📸 MODE PHOTO</h3>
+        <p class="photo-controls-help">Glisser : tourner · Molette : zoom · Clic droit : déplacer</p>
         <div class="photo-actions">
-          <button id="btn-snap-photo" class="btn-primary">📸 PRENDRE CAPTURE D'ÉCRAN (PNG)</button>
-          <button id="btn-exit-photo" class="btn-secondary">✕ QUITTER MODE PHOTO</button>
+          <button id="btn-snap-photo" class="btn-primary">📸 EXPORTER PNG</button>
+          <button id="btn-exit-photo" class="btn-secondary">✕ REVENIR AU JEU</button>
         </div>
       </div>
     </div>
@@ -462,7 +477,7 @@
       <div class="glass-panel modal-card">
         <div class="modal-header">
           <h2>🛠️ ÉDITEUR DE BATAILLE SANDBOX</h2>
-          <button id="btn-close-sandbox" class="btn-close">✕</button>
+          <button aria-label="Fermer et revenir" id="btn-close-sandbox" class="btn-close">✕</button>
         </div>
         <div class="sandbox-body">
           <div class="sandbox-row">
@@ -478,11 +493,11 @@
     <div id="forge-modal" class="ui-screen hidden">
       <div class="glass-panel modal-card">
         <div class="modal-header">
-          <h2>🛡️ LA FORGE YAUTJA & ARMURERIE</h2>
-          <button id="btn-close-forge" class="btn-close">✕</button>
+          <h2>🛡️ LA FORGE & ARMURERIE</h2>
+          <button aria-label="Fermer et revenir" id="btn-close-forge" class="btn-close">✕</button>
         </div>
         <div class="forge-shop-body">
-          <h3>AMÉLIORATIONS DES STATISTIQUES</h3>
+          <div class="forge-balance">HONNEUR DISPONIBLE <strong id="forge-honor-balance">0 PTS</strong><p>100 points par élimination. Chaque achat débite votre réserve.</p></div><h3>AMÉLIORATIONS DES STATISTIQUES</h3>
           <div class="upgrade-row">
             <span>Santé & Renfort d'Armure (+200 HP)</span>
             <button id="btn-buy-hp" class="btn-secondary">3500 PTS HONNEUR</button>
@@ -507,7 +522,7 @@
       <div class="glass-panel modal-card">
         <div class="modal-header">
           <h2>💀 SALLE DES TROPHÉES YAUTJA</h2>
-          <button id="btn-close-trophies" class="btn-close">✕</button>
+          <button aria-label="Fermer et revenir" id="btn-close-trophies" class="btn-close">✕</button>
         </div>
 
         <div class="trophy-stats-grid">
@@ -534,14 +549,34 @@
       <div class="glass-panel modal-card">
         <div class="modal-header">
           <h2>⚙️ COMMANDES & OPTIONS DU JEU</h2>
-          <button id="btn-close-options" class="btn-close">✕</button>
+          <button aria-label="Fermer et revenir" id="btn-close-options" class="btn-close">✕</button>
         </div>
         <div class="options-body">
-          <h3>CONTRÔLES CLAVIER & SOURIS</h3>
+          <div class="settings-panel">
+            <label for="setting-graphics-quality">QUALITÉ GRAPHIQUE</label>
+            <select id="setting-graphics-quality" aria-describedby="graphics-quality-help">
+              <option value="low">Fluide — effets essentiels</option>
+              <option value="balanced" selected>Équilibrée — détails et éclairage</option>
+              <option value="high">Élevée — ombres et effets avancés</option>
+            </select>
+            <p id="graphics-quality-help">Les modèles et les textures restent détaillés dans tous les modes. Les effets s’adaptent aux capacités de votre appareil.</p>
+            <p id="graphics-quality-status" role="status" aria-live="polite"></p>
+            <label for="setting-volume">VOLUME AUDIO <output id="setting-volume-value">30 %</output></label>
+            <input id="setting-volume" type="range" min="0" max="100" value="30" aria-describedby="volume-help">
+            <p id="volume-help">Réglez à 0 pour couper le son.</p>
+            <label class="toggle-setting"><input id="setting-reduced-motion" type="checkbox"> Réduire les animations de l’interface</label>
+          </div>
+          <h3>LES ESSENTIELS</h3>
+          <div class="control-row"><span class="key">ZQSD / WASD</span><span>Se déplacer (positions physiques du clavier)</span></div>
+          <div class="control-row"><span class="key">FLÈCHES</span><span>Déplacer le joueur 2 en coopération locale</span></div>
+          <div class="control-row"><span class="key">ÉCHAP</span><span>Mettre en pause ou reprendre</span></div>
+          <h3>ARSENAL & CAPACITÉS</h3>
             <div class="control-row"><span class="key">CLIC GAUCHE</span><span>Attaque Légère (Série de 5 coups d'arts martiaux Yautja)</span></div>
             <div class="control-row"><span class="key">CLIC DROIT</span><span>Finisher Chargé C1 à C6 (Ki'cte, S'yuit-de Launcher, Dahdt-ne Stun, Guan-thwei, Thwei-mhi, Prah'khe)</span></div>
-            <div class="control-row"><span class="key">Q / ESPACE</span><span>Vraie Surcharge Yautja 360° (True Musou Awakening : Rayonnement Électro-Cinétique 40m)</span></div>
-            <div class="control-row"><span class="key">MORAL (GV'SHI)</span><span>Jauge de Moral en haut au centre : Équilibre Clan Yautja vs Ruche Kainde Amedha</span></div>
+            <div class="control-row"><span class="key">ESPACE</span><span>Vraie Surcharge Yautja 360° (True Musou Awakening : Rayonnement Électro-Cinétique 40m)</span></div>
+            <div class="control-row"><span class="key">F</span><span>Camouflage optique : activer ou désactiver</span></div>
+            <div class="control-row"><span class="key">O</span><span>Ouvrir / fermer le mode photo</span></div>
+            <div class="control-row"><span class="key">TAB</span><span>Alterner entre arme principale et secondaire</span></div>
             <div class="control-row"><span class="key">I</span><span>Bascule Vue Première Personne Cockpit Bio-Masque</span></div>
             <div class="control-row"><span class="key">J</span><span>Perchoir en Hauteur & Affût Perché (Prowl Roosting)</span></div>
             <div class="control-row"><span class="key">C</span><span>Bouclier Hexagonal Feral Predator (Prey 2022)</span></div>
@@ -568,19 +603,16 @@
             <div class="control-row"><span class="key">9</span><span>Tourbillon de Plasma Glaive Dual-Blade (Patriarche AVP / Concrete Jungle) : Cyclone Déflecteur 360°</span></div>
             <div class="control-row"><span class="key">0</span><span>Gelée Royale d'Apex (Aliens: Genocide / AvP 1999) : Rage Berserker Yautja (+45% Vit, +100% Dégâts)</span></div>
             <div class="control-row"><span class="key">TROPHÉES [E]</span><span>Récolte Rituelle de Trophées Légendaires sur les Boss & Sous-Boss Exécutés (Spine Rip)</span></div>
-            <div class="control-row"><span class="key">PRAETOMORPH</span><span>Création d'Apex de David 8 (Alien: Covenant 2017) : Charge Aérienne & Queue Tranchante</span></div>
-            <div class="control-row"><span class="key">ROMULUS LORE</span><span>Boss "The Offspring" (Hybride Z-01 2024) sur la Station Renaissance</span></div>
-            <div class="control-row"><span class="key">LORE ELITE</span><span>Grid Alien Alpha (Nethead AVP 2004) : Immunisé au Filet & Projections d'Acide</span></div>
-            <div class="control-row"><span class="key">VAGUE 3</span><span>Déploiement du Blindé USCM M577 APC avec Tourelle Jumelée 20mm Autonome</span></div>
             <div class="control-row"><span class="key">SHIFT + CLIC DROIT</span><span>Frappe Gantelet Kinetic Power Glove (Onde de choc 12m AVP-R 2007)</span></div>
             <div class="control-row"><span class="key">B (EN VOL)</span><span>Smart-Disc Ricochet Guidé au Laser : Décapite en chaîne jusqu'à 3 cibles (Predator 2 1990)</span></div>
-            <div class="control-row"><span class="key">Z</span><span>Médicomp Cautérisation : Soin 450 HP, Vapeur Antiseptique & Purge d'Acide</span></div>
-            <div class="control-row"><span class="key">RED SWARM</span><span>Incursion du Clan Écarlate (Aliens: Genocide 1991) : Guerre Civile entre Xenos Noirs & Rouges</span></div>
-            <div class="control-row"><span class="key">CLOAK FAIL</span><span>Interférence Électrique du Camouflage Optique (Étincelles & Glitch lors de dégâts 1987)</span></div>
+            <div class="control-row"><span class="key">Z (W AZERTY)</span><span>Médicomp Cautérisation : Soin 450 HP, Vapeur Antiseptique & Purge d'Acide</span></div>
             <div class="control-row"><span class="key">N</span><span>Auto-Destruction 1987 : Anneau Holographique 3D au Gantelet & Rire Sardite de Billy</span></div>
-          </div>
         </div>
       </div>
+    </div>
+
+    <div id="pause-menu" class="ui-screen hidden" role="dialog" aria-modal="true" aria-labelledby="pause-title">
+      <div class="glass-panel modal-card pause-card"><span class="step-label">TRANSMISSION SUSPENDUE</span><h2 id="pause-title">CHASSE EN PAUSE</h2><p>Soufflez. Votre clan garde la position.</p><div class="pause-actions"><button id="btn-resume-game" class="btn-primary">REPRENDRE LA CHASSE</button><button id="btn-pause-options" class="btn-secondary">OPTIONS & COMMANDES</button><button id="btn-pause-menu-return" class="btn-text-link">QUITTER VERS LE MENU</button></div><p class="pause-hint">Échap pour reprendre</p></div>
     </div>
 
     <!-- MISSION COMPLETE / GAME OVER SCREEN -->

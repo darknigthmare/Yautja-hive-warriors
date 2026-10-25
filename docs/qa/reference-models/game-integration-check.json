@@ -1,0 +1,122 @@
+{
+  "model": {
+    "state": "imported",
+    "mask": "attached",
+    "joints": [
+      "hips",
+      "head",
+      "neck",
+      "leftArm",
+      "rightArm",
+      "leftForeArm",
+      "rightForeArm",
+      "leftHand",
+      "rightHand",
+      "leftLeg",
+      "rightLeg",
+      "leftFoot",
+      "rightFoot"
+    ],
+    "eyeHeight": 3.8376651470827396
+  },
+  "fps_head_and_mask_hidden": true,
+  "cooperative_skeletons_independent": true,
+  "cloak_materials_independent": true,
+  "clone_cleanup_survived": true,
+  "alien": {
+    "ok": true,
+    "diagnostics": {
+      "triangles": 205259,
+      "drawCalls": 1,
+      "height": 3.9536638259887695,
+      "normalizationScale": 1.7189842912279434,
+      "forwardAxis": "+z",
+      "rootMotion": "in-place",
+      "motionRootBone": "Hips",
+      "locomotion": "run",
+      "idle": null,
+      "skinCorrections": {
+        "id": "big-chap-v2-tail-lower-legs-rigid-20261022",
+        "sourceImmutable": true,
+        "restGeometryUnchanged": true,
+        "meshes": [
+          {
+            "meshName": "char1",
+            "selectedVertices": 36728,
+            "rigidAttachment": true,
+            "bindings": [
+              {
+                "name": "tail",
+                "targetBone": "Hips",
+                "selectedVertices": 28590,
+                "bounds": {
+                  "min": [
+                    0.010277104564011097,
+                    0.001913580228574574,
+                    -0.479066401720047
+                  ],
+                  "max": [
+                    0.5198137760162354,
+                    1.4609613418579102,
+                    0.7236366868019104
+                  ]
+                }
+              },
+              {
+                "name": "left-calf-and-foot",
+                "targetBone": "LeftLeg",
+                "selectedVertices": 4611,
+                "bounds": {
+                  "min": [
+                    0.08590526878833771,
+                    0,
+                    -0.06599520146846771
+                  ],
+                  "max": [
+                    0.34376952052116394,
+                    0.8234356045722961,
+                    0.27182862162590027
+                  ]
+                }
+              },
+              {
+                "name": "right-calf-and-foot",
+                "targetBone": "RightLeg",
+                "selectedVertices": 3527,
+                "bounds": {
+                  "min": [
+                    -0.2733372747898102,
+                    0.021094759926199913,
+                    -0.7417238354682922
+                  ],
+                  "max": [
+                    -0.021018141880631447,
+                    0.829160749912262,
+                    -0.1854739934206009
+                  ]
+                }
+              }
+            ],
+            "positionHash": "fnv1a32:7d033fad",
+            "sourceSkinIndexHash": "fnv1a32:fa2836bd",
+            "sourceSkinWeightHash": "fnv1a32:16a29f0e"
+          }
+        ]
+      }
+    },
+    "real_horde_wave": true,
+    "independent_skeletons": true,
+    "shared_corrected_geometry": true,
+    "in_place_locomotion": true,
+    "near_and_far_lod": true,
+    "wave_restart": true
+  },
+  "restart": {
+    "state": "imported",
+    "mask": "attached"
+  },
+  "errors": [],
+  "failed_requests": [],
+  "checked_at": "2026-10-22T20:41:48.990Z",
+  "ok": true
+}

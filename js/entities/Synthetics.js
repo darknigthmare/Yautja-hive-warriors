@@ -1,6 +1,9 @@
 /* Weyland-Yutani Combat Synthetics (Androids with Milky White Blood & Bisection AI) */
 
 import * as THREE from 'three';
+import { createSyntheticModel } from '../graphics/SupportModels.js';
+import { disposeObject } from '../engine/SceneResources.js';
+import { selectHostileTarget, requestHostileAttack, syncHostileWarning, releaseHostileAttack } from '../engine/HostilePressure.js';
 
 export class SyntheticsManager {
   constructor(scene, audioEngine, particles) {
@@ -10,6 +13,7 @@ export class SyntheticsManager {
     this.androids = [];
     this.severedProps = [];
     this.bloodPools = [];
+    this.bloodDrops = [];
 
     this.armorMat = new THREE.MeshStandardMaterial({
       color: 0xe2e8f0, // White clean Weyland-Yutani synthetic casing
@@ -26,6 +30,7 @@ export class SyntheticsManager {
       transparent: true,
       opacity: 0.95
     });
+    this.sharedResources = new Set([this.armorMat, this.bodyMat, this.whiteBloodMat]);
   }
 
   spawnSquad(pos, count = 3) {
@@ -34,7 +39,7 @@ export class SyntheticsManager {
     for (let i = 0; i < count; i++) {
       const mesh = this.createSyntheticMesh();
       const angle = (i / count) * Math.PI * 2;
-      mesh.position.set(pos.x + Math.cos(angle) * 16, 0, pos.z + Math.sin(angle) * 16);
+      mesh.position.set(pos.x + Math.cos(angle) * 24, 0, pos.z + Math.sin(angle) * 24);
       this.scene.add(mesh);
 
       this.androids.push({
@@ -43,7 +48,7 @@ export class SyntheticsManager {
         maxHp: 280,
         speed: 9,
         damage: 22,
-        shootCooldown: 0,
+        shootCooldown: 2 + i * 0.35,
         isBisected: false,
         crawlLife: 0
       });
@@ -51,53 +56,12 @@ export class SyntheticsManager {
   }
 
   createSyntheticMesh() {
-    const group = new THREE.Group();
-
-    // Torso with Weyland logo casing
-    const torso = new THREE.Mesh(new THREE.BoxGeometry(0.9, 1.4, 0.5), this.armorMat);
-    torso.name = 'torso';
-    torso.position.y = 1.8;
-    group.add(torso);
-
-    // Synthetic android head
-    const head = new THREE.Mesh(new THREE.SphereGeometry(0.35, 10, 10), this.armorMat);
-    head.name = 'head';
-    head.position.set(0, 2.8, 0);
-    group.add(head);
-
-    // Glowing optic eye visor
-    const visor = new THREE.Mesh(
-      new THREE.BoxGeometry(0.4, 0.08, 0.1),
-      new THREE.MeshBasicMaterial({ color: 0x00d2ff })
-    );
-    visor.name = 'visor';
-    visor.position.set(0, 2.8, 0.32);
-    group.add(visor);
-
-    // Limbs sub-group
-    const legsGroup = new THREE.Group();
-    legsGroup.name = 'legs';
-    const legGeo = new THREE.CylinderGeometry(0.12, 0.1, 1.3, 6);
-    const leftLeg = new THREE.Mesh(legGeo, this.bodyMat);
-    leftLeg.position.set(-0.3, 0.8, 0);
-    legsGroup.add(leftLeg);
-
-    const rightLeg = new THREE.Mesh(legGeo, this.bodyMat);
-    rightLeg.position.set(0.3, 0.8, 0);
-    legsGroup.add(rightLeg);
-    group.add(legsGroup);
-
-    // Pulse Pistol
-    const gun = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.2, 0.6), this.bodyMat);
-    gun.name = 'gun';
-    gun.position.set(0.6, 1.8, 0.4);
-    group.add(gun);
-
-    return group;
+    return createSyntheticModel();
   }
 
   emitWhiteSyntheticBlood(pos) {
-    for (let i = 0; i < 8; i++) {
+    const count = Math.min(8, Math.max(0, 80 - this.bloodDrops.length));
+    for (let i = 0; i < count; i++) {
       const drop = new THREE.Mesh(new THREE.SphereGeometry(0.1, 6, 6), this.whiteBloodMat);
       drop.position.copy(pos).add(new THREE.Vector3(
         (Math.random() - 0.5) * 0.5,
@@ -105,11 +69,12 @@ export class SyntheticsManager {
         (Math.random() - 0.5) * 0.5
       ));
       this.scene.add(drop);
-      setTimeout(() => this.scene.remove(drop), 900);
+      this.bloodDrops.push({ mesh: drop, life: 0.9 });
     }
   }
 
   bisectSynthetic(syn) {
+    releaseHostileAttack(this, syn);
     syn.isBisected = true;
     syn.speed = 2.8; // Slow crawl
     syn.hp = 110;
@@ -180,8 +145,18 @@ export class SyntheticsManager {
   }
 
   update(delta, player, horde) {
+    for (let i = this.bloodDrops.length - 1; i >= 0; i--) {
+      const drop = this.bloodDrops[i];
+      drop.life -= delta;
+      drop.mesh.position.y -= delta * 1.5;
+      if (drop.life <= 0) {
+        disposeObject(drop.mesh, this.sharedResources);
+        this.bloodDrops.splice(i, 1);
+      }
+    }
     for (let i = this.androids.length - 1; i >= 0; i--) {
       const syn = this.androids[i];
+      if (syn.hp <= 0 && !syn.isBisected) this.bisectSynthetic(syn);
 
       // Bisected Crawling State update
       if (syn.isBisected) {
@@ -196,7 +171,8 @@ export class SyntheticsManager {
         if (syn.crawlLife <= 0 || syn.hp <= 0) {
           // Android finally deactivates
           this.audioEngine.playSyntheticShortCircuit();
-          this.scene.remove(syn.mesh);
+          releaseHostileAttack(this, syn);
+          disposeObject(syn.mesh, this.sharedResources);
           this.androids.splice(i, 1);
           continue;
         }
@@ -204,6 +180,7 @@ export class SyntheticsManager {
 
       // EMP Overcharge Stun Check
       if (syn.isEMPStunned) {
+        releaseHostileAttack(this, syn);
         syn.empStunTimer -= delta;
         syn.mesh.rotation.z = Math.sin(Date.now() * 0.05) * 0.15; // Jittering malfunction glitch
         if (syn.empStunTimer <= 0) {
@@ -214,12 +191,14 @@ export class SyntheticsManager {
       }
 
       // Target nearest Xenomorph first, or Yautja if close
+      const targetPlayer = selectHostileTarget(this, syn.mesh.position, player);
       let targetPos = null;
       let isXeno = false;
 
       if (horde.aliens.length > 0) {
         let nearestDist = Infinity;
         horde.aliens.forEach(a => {
+          if (a.hp <= 0) return;
           const d = syn.mesh.position.distanceTo(a.mesh.position);
           if (d < nearestDist) {
             nearestDist = d;
@@ -230,32 +209,36 @@ export class SyntheticsManager {
       }
 
       if (!targetPos) {
-        targetPos = player.position;
+        if (!targetPlayer || targetPlayer.hp <= 0) { releaseHostileAttack(this, syn); continue; }
+        targetPos = targetPlayer.position;
       }
 
+      if (isXeno && (this.combatDirector?.getAttackState(syn)?.phase === 'windup' || syn._localAttackPreparation)) releaseHostileAttack(this, syn);
       const dir = targetPos.clone().sub(syn.mesh.position);
       dir.y = 0;
       const dist = dir.length();
 
-      const stopDist = syn.isBisected ? 6.0 : 10.0;
+      const stopDist = syn.isBisected ? 6.0 : (isXeno ? 10.0 : 12.0);
+      syn.shootCooldown = Math.max(0, (syn.shootCooldown ?? 2) - delta);
 
-      if (dist > stopDist) {
+      if (dist > stopDist + 1e-5) {
         dir.normalize();
-        syn.mesh.position.addScaledVector(dir, syn.speed * delta);
+        syn.mesh.position.addScaledVector(dir, Math.min(syn.speed * delta, dist - stopDist));
+        releaseHostileAttack(this, syn);
         syn.mesh.rotation.y = Math.atan2(dir.x, dir.z);
       } else {
         syn.mesh.rotation.y = Math.atan2(dir.x, dir.z);
         // Shoot pulse weapon
-        syn.shootCooldown -= delta;
-        if (syn.shootCooldown <= 0) {
-          syn.shootCooldown = syn.isBisected ? 2.2 : 1.2;
+        if (syn.shootCooldown <= 0 && (isXeno || requestHostileAttack(this, syn, targetPlayer, delta, { kind: 'ranged', windup: 0.9, recovery: 1.9, duration: 0.3 }))) {
+          syn.shootCooldown = syn.isBisected ? 2.6 : 1.9;
           this.audioEngine.playPulseRifleBurst();
           if (isXeno) {
             horde.checkMeleeHits({ origin: targetPos, radius: 1.5, damage: syn.damage });
           } else {
-            player.takeDamage(syn.damage * 0.4);
+            targetPlayer.takeDamage(syn.damage * 0.4);
           }
         }
+        syncHostileWarning(this, syn);
       }
     }
   }
@@ -276,7 +259,8 @@ export class SyntheticsManager {
           } else {
             // Terminated bisected android
             this.audioEngine.playSyntheticShortCircuit();
-            this.scene.remove(syn.mesh);
+            releaseHostileAttack(this, syn);
+            disposeObject(syn.mesh, this.sharedResources);
             this.androids.splice(i, 1);
             hits.push({ pos: syn.mesh.position.clone(), damage: attack.damage, killed: true });
           }
@@ -289,11 +273,13 @@ export class SyntheticsManager {
   }
 
   clearSquad() {
-    this.androids.forEach(s => this.scene.remove(s.mesh));
+    this.bloodDrops.forEach(drop => disposeObject(drop.mesh, this.sharedResources));
+    this.bloodDrops = [];
+    this.androids.forEach(s => { releaseHostileAttack(this, s); disposeObject(s.mesh, this.sharedResources); });
     this.androids = [];
-    this.severedProps.forEach(p => this.scene.remove(p));
+    this.severedProps.forEach(p => disposeObject(p, this.sharedResources));
     this.severedProps = [];
-    this.bloodPools.forEach(b => this.scene.remove(b));
+    this.bloodPools.forEach(b => disposeObject(b, this.sharedResources));
     this.bloodPools = [];
   }
 }

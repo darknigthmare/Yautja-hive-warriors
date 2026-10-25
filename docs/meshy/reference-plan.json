@@ -1,0 +1,432 @@
+{
+  "schemaVersion": 1,
+  "status": "hunter_delivered_big_chap_method_pending",
+  "updated_at": "2026-10-20T16:17:01.204009+02:00",
+  "objective": "Fidélité visuelle 1:1 aux personnages cinématographiques demandés ; objectif à vérifier, non garanti par la génération.",
+  "imageSelection": [
+    {
+      "id": "hunter-mmpr-01dx_a0026",
+      "character": "hunter",
+      "scope": "body",
+      "view": "face / trois-quarts léger, corps entier",
+      "local_path": "images/hunter-mmpr-01dx_a0026.jpg",
+      "original_local_path": "/workspace/qa/reference-research/hunter/current/images/mmpr-01dx_a0026.jpg",
+      "source_url": "https://www.prime1studio.com/on/demandware.static/-/Sites-p1s-master-catalog/default/dwdfeb3101/images/MMPR-01DXS/catalog/mmpr-01dx_a0026.jpg",
+      "source_page": "https://www.prime1studio.com/pr-jungle-hunter-predator/MMPR-01DXS.html",
+      "product_code": "MMPR-01DXS",
+      "width": 1060,
+      "height": 1500,
+      "sha256": "47a047f3f78a7f11a12793ee59df3a77334b292e731015e88b02f808ab761182",
+      "notes": "Corps entier sans masque porté, main gauche ouverte et lames de poignet partiellement sorties. Biomask détaché présent sur le socle : accessoire à exclure du futur corps. Base, feuillages, logos et lettrage occupent une part importante de l’image.",
+      "visually_checked": true,
+      "pixels_unchanged": true,
+      "generation_ready": false
+    },
+    {
+      "id": "hunter-mmpr-01dx_b0024",
+      "character": "hunter",
+      "scope": "body",
+      "view": "profil droit / trois-quarts, corps entier",
+      "local_path": "images/hunter-mmpr-01dx_b0024.jpg",
+      "original_local_path": "/workspace/qa/reference-research/hunter/current/images/mmpr-01dx_b0024.jpg",
+      "source_url": "https://www.prime1studio.com/on/demandware.static/-/Sites-p1s-master-catalog/default/dwdf9a9251/images/MMPR-01DXS/catalog/mmpr-01dx_b0024.jpg",
+      "source_page": "https://www.prime1studio.com/pr-jungle-hunter-predator/MMPR-01DXS.html",
+      "product_code": "MMPR-01DXS",
+      "width": 1060,
+      "height": 1500,
+      "sha256": "424259406b46f24ea80c22d6c1cea2c66739dee74af407a776ce7125529f333d",
+      "notes": "Corps sans masque porté et visage exposé. Biomask détaché sur le socle. Même ligne de statue, pose générale comparable à a0026 ; les occultations limitent la vérification exacte de la main opposée.",
+      "visually_checked": true,
+      "pixels_unchanged": true,
+      "generation_ready": false
+    },
+    {
+      "id": "hunter-mmpr-01dx_b0022",
+      "character": "hunter",
+      "scope": "body",
+      "view": "profil gauche / arrière trois-quarts",
+      "local_path": "images/hunter-mmpr-01dx_b0022.jpg",
+      "original_local_path": "/workspace/qa/reference-research/hunter/current/images/mmpr-01dx_b0022.jpg",
+      "source_url": "https://www.prime1studio.com/on/demandware.static/-/Sites-p1s-master-catalog/default/dwc6b42c88/images/MMPR-01DXS/catalog/mmpr-01dx_b0022.jpg",
+      "source_page": "https://www.prime1studio.com/pr-jungle-hunter-predator/MMPR-01DXS.html",
+      "product_code": "MMPR-01DXS",
+      "width": 1060,
+      "height": 1500,
+      "sha256": "17b9a02347fe510cc45dacf970a54a7f918cb7705acb887a2c6d85cb1b2102f8",
+      "notes": "Visage visible de profil sans biomask porté. Ce n’est pas un dos orthographique complet : le feuillage masque une grande partie des jambes et du bassin ; expression exacte des mandibules seulement partiellement lisible.",
+      "visually_checked": true,
+      "pixels_unchanged": true,
+      "generation_ready": false
+    },
+    {
+      "id": "hunter-mmpr-01dx_b0010",
+      "character": "hunter",
+      "scope": "face_detail",
+      "view": "visage frontal / trois-quarts léger",
+      "local_path": "images/hunter-mmpr-01dx_b0010.jpg",
+      "original_local_path": "/workspace/qa/reference-research/hunter/current/images/mmpr-01dx_b0010.jpg",
+      "source_url": "https://www.prime1studio.com/on/demandware.static/-/Sites-p1s-master-catalog/default/dw5d9ad447/images/MMPR-01DXS/catalog/mmpr-01dx_b0010.jpg",
+      "source_page": "https://www.prime1studio.com/pr-jungle-hunter-predator/MMPR-01DXS.html",
+      "product_code": "MMPR-01DXS",
+      "width": 1500,
+      "height": 1060,
+      "sha256": "037c9350c1473cdd5270a0e40aab4315ef0d62215079b06a35d7d263282339b3",
+      "notes": "Détail du front, des yeux, mandibules, dents, pigmentation et dreadlocks, depuis la même galerie MMPR-01DXS. Complément facial ; cadrage incompatible avec une série corps entier comme vue supplémentaire directe.",
+      "visually_checked": true,
+      "pixels_unchanged": true,
+      "generation_ready": false
+    },
+    {
+      "id": "hunter-mmpr-01dx_b0030",
+      "character": "hunter",
+      "scope": "face_detail",
+      "view": "profil gauche du visage et de l’épaule",
+      "local_path": "images/hunter-mmpr-01dx_b0030.jpg",
+      "original_local_path": "/workspace/qa/reference-research/hunter/current/images/mmpr-01dx_b0030.jpg",
+      "source_url": "https://www.prime1studio.com/on/demandware.static/-/Sites-p1s-master-catalog/default/dw184128e7/images/MMPR-01DXS/catalog/mmpr-01dx_b0030.jpg",
+      "source_page": "https://www.prime1studio.com/pr-jungle-hunter-predator/MMPR-01DXS.html",
+      "product_code": "MMPR-01DXS",
+      "width": 1500,
+      "height": 1060,
+      "sha256": "c14b13e22c313f4ce7f915a387dd9259f45ab9c20b61543245b0cd1555f526c4",
+      "notes": "Profil du visage démasqué, dreadlocks et canon d’épaule. Complément facial et matériel de la même galerie ; le corps entier n’est pas visible.",
+      "visually_checked": true,
+      "pixels_unchanged": true,
+      "generation_ready": false
+    },
+    {
+      "id": "hunter-mmpr-01dx_b0060",
+      "character": "hunter",
+      "scope": "mask_future",
+      "view": "masque frontal / trois-quarts, éclairage bleu",
+      "local_path": "images/hunter-mmpr-01dx_b0060.jpg",
+      "original_local_path": "/workspace/qa/reference-research/hunter/current/images/mmpr-01dx_b0060.jpg",
+      "source_url": "https://www.prime1studio.com/on/demandware.static/-/Sites-p1s-master-catalog/default/dw98321532/images/MMPR-01DXS/catalog/mmpr-01dx_b0060.jpg",
+      "source_page": "https://www.prime1studio.com/pr-jungle-hunter-predator/MMPR-01DXS.html",
+      "product_code": "MMPR-01DXS",
+      "width": 1500,
+      "height": 1060,
+      "sha256": "a9c1f53c47d49ac033d7dccd3e182b709ce70a5aec573f08f035f62cc28be1bd",
+      "notes": "Référence distincte pour le futur biomask. Le masque est porté, avec dreadlocks et canon dans le cadre : ce n’est pas une photographie du masque isolé, et elle est exclue du futur input du corps démasqué.",
+      "visually_checked": true,
+      "pixels_unchanged": true,
+      "generation_ready": false
+    },
+    {
+      "id": "alien-prime1-mmxlal04s-a015",
+      "character": "alien",
+      "scope": "body",
+      "view": "front_three_quarter",
+      "local_path": "images/alien-prime1-mmxlal04s-a015.jpg",
+      "original_local_path": "/workspace/qa/reference-research/alien/current/prime1-mmxlal04s-a015.jpg",
+      "source_url": "https://www.prime1studio.com/on/demandware.static/-/Sites-p1s-master-catalog/default/dwe8a2e8db/images/MMXLAL-04S/catalog/a015-D5WckRzE.jpg",
+      "source_page": "https://www.prime1studio.com/al1-big-chap-xenomorph-regular-ver/MMXLAL-04S.html",
+      "product_code": "MMXLAL-04S",
+      "width": 1060,
+      "height": 1500,
+      "sha256": "d214ada3bdba7047272a8621d364b90014961d0329cfaa5bd199ec97ab909cb7",
+      "notes": "Preferred full-body front-three-quarter on dark background, interior wall removed; base and left brand/head strip remain.",
+      "visually_checked": true,
+      "pixels_unchanged": true,
+      "generation_ready": false
+    },
+    {
+      "id": "alien-prime1-mmxlal04s-a016",
+      "character": "alien",
+      "scope": "body",
+      "view": "rear_three_quarter",
+      "local_path": "images/alien-prime1-mmxlal04s-a016.jpg",
+      "original_local_path": "/workspace/qa/reference-research/alien/current/prime1-mmxlal04s-a016.jpg",
+      "source_url": "https://www.prime1studio.com/on/demandware.static/-/Sites-p1s-master-catalog/default/dw1b6d11c1/images/MMXLAL-04S/catalog/a016-TiMgAZWT.jpg",
+      "source_page": "https://www.prime1studio.com/al1-big-chap-xenomorph-regular-ver/MMXLAL-04S.html",
+      "product_code": "MMXLAL-04S",
+      "width": 1060,
+      "height": 1500,
+      "sha256": "53c32e122ced55d71b011f508d296e40c2ac5cbf7c4e40549821c0d541568eb7",
+      "notes": "Preferred full-body rear-three-quarter on dark background, interior wall removed; base and left brand/head strip remain.",
+      "visually_checked": true,
+      "pixels_unchanged": true,
+      "generation_ready": false
+    },
+    {
+      "id": "alien-prime1-mmxlal04s-a018",
+      "character": "alien",
+      "scope": "face_detail",
+      "view": "head_frontal",
+      "local_path": "images/alien-prime1-mmxlal04s-a018.jpg",
+      "original_local_path": "/workspace/qa/reference-research/alien/current/prime1-mmxlal04s-a018.jpg",
+      "source_url": "https://www.prime1studio.com/on/demandware.static/-/Sites-p1s-master-catalog/default/dw65b1053d/images/MMXLAL-04S/catalog/a018-xfydIZ5l.jpg",
+      "source_page": "https://www.prime1studio.com/al1-big-chap-xenomorph-regular-ver/MMXLAL-04S.html",
+      "product_code": "MMXLAL-04S",
+      "width": 1499,
+      "height": 1060,
+      "sha256": "e295cd180f3c436285f50370fe68d61026808d498af65badf34ed779d4336e50",
+      "notes": "Preferred neutral-light frontal head close-up; brand/head strip remains.",
+      "visually_checked": true,
+      "pixels_unchanged": true,
+      "generation_ready": false
+    },
+    {
+      "id": "alien-prime1-mmxlal04s-a020",
+      "character": "alien",
+      "scope": "face_detail",
+      "view": "head_lateral_oblique",
+      "local_path": "images/alien-prime1-mmxlal04s-a020.jpg",
+      "original_local_path": "/workspace/qa/reference-research/alien/current/prime1-mmxlal04s-a020.jpg",
+      "source_url": "https://www.prime1studio.com/on/demandware.static/-/Sites-p1s-master-catalog/default/dw2be9f3e5/images/MMXLAL-04S/catalog/a020-APdDR0US.jpg",
+      "source_page": "https://www.prime1studio.com/al1-big-chap-xenomorph-regular-ver/MMXLAL-04S.html",
+      "product_code": "MMXLAL-04S",
+      "width": 1499,
+      "height": 1060,
+      "sha256": "0c0d8617f93e7063b97720f635d9f13dba1c86c0a2911e36b307292cf6ace182",
+      "notes": "Preferred near-lateral oblique head close-up; brand/head strip remains.",
+      "visually_checked": true,
+      "pixels_unchanged": true,
+      "generation_ready": false
+    },
+    {
+      "id": "alien-prime1-mmxlal04s-a014",
+      "character": "alien",
+      "scope": "body",
+      "view": "right_facing_profile_partial",
+      "local_path": "images/alien-prime1-mmxlal04s-a014.jpg",
+      "original_local_path": "/workspace/qa/reference-research/alien/current/prime1-mmxlal04s-a014.jpg",
+      "source_url": "https://www.prime1studio.com/on/demandware.static/-/Sites-p1s-master-catalog/default/dwdfc26d9c/images/MMXLAL-04S/catalog/a014-BbAnoyMi.jpg",
+      "source_page": "https://www.prime1studio.com/al1-big-chap-xenomorph-regular-ver/MMXLAL-04S.html",
+      "product_code": "MMXLAL-04S",
+      "width": 1060,
+      "height": 1500,
+      "sha256": "6fdde0f99904bdfc9a809530c3d92b47b8bbf0e9b96a364666888bbb0804ae34",
+      "notes": "Right-facing profile upper body; hips and lower legs hidden behind wall. Not a full-body side view.",
+      "visually_checked": true,
+      "pixels_unchanged": true,
+      "generation_ready": false
+    }
+  ],
+  "likeness_verified": false,
+  "characters": [
+    {
+      "id": "jungle_hunter",
+      "film": "Predator",
+      "year": 1987,
+      "variant": "Jungle Hunter adulte sans biomask",
+      "body_model_scope": "Corps et visage exposé ; conserver peau, mandibules, dreadlocks, armure et équipements de cette version après examen des références.",
+      "exclude_from_body_model": [
+        "Biomask porté ou fusionné avec le visage"
+      ],
+      "reference_requirements": [
+        "Trois à quatre vues cohérentes : face, profil, dos et trois-quarts.",
+        "Même costume ou même sculpture, avec visage démasqué dans les vues montrant la face.",
+        "Pose des membres et expression des mandibules cohérentes entre les vues.",
+        "Corps entier visible ; gros plans du visage conservés comme compléments distincts."
+      ],
+      "selected_images": [
+        "hunter-mmpr-01dx_a0026",
+        "hunter-mmpr-01dx_b0024",
+        "hunter-mmpr-01dx_b0022",
+        "hunter-mmpr-01dx_b0010",
+        "hunter-mmpr-01dx_b0030"
+      ],
+      "selected_body_views": [
+        "hunter-mmpr-01dx_a0026",
+        "hunter-mmpr-01dx_b0024",
+        "hunter-mmpr-01dx_b0022"
+      ],
+      "selected_face_details": [
+        "hunter-mmpr-01dx_b0010",
+        "hunter-mmpr-01dx_b0030"
+      ],
+      "source_page": "https://www.prime1studio.com/pr-jungle-hunter-predator/MMPR-01DXS.html",
+      "product_code": "MMPR-01DXS",
+      "source_type": "photo_de_replique_ou_statue",
+      "manufacturer_scale": "1/3",
+      "variant_note": "Classic démasqué ; expression du profil arrière partiellement occultée.",
+      "limitations": [
+        "Références de sculpture commerciale, pas documents originaux du costume de tournage. La fidélité géométrique 1:1 n’est pas démontrée.",
+        "Les corps sont posés sur un diorama, avec logos et lettrage ; aucun original n’a été modifié. Ces images ne constituent pas encore un jeu d’inputs Meshy nettoyé et cohérent.",
+        "Le profil arrière sélectionné est partiellement occulté par les plantes ; une vue de dos complète sans occultation n’a pas été trouvée parmi les images examinées.",
+        "La galerie comprend des portraits Classic/Roaring, masqués, mains alternatives et des images explicitement Sculpt Update. Ces variations ne doivent pas être fusionnées dans la même reconstruction.",
+        "Les vues de visage complémentaires ne sont pas des vues de corps entier supplémentaires.",
+        "Le futur masque reste une référence distincte, non isolée, sans vue d’intérieur ni attache arrière vérifiées."
+      ],
+      "generation_ready": false
+    },
+    {
+      "id": "xenomorph_warrior",
+      "film": "Alien",
+      "year": 1979,
+      "variant": "Big Chap",
+      "body_model_scope": "Anatomie du costume de 1979 à établir depuis les photos : crâne, mâchoire, thorax, bras, jambes, pieds, tubes dorsaux et queue.",
+      "reference_requirements": [
+        "Trois à quatre vues du même costume ou de la même sculpture : face, profil, dos et trois-quarts.",
+        "Pose cohérente et corps entier visible, avec queue et tubes dorsaux lorsqu’ils sont exposés.",
+        "Déduire la forme des jambes et des pieds des références ; ne pas imposer une anatomie de Runner ni une hypothèse digitigrade.",
+        "Gros plans du crâne et de la mâchoire conservés comme compléments distincts."
+      ],
+      "selected_images": [
+        "alien-prime1-mmxlal04s-a015",
+        "alien-prime1-mmxlal04s-a016",
+        "alien-prime1-mmxlal04s-a018",
+        "alien-prime1-mmxlal04s-a020",
+        "alien-prime1-mmxlal04s-a014"
+      ],
+      "selected_body_views": [
+        "alien-prime1-mmxlal04s-a015",
+        "alien-prime1-mmxlal04s-a016",
+        "alien-prime1-mmxlal04s-a014"
+      ],
+      "selected_face_details": [
+        "alien-prime1-mmxlal04s-a018",
+        "alien-prime1-mmxlal04s-a020"
+      ],
+      "source_page": "https://www.prime1studio.com/al1-big-chap-xenomorph-regular-ver/MMXLAL-04S.html",
+      "product_code": "MMXLAL-04S",
+      "source_type": "photo_de_replique_ou_statue",
+      "manufacturer_scale": "1/3",
+      "variant_note": "Wide Shot / Giger ; ne pas mélanger la tête Close-Up / Rambaldi.",
+      "limitations": [
+        "Two preferred full-body three-quarter views (front and rear), plus frontal and near-lateral head detail. No true orthographic front/back/profile full-body set established.",
+        "Every source image contains a left brand/secondary-head strip and bottom logo/copyright banner; originals retained unchanged.",
+        "a014 is only a partial profile: the wall hides most lower-body detail.",
+        "a015 and a016 have the wall removed but retain a display base.",
+        "No measured 1:1 match to the production costume established. Modern licensed sculptural interpretation, not proof of exact screen correspondence.",
+        "Page states TM & ©20th Century Studios. Commercial prototype marketing images; no open image license found or reuse/upload permission established."
+      ],
+      "generation_ready": false
+    }
+  ],
+  "future_separate_asset": {
+    "id": "jungle_hunter_biomask",
+    "status": "reference_reviewed_not_isolated_not_submitted",
+    "scope": "Biomask de la version de 1987, modèle séparé à positionner ultérieurement sur la tête.",
+    "selected_images": [
+      "hunter-mmpr-01dx_b0060"
+    ],
+    "estimated_credits": null,
+    "included_in_two_body_estimate": false,
+    "note": "Estimer ce troisième asset avant son étape payante ; aucune génération de masque n’est autorisée par le seul devis des deux corps."
+  },
+  "source_review": {
+    "verified_source_pages": [
+      "https://www.prime1studio.com/pr-jungle-hunter-predator/MMPR-01DXS.html",
+      "https://www.prime1studio.com/al1-big-chap-xenomorph-regular-ver/MMXLAL-04S.html"
+    ],
+    "verified_downloaded_images": [
+      "hunter-mmpr-01dx_a0026",
+      "hunter-mmpr-01dx_b0024",
+      "hunter-mmpr-01dx_b0022",
+      "hunter-mmpr-01dx_b0010",
+      "hunter-mmpr-01dx_b0030",
+      "hunter-mmpr-01dx_b0060",
+      "alien-prime1-mmxlal04s-a015",
+      "alien-prime1-mmxlal04s-a016",
+      "alien-prime1-mmxlal04s-a018",
+      "alien-prime1-mmxlal04s-a020",
+      "alien-prime1-mmxlal04s-a014"
+    ],
+    "classify_each_reference_as": [
+      "photo_de_production",
+      "photo_de_replique_ou_statue",
+      "rendu_promotionnel"
+    ],
+    "required_metadata": [
+      "source_page_url",
+      "image_local_path",
+      "subject_and_version",
+      "view",
+      "source_type",
+      "visually_checked"
+    ],
+    "rules": [
+      "Ouvrir réellement chaque image avant de la sélectionner.",
+      "Conserver la source et son attribution ; ne pas inventer d’angle absent.",
+      "Une mention commerciale « 1:1 » signifie généralement l’échelle de la réplique ; elle ne démontre pas sa fidélité géométrique au film.",
+      "Comparer les formes avec les références avant toute activation dans le jeu."
+    ],
+    "classification": "Photos promotionnelles officielles de sculptures licenciées Prime 1 Studio ; pas des scans ni des photos des costumes de production.",
+    "image_edits_applied": false
+  },
+  "network": {
+    "status": "research_access_working",
+    "draft_status": "published",
+    "requested_hosts": [
+      "www.bing.com",
+      "www.sideshow.com",
+      "images.sideshow.com",
+      "www.prime1studio.com",
+      "statue.prime1studio.com",
+      "www.stanwinstonschool.com",
+      "www.coolprops.com",
+      "commons.wikimedia.org",
+      "upload.wikimedia.org"
+    ],
+    "note": "La politique effective de révision 4 est appliquée à la session active. Les deux galeries et leurs images sont accessibles sur www.prime1studio.com. Aucune nouvelle session nécessaire pour cette recherche.",
+    "previous_configuration_draft_id": "b043ffff-dd3b-449b-bd5a-97e853dadb95~cecfgdraft_6ad76e4130508198bb47296c3a76ae43",
+    "published_version_id": "b043ffff-dd3b-449b-bd5a-97e853dadb95~cecfgver_6ad76f9f2fd88198ad475ff84aedf420",
+    "current_session_source_version_id": "b043ffff-dd3b-449b-bd5a-97e853dadb95~cecfgver_6ad722ef1b108198a4e89e1c2e9d82f8",
+    "current_session_spec_revision": "4",
+    "last_retry_result": "Pages source et 11 images Prime 1 téléchargées et examinées.",
+    "required_action": null,
+    "observed_spec_revision": "4",
+    "policy_state": "enforced"
+  },
+  "budget": {
+    "two_reference_guided_bodies_with_4k_textures_estimated_credits": 60,
+    "per_body_estimated_credits": 30,
+    "source": "https://docs.meshy.ai/en/api/pricing",
+    "source_read_date": "2026-10-20",
+    "excludes": [
+      "Masque séparé",
+      "Remesh éventuel",
+      "Rigging",
+      "Animations supplémentaires"
+    ],
+    "approval_status": "Authorized by user instruction: fait ce qui faut et ensuite genere les modeles",
+    "new_paid_tasks_submitted": true,
+    "reference_uploads_submitted": true,
+    "accepted_estimate_credits": 60,
+    "actual_consumed_credits_current_pass": 30,
+    "remaining_planned_body_not_submitted": "big_chap_1979"
+  },
+  "previous_generation_record": "generation-plan.json",
+  "previous_generation_record_modified": false,
+  "generation_ready": false,
+  "delivery": {
+    "gallery": "/workspace/hive-warriors-reference-pack/index.html",
+    "archive": "/workspace/hive-warriors-references.zip",
+    "archive_bytes": 1930479,
+    "archive_sha256": "1aa9569d338ff1afd183d301eb355f3cadecb3023e6335aaa1547624f6e474c1",
+    "source_manifest": "/workspace/hive-warriors-reference-pack/sources.json",
+    "original_image_count": 11,
+    "image_pixels_unchanged": true,
+    "gallery_browser_check": {
+      "checked_at": "2026-10-20T14:17:40.766Z",
+      "loaded_images": 11,
+      "filter_visible_counts": {
+        "hunter": 5,
+        "alien": 5,
+        "mask": 1,
+        "all": 11
+      },
+      "zoom_and_escape": true,
+      "mobile_horizontal_overflow": false,
+      "page_errors": [],
+      "ok": true
+    }
+  },
+  "preparation_required": [
+    "Isoler le personnage des socles, plantes, murs, logos et portraits secondaires avant tout input Meshy.",
+    "Ne pas soumettre les gros plans comme des vues du corps entier.",
+    "Conserver la cohérence de pose et de variante, sans inventer les angles occultés.",
+    "Exclure la référence du biomask des entrées du corps démasqué."
+  ],
+  "prepared_inputs_record": "reference-generation.json",
+  "current_generation_record": "reference-generation.json",
+  "model_delivery": {
+    "archive": "/workspace/hive-warriors-models.zip",
+    "gallery": "/workspace/hive-warriors-models/index.html",
+    "hunter_model": "/workspace/hive-warriors-models/jungle-hunter-unmasked.glb",
+    "hunter_dense_untextured": "/workspace/hive-warriors-models/jungle-hunter-hd-untextured.glb",
+    "big_chap_model": null
+  }
+}

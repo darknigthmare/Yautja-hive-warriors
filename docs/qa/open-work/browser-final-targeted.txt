@@ -1,0 +1,12 @@
+Relay defense state checks: {"target":8,"beforeActivation":{"entered":true,"completed":false,"kills":0,"defenseKills":0,"commanderDefeated":false,"bossDefeated":false,"interacted":false,"relayPhase":"awaiting-activation","active":0,"queued":10,"gate":false,"objective":"Réactivez le relais de surveillance — APPROCHEZ ET INTERAGISSEZ · CONTRE-ATTAQUE : 8 ENNEMIS"},"activated":{"entered":true,"completed":false,"kills":0,"defenseKills":0,"commanderDefeated":false,"bossDefeated":false,"interacted":true,"relayPhase":"counterattack","active":0,"queued":22,"gate":false,"objective":"Repoussez la contre-attaque du relais : 0/8"},"firstBatchWait":5.099999999999998,"partial":{"entered":true,"completed":false,"kills":0,"defenseKills":1,"commanderDefeated":false,"bossDefeated":false,"interacted":true,"relayPhase":"counterattack","active":3,"queued":18,"gate":false,"objective":"Repoussez la contre-attaque du relais : 1/8"},"complete":{"entered":true,"completed":true,"kills":0,"defenseKills":8,"commanderDefeated":false,"bossDefeated":false,"interacted":true,"relayPhase":"secured","active":0,"queued":0,"gate":true,"objective":"PASSAGE OUVERT — REJOIGNEZ Gorge des chasseurs"},"missionAlive":true}
+✔ relay activation keeps its gate locked until the real counterattack is defeated (37369.866933ms)
+✔ campaign advances through five real maps and finishes after the final boss (102353.489504ms)
+✔ production rendering presets compile, export an image and preserve independent co-op viewports (36727.705615ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 177894.309468

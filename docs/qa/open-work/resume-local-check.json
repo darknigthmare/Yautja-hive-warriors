@@ -1,0 +1,16 @@
+{
+  "status": "passed_local_integrity_only",
+  "verifiedIndexSha256": "9fdd19169a75d324dbde0e77bddbac90167e81ca19bfb06880084246a4bad6d6",
+  "files": 29,
+  "models": 12,
+  "bundles": 5,
+  "globalQa": {
+    "source": "/workspace/Yautja-hive-warriors/docs/qa/open-work-validation.json",
+    "status": "passed_locally_deployment_blocked_quota",
+    "passed": true,
+    "pendingChecks": [],
+    "checkedAt": "2026-10-24T02:42:07.419Z"
+  },
+  "checkedAt": "2026-10-24T02:42:07.419Z",
+  "remoteActionsExecuted": false
+}

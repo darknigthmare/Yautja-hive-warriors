@@ -7,6 +7,8 @@ import { ParticleSystem } from './engine/ParticleSystem.js';
 import { GoreEngine } from './engine/GoreEngine.js';
 import { OrbitalStrikeManager } from './engine/OrbitalStrike.js';
 import { StoryCampaignManager } from './engine/StoryCampaign.js';
+import { CombatDirector } from './engine/CombatDirector.js';
+import { BattlefieldMission } from './engine/BattlefieldMission.js';
 import { WeatherSystem } from './engine/WeatherSystem.js';
 import { UIManager } from './ui/UIManager.js';
 import { ForgeShop } from './ui/ForgeShop.js';
@@ -32,6 +34,8 @@ import { SentryGun } from './entities/SentryGun.js';
 import { FalconDrone } from './entities/FalconDrone.js';
 import { EnvironmentManager } from './entities/Environment.js';
 import { CHARACTERS_DATA } from './data/charactersData.js';
+import { LEVELS_DATA } from './data/levelsData.js';
+import { disposeObject } from './engine/SceneResources.js';
 
 class GameApp {
   constructor() {
@@ -41,21 +45,29 @@ class GameApp {
     this.particles = new ParticleSystem(this.renderer.scene);
     this.gore = new GoreEngine(this.renderer.scene);
     this.orbital = new OrbitalStrikeManager(this.renderer.scene, this.audio);
-    this.campaign = new StoryCampaignManager(this.ui);
     this.weather = new WeatherSystem(this.renderer.scene);
     this.forge = new ForgeShop(this.audio);
     this.ui = new UIManager();
+    this.campaign = new StoryCampaignManager(this.ui);
     this.photoMode = new PhotoMode(this.renderer, this.renderer.scene, this.renderer.camera);
     this.citadel = new YautjaCitadel(this.renderer.scene);
     this.codex = new LoreCodexManager();
     this.env = new EnvironmentManager(this.renderer.scene);
     this.horde = new XenomorphHorde(this.renderer.scene, this.audio, this.gore);
+    this.horde.environment = this.env;
     this.bosses = new BossManager(this.renderer.scene, this.audio);
     this.allies = new YautjaAlliesManager(this.renderer.scene, this.audio);
     this.skimmer = new YautjaSkimmer(this.renderer.scene, this.audio);
     this.marines = new ColonialMarinesManager(this.renderer.scene, this.audio);
     this.synthetics = new SyntheticsManager(this.renderer.scene, this.audio, this.particles);
     this.badBlood = new BadBloodManager(this.renderer.scene, this.audio);
+    this.combatDirector = new CombatDirector({ graceSeconds: 8 });
+    for (const manager of [this.horde, this.bosses, this.marines, this.synthetics, this.badBlood]) {
+      manager.combatDirector = this.combatDirector;
+      manager.environment = this.env;
+    }
+    this.battlefield = null;
+    this.battlefieldProgression = null;
     this.hellHounds = new HellHoundsManager(this.renderer.scene, this.audio);
     this.dropPod = new DropPodEntrance(this.renderer.scene, this.audio, this.particles);
     this.dropship = new CheyenneDropship(this.renderer.scene, this.audio, this.particles);
@@ -67,6 +79,7 @@ class GameApp {
     this.holoDecoys = [];
 
     this.weaponWheel = new WeaponWheel((weaponId) => {
+      this.player?.selectWeapon?.(weaponId);
       this.ui.showAnnouncement(`ARME SÉLECTIONNÉE: ${weaponId.toUpperCase()}`);
     });
 
@@ -82,6 +95,11 @@ class GameApp {
     this.isCoOp = false;
     this.activeLoadout = null;
     this.isFirstPerson = false;
+    this.missionMode = 'hunt';
+    this.pendingChapter = null;
+    this.bossSpawned = false;
+    this.missionTasks = [];
+    this.missionEffects = [];
 
     this.projectiles = [];
     this.isPlaying = false;
@@ -108,6 +126,8 @@ class GameApp {
   setupEventListeners() {
     document.getElementById('btn-start-game').addEventListener('click', () => {
       this.audio.init();
+      this.missionMode = 'hunt';
+      this.campaign.reset?.();
       this.isCoOp = false;
       this.renderer.setSplitScreen(false);
       this.citadel.hide();
@@ -116,23 +136,28 @@ class GameApp {
 
     document.getElementById('btn-open-citadel').addEventListener('click', () => {
       this.audio.init();
-      this.citadel.buildCitadelRoom(this.ui.trophyStats.skulls);
+      this.citadel.buildCitadelRoom(this.ui.trophyStats.skullsCollected);
       this.citadel.show();
+      this.renderer.requestRender();
       this.ui.showAnnouncement('🏰 CITADELLE YAUTJA: STATION DE POLISSAGE DES TROPHÉES AU LASER');
     });
 
     document.getElementById('btn-open-story').addEventListener('click', () => {
       this.audio.init();
+      this.missionMode = 'campaign';
       this.isCoOp = false;
       this.renderer.setSplitScreen(false);
       this.citadel.hide();
       const firstChapter = this.campaign.startCampaign();
+      this.selectChapterLevel(firstChapter);
       this.ui.showAnnouncement(firstChapter.title);
       this.ui.showScreen(document.getElementById('loadout-prep-screen'));
     });
 
     document.getElementById('btn-open-coop').addEventListener('click', () => {
       this.audio.init();
+      this.missionMode = 'hunt';
+      this.campaign.reset?.();
       this.isCoOp = true;
       this.renderer.setSplitScreen(true);
       this.citadel.hide();
@@ -152,6 +177,8 @@ class GameApp {
     });
 
     document.getElementById('btn-open-sandbox').addEventListener('click', () => {
+      this.missionMode = 'sandbox';
+      this.campaign.reset?.();
       this.ui.showScreen(document.getElementById('sandbox-modal'));
     });
 
@@ -181,15 +208,34 @@ class GameApp {
     });
 
     document.getElementById('btn-close-options').addEventListener('click', () => {
-      this.ui.showScreen(this.ui.mainMenu);
+      this.ui.showScreen(this.isPlaying ? document.getElementById('pause-menu') : this.ui.mainMenu);
     });
 
     document.getElementById('btn-replay').addEventListener('click', () => {
+      if (this.pendingChapter) {
+        this.selectChapterLevel(this.pendingChapter);
+        this.pendingChapter = null;
+      } else if (this.missionMode === 'campaign' && !this.campaign.isActive) {
+        this.selectChapterLevel(this.campaign.startCampaign());
+      }
+      if (this.missionMode === 'sandbox') {
+        this.ui.showScreen(document.getElementById('sandbox-modal'));
+        return;
+      }
       this.ui.showScreen(document.getElementById('loadout-prep-screen'));
     });
 
     document.getElementById('btn-menu-return').addEventListener('click', () => {
-      this.endGame(false);
+      this.returnToMenu();
+    });
+
+    document.getElementById('btn-pause-game')?.addEventListener('click', () => this.togglePause(true));
+    document.getElementById('btn-resume-game')?.addEventListener('click', () => this.togglePause(false));
+    document.getElementById('btn-pause-menu-return')?.addEventListener('click', () => this.returnToMenu());
+    document.getElementById('btn-pause-options')?.addEventListener('click', () => this.ui.showScreen(this.ui.optionsModal));
+    document.getElementById('btn-back-to-menu')?.addEventListener('click', () => this.returnToMenu());
+    document.getElementById('btn-back-to-levels')?.addEventListener('click', () => {
+      this.ui.showScreen(this.missionMode === 'campaign' ? this.ui.mainMenu : this.ui.levelSelectMenu);
     });
 
     document.getElementById('btn-snap-photo').addEventListener('click', () => {
@@ -227,9 +273,36 @@ class GameApp {
 
     // Hotkeys
     window.addEventListener('keydown', (e) => {
+      if (e.target instanceof HTMLElement && e.target.matches('input, select, textarea, [contenteditable="true"]')) return;
+      if (e.code === 'Escape' && this.isPlaying) {
+        e.preventDefault();
+        if (this.photoMode.isActive) this.photoMode.toggle(this.player.position);
+        else if (this.weaponWheel.isOpen) this.weaponWheel.close();
+        else this.togglePause(!this.isPaused);
+        return;
+      }
+      if (this.isPlaying && this.dropPod.isActive) {
+        if (['Space', 'Tab', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) e.preventDefault();
+        return;
+      }
       this.keys[e.code] = true;
 
       if (!this.isPlaying || this.isPaused) return;
+      if (['Space', 'Tab', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) e.preventDefault();
+      if (e.repeat) return;
+      if (this.photoMode.isActive) {
+        if (e.code === 'KeyO') this.photoMode.toggle(this.player.position);
+        return;
+      }
+      if (this.weaponWheel.isOpen && e.code !== 'KeyR') return;
+      if (this.isCoOp && this.player2 && ['Enter', 'Numpad0', 'NumpadDecimal'].includes(e.code)) {
+        e.preventDefault();
+        if (e.code === 'Enter' && this.battlefield?.interact(this.player2)) return;
+        this.performCoopAttack(e.code);
+        return;
+      }
+      if (this.player?.hp <= 0) return;
+      if (this.skimmer.isMounted && ['Space', 'ShiftLeft', 'ShiftRight', 'KeyG'].includes(e.code)) return;
 
       // First-Person Bio-Mask View Toggle [I Key]
       if (e.code === 'KeyI' && this.player) {
@@ -358,7 +431,8 @@ class GameApp {
       }
 
       // Netgun Entanglement & Gauntlet Flechette Needler [G Key]
-      if (e.code === 'KeyG' && this.player) {
+      if (e.code === 'KeyG' && this.player &&
+          !this.skimmer.isMounted && this.skimmer.position.distanceTo(this.player.position) >= 4) {
         if (this.player.fireNetgun(this.horde, this.synthetics)) {
           this.ui.showAnnouncement('🕸️ LANCE-FILET NETGUN DÉPLOYÉ : CIBLE ENTOURÉE DE FIL DE DIAMANT TRANCHANT !');
         } else {
@@ -388,7 +462,7 @@ class GameApp {
           if (this.player.struggleQTE()) {
             this.ui.showAnnouncement('💥 FACEHUGGER ARRACHÉ AVEC SUCCÈS !');
           }
-        } else {
+        } else if (!this.battlefield?.interact(this.player)) {
           this.checkTrophyExecution();
         }
       }
@@ -401,7 +475,8 @@ class GameApp {
 
       // 1987 Wrist Computer Nuke Countdown [N Key]
       if (e.code === 'KeyN' && this.player && !this.nukeCountingDown) {
-        this.triggerNukeCountdownSequence();
+        if (this.player.hasGadget?.('nuke')) this.triggerNukeCountdownSequence();
+        else this.ui.showAnnouncement("Équipez l’autodestruction dans votre équipement avant la chasse.");
       }
 
       if (e.code === 'KeyB' && this.player) {
@@ -471,7 +546,8 @@ class GameApp {
     });
 
     window.addEventListener('mousedown', (e) => {
-      if (!this.isPlaying || this.photoMode.isActive) return;
+      if (!this.isPlaying || this.isPaused || this.dropPod.isActive || this.player?.hp <= 0 || this.photoMode.isActive || this.weaponWheel.isOpen) return;
+      if (e.target instanceof HTMLElement && e.target.closest('button, input, select, a, .modal-card, .wheel-item')) return;
       if (e.button === 1) {
         e.preventDefault();
         this.weaponWheel.toggle();
@@ -493,7 +569,177 @@ class GameApp {
       }
     });
 
-    window.addEventListener('contextmenu', e => e.preventDefault());
+    window.addEventListener('contextmenu', e => {
+      if (this.isPlaying && !this.isPaused) e.preventDefault();
+    });
+    window.addEventListener('blur', () => {
+      this.keys = {};
+      if (this.isPlaying && !this.photoMode.isActive) this.togglePause(true);
+    });
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        this.keys = {};
+        if (this.isPlaying && !this.photoMode.isActive) this.togglePause(true);
+      }
+    });
+  }
+
+  selectChapterLevel(chapter) {
+    const level = LEVELS_DATA.find(entry => entry.id === chapter?.levelId);
+    if (level) this.ui.selectedLevel = level;
+  }
+
+  togglePause(paused = !this.isPaused) {
+    if (!this.isPlaying) return;
+    this.isPaused = paused;
+    this.keys = {};
+    this.weaponWheel.close();
+    if (paused && this.photoMode.isActive) this.photoMode.toggle(this.player.position);
+    this.ui.showScreen(paused ? document.getElementById('pause-menu') : this.ui.inGameHud);
+    this.renderer.requestRender();
+    this.lastTime = performance.now();
+  }
+
+  scheduleMissionTask(callback, delay) {
+    this.missionTasks.push({ callback, remaining: delay });
+  }
+
+  updateMissionTasks(delta) {
+    for (let i = this.missionTasks.length - 1; i >= 0; i--) {
+      const task = this.missionTasks[i];
+      task.remaining -= delta;
+      if (task.remaining <= 0) {
+        this.missionTasks.splice(i, 1);
+        task.callback();
+      }
+    }
+    for (let i = this.missionEffects.length - 1; i >= 0; i--) {
+      const effect = this.missionEffects[i];
+      effect.life -= delta;
+      if (effect.life <= 0) {
+        this.removeEffectMesh(effect.mesh);
+        this.missionEffects.splice(i, 1);
+      } else effect.update?.(delta, effect.life / effect.maxLife);
+    }
+  }
+
+  removeEffectMesh(mesh) {
+    if (!mesh) return;
+    this.renderer.scene.remove(mesh);
+    const geometries = new Set();
+    const materials = new Set();
+    mesh.traverse(child => {
+      if (child.geometry) geometries.add(child.geometry);
+      const entries = Array.isArray(child.material) ? child.material : [child.material];
+      entries.filter(Boolean).forEach(material => materials.add(material));
+    });
+    geometries.forEach(geometry => geometry.dispose());
+    materials.forEach(material => material.dispose());
+  }
+
+  clearMissionState() {
+    this.battlefield?.dispose();
+    this.battlefield = null;
+    this.battlefieldProgression = null;
+    this.combatDirector.reset({ graceSeconds: 8 });
+    this.ui.updateBattlefieldHUD?.(null);
+    this.missionTasks = [];
+    this.keys = {};
+    this.weaponWheel.close();
+    if (this.photoMode.isActive && this.player) this.photoMode.toggle(this.player.position);
+    for (const projectile of this.projectiles) this.removeEffectMesh(projectile.mesh);
+    this.projectiles = [];
+    for (const pool of this.pathogenPools) {
+      this.removeEffectMesh(pool.urnMesh);
+      this.removeEffectMesh(pool.poolMesh);
+    }
+    this.pathogenPools = [];
+    this.pathogenCooldown = 0;
+    for (const decoy of this.holoDecoys) this.removeEffectMesh(decoy.mesh);
+    this.holoDecoys = [];
+    for (const effect of this.missionEffects) this.removeEffectMesh(effect.mesh);
+    this.missionEffects = [];
+    this.nukeCountingDown = false;
+    this.isFirstPerson = false;
+    this.lockedTargetPos = null;
+    this.motionTrackerTimer = 0;
+    this.closestEnemyDist = Infinity;
+    this.audio.stopBackgroundMusic();
+    this.audio.stopThermalHum();
+    this.allies.clearSquad();
+    this.marines.clearSquad();
+    this.synthetics.clearSquad();
+    this.hellHounds.dismissPack();
+    this.dropPod.clear();
+    this.updateInsertionStatus();
+    this._insertionCameraFocus = null;
+    this.dropship.clear();
+    this.clearAPCSupport();
+    this.sentryGun.clear();
+    this.falconDrone.clear();
+    this.horde.clearWave();
+    this.bosses.clear?.();
+    this.badBlood.clear?.();
+    this.weather.clear?.();
+    this.particles.clear?.();
+    this.orbital.clear?.();
+    this.gore.clear();
+    this.skimmer.isMounted = false;
+    this.skimmer.mountCooldown = 0;
+    this.skimmer.cannonCooldown = 0;
+    this.skimmer.mesh.visible = false;
+    this.skimmer.clear?.();
+    for (const player of [this.player, this.player2]) {
+      if (!player) continue;
+      player.clearNukeHoloMesh?.();
+      if (player.dispose) player.dispose();
+      else this.renderer.scene.remove(player.mesh);
+    }
+    this.player = null;
+    this.player2 = null;
+    ['thermal-overlay', 'em-overlay', 'tech-overlay', 'uv-overlay', 'cloak-overlay',
+      'first-person-mask-overlay', 'nuke-countdown-overlay', 'true-musou-banner',
+      'acid-corrosion-overlay', 'berserker-rage-overlay', 'facehugger-qte-prompt',
+      'hud-tri-target-lock', 'execution-prompt'].forEach(id => document.getElementById(id)?.classList.add('hidden'));
+    this.renderer.requestRender?.();
+  }
+
+  returnToMenu() {
+    if (this.isPlaying) {
+      this.ui.recordEndSession(this.horde.deadCount, this.sessionSkulls, this.score);
+    }
+    this.isPlaying = false;
+    this.isPaused = false;
+    this.clearMissionState();
+    this.pendingChapter = null;
+    this.campaign.reset?.();
+    this.missionMode = 'hunt';
+    this.isCoOp = false;
+    this.renderer.setSplitScreen(false);
+    this.citadel.hide();
+    this.ui.showScreen(this.ui.mainMenu);
+  }
+
+  performCoopAttack(code) {
+    const player = this.player2;
+    if (!player || player.hp <= 0) return;
+    if (code === 'NumpadDecimal') {
+      const shot = player.firePlasmaShot();
+      if (!shot) return;
+      const mesh = new THREE.Mesh(new THREE.SphereGeometry(0.5, 10, 10), new THREE.MeshBasicMaterial({ color: 0xffb703 }));
+      mesh.position.copy(shot.position);
+      this.renderer.scene.add(mesh);
+      this.projectiles.push({ mesh, direction: shot.direction, damage: shot.damage, speed: 45, life: 2.5 });
+      return;
+    }
+    const attack = code === 'Enter' ? player.lightAttack() : player.heavyAttack();
+    if (!attack) return;
+    attack.origin = player.position;
+    this.registerHits(this.horde.checkMeleeHits(attack));
+    this.synthetics.checkHits(attack);
+    if (this.bosses.activeBoss && this.bosses.activeBoss.mesh.position.distanceTo(player.position) <= attack.radius + 2) {
+      this.bosses.takeDamage(attack.damage);
+    }
   }
 
   updateVisionOverlays(mode) {
@@ -539,8 +785,8 @@ class GameApp {
     let timeLeft = 6;
     timerText.innerText = timeLeft;
 
-    const interval = setInterval(() => {
-      timeLeft--;
+    for (let second = 1; second <= 6; second++) this.scheduleMissionTask(() => {
+      timeLeft = 6 - second;
       if (timerText) timerText.innerText = timeLeft;
 
       // Authentic 1987 Billy's mimicry sardonic laugh right before detonation
@@ -551,7 +797,6 @@ class GameApp {
       }
 
       if (timeLeft <= 0) {
-        clearInterval(interval);
         nukeModal.classList.add('hidden');
         this.nukeCountingDown = false;
         if (this.player && this.player.clearNukeHoloMesh) {
@@ -564,48 +809,75 @@ class GameApp {
         if (this.badBlood.isActive) this.badBlood.takeDamage(10000);
         this.ui.showAnnouncement('☢️ ANNIHILATION NUCLÉAIRE PURIFICATRICE ACCOMPLIE !');
       }
-    }, 1000);
+    }, second);
   }
 
-  startMission() {
+  startMission(options = {}) {
+    this.isPlaying = false;
+    this.clearMissionState();
     this.isPlaying = true;
     this.isPaused = false;
     this.waveIndex = 1;
     this.score = 0;
     this.sessionSkulls = 0;
     this.comboHits = 0;
+    this.comboTimer = 0;
+    this.bossSpawned = false;
     this.horde.deadCount = 0;
     this.announcedMilestones = {};
-    this.totalWaves = this.ui.selectedLevel.waves;
+    this.totalWaves = this.missionMode === 'sandbox' ? 1 : this.ui.selectedLevel.waves;
 
     this.citadel.hide();
-    this.env.buildLevelEnvironment(this.ui.selectedLevel);
+    this.env.buildLevelEnvironment({ ...this.ui.selectedLevel, battlefield: this.missionMode !== 'sandbox' });
     this.renderer.updateLevelEnvironment(this.ui.selectedLevel);
-    this.weather.spawnGasPipes(6);
+    this.weather.setWeather(this.ui.selectedLevel.theme);
     this.gore.clear();
 
     if (this.player) this.renderer.scene.remove(this.player.mesh);
     if (this.player2) this.renderer.scene.remove(this.player2.mesh);
 
     this.player = new Player(this.renderer.scene, this.ui.selectedChar, this.audio, false, this.particles);
+    this.player.applyLoadout?.(this.activeLoadout ?? {});
     this.forge.applyStatsToPlayer(this.player);
+    this.player.setLaserColor?.(Number.parseInt(this.forge.upgrades.laserColor.slice(1), 16));
 
     if (this.isCoOp) {
       this.player2 = new Player(this.renderer.scene, CHARACTERS_DATA[1], this.audio, true, this.particles);
+      this.player2.applyLoadout?.(this.activeLoadout ?? {});
     } else {
       this.player2 = null;
     }
 
-    // Trigger Cinematic Yautja Orbital Drop Pod Entrance!
+    // Both players arrive inside their own closed capsule. Combat starts after
+    // the complete opening and exit sequence, so insertion never spends grace.
     this.dropPod.triggerDrop(this.player.position, () => {
-      this.ui.showAnnouncement('🚀 CAPSULE D\'INSERTION YAUTJA : SAS ÉJECTÉ ! LA CHASSE COMMENCE !');
-    });
+      this.keys = {};
+      for (const player of [this.player, this.player2].filter(Boolean)) player.locomotion?.reset();
+      this.combatDirector.reset({ graceSeconds: 7 });
+      this.updateInsertionStatus();
+      this.ui.showAnnouncement('INSERTION TERMINÉE — PRÉPAREZ VOTRE PREMIÈRE ATTAQUE. [CLIC] FRAPPER · [C] PARER');
+    }, { players: [this.player, this.player2].filter(Boolean) });
 
-    this.skimmer.spawnAt(this.player.position.clone().add(new THREE.Vector3(5, 0, 5)));
-    this.allies.spawnSquad(this.player.position, 3);
-    this.marines.spawnSquad(this.player.position, 4);
-    this.synthetics.spawnSquad(this.player.position, 3);
-    this.horde.spawnWave(55, this.player.position);
+    this.skimmer.spawnAt(this.player.position.clone().add(new THREE.Vector3(-9, 0, 8)));
+    if (this.missionMode !== 'sandbox' && this.env.battlefieldLayout) {
+      this.battlefield = new BattlefieldMission({ environment: this.env, horde: this.horde,
+        bosses: this.bosses, level: this.ui.selectedLevel,
+        onAnnouncement: message => this.ui.showAnnouncement(message),
+        onSectorEntered: sector => this.enterBattlefieldSector(sector) });
+      this.battlefieldProgression = this.battlefield.progression;
+      this.totalWaves = this.env.battlefieldLayout.sectors.length;
+      this.battlefield.update([this.player, this.player2].filter(Boolean));
+    } else {
+      const supportPosition = this.player.position.clone().add(new THREE.Vector3(0, 0, 12));
+      this.allies.spawnSquad(supportPosition, 3);
+      this.marines.spawnSquad(supportPosition, 4);
+      this.synthetics.spawnSquad(supportPosition, 3);
+      this.weather.spawnGasPipes(6);
+      this.horde.spawnWave(options.enemyCount ?? 35, this.player.position);
+    }
+    this.renderer.camera.position.copy(this.player.position).add(new THREE.Vector3(0, 10, 16));
+    this.renderer.cameraP2.position.copy(this.renderer.camera.position);
+    this.updateInsertionPresentation(0, true);
 
     // Initialize Battlefield Morale to 50%
     this.battlefieldMorale = 50.0;
@@ -613,14 +885,76 @@ class GameApp {
 
     this.audio.startBackgroundMusic();
     this.ui.showScreen(this.ui.inGameHud);
-    this.ui.showAnnouncement(`MISSION DÉPLOYÉE: ${this.ui.selectedLevel.name}`);
+    this.ui.showCombo(0);
+    this.ui.updateHUD(this.player, this.horde, this.bosses, this.waveIndex, this.totalWaves, this.score);
+    this.ui.updateBattlefieldHUD(this.battlefieldProgression, this.env.battlefieldLayout, this.player, this.combatDirector, [this.player, this.player2].filter(Boolean));
+    document.getElementById('hud-weapon-label').innerText = 'ARME: PRINCIPALE';
+    const visionTag = document.getElementById('hud-vision-tag');
+    if (visionTag) visionTag.innerText = 'VISION : NATURELLE';
+    this.lastTime = performance.now();
+    this.updateInsertionStatus();
+  }
+
+  clearAPCSupport() {
+    if (this._apcNavigationCollider) {
+      this.env.colliders = this.env.colliders.filter(collider => collider !== this._apcNavigationCollider);
+      this._apcNavigationCollider = null;
+    }
+    this.apc.clear();
+  }
+
+  spawnAPCSupport(position) {
+    this.clearAPCSupport();
+    this.env.resolveMovement(position, 5.7);
+    this.apc.spawn(position);
+    // The navigation system must see the same carrier that stops characters;
+    // otherwise ground enemies repeatedly walk into its visible hull.
+    this._apcNavigationCollider = { x: position.x, z: position.z + 0.08, halfWidth: 2.52, halfDepth: 4.84, height: 2.48, rotation: 0, owner: 'apc',
+      resolveMovement: (actorPosition, actorRadius) => this.apc.resolveMovement(actorPosition, actorRadius) };
+    this.env.colliders.push(this._apcNavigationCollider);
+  }
+
+  enterBattlefieldSector(sector) {
+    this.waveIndex = sector.index + 1;
+    const center = new THREE.Vector3(sector.center[0], 0, sector.center[1]);
+    const arrivingPlayer = [this.player, this.player2].find(player => player?.hp > 0 && this.env.getSectorAt(player.position)?.id === sector.id);
+    const supportPosition = arrivingPlayer ? arrivingPlayer.position.clone().lerp(center, 0.2) : center;
+    this.combatDirector.reset({ graceSeconds: sector.index === 0 ? 8 : 2.5 });
+    // The opening fight belongs to the player. Supporting factions join later
+    // sectors instead of killing the first six enemies during insertion.
+    this.allies.spawnSquad(supportPosition, sector.index === 0 ? 0 : 1);
+    if (sector.index === 0) this.marines.clearSquad();
+    else this.marines.spawnSquad(supportPosition, 2);
+    this.synthetics.spawnSquad(center, sector.index === 0 ? 0 : 2);
+    this.badBlood.clear();
+    this.weather.spawnGasPipes(4, center);
+    this.clearAPCSupport();
+    if (sector.index === 3) {
+      const vehiclePosition = supportPosition.clone().add(new THREE.Vector3(-8, 0, 6));
+      this.spawnAPCSupport(vehiclePosition);
+      this.scheduleMissionTask(() => {
+        if (this.apc.mesh && this.env.activeSectorId === sector.id) this.ui.showAnnouncement('RENFORT USCM — APC M577 EN POSITION DE SOUTIEN');
+      }, 1.5);
+    }
+    // Resolve the freshly spawned squad against the carrier as well, before
+    // the first frame rather than leaving an ally inside its hull.
+    for (const actor of [...this.allies.allies, ...this.marines.marines, ...this.synthetics.androids]) this.env.resolveMovement(actor.mesh.position, 1);
+    // Keep the skimmer available as the battlefield advances without moving a
+    // mounted vehicle out from under either player's controls.
+    if (!this.skimmer.isMounted) this.skimmer.spawnAt(center.clone().add(new THREE.Vector3(sector.index === 0 ? -9 : 5, 0, sector.index === 0 ? 8 : 5)));
+    if (sector.objective.type === 'boss') this.bossSpawned = true;
   }
 
   startSandboxMission(config) {
-    this.startMission();
-    this.horde.spawnWave(config.enemyCount, this.player.position);
-    this.bosses.spawnBoss('empress_matriarch', this.player.position.clone().add(new THREE.Vector3(0, 0, -30)));
-    this.ui.showAnnouncement('⚠️ ARÈNE SANDBOX: REINE MATRIARCHE VOLANTE 20M APPARAÎT !');
+    this.audio.init();
+    this.missionMode = 'sandbox';
+    this.isCoOp = false;
+    this.renderer.setSplitScreen(false);
+    const enemyCount = Math.max(1, Math.min(150, Math.round(Number(config.enemyCount) || 60)));
+    this.startMission({ enemyCount });
+    this.bossSpawned = true;
+    this.bosses.spawnBoss(config.bossType || 'xenomorph_queen', this.player.position.clone().add(new THREE.Vector3(0, 0, -30)));
+    this.ui.showAnnouncement(`ARÈNE SANDBOX : ${enemyCount} ENNEMIS ET UN BOSS. ÉLIMINEZ TOUTES LES CIBLES.`);
   }
 
   performLightAttack() {
@@ -633,6 +967,9 @@ class GameApp {
     if (hits.length > 0) this.registerHits(hits);
     this.weather.checkExplosions(this.player.position, 4.0, this.horde, this.particles);
     this.synthetics.checkHits(attack);
+    if (this.bosses.activeBoss && this.bosses.activeBoss.mesh.position.distanceTo(this.player.position) <= attack.radius + 2) {
+      this.bosses.takeDamage(attack.damage);
+    }
 
     // Update Combo Chain Tag
     const tagElem = document.getElementById('combo-chain-indicator');
@@ -666,6 +1003,9 @@ class GameApp {
     if (hits.length > 0) this.registerHits(hits);
     this.weather.checkExplosions(this.player.position, 6.0, this.horde, this.particles);
     this.synthetics.checkHits(attack);
+    if (this.bosses.activeBoss && this.bosses.activeBoss.mesh.position.distanceTo(this.player.position) <= attack.radius + 2) {
+      this.bosses.takeDamage(attack.damage);
+    }
 
     // Dynasty Warriors Musou C1-C6 Charge Finisher Announcement
     if (this.player.currentChargeName) {
@@ -942,7 +1282,7 @@ class GameApp {
 
     // Drop 3 Black Urn canisters from orbit
     for (let u = 0; u < 3; u++) {
-      setTimeout(() => {
+      this.scheduleMissionTask(() => {
         const urnPos = centerPos.clone()
           .addScaledVector(forward, 10 + u * 6)
           .add(new THREE.Vector3((u - 1) * 6, 0, 0));
@@ -980,7 +1320,7 @@ class GameApp {
           life: 8.5,
           damage: 95
         });
-      }, u * 400);
+      }, u * 0.4);
     }
   }
 
@@ -1117,7 +1457,7 @@ class GameApp {
     const banner = document.getElementById('true-musou-banner');
     if (banner) {
       banner.classList.remove('hidden');
-      setTimeout(() => banner.classList.add('hidden'), 2200);
+      this.scheduleMissionTask(() => banner.classList.add('hidden'), 2.2);
     }
 
     // Shift Battlefield Morale toward Clan (+20%)
@@ -1139,17 +1479,13 @@ class GameApp {
     this.renderer.scene.add(stormGroup);
 
     // Animate intense storm rotation and beam pulse
-    let spinAngle = 0;
-    const stormAnim = setInterval(() => {
-      spinAngle += 0.28;
-      stormGroup.rotation.y = spinAngle;
-      stormGroup.scale.multiplyScalar(1.025);
-      beamMat.opacity -= 0.04;
-      if (beamMat.opacity <= 0) {
-        clearInterval(stormAnim);
-        this.renderer.scene.remove(stormGroup);
+    this.missionEffects.push({ mesh: stormGroup, life: 0.75, maxLife: 0.75,
+      update: (delta, remaining) => {
+        stormGroup.rotation.y += 9 * delta;
+        stormGroup.scale.multiplyScalar(Math.exp(0.8 * delta));
+        beamMat.opacity = 0.95 * remaining;
       }
-    }, 30);
+    });
 
     const attack = {
       origin: this.player.position,
@@ -1171,7 +1507,8 @@ class GameApp {
 
   checkTrophyExecution() {
     // 1. Boss Execution (Queen, The Offspring, Predalien)
-    if (this.bosses.activeBoss && this.bosses.activeBoss.isStunned) {
+    if (this.bosses.activeBoss && this.bosses.activeBoss.isStunned &&
+        this.bosses.activeBoss.mesh.position.distanceTo(this.player.position) <= 8.5) {
       this.player.executeSpineRip();
 
       const bType = this.bosses.activeBoss.type || 'queen';
@@ -1197,8 +1534,7 @@ class GameApp {
       // Decisive Battlefield Morale Victory (+35%)
       this.shiftBattlefieldMorale(35.0);
 
-      this.renderer.scene.remove(this.bosses.activeBoss.mesh);
-      this.bosses.activeBoss = null;
+      this.bosses.clear();
 
       this.ui.showAnnouncement(`🏆 TROPHÉE LÉGENDAIRE RÉCOLTÉ : ${tName} (+${tHonor} HONNEUR, +2 GELÉES ROYALES) !`);
       this.ui.showExecutionPrompt(false);
@@ -1237,9 +1573,9 @@ class GameApp {
             this.gore.spawnDismemberment(a.mesh.position, 'spine_rip');
           }
           this.horde.spawnAcidPool(a.mesh.position);
-          this.renderer.scene.remove(a.mesh);
+          this.horde.recordDefeat(a);
+          disposeObject(a.mesh, this.horde.sharedResources);
           this.horde.aliens.splice(i, 1);
-          this.horde.deadCount++;
 
           this.ui.showAnnouncement(`🏆 TROPHÉE DE CHASSE : ${tName} (+${tHonor} HONNEUR, MORAL +18%) !`);
           this.ui.showExecutionPrompt(false);
@@ -1320,10 +1656,67 @@ class GameApp {
     });
   }
 
+  updateInsertionStatus() {
+    const panel = document.getElementById('insertion-status');
+    if (!panel) return;
+    const active = Boolean(this.dropPod.isActive);
+    panel.classList.toggle('hidden', !active);
+    document.getElementById('in-game-hud')?.classList.toggle('insertion-active', active);
+    if (!active) {
+      this._insertionPhase = null;
+      return;
+    }
+    const phases = {
+      descending: ['INSERTION ORBITALE', 'Capsule en approche'],
+      settling: ['CONTACT AU SOL', 'Stabilisation de la capsule'],
+      opening: ['OUVERTURE DE LA CAPSULE', 'Déverrouillage des portes'],
+      exiting: ['DÉPLOIEMENT DU CHASSEUR', 'Sortie de la capsule'],
+    };
+    if (this._insertionPhase !== this.dropPod.phase) {
+      this._insertionPhase = this.dropPod.phase;
+      const [title, detail] = phases[this.dropPod.phase] ?? phases.descending;
+      document.getElementById('insertion-title').textContent = title;
+      document.getElementById('insertion-detail').textContent = `${detail} · Commandes après la sortie`;
+    }
+    document.getElementById('insertion-progress').style.transform = `scaleX(${Math.max(0, Math.min(1, this.dropPod.progress ?? 0))})`;
+  }
+
+  updateInsertionPresentation(delta, snap = false) {
+    if (!this.dropPod.isActive) return;
+    const cameras = [this.renderer.camera, this.renderer.cameraP2];
+    this._insertionCameraFocus ??= [];
+    const alpha = snap ? 1 : 1 - Math.exp(-8 * delta);
+    for (let index = 0; index < (this.player2 ? 2 : 1); index++) {
+      const target = this.dropPod.getCameraTarget?.(index) ?? (index ? this.player2 : this.player).position;
+      const focus = this._insertionCameraFocus[index] ??= target.clone();
+      focus.lerp(target, alpha);
+      const position = focus.clone().add(new THREE.Vector3(8, 5, 14));
+      cameras[index].position.lerp(position, alpha);
+      cameras[index].lookAt(focus);
+    }
+    this.updateInsertionStatus();
+  }
+
   update(delta) {
     if (!this.isPlaying || !this.player || this.isPaused) return;
 
-    if (this.photoMode.isActive) return;
+    if (this.photoMode.isActive || this.weaponWheel.isOpen) return;
+
+    if (this.dropPod.isActive) {
+      this.weather.update?.(delta);
+      this.dropPod.update(delta);
+      this.updateInsertionPresentation(delta);
+      this.env.updateBattlefieldVisibility?.([this.player, this.player2].filter(Boolean));
+      this.particles.update(delta, this.renderer.camera);
+      this.ui.updateHUD(this.player, this.horde, this.bosses, this.waveIndex, this.totalWaves, this.score);
+      this.ui.updateBattlefieldHUD(this.battlefieldProgression, this.env.battlefieldLayout, this.player, this.combatDirector, [this.player, this.player2].filter(Boolean));
+      return;
+    }
+
+    this.updateMissionTasks(delta);
+    this.weather.update?.(delta);
+    this.dropPod.update?.(delta);
+    this.combatDirector.update(delta, [this.player, this.player2].filter(player => player?.hp > 0));
 
     const qtePrompt = document.getElementById('facehugger-qte-prompt');
     if (qtePrompt) {
@@ -1339,8 +1732,13 @@ class GameApp {
     if (this.keys['KeyS']) moveDirP1.z += 1;
     if (this.keys['KeyA']) moveDirP1.x -= 1;
     if (this.keys['KeyD']) moveDirP1.x += 1;
-    this.player.move(moveDirP1, delta);
-    this.player.update(delta, this.horde);
+    if (!this.skimmer.isMounted && this.player.hp > 0) this.player.move(moveDirP1, delta);
+    this.env.resolveMovement?.(this.player.position);
+    this.dropPod.resolveMovement?.(this.player.position);
+    this.apc.resolveMovement?.(this.player.position);
+    this.player.mesh.position.copy(this.player.position);
+    if (this.player.hp > 0) this.player.update(delta, this.horde);
+    this.weather.setFocus?.(this.player.hp > 0 ? this.player.position : (this.player2?.position ?? this.player.position));
 
     if (this.isCoOp && this.player2) {
       const moveDirP2 = new THREE.Vector3();
@@ -1348,21 +1746,38 @@ class GameApp {
       if (this.keys['ArrowDown']) moveDirP2.z += 1;
       if (this.keys['ArrowLeft']) moveDirP2.x -= 1;
       if (this.keys['ArrowRight']) moveDirP2.x += 1;
-      this.player2.move(moveDirP2, delta);
-      this.player2.update(delta, this.horde);
+      if (this.player2.hp > 0) this.player2.move(moveDirP2, delta);
+      this.env.resolveMovement?.(this.player2.position);
+      this.dropPod.resolveMovement?.(this.player2.position);
+      this.apc.resolveMovement?.(this.player2.position);
+      this.player2.mesh.position.copy(this.player2.position);
+      if (this.player2.hp > 0) this.player2.update(delta, this.horde);
 
       const cam2Target = this.player2.position.clone().add(new THREE.Vector3(0, 10, 16));
       this.renderer.cameraP2.position.lerp(cam2Target, 5 * delta);
       this.renderer.cameraP2.lookAt(this.player2.position.clone().add(new THREE.Vector3(0, 2, 0)));
     }
+    this.env.updateBattlefieldVisibility?.([this.player, this.player2].filter(player => player?.hp > 0));
 
-    this.hellHounds.update(delta, this.player, this.horde);
-    this.synthetics.update(delta, this.player, this.horde);
+    const livingTarget = this.player.hp > 0 ? this.player : (this.player2 ?? this.player);
+    this.hellHounds.update(delta, livingTarget, this.horde);
+    this.synthetics.update(delta, livingTarget, this.horde);
     this.dropship.update(delta, this.horde);
     this.apc.update(delta, this.horde);
     this.sentryGun.update(delta, this.horde);
     this.falconDrone.update(delta, this.player.position, this.horde);
     this.skimmer.update(delta, this.player, this.horde, this.keys);
+    if (this.skimmer.isMounted) {
+      this.env.resolveMovement?.(this.skimmer.position, 1.2);
+      this.dropPod.resolveMovement?.(this.skimmer.position, 2);
+      this.apc.resolveMovement?.(this.skimmer.position, 2);
+      this.skimmer.mesh.position.copy(this.skimmer.position);
+      this.player.position.copy(this.skimmer.position);
+    }
+    this.env.resolveMovement?.(this.player.position);
+    this.dropPod.resolveMovement?.(this.player.position);
+    this.apc.resolveMovement?.(this.player.position);
+    this.player.mesh.position.copy(this.player.position);
     this.orbital.update(delta);
 
     // Update Engineer Black Pathogen Pools (Prometheus 2012)
@@ -1377,8 +1792,8 @@ class GameApp {
         this.synthetics.checkHits({ origin: p.pos, radius: 4.2, damage: p.damage * delta });
       }
       if (p.life <= 0) {
-        this.renderer.scene.remove(p.urnMesh);
-        this.renderer.scene.remove(p.poolMesh);
+        this.removeEffectMesh(p.urnMesh);
+        this.removeEffectMesh(p.poolMesh);
         this.pathogenPools.splice(i, 1);
       }
     }
@@ -1408,15 +1823,16 @@ class GameApp {
         if (this.horde) {
           this.horde.checkMeleeHits({ origin: d.mesh.position, radius: 8.0, damage: 280, type: 'heavy' });
         }
-        this.renderer.scene.remove(d.mesh);
+        this.removeEffectMesh(d.mesh);
         this.holoDecoys.splice(i, 1);
       }
     }
 
     // Camera positioning: First-Person Bio-Mask vs 3rd Person
     if (this.isFirstPerson) {
-      const eyePos = this.player.position.clone().add(new THREE.Vector3(0, 3.6, 0.2));
-      this.renderer.camera.position.lerp(eyePos, 15 * delta);
+      const eyeHeight = this.player.cameraEyeHeight ?? this.player.headMesh?.position.y ?? 3.6;
+      const eyePos = this.player.position.clone().add(new THREE.Vector3(0, eyeHeight, 0.2));
+      this.renderer.camera.position.lerp(eyePos, 1 - Math.exp(-15 * delta));
       const lookTarget = eyePos.clone().add(new THREE.Vector3(
         Math.sin(this.player.rotationY) * 10,
         this.player.isPerched ? -4 : 0,
@@ -1473,7 +1889,7 @@ class GameApp {
 
         if (p.progress >= 1.0 || p.life <= 0) {
           // Returned to player hand
-          this.renderer.scene.remove(p.mesh);
+          this.removeEffectMesh(p.mesh);
           this.projectiles.splice(i, 1);
           this.audio.playShieldBlock();
         }
@@ -1503,7 +1919,7 @@ class GameApp {
         }
 
         if (p.pierceRemaining <= 0 || p.life <= 0) {
-          this.renderer.scene.remove(p.mesh);
+          this.removeEffectMesh(p.mesh);
           this.projectiles.splice(i, 1);
         }
       } else if (p.isShuriken) {
@@ -1531,7 +1947,7 @@ class GameApp {
         }
 
         if (p.pierceRemaining <= 0 || p.life <= 0) {
-          this.renderer.scene.remove(p.mesh);
+          this.removeEffectMesh(p.mesh);
           this.projectiles.splice(i, 1);
         }
       } else if (p.isGuidedFlechette) {
@@ -1551,7 +1967,7 @@ class GameApp {
             this.particles.emitSparks(p.mesh.position, 8);
             this.registerHits(hits);
           }
-          this.renderer.scene.remove(p.mesh);
+          this.removeEffectMesh(p.mesh);
           this.projectiles.splice(i, 1);
         }
       } else if (p.isChargedArrow) {
@@ -1578,7 +1994,7 @@ class GameApp {
         }
 
         if (p.pierceRemaining <= 0 || p.life <= 0) {
-          this.renderer.scene.remove(p.mesh);
+          this.removeEffectMesh(p.mesh);
           this.projectiles.splice(i, 1);
         }
       } else {
@@ -1588,18 +2004,27 @@ class GameApp {
         if (hits.length > 0 || p.life <= 0) {
           this.particles.emitSparks(p.mesh.position, 10);
           this.particles.spawnPlasmaScorch(p.mesh.position);
-          this.renderer.scene.remove(p.mesh);
+          this.removeEffectMesh(p.mesh);
           this.projectiles.splice(i, 1);
           if (hits.length > 0) this.registerHits(hits);
         }
       }
     }
 
-    this.badBlood.update(delta, this.player);
-    this.marines.update(delta, this.player, this.horde);
-    this.allies.update(delta, this.player.position, this.horde);
-    this.horde.update(delta, this.player);
-    this.bosses.update(delta, this.player, this.horde);
+    this.badBlood.update(delta, livingTarget);
+    this.marines.update(delta, livingTarget, this.horde);
+    this.allies.update(delta, livingTarget.position, this.horde);
+    this.horde.update(delta, this.player, this.player2);
+    this.bosses.update(delta, livingTarget, this.horde);
+    for (const actor of [...this.horde.aliens, ...this.synthetics.androids, ...this.marines.marines, ...this.allies.allies, ...this.hellHounds.hounds, this.badBlood.badBlood, this.bosses.activeBoss].filter(Boolean)) {
+      if (actor.mesh) {
+        this.env.resolveMovement(actor.mesh.position, actor.radius ?? 1);
+        this.dropPod.resolveMovement?.(actor.mesh.position, actor.radius ?? 1);
+        this.apc.resolveMovement?.(actor.mesh.position, actor.radius ?? 1);
+      }
+    }
+    this.battlefield?.update([this.player, this.player2].filter(Boolean));
+    this.env.updateBattlefieldObjectives?.(this.battlefieldProgression, delta);
     this.gore.update(delta);
     this.particles.update(delta, this.renderer.camera);
     this.updateTargetLockReticle();
@@ -1631,12 +2056,25 @@ class GameApp {
         }
       }
     });
-    this.ui.showExecutionPrompt((boss && boss.isStunned) || subBossStunnedNearby);
+    this.ui.showExecutionPrompt((boss && boss.isStunned && boss.mesh.position.distanceTo(this.player.position) <= 8.5) || subBossStunnedNearby);
 
-    if (this.horde.aliens.length < 10 && !this.bosses.activeBoss) {
+    if (this.player.hp <= 0 && (!this.isCoOp || !this.player2 || this.player2.hp <= 0)) {
+      this.endGame(false);
+      return;
+    }
+
+    if (this.battlefield?.complete) {
+      this.endGame(true);
+      return;
+    }
+    if (!this.battlefield && this.horde.remainingCount === 0 && !this.bosses.activeBoss) {
+      if (this.bossSpawned) {
+        this.endGame(true);
+        return;
+      }
       if (this.waveIndex < this.totalWaves) {
         this.waveIndex++;
-        this.horde.spawnWave(45 + this.waveIndex * 15, this.player.position);
+        this.horde.spawnWave(30 + this.waveIndex * 10, this.player.position);
         this.ui.showAnnouncement(`VAGUE ${this.waveIndex} APPROCHE ! FORCES DE LA RUCHE DÉPLOYÉES !`);
 
         // Cheyenne Dropship Airstrike Support on Wave 2 & 4!
@@ -1644,23 +2082,24 @@ class GameApp {
           this.dropship.triggerAirstrike(this.player.position, this.horde);
           this.ui.showAnnouncement('✈️ DROPSHIP CHEYENNE UD-4L DÉPLOYÉ : SALVE DE ROQUETTES 70MM !');
           if (this.waveIndex === 2) {
-            setTimeout(() => {
+            this.scheduleMissionTask(() => {
               this.sentryGun.deploySentry(this.player.position.clone().add(new THREE.Vector3(3.5, 0, 2)));
               this.ui.showAnnouncement('📦 LARGAGE TACTIQUE : TOURELLE SENTINELLE UA 571-C DÉPLOYÉE EN APPUI !');
-            }, 2500);
+            }, 2.5);
           }
         }
 
         if (this.waveIndex === 3) {
           this.badBlood.spawnAmbush(this.player.position);
           this.ui.showAnnouncement('⚠️ ALERTE : EMBUSCADE D\'UN YAUTJA RENÉGAT "BAD BLOOD" !');
-          this.apc.spawn(this.player.position.clone().add(new THREE.Vector3(-18, 0, -10)));
-          setTimeout(() => {
+          this.spawnAPCSupport(this.player.position.clone().add(new THREE.Vector3(-18, 0, -10)));
+          this.scheduleMissionTask(() => {
             this.ui.showAnnouncement('🛡️ RENFORT BLINDÉ : BLINDÉ USCM M577 APC EN POSITION DE TIR !');
-          }, 1800);
+          }, 1.8);
         }
       } else if (!this.bosses.activeBoss) {
         const bType = this.ui.selectedLevel.bossType;
+        this.bossSpawned = true;
         this.bosses.spawnBoss(bType, this.player.position.clone().add(new THREE.Vector3(0, 0, -25)));
         
         let bossTitle = 'REINE MATRIARCHE KAINDE AMEDHA (ALIENS 1986)';
@@ -1693,6 +2132,7 @@ class GameApp {
     }
 
     this.ui.updateHUD(this.player, this.horde, this.bosses, this.waveIndex, this.totalWaves, this.score);
+    this.ui.updateBattlefieldHUD(this.battlefieldProgression, this.env.battlefieldLayout, this.player, this.combatDirector, [this.player, this.player2].filter(Boolean));
 
     // Visor Acid Corrosion HUD Overlay Update (Alien: Romulus 2024)
     const acidOverlay = document.getElementById('acid-corrosion-overlay');
@@ -1731,9 +2171,6 @@ class GameApp {
       }
     }
 
-    if (this.player.hp <= 0) {
-      this.endGame(false);
-    }
   }
 
   updateTargetLockReticle() {
@@ -1811,9 +2248,10 @@ class GameApp {
       // Project 3D target coordinates to 2D screen coordinates
       const screenCoord = bestTarget.pos.clone().project(this.renderer.camera);
       // Check if target is in front of camera
-      if (screenCoord.z < 1.0) {
-        const screenX = (screenCoord.x * 0.5 + 0.5) * window.innerWidth;
-        const screenY = (-(screenCoord.y * 0.5) + 0.5) * window.innerHeight;
+      if (screenCoord.z > -1 && screenCoord.z < 1 && Math.abs(screenCoord.x) <= 1 && Math.abs(screenCoord.y) <= 1) {
+        const viewWidth = this.renderer.isSplitScreen ? Math.floor(this.renderer.width / 2) : this.renderer.width;
+        const screenX = (screenCoord.x * 0.5 + 0.5) * viewWidth;
+        const screenY = (-(screenCoord.y * 0.5) + 0.5) * this.renderer.height;
 
         reticleEl.style.left = `${screenX}px`;
         reticleEl.style.top = `${screenY}px`;
@@ -1830,35 +2268,33 @@ class GameApp {
   }
 
   endGame(isVictory) {
+    if (!this.isPlaying) return;
     this.isPlaying = false;
-    this.audio.stopBackgroundMusic();
-    this.audio.stopThermalHum();
-    this.allies.clearSquad();
-    this.marines.clearSquad();
-    this.synthetics.clearSquad();
-    this.hellHounds.dismissPack();
-    this.dropPod.clear();
-    this.dropship.clear();
-    this.apc.clear();
-    this.sentryGun.clear();
-    this.falconDrone.clear();
-    for (const pool of this.pathogenPools) {
-      if (pool.mesh) this.scene.remove(pool.mesh);
-    }
-    this.pathogenPools = [];
-    for (const d of this.holoDecoys) {
-      if (d.mesh) this.scene.remove(d.mesh);
-    }
-    this.holoDecoys = [];
-    if (this.player && this.player.clearNukeHoloMesh) {
-      this.player.clearNukeHoloMesh();
-    }
-
+    this.isPaused = false;
     this.ui.recordEndSession(this.horde.deadCount, this.sessionSkulls, this.score);
 
-    document.getElementById('end-title').innerText = isVictory ? 'VICTOIRE GLORIEUSE !' : 'CHASSE TERMINÉE';
-    document.getElementById('end-subtitle').innerText = isVictory ? 'La ruche Xenomorphe a été complètement anéantie dans l\'honneur Yautja.' : 'Votre Yautja est tombé au combat face à la ruche.';
-
+    let title = isVictory ? 'VICTOIRE GLORIEUSE !' : 'CHASSE TERMINÉE';
+    let subtitle = isVictory
+      ? "La ruche a été anéantie. Votre clan honore cette victoire."
+      : "Votre Yautja est tombé au combat. Préparez une nouvelle chasse.";
+    let replayLabel = 'REJOUER LA MISSION';
+    if (isVictory && this.missionMode === 'campaign') {
+      const progress = this.campaign.completeChapter();
+      if (progress.nextChapter) {
+        this.pendingChapter = progress.nextChapter;
+        title = 'CHAPITRE ACCOMPLI';
+        subtitle = `Prochaine destination : ${progress.nextChapter.title}`;
+        replayLabel = 'CHAPITRE SUIVANT';
+      } else {
+        title = 'CAMPAGNE ACCOMPLIE !';
+        subtitle = 'Les cinq chasses du clan sont terminées. Votre légende est gravée dans la pierre.';
+        replayLabel = 'RECOMMENCER LA CAMPAGNE';
+      }
+    }
+    this.clearMissionState();
+    document.getElementById('end-title').innerText = title;
+    document.getElementById('end-subtitle').innerText = subtitle;
+    document.getElementById('btn-replay').innerText = replayLabel;
     this.ui.showScreen(this.ui.gameOverScreen);
   }
 
@@ -1870,10 +2306,35 @@ class GameApp {
     this.lastTime = now;
 
     this.update(delta);
-    this.renderer.render();
+    // Frozen scenes need no repeated GPU work. Resize, quality and photo-camera
+    // changes invalidate a frame; active combat keeps rendering every frame.
+    const sceneIsMoving = this.isPlaying && !this.isPaused && !this.photoMode.isActive && !this.weaponWheel.isOpen;
+    if (sceneIsMoving || this.renderer.needsRender) this.renderer.render();
   }
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-  window.game = new GameApp();
+  try {
+    window.game = new GameApp();
+  } catch (error) {
+    console.error('Impossible de démarrer le jeu', error);
+    const notice = document.createElement('section');
+    notice.className = 'startup-error glass-panel';
+    notice.setAttribute('role', 'alert');
+    Object.assign(notice.style, {
+      position: 'fixed', inset: '20% 10% auto', padding: '2rem', zIndex: '10000',
+      background: '#0b1421', color: '#f1f5f9', border: '1px solid #ffb703', textAlign: 'center'
+    });
+    const title = document.createElement('h1');
+    title.textContent = 'Le jeu ne peut pas démarrer';
+    const detail = document.createElement('p');
+    detail.textContent = "Vérifiez que WebGL et l’accélération graphique sont activés dans votre navigateur, puis rechargez la page.";
+    const retry = document.createElement('button');
+    retry.className = 'btn-primary';
+    retry.textContent = 'Réessayer';
+    retry.addEventListener('click', () => location.reload());
+    notice.append(title, detail, retry);
+    document.body.append(notice);
+    retry.focus();
+  }
 });

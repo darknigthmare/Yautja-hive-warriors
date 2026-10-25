@@ -1,0 +1,198 @@
+{
+  "status": "validated_with_documented_limits",
+  "activation_recommended": true,
+  "sourceVariant": "Big Chap V2 preserved pose; V1 rejected",
+  "runtimeConfigurationFile": "alien-creatureRig.json",
+  "standaloneConfigurationFile": "alien-creatureRig-standalone.json",
+  "rawRig": {
+    "filename": "rigged_character.glb",
+    "sha256": "202b5d7d635cdb14fcf8af430faba3207d5668f43f85d9d9dca1f81cc0d8a97e",
+    "unchanged": true
+  },
+  "standaloneExport": {
+    "filename": "big-chap-rigged.glb",
+    "bytes": 57544688,
+    "sha256": "fdaa719d96c5ec8f9c19c97d5782d806641bff4fdc956da473c86c8cd4ef5ab4",
+    "triangles": 205259,
+    "vertices": 211185,
+    "joints": 24,
+    "clips": [
+      "walk",
+      "run"
+    ],
+    "skinCorrectionBaked": true,
+    "doNotApplyRuntimeSkinCorrections": true,
+    "containsProvenanceExtras": true
+  },
+  "selection": {
+    "calibrationId": "big-chap-v2-tail-lower-legs-rigid-20261022",
+    "selectedVertices": 36728,
+    "groups": [
+      {
+        "name": "tail",
+        "targetBone": "Hips",
+        "selectedVertices": 28590
+      },
+      {
+        "name": "left-calf-and-foot",
+        "targetBone": "LeftLeg",
+        "selectedVertices": 4611
+      },
+      {
+        "name": "right-calf-and-foot",
+        "targetBone": "RightLeg",
+        "selectedVertices": 3527
+      }
+    ],
+    "method": "Offline welded triangle-graph components with calibrated source-space seeds and attachment/knee cuts. Runtime applies explicit index ranges only after exact geometry and source skin fingerprints. No geometric threshold runs in the game.",
+    "groupsDisjoint": true,
+    "coloredSelectionVerified": true
+  },
+  "diagnosis": "The supplied humanoid rig weighted most tail vertices to legs and placed LeftFoot/LeftToeBase pivots on the tail loop. Compatible source clips then stretched both tail and actual lower legs.",
+  "restGeometryUnchanged": {
+    "POSITION": true,
+    "NORMAL": true,
+    "TEXCOORD_0": true,
+    "TANGENT": true,
+    "triangle_indices": true
+  },
+  "unselectedSkinJointsUnchanged": true,
+  "unselectedSkinWeightsMaxDelta": 0.0,
+  "runtimeChecks": {
+    "bothLegsRun": true,
+    "bothLegsWalk": true,
+    "runRootMotionInPlace": true,
+    "walkRootMotionInPlace": true,
+    "originalPoseUnchanged": true,
+    "sourceClipsUnchanged": true,
+    "gameplayActorUnchanged": true
+  },
+  "standaloneChecks": {
+    "bothLegsRun": true,
+    "bothLegsWalk": true,
+    "runRootMotionInPlace": true,
+    "walkRootMotionInPlace": true,
+    "originalPoseUnchanged": true,
+    "sourceClipsUnchanged": true,
+    "gameplayActorUnchanged": true
+  },
+  "locomotion": {
+    "walk": {
+      "clip": "walk",
+      "samples": 33,
+      "rootMotionPlanarMax": 0,
+      "groups": [
+        {
+          "name": "tail",
+          "targetBone": "Hips",
+          "minY": -0.09586413114351391,
+          "maxInternalEdgeStretch": 1.000000000591033,
+          "vertices": 28590,
+          "sampledInternalEdges": 297
+        },
+        {
+          "name": "left-calf-and-foot",
+          "targetBone": "LeftLeg",
+          "minY": -0.02464147565880631,
+          "maxInternalEdgeStretch": 1.000000776717905,
+          "vertices": 4611,
+          "sampledInternalEdges": 56
+        },
+        {
+          "name": "right-calf-and-foot",
+          "targetBone": "RightLeg",
+          "minY": -0.09020296899433378,
+          "maxInternalEdgeStretch": 1.000000761675601,
+          "vertices": 3527,
+          "sampledInternalEdges": 59
+        }
+      ]
+    },
+    "run": {
+      "clip": "run",
+      "samples": 33,
+      "rootMotionPlanarMax": 0,
+      "groups": [
+        {
+          "name": "tail",
+          "targetBone": "Hips",
+          "minY": -0.1781223391026774,
+          "maxInternalEdgeStretch": 1.0000000005228666,
+          "vertices": 28590,
+          "sampledInternalEdges": 297
+        },
+        {
+          "name": "left-calf-and-foot",
+          "targetBone": "LeftLeg",
+          "minY": 0.12362079727303495,
+          "maxInternalEdgeStretch": 1.000000810300641,
+          "vertices": 4611,
+          "sampledInternalEdges": 56
+        },
+        {
+          "name": "right-calf-and-foot",
+          "targetBone": "RightLeg",
+          "minY": -0.10617325071257938,
+          "maxInternalEdgeStretch": 1.000000884815726,
+          "vertices": 3527,
+          "sampledInternalEdges": 59
+        }
+      ]
+    }
+  },
+  "lod": [
+    {
+      "name": "near",
+      "distance": 8,
+      "detailLevel": 0,
+      "importedVisible": true,
+      "proceduralVisible": 0
+    },
+    {
+      "name": "medium",
+      "distance": 26,
+      "detailLevel": 1,
+      "importedVisible": false,
+      "proceduralVisible": 10
+    },
+    {
+      "name": "far",
+      "distance": 45,
+      "detailLevel": 2,
+      "importedVisible": false,
+      "proceduralVisible": 10
+    }
+  ],
+  "automatedTests": {
+    "helper": 5,
+    "importedCreatureIntegration": 13,
+    "passed": 18,
+    "failed": 0
+  },
+  "evidence": {
+    "runtime": "alien-runtime-calibration/final-captures",
+    "standalone": "alien-runtime-calibration/standalone-captures",
+    "anatomicalSelection": [
+      "selection-front.png",
+      "selection-side.png",
+      "selection-back.png"
+    ],
+    "motion": [
+      "run-side-0.png",
+      "run-side-1.png",
+      "walk-side-0.png",
+      "walk-side-1.png"
+    ]
+  },
+  "limitations": [
+    "Tail is rigidly attached to Hips; this is not articulated caudal animation.",
+    "BOTH lower legs and feet are rigidly attached to their knee/shin bones LeftLeg/RightLeg; independent ankle articulation is disabled for these vertices.",
+    "Small residual ground penetration remains: tail minimum Y about-0.178 in run and-0.096 in walk, relative to standing height3.954; no previous stretched ribbons remain.",
+    "The two separate clips work, but the game uses run for moving states and walk as fallback.",
+    "No idle clip: the bent asymmetric source rest pose returns when stationary.",
+    "At18m the imported visual switches to the different procedural LOD; at38m it lowers again, without a fade.",
+    "V2 jaw/foot details are approximate; no1:1 fidelity measurement. Software WebGL is not hardware performance measurement."
+  ],
+  "newPaidTasksCreated": false,
+  "rawGLBsRewritten": false
+}

@@ -1,6 +1,8 @@
 /* UA 571-C Automated Remote Sentry Gun - Aliens 1986 Special Edition Canon 1:1 */
 
 import * as THREE from 'three';
+import { addSentryMechanicalDetails } from '../graphics/SupportModels.js';
+import { disposeObject } from '../engine/SceneResources.js';
 
 export class SentryGun {
   constructor(scene, audioEngine, particles = null) {
@@ -15,6 +17,7 @@ export class SentryGun {
   }
 
   deploySentry(pos, facingDir = null) {
+    if (this.sentries.length >= 4) disposeObject(this.sentries.shift().group);
     const group = new THREE.Group();
     group.position.copy(pos);
 
@@ -91,6 +94,8 @@ export class SentryGun {
     screen.position.set(0, 0.12, -0.37);
     swivel.add(screen);
 
+    addSentryMechanicalDetails(swivel);
+
     // Muzzle flash point light
     const flashLight = new THREE.PointLight(0xffaa22, 0, 6);
     flashLight.position.set(0, 0, 1.1);
@@ -131,6 +136,8 @@ export class SentryGun {
       if (sentry.fireCooldown > 0) {
         sentry.fireCooldown -= delta;
       }
+
+      sentry.flashLight.intensity = Math.max(0, sentry.flashLight.intensity - delta * 30);
 
       // Update Screen Display Color according to remaining ammo
       if (sentry.ammo <= 0) {
@@ -217,9 +224,9 @@ export class SentryGun {
             horde.goreEngine.spawnDismemberment(target.mesh.position, 'heavy');
           }
           horde.spawnAcidPool(target.mesh.position);
-          this.scene.remove(target.mesh);
+          horde.recordDefeat(target);
+          disposeObject(target.mesh, horde.sharedResources);
           horde.aliens.splice(idx, 1);
-          horde.deadCount++;
         }
       }
     }
@@ -227,7 +234,7 @@ export class SentryGun {
 
   clear() {
     this.sentries.forEach(s => {
-      this.scene.remove(s.group);
+      disposeObject(s.group);
     });
     this.sentries = [];
   }

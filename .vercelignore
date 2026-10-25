@@ -1,0 +1,12 @@
+.git
+.vercel
+node_modules
+dist
+meshy_output
+.env
+.env.*
+coverage
+test-results
+playwright-report
+*.log
+.DS_Store

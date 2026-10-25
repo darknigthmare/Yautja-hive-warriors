@@ -1,0 +1,29 @@
+{
+  "schema_version": "meshy.cli/v1",
+  "command": "make",
+  "ok": true,
+  "result": {
+    "command": "make",
+    "route": "text",
+    "steps": [
+      {
+        "step": 1,
+        "resource": "text-to-3d",
+        "action": "preview",
+        "estimated_credits": 20
+      },
+      {
+        "step": 2,
+        "resource": "text-to-3d",
+        "action": "refine",
+        "estimated_credits": 10
+      }
+    ],
+    "estimated_credits": 30,
+    "note": "Estimates only — confirm prices at https://docs.meshy.ai/en/api/pricing and your balance with `meshy balance`.",
+    "dry_run": true,
+    "requests_made": 0
+  },
+  "error": null,
+  "warnings": []
+}

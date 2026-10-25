@@ -1,0 +1,51 @@
+{
+  "date": "2026-10-23",
+  "review_type": "official licensed collectible photographs, visual review by AI; not prop scan or orthographic measurements",
+  "sources": [
+    {
+      "page": "https://necaonline.com/2016/05/cinemachines-die-cast-collectibles-ud-4l-cheyenne-dropship-aliens/",
+      "name": "NECA CINEMACHINES UD-4L Cheyenne Dropship",
+      "http_status": 200,
+      "page_claim": "6-inch die-cast licensed collectible including miniature APC fitting inside bay",
+      "image_url": "https://necaonline.com/wp-content/uploads/2015/11/1300x-Drop-Ship.jpg",
+      "image_file": "/workspace/qa/insertion-reference-audit-20261023/1300x-Drop-Ship.jpg",
+      "visually_inspected": true,
+      "observed": [
+        "narrow descending cockpit nose",
+        "paired rectangular shoulder intakes",
+        "lateral folding missile housings",
+        "long landing skids on visible mechanical legs",
+        "extended bifurcated tail"
+      ],
+      "image_bytes": 121645,
+      "image_sha256": "d1370756cf2b9a0928509e5eeb4d4e37b5e3230b898b004931225af0fc7f879d"
+    },
+    {
+      "page": "https://necaonline.com/2015/11/cinemachines-die-cast-collectibles-series-1-assortment/",
+      "name": "NECA CINEMACHINES M577 APC",
+      "http_status": 200,
+      "image_url": "https://necaonline.com/wp-content/uploads/2015/11/1300x-M577.jpg",
+      "image_file": "/workspace/qa/insertion-reference-audit-20261023/1300x-M577.jpg",
+      "visually_inspected": true,
+      "observed": [
+        "low angular hull",
+        "four large wheels with solid circular covers",
+        "recessed nose weapon opening",
+        "rear twin-barrel roof turret and longitudinal mounting rail"
+      ],
+      "image_bytes": 123281,
+      "image_sha256": "a36ea706eea8a0c55d7d30714b1eed18fc628b8a9311dbc9fa9686fd5a45cf8e"
+    }
+  ],
+  "skimmer": {
+    "official_reference_found": false,
+    "query_page": "https://necaonline.com/?s=predator+skimmer",
+    "http_status": 200,
+    "result": "NECA returns no results; this alone does not establish absence from canon"
+  },
+  "limitations": [
+    "Licensed miniatures have their own simplifications; not 1:1 film prop measurements.",
+    "Only the two indicated product photographs were visually reviewed.",
+    "No exact fidelity certification and no new Meshy generation."
+  ]
+}

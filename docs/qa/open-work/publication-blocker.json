@@ -1,0 +1,31 @@
+{
+  "status": "v2_publication_blocked_by_vercel_daily_deployment_quota",
+  "checked_at": "2026-10-24T02:31:45.123Z",
+  "platform": "Vercel",
+  "error_code": "api-deployments-free-per-day",
+  "error_message": "Resource is limited - try again in 24 hours (more than 100, code: \"api-deployments-free-per-day\").",
+  "candidate_id": null,
+  "promotion_executed": false,
+  "previous_candidate_id": "dpl_F8txaubo9HpLutyincyoHS6JVA55",
+  "previous_candidate_state": "READY_held_not_promoted",
+  "public_url": "https://yautja-hive-warriors.vercel.app/",
+  "canonical_http": 200,
+  "canonical_sha256": "d9839d93a06fd01e82c7efb49cefc46a4105a4406f65f451afdf7106f5e010db",
+  "canonical_unchanged": true,
+  "local_index_sha256": "9fdd19169a75d324dbde0e77bddbac90167e81ca19bfb06880084246a4bad6d6",
+  "stage": "/workspace/qa/open-work-20261024/vercel-static-prebuilt-v2",
+  "static_files": 29,
+  "static_bytes": 265627030,
+  "models": 12,
+  "bundles": 5,
+  "staging_verified": true,
+  "root_vercel_output_untouched": true,
+  "other_projects_changed": false,
+  "billing_changed": false,
+  "automatic_retries": false,
+  "blocker_evidence": [
+    "vercel-candidate-v2.json",
+    "vercel-candidate-v2-deploy.log"
+  ],
+  "recovery": "Retry the same immutable staging after Vercel reports quota availability; any billing/team change requires a separate authorized decision."
+}

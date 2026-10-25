@@ -1,6 +1,8 @@
 /* UD-4L Cheyenne Dropship Air Support & Napalm Bombing Run (Aliens 1986 Lore) */
 
 import * as THREE from 'three';
+import { createDropshipModel } from '../graphics/SupportModels.js';
+import { disposeObject } from '../engine/SceneResources.js';
 
 export class CheyenneDropship {
   constructor(scene, audioEngine, particles) {
@@ -11,54 +13,17 @@ export class CheyenneDropship {
     this.isFlying = false;
     this.flightProgress = 0;
     this.napalmPools = [];
+    this.pendingStrikes = [];
   }
 
   triggerAirstrike(playerPos, horde) {
     if (this.isFlying) return;
 
     if (this.shipMesh) {
-      this.scene.remove(this.shipMesh);
+      disposeObject(this.shipMesh);
     }
 
-    const shipGroup = new THREE.Group();
-    const hullMat = new THREE.MeshStandardMaterial({
-      color: 0x334155, // Military olive/grey USCM hull
-      metalness: 0.8,
-      roughness: 0.3
-    });
-    const glassMat = new THREE.MeshBasicMaterial({ color: 0x00d2ff });
-    const thrusterMat = new THREE.MeshBasicMaterial({ color: 0xff6600 });
-
-    // Fuselage
-    const body = new THREE.Mesh(new THREE.BoxGeometry(4.5, 2.5, 12), hullMat);
-    body.position.y = 1.2;
-    shipGroup.add(body);
-
-    // Angular Cockpit Canopy
-    const cockpit = new THREE.Mesh(new THREE.ConeGeometry(2.0, 4.0, 4), glassMat);
-    cockpit.rotation.x = Math.PI / 2;
-    cockpit.position.set(0, 1.4, 7.5);
-    shipGroup.add(cockpit);
-
-    // Twin Wing Rocket Pods
-    const leftPod = new THREE.Mesh(new THREE.BoxGeometry(3.5, 0.8, 4.0), hullMat);
-    leftPod.position.set(-4.0, 1.2, 0);
-    shipGroup.add(leftPod);
-
-    const rightPod = new THREE.Mesh(new THREE.BoxGeometry(3.5, 0.8, 4.0), hullMat);
-    rightPod.position.set(4.0, 1.2, 0);
-    shipGroup.add(rightPod);
-
-    // Twin Rear Jet Thrusters
-    const t1 = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 0.9, 1.5, 8), thrusterMat);
-    t1.rotation.x = Math.PI / 2;
-    t1.position.set(-1.8, 1.5, -6.5);
-    shipGroup.add(t1);
-
-    const t2 = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 0.9, 1.5, 8), thrusterMat);
-    t2.rotation.x = Math.PI / 2;
-    t2.position.set(1.8, 1.5, -6.5);
-    shipGroup.add(t2);
+    const shipGroup = createDropshipModel();
 
     // Start 100m behind and 22m altitude
     shipGroup.position.set(playerPos.x - 20, 22, playerPos.z - 90);
@@ -72,25 +37,11 @@ export class CheyenneDropship {
       this.audioEngine.playDropshipFlyby();
     }
 
-    // 1. Initial 70mm Rocket barrage halfway through flyby
-    setTimeout(() => {
-      if (horde) {
-        horde.checkMeleeHits({
-          origin: playerPos,
-          radius: 25,
-          damage: 550,
-          type: 'heavy'
-        });
-      }
-    }, 1200);
-
-    // 2. Napalm Carpet Bombing Run: 4 Incendiary Canisters dropped sequentially
+    // Snapshot the target; queued strikes advance with the game, not wall-clock timers.
+    this.pendingStrikes.push({ time: 1.2, kind: 'rocket', pos: playerPos.clone(), horde });
     for (let b = 0; b < 4; b++) {
-      setTimeout(() => {
-        const dropX = playerPos.x + (b - 1.5) * 8.0;
-        const dropZ = playerPos.z + (b - 1.5) * 10.0;
-        this.spawnNapalmInferno(new THREE.Vector3(dropX, 0.05, dropZ), horde);
-      }, 700 + b * 450);
+      this.pendingStrikes.push({ time: 0.7 + b * 0.45, kind: 'napalm',
+        pos: new THREE.Vector3(playerPos.x + (b - 1.5) * 8, 0.05, playerPos.z + (b - 1.5) * 10), horde });
     }
   }
 
@@ -148,13 +99,22 @@ export class CheyenneDropship {
   }
 
   update(delta, horde = null) {
+    for (let i = this.pendingStrikes.length - 1; i >= 0; i--) {
+      const strike = this.pendingStrikes[i];
+      strike.time -= delta;
+      if (strike.time > 0) continue;
+      this.pendingStrikes.splice(i, 1);
+      const targets = horde || strike.horde;
+      if (strike.kind === 'napalm') this.spawnNapalmInferno(strike.pos, targets);
+      else targets?.checkMeleeHits({ origin: strike.pos, radius: 25, damage: 550, type: 'heavy' });
+    }
     // 1. Dropship Flight Trajectory
     if (this.isFlying && this.shipMesh) {
       this.shipMesh.position.z += 65 * delta;
       this.flightProgress += delta;
 
       if (this.flightProgress >= 4.0) {
-        this.scene.remove(this.shipMesh);
+        disposeObject(this.shipMesh);
         this.shipMesh = null;
         this.isFlying = false;
       }
@@ -184,22 +144,25 @@ export class CheyenneDropship {
       }
 
       if (p.life <= 0) {
-        this.scene.remove(p.poolMesh);
-        this.scene.remove(p.coreMesh);
+        disposeObject(p.poolMesh);
+        disposeObject(p.coreMesh);
         this.napalmPools.splice(i, 1);
       }
     }
   }
 
   clear() {
+    this.pendingStrikes = [];
+    this.isFlying = false;
+    this.flightProgress = 0;
     if (this.shipMesh) {
-      this.scene.remove(this.shipMesh);
+      disposeObject(this.shipMesh);
       this.shipMesh = null;
       this.isFlying = false;
     }
     this.napalmPools.forEach(p => {
-      this.scene.remove(p.poolMesh);
-      this.scene.remove(p.coreMesh);
+      disposeObject(p.poolMesh);
+      disposeObject(p.coreMesh);
     });
     this.napalmPools = [];
   }

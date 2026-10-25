@@ -1,6 +1,7 @@
 /* Gore & Dismemberment Engine 2.0 - 1:1 Lore Body Part Severing Physics */
 
 import * as THREE from 'three';
+import { disposeObject } from './SceneResources.js';
 
 export class GoreEngine {
   constructor(scene) {
@@ -24,9 +25,13 @@ export class GoreEngine {
       transparent: true,
       opacity: 0.9
     });
+    this.sharedResources = new Set([this.xenoFleshMat, this.acidGlowMat, this.yautjaBloodMat]);
   }
 
   spawnDismemberment(pos, weaponType = 'wristblades') {
+    while (this.severedParts.length > 90) {
+      disposeObject(this.severedParts.shift().mesh, this.sharedResources);
+    }
     const isHeavyCut = weaponType === 'heavy' || weaponType === 'smart_disc' || weaponType === 'bone_scythe' || weaponType === 'spine_rip';
     const partsCount = isHeavyCut ? 3 : 2;
 
@@ -133,6 +138,7 @@ export class GoreEngine {
   }
 
   spawnAcidSplatter(pos) {
+    while (this.acidGibs.length >= 100) disposeObject(this.acidGibs.shift().mesh, this.sharedResources);
     const splashGeo = new THREE.CylinderGeometry(1.2 + Math.random() * 0.8, 1.2 + Math.random() * 0.8, 0.03, 10);
     const splash = new THREE.Mesh(splashGeo, this.acidGlowMat);
     splash.position.set(pos.x + (Math.random() - 0.5) * 2, 0.02, pos.z + (Math.random() - 0.5) * 2);
@@ -166,7 +172,7 @@ export class GoreEngine {
       }
 
       if (part.life <= 0) {
-        this.scene.remove(part.mesh);
+        disposeObject(part.mesh, this.sharedResources);
         this.severedParts.splice(i, 1);
       }
     }
@@ -176,16 +182,16 @@ export class GoreEngine {
       const gib = this.acidGibs[i];
       gib.life -= delta;
       if (gib.life <= 0) {
-        this.scene.remove(gib.mesh);
+        disposeObject(gib.mesh, this.sharedResources);
         this.acidGibs.splice(i, 1);
       }
     }
   }
 
   clear() {
-    this.severedParts.forEach(p => this.scene.remove(p.mesh));
+    this.severedParts.forEach(p => disposeObject(p.mesh), this.sharedResources);
     this.severedParts = [];
-    this.acidGibs.forEach(g => this.scene.remove(g.mesh));
+    this.acidGibs.forEach(g => disposeObject(g.mesh), this.sharedResources);
     this.acidGibs = [];
   }
 }

@@ -1,6 +1,8 @@
 /* USCM M577 Armored Personnel Carrier (Aliens 1986 Lore) */
 
 import * as THREE from 'three';
+import { createAPCModel } from '../graphics/SupportModels.js';
+import { disposeObject } from '../engine/SceneResources.js';
 
 export class APCVehicle {
   constructor(scene, audioEngine, particles) {
@@ -14,100 +16,47 @@ export class APCVehicle {
     this.targetPos = new THREE.Vector3();
     this.hp = 2500;
     this.maxHp = 2500;
+    this.model = null;
+    this.deployment = 0;
+    this.recoil = 0;
+    this.weaponFlash = 0;
   }
 
   spawn(pos) {
     if (this.mesh) {
-      this.scene.remove(this.mesh);
+      disposeObject(this.mesh);
     }
 
-    const group = new THREE.Group();
-
-    // Military USCM armor material
-    const armorMat = new THREE.MeshStandardMaterial({
-      color: 0x3b4738, // Olive-drab USCM armor
-      metalness: 0.85,
-      roughness: 0.35
-    });
-
-    const wheelMat = new THREE.MeshStandardMaterial({
-      color: 0x18181b,
-      metalness: 0.2,
-      roughness: 0.8
-    });
-
-    // 1. Sloped Main Chassis (Length: 9m, Width: 4.2m, Height: 2.2m)
-    const hullGeo = new THREE.BoxGeometry(4.2, 2.0, 9.0);
-    const hull = new THREE.Mesh(hullGeo, armorMat);
-    hull.position.y = 1.8;
-    group.add(hull);
-
-    // Front sloped glacis plate
-    const frontGlacis = new THREE.Mesh(new THREE.ConeGeometry(2.4, 3.0, 4), armorMat);
-    frontGlacis.rotation.x = Math.PI / 2;
-    frontGlacis.position.set(0, 1.6, 5.2);
-    group.add(frontGlacis);
-
-    // 2. Eight Massive All-Terrain Wheels (4 on left, 4 on right)
-    const wheelGeo = new THREE.CylinderGeometry(0.85, 0.85, 0.7, 12);
-    wheelGeo.rotateZ(Math.PI / 2);
-
-    const wheelPositions = [-3.0, -1.0, 1.0, 3.0];
-    wheelPositions.forEach(zOffset => {
-      // Left wheel
-      const wl = new THREE.Mesh(wheelGeo, wheelMat);
-      wl.position.set(-2.3, 0.85, zOffset);
-      group.add(wl);
-
-      // Right wheel
-      const wr = new THREE.Mesh(wheelGeo, wheelMat);
-      wr.position.set(2.3, 0.85, zOffset);
-      group.add(wr);
-    });
-
-    // 3. Pivoting Roof-Mounted Dual 20mm Autocannon Turret
-    const turretGroup = new THREE.Group();
-    turretGroup.position.set(0, 3.0, -1.5);
-
-    const turretBase = new THREE.Mesh(new THREE.CylinderGeometry(0.9, 1.1, 0.6, 8), armorMat);
-    turretGroup.add(turretBase);
-
-    // Twin barrels
-    const barrelGeo = new THREE.CylinderGeometry(0.08, 0.08, 2.8, 6);
-    barrelGeo.rotateX(Math.PI / 2);
-    const barrelMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.95 });
-
-    const barrel1 = new THREE.Mesh(barrelGeo, barrelMat);
-    barrel1.position.set(-0.35, 0.25, 1.4);
-    turretGroup.add(barrel1);
-
-    const barrel2 = new THREE.Mesh(barrelGeo, barrelMat);
-    barrel2.position.set(0.35, 0.25, 1.4);
-    turretGroup.add(barrel2);
-
-    group.add(turretGroup);
-    this.turretMesh = turretGroup;
-
-    // Headlights
-    const lightMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
-    const hl1 = new THREE.Mesh(new THREE.SphereGeometry(0.2, 6, 6), lightMat);
-    hl1.position.set(-1.4, 2.0, 4.6);
-    group.add(hl1);
-    const hl2 = new THREE.Mesh(new THREE.SphereGeometry(0.2, 6, 6), lightMat);
-    hl2.position.set(1.4, 2.0, 4.6);
-    group.add(hl2);
+    const model = createAPCModel();
+    const { group, turret } = model;
+    this.model = model;
+    this.turretMesh = turret;
 
     group.position.copy(pos);
     this.scene.add(group);
     this.mesh = group;
     this.isActive = true;
     this.hp = this.maxHp;
+    this.fireCooldown = 0;
+    this.deployment = 0;
+    this.recoil = 0;
+    this.weaponFlash = 0;
+    model.setTurretDeployment(0);
   }
 
   update(delta, horde) {
-    if (!this.isActive || !this.mesh) return;
+    if (!this.isActive || !this.mesh || !Number.isFinite(delta) || delta <= 0) return;
 
-    this.fireCooldown -= delta;
+    this.fireCooldown = Math.max(0, this.fireCooldown - delta);
+    this.deployment = Math.min(1, this.deployment + delta / 0.95);
+    this.model?.setTurretDeployment(this.deployment * this.deployment * (3 - 2 * this.deployment));
+    this.recoil *= Math.exp(-15 * delta);
+    this.weaponFlash *= Math.exp(-24 * delta);
+    if (this.model) {
+      this.model.barrels.position.z = -this.recoil * 0.15;
+      this.model.flareMaterial.opacity = this.weaponFlash * 0.85;
+      this.model.muzzleFlash.visible = this.weaponFlash > 0.02;
+    }
 
     // Track nearest Xenomorph within 30 meters
     let nearestTarget = null;
@@ -124,14 +73,32 @@ export class APCVehicle {
     }
 
     if (nearestTarget && this.turretMesh) {
-      const aimDir = nearestTarget.mesh.position.clone().sub(this.mesh.position);
+      this.mesh.updateMatrixWorld(true);
+      const turretOrigin = this.turretMesh.getWorldPosition(new THREE.Vector3());
+      const aimDir = nearestTarget.mesh.position.clone().sub(turretOrigin);
       aimDir.y = 0;
       aimDir.normalize();
       this.turretMesh.rotation.y = Math.atan2(aimDir.x, aimDir.z) - this.mesh.rotation.y;
+      if (this.model?.frontTurret) {
+        const frontOrigin = this.model.frontTurret.getWorldPosition(new THREE.Vector3());
+        const direction = nearestTarget.mesh.position.clone().sub(frontOrigin);
+        let angle = Math.atan2(direction.x, direction.z) - this.mesh.rotation.y;
+        angle = Math.atan2(Math.sin(angle), Math.cos(angle));
+        this.model.frontTurret.rotation.y = THREE.MathUtils.clamp(angle, -0.55, 0.55);
+      }
 
       // Fire twin 20mm autocannon bursts
-      if (this.fireCooldown <= 0) {
+      if (this.fireCooldown <= 0 && this.deployment >= 1) {
         this.fireCooldown = 1.1;
+        this.recoil = 1;
+        this.weaponFlash = 1;
+        if (this.model) {
+          this.model.barrels.position.z = -0.15;
+          this.model.flareMaterial.opacity = 0.85;
+          this.model.muzzleFlash.visible = true;
+          this.mesh.updateMatrixWorld(true);
+          for (const muzzle of this.model.muzzleSockets) this.particles?.emitSparks?.(muzzle.getWorldPosition(new THREE.Vector3()), 2);
+        }
         if (this.audioEngine && this.audioEngine.playAPCTurretBurst) {
           this.audioEngine.playAPCTurretBurst();
         }
@@ -153,12 +120,50 @@ export class APCVehicle {
     }
   }
 
+  /** Circle against the real carrier footprint, in vehicle space. Wheel
+   * shoulders extend beyond the narrower door section; roof-height jumps do
+   * not collide with an invisible full-height box around the whole vehicle. */
+  resolveMovement(position, radius = 0.75) {
+    if (!this.isActive || !this.mesh || !position?.isVector3 || !Number.isFinite(radius) || radius < 0) return position;
+    const dxWorld = position.x - this.mesh.position.x, dzWorld = position.z - this.mesh.position.z;
+    if (dxWorld * dxWorld + dzWorld * dzWorld > (6 + radius) ** 2) return position;
+    const local = position.clone().sub(this.mesh.position).applyAxisAngle(new THREE.Vector3(0, 1, 0), -this.mesh.rotation.y);
+    const boxes = [];
+    if (local.y < 2.48) {
+      boxes.push({ x: 0, z: 0.08, width: 2.09, depth: 4.84 });
+      for (const z of [-3.23, 2.68]) boxes.push({ x: 0, z, width: 2.52, depth: 1.06 });
+    }
+    if (local.y >= 2.48 && local.y < 3.80 && this.model) boxes.push({ x: 0, z: this.model.turret.position.z, width: 1.05, depth: 1.08 });
+    for (let iteration = 0; iteration < 2; iteration++) for (const box of boxes) {
+      const x = local.x - box.x, z = local.z - box.z;
+      if (Math.abs(x) >= box.width + radius || Math.abs(z) >= box.depth + radius) continue;
+      const px = THREE.MathUtils.clamp(x, -box.width, box.width), pz = THREE.MathUtils.clamp(z, -box.depth, box.depth);
+      const dx = x - px, dz = z - pz, distance = Math.hypot(dx, dz);
+      if (distance > 1e-9) {
+        if (distance >= radius) continue;
+        const gain = (radius - distance) / distance;
+        local.x += dx * gain; local.z += dz * gain;
+      } else {
+        const moveX = box.width + radius - Math.abs(x), moveZ = box.depth + radius - Math.abs(z);
+        if (moveX < moveZ) local.x = box.x + (x < 0 ? -1 : 1) * (box.width + radius);
+        else local.z = box.z + (z < 0 ? -1 : 1) * (box.depth + radius);
+      }
+    }
+    position.copy(local.applyAxisAngle(new THREE.Vector3(0, 1, 0), this.mesh.rotation.y).add(this.mesh.position));
+    return position;
+  }
+
   clear() {
     if (this.mesh) {
-      this.scene.remove(this.mesh);
+      disposeObject(this.mesh);
       this.mesh = null;
       this.turretMesh = null;
       this.isActive = false;
     }
+    this.model = null;
+    this.deployment = 0;
+    this.recoil = 0;
+    this.weaponFlash = 0;
+    this.fireCooldown = 0;
   }
 }

@@ -1,0 +1,210 @@
+
+> predator-hive-warriors@1.0.0 test
+> npm run build && node --test --test-concurrency=1
+
+
+> predator-hive-warriors@1.0.0 build
+> vite build
+
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 78 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/assets/orbitron-latin-600-normal-mazHmDYu.woff2    6.58 kB
+dist/assets/orbitron-latin-800-normal-CQafOXEd.woff2    6.74 kB
+dist/assets/orbitron-latin-800-normal-P4cBi4I7.woff     9.00 kB
+dist/assets/orbitron-latin-600-normal-75H6acHo.woff     9.03 kB
+dist/assets/rajdhani-latin-500-normal-DfvNI-Td.woff    11.76 kB
+dist/assets/rajdhani-latin-700-normal-e0Uj8ZlN.woff    12.06 kB
+dist/assets/rajdhani-latin-600-normal-Dx02qI2_.woff    12.09 kB
+dist/assets/rajdhani-latin-500-normal-ByNUCHrt.woff2   15.08 kB
+dist/assets/rajdhani-latin-700-normal-BPDUZo87.woff2   15.68 kB
+dist/assets/rajdhani-latin-600-normal-CXCVEoA9.woff2   15.73 kB
+dist/index.html                                        33.79 kB │ gzip:   9.09 kB
+dist/assets/index-BNBPJRED.css                         36.73 kB │ gzip:   8.70 kB
+dist/assets/confetti-CAXNRs-2.js                       10.56 kB │ gzip:   4.19 kB
+dist/assets/visual-effects-r9wXagHX.js                107.70 kB │ gzip:  30.24 kB
+dist/assets/index-c6DI5JFs.js                         397.27 kB │ gzip: 120.83 kB
+dist/assets/engine-BvUM56m6.js                        550.95 kB │ gzip: 140.23 kB
+
+✓ built in 322ms
+[plugin builtin:vite-reporter]
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.1
+npm notice To update run: npm install -g npm@12.2.1
+npm notice
+✔ biomask composition requires explicit transforms and clones graph/bones without changing cached surfaces (7.051008ms)
+✔ optional biomask follows FPS/cloak, has private surfaces and is disposed once without touching cache (4048.628219ms)
+✔ unconfigured, failed or malformed optional masks preserve a valid unmasked body (1104.901298ms)
+✔ a mask cannot satisfy the FPS guard when the body head has no identifiable skin faces (415.855553ms)
+✔ a mask request resolved after Player disposal cannot attach or dispose template resources (376.4398ms)
+✔ calibrated eye height and laser origin follow the imported actor and restore the procedural values (400.477269ms)
+✔ opaque filter components are cloned with the mask and participate in FPS, cloak and disposal (397.659533ms)
+✔ optional eye-filter calibration deep-copies measured arrays and rejects malformed geometry (1.684773ms)
+✔ opaque backing meshes occlude both empty windows without altering the cached shell (9.414053ms)
+✔ filter cleanup releases private geometry/material once and retains the shared grid for adapter clones (1.077478ms)
+✔ production: self-hosted startup tolerates damaged saved data (5369.003772ms)
+✔ menus: every modal closes cleanly, settings persist, keyboard focus is visible (10716.643996ms)
+✔ solo: selected loadout, movement, pause, photo, defeat, replay and cleanup (59860.559471ms)
+✔ campaign: a boss victory advances the chapter and loads its actual arena (37403.941809ms)
+✔ coop: two players render at correct aspect and share pause/cleanup (60528.34428ms)
+✔ mobile: 390px menus have no horizontal overflow and remain navigable (5907.543736ms)
+✔ no opt-in keeps the identical source template (2.57083ms)
+✔ explicit tail correction edits selected weights only, keeps rest geometry and source intact, and is shared (2.759278ms)
+✔ wrong assets, missing bones and malformed ranges are rejected instead of guessing anatomy (3.34294ms)
+✔ calibration with source-skin fingerprints refuses applying to an already corrected derivative (0.611104ms)
+✔ disjoint anatomical groups use different bones on one cloned geometry and reject overlap (0.731218ms)
+✔ creature geometry has finite positions/normals/UVs and bounded fused draw calls (3665.236722ms)
+✔ creatures have meaningful anatomical silhouette and independent articulated poses (2.148036ms)
+✔ wave cleanup retains cached creature geometry, while actors are removed (1.032463ms)
+✔ boss cleanup retains its sculpted geometry for a fresh encounter (1.228551ms)
+✔ egg petals remain separate and visibly open when the gameplay hatch triggers (1.296702ms)
+✔ distance LOD reduces triangles while preserving anatomical parts, pivots and proportions (195.418925ms)
+✔ one coherent LOD uses the nearest co-op camera and preserves moving-part poses (1.609412ms)
+✔ all cached LOD buffers survive cleanup and distant hordes have a bounded polygon cost (14.958834ms)
+✔ gunnison_forest: textured environment stays inside its rendering budget (1253.652745ms)
+✔ xenomorph_prime: textured environment stays inside its rendering budget (2795.386842ms)
+✔ antarctic_pyramid: textured environment stays inside its rendering budget (11.899099ms)
+✔ la_rooftops: textured environment stays inside its rendering budget (1401.880733ms)
+✔ val_verde_jungle: textured environment stays inside its rendering budget (24.44206ms)
+✔ romulus_station: textured environment stays inside its rendering budget (9.199101ms)
+✔ forest canopies and undergrowth share geometry instead of creating a mesh per leaf (39.519385ms)
+✔ skyline window instances stay attached to their actual building facades (9.531673ms)
+✔ roads, annuli, landing cap and terrain share isotropic five-metre texture density (18.527838ms)
+✔ botanical models have attached small blades, curved stems, and smooth sculpted stones (23.248397ms)
+✔ forest trails blend their irregular edges and the fabricated pad has a single visible cap (13.895671ms)
+✔ beveled temple obelisks expose their outside surfaces with front-face culling (0.337672ms)
+✔ campaign advances through five real maps and finishes after the final boss (70874.99381ms)
+✔ pause and photo mode freeze mission tasks; menu return cancels effects and timers (41632.474803ms)
+✔ sandbox honors the enemy slider and can be completed without spawning another boss (30398.062757ms)
+✔ melee damages bosses and trophy execution requires close range (18350.980822ms)
+✔ co-op has independent movement and combat and continues while one hunter survives (51325.972187ms)
+✔ generated library excludes pending assets and remote signed URLs (1.72319ms)
+✔ co-op actors share one concurrent template request and failed requests can recover (0.919272ms)
+✔ template retention includes every material, geometry and shared PBR texture (2.222035ms)
+✔ generated body shares separately loaded locomotion clips without renaming source clips (0.954576ms)
+✔ animation sources reject remote URLs and an incomplete clip load can recover (0.810103ms)
+✔ biome weather creates a single animated batch and releases its previous buffers (385.41483ms)
+✔ gas explosions apply one area hit and expire without wall-clock timers (2.6429ms)
+✔ rebuilding hazards reuses geometry and cannot accumulate old pipes (2.097303ms)
+✔ pectoral, abdominal, waist and neck contours form one continuous sculpted torso (4220.625797ms)
+✔ all hunter silhouettes contain real surface detail within a bounded hero budget (2552.076156ms)
+✔ wrist equipment follows the attack joint instead of floating beside the hunter (342.881781ms)
+✔ hero has a small non-emissive mask, longer grounded legs and credible head-to-body proportions (353.965483ms)
+✔ the body net and dark eye slits remain visible above their fitted surfaces (344.478032ms)
+✔ cloak restoration preserves skin, bone, metal, lens and cloth surface properties (366.872718ms)
+✔ hero disposal releases owned geometry and materials without disposing shared surface maps (779.868056ms)
+✔ every equipped weapon remains finite across repeated geometry replacement (356.686771ms)
+✔ import normalization grounds the feet at requested height without mutating the loaded GLB (19.425683ms)
+✔ FPS partitions conserve every triangle/material group for indexed and non-indexed skins (5.291497ms)
+✔ partition drawRange preserves active faces while retaining all inactive source triangles (0.929242ms)
+✔ skin, UV, tangent, custom attributes and active morph deformation survive the split (1.403387ms)
+✔ non-neutral bind poses receive controller deltas in character axes and restore exactly (1.721219ms)
+✔ cooperative clones isolate pose/materials and release only their own GPU resources once (2.138463ms)
+✔ simultaneous arm and forearm controls apply their deltas in character axes (1.921324ms)
+✔ explicit rig aliases/pose corrections work and unsupported FPS rigs cannot pretend to hide a head (2.453259ms)
+✔ malformed and unbounded imports fail before becoming renderable characters (1.269893ms)
+✔ Player keeps its current model for empty manifest, other hunters, absent calibration and failed requests (4440.908065ms)
+✔ Player ignores a load resolved after disposal and never releases shared template resources (479.224458ms)
+✔ a superseded Player request cannot replace or dispose the newer imported visual (414.242743ms)
+✔ Player upgrade preserves weapons/FPS/cloak and disposes imported and socket accessories exactly once (482.39809ms)
+✔ static geometry, decorative bones, invalid skinning and unanimated unknown rigs keep the procedural fallback (2762.278773ms)
+✔ rigged clones share cached surfaces while bones, pose and local normalization remain independent (4.654394ms)
+✔ an explicit rig can animate from its neutral quaternions without guessed bone names (1.094879ms)
+✔ locomotion removes horizontal root motion without changing cached animation or gameplay position (2.884816ms)
+✔ implicit pelvis selection skips Armature wrappers and preserves unknown articulated joint names (2.581748ms)
+✔ a Walking clip rotating only Armature is rejected while calibrated gait remains available (1.30382ms)
+✔ resolved loading waits for scene attachment and selects the current procedural LOD (3.008693ms)
+✔ wave removal cancels a pending attachment and load failures leave all procedural parts visible (1.568839ms)
+✔ cleanup releases private skeleton textures exactly once and preserves cache geometry/material/maps for another actor (1.756558ms)
+✔ calibrated skin corrections share a distinct template while selected skin influences and actor bones stay isolated (4.515353ms)
+✔ removing a corrected creature releases its private skeleton and leaves corrected surfaces usable by another actor (2.171993ms)
+✔ invalid skin calibration rejects attachment without poisoning the source or the valid corrected cache (1.160019ms)
+✔ removal before a calibrated request resolves never attaches corrected geometry or changes the raw source (0.889663ms)
+✔ GLB inspection separates definition, node-instance and visible scene triangle counts (4.754698ms)
+✔ container corruption is rejected before JSON or binary metadata is trusted (1.328532ms)
+✔ URI privacy excludes signed paths, credentials, queries and inline image data (1.03261ms)
+✔ embedded PNG, JPEG and all common WebP headers expose dimensions without decoding (0.936972ms)
+✔ compression, missing dimensions and invalid binary ranges remain explicit (0.618648ms)
+✔ cycles, missing references and unknown counts cannot hang or become false zero-triangle claims (0.686684ms)
+✔ CLI saves deterministic JSON, prints only a summary and protects the source file (177.660427ms)
+✔ gunnison_forest: described, decorated, deterministic and navigable (1290.389668ms)
+✔ xenomorph_prime: described, decorated, deterministic and navigable (2775.592238ms)
+✔ antarctic_pyramid: described, decorated, deterministic and navigable (16.411987ms)
+✔ la_rooftops: described, decorated, deterministic and navigable (1384.874273ms)
+✔ val_verde_jungle: described, decorated, deterministic and navigable (24.646504ms)
+✔ romulus_station: described, decorated, deterministic and navigable (17.612453ms)
+✔ solid scenery collision handles exact centers, corners, rotations and jumping (0.409822ms)
+✔ gunnison_forest: seeking AI can skirt scenery from the perimeter to four open targets (92.75385ms)
+✔ xenomorph_prime: seeking AI can skirt scenery from the perimeter to four open targets (60.818826ms)
+✔ antarctic_pyramid: seeking AI can skirt scenery from the perimeter to four open targets (31.011879ms)
+✔ la_rooftops: seeking AI can skirt scenery from the perimeter to four open targets (14.979772ms)
+✔ val_verde_jungle: seeking AI can skirt scenery from the perimeter to four open targets (70.748117ms)
+✔ romulus_station: seeking AI can skirt scenery from the perimeter to four open targets (25.162728ms)
+✔ production rendering presets compile, export an image and preserve independent co-op viewports (29047.551666ms)
+✔ unsupported graphics fall back safely without overwriting the requested quality (0.869814ms)
+✔ quality budgets scale shadows and contact effects while bounding compact displays (0.303006ms)
+✔ quality changes rebuild bounded weather and release ripple resources (400.603782ms)
+✔ marine: detailed finite model stays inside its rendering budget (2352.113235ms)
+✔ flametrooper: detailed finite model stays inside its rendering budget (43.556945ms)
+✔ synthetic: detailed finite model stays inside its rendering budget (39.245153ms)
+✔ honor guard: detailed finite model stays inside its rendering budget (1458.511445ms)
+✔ hound: detailed finite model stays inside its rendering budget (23.028263ms)
+✔ APC: detailed finite model stays inside its rendering budget (43.776685ms)
+✔ dropship: detailed finite model stays inside its rendering budget (22.30898ms)
+✔ pod: detailed finite model stays inside its rendering budget (33.806359ms)
+✔ skimmer: detailed finite model stays inside its rendering budget (26.672838ms)
+✔ support actors have textured surfaces and anatomically complete silhouettes (114.227244ms)
+✔ synthetic bisection retains its named pivots and material ownership (32.510151ms)
+✔ vehicle turret and capsule hatch remain independently movable and cleanup owns every buffer (59.875866ms)
+✔ detailed support squads and persistent equipment still follow gameplay lifecycle APIs (1658.29506ms)
+✔ dropship keeps strike cancellation while replacing the box hull (17.940288ms)
+✔ citadel trophies are recognizable separate skull families with bounded buffers (698.461836ms)
+✔ sculpted faces and bodies keep adult proportions and actual facial volume (65.945014ms)
+✔ fitted marine armor covers the chest continuously without cloth clipping through (56.577106ms)
+✔ lofted anatomy and hull surfaces retain finite normals, UVs and outward winding (1.798524ms)
+✔ PBR maps have actual surface variation and valid normals rather than flat colors (7950.611039ms)
+✔ surface maps are shared safely and repeat settings cannot leak between materials (1.31247ms)
+✔ organic surfaces distinguish human pores from hunter pigmentation and preserve controlled reflections (2.04423ms)
+✔ campaign uses existing levels and completes once after all five bosses (1.674981ms)
+✔ sandbox and missions respect requested alien counts, including special enemies (3278.379827ms)
+✔ allied kills and consumed facehuggers no longer block the next wave (3.050602ms)
+✔ egg hatching advances only during simulation and clearWave cancels it (2.687683ms)
+✔ each alien targets the nearest living cooperative player (0.634577ms)
+✔ invalid combat damage cannot heal enemies or poison their health (0.737401ms)
+✔ boss death clears projectiles and a running tail whip safely (44.073271ms)
+✔ Offspring drains the actual plasma meter and never refills empty energy (24.009035ms)
+✔ airstrike snapshots target position and cannot leak napalm into the next mission (2391.217458ms)
+✔ drop pod landing uses frame time and clear cancels its completion callback (73.212857ms)
+✔ loadout changes real weapon behavior and gadget quantities without stacking stats (481.462934ms)
+✔ medicomp at full health preserves its limited charge (353.977075ms)
+✔ player disposal cancels delayed abilities and frees external effects (333.991095ms)
+✔ particles and decals stay within a bounded resource budget and clear completely (4.939752ms)
+✔ orbital strike respects boss distance and releases its beam (1.104124ms)
+✔ GPU cleanup disposes owned resources while retaining manager shared materials (0.368433ms)
+✔ capsule disappears after insertion rather than blocking the hunter camera (22.514167ms)
+✔ skimmer mount consumes the key and reset restores a fresh vehicle state (19.790451ms)
+✔ synthetic blood uses bounded simulation lifetimes and clear removes all drops (3.131592ms)
+✔ chestbursters can be killed rather than remaining invulnerable hazards (2.650968ms)
+✔ repeated acid splashback and kill effects keep bounded hazard counts (35.354915ms)
+✔ real horde pursuit skirts a pyramid prop and reaches the nearest cooperative player (294.735578ms)
+✔ ground steering does not clamp airborne enemies or replace active Crusher dashes (0.447114ms)
+ℹ tests 156
+ℹ suites 0
+ℹ pass 156
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 487892.040777
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.1
+npm notice To update run: npm install -g npm@12.2.1
+npm notice

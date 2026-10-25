@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-23T07:04:33.853Z",
+  "reviewer": "city_browser_qa — AI image inspection, not human QA",
+  "status": "PASS_functional_and_contact_with_explicit_visual_limits",
+  "bodySha256": "0e297a50400f885f06595f2fb59c85aed5118517a03c140f0f3aefa5288b564b",
+  "proofs": {
+    "fullRuntime": "runtime-report.json",
+    "postTerrainFix": "ground-contact-report.json",
+    "realCpuGrounding": "city-foot-grounding-baked-proof.json"
+  },
+  "reviewedImages": [
+    "city-front.png",
+    "city-head.png",
+    "city-movement-front.png",
+    "city-movement-negative-front.png",
+    "city-movement-side.png",
+    "city-movement-negative-side.png",
+    "city-feet-positive.png",
+    "city-feet-negative.png",
+    "city-block-front.png",
+    "city-block-left-side.png",
+    "city-attack-s1-front.png",
+    "city-attack-s5-front.png",
+    "city-attack-s5-right-side.png",
+    "city-attack-s5-hand.png",
+    "city-attack-s1-right-side.png",
+    "city-attack-s1-hand.png"
+  ],
+  "findings": [
+    {
+      "area": "Separate biomask/PBR/body",
+      "result": "pass",
+      "observation": "The separate opaque biomask stays attached. Detailed skin/netting/armor surfaces render with decoded4k color/normal maps and2k roughness/metalness; no procedural block body replaces City."
+    },
+    {
+      "area": "Head and actual s1/s5",
+      "result": "pass",
+      "observation": "Head/mask remain visually stable during raised-arm attacks. The repaired hand and cuffs stay cohesive in front/profile/closeup views; no new stretched head sheet or exploding hand edge is visible."
+    },
+    {
+      "area": "Actual left shield block",
+      "result": "pass",
+      "observation": "Arm and separate shield move through actual gameplay block. Profile/front views show no newly opened measured cuff seam; restoration was numerically exact."
+    },
+    {
+      "area": "Hair/FPS/cloak",
+      "result": "pass",
+      "observation": "Two weighted pieces have measured actual deformation with anchored caps and exact rest reset. FPS restores the original hidden covered-face visibility rather than making every head mesh visible. Cloak restores PBR state."
+    },
+    {
+      "area": "Foot/visible terrain contact",
+      "result": "pass_after_fix",
+      "observation": "The first rendered review exposed terrain below the actor contact plane. Environment was corrected to visibleY0; targeted renders and all5329world-space terrain vertices confirm alignment. The lowest actual sole remains on that plane across21controller phases."
+    },
+    {
+      "area": "Gait quality and bob",
+      "result": "bounded_compromise",
+      "observation": "Whole-body views at both extreme phases show a modest vertical excursion rather than the former large hop. Strides remain short and rigid. Contact is at the lowest source sole point: tilted soles and a lifted second foot remain visible. This is not an IK or modern retargeted gait."
+    }
+  ],
+  "metrics": {
+    "bodyTriangles": 235918,
+    "maskTriangles": 75466,
+    "contactErrorMax": 4.428505492870549e-9,
+    "offsetRange": [
+      -0.06265468022684095,
+      0.08594130836126357
+    ],
+    "peakToPeakBob": 0.14859598858810452,
+    "groundWorldRange": [
+      0,
+      0
+    ],
+    "groundingRefusals": 0,
+    "cachedResourcesDisposed": 0,
+    "cacheUnchanged": true,
+    "jungleImport": "imported",
+    "alienImport": "ready",
+    "jsErrors": 0,
+    "failedRequests": 0
+  },
+  "limits": [
+    "This review does not certify photographic likeness1:1, anatomical accuracy or AAA quality.",
+    "Only hair regions10/12 move independently; hair17 is fixed rigidly to Head.",
+    "Wristblade surfaces are baked/static, with no separate actuator; no duplicate procedural blades render.",
+    "Raw Meshy walk/run clips remain editing downloads and do not autoplay.",
+    "No per-foot IK, ankle leveling or anti-sliding is implemented; body bob remains about0.1486game units peak-to-peak."
+  ],
+  "execution": {
+    "allBrowsersClosed": true,
+    "allOwnViteServersClosed": true,
+    "fullRegressionRepeatedAfterTerrainFix": false,
+    "reason": "Only terrain visibility changed after the complete passed game/control/cache/Jungle/Alien run; the final rerun targeted actual floor/contact rendering."
+  }
+}

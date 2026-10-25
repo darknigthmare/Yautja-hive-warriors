@@ -1,0 +1,104 @@
+{
+  "states": [
+    {
+      "mode": "closed",
+      "mechanism": {
+        "id": "city-left-console",
+        "amount": 0,
+        "target": 0,
+        "angle": 0,
+        "mode": "scan",
+        "holdRemaining": 0,
+        "disposed": false
+      },
+      "diagnostics": {
+        "sourceSha256": "0e297a50400f885f06595f2fb59c85aed5118517a03c140f0f3aefa5288b564b",
+        "sourceNode": "model_part11",
+        "sourceVertices": 746,
+        "sourceTriangles": 740,
+        "visibleReplacementTriangles": 740,
+        "rigidBone": "LeftForeArm",
+        "maximumWeightError": 0,
+        "closedMaxVertexError": 4.880632206713545e-8,
+        "texture": "original PBR material borrowed; source UVs copied unchanged",
+        "addedConsoleTriangles": 418,
+        "addedConsoleDrawMeshes": 4,
+        "addedMaterials": 4,
+        "housingPatch": {
+          "node": "model_part7",
+          "removedCoveredArmourTriangles": 276,
+          "skinTrianglesRemoved": 0,
+          "retainedTriangles": 1656,
+          "cacheModified": false,
+          "sourceVerticesModified": 0
+        },
+        "hingeName": "city-left-console-hinge",
+        "bladeExtractionActivated": false,
+        "interpretation": "original plate retained; hinge and electronics modelled locally, not a certified film mechanism"
+      },
+      "body": "imported",
+      "mask": "attached",
+      "render": {
+        "frame": 2,
+        "calls": 29,
+        "triangles": 310789,
+        "points": 0,
+        "lines": 3
+      }
+    },
+    {
+      "mode": "emp",
+      "mechanism": {
+        "id": "city-left-console",
+        "amount": 1,
+        "target": 1,
+        "angle": 1.5,
+        "mode": "emp",
+        "holdRemaining": 1.6,
+        "disposed": false
+      },
+      "diagnostics": {
+        "sourceSha256": "0e297a50400f885f06595f2fb59c85aed5118517a03c140f0f3aefa5288b564b",
+        "sourceNode": "model_part11",
+        "sourceVertices": 746,
+        "sourceTriangles": 740,
+        "visibleReplacementTriangles": 740,
+        "rigidBone": "LeftForeArm",
+        "maximumWeightError": 0,
+        "closedMaxVertexError": 4.880632206713545e-8,
+        "texture": "original PBR material borrowed; source UVs copied unchanged",
+        "addedConsoleTriangles": 418,
+        "addedConsoleDrawMeshes": 4,
+        "addedMaterials": 4,
+        "housingPatch": {
+          "node": "model_part7",
+          "removedCoveredArmourTriangles": 276,
+          "skinTrianglesRemoved": 0,
+          "retainedTriangles": 1656,
+          "cacheModified": false,
+          "sourceVerticesModified": 0
+        },
+        "hingeName": "city-left-console-hinge",
+        "bladeExtractionActivated": false,
+        "interpretation": "original plate retained; hinge and electronics modelled locally, not a certified film mechanism"
+      },
+      "body": "imported",
+      "mask": "attached",
+      "render": {
+        "frame": 3,
+        "calls": 33,
+        "triangles": 310931,
+        "points": 0,
+        "lines": 3
+      }
+    }
+  ],
+  "errors": [],
+  "original": {
+    "body": "imported",
+    "mask": "attached",
+    "plateVisible": true,
+    "housingTriangles": 1932
+  },
+  "scope": "Actual runtime Player, corrected City Hunter body and separate biomask, original PBR textures; controlled isolated wrist close-up. Not a human playthrough or film-fidelity certification."
+}

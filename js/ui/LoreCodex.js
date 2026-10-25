@@ -96,8 +96,9 @@ export class LoreCodexManager {
 
     document.querySelectorAll('.codex-tab-btn').forEach(btn => {
       btn.addEventListener('click', () => {
-        document.querySelectorAll('.codex-tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.codex-tab-btn').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed', 'false'); });
         btn.classList.add('active');
+        btn.setAttribute('aria-pressed', 'true');
         this.activeTab = btn.dataset.tab;
         this.renderTabContent();
       });
@@ -106,11 +107,15 @@ export class LoreCodexManager {
 
   open() {
     this.renderTabContent();
-    if (this.modal) this.modal.classList.remove('hidden');
+    if (this.modal) {
+      if (window.game?.ui) window.game.ui.showScreen(this.modal);
+      else this.modal.classList.remove('hidden');
+    }
   }
 
   close() {
-    if (this.modal) this.modal.classList.add('hidden');
+    if (window.game?.ui) window.game.ui.showScreen(window.game.ui.mainMenu);
+    else if (this.modal) this.modal.classList.add('hidden');
   }
 
   renderTabContent() {

@@ -1,6 +1,9 @@
-/* Colonial Marines USCM Faction Engine (3-Way Battle Warfare) */
+/* Colonial Marines USCM support against the hive. */
 
 import * as THREE from 'three';
+import { createMarineModel, addSentryMechanicalDetails } from '../graphics/SupportModels.js';
+import { disposeObject } from '../engine/SceneResources.js';
+import { selectHostileTarget, requestHostileAttack, syncHostileWarning, releaseHostileAttack } from '../engine/HostilePressure.js';
 
 export class ColonialMarinesManager {
   constructor(scene, audioEngine) {
@@ -8,6 +11,7 @@ export class ColonialMarinesManager {
     this.audioEngine = audioEngine;
     this.marines = [];
     this.sentryGun = null;
+    this.hostileToPlayers = false; // USCM support fights the hive, then holds cover.
   }
 
   spawnSquad(playerPos, count = 4) {
@@ -20,9 +24,9 @@ export class ColonialMarinesManager {
 
       const angle = (i / count) * Math.PI * 2;
       marineMesh.position.set(
-        playerPos.x + Math.cos(angle) * 15,
+        playerPos.x + Math.cos(angle) * 24,
         0,
-        playerPos.z + Math.sin(angle) * 15
+        playerPos.z + Math.sin(angle) * 24
       );
 
       this.scene.add(marineMesh);
@@ -32,148 +36,76 @@ export class ColonialMarinesManager {
         hp: 150,
         maxHp: 150,
         damage: isSmartgunner ? 20 : 35,
-        speed: 8
+        speed: 8,
+        shootCooldown: 1.4 + i * 0.3,
+        grenadeCooldown: 7 + i * 0.6
       });
     }
   }
 
   createMarineMesh(isSmartgunner) {
-    const group = new THREE.Group();
-    const armorMat = new THREE.MeshStandardMaterial({ color: 0x3d4a36, roughness: 0.6, metalness: 0.3 }); // USCM Camo Olive
-    const skinMat = new THREE.MeshStandardMaterial({ color: 0xd4a373, roughness: 0.8 });
-
-    const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.5, 1.8, 8), armorMat);
-    torso.position.y = 1.8;
-    group.add(torso);
-
-    const head = new THREE.Mesh(new THREE.SphereGeometry(0.45, 10, 10), skinMat);
-    head.position.set(0, 3.0, 0);
-    group.add(head);
-
-    // USCM Helmet
-    const helmet = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.55, 0.4, 8), armorMat);
-    helmet.position.set(0, 3.2, 0);
-    group.add(helmet);
-
-    // Weapon (M56 Smartgun or M240 Incinerator Flamethrower - Aliens 1986 Canon 1:1)
-    const gunMat = new THREE.MeshStandardMaterial({ color: 0x111111, metalness: 0.9, roughness: 0.1 });
-    const gun = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.3, 1.4), gunMat);
-    gun.position.set(0.6, 2.0, 0.6);
-    group.add(gun);
-
-    if (!isSmartgunner) {
-      // M240 Flamethrower Pressurized Fuel Canister (Under-barrel)
-      const canisterMat = new THREE.MeshStandardMaterial({ color: 0xb91c1c, roughness: 0.4 });
-      const canister = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.6, 8), canisterMat);
-      canister.rotation.x = Math.PI / 2;
-      canister.position.set(0.6, 1.8, 0.5);
-      group.add(canister);
-
-      // Pilot Flame Igniter Tip
-      const flameMat = new THREE.MeshBasicMaterial({ color: 0xff5500 });
-      const nozzle = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.25, 6), flameMat);
-      nozzle.rotation.x = Math.PI / 2;
-      nozzle.position.set(0.6, 2.0, 1.4);
-      group.add(nozzle);
-    } else {
-      // M56 Smartgun Steadicam Articulated Arm & Headset Sight
-      const steadyArmMat = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.8 });
-      const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.9, 6), steadyArmMat);
-      arm.position.set(0.35, 1.6, 0.2);
-      arm.rotation.z = Math.PI / 4;
-      group.add(arm);
-
-      // Eye-mounted Targeting Headset
-      const eyeMat = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-      const sight = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.08, 0.15), eyeMat);
-      sight.position.set(0.2, 3.1, 0.35);
-      group.add(sight);
-    }
-
-    return group;
+    return createMarineModel(isSmartgunner);
   }
 
   update(delta, player, horde) {
-    this.marines.forEach((m, idx) => {
-      // 3-Way Target Priority: Target nearest Xenomorph first, then Player!
-      let targetPos = null;
-      let nearestDist = Infinity;
-
-      // Check nearest alien
-      horde.aliens.forEach(a => {
-        const d = m.mesh.position.distanceTo(a.mesh.position);
-        if (d < nearestDist) {
-          nearestDist = d;
-          targetPos = a.mesh.position;
-        }
-      });
-
-      // If no aliens nearby, target player
-      if (!targetPos) {
-        targetPos = player.position;
-        nearestDist = m.mesh.position.distanceTo(player.position);
+    this.marines.forEach(m => {
+      if (m.hp <= 0) { releaseHostileAttack(this, m); return; }
+      const targetPlayer = selectHostileTarget(this, m.mesh.position, player);
+      let targetPos = null, nearestDist = Infinity;
+      for (const alien of horde.aliens) {
+        if (alien.hp <= 0) continue;
+        const distance = m.mesh.position.distanceTo(alien.mesh.position);
+        if (distance < nearestDist) { nearestDist = distance; targetPos = alien.mesh.position; }
       }
-
-      if (targetPos) {
-        const dir = targetPos.clone().sub(m.mesh.position);
-        dir.y = 0;
-        if (dir.length() > 6) {
-          dir.normalize();
-          m.mesh.position.addScaledVector(dir, m.speed * delta);
-          m.mesh.rotation.y = Math.atan2(dir.x, dir.z);
-        } else {
-          // Fire M56 Smartgun or M240 Incinerator Flamethrower!
-          if (m.type === 'flametrooper') {
-            if (Math.random() < 0.14) {
-              if (this.audioEngine.playFlamethrowerBurn) {
-                this.audioEngine.playFlamethrowerBurn();
-              } else {
-                this.audioEngine.playAcidSizzle();
-              }
-              if (targetPos === player.position) {
-                player.takeDamage(m.damage * 0.15);
-              } else {
-                // Persistent burn AOE covering xenos
-                horde.aliens.forEach(a => {
-                  if (a.mesh.position.distanceTo(targetPos) <= 4.0) {
-                    a.hp -= m.damage * 1.2;
-                  }
-                });
-              }
-            }
-          } else {
-            // M56 Smartgun tracking fire
-            if (Math.random() < 0.09) {
-              this.audioEngine.playPulseRifleBurst ? this.audioEngine.playPulseRifleBurst() : this.audioEngine.playPlasmaShot();
-              if (targetPos === player.position) {
-                player.takeDamage(m.damage * 0.1);
-              } else {
-                // Deal kinetic damage to the targeted Xenomorph
-                horde.aliens.forEach(a => {
-                  if (a.mesh.position.distanceTo(targetPos) <= 2.5) {
-                    a.hp -= m.damage;
-                  }
-                });
-              }
-            }
-          }
-
-          // USCM M40 25mm Grenade Launcher Secondary Fire
-          if (!m.grenadeCooldown) m.grenadeCooldown = 5.0;
-          m.grenadeCooldown -= delta;
-          if (m.grenadeCooldown <= 0) {
-            m.grenadeCooldown = 6.0 + Math.random() * 3.0;
+      const targetsPlayer = !targetPos;
+      if (targetsPlayer) {
+        if (!this.hostileToPlayers) { releaseHostileAttack(this, m); m.pressureAction = null; return; }
+        if (!targetPlayer || targetPlayer.hp <= 0) { releaseHostileAttack(this, m); return; }
+        targetPos = targetPlayer.position;
+      } else if (m.pressureAction) {
+        releaseHostileAttack(this, m); m.pressureAction = null;
+      }
+      m.shootCooldown = Math.max(0, (m.shootCooldown ?? 1.4) - delta);
+      m.grenadeCooldown = Math.max(0, (m.grenadeCooldown ?? 7) - delta);
+      const dir = targetPos.clone().sub(m.mesh.position); dir.y = 0;
+      const distance = dir.length();
+      m.mesh.rotation.y = Math.atan2(dir.x, dir.z);
+      const stopDistance = targetsPlayer ? 10 : 6;
+      if (distance > stopDistance) {
+        m.mesh.position.addScaledVector(dir.normalize(), Math.min(m.speed * delta, distance - stopDistance));
+      }
+      if (distance > (targetsPlayer ? 18 : 9)) {
+        if (m.pressureAction) { releaseHostileAttack(this, m); m.pressureAction = null; }
+        return;
+      }
+      if (!m.pressureAction) {
+        if (m.grenadeCooldown <= 0) m.pressureAction = 'grenade';
+        else if (m.shootCooldown <= 0) m.pressureAction = 'shot';
+      }
+      if (m.pressureAction) {
+        const grenade = m.pressureAction === 'grenade';
+        const ready = !targetsPlayer || requestHostileAttack(this, m, targetPlayer, delta, {
+          kind: 'ranged', windup: grenade ? 1.15 : 0.8, recovery: grenade ? 2.5 : 1.5, duration: 0.3
+        });
+        if (ready) {
+          if (grenade) {
+            m.grenadeCooldown = 8.5;
             this.audioEngine.playM40GrenadeBlast();
-
-            // Explosive AOE at target position
-            const grenadeAOE = { origin: targetPos, radius: 6.5, damage: 160 };
-            horde.checkMeleeHits(grenadeAOE);
-            if (targetPos === player.position) {
-              player.takeDamage(45);
+            horde.checkMeleeHits({ origin: targetPos, radius: 6.5, damage: 160 });
+            if (targetsPlayer) targetPlayer.takeDamage(30);
+          } else {
+            m.shootCooldown = m.type === 'flametrooper' ? 1.65 : 1.45;
+            if (m.type === 'flametrooper') (this.audioEngine.playFlamethrowerBurn ?? this.audioEngine.playAcidSizzle)?.call(this.audioEngine);
+            else (this.audioEngine.playPulseRifleBurst ?? this.audioEngine.playPlasmaShot)?.call(this.audioEngine);
+            if (targetsPlayer) targetPlayer.takeDamage(m.type === 'flametrooper' ? 12 : 9);
+            else for (const alien of horde.aliens) {
+              if (alien.mesh.position.distanceTo(targetPos) <= (m.type === 'flametrooper' ? 4 : 2.5)) alien.hp -= m.type === 'flametrooper' ? m.damage * 1.2 : m.damage;
             }
           }
+          m.pressureAction = null;
         }
       }
+      syncHostileWarning(this, m);
     });
 
     // Update USCM UA 571-C Sentry Gun Autonomous Target Scanning & Firing
@@ -209,7 +141,7 @@ export class ColonialMarinesManager {
 
   spawnSentryGun(pos) {
     if (this.sentryGun) {
-      this.scene.remove(this.sentryGun.mesh);
+      disposeObject(this.sentryGun.mesh);
     }
     const mesh = this.createSentryGunMesh();
     mesh.position.copy(pos);
@@ -262,14 +194,18 @@ export class ColonialMarinesManager {
     drum.position.set(0, 1.2, -0.4);
     group.add(drum);
 
+    const details = new THREE.Group();
+    details.position.y = 1.5;
+    addSentryMechanicalDetails(details);
+    group.add(details);
     return group;
   }
 
   clearSquad() {
-    this.marines.forEach(m => this.scene.remove(m.mesh));
+    this.marines.forEach(m => { releaseHostileAttack(this, m); disposeObject(m.mesh); });
     this.marines = [];
     if (this.sentryGun) {
-      this.scene.remove(this.sentryGun.mesh);
+      disposeObject(this.sentryGun.mesh);
       this.sentryGun = null;
     }
   }

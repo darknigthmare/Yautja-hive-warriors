@@ -1,0 +1,411 @@
+{
+  "schemaVersion": 2,
+  "updated_at": "2026-10-22T20:42:10.010077+00:00",
+  "status": "all_three_verified_in_game",
+  "release_scope": "all_three",
+  "game_integration_enabled": true,
+  "authorization": {
+    "user_instruction": "fait ce qui faut et ensuite genere les modeles",
+    "accepted_estimate_credits": 60,
+    "scope": "Two reference-guided bodies with 4K PBR textures; Jungle Hunter unmasked, Big Chap 1979. Separate biomask, rigging, paid reruns and animations excluded.",
+    "recorded_at": "2026-10-20T16:24:55.368981+02:00"
+  },
+  "continuation_authorization": {
+    "user_instruction": "detourage classique et ensuite continue (pour le yautja fait le modele du masque du jungle hunter avec meshy via reference en fidelité 1:1 et continue a fond le reste",
+    "date": "2026-10-22",
+    "classical_image_editing_authorized": true,
+    "big_chap_remaining_estimate": 30,
+    "new_biomask_estimate": 30,
+    "pricing_source": "CLI make --dry-run and official pricing checked 2026-10-22",
+    "balance_before_continuation": 2210
+  },
+  "rigging_authorization": {
+    "date": "2026-10-22",
+    "accepted_estimate_credits": 10,
+    "user_answer": "Oui, articuler les deux corps pour 10 crédits",
+    "scope": "Two body rigging tasks, including bundled walking/running; no paid reruns or custom animations"
+  },
+  "preserved_pose_retry_authorization": {
+    "user_response": "Oui, nouvel essai pour 30 crédits",
+    "credits": 30,
+    "task_id": "01a16539-7fa8-7571-9421-468148325510"
+  },
+  "actual_consumed_credits": 130,
+  "actual_cost_scope": "Six reference/rigging tasks, including the rejected first Big Chap. Includes 30 Hunter credits on October 20 and 100 credits on October 22. Historical text-only attempts are separate.",
+  "continuation_consumed_credits": 100,
+  "historical_preview_credits": 40,
+  "historical_generation_record": "docs/meshy/generation-plan.json",
+  "balance_checkpoints": [
+    {
+      "date": "2026-10-22",
+      "stage": "before_continuation",
+      "credits": 2210
+    },
+    {
+      "date": "2026-10-22",
+      "stage": "after_all_six_tasks_terminal",
+      "credits": 2110
+    }
+  ],
+  "all_accepted_tasks_terminal": true,
+  "rigging_submitted": true,
+  "mask_submitted": true,
+  "fidelity_1_to_1_verified": false,
+  "models": [
+    {
+      "id": "jungle_hunter",
+      "inputs": [
+        {
+          "path": "/workspace/Yautja-hive-warriors/meshy_output/reference-guided-20261020/inputs/hunter-front.png",
+          "sha256": "f13c46a8154f96e3a88d5ddf8beeee04f121c0a81a77d7930cde977e707ad3fe",
+          "method": "image_gen isolation edit, AI-reconstructed pixels; not a lossless crop"
+        },
+        {
+          "path": "/workspace/Yautja-hive-warriors/meshy_output/reference-guided-20261020/inputs/hunter-side.png",
+          "sha256": "af7f931fc9b5df5e05997017d6543088b5dd5eaadecbf795c095ae9adc5a5f7c",
+          "method": "image_gen isolation edit, AI-reconstructed pixels; not a lossless crop"
+        }
+      ],
+      "input_review": {
+        "passed": true,
+        "main_view": "hunter-front.png",
+        "findings": [
+          "No mask, pedestal or lettering",
+          "Compatible character, equipment and pose across two oblique views",
+          "AI interpretation; fine details not metrically locked; no full back view",
+          "No measured 1:1 likeness established"
+        ]
+      },
+      "task_id": "01a159b4-8004-75bd-b39d-cf5184ccf13f",
+      "resource": "multi-image-to-3d",
+      "project_dir": "/workspace/Yautja-hive-warriors/meshy_output/reference-guided-20261020/20261020_142616_jungle-hunter-unmasked-referen_01a159b4",
+      "progress": 100,
+      "consumed_credits": 30,
+      "task_snapshot": "/workspace/Yautja-hive-warriors/meshy_output/reference-guided-20261020/20261020_142616_jungle-hunter-unmasked-referen_01a159b4/task_01a159b4-8004-75bd-b39d-cf5184ccf13f.json",
+      "preview_inspected": true,
+      "visual_review": {
+        "model_project": "20261020_142616_jungle-hunter-unmasked-referen_01a159b4",
+        "source_relative_path": "delivered/model.glb",
+        "captures_opened_and_examined": [
+          "front.png",
+          "side.png",
+          "back.png"
+        ],
+        "reference_inputs_examined": [
+          "inputs/hunter-front.png",
+          "inputs/hunter-side.png"
+        ],
+        "references_are_generated_images": true,
+        "canonical_back_reference_available": false,
+        "helmet_absent_visually_verified": true,
+        "source_front_axis_visually_verified": "+z",
+        "closer_to_reference_inputs_than_initial_text_only_attempt": true,
+        "exact_one_to_one_fidelity_validated": false,
+        "rigging_validated": false,
+        "in_game_verified": false,
+        "shipping_manifest_changed": false,
+        "report": "report.json",
+        "review": "review.md",
+        "remaining_findings": [
+          "Simplified cranial, mandible and facial forms compared with inputs.",
+          "Curved compact fingers need close inspection before rigging.",
+          "Wrist blades do not clearly reproduce the two thin parallel reference blades.",
+          "Irregular or rounded small geometry details remain.",
+          "Back has no matching supplied canonical reference."
+        ],
+        "evidence_scope": "Static generated source review; final assembled game checks are recorded under integration/validation."
+      },
+      "validation": {
+        "visually_inspected": true,
+        "in_game_verified": true,
+        "rig_verified": true,
+        "fidelity_1_to_1_verified": false,
+        "evidence": "docs/qa/reference-models/game-integration-check.json"
+      },
+      "status": "SUCCEEDED",
+      "integration_enabled": true,
+      "integration": {
+        "in_game_verified": true,
+        "visually_inspected": true,
+        "rig_verified": true,
+        "fidelity_1_to_1_verified": false
+      }
+    },
+    {
+      "id": "big_chap_1979",
+      "resource": "multi-image-to-3d",
+      "inputs": [
+        {
+          "path": "/workspace/Yautja-hive-warriors/meshy_output/reference-guided-20261020/inputs/alien-front.png",
+          "sha256": "eecf9ab09cd333843ed1171baacb7c087bb8c478cfd14f000e9b887b0b127695",
+          "method": "classical alpha contour, original resolution/RGB preserved, visible legs and feet rechecked"
+        },
+        {
+          "path": "/workspace/Yautja-hive-warriors/meshy_output/reference-guided-20261020/inputs/alien-rear.png",
+          "sha256": "ad28c84c5e9af1e7d2a44fe6c786fff24740d221e64c1ce82805df46c70fb7b5",
+          "method": "classical alpha contour, original resolution/RGB preserved, visible legs and feet rechecked"
+        }
+      ],
+      "input_review": {
+        "passed": true,
+        "user_leg_correction_addressed": true,
+        "no_obvious_limb_amputation": true,
+        "limitations": [
+          "Small contact shadows retained to preserve foot anatomy",
+          "No hidden geometry reconstructed",
+          "No measured1:1 fidelity established"
+        ]
+      },
+      "task_id": "01a16527-c3e4-77ab-a0fa-f6feb1849d8b",
+      "project_dir": "/workspace/Yautja-hive-warriors/meshy_output/reference-guided-20261020/20261022_194803_big-chap-1979-reference_01a16527",
+      "task_snapshot": "/workspace/Yautja-hive-warriors/meshy_output/reference-guided-20261020/20261022_194803_big-chap-1979-reference_01a16527/task_01a16527-c3e4-77ab-a0fa-f6feb1849d8b.json",
+      "progress": 100,
+      "consumed_credits": 30,
+      "visual_review": {
+        "visually_inspected": true,
+        "views": [
+          "front",
+          "side",
+          "back"
+        ],
+        "legs_and_feet_complete": true,
+        "tail_and_dorsal_tubes_present": true,
+        "fidelity_1_to_1_verified": false,
+        "major_shape_issue": "Cranium too upright and insufficiently elongated horizontally; mouth unclear",
+        "rigging_decision": "held_pending_user_new_variant_or_acceptance_of_approximation",
+        "captures": "/workspace/qa/reference-generation/alien-captures",
+        "evidence_scope": "Static generated source review; final assembled game checks are recorded under integration/validation."
+      },
+      "release_status": "held",
+      "preview_inspected": true,
+      "status": "SUCCEEDED",
+      "integration_enabled": false,
+      "rejection_reason": "Complete legs, but generated cranium too vertical; replaced by the preserved-pose variant."
+    },
+    {
+      "id": "hunter_rig",
+      "resource": "rigging",
+      "project_dir": "/workspace/Yautja-hive-warriors/meshy_output/reference-guided-20261020/20261020_142616_jungle-hunter-unmasked-referen_01a159b4",
+      "stage": "rigging",
+      "source_task_id": "01a159b4-8004-75bd-b39d-cf5184ccf13f",
+      "source_triangles": 206591,
+      "task_id": "01a1651a-500c-757f-b9d6-8339ad63b85a",
+      "task_snapshot": "/workspace/Yautja-hive-warriors/meshy_output/reference-guided-20261020/20261020_142616_jungle-hunter-unmasked-referen_01a159b4/task_01a1651a-500c-757f-b9d6-8339ad63b85a.json",
+      "progress": 100,
+      "consumed_credits": 5,
+      "validation": {
+        "visually_inspected": true,
+        "in_game_verified": true,
+        "rig_verified": true,
+        "fidelity_1_to_1_verified": false,
+        "evidence": "docs/qa/reference-models/game-integration-check.json"
+      },
+      "status": "SUCCEEDED",
+      "integration_enabled": true,
+      "integration": {
+        "in_game_verified": true,
+        "visually_inspected": true,
+        "rig_verified": true,
+        "fidelity_1_to_1_verified": false
+      }
+    },
+    {
+      "id": "jungle_hunter_biomask",
+      "resource": "multi-image-to-3d",
+      "scope": "Separate rigid Jungle Hunter biomask shell, original photographed eye surfaces retained",
+      "inputs": [
+        {
+          "path": "/workspace/Yautja-hive-warriors/meshy_output/reference-guided-20261020/inputs/mask-front.png",
+          "sha256": "22302a84cd1790e1723e8d0f000ba6898f49284da69c301da1d3e93f18c98bd2",
+          "method": "classical outer contour isolation, original eye RGB preserved"
+        },
+        {
+          "path": "/workspace/Yautja-hive-warriors/meshy_output/reference-guided-20261020/inputs/mask-side.png",
+          "sha256": "82ff883651492db502bd13e8dce2ab13b1356c419652e5484c3e3a0fb1820b71",
+          "method": "classical outer contour isolation, original eye RGB preserved"
+        }
+      ],
+      "source_selection": "/workspace/qa/reference-research/hunter/current/mask-selection.json",
+      "task_id": "01a1651d-69e2-70dd-acdd-433cb66a0492",
+      "project_dir": "/workspace/Yautja-hive-warriors/meshy_output/reference-guided-20261020/20261022_193636_jungle-hunter-biomask-referenc_01a1651d",
+      "task_snapshot": "/workspace/Yautja-hive-warriors/meshy_output/reference-guided-20261020/20261022_193636_jungle-hunter-biomask-referenc_01a1651d/task_01a1651d-69e2-70dd-acdd-433cb66a0492.json",
+      "progress": 100,
+      "consumed_credits": 30,
+      "validation": {
+        "visually_inspected": true,
+        "in_game_verified": true,
+        "rig_verified": false,
+        "fidelity_1_to_1_verified": false,
+        "evidence": "docs/qa/reference-models/game-integration-check.json"
+      },
+      "status": "SUCCEEDED",
+      "integration_enabled": true,
+      "integration": {
+        "in_game_verified": true,
+        "visually_inspected": true,
+        "rig_verified": false,
+        "fidelity_1_to_1_verified": false
+      }
+    },
+    {
+      "id": "big_chap_preserved_pose",
+      "resource": "image-to-3d",
+      "variant_of": "big_chap_1979",
+      "task_id": "01a16539-7fa8-7571-9421-468148325510",
+      "project_dir": "/workspace/Yautja-hive-warriors/meshy_output/reference-guided-20261020/20261022_200731_big-chap-preserved-pose-refere_01a16539",
+      "task_snapshot": "/workspace/Yautja-hive-warriors/meshy_output/reference-guided-20261020/20261022_200731_big-chap-preserved-pose-refere_01a16539/task_01a16539-7fa8-7571-9421-468148325510.json",
+      "progress": 100,
+      "consumed_credits": 30,
+      "preview_inspected": true,
+      "visual_review": {
+        "visually_inspected": true,
+        "views": [
+          "front",
+          "side",
+          "back"
+        ],
+        "head_profile_improved": true,
+        "legs_and_feet_complete": true,
+        "tail_and_tubes_present": true,
+        "fidelity_1_to_1_verified": false,
+        "limitations": [
+          "Shape/material details still differ from cinematic costume",
+          "Feet/toes and lower jaw simplified",
+          "Rig/animation still to verify"
+        ],
+        "evidence_scope": "Static generated source review; final assembled game checks are recorded under integration/validation."
+      },
+      "source_triangles": 205259,
+      "asset_key": "xenomorph_warrior",
+      "status": "SUCCEEDED",
+      "integration_enabled": true,
+      "integration": {
+        "rig_verified": true,
+        "in_game_verified": true,
+        "visually_inspected": true,
+        "exact_one_to_one_fidelity_validated": false,
+        "tail_correction": "Local calibrated tail and lower-leg skin correction; no additional generation or credit consumption."
+      }
+    },
+    {
+      "id": "alien_rig",
+      "resource": "rigging",
+      "project_dir": "/workspace/Yautja-hive-warriors/meshy_output/reference-guided-20261020/20261022_200731_big-chap-preserved-pose-refere_01a16539",
+      "stage": "rigging",
+      "source_task_id": "01a16539-7fa8-7571-9421-468148325510",
+      "source_model": "big_chap_preserved_pose",
+      "source_triangles": 205259,
+      "asset_key": "xenomorph_warrior",
+      "task_id": "01a1653e-d6a2-71c3-ae3f-d71af97d1797",
+      "task_snapshot": "/workspace/Yautja-hive-warriors/meshy_output/reference-guided-20261020/20261022_200731_big-chap-preserved-pose-refere_01a16539/task_01a1653e-d6a2-71c3-ae3f-d71af97d1797.json",
+      "progress": 100,
+      "consumed_credits": 5,
+      "status": "SUCCEEDED",
+      "integration_enabled": true,
+      "integration": {
+        "in_game_verified": true,
+        "visually_inspected": true,
+        "rig_verified": true,
+        "fidelity_1_to_1_verified": false
+      },
+      "validation": {
+        "in_game_verified": true,
+        "rig_verified": true,
+        "tail_and_lower_leg_weights_locally_corrected": true,
+        "note": "Provider rig has 24 humanoid joints and no tail chain. Tail follows Hips after the measured skin-weight correction; both lower legs and feet follow LeftLeg/RightLeg to bypass the misplaced ankle pivots. No independent tail or ankle animation."
+      }
+    }
+  ],
+  "shipping_assets": [
+    {
+      "url": "/models/big-chap-rigged.glb",
+      "bytes": 56951716,
+      "sha256": "202b5d7d635cdb14fcf8af430faba3207d5668f43f85d9d9dca1f81cc0d8a97e"
+    },
+    {
+      "url": "/models/big-chap-run.glb",
+      "bytes": 79336,
+      "sha256": "7944bc681cef08d822905b099a79963710517dd14898e0c526dcced2cf7b827d"
+    },
+    {
+      "url": "/models/big-chap-walk.glb",
+      "bytes": 89968,
+      "sha256": "ae87707f9fa53e246d629c44c454ec6b58b98e0396330e9561476f43bc0e43da"
+    },
+    {
+      "url": "/models/jungle-hunter-biomask.glb",
+      "bytes": 34211520,
+      "sha256": "a8f2cae605da72d463ace4b5fe4b9363a33c0932298158f65ca85bbe98fd1a77"
+    },
+    {
+      "url": "/models/jungle-hunter-rigged.glb",
+      "bytes": 53768472,
+      "sha256": "179fe7081ad39f8cb198086d984380dd119e625c8853fa2f11bd69e08ab0be5d"
+    },
+    {
+      "url": "/models/jungle-hunter-run.glb",
+      "bytes": 79764,
+      "sha256": "cc1053be4ea26801cf9d2e5ad148ef663373714634a1068aa2b91c14d59c49be"
+    },
+    {
+      "url": "/models/jungle-hunter-walk.glb",
+      "bytes": 90416,
+      "sha256": "ffd0a1b2684f3bef06d29cfc8da8fcb003190aaec121e69e673d744fe7310424"
+    }
+  ],
+  "input_preparation": {
+    "hunter": "Two coherent AI-isolated views; reconstructed pixels, not a lossless crop. No mask on body.",
+    "alien": "Classical isolation from licensed statue photos, original RGB retained. Legs and feet restored before upload. V2 uses only the main photo, image_enhancement=false and no automatic pose mode.",
+    "biomask": "Classical isolation, original eye surfaces retained. Meshy still generated openings; calibrated opaque grilles were assembled locally afterward."
+  },
+  "runtime_assemblies": {
+    "biomask": "Raw Meshy shell + calibrated opaque local eye filters. Standalone assembled GLB supplied separately.",
+    "alien": "Raw rigged Meshy GLB + calibrated local tail and lower-leg skin-weight repair. Standalone corrected GLB supplied separately."
+  },
+  "validation": {
+    "actual_game_report": "docs/qa/reference-models/game-integration-check.json",
+    "rigged_bodies": 2,
+    "rigid_biomasks": 1,
+    "human_testers": 0,
+    "fidelity_1_to_1_verified": false,
+    "rig_correction_proof": "docs/qa/reference-models/alien-rig-correction-proof.json",
+    "live_deployment": "docs/qa/reference-models/live-deployment.json"
+  },
+  "remaining_limits": [
+    "Exact 1:1 similarity is not established; references include collectible statue photos, not a scan of the original screen-used characters.",
+    "The Alien tail follows the pelvis as a rigid skin region; the provider rig has no tail bone chain.",
+    "Neither ankle has independent articulation after the local repair; the tail can still slightly penetrate the floor during the gait (up to 0.178 normalized game units in the measured run cycle).",
+    "Alien feet and jaw and some Hunter face/equipment details remain simplified.",
+    "Detailed imported Alien geometry is used for nearby actors; distant actors retain procedural LOD geometry.",
+    "The Hunter source includes a broad baked wrist blade; calibrated local weapon accessories remain procedural.",
+    "Other NPCs and creature variants retain procedural models."
+  ],
+  "standalone_models": [
+    {
+      "file": "big-chap-rigged.glb",
+      "sha256": "fdaa719d96c5ec8f9c19c97d5782d806641bff4fdc956da473c86c8cd4ef5ab4",
+      "bytes": 57544688,
+      "local_corrections_baked": true,
+      "animations_embedded": [
+        "walk",
+        "run"
+      ],
+      "requires_runtime_skin_corrections": false
+    },
+    {
+      "file": "jungle-hunter-biomask-assembled.glb",
+      "sha256": "7764239e11135a3fc710af83fa070d6d68acce8ab4a7a6d5e438dc3e4c1c9409",
+      "bytes": 35562888,
+      "local_eye_filters_baked": true,
+      "requires_runtime_eye_filters": false
+    }
+  ],
+  "publication": {
+    "status": "ready",
+    "url": "https://yautja-hive-warriors.vercel.app",
+    "deployment_id": "dpl_HWhJms94Eyimg6J9ujtac9MvPSwZ",
+    "http_status": 200,
+    "browser_errors": 0,
+    "verified_model_files": 7
+  }
+}

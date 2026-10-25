@@ -1,0 +1,180 @@
+{
+  "status": "passed_locally_deployment_blocked_quota",
+  "date": "2026-10-24",
+  "updated_at": "2026-10-24T02:40:57.015732+00:00",
+  "automated": true,
+  "human_testers": 0,
+  "fidelity_1_to_1_verified": false,
+  "new_meshy_credits": 0,
+  "build": {
+    "index_sha256": "9fdd19169a75d324dbde0e77bddbac90167e81ca19bfb06880084246a4bad6d6",
+    "success": true,
+    "static_files": 29,
+    "glb_files": 12,
+    "js_css_bundles": 5,
+    "log": "open-work/build-final.txt",
+    "runtime_sources_newer_than_build": []
+  },
+  "independent_reviews": {
+    "reviewers": 5,
+    "kind": "AI agents and automated checks; not human playtesters",
+    "findings_corrected": [
+      "APC coarse navigation outline must delegate exact physical collision",
+      "consumable facehuggers must not exhaust finite elimination quotas",
+      "FPS camera interpolation must not overshoot at low frame rates"
+    ]
+  },
+  "cpu": {
+    "passed": 336,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "duration_ms": 176676.879377,
+    "command": "node --test --test-concurrency=1 tests/*.test.js tests/browser-cleanup.test.mjs",
+    "log": "open-work/cpu-final.txt"
+  },
+  "browser": {
+    "initial_full_suite": {
+      "index_sha256": "8c1e168708ac15a60124daf7d7e020182400a410a7cd9519c4e05c1591f99f78",
+      "cases": 15,
+      "passed": 14,
+      "failed": 1,
+      "skipped": 0,
+      "duration_ms": 484753.454826,
+      "failure": "Partial relay fixture assumed arrival after3.1s and at most4 credited deaths per blast. Grace can delay arrival and chestbursters can add deaths. Original reporter did not expose the exact partial count; result retained. Revised fixture waits for actual arrival and isolates one real enemy.",
+      "log": "open-work/browser-v1.txt"
+    },
+    "final_targeted": {
+      "status": "passed",
+      "index_sha256": "9fdd19169a75d324dbde0e77bddbac90167e81ca19bfb06880084246a4bad6d6",
+      "cases": 3,
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "coverage": [
+        "Relay real arrival,1/8 locked then8/8 opened",
+        "Campaign through5 real maps and final boss",
+        "Rendering presets, image export and independent co-op viewports"
+      ],
+      "log": "open-work/browser-final-targeted.txt"
+    },
+    "final_runtime": {
+      "status": "passed",
+      "index_sha256": "9fdd19169a75d324dbde0e77bddbac90167e81ca19bfb06880084246a4bad6d6",
+      "capture_count": 19,
+      "javascript_errors": [],
+      "failed_requests": [],
+      "external_requests": [],
+      "cleanup": {
+        "player": null,
+        "player2": null,
+        "enemies": 0,
+        "pods": 0,
+        "active": false,
+        "apc": null,
+        "apcActive": false,
+        "apcNavigationColliders": 0
+      },
+      "report": "open-work/runtime-final-report.json",
+      "captures": "open-work/README.md"
+    },
+    "distinct_regression_cases_resolved": 15,
+    "harness_adjustments": [
+      {
+        "attempt": 1,
+        "failure": "Derived City foot/laser values differed by3.85e-10 world units at delta0; phase and control quaternions unchanged. Derived-value tolerance1e-8; exact control-state assertions retained.",
+        "retained_report": "open-work/harness-attempt1-report.json"
+      },
+      {
+        "attempt": 2,
+        "failure": "Node strict assertion distinguished-0 from+0 on an airborne zero height offset. Numeric absolute-zero check added; no production change.",
+        "retained_report": "open-work/harness-attempt2-report.json"
+      }
+    ]
+  },
+  "features": {
+    "city_console": {
+      "original_plate_triangles": 740,
+      "private_covered_armour_triangles_opened": 276,
+      "skin_triangles_removed": 0,
+      "added_interior_triangles": 418,
+      "closed_original_pixel_difference": 0,
+      "proof": "city-hunter-console/render-report.json"
+    },
+    "big_chap": {
+      "tail_joints": 9,
+      "weighted_tail_vertices": 28590,
+      "exact_foot_region_vertices": 8138,
+      "convex_support_vertices": 515,
+      "max_visual_height_correction": 0.18,
+      "foot_ik": false,
+      "proof": "big-chap-articulation/"
+    },
+    "apc": {
+      "triangles_including_hidden_flash": 27578,
+      "draw_meshes": 14,
+      "turret_deployment_seconds": 0.95,
+      "physical_collision": "Actual vehicle resolver delegated through environment; navigation outline is not extra wall",
+      "proof": "apc-detail/validation.json"
+    },
+    "relay": {
+      "defense_targets": [
+        8,
+        10,
+        12
+      ],
+      "reinforcement_batch": 4,
+      "minimum_warning_seconds": 3,
+      "quota_recovery": "Only exhausted encounters with a living player get the missing countable opposition; no phantom kills"
+    },
+    "locomotion": {
+      "basis": "Resolved displacement and simulation time",
+      "fps_camera": "Exponential convergence without low-frame-rate overshoot"
+    }
+  },
+  "publication": {
+    "status": "blocked_by_vercel_daily_quota",
+    "attempted_index_sha256": "9fdd19169a75d324dbde0e77bddbac90167e81ca19bfb06880084246a4bad6d6",
+    "error_code": "api-deployments-free-per-day",
+    "provider_message": "Resource is limited - try again in 24 hours (more than 100)",
+    "final_deployment_created": false,
+    "promoted": false,
+    "canonical_url": "https://yautja-hive-warriors.vercel.app",
+    "canonical_previous_index_sha256": "d9839d93a06fd01e82c7efb49cefc46a4105a4406f65f451afdf7106f5e010db",
+    "unpromoted_intermediate_candidate": "dpl_F8txaubo9HpLutyincyoHS6JVA55",
+    "resume_instructions": "../../scripts/README-publication.md",
+    "resume_script": "../../scripts/resume-verified-publication.mjs",
+    "canonical_last_checked_at": "2026-10-24T02:42:35.136Z",
+    "canonical_last_http": 200,
+    "canonical_last_sha256": "d9839d93a06fd01e82c7efb49cefc46a4105a4406f65f451afdf7106f5e010db",
+    "canonical_still_previous_build": true,
+    "local_resume_preflight": "open-work/resume-local-check.json",
+    "delivery_evidence": "open-work/publication-blocker.json"
+  },
+  "limitations": [
+    "Film fidelity1:1 not established.",
+    "City Hunter full wristblades/right gauntlet and complete hair articulation remain unfinished.",
+    "Five other Yautja Meshy generations are outside the spent75-credit City Hunter authorization.",
+    "Foot height compensation is not ankle IK or horizontal anti-slide; tail floor constraint does not handle stairs or body collision.",
+    "APC full rear turret stowage, interior and rolling suspension remain simplified.",
+    "Automated software-GPU checks do not establish frame rate on player hardware."
+  ],
+  "source_files_sha256": {
+    "js/main.js": "f21cf9cb705957fa2052b076b6d7ffe39830475c209d8812038e08fa7d1751bb",
+    "js/entities/Player.js": "29b0766a79652420f285108d517286ce419fb13489814761148a89f653597e89",
+    "js/entities/Environment.js": "cabaef76c830df86bb5c7eb722aba0aa04b2631dccf1a2efceef0bbe2ff88b69",
+    "js/entities/DropPodEntrance.js": "7de681ce26d2e765aeab7c05c31b3eae71893ffa6c7fc33eb65cce6b050fff04",
+    "js/entities/XenomorphHorde.js": "28bbce951a3b0d0df789c3b66e19adeccb16dc498469cabedba22febba1ee2e1",
+    "js/entities/APCVehicle.js": "1a29a6567e70aeb152620670c2d756ef528b06f283007d6bda94e99aa6639692",
+    "js/engine/BattlefieldMission.js": "8985048e68590dea49275ccf8146ad7cbd66da5ef41e5f59b1f8ded7446df7ba",
+    "js/engine/BattlefieldProgression.js": "0947487f17102dea7ff3eab5c3346e62995c5170b5d61a256493c876ad28ecef",
+    "js/graphics/CityHunterMechanisms.js": "fa953bca72617e7341701ea39a33d0886f68c59c62652e92df4ea08cd74bad71",
+    "js/graphics/HunterLocomotion.js": "7de275a80125a8c595c4be33c543c725c8ada6c22e53c083980c96bae3a27931",
+    "js/graphics/ImportedCreature.js": "a68260d28f488dd96da8b7dfb9d96678e5bca472b16c49529083600657f66c9c",
+    "js/graphics/ImportedTailRig.js": "bb7ebb748b7835ef7753cd7a8895f94451e95a5935f1fad8b4f641fc3cc2ff7b",
+    "js/graphics/ImportedCreatureGrounding.js": "eb1c5ff50d6dc4801abb7379bd16c8680c84b9b60c0a0d1b2265edaf659dd7b3",
+    "js/graphics/APCModel.js": "b3ef4caac39519fdfe9b48453903b8bb8a5091040345a27745f1a0090f74680b",
+    "js/graphics/BattlefieldRelay.js": "4479cd03a2857d074b7005f580206194253773437c46358a058cfd94a63cde68",
+    "js/graphics/GeneratedAssetManifest.js": "f3a8102f3bd126c18f8bae0e9391025a636c2313f07076437f8e70ee630f4f6d"
+  }
+}

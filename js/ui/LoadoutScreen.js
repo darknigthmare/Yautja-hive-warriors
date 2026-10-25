@@ -11,6 +11,19 @@ export class LoadoutScreen {
     this.selectedGadgets = ['medicomp', 'bear_trap']; // Max 2 gadgets
 
     this.setupListeners();
+    this.syncSelection();
+  }
+
+  syncSelection() {
+    for (const [selector, selected] of [['.loadout-primary-btn', [this.selectedPrimary]], ['.loadout-secondary-btn', [this.selectedSecondary]], ['.loadout-gadget-btn', this.selectedGadgets]]) {
+      document.querySelectorAll(selector).forEach(btn => {
+        const active = selected.includes(btn.dataset.item);
+        btn.classList.toggle('selected', active);
+        btn.setAttribute('aria-pressed', String(active));
+      });
+    }
+    const feedback = document.getElementById('loadout-feedback');
+    if (feedback) feedback.textContent = `${this.selectedGadgets.length} gadget${this.selectedGadgets.length === 1 ? '' : 's'} sélectionné${this.selectedGadgets.length === 1 ? '' : 's'} sur 2`;
   }
 
   setupListeners() {
@@ -20,6 +33,7 @@ export class LoadoutScreen {
         document.querySelectorAll('.loadout-primary-btn').forEach(b => b.classList.remove('selected'));
         btn.classList.add('selected');
         this.selectedPrimary = btn.dataset.item;
+        this.syncSelection();
       });
     });
 
@@ -29,6 +43,7 @@ export class LoadoutScreen {
         document.querySelectorAll('.loadout-secondary-btn').forEach(b => b.classList.remove('selected'));
         btn.classList.add('selected');
         this.selectedSecondary = btn.dataset.item;
+        this.syncSelection();
       });
     });
 
@@ -43,8 +58,13 @@ export class LoadoutScreen {
           if (this.selectedGadgets.length < 2) {
             this.selectedGadgets.push(item);
             btn.classList.add('selected');
+          } else {
+            const feedback = document.getElementById('loadout-feedback');
+            if (feedback) feedback.textContent = 'Deux gadgets maximum. Retirez-en un avant d’en choisir un autre.';
+            return;
           }
         }
+        this.syncSelection();
       });
     });
 
@@ -55,7 +75,7 @@ export class LoadoutScreen {
           primary: this.selectedPrimary,
           secondary: this.selectedSecondary,
           plasma: this.selectedPlasma,
-          gadgets: this.selectedGadgets
+          gadgets: [...this.selectedGadgets]
         });
       });
     }

@@ -1,6 +1,8 @@
 /* Bad Blood Rogue Yautja Encounter System - Renegade Predator Ambush */
 
 import * as THREE from 'three';
+import { disposeObject } from '../engine/SceneResources.js';
+import { selectHostileTarget, requestHostileAttack, syncHostileWarning, releaseHostileAttack } from '../engine/HostilePressure.js';
 
 export class BadBloodManager {
   constructor(scene, audioEngine) {
@@ -12,7 +14,8 @@ export class BadBloodManager {
 
   spawnAmbush(playerPos) {
     if (this.badBlood) {
-      this.scene.remove(this.badBlood.mesh);
+      releaseHostileAttack(this, this.badBlood);
+      disposeObject(this.badBlood.mesh);
     }
 
     const mesh = this.createBadBloodMesh();
@@ -28,7 +31,8 @@ export class BadBloodManager {
       damage: 75,
       isCloaked: true,
       cloakTimer: 4.0,
-      attackCooldown: 0
+      attackCooldown: 1.5,
+      plasmaTimer: 3
     };
     this.isActive = true;
 
@@ -72,6 +76,8 @@ export class BadBloodManager {
     if (!this.isActive || !this.badBlood) return;
 
     const bb = this.badBlood;
+    player = selectHostileTarget(this, bb.mesh.position, player);
+    if (!player || player.hp <= 0) { releaseHostileAttack(this, bb); return; }
 
     // Cloaking flicker
     bb.cloakTimer -= delta;
@@ -79,7 +85,7 @@ export class BadBloodManager {
       bb.isCloaked = !bb.isCloaked;
       bb.cloakTimer = bb.isCloaked ? 3.5 : 5.0;
       bb.mesh.traverse(child => {
-        if (child.isMesh) {
+        if (child.isMesh && child.name !== 'hostile-attack-warning') {
           child.material.transparent = bb.isCloaked;
           child.material.opacity = bb.isCloaked ? 0.35 : 1.0;
         }
@@ -87,46 +93,52 @@ export class BadBloodManager {
       this.audioEngine.playYautjaClick();
     }
 
-    // Aggressive dash & strike
-    const dir = player.position.clone().sub(bb.mesh.position);
-    dir.y = 0;
-    const dist = dir.length();
-
-    // Plasma Caster Cannon shot at medium distance (6m - 18m)
-    if (!bb.plasmaTimer) bb.plasmaTimer = 3.0;
-    bb.plasmaTimer -= delta;
-    if (dist >= 6.0 && dist <= 18.0 && bb.plasmaTimer <= 0) {
-      bb.plasmaTimer = 4.2;
-      this.audioEngine.playPlasmaShot();
-      if (!player.isBlocking) {
-        player.takeDamage(55);
+    const dir = player.position.clone().sub(bb.mesh.position); dir.y = 0;
+    const distance = dir.length();
+    bb.attackCooldown = Math.max(0, (bb.attackCooldown ?? 1.5) - delta);
+    bb.plasmaTimer = Math.max(0, (bb.plasmaTimer ?? 3) - delta);
+    if (!bb.pressureAction) {
+      if (distance <= 3 && bb.attackCooldown <= 0) bb.pressureAction = 'blade';
+      else if (distance >= 6 && distance <= 18 && bb.plasmaTimer <= 0) bb.pressureAction = 'plasma';
+    }
+    const action = bb.pressureAction;
+    if (action && (distance > (action === 'blade' ? 3.5 : 20))) {
+      releaseHostileAttack(this, bb); bb.pressureAction = null;
+    } else if (action && requestHostileAttack(this, bb, player, delta, {
+      kind: action === 'blade' ? 'melee' : 'ranged', windup: action === 'blade' ? 0.9 : 1.1,
+      recovery: 1.7, duration: 0.4
+    })) {
+      if (action === 'plasma') {
+        bb.plasmaTimer = 5.2; this.audioEngine.playPlasmaShot();
+        if (!player.isBlocking) player.takeDamage(55); else player.audioEngine.playShieldBlock();
       } else {
-        player.audioEngine.playShieldBlock();
+        bb.attackCooldown = 1.8; this.audioEngine.playSlash();
+        if (distance <= 3.5) player.takeDamage(bb.damage);
       }
+      bb.pressureAction = null;
     }
-
-    if (dist > 2.2) {
-      dir.normalize();
-      bb.mesh.position.addScaledVector(dir, bb.speed * delta);
+    syncHostileWarning(this, bb, 1.65);
+    const preparing = this.combatDirector?.getAttackState(bb)?.phase === 'windup' || bb._localAttackPreparation;
+    if (distance > 2.7 && !preparing) {
+      bb.mesh.position.addScaledVector(dir.normalize(), Math.min(bb.speed * delta, distance - 2.7));
       bb.mesh.rotation.y = Math.atan2(dir.x, dir.z);
-    } else {
-      if (bb.attackCooldown <= 0) {
-        bb.attackCooldown = 0.8;
-        this.audioEngine.playSlash();
-        player.takeDamage(bb.damage);
-      }
-    }
-
-    if (bb.attackCooldown > 0) {
-      bb.attackCooldown -= delta;
     }
   }
 
+  clear() {
+    releaseHostileAttack(this, this.badBlood);
+    disposeObject(this.badBlood?.mesh);
+    this.badBlood = null;
+    this.isActive = false;
+  }
+
   takeDamage(amount) {
+    if (!Number.isFinite(amount) || amount <= 0) return false;
     if (!this.badBlood) return false;
     this.badBlood.hp -= amount;
     if (this.badBlood.hp <= 0) {
-      this.scene.remove(this.badBlood.mesh);
+      releaseHostileAttack(this, this.badBlood);
+      disposeObject(this.badBlood.mesh);
       this.badBlood = null;
       this.isActive = false;
       this.audioEngine.playYautjaRoar();

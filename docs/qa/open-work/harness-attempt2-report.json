@@ -1,0 +1,2297 @@
+{
+  "status": "failed",
+  "startedAt": "2026-10-24T02:34:58.081Z",
+  "url": "http://127.0.0.1:4198",
+  "scope": "all",
+  "automated": true,
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "conditions": "Production assets loaded through the real app. Character and creature animation are inspected in controlled paused presentation frames; this is not a human combat playthrough.",
+  "errors": [],
+  "failedRequests": [],
+  "externalRequests": [],
+  "characters": [
+    {
+      "character": "CITY HUNTER (1990)",
+      "visual": "imported",
+      "mask": "attached",
+      "runs": [
+        {
+          "fps": 30,
+          "position": [
+            18.99999999999999,
+            0,
+            4.2
+          ],
+          "state": {
+            "phase": 6.086835766330214,
+            "strength": 0.9999991684712809,
+            "speed": 18.999999999999986,
+            "cycleDistance": 6.4,
+            "moving": true,
+            "runBlend": 0.9996645373720963,
+            "travelledDistance": 18.99999999999999,
+            "stepCount": 5,
+            "visualOffsetY": 0,
+            "supportMinimumY": null,
+            "grounded": true,
+            "teleports": 0,
+            "controlQuaternions": [
+              [
+                0.022468411729057846,
+                0,
+                0,
+                0.999747553372537
+              ],
+              [
+                -0.022468411729057846,
+                0,
+                0,
+                0.999747553372537
+              ],
+              [
+                -0.04679603405877933,
+                0,
+                0,
+                0.9989044655002647
+              ],
+              [
+                0.04679603405877933,
+                0,
+                0,
+                0.9989044655002647
+              ]
+            ],
+            "grounding": {
+              "status": "applied",
+              "sourceSha256": "0e297a50400f885f06595f2fb59c85aed5118517a03c140f0f3aefa5288b564b",
+              "motionGain": 0.2,
+              "maxOffset": 0.15,
+              "restMinimumY": 1.0651243170655978e-15,
+              "regions": [
+                {
+                  "regionId": "model_part0",
+                  "supportVertices": 36,
+                  "referencedVertices": 9194,
+                  "restError": 2.4841240175987878e-15,
+                  "coverageError": 1.131807918442113e-15
+                },
+                {
+                  "regionId": "model_part4",
+                  "supportVertices": 36,
+                  "referencedVertices": 8860,
+                  "restError": 2.2898349882893854e-15,
+                  "coverageError": 1.0210439046088652e-15
+                }
+              ],
+              "offsetY": 0.017536883487789867,
+              "minimumYBeforeOffset": -0.017536883487789867,
+              "minimumYAfterOffset": 0,
+              "maxObservedAbsoluteOffset": 0.08188786859451981,
+              "refusals": 0,
+              "lastError": null,
+              "lastRejectedOffsetY": null
+            },
+            "visualGroundOffsetY": 0.017536883487789867,
+            "laserOffset": 0.017536883487789867
+          }
+        },
+        {
+          "fps": 60,
+          "position": [
+            18.99999999999999,
+            0,
+            4.2
+          ],
+          "state": {
+            "phase": 6.086835766330214,
+            "strength": 0.9999991684712809,
+            "speed": 18.999999999999986,
+            "cycleDistance": 6.4,
+            "moving": true,
+            "runBlend": 0.9996645373720964,
+            "travelledDistance": 18.99999999999999,
+            "stepCount": 5,
+            "visualOffsetY": 0,
+            "supportMinimumY": null,
+            "grounded": true,
+            "teleports": 0,
+            "controlQuaternions": [
+              [
+                0.022468411729057846,
+                0,
+                0,
+                0.999747553372537
+              ],
+              [
+                -0.022468411729057846,
+                0,
+                0,
+                0.999747553372537
+              ],
+              [
+                -0.04679603405877933,
+                0,
+                0,
+                0.9989044655002647
+              ],
+              [
+                0.04679603405877933,
+                0,
+                0,
+                0.9989044655002647
+              ]
+            ],
+            "grounding": {
+              "status": "applied",
+              "sourceSha256": "0e297a50400f885f06595f2fb59c85aed5118517a03c140f0f3aefa5288b564b",
+              "motionGain": 0.2,
+              "maxOffset": 0.15,
+              "restMinimumY": 1.0651243170655978e-15,
+              "regions": [
+                {
+                  "regionId": "model_part0",
+                  "supportVertices": 36,
+                  "referencedVertices": 9194,
+                  "restError": 2.4841240175987878e-15,
+                  "coverageError": 1.131807918442113e-15
+                },
+                {
+                  "regionId": "model_part4",
+                  "supportVertices": 36,
+                  "referencedVertices": 8860,
+                  "restError": 2.2898349882893854e-15,
+                  "coverageError": 1.0210439046088652e-15
+                }
+              ],
+              "offsetY": 0.01753688290887569,
+              "minimumYBeforeOffset": -0.01753688290887569,
+              "minimumYAfterOffset": 0,
+              "maxObservedAbsoluteOffset": 0.08188786859451981,
+              "refusals": 0,
+              "lastError": null,
+              "lastRejectedOffsetY": null
+            },
+            "visualGroundOffsetY": 0.01753688290887569,
+            "laserOffset": 0.01753688290887569
+          }
+        },
+        {
+          "fps": 120,
+          "position": [
+            19.00000000000002,
+            0,
+            4.2
+          ],
+          "state": {
+            "phase": 6.086835766330243,
+            "strength": 0.9999991684712809,
+            "speed": 19.0000000000002,
+            "cycleDistance": 6.4,
+            "moving": true,
+            "runBlend": 0.999664537372097,
+            "travelledDistance": 19.00000000000002,
+            "stepCount": 5,
+            "visualOffsetY": 0,
+            "supportMinimumY": null,
+            "grounded": true,
+            "teleports": 0,
+            "controlQuaternions": [
+              [
+                0.022468411729054647,
+                0,
+                0,
+                0.999747553372537
+              ],
+              [
+                -0.022468411729054647,
+                0,
+                0,
+                0.999747553372537
+              ],
+              [
+                -0.04679603405877267,
+                0,
+                0,
+                0.998904465500265
+              ],
+              [
+                0.04679603405877267,
+                0,
+                0,
+                0.998904465500265
+              ]
+            ],
+            "grounding": {
+              "status": "applied",
+              "sourceSha256": "0e297a50400f885f06595f2fb59c85aed5118517a03c140f0f3aefa5288b564b",
+              "motionGain": 0.2,
+              "maxOffset": 0.15,
+              "restMinimumY": 1.0651243170655978e-15,
+              "regions": [
+                {
+                  "regionId": "model_part0",
+                  "supportVertices": 36,
+                  "referencedVertices": 9194,
+                  "restError": 2.4841240175987878e-15,
+                  "coverageError": 1.131807918442113e-15
+                },
+                {
+                  "regionId": "model_part4",
+                  "supportVertices": 36,
+                  "referencedVertices": 8860,
+                  "restError": 2.2898349882893854e-15,
+                  "coverageError": 1.0210439046088652e-15
+                }
+              ],
+              "offsetY": 0.017536882557556675,
+              "minimumYBeforeOffset": -0.017536882557556675,
+              "minimumYAfterOffset": 0,
+              "maxObservedAbsoluteOffset": 0.08255163520373753,
+              "refusals": 0,
+              "lastError": null,
+              "lastRejectedOffsetY": null
+            },
+            "visualGroundOffsetY": 0.017536882557556675,
+            "laserOffset": 0.017536882557556675
+          }
+        }
+      ],
+      "zeroBefore": {
+        "phase": 6.086835766330243,
+        "strength": 0.9999991684712809,
+        "speed": 19.0000000000002,
+        "cycleDistance": 6.4,
+        "moving": true,
+        "runBlend": 0.999664537372097,
+        "travelledDistance": 19.00000000000002,
+        "stepCount": 5,
+        "visualOffsetY": 0,
+        "supportMinimumY": null,
+        "grounded": true,
+        "teleports": 0,
+        "controlQuaternions": [
+          [
+            0.022468411729054647,
+            0,
+            0,
+            0.999747553372537
+          ],
+          [
+            -0.022468411729054647,
+            0,
+            0,
+            0.999747553372537
+          ],
+          [
+            -0.04679603405877267,
+            0,
+            0,
+            0.998904465500265
+          ],
+          [
+            0.04679603405877267,
+            0,
+            0,
+            0.998904465500265
+          ]
+        ],
+        "grounding": {
+          "status": "applied",
+          "sourceSha256": "0e297a50400f885f06595f2fb59c85aed5118517a03c140f0f3aefa5288b564b",
+          "motionGain": 0.2,
+          "maxOffset": 0.15,
+          "restMinimumY": 1.0651243170655978e-15,
+          "regions": [
+            {
+              "regionId": "model_part0",
+              "supportVertices": 36,
+              "referencedVertices": 9194,
+              "restError": 2.4841240175987878e-15,
+              "coverageError": 1.131807918442113e-15
+            },
+            {
+              "regionId": "model_part4",
+              "supportVertices": 36,
+              "referencedVertices": 8860,
+              "restError": 2.2898349882893854e-15,
+              "coverageError": 1.0210439046088652e-15
+            }
+          ],
+          "offsetY": 0.017536882557556675,
+          "minimumYBeforeOffset": -0.017536882557556675,
+          "minimumYAfterOffset": 0,
+          "maxObservedAbsoluteOffset": 0.08255163520373753,
+          "refusals": 0,
+          "lastError": null,
+          "lastRejectedOffsetY": null
+        },
+        "visualGroundOffsetY": 0.017536882557556675,
+        "laserOffset": 0.017536882557556675
+      },
+      "zeroAfter": {
+        "phase": 6.086835766330243,
+        "strength": 0.9999991684712809,
+        "speed": 19.0000000000002,
+        "cycleDistance": 6.4,
+        "moving": true,
+        "runBlend": 0.999664537372097,
+        "travelledDistance": 19.00000000000002,
+        "stepCount": 5,
+        "visualOffsetY": 0,
+        "supportMinimumY": null,
+        "grounded": true,
+        "teleports": 0,
+        "controlQuaternions": [
+          [
+            0.022468411729054647,
+            0,
+            0,
+            0.999747553372537
+          ],
+          [
+            -0.022468411729054647,
+            0,
+            0,
+            0.999747553372537
+          ],
+          [
+            -0.04679603405877267,
+            0,
+            0,
+            0.998904465500265
+          ],
+          [
+            0.04679603405877267,
+            0,
+            0,
+            0.998904465500265
+          ]
+        ],
+        "grounding": {
+          "status": "applied",
+          "sourceSha256": "0e297a50400f885f06595f2fb59c85aed5118517a03c140f0f3aefa5288b564b",
+          "motionGain": 0.2,
+          "maxOffset": 0.15,
+          "restMinimumY": 1.0651243170655978e-15,
+          "regions": [
+            {
+              "regionId": "model_part0",
+              "supportVertices": 36,
+              "referencedVertices": 9194,
+              "restError": 2.4841240175987878e-15,
+              "coverageError": 1.131807918442113e-15
+            },
+            {
+              "regionId": "model_part4",
+              "supportVertices": 36,
+              "referencedVertices": 8860,
+              "restError": 2.2898349882893854e-15,
+              "coverageError": 1.0210439046088652e-15
+            }
+          ],
+          "offsetY": 0.017536882172481734,
+          "minimumYBeforeOffset": -0.017536882172481734,
+          "minimumYAfterOffset": 0,
+          "maxObservedAbsoluteOffset": 0.08255163520373753,
+          "refusals": 0,
+          "lastError": null,
+          "lastRejectedOffsetY": null
+        },
+        "visualGroundOffsetY": 0.017536882172481734,
+        "laserOffset": 0.017536882172481734
+      },
+      "pauseBefore": {
+        "phase": 6.086835766330243,
+        "strength": 0.9999991684712809,
+        "speed": 19.0000000000002,
+        "cycleDistance": 6.4,
+        "moving": true,
+        "runBlend": 0.999664537372097,
+        "travelledDistance": 19.00000000000002,
+        "stepCount": 5,
+        "visualOffsetY": 0,
+        "supportMinimumY": null,
+        "grounded": true,
+        "teleports": 0,
+        "controlQuaternions": [
+          [
+            0.022468411729054647,
+            0,
+            0,
+            0.999747553372537
+          ],
+          [
+            -0.022468411729054647,
+            0,
+            0,
+            0.999747553372537
+          ],
+          [
+            -0.04679603405877267,
+            0,
+            0,
+            0.998904465500265
+          ],
+          [
+            0.04679603405877267,
+            0,
+            0,
+            0.998904465500265
+          ]
+        ],
+        "grounding": {
+          "status": "applied",
+          "sourceSha256": "0e297a50400f885f06595f2fb59c85aed5118517a03c140f0f3aefa5288b564b",
+          "motionGain": 0.2,
+          "maxOffset": 0.15,
+          "restMinimumY": 1.0651243170655978e-15,
+          "regions": [
+            {
+              "regionId": "model_part0",
+              "supportVertices": 36,
+              "referencedVertices": 9194,
+              "restError": 2.4841240175987878e-15,
+              "coverageError": 1.131807918442113e-15
+            },
+            {
+              "regionId": "model_part4",
+              "supportVertices": 36,
+              "referencedVertices": 8860,
+              "restError": 2.2898349882893854e-15,
+              "coverageError": 1.0210439046088652e-15
+            }
+          ],
+          "offsetY": 0.017536882172481734,
+          "minimumYBeforeOffset": -0.017536882172481734,
+          "minimumYAfterOffset": 0,
+          "maxObservedAbsoluteOffset": 0.08255163520373753,
+          "refusals": 0,
+          "lastError": null,
+          "lastRejectedOffsetY": null
+        },
+        "visualGroundOffsetY": 0.017536882172481734,
+        "laserOffset": 0.017536882172481734
+      },
+      "pauseAfter": {
+        "phase": 6.086835766330243,
+        "strength": 0.9999991684712809,
+        "speed": 19.0000000000002,
+        "cycleDistance": 6.4,
+        "moving": true,
+        "runBlend": 0.999664537372097,
+        "travelledDistance": 19.00000000000002,
+        "stepCount": 5,
+        "visualOffsetY": 0,
+        "supportMinimumY": null,
+        "grounded": true,
+        "teleports": 0,
+        "controlQuaternions": [
+          [
+            0.022468411729054647,
+            0,
+            0,
+            0.999747553372537
+          ],
+          [
+            -0.022468411729054647,
+            0,
+            0,
+            0.999747553372537
+          ],
+          [
+            -0.04679603405877267,
+            0,
+            0,
+            0.998904465500265
+          ],
+          [
+            0.04679603405877267,
+            0,
+            0,
+            0.998904465500265
+          ]
+        ],
+        "grounding": {
+          "status": "applied",
+          "sourceSha256": "0e297a50400f885f06595f2fb59c85aed5118517a03c140f0f3aefa5288b564b",
+          "motionGain": 0.2,
+          "maxOffset": 0.15,
+          "restMinimumY": 1.0651243170655978e-15,
+          "regions": [
+            {
+              "regionId": "model_part0",
+              "supportVertices": 36,
+              "referencedVertices": 9194,
+              "restError": 2.4841240175987878e-15,
+              "coverageError": 1.131807918442113e-15
+            },
+            {
+              "regionId": "model_part4",
+              "supportVertices": 36,
+              "referencedVertices": 8860,
+              "restError": 2.2898349882893854e-15,
+              "coverageError": 1.0210439046088652e-15
+            }
+          ],
+          "offsetY": 0.017536882172481734,
+          "minimumYBeforeOffset": -0.017536882172481734,
+          "minimumYAfterOffset": 0,
+          "maxObservedAbsoluteOffset": 0.08255163520373753,
+          "refusals": 0,
+          "lastError": null,
+          "lastRejectedOffsetY": null
+        },
+        "visualGroundOffsetY": 0.017536882172481734,
+        "laserOffset": 0.017536882172481734
+      },
+      "blocked": {
+        "phase": 0,
+        "strength": 0,
+        "speed": 0,
+        "cycleDistance": 6.4,
+        "moving": false,
+        "runBlend": 0,
+        "travelledDistance": 0,
+        "stepCount": 0,
+        "visualOffsetY": 0,
+        "supportMinimumY": null,
+        "grounded": true,
+        "teleports": 0,
+        "controlQuaternions": [
+          [
+            0,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ],
+        "grounding": {
+          "status": "applied",
+          "sourceSha256": "0e297a50400f885f06595f2fb59c85aed5118517a03c140f0f3aefa5288b564b",
+          "motionGain": 0.2,
+          "maxOffset": 0.15,
+          "restMinimumY": 1.0651243170655978e-15,
+          "regions": [
+            {
+              "regionId": "model_part0",
+              "supportVertices": 36,
+              "referencedVertices": 9194,
+              "restError": 2.4841240175987878e-15,
+              "coverageError": 1.131807918442113e-15
+            },
+            {
+              "regionId": "model_part4",
+              "supportVertices": 36,
+              "referencedVertices": 8860,
+              "restError": 2.2898349882893854e-15,
+              "coverageError": 1.0210439046088652e-15
+            }
+          ],
+          "offsetY": 5.226389807044818e-10,
+          "minimumYBeforeOffset": -5.226389807044818e-10,
+          "minimumYAfterOffset": 0,
+          "maxObservedAbsoluteOffset": 0.08255163520373753,
+          "refusals": 0,
+          "lastError": null,
+          "lastRejectedOffsetY": null
+        },
+        "visualGroundOffsetY": 5.226389807044818e-10,
+        "laserOffset": 5.226389807044818e-10
+      },
+      "final": {
+        "phase": 3.0434178831651053,
+        "strength": 0.9990881180344454,
+        "speed": 18.999999999999986,
+        "cycleDistance": 6.4,
+        "moving": true,
+        "runBlend": 0.9816843611112646,
+        "travelledDistance": 9.499999999999993,
+        "stepCount": 2,
+        "visualOffsetY": 0,
+        "supportMinimumY": null,
+        "grounded": true,
+        "teleports": 0,
+        "controlQuaternions": [
+          [
+            -0.01116912451378956,
+            0,
+            0,
+            0.9999376233833766
+          ],
+          [
+            0.01116912451378956,
+            0,
+            0,
+            0.9999376233833766
+          ],
+          [
+            0.023267393333917977,
+            0,
+            0,
+            0.9997292775584021
+          ],
+          [
+            -0.023267393333917977,
+            0,
+            0,
+            0.9997292775584021
+          ]
+        ],
+        "grounding": {
+          "status": "applied",
+          "sourceSha256": "0e297a50400f885f06595f2fb59c85aed5118517a03c140f0f3aefa5288b564b",
+          "motionGain": 0.2,
+          "maxOffset": 0.15,
+          "restMinimumY": 1.0651243170655978e-15,
+          "regions": [
+            {
+              "regionId": "model_part0",
+              "supportVertices": 36,
+              "referencedVertices": 9194,
+              "restError": 2.4841240175987878e-15,
+              "coverageError": 1.131807918442113e-15
+            },
+            {
+              "regionId": "model_part4",
+              "supportVertices": 36,
+              "referencedVertices": 8860,
+              "restError": 2.2898349882893854e-15,
+              "coverageError": 1.0210439046088652e-15
+            }
+          ],
+          "offsetY": -0.005907699530303616,
+          "minimumYBeforeOffset": 0.005907699530303616,
+          "minimumYAfterOffset": 0,
+          "maxObservedAbsoluteOffset": 0.08255163520373753,
+          "refusals": 0,
+          "lastError": null,
+          "lastRejectedOffsetY": null
+        },
+        "visualGroundOffsetY": -0.005907699530303616,
+        "laserOffset": -0.005907699530303616
+      },
+      "diagnostics": {
+        "supportVertices": [
+          37,
+          37
+        ],
+        "maxObservedVisualOffset": 0,
+        "contactRefusals": 0,
+        "lastContactError": null
+      }
+    },
+    {
+      "character": "JUNGLE HUNTER (1987)",
+      "visual": "imported",
+      "mask": "attached",
+      "runs": [
+        {
+          "fps": 30,
+          "position": [
+            15.999999999999998,
+            0,
+            4.2
+          ],
+          "state": {
+            "phase": 3.1415926535897896,
+            "strength": 0.9999991684712809,
+            "speed": 15.999999999999996,
+            "cycleDistance": 6.4,
+            "moving": true,
+            "runBlend": 0.9996645373720972,
+            "travelledDistance": 15.999999999999998,
+            "stepCount": 5,
+            "visualOffsetY": 0,
+            "supportMinimumY": null,
+            "grounded": true,
+            "teleports": 0,
+            "controlQuaternions": [
+              [
+                -4.2330326291149233e-16,
+                0,
+                0,
+                1
+              ],
+              [
+                4.2330326291149233e-16,
+                0,
+                0,
+                1
+              ],
+              [
+                8.818817977322758e-16,
+                0,
+                0,
+                1
+              ],
+              [
+                -8.818817977322758e-16,
+                0,
+                0,
+                1
+              ]
+            ],
+            "grounding": null,
+            "visualGroundOffsetY": 0,
+            "laserOffset": 0
+          }
+        },
+        {
+          "fps": 60,
+          "position": [
+            16.00000000000002,
+            0,
+            4.2
+          ],
+          "state": {
+            "phase": 3.1415926535898127,
+            "strength": 0.9999991684712809,
+            "speed": 15.999999999999943,
+            "cycleDistance": 6.4,
+            "moving": true,
+            "runBlend": 0.9996645373720968,
+            "travelledDistance": 16.00000000000002,
+            "stepCount": 5,
+            "visualOffsetY": 0,
+            "supportMinimumY": null,
+            "grounded": true,
+            "teleports": 0,
+            "controlQuaternions": [
+              [
+                2.236483132922023e-15,
+                0,
+                0,
+                1
+              ],
+              [
+                -2.236483132922023e-15,
+                0,
+                0,
+                1
+              ],
+              [
+                -4.659339860254215e-15,
+                0,
+                0,
+                1
+              ],
+              [
+                4.659339860254215e-15,
+                0,
+                0,
+                1
+              ]
+            ],
+            "grounding": null,
+            "visualGroundOffsetY": 0,
+            "laserOffset": 0
+          }
+        },
+        {
+          "fps": 120,
+          "position": [
+            15.999999999999982,
+            0,
+            4.2
+          ],
+          "state": {
+            "phase": 3.1415926535897736,
+            "strength": 0.9999991684712809,
+            "speed": 15.999999999999943,
+            "cycleDistance": 6.4,
+            "moving": true,
+            "runBlend": 0.9996645373720926,
+            "travelledDistance": 15.999999999999982,
+            "stepCount": 5,
+            "visualOffsetY": 0,
+            "supportMinimumY": null,
+            "grounded": true,
+            "teleports": 0,
+            "controlQuaternions": [
+              [
+                -2.2646938446423824e-15,
+                0,
+                0,
+                1
+              ],
+              [
+                2.2646938446423824e-15,
+                0,
+                0,
+                1
+              ],
+              [
+                4.718112176338297e-15,
+                0,
+                0,
+                1
+              ],
+              [
+                -4.718112176338297e-15,
+                0,
+                0,
+                1
+              ]
+            ],
+            "grounding": null,
+            "visualGroundOffsetY": 0,
+            "laserOffset": 0
+          }
+        }
+      ],
+      "zeroBefore": {
+        "phase": 3.1415926535897736,
+        "strength": 0.9999991684712809,
+        "speed": 15.999999999999943,
+        "cycleDistance": 6.4,
+        "moving": true,
+        "runBlend": 0.9996645373720926,
+        "travelledDistance": 15.999999999999982,
+        "stepCount": 5,
+        "visualOffsetY": 0,
+        "supportMinimumY": null,
+        "grounded": true,
+        "teleports": 0,
+        "controlQuaternions": [
+          [
+            -2.2646938446423824e-15,
+            0,
+            0,
+            1
+          ],
+          [
+            2.2646938446423824e-15,
+            0,
+            0,
+            1
+          ],
+          [
+            4.718112176338297e-15,
+            0,
+            0,
+            1
+          ],
+          [
+            -4.718112176338297e-15,
+            0,
+            0,
+            1
+          ]
+        ],
+        "grounding": null,
+        "visualGroundOffsetY": 0,
+        "laserOffset": 0
+      },
+      "zeroAfter": {
+        "phase": 3.1415926535897736,
+        "strength": 0.9999991684712809,
+        "speed": 15.999999999999943,
+        "cycleDistance": 6.4,
+        "moving": true,
+        "runBlend": 0.9996645373720926,
+        "travelledDistance": 15.999999999999982,
+        "stepCount": 5,
+        "visualOffsetY": 0,
+        "supportMinimumY": null,
+        "grounded": true,
+        "teleports": 0,
+        "controlQuaternions": [
+          [
+            -2.2646938446423824e-15,
+            0,
+            0,
+            1
+          ],
+          [
+            2.2646938446423824e-15,
+            0,
+            0,
+            1
+          ],
+          [
+            4.718112176338297e-15,
+            0,
+            0,
+            1
+          ],
+          [
+            -4.718112176338297e-15,
+            0,
+            0,
+            1
+          ]
+        ],
+        "grounding": null,
+        "visualGroundOffsetY": 0,
+        "laserOffset": 0
+      },
+      "pauseBefore": {
+        "phase": 3.1415926535897736,
+        "strength": 0.9999991684712809,
+        "speed": 15.999999999999943,
+        "cycleDistance": 6.4,
+        "moving": true,
+        "runBlend": 0.9996645373720926,
+        "travelledDistance": 15.999999999999982,
+        "stepCount": 5,
+        "visualOffsetY": 0,
+        "supportMinimumY": null,
+        "grounded": true,
+        "teleports": 0,
+        "controlQuaternions": [
+          [
+            -2.2646938446423824e-15,
+            0,
+            0,
+            1
+          ],
+          [
+            2.2646938446423824e-15,
+            0,
+            0,
+            1
+          ],
+          [
+            4.718112176338297e-15,
+            0,
+            0,
+            1
+          ],
+          [
+            -4.718112176338297e-15,
+            0,
+            0,
+            1
+          ]
+        ],
+        "grounding": null,
+        "visualGroundOffsetY": 0,
+        "laserOffset": 0
+      },
+      "pauseAfter": {
+        "phase": 3.1415926535897736,
+        "strength": 0.9999991684712809,
+        "speed": 15.999999999999943,
+        "cycleDistance": 6.4,
+        "moving": true,
+        "runBlend": 0.9996645373720926,
+        "travelledDistance": 15.999999999999982,
+        "stepCount": 5,
+        "visualOffsetY": 0,
+        "supportMinimumY": null,
+        "grounded": true,
+        "teleports": 0,
+        "controlQuaternions": [
+          [
+            -2.2646938446423824e-15,
+            0,
+            0,
+            1
+          ],
+          [
+            2.2646938446423824e-15,
+            0,
+            0,
+            1
+          ],
+          [
+            4.718112176338297e-15,
+            0,
+            0,
+            1
+          ],
+          [
+            -4.718112176338297e-15,
+            0,
+            0,
+            1
+          ]
+        ],
+        "grounding": null,
+        "visualGroundOffsetY": 0,
+        "laserOffset": 0
+      },
+      "blocked": {
+        "phase": 0,
+        "strength": 0,
+        "speed": 0,
+        "cycleDistance": 6.4,
+        "moving": false,
+        "runBlend": 0,
+        "travelledDistance": 0,
+        "stepCount": 0,
+        "visualOffsetY": 0,
+        "supportMinimumY": null,
+        "grounded": true,
+        "teleports": 0,
+        "controlQuaternions": [
+          [
+            0,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ],
+        "grounding": null,
+        "visualGroundOffsetY": 0,
+        "laserOffset": 0
+      },
+      "final": {
+        "phase": 1.5707963267949063,
+        "strength": 0.9990881180344454,
+        "speed": 16.00000000000005,
+        "cycleDistance": 6.4,
+        "moving": true,
+        "runBlend": 0.9816843611112659,
+        "travelledDistance": 8.00000000000001,
+        "stepCount": 2,
+        "visualOffsetY": 0,
+        "supportMinimumY": null,
+        "grounded": true,
+        "teleports": 0,
+        "controlQuaternions": [
+          [
+            -0.11370663823592261,
+            0,
+            0,
+            0.9935143685025823
+          ],
+          [
+            0.11370663823592261,
+            0,
+            0,
+            0.9935143685025823
+          ],
+          [
+            0.2351785694667481,
+            0,
+            0,
+            0.9719521801321164
+          ],
+          [
+            -0.2351785694667481,
+            0,
+            0,
+            0.9719521801321164
+          ]
+        ],
+        "grounding": null,
+        "visualGroundOffsetY": 0,
+        "laserOffset": 0
+      },
+      "diagnostics": {
+        "supportVertices": [
+          37,
+          37
+        ],
+        "maxObservedVisualOffset": 0,
+        "contactRefusals": 0,
+        "lastContactError": null
+      }
+    }
+  ],
+  "captures": [
+    "/workspace/qa/open-work-20261024/all-attempt2/city-moving.png",
+    "/workspace/qa/open-work-20261024/all-attempt2/city-console-closed-front.png",
+    "/workspace/qa/open-work-20261024/all-attempt2/city-console-closed-back.png",
+    "/workspace/qa/open-work-20261024/all-attempt2/city-console-open-front.png",
+    "/workspace/qa/open-work-20261024/all-attempt2/city-console-open-back.png",
+    "/workspace/qa/open-work-20261024/all-attempt2/city-console-emp.png",
+    "/workspace/qa/open-work-20261024/all-attempt2/city-coop-private-animation.png",
+    "/workspace/qa/open-work-20261024/all-attempt2/jungle-moving.png",
+    "/workspace/qa/open-work-20261024/all-attempt2/big-chap-independent-tails.png",
+    "/workspace/qa/open-work-20261024/all-attempt2/big-chap-run-rigid-reference.png",
+    "/workspace/qa/open-work-20261024/all-attempt2/big-chap-run-articulated.png",
+    "/workspace/qa/open-work-20261024/all-attempt2/big-chap-idle-rest.png",
+    "/workspace/qa/open-work-20261024/all-attempt2/big-chap-idle-tail-motion.png"
+  ],
+  "indexSha256": "9fdd19169a75d324dbde0e77bddbac90167e81ca19bfb06880084246a4bad6d6",
+  "mechanisms": {
+    "before": {
+      "id": "city-left-console",
+      "amount": 0,
+      "target": 0,
+      "angle": 0,
+      "mode": "scan",
+      "holdRemaining": 0,
+      "disposed": false
+    },
+    "restVisibility": {
+      "source": true,
+      "hinge": false,
+      "board": false,
+      "housingTriangles": 1932
+    },
+    "opened": {
+      "id": "city-left-console",
+      "amount": 1,
+      "target": 1,
+      "angle": 1.5,
+      "mode": "scan",
+      "holdRemaining": null,
+      "disposed": false
+    },
+    "openedVisibility": {
+      "source": false,
+      "hinge": true,
+      "board": true,
+      "housingTriangles": 1656
+    },
+    "diagnostics": {
+      "sourceSha256": "0e297a50400f885f06595f2fb59c85aed5118517a03c140f0f3aefa5288b564b",
+      "sourceNode": "model_part11",
+      "sourceVertices": 746,
+      "sourceTriangles": 740,
+      "visibleReplacementTriangles": 740,
+      "rigidBone": "LeftForeArm",
+      "maximumWeightError": 0,
+      "closedMaxVertexError": 4.880632206713545e-08,
+      "texture": "original PBR material borrowed; source UVs copied unchanged",
+      "addedConsoleTriangles": 418,
+      "addedConsoleDrawMeshes": 4,
+      "addedMaterials": 4,
+      "housingPatch": {
+        "node": "model_part7",
+        "removedCoveredArmourTriangles": 276,
+        "skinTrianglesRemoved": 0,
+        "retainedTriangles": 1656,
+        "cacheModified": false,
+        "sourceVerticesModified": 0
+      },
+      "hingeName": "city-left-console-hinge",
+      "bladeExtractionActivated": false,
+      "interpretation": "original plate retained; hinge and electronics modelled locally, not a certified film mechanism"
+    },
+    "closed": {
+      "id": "city-left-console",
+      "amount": 0,
+      "target": 0,
+      "angle": 0,
+      "mode": "scan",
+      "holdRemaining": null,
+      "disposed": false
+    },
+    "emp": {
+      "state": {
+        "id": "city-left-console",
+        "amount": 1,
+        "target": 1,
+        "angle": 1.5,
+        "mode": "emp",
+        "holdRemaining": 1.3000000000000018,
+        "disposed": false
+      },
+      "cooldown": 11.499999999999975
+    }
+  },
+  "coop": {
+    "p1Before": {
+      "phase": 3.0434178831651053,
+      "strength": 0,
+      "speed": 0,
+      "cycleDistance": 6.4,
+      "moving": false,
+      "runBlend": 2.0234022769957727e-09,
+      "travelledDistance": 9.499999999999993,
+      "stepCount": 2,
+      "visualOffsetY": 0,
+      "supportMinimumY": null,
+      "grounded": true,
+      "teleports": 0
+    },
+    "p1After": {
+      "phase": 3.0434178831651053,
+      "strength": 0,
+      "speed": 0,
+      "cycleDistance": 6.4,
+      "moving": false,
+      "runBlend": 2.0234022769957727e-09,
+      "travelledDistance": 9.499999999999993,
+      "stepCount": 2,
+      "visualOffsetY": 0,
+      "supportMinimumY": null,
+      "grounded": true,
+      "teleports": 0
+    },
+    "p2": {
+      "phase": 6.217735460229796,
+      "strength": 0.9905964374485048,
+      "speed": 18.999999999999986,
+      "cycleDistance": 6.4,
+      "moving": true,
+      "runBlend": 0.9305165487771974,
+      "travelledDistance": 6.33333333333333,
+      "stepCount": 1,
+      "visualOffsetY": 0,
+      "supportMinimumY": null,
+      "grounded": true,
+      "teleports": 0
+    },
+    "p2ConsoleBefore": {
+      "id": "city-left-console",
+      "amount": 0,
+      "target": 0,
+      "angle": 0,
+      "mode": "scan",
+      "holdRemaining": 0,
+      "disposed": false
+    },
+    "p2ConsoleAfter": {
+      "id": "city-left-console",
+      "amount": 0,
+      "target": 0,
+      "angle": 0,
+      "mode": "scan",
+      "holdRemaining": 0,
+      "disposed": false
+    },
+    "privateHinges": true,
+    "privateHeadBones": true
+  },
+  "firstPersonCamera": {
+    "character": "WOLF PREDATOR (AVP REQUIEM)",
+    "visual": "procedural",
+    "runs": [
+      {
+        "fps": 10,
+        "finalDistance": 1.0127168791867788e-05,
+        "finalPosition": [
+          7.341655692043802e-06,
+          3.995004254022257,
+          4.399994493758231
+        ],
+        "overshoots": 0,
+        "increases": 0,
+        "targetDrift": 0
+      },
+      {
+        "fps": 30,
+        "finalDistance": 1.01271687918678e-05,
+        "finalPosition": [
+          7.341655692043817e-06,
+          3.995004254022257,
+          4.399994493758231
+        ],
+        "overshoots": 0,
+        "increases": 0,
+        "targetDrift": 0
+      },
+      {
+        "fps": 60,
+        "finalDistance": 1.0127168791867805e-05,
+        "finalPosition": [
+          7.341655692043825e-06,
+          3.995004254022257,
+          4.399994493758231
+        ],
+        "overshoots": 0,
+        "increases": 0,
+        "targetDrift": 0
+      },
+      {
+        "fps": 120,
+        "finalDistance": 1.012716879253855e-05,
+        "finalPosition": [
+          7.341655692043871e-06,
+          3.9950042540222572,
+          4.39999449375823
+        ],
+        "overshoots": 0,
+        "increases": 0,
+        "targetDrift": 0
+      }
+    ],
+    "actorDisplacement": 0,
+    "restoredThirdPerson": true,
+    "conditions": "Actual game.update, stationary warmed-up Wolf, empty horde/queue, real first-person input and eye height; camera initially24m lateral/14m vertical/18m behind target."
+  },
+  "tail": {
+    "selectedVertices": 28590,
+    "footRegionVertices": 8138,
+    "phases": [
+      {
+        "phase": 0,
+        "minimumY": 0.02887981950742924,
+        "minimumFootY": 0.004999999999999831,
+        "actorPosition": [
+          0,
+          0,
+          12
+        ],
+        "footGrounding": {
+          "id": "big-chap-v2-measured-feet-support-20261024",
+          "supportVertices": 515,
+          "method": "measured-rigid-region-convex-support",
+          "ankleIK": false,
+          "minFootYBefore": -0.044011565812390574,
+          "minFootYAfter": 0.0049999999999999975,
+          "visualWorldOffsetY": 0.04901156581239057,
+          "limited": false,
+          "contact": true,
+          "feet": [
+            {
+              "name": "left-calf-and-foot",
+              "minY": 1.2696922028879474
+            },
+            {
+              "name": "right-calf-and-foot",
+              "minY": -0.044011565812390574
+            }
+          ]
+        },
+        "quaternions": [
+          [
+            0,
+            0,
+            0,
+            1
+          ],
+          [
+            -0.06604105575499815,
+            -0.007537413946882262,
+            0.020380100612453742,
+            0.997580281403349
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ],
+        "diagnostics": {
+          "id": "big-chap-v2-geodesic-tail-chain-20261024",
+          "boneCount": 9,
+          "weightedVertices": 28590,
+          "envelopeBuckets": 257,
+          "sourceGeometryUnchanged": true,
+          "privateActorBones": true,
+          "lastGroundMinimum": 0.022252202524618597,
+          "lastSolverIterations": 2,
+          "maxGroundCorrectionRadians": 0.13917913709533436,
+          "groundLimited": false,
+          "phase": 0
+        }
+      },
+      {
+        "phase": 1.5707963267948966,
+        "minimumY": 0.027263935716632454,
+        "minimumFootY": 0.16685877828825305,
+        "actorPosition": [
+          0,
+          0,
+          12
+        ],
+        "footGrounding": {
+          "id": "big-chap-v2-measured-feet-support-20261024",
+          "supportVertices": 515,
+          "method": "measured-rigid-region-convex-support",
+          "ankleIK": false,
+          "minFootYBefore": 0.16685877828825305,
+          "minFootYAfter": 0.16685877828825305,
+          "visualWorldOffsetY": 0,
+          "limited": false,
+          "contact": false,
+          "feet": [
+            {
+              "name": "left-calf-and-foot",
+              "minY": 0.16685877828825305
+            },
+            {
+              "name": "right-calf-and-foot",
+              "minY": 1.008326693453335
+            }
+          ]
+        },
+        "quaternions": [
+          [
+            0,
+            0,
+            0,
+            1
+          ],
+          [
+            -0.03707868260503186,
+            -0.001080533234684771,
+            0.012468825466807778,
+            0.9992339726689052
+          ],
+          [
+            0.0005835182192490168,
+            -0.002000617620315863,
+            1.1673993661953953e-06,
+            0.9999978285147735
+          ],
+          [
+            -0.0004824153848421435,
+            -0.005566396333985761,
+            -2.68535714503905e-06,
+            0.9999843911282007
+          ],
+          [
+            -0.0020253971911711366,
+            -0.007589722040878701,
+            -1.537267600655126e-05,
+            0.9999691463486466
+          ],
+          [
+            -0.0036342980811742464,
+            -0.006167919960274295,
+            -2.2416634130937722e-05,
+            0.9999743737408051
+          ],
+          [
+            -0.004850256290206449,
+            -0.0010765144105886106,
+            -5.221435234536744e-06,
+            0.9999876579755271
+          ],
+          [
+            -0.005267003736181172,
+            0.005896671060483873,
+            3.1058759310233484e-05,
+            0.9999687430002004
+          ],
+          [
+            -0.004628497561613049,
+            0.011624873282979852,
+            5.3809910144876605e-05,
+            0.9999217151537266
+          ]
+        ],
+        "diagnostics": {
+          "id": "big-chap-v2-geodesic-tail-chain-20261024",
+          "boneCount": 9,
+          "weightedVertices": 28590,
+          "envelopeBuckets": 257,
+          "sourceGeometryUnchanged": true,
+          "privateActorBones": true,
+          "lastGroundMinimum": 0.023347571650296307,
+          "lastSolverIterations": 1,
+          "maxGroundCorrectionRadians": 0.08,
+          "groundLimited": false,
+          "phase": 1.5707963267948966
+        }
+      },
+      {
+        "phase": 3.141592653589793,
+        "minimumY": 0.0465836589713865,
+        "minimumFootY": 0.8032043411189365,
+        "actorPosition": [
+          0,
+          0,
+          12
+        ],
+        "footGrounding": {
+          "id": "big-chap-v2-measured-feet-support-20261024",
+          "supportVertices": 515,
+          "method": "measured-rigid-region-convex-support",
+          "ankleIK": false,
+          "minFootYBefore": 0.8032043411189365,
+          "minFootYAfter": 0.8032043411189365,
+          "visualWorldOffsetY": 0,
+          "limited": false,
+          "contact": false,
+          "feet": [
+            {
+              "name": "left-calf-and-foot",
+              "minY": 0.8032043411189365
+            },
+            {
+              "name": "right-calf-and-foot",
+              "minY": 0.9403063963887404
+            }
+          ]
+        },
+        "quaternions": [
+          [
+            0,
+            0,
+            0,
+            1
+          ],
+          [
+            -0.05456813749489111,
+            0.009409149025839203,
+            0.022495468944596638,
+            0.998212272095425
+          ],
+          [
+            0.0022228202922467267,
+            0.0019654007367148887,
+            -4.368751870706727e-06,
+            0.9999955981157149
+          ],
+          [
+            0.0024370534685609615,
+            -0.0013859541468680553,
+            3.3776576352974606e-06,
+            0.99999606993732
+          ],
+          [
+            0.0018323229831650348,
+            -0.005891727263996609,
+            1.0795752775331789e-05,
+            0.999980964831723
+          ],
+          [
+            0.00042724518812020554,
+            -0.008984740103348612,
+            3.838842275540195e-06,
+            0.9999595451277455
+          ],
+          [
+            -0.001547210413110096,
+            -0.008427189788335104,
+            -1.3039114413402125e-05,
+            0.9999632935474134
+          ],
+          [
+            -0.0036882396195783403,
+            -0.0035754219991418947,
+            -1.3187187059771723e-05,
+            0.9999868064490325
+          ],
+          [
+            -0.005502864275375036,
+            0.0040567486621675515,
+            2.2324259002576922e-05,
+            0.9999766301152674
+          ]
+        ],
+        "diagnostics": {
+          "id": "big-chap-v2-geodesic-tail-chain-20261024",
+          "boneCount": 9,
+          "weightedVertices": 28590,
+          "envelopeBuckets": 257,
+          "sourceGeometryUnchanged": true,
+          "privateActorBones": true,
+          "lastGroundMinimum": 0.023198234838894907,
+          "lastSolverIterations": 2,
+          "maxGroundCorrectionRadians": 0.12142990933211309,
+          "groundLimited": false,
+          "phase": 3.141592653589793
+        }
+      },
+      {
+        "phase": 4.71238898038469,
+        "minimumY": 0.042272791821685,
+        "minimumFootY": 0.19913755861208912,
+        "actorPosition": [
+          0,
+          0,
+          12
+        ],
+        "footGrounding": {
+          "id": "big-chap-v2-measured-feet-support-20261024",
+          "supportVertices": 515,
+          "method": "measured-rigid-region-convex-support",
+          "ankleIK": false,
+          "minFootYBefore": 0.19913755861208915,
+          "minFootYAfter": 0.19913755861208915,
+          "visualWorldOffsetY": 0,
+          "limited": false,
+          "contact": false,
+          "feet": [
+            {
+              "name": "left-calf-and-foot",
+              "minY": 1.2722859894490917
+            },
+            {
+              "name": "right-calf-and-foot",
+              "minY": 0.19913755861208915
+            }
+          ]
+        },
+        "quaternions": [
+          [
+            0,
+            0,
+            0,
+            1
+          ],
+          [
+            -0.02998675125602658,
+            0.003241698980383122,
+            0.008460713843430685,
+            0.9995092308018417
+          ],
+          [
+            0.0014347493641173085,
+            0.0045534581689197304,
+            -6.533145666274967e-06,
+            0.9999886036702038
+          ],
+          [
+            0.00269520305925597,
+            0.003766186791096546,
+            -1.0150747020244222e-05,
+            0.9999892757497384
+          ],
+          [
+            0.003689192799705659,
+            -6.29877616159624e-05,
+            2.3237557842203074e-07,
+            0.9999931929213192
+          ],
+          [
+            0.004022249662135951,
+            -0.005502329853205232,
+            2.213225847176991e-05,
+            0.9999767724222423
+          ],
+          [
+            0.0034452153904394062,
+            -0.00986944049564265,
+            3.4004206272055373e-05,
+            0.9999453602467139
+          ],
+          [
+            0.0019181314249368693,
+            -0.010540715596556791,
+            2.021963832934204e-05,
+            0.9999426051917757
+          ],
+          [
+            -0.0003677282308115958,
+            -0.006355827209136628,
+            -2.3372644621716564e-06,
+            0.9999797339101293
+          ]
+        ],
+        "diagnostics": {
+          "id": "big-chap-v2-geodesic-tail-chain-20261024",
+          "boneCount": 9,
+          "weightedVertices": 28590,
+          "envelopeBuckets": 257,
+          "sourceGeometryUnchanged": true,
+          "privateActorBones": true,
+          "lastGroundMinimum": 0.026093306676018287,
+          "lastSolverIterations": 1,
+          "maxGroundCorrectionRadians": 0.06303482604341176,
+          "groundLimited": false,
+          "phase": 4.71238898038469
+        }
+      },
+      {
+        "phase": 6.283185307179586,
+        "minimumY": 0.02913958539212246,
+        "minimumFootY": 0.00500000000000006,
+        "actorPosition": [
+          0,
+          0,
+          12
+        ],
+        "footGrounding": {
+          "id": "big-chap-v2-measured-feet-support-20261024",
+          "supportVertices": 515,
+          "method": "measured-rigid-region-convex-support",
+          "ankleIK": false,
+          "minFootYBefore": -0.044012361422888294,
+          "minFootYAfter": 0.0049999999999999975,
+          "visualWorldOffsetY": 0.04901236142288829,
+          "limited": false,
+          "contact": true,
+          "feet": [
+            {
+              "name": "left-calf-and-foot",
+              "minY": 1.269692570037925
+            },
+            {
+              "name": "right-calf-and-foot",
+              "minY": -0.044012361422888294
+            }
+          ]
+        },
+        "quaternions": [
+          [
+            0,
+            0,
+            0,
+            1
+          ],
+          [
+            -0.06577397354737904,
+            -0.006342355226986594,
+            0.021296591242198838,
+            0.9975870960148925
+          ],
+          [
+            -0.0009200799974199112,
+            0.003949076774565484,
+            3.633496419228193e-06,
+            0.9999917790823205
+          ],
+          [
+            1.0155064693684602e-05,
+            0.006277832124142318,
+            -6.375304766371907e-08,
+            0.9999802941661858
+          ],
+          [
+            0.0015173425668961456,
+            0.00580991675230091,
+            -8.815792937720116e-06,
+            0.9999819710680526
+          ],
+          [
+            0.0032249179208044833,
+            0.0018378025703114987,
+            -5.926803272746348e-06,
+            0.9999931111517667
+          ],
+          [
+            0.004675552502342739,
+            -0.004392300189989137,
+            2.0536852730519363e-05,
+            0.9999794230313325
+          ],
+          [
+            0.005429691753249412,
+            -0.010115797471568015,
+            5.4929282450468696e-05,
+            0.9999340908638693
+          ],
+          [
+            0.005168625518478376,
+            -0.012311960942230686,
+            6.364158950851386e-05,
+            0.9999108444645227
+          ]
+        ],
+        "diagnostics": {
+          "id": "big-chap-v2-geodesic-tail-chain-20261024",
+          "boneCount": 9,
+          "weightedVertices": 28590,
+          "envelopeBuckets": 257,
+          "sourceGeometryUnchanged": true,
+          "privateActorBones": true,
+          "lastGroundMinimum": 0.022795881676097498,
+          "lastSolverIterations": 2,
+          "maxGroundCorrectionRadians": 0.13720542374673278,
+          "groundLimited": false,
+          "phase": 6.283185307179586
+        }
+      }
+    ],
+    "peerBefore": [
+      [
+        0,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        1
+      ]
+    ],
+    "peerAfter": [
+      [
+        0,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        1
+      ]
+    ],
+    "hidden": {
+      "visible": false,
+      "source": "procedural"
+    },
+    "restored": {
+      "phase": 1.5707963267948966,
+      "minimumY": 0.027263935716632454,
+      "minimumFootY": 0.16685877828825305,
+      "actorPosition": [
+        0,
+        0,
+        12
+      ],
+      "footGrounding": {
+        "id": "big-chap-v2-measured-feet-support-20261024",
+        "supportVertices": 515,
+        "method": "measured-rigid-region-convex-support",
+        "ankleIK": false,
+        "minFootYBefore": 0.16685877828825305,
+        "minFootYAfter": 0.16685877828825305,
+        "visualWorldOffsetY": 0,
+        "limited": false,
+        "contact": false,
+        "feet": [
+          {
+            "name": "left-calf-and-foot",
+            "minY": 0.16685877828825305
+          },
+          {
+            "name": "right-calf-and-foot",
+            "minY": 1.008326693453335
+          }
+        ]
+      },
+      "quaternions": [
+        [
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          -0.03707868260503186,
+          -0.001080533234684771,
+          0.012468825466807778,
+          0.9992339726689052
+        ],
+        [
+          0.0005835182192490168,
+          -0.002000617620315863,
+          1.1673993661953953e-06,
+          0.9999978285147735
+        ],
+        [
+          -0.0004824153848421435,
+          -0.005566396333985761,
+          -2.68535714503905e-06,
+          0.9999843911282007
+        ],
+        [
+          -0.0020253971911711366,
+          -0.007589722040878701,
+          -1.537267600655126e-05,
+          0.9999691463486466
+        ],
+        [
+          -0.0036342980811742464,
+          -0.006167919960274295,
+          -2.2416634130937722e-05,
+          0.9999743737408051
+        ],
+        [
+          -0.004850256290206449,
+          -0.0010765144105886106,
+          -5.221435234536744e-06,
+          0.9999876579755271
+        ],
+        [
+          -0.005267003736181172,
+          0.005896671060483873,
+          3.1058759310233484e-05,
+          0.9999687430002004
+        ],
+        [
+          -0.004628497561613049,
+          0.011624873282979852,
+          5.3809910144876605e-05,
+          0.9999217151537266
+        ]
+      ],
+      "diagnostics": {
+        "id": "big-chap-v2-geodesic-tail-chain-20261024",
+        "boneCount": 9,
+        "weightedVertices": 28590,
+        "envelopeBuckets": 257,
+        "sourceGeometryUnchanged": true,
+        "privateActorBones": true,
+        "lastGroundMinimum": 0.023347571650296307,
+        "lastSolverIterations": 1,
+        "maxGroundCorrectionRadians": 0.08,
+        "groundLimited": false,
+        "phase": 1.5707963267948966
+      }
+    },
+    "boneCounts": [
+      9,
+      9
+    ],
+    "importedStates": [
+      "ready",
+      "ready"
+    ],
+    "comparison": {
+      "phase": 0.5890486225480862,
+      "oldMinimumY": -0.1598552229320421,
+      "newMinimumY": 0.022115801429110567,
+      "bodyPoseUnchanged": true,
+      "bodyWorldMaxError": 0,
+      "footGrounding": {
+        "id": "big-chap-v2-measured-feet-support-20261024",
+        "supportVertices": 515,
+        "method": "measured-rigid-region-convex-support",
+        "ankleIK": false,
+        "minFootYBefore": 0.027331599464005957,
+        "minFootYAfter": 0.005000000000000001,
+        "visualWorldOffsetY": -0.022331599464005956,
+        "limited": false,
+        "contact": true,
+        "feet": [
+          {
+            "name": "left-calf-and-foot",
+            "minY": 1.405445226050276
+          },
+          {
+            "name": "right-calf-and-foot",
+            "minY": 0.027331599464005957
+          }
+        ]
+      },
+      "method": "Same real run clip, model, materials and camera; added tail joints reset for former rigid-Hips reference only."
+    },
+    "idle": [
+      {
+        "phase": 0,
+        "quaternions": [
+          [
+            0,
+            0,
+            0,
+            1
+          ],
+          [
+            -0.004363960917592679,
+            -0.00022590370972102583,
+            0.0010842507831522988,
+            0.9999898645550679
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ],
+        "minimumY": 0.018594558668329958,
+        "footGrounding": {
+          "id": "big-chap-v2-measured-feet-support-20261024",
+          "supportVertices": 515,
+          "method": "measured-rigid-region-convex-support",
+          "ankleIK": false,
+          "minFootYBefore": -1.060846090960998e-15,
+          "minFootYAfter": 0.005,
+          "visualWorldOffsetY": 0.005000000000001061,
+          "limited": false,
+          "contact": true,
+          "feet": [
+            {
+              "name": "left-calf-and-foot",
+              "minY": -1.060846090960998e-15
+            },
+            {
+              "name": "right-calf-and-foot",
+              "minY": 0.03626158486394875
+            }
+          ]
+        }
+      },
+      {
+        "phase": 4.71238898038469,
+        "quaternions": [
+          [
+            0,
+            0,
+            0,
+            1
+          ],
+          [
+            -0.0055507925417760465,
+            0.0006564260482425505,
+            0.0014399799191816792,
+            0.9999833419936721
+          ],
+          [
+            0.0005021669968918406,
+            0.001593716631282414,
+            -8.003130119074452e-07,
+            0.9999986039465084
+          ],
+          [
+            0.0009433279436020124,
+            0.0013181723126262472,
+            -1.2434704105604492e-06,
+            0.9999986862754365
+          ],
+          [
+            0.0012912200523072777,
+            -2.2045848224609403e-05,
+            2.8466065034678312e-08,
+            0.9999991661320304
+          ],
+          [
+            0.00140780941386134,
+            -0.0019258376467019525,
+            2.7112200830923017e-06,
+            0.9999971546032829
+          ],
+          [
+            0.0012058790176365634,
+            -0.003454371376153783,
+            4.165581843716911e-06,
+            0.9999933065560181
+          ],
+          [
+            0.0006713790896533785,
+            -0.0036893163660933646,
+            2.4769472785548707e-06,
+            0.9999929690696497
+          ],
+          [
+            -0.0001287071645609775,
+            -0.0022245527979882634,
+            -2.863165938558264e-07,
+            0.9999975173965348
+          ]
+        ],
+        "minimumY": 0.018949848411093206,
+        "footGrounding": {
+          "id": "big-chap-v2-measured-feet-support-20261024",
+          "supportVertices": 515,
+          "method": "measured-rigid-region-convex-support",
+          "ankleIK": false,
+          "minFootYBefore": -1.060846090960998e-15,
+          "minFootYAfter": 0.005,
+          "visualWorldOffsetY": 0.005000000000001061,
+          "limited": false,
+          "contact": true,
+          "feet": [
+            {
+              "name": "left-calf-and-foot",
+              "minY": -1.060846090960998e-15
+            },
+            {
+              "name": "right-calf-and-foot",
+              "minY": 0.03626158486394875
+            }
+          ]
+        }
+      }
+    ],
+    "airborne": {
+      "phase": 0.9817477042468103,
+      "footGrounding": {
+        "id": "big-chap-v2-measured-feet-support-20261024",
+        "supportVertices": 515,
+        "method": "measured-rigid-region-convex-support",
+        "ankleIK": false,
+        "minFootYBefore": 0.3104957427201925,
+        "minFootYAfter": 0.3104957427201925,
+        "visualWorldOffsetY": 0,
+        "limited": false,
+        "contact": false,
+        "feet": [
+          {
+            "name": "left-calf-and-foot",
+            "minY": 0.7722093239031687
+          },
+          {
+            "name": "right-calf-and-foot",
+            "minY": 0.3104957427201925
+          }
+        ]
+      }
+    }
+  },
+  "failure": {
+    "message": "Natural airborne motion is preserved\n+ actual - expected\n\n+ -0\n- 0\n",
+    "stack": "AssertionError [ERR_ASSERTION]: Natural airborne motion is preserved\n+ actual - expected\n\n+ -0\n- 0\n\n    at file:///workspace/qa/open-work-20261024/check-open-work.mjs:365:12"
+  },
+  "completedAt": "2026-10-24T02:36:40.924Z"
+}

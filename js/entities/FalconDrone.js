@@ -1,6 +1,9 @@
 /* Falconer Super Predator Biomechanical Falcon Drone - Predators 2010 Canon 1:1 */
 
 import * as THREE from 'three';
+import { addDroneMechanicalDetails } from '../graphics/SupportModels.js';
+import { createSurfaceMaterial } from '../graphics/SurfaceLibrary.js';
+import { disposeObject } from '../engine/SceneResources.js';
 
 export class FalconDrone {
   constructor(scene, audioEngine, particles = null) {
@@ -31,13 +34,13 @@ export class FalconDrone {
   buildDroneMesh() {
     this.mesh = new THREE.Group();
 
-    const titaniumMat = new THREE.MeshStandardMaterial({
+    const titaniumMat = createSurfaceMaterial('armor', {
       color: 0x1e293b,
       metalness: 0.95,
       roughness: 0.15
     });
 
-    const darkMat = new THREE.MeshStandardMaterial({
+    const darkMat = createSurfaceMaterial('metal', {
       color: 0x0f172a,
       metalness: 0.9,
       roughness: 0.25
@@ -111,6 +114,8 @@ export class FalconDrone {
     gunR.position.set(0.25, -0.15, 0.4);
     this.mesh.add(gunR);
 
+    addDroneMechanicalDetails(this.mesh, this.leftWing, this.rightWing);
+
     // Rear Jet Thruster Light
     this.thrusterLight = new THREE.PointLight(0x00d2ff, 2.5, 8);
     this.thrusterLight.position.set(0, 0, -0.9);
@@ -121,6 +126,9 @@ export class FalconDrone {
   }
 
   launch(playerPos) {
+    this.isDiving = false;
+    this.diveTarget = null;
+    this.fireCooldown = 0;
     this.isActive = true;
     this.flightTimer = 26.0; // 26 seconds active aerial support
     this.orbitAngle = Math.random() * Math.PI * 2;
@@ -155,7 +163,7 @@ export class FalconDrone {
     // Dive / Strafing AI Logic
     if (this.isDiving) {
       this.diveTimer -= delta;
-      if (this.diveTarget && this.diveTarget.mesh) {
+      if (this.diveTarget?.mesh && this.diveTarget.hp > 0 && horde?.aliens.includes(this.diveTarget)) {
         const targetPos = this.diveTarget.mesh.position.clone().add(new THREE.Vector3(0, 1.2, 0));
         const toTarget = targetPos.sub(this.mesh.position);
         const dist = toTarget.length();
@@ -233,7 +241,7 @@ export class FalconDrone {
       this.particles.emitSparks(this.mesh.position, 10);
     }
 
-    if (target && target.mesh) {
+    if (target?.mesh && target.hp > 0 && horde?.aliens.includes(target)) {
       target.hp -= 150;
       if (this.particles) {
         this.particles.emitSparks(target.mesh.position, 15);
@@ -246,9 +254,9 @@ export class FalconDrone {
             horde.goreEngine.spawnDismemberment(target.mesh.position, 'heavy');
           }
           horde.spawnAcidPool(target.mesh.position);
-          this.scene.remove(target.mesh);
+          horde.recordDefeat(target);
+          disposeObject(target.mesh, horde.sharedResources);
           horde.aliens.splice(idx, 1);
-          horde.deadCount++;
         }
       }
     }

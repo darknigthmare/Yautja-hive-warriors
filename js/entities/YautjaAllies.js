@@ -1,6 +1,8 @@
 /* Allied Yautja Honor Guard AI Squad Manager */
 
 import * as THREE from 'three';
+import { createHonorGuardModel } from '../graphics/SupportModels.js';
+import { disposeObject } from '../engine/SceneResources.js';
 
 export class YautjaAlliesManager {
   constructor(scene, audioEngine) {
@@ -11,85 +13,18 @@ export class YautjaAlliesManager {
 
   spawnSquad(playerPos, count = 3) {
     this.clearSquad();
-
-    const armorMat = new THREE.MeshStandardMaterial({ color: 0x3d4450, roughness: 0.35, metalness: 0.85 });
-    const skinMat = new THREE.MeshStandardMaterial({ color: 0x8a795d, roughness: 0.65 });
-    const dreadMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.8 });
-    const bladeMat = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.1, metalness: 0.95 });
-    const laserMat = new THREE.MeshBasicMaterial({ color: 0x00d2ff });
-
     for (let i = 0; i < count; i++) {
-      const group = new THREE.Group();
-
-      // Torso & Mesh Armor Cuirass
-      const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.75, 0.5, 2.0, 8), skinMat);
-      torso.position.y = 2.0;
-      group.add(torso);
-
-      const chestPlate = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.1, 0.8), armorMat);
-      chestPlate.position.set(0, 2.3, 0.1);
-      group.add(chestPlate);
-
-      // Bio-Mask Helmet with visor slit
-      const head = new THREE.Mesh(new THREE.SphereGeometry(0.55, 8, 8), armorMat);
-      head.position.set(0, 3.4, 0.1);
-      group.add(head);
-
-      // Crown of 8 Flexible Dreadlocks / Quills
-      for (let d = 0; d < 8; d++) {
-        const dread = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.03, 1.3, 5), dreadMat);
-        const dAngle = (d / 8) * Math.PI + Math.PI / 2;
-        dread.position.set(Math.cos(dAngle) * 0.45, 3.1, Math.sin(dAngle) * 0.45 - 0.2);
-        dread.rotation.x = 0.5;
-        dread.rotation.z = Math.cos(dAngle) * 0.3;
-        group.add(dread);
-      }
-
-      // Left Shoulder Mounted Plasma Caster Cannon
-      const casterBase = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.3, 0.3), armorMat);
-      casterBase.position.set(-0.85, 3.0, -0.2);
-      group.add(casterBase);
-      const casterBarrel = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.6, 6), armorMat);
-      casterBarrel.rotation.x = Math.PI / 2;
-      casterBarrel.position.set(-0.85, 3.15, 0.1);
-      group.add(casterBarrel);
-
-      // Right Arm with Dual Extensible Wristblades
-      const rArm = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.18, 1.4, 6), skinMat);
-      rArm.position.set(1.1, 2.0, 0);
-      group.add(rArm);
-
-      const gauntlet = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.45, 0.35), armorMat);
-      gauntlet.position.set(1.1, 1.4, 0.1);
-      group.add(gauntlet);
-
-      // 2 Serrated Steel Wristblades
-      const b1 = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.08, 1.2), bladeMat);
-      b1.position.set(1.03, 1.38, 0.65);
-      group.add(b1);
-      const b2 = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.08, 1.2), bladeMat);
-      b2.position.set(1.17, 1.38, 0.65);
-      group.add(b2);
-
+      const group = createHonorGuardModel(i);
       const offset = new THREE.Vector3((i - 1) * 4.5, 0, (Math.random() - 0.5) * 4);
       group.position.copy(playerPos).add(offset);
       this.scene.add(group);
-
-      this.allies.push({
-        mesh: group,
-        hp: 950,
-        maxHp: 950,
-        moveSpeed: 14.5,
-        damage: 110,
-        radius: 1.3,
-        attackTimer: 0,
-        plasmaCooldown: 2.5 + Math.random() * 2.0
-      });
+      this.allies.push({ mesh: group, hp: 950, maxHp: 950, moveSpeed: 14.5,
+        damage: 110, radius: 1.3, attackTimer: 0, plasmaCooldown: 2.5 + Math.random() * 2.0 });
     }
   }
 
   clearSquad() {
-    this.allies.forEach(a => this.scene.remove(a.mesh));
+    this.allies.forEach(a => disposeObject(a.mesh));
     this.allies = [];
   }
 

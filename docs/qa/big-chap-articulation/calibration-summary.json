@@ -1,0 +1,77 @@
+{
+  "calibrated": true,
+  "id": "big-chap-v2-geodesic-tail-chain-20261024",
+  "sourceSha256": "202b5d7d635cdb14fcf8af430faba3207d5668f43f85d9d9dca1f81cc0d8a97e",
+  "meshName": "char1",
+  "parentBone": "Hips",
+  "vertexCount": 211185,
+  "indexCount": 615777,
+  "positionHash": "fnv1a32:7d033fad",
+  "indexHash": "fnv1a32:4c11d243",
+  "curve": [
+    [
+      0.025761563330888748,
+      1.4531062841415405,
+      -0.40695813298225403
+    ],
+    [
+      0.21077227592468262,
+      0.9426332116127014,
+      -0.4440707862377167
+    ],
+    [
+      0.3647618889808655,
+      0.6070333123207092,
+      -0.3657848536968231
+    ],
+    [
+      0.4639308750629425,
+      0.2909509241580963,
+      -0.18280521035194397
+    ],
+    [
+      0.44985896348953247,
+      0.07257634401321411,
+      0.13625673949718475
+    ],
+    [
+      0.2757783830165863,
+      0.15897627174854279,
+      0.47979384660720825
+    ],
+    [
+      0.15640369057655334,
+      0.48124760389328003,
+      0.6663982272148132
+    ],
+    [
+      0.09733173251152039,
+      0.8515238165855408,
+      0.6955639123916626
+    ],
+    [
+      0.038672368973493576,
+      1.1766504049301147,
+      0.604008674621582
+    ]
+  ],
+  "motion": {
+    "yawAmplitude": 0.025,
+    "pitchAmplitude": 0.012,
+    "waveLag": 0.65
+  },
+  "ground": {
+    "clearance": 0.018,
+    "maxJointCorrection": 0.35,
+    "iterations": 9
+  },
+  "provenance": {
+    "selection": "Explicit previously reviewed tail ranges only; source POSITION coordinates; welded triangle-edge geodesic from the root boundary",
+    "selectedVertices": 28590,
+    "rootCollarLockedFraction": 0.06,
+    "rootBoundaryVertices": 25,
+    "boneCount": 9,
+    "restVerticesAndTexturesUnchanged": true,
+    "sourceGeometryModified": false
+  }
+}
