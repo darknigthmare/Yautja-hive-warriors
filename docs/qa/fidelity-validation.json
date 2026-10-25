@@ -1,5 +1,5 @@
 {
-  "status": "passed_locally_waiting_publication",
+  "status": "published_and_verified",
   "date": "2026-10-25",
   "baseline_commit": "8e343fa36cb8f536dfa80ee2c8a7869a670afb12",
   "baseline_index_sha256": "8683a627c08e1c2647913aa29dc375df8cdde08c69da18895981de2b5c5fae6f",
@@ -18,7 +18,8 @@
     "bundles": 5,
     "source_manifest": "fidelity/frozen-source-v2.json",
     "artifact_manifest": "fidelity/frozen-artifacts-v2.json",
-    "artifact_manifest_sha256": "fe244b768b7334f468b5970eabc323bb5f4752275d3d07cfa91f74296dff3f27"
+    "artifact_manifest_sha256": "fe244b768b7334f468b5970eabc323bb5f4752275d3d07cfa91f74296dff3f27",
+    "source_manifest_file_sha256": "e8db87a42dba0c02027ef2cf924a1ec5d54846eade06bc4c827c7fe59f34b723"
   },
   "cpu": {
     "status": "passed",
@@ -153,10 +154,36 @@
     "Five other Yautja bodies remain outside the previously approved City generation budget. No paid generation was launched."
   ],
   "publication": {
-    "status": "ready_for_verified_deployment",
+    "status": "published_and_verified",
     "canonical_url": "https://yautja-hive-warriors.vercel.app",
     "git_branch": "codex/validated-gameplay-20261025",
-    "previous_canonical_index_sha256": "8683a627c08e1c2647913aa29dc375df8cdde08c69da18895981de2b5c5fae6f"
+    "previous_canonical_index_sha256": "8683a627c08e1c2647913aa29dc375df8cdde08c69da18895981de2b5c5fae6f",
+    "deployment_id": "dpl_39FAHCh8Z68e8d6vHt4ZXg3ZSbaY",
+    "candidate_url": "https://yautja-hive-warriors-k9wu2pq8z-darknigthmares-projects.vercel.app",
+    "ready_state": "READY",
+    "promotion_executed": true,
+    "single_candidate_created": true,
+    "public_files_verified": 29,
+    "public_models_verified": 12,
+    "public_bundles_verified": 5,
+    "index_sha256": "cb19eded36c19e20a5c50b94daad56d1d8550cf1c9ddff08df6d0167d7a03910",
+    "http_verification": "fidelity/vercel-public-verification.json",
+    "candidate_verification": "fidelity/vercel-candidate-verification.json",
+    "delivery_report": "fidelity/vercel-delivery.json",
+    "other_projects_changed": false,
+    "billing_changed": false,
+    "public_browser": {
+      "status": "passed",
+      "index_sha256": "cb19eded36c19e20a5c50b94daad56d1d8550cf1c9ddff08df6d0167d7a03910",
+      "report": "fidelity/public-browser.json",
+      "captures": 3,
+      "errors": 0,
+      "csp_violations": 0,
+      "http_errors": 0,
+      "failed_requests": 0,
+      "external_requests": 0
+    },
+    "source_commit": "447e5cc083564ce942080d755607f8dc555146c5"
   },
   "prior_build": {
     "index_sha256": "397cdbf1276d3c1ef45312b5431083d11e4e94452846f7b04ed47a21bb72e5c3",
@@ -188,5 +215,6 @@
     "report": "fidelity/review.json",
     "summary": "fidelity/review.md",
     "human_testers": 0
-  }
+  },
+  "source_commit": "447e5cc083564ce942080d755607f8dc555146c5"
 }

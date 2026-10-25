@@ -10,7 +10,7 @@ Automated checks and an independent agent's visual/code review across five axes.
 - Source GLB paths, sizes, digests and public/dist equality: `source-provenance.json`.
 - Both integrated browser passes: zero JavaScript errors, zero failed asset requests, zero external HTTP requests; only one Chromium running at a time. Browsers and their own preview servers closed after each pass.
 
-Decision: **GO for these source-preserving improvements and the corrected gameplay controller**, subject to the coordinator's final regression/deployment checks. This does not mean all remaining source-art or 1:1 limitations have been solved.
+Decision: **GO for these source-preserving improvements and the corrected gameplay controller**, with the coordinator's 15/15 browser regression, HTTP29/29 file checks and independent public HTTPS smoke now passed. This does not mean all remaining source-art or 1:1 limitations have been solved.
 
 ## 1. Shape, surfaces and mechanisms
 
@@ -60,3 +60,8 @@ Read source validation and source-backed tests: mane and ankles require exact so
 Both integrated browser passes confirm return-to-menu removes player, aliens, pods, carrier and its navigation owner. The first baseline harness wrongly expected a public player `skeletons` property; the first v2 harness used the wrong APC.update argument signature. Those fixture failures are retained separately; corrected reruns passed. Neither fixture error required a production change.
 
 Reproducible harnesses: `capture-baseline.mjs`, `capture-close-baseline.mjs`, `capture-candidate.mjs`, and `check-final-workflow.mjs`. Future public HTTPS verification is prepared in `smoke-public-final.mjs`, expects `FIDELITY_INDEX_SHA256`, and is not run until the coordinator gives the deployment/GPU go-ahead.
+
+
+## Canonical HTTPS verification
+
+Deployment `dpl_39FAHCh8Z68e8d6vHt4ZXg3ZSbaY` was promoted READY after coordinator HTTP29/29 verification. The independent public smoke fetched the exact cb19…3910 index, passed the UI mission flow and all new runtime model/mechanism states, and inspected three actual-client images. It recorded zero JS errors, CSP violation events, failed HTTP responses/assets or external requests. Player, Horde actors, pods, APC and navigation ownership all cleaned up. Full primitive report: `public-final/report.json`.

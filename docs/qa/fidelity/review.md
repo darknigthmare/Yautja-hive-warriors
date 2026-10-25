@@ -1,6 +1,6 @@
 # Focused independent QA conclusion
 
-**GO for this fidelity pass**, pending the coordinator's final regression and deployment verification. Five automated/agent review axes; **zero human testers, no certified 1:1 fidelity, no certified real-device FPS**.
+**GO for this fidelity pass**. Coordinator regression passed 15/15; canonical deployment was promoted and 29/29 static files verified. Independent public HTTPS smoke also passed. Five automated/agent review axes; **zero human testers, no certified 1:1 fidelity, no certified real-device FPS**.
 
 Geometry build `397cdbf1276d3c1ef45312b5431083d11e4e94452846f7b04ed47a21bb72e5c3`: **26 integrated captures passed**. Final APC controller build `cb19eded36c19e20a5c50b94daad56d1d8550cf1c9ddff08df6d0167d7a03910`: **focused workflow passed**. Models are unchanged between these builds; images retain their original v1 digest.
 
@@ -16,4 +16,4 @@ Both production-preview runs: **zero JS errors, failed asset requests or externa
 
 Retained diagnostics are not concealed: the mane development pilot has four raw Vite HMR client/websocket errors, so that report is marked failed; production-preview integrated runs have none. The initial v2 QA fixture called APC.update with the wrong second argument, then was corrected to `(delta,horde)` and rerun successfully without a product change. The baseline fixture's missing public `skeletons` assumption was also corrected and retained separately.
 
-Detailed evidence: `review.json`, `INDEPENDENT-REVIEW.md`, the v1/v2 reports, 39 baseline images, source provenance and render-budget comparison. HTTPS final smoke is prepared and awaits the coordinator's deployment/GPU go-ahead.
+Detailed evidence: `review.json`, `INDEPENDENT-REVIEW.md`, the v1/v2 reports, 39 baseline images, source provenance and render-budget comparison. Final HTTPS smoke passed on the canonical site, deployment `dpl_39FAHCh8Z68e8d6vHt4ZXg3ZSbaY`, index `cb19eded36c19e20a5c50b94daad56d1d8550cf1c9ddff08df6d0167d7a03910`: three actual-client captures, zero JS/CSP/failed-assets/HTTP>=400/external requests. City insertion/effects/pause, 12 mane chains/38 segments and rigid housing; native Big Chap37/4/9 and contact.005; APC rear contact/clearance/navigation; Wolf portrait/FPS and complete cleanup passed. See `../public-final/report.json`.

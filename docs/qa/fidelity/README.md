@@ -49,3 +49,11 @@ Les photos NECA montrent les détails et le retour du rail, mais pas toutes les 
 Les contrôles couvrent cinq axes : formes et surfaces ; transitions et jouabilité ; contacts et navigation ; ressources et budget ; provenance, propriété et nettoyage. Ce sont des tests automatisés et des revues d'agents IA, avec **zéro testeur humain déclaré**. Les douze GLB source gardent leurs empreintes et aucun crédit Meshy supplémentaire n'est dépensé.
 
 L'[audit des chantiers](../../MODEL-FIDELITY-AUDIT.md) conserve les écarts restant à traiter, dont les lames natives, les anatomies simplifiées et les cinq autres corps Yautja non générés dans le budget City approuvé.
+
+## Version publique vérifiée
+
+Le déploiement `dpl_39FAHCh8Z68e8d6vHt4ZXg3ZSbaY` sert le build final sur [l'URL canonique](https://yautja-hive-warriors.vercel.app). Les 29 fichiers publics, dont les 12 GLB et cinq bundles, correspondent aux tailles et empreintes du stage figé. Le contrôle navigateur HTTPS passe avec zéro erreur JavaScript, CSP, HTTP, ressource manquante ou requête externe.
+
+[Leurre City et décor réel](live-city-detailed-decoy.png) · [Console et compte à rebours](live-city-wrist-countdown.png) · [Masque Wolf dans le jeu public](live-wolf-specific-biomask.png) · [Rapport navigateur](public-browser.json) · [Empreintes HTTP](vercel-public-verification.json)
+
+Le parcours vérifie l'insertion protégée, les 12 chaînes City, le boîtier rigide, les chevilles et la queue Big Chap, le rail et la collision APC, la tête masquée en FPS, le leurre détaillé, la pause, les effets et le nettoyage. Les sources du jeu sont poussées au commit `447e5cc` sur `codex/validated-gameplay-20261025` ; les preuves de livraison sont enregistrées ensuite sur cette même branche.

@@ -1,0 +1,33 @@
+{
+  "status": "published_and_public_http_verified",
+  "startedAt": "2026-10-25T09:05:46.060Z",
+  "index_sha256": "cb19eded36c19e20a5c50b94daad56d1d8550cf1c9ddff08df6d0167d7a03910",
+  "stage": "/workspace/qa/fidelity-20261025/vercel-static-prebuilt-v2",
+  "promotion_executed": true,
+  "deployment_id": "dpl_39FAHCh8Z68e8d6vHt4ZXg3ZSbaY",
+  "other_projects_changed": false,
+  "billing_changed": false,
+  "global_qa": {
+    "source": "/workspace/Yautja-hive-warriors/docs/qa/fidelity-validation.json",
+    "status": "passed_locally_waiting_publication",
+    "passed": true,
+    "pendingChecks": [],
+    "checkedAt": "2026-10-25T09:06:45.008Z"
+  },
+  "canonical_before": {
+    "http": 200,
+    "sha256": "8683a627c08e1c2647913aa29dc375df8cdde08c69da18895981de2b5c5fae6f"
+  },
+  "ready_state": "READY",
+  "candidate_url": "https://yautja-hive-warriors-k9wu2pq8z-darknigthmares-projects.vercel.app",
+  "updatedAt": "2026-10-25T09:07:02.408Z",
+  "public_url": "https://yautja-hive-warriors.vercel.app",
+  "canonical_after": {
+    "http": 200,
+    "sha256": "cb19eded36c19e20a5c50b94daad56d1d8550cf1c9ddff08df6d0167d7a03910"
+  },
+  "public_files_verified": 29,
+  "public_models_verified": 12,
+  "public_bundles_verified": 5,
+  "browser_verification": "Required separately on the canonical URL; this script does not start Chromium or claim human QA"
+}

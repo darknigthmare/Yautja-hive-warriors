@@ -251,5 +251,73 @@
       "detail": "Initial baseline fixture assumed Player adapter exposed skeletons; corrected traversal gathers primitive bone counts. Failure retained in baseline-fixture-error-1.json."
     }
   ],
-  "publicationStatus": "Await coordinator regression and deployment. Prepared HTTPS smoke has not been run against final deployment."
+  "publicationStatus": "Canonical deployment READY and promoted; coordinator HTTP29/29 files passed; independent HTTPS actual client smoke passed.",
+  "deploymentId": "dpl_39FAHCh8Z68e8d6vHt4ZXg3ZSbaY",
+  "publicSmoke": {
+    "status": "passed",
+    "indexSha256": "cb19eded36c19e20a5c50b94daad56d1d8550cf1c9ddff08df6d0167d7a03910",
+    "captures": [
+      "/workspace/qa/fidelity-20261025/public-final/live-city-detailed-decoy.png",
+      "/workspace/qa/fidelity-20261025/public-final/live-city-wrist-countdown.png",
+      "/workspace/qa/fidelity-20261025/public-final/live-wolf-specific-biomask.png"
+    ],
+    "errors": [],
+    "failedAssetRequests": [],
+    "failedHttpResponses": [],
+    "cspViolations": [],
+    "externalRequests": [],
+    "city": {
+      "rightGauntlet": "ready",
+      "stats": {
+        "dreadlocks": 12,
+        "simulatedSegments": 38,
+        "wristbladeActuators": 0,
+        "gauntletHinges": 0
+      },
+      "foot": "applied"
+    },
+    "creature": {
+      "fixture": "Native request through actual Horde API, standalone QA actor; removed immediately",
+      "bones": [
+        37
+      ],
+      "ankleJoints": 4,
+      "tailJoints": 9,
+      "contact": 0.005000000000000001
+    },
+    "handoff": {
+      "hp": 850,
+      "energy": 100,
+      "visible": true,
+      "phase": "complete",
+      "grace": 7
+    },
+    "apc": {
+      "stowed": [
+        0,
+        0.8999999999999999,
+        -4.95
+      ],
+      "stowedDisplacement": 0.5176013112068176,
+      "deployedDisplacement": 0,
+      "navigationOwners": 1
+    },
+    "wolf": {
+      "visual": "procedural",
+      "revision": "wolf-biomask-reference-sculpt-v1",
+      "hp": 1150
+    },
+    "wolfFPS": {
+      "enabled": true,
+      "headVisible": false
+    },
+    "cleanup": {
+      "player": null,
+      "aliens": 0,
+      "pods": 0,
+      "apc": null,
+      "navOwners": 0
+    },
+    "report": "../public-final/report.json"
+  }
 }

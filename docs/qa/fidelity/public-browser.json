@@ -1,0 +1,167 @@
+{
+  "status": "passed",
+  "startedAt": "2026-10-25T09:07:33.139Z",
+  "errors": [],
+  "failedRequests": [],
+  "failedResponses": [],
+  "cspViolations": [],
+  "captures": [
+    "/workspace/qa/fidelity-20261025/public-final/live-city-detailed-decoy.png",
+    "/workspace/qa/fidelity-20261025/public-final/live-city-wrist-countdown.png",
+    "/workspace/qa/fidelity-20261025/public-final/live-wolf-specific-biomask.png"
+  ],
+  "automated": true,
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "scope": "Public HTTPS actual client; UI mission flow, City detailed effects and independent mane/gauntlet, source-native Big Chap fixture, APC rail/collision and Wolf portrait/FPS.",
+  "externalRequests": [],
+  "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+  "indexSha256": "cb19eded36c19e20a5c50b94daad56d1d8550cf1c9ddff08df6d0167d7a03910",
+  "initial": {
+    "hp": 850,
+    "maxHp": 850,
+    "energy": 100,
+    "visible": false,
+    "visual": "imported",
+    "mask": "attached"
+  },
+  "city": {
+    "rightGauntlet": "ready",
+    "stats": {
+      "dreadlocks": 12,
+      "simulatedSegments": 38,
+      "wristbladeActuators": 0,
+      "gauntletHinges": 0
+    },
+    "foot": "applied"
+  },
+  "creature": {
+    "fixture": "Native request through actual Horde API, standalone QA actor; removed immediately",
+    "bones": [
+      37
+    ],
+    "ankleJoints": 4,
+    "tailJoints": 9,
+    "contact": 0.005000000000000001
+  },
+  "handoff": {
+    "hp": 850,
+    "energy": 100,
+    "visible": true,
+    "phase": "complete",
+    "grace": 7
+  },
+  "route": {
+    "visited": [
+      "insertion",
+      "approach",
+      "relay",
+      "foundry"
+    ],
+    "completed": [
+      "insertion",
+      "approach",
+      "relay"
+    ],
+    "openGates": [
+      "gate-insertion-approach",
+      "gate-approach-relay",
+      "gate-relay-foundry"
+    ],
+    "boss": null
+  },
+  "sector4": {
+    "sector": 3,
+    "clusters": 4,
+    "diagnostics": {
+      "triangles": 7464,
+      "drawMeshes": 5,
+      "modelledPieces": 114,
+      "colliders": 20,
+      "floorY": 0
+    },
+    "apc": true,
+    "hp": 800.7399999999989
+  },
+  "apc": {
+    "stowed": [
+      0,
+      0.8999999999999999,
+      -4.95
+    ],
+    "stowedDisplacement": 0.5176013112068176,
+    "deployedDisplacement": 0,
+    "navigationOwners": 1
+  },
+  "decoy": {
+    "sourceKind": "imported",
+    "sourceAssetKey": "city_hunter",
+    "snapshotPose": true,
+    "visibleMeshes": 26,
+    "visibleTriangles": 310789,
+    "totalTriangles": 318271,
+    "geometryBytes": 29865466,
+    "ownedGeometries": 42,
+    "ownedMaterials": 2,
+    "privateSkeletons": 26,
+    "sharedSourceGeometries": 0,
+    "copiedTextures": 0,
+    "restoredHeads": 0,
+    "preservedHiddenHeads": 1,
+    "elapsed": 0,
+    "disposed": false
+  },
+  "countdown": {
+    "disposed": false,
+    "countdown": {
+      "remainingSeconds": 5.4,
+      "displaySeconds": 6,
+      "elapsed": 0.6,
+      "anchor": "measured-city-console",
+      "anchorObjectName": "city-left-console-board"
+    },
+    "trophy": null
+  },
+  "pause": {
+    "paused": true,
+    "equal": true
+  },
+  "trophy": {
+    "state": {
+      "disposed": false,
+      "countdown": null,
+      "trophy": {
+        "elapsed": 0.1,
+        "remainingSeconds": 3.4,
+        "anchor": "imported-right-hand",
+        "anchorObjectName": "imported-socket-rightHand",
+        "family": "queen",
+        "victimKind": "predalien_queen"
+      }
+    },
+    "family": "queen"
+  },
+  "cleanup": {
+    "decoys": 0,
+    "ghostDisposed": true,
+    "player": null,
+    "active": false
+  },
+  "wolf": {
+    "visual": "procedural",
+    "revision": "wolf-biomask-reference-sculpt-v1",
+    "hp": 1150
+  },
+  "wolfFPS": {
+    "enabled": true,
+    "headVisible": false
+  },
+  "finalCleanup": {
+    "player": null,
+    "aliens": 0,
+    "pods": 0,
+    "apc": null,
+    "navOwners": 0
+  },
+  "completedAt": "2026-10-25T09:08:24.349Z"
+}
