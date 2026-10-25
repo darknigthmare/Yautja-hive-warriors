@@ -1,0 +1,40 @@
+✔ gunnison_forest: a large connected map has locked physical corridors, safe spawns and a complete route (5604.836695ms)
+✔ xenomorph_prime: a large connected map has locked physical corridors, safe spawns and a complete route (1747.961185ms)
+✔ antarctic_pyramid: a large connected map has locked physical corridors, safe spawns and a complete route (227.189189ms)
+✔ la_rooftops: a large connected map has locked physical corridors, safe spawns and a complete route (275.380962ms)
+✔ val_verde_jungle: a large connected map has locked physical corridors, safe spawns and a complete route (259.112246ms)
+✔ romulus_station: a large connected map has locked physical corridors, safe spawns and a complete route (261.569967ms)
+Architecture frame budget: {"type":"forest","maximumTriangles":465786,"maximumPotentialSubmissions":171}
+Architecture frame budget: {"type":"hive","maximumTriangles":110598,"maximumPotentialSubmissions":225}
+Architecture frame budget: {"type":"temple","maximumTriangles":67406,"maximumPotentialSubmissions":221}
+Architecture frame budget: {"type":"rooftop","maximumTriangles":89150,"maximumPotentialSubmissions":199}
+Architecture frame budget: {"type":"jungle","maximumTriangles":355054,"maximumPotentialSubmissions":167}
+Architecture frame budget: {"type":"station","maximumTriangles":115454,"maximumPotentialSubmissions":229}
+✔ forest: sector architecture has distinct silhouettes, real footprints and clear battle routes (4348.07778ms)
+✔ hive: sector architecture has distinct silhouettes, real footprints and clear battle routes (1923.491642ms)
+✔ temple: sector architecture has distinct silhouettes, real footprints and clear battle routes (127.762305ms)
+✔ rooftop: sector architecture has distinct silhouettes, real footprints and clear battle routes (162.999238ms)
+✔ jungle: sector architecture has distinct silhouettes, real footprints and clear battle routes (122.705548ms)
+✔ station: sector architecture has distinct silhouettes, real footprints and clear battle routes (132.500946ms)
+✔ resin cores collide as their rotated ellipse rather than a hidden rectangular wall (123.545734ms)
+✔ all static architecture resources are environment-owned and released exactly once on replay (144.942721ms)
+✔ gunnison_forest: textured environment stays inside its rendering budget (4416.89952ms)
+✔ xenomorph_prime: textured environment stays inside its rendering budget (1494.78751ms)
+✔ antarctic_pyramid: textured environment stays inside its rendering budget (114.071597ms)
+✔ la_rooftops: textured environment stays inside its rendering budget (135.934718ms)
+✔ val_verde_jungle: textured environment stays inside its rendering budget (101.502874ms)
+✔ romulus_station: textured environment stays inside its rendering budget (115.555996ms)
+✔ forest canopies and undergrowth share geometry instead of creating a mesh per leaf (255.447766ms)
+✔ skyline window instances stay attached to their actual building facades (114.319021ms)
+✔ roads, annuli, landing cap and terrain share isotropic five-metre texture density (114.92798ms)
+✔ botanical models have attached small blades, curved stems, and smooth sculpted stones (121.75614ms)
+✔ forest trails blend their irregular edges and the fabricated pad has a single visible cap (112.184506ms)
+✔ beveled temple obelisks expose their outside surfaces with front-face culling (0.384836ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 26
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 22965.594818

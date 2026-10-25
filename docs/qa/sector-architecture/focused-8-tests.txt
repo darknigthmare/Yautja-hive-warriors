@@ -1,0 +1,16 @@
+✔ forest: sector architecture has distinct silhouettes, real footprints and clear battle routes (4503.634944ms)
+✔ hive: sector architecture has distinct silhouettes, real footprints and clear battle routes (1617.892291ms)
+✔ temple: sector architecture has distinct silhouettes, real footprints and clear battle routes (83.098512ms)
+✔ rooftop: sector architecture has distinct silhouettes, real footprints and clear battle routes (85.661234ms)
+✔ jungle: sector architecture has distinct silhouettes, real footprints and clear battle routes (82.210417ms)
+✔ station: sector architecture has distinct silhouettes, real footprints and clear battle routes (85.247289ms)
+✔ resin cores collide as their rotated ellipse rather than a hidden rectangular wall (74.118262ms)
+✔ all static architecture resources are environment-owned and released exactly once on replay (78.51015ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6757.580074

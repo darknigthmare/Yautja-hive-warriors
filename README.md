@@ -2,6 +2,10 @@
 
 Jeu d'action 3D dans le navigateur, réalisé avec Three.js et Vite. Six environnements avec territoires reliés, chasse libre, campagne de cinq chapitres, coopération locale à deux joueurs, forge et arène personnalisée.
 
+La reprise du 25 octobre développe l'architecture des secteurs, le leurre détaillé du personnage et les effets de gantelet/trophée, puis corrige la victoire après exécution et plusieurs états de coopération. Voir le [bilan et les captures](docs/qa/development/README.md), le [rapport de validation](docs/qa/development-validation.json) et [la branche Git publiée](docs/GIT-PUBLICATION.md). La fidélité exacte 1:1 reste non établie.
+
+Version publiée : [yautja-hive-warriors.vercel.app](https://yautja-hive-warriors.vercel.app), build `8683a627…`. Les fichiers et le fonctionnement HTTPS sont vérifiés dans le rapport de reprise.
+
 ## Développement
 
 Archive de livraison : sources et fichiers GLB dans `public/models/`, sans dossier `dist/` pour éviter de dupliquer les modèles. Après extraction, recompiler avec `npm ci && npm run build`, puis lancer `npm run preview`.
@@ -73,7 +77,7 @@ La passe City Hunter du 23/10/2026 ajoute un corps Meshy corrigé et un masque s
 
 La reprise poursuit également la [queue du Big Chap à neuf os](docs/BIG-CHAP-TAIL.md), le [contact visuel et la locomotion du joueur](docs/LOCOMOTION.md), ainsi que le [M577 APC et sa tourelle sur rail](docs/APC.md). Aucun nouveau crédit Meshy n'est consommé par ces corrections locales.
 
-Le build du 24 octobre est validé localement : 336 tests CPU, contrôles navigateur et 19 captures des modèles réels. **Sa publication reste bloquée par le quota quotidien Vercel** ; le domaine public conserve la version précédente. Voir le [bilan et les captures](docs/qa/open-work/README.md), le [rapport de validation](docs/qa/open-work-validation.json) et les [instructions de reprise de publication](scripts/README-publication.md).
+Le build du 24 octobre a été publié et vérifié le 25 octobre : 336 tests CPU, contrôles navigateur et 19 captures des modèles réels. Le quota Vercel qui bloquait la création du candidat a été levé. Voir le [bilan et les captures](docs/qa/open-work/README.md), le [rapport de validation](docs/qa/open-work-validation.json) et les [instructions de reprise de publication](scripts/README-publication.md).
 
 
 La chasse et la campagne utilisent désormais [six territoires reliés par des couloirs](docs/BATTLEFIELDS.md), avec portes ouvertes par éliminations, commandants vaincus ou activation puis défense d’un relais. Le départ laisse sept secondes de préparation après l’insertion ; six ennemis arrivent d’abord, puis les renforts sont échelonnés. Les attaques sont préparées et limitées par joueur, et les Marines soutiennent le combat contre la ruche. La [validation initiale](docs/qa/musou-battlefield-validation.json) suit la première publication ; les nouvelles passes sont distinguées dans [QA.md](QA.md).

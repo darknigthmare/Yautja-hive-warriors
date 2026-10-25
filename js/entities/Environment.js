@@ -6,6 +6,7 @@ import { createSurfaceMaterial } from '../graphics/SurfaceLibrary.js';
 import { beveledBlockGeometry, buildDetailedForest, buildBiomeDetails, projectGroundUV } from '../graphics/EnvironmentDetails.js';
 import { wornTrailGeometry, weatherGroundRing, naturalBoundaryGeometry, resinColumnGeometry, erodedObeliskGeometry } from '../graphics/EnvironmentSculpt.js';
 import { buildBattlefieldRelay } from '../graphics/BattlefieldRelay.js';
+import { buildBattlefieldSectorDetails, buildBattlefieldCorridorDetails } from '../graphics/BattlefieldSectorDetails.js';
 
 export class EnvironmentManager {
   constructor(scene) {
@@ -18,6 +19,7 @@ export class EnvironmentManager {
     this.battlefieldLayout = null; this.openGates = new Set(); this.completedSectors = new Set();
     this.gateVisuals = new Map(); this.sectorVisuals = new Map(); this.objectiveMarkers = new Map();
     this.relayVisuals = new Map();
+    this.corridorVisuals = new Map();
   }
 
   clearEnvironment() {
@@ -40,6 +42,7 @@ export class EnvironmentManager {
     this.sectorVisuals = new Map();
     this.objectiveMarkers = new Map();
     this.relayVisuals = new Map();
+    this.corridorVisuals = new Map();
     this.activeSectorId = null;
     this._battlefieldRectsCache = null;
   }
@@ -184,7 +187,9 @@ export class EnvironmentManager {
         const floor = this.mesh(sectorFloor, this.floorMat, [sector.center[0], 0, sector.center[1]]);
         floor.name = `battlefield-floor-${sector.id}`; floor.castShadow = false;
         const details = new THREE.Group(); details.name = `sector-${sector.id}-details`; this.root.add(details);
-        this.sectorVisuals.set(sector.id, details); this.buildSectorLandmarks(sector, details);
+        this.sectorVisuals.set(sector.id, details);
+        const architecture = buildBattlefieldSectorDetails(this, sector, details);
+        this.buildSectorLandmarks(sector, details, architecture?.userData.landmarks);
       }
       const marker = new THREE.Group(); marker.position.set(sector.objective.position[0], 0, sector.objective.position[1]);
       marker.name = `battlefield-objective-${sector.id}`;
@@ -202,6 +207,7 @@ export class EnvironmentManager {
       const geometry = this.geometry(`battlefield-floor-${corridor.id}`, () => { const geometry = new THREE.PlaneGeometry(width, depth); geometry.rotateX(-Math.PI / 2); projectGroundUV(geometry); geometry.setAttribute('color', new THREE.Float32BufferAttribute(Array.from({ length: geometry.attributes.position.count * 3 }, () => 1), 3)); return geometry; });
       const floor = this.mesh(geometry, this.pathMat, [corridor.center[0], 0.012, corridor.center[1]]);
       floor.name = corridor.id; floor.castShadow = false;
+      this.corridorVisuals.set(corridor.id, buildBattlefieldCorridorDetails(this, corridor, this.root));
     }
     this.buildBattlefieldWalls();
     const sealMat = this.material('battlefield-seal', { color: 0xf58b57, emissive: 0xc34918, emissiveIntensity: 0.75, roughness: 0.4, metalness: 0.25, transparent: true, opacity: 0.72, depthWrite: false, surface: 'metal' });
@@ -223,9 +229,11 @@ export class EnvironmentManager {
     this.setActiveSector(this.battlefieldLayout.entrySectorId);
   }
 
-  buildSectorLandmarks(sector, parent) {
+  buildSectorLandmarks(sector, parent, reservedSites = []) {
     const [cx, cz] = sector.center, entries = [];
+    const reserved = (x, z, radius = 0) => reservedSites.some(site => Math.hypot(x - cx - site.x, z - cz - site.z) < site.radius + radius + 1);
     const addBatch = (name, geometry, material, placements, shadows = true) => {
+      if (!placements.length) return null;
       const mesh = new THREE.InstancedMesh(geometry, material, placements.length), dummy = new THREE.Object3D();
       placements.forEach((entry, index) => { dummy.position.set(...entry.position); dummy.scale.set(...(entry.scale ?? [1, 1, 1])); dummy.rotation.set(0, entry.yaw ?? 0, 0); dummy.updateMatrix(); mesh.setMatrixAt(index, dummy.matrix); });
       mesh.name = `battlefield-${sector.id}-${name}`; mesh.castShadow = shadows; mesh.receiveShadow = true; parent.add(mesh); return mesh;
@@ -236,6 +244,7 @@ export class EnvironmentManager {
         const x = cx + Math.cos(angle) * radius, z = cz + Math.sin(angle) * radius;
         if (Math.abs(x - cx) < 12 || Math.abs(z - cz) < 12) continue;
         const scale = 0.8 + (index % 4) * 0.09;
+        if (reserved(x, z, 1.05 * scale)) continue;
         entries.push({ position: [x, 0, z], scale: [scale, scale, scale], yaw: angle }); this.addCollider(x, z, 1.05 * scale, 11 * scale);
       }
       addBatch('tree-trunks', this.geometries.get('tree-wood-sculpt'), this.materials.get('bark'), entries);
@@ -245,17 +254,20 @@ export class EnvironmentManager {
         const angle = index * 2.399963, radius = 34 + index % 5 * 4;
         const x = cx + Math.cos(angle) * radius, z = cz + Math.sin(angle) * radius;
         if (Math.abs(x - cx) < 11 || Math.abs(z - cz) < 11) continue;
+        if (reserved(x, z, 0.8)) continue;
         ferns.push({ position: [x, 0, z], scale: [0.8, 0.8, 0.8], yaw: angle });
       }
       addBatch('undergrowth', this.geometries.get('fern-sculpt'), this.materials.get('undergrowth'), ferns, false);
       const rocks = [];
       for (const [x, z] of [[-32, -34], [35, 32], [-43, 27], [30, -43]]) {
+        if (reserved(cx + x, cz + z, 2.3)) continue;
         rocks.push({ position: [cx + x, 1.4, cz + z], scale: [2.3, 1.8, 2.4], yaw: sector.index }); this.addCollider(cx + x, cz + z, 2.3, 3.5);
       }
       addBatch('weathered-cover', this.geometries.get('rock-hd'), this.materials.get('rock'), rocks);
     } else {
       const blocks = [], accents = [];
       for (const [x, z] of [[-35, -35], [35, -35], [-35, 35], [35, 35]]) {
+        if (reserved(cx + x, cz + z, Math.hypot(this.type === 'temple' ? 2.5 : 4.5, 3))) continue;
         const height = this.type === 'temple' ? 5.5 : this.type === 'hive' ? 5.8 : 3.1;
         blocks.push({ position: [cx + x, height / 2, cz + z], scale: [this.type === 'temple' ? 5 : 9, height, 6], yaw: 0 });
         accents.push({ position: [cx + x, height + 0.08, cz + z], scale: [7, 0.15, 0.25] });
@@ -266,14 +278,18 @@ export class EnvironmentManager {
       const landmarkGeometry = this.type === 'temple' ? this.geometry('obelisk', () => erodedObeliskGeometry()) : this.type === 'hive' ? this.geometry('hive-column', () => resinColumnGeometry()) : null;
       if (landmarkGeometry) {
         addBatch('landmarks', landmarkGeometry, this.wallMat, [[-48, -40], [48, 40], [-48, 40], [48, -40]].map(([x, z]) => ({ position: [cx + x, 4, cz + z], yaw: sector.index * 0.3 })));
-      } else {
+      } else if (reservedSites.length < 4) {
         const panels = [];
         for (let index = 0; index < 16; index++) { const x = (index % 4 - 1.5) * 22, z = index < 8 ? -53 : 53; panels.push({ position: [cx + x, 0.024, cz + z], scale: [9, 0.025, 0.08] }); }
         addBatch('floor-panel-seams', this.geometry('beveled-box', beveledBlockGeometry), this.darkMat, panels, false);
       }
     }
+    // The new occupied sites already provide taller landmarks and ground
+    // markings. Avoid retaining four extra legacy mast draws per territory.
+    if (reservedSites.length >= 4) return;
     // Distinct raised flag towers identify each territory from its approach.
     for (const side of [-1, 1]) {
+      if (reserved(cx + side * 24, cz - 46, 1.4)) continue;
       this.box(this.wallMat, [cx + side * 24, 3, cz - 46], [1.1, 6, 1.1], parent);
       this.box(this.trimMat, [cx + side * 24, 5.6, cz - 46], [2.8, 0.55 + sector.index * 0.14, 0.25], parent);
     }
@@ -380,6 +396,10 @@ export class EnvironmentManager {
     for (const sector of this.battlefieldLayout.sectors) {
       const group = this.sectorVisuals.get(sector.id);
       if (group) group.visible = positions.some(position => Math.hypot(position.x - sector.center[0], position.z - sector.center[1]) < 116);
+    }
+    for (const corridor of this.battlefieldLayout.corridors) {
+      const group = this.corridorVisuals.get(corridor.id);
+      if (group) group.visible = positions.some(position => Math.hypot(position.x - corridor.center[0], position.z - corridor.center[1]) < 130);
     }
   }
 

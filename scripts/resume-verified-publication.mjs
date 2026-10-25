@@ -8,15 +8,15 @@ import { copyFile, readFile, readdir, stat, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const VERIFIED_SHA = '9fdd19169a75d324dbde0e77bddbac90167e81ca19bfb06880084246a4bad6d6';
-const PREVIOUS_PUBLIC_SHA = 'd9839d93a06fd01e82c7efb49cefc46a4105a4406f65f451afdf7106f5e010db';
-const MANIFEST_SHA = 'db7959692a49e460504b23c9273f982ee103d9abe3c2549b4bf87c39d9a3d859';
+const VERIFIED_SHA = '8683a627c08e1c2647913aa29dc375df8cdde08c69da18895981de2b5c5fae6f';
+const PREVIOUS_PUBLIC_SHA = '9fdd19169a75d324dbde0e77bddbac90167e81ca19bfb06880084246a4bad6d6';
+const MANIFEST_SHA = 'da553b8ca45340e81b7c522ec1d6616f89c2f19aead7b26153ea458495271649';
 const CONFIG_SHA = 'fff4229af49c3a7397bd4aed332a50e94f7856a0366cfab2c2e2478a779b409b';
 const LINK_SHA = '77454d4ed9af5d8736994c6061dadc515966445cabaa602b75ee4482fffb8505';
 const ORIGIN = 'https://yautja-hive-warriors.vercel.app';
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const qa = '/workspace/qa/open-work-20261024';
-const qaReportPath = repo + '/docs/qa/open-work-validation.json';
+const qa = '/workspace/qa/development-20261025';
+const qaReportPath = repo + '/docs/qa/development-validation.json';
 const stage = qa + '/vercel-static-prebuilt-v2';
 const cli = qa + '/vercel-cli.sh';
 const argv = process.argv.slice(2);
@@ -81,11 +81,12 @@ async function validateLocal() {
 async function validateGlobalQa(required = false) {
   const validation = await jsonFile(qaReportPath);
   const checks = {
-    final_status: validation.status === 'passed_locally_deployment_blocked_quota',
+    final_status: ['passed_locally_waiting_publication', 'published_and_verified'].includes(validation.status),
     final_build: validation.build?.success === true && validation.build?.index_sha256 === VERIFIED_SHA,
-    cpu: validation.cpu?.passed === 336 && validation.cpu?.failed === 0,
-    targeted_browser: validation.browser?.final_targeted?.status === 'passed'
-      && validation.browser?.final_targeted?.index_sha256 === VERIFIED_SHA,
+    cpu: validation.cpu?.passed === 360 && validation.cpu?.failed === 0
+      && validation.cpu?.final_environment?.status === 'passed',
+    regression_browser: validation.browser?.final_regression?.status === 'passed'
+      && validation.browser?.final_regression?.index_sha256 === VERIFIED_SHA,
     runtime_browser: validation.browser?.final_runtime?.status === 'passed',
   };
   const pendingChecks = Object.keys(checks).filter(key => !checks[key]);

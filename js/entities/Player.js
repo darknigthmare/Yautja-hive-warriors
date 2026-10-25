@@ -11,6 +11,8 @@ import { BIOMASK_GROUP_NAME, composeCharacterWithBiomask, parseBiomaskCalibratio
 import { HunterLocomotion } from '../graphics/HunterLocomotion.js';
 import { installCityHunterMechanisms } from '../graphics/CityHunterMechanisms.js';
 import { CITY_HUNTER_CONSOLE } from '../graphics/CityHunterMechanismsCalibration.js';
+import { getHunterGadgetEffects } from '../graphics/HunterGadgetEffects.js';
+import { createHunterHologram } from '../graphics/HunterHologram.js';
 
 const REQUIRED_RIG_BONES = ['hips', 'head', 'leftArm', 'rightArm', 'leftForeArm', 'rightForeArm', 'leftHand', 'rightHand', 'leftLeg', 'rightLeg', 'leftFoot', 'rightFoot'];
 const REQUIRED_ACCESSORIES = ['blade1', 'blade2', 'shieldMesh', 'secWeaponMesh', 'plasmaGlaiveMesh', 'clanMarkMesh'];
@@ -241,6 +243,7 @@ export class Player {
         laserStarts: [], records: [], latest: new Map(), hidden: new Map(),
         skinMaterials: this.skinMaterials, armorMaterials: this.armorMaterials };
       this._importedCharacter = imported; this.mesh.add(adapter.root);
+      this._gadgetEffects?.rebind();
       if (rig.laserSight) {
         this.laserGroup.children.forEach((line, index) => {
           const positions = line.geometry.attributes.position;
@@ -352,6 +355,7 @@ export class Player {
     for (const material of [...imported.adapter.materials, ...(imported.mechanisms?.materials ?? [])]) this._uncloakedSurfaces?.delete(material);
     imported.mechanisms?.dispose();
     imported.adapter.dispose(); this._importedCharacter = null;
+    this._gadgetEffects?.rebind();
     this._syncWristbladeVisuals();
     delete this.mesh.userData.generatedAsset;
     this.generatedVisualState = 'procedural';
@@ -764,34 +768,12 @@ export class Player {
     return true;
   }
 
-  executeSpineRip() {
+  executeSpineRip(victimKind = 'human') {
     this.audioEngine.playSpineRip();
     this.audioEngine.playYautjaRoar();
     this.brandClanMark();
 
-    const spineGroup = new THREE.Group();
-    const boneMat = new THREE.MeshStandardMaterial({ color: 0xddddcc, roughness: 0.5 });
-    const bloodMat = new THREE.MeshBasicMaterial({ color: 0x880000 });
-
-    const skull = new THREE.Mesh(new THREE.SphereGeometry(0.35, 8, 8), boneMat);
-    skull.position.y = 1.6;
-    spineGroup.add(skull);
-
-    for (let v = 0; v < 8; v++) {
-      const vert = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.18, 6), v % 2 === 0 ? boneMat : bloodMat);
-      vert.position.y = 1.4 - v * 0.2;
-      spineGroup.add(vert);
-    }
-
-    this.rightArm.add(spineGroup);
-    this.rightArm.rotation.x = -Math.PI * 0.8;
-
-    this.schedule(() => {
-      this.rightArm.remove(spineGroup);
-      this.rightArm.rotation.x = 0;
-    }, 3500);
-
-    return true;
+    return getHunterGadgetEffects(this).startTrophy({ kind: victimKind });
   }
 
   triggerFacehuggerLatch() {
@@ -941,37 +923,18 @@ export class Player {
   }
 
   deployHoloDecoy(scene) {
-    if (this.holoDecoyCooldown > 0 || this.isFacehuggerLatched) return null;
+    if (this._disposed || this.hp <= 0 || this.holoDecoyCooldown > 0 || this.isFacehuggerLatched) return null;
+    let projection;
+    try { projection = createHunterHologram(this); }
+    catch { return null; }
     this.holoDecoyCooldown = 16.0;
-
     this.audioEngine.playHoloDecoyDeploy();
-
-    // Create Holographic Cyan Translucent Clone Mesh
-    const decoyGroup = new THREE.Group();
-    decoyGroup.position.copy(this.position);
-    decoyGroup.rotation.y = this.rotationY;
-
-    const holoMat = new THREE.MeshBasicMaterial({
-      color: 0x00ffff,
-      transparent: true,
-      opacity: 0.6,
-      wireframe: true
-    });
-
-    const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.65, 0.45, 1.9, 8), holoMat);
-    torso.position.y = 1.9;
-    decoyGroup.add(torso);
-
-    const head = new THREE.Mesh(new THREE.SphereGeometry(0.5, 8, 8), holoMat);
-    head.position.set(0, 3.2, 0);
-    decoyGroup.add(head);
-
-    scene.add(decoyGroup);
+    scene.add(projection.mesh);
 
     const forward = new THREE.Vector3(Math.sin(this.rotationY), 0, Math.cos(this.rotationY)).normalize();
 
     return {
-      mesh: decoyGroup,
+      ...projection,
       direction: forward,
       speed: 7.5,
       life: 6.0,
@@ -981,33 +944,13 @@ export class Player {
 
   triggerNukeSelfDestruct() {
     this.audioEngine.playPredatorLaughCountdown();
-    this._importedCharacter?.mechanisms?.trigger('nuke', 10);
-
-    // 3D Holographic Yautja Glyphs Ring over left gauntlet (1987 canon)
-    if (!this.wristNukeHoloMesh && this.leftArm) {
-      const holoGroup = new THREE.Group();
-      const ringGeo = new THREE.TorusGeometry(0.55, 0.03, 8, 24);
-      const ringMat = new THREE.MeshBasicMaterial({ color: 0xff0033, wireframe: true, transparent: true, opacity: 0.85 });
-      const ringMesh = new THREE.Mesh(ringGeo, ringMat);
-      ringMesh.rotation.x = Math.PI / 2;
-      holoGroup.add(ringMesh);
-
-      // 3 Glowing Yautja glyph prisms
-      for (let g = 0; g < 3; g++) {
-        const glyph = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.25, 3), new THREE.MeshBasicMaterial({ color: 0xff1144 }));
-        const angle = (g / 3) * Math.PI * 2;
-        glyph.position.set(Math.cos(angle) * 0.45, 0.08, Math.sin(angle) * 0.45);
-        holoGroup.add(glyph);
-      }
-      holoGroup.position.set(0, -0.6, 0.35);
-      this.leftArm.add(holoGroup);
-      this.wristNukeHoloMesh = holoGroup;
-    }
+    getHunterGadgetEffects(this).startCountdown();
 
     return { damage: 10000, radius: 60 };
   }
 
   clearNukeHoloMesh() {
+    this._gadgetEffects?.stopCountdown();
     if (this._importedCharacter?.mechanisms?.getState().mode === 'nuke') this._importedCharacter.mechanisms.trigger('nuke', 0);
     if (this.wristNukeHoloMesh && this.leftArm) {
       disposeObject(this.wristNukeHoloMesh);
@@ -1082,6 +1025,8 @@ export class Player {
     this._disposed = true;
     this._generatedVisualGeneration++;
     this._timers = [];
+    this._gadgetEffects?.dispose();
+    this._gadgetEffects = null;
     this._effects.forEach(effect => disposeObject(effect));
     this._effects.clear();
     this.locomotion.dispose();
@@ -1403,6 +1348,15 @@ export class Player {
     return this.hp;
   }
 
+  updateDefeatedEffects(delta) {
+    if (this._disposed || this.hp > 0 || !Number.isFinite(delta) || delta <= 0) return;
+    // Co-op can continue after one hunter falls. Existing projections keep
+    // their simulation timers without reviving movement, energy or gadgets.
+    this._gadgetEffects?.update(delta);
+    this._importedCharacter?.mechanisms?.update(delta);
+    this._gadgetEffects?.rebind();
+  }
+
   update(delta, horde = null) {
     if (this._disposed) return;
     for (const timer of [...this._timers]) {
@@ -1414,10 +1368,6 @@ export class Player {
     }
     if (this.visorAcidBurn > 0) {
       this.visorAcidBurn = Math.max(0, this.visorAcidBurn - delta * 0.35);
-    }
-
-    if (this.wristNukeHoloMesh) {
-      this.wristNukeHoloMesh.rotation.y += delta * 4.5;
     }
 
     if (this.warhornBuffTimer > 0) {
@@ -1558,11 +1508,13 @@ export class Player {
       this.plasmaEnergy = Math.min(this.maxPlasmaEnergy, this.plasmaEnergy + 15 * delta);
     }
     this.locomotion.update(delta);
+    this._gadgetEffects?.update(delta);
     if (this._importedCharacter) {
       this._syncImportedAccessories();
       this._importedCharacter.adapter.update(delta, this.locomotion.state.moving);
       this._importedCharacter.mechanisms?.update(delta);
       this.laserGroup.position.y = this._importedCharacter.laserBaseY + (this._importedCharacter.adapter.visualGroundOffsetY ?? 0);
     }
+    this._gadgetEffects?.rebind();
   }
 }

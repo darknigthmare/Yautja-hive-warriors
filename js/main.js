@@ -637,6 +637,11 @@ class GameApp {
     materials.forEach(material => material.dispose());
   }
 
+  removeHoloDecoy(decoy) {
+    if (typeof decoy?.dispose === 'function') decoy.dispose();
+    else if (decoy?.mesh) this.removeEffectMesh(decoy.mesh);
+  }
+
   clearMissionState() {
     this.battlefield?.dispose();
     this.battlefield = null;
@@ -655,7 +660,7 @@ class GameApp {
     }
     this.pathogenPools = [];
     this.pathogenCooldown = 0;
-    for (const decoy of this.holoDecoys) this.removeEffectMesh(decoy.mesh);
+    for (const decoy of this.holoDecoys) this.removeHoloDecoy(decoy);
     this.holoDecoys = [];
     for (const effect of this.missionEffects) this.removeEffectMesh(effect.mesh);
     this.missionEffects = [];
@@ -1441,7 +1446,7 @@ class GameApp {
   }
 
   deployHoloDecoy() {
-    if (!this.player) return;
+    if (!this.player || this.player.hp <= 0) return;
     const decoy = this.player.deployHoloDecoy(this.renderer.scene);
     if (!decoy) return;
 
@@ -1509,7 +1514,7 @@ class GameApp {
     // 1. Boss Execution (Queen, The Offspring, Predalien)
     if (this.bosses.activeBoss && this.bosses.activeBoss.isStunned &&
         this.bosses.activeBoss.mesh.position.distanceTo(this.player.position) <= 8.5) {
-      this.player.executeSpineRip();
+      this.player.executeSpineRip(this.bosses.activeBoss.type || 'queen');
 
       const bType = this.bosses.activeBoss.type || 'queen';
       let tName = 'Couronne Chitinense & Colonne Vertébrale de Reine Matriarche (Aliens 1986 / AvP 2004)';
@@ -1534,7 +1539,9 @@ class GameApp {
       // Decisive Battlefield Morale Victory (+35%)
       this.shiftBattlefieldMorale(35.0);
 
-      this.bosses.clear();
+      // Record an actual death before removing the encounter. Clearing a
+      // living boss alone cannot satisfy the battlefield's final objective.
+      this.bosses.takeDamage(this.bosses.activeBoss.hp);
 
       this.ui.showAnnouncement(`🏆 TROPHÉE LÉGENDAIRE RÉCOLTÉ : ${tName} (+${tHonor} HONNEUR, +2 GELÉES ROYALES) !`);
       this.ui.showExecutionPrompt(false);
@@ -1546,7 +1553,7 @@ class GameApp {
       const a = this.horde.aliens[i];
       if ((a.type === 'crusher' || a.type === 'praetorian' || a.type === 'grid_alien') && a.isStunned) {
         if (a.mesh.position.distanceTo(this.player.position) <= 5.5) {
-          this.player.executeSpineRip();
+          this.player.executeSpineRip(a.type);
           this.sessionSkulls++;
 
           let tName = a.type === 'crusher'
@@ -1738,6 +1745,7 @@ class GameApp {
     this.apc.resolveMovement?.(this.player.position);
     this.player.mesh.position.copy(this.player.position);
     if (this.player.hp > 0) this.player.update(delta, this.horde);
+    else this.player.updateDefeatedEffects(delta);
     this.weather.setFocus?.(this.player.hp > 0 ? this.player.position : (this.player2?.position ?? this.player.position));
 
     if (this.isCoOp && this.player2) {
@@ -1752,6 +1760,7 @@ class GameApp {
       this.apc.resolveMovement?.(this.player2.position);
       this.player2.mesh.position.copy(this.player2.position);
       if (this.player2.hp > 0) this.player2.update(delta, this.horde);
+      else this.player2.updateDefeatedEffects(delta);
 
       const cam2Target = this.player2.position.clone().add(new THREE.Vector3(0, 10, 16));
       this.renderer.cameraP2.position.lerp(cam2Target, 5 * delta);
@@ -1803,9 +1812,7 @@ class GameApp {
       const d = this.holoDecoys[i];
       d.life -= delta;
       d.mesh.position.addScaledVector(d.direction, d.speed * delta);
-      d.mesh.children.forEach(c => {
-        if (c.material) c.material.opacity = 0.4 + Math.sin(Date.now() * 0.03) * 0.25;
-      });
+      d.update?.(delta);
 
       // Lure horde aggro towards decoy
       if (this.horde && this.horde.aliens) {
@@ -1823,7 +1830,7 @@ class GameApp {
         if (this.horde) {
           this.horde.checkMeleeHits({ origin: d.mesh.position, radius: 8.0, damage: 280, type: 'heavy' });
         }
-        this.removeEffectMesh(d.mesh);
+        this.removeHoloDecoy(d);
         this.holoDecoys.splice(i, 1);
       }
     }

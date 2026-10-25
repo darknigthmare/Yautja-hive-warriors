@@ -1,0 +1,168 @@
+{
+  "status": "published_and_verified",
+  "date": "2026-10-25",
+  "updated_at": "2026-10-25T07:47:25.308467+00:00",
+  "automated": true,
+  "human_testers": 0,
+  "fidelity_1_to_1_verified": false,
+  "new_meshy_credits": 0,
+  "build": {
+    "success": true,
+    "index_sha256": "8683a627c08e1c2647913aa29dc375df8cdde08c69da18895981de2b5c5fae6f",
+    "version": "V3",
+    "static_files": 29,
+    "models": 12,
+    "bundles": 5,
+    "log": "development/build-final.txt",
+    "runtime_sources_newer_than_build": []
+  },
+  "cpu": {
+    "passed": 360,
+    "failed": 0,
+    "skipped": 0,
+    "duration_ms": 216796.892587,
+    "index_sha256": "3c8739bf4b22b66bf10bf01a772306940dfe5cfc260964f12fbc1064b6cc8405",
+    "log": "development/cpu-broad-v2.txt",
+    "final_environment": {
+      "status": "passed",
+      "passed": 26,
+      "failed": 0,
+      "duration_seconds": 22.97,
+      "coverage": "Only final V3 production differences: timber proxy rendering/material, redundant legacy landmarks and batched station corridor material",
+      "proof": "sector-architecture/validation.json",
+      "index_sha256": "8683a627c08e1c2647913aa29dc375df8cdde08c69da18895981de2b5c5fae6f"
+    }
+  },
+  "browser": {
+    "final_regression": {
+      "status": "passed",
+      "index_sha256": "8683a627c08e1c2647913aa29dc375df8cdde08c69da18895981de2b5c5fae6f",
+      "cases": 15,
+      "passed": 15,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "duration_ms": 599740.560946,
+      "log": "development/browser-final.txt"
+    },
+    "final_runtime": {
+      "status": "passed",
+      "index_sha256": "8683a627c08e1c2647913aa29dc375df8cdde08c69da18895981de2b5c5fae6f",
+      "captures": 10,
+      "javascript_errors": [],
+      "failed_requests": [],
+      "external_requests": [],
+      "report": "development/runtime-final-report.json",
+      "cleanup": {
+        "player": null,
+        "player2": null,
+        "decoys": 0,
+        "controller": {
+          "disposed": true,
+          "countdown": null,
+          "trophy": null
+        },
+        "active": false
+      }
+    },
+    "harness_adjustments": [
+      {
+        "failure": "Playwright launch fixture returned full creature adapter graphs through Promise.all, exceeding transport serialization limits. Wait now returns no adapters; product code and assertions unchanged.",
+        "preserved_log": "development/runtime-attempt1-transport.txt"
+      }
+    ],
+    "final_architecture": {
+      "status": "passed",
+      "index_sha256": "8683a627c08e1c2647913aa29dc375df8cdde08c69da18895981de2b5c5fae6f",
+      "captures": 15,
+      "errors": [],
+      "report": "development/after-report.json"
+    },
+    "public_runtime": {
+      "status": "passed",
+      "index_sha256": "8683a627c08e1c2647913aa29dc375df8cdde08c69da18895981de2b5c5fae6f",
+      "captures": 3,
+      "javascript_errors": [],
+      "failed_requests": [],
+      "external_requests": [],
+      "report": "development/public-final-report.json"
+    }
+  },
+  "features": [
+    "Four central architecture clusters per later sector, six biomes, safe routes and physical volumes",
+    "Snapshot hologram of the actual character, independent private resources and scan shader",
+    "Calibrated six-second wrist projection and victim-family trophy with private cleanup",
+    "Boss execution produces a real death and completes the final objective",
+    "Defeated co-op effect timers advance without gameplay regeneration; dead players cannot deploy decoys",
+    "Cloaked trophies invalidate their shader only on transparency changes"
+  ],
+  "baseline_publication": {
+    "status": "published_and_public_browser_verified",
+    "deployment_id": "dpl_CWb2SN7cSBkAhEGSyM3hxBPVgJhg",
+    "index_sha256": "9fdd19169a75d324dbde0e77bddbac90167e81ca19bfb06880084246a4bad6d6",
+    "public_files_verified": 29,
+    "public_browser_report": "development/public-base-report.json"
+  },
+  "git": {
+    "branch": "codex/validated-gameplay-20261025",
+    "checkpoint_commit": "5e8c03a498dcbaff30d1b9c6de0a3a5d50f40da8",
+    "master_observed_at_start": "f91562b86ef61c9ef7e65087b4beb109036f8dd8",
+    "concurrent_master_commits": 26,
+    "integration_conflicts_observed": 21,
+    "master_overwritten": false,
+    "branch_push_verified": true,
+    "new_work_validation_complete": true
+  },
+  "publication": {
+    "status": "published_and_verified",
+    "candidate_id": "dpl_85Br8dxkvi4Ji87BjgQUQ9CnTCcb",
+    "promoted": true,
+    "url": "https://yautja-hive-warriors.vercel.app",
+    "candidate_http_verification": "development/candidate-verification.json",
+    "public_files_verified": 29,
+    "public_models_verified": 12,
+    "public_bundles_verified": 5,
+    "public_file_report": "development/public-files-verification.json",
+    "delivery_report": "development/delivery-summary.json",
+    "deployment_id": "dpl_85Br8dxkvi4Ji87BjgQUQ9CnTCcb",
+    "index_sha256": "8683a627c08e1c2647913aa29dc375df8cdde08c69da18895981de2b5c5fae6f",
+    "public_runtime_verified": true,
+    "publication_report": "development/publication-result.json"
+  },
+  "limitations": [
+    "Local set design and effects, no film fidelity1:1 established.",
+    "Flat movement floor, no new walkable roofs/stairs or complete interiors.",
+    "Hologram captures a fixed pose rather than playing a walking animation.",
+    "Jungle Hunter countdown uses an anatomical forearm anchor; only City uses a measured console plane.",
+    "Trophy family silhouettes do not reproduce each specific boss or finger grip articulation.",
+    "Automated software-renderer checks do not establish player hardware frame rate.",
+    "Master integration remains separate because concurrent changes have21 content conflicts."
+  ],
+  "source_files_sha256": {
+    "js/main.js": "ac6150cc162510018a10bc76225cfb53bd7a88383c906b297aafc031fe0f273b",
+    "js/entities/Player.js": "490a7c3b189bac5e5a30aaa9c4d0acd84d41f299c2e805d584ff4803ff6ae448",
+    "js/entities/Environment.js": "f46f44a75c352edbffb9ef667c62de494f42fcc1213e4a38f79c41457b709895",
+    "js/graphics/HunterHologram.js": "3817ff79b3afc8504c104d4f8fafdc08ab0fd4e04bf80ae1dec91c101d733f5f",
+    "js/graphics/HunterGadgetEffects.js": "398569c2dd14c7df0e8b0a220960088939b26644608b1033d9de89bb96c00bcc",
+    "js/graphics/BattlefieldSectorDetails.js": "8faec7f8bf8821ed2eb1b809bc4292c2ec797c7653823a1b602c33e279e3e39e",
+    "js/graphics/ImportedCharacter.js": "59f055c454d541a5f040389104119a6117498473982c8d8401809239296ea32d",
+    "tests/gameplay.test.mjs": "d443dea2352aaaa1391db3f779ccc5e8f5dd48ce6c374ea9ad8010024a4b661b",
+    "tests/hunter-gadget-effects.test.js": "3accd0ad091f281b5055c9ad6ab695db0e770c771dc2a1ea8f58f86acd55c6f8",
+    "tests/hunter-hologram.test.js": "c98ce96f9358f08a0720a94a641526ff002b55f5bf94d1c13a0fda72c00ded75",
+    "tests/battlefield-sector-details.test.js": "1ac1da35e9f50e6bdf54af83392dedd10c18ef893b8ee3e1d4a08a568adc3c5f"
+  },
+  "review_iterations": [
+    {
+      "build": "V1-2a708",
+      "result": "CPU and GPU smoke passed; architecture visual density insufficient because two sites were too far from central routes.",
+      "correction": "Four larger central sites reserve their positions before old props.",
+      "image": "development/review-v1-sparse-forest.png"
+    },
+    {
+      "build": "V2-3c8739",
+      "result": "360 CPU and dense scenes passed; timber collision proxy was also drawn and covered the actual logs.",
+      "correction": "V3 keeps only its physical resolver and real cylinders, removes obsolete mast draws and batches station corridors.",
+      "image": "development/review-v2-obstructed-timber.png"
+    }
+  ]
+}

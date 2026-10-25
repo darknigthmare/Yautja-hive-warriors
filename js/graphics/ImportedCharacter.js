@@ -352,7 +352,8 @@ export function createImportedCharacter(owner, gltf, options = {}) {
     };
     syncHead();
     return { root, model, bones, controls, sockets, materials, skinMaterials, armorMaterials,
-      headMeshes, canHideHead: headMeshes.length > 0, animations: gltf.animations ?? [],
+      headMeshes, getHeadRestVisibility: mesh => originallyVisible.get(mesh) ?? null,
+      canHideHead: headMeshes.length > 0, animations: gltf.animations ?? [],
       diagnostics: { mappedBones: Object.fromEntries(Object.entries(bones).map(([role, bone]) => [role, bone.name])),
         missingBones: ['leftArm', 'rightArm', 'leftLeg', 'rightLeg', 'head'].filter(role => !bones[role]),
         missingControls: ROLES.filter(role => !controls[role]),

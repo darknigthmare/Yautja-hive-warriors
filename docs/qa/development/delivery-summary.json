@@ -1,0 +1,26 @@
+{
+  "status": "published_and_public_http_verified",
+  "updated_at": "2026-10-25T07:40:43.712267+00:00",
+  "deployment_id": "dpl_85Br8dxkvi4Ji87BjgQUQ9CnTCcb",
+  "index_sha256": "8683a627c08e1c2647913aa29dc375df8cdde08c69da18895981de2b5c5fae6f",
+  "public_url": "https://yautja-hive-warriors.vercel.app",
+  "public_files_verified": 29,
+  "public_models_verified": 12,
+  "public_bundles_verified": 5,
+  "public_bytes_verified": 265653297,
+  "promotion_executed": true,
+  "canonical_after": {
+    "http": 200,
+    "sha256": "8683a627c08e1c2647913aa29dc375df8cdde08c69da18895981de2b5c5fae6f"
+  },
+  "global_qa": {
+    "before_promotion_report": "/workspace/qa/development-20261025/global-validation-before-promotion.json",
+    "status": "passed_locally_waiting_publication",
+    "cpu_broad_passed": 360,
+    "cpu_environment_delta_passed": 26,
+    "final_browser_passed": 15,
+    "final_runtime_captures": 10
+  },
+  "canonical_browser_verification": "Pending root HTTPS check; not claimed by file verifier",
+  "repo_docs_scripts_untouched_by_delivery_agent": true
+}

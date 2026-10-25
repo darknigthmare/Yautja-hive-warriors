@@ -414,12 +414,13 @@ test('sandbox honors the enemy slider and can be completed without spawning anot
   } finally { await context.close(); }
 });
 
-test('melee damages bosses and trophy execution requires close range', async () => {
+test('melee damages bosses and a close-range trophy execution records a real final victory and releases its visual', async () => {
   const { page, context, errors } = await createSession();
   try {
     await launchHunt(page);
     await reachFinalBattlefieldBoss(page);
     const results = await page.evaluate(() => {
+      const mission = game.battlefield;
       const boss = game.bosses.activeBoss;
       boss.mesh.position.copy(game.player.position).add({ x: 0, y: 0, z: 3 });
       const before = boss.hp;
@@ -431,11 +432,43 @@ test('melee damages bosses and trophy execution requires close range', async () 
       const farTargetSurvived = !!game.bosses.activeBoss;
       boss.mesh.position.copy(game.player.position).add({ x: 0, y: 0, z: 3 });
       game.checkTrophyExecution();
-      return { meleeDamage, farTargetSurvived, nearbyExecuted: !game.bosses.activeBoss };
+      const trophy = game.player.mesh.getObjectByName('hunter-spine-trophy-effect');
+      const trophyState = game.player._gadgetEffects?.getState().trophy;
+      const geometries = new Set(), materials = new Set();
+      trophy?.traverse(mesh => {
+        if (mesh.geometry) geometries.add(mesh.geometry);
+        for (const material of Array.isArray(mesh.material) ? mesh.material : [mesh.material]) if (material) materials.add(material);
+      });
+      let geometryDisposals = 0, materialDisposals = 0;
+      geometries.forEach(geometry => geometry.addEventListener('dispose', () => geometryDisposals++));
+      materials.forEach(material => material.addEventListener('dispose', () => materialDisposals++));
+      const state = { meleeDamage, farTargetSurvived, nearbyExecuted: !game.bosses.activeBoss,
+        defeatedBossHp: boss.hp, victimKind: boss.type, trophyFamily: trophyState?.family,
+        trophyVictimKind: trophyState?.victimKind, renderedFamily: trophy?.userData.trophyFamily,
+        trophyGeometries: geometries.size, trophyMaterials: materials.size };
+      game.update(0.001);
+      return { ...state, missionComplete: mission.complete,
+        finalSectorComplete: mission.progression.currentState.completed,
+        isPlaying: game.isPlaying, finalPlayer: game.player,
+        trophyRemoved: trophy?.parent === null, geometryDisposals, materialDisposals };
     });
     assert.ok(results.meleeDamage > 0);
     assert.equal(results.farTargetSurvived, true);
     assert.equal(results.nearbyExecuted, true);
+    assert.equal(results.defeatedBossHp, 0, 'An execution must report a real boss death rather than only removing a living encounter.');
+    assert.equal(results.victimKind, 'predalien_queen');
+    assert.equal(results.trophyFamily, 'queen', 'A queen execution must show its actual skull family, not a human sphere.');
+    assert.equal(results.renderedFamily, 'queen');
+    assert.equal(results.trophyVictimKind, results.victimKind);
+    assert.ok(results.trophyGeometries > 0 && results.trophyMaterials > 0);
+    assert.equal(results.missionComplete, true);
+    assert.equal(results.finalSectorComplete, true);
+    assert.equal(results.isPlaying, false);
+    assert.equal(results.finalPlayer, null);
+    assert.equal(results.trophyRemoved, true);
+    assert.equal(results.geometryDisposals, results.trophyGeometries, 'Ending the victorious mission releases every trophy geometry once.');
+    assert.equal(results.materialDisposals, results.trophyMaterials, 'Ending the victorious mission releases every trophy material once.');
+    assert.match(await page.locator('#end-title').innerText(), /VICTOIRE/);
     assert.deepEqual(errors, []);
   } finally { await context.close(); }
 });
