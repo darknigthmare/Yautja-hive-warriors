@@ -13,7 +13,29 @@
       "Préserver la rareté des Yautja, les groupes par faction et la cohérence d’œuvre. Les chiffres d’armée et dimensions sont des cibles à tester.",
       "Le menu a été observé en ligne. WebGL indisponible dans la session d’audit : combats, FPS et fidélité visuelle restent à valider sur matériel cible."
     ],
-    "filename": "Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.xlsx"
+    "filename": "Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.xlsx",
+    "expansion": {
+      "date": "2026-10-26",
+      "title": "Guerres de clans Yautja et affrontements contre les humains",
+      "status": "Propositions de conception originales à développer et à profiler",
+      "codeAuditCommit": "0f37cc52f9d83a4abecc17b80f7bfc67701677cf",
+      "scope": "Ajout de cartes, scénarios, compositions, chefs et budgets au plan existant. Les 126 constats du code restent ceux de l’audit v65.5.",
+      "rules": [
+        "Les nouveaux clans, lieux et déroulements de mission sont créés pour le projet. Leur présence ne certifie pas un événement ou un rite canonique.",
+        "Les scénarios sont des presets indépendants. Si une campagne les relie, elle conserve l’identité, la mort, la capture et le retrait des chefs et des groupes.",
+        "Les forces actives, distantes et de réserve sont trois états exclusifs. Actif signifie simulé en détail, pas nécessairement visible. Les fronts partagent l’allocation globale, les chefs sont inclus et le joueur est séparé des PNJ.",
+        "Les civils, personnes blessées non combattantes et matériels sont suivis séparément. Leurs plafonds de représentation doivent entrer dans le profilage de la scène complète.",
+        "Les factions humaines respectent l’époque du scénario. Les relations sont définies par les objectifs et les événements ; une trêve ne crée aucune unité supplémentaire."
+      ],
+      "counts": {
+        "maps": 8,
+        "fronts": 12,
+        "groups": 12,
+        "bosses": 6,
+        "encounters": 12,
+        "budgets": 5
+      }
+    }
   },
   "backlog": {
     "sheetName": "Manquants",
@@ -130,6 +152,71 @@
         "allyDistant": 34,
         "enemyReserve": 360,
         "allyReserve": 8
+      },
+      {
+        "id": "EFF-09",
+        "label": "Clans rivaux — escarmouche de chasseurs",
+        "enemyActive": 16,
+        "allyActive": 8,
+        "playerActive": 1,
+        "enemyDistant": 32,
+        "allyDistant": 8,
+        "enemyReserve": 16,
+        "allyReserve": 4,
+        "fronts": 3,
+        "notes": "Proposition originale : 64 Yautja adverses et 20 alliés PNJ alloués. Cellules spécialisées et effectifs finis ; chefs inclus dans les groupes. Trois fronts partagent 16 ennemis et 8 alliés PNJ actifs au total. Le joueur est séparé. Renforts limités par les réserves et les routes ; aucun chiffre canonique ni performance certifiée."
+      },
+      {
+        "id": "EFF-10",
+        "label": "Clans rivaux — siège exceptionnel",
+        "enemyActive": 32,
+        "allyActive": 16,
+        "playerActive": 1,
+        "enemyDistant": 64,
+        "allyDistant": 32,
+        "enemyReserve": 32,
+        "allyReserve": 16,
+        "fronts": 4,
+        "notes": "Guerre de clan originale exceptionnelle : 128 adversaires Yautja et 64 alliés PNJ alloués, dont 32 et 16 proches. Les quatre fronts se répartissent cette même force. Chefs, blessés combattants et équipages ne sont comptés qu’une fois. Civils, appareils et tourelles ont leurs compteurs séparés. À valider après EFF-09."
+      },
+      {
+        "id": "EFF-11",
+        "label": "Humains contemporains — capture et poursuite",
+        "enemyActive": 64,
+        "allyActive": 4,
+        "playerActive": 1,
+        "enemyDistant": 128,
+        "allyDistant": 4,
+        "enemyReserve": 64,
+        "allyReserve": 0,
+        "fronts": 3,
+        "notes": "Mission originale contemporaine : 256 humains adverses et 8 Yautja alliés PNJ alloués. Trois fronts partagent les budgets actifs. Les unités viennent de postes, véhicules ou convois identifiés ; chaque transport transfère ses passagers sans duplication. Aucun armement futuriste importé. Civils hors budget combattants et hors objectifs de kills."
+      },
+      {
+        "id": "EFF-12",
+        "label": "Humains du futur — opération militaire",
+        "enemyActive": 128,
+        "allyActive": 12,
+        "playerActive": 1,
+        "enemyDistant": 384,
+        "allyDistant": 12,
+        "enemyReserve": 256,
+        "allyReserve": 8,
+        "fronts": 4,
+        "notes": "Opération originale du futur : 768 adversaires et 32 Yautja alliés PNJ alloués sur quatre fronts. Le scénario précise la faction humaine et les éventuels synthétiques combattants ; aucun androïde ajouté en dehors de l’allocation. Les véhicules et tourelles sont du matériel, leurs équipages sont déjà comptés. Les civils et unités de maintenance restent séparés. Plafonds à profiler, pas capacités acquises."
+      },
+      {
+        "id": "EFF-13",
+        "label": "Plusieurs camps — rivalité Yautja et force humaine",
+        "enemyActive": 96,
+        "allyActive": 12,
+        "playerActive": 1,
+        "enemyDistant": 192,
+        "allyDistant": 12,
+        "enemyReserve": 96,
+        "allyReserve": 8,
+        "fronts": 4,
+        "notes": "384 combattants initialement adverses, répartis entre deux camps indépendants, et 32 alliés PNJ. Chaque scénario ventile actifs/distants/réserves par camp et tous les fronts partagent ces plafonds. Une trêve change les relations sans dupliquer les unités ni créer des renforts. Les chefs sont inclus. Civils et matériel ont des compteurs et limites de représentation distincts. Conflit original à profiler."
       }
     ]
   },
@@ -6256,6 +6343,186 @@
           "restrictions": "Naru et Taabe restent des individus uniques ; pas de groupe ennemi automatique fondé sur leur origine",
           "status": "À créer : rôles et relations propres",
           "countBasis": "Combattants PNJ ; joueur exclu"
+        },
+        {
+          "id": "GRP-31",
+          "faction": "Yautja — modèle de détachement ; allégeance fixée par chaque opération",
+          "role": "Éclaireurs de relief",
+          "continuity": "Rôles de scénario originaux utilisables par le clan du joueur ou un clan rival ; aucun rang, caste ou rite canonique ajouté, aucune hostilité déduite de l’espèce.",
+          "composition": "4 PNJ : 1 chef de piste, 2 éclaireurs, 1 observateur de couverture",
+          "min": 4,
+          "max": 4,
+          "command": "Chef de groupe inclus dans les quatre ; relais opérationnel propre à cette mission.",
+          "behavior": "Observer, marquer les accès et rompre le contact ; guider une interception sans affronter seuls une position fortifiée",
+          "spawn": "Corniche, piste ou débarcadère déjà accessible",
+          "restrictions": "Pas de vision à travers toutes les parois ni détection parfaite du camouflage ; un contact doit être confirmé. Équipements autorisés par le profil du chasseur ; pas de multiplication automatique des armes rares.",
+          "status": "À créer : proposition de groupe spécialisé, à profiler",
+          "countBasis": "Quatre combattants PNJ ; joueur exclu ; chef et éventuel boss inclus, jamais ajoutés au quota."
+        },
+        {
+          "id": "GRP-32",
+          "faction": "Yautja — modèle de détachement ; allégeance fixée par chaque opération",
+          "role": "Intercepteurs de passage",
+          "continuity": "Rôles de scénario originaux utilisables par le clan du joueur ou un clan rival ; aucun rang, caste ou rite canonique ajouté, aucune hostilité déduite de l’espèce.",
+          "composition": "4 PNJ : 1 chef d’interception, 2 combattants de proximité, 1 spécialiste de l’entrave",
+          "min": 4,
+          "max": 4,
+          "command": "Chef de groupe inclus dans les quatre ; relais opérationnel propre à cette mission.",
+          "behavior": "Contenir une voie, interrompre un mouvement puis se replier vers le passage suivant",
+          "spawn": "Piste raccordée ou position d’embuscade lisible",
+          "restrictions": "Les entraves sont limitées, télégraphiées et destructibles ; aucune chaîne de contrôle sans issue. Équipements autorisés par le profil du chasseur ; pas de multiplication automatique des armes rares.",
+          "status": "À créer : proposition de groupe spécialisé, à profiler",
+          "countBasis": "Quatre combattants PNJ ; joueur exclu ; chef et éventuel boss inclus, jamais ajoutés au quota."
+        },
+        {
+          "id": "GRP-33",
+          "faction": "Yautja — modèle de détachement ; allégeance fixée par chaque opération",
+          "role": "Gardes de position",
+          "continuity": "Rôles de scénario originaux utilisables par le clan du joueur ou un clan rival ; aucun rang, caste ou rite canonique ajouté, aucune hostilité déduite de l’espèce.",
+          "composition": "4 PNJ : 1 chef de poste, 2 gardes de contact, 1 appui à distance",
+          "min": 4,
+          "max": 4,
+          "command": "Chef de groupe inclus dans les quatre ; relais opérationnel propre à cette mission.",
+          "behavior": "Défendre un accès, garder un couvert et protéger un départ ; abandonner une position devenue intenable",
+          "spawn": "Garnison ou abri figurant sur la carte",
+          "restrictions": "Un seul appui spécialisé par groupe ; munitions et couverture ne sont pas infinies. Équipements autorisés par le profil du chasseur ; pas de multiplication automatique des armes rares.",
+          "status": "À créer : proposition de groupe spécialisé, à profiler",
+          "countBasis": "Quatre combattants PNJ ; joueur exclu ; chef et éventuel boss inclus, jamais ajoutés au quota."
+        },
+        {
+          "id": "GRP-34",
+          "faction": "Yautja — modèle de détachement ; allégeance fixée par chaque opération",
+          "role": "Équipe de route et de réparation",
+          "continuity": "Rôles de scénario originaux utilisables par le clan du joueur ou un clan rival ; aucun rang, caste ou rite canonique ajouté, aucune hostilité déduite de l’espèce.",
+          "composition": "4 PNJ : 1 chef technicien, 2 opérateurs, 1 garde de couverture",
+          "min": 4,
+          "max": 4,
+          "command": "Chef de groupe inclus dans les quatre ; relais opérationnel propre à cette mission.",
+          "behavior": "Déverrouiller, réparer, désactiver un relais ou préparer une voie de départ ; demander protection pendant le travail",
+          "spawn": "Atelier, dépôt ou véhicule déjà alloué au scénario",
+          "restrictions": "La progression de travail s’arrête sous interruption et conserve son état ; aucun renfort gratuit créé par réparation. Équipements autorisés par le profil du chasseur ; pas de multiplication automatique des armes rares.",
+          "status": "À créer : proposition de groupe spécialisé, à profiler",
+          "countBasis": "Quatre combattants PNJ ; joueur exclu ; chef et éventuel boss inclus, jamais ajoutés au quota."
+        },
+        {
+          "id": "GRP-35",
+          "faction": "Yautja — modèle de détachement ; allégeance fixée par chaque opération",
+          "role": "Escorte de fret et de retrait",
+          "continuity": "Rôles de scénario originaux utilisables par le clan du joueur ou un clan rival ; aucun rang, caste ou rite canonique ajouté, aucune hostilité déduite de l’espèce.",
+          "composition": "4 PNJ : 1 chef d’escorte, 1 pilote ou technicien, 2 gardes",
+          "min": 4,
+          "max": 4,
+          "command": "Chef de groupe inclus dans les quatre ; relais opérationnel propre à cette mission.",
+          "behavior": "Protéger le fret, déplacer un module et ramener les survivants ; privilégier le retour à la poursuite des cibles",
+          "spawn": "Quai, convoi ou point de rassemblement nommé",
+          "restrictions": "Pilote inclus dans les quatre ; aucun soldat supplémentaire caché dans le véhicule. Un module de fret n’est pas une unité combattante. Équipements autorisés par le profil du chasseur ; pas de multiplication automatique des armes rares.",
+          "status": "À créer : proposition de groupe spécialisé, à profiler",
+          "countBasis": "Quatre combattants PNJ ; joueur exclu ; chef et éventuel boss inclus, jamais ajoutés au quota."
+        },
+        {
+          "id": "GRP-36",
+          "faction": "Yautja — modèle de détachement ; allégeance fixée par chaque opération",
+          "role": "Détachement de commandement",
+          "continuity": "Rôles de scénario originaux utilisables par le clan du joueur ou un clan rival ; aucun rang, caste ou rite canonique ajouté, aucune hostilité déduite de l’espèce.",
+          "composition": "4 PNJ : 1 commandant, 2 gardes rapprochés, 1 relais d’ordres",
+          "min": 4,
+          "max": 4,
+          "command": "Chef de groupe inclus dans les quatre ; relais opérationnel propre à cette mission.",
+          "behavior": "Transmettre les priorités, organiser une capture ou un retrait, préserver un canal de liaison",
+          "spawn": "Poste de commandement ou délégation à accès connu",
+          "restrictions": "Un boss nommé remplace le commandant dans les quatre. Sa défaite perturbe les ordres mais ne tue ni ne supprime les autres groupes. Équipements autorisés par le profil du chasseur ; pas de multiplication automatique des armes rares.",
+          "status": "À créer : proposition de groupe spécialisé, à profiler",
+          "countBasis": "Quatre combattants PNJ ; joueur exclu ; chef et éventuel boss inclus, jamais ajoutés au quota."
+        },
+        {
+          "id": "GRP-37",
+          "faction": "Humains — force de capture contemporaine originale",
+          "role": "Équipe de capture et de couverture",
+          "continuity": "Présent fictif, organisation originale ; aucun équipement futur importé",
+          "composition": "8 combattants : 1 chef, 4 fusiliers, 2 spécialistes de capture, 1 opérateur radio armé",
+          "min": 8,
+          "max": 8,
+          "command": "Chef d’équipe sous les ordres du commandant BOS-29, qui reste dans la cellule GRP-42 distincte",
+          "behavior": "Couvrir une approche, préparer un dispositif de capture, protéger le transport puis se replier sous pression ; délais de préparation et rechargement lisibles",
+          "spawn": "Poste de contrôle ou transport arrivé par une route ouverte ; consommation de réserve",
+          "restrictions": "Dispositifs de capture proposés comme fiction originale ; efficacité à équilibrer, aucune neutralisation garantie du chasseur ni invulnérabilité humaine",
+          "status": "À créer — proposition d’opération contemporaine",
+          "countBasis": "8 combattants PNJ, chef compris ; véhicules, civils et matériel comptés séparément"
+        },
+        {
+          "id": "GRP-38",
+          "faction": "Humains — mercenaires de sécurité industrielle",
+          "role": "Détachement de protection du convoi",
+          "continuity": "Contrat contemporain fictif, société et identité visuelle originales",
+          "composition": "8 combattants : 1 chef, 4 fusiliers, 1 appui, 1 sapeur, 1 observateur",
+          "min": 8,
+          "max": 8,
+          "command": "Chef de détachement relié au poste de sécurité",
+          "behavior": "Bloquer un axe, escorter un chargement, poser des obstacles puis déplacer la ligne si elle est contournée ; tir et munitions bornés",
+          "spawn": "Dépôt et convoi de relève identifiés ; pas de création autour de la caméra",
+          "restrictions": "Équipement d’une seule époque ; employés non armés séparés ; tout matériel lourd occupe un budget de matériel distinct",
+          "status": "À créer — groupe industriel original",
+          "countBasis": "8 combattants PNJ, équipages éventuels inclus dans ces 8 ; matériel non additionné comme soldat"
+        },
+        {
+          "id": "GRP-39",
+          "faction": "Humains — force coloniale militaire hostile",
+          "role": "Section de contre-assaut à la colonie",
+          "continuity": "Futur Alien/AVP compatible, mission originale ; hostilité à ce clan motivée par l’ordre d’opération, pas attribuée à tous les Marines",
+          "composition": "8 combattants : 1 chef, 4 fusiliers, 1 smartgunner, 1 spécialiste de brèche, 1 radio",
+          "min": 8,
+          "max": 8,
+          "command": "Chef de section ; sous commandement expéditionnaire propre à cette opération",
+          "behavior": "Tenir des couverts, progresser par bonds, renforcer un axe menacé et sécuriser une route logistique ; les sections poursuivent des ordres locaux après perte du commandement",
+          "spawn": "Caserne ou transport militaire depuis une réserve finie ; points de débarquement explicités",
+          "restrictions": "Armes et tenues futures de l’incarnation retenue à référencer ; ni réplique de l’escouade nommée d’Aliens ni armure humaine fantasmatique",
+          "status": "À créer — composition de guerre originale",
+          "countBasis": "8 combattants PNJ ; chef et spécialiste inclus, transport et passagers sans double comptage"
+        },
+        {
+          "id": "GRP-40",
+          "faction": "Humains — sûreté orbitale originale",
+          "role": "Équipe de défense des compartiments",
+          "continuity": "Futur spatial original ; société distincte des entreprises canoniques sauf attribution ultérieure documentée",
+          "composition": "8 combattants : 1 chef, 4 fusiliers, 1 protecteur équipé d’un bouclier proposé, 1 technicien armé, 1 observateur",
+          "min": 8,
+          "max": 8,
+          "command": "Chef de compartiment et consignes du poste de sûreté",
+          "behavior": "Fermer un sas, défendre un croisement, sécuriser une brèche et se réaffecter par les coursives accessibles ; évite de tirer à travers un allié",
+          "spawn": "Module de casernement ou navette amarrée à un quai intact",
+          "restrictions": "Bouclier et protocole de combat sont créations de jeu à tester ; synthétiques de maintenance neutres séparés ; aucune immunité humaine aux armes Yautja",
+          "status": "À créer — sécurité orbitale originale",
+          "countBasis": "8 humains combattants PNJ ; aucun synthétique ni tourelle dans ce compteur"
+        },
+        {
+          "id": "GRP-41",
+          "faction": "Humains — cordon militaire de cité coloniale",
+          "role": "Section de barrage et d’interception",
+          "continuity": "Futur colonial original, équipement et mandat propres à l’opération",
+          "composition": "8 combattants : 1 chef, 4 fusiliers, 1 observateur, 1 radio, 1 appui léger",
+          "min": 8,
+          "max": 8,
+          "command": "Chef de barrage ; directives de capture ou d’interception définies par la mission",
+          "behavior": "Contrôler un carrefour, surveiller les hauteurs, laisser passer les civils autorisés et déplacer le barrage si un axe cède",
+          "spawn": "Dépôt périphérique et route militaire distincte de la file d’évacuation",
+          "restrictions": "Civils et soignants ne deviennent pas ennemis par voisinage ; aucune armée humaine omnisciente ou tir à travers immeubles",
+          "status": "À créer — contrôle urbain original",
+          "countBasis": "8 combattants PNJ ; chauffeurs militaires compris si affectés, passagers et matériel suivis une seule fois"
+        },
+        {
+          "id": "GRP-42",
+          "faction": "Humains — cellule de commandement d’opération",
+          "role": "Poste de commandement protégé",
+          "continuity": "Un seul profil sélectionné par mission : contemporain pour AFF-06/07 ; futur pour AFF-08/09/10/11/12. Chaque chef appartient à la faction de cette opération.",
+          "composition": "8 combattants : 1 commandant, 2 radios armés, 2 gardes, 1 opérateur de contre-surveillance armé, 1 technicien armé, 1 agent de liaison armé",
+          "min": 8,
+          "max": 8,
+          "command": "Un commandant unique, remplacé par BOS-29, BOS-30 ou BOS-31 selon l’opération",
+          "behavior": "Émettre ordres et demandes de renfort, surveiller les liaisons puis évacuer vers un poste de repli réel ; le personnel peut défendre le poste sans bonus de santé arbitraire",
+          "spawn": "Poste déjà déployé ; ne réapparaît pas après sa neutralisation",
+          "restrictions": "Les armes, radios et protections sont celles du profil de période ; un seul commandant de rencontre compté dans l’effectif de huit",
+          "status": "À créer — archétype de commandement, variantes de période séparées",
+          "countBasis": "8 humains combattants PNJ ; le boss-commandant est l’un des huit, jamais une unité ajoutée au budget"
         }
       ]
     },
@@ -6525,6 +6792,201 @@
           "priority": "P1",
           "frontD": "Sans objet pour ce scénario à trois fronts maximum",
           "frontE": "Sans objet pour ce scénario à trois fronts maximum"
+        },
+        {
+          "id": "FR-14",
+          "operation": "Raid des archives retenues",
+          "frontA": "A — Ouvrir le dépôt et extraire le registre des routes.",
+          "frontB": "B — Brouiller ou capturer le relais avant l’alerte générale.",
+          "frontC": "C — Garder un quai de sortie et une voie de retour.",
+          "frontD": "Sans objet : cette opération possède exactement trois fronts.",
+          "frontE": "Sans objet : aucun cinquième front dans cette opération.",
+          "independent": "Les gardes cherchent le registre, le relais progresse vers l’alerte et l’équipe de quai prépare un départ même hors caméra. Les réserves quittent un quai identifié.",
+          "choice": "Raid silencieux et extraction précoce, ou prise durable du relais pour obtenir plus de renseignements.",
+          "consequence": "Relais ignoré : patrouilles distantes convergent. Quai perdu : la sortie se déplace vers la corniche, avec un délai annoncé. Les archives intactes permettent d’identifier un convoi dans l’opération suivante.",
+          "success": "Registre sécurisé et détachement revenu par une sortie praticable ; capture du commandant facultative.",
+          "constraints": "Scénario original de conflit entre deux clans Yautja inventés ; aucune guerre, coutume, hiérarchie ou règle de duel n’est présentée comme canonique ou universelle. Budget EFF-09, 3 fronts persistants. Un chef remplace un membre de son escouade ; joueur exclu des PNJ. Aucun renfort illimité.\nCarte : LD-14\nGabarit : EFF-09\nFronts simultanés prévus : 3",
+          "priority": "P1",
+          "mapId": "LD-14",
+          "budgetId": "EFF-09",
+          "frontCount": 3
+        },
+        {
+          "id": "FR-15",
+          "operation": "Défense des Quatre Accès",
+          "frontA": "A — Contenir la brèche de l’enceinte et préserver les accès de défense.",
+          "frontB": "B — Maintenir l’énergie et les réparations de la forge sans transformer celle-ci en objectif de massacres.",
+          "frontC": "C — Escorter les équipages et la réserve mobile jusqu’au port.",
+          "frontD": "D — Couper la route de ravitaillement de la commandante de siège et préserver son propre retrait.",
+          "frontE": "Sans objet : aucun cinquième front dans cette opération.",
+          "independent": "Quatre axes progressent séparément : brèche, réparations, évacuation et chaîne d’ordres. Les assiégeants peuvent préférer la saisie du port à une bataille dans les quartiers.",
+          "choice": "Contre-attaque sur le commandement rival, ou défense mobile qui concède l’enceinte mais conserve le port et les archives.",
+          "consequence": "Forge perdue : réparations suspendues. Port menacé : fenêtre d’évacuation se réduit. Commandement rival privé de ravitaillement : assaut ralentit puis retraite possible ; aucun soldat ne disparaît.",
+          "success": "Conserver ou évacuer les archives et les défenseurs, puis imposer une cessation de l’assaut ou un départ viable.",
+          "constraints": "Scénario original de conflit entre deux clans Yautja inventés ; aucune guerre, coutume, hiérarchie ou règle de duel n’est présentée comme canonique ou universelle. Budget EFF-10, 4 fronts persistants. Un chef remplace un membre de son escouade ; joueur exclu des PNJ. Aucun renfort illimité.\nCarte : LD-12\nGabarit : EFF-10\nFronts simultanés prévus : 4",
+          "priority": "P1",
+          "mapId": "LD-12",
+          "budgetId": "EFF-10",
+          "frontCount": 4
+        },
+        {
+          "id": "FR-16",
+          "operation": "Interception du Convoi gris",
+          "frontA": "A — Suivre et immobiliser les deux modules de fret sans détruire leur contenu.",
+          "frontB": "B — Saisir le prochain passage pour choisir où se produit l’interception.",
+          "frontC": "C — Préserver le terminus de récupération et empêcher la fuite par la piste latérale.",
+          "frontD": "Sans objet : cette opération possède exactement trois fronts.",
+          "frontE": "Sans objet : aucun cinquième front dans cette opération.",
+          "independent": "Le convoi avance, les gardes changent de route et les escouades d’interception manœuvrent hors écran. Un module immobilisé reste sur place avec son état.",
+          "choice": "Prendre de l’avance par les terrasses ou ralentir le convoi au prix d’une alerte plus rapide.",
+          "consequence": "Passage ignoré : détour plus long pour le joueur. Sortie perdue : un module peut s’échapper et réduit le butin, sans annuler la capture de l’autre.",
+          "success": "Au moins un module récupéré intact et corridor de retour sécurisé ; récupérer les deux constitue l’objectif secondaire.",
+          "constraints": "Scénario original de conflit entre deux clans Yautja inventés ; aucune guerre, coutume, hiérarchie ou règle de duel n’est présentée comme canonique ou universelle. Budget EFF-09, 3 fronts persistants. Un chef remplace un membre de son escouade ; joueur exclu des PNJ. Aucun renfort illimité.\nCarte : LD-15\nGabarit : EFF-09\nFronts simultanés prévus : 3",
+          "priority": "P1",
+          "mapId": "LD-15",
+          "budgetId": "EFF-09",
+          "frontCount": 3
+        },
+        {
+          "id": "FR-17",
+          "operation": "Frontière des Deux Balises",
+          "frontA": "A — Identifier et repousser une intrusion au passage officiel.",
+          "frontB": "B — Sécuriser le ravitaillement et vérifier l’origine d’une attaque contestée.",
+          "frontC": "C — Maintenir le relais qui transmet retrait, identification ou trêve locale.",
+          "frontD": "Sans objet : cette opération possède exactement trois fronts.",
+          "frontE": "Sans objet : aucun cinquième front dans cette opération.",
+          "independent": "Chaque patrouille poursuit sa mission et peut se retirer. La tension dépend des intrusions, preuves et tirs observés ; elle continue d’évoluer hors caméra.",
+          "choice": "Bloquer l’accès par la force, escorter un passage négocié ou récupérer une preuve avant d’ouvrir le feu.",
+          "consequence": "Relais perdu : ordres de cessez-le-feu retardés. Tir non justifié : escalade locale et arrivée d’une réserve existante. Preuve récupérée : retrait négocié possible sur deux cols.",
+          "success": "Deux passages sécurisés et un accord de frontière ou une évacuation ordonnée, sans obligation de vaincre un boss.",
+          "constraints": "Scénario original de conflit entre deux clans Yautja inventés ; aucune guerre, coutume, hiérarchie ou règle de duel n’est présentée comme canonique ou universelle. Budget EFF-09, 3 fronts persistants. Un chef remplace un membre de son escouade ; joueur exclu des PNJ. Aucun renfort illimité.\nCarte : LD-16\nGabarit : EFF-09\nFronts simultanés prévus : 3",
+          "priority": "P1",
+          "mapId": "LD-16",
+          "budgetId": "EFF-09",
+          "frontCount": 3
+        },
+        {
+          "id": "FR-18",
+          "operation": "Accord sous les Arches silencieuses",
+          "frontA": "A — Affronter ou convaincre la porte-parole selon les règles acceptées pour cette rencontre.",
+          "frontB": "B — Faire retirer les équipes de fret et récupérer les blessés pendant l’échange.",
+          "frontC": "C — Obtenir la réception de l’ordre de cessation par les gardes qui contestent l’accord.",
+          "frontD": "Sans objet : cette opération possède exactement trois fronts.",
+          "frontE": "Sans objet : aucun cinquième front dans cette opération.",
+          "independent": "Le duel ne gèle pas le monde. Retrait, soin et contestation continuent ; les deux camps peuvent émettre un arrêt si les conditions négociées sont violées.",
+          "choice": "Accepter le duel, négocier une concession matérielle, ou quitter l’arène pour rétablir un relais menacé.",
+          "consequence": "Victoire ou concession : ordre de cessation proposé, puis exécuté seulement après réception. Relais bloqué : une escouade continue l’interception. Rupture du duel : fenêtre de sortie annoncée et reprise limitée des hostilités.",
+          "success": "Accord ou repli validé sur les trois fronts, avec unités retirées réellement et statut de la porte-parole conservé.",
+          "constraints": "Scénario original de conflit entre deux clans Yautja inventés ; aucune guerre, coutume, hiérarchie ou règle de duel n’est présentée comme canonique ou universelle. Budget EFF-09, 3 fronts persistants. Un chef remplace un membre de son escouade ; joueur exclu des PNJ. Aucun renfort illimité.\nCarte : LD-17\nGabarit : EFF-09\nFronts simultanés prévus : 3",
+          "priority": "P1",
+          "mapId": "LD-17",
+          "budgetId": "EFF-09",
+          "frontCount": 3
+        },
+        {
+          "id": "FR-19",
+          "operation": "Port de récupération : reprendre le matériel du clan",
+          "frontA": "Ouvrir le hangar où le matériel capturé est regroupé",
+          "frontB": "Couper le relais de surveillance et empêcher une mise en alerte générale",
+          "frontC": "Intercepter le transfert et maintenir le quai d’extraction",
+          "frontD": "Sans objet : opération limitée à trois fronts",
+          "frontE": "Sans objet : opération limitée à trois fronts",
+          "independent": "Le convoi suit son horaire ; les gardes reçoivent des ordres depuis le poste et l’équipe d’extraction peut être repoussée hors caméra",
+          "choice": "Neutraliser la surveillance avant assaut ou couper immédiatement le transfert",
+          "consequence": "Le matériel part vers un autre hangar, les renforts changent de route ou le quai devient inaccessible",
+          "success": "Matériel identifié récupéré et chasseur extrait par une voie encore ouverte ; neutraliser le commandant seul ne termine pas la mission",
+          "constraints": "AFF-06 ; LD-18 ; EFF-11 : 256 ennemis humains et 8 alliés Yautja PNJ alloués, plus 1 joueur ; opération contemporaine originale",
+          "priority": "P1"
+        },
+        {
+          "id": "FR-20",
+          "operation": "Bassin industriel : interrompre la livraison d’un trophée technologique",
+          "frontA": "Saisir la halle où le chargement est préparé",
+          "frontB": "Intercepter le convoi ferroviaire ou routier avant sortie du site",
+          "frontC": "Désorganiser le poste de sécurité et préserver la sortie de maintenance",
+          "frontD": "Sans objet : opération limitée à trois fronts",
+          "frontE": "Sans objet : opération limitée à trois fronts",
+          "independent": "Les mercenaires escortent la livraison, déplacent leurs barrages et défendent la logistique sans attendre le joueur",
+          "choice": "Prendre les documents de destination ou détruire le dispositif de transfert avant départ",
+          "consequence": "La livraison change de destination, la sortie est verrouillée ou des gardes se redéploient depuis un dépôt encore actif",
+          "success": "Chargement récupéré ou rendu inutilisable selon objectif choisi avant départ, puis extraction ; bilan de sortie et survivants enregistré",
+          "constraints": "AFF-07 ; LD-19 ; EFF-11 ; entreprise et mercenaires contemporains originaux, aucune arme future",
+          "priority": "P1"
+        },
+        {
+          "id": "FR-21",
+          "operation": "Colonie en conflit : reprendre une installation occupée",
+          "frontA": "Prendre le poste de coordination de la force militaire hostile",
+          "frontB": "Couper la route de ravitaillement et les armes d’appui",
+          "frontC": "Récupérer l’objectif du clan dans les ateliers et tenir la liaison",
+          "frontD": "Protéger l’aire d’extraction contre une contre-attaque de réserve",
+          "frontE": "Sans objet : opération limitée à quatre fronts",
+          "independent": "Les sections humaines renforcent l’axe le plus menacé ; logistique, détachement allié et extraction évoluent même hors caméra",
+          "choice": "Réduire la capacité de contre-attaque avant la récupération ou agir vite puis défendre la retraite",
+          "consequence": "Les réserves arrivent par les routes ouvertes ; perte de liaison force un détour et rend l’extraction plus coûteuse",
+          "success": "Objectif du clan récupéré et extraction assurée ; la colonie conserve son état, ses civils et ses voies techniques après le combat",
+          "constraints": "AFF-08 ; réutilise LD-11 ; EFF-12 : 768 ennemis humains et 32 alliés Yautja PNJ alloués, plus 1 joueur. Variante originale sans ruche active par défaut.",
+          "priority": "P1"
+        },
+        {
+          "id": "FR-22",
+          "operation": "Chantier orbital : libérer la navette saisie",
+          "frontA": "Traverser les compartiments de sûreté jusqu’au contrôle d’amarrage",
+          "frontB": "Couper les interceptions et rétablir une alimentation exploitable",
+          "frontC": "Récupérer les données du clan sans perdre le sas de retour",
+          "frontD": "Tenir le quai de départ pendant la préparation de la navette",
+          "frontE": "Sans objet : opération limitée à quatre fronts",
+          "independent": "La sûreté déplace ses équipes par les sas ouverts ; les navettes de renfort amarrent réellement ; le départ et les pannes ont une horloge commune",
+          "choice": "Ouvrir un raccourci sous gravité dégradée ou préserver le circuit d’air et sécuriser une route plus longue",
+          "consequence": "Le quai est recapturé, un sas ferme ou l’interception retarde le départ ; aucune équipe ne se téléporte à travers un compartiment isolé",
+          "success": "Navette libérée, données ou matériel requis récupérés et décollage accompli ; le chef de sûreté est un obstacle, pas une condition suffisante de victoire",
+          "constraints": "AFF-09 ; LD-20 ; EFF-12 ; station et sûreté humaines originales du futur, sans Offspring, Rogue ni ruche par défaut",
+          "priority": "P1"
+        },
+        {
+          "id": "FR-23",
+          "operation": "Cité-port : extraire un captif sans perdre la sortie",
+          "frontA": "Contourner ou ouvrir le cordon de confinement du centre médical",
+          "frontB": "Désorganiser le poste d’interception militaire",
+          "frontC": "Préparer un transfert vers le terminal et défendre le véhicule ou passage",
+          "frontD": "Maintenir le couloir partagé avec l’évacuation civile",
+          "frontE": "Sans objet : opération limitée à quatre fronts",
+          "independent": "Le captif peut être transféré ; les militaires déplacent leurs barrages et les civils gagnent leurs refuges hors caméra",
+          "choice": "Reprendre immédiatement le captif ou sécuriser d’abord le couloir de sortie",
+          "consequence": "Le transfert change de route, le terminal se ferme ou le trajet civil devient dangereux ; chaque conséquence est annoncée et persistante",
+          "success": "Captif non combattant extrait avec le joueur et objectif militaire résolu ; le bilan des civils est enregistré séparément du score de combat",
+          "constraints": "AFF-10 ; LD-21 ; EFF-12 ; campagne future originale, militaires hostiles par mandat explicite et civils neutres ; le captif ne rejoint pas automatiquement les 32 alliés combattants",
+          "priority": "P2"
+        },
+        {
+          "id": "FR-24",
+          "operation": "Convergence sur une colonie : deux adversaires indépendants",
+          "frontA": "Sécuriser le quai contre la cellule Yautja rivale et garder un accès d’extraction",
+          "frontB": "Interrompre le transfert humain de l’équipement volé sans détruire la colonie habitée",
+          "frontC": "Couper le nœud radio qui coordonne les renforts humains",
+          "frontD": "Faire passer trois groupes de huit civils par le corridor civil protégé",
+          "frontE": "Sans objet : quatre fronts pour cette opération",
+          "independent": "Le clan rival tente de saisir le même équipement ; les humains défendent le transfert et ouvrent le feu sur les deux clans selon leurs contacts. Chaque camp consomme sa propre réserve et peut se battre contre l’autre hors de la caméra.",
+          "choice": "Accélérer la récupération, secourir le corridor civil ou négocier une neutralité temporaire avec une cellule rivale",
+          "consequence": "Un quai perdu ferme une sortie ; la radio intacte permet une réaffectation des unités humaines ; un corridor abandonné bloque une extraction civile, sans conversion des civils en ennemis.",
+          "success": "Équipement récupéré et joueur extrait par une route tenue. Douze à vingt-trois civils évacués donnent une victoire partielle, vingt-quatre le meilleur bilan ; moins de douze donnent un repli non victorieux et un échec du secours.",
+          "constraints": "Carte LD-11 ; EFF-13. Rivaux : 16 actifs +16 distants +16 réserve =48. Humains : 80 +176 +80 =336. Alliés : 12 +12 +8 =32. Groupes rivaux de 4 et humains de 8. Les 24 civils sont séparés, dont 8 actifs au plus. Cadre futur original, aucune scène officielle revendiquée.",
+          "priority": "P1"
+        },
+        {
+          "id": "FR-25",
+          "operation": "Citadelle sous double pression : guerre de clans et raid humain",
+          "frontA": "Repousser le débarquement humain au port sans sacrifier la route des transports du clan",
+          "frontB": "Empêcher le clan rival de prendre les archives et les accès supérieurs",
+          "frontC": "Rétablir le relais qui permet des ordres cohérents et un cessez-le-feu local éventuel",
+          "frontD": "Évacuer douze membres non combattants du clan depuis les ateliers vers un abri",
+          "frontE": "Sans objet : quatre fronts pour cette opération",
+          "independent": "Les humains poursuivent un objectif de récupération technologique et les rivaux un objectif territorial. La perte d’une route logistique modifie leurs possibilités de renfort. Un accord local suspend un engagement mais ne transforme pas toute une faction en alliée.",
+          "choice": "Conserver tous les secteurs ou céder une zone pour isoler un adversaire et garantir l’évacuation",
+          "consequence": "Port perdu : réserve alliée retardée. Archives perdues : objectif de récupération déclenché. Relais perdu : ordres limités à portée locale. Ateliers abandonnés : évacuation interrompue et pertes persistantes.",
+          "success": "Abri et route de sortie conservés, relais repris et les deux objectifs ennemis empêchés ou récupérés. Une retraite du joueur avec les survivants constitue une issue distincte de victoire.",
+          "constraints": "Carte LD-12 ; EFF-13. Rivaux : 24 actifs +48 distants +24 réserve =96. Humains : 72 +144 +72 =288. Alliés : 12 +12 +8 =32. Douze non-combattants séparés, six actifs au plus. Incursion future et citadelle entièrement originales ; aucun rite ou conflit présenté comme fait canonique.",
+          "priority": "P2"
         }
       ],
       "priorityKey": "priority"
@@ -6871,6 +7333,166 @@
           "travel": "Cible de trajet entre deux objectifs voisins : 45–90 s hors combat. Les fronts plus éloignés nécessitent délégation ou transport, pas un délai de secours impossible.",
           "speed": "Profil de référence : 14 u/s à calibrer avec le chasseur lent, collisions et détours réels. Les unités de jeu ne sont pas des mètres.",
           "footprint": "Boîte englobante proposée ; surface jouable partielle, plusieurs étages possibles. Les dimensions ne sont pas un plan canonique."
+        },
+        {
+          "id": "LD-14",
+          "place": "Anneau des Trois Docks — raid de clan",
+          "current": "Nouvelle proposition de carte ; intégration au jeu à réaliser",
+          "continuity": "Scénario original de conflit entre deux clans Yautja inventés ; aucune guerre, coutume, hiérarchie ou règle de duel n’est présentée comme canonique ou universelle.",
+          "width": 1200,
+          "length": 1400,
+          "sectors": 10,
+          "fronts": 3,
+          "zoneVariation": "Dépôt 180 × 240 u ; relais 90 × 140 u ; cale sèche 120 × 200 u ; corniches de 12–24 u ; passerelles de 8–12 u, avec refuges de croisement.",
+          "topology": "Trois îlots reliés en boucle : dépôt A, relais B et départ C. Une passerelle basse et une corniche donnent deux entrées au dépôt ; la voie de fret est distincte du retour discret. La destruction d’un pont laisse une seconde route.",
+          "landmarks": "Dépôt des archives saisies, antenne inclinée, coque en réparation, trois balises de marée, plate-forme de départ.",
+          "variation": "Changer la ronde et l’îlot d’accostage ; conserver les routes, les accès et les abris. Les marées peuvent fermer une voie basse avec avertissement, jamais toutes les sorties.",
+          "validation": "Trois fronts restent connectés. Une escouade de quatre peut se croiser sur les passages prévus. Les réserves arrivent par un quai contrôlé ; ni apparition dans le dépôt ni combat sous un plancher sans accès.\nOpération liée : FR-14\nGabarit lié : EFF-09",
+          "priority": "P2",
+          "travel": "Cible : 45–90 s de trajet réel entre objectifs voisins, obstacles compris. Les objectifs éloignés se délèguent ; leurs délais de secours sont calculés depuis le chemin praticable.",
+          "speed": "Référence de prototype : 14 u/s à recalibrer sur le chasseur lent et les détours. Les unités de jeu ne sont pas des mètres.",
+          "footprint": "Boîte englobante de conception, à profiler ; surface jouable partielle. Terrain, échelle et architecture sont des propositions originales.",
+          "frontId": "FR-14",
+          "budgetId": "EFF-09"
+        },
+        {
+          "id": "LD-15",
+          "place": "Ravines du Convoi gris — poursuite et interception",
+          "current": "Nouvelle proposition de carte ; intégration au jeu à réaliser",
+          "continuity": "Scénario original de conflit entre deux clans Yautja inventés ; aucune guerre, coutume, hiérarchie ou règle de duel n’est présentée comme canonique ou universelle.",
+          "width": 900,
+          "length": 2300,
+          "sectors": 11,
+          "fronts": 3,
+          "zoneVariation": "Route de fret de 18–30 u ; gorge 100 × 260 u ; deux terrasses 160 × 240 u ; pont 16 × 90 u ; terminus 220 × 300 u ; dénivelés proposés de 6–18 u avec accès visibles.",
+          "topology": "Ruban longitudinal avec deux raccourcis latéraux et trois portes de choix. A suit les modules de fret, B commande le prochain passage, C contrôle la sortie et le retour. Les fronts se déplacent par segments sans effacer les groupes précédents.",
+          "landmarks": "Deux modules de fret, arche fendue, pont à verrou mécanique, belvédère de piste, terminus à deux sorties.",
+          "variation": "Choisir la branche de convoi et un éboulement annoncé. Un éboulement ouvre un détour praticable ; aucune perte de cargaison par tirage aléatoire sans contre-action.",
+          "validation": "Les raccourcis permettent d’intercepter le convoi avec le chasseur lent. Les pilotes font partie des escouades comptées ; les modules ne génèrent pas de combattants supplémentaires. Aucune zone de transition ne téléporte le convoi.\nOpération liée : FR-16\nGabarit lié : EFF-09",
+          "priority": "P2",
+          "travel": "Cible : 45–90 s de trajet réel entre objectifs voisins, obstacles compris. Les objectifs éloignés se délèguent ; leurs délais de secours sont calculés depuis le chemin praticable.",
+          "speed": "Référence de prototype : 14 u/s à recalibrer sur le chasseur lent et les détours. Les unités de jeu ne sont pas des mètres.",
+          "footprint": "Boîte englobante de conception, à profiler ; surface jouable partielle. Terrain, échelle et architecture sont des propositions originales.",
+          "frontId": "FR-16",
+          "budgetId": "EFF-09"
+        },
+        {
+          "id": "LD-16",
+          "place": "Col des Deux Balises — crise de frontière",
+          "current": "Nouvelle proposition de carte ; intégration au jeu à réaliser",
+          "continuity": "Scénario original de conflit entre deux clans Yautja inventés ; aucune guerre, coutume, hiérarchie ou règle de duel n’est présentée comme canonique ou universelle.",
+          "width": 1700,
+          "length": 1300,
+          "sectors": 12,
+          "fronts": 3,
+          "zoneVariation": "Trois cols de 20–45 u ; plateau 240 × 320 u ; point de ravitaillement 120 × 180 u ; gué 18 × 100 u ; deux refuges 90 × 130 u ; dénivelés proposés de 4–16 u.",
+          "topology": "Trois passages frontaliers reliés par deux chemins transversaux. A est le passage officiel, B la route de ravitaillement contestée, C le relais d’identification. Une ligne de frontière visible distingue observation, intrusion et attaque.",
+          "landmarks": "Deux balises rivales, cairn brisé, réserve scellée, refuge de montagne, poste d’identification.",
+          "variation": "Patrouilles, brouillard et direction d’arrivée changent. Frontière, droits de passage propres à cette mission et signaux visuels restent fixes.",
+          "validation": "Toute incursion est détectable avant les hostilités. Les patrouilles peuvent se retirer sans entrer dans un autre combat forcé ; le joueur peut atteindre le relais avant une escalade annoncée.\nOpération liée : FR-17\nGabarit lié : EFF-09",
+          "priority": "P2",
+          "travel": "Cible : 45–90 s de trajet réel entre objectifs voisins, obstacles compris. Les objectifs éloignés se délèguent ; leurs délais de secours sont calculés depuis le chemin praticable.",
+          "speed": "Référence de prototype : 14 u/s à recalibrer sur le chasseur lent et les détours. Les unités de jeu ne sont pas des mètres.",
+          "footprint": "Boîte englobante de conception, à profiler ; surface jouable partielle. Terrain, échelle et architecture sont des propositions originales.",
+          "frontId": "FR-17",
+          "budgetId": "EFF-09"
+        },
+        {
+          "id": "LD-17",
+          "place": "Plateau des Arches silencieuses — accord sous tension",
+          "current": "Nouvelle proposition de carte ; intégration au jeu à réaliser",
+          "continuity": "Scénario original de conflit entre deux clans Yautja inventés ; aucune guerre, coutume, hiérarchie ou règle de duel n’est présentée comme canonique ou universelle.",
+          "width": 1000,
+          "length": 1200,
+          "sectors": 9,
+          "fronts": 3,
+          "zoneVariation": "Espace de duel 140 × 180 u ; observatoire 90 × 140 u ; corridor de retrait 24–40 u ; aire de récupération 160 × 220 u ; trois arches naturelles et des abris périphériques.",
+          "topology": "Boucle à trois pôles : duel A, retrait B, relais d’ordres C. Deux passages quittent l’espace de duel. Le joueur peut refuser ou interrompre le duel et rejoindre le relais, avec un coût stratégique explicite.",
+          "landmarks": "Arche centrale, marques temporaires des deux délégations, deux signaux d’accord, rampe de départ, poste des gardes dissidents.",
+          "variation": "Placer la délégation et les guetteurs sur des accès symétriques. Les règles d’arrêt du duel sont négociées pour cette opération ; la géométrie ne change pas pendant l’échange.",
+          "validation": "Aucun verrou de caméra ne suspend B ou C. La victoire du duel n’efface aucune unité : l’ordre de retrait doit circuler. Les sorties restent utilisables en cas de rupture de l’accord.\nOpération liée : FR-18\nGabarit lié : EFF-09",
+          "priority": "P2",
+          "travel": "Cible : 45–90 s de trajet réel entre objectifs voisins, obstacles compris. Les objectifs éloignés se délèguent ; leurs délais de secours sont calculés depuis le chemin praticable.",
+          "speed": "Référence de prototype : 14 u/s à recalibrer sur le chasseur lent et les détours. Les unités de jeu ne sont pas des mètres.",
+          "footprint": "Boîte englobante de conception, à profiler ; surface jouable partielle. Terrain, échelle et architecture sont des propositions originales.",
+          "frontId": "FR-18",
+          "budgetId": "EFF-09"
+        },
+        {
+          "id": "LD-18",
+          "place": "Port de récupération — entrepôts, quais et zone de capture",
+          "current": "Nouvelle carte proposée ; aucune implémentation revendiquée par cet ajout d’audit",
+          "continuity": "Conflit contemporain original de Yautja contre une force humaine de capture ; ni reconstitution de Predator 2 ni site Stargazer canonique",
+          "width": 1200,
+          "length": 1600,
+          "sectors": 12,
+          "fronts": 3,
+          "zoneVariation": "Quai180×320u ; entrepôt100×180u ; allée12–24u ; grue et passerelles ; cour de contrôle120×180u",
+          "topology": "Trois axes reliés par routes de service ; passage bas pour les humains, passerelles pour chasseurs et voie de convoi. Les conteneurs laissent deux approches par objectif.",
+          "landmarks": "Navire immobilisé, hangar scellé, poste radio, transformateur, grille douanière, quai d’extraction",
+          "variation": "Position du convoi, équipes de patrouille et projecteurs variables ; les bâtiments, sas et quais gardent leur position",
+          "validation": "Routes de renfort et d’extraction praticables ; équipements contemporains ; plateformes et volumes visibles concordent avec les accès",
+          "priority": "P1",
+          "travel": "Cible : 30–75 s entre objectifs voisins hors combat ; interruption de la route principale laisse un détour ou impose une délégation annoncée",
+          "speed": "Référence de conception : 14 u/s à calibrer en jeu selon profil de chasseur, collisions, détours et verticalité",
+          "footprint": "Boîte englobante originale en unités de jeu ; plusieurs niveaux et zones non accessibles. Aucune dimension physique ni topographie de film revendiquée"
+        },
+        {
+          "id": "LD-19",
+          "place": "Bassin industriel sous contrat — usine, voies ferrées et dépôts",
+          "current": "Nouvelle carte proposée ; aucune implémentation revendiquée par cet ajout d’audit",
+          "continuity": "Époque contemporaine fictive ; société et mercenaires originaux, sans armes USCM ni technologie de station spatiale",
+          "width": 1400,
+          "length": 1900,
+          "sectors": 14,
+          "fronts": 3,
+          "zoneVariation": "Atelier180×260u ; cour ferroviaire220×400u ; dépôt100×180u ; galerie12–22u ; poste de commande80×120u",
+          "topology": "Production, dépôt et gare forment trois secteurs de combat liés par une boucle de desserte. Une ligne électrique et un réseau radio relient leurs défenses sans les rendre indestructibles.",
+          "landmarks": "Halle d’assemblage, train de fret, centrale de service, silo d’archives, pont roulant, sortie de maintenance",
+          "variation": "Horaires du convoi, accès condamnés et positions de surveillance changent ; logique industrielle et liaisons de transport persistent",
+          "validation": "Aucun convoyeur décoratif utilisé comme route sans collision ; véhicules dans leur gabarit ; arrêt de l’énergie modifie réellement projecteurs et portails",
+          "priority": "P1",
+          "travel": "Cible : 35–80 s entre objectifs voisins ; les grands axes favorisent un transport identifié, les galeries offrent un détour plus sûr et plus lent",
+          "speed": "Référence : 14 u/s ; temps mesuré sur les routes réellement accessibles, sans conversion automatique en mètres",
+          "footprint": "Enveloppe de théâtre original en unités de jeu ; surface jouable partielle et niveaux d’ateliers. Les tailles sont des propositions à profiler"
+        },
+        {
+          "id": "LD-20",
+          "place": "Chantier orbital — anneau de service, modules et quais d’embarquement",
+          "current": "Nouvelle carte proposée ; aucune implémentation revendiquée par cet ajout d’audit",
+          "continuity": "Futur spatial original inspiré du périmètre Alien/Predator ; station, société et plan inventés, distincts de Renaissance et du Nostromo",
+          "width": 1000,
+          "length": 1800,
+          "sectors": 14,
+          "fronts": 4,
+          "zoneVariation": "Baie180×300u ; atelier80×150u ; coursive10–18u ; sas20×35u ; noyau de service100×180u ; plusieurs ponts",
+          "topology": "Deux anneaux de circulation relient quatre fronts ; ascenseurs de service, sas et conduits ont des connexions persistantes. Pression et gravité sont des états par compartiment.",
+          "landmarks": "Navette immobilisée, contrôle d’amarrage, relais énergétique, coffre de données, quai de départ, refuge de personnel",
+          "variation": "Pannes, itinéraires d’embarquement et arrivée des transports militaires ; la disposition des compartiments et leur pression restent traçables",
+          "validation": "Pas d’APC dans les coursives ; humains, chasseurs et matériel possèdent des routes de taille adaptée. Une décompression ne traverse pas un sas fermé sans règle physique explicite.",
+          "priority": "P1",
+          "travel": "Cible : 30–70 s entre objectifs voisins, sas compris ; les délais de fermeture sont annoncés et préservent une autre liaison ou un protocole de secours",
+          "speed": "Référence au sol : 14 u/s à calibrer ; changements de gravité documentés séparément, sans bonus implicite dans les temps de trajet",
+          "footprint": "Boîte englobante des modules en unités de jeu, répartis sur plusieurs ponts ; aucun plan ni volume canonique prétendu"
+        },
+        {
+          "id": "LD-21",
+          "place": "Cité-port en évacuation — quartiers, centre médical et terminal",
+          "current": "Nouvelle carte proposée ; aucune implémentation revendiquée par cet ajout d’audit",
+          "continuity": "Ville coloniale future originale ; conflit Yautja contre un cordon militaire humain, avec civils neutres et sans alliance automatique",
+          "width": 1800,
+          "length": 2400,
+          "sectors": 18,
+          "fronts": 4,
+          "zoneVariation": "Quartier180×260u ; boulevard25–45u ; centre médical100×180u ; terminal250×400u ; passerelles et cours de service",
+          "topology": "Quatre axes entre zone de confinement, commandement, évacuation et terminal. Les routes militaires et civiles se croisent en points contrôlables ; toits et sous-sols offrent des détours cohérents.",
+          "landmarks": "Centre médical, poste de commandement, dépôt logistique, pont urbain, refuges civils, terminal d’embarquement",
+          "variation": "Ordre d’évacuation, itinéraire de convoi et barrages ; mêmes immeubles et accès entre phases, aucun quartier téléporté",
+          "validation": "Les civils conservent une route crédible vers leurs refuges ; destructions, barrages et trafic modifient les parcours sans effacer les habitants",
+          "priority": "P2",
+          "travel": "Cible : 40–90 s entre objectifs voisins ; les fronts éloignés nécessitent affectation d’alliés ou transports, avec délais de secours calibrés",
+          "speed": "Référence : 14 u/s à vérifier avec le profil lent et les routes encombrées ; convoyage et marche civile possèdent leurs propres vitesses",
+          "footprint": "Enveloppe de ville originale en unités de jeu ; seuls les quartiers utiles sont parcourables. Pas de mètres ni de copie d’une ville filmique revendiqués"
         }
       ],
       "priorityKey": "priority"
@@ -7413,6 +8035,114 @@
           "proof": "0f37cc52f9d8 : js/entities/Bosses.js : lignes 23-36\n0f37cc52f9d8 : js/entities/Bosses.js : lignes 773-799\n1d52d9ff91db : js/entities/Bosses.js : lignes 57-61",
           "url": "https://github.com/darknigthmare/Yautja-hive-warriors/blob/0f37cc52f9d83a4abecc17b80f7bfc67701677cf/js/entities/Bosses.js#L23-L36\nhttps://github.com/darknigthmare/Yautja-hive-warriors/blob/0f37cc52f9d83a4abecc17b80f7bfc67701677cf/js/entities/Bosses.js#L773-L799\nhttps://github.com/darknigthmare/Yautja-hive-warriors/blob/1d52d9ff91dbe85c08256f44f8b72086ab65200a/js/entities/Bosses.js#L57-L61",
           "hp": 8600
+        },
+        {
+          "id": "BOS-26",
+          "name": "Kher, pisteur des Lames de Basalte",
+          "tier": "Commandant de détachement",
+          "current": "Nouvelle proposition originale ; intégration à réaliser",
+          "codeId": "proposition_kher_tracker",
+          "continuity": "Scénario original de conflit entre deux clans Yautja inventés ; aucune guerre, coutume, hiérarchie ou règle de duel n’est présentée comme canonique ou universelle.",
+          "battleRole": "Déplacer les gardes vers un accès découvert, protéger les archives ou un convoi selon l’opération.",
+          "proposedBehavior": "Observer puis marquer une route, déclencher une interception bornée par la réserve et changer de couvert. À forte pression, tenter un retrait vers une escouade existante.",
+          "counterplay": "Couper le relais, prendre une route non observée, interrompre le marquage ou capturer le passage de repli. Sa portée et ses fenêtres restent celles d’un chasseur, pas d’un géant.",
+          "armyEffect": "Capture ou retrait de Kher ralentit les nouvelles interceptions ; les gardes déjà engagés conservent leurs ordres. Un successeur anonyme peut transmettre un repli, sans recréer Kher.",
+          "frequency": "Un individu unique dans GRP-36 ; réutilisable dans une autre opération seulement si son état de campagne le permet.",
+          "fidelity": "Nom, rôle et tactique originaux. Pas de pouvoir psychique, de téléportation ni de rang Yautja universel déduits du rôle.",
+          "priority": "P1",
+          "proof": "Voir le registre Manquants pour les systèmes associés. Fiche de conception non testée en jeu.",
+          "url": "",
+          "hp": "n.a."
+        },
+        {
+          "id": "BOS-27",
+          "name": "Raan, commandante du siège",
+          "tier": "Commandante majeure de mission",
+          "current": "Nouvelle proposition originale ; intégration à réaliser",
+          "codeId": "proposition_raan_siege_commander",
+          "continuity": "Scénario original de conflit entre deux clans Yautja inventés ; aucune guerre, coutume, hiérarchie ou règle de duel n’est présentée comme canonique ou universelle.",
+          "battleRole": "Arbitrer brèche, ravitaillement et retrait pendant l’attaque de la Citadelle.",
+          "proposedBehavior": "Tenir un poste mobile protégé, engager un appui limité puis changer d’objectif si une route de fret tombe. Une rupture de couverture ouvre une courte occasion de duel ou capture.",
+          "counterplay": "Couper sa logistique, détourner son escorte vers un objectif crédible, détruire un relais puis choisir capture ou pression sur le port.",
+          "armyEffect": "La chaîne de commandement change de priorité : arrêt des nouvelles vagues, regroupement puis retrait par des sorties connues. Les groupes isolés doivent recevoir l’ordre ; la victoire ne les efface pas.",
+          "frequency": "Une Raan par opération, incluse dans le GRP-36 rival. Le front est défini par l’opération : D dans AFF-02, B dans AFF-12. Sa mort, sa capture ou son retrait persistent si les missions sont liées en campagne.",
+          "fidelity": "Fonction de commandement inventée pour ce conflit. Sa taille, ses armes et ses défenses restent à vérifier contre le profil Yautja choisi ; aucun rang canonique nouveau.",
+          "priority": "P1",
+          "proof": "Voir le registre Manquants pour les systèmes associés. Fiche de conception non testée en jeu.",
+          "url": "",
+          "hp": "n.a."
+        },
+        {
+          "id": "BOS-28",
+          "name": "Sel, porte-parole armée du clan rival",
+          "tier": "Adversaire de duel et décision stratégique",
+          "current": "Nouvelle proposition originale ; intégration à réaliser",
+          "codeId": "proposition_sel_negotiator",
+          "continuity": "Scénario original de conflit entre deux clans Yautja inventés ; aucune guerre, coutume, hiérarchie ou règle de duel n’est présentée comme canonique ou universelle.",
+          "battleRole": "Engager sa délégation sur un accord qui doit ensuite être reçu par les fronts encore actifs.",
+          "proposedBehavior": "Alterner garde, feinte et engagement court ; demander un arrêt aux seuils négociés. La rencontre peut se conclure par désarmement, concession ou repli sans mise à mort.",
+          "counterplay": "Lire la posture, contrôler la distance, respecter ou refuser explicitement les conditions de l’échange. Secourir le relais peut coûter une concession dans la négociation.",
+          "armyEffect": "Le résultat autorise un ordre de cessation ; son relais et son exécution sur B et C déterminent la fin réelle de la bataille. L’échec d’un signal n’annule pas magiquement l’accord.",
+          "frequency": "Une seule Sel, incluse dans le GRP-36 du front A. Un arrêt met fin à son attaque mais conserve sa position, son escorte et son état.",
+          "fidelity": "Duel et limites convenus par ces deux délégations fictives ; aucune obligation de duel ni règle d’honneur présentée comme commune à tous les Yautja.",
+          "priority": "P1",
+          "proof": "Voir le registre Manquants pour les systèmes associés. Fiche de conception non testée en jeu.",
+          "url": "",
+          "hp": "n.a."
+        },
+        {
+          "id": "BOS-29",
+          "name": "Commandant de la force de capture",
+          "tier": "Mini-boss humain tactique",
+          "current": "Nouvelle rencontre proposée dans l’audit ; aucune présence dans le code revendiquée",
+          "codeId": "À créer — commandant_capture_original",
+          "continuity": "Personnage humain contemporain original, distinct de tout officier nommé de la franchise",
+          "battleRole": "Déclencher le transfert du matériel Yautja saisi et réaffecter les équipes de capture",
+          "proposedBehavior": "Commander depuis couvert, appeler une escorte finie, déplacer le dispositif de capture puis tenter une retraite par la route de service ; combat humain soumis aux dégâts normaux",
+          "counterplay": "Couper les communications, interrompre le départ du convoi, contourner l’escorte ou accepter une reddition si le scénario l’autorise",
+          "armyEffect": "Sa neutralisation empêche de nouveaux ordres centralisés ; les groupes gardent leurs ordres locaux, les renforts en route restent suivis et la récupération du matériel reste nécessaire",
+          "frequency": "1 individu dans AFF-06, inclus dans la cellule GRP-42 déjà comptée",
+          "fidelity": "Création originale ; équipements contemporains. Difficulté issue du terrain, du commandement et des gardes, sans invulnérabilité ni PV de monstre.",
+          "priority": "P1",
+          "proof": "Voir le registre Manquants pour les systèmes associés. Fiche de conception non testée en jeu.",
+          "url": "",
+          "hp": "n.a."
+        },
+        {
+          "id": "BOS-30",
+          "name": "Responsable tactique de sécurité",
+          "tier": "Mini-boss humain de contrôle du site",
+          "current": "Nouvel archétype de rencontre proposé ; aucune implémentation revendiquée",
+          "codeId": "À créer — responsable_securite_original",
+          "continuity": "Deux incarnations originales séparées : directeur de sécurité contemporain AFF-07, officier de sûreté orbitale futur AFF-09",
+          "battleRole": "Protéger le chargement ou la navette saisis en commandant portes, alarmes et escortes du site",
+          "proposedBehavior": "Prendre couvert, transférer son poste quand un relais tombe, demander un détachement disponible ; les commandes exigent liaison et énergie effectives",
+          "counterplay": "Sabotage ciblé du relais, prise du poste secondaire, intervention technique ou affrontement humain direct",
+          "armyEffect": "Perte de coordination et de verrouillage sur les seuls systèmes encore reliés au poste ; pas extinction magique de toutes les défenses ni disparition des gardes",
+          "frequency": "1 responsable propre à chaque opération ; un des 8 membres GRP-42, aucun clone simultané",
+          "fidelity": "Les deux périodes partagent un rôle de conception, pas la même identité ni le même équipement. Toute résistance provient de couverts ou protections visibles destructibles.",
+          "priority": "P1",
+          "proof": "Voir le registre Manquants pour les systèmes associés. Fiche de conception non testée en jeu.",
+          "url": "",
+          "hp": "n.a."
+        },
+        {
+          "id": "BOS-31",
+          "name": "Commandant expéditionnaire de la force humaine",
+          "tier": "Chef d’opération humain",
+          "current": "Nouvel archétype proposé pour les conflits futurs ; aucune présence dans le code revendiquée",
+          "codeId": "À créer — commandant_expeditionnaire_original",
+          "continuity": "Officiers originaux distincts selon l’opération future (AFF-08, AFF-10, AFF-11 et AFF-12). Le profil de rencontre est réutilisable ; un individu mort ou capturé ne réapparaît pas dans une campagne liée.",
+          "battleRole": "Coordonner les contre-attaques, préserver le cordon ou transférer un objectif sous protection",
+          "proposedBehavior": "Donner des ordres depuis un véhicule ou poste accessible, changer de lieu avec son escorte puis défendre une voie de repli ; blessures et ligne de vue réelles",
+          "counterplay": "Couper la logistique, bloquer la voie de repli, neutraliser l’antenne ou l’affronter quand son couvert est perdu",
+          "armyEffect": "Réserves non engagées retardées ou annulées selon leur source ; les sections déjà déployées gardent une autonomie locale. La victoire exige encore récupération et extraction.",
+          "frequency": "1 commandant par opération, inclus dans GRP-42 ; officier distinct d’une opération à l’autre",
+          "fidelity": "Pas de personnage canonique transformé en antagoniste sans scénario. Armure, taille et dégâts humains ; aucun commandant géant à santé artificiellement illimitée.",
+          "priority": "P1",
+          "proof": "Voir le registre Manquants pour les systèmes associés. Fiche de conception non testée en jeu.",
+          "url": "",
+          "hp": "n.a."
         }
       ],
       "priorityKey": "priority"
@@ -9319,6 +10049,1717 @@
           "url": ""
         }
       ]
+    },
+    {
+      "name": "Affrontements",
+      "title": "Guerres de clans et batailles contre les humains",
+      "description": "Scénarios de conception reliés aux cartes, fronts, effectifs et groupes. Le budget est partagé entre les fronts, jamais multiplié par leur nombre.",
+      "columns": [
+        {
+          "key": "id",
+          "label": "ID",
+          "width": 14
+        },
+        {
+          "key": "title",
+          "label": "Affrontement",
+          "width": 43
+        },
+        {
+          "key": "type",
+          "label": "Type de guerre",
+          "width": 27
+        },
+        {
+          "key": "mapLabel",
+          "label": "Carte et lieu",
+          "width": 53
+        },
+        {
+          "key": "frontLabel",
+          "label": "Fronts associés",
+          "width": 51
+        },
+        {
+          "key": "budgetLabel",
+          "label": "Gabarit d’effectifs",
+          "width": 52
+        },
+        {
+          "key": "playerSide",
+          "label": "Camp du joueur",
+          "width": 55
+        },
+        {
+          "key": "enemySide",
+          "label": "Camp adverse",
+          "width": 60
+        },
+        {
+          "key": "thirdParties",
+          "label": "Tiers / civils",
+          "width": 60
+        },
+        {
+          "key": "alliedGroups",
+          "label": "Groupes alliés",
+          "width": 67
+        },
+        {
+          "key": "enemyGroups",
+          "label": "Groupes adverses",
+          "width": 67
+        },
+        {
+          "key": "initialDeployment",
+          "label": "Implantation initiale",
+          "width": 87
+        },
+        {
+          "key": "reinforcementRules",
+          "label": "Réserves et renforts",
+          "width": 87
+        },
+        {
+          "key": "objectives",
+          "label": "Objectifs",
+          "width": 90
+        },
+        {
+          "key": "victory",
+          "label": "Victoire",
+          "width": 76
+        },
+        {
+          "key": "defeat",
+          "label": "Défaite",
+          "width": 76
+        },
+        {
+          "key": "commander",
+          "label": "Commandement",
+          "width": 64
+        },
+        {
+          "key": "bosses",
+          "label": "Boss et chefs",
+          "width": 65
+        },
+        {
+          "key": "parallelConsequences",
+          "label": "Conséquences entre fronts",
+          "width": 90
+        },
+        {
+          "key": "continuity",
+          "label": "Continuité / fiction",
+          "width": 84
+        },
+        {
+          "key": "priority",
+          "label": "Priorité",
+          "width": 10
+        },
+        {
+          "key": "acceptance",
+          "label": "Critères de validation",
+          "width": 93
+        }
+      ],
+      "rows": [
+        {
+          "id": "AFF-01",
+          "title": "Le registre des routes saisies",
+          "type": "Raid et capture",
+          "mapId": "LD-14",
+          "frontId": "FR-14",
+          "budgetId": "EFF-09",
+          "thirdParties": "Aucun combattant tiers ; les équipements et modules de fret sont des objectifs, pas des unités ajoutées au budget.",
+          "reinforcementRules": "L’alerte du relais autorise au maximum une escouade de réserve à la fois par quai intact. Couper le relais suspend les nouveaux départs mais pas les patrouilles déjà sorties. Aucun contingent ne se renouvelle après épuisement ; l’extraction interrompt les demandes restantes. Les plafonds actifs et distants du budget restent contraignants : si aucun emplacement n’est disponible, le renfort attend à sa source. Chaque transfert conserve l’agent et consomme la réserve une seule fois.",
+          "objectives": "A : ouvrir le dépôt et emporter le registre intact. B : capturer le relais ou retarder son alerte. C : préserver au moins un départ relié au dépôt. Bonus : capturer Kher ou récupérer les horaires du convoi.",
+          "victory": "Registre sécurisé et joueur revenu par une voie ouverte avec un détachement capable d’assurer le départ. Une majorité des rivaux peut rester en vie.",
+          "defeat": "Registre détruit ou emporté hors carte par les rivaux ; joueur neutralisé sans secours ; toutes les sorties devenues durablement inaccessibles après une possibilité de contre-action annoncée.",
+          "commander": "Kher occupe la place de chef dans le GRP-36 ennemi du front B ; il n’est pas une cinquième unité.",
+          "bossIds": [
+            "BOS-26"
+          ],
+          "parallelConsequences": "B détermine le rythme des renforts, C le lieu du départ. Des gardes peuvent choisir de sauver les archives plutôt que poursuivre le joueur. Renseignements emportés ou perdus modifient l’information disponible pour AFF-03.",
+          "continuity": "Scénario original de conflit entre deux clans Yautja inventés ; aucune guerre, coutume, hiérarchie ou règle de duel n’est présentée comme canonique ou universelle. Mission indépendante par défaut ; en campagne, conserver l’état de Kher et du registre.",
+          "priority": "P1",
+          "acceptance": "Journal de simulation réconcilié avec EFF-09 sur trois fronts ; aucune apparition sans quai accessible. Une réussite est possible sans éliminer tous les rivaux. L’éloignement de B fait progresser son alerte ; capturer Kher conserve son état après extraction.",
+          "playerSide": "Clan des Cendres Veilleuses — création originale",
+          "enemySide": "Clan des Lames de Basalte — création originale",
+          "alliedGroupIds": [
+            "GRP-31",
+            "GRP-33",
+            "GRP-34",
+            "GRP-35"
+          ],
+          "enemyGroupIds": [
+            "GRP-31",
+            "GRP-32",
+            "GRP-33",
+            "GRP-34",
+            "GRP-35",
+            "GRP-36"
+          ],
+          "initialDeployment": "Actifs : A = E [1 × GRP-34 + 1 × GRP-33], A [1 × GRP-31] ; B = E [1 × GRP-36], A [1 × GRP-34] ; C = E [1 × GRP-32], A [aucune escouade]. Distants : A = E [2 × GRP-33], A [aucune escouade] ; B = E [3 × GRP-31], A [1 × GRP-31] ; C = E [3 × GRP-35], A [1 × GRP-35]. Réserve non déployée : Réserve = E [2 × GRP-32 + 2 × GRP-33], A [1 × GRP-33]. Chaque escouade = 4 PNJ ; commandants compris. Joueur séparé. Une unité qui change de niveau de simulation garde son ID, ses PV et son objectif. E/A désignent les camps de départ ; une trêve change les relations, sans créer ni dupliquer les agents.",
+          "forceAllocation": {
+            "active": [
+              {
+                "front": "A",
+                "enemy": [
+                  {
+                    "groupId": "GRP-34",
+                    "squads": 1,
+                    "npc": 4
+                  },
+                  {
+                    "groupId": "GRP-33",
+                    "squads": 1,
+                    "npc": 4
+                  }
+                ],
+                "ally": [
+                  {
+                    "groupId": "GRP-31",
+                    "squads": 1,
+                    "npc": 4
+                  }
+                ]
+              },
+              {
+                "front": "B",
+                "enemy": [
+                  {
+                    "groupId": "GRP-36",
+                    "squads": 1,
+                    "npc": 4
+                  }
+                ],
+                "ally": [
+                  {
+                    "groupId": "GRP-34",
+                    "squads": 1,
+                    "npc": 4
+                  }
+                ]
+              },
+              {
+                "front": "C",
+                "enemy": [
+                  {
+                    "groupId": "GRP-32",
+                    "squads": 1,
+                    "npc": 4
+                  }
+                ],
+                "ally": []
+              }
+            ],
+            "distant": [
+              {
+                "front": "A",
+                "enemy": [
+                  {
+                    "groupId": "GRP-33",
+                    "squads": 2,
+                    "npc": 8
+                  }
+                ],
+                "ally": []
+              },
+              {
+                "front": "B",
+                "enemy": [
+                  {
+                    "groupId": "GRP-31",
+                    "squads": 3,
+                    "npc": 12
+                  }
+                ],
+                "ally": [
+                  {
+                    "groupId": "GRP-31",
+                    "squads": 1,
+                    "npc": 4
+                  }
+                ]
+              },
+              {
+                "front": "C",
+                "enemy": [
+                  {
+                    "groupId": "GRP-35",
+                    "squads": 3,
+                    "npc": 12
+                  }
+                ],
+                "ally": [
+                  {
+                    "groupId": "GRP-35",
+                    "squads": 1,
+                    "npc": 4
+                  }
+                ]
+              }
+            ],
+            "reserve": [
+              {
+                "front": "Réserve",
+                "enemy": [
+                  {
+                    "groupId": "GRP-32",
+                    "squads": 2,
+                    "npc": 8
+                  },
+                  {
+                    "groupId": "GRP-33",
+                    "squads": 2,
+                    "npc": 8
+                  }
+                ],
+                "ally": [
+                  {
+                    "groupId": "GRP-33",
+                    "squads": 1,
+                    "npc": 4
+                  }
+                ]
+              }
+            ]
+          },
+          "mapLabel": "LD-14 — Anneau des Trois Docks — raid de clan",
+          "frontLabel": "FR-14 — Raid des archives retenues",
+          "budgetLabel": "EFF-09 — Clans rivaux — escarmouche de chasseurs",
+          "alliedGroups": "GRP-31 — Éclaireurs de relief (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-33 — Gardes de position (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-34 — Équipe de route et de réparation (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-35 — Escorte de fret et de retrait (Yautja — modèle de détachement ; allégeance fixée par chaque opération)",
+          "enemyGroups": "GRP-31 — Éclaireurs de relief (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-32 — Intercepteurs de passage (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-33 — Gardes de position (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-34 — Équipe de route et de réparation (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-35 — Escorte de fret et de retrait (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-36 — Détachement de commandement (Yautja — modèle de détachement ; allégeance fixée par chaque opération)",
+          "bosses": "BOS-26 — Kher, pisteur des Lames de Basalte"
+        },
+        {
+          "id": "AFF-02",
+          "title": "La Citadelle tient ses départs",
+          "type": "Siège et défense mobile",
+          "mapId": "LD-12",
+          "frontId": "FR-15",
+          "budgetId": "EFF-10",
+          "thirdParties": "Équipages et habitants éventuels constituent un lot non combattant distinct, à plafonner ; ils ne comptent ni dans les soldats ni dans les KOs. Aucune faction combattante tierce.",
+          "reinforcementRules": "Les deux camps prélèvent leurs renforts sur leur réserve du scénario. Départs seulement par le port ou les routes de fret contrôlées. Maximum deux escouades en transit par camp ; perte de route détourne ou bloque le prochain départ. Les unités de réparation ne créent aucun combattant. Les plafonds actifs et distants du budget restent contraignants : si aucun emplacement n’est disponible, le renfort attend à sa source. Chaque transfert conserve l’agent et consomme la réserve une seule fois.",
+          "objectives": "A : tenir la brèche assez longtemps pour organiser la défense. B : maintenir ou évacuer les moyens de réparation. C : préserver une sortie pour archives et survivants. D : couper l’approvisionnement de Raan ou obtenir son ordre d’arrêt.",
+          "victory": "Archives et contingent allié sortis par une voie viable, ou assaut effectivement stoppé et port sécurisé. Perdre un rempart ne force pas la défaite si le repli annoncé reste possible.",
+          "defeat": "Archives perdues et aucune évacuation encore possible ; joueur neutralisé sans secours ; contingent d’évacuation incapable de rejoindre un point de départ malgré les contre-actions prévues.",
+          "commander": "Raan remplace le commandant d’un GRP-36 du front D. Les chefs de poste alliés appartiennent aux GRP-33 déjà comptés.",
+          "bossIds": [
+            "BOS-27"
+          ],
+          "parallelConsequences": "La brèche consomme les défenseurs disponibles, la forge conditionne les réparations et le port matérialise le retrait. Une victoire sur Raan ordonne un regroupement ; les unités isolées quittent réellement leurs fronts après réception.",
+          "continuity": "Scénario original de conflit entre deux clans Yautja inventés ; aucune guerre, coutume, hiérarchie ou règle de duel n’est présentée comme canonique ou universelle. Réutilise LD-12 avec quatre axes ; toute architecture ou vie de clan supplémentaire reste une création de cette citadelle.",
+          "priority": "P2",
+          "acceptance": "Quatre fronts avancent pendant une visite au port. EFF-10 est respecté en combat et en renfort. Au moins deux fins distinctes sont jouables : défense conservée et évacuation réussie. Aucun civil, pilote ou commandant n’est compté deux fois.",
+          "playerSide": "Clan des Cendres Veilleuses — création originale",
+          "enemySide": "Clan des Lames de Basalte — création originale",
+          "alliedGroupIds": [
+            "GRP-31",
+            "GRP-33",
+            "GRP-34",
+            "GRP-35"
+          ],
+          "enemyGroupIds": [
+            "GRP-31",
+            "GRP-32",
+            "GRP-33",
+            "GRP-34",
+            "GRP-35",
+            "GRP-36"
+          ],
+          "initialDeployment": "Actifs : A = E [2 × GRP-32], A [2 × GRP-33] ; B = E [2 × GRP-34], A [1 × GRP-34] ; C = E [2 × GRP-35], A [1 × GRP-35] ; D = E [1 × GRP-36 + 1 × GRP-33], A [aucune escouade]. Distants : A = E [4 × GRP-33], A [2 × GRP-33] ; B = E [4 × GRP-32], A [2 × GRP-34] ; C = E [4 × GRP-31], A [2 × GRP-35] ; D = E [4 × GRP-35], A [2 × GRP-31]. Réserve non déployée : Réserve = E [4 × GRP-32 + 4 × GRP-34], A [2 × GRP-33 + 2 × GRP-35]. Chaque escouade = 4 PNJ ; commandants compris. Joueur séparé. Une unité qui change de niveau de simulation garde son ID, ses PV et son objectif. E/A désignent les camps de départ ; une trêve change les relations, sans créer ni dupliquer les agents.",
+          "forceAllocation": {
+            "active": [
+              {
+                "front": "A",
+                "enemy": [
+                  {
+                    "groupId": "GRP-32",
+                    "squads": 2,
+                    "npc": 8
+                  }
+                ],
+                "ally": [
+                  {
+                    "groupId": "GRP-33",
+                    "squads": 2,
+                    "npc": 8
+                  }
+                ]
+              },
+              {
+                "front": "B",
+                "enemy": [
+                  {
+                    "groupId": "GRP-34",
+                    "squads": 2,
+                    "npc": 8
+                  }
+                ],
+                "ally": [
+                  {
+                    "groupId": "GRP-34",
+                    "squads": 1,
+                    "npc": 4
+                  }
+                ]
+              },
+              {
+                "front": "C",
+                "enemy": [
+                  {
+                    "groupId": "GRP-35",
+                    "squads": 2,
+                    "npc": 8
+                  }
+                ],
+                "ally": [
+                  {
+                    "groupId": "GRP-35",
+                    "squads": 1,
+                    "npc": 4
+                  }
+                ]
+              },
+              {
+                "front": "D",
+                "enemy": [
+                  {
+                    "groupId": "GRP-36",
+                    "squads": 1,
+                    "npc": 4
+                  },
+                  {
+                    "groupId": "GRP-33",
+                    "squads": 1,
+                    "npc": 4
+                  }
+                ],
+                "ally": []
+              }
+            ],
+            "distant": [
+              {
+                "front": "A",
+                "enemy": [
+                  {
+                    "groupId": "GRP-33",
+                    "squads": 4,
+                    "npc": 16
+                  }
+                ],
+                "ally": [
+                  {
+                    "groupId": "GRP-33",
+                    "squads": 2,
+                    "npc": 8
+                  }
+                ]
+              },
+              {
+                "front": "B",
+                "enemy": [
+                  {
+                    "groupId": "GRP-32",
+                    "squads": 4,
+                    "npc": 16
+                  }
+                ],
+                "ally": [
+                  {
+                    "groupId": "GRP-34",
+                    "squads": 2,
+                    "npc": 8
+                  }
+                ]
+              },
+              {
+                "front": "C",
+                "enemy": [
+                  {
+                    "groupId": "GRP-31",
+                    "squads": 4,
+                    "npc": 16
+                  }
+                ],
+                "ally": [
+                  {
+                    "groupId": "GRP-35",
+                    "squads": 2,
+                    "npc": 8
+                  }
+                ]
+              },
+              {
+                "front": "D",
+                "enemy": [
+                  {
+                    "groupId": "GRP-35",
+                    "squads": 4,
+                    "npc": 16
+                  }
+                ],
+                "ally": [
+                  {
+                    "groupId": "GRP-31",
+                    "squads": 2,
+                    "npc": 8
+                  }
+                ]
+              }
+            ],
+            "reserve": [
+              {
+                "front": "Réserve",
+                "enemy": [
+                  {
+                    "groupId": "GRP-32",
+                    "squads": 4,
+                    "npc": 16
+                  },
+                  {
+                    "groupId": "GRP-34",
+                    "squads": 4,
+                    "npc": 16
+                  }
+                ],
+                "ally": [
+                  {
+                    "groupId": "GRP-33",
+                    "squads": 2,
+                    "npc": 8
+                  },
+                  {
+                    "groupId": "GRP-35",
+                    "squads": 2,
+                    "npc": 8
+                  }
+                ]
+              }
+            ]
+          },
+          "mapLabel": "LD-12 — Citadelle attaquée / monde du clan",
+          "frontLabel": "FR-15 — Défense des Quatre Accès",
+          "budgetLabel": "EFF-10 — Clans rivaux — siège exceptionnel",
+          "alliedGroups": "GRP-31 — Éclaireurs de relief (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-33 — Gardes de position (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-34 — Équipe de route et de réparation (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-35 — Escorte de fret et de retrait (Yautja — modèle de détachement ; allégeance fixée par chaque opération)",
+          "enemyGroups": "GRP-31 — Éclaireurs de relief (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-32 — Intercepteurs de passage (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-33 — Gardes de position (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-34 — Équipe de route et de réparation (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-35 — Escorte de fret et de retrait (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-36 — Détachement de commandement (Yautja — modèle de détachement ; allégeance fixée par chaque opération)",
+          "bosses": "BOS-27 — Raan, commandante du siège"
+        },
+        {
+          "id": "AFF-03",
+          "title": "Couper la route du Convoi gris",
+          "type": "Poursuite et interception",
+          "mapId": "LD-15",
+          "frontId": "FR-16",
+          "budgetId": "EFF-09",
+          "thirdParties": "Aucun combattant tiers ; deux modules de fret originaux, sans soldats générés à leur ouverture. Les conducteurs sont inclus dans GRP-35.",
+          "reinforcementRules": "Les gardes se déplacent entre branches avec leurs identifiants persistants. Réserve déclenchée seulement après un signal envoyé depuis un passage accessible ; une escouade par événement d’alerte confirmé. Prendre un passage peut empêcher un départ, sans supprimer l’escorte déjà sur la route. Les plafonds actifs et distants du budget restent contraignants : si aucun emplacement n’est disponible, le renfort attend à sa source. Chaque transfert conserve l’agent et consomme la réserve une seule fois.",
+          "objectives": "A : immobiliser au moins un module et préserver son contenu. B : contrôler un passage d’interception. C : sécuriser la reprise du fret et la route du retour. Bonus : récupérer les deux modules sans détruire leur propulsion.",
+          "victory": "Un module au minimum transféré à une escorte alliée existante puis ramené au terminus sûr. La capture de Kher est facultative.",
+          "defeat": "Les deux modules quittent la zone ou sont détruits ; aucune escorte survivante ne peut reprendre le fret et aucun secours n’est disponible ; joueur neutralisé sans secours.",
+          "commander": "Kher tient le GRP-36 du front B seulement s’il est libre dans une campagne liée. Sinon le même emplacement reçoit un chef anonyme sans recréer le personnage ni augmenter le quota.",
+          "bossIds": [
+            "BOS-26"
+          ],
+          "parallelConsequences": "A avance même quand le joueur saisit B ; un module immobilisé immobilise une partie de son escorte. C décide si le fret récupéré peut sortir. Les pertes d’une interception restent présentes lors du passage au segment suivant.",
+          "continuity": "Scénario original de conflit entre deux clans Yautja inventés ; aucune guerre, coutume, hiérarchie ou règle de duel n’est présentée comme canonique ou universelle. Les modules et itinéraires sont inventés. Si AFF-01 précède cette mission, réutiliser ses renseignements et l’état de Kher ; les opérations peuvent aussi être jouées séparément.",
+          "priority": "P1",
+          "acceptance": "Une interception est réalisable avec le chasseur lent et sans téléportation. Chaque pilote appartient au contingent. Récupérer un module puis perdre l’autre produit un résultat partiel cohérent. Aucun passage de secteur ne réinitialise le convoi ou son escorte.",
+          "playerSide": "Clan des Cendres Veilleuses — création originale",
+          "enemySide": "Clan des Lames de Basalte — création originale",
+          "alliedGroupIds": [
+            "GRP-31",
+            "GRP-32",
+            "GRP-34",
+            "GRP-35"
+          ],
+          "enemyGroupIds": [
+            "GRP-31",
+            "GRP-32",
+            "GRP-33",
+            "GRP-35",
+            "GRP-36"
+          ],
+          "initialDeployment": "Actifs : A = E [2 × GRP-35], A [aucune escouade] ; B = E [1 × GRP-36], A [1 × GRP-32] ; C = E [1 × GRP-33], A [1 × GRP-31]. Distants : A = E [3 × GRP-35], A [1 × GRP-31] ; B = E [2 × GRP-32], A [aucune escouade] ; C = E [3 × GRP-31], A [1 × GRP-35]. Réserve non déployée : Réserve = E [2 × GRP-33 + 2 × GRP-32], A [1 × GRP-34]. Chaque escouade = 4 PNJ ; commandants compris. Joueur séparé. Une unité qui change de niveau de simulation garde son ID, ses PV et son objectif. E/A désignent les camps de départ ; une trêve change les relations, sans créer ni dupliquer les agents.",
+          "forceAllocation": {
+            "active": [
+              {
+                "front": "A",
+                "enemy": [
+                  {
+                    "groupId": "GRP-35",
+                    "squads": 2,
+                    "npc": 8
+                  }
+                ],
+                "ally": []
+              },
+              {
+                "front": "B",
+                "enemy": [
+                  {
+                    "groupId": "GRP-36",
+                    "squads": 1,
+                    "npc": 4
+                  }
+                ],
+                "ally": [
+                  {
+                    "groupId": "GRP-32",
+                    "squads": 1,
+                    "npc": 4
+                  }
+                ]
+              },
+              {
+                "front": "C",
+                "enemy": [
+                  {
+                    "groupId": "GRP-33",
+                    "squads": 1,
+                    "npc": 4
+                  }
+                ],
+                "ally": [
+                  {
+                    "groupId": "GRP-31",
+                    "squads": 1,
+                    "npc": 4
+                  }
+                ]
+              }
+            ],
+            "distant": [
+              {
+                "front": "A",
+                "enemy": [
+                  {
+                    "groupId": "GRP-35",
+                    "squads": 3,
+                    "npc": 12
+                  }
+                ],
+                "ally": [
+                  {
+                    "groupId": "GRP-31",
+                    "squads": 1,
+                    "npc": 4
+                  }
+                ]
+              },
+              {
+                "front": "B",
+                "enemy": [
+                  {
+                    "groupId": "GRP-32",
+                    "squads": 2,
+                    "npc": 8
+                  }
+                ],
+                "ally": []
+              },
+              {
+                "front": "C",
+                "enemy": [
+                  {
+                    "groupId": "GRP-31",
+                    "squads": 3,
+                    "npc": 12
+                  }
+                ],
+                "ally": [
+                  {
+                    "groupId": "GRP-35",
+                    "squads": 1,
+                    "npc": 4
+                  }
+                ]
+              }
+            ],
+            "reserve": [
+              {
+                "front": "Réserve",
+                "enemy": [
+                  {
+                    "groupId": "GRP-33",
+                    "squads": 2,
+                    "npc": 8
+                  },
+                  {
+                    "groupId": "GRP-32",
+                    "squads": 2,
+                    "npc": 8
+                  }
+                ],
+                "ally": [
+                  {
+                    "groupId": "GRP-34",
+                    "squads": 1,
+                    "npc": 4
+                  }
+                ]
+              }
+            ]
+          },
+          "mapLabel": "LD-15 — Ravines du Convoi gris — poursuite et interception",
+          "frontLabel": "FR-16 — Interception du Convoi gris",
+          "budgetLabel": "EFF-09 — Clans rivaux — escarmouche de chasseurs",
+          "alliedGroups": "GRP-31 — Éclaireurs de relief (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-32 — Intercepteurs de passage (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-34 — Équipe de route et de réparation (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-35 — Escorte de fret et de retrait (Yautja — modèle de détachement ; allégeance fixée par chaque opération)",
+          "enemyGroups": "GRP-31 — Éclaireurs de relief (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-32 — Intercepteurs de passage (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-33 — Gardes de position (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-35 — Escorte de fret et de retrait (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-36 — Détachement de commandement (Yautja — modèle de détachement ; allégeance fixée par chaque opération)",
+          "bosses": "BOS-26 — Kher, pisteur des Lames de Basalte"
+        },
+        {
+          "id": "AFF-04",
+          "title": "L’incident des Deux Balises",
+          "type": "Frontière, identification et désescalade",
+          "mapId": "LD-16",
+          "frontId": "FR-17",
+          "budgetId": "EFF-09",
+          "thirdParties": "Aucun combattant tiers. Un objet de preuve et des bornes de passage remplacent une faction cachée ; l’opération n’attribue pas l’incident à un peuple réel.",
+          "reinforcementRules": "Une montée de tension déclenche une demande vers la réserve existante. L’ordre de retrait annule les départs non effectués ; les unités en route rejoignent un point de rassemblement. Aucun renfort apparaît directement au contact pour punir une décision. Les plafonds actifs et distants du budget restent contraignants : si aucun emplacement n’est disponible, le renfort attend à sa source. Chaque transfert conserve l’agent et consomme la réserve une seule fois.",
+          "objectives": "A : identifier la patrouille qui franchit la limite et préserver un passage. B : récupérer le relevé d’incident puis accompagner ou bloquer le ravitaillement. C : transmettre l’identification et une consigne de retrait ou de passage.",
+          "victory": "Deux passages sécurisés et relais opérationnel, avec accord local exécuté ou repli ordonné des deux contingents. Résolution sans décès possible ; aucun duel ni boss imposé.",
+          "defeat": "Escalade incontrôlée qui coupe les trois routes après signaux d’avertissement ; preuve indispensable détruite avant transmission et retrait devenu impossible ; joueur neutralisé sans secours.",
+          "commander": "Chefs de poste ordinaires inclus dans GRP-33 et GRP-36 ; aucun individu de boss ajouté.",
+          "bossIds": [],
+          "parallelConsequences": "Un tir sur A accroît la vigilance de B ; une preuve transmise via C peut réduire cette tension. Les patrouilles ignorées continuent leur mouvement, puis peuvent se retirer plutôt que combattre jusqu’au dernier.",
+          "continuity": "Scénario original de conflit entre deux clans Yautja inventés ; aucune guerre, coutume, hiérarchie ou règle de duel n’est présentée comme canonique ou universelle. Les droits de passage, règles de tension et solutions négociées sont propres à ce conflit fictif, sans prétention sur une loi Yautja générale.",
+          "priority": "P2",
+          "acceptance": "La même composition permet une résolution négociée et une résolution armée. Chaque changement de relation apparaît dans un journal visible. Les tirs, le relevé et le relais expliquent la tension ; aucun changement d’hostilité aléatoire.",
+          "playerSide": "Clan des Cendres Veilleuses — création originale",
+          "enemySide": "Clan des Lames de Basalte — création originale",
+          "alliedGroupIds": [
+            "GRP-31",
+            "GRP-33",
+            "GRP-35"
+          ],
+          "enemyGroupIds": [
+            "GRP-31",
+            "GRP-32",
+            "GRP-33",
+            "GRP-35",
+            "GRP-36"
+          ],
+          "initialDeployment": "Actifs : A = E [1 × GRP-33], A [1 × GRP-31] ; B = E [2 × GRP-31], A [aucune escouade] ; C = E [1 × GRP-36], A [1 × GRP-33]. Distants : A = E [4 × GRP-32], A [1 × GRP-33] ; B = E [2 × GRP-35], A [1 × GRP-31] ; C = E [2 × GRP-33], A [aucune escouade]. Réserve non déployée : Réserve = E [2 × GRP-31 + 2 × GRP-32], A [1 × GRP-35]. Chaque escouade = 4 PNJ ; commandants compris. Joueur séparé. Une unité qui change de niveau de simulation garde son ID, ses PV et son objectif. E/A désignent les camps de départ ; une trêve change les relations, sans créer ni dupliquer les agents.",
+          "forceAllocation": {
+            "active": [
+              {
+                "front": "A",
+                "enemy": [
+                  {
+                    "groupId": "GRP-33",
+                    "squads": 1,
+                    "npc": 4
+                  }
+                ],
+                "ally": [
+                  {
+                    "groupId": "GRP-31",
+                    "squads": 1,
+                    "npc": 4
+                  }
+                ]
+              },
+              {
+                "front": "B",
+                "enemy": [
+                  {
+                    "groupId": "GRP-31",
+                    "squads": 2,
+                    "npc": 8
+                  }
+                ],
+                "ally": []
+              },
+              {
+                "front": "C",
+                "enemy": [
+                  {
+                    "groupId": "GRP-36",
+                    "squads": 1,
+                    "npc": 4
+                  }
+                ],
+                "ally": [
+                  {
+                    "groupId": "GRP-33",
+                    "squads": 1,
+                    "npc": 4
+                  }
+                ]
+              }
+            ],
+            "distant": [
+              {
+                "front": "A",
+                "enemy": [
+                  {
+                    "groupId": "GRP-32",
+                    "squads": 4,
+                    "npc": 16
+                  }
+                ],
+                "ally": [
+                  {
+                    "groupId": "GRP-33",
+                    "squads": 1,
+                    "npc": 4
+                  }
+                ]
+              },
+              {
+                "front": "B",
+                "enemy": [
+                  {
+                    "groupId": "GRP-35",
+                    "squads": 2,
+                    "npc": 8
+                  }
+                ],
+                "ally": [
+                  {
+                    "groupId": "GRP-31",
+                    "squads": 1,
+                    "npc": 4
+                  }
+                ]
+              },
+              {
+                "front": "C",
+                "enemy": [
+                  {
+                    "groupId": "GRP-33",
+                    "squads": 2,
+                    "npc": 8
+                  }
+                ],
+                "ally": []
+              }
+            ],
+            "reserve": [
+              {
+                "front": "Réserve",
+                "enemy": [
+                  {
+                    "groupId": "GRP-31",
+                    "squads": 2,
+                    "npc": 8
+                  },
+                  {
+                    "groupId": "GRP-32",
+                    "squads": 2,
+                    "npc": 8
+                  }
+                ],
+                "ally": [
+                  {
+                    "groupId": "GRP-35",
+                    "squads": 1,
+                    "npc": 4
+                  }
+                ]
+              }
+            ]
+          },
+          "mapLabel": "LD-16 — Col des Deux Balises — crise de frontière",
+          "frontLabel": "FR-17 — Frontière des Deux Balises",
+          "budgetLabel": "EFF-09 — Clans rivaux — escarmouche de chasseurs",
+          "alliedGroups": "GRP-31 — Éclaireurs de relief (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-33 — Gardes de position (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-35 — Escorte de fret et de retrait (Yautja — modèle de détachement ; allégeance fixée par chaque opération)",
+          "enemyGroups": "GRP-31 — Éclaireurs de relief (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-32 — Intercepteurs de passage (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-33 — Gardes de position (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-35 — Escorte de fret et de retrait (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-36 — Détachement de commandement (Yautja — modèle de détachement ; allégeance fixée par chaque opération)",
+          "bosses": "Aucun boss imposé"
+        },
+        {
+          "id": "AFF-05",
+          "title": "Un accord pendant que les fronts reculent",
+          "type": "Duel négocié et cessation des combats",
+          "mapId": "LD-17",
+          "frontId": "FR-18",
+          "budgetId": "EFF-09",
+          "thirdParties": "Aucun combattant tiers. Témoins et gardes appartiennent aux escouades déjà comptées ; leur état de trêve ne crée pas une population neutre supplémentaire.",
+          "reinforcementRules": "Pendant le duel accepté, aucune réserve ne rejoint A. Sur B et C, une arrivée doit être autorisée par une menace confirmée et prélevée dans la réserve. Un accord annule les départs ; les groupes déjà engagés se retirent après réception et validation de leur chemin. Les plafonds actifs et distants du budget restent contraignants : si aucun emplacement n’est disponible, le renfort attend à sa source. Chaque transfert conserve l’agent et consomme la réserve une seule fois.",
+          "objectives": "A : obtenir un arrêt accepté par Sel, par désarmement, concession ou issue convenue du duel. B : retirer fret et blessés sans abandonner la sortie. C : livrer l’ordre de cessation aux gardes contestataires et vérifier sa réception.",
+          "victory": "Accord ou repli accepté, retrait réalisé sur B et ordre exécuté sur C. Le joueur n’a pas besoin de tuer Sel ; sa mort ne remplace pas la transmission des ordres.",
+          "defeat": "Sorties coupées après rupture annoncée de l’accord et aucun repli possible ; attaque contre la délégation qui rend le retrait impossible ; joueur neutralisé sans secours. Refuser le duel avant son début n’est pas automatiquement un échec.",
+          "commander": "Sel remplace la cheffe du GRP-36 adverse sur A. Le GRP-36 allié comprend la liaison de la délégation et ses trois gardes ; le joueur reste hors de ces quatre PNJ.",
+          "bossIds": [
+            "BOS-28"
+          ],
+          "parallelConsequences": "Le duel fait évoluer la volonté d’accord ; B et C continuent d’avancer. Quitter A pour sauver le relais coûte une concession annoncée. La défaite d’un champion ne supprime pas les gardes, et une unité qui n’a pas reçu l’ordre peut encore intercepter le convoi.",
+          "continuity": "Scénario original de conflit entre deux clans Yautja inventés ; aucune guerre, coutume, hiérarchie ou règle de duel n’est présentée comme canonique ou universelle. Les conditions du duel sont proposées, acceptées ou refusées à l’écran pour cette opération uniquement. Le statut de Sel et les survivants sont persistants.",
+          "priority": "P2",
+          "acceptance": "Un enregistrement montre A, B et C évoluer pendant le duel. Une victoire seule sur Sel ne ferme pas la mission avant retrait et réception des ordres. Refus du duel, accord sans mort et rupture suivie d’un repli possèdent des sorties cohérentes.",
+          "playerSide": "Clan des Cendres Veilleuses — création originale",
+          "enemySide": "Clan des Lames de Basalte — création originale",
+          "alliedGroupIds": [
+            "GRP-31",
+            "GRP-33",
+            "GRP-35",
+            "GRP-36"
+          ],
+          "enemyGroupIds": [
+            "GRP-31",
+            "GRP-32",
+            "GRP-33",
+            "GRP-35",
+            "GRP-36"
+          ],
+          "initialDeployment": "Actifs : A = E [1 × GRP-36], A [1 × GRP-36] ; B = E [1 × GRP-35], A [1 × GRP-35] ; C = E [2 × GRP-32], A [aucune escouade]. Distants : A = E [2 × GRP-33], A [aucune escouade] ; B = E [3 × GRP-35], A [1 × GRP-33] ; C = E [3 × GRP-31], A [1 × GRP-31]. Réserve non déployée : Réserve = E [2 × GRP-32 + 2 × GRP-33], A [1 × GRP-33]. Chaque escouade = 4 PNJ ; commandants compris. Joueur séparé. Une unité qui change de niveau de simulation garde son ID, ses PV et son objectif. E/A désignent les camps de départ ; une trêve change les relations, sans créer ni dupliquer les agents.",
+          "forceAllocation": {
+            "active": [
+              {
+                "front": "A",
+                "enemy": [
+                  {
+                    "groupId": "GRP-36",
+                    "squads": 1,
+                    "npc": 4
+                  }
+                ],
+                "ally": [
+                  {
+                    "groupId": "GRP-36",
+                    "squads": 1,
+                    "npc": 4
+                  }
+                ]
+              },
+              {
+                "front": "B",
+                "enemy": [
+                  {
+                    "groupId": "GRP-35",
+                    "squads": 1,
+                    "npc": 4
+                  }
+                ],
+                "ally": [
+                  {
+                    "groupId": "GRP-35",
+                    "squads": 1,
+                    "npc": 4
+                  }
+                ]
+              },
+              {
+                "front": "C",
+                "enemy": [
+                  {
+                    "groupId": "GRP-32",
+                    "squads": 2,
+                    "npc": 8
+                  }
+                ],
+                "ally": []
+              }
+            ],
+            "distant": [
+              {
+                "front": "A",
+                "enemy": [
+                  {
+                    "groupId": "GRP-33",
+                    "squads": 2,
+                    "npc": 8
+                  }
+                ],
+                "ally": []
+              },
+              {
+                "front": "B",
+                "enemy": [
+                  {
+                    "groupId": "GRP-35",
+                    "squads": 3,
+                    "npc": 12
+                  }
+                ],
+                "ally": [
+                  {
+                    "groupId": "GRP-33",
+                    "squads": 1,
+                    "npc": 4
+                  }
+                ]
+              },
+              {
+                "front": "C",
+                "enemy": [
+                  {
+                    "groupId": "GRP-31",
+                    "squads": 3,
+                    "npc": 12
+                  }
+                ],
+                "ally": [
+                  {
+                    "groupId": "GRP-31",
+                    "squads": 1,
+                    "npc": 4
+                  }
+                ]
+              }
+            ],
+            "reserve": [
+              {
+                "front": "Réserve",
+                "enemy": [
+                  {
+                    "groupId": "GRP-32",
+                    "squads": 2,
+                    "npc": 8
+                  },
+                  {
+                    "groupId": "GRP-33",
+                    "squads": 2,
+                    "npc": 8
+                  }
+                ],
+                "ally": [
+                  {
+                    "groupId": "GRP-33",
+                    "squads": 1,
+                    "npc": 4
+                  }
+                ]
+              }
+            ]
+          },
+          "mapLabel": "LD-17 — Plateau des Arches silencieuses — accord sous tension",
+          "frontLabel": "FR-18 — Accord sous les Arches silencieuses",
+          "budgetLabel": "EFF-09 — Clans rivaux — escarmouche de chasseurs",
+          "alliedGroups": "GRP-31 — Éclaireurs de relief (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-33 — Gardes de position (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-35 — Escorte de fret et de retrait (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-36 — Détachement de commandement (Yautja — modèle de détachement ; allégeance fixée par chaque opération)",
+          "enemyGroups": "GRP-31 — Éclaireurs de relief (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-32 — Intercepteurs de passage (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-33 — Gardes de position (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-35 — Escorte de fret et de retrait (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-36 — Détachement de commandement (Yautja — modèle de détachement ; allégeance fixée par chaque opération)",
+          "bosses": "BOS-28 — Sel, porte-parole armée du clan rival"
+        },
+        {
+          "id": "AFF-06",
+          "title": "Reprendre le matériel capturé au port",
+          "type": "Yautja contre force humaine de capture — mission originale contemporaine",
+          "mapId": "LD-18",
+          "frontId": "FR-19",
+          "budgetId": "EFF-11",
+          "playerSide": "Un chasseur du clan et un contingent limité de 8 alliés PNJ ; personnages et guerre originaux",
+          "enemySide": "Force humaine contemporaine mandatée pour saisir le matériel extraterrestre ; identité originale et objectifs de capture explicités",
+          "thirdParties": "16 travailleurs portuaires neutres (2 GRP-28 au format 8), hors effectifs combattants ; 2 véhicules de transfert comme matériel, équipages militaires déjà inclus ; aucun synthétique",
+          "alliedGroupIds": [
+            "GRP-12",
+            "GRP-13"
+          ],
+          "enemyGroupIds": [
+            "GRP-37",
+            "GRP-42"
+          ],
+          "initialDeployment": "EFF-11 — Ennemis : 64 actifs (A32/B16/C16), 128 déjà déployés distants (A32/B48/C48), 64 non déployés ; total 256. Chaque front commence donc avec 64 humains déployés, la réserve de 64 est commune. 32 groupes de 8 au total : 31 groupes de troupe + 1 cellule GRP-42 ; cette dernière est incluse dans les actifs du front C, et son chef est le boss, sans unité supplémentaire. Alliés Yautja PNJ : 4 actifs sur A (1 GRP-13), 4 distants (B2/C2, 2 GRP-12 au format 2), 0 en réserve ; total 8. Joueur : 1, distinct des 8 PNJ. Non-combattants : 16 travailleurs ; véhicules : 2, sans ajout automatique de personnel.",
+          "reinforcementRules": "8 groupes GRP-37 de 8 constituent les 64 humains de réserve ; chacun n’entre qu’une fois par la route du dépôt ou le quai d’accostage. Couper les deux accès bloque la réserve encore non déployée. Les 128 distants sont déjà engagés et ne sont jamais recréés comme renforts.",
+          "objectives": "Récupérer l’équipement identifié du clan, empêcher son départ, maintenir un quai de sortie ; la prise du poste de capture est une option tactique",
+          "victory": "L’objet validé est à bord de l’extraction et le joueur quitte le site par une voie accessible ; pertes et matériels laissés sur place consignés",
+          "defeat": "Joueur définitivement hors combat selon règle de mission, matériel évacué au-delà du théâtre, ou toutes les voies de sortie perdues sans solution annoncée de remplacement",
+          "commander": "BOS-29 commande depuis la cellule GRP-42 du front C ; l’opérateur du convoi poursuit son dernier ordre si la radio tombe",
+          "bossIds": [
+            "BOS-29"
+          ],
+          "parallelConsequences": "B ignoré permet la localisation des alliés ; C ignoré déplace le chargement et peut fermer le quai ; A prolongé consomme temps et ressources de l’extraction",
+          "continuity": "Fiction originale. Inspiration générale de chasse et de capture humaine ; ni déroulé canonique de film, ni effectif militaire officiel. Armes, dates et groupes contemporains séparés de l’univers colonial futur.",
+          "priority": "P1",
+          "acceptance": "Trois fronts évoluent hors caméra ; bilan 256 humains combattants / 8 alliés PNJ / 1 joueur exact ; 16 travailleurs séparés ; chef non compté deux fois ; capture du boss seule ne donne pas la victoire.",
+          "mapLabel": "LD-18 — Port de récupération — entrepôts, quais et zone de capture",
+          "frontLabel": "FR-19 — Port de récupération : reprendre le matériel du clan",
+          "budgetLabel": "EFF-11 — Humains contemporains — capture et poursuite",
+          "alliedGroups": "GRP-12 — Éclaireurs (Yautja alliés)\nGRP-13 — Soutien plasma (Yautja alliés)",
+          "enemyGroups": "GRP-37 — Équipe de capture et de couverture (Humains — force de capture contemporaine originale)\nGRP-42 — Poste de commandement protégé (Humains — cellule de commandement d’opération)",
+          "bosses": "BOS-29 — Commandant de la force de capture"
+        },
+        {
+          "id": "AFF-07",
+          "title": "Interrompre la livraison industrielle",
+          "type": "Yautja contre mercenaires de sécurité — mission originale contemporaine",
+          "mapId": "LD-19",
+          "frontId": "FR-20",
+          "budgetId": "EFF-11",
+          "playerSide": "Un chasseur original et 8 alliés Yautja PNJ chargés de reprendre une technologie du clan",
+          "enemySide": "Mercenaires et sécurité armée d’une entreprise fictive ; aucun nom de société canonique ni matériel USCM importé",
+          "thirdParties": "24 ouvriers neutres (3 GRP-28 au format 8), hors combat ; 1 convoi et 2 postes de surveillance automatisés comptés en matériel, opérateurs humains déjà inclus ; aucun synthétique",
+          "alliedGroupIds": [
+            "GRP-12",
+            "GRP-13"
+          ],
+          "enemyGroupIds": [
+            "GRP-38",
+            "GRP-42"
+          ],
+          "initialDeployment": "EFF-11 — Ennemis : 64 actifs (A32/B16/C16), 128 déjà déployés distants (A32/B48/C48), 64 non déployés ; total 256. Chaque front commence donc avec 64 humains déployés, la réserve de 64 est commune. 32 groupes de 8 au total : 31 groupes de troupe + 1 cellule GRP-42 ; cette dernière est incluse dans les actifs du front A, et son chef est le boss, sans unité supplémentaire. Alliés Yautja PNJ : 4 actifs sur A (1 GRP-13), 4 distants (B2/C2, 2 GRP-12 au format 2), 0 en réserve ; total 8. Joueur : 1, distinct des 8 PNJ. Non-combattants : 24 ouvriers ; matériel : 1 convoi et 2 postes de surveillance, sans soldats ajoutés.",
+          "reinforcementRules": "Les 64 réservistes sont 8 GRP-38 de 8 au dépôt extérieur. Départ conditionné à un ordre transmis et à une route ouverte ; un convoi bloqué conserve ses occupants dans son registre au lieu de les cloner à pied.",
+          "objectives": "Atteindre le chargement, contrôler son transfert et ouvrir une issue ; choisir en briefing récupération ou neutralisation du matériel pour rendre la condition finale non ambiguë",
+          "victory": "Objectif de matériel choisi accompli et extraction réussie avant sa sortie définitive ; l’usine conserve état des portails, convoi et alimentation",
+          "defeat": "Matériel livré hors du théâtre avant intervention, joueur définitivement vaincu, ou sortie perdue après l’avertissement prévu par la mission",
+          "commander": "BOS-30, incarnation contemporaine propre à ce site, occupe l’un des 8 postes GRP-42 sur A",
+          "bossIds": [
+            "BOS-30"
+          ],
+          "parallelConsequences": "La livraison progresse sur B ; le poste C réaffecte ses gardes si A tombe ; couper l’énergie ouvre certains accès mais en ferme d’autres selon leurs mécanismes documentés",
+          "continuity": "Entreprise, conflit et chef originaux. Technologie humaine contemporaine, équipement Yautja choisi pour les chasseurs originaux. Aucun catalogue de figurines n’est présenté comme preuve du plan ou de l’effectif.",
+          "priority": "P1",
+          "acceptance": "Trois fronts et convoi fonctionnent hors caméra ; 256/8/1 respectés ; les 24 ouvriers ne deviennent pas cibles par faction de voisinage ; objectif matériel et extraction restent requis après neutralisation du responsable.",
+          "mapLabel": "LD-19 — Bassin industriel sous contrat — usine, voies ferrées et dépôts",
+          "frontLabel": "FR-20 — Bassin industriel : interrompre la livraison d’un trophée technologique",
+          "budgetLabel": "EFF-11 — Humains contemporains — capture et poursuite",
+          "alliedGroups": "GRP-12 — Éclaireurs (Yautja alliés)\nGRP-13 — Soutien plasma (Yautja alliés)",
+          "enemyGroups": "GRP-38 — Détachement de protection du convoi (Humains — mercenaires de sécurité industrielle)\nGRP-42 — Poste de commandement protégé (Humains — cellule de commandement d’opération)",
+          "bosses": "BOS-30 — Responsable tactique de sécurité"
+        },
+        {
+          "id": "AFF-08",
+          "title": "Reprendre une installation de la colonie",
+          "type": "Yautja contre force coloniale militaire — bataille originale future",
+          "mapId": "LD-11",
+          "frontId": "FR-21",
+          "budgetId": "EFF-12",
+          "playerSide": "Un chasseur du clan avec 32 alliés Yautja PNJ répartis entre attaque, soutien et réserve ; guerre originale explicitée",
+          "enemySide": "Force humaine coloniale hostile à ce clan dans le mandat de l’opération ; unités originales, sans faire de tous les Marines des ennemis permanents",
+          "thirdParties": "32 colons non combattants (4 GRP-28 au format 8), hors bilan militaire ; 2 transports blindés et 2 sentinelles comme matériel, équipages déjà dans les 768 humains ; aucun synthétique combattant ni ruche active par défaut",
+          "alliedGroupIds": [
+            "GRP-11",
+            "GRP-13"
+          ],
+          "enemyGroupIds": [
+            "GRP-39",
+            "GRP-42"
+          ],
+          "initialDeployment": "EFF-12 — Ennemis : 128 actifs (A48/B32/C24/D24), 384 déjà déployés distants (96 par front), 256 non déployés ; total 768. Déploiement initial par front : A144/B128/C120/D120 ; réserve commune 256. 96 groupes de 8 au total : 95 groupes de troupe + 1 cellule GRP-42, incluse dans les actifs du front A ; son chef est le boss déjà compté. Alliés Yautja PNJ : 12 actifs (A8 en GRP-11 au format 8, B4 en GRP-13), 12 distants (C8 en GRP-11, D4 en GRP-13), 8 en réserve (1 GRP-11) ; total 32. Joueur : 1, distinct des 32 PNJ. Non-combattants : 32 colons. Matériel : 2 transports blindés et 2 sentinelles ; occupants comptés dans les groupes militaires existants.",
+          "reinforcementRules": "Réserve humaine de 256 = 32 GRP-39 de 8, répartis en quatre lots logistiques de 64 non déployés. Les accès caserne, piste et routes déterminent les arrivées. Les 8 alliés de réserve rejoignent par une insertion du clan accessible. Réaffecter les 384 distants ne crée aucun soldat.",
+          "objectives": "Réduire coordination et ravitaillement adverses, reprendre l’objectif du clan dans les ateliers, protéger la liaison puis l’extraction ; la colonie LD-11 est réutilisée avec ses spawns de ruche désactivés pour ce preset",
+          "victory": "Objectif récupéré, joueur extrait et au moins une route de sortie sécurisée au moment du départ ; résultat des autres fronts et bilan colonial persistants",
+          "defeat": "Perte définitive du joueur, transfert irréversible de l’objectif hors du théâtre ou fermeture annoncée de toutes les possibilités d’extraction",
+          "commander": "BOS-31, officier original de cette expédition, inclus dans le GRP-42 du front A ; les chefs de section restent autonomes après perte de radio",
+          "bossIds": [
+            "BOS-31"
+          ],
+          "parallelConsequences": "B préservé fournit les appuis du contre-assaut ; C perdu coupe la liaison de transport ; D perdu oblige à une extraction secondaire préparée ou à une défaite explicitement annoncée",
+          "continuity": "Campagne originale future inspirée du périmètre colonial Alien/AVP. LD-11 n’est pas présentée comme le plan exact de LV-426. Aucun roster nommé du film, aucune hostilité universelle et aucune caste biologique injectée par défaut.",
+          "priority": "P1",
+          "acceptance": "Quatre fronts indépendants ; bilan humain 768 et allié 32, joueur séparé ; 32 colons et matériel hors quota de soldats ; désactivation réelle des sources xénomorphes du preset ; pas victoire automatique à la mort du commandant.",
+          "mapLabel": "LD-11 — Colonie / processeur atmosphérique",
+          "frontLabel": "FR-21 — Colonie en conflit : reprendre une installation occupée",
+          "budgetLabel": "EFF-12 — Humains du futur — opération militaire",
+          "alliedGroups": "GRP-11 — Détachement d’assaut (Yautja alliés)\nGRP-13 — Soutien plasma (Yautja alliés)",
+          "enemyGroups": "GRP-39 — Section de contre-assaut à la colonie (Humains — force coloniale militaire hostile)\nGRP-42 — Poste de commandement protégé (Humains — cellule de commandement d’opération)",
+          "bosses": "BOS-31 — Commandant expéditionnaire de la force humaine"
+        },
+        {
+          "id": "AFF-09",
+          "title": "Libérer la navette du chantier orbital",
+          "type": "Yautja contre sûreté humaine orbitale — opération originale future",
+          "mapId": "LD-20",
+          "frontId": "FR-22",
+          "budgetId": "EFF-12",
+          "playerSide": "Un chasseur original et 32 alliés Yautja PNJ affectés aux modules, au quai et à la réserve",
+          "enemySide": "Sûreté humaine d’un chantier spatial fictif chargée de confisquer la navette ; équipement futur par profil explicitement défini",
+          "thirdParties": "16 techniciens humains neutres (2 GRP-28 de 8) et 4 synthétiques de maintenance neutres (1 GRP-26 de 4), tous hors effectifs combattants. Navettes et défenses fixes comptées en matériel ; aucun APC dans les coursives.",
+          "alliedGroupIds": [
+            "GRP-11",
+            "GRP-13"
+          ],
+          "enemyGroupIds": [
+            "GRP-40",
+            "GRP-42"
+          ],
+          "initialDeployment": "EFF-12 — Ennemis : 128 actifs (A48/B32/C24/D24), 384 déjà déployés distants (96 par front), 256 non déployés ; total 768. Déploiement initial par front : A144/B128/C120/D120 ; réserve commune 256. 96 groupes de 8 au total : 95 groupes de troupe + 1 cellule GRP-42, incluse dans les actifs du front A ; son chef est le boss déjà compté. Alliés Yautja PNJ : 12 actifs (A8 en GRP-11 au format 8, B4 en GRP-13), 12 distants (C8 en GRP-11, D4 en GRP-13), 8 en réserve (1 GRP-11) ; total 32. Joueur : 1, distinct des 32 PNJ. Hors combat : 16 techniciens humains et 4 synthétiques de maintenance distincts. Matériel : navette du clan et 2 points de défense fixes, sans personnels supplémentaires.",
+          "reinforcementRules": "256 réservistes humains = 32 GRP-40 de 8 dans des navettes non encore amarrées ou casernements non ouverts. Le contrôle d’amarrage et les sas déterminent l’entrée ; compartiment isolé bloque le passage. Les synthétiques neutres ne sont jamais convertis silencieusement en renforts ennemis.",
+          "objectives": "Libérer les verrous d’amarrage, reprendre données ou matériel du clan, désactiver l’interception et maintenir le quai pendant la préparation du départ",
+          "victory": "La navette part réellement avec les éléments requis et le joueur ; décompression, sas, modules isolés et survivants restent enregistrés au débriefing",
+          "defeat": "Joueur définitivement vaincu, navette détruite ou saisie hors du théâtre, ou perte de tous les accès au départ après avertissement et absence de secours déclaré",
+          "commander": "BOS-30, incarnation orbitale distincte du responsable contemporain d’AFF-07, inclus dans les 8 membres GRP-42 du front A",
+          "bossIds": [
+            "BOS-30"
+          ],
+          "parallelConsequences": "B détermine énergie et interception ; C perdu prive du retour court ; D peut être repris par une équipe débarquée pendant que le joueur contrôle A. La neutralisation du chef ne ventile pas automatiquement tous les compartiments.",
+          "continuity": "Station, société, commandant et conflit originaux du futur. La carte n’est ni Renaissance ni Nostromo ; pas d’Offspring, Rogue ou xénomorphes par défaut. La présence de synthétiques suit un protocole de maintenance séparé.",
+          "priority": "P1",
+          "acceptance": "Quatre fronts progressent indépendamment ; 768 humains combattants / 32 alliés / 1 joueur conservés ; 16 techniciens et 4 synthétiques hors quotas ; aucun renfort ne franchit un sas fermé sans chemin ; le départ requiert des conditions spatiales réelles.",
+          "mapLabel": "LD-20 — Chantier orbital — anneau de service, modules et quais d’embarquement",
+          "frontLabel": "FR-22 — Chantier orbital : libérer la navette saisie",
+          "budgetLabel": "EFF-12 — Humains du futur — opération militaire",
+          "alliedGroups": "GRP-11 — Détachement d’assaut (Yautja alliés)\nGRP-13 — Soutien plasma (Yautja alliés)",
+          "enemyGroups": "GRP-40 — Équipe de défense des compartiments (Humains — sûreté orbitale originale)\nGRP-42 — Poste de commandement protégé (Humains — cellule de commandement d’opération)",
+          "bosses": "BOS-30 — Responsable tactique de sécurité"
+        },
+        {
+          "id": "AFF-10",
+          "title": "Extraire le captif de la cité-port",
+          "type": "Yautja contre cordon humain — bataille originale future avec évacuation civile",
+          "mapId": "LD-21",
+          "frontId": "FR-23",
+          "budgetId": "EFF-12",
+          "playerSide": "Un chasseur et 32 alliés Yautja PNJ ; un captif Yautja non combattant constitue l’objectif et reste dans un registre distinct",
+          "enemySide": "Force militaire coloniale originale dont le mandat explicite est confinement et interception ; ses unités sont distinctes des civils et secours",
+          "thirdParties": "40 civils et soignants non combattants (5 GRP-28 de 8), 1 captif Yautja non combattant, 2 véhicules d’évacuation civils et 2 transports militaires comme matériel ; équipages militaires déjà dans les 768, chauffeurs civils dans les 40",
+          "alliedGroupIds": [
+            "GRP-11",
+            "GRP-13"
+          ],
+          "enemyGroupIds": [
+            "GRP-41",
+            "GRP-42"
+          ],
+          "initialDeployment": "EFF-12 — Ennemis : 128 actifs (A48/B32/C24/D24), 384 déjà déployés distants (96 par front), 256 non déployés ; total 768. Déploiement initial par front : A144/B128/C120/D120 ; réserve commune 256. 96 groupes de 8 au total : 95 groupes de troupe + 1 cellule GRP-42, incluse dans les actifs du front B ; son chef est le boss déjà compté. Alliés Yautja PNJ : 12 actifs (A8 en GRP-11 au format 8, B4 en GRP-13), 12 distants (C8 en GRP-11, D4 en GRP-13), 8 en réserve (1 GRP-11) ; total 32. Joueur : 1, distinct des 32 PNJ. Hors combat : 40 civils/soignants et 1 captif Yautja ; le captif ne s’ajoute pas aux 32 combattants après libération. Matériel : 4 véhicules, occupants déjà rattachés à leur registre.",
+          "reinforcementRules": "256 réservistes humains = 32 GRP-41 de 8, fournis par les dépôts et la route militaire périphérique. Couper un axe retarde ou détourne ses groupes sans les effacer. Les 8 alliés de réserve arrivent par une voie du clan déclarée. Le captif libéré reste escorté et non combattant pendant cette opération.",
+          "objectives": "Atteindre et libérer le captif, empêcher son transfert hors du théâtre, ouvrir une route jusqu’au terminal et maintenir un passage utilisable durant l’extraction",
+          "victory": "Captif et joueur extraits ; issue du cordon et bilan de l’évacuation consignés séparément. Les pertes civiles affectent le débriefing selon règles du scénario et n’alimentent jamais le compteur de victoires militaires.",
+          "defeat": "Captif mort ou transféré irréversiblement, joueur définitivement vaincu, ou toutes les voies d’extraction définitivement coupées après avertissement",
+          "commander": "BOS-31, officier original de cette cité distinct de celui d’AFF-08, inclus dans GRP-42 sur B ; les chefs de barrage continuent leurs consignes locales",
+          "bossIds": [
+            "BOS-31"
+          ],
+          "parallelConsequences": "A ignoré permet le transfert du captif ; B maintenu augmente la coordination d’interception ; C perdu éloigne le terminal ; D ignoré congestionne la sortie et modifie réellement les déplacements des civils",
+          "continuity": "Ville, captif, officiers et conflit originaux dans un futur colonial. Aucun peuple ni groupe civil n’est ennemi par défaut ; coopération éventuelle avec les secours découle d’un événement explicite, sans alliance universelle humain/Yautja.",
+          "priority": "P2",
+          "acceptance": "Quatre fronts hors caméra, 768 ennemis et 32 alliés combattants préservés, 1 joueur distinct ; 40 civils et 1 captif suivis hors quotas ; véhicules/passagers sans double comptage ; libération du captif et mort du commandant ne déclenchent pas une victoire prématurée.",
+          "mapLabel": "LD-21 — Cité-port en évacuation — quartiers, centre médical et terminal",
+          "frontLabel": "FR-23 — Cité-port : extraire un captif sans perdre la sortie",
+          "budgetLabel": "EFF-12 — Humains du futur — opération militaire",
+          "alliedGroups": "GRP-11 — Détachement d’assaut (Yautja alliés)\nGRP-13 — Soutien plasma (Yautja alliés)",
+          "enemyGroups": "GRP-41 — Section de barrage et d’interception (Humains — cordon militaire de cité coloniale)\nGRP-42 — Poste de commandement protégé (Humains — cellule de commandement d’opération)",
+          "bosses": "BOS-31 — Commandant expéditionnaire de la force humaine"
+        },
+        {
+          "id": "AFF-11",
+          "title": "Convergence sur la colonie",
+          "type": "Trois camps : clan du joueur, clan rival, force humaine",
+          "mapId": "LD-11",
+          "frontId": "FR-24",
+          "budgetId": "EFF-13",
+          "playerSide": "Détachement du clan du joueur, 32 alliés PNJ alloués et un joueur",
+          "enemySide": "Clan rival original : 48 combattants. Force coloniale humaine du futur : 336 combattants. Ces camps poursuivent des objectifs distincts et peuvent s’affronter entre eux.",
+          "thirdParties": "24 civils en trois groupes de huit, dont huit au plus actifs. Ils ne combattent pas et ne consomment aucune réserve militaire. Les véhicules et consoles sont suivis comme matériel.",
+          "alliedGroupIds": [
+            "GRP-13",
+            "GRP-31",
+            "GRP-35",
+            "GRP-33",
+            "GRP-34"
+          ],
+          "enemyGroupIds": [
+            "GRP-36",
+            "GRP-42",
+            "GRP-39",
+            "GRP-31",
+            "GRP-32",
+            "GRP-33",
+            "GRP-35"
+          ],
+          "initialDeployment": "Actifs : A [rivaux 4, humains 16, alliés 4] ; B [rivaux 8, humains 32, alliés 4] ; C [rivaux 4, humains 24, alliés 0] ; D [rivaux 0, humains 8, alliés 4]. Distants : A [rivaux 0, humains 40, alliés 0] ; B [rivaux 0, humains 40, alliés 4] ; C [rivaux 8, humains 48, alliés 4] ; D [rivaux 8, humains 48, alliés 4]. Réserve : Réserve [rivaux 16, humains 80, alliés 8]. Groupes Yautja de 4 et humains de 8 ; le commandant remplace un membre. Un joueur est ajouté séparément. Les forces gardent leurs identifiants lors des changements de détail de simulation ou de relation.",
+          "reinforcementRules": "Chaque camp possède un registre distinct. Les renforts humains arrivent par le poste logistique tant que radio et route existent. Les rivaux n’entrent que par leur zone d’insertion. Un cessez-le-feu modifie la relation d’unités existantes ; aucune nouvelle unité ni conversion automatique de la réserve adverse en alliés.",
+          "objectives": "A :quai et sortie. B :transfert de l’équipement. C :radio des renforts humains. D :corridor civil. Le choix d’un objectif doit produire un résultat observable sur au moins un autre front.",
+          "victory": "Récupérer l’équipement et extraire le joueur par une voie tenue. Avec 12 à 23 civils évacués sur 24, obtenir une victoire partielle ; avec les 24, obtenir le meilleur bilan. Conserver les survivants et pertes des trois camps.",
+          "defeat": "Équipement emporté hors du théâtre, aucune voie de départ récupérable ou mort définitive du joueur selon les règles du mode. Si moins de 12 civils peuvent être évacués, le joueur peut encore organiser un repli, classé non victorieux avec échec de l’objectif de secours.",
+          "commander": "Kher (BOS-26) remplace le chef du GRP-36 rival du front A. Un officier humain original de profil BOS-31 remplace le chef du GRP-42 du même front. Ils appartiennent à deux camps indépendants.",
+          "bossIds": [
+            "BOS-26",
+            "BOS-31"
+          ],
+          "parallelConsequences": "Neutraliser la radio réduit les réaffectations humaines, pas la population déjà déployée. Capturer le chef rival peut permettre une neutralité locale. Les réserves sont finies et le boss final dépend du camp qui tient le quai.",
+          "continuity": "Mission de guerre originale du futur sur la carte de colonie proposée. Noms de clans et chaîne d’événements inventés pour le projet. Aucun effectif de film ni plan de LV-426 certifié.",
+          "priority": "P1",
+          "acceptance": "Pendant dix minutes avec le joueur sur A, observer un affrontement autonome B/C, une extraction civile et une consommation de réserve. Vérifier 48 rivaux +336 humains +32 alliés sans duplication, puis un changement de relation sans gain de population.",
+          "forceAllocation": {
+            "active": [
+              {
+                "front": "A",
+                "enemy": [
+                  {
+                    "groupId": "GRP-36",
+                    "squads": 1,
+                    "npc": 4,
+                    "camp": "Clan rival"
+                  },
+                  {
+                    "groupId": "GRP-42",
+                    "squads": 1,
+                    "npc": 8,
+                    "camp": "Force humaine"
+                  },
+                  {
+                    "groupId": "GRP-39",
+                    "squads": 1,
+                    "npc": 8,
+                    "camp": "Force humaine"
+                  }
+                ],
+                "ally": [
+                  {
+                    "groupId": "GRP-13",
+                    "squads": 1,
+                    "npc": 4,
+                    "camp": "Clan du joueur"
+                  }
+                ]
+              },
+              {
+                "front": "B",
+                "enemy": [
+                  {
+                    "groupId": "GRP-31",
+                    "squads": 1,
+                    "npc": 4,
+                    "camp": "Clan rival"
+                  },
+                  {
+                    "groupId": "GRP-32",
+                    "squads": 1,
+                    "npc": 4,
+                    "camp": "Clan rival"
+                  },
+                  {
+                    "groupId": "GRP-39",
+                    "squads": 4,
+                    "npc": 32,
+                    "camp": "Force humaine"
+                  }
+                ],
+                "ally": [
+                  {
+                    "groupId": "GRP-31",
+                    "squads": 1,
+                    "npc": 4,
+                    "camp": "Clan du joueur"
+                  }
+                ]
+              },
+              {
+                "front": "C",
+                "enemy": [
+                  {
+                    "groupId": "GRP-33",
+                    "squads": 1,
+                    "npc": 4,
+                    "camp": "Clan rival"
+                  },
+                  {
+                    "groupId": "GRP-39",
+                    "squads": 3,
+                    "npc": 24,
+                    "camp": "Force humaine"
+                  }
+                ],
+                "ally": []
+              },
+              {
+                "front": "D",
+                "enemy": [
+                  {
+                    "groupId": "GRP-39",
+                    "squads": 1,
+                    "npc": 8,
+                    "camp": "Force humaine"
+                  }
+                ],
+                "ally": [
+                  {
+                    "groupId": "GRP-35",
+                    "squads": 1,
+                    "npc": 4,
+                    "camp": "Clan du joueur"
+                  }
+                ]
+              }
+            ],
+            "distant": [
+              {
+                "front": "A",
+                "enemy": [
+                  {
+                    "groupId": "GRP-39",
+                    "squads": 5,
+                    "npc": 40,
+                    "camp": "Force humaine"
+                  }
+                ],
+                "ally": []
+              },
+              {
+                "front": "B",
+                "enemy": [
+                  {
+                    "groupId": "GRP-39",
+                    "squads": 5,
+                    "npc": 40,
+                    "camp": "Force humaine"
+                  }
+                ],
+                "ally": [
+                  {
+                    "groupId": "GRP-33",
+                    "squads": 1,
+                    "npc": 4,
+                    "camp": "Clan du joueur"
+                  }
+                ]
+              },
+              {
+                "front": "C",
+                "enemy": [
+                  {
+                    "groupId": "GRP-33",
+                    "squads": 2,
+                    "npc": 8,
+                    "camp": "Clan rival"
+                  },
+                  {
+                    "groupId": "GRP-39",
+                    "squads": 6,
+                    "npc": 48,
+                    "camp": "Force humaine"
+                  }
+                ],
+                "ally": [
+                  {
+                    "groupId": "GRP-34",
+                    "squads": 1,
+                    "npc": 4,
+                    "camp": "Clan du joueur"
+                  }
+                ]
+              },
+              {
+                "front": "D",
+                "enemy": [
+                  {
+                    "groupId": "GRP-35",
+                    "squads": 2,
+                    "npc": 8,
+                    "camp": "Clan rival"
+                  },
+                  {
+                    "groupId": "GRP-39",
+                    "squads": 6,
+                    "npc": 48,
+                    "camp": "Force humaine"
+                  }
+                ],
+                "ally": [
+                  {
+                    "groupId": "GRP-35",
+                    "squads": 1,
+                    "npc": 4,
+                    "camp": "Clan du joueur"
+                  }
+                ]
+              }
+            ],
+            "reserve": [
+              {
+                "front": "Réserve",
+                "enemy": [
+                  {
+                    "groupId": "GRP-32",
+                    "squads": 4,
+                    "npc": 16,
+                    "camp": "Clan rival"
+                  },
+                  {
+                    "groupId": "GRP-39",
+                    "squads": 10,
+                    "npc": 80,
+                    "camp": "Force humaine"
+                  }
+                ],
+                "ally": [
+                  {
+                    "groupId": "GRP-33",
+                    "squads": 2,
+                    "npc": 8,
+                    "camp": "Clan du joueur"
+                  }
+                ]
+              }
+            ]
+          },
+          "mapLabel": "LD-11 — Colonie / processeur atmosphérique",
+          "frontLabel": "FR-24 — Convergence sur une colonie : deux adversaires indépendants",
+          "budgetLabel": "EFF-13 — Plusieurs camps — rivalité Yautja et force humaine",
+          "alliedGroups": "GRP-13 — Soutien plasma (Yautja alliés)\nGRP-31 — Éclaireurs de relief (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-35 — Escorte de fret et de retrait (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-33 — Gardes de position (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-34 — Équipe de route et de réparation (Yautja — modèle de détachement ; allégeance fixée par chaque opération)",
+          "enemyGroups": "GRP-36 — Détachement de commandement (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-42 — Poste de commandement protégé (Humains — cellule de commandement d’opération)\nGRP-39 — Section de contre-assaut à la colonie (Humains — force coloniale militaire hostile)\nGRP-31 — Éclaireurs de relief (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-32 — Intercepteurs de passage (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-33 — Gardes de position (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-35 — Escorte de fret et de retrait (Yautja — modèle de détachement ; allégeance fixée par chaque opération)",
+          "bosses": "BOS-26 — Kher, pisteur des Lames de Basalte\nBOS-31 — Commandant expéditionnaire de la force humaine"
+        },
+        {
+          "id": "AFF-12",
+          "title": "Citadelle sous double pression",
+          "type": "Défense du clan contre deux camps aux objectifs différents",
+          "mapId": "LD-12",
+          "frontId": "FR-25",
+          "budgetId": "EFF-13",
+          "playerSide": "Garnison originale du clan du joueur : 32 alliés PNJ alloués et un joueur",
+          "enemySide": "Clan rival original : 96 combattants. Détachement humain du futur : 288 combattants. La rivalité et les objectifs propres empêchent une coopération automatique entre eux.",
+          "thirdParties": "Douze membres non combattants du clan dans les ateliers, six actifs au plus. Transport, navettes et défenses fixes sont des dispositifs séparés, équipages inclus dans leur faction combattante.",
+          "alliedGroupIds": [
+            "GRP-33",
+            "GRP-13",
+            "GRP-34",
+            "GRP-35",
+            "GRP-31"
+          ],
+          "enemyGroupIds": [
+            "GRP-41",
+            "GRP-36",
+            "GRP-32",
+            "GRP-31",
+            "GRP-42",
+            "GRP-33",
+            "GRP-35"
+          ],
+          "initialDeployment": "Actifs : A [rivaux 0, humains 32, alliés 4] ; B [rivaux 12, humains 8, alliés 4] ; C [rivaux 8, humains 24, alliés 4] ; D [rivaux 4, humains 8, alliés 0]. Distants : A [rivaux 8, humains 40, alliés 4] ; B [rivaux 16, humains 40, alliés 0] ; C [rivaux 16, humains 32, alliés 4] ; D [rivaux 8, humains 32, alliés 4]. Réserve : Réserve [rivaux 24, humains 72, alliés 8]. Groupes Yautja de 4 et humains de 8 ; le commandant remplace un membre. Un joueur est ajouté séparément. Les forces gardent leurs identifiants lors des changements de détail de simulation ou de relation.",
+          "reinforcementRules": "Le port conditionne l’arrivée de la réserve du clan. Les rivaux utilisent une passe distincte de la route des humains. Une unité embarquée n’existe pas en parallèle au sol. Une trêve éventuelle garde les unités et leur réserve dans leur camp initial, désormais neutre sur le périmètre convenu.",
+          "objectives": "A :port. B :archives et hauteurs. C :relais de commandement. D :évacuation des ateliers. Les voies civiles et les itinéraires de gros véhicules restent distincts.",
+          "victory": "Garder l’abri et une route de sortie, rétablir le relais et empêcher ou annuler les deux prises ennemies. Sauver les douze non-combattants donne le meilleur bilan, sans remplacer les objectifs militaires.",
+          "defeat": "Capture durable des deux objectifs ennemis avec disparition de toute route de sortie, ou issue de défaite propre au joueur. Une évacuation réussie suivie d’un repli est une issue de campagne spécifique.",
+          "commander": "Raan (BOS-27) remplace le chef du GRP-36 rival du front B. Un officier humain original de profil BOS-31 remplace le chef du GRP-42 du front C. Le commandement de garnison appartient au clan du joueur.",
+          "bossIds": [
+            "BOS-27",
+            "BOS-31"
+          ],
+          "parallelConsequences": "La chute du port retarde des renforts déjà alloués ; la perte des archives ouvre une mission de récupération ; une neutralité locale peut libérer une route, mais ne supprime ni le raid humain ni le front rival restant.",
+          "continuity": "Citadelle, clans et incursion future originaux. La présence de non-combattants et l’accord de cessez-le-feu sont des règles de ce scénario, sans prétendre définir toutes les sociétés Yautja.",
+          "priority": "P2",
+          "acceptance": "Simuler les quatre fronts sans caméra pendant cinq minutes, puis retrouver positions et pertes. Vérifier 96 rivaux +288 humains +32 alliés, routes de renfort finies, non-combattants séparés et effets persistants d’une retraite ou d’un cessez-le-feu.",
+          "forceAllocation": {
+            "active": [
+              {
+                "front": "A",
+                "enemy": [
+                  {
+                    "groupId": "GRP-41",
+                    "squads": 4,
+                    "npc": 32,
+                    "camp": "Force humaine"
+                  }
+                ],
+                "ally": [
+                  {
+                    "groupId": "GRP-33",
+                    "squads": 1,
+                    "npc": 4,
+                    "camp": "Clan du joueur"
+                  }
+                ]
+              },
+              {
+                "front": "B",
+                "enemy": [
+                  {
+                    "groupId": "GRP-36",
+                    "squads": 1,
+                    "npc": 4,
+                    "camp": "Clan rival"
+                  },
+                  {
+                    "groupId": "GRP-32",
+                    "squads": 2,
+                    "npc": 8,
+                    "camp": "Clan rival"
+                  },
+                  {
+                    "groupId": "GRP-41",
+                    "squads": 1,
+                    "npc": 8,
+                    "camp": "Force humaine"
+                  }
+                ],
+                "ally": [
+                  {
+                    "groupId": "GRP-13",
+                    "squads": 1,
+                    "npc": 4,
+                    "camp": "Clan du joueur"
+                  }
+                ]
+              },
+              {
+                "front": "C",
+                "enemy": [
+                  {
+                    "groupId": "GRP-31",
+                    "squads": 2,
+                    "npc": 8,
+                    "camp": "Clan rival"
+                  },
+                  {
+                    "groupId": "GRP-42",
+                    "squads": 1,
+                    "npc": 8,
+                    "camp": "Force humaine"
+                  },
+                  {
+                    "groupId": "GRP-41",
+                    "squads": 2,
+                    "npc": 16,
+                    "camp": "Force humaine"
+                  }
+                ],
+                "ally": [
+                  {
+                    "groupId": "GRP-34",
+                    "squads": 1,
+                    "npc": 4,
+                    "camp": "Clan du joueur"
+                  }
+                ]
+              },
+              {
+                "front": "D",
+                "enemy": [
+                  {
+                    "groupId": "GRP-33",
+                    "squads": 1,
+                    "npc": 4,
+                    "camp": "Clan rival"
+                  },
+                  {
+                    "groupId": "GRP-41",
+                    "squads": 1,
+                    "npc": 8,
+                    "camp": "Force humaine"
+                  }
+                ],
+                "ally": []
+              }
+            ],
+            "distant": [
+              {
+                "front": "A",
+                "enemy": [
+                  {
+                    "groupId": "GRP-35",
+                    "squads": 2,
+                    "npc": 8,
+                    "camp": "Clan rival"
+                  },
+                  {
+                    "groupId": "GRP-41",
+                    "squads": 5,
+                    "npc": 40,
+                    "camp": "Force humaine"
+                  }
+                ],
+                "ally": [
+                  {
+                    "groupId": "GRP-35",
+                    "squads": 1,
+                    "npc": 4,
+                    "camp": "Clan du joueur"
+                  }
+                ]
+              },
+              {
+                "front": "B",
+                "enemy": [
+                  {
+                    "groupId": "GRP-33",
+                    "squads": 4,
+                    "npc": 16,
+                    "camp": "Clan rival"
+                  },
+                  {
+                    "groupId": "GRP-41",
+                    "squads": 5,
+                    "npc": 40,
+                    "camp": "Force humaine"
+                  }
+                ],
+                "ally": []
+              },
+              {
+                "front": "C",
+                "enemy": [
+                  {
+                    "groupId": "GRP-32",
+                    "squads": 4,
+                    "npc": 16,
+                    "camp": "Clan rival"
+                  },
+                  {
+                    "groupId": "GRP-41",
+                    "squads": 4,
+                    "npc": 32,
+                    "camp": "Force humaine"
+                  }
+                ],
+                "ally": [
+                  {
+                    "groupId": "GRP-33",
+                    "squads": 1,
+                    "npc": 4,
+                    "camp": "Clan du joueur"
+                  }
+                ]
+              },
+              {
+                "front": "D",
+                "enemy": [
+                  {
+                    "groupId": "GRP-31",
+                    "squads": 2,
+                    "npc": 8,
+                    "camp": "Clan rival"
+                  },
+                  {
+                    "groupId": "GRP-41",
+                    "squads": 4,
+                    "npc": 32,
+                    "camp": "Force humaine"
+                  }
+                ],
+                "ally": [
+                  {
+                    "groupId": "GRP-31",
+                    "squads": 1,
+                    "npc": 4,
+                    "camp": "Clan du joueur"
+                  }
+                ]
+              }
+            ],
+            "reserve": [
+              {
+                "front": "Réserve",
+                "enemy": [
+                  {
+                    "groupId": "GRP-32",
+                    "squads": 6,
+                    "npc": 24,
+                    "camp": "Clan rival"
+                  },
+                  {
+                    "groupId": "GRP-41",
+                    "squads": 9,
+                    "npc": 72,
+                    "camp": "Force humaine"
+                  }
+                ],
+                "ally": [
+                  {
+                    "groupId": "GRP-33",
+                    "squads": 2,
+                    "npc": 8,
+                    "camp": "Clan du joueur"
+                  }
+                ]
+              }
+            ]
+          },
+          "mapLabel": "LD-12 — Citadelle attaquée / monde du clan",
+          "frontLabel": "FR-25 — Citadelle sous double pression : guerre de clans et raid humain",
+          "budgetLabel": "EFF-13 — Plusieurs camps — rivalité Yautja et force humaine",
+          "alliedGroups": "GRP-33 — Gardes de position (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-13 — Soutien plasma (Yautja alliés)\nGRP-34 — Équipe de route et de réparation (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-35 — Escorte de fret et de retrait (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-31 — Éclaireurs de relief (Yautja — modèle de détachement ; allégeance fixée par chaque opération)",
+          "enemyGroups": "GRP-41 — Section de barrage et d’interception (Humains — cordon militaire de cité coloniale)\nGRP-36 — Détachement de commandement (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-32 — Intercepteurs de passage (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-31 — Éclaireurs de relief (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-42 — Poste de commandement protégé (Humains — cellule de commandement d’opération)\nGRP-33 — Gardes de position (Yautja — modèle de détachement ; allégeance fixée par chaque opération)\nGRP-35 — Escorte de fret et de retrait (Yautja — modèle de détachement ; allégeance fixée par chaque opération)",
+          "bosses": "BOS-27 — Raan, commandante du siège\nBOS-31 — Commandant expéditionnaire de la force humaine"
+        }
+      ],
+      "priorityKey": "priority"
     }
   ],
   "validationPending": false,
@@ -9428,75 +11869,175 @@
   },
   "workbookVerification": {
     "filename": "Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.xlsx",
-    "sha256": "fb2304534ea1e42000969f696fdbc34692ed8ae78d784d2400085159b69b6e52",
+    "sha256": "fd5b9ed2201ada4657cfb5b0abbce2722cc4740be1775a53f5219d791b93b8f3",
     "sheets": [
+      "Synthese",
+      "Effectifs",
+      "Manquants",
+      "Comparatif_DW",
+      "Groupes",
+      "Fronts",
+      "Cartes_zones",
+      "Boss_et_elites",
+      "Fidelite",
+      "Validation",
+      "Feuille_route",
+      "Etat_verifie",
+      "Affrontements"
+    ],
+    "tableCount": 12,
+    "formulas": 110,
+    "formulaCheck": "{\"kind\":\"notice\",\"message\":\"Cell search matched 0 entries.\"}",
+    "budgetResults": [
       {
-        "name": "Synthese",
-        "rows": 35,
-        "cols": 12
+        "id": "EFF-01",
+        "active": 27,
+        "enemies": 96,
+        "alliedNPCs": 2,
+        "players": 1,
+        "allAllocated": 99
       },
       {
-        "name": "Manquants",
-        "rows": 126,
-        "cols": 14
+        "id": "EFF-02",
+        "active": 73,
+        "enemies": 384,
+        "alliedNPCs": 24,
+        "players": 1,
+        "allAllocated": 409
       },
       {
-        "name": "Comparatif_DW",
-        "rows": 40,
-        "cols": 10
+        "id": "EFF-03",
+        "active": 145,
+        "enemies": 1000,
+        "alliedNPCs": 48,
+        "players": 1,
+        "allAllocated": 1049
       },
+      {
+        "id": "EFF-04",
+        "active": 217,
+        "enemies": 2000,
+        "alliedNPCs": 72,
+        "players": 1,
+        "allAllocated": 2073
+      },
+      {
+        "id": "EFF-05",
+        "active": 289,
+        "enemies": 4000,
+        "alliedNPCs": 96,
+        "players": 1,
+        "allAllocated": 4097
+      },
+      {
+        "id": "EFF-06",
+        "active": 157,
+        "enemies": 1000,
+        "alliedNPCs": 120,
+        "players": 1,
+        "allAllocated": 1121
+      },
+      {
+        "id": "EFF-07",
+        "active": 146,
+        "enemies": 1000,
+        "alliedNPCs": 48,
+        "players": 2,
+        "allAllocated": 1050
+      },
+      {
+        "id": "EFF-08",
+        "active": 55,
+        "enemies": 1000,
+        "alliedNPCs": 48,
+        "players": 1,
+        "allAllocated": 1049
+      },
+      {
+        "id": "EFF-09",
+        "active": 25,
+        "enemies": 64,
+        "alliedNPCs": 20,
+        "players": 1,
+        "allAllocated": 85
+      },
+      {
+        "id": "EFF-10",
+        "active": 49,
+        "enemies": 128,
+        "alliedNPCs": 64,
+        "players": 1,
+        "allAllocated": 193
+      },
+      {
+        "id": "EFF-11",
+        "active": 69,
+        "enemies": 256,
+        "alliedNPCs": 8,
+        "players": 1,
+        "allAllocated": 265
+      },
+      {
+        "id": "EFF-12",
+        "active": 141,
+        "enemies": 768,
+        "alliedNPCs": 32,
+        "players": 1,
+        "allAllocated": 801
+      },
+      {
+        "id": "EFF-13",
+        "active": 109,
+        "enemies": 384,
+        "alliedNPCs": 32,
+        "players": 1,
+        "allAllocated": 417
+      }
+    ],
+    "originalContentPreserved": true,
+    "changes": [
       {
         "name": "Groupes",
-        "rows": 30,
-        "cols": 13
+        "oldRows": 30,
+        "newRows": 42,
+        "addedRows": 12
       },
       {
         "name": "Fronts",
-        "rows": 13,
-        "cols": 13
+        "oldRows": 13,
+        "newRows": 25,
+        "addedRows": 12
       },
       {
         "name": "Cartes_zones",
-        "rows": 13,
-        "cols": 17
+        "oldRows": 13,
+        "newRows": 21,
+        "addedRows": 8
       },
       {
         "name": "Boss_et_elites",
-        "rows": 25,
-        "cols": 16
+        "oldRows": 25,
+        "newRows": 31,
+        "addedRows": 6
       },
       {
-        "name": "Fidelite",
-        "rows": 47,
-        "cols": 11
-      },
-      {
-        "name": "Validation",
-        "rows": 24,
-        "cols": 7
-      },
-      {
-        "name": "Feuille_route",
-        "rows": 6,
-        "cols": 7
-      },
-      {
-        "name": "Etat_verifie",
-        "rows": 73,
-        "cols": 9
+        "name": "Affrontements",
+        "oldRows": 0,
+        "newRows": 12,
+        "addedRows": 12
       },
       {
         "name": "Effectifs",
-        "rows": 8,
-        "cols": 15
+        "oldRows": 8,
+        "newRows": 13,
+        "addedRows": 5
+      },
+      {
+        "name": "Synthese",
+        "updated": "Nombre de feuilles et résumé de l’extension"
       }
     ],
-    "formulaCheck": "{\"kind\":\"notice\",\"message\":\"Cell search matched 0 entries.\"}",
-    "recalculationChecks": [
-      "Synthèse : total du registre et répartition P0–P3 rapprochés des données sources.",
-      "Effectifs : entrée modifiée, entrée vide et zéro vérifiés ; valeurs initiales rétablies."
-    ],
-    "visualReviews": 14,
+    "visualReviews": 26,
     "note": "Les contrôles du classeur ne constituent pas une validation des 24 recettes du jeu."
   }
 }

@@ -4,10 +4,47 @@
 
 ## Livrables
 
-- [Classeur Excel](./Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.xlsx) : 12 onglets, critères de validation, preuves, hypothèses modifiables et suivi des actions.
+- [Classeur Excel](./Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.xlsx) : 13 onglets, critères de validation, preuves, hypothèses modifiables et suivi des actions.
 - [Données de l’audit](./audit-data.json) : contenu textuel et numérique du classeur, liens de preuve et schéma des tableaux, lisibles dans une revue Git.
 
 L’audit contient **126 actions** : **14 P0**, **88 P1** et **24 P2**. Elles comprennent **63 éléments à créer, 26 partiels, 20 à réconcilier, 11 à corriger et 6 à valider**. Il ne s’agit donc pas de 126 fonctionnalités toutes absentes. La priorité décrit l’ordre de travail ; le constat décrit ce qui existe ; la colonne « Suivi » sert au pilotage ultérieur.
+
+## Complément : guerres de clans et affrontements humains
+
+Le nouvel onglet **`Affrontements`** contient **12 opérations détaillées** : cinq conflits entre clans Yautja, cinq missions contre différentes forces humaines et deux conflits à plusieurs camps. Chaque fiche relie sa carte, son scénario de fronts, son budget d’effectifs, ses groupes et ses commandants. Elle précise le déploiement, les renforts, les objectifs, les conditions de victoire et de défaite, ainsi que les conséquences des fronts éloignés.
+
+L’ajout apporte **8 cartes, 12 scénarios de fronts, 12 modèles de groupes, 6 fiches de commandants et 5 budgets**. Le catalogue atteint ainsi **21 cartes, 25 scénarios de fronts, 42 groupes, 31 fiches de boss/élites/dispositifs et 13 budgets**. Les 126 constats techniques restent ceux de l’audit v65.5 ; les nouvelles fiches sont des propositions de conception.
+
+### Nouvelles cartes
+
+| ID | Carte | Type d’opération | Fronts |
+|---|---|---|---:|
+| LD-14 | Anneau des Trois Docks | Raid entre clans pour récupérer des archives et s’extraire | 3 |
+| LD-15 | Ravines du Convoi gris | Poursuite, interception de fret et protection des voies de retrait | 3 |
+| LD-16 | Col des Deux Balises | Conflit de frontière, identification et désescalade | 3 |
+| LD-17 | Plateau des Arches silencieuses | Duel négocié pendant que les groupes se retirent sur les autres fronts | 3 |
+| LD-18 | Port de récupération | Affrontement contre une force de capture humaine contemporaine | 3 |
+| LD-19 | Bassin industriel sous contrat | Sabotage d’une livraison protégée par des mercenaires | 3 |
+| LD-20 | Chantier orbital | Reprise d’une navette et affrontement contre une sûreté humaine du futur | 4 |
+| LD-21 | Cité-port en évacuation | Extraction d’un captif au milieu d’un confinement militaire | 4 |
+
+Les cartes **LD-11, colonie**, et **LD-12, citadelle**, reçoivent aussi des opérations supplémentaires. Deux scénarios y mettent simultanément en présence le clan du joueur, un clan rival et une force humaine indépendante. Leurs relations et leurs réserves sont suivies séparément.
+
+### Effectifs des nouvelles opérations
+
+| Budget | Ennemis actifs | Alliés PNJ actifs | Ennemis distants | Alliés distants | Réserve ennemie | Réserve alliée | Forces allouées E / A | Fronts |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| EFF-09 — Escarmouche entre clans | 16 | 8 | 32 | 8 | 16 | 4 | 64 / 20 | 3 |
+| EFF-10 — Siège de clan | 32 | 16 | 64 | 32 | 32 | 16 | 128 / 64 | 4 |
+| EFF-11 — Force humaine contemporaine | 64 | 4 | 128 | 4 | 64 | 0 | 256 / 8 | 3 |
+| EFF-12 — Opération humaine du futur | 128 | 12 | 384 | 12 | 256 | 8 | 768 / 32 | 4 |
+| EFF-13 — Plusieurs camps | 96 | 12 | 192 | 12 | 96 | 8 | 384 / 32 | 4 |
+
+Chaque ligne ajoute **un joueur**, compté séparément. Les états actif, distant et réserve sont exclusifs. « Actif » désigne une simulation détaillée, pas nécessairement une unité visible à l’écran ; les fronts partagent les plafonds globaux. Les véhicules, civils et personnes blessées non combattantes sont suivis à part, et leur représentation doit être incluse dans le profilage de la scène complète.
+
+Les cellules Yautja nouvelles sont des groupes de **quatre PNJ**, les groupes humains nouveaux des formations de **huit**. Les commandants occupent une place dans ces groupes. Les deux opérations mixtes ventilent leurs 384 adversaires en **48 Yautja + 336 humains**, ou **96 Yautja + 288 humains**. Une trêve modifie les relations des unités existantes sans créer de nouvelles unités.
+
+Les **Cendres Veilleuses**, les **Lames de Basalte**, leurs commandants et les huit lieux supplémentaires sont des créations originales pour le projet. Leurs conflits et accords ne définissent pas des règles universelles de la franchise. Les périodes contemporaines et futures restent séparées. Si une campagne relie les opérations, elle conserve la mort, la capture et le retrait des personnages au lieu de recréer un chef déjà éliminé.
 
 ## Versions réellement comparées
 
@@ -47,7 +84,7 @@ L’appel initial `spawnWave(55)` du code récent conduit à **75 agents ou grou
 
 Le plafond de 200 de la branche validée concerne le total d’un encounter, incluant les unités en attente ; il ne certifie pas 200 combattants simultanément actifs.
 
-Les huit gabarits de l’onglet `Effectifs` séparent donc les ennemis actifs, alliés PNJ actifs, joueurs, forces distantes déjà déployées et réserves non déployées. Les totaux sont calculés par formule, sans double comptage des joueurs, des réserves ou d’un groupe visible par deux caméras.
+Les treize gabarits de l’onglet `Effectifs` séparent donc les ennemis actifs, alliés PNJ actifs, joueurs, forces distantes déjà déployées et réserves non déployées. Les totaux sont calculés par formule, sans double comptage des joueurs, des réserves ou d’un groupe visible par deux caméras.
 
 **Exemple proposé, EFF-03 :** 128 ennemis proches + 512 déployés au loin + 360 en réserve = **1 000 ennemis alloués** ; 16 alliés PNJ proches + 24 au loin + 8 en réserve = **48 alliés PNJ**, auxquels s’ajoute le joueur ; **trois fronts**. Il s’agit d’un objectif de conception pour une guerre originale du clan, soumis au profilage, et non d’une capacité déjà démontrée ou d’un effectif de film.
 
@@ -59,13 +96,13 @@ Les groupes de *Prey* sont séparés des factions et armements futuristes. Les a
 
 ### 5. Agrandir par la topologie et les objectifs
 
-Les 13 fiches de terrain couvrent les dix lieux déclarés dans la v65.5 et trois terrains proposés. Elles décrivent les secteurs, voies, goulets, repères, zones variables, fronts et critères de navigation.
+Les 21 fiches de terrain couvrent les dix lieux déclarés dans la v65.5 et onze terrains proposés. Elles décrivent les secteurs, voies, goulets, repères, zones variables, fronts et critères de navigation.
 
 Les dimensions cibles vont de **700 × 900 à 2 000 × 2 400 unités de jeu**. Elles désignent des emprises de conception ; toute l’emprise n’est pas nécessairement praticable. Elles ne sont pas converties en mètres, ne reproduisent pas un plan canonique certifié et restent à calibrer avec les vitesses, les trajets, le streaming et les performances.
 
 ### 6. Relier boss, mini-boss et bataille
 
-Les 25 fiches couvrent des profils déjà présents et des rôles à concevoir. Elles distinguent les chefs de groupe, élites, mini-boss, chasseurs uniques, boss majeurs et structures de rencontre. Quinze identifiants de boss du code sont examinés dans l’inventaire ; ces deux nombres ne désignent pas la même chose.
+Les 31 fiches couvrent des profils déjà présents et des rôles à concevoir. Elles distinguent les chefs de groupe, élites, mini-boss, chasseurs uniques, boss majeurs et structures de rencontre. Quinze identifiants de boss du code sont examinés dans l’inventaire ; ces deux nombres ne désignent pas la même chose.
 
 Le Feral ajouté en v65 possède un constructeur et 8 600 PV de gameplay. Son combat reste à corriger : appel `spawnAcidSpit` sans définition trouvée, héritage d’attaques génériques d’acide et de queue, piège du masque appliquant directement des dégâts. Les interactions Prey sont également à comparer à leurs annonces et aux scènes sources (`AUD-123` à `AUD-126`).
 
@@ -82,22 +119,23 @@ Dans le complément v65.5, Sarii suit le premier joueur et applique des dégâts
 
 Les sources officielles parlent de batailles contre des milliers d’ennemis et du concept « un contre mille ». Cela ne suffit pas à certifier un nombre universel d’agents entièrement simulés à chaque image. Aucun tel plafond n’est inventé dans le classeur. Les sources et leurs limites sont jointes aux 40 comparaisons, chacune reliée aux actions de l’audit.
 
-## Organisation des 12 onglets
+## Organisation des 13 onglets
 
 | Onglet | Contenu |
 |---|---|
 | `Synthese` | Indicateurs calculés, répartition des priorités, états et domaines, constats et mode d’emploi. |
-| `Effectifs` | 8 gabarits avec hypothèses modifiables et totaux calculés. |
+| `Effectifs` | 13 gabarits avec hypothèses modifiables et totaux calculés. |
 | `Manquants` | 126 actions avec état par branche, cible, critère de validation, priorité, dépendances, preuves et suivi. |
 | `Comparatif_DW` | 40 mécanismes sourcés et leur adaptation au projet. |
-| `Groupes` | 30 compositions et rôles cohérents par faction et contexte. |
-| `Fronts` | 13 scénarios de bataille sur plusieurs fronts, événements et conséquences. |
-| `Cartes_zones` | 13 fiches de terrain et de circulation, dont 3 propositions nouvelles. |
-| `Boss_et_elites` | 25 fiches de boss, mini-boss, élites et dispositifs, contre-jeu et conséquences sur la bataille. |
+| `Groupes` | 42 compositions et rôles cohérents par faction et contexte. |
+| `Fronts` | 25 scénarios de bataille sur plusieurs fronts, événements et conséquences. |
+| `Cartes_zones` | 21 fiches de terrain et de circulation, dont 11 propositions originales. |
+| `Boss_et_elites` | 31 fiches de boss, mini-boss, élites et dispositifs, contre-jeu et conséquences sur la bataille. |
 | `Fidelite` | 47 règles, périmètres d’œuvre, contrôles d’arsenal et limites des sources. |
 | `Validation` | 24 procédures à exécuter, avec preuves attendues ; aucun résultat futur déclaré réussi. |
 | `Feuille_route` | 6 lots successifs avec prérequis et critères de sortie. |
 | `Etat_verifie` | Relevés de versions, inventaire, architecture, historique Vercel, références et limites de vérification. |
+| `Affrontements` | 12 opérations détaillées contre des clans rivaux, des forces humaines ou plusieurs camps, avec références aux autres onglets. |
 
 ## Utilisation et validation
 
