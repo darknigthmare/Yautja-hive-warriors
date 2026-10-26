@@ -250,6 +250,8 @@ export class Player {
     this.isHanzoBushidoActive = false;
     this.neurotoxinBladeTimer = 0;
     this.isNeurotoxinBladeActive = false;
+    this.masterHunterStalkerTimer = 0;
+    this.isMasterHunterStalkerActive = false;
     this.loadClanForgeUpgrades();
   }
 
@@ -1585,11 +1587,12 @@ export class Player {
     const flintlockMult = this.isFlintlockKineticActive ? 1.40 : 1.0;
     const hanzoMult = this.isHanzoBushidoActive ? 1.60 : 1.0;
     const neuroMult = this.isNeurotoxinBladeActive ? 1.45 : 1.0;
+    const stalkerMult = this.isMasterHunterStalkerActive ? 1.50 : 1.0;
 
     return {
       type: 'light',
       step: this.attackComboStep,
-      damage: baseDmg * (1 + this.attackComboStep * 0.18) * buff * mudMult * billyMult * lightningMult * flintlockMult * hanzoMult * neuroMult,
+      damage: baseDmg * (1 + this.attackComboStep * 0.18) * buff * mudMult * billyMult * lightningMult * flintlockMult * hanzoMult * neuroMult * stalkerMult,
       radius: (this.isSecondaryWeapon ? 4.8 : 3.8) * (this.meleeReachMultiplier || 1.0),
       angle: (Math.PI * 0.65) * (this.meleeArcMultiplier || 1.0)
     };
@@ -1695,11 +1698,12 @@ export class Player {
     const flintlockMult = this.isFlintlockKineticActive ? 1.40 : 1.0;
     const hanzoMult = this.isHanzoBushidoActive ? 1.60 : 1.0;
     const neuroMult = this.isNeurotoxinBladeActive ? 1.45 : 1.0;
+    const stalkerMult = this.isMasterHunterStalkerActive ? 1.50 : 1.0;
 
     return {
       type: chargeType,
       name: chargeName,
-      damage: baseDmg * dmgMult * buff * mudMult * billyMult * lightningMult * flintlockMult * hanzoMult * neuroMult,
+      damage: baseDmg * dmgMult * buff * mudMult * billyMult * lightningMult * flintlockMult * hanzoMult * neuroMult * stalkerMult,
       radius: radius,
       knockback: knockback,
       isLauncher: isLauncher,
@@ -4211,7 +4215,16 @@ export class Player {
       this.neurotoxinBladeTimer -= delta;
       if (this.neurotoxinBladeTimer <= 0) this.isNeurotoxinBladeActive = false;
     }
+    if (this.masterHunterStalkerTimer > 0) {
+      this.masterHunterStalkerTimer -= delta;
+      if (this.masterHunterStalkerTimer <= 0) this.isMasterHunterStalkerActive = false;
+    }
     this.isOnBough = (this.position && this.position.y >= 5.0);
+  }
+
+  applyMasterHunterStalker(duration = 22.0) {
+    this.masterHunterStalkerTimer = duration;
+    this.isMasterHunterStalkerActive = true;
   }
 
   applyHanzoBushido(duration = 35.0) {

@@ -648,6 +648,14 @@ class GameApp {
           // Handled Royce's Free-fall Cliff Leap into Plunge Basin (Predators 2010)!
         } else if (this.env && this.env.checkSuperPredatorShipInteraction && this.env.checkSuperPredatorShipInteraction(this.player, this.ui, this.audio, this.horde, this.bosses, this.particles)) {
           // Handled Mr. Black Super Predator Scout Ship Propulsion Overload (Predators 2010)!
+        } else if (this.env && this.env.checkFalconerRoostInteraction && this.env.checkFalconerRoostInteraction(this.player, this.ui, this.audio, this.falconDrone)) {
+          // Handled Falconer Predator Recon Drone Launch & Hunt Telemetry (Predators 2010)!
+        } else if (this.env && this.env.checkCuchilloDecoyInteraction && this.env.checkCuchilloDecoyInteraction(this.player, this.ui, this.audio, this.horde, this.bosses, this.particles)) {
+          // Handled Cuchillo's Booby-Trapped Acoustic Decoy Disarm (Predators 2010)!
+        } else if (this.env && this.env.checkBoneGongInteraction && this.env.checkBoneGongInteraction(this.player, this.ui, this.audio, this.horde, this.bosses, this.particles)) {
+          // Handled Royce's Bone Gong Strike & Thermal Flare Braziers (Predators 2010)!
+        } else if (this.env && this.env.checkIsabelleSniperStash && this.env.checkIsabelleSniperStash(this.player, this.ui, this.audio)) {
+          // Handled Isabelle's Blaser R93 Precision Sniper Ammo Stash (Predators 2010)!
         } else if (this.env && this.env.checkScoutShipConsoleInteraction && this.env.checkScoutShipConsoleInteraction(this.player.position, this.ui, this.audio, this.horde, this.player)) {
           // Handled Crashed Scout Ship Telemetry Scan (AVP: Requiem 2007)!
         } else if (this.env && this.env.checkCharonLabConsoleInteraction && this.env.checkCharonLabConsoleInteraction(this.player.position, this.horde, this.ui, this.audio)) {
@@ -1280,6 +1288,9 @@ class GameApp {
       if (this.env.checkRoyceTripwireTrigger) {
         this.env.checkRoyceTripwireTrigger(attack.origin, this.audio, this.horde, this.bosses, this.particles, this.ui);
       }
+      if (this.env.checkMombassaPunjiTrapTrigger) {
+        this.env.checkMombassaPunjiTrapTrigger(attack.origin, this.audio, this.horde, this.bosses, this.particles, this.ui);
+      }
     }
 
     // Update Combo Chain Tag
@@ -1364,6 +1375,9 @@ class GameApp {
       }
       if (this.env.checkRoyceTripwireTrigger) {
         this.env.checkRoyceTripwireTrigger(attack.origin, this.audio, this.horde, this.bosses, this.particles, this.ui);
+      }
+      if (this.env.checkMombassaPunjiTrapTrigger) {
+        this.env.checkMombassaPunjiTrapTrigger(attack.origin, this.audio, this.horde, this.bosses, this.particles, this.ui);
       }
     }
 
@@ -2647,6 +2661,9 @@ class GameApp {
           if (this.env.checkRoyceTripwireTrigger) {
             this.env.checkRoyceTripwireTrigger(p.mesh.position, this.audio, this.horde, this.bosses, this.particles, this.ui);
           }
+          if (this.env.checkMombassaPunjiTrapTrigger) {
+            this.env.checkMombassaPunjiTrapTrigger(p.mesh.position, this.audio, this.horde, this.bosses, this.particles, this.ui);
+          }
         }
 
         const hits = this.horde.checkMeleeHits({ origin: p.mesh.position, radius: 2.8, damage: p.damage });
@@ -2832,6 +2849,9 @@ class GameApp {
           }
           if (this.env.checkRoyceTripwireTrigger) {
             this.env.checkRoyceTripwireTrigger(p.mesh.position, this.audio, this.horde, this.bosses, this.particles, this.ui);
+          }
+          if (this.env.checkMombassaPunjiTrapTrigger) {
+            this.env.checkMombassaPunjiTrapTrigger(p.mesh.position, this.audio, this.horde, this.bosses, this.particles, this.ui);
           }
         }
 
@@ -3383,6 +3403,34 @@ class GameApp {
       if (shipPrompt) {
         if (isNearShip) shipPrompt.classList.remove('hidden');
         else shipPrompt.classList.add('hidden');
+      }
+
+      const isNearFalconer = this.env.falconerDronePerch && !this.env.falconerDronePerch.isClaimed && this.player && this.player.position.y >= 3.8 && this.player.position.distanceTo(this.env.falconerDronePerch.cradlePos) <= 4.5;
+      const falconerPrompt = document.getElementById('falconer-drone-prompt');
+      if (falconerPrompt) {
+        if (isNearFalconer) falconerPrompt.classList.remove('hidden');
+        else falconerPrompt.classList.add('hidden');
+      }
+
+      const isNearCuchillo = this.env.cuchilloAcousticDecoy && !this.env.cuchilloAcousticDecoy.isDisarmed && !this.env.cuchilloAcousticDecoy.isDetonated && this.player && this.player.position.distanceTo(this.env.cuchilloAcousticDecoy.decoyPos) <= 4.2;
+      const cuchilloPrompt = document.getElementById('cuchillo-decoy-prompt');
+      if (cuchilloPrompt) {
+        if (isNearCuchillo) cuchilloPrompt.classList.remove('hidden');
+        else cuchilloPrompt.classList.add('hidden');
+      }
+
+      const isNearBoneGong = this.env.royceBoneGong && this.player && this.player.position.distanceTo(this.env.royceBoneGong.gongPos) <= 4.5;
+      const boneGongPrompt = document.getElementById('bone-gong-prompt');
+      if (boneGongPrompt) {
+        if (isNearBoneGong) boneGongPrompt.classList.remove('hidden');
+        else boneGongPrompt.classList.add('hidden');
+      }
+
+      const isNearIsabelle = this.env.isabelleSniperStash && !this.env.isabelleSniperStash.isClaimed && this.player && this.player.position.y >= 7.5 && this.player.position.distanceTo(this.env.isabelleSniperStash.stashPos) <= 4.2;
+      const isabellePrompt = document.getElementById('isabelle-sniper-prompt');
+      if (isabellePrompt) {
+        if (isNearIsabelle) isabellePrompt.classList.remove('hidden');
+        else isabellePrompt.classList.add('hidden');
       }
     }
 

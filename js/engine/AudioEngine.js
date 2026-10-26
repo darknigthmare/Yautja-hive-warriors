@@ -8668,6 +8668,250 @@ export class AudioEngine {
     snapOsc.start(now + 0.65);
     snapOsc.stop(now + 0.82);
   }
+
+  // Method 175: Falconer Predator Recon Drone High-Speed Turbine Launch & Avian Screech
+  playFalconerDroneLaunch() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // High-pitched aerodynamic turbine spool-up (1200Hz -> 4200Hz)
+    const turbineOsc = this.ctx.createOscillator();
+    turbineOsc.type = 'sawtooth';
+    turbineOsc.frequency.setValueAtTime(1200, now);
+    turbineOsc.frequency.exponentialRampToValueAtTime(4200, now + 0.35);
+
+    const turbineFilter = this.ctx.createBiquadFilter();
+    turbineFilter.type = 'bandpass';
+    turbineFilter.frequency.setValueAtTime(1800, now);
+    turbineFilter.frequency.linearRampToValueAtTime(3600, now + 0.35);
+    turbineFilter.Q.setValueAtTime(4.0, now);
+
+    const turbineGain = this.ctx.createGain();
+    turbineGain.gain.setValueAtTime(0.01, now);
+    turbineGain.gain.linearRampToValueAtTime(0.75, now + 0.15);
+    turbineGain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+
+    turbineOsc.connect(turbineFilter);
+    turbineFilter.connect(turbineGain);
+    turbineGain.connect(this.getOut());
+    turbineOsc.start(now);
+    turbineOsc.stop(now + 0.45);
+
+    // Mechanical avian screech overtone
+    const screechOsc = this.ctx.createOscillator();
+    screechOsc.type = 'triangle';
+    screechOsc.frequency.setValueAtTime(3400, now + 0.12);
+    screechOsc.frequency.linearRampToValueAtTime(2600, now + 0.38);
+
+    const screechGain = this.ctx.createGain();
+    screechGain.gain.setValueAtTime(0.01, now + 0.12);
+    screechGain.gain.linearRampToValueAtTime(0.65, now + 0.2);
+    screechGain.gain.exponentialRampToValueAtTime(0.01, now + 0.42);
+
+    screechOsc.connect(screechGain);
+    screechGain.connect(this.getOut());
+    screechOsc.start(now + 0.12);
+    screechOsc.stop(now + 0.42);
+  }
+
+  // Method 176: Cuchillo's Booby-Trapped Radio Decoy (Ghostly voice static & electronic whine)
+  playCuchilloAcousticDecoy() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Distorted radio carrier whine
+    const carrierOsc = this.ctx.createOscillator();
+    carrierOsc.type = 'sine';
+    carrierOsc.frequency.setValueAtTime(840, now);
+    carrierOsc.frequency.linearRampToValueAtTime(720, now + 0.6);
+
+    const carrierGain = this.ctx.createGain();
+    carrierGain.gain.setValueAtTime(0.01, now);
+    carrierGain.gain.linearRampToValueAtTime(0.4, now + 0.1);
+    carrierGain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+
+    carrierOsc.connect(carrierGain);
+    carrierGain.connect(this.getOut());
+    carrierOsc.start(now);
+    carrierOsc.stop(now + 0.6);
+
+    // Formant speech-like murmur noise
+    const bufSize = Math.floor(this.ctx.sampleRate * 0.7);
+    const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.sin((i / bufSize) * Math.PI * 4);
+    }
+    const noiseSrc = this.ctx.createBufferSource();
+    noiseSrc.buffer = buf;
+
+    const formantFilter = this.ctx.createBiquadFilter();
+    formantFilter.type = 'bandpass';
+    formantFilter.frequency.setValueAtTime(450, now);
+    formantFilter.frequency.linearRampToValueAtTime(880, now + 0.35);
+    formantFilter.Q.setValueAtTime(6.0, now);
+
+    const noiseGain = this.ctx.createGain();
+    noiseGain.gain.setValueAtTime(0.01, now);
+    noiseGain.gain.linearRampToValueAtTime(0.55, now + 0.15);
+    noiseGain.gain.exponentialRampToValueAtTime(0.01, now + 0.7);
+
+    noiseSrc.connect(formantFilter);
+    formantFilter.connect(noiseGain);
+    noiseGain.connect(this.getOut());
+    noiseSrc.start(now);
+    noiseSrc.stop(now + 0.7);
+  }
+
+  // Method 177: Mombassa's Spring-Loaded Punji Stake Rack Snap & Piercing Strike
+  playPunjiSpringSnap() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Heavy tension spring release whip
+    const springOsc = this.ctx.createOscillator();
+    springOsc.type = 'sawtooth';
+    springOsc.frequency.setValueAtTime(620, now);
+    springOsc.frequency.exponentialRampToValueAtTime(95, now + 0.12);
+
+    const springGain = this.ctx.createGain();
+    springGain.gain.setValueAtTime(0.9, now);
+    springGain.gain.exponentialRampToValueAtTime(0.01, now + 0.14);
+
+    springOsc.connect(springGain);
+    springGain.connect(this.getOut());
+    springOsc.start(now);
+    springOsc.stop(now + 0.14);
+
+    // Violent splintering bamboo impact crack
+    const bufSize = Math.floor(this.ctx.sampleRate * 0.3);
+    const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufSize * 0.2));
+    }
+    const snapSrc = this.ctx.createBufferSource();
+    snapSrc.buffer = buf;
+
+    const snapFilter = this.ctx.createBiquadFilter();
+    snapFilter.type = 'highpass';
+    snapFilter.frequency.setValueAtTime(1900, now);
+
+    const snapGain = this.ctx.createGain();
+    snapGain.gain.setValueAtTime(0.85, now + 0.02);
+    snapGain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+
+    snapSrc.connect(snapFilter);
+    snapFilter.connect(snapGain);
+    snapGain.connect(this.getOut());
+    snapSrc.start(now + 0.02);
+    snapSrc.stop(now + 0.3);
+  }
+
+  // Method 178: Royce's Primal Bone Gong Strike & Resonant Sub-Bass Boom
+  playBoneGongStrike() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Primal bone mallet impact transient
+    const malletOsc = this.ctx.createOscillator();
+    malletOsc.type = 'triangle';
+    malletOsc.frequency.setValueAtTime(260, now);
+    malletOsc.frequency.exponentialRampToValueAtTime(58, now + 0.18);
+
+    const malletGain = this.ctx.createGain();
+    malletGain.gain.setValueAtTime(0.95, now);
+    malletGain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+
+    malletOsc.connect(malletGain);
+    malletGain.connect(this.getOut());
+    malletOsc.start(now);
+    malletOsc.stop(now + 0.2);
+
+    // Cavernous 58Hz sub-bass gong resonance with 2.8s decay
+    const gongOsc = this.ctx.createOscillator();
+    gongOsc.type = 'sine';
+    gongOsc.frequency.setValueAtTime(58, now);
+    gongOsc.frequency.linearRampToValueAtTime(54, now + 2.8);
+
+    const gongGain = this.ctx.createGain();
+    gongGain.gain.setValueAtTime(0.01, now);
+    gongGain.gain.linearRampToValueAtTime(0.95, now + 0.05);
+    gongGain.gain.exponentialRampToValueAtTime(0.005, now + 2.8);
+
+    gongOsc.connect(gongGain);
+    gongGain.connect(this.getOut());
+    gongOsc.start(now);
+    gongOsc.stop(now + 2.8);
+
+    // Hollow acoustic overtone (174Hz)
+    const overtoneOsc = this.ctx.createOscillator();
+    overtoneOsc.type = 'sine';
+    overtoneOsc.frequency.setValueAtTime(174, now);
+    overtoneOsc.frequency.linearRampToValueAtTime(162, now + 1.8);
+
+    const overtoneGain = this.ctx.createGain();
+    overtoneGain.gain.setValueAtTime(0.01, now);
+    overtoneGain.gain.linearRampToValueAtTime(0.5, now + 0.04);
+    overtoneGain.gain.exponentialRampToValueAtTime(0.005, now + 1.8);
+
+    overtoneOsc.connect(overtoneGain);
+    overtoneGain.connect(this.getOut());
+    overtoneOsc.start(now);
+    overtoneOsc.stop(now + 1.8);
+  }
+
+  // Method 179: Isabelle's Blaser R93 Precision Bolt-Action Chambering & Ejection
+  playSniperRifleBoltCycle() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Bolt lift & back slide (t = 0.0s)
+    const slideOsc = this.ctx.createOscillator();
+    slideOsc.type = 'square';
+    slideOsc.frequency.setValueAtTime(1420, now);
+    slideOsc.frequency.exponentialRampToValueAtTime(450, now + 0.08);
+
+    const slideGain = this.ctx.createGain();
+    slideGain.gain.setValueAtTime(0.7, now);
+    slideGain.gain.exponentialRampToValueAtTime(0.01, now + 0.09);
+
+    slideOsc.connect(slideGain);
+    slideGain.connect(this.getOut());
+    slideOsc.start(now);
+    slideOsc.stop(now + 0.09);
+
+    // Brass cartridge ejection ping (t = 0.12s)
+    const pingOsc = this.ctx.createOscillator();
+    pingOsc.type = 'sine';
+    pingOsc.frequency.setValueAtTime(3200, now + 0.12);
+    pingOsc.frequency.linearRampToValueAtTime(3120, now + 0.35);
+
+    const pingGain = this.ctx.createGain();
+    pingGain.gain.setValueAtTime(0.01, now + 0.12);
+    pingGain.gain.linearRampToValueAtTime(0.8, now + 0.14);
+    pingGain.gain.exponentialRampToValueAtTime(0.008, now + 0.35);
+
+    pingOsc.connect(pingGain);
+    pingGain.connect(this.getOut());
+    pingOsc.start(now + 0.12);
+    pingOsc.stop(now + 0.35);
+
+    // Forward chambering slam & lock (t = 0.22s)
+    const lockOsc = this.ctx.createOscillator();
+    lockOsc.type = 'triangle';
+    lockOsc.frequency.setValueAtTime(780, now + 0.22);
+    lockOsc.frequency.exponentialRampToValueAtTime(180, now + 0.3);
+
+    const lockGain = this.ctx.createGain();
+    lockGain.gain.setValueAtTime(0.85, now + 0.22);
+    lockGain.gain.exponentialRampToValueAtTime(0.01, now + 0.32);
+
+    lockOsc.connect(lockGain);
+    lockGain.connect(this.getOut());
+    lockOsc.start(now + 0.22);
+    lockOsc.stop(now + 0.32);
+  }
 }
 
 

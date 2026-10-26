@@ -180,6 +180,13 @@ export class EnvironmentManager {
     this.royceTripwireTrap = null;
     this.activePreserveSmokeScreen = null;
     this.activePreserveFireZones = [];
+    // v62.0 Predators (2010) Apex Polish Systems
+    this.falconerDronePerch = null;
+    this.cuchilloAcousticDecoy = null;
+    this.mombassaPunjiTrap = null;
+    this.royceBoneGong = null;
+    this.isabelleSniperStash = null;
+    this.activeGongFireBraziers = [];
   }
 
   clearEnvironment() {
@@ -695,6 +702,35 @@ export class EnvironmentManager {
         if (f.light) this.scene.remove(f.light);
       });
       this.activePreserveFireZones = [];
+    }
+
+    // v62.0 Cleanups
+    if (this.falconerDronePerch && this.falconerDronePerch.group) {
+      this.scene.remove(this.falconerDronePerch.group);
+      this.falconerDronePerch = null;
+    }
+    if (this.cuchilloAcousticDecoy && this.cuchilloAcousticDecoy.group) {
+      this.scene.remove(this.cuchilloAcousticDecoy.group);
+      this.cuchilloAcousticDecoy = null;
+    }
+    if (this.mombassaPunjiTrap && this.mombassaPunjiTrap.group) {
+      this.scene.remove(this.mombassaPunjiTrap.group);
+      this.mombassaPunjiTrap = null;
+    }
+    if (this.royceBoneGong && this.royceBoneGong.group) {
+      this.scene.remove(this.royceBoneGong.group);
+      this.royceBoneGong = null;
+    }
+    if (this.isabelleSniperStash && this.isabelleSniperStash.group) {
+      this.scene.remove(this.isabelleSniperStash.group);
+      this.isabelleSniperStash = null;
+    }
+    if (this.activeGongFireBraziers && this.activeGongFireBraziers.length > 0) {
+      this.activeGongFireBraziers.forEach(b => {
+        if (b.mesh) this.scene.remove(b.mesh);
+        if (b.light) this.scene.remove(b.light);
+      });
+      this.activeGongFireBraziers = [];
     }
 
     this.reactorMeltdownActive = false;
@@ -2238,6 +2274,29 @@ export class EnvironmentManager {
       if (x >= 24.0 && x <= 27.0 && Math.abs(vz) <= 2.2) {
         const factor = (x - 24.0) / 3.0;
         return factor * 7.5;
+      }
+    }
+
+    // 36. Falconer Drone Roost & Canopy Branch Platform (+4.8m) (Predators 2010)
+    if (this.falconerDronePerch && this.falconerDronePerch.pos) {
+      const fx = x - 10.0;
+      const fz = z - 14.0;
+      if (Math.abs(fx) <= 3.2 && Math.abs(fz) <= 3.2) {
+        return 4.8;
+      }
+      // Access branch incline
+      if (Math.abs(fx) <= 1.2 && z >= 8.0 && z <= 11.5) {
+        const factor = (z - 8.0) / 3.5;
+        return factor * 4.8;
+      }
+    }
+
+    // 37. Isabelle's Sniper Overlook & Tactical Nest (+9.0m) (Predators 2010)
+    if (this.isabelleSniperStash && this.isabelleSniperStash.pos) {
+      const ix = x - (-28.0);
+      const iz = z - (-28.0);
+      if (Math.abs(ix) <= 3.5 && Math.abs(iz) <= 3.5) {
+        return 9.0;
       }
     }
 
@@ -11721,6 +11780,21 @@ export class EnvironmentManager {
     // 11. Quadruple Celestial Moons Horizon Vista Monolith [30, 0, -26] (+7.5m)
     this.buildCelestialVistaMonolithProps(group);
 
+    // 12. Falconer Predator Recon Drone Roost & Perch [10, 0, 14] (+4.8m)
+    this.buildFalconerDronePerchProps(group);
+
+    // 13. Cuchillo's Booby-Trapped Acoustic Decoy [-10, 0, -6]
+    this.buildCuchilloDecoyProps(group);
+
+    // 14. Mombassa's Spring-Loaded Punji Stake Pit Trap [-4, 0, 18]
+    this.buildMombassaPunjiTrapProps(group);
+
+    // 15. Royce's Bone Gong & Sacrificial Fire Braziers [0, 0, 8]
+    this.buildRoyceBoneGongProps(group);
+
+    // 16. Isabelle's Blaser R93 Tactical Sniper Stash [-28, 9.0, -28] (+9.0m)
+    this.buildIsabelleSniperStashProps(group);
+
     this.scene.add(group);
     this.envObjects.push(group);
 
@@ -12331,6 +12405,267 @@ export class EnvironmentManager {
     };
   }
 
+  // 12. Falconer Predator Recon Drone Roost & Perch [10, 0, 14] (+4.8m)
+  buildFalconerDronePerchProps(parentGroup) {
+    const group = new THREE.Group();
+    const pos = new THREE.Vector3(10, 0, 14);
+    group.position.copy(pos);
+
+    const banyanMat = new THREE.MeshStandardMaterial({ color: 0x3d2012, roughness: 0.95 });
+    const metalMat = new THREE.MeshStandardMaterial({ color: 0x1f2421, metalness: 0.9, roughness: 0.25 });
+    const runeMat = new THREE.MeshBasicMaterial({ color: 0xf59e0b });
+
+    // Elevated twisted banyan tree trunk rising to +4.8m
+    const trunk = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 2.2, 10.0, 8), banyanMat);
+    trunk.position.y = 5.0;
+    trunk.castShadow = true;
+    group.add(trunk);
+
+    // Roost landing cradle platform at +4.8m
+    const roost = new THREE.Mesh(new THREE.CylinderGeometry(2.4, 2.8, 0.4, 8), metalMat);
+    roost.position.y = 4.8;
+    roost.receiveShadow = true;
+    group.add(roost);
+
+    // Avian mechanical perch claws
+    for (let c = 0; c < 4; c++) {
+      const a = (c / 4) * Math.PI * 2;
+      const claw = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.8, 4), metalMat);
+      claw.position.set(Math.cos(a) * 2.2, 5.2, Math.sin(a) * 2.2);
+      claw.rotation.z = -0.3;
+      group.add(claw);
+    }
+
+    // Holographic amber telemetry landing ring
+    const holoRing = new THREE.Mesh(new THREE.RingGeometry(1.4, 1.8, 16), runeMat);
+    holoRing.rotation.x = -Math.PI / 2;
+    holoRing.position.y = 4.85;
+    group.add(holoRing);
+
+    const roostLight = new THREE.PointLight(0xf59e0b, 1.8, 6.0);
+    roostLight.position.set(0, 5.5, 0);
+    group.add(roostLight);
+
+    parentGroup.add(group);
+
+    this.falconerDronePerch = {
+      group,
+      pos: new THREE.Vector3(10, 4.8, 14),
+      roostPos: new THREE.Vector3(10, 4.8, 14),
+      holoRing,
+      light: roostLight,
+      isLaunched: false
+    };
+  }
+
+  // 13. Cuchillo's Booby-Trapped Acoustic Decoy [-10, 0, -6]
+  buildCuchilloDecoyProps(parentGroup) {
+    const group = new THREE.Group();
+    const pos = new THREE.Vector3(-10, 0, -6);
+    group.position.copy(pos);
+
+    const vestMat = new THREE.MeshStandardMaterial({ color: 0x3f3f46, roughness: 0.8 });
+    const radioMat = new THREE.MeshStandardMaterial({ color: 0x18181b, metalness: 0.8, roughness: 0.3 });
+    const ledMat = new THREE.MeshBasicMaterial({ color: 0xef4444 });
+
+    // Discarded Los Zetas tactical vest on bloodstained soil
+    const vest = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.4, 0.7), vestMat);
+    vest.position.y = 0.2;
+    group.add(vest);
+
+    // Rigged military radio transmitter with blinking red LED
+    const radio = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.15, 0.25), radioMat);
+    radio.position.set(0, 0.45, 0);
+    group.add(radio);
+
+    const led = new THREE.Mesh(new THREE.SphereGeometry(0.04, 6, 6), ledMat);
+    led.position.set(0.1, 0.54, 0.08);
+    group.add(led);
+
+    const decoyLight = new THREE.PointLight(0xef4444, 1.4, 5.0);
+    decoyLight.position.set(0, 0.8, 0);
+    group.add(decoyLight);
+
+    parentGroup.add(group);
+
+    this.cuchilloAcousticDecoy = {
+      group,
+      pos,
+      decoyPos: pos.clone(),
+      light: decoyLight,
+      ledMesh: led,
+      isDisarmed: false,
+      isDetonated: false,
+      pulseTimer: 0
+    };
+  }
+
+  // 14. Mombassa's Spring-Loaded Punji Stake Pit Trap [-4, 0, 18]
+  buildMombassaPunjiTrapProps(parentGroup) {
+    const group = new THREE.Group();
+    const pos = new THREE.Vector3(-4, 0, 18);
+    group.position.copy(pos);
+
+    const woodMat = new THREE.MeshStandardMaterial({ color: 0x3b2416, roughness: 0.95 });
+    const stakeMat = new THREE.MeshStandardMaterial({ color: 0x713f12, roughness: 0.7 });
+    const poisonMat = new THREE.MeshStandardMaterial({ color: 0x15803d, roughness: 0.4 });
+
+    // Camouflaged pit rim
+    const pitRim = new THREE.Mesh(new THREE.TorusGeometry(2.4, 0.3, 6, 12), woodMat);
+    pitRim.rotation.x = Math.PI / 2;
+    pitRim.position.y = 0.1;
+    group.add(pitRim);
+
+    // Spring-loaded bamboo & bone stake racks (4 inward-facing clusters)
+    const racks = [];
+    for (let r = 0; r < 4; r++) {
+      const a = (r / 4) * Math.PI * 2;
+      const rackGroup = new THREE.Group();
+      rackGroup.position.set(Math.cos(a) * 2.0, 0.2, Math.sin(a) * 2.0);
+      rackGroup.rotation.y = a + Math.PI;
+
+      for (let s = -2; s <= 2; s++) {
+        const stake = new THREE.Mesh(new THREE.ConeGeometry(0.06, 1.4, 5), stakeMat);
+        stake.position.set(s * 0.28, 0.6, 0);
+        stake.rotation.x = 0.4;
+        rackGroup.add(stake);
+
+        // Toxic dipped tip
+        const tip = new THREE.Mesh(new THREE.ConeGeometry(0.062, 0.35, 5), poisonMat);
+        tip.position.set(s * 0.28, 1.15, 0.22);
+        tip.rotation.x = 0.4;
+        rackGroup.add(tip);
+      }
+      group.add(rackGroup);
+      racks.push(rackGroup);
+    }
+
+    parentGroup.add(group);
+
+    this.mombassaPunjiTrap = {
+      group,
+      pos,
+      trapPos: pos.clone(),
+      racks,
+      isSprung: false
+    };
+  }
+
+  // 15. Royce's Bone Gong & Sacrificial Fire Braziers [0, 0, 8]
+  buildRoyceBoneGongProps(parentGroup) {
+    const group = new THREE.Group();
+    const pos = new THREE.Vector3(0, 0, 8);
+    group.position.copy(pos);
+
+    const boneMat = new THREE.MeshStandardMaterial({ color: 0xd6cebe, roughness: 0.5 });
+    const woodMat = new THREE.MeshStandardMaterial({ color: 0x3f2212, roughness: 0.95 });
+    const ironMat = new THREE.MeshStandardMaterial({ color: 0x1f2421, metalness: 0.8, roughness: 0.35 });
+
+    // Heavy timber gallows post
+    const postL = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.2, 3.8, 6), woodMat);
+    postL.position.set(-1.4, 1.9, 0);
+    group.add(postL);
+
+    const postR = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.2, 3.8, 6), woodMat);
+    postR.position.set(1.4, 1.9, 0);
+    group.add(postR);
+
+    const crossbar = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 3.2, 6), woodMat);
+    crossbar.position.set(0, 3.6, 0);
+    crossbar.rotation.z = Math.PI / 2;
+    group.add(crossbar);
+
+    // Suspended alien ribcage bone gong
+    const gong = new THREE.Mesh(new THREE.TorusGeometry(0.9, 0.22, 8, 12), boneMat);
+    gong.position.set(0, 2.2, 0);
+    gong.castShadow = true;
+    group.add(gong);
+
+    // Mallet striker on pedestal
+    const mallet = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.12, 1.1, 6), boneMat);
+    mallet.position.set(0.6, 1.2, 0.4);
+    mallet.rotation.z = Math.PI / 4;
+    group.add(mallet);
+
+    // 6 Sacrificial iron brazier pots in circle around the clearing (radius 6.5m)
+    const braziers = [];
+    for (let b = 0; b < 6; b++) {
+      const a = (b / 6) * Math.PI * 2;
+      const bx = Math.cos(a) * 6.5;
+      const bz = Math.sin(a) * 6.5;
+
+      const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.3, 0.6, 8), ironMat);
+      pot.position.set(bx, 0.3, bz);
+      group.add(pot);
+
+      const fireMesh = new THREE.Mesh(
+        new THREE.SphereGeometry(0.35, 6, 6),
+        new THREE.MeshBasicMaterial({ color: 0xf97316, transparent: true, opacity: 0.0 })
+      );
+      fireMesh.position.set(bx, 0.7, bz);
+      group.add(fireMesh);
+
+      const fireLight = new THREE.PointLight(0xf97316, 0.0, 8.0);
+      fireLight.position.set(bx, 1.0, bz);
+      group.add(fireLight);
+
+      braziers.push({ pot, fireMesh, fireLight, pos: new THREE.Vector3(pos.x + bx, 0.3, pos.z + bz) });
+    }
+
+    parentGroup.add(group);
+
+    this.royceBoneGong = {
+      group,
+      pos,
+      gongPos: pos.clone().add(new THREE.Vector3(0, 1.2, 0)),
+      gongMesh: gong,
+      braziers,
+      isStruck: false,
+      blindTimer: 0
+    };
+  }
+
+  // 16. Isabelle's Blaser R93 Tactical Sniper Stash [-28, 9.0, -28] (+9.0m)
+  buildIsabelleSniperStashProps(parentGroup) {
+    const group = new THREE.Group();
+    const pos = new THREE.Vector3(-28, 9.0, -28);
+    group.position.copy(pos);
+
+    const caseMat = new THREE.MeshStandardMaterial({ color: 0x365314, roughness: 0.6 });
+    const metalMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.9, roughness: 0.2 });
+    const scopeMat = new THREE.MeshBasicMaterial({ color: 0x22c55e });
+
+    // Tactical rifle transport case (opened)
+    const rifleCase = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.25, 0.5), caseMat);
+    rifleCase.position.y = 0.12;
+    group.add(rifleCase);
+
+    // Blaser R93 barrel & thermal scope silhouette
+    const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.05, 1.3, 6), metalMat);
+    barrel.position.set(0, 0.26, 0);
+    barrel.rotation.z = Math.PI / 2;
+    group.add(barrel);
+
+    const scopeLens = new THREE.Mesh(new THREE.CircleGeometry(0.06, 8), scopeMat);
+    scopeLens.position.set(-0.25, 0.35, 0.06);
+    group.add(scopeLens);
+
+    // Tactical night-vision green reticle glow
+    const stashLight = new THREE.PointLight(0x22c55e, 1.4, 4.5);
+    stashLight.position.set(0, 0.6, 0);
+    group.add(stashLight);
+
+    parentGroup.add(group);
+
+    this.isabelleSniperStash = {
+      group,
+      pos,
+      stashPos: pos.clone(),
+      light: stashLight,
+      isClaimed: false
+    };
+  }
+
   /* === PREDATORS (2010) GAME PRESERVE INTERACTION METHODS === */
 
   // Ronald Noland's Drilling Rig Hideout Interaction
@@ -12623,6 +12958,182 @@ export class EnvironmentManager {
 
       if (ui && ui.showAnnouncement) {
         ui.showAnnouncement(`💣 PIÈGE DE GRENADES DE ROYCE DÉCLENCHÉ (PREDATORS 2010) : DÉFLAGRATION EN CHAÎNE & BRASIER DE PITCH (${trapCasualties} TOUCHÉS, 480 DMG, BRÛLURE 12S) !`, 'warning');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Falconer Predator Recon Drone Roost Interaction
+  checkFalconerRoostInteraction(player, ui, audio, falconDrone) {
+    if (!this.falconerDronePerch || !player || !player.position || this.falconerDronePerch.isLaunched) return false;
+    if (player.position.distanceTo(this.falconerDronePerch.roostPos) <= 4.5) {
+      this.falconerDronePerch.isLaunched = true;
+      if (audio && audio.playFalconerDroneLaunch) audio.playFalconerDroneLaunch();
+
+      if (falconDrone && falconDrone.launch) {
+        falconDrone.launch(player.position);
+      }
+
+      if (player.recordTrophy) {
+        player.recordTrophy('Perchoir & Terminal de Liaison du Falconer Predator (Predators 2010)', 2500);
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('🦅 DRONE FAUCON FALCONER DÉPLOYÉ (PREDATORS 2010) : VERROUILLAGE LASER & TIRS MICRO-PLASMA AÉRIENS (+2500 HONNEUR) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Cuchillo's Booby-Trapped Acoustic Decoy Disarm / Interaction
+  checkCuchilloDecoyInteraction(player, ui, audio, horde, bosses, particles) {
+    if (!this.cuchilloAcousticDecoy || !player || !player.position || this.cuchilloAcousticDecoy.isDisarmed || this.cuchilloAcousticDecoy.isDetonated) return false;
+    if (player.position.distanceTo(this.cuchilloAcousticDecoy.decoyPos) <= 4.2) {
+      this.cuchilloAcousticDecoy.isDisarmed = true;
+      if (this.cuchilloAcousticDecoy.light) {
+        this.cuchilloAcousticDecoy.light.color.setHex(0x22c55e); // Disarmed green
+      }
+
+      player.grenades30mm = (player.grenades30mm || 0) + 4;
+      player.medicompCharges = Math.min(5, (player.medicompCharges || 0) + 3);
+      if (player.addScore) player.addScore(1500);
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('📻 PIÈGE ACOUSTIQUE DE CUCHILLO DÉSARMÉ (PREDATORS 2010) : CHARGES & SOINS RÉCUPÉRÉS (+4 GRENADES, +3 MEDICOMP, +1500 SCORE) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Cuchillo's Booby-Trapped Decoy Detonation (Triggered by enemy contact or weapon hit)
+  triggerCuchilloDecoyBlast(audio, horde, bosses, particles, ui) {
+    if (!this.cuchilloAcousticDecoy || this.cuchilloAcousticDecoy.isDetonated || this.cuchilloAcousticDecoy.isDisarmed) return;
+    this.cuchilloAcousticDecoy.isDetonated = true;
+
+    if (audio && audio.playNikolaiDualClaymoreDetonation) audio.playNikolaiDualClaymoreDetonation();
+    if (particles && particles.emitExplosion) {
+      particles.emitExplosion(this.cuchilloAcousticDecoy.decoyPos, 28);
+    }
+
+    let kills = 0;
+    if (horde && horde.aliens) {
+      horde.aliens.forEach(alien => {
+        if (alien && alien.mesh && alien.hp > 0 && alien.mesh.position.distanceTo(this.cuchilloAcousticDecoy.decoyPos) <= 14.0) {
+          alien.hp -= 520;
+          alien.isStunned = true;
+          alien.stunTimer = 3.5;
+          kills++;
+        }
+      });
+    }
+
+    if (ui && ui.showAnnouncement) {
+      ui.showAnnouncement(`💣 PIÈGE D'EMBUSCADE DE CUCHILLO EXPLOSÉ (PREDATORS 2010) : SOUFFLE INCENDIAIRE (${kills} XÉNOS PULVÉRISÉS, 520 DMG) !`, 'warning');
+    }
+  }
+
+  // Mombassa's Spring-Loaded Punji Stake Pit Trap Trigger
+  checkMombassaPunjiTrapTrigger(hitPos, audio, horde, bosses, particles, ui) {
+    if (!this.mombassaPunjiTrap || !hitPos || this.mombassaPunjiTrap.isSprung) return false;
+    if (hitPos.distanceTo(this.mombassaPunjiTrap.pos) <= 3.6) {
+      this.mombassaPunjiTrap.isSprung = true;
+      if (audio && audio.playPunjiSpringSnap) audio.playPunjiSpringSnap();
+
+      // Animate spring racks snapping inward
+      if (this.mombassaPunjiTrap.racks) {
+        this.mombassaPunjiTrap.racks.forEach(rack => {
+          rack.position.multiplyScalar(0.45);
+        });
+      }
+
+      let victims = 0;
+      if (horde && horde.aliens) {
+        horde.aliens.forEach(alien => {
+          if (alien && alien.mesh && alien.hp > 0 && alien.mesh.position.distanceTo(this.mombassaPunjiTrap.pos) <= 7.5) {
+            alien.hp -= 580;
+            alien.isStunned = true;
+            alien.stunTimer = 4.0;
+            victims++;
+            if (particles && particles.emitAlienBloodSpurt) {
+              particles.emitAlienBloodSpurt(alien.mesh.position, 16);
+            }
+          }
+        });
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement(`🎋 PIÈGE DE PIEUX PUNJI DE MOMBASSA DÉCLENCHÉ (PREDATORS 2010) : DÉTENTE À RESSORT (${victims} XÉNOS EMPALÉS, 580 DMG, STUN 4S) !`, 'warning');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Royce's Bone Gong & Sacrificial Fire Braziers Interaction
+  checkBoneGongInteraction(player, ui, audio, horde, bosses, particles) {
+    if (!this.royceBoneGong || !player || !player.position) return false;
+    if (player.position.distanceTo(this.royceBoneGong.gongPos) <= 4.2) {
+      if (this.royceBoneGong.isStruck && this.royceBoneGong.blindTimer > 0) {
+        if (ui && ui.showAnnouncement) {
+          ui.showAnnouncement(`⏳ BRASIER DE CHASSE ACTIF (${Math.ceil(this.royceBoneGong.blindTimer)}S RESTANTES)`);
+        }
+        return true;
+      }
+      this.royceBoneGong.isStruck = true;
+      this.royceBoneGong.blindTimer = 22.0;
+
+      if (audio && audio.playBoneGongStrike) audio.playBoneGongStrike();
+
+      // Light up all 6 surrounding fire braziers
+      if (this.royceBoneGong.braziers) {
+        this.royceBoneGong.braziers.forEach(b => {
+          if (b.fireMesh) b.fireMesh.material.opacity = 0.85;
+          if (b.fireLight) b.fireLight.intensity = 2.8;
+        });
+      }
+
+      // Blind thermal tracking for all horde enemies in arena
+      if (horde && horde.aliens) {
+        horde.aliens.forEach(alien => {
+          if (alien && alien.mesh && alien.hp > 0) {
+            alien.isStunned = true;
+            alien.stunTimer = 3.0;
+            alien.target = null;
+          }
+        });
+      }
+
+      player.musouEnergy = player.maxMusouEnergy || 100;
+      if (player.applyMasterHunterStalker) {
+        player.applyMasterHunterStalker(22.0);
+      }
+      if (player.recordTrophy) {
+        player.recordTrophy('Gong d\'Os & Défi de Chasse de Royce (Predators 2010)', 2500);
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('🔥 GONG DE ROYCE FRAPPÉ (PREDATORS 2010) : BRASIERS CIRCULAIRES ALLUMÉS, VISION THERMIQUE ENNEMIE AVEUGLÉE & MUSOU MAX (+2500 HONNEUR) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Isabelle's Blaser R93 Tactical Sniper Stash Interaction
+  checkIsabelleSniperStash(player, ui, audio) {
+    if (!this.isabelleSniperStash || !player || !player.position || this.isabelleSniperStash.isClaimed) return false;
+    if (player.position.y >= 7.5 && player.position.distanceTo(this.isabelleSniperStash.stashPos) <= 4.2) {
+      this.isabelleSniperStash.isClaimed = true;
+      if (audio && audio.playSniperRifleBoltCycle) audio.playSniperRifleBoltCycle();
+
+      player.gaussSlugs = (player.gaussSlugs || 0) + 8;
+      if (player.addScore) player.addScore(1500);
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('🎯 CACHE DU BLASER R93 D\'ISABELLE (PREDATORS 2010) : MUNITIONS SNIPER HAUTE-VÉLOCITÉ RÉCUPÉRÉES (+8 SLUGS AP, +1500 SCORE) !', 'success');
       }
       return true;
     }
@@ -12937,6 +13448,52 @@ export class EnvironmentManager {
     }
     if (this.celestialVistaMonolith && this.celestialVistaMonolith.skyGroup) {
       this.celestialVistaMonolith.skyGroup.rotation.y += delta * 0.02;
+    }
+
+    // v62.0 Real-time Loops (Falconer Drone Roost, Cuchillo Decoy, Mombassa Trap & Bone Gong)
+    if (this.falconerDronePerch && this.falconerDronePerch.holoRing) {
+      this.falconerDronePerch.holoRing.rotation.z += delta * 1.5;
+    }
+    if (this.cuchilloAcousticDecoy && !this.cuchilloAcousticDecoy.isDisarmed && !this.cuchilloAcousticDecoy.isDetonated) {
+      this.cuchilloAcousticDecoy.pulseTimer += delta * 4.0;
+      if (this.cuchilloAcousticDecoy.light) {
+        this.cuchilloAcousticDecoy.light.intensity = 1.0 + Math.sin(this.cuchilloAcousticDecoy.pulseTimer) * 0.8;
+      }
+      if (horde && horde.aliens) {
+        for (let a = 0; a < horde.aliens.length; a++) {
+          const alien = horde.aliens[a];
+          if (alien && alien.mesh && alien.hp > 0 && alien.mesh.position.distanceTo(this.cuchilloAcousticDecoy.decoyPos) <= 2.2) {
+            this.triggerCuchilloDecoyBlast(audio, horde, bosses, particles, ui);
+            break;
+          }
+        }
+      }
+    }
+    if (this.mombassaPunjiTrap && !this.mombassaPunjiTrap.isSprung && horde && horde.aliens) {
+      for (let a = 0; a < horde.aliens.length; a++) {
+        const alien = horde.aliens[a];
+        if (alien && alien.mesh && alien.hp > 0 && alien.mesh.position.distanceTo(this.mombassaPunjiTrap.pos) <= 2.2) {
+          this.checkMombassaPunjiTrapTrigger(this.mombassaPunjiTrap.pos, audio, horde, bosses, particles, ui);
+          break;
+        }
+      }
+    }
+    if (this.royceBoneGong && this.royceBoneGong.blindTimer > 0) {
+      this.royceBoneGong.blindTimer -= delta;
+      if (this.royceBoneGong.braziers) {
+        this.royceBoneGong.braziers.forEach(b => {
+          if (b.fireLight) b.fireLight.intensity = 2.4 + Math.random() * 1.2;
+          if (b.fireMesh) b.fireMesh.scale.setScalar(1.0 + Math.sin(Date.now() * 0.01) * 0.2);
+        });
+      }
+      if (this.royceBoneGong.blindTimer <= 0) {
+        if (this.royceBoneGong.braziers) {
+          this.royceBoneGong.braziers.forEach(b => {
+            if (b.fireMesh) b.fireMesh.material.opacity = 0.0;
+            if (b.fireLight) b.fireLight.intensity = 0.0;
+          });
+        }
+      }
     }
   }
 }
