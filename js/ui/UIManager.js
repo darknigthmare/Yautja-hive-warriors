@@ -121,10 +121,10 @@ export class UIManager {
       const card = document.createElement('div');
       card.className = `level-card ${index === 0 ? 'selected' : ''}`;
       card.innerHTML = `
-        <div class="level-card-icon">${lvl.icon}</div>
-        <span class="level-badge ${lvl.difficultyBadge}">${lvl.difficulty}</span>
+        <div class="level-card-icon">${lvl.icon || '🌲'}</div>
+        <span class="level-badge ${lvl.difficultyBadge || 'badge-hard'}">${lvl.difficulty || 'ÉLITE'}</span>
         <h3>${lvl.name}</h3>
-        <p>${lvl.description}</p>
+        <p>${lvl.description || lvl.desc || ''}</p>
       `;
 
       card.addEventListener('click', () => {

@@ -208,6 +208,10 @@ export class EnvironmentManager {
     this.cryoNitrogenTanks = [];
     this.nebraskaHarpoonRig = null;
     this.stargazerCanopyHighways = [];
+    this.stargazerEnergyDome = null;
+    this.roryTranslatorDesk = null;
+    this.crashedArkTurbine = null;
+    this.caseyDeconStation = null;
   }
 
   clearEnvironment() {
@@ -833,6 +837,22 @@ export class EnvironmentManager {
     if (this.nebraskaHarpoonRig && this.nebraskaHarpoonRig.group) {
       this.scene.remove(this.nebraskaHarpoonRig.group);
       this.nebraskaHarpoonRig = null;
+    }
+    if (this.stargazerEnergyDome) {
+      this.scene.remove(this.stargazerEnergyDome);
+      this.stargazerEnergyDome = null;
+    }
+    if (this.roryTranslatorDesk && this.roryTranslatorDesk.group) {
+      this.scene.remove(this.roryTranslatorDesk.group);
+      this.roryTranslatorDesk = null;
+    }
+    if (this.crashedArkTurbine && this.crashedArkTurbine.group) {
+      this.scene.remove(this.crashedArkTurbine.group);
+      this.crashedArkTurbine = null;
+    }
+    if (this.caseyDeconStation && this.caseyDeconStation.group) {
+      this.scene.remove(this.caseyDeconStation.group);
+      this.caseyDeconStation = null;
     }
     this.stargazerCanopyHighways = [];
 
@@ -13911,6 +13931,72 @@ export class EnvironmentManager {
     if (this.predatorKillerPod && !this.predatorKillerPod.isClaimed && this.predatorKillerPod.light) {
       this.predatorKillerPod.light.intensity = 1.4 + Math.sin(Date.now() * 0.006) * 0.6;
     }
+    if (this.roryTranslatorDesk) {
+      if (this.roryTranslatorDesk.ring1) this.roryTranslatorDesk.ring1.rotation.y += delta * 1.6;
+      if (this.roryTranslatorDesk.ring2) this.roryTranslatorDesk.ring2.rotation.x += delta * 1.3;
+      if (this.roryTranslatorDesk.light) {
+        this.roryTranslatorDesk.light.intensity = 1.5 + Math.sin(Date.now() * 0.007) * 0.6;
+      }
+    }
+    if (this.crashedArkTurbine && this.crashedArkTurbine.rotor && !this.crashedArkTurbine.isDetonated) {
+      this.crashedArkTurbine.rotor.rotation.z += delta * 7.5;
+    }
+    if (this.stargazerEnergyDome && this.stargazerEnergyDome.material) {
+      this.stargazerEnergyDome.material.opacity = 0.16 + Math.sin(Date.now() * 0.003) * 0.08;
+      if (player && player.position) {
+        const flatDist = Math.sqrt(player.position.x * player.position.x + player.position.z * player.position.z);
+        if (flatDist >= 41.5) {
+          const ratio = 41.3 / flatDist;
+          player.position.x *= ratio;
+          player.position.z *= ratio;
+          if (audio && audio.playForcefieldDeflectionCrackle && (!this._lastDomeSound || Date.now() - this._lastDomeSound > 1000)) {
+            this._lastDomeSound = Date.now();
+            audio.playForcefieldDeflectionCrackle();
+            if (particles && particles.emitSparks) {
+              particles.emitSparks(player.position.clone().add(new THREE.Vector3(0, 1.2, 0)), 18);
+            }
+            if (ui && ui.showAnnouncement) {
+              ui.showAnnouncement('⚡ DÔME DE CONFINEMENT STARGAZER : FRONTIÈRE DU CHAMP DE FORCE INFRANCHISSABLE !', 'warning');
+            }
+          }
+        }
+      }
+      if (horde && horde.aliens) {
+        horde.aliens.forEach(alien => {
+          if (alien && alien.mesh && alien.hp > 0) {
+            const aDist = Math.sqrt(alien.mesh.position.x * alien.mesh.position.x + alien.mesh.position.z * alien.mesh.position.z);
+            if (aDist >= 41.5) {
+              const aRatio = 41.2 / aDist;
+              alien.mesh.position.x *= aRatio;
+              alien.mesh.position.z *= aRatio;
+              alien.hp -= delta * 150;
+              if (particles && particles.emitSparks && Math.random() < 0.1) {
+                particles.emitSparks(alien.mesh.position, 6);
+              }
+            }
+          }
+        });
+      }
+    }
+    if (this.friendlyLoboHound && this.friendlyLoboHound.isTamed && player && player.position && this.friendlyLoboHound.group) {
+      const targetPos = player.position.clone().add(new THREE.Vector3(-2.2, 0, 1.6));
+      targetPos.y = 0.7;
+      this.friendlyLoboHound.group.position.lerp(targetPos, Math.min(1.0, delta * 3.5));
+      this.friendlyLoboHound.group.lookAt(player.position.x, 0.7, player.position.z);
+      this.friendlyLoboHound.pos.copy(this.friendlyLoboHound.group.position);
+
+      if (horde && horde.aliens) {
+        for (let a = 0; a < horde.aliens.length; a++) {
+          const alien = horde.aliens[a];
+          if (alien && alien.mesh && alien.hp > 0 && alien.mesh.position.distanceTo(this.friendlyLoboHound.group.position) <= 3.8) {
+            alien.hp -= delta * 110;
+            if (particles && particles.emitSparks && Math.random() < 0.2) {
+              particles.emitSparks(alien.mesh.position, 8);
+            }
+          }
+        }
+      }
+    }
   }
 
   /* === SECTOR 9: PROJET STARGAZER & FORÊT DU CRASH (THE PREDATOR 2018) === */
@@ -14332,6 +14418,111 @@ export class EnvironmentManager {
     bb3.receiveShadow = true;
     group.add(bb3);
 
+    // 16. Hemispherical Stargazer Perimeter Energy Forcefield Dome [0, 0, 0] (Radius 42m)
+    const domeGeo = new THREE.SphereGeometry(42.0, 36, 18, 0, Math.PI * 2, 0, Math.PI * 0.5);
+    const domeMat = new THREE.MeshBasicMaterial({
+      color: 0x38bdf8,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.16
+    });
+    const energyDome = new THREE.Mesh(domeGeo, domeMat);
+    energyDome.position.set(0, 0, 0);
+    this.scene.add(energyDome);
+    this.stargazerEnergyDome = energyDome;
+    this.envObjects.push(energyDome);
+
+    // 17. Rory McKenna's Decoded Star Map & Predator Mask Station [-12, 0, 7]
+    const roryGroup = new THREE.Group();
+    roryGroup.position.set(-12, 0, 7);
+
+    const deskMesh = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.9, 1.2), metalMat);
+    deskMesh.position.y = 0.45;
+    roryGroup.add(deskMesh);
+
+    const maskMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.25, 0.5, 8), new THREE.MeshStandardMaterial({ color: 0xa16207, roughness: 0.8 }));
+    maskMesh.rotation.x = Math.PI / 4;
+    maskMesh.position.set(-0.4, 1.05, 0.1);
+    roryGroup.add(maskMesh);
+
+    const holoGreenMat = new THREE.MeshBasicMaterial({ color: 0x10b981, transparent: true, opacity: 0.65, wireframe: true });
+    const holoRing1 = new THREE.Mesh(new THREE.TorusGeometry(1.4, 0.03, 6, 24), holoGreenMat);
+    holoRing1.position.set(0.3, 1.6, 0);
+    holoRing1.rotation.x = Math.PI / 3;
+    roryGroup.add(holoRing1);
+
+    const holoRing2 = new THREE.Mesh(new THREE.TorusGeometry(0.9, 0.025, 6, 18), new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.75, wireframe: true }));
+    holoRing2.position.set(0.3, 1.6, 0);
+    holoRing2.rotation.y = Math.PI / 4;
+    roryGroup.add(holoRing2);
+
+    const roryLight = new THREE.PointLight(0x10b981, 1.8, 6.0);
+    roryLight.position.set(0.3, 1.6, 0);
+    roryGroup.add(roryLight);
+
+    group.add(roryGroup);
+    this.roryTranslatorDesk = {
+      group: roryGroup,
+      pos: new THREE.Vector3(-12, 0.9, 7),
+      ring1: holoRing1,
+      ring2: holoRing2,
+      light: roryLight,
+      isDecoded: false
+    };
+
+    // 18. Crashed Ark Ship Main Plasma Turbine Core [24, 0, -16] (+5.4m elevation)
+    const turbineGroup = new THREE.Group();
+    turbineGroup.position.set(24, 5.4, -16);
+
+    const turbineCowl = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 1.8, 2.2, 16), shipHullMat);
+    turbineCowl.rotation.x = Math.PI / 2;
+    turbineGroup.add(turbineCowl);
+
+    const rotorGroup = new THREE.Group();
+    for (let b = 0; b < 6; b++) {
+      const blade = new THREE.Mesh(new THREE.BoxGeometry(0.12, 1.3, 0.04), metalMat);
+      blade.rotation.z = (b / 6) * Math.PI * 2;
+      rotorGroup.add(blade);
+    }
+    rotorGroup.position.set(0, 0, 0.9);
+    turbineGroup.add(rotorGroup);
+
+    const coreLight = new THREE.PointLight(0x38bdf8, 2.6, 8.0);
+    turbineGroup.add(coreLight);
+
+    group.add(turbineGroup);
+    this.crashedArkTurbine = {
+      group: turbineGroup,
+      pos: new THREE.Vector3(24, 5.4, -16),
+      rotor: rotorGroup,
+      light: coreLight,
+      isDetonated: false
+    };
+
+    // 19. Dr. Casey Bracket's Biogenetic Decontamination Airlock Station [-6, 0, -6]
+    const deconGroup = new THREE.Group();
+    deconGroup.position.set(-6, 0, -6);
+
+    const deconFrame = new THREE.Mesh(new THREE.CylinderGeometry(1.5, 1.6, 3.4, 12), metalMat);
+    deconFrame.position.y = 1.7;
+    deconGroup.add(deconFrame);
+
+    const deconGlass = new THREE.Mesh(new THREE.CylinderGeometry(1.3, 1.3, 2.6, 12), new THREE.MeshBasicMaterial({ color: 0x10b981, transparent: true, opacity: 0.45 }));
+    deconGlass.position.y = 1.7;
+    deconGroup.add(deconGlass);
+
+    const deconLight = new THREE.PointLight(0x10b981, 2.0, 7.0);
+    deconLight.position.set(0, 2.0, 0);
+    deconGroup.add(deconLight);
+
+    group.add(deconGroup);
+    this.caseyDeconStation = {
+      group: deconGroup,
+      pos: new THREE.Vector3(-6, 1.7, -6),
+      light: deconLight,
+      isUsed: false
+    };
+
     this.scene.add(group);
     this.envObjects.push(group);
   }
@@ -14585,6 +14776,91 @@ export class EnvironmentManager {
 
       if (ui && ui.showAnnouncement) {
         ui.showAnnouncement('⚓ TREUIL À HARPON DE NEBRASKA (THE PREDATOR 2018) : CÂBLE D\'ACIER HARPONNÉ (600-700 DMG CINÉTIQUES & STUN 5S) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Stargazer Interaction: Rory McKenna's Decoded Star Map & Predator Mask
+  checkRoryTranslatorInteraction(player, ui, audio, bosses) {
+    if (!this.roryTranslatorDesk || !player || !player.position || this.roryTranslatorDesk.isDecoded) return false;
+    if (player.position.distanceTo(this.roryTranslatorDesk.pos) <= 4.2) {
+      this.roryTranslatorDesk.isDecoded = true;
+      if (audio && audio.playTranslatorStarMapChime) audio.playTranslatorStarMapChime();
+
+      if (player.applyRoryStarMapTelemetry) player.applyRoryStarMapTelemetry(30.0);
+      if (player.addScore) player.addScore(2500);
+
+      if (bosses && bosses.activeBoss) {
+        bosses.activeBoss.isCloaked = false;
+        if (bosses.activeBoss.mesh) bosses.activeBoss.mesh.visible = true;
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('🗺️ CARTE STELLAIRE DE RORY DÉCODÉE (THE PREDATOR 2018) : TÉLÉMÉTRIE D\'HYBRIDATION RÉVÉLÉE, CRITIQUES +35% & BOSS DÉCLOQUÉ (30S, +2500 SCORE) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Stargazer Interaction: Nebraska Williams' Crashed Ark Turbine Leap & Thermonuclear Plasma Detonation
+  checkTurbineCoreOverload(player, ui, audio, horde, bosses, particles) {
+    if (!this.crashedArkTurbine || !player || !player.position || this.crashedArkTurbine.isDetonated) return false;
+    if (player.position.y >= 4.5 && player.position.distanceTo(this.crashedArkTurbine.pos) <= 4.8) {
+      this.crashedArkTurbine.isDetonated = true;
+      if (audio && audio.playShipTurbinePlasmaDetonation) audio.playShipTurbinePlasmaDetonation();
+
+      let vaporizedCount = 0;
+      if (horde && horde.aliens) {
+        horde.aliens.forEach(alien => {
+          if (alien && alien.mesh && alien.hp > 0 && alien.mesh.position.distanceTo(this.crashedArkTurbine.pos) <= 24.0) {
+            alien.hp -= 900;
+            vaporizedCount++;
+            if (particles && particles.emitSparks) {
+              particles.emitSparks(alien.mesh.position, 25);
+            }
+          }
+        });
+      }
+
+      if (bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
+        if (bosses.activeBoss.mesh.position.distanceTo(this.crashedArkTurbine.pos) <= 26.0) {
+          bosses.activeBoss.hp -= 900;
+          bosses.activeBoss.stunTimer = 6.0;
+          if (particles && particles.emitSparks) {
+            particles.emitSparks(bosses.activeBoss.mesh.position, 35);
+          }
+        }
+      }
+
+      if (player.addScore) player.addScore(3000);
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement(`💥 TURBINE PRINCIPALE DE L'ARCHE EN SURCHARGE (THE PREDATOR 2018) : SACRIFICE DE NEBRASKA & DÉTONATION THERMONUCLÉAIRE (${vaporizedCount} ENNEMIS DÉSINTÉGRÉS, 900 DMG, +3000 SCORE) !`, 'error');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Stargazer Interaction: Dr. Casey Bracket's Biogenetic Decontamination Station
+  checkStargazerDecontamination(player, ui, audio) {
+    if (!this.caseyDeconStation || !player || !player.position || this.caseyDeconStation.isUsed) return false;
+    if (player.position.distanceTo(this.caseyDeconStation.pos) <= 4.2) {
+      this.caseyDeconStation.isUsed = true;
+      if (audio && audio.playDecontaminationSprayHiss) audio.playDecontaminationSprayHiss();
+
+      if (player.applyCaseyDeconBuff) player.applyCaseyDeconBuff(35.0);
+      else {
+        player.hp = Math.min(player.maxHp || 100, (player.hp || 0) + 75);
+        player.shield = Math.min(200, (player.shield || 0) + 100);
+      }
+      if (player.addScore) player.addScore(2000);
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('🧪 SAS DE DÉCONTAMINATION BIOGÉNÉTIQUE (THE PREDATOR 2018) : PURGE BIOLOGIQUE TOTALE, SOINS +75 HP, BOUCLIER 100% & FLÉCHETTES TRANQUILLISANTES (3 TIRS) !', 'success');
       }
       return true;
     }

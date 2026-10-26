@@ -684,6 +684,12 @@ class GameApp {
           // Handled Baxley & Coyle's Tourette's / Sniper Defilade Bunker (The Predator 2018)!
         } else if (this.env && this.env.checkNebraskaHarpoonRig && this.env.checkNebraskaHarpoonRig(this.player, this.ui, this.audio, this.horde, this.bosses, this.particles)) {
           // Handled Nebraska Williams' Steel Harpoon Tow Cable Rig (The Predator 2018)!
+        } else if (this.env && this.env.checkRoryTranslatorInteraction && this.env.checkRoryTranslatorInteraction(this.player, this.ui, this.audio, this.bosses)) {
+          // Handled Rory McKenna's Decoded Star Map & Predator Mask (The Predator 2018)!
+        } else if (this.env && this.env.checkTurbineCoreOverload && this.env.checkTurbineCoreOverload(this.player, this.ui, this.audio, this.horde, this.bosses, this.particles)) {
+          // Handled Crashed Ark Ship Main Plasma Turbine Core Overload (The Predator 2018)!
+        } else if (this.env && this.env.checkStargazerDecontamination && this.env.checkStargazerDecontamination(this.player, this.ui, this.audio)) {
+          // Handled Dr. Casey Bracket's Biogenetic Decontamination Airlock (The Predator 2018)!
         } else if (this.env && this.env.checkScoutShipConsoleInteraction && this.env.checkScoutShipConsoleInteraction(this.player.position, this.ui, this.audio, this.horde, this.player)) {
           // Handled Crashed Scout Ship Telemetry Scan (AVP: Requiem 2007)!
         } else if (this.env && this.env.checkCharonLabConsoleInteraction && this.env.checkCharonLabConsoleInteraction(this.player.position, this.horde, this.ui, this.audio)) {
@@ -3576,6 +3582,27 @@ class GameApp {
       if (nebraskaPrompt) {
         if (isNearNebraska) nebraskaPrompt.classList.remove('hidden');
         else nebraskaPrompt.classList.add('hidden');
+      }
+
+      const isNearRory = this.env.roryTranslatorDesk && !this.env.roryTranslatorDesk.isDecoded && this.player && this.player.position.distanceTo(this.env.roryTranslatorDesk.pos) <= 4.2;
+      const roryPrompt = document.getElementById('rory-translator-prompt');
+      if (roryPrompt) {
+        if (isNearRory) roryPrompt.classList.remove('hidden');
+        else roryPrompt.classList.add('hidden');
+      }
+
+      const isNearTurbine = this.env.crashedArkTurbine && !this.env.crashedArkTurbine.isDetonated && this.player && this.player.position.y >= 4.5 && this.player.position.distanceTo(this.env.crashedArkTurbine.pos) <= 4.8;
+      const turbinePrompt = document.getElementById('crashed-ark-turbine-prompt');
+      if (turbinePrompt) {
+        if (isNearTurbine) turbinePrompt.classList.remove('hidden');
+        else turbinePrompt.classList.add('hidden');
+      }
+
+      const isNearDecon = this.env.caseyDeconStation && !this.env.caseyDeconStation.isUsed && this.player && this.player.position.distanceTo(this.env.caseyDeconStation.pos) <= 4.2;
+      const deconPrompt = document.getElementById('casey-decon-prompt');
+      if (deconPrompt) {
+        if (isNearDecon) deconPrompt.classList.remove('hidden');
+        else deconPrompt.classList.add('hidden');
       }
     }
 

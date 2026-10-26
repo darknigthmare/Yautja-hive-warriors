@@ -1769,6 +1769,9 @@ export class Player {
     if (this.orbitalScanTimer > 0) {
       dmg *= 1.25; // +25% critical scan boost
     }
+    if (this.isRoryTelemetryActive) {
+      dmg *= 1.35; // +35% decoded Yautja telemetry critical damage boost (The Predator 2018)
+    }
 
     return {
       position: origin,
@@ -4255,6 +4258,14 @@ export class Player {
       this.fugitiveAutoAimTimer -= delta;
       if (this.fugitiveAutoAimTimer <= 0) this.isFugitiveAutoAimActive = false;
     }
+    if (this.roryTelemetryTimer > 0) {
+      this.roryTelemetryTimer -= delta;
+      if (this.roryTelemetryTimer <= 0) this.isRoryTelemetryActive = false;
+    }
+    if (this.caseyDeconTimer > 0) {
+      this.caseyDeconTimer -= delta;
+      if (this.caseyDeconTimer <= 0) this.isCaseyDeconActive = false;
+    }
     this.isOnBough = (this.position && this.position.y >= 5.0);
   }
 
@@ -4266,6 +4277,18 @@ export class Player {
   applyFugitiveAutoAim(duration = 30.0) {
     this.fugitiveAutoAimTimer = duration;
     this.isFugitiveAutoAimActive = true;
+  }
+
+  applyRoryStarMapTelemetry(duration = 30.0) {
+    this.roryTelemetryTimer = duration;
+    this.isRoryTelemetryActive = true;
+  }
+
+  applyCaseyDeconBuff(duration = 35.0) {
+    this.caseyDeconTimer = duration;
+    this.isCaseyDeconActive = true;
+    this.hp = Math.min(this.maxHp || 100, (this.hp || 0) + 75);
+    this.shield = Math.min(200, (this.shield || 0) + 100);
   }
 
   applyPredatorKillerNano(duration = 30.0) {

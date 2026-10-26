@@ -9259,6 +9259,127 @@ export class AudioEngine {
       barkOsc.stop(bTime + 0.18);
     }
   }
+
+  // Method 188: Rory McKenna's Decoded Holographic Star Map & Yautja Translation Chimes (The Predator 2018)
+  playTranslatorStarMapChime() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Rising crystalline four-note arpeggio chord (E5, G#5, B5, E6)
+    const freqs = [659.25, 830.61, 987.77, 1318.51];
+    freqs.forEach((freq, idx) => {
+      const noteTime = now + idx * 0.08;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = idx % 2 === 0 ? 'sine' : 'triangle';
+      osc.frequency.setValueAtTime(freq, noteTime);
+      osc.frequency.exponentialRampToValueAtTime(freq * 1.02, noteTime + 0.35);
+
+      gain.gain.setValueAtTime(0.01, noteTime);
+      gain.gain.linearRampToValueAtTime(0.5, noteTime + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, noteTime + 0.45);
+
+      osc.connect(gain);
+      gain.connect(this.getOut());
+      osc.start(noteTime);
+      osc.stop(noteTime + 0.45);
+    });
+  }
+
+  // Method 189: Dr. Casey Bracket's Biogenetic Decontamination Airlock High-Pressure Mist (The Predator 2018)
+  playDecontaminationSprayHiss() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const bufferSize = Math.floor(this.ctx.sampleRate * 1.2);
+    const noiseBuffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const output = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      output[i] = Math.random() * 2 - 1;
+    }
+
+    const whiteNoise = this.ctx.createBufferSource();
+    whiteNoise.buffer = noiseBuffer;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(2200, now);
+    filter.frequency.exponentialRampToValueAtTime(800, now + 1.2);
+    filter.Q.value = 3.5;
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.01, now);
+    gain.gain.linearRampToValueAtTime(0.65, now + 0.1);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+
+    whiteNoise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.getOut());
+    whiteNoise.start(now);
+    whiteNoise.stop(now + 1.2);
+  }
+
+  // Method 190: Nebraska Williams' Crashed Ark Turbine Leap & Thermonuclear Plasma Detonation (The Predator 2018)
+  playShipTurbinePlasmaDetonation() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Sub-bass intake implosion leading to massive pulse shockwave
+    const subOsc = this.ctx.createOscillator();
+    subOsc.type = 'sine';
+    subOsc.frequency.setValueAtTime(35, now);
+    subOsc.frequency.linearRampToValueAtTime(75, now + 0.25);
+    subOsc.frequency.exponentialRampToValueAtTime(25, now + 1.5);
+
+    const subGain = this.ctx.createGain();
+    subGain.gain.setValueAtTime(0.01, now);
+    subGain.gain.linearRampToValueAtTime(0.95, now + 0.25);
+    subGain.gain.exponentialRampToValueAtTime(0.001, now + 1.6);
+
+    subOsc.connect(subGain);
+    subGain.connect(this.getOut());
+    subOsc.start(now);
+    subOsc.stop(now + 1.6);
+
+    // High frequency ionic plasma crackle
+    const osc2 = this.ctx.createOscillator();
+    osc2.type = 'sawtooth';
+    osc2.frequency.setValueAtTime(320, now + 0.2);
+    osc2.frequency.exponentialRampToValueAtTime(60, now + 0.9);
+
+    const gain2 = this.ctx.createGain();
+    gain2.gain.setValueAtTime(0.01, now + 0.2);
+    gain2.gain.linearRampToValueAtTime(0.7, now + 0.28);
+    gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.9);
+
+    osc2.connect(gain2);
+    gain2.connect(this.getOut());
+    osc2.start(now + 0.2);
+    osc2.stop(now + 0.9);
+  }
+
+  // Method 191: Stargazer Perimeter Energy Forcefield Boundary Repulsion Crackle (The Predator 2018)
+  playForcefieldDeflectionCrackle() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const osc = this.ctx.createOscillator();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(140, now);
+    osc.frequency.linearRampToValueAtTime(380, now + 0.05);
+    osc.frequency.exponentialRampToValueAtTime(90, now + 0.25);
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.01, now);
+    gain.gain.linearRampToValueAtTime(0.75, now + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+
+    osc.connect(gain);
+    gain.connect(this.getOut());
+    osc.start(now);
+    osc.stop(now + 0.25);
+  }
 }
 
 
