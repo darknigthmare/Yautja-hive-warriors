@@ -6,6 +6,7 @@ $files = @(
   "js/entities/Player.js",
   "js/entities/HellHounds.js",
   "js/entities/Bosses.js",
+  "js/engine/WeatherSystem.js",
   "js/main.js"
 )
 foreach ($file in $files) {

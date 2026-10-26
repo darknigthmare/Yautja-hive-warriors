@@ -37,6 +37,8 @@ export class WeatherSystem {
       this.initToxicSpores();
     } else if (type === 'humid_mist') {
       this.initHumidMist();
+    } else if (type === 'autumn_gale') {
+      this.initAutumnGale();
     }
   }
 
@@ -170,6 +172,39 @@ export class WeatherSystem {
     this.scene.add(this.weatherParticles);
   }
 
+  initAutumnGale() {
+    this.particleCount = 850;
+    const geo = new THREE.BufferGeometry();
+    const positions = new Float32Array(this.particleCount * 3);
+    this.particleVelocities = [];
+
+    for (let i = 0; i < this.particleCount; i++) {
+      positions[i * 3] = (Math.random() - 0.5) * 80;
+      positions[i * 3 + 1] = Math.random() * 25;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 80;
+
+      this.particleVelocities.push({
+        vy: -3.5 - Math.random() * 4.5,
+        vx: 8.5 + Math.random() * 5.0,
+        vz: (Math.random() - 0.5) * 4.0,
+        swayFreq: 1.5 + Math.random() * 2.5
+      });
+    }
+
+    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    this.particlePositions = positions;
+
+    const mat = new THREE.PointsMaterial({
+      color: 0xf59e0b,
+      size: 0.55,
+      transparent: true,
+      opacity: 0.85
+    });
+
+    this.weatherParticles = new THREE.Points(geo, mat);
+    this.scene.add(this.weatherParticles);
+  }
+
   update(delta, playerPos, renderer, audioEngine, horde) {
     this.timeAccumulator += delta;
 
@@ -237,6 +272,21 @@ export class WeatherSystem {
         // Wrap around player radius
         if (Math.abs(pos[i * 3] - center.x) > 42) pos[i * 3] = center.x - Math.sign(pos[i * 3] - center.x) * 40;
         if (Math.abs(pos[i * 3 + 2] - center.z) > 42) pos[i * 3 + 2] = center.z - Math.sign(pos[i * 3 + 2] - center.z) * 40;
+      }
+    }
+
+    else if (this.weatherType === 'autumn_gale') {
+      for (let i = 0; i < this.particleCount; i++) {
+        const vel = this.particleVelocities[i];
+        pos[i * 3 + 1] += vel.vy * delta;
+        pos[i * 3] += (vel.vx + Math.sin(this.timeAccumulator * vel.swayFreq + i) * 3.0) * delta;
+        pos[i * 3 + 2] += (vel.vz + Math.cos(this.timeAccumulator * vel.swayFreq + i) * 2.0) * delta;
+
+        if (pos[i * 3 + 1] <= 0.1) {
+          pos[i * 3 + 1] = 22 + Math.random() * 4;
+          pos[i * 3] = center.x - 40 + (Math.random() - 0.5) * 20;
+          pos[i * 3 + 2] = center.z + (Math.random() - 0.5) * 75;
+        }
       }
     }
 
