@@ -4819,9 +4819,6 @@ class GameApp {
       cycloneSlot.classList.toggle('active', this.player.isCycloneWhirling);
     }
 
-    if (this.player.hp <= 0) {
-      this.endGame(false);
-    }
   }
 
   updateTargetLockReticle() {

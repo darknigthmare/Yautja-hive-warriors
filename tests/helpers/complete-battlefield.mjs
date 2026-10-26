@@ -14,9 +14,11 @@ export async function reachBattlefieldSector(page, stopAtSectorIndex = 5) {
       if (!g.isPlaying || !g.player) throw new Error('Mission ended before its final battlefield encounter');
     };
     const moveTo = target => {
-      const destination = player.position.clone().set(target[0], 0, target[1]);
-      for (let index = 0; player.position.distanceTo(destination) > 0.01 && index < 1000; index++) {
-        const direction = destination.clone().sub(player.position); direction.y = 0;
+      const destination = player.position.clone().set(target[0], player.position.y, target[1]);
+      const remaining = () => Math.hypot(player.position.x - destination.x, player.position.z - destination.z);
+      for (let index = 0; remaining() > 0.01 && index < 1000; index++) {
+        const waypoint = g.env.getNavigationWaypoint?.(player.position, destination, .65) ?? destination;
+        const direction = waypoint.clone().sub(player.position); direction.y = 0;
         const distance = direction.length();
         const requested = player.position.clone().addScaledVector(direction.normalize(), Math.min(0.7, distance));
         g.env.resolveMovement(requested);
@@ -24,7 +26,7 @@ export async function reachBattlefieldSector(page, stopAtSectorIndex = 5) {
         if (requested.distanceTo(player.position) < 0.001) throw new Error('Blocked battlefield route before ' + destination.toArray());
         player.position.copy(requested); player.mesh.position.copy(requested); step();
       }
-      if (player.position.distanceTo(destination) > 0.01) throw new Error(`Battlefield travel did not reach ${destination.toArray()} from ${player.position.toArray()}`);
+      if (remaining() > 0.01) throw new Error(`Battlefield travel did not reach ${destination.toArray()} from ${player.position.toArray()}`);
     };
     for (const sector of layout.sectors) {
       // Resume an existing mission without walking back through prior sectors.
@@ -68,8 +70,11 @@ export async function reachBattlefieldSector(page, stopAtSectorIndex = 5) {
         // than a direct objective-state edit, must earn every gate opening.
         // An activated relay now also needs its real counterattack defeated.
         for (let round = 0; !progression.currentState.completed && round < 30; round++) {
-          const hits = g.horde.checkMeleeHits({ origin: player.position, radius: 200, damage: 1_000_000 });
-          g.registerHits(hits); step();
+          // Explicitly shorten each fight through the real damage/death ledger.
+          // A map-wide melee strike now correctly stops at physical cover and
+          // is no longer an appropriate progress-only test fixture.
+          for (const enemy of [...g.horde.getActiveCombatants()]) g.horde.applyDamage(enemy, 1_000_000, { cause: 'qa-shortened-fight', killerFaction: 'player_clan' });
+          step();
           if (progression.currentState.completed) break;
           if (!g.horde.remainingCount) throw new Error('Encounter exhausted before its objective: ' + sector.id);
           for (let frame = 0; frame < 31; frame++) step(0.1);

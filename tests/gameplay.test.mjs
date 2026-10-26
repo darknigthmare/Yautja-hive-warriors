@@ -240,7 +240,9 @@ test('relay activation keeps its gate locked until the real counterattack is def
         queued: g.horde.pendingSpawnCount, gate: g.env.isGateOpen(gate.id),
         objective: document.getElementById('battlefield-objective-text').textContent });
       const damageEncounter = () => {
-        g.registerHits(g.horde.checkMeleeHits({ origin: g.player.position, radius: 200, damage: 1_000_000 }));
+        // Assisted objective-flow fixture: settle actual actors through their
+        // damage/death callbacks, including those protected by scenery.
+        for (const enemy of [...g.horde.getActiveCombatants()]) g.horde.applyDamage(enemy, 1_000_000, { cause: 'qa-shortened-fight', killerFaction: 'player_clan' });
         g.update(0.001);
       };
       g.isPaused = false;
@@ -425,8 +427,15 @@ test('melee damages bosses and a close-range trophy execution records a real fin
       boss.mesh.position.copy(game.player.position).add({ x: 0, y: 0, z: 3 });
       const before = boss.hp;
       game.performLightAttack();
+      const instantDamage = before - boss.hp;
+      for (let frame = 0; boss.hp === before && frame < 90; frame++) game.update(1 / 120);
       const meleeDamage = before - boss.hp;
       boss.isStunned = true;
+      game.checkTrophyExecution();
+      const healthyTargetSurvived = !!game.bosses.activeBoss;
+      // Assisted execution fixture: first earn a real melee impact, then put
+      // the boss in the documented wounded execution window.
+      boss.hp = boss.maxHp * .25;
       boss.mesh.position.set(40, 0, 40);
       game.checkTrophyExecution();
       const farTargetSurvived = !!game.bosses.activeBoss;
@@ -442,17 +451,19 @@ test('melee damages bosses and a close-range trophy execution records a real fin
       let geometryDisposals = 0, materialDisposals = 0;
       geometries.forEach(geometry => geometry.addEventListener('dispose', () => geometryDisposals++));
       materials.forEach(material => material.addEventListener('dispose', () => materialDisposals++));
-      const state = { meleeDamage, farTargetSurvived, nearbyExecuted: !game.bosses.activeBoss,
+      const state = { instantDamage, meleeDamage, healthyTargetSurvived, farTargetSurvived, nearbyExecuted: !game.bosses.activeBoss,
         defeatedBossHp: boss.hp, victimKind: boss.type, trophyFamily: trophyState?.family,
         trophyVictimKind: trophyState?.victimKind, renderedFamily: trophy?.userData.trophyFamily,
         trophyGeometries: geometries.size, trophyMaterials: materials.size };
       game.update(0.001);
       return { ...state, missionComplete: mission.complete,
         finalSectorComplete: mission.progression.currentState.completed,
-        isPlaying: game.isPlaying, finalPlayer: game.player,
+        isPlaying: game.isPlaying, finalPlayerCleared: game.player === null,
         trophyRemoved: trophy?.parent === null, geometryDisposals, materialDisposals };
     });
     assert.ok(results.meleeDamage > 0);
+    assert.equal(results.instantDamage, 0, 'Melee damage follows the active animation window.');
+    assert.equal(results.healthyTargetSurvived, true, 'A healthy stunned boss cannot be executed.');
     assert.equal(results.farTargetSurvived, true);
     assert.equal(results.nearbyExecuted, true);
     assert.equal(results.defeatedBossHp, 0, 'An execution must report a real boss death rather than only removing a living encounter.');
@@ -464,7 +475,7 @@ test('melee damages bosses and a close-range trophy execution records a real fin
     assert.equal(results.missionComplete, true);
     assert.equal(results.finalSectorComplete, true);
     assert.equal(results.isPlaying, false);
-    assert.equal(results.finalPlayer, null);
+    assert.equal(results.finalPlayerCleared, true);
     assert.equal(results.trophyRemoved, true);
     assert.equal(results.geometryDisposals, results.trophyGeometries, 'Ending the victorious mission releases every trophy geometry once.');
     assert.equal(results.materialDisposals, results.trophyMaterials, 'Ending the victorious mission releases every trophy material once.');
