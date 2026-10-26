@@ -168,6 +168,18 @@ export class EnvironmentManager {
     this.fireEscapeStairs = null;
     this.boilingTarKettle = null;
     this.activeTarPuddles = [];
+    // v61.0 Predators (2010) Game Preserve Systems
+    this.nolandHideout = null;
+    this.hanzoDuelArena = null;
+    this.hellhoundKennel = null;
+    this.nikolaiBlastMemorial = null;
+    this.alienFloraPatch = null;
+    this.superPredatorShipDais = null;
+    this.celestialVistaMonolith = null;
+    this.royceCliffWaterfall = null;
+    this.royceTripwireTrap = null;
+    this.activePreserveSmokeScreen = null;
+    this.activePreserveFireZones = [];
   }
 
   clearEnvironment() {
@@ -634,6 +646,55 @@ export class EnvironmentManager {
         if (p.mesh) this.scene.remove(p.mesh);
       });
       this.activeTarPuddles = [];
+    }
+
+    // v61.0 Predators (2010) Game Preserve Cleanups
+    if (this.nolandHideout && this.nolandHideout.group) {
+      this.scene.remove(this.nolandHideout.group);
+      this.nolandHideout = null;
+    }
+    if (this.hanzoDuelArena && this.hanzoDuelArena.group) {
+      this.scene.remove(this.hanzoDuelArena.group);
+      this.hanzoDuelArena = null;
+    }
+    if (this.hellhoundKennel && this.hellhoundKennel.group) {
+      this.scene.remove(this.hellhoundKennel.group);
+      this.hellhoundKennel = null;
+    }
+    if (this.nikolaiBlastMemorial && this.nikolaiBlastMemorial.group) {
+      this.scene.remove(this.nikolaiBlastMemorial.group);
+      this.nikolaiBlastMemorial = null;
+    }
+    if (this.alienFloraPatch && this.alienFloraPatch.group) {
+      this.scene.remove(this.alienFloraPatch.group);
+      this.alienFloraPatch = null;
+    }
+    if (this.superPredatorShipDais && this.superPredatorShipDais.group) {
+      this.scene.remove(this.superPredatorShipDais.group);
+      this.superPredatorShipDais = null;
+    }
+    if (this.celestialVistaMonolith && this.celestialVistaMonolith.group) {
+      this.scene.remove(this.celestialVistaMonolith.group);
+      this.celestialVistaMonolith = null;
+    }
+    if (this.royceCliffWaterfall && this.royceCliffWaterfall.group) {
+      this.scene.remove(this.royceCliffWaterfall.group);
+      this.royceCliffWaterfall = null;
+    }
+    if (this.royceTripwireTrap && this.royceTripwireTrap.group) {
+      this.scene.remove(this.royceTripwireTrap.group);
+      this.royceTripwireTrap = null;
+    }
+    if (this.activePreserveSmokeScreen && this.activePreserveSmokeScreen.mesh) {
+      this.scene.remove(this.activePreserveSmokeScreen.mesh);
+      this.activePreserveSmokeScreen = null;
+    }
+    if (this.activePreserveFireZones && this.activePreserveFireZones.length > 0) {
+      this.activePreserveFireZones.forEach(f => {
+        if (f.mesh) this.scene.remove(f.mesh);
+        if (f.light) this.scene.remove(f.light);
+      });
+      this.activePreserveFireZones = [];
     }
 
     this.reactorMeltdownActive = false;
@@ -2131,6 +2192,52 @@ export class EnvironmentManager {
     if (this.fireEscapeStairs && this.fireEscapeStairs.pos) {
       if (x >= 18.0 && x <= 24.0 && z >= 8.5 && z <= 11.5) {
         return x < 21.0 ? 2.5 : 5.0;
+      }
+    }
+
+    // 32. Royce's Free-fall Cliff Edge & Overlook (+9.0m) (Predators 2010)
+    if (this.royceCliffWaterfall && this.royceCliffWaterfall.pos) {
+      const cx = x - (-28.0);
+      const cz = z - (-26.0);
+      if (Math.abs(cx) <= 4.2 && Math.abs(cz) <= 3.8) {
+        return 9.0;
+      }
+      // Natural cliffside root trail ascent ramp
+      if (x >= -24.0 && x <= -20.0 && Math.abs(cz) <= 2.8) {
+        const factor = (-20.0 - x) / 4.0;
+        return factor * 9.0;
+      }
+    }
+
+    // 33. Ronald Noland's C-130 / Drilling Rig Scrap Roof (+4.2m) (Predators 2010)
+    if (this.nolandHideout && this.nolandHideout.pos) {
+      const nx = x - (-28.0);
+      const nz = z - 24.0;
+      if (Math.abs(nx) <= 4.8 && Math.abs(nz) <= 4.0) {
+        return 4.2;
+      }
+    }
+
+    // 34. Super Predator Scout Ship Launch Dais (+3.0m) (Predators 2010)
+    if (this.superPredatorShipDais && this.superPredatorShipDais.pos) {
+      const sx = x - 0.0;
+      const sz = z - (-32.0);
+      if (sx * sx + sz * sz <= 6.2 * 6.2) {
+        return 3.0;
+      }
+    }
+
+    // 35. Quadruple Celestial Moons Horizon Vista Platform (+7.5m) (Predators 2010)
+    if (this.celestialVistaMonolith && this.celestialVistaMonolith.pos) {
+      const vx = x - 30.0;
+      const vz = z - (-26.0);
+      if (Math.abs(vx) <= 4.0 && Math.abs(vz) <= 4.0) {
+        return 7.5;
+      }
+      // Ancient stone ramp ascent
+      if (x >= 24.0 && x <= 27.0 && Math.abs(vz) <= 2.2) {
+        const factor = (x - 24.0) / 3.0;
+        return factor * 7.5;
       }
     }
 
@@ -11587,6 +11694,33 @@ export class EnvironmentManager {
       });
     });
 
+    // 3. Ronald Noland's Drilling Rig Subterranean Hideout [-28, 0, 24]
+    this.buildNolandHideoutProps(group);
+
+    // 4. Royce's Parachute Free-Fall Waterfall Cliff [-28, 0, -26] (+9.0m)
+    this.buildRoyceWaterfallCliffProps(group);
+
+    // 5. Tracker Predator's Spiked Hell-Hound Kennel & Whistle Totem [-18, 0, -18]
+    this.buildHellhoundKennelProps(group);
+
+    // 6. Nikolai's Dual Claymore Suicide Blast Memorial Crater [16, 0, -22]
+    this.buildNikolaiBlastMemorialProps(group);
+
+    // 7. Hanzo's Yakuza Tall-Grass Katana Duel Arena [26, 0, 0]
+    this.buildHanzoDuelArenaProps(group);
+
+    // 8. Dr. Edwin's Neurotoxin Alien Flora Patch [18, 0, 18]
+    this.buildAlienFloraPatchProps(group);
+
+    // 9. Royce's Scavenged Grenade Tripwire Perimeter [-8, 0, 8]
+    this.buildRoyceTripwireTrapProps(group);
+
+    // 10. Super Predator Berserker (Mr. Black) Ship Launch Dais [0, 0, -32] (+3.0m)
+    this.buildSuperPredatorShipDaisProps(group);
+
+    // 11. Quadruple Celestial Moons Horizon Vista Monolith [30, 0, -26] (+7.5m)
+    this.buildCelestialVistaMonolithProps(group);
+
     this.scene.add(group);
     this.envObjects.push(group);
 
@@ -11657,6 +11791,842 @@ export class EnvironmentManager {
     if (ui && ui.showAnnouncement) {
       ui.showAnnouncement(`🪨 ÉBOULEMENT DE ROCHERS DÉCLENCHÉ (PREDATORS 2010) : 3 TONNES ÉCRASENT LES HORDES (${crushedCount} XÉNOS PULVÉRISÉS, 650 DMG) !`, 'success');
     }
+  }
+
+  /* === PREDATORS (2010) GAME PRESERVE CANONICAL 1:1 BUILDERS === */
+
+  // 3. Ronald Noland's Drilling Rig / C-130 Fuselage Scrap Hideout [-28, 0, 24]
+  buildNolandHideoutProps(parentGroup) {
+    const group = new THREE.Group();
+    const pos = new THREE.Vector3(-28, 0, 24);
+    group.position.copy(pos);
+
+    const metalMat = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.85, roughness: 0.4 });
+    const rustMat = new THREE.MeshStandardMaterial({ color: 0x78350f, metalness: 0.5, roughness: 0.8 });
+    const hazardMat = new THREE.MeshStandardMaterial({ color: 0xeab308, roughness: 0.6 });
+
+    // Curved fuselage hull shelter (width 8.5m, height 4.2m)
+    const hullGeo = new THREE.CylinderGeometry(4.2, 4.4, 7.5, 12, 1, false, 0, Math.PI);
+    const hull = new THREE.Mesh(hullGeo, rustMat);
+    hull.rotation.z = Math.PI / 2;
+    hull.rotation.y = Math.PI / 4;
+    hull.position.y = 2.1;
+    hull.castShadow = true;
+    group.add(hull);
+
+    // Blast hatch door with hazard chevron bars
+    const door = new THREE.Mesh(new THREE.BoxGeometry(2.0, 3.2, 0.4), metalMat);
+    door.position.set(2.4, 1.6, 2.4);
+    door.rotation.y = -Math.PI / 4;
+    group.add(door);
+
+    const hazardStripe = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.3, 0.45), hazardMat);
+    hazardStripe.position.set(2.4, 2.2, 2.4);
+    hazardStripe.rotation.y = -Math.PI / 4;
+    group.add(hazardStripe);
+
+    // Ventilation duct intake cylinder with 4-blade exhaust fan
+    const duct = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 0.8, 1.4, 12), metalMat);
+    duct.position.set(-1.8, 3.8, -1.8);
+    duct.rotation.x = Math.PI / 2;
+    group.add(duct);
+
+    const fanGroup = new THREE.Group();
+    fanGroup.position.set(-1.8, 3.8, -1.1);
+    for (let b = 0; b < 4; b++) {
+      const blade = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.16, 0.04), metalMat);
+      blade.rotation.z = (b / 4) * Math.PI * 2;
+      fanGroup.add(blade);
+    }
+    group.add(fanGroup);
+
+    // Amber warning beacon & salvage loot crate
+    const beaconLight = new THREE.PointLight(0xf97316, 1.6, 8.0);
+    beaconLight.position.set(2.4, 3.4, 2.4);
+    group.add(beaconLight);
+
+    const crate = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.8, 0.9), metalMat);
+    crate.position.set(1.2, 0.4, 1.2);
+    group.add(crate);
+
+    parentGroup.add(group);
+
+    this.nolandHideout = {
+      group,
+      pos,
+      doorPos: pos.clone().add(new THREE.Vector3(2.4, 0, 2.4)),
+      fanMesh: fanGroup,
+      light: beaconLight,
+      isLooted: false
+    };
+  }
+
+  // 4. Royce's Parachute Free-Fall Waterfall Cliff [-28, 0, -26] (+9.0m)
+  buildRoyceWaterfallCliffProps(parentGroup) {
+    const group = new THREE.Group();
+    const pos = new THREE.Vector3(-28, 0, -26);
+    group.position.copy(pos);
+
+    const stoneMat = new THREE.MeshStandardMaterial({ color: 0x3d3024, roughness: 0.95 });
+    const mossMat = new THREE.MeshStandardMaterial({ color: 0x1f3d1e, roughness: 0.9 });
+    const waterMat = new THREE.MeshStandardMaterial({
+      color: 0x06b6d4,
+      metalness: 0.1,
+      roughness: 0.08,
+      transparent: true,
+      opacity: 0.78
+    });
+
+    // Tiered sandstone cliff massif rising to +9.0m
+    const tier1 = new THREE.Mesh(new THREE.CylinderGeometry(5.5, 6.2, 3.0, 8), stoneMat);
+    tier1.position.y = 1.5;
+    group.add(tier1);
+
+    const tier2 = new THREE.Mesh(new THREE.CylinderGeometry(4.4, 5.2, 3.0, 8), stoneMat);
+    tier2.position.y = 4.5;
+    group.add(tier2);
+
+    const cliffTop = new THREE.Mesh(new THREE.CylinderGeometry(3.6, 4.2, 3.0, 8), mossMat);
+    cliffTop.position.y = 7.5;
+    cliffTop.receiveShadow = true;
+    group.add(cliffTop);
+
+    // Overhanging leap precipice ledge at +9.0m
+    const ledge = new THREE.Mesh(new THREE.BoxGeometry(3.2, 0.6, 2.4), mossMat);
+    ledge.position.set(0, 9.0, 3.2);
+    group.add(ledge);
+
+    // Cascading waterfall stream plane
+    const waterfall = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 8.8), waterMat);
+    waterfall.position.set(0, 4.6, 4.4);
+    group.add(waterfall);
+
+    // Deep plunge pool basin at the foot [-28, 0.2, -18]
+    const pool = new THREE.Mesh(new THREE.CylinderGeometry(4.8, 5.0, 0.35, 14), waterMat);
+    pool.position.set(0, 0.2, 7.8);
+    group.add(pool);
+
+    const poolRim = new THREE.Mesh(new THREE.TorusGeometry(5.0, 0.45, 6, 14), stoneMat);
+    poolRim.rotation.x = Math.PI / 2;
+    poolRim.position.set(0, 0.2, 7.8);
+    group.add(poolRim);
+
+    // Cyan bioluminescent plunge glow
+    const poolLight = new THREE.PointLight(0x06b6d4, 1.8, 8.0);
+    poolLight.position.set(0, 1.2, 7.8);
+    group.add(poolLight);
+
+    parentGroup.add(group);
+
+    this.royceCliffWaterfall = {
+      group,
+      pos: new THREE.Vector3(-28, 9.0, -26),
+      poolPos: new THREE.Vector3(-28, 0.5, -18.2)
+    };
+  }
+
+  // 5. Tracker Predator's Spiked Hell-Hound Kennel & Whistle Totem [-18, 0, -18]
+  buildHellhoundKennelProps(parentGroup) {
+    const group = new THREE.Group();
+    const pos = new THREE.Vector3(-18, 0, -18);
+    group.position.copy(pos);
+
+    const woodMat = new THREE.MeshStandardMaterial({ color: 0x3b2416, roughness: 0.95 });
+    const boneMat = new THREE.MeshStandardMaterial({ color: 0xd6cebe, roughness: 0.6 });
+    const quillMat = new THREE.MeshStandardMaterial({ color: 0x1c1917, roughness: 0.3, metalness: 0.8 });
+    const ironMat = new THREE.MeshStandardMaterial({ color: 0x292524, metalness: 0.8, roughness: 0.4 });
+
+    // Stockade bone & quill stockade palisade (radius 5.2m)
+    for (let p = 0; p < 12; p++) {
+      if (p === 6) continue; // Gap for gate entrance
+      const a = (p / 12) * Math.PI * 2;
+      const stake = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.16, 2.8, 6), woodMat);
+      stake.position.set(Math.cos(a) * 4.8, 1.4, Math.sin(a) * 4.8);
+      stake.rotation.x = (Math.random() - 0.5) * 0.15;
+      group.add(stake);
+
+      // Chitinous spikes protruding outward
+      const quill = new THREE.Mesh(new THREE.ConeGeometry(0.08, 1.1, 5), quillMat);
+      quill.position.set(Math.cos(a) * 4.9, 2.2, Math.sin(a) * 4.9);
+      quill.rotation.set(Math.sin(a) * 0.4, 0, -Math.cos(a) * 0.4);
+      group.add(quill);
+    }
+
+    // Gnawed bone trough & scattered ribcages
+    const trough = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.5, 0.8), woodMat);
+    trough.position.set(-1.2, 0.25, -0.6);
+    group.add(trough);
+
+    const rib = new THREE.Mesh(new THREE.TorusGeometry(0.7, 0.08, 6, 8, Math.PI), boneMat);
+    rib.position.set(1.0, 0.4, 0.5);
+    rib.rotation.x = Math.PI / 2;
+    group.add(rib);
+
+    // Central iron pike mounting the Tracker Predator's Whistle Totem
+    const pike = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.08, 3.2, 6), ironMat);
+    pike.position.set(0, 1.6, 0);
+    group.add(pike);
+
+    // Carved acoustic hunting whistle with crimson runes
+    const whistle = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.08, 0.7, 8), boneMat);
+    whistle.position.set(0, 3.2, 0);
+    whistle.rotation.z = Math.PI / 4;
+    group.add(whistle);
+
+    const whistleLight = new THREE.PointLight(0xf59e0b, 1.8, 6.0);
+    whistleLight.position.set(0, 3.4, 0);
+    group.add(whistleLight);
+
+    parentGroup.add(group);
+
+    this.hellhoundKennel = {
+      group,
+      pos,
+      whistlePos: pos.clone().add(new THREE.Vector3(0, 1.6, 0)),
+      whistleMesh: whistle,
+      isUsed: false
+    };
+  }
+
+  // 6. Nikolai's Dual Claymore Suicide Blast Memorial Crater [16, 0, -22]
+  buildNikolaiBlastMemorialProps(parentGroup) {
+    const group = new THREE.Group();
+    const pos = new THREE.Vector3(16, 0, -22);
+    group.position.copy(pos);
+
+    const scorchMat = new THREE.MeshStandardMaterial({ color: 0x17120e, roughness: 0.98 });
+    const armorMat = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.8, roughness: 0.3 });
+    const crateMat = new THREE.MeshStandardMaterial({ color: 0x365314, roughness: 0.7 });
+    const claymoreMat = new THREE.MeshStandardMaterial({ color: 0x4d5b38, roughness: 0.6 });
+
+    // Blackened blast crater rim
+    const rim = new THREE.Mesh(new THREE.TorusGeometry(3.6, 0.4, 6, 14), scorchMat);
+    rim.rotation.x = Math.PI / 2;
+    rim.position.y = 0.1;
+    group.add(rim);
+
+    const craterCenter = new THREE.Mesh(new THREE.CylinderGeometry(3.4, 3.4, 0.15, 14), scorchMat);
+    craterCenter.position.y = 0.05;
+    group.add(craterCenter);
+
+    // Shattered Spetsnaz heavy chest armor plate
+    const plate = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.9, 0.15), armorMat);
+    plate.position.set(-0.8, 0.15, 0.6);
+    plate.rotation.set(0.2, 0.4, -0.3);
+    group.add(plate);
+
+    // Russian military ammo container
+    const ammoBox = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.6, 0.6), crateMat);
+    ammoBox.position.set(1.0, 0.3, -0.8);
+    ammoBox.rotation.y = 0.5;
+    group.add(ammoBox);
+
+    // Dual M18A1 Claymore mines on scissor wire folding legs
+    [-0.6, 0.6].forEach((xOff, i) => {
+      const mine = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.38, 0.14), claymoreMat);
+      mine.position.set(xOff, 0.28, 0.2);
+      mine.rotation.y = (i === 0 ? -0.2 : 0.2);
+      group.add(mine);
+    });
+
+    parentGroup.add(group);
+
+    this.nikolaiBlastMemorial = {
+      group,
+      pos,
+      craterPos: pos.clone(),
+      isDetonated: false
+    };
+  }
+
+  // 7. Hanzo's Yakuza Tall-Grass Katana Duel Arena [26, 0, 0]
+  buildHanzoDuelArenaProps(parentGroup) {
+    const group = new THREE.Group();
+    const pos = new THREE.Vector3(26, 0, 0);
+    group.position.copy(pos);
+
+    const stoneMat = new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.8 });
+    const bladeMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, metalness: 0.96, roughness: 0.1 });
+    const goldMat = new THREE.MeshStandardMaterial({ color: 0xd97706, metalness: 0.88, roughness: 0.2 });
+    const grassMat = new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.9 });
+
+    // Ring of 24 tall amber reed grass clusters swaying in the breeze
+    for (let g = 0; g < 24; g++) {
+      const a = (g / 24) * Math.PI * 2;
+      const r = 5.5 + (g % 3) * 1.0;
+      for (let s = 0; s < 4; s++) {
+        const stalk = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.05, 2.2 + Math.random() * 0.6, 5), grassMat);
+        stalk.position.set(
+          Math.cos(a) * r + (Math.random() - 0.5) * 0.6,
+          1.1,
+          Math.sin(a) * r + (Math.random() - 0.5) * 0.6
+        );
+        stalk.rotation.z = (Math.random() - 0.5) * 0.2;
+        group.add(stalk);
+      }
+    }
+
+    // Central polygonal dueling stone plinth
+    const stone = new THREE.Mesh(new THREE.CylinderGeometry(1.4, 1.6, 0.4, 6), stoneMat);
+    stone.position.y = 0.2;
+    group.add(stone);
+
+    // Hanzo's Hattori Hanzo Katana planted point-down into the stone
+    const katanaGroup = new THREE.Group();
+    katanaGroup.position.set(0, 0.4, 0);
+
+    const blade = new THREE.Mesh(new THREE.BoxGeometry(0.04, 1.4, 0.08), bladeMat);
+    blade.position.y = 0.7;
+    katanaGroup.add(blade);
+
+    const tsuba = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 0.04, 8), goldMat);
+    tsuba.position.y = 1.4;
+    katanaGroup.add(tsuba);
+
+    const hilt = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.45, 6), bladeMat);
+    hilt.position.y = 1.65;
+    katanaGroup.add(hilt);
+
+    group.add(katanaGroup);
+
+    // Pure white glint light
+    const glint = new THREE.PointLight(0xffedd5, 1.6, 6.0);
+    glint.position.set(0, 1.8, 0);
+    group.add(glint);
+
+    parentGroup.add(group);
+
+    this.hanzoDuelArena = {
+      group,
+      pos,
+      katanaPos: pos.clone().add(new THREE.Vector3(0, 0.4, 0)),
+      katanaMesh: katanaGroup,
+      isDrawn: false
+    };
+  }
+
+  // 8. Dr. Edwin's Neurotoxin Alien Flora Patch [18, 0, 18]
+  buildAlienFloraPatchProps(parentGroup) {
+    const group = new THREE.Group();
+    const pos = new THREE.Vector3(18, 0, 18);
+    group.position.copy(pos);
+
+    const bulbMat = new THREE.MeshStandardMaterial({
+      color: 0x9333ea,
+      metalness: 0.1,
+      roughness: 0.25,
+      transparent: true,
+      opacity: 0.85
+    });
+    const tendrilMat = new THREE.MeshStandardMaterial({ color: 0x4c1d95, roughness: 0.8 });
+
+    // 5 bulbous carnivorous pitcher plants
+    for (let p = 0; p < 5; p++) {
+      const a = (p / 5) * Math.PI * 2;
+      const r = 1.8 + (p % 2) * 0.8;
+      const plantGroup = new THREE.Group();
+      plantGroup.position.set(Math.cos(a) * r, 0, Math.sin(a) * r);
+
+      const stalk = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.15, 1.4, 6), tendrilMat);
+      stalk.position.y = 0.7;
+      plantGroup.add(stalk);
+
+      const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.65, 8, 8), bulbMat);
+      bulb.position.y = 1.5;
+      bulb.scale.set(0.85, 1.3, 0.85);
+      plantGroup.add(bulb);
+
+      group.add(plantGroup);
+    }
+
+    // Bioluminescent purple/magenta neurotoxin core light
+    const toxinLight = new THREE.PointLight(0xd946ef, 2.2, 7.0);
+    toxinLight.position.set(0, 1.8, 0);
+    group.add(toxinLight);
+
+    parentGroup.add(group);
+
+    this.alienFloraPatch = {
+      group,
+      pos,
+      harvestPos: pos.clone().add(new THREE.Vector3(0, 0.5, 0)),
+      light: toxinLight,
+      cooldown: 0
+    };
+  }
+
+  // 9. Royce's Scavenged Grenade Tripwire Perimeter [-8, 0, 8]
+  buildRoyceTripwireTrapProps(parentGroup) {
+    const group = new THREE.Group();
+    const pos = new THREE.Vector3(-8, 0, 8);
+    group.position.copy(pos);
+
+    const woodMat = new THREE.MeshStandardMaterial({ color: 0x3f2212, roughness: 0.95 });
+    const wireMat = new THREE.MeshBasicMaterial({ color: 0x15803d });
+    const grenadeMat = new THREE.MeshStandardMaterial({ color: 0x3f4f2c, metalness: 0.6, roughness: 0.5 });
+
+    // Two anchoring timber stakes (distance 5.2m)
+    const postL = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.15, 1.4, 6), woodMat);
+    postL.position.set(-2.6, 0.7, 0);
+    group.add(postL);
+
+    const postR = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.15, 1.4, 6), woodMat);
+    postR.position.set(2.6, 0.7, 0);
+    group.add(postR);
+
+    // Taut olive green tripwire spanning the gap
+    const wire = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 5.2, 4), wireMat);
+    wire.position.set(0, 0.28, 0);
+    wire.rotation.z = Math.PI / 2;
+    group.add(wire);
+
+    // 3 suspended F-1 grenades
+    [-1.2, 0, 1.2].forEach(xOff => {
+      const grenade = new THREE.Mesh(new THREE.SphereGeometry(0.16, 6, 6), grenadeMat);
+      grenade.position.set(xOff, 0.24, 0);
+      group.add(grenade);
+    });
+
+    parentGroup.add(group);
+
+    this.royceTripwireTrap = {
+      group,
+      pos,
+      wireMesh: wire,
+      isTripped: false
+    };
+  }
+
+  // 10. Super Predator Berserker (Mr. Black) Ship Launch Dais [0, 0, -32] (+3.0m)
+  buildSuperPredatorShipDaisProps(parentGroup) {
+    const group = new THREE.Group();
+    const pos = new THREE.Vector3(0, 0, -32);
+    group.position.copy(pos);
+
+    const obsidianMat = new THREE.MeshStandardMaterial({ color: 0x111827, metalness: 0.85, roughness: 0.25 });
+    const thrusterMat = new THREE.MeshBasicMaterial({ color: 0xef4444 });
+    const glyphMat = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+
+    // Truncated stepped pyramid dais rising to +3.0m
+    const baseTier = new THREE.Mesh(new THREE.BoxGeometry(11.0, 1.5, 11.0), obsidianMat);
+    baseTier.position.y = 0.75;
+    baseTier.receiveShadow = true;
+    group.add(baseTier);
+
+    const upperTier = new THREE.Mesh(new THREE.BoxGeometry(8.5, 1.5, 8.5), obsidianMat);
+    upperTier.position.y = 2.25;
+    upperTier.receiveShadow = true;
+    group.add(upperTier);
+
+    // Scout ship launch cradle cradles & twin angular propulsion nozzles
+    [-2.2, 2.2].forEach(xOff => {
+      const thruster = new THREE.Mesh(new THREE.CylinderGeometry(0.65, 0.9, 2.2, 8), obsidianMat);
+      thruster.position.set(xOff, 3.8, -1.8);
+      thruster.rotation.x = Math.PI / 4;
+      group.add(thruster);
+
+      const nozzleGlow = new THREE.Mesh(new THREE.CircleGeometry(0.6, 8), thrusterMat);
+      nozzleGlow.position.set(xOff, 3.4, -2.4);
+      nozzleGlow.rotation.x = -Math.PI / 4;
+      group.add(nozzleGlow);
+    });
+
+    // Remote telemetry console with red alien glyph display
+    const consoleStand = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.2, 0.6), obsidianMat);
+    consoleStand.position.set(0, 3.6, 2.0);
+    group.add(consoleStand);
+
+    const screen = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 0.5), glyphMat);
+    screen.position.set(0, 4.0, 2.32);
+    group.add(screen);
+
+    // Directional plasma torch light
+    const shipLight = new THREE.PointLight(0xef4444, 2.5, 10.0);
+    shipLight.position.set(0, 4.2, 0);
+    group.add(shipLight);
+
+    parentGroup.add(group);
+
+    this.superPredatorShipDais = {
+      group,
+      pos: new THREE.Vector3(0, 3.0, -32),
+      consolePos: new THREE.Vector3(0, 3.2, -30.0),
+      light: shipLight,
+      isOverloaded: false
+    };
+  }
+
+  // 11. Quadruple Celestial Moons Horizon Vista Monolith [30, 0, -26] (+7.5m)
+  buildCelestialVistaMonolithProps(parentGroup) {
+    const group = new THREE.Group();
+    const pos = new THREE.Vector3(30, 0, -26);
+    group.position.copy(pos);
+
+    const basaltMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.9 });
+    const runeMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8 });
+
+    // Basalt promontory plateau rising to +7.5m
+    const basePillar = new THREE.Mesh(new THREE.CylinderGeometry(4.2, 5.0, 7.5, 8), basaltMat);
+    basePillar.position.y = 3.75;
+    basePillar.receiveShadow = true;
+    group.add(basePillar);
+
+    // Ancient carved Yautja monolith depicting planetary alignment
+    const monolith = new THREE.Mesh(new THREE.BoxGeometry(1.4, 4.5, 0.8), basaltMat);
+    monolith.position.set(0, 9.75, 0);
+    monolith.castShadow = true;
+    group.add(monolith);
+
+    // 4 celestial lunar alignment glyphs
+    for (let m = 0; m < 4; m++) {
+      const moonGlyph = new THREE.Mesh(new THREE.RingGeometry(0.12, 0.22, 12), runeMat);
+      moonGlyph.position.set(0, 8.4 + m * 0.75, 0.42);
+      group.add(moonGlyph);
+    }
+
+    // Sky-blue holographic celestial aura
+    const vistaLight = new THREE.PointLight(0x38bdf8, 2.0, 9.0);
+    vistaLight.position.set(0, 10.5, 0);
+    group.add(vistaLight);
+
+    // High-altitude celestial moons & ringed gas giant in the alien sky (Predators 2010 hallmark)
+    const skyGroup = new THREE.Group();
+    skyGroup.position.set(45, 65, -55);
+
+    // 1. Enormous Banded Gas Giant Planet (Radius 18m)
+    const gasGiantMat = new THREE.MeshBasicMaterial({ color: 0x9a3412 });
+    const gasGiant = new THREE.Mesh(new THREE.SphereGeometry(18.0, 24, 24), gasGiantMat);
+    skyGroup.add(gasGiant);
+
+    // Planetary Dust Ring (Inner 22m, Outer 34m)
+    const ringMat = new THREE.MeshBasicMaterial({ color: 0xd97706, side: THREE.DoubleSide, transparent: true, opacity: 0.65 });
+    const ring = new THREE.Mesh(new THREE.RingGeometry(22.0, 34.0, 32), ringMat);
+    ring.rotation.x = Math.PI / 3;
+    ring.rotation.y = Math.PI / 6;
+    skyGroup.add(ring);
+
+    // 4 Orbiting Celestial Moons
+    const moonConfigs = [
+      { r: 4.2, x: -28, y: 12, z: 8, color: 0x38bdf8 },   // Luminescent Cyan Moon
+      { r: 3.5, x: 26, y: -10, z: -12, color: 0xef4444 },  // Cratered Crimson Moon
+      { r: 2.8, x: -14, y: -18, z: 16, color: 0xfef08a },  // Pale Amber Moon
+      { r: 2.2, x: 18, y: 16, z: 22, color: 0xa855f7 }    // Deep Violet Moon
+    ];
+
+    moonConfigs.forEach(cfg => {
+      const moon = new THREE.Mesh(new THREE.SphereGeometry(cfg.r, 16, 16), new THREE.MeshBasicMaterial({ color: cfg.color }));
+      moon.position.set(cfg.x, cfg.y, cfg.z);
+      skyGroup.add(moon);
+    });
+
+    group.add(skyGroup);
+
+    parentGroup.add(group);
+
+    this.celestialVistaMonolith = {
+      group,
+      pos: new THREE.Vector3(30, 7.5, -26),
+      light: vistaLight,
+      skyGroup
+    };
+  }
+
+  /* === PREDATORS (2010) GAME PRESERVE INTERACTION METHODS === */
+
+  // Ronald Noland's Drilling Rig Hideout Interaction
+  checkNolandHideoutInteraction(player, ui, audio) {
+    if (!this.nolandHideout || !player || !player.position || this.nolandHideout.isLooted) return false;
+    if (player.position.distanceTo(this.nolandHideout.doorPos) <= 4.8) {
+      this.nolandHideout.isLooted = true;
+      if (audio && audio.playNolandSmokeGrenadePop) audio.playNolandSmokeGrenadePop();
+
+      // Spawn optical dispersion smoke screen dome covering 24m
+      const smokeGeo = new THREE.SphereGeometry(18.0, 16, 12);
+      const smokeMat = new THREE.MeshBasicMaterial({
+        color: 0x94a3b8,
+        transparent: true,
+        opacity: 0.6,
+        side: THREE.DoubleSide
+      });
+      const smokeMesh = new THREE.Mesh(smokeGeo, smokeMat);
+      smokeMesh.position.copy(this.nolandHideout.doorPos);
+      this.scene.add(smokeMesh);
+
+      this.activePreserveSmokeScreen = {
+        mesh: smokeMesh,
+        pos: this.nolandHideout.doorPos.clone(),
+        timer: 18.0
+      };
+
+      // Scavenged ordnance & survival ammo
+      player.gaussSlugs = (player.gaussSlugs || 0) + 4;
+      player.plasmaCharges = Math.min(player.maxPlasmaCharges || 10, (player.plasmaCharges || 0) + 4);
+      player.shield = Math.min(player.maxShield || 600, player.shield + 350);
+      if (player.addScore) player.addScore(1500);
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('🌫️ PLANQUE DE NOLAND OUVERTE (PREDATORS 2010) : ÉCRAN DE FUMÉE DÉPLOYÉ (18S) + CHARGES DE SURVIE (+1500 SCORE) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Tracker Predator's Spiked Hell-Hound Whistle Totem Interaction
+  checkTrackerWhistleInteraction(player, ui, audio, horde, hellHoundsManager) {
+    if (!this.hellhoundKennel || !player || !player.position || this.hellhoundKennel.isUsed) return false;
+    if (player.position.distanceTo(this.hellhoundKennel.whistlePos) <= 4.5) {
+      this.hellhoundKennel.isUsed = true;
+      if (audio) {
+        if (audio.playTrackerHoundWhistle) audio.playTrackerHoundWhistle();
+        setTimeout(() => {
+          if (audio.playHellhoundSnarlRoar) audio.playHellhoundSnarlRoar();
+        }, 280);
+      }
+
+      // Summon loyal Hell-Hound hunting pack
+      if (hellHoundsManager && hellHoundsManager.summonPack) {
+        hellHoundsManager.summonPack(player.position, 2);
+      }
+
+      // Sonic acoustic pulse stuns and damages Xenomorphs
+      let stunnedCount = 0;
+      if (horde && horde.aliens) {
+        horde.aliens.forEach(alien => {
+          if (alien && alien.mesh && alien.hp > 0 && alien.mesh.position.distanceTo(this.hellhoundKennel.whistlePos) <= 24.0) {
+            alien.hp -= 220;
+            alien.isStunned = true;
+            alien.stunTimer = 4.5;
+            stunnedCount++;
+          }
+        });
+      }
+
+      if (player.recordTrophy) {
+        player.recordTrophy('Sifflet Sonique Ancestral du Tracker Predator (Predators 2010)', 2500);
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement(`🐺 SIFFLET DU TRACKER PREDATOR DÉCHAÎNÉ : MEUTE DE HOUNDS INVOQUÉE & ${stunnedCount} XÉNOS STUNNÉS (4.5S, +2500 HONNEUR) !`, 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Nikolai's Dual Claymore Suicide Blast Memorial Interaction
+  checkNikolaiClaymoreInteraction(player, ui, audio, horde, bosses, particles) {
+    if (!this.nikolaiBlastMemorial || !player || !player.position || this.nikolaiBlastMemorial.isDetonated) return false;
+    if (player.position.distanceTo(this.nikolaiBlastMemorial.craterPos) <= 4.2) {
+      this.nikolaiBlastMemorial.isDetonated = true;
+      if (audio && audio.playNikolaiDualClaymoreDetonation) audio.playNikolaiDualClaymoreDetonation();
+      if (particles && particles.emitExplosion) {
+        particles.emitExplosion(this.nikolaiBlastMemorial.craterPos, 28);
+      }
+
+      let blastKills = 0;
+      if (horde && horde.aliens) {
+        horde.aliens.forEach(alien => {
+          if (alien && alien.mesh && alien.hp > 0 && alien.mesh.position.distanceTo(this.nikolaiBlastMemorial.craterPos) <= 16.0) {
+            alien.hp -= 650;
+            alien.isStunned = true;
+            alien.stunTimer = 3.5;
+            blastKills++;
+          }
+        });
+      }
+      if (bosses && bosses.activeBosses) {
+        bosses.activeBosses.forEach(boss => {
+          if (boss && boss.mesh && boss.hp > 0 && boss.mesh.position.distanceTo(this.nikolaiBlastMemorial.craterPos) <= 16.0) {
+            boss.hp -= 650;
+            boss.isStunned = true;
+            boss.stunTimer = 3.0;
+          }
+        });
+      }
+
+      player.grenades30mm = (player.grenades30mm || 0) + 6;
+      if (player.addScore) player.addScore(2000);
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement(`💥 SACRIFICE DE NIKOLAI (PREDATORS 2010) : DÉTONATION DES CLAYMORES SPETSNAZ (${blastKills} XÉNOS PULVÉRISÉS, +6 GRENADES, +2000 SCORE) !`, 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Hanzo's Yakuza Katana Dueling Arena Interaction
+  checkHanzoArenaInteraction(player, ui, audio) {
+    if (!this.hanzoDuelArena || !player || !player.position || this.hanzoDuelArena.isDrawn) return false;
+    if (player.position.distanceTo(this.hanzoDuelArena.katanaPos) <= 4.2) {
+      this.hanzoDuelArena.isDrawn = true;
+      if (this.hanzoDuelArena.katanaMesh) {
+        this.hanzoDuelArena.katanaMesh.position.y += 0.8;
+      }
+      if (audio && audio.playHanzoKatanaRing) audio.playHanzoKatanaRing();
+
+      if (player.applyHanzoBushido) {
+        player.applyHanzoBushido(35.0);
+      }
+      if (player.recordTrophy) {
+        player.recordTrophy('Hattori Hanzo Katana du Yakuza (Predators 2010)', 2500);
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('⚔️ KATANA DE HANZO DÉGAÎNÉ DANS LES HAUTES HERBES (PREDATORS 2010) : BUFF BUSHIDO ACTIF (+60% DÉGÂTS CRITIQUES MÊLÉE, +2500 HONNEUR) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Dr. Edwin's Neurotoxin Alien Flora Extraction Interaction
+  checkAlienFloraHarvest(player, ui, audio) {
+    if (!this.alienFloraPatch || !player || !player.position) return false;
+    if (player.position.distanceTo(this.alienFloraPatch.harvestPos) <= 4.2) {
+      if (this.alienFloraPatch.cooldown > 0) {
+        if (ui && ui.showAnnouncement) {
+          ui.showAnnouncement(`⏳ BULBES DE NEUROTOXINE EN RECHARGE (${Math.ceil(this.alienFloraPatch.cooldown)}S)`);
+        }
+        return true;
+      }
+      this.alienFloraPatch.cooldown = 40.0;
+      if (audio && audio.playAlienFloraNeurotoxinHiss) audio.playAlienFloraNeurotoxinHiss();
+
+      if (player.applyNeurotoxinBlade) {
+        player.applyNeurotoxinBlade(30.0);
+      }
+      if (player.addScore) player.addScore(1500);
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('🧪 NEUROTOXINE PARALYSANTE EXTRAITE (PREDATORS 2010) : LAMES EMPOISONNÉES (+150 DMG POISON PAR COUP PENDANT 30S) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Royce's Free-fall Cliff Leap Overlook Interaction
+  checkRoyceCliffLeapInteraction(player, ui, audio, particles) {
+    if (!this.royceCliffWaterfall || !player || !player.position) return false;
+    if (player.position.y >= 7.5 && player.position.distanceTo(this.royceCliffWaterfall.pos) <= 4.8) {
+      if (audio && audio.playRoyceParachuteFreefallGale) audio.playRoyceParachuteFreefallGale();
+
+      // Plunge player down safely into the river plunge pool
+      player.position.set(-28, 0.5, -18.2);
+      if (player.stamina !== undefined) player.stamina = player.maxStamina || 100;
+      if (player.acidBurnTimer !== undefined) player.acidBurnTimer = 0;
+      if (player.addScore) player.addScore(1000);
+
+      if (particles && particles.emitSparks) {
+        particles.emitSparks(player.position, 16);
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('🪂 SAUT DE L\'ANGE DE ROYCE (PREDATORS 2010) : PLONGEON DE 9 MÈTRES DANS LA CASCADE (ENDURANCE RESTAURÉE, +1000 SCORE) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Super Predator Berserker (Mr. Black) Ship Launch Dais Interaction
+  checkSuperPredatorShipInteraction(player, ui, audio, horde, bosses, particles) {
+    if (!this.superPredatorShipDais || !player || !player.position || this.superPredatorShipDais.isOverloaded) return false;
+    if (player.position.distanceTo(this.superPredatorShipDais.consolePos) <= 4.5) {
+      this.superPredatorShipDais.isOverloaded = true;
+      if (audio && audio.playSuperPredatorShipRemoteBeep) audio.playSuperPredatorShipRemoteBeep();
+
+      if (particles && particles.emitExplosion) {
+        particles.emitExplosion(new THREE.Vector3(0, 3.5, -34.0), 32);
+      }
+
+      // Directional plasma torch incinerates everything in front on 25m cone
+      let torchCount = 0;
+      if (horde && horde.aliens) {
+        horde.aliens.forEach(alien => {
+          if (alien && alien.mesh && alien.hp > 0 && alien.mesh.position.distanceTo(this.superPredatorShipDais.pos) <= 26.0 && alien.mesh.position.z >= -32.0) {
+            alien.hp -= 750;
+            alien.isStunned = true;
+            alien.stunTimer = 4.0;
+            torchCount++;
+          }
+        });
+      }
+      if (bosses && bosses.activeBosses) {
+        bosses.activeBosses.forEach(boss => {
+          if (boss && boss.mesh && boss.hp > 0 && boss.mesh.position.distanceTo(this.superPredatorShipDais.pos) <= 26.0 && boss.mesh.position.z >= -32.0) {
+            boss.hp -= 750;
+            boss.isStunned = true;
+            boss.stunTimer = 3.5;
+          }
+        });
+      }
+
+      if (player.recordTrophy) {
+        player.recordTrophy('Console de Commande du Vaisseau de Mr. Black (Predators 2010)', 2500);
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement(`🚀 RÉACTEUR DU VAISSEAU DE MR. BLACK SURCHARGÉ (PREDATORS 2010) : TORCHE PLASMA DÉVASTATRICE (${torchCount} XÉNOS INCINÉRÉS, +2500 HONNEUR) !`, 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Royce's Scavenged Grenade Tripwire Perimeter Trigger
+  checkRoyceTripwireTrigger(hitPos, audio, horde, bosses, particles, ui) {
+    if (!this.royceTripwireTrap || !hitPos || this.royceTripwireTrap.isTripped) return false;
+    if (hitPos.distanceTo(this.royceTripwireTrap.pos) <= 3.8) {
+      this.royceTripwireTrap.isTripped = true;
+      if (this.royceTripwireTrap.wireMesh) {
+        this.royceTripwireTrap.group.remove(this.royceTripwireTrap.wireMesh);
+      }
+      if (audio && audio.playNikolaiDualClaymoreDetonation) audio.playNikolaiDualClaymoreDetonation();
+
+      if (particles && particles.emitExplosion) {
+        particles.emitExplosion(this.royceTripwireTrap.pos, 24);
+      }
+
+      let trapCasualties = 0;
+      if (horde && horde.aliens) {
+        horde.aliens.forEach(alien => {
+          if (alien && alien.mesh && alien.hp > 0 && alien.mesh.position.distanceTo(this.royceTripwireTrap.pos) <= 12.0) {
+            alien.hp -= 480;
+            alien.isStunned = true;
+            alien.stunTimer = 3.0;
+            trapCasualties++;
+          }
+        });
+      }
+
+      // Spawn persistent burning fire zone for 12 seconds
+      const fireGeo = new THREE.CylinderGeometry(4.0, 4.0, 0.2, 12);
+      const fireMat = new THREE.MeshBasicMaterial({ color: 0xf97316, transparent: true, opacity: 0.8 });
+      const fireMesh = new THREE.Mesh(fireGeo, fireMat);
+      fireMesh.position.copy(this.royceTripwireTrap.pos);
+      this.scene.add(fireMesh);
+
+      const fireLight = new THREE.PointLight(0xf97316, 2.5, 9.0);
+      fireLight.position.copy(this.royceTripwireTrap.pos);
+      fireLight.position.y += 1.2;
+      this.scene.add(fireLight);
+
+      this.activePreserveFireZones.push({
+        mesh: fireMesh,
+        light: fireLight,
+        pos: this.royceTripwireTrap.pos.clone(),
+        timer: 12.0
+      });
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement(`💣 PIÈGE DE GRENADES DE ROYCE DÉCLENCHÉ (PREDATORS 2010) : DÉFLAGRATION EN CHAÎNE & BRASIER DE PITCH (${trapCasualties} TOUCHÉS, 480 DMG, BRÛLURE 12S) !`, 'warning');
+      }
+      return true;
+    }
+    return false;
   }
 
   /* === v56.0 Master Level Design Combined Update Helper === */
@@ -11899,6 +12869,74 @@ export class EnvironmentManager {
           this.activeTarPuddles.splice(t, 1);
         }
       }
+    }
+
+    // v61.0 Master 1:1 Predators (2010) Game Preserve Systems
+    if (this.nolandHideout && this.nolandHideout.fanMesh) {
+      this.nolandHideout.fanMesh.rotation.z += delta * 6.0;
+    }
+    if (this.alienFloraPatch && this.alienFloraPatch.cooldown > 0) {
+      this.alienFloraPatch.cooldown -= delta;
+      if (this.alienFloraPatch.light) {
+        this.alienFloraPatch.light.intensity = 1.5 + Math.sin(Date.now() * 0.005) * 0.7;
+      }
+    }
+    if (this.activePreserveSmokeScreen) {
+      const smoke = this.activePreserveSmokeScreen;
+      smoke.timer -= delta;
+      if (smoke.mesh) {
+        smoke.mesh.scale.multiplyScalar(1.0 + delta * 0.04);
+        if (smoke.mesh.material) {
+          smoke.mesh.material.opacity = Math.max(0.05, (smoke.timer / 18.0) * 0.6);
+        }
+      }
+      if (horde && horde.aliens && player && player.position) {
+        if (player.position.distanceTo(smoke.pos) <= 24.0) {
+          horde.aliens.forEach(alien => {
+            if (alien && alien.mesh && alien.hp > 0 && alien.mesh.position.distanceTo(smoke.pos) <= 26.0) {
+              alien.target = null; // Suppress tracking while inside smoke screen
+            }
+          });
+        }
+      }
+      if (smoke.timer <= 0) {
+        if (smoke.mesh) this.scene.remove(smoke.mesh);
+        this.activePreserveSmokeScreen = null;
+      }
+    }
+    if (this.royceTripwireTrap && !this.royceTripwireTrap.isTripped && horde && horde.aliens) {
+      for (let a = 0; a < horde.aliens.length; a++) {
+        const alien = horde.aliens[a];
+        if (alien && alien.mesh && alien.hp > 0 && alien.mesh.position.distanceTo(this.royceTripwireTrap.pos) <= 2.4) {
+          this.checkRoyceTripwireTrigger(this.royceTripwireTrap.pos, audio, horde, bosses, particles, ui);
+          break;
+        }
+      }
+    }
+    if (this.activePreserveFireZones && this.activePreserveFireZones.length > 0) {
+      for (let f = this.activePreserveFireZones.length - 1; f >= 0; f--) {
+        const fire = this.activePreserveFireZones[f];
+        fire.timer -= delta;
+        if (fire.light) fire.light.intensity = 2.4 + Math.random() * 1.8;
+        if (horde && horde.aliens) {
+          horde.aliens.forEach(alien => {
+            if (alien && alien.mesh && alien.hp > 0 && alien.mesh.position.distanceTo(fire.pos) <= 6.5) {
+              alien.hp -= delta * 120;
+            }
+          });
+        }
+        if (fire.timer <= 0) {
+          if (fire.mesh) this.scene.remove(fire.mesh);
+          if (fire.light) this.scene.remove(fire.light);
+          this.activePreserveFireZones.splice(f, 1);
+        }
+      }
+    }
+    if (this.celestialVistaMonolith && this.celestialVistaMonolith.light) {
+      this.celestialVistaMonolith.light.intensity = 1.8 + Math.sin(Date.now() * 0.003) * 0.8;
+    }
+    if (this.celestialVistaMonolith && this.celestialVistaMonolith.skyGroup) {
+      this.celestialVistaMonolith.skyGroup.rotation.y += delta * 0.02;
     }
   }
 }

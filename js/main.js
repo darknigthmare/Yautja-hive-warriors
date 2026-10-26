@@ -634,6 +634,20 @@ class GameApp {
           // Handled El Scorpio's Colombian Cartel Penthouse Drug Lab (Predator 2 1990)!
         } else if (this.env && this.env.checkPoleVaultLaunchPad && this.env.checkPoleVaultLaunchPad(this.player, this.ui, this.audio, this.horde, this.bosses, this.particles)) {
           // Handled Combi-Stick Pole-Vault Catapult Launch to Eastern Columbia (Predator 2 1990)!
+        } else if (this.env && this.env.checkNolandHideoutInteraction && this.env.checkNolandHideoutInteraction(this.player, this.ui, this.audio)) {
+          // Handled Ronald Noland's Drilling Rig Subterranean Hideout (Predators 2010)!
+        } else if (this.env && this.env.checkTrackerWhistleInteraction && this.env.checkTrackerWhistleInteraction(this.player, this.ui, this.audio, this.horde, this.hellHounds)) {
+          // Handled Tracker Predator's Whistle Totem & Hell-Hound Summon (Predators 2010)!
+        } else if (this.env && this.env.checkNikolaiClaymoreInteraction && this.env.checkNikolaiClaymoreInteraction(this.player, this.ui, this.audio, this.horde, this.bosses, this.particles)) {
+          // Handled Nikolai's Dual Claymore Suicide Blast Memorial (Predators 2010)!
+        } else if (this.env && this.env.checkHanzoArenaInteraction && this.env.checkHanzoArenaInteraction(this.player, this.ui, this.audio)) {
+          // Handled Hanzo's Yakuza Katana Tall-Grass Duel Arena (Predators 2010)!
+        } else if (this.env && this.env.checkAlienFloraHarvest && this.env.checkAlienFloraHarvest(this.player, this.ui, this.audio)) {
+          // Handled Dr. Edwin's Neurotoxin Alien Flora Extraction (Predators 2010)!
+        } else if (this.env && this.env.checkRoyceCliffLeapInteraction && this.env.checkRoyceCliffLeapInteraction(this.player, this.ui, this.audio, this.particles)) {
+          // Handled Royce's Free-fall Cliff Leap into Plunge Basin (Predators 2010)!
+        } else if (this.env && this.env.checkSuperPredatorShipInteraction && this.env.checkSuperPredatorShipInteraction(this.player, this.ui, this.audio, this.horde, this.bosses, this.particles)) {
+          // Handled Mr. Black Super Predator Scout Ship Propulsion Overload (Predators 2010)!
         } else if (this.env && this.env.checkScoutShipConsoleInteraction && this.env.checkScoutShipConsoleInteraction(this.player.position, this.ui, this.audio, this.horde, this.player)) {
           // Handled Crashed Scout Ship Telemetry Scan (AVP: Requiem 2007)!
         } else if (this.env && this.env.checkCharonLabConsoleInteraction && this.env.checkCharonLabConsoleInteraction(this.player.position, this.horde, this.ui, this.audio)) {
@@ -1263,6 +1277,9 @@ class GameApp {
       if (this.env.checkBoilingTarSpillDamage) {
         this.env.checkBoilingTarSpillDamage(attack.origin, attack.damage, this.audio, this.horde, this.bosses, this.particles, this.ui);
       }
+      if (this.env.checkRoyceTripwireTrigger) {
+        this.env.checkRoyceTripwireTrigger(attack.origin, this.audio, this.horde, this.bosses, this.particles, this.ui);
+      }
     }
 
     // Update Combo Chain Tag
@@ -1344,6 +1361,9 @@ class GameApp {
       }
       if (this.env.checkBoilingTarSpillDamage) {
         this.env.checkBoilingTarSpillDamage(attack.origin, attack.damage, this.audio, this.horde, this.bosses, this.particles, this.ui);
+      }
+      if (this.env.checkRoyceTripwireTrigger) {
+        this.env.checkRoyceTripwireTrigger(attack.origin, this.audio, this.horde, this.bosses, this.particles, this.ui);
       }
     }
 
@@ -2624,6 +2644,9 @@ class GameApp {
           if (this.env.checkBoilingTarSpillDamage) {
             this.env.checkBoilingTarSpillDamage(p.mesh.position, p.damage, this.audio, this.horde, this.bosses, this.particles, this.ui);
           }
+          if (this.env.checkRoyceTripwireTrigger) {
+            this.env.checkRoyceTripwireTrigger(p.mesh.position, this.audio, this.horde, this.bosses, this.particles, this.ui);
+          }
         }
 
         const hits = this.horde.checkMeleeHits({ origin: p.mesh.position, radius: 2.8, damage: p.damage });
@@ -2806,6 +2829,9 @@ class GameApp {
           }
           if (this.env.checkBoilingTarSpillDamage) {
             this.env.checkBoilingTarSpillDamage(p.mesh.position, p.damage, this.audio, this.horde, this.bosses, this.particles, this.ui);
+          }
+          if (this.env.checkRoyceTripwireTrigger) {
+            this.env.checkRoyceTripwireTrigger(p.mesh.position, this.audio, this.horde, this.bosses, this.particles, this.ui);
           }
         }
 
@@ -3307,6 +3333,56 @@ class GameApp {
       if (vaultPadPrompt) {
         if (isNearVaultPad) vaultPadPrompt.classList.remove('hidden');
         else vaultPadPrompt.classList.add('hidden');
+      }
+
+      // v61.0 PREDATORS (2010) GAME PRESERVE PROMPTS
+      const isNearNoland = this.env.nolandHideout && !this.env.nolandHideout.isLooted && this.player && this.player.position.distanceTo(this.env.nolandHideout.doorPos) <= 4.8;
+      const nolandPrompt = document.getElementById('noland-hideout-prompt');
+      if (nolandPrompt) {
+        if (isNearNoland) nolandPrompt.classList.remove('hidden');
+        else nolandPrompt.classList.add('hidden');
+      }
+
+      const isNearWhistle = this.env.hellhoundKennel && !this.env.hellhoundKennel.isUsed && this.player && this.player.position.distanceTo(this.env.hellhoundKennel.whistlePos) <= 4.5;
+      const whistlePrompt = document.getElementById('tracker-whistle-prompt');
+      if (whistlePrompt) {
+        if (isNearWhistle) whistlePrompt.classList.remove('hidden');
+        else whistlePrompt.classList.add('hidden');
+      }
+
+      const isNearNikolai = this.env.nikolaiBlastMemorial && !this.env.nikolaiBlastMemorial.isDetonated && this.player && this.player.position.distanceTo(this.env.nikolaiBlastMemorial.craterPos) <= 4.2;
+      const nikolaiPrompt = document.getElementById('nikolai-claymore-prompt');
+      if (nikolaiPrompt) {
+        if (isNearNikolai) nikolaiPrompt.classList.remove('hidden');
+        else nikolaiPrompt.classList.add('hidden');
+      }
+
+      const isNearHanzo = this.env.hanzoDuelArena && !this.env.hanzoDuelArena.isDrawn && this.player && this.player.position.distanceTo(this.env.hanzoDuelArena.katanaPos) <= 4.2;
+      const hanzoPrompt = document.getElementById('hanzo-katana-prompt');
+      if (hanzoPrompt) {
+        if (isNearHanzo) hanzoPrompt.classList.remove('hidden');
+        else hanzoPrompt.classList.add('hidden');
+      }
+
+      const isNearFlora = this.env.alienFloraPatch && this.player && this.player.position.distanceTo(this.env.alienFloraPatch.harvestPos) <= 4.2;
+      const floraPrompt = document.getElementById('alien-flora-prompt');
+      if (floraPrompt) {
+        if (isNearFlora) floraPrompt.classList.remove('hidden');
+        else floraPrompt.classList.add('hidden');
+      }
+
+      const isNearCliffLeap = this.env.royceCliffWaterfall && this.player && this.player.position.y >= 7.5 && this.player.position.distanceTo(this.env.royceCliffWaterfall.pos) <= 4.8;
+      const cliffLeapPrompt = document.getElementById('royce-cliff-leap-prompt');
+      if (cliffLeapPrompt) {
+        if (isNearCliffLeap) cliffLeapPrompt.classList.remove('hidden');
+        else cliffLeapPrompt.classList.add('hidden');
+      }
+
+      const isNearShip = this.env.superPredatorShipDais && !this.env.superPredatorShipDais.isOverloaded && this.player && this.player.position.distanceTo(this.env.superPredatorShipDais.consolePos) <= 4.5;
+      const shipPrompt = document.getElementById('super-predator-ship-prompt');
+      if (shipPrompt) {
+        if (isNearShip) shipPrompt.classList.remove('hidden');
+        else shipPrompt.classList.add('hidden');
       }
     }
 

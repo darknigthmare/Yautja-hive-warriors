@@ -245,6 +245,11 @@ export class Player {
     this.isJerryLastStandActive = false;
     this.owlfUltravioletScanTimer = 0;
     this.isOWLFUltravioletActive = false;
+    // v61.0 Predators (2010) Game Preserve Systems
+    this.hanzoBushidoTimer = 0;
+    this.isHanzoBushidoActive = false;
+    this.neurotoxinBladeTimer = 0;
+    this.isNeurotoxinBladeActive = false;
     this.loadClanForgeUpgrades();
   }
 
@@ -1578,11 +1583,13 @@ export class Player {
     const billyMult = this.isBillyCourageActive ? 1.50 : 1.0;
     const lightningMult = this.isLightningAuraActive ? 1.35 : 1.0;
     const flintlockMult = this.isFlintlockKineticActive ? 1.40 : 1.0;
+    const hanzoMult = this.isHanzoBushidoActive ? 1.60 : 1.0;
+    const neuroMult = this.isNeurotoxinBladeActive ? 1.45 : 1.0;
 
     return {
       type: 'light',
       step: this.attackComboStep,
-      damage: baseDmg * (1 + this.attackComboStep * 0.18) * buff * mudMult * billyMult * lightningMult * flintlockMult,
+      damage: baseDmg * (1 + this.attackComboStep * 0.18) * buff * mudMult * billyMult * lightningMult * flintlockMult * hanzoMult * neuroMult,
       radius: (this.isSecondaryWeapon ? 4.8 : 3.8) * (this.meleeReachMultiplier || 1.0),
       angle: (Math.PI * 0.65) * (this.meleeArcMultiplier || 1.0)
     };
@@ -1686,11 +1693,13 @@ export class Player {
     const billyMult = this.isBillyCourageActive ? 1.50 : 1.0;
     const lightningMult = this.isLightningAuraActive ? 1.35 : 1.0;
     const flintlockMult = this.isFlintlockKineticActive ? 1.40 : 1.0;
+    const hanzoMult = this.isHanzoBushidoActive ? 1.60 : 1.0;
+    const neuroMult = this.isNeurotoxinBladeActive ? 1.45 : 1.0;
 
     return {
       type: chargeType,
       name: chargeName,
-      damage: baseDmg * dmgMult * buff * mudMult * billyMult * lightningMult * flintlockMult,
+      damage: baseDmg * dmgMult * buff * mudMult * billyMult * lightningMult * flintlockMult * hanzoMult * neuroMult,
       radius: radius,
       knockback: knockback,
       isLauncher: isLauncher,
@@ -4193,7 +4202,26 @@ export class Player {
       this.owlfUltravioletScanTimer -= delta;
       if (this.owlfUltravioletScanTimer <= 0) this.isOWLFUltravioletActive = false;
     }
+    // v61.0 Predators (2010) Game Preserve Buffs
+    if (this.hanzoBushidoTimer > 0) {
+      this.hanzoBushidoTimer -= delta;
+      if (this.hanzoBushidoTimer <= 0) this.isHanzoBushidoActive = false;
+    }
+    if (this.neurotoxinBladeTimer > 0) {
+      this.neurotoxinBladeTimer -= delta;
+      if (this.neurotoxinBladeTimer <= 0) this.isNeurotoxinBladeActive = false;
+    }
     this.isOnBough = (this.position && this.position.y >= 5.0);
+  }
+
+  applyHanzoBushido(duration = 35.0) {
+    this.hanzoBushidoTimer = duration;
+    this.isHanzoBushidoActive = true;
+  }
+
+  applyNeurotoxinBlade(duration = 30.0) {
+    this.neurotoxinBladeTimer = duration;
+    this.isNeurotoxinBladeActive = true;
   }
 
   applyJerryLastStand(duration = 30.0) {

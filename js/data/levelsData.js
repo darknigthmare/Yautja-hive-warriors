@@ -107,8 +107,8 @@ export const LEVELS_DATA = [
     floorColor: 0x241711,
     wallColor: 0x38271e,
     fogColor: 0x1f0d06,
-    fogDensity: 0.019,
-    weatherType: 'none',
+    fogDensity: 0.015,
+    weatherType: 'humid_mist',
     skyColor: 0x150702,
     waves: 6,
     bossType: 'berserker_super_predator'
