@@ -230,6 +230,10 @@ export class EnvironmentManager {
     this.trapperBaitTree = null;
     this.cougarPineBough = null;
     this.activePowderKegFire = null;
+    this.voyageurRiverRaft = null;
+    this.comancheTotemPost = null;
+    this.brushPitfallTrap = null;
+    this.lightningSplitPine = null;
   }
 
   clearEnvironment() {
@@ -934,6 +938,22 @@ export class EnvironmentManager {
     if (this.activePowderKegFire && this.activePowderKegFire.mesh) {
       this.scene.remove(this.activePowderKegFire.mesh);
       this.activePowderKegFire = null;
+    }
+    if (this.voyageurRiverRaft && this.voyageurRiverRaft.group) {
+      this.scene.remove(this.voyageurRiverRaft.group);
+      this.voyageurRiverRaft = null;
+    }
+    if (this.comancheTotemPost && this.comancheTotemPost.group) {
+      this.scene.remove(this.comancheTotemPost.group);
+      this.comancheTotemPost = null;
+    }
+    if (this.brushPitfallTrap && this.brushPitfallTrap.group) {
+      this.scene.remove(this.brushPitfallTrap.group);
+      this.brushPitfallTrap = null;
+    }
+    if (this.lightningSplitPine && this.lightningSplitPine.group) {
+      this.scene.remove(this.lightningSplitPine.group);
+      this.lightningSplitPine = null;
     }
     this.burnedForestCharredTrees = [];
     this.trapperBearTraps = [];
@@ -14187,6 +14207,26 @@ export class EnvironmentManager {
         this.activePowderKegFire = null;
       }
     }
+
+    // Concealed Brush Pitfall Stake Trap Trigger Check
+    if (this.brushPitfallTrap && !this.brushPitfallTrap.isTriggered && horde && horde.aliens) {
+      for (let a = 0; a < horde.aliens.length; a++) {
+        const alien = horde.aliens[a];
+        if (alien && alien.mesh && alien.hp > 0 && alien.mesh.position.distanceTo(this.brushPitfallTrap.pos) <= 2.6) {
+          this.brushPitfallTrap.isTriggered = true;
+          if (this.brushPitfallTrap.cover) this.brushPitfallTrap.cover.visible = false;
+          alien.hp -= 450;
+          alien.isStunned = true;
+          alien.stunTimer = 3.5;
+          if (audio && audio.playPitfallCollapseSnap) audio.playPitfallCollapseSnap();
+          if (particles && particles.emitSparks) particles.emitSparks(this.brushPitfallTrap.pos, 20);
+          if (ui && ui.showAnnouncement) {
+            ui.showAnnouncement('🍂 FOSSE DE PIEUX DISSIMULÉE EFFONDRÉE (PREY 2022) : ENNEMI EMPALÉ (450 DMG & STUN 3.5S) !', 'warning');
+          }
+          break;
+        }
+      }
+    }
   }
 
   /* === SECTOR 9: PROJET STARGAZER & FORÊT DU CRASH (THE PREDATOR 2018) === */
@@ -15437,6 +15477,113 @@ export class EnvironmentManager {
       pos: new THREE.Vector3(-10, 5.2, -6)
     };
 
+    // 17. French Voyageurs' River Raft & Fur Trade Cache [16, 0.2, -18]
+    const raftGroup = new THREE.Group();
+    raftGroup.position.set(16, 0.2, -18);
+
+    const raftBase = new THREE.Mesh(new THREE.BoxGeometry(4.2, 0.35, 5.5), woodMat);
+    raftBase.position.y = 0.15;
+    raftBase.receiveShadow = true;
+    raftGroup.add(raftBase);
+
+    for (let p = 0; p < 3; p++) {
+      const peltBundle = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.45, 0.8), furMat);
+      peltBundle.position.set(-0.9 + p * 0.9, 0.45, -0.6);
+      raftGroup.add(peltBundle);
+    }
+
+    const raftLight = new THREE.PointLight(0xf59e0b, 1.5, 6.0);
+    raftLight.position.set(0, 1.2, 0);
+    raftGroup.add(raftLight);
+
+    group.add(raftGroup);
+    this.voyageurRiverRaft = {
+      group: raftGroup,
+      pos: new THREE.Vector3(16, 0.4, -18),
+      isLooted: false
+    };
+
+    // 18. Comanche Sun Dance / War Paint Medicine Totem Post [-16, 0, 10]
+    const totemGroup = new THREE.Group();
+    totemGroup.position.set(-16, 0, 10);
+
+    const totemPole = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.45, 4.8, 8), woodMat);
+    totemPole.position.y = 2.4;
+    totemGroup.add(totemPole);
+
+    const redBand = new THREE.Mesh(new THREE.TorusGeometry(0.38, 0.05, 4, 16), new THREE.MeshBasicMaterial({ color: 0xb91c1c }));
+    redBand.position.set(0, 3.2, 0);
+    redBand.rotation.x = Math.PI / 2;
+    totemGroup.add(redBand);
+
+    const whiteBand = new THREE.Mesh(new THREE.TorusGeometry(0.39, 0.05, 4, 16), new THREE.MeshBasicMaterial({ color: 0xf8fafc }));
+    whiteBand.position.set(0, 2.6, 0);
+    whiteBand.rotation.x = Math.PI / 2;
+    totemGroup.add(whiteBand);
+
+    const totemLight = new THREE.PointLight(0xb91c1c, 1.6, 6.0);
+    totemLight.position.set(0, 3.4, 0);
+    totemGroup.add(totemLight);
+
+    group.add(totemGroup);
+    this.comancheTotemPost = {
+      group: totemGroup,
+      pos: new THREE.Vector3(-16, 1.5, 10),
+      isClaimed: false
+    };
+
+    // 19. Concealed Brush Pitfall Stake Trap [2, 0, 14]
+    const pitGroup = new THREE.Group();
+    pitGroup.position.set(2, 0, 14);
+
+    const pitHole = new THREE.Mesh(new THREE.CylinderGeometry(2.4, 2.2, 1.8, 12), new THREE.MeshStandardMaterial({ color: 0x1c1917, roughness: 0.95 }));
+    pitHole.position.y = -0.9;
+    pitGroup.add(pitHole);
+
+    for (let s = 0; s < 5; s++) {
+      const stake = new THREE.Mesh(new THREE.ConeGeometry(0.12, 1.2, 4), woodMat);
+      const sa = (s / 5) * Math.PI * 2;
+      stake.position.set(Math.cos(sa) * 1.0, 0.4, Math.sin(sa) * 1.0);
+      pitGroup.add(stake);
+    }
+
+    const brushCover = new THREE.Mesh(new THREE.CircleGeometry(2.4, 12), new THREE.MeshStandardMaterial({ color: 0x3d3020, roughness: 0.9 }));
+    brushCover.rotation.x = -Math.PI / 2;
+    brushCover.position.y = 0.05;
+    pitGroup.add(brushCover);
+
+    group.add(pitGroup);
+    this.brushPitfallTrap = {
+      group: pitGroup,
+      pos: new THREE.Vector3(2, 0.1, 14),
+      cover: brushCover,
+      isTriggered: false
+    };
+
+    // 20. Lightning-Struck Split Hollow Pine [-4, 0, -22]
+    const pineGroup = new THREE.Group();
+    pineGroup.position.set(-4, 0, -22);
+
+    const trunkLeft = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.55, 5.0, 8, 1, false, 0, Math.PI), charredMat);
+    trunkLeft.position.set(-0.35, 2.5, 0);
+    pineGroup.add(trunkLeft);
+
+    const trunkRight = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.55, 4.5, 8, 1, false, Math.PI * 0.8, Math.PI), charredMat);
+    trunkRight.position.set(0.35, 2.25, 0);
+    trunkRight.rotation.z = -0.15;
+    pineGroup.add(trunkRight);
+
+    const hollowLight = new THREE.PointLight(0x22c55e, 1.4, 4.0);
+    hollowLight.position.set(0, 1.4, 0);
+    pineGroup.add(hollowLight);
+
+    group.add(pineGroup);
+    this.lightningSplitPine = {
+      group: pineGroup,
+      pos: new THREE.Vector3(-4, 1.2, -22),
+      isClaimed: false
+    };
+
     this.scene.add(group);
     this.envObjects.push(group);
   }
@@ -15673,6 +15820,64 @@ export class EnvironmentManager {
 
       if (ui && ui.showAnnouncement) {
         ui.showAnnouncement(`💣 BARILS DE POUDRE DES TRAPPEURS EN DÉFLAGRATION (PREY 2022) : BARRAGE DE FLAMMES (${vaporizedCount} ENNEMIS, 750 DMG, 16M) !`, 'error');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Prey Interaction: French Voyageurs' River Raft & Fur Trade Cache
+  checkVoyageurRaftInteraction(player, ui, audio) {
+    if (!this.voyageurRiverRaft || !player || !player.position || this.voyageurRiverRaft.isLooted) return false;
+    if (player.position.distanceTo(this.voyageurRiverRaft.pos) <= 4.5) {
+      this.voyageurRiverRaft.isLooted = true;
+      if (audio && audio.playWaterRapidsSplash) audio.playWaterRapidsSplash();
+
+      player.smartDiscCharges = Math.min(8, (player.smartDiscCharges || 0) + 4);
+      player.m77GaussAmmo = Math.min(12, (player.m77GaussAmmo || 0) + 6);
+      player.shield = Math.min(200, (player.shield || 0) + 100);
+      if (player.addScore) player.addScore(2000);
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('🛶 RADEAU DES TRAPPEURS PILLÉ (PREY 2022) : BALLES DE PLOMB & PEAUX DE CASTOR (+4 DISCS, +6 BALLES, BOUCLIER 100%) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Prey Interaction: Comanche Sun Dance / War Paint Medicine Totem Post
+  checkComancheTotemInteraction(player, ui, audio) {
+    if (!this.comancheTotemPost || !player || !player.position || this.comancheTotemPost.isClaimed) return false;
+    if (player.position.distanceTo(this.comancheTotemPost.pos) <= 4.5) {
+      this.comancheTotemPost.isClaimed = true;
+      if (audio && audio.playComancheTotemChant) audio.playComancheTotemChant();
+
+      if (player.applyComancheWarPaint) player.applyComancheWarPaint(30.0);
+      player.plasmaEnergy = player.maxPlasmaEnergy || 100;
+      if (player.addScore) player.addScore(2500);
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('🪶 PEINTURES DE GUERRE COMANCHES APPLIQUÉES (PREY 2022) : FRAPPES AU CORPS-À-CORPS +25% & VITESSE +30% (30S, +2500 SCORE) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Prey Interaction: Lightning-Struck Split Hollow Pine
+  checkLightningPineInteraction(player, ui, audio) {
+    if (!this.lightningSplitPine || !player || !player.position || this.lightningSplitPine.isClaimed) return false;
+    if (player.position.distanceTo(this.lightningSplitPine.pos) <= 4.2) {
+      this.lightningSplitPine.isClaimed = true;
+      if (audio && audio.playOrangeFlowerHerbalDrink) audio.playOrangeFlowerHerbalDrink();
+
+      player.hp = Math.min(player.maxHp || 100, (player.hp || 0) + 65);
+      if (player.medicompCharges !== undefined) player.medicompCharges = Math.min(6, player.medicompCharges + 2);
+      if (player.addScore) player.addScore(1800);
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('⚡ ABRI DU PIN FOUDROYÉ (PREY 2022) : ÉCORCES DE SAULE THÉRAPEUTIQUES (+65 PV, +2 MEDICOMP, +1800 SCORE) !', 'success');
       }
       return true;
     }

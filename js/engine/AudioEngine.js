@@ -9684,6 +9684,141 @@ export class AudioEngine {
     osc.start(now);
     osc.stop(now + 0.28);
   }
+
+  // Method 202: Comanche Sacred Medicine Totem Flute & Powwow Bass Drum (Prey 2022)
+  playComancheTotemChant() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Resonant cedar wood flute with vibrato
+    const fluteOsc = this.ctx.createOscillator();
+    fluteOsc.type = 'triangle';
+    fluteOsc.frequency.setValueAtTime(329.63, now); // E4
+    fluteOsc.frequency.linearRampToValueAtTime(392.00, now + 0.25); // G4
+    fluteOsc.frequency.exponentialRampToValueAtTime(293.66, now + 0.85); // D4
+
+    const fluteGain = this.ctx.createGain();
+    fluteGain.gain.setValueAtTime(0.01, now);
+    fluteGain.gain.linearRampToValueAtTime(0.65, now + 0.15);
+    fluteGain.gain.exponentialRampToValueAtTime(0.001, now + 0.9);
+
+    fluteOsc.connect(fluteGain);
+    fluteGain.connect(this.getOut());
+    fluteOsc.start(now);
+    fluteOsc.stop(now + 0.9);
+
+    // Deep leather powwow drum thump
+    const drumOsc = this.ctx.createOscillator();
+    drumOsc.type = 'sine';
+    drumOsc.frequency.setValueAtTime(58, now);
+    drumOsc.frequency.exponentialRampToValueAtTime(26, now + 0.65);
+
+    const drumGain = this.ctx.createGain();
+    drumGain.gain.setValueAtTime(0.01, now);
+    drumGain.gain.linearRampToValueAtTime(0.9, now + 0.02);
+    drumGain.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
+
+    drumOsc.connect(drumGain);
+    drumGain.connect(this.getOut());
+    drumOsc.start(now);
+    drumOsc.stop(now + 0.7);
+  }
+
+  // Method 203: Concealed Brush Pitfall Stake Trap Collapse & Impalement Crunch (Prey 2022)
+  playPitfallCollapseSnap() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Sharp twig/brush branch snapping
+    const snapOsc = this.ctx.createOscillator();
+    snapOsc.type = 'sawtooth';
+    snapOsc.frequency.setValueAtTime(1600, now);
+    snapOsc.frequency.exponentialRampToValueAtTime(320, now + 0.04);
+
+    const snapGain = this.ctx.createGain();
+    snapGain.gain.setValueAtTime(0.01, now);
+    snapGain.gain.linearRampToValueAtTime(0.85, now + 0.005);
+    snapGain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+
+    snapOsc.connect(snapGain);
+    snapGain.connect(this.getOut());
+    snapOsc.start(now);
+    snapOsc.stop(now + 0.06);
+
+    // Deep wooden stake impale crunch
+    const stakeTime = now + 0.05;
+    const stakeOsc = this.ctx.createOscillator();
+    stakeOsc.type = 'triangle';
+    stakeOsc.frequency.setValueAtTime(180, stakeTime);
+    stakeOsc.frequency.exponentialRampToValueAtTime(38, stakeTime + 0.35);
+
+    const stakeGain = this.ctx.createGain();
+    stakeGain.gain.setValueAtTime(0.01, stakeTime);
+    stakeGain.gain.linearRampToValueAtTime(0.9, stakeTime + 0.02);
+    stakeGain.gain.exponentialRampToValueAtTime(0.001, stakeTime + 0.38);
+
+    stakeOsc.connect(stakeGain);
+    stakeGain.connect(this.getOut());
+    stakeOsc.start(stakeTime);
+    stakeOsc.stop(stakeTime + 0.38);
+  }
+
+  // Method 204: French Voyageurs Rolling Flintlock Musket Volley (Prey 2022)
+  playFrenchMusketVolley() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    for (let m = 0; m < 3; m++) {
+      const mTime = now + m * 0.06;
+      const mOsc = this.ctx.createOscillator();
+      mOsc.type = 'triangle';
+      mOsc.frequency.setValueAtTime(120, mTime);
+      mOsc.frequency.exponentialRampToValueAtTime(35, mTime + 0.5);
+
+      const mGain = this.ctx.createGain();
+      mGain.gain.setValueAtTime(0.01, mTime);
+      mGain.gain.linearRampToValueAtTime(0.85, mTime + 0.015);
+      mGain.gain.exponentialRampToValueAtTime(0.001, mTime + 0.5);
+
+      mOsc.connect(mGain);
+      mGain.connect(this.getOut());
+      mOsc.start(mTime);
+      mOsc.stop(mTime + 0.5);
+    }
+  }
+
+  // Method 205: Mountain River Rapids Water Rush & Surge (Prey 2022)
+  playWaterRapidsSplash() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const bufferSize = Math.floor(this.ctx.sampleRate * 0.8);
+    const noiseBuffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const output = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      output[i] = Math.random() * 2 - 1;
+    }
+
+    const riverNoise = this.ctx.createBufferSource();
+    riverNoise.buffer = noiseBuffer;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(800, now);
+    filter.frequency.linearRampToValueAtTime(1400, now + 0.4);
+    filter.frequency.exponentialRampToValueAtTime(500, now + 0.8);
+
+    const riverGain = this.ctx.createGain();
+    riverGain.gain.setValueAtTime(0.01, now);
+    riverGain.gain.linearRampToValueAtTime(0.65, now + 0.1);
+    riverGain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+
+    riverNoise.connect(filter);
+    filter.connect(riverGain);
+    riverGain.connect(this.getOut());
+    riverNoise.start(now);
+    riverNoise.stop(now + 0.8);
+  }
 }
 
 

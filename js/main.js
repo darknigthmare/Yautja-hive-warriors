@@ -710,6 +710,12 @@ class GameApp {
           // Handled Sarii the Carolina Dog Companion (Prey 2022)!
         } else if (this.env && this.env.checkTrapperBaitTreeInteraction && this.env.checkTrapperBaitTreeInteraction(this.player, this.ui, this.audio, this.horde, this.bosses, this.particles)) {
           // Handled French Trappers' Bait Tree & Powder Kegs (Prey 2022)!
+        } else if (this.env && this.env.checkVoyageurRaftInteraction && this.env.checkVoyageurRaftInteraction(this.player, this.ui, this.audio)) {
+          // Handled French Voyageurs' River Raft (Prey 2022)!
+        } else if (this.env && this.env.checkComancheTotemInteraction && this.env.checkComancheTotemInteraction(this.player, this.ui, this.audio)) {
+          // Handled Comanche Sun Dance War Paint Totem Post (Prey 2022)!
+        } else if (this.env && this.env.checkLightningPineInteraction && this.env.checkLightningPineInteraction(this.player, this.ui, this.audio)) {
+          // Handled Lightning-Struck Split Hollow Pine Pouch (Prey 2022)!
         } else if (this.env && this.env.checkScoutShipConsoleInteraction && this.env.checkScoutShipConsoleInteraction(this.player.position, this.ui, this.audio, this.horde, this.player)) {
           // Handled Crashed Scout Ship Telemetry Scan (AVP: Requiem 2007)!
         } else if (this.env && this.env.checkCharonLabConsoleInteraction && this.env.checkCharonLabConsoleInteraction(this.player.position, this.horde, this.ui, this.audio)) {
@@ -3693,6 +3699,27 @@ class GameApp {
       if (baitPrompt) {
         if (isNearBait) baitPrompt.classList.remove('hidden');
         else baitPrompt.classList.add('hidden');
+      }
+
+      const isNearRaft = this.env.voyageurRiverRaft && !this.env.voyageurRiverRaft.isLooted && this.player && this.player.position.distanceTo(this.env.voyageurRiverRaft.pos) <= 4.5;
+      const raftPrompt = document.getElementById('voyageur-raft-prompt');
+      if (raftPrompt) {
+        if (isNearRaft) raftPrompt.classList.remove('hidden');
+        else raftPrompt.classList.add('hidden');
+      }
+
+      const isNearTotem = this.env.comancheTotemPost && !this.env.comancheTotemPost.isClaimed && this.player && this.player.position.distanceTo(this.env.comancheTotemPost.pos) <= 4.5;
+      const totemPrompt = document.getElementById('comanche-totem-prompt');
+      if (totemPrompt) {
+        if (isNearTotem) totemPrompt.classList.remove('hidden');
+        else totemPrompt.classList.add('hidden');
+      }
+
+      const isNearPine = this.env.lightningSplitPine && !this.env.lightningSplitPine.isClaimed && this.player && this.player.position.distanceTo(this.env.lightningSplitPine.pos) <= 4.5;
+      const pinePrompt = document.getElementById('lightning-pine-prompt');
+      if (pinePrompt) {
+        if (isNearPine) pinePrompt.classList.remove('hidden');
+        else pinePrompt.classList.add('hidden');
       }
     }
 

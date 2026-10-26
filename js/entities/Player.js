@@ -107,6 +107,10 @@ export class Player {
     this.smartgunTurretRef = null;
     this.isSyntheticAnkleGrabbed = false;
     this.ankleGrabTimer = 0;
+    this.isComancheWarPaintActive = false;
+    this.comancheWarPaintTimer = 0;
+    this.isMudCoated = false;
+    this.mudCoatedTimer = 0;
     // v47.0 Weapon Systems
     this.isPlasmaScytheActive = false;
     this.plasmaScytheMesh = null;
@@ -1531,6 +1535,7 @@ export class Player {
       dir.normalize();
       let speedMult = (this.warhornBuffTimer > 0 ? 1.4 : 1.0) * (this.isBerserkerActive ? 1.45 : 1.0);
       if (this.isExosuitActive) speedMult *= 1.25;
+      if (this.isComancheWarPaintActive) speedMult *= 1.30; // +30% Comanche War Paint Spirit Agility (Prey 2022)
       if (this.isSyntheticAnkleGrabbed) speedMult *= 0.2;
       const moveDistance = this.moveSpeed * speedMult * delta;
       this.position.addScaledVector(dir, moveDistance);
@@ -1601,11 +1606,12 @@ export class Player {
     const stalkerMult = this.isMasterHunterStalkerActive ? 1.50 : 1.0;
     const nanoMult = this.isPredatorKillerNanoActive ? 1.45 : 1.0;
     const dillonMult = this.isDillonGritActive ? 1.40 : 1.0;
+    const comancheMult = this.isComancheWarPaintActive ? 1.25 : 1.0;
 
     return {
       type: 'light',
       step: this.attackComboStep,
-      damage: baseDmg * (1 + this.attackComboStep * 0.18) * buff * mudMult * billyMult * lightningMult * flintlockMult * hanzoMult * neuroMult * stalkerMult * nanoMult * dillonMult,
+      damage: baseDmg * (1 + this.attackComboStep * 0.18) * buff * mudMult * billyMult * lightningMult * flintlockMult * hanzoMult * neuroMult * stalkerMult * nanoMult * dillonMult * comancheMult,
       radius: (this.isSecondaryWeapon ? 4.8 : 3.8) * (this.meleeReachMultiplier || 1.0),
       angle: (Math.PI * 0.65) * (this.meleeArcMultiplier || 1.0)
     };
@@ -1714,11 +1720,12 @@ export class Player {
     const stalkerMult = this.isMasterHunterStalkerActive ? 1.50 : 1.0;
     const nanoMult = this.isPredatorKillerNanoActive ? 1.45 : 1.0;
     const dillonMult = this.isDillonGritActive ? 1.40 : 1.0;
+    const comancheMult = this.isComancheWarPaintActive ? 1.25 : 1.0;
 
     return {
       type: chargeType,
       name: chargeName,
-      damage: baseDmg * dmgMult * buff * mudMult * billyMult * lightningMult * flintlockMult * hanzoMult * neuroMult * stalkerMult * nanoMult * dillonMult,
+      damage: baseDmg * dmgMult * buff * mudMult * billyMult * lightningMult * flintlockMult * hanzoMult * neuroMult * stalkerMult * nanoMult * dillonMult * comancheMult,
       radius: radius,
       knockback: knockback,
       isLauncher: isLauncher,
@@ -1777,6 +1784,9 @@ export class Player {
     }
     if (this.isMudCoated) {
       dmg *= 1.40; // +40% mud-masked ambush strike (Prey 2022)
+    }
+    if (this.isComancheWarPaintActive) {
+      dmg *= 1.25; // +25% Comanche War Paint kinetic force (Prey 2022)
     }
 
     return {
@@ -4284,7 +4294,16 @@ export class Player {
       this.mudCoatedTimer -= delta;
       if (this.mudCoatedTimer <= 0) this.isMudCoated = false;
     }
+    if (this.comancheWarPaintTimer > 0) {
+      this.comancheWarPaintTimer -= delta;
+      if (this.comancheWarPaintTimer <= 0) this.isComancheWarPaintActive = false;
+    }
     this.isOnBough = (this.position && this.position.y >= 5.0);
+  }
+
+  applyComancheWarPaint(duration = 30.0) {
+    this.comancheWarPaintTimer = duration;
+    this.isComancheWarPaintActive = true;
   }
 
   applyMudCamouflage(duration = 30.0) {
