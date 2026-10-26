@@ -937,17 +937,15 @@ class GameApp {
         }
       }
 
-      // Chantier 4 (v46): Yautja Cyber-Hunt Bionic Exosuit [O Key] / Photo Mode [Shift + O Key]
+      // Photo mode keeps its documented shortcut; the exosuit uses Shift+O.
       if (e.code === 'KeyO' && this.player) {
         if (this.keys['ShiftLeft'] || this.keys['ShiftRight']) {
-          this.photoMode.toggle(this.player.position);
-        } else {
           if (this.player.activateCyberExosuit(this.ui, this.particles)) {
             // Exosuit active!
           } else {
             this.ui.showAnnouncement('⏳ EXOSQUELETTE BIONIQUE EN RECHARGE (45S)...');
           }
-        }
+        } else this.photoMode.toggle(this.player.position);
       }
 
       if (e.code === 'Backquote' && this.battleSimulation) { e.preventDefault(); this.openCommandMap(); return; }
@@ -4985,7 +4983,7 @@ class GameApp {
     let subtitle = isVictory
       ? "La ruche a été anéantie. Votre clan honore cette victoire."
       : "Votre Yautja est tombé au combat. Préparez une nouvelle chasse.";
-    if (operationResult) subtitle = `Opération originale : ${operationResult.reason ?? operationResult.outcome}. Les pertes et les réserves ont été comptabilisées.`;
+    if (operationResult) subtitle = debrief?.reason ?? (isVictory ? 'Les objectifs ont été accomplis.' : 'Les chasseurs ont été vaincus.');
     let replayLabel = 'REJOUER LA MISSION';
     if (isVictory && this.missionMode === 'campaign') {
       const progress = this.campaign.completeChapter();
