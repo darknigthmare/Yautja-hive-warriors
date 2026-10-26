@@ -706,6 +706,10 @@ class GameApp {
           // Handled Trapper Field Medical Tent (Prey 2022)!
         } else if (this.env && this.env.checkFeralArsenalInteraction && this.env.checkFeralArsenalInteraction(this.player, this.ui, this.audio)) {
           // Handled Archaic Feral Weapon Rack (Prey 2022)!
+        } else if (this.env && this.env.checkSariiCompanionInteraction && this.env.checkSariiCompanionInteraction(this.player, this.ui, this.audio)) {
+          // Handled Sarii the Carolina Dog Companion (Prey 2022)!
+        } else if (this.env && this.env.checkTrapperBaitTreeInteraction && this.env.checkTrapperBaitTreeInteraction(this.player, this.ui, this.audio, this.horde, this.bosses, this.particles)) {
+          // Handled French Trappers' Bait Tree & Powder Kegs (Prey 2022)!
         } else if (this.env && this.env.checkScoutShipConsoleInteraction && this.env.checkScoutShipConsoleInteraction(this.player.position, this.ui, this.audio, this.horde, this.player)) {
           // Handled Crashed Scout Ship Telemetry Scan (AVP: Requiem 2007)!
         } else if (this.env && this.env.checkCharonLabConsoleInteraction && this.env.checkCharonLabConsoleInteraction(this.player.position, this.horde, this.ui, this.audio)) {
@@ -3675,6 +3679,20 @@ class GameApp {
       if (feralArsenalPrompt) {
         if (isNearFeralArsenal) feralArsenalPrompt.classList.remove('hidden');
         else feralArsenalPrompt.classList.add('hidden');
+      }
+
+      const isNearSarii = this.env.sariiCompanion && !this.env.sariiCompanion.isTamed && this.player && this.player.position.distanceTo(this.env.sariiCompanion.pos) <= 4.5;
+      const sariiPrompt = document.getElementById('sarii-companion-prompt');
+      if (sariiPrompt) {
+        if (isNearSarii) sariiPrompt.classList.remove('hidden');
+        else sariiPrompt.classList.add('hidden');
+      }
+
+      const isNearBait = this.env.trapperBaitTree && !this.env.trapperBaitTree.isDetonated && this.player && this.player.position.distanceTo(this.env.trapperBaitTree.pos) <= 4.5;
+      const baitPrompt = document.getElementById('trapper-bait-prompt');
+      if (baitPrompt) {
+        if (isNearBait) baitPrompt.classList.remove('hidden');
+        else baitPrompt.classList.add('hidden');
       }
     }
 

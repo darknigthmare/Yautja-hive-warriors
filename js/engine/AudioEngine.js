@@ -9567,6 +9567,123 @@ export class AudioEngine {
     whooshOsc.start(now);
     whooshOsc.stop(now + 0.35);
   }
+
+  // Method 198: Sarii (Naru's Carolina Dog) Loyal Alert Bark & Pant (Prey 2022)
+  playSariiLoyalBark() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    for (let b = 0; b < 2; b++) {
+      const bTime = now + b * 0.18;
+      const osc = this.ctx.createOscillator();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(540, bTime);
+      osc.frequency.linearRampToValueAtTime(780, bTime + 0.03);
+      osc.frequency.exponentialRampToValueAtTime(240, bTime + 0.14);
+
+      const gain = this.ctx.createGain();
+      gain.gain.setValueAtTime(0.01, bTime);
+      gain.gain.linearRampToValueAtTime(0.75, bTime + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, bTime + 0.15);
+
+      osc.connect(gain);
+      gain.connect(this.getOut());
+      osc.start(bTime);
+      osc.stop(bTime + 0.15);
+    }
+  }
+
+  // Method 199: Quicksand Mud Sinkhole Viscous Splash & Suction Squelch (Prey 2022)
+  playMudSplashWade() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const osc = this.ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(140, now);
+    osc.frequency.linearRampToValueAtTime(75, now + 0.1);
+    osc.frequency.exponentialRampToValueAtTime(32, now + 0.35);
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.01, now);
+    gain.gain.linearRampToValueAtTime(0.85, now + 0.04);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.38);
+
+    osc.connect(gain);
+    gain.connect(this.getOut());
+    osc.start(now);
+    osc.stop(now + 0.38);
+  }
+
+  // Method 200: French Voyageurs Black Powder Keg Fuse Hiss & Wooden Barrel Detonation (Prey 2022)
+  playBlackPowderKegIgnition() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Sizzling gunpowder fuse hiss
+    const bufferSize = Math.floor(this.ctx.sampleRate * 0.25);
+    const noiseBuffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const output = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      output[i] = Math.random() * 2 - 1;
+    }
+    const fuseNoise = this.ctx.createBufferSource();
+    fuseNoise.buffer = noiseBuffer;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'highpass';
+    filter.frequency.setValueAtTime(2800, now);
+
+    const fuseGain = this.ctx.createGain();
+    fuseGain.gain.setValueAtTime(0.01, now);
+    fuseGain.gain.linearRampToValueAtTime(0.5, now + 0.05);
+    fuseGain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+
+    fuseNoise.connect(filter);
+    filter.connect(fuseGain);
+    fuseGain.connect(this.getOut());
+    fuseNoise.start(now);
+    fuseNoise.stop(now + 0.25);
+
+    // Heavy wooden keg explosion
+    const boomTime = now + 0.22;
+    const boomOsc = this.ctx.createOscillator();
+    boomOsc.type = 'triangle';
+    boomOsc.frequency.setValueAtTime(80, boomTime);
+    boomOsc.frequency.exponentialRampToValueAtTime(22, boomTime + 0.85);
+
+    const boomGain = this.ctx.createGain();
+    boomGain.gain.setValueAtTime(0.01, boomTime);
+    boomGain.gain.linearRampToValueAtTime(0.95, boomTime + 0.02);
+    boomGain.gain.exponentialRampToValueAtTime(0.001, boomTime + 0.85);
+
+    boomOsc.connect(boomGain);
+    boomGain.connect(this.getOut());
+    boomOsc.start(boomTime);
+    boomOsc.stop(boomTime + 0.85);
+  }
+
+  // Method 201: Feral Bone Fan Shield Kinetic Ricochet & Perfect Parry Clang (Prey 2022)
+  playFeralShieldParrySparks() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const osc = this.ctx.createOscillator();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(880, now);
+    osc.frequency.linearRampToValueAtTime(2400, now + 0.04);
+    osc.frequency.exponentialRampToValueAtTime(320, now + 0.28);
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.01, now);
+    gain.gain.linearRampToValueAtTime(0.9, now + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+
+    osc.connect(gain);
+    gain.connect(this.getOut());
+    osc.start(now);
+    osc.stop(now + 0.28);
+  }
 }
 
 

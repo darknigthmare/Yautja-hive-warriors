@@ -1775,6 +1775,9 @@ export class Player {
     if (this.isOrangeFlowerActive) {
       dmg *= 1.50; // +50% thermal stealth critical strike (Prey 2022)
     }
+    if (this.isMudCoated) {
+      dmg *= 1.40; // +40% mud-masked ambush strike (Prey 2022)
+    }
 
     return {
       position: origin,
@@ -4277,7 +4280,17 @@ export class Player {
       this.taabeWarTimer -= delta;
       if (this.taabeWarTimer <= 0) this.isTaabeWarActive = false;
     }
+    if (this.mudCoatedTimer > 0) {
+      this.mudCoatedTimer -= delta;
+      if (this.mudCoatedTimer <= 0) this.isMudCoated = false;
+    }
     this.isOnBough = (this.position && this.position.y >= 5.0);
+  }
+
+  applyMudCamouflage(duration = 30.0) {
+    this.mudCoatedTimer = duration;
+    this.isMudCoated = true;
+    this.isCloaked = true;
   }
 
   applyOrangeFlowerBuff(duration = 35.0) {

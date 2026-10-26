@@ -226,6 +226,10 @@ export class EnvironmentManager {
     this.naruTomahawkTree = null;
     this.trapperMedicalTent = null;
     this.feralArsenalStation = null;
+    this.sariiCompanion = null;
+    this.trapperBaitTree = null;
+    this.cougarPineBough = null;
+    this.activePowderKegFire = null;
   }
 
   clearEnvironment() {
@@ -914,6 +918,22 @@ export class EnvironmentManager {
     if (this.feralArsenalStation && this.feralArsenalStation.group) {
       this.scene.remove(this.feralArsenalStation.group);
       this.feralArsenalStation = null;
+    }
+    if (this.sariiCompanion && this.sariiCompanion.group) {
+      this.scene.remove(this.sariiCompanion.group);
+      this.sariiCompanion = null;
+    }
+    if (this.trapperBaitTree && this.trapperBaitTree.group) {
+      this.scene.remove(this.trapperBaitTree.group);
+      this.trapperBaitTree = null;
+    }
+    if (this.cougarPineBough && this.cougarPineBough.group) {
+      this.scene.remove(this.cougarPineBough.group);
+      this.cougarPineBough = null;
+    }
+    if (this.activePowderKegFire && this.activePowderKegFire.mesh) {
+      this.scene.remove(this.activePowderKegFire.mesh);
+      this.activePowderKegFire = null;
     }
     this.burnedForestCharredTrees = [];
     this.trapperBearTraps = [];
@@ -14113,6 +14133,60 @@ export class EnvironmentManager {
         }
       }
     }
+
+    // Active Sarii Dog Companion Navigation & Combat Loop
+    if (this.sariiCompanion && this.sariiCompanion.isTamed && player && player.position && this.sariiCompanion.group) {
+      const targetPos = player.position.clone().add(new THREE.Vector3(1.8, 0, 1.4));
+      targetPos.y = 0.45;
+      this.sariiCompanion.group.position.lerp(targetPos, Math.min(1.0, delta * 4.2));
+      this.sariiCompanion.group.lookAt(player.position.x, 0.45, player.position.z);
+      this.sariiCompanion.pos.copy(this.sariiCompanion.group.position);
+
+      if (horde && horde.aliens) {
+        for (let a = 0; a < horde.aliens.length; a++) {
+          const alien = horde.aliens[a];
+          if (alien && alien.mesh && alien.hp > 0 && alien.mesh.position.distanceTo(this.sariiCompanion.group.position) <= 3.4) {
+            alien.hp -= delta * 85;
+            if (particles && particles.emitSparks && Math.random() < 0.25) {
+              particles.emitSparks(alien.mesh.position, 6);
+            }
+          }
+        }
+      }
+    }
+
+    // Mud Sinkhole Player Camouflage Coating
+    if (player && player.position) {
+      const flatMudDist = Math.sqrt(player.position.x * player.position.x + player.position.z * player.position.z);
+      if (flatMudDist <= 5.5 && player.position.y <= 0.8) {
+        if (!player.isMudCoated) {
+          if (player.applyMudCamouflage) player.applyMudCamouflage(30.0);
+          if (audio && audio.playMudSplashWade && (!this._lastMudSound || Date.now() - this._lastMudSound > 2500)) {
+            this._lastMudSound = Date.now();
+            audio.playMudSplashWade();
+            if (ui && ui.showAnnouncement) {
+              ui.showAnnouncement('🌿 ENSEVELI DANS LA BOUE DE TOURBIÈRE (PREY 2022) : TEMPÉRATURE MASQUÉE & RÉSISTANCE ACIDE +40% (30S) !', 'success');
+            }
+          }
+        }
+      }
+    }
+
+    // Active Powder Keg Firestorm
+    if (this.activePowderKegFire) {
+      this.activePowderKegFire.timer -= delta;
+      if (horde && horde.aliens) {
+        horde.aliens.forEach(alien => {
+          if (alien && alien.mesh && alien.hp > 0 && alien.mesh.position.distanceTo(this.activePowderKegFire.pos) <= 8.5) {
+            alien.hp -= delta * 110;
+          }
+        });
+      }
+      if (this.activePowderKegFire.timer <= 0) {
+        if (this.activePowderKegFire.mesh) this.scene.remove(this.activePowderKegFire.mesh);
+        this.activePowderKegFire = null;
+      }
+    }
   }
 
   /* === SECTOR 9: PROJET STARGAZER & FORÊT DU CRASH (THE PREDATOR 2018) === */
@@ -15282,6 +15356,87 @@ export class EnvironmentManager {
       isClaimed: false
     };
 
+    // 14. Sarii (Naru's Loyal Carolina Dog Companion) [-24, 0, -4]
+    const sariiGroup = new THREE.Group();
+    sariiGroup.position.set(-24, 0, -4);
+
+    const dogBody = new THREE.Mesh(new THREE.BoxGeometry(0.75, 0.55, 1.3), new THREE.MeshStandardMaterial({ color: 0x92400e, roughness: 0.8 }));
+    dogBody.position.y = 0.45;
+    sariiGroup.add(dogBody);
+
+    const dogChest = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.45, 0.5), new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.9 }));
+    dogChest.position.set(0, 0.42, 0.45);
+    sariiGroup.add(dogChest);
+
+    const dogHead = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.42, 0.55), new THREE.MeshStandardMaterial({ color: 0x78350f, roughness: 0.8 }));
+    dogHead.position.set(0, 0.75, 0.7);
+    sariiGroup.add(dogHead);
+
+    [-0.18, 0.18].forEach(ex => {
+      const ear = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.22, 4), new THREE.MeshStandardMaterial({ color: 0x451a03 }));
+      ear.position.set(ex, 1.02, 0.65);
+      sariiGroup.add(ear);
+    });
+
+    const sariiLight = new THREE.PointLight(0xf59e0b, 1.4, 5.0);
+    sariiLight.position.set(0, 0.9, 0);
+    sariiGroup.add(sariiLight);
+
+    group.add(sariiGroup);
+    this.sariiCompanion = {
+      group: sariiGroup,
+      pos: new THREE.Vector3(-24, 0.45, -4),
+      isTamed: false
+    };
+
+    // 15. French Trappers' Bait Tree & Powder Kegs [12, 0, 8]
+    const baitGroup = new THREE.Group();
+    baitGroup.position.set(12, 0, 8);
+
+    const oakTree = new THREE.Mesh(new THREE.CylinderGeometry(0.65, 0.85, 6.5, 8), woodMat);
+    oakTree.position.y = 3.25;
+    baitGroup.add(oakTree);
+
+    const chain = new THREE.Mesh(new THREE.TorusGeometry(0.75, 0.05, 6, 16), ironMat);
+    chain.position.set(0, 1.8, 0);
+    baitGroup.add(chain);
+
+    for (let k = 0; k < 3; k++) {
+      const keg = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.4, 0.75, 10), new THREE.MeshStandardMaterial({ color: 0x451a03, roughness: 0.7 }));
+      keg.position.set(0.8 + (k % 2) * 0.6, 0.38, -0.6 + Math.floor(k / 2) * 0.9);
+      baitGroup.add(keg);
+    }
+
+    const kegLight = new THREE.PointLight(0xef4444, 1.5, 5.0);
+    kegLight.position.set(1.0, 0.8, 0);
+    baitGroup.add(kegLight);
+
+    group.add(baitGroup);
+    this.trapperBaitTree = {
+      group: baitGroup,
+      pos: new THREE.Vector3(12, 0.6, 8),
+      isDetonated: false
+    };
+
+    // 16. Mountain Lion High Pine Bough [-10, 0, -6] (+5.2m)
+    const cougarGroup = new THREE.Group();
+    cougarGroup.position.set(-10, 0, -6);
+
+    const boughTrunk = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.6, 5.5, 8), woodMat);
+    boughTrunk.position.y = 2.75;
+    cougarGroup.add(boughTrunk);
+
+    const horizontalBough = new THREE.Mesh(new THREE.BoxGeometry(7.5, 0.4, 1.8), woodMat);
+    horizontalBough.position.set(0, 5.2, 0);
+    horizontalBough.receiveShadow = true;
+    cougarGroup.add(horizontalBough);
+
+    group.add(cougarGroup);
+    this.cougarPineBough = {
+      group: cougarGroup,
+      pos: new THREE.Vector3(-10, 5.2, -6)
+    };
+
     this.scene.add(group);
     this.envObjects.push(group);
   }
@@ -15454,6 +15609,70 @@ export class EnvironmentManager {
 
       if (ui && ui.showAnnouncement) {
         ui.showAnnouncement('🛡️ ARSENAL ARCHAÏQUE DU FERAL PREDATOR (PREY 2022) : LANCE TÉLESCOPIQUE & BOUCLIER D\'OS (+2500 HONNEUR, PLASMA 100%) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Prey Interaction: Sarii (Naru's Faithful Carolina Dog Companion)
+  checkSariiCompanionInteraction(player, ui, audio) {
+    if (!this.sariiCompanion || !player || !player.position || this.sariiCompanion.isTamed) return false;
+    if (player.position.distanceTo(this.sariiCompanion.pos) <= 4.5) {
+      this.sariiCompanion.isTamed = true;
+      if (audio && audio.playSariiLoyalBark) audio.playSariiLoyalBark();
+
+      player.smartDiscCharges = Math.min(8, (player.smartDiscCharges || 0) + 4);
+      if (player.medicompCharges !== undefined) player.medicompCharges = Math.min(6, player.medicompCharges + 2);
+      if (player.addScore) player.addScore(2000);
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('🐕 SARII REJOINT LA CHASSE (PREY 2022) : CHIENNE DE GUERRE COMANCHE DÉPLOYÉE (+4 DISCS, +2 MEDICOMP, +2000 SCORE) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Prey Interaction: French Trappers' Bait Tree & Black Powder Kegs
+  checkTrapperBaitTreeInteraction(player, ui, audio, horde, bosses, particles) {
+    if (!this.trapperBaitTree || !player || !player.position || this.trapperBaitTree.isDetonated) return false;
+    if (player.position.distanceTo(this.trapperBaitTree.pos) <= 4.5) {
+      this.trapperBaitTree.isDetonated = true;
+      if (audio && audio.playBlackPowderKegIgnition) audio.playBlackPowderKegIgnition();
+
+      let vaporizedCount = 0;
+      if (horde && horde.aliens) {
+        horde.aliens.forEach(alien => {
+          if (alien && alien.mesh && alien.hp > 0 && alien.mesh.position.distanceTo(this.trapperBaitTree.pos) <= 16.0) {
+            alien.hp -= 750;
+            vaporizedCount++;
+            if (particles && particles.emitSparks) {
+              particles.emitSparks(alien.mesh.position, 20);
+            }
+          }
+        });
+      }
+
+      if (bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
+        if (bosses.activeBoss.mesh.position.distanceTo(this.trapperBaitTree.pos) <= 18.0) {
+          bosses.activeBoss.hp -= 750;
+          bosses.activeBoss.isStunned = true;
+          bosses.activeBoss.stunTimer = 4.5;
+        }
+      }
+
+      const fireGeo = new THREE.CylinderGeometry(8.5, 9.0, 0.4, 16);
+      const fireMat = new THREE.MeshBasicMaterial({ color: 0xf97316, transparent: true, opacity: 0.65 });
+      const fireMesh = new THREE.Mesh(fireGeo, fireMat);
+      fireMesh.position.copy(this.trapperBaitTree.pos);
+      this.scene.add(fireMesh);
+      this.activePowderKegFire = { mesh: fireMesh, pos: this.trapperBaitTree.pos.clone(), timer: 18.0 };
+
+      if (player.addScore) player.addScore(2500);
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement(`💣 BARILS DE POUDRE DES TRAPPEURS EN DÉFLAGRATION (PREY 2022) : BARRAGE DE FLAMMES (${vaporizedCount} ENNEMIS, 750 DMG, 16M) !`, 'error');
       }
       return true;
     }
