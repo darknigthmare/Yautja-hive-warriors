@@ -1,6 +1,6 @@
 {
   "date": "2026-10-26",
-  "scope": "CPU catalogue, objective-controller and immutable-workbook verification; shared working tree, not a production deployment certificate",
+  "scope": "Historical 24-test component snapshot before the provisional 32-detail cap. Final candidate acceptance is recorded separately in implementation-progress.json.",
   "workingTreeBaseHead": "1d52d9ff91dbe85c08256f44f8b72086ab65200a",
   "command": "node --max-old-space-size=2048 --test --test-concurrency=1 tests/battle-catalog.test.js tests/audit-progress.test.js tests/operation-objectives.test.js",
   "exitCode": 0,
@@ -54,5 +54,10 @@
     "Les34 variantes sont des extensions adaptées du monde, pas des reconstitutions géographiques1:1.",
     "Les115 profils sont un registre de contenu/source, pas115modèles rendus.",
     "Les critères qui exigent GPU, matériel cible, manette ou session interactive longue attendent leurs preuves dédiées."
+  ],
+  "supersededBy": [
+    "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+    "docs/audits/2026-10-26/qa/runtime-c518-11-biomes-4-ops.json",
+    "docs/audits/2026-10-26/qa/runtime-48b5-incremental-charon-4-ops-photo.json"
   ]
 }

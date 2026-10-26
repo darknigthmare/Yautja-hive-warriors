@@ -10,34 +10,103 @@
   "scope": "Implementation follow-up. Original findings and acceptance criteria remain historical source records.",
   "actions": {
     "AUD-001": {
-      "status": "En cours",
+      "status": "Terminé",
       "priority": "P0",
       "domain": "Versions et fiabilité",
       "item": "Réconcilier la version récente et la branche jouable",
       "acceptance": "Une branche candidate regroupe les 10 cartes récentes et la progression/QA préservée; aucun module validé supprimé sans décision tracée.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Réconciliation main v67 et fondation validée en cours de revue globale ; le catalogue conserve les deux provenances. Critère complet à vérifier sur la candidate finale."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "review",
+          "path": "docs/audits/2026-10-26/qa/frozen-build-reviewed.json",
+          "sha256": "60f984dee7ed5c89ef1fe23623ff3841aa24d9afae45688a0d0b5ce120a28a47",
+          "scope": "Construction Vite et manifeste propre, commit source et empreintes des fichiers servis identifiés."
+        },
+        {
+          "kind": "review",
+          "path": "docs/audits/2026-10-26/qa/model-integrity-reviewed.json",
+          "sha256": "d14a64db8f18d055e1f62917afc3617fa966f0c8ac3c320c984afc65449599c8",
+          "scope": "12GLB identiques aux sources validées ; aucune nouvelle génération ni certification1:1."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+          "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
+          "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        }
+      ],
+      "notes": "La candidate réunit mainv67 et fondations validées, avec historique de fusion et sources d’audit préservées. Les12GLB validés sont inchangés ; les adaptations et décisions sont tracées."
     },
     "AUD-002": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P0",
       "domain": "Versions et fiabilité",
       "item": "Corriger la syntaxe du routeur de jeu",
       "acceptance": "node --check main.js passe; build Vite puis lancement réel des 10 cartes réussissent.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Le routeur est réconcilié par l’agent principal ; analyse syntaxique, build et parcours réels des onze cartes à joindre avant clôture."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+          "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
+          "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/audits/2026-10-26/qa/runtime-c518-11-biomes-4-ops.json",
+          "sha256": "56bddb4b3e25cfd419927782604e4ad79524763c37969409f2449322326aeec5",
+          "scope": "Sourcec5187b2/index56204f :11démarrages/insertion/nettoyage avecfixture1ennemi et4smokes d’opération, cap≤32, mêmesIDs, Earchives/reprise/carte/Fcamouflage/Queen réelle et bilan ; zéroJS/réseau/externe. Pas11victoires ; trêve démarrée puis interrompue par dégâts, completionCPU seulement."
+        },
+        {
+          "kind": "review",
+          "path": "docs/audits/2026-10-26/qa/frozen-build-reviewed.json",
+          "sha256": "60f984dee7ed5c89ef1fe23623ff3841aa24d9afae45688a0d0b5ce120a28a47",
+          "scope": "Construction Vite et manifeste propre, commit source et empreintes des fichiers servis identifiés."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/audits/2026-10-26/qa/runtime-48b5-incremental-charon-4-ops-photo.json",
+          "sha256": "2b737ee19d428e27f97d7746e72e8cd23cbc9d04409a2ebf21e9ff410b4b101a",
+          "scope": "DeltaUI source48b5/index124d7735 : Charon et4opérations, vraiOphotoouvrir/fermer, mêmesIDs/caps/E/save/carte/Queen/bilanFR. Les11biomes complets restent couverts par le rapport antérieurc518. Trêve interrompue par dégâts ; completion nonrevendiquée."
+        }
+      ],
+      "notes": "Les134modulesJS passent analyse, Viteconstruit et les11niveaux ont réellement démarré avec insertion et nettoyage. Il s’agit de démarrages assistés, pas de parcours complets."
     },
     "AUD-003": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P0",
       "domain": "Versions et fiabilité",
       "item": "Corriger la syntaxe du décor",
       "acceptance": "Le fichier est analysable et chaque biome se construit sans exception ni perte des interactions retenues.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Analyse et construction des11biomes et34variantes passent sans exception ; les portes, temporisations et Sarii sont couverts. La préservation de tous les prompts/interactionsv67 demande encore recette globale avant clôture."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+          "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
+          "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/world-phase2-construction-transport-stream-44-tests.txt",
+          "sha256": "3213ed0c76d8bc23fce37272f7de927fe76ef5da5f9c338e15440034f0c1fa09",
+          "scope": "44/44 :34terrains construits, trajets physiques, transport, pont destructible/réparable et streaming des allocations GPU testé côté CPU."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/audits/2026-10-26/qa/runtime-c518-11-biomes-4-ops.json",
+          "sha256": "56bddb4b3e25cfd419927782604e4ad79524763c37969409f2449322326aeec5",
+          "scope": "Sourcec5187b2/index56204f :11démarrages/insertion/nettoyage avecfixture1ennemi et4smokes d’opération, cap≤32, mêmesIDs, Earchives/reprise/carte/Fcamouflage/Queen réelle et bilan ; zéroJS/réseau/externe. Pas11victoires ; trêve démarrée puis interrompue par dégâts, completionCPU seulement."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/audits/2026-10-26/qa/runtime-48b5-incremental-charon-4-ops-photo.json",
+          "sha256": "2b737ee19d428e27f97d7746e72e8cd23cbc9d04409a2ebf21e9ff410b4b101a",
+          "scope": "DeltaUI source48b5/index124d7735 : Charon et4opérations, vraiOphotoouvrir/fermer, mêmesIDs/caps/E/save/carte/Queen/bilanFR. Les11biomes complets restent couverts par le rapport antérieurc518. Trêve interrompue par dégâts ; completion nonrevendiquée."
+        }
+      ],
+      "notes": "Les11biomes et34variantes se construisent ; les mécanismes conservés sont couverts par les tests et les11démarrages. Le défaut de proximité du monte-charge Charon a été corrigé et retesté ; l’exactitude de tous les effetsPrey reste suivie en126."
     },
     "AUD-004": {
       "status": "À valider",
@@ -50,54 +119,137 @@
       "notes": "La chaîne de publication/manifeste est préservée. La correspondance du nouveau contenu avec URL publique et preview de PR n’a pas encore été vérifiée."
     },
     "AUD-005": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P0",
       "domain": "Versions et fiabilité",
       "item": "Préserver les acquis validés dans la fusion",
       "acceptance": "Chaque acquis cité dans docs/BATTLEFIELDS et docs/SECTOR-ARCHITECTURE a un équivalent vérifié dans la candidate.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Les fondations validées ont été conservées pendant la réconciliation ; comparaison exhaustive BATTLEFIELDS/SECTOR-ARCHITECTURE et validation intégrée encore requises."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+          "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
+          "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        },
+        {
+          "kind": "review",
+          "path": "docs/audits/2026-10-26/qa/model-integrity-reviewed.json",
+          "sha256": "d14a64db8f18d055e1f62917afc3617fa966f0c8ac3c320c984afc65449599c8",
+          "scope": "12GLB identiques aux sources validées ; aucune nouvelle génération ni certification1:1."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/world-phase2-construction-transport-stream-44-tests.txt",
+          "sha256": "3213ed0c76d8bc23fce37272f7de927fe76ef5da5f9c338e15440034f0c1fa09",
+          "scope": "44/44 :34terrains construits, trajets physiques, transport, pont destructible/réparable et streaming des allocations GPU testé côté CPU."
+        }
+      ],
+      "notes": "La revue des fondations et la suite653 conservent secteurs/relais/portes, pression d’attaque, progression, ressources, insertion et modèles validés. Les changements interprétés restent documentés ; aucune fidélité visuelle1:1 n’est déduite de la fusion."
     },
     "AUD-006": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P0",
       "domain": "Versions et fiabilité",
       "item": "Garantir des missions finies et un mode survie explicite",
       "acceptance": "Une chasse se termine une seule fois, la campagne avance et la survie seule continue indéfiniment.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Le mode opération possède un résultat unique et des réserves finies ; la chasse/campagne/survie complète doit encore être confirmée en parcours réel."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/combat-phase2-71-tests.txt",
+          "sha256": "6e20e10df3b68727b9630ffdc3270aef6f3cdd5839d634847fc8f27c4663d3c5",
+          "scope": "71/71 : vrais managers de combat, décès et quotas, formations/compagnons, relations, poursuite, cadence, cleanup et progression."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+          "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
+          "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        }
+      ],
+      "notes": "Les missions finies, résultat unique et progression de campagne sont raccordés ; la survie est explicitement sélectionnée et seule reste sans victoire finale. Tests de progression/quotas et revue du routeur intégrés."
     },
     "AUD-007": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P0",
       "domain": "Versions et fiabilité",
       "item": "Raccorder les cinq chapitres aux niveaux réels",
       "acceptance": "Démarrer et finir chaque chapitre ouvre le bon lieu suivant; aucune sélection précédente ne remplace le lieu demandé.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "StoryCampaign utilise les niveaux réels ; les cinq transitions de chapitre doivent être vérifiées avec le routeur intégré."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/combat-phase2-71-tests.txt",
+          "sha256": "6e20e10df3b68727b9630ffdc3270aef6f3cdd5839d634847fc8f27c4663d3c5",
+          "scope": "71/71 : vrais managers de combat, décès et quotas, formations/compagnons, relations, poursuite, cadence, cleanup et progression."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+          "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
+          "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        }
+      ],
+      "notes": "Les cinq chapitres désignent des niveaux existants ; le routeur sélectionne explicitement le chapitre demandé et le bouton suivant applique sa destination. La campagne complète une seulefois ses cinqétapes dans les tests."
     },
     "AUD-008": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Versions et fiabilité",
       "item": "Reconstituer un registre d’état du contenu",
       "acceptance": "Aucun objet n’est marqué terminé sur la seule présence d’un libellé, d’un bouton ou d’un commentaire.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Registre 115 profils/34 cartes/27 opérations/39 rencontres avec stades, exclusions et limites explicites ; les profils ne sont pas comptés comme modèles 3D terminés. Revue globale des autres registres encore requise."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+          "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
+          "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        },
+        {
+          "kind": "review",
+          "path": "docs/audits/2026-10-26/qa/model-integrity-reviewed.json",
+          "sha256": "d14a64db8f18d055e1f62917afc3617fa966f0c8ac3c320c984afc65449599c8",
+          "scope": "12GLB identiques aux sources validées ; aucune nouvelle génération ni certification1:1."
+        }
+      ],
+      "notes": "Le registre distingue115profils,34terrains adaptés,27plans, actifs rendus, exclusions, stades et limites. Le suivi exige des preuves épinglées pourTerminé ; aucunprofil n’est assimilé à un modèle3D1:1."
     },
     "AUD-009": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Effectifs et foule",
       "item": "Séparer les quatre niveaux d’effectifs",
       "acceptance": "Le diagnostic et le bilan réconcilient réserves, actifs, pertes et évacués sans comptage double.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Le moteur sépare réserve, distant, actif, mort et évacué avec identités finies et invariants ; le bilan/HUD réels sont à vérifier après intégration."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+          "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c",
+          "scope": "56/56 : réserves, relations, pertes/identités, horloges, renseignement, arc original, objectifs, tactiques et compagnons ; portée CPU explicite."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+          "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
+          "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/audits/2026-10-26/qa/runtime-c518-11-biomes-4-ops.json",
+          "sha256": "56bddb4b3e25cfd419927782604e4ad79524763c37969409f2449322326aeec5",
+          "scope": "Sourcec5187b2/index56204f :11démarrages/insertion/nettoyage avecfixture1ennemi et4smokes d’opération, cap≤32, mêmesIDs, Earchives/reprise/carte/Fcamouflage/Queen réelle et bilan ; zéroJS/réseau/externe. Pas11victoires ; trêve démarrée puis interrompue par dégâts, completionCPU seulement."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/audits/2026-10-26/qa/runtime-48b5-incremental-charon-4-ops-photo.json",
+          "sha256": "2b737ee19d428e27f97d7746e72e8cd23cbc9d04409a2ebf21e9ff410b4b101a",
+          "scope": "DeltaUI source48b5/index124d7735 : Charon et4opérations, vraiOphotoouvrir/fermer, mêmesIDs/caps/E/save/carte/Queen/bilanFR. Les11biomes complets restent couverts par le rapport antérieurc518. Trêve interrompue par dégâts ; completion nonrevendiquée."
+        }
+      ],
+      "notes": "Réserves, distants, détaillés, morts, évacués et capturés sont réconciliés par identité. Le bilan final capture ces comptes avant cleanup et les affiche par camp ; les3lignes de l’opération952NPC se réconcilient dans le navigateur."
     },
     "AUD-010": {
       "status": "En cours",
@@ -107,7 +259,7 @@
       "acceptance": "Chaque profil tient sa cible de frame time dans une scène comparable; le nombre réellement actif est enregistré.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Les budgets du catalogue et le plafond global sont appliqués ; aucune mesure comparative sur les plateformes cibles ne permet encore de certifier leurs frame times."
+      "notes": "Plafond provisoire32 et budgets par faction appliqués, surplus distant sans perte d’identité. Télémétrie et compteurs scèneentière existent ; aucun profil matériel cible validé."
     },
     "AUD-011": {
       "status": "À valider",
@@ -117,17 +269,30 @@
       "acceptance": "La foule augmente sans chaînes de coups impossibles à éviter ni ennemi invisible capable de tuer.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Le directeur d’engagement conserve télégraphes, grâce d’entrée et limites d’attaques ; lisibilité et difficulté doivent être observées sur la candidate finale."
+      "notes": "Grâce d’entrée et directeur d’engagement couvrent toutes factions. Les démarrages gardent1000HP ; densité et difficulté humaines ne sont pas mesurées."
     },
     "AUD-012": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Effectifs et foule",
       "item": "Créer une réserve finie par armée",
       "acceptance": "Détruire une source de renfort diminue effectivement les arrivées; les réserves ne deviennent jamais négatives.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Réserves finies et arrivées annoncées réelles ; les27 configurations initiales ravitaillées déploient leurs groupes alloués sans nouvelID ni mort inventée. Les groupes8 ne sont plus bloqués par une autorisation d’arrivée4. Sabotage et coupure de ravitaillement restent causaux."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+          "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c",
+          "scope": "56/56 : réserves, relations, pertes/identités, horloges, renseignement, arc original, objectifs, tactiques et compagnons ; portée CPU explicite."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+          "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
+          "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        }
+      ],
+      "notes": "Toutes les réserves sont finies. Les groupes8 disposent d’un débit d’arrivée compatible ; la perte de leur source d’origine ou de sa route annule l’arrivée sans mort inventée ni réserve négative."
     },
     "AUD-013": {
       "status": "À valider",
@@ -147,17 +312,30 @@
       "acceptance": "Traverser un passage n’efface ni poursuivant, ni chef blessé, ni pertes déjà enregistrées.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Les transitions actif/distant préservent identité, HP, position et décès. Les passages ordinaires et stratégiques doivent encore être vérifiés en jeu."
+      "notes": "Persistance et culls sont testés ; retour/poursuite des survivants dans tous les passages réels à confirmer lors de parcours complets."
     },
     "AUD-015": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Effectifs et foule",
       "item": "Rendre les vagues progressives et paramétrables",
       "acceptance": "Modifier un profil modifie la cadence mesurée sans toucher le code des créatures; la pause fige les délais.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Cadences, délais et arrivées viennent de la configuration et avancent en secondes de simulation ; tests de pause et intégration finale à rapprocher."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+          "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c",
+          "scope": "56/56 : réserves, relations, pertes/identités, horloges, renseignement, arc original, objectifs, tactiques et compagnons ; portée CPU explicite."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+          "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
+          "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        }
+      ],
+      "notes": "Cadence, délai d’annonce et lots viennent des profils ; les misesàjour utilisent les secondes de simulation. Modifier ces données ne modifie pas le code des créatures ; pause et reprise conservent les échéances."
     },
     "AUD-016": {
       "status": "En cours",
@@ -167,27 +345,59 @@
       "acceptance": "Deux difficultés peuvent garder une même armée lisible tout en changeant tactique et tolérance, sans gonfler tous les PV.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Le budget d’une armée est distinct des paramètres de combat ; comparaison de deux difficultés avec même population et tactiques distinctes encore à établir."
+      "notes": "Population, plafond de rendu et dégâts sont séparés ; comparaison de deux difficultés avec même armée et tactiques différentes encore partielle."
     },
     "AUD-017": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Effectifs et foule",
       "item": "Unifier le comptage de tous les types hostiles",
       "acceptance": "Une victoire ne part pas avec un ennemi requis vivant dans une liste secondaire; aucune menace ne bloque à tort un objectif déjà réussi.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "CombatEvents et le pont stratégique centralisent les décès de plusieurs managers ; les fins de mission avec menaces secondaires demandent validation globale."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/combat-phase2-71-tests.txt",
+          "sha256": "6e20e10df3b68727b9630ffdc3270aef6f3cdd5839d634847fc8f27c4663d3c5",
+          "scope": "71/71 : vrais managers de combat, décès et quotas, formations/compagnons, relations, poursuite, cadence, cleanup et progression."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+          "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
+          "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        }
+      ],
+      "notes": "Le comptage central couvre les listes de menaces et décès secondaires ; alliés, parasites consommés et dégâts de décor ne bloquent plus les quotas. Les éventuels manquants d’un quota fini passent par une file réelle."
     },
     "AUD-018": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P0",
       "domain": "Effectifs et foule",
       "item": "Synchroniser mort, score et objectif",
       "acceptance": "Un ennemi tué par allié, piège, acide ou joueur crédite une seule perte et les bons objectifs.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Identités de vie, déduplication et conséquences des morts sont couvertes par les suites combat et simulation ; score et objectifs intégrés restent à vérifier sur la candidate."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/combat-phase2-71-tests.txt",
+          "sha256": "6e20e10df3b68727b9630ffdc3270aef6f3cdd5839d634847fc8f27c4663d3c5",
+          "scope": "71/71 : vrais managers de combat, décès et quotas, formations/compagnons, relations, poursuite, cadence, cleanup et progression."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+          "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c",
+          "scope": "56/56 : réserves, relations, pertes/identités, horloges, renseignement, arc original, objectifs, tactiques et compagnons ; portée CPU explicite."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/forge-ledger-acceptance-tests.txt",
+          "sha256": "32dd096aa7aed6655a079b4e30eb153ecd5de4ee5c2be698e56a352b34305bae",
+          "scope": "7/7 : vraieForgeShop, deux achats successifs débités puisrechargement ; scorefourni ne crée aucunfonds ; ledger/migration/quota/pending/idempotence."
+        }
+      ],
+      "notes": "Une identité de vie/armée produit une seule mort, un seul crédit et la bonne conséquence, y compris sources concurrentes, callbackréentrant, décor, allié et sortie de détail. Les culls vivants ne comptent pas comme morts."
     },
     "AUD-019": {
       "status": "À valider",
@@ -197,17 +407,17 @@
       "acceptance": "Quitter puis rejoindre un front conserve effectifs, positions plausibles, moral et progression temporelle.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Le moteur conserve les unités éloignées, combats, moral et renforts ; le pont rematérialise leurs identités et HP sans inventer de mort."
+      "notes": "Simulation distante, HP, moral, temps et identité sont persistants ; observation répétée de retours blessés sur plusieurs fronts en session complète encore requise."
     },
     "AUD-020": {
-      "status": "En cours",
+      "status": "À valider",
       "priority": "P2",
       "domain": "Effectifs et foule",
       "item": "Donner une échelle perceptible au champ de bataille",
       "acceptance": "Depuis les points hauts, le joueur identifie au moins deux combats réels et leurs voies d’accès.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Les nouvelles topologies comportent plusieurs fronts physiques et contournements ; observation de deux combats réels depuis des points hauts encore nécessaire."
+      "notes": "Les34terrains et plusieurs combats distants sont réels ; aucune capture de deux combats visibles depuis un point haut n’est fournie."
     },
     "AUD-021": {
       "status": "En cours",
@@ -217,27 +427,53 @@
       "acceptance": "Une même graine et un même profil produisent une composition autorisée; aucune caste exclue n’apparaît.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Les 62 modèles et allocations des 27 propositions sont conservés et validés. Les armées exécutables utilisent encore des archétypes adaptés explicitement marqués, pas 115 modèles canoniques."
+      "notes": "62modèles et27allocations sont consommables ; la réalisation actuelle utilise des archétypes adaptés explicites, pas les115silhouettes/castes différentes."
     },
     "AUD-022": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Groupes et factions",
       "item": "Empêcher la répétition des individus nommés",
       "acceptance": "Un individu nommé n’existe qu’une fois dans la mission et ne revient pas après une mort confirmée.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Les identités nommées remplacent une place allouée, sont globales par scénario et refusées en réserve générique ; persistance et non-réapparition couvertes au niveau moteur."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+          "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c",
+          "scope": "56/56 : réserves, relations, pertes/identités, horloges, renseignement, arc original, objectifs, tactiques et compagnons ; portée CPU explicite."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/combat-phase2-71-tests.txt",
+          "sha256": "6e20e10df3b68727b9630ffdc3270aef6f3cdd5839d634847fc8f27c4663d3c5",
+          "scope": "71/71 : vrais managers de combat, décès et quotas, formations/compagnons, relations, poursuite, cadence, cleanup et progression."
+        }
+      ],
+      "notes": "Les individus nommés ont une identité unique, remplacent une place allouée et ne sont pas tirés en réserve générique ; mort/capture confirmée et rechargement ne les recréent pas."
     },
     "AUD-023": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Groupes et factions",
       "item": "Établir une matrice de relations entre factions",
       "acceptance": "Les trois camps combattent leurs adversaires déclarés; une alliance annoncée ne se termine pas automatiquement quand le dernier xéno proche meurt.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Matrice explicite trois camps et trêves locales persistantes dans le moteur et managers. Les relations ne sont pas déduites de la couleur ou de l’espèce."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+          "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c",
+          "scope": "56/56 : réserves, relations, pertes/identités, horloges, renseignement, arc original, objectifs, tactiques et compagnons ; portée CPU explicite."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/combat-phase2-71-tests.txt",
+          "sha256": "6e20e10df3b68727b9630ffdc3270aef6f3cdd5839d634847fc8f27c4663d3c5",
+          "scope": "71/71 : vrais managers de combat, décès et quotas, formations/compagnons, relations, poursuite, cadence, cleanup et progression."
+        }
+      ],
+      "notes": "Les trois camps utilisent une matrice explicite dans la simulation et les vrais managers. Une trêve persiste et ne dépend ni du dernier xéno proche ni de la couleur des unités. La complétion de négociation en navigateur n’est pas revendiquée."
     },
     "AUD-024": {
       "status": "À valider",
@@ -247,7 +483,7 @@
       "acceptance": "Un combat observé sans joueur au contact change les pertes des deux camps, avec actions et impacts visibles.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Le moteur éloigné et le combat détaillé permettent des pertes réciproques entre IA ; actions et impacts visibles doivent être confirmés en capture du jeu intégré."
+      "notes": "La réciprocité des pertes existe dans le moteur et les vrais managers ; une observation prolongée des impacts des deux camps sans joueur au contact reste à documenter."
     },
     "AUD-025": {
       "status": "En cours",
@@ -257,7 +493,7 @@
       "acceptance": "Chaque groupe possède une raison de présence et des comportements cohérents; les parasites ne remplacent pas une ligne d’assaut permanente.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Le registre distingue œuf, parasite, juvénile, combattant, reine et espèces non-xénomorphes ; la majorité des profils n’a pas encore son acteur et comportement distinct rendus."
+      "notes": "Stades, espèces, exclusions et rares sont distingués. Tous les profils du registre n’ont pas encore acteur/comportement/silhouette distincts rendus."
     },
     "AUD-026": {
       "status": "En cours",
@@ -267,7 +503,7 @@
       "acceptance": "Une cellule garde son identité et ses équipements; son effectif reste justifié par le scénario de chasse ou de guerre.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Les propositions originales de guerre de clans gardent groupes, équipements et individus uniques. Les génériques sont annoncés comme adaptations, sans multiplication canonique silencieuse."
+      "notes": "Cellules et identité de clan sont persistantes et contextualisées ; les nombreux groupes proposés ne disposent pas tous d’équipement/modèle distinct fidèle."
     },
     "AUD-027": {
       "status": "En cours",
@@ -277,37 +513,50 @@
       "acceptance": "La composition autorise couverture, progression et replis; aucun groupe entier n’est composé de la même arme lourde.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Les modèles de groupes humains conservent composition et rôles de l’audit ; les scénarios actuels emploient des soldats adaptés et ne matérialisent pas toutes les compositions spécialisées."
+      "notes": "Les compositions humaines et rôles existent ; les presets exécutables n’incarnent pas toutes les spécialisations sources et formations d’appui."
     },
     "AUD-028": {
-      "status": "En cours",
+      "status": "À valider",
       "priority": "P1",
       "domain": "Groupes et factions",
       "item": "Séparer synthétiques militaires, industriels et civils",
       "acceptance": "Un profil de sécurité et un profil industriel réagissent différemment à une intrusion et restent limités à leur lieu.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Les synthétiques disposent de types/lieux et de managers distincts ; revue complète sécurité/industriel/civil et réactions par lieu encore à réaliser."
+      "notes": "Synthétiques militaires/industriels/civils sont contextualisés ; réactions distinctes et limites de lieu doivent encore être revues intégralement."
     },
     "AUD-029": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Groupes et factions",
       "item": "Lier types rares et conditions de scénario",
       "acceptance": "Toutes les compositions passent une validation d’appartenance et d’anachronisme avant lancement.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Le validateur refuse exclus, non-combattants d’assaut, individus nommés en réserve et contextes incohérents. La sélection réelle doit conserver ces refus avant lancement."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+          "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
+          "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+          "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c",
+          "scope": "56/56 : réserves, relations, pertes/identités, horloges, renseignement, arc original, objectifs, tactiques et compagnons ; portée CPU explicite."
+        }
+      ],
+      "notes": "Les compositions et contextes sont validés avant matérialisation ; exclus, stades noncombattants, uniques doublés, réserves nommées et contextes interdits sont refusés. Les27plans gardent leurs adaptations déclarées."
     },
     "AUD-030": {
-      "status": "À faire",
+      "status": "À valider",
       "priority": "P2",
       "domain": "Groupes et factions",
       "item": "Préserver la guerre entre ruches comme scénario spécifique",
       "acceptance": "Le joueur comprend quel groupe appartient à quelle ruche et peut exploiter un conflit déjà actif.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Les profils et restrictions de guerre de ruches sont documentés ; aucun scénario complet deux ruches rendu et compris par le joueur n’est encore prouvé."
+      "notes": "Un scénario original de96identités Ambre/Obsidienne, territoires, réserves et hostilité de ruches est implémenté ; infight par couleur supprimé. AccèsUI/compréhension/affrontement visuel noncertifiés par les4smokes sélectionnés."
     },
     "AUD-031": {
       "status": "En cours",
@@ -317,7 +566,7 @@
       "acceptance": "Un test de silhouette identifie chef, appui, parasite et lourd sans dépendre uniquement de la couleur.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Chefs, parasites et lourds disposent de types distincts quand supportés ; test de silhouettes pour tous les rôles et nouveaux profils encore absent."
+      "notes": "Types/rangs équipés et chefs existent, mais test de silhouette sans couleur pour tous les rôles manque encore."
     },
     "AUD-032": {
       "status": "À valider",
@@ -327,17 +576,42 @@
       "acceptance": "Le même groupe conserve son identité lors d’un passage proche/lointain et dans le bilan de bataille.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Les IDs de groupes et unités sont conservés entre réserve, distant, actif, sauvegarde et bilan ; vérifier leur présentation réelle dans l’interface finale."
+      "notes": "IDs de groupes conservés dans moteur/LOD/checkpoints/journal ; leur suivi par le joueur sur l’ensemble des fronts/bilans reste à vérifier individuellement."
     },
     "AUD-033": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Alliés et commandement",
       "item": "Donner des ordres de combat aux alliés",
       "acceptance": "Un ordre change réellement objectif et trajet; un ordre impossible explique sa cause et peut être annulé.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Cinq ordres, annulation/regroupement, refus lisibles et donneursP1/P2 sont raccordés au panneau et aux managers. Recette du jeu réel encore requise pour clôturer."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+          "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c",
+          "scope": "56/56 : réserves, relations, pertes/identités, horloges, renseignement, arc original, objectifs, tactiques et compagnons ; portée CPU explicite."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/combat-phase2-71-tests.txt",
+          "sha256": "6e20e10df3b68727b9630ffdc3270aef6f3cdd5839d634847fc8f27c4663d3c5",
+          "scope": "71/71 : vrais managers de combat, décès et quotas, formations/compagnons, relations, poursuite, cadence, cleanup et progression."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/audits/2026-10-26/qa/runtime-c518-11-biomes-4-ops.json",
+          "sha256": "56bddb4b3e25cfd419927782604e4ad79524763c37969409f2449322326aeec5",
+          "scope": "Sourcec5187b2/index56204f :11démarrages/insertion/nettoyage avecfixture1ennemi et4smokes d’opération, cap≤32, mêmesIDs, Earchives/reprise/carte/Fcamouflage/Queen réelle et bilan ; zéroJS/réseau/externe. Pas11victoires ; trêve démarrée puis interrompue par dégâts, completionCPU seulement."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/audits/2026-10-26/qa/runtime-48b5-incremental-charon-4-ops-photo.json",
+          "sha256": "2b737ee19d428e27f97d7746e72e8cd23cbc9d04409a2ebf21e9ff410b4b101a",
+          "scope": "DeltaUI source48b5/index124d7735 : Charon et4opérations, vraiOphotoouvrir/fermer, mêmesIDs/caps/E/save/carte/Queen/bilanFR. Les11biomes complets restent couverts par le rapport antérieurc518. Trêve interrompue par dégâts ; completion nonrevendiquée."
+        }
+      ],
+      "notes": "Les ordres changent réellement destination et chemin, peuvent être remplacés/annulés et refusent les routes impossibles avec explication. La carte transmet un vrai ordre joueur au moteur via clics réels ; les types de déplacement sont couverts côté CPU."
     },
     "AUD-034": {
       "status": "À valider",
@@ -347,7 +621,7 @@
       "acceptance": "Pendant que le joueur agit ailleurs, le capitaine peut défendre ou perdre un objectif selon des règles visibles.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Le bouton capitaine délègue un front à un groupe réel ; le moteur distant poursuit défense/capture/pertes. Lisibilité et résultat pendant intervention du joueur ailleurs à vérifier dans la recette finale."
+      "notes": "Délégation de capitaine et autonomie distante sont fonctionnelles et testées ; victoire/perte d’un front délégué observée dans le jeu complet encore à prouver."
     },
     "AUD-035": {
       "status": "En cours",
@@ -357,37 +631,50 @@
       "acceptance": "Un allié peut être mis à terre et secouru; son absence change l’action du groupe sans provoquer un échec arbitraire.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "La survie des groupes et les secours d’objectifs sont réels. Ils ne démontrent pas encore une boucle complète allié mis à terre puis secouru avec effet sur sa cellule."
+      "notes": "Soins de compagnons, blessures et retraite sont réels ; cela ne constitue pas une boucle complète allié misàterre puis secouru/réanimé."
     },
     "AUD-036": {
-      "status": "En cours",
+      "status": "À valider",
       "priority": "P1",
       "domain": "Alliés et commandement",
       "item": "Proposer des tactiques collectives Yautja",
       "acceptance": "La tactique repositionne les unités et produit un effet mesurable; elle peut échouer si ses conditions ne sont plus remplies.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Quatre tactiques ont commandes réelles et préconditions moteur, avec sélection de groupes et positions distinctes. Leurs effets et échecs sont à confirmer dans le jeu."
+      "notes": "Quatre tactiques repositionnent les groupes, changent effets et refusent préconditions invalides. Leur lisibilité physique et usage UI répété restent à observer."
     },
     "AUD-037": {
-      "status": "À faire",
+      "status": "À valider",
       "priority": "P2",
       "domain": "Alliés et commandement",
       "item": "Rendre les compagnons spécialisés et équipables",
       "acceptance": "Deux compagnons de rôles différents modifient le plan de bataille; aucun n’accède à une arme hors profil sans choix explicite.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Les spécialisations et arsenaux sont catalogués ; choix et équipement effectifs de deux compagnons spécialisés non démontrés."
+      "notes": "Quatre kits de compagnons avec équipements autorisés, charges/cooldowns, marche, soins/recon/réparation/sabotage/suppression et checkpoints sont développés. Aucun parcours complet de deux rôles depuis les nouveauxmenus n’est revendiqué."
     },
     "AUD-038": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P2",
       "domain": "Alliés et commandement",
       "item": "Préserver les ordres en coopération",
       "acceptance": "Deux ordres contradictoires sont résolus de façon lisible, sans téléportation ni va-et-vient infini.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Les ordres incluent donneurP1/P2 et séquence ; le dernier accepté remplace une seule fois le précédent. Le panneau montre le dernier ordre. Recette coop contradictoire encore nécessaire."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+          "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c",
+          "scope": "56/56 : réserves, relations, pertes/identités, horloges, renseignement, arc original, objectifs, tactiques et compagnons ; portée CPU explicite."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+          "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
+          "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        }
+      ],
+      "notes": "DonneursP1/P2 et séquences sont explicites : le dernier ordre accepté remplace le précédent une seulefois, sans empilement de chemins. Les tests d’ordres concurrents et navigation de menus virtuels couvrent l’arbitrage."
     },
     "AUD-039": {
       "status": "En cours",
@@ -397,17 +684,30 @@
       "acceptance": "Un hangar fermé ne reçoit pas une frappe aérienne arbitraire; un appui perdu ou privé de munitions cesse d’agir.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Des appuis et transports existants sont préservés ; munitions, perte et impossibilité d’appui aérien dans chaque espace clos restent à vérifier."
+      "notes": "Soutiens/transports et tirs réels sont conservés ; restrictions de hangars, munitions/perte de chaque appui lourd ne sont pas toutes certifiées."
     },
     "AUD-040": {
-      "status": "À faire",
+      "status": "Terminé",
       "priority": "P2",
       "domain": "Alliés et commandement",
       "item": "Distinguer montée de puissance et rang social",
       "acceptance": "Le bilan peut féliciter une performance sans changer instantanément le statut canonique du chasseur.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Les gains et dépenses d’honneur ont un registre ; distinction explicite entre performance et changement de rang social canonique encore à concevoir ou prouver."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+          "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c",
+          "scope": "56/56 : réserves, relations, pertes/identités, horloges, renseignement, arc original, objectifs, tactiques et compagnons ; portée CPU explicite."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+          "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
+          "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        }
+      ],
+      "notes": "Les preuves d’archives, secours, défense ou diplomatie donnent des reconnaissances de mission originales. Un score de kills ne change pas automatiquement le rang canonique et ne crée pas de bonus de statistiques."
     },
     "AUD-041": {
       "status": "Terminé",
@@ -419,18 +719,18 @@
       "evidence": [
         {
           "kind": "test",
-          "path": "docs/audits/2026-10-26/qa/world-construction-54-tests.txt",
-          "sha256": "59a556766b91d90f8e6c3310056d5b93a8612effbbe21d852944c8b49dca0435",
-          "scope": "54/54 :34 variantes construites avec tracés distincts, nombre réel de secteurs/fronts, alternatives orthogonales, parcours des polylignes sur sols/collisions réels ; chasses ordinaires préservées."
+          "path": "docs/audits/2026-10-26/qa/world-phase2-construction-transport-stream-44-tests.txt",
+          "sha256": "3213ed0c76d8bc23fce37272f7de927fe76ef5da5f9c338e15440034f0c1fa09",
+          "scope": "44/44 :34terrains construits, trajets physiques, transport, pont destructible/réparable et streaming des allocations GPU testé côté CPU."
         },
         {
           "kind": "test",
           "path": "docs/audits/2026-10-26/qa/world-navigation-freeze-15-tests.txt",
           "sha256": "a7b7145bc28bc0efc5ad78175c8d3f4eb74ab4025f768c6d000d4b27b097156c",
-          "scope": "15/15 : navigation IA des11biomes, portes qui bloquent puis rouvrent réellement mouvement/rayons, parcours civil avec2angles et détour après fermeture de flanc."
+          "scope": "15/15 : navigation des11biomes, contacts partagés, portes réelles et détour civil autour de2angles."
         }
       ],
-      "notes": "34 variantes construites possèdent des voies principales et deux vrais contournements ; les54 contrôles parcourent physiquement chaque route. Les15 contrôles gelés vérifient portes réelles et navigation alternative, pas un second trait de HUD."
+      "notes": "Les34variantes ont des axes principaux et deux véritables contournements traversables. Les fermetures de flanc ne suppriment pas le choix d’intervention ni le chemin principal vers les dispositifs."
     },
     "AUD-042": {
       "status": "À valider",
@@ -440,47 +740,86 @@
       "acceptance": "Un enregistrement montre combat et décisions simultanés sur plusieurs fronts; éloigner le joueur ne fige pas le résultat.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Plusieurs fronts sont simulés simultanément et ne figent pas à distance ; une capture récente des combats et décisions simultanés reste nécessaire."
+      "notes": "Plusieurs fronts combattent à distance simultanément et conservent leurs résultats ; enregistrement visuel montrant deux combats/choix simultanés absent."
     },
     "AUD-043": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Fronts et objectifs",
       "item": "Créer des bases et sources de renfort capturables",
       "acceptance": "Une position capturée change les arrivées et les routes; elle peut être contestée ou perdue.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Les bases ont propriétaire, contestation, source et capacité d’arrivée ; sabotage et capture modifient ces états. Les effets sur les vraies routes sont encore en revue."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+          "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c",
+          "scope": "56/56 : réserves, relations, pertes/identités, horloges, renseignement, arc original, objectifs, tactiques et compagnons ; portée CPU explicite."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/world-phase2-construction-transport-stream-44-tests.txt",
+          "sha256": "3213ed0c76d8bc23fce37272f7de927fe76ef5da5f9c338e15440034f0c1fa09",
+          "scope": "44/44 :34terrains construits, trajets physiques, transport, pont destructible/réparable et streaming des allocations GPU testé côté CPU."
+        }
+      ],
+      "notes": "Bases et sources ont propriétaire, capture, contestation et pertes réversibles ; changer de contrôle modifie les origines/réseaux autorisés de renfort. Sabotage et routes ont des conséquences réelles, avec portes physiques séparées."
     },
     "AUD-044": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Fronts et objectifs",
       "item": "Rendre le moral local et causal",
       "acceptance": "Perdre un chef affecte ses unités proches et son front; la cause de variation est lisible.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "La mort d’un officier et la perte d’une position modifient groupe/front avec événement causal ; affichage de la cause dans le jeu à confirmer."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+          "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c",
+          "scope": "56/56 : réserves, relations, pertes/identités, horloges, renseignement, arc original, objectifs, tactiques et compagnons ; portée CPU explicite."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+          "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
+          "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        }
+      ],
+      "notes": "La perte d’un chef affecte son groupe et les groupes du même front, avec deltas et cause enregistrés. Les variations sont consultables dans les états et le journal causal du bilan ; la ruche a sa logique distincte."
     },
     "AUD-045": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Fronts et objectifs",
       "item": "Adapter le moral des xénomorphes à leur comportement",
       "acceptance": "Détruire un nœud change comportement et réapprovisionnement sans attribuer aux xénos un moral humain générique.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "La ruche emploie une pression/coordination propre et la destruction de ses sources réduit les arrivées ; adaptation comportementale visible à confirmer."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+          "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c",
+          "scope": "56/56 : réserves, relations, pertes/identités, horloges, renseignement, arc original, objectifs, tactiques et compagnons ; portée CPU explicite."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+          "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
+          "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        }
+      ],
+      "notes": "La ruche utilise pression/coordination, sans peur humaine ni retraite automatique. La destruction de ses sources réduit son rendement de combat distant et interrompt ses renforts ; les tests observent ces changements causaux."
     },
     "AUD-046": {
-      "status": "À valider",
+      "status": "En cours",
       "priority": "P1",
       "domain": "Fronts et objectifs",
       "item": "Ajouter retraite et regroupement",
       "acceptance": "Une unité en difficulté quitte le front par un trajet réel, conserve ses pertes et revient seulement si renforcée.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Retraite et regroupement conservent unités/HP et suivent les routes ; contrôle de leurs trajets détaillés réels encore nécessaire."
+      "notes": "Retraite et regroupement réels conservent pertes et trajets. La condition systématique de retour seulement après renforcement ne doit pas être déduite de la seule remontée du moral."
     },
     "AUD-047": {
       "status": "À valider",
@@ -490,27 +829,65 @@
       "acceptance": "La défaite affiche sa cause vérifiable et laisse un temps de réaction cohérent avec la distance.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Pertes de fronts critiques avec grâce, destruction d’objectif et fuite de convoi produisent des causes de défaite distinctes ; distance et temps de réaction restent à observer."
+      "notes": "Défaites causales, fronts critiques et grâce sont testés ; la grâce fixe30s n’est pas encore calibrée aux retours depuis toutes les grandes cartes."
     },
     "AUD-048": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Fronts et objectifs",
       "item": "Rendre les missions secondaires réellement décisives",
       "acceptance": "Ignorer ou réussir une mission secondaire produit deux états de bataille distincts et traçables.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Sabotage des sources et trêves changent renforts/relations ; les terminaux choisissent des portes de contournement physiques distinctes fermées au départ, sans couper le chemin principal. Le raccord décor est en cours de recette."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+          "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c",
+          "scope": "56/56 : réserves, relations, pertes/identités, horloges, renseignement, arc original, objectifs, tactiques et compagnons ; portée CPU explicite."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/world-phase2-construction-transport-stream-44-tests.txt",
+          "sha256": "3213ed0c76d8bc23fce37272f7de927fe76ef5da5f9c338e15440034f0c1fa09",
+          "scope": "44/44 :34terrains construits, trajets physiques, transport, pont destructible/réparable et streaming des allocations GPU testé côté CPU."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/audits/2026-10-26/qa/runtime-c518-11-biomes-4-ops.json",
+          "sha256": "56bddb4b3e25cfd419927782604e4ad79524763c37969409f2449322326aeec5",
+          "scope": "Sourcec5187b2/index56204f :11démarrages/insertion/nettoyage avecfixture1ennemi et4smokes d’opération, cap≤32, mêmesIDs, Earchives/reprise/carte/Fcamouflage/Queen réelle et bilan ; zéroJS/réseau/externe. Pas11victoires ; trêve démarrée puis interrompue par dégâts, completionCPU seulement."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/audits/2026-10-26/qa/runtime-48b5-incremental-charon-4-ops-photo.json",
+          "sha256": "2b737ee19d428e27f97d7746e72e8cd23cbc9d04409a2ebf21e9ff410b4b101a",
+          "scope": "DeltaUI source48b5/index124d7735 : Charon et4opérations, vraiOphotoouvrir/fermer, mêmesIDs/caps/E/save/carte/Queen/bilanFR. Les11biomes complets restent couverts par le rapport antérieurc518. Trêve interrompue par dégâts ; completion nonrevendiquée."
+        }
+      ],
+      "notes": "Réussir ou ignorer les actions secondaires modifie réellement sources, relations, convois et portes de contournement. Les tâchesE et objets portés passent par le contrôleur réel, avec états différents et journalisés."
     },
     "AUD-049": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Fronts et objectifs",
       "item": "Planifier embuscades et contre-offensives",
       "acceptance": "L’événement varie selon actions mais reste annoncé; aucune attaque n’apparaît déjà au contact du joueur.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "27 réactions causées par des tâches précises sont annoncées12s avant départ d’un groupe existant vers le front ou appel de réserve finie. Tests : aucune réaction si action ignorée, délai/pause/reprise, route réelle sans apparition au contact, aucune identité ajoutée, trêve annule. Validation visible finale encore requise."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+          "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c",
+          "scope": "56/56 : réserves, relations, pertes/identités, horloges, renseignement, arc original, objectifs, tactiques et compagnons ; portée CPU explicite."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+          "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
+          "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        }
+      ],
+      "notes": "Chaque plan possède une réaction causée par une tâche précise, annoncée12s avant départ. Elle réaffecte un groupe déjà alloué ou une réserve finie, emprunte une route et s’annule si trêve/forces/accès indisponibles ; aucune arrivée au contact n’est créée."
     },
     "AUD-050": {
       "status": "À valider",
@@ -520,7 +897,7 @@
       "acceptance": "Couper une route réduit un type de renfort et le camp signale comment la rétablir.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Le graphe conditionne sources/arrivées ; les routes portent leurs vraies portes et les terminaux ouvrent des détours réels. Coupure avant départ et en transit n’invente pas de téléportation. Messages et jeu réel à confirmer."
+      "notes": "Origines de réserve, routes et ponts conditionnent réellement le ravitaillement. La lisibilité de toutes les causes et réparations possibles dans une session complète reste à confirmer."
     },
     "AUD-051": {
       "status": "À valider",
@@ -530,37 +907,69 @@
       "acceptance": "Deux parcours gagnants mobilisent des objectifs différents avec conséquences et durées comparables.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Plusieurs opérations possèdent deux stratégies réelles (trêve/repli, duel/extraction, sabotage/convoi, logistique/reine) ; comparaison humaine des durées et conséquences non effectuée."
+      "notes": "Plusieurs stratégies réelles sont exécutables et testées ; durées et conséquences comparables en jeu humain ne sont pas mesurées."
     },
     "AUD-052": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Fronts et objectifs",
       "item": "Créer un briefing de bataille exploitable",
       "acceptance": "Le briefing permet de choisir équipement et première route; ses renseignements concordent avec le lancement.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Briefing et lancement utilisent la même configuration : fronts, routes, forces, budget, objectifs et échecs sont montrés avant choix du loadout. Concordance testée par la suite scène, lisibilité réelle à vérifier."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+          "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
+          "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/audits/2026-10-26/qa/runtime-c518-11-biomes-4-ops.json",
+          "sha256": "56bddb4b3e25cfd419927782604e4ad79524763c37969409f2449322326aeec5",
+          "scope": "Sourcec5187b2/index56204f :11démarrages/insertion/nettoyage avecfixture1ennemi et4smokes d’opération, cap≤32, mêmesIDs, Earchives/reprise/carte/Fcamouflage/Queen réelle et bilan ; zéroJS/réseau/externe. Pas11victoires ; trêve démarrée puis interrompue par dégâts, completionCPU seulement."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/audits/2026-10-26/qa/runtime-48b5-incremental-charon-4-ops-photo.json",
+          "sha256": "2b737ee19d428e27f97d7746e72e8cd23cbc9d04409a2ebf21e9ff410b4b101a",
+          "scope": "DeltaUI source48b5/index124d7735 : Charon et4opérations, vraiOphotoouvrir/fermer, mêmesIDs/caps/E/save/carte/Queen/bilanFR. Les11biomes complets restent couverts par le rapport antérieurc518. Trêve interrompue par dégâts ; completion nonrevendiquée."
+        }
+      ],
+      "notes": "Briefing et lancement utilisent la même configuration liée au terrain : forces, routes, fronts, objectifs, échecs et équipement sont présentés avant déploiement. Les budgets annoncés24/32 concordent avec les4lancements réels ; plafonds provisoires et cibles source sont distingués."
     },
     "AUD-053": {
-      "status": "En cours",
+      "status": "À valider",
       "priority": "P2",
       "domain": "Fronts et objectifs",
       "item": "Ajouter renseignement et brouillard tactique",
       "acceptance": "Une unité hors contact n’est pas suivie avec précision absolue; le joueur connaît l’âge de son dernier rapport.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Le moteur distingue rapport de position, âge et précision des contacts éloignés ; présentation du renseignement incertain et brouillard tactique dans la vraie interface encore à compléter ou vérifier."
+      "notes": "Intel respecte murs, vue des deuxjoueurs, rapports retardés, incertitude, ancienneté et reconnaissance temporaire. Lisibilité de tous ces états sur la carte tactique en session complète à confirmer."
     },
     "AUD-054": {
-      "status": "En cours",
+      "status": "Terminé",
       "priority": "P2",
       "domain": "Fronts et objectifs",
       "item": "Rendre les conséquences de bataille persistantes",
       "acceptance": "Recharger ou passer à la mission suivante reflète les décisions antérieures sans recréer les chefs vaincus.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "La reprise conserve l’état d’une opération et ses individus ; propagation des décisions et chefs morts entre plusieurs missions non encore démontrée."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+          "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c",
+          "scope": "56/56 : réserves, relations, pertes/identités, horloges, renseignement, arc original, objectifs, tactiques et compagnons ; portée CPU explicite."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+          "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
+          "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        }
+      ],
+      "notes": "L’arc original AFF01–05 est volontaire. Il conserve décisions, fronts, pertes nommées et reçus ; Kher mort dansAFF01 reste absent dansAFF03, y compris avec un checkpoint plus ancien. Les opérations horsarc demeurent indépendantes."
     },
     "AUD-055": {
       "status": "À valider",
@@ -570,7 +979,7 @@
       "acceptance": "Chaque zone a rôle, capacité, au moins deux repères et passages dimensionnés; les dimensions sont exprimées en unités tant que l’échelle n’est pas calibrée.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Les variantes ont secteurs, objectifs, passages, capacités et repères ; mesures en unités de jeu, pas dimensions historiques certifiées."
+      "notes": "Secteurs, capacités, objectifs, repères et dimensions en unités sont construits. Rôle perceptible et deuxrepères utiles dans chaque zone n’ont pas tous été recensés visuellement."
     },
     "AUD-056": {
       "status": "Terminé",
@@ -582,28 +991,28 @@
       "evidence": [
         {
           "kind": "test",
-          "path": "docs/audits/2026-10-26/qa/world-construction-54-tests.txt",
-          "sha256": "59a556766b91d90f8e6c3310056d5b93a8612effbbe21d852944c8b49dca0435",
-          "scope": "54/54 :34 variantes construites avec tracés distincts, nombre réel de secteurs/fronts, alternatives orthogonales, parcours des polylignes sur sols/collisions réels ; chasses ordinaires préservées."
+          "path": "docs/audits/2026-10-26/qa/world-phase2-construction-transport-stream-44-tests.txt",
+          "sha256": "3213ed0c76d8bc23fce37272f7de927fe76ef5da5f9c338e15440034f0c1fa09",
+          "scope": "44/44 :34terrains construits, trajets physiques, transport, pont destructible/réparable et streaming des allocations GPU testé côté CPU."
         },
         {
           "kind": "test",
           "path": "docs/audits/2026-10-26/qa/world-navigation-freeze-15-tests.txt",
           "sha256": "a7b7145bc28bc0efc5ad78175c8d3f4eb74ab4025f768c6d000d4b27b097156c",
-          "scope": "15/15 : navigation IA des11biomes, portes qui bloquent puis rouvrent réellement mouvement/rayons, parcours civil avec2angles et détour après fermeture de flanc."
+          "scope": "15/15 : navigation des11biomes, contacts partagés, portes réelles et détour civil autour de2angles."
         }
       ],
-      "notes": "Les34 variantes ont des dispositions physiques distinctes,9–20secteurs,3–5fronts et deux contournements ; leurs polylignes suivent des couloirs réels mesurés. Les chasses ordinaires gardent sixsecteurs. Ce sont des topologies adaptées, pas des plans de film1:1."
+      "notes": "Les34tracés physiques sont distincts, avec9–20secteurs,3–5fronts et contournements orthogonaux réellement construits. Les chasses ordinaires conservent leur topologie à sixsecteurs ; aucune carte n’est présentée comme scan1:1."
     },
     "AUD-057": {
-      "status": "À valider",
+      "status": "En cours",
       "priority": "P1",
       "domain": "Level design",
       "item": "Définir des échelles de bataille compatibles avec le lieu",
       "acceptance": "Les grandes cartes possèdent distance, densité et temps de déplacement justifiés; aucun couloir de station n’accueille une armée impossible.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Tailles, populations et temps de parcours figurent dans les propositions et routes mesurées ; cohérence perceptible de densité selon lieu encore à observer."
+      "notes": "Distances/populations/corridors sont explicites ; justification et validation de densité/temps de déplacement pour chaque lieu restent partielles."
     },
     "AUD-058": {
       "status": "En cours",
@@ -613,7 +1022,7 @@
       "acceptance": "Des graines différentes produisent des cartes jouables différentes, avec chemins complets et décors compatibles.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "34 variantes déterministes fonctionnent comme assemblages adaptés ; plusieurs graines jouables distinctes par même proposition restent à démontrer."
+      "notes": "34variantes déterministes réelles, pas34alias. Plusieurs graines jouables différentes pour une même proposition ne sont pas encore démontrées."
     },
     "AUD-059": {
       "status": "En cours",
@@ -623,7 +1032,7 @@
       "acceptance": "Chaque zone distingue reproduction documentée et extension originale; une variation ne déplace pas arbitrairement un repère essentiel.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Les lieux sources et extensions adaptées sont explicitement séparés ; comparaison documentée des repères iconiques avec références encore incomplète."
+      "notes": "Les extensions sont déclarées originales et nonmesurées ; ancrages géographiques précis des lieux iconiques noncertifiés."
     },
     "AUD-060": {
       "status": "À valider",
@@ -633,37 +1042,75 @@
       "acceptance": "La jungle 1987 ne reçoit pas automatiquement un laboratoire spatial ou une matriarche; les exceptions sont des missions alternatives identifiées.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Règles de contexte et variantes alternatives empêchent de présenter les batailles de guerre comme reconstitutions des films ; vérifier le filtrage de chaque installation réelle."
+      "notes": "Le filtrage des mécanismes par contexte empêche les installations futuristes automatiques dePrey ; revue de tous décors/groupes/objets par contexte encore nécessaire."
     },
     "AUD-061": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P0",
       "domain": "Level design",
       "item": "Rendre solides les volumes de décor pertinents",
       "acceptance": "Joueurs, alliés et ennemis heurtent les mêmes volumes; les espaces sous les abris restent franchissables.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Volumes partagés, couverture et mouvement des acteurs sont réconciliés ; parcours comparatif joueur/allié/ennemi dans tous les biomes encore à associer aux preuves finales."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/world-phase2-construction-transport-stream-44-tests.txt",
+          "sha256": "3213ed0c76d8bc23fce37272f7de927fe76ef5da5f9c338e15440034f0c1fa09",
+          "scope": "44/44 :34terrains construits, trajets physiques, transport, pont destructible/réparable et streaming des allocations GPU testé côté CPU."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/world-navigation-freeze-15-tests.txt",
+          "sha256": "a7b7145bc28bc0efc5ad78175c8d3f4eb74ab4025f768c6d000d4b27b097156c",
+          "scope": "15/15 : navigation des11biomes, contacts partagés, portes réelles et détour civil autour de2angles."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+          "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
+          "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        }
+      ],
+      "notes": "Joueur et managers partagent les volumes de collision/visibilité et les accès. Couverts, portes, poses de pont et espaces sous supports sont testés, y compris contacts conservés hors caméra. Les petits détails décoratifs nonphysiques restent une limite documentée."
     },
     "AUD-062": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Level design",
       "item": "Ajouter une navigation des groupes à grande échelle",
       "acceptance": "Un groupe contourne un obstacle, choisit un autre passage et atteint un objectif distant sans traverser les murs.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Routes physiques, navigation de graphe et traces de leader guident groupes/convois/sauvés ; les tests d’escorte passent deux angles sans traverser les murs."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+          "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c",
+          "scope": "56/56 : réserves, relations, pertes/identités, horloges, renseignement, arc original, objectifs, tactiques et compagnons ; portée CPU explicite."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/world-phase2-construction-transport-stream-44-tests.txt",
+          "sha256": "3213ed0c76d8bc23fce37272f7de927fe76ef5da5f9c338e15440034f0c1fa09",
+          "scope": "44/44 :34terrains construits, trajets physiques, transport, pont destructible/réparable et streaming des allocations GPU testé côté CPU."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/world-navigation-freeze-15-tests.txt",
+          "sha256": "a7b7145bc28bc0efc5ad78175c8d3f4eb74ab4025f768c6d000d4b27b097156c",
+          "scope": "15/15 : navigation des11biomes, contacts partagés, portes réelles et détour civil autour de2angles."
+        }
+      ],
+      "notes": "Les groupes suivent le graphe physique et ses alternatives ; accompagnants et civils contournent les couverts et suivent deux angles sans traverser les murs. La fermeture d’un flanc choisit une autre voie, en conservant leurs identités."
     },
     "AUD-063": {
-      "status": "En cours",
+      "status": "À valider",
       "priority": "P1",
       "domain": "Level design",
       "item": "Gérer l’encombrement aux portes et ponts",
       "acceptance": "Un flot d’assaut traverse un goulet et une évacuation inverse reste possible; aucun blocage prolongé.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Les routes de contournement et la navigation limitent les blocages ; un stress test de flux opposés dans portes/ponts reste à effectuer."
+      "notes": "Détours, formations et navigation évitent les blocages structurels ; aucun stress test exhaustif d’assaut/évacuation opposés aux goulets n’est fourni."
     },
     "AUD-064": {
       "status": "En cours",
@@ -673,17 +1120,30 @@
       "acceptance": "Les IA utilisent les bons accès; les tirs et sauts respectent hauteur, plafonds et visibilité.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Collisions, hauteurs et getElevationAt des passerelles héritées sont conservés ; il n’y a pas de navmesh complet des étages. L’accès vertical tactique de toutes les IA reste partiel."
+      "notes": "Une vraie rampe0→3→0 et unUSCM traversant le pont sont testés ; pas de navmesh complet multiétages ni validation de tous accès verticaux."
     },
     "AUD-065": {
-      "status": "À faire",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Level design",
       "item": "Lier destruction et contrôle du terrain",
       "acceptance": "Détruire un pont modifie les trajets des deux camps et ne laisse ni collision fantôme ni chemin invalide.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Fermetures de routes et portes sont en cours de raccordement ; destruction réelle de pont modifiant navigation/collision des deux camps non démontrée."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/world-phase2-construction-transport-stream-44-tests.txt",
+          "sha256": "3213ed0c76d8bc23fce37272f7de927fe76ef5da5f9c338e15440034f0c1fa09",
+          "scope": "44/44 :34terrains construits, trajets physiques, transport, pont destructible/réparable et streaming des allocations GPU testé côté CPU."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+          "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
+          "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        }
+      ],
+      "notes": "Le pont possède support, rampe et collision réels. Sa destruction ferme la route aux deux camps, fait tomber les acteurs présents et retire le collider du tablier ; détour, réparation et état sauvegardé sont testés sans duplication."
     },
     "AUD-066": {
       "status": "À valider",
@@ -693,27 +1153,40 @@
       "acceptance": "Aucune attaque ou caméra traverse un volume majeur; le joueur peut lire le boss et se déplacer durant toutes ses phases.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Les boss utilisent espaces et géométries bornées dans les tests ; contrôle visuel caméra/attaques de chaque phase dans les arènes réelles encore requis."
+      "notes": "Géométries et hauteurs de boss sont bornées et la caméra est physique ; chaque phase/caméra des18affrontements complets reste à examiner."
     },
     "AUD-067": {
-      "status": "En cours",
+      "status": "À valider",
       "priority": "P2",
       "domain": "Level design",
       "item": "Guider par le décor et les lignes de vue",
       "acceptance": "Un joueur peut repérer la route principale et un contournement sans suivre uniquement un marqueur HUD.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Repères et contournements physiques existent ; guidage sans HUD doit être observé avec des joueurs."
+      "notes": "Contournements/repères sont construits ; guidage des joueurs sans marqueurs HUD nonévalué."
     },
     "AUD-068": {
-      "status": "En cours",
+      "status": "Terminé",
       "priority": "P2",
       "domain": "Level design",
       "item": "Adapter transports et déplacements aux grandes distances",
       "acceptance": "Traverser une grande carte n’est ni une longue course vide ni une téléportation qui annule la menace d’un front.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Les transports détaillés existants sont préservés ; traversée tactique des nouvelles grandes variantes avec risque de fronts non encore démontrée."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/world-phase2-construction-transport-stream-44-tests.txt",
+          "sha256": "3213ed0c76d8bc23fce37272f7de927fe76ef5da5f9c338e15440034f0c1fa09",
+          "scope": "44/44 :34terrains construits, trajets physiques, transport, pont destructible/réparable et streaming des allocations GPU testé côté CPU."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+          "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
+          "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        }
+      ],
+      "notes": "Le skimmer réel embarque puis suit physiquement les corridors et deux angles, avec durée et vitesse mesurées. Contact ennemi, perte de route ou commande manuelle interrompent le transport à sa position ; aucun saut entre fronts."
     },
     "AUD-069": {
       "status": "En cours",
@@ -723,7 +1196,7 @@
       "acceptance": "Un tableau de mesures prouve les rapports d’échelle; chaque exception artistique est documentée.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Les scènes utilisent des mesures en unités et des contrôles de géométrie ; table complète acteurs/lieux et comparaison d’échelle source 1:1 encore incomplète."
+      "notes": "Hauteurs de boss et dimensions de terrain sont mesurées en unités de jeu. Rapports d’échelle source/costume/acteur1:1 nonétablis."
     },
     "AUD-070": {
       "status": "En cours",
@@ -733,7 +1206,7 @@
       "acceptance": "La mesure distingue zones calmes, fronts denses et points de décision; aucune grande extension ne reste vide sans fonction.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Fronts et fonctions sont distribués dans les variantes ; mesure des zones calmes/denses et de leur utilité sur toutes les grandes cartes encore manquante."
+      "notes": "Les fonctions de fronts existent ; mesure de densité utile et zones calmes pour chaque grande extension nonréalisée."
     },
     "AUD-071": {
       "status": "À valider",
@@ -743,17 +1216,30 @@
       "acceptance": "Les 10 cartes génèrent leur boss annoncé et une erreur de configuration est détectée avant la partie.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Le registre détecte boss inconnus avant effacement et chaque type possède son constructeur ; correspondance des onze cartes et boss annoncés à vérifier en jeu."
+      "notes": "18constructeurs stricts,11mappings de lieux et vraieQueen allouée sont couverts ; les11rencontres finales ne sont pas toutes lancées/jouées et la détection universelle de configuration invalide avant lancement reste à confirmer."
     },
     "AUD-072": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Boss et mini-boss",
       "item": "Respecter le boss propre à la mission",
       "acceptance": "Gunnison, pyramide, Stargazer et Renaissance finissent avec leur rencontre définie; aucune substitution silencieuse.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Les rencontres récentes sont intégrées sans substitution générique silencieuse ; fins de Gunnison/pyramide/Stargazer/Renaissance à confirmer sur la candidate."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/boss-honor-acceptance-tests.txt",
+          "sha256": "b65dc2b3050cca077bbf0e3bc27ea4e516352689cd1104793f0e5c1a4fa7e2cb",
+          "scope": "14/14 :18constructeurs réels normalisés, attaques/biologie, masque et boltsFeral, esquive/couvert/parades/exécution/cleanup, ledger."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+          "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
+          "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        }
+      ],
+      "notes": "Les données des11lieux désignent leurs rencontres et le routeur transmet le type du lieu au registre strict. Les constructeurs correspondant à ces types existent ; aucun boss inconnu n’est remplacé silencieusement par une Queen. Ce contrôle de raccordement ne vaut pas onzecombats finaux joués."
     },
     "AUD-073": {
       "status": "À valider",
@@ -763,17 +1249,17 @@
       "acceptance": "Deux mini-boss sur deux fronts gardent chacun état et cible; faire apparaître le boss majeur n’en efface aucun.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Les commandants stratégiques possèdent leurs identités et états séparés ; vérifier simultanément deux officiers matérialisés et l’arrivée d’un boss majeur."
+      "notes": "Plusieurs officiers/Praetorians gardent leurs états ; un seul bossmajeur est volontaire. La coexistence visuelle de deuxminiboss sur deuxfronts et du majeur reste à vérifier."
     },
     "AUD-074": {
-      "status": "À valider",
+      "status": "En cours",
       "priority": "P1",
       "domain": "Boss et mini-boss",
       "item": "Donner une fonction stratégique à chaque officier",
       "acceptance": "Vaincre l’officier change immédiatement une capacité de son groupe ou de son front, annoncée au joueur.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "La perte d’officier affecte moral/capacité du groupe et produit un événement ; sa lisibilité dans le HUD doit être confirmée."
+      "notes": "Perte des officiers humains/clans change moral et front ; l’impact stratégique spécifique de chaque officier de ruche ne doit pas être réduit à une annonce."
     },
     "AUD-075": {
       "status": "À valider",
@@ -783,27 +1269,40 @@
       "acceptance": "Le joueur reconnaît une escalade et bénéficie de respiration; les élites ne remplacent pas la majorité de l’armée.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Le registre distingue élite, mini-boss et boss et limite uniques/rares ; rythme et respiration des rencontres à observer."
+      "notes": "Élites/mini-boss/boss sont catégorisés et bornés ; escalade perceptible et respiration en combat complet nonmesurées."
     },
     "AUD-076": {
-      "status": "En cours",
+      "status": "À valider",
       "priority": "P1",
       "domain": "Boss et mini-boss",
       "item": "Rendre chaque affrontement mécaniquement distinct",
       "acceptance": "Chaque boss exige au moins une lecture et une réponse distinctes; aucune différence limitée aux PV et à la couleur.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "18 types de boss construisent et ont des attaques autorisées distinctes ; chaque lecture/réponse mécanique en combat complet reste à vérifier."
+      "notes": "Plusieurs contre-jeux sont réels ; aucune revue individuelle des18lectures/réponses de boss n’est revendiquée."
     },
     "AUD-077": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Boss et mini-boss",
       "item": "Adapter parades et ruptures à l’anatomie",
       "acceptance": "La même signalétique conserve sa signification; les attaques d’une créature géante ne se parent pas arbitrairement comme une lame humaine.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Les attaques lourdes, géantes, projectiles et acide n’utilisent pas une parade universelle ; signalétique et cas anatomiques sont testés partiellement."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/boss-honor-acceptance-tests.txt",
+          "sha256": "b65dc2b3050cca077bbf0e3bc27ea4e516352689cd1104793f0e5c1a4fa7e2cb",
+          "scope": "14/14 :18constructeurs réels normalisés, attaques/biologie, masque et boltsFeral, esquive/couvert/parades/exécution/cleanup, ledger."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+          "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
+          "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        }
+      ],
+      "notes": "Les contre-attaques sont typées : géants, lourds, acide et projectiles ne reçoivent pas une parade universelle de lame humaine. Conditions anatomiques, garde/parade et signal de préparation partagé sont testés."
     },
     "AUD-078": {
       "status": "En cours",
@@ -813,7 +1312,7 @@
       "acceptance": "Une phase peut menacer un objectif secondaire, mais conserve des issues et ne remet pas gratuitement à zéro les victoires antérieures.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Plusieurs objectifs restent actifs autour des commandants ; phases liées aux fronts et menaces secondaires spécifiques restent incomplètes."
+      "notes": "Les fronts et objectifs subsistent autour des boss ; phases menaçant des objectifs secondaires et leurs issues restent partielles."
     },
     "AUD-079": {
       "status": "À valider",
@@ -823,7 +1322,7 @@
       "acceptance": "Chaque fiche distingue confirmé, interprétation et invention; aucun commentaire source n’est utilisé comme preuve externe.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "39 fiches séparent source, adaptation, titres et exclusions ; les constructeurs procéduraux ne sont pas certifiés canoniques par leurs commentaires."
+      "notes": "Les39fiches distinguent sources/adaptations/titres ; vérification externe individuelle des revendications canoniques encore partielle."
     },
     "AUD-080": {
       "status": "À valider",
@@ -833,77 +1332,118 @@
       "acceptance": "Une exécution ne tue pas le joueur hors champ, n’efface pas le boss d’un autre front et ne répète pas son trophée.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Les exécutions consomment une identité une fois et respectent les autres acteurs ; sécurité hors champ et coexistence de boss doivent encore être vérifiées en jeu."
+      "notes": "Exécution portée/armure/idempotence est testée ; sécurité horschamp et coexistence de tous boss pendant cinématique restent à confirmer."
     },
     "AUD-081": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P2",
       "domain": "Boss et mini-boss",
       "item": "Créer des rencontres de commandants humains et Bad Blood",
       "acceptance": "Les commandants gagnent leur importance par position et groupe; leurs forces restent cohérentes avec leur équipement.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Des commandants originaux humains et Bad Blood occupent une place allouée dans leurs groupes ; leur modèle adapté est annoncé, pas une reproduction historique certifiée."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+          "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
+          "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+          "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c",
+          "scope": "56/56 : réserves, relations, pertes/identités, horloges, renseignement, arc original, objectifs, tactiques et compagnons ; portée CPU explicite."
+        }
+      ],
+      "notes": "Les commandants originaux humains et BadBlood occupent une position et une place réelles dans une force cohérente. Leurs noms/états ne créent pas de combattant supplémentaire ; leur rendu adapté n’est pas une reproduction historique certifiée."
     },
     "AUD-082": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Combat et rôles",
       "item": "Différencier réellement les styles des sept chasseurs",
       "acceptance": "Chaque chasseur possède une boucle identifiable et des faiblesses; les libellés d’armure ne remplacent pas les différences jouables.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Styles et arsenaux des sept chasseurs disposent de paramètres/contraintes propres ; boucle et faiblesse de chacun encore à tester dans le jeu."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+          "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
+          "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        }
+      ],
+      "notes": "Les sept chasseurs ont chaînes, fenêtres, portée, mobilité, coûts et ressources distincts, avec contraintes/contre-jeu propres. Les tests vérifient les actions réelles et transitions, pas uniquement des libellés d’armure ; aucune différence de modèle1:1 n’en est déduite."
     },
     "AUD-083": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Combat et rôles",
       "item": "Contrôler les équipements autorisés par personnage",
       "acceptance": "Le mode fidèle ne donne pas une arme non attestée au personnage sans la signaler; les variantes restent utilisables en mode adapté.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Les règles distinguent strict/contextuel/adapté, refusent armes inconnues et équipements hors profil ; le blocage de toutes les voies d’entrée réelles est à confirmer."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+          "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
+          "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        }
+      ],
+      "notes": "Le kit fidèle à l’incarnation refuse les équipements horsprofil et les anciennes voies d’action nonpermises ; les choix croisés restent explicitement adaptés. Feral utilise ses bolts finis et ne reçoit pas de plasma forcé."
     },
     "AUD-084": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Combat et rôles",
       "item": "Lier la roue d’armes aux actions effectives",
       "acceptance": "Changer d’arme change la prochaine action, affiche la bonne ressource et respecte le profil du chasseur.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "La roue et les actions sont raccordées aux armes disponibles par personnage ; ressources et prochaine action de chaque entrée restent à vérifier."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+          "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
+          "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        }
+      ],
+      "notes": "Une sélection d’arme unique commande géométrie tenue, prochain projectile, dégâts, coût, cooldown et ressource affichée. Les changements répétés ne cumulent pas les statistiques ; les tests couvrent toutes les entrées de roue."
     },
     "AUD-085": {
-      "status": "En cours",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Combat et rôles",
       "item": "Décrire précisément chaînes légères et lourdes",
       "acceptance": "Toutes les transitions attendues se produisent au bon timing à 30/60/120 fps et n’ajoutent pas d’impacts invisibles.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Les chaînes et horloges de combat existantes sont préservées ; matrice exhaustive légère/lourde et impacts à30/60/120fps encore manquante."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+          "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
+          "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        }
+      ],
+      "notes": "Les chaînes légères/lourdes ont phases et impacts identifiés par nonce. Leurs fenêtres, annulations et récupération sont vérifiées à30/60/120fps, avec une seule émission d’impact attendue par transition."
     },
     "AUD-086": {
-      "status": "En cours",
+      "status": "À valider",
       "priority": "P1",
       "domain": "Combat et rôles",
       "item": "Gérer ressources et fenêtres des attaques de masse",
       "acceptance": "Un enchaînement dominant ne rend pas tous les groupes inoffensifs en permanence; les coûts sont visibles avant l’action.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Ressources et fenêtres de combat sont présentes ; coût visible et absence de contrôle permanent des formations restent à mesurer."
+      "notes": "Endurance, cooldowns et impacts finis empêchent les enchaînements gratuits dans les tests ; visibilité préalable de tous coûts et absence de domination permanente restent à observer."
     },
     "AUD-087": {
-      "status": "À faire",
+      "status": "À valider",
       "priority": "P2",
       "domain": "Combat et rôles",
       "item": "Créer des réponses adaptées aux formations",
       "acceptance": "Une même compétence est efficace contre une ligne mais moins contre un groupe dispersé; l’IA réagit de manière lisible.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Les groupes et formations ont une représentation stratégique ; réponses spécialisées ligne/dispersé avec réaction visible de l’IA non démontrées."
+      "notes": "Formations à vrais slots, cohésion/root, dégâts différenciés ligne/dispersé et contre-jeu sont implémentés/testés ; présentation lisible de toutes les réponses en jeu encore noncertifiée."
     },
     "AUD-088": {
       "status": "En cours",
@@ -913,7 +1453,7 @@
       "acceptance": "Une approche furtive ouvre un avantage concret sans rendre obligatoire le combat frontal de toutes les unités.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Furtivité et gadgets du socle sont conservés ; avantage concret d’approche furtive dans les opérations de masse reste à vérifier."
+      "notes": "Fcamouflage est rétabli et testé réellement. Bonus/backstab/résistance existent ; une approche furtive transformant concrètement tous les plans de masse reste à valider."
     },
     "AUD-089": {
       "status": "À valider",
@@ -923,7 +1463,7 @@
       "acceptance": "Aucune capacité originale ne porte une certification 1:1 sans référence et comparaison; les collisions et contre-effets sont testés.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Les données nouvelles annoncent adaptations et fidélité non certifiée ; collisions/contre-effets de chaque pouvoir extrapolé restent à vérifier individuellement."
+      "notes": "Les nouveaux profils annoncent adaptations et fidélité noncertifiée ; collisions/contre-effets de chaque ancien gadget extrapolé ne sont pas tous certifiés."
     },
     "AUD-090": {
       "status": "À valider",
@@ -933,7 +1473,7 @@
       "acceptance": "Un tir ordinaire ne traverse pas une paroi; une arme perforante le fait seulement dans ses limites annoncées.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "CombatGeometry et les projectiles consultent les volumes du décor ; tirs au travers de parois et exceptions de perforation à vérifier sur chaque arme."
+      "notes": "Murs et couverts partagés arrêtent mêlée/tirs/projectiles, ycompris NPC. Les limites de perforation de toutes les armes ne sont pas encore certifiées."
     },
     "AUD-091": {
       "status": "À valider",
@@ -943,57 +1483,133 @@
       "acceptance": "Aucune combinaison ne laisse le personnage bloqué indéfiniment; chaque état possède une indication et une issue.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Le socle de combat conserve délais, interruptions et états ; combinaisons d’effets et issues lisibles demandent recette globale."
+      "notes": "États et effets temporaires sont bornés dans les tests ; aucune matrice exhaustive des combinaisons de tous pouvoirs hérités n’est fournie."
     },
     "AUD-092": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Campagne et progression",
       "item": "Séparer campagnes fidèles et batailles alternatives",
       "acceptance": "Un joueur sait si la bataille reproduit un événement ou réutilise un lieu pour une guerre alternative.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Les27 opérations sont explicitement originales/adaptées et les variantes humaines indisponibles sont refusées ; labels de sélection et lancement réel à vérifier."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+          "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
+          "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/audits/2026-10-26/qa/runtime-c518-11-biomes-4-ops.json",
+          "sha256": "56bddb4b3e25cfd419927782604e4ad79524763c37969409f2449322326aeec5",
+          "scope": "Sourcec5187b2/index56204f :11démarrages/insertion/nettoyage avecfixture1ennemi et4smokes d’opération, cap≤32, mêmesIDs, Earchives/reprise/carte/Fcamouflage/Queen réelle et bilan ; zéroJS/réseau/externe. Pas11victoires ; trêve démarrée puis interrompue par dégâts, completionCPU seulement."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/audits/2026-10-26/qa/runtime-48b5-incremental-charon-4-ops-photo.json",
+          "sha256": "2b737ee19d428e27f97d7746e72e8cd23cbc9d04409a2ebf21e9ff410b4b101a",
+          "scope": "DeltaUI source48b5/index124d7735 : Charon et4opérations, vraiOphotoouvrir/fermer, mêmesIDs/caps/E/save/carte/Queen/bilanFR. Les11biomes complets restent couverts par le rapport antérieurc518. Trêve interrompue par dégâts ; completion nonrevendiquée."
+        }
+      ],
+      "notes": "La sélection, le briefing et leHUD identifient les opérations originales et terrains adaptés. Arsenal fidèle à une incarnation et géographie film1:1 ne sont pas confondus ; les deux contrôleurs humains absents sont désactivés."
     },
     "AUD-093": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Campagne et progression",
       "item": "Créer des arcs de bataille et changements d’objectif",
       "acceptance": "Chaque mission possède au moins un changement de situation causal, annoncé sans interrompre le contrôle inutilement.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Chaque plan comprend actions causales, préconditions et changement d’état (source, convoi, négociation, secours ou extraction) ; annonces et contrôle réel à confirmer."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+          "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c",
+          "scope": "56/56 : réserves, relations, pertes/identités, horloges, renseignement, arc original, objectifs, tactiques et compagnons ; portée CPU explicite."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+          "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
+          "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/audits/2026-10-26/qa/runtime-c518-11-biomes-4-ops.json",
+          "sha256": "56bddb4b3e25cfd419927782604e4ad79524763c37969409f2449322326aeec5",
+          "scope": "Sourcec5187b2/index56204f :11démarrages/insertion/nettoyage avecfixture1ennemi et4smokes d’opération, cap≤32, mêmesIDs, Earchives/reprise/carte/Fcamouflage/Queen réelle et bilan ; zéroJS/réseau/externe. Pas11victoires ; trêve démarrée puis interrompue par dégâts, completionCPU seulement."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/audits/2026-10-26/qa/runtime-48b5-incremental-charon-4-ops-photo.json",
+          "sha256": "2b737ee19d428e27f97d7746e72e8cd23cbc9d04409a2ebf21e9ff410b4b101a",
+          "scope": "DeltaUI source48b5/index124d7735 : Charon et4opérations, vraiOphotoouvrir/fermer, mêmesIDs/caps/E/save/carte/Queen/bilanFR. Les11biomes complets restent couverts par le rapport antérieurc518. Trêve interrompue par dégâts ; completion nonrevendiquée."
+        }
+      ],
+      "notes": "Les27plans distincts ont préconditions et changements causaux : preuve, source, portail, convoi, secours, défense, duel ou extraction. La seule capture générique ne gagne pas ces opérations ; les annonces conservent le contrôle du joueur."
     },
     "AUD-094": {
-      "status": "En cours",
+      "status": "À valider",
       "priority": "P2",
       "domain": "Campagne et progression",
       "item": "Donner aux personnages des enjeux et conséquences",
       "acceptance": "Le briefing et le débrief réagissent au personnage et aux événements réellement accomplis.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Les événements et résultats reflètent tâches, pertes et stratégies réellement accomplies ; réactions propres au personnage dans tous les briefings/débriefings restent partielles."
+      "notes": "Reconnaissances, données de briefing/débrief et arc réagissent au personnage/événements ; présentation complète des enjeux de tous personnages reste à vérifier."
     },
     "AUD-095": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P0",
       "domain": "Campagne et progression",
       "item": "Corriger le débit d’honneur de la forge",
       "acceptance": "Deux achats successifs débitent le solde réel; recharger n’autorise pas à dépenser plusieurs fois les mêmes points.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "HonorLedger et ForgeShop conservent débit persistant/idempotent ; deux achats successifs et rechargement sont à relier aux preuves globales."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/forge-ledger-acceptance-tests.txt",
+          "sha256": "32dd096aa7aed6655a079b4e30eb153ecd5de4ee5c2be698e56a352b34305bae",
+          "scope": "7/7 : vraieForgeShop, deux achats successifs débités puisrechargement ; scorefourni ne crée aucunfonds ; ledger/migration/quota/pending/idempotence."
+        }
+      ],
+      "notes": "La vraieForgeShop débite deux achats successifs sur le solde persistant ; rechargement et scorefourni artificiellement ne recréent pas d’honneur. Les reçus et échecs de stockage sont idempotents et conservateurs."
     },
     "AUD-096": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Campagne et progression",
       "item": "Sauvegarder et reprendre une opération longue",
       "acceptance": "Reprendre restitue l’état sans doublon de récompense et sans réinitialiser un front perdu.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Sauvegarde et reprise raccordées : inventaires, cooldowns, blessés, pertes, fronts, routes, sources, objectifs, civils, chargements et réactions. Tests de reprise sans duplication ; recette avec récompenses réelles encore requise."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+          "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c",
+          "scope": "56/56 : réserves, relations, pertes/identités, horloges, renseignement, arc original, objectifs, tactiques et compagnons ; portée CPU explicite."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+          "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
+          "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/audits/2026-10-26/qa/runtime-c518-11-biomes-4-ops.json",
+          "sha256": "56bddb4b3e25cfd419927782604e4ad79524763c37969409f2449322326aeec5",
+          "scope": "Sourcec5187b2/index56204f :11démarrages/insertion/nettoyage avecfixture1ennemi et4smokes d’opération, cap≤32, mêmesIDs, Earchives/reprise/carte/Fcamouflage/Queen réelle et bilan ; zéroJS/réseau/externe. Pas11victoires ; trêve démarrée puis interrompue par dégâts, completionCPU seulement."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/audits/2026-10-26/qa/runtime-48b5-incremental-charon-4-ops-photo.json",
+          "sha256": "2b737ee19d428e27f97d7746e72e8cd23cbc9d04409a2ebf21e9ff410b4b101a",
+          "scope": "DeltaUI source48b5/index124d7735 : Charon et4opérations, vraiOphotoouvrir/fermer, mêmesIDs/caps/E/save/carte/Queen/bilanFR. Les11biomes complets restent couverts par le rapport antérieurc518. Trêve interrompue par dégâts ; completion nonrevendiquée."
+        }
+      ],
+      "notes": "La reprise via les vraismenus conserve unités/identités, blessés, pertes, fronts, routes, cooldowns, inventaires et objectifs. L’archive reste portée après suspension/reprise ; les crédits d’une même identité/session ne sont pas repayés."
     },
     "AUD-097": {
       "status": "À valider",
@@ -1003,17 +1619,30 @@
       "acceptance": "Deux variantes d’une même carte demandent des décisions différentes tout en respectant la table de cohérence.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Les34 terrains adaptés et27 plans offrent routes, objectifs et relations distincts ; comparaison de deux conditions d’une même carte à observer."
+      "notes": "Variantes/cartes/plans ont conditions distinctes et cohérentes ; comparaison en jeu de deux variantes d’une même carte à documenter."
     },
     "AUD-098": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "HUD et lisibilité",
       "item": "Corriger les tableaux du radar de factions",
       "acceptance": "Chaque acteur visible apparaît dans la bonne catégorie; un symbole ne devient pas allié seulement par sa couleur.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Tableaux des factions et relations du radar ont été corrigés ; les acteurs stratégiques portent leur camp. Classification visible trois camps/trêve encore à vérifier."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+          "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
+          "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/combat-phase2-71-tests.txt",
+          "sha256": "6e20e10df3b68727b9630ffdc3270aef6f3cdd5839d634847fc8f27c4663d3c5",
+          "scope": "71/71 : vrais managers de combat, décès et quotas, formations/compagnons, relations, poursuite, cadence, cleanup et progression."
+        }
+      ],
+      "notes": "Les tableaux réels des managers et les IDs de faction alimentent le radar ; espèce/couleur ne décident pas de l’alliance. Les trois camps et les relations sont distingués par la même source d’état que le combat."
     },
     "AUD-099": {
       "status": "À valider",
@@ -1023,47 +1652,86 @@
       "acceptance": "Le joueur peut comparer les fronts et envoyer une unité depuis la carte sans perdre la compréhension de la situation.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "La carte de commandement permet zoom/pan, choix groupe/front et ordresP1/P2. Les commandes ciblent le moteur réel ; compréhension et fonctionnement complet à vérifier dans le jeu."
+      "notes": "Carte réelle zoom/pan, sélection groupe/front, ordres, tactiques, délégation et journal. Le clic transmettre est validé ; toutes les combinaisons de choix/trajectoires depuis la carte ne sont pas parcourues."
     },
     "AUD-100": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "HUD et lisibilité",
       "item": "Prioriser alertes et rapports des fronts",
       "acceptance": "Une attaque ordinaire ne masque pas un avertissement stratégique; chaque alerte urgente pointe le lieu et le délai.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Le moteur fournit événements, priorité, cause, front et délai ; l’interface conserve les alertes urgentes et les contre-offensives annoncées. Flèches/délais et concurrence d’alertes restent à confirmer."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+          "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
+          "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        }
+      ],
+      "notes": "Les alertes critiques persistent avant les rapports ordinaires et affichent front, direction/distance et échéance réelle. Le capitaine en danger et les contre-offensives annoncées ont une priorité testée."
     },
     "AUD-101": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P2",
       "domain": "HUD et lisibilité",
       "item": "Afficher l’origine des gains et pertes de contrôle",
       "acceptance": "Une variation importante de contrôle est explicable par un événement enregistré et accessible au journal.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Le journal conserve captures, sources, relations, morts et objectifs causaux ; accès et explication des variations dans l’interface encore à vérifier."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+          "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c",
+          "scope": "56/56 : réserves, relations, pertes/identités, horloges, renseignement, arc original, objectifs, tactiques et compagnons ; portée CPU explicite."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+          "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
+          "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/audits/2026-10-26/qa/runtime-c518-11-biomes-4-ops.json",
+          "sha256": "56bddb4b3e25cfd419927782604e4ad79524763c37969409f2449322326aeec5",
+          "scope": "Sourcec5187b2/index56204f :11démarrages/insertion/nettoyage avecfixture1ennemi et4smokes d’opération, cap≤32, mêmesIDs, Earchives/reprise/carte/Fcamouflage/Queen réelle et bilan ; zéroJS/réseau/externe. Pas11victoires ; trêve démarrée puis interrompue par dégâts, completionCPU seulement."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/audits/2026-10-26/qa/runtime-48b5-incremental-charon-4-ops-photo.json",
+          "sha256": "2b737ee19d428e27f97d7746e72e8cd23cbc9d04409a2ebf21e9ff410b4b101a",
+          "scope": "DeltaUI source48b5/index124d7735 : Charon et4opérations, vraiOphotoouvrir/fermer, mêmesIDs/caps/E/save/carte/Queen/bilanFR. Les11biomes complets restent couverts par le rapport antérieurc518. Trêve interrompue par dégâts ; completion nonrevendiquée."
+        }
+      ],
+      "notes": "Captures, sources, relations, morts, cohésion et objectifs ont des événements causaux accessibles au journal. Le bilan affiche les causes connues et les deltas de contrôle/cohésion, sans inventer des pertes lors du nettoyage."
     },
     "AUD-102": {
-      "status": "En cours",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "HUD et lisibilité",
       "item": "Rendre le HUD de masse utilisable à la manette",
       "acceptance": "Toutes les actions nécessaires à une bataille sont réalisables avec une manette sans clavier ni perte de mouvement.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "La couverture complète manette n’est pas implémentée : les nouvelles actionsE et la carte de commandement nécessitent encore une voie sans clavier/souris et une recette dédiée."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+          "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
+          "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        }
+      ],
+      "notes": "Le chemin manette comprend gameplay, pause, carte, menus, choix natifs/multiples et interactions, avec navigation de focus et absence de fuite d’input. Validation par API/manettes virtuelles et tests de pontUI ; aucune manette physique n’a été essayée."
     },
     "AUD-103": {
-      "status": "En cours",
+      "status": "À valider",
       "priority": "P2",
       "domain": "HUD et lisibilité",
       "item": "Préserver la lisibilité pour tous les profils visuels",
       "acceptance": "Les objectifs et dangers restent distinguables avec couleurs simulées et effets réduits.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Les informations textuelles ne reposent pas seulement sur couleur ; simulations de daltonisme, effets réduits et lisibilité des dangers restent à vérifier."
+      "notes": "Contraste, focus, textes et effets réduits sont développés ; simulation complète des profils visuels et lecture des dangers noncertifiées."
     },
     "AUD-104": {
       "status": "À valider",
@@ -1073,7 +1741,7 @@
       "acceptance": "Le joueur et le danger principal restent visibles dans chaque scénario; la caméra ne traverse pas les parois.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Le socle caméra est conservé lors de l’intégration ; caméra de commandement et visibilité des dangers sur toutes les nouvelles variantes à contrôler."
+      "notes": "La caméra résout les volumes physiques, bornes de cadrage et proximité ; visibilité du joueur/danger dans chaque phase et scénario reste à contrôler."
     },
     "AUD-105": {
       "status": "À valider",
@@ -1083,7 +1751,7 @@
       "acceptance": "Dix relances d’une mission ne font pas croître les compteurs de ressources; aucune texture partagée ne disparaît.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Les tests de décor contrôlent libération unique des ressources ; dix relances réelles et textures partagées demandent preuve globale récente."
+      "notes": "Les ressources sont libérées une fois et11démarrages/nettoyages ont passé ; dixrelances identiques d’une même mission avec plateau mesuré restent à documenter."
     },
     "AUD-106": {
       "status": "En cours",
@@ -1093,17 +1761,17 @@
       "acceptance": "L’augmentation du nombre d’unités suit les budgets mesurés et conserve la silhouette de chaque rôle.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Plafond global et profils de détail bornent les acteurs ; budget de rendu, silhouettes et performances sur les matériels cibles restent à mesurer."
+      "notes": "Le rendu respecte capprovisoire32 etLOD ; budget de rendu/silhouettes sur matériels cibles nonmesuré."
     },
     "AUD-107": {
-      "status": "À valider",
+      "status": "En cours",
       "priority": "P1",
       "domain": "Performance et QA",
       "item": "Échelonner les calculs IA et requêtes de proximité",
       "acceptance": "La recherche de cibles ne domine pas le temps CPU lorsque l’effectif double; les résultats restent déterministes pour le test.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "La simulation stratégique travaille à pas déterministes avec recherche groupée ; coût CPU de proximité quand l’effectif double doit encore être mesuré."
+      "notes": "Moteur à pasfixe et recherche groupée ; courbe CPU à effectif doublé nonmesurée."
     },
     "AUD-108": {
       "status": "À valider",
@@ -1113,7 +1781,7 @@
       "acceptance": "P1 etP2 peuvent combattre sur deux fronts avec menaces équitables, objectifs partagés et budget mesuré.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Les deux joueurs partagent un plafond et les apparitions évitent leur proximité ; combats réels simultanés, équité et coût mesuré restent à vérifier."
+      "notes": "Budgets communs et acteurs des deuxjoueurs sont testés côté moteur/contrôles ; deuxfronts réellement visibles en coopération avec mesures restent à vérifier."
     },
     "AUD-109": {
       "status": "À valider",
@@ -1123,37 +1791,75 @@
       "acceptance": "Une bataille prolongée garde une mémoire stable et les effets obligatoires restent lisibles quand le budget est atteint.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Journaux, événements et ressources de décor sont bornés et libérés ; stabilité mémoire d’une longue bataille avec effets/cadavres encore à mesurer."
+      "notes": "Événements/effets/cadavres ont plafonds et cleanup ; stabilité mémoire d’une bataille interactive prolongée noncertifiée."
     },
     "AUD-110": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P0",
       "domain": "Performance et QA",
       "item": "Assurer une simulation indépendante de la fréquence d’images",
       "acceptance": "Le même scénario à 30/60/120 fps produit des cadences et dégâts proches selon la tolérance documentée.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Les horloges des nouveaux modules utilisent delta et les suites comparent les fréquences ; cadences et dégâts intégrés à30/60/120fps attendent preuve finale."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+          "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c",
+          "scope": "56/56 : réserves, relations, pertes/identités, horloges, renseignement, arc original, objectifs, tactiques et compagnons ; portée CPU explicite."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+          "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
+          "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        }
+      ],
+      "notes": "Un même scénario déterministe de20minutes est comparé à30/60/120fps ; cadences, états et dégâts concordent selon les assertions/tolérances des tests. Horloges, projectiles, chaînes et dégâts continus utilisent le temps simulé ; pas de promesse deFPS matériel."
     },
     "AUD-111": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Performance et QA",
       "item": "Suspendre tous les événements à la pause",
       "acceptance": "Une pause de 60 s ne déclenche ni frappe, ni invocation, ni perte de front; quitter annule les callbacks.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "La pause fige moteur, objectifs, canalisations et déplacements et dispose annule les actions ; frappes/invocations/callbacks des anciens modules à vérifier globalement."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+          "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c",
+          "scope": "56/56 : réserves, relations, pertes/identités, horloges, renseignement, arc original, objectifs, tactiques et compagnons ; portée CPU explicite."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+          "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
+          "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/audits/2026-10-26/qa/runtime-c518-11-biomes-4-ops.json",
+          "sha256": "56bddb4b3e25cfd419927782604e4ad79524763c37969409f2449322326aeec5",
+          "scope": "Sourcec5187b2/index56204f :11démarrages/insertion/nettoyage avecfixture1ennemi et4smokes d’opération, cap≤32, mêmesIDs, Earchives/reprise/carte/Fcamouflage/Queen réelle et bilan ; zéroJS/réseau/externe. Pas11victoires ; trêve démarrée puis interrompue par dégâts, completionCPU seulement."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/audits/2026-10-26/qa/runtime-48b5-incremental-charon-4-ops-photo.json",
+          "sha256": "2b737ee19d428e27f97d7746e72e8cd23cbc9d04409a2ebf21e9ff410b4b101a",
+          "scope": "DeltaUI source48b5/index124d7735 : Charon et4opérations, vraiOphotoouvrir/fermer, mêmesIDs/caps/E/save/carte/Queen/bilanFR. Les11biomes complets restent couverts par le rapport antérieurc518. Trêve interrompue par dégâts ; completion nonrevendiquée."
+        }
+      ],
+      "notes": "La pause fige les horloges du moteur, mécanismes, attaques et objectifs ; dispose/clear annulent leurs actions.60secondes de misesàjour en pause dans la vraiecarte ne changent pas le temps stratégique. Il ne s’agit pas d’un chronométrage humain de60s."
     },
     "AUD-112": {
-      "status": "En cours",
+      "status": "À valider",
       "priority": "P2",
       "domain": "Performance et QA",
       "item": "Préparer un chargement par zones",
       "acceptance": "Le franchissement ne provoque ni terrain absent ni arrêt prolongé; revenir conserve objectifs et destructions.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Le niveau de détail stratégique conserve unités et objectifs hors contact ; streaming réel du terrain par zones et absence d’arrêt au franchissement non encore démontrés."
+      "notes": "Le streaming libère réellement les allocations de géométrie/instances en gardant les modèlesCPU et états du monde. ParcoursGPU de3zones puisretour et mesure de pause au franchissement restent à documenter."
     },
     "AUD-113": {
       "status": "En cours",
@@ -1163,17 +1869,36 @@
       "acceptance": "Les promesses d’effectifs reposent sur une capture mesurée et reproductible, pas sur le seul nombre de triangles.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Les compteurs/budgets sont explicites ; captures reproductibles CPU/GPU sur matériels cibles requises avant promesse de performances."
+      "notes": "Télémétrie distingue duréeCPU, intervalles d’affichage, compteurs scèneentière et absence de timerGPU ; les captures SwiftShader ne valident pas les performances sur matériels cibles."
     },
     "AUD-114": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P0",
       "domain": "Performance et QA",
       "item": "Rétablir une construction et des dépendances reproductibles",
       "acceptance": "Deux installations propres produisent le même jeu fonctionnel et les erreurs bloquent la PR avant publication.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Les dépendances et réglages Vite validés sont préservés ; double installation propre et deux constructions fonctionnelles restent à joindre à la candidate finale."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/qa/pr3/reproducibility/report.json",
+          "sha256": "7807fc7e52068c31f6829eb60c4a7275da3e9e1558121515101377816c701a5e",
+          "scope": "Deux installations et deux builds propres, codes0, sources propres,30/30fichiers et12/12GLB identiques au stage, build-info compris ; distoriginal/stage inchangés."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/publication-guards-5-tests.txt",
+          "sha256": "5fb1946df9f34969da0b560d8f8f5478a5d5a38f636a17526c3adf8a673f0476",
+          "scope": "5/5 gardes de publication : refus des preuves/index/dépendances incohérents ; garde locale, pas statut de protection PR GitHub."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/audits/2026-10-26/qa/runtime-48b5-incremental-charon-4-ops-photo.json",
+          "sha256": "2b737ee19d428e27f97d7746e72e8cd23cbc9d04409a2ebf21e9ff410b4b101a",
+          "scope": "Le stage identique aux deux clones est testé fonctionnellement : Charon+4opérations,photo/bilan/IDs,0JS/réseau/externe."
+        }
+      ],
+      "notes": "Deux clones locaux propres du commit48b5, deux npmci standard et deux builds réussis. Les30fichiers,12GLB et build-info sont identiques octet par octet au stage fonctionnel et entre clones. Les gardes locales refusent une publication avec preuves/manifeste incohérents ; aucune protection GitHub/CI distante n’est revendiquée. PortéeLinux/Node24.19/npm11.9, pas crossOS."
     },
     "AUD-115": {
       "status": "À valider",
@@ -1183,17 +1908,42 @@
       "acceptance": "Un rapport récent relie chaque carte au SHA et prouve au moins une victoire et une défaite cohérentes.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Les tests unitaires/constructions couvrent scénarios et cartes ; onze parcours réels complets avec victoire/défaite, version et preuves encore à établir."
+      "notes": "11démarrages/insertion/nettoyage et4smokes opération passent ; il ne s’agit pas de11parcours complets chacun victoire/défaite."
     },
     "AUD-116": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Performance et QA",
       "item": "Tester les vrais fronts simultanés",
       "acceptance": "Les bilans attendus concordent entre simulation distante et matérialisation; aucune perte n’est inventée lors du changement de détail.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Le pont et le moteur testent identités, HP, pertes et limites lors des transitions distant/actif ; validation simultanée dans le vrai jeu en cours."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+          "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c",
+          "scope": "56/56 : réserves, relations, pertes/identités, horloges, renseignement, arc original, objectifs, tactiques et compagnons ; portée CPU explicite."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/combat-phase2-71-tests.txt",
+          "sha256": "6e20e10df3b68727b9630ffdc3270aef6f3cdd5839d634847fc8f27c4663d3c5",
+          "scope": "71/71 : vrais managers de combat, décès et quotas, formations/compagnons, relations, poursuite, cadence, cleanup et progression."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/audits/2026-10-26/qa/runtime-c518-11-biomes-4-ops.json",
+          "sha256": "56bddb4b3e25cfd419927782604e4ad79524763c37969409f2449322326aeec5",
+          "scope": "Sourcec5187b2/index56204f :11démarrages/insertion/nettoyage avecfixture1ennemi et4smokes d’opération, cap≤32, mêmesIDs, Earchives/reprise/carte/Fcamouflage/Queen réelle et bilan ; zéroJS/réseau/externe. Pas11victoires ; trêve démarrée puis interrompue par dégâts, completionCPU seulement."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/audits/2026-10-26/qa/runtime-48b5-incremental-charon-4-ops-photo.json",
+          "sha256": "2b737ee19d428e27f97d7746e72e8cd23cbc9d04409a2ebf21e9ff410b4b101a",
+          "scope": "DeltaUI source48b5/index124d7735 : Charon et4opérations, vraiOphotoouvrir/fermer, mêmesIDs/caps/E/save/carte/Queen/bilanFR. Les11biomes complets restent couverts par le rapport antérieurc518. Trêve interrompue par dégâts ; completion nonrevendiquée."
+        }
+      ],
+      "notes": "Les transitions distant/détaillé conservent états, HP, IDs et pertes. Les4smokes réels réconcilient acteurs et compteurs sous le plafond32, avec une vraieQueen allouée ; sortir du détail ne produit pas une mort."
     },
     "AUD-117": {
       "status": "Terminé",
@@ -1205,12 +1955,18 @@
       "evidence": [
         {
           "kind": "test",
-          "path": "docs/audits/2026-10-26/catalog-objectives-test.txt",
-          "sha256": "a97eed9f9852449cd7df2b740adc941756af8f3421a20168a37333b7d106c3ca",
-          "scope": "24/24 tests automatisés : validation115 profils, refus uniques/exclus/réserves nommées/contextes/arsenaux incohérents ; réserves finies initiales des27 opérations et objectifs narratifs exécutés, sans prétendre115assets1:1."
+          "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+          "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
+          "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+          "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c",
+          "scope": "56/56 : réserves, relations, pertes/identités, horloges, renseignement, arc original, objectifs, tactiques et compagnons ; portée CPU explicite."
         }
       ],
-      "notes": "Les tests refusent individu unique doublé, profil exclu/non-combattant, réserve de nommé, contexte/époque et arme non autorisés avec erreurs précises ; les115 fiches sont validées structurellement sans annoncer115 modèles rendus."
+      "notes": "Les115fiches et27allocations sont validées : uniques doublés, exclus, réserves nommées, contextes et arsenaux interdits échouent avec message. Les profils ne sont pas assimilés à115modèles rendus."
     },
     "AUD-118": {
       "status": "À valider",
@@ -1220,7 +1976,7 @@
       "acceptance": "Une sauvegarde ancienne, partielle ou invalide ne bloque pas le lancement et n’efface pas silencieusement des trophées valides.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Les restaurations refusent configurations et registres corrompus avant mutation ; migrations anciennes, trophées valides et lancement de sauvegarde partielle encore à contrôler globalement."
+      "notes": "Checkpoints, incompatibilités, corruption et reçus ont tests ; toutes les migrations d’anciennes sauvegardes/trophées valides restent à vérifier."
     },
     "AUD-119": {
       "status": "À valider",
@@ -1230,17 +1986,30 @@
       "acceptance": "Le rapport cite version, durée et problèmes observés; les conclusions ne prétendent pas mesurer ce qui n’a pas été testé.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Les rapports automatiques indiquent leur portée. Aucun playtest humain n’a été réalisé pendant cette passe :0 testeur humain, pas de conclusion de difficulté humaine."
+      "notes": "Le rapport automatique cite source/version/durée/assistances et défauts observés ;0testeurhumain. Lisibilité/difficulté humaines nonmesurées."
     },
     "AUD-120": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Performance et QA",
       "item": "Vérifier les modèles sans annoncer une fidélité non démontrée",
       "acceptance": "Une validation liste ce qui correspond et ce qui reste approximatif pour silhouette, anatomie, armure, arme et animation.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Une revue dédiée des références/modèles est menée en parallèle ; silhouette, anatomie, armure, arme et animation restent à qualifier individuellement sans certification1:1 déduite du polygone."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "review",
+          "path": "docs/audits/2026-10-26/qa/model-integrity-reviewed.json",
+          "sha256": "d14a64db8f18d055e1f62917afc3617fa966f0c8ac3c320c984afc65449599c8",
+          "scope": "12GLB identiques aux sources validées ; aucune nouvelle génération ni certification1:1."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+          "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
+          "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        }
+      ],
+      "notes": "La revue liste correspondances et limites pour silhouette/anatomie/armure/armes/animations des modèles existants ; les12GLB restent identiques. Cette clôture valide la qualification honnête des écarts, jamais une fidélité visuelle1:1 ni les cinqmodèles encore absents."
     },
     "AUD-121": {
       "status": "À valider",
@@ -1250,58 +2019,102 @@
       "acceptance": "Aucune croissance mémoire continue, objectif bloqué ou perte de commandes; les incidents sont liés à une chronologie reproductible.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Journaux et réserves sont bornés et le moteur est testé sur durée simulée ; session interactive longue60minutes avec mesures mémoire et chronologie encore manquante."
+      "notes": "20minutes simulées et smokes interactifs bornés passent ; aucune session interactive instrumentée60minutes n’est revendiquée."
     },
     "AUD-122": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P2",
       "domain": "Performance et QA",
       "item": "Faire du bilan une preuve des résultats de la bataille",
       "acceptance": "Le bilan se réconcilie avec le journal de simulation; il ne crédite pas une victoire pour des ennemis simplement effacés.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Les comptes du moteur et du contrôleur conservent morts/évacués séparément des sorties de détail ; bilan final du vrai jeu et rapprochement du journal à confirmer."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+          "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c",
+          "scope": "56/56 : réserves, relations, pertes/identités, horloges, renseignement, arc original, objectifs, tactiques et compagnons ; portée CPU explicite."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+          "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
+          "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/audits/2026-10-26/qa/runtime-c518-11-biomes-4-ops.json",
+          "sha256": "56bddb4b3e25cfd419927782604e4ad79524763c37969409f2449322326aeec5",
+          "scope": "Sourcec5187b2/index56204f :11démarrages/insertion/nettoyage avecfixture1ennemi et4smokes d’opération, cap≤32, mêmesIDs, Earchives/reprise/carte/Fcamouflage/Queen réelle et bilan ; zéroJS/réseau/externe. Pas11victoires ; trêve démarrée puis interrompue par dégâts, completionCPU seulement."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/audits/2026-10-26/qa/runtime-48b5-incremental-charon-4-ops-photo.json",
+          "sha256": "2b737ee19d428e27f97d7746e72e8cd23cbc9d04409a2ebf21e9ff410b4b101a",
+          "scope": "DeltaUI source48b5/index124d7735 : Charon et4opérations, vraiOphotoouvrir/fermer, mêmesIDs/caps/E/save/carte/Queen/bilanFR. Les11biomes complets restent couverts par le rapport antérieurc518. Trêve interrompue par dégâts ; completion nonrevendiquée."
+        }
+      ],
+      "notes": "Le bilan capture les comptes avant destruction des managers, montre les états exclusifs par camp, les noncombattants et le journal. Les952unités du casQueen se réconcilient ; la défaite de test est assistée, aucune victoire/boss tué n’est revendiqué."
     },
     "AUD-123": {
-      "status": "À valider",
+      "status": "En cours",
       "priority": "P1",
       "domain": "Groupes et factions",
       "item": "Définir le scénario Prey de 1719 et ses groupes autorisés",
       "acceptance": "La version fidèle ne charge aucun groupe ou objet exclu par le profil 1719 ; les rencontres sont compatibles avec le lieu et leur source. Les variantes adaptées sont nommées dans la sélection.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Les variantes Prey1719 et leurs restrictions sont documentées et testées ; chargement de chaque groupe/objet et labels adaptés à vérifier dans la scène réelle."
+      "notes": "Contexte1719 et filtrage des éléments sont explicités ; les batailles sont adaptées. Une reconstitution fidèle complète avec groupes/objets tousvalidés n’est pas fournie."
     },
     "AUD-124": {
-      "status": "À valider",
+      "status": "En cours",
       "priority": "P1",
       "domain": "Boss et mini-boss",
       "item": "Préserver la singularité du Feral entre personnage et boss",
       "acceptance": "La mission Prey se conclut avec le boss prévu ; le choix du chasseur possède une justification cohérente ou une restriction explicite. Le modèle est mesuré par rapport au joueur et aux accès, sans déduire sa taille d’un commentaire.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "BossFeral et personnage restent distincts, avec profils propres ; justification du choix joueur, mesures d’échelle et passages à vérifier dans la scène finale."
+      "notes": "Feralboss/personnage et équipements sont distincts ; modèle/échelle par références, accès et justification de sélection pour tous modes restent à compléter."
     },
     "AUD-125": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P0",
       "domain": "Boss et mini-boss",
       "item": "Corriger le combat Feral et le piège du masque",
       "acceptance": "Après correction de syntaxe, toutes les attaques Feral s’exécutent sans méthode absente. Aucun crachat acide ni coup de queue hérité ne s’active pour lui. Le piège ne blesse le boss que si la fléchette guidée le touche ; sortie, pause et fin de rencontre annulent les callbacks obsolètes.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Feral ne reçoit ni acide ni queue ; piège du masque et carreau physique testés sans dégâts immédiats, avec esquive/couvert. Sortie/pause/fin à rapprocher des preuves finales."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/boss-honor-acceptance-tests.txt",
+          "sha256": "b65dc2b3050cca077bbf0e3bc27ea4e516352689cd1104793f0e5c1a4fa7e2cb",
+          "scope": "14/14 :18constructeurs réels normalisés, attaques/biologie, masque et boltsFeral, esquive/couvert/parades/exécution/cleanup, ledger."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+          "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
+          "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        }
+      ],
+      "notes": "Feral exécute ses branches sans acide ni queue. Le masque arme un vrai projectile guidé ; aucunHP n’est retiré à l’activation. Esquive, obstacle, impact réel, pause et nettoyage des attaques différées sont testés."
     },
     "AUD-126": {
-      "status": "À valider",
+      "status": "En cours",
       "priority": "P1",
       "domain": "Combat et rôles",
       "item": "Rendre les dix interactions Prey et leurs effets conformes aux annonces et sources",
       "acceptance": "Les dix prompts correspondent aux effets observés. Taabe modifie réellement la mobilité ; arc et hache utilisent les ressources annoncées ; le pistolet respecte portée et obstacle. La boue ne se déclenche que dans un volume présent et applique le bonus annoncé une fois, avec expiration. Souffle et feu affichent leur rayon distinct. Sariska, 0 °C, matériaux et rôle de Sarii sont sourcés ou présentés comme adaptations.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Sarii possède identité unique, ordres, blessures/retrait et morsure limitée ; le masque arme de vraisbolts sansDMGdirect. Le puma est toujours un accessoire sansIA. Ressources, obstacles, rayons et expiration des dixprompts demandent recette globale ; ne pas certifier tout le scénario."
+      "notes": "Sarii, boue, masque, ressources et interactions principales sont mieuxdéveloppés ; puma reste accessoire sansIA et les dixprompts/annonces/sources ne sont pas tous certifiés."
     }
   },
-  "reviewStage": "preliminary_after_24_catalogue_tracker_narrative_tests_and_agent_implementation_reviews; integrated_runtime_pending"
+  "reviewStage": "final_scoped_review_653_cpu_tests_11_prior_biome_startups_and_48b5_incremental_browser_validation",
+  "validatedRuntimeSource": "48b5bd5aa9d35fd3919ade38cf2aef55389bec5b",
+  "runtimeEvidence": {
+    "fullStartups": "docs/audits/2026-10-26/qa/runtime-c518-11-biomes-4-ops.json",
+    "incrementalFinal": "docs/audits/2026-10-26/qa/runtime-48b5-incremental-charon-4-ops-photo.json",
+    "scope": "11biomes initialement, puisCharon+4smokes après correctifsUI. Aucun parcours complet gagné ni test humain ni performance matérielle certifiée."
+  }
 }

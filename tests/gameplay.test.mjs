@@ -424,6 +424,8 @@ test('melee damages bosses and a close-range trophy execution records a real fin
     const results = await page.evaluate(() => {
       const mission = game.battlefield;
       const boss = game.bosses.activeBoss;
+      game.allies.clearSquad(); game.marines.clearSquad(); game.synthetics.clearSquad();
+      boss.isStunned = true; boss.stunTimer = 5;
       boss.mesh.position.copy(game.player.position).add({ x: 0, y: 0, z: 3 });
       const before = boss.hp;
       game.performLightAttack();

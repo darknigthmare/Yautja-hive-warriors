@@ -1,0 +1,211 @@
+{
+  "status": "passed_locally_waiting_publication",
+  "branch": "codex/complete-pr3-20261026",
+  "source_history": {
+    "validated": "1d52d9ff91dbe85c08256f44f8b72086ab65200a",
+    "main_v67": "9c18c196c794b77f6bcfa02045c960080d955cfa",
+    "audit_pr3": "0435827e41eae19472179e8116d9eb4105647664",
+    "runtime_source": "48b5bd5aa9d35fd3919ade38cf2aef55389bec5b"
+  },
+  "build": {
+    "success": true,
+    "source_commit": "48b5bd5aa9d35fd3919ade38cf2aef55389bec5b",
+    "source_fingerprint": "8e45634c13e3d51b1d706bdc387b1b5c43fc82e65f34b959a999530b8c75a423",
+    "source_tree_dirty": false,
+    "index_sha256": "124d7735003c245bc60814e6004c35ace77bd4011b31d448a6aa6c4c41dad185",
+    "build_info_sha256": "ca39fd23d605d11f8ae9810e233248ae7426a91514c8f8cc9dade4d426869b9b",
+    "static_files": 30,
+    "models": 12,
+    "bundles": 5,
+    "proof": "docs/qa/pr3/build-final.txt",
+    "manifest": "docs/qa/pr3/frozen-artifacts.json"
+  },
+  "cpu": {
+    "status": "passed",
+    "passed": 653,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "duration_ms": 405478.218583,
+    "index_sha256": "124d7735003c245bc60814e6004c35ace77bd4011b31d448a6aa6c4c41dad185",
+    "proof": "docs/qa/pr3/cpu-final.txt"
+  },
+  "browser": {
+    "final_regression": {
+      "status": "passed",
+      "passed": 15,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "index_sha256": "124d7735003c245bc60814e6004c35ace77bd4011b31d448a6aa6c4c41dad185",
+      "duration_ms": 548000.573046,
+      "proof": "docs/qa/pr3/browser-final.txt"
+    },
+    "final_runtime": {
+      "status": "passed",
+      "index_sha256": "124d7735003c245bc60814e6004c35ace77bd4011b31d448a6aa6c4c41dad185",
+      "errors": 0,
+      "failed_requests": 0,
+      "external_requests": 0,
+      "checks": [
+        {
+          "id": "incrementalCharonStartup",
+          "status": "passed"
+        },
+        {
+          "id": "fourOperationSmokes",
+          "status": "passed"
+        },
+        {
+          "id": "everyOperationAtMost32",
+          "status": "passed"
+        },
+        {
+          "id": "finiteUniqueIdentities",
+          "status": "passed"
+        },
+        {
+          "id": "realCommandMapOrder",
+          "status": "passed"
+        },
+        {
+          "id": "realPhotoKey",
+          "status": "passed"
+        },
+        {
+          "id": "archiveCheckpointAndResume",
+          "status": "passed"
+        },
+        {
+          "id": "realCamouflageKey",
+          "status": "passed"
+        },
+        {
+          "id": "truceInputAndCausalOutcome",
+          "status": "passed"
+        },
+        {
+          "id": "allocatedRealQueen",
+          "status": "passed"
+        },
+        {
+          "id": "reconciledDebrief",
+          "status": "passed"
+        },
+        {
+          "id": "frozenDist",
+          "status": "passed"
+        }
+      ],
+      "proof": "docs/qa/pr3/runtime-final/report.json",
+      "level_startups": 1,
+      "operation_smokes": 4,
+      "duration_seconds": 242.589,
+      "scope": "Incremental Charon + four operations + O photo. Real mouse/keyboard menus/F/E, assisted player placement, one-enemy startup fixtures, deterministic simulation stepping and an assisted player-death debrief; no DOM-click fallback, budget override, full victories, hardware or human certification",
+      "dist_unchanged": true,
+      "prior_11_biome_proof": "docs/qa/pr3/runtime/report.json"
+    },
+    "prior_full_biome_runtime": {
+      "status": "passed",
+      "index_sha256": "56204f890dc6faa392bb2165eb675596460b728fbded7f6a6b0b1a07c8ebfc37",
+      "errors": 0,
+      "failed_requests": 0,
+      "external_requests": 0,
+      "checks": [
+        {
+          "id": "elevenBiomeStartups",
+          "status": "passed"
+        },
+        {
+          "id": "fourOperationSmokes",
+          "status": "passed"
+        },
+        {
+          "id": "everyOperationAtMost32",
+          "status": "passed"
+        },
+        {
+          "id": "finiteUniqueIdentities",
+          "status": "passed"
+        },
+        {
+          "id": "realCommandMapOrder",
+          "status": "passed"
+        },
+        {
+          "id": "archiveCheckpointAndResume",
+          "status": "passed"
+        },
+        {
+          "id": "realCamouflageKey",
+          "status": "passed"
+        },
+        {
+          "id": "truceInputAndCausalOutcome",
+          "status": "passed"
+        },
+        {
+          "id": "allocatedRealQueen",
+          "status": "passed"
+        },
+        {
+          "id": "reconciledDebrief",
+          "status": "passed"
+        },
+        {
+          "id": "frozenDist",
+          "status": "passed"
+        }
+      ],
+      "proof": "docs/qa/pr3/runtime/report.json",
+      "level_startups": 11,
+      "operation_smokes": 4,
+      "duration_seconds": 397.404,
+      "scope": "Real mouse/keyboard menus/F/E, assisted player placement, one-enemy startup fixtures, deterministic simulation stepping and an assisted player-death debrief; no DOM-click fallback, budget override, full victories, hardware or human certification",
+      "dist_unchanged": true
+    }
+  },
+  "scope": {
+    "worker_agents": 6,
+    "human_testers": 0,
+    "fidelity_1_to_1_verified": false,
+    "base_biomes": 11,
+    "constructed_original_map_variants": 34,
+    "catalogue_operations": 27,
+    "playable_yautja_operations": 25,
+    "additional_original_presets": [
+      "pilot",
+      "hive-conflict"
+    ],
+    "default_detailed_actor_cap": 32,
+    "imported_glb_files_unchanged": 12,
+    "additional_meshy_credits_spent": 0
+  },
+  "limitations": [
+    "Les modèles, textures, animations et plans ne sont pas certifiés 1:1 ; les cinq autres corps importés restent à produire/valider.",
+    "AFF25 et AFF26 nécessitent un contrôleur humain encore indisponible.",
+    "Les essais contrôlés emploient des fixtures, placements assistés et pas de simulation déclarés ; ils ne constituent pas 25 victoires jouées, cinq testeurs humains ou une mesure matérielle PC/mobile.",
+    "Le plafond32 et les compteurs de buffers ne certifient pas la fréquence d’affichage ni la mémoire du pilote graphique sur les appareils des joueurs.",
+    "La trêve a été vérifiée comme interaction interruptible en navigateur ; sa réalisation diplomatique complète est vérifiée par tests de composants, pas par le smoke sous tirs.",
+    "Les critères restant ouverts du classeur gardent leur état et leur limite de preuve."
+  ],
+  "prior_failures_preserved": [
+    "docs/qa/pr3/attempts/cpu-fixture-failure.txt",
+    "docs/qa/pr3/attempts/runtime-charon-failure.json",
+    "docs/qa/pr3/attempts/browser-photo-coop-fixture-failures.txt"
+  ],
+  "delivery_proof": "docs/qa/pr3/vercel-delivery.json",
+  "reproducibility": {
+    "status": "passed",
+    "clean_installs": 2,
+    "isolated_builds": 2,
+    "identical_static_files": 30,
+    "identical_glb_files": 12,
+    "identical_build_info": true,
+    "proof": "docs/qa/pr3/reproducibility/report.json"
+  },
+  "resource_restarts": {
+    "status": "additional_check_pending",
+    "promotion_waits_for_result": true
+  }
+}

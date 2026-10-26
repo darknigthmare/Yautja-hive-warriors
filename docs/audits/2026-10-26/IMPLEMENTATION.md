@@ -12,6 +12,8 @@ Les profils distinguent individu unique, stade de vie, combattant générique, c
 
 `getBattleOperationConfig(id, options)` produit une configuration mutable privée pour le moteur : factions, relations, réserves finies, groupes et identités, fronts, routes et conditions. Les opérations sont marquées originales. Les allocations structurées sont conservées exactement ; les cinq lignes AFF-06 à AFF-10, qui expriment leurs comptes seulement en prose, sont traduites explicitement. Commandants, pilotes et personnages nommés remplacent des places allouées au lieu d'ajouter des combattants. Les civils et véhicules restent séparés du budget militaire.
 
+Le plafond courant est provisoirement limité à **32 acteurs détaillés**, sans effacer les armées distantes. Le budget souhaité de l'Excel reste dans `desiredDetailedBudget` et `sourceDetailedBudget` ; les réserves et tous les IDs restent identiques. AFF-11 passe ainsi de 108 souhaités à 32 détaillés, AFF-27 de 136 à 32, tandis qu'AFF-01 garde ses 24. Dépasser 32 exige l'option expérimentale explicite ; ce plafond ne constitue pas un profilage matériel.
+
 Les deux variantes humaines AFF-25 et AFF-26 exigent un contrôleur humain réellement disponible. Une proposition dépourvue de scène construite reste signalée comme terrain de biome adapté. Les objectifs narratifs sources restent distincts de leur mise en œuvre ; les critères d'origine ne deviennent pas automatiquement « terminés » parce qu'une configuration existe.
 
 ## Objectifs narratifs exécutables
@@ -38,3 +40,15 @@ node --max-old-space-size=2048 --test --test-concurrency=1 tests/battle-catalog.
 ```
 
 Le script Python utilise uniquement sa bibliothèque standard. Il refuse d'écraser une autre modification du classeur, un critère réécrit ou une preuve dont les octets ont changé. Aucun test humain, mesure de performance sur le matériel des joueurs ou certification graphique 1:1 n'est déduit de ces vérifications structurelles.
+
+## État vérifié de cette livraison
+
+Le suivi courant contient **54 critères terminés, 47 à valider et 25 en cours**. Chaque critère terminé possède une portée et des preuves locales épinglées. Les clôtures valident des comportements, contrats, raccordements ou revues selon leur critère ; elles ne signifient pas que tous les personnages sont reconstruits à l'identique. Les deux P0 restant à valider concernent les rencontres finales de tous les lieux/configurations avant lancement (AUD-071) et dix relances identiques instrumentées (AUD-105). Deux installations propres et builds identiques sont désormais prouvés pour AUD-114 ; les gardes de publication sont locales, aucune protection GitHub/CI distante n’est revendiquée.
+
+La suite finale comprend **653 tests CPU réussis**. Le rapport `qa/runtime-c518-11-biomes-4-ops.json` conserve onze démarrages/insertion/nettoyage, puis quatre smokes d'opération. Les premières rencontres des onze lieux utilisent explicitement une fixture d'un combattant ; aucune victoire de mission n'est revendiquée. La reprise du registre, les commandes de carte, le plafond et les identités, ainsi que la Queen via son vrai manager, sont vérifiés dans le navigateur.
+
+Le rapport incrémental `qa/runtime-48b5-incremental-charon-4-ops-photo.json` couvre Charon, les quatre opérations, l'ouverture/fermeture de la photo avec O et le bilan traduit après les correctifs d'interface. Il conserve l'empreinte du dist avant/après et zéro erreur JavaScript, requête échouée ou accès externe. Les onze lieux antérieurs restent une preuve distincte : ils ne sont pas recomptés comme onze nouveaux parcours sur chaque changement d'interface.
+
+La négociation AFF-11 démarre avec la vraie touche E, mais les dégâts interrompent sa canalisation. Le camouflage est activé avec F ; il ne rend pas le joueur invulnérable. La complétion de cette négociation est donc vérifiée côté CPU seulement, et non présentée comme une réussite complète dans le navigateur. Le bilan Queen provient d'une mort du joueur assistée pour tester la défaite et la réconciliation des états ; aucun boss vaincu n'est fabriqué.
+
+Les rapports `catalog-objectives-test.txt` et `catalog-objectives-verification.json` gardent le contrôle historique de 24 composants avant l'ajout du plafond provisoire. Pour le candidat final, se reporter aux preuves CPU, aux rapports de navigateur et aux empreintes de `implementation-progress.json` / `implementation-verification.json`.

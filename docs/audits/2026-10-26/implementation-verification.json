@@ -4,10 +4,10 @@
   "followupColumn": "N",
   "counts": {
     "Bloqué": 0,
-    "En cours": 34,
-    "Terminé": 3,
-    "À faire": 5,
-    "À valider": 84
+    "En cours": 25,
+    "Terminé": 54,
+    "À faire": 0,
+    "À valider": 47
   },
   "changedMembers": [
     "xl/worksheets/sheet3.xml"
@@ -15,9 +15,244 @@
   "allNonFollowupContentPreserved": true,
   "evidenceChecks": [
     {
+      "action": "AUD-001",
+      "path": "docs/audits/2026-10-26/qa/frozen-build-reviewed.json",
+      "sha256": "60f984dee7ed5c89ef1fe23623ff3841aa24d9afae45688a0d0b5ce120a28a47"
+    },
+    {
+      "action": "AUD-001",
+      "path": "docs/audits/2026-10-26/qa/model-integrity-reviewed.json",
+      "sha256": "d14a64db8f18d055e1f62917afc3617fa966f0c8ac3c320c984afc65449599c8"
+    },
+    {
+      "action": "AUD-001",
+      "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+      "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-002",
+      "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+      "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-002",
+      "path": "docs/audits/2026-10-26/qa/runtime-c518-11-biomes-4-ops.json",
+      "sha256": "56bddb4b3e25cfd419927782604e4ad79524763c37969409f2449322326aeec5"
+    },
+    {
+      "action": "AUD-002",
+      "path": "docs/audits/2026-10-26/qa/frozen-build-reviewed.json",
+      "sha256": "60f984dee7ed5c89ef1fe23623ff3841aa24d9afae45688a0d0b5ce120a28a47"
+    },
+    {
+      "action": "AUD-002",
+      "path": "docs/audits/2026-10-26/qa/runtime-48b5-incremental-charon-4-ops-photo.json",
+      "sha256": "2b737ee19d428e27f97d7746e72e8cd23cbc9d04409a2ebf21e9ff410b4b101a"
+    },
+    {
+      "action": "AUD-003",
+      "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+      "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-003",
+      "path": "docs/audits/2026-10-26/qa/world-phase2-construction-transport-stream-44-tests.txt",
+      "sha256": "3213ed0c76d8bc23fce37272f7de927fe76ef5da5f9c338e15440034f0c1fa09"
+    },
+    {
+      "action": "AUD-003",
+      "path": "docs/audits/2026-10-26/qa/runtime-c518-11-biomes-4-ops.json",
+      "sha256": "56bddb4b3e25cfd419927782604e4ad79524763c37969409f2449322326aeec5"
+    },
+    {
+      "action": "AUD-003",
+      "path": "docs/audits/2026-10-26/qa/runtime-48b5-incremental-charon-4-ops-photo.json",
+      "sha256": "2b737ee19d428e27f97d7746e72e8cd23cbc9d04409a2ebf21e9ff410b4b101a"
+    },
+    {
+      "action": "AUD-005",
+      "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+      "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-005",
+      "path": "docs/audits/2026-10-26/qa/model-integrity-reviewed.json",
+      "sha256": "d14a64db8f18d055e1f62917afc3617fa966f0c8ac3c320c984afc65449599c8"
+    },
+    {
+      "action": "AUD-005",
+      "path": "docs/audits/2026-10-26/qa/world-phase2-construction-transport-stream-44-tests.txt",
+      "sha256": "3213ed0c76d8bc23fce37272f7de927fe76ef5da5f9c338e15440034f0c1fa09"
+    },
+    {
+      "action": "AUD-006",
+      "path": "docs/audits/2026-10-26/qa/combat-phase2-71-tests.txt",
+      "sha256": "6e20e10df3b68727b9630ffdc3270aef6f3cdd5839d634847fc8f27c4663d3c5"
+    },
+    {
+      "action": "AUD-006",
+      "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+      "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-007",
+      "path": "docs/audits/2026-10-26/qa/combat-phase2-71-tests.txt",
+      "sha256": "6e20e10df3b68727b9630ffdc3270aef6f3cdd5839d634847fc8f27c4663d3c5"
+    },
+    {
+      "action": "AUD-007",
+      "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+      "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-008",
+      "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+      "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-008",
+      "path": "docs/audits/2026-10-26/qa/model-integrity-reviewed.json",
+      "sha256": "d14a64db8f18d055e1f62917afc3617fa966f0c8ac3c320c984afc65449599c8"
+    },
+    {
+      "action": "AUD-009",
+      "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+      "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c"
+    },
+    {
+      "action": "AUD-009",
+      "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+      "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-009",
+      "path": "docs/audits/2026-10-26/qa/runtime-c518-11-biomes-4-ops.json",
+      "sha256": "56bddb4b3e25cfd419927782604e4ad79524763c37969409f2449322326aeec5"
+    },
+    {
+      "action": "AUD-009",
+      "path": "docs/audits/2026-10-26/qa/runtime-48b5-incremental-charon-4-ops-photo.json",
+      "sha256": "2b737ee19d428e27f97d7746e72e8cd23cbc9d04409a2ebf21e9ff410b4b101a"
+    },
+    {
+      "action": "AUD-012",
+      "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+      "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c"
+    },
+    {
+      "action": "AUD-012",
+      "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+      "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-015",
+      "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+      "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c"
+    },
+    {
+      "action": "AUD-015",
+      "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+      "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-017",
+      "path": "docs/audits/2026-10-26/qa/combat-phase2-71-tests.txt",
+      "sha256": "6e20e10df3b68727b9630ffdc3270aef6f3cdd5839d634847fc8f27c4663d3c5"
+    },
+    {
+      "action": "AUD-017",
+      "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+      "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-018",
+      "path": "docs/audits/2026-10-26/qa/combat-phase2-71-tests.txt",
+      "sha256": "6e20e10df3b68727b9630ffdc3270aef6f3cdd5839d634847fc8f27c4663d3c5"
+    },
+    {
+      "action": "AUD-018",
+      "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+      "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c"
+    },
+    {
+      "action": "AUD-018",
+      "path": "docs/audits/2026-10-26/qa/forge-ledger-acceptance-tests.txt",
+      "sha256": "32dd096aa7aed6655a079b4e30eb153ecd5de4ee5c2be698e56a352b34305bae"
+    },
+    {
+      "action": "AUD-022",
+      "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+      "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c"
+    },
+    {
+      "action": "AUD-022",
+      "path": "docs/audits/2026-10-26/qa/combat-phase2-71-tests.txt",
+      "sha256": "6e20e10df3b68727b9630ffdc3270aef6f3cdd5839d634847fc8f27c4663d3c5"
+    },
+    {
+      "action": "AUD-023",
+      "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+      "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c"
+    },
+    {
+      "action": "AUD-023",
+      "path": "docs/audits/2026-10-26/qa/combat-phase2-71-tests.txt",
+      "sha256": "6e20e10df3b68727b9630ffdc3270aef6f3cdd5839d634847fc8f27c4663d3c5"
+    },
+    {
+      "action": "AUD-029",
+      "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+      "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-029",
+      "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+      "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c"
+    },
+    {
+      "action": "AUD-033",
+      "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+      "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c"
+    },
+    {
+      "action": "AUD-033",
+      "path": "docs/audits/2026-10-26/qa/combat-phase2-71-tests.txt",
+      "sha256": "6e20e10df3b68727b9630ffdc3270aef6f3cdd5839d634847fc8f27c4663d3c5"
+    },
+    {
+      "action": "AUD-033",
+      "path": "docs/audits/2026-10-26/qa/runtime-c518-11-biomes-4-ops.json",
+      "sha256": "56bddb4b3e25cfd419927782604e4ad79524763c37969409f2449322326aeec5"
+    },
+    {
+      "action": "AUD-033",
+      "path": "docs/audits/2026-10-26/qa/runtime-48b5-incremental-charon-4-ops-photo.json",
+      "sha256": "2b737ee19d428e27f97d7746e72e8cd23cbc9d04409a2ebf21e9ff410b4b101a"
+    },
+    {
+      "action": "AUD-038",
+      "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+      "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c"
+    },
+    {
+      "action": "AUD-038",
+      "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+      "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-040",
+      "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+      "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c"
+    },
+    {
+      "action": "AUD-040",
+      "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+      "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
       "action": "AUD-041",
-      "path": "docs/audits/2026-10-26/qa/world-construction-54-tests.txt",
-      "sha256": "59a556766b91d90f8e6c3310056d5b93a8612effbbe21d852944c8b49dca0435"
+      "path": "docs/audits/2026-10-26/qa/world-phase2-construction-transport-stream-44-tests.txt",
+      "sha256": "3213ed0c76d8bc23fce37272f7de927fe76ef5da5f9c338e15440034f0c1fa09"
     },
     {
       "action": "AUD-041",
@@ -25,38 +260,421 @@
       "sha256": "a7b7145bc28bc0efc5ad78175c8d3f4eb74ab4025f768c6d000d4b27b097156c"
     },
     {
+      "action": "AUD-043",
+      "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+      "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c"
+    },
+    {
+      "action": "AUD-043",
+      "path": "docs/audits/2026-10-26/qa/world-phase2-construction-transport-stream-44-tests.txt",
+      "sha256": "3213ed0c76d8bc23fce37272f7de927fe76ef5da5f9c338e15440034f0c1fa09"
+    },
+    {
+      "action": "AUD-044",
+      "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+      "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c"
+    },
+    {
+      "action": "AUD-044",
+      "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+      "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-045",
+      "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+      "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c"
+    },
+    {
+      "action": "AUD-045",
+      "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+      "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-048",
+      "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+      "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c"
+    },
+    {
+      "action": "AUD-048",
+      "path": "docs/audits/2026-10-26/qa/world-phase2-construction-transport-stream-44-tests.txt",
+      "sha256": "3213ed0c76d8bc23fce37272f7de927fe76ef5da5f9c338e15440034f0c1fa09"
+    },
+    {
+      "action": "AUD-048",
+      "path": "docs/audits/2026-10-26/qa/runtime-c518-11-biomes-4-ops.json",
+      "sha256": "56bddb4b3e25cfd419927782604e4ad79524763c37969409f2449322326aeec5"
+    },
+    {
+      "action": "AUD-048",
+      "path": "docs/audits/2026-10-26/qa/runtime-48b5-incremental-charon-4-ops-photo.json",
+      "sha256": "2b737ee19d428e27f97d7746e72e8cd23cbc9d04409a2ebf21e9ff410b4b101a"
+    },
+    {
+      "action": "AUD-049",
+      "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+      "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c"
+    },
+    {
+      "action": "AUD-049",
+      "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+      "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-052",
+      "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+      "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-052",
+      "path": "docs/audits/2026-10-26/qa/runtime-c518-11-biomes-4-ops.json",
+      "sha256": "56bddb4b3e25cfd419927782604e4ad79524763c37969409f2449322326aeec5"
+    },
+    {
+      "action": "AUD-052",
+      "path": "docs/audits/2026-10-26/qa/runtime-48b5-incremental-charon-4-ops-photo.json",
+      "sha256": "2b737ee19d428e27f97d7746e72e8cd23cbc9d04409a2ebf21e9ff410b4b101a"
+    },
+    {
+      "action": "AUD-054",
+      "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+      "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c"
+    },
+    {
+      "action": "AUD-054",
+      "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+      "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
       "action": "AUD-056",
-      "path": "docs/audits/2026-10-26/qa/world-construction-54-tests.txt",
-      "sha256": "59a556766b91d90f8e6c3310056d5b93a8612effbbe21d852944c8b49dca0435"
+      "path": "docs/audits/2026-10-26/qa/world-phase2-construction-transport-stream-44-tests.txt",
+      "sha256": "3213ed0c76d8bc23fce37272f7de927fe76ef5da5f9c338e15440034f0c1fa09"
     },
     {
       "action": "AUD-056",
       "path": "docs/audits/2026-10-26/qa/world-navigation-freeze-15-tests.txt",
       "sha256": "a7b7145bc28bc0efc5ad78175c8d3f4eb74ab4025f768c6d000d4b27b097156c"
+    },
+    {
+      "action": "AUD-061",
+      "path": "docs/audits/2026-10-26/qa/world-phase2-construction-transport-stream-44-tests.txt",
+      "sha256": "3213ed0c76d8bc23fce37272f7de927fe76ef5da5f9c338e15440034f0c1fa09"
+    },
+    {
+      "action": "AUD-061",
+      "path": "docs/audits/2026-10-26/qa/world-navigation-freeze-15-tests.txt",
+      "sha256": "a7b7145bc28bc0efc5ad78175c8d3f4eb74ab4025f768c6d000d4b27b097156c"
+    },
+    {
+      "action": "AUD-061",
+      "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+      "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-062",
+      "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+      "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c"
+    },
+    {
+      "action": "AUD-062",
+      "path": "docs/audits/2026-10-26/qa/world-phase2-construction-transport-stream-44-tests.txt",
+      "sha256": "3213ed0c76d8bc23fce37272f7de927fe76ef5da5f9c338e15440034f0c1fa09"
+    },
+    {
+      "action": "AUD-062",
+      "path": "docs/audits/2026-10-26/qa/world-navigation-freeze-15-tests.txt",
+      "sha256": "a7b7145bc28bc0efc5ad78175c8d3f4eb74ab4025f768c6d000d4b27b097156c"
+    },
+    {
+      "action": "AUD-065",
+      "path": "docs/audits/2026-10-26/qa/world-phase2-construction-transport-stream-44-tests.txt",
+      "sha256": "3213ed0c76d8bc23fce37272f7de927fe76ef5da5f9c338e15440034f0c1fa09"
+    },
+    {
+      "action": "AUD-065",
+      "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+      "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-068",
+      "path": "docs/audits/2026-10-26/qa/world-phase2-construction-transport-stream-44-tests.txt",
+      "sha256": "3213ed0c76d8bc23fce37272f7de927fe76ef5da5f9c338e15440034f0c1fa09"
+    },
+    {
+      "action": "AUD-068",
+      "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+      "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-072",
+      "path": "docs/audits/2026-10-26/qa/boss-honor-acceptance-tests.txt",
+      "sha256": "b65dc2b3050cca077bbf0e3bc27ea4e516352689cd1104793f0e5c1a4fa7e2cb"
+    },
+    {
+      "action": "AUD-072",
+      "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+      "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-077",
+      "path": "docs/audits/2026-10-26/qa/boss-honor-acceptance-tests.txt",
+      "sha256": "b65dc2b3050cca077bbf0e3bc27ea4e516352689cd1104793f0e5c1a4fa7e2cb"
+    },
+    {
+      "action": "AUD-077",
+      "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+      "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-081",
+      "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+      "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-081",
+      "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+      "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c"
+    },
+    {
+      "action": "AUD-082",
+      "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+      "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-083",
+      "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+      "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-084",
+      "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+      "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-085",
+      "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+      "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-092",
+      "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+      "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-092",
+      "path": "docs/audits/2026-10-26/qa/runtime-c518-11-biomes-4-ops.json",
+      "sha256": "56bddb4b3e25cfd419927782604e4ad79524763c37969409f2449322326aeec5"
+    },
+    {
+      "action": "AUD-092",
+      "path": "docs/audits/2026-10-26/qa/runtime-48b5-incremental-charon-4-ops-photo.json",
+      "sha256": "2b737ee19d428e27f97d7746e72e8cd23cbc9d04409a2ebf21e9ff410b4b101a"
+    },
+    {
+      "action": "AUD-093",
+      "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+      "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c"
+    },
+    {
+      "action": "AUD-093",
+      "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+      "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-093",
+      "path": "docs/audits/2026-10-26/qa/runtime-c518-11-biomes-4-ops.json",
+      "sha256": "56bddb4b3e25cfd419927782604e4ad79524763c37969409f2449322326aeec5"
+    },
+    {
+      "action": "AUD-093",
+      "path": "docs/audits/2026-10-26/qa/runtime-48b5-incremental-charon-4-ops-photo.json",
+      "sha256": "2b737ee19d428e27f97d7746e72e8cd23cbc9d04409a2ebf21e9ff410b4b101a"
+    },
+    {
+      "action": "AUD-095",
+      "path": "docs/audits/2026-10-26/qa/forge-ledger-acceptance-tests.txt",
+      "sha256": "32dd096aa7aed6655a079b4e30eb153ecd5de4ee5c2be698e56a352b34305bae"
+    },
+    {
+      "action": "AUD-096",
+      "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+      "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c"
+    },
+    {
+      "action": "AUD-096",
+      "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+      "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-096",
+      "path": "docs/audits/2026-10-26/qa/runtime-c518-11-biomes-4-ops.json",
+      "sha256": "56bddb4b3e25cfd419927782604e4ad79524763c37969409f2449322326aeec5"
+    },
+    {
+      "action": "AUD-096",
+      "path": "docs/audits/2026-10-26/qa/runtime-48b5-incremental-charon-4-ops-photo.json",
+      "sha256": "2b737ee19d428e27f97d7746e72e8cd23cbc9d04409a2ebf21e9ff410b4b101a"
+    },
+    {
+      "action": "AUD-098",
+      "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+      "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-098",
+      "path": "docs/audits/2026-10-26/qa/combat-phase2-71-tests.txt",
+      "sha256": "6e20e10df3b68727b9630ffdc3270aef6f3cdd5839d634847fc8f27c4663d3c5"
+    },
+    {
+      "action": "AUD-100",
+      "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+      "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-101",
+      "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+      "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c"
+    },
+    {
+      "action": "AUD-101",
+      "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+      "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-101",
+      "path": "docs/audits/2026-10-26/qa/runtime-c518-11-biomes-4-ops.json",
+      "sha256": "56bddb4b3e25cfd419927782604e4ad79524763c37969409f2449322326aeec5"
+    },
+    {
+      "action": "AUD-101",
+      "path": "docs/audits/2026-10-26/qa/runtime-48b5-incremental-charon-4-ops-photo.json",
+      "sha256": "2b737ee19d428e27f97d7746e72e8cd23cbc9d04409a2ebf21e9ff410b4b101a"
+    },
+    {
+      "action": "AUD-102",
+      "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+      "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-110",
+      "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+      "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c"
+    },
+    {
+      "action": "AUD-110",
+      "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+      "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-111",
+      "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+      "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c"
+    },
+    {
+      "action": "AUD-111",
+      "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+      "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-111",
+      "path": "docs/audits/2026-10-26/qa/runtime-c518-11-biomes-4-ops.json",
+      "sha256": "56bddb4b3e25cfd419927782604e4ad79524763c37969409f2449322326aeec5"
+    },
+    {
+      "action": "AUD-111",
+      "path": "docs/audits/2026-10-26/qa/runtime-48b5-incremental-charon-4-ops-photo.json",
+      "sha256": "2b737ee19d428e27f97d7746e72e8cd23cbc9d04409a2ebf21e9ff410b4b101a"
+    },
+    {
+      "action": "AUD-114",
+      "path": "docs/qa/pr3/reproducibility/report.json",
+      "sha256": "7807fc7e52068c31f6829eb60c4a7275da3e9e1558121515101377816c701a5e"
+    },
+    {
+      "action": "AUD-114",
+      "path": "docs/audits/2026-10-26/qa/publication-guards-5-tests.txt",
+      "sha256": "5fb1946df9f34969da0b560d8f8f5478a5d5a38f636a17526c3adf8a673f0476"
+    },
+    {
+      "action": "AUD-114",
+      "path": "docs/audits/2026-10-26/qa/runtime-48b5-incremental-charon-4-ops-photo.json",
+      "sha256": "2b737ee19d428e27f97d7746e72e8cd23cbc9d04409a2ebf21e9ff410b4b101a"
+    },
+    {
+      "action": "AUD-116",
+      "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+      "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c"
+    },
+    {
+      "action": "AUD-116",
+      "path": "docs/audits/2026-10-26/qa/combat-phase2-71-tests.txt",
+      "sha256": "6e20e10df3b68727b9630ffdc3270aef6f3cdd5839d634847fc8f27c4663d3c5"
+    },
+    {
+      "action": "AUD-116",
+      "path": "docs/audits/2026-10-26/qa/runtime-c518-11-biomes-4-ops.json",
+      "sha256": "56bddb4b3e25cfd419927782604e4ad79524763c37969409f2449322326aeec5"
+    },
+    {
+      "action": "AUD-116",
+      "path": "docs/audits/2026-10-26/qa/runtime-48b5-incremental-charon-4-ops-photo.json",
+      "sha256": "2b737ee19d428e27f97d7746e72e8cd23cbc9d04409a2ebf21e9ff410b4b101a"
     },
     {
       "action": "AUD-117",
-      "path": "docs/audits/2026-10-26/catalog-objectives-test.txt",
-      "sha256": "a97eed9f9852449cd7df2b740adc941756af8f3421a20168a37333b7d106c3ca"
+      "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+      "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-117",
+      "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+      "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c"
+    },
+    {
+      "action": "AUD-120",
+      "path": "docs/audits/2026-10-26/qa/model-integrity-reviewed.json",
+      "sha256": "d14a64db8f18d055e1f62917afc3617fa966f0c8ac3c320c984afc65449599c8"
+    },
+    {
+      "action": "AUD-120",
+      "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+      "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-122",
+      "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
+      "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c"
+    },
+    {
+      "action": "AUD-122",
+      "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+      "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-122",
+      "path": "docs/audits/2026-10-26/qa/runtime-c518-11-biomes-4-ops.json",
+      "sha256": "56bddb4b3e25cfd419927782604e4ad79524763c37969409f2449322326aeec5"
+    },
+    {
+      "action": "AUD-122",
+      "path": "docs/audits/2026-10-26/qa/runtime-48b5-incremental-charon-4-ops-photo.json",
+      "sha256": "2b737ee19d428e27f97d7746e72e8cd23cbc9d04409a2ebf21e9ff410b4b101a"
+    },
+    {
+      "action": "AUD-125",
+      "path": "docs/audits/2026-10-26/qa/boss-honor-acceptance-tests.txt",
+      "sha256": "b65dc2b3050cca077bbf0e3bc27ea4e516352689cd1104793f0e5c1a4fa7e2cb"
+    },
+    {
+      "action": "AUD-125",
+      "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
+      "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
     }
   ],
   "sourceWorkbookSha256": "d3f88eee0e88deb4dbc2247f8b295c6c5a6de91ff9626ea94b0d274f08e652b5",
-  "workingWorkbookSha256": "91154e7b32cacb3c0d1033261b234e79533fbc622bea60299be7f6c89ecad750",
+  "workingWorkbookSha256": "849fe2e1d5a7c21a85ed2f1c4e1ecbb565da96ca0f6dad18cd003209f378c871",
   "remainingP0": [
-    "AUD-001",
-    "AUD-002",
-    "AUD-003",
-    "AUD-005",
-    "AUD-006",
-    "AUD-007",
-    "AUD-018",
-    "AUD-061",
     "AUD-071",
-    "AUD-095",
-    "AUD-105",
-    "AUD-110",
-    "AUD-114",
-    "AUD-125"
+    "AUD-105"
   ],
   "humanTesters": 0,
   "fidelity1to1Verified": false
