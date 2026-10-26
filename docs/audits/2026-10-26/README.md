@@ -1,19 +1,19 @@
 # Audit Yautja Hive Warriors — batailles de masse et fidélité
 
-**Photographie de l’état observé le 26 octobre 2026.** Cet audit compare le code récent, la version publiée sur Vercel et les mécanismes documentés de Dynasty Warriors afin de définir les travaux nécessaires à des batailles de masse cohérentes avec Alien / Predator.
+**Photographie du code et de Vercel arrêtée à l’audit initial du 26 octobre 2026, enrichie de propositions de conception le même jour.** Cet audit compare le code récent, la version publiée sur Vercel et les mécanismes documentés de Dynasty Warriors afin de définir les travaux nécessaires à des batailles de masse cohérentes avec Alien / Predator.
 
 ## Livrables
 
-- [Classeur Excel](./Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.xlsx) : 13 onglets, critères de validation, preuves, hypothèses modifiables et suivi des actions.
+- [Classeur Excel](./Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.xlsx) : 15 onglets, critères de validation, preuves, hypothèses modifiables et suivi des actions.
 - [Données de l’audit](./audit-data.json) : contenu textuel et numérique du classeur, liens de preuve et schéma des tableaux, lisibles dans une revue Git.
 
 L’audit contient **126 actions** : **14 P0**, **88 P1** et **24 P2**. Elles comprennent **63 éléments à créer, 26 partiels, 20 à réconcilier, 11 à corriger et 6 à valider**. Il ne s’agit donc pas de 126 fonctionnalités toutes absentes. La priorité décrit l’ordre de travail ; le constat décrit ce qui existe ; la colonne « Suivi » sert au pilotage ultérieur.
 
-## Complément : guerres de clans et affrontements humains
+## Premier complément : guerres de clans et affrontements humains
 
-Le nouvel onglet **`Affrontements`** contient **12 opérations détaillées** : cinq conflits entre clans Yautja, cinq missions contre différentes forces humaines et deux conflits à plusieurs camps. Chaque fiche relie sa carte, son scénario de fronts, son budget d’effectifs, ses groupes et ses commandants. Elle précise le déploiement, les renforts, les objectifs, les conditions de victoire et de défaite, ainsi que les conséquences des fronts éloignés.
+Le premier complément a ajouté **12 opérations détaillées** dans **`Affrontements`** : cinq conflits entre clans Yautja, cinq missions contre différentes forces humaines et deux conflits à plusieurs camps. Chaque fiche relie sa carte, son scénario de fronts, son budget d’effectifs, ses groupes et ses commandants. Elle précise le déploiement, les renforts, les objectifs, les conditions de victoire et de défaite, ainsi que les conséquences des fronts éloignés.
 
-L’ajout apporte **8 cartes, 12 scénarios de fronts, 12 modèles de groupes, 6 fiches de commandants et 5 budgets**. Le catalogue atteint ainsi **21 cartes, 25 scénarios de fronts, 42 groupes, 31 fiches de boss/élites/dispositifs et 13 budgets**. Les 126 constats techniques restent ceux de l’audit v65.5 ; les nouvelles fiches sont des propositions de conception.
+L’ajout apporte **8 cartes, 12 scénarios de fronts, 12 modèles de groupes, 6 fiches de commandants et 5 budgets**. À cette étape, le catalogue atteignait **21 cartes, 25 scénarios de fronts, 42 groupes, 31 fiches de boss/élites/dispositifs et 13 budgets**. Les 126 constats techniques restent ceux de l’audit v65.5 ; les nouvelles fiches sont des propositions de conception.
 
 ### Nouvelles cartes
 
@@ -42,9 +42,75 @@ Les cartes **LD-11, colonie**, et **LD-12, citadelle**, reçoivent aussi des op�
 
 Chaque ligne ajoute **un joueur**, compté séparément. Les états actif, distant et réserve sont exclusifs. « Actif » désigne une simulation détaillée, pas nécessairement une unité visible à l’écran ; les fronts partagent les plafonds globaux. Les véhicules, civils et personnes blessées non combattantes sont suivis à part, et leur représentation doit être incluse dans le profilage de la scène complète.
 
-Les cellules Yautja nouvelles sont des groupes de **quatre PNJ**, les groupes humains nouveaux des formations de **huit**. Les commandants occupent une place dans ces groupes. Les deux opérations mixtes ventilent leurs 384 adversaires en **48 Yautja + 336 humains**, ou **96 Yautja + 288 humains**. Une trêve modifie les relations des unités existantes sans créer de nouvelles unités.
+Dans ce premier complément, les cellules Yautja nouvelles sont des groupes de **quatre PNJ**, les groupes humains nouveaux des formations de **huit**. Les commandants occupent une place dans ces groupes. Les deux opérations mixtes ventilent leurs 384 adversaires en **48 Yautja + 336 humains**, ou **96 Yautja + 288 humains**. Une trêve modifie les relations des unités existantes sans créer de nouvelles unités.
 
 Les **Cendres Veilleuses**, les **Lames de Basalte**, leurs commandants et les huit lieux supplémentaires sont des créations originales pour le projet. Leurs conflits et accords ne définissent pas des règles universelles de la franchise. Les périodes contemporaines et futures restent séparées. Si une campagne relie les opérations, elle conserve la mort, la capture et le retrait des personnages au lieu de recréer un chef déjà éliminé.
+
+## Deuxième complément : profils et lieux issus des médias
+
+Les deux nouveaux onglets contiennent **115 fiches de profils** et **27 fiches de lieux ou de secteurs sourcés**. La répartition est de **37 fiches xénomorphes ou autres organismes associés, 37 fiches Yautja et matériel associé, 41 fiches humaines, synthétiques, technologiques ou de matériel piloté**. Ces nombres décrivent des fiches de conception : ils ne signifient pas 115 castes biologiques ni 115 unités totalement absentes.
+
+Le catalogue cite **66 URL de sources primaires distinctes**, organisées en 70 références de travail. Les sources comprennent studios, éditeurs, développeurs, manuel officiel archivé et créateurs d’effets. Les fiches officielles de figurines sont limitées à ce qu’elles attestent effectivement, notamment nom ou représentation ; elles ne prouvent pas toutes les aptitudes ou une chronologie universelle.
+
+Chaque fiche précise l’œuvre, le média, la continuité, le fait attesté, le niveau de preuve, le rôle proposé, l’état du code au SHA figé, les éléments manquants, les règles de groupe, les affrontements et lieux compatibles, les restrictions et les URL. Le statut « unique » ou « exclu du spawn » reste distinct de la priorité de développement.
+
+### Règles de fidélité
+
+- Stades de vie, castes propres à un jeu, variations d’hôte et individus nommés restent distincts.
+- Les profils du Pathogène, Neomorph, Deacon, Trilobite et Eye Midge ne sont pas automatiquement tous traités comme des castes xénomorphes.
+- Les classes Yautja d’Extinction ou de Hunting Grounds ne deviennent pas une hiérarchie universelle. Young Blood et Blooded sont des statuts contextualisés ; les seuils de KOs ou droits d’armement du projet restent des mécaniques à justifier.
+- Les humains ont des factions, fonctions et classes de jeu. Cyborg, synthétique à IA et hybride de conscience humaine ne sont pas des catégories interchangeables.
+- Un personnage unique n’est jamais ajouté à une réserve de clones. Un événement Steel Team exige une composition vérifiée et une réallocation à budget constant avant activation.
+- Une présence Yautja dans un lieu d’Alien est annoncée comme scénario original lorsque l’œuvre source ne l’atteste pas. Les sources d’un lieu ne valident pas les plans ou populations imaginés pour le mode musou.
+
+### Nouveaux terrains et opérations
+
+L’ajout comprend **13 cartes, 15 opérations détaillées et leurs 15 plans de fronts, 20 modèles de groupes, 8 fiches de rencontres et 4 budgets**. Le total du classeur atteint **34 cartes, 27 opérations détaillées, 40 plans de fronts, 62 groupes, 39 fiches de rencontres et 17 budgets**. Les deux modes humains sont des variantes secondaires proposées ; ils demandent un contrôleur humain jouable qui n’est pas établi par l’audit.
+
+| Carte | Terrain | Opérations proposées |
+|---|---|---|
+| LD-22 | Sevastopol — réseaux publics et techniques | AFF-13 — Y-X avec réseau synthétique tiers |
+| LD-23 | Lethe — colonie, usine et accès de ruche | AFF-14 — Y-X, humains secourus neutres ; AFF-25 — X-H, mode humain secondaire optionnel |
+| LD-24 | Freya Prospect — complexe, ruines et extraction | AFF-15 — X-Y-H, trois camps indépendants |
+| LD-25 | LV-895 — périphérie industrielle et ruines | AFF-16 — X-Y-H, synthétiques corporatistes indépendants |
+| LD-26 | Prodigy City — cordon autour du Maginot | AFF-17 — X-Y-H, variante de guerre de 2120 |
+| LD-27 | Tobler-9 — avant-poste, refuge et sous-sol | AFF-18 — Y-X, pacte local avec les survivants ; AFF-26 — X-H, humains et coopération synthétique scénarisée |
+| LD-28 | Station Epsilon — sas, laboratoires et quai | AFF-19 — X-Y-H, infiltration localisée |
+| LD-29 | Neonopolis — récupération technologique dans les quartiers industriels | AFF-20 — Yautja contre sécurité humaine ; raid de grande ampleur original |
+| LD-30 | Genna — trois voies de récupération d’une balise de clan | AFF-21 — Yautja contre Yautja ; conflit original sur lieu de film |
+| LD-31 | Réserve de The Last Hunt — opération de libération alternative | AFF-22 — Yautja contre ravisseurs Yautja ; humains à secourir |
+| LD-32 | Planète de toundra — épave de Theta et approche de l’avant-poste | AFF-23 — Traque Yautja/humains restreinte ; trêve locale possible |
+| LD-33 | Lune des Spinners — habitat et terraformation | AFF-24 — Y-X, colonie humaine à évacuer |
+| LD-34 | LV-742 — bassin atmosphérique et ruche des failles | AFF-27 — Guerre à trois espèces — sabotage logistique, rivalité de routes et assaut de ruche |
+
+Chaque carte décrit des zones de tailles différentes, des routes terrestres ou verticales, des goulets, des repères fixes, les causes de variation et les contrôles de navigation. Les objectifs changent l’état de la bataille sans déplacer arbitrairement les lieux.
+
+### Exemple à trois espèces : LV-742
+
+Le [manuel officiel d’AVP: Extinction](https://gamingalexandria.com/ps2/Aliens%20Versus%20Predator%20Extinction/Aliens%20Versus%20Predator%20Extinction%20-%20Manual.pdf) fournit le cadre de LV-742. **AFF-27** en propose une nouvelle opération musou, avec quatre fronts : installations atmosphériques et atterrissage, col logistique, ruche, sanctuaire et extraction. Son plan et ses nombres sont originaux.
+
+| Camp | Actifs | Distants | Réserve | Total alloué |
+|---|---:|---:|---:|---:|
+| Xénomorphes | 96 | 384 | 256 | 736 |
+| Force humaine, soutien synthétique et pilotes compris | 32 | 96 | 64 | 192 |
+| Alliés Yautja PNJ | 8 | 8 | 8 | 24 |
+| Joueur | 1 | 0 | 0 | 1 |
+
+Cela donne **953 combattants alloués**, dont **137 actifs au plafond proposé**, à profiler. Les forces distantes et de réserve ne sont pas toutes simulées en détail. La reine remplace un membre de sa cellule ; les Predguns, sentries, Shrine, transports et objets biologiques ont des plafonds matériels séparés. Les deux camps adverses conservent leurs objectifs et peuvent s’affronter sans le joueur.
+
+Sevastopol et la toundra de Theta utilisent des budgets nettement plus faibles. Le théâtre et son rythme déterminent la densité ; les mêmes centaines d’unités ne sont pas ajoutées indistinctement à chaque lieu.
+
+### Sources de référence du complément
+
+- [Cold Iron — Fireteam Elite, notes de version](https://www.aliensfireteamelite.com/en/releasenotes/) et [Pathogen](https://www.aliensfireteamelite.com/en/community/pathogen-deep-dive-an-exhilarating-new-story/).
+- [Focus — Dark Descent, histoire et cadre](https://www.focus-entmt.com/en/news/tindalos-and-focus-reveal-story-trailer-for-aliens-dark-descent).
+- [IllFonic — classes humaines de Hunting Grounds](https://predator.illfonic.com/the-fireteam/).
+- [FX — personnages d’Alien: Earth](https://www.fxnetworks.com/shows/alien-earth/characters).
+- [Disney — Predator: Badlands](https://www.disneyplus.com/explore/articles/predator-badlands-movie).
+- [Marvel — Alien (2022) #3](https://www.marvel.com/comics/issue/103780/read), [Alien (2021) #10](https://www.marvel.com/comics/issue/89581/alien_2021_10) et [Predator (2022) #2](https://www.marvel.com/comics/issue/89619/predator).
+- [Legacy Effects — créatures d’Alien: Romulus](https://www.legacyefx.com/alien-romulus).
+
+La sélection vise les profils et théâtres utiles au projet. Les dossiers incomplets restent identifiables ; elle ne prétend pas épuiser tous les comics, variantes ou apparitions de la franchise.
 
 ## Versions réellement comparées
 
@@ -84,7 +150,7 @@ L’appel initial `spawnWave(55)` du code récent conduit à **75 agents ou grou
 
 Le plafond de 200 de la branche validée concerne le total d’un encounter, incluant les unités en attente ; il ne certifie pas 200 combattants simultanément actifs.
 
-Les treize gabarits de l’onglet `Effectifs` séparent donc les ennemis actifs, alliés PNJ actifs, joueurs, forces distantes déjà déployées et réserves non déployées. Les totaux sont calculés par formule, sans double comptage des joueurs, des réserves ou d’un groupe visible par deux caméras.
+Les dix-sept gabarits de l’onglet `Effectifs` séparent donc les ennemis actifs, alliés PNJ actifs, joueurs, forces distantes déjà déployées et réserves non déployées. Les totaux sont calculés par formule, sans double comptage des joueurs, des réserves ou d’un groupe visible par deux caméras.
 
 **Exemple proposé, EFF-03 :** 128 ennemis proches + 512 déployés au loin + 360 en réserve = **1 000 ennemis alloués** ; 16 alliés PNJ proches + 24 au loin + 8 en réserve = **48 alliés PNJ**, auxquels s’ajoute le joueur ; **trois fronts**. Il s’agit d’un objectif de conception pour une guerre originale du clan, soumis au profilage, et non d’une capacité déjà démontrée ou d’un effectif de film.
 
@@ -96,13 +162,13 @@ Les groupes de *Prey* sont séparés des factions et armements futuristes. Les a
 
 ### 5. Agrandir par la topologie et les objectifs
 
-Les 21 fiches de terrain couvrent les dix lieux déclarés dans la v65.5 et onze terrains proposés. Elles décrivent les secteurs, voies, goulets, repères, zones variables, fronts et critères de navigation.
+Les 34 fiches de terrain comprennent les dix lieux déclarés dans la v65.5, les propositions initiales et 13 terrains supplémentaires fondés sur les médias. Les 27 fiches de provenance de `Lieux_medias` peuvent décrire plusieurs secteurs ou angles d’un même lieu ; elles ne représentent pas 27 planètes différentes. Elles décrivent les secteurs, voies, goulets, repères, zones variables, fronts et critères de navigation.
 
-Les dimensions cibles vont de **700 × 900 à 2 000 × 2 400 unités de jeu**. Elles désignent des emprises de conception ; toute l’emprise n’est pas nécessairement praticable. Elles ne sont pas converties en mètres, ne reproduisent pas un plan canonique certifié et restent à calibrer avec les vitesses, les trajets, le streaming et les performances.
+Les dimensions cibles sont propres à chaque terrain et exprimées en **unités de jeu** dans `Cartes_zones`. Elles désignent des emprises de conception ; toute l’emprise n’est pas nécessairement praticable. Elles ne sont pas converties en mètres, ne reproduisent pas un plan canonique certifié et restent à calibrer avec les vitesses, les trajets, le streaming et les performances.
 
 ### 6. Relier boss, mini-boss et bataille
 
-Les 31 fiches couvrent des profils déjà présents et des rôles à concevoir. Elles distinguent les chefs de groupe, élites, mini-boss, chasseurs uniques, boss majeurs et structures de rencontre. Quinze identifiants de boss du code sont examinés dans l’inventaire ; ces deux nombres ne désignent pas la même chose.
+Les 39 fiches couvrent des profils déjà présents et des rôles à concevoir. Elles distinguent les chefs de groupe, élites, mini-boss, chasseurs uniques, boss majeurs et structures de rencontre. Quinze identifiants de boss du code sont examinés dans l’inventaire ; ces deux nombres ne désignent pas la même chose.
 
 Le Feral ajouté en v65 possède un constructeur et 8 600 PV de gameplay. Son combat reste à corriger : appel `spawnAcidSpit` sans définition trouvée, héritage d’attaques génériques d’acide et de queue, piège du masque appliquant directement des dégâts. Les interactions Prey sont également à comparer à leurs annonces et aux scènes sources (`AUD-123` à `AUD-126`).
 
@@ -119,30 +185,32 @@ Dans le complément v65.5, Sarii suit le premier joueur et applique des dégâts
 
 Les sources officielles parlent de batailles contre des milliers d’ennemis et du concept « un contre mille ». Cela ne suffit pas à certifier un nombre universel d’agents entièrement simulés à chaque image. Aucun tel plafond n’est inventé dans le classeur. Les sources et leurs limites sont jointes aux 40 comparaisons, chacune reliée aux actions de l’audit.
 
-## Organisation des 13 onglets
+## Organisation des 15 onglets
 
 | Onglet | Contenu |
 |---|---|
 | `Synthese` | Indicateurs calculés, répartition des priorités, états et domaines, constats et mode d’emploi. |
-| `Effectifs` | 13 gabarits avec hypothèses modifiables et totaux calculés. |
+| `Effectifs` | 17 gabarits avec hypothèses modifiables et totaux calculés. |
 | `Manquants` | 126 actions avec état par branche, cible, critère de validation, priorité, dépendances, preuves et suivi. |
 | `Comparatif_DW` | 40 mécanismes sourcés et leur adaptation au projet. |
-| `Groupes` | 42 compositions et rôles cohérents par faction et contexte. |
-| `Fronts` | 25 scénarios de bataille sur plusieurs fronts, événements et conséquences. |
-| `Cartes_zones` | 21 fiches de terrain et de circulation, dont 11 propositions originales. |
-| `Boss_et_elites` | 31 fiches de boss, mini-boss, élites et dispositifs, contre-jeu et conséquences sur la bataille. |
+| `Groupes` | 62 compositions et rôles cohérents par faction et contexte. |
+| `Fronts` | 40 scénarios de bataille sur plusieurs fronts, événements et conséquences. |
+| `Cartes_zones` | 34 fiches de terrain, secteurs variables, circulation et critères de navigation ; source du lieu distincte du plan proposé. |
+| `Boss_et_elites` | 39 fiches de boss, mini-boss, élites et dispositifs, contre-jeu et conséquences sur la bataille. |
 | `Fidelite` | 47 règles, périmètres d’œuvre, contrôles d’arsenal et limites des sources. |
 | `Validation` | 24 procédures à exécuter, avec preuves attendues ; aucun résultat futur déclaré réussi. |
 | `Feuille_route` | 6 lots successifs avec prérequis et critères de sortie. |
 | `Etat_verifie` | Relevés de versions, inventaire, architecture, historique Vercel, références et limites de vérification. |
-| `Affrontements` | 12 opérations détaillées contre des clans rivaux, des forces humaines ou plusieurs camps, avec références aux autres onglets. |
+| `Affrontements` | 27 opérations détaillées Y-X, Y-H, Y-Y, X-Y-H et variantes X-H optionnelles, avec références aux autres onglets. |
+| `Bestiaire_medias` | 115 fiches : stades, castes de jeux, rôles, classes, matériel et individus ; preuves, état du code, travail manquant et éligibilité. |
+| `Lieux_medias` | 27 fiches de provenance et de compatibilité : œuvre, continuité, fait attesté, topologie proposée et restrictions. |
 
 ## Utilisation et validation
 
-Commencer par `Synthese`, puis filtrer `Manquants` sur `P0`. Modifier les hypothèses signalées dans `Effectifs` et la colonne « Suivi » sans écraser les constats ni les preuves. Les lots proposés commencent par une base unique compilable, puis une bataille pilote à trois fronts ; la montée en charge suit la mesure sur le matériel cible.
+Commencer par `Synthese`, puis filtrer `Manquants` sur `P0`. Pour ce complément, ouvrir `Bestiaire_medias` et filtrer l’œuvre, le type et l’éligibilité ; utiliser ensuite `Lieux_medias`, `Cartes_zones` et `Affrontements` pour choisir un théâtre et ses forces. Modifier les hypothèses signalées dans `Effectifs` et la colonne « Suivi » sans écraser les constats ni les preuves. Les lots proposés commencent par une base unique compilable, puis une bataille pilote à trois fronts ; la montée en charge suit la mesure sur le matériel cible.
 
 Le menu de production a été observé dans le navigateur. Cette session d’audit n’avait pas de contexte WebGL utilisable (`GL_VENDOR` et `GL_RENDERER` désactivés) : aucun résultat de combat, FPS ou comparaison visuelle exhaustive n’est certifié. Cette limite de l’environnement d’audit ne démontre pas un défaut WebGL du jeu sur les machines des joueurs.
 
-La vérification du livrable Excel comprend la cohérence des nombres, des références d’actions, des formules de synthèse et des budgets, ainsi qu’un rendu visuel des onglets. Les 24 recettes du jeu restent à exécuter après intégration des changements de gameplay.
+Le classeur totalise 677 lignes détaillées. Le contrôle XML confirme 15 feuilles, 14 tableaux filtrables et 142 formules, sans cellule d’erreur. Les 460 lignes antérieures, leurs valeurs, styles, dimensions, volets figés, validations et formats conditionnels restent préservés. La vérification comprend également les références d’actions, les budgets et les rendus visuels des ajouts. Les 24 recettes du jeu restent à exécuter après intégration des changements de gameplay.
 
 **Portée de la PR :** ajout du classeur, de ses données lisibles et de cette notice. Aucune modification du gameplay ni fusion automatique des branches. Le point d’ancrage de l’audit reste `0f37cc52`, même si `main` évolue après sa publication.
