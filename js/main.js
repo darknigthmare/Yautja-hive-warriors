@@ -4020,7 +4020,7 @@ class GameApp {
       }
 
       // Chantier 5 & Sofia QA (v52.0): Hydraulic Cargo Lift Proximity Prompt
-      const isNearLift = this.env.hydraulicCargoLift && this.player && this.player.position.distanceTo(this.env.hydraulicCargoLift.switchPos) <= 4.2;
+      const isNearLift = this.env.hydraulicCargoLift && this.player && this.player.position.distanceTo(this.env.hydraulicCargoLift.pos) <= 4.2;
       const liftPrompt = document.getElementById('hydraulic-lift-prompt');
       if (liftPrompt) {
         if (isNearLift) liftPrompt.classList.remove('hidden');

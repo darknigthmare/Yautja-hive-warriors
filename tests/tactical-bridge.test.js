@@ -7,6 +7,7 @@ import { BattleSimulation } from '../js/battlefield/BattleSimulation.js';
 import { createBattlefieldOperation } from '../js/battlefield/BattlefieldOperation.js';
 import { BattleActorBridge } from '../js/battlefield/BattleActorBridge.js';
 import { ColonialMarinesManager } from '../js/entities/ColonialMarines.js';
+import { CombatDirector } from '../js/engine/CombatDirector.js';
 
 function fixture() {
   const e = new EnvironmentManager(new THREE.Scene()); e.buildLevelEnvironment({ ...LEVELS_DATA[0], mapId: 'LD-01', strategicMode: true });
@@ -85,7 +86,7 @@ test('a real USCM actor and BattleActorBridge walk the access ramp, deck and exi
   const marines = new ColonialMarinesManager(e.scene, {}); marines.environment = e;
   const game = { env: e, player: { hp: 100, position: new THREE.Vector3(30000, 0, 30000), factionId: 'player_clan' },
     marines, horde: { aliens: [], checkMeleeHits: () => [], cancelPendingSpawns() {}, getActiveCombatants: () => [] },
-    allies: { allies: [] }, synthetics: { androids: [] }, bosses: {}, combatDirector: {}, battleSimulation: simulation };
+    allies: { allies: [] }, synthetics: { androids: [] }, bosses: {}, combatDirector: new CombatDirector(), battleSimulation: simulation };
   const projection = new BattleActorBridge(game); projection.bind(simulation); e.game = game;
   const group = [...simulation.groups.values()].find(group => group.factionId === 'human_force');
   const units = simulation.getGroupUnits(group.id).map((unit, i) => ({ ...unit, position: [s.center[0] - 26, s.center[1] + (i - 1) * 2] }));
