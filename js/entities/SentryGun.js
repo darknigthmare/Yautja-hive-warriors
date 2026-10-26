@@ -207,6 +207,12 @@ export class SentryGun {
     this.audioEngine.playSentryGunBurst();
     sentry.flashLight.intensity = 4.5;
 
+    // Eject spent 10mm explosive-tip caseless/brass sparks on lateral side
+    if (this.particles) {
+      const ejectPos = sentry.group.position.clone().add(new THREE.Vector3(0.3, 1.2, 0));
+      this.particles.emitSparks(ejectPos, roundsToFire * 3);
+    }
+
     // Deal damage to target and small splash
     if (target && target.mesh) {
       const damageTotal = roundsToFire * 42; // Up to 210 burst damage!
@@ -237,5 +243,34 @@ export class SentryGun {
       disposeObject(s.group);
     });
     this.sentries = [];
+  }
+
+  /* Chantier 5: USCM Sentry Gun Reload & Directional Arc Calibration (Aliens 1986 Canon 1:1) */
+  reloadSentry(playerPos, ammoCount = 250) {
+    for (const sentry of this.sentries) {
+      if (playerPos.distanceTo(sentry.group.position) <= 3.2) {
+        if (sentry.ammo >= sentry.maxAmmo) return { success: false, reason: 'full' };
+        sentry.ammo = Math.min(sentry.maxAmmo, sentry.ammo + ammoCount);
+        sentry.isEmptyAnnounced = false;
+        if (this.audioEngine && this.audioEngine.playSupplyCacheOpen) {
+          this.audioEngine.playSupplyCacheOpen();
+        }
+        return { success: true, ammo: sentry.ammo };
+      }
+    }
+    return { success: false, reason: 'too_far' };
+  }
+
+  calibrateDirection(playerPos, rotationY) {
+    for (const sentry of this.sentries) {
+      if (playerPos.distanceTo(sentry.group.position) <= 3.2) {
+        sentry.group.rotation.y = rotationY;
+        if (this.audioEngine && this.audioEngine.playHydraulicDoorGrind) {
+          this.audioEngine.playHydraulicDoorGrind();
+        }
+        return { success: true };
+      }
+    }
+    return { success: false };
   }
 }

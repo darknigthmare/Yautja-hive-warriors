@@ -1,0 +1,40 @@
+# Mise en œuvre de l'audit
+
+Le classeur et `audit-data.json` proviennent de la PR #3, commit `0435827e`. Leurs constats restent arrêtés au code `0f37cc52` (v65.5). La reprise intègre aussi les ajouts v66–v67 du `main` récent `9c18c19` et les fondations jouables de `1d52d9f` ; elle ne remplace pas ces branches par une copie du seul audit.
+
+`Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.source.xlsx` conserve les octets originaux. Le fichier sans suffixe `.source` reçoit uniquement les cellules **N7:N132, Suivi**, après contrôle des preuves. Les constats, critères, références, styles, autres feuilles, 14 tableaux et 142 formules restent intacts. Le JSON d'audit demeure la source historique ; le suivi courant est `implementation-progress.json`.
+
+## Catalogue consommable
+
+`js/data/BattleCatalog.js` expose 115 profils sourcés, 34 propositions de cartes, 27 opérations, 62 modèles de groupes, 17 budgets, 40 scénarios de fronts, 39 rencontres et 70 références. `scripts/sync-battle-catalog.mjs --check` vérifie sa reproduction depuis l'audit préservé. Ce catalogue ne constitue ni 115 modèles rendus ni 34 cartes construites ou certifiées 1:1.
+
+Les profils distinguent individu unique, stade de vie, combattant générique, civil, matériel, classe contextualisée et élément exclu ou non documenté. La validation refuse notamment les individus nommés dans une réserve générique, les clones de reine, les cadres de classification pris pour soldats et les rosters non documentés. Les règles d'arsenal séparent Jungle, City, Wolf, Feral et les classes Hunting Grounds ; elles restent des adaptations conservatrices liées aux références, pas une certification scène par scène.
+
+`getBattleOperationConfig(id, options)` produit une configuration mutable privée pour le moteur : factions, relations, réserves finies, groupes et identités, fronts, routes et conditions. Les opérations sont marquées originales. Les allocations structurées sont conservées exactement ; les cinq lignes AFF-06 à AFF-10, qui expriment leurs comptes seulement en prose, sont traduites explicitement. Commandants, pilotes et personnages nommés remplacent des places allouées au lieu d'ajouter des combattants. Les civils et véhicules restent séparés du budget militaire.
+
+Les deux variantes humaines AFF-25 et AFF-26 exigent un contrôleur humain réellement disponible. Une proposition dépourvue de scène construite reste signalée comme terrain de biome adapté. Les objectifs narratifs sources restent distincts de leur mise en œuvre ; les critères d'origine ne deviennent pas automatiquement « terminés » parce qu'une configuration existe.
+
+## Objectifs narratifs exécutables
+
+`OperationObjectiveSpecs.js` traduit les 27 propositions en plans différents. `OperationObjectives.js` exécute les actions de proximité, canalisations à la touche E, archives transportées, interceptions de convois, sabotages des vraies sources, activations, libérations, escortes, défenses chronométrées, duels, trêves limitées et extractions. Le mode narratif désactive la victoire générique par capture des fronts. Une destruction de source, une capture ou une négociation modifie le moteur, et les différentes stratégies consultent ces états réels.
+
+La mort d'un porteur laisse son chargement récupérable à sa dernière position ; elle ne crée pas un second gain d'objectif. Les personnes libérées conservent des identités et des PV séparés des soldats et suivent le chemin effectivement parcouru par leur guide. Les convois concatènent les couloirs du graphe physique, dans le bon sens, et refusent un trajet déconnecté. Le contrôleur appelle la résolution de mouvement du décor avec l'origine, la destination et le pas ; une extraction exige l'arrivée réelle du groupe. Une sauvegarde conserve canalisations, chargements, personnes, chemins et résultat sans rejouer les effets.
+
+Les terminaux de déverrouillage choisissent des portes de contournement réelles, fermées au départ. La fermeture est refusée si elle couperait le graphe principal : le joueur peut toujours rejoindre le terminal par une autre voie. L'événement de réussite fournit les IDs de route et de portes au décor. Deux terminaux d'une même opération commandent des voies différentes, avec une conséquence physique et stratégique.
+
+Chaque plan possède aussi une contre-offensive liée à une action précise. Le contrôleur l'annonce douze secondes avant le départ d'un groupe déjà alloué. Une trêve ou l'absence de forces/route annule la réaction ; elle ne crée aucun combattant. Les réserves de huit unités disposent d'une autorisation d'arrivée suffisante pour le groupe entier, avec cadence et plafond actif inchangés. Le budget trop petit aurait sinon bloqué leurs renforts définitivement.
+
+`tests/operation-objectives.test.js` exécute les 27 plans avec le vrai moteur, puis vérifie annulation par dégâts/distance, pause, récupération en coopération, sabotage et trêve, contre-offensive causale, convoi avec coude, concaténation de routes indirectes, portes de contournement, escorte autour de deux murs à angle droit, registre des civils et reprise de sauvegarde. Les captures génériques seules ne gagnent aucune de ces opérations. Le rapport CPU `catalog-objectives-test.txt` inclut ces onze cas et les treize contrôles du catalogue et du classeur, dont les arrivées finies des 27 configurations initiales ravitaillées. Ce sont des tests automatisés, pas 27 parcours humains ni une certification de ressemblance visuelle.
+
+## Suivi avec preuves
+
+Le registre conserve chaque critère d'origine et un des états `À faire`, `En cours`, `À valider`, `Terminé`, `Bloqué`. Un état `Terminé` exige `acceptanceVerified: true` et au moins une preuve locale avec `kind` (`test`, `runtime` ou `review`), `path`, `sha256` et `scope`. La portée explique quel comportement du critère a été vérifié. Le script vérifie l'identité des 126 actions, leurs critères inchangés, l'existence et l'empreinte des preuves ; la responsabilité de la correspondance entre preuve et critère demeure celle de la revue.
+
+```sh
+node scripts/sync-battle-catalog.mjs --check
+python3 scripts/update-audit-progress.py --check
+python3 scripts/update-audit-progress.py --write --report docs/audits/2026-10-26/implementation-verification.json
+node --max-old-space-size=2048 --test --test-concurrency=1 tests/battle-catalog.test.js tests/audit-progress.test.js tests/operation-objectives.test.js
+```
+
+Le script Python utilise uniquement sa bibliothèque standard. Il refuse d'écraser une autre modification du classeur, un critère réécrit ou une preuve dont les octets ont changé. Aucun test humain, mesure de performance sur le matériel des joueurs ou certification graphique 1:1 n'est déduit de ces vérifications structurelles.

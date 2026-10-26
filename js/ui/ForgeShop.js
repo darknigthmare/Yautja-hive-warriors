@@ -1,5 +1,6 @@
 /* Persistent Yautja forge. Honor is earned once, and every purchase is debited. */
 import { readStoredNumber, readStoredObject, writeStored } from './storage.js';
+import { HonorLedger } from '../engine/HonorLedger.js';
 
 const DEFAULT_UPGRADES = { hpLevel: 0, damageLevel: 0, plasmaLevel: 0, activeMask: 'classic', laserColor: '#00d2ff', spentHonor: 0 };
 export class ForgeShop {
@@ -11,6 +12,11 @@ export class ForgeShop {
       this.upgrades[field] = Number.isFinite(value) ? Math.max(0, Math.min(5, Math.floor(value))) : 0;
     }
     this.upgrades.spentHonor = Number.isFinite(Number(this.upgrades.spentHonor)) ? Math.max(0, Number(this.upgrades.spentHonor)) : 0;
+    let storage; try { storage = globalThis.localStorage; } catch { /* Private browsing can deny storage access. */ }
+    this.honorLedger = new HonorLedger({ storage, earned: Math.floor(readStoredNumber('yautja_total_kos') * 100), spent: Math.floor(this.upgrades.spentHonor) });
+    for (const type of ['hp', 'damage', 'plasma']) for (let level = 1; level <= 5; level++) {
+      if (this.honorLedger.hasTransaction(`forge:${type}:${level}`)) this.upgrades[`${type}Level`] = Math.max(this.upgrades[`${type}Level`], level);
+    }
     if (!['#00d2ff', '#ff1a1a', '#39ff14'].includes(this.upgrades.laserColor)) this.upgrades.laserColor = DEFAULT_UPGRADES.laserColor;
     this.shopModal = document.getElementById('forge-modal');
     document.addEventListener('ui-screen-change', event => {
@@ -23,8 +29,8 @@ export class ForgeShop {
     this.render();
   }
   getCost(level) { return (level + 1) * 3500; }
-  getBalance(earnedHonor = readStoredNumber('yautja_total_kos') * 100) {
-    return Math.max(0, earnedHonor - this.upgrades.spentHonor);
+  getBalance() {
+    return this.honorLedger.balance;
   }
   buyUpgrade(type, currentScore) {
     if (!['hp', 'damage', 'plasma'].includes(type)) return 0;
@@ -34,10 +40,11 @@ export class ForgeShop {
       window.game?.ui.showAnnouncement('Amélioration maximale atteinte.');
       return 0;
     }
-    if (this.getBalance(currentScore) < cost) {
+    if (this.getBalance() < cost) {
       window.game?.ui.showAnnouncement(`Honneur insuffisant : ${cost.toLocaleString('fr-FR')} points nécessaires.`);
       return 0;
     }
+    if (!this.honorLedger.spend({ id: `forge:${type}:${level + 1}`, amount: cost })) return 0;
     this.upgrades[`${type}Level`]++;
     this.upgrades.spentHonor += cost;
     this.save();

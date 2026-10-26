@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import { createAPCModel } from '../graphics/SupportModels.js';
 import { APC_DEPLOYMENT_SECONDS, APC_NAVIGATION } from '../graphics/APCModel.js';
 import { disposeObject } from '../engine/SceneResources.js';
+import { traceCombatSegment } from '../engine/CombatGeometry.js';
 
 // Circle against the horizontal projection of an actor-height clipped part.
 function resolveCirclePolygon(point, radius, polygon) {
@@ -40,6 +41,7 @@ export class APCVehicle {
     this.isActive = false;
     this.fireCooldown = 0;
     this.targetPos = new THREE.Vector3();
+    this.tracers = [];
     this.hp = 2500;
     this.maxHp = 2500;
     this.model = null;
@@ -54,6 +56,7 @@ export class APCVehicle {
     const center = new THREE.Vector3(0, 0, APC_NAVIGATION.centerZ).applyAxisAngle(new THREE.Vector3(0, 1, 0), this.mesh.rotation.y).add(this.mesh.position);
     return { x: center.x, z: center.z, halfWidth: APC_NAVIGATION.halfWidth, halfDepth: APC_NAVIGATION.halfDepth,
       height: APC_NAVIGATION.height, rotation: this.mesh.rotation.y, owner: 'apc',
+      traceSegment: (from, to, options) => this.traceSegment(from, to, options),
       resolveMovement: (position, radius, height) => this.resolveMovement(position, radius, height) };
   }
 
@@ -79,7 +82,20 @@ export class APCVehicle {
     model.setTurretDeployment(0);
   }
 
-  update(delta, horde) {
+  traceSegment(from, to) {
+    if (!this.isActive || !this.mesh) return null;
+    const start = from?.isVector3 ? from : new THREE.Vector3(...from), end = to?.isVector3 ? to : new THREE.Vector3(...to);
+    const nav = this.getNavigationCollider(); delete nav.traceSegment; delete nav.resolveMovement;
+    nav.height = 6;
+    if (!traceCombatSegment(start, end, [nav])) return null;
+    const direction = end.clone().sub(start), length = direction.length(); if (length < 1e-9) return null;
+    this.mesh.updateWorldMatrix(true, true);
+    const ray = new THREE.Raycaster(start, direction.divideScalar(length), 0, length);
+    const hit = ray.intersectObject(this.mesh, true).find(entry => entry.object.visible && entry.object.material?.depthWrite !== false);
+    return hit ? { point: hit.point, normal: hit.face?.normal.clone().applyNormalMatrix(new THREE.Matrix3().getNormalMatrix(hit.object.matrixWorld)).normalize() ?? new THREE.Vector3(), distance: hit.distance, t: hit.distance / length } : null;
+  }
+
+  update(delta, horde, bosses = null) {
     if (!this.isActive || !this.mesh || !Number.isFinite(delta) || delta <= 0) return;
 
     this.fireCooldown = Math.max(0, this.fireCooldown - delta);
@@ -93,6 +109,12 @@ export class APCVehicle {
       this.model.muzzleFlash.visible = this.weaponFlash > 0.02;
     }
 
+    for (let i = this.tracers.length - 1; i >= 0; i--) {
+      const tracer = this.tracers[i]; tracer.life -= delta;
+      const distance = tracer.mesh.position.distanceTo(tracer.target), step = Math.min(distance, tracer.speed * delta);
+      tracer.mesh.position.addScaledVector(tracer.dir, step);
+      if (tracer.life <= 0 || distance <= step + .05) { disposeObject(tracer.mesh); this.tracers.splice(i, 1); }
+    }
     // A close target below the gun's depression stop must not prevent fire
     // at the next reachable enemy. Select using the same physical aim check
     // that will drive the housing and the muzzle effects for this shot.
@@ -106,7 +128,10 @@ export class APCVehicle {
         if (d < 30) candidates.push({ alien: a, distance: d });
       });
     }
-    candidates.sort((a, b) => a.distance - b.distance);
+    const boss = bosses?.activeBoss;
+    if (boss?.mesh && boss.hp > 0 && this.mesh.position.distanceTo(boss.mesh.position) < 38) candidates.push({ alien: boss, distance: this.mesh.position.distanceTo(boss.mesh.position), boss: true });
+    const priority = candidate => candidate.boss ? 2 : candidate.alien.isOfficer || ['praetorian', 'crusher'].includes(candidate.alien.type) ? 1 : 0;
+    candidates.sort((a, b) => priority(b) - priority(a) || a.distance - b.distance);
     for (const { alien } of candidates) {
       this.targetPos.copy(alien.mesh.position);
       this.targetPos.y += alien.type === 'facehugger' ? 0.2 : 1.25;
@@ -131,6 +156,7 @@ export class APCVehicle {
           this.model.flareMaterial.opacity = 0.85;
           this.model.muzzleFlash.visible = true;
           this.mesh.updateMatrixWorld(true);
+          for (const muzzle of this.model.muzzleSockets) this.spawnTracer(muzzle.getWorldPosition(new THREE.Vector3()), this.targetPos);
           for (const muzzle of this.model.muzzleSockets) this.particles?.emitSparks?.(muzzle.getWorldPosition(new THREE.Vector3()), 2);
         }
         if (this.audioEngine && this.audioEngine.playAPCTurretBurst) {
@@ -138,7 +164,9 @@ export class APCVehicle {
         }
 
         // Heavy suppressive fire damage
-        if (horde) {
+        if (nearestTarget === bosses?.activeBoss) {
+          bosses.takeDamage(240);
+        } else if (horde) {
           horde.checkMeleeHits({
             origin: nearestTarget.mesh.position,
             radius: 3.5,
@@ -189,6 +217,8 @@ export class APCVehicle {
   }
 
   clear() {
+    for (const tracer of this.tracers) disposeObject(tracer.mesh);
+    this.tracers = [];
     if (this.mesh) {
       disposeObject(this.mesh);
       this.mesh = null;
@@ -200,5 +230,25 @@ export class APCVehicle {
     this.recoil = 0;
     this.weaponFlash = 0;
     this.fireCooldown = 0;
+  }
+
+  spawnTracer(startPos, targetPos) {
+    const tracerGeo = new THREE.CylinderGeometry(0.04, 0.04, 0.8, 4);
+    tracerGeo.rotateX(Math.PI / 2);
+    const tracerMat = new THREE.MeshBasicMaterial({ color: 0xfff066 });
+    const tracerMesh = new THREE.Mesh(tracerGeo, tracerMat);
+
+    tracerMesh.position.copy(startPos);
+    tracerMesh.lookAt(targetPos);
+    this.scene.add(tracerMesh);
+
+    const dir = targetPos.clone().sub(startPos).normalize();
+    this.tracers.push({
+      mesh: tracerMesh,
+      dir,
+      target: targetPos.clone(),
+      speed: 75.0,
+      life: 0.6
+    });
   }
 }

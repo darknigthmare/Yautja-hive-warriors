@@ -14,6 +14,8 @@ export class CheyenneDropship {
     this.flightProgress = 0;
     this.napalmPools = [];
     this.pendingStrikes = [];
+    this.microRockets = [];
+    this.elapsed = 0;
   }
 
   triggerAirstrike(playerPos, horde) {
@@ -99,6 +101,8 @@ export class CheyenneDropship {
   }
 
   update(delta, horde = null) {
+    if (!Number.isFinite(delta) || delta <= 0) return;
+    this.elapsed += delta;
     for (let i = this.pendingStrikes.length - 1; i >= 0; i--) {
       const strike = this.pendingStrikes[i];
       strike.time -= delta;
@@ -106,7 +110,19 @@ export class CheyenneDropship {
       this.pendingStrikes.splice(i, 1);
       const targets = horde || strike.horde;
       if (strike.kind === 'napalm') this.spawnNapalmInferno(strike.pos, targets);
-      else targets?.checkMeleeHits({ origin: strike.pos, radius: 25, damage: 550, type: 'heavy' });
+      else for (let rocket = 0; rocket < 6; rocket++) {
+        const target = strike.pos.clone().add(new THREE.Vector3((rocket % 3 - 1) * 3, 0, (Math.floor(rocket / 3) - .5) * 4));
+        this.fireMicroRocket(rocket % 2 ? 4 : -4, target, targets);
+      }
+    }
+    for (let i = this.microRockets.length - 1; i >= 0; i--) {
+      const rocket = this.microRockets[i], distance = rocket.mesh.position.distanceTo(rocket.target);
+      rocket.life -= delta; const step = Math.min(distance, rocket.speed * delta);
+      rocket.mesh.position.addScaledVector(rocket.dir, step);
+      if (distance <= step + .05) {
+        (horde ?? rocket.horde)?.checkMeleeHits({ origin: rocket.target, radius: 3.8, damage: 210, type: 'heavy' });
+        this.particles?.emitSparks?.(rocket.target, 12); disposeObject(rocket.mesh); this.microRockets.splice(i, 1);
+      } else if (rocket.life <= 0) { disposeObject(rocket.mesh); this.microRockets.splice(i, 1); }
     }
     // 1. Dropship Flight Trajectory
     if (this.isFlying && this.shipMesh) {
@@ -123,14 +139,14 @@ export class CheyenneDropship {
     // 2. Active Napalm Burning Hazards Update
     for (let i = this.napalmPools.length - 1; i >= 0; i--) {
       const p = this.napalmPools[i];
-      p.life -= delta;
+      const burnStep = Math.min(delta, p.life); p.life -= delta;
 
       // Flame flicker animation
-      p.poolMesh.material.opacity = 0.65 + Math.sin(Date.now() * 0.015) * 0.2;
+      p.poolMesh.material.opacity = 0.65 + Math.sin((this.elapsed * 1000) * 0.015) * 0.2;
       p.coreMesh.scale.set(
-        1.0 + Math.sin(Date.now() * 0.02) * 0.15,
-        1.0 + Math.cos(Date.now() * 0.02) * 0.2,
-        1.0 + Math.sin(Date.now() * 0.02) * 0.15
+        1.0 + Math.sin((this.elapsed * 1000) * 0.02) * 0.15,
+        1.0 + Math.cos((this.elapsed * 1000) * 0.02) * 0.2,
+        1.0 + Math.sin((this.elapsed * 1000) * 0.02) * 0.15
       );
 
       // Continuous burn damage to any Xenomorphs walking into fire
@@ -138,7 +154,7 @@ export class CheyenneDropship {
         horde.checkMeleeHits({
           origin: p.pos,
           radius: 3.8,
-          damage: p.damage * delta,
+          damage: p.damage * burnStep,
           type: 'light'
         });
       }
@@ -152,6 +168,8 @@ export class CheyenneDropship {
   }
 
   clear() {
+    for (const rocket of this.microRockets) disposeObject(rocket.mesh);
+    this.microRockets = []; this.elapsed = 0;
     this.pendingStrikes = [];
     this.isFlying = false;
     this.flightProgress = 0;
@@ -165,5 +183,53 @@ export class CheyenneDropship {
       disposeObject(p.coreMesh);
     });
     this.napalmPools = [];
+  }
+
+  fireMicroRocket(podXOffset, targetPos, horde) {
+    if (!this.shipMesh || !targetPos?.isVector3) return false;
+    if (!this.shipMesh) return;
+
+    const startPos = this.shipMesh.position.clone().add(new THREE.Vector3(podXOffset, 0.8, 1.0));
+    const rocketGroup = new THREE.Group();
+
+    // Missile Body
+    const bodyMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.9, roughness: 0.3 });
+    const body = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 1.4, 6), bodyMat);
+    body.rotation.x = Math.PI / 2;
+    rocketGroup.add(body);
+
+    // High-Explosive Warhead Tip
+    const tipMat = new THREE.MeshBasicMaterial({ color: 0xff3b30 });
+    const tip = new THREE.Mesh(new THREE.ConeGeometry(0.15, 0.45, 6), tipMat);
+    tip.rotation.x = Math.PI / 2;
+    tip.position.set(0, 0, 0.8);
+    rocketGroup.add(tip);
+
+    // Blazing Rocket Exhaust Plume
+    const exhaustMat = new THREE.MeshBasicMaterial({ color: 0xffcc00 });
+    const exhaust = new THREE.Mesh(new THREE.ConeGeometry(0.13, 0.6, 6), exhaustMat);
+    exhaust.rotation.x = -Math.PI / 2;
+    exhaust.position.set(0, 0, -0.9);
+    rocketGroup.add(exhaust);
+
+    rocketGroup.position.copy(startPos);
+    rocketGroup.lookAt(targetPos);
+    this.scene.add(rocketGroup);
+
+    if (this.audioEngine && this.audioEngine.playLauncherWhoosh) {
+      this.audioEngine.playLauncherWhoosh();
+    } else if (this.audioEngine && this.audioEngine.playFlechetteVolleyLaunch) {
+      this.audioEngine.playFlechetteVolleyLaunch();
+    }
+
+    const dir = targetPos.clone().sub(startPos).normalize();
+    this.microRockets.push({
+      mesh: rocketGroup,
+      dir,
+      target: targetPos.clone(),
+      horde,
+      speed: 52.0,
+      life: 2.5
+    });
   }
 }

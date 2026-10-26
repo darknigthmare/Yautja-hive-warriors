@@ -1,0 +1,12 @@
+✔ Sarii joins once without futuristic loot, accepts explicit orders and cannot be stolen by the second player (1.734469ms)
+✔ wounds force a persistent retreat without repeated withdrawal events or unlimited automatic healing (3.911906ms)
+✔ guard bites one hostile target on a finite cadence at30/60/120fps, while following and allied actors receive no free damage (3.967533ms)
+✔ the three-laser bone mask arms a real projectile trap and never applies instant boss damage (1.488863ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 131.468668

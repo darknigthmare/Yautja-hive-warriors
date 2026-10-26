@@ -1,5 +1,14 @@
+import { WorldGeometryStreaming } from '../graphics/WorldGeometryStreaming.js';
+import { TacticalBridge } from './TacticalBridge.js';
+import { BattlefieldNavigation } from '../engine/BattlefieldNavigation.js';
+import { traceCombatSegment, hasCombatLineOfSight } from '../engine/CombatGeometry.js';
+import { updateReferenceContacts, updateReferenceInterest } from '../graphics/ReferenceWorldContacts.js';
+import { battlefieldUnionBoundary } from '../data/BattlefieldTopology.js';
 /* Deterministic, resource-owned arenas with clear combat lanes and landmarks. */
 import * as THREE from 'three';
+import { synchronizeReferenceLandmarks } from '../graphics/ReferenceLandmarkBatching.js';
+import { ReferenceEnvironmentMechanisms } from './ReferenceEnvironmentMechanisms.js';
+import { buildReferenceLevelMechanisms, referenceLevelProfile } from '../data/ReferenceLevelMechanisms.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { createBattlefieldLayout, pointInBattlefieldRect } from '../data/BattlefieldLayouts.js';
 import { createSurfaceMaterial } from '../graphics/SurfaceLibrary.js';
@@ -8,8 +17,15 @@ import { wornTrailGeometry, weatherGroundRing, naturalBoundaryGeometry, resinCol
 import { buildBattlefieldRelay } from '../graphics/BattlefieldRelay.js';
 import { buildBattlefieldSectorDetails, buildBattlefieldCorridorDetails } from '../graphics/BattlefieldSectorDetails.js';
 
-export class EnvironmentManager {
+export class EnvironmentManager extends ReferenceEnvironmentMechanisms {
   constructor(scene) {
+    super(scene);
+    this.game = null;
+    this.referenceTime = 0;
+    this.referenceTimers = [];
+    this.referenceOwnedRoots = new Map();
+    this.referenceResourceRefs = new Map();
+    this._referenceClearing = false;
     this.scene = scene;
     this.envObjects = [];
     this.colliders = [];
@@ -20,31 +36,121 @@ export class EnvironmentManager {
     this.gateVisuals = new Map(); this.sectorVisuals = new Map(); this.objectiveMarkers = new Map();
     this.relayVisuals = new Map();
     this.corridorVisuals = new Map();
+    this.tacticalBridges = new Map();
+    this.navigation = new BattlefieldNavigation(this);
   }
 
   clearEnvironment() {
-    this.envObjects.forEach(object => {
-      object.traverse(child => { if (child.isInstancedMesh) child.dispose(); });
-      this.scene.remove(object);
+    this._referenceClearing = true;
+    this.worldStreaming?.dispose(); this.worldStreaming = null;
+    const roots = new Set([...this.envObjects, ...this.referenceOwnedRoots.keys()]);
+    const geometries = new Set(this.geometries.values()), materials = new Set(this.materials.values()), instances = new Set();
+    for (const object of roots) object.traverse(child => {
+      if (child.isInstancedMesh) instances.add(child);
+      if (child.geometry) geometries.add(child.geometry);
+      for (const material of (Array.isArray(child.material) ? child.material : [child.material])) if (material) materials.add(material);
     });
-    this.geometries.forEach(geometry => geometry.dispose());
-    this.materials.forEach(material => material.dispose());
-    this.envObjects = [];
-    this.colliders = [];
-    this.geometries.clear();
-    this.materials.clear();
-    this.root = null;
-    this.skylineBuildings = [];
-    this.battlefieldLayout = null;
-    this.openGates = new Set();
-    this.completedSectors = new Set();
-    this.gateVisuals = new Map();
-    this.sectorVisuals = new Map();
-    this.objectiveMarkers = new Map();
-    this.relayVisuals = new Map();
-    this.corridorVisuals = new Map();
-    this.activeSectorId = null;
-    this._battlefieldRectsCache = null;
+    instances.forEach(object => object.dispose());
+    geometries.forEach(geometry => geometry.dispose());
+    materials.forEach(material => material.dispose());
+    for (const object of roots) object.removeFromParent();
+    this.clearReferenceState();
+    for (const bridge of this.tacticalBridges?.values() ?? []) bridge.dispose();
+    this.tacticalBridges?.clear();
+    this.referenceTimers.length = 0; this.referenceTime = 0; this.referenceBatches = null; this.referenceContacts = []; this.referenceInterest = [];
+    this.referenceOwnedRoots.clear(); this.referenceResourceRefs.clear();
+    this.envObjects = []; this.colliders = [];
+    this.geometries.clear(); this.materials.clear();
+    this.root = null; this.referenceRoot = null; this.skylineBuildings = [];
+    this.battlefieldLayout = null; this.openGates = new Set(); this.completedSectors = new Set();
+    this.gateVisuals = new Map(); this.sectorVisuals = new Map(); this.objectiveMarkers = new Map();
+    this.relayVisuals = new Map(); this.corridorVisuals = new Map();
+    this.activeSectorId = null; this._battlefieldRectsCache = null;
+    this.navigation = new BattlefieldNavigation(this);
+    this._referenceClearing = false;
+  }
+
+  /** Stage-created effects use simulation time, so pause/menu never leak timers. */
+  referenceDelay(callback, milliseconds) {
+    if (typeof callback !== 'function' || !Number.isFinite(milliseconds) || milliseconds < 0) return null;
+    const timer = { callback, remaining: milliseconds / 1000, period: 0, cancelled: false };
+    this.referenceTimers.push(timer); return timer;
+  }
+
+  referenceEvery(callback, milliseconds) {
+    const timer = this.referenceDelay(callback, milliseconds);
+    if (timer) timer.period = Math.max(1 / 240, milliseconds / 1000);
+    return timer;
+  }
+
+  cancelReferenceTimer(timer) { if (timer) timer.cancelled = true; }
+
+  update(delta, horde, audioEngine, player) {
+    if (!this.root || !Number.isFinite(delta) || delta <= 0) return;
+    this.referenceTime += delta;
+    for (const bridge of this.tacticalBridges.values()) bridge.update(delta);
+    for (const timer of [...this.referenceTimers]) {
+      if (timer.cancelled) continue;
+      timer.remaining -= delta;
+      let budget = 64;
+      while (!timer.cancelled && timer.remaining <= 1e-10 && budget-- > 0) {
+        timer.callback();
+        if (!timer.period) { timer.cancelled = true; break; }
+        timer.remaining += timer.period;
+      }
+    }
+    this.referenceTimers = this.referenceTimers.filter(timer => !timer.cancelled);
+    this.updateReferenceMechanisms(delta, horde, audioEngine, player);
+    synchronizeReferenceLandmarks(this);
+    updateReferenceContacts(this);
+  }
+
+  addReferenceObject(...objects) {
+    for (const object of objects) {
+      if (!object?.isObject3D) continue;
+      (this.referenceRoot ?? this.root ?? this.scene).add(object);
+      this.trackReferenceObject(object);
+    }
+    return this;
+  }
+
+  trackReferenceObject(object) {
+    let resources = this.referenceOwnedRoots.get(object);
+    if (!resources) { resources = new Set(); this.referenceOwnedRoots.set(object, resources); }
+    object.traverse(child => {
+      const entries = [child.geometry, ...(Array.isArray(child.material) ? child.material : [child.material])];
+      for (const resource of entries) {
+        if (!resource || resources.has(resource)) continue;
+        resources.add(resource);
+        this.referenceResourceRefs.set(resource, (this.referenceResourceRefs.get(resource) ?? 0) + 1);
+        const store = resource.isBufferGeometry ? this.geometries : this.materials;
+        if (![...store.values()].includes(resource)) store.set(`reference-${resource.uuid}`, resource);
+      }
+    });
+    return object;
+  }
+
+  removeReferenceObject(...objects) {
+    for (const object of objects) {
+      if (!object?.isObject3D) continue;
+      object.removeFromParent();
+      if (this._referenceClearing) continue;
+      const resources = this.referenceOwnedRoots.get(object);
+      if (!resources) continue; // An actor belongs to its own manager, never here.
+      for (const resource of resources) {
+        const remaining = (this.referenceResourceRefs.get(resource) ?? 1) - 1;
+        if (remaining > 0) this.referenceResourceRefs.set(resource, remaining);
+        else {
+          this.referenceResourceRefs.delete(resource);
+          resource.dispose();
+          const store = resource.isBufferGeometry ? this.geometries : this.materials;
+          for (const [key, value] of store) if (value === resource) store.delete(key);
+        }
+      }
+      this.referenceOwnedRoots.delete(object);
+      this.envObjects = this.envObjects.filter(entry => entry !== object);
+    }
+    return this;
   }
 
   geometry(key, create) {
@@ -134,7 +240,17 @@ export class EnvironmentManager {
     else this.buildStation();
     buildBiomeDetails(this);
     if (levelConfig.battlefield) this.buildBattlefield(levelConfig);
+    this.referenceProfile = referenceLevelProfile(levelConfig.id, levelConfig.mapId ?? levelConfig.auditMapId);
+    this.referenceRoot = new THREE.Group(); this.referenceRoot.name = `reference-landmarks-${levelConfig.id}`;
+    (this.sectorVisuals.get('insertion') ?? this.root).add(this.referenceRoot);
+    buildReferenceLevelMechanisms(this, levelConfig);
+    for (const object of this.referenceOwnedRoots.keys()) this.trackReferenceObject(object);
+    this.updateBattlefieldVisibility([{ x: 0, z: 0 }]);
+    // Reference builders may register their roots as well; only the owned arena
+    // root participates in removal, while resource sets remain independently tracked.
+    this.envObjects = [this.root];
     this.root.updateMatrixWorld(true);
+    this.worldStreaming = new WorldGeometryStreaming(this); this.worldStreaming.update([{ x: 0, z: 0 }]);
   }
 
   buildGround() {
@@ -163,7 +279,7 @@ export class EnvironmentManager {
 
   buildBattlefield(levelConfig) {
     this.battlefieldLayout = createBattlefieldLayout(levelConfig);
-    this.root.userData.battlefield = { sectors: 6, corridors: 5, ...this.battlefieldLayout.dimensions };
+    this.root.userData.battlefield = { sectors: this.battlefieldLayout.sectors.length, corridors: this.battlefieldLayout.corridors.length, mapId: this.battlefieldLayout.mapId ?? null, ...this.battlefieldLayout.dimensions };
     const firstDetails = new THREE.Group(); firstDetails.name = 'sector-insertion-details';
     // Old distant silhouettes occupied the new connections. Retain their owned
     // resources for cleanup, but replace their backdrop with the actual map.
@@ -184,7 +300,12 @@ export class EnvironmentManager {
     });
     for (const sector of this.battlefieldLayout.sectors) {
       if (sector.id !== 'insertion') {
-        const floor = this.mesh(sectorFloor, this.floorMat, [sector.center[0], 0, sector.center[1]]);
+        const width = sector.bounds.maxX - sector.bounds.minX, depth = sector.bounds.maxZ - sector.bounds.minZ;
+        const roomFloor = width === 132 && depth === 132 ? sectorFloor : this.geometry(`battlefield-room-${width}-${depth}`, () => {
+          const geometry = new THREE.PlaneGeometry(width, depth, 16, 16); geometry.rotateX(-Math.PI / 2); projectGroundUV(geometry);
+          geometry.setAttribute('color', new THREE.Float32BufferAttribute(Array.from({ length: geometry.attributes.position.count * 3 }, () => .87), 3)); return geometry;
+        });
+        const floor = this.mesh(roomFloor, this.floorMat, [sector.center[0], 0, sector.center[1]]);
         floor.name = `battlefield-floor-${sector.id}`; floor.castShadow = false;
         const details = new THREE.Group(); details.name = `sector-${sector.id}-details`; this.root.add(details);
         this.sectorVisuals.set(sector.id, details);
@@ -204,7 +325,20 @@ export class EnvironmentManager {
     }
     for (const corridor of this.battlefieldLayout.corridors) {
       const width = corridor.bounds.maxX - corridor.bounds.minX, depth = corridor.bounds.maxZ - corridor.bounds.minZ;
-      const geometry = this.geometry(`battlefield-floor-${corridor.id}`, () => { const geometry = new THREE.PlaneGeometry(width, depth); geometry.rotateX(-Math.PI / 2); projectGroundUV(geometry); geometry.setAttribute('color', new THREE.Float32BufferAttribute(Array.from({ length: geometry.attributes.position.count * 3 }, () => 1), 3)); return geometry; });
+      const geometry = this.geometry(`battlefield-floor-${corridor.id}`, () => {
+        const bridge = this.battlefieldLayout.tacticalBridges.find(bridge => bridge.corridorId === corridor.id);
+        let geometry;
+        if (bridge) {
+          const along = bridge.axis === 'x' ? 0 : 1, middle = bridge.center[along] - corridor.center[along], length = along === 0 ? width : depth;
+          const pieces = [];
+          for (const [start, end] of [[-length / 2, middle - bridge.halfSpan], [middle + bridge.halfSpan, length / 2]]) {
+            const plane = new THREE.PlaneGeometry(along === 0 ? end - start : width, along === 1 ? end - start : depth); plane.rotateX(-Math.PI / 2);
+            plane.translate(along === 0 ? (start + end) / 2 : 0, 0, along === 1 ? (start + end) / 2 : 0); pieces.push(plane);
+          }
+          geometry = mergeGeometries(pieces, false); pieces.forEach(piece => piece.dispose()); geometry.userData.bridgeGap = bridge.id;
+        } else { geometry = new THREE.PlaneGeometry(width, depth); geometry.rotateX(-Math.PI / 2); }
+        projectGroundUV(geometry); geometry.setAttribute('color', new THREE.Float32BufferAttribute(Array.from({ length: geometry.attributes.position.count * 3 }, () => 1), 3)); return geometry;
+      });
       const floor = this.mesh(geometry, this.pathMat, [corridor.center[0], 0.012, corridor.center[1]]);
       floor.name = corridor.id; floor.castShadow = false;
       this.corridorVisuals.set(corridor.id, buildBattlefieldCorridorDetails(this, corridor, this.root));
@@ -212,20 +346,31 @@ export class EnvironmentManager {
     this.buildBattlefieldWalls();
     const sealMat = this.material('battlefield-seal', { color: 0xf58b57, emissive: 0xc34918, emissiveIntensity: 0.75, roughness: 0.4, metalness: 0.25, transparent: true, opacity: 0.72, depthWrite: false, surface: 'metal' });
     for (const gate of this.battlefieldLayout.gates) {
+      const doorHalf = this.battlefieldLayout.corridorWidth / 2;
       const frame = new THREE.Group(); frame.name = gate.id; frame.position.set(gate.center[0], 0, gate.center[1]);
       if (gate.axis === 'x') frame.rotation.y = Math.PI / 2;
       for (const side of [-1, 1]) {
-        this.box(this.wallMat, [side * 10, 6, 0], [2, 12, 3], frame);
-        this.box(this.trimMat, [side * 10, 6.4, -1.56], [0.35, 8.8, 0.12], frame);
+        this.box(this.wallMat, [side * (doorHalf + 1), 6, 0], [2, 12, 3], frame);
+        this.box(this.trimMat, [side * (doorHalf + 1), 6.4, -1.56], [0.35, 8.8, 0.12], frame);
       }
-      this.box(this.wallMat, [0, 12, 0], [22, 1.4, 3], frame);
+      this.box(this.wallMat, [0, 12, 0], [doorHalf * 2 + 4, 1.4, 3], frame);
       const panel = new THREE.Group(); panel.name = `${gate.id}-seal`; frame.add(panel);
-      this.box(sealMat, [0, 5.65, 0], [18, 11.3, 0.35], panel);
+      this.box(sealMat, [0, 5.65, 0], [doorHalf * 2, 11.3, 0.35], panel);
       for (let bar = -3; bar <= 3; bar++) this.box(this.trimMat, [bar * 2.4, 5.65, -0.23], [0.06, 10.8, 0.05], panel);
+      // A gate keeps its moving seal separate while sharing three material
+      // submissions for posts, frame trim and seal ribs instead of 13 draws.
+      for (const [parent, material, suffix] of [[frame, this.wallMat, 'frame'], [frame, this.trimMat, 'trim'], [panel, this.trimMat, 'ribs']]) {
+        const sources = parent.children.filter(child => child.isMesh && child.material === material);
+        const pieces = sources.map(child => { child.updateMatrix(); return child.geometry.clone().applyMatrix4(child.matrix); });
+        const geometry = this.geometry(`${gate.id}-${suffix}`, () => mergeGeometries(pieces, false));
+        pieces.forEach(piece => piece.dispose()); sources.forEach(child => child.removeFromParent());
+        const mesh = this.mesh(geometry, material, [0, 0, 0], [1, 1, 1], parent); mesh.name = `${gate.id}-${suffix}`;
+      }
       // Gate barriers remain effective during jumps and skimmer movement.
-      const collider = { x: gate.center[0], z: gate.center[1], halfWidth: gate.axis === 'x' ? 1 : 9, halfDepth: gate.axis === 'z' ? 1 : 9, height: Infinity, rotation: 0, gateId: gate.id };
+      const collider = { x: gate.center[0], z: gate.center[1], halfWidth: gate.axis === 'x' ? 1 : doorHalf, halfDepth: gate.axis === 'z' ? 1 : doorHalf, height: Infinity, rotation: 0, gateId: gate.id };
       this.colliders.push(collider); this.root.add(frame); this.gateVisuals.set(gate.id, { frame, panel, collider });
     }
+    for (const spec of this.battlefieldLayout.tacticalBridges) this.tacticalBridges.set(spec.id, new TacticalBridge(this, spec));
     this.setActiveSector(this.battlefieldLayout.entrySectorId);
   }
 
@@ -312,6 +457,14 @@ export class EnvironmentManager {
       caps.push(block.clone().scale(width, 0.16, depth + 0.12).translate(x, height - 0.04, z));
       this.addBoxCollider(x, z, width / 2, depth / 2, height);
     };
+    if (this.battlefieldLayout.variant || this.battlefieldLayout.strategicMode) {
+      const rectangles = [...this.battlefieldLayout.sectors.map(sector => sector.bounds), ...this.battlefieldLayout.corridors.map(corridor => corridor.bounds)];
+      for (const edge of battlefieldUnionBoundary(rectangles)) {
+        const middle = (edge.start + edge.end) / 2, length = edge.end - edge.start;
+        append(edge.axis === 'x' ? edge.at : middle, edge.axis === 'z' ? edge.at : middle,
+          edge.axis === 'x' ? 2 : length, edge.axis === 'z' ? 2 : length);
+      }
+    } else {
     for (const sector of this.battlefieldLayout.sectors) {
       const openings = { north: [], south: [], west: [], east: [] };
       for (const corridor of this.battlefieldLayout.corridors.filter(item => item.from === sector.id || item.to === sector.id)) {
@@ -335,6 +488,7 @@ export class EnvironmentManager {
       const length = Math.hypot(to.center[0] - from.center[0], to.center[1] - from.center[1]) - 132;
       for (const side of [-1, 1]) append(corridor.center[0] + (corridor.axis === 'z' ? side * 10 : 0), corridor.center[1] + (corridor.axis === 'x' ? side * 10 : 0), corridor.axis === 'x' ? length : 2, corridor.axis === 'z' ? length : 2);
     }
+    }
     const boundaryMaterial = this.material('battlefield-boundary', { color: this.wallMat.color.getHex(), roughness: this.organic ? 0.96 : 0.76, metalness: this.organic || this.type === 'temple' ? 0.02 : 0.35, surface: this.organic || this.type === 'temple' ? 'stone' : this.type === 'hive' ? 'chitin' : 'metal' });
     for (const [key, source, material] of [['battlefield-walls', pieces, boundaryMaterial], ['battlefield-wall-caps', caps, this.organic ? boundaryMaterial : this.trimMat]]) {
       const geometry = this.geometry(key, () => mergeGeometries(source, false)); source.forEach(item => item.dispose());
@@ -351,10 +505,30 @@ export class EnvironmentManager {
   openGate(id) {
     const visual = this.gateVisuals.get(id);
     if (!visual || this.openGates.has(id)) return false;
+    this.navigation.gridCache.clear(); this.navigation.actorPaths = new WeakMap();
     this.openGates.add(id); this._battlefieldRectsCache = null; visual.panel.visible = false;
     this.colliders = this.colliders.filter(collider => collider !== visual.collider);
     const gate = this.battlefieldLayout.gates.find(item => item.id === id);
-    this.completeSector(gate.from);
+    if (!this.battlefieldLayout.strategicMode) this.completeSector(gate.from);
+    return true;
+  }
+
+  closeGate(id) {
+    const visual = this.gateVisuals.get(id);
+    if (!visual || !this.openGates.has(id)) return false;
+    this.navigation.gridCache.clear(); this.navigation.actorPaths = new WeakMap();
+    this.openGates.delete(id); this._battlefieldRectsCache = null; visual.panel.visible = true;
+    if (!this.colliders.includes(visual.collider)) this.colliders.push(visual.collider);
+    return true;
+  }
+
+  setGateOpen(id, open) { return open ? this.openGate(id) : this.closeGate(id); }
+
+  setOperationRouteOpen(routeId, open) {
+    const route = this.battlefieldLayout?.strategicRoutes.find(route => route.id === routeId);
+    if (!route || (open && !this.isTacticalRouteAvailable(routeId))) return false;
+    for (const gateId of route.physicalGateIds) this.setGateOpen(gateId, open);
+    route.open = !!open;
     return true;
   }
 
@@ -393,20 +567,29 @@ export class EnvironmentManager {
     if (!this.battlefieldLayout) return;
     const positions = (Array.isArray(players) ? players : [players]).map(player => player?.position ?? player).filter(position => Number.isFinite(position?.x) && Number.isFinite(position?.z));
     if (!positions.length) return;
+    updateReferenceInterest(this, positions); synchronizeReferenceLandmarks(this); updateReferenceContacts(this);
     for (const sector of this.battlefieldLayout.sectors) {
       const group = this.sectorVisuals.get(sector.id);
       if (group) group.visible = positions.some(position => Math.hypot(position.x - sector.center[0], position.z - sector.center[1]) < 116);
+    }
+    for (const gate of this.battlefieldLayout.gates) {
+      const visual = this.gateVisuals.get(gate.id);
+      if (visual) visual.frame.visible = positions.some(position => Math.hypot(position.x - gate.center[0], position.z - gate.center[1]) < 155);
     }
     for (const corridor of this.battlefieldLayout.corridors) {
       const group = this.corridorVisuals.get(corridor.id);
       if (group) group.visible = positions.some(position => Math.hypot(position.x - corridor.center[0], position.z - corridor.center[1]) < 130);
     }
+    this.worldStreaming?.update(positions);
   }
+
+  getWorldStreamingStats() { return this.worldStreaming?.getStats() ?? null; }
 
   accessibleBattlefieldRects() {
     if (this._battlefieldRectsCache) return this._battlefieldRectsCache;
     const layout = this.battlefieldLayout;
     if (!layout) return null;
+    if (layout.strategicMode) return this._battlefieldRectsCache = [...layout.sectors.map(sector => sector.bounds), ...layout.corridors.map(corridor => corridor.bounds)];
     const reachable = new Set([layout.entrySectorId]);
     for (let pass = 0; pass < layout.sectors.length; pass++) {
       for (const gate of layout.gates) if (this.openGates.has(gate.id)) {
@@ -451,6 +634,7 @@ export class EnvironmentManager {
     const spacing = Math.max(24, Math.min(48, Number.isFinite(distance) ? distance : 30));
     let best = null, bestDistance = -Infinity;
     const clear = position => this.colliders.every(collider => {
+      if (collider.enabled === false || collider.solid === false || collider.baseY > 1.7 || (typeof collider.isCollisionActive === 'function' && !collider.isCollisionActive())) return true;
       const dx = position.x - collider.x, dz = position.z - collider.z;
       if (collider.halfWidth == null) return Math.hypot(dx, dz) >= collider.radius + 2.2;
       const cosine = Math.cos(collider.rotation), sine = Math.sin(collider.rotation);
@@ -776,7 +960,8 @@ export class EnvironmentManager {
     let blocker = null;
     let closest = Infinity;
     for (const collider of this.colliders) {
-      if (position.y > collider.height + 0.2) continue;
+      if (collider.enabled === false || collider.solid === false || (typeof collider.isCollisionActive === 'function' && !collider.isCollisionActive())) continue;
+      if (position.y > (collider.baseY ?? 0) + collider.height + 0.2 || position.y + 1.4 < (collider.baseY ?? 0)) continue;
       const dx = attemptX - collider.x, dz = attemptZ - collider.z;
       let intersects;
       if (collider.halfWidth != null) {
@@ -791,6 +976,19 @@ export class EnvironmentManager {
       if (intersects && dx * dx + dz * dz < closest) {
         closest = dx * dx + dz * dz;
         blocker = collider;
+      }
+    }
+    if (target && Number.isFinite(stepDistance) && stepDistance > 0 && (blocker || this.navigation.actorPaths.has(position))) {
+      // The seek caller has already advanced once toward its target. Recover
+      // that origin, then consume this step along the persistent planned path.
+      const direction = new THREE.Vector3(target.x - attemptX, 0, target.z - attemptZ).normalize();
+      position.set(attemptX - direction.x * stepDistance, position.y, attemptZ - direction.z * stepDistance);
+      this.resolveMovement(position, radius);
+      const waypoint = this.getNavigationWaypoint(position, target, radius);
+      if (waypoint && waypoint.distanceTo(position) > .05) {
+        direction.copy(waypoint).sub(position); direction.y = 0;
+        position.addScaledVector(direction.normalize(), Math.min(stepDistance, waypoint.distanceTo(position)));
+        return this.resolveMovement(position, radius);
       }
     }
     this.resolveMovement(position, radius);
@@ -808,6 +1006,53 @@ export class EnvironmentManager {
     return this.resolveMovement(position, radius);
   }
 
+  getElevationAt(x, z, currentY) {
+    for (const bridge of this.tacticalBridges.values()) {
+      const height = bridge.elevationAt(x, z);
+      if (height !== null) return !bridge.destroyed && Number.isFinite(currentY) && currentY + .65 < height ? -5 : height;
+    }
+    return super.getElevationAt(x, z);
+  }
+
+  resolveVerticalMovement(position, previousY, bodyHeight = 2.4) {
+    if (!Number.isFinite(previousY) || position.y <= previousY || !(bodyHeight > 0)) return { blocked: false };
+    const from = position.clone().setY(previousY + bodyHeight), to = position.clone().setY(position.y + bodyHeight);
+    let closest = null;
+    for (const bridge of this.tacticalBridges.values()) {
+      const hit = bridge.traceDeck(from, to); if (hit && (!closest || hit.distance < closest.distance)) closest = hit;
+    }
+    if (!closest) return { blocked: false };
+    position.y = Math.min(position.y, closest.point.y - bodyHeight - .025);
+    return { blocked: true, point: position.clone(), hitPoint: closest.point, collider: closest.collider };
+  }
+
+  traceTacticalDeck(collider, from, to, options) {
+    const shape = { ...collider }; delete shape.traceSegment; delete shape.resolveMovement;
+    const hit = traceCombatSegment(from, to, [shape], options); if (hit) hit.collider = collider; return hit;
+  }
+
+  isTacticalRouteAvailable(routeId) { return ![...this.tacticalBridges.values()].some(bridge => bridge.spec.routeId === routeId && bridge.destroyed); }
+
+  checkTacticalBridgeInteraction(player) { return [...this.tacticalBridges.values()].some(bridge => bridge.interact(player)); }
+  getTacticalWorldPrompt(player) {
+    const bridge = [...this.tacticalBridges.values()].find(bridge => player?.position && player.position.distanceTo(bridge.consolePosition) < 5);
+    return bridge ? (bridge.sabotage ? `${bridge.sabotage.action === 'repair' ? 'Reconstruction' : 'Sabotage'} : ${Math.ceil(bridge.sabotage.remaining)} s` : `E · ${bridge.destroyed ? 'Reconstruire le pont (6 s)' : 'Saboter le pont (3 s)'}`) : null;
+  }
+  repairTacticalBridge(id) { return this.tacticalBridges.get(id)?.repair() ?? false; }
+  damageTacticalBridge(id, amount, cause) { return this.tacticalBridges.get(id)?.damage(amount, cause) ?? false; }
+  serializeTacticalWorld() { return { version: 1, bridges: [...this.tacticalBridges.values()].map(bridge => bridge.serialize()) }; }
+  restoreTacticalWorld(saved) { if (saved?.version !== 1 || !Array.isArray(saved.bridges)) return false; return saved.bridges.every(state => this.tacticalBridges.get(state.id)?.restore(state)); }
+  resolveGroundAgentMovement(position, target, stepDistance, radius = .65) {
+    position.y = this.getElevationAt(position.x, position.z, position.y);
+    this.resolveAgentMovement(position, target, stepDistance, radius);
+    position.y = this.getElevationAt(position.x, position.z, position.y); return position;
+  }
+
+  getNavigationWaypoint(position, target, radius = .65) { return this.navigation.waypoint(position, target, radius); }
+
+  traceSegment(from, to, options) { return traceCombatSegment(from, to, this.colliders, options); }
+  hasLineOfSight(from, to, options) { return hasCombatLineOfSight(from, to, this.colliders, options); }
+
   // Resolve against the visible perimeter and only solid, waist-high props.
   // Called after movement by the game loop; y remains untouched for jump physics.
   resolveMovement(position, radius = 0.75) {
@@ -818,13 +1063,14 @@ export class EnvironmentManager {
     }
     for (let pass = 0; pass < 2; pass++) {
       for (const collider of this.colliders) {
+        if (collider.enabled === false || collider.solid === false || (typeof collider.isCollisionActive === 'function' && !collider.isCollisionActive())) continue;
         // Moving mechanisms can supply their actual shape while retaining a
         // conservative outline for spawn clearance and local AI steering.
         if (typeof collider.resolveMovement === 'function') {
           collider.resolveMovement(position, radius);
           continue;
         }
-        if (position.y > collider.height + 0.2) continue;
+      if (position.y > (collider.baseY ?? 0) + collider.height + 0.2 || position.y + 1.4 < (collider.baseY ?? 0)) continue;
         const dx = position.x - collider.x, dz = position.z - collider.z;
         if (collider.halfWidth != null) {
           // Work in the prop's local space, including rounded outside corners.

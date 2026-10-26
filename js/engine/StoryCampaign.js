@@ -11,7 +11,7 @@ export const CAMPAIGN_CHAPTERS = [
   {
     chapter: 2,
     title: 'CHAPITRE II: LA JUNGLE MORTELLE',
-    objective: 'Repoussez les vagues de Val Verde et terrassez le Prétorien.',
+    objective: 'Traversez Val Verde et remportez le duel contre le Jungle Hunter (affrontement alternatif).',
     targetKos: 50,
     levelId: 'val_verde_jungle'
   },

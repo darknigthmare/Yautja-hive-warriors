@@ -6,6 +6,8 @@ import { disposeObject } from './SceneResources.js';
 export class GoreEngine {
   constructor(scene) {
     this.scene = scene;
+    this.elapsed = 0;
+    this.acidSlagDecals = [];
     this.severedParts = [];
     this.acidGibs = [];
 
@@ -150,7 +152,7 @@ export class GoreEngine {
     });
   }
 
-  update(delta) {
+  _updateCore(delta) {
     // Update flying severed body parts
     for (let i = this.severedParts.length - 1; i >= 0; i--) {
       const part = this.severedParts[i];
@@ -188,10 +190,73 @@ export class GoreEngine {
     }
   }
 
-  clear() {
+  _clearCore() {
     this.severedParts.forEach(p => disposeObject(p.mesh), this.sharedResources);
     this.severedParts = [];
     this.acidGibs.forEach(g => disposeObject(g.mesh), this.sharedResources);
     this.acidGibs = [];
   }
+
+  spawnAcidSlagDecal(pos, radius = 2.4, audioEngine = null) {
+    const group = new THREE.Group();
+    group.position.set(pos.x, 0.03, pos.z);
+
+    // Deep caustic crater on metallic floor
+    const craterGeo = new THREE.RingGeometry(0.2, radius, 16);
+    craterGeo.rotateX(-Math.PI / 2);
+    const craterMat = new THREE.MeshStandardMaterial({
+      color: 0x080c10,
+      roughness: 0.95,
+      metalness: 0.7
+    });
+    const crater = new THREE.Mesh(craterGeo, craterMat);
+    group.add(crater);
+
+    // Sizzling acid fluorescent erosion veins
+    const veinGeo = new THREE.RingGeometry(0.1, radius * 0.75, 12);
+    veinGeo.rotateX(-Math.PI / 2);
+    const vein = new THREE.Mesh(veinGeo, this.acidGlowMat);
+    vein.position.y = 0.01;
+    group.add(vein);
+
+    // Rising vapor wisps
+    const wisps = [];
+    const wispMat = new THREE.MeshBasicMaterial({ color: 0x84cc16, transparent: true, opacity: 0.5 });
+    for (let w = 0; w < 3; w++) {
+      const wisp = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.12, 1.6, 6), wispMat);
+      const angle = (w / 3) * Math.PI * 2;
+      wisp.position.set(Math.cos(angle) * (radius * 0.4), 0.8, Math.sin(angle) * (radius * 0.4));
+      group.add(wisp);
+      wisps.push(wisp);
+    }
+
+    this.scene.add(group);
+    this.acidSlagDecals.push({
+      group: group,
+      vein: vein,
+      wisps: wisps,
+      life: 18.0
+    });
+
+    if (audioEngine && audioEngine.playAcidFloorHiss) {
+      audioEngine.playAcidFloorHiss();
+    }
+  }
+
+  update(delta) {
+    if (!Number.isFinite(delta) || delta <= 0) return;
+    this.elapsed += delta; this._updateCore(delta);
+    for (let i = this.acidSlagDecals.length - 1; i >= 0; i--) {
+      const slag = this.acidSlagDecals[i]; slag.life -= delta;
+      if (slag.vein?.material) slag.vein.material.opacity = Math.min(.85, slag.life / 18) * (.6 + Math.sin(this.elapsed * 9) * .2);
+      for (const [index, wisp] of (slag.wisps ?? []).entries()) { wisp.rotation.y += delta * 2; wisp.position.y = .8 + Math.sin(this.elapsed * 4 + index) * .25; }
+      if (slag.life <= 0) { disposeObject(slag.group, this.sharedResources); this.acidSlagDecals.splice(i, 1); }
+    }
+  }
+  clear() {
+    this._clearCore();
+    for (const slag of this.acidSlagDecals) disposeObject(slag.group, this.sharedResources);
+    this.acidSlagDecals = []; this.elapsed = 0;
+  }
+
 }

@@ -58,7 +58,7 @@ export class WeaponWheel {
   }
 
   close() {
-    this.isOpen = false;
+    this.isOpen = false;this.inputOwner=null;
     if (this.overlay) { this.overlay.classList.add('hidden'); this.overlay.setAttribute('aria-hidden', 'true'); }
     if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
   }

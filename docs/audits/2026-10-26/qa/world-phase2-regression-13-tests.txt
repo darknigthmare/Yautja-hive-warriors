@@ -1,0 +1,21 @@
+✔ controlled transport mounts the real skimmer and physically follows both corridor turns over a measured duration (5435.40186ms)
+✔ enemy contact and loss of controlled route stop assistance at its current position (339.215901ms)
+✔ two players cannot steal a mounted vehicle and manual input cancels assistance without teleporting (207.155566ms)
+✔ static instancing preserves authored dimensions, per-instance colors and moving parent transforms (6.587881ms)
+✔ render distance never disables physical cover, while authored removal does (3.099083ms)
+✔ reference timers follow simulation time and cannot fire after a rebuild (0.735494ms)
+✔ operation doors really block movement and rays, reopen, and avoid fake sector completion (4883.669245ms)
+✔ civilian navigation crosses two corridor turns and reroutes around a closed flank (280.539972ms)
+✔ LD-01 raised crossing has continuous 0→3→0 ground for walkers and finite real surfaces for bolts (5049.796552ms)
+✔ destruction closes the real route for both camps, drops supported actors and preserves an alternative (395.309302ms)
+✔ repair and saved destruction restore support and route state without duplicating collisions (363.402659ms)
+✔ far zones release geometry/instance GPU allocations, preserve CPU templates and restore for either player (5034.618394ms)
+✔ streamed terrain returns with the same destroyed bridge and objective state (364.709282ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 22921.232989

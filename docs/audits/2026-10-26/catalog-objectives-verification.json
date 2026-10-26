@@ -1,0 +1,58 @@
+{
+  "date": "2026-10-26",
+  "scope": "CPU catalogue, objective-controller and immutable-workbook verification; shared working tree, not a production deployment certificate",
+  "workingTreeBaseHead": "1d52d9ff91dbe85c08256f44f8b72086ab65200a",
+  "command": "node --max-old-space-size=2048 --test --test-concurrency=1 tests/battle-catalog.test.js tests/audit-progress.test.js tests/operation-objectives.test.js",
+  "exitCode": 0,
+  "tests": 24,
+  "passed": 24,
+  "testArtifact": "docs/audits/2026-10-26/catalog-objectives-test.txt",
+  "testArtifactSha256": "a97eed9f9852449cd7df2b740adc941756af8f3421a20168a37333b7d106c3ca",
+  "files": [
+    {
+      "path": "js/data/BattleCatalog.js",
+      "sha256": "4e6f60f10d7caa72db941200fe020d251420b20f846c5550096473ec4a9e02c8"
+    },
+    {
+      "path": "js/data/BattleCatalogData.js",
+      "sha256": "2b91893d127a957727c552347b55998d7235acb0ffef1ab4ef10b79b44de1281"
+    },
+    {
+      "path": "js/battlefield/OperationObjectiveSpecs.js",
+      "sha256": "4a2edacf2301378af50d4a81370219846dd938579ddc98c598482fed9352192d"
+    },
+    {
+      "path": "js/battlefield/OperationObjectives.js",
+      "sha256": "32547f8e0a1aea94d9d4f0f3cb58d84fe1fab87ed59955b06423c6745053298e"
+    },
+    {
+      "path": "tests/battle-catalog.test.js",
+      "sha256": "e2b9b9ac44f8b23f3429cd73dcea83803d3430b0e594ed74fa13f0b3fa51e29b"
+    },
+    {
+      "path": "tests/audit-progress.test.js",
+      "sha256": "bfe109fbcd42deefd32f1fc8613fcdd014ce9b9709cf5ceb8cc35f1af47c4b4f"
+    },
+    {
+      "path": "tests/operation-objectives.test.js",
+      "sha256": "1cfb82b6bbbd89f144a9d65106a686d872030890cb8ef822673fe9c2a0f35a0e"
+    },
+    {
+      "path": "scripts/sync-battle-catalog.mjs",
+      "sha256": "1f8e395f829bdf57f6eab3365398034eb74e38d206b0b7d240a2b467317d1e4e"
+    },
+    {
+      "path": "scripts/update-audit-progress.py",
+      "sha256": "d09dd2f5a4d1c92beb8bf221de94977eda1b148af18f6a352f667f69a08565b1"
+    }
+  ],
+  "humanTesters": 0,
+  "visualFidelity1to1Verified": false,
+  "renderedAssetCount115Verified": false,
+  "limitations": [
+    "Les27 plans sont exécutés par tests automatisés avec les préconditions de capture et de déplacement contrôlées ; pas27 parcours humains.",
+    "Les34 variantes sont des extensions adaptées du monde, pas des reconstitutions géographiques1:1.",
+    "Les115 profils sont un registre de contenu/source, pas115modèles rendus.",
+    "Les critères qui exigent GPU, matériel cible, manette ou session interactive longue attendent leurs preuves dédiées."
+  ]
+}

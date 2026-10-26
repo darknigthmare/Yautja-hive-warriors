@@ -11,6 +11,7 @@ import { FXAAShader } from 'three/addons/shaders/FXAAShader.js';
 import { getRenderQualityProfile, normalizeRenderQuality, isSoftwareGraphicsRenderer } from '../graphics/renderQuality.js';
 import { setTextureAnisotropy } from '../graphics/SurfaceLibrary.js';
 import { updateCreatureDetail } from '../graphics/CreatureModels.js';
+import { FrameTelemetry } from './FrameTelemetry.js';
 
 const PALETTES = {
   rain_forest: { horizon: 0x68776f, zenith: 0x253c43, key: 0xf1e8d6, ground: 0x313e2e, accent: 0xa8bec5, clouds: 0.74, stars: 0, exposure: 1.16 },
@@ -18,7 +19,12 @@ const PALETTES = {
   hive_world: { horizon: 0x56415d, zenith: 0x140f25, key: 0xd1bfe5, ground: 0x30253b, accent: 0x9be9c5, clouds: 0.86, stars: 0.18, exposure: 1.16 },
   pyramid: { horizon: 0x688397, zenith: 0x18314b, key: 0xdce9ff, ground: 0x303c4b, accent: 0xffb769, clouds: 0.62, stars: 0, exposure: 1.08 },
   la_rooftops: { horizon: 0x7c5975, zenith: 0x101d3a, key: 0xd2dcff, ground: 0x303341, accent: 0xffb15d, clouds: 0.70, stars: 0.30, exposure: 1.13 },
-  romulus_station: { horizon: 0x32455d, zenith: 0x030919, key: 0xbddeef, ground: 0x24323e, accent: 0x83e5ef, clouds: 0, stars: 1, exposure: 1.20 }
+  romulus_station: { horizon: 0x32455d, zenith: 0x030919, key: 0xbddeef, ground: 0x24323e, accent: 0x83e5ef, clouds: 0, stars: 1, exposure: 1.20 },
+  space_station: { horizon: 0x172a3b, zenith: 0x020914, key: 0xb3d4ea, ground: 0x1b2634, accent: 0xe2a96b, clouds: 0, stars: 1, exposure: 1.12 },
+  temple: { horizon: 0x676960, zenith: 0x182b3e, key: 0xc7d9e1, ground: 0x333a2b, accent: 0x7fb8bc, clouds: .56, stars: .45, exposure: 1.12 },
+  stargazer: { horizon: 0x9c906d, zenith: 0x3b6272, key: 0xffe0b3, ground: 0x49432c, accent: 0xd2ad68, clouds: .44, stars: 0, exposure: 1.10 },
+  comanche_territory: { horizon: 0xa9af8b, zenith: 0x557b82, key: 0xffe5bc, ground: 0x42442a, accent: 0x9db6a7, clouds: .46, stars: 0, exposure: 1.10 },
+  killer_of_killers: { horizon: 0x2f4c5c, zenith: 0x061329, key: 0xb4d5e6, ground: 0x25323b, accent: 0x7bbac1, clouds: .3, stars: .8, exposure: 1.15 }
 };
 
 export class EngineRenderer {
@@ -46,6 +52,11 @@ export class EngineRenderer {
     this._rimOffset = new THREE.Vector3(15, 16, -28);
     this._lastRenderTime = 0;
     this._skyTime = 0;
+    this.lightningFlashTimer = 0;
+    this.flashDuration = .35;
+    this.baseAmbientIntensity = .85;
+    this.baseDirIntensity = 3.4;
+    this.currentSkyColor = 0xe2eadb;
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -59,6 +70,7 @@ export class EngineRenderer {
     const rendererInfo = gl.getExtension('WEBGL_debug_renderer_info');
     this.graphicsRendererName = rendererInfo ? gl.getParameter(rendererInfo.UNMASKED_RENDERER_WEBGL) : '';
     this.softwareRenderer = isSoftwareGraphicsRenderer(this.graphicsRendererName);
+    this.frameTelemetry = new FrameTelemetry({ softwareRenderer: this.softwareRenderer });
 
     const pmrem = new THREE.PMREMGenerator(this.renderer);
     const room = new RoomEnvironment();
@@ -170,6 +182,8 @@ export class EngineRenderer {
 
   getQuality() { return this.quality; }
 
+  getFrameStats() { return this.frameTelemetry?.snapshot() ?? { samples: 0, gpuTimeAvailable: false }; }
+
   requestRender() { this.needsRender = true; }
 
   getQualityInfo() {
@@ -239,6 +253,10 @@ export class EngineRenderer {
     this.dirLight.color.set(levelConfig.keyLightColor ?? palette.key).lerp(new THREE.Color(palette.key), 0.65);
     this.rimLight.color.set(levelConfig.accentColor ?? palette.accent).lerp(new THREE.Color(0xc3c9ce), 0.65);
     this.renderer.toneMappingExposure = palette.exposure;
+    this.currentSkyColor = this.dirLight.color.getHex();
+    this.baseAmbientIntensity = this.ambientLight.intensity;
+    this.baseDirIntensity = this.dirLight.intensity;
+    this._lightingRest = { ambient: this.ambientLight.color.getHex(), key: this.dirLight.color.getHex(), exposure: palette.exposure };
     this.requestRender();
   }
 
@@ -264,6 +282,10 @@ export class EngineRenderer {
     if (this.contextLost) return;
     this.needsRender = false;
     const now = performance.now();
+    const info = this.renderer.info;
+    const previousAutoReset = info.autoReset;
+    info.reset(); info.autoReset = false;
+    try {
     const step = this._lastRenderTime ? Math.min(0.1, Math.max(0, (now - this._lastRenderTime) / 1000)) : 0;
     this._lastRenderTime = now;
     if (!document.body?.classList.contains('reduced-motion')) this._skyTime += step;
@@ -294,6 +316,11 @@ export class EngineRenderer {
       this.renderer.render(this.scene, this.cameraP2);
       this.renderer.setScissorTest(false); this.renderer.setViewport(0, 0, width, height);
     } else this.renderer.render(this.scene, this.camera);
+    } finally {
+      this.frameTelemetry?.record({ startedAt: now, endedAt: performance.now(), render: info.render, memory: info.memory,
+        views: this.isSplitScreen ? 2 : 1, postprocessing: Boolean(this.composer) && !this.isSplitScreen });
+      info.autoReset = previousAutoReset;
+    }
   }
 
   dispose() {
@@ -304,5 +331,51 @@ export class EngineRenderer {
     this.disposePostprocessing();
     this.environmentTarget.dispose(); this.sky.geometry.dispose(); this.skyMaterial.dispose();
     this.renderer.dispose(); this.renderer.domElement.remove();
+  }
+
+  triggerLightningFlash(color = 0xd8ecff, intensity = 4.8) {
+    if (globalThis.document?.body?.classList.contains('reduced-flashes')) return;
+    this.lightningFlashTimer = this.flashDuration;
+    this.ambientLight.color.setHex(color);
+    this.dirLight.color.setHex(color);
+    this.ambientLight.intensity = this.baseAmbientIntensity + intensity * 0.7;
+    this.dirLight.intensity = this.baseDirIntensity + intensity;
+  }
+
+  setVisionMode(mode) {
+    this._visionMode = mode;
+    if (mode === 'thermal') {
+      this.ambientLight.color.setHex(0x1a2b4c);
+      this.dirLight.color.setHex(0xff7700);
+      this.renderer.toneMappingExposure = 1.35;
+    } else if (mode === 'tech') {
+      this.ambientLight.color.setHex(0x0e2f3d);
+      this.dirLight.color.setHex(0x00d2ff);
+      this.renderer.toneMappingExposure = 1.2;
+    } else if (mode === 'neuro') {
+      this.ambientLight.color.setHex(0x193315);
+      this.dirLight.color.setHex(0x84cc16);
+      this.renderer.toneMappingExposure = 1.25;
+    } else {
+      this.ambientLight.color.setHex(this._lightingRest?.ambient ?? 0xc0dfe4);
+      this.dirLight.color.setHex(this.currentSkyColor);
+      this.renderer.toneMappingExposure = this._lightingRest?.exposure ?? 1.12;
+    }
+    this.requestRender();
+  }
+
+  update(delta) {
+    if (!Number.isFinite(delta) || delta <= 0) return;
+    if (this.lightningFlashTimer > 0) {
+      this.lightningFlashTimer -= delta;
+      const t = Math.max(0, this.lightningFlashTimer / this.flashDuration);
+      this.ambientLight.intensity = THREE.MathUtils.lerp(this.baseAmbientIntensity, this.baseAmbientIntensity + 3.0, t);
+      this.dirLight.intensity = THREE.MathUtils.lerp(this.baseDirIntensity, this.baseDirIntensity + 4.5, t);
+
+      if (this.lightningFlashTimer <= 0) {
+        this.setVisionMode(this._visionMode);
+      }
+      this.requestRender();
+    }
   }
 }

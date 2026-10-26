@@ -1,0 +1,15 @@
+✔ two actual forge purchases debit persistent funds and reload cannot spend caller-supplied score (19.496586ms)
+✔ legacy earned/spent honor migrates once and caller-supplied funds cannot alter the balance (1.051311ms)
+✔ a combat identity earns once, including French trophy names across persistence (0.880603ms)
+✔ settling a mission compacts deaths while preserving exact old-session replay rejection and purchases (148.325265ms)
+✔ quota failures roll back both credit and debit without inventing funds or upgrade receipts (0.407114ms)
+✔ corrupt saves, invalid amounts and unavailable storage remain finite and playable (0.334875ms)
+✔ failed combat credits remain pending once and settle after storage recovers without reopening a finished run (0.470364ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 323.668793

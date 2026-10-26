@@ -23,23 +23,43 @@
     </div>
   </div>
 
-  <!-- 4 BIO-MASK VISION MODES OVERLAYS -->
+  <!-- 5 BIO-MASK VISION MODES OVERLAYS -->
   <div id="thermal-overlay" class="hidden"></div>
   <div id="em-overlay" class="hidden"></div>
   <div id="tech-overlay" class="hidden"></div>
   <div id="uv-overlay" class="hidden"></div>
+  <div id="sonar-overlay" class="hidden"></div>
 
   <div id="cloak-overlay" class="hidden"></div>
   <div id="acid-corrosion-overlay" class="hidden"></div>
   <div id="berserker-rage-overlay" class="hidden"></div>
+  <!-- Chantier 10: Marvel Alpha Eldritch Hallucination Pulse Overlay -->
+  <div id="hallucination-overlay" class="hallucination-vignette hidden">
+    <div class="hallucination-title">LA FEMME DANS L'OBSCURITÉ (THE WOMAN IN THE DARK)</div>
+    <div class="hallucination-sub">PULSE TÉLÉPATHIQUE DE L'ALPHA MARVEL • HALLUCINATION ELDRITCH</div>
+    <div class="hallucination-eyes">👁️ 👁️ 👁️</div>
+  </div>
   <div id="screen-flash"></div>
 
-  <!-- 1987 WRIST COMPUTER NUKE COUNTDOWN OVERLAY -->
+  <!-- CHANTIER 1 & ELENA QA (v53.0): 1987 WRIST COMPUTER NUKE COUNTDOWN & KEYPAD OVERLAY -->
   <div id="nuke-countdown-overlay" class="hidden">
-    <div class="nuke-glyphs-box">
-      <div class="yautja-glyphs">᚛᚜ ᚠᚡ ᚢᚣ ᚤᚥ ᚦᚧ</div>
-      <div class="nuke-timer" id="nuke-timer-seconds">6</div>
-      <div class="nuke-warning">AUTO-DESTRUCTION RITUELLE 1987</div>
+    <div class="nuke-wrist-panel">
+      <div class="wrist-casing-header">
+        <span class="wrist-led pulse-red"></span>
+        <span class="wrist-title">CLAVIER DE GANTELET // AUTO-DESTRUCTION THERMONUCLÉAIRE 1987</span>
+      </div>
+      <div class="nuke-lcd-display">
+        <div class="lcd-glyph-track" id="nuke-input-glyphs">᚛ ᚠ ᚢ ᚦ</div>
+        <div class="nuke-timer" id="nuke-timer-seconds">6</div>
+        <div class="nuke-status-bar" id="nuke-status-text">SÉQUENCE SACRÉE INITIALISÉE • COMPTE À REBOURS ACTIF</div>
+      </div>
+      <div class="wrist-keypad-grid">
+        <button class="wrist-key" data-game-action="inputNukeKeypad" data-game-args="[&quot;᚛&quot;]">᚛</button>
+        <button class="wrist-key" data-game-action="inputNukeKeypad" data-game-args="[&quot;᚜&quot;]">᚜</button>
+        <button class="wrist-key" data-game-action="inputNukeKeypad" data-game-args="[&quot;ᚠ&quot;]">ᚠ</button>
+        <button class="wrist-key" data-game-action="inputNukeKeypad" data-game-args="[&quot;ᚡ&quot;]">ᚡ</button>
+      </div>
+      <button class="btn-abort-nuke" data-game-action="abortNukeCountdown" data-game-args="[]">ANNULER L'AUTO-DESTRUCTION [SHIFT+N]</button>
     </div>
   </div>
 
@@ -167,6 +187,15 @@
         <p>Sélectionnez le terrain d'affrontement contre les hordes de la ruche</p>
       </div>
 
+      <div class="operation-setup">
+        <label>Déroulement<select id="mission-mode-select"><option value="hunt">Chasse : six secteurs, portes et boss final</option><option value="fronts">Guerre : trois fronts, réserves finies et ordres</option><option value="survival">Survie infinie : vagues sans victoire finale</option></select></label>
+        <label id="operation-select-label" class="hidden">Opération originale<select id="operation-select"><option value="pilot">Trois fronts — terrain sélectionné</option></select></label>
+        <label id="campaign-arc-label" class="hidden"><span><input id="campaign-arc-enabled" type="checkbox"> Lier AFF-01 à AFF-05 dans l’arc original « Conflits de clans »</span></label>
+        <p id="campaign-arc-debrief" class="operation-provenance"></p>
+        <button id="btn-reset-campaign-arc" class="btn-secondary">RÉINITIALISER UNIQUEMENT CET ARC</button>
+        <p id="operation-provenance" class="operation-provenance">Terrains et affrontements adaptés de la franchise.</p>
+        <button id="btn-resume-operation" class="btn-secondary hidden">REPRENDRE L’OPÉRATION SAUVEGARDÉE</button>
+      </div>
       <div class="levels-grid" id="levels-grid-container"></div>
 
       <div class="level-select-footer">
@@ -182,6 +211,7 @@
         <p>Choisissez une arme principale, une secondaire et deux gadgets maximum.</p>
       </div>
 
+      <div class="operation-setup"><label>Arsenal<select id="fidelity-mode-select"><option value="adapted">Adapté : choix libres pour cet affrontement alternatif</option><option value="faithful">Fidèle à l’incarnation : armes et capacités attestées</option></select></label><p class="operation-provenance">Les modèles et la géographie restent des adaptations ; aucune fidélité visuelle 1:1 n’est certifiée.</p></div>
       <div class="loadout-grid-container">
         <!-- Primary Weapon -->
         <div class="loadout-section glass-panel">
@@ -251,6 +281,25 @@
             <div id="hud-musou-fill" class="bar-fill musou-fill" style="width: 0%;"></div>
             <span id="hud-musou-text" class="bar-label">SURCHARGE MUSOU [ESPACE]</span>
           </div>
+
+          <div class="hud-bar-container stamina-bar-bg"><div id="hud-stamina-fill" class="bar-fill stamina-fill" style="width:100%"></div><span id="hud-stamina-text" class="bar-label">ENDURANCE 100/100</span></div>
+
+          <!-- Chantier 5 & Marc UI QA (v54.0): Yautja Biometric ECG Holoscan & Z-01 Embryo Monitor -->
+          <div id="wrist-ecg-holoscan" class="wrist-ecg-card">
+            <div class="ecg-row-header">
+              <span class="ecg-icon">💓</span>
+              <span class="ecg-title">BIOMÉTRIE :</span>
+              <span id="wrist-ecg-bpm" class="ecg-bpm">72 BPM</span>
+              <span id="wrist-blooded-badge" class="badge-unblooded">INITIÉ</span>
+            </div>
+            <div class="ecg-status-row">
+              <span id="wrist-embryo-scan" class="embryo-clean">AUCUN CORPUS PARASITE DÉTECTÉ</span>
+            </div>
+          </div>
+          <!-- Marc QA (v56.0): Verticality Telemetry & Hunting Bough Altitude HUD -->
+          <div id="wrist-verticality-hud" class="wrist-verticality-card">
+            ALTITUDE: +0.0m // AU SOL
+          </div>
         </div>
       </div>
 
@@ -268,6 +317,40 @@
         </div>
       </div>
 
+      <!-- Chantier 10: Hive Bio-Acoustic Danger & Pressure Meter (Aliens 1986 / Romulus Canon) -->
+      <div id="hud-hive-pressure-container" class="hive-pressure-panel glass-panel">
+        <div class="hive-pressure-header">
+          <span class="pressure-icon">📡</span>
+          <span class="pressure-title">BIO-PRESSION RUCHE (ACOUSTIQUE)</span>
+          <span id="hive-pressure-tag" class="pressure-badge badge-calm">CALME</span>
+        </div>
+        <div class="hive-pressure-track">
+          <div id="hive-pressure-fill" class="hive-pressure-fill" style="width: 15%;"></div>
+          <div class="pressure-threshold-line" style="left: 80%;"></div>
+        </div>
+        <div class="hive-pressure-footer">
+          <span id="hive-pressure-val">15%</span>
+          <span id="hive-pressure-warning" class="pressure-status">ÉCHO BIO-RADAR STABLE</span>
+        </div>
+      </div>
+
+      <!-- Chantier 1: Grand Musou Boss Health Gauge & Phase Badges -->
+      <div id="hud-boss-container" class="boss-hud-container hidden">
+        <div class="boss-header-row">
+          <span id="hud-boss-icon" class="boss-icon">👑</span>
+          <div class="boss-info-col">
+            <div class="boss-title-row">
+              <span id="hud-boss-name" class="boss-name">REINE XÉNOMORPHE IMPÉRIALE</span>
+              <span id="hud-boss-badge" class="boss-state-badge">PHASE 1 : GESTANTE</span>
+            </div>
+            <div class="boss-bar-bg">
+              <div id="hud-boss-hp-fill" class="boss-hp-fill" style="width: 100%;"></div>
+              <span id="hud-boss-hp-text" class="boss-hp-label">8000 / 8000 HP (100%)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="hud-top-right">
         <div class="minimap-card glass-panel">
           <div class="minimap-header">
@@ -280,6 +363,11 @@
             <span class="map-key map-key-enemy">Ennemis</span>
             <span class="map-key map-key-objective">Objectif</span>
             <span class="map-key map-key-gate">Porte fermée</span>
+            <span>🟢 Clan</span>
+            <span>🔴 Xéno</span>
+            <span>🔵 USCM</span>
+            <span>⚪ Synth</span>
+            <span>💀 BadBlood</span>
           </div>
         </div>
           <div id="battlefield-objective" class="battlefield-objective glass-panel hidden">
@@ -330,12 +418,689 @@
         <span class="insertion-progress-track" aria-hidden="true"><span id="insertion-progress"></span></span>
       </div>
 
-      <!-- 1987 CANON TRI-LASER TARGET LOCK RETICLE -->
+      <p id="tactical-world-prompt" class="tactical-world-prompt hidden" role="status"></p>
+      <nav id="hud-combat-controls" aria-label="Actions de combat"><span id="hud-active-weapon">LAMES DE POIGNET</span><button id="btn-hud-weapons" type="button">ARMES · TAB</button><button id="btn-hud-map" type="button">CARTE · ²</button><button id="btn-hud-details" type="button">TÉLÉMÉTRIE</button></nav>
+
+      <!-- DYNASTY WARRIORS / MUSOU 1:1 OFFICER DEFEATED BANNER -->
+      <div id="officer-defeated-banner" class="musou-officer-banner hidden">
+        <div class="musou-officer-title" id="musou-officer-title">⚔️ OFFICIER ENNEMI ÉLIMINÉ ⚔️</div>
+        <div class="musou-officer-name" id="musou-officer-name">PRAETORIAN ROYAL GUARD</div>
+        <div class="musou-officer-sub">L'ÉQUILIBRE DU CHAMP DE BATAILLE BASCULE VERS LE CLAN !</div>
+      </div>
+
+      <!-- Chantier 10: 1987 CANON TRI-LASER & BIO-MASK TARGET LOCK TELEMETRY RETICLE -->
       <div id="hud-tri-target-lock" class="tri-laser-reticle hidden">
+        <div class="tri-bracket top-bracket"></div>
+        <div class="tri-bracket left-bracket"></div>
+        <div class="tri-bracket right-bracket"></div>
         <div class="tri-dot dot-1"></div>
         <div class="tri-dot dot-2"></div>
         <div class="tri-dot dot-3"></div>
-        <div class="target-info-tag" id="hud-target-info">LOCK: 12.4m - DRONE</div>
+        <div class="target-info-tag" id="hud-target-info">
+          <div class="telemetry-genus" id="hud-telemetry-genus">GENUS : XX121 XENOMORPHE</div>
+          <div class="telemetry-stats" id="hud-telemetry-stats">DISTANCE : 12.4M | MENACE : CRITIQUE</div>
+          <div class="telemetry-weakpoint" id="hud-telemetry-weakpoint">FAIBLESSE : DÔME CRÂNIEN (-40% ARMURE)</div>
+        </div>
+      </div>
+
+      <!-- CINEMATIC HONOR DUEL LETTERBOX (Chantier 10) -->
+      <div id="duel-letterbox-top" class="duel-letterbox top-bar hidden"></div>
+      <div id="duel-letterbox-bottom" class="duel-letterbox bottom-bar hidden"></div>
+
+      <!-- CLASHING BLADES 3-STAGE QTE PROMPT (Chantier 10) -->
+      <div id="clashing-blades-prompt" class="clashing-blades-box hidden">
+        <div class="duel-stage-title" id="duel-qte-stage">DUEL D'HONNEUR YAUTJA : PHASE 1/3</div>
+        <div class="duel-key-circle" id="duel-qte-key">F</div>
+        <div class="duel-action-label" id="duel-qte-action">PARADE ÉCLAIR DE LAMES</div>
+        <div class="duel-timer-track">
+          <div id="duel-qte-timer-fill" class="duel-timer-fill"></div>
+        </div>
+        <div class="duel-sub-hint">CLASHEZ AVANT L'EXPIRATION DU TIMER !</div>
+      </div>
+
+      <!-- TRAX-NET WALL-PENETRATING TRACKER CONTAINER (Chantier 3) -->
+      <div id="trax-net-container" class="trax-net-overlay-container"></div>
+
+      <!-- SENTRY GUN PROXIMITY HUD PROMPT (Chantier 5) -->
+      <div id="sentry-proximity-prompt" class="sentry-hud-prompt hidden">
+        <div class="sentry-prompt-header">⚙️ TOURELLE SENTINELLE UA 571-C</div>
+        <div class="sentry-prompt-ammo" id="sentry-prompt-ammo">500 / 500 RDS</div>
+        <div class="sentry-prompt-actions">
+          <span>[E] RECHARGER (+250 RDS)</span>
+          <span>[R] CALIBRER ARC DE TIR</span>
+        </div>
+      </div>
+
+      <!-- SMART-DISC REMOTE GUIDANCE HUD (Chantier 3) -->
+      <div id="smartdisc-guidance-hud" class="smartdisc-guidance-overlay hidden">
+        <div class="guidance-reticle"></div>
+        <div class="guidance-header">SMART-DISC // TÉLÉGUIDAGE LASER ACTIF</div>
+        <div class="guidance-hint">[SHIFT+B] DÉSACTIVER // CIBLE VERROUILLÉE</div>
+      </div>
+
+      <!-- FALLEN MARINE SCAVENGE PROMPT (Chantier 4) -->
+      <div id="marine-scavenge-prompt" class="marine-scavenge-box hidden">
+        <div class="scavenge-key">[ E ]</div>
+        <div class="scavenge-text">FOUILLER LE CORPS DU MARINE USCM (MUNITIONS & SOIN)</div>
+      </div>
+
+      <!-- CATERPILLAR POWER LOADER WORKSTATION PROMPT (Chantier 6) -->
+      <div id="power-loader-prompt" class="power-loader-box hidden">
+        <div class="loader-key">[ E ]</div>
+        <div class="loader-text">ACTIONNER LA PINCE DU POWER LOADER P-5000 (800 DÉGÂTS BROYAGE)</div>
+      </div>
+
+      <!-- COLONY REACTOR MELTDOWN BANNER (Chantier 3) -->
+      <div id="reactor-meltdown-banner" class="reactor-meltdown-banner hidden">
+        <div class="reactor-warning-icon">⚠️</div>
+        <div class="reactor-info">
+          <div class="reactor-title">SURCHARGE CRITIQUE DU RÉACTEUR HADLEY'S HOPE</div>
+          <div class="reactor-timer" id="reactor-timer-text">03:00 AVANT VAPORISATION THERMONUCLÉAIRE (50 MT)</div>
+        </div>
+      </div>
+
+      <!-- USCM M577 APC PROMPT (Chantier 2) -->
+      <div id="apc-mount-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">MONTER / PILOTER LE BLINDÉ M577 APC (CANON 20MM DUAL BOYARS)</div>
+      </div>
+
+      <!-- CHANTIER 10 (v51.0): ENGINEER STASIS CRYPT PROMPT -->
+      <div id="engineer-crypt-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">OUVRIR LA CRYPTE DE STASE // ÉVEILLER LE PILOTE INGÉNIEUR MALA'KAK</div>
+      </div>
+
+      <!-- CHANTIER 10 & MARC QA (v52.0): COLOSSAL BOSS MULTI-SEGMENT HEALTH BAR -->
+      <div id="colossal-boss-hud" class="colossal-boss-panel hidden">
+        <div class="colossal-boss-header">
+          <span class="boss-skull-icon">💀</span>
+          <span id="colossal-boss-title" class="boss-title-text">ROGUE KING XENOMORPH PRIME</span>
+          <span id="colossal-boss-phase" class="boss-phase-badge">PHASE 1</span>
+        </div>
+        <div class="colossal-boss-bar-track">
+          <div id="colossal-boss-bar-fill" class="colossal-boss-fill"></div>
+          <div class="bar-notch notch-1"></div>
+          <div class="bar-notch notch-2"></div>
+        </div>
+        <div class="colossal-boss-sub">
+          <span id="colossal-boss-hp-text">9500 / 9500 PV</span>
+          <span id="colossal-boss-armor-status">BLINDAGE CHITINEUX : INTACT</span>
+        </div>
+      </div>
+
+      <!-- CHANTIER 5 & SOFIA QA (v52.0): HYDRAULIC CARGO LIFT PROMPT -->
+      <div id="hydraulic-lift-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">ACTIONNER LE MONTE-CHARGE HYDRAULIQUE USCM (NIVEAU SOL / PASSERELLE +5.5M)</div>
+      </div>
+
+      <!-- v56.0 LEVEL DESIGN PROMPTS -->
+      <div id="scout-ship-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">SCANNER ORBITAL DU VAISSEAU CRASHÉ (AVP: REQUIEM) // +25% CRITIQUES 25S</div>
+      </div>
+
+      <div id="charon-lab-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">CONSOLE DE PURGE PHÉROMONALE DE BASE CHARON (ALIENS: ROGUE) // STUN 4S 24M</div>
+      </div>
+
+      <div id="fixed-sentry-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">RÉARMER LA TOURELLE SENTINELLE TRIPODE UA 571-C (+250 CARTOUCHES 10MM)</div>
+      </div>
+
+      <div id="crucified-predator-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">TRANCHER LES LIENS DU CLASSIC PREDATOR CRUCIFIÉ // RITUEL D'HONNEUR 1987</div>
+      </div>
+
+      <!-- v56.5 SECTOR OVERHAUL PROMPTS -->
+      <div id="valverde-radio-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">TRANSMETTEUR RADIO MILITAIRE DU HUEY (PREDATOR 1987) // ÉMETTRE SOS D'EMBUSCADE</div>
+      </div>
+
+      <div id="mud-pit-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">BAIN DE BOUE THERMIQUE (PREDATOR 1987) // MASQUER SIGNATURE THERMIQUE (+40% FURTIF 25S)</div>
+      </div>
+
+      <div id="pyramid-altar-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">AUTEL SACRIFICIEL DES CASTERS (AVP 2004) // BÉNÉDICTION MARTIALE DU CLAN</div>
+      </div>
+
+      <div id="romulus-zerog-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">SAS DÉPRESSURISATION ZÉRO-G (ALIEN: ROMULUS) // SUSPENSION GRAVITATIONNELLE 6S</div>
+      </div>
+
+      <div id="rook-console-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">CONSOLE SCIENTIFIQUE DE ROOK (ALIEN: ROMULUS) // ACCÈS WY & SOIN MEDICOMP</div>
+      </div>
+
+      <div id="royal-jelly-node-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">EXTRAIRE LA GELÉE ROYALE DE LA RUCHE // +2 FIOLES ROYALES & SOIN +350 HP</div>
+      </div>
+
+      <!-- v57.0 SECTOR OVERHAUL PROMPTS -->
+      <div id="crypt-reliquary-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">COFFRE RELIQUAIRE DU CIMETIÈRE DE GUNNISON (AVP: REQUIEM) // MUNITIONS USCM & BLINDAGE</div>
+      </div>
+
+      <div id="neural-inhibitor-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">PYLÔNE INHIBITEUR NEURONAL (ALIENS: ROGUE) // ONDES ULTRASONIQUES ANTI-XÉNO 16S</div>
+      </div>
+
+      <div id="boulder-trap-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ] OU [TIR]</div>
+        <div class="apc-text">PIÈGE À ÉBOULEMENT DE ROCHERS (PREDATORS 2010) // ÉCRASER LES HORDES (650 DMG)</div>
+      </div>
+
+      <div id="dutch-log-trap-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ] OU [TIR]</div>
+        <div class="apc-text">PIÈGE À TRONC BALANCIER DE DUTCH (PREDATOR 1987) // BALAYER LE COULOIR (580 DMG)</div>
+      </div>
+
+      <!-- v58.0 PREDATOR 1 (1987) VAL VERDE PROMPTS -->
+      <div id="billy-machete-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">MACHETTE DE COMBAT DE BILLY SOLE (PREDATOR 1987) // COURAGE MARTIAL (+50% DÉGÂTS MÊLÉE, +2000 HONNEUR)</div>
+      </div>
+
+      <div id="hopper-satchel-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">SACOCHE MILITAIRE DU CAPITAINE JIM HOPPER (PREDATOR 1987) // +4 GRENADES, +3 MEDICOMP & BLINDAGE</div>
+      </div>
+
+      <div id="old-painless-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">DÉCHAÎNER LA MINIGUN M134 'OLD PAINLESS' (PREDATOR 1987) // DÉBOISAGE 6000 RPM (450 DMG SUR 25M)</div>
+      </div>
+
+      <!-- v59.0 PREDATOR 1 (1987) VAL VERDE APEX PROMPTS -->
+      <div id="dutch-challenge-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">DÉFI DE DUTCH : 'KILL ME! I'M HERE!' (PREDATOR 1987) // RUGISSEMENT DANS LA CANOPÉE (+40% MUSOU)</div>
+      </div>
+
+      <div id="dutch-workbench-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">ÉTABLI DE CHASSE DE DUTCH (PREDATOR 1987) // FABRIQUER FLÈCHES EXPLOSIVES (+6 TIRS EXPLOSIFS)</div>
+      </div>
+
+      <div id="anna-maps-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">CARTES TACTIQUES DES GUÉRILLEROS (PREDATOR 1987) // DÉTECTION THERMIQUE RADAR ACTIVE (35S)</div>
+      </div>
+
+      <div id="wild-boar-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">RÔTI DE JAVELINA DE GUÉRILLA (PREDATOR 1987) // RATION DE SURVIE (+300 PV, ENDURANCE MAX)</div>
+      </div>
+
+      <div id="glowing-blood-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">SANG VERT DE JUNGLE HUNTER (PREDATOR 1987) // ANALYSE ADN (+2500 HONNEUR, SURCHARGE PLASMA 30S)</div>
+      </div>
+
+      <!-- v60.0 PREDATOR 2 (1990) TOITS DE LOS ANGELES PROMPTS -->
+      <div id="eastern-columbia-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">FLÈCHE DE L'EASTERN COLUMBIA (PREDATOR 2 1990) // CANALISER LA FOUDRE (PLASMA 100%, MUSOU MAX & AURA ÉLECTRIQUE)</div>
+      </div>
+
+      <div id="meat-locker-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">VALVE CRYOGÉNIQUE DE L'ABATTOIR OWLF (PREDATOR 2 1990) // DÉLUGE D'AZOTE LIQUIDE (260 DMG & GEL 7S)</div>
+      </div>
+
+      <div id="king-willie-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">AUTEL VOODOO DE KING WILLIE (PREDATOR 2 1990) // 'ON NE PEUT PAS VOIR LES YEUX DU DÉMON...' (+2500 HONNEUR & VISION THERMIQUE)</div>
+      </div>
+
+      <div id="danny-netgun-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">FILET MICROCÂBLE DE DANNY BOY (PREDATOR 2 1990) // RÉCUPÉRER LE HARPON ET LES FILETS (+4 FILETS, +2 HARPONS)</div>
+      </div>
+
+      <div id="lost-tribe-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">VAISSEAU-MÈRE DU LOST TRIBE & ANCIEN GREYBACK (PREDATOR 2 1990) // 'TAKE IT.' (CRÂNE XÉNO 1990 & PISTOLET ADOLINI 1715)</div>
+      </div>
+
+      <div id="city-hunter-surgery-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">CHIRURGIE D'URGENCE DU CITY HUNTER (PREDATOR 2 1990) // CAUTÉRISATION AU SOLVANT BLEU (+400 PV & BLINDAGE MAX)</div>
+      </div>
+
+      <div id="harrigan-cruiser-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">BARRICADE SWAT DU LIEUTENANT HARRIGAN (PREDATOR 2 1990) // ARMERIE TACTIQUE (+5 GRENADES, +4 SLUGS, +350 BLINDAGE)</div>
+      </div>
+
+      <div id="smart-disc-girder-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">SMART-DISC ENCLAVÉ DANS LA POUTRELLE (PREDATOR 2 1990) // RÉCUPÉRER LE DISQUE GYROSCOPIQUE (PRÊT & +2 CHARGES)</div>
+      </div>
+
+      <div id="subway-massacre-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">RAME DE MÉTRO #666 (PREDATOR 2 1990) // DERNIER BAROUD DE JERRY LAMBERT (+2000 HONNEUR, CADENCE x1.5)</div>
+      </div>
+
+      <div id="owlf-van-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">FOURGON DE SURVEILLANCE OWLF (PREDATOR 2 1990) // TÉLÉMÉTRIE ULTRAVIOLET DE PETER KEYES (SCAN MURAL 40S)</div>
+      </div>
+
+      <div id="cartel-penthouse-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">LABO PENTHOUSE D'EL SCORPIO (PREDATOR 2 1990) // ARSENAL DU CARTEL COLOMBIEN (+6 GRENADES, +6 FLÉCHETTES)</div>
+      </div>
+
+      <div id="pole-vault-pad-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">TREMPLIN DE PERCHE COMBI-STICK (PREDATOR 2 1990) // SAUT TÉLESCOPIQUE VERS L'EASTERN COLUMBIA (650 DMG CRATÈRE)</div>
+      </div>
+
+      <!-- v61.0 PREDATORS (2010) GAME PRESERVE PROMPTS -->
+      <div id="noland-hideout-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">PLANQUE DE RONALD NOLAND (PREDATORS 2010) // ÉCRAN DE FUMÉE OPTIQUE (18S) & MUNITIONS DE SURVIE</div>
+      </div>
+
+      <div id="tracker-whistle-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">SIFFLET DU TRACKER PREDATOR (PREDATORS 2010) // INVOQUER LA MEUTE DE HOUNDS & STUNNER LA RUCHE (4.5S)</div>
+      </div>
+
+      <div id="nikolai-claymore-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">CRATÈRE DE NIKOLAI (PREDATORS 2010) // DÉTONATION DES CLAYMORES SPETSNAZ (650 DMG) & +6 GRENADES</div>
+      </div>
+
+      <div id="hanzo-katana-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">KATANA DE HANZO DANS LES HAUTES HERBES (PREDATORS 2010) // BUFF BUSHIDO (+60% DÉGÂTS CRITIQUES MÊLÉE)</div>
+      </div>
+
+      <div id="alien-flora-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">FLORE CARNIVORE D'EDWIN (PREDATORS 2010) // EXTRAIRE LA NEUROTOXINE PARALYSANTE (+150 DMG POISON 30S)</div>
+      </div>
+
+      <div id="royce-cliff-leap-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">BORD DE LA CASCADE (+9.0M) // SAUT DE L'ANGE DE ROYCE (PREDATORS 2010) DANS LE BASSIN DE CHUTE</div>
+      </div>
+
+      <div id="super-predator-ship-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">CONSOLE DU VAISSEAU DE MR. BLACK (PREDATORS 2010) // SURCHARGER LA PROPULSION PLASMA (750 DMG CONIQUE)</div>
+      </div>
+
+      <div id="falconer-drone-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">PERCHOIR DU FALCONER PREDATOR (PREDATORS 2010) // DÉPLOYER LE DRONE FAUCON CYBERNÉTIQUE (+2500 HONNEUR)</div>
+      </div>
+
+      <div id="cuchillo-decoy-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">RADIO D'EMBUSCADE DE CUCHILLO (PREDATORS 2010) // DÉSARMER LE PIÈGE ACOUSTIQUE (+4 GRENADES, +3 MEDICOMP)</div>
+      </div>
+
+      <div id="bone-gong-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">GONG D'OS SACRÉ DE ROYCE (PREDATORS 2010) // FRAPPER LE GONG, ALLUMER LE BRASIER & AVEUGLER LA VISION THERMIQUE</div>
+      </div>
+
+      <div id="isabelle-sniper-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">NID SNIPER D'ISABELLE (PREDATORS 2010) // ARSENAL BLASER R93 (+8 MUNITIONS AP HAUTE-VÉLOCITÉ)</div>
+      </div>
+
+      <!-- v63.0 Val Verde Master Prompts (Predator 1987) -->
+      <div id="dillon-mp5-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">DERNIER COMBAT DE DILLON (PREDATOR 1987) // RÉCUPÉRER DOUBLE MP5 & DOSSIER CIA (+8 BOLTS, CADENCE +40%)</div>
+      </div>
+
+      <div id="poncho-grenade-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">CACHE DU LANCE-GRENADES DE PONCHO (PREDATOR 1987) // RÉCUPÉRER LE M79 40MM (+6 GRENADES, +2 MEDICOMP)</div>
+      </div>
+
+      <div id="hawkins-relay-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">BALISE RADIO TACTIQUE DE HAWKINS (PREDATOR 1987) // ACTIVER LE SCANNER INFRAROUGE (35S RADAR)</div>
+      </div>
+
+      <div id="mud-waterfall-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">CASCADE & BASSIN DE BOUE DE VAL VERDE (PREDATOR 1987) // S'IMMERGER DANS LA BOUE (IMMUNITÉ THERMIQUE 30S)</div>
+      </div>
+
+      <!-- v63.0 The Predator (2018) Stargazer Prompts -->
+      <div id="stargazer-vivisection-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">TABLE DE VIVISECTION DU FUGITIVE PREDATOR (2018) // RÉGÉNÉRER FLUIDES & LAMES TOXIQUES (+100% PLASMA)</div>
+      </div>
+
+      <div id="predator-killer-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">CAPSULE "PREDATOR KILLER" (2018) // DÉPLOYER L'EXOSQUELETTE NANOTECHNOLOGIQUE (+100 SHIELD, +45% CRIT)</div>
+      </div>
+
+      <div id="quinn-sniper-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">NID SNIPER TAC-50 DE QUINN MCKENNA (2018) // MUNITIONS HAUTE-VÉLOCITÉ (+12 GAUSS SLUGS)</div>
+      </div>
+
+      <div id="traeger-weapon-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">CASIER D'ARMEMENT DE SEAN TRAEGER (2018) // PIRATER LES CANONS D'ÉPAULE (+60% PLASMA, +4 GRENADES)</div>
+      </div>
+
+      <div id="loonies-bus-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">BUS MILITAIRE DES "LOONIES" (2018) // TROUSSE MÉDICALE DE CASEY BRACKET (+3 MEDICOMP, +6 BOLTS)</div>
+      </div>
+
+      <div id="crashed-ark-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">DÉFLECTEUR DU VAISSEAU ARK (2018) // SURCHARGER LE CHAMP DE FORCE ÉNERGÉTIQUE (450 DMG CONIQUE 25M)</div>
+      </div>
+
+      <div id="fugitive-gauntlet-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">GANTELET DU FUGITIVE PREDATOR (2018) // VERROUILLAGE VISÉE AUTOMATIQUE & PLASMA 100% (30S, +2500 SCORE)</div>
+      </div>
+
+      <div id="friendly-lobo-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">MOLOSSE YAUTJA "LOBO" (2018) // DOMESTIQUER LE COMPAGNON ALLIÉ (+4 GRENADES RAPPORTÉES, ALLIÉ DE CHASSE)</div>
+      </div>
+
+      <div id="baxley-coyle-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">NID DÉFILÉ DE BAXLEY & COYLE (2018) // DÉPOUILLER LA MITRAILLEUSE M249 (+6 SMART-DISCS, +4 GRENADES)</div>
+      </div>
+
+      <div id="nebraska-harpoon-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">TREUIL À HARPON DE NEBRASKA (2018) // DÉCOCHER LE HARPON D'ACIER (600-700 DMG CINÉTIQUES & STUN 5S)</div>
+      </div>
+
+      <div id="rory-translator-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">CARTE STELLAIRE DE RORY MCKENNA (2018) // DÉCODER LA TÉLÉMÉTRIE D'HYBRIDATION (+35% CRITIQUES 30S, DÉCLOQUAGE BOSS)</div>
+      </div>
+
+      <div id="crashed-ark-turbine-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">TURBINE PRINCIPALE DE L'ARCHE (2018) // SURCHARGE DE NEBRASKA (DÉTONATION PLASMA 900 DMG, 24M)</div>
+      </div>
+
+      <div id="casey-decon-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">SAS DE DÉCONTAMINATION DE CASEY (2018) // PURGE BIOLOGIQUE TOTALE (+75 HP, BOUCLIER 100%)</div>
+      </div>
+
+      <div id="bone-mask-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">MASQUE D'OS DU FERAL (PREY 2022) // ARMER LE PIÈGE DE GUIDAGE LASER SUR LA TOURBIÈRE (1500 DMG RÉFLÉCHIS)</div>
+      </div>
+
+      <div id="orange-flower-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">FLEURS D'ORANGE SARISKA (PREY 2022) // INGÉRER L'ÉLIXIR (TEMPÉRATURE 0°C, FURTIVITÉ THERMIQUE 35S)</div>
+      </div>
+
+      <div id="adolini-pistol-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">PISTOLET À SILEX DE RAPHAEL ADOLINI 1715 (PREY 2022) // TIR DE POUDRE NOIRE PERFORANT (1200 DMG)</div>
+      </div>
+
+      <div id="taabe-bow-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">ARC DE GUERRE DE TAABE (PREY 2022) // FLÈCHES SILENCIEUSES & VÉLOCITÉ COMANCHE +30% (+6 DISCS)</div>
+      </div>
+
+      <div id="grizzly-trophy-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">GRIZZLY TERRASSÉ (PREY 2022) // ÉCORCHER LA FOURRURE & ÉPANCHER LE SANG VERT (+150 BOUCLIER)</div>
+      </div>
+
+      <div id="naru-tomahawk-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">HACHETTE À RAPPEL DE NARU (PREY 2022) // RÉCUPÉRER LA TOMAHAWK (+4 CHARGES, +1800 SCORE)</div>
+      </div>
+
+      <div id="trapper-med-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">CAMP MÉDICAL DES TRAPPEURS (PREY 2022) // PILLER LES SOINS & ÉTHER (+85 PV, +3 TROUSSES MEDICOMP)</div>
+      </div>
+
+      <div id="feral-arsenal-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">ARSENAL ARCHAÏQUE DU FERAL (PREY 2022) // LANCE D'OBSIDIENNE & BOUCLIER D'OS (+2500 HONNEUR, PLASMA 100%)</div>
+      </div>
+
+      <div id="sarii-companion-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">CHIENNE DE GUERRE SARII (PREY 2022) // RECRUTER LA COMPAGNONNE LOYALE (+4 DISCS, +2 MEDICOMP, ALLIÉE DE CHASSE)</div>
+      </div>
+
+      <div id="trapper-bait-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">ARBRE D'APPÂT DES TRAPPEURS (PREY 2022) // METTRE À FEU LES BARILS DE POUDRE (750 DMG & BARRAGE DE FLAMMES 16M)</div>
+      </div>
+
+      <div id="voyageur-raft-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">RADEAU DES TRAPPEURS (PREY 2022) // PILLER LES BALLES & PEAUX DE CASTOR (+4 DISCS, +6 BALLES, BOUCLIER 100%)</div>
+      </div>
+
+      <div id="comanche-totem-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">TOTEM DE GUERRE COMANCHE (PREY 2022) // PEINTURES SACRÉES (+25% DÉGÂTS MÊLÉE, VITESSE +30% 30S)</div>
+      </div>
+
+      <div id="lightning-pine-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">ABRI DU PIN FOUDROYÉ (PREY 2022) // ÉCORCES DE SAULE THÉRAPEUTIQUES (+65 PV, +2 MEDICOMP)</div>
+      </div>
+
+      <div id="trapper-spit-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">CAMPEMENT DES COUREURS DES BOIS (PREY 2022) // RENVERSER LE CHAUDRON D'HUILE BOUILLANTE (500 DMG FEU, +75 PV)</div>
+      </div>
+
+      <div id="buffalo-cairn-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">CAIRN SACRÉ DU BISON (PREY 2022) // COMMUNION ANCESTRALE (+20% DÉGÂTS CRITIQUES, INSTINCT DE TRAQUE 30S)</div>
+      </div>
+
+      <div id="severed-gauntlet-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">AVANT-BRAS DU FERAL PREDATOR (PREY 2022) // ÉQUIPER LES GRIFFES D'OBSIDIENNE (+35% PERFORATION, +100 BOUCLIER)</div>
+      </div>
+
+      <!-- PREDATOR: KILLER OF KILLERS (2025) INTERACTION PROMPTS -->
+      <div id="stasis-trio-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">DAIS DES 3 CRYO-PODS (KILLER OF KILLERS 2025) // SURCHARGER LA GRILLE DE STASE (1000 DMG / STUN BOSS 6S)</div>
+      </div>
+
+      <div id="ursa-shield-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">DRAKKAR VIKING D'URSA (LE BOUCLIER 850) // ÉQUIPER LE BOUCLIER D'OAK (+150 BOUCLIER, BERSERK VALKYRIE)</div>
+      </div>
+
+      <div id="ursa-axe-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">HACHE DANOISE D'URSA & PIERRE RUNIQUE (LE BOUCLIER 850) // MANIER LA HACHE LOURDE (+45% CRITIQUES)</div>
+      </div>
+
+      <div id="kenji-katana-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">RÂTELIER MASAMUNE DE KENJI (LE SABRE 1620) // DÉGAINER LE KATANA ANCESTRAL (+35% CADENCE, +25% VITESSE, +4 SHURIKENS)</div>
+      </div>
+
+      <div id="kenji-decoy-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">BOSQUET DE BAMBOU DE KENJI (LE SABRE 1620) // DÉCLENCHER LE LEURRE FUMIGÈNE (DISTRACTION ENNEMIE 8S)</div>
+      </div>
+
+      <div id="torres-plane-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">ÉPAVE DU CHASSEUR P-40 DE TORRES (LA BALLE 1943) // RÉCUPÉRER LES MUNITIONS INCENDIAIRES (+30% FEU RANGED, +6 BALLES)</div>
+      </div>
+
+      <div id="torres-browning-prompt" class="apc-mount-box hidden">
+        <div class="apc-key">[ E ]</div>
+        <div class="apc-text">MITRAILLEUSE BROWNING .50 CAL M2 DE TORRES (LA BALLE 1943) // DÉCHAÎNER LA RAFALE LOURDE (900 DMG)</div>
+      </div>
+
+      <!-- CHANTIER 4 & LUCAS QA (v51.0): COUNTER-RIPOSTE READY BADGE -->
+      <div id="counter-riposte-badge" class="counter-riposte-banner hidden">
+        ⚡ RIPOSTE GUAN-THWEI PRÊTE : [CLIC GAUCHE] x4 DÉGÂTS CRITIQUES !
+      </div>
+
+      <!-- REACTOR CONSOLE PROMPT (Chantier 3) -->
+      <div id="reactor-console-prompt" class="reactor-console-box hidden">
+        <div class="reactor-key">[ E ]</div>
+        <div class="reactor-text">PURGER LE NOYAU DU RÉACTEUR / STABILISER LA SURCHARGE</div>
+      </div>
+
+      <!-- ELECTRIC FLOOR GRID PROMPT (Chantier 6) -->
+      <div id="electric-grid-prompt" class="electric-grid-box hidden">
+        <div class="grid-key">[ E ]</div>
+        <div class="grid-text">DÉCHARGER LA GRILLE HAUTE-TENSION 15 kV (PARALYSIE XÉNOS)</div>
+      </div>
+
+      <!-- DECONTAMINATION AIRLOCK PROMPT (Chantier 9) -->
+      <div id="decon-airlock-prompt" class="decon-airlock-box hidden">
+        <div class="decon-key">[ E ]</div>
+        <div class="decon-text">SAS DE DÉCONTAMINATION MÉDICALE (PURGE INFECTIONS, SOIN +250 HP)</div>
+      </div>
+
+      <!-- KI'CTE GAUNTLET GRAPPLE PROMPT (Chantier 7) -->
+      <div id="grapple-prompt" class="grapple-box hidden">
+        <div class="grapple-key">[ F / G ]</div>
+        <div class="grapple-text">PRISE KI'CTE & PROJECTION SISMIQUE D'ÉCRASEMENT</div>
+      </div>
+
+      <!-- USCM M56 SMARTGUN TURRET PROMPT (Chantier 1 v46) -->
+      <div id="smartgun-turret-prompt" class="smartgun-turret-box hidden">
+        <div class="smartgun-key">[ E ]</div>
+        <div class="smartgun-text">MONTER LA TOURELLE M56 SMARTGUN (1200 CPM, 10x28MM SANS ÉTUI)</div>
+      </div>
+
+      <!-- USCM CARGO CRANE OPERATOR CONSOLE PROMPT (Chantier 9 v46) -->
+      <div id="cargo-crane-prompt" class="cargo-crane-box hidden">
+        <div class="crane-key">[ E ]</div>
+        <div class="crane-text">LARGUER LE CONTENEUR DE 10 TONNES (TREUIL ÉLECTROMAGNÉTIQUE)</div>
+      </div>
+
+      <!-- DERELICT LV-426 ATMOSPHERE & LOW GRAVITY HUD (Chantier 2 v46) -->
+      <div id="derelict-atmosphere-hud" class="derelict-hud-banner hidden">
+        <div class="derelict-icon">🌌</div>
+        <div class="derelict-info">
+          <div class="derelict-title">DERELICT LV-426 // ENCEINTE DU COUVOIR FOSSILISÉ</div>
+          <div class="derelict-sub">GRAVITÉ FAIBLE 0.45G ACTIVE • PLAN LASER BLEU SENSIBLE</div>
+        </div>
+      </div>
+
+      <!-- WEYLAND-YUTANI COOLING TOWER CRYO-VENT PROMPT (Chantier 6 v47) -->
+      <div id="cryo-vent-prompt" class="cryo-vent-box hidden">
+        <div class="cryo-key">[ E ]</div>
+        <div class="cryo-vent-text">PURGE CRYOGÉNIQUE AZOTE LIQUIDE (ZONE 18M, SHATTER X3)</div>
+      </div>
+
+      <!-- FIORINA 161 MOLTEN LEAD FOUNDRY VALVE PROMPT (Chantier 4 v48) -->
+      <div id="foundry-valve-prompt" class="foundry-valve-box hidden">
+        <div class="foundry-key">[ E ]</div>
+        <div class="foundry-valve-text">OUVRIR LA VANNE DE COULÉE : 12 TONNES DE PLOMB EN FUSION 1200°C (ALIEN 3)</div>
+      </div>
+
+      <!-- USM AURIGA FLOODED BASIN 50,000V BREAKER PROMPT (Chantier 4 v49) -->
+      <div id="auriga-breaker-prompt" class="foundry-valve-box hidden">
+        <div class="foundry-key">[ E ]</div>
+        <div class="foundry-valve-text">SURTENSION HYDRO-ÉLECTRIQUE USM AURIGA (50 000V DANS L'EAU, 320 DÉGÂTS/S & STUN)</div>
+      </div>
+
+      <!-- ANCIENT YAUTJA SHRINE OF THE ANCIENTS PROMPT (Chantier 9 v49) -->
+      <div id="ancient-shrine-prompt" class="foundry-valve-box hidden">
+        <div class="foundry-key">[ E ]</div>
+        <div class="foundry-valve-text">PRIÈRE SACRÉE À L'AUTEL DES ANCIENS : BÉNÉDICTION DIVINE (KOS'KANTI / PAYA / CETANU)</div>
+      </div>
+
+      <!-- QA AUDIT #2 (Elena): DIEGETIC YAUTJA WRIST GAUNTLET TELEMETRY HUD -->
+      <div id="diegetic-wrist-gauntlet-hud" class="wrist-gauntlet-panel">
+        <div class="wrist-header">
+          <span class="wrist-title">YAUTJA GAUNTLET // K'VATH-VHE</span>
+          <span id="wrist-matrix-glyphs" class="wrist-glyphs">⋈ ⋉ : ⋐ ⋑</span>
+        </div>
+        <div class="wrist-body">
+          <div class="wrist-row">
+            <span class="wrist-label">MASQUE :</span>
+            <span id="wrist-mask-name" class="wrist-value">JUNGLE HUNTER (1987)</span>
+          </div>
+          <div class="wrist-row">
+            <span class="wrist-label">BÉNÉDICTION :</span>
+            <span id="wrist-blessing-tag" class="wrist-value-highlight">AUCUNE BÉNÉDICTION</span>
+          </div>
+          <div class="wrist-ammo-cluster">
+            <span id="wrist-ammo-gauss" class="wrist-chip">M77: 12/12</span>
+            <span id="wrist-ammo-bolt" class="wrist-chip">BOLT: 10/10</span>
+            <span id="wrist-ammo-grenades" class="wrist-chip">HEDP: 4/6</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- WEYLAND-YUTANI 155MM COASTAL RAIL-CANNON PROMPT (Chantier 2 v50) -->
+      <div id="rail-cannon-prompt" class="foundry-valve-box hidden">
+        <div class="foundry-key">[ E ]</div>
+        <div class="foundry-valve-text">CANON DE SIÈGE 155MM (TIR ARTILLERIE URANIUM APPAUVRI, 1800 DMG, CRATÈRE 12M)</div>
+      </div>
+
+      <!-- WEYLAND-YUTANI CRYO-STASIS SPECIMEN POD PROMPT (Chantier 4 v50) -->
+      <div id="cryo-stasis-pod-prompt" class="cryo-vent-box hidden">
+        <div class="cryo-key">[ E ]</div>
+        <div class="cryo-vent-text">BRIS CRYO-STASE : EXPULSION AZOTE LIQUIDE (ZONE 15M, CONGÉLATION 6S, SOIN 200 PV)</div>
+      </div>
+
+      <!-- Chantier 6 & Marc QA (v55.0): Sniper Plasma Tri-Laser Focus Reticle -->
+      <div id="tri-laser-sniper-reticle" class="sniper-tri-laser-overlay hidden">
+        <div class="sniper-tri-crosshair">
+          <div class="sniper-bracket bracket-tl"></div>
+          <div class="sniper-bracket bracket-tr"></div>
+          <div class="sniper-bracket bracket-bl"></div>
+          <div class="sniper-bracket bracket-br"></div>
+          <div class="sniper-dot dot-top"></div>
+          <div class="sniper-dot dot-left"></div>
+          <div class="sniper-dot dot-right"></div>
+          <div class="sniper-center-diamond"></div>
+          <div class="sniper-telemetry-readout">TRI-BEAM AP-LANCE // CHARGE READY</div>
+        </div>
+      </div>
+
+      <!-- MARC QA AUDIT #1: DYNAMIC CIRCULAR COMBAT RETICLE HUD -->
+      <div id="dynamic-combat-reticle" class="combat-reticle-overlay">
+        <svg class="reticle-svg" viewBox="0 0 100 100">
+          <circle class="reticle-bg-circle" cx="50" cy="50" r="32" />
+          <circle id="reticle-charge-circle" class="reticle-progress-circle" cx="50" cy="50" r="32" stroke-dasharray="200" stroke-dashoffset="200" />
+        </svg>
+        <div class="reticle-dot"></div>
       </div>
 
       <div class="hud-bottom-center" id="hud-equipped-slots-container">
@@ -421,11 +1186,139 @@
         </div>
         <div class="ability-slot" id="slot-vision">
           <div class="slot-key">V</div>
-          <div class="slot-label">4 MODES VISION</div>
+          <div class="slot-label">5 MODES VISION</div>
         </div>
-        <div class="ability-slot" id="slot-swap">
+        <div class="ability-slot" id="slot-trax">
+          <div class="slot-key">X</div>
+          <div class="slot-label">TRAX-NET</div>
+        </div>
+        <div class="ability-slot" id="slot-whirl">
+          <div class="slot-key">⇧+RMB</div>
+          <div class="slot-label">WHIRL-SHIELD</div>
+        </div>
+        <div class="ability-slot" id="slot-tripwire">
+          <div class="slot-key">Y</div>
+          <div class="slot-label">TRIPWIRE-MINE</div>
+        </div>
+        <div class="ability-slot" id="slot-flamer">
+          <div class="slot-key">⇧+0</div>
+          <div class="slot-label">BRÛLEUR PLASMA</div>
+        </div>
+        <div class="ability-slot" id="slot-plasma-pistol">
+          <div class="slot-key">P</div>
+          <div class="slot-label">PISTOLET PLASMA</div>
+        </div>
+        <div class="ability-slot" id="slot-grapple">
+          <div class="slot-key">F / G</div>
+          <div class="slot-label">PRISE KI'CTE</div>
+        </div>
+        <div class="ability-slot" id="slot-exosuit">
+          <div class="slot-key">O</div>
+          <div class="slot-label">EXOSQUELETTE BIONIQUE</div>
+        </div>
+        <div class="ability-slot" id="slot-neurotoxin">
+          <div class="slot-key">N</div>
+          <div class="slot-label">NEUROTOXINE YAUTJA</div>
+        </div>
+        <div class="ability-slot" id="slot-plasma-scythe">
+          <div class="slot-key">⇧+6</div>
+          <div class="slot-label">FAUX PLASMA</div>
+        </div>
+        <div class="ability-slot" id="slot-m41a-grenade">
+          <div class="slot-key">⇧+9</div>
+          <div class="slot-label">GRENADE M41A</div>
+        </div>
+        <div class="ability-slot" id="slot-scout-beam">
+          <div class="slot-key">M</div>
+          <div class="slot-label">FAISCEAU SCOUT</div>
+        </div>
+        <div class="ability-slot" id="slot-m77-gauss">
+          <div class="slot-key">⇧+7</div>
+          <div class="slot-label">RAILGUN M77 GAUSS</div>
+        </div>
+        <div class="ability-slot" id="slot-bishop-squad">
+          <div class="slot-key">⇧+8</div>
+          <div class="slot-label">ANDROÏDES BISHOP</div>
+        </div>
+        <div class="ability-slot" id="slot-biomask">
+          <div class="slot-key">⇧+V</div>
+          <div class="slot-label">6 BIO-MASQUES</div>
+        </div>
+        <div class="ability-slot" id="slot-maul">
+          <div class="slot-key">⇧+1</div>
+          <div class="slot-label">MASSE GRAVITÉ</div>
+        </div>
+        <div class="ability-slot" id="slot-seegson-bolt">
+          <div class="slot-key">⇧+3</div>
+          <div class="slot-label">FUSIL À CLOUS</div>
+        </div>
+        <div class="ability-slot" id="slot-sonic-trap">
+          <div class="slot-key">⇧+T</div>
+          <div class="slot-label">PIÈGE SONIQUE</div>
+        </div>
+        <div class="ability-slot" id="slot-shadow-dash">
+          <div class="slot-key">ALT</div>
+          <div class="slot-label">SHADOW DASH</div>
+        </div>
+        <div class="ability-slot" id="slot-dropship-bombing">
+          <div class="slot-key">⇧+J</div>
+          <div class="slot-label">TAPIS BOMBES</div>
+        </div>
+        <div class="ability-slot" id="slot-dual-plasma">
+          <div class="slot-key">⇧+␣+RMB</div>
+          <div class="slot-label">DOUBLE RAYON</div>
+        </div>
+        <div role="button" tabindex="0" class="ability-slot slot-help-btn" id="slot-tactical-help" data-modal-id="qa-tactical-help-overlay" data-modal-action="toggle">
+          <div class="slot-key">F1</div>
+          <div class="slot-label">AIDE TOUCHES</div>
+        </div>
+        <div role="button" tabindex="0" class="ability-slot slot-vault-btn" id="slot-vault" data-game-action="toggleClanHonorVaultModal" data-game-args="[]">
+          <div class="slot-key">F2</div>
+          <div class="slot-label">PANTHÉON</div>
+        </div>
+        <div role="button" tabindex="0" class="ability-slot slot-forge-btn" id="slot-forge" data-game-action="toggleClanForgeModal" data-game-args="[]">
+          <div class="slot-key">F3</div>
+          <div class="slot-label">FORGE CLAN</div>
+        </div>
+        <div role="button" tabindex="0" class="ability-slot slot-bridge-btn" id="slot-mothership-bridge" data-game-action="toggleMothershipBridgeModal" data-game-args="[]">
+          <div class="slot-key">F4</div>
+          <div class="slot-label">PASSERELLE</div>
+        </div>
+        <div role="button" tabindex="0" class="ability-slot" id="slot-pole-vault" data-player-action="performCombistickPoleVault">
+          <div class="slot-key">⇧+␣</div>
+          <div class="slot-label">SAUT PERCHE</div>
+        </div>
+        <div role="button" tabindex="0" class="ability-slot" id="slot-wristblade-parry" data-player-action="performWristbladeParry">
+          <div class="slot-key">F</div>
+          <div class="slot-label">PARADE DLEX</div>
+        </div>
+        <div role="button" tabindex="0" class="ability-slot" id="slot-vocal-mimicry" data-player-action="triggerVoiceMimicryDecoy">
+          <div class="slot-key">⇧+Y</div>
+          <div class="slot-label">LEURRE VOCAL</div>
+        </div>
+        <div role="button" tabindex="0" class="ability-slot" id="slot-chest-roar" data-player-action="performPredatorChestThumpRoar">
+          <div class="slot-key">H</div>
+          <div class="slot-label">DÉFI PECTORAL</div>
+        </div>
+        <div role="button" tabindex="0" class="ability-slot" id="slot-cyclone-whirl" data-player-action="performCombistickCycloneWhirl">
+          <div class="slot-key">⇧+CLIC</div>
+          <div class="slot-label">CYCLONE COMBI</div>
+        </div>
+        <div role="button" tabindex="0" class="ability-slot" id="slot-smart-disc-multi" data-player-action="performSmartDiscMultiLock">
+          <div class="slot-key">⇧+B</div>
+          <div class="slot-label">MULTI-DISC</div>
+        </div>
+        <div role="button" tabindex="0" class="ability-slot" id="slot-burner-cannon" data-player-action="fireBurnerHeavyPlasma">
+          <div class="slot-key">⇧+0</div>
+          <div class="slot-label">BURNER HEAVY</div>
+        </div>
+        <div role="button" tabindex="0" class="ability-slot" id="slot-sniper-mode" data-player-action="toggleSniperPlasmaMode">
+          <div class="slot-key">Z</div>
+          <div class="slot-label">SNIPER TRI-LASER</div>
+        </div>
+        <div role="button" tabindex="0" class="ability-slot" id="slot-swap" data-game-action="toggleWeaponWheel" data-game-args="[]">
           <div class="slot-key">TAB</div>
-          <div class="slot-label" id="hud-weapon-label">ARME: PRINCIPALE</div>
+          <div class="slot-label" id="hud-weapon-label">ROUE DES ARMES</div>
         </div>
       </div>
 
@@ -437,6 +1330,266 @@
         <div class="honor-score-box">
           <span>HONNEUR: </span>
           <span id="hud-honor-score">0 PTS</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- QA AUDIT #1 (Marc - UI/UX Lead): TACTICAL KEYBIND & ARSENAL REFERENCE OVERLAY -->
+    <div id="qa-tactical-help-overlay" class="ui-screen hidden">
+      <div class="glass-panel modal-card tactical-help-card">
+        <div class="modal-header">
+          <h2>🎯 DOSSIER TACTIQUE DU CLAN YAUTJA // COMMANDES [F1]</h2>
+          <button id="btn-close-tactical-help" class="btn-close" data-modal-id="qa-tactical-help-overlay" data-modal-action="add">✕</button>
+        </div>
+        <div class="tactical-help-grid">
+          <div class="tactical-help-col">
+            <div class="tactical-category">⚔️ ARSENAL MÊLÉE & PROTOCOLES APEX</div>
+            <div class="tactical-item"><span class="tactical-key">LMB</span> Claws / Lames de Poignet / Frappe Légère</div>
+            <div class="tactical-item"><span class="tactical-key">RMB</span> Frappe Lourde Décapitante / Coup de Pied</div>
+            <div class="tactical-item"><span class="tactical-key">⇧ + LMB</span> Spine Whip (Fouet de Vertèbres) / Iaijutsu</div>
+            <div class="tactical-item"><span class="tactical-key">⇧ + RMB</span> Whirl-Shield (Bouclier Tournant Glaive)</div>
+            <div class="tactical-item"><span class="tactical-key">⇧ + 1</span> Masse Gravitationnelle Maul (Onde Sismique)</div>
+            <div class="tactical-item"><span class="tactical-key">⇧ + 6</span> Faux d'Énergie Plasma Primordiale (Scythe)</div>
+            <div class="tactical-item"><span class="tactical-key">F / G</span> Prise Électro-Cinétique Ki'cte & Projection</div>
+            <div class="tactical-item"><span class="tactical-key">SPACE / Q</span> Attaque Musou Surchargée (Overload)</div>
+          </div>
+          <div class="tactical-help-col">
+            <div class="tactical-category">⚡ SYSTÈMES BALISTIQUES & ÉNERGÉTIQUES</div>
+            <div class="tactical-item"><span class="tactical-key">SHIFT (Maintenir)</span> Canon Plasma Épaule (Tri-Laser)</div>
+            <div class="tactical-item"><span class="tactical-key">P</span> Lancer de Combi-Stick Extensible</div>
+            <div class="tactical-item"><span class="tactical-key">⇧ + P</span> Pistolet Plasma Triplette (AVP-R)</div>
+            <div class="tactical-item"><span class="tactical-key">⇧ + 3</span> Fusil à Clous Industriel Seegson (Tungstène)</div>
+            <div class="tactical-item"><span class="tactical-key">⇧ + 7</span> Fusil Railgun Hyper-Vélocité M77 Gauss</div>
+            <div class="tactical-item"><span class="tactical-key">⇧ + 9</span> Grenade 30mm HEDP USCM M41A</div>
+            <div class="tactical-item"><span class="tactical-key">⇧ + 0</span> Brûleur Plasma Incinérateur Continu</div>
+            <div class="tactical-item"><span class="tactical-key">X</span> Balise Trax-Net / <span class="tactical-key">⇧ + X</span> Frappe Orbitale</div>
+          </div>
+          <div class="tactical-help-col">
+            <div class="tactical-category">🛡️ GADGETS, RELIQUES & DIÉGÉTIQUE</div>
+            <div class="tactical-item"><span class="tactical-key">V</span> 5 Modes de Vision Bio-Masque</div>
+            <div class="tactical-item"><span class="tactical-key">⇧ + V</span> Cycle des 6 Bio-Masques Légendaires</div>
+            <div class="tactical-item"><span class="tactical-key">T</span> Piège à Loup / <span class="tactical-key">⇧ + T</span> Piège Sonique Tracker</div>
+            <div class="tactical-item"><span class="tactical-key">M</span> Faisceau Scout / <span class="tactical-key">⇧ + M</span> Mode Infini</div>
+            <div class="tactical-item"><span class="tactical-key">E</span> Exécution Trophée / Stations & Interrupteurs</div>
+            <div class="tactical-item"><span class="tactical-key">Z</span> Trousse de Cautérisation Medicomp (+450 HP)</div>
+            <div class="tactical-item"><span class="tactical-key">N</span> Neurotoxine / <span class="tactical-key">⇧ + N</span> Autodestruction 1987</div>
+            <div class="tactical-item"><span class="tactical-key">F1</span> Basculer cet Affichage Tactique</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHANTIER 9 (v50.0): PERSISTENT CLAN HONOR VAULT & TROPHY ARMORY MODAL [F2] -->
+    <div id="clan-honor-vault-modal" class="ui-screen hidden">
+      <div class="glass-panel modal-card vault-card">
+        <div class="modal-header">
+          <h2>🏛️ PANTHÉON DE CHASSE DU GRAND CLAN // TROPHÉES & RELIQUES [F2]</h2>
+          <button id="btn-close-vault" class="btn-close" data-modal-id="clan-honor-vault-modal" data-modal-action="add">✕</button>
+        </div>
+        <div class="vault-stats-row">
+          <div class="vault-stat-box">
+            <div class="vault-stat-label">HONNEUR CUMULÉ</div>
+            <div id="vault-lifetime-honor" class="vault-stat-value">0 PTS</div>
+          </div>
+          <div class="vault-stat-box">
+            <div class="vault-stat-label">CRÂNES RÉCOLTÉS</div>
+            <div id="vault-lifetime-skulls" class="vault-stat-value">0 CRÂNES</div>
+          </div>
+          <div class="vault-stat-box">
+            <div class="vault-stat-label">RECORD COMBO</div>
+            <div id="vault-highest-combo" class="vault-stat-value">0 HITS</div>
+          </div>
+          <div class="vault-stat-box">
+            <div class="vault-stat-label">VAGUE ULTIME</div>
+            <div id="vault-max-wave" class="vault-stat-value">VAGUE 1</div>
+          </div>
+        </div>
+        <div class="vault-trophies-header">🏆 RELIQUES & TROPHÉES DE CHASSE PERSISTANTS</div>
+        <div id="vault-trophies-list" class="vault-trophies-grid">
+          <!-- Populated dynamically via main.js toggleClanHonorVaultModal() -->
+        </div>
+      </div>
+    </div>
+
+    <!-- CHANTIER 10 (v50.0): SACRED BLOOD RITUAL & EXTRACTION OVERLAY -->
+    <div id="sacred-blood-ritual-overlay" class="sacred-ritual-banner hidden">
+      <div class="ritual-content">
+        <div class="ritual-glyph">⚡ ᚛ ᚜ ⚡</div>
+        <h1 class="ritual-title">🩸 RITUEL DU SANG SACRÉ ACCOMPLI</h1>
+        <div class="ritual-sub">LE SYMBOLE DU CLAN EST GRAVÉ DANS LA CHITINE • EXTRACTION ORBITALE PAR LE VAISSEAU-MÈRE EN COURS</div>
+      </div>
+    </div>
+
+    <!-- CHANTIER 1 (v51.0): CLAN WEAPON FORGE & SACRED SHRINE MODAL [F3] -->
+    <div id="clan-armory-forge-modal" class="ui-screen hidden">
+      <div class="glass-panel modal-card forge-card">
+        <div class="modal-header">
+          <h2>⚒️ FORGE SACRÉE DU CLAN // ARSENAL ANCESTRAL YAUTJA [F3]</h2>
+          <button id="btn-close-clan-forge" class="btn-close" data-modal-id="clan-armory-forge-modal" data-modal-action="add">✕</button>
+        </div>
+        <div class="forge-stats-bar">
+          <div class="forge-stat-pill">HONNEUR : <span id="clan-forge-honor-balance">0 PTS</span></div>
+          <div class="forge-stat-pill">GELÉE ROYALE : <span id="forge-jelly-balance">0 FIOLES</span></div>
+        </div>
+        <div class="forge-grid">
+          <div class="forge-item-card">
+            <div class="forge-icon">🔱</div>
+            <div class="forge-title">COMBI-STICK BARBELÉ DLEX</div>
+            <div class="forge-desc">Lame dentelée en titane Dlex infligeant un saignement continu (+25% dégâts au lancer).</div>
+            <button id="btn-forge-combistick" class="btn-forge">FORGER (1500 PTS + 2 GELÉES)</button>
+          </div>
+          <div class="forge-item-card">
+            <div class="forge-icon">🥏</div>
+            <div class="forge-title">DISQUE INTELLIGENT DENTELÉ</div>
+            <div class="forge-desc">Gyroscopes supersoniques traversant jusqu'à 6 cibles avec sifflement chirurgical de rasoir.</div>
+            <button id="btn-forge-smartdisc" class="btn-forge">FORGER (2000 PTS + 3 GELÉES)</button>
+          </div>
+          <div class="forge-item-card">
+            <div class="forge-icon">⚡</div>
+            <div class="forge-title">BOBINE SURCHARGÉE PLASMACASTER</div>
+            <div class="forge-desc">Condensateurs magnétiques supraconducteurs : -25% de coût d'énergie et ionisation thermique.</div>
+            <button id="btn-forge-plasmacaster" class="btn-forge">FORGER (2500 PTS + 4 GELÉES)</button>
+          </div>
+          <div class="forge-item-card">
+            <div class="forge-icon">⚔️</div>
+            <div class="forge-title">LAMES DE POIGNET MAÎTRE DLEX</div>
+            <div class="forge-desc">Alliage de parade renforcé : fenêtre de déviation [F] portée à 0.58s et contre-attaque dévastatrice x4.0.</div>
+            <button id="btn-forge-wristblades" class="btn-forge">FORGER (3000 PTS + 5 GELÉES)</button>
+          </div>
+          <div class="forge-item-card">
+            <div class="forge-icon">🛡️</div>
+            <div class="forge-title">CUIRASSE ANCESTRALE ENKIDU DLEX</div>
+            <div class="forge-desc">Blindage lourd cérémoniel gravé de runes : +250 PV max, 40% de résistance aux acides corrosifs et -20% temps de recharge des aptitudes.</div>
+            <button id="btn-forge-enkidu" class="btn-forge">FORGER (3000 PTS + 5 GELÉES)</button>
+          </div>
+          <div class="forge-item-card">
+            <div class="forge-icon">🔥</div>
+            <div class="forge-title">BOBINE SURPUISSANCE BURNER</div>
+            <div class="forge-desc">Condensateur plasma lourd surchauffé : débloque la frappe Burner [⇧+0] (680 dmg direct + 340 splash sur 6.2m).</div>
+            <button id="btn-forge-burner-coil" class="btn-forge">FORGER (3500 PTS + 6 GELÉES)</button>
+          </div>
+          <div class="forge-item-card">
+            <div class="forge-icon">⚜️</div>
+            <div class="forge-title">LAMES CAUTÉRISANTES AU SANG ACIDE</div>
+            <div class="forge-desc">Finition thermique au sang d'Aliens décapités : +30% dégâts de mêlée et neutralisation immédiate de l'acide caustique.</div>
+            <button id="btn-forge-cauterizing" class="btn-forge">FORGER (3200 PTS + 5 GELÉES)</button>
+          </div>
+          <div class="forge-item-card">
+            <div class="forge-icon">🛡️</div>
+            <div class="forge-title">TISSAGE CHITINIQUE CÉRAMIQUE THERMIQUE</div>
+            <div class="forge-desc">Plaquage composite céramique réfractaire : -50% de dégâts d'acide, déviation balistique active et neutralisation des brûlures.</div>
+            <button id="btn-forge-ceramic-armor" class="btn-forge">FORGER (3600 PTS + 5 GELÉES)</button>
+          </div>
+          <div class="forge-item-card">
+            <div class="forge-icon">🔭</div>
+            <div class="forge-title">VISEUR TÉLÉMÉTRIQUE PRÉDATORIAL DLEX MARK IV</div>
+            <div class="forge-desc">Système optique de ciblage avancé : +40% détection thermique, verrouillage sniper accéléré et -25% de coût en énergie plasma.</div>
+            <button id="btn-forge-dlex-targeting" class="btn-forge">FORGER (4000 PTS + 6 GELÉES)</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHANTIER 6 & MARC QA (v51.0): YAUTJA RADIAL WEAPON WHEEL [TAB] -->
+    <div id="yautja-radial-weapon-wheel" class="weapon-wheel-overlay hidden">
+      <div class="wheel-center-reticle">
+        <div class="wheel-center-title">ROUE DES ARMES</div>
+        <div class="wheel-center-sub">RALENTI TACTIQUE</div>
+      </div>
+      <div class="wheel-slices-container">
+        <div role="button" tabindex="0" class="wheel-slice slice-1" data-game-action="selectWeaponSlice" data-game-args="[1]">
+          <div class="wheel-slice-key">1 / ⇧+1</div>
+          <div class="wheel-slice-icon">⚔️</div>
+          <div class="wheel-slice-label">LAMES / MASSE</div>
+        </div>
+        <div role="button" tabindex="0" class="wheel-slice slice-2" data-game-action="selectWeaponSlice" data-game-args="[2]">
+          <div class="wheel-slice-key">P</div>
+          <div class="wheel-slice-icon">🔱</div>
+          <div class="wheel-slice-label">COMBI-STICK</div>
+        </div>
+        <div role="button" tabindex="0" class="wheel-slice slice-3" data-game-action="selectWeaponSlice" data-game-args="[3]">
+          <div class="wheel-slice-key">C</div>
+          <div class="wheel-slice-icon">🥏</div>
+          <div class="wheel-slice-label">SMART-DISC</div>
+        </div>
+        <div role="button" tabindex="0" class="wheel-slice slice-4" data-game-action="selectWeaponSlice" data-game-args="[4]">
+          <div class="wheel-slice-key">LMB / ⇧+␣</div>
+          <div class="wheel-slice-icon">⚡</div>
+          <div class="wheel-slice-label">PLASMACASTER</div>
+        </div>
+        <div role="button" tabindex="0" class="wheel-slice slice-5" data-game-action="selectWeaponSlice" data-game-args="[5]">
+          <div class="wheel-slice-key">X / T</div>
+          <div class="wheel-slice-icon">🕸️</div>
+          <div class="wheel-slice-label">TRAX-NET / PIÈGE</div>
+        </div>
+        <div role="button" tabindex="0" class="wheel-slice slice-6" data-game-action="selectWeaponSlice" data-game-args="[6]">
+          <div class="wheel-slice-key">2 / ⇧+3</div>
+          <div class="wheel-slice-icon">🔫</div>
+          <div class="wheel-slice-label">BALISTIQUE USCM</div>
+        </div>
+        <div role="button" tabindex="0" class="wheel-slice slice-7" data-game-action="selectWeaponSlice" data-game-args="[7]">
+          <div class="wheel-slice-key">⇧+Y</div>
+          <div class="wheel-slice-icon">📻</div>
+          <div class="wheel-slice-label">LEURRE VOCAL</div>
+        </div>
+        <div role="button" tabindex="0" class="wheel-slice slice-8" data-game-action="selectWeaponSlice" data-game-args="[8]">
+          <div class="wheel-slice-key">⇧+J</div>
+          <div class="wheel-slice-icon">✈️</div>
+          <div class="wheel-slice-label">DROPSHIP BOMB</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHANTIER 2 & SOFIA QA (v51.0): USCM M577 APC COCKPIT OVERLAY -->
+    <div id="apc-cockpit-overlay" class="apc-cockpit-screen hidden">
+      <div class="apc-crt-scanlines"></div>
+      <div class="apc-hud-header">
+        <div class="apc-hud-title">USCM M577 APC // POSTE DE TIR TOURELLE 20MM BOYARS</div>
+        <div class="apc-hud-status">SYSTÈME ARMEMENT : PRÊT (CADENCE 600 CPM)</div>
+      </div>
+      <div class="apc-targeting-reticle">
+        <div class="reticle-bracket-l"></div>
+        <div class="reticle-bracket-r"></div>
+        <div class="reticle-crosshair"></div>
+      </div>
+      <div class="apc-hud-footer">
+        <div class="apc-stat">BLINDAGE CHÂSSIS : 100% (TITANE RENFORCÉ)</div>
+        <div class="apc-stat">COMMANDES : [ESPACE / CLIC] TIR CONTINU | [Z/Q/S/D] CHENILLES | [E] DÉBARQUER</div>
+      </div>
+    </div>
+
+    <!-- CHANTIER 3 & ELENA QA (v52.0): MOTHERSHIP BRIDGE & PLANETARY COMMAND WAR ROOM [F4] -->
+    <div id="mothership-bridge-modal" class="ui-screen hidden">
+      <div class="glass-panel modal-card bridge-card">
+        <div class="modal-header">
+          <h2>🛸 PASSERELLE DU VAISSEAU-MÈRE YAUTJA // COMMANDEMENT ORBITAL [F4]</h2>
+          <button id="btn-close-bridge" class="btn-close" data-modal-id="mothership-bridge-modal" data-modal-action="add">✕</button>
+        </div>
+        <div class="bridge-holo-globe">
+          <div class="globe-ring ring-1"></div>
+          <div class="globe-ring ring-2"></div>
+          <div class="globe-scan-line"></div>
+          <div class="globe-label">PLANÈTE LV-1201 // ZONE DE CHASSE CONFINÉE</div>
+        </div>
+        <div class="bridge-actions-grid">
+          <div class="bridge-action-card">
+            <div class="bridge-icon">⚡</div>
+            <div class="bridge-action-title">BARRAGE PLANÉTAIRE ORBITAL</div>
+            <div class="bridge-action-desc">Tir de saturation au plasma lourd depuis l'orbite balayant l'ensemble de l'arène (1400 dégâts bruts).</div>
+            <button id="btn-orbital-barrage" class="btn-bridge" data-game-action="callPlanetaryOrbitalBarrage" data-game-args="[]">ORDONNER LE BARRAGE (4000 HONNEUR)</button>
+          </div>
+          <div class="bridge-action-card">
+            <div class="bridge-icon">📦</div>
+            <div class="bridge-action-title">CAPSULE DE RAVITAILLEMENT ORBITALE</div>
+            <div class="bridge-action-desc">Largage d'urgence d'une capsule Drop Pod contenant munitions lourdes, charges Medicomp et Gelée Royale.</div>
+            <button id="btn-drop-pod-resupply" class="btn-bridge" data-game-action="callOrbitalDropPodResupply" data-game-args="[]">LARGUER LA CAPSULE (2500 HONNEUR)</button>
+          </div>
+          <div class="bridge-action-card">
+            <div class="bridge-icon">👑</div>
+            <div class="bridge-action-title">RITUEL DU CONSEIL DES ANCIENS</div>
+            <div class="bridge-action-desc">Invocation de la grâce clanique ancestrale : régénération instantanée de 100% des PV et purge complète des acides.</div>
+            <button id="btn-elders-blessing" class="btn-bridge" data-game-action="callEldersEmergencyBlessing" data-game-args="[]">RITUEL ANCESTRAL (3000 HONNEUR)</button>
+          </div>
         </div>
       </div>
     </div>
@@ -565,6 +1718,10 @@
             <input id="setting-volume" type="range" min="0" max="100" value="30" aria-describedby="volume-help">
             <p id="volume-help">Réglez à 0 pour couper le son.</p>
             <label class="toggle-setting"><input id="setting-reduced-motion" type="checkbox"> Réduire les animations de l’interface</label>
+            <label>Palette de la carte<select id="setting-map-palette"><option value="default">Standard</option><option value="accessible">Contrastes accessibles</option></select></label>
+            <label class="toggle-setting"><input id="setting-marker-symbols" type="checkbox" checked> Symboles de relation indépendants des couleurs</label>
+            <label class="toggle-setting"><input id="setting-reduced-flashes" type="checkbox"> Réduire les flashs et les secousses</label>
+            <label class="toggle-setting"><input id="setting-detailed-hud" type="checkbox"> Afficher la télémétrie et tous les raccourcis</label>
           </div>
           <h3>LES ESSENTIELS</h3>
           <div class="control-row"><span class="key">ZQSD / WASD</span><span>Se déplacer (positions physiques du clavier)</span></div>
@@ -607,12 +1764,17 @@
             <div class="control-row"><span class="key">B (EN VOL)</span><span>Smart-Disc Ricochet Guidé au Laser : Décapite en chaîne jusqu'à 3 cibles (Predator 2 1990)</span></div>
             <div class="control-row"><span class="key">Z (W AZERTY)</span><span>Médicomp Cautérisation : Soin 450 HP, Vapeur Antiseptique & Purge d'Acide</span></div>
             <div class="control-row"><span class="key">N</span><span>Auto-Destruction 1987 : Anneau Holographique 3D au Gantelet & Rire Sardite de Billy</span></div>
+            <div class="control-row"><span class="key">SHIFT + 0</span><span>Brûleur Plasma Incinérateur : Cône Napalm Soutenu (110 DPS, détruit toiles et micro-essaims)</span></div>
+            <div class="control-row"><span class="key">POWER LOADER [E]</span><span>P-5000 Caterpillar (Aliens 1986) : Pince Hydraulique Broyage Massif 800 Dégâts</span></div>
+            <div class="control-row"><span class="key">CRYO-TUBES</span><span>Tubes de Spécimens Weyland-Yutani : Déflagration Chimique Cryogénique 350 Dégâts</span></div>
+            <div class="control-row"><span class="key">MARVEL CANON</span><span>Alpha Epsilon Apex (Marvel 2021) : Rugissement d'Ordre & Hallucination Eldritch</span></div>
         </div>
       </div>
     </div>
 
     <div id="pause-menu" class="ui-screen hidden" role="dialog" aria-modal="true" aria-labelledby="pause-title">
-      <div class="glass-panel modal-card pause-card"><span class="step-label">TRANSMISSION SUSPENDUE</span><h2 id="pause-title">CHASSE EN PAUSE</h2><p>Soufflez. Votre clan garde la position.</p><div class="pause-actions"><button id="btn-resume-game" class="btn-primary">REPRENDRE LA CHASSE</button><button id="btn-pause-options" class="btn-secondary">OPTIONS & COMMANDES</button><button id="btn-pause-menu-return" class="btn-text-link">QUITTER VERS LE MENU</button></div><p class="pause-hint">Échap pour reprendre</p></div>
+      <div class="glass-panel modal-card pause-card"><span class="step-label">TRANSMISSION SUSPENDUE</span><h2 id="pause-title">CHASSE EN PAUSE</h2><p>Soufflez. Votre clan garde la position.</p><div class="pause-actions"><button id="btn-resume-game" class="btn-primary">REPRENDRE LA CHASSE</button><button id="btn-pause-options" class="btn-secondary">OPTIONS & COMMANDES</button><button id="btn-pause-menu-return" class="btn-text-link">QUITTER VERS LE MENU</button>
+        <button id="btn-abandon-operation" class="btn-secondary hidden">ABANDONNER CETTE OPÉRATION ET SA REPRISE</button></div><p class="pause-hint">Échap pour reprendre</p></div>
     </div>
 
     <!-- MISSION COMPLETE / GAME OVER SCREEN -->
@@ -621,6 +1783,7 @@
         <h1 id="end-title">VICTOIRE GLORIEUSE !</h1>
         <p id="end-subtitle">La Ruche Xenomorphe a été complètement anéantie dans l'honneur Yautja.</p>
 
+        <section id="battle-debrief" class="battle-debrief hidden" aria-label="Bilan des forces et des objectifs"></section>
         <div class="end-stats">
           <div class="end-stat-item">
             <span class="label">Xenomorphes Éliminés:</span>

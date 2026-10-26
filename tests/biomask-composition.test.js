@@ -137,3 +137,25 @@ test('opaque filter components are cloned with the mask and participate in FPS, 
   filters.forEach(mesh => { mesh.geometry.addEventListener('dispose', () => disposed++); mesh.material.addEventListener('dispose', () => disposed++); });
   actor.dispose(); actor.dispose(); assert.equal(disposed, 4); assert.equal(sharedDisposed, 0);
 });
+
+test('zero-time frames propagate FPS, cloak and explicit imported pose while every simulation clock stays frozen', async () => {
+  const f = fixture(), actor = player();
+  f.entry.characterRig.biomask.eyeFilters = { calibrated: true, coordinateSpace: 'gltf-scene', filters: [-1, 1].map(side => ({
+    name: side < 0 ? 'left' : 'right', vertices: [[side * .08 - .03, 0, .03], [side * .08 + .03, 0, .03], [side * .08, .05, .03]], indices: [0, 1, 2]
+  })) };
+  try {
+    assert.equal(await actor.loadGeneratedVisual(f.library), true);
+    const filters = maskMeshes(actor._importedCharacter.biomask.root).filter(mesh => mesh.userData.biomaskEyeFilter);
+    actor.lightAttack(); actor.feralBoltCooldown = .8; let callbacks = 0;
+    actor.schedule(() => callbacks++, 10);
+    const clocks = () => [actor._simulationTime, actor.attackTimer, actor.stamina, actor.feralBoltCooldown, actor._timers[0].time];
+    const before = clocks();
+    actor.headMesh.visible = false; actor.update(0); assert.ok(filters.every(mesh => !mesh.visible));
+    actor.headMesh.visible = true; actor.toggleCloak(); actor.update(0);
+    assert.ok(filters.every(mesh => mesh.visible && mesh.material.transparent && mesh.material.opacity === .22));
+    actor.rightArm.rotation.x = -.4; const oldPose = actor._importedCharacter.adapter.bones.rightArm.quaternion.clone();
+    actor.update(0); assert.ok(actor._importedCharacter.adapter.bones.rightArm.quaternion.angleTo(oldPose) > .01);
+    actor.toggleCloak(); actor.update(0); assert.ok(filters.every(mesh => !mesh.material.transparent && mesh.material.opacity === 1));
+    assert.deepEqual(clocks(), before); assert.equal(callbacks, 0);
+  } finally { actor.dispose(); }
+});

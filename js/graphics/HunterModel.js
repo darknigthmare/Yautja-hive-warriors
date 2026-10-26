@@ -87,6 +87,12 @@ function wristBladeGeometry() {
 }
 
 export function createHunterWeaponGeometry(id) {
+  const join = parts => {
+    const ready = parts.map(part => part.index ? part.toNonIndexed() : part);
+    const geometry = mergeGeometries(ready, false);
+    for (const part of new Set([...parts, ...ready])) part.dispose();
+    return geometry;
+  };
   if (id === 'combistick') {
     const parts = [];
     const shaft = new THREE.CylinderGeometry(0.065, 0.065, 3.6, 16);
@@ -118,7 +124,39 @@ export function createHunterWeaponGeometry(id) {
     for (let i = 0; i < 12; i++) { const angle = i * Math.PI / 6; const radius = i % 2 ? 0.31 : 0.83; points.push([Math.sin(angle) * radius, Math.cos(angle) * radius]); }
     const geometry = plateGeometry(points, 0.055, 0.018); geometry.rotateX(Math.PI / 2); return geometry;
   }
-  if (['alpha_sickle', 'compound_bow', 'plasma_whip'].includes(id)) return new THREE.TorusGeometry(0.72, 0.065, 10, 36, Math.PI * 1.4);
+  if (id === 'alpha_sickle') {
+    const blade = plateGeometry([[-.09, -.7], [.08, -.7], [.1, .46], [.38, .53], [.67, .9], [.72, 1.32], [.55, 1.66], [.58, 1.19], [.39, .91], [.08, .85], [-.08, .57]], .055, .018);
+    blade.rotateX(Math.PI / 2); return blade;
+  }
+  if (id === 'compound_bow') {
+    const body = taperedSweep([[0, -.95, .12], [0, -.73, -.18], [0, -.3, -.35], [0, 0, -.18], [0, .3, -.35], [0, .73, -.18], [0, .95, .12]], [.035, .055, .06, .075, .06, .055, .035], { longitudinal: 56, radial: 10 });
+    const string = new THREE.CylinderGeometry(.008, .008, 1.9, 6); string.translate(0, 0, .12);
+    const handle = new THREE.CylinderGeometry(.075, .075, .26, 12);
+    return join([body, string, handle]);
+  }
+  if (id === 'plasma_whip') {
+    const path = [[0, -.28, 0], [0, .15, .04], [.35, .45, .05], [.7, .2, .05], [.64, -.28, .05], [.17, -.43, .05], [-.2, -.16, .05], [-.16, .2, .05]];
+    const parts = [taperedSweep(path, [.065, .06, .055, .05, .045, .04, .035, .018], { longitudinal: 70, radial: 10 })];
+    for (let i = 0; i < 12; i++) {
+      const t = i / 11 * Math.PI * 1.75;
+      const rib = new THREE.TorusGeometry(.062, .012, 5, 10); rib.translate(.3 + Math.cos(t) * .37, -.01 + Math.sin(t) * .34, .05); parts.push(rib);
+    }
+    return join(parts);
+  }
+  if (id === 'crossbow') {
+    // Handheld bolt-gun approximation based on Prime1 MMPR-07DXS_a12.
+    // The long, flat rail is separate from the folded forearm shield.
+    const parts = [plateGeometry([[-.10, -.35], [.10, -.35], [.13, .65], [.08, 1.12], [-.08, 1.12], [-.13, .65]], .065, .012)];
+    for (const x of [-.075, .075]) {
+      const rail = new THREE.BoxGeometry(.035, 1.32, .035); rail.translate(x, .4, .095); parts.push(rail);
+    }
+    for (let step = 0; step < 8; step++) {
+      const brace = new THREE.BoxGeometry(.17, .025, .035); brace.translate(0, -.2 + step * .15, .095); parts.push(brace);
+    }
+    const grip = new THREE.BoxGeometry(.14, .16, .26); grip.translate(0, -.15, -.08); parts.push(grip);
+    const dart = new THREE.CylinderGeometry(.012, .012, 1.3, 8); dart.translate(0, .4, .13); parts.push(dart);
+    const geometry = join(parts); geometry.rotateX(Math.PI / 2); return geometry;
+  }
   // Beveled, lenticular disc has thickness and an edge without excessive hidden topology.
   return new THREE.LatheGeometry([new THREE.Vector2(0, -0.055), new THREE.Vector2(0.34, -0.06), new THREE.Vector2(0.64, -0.018), new THREE.Vector2(0.67, 0), new THREE.Vector2(0.6, 0.035), new THREE.Vector2(0.3, 0.07), new THREE.Vector2(0, 0.06)], 48);
 }
@@ -316,6 +354,19 @@ export function buildHunterModel(owner) {
     return arm;
   }
   owner.leftArm = buildArm(-1); owner.rightArm = buildArm(1);
+  if (owner.data.id === 'feral_predator') {
+    // Folded shield ribs: Prime1 MMPR-07DXS_a12 shows these on the left
+    // gauntlet. Keep this separate from the handheld bolt-gun silhouette.
+    // Local dimensions remain an interpretation, not a measured film prop.
+    const launcher = new THREE.Group(); launcher.name = 'feral-folded-shield';
+    launcher.position.set(-.035, -1.02, .15);
+    for (const x of [-.09, 0, .09]) {
+      add(launcher, taperedSweep([[x, -.23, .03], [x, -.08, .11], [x, .13, .1], [x, .23, .03]], [.021, .029, .027, .012], { longitudinal: 24, radial: 10 }), bone);
+    }
+    add(launcher, round(.3, .19, .09, .035), armor, [0, -.13, .015]);
+    batch(launcher); launcher.visible = false; owner.leftArm.add(launcher);
+    owner._feralFoldedShield = launcher;
+  }
   owner.shieldMesh = add(owner.leftArm, sculptLoft([[-0.04, 0.03, 0.03], [-0.025, 0.55, 0.55], [0.025, 0.56, 0.56], [0.06, 0.08, 0.08]], { radial: 64, longitudinal: 12 }), primitive ? bone : armor, [-0.08, -1.04, 0.26], [1, 1, 1], [Math.PI / 2, 0, 0]);
   owner.shieldMesh.visible = false;
   owner.blade1 = add(owner.rightArm, wristBladeGeometry(), metal, [-0.05, -1.13, 0.2]);
@@ -354,16 +405,19 @@ export function buildHunterModel(owner) {
   }
 
   const cannonCount = wolf ? 2 : 1;
+  const cannonParent = owner.data.id === 'feral_predator' ? new THREE.Group() : root;
+  if (cannonParent !== root) { cannonParent.name = 'adapted-feral-plasma-caster'; root.add(cannonParent); owner._plasmaCasterVisual = cannonParent; }
   for (let cannon = 0; cannon < cannonCount; cannon++) {
     const side = cannon === 0 ? -1 : 1;
-    tube(root, dark, [[side * 0.55, 3.47, -0.08], [side * 0.83, 3.39, -0.1], [side * 1.02, 3.41, -0.11]], 0.065, 20, 10);
+    tube(cannonParent, dark, [[side * 0.55, 3.47, -0.08], [side * 0.83, 3.39, -0.1], [side * 1.02, 3.41, -0.11]], 0.065, 20, 10);
     const housing = sculptLoft([[-0.39, 0.07, 0.08], [-0.32, 0.14, 0.135], [0.13, 0.145, 0.14], [0.31, 0.105, 0.105]], { radial: 48, longitudinal: 24 });
-    add(root, housing, armor, [side * 1.02, 3.41, 0.04], [1, 1, 1], [Math.PI / 2, 0, 0]);
-    add(root, new THREE.CylinderGeometry(0.095, 0.11, 0.25, 48), metal, [side * 1.02, 3.41, 0.48], [1, 1, 1], [Math.PI / 2, 0, 0]);
-    add(root, new THREE.TorusGeometry(0.083, 0.015, 12, 32), dark, [side * 1.02, 3.41, 0.62]);
-    add(root, sphere(24, 16), light, [side * 1.02, 3.41, 0.622], [0.055, 0.055, 0.012]);
-    for (let fin = 0; fin < 5; fin++) add(root, new THREE.TorusGeometry(0.144, 0.012, 8, 32), metal, [side * 1.02, 3.41, -0.2 + fin * 0.075]);
+    add(cannonParent, housing, armor, [side * 1.02, 3.41, 0.04], [1, 1, 1], [Math.PI / 2, 0, 0]);
+    add(cannonParent, new THREE.CylinderGeometry(0.095, 0.11, 0.25, 48), metal, [side * 1.02, 3.41, 0.48], [1, 1, 1], [Math.PI / 2, 0, 0]);
+    add(cannonParent, new THREE.TorusGeometry(0.083, 0.015, 12, 32), dark, [side * 1.02, 3.41, 0.62]);
+    add(cannonParent, sphere(24, 16), light, [side * 1.02, 3.41, 0.622], [0.055, 0.055, 0.012]);
+    for (let fin = 0; fin < 5; fin++) add(cannonParent, new THREE.TorusGeometry(0.144, 0.012, 8, 32), metal, [side * 1.02, 3.41, -0.2 + fin * 0.075]);
   }
+  if (cannonParent !== root) batch(cannonParent);
   for (const side of [-1, 1]) {
     add(root, sphere(24, 16), bone, [side * 0.3, 2.07, -0.24], [0.07, 0.09, 0.065]);
     for (const eye of [-1, 1]) add(root, sphere(16, 12), dark, [side * 0.3 + eye * 0.025, 2.095, -0.18], [0.014, 0.018, 0.008]);

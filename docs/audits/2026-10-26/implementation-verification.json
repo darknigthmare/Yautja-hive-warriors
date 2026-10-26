@@ -1,0 +1,63 @@
+{
+  "status": "passed",
+  "actions": 126,
+  "followupColumn": "N",
+  "counts": {
+    "Bloqué": 0,
+    "En cours": 34,
+    "Terminé": 3,
+    "À faire": 5,
+    "À valider": 84
+  },
+  "changedMembers": [
+    "xl/worksheets/sheet3.xml"
+  ],
+  "allNonFollowupContentPreserved": true,
+  "evidenceChecks": [
+    {
+      "action": "AUD-041",
+      "path": "docs/audits/2026-10-26/qa/world-construction-54-tests.txt",
+      "sha256": "59a556766b91d90f8e6c3310056d5b93a8612effbbe21d852944c8b49dca0435"
+    },
+    {
+      "action": "AUD-041",
+      "path": "docs/audits/2026-10-26/qa/world-navigation-freeze-15-tests.txt",
+      "sha256": "a7b7145bc28bc0efc5ad78175c8d3f4eb74ab4025f768c6d000d4b27b097156c"
+    },
+    {
+      "action": "AUD-056",
+      "path": "docs/audits/2026-10-26/qa/world-construction-54-tests.txt",
+      "sha256": "59a556766b91d90f8e6c3310056d5b93a8612effbbe21d852944c8b49dca0435"
+    },
+    {
+      "action": "AUD-056",
+      "path": "docs/audits/2026-10-26/qa/world-navigation-freeze-15-tests.txt",
+      "sha256": "a7b7145bc28bc0efc5ad78175c8d3f4eb74ab4025f768c6d000d4b27b097156c"
+    },
+    {
+      "action": "AUD-117",
+      "path": "docs/audits/2026-10-26/catalog-objectives-test.txt",
+      "sha256": "a97eed9f9852449cd7df2b740adc941756af8f3421a20168a37333b7d106c3ca"
+    }
+  ],
+  "sourceWorkbookSha256": "d3f88eee0e88deb4dbc2247f8b295c6c5a6de91ff9626ea94b0d274f08e652b5",
+  "workingWorkbookSha256": "91154e7b32cacb3c0d1033261b234e79533fbc622bea60299be7f6c89ecad750",
+  "remainingP0": [
+    "AUD-001",
+    "AUD-002",
+    "AUD-003",
+    "AUD-005",
+    "AUD-006",
+    "AUD-007",
+    "AUD-018",
+    "AUD-061",
+    "AUD-071",
+    "AUD-095",
+    "AUD-105",
+    "AUD-110",
+    "AUD-114",
+    "AUD-125"
+  ],
+  "humanTesters": 0,
+  "fidelity1to1Verified": false
+}

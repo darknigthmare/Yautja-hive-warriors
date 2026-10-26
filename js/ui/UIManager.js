@@ -1,9 +1,16 @@
 /* User Interface Manager & Minimap Renderer */
 
 import confetti from 'canvas-confetti';
+import { AccessibilityPreferences, drawAccessibleMarker } from './AccessibilityPreferences.js';
 import { readStored, readStoredNumber, writeStored } from './storage.js';
+import * as THREE from 'three';
 import { CHARACTERS_DATA } from '../data/charactersData.js';
 import { LEVELS_DATA } from '../data/levelsData.js';
+
+const bossDisplayNames = {
+  xenomorph_queen:'REINE XÉNOMORPHE',queen:'REINE XÉNOMORPHE',praetorian:'PRÉTORIEN',predalien:'PRÉDALIEN',predalien_queen:'PRÉDALIEN — RENCONTRE ADAPTÉE',imperial_queen:'REINE IMPÉRIALE',empress_matriarch:'IMPÉRATRICE DE LA RUCHE',the_offspring:'THE OFFSPRING',predalien_abomination:'ABOMINATION PRÉDALIENNE',predalien_matriarch_titan:'MATRIARCHE TITAN — CRÉATION ORIGINALE',rogue_king_prime:'ROGUE KING',awakened_engineer:'INGÉNIEUR ÉVEILLÉ',trilobite_prime:'TRILOBITE PRIME',berserker_super_predator:'BERSERKER / MR. BLACK',ultimate_upgrade_predator:'UPGRADE PREDATOR',feral_predator_boss:'FERAL PREDATOR',jungle_hunter_boss:'JUNGLE HUNTER',city_hunter_boss:'CITY HUNTER'
+};
+export const bossHUDLabel = boss => boss?.profileName ?? bossDisplayNames[boss?.type] ?? 'ADVERSAIRE';
 
 const cardinalDirections = ['N', 'NE', 'E', 'SE', 'S', 'SO', 'O', 'NO'];
 
@@ -84,6 +91,9 @@ export class UIManager {
     this.comboCount = document.getElementById('combo-count');
     this.executionPrompt = document.getElementById('execution-prompt');
     this.announcementBanner = document.getElementById('ability-announcement');
+    this.announcementQueue = [];
+    this.isShowingAnnouncement = false;
+    this.announcementTimeout = null;
 
     // Minimap
     this.minimapCanvas = document.getElementById('minimap-canvas');
@@ -152,6 +162,10 @@ export class UIManager {
   }
 
   setupSettings() {
+    this.presentationPreferences=new AccessibilityPreferences({document});
+    const prefControls={palette:document.getElementById('setting-map-palette'),symbols:document.getElementById('setting-marker-symbols'),reducedFlashes:document.getElementById('setting-reduced-flashes')};
+    for(const[key,control]of Object.entries(prefControls))if(control){if(key==='palette')control.value=this.presentationPreferences.get()[key];else control.checked=this.presentationPreferences.get()[key];control.addEventListener('change',()=>this.presentationPreferences.set({[key]:key==='palette'?control.value:control.checked}));}
+
     const graphics = document.getElementById('setting-graphics-quality');
     const graphicsStatus = document.getElementById('graphics-quality-status');
     if (graphics) {
@@ -170,6 +184,8 @@ export class UIManager {
       document.addEventListener('graphics-quality-change', updateStatus);
       document.addEventListener('ui-screen-change', updateStatus);
     }
+    const detailedHUD=document.getElementById('setting-detailed-hud');
+    if(detailedHUD){detailedHUD.checked=readStored('yautja_detailed_hud','false')==='true';document.body.classList.toggle('hud-detailed',detailedHUD.checked);detailedHUD.addEventListener('change',()=>{document.body.classList.toggle('hud-detailed',detailedHUD.checked);writeStored('yautja_detailed_hud',String(detailedHUD.checked));});}
     const volume = document.getElementById('setting-volume');
     const output = document.getElementById('setting-volume-value');
     if (volume) {
@@ -252,8 +268,8 @@ export class UIManager {
       card.className = `level-card ${index === 0 ? 'selected' : ''}`;
       if (lvl.accentColor) card.style.borderTopColor = lvl.accentColor;
       card.innerHTML = `
-        <div class="level-card-icon">${lvl.icon}</div>
-        <span class="level-badge ${lvl.difficultyBadge}">${lvl.difficulty}</span>
+        <div class="level-card-icon">${lvl.icon || '🌲'}</div>
+        <span class="level-badge ${lvl.difficultyBadge || 'badge-hard'}">${lvl.difficulty || 'ÉLITE'}</span>
         <h3>${lvl.name}</h3>
         <p>${lvl.desc ?? lvl.description}</p>
         ${lvl.battlefield ? '<span class="level-layout-summary">6 zones reliées · Passages à débloquer</span>' : ''}
@@ -270,7 +286,7 @@ export class UIManager {
     });
   }
 
-  updateHUD(player, horde, bossManager, waveIndex, totalWaves, score) {
+  updateHUD(player, horde, bossManager, waveIndex, totalWaves, score, factions = {}) {
     const playerName = player.data?.name ?? this.selectedChar?.name ?? 'YAUTJA';
     if (this.hudPlayerName && this.hudPlayerName.textContent !== playerName) this.hudPlayerName.textContent = playerName;
     // Player HP
@@ -281,7 +297,11 @@ export class UIManager {
     // Plasma Energy
     const plasmaPct = (player.plasmaEnergy / player.maxPlasmaEnergy) * 100;
     this.hudPlasmaFill.style.width = `${plasmaPct}%`;
-    this.hudPlasmaText.innerText = `ÉNERGIE PLASMA: ${Math.ceil(plasmaPct)}%`;
+    const combat = player.getCombatState?.(), weapon = player.getWeaponState?.();
+    this.hudPlasmaText.innerText = weapon?.rangedResource === 'bolts' ? `BOULONS : ${weapon?.boltAmmo ?? player.boltAmmo ?? 0}` : `ÉNERGIE PLASMA : ${Math.ceil(plasmaPct)}%`;
+    if(combat){const staminaFill=document.getElementById('hud-stamina-fill'),staminaText=document.getElementById('hud-stamina-text');if(staminaFill)staminaFill.style.width=`${Math.max(0,combat.stamina/combat.maxStamina*100)}%`;if(staminaText)staminaText.textContent=`ENDURANCE ${Math.ceil(combat.stamina)}/${combat.maxStamina}`;}
+    document.getElementById('wrist-ecg-holoscan')?.classList.toggle('is-critical',Boolean(player.isChestbursterImplanted||player.isFacehuggerLatched));
+    const activeWeapon=document.getElementById('hud-active-weapon');if(activeWeapon)activeWeapon.textContent=({wristblades:'LAMES DE POIGNET',combistick:'COMBISTICK',smart_disc:'SMART-DISC',crossbow:'LANCE-BOULONS',shuriken:'SHURIKEN',compound_bow:'ARC COMPOSÉ',katana:'KATANA',viking_axe:'HACHE',alpha_sickle:'FAUCILLE'})[weapon?.id]??'ARME PRINCIPALE';
 
     // Musou Gauge
     const musouPct = (player.musouEnergy / player.maxMusouEnergy) * 100;
@@ -289,17 +309,185 @@ export class UIManager {
     this.hudMusouText.innerText = musouPct >= 100 ? '⚡ SURCHARGE PRÊTE ! [ESPACE]' : `SURCHARGE MUSOU: ${Math.ceil(musouPct)}%`;
 
     // Counters & Score
-    this.hudKoCount.innerText = horde.deadCount;
+    this.hudKoCount.innerText = factions.sessionDefeats ?? horde.deadCount;
     this.hudHonorScore.innerText = `${score} PTS`;
     this.hudLevelName.innerText = this.selectedLevel.name;
     this.hudWaveCounter.innerText = `VAGUE ${waveIndex}/${totalWaves}`;
 
-    // Render Minimap
-    this._minimapActors = { horde, bossManager };
-    if (!this._battlefieldHUD) this.renderMinimap(player, horde, bossManager);
+    // Chantier 1: Grand Musou Boss Health Gauge
+    const bossContainer = document.getElementById('hud-boss-container');
+    if (bossContainer) {
+      if (bossManager && bossManager.activeBoss && bossManager.activeBoss.hp > 0) {
+        bossContainer.classList.remove('hidden');
+        const b = bossManager.activeBoss;
+        const bPct = Math.max(0, Math.min(100, (b.hp / b.maxHp) * 100));
+
+        const bossFill = document.getElementById('hud-boss-hp-fill');
+        const bossText = document.getElementById('hud-boss-hp-text');
+        const bossName = document.getElementById('hud-boss-name');
+        const bossIcon = document.getElementById('hud-boss-icon');
+        const bossBadge = document.getElementById('hud-boss-badge');
+
+        if (bossFill) bossFill.style.width = `${bPct}%`;
+        if (bossText) bossText.innerText = `${Math.ceil(b.hp)} / ${b.maxHp} HP (${Math.ceil(bPct)}%)`;
+
+        const title = bossHUDLabel(b);
+        const icon = /predator|hunter/.test(b.type) ? '⚔️' : '👑';
+        if (bossName) bossName.innerText = title;
+        if (bossIcon) bossIcon.innerText = icon;
+
+        if (bossBadge) {
+          if (b.isStunned && bPct <= 30) {
+            bossBadge.innerText = (b.type === 'predalien_abomination') ? '💀 EXÉCUTION DÉCAPITANTE [E] : ARRACHEZ LE CRÂNE HYBRIDE !' : (b.type === 'rogue_king_prime' ? '👑 ÉTOURDI — ARRACHEZ LA COURONNE CORNUE [E] !' : '💥 ÉTOURDI — EXÉCUTION SPIDERIP [E] !');
+            bossBadge.style.color = '#ff3300';
+            bossBadge.style.borderColor = '#ff3300';
+          } else if (bPct < 25 && b.type === 'predalien_abomination') {
+            bossBadge.innerText = '💀 SEUIL CRITIQUE D\'ÉPUISEMENT (<25%)';
+            bossBadge.style.color = '#f97316';
+            bossBadge.style.borderColor = '#f97316';
+          } else if (bPct < 45) {
+            bossBadge.innerText = (b.type === 'predalien_abomination' || b.type === 'predalien_queen') ? '🩸 FUREUR GESTANTE : CRACHAT D\'ACIDE & COUVÉE !' : (b.type === 'rogue_king_prime' ? '⚡ FUREUR DU ROI XÉNO : CHARGES DÉVASTATRICES & ONDE PHÉROMONE !' : '🔥 ÉTAT ENRAGÉ DÉCHAÎNÉ (<45%) !');
+            bossBadge.style.color = '#ef4444';
+            bossBadge.style.borderColor = '#ef4444';
+          } else if (bPct < 65 && b.type === 'predalien_abomination') {
+            bossBadge.innerText = '⚠️ PHASE 2 : DÉGORGEMENT D\'ACIDE CORROSIF';
+            bossBadge.style.color = '#84cc16';
+            bossBadge.style.borderColor = '#84cc16';
+          } else {
+            bossBadge.innerText = b.isStunned ? 'DÉSÉQUILIBRÉ — OUVERTURE POUR ATTAQUER' : 'PHASE 1 : COMBAT OUVERT';
+            bossBadge.style.color = '#fef08a';
+            bossBadge.style.borderColor = '#facc15';
+          }
+        }
+      } else {
+        bossContainer.classList.add('hidden');
+      }
+    }
+
+    // Chantier 10 & Marc QA (v52.0): Colossal Boss Multi-Segment Health HUD
+    const colossalHud = document.getElementById('colossal-boss-hud');
+    if (colossalHud) {
+      if (bossManager && bossManager.activeBoss && bossManager.activeBoss.hp > 0) {
+        colossalHud.classList.remove('hidden');
+        const b = bossManager.activeBoss;
+        const bPct = Math.max(0, Math.min(100, (b.hp / b.maxHp) * 100));
+        const fillEl = document.getElementById('colossal-boss-bar-fill');
+        const titleEl = document.getElementById('colossal-boss-title');
+        const phaseEl = document.getElementById('colossal-boss-phase');
+        const hpTextEl = document.getElementById('colossal-boss-hp-text');
+        const armorEl = document.getElementById('colossal-boss-armor-status');
+
+        if (fillEl) fillEl.style.width = `${bPct}%`;
+        if (hpTextEl) hpTextEl.innerText = `${Math.ceil(b.hp)} / ${b.maxHp} PV (${Math.ceil(bPct)}%)`;
+
+        if (titleEl) titleEl.innerText = bossHUDLabel(b);
+
+        if (phaseEl) {
+          if (b.isStunned) {
+            phaseEl.innerText = bPct <= 30 ? 'ÉTOURDI — EXÉCUTION [E] À MOINS DE 8 UNITÉS' : 'DÉSÉQUILIBRÉ — OUVERTURE POUR ATTAQUER';
+            phaseEl.style.borderColor = '#ff3300';
+            phaseEl.style.color = '#ff3300';
+          } else if (bPct < 25) {
+            phaseEl.innerText = 'PHASE 3 : SEUIL CRITIQUE';
+            phaseEl.style.borderColor = '#ef4444';
+            phaseEl.style.color = '#ef4444';
+          } else if (bPct < 50) {
+            phaseEl.innerText = 'PHASE 2 : FUREUR ENRAGÉE';
+            phaseEl.style.borderColor = '#f97316';
+            phaseEl.style.color = '#f97316';
+          } else {
+            phaseEl.innerText = 'PHASE 1 : COMBAT OUVERT';
+            phaseEl.style.borderColor = '#00ffff';
+            phaseEl.style.color = '#00ffff';
+          }
+        }
+
+        if (armorEl) {
+          armorEl.innerText = bPct > 50 ? 'BLINDAGE CHITINEUX : INTACT' : (bPct > 20 ? 'BLINDAGE CHITINEUX : FRACTURÉ (-30%)' : 'BLINDAGE : DÉTRUIT (VULNÉRABLE)');
+        }
+      } else {
+        colossalHud.classList.add('hidden');
+      }
+    }
+
+    // Chantier 10: Hive Bio-Acoustic Danger & Pressure Meter (Aliens 1986 / Romulus)
+    const pContainer = document.getElementById('hud-hive-pressure-container');
+    if (pContainer && horde) {
+      let nearestDist = 999;
+      if (horde.aliens && horde.aliens.length > 0) {
+        horde.aliens.forEach(a => {
+          if (a.hp > 0) {
+            const d = a.mesh.position.distanceTo(player.position);
+            if (d < nearestDist) nearestDist = d;
+          }
+        });
+      }
+
+      const countFactor = Math.min(60, (horde.aliens.length / 35) * 60);
+      const proxFactor = Math.max(0, (28 - Math.min(28, nearestDist)) / 28) * 40;
+      const pressure = Math.min(100, Math.ceil(countFactor + proxFactor));
+
+      const pFill = document.getElementById('hive-pressure-fill');
+      const pVal = document.getElementById('hive-pressure-val');
+      const pTag = document.getElementById('hive-pressure-tag');
+      const pWarn = document.getElementById('hive-pressure-warning');
+
+      if (pFill) pFill.style.width = `${pressure}%`;
+      if (pVal) pVal.innerText = `${pressure}%`;
+
+      if (pTag && pWarn) {
+        if (pressure >= 80) {
+          pTag.innerText = 'DANGER CRITIQUE';
+          pTag.className = 'pressure-badge badge-danger';
+          pWarn.innerText = 'EMBUSCADE EN MASSE IMMINENTE !';
+          pWarn.style.color = '#ef4444';
+        } else if (pressure >= 45) {
+          pTag.innerText = 'VIGILANCE ACCRUE';
+          pTag.className = 'pressure-badge badge-warning';
+          pWarn.innerText = 'ACTIVITÉ RUCHE INTENSE';
+          pWarn.style.color = '#f59e0b';
+        } else {
+          pTag.innerText = 'CALME';
+          pTag.className = 'pressure-badge badge-calm';
+          pWarn.innerText = 'ÉCHO BIO-RADAR STABLE';
+          pWarn.style.color = '#34d399';
+        }
+      }
+    }
+
+    // Chantier 8: Render Multi-Faction Minimap
+    this._minimapActors = { horde, bossManager, factions };
+    if (!this._battlefieldHUD) this.renderMinimap(player, horde, bossManager, factions);
+  }
+
+  updateOperationHUD(state, layout, players = [], objectives = null) {
+    this._operationHUD = state ? {state,layout,players,objectives} : null;
+    if (!state) return;
+    this.hudWaveCounter.textContent = `${state.fronts.length} FRONTS · RÉSERVES FINIES`;
+    const weapon = this._minimapActors?.player?.getCombatState?.();
+    if (weapon) this.hudPlasmaText.textContent += ` · ENDURANCE ${Math.ceil(weapon.stamina ?? 0)}`;
+    this.minimapCanvas?.setAttribute('aria-label','Carte des fronts et rapports de positions connus');
+    this.renderOperationMap();
+  }
+
+  renderOperationMap() {
+    if(!this.minimapCtx||!this._operationHUD)return;
+    const {state,layout,players,objectives}=this._operationHUD,ctx=this.minimapCtx,{width,height}=this.minimapCanvas;
+    const b=layout.bounds,pad=12,scale=Math.min((width-2*pad)/(b.maxX-b.minX),(height-2*pad)/(b.maxZ-b.minZ));
+    const project=point=>[width/2+(point[0]-(b.minX+b.maxX)/2)*scale,height/2+(point[1]-(b.minZ+b.maxZ)/2)*scale];
+    const colors={player_clan:'#77e4c4',clan:'#77e4c4',hive:'#ef817d',human:'#76b6f0',human_force:'#76b6f0',rival_clan:'#d2a0dc',yautja:'#77e4c4'};
+    ctx.clearRect(0,0,width,height);
+    for(const sector of layout.sectors){const[x,y]=project([sector.bounds.minX,sector.bounds.minZ]);ctx.fillStyle='#243e39';ctx.fillRect(x,y,(sector.bounds.maxX-sector.bounds.minX)*scale,(sector.bounds.maxZ-sector.bounds.minZ)*scale);}
+    for(const route of state.routes){ctx.strokeStyle=route.open?'#6d9e8f':'#9c685d';ctx.lineWidth=2;ctx.beginPath();for(const[index,point]of(route.waypoints??[]).entries()){const[x,y]=project(point);if(index)ctx.lineTo(x,y);else ctx.moveTo(x,y);}ctx.stroke();}
+    const dot=(point,color,radius)=>{const[x,y]=project(point);ctx.fillStyle=color;ctx.beginPath();ctx.arc(x,y,radius,0,Math.PI*2);ctx.fill();};
+    for(const front of state.fronts){dot(front.position,colors[front.owner]??'#c7bb94',6);const[x,y]=project(front.position);ctx.fillStyle='#edf8f3';ctx.font='9px sans-serif';ctx.textAlign='center';ctx.fillText(front.label,x,y-9);}
+    for(const group of state.groups)if(group.alive>0&&group.precisePositionKnown)dot(group.position,colors[group.factionId]??'#bea8e0',2.3);
+    for(const task of objectives?.tasks??[])if(task.available&&task.status!=='done')dot(task.position,'#ffe1a0',3);
+    for(const player of players)if(player.hp>0)dot(player.position,'#ddffb1',4);
   }
 
   updateBattlefieldHUD(progression, layout, player, combatDirector, players = []) {
+    if (this._operationHUD) { this.renderOperationMap(); return; }
     const state = battlefieldHUDState(progression, layout, player, combatDirector, players);
     this._battlefieldHUD = state ? { progression, layout, player, players, state } : null;
     this.battlefieldObjective?.classList.toggle('hidden', !state);
@@ -332,11 +520,12 @@ export class UIManager {
       }));
     }
     this.minimapCanvas?.setAttribute('aria-label', `Champ de bataille : ${state.sectorName}, zone ${state.sectorCount}. ${state.objectiveText}`);
-    this.renderMinimap(player, this._minimapActors?.horde ?? { aliens: [] }, this._minimapActors?.bossManager ?? {});
+    this.renderMinimap(player, this._minimapActors?.horde ?? { aliens: [] }, this._minimapActors?.bossManager ?? {}, this._minimapActors?.factions ?? {});
   }
 
-  renderMinimap(player, horde, bossManager) {
+  renderMinimap(player, horde, bossManager, factions = {}) {
     if (!this.minimapCtx) return;
+    if (this._operationHUD) return this.renderOperationMap();
     if (this._battlefieldHUD) return this.renderBattlefieldMap(player, horde, bossManager);
     const ctx = this.minimapCtx;
     const w = this.minimapCanvas.width;
@@ -348,35 +537,119 @@ export class UIManager {
     const cx = w / 2;
     const cy = h / 2;
 
-    // Draw Xenomorph Horde Dots
+    // 1. Draw Xenomorph Horde Dots (Red)
     ctx.fillStyle = '#ff1a1a';
     horde.aliens.forEach(xeno => {
       const relX = (xeno.mesh.position.x - player.position.x) * scale;
       const relZ = (xeno.mesh.position.z - player.position.z) * scale;
       if (Math.abs(relX) < cx && Math.abs(relZ) < cy) {
         ctx.beginPath();
-        ctx.arc(cx + relX, cy + relZ, 2.5, 0, Math.PI * 2);
+        ctx.arc(cx + relX, cy + relZ, xeno.isOfficer ? 3.5 : 2.0, 0, Math.PI * 2);
         ctx.fill();
       }
     });
 
-    // Draw Active Boss Dot
+    // 2. USCM Colonial Marines (Cobalt Blue)
+    if (factions.marines && factions.marines.marines) {
+      ctx.fillStyle = '#3b82f6';
+      factions.marines.marines.forEach(m => {
+        if (m.hp > 0 && m.mesh) {
+          const relX = (m.mesh.position.x - player.position.x) * scale;
+          const relZ = (m.mesh.position.z - player.position.z) * scale;
+          if (Math.abs(relX) < cx && Math.abs(relZ) < cy) {
+            ctx.beginPath();
+            ctx.arc(cx + relX, cy + relZ, 2.5, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+      });
+    }
+
+    // 3. Yautja Clan Allies (Cyan)
+    if (factions.allies && factions.allies.allies) {
+      ctx.fillStyle = '#06b6d4';
+      factions.allies.allies.forEach(a => {
+        if (a.hp > 0 && a.mesh) {
+          const relX = (a.mesh.position.x - player.position.x) * scale;
+          const relZ = (a.mesh.position.z - player.position.z) * scale;
+          if (Math.abs(relX) < cx && Math.abs(relZ) < cy) {
+            ctx.beginPath();
+            ctx.arc(cx + relX, cy + relZ, 3.0, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+      });
+    }
+
+    // 4. Weyland-Yutani Synthetics (Clinical White)
+    if (factions.synthetics && factions.synthetics.androids) {
+      ctx.fillStyle = '#f8fafc';
+      factions.synthetics.androids.forEach(s => {
+        if (s.hp > 0 && s.mesh) {
+          const relX = (s.mesh.position.x - player.position.x) * scale;
+          const relZ = (s.mesh.position.z - player.position.z) * scale;
+          if (Math.abs(relX) < cx && Math.abs(relZ) < cy) {
+            ctx.beginPath();
+            ctx.arc(cx + relX, cy + relZ, 2.2, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+      });
+    }
+
+    // 5. Bad Blood Renegade Yautja (Crimson & Purple pulsating skull)
+    if (factions.badBlood && factions.badBlood.isActive && factions.badBlood.badBlood) {
+      const bb = factions.badBlood.badBlood;
+      const relX = (bb.mesh.position.x - player.position.x) * scale;
+      const relZ = (bb.mesh.position.z - player.position.z) * scale;
+      if (Math.abs(relX) < cx && Math.abs(relZ) < cy) {
+        ctx.fillStyle = '#dc2626';
+        ctx.beginPath();
+        ctx.arc(cx + relX, cy + relZ, 5.0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#c084fc';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+    }
+
+    // 6. Draw Active Boss Dot (Gold with glowing aura ring)
     if (bossManager.activeBoss) {
       const boss = bossManager.activeBoss;
       const relX = (boss.mesh.position.x - player.position.x) * scale;
       const relZ = (boss.mesh.position.z - player.position.z) * scale;
 
-      ctx.fillStyle = '#ffb703';
-      ctx.beginPath();
-      ctx.arc(cx + relX, cy + relZ, 6, 0, Math.PI * 2);
-      ctx.fill();
+      if (Math.abs(relX) < cx && Math.abs(relZ) < cy) {
+        // Outer pulsing ring
+        const pulse = 7.0 + Math.sin(Date.now() * 0.008) * 2.0;
+        ctx.strokeStyle = '#f59e0b';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(cx + relX, cy + relZ, pulse, 0, Math.PI * 2);
+        ctx.stroke();
+
+        ctx.fillStyle = '#fbbf24';
+        ctx.beginPath();
+        ctx.arc(cx + relX, cy + relZ, 5.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
     }
 
-    // Draw Player Dot (Green)
-    ctx.fillStyle = '#39ff14';
+    // 7. Draw Player Dot (Green) & Direction Cone
+    ctx.fillStyle = '#22c55e';
     ctx.beginPath();
     ctx.arc(cx, cy, 4, 0, Math.PI * 2);
     ctx.fill();
+
+    // Direction arrow
+    const pRot = player.rotationY || 0;
+    const dirLen = 8;
+    ctx.strokeStyle = '#22c55e';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + Math.sin(pRot) * dirLen, cy + Math.cos(pRot) * dirLen);
+    ctx.stroke();
   }
 
   renderBattlefieldMap(player, horde, bossManager) {
@@ -426,6 +699,9 @@ export class UIManager {
       ctx.fillStyle = progression.currentState?.relayPhase === 'counterattack' ? '#ff9b68' : '#ffd879'; ctx.beginPath(); ctx.moveTo(x, y - 5); ctx.lineTo(x + 5, y); ctx.lineTo(x, y + 5); ctx.lineTo(x - 5, y); ctx.closePath(); ctx.fill();
     }
     for (const alien of horde.aliens ?? []) dot(alien.mesh?.position, '#ff7974', 1.5);
+    const factionActors=this._minimapActors?.factions??{};
+    for(const[actors,role,factionId]of[[factionActors.marines?.marines,'hostile','human_force'],[factionActors.allies?.allies,'ally','player_clan'],[factionActors.synthetics?.androids,'hostile','synthetic']])for(const actor of actors??[])if(actor.hp>0&&actor.mesh){const[x,y]=project(actor.mesh.position.x,actor.mesh.position.z);if(ctx.save)drawAccessibleMarker(ctx,{x,y,size:3,role,factionId,label:role==='ally'?'Allié':'Hostile'},this.presentationPreferences?.get());else dot(actor.mesh.position,role==='ally'?'#75d8b1':'#e08e84',2);}
+
     if (bossManager.activeBoss) dot(bossManager.activeBoss.mesh?.position, '#ffb703', 4);
     for (const other of players) if (other !== player && other?.hp > 0) dot(other.position, '#80d9ee', 3.5);
     dot(player.position, '#c8ff99', 4);
@@ -456,20 +732,82 @@ export class UIManager {
   }
 
   showAnnouncement(msg) {
-    clearTimeout(this.announcementTimer);
+    if (!msg) return;
     const globalStatus = document.getElementById('global-status');
-    globalStatus?.classList.add('hidden');
-    this.announcementBanner.classList.add('hidden');
-    const target = this.inGameHud.classList.contains('hidden') ? globalStatus : this.announcementBanner;
-    if (!target) return;
-    target.textContent = msg;
-    target.classList.remove('hidden');
-    this.announcementTimer = setTimeout(() => target.classList.add('hidden'), 3500);
+    if (this.inGameHud.classList.contains('hidden') && globalStatus) {
+      clearTimeout(this.announcementTimer); globalStatus.textContent = msg; globalStatus.classList.remove('hidden');
+      this.announcementTimer = setTimeout(() => globalStatus.classList.add('hidden'), 3500); return;
+    }
+    if (!msg) return;
+    this.announcementQueue.push(msg);
+    if (!this.isShowingAnnouncement) {
+      this.processAnnouncementQueue();
+    }
+  }
+
+  processAnnouncementQueue() {
+    if (this.announcementQueue.length === 0) {
+      this.isShowingAnnouncement = false;
+      return;
+    }
+    this.isShowingAnnouncement = true;
+    const nextMsg = this.announcementQueue.shift();
+    if (this.announcementBanner) {
+      this.announcementBanner.innerText = nextMsg;
+      this.announcementBanner.classList.remove('hidden');
+      this.announcementBanner.style.opacity = '1';
+      this.announcementBanner.style.transform = 'translateX(-50%) scale(1.04)';
+
+      if (this.announcementTimeout) clearTimeout(this.announcementTimeout);
+      this.announcementTimeout = setTimeout(() => {
+        if (this.announcementBanner) {
+          this.announcementBanner.style.opacity = '0';
+          this.announcementBanner.style.transform = 'translateX(-50%) scale(0.96)';
+          this.announcementTransitionTimer = setTimeout(() => {
+            if (this.announcementBanner) this.announcementBanner.classList.add('hidden');
+            this.processAnnouncementQueue();
+          }, 240);
+        } else {
+          this.processAnnouncementQueue();
+        }
+      }, 2200);
+    } else {
+      this.isShowingAnnouncement = false;
+    }
+  }
+
+  showOfficerDefeatedBanner(officerTitle = 'PRAETORIAN ROYAL GUARD') {
+    if (!this.officerBanner) {
+      this.officerBanner = document.getElementById('officer-defeated-banner');
+      this.officerNameEl = document.getElementById('musou-officer-name');
+    }
+    if (this.officerBanner) {
+      if (this.officerNameEl) this.officerNameEl.innerText = officerTitle.toUpperCase();
+      this.officerBanner.classList.remove('hidden');
+      if (this.officerTimeout) clearTimeout(this.officerTimeout);
+      this.officerTimeout = setTimeout(() => {
+        this.officerBanner.classList.add('hidden');
+      }, 2800);
+    }
+  }
+
+  clearTransientState() {
+    for (const key of ['announcementTimer', 'announcementTimeout', 'announcementTransitionTimer', 'officerTimeout', 'flashTimeout']) {
+      clearTimeout(this[key]); this[key] = null;
+    }
+    this.announcementQueue.length = 0;
+    this.isShowingAnnouncement = false;
+    this.announcementBanner?.classList.add('hidden');
+    this.officerBanner?.classList.add('hidden');
+    document.getElementById('global-status')?.classList.add('hidden');
+    if (this.screenFlash) this.screenFlash.className = '';
   }
 
   flashScreen(type) {
+    this.screenFlash.style.opacity=document.body.classList.contains('reduced-flashes')?'.08':'';
     this.screenFlash.className = `${type}-flash`;
-    setTimeout(() => {
+    clearTimeout(this.flashTimeout);
+    this.flashTimeout = setTimeout(() => {
       this.screenFlash.className = '';
     }, 200);
   }
@@ -505,7 +843,22 @@ export class UIManager {
     });
   }
 
-  recordEndSession(kos, skulls, honor) {
+  renderBattleDebrief(debrief) {
+    const root=document.getElementById('battle-debrief');root.replaceChildren();root.classList.toggle('hidden',!debrief);if(!debrief)return;
+    const title=document.createElement('h3');title.textContent=debrief.label;const reason=document.createElement('p');reason.textContent=debrief.reason;root.append(title,reason);
+    const scroll=document.createElement('div');scroll.className='debrief-table-scroll';const table=document.createElement('table');
+    const headings=['Camp','Alloués','Détaillés','Distants','Réserves','Pertes','Évacués','Capturés'];const header=document.createElement('tr');for(const text of headings){const cell=document.createElement('th');cell.textContent=text;header.append(cell);}table.append(header);
+    for(const row of debrief.rows){const tr=document.createElement('tr');for(const value of[row.label,row.allocated,row.active,row.distant,row.reserve,row.dead,row.evacuated,row.captured]){const cell=document.createElement('td');cell.textContent=value;tr.append(cell);}table.append(tr);}scroll.append(table);root.append(scroll);
+    const note=document.createElement('p');note.textContent='Chaque combattant appartient à un seul état. Les changements de niveau de détail ne comptent pas comme des pertes.';root.append(note);
+    if(debrief.noncombatants){const n=debrief.noncombatants,p=document.createElement('p');p.textContent=`Non-combattants : ${n.allocated} personnes · ${n.captive} captives · ${n.rescued} secourues · ${n.evacuated} évacuées · ${n.dead} perdues.`;root.append(p);}
+    if(debrief.named.length){const p=document.createElement('p');p.textContent='Destins confirmés : '+debrief.named.map(item=>`${item.label} — ${({dead:'vaincu',evacuated:'évacué',captured:'capturé'})[item.state]}`).join(' · ');root.append(p);}
+    const details=document.createElement('details'),summary=document.createElement('summary');summary.textContent='Journal des causes connues';details.append(summary);const list=document.createElement('ol');const names={unit_died:'Combattant perdu',base_captured:'Contrôle du front changé',morale_changed:'Cohésion modifiée',source_disabled:'Source de renfort neutralisée',reinforcements_inbound:'Renforts en route',reinforcements_arrived:'Renforts arrivés',route_changed:'Passage modifié',operation_finished:'Résultat confirmé',group_order:'Ordre transmis',tactic_ordered:'Tactique collective',companion_ability:'Action du compagnon'};for(const event of debrief.journal.filter(item=>item.priority>=1).slice(-24)){const li=document.createElement('li');li.textContent=`${Math.floor(event.time/60)}:${String(Math.floor(event.time%60)).padStart(2,'0')} · ${names[event.type]??'Rapport de mission'}${event.before!==undefined?' · '+Math.round(event.before)+' → '+Math.round(event.after):''}`;list.append(li);}details.append(list);root.append(details);
+  }
+
+  recordEndSession(kos, skulls, honor, sessionId) {
+    this._recordedSessions ??= new Set();
+    if (sessionId !== undefined && this._recordedSessions.has(sessionId)) return false;
+    if (sessionId !== undefined) this._recordedSessions.add(sessionId);
     kos = Math.max(0, Math.floor(Number(kos) || 0));
     skulls = Math.max(0, Math.floor(Number(skulls) || 0));
     this.trophyStats.totalKos += kos;
@@ -520,5 +873,292 @@ export class UIManager {
     if (kos > 20 && !document.body.classList.contains('reduced-motion')) {
       confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
     }
+  }
+
+  /* Chantier 10: Bio-Mask Target Lock Telemetry & Weakpoint Scanning Reticle */
+  updateTargetLockTelemetry(target, camera, player, visionMode = 0) {
+    const reticleElem = document.getElementById('hud-tri-target-lock');
+    if (!reticleElem) return;
+
+    if (!target || !target.mesh || target.hp <= 0 || !camera) {
+      reticleElem.classList.add('hidden');
+      return;
+    }
+
+    // Project 3D enemy world position to 2D screen coordinates
+    const targetPos = target.mesh.position.clone();
+    targetPos.y += (target.height || 1.4) * 0.7;
+
+    const projected = targetPos.clone().project(camera);
+    if (projected.z > 1.0) {
+      // Behind camera view frustum
+      reticleElem.classList.add('hidden');
+      return;
+    }
+
+    const screenX = (projected.x * 0.5 + 0.5) * window.innerWidth;
+    const screenY = (-(projected.y * 0.5) + 0.5) * window.innerHeight;
+
+    reticleElem.style.left = `${screenX}px`;
+    reticleElem.style.top = `${screenY}px`;
+    reticleElem.classList.remove('hidden');
+
+    // Genus & Threat Classification
+    let genus = 'GENUS : XX121 GUERRIER XÉNOMORPHE';
+    let weakpoint = 'FAIBLESSE : DÔME CRÂNIEN (-40% ARMURE)';
+    let threat = 'ÉLEVÉE';
+
+    if (target.type === 'queen') {
+      genus = 'GENUS : REINE GESTANTE MATRIARCH';
+      weakpoint = 'FAIBLESSE : SAC D\'INOCULATION & ÉCUSSON CERVICAL';
+      threat = 'EXTRÊME / NIVEAU OMEGA';
+    } else if (target.type === 'praetorian') {
+      genus = 'GENUS : GARDE ROYALE PRAETORIEN';
+      weakpoint = 'FAIBLESSE : TUBES RESPIRATOIRES DORSAL';
+      threat = 'LÉTALE';
+    } else if (target.type === 'crusher') {
+      genus = 'GENUS : BROYEUR BLINDÉ (CRUSHER)';
+      weakpoint = 'FAIBLESSE : FLANC & ARTICULATIONS POSTÉRIEURES';
+      threat = 'MAXIMALE';
+    } else if (target.type === 'facehugger') {
+      genus = 'GENUS : ARACHNIDE PARASITE (FACEHUGGER)';
+      weakpoint = 'FAIBLESSE : CORPUS EMBRYONNAIRE VITAL';
+      threat = 'IMMÉDIATE';
+    } else if (target.type === 'grid_alien') {
+      genus = 'GENUS : ALIEN BALAFRÉ (GRID CELTIC NEMESIS)';
+      weakpoint = 'FAIBLESSE : CICATRICES CARAPACE (BRÈCHES FIBREUSES)';
+      threat = 'APEX';
+    } else if (target.type === 'spitter') {
+      genus = 'GENUS : CRACHEUR D\'ACIDE SPITTER';
+      weakpoint = 'FAIBLESSE : POCHES GASTRIQUES ACIDIFIÉES';
+      threat = 'DISTANCE HAUTE';
+    } else if (target.type === 'red_warrior') {
+      genus = 'GENUS : GUERRIER KAINDE AMEDHA ÉCARLATE';
+      weakpoint = 'FAIBLESSE : ÉCORCE CHITINEUSE CHAUFFÉE';
+      threat = 'FRENZY';
+    } else if (target.isMarvelAlpha || target.type === 'marvel_alpha') {
+      genus = 'GENUS : ALPHA EPSILON APEX (MARVEL CANON)';
+      weakpoint = 'FAIBLESSE : FAUX DORSALES & ÉPINE CENTRALE';
+      threat = 'COMMANDEMENT / APEX CRITIQUE';
+    } else if (target.type === 'cryo_xeno') {
+      genus = 'GENUS : XÉNOMORPHE CRYO-SUBZÉRO (LV-695)';
+      weakpoint = 'FAIBLESSE : CRISTAUX DE GIVRE (VULNÉRABLE AU PLASMA)';
+      threat = 'GLACIALE / RALENTISSEMENT';
+    } else if (target.type === 'cyber_xeno') {
+      genus = 'GENUS : CYBORG XÉNOMORPHE STEEL TEAM (W-Y ICARUS)';
+      weakpoint = 'FAIBLESSE : HARNAIS TITANE & DIODE OPTIQUE';
+      threat = 'BALISTIQUE / ARTIFICIELLE';
+    }
+
+    const dist = player && player.position ? player.position.distanceTo(target.mesh.position).toFixed(1) : '12.0';
+
+    const genusElem = document.getElementById('hud-telemetry-genus');
+    const statsElem = document.getElementById('hud-telemetry-stats');
+    const weakpointElem = document.getElementById('hud-telemetry-weakpoint');
+
+    if (genusElem) genusElem.innerText = genus;
+    if (statsElem) statsElem.innerText = `DISTANCE : ${dist}M | MENACE : ${threat}`;
+    if (weakpointElem) weakpointElem.innerText = weakpoint;
+  }
+
+  /* Chantier 3: Trax-Net Micro-Beacon Dart Gun Wall-Penetrating Tracker HUD */
+  updateTraxNetTelemetry(taggedTargets, camera, player) {
+    const container = document.getElementById('trax-net-container');
+    if (!container) return;
+
+    if (!taggedTargets || taggedTargets.length === 0 || !camera) {
+      container.innerHTML = '';
+      return;
+    }
+
+    let html = '';
+    taggedTargets.forEach(target => {
+      if (!target || !target.mesh || target.hp <= 0) return;
+      const pos = target.mesh.position.clone();
+      pos.y += (target.height || 1.5) * 0.5;
+
+      const projected = pos.clone().project(camera);
+      if (projected.z > 1.0) return; // Behind camera
+
+      const screenX = (projected.x * 0.5 + 0.5) * window.innerWidth;
+      const screenY = (-(projected.y * 0.5) + 0.5) * window.innerHeight;
+      const dist = player && player.position ? player.position.distanceTo(target.mesh.position).toFixed(1) : '10.0';
+      const timeLeft = target.traxTimer ? target.traxTimer.toFixed(1) : '20.0';
+
+      html += `
+        <div class="trax-net-bracket" style="left: ${screenX}px; top: ${screenY}px;">
+          <div class="trax-net-diamond"></div>
+          <div class="trax-net-tag">
+            <span class="trax-title">🎯 TRAX-NET // ${timeLeft}s</span>
+            <span class="trax-meta">${dist}m | VULNÉRABILITÉ +25%</span>
+          </div>
+        </div>
+      `;
+    });
+    container.innerHTML = html;
+  }
+
+  /* Chantier 5: Sentry Gun Reload & Calibration Proximity Prompt */
+  updateSentryProximityPrompt(isNear, sentry) {
+    const promptElem = document.getElementById('sentry-proximity-prompt');
+    if (!promptElem) return;
+    if (isNear && sentry && sentry.isDeployed) {
+      promptElem.classList.remove('hidden');
+      const ammoElem = document.getElementById('sentry-prompt-ammo');
+      if (ammoElem) ammoElem.innerText = `${sentry.ammo} / ${sentry.maxAmmo || 500} RDS`;
+    } else {
+      promptElem.classList.add('hidden');
+    }
+  }
+
+  /* Chantier 3 (v43): Smart-Disc Remote Laser Guidance HUD */
+  updateSmartDiscGuidance(isGuiding) {
+    const hud = document.getElementById('smartdisc-guidance-hud');
+    if (!hud) return;
+    if (isGuiding) {
+      hud.classList.remove('hidden');
+    } else {
+      hud.classList.add('hidden');
+    }
+  }
+
+  /* Chantier 4 (v43): Fallen Marine Scavenge Proximity Prompt */
+  updateMarineScavengePrompt(isNear, marine) {
+    const prompt = document.getElementById('marine-scavenge-prompt');
+    if (!prompt) return;
+    if (isNear && marine && !marine.isScavenged) {
+      prompt.classList.remove('hidden');
+    } else {
+      prompt.classList.add('hidden');
+    }
+  }
+
+  /* === CHANTIER 1 (v46): USCM M56 Smartgun Turret Proximity & Mount Prompt === */
+  updateSmartgunPrompt(isNear, isMounted, smartgun) {
+    const prompt = document.getElementById('smartgun-turret-prompt');
+    if (!prompt) return;
+    if (isNear || isMounted) {
+      prompt.classList.remove('hidden');
+      const textElem = prompt.querySelector('.smartgun-text');
+      if (textElem && smartgun) {
+        textElem.innerText = isMounted
+          ? `TOURELLE M56 ACTIVE // [CLIC GAUCHE] TIRER (${smartgun.ammo}/${smartgun.maxAmmo} RDS) | [E] DÉMONTER`
+          : `MONTER LA TOURELLE M56 SMARTGUN (${smartgun.ammo}/${smartgun.maxAmmo} RDS)`;
+      }
+    } else {
+      prompt.classList.add('hidden');
+    }
+  }
+
+  /* === CHANTIER 9 (v46): USCM Cargo Crane Operator Console Prompt === */
+  updateCargoCranePrompt(isNear, craneConsole) {
+    const prompt = document.getElementById('cargo-crane-prompt');
+    if (!prompt) return;
+    if (isNear && craneConsole && !craneConsole.isUsed) {
+      prompt.classList.remove('hidden');
+    } else {
+      prompt.classList.add('hidden');
+    }
+  }
+
+  /* === CHANTIER 2 (v46): Derelict LV-426 Low Gravity & Laser Mist HUD Banner === */
+  updateDerelictHud(isInside) {
+    const banner = document.getElementById('derelict-atmosphere-hud');
+    if (!banner) return;
+    if (isInside) {
+      banner.classList.remove('hidden');
+    } else {
+      banner.classList.add('hidden');
+    }
+  }
+
+  /* === CHANTIER 6 (v47): Weyland-Yutani Atmospheric Cooling Tower Cryo-Vent Purge Prompt === */
+  updateCryoVentPrompt(isNear, cryoVent) {
+    const prompt = document.getElementById('cryo-vent-prompt');
+    if (!prompt) return;
+    if (isNear && cryoVent) {
+      prompt.classList.remove('hidden');
+      const textElem = prompt.querySelector('.cryo-vent-text');
+      if (textElem) {
+        if (cryoVent.cooldown > 0) {
+          textElem.innerText = `PURGE EN RECHARGE CRYOGÉNIQUE (${Math.ceil(cryoVent.cooldown)}S)`;
+          prompt.style.borderColor = '#64748b';
+        } else {
+          textElem.innerText = `[E] PURGE D'AZOTE LIQUIDE (ZONE 18M, SHATTER X3)`;
+          prompt.style.borderColor = '#38bdf8';
+        }
+      }
+    } else {
+      prompt.classList.add('hidden');
+    }
+  }
+
+  /* === CHANTIER 4 (v48): Fiorina 161 Molten Lead Foundry Valve Prompt === */
+  updateFoundryValvePrompt(isNear, foundry) {
+    const prompt = document.getElementById('foundry-valve-prompt');
+    if (!prompt) return;
+    if (isNear && foundry) {
+      prompt.classList.remove('hidden');
+      const textElem = prompt.querySelector('.foundry-valve-text');
+      if (textElem) {
+        if (foundry.isPouring) {
+          textElem.innerText = `COULÉE EN COURS : 12 TONNES DE PLOMB 1200°C (${Math.ceil(foundry.pourTimer)}S)`;
+          prompt.style.borderColor = '#ff5500';
+        } else if (foundry.cooldown > 0) {
+          textElem.innerText = `CREUSET EN RECHARGE THERMIQUE (${Math.ceil(foundry.cooldown)}S)`;
+          prompt.style.borderColor = '#64748b';
+        } else {
+          textElem.innerText = `[E] DÉVERSER 12 TONNES DE PLOMB EN FUSION 1200°C (CANAL 14M, 280 DÉGÂTS/S)`;
+          prompt.style.borderColor = '#f97316';
+        }
+      }
+    } else {
+      prompt.classList.add('hidden');
+    }
+  }
+
+  /* === QA AUDIT #2 (Elena - Diegetic Yautja Immersion): Wrist Gauntlet Telemetry HUD === */
+  updateDiegeticWristTelemetry(player, env, isEndless = false) {
+    const hud = document.getElementById('diegetic-wrist-gauntlet-hud');
+    if (!hud || !player) return;
+
+    const maskElem = document.getElementById('wrist-mask-name');
+    if (maskElem) {
+      maskElem.innerText = player.bioMaskName || 'JUNGLE HUNTER (1987)';
+    }
+
+    const blessingElem = document.getElementById('wrist-blessing-tag');
+    if (blessingElem) {
+      if (env && env.ancientShrine && env.ancientShrine.blessingActive) {
+        const names = ["KOS'KANTI (ENERGIE)", "FUREUR PAYA (+50% DMG)", "SOUFFLE CETANU (AURA)"];
+        const bName = names[env.ancientShrine.blessingIndex] || 'ACTIVE';
+        blessingElem.innerText = `${bName} (${Math.ceil(env.ancientShrine.blessingTimer)}S)`;
+        blessingElem.style.color = '#38bdf8';
+      } else {
+        blessingElem.innerText = 'AUCUNE BÉNÉDICTION';
+        blessingElem.style.color = '#64748b';
+      }
+    }
+
+    const glyphsElem = document.getElementById('wrist-matrix-glyphs');
+    if (glyphsElem) {
+      // Yautja red countdown matrix glyph sequence (Predator 1987 Wrist Computer Lore)
+      const glyphChars = ['⋈','⋉','⋊','⋐','⋑','⋒','⋓','⋔','⋕','⋖','⋗','⟢','⟣','⟤','⟥'];
+      const tick = Math.floor(Date.now() / 140);
+      const g1 = glyphChars[tick % glyphChars.length];
+      const g2 = glyphChars[(tick + 3) % glyphChars.length];
+      const g3 = glyphChars[(tick + 7) % glyphChars.length];
+      const g4 = glyphChars[(tick + 11) % glyphChars.length];
+      glyphsElem.innerText = `${g1} ${g2} : ${g3} ${g4}`;
+    }
+
+    const ammoGauss = document.getElementById('wrist-ammo-gauss');
+    if (ammoGauss) ammoGauss.innerText = `M77: ${player.m77GaussAmmo ?? 12}/12`;
+
+    const ammoBolt = document.getElementById('wrist-ammo-bolt');
+    if (ammoBolt) ammoBolt.innerText = `BOLT: ${player.seegsonBoltAmmo ?? 10}/10`;
+
+    const ammoGrenade = document.getElementById('wrist-ammo-grenades');
+    if (ammoGrenade) ammoGrenade.innerText = `HEDP: ${player.m41aGrenadeCharges ?? 4}/6`;
   }
 }

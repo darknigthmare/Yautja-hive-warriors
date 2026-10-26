@@ -1,7 +1,10 @@
 /* Allied Yautja Honor Guard AI Squad Manager */
 
 import * as THREE from 'three';
+import { applyBattleUnit, despawnBattleActor, selectBattleTarget, battleHostile, moveBattleOrder, requestNPCStrike, maintainBattleFormation } from '../engine/BattleActorSupport.js';
+import { recordCombatDeath } from '../engine/CombatEvents.js';
 import { createHonorGuardModel } from '../graphics/SupportModels.js';
+import { releaseHostileAttack, requestHostileAttack } from '../engine/HostilePressure.js';
 import { disposeObject } from '../engine/SceneResources.js';
 
 export class YautjaAlliesManager {
@@ -10,6 +13,7 @@ export class YautjaAlliesManager {
     this.audioEngine = audioEngine;
     this.allies = [];
   }
+
 
   spawnSquad(playerPos, count = 3) {
     this.clearSquad();
@@ -23,66 +27,68 @@ export class YautjaAlliesManager {
     }
   }
 
+
   clearSquad() {
     this.allies.forEach(a => disposeObject(a.mesh));
     this.allies = [];
   }
 
+
   update(delta, playerPos, horde) {
-    for (let i = this.allies.length - 1; i >= 0; i--) {
-      const ally = this.allies[i];
-      const allyPos = ally.mesh.position;
-
-      // Find nearest Xenomorph
-      let nearestXeno = null;
-      let minDistance = 25;
-
-      horde.aliens.forEach(xeno => {
-        const dist = allyPos.distanceTo(xeno.mesh.position);
-        if (dist < minDistance) {
-          minDistance = dist;
-          nearestXeno = xeno;
-        }
-      });
-
-      if (nearestXeno) {
-        const dir = nearestXeno.mesh.position.clone().sub(allyPos);
-        dir.y = 0;
-        const dist = dir.length();
-
-        // Shoulder Plasma Caster Fire (medium range 6m - 20m)
-        ally.plasmaCooldown -= delta;
-        if (ally.plasmaCooldown <= 0 && dist >= 6.0 && dist <= 22.0) {
-          ally.plasmaCooldown = 4.0;
-          this.audioEngine.playPlasmaShot();
-          nearestXeno.hp -= 160;
-          if (Math.random() < 0.3) this.audioEngine.playYautjaClick();
-        }
-
-        if (dist > 2.2) {
-          dir.normalize();
-          allyPos.addScaledVector(dir, ally.moveSpeed * delta);
-          ally.mesh.rotation.y = Math.atan2(dir.x, dir.z);
-        } else {
-          // Melee attack nearest xeno with wristblades
-          ally.attackTimer -= delta;
-          if (ally.attackTimer <= 0) {
-            ally.attackTimer = 0.85;
-            nearestXeno.hp -= ally.damage;
-            this.audioEngine.playSlash();
-            if (Math.random() < 0.25) this.audioEngine.playYautjaRoar();
-          }
-        }
-      } else {
-        // Follow Player Formation
-        const dir = playerPos.clone().sub(allyPos);
-        dir.y = 0;
-        if (dir.length() > 6.0) {
-          dir.normalize();
-          allyPos.addScaledVector(dir, ally.moveSpeed * delta);
-          ally.mesh.rotation.y = Math.atan2(dir.x, dir.z);
-        }
+    if (!Number.isFinite(delta) || delta <= 0) return;
+    for (const ally of [...this.allies]) {
+      if (ally.hp <= 0) { this.defeatCombatant(ally, { cause: 'combat', killerFaction: ally.lastDamageFaction }); continue; }
+      if(maintainBattleFormation(this,ally,delta,ally.moveSpeed))continue;
+      let target = null;
+      if (ally.battleUnitId && this.battleSimulation) target = selectBattleTarget(this, ally, [], horde?.getActiveCombatants?.() ?? horde?.aliens ?? []);
+      else {
+        const nearest = (horde?.aliens ?? []).filter(actor => actor.hp > 0 && actor.mesh.position.distanceTo(ally.mesh.position) < 25).sort((a,b) => a.mesh.position.distanceToSquared(ally.mesh.position) - b.mesh.position.distanceToSquared(ally.mesh.position))[0];
+        if (nearest) target = selectBattleTarget(this, ally, [], [nearest]);
       }
+      if (!target) {
+        if (ally.battleUnitId) { moveBattleOrder(this, ally, delta, ally.moveSpeed); continue; }
+        const direction = playerPos.clone().sub(ally.mesh.position).setY(0), distance = direction.length();
+        if (distance > 6) { ally.mesh.position.addScaledVector(direction.normalize(), Math.min(ally.moveSpeed * delta, distance - 6)); this.environment?.resolveAgentMovement?.(ally.mesh.position, playerPos, ally.moveSpeed * delta, ally.radius); }
+        continue;
+      }
+      const direction = target.position.clone().sub(ally.mesh.position).setY(0), distance = direction.length();
+      if (this.environment?.hasLineOfSight && !this.environment.hasLineOfSight(ally.mesh.position.clone().add(new THREE.Vector3(0,1.8,0)), target.position.clone().add(new THREE.Vector3(0,1.5,0)))) {
+        releaseHostileAttack(this, ally); ally._npcPreparation = 0;
+        if (distance > .1) ally.mesh.position.addScaledVector(direction.normalize(), Math.min(ally.moveSpeed * delta, distance));
+        this.environment.resolveAgentMovement?.(ally.mesh.position, target.position, ally.moveSpeed * delta, ally.radius); continue;
+      }
+      ally.attackTimer = Math.max(0, ally.attackTimer - delta); ally.plasmaCooldown = Math.max(0, ally.plasmaCooldown - delta);
+      ally.mesh.rotation.y = Math.atan2(direction.x, direction.z);
+      const ranged = ally.companionAllowsPlasma!==false && distance >= 6 && distance <= 22 && ally.plasmaCooldown <= 0;
+      if (distance > 2.2 && !ranged) { const step = Math.min(ally.moveSpeed * delta, distance - 2.2); ally.mesh.position.addScaledVector(direction.normalize(), step); this.environment?.resolveAgentMovement?.(ally.mesh.position, target.position, step, ally.radius); }
+      if (!ranged && (distance > 3 || ally.attackTimer > 0)) continue;
+      const granted = target.isBattleNPC ? requestNPCStrike(ally, target, delta, { windup: .65, recovery: 1.1 })
+        : requestHostileAttack(this, ally, target, delta, { kind: ranged ? 'ranged' : 'melee', windup: ranged ? 1.1 : .85, recovery: 1.6, duration: .35 });
+      if (!granted) continue;
+      if (ranged) { ally.plasmaCooldown = 4; this.audioEngine?.playPlasmaShot?.(); }
+      else { ally.attackTimer = .95; this.audioEngine?.playSlash?.(); }
+      target.takeDamage(ranged ? 60 : ally.damage, false, ally, { attackKind: ranged ? 'plasma' : 'melee', blockable: !ranged, parryable: !ranged });
     }
   }
+
+  spawnBattleUnit(unit, group) {
+    const existing = this.allies.find(actor => actor.battleUnitId === unit.id); if (existing) return existing;
+    if (!['yautja','honor_guard','clan_hunter','bad_blood'].includes(unit.actorType)) throw new RangeError(`Unsupported detailed clan profile: ${unit.actorType}`);
+    const actor = { mesh: createHonorGuardModel(this.allies.length), type: unit.actorType === 'bad_blood' ? 'bad_blood' : 'clan_hunter', moveSpeed: 12,
+      damage: 55, radius: 1.3, attackTimer: 1, plasmaCooldown: 3 };
+    this.allies.push(applyBattleUnit(this, actor, unit, group)); return actor;
+  }
+
+  despawnBattleUnit(unitOrId) { return despawnBattleActor(this, this.allies, unitOrId); }
+
+
+
+  defeatCombatant(actor, details = {}) {
+    if (!actor) return null;
+    const event = recordCombatDeath(this, actor, { kind: actor.type ?? 'yautja', ...details });
+    actor.hp = 0; releaseHostileAttack(this, actor); const index = this.allies.indexOf(actor); if (index >= 0) this.allies.splice(index, 1);
+    if (!actor._combatDisposed) { disposeObject(actor.mesh, this.sharedResources); actor._combatDisposed = true; } if (event) this.onDefeated?.(event); return event;
+  }
+
+
 }

@@ -1,6 +1,8 @@
 /* Colonial Marines USCM support against the hive. */
 
 import * as THREE from 'three';
+import { applyBattleUnit, despawnBattleActor, selectBattleTarget, battleHostile, moveBattleOrder, requestNPCStrike, maintainBattleFormation } from '../engine/BattleActorSupport.js';
+import { recordCombatDeath } from '../engine/CombatEvents.js';
 import { createMarineModel, addSentryMechanicalDetails } from '../graphics/SupportModels.js';
 import { disposeObject } from '../engine/SceneResources.js';
 import { selectHostileTarget, requestHostileAttack, syncHostileWarning, releaseHostileAttack } from '../engine/HostilePressure.js';
@@ -11,8 +13,10 @@ export class ColonialMarinesManager {
     this.audioEngine = audioEngine;
     this.marines = [];
     this.sentryGun = null;
+    this.distressBeacon = null; this.beaconTriggered = false; this.airSupportPending = false; this.airSupportTimer = 0; this.strafeCenter = null;
     this.hostileToPlayers = false; // USCM support fights the hive, then holds cover.
   }
+
 
   spawnSquad(playerPos, count = 4) {
     this.clearSquad();
@@ -43,99 +47,56 @@ export class ColonialMarinesManager {
     }
   }
 
+
   createMarineMesh(isSmartgunner) {
     return createMarineModel(isSmartgunner);
   }
 
+
   update(delta, player, horde) {
-    this.marines.forEach(m => {
-      if (m.hp <= 0) { releaseHostileAttack(this, m); return; }
-      const targetPlayer = selectHostileTarget(this, m.mesh.position, player);
-      let targetPos = null, nearestDist = Infinity;
-      for (const alien of horde.aliens) {
-        if (alien.hp <= 0) continue;
-        const distance = m.mesh.position.distanceTo(alien.mesh.position);
-        if (distance < nearestDist) { nearestDist = distance; targetPos = alien.mesh.position; }
+    if (!Number.isFinite(delta) || delta <= 0) return;
+    this.time = (this.time ?? 0) + delta;
+    if (this.distressBeacon) { this.distressBeacon.life -= delta; if (this.distressBeacon.life <= 0) { disposeObject(this.distressBeacon.mesh); this.distressBeacon = null; } }
+    if (this.airSupportPending) { this.airSupportTimer -= delta; if (this.airSupportTimer <= 0) { this.airSupportPending = false; if (horde) horde.checkMeleeHits({ origin: this.strafeCenter, radius: 7, damage: 180, type: 'gunship', killerFaction: this.factionId ?? 'uscm' }); } }
+    for (const m of [...this.marines]) {
+      if (m.hp <= 0) { this.defeatCombatant(m, { cause: 'combat', killerFaction: m.lastDamageFaction }); continue; }
+      if(maintainBattleFormation(this,m,delta,m.speed))continue;
+      if (m.isFacehuggerLatched) { m.facehuggerHold -= delta; if (m.facehuggerHold > 0) continue; m.isFacehuggerLatched = false; }
+      let targetPlayer = null, targetPos = null, target = null, targetsPlayer = false;
+      if (m.battleUnitId && this.battleSimulation) {
+        target = selectBattleTarget(this, m, player, horde?.getActiveCombatants?.() ?? horde?.aliens ?? []);
+        if (!target) { releaseHostileAttack(this, m); moveBattleOrder(this, m, delta, m.speed); continue; }
+        targetPos = target.position; targetsPlayer = !target.isBattleNPC; targetPlayer = target;
+      } else {
+        targetPlayer = selectHostileTarget(this, m.mesh.position, player);
+        let nearestDist = Infinity;
+        for (const alien of horde?.aliens ?? []) { if (alien.hp <= 0) continue; const distance = m.mesh.position.distanceTo(alien.mesh.position); if (distance < nearestDist) { nearestDist = distance; target = alien; targetPos = alien.mesh.position; } }
+        targetsPlayer = !targetPos;
+        if (targetsPlayer) { if (!this.hostileToPlayers || !targetPlayer || targetPlayer.hp <= 0) { releaseHostileAttack(this, m); continue; } targetPos = targetPlayer.position; target = targetPlayer; }
       }
-      const targetsPlayer = !targetPos;
-      if (targetsPlayer) {
-        if (!this.hostileToPlayers) { releaseHostileAttack(this, m); m.pressureAction = null; return; }
-        if (!targetPlayer || targetPlayer.hp <= 0) { releaseHostileAttack(this, m); return; }
-        targetPos = targetPlayer.position;
-      } else if (m.pressureAction) {
-        releaseHostileAttack(this, m); m.pressureAction = null;
-      }
-      m.shootCooldown = Math.max(0, (m.shootCooldown ?? 1.4) - delta);
-      m.grenadeCooldown = Math.max(0, (m.grenadeCooldown ?? 7) - delta);
-      const dir = targetPos.clone().sub(m.mesh.position); dir.y = 0;
-      const distance = dir.length();
-      m.mesh.rotation.y = Math.atan2(dir.x, dir.z);
-      const stopDistance = targetsPlayer ? 10 : 6;
-      if (distance > stopDistance) {
-        m.mesh.position.addScaledVector(dir.normalize(), Math.min(m.speed * delta, distance - stopDistance));
-      }
-      if (distance > (targetsPlayer ? 18 : 9)) {
-        if (m.pressureAction) { releaseHostileAttack(this, m); m.pressureAction = null; }
-        return;
-      }
-      if (!m.pressureAction) {
-        if (m.grenadeCooldown <= 0) m.pressureAction = 'grenade';
-        else if (m.shootCooldown <= 0) m.pressureAction = 'shot';
-      }
-      if (m.pressureAction) {
-        const grenade = m.pressureAction === 'grenade';
-        const ready = !targetsPlayer || requestHostileAttack(this, m, targetPlayer, delta, {
-          kind: 'ranged', windup: grenade ? 1.15 : 0.8, recovery: grenade ? 2.5 : 1.5, duration: 0.3
-        });
-        if (ready) {
-          if (grenade) {
-            m.grenadeCooldown = 8.5;
-            this.audioEngine.playM40GrenadeBlast();
-            horde.checkMeleeHits({ origin: targetPos, radius: 6.5, damage: 160 });
-            if (targetsPlayer) targetPlayer.takeDamage(30);
-          } else {
-            m.shootCooldown = m.type === 'flametrooper' ? 1.65 : 1.45;
-            if (m.type === 'flametrooper') (this.audioEngine.playFlamethrowerBurn ?? this.audioEngine.playAcidSizzle)?.call(this.audioEngine);
-            else (this.audioEngine.playPulseRifleBurst ?? this.audioEngine.playPlasmaShot)?.call(this.audioEngine);
-            if (targetsPlayer) targetPlayer.takeDamage(m.type === 'flametrooper' ? 12 : 9);
-            else for (const alien of horde.aliens) {
-              if (alien.mesh.position.distanceTo(targetPos) <= (m.type === 'flametrooper' ? 4 : 2.5)) alien.hp -= m.type === 'flametrooper' ? m.damage * 1.2 : m.damage;
-            }
-          }
-          m.pressureAction = null;
-        }
-      }
+      m.shootCooldown = Math.max(0, (m.shootCooldown ?? 1.4) - delta); m.grenadeCooldown = Math.max(0, (m.grenadeCooldown ?? 7) - delta);
+      const direction = targetPos.clone().sub(m.mesh.position).setY(0), distance = direction.length(); m.mesh.rotation.y = Math.atan2(direction.x, direction.z);
+      const range = m.type === 'flametrooper' ? 5 : 20, stopping = m.type === 'flametrooper' ? 3.5 : 12;
+      const covered = this.environment?.hasLineOfSight && !this.environment.hasLineOfSight(m.mesh.position.clone().add(new THREE.Vector3(0, 2, 0)), targetPos.clone().add(new THREE.Vector3(0, 1.6, 0)));
+      if (distance > stopping || covered) { const step = covered ? m.speed * delta : Math.min(m.speed * delta, distance - stopping); m.mesh.position.addScaledVector(direction.normalize(), step); this.environment?.resolveAgentMovement?.(m.mesh.position, targetPos, step, .8); }
+      if (covered || distance > range) { releaseHostileAttack(this, m); m.pressureAction = null; continue; }
+      if (m.shootCooldown > 0) continue;
+      const granted = targetsPlayer ? requestHostileAttack(this, m, targetPlayer, delta, { kind: 'ranged', windup: .8, recovery: 1.5, duration: .3 })
+        : !target.isBattleNPC || requestNPCStrike(m, target, delta, { windup: .6, recovery: 1.45 });
+      if (!granted) { if (targetsPlayer) syncHostileWarning(this, m); continue; }
+      m.shootCooldown = m.type === 'flametrooper' ? 1.65 : 1.45;
+      if (m.type === 'flametrooper') (this.audioEngine.playFlamethrowerBurn ?? this.audioEngine.playAcidSizzle)?.call(this.audioEngine);
+      else (this.audioEngine.playPulseRifleBurst ?? this.audioEngine.playPlasmaShot)?.call(this.audioEngine);
+      if (targetsPlayer) targetPlayer.takeDamage(m.type === 'flametrooper' ? 12 : 9, m.type === 'flametrooper', m, { attackKind: m.type === 'flametrooper' ? 'fire' : 'ballistic', blockable: false, parryable: false });
+      else if (target.isBattleNPC) target.takeDamage(m.damage);
+      else { target.hp -= m.damage; if (target.hp <= 0) horde.defeatAlien?.(target, { cause: m.type, killerFaction: m.factionId ?? 'uscm' }); }
       syncHostileWarning(this, m);
-    });
-
-    // Update USCM UA 571-C Sentry Gun Autonomous Target Scanning & Firing
-    if (this.sentryGun && this.sentryGun.ammo > 0) {
-      let nearestTarget = null;
-      let nearestDist = Infinity;
-
-      horde.aliens.forEach(a => {
-        const d = this.sentryGun.mesh.position.distanceTo(a.mesh.position);
-        if (d < nearestDist && d <= this.sentryGun.range) {
-          nearestDist = d;
-          nearestTarget = a;
-        }
-      });
-
-      if (nearestTarget) {
-        const dir = nearestTarget.mesh.position.clone().sub(this.sentryGun.mesh.position);
-        dir.y = 0;
-        this.sentryGun.mesh.rotation.y = Math.atan2(dir.x, dir.z);
-
-        this.sentryGun.fireCooldown -= delta;
-        if (this.sentryGun.fireCooldown <= 0) {
-          this.sentryGun.fireCooldown = 0.35; // 4-shot burst every 0.35s
-          this.sentryGun.ammo -= 4;
-          this.audioEngine.playSentryGunBurst();
-
-          // Sentry bullets deal rapid kinetic damage to target
-          nearestTarget.hp -= this.sentryGun.damage * 4;
-        }
-      }
+    }
+    if (this.sentryGun?.ammo > 0) {
+      const target = (horde?.aliens ?? []).filter(a => a.hp > 0 && this.sentryGun.mesh.position.distanceTo(a.mesh.position) <= this.sentryGun.range).sort((a,b) => this.sentryGun.mesh.position.distanceToSquared(a.mesh.position) - this.sentryGun.mesh.position.distanceToSquared(b.mesh.position))[0];
+      this.sentryGun.fireCooldown = Math.max(0, this.sentryGun.fireCooldown - delta);
+      const clear = target && (!this.environment?.hasLineOfSight || this.environment.hasLineOfSight(this.sentryGun.mesh.position.clone().add(new THREE.Vector3(0,1.2,0)), target.mesh.position.clone().add(new THREE.Vector3(0,1.6,0))));
+      if (clear && this.sentryGun.fireCooldown <= 0) { this.sentryGun.fireCooldown = .35; const rounds = Math.min(4, this.sentryGun.ammo); this.sentryGun.ammo -= rounds; target.hp -= this.sentryGun.damage * rounds; this.audioEngine?.playSentryGunBurst?.(); if (target.hp <= 0) horde.defeatAlien?.(target, { cause: 'sentry', killerFaction: this.factionId ?? 'uscm' }); }
     }
   }
 
@@ -155,6 +116,7 @@ export class ColonialMarinesManager {
       damage: 18
     };
   }
+
 
   createSentryGunMesh() {
     const group = new THREE.Group();
@@ -201,7 +163,9 @@ export class ColonialMarinesManager {
     return group;
   }
 
+
   clearSquad() {
+    if (this.distressBeacon) disposeObject(this.distressBeacon.mesh); this.distressBeacon = null; this.airSupportPending = false; this.beaconTriggered = false;
     this.marines.forEach(m => { releaseHostileAttack(this, m); disposeObject(m.mesh); });
     this.marines = [];
     if (this.sentryGun) {
@@ -209,4 +173,40 @@ export class ColonialMarinesManager {
       this.sentryGun = null;
     }
   }
+  deployDistressBeacon(position) {
+    if (!position?.isVector3 || this.beaconTriggered) return false;
+    this.beaconTriggered = true;
+    const mesh = new THREE.Mesh(new THREE.CylinderGeometry(.18, .24, .6, 12), new THREE.MeshStandardMaterial({ color: 0x2b4434, roughness: .6 }));
+    mesh.position.copy(position).setY(.3); this.scene.add(mesh); this.distressBeacon = { mesh, life: 12 };
+    this.audioEngine?.playDistressBeaconPing?.();
+    return true;
+  }
+
+  triggerGunshipStrafe(position) {
+    if (!position?.isVector3 || this.airSupportPending) return false;
+    this.strafeCenter = position.clone(); this.airSupportTimer = 2.5; this.airSupportPending = true;
+    this.audioEngine?.playCheyenneFlyby?.(); return true;
+  }
+
+  spawnBattleUnit(unit, group) {
+    const existing = this.marines.find(actor => actor.battleUnitId === unit.id); if (existing) return existing;
+    if (!['marine','human','smartgunner','flametrooper'].includes(unit.actorType)) throw new RangeError(`Unsupported detailed human profile: ${unit.actorType}`);
+    const heavy = unit.actorType === 'flametrooper';
+    const actor = { mesh: this.createMarineMesh(!heavy), type: heavy ? 'flametrooper' : 'smartgunner', damage: heavy ? 35 : 20, speed: 8,
+      radius: .8, shootCooldown: 1.5, grenadeCooldown: 7 };
+    this.marines.push(applyBattleUnit(this, actor, unit, group)); return actor;
+  }
+
+  despawnBattleUnit(unitOrId) { return despawnBattleActor(this, this.marines, unitOrId); }
+
+
+
+  defeatCombatant(actor, details = {}) {
+    if (!actor) return null;
+    const event = recordCombatDeath(this, actor, { kind: actor.type ?? 'marine', ...details });
+    actor.hp = 0; releaseHostileAttack(this, actor); const index = this.marines.indexOf(actor); if (index >= 0) this.marines.splice(index, 1);
+    if (!actor._combatDisposed) { disposeObject(actor.mesh, this.sharedResources); actor._combatDisposed = true; } if (event) this.onDefeated?.(event); return event;
+  }
+
+
 }

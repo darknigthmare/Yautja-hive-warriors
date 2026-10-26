@@ -105,7 +105,7 @@ test('boss embryo volley cannot apply three stacked hits to one player in one fr
   const manager = new Boss(new THREE.Scene(), audio), p = player(), enemies = horde();
   manager.spawnBoss('predalien_queen', new THREE.Vector3(20, 0, 0)); manager.regurgitateChestbursters(p, enemies);
   for (const projectile of manager.embryoProjectiles) { projectile.mesh.position.copy(p.position); projectile.velocity.set(0, 0, 0); }
-  manager.update(0, p, enemies);
+  manager.update(1 / 60, p, enemies);
   assert.deepEqual(p.hits, [60]);
   manager.clear();
 });
@@ -114,7 +114,7 @@ test('preparation warning stays on the visible combat plane for scaled and verti
   const manager = new Synthetics(new THREE.Scene(), audio), director = new CombatDirector({ graceSeconds: 0 });
   manager.combatDirector = director; manager.spawnSquad(new THREE.Vector3(), 1);
   const syn = manager.androids[0]; syn.mesh.position.set(0, 0.2, 0); syn.mesh.scale.setScalar(2); syn.shootCooldown = 0;
-  const p = player(new THREE.Vector3(1, 0, 0)); director.update(0, [p]); manager.update(0, p, horde());
+  const p = player(new THREE.Vector3(1, 0, 0)); director.update(1 / 60, [p]); manager.update(1 / 60, p, horde());
   const warning = syn.attackWarning; assert.ok(warning?.visible);
   assert.ok(Math.abs(warning.getWorldPosition(new THREE.Vector3()).y - 0.035) < 1e-8);
   manager.clearSquad(); assert.equal(director.attacks.size, 0);

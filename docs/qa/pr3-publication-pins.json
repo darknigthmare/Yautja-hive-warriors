@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "status": "unfrozen",
+  "sourceCommit": null,
+  "sourceFingerprint": null,
+  "indexSha256": null,
+  "buildInfoSha256": null,
+  "previousPublicIndexSha256": "cb19eded36c19e20a5c50b94daad56d1d8550cf1c9ddff08df6d0167d7a03910",
+  "artifactManifestSha256": null,
+  "outputConfigSha256": null,
+  "projectLinkSha256": null,
+  "qaReportSha256": null,
+  "cpuPassed": null,
+  "browserRegressionPassed": null,
+  "expectedRuntimeChecks": [],
+  "origin": "https://yautja-hive-warriors.vercel.app",
+  "qaDirectory": "/workspace/qa/pr3-20261026",
+  "stageDirectory": "/workspace/qa/pr3-20261026/vercel-static-prebuilt",
+  "cliWrapper": "/workspace/qa/pr3-20261026/vercel-cli.sh",
+  "qaReport": "docs/qa/pr3-validation.json"
+}

@@ -77,7 +77,11 @@ test('each alien targets the nearest living cooperative player', () => {
   const p2 = fighter(new THREE.Vector3(0.5, 0, 0));
   horde.update(0.1, p1, p2);
   assert.equal(p1.hp, 1000);
-  assert.equal(p2.hp, 997.5);
+  assert.equal(p2.hp, 1000, 'a nearby cooperative target receives the full preparation window');
+  for(let frame=0;frame<5;frame++)horde.update(.1,p1,p2);
+  assert.equal(p2.hp,1000,'there is no damage before the .7-second windup');
+  horde.update(.1,p1,p2);
+  assert.equal(p1.hp,1000);assert.equal(p2.hp,975,'one committed strike, rather than continuous per-frame damage');
   p2.hp = 0;
   horde.update(0.1, p1, p2);
   assert(mesh.position.x > 0);
