@@ -9146,6 +9146,119 @@ export class AudioEngine {
       }
     }
   }
+
+  // Method 185: Stargazer Sub-Zero Liquid Nitrogen Cryo-Tank Breach & Flash Freeze (The Predator 2018)
+  playCryoNitrogenHiss() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Violent pressurized vapor expansion
+    const bufSize = Math.floor(this.ctx.sampleRate * 0.8);
+    const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufSize * 0.4));
+    }
+    const hissSrc = this.ctx.createBufferSource();
+    hissSrc.buffer = buf;
+
+    const hissFilter = this.ctx.createBiquadFilter();
+    hissFilter.type = 'bandpass';
+    hissFilter.frequency.setValueAtTime(3200, now);
+    hissFilter.frequency.exponentialRampToValueAtTime(1400, now + 0.7);
+    hissFilter.Q.setValueAtTime(3.0, now);
+
+    const hissGain = this.ctx.createGain();
+    hissGain.gain.setValueAtTime(0.9, now);
+    hissGain.gain.exponentialRampToValueAtTime(0.01, now + 0.8);
+
+    hissSrc.connect(hissFilter);
+    hissFilter.connect(hissGain);
+    hissGain.connect(this.getOut());
+    hissSrc.start(now);
+    hissSrc.stop(now + 0.8);
+
+    // Rapid ice crystallization crackle
+    for (let c = 0; c < 4; c++) {
+      const cTime = now + 0.1 + c * 0.12;
+      const crackOsc = this.ctx.createOscillator();
+      crackOsc.type = 'triangle';
+      crackOsc.frequency.setValueAtTime(4200 + c * 400, cTime);
+      crackOsc.frequency.exponentialRampToValueAtTime(2100, cTime + 0.08);
+
+      const crackGain = this.ctx.createGain();
+      crackGain.gain.setValueAtTime(0.5, cTime);
+      crackGain.gain.exponentialRampToValueAtTime(0.01, cTime + 0.08);
+
+      crackOsc.connect(crackGain);
+      crackGain.connect(this.getOut());
+      crackOsc.start(cTime);
+      crackOsc.stop(cTime + 0.08);
+    }
+  }
+
+  // Method 186: Nebraska Williams' Steel Harpoon Tow Cable Whip & Winch Snap (The Predator 2018)
+  playHarpoonWinchCableSnap() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Heavy tension steel cable release whip (820Hz -> 110Hz snap)
+    const whipOsc = this.ctx.createOscillator();
+    whipOsc.type = 'sawtooth';
+    whipOsc.frequency.setValueAtTime(820, now);
+    whipOsc.frequency.exponentialRampToValueAtTime(110, now + 0.15);
+
+    const whipGain = this.ctx.createGain();
+    whipGain.gain.setValueAtTime(0.95, now);
+    whipGain.gain.exponentialRampToValueAtTime(0.01, now + 0.18);
+
+    whipOsc.connect(whipGain);
+    whipGain.connect(this.getOut());
+    whipOsc.start(now);
+    whipOsc.stop(now + 0.18);
+
+    // Hydraulic winch motor spool whine
+    const winchOsc = this.ctx.createOscillator();
+    winchOsc.type = 'square';
+    winchOsc.frequency.setValueAtTime(320, now + 0.05);
+    winchOsc.frequency.linearRampToValueAtTime(740, now + 0.45);
+
+    const winchGain = this.ctx.createGain();
+    winchGain.gain.setValueAtTime(0.01, now + 0.05);
+    winchGain.gain.linearRampToValueAtTime(0.6, now + 0.15);
+    winchGain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+
+    winchOsc.connect(winchGain);
+    winchGain.connect(this.getOut());
+    winchOsc.start(now + 0.05);
+    winchOsc.stop(now + 0.5);
+  }
+
+  // Method 187: "Lobo" Friendly Head-Scarre Predator Hound Canine Bark & Pant (The Predator 2018)
+  playFriendlyHoundBark() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Resonant guttural canine bark with alien harmonic formant
+    for (let b = 0; b < 2; b++) {
+      const bTime = now + b * 0.22;
+      const barkOsc = this.ctx.createOscillator();
+      barkOsc.type = 'triangle';
+      barkOsc.frequency.setValueAtTime(360, bTime);
+      barkOsc.frequency.linearRampToValueAtTime(520, bTime + 0.04);
+      barkOsc.frequency.exponentialRampToValueAtTime(140, bTime + 0.16);
+
+      const barkGain = this.ctx.createGain();
+      barkGain.gain.setValueAtTime(0.01, bTime);
+      barkGain.gain.linearRampToValueAtTime(0.8, bTime + 0.03);
+      barkGain.gain.exponentialRampToValueAtTime(0.01, bTime + 0.18);
+
+      barkOsc.connect(barkGain);
+      barkGain.connect(this.getOut());
+      barkOsc.start(bTime);
+      barkOsc.stop(bTime + 0.18);
+    }
+  }
 }
 
 

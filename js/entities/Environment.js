@@ -202,6 +202,12 @@ export class EnvironmentManager {
     this.stargazerShieldPylons = [];
     this.looniesTransportBus = null;
     this.shatteredOakArena = null;
+    this.fugitiveGauntletLocker = null;
+    this.friendlyLoboHound = null;
+    this.baxleyCoyleBunker = null;
+    this.cryoNitrogenTanks = [];
+    this.nebraskaHarpoonRig = null;
+    this.stargazerCanopyHighways = [];
   }
 
   clearEnvironment() {
@@ -806,6 +812,29 @@ export class EnvironmentManager {
       this.scene.remove(this.shatteredOakArena.group);
       this.shatteredOakArena = null;
     }
+    if (this.fugitiveGauntletLocker && this.fugitiveGauntletLocker.group) {
+      this.scene.remove(this.fugitiveGauntletLocker.group);
+      this.fugitiveGauntletLocker = null;
+    }
+    if (this.friendlyLoboHound && this.friendlyLoboHound.group) {
+      this.scene.remove(this.friendlyLoboHound.group);
+      this.friendlyLoboHound = null;
+    }
+    if (this.baxleyCoyleBunker && this.baxleyCoyleBunker.group) {
+      this.scene.remove(this.baxleyCoyleBunker.group);
+      this.baxleyCoyleBunker = null;
+    }
+    if (this.cryoNitrogenTanks && this.cryoNitrogenTanks.length > 0) {
+      this.cryoNitrogenTanks.forEach(t => {
+        if (t.mesh) this.scene.remove(t.mesh);
+      });
+      this.cryoNitrogenTanks = [];
+    }
+    if (this.nebraskaHarpoonRig && this.nebraskaHarpoonRig.group) {
+      this.scene.remove(this.nebraskaHarpoonRig.group);
+      this.nebraskaHarpoonRig = null;
+    }
+    this.stargazerCanopyHighways = [];
 
     this.reactorMeltdownActive = false;
     this.reactorMeltdownTimer = 180.0;
@@ -2440,6 +2469,25 @@ export class EnvironmentManager {
       if (Math.abs(ox) <= 1.4 && z >= 20.0 && z <= 24.0) {
         const factor = (z - 20.0) / 4.0;
         return factor * 4.5;
+      }
+    }
+
+    // 43. Baxley & Coyle's Sandbag Bunker Platform (+2.2m) (The Predator 2018)
+    if (this.baxleyCoyleBunker && this.baxleyCoyleBunker.pos) {
+      const bcx = x - 6.0;
+      const bcz = z - (-22.0);
+      if (Math.abs(bcx) <= 3.0 && Math.abs(bcz) <= 2.6) {
+        return 2.2;
+      }
+    }
+
+    // 44. Stargazer Autumn Canopy Bough Aerial Highway (+6.8m) (The Predator 2018)
+    if (this.stargazerCanopyHighways && this.stargazerCanopyHighways.length > 0) {
+      for (let h = 0; h < this.stargazerCanopyHighways.length; h++) {
+        const span = this.stargazerCanopyHighways[h];
+        if (x >= span.minX && x <= span.maxX && z >= span.minZ && z <= span.maxZ) {
+          return 6.8;
+        }
       }
     }
 
@@ -14147,6 +14195,143 @@ export class EnvironmentManager {
       pos: new THREE.Vector3(0, 4.5, 26)
     };
 
+    // 10. Fugitive Predator's Gauntlet & Mask Storage Drop [-6, 0, 16]
+    const dropGroup = new THREE.Group();
+    dropGroup.position.set(-6, 0, 16);
+
+    const parcelBox = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.7, 0.9), new THREE.MeshStandardMaterial({ color: 0x78716c, roughness: 0.8 }));
+    parcelBox.position.y = 0.35;
+    dropGroup.add(parcelBox);
+
+    const fugitiveGauntlet = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.3, 0.8), new THREE.MeshStandardMaterial({ color: 0x1f2421, metalness: 0.95 }));
+    fugitiveGauntlet.position.set(0, 0.8, 0);
+    dropGroup.add(fugitiveGauntlet);
+
+    const lockerLight = new THREE.PointLight(0xef4444, 1.8, 6.0);
+    lockerLight.position.set(0, 1.2, 0);
+    dropGroup.add(lockerLight);
+
+    group.add(dropGroup);
+    this.fugitiveGauntletLocker = {
+      group: dropGroup,
+      pos: new THREE.Vector3(-6, 0.8, 16),
+      isClaimed: false
+    };
+
+    // 11. "Lobo" Friendly Head-Scarred Predator Hound [14, 0, 8]
+    const loboGroup = new THREE.Group();
+    loboGroup.position.set(14, 0, 8);
+
+    const houndBody = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.9, 2.2), new THREE.MeshStandardMaterial({ color: 0x3d4336, roughness: 0.7 }));
+    houndBody.position.y = 0.7;
+    loboGroup.add(houndBody);
+
+    const houndHead = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.7, 0.9), new THREE.MeshStandardMaterial({ color: 0x2b3024, roughness: 0.7 }));
+    houndHead.position.set(0, 1.1, 1.1);
+    loboGroup.add(houndHead);
+
+    const scarBandage = new THREE.Mesh(new THREE.BoxGeometry(0.85, 0.18, 0.6), new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.9 }));
+    scarBandage.position.set(0, 1.35, 1.0);
+    loboGroup.add(scarBandage);
+
+    const loboLight = new THREE.PointLight(0x22c55e, 1.8, 7.0);
+    loboLight.position.set(0, 1.4, 0);
+    loboGroup.add(loboLight);
+
+    group.add(loboGroup);
+    this.friendlyLoboHound = {
+      group: loboGroup,
+      pos: new THREE.Vector3(14, 0.7, 8),
+      isTamed: false
+    };
+
+    // 12. Baxley & Coyle's Tourette's / Sniper Defilade Bunker [6, 0, -22] (+2.2m)
+    const bunkerGroup = new THREE.Group();
+    bunkerGroup.position.set(6, 0, -22);
+
+    const sandbagPlatform = new THREE.Mesh(new THREE.BoxGeometry(5.2, 2.2, 4.5), new THREE.MeshStandardMaterial({ color: 0x78716c, roughness: 0.9 }));
+    sandbagPlatform.position.y = 1.1;
+    sandbagPlatform.receiveShadow = true;
+    bunkerGroup.add(sandbagPlatform);
+
+    const sawGun = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.05, 1.4, 6), new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.9 }));
+    sawGun.rotation.x = Math.PI / 2;
+    sawGun.position.set(0, 2.5, 1.6);
+    bunkerGroup.add(sawGun);
+
+    group.add(bunkerGroup);
+    this.baxleyCoyleBunker = {
+      group: bunkerGroup,
+      pos: new THREE.Vector3(6, 2.2, -22),
+      isLooted: false
+    };
+
+    // 13. Stargazer Pressurized Liquid Nitrogen Cryo-Tanks [-18, 0, -8]
+    this.cryoNitrogenTanks = [];
+    const tankCoords = [
+      new THREE.Vector3(-18, 1.5, -8),
+      new THREE.Vector3(-16.5, 1.5, -8),
+      new THREE.Vector3(-18, 1.5, -6.5)
+    ];
+    tankCoords.forEach((tPos, idx) => {
+      const tank = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.55, 2.8, 12), new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.85, roughness: 0.2 }));
+      tank.position.copy(tPos);
+      tank.castShadow = true;
+      group.add(tank);
+      this.cryoNitrogenTanks.push({ id: idx, pos: tPos.clone(), isRuptured: false, mesh: tank });
+    });
+
+    // 14. Nebraska Williams' Steel Harpoon Tow Cable Winch Rig [4, 0, 18]
+    const harpoonGroup = new THREE.Group();
+    harpoonGroup.position.set(4, 0, 18);
+
+    const winchBase = new THREE.Mesh(new THREE.BoxGeometry(1.6, 1.2, 1.8), new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.8 }));
+    winchBase.position.y = 0.6;
+    harpoonGroup.add(winchBase);
+
+    const cableSpool = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.4, 0.9, 12), new THREE.MeshStandardMaterial({ color: 0x64748b, metalness: 0.95 }));
+    cableSpool.rotation.z = Math.PI / 2;
+    cableSpool.position.set(0, 1.2, 0);
+    harpoonGroup.add(cableSpool);
+
+    const harpoonPike = new THREE.Mesh(new THREE.ConeGeometry(0.12, 1.4, 6), new THREE.MeshStandardMaterial({ color: 0xd4d4d8, metalness: 0.95 }));
+    harpoonPike.rotation.x = -Math.PI / 2.8;
+    harpoonPike.position.set(0, 1.6, 0.7);
+    harpoonGroup.add(harpoonPike);
+
+    group.add(harpoonGroup);
+    this.nebraskaHarpoonRig = {
+      group: harpoonGroup,
+      pos: new THREE.Vector3(4, 1.2, 18),
+      isFired: false
+    };
+
+    // 15. Stargazer Autumn Canopy Bough Aerial Highways (+6.8m elevation)
+    const autumnCanopyMat = new THREE.MeshStandardMaterial({ color: 0x452311, roughness: 0.9 });
+    this.stargazerCanopyHighways = [
+      { minX: -24, maxX: -4, minZ: -26, maxZ: -10 },
+      { minX: 4, maxX: 24, minZ: -26, maxZ: -10 },
+      { minX: -24, maxX: -4, minZ: 4, maxZ: 26 },
+      { minX: 4, maxX: 24, minZ: 4, maxZ: 26 }
+    ];
+
+    const bb1 = new THREE.Mesh(new THREE.BoxGeometry(20.0, 0.35, 2.2), autumnCanopyMat);
+    bb1.position.set(-10, 6.8, -20);
+    bb1.receiveShadow = true;
+    group.add(bb1);
+
+    const bb2 = new THREE.Mesh(new THREE.BoxGeometry(22.0, 0.35, 2.2), autumnCanopyMat);
+    bb2.position.set(9, 6.8, -12.5);
+    bb2.rotation.y = Math.atan2(15, 18);
+    bb2.receiveShadow = true;
+    group.add(bb2);
+
+    const bb3 = new THREE.Mesh(new THREE.BoxGeometry(22.0, 0.35, 2.2), autumnCanopyMat);
+    bb3.position.set(-9, 6.8, 15);
+    bb3.rotation.y = Math.atan2(-10, -18);
+    bb3.receiveShadow = true;
+    group.add(bb3);
+
     this.scene.add(group);
     this.envObjects.push(group);
   }
@@ -14268,6 +14453,138 @@ export class EnvironmentManager {
 
       if (ui && ui.showAnnouncement) {
         ui.showAnnouncement('⚡ CHAMP DE FORCE DU VAISSEAU ARK SURCHARGÉ (THE PREDATOR 2018) : DÉCHARGE ÉLECTROSTATIQUE 25M (450 DMG, STUN 4S, MUSOU MAX) !', 'warning');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Stargazer Interaction: Fugitive Predator's Gauntlet & Mask Storage Locker
+  checkFugitiveLockerInteraction(player, ui, audio) {
+    if (!this.fugitiveGauntletLocker || !player || !player.position || this.fugitiveGauntletLocker.isClaimed) return false;
+    if (player.position.distanceTo(this.fugitiveGauntletLocker.pos) <= 4.2) {
+      this.fugitiveGauntletLocker.isClaimed = true;
+      if (audio && audio.playSuperPredatorShipRemoteBeep) audio.playSuperPredatorShipRemoteBeep();
+
+      if (player.applyFugitiveAutoAim) player.applyFugitiveAutoAim(30.0);
+      player.plasmaEnergy = player.maxPlasmaEnergy || 100;
+      if (player.addScore) player.addScore(2500);
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('🎯 GANTELET DU FUGITIVE PREDATOR RÉCUPÉRÉ (THE PREDATOR 2018) : VISÉE AUTO VERROUILLÉE & PLASMA 100% (30S, +2500 SCORE) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Stargazer Interaction: "Lobo" Friendly Head-Scarred Predator Hound
+  checkFriendlyLoboInteraction(player, ui, audio) {
+    if (!this.friendlyLoboHound || !player || !player.position || this.friendlyLoboHound.isTamed) return false;
+    if (player.position.distanceTo(this.friendlyLoboHound.pos) <= 4.5) {
+      this.friendlyLoboHound.isTamed = true;
+      if (audio && audio.playFriendlyHoundBark) audio.playFriendlyHoundBark();
+
+      if (player.applyFriendlyLobo) player.applyFriendlyLobo(35.0);
+      player.m41aGrenadeCharges = Math.min(8, (player.m41aGrenadeCharges || 0) + 4);
+      if (player.addScore) player.addScore(2000);
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('🐕 MOLOSSE "LOBO" DOMESTIQUÉ (THE PREDATOR 2018) : COMBATTANT ALLIÉ DÉPLOYÉ & GRENADES RAPPORTÉES (+4 GRENADES, +2000 SCORE) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Stargazer Interaction: Baxley & Coyle's Tourette's / Sniper Bunker
+  checkBaxleyCoyleBunkerInteraction(player, ui, audio) {
+    if (!this.baxleyCoyleBunker || !player || !player.position || this.baxleyCoyleBunker.isLooted) return false;
+    if (player.position.distanceTo(this.baxleyCoyleBunker.pos) <= 4.5) {
+      this.baxleyCoyleBunker.isLooted = true;
+      if (audio && audio.playDillonDualMP5Firestorm) audio.playDillonDualMP5Firestorm();
+
+      player.smartDiscCharges = Math.min(8, (player.smartDiscCharges || 0) + 6);
+      player.m41aGrenadeCharges = Math.min(8, (player.m41aGrenadeCharges || 0) + 4);
+      if (player.addScore) player.addScore(2000);
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('🎖️ NID DÉFILÉ DE BAXLEY & COYLE (THE PREDATOR 2018) : MITRAILLEUSE M249 DÉPOUILLÉE (+6 SMART-DISCS, +4 GRENADES) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Stargazer Interaction / Trigger: Liquid Nitrogen Cryo-Tanks Breach
+  checkCryoNitrogenTankTrigger(hitPos, audio, horde, bosses, particles, ui) {
+    if (!this.cryoNitrogenTanks || this.cryoNitrogenTanks.length === 0 || !hitPos) return false;
+    for (let i = 0; i < this.cryoNitrogenTanks.length; i++) {
+      const tank = this.cryoNitrogenTanks[i];
+      if (!tank.isRuptured && hitPos.distanceTo(tank.pos) <= 3.8) {
+        tank.isRuptured = true;
+        if (audio && audio.playCryoNitrogenHiss) audio.playCryoNitrogenHiss();
+
+        let frozenCount = 0;
+        if (horde && horde.aliens) {
+          horde.aliens.forEach(alien => {
+            if (alien && alien.mesh && alien.hp > 0 && alien.mesh.position.distanceTo(tank.pos) <= 14.0) {
+              alien.hp -= 280;
+              alien.isStunned = true;
+              alien.stunTimer = 6.0;
+              frozenCount++;
+              if (particles && particles.emitSparks) particles.emitSparks(alien.mesh.position, 12);
+            }
+          });
+        }
+        if (bosses && bosses.activeBoss && bosses.activeBoss.mesh && bosses.activeBoss.mesh.position.distanceTo(tank.pos) <= 14.0) {
+          bosses.activeBoss.hp -= 350;
+          bosses.activeBoss.isStunned = true;
+          bosses.activeBoss.stunTimer = 3.5;
+        }
+
+        if (ui && ui.showAnnouncement) {
+          ui.showAnnouncement(`❄️ CUVE D'AZOTE LIQUIDE STARGAZER PERCÉE (2018) : FLASH CRYOGÉNIQUE (${frozenCount} ENNEMIS CONGELÉS 6S, 280 DMG) !`, 'warning');
+        }
+        return true;
+      }
+    }
+    return false;
+  }
+
+  // Stargazer Interaction: Nebraska Williams' Steel Harpoon Tow Cable Rig
+  checkNebraskaHarpoonRig(player, ui, audio, horde, bosses, particles) {
+    if (!this.nebraskaHarpoonRig || !player || !player.position || this.nebraskaHarpoonRig.isFired) return false;
+    if (player.position.distanceTo(this.nebraskaHarpoonRig.pos) <= 4.2) {
+      this.nebraskaHarpoonRig.isFired = true;
+      if (audio && audio.playHarpoonWinchCableSnap) audio.playHarpoonWinchCableSnap();
+
+      let target = null;
+      if (bosses && bosses.activeBoss && bosses.activeBoss.hp > 0) {
+        target = bosses.activeBoss;
+        target.hp -= 700;
+        target.isStunned = true;
+        target.stunTimer = 4.5;
+      } else if (horde && horde.aliens) {
+        for (let a = 0; a < horde.aliens.length; a++) {
+          const alien = horde.aliens[a];
+          if (alien && alien.hp > 0) {
+            target = alien;
+            target.hp -= 600;
+            target.isStunned = true;
+            target.stunTimer = 5.0;
+            break;
+          }
+        }
+      }
+
+      if (particles && target && target.mesh) {
+        particles.emitSparks(target.mesh.position, 25);
+      }
+      if (player.addScore) player.addScore(2500);
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('⚓ TREUIL À HARPON DE NEBRASKA (THE PREDATOR 2018) : CÂBLE D\'ACIER HARPONNÉ (600-700 DMG CINÉTIQUES & STUN 5S) !', 'success');
       }
       return true;
     }

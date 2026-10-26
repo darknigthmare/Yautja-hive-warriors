@@ -676,6 +676,14 @@ class GameApp {
           // Handled Loonies Military Transport Bus & Casey Bracket Medkit (The Predator 2018)!
         } else if (this.env && this.env.checkStargazerShieldGenerator && this.env.checkStargazerShieldGenerator(this.player, this.ui, this.audio, this.horde)) {
           // Handled Crashed Fugitive Ark Starship Forcefield Shield Overload (The Predator 2018)!
+        } else if (this.env && this.env.checkFugitiveLockerInteraction && this.env.checkFugitiveLockerInteraction(this.player, this.ui, this.audio)) {
+          // Handled Fugitive Predator's Gauntlet & Mask Storage Drop (The Predator 2018)!
+        } else if (this.env && this.env.checkFriendlyLoboInteraction && this.env.checkFriendlyLoboInteraction(this.player, this.ui, this.audio)) {
+          // Handled "Lobo" Friendly Head-Scarred Predator Hound (The Predator 2018)!
+        } else if (this.env && this.env.checkBaxleyCoyleBunkerInteraction && this.env.checkBaxleyCoyleBunkerInteraction(this.player, this.ui, this.audio)) {
+          // Handled Baxley & Coyle's Tourette's / Sniper Defilade Bunker (The Predator 2018)!
+        } else if (this.env && this.env.checkNebraskaHarpoonRig && this.env.checkNebraskaHarpoonRig(this.player, this.ui, this.audio, this.horde, this.bosses, this.particles)) {
+          // Handled Nebraska Williams' Steel Harpoon Tow Cable Rig (The Predator 2018)!
         } else if (this.env && this.env.checkScoutShipConsoleInteraction && this.env.checkScoutShipConsoleInteraction(this.player.position, this.ui, this.audio, this.horde, this.player)) {
           // Handled Crashed Scout Ship Telemetry Scan (AVP: Requiem 2007)!
         } else if (this.env && this.env.checkCharonLabConsoleInteraction && this.env.checkCharonLabConsoleInteraction(this.player.position, this.horde, this.ui, this.audio)) {
@@ -1311,6 +1319,9 @@ class GameApp {
       if (this.env.checkMombassaPunjiTrapTrigger) {
         this.env.checkMombassaPunjiTrapTrigger(attack.origin, this.audio, this.horde, this.bosses, this.particles, this.ui);
       }
+      if (this.env.checkCryoNitrogenTankTrigger) {
+        this.env.checkCryoNitrogenTankTrigger(attack.origin, this.audio, this.horde, this.bosses, this.particles, this.ui);
+      }
     }
 
     // Update Combo Chain Tag
@@ -1398,6 +1409,9 @@ class GameApp {
       }
       if (this.env.checkMombassaPunjiTrapTrigger) {
         this.env.checkMombassaPunjiTrapTrigger(attack.origin, this.audio, this.horde, this.bosses, this.particles, this.ui);
+      }
+      if (this.env.checkCryoNitrogenTankTrigger) {
+        this.env.checkCryoNitrogenTankTrigger(attack.origin, this.audio, this.horde, this.bosses, this.particles, this.ui);
       }
     }
 
@@ -2689,6 +2703,9 @@ class GameApp {
           if (this.env.checkMombassaPunjiTrapTrigger) {
             this.env.checkMombassaPunjiTrapTrigger(p.mesh.position, this.audio, this.horde, this.bosses, this.particles, this.ui);
           }
+          if (this.env.checkCryoNitrogenTankTrigger) {
+            this.env.checkCryoNitrogenTankTrigger(p.mesh.position, this.audio, this.horde, this.bosses, this.particles, this.ui);
+          }
         }
 
         const hits = this.horde.checkMeleeHits({ origin: p.mesh.position, radius: 2.8, damage: p.damage });
@@ -2877,6 +2894,9 @@ class GameApp {
           }
           if (this.env.checkMombassaPunjiTrapTrigger) {
             this.env.checkMombassaPunjiTrapTrigger(p.mesh.position, this.audio, this.horde, this.bosses, this.particles, this.ui);
+          }
+          if (this.env.checkCryoNitrogenTankTrigger) {
+            this.env.checkCryoNitrogenTankTrigger(p.mesh.position, this.audio, this.horde, this.bosses, this.particles, this.ui);
           }
         }
 
@@ -3528,6 +3548,34 @@ class GameApp {
       if (arkPrompt) {
         if (isNearArk) arkPrompt.classList.remove('hidden');
         else arkPrompt.classList.add('hidden');
+      }
+
+      const isNearFugitiveLocker = this.env.fugitiveGauntletLocker && !this.env.fugitiveGauntletLocker.isClaimed && this.player && this.player.position.distanceTo(this.env.fugitiveGauntletLocker.pos) <= 4.2;
+      const fugitivePrompt = document.getElementById('fugitive-gauntlet-prompt');
+      if (fugitivePrompt) {
+        if (isNearFugitiveLocker) fugitivePrompt.classList.remove('hidden');
+        else fugitivePrompt.classList.add('hidden');
+      }
+
+      const isNearLobo = this.env.friendlyLoboHound && !this.env.friendlyLoboHound.isTamed && this.player && this.player.position.distanceTo(this.env.friendlyLoboHound.pos) <= 4.5;
+      const loboPrompt = document.getElementById('friendly-lobo-prompt');
+      if (loboPrompt) {
+        if (isNearLobo) loboPrompt.classList.remove('hidden');
+        else loboPrompt.classList.add('hidden');
+      }
+
+      const isNearBaxleyCoyle = this.env.baxleyCoyleBunker && !this.env.baxleyCoyleBunker.isLooted && this.player && this.player.position.distanceTo(this.env.baxleyCoyleBunker.pos) <= 4.5;
+      const baxleyPrompt = document.getElementById('baxley-coyle-prompt');
+      if (baxleyPrompt) {
+        if (isNearBaxleyCoyle) baxleyPrompt.classList.remove('hidden');
+        else baxleyPrompt.classList.add('hidden');
+      }
+
+      const isNearNebraska = this.env.nebraskaHarpoonRig && !this.env.nebraskaHarpoonRig.isFired && this.player && this.player.position.distanceTo(this.env.nebraskaHarpoonRig.pos) <= 4.2;
+      const nebraskaPrompt = document.getElementById('nebraska-harpoon-prompt');
+      if (nebraskaPrompt) {
+        if (isNearNebraska) nebraskaPrompt.classList.remove('hidden');
+        else nebraskaPrompt.classList.add('hidden');
       }
     }
 

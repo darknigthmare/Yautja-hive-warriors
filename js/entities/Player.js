@@ -259,6 +259,10 @@ export class Player {
     this.dillonGritTimer = 0;
     this.isHawkinsScanActive = false;
     this.hawkinsScanTimer = 0;
+    this.isFriendlyLoboActive = false;
+    this.friendlyLoboTimer = 0;
+    this.isFugitiveAutoAimActive = false;
+    this.fugitiveAutoAimTimer = 0;
     this.loadClanForgeUpgrades();
   }
 
@@ -4243,7 +4247,25 @@ export class Player {
       this.hawkinsScanTimer -= delta;
       if (this.hawkinsScanTimer <= 0) this.isHawkinsScanActive = false;
     }
+    if (this.friendlyLoboTimer > 0) {
+      this.friendlyLoboTimer -= delta;
+      if (this.friendlyLoboTimer <= 0) this.isFriendlyLoboActive = false;
+    }
+    if (this.fugitiveAutoAimTimer > 0) {
+      this.fugitiveAutoAimTimer -= delta;
+      if (this.fugitiveAutoAimTimer <= 0) this.isFugitiveAutoAimActive = false;
+    }
     this.isOnBough = (this.position && this.position.y >= 5.0);
+  }
+
+  applyFriendlyLobo(duration = 35.0) {
+    this.friendlyLoboTimer = duration;
+    this.isFriendlyLoboActive = true;
+  }
+
+  applyFugitiveAutoAim(duration = 30.0) {
+    this.fugitiveAutoAimTimer = duration;
+    this.isFugitiveAutoAimActive = true;
   }
 
   applyPredatorKillerNano(duration = 30.0) {
