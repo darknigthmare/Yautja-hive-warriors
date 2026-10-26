@@ -716,6 +716,12 @@ class GameApp {
           // Handled Comanche Sun Dance War Paint Totem Post (Prey 2022)!
         } else if (this.env && this.env.checkLightningPineInteraction && this.env.checkLightningPineInteraction(this.player, this.ui, this.audio)) {
           // Handled Lightning-Struck Split Hollow Pine Pouch (Prey 2022)!
+        } else if (this.env && this.env.checkTrapperCampfireInteraction && this.env.checkTrapperCampfireInteraction(this.player, this.ui, this.audio, this.horde, this.particles)) {
+          // Handled French Trappers' Campfire Cauldron (Prey 2022)!
+        } else if (this.env && this.env.checkBuffaloCairnInteraction && this.env.checkBuffaloCairnInteraction(this.player, this.ui, this.audio)) {
+          // Handled Comanche Buffalo Skull Cairn (Prey 2022)!
+        } else if (this.env && this.env.checkFeralSeveredGauntletInteraction && this.env.checkFeralSeveredGauntletInteraction(this.player, this.ui, this.audio)) {
+          // Handled Feral Predator's Severed Arm-Gauntlet (Prey 2022)!
         } else if (this.env && this.env.checkScoutShipConsoleInteraction && this.env.checkScoutShipConsoleInteraction(this.player.position, this.ui, this.audio, this.horde, this.player)) {
           // Handled Crashed Scout Ship Telemetry Scan (AVP: Requiem 2007)!
         } else if (this.env && this.env.checkCharonLabConsoleInteraction && this.env.checkCharonLabConsoleInteraction(this.player.position, this.horde, this.ui, this.audio)) {
@@ -3720,6 +3726,27 @@ class GameApp {
       if (pinePrompt) {
         if (isNearPine) pinePrompt.classList.remove('hidden');
         else pinePrompt.classList.add('hidden');
+      }
+
+      const isNearSpit = this.env.trapperCampfireSpit && !this.env.trapperCampfireSpit.isToppled && this.player && this.player.position.distanceTo(this.env.trapperCampfireSpit.pos) <= 4.5;
+      const spitPrompt = document.getElementById('trapper-spit-prompt');
+      if (spitPrompt) {
+        if (isNearSpit) spitPrompt.classList.remove('hidden');
+        else spitPrompt.classList.add('hidden');
+      }
+
+      const isNearCairn = this.env.buffaloSkullCairn && !this.env.buffaloSkullCairn.isCommuned && this.player && this.player.position.distanceTo(this.env.buffaloSkullCairn.pos) <= 4.5;
+      const cairnPrompt = document.getElementById('buffalo-cairn-prompt');
+      if (cairnPrompt) {
+        if (isNearCairn) cairnPrompt.classList.remove('hidden');
+        else cairnPrompt.classList.add('hidden');
+      }
+
+      const isNearGauntlet = this.env.feralSeveredGauntlet && !this.env.feralSeveredGauntlet.isClaimed && this.player && this.player.position.distanceTo(this.env.feralSeveredGauntlet.pos) <= 4.2;
+      const gauntletPrompt = document.getElementById('severed-gauntlet-prompt');
+      if (gauntletPrompt) {
+        if (isNearGauntlet) gauntletPrompt.classList.remove('hidden');
+        else gauntletPrompt.classList.add('hidden');
       }
     }
 

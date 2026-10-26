@@ -234,6 +234,9 @@ export class EnvironmentManager {
     this.comancheTotemPost = null;
     this.brushPitfallTrap = null;
     this.lightningSplitPine = null;
+    this.trapperCampfireSpit = null;
+    this.buffaloSkullCairn = null;
+    this.feralSeveredGauntlet = null;
   }
 
   clearEnvironment() {
@@ -954,6 +957,18 @@ export class EnvironmentManager {
     if (this.lightningSplitPine && this.lightningSplitPine.group) {
       this.scene.remove(this.lightningSplitPine.group);
       this.lightningSplitPine = null;
+    }
+    if (this.trapperCampfireSpit && this.trapperCampfireSpit.group) {
+      this.scene.remove(this.trapperCampfireSpit.group);
+      this.trapperCampfireSpit = null;
+    }
+    if (this.buffaloSkullCairn && this.buffaloSkullCairn.group) {
+      this.scene.remove(this.buffaloSkullCairn.group);
+      this.buffaloSkullCairn = null;
+    }
+    if (this.feralSeveredGauntlet && this.feralSeveredGauntlet.group) {
+      this.scene.remove(this.feralSeveredGauntlet.group);
+      this.feralSeveredGauntlet = null;
     }
     this.burnedForestCharredTrees = [];
     this.trapperBearTraps = [];
@@ -15584,6 +15599,126 @@ export class EnvironmentManager {
       isClaimed: false
     };
 
+    // 21. French Trappers' Iron Spit & Campfire Cauldron [-6, 0, -14]
+    const spitGroup = new THREE.Group();
+    spitGroup.position.set(-6, 0, -14);
+
+    const stoneRingMat = new THREE.MeshStandardMaterial({ color: 0x52525b, roughness: 0.95 });
+    for (let s = 0; s < 8; s++) {
+      const ang = (s / 8) * Math.PI * 2;
+      const stone = new THREE.Mesh(new THREE.DodecahedronGeometry(0.22, 0), stoneRingMat);
+      stone.position.set(Math.cos(ang) * 0.9, 0.12, Math.sin(ang) * 0.9);
+      spitGroup.add(stone);
+    }
+
+    const fireLight = new THREE.PointLight(0xff5500, 2.5, 8.0);
+    fireLight.position.set(0, 0.5, 0);
+    spitGroup.add(fireLight);
+
+    const fireGlow = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.7, 0.1, 12), new THREE.MeshBasicMaterial({ color: 0xff3700 }));
+    fireGlow.position.y = 0.06;
+    spitGroup.add(fireGlow);
+
+    // Iron Tripod & Hanging Cauldron
+    const tripodLegMat = new THREE.MeshStandardMaterial({ color: 0x18181b, metalness: 0.9, roughness: 0.3 });
+    [-0.45, 0.45].forEach(tx => {
+      const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 1.8), tripodLegMat);
+      leg.position.set(tx, 0.9, 0);
+      leg.rotation.z = tx < 0 ? -0.25 : 0.25;
+      spitGroup.add(leg);
+    });
+
+    const potMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.28, 0.45, 12), ironMat);
+    potMesh.position.set(0, 0.85, 0);
+    spitGroup.add(potMesh);
+
+    group.add(spitGroup);
+    this.trapperCampfireSpit = {
+      group: spitGroup,
+      pos: new THREE.Vector3(-6, 0.5, -14),
+      isToppled: false
+    };
+
+    // 22. Comanche Buffalo Skull Trail Marker Cairn [-8, 0, 6]
+    const cairnGroup = new THREE.Group();
+    cairnGroup.position.set(-8, 0, 6);
+
+    const cairnMat = new THREE.MeshStandardMaterial({ color: 0x71717a, roughness: 0.9 });
+    const b1 = new THREE.Mesh(new THREE.CylinderGeometry(0.9, 1.05, 0.35, 8), cairnMat);
+    b1.position.y = 0.17;
+    cairnGroup.add(b1);
+
+    const b2 = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.82, 0.35, 7), cairnMat);
+    b2.position.y = 0.52;
+    cairnGroup.add(b2);
+
+    const b3 = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.62, 0.35, 6), cairnMat);
+    b3.position.y = 0.87;
+    cairnGroup.add(b3);
+
+    // Weathered Buffalo Skull & Horns
+    const skullMat = new THREE.MeshStandardMaterial({ color: 0xeadfcf, roughness: 0.5 });
+    const buffaloSkull = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.65, 0.45), skullMat);
+    buffaloSkull.position.set(0, 1.35, 0);
+    cairnGroup.add(buffaloSkull);
+
+    [-0.38, 0.38].forEach(hx => {
+      const horn = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.1, 0.65, 6), ironMat);
+      horn.position.set(hx, 1.6, 0);
+      horn.rotation.z = hx < 0 ? -0.85 : 0.85;
+      horn.rotation.x = -0.2;
+      cairnGroup.add(horn);
+    });
+
+    const cairnLight = new THREE.PointLight(0xf59e0b, 1.4, 6.0);
+    cairnLight.position.set(0, 1.5, 0);
+    cairnGroup.add(cairnLight);
+
+    group.add(cairnGroup);
+    this.buffaloSkullCairn = {
+      group: cairnGroup,
+      pos: new THREE.Vector3(-8, 1.2, 6),
+      isCommuned: false
+    };
+
+    // 23. Feral Predator's Severed Arm-Gauntlet & Obsidian Claws [6, 0.3, -4]
+    const gauntletGroup = new THREE.Group();
+    gauntletGroup.position.set(6, 0.3, -4);
+
+    const rockBase = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.4, 1.4), new THREE.MeshStandardMaterial({ color: 0x3f3f46, roughness: 0.9 }));
+    rockBase.position.y = -0.15;
+    gauntletGroup.add(rockBase);
+
+    const severedArmMat = new THREE.MeshStandardMaterial({ color: 0x3f352b, roughness: 0.7 });
+    const armMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.22, 0.85, 8), severedArmMat);
+    armMesh.rotation.z = Math.PI / 2;
+    armMesh.position.set(0, 0.15, 0);
+    gauntletGroup.add(armMesh);
+
+    // Yautja Luminescent Blood Splatter
+    const bloodSplat = new THREE.Mesh(new THREE.PlaneGeometry(1.2, 1.2), new THREE.MeshBasicMaterial({ color: 0x22c55e, transparent: true, opacity: 0.85 }));
+    bloodSplat.rotation.x = -Math.PI / 2;
+    bloodSplat.position.set(0, 0.06, 0);
+    gauntletGroup.add(bloodSplat);
+
+    // Twin Obsidian Razor Wrist Claws
+    [-0.08, 0.08].forEach(cz => {
+      const claw = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.03, 0.06), obsidianMat);
+      claw.position.set(0.6, 0.16, cz);
+      gauntletGroup.add(claw);
+    });
+
+    const gauntletLight = new THREE.PointLight(0x10b981, 1.8, 5.0);
+    gauntletLight.position.set(0, 0.4, 0);
+    gauntletGroup.add(gauntletLight);
+
+    group.add(gauntletGroup);
+    this.feralSeveredGauntlet = {
+      group: gauntletGroup,
+      pos: new THREE.Vector3(6, 0.4, -4),
+      isClaimed: false
+    };
+
     this.scene.add(group);
     this.envObjects.push(group);
   }
@@ -15878,6 +16013,73 @@ export class EnvironmentManager {
 
       if (ui && ui.showAnnouncement) {
         ui.showAnnouncement('⚡ ABRI DU PIN FOUDROYÉ (PREY 2022) : ÉCORCES DE SAULE THÉRAPEUTIQUES (+65 PV, +2 MEDICOMP, +1800 SCORE) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Prey Interaction: French Trappers' Campfire Cauldron Topple
+  checkTrapperCampfireInteraction(player, ui, audio, horde, particles) {
+    if (!this.trapperCampfireSpit || !player || !player.position || this.trapperCampfireSpit.isToppled) return false;
+    if (player.position.distanceTo(this.trapperCampfireSpit.pos) <= 4.5) {
+      this.trapperCampfireSpit.isToppled = true;
+      if (audio && audio.playCampfireCauldronScald) audio.playCampfireCauldronScald();
+
+      if (horde && horde.aliens) {
+        horde.aliens.forEach(alien => {
+          if (alien.isAlive && alien.position.distanceTo(this.trapperCampfireSpit.pos) <= 7.5) {
+            alien.takeDamage(500, true);
+          }
+        });
+      }
+
+      player.hp = Math.min(player.maxHp || 100, (player.hp || 0) + 75);
+      if (player.addScore) player.addScore(1500);
+
+      if (particles && particles.emitExplosion) {
+        particles.emitExplosion(this.trapperCampfireSpit.pos, 0xff4500, 45);
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('🔥 CHAUDRON D\'HUILE BOUILLANTE RENVERSÉ (PREY 2022) : 500 DMG FEU DE ZONE & RATIONS (+75 PV, +1500 SCORE) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Prey Interaction: Comanche Buffalo Skull Trail Marker Cairn
+  checkBuffaloCairnInteraction(player, ui, audio) {
+    if (!this.buffaloSkullCairn || !player || !player.position || this.buffaloSkullCairn.isCommuned) return false;
+    if (player.position.distanceTo(this.buffaloSkullCairn.pos) <= 4.5) {
+      this.buffaloSkullCairn.isCommuned = true;
+      if (audio && audio.playBuffaloCairnWindChime) audio.playBuffaloCairnWindChime();
+
+      if (player.applyAncestralTrackingBuff) player.applyAncestralTrackingBuff(30.0);
+      if (player.addScore) player.addScore(2000);
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('🦬 CAIRN SACRÉ DU BISON (PREY 2022) : INSTINCT DE TRAQUE ANCESTRAL (+20% DÉGÂTS CRITIQUES, 30S, +2000 SCORE) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Prey Interaction: Feral Predator's Severed Arm-Gauntlet & Obsidian Claws
+  checkFeralSeveredGauntletInteraction(player, ui, audio) {
+    if (!this.feralSeveredGauntlet || !player || !player.position || this.feralSeveredGauntlet.isClaimed) return false;
+    if (player.position.distanceTo(this.feralSeveredGauntlet.pos) <= 4.2) {
+      this.feralSeveredGauntlet.isClaimed = true;
+      if (audio && audio.playFeralSeveredGauntletSnap) audio.playFeralSeveredGauntletSnap();
+
+      if (player.applyFeralClawsBuff) player.applyFeralClawsBuff(30.0);
+      player.shield = Math.min(200, (player.shield || 0) + 100);
+      if (player.addScore) player.addScore(2500);
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('🩸 AVANT-BRAS TRANCHÉ DU FERAL (PREY 2022) : GRIFFES D\'OBSIDIENNE ÉQUIPÉES (+35% PERFORATION, 30S, +2500 SCORE) !', 'success');
       }
       return true;
     }

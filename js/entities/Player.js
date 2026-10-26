@@ -111,6 +111,10 @@ export class Player {
     this.comancheWarPaintTimer = 0;
     this.isMudCoated = false;
     this.mudCoatedTimer = 0;
+    this.isFeralClawsActive = false;
+    this.feralClawsTimer = 0;
+    this.isAncestralTrackingActive = false;
+    this.ancestralTrackingTimer = 0;
     // v47.0 Weapon Systems
     this.isPlasmaScytheActive = false;
     this.plasmaScytheMesh = null;
@@ -1607,11 +1611,13 @@ export class Player {
     const nanoMult = this.isPredatorKillerNanoActive ? 1.45 : 1.0;
     const dillonMult = this.isDillonGritActive ? 1.40 : 1.0;
     const comancheMult = this.isComancheWarPaintActive ? 1.25 : 1.0;
+    const clawsMult = this.isFeralClawsActive ? 1.35 : 1.0;
+    const trackingMult = this.isAncestralTrackingActive ? 1.20 : 1.0;
 
     return {
       type: 'light',
       step: this.attackComboStep,
-      damage: baseDmg * (1 + this.attackComboStep * 0.18) * buff * mudMult * billyMult * lightningMult * flintlockMult * hanzoMult * neuroMult * stalkerMult * nanoMult * dillonMult * comancheMult,
+      damage: baseDmg * (1 + this.attackComboStep * 0.18) * buff * mudMult * billyMult * lightningMult * flintlockMult * hanzoMult * neuroMult * stalkerMult * nanoMult * dillonMult * comancheMult * clawsMult * trackingMult,
       radius: (this.isSecondaryWeapon ? 4.8 : 3.8) * (this.meleeReachMultiplier || 1.0),
       angle: (Math.PI * 0.65) * (this.meleeArcMultiplier || 1.0)
     };
@@ -1721,11 +1727,13 @@ export class Player {
     const nanoMult = this.isPredatorKillerNanoActive ? 1.45 : 1.0;
     const dillonMult = this.isDillonGritActive ? 1.40 : 1.0;
     const comancheMult = this.isComancheWarPaintActive ? 1.25 : 1.0;
+    const clawsMult = this.isFeralClawsActive ? 1.35 : 1.0;
+    const trackingMult = this.isAncestralTrackingActive ? 1.20 : 1.0;
 
     return {
       type: chargeType,
       name: chargeName,
-      damage: baseDmg * dmgMult * buff * mudMult * billyMult * lightningMult * flintlockMult * hanzoMult * neuroMult * stalkerMult * nanoMult * dillonMult * comancheMult,
+      damage: baseDmg * dmgMult * buff * mudMult * billyMult * lightningMult * flintlockMult * hanzoMult * neuroMult * stalkerMult * nanoMult * dillonMult * comancheMult * clawsMult * trackingMult,
       radius: radius,
       knockback: knockback,
       isLauncher: isLauncher,
@@ -4298,7 +4306,25 @@ export class Player {
       this.comancheWarPaintTimer -= delta;
       if (this.comancheWarPaintTimer <= 0) this.isComancheWarPaintActive = false;
     }
+    if (this.feralClawsTimer > 0) {
+      this.feralClawsTimer -= delta;
+      if (this.feralClawsTimer <= 0) this.isFeralClawsActive = false;
+    }
+    if (this.ancestralTrackingTimer > 0) {
+      this.ancestralTrackingTimer -= delta;
+      if (this.ancestralTrackingTimer <= 0) this.isAncestralTrackingActive = false;
+    }
     this.isOnBough = (this.position && this.position.y >= 5.0);
+  }
+
+  applyFeralClawsBuff(duration = 30.0) {
+    this.feralClawsTimer = duration;
+    this.isFeralClawsActive = true;
+  }
+
+  applyAncestralTrackingBuff(duration = 30.0) {
+    this.ancestralTrackingTimer = duration;
+    this.isAncestralTrackingActive = true;
   }
 
   applyComancheWarPaint(duration = 30.0) {

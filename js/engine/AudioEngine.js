@@ -9819,6 +9819,135 @@ export class AudioEngine {
     riverNoise.start(now);
     riverNoise.stop(now + 0.8);
   }
+
+  // Method 206: Comanche Buffalo Skull Cairn Sacred Wind & Bone Chimes (Prey 2022)
+  playBuffaloCairnWindChime() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Wind howling through hollow horn
+    const windOsc = this.ctx.createOscillator();
+    windOsc.type = 'sine';
+    windOsc.frequency.setValueAtTime(220, now);
+    windOsc.frequency.linearRampToValueAtTime(310, now + 0.35);
+    windOsc.frequency.exponentialRampToValueAtTime(160, now + 0.9);
+
+    const windGain = this.ctx.createGain();
+    windGain.gain.setValueAtTime(0.01, now);
+    windGain.gain.linearRampToValueAtTime(0.45, now + 0.2);
+    windGain.gain.exponentialRampToValueAtTime(0.001, now + 0.95);
+
+    windOsc.connect(windGain);
+    windGain.connect(this.getOut());
+    windOsc.start(now);
+    windOsc.stop(now + 0.95);
+
+    // Bone chimes
+    [1760, 2349, 3135].forEach((freq, idx) => {
+      const cTime = now + 0.1 + idx * 0.12;
+      const cOsc = this.ctx.createOscillator();
+      cOsc.type = 'triangle';
+      cOsc.frequency.setValueAtTime(freq, cTime);
+
+      const cGain = this.ctx.createGain();
+      cGain.gain.setValueAtTime(0.01, cTime);
+      cGain.gain.linearRampToValueAtTime(0.35, cTime + 0.01);
+      cGain.gain.exponentialRampToValueAtTime(0.001, cTime + 0.4);
+
+      cOsc.connect(cGain);
+      cGain.connect(this.getOut());
+      cOsc.start(cTime);
+      cOsc.stop(cTime + 0.4);
+    });
+  }
+
+  // Method 207: French Trappers' Campfire Cauldron Topple & Scalding Oil Sizzle (Prey 2022)
+  playCampfireCauldronScald() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Cast-iron clang
+    const ironOsc = this.ctx.createOscillator();
+    ironOsc.type = 'square';
+    ironOsc.frequency.setValueAtTime(280, now);
+    ironOsc.frequency.exponentialRampToValueAtTime(80, now + 0.3);
+
+    const ironGain = this.ctx.createGain();
+    ironGain.gain.setValueAtTime(0.01, now);
+    ironGain.gain.linearRampToValueAtTime(0.7, now + 0.005);
+    ironGain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+
+    ironOsc.connect(ironGain);
+    ironGain.connect(this.getOut());
+    ironOsc.start(now);
+    ironOsc.stop(now + 0.35);
+
+    // Scalding sizzle noise
+    const bufferSize = Math.floor(this.ctx.sampleRate * 0.75);
+    const noiseBuffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const output = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      output[i] = Math.random() * 2 - 1;
+    }
+
+    const sizzle = this.ctx.createBufferSource();
+    sizzle.buffer = noiseBuffer;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'highpass';
+    filter.frequency.setValueAtTime(2200, now + 0.05);
+
+    const sizzleGain = this.ctx.createGain();
+    sizzleGain.gain.setValueAtTime(0.01, now + 0.05);
+    sizzleGain.gain.linearRampToValueAtTime(0.85, now + 0.12);
+    sizzleGain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+
+    sizzle.connect(filter);
+    filter.connect(sizzleGain);
+    sizzleGain.connect(this.getOut());
+    sizzle.start(now + 0.05);
+    sizzle.stop(now + 0.8);
+  }
+
+  // Method 208: Feral Severed Arm-Gauntlet Razor Obsidian Blades Ejection (Prey 2022)
+  playFeralSeveredGauntletSnap() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Kinetic latch release
+    const latchOsc = this.ctx.createOscillator();
+    latchOsc.type = 'sawtooth';
+    latchOsc.frequency.setValueAtTime(1400, now);
+    latchOsc.frequency.exponentialRampToValueAtTime(240, now + 0.035);
+
+    const latchGain = this.ctx.createGain();
+    latchGain.gain.setValueAtTime(0.01, now);
+    latchGain.gain.linearRampToValueAtTime(0.9, now + 0.005);
+    latchGain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+
+    latchOsc.connect(latchGain);
+    latchGain.connect(this.getOut());
+    latchOsc.start(now);
+    latchOsc.stop(now + 0.05);
+
+    // Razor blade scrape ping
+    const razorTime = now + 0.03;
+    const razorOsc = this.ctx.createOscillator();
+    razorOsc.type = 'sine';
+    razorOsc.frequency.setValueAtTime(2600, razorTime);
+    razorOsc.frequency.linearRampToValueAtTime(3200, razorTime + 0.08);
+    razorOsc.frequency.exponentialRampToValueAtTime(1200, razorTime + 0.28);
+
+    const razorGain = this.ctx.createGain();
+    razorGain.gain.setValueAtTime(0.01, razorTime);
+    razorGain.gain.linearRampToValueAtTime(0.65, razorTime + 0.01);
+    razorGain.gain.exponentialRampToValueAtTime(0.001, razorTime + 0.3);
+
+    razorOsc.connect(razorGain);
+    razorGain.connect(this.getOut());
+    razorOsc.start(razorTime);
+    razorOsc.stop(razorTime + 0.3);
+  }
 }
 
 
