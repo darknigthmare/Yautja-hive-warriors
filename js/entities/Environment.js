@@ -187,6 +187,21 @@ export class EnvironmentManager {
     this.royceBoneGong = null;
     this.isabelleSniperStash = null;
     this.activeGongFireBraziers = [];
+    // v63.0 Val Verde Master Expansion (Predator 1987)
+    this.dillonLastStand = null;
+    this.ponchoGrenadeStash = null;
+    this.hawkinsRadioBeacon = null;
+    this.mudWaterfallBasin = null;
+    // v63.0 The Predator (2018) Stargazer Systems
+    this.stargazerVivisection = null;
+    this.predatorKillerPod = null;
+    this.crashedArkStarship = null;
+    this.quinnSniperPerch = null;
+    this.houndKennelStargazer = null;
+    this.traegerWeaponLocker = null;
+    this.stargazerShieldPylons = [];
+    this.looniesTransportBus = null;
+    this.shatteredOakArena = null;
   }
 
   clearEnvironment() {
@@ -733,6 +748,65 @@ export class EnvironmentManager {
       this.activeGongFireBraziers = [];
     }
 
+    // v63.0 Val Verde Master Cleanups
+    if (this.dillonLastStand && this.dillonLastStand.group) {
+      this.scene.remove(this.dillonLastStand.group);
+      this.dillonLastStand = null;
+    }
+    if (this.ponchoGrenadeStash && this.ponchoGrenadeStash.group) {
+      this.scene.remove(this.ponchoGrenadeStash.group);
+      this.ponchoGrenadeStash = null;
+    }
+    if (this.hawkinsRadioBeacon && this.hawkinsRadioBeacon.group) {
+      this.scene.remove(this.hawkinsRadioBeacon.group);
+      this.hawkinsRadioBeacon = null;
+    }
+    if (this.mudWaterfallBasin && this.mudWaterfallBasin.group) {
+      this.scene.remove(this.mudWaterfallBasin.group);
+      this.mudWaterfallBasin = null;
+    }
+
+    // v63.0 The Predator (2018) Stargazer Cleanups
+    if (this.stargazerVivisection && this.stargazerVivisection.group) {
+      this.scene.remove(this.stargazerVivisection.group);
+      this.stargazerVivisection = null;
+    }
+    if (this.predatorKillerPod && this.predatorKillerPod.group) {
+      this.scene.remove(this.predatorKillerPod.group);
+      this.predatorKillerPod = null;
+    }
+    if (this.crashedArkStarship && this.crashedArkStarship.group) {
+      this.scene.remove(this.crashedArkStarship.group);
+      this.crashedArkStarship = null;
+    }
+    if (this.quinnSniperPerch && this.quinnSniperPerch.group) {
+      this.scene.remove(this.quinnSniperPerch.group);
+      this.quinnSniperPerch = null;
+    }
+    if (this.houndKennelStargazer && this.houndKennelStargazer.group) {
+      this.scene.remove(this.houndKennelStargazer.group);
+      this.houndKennelStargazer = null;
+    }
+    if (this.traegerWeaponLocker && this.traegerWeaponLocker.group) {
+      this.scene.remove(this.traegerWeaponLocker.group);
+      this.traegerWeaponLocker = null;
+    }
+    if (this.stargazerShieldPylons && this.stargazerShieldPylons.length > 0) {
+      this.stargazerShieldPylons.forEach(p => {
+        if (p.mesh) this.scene.remove(p.mesh);
+        if (p.light) this.scene.remove(p.light);
+      });
+      this.stargazerShieldPylons = [];
+    }
+    if (this.looniesTransportBus && this.looniesTransportBus.group) {
+      this.scene.remove(this.looniesTransportBus.group);
+      this.looniesTransportBus = null;
+    }
+    if (this.shatteredOakArena && this.shatteredOakArena.group) {
+      this.scene.remove(this.shatteredOakArena.group);
+      this.shatteredOakArena = null;
+    }
+
     this.reactorMeltdownActive = false;
     this.reactorMeltdownTimer = 180.0;
     this.slabShiftTimer = 0;
@@ -792,6 +866,10 @@ export class EnvironmentManager {
     if (levelId === 'val_verde_jungle') {
       this.buildJungleProps();
       this.buildValVerdeProps();
+      this.buildValVerdeMasterExpansionProps();
+    } else if (levelId === 'stargazer_facility' || theme === 'stargazer') {
+      this.buildStargazerLabProps();
+      this.buildStargazerFacilityExpansionProps();
     } else if (levelId === 'gunnison_forest' || theme === 'rain_forest') {
       this.buildCrashedScoutShipProps();
       this.buildGunnisonForestExpansionProps();
@@ -2297,6 +2375,71 @@ export class EnvironmentManager {
       const iz = z - (-28.0);
       if (Math.abs(ix) <= 3.5 && Math.abs(iz) <= 3.5) {
         return 9.0;
+      }
+    }
+
+    // 38. Val Verde Mountain Cliff & Waterfall Basin Leap (+6.2m) (Predator 1987)
+    if (this.valVerdeWaterfall && this.valVerdeWaterfall.pos) {
+      const wx = x - 32.0;
+      const wz = z - (-8.0);
+      if (Math.abs(wx) <= 4.2 && Math.abs(wz) <= 4.2) {
+        return 6.2;
+      }
+      // Natural cliff trail ramp
+      if (x >= 24.5 && x <= 28.5 && Math.abs(wz) <= 2.0) {
+        const factor = (x - 24.5) / 4.0;
+        return factor * 6.2;
+      }
+    }
+
+    // 39. Crashed Fugitive Ark Starship Platform (+5.4m) (The Predator 2018)
+    if (this.crashedArkStarship && this.crashedArkStarship.pos) {
+      const ax = x - 22.0;
+      const az = z - (-18.0);
+      if (Math.abs(ax) <= 4.5 && Math.abs(az) <= 4.5) {
+        return 5.4;
+      }
+      // Metal fuselage ramp incline
+      if (x >= 16.0 && x <= 19.5 && Math.abs(az) <= 2.2) {
+        const factor = (x - 16.0) / 3.5;
+        return factor * 5.4;
+      }
+    }
+
+    // 40. Quinn McKenna's Rooftop Sniper Perch (+6.8m) (The Predator 2018)
+    if (this.quinnSniperPerch && this.quinnSniperPerch.pos) {
+      const qx = x - (-20.0);
+      const qz = z - (-22.0);
+      if (Math.abs(qx) <= 3.8 && Math.abs(qz) <= 3.8) {
+        return 6.8;
+      }
+      // Exterior metal industrial stairs
+      if (x >= -24.0 && x <= -20.5 && Math.abs(qz) <= 1.8) {
+        const factor = (x - (-24.0)) / 3.5;
+        return factor * 6.8;
+      }
+    }
+
+    // 41. Overturned "Loonies" Military Transport Bus (+3.2m) (The Predator 2018)
+    if (this.looniesTransportBus && this.looniesTransportBus.pos) {
+      const bx = x - (-24.0);
+      const bz = z - 4.0;
+      if (Math.abs(bx) <= 3.2 && Math.abs(bz) <= 5.2) {
+        return 3.2;
+      }
+    }
+
+    // 42. Giant Shattered Oak Tracking Arena Overlook (+4.5m) (The Predator 2018)
+    if (this.shatteredOakArena && this.shatteredOakArena.pos) {
+      const ox = x - 0.0;
+      const oz = z - 26.0;
+      if (Math.abs(ox) <= 3.6 && Math.abs(oz) <= 3.6) {
+        return 4.5;
+      }
+      // Fallen massive bough ramp
+      if (Math.abs(ox) <= 1.4 && z >= 20.0 && z <= 24.0) {
+        const factor = (z - 20.0) / 4.0;
+        return factor * 4.5;
       }
     }
 
@@ -9758,6 +9901,217 @@ export class EnvironmentManager {
     }
   }
 
+  /* === v63.0 Val Verde Jungle Master Expansion (Predator 1987) === */
+  buildValVerdeMasterExpansionProps() {
+    const group = new THREE.Group();
+    const camoMat = new THREE.MeshStandardMaterial({ color: 0x22301c, metalness: 0.6, roughness: 0.5 });
+    const metalMat = new THREE.MeshStandardMaterial({ color: 0x181e19, metalness: 0.9, roughness: 0.2 });
+    const woodMat = new THREE.MeshStandardMaterial({ color: 0x3d2012, roughness: 0.95 });
+    const bloodMat = new THREE.MeshStandardMaterial({ color: 0x4a0404, roughness: 0.2 });
+    const mudMat = new THREE.MeshStandardMaterial({ color: 0x1b130c, roughness: 0.25, metalness: 0.1 });
+    const goldMat = new THREE.MeshStandardMaterial({ color: 0xd97706, metalness: 0.9, roughness: 0.2 });
+
+    // 20. Al Dillon's Severed Arm & Dual MP5 Last Stand [22, 0, -20]
+    const dillonGroup = new THREE.Group();
+    dillonGroup.position.set(22, 0, -20);
+
+    const severedArm = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.1, 0.45, 6), new THREE.MeshStandardMaterial({ color: 0x6b3b24 }));
+    severedArm.rotation.z = Math.PI / 3;
+    severedArm.position.set(0, 0.2, 0);
+    dillonGroup.add(severedArm);
+
+    [-0.25, 0.25].forEach(mx => {
+      const mp5Body = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.18, 0.75), metalMat);
+      mp5Body.position.set(mx, 0.35, 0);
+      dillonGroup.add(mp5Body);
+      const mp5Mag = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.35, 0.12), metalMat);
+      mp5Mag.position.set(mx, 0.15, 0.1);
+      mp5Mag.rotation.x = -0.25;
+      dillonGroup.add(mp5Mag);
+    });
+
+    const dillonBlood = new THREE.Mesh(new THREE.CircleGeometry(1.6, 8), bloodMat);
+    dillonBlood.rotation.x = -Math.PI / 2;
+    dillonBlood.position.y = 0.02;
+    dillonGroup.add(dillonBlood);
+
+    for (let c = 0; c < 16; c++) {
+      const casing = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.18, 4), goldMat);
+      casing.rotation.set(Math.PI / 2, c * 0.9, 0);
+      casing.position.set((Math.random() - 0.5) * 2.5, 0.04, (Math.random() - 0.5) * 2.5);
+      dillonGroup.add(casing);
+    }
+
+    const dossier = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.08, 0.5), new THREE.MeshStandardMaterial({ color: 0xd4d4d8 }));
+    dossier.position.set(0.6, 0.06, 0.4);
+    dillonGroup.add(dossier);
+
+    group.add(dillonGroup);
+    this.dillonLastStand = {
+      group: dillonGroup,
+      pos: new THREE.Vector3(22, 0, -20),
+      isLooted: false
+    };
+
+    // 21. Poncho Ramirez's Splintered Tree Defilade & 40mm Grenade Cache [-20, 0, 2]
+    const ponchoGroup = new THREE.Group();
+    ponchoGroup.position.set(-20, 0, 2);
+
+    const trunk = new THREE.Mesh(new THREE.CylinderGeometry(1.8, 2.2, 7.0, 10), woodMat);
+    trunk.position.y = 3.5;
+    ponchoGroup.add(trunk);
+
+    const m79Barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.09, 1.1, 6), metalMat);
+    m79Barrel.rotation.x = 0.45;
+    m79Barrel.position.set(1.4, 0.6, 0.8);
+    ponchoGroup.add(m79Barrel);
+
+    const m79Stock = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.22, 0.5), woodMat);
+    m79Stock.position.set(1.4, 0.25, 0.4);
+    m79Stock.rotation.x = 0.45;
+    ponchoGroup.add(m79Stock);
+
+    const ammoCrate = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.5, 0.6), camoMat);
+    ammoCrate.position.set(1.6, 0.25, -0.6);
+    ponchoGroup.add(ammoCrate);
+
+    group.add(ponchoGroup);
+    this.ponchoGrenadeStash = {
+      group: ponchoGroup,
+      pos: new THREE.Vector3(-20, 0.5, 2),
+      isClaimed: false
+    };
+
+    // 22. Rick Hawkins' Glasses & Spec-Ops Encrypted Radio Beacon [-12, 0, -18]
+    const hawkinsGroup = new THREE.Group();
+    hawkinsGroup.position.set(-12, 0, -18);
+
+    const pack = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.9, 0.5), camoMat);
+    pack.position.y = 0.45;
+    hawkinsGroup.add(pack);
+
+    const glasses = new THREE.Mesh(new THREE.TorusGeometry(0.08, 0.015, 4, 8), metalMat);
+    glasses.position.set(0.5, 0.4, 0.2);
+    glasses.rotation.x = Math.PI / 2;
+    hawkinsGroup.add(glasses);
+
+    const beaconAntenna = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 1.8, 4), metalMat);
+    beaconAntenna.position.set(-0.3, 1.1, 0);
+    hawkinsGroup.add(beaconAntenna);
+
+    const beaconLight = new THREE.PointLight(0x22c55e, 1.6, 6.0);
+    beaconLight.position.set(-0.3, 2.0, 0);
+    hawkinsGroup.add(beaconLight);
+
+    group.add(hawkinsGroup);
+    this.hawkinsRadioBeacon = {
+      group: hawkinsGroup,
+      pos: new THREE.Vector3(-12, 0.5, -18),
+      light: beaconLight,
+      isActivated: false
+    };
+
+    // 23. Waterfall Plunge Deep Mud Basin [26.5, 0, -8]
+    const basinGroup = new THREE.Group();
+    basinGroup.position.set(26.5, 0, -8);
+
+    const basinMud = new THREE.Mesh(new THREE.CylinderGeometry(4.5, 5.0, 0.4, 16), mudMat);
+    basinMud.position.y = 0.2;
+    basinMud.receiveShadow = true;
+    basinGroup.add(basinMud);
+
+    const mudBubbles = new THREE.PointLight(0x38bdf8, 1.2, 5.0);
+    mudBubbles.position.set(0, 0.8, 0);
+    basinGroup.add(mudBubbles);
+
+    group.add(basinGroup);
+    this.mudWaterfallBasin = {
+      group: basinGroup,
+      pos: new THREE.Vector3(26.5, 0.2, -8),
+      cooldown: 0
+    };
+
+    this.scene.add(group);
+    this.envObjects.push(group);
+  }
+
+  // Val Verde Master Interaction: Al Dillon's Dual MP5 Last Stand
+  checkDillonStandInteraction(player, ui, audio) {
+    if (!this.dillonLastStand || !player || !player.position || this.dillonLastStand.isLooted) return false;
+    if (player.position.distanceTo(this.dillonLastStand.pos) <= 4.2) {
+      this.dillonLastStand.isLooted = true;
+      if (audio && audio.playDillonDualMP5Firestorm) audio.playDillonDualMP5Firestorm();
+
+      if (player.applyDillonGrit) player.applyDillonGrit(30.0);
+      player.seegsonBoltAmmo = Math.min(18, (player.seegsonBoltAmmo || 0) + 8);
+      player.m77GaussAmmo = Math.min(18, (player.m77GaussAmmo || 0) + 6);
+      if (player.addScore) player.addScore(2500);
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('🎖️ BAROUD D\'HONNEUR DE DILLON (PREDATOR 1987) : DOUBLE MP5 & DOSSIER CIA RÉCUPÉRÉS (+8 BOLTS, +6 GAUSS, BRAVOURE +40% CADENCE 30S) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Val Verde Master Interaction: Poncho Ramirez's 40mm Grenade Launcher Cache
+  checkPonchoStashInteraction(player, ui, audio) {
+    if (!this.ponchoGrenadeStash || !player || !player.position || this.ponchoGrenadeStash.isClaimed) return false;
+    if (player.position.distanceTo(this.ponchoGrenadeStash.pos) <= 4.2) {
+      this.ponchoGrenadeStash.isClaimed = true;
+      if (audio && audio.playM41aGrenadeLaunch) audio.playM41aGrenadeLaunch();
+
+      player.m41aGrenadeCharges = Math.min(8, (player.m41aGrenadeCharges || 0) + 6);
+      player.medicompCharges = Math.min(6, (player.medicompCharges || 0) + 2);
+      if (player.addScore) player.addScore(1800);
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('💣 CACHE DU LANCE-GRENADES 40MM DE PONCHO (PREDATOR 1987) : MUNITIONS EXPLOSIVES RÉCUPÉRÉES (+6 GRENADES 40MM, +2 MEDICOMP) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Val Verde Master Interaction: Rick Hawkins' Encrypted Radio Relay Beacon
+  checkHawkinsRelayInteraction(player, ui, audio) {
+    if (!this.hawkinsRadioBeacon || !player || !player.position || this.hawkinsRadioBeacon.isActivated) return false;
+    if (player.position.distanceTo(this.hawkinsRadioBeacon.pos) <= 4.2) {
+      this.hawkinsRadioBeacon.isActivated = true;
+      if (audio && audio.playHueyRadioStatic) audio.playHueyRadioStatic();
+
+      if (player.applyHawkinsScan) player.applyHawkinsScan(35.0);
+      if (player.addScore) player.addScore(1500);
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('📡 BALISE RADIO TACTIQUE DE HAWKINS (PREDATOR 1987) : FRÉQUENCES CLAN DESTOCKÉES (DÉTECTION INFRAROUGE 35S, +1500 SCORE) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Val Verde Master Interaction: Waterfall Plunge & Deep Mud Basin
+  checkValVerdeMudPlunge(player, ui, audio) {
+    if (!this.mudWaterfallBasin || !player || !player.position) return false;
+    if (player.position.distanceTo(this.mudWaterfallBasin.pos) <= 4.5) {
+      if (this.mudWaterfallBasin.cooldown > 0) return false;
+      this.mudWaterfallBasin.cooldown = 20.0;
+      if (audio && audio.playRiverWaterWadeSquelch) audio.playRiverWaterWadeSquelch();
+
+      player.isMudCamouflaged = true;
+      player.mudCamouflageTimer = 30.0;
+      player.hp = Math.min(player.maxHp, player.hp + 60);
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('🌊 PLONGEON DANS LA CASCADE & BASSIN DE BOUE (PREDATOR 1987) : IMMUNITÉ THERMIQUE ABSOLUE 30S (+60 PV RESTAURÉS) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
   /* === SECTOR 2 & SOFIA LEVEL DESIGN (v56.5): LA Rooftops Helipad, Water Tower & Spire (Predator 2 1990) === */
   buildLARooftopExpansionProps() {
     const group = new THREE.Group();
@@ -13495,6 +13849,429 @@ export class EnvironmentManager {
         }
       }
     }
+
+    // v63.0 The Predator (2018) Stargazer Real-Time Loops
+    if (this.stargazerVivisection && this.stargazerVivisection.hologram) {
+      this.stargazerVivisection.hologram.rotation.y += delta * 1.2;
+    }
+    if (this.crashedArkStarship && this.crashedArkStarship.shieldRing) {
+      this.crashedArkStarship.shieldRing.rotation.z += delta * 2.0;
+      if (this.crashedArkStarship.light) {
+        this.crashedArkStarship.light.intensity = 2.0 + Math.sin(Date.now() * 0.008) * 1.0;
+      }
+    }
+    if (this.predatorKillerPod && !this.predatorKillerPod.isClaimed && this.predatorKillerPod.light) {
+      this.predatorKillerPod.light.intensity = 1.4 + Math.sin(Date.now() * 0.006) * 0.6;
+    }
+  }
+
+  /* === SECTOR 9: PROJET STARGAZER & FORÊT DU CRASH (THE PREDATOR 2018) === */
+  buildStargazerLabProps() {
+    const group = new THREE.Group();
+    const steelMat = new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.85, roughness: 0.25 });
+    const darkFloorMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.7, metalness: 0.3 });
+    const greenFluidMat = new THREE.MeshBasicMaterial({ color: 0x22c55e, transparent: true, opacity: 0.75 });
+    const holoMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.45 });
+    const yellowStripeMat = new THREE.MeshBasicMaterial({ color: 0xfacc15 });
+
+    // 1. Central Vivisection Operating Table [0, 0, 0]
+    const tableGroup = new THREE.Group();
+    tableGroup.position.set(0, 0, 0);
+
+    const basePlatform = new THREE.Mesh(new THREE.CylinderGeometry(4.2, 4.6, 0.3, 16), darkFloorMat);
+    basePlatform.position.y = 0.15;
+    tableGroup.add(basePlatform);
+
+    // Hazard yellow border ring
+    const hazardRing = new THREE.Mesh(new THREE.TorusGeometry(4.3, 0.08, 4, 24), yellowStripeMat);
+    hazardRing.rotation.x = Math.PI / 2;
+    hazardRing.position.y = 0.31;
+    tableGroup.add(hazardRing);
+
+    // Surgical Table Bed
+    const tableBed = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.8, 3.8), steelMat);
+    tableBed.position.y = 0.7;
+    tableBed.castShadow = true;
+    tableGroup.add(tableBed);
+
+    // Luminescent Yautja green blood splatters
+    const bloodPool = new THREE.Mesh(new THREE.PlaneGeometry(1.8, 2.6), greenFluidMat);
+    bloodPool.rotation.x = -Math.PI / 2;
+    bloodPool.position.set(0, 1.11, 0);
+    tableGroup.add(bloodPool);
+
+    // Holographic vital scanner arc above table
+    const holoArc = new THREE.Mesh(new THREE.TorusGeometry(1.4, 0.04, 6, 16, Math.PI), holoMat);
+    holoArc.position.set(0, 2.2, 0);
+    holoArc.rotation.z = Math.PI;
+    tableGroup.add(holoArc);
+
+    const tableLight = new THREE.PointLight(0x22c55e, 2.4, 8.0);
+    tableLight.position.set(0, 1.8, 0);
+    tableGroup.add(tableLight);
+
+    group.add(tableGroup);
+    this.stargazerVivisection = {
+      group: tableGroup,
+      pos: new THREE.Vector3(0, 0.7, 0),
+      hologram: holoArc,
+      isHarvested: false
+    };
+
+    // 2. Stargazer Cryogenic Stasis Chamber & "Predator Killer" Exosuit Capsule [-14, 0, 10]
+    const podGroup = new THREE.Group();
+    podGroup.position.set(-14, 0, 10);
+
+    const podFrame = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 1.8, 3.8, 12), steelMat);
+    podFrame.position.y = 1.9;
+    podGroup.add(podFrame);
+
+    const podGlass = new THREE.Mesh(new THREE.CylinderGeometry(1.3, 1.3, 2.8, 12), new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.55 }));
+    podGlass.position.y = 1.9;
+    podGroup.add(podGlass);
+
+    // Nanotech gauntlet inside capsule
+    const nanoGauntlet = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.8, 0.4), new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.95 }));
+    nanoGauntlet.position.y = 1.8;
+    podGroup.add(nanoGauntlet);
+
+    const podLight = new THREE.PointLight(0x38bdf8, 2.2, 7.0);
+    podLight.position.set(0, 2.2, 0);
+    podGroup.add(podLight);
+
+    group.add(podGroup);
+    this.predatorKillerPod = {
+      group: podGroup,
+      pos: new THREE.Vector3(-14, 1.8, 10),
+      light: podLight,
+      isClaimed: false
+    };
+
+    // 3. Sean Traeger's Reversed Plasma Cannon Weapons Locker [-8, 0, -12]
+    const lockerGroup = new THREE.Group();
+    lockerGroup.position.set(-8, 0, -12);
+
+    const lockerBox = new THREE.Mesh(new THREE.BoxGeometry(1.8, 2.4, 0.8), steelMat);
+    lockerBox.position.y = 1.2;
+    lockerGroup.add(lockerBox);
+
+    // Mounted plasma cannon rack
+    const cannonMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.1, 1.2, 8), new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.9 }));
+    cannonMesh.rotation.x = Math.PI / 2;
+    cannonMesh.position.set(0, 1.4, 0.45);
+    lockerGroup.add(cannonMesh);
+
+    group.add(lockerGroup);
+    this.traegerWeaponLocker = {
+      group: lockerGroup,
+      pos: new THREE.Vector3(-8, 1.2, -12),
+      isLooted: false
+    };
+
+    // 4. High-Voltage Containment Shield Pylons [10, 0, -6]
+    const pylonGroup = new THREE.Group();
+    pylonGroup.position.set(10, 0, -6);
+
+    for (let p = 0; p < 3; p++) {
+      const a = (p / 3) * Math.PI * 2;
+      const pylon = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.35, 4.2, 6), steelMat);
+      pylon.position.set(Math.cos(a) * 2.8, 2.1, Math.sin(a) * 2.8);
+      pylonGroup.add(pylon);
+
+      const pLight = new THREE.PointLight(0x38bdf8, 1.4, 6.0);
+      pLight.position.set(Math.cos(a) * 2.8, 4.0, Math.sin(a) * 2.8);
+      pylonGroup.add(pLight);
+      this.stargazerShieldPylons.push({ mesh: pylon, light: pLight });
+    }
+
+    group.add(pylonGroup);
+    this.scene.add(group);
+    this.envObjects.push(group);
+  }
+
+  buildStargazerFacilityExpansionProps() {
+    const group = new THREE.Group();
+    const shipHullMat = new THREE.MeshStandardMaterial({ color: 0x1f2421, metalness: 0.92, roughness: 0.22 });
+    const metalMat = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.85, roughness: 0.3 });
+    const woodMat = new THREE.MeshStandardMaterial({ color: 0x3d2012, roughness: 0.95 });
+    const bloodMat = new THREE.MeshStandardMaterial({ color: 0x4a0404, roughness: 0.25 });
+    const blueShieldMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.5 });
+
+    // 5. Crashed Fugitive Ark Starship Fuselage [22, 0, -18] (+5.4m elevation)
+    const shipGroup = new THREE.Group();
+    shipGroup.position.set(22, 0, -18);
+
+    // Tilted main hull (length 18m, radius 3.5m)
+    const hull = new THREE.Mesh(new THREE.CylinderGeometry(2.4, 3.8, 16.0, 10), shipHullMat);
+    hull.rotation.set(0.35, 0.45, Math.PI / 2);
+    hull.position.y = 2.7;
+    hull.castShadow = true;
+    hull.receiveShadow = true;
+    shipGroup.add(hull);
+
+    // Walkway platform on top of crash hull (+5.4m)
+    const deck = new THREE.Mesh(new THREE.BoxGeometry(6.2, 0.4, 5.0), metalMat);
+    deck.position.set(0, 5.4, 0);
+    deck.receiveShadow = true;
+    shipGroup.add(deck);
+
+    // Forcefield Cloaking Deflector Ring
+    const shieldRing = new THREE.Mesh(new THREE.TorusGeometry(3.2, 0.12, 6, 24), blueShieldMat);
+    shieldRing.position.set(0, 5.4, 0);
+    shieldRing.rotation.x = Math.PI / 2;
+    shipGroup.add(shieldRing);
+
+    const shipLight = new THREE.PointLight(0x38bdf8, 2.5, 12.0);
+    shipLight.position.set(0, 6.2, 0);
+    shipGroup.add(shipLight);
+
+    group.add(shipGroup);
+    this.crashedArkStarship = {
+      group: shipGroup,
+      pos: new THREE.Vector3(22, 5.4, -18),
+      shieldRing,
+      light: shipLight,
+      isShieldOverloaded: false
+    };
+
+    // 6. Quinn McKenna's Rooftop Sniper Perch & TAC-50 Overlook [-20, 0, -22] (+6.8m elevation)
+    const perchGroup = new THREE.Group();
+    perchGroup.position.set(-20, 0, -22);
+
+    const towerPillars = new THREE.Mesh(new THREE.BoxGeometry(5.8, 6.8, 5.8), metalMat);
+    towerPillars.position.y = 3.4;
+    perchGroup.add(towerPillars);
+
+    const perchRoof = new THREE.Mesh(new THREE.BoxGeometry(6.4, 0.4, 6.4), metalMat);
+    perchRoof.position.y = 6.8;
+    perchRoof.receiveShadow = true;
+    perchGroup.add(perchRoof);
+
+    // Heavy McMillan TAC-50 Sniper Rifle on sandbag
+    const sandbag = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.4, 0.6), new THREE.MeshStandardMaterial({ color: 0x78716c }));
+    sandbag.position.set(0, 7.2, 2.2);
+    perchGroup.add(sandbag);
+
+    const rifle = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.05, 1.8, 6), new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.95 }));
+    rifle.rotation.x = Math.PI / 2;
+    rifle.position.set(0, 7.5, 2.2);
+    perchGroup.add(rifle);
+
+    group.add(perchGroup);
+    this.quinnSniperPerch = {
+      group: perchGroup,
+      pos: new THREE.Vector3(-20, 6.8, -22),
+      isLooted: false
+    };
+
+    // 7. Genetically Engineered Predator Hounds Kennel [18, 0, 14]
+    const kennelGroup = new THREE.Group();
+    kennelGroup.position.set(18, 0, 14);
+
+    // Torn open steel cage enclosure
+    for (let b = 0; b < 6; b++) {
+      const bar = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 3.2, 6), metalMat);
+      bar.position.set(-2.0 + b * 0.8, 1.6, 1.8);
+      if (b === 2 || b === 3) bar.rotation.z = (Math.random() - 0.5) * 0.8; // Bent bars
+      kennelGroup.add(bar);
+    }
+
+    // Mutated DNA Sequencing Vial on crate
+    const crate = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.8, 1.0), new THREE.MeshStandardMaterial({ color: 0x334155 }));
+    crate.position.set(0, 0.4, 0);
+    kennelGroup.add(crate);
+
+    const vialLight = new THREE.PointLight(0xa855f7, 1.8, 6.0);
+    vialLight.position.set(0, 1.2, 0);
+    kennelGroup.add(vialLight);
+
+    group.add(kennelGroup);
+    this.houndKennelStargazer = {
+      group: kennelGroup,
+      pos: new THREE.Vector3(18, 0.8, 14),
+      isCollected: false
+    };
+
+    // 8. Overturned "Loonies" Military Transport Bus [-24, 0, 4] (+3.2m elevation)
+    const busGroup = new THREE.Group();
+    busGroup.position.set(-24, 0, 4);
+
+    const busBody = new THREE.Mesh(new THREE.BoxGeometry(3.6, 2.8, 8.5), new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.6 }));
+    busBody.rotation.z = Math.PI / 2.3; // Tilted on side
+    busBody.position.y = 1.6;
+    busBody.castShadow = true;
+    busBody.receiveShadow = true;
+    busGroup.add(busBody);
+
+    // Wheels
+    [-1.6, 1.6].forEach(wz => {
+      const wheel = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.6, 0.4, 12), new THREE.MeshStandardMaterial({ color: 0x09090b }));
+      wheel.rotation.z = Math.PI / 2;
+      wheel.position.set(1.6, 1.4, wz * 2.0);
+      busGroup.add(wheel);
+    });
+
+    group.add(busGroup);
+    this.looniesTransportBus = {
+      group: busGroup,
+      pos: new THREE.Vector3(-24, 3.2, 4),
+      isClaimed: false
+    };
+
+    // 9. Giant Shattered Oak Tracking Arena Overlook [0, 0, 26] (+4.5m elevation)
+    const oakGroup = new THREE.Group();
+    oakGroup.position.set(0, 0, 26);
+
+    const oakTrunk = new THREE.Mesh(new THREE.CylinderGeometry(2.4, 3.2, 5.0, 10), woodMat);
+    oakTrunk.position.y = 2.5;
+    oakTrunk.castShadow = true;
+    oakTrunk.receiveShadow = true;
+    oakGroup.add(oakTrunk);
+
+    // Shattered jagged stump top (+4.5m)
+    const shatteredTop = new THREE.Mesh(new THREE.BoxGeometry(4.2, 0.4, 4.2), woodMat);
+    shatteredTop.position.y = 4.5;
+    shatteredTop.receiveShadow = true;
+    oakGroup.add(shatteredTop);
+
+    // Huge fallen fractured bough forming a ramp
+    const rampBough = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 1.1, 7.5, 8), woodMat);
+    rampBough.rotation.x = Math.atan2(4.5, 6.0);
+    rampBough.position.set(0, 2.25, -3.2);
+    rampBough.castShadow = true;
+    oakGroup.add(rampBough);
+
+    group.add(oakGroup);
+    this.shatteredOakArena = {
+      group: oakGroup,
+      pos: new THREE.Vector3(0, 4.5, 26)
+    };
+
+    this.scene.add(group);
+    this.envObjects.push(group);
+  }
+
+  // Stargazer Interaction: Central Vivisection Table
+  checkStargazerVivisectionInteraction(player, ui, audio) {
+    if (!this.stargazerVivisection || !player || !player.position || this.stargazerVivisection.isHarvested) return false;
+    if (player.position.distanceTo(this.stargazerVivisection.pos) <= 4.2) {
+      this.stargazerVivisection.isHarvested = true;
+      if (audio && audio.playAlienFloraNeurotoxinHiss) audio.playAlienFloraNeurotoxinHiss();
+
+      player.plasmaEnergy = player.maxPlasmaEnergy || 100;
+      if (player.applyNeurotoxinBlade) player.applyNeurotoxinBlade(35.0);
+      if (player.addScore) player.addScore(2000);
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('🧬 TABLE DE VIVISECTION DU FUGITIVE PREDATOR (THE PREDATOR 2018) : FLUIDES RÉGÉNÉRÉS (+100% PLASMA, LAMES TOXIQUES 35S, +2000 SCORE) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Stargazer Interaction: Predator Killer Nanotech Exosuit Pod
+  checkPredatorKillerPodInteraction(player, ui, audio) {
+    if (!this.predatorKillerPod || !player || !player.position || this.predatorKillerPod.isClaimed) return false;
+    if (player.position.distanceTo(this.predatorKillerPod.pos) <= 4.5) {
+      this.predatorKillerPod.isClaimed = true;
+      if (audio && audio.playPredatorKillerNanoSuitDeploy) audio.playPredatorKillerNanoSuitDeploy();
+
+      if (player.applyPredatorKillerNano) player.applyPredatorKillerNano(35.0);
+      player.recordTrophy('Exosquelette Nanotechnologique "Predator Killer" (The Predator 2018)', 3500);
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('🦾 EXOSQUELETTE "PREDATOR KILLER" ACTIVÉ (THE PREDATOR 2018) : BLINDAGE NANOTECH (+100 SHIELD, +45% DÉGÂTS CRITIQUES 35S, +3500 HONNEUR) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Stargazer Interaction: Quinn McKenna's Rooftop Sniper Perch
+  checkQuinnSniperPerchInteraction(player, ui, audio) {
+    if (!this.quinnSniperPerch || !player || !player.position || this.quinnSniperPerch.isLooted) return false;
+    if (player.position.y >= 5.5 && player.position.distanceTo(this.quinnSniperPerch.pos) <= 4.5) {
+      this.quinnSniperPerch.isLooted = true;
+      if (audio && audio.playSniperRifleBoltCycle) audio.playSniperRifleBoltCycle();
+
+      player.gaussSlugs = (player.gaussSlugs || 0) + 12;
+      player.m77GaussAmmo = (player.m77GaussAmmo || 0) + 8;
+      if (player.addScore) player.addScore(2500);
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('🎯 NID SNIPER TAC-50 DE QUINN MCKENNA (THE PREDATOR 2018) : MUNITIONS ANTIBLINDAGE RÉCUPÉRÉES (+12 GAUSS SLUGS, +2500 SCORE) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Stargazer Interaction: Sean Traeger's Reversed Plasma Cannon Weapons Locker
+  checkTraegerWeaponsLockerInteraction(player, ui, audio) {
+    if (!this.traegerWeaponLocker || !player || !player.position || this.traegerWeaponLocker.isLooted) return false;
+    if (player.position.distanceTo(this.traegerWeaponLocker.pos) <= 4.2) {
+      this.traegerWeaponLocker.isLooted = true;
+      if (audio && audio.playSuperPredatorShipRemoteBeep) audio.playSuperPredatorShipRemoteBeep();
+
+      player.plasmaEnergy = Math.min(player.maxPlasmaEnergy || 100, (player.plasmaEnergy || 0) + 60);
+      player.m41aGrenadeCharges = Math.min(8, (player.m41aGrenadeCharges || 0) + 4);
+      if (player.addScore) player.addScore(2000);
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('🔋 ARSENAL DE SEAN TRAEGER (THE PREDATOR 2018) : CANONS PLASMA D\'ÉPAULE PIRATÉS (+60% PLASMA, +4 GRENADES) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Stargazer Interaction: Overturned "Loonies" Transport Bus
+  checkLooniesBusInteraction(player, ui, audio) {
+    if (!this.looniesTransportBus || !player || !player.position || this.looniesTransportBus.isClaimed) return false;
+    if (player.position.distanceTo(this.looniesTransportBus.pos) <= 4.8) {
+      this.looniesTransportBus.isClaimed = true;
+      if (audio && audio.playCuchilloAcousticDecoy) audio.playCuchilloAcousticDecoy();
+
+      player.medicompCharges = Math.min(6, (player.medicompCharges || 0) + 3);
+      player.seegsonBoltAmmo = Math.min(18, (player.seegsonBoltAmmo || 0) + 6);
+      if (player.addScore) player.addScore(2200);
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('🚌 BUS MILITAIRE DES "LOONIES" (THE PREDATOR 2018) : TROUSSE MÉDICALE DE CASEY BRACKET (+3 MEDICOMP, +6 BOLTS, +2200 SCORE) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Stargazer Interaction: Crashed Ark Starship Forcefield Shield Generator
+  checkStargazerShieldGenerator(player, ui, audio, horde) {
+    if (!this.crashedArkStarship || !player || !player.position || this.crashedArkStarship.isShieldOverloaded) return false;
+    if (player.position.y >= 4.5 && player.position.distanceTo(this.crashedArkStarship.pos) <= 4.8) {
+      this.crashedArkStarship.isShieldOverloaded = true;
+      if (audio && audio.playArkShipPlasmaShieldDeflection) audio.playArkShipPlasmaShieldDeflection();
+
+      // Electrostatic shockwave disrupting all nearby enemies
+      if (horde && horde.aliens) {
+        horde.aliens.forEach(alien => {
+          if (alien && alien.mesh && alien.hp > 0 && alien.mesh.position.distanceTo(this.crashedArkStarship.pos) <= 25.0) {
+            alien.hp -= 450;
+            alien.isStunned = true;
+            alien.stunTimer = 4.0;
+          }
+        });
+      }
+
+      player.musouEnergy = player.maxMusouEnergy || 100;
+      if (player.addScore) player.addScore(3000);
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('⚡ CHAMP DE FORCE DU VAISSEAU ARK SURCHARGÉ (THE PREDATOR 2018) : DÉCHARGE ÉLECTROSTATIQUE 25M (450 DMG, STUN 4S, MUSOU MAX) !', 'warning');
+      }
+      return true;
+    }
+    return false;
   }
 }
 

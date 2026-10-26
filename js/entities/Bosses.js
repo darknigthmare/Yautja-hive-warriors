@@ -30,8 +30,9 @@ export class BossManager {
     const isOffspring = type === 'the_offspring';
     const isTrilobite = type === 'trilobite_prime';
     const isBerserker = type === 'berserker_super_predator';
+    const isUltimateUpgrade = type === 'ultimate_upgrade_predator';
 
-    const hp = isMatriarchTitan ? 10000 : (isRogueKing ? 9500 : (isBerserker ? 8800 : (isEngineer ? 8500 : (isImperial ? 8000 : (isTrilobite ? 7000 : (isPredalienAbomination ? 6500 : (isEmpress ? 6000 : (isPredalienQueen ? 5000 : (isOffspring ? 4500 : 3000)))))))));
+    const hp = isMatriarchTitan ? 10000 : (isRogueKing ? 9500 : (isUltimateUpgrade ? 9200 : (isBerserker ? 8800 : (isEngineer ? 8500 : (isImperial ? 8000 : (isTrilobite ? 7000 : (isPredalienAbomination ? 6500 : (isEmpress ? 6000 : (isPredalienQueen ? 5000 : (isOffspring ? 4500 : 3000))))))))));
 
     this.activeBoss = {
       type: type,
@@ -52,7 +53,9 @@ export class BossManager {
       chargeTimer: 0
     };
 
-    if (isRogueKing) {
+    if (isUltimateUpgrade) {
+      if (this.audioEngine.playUltimatePredatorRoar) this.audioEngine.playUltimatePredatorRoar();
+    } else if (isRogueKing) {
       if (this.audioEngine.playRogueKingEarthquakeRoar) this.audioEngine.playRogueKingEarthquakeRoar();
       if (this.audioEngine.playYautjaRoar) this.audioEngine.playYautjaRoar();
     } else if (isEngineer) {
@@ -438,6 +441,131 @@ export class BossManager {
     return group;
   }
 
+  /* === THE PREDATOR (2018): 3.3m Ultimate Upgrade Genetically Hybridized Predator Boss Mesh === */
+  buildUltimatePredatorMesh(scale = 3.3) {
+    const group = new THREE.Group();
+
+    // Genetically modified armored dermal exoskeleton
+    const dermalMat = new THREE.MeshStandardMaterial({
+      color: 0x1e2024,
+      roughness: 0.42,
+      metalness: 0.65
+    });
+
+    // Dark carbonized chitin carapace plates
+    const carapaceMat = new THREE.MeshStandardMaterial({
+      color: 0x111317,
+      roughness: 0.28,
+      metalness: 0.85
+    });
+
+    // Bone / razor tooth material
+    const fangMat = new THREE.MeshStandardMaterial({
+      color: 0xf3f4f6,
+      roughness: 0.35,
+      metalness: 0.1
+    });
+
+    const bladeMat = new THREE.MeshStandardMaterial({
+      color: 0xa1a1aa,
+      metalness: 0.95,
+      roughness: 0.15
+    });
+
+    const brassMat = new THREE.MeshStandardMaterial({
+      color: 0xd97706,
+      metalness: 0.9,
+      roughness: 0.2
+    });
+
+    // 1. Colossal Muscular Torso & Armored Dermal Carapace
+    const torso = new THREE.Mesh(new THREE.BoxGeometry(1.6 * scale, 2.0 * scale, 1.1 * scale), dermalMat);
+    torso.position.y = 2.4 * scale;
+    torso.castShadow = true;
+    group.add(torso);
+
+    const chestPlates = new THREE.Mesh(new THREE.BoxGeometry(1.4 * scale, 1.2 * scale, 0.3 * scale), carapaceMat);
+    chestPlates.position.set(0, 2.7 * scale, 0.6 * scale);
+    group.add(chestPlates);
+
+    // 2. Unmasked Terrifying Genetic Head & Flared Mandibles
+    const head = new THREE.Mesh(new THREE.BoxGeometry(0.9 * scale, 1.1 * scale, 1.0 * scale), dermalMat);
+    head.position.set(0, 3.7 * scale, 0.2 * scale);
+    group.add(head);
+
+    // 4 Flared Mandibles
+    [
+      { x: -0.38, y: 3.35, z: 0.55, rx: 0.4, ry: 0.5 },
+      { x: 0.38, y: 3.35, z: 0.55, rx: 0.4, ry: -0.5 },
+      { x: -0.42, y: 3.15, z: 0.5, rx: -0.3, ry: 0.4 },
+      { x: 0.42, y: 3.15, z: 0.5, rx: -0.3, ry: -0.4 }
+    ].forEach(m => {
+      const mand = new THREE.Mesh(new THREE.ConeGeometry(0.12 * scale, 0.55 * scale, 5), fangMat);
+      mand.position.set(m.x * scale, m.y * scale, m.z * scale);
+      mand.rotation.set(m.rx, m.ry, 0);
+      group.add(mand);
+    });
+
+    // Glowing Piercing Amber Eyes
+    const eyeMat = new THREE.MeshBasicMaterial({ color: 0xf59e0b });
+    [-0.22, 0.22].forEach(ex => {
+      const eye = new THREE.Mesh(new THREE.SphereGeometry(0.07 * scale, 6, 6), eyeMat);
+      eye.position.set(ex * scale, 3.8 * scale, 0.72 * scale);
+      group.add(eye);
+    });
+
+    // 3. Thick Heavy Dreadlocks with Tribal Brass Clasps
+    const dreadMat = new THREE.MeshStandardMaterial({ color: 0x09090b, roughness: 0.75 });
+    for (let d = 0; d < 18; d++) {
+      const dread = new THREE.Mesh(new THREE.CylinderGeometry(0.065 * scale, 0.04 * scale, 1.8 * scale, 6), dreadMat);
+      const angle = (d / 18) * Math.PI - Math.PI / 2;
+      dread.position.set(Math.cos(angle) * 0.52 * scale, 3.5 * scale, -0.4 * scale);
+      dread.rotation.set(-0.55, 0, Math.sin(angle) * 0.4);
+      group.add(dread);
+
+      if (d % 3 === 0) {
+        const ring = new THREE.Mesh(new THREE.TorusGeometry(0.07 * scale, 0.02 * scale, 4, 8), brassMat);
+        ring.position.set(Math.cos(angle) * 0.52 * scale, 3.1 * scale, -0.55 * scale);
+        group.add(ring);
+      }
+    }
+
+    // 4. Heavy Shoulder Plasma Cannon Mount
+    const gunPod = new THREE.Mesh(new THREE.BoxGeometry(0.4 * scale, 0.35 * scale, 0.8 * scale), carapaceMat);
+    gunPod.position.set(-0.85 * scale, 3.5 * scale, -0.1 * scale);
+    group.add(gunPod);
+
+    const gunBarrel = new THREE.Mesh(new THREE.CylinderGeometry(0.08 * scale, 0.08 * scale, 1.0 * scale, 8), carapaceMat);
+    gunBarrel.rotation.x = Math.PI / 2;
+    gunBarrel.position.set(-0.85 * scale, 3.5 * scale, 0.45 * scale);
+    group.add(gunBarrel);
+
+    // 5. Dual Forearms with Integrated Retractable Heavy Blades
+    [-1, 1].forEach(side => {
+      const arm = new THREE.Mesh(new THREE.BoxGeometry(0.4 * scale, 1.6 * scale, 0.45 * scale), dermalMat);
+      arm.position.set(side * 1.05 * scale, 2.5 * scale, 0.2 * scale);
+      group.add(arm);
+
+      const gauntlet = new THREE.Mesh(new THREE.BoxGeometry(0.46 * scale, 0.8 * scale, 0.5 * scale), carapaceMat);
+      gauntlet.position.set(side * 1.05 * scale, 2.0 * scale, 0.2 * scale);
+      group.add(gauntlet);
+
+      const dualBlade = new THREE.Mesh(new THREE.BoxGeometry(0.1 * scale, 0.04 * scale, 2.4 * scale), bladeMat);
+      dualBlade.position.set(side * 1.15 * scale, 1.8 * scale, 1.4 * scale);
+      group.add(dualBlade);
+    });
+
+    // 6. Colossal Muscular Legs & Armored Greaves
+    [-0.5, 0.5].forEach(lx => {
+      const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.28 * scale, 0.2 * scale, 2.0 * scale, 8), carapaceMat);
+      leg.position.set(lx * scale, 1.0 * scale, 0);
+      leg.castShadow = true;
+      group.add(leg);
+    });
+
+    return group;
+  }
+
   /* === CHANTIER 2 (v52.0): Rogue King Xenomorph Prime Boss Mesh (Aliens: Rogue 1993 Lore) === */
   buildRogueKingMesh(scale = 3.2) {
     const group = new THREE.Group();
@@ -546,6 +674,9 @@ export class BossManager {
     }
     if (type === 'berserker_super_predator') {
       return this.buildBerserkerPredatorMesh(2.6);
+    }
+    if (type === 'ultimate_upgrade_predator') {
+      return this.buildUltimatePredatorMesh(3.3);
     }
 
     const group = new THREE.Group();
@@ -1499,6 +1630,51 @@ export class BossManager {
         player.takeDamage(420, false, this.activeBoss);
         if (window.gameInstance && window.gameInstance.particles && window.gameInstance.particles.emitSparks) {
           window.gameInstance.particles.emitSparks(player.position.clone().add(new THREE.Vector3(0, 1.4, 0)), 24);
+        }
+      }
+    } else if (this.activeBoss.type === 'ultimate_upgrade_predator') {
+      // The Predator (2018): 3.3m Ultimate Upgrade Predator AI
+      if (!this.activeBoss.cannonCooldown) this.activeBoss.cannonCooldown = 3.5;
+      this.activeBoss.cannonCooldown -= delta;
+
+      if (!this.activeBoss.roarCooldown) this.activeBoss.roarCooldown = 6.0;
+      this.activeBoss.roarCooldown -= delta;
+
+      if (dist > 0.1) {
+        this.activeBoss.mesh.lookAt(player.position.x, this.activeBoss.mesh.position.y, player.position.z);
+      }
+
+      // 1. Long range: Shoulder Plasma Cannon Blast
+      if (dist > 8.0 && dist <= 42.0 && this.activeBoss.cannonCooldown <= 0) {
+        this.activeBoss.cannonCooldown = 4.0;
+        if (this.audioEngine && this.audioEngine.playBurnerHeavyPlasmaBlast) {
+          this.audioEngine.playBurnerHeavyPlasmaBlast();
+        }
+        for (let b = 0; b < 2; b++) {
+          setTimeout(() => {
+            if (this.activeBoss && player) {
+              const pDir = player.position.clone().sub(this.activeBoss.mesh.position).normalize();
+              this.spawnAcidSpit(this.activeBoss.mesh.position.clone().add(new THREE.Vector3(0, 3.8, 0)), pDir);
+            }
+          }, b * 200);
+        }
+        if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
+          window.gameInstance.ui.showAnnouncement('💥 CANON D\'ÉPAULE DE L\'ULTIMATE PREDATOR EN SALVE !', 'warning');
+        }
+      }
+
+      // 2. Melee range: Titanic Roar Stun & Dual Wristblade Cleave (480 Dmg)
+      if (dist <= 7.2 && this.activeBoss.roarCooldown <= 0) {
+        this.activeBoss.roarCooldown = 5.0;
+        if (this.audioEngine && this.audioEngine.playUltimatePredatorRoar) {
+          this.audioEngine.playUltimatePredatorRoar();
+        }
+        player.takeDamage(480, false, this.activeBoss);
+        if (window.gameInstance && window.gameInstance.particles && window.gameInstance.particles.emitSparks) {
+          window.gameInstance.particles.emitSparks(player.position.clone().add(new THREE.Vector3(0, 1.6, 0)), 30);
+        }
+        if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
+          window.gameInstance.ui.showAnnouncement('⚠️ IMPACT TITANESQUE DE L\'ULTIMATE PREDATOR (480 DMG) !', 'error');
         }
       }
     } else if (this.activeBoss.type === 'rogue_king_prime') {

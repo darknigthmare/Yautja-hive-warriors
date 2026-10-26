@@ -656,6 +656,26 @@ class GameApp {
           // Handled Royce's Bone Gong Strike & Thermal Flare Braziers (Predators 2010)!
         } else if (this.env && this.env.checkIsabelleSniperStash && this.env.checkIsabelleSniperStash(this.player, this.ui, this.audio)) {
           // Handled Isabelle's Blaser R93 Precision Sniper Ammo Stash (Predators 2010)!
+        } else if (this.env && this.env.checkDillonStandInteraction && this.env.checkDillonStandInteraction(this.player, this.ui, this.audio)) {
+          // Handled Al Dillon's Dual MP5 Last Stand (Predator 1987)!
+        } else if (this.env && this.env.checkPonchoStashInteraction && this.env.checkPonchoStashInteraction(this.player, this.ui, this.audio)) {
+          // Handled Poncho Ramirez's 40mm Grenade Cache (Predator 1987)!
+        } else if (this.env && this.env.checkHawkinsRelayInteraction && this.env.checkHawkinsRelayInteraction(this.player, this.ui, this.audio)) {
+          // Handled Rick Hawkins' Spec-Ops Radio Relay Beacon (Predator 1987)!
+        } else if (this.env && this.env.checkValVerdeMudPlunge && this.env.checkValVerdeMudPlunge(this.player, this.ui, this.audio)) {
+          // Handled Val Verde Waterfall Mud Plunge (Predator 1987)!
+        } else if (this.env && this.env.checkStargazerVivisectionInteraction && this.env.checkStargazerVivisectionInteraction(this.player, this.ui, this.audio)) {
+          // Handled Fugitive Predator Vivisection Table (The Predator 2018)!
+        } else if (this.env && this.env.checkPredatorKillerPodInteraction && this.env.checkPredatorKillerPodInteraction(this.player, this.ui, this.audio)) {
+          // Handled Predator Killer Nanotech Pod Deployment (The Predator 2018)!
+        } else if (this.env && this.env.checkQuinnSniperPerchInteraction && this.env.checkQuinnSniperPerchInteraction(this.player, this.ui, this.audio)) {
+          // Handled Quinn McKenna's TAC-50 Rooftop Perch (The Predator 2018)!
+        } else if (this.env && this.env.checkTraegerWeaponsLockerInteraction && this.env.checkTraegerWeaponsLockerInteraction(this.player, this.ui, this.audio)) {
+          // Handled Sean Traeger's Reversed Plasma Cannon Weapons Locker (The Predator 2018)!
+        } else if (this.env && this.env.checkLooniesBusInteraction && this.env.checkLooniesBusInteraction(this.player, this.ui, this.audio)) {
+          // Handled Loonies Military Transport Bus & Casey Bracket Medkit (The Predator 2018)!
+        } else if (this.env && this.env.checkStargazerShieldGenerator && this.env.checkStargazerShieldGenerator(this.player, this.ui, this.audio, this.horde)) {
+          // Handled Crashed Fugitive Ark Starship Forcefield Shield Overload (The Predator 2018)!
         } else if (this.env && this.env.checkScoutShipConsoleInteraction && this.env.checkScoutShipConsoleInteraction(this.player.position, this.ui, this.audio, this.horde, this.player)) {
           // Handled Crashed Scout Ship Telemetry Scan (AVP: Requiem 2007)!
         } else if (this.env && this.env.checkCharonLabConsoleInteraction && this.env.checkCharonLabConsoleInteraction(this.player.position, this.horde, this.ui, this.audio)) {
@@ -1973,6 +1993,11 @@ class GameApp {
         tHonor = 8000;
         this.player.royalJellyFlasks += 4;
         if (this.audio && this.audio.playBadBloodBerserkerRoar) this.audio.playBadBloodBerserkerRoar();
+      } else if (bType === 'ultimate_upgrade_predator') {
+        tName = "Exosquelette Chitinique Dermal & ADN Hybride de l'Ultimate Upgrade Predator (The Predator 2018)";
+        tHonor = 9000;
+        this.player.royalJellyFlasks += 5;
+        if (this.audio && this.audio.playUltimatePredatorRoar) this.audio.playUltimatePredatorRoar();
       }
 
       this.player.recordTrophy(tName, tHonor);
@@ -3432,6 +3457,78 @@ class GameApp {
         if (isNearIsabelle) isabellePrompt.classList.remove('hidden');
         else isabellePrompt.classList.add('hidden');
       }
+
+      // v63.0 Val Verde Master Prompts (Predator 1987)
+      const isNearDillon = this.env.dillonLastStand && !this.env.dillonLastStand.isLooted && this.player && this.player.position.distanceTo(this.env.dillonLastStand.pos) <= 4.2;
+      const dillonPrompt = document.getElementById('dillon-mp5-prompt');
+      if (dillonPrompt) {
+        if (isNearDillon) dillonPrompt.classList.remove('hidden');
+        else dillonPrompt.classList.add('hidden');
+      }
+
+      const isNearPoncho = this.env.ponchoGrenadeStash && !this.env.ponchoGrenadeStash.isClaimed && this.player && this.player.position.distanceTo(this.env.ponchoGrenadeStash.pos) <= 4.2;
+      const ponchoPrompt = document.getElementById('poncho-grenade-prompt');
+      if (ponchoPrompt) {
+        if (isNearPoncho) ponchoPrompt.classList.remove('hidden');
+        else ponchoPrompt.classList.add('hidden');
+      }
+
+      const isNearHawkins = this.env.hawkinsRadioBeacon && !this.env.hawkinsRadioBeacon.isActivated && this.player && this.player.position.distanceTo(this.env.hawkinsRadioBeacon.pos) <= 4.2;
+      const hawkinsPrompt = document.getElementById('hawkins-relay-prompt');
+      if (hawkinsPrompt) {
+        if (isNearHawkins) hawkinsPrompt.classList.remove('hidden');
+        else hawkinsPrompt.classList.add('hidden');
+      }
+
+      const isNearMudWaterfall = this.env.mudWaterfallBasin && this.player && this.player.position.distanceTo(this.env.mudWaterfallBasin.pos) <= 4.5;
+      const mudWaterfallPrompt = document.getElementById('mud-waterfall-prompt');
+      if (mudWaterfallPrompt) {
+        if (isNearMudWaterfall) mudWaterfallPrompt.classList.remove('hidden');
+        else mudWaterfallPrompt.classList.add('hidden');
+      }
+
+      // v63.0 The Predator (2018) Stargazer Prompts
+      const isNearVivisection = this.env.stargazerVivisection && !this.env.stargazerVivisection.isHarvested && this.player && this.player.position.distanceTo(this.env.stargazerVivisection.pos) <= 4.2;
+      const vivisectionPrompt = document.getElementById('stargazer-vivisection-prompt');
+      if (vivisectionPrompt) {
+        if (isNearVivisection) vivisectionPrompt.classList.remove('hidden');
+        else vivisectionPrompt.classList.add('hidden');
+      }
+
+      const isNearPredatorKiller = this.env.predatorKillerPod && !this.env.predatorKillerPod.isClaimed && this.player && this.player.position.distanceTo(this.env.predatorKillerPod.pos) <= 4.5;
+      const killerPrompt = document.getElementById('predator-killer-prompt');
+      if (killerPrompt) {
+        if (isNearPredatorKiller) killerPrompt.classList.remove('hidden');
+        else killerPrompt.classList.add('hidden');
+      }
+
+      const isNearQuinn = this.env.quinnSniperPerch && !this.env.quinnSniperPerch.isLooted && this.player && this.player.position.y >= 5.5 && this.player.position.distanceTo(this.env.quinnSniperPerch.pos) <= 4.5;
+      const quinnPrompt = document.getElementById('quinn-sniper-prompt');
+      if (quinnPrompt) {
+        if (isNearQuinn) quinnPrompt.classList.remove('hidden');
+        else quinnPrompt.classList.add('hidden');
+      }
+
+      const isNearTraeger = this.env.traegerWeaponLocker && !this.env.traegerWeaponLocker.isLooted && this.player && this.player.position.distanceTo(this.env.traegerWeaponLocker.pos) <= 4.2;
+      const traegerPrompt = document.getElementById('traeger-weapon-prompt');
+      if (traegerPrompt) {
+        if (isNearTraeger) traegerPrompt.classList.remove('hidden');
+        else traegerPrompt.classList.add('hidden');
+      }
+
+      const isNearLoonies = this.env.looniesTransportBus && !this.env.looniesTransportBus.isClaimed && this.player && this.player.position.distanceTo(this.env.looniesTransportBus.pos) <= 4.8;
+      const looniesPrompt = document.getElementById('loonies-bus-prompt');
+      if (looniesPrompt) {
+        if (isNearLoonies) looniesPrompt.classList.remove('hidden');
+        else looniesPrompt.classList.add('hidden');
+      }
+
+      const isNearArk = this.env.crashedArkStarship && !this.env.crashedArkStarship.isShieldOverloaded && this.player && this.player.position.y >= 4.5 && this.player.position.distanceTo(this.env.crashedArkStarship.pos) <= 4.8;
+      const arkPrompt = document.getElementById('crashed-ark-prompt');
+      if (arkPrompt) {
+        if (isNearArk) arkPrompt.classList.remove('hidden');
+        else arkPrompt.classList.add('hidden');
+      }
     }
 
     if (this.horde.aliens.length < 10 && !this.bosses.activeBoss) {
@@ -3639,12 +3736,15 @@ class GameApp {
         const name = this.bosses.activeBoss.type === 'predalien_queen' ? 'PREDALIEN QUEEN MATRIARCH' :
                      this.bosses.activeBoss.type === 'empress_matriarch' ? 'EMPRESS MATRIARCH IMPERIAL' :
                      this.bosses.activeBoss.type === 'rogue_king_prime' ? 'ROGUE KING XENOMORPH PRIME' :
+                     this.bosses.activeBoss.type === 'berserker_super_predator' ? 'SUPER PREDATOR BERSERKER (MR. BLACK)' :
+                     this.bosses.activeBoss.type === 'ultimate_upgrade_predator' ? 'ULTIMATE UPGRADE PREDATOR 3.3M' :
                      this.bosses.activeBoss.type === 'awakened_engineer' ? 'MALA\'KAK ENGINEER' : 'REINE XÉNOMORPHE';
         bestTarget = {
           pos: bossPos.clone().add(new THREE.Vector3(0, 3, 0)),
           dist: d,
           name,
-          weakpoint: this.bosses.activeBoss.type === 'rogue_king_prime' ? "FAIBLESSE : PLAQUES DORSALES & BASE DES CORNES CRÂNIENNES (3.0X)" : "FAIBLESSE : SAC D'INOCULATION & ÉCUSSON CERVICAL (3.5X)"
+          weakpoint: this.bosses.activeBoss.type === 'ultimate_upgrade_predator' ? "FAIBLESSE : ARTICULATIONS CERVICALES & CARAPACE VENTRALE (3.2X)" :
+                     this.bosses.activeBoss.type === 'rogue_king_prime' ? "FAIBLESSE : PLAQUES DORSALES & BASE DES CORNES CRÂNIENNES (3.0X)" : "FAIBLESSE : SAC D'INOCULATION & ÉCUSSON CERVICAL (3.5X)"
         };
       }
     }

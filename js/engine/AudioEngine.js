@@ -8912,6 +8912,240 @@ export class AudioEngine {
     lockOsc.start(now + 0.22);
     lockOsc.stop(now + 0.32);
   }
+
+  // Method 180: Stargazer Laboratory Emergency Containment Breach Klaxon (The Predator 2018)
+  playStargazerAlarmKlaxon() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Dual-tone high-frequency klaxon (880Hz / 660Hz alternated pulse)
+    for (let p = 0; p < 3; p++) {
+      const pTime = now + p * 0.32;
+      const oscA = this.ctx.createOscillator();
+      oscA.type = 'sawtooth';
+      oscA.frequency.setValueAtTime(880, pTime);
+      oscA.frequency.linearRampToValueAtTime(840, pTime + 0.14);
+
+      const gainA = this.ctx.createGain();
+      gainA.gain.setValueAtTime(0.01, pTime);
+      gainA.gain.linearRampToValueAtTime(0.45, pTime + 0.02);
+      gainA.gain.exponentialRampToValueAtTime(0.01, pTime + 0.15);
+
+      oscA.connect(gainA);
+      gainA.connect(this.getOut());
+      oscA.start(pTime);
+      oscA.stop(pTime + 0.15);
+
+      const oscB = this.ctx.createOscillator();
+      oscB.type = 'sawtooth';
+      oscB.frequency.setValueAtTime(660, pTime + 0.15);
+      oscB.frequency.linearRampToValueAtTime(620, pTime + 0.28);
+
+      const gainB = this.ctx.createGain();
+      gainB.gain.setValueAtTime(0.01, pTime + 0.15);
+      gainB.gain.linearRampToValueAtTime(0.4, pTime + 0.17);
+      gainB.gain.exponentialRampToValueAtTime(0.01, pTime + 0.29);
+
+      oscB.connect(gainB);
+      gainB.connect(this.getOut());
+      oscB.start(pTime + 0.15);
+      oscB.stop(pTime + 0.29);
+    }
+  }
+
+  // Method 181: "Predator Killer" Nanotech Exosuit Rapid Weave & Pressurization (The Predator 2018)
+  playPredatorKillerNanoSuitDeploy() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // High-frequency carbon nanotube lattice crystallization (2800Hz -> 5400Hz sweep)
+    const nanoOsc = this.ctx.createOscillator();
+    nanoOsc.type = 'sine';
+    nanoOsc.frequency.setValueAtTime(2800, now);
+    nanoOsc.frequency.exponentialRampToValueAtTime(5400, now + 0.45);
+
+    const nanoGain = this.ctx.createGain();
+    nanoGain.gain.setValueAtTime(0.01, now);
+    nanoGain.gain.linearRampToValueAtTime(0.65, now + 0.15);
+    nanoGain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+
+    nanoOsc.connect(nanoGain);
+    nanoGain.connect(this.getOut());
+    nanoOsc.start(now);
+    nanoOsc.stop(now + 0.5);
+
+    // Hydraulic suit clamp lock & pneumatic hiss
+    const bufSize = Math.floor(this.ctx.sampleRate * 0.4);
+    const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufSize * 0.25));
+    }
+    const hissSrc = this.ctx.createBufferSource();
+    hissSrc.buffer = buf;
+
+    const hissFilter = this.ctx.createBiquadFilter();
+    hissFilter.type = 'highpass';
+    hissFilter.frequency.setValueAtTime(2400, now + 0.18);
+
+    const hissGain = this.ctx.createGain();
+    hissGain.gain.setValueAtTime(0.7, now + 0.18);
+    hissGain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+
+    hissSrc.connect(hissFilter);
+    hissFilter.connect(hissGain);
+    hissGain.connect(this.getOut());
+    hissSrc.start(now + 0.18);
+    hissSrc.stop(now + 0.45);
+
+    // Deep servo locking clank
+    const clampOsc = this.ctx.createOscillator();
+    clampOsc.type = 'triangle';
+    clampOsc.frequency.setValueAtTime(240, now + 0.32);
+    clampOsc.frequency.exponentialRampToValueAtTime(65, now + 0.48);
+
+    const clampGain = this.ctx.createGain();
+    clampGain.gain.setValueAtTime(0.8, now + 0.32);
+    clampGain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+
+    clampOsc.connect(clampGain);
+    clampGain.connect(this.getOut());
+    clampOsc.start(now + 0.32);
+    clampOsc.stop(now + 0.5);
+  }
+
+  // Method 182: Ultimate Upgrade Predator 3.3m Titan Guttural Roar (The Predator 2018)
+  playUltimatePredatorRoar() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Massive 45Hz sub-bass guttural foundation
+    const subOsc = this.ctx.createOscillator();
+    subOsc.type = 'sawtooth';
+    subOsc.frequency.setValueAtTime(45, now);
+    subOsc.frequency.linearRampToValueAtTime(78, now + 0.45);
+    subOsc.frequency.exponentialRampToValueAtTime(36, now + 1.8);
+
+    const subFilter = this.ctx.createBiquadFilter();
+    subFilter.type = 'lowpass';
+    subFilter.frequency.setValueAtTime(140, now);
+    subFilter.frequency.linearRampToValueAtTime(220, now + 0.5);
+    subFilter.frequency.exponentialRampToValueAtTime(80, now + 1.8);
+
+    const subGain = this.ctx.createGain();
+    subGain.gain.setValueAtTime(0.01, now);
+    subGain.gain.linearRampToValueAtTime(0.95, now + 0.2);
+    subGain.gain.exponentialRampToValueAtTime(0.005, now + 1.8);
+
+    subOsc.connect(subFilter);
+    subFilter.connect(subGain);
+    subGain.connect(this.getOut());
+    subOsc.start(now);
+    subOsc.stop(now + 1.8);
+
+    // Primal vocal tract formant screech (380Hz -> 620Hz)
+    const roarOsc = this.ctx.createOscillator();
+    roarOsc.type = 'triangle';
+    roarOsc.frequency.setValueAtTime(320, now + 0.1);
+    roarOsc.frequency.linearRampToValueAtTime(540, now + 0.6);
+    roarOsc.frequency.exponentialRampToValueAtTime(160, now + 1.6);
+
+    const roarGain = this.ctx.createGain();
+    roarGain.gain.setValueAtTime(0.01, now + 0.1);
+    roarGain.gain.linearRampToValueAtTime(0.85, now + 0.35);
+    roarGain.gain.exponentialRampToValueAtTime(0.01, now + 1.6);
+
+    roarOsc.connect(roarGain);
+    roarGain.connect(this.getOut());
+    roarOsc.start(now + 0.1);
+    roarOsc.stop(now + 1.6);
+  }
+
+  // Method 183: Fugitive Ark Starship Forcefield Deflection Hum & Ionic Surge (The Predator 2018)
+  playArkShipPlasmaShieldDeflection() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // High electrostatic ionic hum (1400Hz modulated)
+    const humOsc = this.ctx.createOscillator();
+    humOsc.type = 'sawtooth';
+    humOsc.frequency.setValueAtTime(1400, now);
+    humOsc.frequency.linearRampToValueAtTime(950, now + 0.35);
+
+    const humFilter = this.ctx.createBiquadFilter();
+    humFilter.type = 'bandpass';
+    humFilter.frequency.setValueAtTime(1200, now);
+    humFilter.Q.setValueAtTime(5.0, now);
+
+    const humGain = this.ctx.createGain();
+    humGain.gain.setValueAtTime(0.01, now);
+    humGain.gain.linearRampToValueAtTime(0.7, now + 0.05);
+    humGain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+
+    humOsc.connect(humFilter);
+    humFilter.connect(humGain);
+    humGain.connect(this.getOut());
+    humOsc.start(now);
+    humOsc.stop(now + 0.4);
+
+    // Plasma discharge crackle
+    const bufSize = Math.floor(this.ctx.sampleRate * 0.25);
+    const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.sin(i * 0.2);
+    }
+    const crackleSrc = this.ctx.createBufferSource();
+    crackleSrc.buffer = buf;
+
+    const crackleGain = this.ctx.createGain();
+    crackleGain.gain.setValueAtTime(0.65, now + 0.02);
+    crackleGain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+
+    crackleSrc.connect(crackleGain);
+    crackleGain.connect(this.getOut());
+    crackleSrc.start(now + 0.02);
+    crackleSrc.stop(now + 0.25);
+  }
+
+  // Method 184: Al Dillon's Dual Heckler & Koch MP5 Last Stand Firestorm (Predator 1987)
+  playDillonDualMP5Firestorm() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Cyclic twin bursts (6 rounds rapid alternation, 800 RPM)
+    for (let r = 0; r < 6; r++) {
+      const rTime = now + r * 0.055;
+      const shotOsc = this.ctx.createOscillator();
+      shotOsc.type = 'triangle';
+      shotOsc.frequency.setValueAtTime(540, rTime);
+      shotOsc.frequency.exponentialRampToValueAtTime(95, rTime + 0.04);
+
+      const shotGain = this.ctx.createGain();
+      shotGain.gain.setValueAtTime(0.85, rTime);
+      shotGain.gain.exponentialRampToValueAtTime(0.01, rTime + 0.045);
+
+      shotOsc.connect(shotGain);
+      shotGain.connect(this.getOut());
+      shotOsc.start(rTime);
+      shotOsc.stop(rTime + 0.045);
+
+      // Brass casing clink ping
+      if (r % 2 === 0) {
+        const pingOsc = this.ctx.createOscillator();
+        pingOsc.type = 'sine';
+        pingOsc.frequency.setValueAtTime(3600 + r * 150, rTime + 0.08);
+        const pingGain = this.ctx.createGain();
+        pingGain.gain.setValueAtTime(0.01, rTime + 0.08);
+        pingGain.gain.linearRampToValueAtTime(0.35, rTime + 0.09);
+        pingGain.gain.exponentialRampToValueAtTime(0.005, rTime + 0.22);
+        pingOsc.connect(pingGain);
+        pingGain.connect(this.getOut());
+        pingOsc.start(rTime + 0.08);
+        pingOsc.stop(rTime + 0.22);
+      }
+    }
+  }
 }
 
 

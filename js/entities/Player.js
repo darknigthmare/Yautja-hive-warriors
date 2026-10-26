@@ -252,6 +252,13 @@ export class Player {
     this.isNeurotoxinBladeActive = false;
     this.masterHunterStalkerTimer = 0;
     this.isMasterHunterStalkerActive = false;
+    // v63.0 The Predator (2018) & Val Verde Master Systems
+    this.isPredatorKillerNanoActive = false;
+    this.predatorKillerTimer = 0;
+    this.isDillonGritActive = false;
+    this.dillonGritTimer = 0;
+    this.isHawkinsScanActive = false;
+    this.hawkinsScanTimer = 0;
     this.loadClanForgeUpgrades();
   }
 
@@ -1588,11 +1595,13 @@ export class Player {
     const hanzoMult = this.isHanzoBushidoActive ? 1.60 : 1.0;
     const neuroMult = this.isNeurotoxinBladeActive ? 1.45 : 1.0;
     const stalkerMult = this.isMasterHunterStalkerActive ? 1.50 : 1.0;
+    const nanoMult = this.isPredatorKillerNanoActive ? 1.45 : 1.0;
+    const dillonMult = this.isDillonGritActive ? 1.40 : 1.0;
 
     return {
       type: 'light',
       step: this.attackComboStep,
-      damage: baseDmg * (1 + this.attackComboStep * 0.18) * buff * mudMult * billyMult * lightningMult * flintlockMult * hanzoMult * neuroMult * stalkerMult,
+      damage: baseDmg * (1 + this.attackComboStep * 0.18) * buff * mudMult * billyMult * lightningMult * flintlockMult * hanzoMult * neuroMult * stalkerMult * nanoMult * dillonMult,
       radius: (this.isSecondaryWeapon ? 4.8 : 3.8) * (this.meleeReachMultiplier || 1.0),
       angle: (Math.PI * 0.65) * (this.meleeArcMultiplier || 1.0)
     };
@@ -1699,11 +1708,13 @@ export class Player {
     const hanzoMult = this.isHanzoBushidoActive ? 1.60 : 1.0;
     const neuroMult = this.isNeurotoxinBladeActive ? 1.45 : 1.0;
     const stalkerMult = this.isMasterHunterStalkerActive ? 1.50 : 1.0;
+    const nanoMult = this.isPredatorKillerNanoActive ? 1.45 : 1.0;
+    const dillonMult = this.isDillonGritActive ? 1.40 : 1.0;
 
     return {
       type: chargeType,
       name: chargeName,
-      damage: baseDmg * dmgMult * buff * mudMult * billyMult * lightningMult * flintlockMult * hanzoMult * neuroMult * stalkerMult,
+      damage: baseDmg * dmgMult * buff * mudMult * billyMult * lightningMult * flintlockMult * hanzoMult * neuroMult * stalkerMult * nanoMult * dillonMult,
       radius: radius,
       knockback: knockback,
       isLauncher: isLauncher,
@@ -4219,7 +4230,36 @@ export class Player {
       this.masterHunterStalkerTimer -= delta;
       if (this.masterHunterStalkerTimer <= 0) this.isMasterHunterStalkerActive = false;
     }
+    // v63.0 The Predator (2018) & Val Verde Master Timers
+    if (this.predatorKillerTimer > 0) {
+      this.predatorKillerTimer -= delta;
+      if (this.predatorKillerTimer <= 0) this.isPredatorKillerNanoActive = false;
+    }
+    if (this.dillonGritTimer > 0) {
+      this.dillonGritTimer -= delta;
+      if (this.dillonGritTimer <= 0) this.isDillonGritActive = false;
+    }
+    if (this.hawkinsScanTimer > 0) {
+      this.hawkinsScanTimer -= delta;
+      if (this.hawkinsScanTimer <= 0) this.isHawkinsScanActive = false;
+    }
     this.isOnBough = (this.position && this.position.y >= 5.0);
+  }
+
+  applyPredatorKillerNano(duration = 30.0) {
+    this.predatorKillerTimer = duration;
+    this.isPredatorKillerNanoActive = true;
+    this.shield = Math.min(200, (this.shield || 0) + 100);
+  }
+
+  applyDillonGrit(duration = 30.0) {
+    this.dillonGritTimer = duration;
+    this.isDillonGritActive = true;
+  }
+
+  applyHawkinsScan(duration = 35.0) {
+    this.hawkinsScanTimer = duration;
+    this.isHawkinsScanActive = true;
   }
 
   applyMasterHunterStalker(duration = 22.0) {

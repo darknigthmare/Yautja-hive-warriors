@@ -103,6 +103,10 @@ export const LEVELS_DATA = [
     id: 'game_preserve_planet',
     name: 'RÉSERVE DE CHASSE DE MR. BLACK (PREDATORS 2010)',
     desc: 'Jungle extraterrestre sauvage contrôlée par le clan Super Predator Berserker, parsemée de totems d\'écorcheurs et de pièges mortels.',
+    description: 'Jungle extraterrestre sauvage contrôlée par le clan Super Predator Berserker, parsemée de totems d\'écorcheurs et de pièges mortels.',
+    icon: '🪐',
+    difficulty: 'APEX',
+    difficultyBadge: 'badge-apex',
     theme: 'temple',
     floorColor: 0x241711,
     wallColor: 0x38271e,
@@ -112,5 +116,23 @@ export const LEVELS_DATA = [
     skyColor: 0x150702,
     waves: 6,
     bossType: 'berserker_super_predator'
+  },
+  {
+    id: 'stargazer_facility',
+    name: 'PROJET STARGAZER (THE PREDATOR 2018)',
+    desc: 'Base souterraine secrète de recherche xénobiologique, forêt d\'automne et carcasse du vaisseau Ark en flammes.',
+    description: 'Base souterraine secrète de recherche xénobiologique, forêt d\'automne et carcasse du vaisseau Ark en flammes.',
+    icon: '🔬',
+    difficulty: 'APEX',
+    difficultyBadge: 'badge-apex',
+    theme: 'stargazer',
+    floorColor: 0x1a1e22,
+    wallColor: 0x2d343c,
+    fogColor: 0x0f1317,
+    fogDensity: 0.016,
+    weatherType: 'autumn_gale',
+    skyColor: 0x06090c,
+    waves: 6,
+    bossType: 'ultimate_upgrade_predator'
   }
 ];
