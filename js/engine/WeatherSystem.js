@@ -41,6 +41,8 @@ export class WeatherSystem {
       this.initAutumnGale();
     } else if (type === 'morning_haze' || type === 'prey_mist') {
       this.initMorningHaze();
+    } else if (type === 'stasis_aurora' || type === 'cosmic_nebula') {
+      this.initStasisAurora();
     }
   }
 
@@ -240,6 +242,39 @@ export class WeatherSystem {
     this.scene.add(this.weatherParticles);
   }
 
+  initStasisAurora() {
+    this.particleCount = 850;
+    const geo = new THREE.BufferGeometry();
+    const positions = new Float32Array(this.particleCount * 3);
+    this.particleVelocities = [];
+
+    for (let i = 0; i < this.particleCount; i++) {
+      positions[i * 3] = (Math.random() - 0.5) * 90;
+      positions[i * 3 + 1] = 0.5 + Math.random() * 18;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 90;
+
+      this.particleVelocities.push({
+        vy: (Math.random() - 0.5) * 0.3,
+        vx: (Math.random() - 0.5) * 0.8,
+        vz: (Math.random() - 0.5) * 0.8,
+        swayFreq: 0.5 + Math.random() * 1.2
+      });
+    }
+
+    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    this.particlePositions = positions;
+
+    const mat = new THREE.PointsMaterial({
+      color: 0x38bdf8,
+      size: 0.95,
+      transparent: true,
+      opacity: 0.55
+    });
+
+    this.weatherParticles = new THREE.Points(geo, mat);
+    this.scene.add(this.weatherParticles);
+  }
+
   update(delta, playerPos, renderer, audioEngine, horde) {
     this.timeAccumulator += delta;
 
@@ -335,6 +370,19 @@ export class WeatherSystem {
 
         if (Math.abs(pos[i * 3] - center.x) > 42) pos[i * 3] = center.x - Math.sign(pos[i * 3] - center.x) * 40;
         if (Math.abs(pos[i * 3 + 2] - center.z) > 42) pos[i * 3 + 2] = center.z - Math.sign(pos[i * 3 + 2] - center.z) * 40;
+      }
+    } else if (this.weatherType === 'stasis_aurora' || this.weatherType === 'cosmic_nebula') {
+      for (let i = 0; i < this.particleCount; i++) {
+        const vel = this.particleVelocities[i];
+        pos[i * 3 + 1] += Math.sin(this.timeAccumulator * 0.8 + i) * 0.4 * delta;
+        pos[i * 3] += (vel.vx + Math.sin(this.timeAccumulator * vel.swayFreq + i) * 0.6) * delta;
+        pos[i * 3 + 2] += (vel.vz + Math.cos(this.timeAccumulator * vel.swayFreq + i) * 0.6) * delta;
+
+        if (pos[i * 3 + 1] < 0.2) pos[i * 3 + 1] = 16.0;
+        if (pos[i * 3 + 1] > 18.0) pos[i * 3 + 1] = 0.5;
+
+        if (Math.abs(pos[i * 3] - center.x) > 45) pos[i * 3] = center.x - Math.sign(pos[i * 3] - center.x) * 43;
+        if (Math.abs(pos[i * 3 + 2] - center.z) > 45) pos[i * 3 + 2] = center.z - Math.sign(pos[i * 3 + 2] - center.z) * 43;
       }
     }
 

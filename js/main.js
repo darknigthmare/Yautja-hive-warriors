@@ -722,6 +722,20 @@ class GameApp {
           // Handled Comanche Buffalo Skull Cairn (Prey 2022)!
         } else if (this.env && this.env.checkFeralSeveredGauntletInteraction && this.env.checkFeralSeveredGauntletInteraction(this.player, this.ui, this.audio)) {
           // Handled Feral Predator's Severed Arm-Gauntlet (Prey 2022)!
+        } else if (this.env && this.env.checkStasisTrioAwakeningInteraction && this.env.checkStasisTrioAwakeningInteraction(this.player, this.ui, this.audio, this.bosses, this.horde, this.particles)) {
+          // Handled Trio Cryo-Stasis Pods (Killer of Killers 2025)!
+        } else if (this.env && this.env.checkUrsaShieldInteraction && this.env.checkUrsaShieldInteraction(this.player, this.ui, this.audio)) {
+          // Handled Ursa's Viking Shield (The Shield 850)!
+        } else if (this.env && this.env.checkUrsaDaneAxeInteraction && this.env.checkUrsaDaneAxeInteraction(this.player, this.ui, this.audio)) {
+          // Handled Ursa's Dane Axe & Runestone (The Shield 850)!
+        } else if (this.env && this.env.checkKenjiKatanaInteraction && this.env.checkKenjiKatanaInteraction(this.player, this.ui, this.audio)) {
+          // Handled Kenji's Masamune Katana (The Sabre 1620)!
+        } else if (this.env && this.env.checkKenjiBambooDecoyInteraction && this.env.checkKenjiBambooDecoyInteraction(this.player, this.ui, this.audio, this.horde)) {
+          // Handled Kenji's Bamboo Decoy (The Sabre 1620)!
+        } else if (this.env && this.env.checkTorresWarhawkInteraction && this.env.checkTorresWarhawkInteraction(this.player, this.ui, this.audio)) {
+          // Handled Torres' Crashed P-40 Warhawk (The Bullet 1943)!
+        } else if (this.env && this.env.checkTorresBrowningInteraction && this.env.checkTorresBrowningInteraction(this.player, this.ui, this.audio, this.horde, this.particles)) {
+          // Handled Torres' Browning .50 Cal M2 Machine Gun (The Bullet 1943)!
         } else if (this.env && this.env.checkScoutShipConsoleInteraction && this.env.checkScoutShipConsoleInteraction(this.player.position, this.ui, this.audio, this.horde, this.player)) {
           // Handled Crashed Scout Ship Telemetry Scan (AVP: Requiem 2007)!
         } else if (this.env && this.env.checkCharonLabConsoleInteraction && this.env.checkCharonLabConsoleInteraction(this.player.position, this.horde, this.ui, this.audio)) {
@@ -3747,6 +3761,56 @@ class GameApp {
       if (gauntletPrompt) {
         if (isNearGauntlet) gauntletPrompt.classList.remove('hidden');
         else gauntletPrompt.classList.add('hidden');
+      }
+
+      // Predator: Killer of Killers (2025) Prompts
+      const isNearStasis = this.env.trioCryoStasisPods && !this.env.trioCryoStasisPods.isAwakened && this.player && this.player.position.distanceTo(this.env.trioCryoStasisPods.pos) <= 4.8;
+      const stasisPrompt = document.getElementById('stasis-trio-prompt');
+      if (stasisPrompt) {
+        if (isNearStasis) stasisPrompt.classList.remove('hidden');
+        else stasisPrompt.classList.add('hidden');
+      }
+
+      const isNearUrsaShield = this.env.ursaShieldProw && !this.env.ursaShieldProw.isClaimed && this.player && this.player.position.distanceTo(this.env.ursaShieldProw.pos) <= 4.2;
+      const ursaShieldPrompt = document.getElementById('ursa-shield-prompt');
+      if (ursaShieldPrompt) {
+        if (isNearUrsaShield) ursaShieldPrompt.classList.remove('hidden');
+        else ursaShieldPrompt.classList.add('hidden');
+      }
+
+      const isNearUrsaAxe = this.env.ursaDaneAxeAltar && !this.env.ursaDaneAxeAltar.isClaimed && this.player && this.player.position.distanceTo(this.env.ursaDaneAxeAltar.pos) <= 4.2;
+      const ursaAxePrompt = document.getElementById('ursa-axe-prompt');
+      if (ursaAxePrompt) {
+        if (isNearUrsaAxe) ursaAxePrompt.classList.remove('hidden');
+        else ursaAxePrompt.classList.add('hidden');
+      }
+
+      const isNearKenjiKatana = this.env.kenjiKatanaStand && !this.env.kenjiKatanaStand.isClaimed && this.player && this.player.position.distanceTo(this.env.kenjiKatanaStand.pos) <= 4.2;
+      const kenjiKatanaPrompt = document.getElementById('kenji-katana-prompt');
+      if (kenjiKatanaPrompt) {
+        if (isNearKenjiKatana) kenjiKatanaPrompt.classList.remove('hidden');
+        else kenjiKatanaPrompt.classList.add('hidden');
+      }
+
+      const isNearKenjiDecoy = this.env.kenjiBambooDecoy && !this.env.kenjiBambooDecoy.isTriggered && this.player && this.player.position.distanceTo(this.env.kenjiBambooDecoy.pos) <= 4.2;
+      const kenjiDecoyPrompt = document.getElementById('kenji-decoy-prompt');
+      if (kenjiDecoyPrompt) {
+        if (isNearKenjiDecoy) kenjiDecoyPrompt.classList.remove('hidden');
+        else kenjiDecoyPrompt.classList.add('hidden');
+      }
+
+      const isNearTorresPlane = this.env.torresWarhawkWreck && !this.env.torresWarhawkWreck.isClaimed && this.player && this.player.position.distanceTo(this.env.torresWarhawkWreck.pos) <= 4.2;
+      const torresPlanePrompt = document.getElementById('torres-plane-prompt');
+      if (torresPlanePrompt) {
+        if (isNearTorresPlane) torresPlanePrompt.classList.remove('hidden');
+        else torresPlanePrompt.classList.add('hidden');
+      }
+
+      const isNearTorresGun = this.env.torresBrowningNest && !this.env.torresBrowningNest.isFired && this.player && this.player.position.distanceTo(this.env.torresBrowningNest.pos) <= 4.2;
+      const torresGunPrompt = document.getElementById('torres-browning-prompt');
+      if (torresGunPrompt) {
+        if (isNearTorresGun) torresGunPrompt.classList.remove('hidden');
+        else torresGunPrompt.classList.add('hidden');
       }
     }
 

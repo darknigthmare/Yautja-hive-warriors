@@ -9948,6 +9948,304 @@ export class AudioEngine {
     razorOsc.start(razorTime);
     razorOsc.stop(razorTime + 0.3);
   }
+
+  // Method 209: Ursa's Viking Oak Shield Iron Boss Impact & Parry Clang (Killer of Killers 2025)
+  playVikingShieldBlock() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Heavy oak wood thud
+    const woodOsc = this.ctx.createOscillator();
+    woodOsc.type = 'triangle';
+    woodOsc.frequency.setValueAtTime(110, now);
+    woodOsc.frequency.exponentialRampToValueAtTime(35, now + 0.22);
+
+    const woodGain = this.ctx.createGain();
+    woodGain.gain.setValueAtTime(0.01, now);
+    woodGain.gain.linearRampToValueAtTime(0.9, now + 0.005);
+    woodGain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+
+    woodOsc.connect(woodGain);
+    woodGain.connect(this.getOut());
+    woodOsc.start(now);
+    woodOsc.stop(now + 0.25);
+
+    // Iron boss resonant chime
+    const bossOsc = this.ctx.createOscillator();
+    bossOsc.type = 'sine';
+    bossOsc.frequency.setValueAtTime(1240, now);
+    bossOsc.frequency.exponentialRampToValueAtTime(620, now + 0.45);
+
+    const bossGain = this.ctx.createGain();
+    bossGain.gain.setValueAtTime(0.01, now);
+    bossGain.gain.linearRampToValueAtTime(0.7, now + 0.005);
+    bossGain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+
+    bossOsc.connect(bossGain);
+    bossGain.connect(this.getOut());
+    bossOsc.start(now);
+    bossOsc.stop(now + 0.45);
+  }
+
+  // Method 210: Ursa's Gjallarhorn Deep War Horn Blast (Killer of Killers 2025)
+  playVikingWarHorn() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const hornOsc = this.ctx.createOscillator();
+    hornOsc.type = 'sawtooth';
+    hornOsc.frequency.setValueAtTime(110, now); // A2
+    hornOsc.frequency.linearRampToValueAtTime(164.81, now + 0.4); // E3
+    hornOsc.frequency.exponentialRampToValueAtTime(110, now + 1.2);
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(450, now);
+    filter.frequency.linearRampToValueAtTime(900, now + 0.4);
+    filter.frequency.exponentialRampToValueAtTime(320, now + 1.2);
+
+    const hornGain = this.ctx.createGain();
+    hornGain.gain.setValueAtTime(0.01, now);
+    hornGain.gain.linearRampToValueAtTime(0.85, now + 0.2);
+    hornGain.gain.exponentialRampToValueAtTime(0.001, now + 1.25);
+
+    hornOsc.connect(filter);
+    filter.connect(hornGain);
+    hornGain.connect(this.getOut());
+    hornOsc.start(now);
+    hornOsc.stop(now + 1.25);
+  }
+
+  // Method 211: Kenji's Ancestral Masamune Katana Iaijutsu Draw & Flash Slice (Killer of Killers 2025)
+  playKatanaIaijutsuDraw() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // High frequency metallic sheath hiss
+    const hissOsc = this.ctx.createOscillator();
+    hissOsc.type = 'sine';
+    hissOsc.frequency.setValueAtTime(3400, now);
+    hissOsc.frequency.exponentialRampToValueAtTime(4800, now + 0.08);
+
+    const hissGain = this.ctx.createGain();
+    hissGain.gain.setValueAtTime(0.01, now);
+    hissGain.gain.linearRampToValueAtTime(0.7, now + 0.02);
+    hissGain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+
+    hissOsc.connect(hissGain);
+    hissGain.connect(this.getOut());
+    hissOsc.start(now);
+    hissOsc.stop(now + 0.12);
+
+    // Aerodynamic slicing whoosh
+    const whooshOsc = this.ctx.createOscillator();
+    whooshOsc.type = 'triangle';
+    whooshOsc.frequency.setValueAtTime(420, now + 0.04);
+    whooshOsc.frequency.exponentialRampToValueAtTime(90, now + 0.32);
+
+    const whooshGain = this.ctx.createGain();
+    whooshGain.gain.setValueAtTime(0.01, now + 0.04);
+    whooshGain.gain.linearRampToValueAtTime(0.8, now + 0.08);
+    whooshGain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+
+    whooshOsc.connect(whooshGain);
+    whooshGain.connect(this.getOut());
+    whooshOsc.start(now + 0.04);
+    whooshOsc.stop(now + 0.35);
+  }
+
+  // Method 212: Kenji's Ninja Smoke Bomb Puff & Bronze Temple Wind Chimes (Killer of Killers 2025)
+  playNinjaSmokeBomb() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const bufferSize = Math.floor(this.ctx.sampleRate * 0.45);
+    const noiseBuffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const output = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      output[i] = Math.random() * 2 - 1;
+    }
+
+    const puff = this.ctx.createBufferSource();
+    puff.buffer = noiseBuffer;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(600, now);
+    filter.frequency.exponentialRampToValueAtTime(120, now + 0.4);
+
+    const puffGain = this.ctx.createGain();
+    puffGain.gain.setValueAtTime(0.01, now);
+    puffGain.gain.linearRampToValueAtTime(0.85, now + 0.02);
+    puffGain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+
+    puff.connect(filter);
+    filter.connect(puffGain);
+    puffGain.connect(this.getOut());
+    puff.start(now);
+    puff.stop(now + 0.45);
+
+    // Chime bell shimmer
+    const chimeOsc = this.ctx.createOscillator();
+    chimeOsc.type = 'sine';
+    chimeOsc.frequency.setValueAtTime(2800, now + 0.1);
+    chimeOsc.frequency.exponentialRampToValueAtTime(1400, now + 0.6);
+
+    const chimeGain = this.ctx.createGain();
+    chimeGain.gain.setValueAtTime(0.01, now + 0.1);
+    chimeGain.gain.linearRampToValueAtTime(0.4, now + 0.12);
+    chimeGain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+
+    chimeOsc.connect(chimeGain);
+    chimeGain.connect(this.getOut());
+    chimeOsc.start(now + 0.1);
+    chimeOsc.stop(now + 0.6);
+  }
+
+  // Method 213: Torres' USAAF Browning .50 Cal M2 Heavy Machine Gun Strafe Burst (Killer of Killers 2025)
+  playBrowning50CalBurst() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    for (let b = 0; b < 6; b++) {
+      const bTime = now + b * 0.075;
+      const bOsc = this.ctx.createOscillator();
+      bOsc.type = 'square';
+      bOsc.frequency.setValueAtTime(140, bTime);
+      bOsc.frequency.exponentialRampToValueAtTime(32, bTime + 0.09);
+
+      const bGain = this.ctx.createGain();
+      bGain.gain.setValueAtTime(0.01, bTime);
+      bGain.gain.linearRampToValueAtTime(0.95, bTime + 0.005);
+      bGain.gain.exponentialRampToValueAtTime(0.001, bTime + 0.12);
+
+      bOsc.connect(bGain);
+      bGain.connect(this.getOut());
+      bOsc.start(bTime);
+      bOsc.stop(bTime + 0.12);
+    }
+  }
+
+  // Method 214: Torres' Crashed P-40 Fighter Allison V-12 Engine Sputter (Killer of Killers 2025)
+  playPlaneEngineSputter() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    for (let c = 0; c < 4; c++) {
+      const cTime = now + c * 0.14;
+      const cOsc = this.ctx.createOscillator();
+      cOsc.type = 'sawtooth';
+      cOsc.frequency.setValueAtTime(85 + c * 15, cTime);
+      cOsc.frequency.exponentialRampToValueAtTime(24, cTime + 0.12);
+
+      const cGain = this.ctx.createGain();
+      cGain.gain.setValueAtTime(0.01, cTime);
+      cGain.gain.linearRampToValueAtTime(0.7, cTime + 0.01);
+      cGain.gain.exponentialRampToValueAtTime(0.001, cTime + 0.14);
+
+      cOsc.connect(cGain);
+      cGain.connect(this.getOut());
+      cOsc.start(cTime);
+      cOsc.stop(cTime + 0.14);
+    }
+  }
+
+  // Method 215: Cosmic Yautja Cryo-Stasis Pod Decompression Vent & Resonant Awakening (Killer of Killers 2025)
+  playStasisPodDecompression() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Pneumatic pressure hiss
+    const bufferSize = Math.floor(this.ctx.sampleRate * 0.85);
+    const noiseBuffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const output = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      output[i] = Math.random() * 2 - 1;
+    }
+
+    const hiss = this.ctx.createBufferSource();
+    hiss.buffer = noiseBuffer;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(1800, now);
+    filter.frequency.exponentialRampToValueAtTime(450, now + 0.8);
+
+    const hissGain = this.ctx.createGain();
+    hissGain.gain.setValueAtTime(0.01, now);
+    hissGain.gain.linearRampToValueAtTime(0.85, now + 0.05);
+    hissGain.gain.exponentialRampToValueAtTime(0.001, now + 0.85);
+
+    hiss.connect(filter);
+    filter.connect(hissGain);
+    hissGain.connect(this.getOut());
+    hiss.start(now);
+    hiss.stop(now + 0.85);
+
+    // Harmonic power-up surge
+    const surgeOsc = this.ctx.createOscillator();
+    surgeOsc.type = 'triangle';
+    surgeOsc.frequency.setValueAtTime(220, now + 0.2);
+    surgeOsc.frequency.linearRampToValueAtTime(880, now + 0.7);
+
+    const surgeGain = this.ctx.createGain();
+    surgeGain.gain.setValueAtTime(0.01, now + 0.2);
+    surgeGain.gain.linearRampToValueAtTime(0.7, now + 0.4);
+    surgeGain.gain.exponentialRampToValueAtTime(0.001, now + 0.9);
+
+    surgeOsc.connect(surgeGain);
+    surgeGain.connect(this.getOut());
+    surgeOsc.start(now + 0.2);
+    surgeOsc.stop(now + 0.9);
+  }
+
+  // Method 216: Apex Gladiator Grandmaster Predator Arena Battle Roar (Killer of Killers 2025)
+  playApexGladiatorRoar() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Sub-bass dread thump
+    const subOsc = this.ctx.createOscillator();
+    subOsc.type = 'sine';
+    subOsc.frequency.setValueAtTime(62, now);
+    subOsc.frequency.exponentialRampToValueAtTime(22, now + 0.8);
+
+    const subGain = this.ctx.createGain();
+    subGain.gain.setValueAtTime(0.01, now);
+    subGain.gain.linearRampToValueAtTime(1.0, now + 0.03);
+    subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.85);
+
+    subOsc.connect(subGain);
+    subGain.connect(this.getOut());
+    subOsc.start(now);
+    subOsc.stop(now + 0.85);
+
+    // Primal dual-vocal roar
+    const roarOsc1 = this.ctx.createOscillator();
+    roarOsc1.type = 'sawtooth';
+    roarOsc1.frequency.setValueAtTime(180, now);
+    roarOsc1.frequency.linearRampToValueAtTime(320, now + 0.35);
+    roarOsc1.frequency.exponentialRampToValueAtTime(95, now + 1.1);
+
+    const roarOsc2 = this.ctx.createOscillator();
+    roarOsc2.type = 'triangle';
+    roarOsc2.frequency.setValueAtTime(140, now);
+    roarOsc2.frequency.linearRampToValueAtTime(260, now + 0.35);
+    roarOsc2.frequency.exponentialRampToValueAtTime(75, now + 1.1);
+
+    const roarGain = this.ctx.createGain();
+    roarGain.gain.setValueAtTime(0.01, now);
+    roarGain.gain.linearRampToValueAtTime(0.9, now + 0.1);
+    roarGain.gain.exponentialRampToValueAtTime(0.001, now + 1.15);
+
+    roarOsc1.connect(roarGain);
+    roarOsc2.connect(roarGain);
+    roarGain.connect(this.getOut());
+    roarOsc1.start(now);
+    roarOsc2.start(now);
+    roarOsc1.stop(now + 1.15);
+    roarOsc2.stop(now + 1.15);
+  }
 }
 
 

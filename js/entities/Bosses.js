@@ -31,9 +31,10 @@ export class BossManager {
     const isTrilobite = type === 'trilobite_prime';
     const isBerserker = type === 'berserker_super_predator';
     const isUltimateUpgrade = type === 'ultimate_upgrade_predator';
+    const isApexGladiator = type === 'apex_gladiator_predator';
     const isFeralPredator = type === 'feral_predator_boss';
 
-    const hp = isMatriarchTitan ? 10000 : (isRogueKing ? 9500 : (isUltimateUpgrade ? 9200 : (isBerserker ? 8800 : (isFeralPredator ? 8600 : (isEngineer ? 8500 : (isImperial ? 8000 : (isTrilobite ? 7000 : (isPredalienAbomination ? 6500 : (isEmpress ? 6000 : (isPredalienQueen ? 5000 : (isOffspring ? 4500 : 3000)))))))))));
+    const hp = isMatriarchTitan ? 10000 : (isRogueKing ? 9500 : (isUltimateUpgrade ? 9200 : (isApexGladiator ? 9000 : (isBerserker ? 8800 : (isFeralPredator ? 8600 : (isEngineer ? 8500 : (isImperial ? 8000 : (isTrilobite ? 7000 : (isPredalienAbomination ? 6500 : (isEmpress ? 6000 : (isPredalienQueen ? 5000 : (isOffspring ? 4500 : 3000))))))))))));
 
     this.activeBoss = {
       type: type,
@@ -549,6 +550,103 @@ export class BossManager {
     return group;
   }
 
+  /* === PREDATOR: KILLER OF KILLERS (2025): 3.2m Apex Gladiator Grandmaster Predator Boss Mesh === */
+  buildApexGladiatorMesh(scale = 3.2) {
+    const group = new THREE.Group();
+
+    const skinMat = new THREE.MeshStandardMaterial({
+      color: 0x2e2d29,
+      roughness: 0.65,
+      metalness: 0.25
+    });
+
+    const armorMat = new THREE.MeshStandardMaterial({
+      color: 0xd97706, // Regal Gold Ancient Armor
+      roughness: 0.28,
+      metalness: 0.88
+    });
+
+    const obsidianMat = new THREE.MeshStandardMaterial({
+      color: 0x0f172a,
+      roughness: 0.15,
+      metalness: 0.92
+    });
+
+    const plasmaGlowMat = new THREE.MeshBasicMaterial({
+      color: 0x38bdf8
+    });
+
+    // 1. Massive Colosseum Armor Torso & Royal Pauldrons
+    const torso = new THREE.Mesh(new THREE.BoxGeometry(1.5 * scale, 1.8 * scale, 1.1 * scale), armorMat);
+    torso.position.y = 2.4 * scale;
+    torso.castShadow = true;
+    group.add(torso);
+
+    [-0.95, 0.95].forEach(px => {
+      const pauldron = new THREE.Mesh(new THREE.BoxGeometry(0.75 * scale, 0.45 * scale, 0.85 * scale), armorMat);
+      pauldron.position.set(px * scale, 3.1 * scale, 0);
+      group.add(pauldron);
+    });
+
+    // 2. Ceremonial Battle Skirt / Cape (Imperial Purple)
+    const capeMat = new THREE.MeshStandardMaterial({ color: 0x4c1d95, roughness: 0.85 });
+    const cape = new THREE.Mesh(new THREE.BoxGeometry(1.4 * scale, 1.6 * scale, 0.15 * scale), capeMat);
+    cape.position.set(0, 1.7 * scale, -0.55 * scale);
+    group.add(cape);
+
+    // 3. Ancient Bio-Mask with Horned Crest & 3 Red Optic Lenses
+    const head = new THREE.Mesh(new THREE.BoxGeometry(0.85 * scale, 0.95 * scale, 0.95 * scale), obsidianMat);
+    head.position.set(0, 3.45 * scale, 0.2 * scale);
+    group.add(head);
+
+    [-0.35, 0.35].forEach(hx => {
+      const horn = new THREE.Mesh(new THREE.CylinderGeometry(0.04 * scale, 0.12 * scale, 0.8 * scale, 6), armorMat);
+      horn.position.set(hx * scale, 4.0 * scale, -0.1 * scale);
+      horn.rotation.z = hx < 0 ? -0.5 : 0.5;
+      group.add(horn);
+    });
+
+    // Tri-Laser Optics
+    const triLaserLight = new THREE.PointLight(0xef4444, 2.0, 8.0);
+    triLaserLight.position.set(0, 3.45 * scale, 0.7 * scale);
+    group.add(triLaserLight);
+
+    // Dreadlocks (Heavy Golden Ring Clamps)
+    for (let d = -4; d <= 4; d++) {
+      const dread = new THREE.Mesh(new THREE.CylinderGeometry(0.06 * scale, 0.04 * scale, 1.5 * scale, 6), skinMat);
+      dread.position.set((d * 0.14) * scale, 3.0 * scale, -0.45 * scale);
+      dread.rotation.x = -0.3;
+      group.add(dread);
+    }
+
+    // 4. Dual Forearm Plasma Glaives (Left & Right)
+    [-0.95, 0.95].forEach(ax => {
+      const arm = new THREE.Mesh(new THREE.BoxGeometry(0.42 * scale, 1.4 * scale, 0.45 * scale), skinMat);
+      arm.position.set(ax * scale, 2.3 * scale, 0);
+      group.add(arm);
+
+      // Curved Double-Edged Plasma Glaive
+      const glaive = new THREE.Mesh(new THREE.BoxGeometry(0.08 * scale, 1.9 * scale, 0.22 * scale), obsidianMat);
+      glaive.position.set(ax * scale, 2.2 * scale, 0.55 * scale);
+      group.add(glaive);
+
+      const edgeGlow = new THREE.Mesh(new THREE.BoxGeometry(0.04 * scale, 1.8 * scale, 0.05 * scale), plasmaGlowMat);
+      edgeGlow.position.set(ax * scale, 2.2 * scale, 0.68 * scale);
+      group.add(edgeGlow);
+    });
+
+    // 5. Heavy Armored Legs & Greaves
+    [-0.45, 0.45].forEach(lx => {
+      const leg = new THREE.Mesh(new THREE.BoxGeometry(0.52 * scale, 1.9 * scale, 0.55 * scale), armorMat);
+      leg.position.set(lx * scale, 0.95 * scale, 0);
+      leg.castShadow = true;
+      group.add(leg);
+    });
+
+    group.castShadow = true;
+    return group;
+  }
+
   /* === THE PREDATOR (2018): 3.3m Ultimate Upgrade Genetically Hybridized Predator Boss Mesh === */
   buildUltimatePredatorMesh(scale = 3.3) {
     const group = new THREE.Group();
@@ -788,6 +886,9 @@ export class BossManager {
     }
     if (type === 'feral_predator_boss') {
       return this.buildFeralPredatorMesh(2.9);
+    }
+    if (type === 'apex_gladiator_predator') {
+      return this.buildApexGladiatorMesh(3.2);
     }
 
     const group = new THREE.Group();
@@ -1818,6 +1919,67 @@ export class BossManager {
         }
         if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
           window.gameInstance.ui.showAnnouncement('⚔️ EMPALEMENT À LA LANCE D\'OBSIDIENNE DU FERAL PREDATOR (420 DMG) !', 'error');
+        }
+      }
+    } else if (this.activeBoss.type === 'apex_gladiator_predator') {
+      // Predator: Killer of Killers (2025): 3.2m Grandmaster Arbiter AI
+      if (!this.activeBoss.glaiveCooldown) this.activeBoss.glaiveCooldown = 3.2;
+      this.activeBoss.glaiveCooldown -= delta;
+
+      if (!this.activeBoss.stasisBeamCooldown) this.activeBoss.stasisBeamCooldown = 4.0;
+      this.activeBoss.stasisBeamCooldown -= delta;
+
+      if (dist > 0.1) {
+        this.activeBoss.mesh.lookAt(player.position.x, this.activeBoss.mesh.position.y, player.position.z);
+      }
+
+      // Phase 2 Stasis Shield at < 50% HP
+      if (this.activeBoss.hp <= 4500 && !this.activeBoss.stasisShieldActivated) {
+        this.activeBoss.stasisShieldActivated = true;
+        this.activeBoss.hasPhaseShield = true;
+        this.activeBoss.phaseShieldHp = 2200;
+        if (this.audioEngine && this.audioEngine.playStasisPodDecompression) {
+          this.audioEngine.playStasisPodDecompression();
+        }
+        if (this.audioEngine && this.audioEngine.playApexGladiatorRoar) {
+          this.audioEngine.playApexGladiatorRoar();
+        }
+        if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
+          window.gameInstance.ui.showAnnouncement('🛡️ CHAMP DE FORCE DE STASE COSMIQUE DU GRAND MAÎTRE ARBITRE DÉPLOYÉ (2200 BOUCLIER) !', 'warning');
+        }
+      }
+
+      // 1. Long range: Twin Stasis Plasma Barrage
+      if (dist > 7.5 && dist <= 40.0 && this.activeBoss.stasisBeamCooldown <= 0 && !this.activeBoss.isStunned) {
+        this.activeBoss.stasisBeamCooldown = 4.2;
+        if (this.audioEngine && this.audioEngine.playBurnerHeavyPlasmaBlast) {
+          this.audioEngine.playBurnerHeavyPlasmaBlast();
+        }
+        for (let b = 0; b < 2; b++) {
+          setTimeout(() => {
+            if (this.activeBoss && player) {
+              const pDir = player.position.clone().sub(this.activeBoss.mesh.position).normalize();
+              this.spawnAcidSpit(this.activeBoss.mesh.position.clone().add(new THREE.Vector3(0, 3.2, 0)), pDir);
+            }
+          }, b * 180);
+        }
+        if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
+          window.gameInstance.ui.showAnnouncement('⚡ DOUBLE DÉCHARGE DE STASE PLASMA DU GRAND MAÎTRE YAUTJA !', 'warning');
+        }
+      }
+
+      // 2. Melee range: Dual Plasma Glaive Whirlwind Slash (480 Dmg)
+      if (dist <= 7.0 && this.activeBoss.glaiveCooldown <= 0 && !this.activeBoss.isStunned) {
+        this.activeBoss.glaiveCooldown = 3.6;
+        if (this.audioEngine && this.audioEngine.playApexGladiatorRoar) {
+          this.audioEngine.playApexGladiatorRoar();
+        }
+        player.takeDamage(480, false, this.activeBoss);
+        if (window.gameInstance && window.gameInstance.particles && window.gameInstance.particles.emitSparks) {
+          window.gameInstance.particles.emitSparks(player.position.clone().add(new THREE.Vector3(0, 1.5, 0)), 32);
+        }
+        if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
+          window.gameInstance.ui.showAnnouncement('⚔️ MOULINET TOURNOYANT AUX DOUBLES GLAIVES DU GRAND MAÎTRE GLADIATEUR (480 DMG) !', 'error');
         }
       }
     } else if (this.activeBoss.type === 'ultimate_upgrade_predator') {

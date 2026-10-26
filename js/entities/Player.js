@@ -115,6 +115,12 @@ export class Player {
     this.feralClawsTimer = 0;
     this.isAncestralTrackingActive = false;
     this.ancestralTrackingTimer = 0;
+    this.isUrsaBerserkActive = false;
+    this.ursaBerserkTimer = 0;
+    this.isKenjiReflexesActive = false;
+    this.kenjiReflexesTimer = 0;
+    this.isTorresIncendiaryActive = false;
+    this.torresIncendiaryTimer = 0;
     // v47.0 Weapon Systems
     this.isPlasmaScytheActive = false;
     this.plasmaScytheMesh = null;
@@ -1540,6 +1546,7 @@ export class Player {
       let speedMult = (this.warhornBuffTimer > 0 ? 1.4 : 1.0) * (this.isBerserkerActive ? 1.45 : 1.0);
       if (this.isExosuitActive) speedMult *= 1.25;
       if (this.isComancheWarPaintActive) speedMult *= 1.30; // +30% Comanche War Paint Spirit Agility (Prey 2022)
+      if (this.isKenjiReflexesActive) speedMult *= 1.25; // +25% Ninja Agility (Killer of Killers 2025)
       if (this.isSyntheticAnkleGrabbed) speedMult *= 0.2;
       const moveDistance = this.moveSpeed * speedMult * delta;
       this.position.addScaledVector(dir, moveDistance);
@@ -1613,11 +1620,13 @@ export class Player {
     const comancheMult = this.isComancheWarPaintActive ? 1.25 : 1.0;
     const clawsMult = this.isFeralClawsActive ? 1.35 : 1.0;
     const trackingMult = this.isAncestralTrackingActive ? 1.20 : 1.0;
+    const ursaMult = this.isUrsaBerserkActive ? 1.30 : 1.0;
+    const kenjiMult = this.isKenjiReflexesActive ? 1.35 : 1.0;
 
     return {
       type: 'light',
       step: this.attackComboStep,
-      damage: baseDmg * (1 + this.attackComboStep * 0.18) * buff * mudMult * billyMult * lightningMult * flintlockMult * hanzoMult * neuroMult * stalkerMult * nanoMult * dillonMult * comancheMult * clawsMult * trackingMult,
+      damage: baseDmg * (1 + this.attackComboStep * 0.18) * buff * mudMult * billyMult * lightningMult * flintlockMult * hanzoMult * neuroMult * stalkerMult * nanoMult * dillonMult * comancheMult * clawsMult * trackingMult * ursaMult * kenjiMult,
       radius: (this.isSecondaryWeapon ? 4.8 : 3.8) * (this.meleeReachMultiplier || 1.0),
       angle: (Math.PI * 0.65) * (this.meleeArcMultiplier || 1.0)
     };
@@ -1729,11 +1738,13 @@ export class Player {
     const comancheMult = this.isComancheWarPaintActive ? 1.25 : 1.0;
     const clawsMult = this.isFeralClawsActive ? 1.35 : 1.0;
     const trackingMult = this.isAncestralTrackingActive ? 1.20 : 1.0;
+    const ursaMult = this.isUrsaBerserkActive ? 1.45 : 1.0;
+    const kenjiMult = this.isKenjiReflexesActive ? 1.30 : 1.0;
 
     return {
       type: chargeType,
       name: chargeName,
-      damage: baseDmg * dmgMult * buff * mudMult * billyMult * lightningMult * flintlockMult * hanzoMult * neuroMult * stalkerMult * nanoMult * dillonMult * comancheMult * clawsMult * trackingMult,
+      damage: baseDmg * dmgMult * buff * mudMult * billyMult * lightningMult * flintlockMult * hanzoMult * neuroMult * stalkerMult * nanoMult * dillonMult * comancheMult * clawsMult * trackingMult * ursaMult * kenjiMult,
       radius: radius,
       knockback: knockback,
       isLauncher: isLauncher,
@@ -1795,6 +1806,9 @@ export class Player {
     }
     if (this.isComancheWarPaintActive) {
       dmg *= 1.25; // +25% Comanche War Paint kinetic force (Prey 2022)
+    }
+    if (this.isTorresIncendiaryActive) {
+      dmg *= 1.30; // +30% WWII Incendiary Aviator Ammo (Killer of Killers 2025)
     }
 
     return {
@@ -4314,7 +4328,36 @@ export class Player {
       this.ancestralTrackingTimer -= delta;
       if (this.ancestralTrackingTimer <= 0) this.isAncestralTrackingActive = false;
     }
+    if (this.ursaBerserkTimer > 0) {
+      this.ursaBerserkTimer -= delta;
+      if (this.ursaBerserkTimer <= 0) this.isUrsaBerserkActive = false;
+    }
+    if (this.kenjiReflexesTimer > 0) {
+      this.kenjiReflexesTimer -= delta;
+      if (this.kenjiReflexesTimer <= 0) this.isKenjiReflexesActive = false;
+    }
+    if (this.torresIncendiaryTimer > 0) {
+      this.torresIncendiaryTimer -= delta;
+      if (this.torresIncendiaryTimer <= 0) this.isTorresIncendiaryActive = false;
+    }
     this.isOnBough = (this.position && this.position.y >= 5.0);
+  }
+
+  applyUrsaBerserk(duration = 30.0) {
+    this.ursaBerserkTimer = duration;
+    this.isUrsaBerserkActive = true;
+    this.shield = Math.min(200, (this.shield || 0) + 150);
+  }
+
+  applyKenjiReflexes(duration = 30.0) {
+    this.kenjiReflexesTimer = duration;
+    this.isKenjiReflexesActive = true;
+  }
+
+  applyTorresIncendiary(duration = 30.0) {
+    this.torresIncendiaryTimer = duration;
+    this.isTorresIncendiaryActive = true;
+    this.m77GaussAmmo = Math.min(12, (this.m77GaussAmmo || 0) + 6);
   }
 
   applyFeralClawsBuff(duration = 30.0) {

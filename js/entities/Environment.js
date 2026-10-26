@@ -237,6 +237,13 @@ export class EnvironmentManager {
     this.trapperCampfireSpit = null;
     this.buffaloSkullCairn = null;
     this.feralSeveredGauntlet = null;
+    this.ursaShieldProw = null;
+    this.ursaDaneAxeAltar = null;
+    this.kenjiKatanaStand = null;
+    this.kenjiBambooDecoy = null;
+    this.torresWarhawkWreck = null;
+    this.torresBrowningNest = null;
+    this.trioCryoStasisPods = null;
   }
 
   clearEnvironment() {
@@ -970,6 +977,34 @@ export class EnvironmentManager {
       this.scene.remove(this.feralSeveredGauntlet.group);
       this.feralSeveredGauntlet = null;
     }
+    if (this.ursaShieldProw && this.ursaShieldProw.group) {
+      this.scene.remove(this.ursaShieldProw.group);
+      this.ursaShieldProw = null;
+    }
+    if (this.ursaDaneAxeAltar && this.ursaDaneAxeAltar.group) {
+      this.scene.remove(this.ursaDaneAxeAltar.group);
+      this.ursaDaneAxeAltar = null;
+    }
+    if (this.kenjiKatanaStand && this.kenjiKatanaStand.group) {
+      this.scene.remove(this.kenjiKatanaStand.group);
+      this.kenjiKatanaStand = null;
+    }
+    if (this.kenjiBambooDecoy && this.kenjiBambooDecoy.group) {
+      this.scene.remove(this.kenjiBambooDecoy.group);
+      this.kenjiBambooDecoy = null;
+    }
+    if (this.torresWarhawkWreck && this.torresWarhawkWreck.group) {
+      this.scene.remove(this.torresWarhawkWreck.group);
+      this.torresWarhawkWreck = null;
+    }
+    if (this.torresBrowningNest && this.torresBrowningNest.group) {
+      this.scene.remove(this.torresBrowningNest.group);
+      this.torresBrowningNest = null;
+    }
+    if (this.trioCryoStasisPods && this.trioCryoStasisPods.group) {
+      this.scene.remove(this.trioCryoStasisPods.group);
+      this.trioCryoStasisPods = null;
+    }
     this.burnedForestCharredTrees = [];
     this.trapperBearTraps = [];
 
@@ -1040,6 +1075,9 @@ export class EnvironmentManager {
       this.buildPreyComancheProps();
       this.buildPreyTerritoryExpansionProps();
       this.buildJungleProps();
+    } else if (levelId === 'killer_of_killers_arena' || theme === 'killer_of_killers') {
+      this.buildKillerOfKillersProps();
+      this.buildKillerOfKillersExpansionProps();
     } else if (levelId === 'gunnison_forest' || theme === 'rain_forest') {
       this.buildCrashedScoutShipProps();
       this.buildGunnisonForestExpansionProps();
@@ -16080,6 +16118,525 @@ export class EnvironmentManager {
 
       if (ui && ui.showAnnouncement) {
         ui.showAnnouncement('🩸 AVANT-BRAS TRANCHÉ DU FERAL (PREY 2022) : GRIFFES D\'OBSIDIENNE ÉQUIPÉES (+35% PERFORATION, 30S, +2500 SCORE) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  /* =========================================================================
+     PREDATOR: KILLER OF KILLERS (2025) — MASTER 1:1 LEVEL DESIGN
+     3 ÉPOQUES : LE BOUCLIER (850), LE SABRE (1620) & LA BALLE (1943)
+     COLISÉE COSMIQUE YAUTJA & PODS DE CRYO-STASE
+     ========================================================================= */
+
+  buildKillerOfKillersProps() {
+    const group = new THREE.Group();
+
+    const obsidianMat = new THREE.MeshStandardMaterial({ color: 0x18151f, metalness: 0.88, roughness: 0.22 });
+    const goldMat = new THREE.MeshStandardMaterial({ color: 0xd97706, metalness: 0.92, roughness: 0.18 });
+    const stasisGlassMat = new THREE.MeshStandardMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.5, roughness: 0.1 });
+    const iceMat = new THREE.MeshStandardMaterial({ color: 0x7dd3fc, transparent: true, opacity: 0.65, roughness: 0.15 });
+    const woodMat = new THREE.MeshStandardMaterial({ color: 0x451a03, roughness: 0.85 });
+    const ironMat = new THREE.MeshStandardMaterial({ color: 0x27272a, metalness: 0.85, roughness: 0.35 });
+    const redLacquerMat = new THREE.MeshStandardMaterial({ color: 0x991b1b, roughness: 0.45 });
+    const bambooMat = new THREE.MeshStandardMaterial({ color: 0x4ade80, roughness: 0.5 });
+    const airplaneMat = new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.75, roughness: 0.35 });
+    const sandbagMat = new THREE.MeshStandardMaterial({ color: 0xa16207, roughness: 0.95 });
+
+    // 1. Central Grand Dais of the 3 Cryo-Stasis Pods [0, 0, 0]
+    const daisGroup = new THREE.Group();
+    daisGroup.position.set(0, 0, 0);
+
+    const baseDais = new THREE.Mesh(new THREE.CylinderGeometry(7.0, 7.8, 0.6, 6), obsidianMat);
+    baseDais.position.y = 0.3;
+    baseDais.receiveShadow = true;
+    daisGroup.add(baseDais);
+
+    const goldRing = new THREE.Mesh(new THREE.RingGeometry(4.5, 5.0, 32), goldMat);
+    goldRing.rotation.x = -Math.PI / 2;
+    goldRing.position.y = 0.61;
+    daisGroup.add(goldRing);
+
+    // Stasis Core Central Console
+    const consolePillar = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 1.1, 1.4, 8), obsidianMat);
+    consolePillar.position.y = 1.3;
+    daisGroup.add(consolePillar);
+
+    const coreLight = new THREE.PointLight(0xa855f7, 2.5, 10.0);
+    coreLight.position.set(0, 2.2, 0);
+    daisGroup.add(coreLight);
+
+    // Pod 1: Ursa (The Shield - Scandinavia 850) [-3.2, 0.6, -1.8]
+    const pod1 = new THREE.Group();
+    pod1.position.set(-3.2, 0.6, -1.8);
+    const pod1Glass = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.7, 2.4, 16), stasisGlassMat);
+    pod1Glass.position.y = 1.2;
+    pod1.add(pod1Glass);
+    const pod1Light = new THREE.PointLight(0x38bdf8, 2.0, 6.0);
+    pod1Light.position.set(0, 1.2, 0);
+    pod1.add(pod1Light);
+    daisGroup.add(pod1);
+
+    // Pod 2: Kenji (The Sabre - Feudal Japan 1620) [3.2, 0.6, -1.8]
+    const pod2 = new THREE.Group();
+    pod2.position.set(3.2, 0.6, -1.8);
+    const pod2Glass = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.7, 2.4, 16), new THREE.MeshStandardMaterial({ color: 0xef4444, transparent: true, opacity: 0.5 }));
+    pod2Glass.position.y = 1.2;
+    pod2.add(pod2Glass);
+    const pod2Light = new THREE.PointLight(0xef4444, 2.0, 6.0);
+    pod2Light.position.set(0, 1.2, 0);
+    pod2.add(pod2Light);
+    daisGroup.add(pod2);
+
+    // Pod 3: Torres (The Bullet - WWII 1943) [0, 0.6, 3.6]
+    const pod3 = new THREE.Group();
+    pod3.position.set(0, 0.6, 3.6);
+    const pod3Glass = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.7, 2.4, 16), new THREE.MeshStandardMaterial({ color: 0xeab308, transparent: true, opacity: 0.5 }));
+    pod3Glass.position.y = 1.2;
+    pod3.add(pod3Glass);
+    const pod3Light = new THREE.PointLight(0xeab308, 2.0, 6.0);
+    pod3Light.position.set(0, 1.2, 0);
+    pod3.add(pod3Light);
+    daisGroup.add(pod3);
+
+    group.add(daisGroup);
+    this.trioCryoStasisPods = {
+      group: daisGroup,
+      pos: new THREE.Vector3(0, 1.2, 0),
+      isAwakened: false
+    };
+
+    // 2. ERA I (The Shield 850): Ursa's Viking Longship Prow & Shieldwall [-18, 0, 18]
+    const ursaGroup = new THREE.Group();
+    ursaGroup.position.set(-18, 0, 18);
+
+    const iceMound = new THREE.Mesh(new THREE.BoxGeometry(4.8, 1.2, 4.8), iceMat);
+    iceMound.position.y = 0.6;
+    ursaGroup.add(iceMound);
+
+    // Longship Dragon Prow
+    const prow = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.5, 3.8, 8), woodMat);
+    prow.position.set(0, 2.2, 0);
+    prow.rotation.z = 0.35;
+    ursaGroup.add(prow);
+
+    const dragonHead = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.7, 1.2), woodMat);
+    dragonHead.position.set(0.7, 3.8, 0);
+    ursaGroup.add(dragonHead);
+
+    // Ursa's Lindisfarne Oak Shield with Iron Boss
+    const shieldPlate = new THREE.Mesh(new THREE.CylinderGeometry(0.85, 0.85, 0.08, 24), new THREE.MeshStandardMaterial({ color: 0xb91c1c, roughness: 0.8 }));
+    shieldPlate.rotation.x = Math.PI / 2;
+    shieldPlate.position.set(0.6, 1.6, 0.5);
+    ursaGroup.add(shieldPlate);
+
+    const shieldBoss = new THREE.Mesh(new THREE.SphereGeometry(0.22, 12, 12), ironMat);
+    shieldBoss.position.set(0.6, 1.6, 0.58);
+    ursaGroup.add(shieldBoss);
+
+    const ursaLight = new THREE.PointLight(0x38bdf8, 1.8, 6.0);
+    ursaLight.position.set(0, 2.0, 0);
+    ursaGroup.add(ursaLight);
+
+    group.add(ursaGroup);
+    this.ursaShieldProw = {
+      group: ursaGroup,
+      pos: new THREE.Vector3(-18, 1.4, 18),
+      isClaimed: false
+    };
+
+    // 3. ERA I: Ursa's Dane Axe & Anders' Runestone Dais [-22, 0, 12]
+    const runeGroup = new THREE.Group();
+    runeGroup.position.set(-22, 0, 12);
+
+    const runestone = new THREE.Mesh(new THREE.BoxGeometry(1.6, 3.6, 0.8), obsidianMat);
+    runestone.position.y = 1.8;
+    runeGroup.add(runestone);
+
+    // Embedded Two-Handed Dane Axe
+    const axeHaft = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 2.2), woodMat);
+    axeHaft.position.set(0, 2.2, 0.5);
+    axeHaft.rotation.x = 0.4;
+    runeGroup.add(axeHaft);
+
+    const axeBlade = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.4, 0.04), ironMat);
+    axeBlade.position.set(0, 3.0, 0.65);
+    runeGroup.add(axeBlade);
+
+    const runeLight = new THREE.PointLight(0x38bdf8, 2.2, 7.0);
+    runeLight.position.set(0, 2.5, 0.6);
+    runeGroup.add(runeLight);
+
+    group.add(runeGroup);
+    this.ursaDaneAxeAltar = {
+      group: runeGroup,
+      pos: new THREE.Vector3(-22, 1.8, 12),
+      isClaimed: false
+    };
+
+    // 4. ERA II (The Sabre 1620): Kenji's Tatami Dojo Pavilion & Torii Gate [18, 0, 18]
+    const dojoGroup = new THREE.Group();
+    dojoGroup.position.set(18, 0, 18);
+
+    const tatamiPlatform = new THREE.Mesh(new THREE.BoxGeometry(5.2, 0.4, 5.2), new THREE.MeshStandardMaterial({ color: 0xd4c28f, roughness: 0.9 }));
+    tatamiPlatform.position.y = 0.2;
+    dojoGroup.add(tatamiPlatform);
+
+    // Torii Gate Pillars & Crossbeam
+    [-1.8, 1.8].forEach(tx => {
+      const pillar = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.22, 3.5, 12), redLacquerMat);
+      pillar.position.set(tx, 1.8, 0);
+      dojoGroup.add(pillar);
+    });
+
+    const crossbeam = new THREE.Mesh(new THREE.BoxGeometry(4.5, 0.35, 0.4), redLacquerMat);
+    crossbeam.position.set(0, 3.6, 0);
+    dojoGroup.add(crossbeam);
+
+    // Katana Sword Kake Stand & Masamune Katana
+    const swordStand = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.8, 0.35), obsidianMat);
+    swordStand.position.set(0, 0.8, 0);
+    dojoGroup.add(swordStand);
+
+    const katanaBlade = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.04, 0.08), new THREE.MeshStandardMaterial({ color: 0xf1f5f9, metalness: 0.95, roughness: 0.1 }));
+    katanaBlade.position.set(0, 1.25, 0);
+    katanaBlade.rotation.z = 0.1;
+    dojoGroup.add(katanaBlade);
+
+    const dojoLight = new THREE.PointLight(0xef4444, 2.0, 7.0);
+    dojoLight.position.set(0, 2.0, 0);
+    dojoGroup.add(dojoLight);
+
+    group.add(dojoGroup);
+    this.kenjiKatanaStand = {
+      group: dojoGroup,
+      pos: new THREE.Vector3(18, 1.2, 18),
+      isClaimed: false
+    };
+
+    // 5. ERA II: Zen Bamboo Grove & Bronze Wind Chime Decoy [22, 0, 12]
+    const bambooGroup = new THREE.Group();
+    bambooGroup.position.set(22, 0, 12);
+
+    for (let b = 0; b < 10; b++) {
+      const bx = (b % 4 - 1.5) * 0.7;
+      const bz = (Math.floor(b / 4) - 1.0) * 0.8;
+      const stalk = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.09, 4.5, 8), bambooMat);
+      stalk.position.set(bx, 2.25, bz);
+      bambooGroup.add(stalk);
+    }
+
+    const bell = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.28, 0.45, 12), goldMat);
+    bell.position.set(0, 2.6, 0);
+    bambooGroup.add(bell);
+
+    const bambooLight = new THREE.PointLight(0x22c55e, 1.5, 5.0);
+    bambooLight.position.set(0, 2.0, 0);
+    bambooGroup.add(bambooLight);
+
+    group.add(bambooGroup);
+    this.kenjiBambooDecoy = {
+      group: bambooGroup,
+      pos: new THREE.Vector3(22, 1.4, 12),
+      isTriggered: false
+    };
+
+    // 6. ERA III (The Bullet 1943): John J. Torres' Crashed P-40 Warhawk [-18, 0, -18]
+    const warhawkGroup = new THREE.Group();
+    warhawkGroup.position.set(-18, 0, -18);
+
+    const sandDune = new THREE.Mesh(new THREE.BoxGeometry(5.5, 0.8, 5.5), sandbagMat);
+    sandDune.position.y = 0.4;
+    warhawkGroup.add(sandDune);
+
+    // Aluminum Fuselage
+    const fuselage = new THREE.Mesh(new THREE.CylinderGeometry(0.9, 0.6, 4.8, 12), airplaneMat);
+    fuselage.rotation.x = Math.PI / 2;
+    fuselage.rotation.z = 0.35;
+    fuselage.position.set(0, 1.1, 0);
+    warhawkGroup.add(fuselage);
+
+    // 3-Blade Bent Propeller
+    [-0.7, 0.7].forEach(pAngle => {
+      const blade = new THREE.Mesh(new THREE.BoxGeometry(0.18, 1.2, 0.04), ironMat);
+      blade.position.set(0, 1.1 + Math.sin(pAngle) * 0.9, 2.4 + Math.cos(pAngle) * 0.9);
+      blade.rotation.x = pAngle;
+      warhawkGroup.add(blade);
+    });
+
+    const smokeLight = new THREE.PointLight(0xf59e0b, 2.2, 7.0);
+    smokeLight.position.set(0, 1.8, 1.2);
+    warhawkGroup.add(smokeLight);
+
+    group.add(warhawkGroup);
+    this.torresWarhawkWreck = {
+      group: warhawkGroup,
+      pos: new THREE.Vector3(-18, 1.4, -18),
+      isClaimed: false
+    };
+
+    // 7. ERA III: USAAF Browning .50 Cal M2 Heavy Machine Gun Nest [-22, 0, -12]
+    const browningGroup = new THREE.Group();
+    browningGroup.position.set(-22, 0, -12);
+
+    for (let sb = 0; sb < 6; sb++) {
+      const ang = (sb / 6) * Math.PI;
+      const sandbag = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.35, 0.45), sandbagMat);
+      sandbag.position.set(Math.cos(ang) * 1.4, 0.4, Math.sin(ang) * 1.4);
+      sandbag.rotation.y = -ang;
+      browningGroup.add(sandbag);
+    }
+
+    // Browning M2 Heavy Gun Body & Barrel
+    const gunBody = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.28, 1.6), ironMat);
+    gunBody.position.set(0, 1.1, 0.2);
+    browningGroup.add(gunBody);
+
+    const gunBarrel = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 1.4, 8), ironMat);
+    gunBarrel.rotation.x = Math.PI / 2;
+    gunBarrel.position.set(0, 1.1, 1.5);
+    browningGroup.add(gunBarrel);
+
+    const ammoBox = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.3, 0.5), new THREE.MeshStandardMaterial({ color: 0x15803d, roughness: 0.7 }));
+    ammoBox.position.set(0.45, 0.8, 0.2);
+    browningGroup.add(ammoBox);
+
+    const browningLight = new THREE.PointLight(0xeab308, 1.6, 5.0);
+    browningLight.position.set(0, 1.5, 0.5);
+    browningGroup.add(browningLight);
+
+    group.add(browningGroup);
+    this.torresBrowningNest = {
+      group: browningGroup,
+      pos: new THREE.Vector3(-22, 1.2, -12),
+      isFired: false
+    };
+
+    this.scene.add(group);
+    this.envObjects.push(group);
+  }
+
+  buildKillerOfKillersExpansionProps() {
+    const group = new THREE.Group();
+    const obsidianMat = new THREE.MeshStandardMaterial({ color: 0x18151f, metalness: 0.88, roughness: 0.22 });
+    const goldMat = new THREE.MeshStandardMaterial({ color: 0xd97706, metalness: 0.92, roughness: 0.18 });
+
+    // 8. The Grandmaster Arbiter's Throne [0, 0, -24]
+    const throneGroup = new THREE.Group();
+    throneGroup.position.set(0, 0, -24);
+
+    const throneBase = new THREE.Mesh(new THREE.BoxGeometry(4.2, 0.8, 3.4), obsidianMat);
+    throneBase.position.y = 0.4;
+    throneGroup.add(throneBase);
+
+    const throneBack = new THREE.Mesh(new THREE.BoxGeometry(3.6, 4.5, 0.6), obsidianMat);
+    throneBack.position.set(0, 2.8, -1.2);
+    throneGroup.add(throneBack);
+
+    // Trophies Mounted on Throne: Viking Horned Skull, Samurai Kabuto, Pilot Helm
+    const trophySkull = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.6, 0.5), new THREE.MeshStandardMaterial({ color: 0xeadfcf }));
+    trophySkull.position.set(-1.1, 4.5, -0.7);
+    throneGroup.add(trophySkull);
+
+    const trophyKabuto = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.55, 0.55), new THREE.MeshStandardMaterial({ color: 0x991b1b }));
+    trophyKabuto.position.set(0, 4.8, -0.7);
+    throneGroup.add(trophyKabuto);
+
+    const trophyPilot = new THREE.Mesh(new THREE.BoxGeometry(0.52, 0.52, 0.52), new THREE.MeshStandardMaterial({ color: 0x334155 }));
+    trophyPilot.position.set(1.1, 4.5, -0.7);
+    throneGroup.add(trophyPilot);
+
+    const throneLight = new THREE.PointLight(0xa855f7, 2.8, 12.0);
+    throneLight.position.set(0, 3.2, 0);
+    throneGroup.add(throneLight);
+
+    group.add(throneGroup);
+
+    // 9. Twin Cosmic Stasis Containment Pylons [-8, 0, 0] & [8, 0, 0]
+    [-8, 8].forEach(px => {
+      const pylon = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.65, 5.5, 8), obsidianMat);
+      pylon.position.set(px, 2.75, 0);
+      group.add(pylon);
+
+      const pCap = new THREE.Mesh(new THREE.SphereGeometry(0.55, 12, 12), goldMat);
+      pCap.position.set(px, 5.6, 0);
+      group.add(pCap);
+
+      const pLight = new THREE.PointLight(0x38bdf8, 2.0, 8.0);
+      pLight.position.set(px, 5.6, 0);
+      group.add(pLight);
+    });
+
+    this.scene.add(group);
+    this.envObjects.push(group);
+  }
+
+  // Killer of Killers Interaction: Trio Cryo-Stasis Pods Awakening Overload
+  checkStasisTrioAwakeningInteraction(player, ui, audio, bosses, horde, particles) {
+    if (!this.trioCryoStasisPods || !player || !player.position || this.trioCryoStasisPods.isAwakened) return false;
+    if (player.position.distanceTo(this.trioCryoStasisPods.pos) <= 4.8) {
+      this.trioCryoStasisPods.isAwakened = true;
+      if (audio && audio.playStasisPodDecompression) audio.playStasisPodDecompression();
+      if (audio && audio.playApexGladiatorRoar) audio.playApexGladiatorRoar();
+
+      // Damage surrounding horde
+      if (horde && horde.aliens) {
+        horde.aliens.forEach(alien => {
+          if (alien.isAlive && alien.position.distanceTo(this.trioCryoStasisPods.pos) <= 14.0) {
+            alien.takeDamage(1000, true);
+          }
+        });
+      }
+
+      // Stun and damage Boss
+      if (bosses && bosses.activeBoss && bosses.activeBoss.type === 'apex_gladiator_predator') {
+        bosses.activeBoss.hp -= 2000;
+        bosses.activeBoss.isStunned = true;
+        bosses.activeBoss.stunTimer = 6.0;
+        bosses.activeBoss.hasPhaseShield = false;
+        bosses.activeBoss.phaseShieldHp = 0;
+      }
+
+      player.hp = player.maxHp || 100;
+      player.shield = Math.min(200, (player.shield || 0) + 150);
+      if (player.addScore) player.addScore(3500);
+
+      if (particles && particles.emitExplosion) {
+        particles.emitExplosion(this.trioCryoStasisPods.pos, 0x38bdf8, 55);
+      }
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('🌌 TRIO DES TUEURS RÉVEILLÉ (KILLER OF KILLERS 2025) : URSA, KENJI & TORRES DÉCHAÎNENT L\'ONDE DE CHOC (1000 DMG / STUN BOSS 6S) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Killer of Killers Interaction: Ursa's Lindisfarne Oak Shield (The Shield 850)
+  checkUrsaShieldInteraction(player, ui, audio) {
+    if (!this.ursaShieldProw || !player || !player.position || this.ursaShieldProw.isClaimed) return false;
+    if (player.position.distanceTo(this.ursaShieldProw.pos) <= 4.2) {
+      this.ursaShieldProw.isClaimed = true;
+      if (audio && audio.playVikingShieldBlock) audio.playVikingShieldBlock();
+
+      if (player.applyUrsaBerserk) player.applyUrsaBerserk(30.0);
+      player.shield = Math.min(200, (player.shield || 0) + 150);
+      if (player.addScore) player.addScore(2000);
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('🛡️ BOUCLIER VIKING D\'URSA ÉQUIPÉ (LE BOUCLIER 850) : PARADE FRONTALE RENFORCÉE (+150 BOUCLIER, BERSERK VALKYRIE 30S) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Killer of Killers Interaction: Ursa's Dane Axe & Anders' Runestone (The Shield 850)
+  checkUrsaDaneAxeInteraction(player, ui, audio) {
+    if (!this.ursaDaneAxeAltar || !player || !player.position || this.ursaDaneAxeAltar.isClaimed) return false;
+    if (player.position.distanceTo(this.ursaDaneAxeAltar.pos) <= 4.2) {
+      this.ursaDaneAxeAltar.isClaimed = true;
+      if (audio && audio.playVikingWarHorn) audio.playVikingWarHorn();
+
+      if (player.applyUrsaBerserk) player.applyUrsaBerserk(30.0);
+      player.plasmaEnergy = player.maxPlasmaEnergy || 100;
+      if (player.addScore) player.addScore(2500);
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('🪓 HACHE DANOISE D\'URSA & RUNES D\'ANDERS (LE BOUCLIER 850) : DÉGÂTS CRITIQUES LOURDS +45% (30S, +2500 SCORE) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Killer of Killers Interaction: Kenji's Ancestral Masamune Katana (The Sabre 1620)
+  checkKenjiKatanaInteraction(player, ui, audio) {
+    if (!this.kenjiKatanaStand || !player || !player.position || this.kenjiKatanaStand.isClaimed) return false;
+    if (player.position.distanceTo(this.kenjiKatanaStand.pos) <= 4.2) {
+      this.kenjiKatanaStand.isClaimed = true;
+      if (audio && audio.playKatanaIaijutsuDraw) audio.playKatanaIaijutsuDraw();
+
+      if (player.applyKenjiReflexes) player.applyKenjiReflexes(30.0);
+      player.smartDiscCharges = Math.min(8, (player.smartDiscCharges || 0) + 4);
+      if (player.addScore) player.addScore(2500);
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('⚔️ MASAMUNE DE KENJI RÉCUPÉRÉ (LE SABRE 1620) : RÉFLEXES NINJA (+35% CADENCE, +25% VITESSE, +4 SHURIKENS/DISCS) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Killer of Killers Interaction: Kenji's Bamboo Decoy Bell (The Sabre 1620)
+  checkKenjiBambooDecoyInteraction(player, ui, audio, horde) {
+    if (!this.kenjiBambooDecoy || !player || !player.position || this.kenjiBambooDecoy.isTriggered) return false;
+    if (player.position.distanceTo(this.kenjiBambooDecoy.pos) <= 4.2) {
+      this.kenjiBambooDecoy.isTriggered = true;
+      if (audio && audio.playNinjaSmokeBomb) audio.playNinjaSmokeBomb();
+
+      if (horde && horde.aliens) {
+        horde.aliens.forEach(alien => {
+          if (alien.isAlive && alien.position.distanceTo(this.kenjiBambooDecoy.pos) <= 22.0) {
+            alien.targetPosition = this.kenjiBambooDecoy.pos.clone();
+            alien.distractionTimer = 8.0;
+          }
+        });
+      }
+      if (player.addScore) player.addScore(1800);
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('💨 BOMBE FUMIGÈNE & LEURRE DE BAMBOU (LE SABRE 1620) : ENNEMIS DÉTOURNÉS PENDANT 8S (+1800 SCORE) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Killer of Killers Interaction: Torres' Crashed P-40 Warhawk Avionics (The Bullet 1943)
+  checkTorresWarhawkInteraction(player, ui, audio) {
+    if (!this.torresWarhawkWreck || !player || !player.position || this.torresWarhawkWreck.isClaimed) return false;
+    if (player.position.distanceTo(this.torresWarhawkWreck.pos) <= 4.2) {
+      this.torresWarhawkWreck.isClaimed = true;
+      if (audio && audio.playPlaneEngineSputter) audio.playPlaneEngineSputter();
+
+      if (player.applyTorresIncendiary) player.applyTorresIncendiary(30.0);
+      player.medicompCharges = Math.min(6, (player.medicompCharges || 0) + 2);
+      if (player.addScore) player.addScore(2500);
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('✈️ ÉPAVE DU P-40 DE TORRES (LA BALLE 1943) : MUNITIONS INCENDIAIRES D\'AVIATEUR (+30% FEU RANGED, +6 BALLES GAUSS, +2 MEDICOMP) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Killer of Killers Interaction: Torres' Browning .50 Cal M2 Machine Gun (The Bullet 1943)
+  checkTorresBrowningInteraction(player, ui, audio, horde, particles) {
+    if (!this.torresBrowningNest || !player || !player.position || this.torresBrowningNest.isFired) return false;
+    if (player.position.distanceTo(this.torresBrowningNest.pos) <= 4.2) {
+      this.torresBrowningNest.isFired = true;
+      if (audio && audio.playBrowning50CalBurst) audio.playBrowning50CalBurst();
+
+      if (horde && horde.aliens) {
+        horde.aliens.forEach(alien => {
+          if (alien.isAlive && alien.position.distanceTo(this.torresBrowningNest.pos) <= 25.0) {
+            alien.takeDamage(900, true);
+          }
+        });
+      }
+
+      if (particles && particles.emitExplosion) {
+        particles.emitExplosion(this.torresBrowningNest.pos.clone().add(new THREE.Vector3(0, 1.2, 1.8)), 0xeab308, 40);
+      }
+      if (player.addScore) player.addScore(2000);
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('💥 MITRAILLEUSE BROWNING .50 CAL M2 DE TORRES (LA BALLE 1943) : RAFALE LOURDE DÉVASTATRICE (900 DMG, +2000 SCORE) !', 'success');
       }
       return true;
     }

@@ -180,5 +180,23 @@ export const LEVELS_DATA = [
     skyColor: 0x14100b,
     waves: 6,
     bossType: 'feral_predator_boss'
+  },
+  {
+    id: 'killer_of_killers_arena',
+    name: 'ARÈNE DES TUEURS DE TUEURS (KILLER OF KILLERS 2025)',
+    desc: 'Colisée cosmique Yautja réunissant 3 époques : Le Bouclier Viking d\'Ursa (850), Le Sabre Féodal de Kenji (1620) et La Balle de Torres (1943).',
+    description: 'Colisée cosmique Yautja réunissant 3 époques : Le Bouclier Viking d\'Ursa (850), Le Sabre Féodal de Kenji (1620) et La Balle de Torres (1943).',
+    icon: '⚔️',
+    difficulty: 'TITANESQUE',
+    difficultyBadge: 'badge-apex',
+    theme: 'killer_of_killers',
+    floorColor: 0x18151f,
+    wallColor: 0x2e273d,
+    fogColor: 0x110f17,
+    fogDensity: 0.014,
+    weatherType: 'stasis_aurora',
+    skyColor: 0x09070e,
+    waves: 6,
+    bossType: 'apex_gladiator_predator'
   }
 ];
