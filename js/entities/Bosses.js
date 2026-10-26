@@ -31,8 +31,9 @@ export class BossManager {
     const isTrilobite = type === 'trilobite_prime';
     const isBerserker = type === 'berserker_super_predator';
     const isUltimateUpgrade = type === 'ultimate_upgrade_predator';
+    const isFeralPredator = type === 'feral_predator_boss';
 
-    const hp = isMatriarchTitan ? 10000 : (isRogueKing ? 9500 : (isUltimateUpgrade ? 9200 : (isBerserker ? 8800 : (isEngineer ? 8500 : (isImperial ? 8000 : (isTrilobite ? 7000 : (isPredalienAbomination ? 6500 : (isEmpress ? 6000 : (isPredalienQueen ? 5000 : (isOffspring ? 4500 : 3000))))))))));
+    const hp = isMatriarchTitan ? 10000 : (isRogueKing ? 9500 : (isUltimateUpgrade ? 9200 : (isBerserker ? 8800 : (isFeralPredator ? 8600 : (isEngineer ? 8500 : (isImperial ? 8000 : (isTrilobite ? 7000 : (isPredalienAbomination ? 6500 : (isEmpress ? 6000 : (isPredalienQueen ? 5000 : (isOffspring ? 4500 : 3000)))))))))));
 
     this.activeBoss = {
       type: type,
@@ -53,7 +54,9 @@ export class BossManager {
       chargeTimer: 0
     };
 
-    if (isUltimateUpgrade) {
+    if (isFeralPredator) {
+      if (this.audioEngine.playFeralPredatorPrimalRoar) this.audioEngine.playFeralPredatorPrimalRoar();
+    } else if (isUltimateUpgrade) {
       if (this.audioEngine.playUltimatePredatorRoar) this.audioEngine.playUltimatePredatorRoar();
     } else if (isRogueKing) {
       if (this.audioEngine.playRogueKingEarthquakeRoar) this.audioEngine.playRogueKingEarthquakeRoar();
@@ -441,6 +444,111 @@ export class BossManager {
     return group;
   }
 
+  /* === PREY (2022): 3.1m Feral Predator Primordial Archaic Hunter Boss Mesh === */
+  buildFeralPredatorMesh(scale = 2.9) {
+    const group = new THREE.Group();
+
+    // Pale leathery reptilian flesh
+    const skinMat = new THREE.MeshStandardMaterial({
+      color: 0x4a4738,
+      roughness: 0.72,
+      metalness: 0.2
+    });
+
+    // Primitive carved bone skull mask
+    const boneMat = new THREE.MeshStandardMaterial({
+      color: 0xd6d3d1,
+      roughness: 0.45,
+      metalness: 0.15
+    });
+
+    // Dark obsidian volcanic glass
+    const obsidianMat = new THREE.MeshStandardMaterial({
+      color: 0x09090b,
+      roughness: 0.08,
+      metalness: 0.95
+    });
+
+    const leatherMat = new THREE.MeshStandardMaterial({
+      color: 0x271c14,
+      roughness: 0.85
+    });
+
+    // 1. Muscular Torso & Dorsal Spine Ridges
+    const torso = new THREE.Mesh(new THREE.BoxGeometry(1.4 * scale, 1.8 * scale, 0.95 * scale), skinMat);
+    torso.position.y = 2.2 * scale;
+    torso.castShadow = true;
+    group.add(torso);
+
+    for (let s = 0; s < 5; s++) {
+      const spine = new THREE.Mesh(new THREE.ConeGeometry(0.08 * scale, 0.35 * scale, 4), boneMat);
+      spine.rotation.x = -Math.PI / 3;
+      spine.position.set(0, (1.6 + s * 0.3) * scale, -0.52 * scale);
+      group.add(spine);
+    }
+
+    // 2. Feral Head, Exposed Animalistic Lower Mandibles & Carved Bone Skull Mask
+    const head = new THREE.Mesh(new THREE.BoxGeometry(0.75 * scale, 0.9 * scale, 0.85 * scale), skinMat);
+    head.position.set(0, 3.4 * scale, 0.15 * scale);
+    group.add(head);
+
+    const boneMask = new THREE.Mesh(new THREE.BoxGeometry(0.82 * scale, 0.55 * scale, 0.65 * scale), boneMat);
+    boneMask.position.set(0, 3.6 * scale, 0.32 * scale);
+    group.add(boneMask);
+
+    [-0.28, 0.28].forEach(mx => {
+      const mand = new THREE.Mesh(new THREE.ConeGeometry(0.08 * scale, 0.45 * scale, 4), boneMat);
+      mand.rotation.x = Math.PI / 4;
+      mand.rotation.z = mx > 0 ? -0.4 : 0.4;
+      mand.position.set(mx * scale, 3.1 * scale, 0.48 * scale);
+      group.add(mand);
+    });
+
+    const laserAperture = new THREE.Mesh(new THREE.CylinderGeometry(0.04 * scale, 0.04 * scale, 0.15 * scale, 6), new THREE.MeshBasicMaterial({ color: 0xef4444 }));
+    laserAperture.rotation.x = Math.PI / 2;
+    laserAperture.position.set(-0.35 * scale, 3.65 * scale, 0.62 * scale);
+    group.add(laserAperture);
+
+    // 3. Right Arm: Telescopic Obsidian Spear / Cut Blade
+    const rightArm = new THREE.Mesh(new THREE.BoxGeometry(0.4 * scale, 1.5 * scale, 0.45 * scale), skinMat);
+    rightArm.position.set(0.95 * scale, 2.1 * scale, 0);
+    group.add(rightArm);
+
+    const spearShaft = new THREE.Mesh(new THREE.CylinderGeometry(0.05 * scale, 0.05 * scale, 2.6 * scale, 8), leatherMat);
+    spearShaft.position.set(1.05 * scale, 2.0 * scale, 0.3 * scale);
+    spearShaft.rotation.x = Math.PI / 3;
+    group.add(spearShaft);
+
+    const spearTip = new THREE.Mesh(new THREE.ConeGeometry(0.12 * scale, 0.8 * scale, 4), obsidianMat);
+    spearTip.position.set(1.05 * scale, 2.9 * scale, 0.9 * scale);
+    spearTip.rotation.x = Math.PI / 3;
+    group.add(spearTip);
+
+    // 4. Left Arm: Folding Expanding Bone Fan Shield on Forearm
+    const leftArm = new THREE.Mesh(new THREE.BoxGeometry(0.4 * scale, 1.5 * scale, 0.45 * scale), skinMat);
+    leftArm.position.set(-0.95 * scale, 2.1 * scale, 0);
+    group.add(leftArm);
+
+    const shieldPlate = new THREE.Mesh(new THREE.BoxGeometry(0.18 * scale, 1.2 * scale, 0.85 * scale), boneMat);
+    shieldPlate.position.set(-1.18 * scale, 1.8 * scale, 0.25 * scale);
+    group.add(shieldPlate);
+
+    // 5. Powerful Digigrade Legs & Archaic Loincloth
+    [-0.45, 0.45].forEach(lx => {
+      const leg = new THREE.Mesh(new THREE.BoxGeometry(0.48 * scale, 1.8 * scale, 0.52 * scale), skinMat);
+      leg.position.set(lx * scale, 0.9 * scale, 0);
+      leg.castShadow = true;
+      group.add(leg);
+    });
+
+    const loincloth = new THREE.Mesh(new THREE.BoxGeometry(1.1 * scale, 0.8 * scale, 0.65 * scale), leatherMat);
+    loincloth.position.set(0, 1.4 * scale, 0);
+    group.add(loincloth);
+
+    group.castShadow = true;
+    return group;
+  }
+
   /* === THE PREDATOR (2018): 3.3m Ultimate Upgrade Genetically Hybridized Predator Boss Mesh === */
   buildUltimatePredatorMesh(scale = 3.3) {
     const group = new THREE.Group();
@@ -677,6 +785,9 @@ export class BossManager {
     }
     if (type === 'ultimate_upgrade_predator') {
       return this.buildUltimatePredatorMesh(3.3);
+    }
+    if (type === 'feral_predator_boss') {
+      return this.buildFeralPredatorMesh(2.9);
     }
 
     const group = new THREE.Group();
@@ -1630,6 +1741,83 @@ export class BossManager {
         player.takeDamage(420, false, this.activeBoss);
         if (window.gameInstance && window.gameInstance.particles && window.gameInstance.particles.emitSparks) {
           window.gameInstance.particles.emitSparks(player.position.clone().add(new THREE.Vector3(0, 1.4, 0)), 24);
+        }
+      }
+    } else if (this.activeBoss.type === 'feral_predator_boss') {
+      // Prey (2022): 3.1m Feral Predator Archaic Hunter AI
+      if (!this.activeBoss.crossbowCooldown) this.activeBoss.crossbowCooldown = 3.0;
+      this.activeBoss.crossbowCooldown -= delta;
+
+      if (!this.activeBoss.spearCooldown) this.activeBoss.spearCooldown = 4.5;
+      this.activeBoss.spearCooldown -= delta;
+
+      if (dist > 0.1) {
+        this.activeBoss.mesh.lookAt(player.position.x, this.activeBoss.mesh.position.y, player.position.z);
+      }
+
+      // Check Mud Sinkhole Entrapment: if near [0, 0, 0] within 5.5m
+      const mudDist = Math.sqrt(this.activeBoss.mesh.position.x * this.activeBoss.mesh.position.x + this.activeBoss.mesh.position.z * this.activeBoss.mesh.position.z);
+      if (mudDist <= 5.5 && !this.activeBoss.isMudStunned) {
+        this.activeBoss.isMudStunned = true;
+        this.activeBoss.isStunned = true;
+        this.activeBoss.stunTimer = 7.0;
+        if (window.gameInstance && window.gameInstance.particles && window.gameInstance.particles.emitSparks) {
+          window.gameInstance.particles.emitSparks(this.activeBoss.mesh.position, 25);
+        }
+        if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
+          window.gameInstance.ui.showAnnouncement('🎯 FERAL PREDATOR ENGLUÉ DANS LA TOURBIÈRE DE BOUE (IMMOBILISÉ 7S, CRITIQUES x3.5) !', 'success');
+        }
+      }
+
+      // 1. Long range: 3 Pneumatic Crossbow Homing Flechettes (unless blocked or decoyed)
+      if (dist > 7.0 && dist <= 38.0 && this.activeBoss.crossbowCooldown <= 0 && !this.activeBoss.isStunned) {
+        this.activeBoss.crossbowCooldown = 3.8;
+
+        const decoyActive = window.gameInstance && window.gameInstance.env && window.gameInstance.env.boneMaskDecoy && window.gameInstance.env.boneMaskDecoy.isArmed;
+        if (decoyActive) {
+          if (this.audioEngine && this.audioEngine.playBoneMaskLaserLockRedirect) {
+            this.audioEngine.playBoneMaskLaserLockRedirect();
+          }
+          this.activeBoss.hp -= 1500;
+          this.activeBoss.isStunned = true;
+          this.activeBoss.stunTimer = 4.0;
+          window.gameInstance.env.boneMaskDecoy.isArmed = false;
+          if (window.gameInstance.particles && window.gameInstance.particles.emitSparks) {
+            window.gameInstance.particles.emitSparks(this.activeBoss.mesh.position.clone().add(new THREE.Vector3(0, 3.2, 0)), 35);
+          }
+          if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
+            window.gameInstance.ui.showAnnouncement('💥 PIÈGE DU MASQUE D\'OS DÉCLENCHÉ : FLÉCHETTES DÉVIÉES DANS LE CRÂNE DU FERAL (1500 DMG) !', 'success');
+          }
+        } else {
+          if (this.audioEngine && this.audioEngine.playCrossbowHomingDarts) {
+            this.audioEngine.playCrossbowHomingDarts();
+          }
+          for (let f = 0; f < 3; f++) {
+            setTimeout(() => {
+              if (this.activeBoss && player) {
+                const fDir = player.position.clone().sub(this.activeBoss.mesh.position).normalize();
+                this.spawnAcidSpit(this.activeBoss.mesh.position.clone().add(new THREE.Vector3(0, 2.8, 0)), fDir);
+              }
+            }, f * 100);
+          }
+          if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
+            window.gameInstance.ui.showAnnouncement('🎯 SALVE D\'ARBALÈTE PNEUMATIQUE DU FERAL PREDATOR !', 'warning');
+          }
+        }
+      }
+
+      // 2. Melee range: Leaping Obsidian Cut Spear Impale (420 Dmg)
+      if (dist <= 6.5 && this.activeBoss.spearCooldown <= 0 && !this.activeBoss.isStunned) {
+        this.activeBoss.spearCooldown = 4.2;
+        if (this.audioEngine && this.audioEngine.playFeralPredatorPrimalRoar) {
+          this.audioEngine.playFeralPredatorPrimalRoar();
+        }
+        player.takeDamage(420, false, this.activeBoss);
+        if (window.gameInstance && window.gameInstance.particles && window.gameInstance.particles.emitSparks) {
+          window.gameInstance.particles.emitSparks(player.position.clone().add(new THREE.Vector3(0, 1.4, 0)), 28);
+        }
+        if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
+          window.gameInstance.ui.showAnnouncement('⚔️ EMPALEMENT À LA LANCE D\'OBSIDIENNE DU FERAL PREDATOR (420 DMG) !', 'error');
         }
       }
     } else if (this.activeBoss.type === 'ultimate_upgrade_predator') {

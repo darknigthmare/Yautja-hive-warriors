@@ -690,6 +690,22 @@ class GameApp {
           // Handled Crashed Ark Ship Main Plasma Turbine Core Overload (The Predator 2018)!
         } else if (this.env && this.env.checkStargazerDecontamination && this.env.checkStargazerDecontamination(this.player, this.ui, this.audio)) {
           // Handled Dr. Casey Bracket's Biogenetic Decontamination Airlock (The Predator 2018)!
+        } else if (this.env && this.env.checkBoneMaskDecoyInteraction && this.env.checkBoneMaskDecoyInteraction(this.player, this.ui, this.audio, this.bosses, this.particles)) {
+          // Handled Feral Bone Mask & 3-Laser Homing Decoy Rig (Prey 2022)!
+        } else if (this.env && this.env.checkOrangeFlowerInteraction && this.env.checkOrangeFlowerInteraction(this.player, this.ui, this.audio)) {
+          // Handled Naru's Orange Flower (Sariska) Meadow (Prey 2022)!
+        } else if (this.env && this.env.checkAdoliniPistolInteraction && this.env.checkAdoliniPistolInteraction(this.player, this.ui, this.audio, this.horde, this.bosses, this.particles)) {
+          // Handled Raphael Adolini 1715 Flintlock Pistol (Prey 2022)!
+        } else if (this.env && this.env.checkTaabeWarBowInteraction && this.env.checkTaabeWarBowInteraction(this.player, this.ui, this.audio)) {
+          // Handled Taabe's Comanche War Horse & Rock Overlook (Prey 2022)!
+        } else if (this.env && this.env.checkGrizzlyBearTrophyInteraction && this.env.checkGrizzlyBearTrophyInteraction(this.player, this.ui, this.audio)) {
+          // Handled Giant Slain Grizzly Bear Carcass Trophy (Prey 2022)!
+        } else if (this.env && this.env.checkNaruTomahawkInteraction && this.env.checkNaruTomahawkInteraction(this.player, this.ui, this.audio)) {
+          // Handled Naru's Tethered Tomahawk in Pine Trunk (Prey 2022)!
+        } else if (this.env && this.env.checkTrapperMedicalTentInteraction && this.env.checkTrapperMedicalTentInteraction(this.player, this.ui, this.audio)) {
+          // Handled Trapper Field Medical Tent (Prey 2022)!
+        } else if (this.env && this.env.checkFeralArsenalInteraction && this.env.checkFeralArsenalInteraction(this.player, this.ui, this.audio)) {
+          // Handled Archaic Feral Weapon Rack (Prey 2022)!
         } else if (this.env && this.env.checkScoutShipConsoleInteraction && this.env.checkScoutShipConsoleInteraction(this.player.position, this.ui, this.audio, this.horde, this.player)) {
           // Handled Crashed Scout Ship Telemetry Scan (AVP: Requiem 2007)!
         } else if (this.env && this.env.checkCharonLabConsoleInteraction && this.env.checkCharonLabConsoleInteraction(this.player.position, this.horde, this.ui, this.audio)) {
@@ -3603,6 +3619,62 @@ class GameApp {
       if (deconPrompt) {
         if (isNearDecon) deconPrompt.classList.remove('hidden');
         else deconPrompt.classList.add('hidden');
+      }
+
+      const isNearBoneMask = this.env.boneMaskDecoy && this.env.boneMaskDecoy.isArmed && this.player && this.player.position.distanceTo(this.env.boneMaskDecoy.pos) <= 4.2;
+      const maskPrompt = document.getElementById('bone-mask-prompt');
+      if (maskPrompt) {
+        if (isNearBoneMask) maskPrompt.classList.remove('hidden');
+        else maskPrompt.classList.add('hidden');
+      }
+
+      const isNearFlower = this.env.orangeFlowerPatch && !this.env.orangeFlowerPatch.isHarvested && this.player && this.player.position.distanceTo(this.env.orangeFlowerPatch.pos) <= 4.2;
+      const flowerPrompt = document.getElementById('orange-flower-prompt');
+      if (flowerPrompt) {
+        if (isNearFlower) flowerPrompt.classList.remove('hidden');
+        else flowerPrompt.classList.add('hidden');
+      }
+
+      const isNearAdolini = this.env.adoliniPistolPedestal && !this.env.adoliniPistolPedestal.isClaimed && this.player && this.player.position.distanceTo(this.env.adoliniPistolPedestal.pos) <= 4.2;
+      const adoliniPrompt = document.getElementById('adolini-pistol-prompt');
+      if (adoliniPrompt) {
+        if (isNearAdolini) adoliniPrompt.classList.remove('hidden');
+        else adoliniPrompt.classList.add('hidden');
+      }
+
+      const isNearTaabe = this.env.taabeRockPerch && !this.env.taabeRockPerch.isClaimed && this.player && this.player.position.y >= 3.0 && this.player.position.distanceTo(this.env.taabeRockPerch.pos) <= 4.8;
+      const taabePrompt = document.getElementById('taabe-bow-prompt');
+      if (taabePrompt) {
+        if (isNearTaabe) taabePrompt.classList.remove('hidden');
+        else taabePrompt.classList.add('hidden');
+      }
+
+      const isNearGrizzly = this.env.grizzlyBearCarcass && !this.env.grizzlyBearCarcass.isSkinned && this.player && this.player.position.distanceTo(this.env.grizzlyBearCarcass.pos) <= 4.5;
+      const grizzlyPrompt = document.getElementById('grizzly-trophy-prompt');
+      if (grizzlyPrompt) {
+        if (isNearGrizzly) grizzlyPrompt.classList.remove('hidden');
+        else grizzlyPrompt.classList.add('hidden');
+      }
+
+      const isNearTomahawk = this.env.naruTomahawkTree && !this.env.naruTomahawkTree.isClaimed && this.player && this.player.position.distanceTo(this.env.naruTomahawkTree.pos) <= 4.2;
+      const tomahawkPrompt = document.getElementById('naru-tomahawk-prompt');
+      if (tomahawkPrompt) {
+        if (isNearTomahawk) tomahawkPrompt.classList.remove('hidden');
+        else tomahawkPrompt.classList.add('hidden');
+      }
+
+      const isNearMedTent = this.env.trapperMedicalTent && !this.env.trapperMedicalTent.isLooted && this.player && this.player.position.distanceTo(this.env.trapperMedicalTent.pos) <= 4.2;
+      const medTentPrompt = document.getElementById('trapper-med-prompt');
+      if (medTentPrompt) {
+        if (isNearMedTent) medTentPrompt.classList.remove('hidden');
+        else medTentPrompt.classList.add('hidden');
+      }
+
+      const isNearFeralArsenal = this.env.feralArsenalStation && !this.env.feralArsenalStation.isClaimed && this.player && this.player.position.distanceTo(this.env.feralArsenalStation.pos) <= 4.2;
+      const feralArsenalPrompt = document.getElementById('feral-arsenal-prompt');
+      if (feralArsenalPrompt) {
+        if (isNearFeralArsenal) feralArsenalPrompt.classList.remove('hidden');
+        else feralArsenalPrompt.classList.add('hidden');
       }
     }
 

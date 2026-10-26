@@ -1772,6 +1772,9 @@ export class Player {
     if (this.isRoryTelemetryActive) {
       dmg *= 1.35; // +35% decoded Yautja telemetry critical damage boost (The Predator 2018)
     }
+    if (this.isOrangeFlowerActive) {
+      dmg *= 1.50; // +50% thermal stealth critical strike (Prey 2022)
+    }
 
     return {
       position: origin,
@@ -4266,7 +4269,26 @@ export class Player {
       this.caseyDeconTimer -= delta;
       if (this.caseyDeconTimer <= 0) this.isCaseyDeconActive = false;
     }
+    if (this.orangeFlowerTimer > 0) {
+      this.orangeFlowerTimer -= delta;
+      if (this.orangeFlowerTimer <= 0) this.isOrangeFlowerActive = false;
+    }
+    if (this.taabeWarTimer > 0) {
+      this.taabeWarTimer -= delta;
+      if (this.taabeWarTimer <= 0) this.isTaabeWarActive = false;
+    }
     this.isOnBough = (this.position && this.position.y >= 5.0);
+  }
+
+  applyOrangeFlowerBuff(duration = 35.0) {
+    this.orangeFlowerTimer = duration;
+    this.isOrangeFlowerActive = true;
+    this.isCloaked = true;
+  }
+
+  applyTaabeWarAgility(duration = 25.0) {
+    this.taabeWarTimer = duration;
+    this.isTaabeWarActive = true;
   }
 
   applyFriendlyLobo(duration = 35.0) {

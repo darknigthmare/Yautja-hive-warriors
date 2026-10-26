@@ -9380,6 +9380,193 @@ export class AudioEngine {
     osc.start(now);
     osc.stop(now + 0.25);
   }
+
+  // Method 192: Feral Bone Mask Tri-Laser Reticle Lock & Flechette Redirection (Prey 2022)
+  playBoneMaskLaserLockRedirect() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // 3 rapid rising harmonic chirps
+    [1760, 2200, 2640].forEach((freq, idx) => {
+      const cTime = now + idx * 0.05;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, cTime);
+      osc.frequency.exponentialRampToValueAtTime(freq * 1.3, cTime + 0.04);
+
+      gain.gain.setValueAtTime(0.01, cTime);
+      gain.gain.linearRampToValueAtTime(0.6, cTime + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.001, cTime + 0.04);
+
+      osc.connect(gain);
+      gain.connect(this.getOut());
+      osc.start(cTime);
+      osc.stop(cTime + 0.04);
+    });
+
+    // Metallic ricochet and bone crunch
+    const impactTime = now + 0.18;
+    const osc2 = this.ctx.createOscillator();
+    osc2.type = 'triangle';
+    osc2.frequency.setValueAtTime(3200, impactTime);
+    osc2.frequency.exponentialRampToValueAtTime(420, impactTime + 0.15);
+
+    const gain2 = this.ctx.createGain();
+    gain2.gain.setValueAtTime(0.01, impactTime);
+    gain2.gain.linearRampToValueAtTime(0.85, impactTime + 0.02);
+    gain2.gain.exponentialRampToValueAtTime(0.001, impactTime + 0.22);
+
+    osc2.connect(gain2);
+    gain2.connect(this.getOut());
+    osc2.start(impactTime);
+    osc2.stop(impactTime + 0.22);
+  }
+
+  // Method 193: Naru's Orange Flower (Sariska) Herbal Ingestion & Body Temp Drop (Prey 2022)
+  playOrangeFlowerHerbalDrink() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Gulp and chilled breath bandpass noise
+    const bufferSize = Math.floor(this.ctx.sampleRate * 1.0);
+    const noiseBuffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const output = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      output[i] = Math.random() * 2 - 1;
+    }
+
+    const whiteNoise = this.ctx.createBufferSource();
+    whiteNoise.buffer = noiseBuffer;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(2400, now);
+    filter.frequency.exponentialRampToValueAtTime(350, now + 1.0);
+    filter.Q.value = 4.0;
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.01, now);
+    gain.gain.linearRampToValueAtTime(0.7, now + 0.1);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 1.0);
+
+    whiteNoise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.getOut());
+    whiteNoise.start(now);
+    whiteNoise.stop(now + 1.0);
+  }
+
+  // Method 194: Raphael Adolini 1715 Flintlock Pistol Black Powder Shot (Predator 2 / Prey 2022)
+  playFlintlockPistolShot() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    // Flint strike click
+    const clickOsc = this.ctx.createOscillator();
+    clickOsc.type = 'sawtooth';
+    clickOsc.frequency.setValueAtTime(1400, now);
+    clickOsc.frequency.exponentialRampToValueAtTime(200, now + 0.03);
+
+    const clickGain = this.ctx.createGain();
+    clickGain.gain.setValueAtTime(0.01, now);
+    clickGain.gain.linearRampToValueAtTime(0.9, now + 0.005);
+    clickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.03);
+
+    clickOsc.connect(clickGain);
+    clickGain.connect(this.getOut());
+    clickOsc.start(now);
+    clickOsc.stop(now + 0.03);
+
+    // Deep black powder boom (sub-bass + mid crack)
+    const blastTime = now + 0.025;
+    const blastOsc = this.ctx.createOscillator();
+    blastOsc.type = 'triangle';
+    blastOsc.frequency.setValueAtTime(95, blastTime);
+    blastOsc.frequency.exponentialRampToValueAtTime(28, blastTime + 0.65);
+
+    const blastGain = this.ctx.createGain();
+    blastGain.gain.setValueAtTime(0.01, blastTime);
+    blastGain.gain.linearRampToValueAtTime(0.95, blastTime + 0.02);
+    blastGain.gain.exponentialRampToValueAtTime(0.001, blastTime + 0.7);
+
+    blastOsc.connect(blastGain);
+    blastGain.connect(this.getOut());
+    blastOsc.start(blastTime);
+    blastOsc.stop(blastTime + 0.7);
+  }
+
+  // Method 195: Feral Predator 3.1m Primal Archaic Guttural Roar (Prey 2022)
+  playFeralPredatorPrimalRoar() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    [48, 110, 260].forEach((freq, idx) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = idx === 0 ? 'sine' : (idx === 1 ? 'sawtooth' : 'triangle');
+      osc.frequency.setValueAtTime(freq, now);
+      osc.frequency.linearRampToValueAtTime(freq * 1.5, now + 0.15);
+      osc.frequency.exponentialRampToValueAtTime(freq * 0.6, now + 0.85);
+
+      gain.gain.setValueAtTime(0.01, now);
+      gain.gain.linearRampToValueAtTime(0.65 / (idx + 1), now + 0.08);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.85);
+
+      osc.connect(gain);
+      gain.connect(this.getOut());
+      osc.start(now);
+      osc.stop(now + 0.85);
+    });
+  }
+
+  // Method 196: Feral Predator Pneumatic Crossbow 3-Dart Rapid Burst (Prey 2022)
+  playCrossbowHomingDarts() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    for (let i = 0; i < 3; i++) {
+      const dTime = now + i * 0.09;
+      const twangOsc = this.ctx.createOscillator();
+      twangOsc.type = 'triangle';
+      twangOsc.frequency.setValueAtTime(620, dTime);
+      twangOsc.frequency.exponentialRampToValueAtTime(120, dTime + 0.12);
+
+      const twangGain = this.ctx.createGain();
+      twangGain.gain.setValueAtTime(0.01, dTime);
+      twangGain.gain.linearRampToValueAtTime(0.75, dTime + 0.015);
+      twangGain.gain.exponentialRampToValueAtTime(0.001, dTime + 0.12);
+
+      twangOsc.connect(twangGain);
+      twangGain.connect(this.getOut());
+      twangOsc.start(dTime);
+      twangOsc.stop(dTime + 0.12);
+    }
+  }
+
+  // Method 197: Naru's Rawhide-Tethered Tomahawk Whistle & Cleave (Prey 2022)
+  playTomahawkRopeWhistle() {
+    if (!this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    const whooshOsc = this.ctx.createOscillator();
+    whooshOsc.type = 'sine';
+    whooshOsc.frequency.setValueAtTime(340, now);
+    whooshOsc.frequency.linearRampToValueAtTime(780, now + 0.12);
+    whooshOsc.frequency.exponentialRampToValueAtTime(160, now + 0.32);
+
+    const whooshGain = this.ctx.createGain();
+    whooshGain.gain.setValueAtTime(0.01, now);
+    whooshGain.gain.linearRampToValueAtTime(0.8, now + 0.08);
+    whooshGain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+
+    whooshOsc.connect(whooshGain);
+    whooshGain.connect(this.getOut());
+    whooshOsc.start(now);
+    whooshOsc.stop(now + 0.35);
+  }
 }
 
 

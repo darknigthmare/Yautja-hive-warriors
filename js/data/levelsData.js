@@ -162,5 +162,23 @@ export const LEVELS_DATA = [
     skyColor: 0x06090c,
     waves: 6,
     bossType: 'ultimate_upgrade_predator'
+  },
+  {
+    id: 'prey_comanche_territory',
+    name: 'TERRITOIRE COMANCHE 1719 (PREY 2022)',
+    desc: 'Grandes Plaines du Nord, forêt calcinée par les trappeurs français, tourbière de boue mouvante et traque du Feral Predator.',
+    description: 'Grandes Plaines du Nord, forêt calcinée par les trappeurs français, tourbière de boue mouvante et traque du Feral Predator.',
+    icon: '🪓',
+    difficulty: 'LÉGENDAIRE',
+    difficultyBadge: 'badge-apex',
+    theme: 'comanche_territory',
+    floorColor: 0x221d15,
+    wallColor: 0x3a3022,
+    fogColor: 0x1c1812,
+    fogDensity: 0.015,
+    weatherType: 'morning_haze',
+    skyColor: 0x14100b,
+    waves: 6,
+    bossType: 'feral_predator_boss'
   }
 ];

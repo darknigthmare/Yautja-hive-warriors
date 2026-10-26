@@ -212,6 +212,20 @@ export class EnvironmentManager {
     this.roryTranslatorDesk = null;
     this.crashedArkTurbine = null;
     this.caseyDeconStation = null;
+    // v65.0 Prey (2022) Comanche Territory Systems
+    this.preyMudSinkhole = null;
+    this.boneMaskDecoy = null;
+    this.orangeFlowerPatch = null;
+    this.trapperCampVoyageurs = null;
+    this.adoliniPistolPedestal = null;
+    this.taabeRockPerch = null;
+    this.grizzlyBearCarcass = null;
+    this.beaverDamCrossing = null;
+    this.burnedForestCharredTrees = [];
+    this.trapperBearTraps = [];
+    this.naruTomahawkTree = null;
+    this.trapperMedicalTent = null;
+    this.feralArsenalStation = null;
   }
 
   clearEnvironment() {
@@ -856,6 +870,54 @@ export class EnvironmentManager {
     }
     this.stargazerCanopyHighways = [];
 
+    // v65.0 Prey Cleanups
+    if (this.preyMudSinkhole && this.preyMudSinkhole.group) {
+      this.scene.remove(this.preyMudSinkhole.group);
+      this.preyMudSinkhole = null;
+    }
+    if (this.boneMaskDecoy && this.boneMaskDecoy.group) {
+      this.scene.remove(this.boneMaskDecoy.group);
+      this.boneMaskDecoy = null;
+    }
+    if (this.orangeFlowerPatch && this.orangeFlowerPatch.group) {
+      this.scene.remove(this.orangeFlowerPatch.group);
+      this.orangeFlowerPatch = null;
+    }
+    if (this.trapperCampVoyageurs && this.trapperCampVoyageurs.group) {
+      this.scene.remove(this.trapperCampVoyageurs.group);
+      this.trapperCampVoyageurs = null;
+    }
+    if (this.adoliniPistolPedestal && this.adoliniPistolPedestal.group) {
+      this.scene.remove(this.adoliniPistolPedestal.group);
+      this.adoliniPistolPedestal = null;
+    }
+    if (this.taabeRockPerch && this.taabeRockPerch.group) {
+      this.scene.remove(this.taabeRockPerch.group);
+      this.taabeRockPerch = null;
+    }
+    if (this.grizzlyBearCarcass && this.grizzlyBearCarcass.group) {
+      this.scene.remove(this.grizzlyBearCarcass.group);
+      this.grizzlyBearCarcass = null;
+    }
+    if (this.beaverDamCrossing && this.beaverDamCrossing.group) {
+      this.scene.remove(this.beaverDamCrossing.group);
+      this.beaverDamCrossing = null;
+    }
+    if (this.naruTomahawkTree && this.naruTomahawkTree.group) {
+      this.scene.remove(this.naruTomahawkTree.group);
+      this.naruTomahawkTree = null;
+    }
+    if (this.trapperMedicalTent && this.trapperMedicalTent.group) {
+      this.scene.remove(this.trapperMedicalTent.group);
+      this.trapperMedicalTent = null;
+    }
+    if (this.feralArsenalStation && this.feralArsenalStation.group) {
+      this.scene.remove(this.feralArsenalStation.group);
+      this.feralArsenalStation = null;
+    }
+    this.burnedForestCharredTrees = [];
+    this.trapperBearTraps = [];
+
     this.reactorMeltdownActive = false;
     this.reactorMeltdownTimer = 180.0;
     this.slabShiftTimer = 0;
@@ -919,6 +981,10 @@ export class EnvironmentManager {
     } else if (levelId === 'stargazer_facility' || theme === 'stargazer') {
       this.buildStargazerLabProps();
       this.buildStargazerFacilityExpansionProps();
+    } else if (levelId === 'prey_comanche_territory' || theme === 'comanche_territory') {
+      this.buildPreyComancheProps();
+      this.buildPreyTerritoryExpansionProps();
+      this.buildJungleProps();
     } else if (levelId === 'gunnison_forest' || theme === 'rain_forest') {
       this.buildCrashedScoutShipProps();
       this.buildGunnisonForestExpansionProps();
@@ -13997,6 +14063,56 @@ export class EnvironmentManager {
         }
       }
     }
+
+    // v65.0 Prey (2022) Comanche Territory Real-Time Loops
+    if (this.preyMudSinkhole && this.preyMudSinkhole.bubbles) {
+      this.preyMudSinkhole.bubbles.forEach((b, idx) => {
+        b.position.y = 0.2 + Math.sin(Date.now() * 0.005 + idx * 1.5) * 0.12;
+      });
+      if (horde && horde.aliens) {
+        horde.aliens.forEach(alien => {
+          if (alien && alien.mesh && alien.hp > 0) {
+            const mDist = Math.sqrt(alien.mesh.position.x * alien.mesh.position.x + alien.mesh.position.z * alien.mesh.position.z);
+            if (mDist <= 5.5) {
+              alien.hp -= delta * 60;
+              alien.speedMult = 0.15;
+            }
+          }
+        });
+      }
+    }
+    if (this.boneMaskDecoy && this.boneMaskDecoy.lasers && this.boneMaskDecoy.isArmed) {
+      this.boneMaskDecoy.lasers.forEach(l => {
+        if (l.material) {
+          l.material.opacity = 0.65 + Math.sin(Date.now() * 0.008) * 0.25;
+        }
+      });
+    }
+    if (this.orangeFlowerPatch && this.orangeFlowerPatch.light && !this.orangeFlowerPatch.isHarvested) {
+      this.orangeFlowerPatch.light.intensity = 1.4 + Math.sin(Date.now() * 0.004) * 0.5;
+    }
+    if (this.trapperBearTraps && this.trapperBearTraps.length > 0 && horde && horde.aliens) {
+      for (let t = 0; t < this.trapperBearTraps.length; t++) {
+        const trap = this.trapperBearTraps[t];
+        if (!trap.isSprung) {
+          for (let a = 0; a < horde.aliens.length; a++) {
+            const alien = horde.aliens[a];
+            if (alien && alien.mesh && alien.hp > 0 && alien.mesh.position.distanceTo(trap.pos) <= 2.2) {
+              trap.isSprung = true;
+              alien.hp -= 380;
+              alien.isStunned = true;
+              alien.stunTimer = 4.0;
+              if (audio && audio.playBearTrapSnap) audio.playBearTrapSnap();
+              if (particles && particles.emitSparks) particles.emitSparks(trap.pos, 16);
+              if (ui && ui.showAnnouncement) {
+                ui.showAnnouncement('🪤 PIÈGE À LOUPS DES TRAPPEURS FRANÇAIS DÉCLENCHÉ (380 DMG & STUN 4S) !', 'warning');
+              }
+              break;
+            }
+          }
+        }
+      }
+    }
   }
 
   /* === SECTOR 9: PROJET STARGAZER & FORÊT DU CRASH (THE PREDATOR 2018) === */
@@ -14861,6 +14977,483 @@ export class EnvironmentManager {
 
       if (ui && ui.showAnnouncement) {
         ui.showAnnouncement('🧪 SAS DE DÉCONTAMINATION BIOGÉNÉTIQUE (THE PREDATOR 2018) : PURGE BIOLOGIQUE TOTALE, SOINS +75 HP, BOUCLIER 100% & FLÉCHETTES TRANQUILLISANTES (3 TIRS) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  /* === SECTOR 10: TERRITOIRE COMANCHE 1719 (PREY 2022) === */
+  buildPreyComancheProps() {
+    const group = new THREE.Group();
+    const dirtMat = new THREE.MeshStandardMaterial({ color: 0x3d3020, roughness: 0.95 });
+    const mudMat = new THREE.MeshStandardMaterial({ color: 0x241d13, roughness: 0.35, metalness: 0.1 });
+    const boneMat = new THREE.MeshStandardMaterial({ color: 0xd6d3d1, roughness: 0.45 });
+    const woodMat = new THREE.MeshStandardMaterial({ color: 0x3d2516, roughness: 0.9 });
+    const orangeFlowerMat = new THREE.MeshBasicMaterial({ color: 0xf97316 });
+
+    // 1. Quicksand Mud Sinkhole [0, 0, 0] (Radius 5.5m)
+    const mudGroup = new THREE.Group();
+    mudGroup.position.set(0, 0, 0);
+
+    const mudBasin = new THREE.Mesh(new THREE.CylinderGeometry(5.5, 5.8, 0.4, 24), mudMat);
+    mudBasin.position.y = 0.15;
+    mudBasin.receiveShadow = true;
+    mudGroup.add(mudBasin);
+
+    const bubbles = [];
+    [-2.2, 2.0, -1.2, 1.8].forEach((bx, idx) => {
+      const bz = (idx % 2 === 0 ? -1.8 : 1.5) * (idx < 2 ? 1 : -0.8);
+      const bubble = new THREE.Mesh(new THREE.SphereGeometry(0.35, 8, 6), mudMat);
+      bubble.position.set(bx, 0.2, bz);
+      mudGroup.add(bubble);
+      bubbles.push(bubble);
+    });
+
+    group.add(mudGroup);
+    this.preyMudSinkhole = {
+      group: mudGroup,
+      pos: new THREE.Vector3(0, 0, 0),
+      radius: 5.5,
+      bubbles: bubbles
+    };
+
+    // 2. Feral Bone Mask & 3-Laser Homing Decoy Rig [4, 0.4, -12]
+    const decoyGroup = new THREE.Group();
+    decoyGroup.position.set(4, 0, -12);
+
+    const stake = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.1, 1.6, 6), woodMat);
+    stake.position.y = 0.8;
+    decoyGroup.add(stake);
+
+    const mask = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.65, 0.45), boneMat);
+    mask.position.set(0, 1.45, 0);
+    decoyGroup.add(mask);
+
+    const laserMat = new THREE.MeshBasicMaterial({ color: 0xef4444, transparent: true, opacity: 0.8 });
+    const lasers = [];
+    [-0.12, 0, 0.12].forEach(lx => {
+      const laserBeam = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 12.0, 4), laserMat);
+      laserBeam.rotation.x = Math.PI / 2;
+      laserBeam.position.set(lx, 1.45, 6.0);
+      decoyGroup.add(laserBeam);
+      lasers.push(laserBeam);
+    });
+
+    const laserLight = new THREE.PointLight(0xef4444, 1.6, 6.0);
+    laserLight.position.set(0, 1.5, 0);
+    decoyGroup.add(laserLight);
+
+    group.add(decoyGroup);
+    this.boneMaskDecoy = {
+      group: decoyGroup,
+      pos: new THREE.Vector3(4, 1.4, -12),
+      lasers: lasers,
+      isArmed: true
+    };
+
+    // 3. Naru's Orange Flower (Sariska) Meadow [-14, 0, -8]
+    const meadowGroup = new THREE.Group();
+    meadowGroup.position.set(-14, 0, -8);
+
+    const meadowPatch = new THREE.Mesh(new THREE.CylinderGeometry(3.6, 4.0, 0.25, 16), new THREE.MeshStandardMaterial({ color: 0x1f2e1a, roughness: 0.9 }));
+    meadowPatch.position.y = 0.12;
+    meadowGroup.add(meadowPatch);
+
+    for (let f = 0; f < 10; f++) {
+      const a = (f / 10) * Math.PI * 2;
+      const r = 1.0 + Math.random() * 2.2;
+      const flower = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.3, 5), orangeFlowerMat);
+      flower.position.set(Math.cos(a) * r, 0.35, Math.sin(a) * r);
+      meadowGroup.add(flower);
+    }
+
+    const flowerLight = new THREE.PointLight(0xf97316, 1.8, 7.0);
+    flowerLight.position.set(0, 1.2, 0);
+    meadowGroup.add(flowerLight);
+
+    group.add(meadowGroup);
+    this.orangeFlowerPatch = {
+      group: meadowGroup,
+      pos: new THREE.Vector3(-14, 0.5, -8),
+      light: flowerLight,
+      isHarvested: false
+    };
+
+    // 4. French Voyageurs Trapper Camp [18, 0, 16]
+    const campGroup = new THREE.Group();
+    campGroup.position.set(18, 0, 16);
+
+    for (let p = 0; p < 4; p++) {
+      const post = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.1, 3.2, 6), woodMat);
+      post.position.set(-1.6 + (p % 2) * 3.2, 1.6, -1.2 + Math.floor(p / 2) * 2.4);
+      campGroup.add(post);
+    }
+    const canvasRoof = new THREE.Mesh(new THREE.ConeGeometry(2.6, 1.4, 4), new THREE.MeshStandardMaterial({ color: 0x78716c, roughness: 0.9 }));
+    canvasRoof.position.set(0, 3.4, 0);
+    campGroup.add(canvasRoof);
+
+    const bisonPiles = new THREE.Mesh(new THREE.BoxGeometry(2.6, 1.2, 2.0), boneMat);
+    bisonPiles.position.set(3.2, 0.6, 0);
+    campGroup.add(bisonPiles);
+
+    group.add(campGroup);
+    this.trapperCampVoyageurs = {
+      group: campGroup,
+      pos: new THREE.Vector3(18, 0.6, 16)
+    };
+
+    // 5. Raphael Adolini 1715 Flintlock Pistol [18, 0, 17]
+    const pistolGroup = new THREE.Group();
+    pistolGroup.position.set(18, 0, 17);
+
+    const logBlock = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.55, 1.1, 10), woodMat);
+    logBlock.position.y = 0.55;
+    pistolGroup.add(logBlock);
+
+    const pistolStock = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.18, 0.65), woodMat);
+    pistolStock.position.set(0, 1.18, 0);
+    pistolStock.rotation.x = Math.PI / 6;
+    pistolGroup.add(pistolStock);
+
+    const pistolBarrel = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.04, 0.55, 8), new THREE.MeshStandardMaterial({ color: 0x18181b, metalness: 0.9 }));
+    pistolBarrel.rotation.x = Math.PI / 2;
+    pistolBarrel.position.set(0, 1.28, 0.22);
+    pistolGroup.add(pistolBarrel);
+
+    const pistolLight = new THREE.PointLight(0xf59e0b, 1.6, 5.0);
+    pistolLight.position.set(0, 1.5, 0);
+    pistolGroup.add(pistolLight);
+
+    group.add(pistolGroup);
+    this.adoliniPistolPedestal = {
+      group: pistolGroup,
+      pos: new THREE.Vector3(18, 1.2, 17),
+      isClaimed: false
+    };
+
+    // 6. Taabe's Comanche War Horse & Rock Overlook [-22, 0, 14] (+3.8m)
+    const taabeGroup = new THREE.Group();
+    taabeGroup.position.set(-22, 0, 14);
+
+    const boulder = new THREE.Mesh(new THREE.BoxGeometry(6.4, 3.8, 5.8), dirtMat);
+    boulder.position.y = 1.9;
+    boulder.receiveShadow = true;
+    taabeGroup.add(boulder);
+
+    const bowShaft = new THREE.Mesh(new THREE.TorusGeometry(0.65, 0.03, 6, 16, Math.PI), woodMat);
+    bowShaft.position.set(0, 4.4, 1.6);
+    bowShaft.rotation.z = Math.PI;
+    taabeGroup.add(bowShaft);
+
+    group.add(taabeGroup);
+    this.taabeRockPerch = {
+      group: taabeGroup,
+      pos: new THREE.Vector3(-22, 3.8, 14),
+      isClaimed: false
+    };
+
+    this.scene.add(group);
+    this.envObjects.push(group);
+  }
+
+  buildPreyTerritoryExpansionProps() {
+    const group = new THREE.Group();
+    const woodMat = new THREE.MeshStandardMaterial({ color: 0x3d2516, roughness: 0.9 });
+    const charredMat = new THREE.MeshStandardMaterial({ color: 0x0f0f10, roughness: 0.95 });
+    const ironMat = new THREE.MeshStandardMaterial({ color: 0x27272a, metalness: 0.85, roughness: 0.4 });
+    const furMat = new THREE.MeshStandardMaterial({ color: 0x271c14, roughness: 0.95 });
+    const boneMat = new THREE.MeshStandardMaterial({ color: 0xd6d3d1, roughness: 0.45 });
+    const obsidianMat = new THREE.MeshStandardMaterial({ color: 0x09090b, metalness: 0.9, roughness: 0.05 });
+
+    // 7. Giant Slain Grizzly Bear Carcass [14, 0, -8]
+    const bearGroup = new THREE.Group();
+    bearGroup.position.set(14, 0, -8);
+
+    const bearBody = new THREE.Mesh(new THREE.BoxGeometry(2.2, 1.3, 3.4), furMat);
+    bearBody.position.y = 0.65;
+    bearBody.rotation.y = 0.35;
+    bearGroup.add(bearBody);
+
+    const bearHead = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.9, 1.2), furMat);
+    bearHead.position.set(0, 0.8, 1.8);
+    bearGroup.add(bearHead);
+
+    const greenBlood = new THREE.Mesh(new THREE.PlaneGeometry(1.8, 2.2), new THREE.MeshBasicMaterial({ color: 0x22c55e, transparent: true, opacity: 0.7 }));
+    greenBlood.rotation.x = -Math.PI / 2;
+    greenBlood.position.set(0, 0.02, 0);
+    bearGroup.add(greenBlood);
+
+    group.add(bearGroup);
+    this.grizzlyBearCarcass = {
+      group: bearGroup,
+      pos: new THREE.Vector3(14, 0.65, -8),
+      isSkinned: false
+    };
+
+    // 8. Beaver Dam Crossing Catwalk [12, 0, -5] (+2.5m)
+    const damGroup = new THREE.Group();
+    damGroup.position.set(12, 0, -5);
+
+    const damBase = new THREE.Mesh(new THREE.BoxGeometry(4.8, 2.5, 7.5), woodMat);
+    damBase.position.y = 1.25;
+    damBase.receiveShadow = true;
+    damGroup.add(damBase);
+
+    group.add(damGroup);
+    this.beaverDamCrossing = {
+      group: damGroup,
+      pos: new THREE.Vector3(12, 2.5, -5)
+    };
+
+    // 9. Burned Forest of Charred Pine Stumps [-18, 0, -20]
+    const burnedCoords = [
+      [-18, -20], [-21, -17], [-15, -23], [-22, -22], [-17, -16]
+    ];
+    burnedCoords.forEach(bc => {
+      const stump = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.45, 3.2, 6), charredMat);
+      stump.position.set(bc[0], 1.6, bc[1]);
+      group.add(stump);
+      this.burnedForestCharredTrees.push(stump);
+    });
+
+    // 10. Forged Iron Trapper Bear Traps
+    this.trapperBearTraps = [];
+    const trapCoords = [new THREE.Vector3(-12, 0.1, -18), new THREE.Vector3(-16, 0.1, -14)];
+    trapCoords.forEach((tPos, idx) => {
+      const trapMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.45, 0.1, 8), ironMat);
+      trapMesh.position.copy(tPos);
+      group.add(trapMesh);
+      this.trapperBearTraps.push({ id: idx, pos: tPos.clone(), isSprung: false, mesh: trapMesh });
+    });
+
+    // 11. Naru's Tethered Tomahawk [-8, 0, 18]
+    const tomahawkGroup = new THREE.Group();
+    tomahawkGroup.position.set(-8, 0, 18);
+
+    const treeTrunk = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.6, 4.0, 8), woodMat);
+    treeTrunk.position.y = 2.0;
+    tomahawkGroup.add(treeTrunk);
+
+    const tomahawkBlade = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.35, 0.25), ironMat);
+    tomahawkBlade.position.set(0, 1.8, 0.55);
+    tomahawkGroup.add(tomahawkBlade);
+
+    group.add(tomahawkGroup);
+    this.naruTomahawkTree = {
+      group: tomahawkGroup,
+      pos: new THREE.Vector3(-8, 1.8, 18),
+      isClaimed: false
+    };
+
+    // 12. Trapper Field Medical Tent [22, 0, 12]
+    const medGroup = new THREE.Group();
+    medGroup.position.set(22, 0, 12);
+
+    const medTent = new THREE.Mesh(new THREE.ConeGeometry(2.4, 2.8, 4), new THREE.MeshStandardMaterial({ color: 0x57534e, roughness: 0.9 }));
+    medTent.position.y = 1.4;
+    medGroup.add(medTent);
+
+    group.add(medGroup);
+    this.trapperMedicalTent = {
+      group: medGroup,
+      pos: new THREE.Vector3(22, 1.4, 12),
+      isLooted: false
+    };
+
+    // 13. Archaic Feral Weapon Rack [0, 0, 24]
+    const arsenalGroup = new THREE.Group();
+    arsenalGroup.position.set(0, 0, 24);
+
+    const spearRack = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 2.8, 6), obsidianMat);
+    spearRack.rotation.z = Math.PI / 4;
+    spearRack.position.set(0, 1.4, 0);
+    arsenalGroup.add(spearRack);
+
+    const boneShieldIcon = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.7, 0.08, 6), boneMat);
+    boneShieldIcon.rotation.x = Math.PI / 2;
+    boneShieldIcon.position.set(0, 1.2, 0.2);
+    arsenalGroup.add(boneShieldIcon);
+
+    group.add(arsenalGroup);
+    this.feralArsenalStation = {
+      group: arsenalGroup,
+      pos: new THREE.Vector3(0, 1.2, 24),
+      isClaimed: false
+    };
+
+    this.scene.add(group);
+    this.envObjects.push(group);
+  }
+
+  // Prey Interaction: Feral Bone Mask & 3-Laser Homing Decoy Rig
+  checkBoneMaskDecoyInteraction(player, ui, audio, bosses, particles) {
+    if (!this.boneMaskDecoy || !player || !player.position || !this.boneMaskDecoy.isArmed) return false;
+    if (player.position.distanceTo(this.boneMaskDecoy.pos) <= 4.2) {
+      if (audio && audio.playBoneMaskLaserLockRedirect) audio.playBoneMaskLaserLockRedirect();
+
+      if (bosses && bosses.activeBoss && bosses.activeBoss.type === 'feral_predator_boss') {
+        bosses.activeBoss.hp -= 1500;
+        bosses.activeBoss.isStunned = true;
+        bosses.activeBoss.stunTimer = 5.0;
+        this.boneMaskDecoy.isArmed = false;
+        if (particles && particles.emitSparks) {
+          particles.emitSparks(bosses.activeBoss.mesh.position, 35);
+        }
+        if (ui && ui.showAnnouncement) {
+          ui.showAnnouncement('💥 PIÈGE DU MASQUE D\'OS DÉCLENCHÉ : FLÉCHETTES DÉVIÉES DANS LE CRÂNE DU FERAL (1500 DMG) !', 'success');
+        }
+      } else {
+        if (ui && ui.showAnnouncement) {
+          ui.showAnnouncement('🎯 MASQUE D\'OS ALIGNÉ SUR LA TOURBIÈRE : ATTENTE DU TIR ENNEMI !', 'warning');
+        }
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Prey Interaction: Naru's Orange Flower (Sariska) Meadow
+  checkOrangeFlowerInteraction(player, ui, audio) {
+    if (!this.orangeFlowerPatch || !player || !player.position || this.orangeFlowerPatch.isHarvested) return false;
+    if (player.position.distanceTo(this.orangeFlowerPatch.pos) <= 4.2) {
+      this.orangeFlowerPatch.isHarvested = true;
+      if (audio && audio.playOrangeFlowerHerbalDrink) audio.playOrangeFlowerHerbalDrink();
+
+      if (player.applyOrangeFlowerBuff) player.applyOrangeFlowerBuff(35.0);
+      if (player.addScore) player.addScore(2000);
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('🌿 FLEURS D\'ORANGE SARISKA CONSOMMÉES (PREY 2022) : TEMPÉRATURE 0°C & INVISIBILITÉ THERMIQUE (35S, +2000 SCORE) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Prey Interaction: Raphael Adolini 1715 Flintlock Pistol
+  checkAdoliniPistolInteraction(player, ui, audio, horde, bosses, particles) {
+    if (!this.adoliniPistolPedestal || !player || !player.position || this.adoliniPistolPedestal.isClaimed) return false;
+    if (player.position.distanceTo(this.adoliniPistolPedestal.pos) <= 4.2) {
+      this.adoliniPistolPedestal.isClaimed = true;
+      if (audio && audio.playFlintlockPistolShot) audio.playFlintlockPistolShot();
+
+      let target = null;
+      if (bosses && bosses.activeBoss && bosses.activeBoss.hp > 0) {
+        target = bosses.activeBoss;
+        target.hp -= 1200;
+        target.isStunned = true;
+        target.stunTimer = 4.0;
+      } else if (horde && horde.aliens) {
+        for (let a = 0; a < horde.aliens.length; a++) {
+          const alien = horde.aliens[a];
+          if (alien && alien.hp > 0) {
+            target = alien;
+            target.hp -= 1200;
+            break;
+          }
+        }
+      }
+
+      if (particles && target && target.mesh) {
+        particles.emitSparks(target.mesh.position, 30);
+      }
+      if (player.addScore) player.addScore(2500);
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('🏴‍☠️ PISTOLET À SILEX DE RAPHAEL ADOLINI 1715 RÉCUPÉRÉ (PREY 2022) : DÉCHARGE PERFORANTE (1200 DMG, +2500 SCORE) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Prey Interaction: Taabe's Comanche War Horse & Rock Overlook
+  checkTaabeWarBowInteraction(player, ui, audio) {
+    if (!this.taabeRockPerch || !player || !player.position || this.taabeRockPerch.isClaimed) return false;
+    if (player.position.distanceTo(this.taabeRockPerch.pos) <= 4.5) {
+      this.taabeRockPerch.isClaimed = true;
+      if (audio && audio.playCrossbowHomingDarts) audio.playCrossbowHomingDarts();
+
+      if (player.applyTaabeWarAgility) player.applyTaabeWarAgility(25.0);
+      player.smartDiscCharges = Math.min(8, (player.smartDiscCharges || 0) + 6);
+      if (player.addScore) player.addScore(2000);
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('🏹 ARC DE GUERRE DE TAABE DÉPLOYÉ (PREY 2022) : AGILITÉ COMANCHE +30% & FLÈCHES SILENCIEUSES (+6 DISCS, +2000 SCORE) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Prey Interaction: Giant Slain Grizzly Bear Carcass
+  checkGrizzlyBearTrophyInteraction(player, ui, audio) {
+    if (!this.grizzlyBearCarcass || !player || !player.position || this.grizzlyBearCarcass.isSkinned) return false;
+    if (player.position.distanceTo(this.grizzlyBearCarcass.pos) <= 4.5) {
+      this.grizzlyBearCarcass.isSkinned = true;
+      if (audio && audio.playCeramicArmorDeflection) audio.playCeramicArmorDeflection();
+
+      player.shield = Math.min(200, (player.shield || 0) + 150);
+      if (player.addScore) player.addScore(2000);
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('🐻 FOURRURE DU GRIZZLY ÉCORCHÉE (PREY 2022) : CUIRASSE ÉPAISSE (+150 BOUCLIER, +2000 HONNEUR) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Prey Interaction: Naru's Tethered Tomahawk
+  checkNaruTomahawkInteraction(player, ui, audio) {
+    if (!this.naruTomahawkTree || !player || !player.position || this.naruTomahawkTree.isClaimed) return false;
+    if (player.position.distanceTo(this.naruTomahawkTree.pos) <= 4.2) {
+      this.naruTomahawkTree.isClaimed = true;
+      if (audio && audio.playTomahawkRopeWhistle) audio.playTomahawkRopeWhistle();
+
+      player.m41aGrenadeCharges = Math.min(8, (player.m41aGrenadeCharges || 0) + 4);
+      if (player.addScore) player.addScore(1800);
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('🪓 HACHETTE À RAPPEL DE NARU RÉCUPÉRÉE (PREY 2022) : FRAPPE CINÉTIQUE (+4 CHARGES, +1800 SCORE) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Prey Interaction: Trapper Field Medical Tent
+  checkTrapperMedicalTentInteraction(player, ui, audio) {
+    if (!this.trapperMedicalTent || !player || !player.position || this.trapperMedicalTent.isLooted) return false;
+    if (player.position.distanceTo(this.trapperMedicalTent.pos) <= 4.2) {
+      this.trapperMedicalTent.isLooted = true;
+      if (audio && audio.playSyntheticWhiteFluidLeak) audio.playSyntheticWhiteFluidLeak();
+
+      player.hp = Math.min(player.maxHp || 100, (player.hp || 0) + 85);
+      if (player.medicompCharges !== undefined) player.medicompCharges = Math.min(6, player.medicompCharges + 3);
+      if (player.addScore) player.addScore(1500);
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('⛺ CAMP MÉDICAL DES TRAPPEURS PILLÉ (PREY 2022) : SOINS +85 PV & +3 TROUSSES MEDICOMP (+1500 SCORE) !', 'success');
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // Prey Interaction: Archaic Feral Weapon Rack
+  checkFeralArsenalInteraction(player, ui, audio) {
+    if (!this.feralArsenalStation || !player || !player.position || this.feralArsenalStation.isClaimed) return false;
+    if (player.position.distanceTo(this.feralArsenalStation.pos) <= 4.2) {
+      this.feralArsenalStation.isClaimed = true;
+      if (audio && audio.playFeralShieldDeploy) audio.playFeralShieldDeploy();
+
+      player.plasmaEnergy = player.maxPlasmaEnergy || 100;
+      if (player.addScore) player.addScore(2500);
+
+      if (ui && ui.showAnnouncement) {
+        ui.showAnnouncement('🛡️ ARSENAL ARCHAÏQUE DU FERAL PREDATOR (PREY 2022) : LANCE TÉLESCOPIQUE & BOUCLIER D\'OS (+2500 HONNEUR, PLASMA 100%) !', 'success');
       }
       return true;
     }
