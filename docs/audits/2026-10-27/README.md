@@ -1,89 +1,115 @@
-# Contrôle de complétude du catalogue — 27 octobre 2026
+# Contrôle de complétude — révision USCM du 27 octobre 2026
 
-Ce contrôle poursuit l’audit Musou et le catalogue de médias de la PR #3. Il répond à la demande de vérifier les castes, formes, classes, individus, clans et forces humaines ou synthétiques oubliés dans la dernière version de travail.
+La précision utilisateur **« Isco » = USCM** est intégrée. Cette révision poursuit l’audit Musou, les affrontements entre clans Yautja et le catalogue de médias des PR #3 et #4, en contrôlant les classes, individus, organismes, forces militaires, synthétiques et matériels manquants.
 
-**Résultat : 102 fiches documentées ajoutées aux 115 fiches existantes, soit 217 fiches.** Le nouveau registre conserve également **31 dossiers à documenter**, **7 exclusions du socle** et le terme utilisateur **« Isco » à préciser**. Ces résultats ne constituent pas une certification d’exhaustivité de tous les médias Alien / Predator.
+**Résultat : 270 fiches documentaires, soit 53 ajouts depuis la première version de la PR #4 et 35 fiches existantes complétées.** Le contrôle comprend désormais **132 entrées**, dont **43 dossiers à documenter**, ainsi que **69 propositions de groupes** et **34 lieux documentés**. La liste des dossiers ouverts rend les limites vérifiables ; ces résultats ne certifient pas l’exhaustivité de tous les médias Alien / Predator.
 
 ## Livrables
 
 - [Excel révisé — 16 onglets](Yautja_Hive_Warriors_Controle_Completude_2026-10-27.xlsx)
-- [Données du contrôle et inventaire de code](completeness-audit.json)
-- [Classeur historique et audit du 26 octobre](../2026-10-26/README.md)
+- [Données, sources et preuves du contrôle](completeness-audit.json)
+- [Audit Musou et classeur historique du 26 octobre](../2026-10-26/README.md)
 
-Le nouvel onglet **Controle_roster** rassemble 80 contrôles : écarts de code, corrections d’identité, preuves manquantes, limites et couverture des œuvres. **Bestiaire_medias** contient les 217 fiches avec leur œuvre, niveau de preuve, sources, éligibilité au spawn, règles de groupe, lieux compatibles et travail restant. **Synthese** ajoute un bloc de contrôle daté sans remplacer la synthèse historique.
+**Bestiaire_medias** contient les 270 fiches avec leur œuvre, niveau de preuve, sources, éligibilité au spawn, composition de groupe, lieux compatibles et travail restant. **Controle_roster** regroupe les écarts de code, corrections d’identité, équipements par œuvre et dossiers ouverts. **Groupes** et **Lieux_medias** reçoivent chacun sept propositions supplémentaires. Le nouveau bloc USCM de **Synthese** est séparé du bloc initial à 217 fiches, conservé comme historique daté.
 
-## Version examinée
+## Dernière version vérifiée
 
-| Élément | Référence vérifiée |
+| Élément | Référence |
 |---|---|
-| Branche de travail la plus récente examinée | `codex/complete-pr3-20261026` |
-| Commit audité | [`39871c450379225de8174711237632e6aa883f04`](https://github.com/darknigthmare/Yautja-hive-warriors/tree/39871c450379225de8174711237632e6aa883f04) |
+| Dernier état documentaire examiné avant cette révision | `codex/catalogue-completeness-20261027` à [`527cd1164a4160df95d96963cd6efab263d9227e`](https://github.com/darknigthmare/Yautja-hive-warriors/tree/527cd1164a4160df95d96963cd6efab263d9227e) |
+| Code de jeu examiné, inchangé dans la PR documentaire | [`39871c450379225de8174711237632e6aa883f04`](https://github.com/darknigthmare/Yautja-hive-warriors/tree/39871c450379225de8174711237632e6aa883f04), branche `codex/complete-pr3-20261026` |
 | `main` lors du contrôle | `af90000169256bd8781536ba7eca45d843d4173c` ; PR #3 fusionnée |
-| Production Vercel | [`yautja-hive-warriors.vercel.app`](https://yautja-hive-warriors.vercel.app), déploiement `dpl_39FAHCh8Z68e8d6vHt4ZXg3ZSbaY`, état `READY`, origine `cli` |
+| Aperçu Vercel associé au commit documentaire `527cd116` | [`yautja-hive-warriors-inyjy460v-darknigthmares-projects.vercel.app`](https://yautja-hive-warriors-inyjy460v-darknigthmares-projects.vercel.app), `dpl_XQuU9MdpwdYepZ5LpNfWK9UfdwCv`, état `READY` |
+| Production Vercel | [`yautja-hive-warriors.vercel.app`](https://yautja-hive-warriors.vercel.app), `dpl_39FAHCh8Z68e8d6vHt4ZXg3ZSbaY`, état `READY`, origine `cli`, sans SHA Git fourni |
 
-Le déploiement de production ne fournit pas de SHA Git permettant de le rattacher au commit audité. Le présent contrôle ne certifie donc pas que le nouveau catalogue ou la dernière branche est déjà en production. Aucune nouvelle session WebGL ni mesure de performance matérielle n’a été réalisée pour cette révision documentaire.
+La PR #4 cible `codex/complete-pr3-20261026` et ne contient que les trois fichiers de ce dossier. La production ne peut pas être rattachée au code examiné à partir des métadonnées disponibles. Aucune nouvelle session de combat WebGL, mesure de performance matérielle, campagne USCM jouable ou géométrie construite n’est validée par cette révision documentaire.
 
-La PR de ce dossier cible `codex/complete-pr3-20261026` afin de présenter uniquement les trois nouveaux fichiers du contrôle. Les fichiers historiques, le JSON consommé par le jeu et le gameplay restent ceux de cette branche.
+## Comptage des fiches
 
-## Ajouts documentés
+| Famille documentaire | Catalogue initial | Première révision | Ajouts USCM | Total révisé |
+|---|---:|---:|---:|---:|
+| Xénomorphes, formes et organismes du registre | 37 | 63 | 4 | 67 |
+| Yautja, classes, individus et groupes | 37 | 64 | 5 | 69 |
+| Humains, synthétiques, groupes et matériels | 41 | 84 | 43 | 127 |
+| Autres organismes associés | 0 | 6 | 1 | 7 |
+| **Total** | **115** | **217** | **53** | **270** |
 
-| Famille de fiches | Avant | Ajouts | Total |
-|---|---:|---:|---:|
-| Xénomorphes, formes et organismes examinés avec ce registre | 37 | 26 | 63 |
-| Yautja, classes, individus et groupes | 37 | 27 | 64 |
-| Humains, synthétiques, groupes et matériels | 41 | 43 | 84 |
-| Autres organismes associés | 0 | 6 | 6 |
-| **Total** | **115** | **102** | **217** |
+Les 155 ajouts cumulés et ces totaux comptent des **fiches**, pas des espèces, races biologiques, modèles 3D ou combattants rendus. Les préfixes servent au classement ; chaque fiche précise sa famille réelle. Les 43 ajouts HUM ne sont donc pas 43 nouvelles classes USCM.
 
-Ces totaux comptent des **fiches**, pas des espèces, des races, des modèles 3D ni des combattants rendus. Les préfixes servent au rangement documentaire : les organismes non xénomorphes et les taxonomies non résolues gardent une famille explicite dans leur fiche.
+## USCM, humains et forces Weyland-Yutani
 
-### Yautja
+### Classes et jeux
 
-Seize fiches de classes de *Predator: Hunting Grounds* manquaient au sens retenu par ce catalogue : Valkyrie, Cleopatra, Exiled, Captured, Emissary, Bionic, Amazon, Pirate, Gladiator, Anubis, Exalted, Witch, Oni, Jotun, Father et Elder. La classe Elder est séparée de l’individu Greyback de *Predator 2* ; leur identité commune n’est pas présumée. Father reste un individu unique, même lorsqu’il dirige un clan.
+Les quatre fiches manquantes **Gunner, Medic, Recon et Tecker de Dark Descent** complètent Sergeant. L’ARC, le drone tactique et le synthétique récupéré disposent de fiches distinctes. Les cinq classes disponibles alimentent une sélection de quatre places dans la proposition GRP-53 ; elles ne créent pas une cinquième place automatique. Les capacités précises, équipements et états de progression encore insuffisamment établis restent signalés.
 
-Les autres ajouts comprennent notamment Kwei, Ahab, Broken Tusk, Hornhead et une fiche de groupe pour la Lost Tribe. Les crossovers et les créations de produits licenciés concernés sont signalés comme extensions optionnelles. L’appellation d’une classe, d’un équipement, d’un statut ou d’un personnage ne devient pas automatiquement une race biologique.
+Les **sept kits d’AFE1**, les **six kits d’AFE2** et les **neuf unités humaines d’AVP: Extinction** avaient déjà leurs fiches : ils sont revérifiés et conservés par jeu. Les variantes FPS d’une arme ne sont pas transférées aux unités du RTS. Les 22 contrôles d’arsenal ajoutés cette passe précisent l’œuvre, la preuve et l’usage proposé sans fabriquer une classe supplémentaire pour chaque arme.
 
-### Xénomorphes et organismes
+Les identités ajoutées comprennent Rookie d’AVP 2010, Winter, Cruz, O’Neal, Bella et Reid de Colonial Marines, Zula Hendricks, Davis 01, Ben Carver, ainsi que Dutch et Linn de l’arcade Capcom. Les incarnations restent séparées par œuvre. **Zula, Davis 01 et Hicks conservent chacun une seule identité documentaire**, avec plusieurs incarnations lorsqu’elles sont établies.
 
-Les ajouts comprennent les profils nommés de *Fireteam Elite 2*, Xenoborg, Empress d’*AVP2*, Queen Mother d’*Earth War*, des formes liées à *Alien 3*, Hammerpede, les organismes distincts d’*Alien: Earth*, Lurker / Spitter / Raven de *Colonial Marines* et les adversaires Razor Claws / Chrysalis / Arachnoid de l’arcade. Une source de figurine licenciée n’établit que les éléments explicitement attestés ; les montages du film et les mécaniques restent à contrôler lorsque la fiche le précise.
+Sources principales : [annonces et correctifs du développeur Dark Descent](https://steamcommunity.com/app/1150440/allnews/), [présentation de Colonial Marines par SEGA](https://blog.playstation.com/archive/2013/02/13/aliens-colonial-marines-bursts-onto-psn-today-with-plus-discount), [présentation de Rogue Incursion par Survios](https://survios.com/studio/pre-order-alien-rogue-incursion/). Les autres sources et leurs limites sont conservées dans les fiches.
 
-Le Titan de *Dark Descent* est enregistré comme menace nommée à identifier, avec spawn bloqué tant que son modèle et sa taxonomie ne sont pas vérifiés. Le cadre XEN-037 n’ajoute aucun acteur : il sélectionne les incarnations locales déjà documentées.
+### Films, comics, véhicules et affiliations
 
-### Humains, Weyland-Yutani et synthétiques
+Douze identités de Marines d’**Aliens** sont ajoutées : Gorman, Hicks, Hudson, Vasquez, Frost, Apone, Crowe, Wierzbowski, Dietrich, Drake, Ferro et Spunkmeyer. Le relevé s’appuie notamment sur les matériels licenciés GF9 et NECA ; il ne remplace pas le contrôle de chaque scène, arme et animation du film. Ripley, Burke et Newt reçoivent des fiches civiles séparées. Newt n’alimente aucun groupe d’infanterie.
 
-Le registre distingue les sous-types synthétiques attestés, les classes de Colonial Marines, les commandos Weyland-Yutani et variantes d’armement, les mercenaires Corporate, OWLF, Stargazer, les équipements et les personnages uniques. Ash, David, Walter, Bishop, Annalee Call, Andy et Rook reçoivent des fiches narratives distinctes ; leur statut synthétique ne suffit pas à les traiter tous comme ennemis Weyland-Yutani.
+Le catalogue ajoute Alec Brand, Captain Paget, les Davis reprogrammés hostiles, le M577, le P-5000, le Cheyenne et les matériels ou classes propres aux adaptations licenciées. Les **Davis reprogrammés ne sont pas des clones du Davis 01 allié**. Un pilote déjà alloué n’est pas recompté lors de l’embarquement. Exosuit d’Extinction, P-5000 et Exosuit WY de Hot Landing Zone restent des matériels distincts.
 
-**Synth Warden d’AFE1 et Warden xénomorphe d’AFE2 restent deux profils différents.** Les noms identiques entre jeux ne transfèrent automatiquement ni biologie, ni équipement, ni comportement.
+La règle d’affiliation distingue **USCM**, **USM**, forces corporatives et civils. Une mission de Paget pour Weyland-Yutani ne transforme pas son détachement USCM en commandos privés. Les synthétiques sont classés selon leur modèle, leur rôle et leur allégeance locale. Ash, David, Walter, Bishop, Call, Andy et Rook ne deviennent pas tous des ennemis WY par leur seule nature synthétique.
 
-## Écarts prioritaires constatés dans le code
+Le module Hot Landing Zone ajoute ses propres **Heavy Marine, WY Commando Captain et WY Exosuit**. Les règles de cette adaptation ne définissent pas une hiérarchie universelle de tous les films et jeux. **Synth Warden d’AFE1 et Warden xénomorphe d’AFE2** restent distincts.
 
-La construction des configurations des **27 opérations** a été exécutée sans exception. L’option `allowHumanController: true` a uniquement permis d’inspecter les deux configurations humaines optionnelles. Cette vérification de configuration ne valide ni un contrôleur humain jouable, ni le rendu, ni les combats.
+Sources de référence : [livret GF9 Aliens](https://www.gf9games.com/aliens/wp-content/uploads/2023/02/Aliens-Rulebook-2023-LR.pdf), [livret Ultimate Badasses, document primaire reproduit](https://tesera.ru/images/items/1765424/Aliens-UB-Rulebook.pdf), [règles Prodos Hot Landing Zone](https://prodosgames.com/sites/prodosgames.com/files/files/AvP_HLZ_rulebook_v1.pdf).
 
-| Priorité | Cas | Constat reproductible | Travail requis |
+## Yautja, xénomorphes et autres organismes
+
+La passe ajoute **Serpent Hunter / Alien Head Predator**, **Predator Hunter**, **Predator Warrior** et **Mad Predator** dans leurs incarnations AVP 2010 ou arcade Capcom. Leurs noms ne constituent pas quatre races nouvelles.
+
+Le texte photographié de l’emballage NECA Alpha établit, dans ce récit licencié, les **Hish-qu-Ten**, les **Amengi**, la révolte et l’appellation **First Hunter**. Il permet d’ajouter deux fiches optionnelles et de préciser Alpha, sans étendre cette généalogie à tous les films ou à Hunting Grounds. La photographie ne confirme pas le nom Kaail. [Document primaire inspecté : dos de l’emballage NECA, reproduit par Toy Wizards](https://toy-wizards.com/wp-content/uploads/2020/05/95894107_3128871713841859_5922811062834429952_o.jpg).
+
+Les quatre formes **Alien Brute, Guard, Scout et Skulker** de GF9 Five by Five sont conservées **hors socle par défaut**. Leurs règles et silhouettes de plateau ne prouvent pas une caste filmique ; leurs éventuelles animations 3D seraient des créations d’adaptation. Les fiches Queen Facehugger et Bambi Burster conservent leurs limites de provenance et de montage. [Livret Five by Five, document primaire reproduit](https://www.tesera.ru/images/items/2364137/Aliens-5x5-Rulebook-WEB.pdf).
+
+Les ajouts précédents restent présents : classes Hunting Grounds manquantes, Yautja nommés et Lost Tribe, formes de jeux et comics, organismes d’Alien: Earth, Prometheus et films associés. Les types, rangs, clans, individus, stades biologiques et mutations restent explicitement séparés. Les **11 fiches optionnelles** cumulées sont distinctes des **7 exclusions de périmètre**.
+
+## Sept lieux et sept groupes supplémentaires
+
+Les lieux ajoutés sont **Hadley’s Hope / LV-426**, **USS Sulaco**, **Tartarus**, **Europa**, **Legato**, **Purdan / LV-354 — Castor’s Cradle** et **USS Sephora**. Les variantes film, jeu et comic sont délimitées. Purdan, LV-354 et son installation ne forment pas trois planètes différentes. Les sept fiches décrivent des zones, objectifs et rencontres possibles ; elles ne représentent pas sept cartes déjà construites et ne revendiquent aucune superficie officielle ou topographie 1:1.
+
+Les groupes ajoutés couvrent le détachement nommé d’Aliens, la mission Sephora, le binôme Zula / Davis 01, l’équipage Cheyenne, un détachement original sous Paget, un contingent de Davis reprogrammés et une configuration de quatre Marines AFE2. Les effectifs sont des **propositions de conception**, adaptées aux quotas du projet. Les personnages nommés sont uniques, les pertes persistent et les réserves sont finies. Les scènes à trois camps et les rencontres supplémentaires sont annoncées comme adaptations lorsqu’elles ne sont pas attestées.
+
+Les affrontements entre clans Yautja, contre les humains ou les xénomorphes et à trois camps du précédent audit restent dans leurs onglets. Les sept lieux ne modifient pas les 34 plans existants de **Cartes_zones**.
+
+## Écarts prioritaires du code
+
+La construction des **27 configurations d’opération** a été exécutée sans exception. `allowHumanController: true` sert uniquement à inspecter les configurations optionnelles AFF-25 et AFF-26 ; ce contrôle ne démontre pas l’existence d’un contrôleur humain jouable.
+
+| Priorité | Cas | Constat | Travail requis |
 |---|---|---|---|
-| P0 | AFF-13 / GRP-50 — Working Joes | Les profils produits sont `original_human_soldier` et `original_human_officer`, avec `actorType: marine` et `species: human`. Aucun `working_joe` ou `synthetic` dans les profils de l’opération. | Conserver le type du groupe lors de l’allocation et sélectionner un acteur synthétique compatible. |
-| P0 | AFF-16 / GRP-46 — synthétiques WY | Même conversion vers des profils Marines humains ; aucun `synthetic` ou `weyland_combat` dans les profils de l’opération. | Lier le profil du catalogue, son espèce et le gestionnaire d’acteurs, puis vérifier la composition générée. |
-| P1 | Spécialisation des acteurs | Les registres acceptent quelques catégories génériques. Ils ne démontrent pas tous les sous-types ou individus du catalogue. | Établir une correspondance explicite profil → acteur → source et vérifier les différences réelles. |
-| P1 | Relations entre camps | Le constructeur initialise les paires de factions comme hostiles. | Définir les alliances et hostilités par scénario, notamment pour les rencontres à trois camps. |
+| P0 | AFF-27 / GRP-60 — Extinction | Les 22 sections H-LIGNE et 2 H-APPUI allouent 192 places, dont 24 Synthetic et 2 Exosuits pilotés. Le constructeur produit 24 officiers et 168 soldats génériques, tous `actorType: marine`. | Conserver les neuf rôles et leur profil source dans l’allocation ; choisir le bon acteur, l’espèce et le matériel. |
+| P0 | AFF-13 / GRP-50 — Working Joes | Les profils générés restent des soldats/officiers humains de type Marine. | Raccorder le groupe à un acteur synthétique compatible. |
+| P0 | AFF-16 / GRP-46 — synthétiques WY | Même conversion des profils synthétiques en Marines humains. | Préserver espèce, modèle et affiliation lors de la génération. |
+| P1 | AFF-25 / GRP-53 — Dark Descent | Les 32 places générées n’utilisent pas les cinq classes locales documentées. | Définir les sélections de classes puis les relier aux acteurs. |
+| P1 | Spécialisation Marine | `marine`, `human` et `smartgunner` empruntent la même branche ; `flametrooper` est la seule autre variante examinée. | Relier les armes, fonctions et modèles propres au preset. |
+| P1 | USCM contre force corporative | `allocatedCamp` regroupe les ennemis humains sous `human_force`. | Séparer affiliation, espèce et relations de scénario. |
+| P2 | GRP-47 — Fireteam Elite | Aucune des 27 configurations ne référence ce groupe pourtant catalogué. | Créer son raccord d’opération si la proposition est retenue. |
 
-Preuves figées : [allocation des camps et profils génériques](https://github.com/darknigthmare/Yautja-hive-warriors/blob/39871c450379225de8174711237632e6aa883f04/js/data/BattleCatalog.js#L145-L175), [relations et groupes](https://github.com/darknigthmare/Yautja-hive-warriors/blob/39871c450379225de8174711237632e6aa883f04/js/data/BattleCatalog.js#L225-L265), [types synthétiques acceptés](https://github.com/darknigthmare/Yautja-hive-warriors/blob/39871c450379225de8174711237632e6aa883f04/js/entities/Synthetics.js#L298-L307), [types humains acceptés](https://github.com/darknigthmare/Yautja-hive-warriors/blob/39871c450379225de8174711237632e6aa883f04/js/entities/ColonialMarines.js#L190-L200).
+Les **192 places** sont le budget proposé par le projet, réparti entre unités actives, distantes et réserves ; ce n’est ni un nombre canonique du RTS ni une mesure de personnages affichés simultanément.
 
-Le code audité conserve **115 profils source, 7 personnages jouables et 18 entrées de boss**. Les 102 ajouts documentaires ne sont pas des unités nouvellement implémentées. Les noms de boss ou les commentaires « canon 1:1 » ne prouvent pas à eux seuls l’identité, les animations et le comportement d’une incarnation.
+Preuves figées : [construction des groupes](https://github.com/darknigthmare/Yautja-hive-warriors/blob/39871c450379225de8174711237632e6aa883f04/js/data/BattleCatalog.js#L240-L265), [camp humain](https://github.com/darknigthmare/Yautja-hive-warriors/blob/39871c450379225de8174711237632e6aa883f04/js/data/BattleCatalog.js#L144-L150), [gestionnaire Marine](https://github.com/darknigthmare/Yautja-hive-warriors/blob/39871c450379225de8174711237632e6aa883f04/js/entities/ColonialMarines.js#L190-L197), [variantes du modèle](https://github.com/darknigthmare/Yautja-hive-warriors/blob/39871c450379225de8174711237632e6aa883f04/js/graphics/SupportModels.js#L170-L187), [garde du contrôleur humain](https://github.com/darknigthmare/Yautja-hive-warriors/blob/39871c450379225de8174711237632e6aa883f04/js/data/BattleCatalog.js#L212-L222).
 
-## Cohérence et limites explicites
+Le code conserve **115 profils source, 7 personnages jouables et 18 entrées de boss**. Les ajouts documentaires ne sont pas des unités implémentées. Ces défauts restent des travaux à réaliser dans une modification de gameplay distincte.
 
-Les sources sont conservées par fiche : **150 références, représentant 135 URL primaires distinctes**, avec leur portée et leur limite. Une œuvre officiellement publiée ou un produit licencié atteste sa propre incarnation ; cela ne démontre pas une continuité universelle entre tous les médias.
+## Dossiers ouverts et fidélité
 
-Les règles d’adaptation séparent espèce, stade biologique, mutation, classe de jeu, rang, clan, individu, groupe et matériel. Les individus nommés ne fournissent pas de réserves de clones. Un ajout remplace une place du budget de bataille alloué ; il ne crée pas automatiquement de renforts. Les alliances, lieux et compositions dépendent du preset choisi. Les rencontres originales réunissant plusieurs univers sont indiquées comme propositions d’adaptation.
+Les sources comprennent **212 références / 183 URL distinctes de documents primaires**, parfois reproduits par un autre hébergeur. Chaque fiche précise la portée de la preuve. Une publication sous licence atteste son incarnation ; elle ne prouve pas une continuité universelle entre tous les médias.
 
-Les **31 dossiers à documenter** comprennent notamment certains sous-types synthétiques d’AFE1, le roster précis des PMC de *Colonial Marines*, les synthétiques d’*AVP 2010*, Darwin Era, les factions de *Three World War*, plusieurs variantes royales de comics et les Amengi. Un dossier non résolu ne signifie pas que l’entité est inexistante : il identifie la preuve primaire manquante avant de promettre une fidélité 1:1.
+Les **43 dossiers à documenter** comprennent notamment les sous-types synthétiques d’AFE1, les PMC / Hazmat / Heavy de Colonial Marines, les synthétiques d’AVP 2010, Darwin Era, les rosters complets d’Infestation et de plusieurs comics, les unités RPG, les variantes royales, certains clans et les plans détaillés de lieux. Certains dossiers disposent déjà d’une preuve partielle mais nécessitent encore le relevé du roster, des scènes ou des capacités. Le dossier Hish restant ouvert concerne aussi ses autres incarnations et clans ; les deux fiches issues du récit NECA ne le closent pas entièrement.
 
-Les **7 exclusions du socle** concernent des généralisations non démontrées ou des limites de périmètre : hiérarchie universelle de rangs, « Clan Apex » universel, classes traitées comme races, concepts non diffusés, variantes exclusivement issues de figurines, fusion de toutes les formes en une caste et Abe dans une scène supprimée. Ces exclusions sont distinctes des **5 nouvelles fiches optionnelles**, conservées dans le catalogue avec activation hors socle par défaut.
+Le nombre de dossiers ouverts augmente par rapport à la première passe parce que la couverture USCM s’élargit et que les preuves partielles sont normalisées sous le même statut. CTRL-007 est désormais résolu par la précision utilisateur. Les dossiers arcade documentés et Amengi/NECA sont également mis à jour, avec leurs limites conservées.
 
-Le terme **« Isco »** n’a pas été identifié dans le code ou les sources consultées. Il reste dans CTRL-007. Les xénomorphes, Colonial Marines et forces corporatives ont été examinés séparément sans attribuer arbitrairement un sens à ce terme.
+La fidélité quasi 1:1 reste un objectif à vérifier **par incarnation** : source, silhouette, équipement, attaques, mobilité, comportement, affiliation, décor et conditions de rencontre. Les adaptations Musou des effectifs, réserves et fronts simultanés sont explicitement des choix de conception du projet.
 
-## Conservation du travail antérieur et vérification
+## Conservation et vérification du classeur
 
-Les **126 actions historiques** conservent leurs statuts : **54 « Terminé », 47 « À valider », 25 « En cours »**. Les 17 budgets, 62 groupes, 40 plans de fronts, 34 cartes, 39 rencontres et 27 batailles du précédent classeur sont conservés. Le total de lignes détaillées passe de 677 à **859** après les 102 ajouts et 80 contrôles.
+Les **126 actions historiques** conservent **54 « Terminé », 47 « À valider » et 25 « En cours »**. Les 17 budgets, 40 plans de fronts, 34 plans de cartes, 39 rencontres et 27 batailles restent conservés. Les 62 groupes précédents sont conservés, avec six règles/compositions précisées, et sept groupes sont ajoutés. Les 27 lieux précédents restent présents ; sept sont ajoutés. Le total de lignes détaillées passe de **859 à 978**.
 
-La vérification finale du classeur est consignée dans `completeness-audit.json`, section `validation`. Elle contrôle les données enregistrées, les comptes, les identifiants, les formules, les tables, les filtres, les validations, les styles conditionnels et la conservation des feuilles historiques. Les vues modifiées sont contrôlées visuellement. Aucun lancement de Microsoft Excel natif n’est revendiqué.
+La validation finale est consignée dans `completeness-audit.json`, section `validation`. Elle compare les données sauvegardées aux matrices attendues, contrôle les identifiants, calculs de synthèse, tables, filtres, validations, mises en forme conditionnelles et la conservation des cellules hors périmètre. Les 148 formules antérieures sont conservées et six formules USCM ajoutées. Les vues modifiées font l’objet d’un contrôle visuel. Aucun lancement de Microsoft Excel natif n’est revendiqué.
