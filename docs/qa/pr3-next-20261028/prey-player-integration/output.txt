@@ -1,0 +1,250 @@
+TAP version 13
+# Subtest: reference kits preserve their own sources and reject undocumented equipment while adapted kits retain crossovers
+ok 1 - reference kits preserve their own sources and reject undocumented equipment while adapted kits retain crossovers
+  ---
+  duration_ms: 1.19617
+  type: 'test'
+  ...
+# Subtest: Feral reference mode hides its crossover cannon and fires finite solid bolts without plasma energy or charged plasma
+ok 2 - Feral reference mode hides its crossover cannon and fires finite solid bolts without plasma energy or charged plasma
+  ---
+  duration_ms: 2715.312844
+  type: 'test'
+  ...
+# Subtest: all wheel weapons have one selected state, explicit projectile actions and repeatable loadouts without stacked statistics
+ok 3 - all wheel weapons have one selected state, explicit projectile actions and repeatable loadouts without stacked statistics
+  ---
+  duration_ms: 1912.721832
+  type: 'test'
+  ...
+# Subtest: the seven hunters have distinct committed timings, costs, reach, mobility and finite light/heavy chains
+ok 4 - the seven hunters have distinct committed timings, costs, reach, mobility and finite light/heavy chains
+  ---
+  duration_ms: 3720.73712
+  type: 'test'
+  ...
+# Subtest: attack phases, cancellation and stamina recovery use simulation seconds consistently at 30, 60 and 120 fps
+ok 5 - attack phases, cancellation and stamina recovery use simulation seconds consistently at 30, 60 and 120 fps
+  ---
+  duration_ms: 1275.526904
+  type: 'test'
+  ...
+# Subtest: mass finishers cannot bypass endurance or their style cooldown
+ok 6 - mass finishers cannot bypass endurance or their style cooldown
+  ---
+  duration_ms: 416.571741
+  type: 'test'
+  ...
+# Subtest: selected projectile profiles match actual admitted damage, resources and cooldowns
+ok 7 - selected projectile profiles match actual admitted damage, resources and cooldowns
+  ---
+  duration_ms: 1309.678724
+  type: 'test'
+  ...
+# Subtest: parry and shield require the attack context, spend reserves and cannot negate Queen-like hits or acid
+ok 8 - parry and shield require the attack context, spend reserves and cannot negate Queen-like hits or acid
+  ---
+  duration_ms: 438.732925
+  type: 'test'
+  ...
+# Subtest: legacy timers and afterimages stop with their owner and never dispose live actor geometry
+ok 9 - legacy timers and afterimages stop with their owner and never dispose live actor geometry
+  ---
+  duration_ms: 425.286828
+  type: 'test'
+  ...
+# Subtest: legacy ranged damage obeys physical cover and faction relations before changing HP
+ok 10 - legacy ranged damage obeys physical cover and faction relations before changing HP
+  ---
+  duration_ms: 544.210767
+  type: 'test'
+  ...
+# Subtest: net pinning uses nearby physical walls on expanded maps and releases when a truce begins
+ok 11 - net pinning uses nearby physical walls on expanded maps and releases when a truce begins
+  ---
+  duration_ms: 457.382843
+  type: 'test'
+  ...
+# Subtest: player elevation supplies its layer and an ascending jump stops at the shared physical ceiling
+ok 12 - player elevation supplies its layer and an ascending jump stops at the shared physical ceiling
+  ---
+  duration_ms: 475.626569
+  type: 'test'
+  ...
+# Subtest: bow, sickle, whip and physical bolt launcher are distinct finite silhouettes with bounded geometry
+ok 13 - bow, sickle, whip and physical bolt launcher are distinct finite silhouettes with bounded geometry
+  ---
+  duration_ms: 3.617569
+  type: 'test'
+  ...
+# Subtest: operation resume keeps spent resources and remaining cooldowns instead of refilling the hunter
+ok 14 - operation resume keeps spent resources and remaining cooldowns instead of refilling the hunter
+  ---
+  duration_ms: 2.654003
+  type: 'test'
+  ...
+# Subtest: a defeated co-op hunter stays defeated when the surviving partner resumes
+ok 15 - a defeated co-op hunter stays defeated when the surviving partner resumes
+  ---
+  duration_ms: 0.449057
+  type: 'test'
+  ...
+# Subtest: empty gadget and ammunition stocks stay empty after a checkpoint rebuild
+ok 16 - empty gadget and ammunition stocks stay empty after a checkpoint rebuild
+  ---
+  duration_ms: 0.327909
+  type: 'test'
+  ...
+# Subtest: same planar point preserves separate above-bridge and underground checkpoint layers
+ok 17 - same planar point preserves separate above-bridge and underground checkpoint layers
+  ---
+  duration_ms: 1.170204
+  type: 'test'
+  ...
+# Subtest: laser lock stays on its world target during positive and negative visual grounding offsets
+ok 18 - laser lock stays on its world target during positive and negative visual grounding offsets
+  ---
+  duration_ms: 5039.235666
+  type: 'test'
+  ...
+# Subtest: Adolini uses facing, finite range and the real cover ray; a consumed miss cannot hit a distant boss later
+ok 19 - Adolini uses facing, finite range and the real cover ray; a consumed miss cannot hit a distant boss later
+  ---
+  duration_ms: 9.797614
+  type: 'test'
+  ...
+# Subtest: Adolini selects the first visible hostile body and routes NPC/boss deaths once through actual managers
+ok 20 - Adolini selects the first visible hostile body and routes NPC/boss deaths once through actual managers
+  ---
+  duration_ms: 2.894986
+  type: 'test'
+  ...
+# Subtest: bow and axe pickups equip their own resource, clamp stocks and preserve refused pickups
+ok 21 - bow and axe pickups equip their own resource, clamp stocks and preserve refused pickups
+  ---
+  duration_ms: 1.867919
+  type: 'test'
+  ...
+# Subtest: flower, grizzly, medicine and Feral rack announce observed bounded resources without score/plasma substitutes
+ok 22 - flower, grizzly, medicine and Feral rack announce observed bounded resources without score/plasma substitutes
+  ---
+  duration_ms: 2.783589
+  type: 'test'
+  ...
+# Subtest: powder blast and fire use distinct radii, actual NPC/boss damage, cover, diplomacy and one ignition
+ok 23 - powder blast and fire use distinct radii, actual NPC/boss damage, cover, diplomacy and one ignition
+  ---
+  duration_ms: 4.937494
+  type: 'test'
+  ...
+# Subtest: powder fire damage clips the last timestep at expiration at30/60/120Hz and frees its owned mesh
+ok 24 - powder fire damage clips the last timestep at expiration at30/60/120Hz and frees its owned mesh
+  ---
+  duration_ms: 18.091165
+  type: 'test'
+  ...
+# Subtest: the cauldron hits actual Horde actor shape and manager death ledger, within7.5U and behind no cover
+ok 25 - the cauldron hits actual Horde actor shape and manager death ledger, within7.5U and behind no cover
+  ---
+  duration_ms: 0.997642
+  type: 'test'
+  ...
+# Subtest: mud is once per actual-volume entry per cooperative player, and pause/zero delta cannot consume or age interactions
+ok 26 - mud is once per actual-volume entry per cooperative player, and pause/zero delta cannot consume or age interactions
+  ---
+  duration_ms: 0.860008
+  type: 'test'
+  ...
+# Subtest: real Taabe pickup equips the wooden bow, grants six finite arrows once and never spends or refills plasma
+ok 27 - real Taabe pickup equips the wooden bow, grants six finite arrows once and never spends or refills plasma
+  ---
+  duration_ms: 3009.220494
+  type: 'test'
+  ...
+# Subtest: real Naru pickup creates a right-hand tethered axe and spends exactly four admitted physical swings
+ok 28 - real Naru pickup creates a right-hand tethered axe and spends exactly four admitted physical swings
+  ---
+  duration_ms: 780.117452
+  type: 'test'
+  ...
+# Subtest: faithful kits and other missions reject human Prey tools without consuming the pickup or granting stock
+ok 29 - faithful kits and other missions reject human Prey tools without consuming the pickup or granting stock
+  ---
+  duration_ms: 412.392992
+  type: 'test'
+  ...
+# Subtest: save/reload preserves exhausted stocks, partial bow cooldown and buff time without a refill or extra life
+ok 30 - save/reload preserves exhausted stocks, partial bow cooldown and buff time without a refill or extra life
+  ---
+  duration_ms: 928.640432
+  type: 'test'
+  ...
+# Subtest: Taabe agility changes actual travel by 30 percent once and expires at 25 seconds at30/60/120fps; pause freezes it
+ok 31 - Taabe agility changes actual travel by 30 percent once and expires at 25 seconds at30/60/120fps; pause freezes it
+  ---
+  duration_ms: 1483.113068
+  type: 'test'
+  ...
+# Subtest: orange flower attenuates heat temporarily, mud reduces actual acid damage by40 percent, and neither toggles technological cloak
+ok 32 - orange flower attenuates heat temporarily, mud reduces actual acid damage by40 percent, and neither toggles technological cloak
+  ---
+  duration_ms: 543.634807
+  type: 'test'
+  ...
+# Subtest: solid arrow and held tool geometry use finite bounded authored detail and can be fully disposed
+ok 33 - solid arrow and held tool geometry use finite bounded authored detail and can be fully disposed
+  ---
+  duration_ms: 5.766868
+  type: 'test'
+  ...
+# Subtest: held tools follow native hand sockets with compensated GLB scale and survive removal of the imported body exactly once
+ok 34 - held tools follow native hand sockets with compensated GLB scale and survive removal of the imported body exactly once
+  ---
+  duration_ms: 447.527884
+  type: 'test'
+  ...
+# Subtest: actual player height prevents walking or pouncing through a low overhead deck
+ok 35 - actual player height prevents walking or pouncing through a low overhead deck
+  ---
+  duration_ms: 397.724168
+  type: 'test'
+  ...
+# Subtest: Sarii joins once without futuristic loot, accepts explicit orders and cannot be stolen by the second player
+ok 36 - Sarii joins once without futuristic loot, accepts explicit orders and cannot be stolen by the second player
+  ---
+  duration_ms: 1.791469
+  type: 'test'
+  ...
+# Subtest: wounds force a persistent retreat without repeated withdrawal events or unlimited automatic healing
+ok 37 - wounds force a persistent retreat without repeated withdrawal events or unlimited automatic healing
+  ---
+  duration_ms: 6.310198
+  type: 'test'
+  ...
+# Subtest: guard bites one hostile target on a finite cadence at30/60/120fps, while following and allied actors receive no free damage
+ok 38 - guard bites one hostile target on a finite cadence at30/60/120fps, while following and allied actors receive no free damage
+  ---
+  duration_ms: 4.616483
+  type: 'test'
+  ...
+# Subtest: the three-laser bone mask arms a real projectile trap and never applies instant boss damage
+ok 39 - the three-laser bone mask arms a real projectile trap and never applies instant boss damage
+  ---
+  duration_ms: 2.489577
+  type: 'test'
+  ...
+# Subtest: the origin of another biome cannot grant Prey mud camouflage without an actual mud basin
+ok 40 - the origin of another biome cannot grant Prey mud camouflage without an actual mud basin
+  ---
+  duration_ms: 1.430762
+  type: 'test'
+  ...
+1..40
+# tests 40
+# suites 0
+# pass 40
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 27893.18012

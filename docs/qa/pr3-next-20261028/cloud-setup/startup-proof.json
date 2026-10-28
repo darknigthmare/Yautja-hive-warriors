@@ -1,0 +1,14 @@
+{
+  "status": "passed",
+  "workflow": "Vite development server after completed npm-ci install",
+  "workingDirectory": "/tmp/yautja-repro-20261028",
+  "sourceCommit": "5089228a12ac2985ef03e72782fd29e8687f6b33",
+  "htmlStatus": 200,
+  "mainModuleStatus": 200,
+  "semanticChecks": [
+    "HIVE WARRIORS title",
+    "GameApp module"
+  ],
+  "startupCommand": "npm run dev -- --host 127.0.0.1 --port 5199 --strictPort",
+  "initialPrematureStartup": "Preserved failed attempt: Vite was started before npm-ci completed; retried after installation exit0."
+}

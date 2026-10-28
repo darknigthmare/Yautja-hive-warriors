@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "label": "prey-checkpoint-contracts",
+  "startedAt": "2026-10-28T09:24:32.440Z",
+  "scope": "Explicit automated CPU suite. No browser, human playtest, hardware performance or visual fidelity certification.",
+  "command": [
+    "node",
+    "--max-old-space-size=2048",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=tap",
+    "tests/prey-interaction-checkpoint.test.js",
+    "tests/prey-interaction-contracts.test.js",
+    "tests/prey-reference-interactions.test.js"
+  ],
+  "cwd": "/workspace/Yautja-next-20261028",
+  "node": "v24.19.0",
+  "platform": "linux",
+  "arch": "x64",
+  "sourceHeadBefore": "a8aa85762365f1824c2772883a4ddb3fb708cc1e",
+  "sourceBefore": {
+    "sha256": "2756cdbd8d64fc7dcb33b212973fd8e3703d30f57e69f6f56c0a0223d1f2c2d9",
+    "files": 150
+  },
+  "testsBefore": [
+    {
+      "path": "tests/prey-interaction-checkpoint.test.js",
+      "sha256": "35830e360e3ba40de9f510991b6a67614ce7022a53f0b894e8203e84780d34ea"
+    },
+    {
+      "path": "tests/prey-interaction-contracts.test.js",
+      "sha256": "cef43f5e5d27ebcb23c31726eaae3fbbdcbe3847c151a9d0213f3ebe7ca06d4f"
+    },
+    {
+      "path": "tests/prey-reference-interactions.test.js",
+      "sha256": "ffd0d27e44828ee3347a3cbcea646e0d5eb7e5c466ae4f56fead2dfdc151e095"
+    }
+  ],
+  "rawOutput": "output.txt",
+  "humanTesters": 0,
+  "browserSessions": 0,
+  "fidelity1to1Verified": false,
+  "exitCode": 0,
+  "signal": null,
+  "rawBytes": 5429,
+  "summaryParserReadsTailBytes": 5429,
+  "result": {
+    "tests": 19,
+    "pass": 19,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "sourceHeadAfter": "a8aa85762365f1824c2772883a4ddb3fb708cc1e",
+  "sourceAfter": {
+    "sha256": "2756cdbd8d64fc7dcb33b212973fd8e3703d30f57e69f6f56c0a0223d1f2c2d9",
+    "files": 150
+  },
+  "testsAfter": [
+    {
+      "path": "tests/prey-interaction-checkpoint.test.js",
+      "sha256": "35830e360e3ba40de9f510991b6a67614ce7022a53f0b894e8203e84780d34ea"
+    },
+    {
+      "path": "tests/prey-interaction-contracts.test.js",
+      "sha256": "cef43f5e5d27ebcb23c31726eaae3fbbdcbe3847c151a9d0213f3ebe7ca06d4f"
+    },
+    {
+      "path": "tests/prey-reference-interactions.test.js",
+      "sha256": "ffd0d27e44828ee3347a3cbcea646e0d5eb7e5c466ae4f56fead2dfdc151e095"
+    }
+  ],
+  "runtimeSourceUnchanged": true,
+  "testsUnchanged": true,
+  "rawSha256": "66fb3251f86e05d36a991bd4f1fa7325b1628935142f001c0e258a481f731db3",
+  "endedAt": "2026-10-28T09:24:33.099Z",
+  "durationSeconds": 0.659
+}

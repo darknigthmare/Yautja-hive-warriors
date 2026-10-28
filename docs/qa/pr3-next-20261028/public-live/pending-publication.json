@@ -1,0 +1,24 @@
+{
+  "status": "prepared_awaiting_final_vercel_go_and_exclusive_chromium",
+  "preparedDate": "2026-10-28",
+  "origin": "https://yautja-hive-warriors.vercel.app",
+  "expected": {
+    "source": "5089228a12ac2985ef03e72782fd29e8687f6b33",
+    "index": "643b94f665f1eb3057d35e74b8313968683372f709fdeed671b0c1045b66db0d",
+    "buildInfo": "e0553896eeeb4c21b3b8eb392dc08b270926974ff3efed57c9733617416af50a"
+  },
+  "deployment": null,
+  "browserLaunchedForNextPublicQa": false,
+  "publicNetworkAccessedForNextQa": false,
+  "validation": {
+    "nodeSyntaxCheck": "passed",
+    "helpWithoutExecution": "passed",
+    "configurationValidationOnly": "passed"
+  },
+  "intendedFunctionalCheckCount": 22,
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "result": null,
+  "freezeRevisionReason": "Root replaced the previous a225277 freeze after fixing NPC helipad exit blocking, false sentry interaction interception of E, and legacy rooftop air guards. No public NEXT deployment exists yet; local QA is still in progress.",
+  "instruction": "This is preparation only. Do not run the public browser QA until root supplies the real NEXT deployment ID and explicitly releases the exclusive Chromium slot after final publication."
+}

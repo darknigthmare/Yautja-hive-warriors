@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "sourceCommit": "5089228a12ac2985ef03e72782fd29e8687f6b33",
+  "sourceFingerprint": "6958b3dfe9552d85fc8ce08c86acfe5e4cf5188808656b707a548376997cddfe",
+  "indexSha256": "643b94f665f1eb3057d35e74b8313968683372f709fdeed671b0c1045b66db0d",
+  "distUnchanged": true,
+  "cases": 4,
+  "pass": 4,
+  "fail": 0,
+  "durationSeconds": 147.713,
+  "browserErrors": 0,
+  "failedRequests": 0,
+  "externalRequests": 0,
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "assisted": true,
+  "recipe": "run-integrated-features.mjs",
+  "report": "final-5089228/report.json",
+  "proofs": {
+    "final-5089228/allocated-ally-three-second-rescue.png": "94fc179e2926c38ea63912034362f27573d7e69ed35c32aa77eadd6d818f27f0",
+    "final-5089228/ally-actual-downed.png": "7c1eb77256a8195d510ef2baa8ee9d2e5ff71e6c8f590d1cd7887e8ab70121c9",
+    "final-5089228/finite-support-roof-refusal-destruction.png": "753f9e1bda5dbed4f4d0a65192adc4b19cb66a1c801d8c29342baed7be9b0ca9",
+    "final-5089228/prey-bow-held.png": "393e558f8e393023262f8c02f76bf8ded92385b7e783cecbeb427db944f5f2b1",
+    "final-5089228/prey-owned-tools-wheel.png": "32a47251b0cd95492613b7213e207c8e30645f201ae660de1e6e0b25cfc73767",
+    "final-5089228/prey-tools-real-pickups-first-arrow.png": "992e689876f9e044524d00950f43d2c89be9de2f4c576ee9db1daf17bc58a2cb",
+    "final-5089228/report.json": "959d6122e1edeb1376e626e3e709d69e36df4a3fffb4d7d43d3dbc79495f8ed3",
+    "final-5089228/scene-seed-difficulty-checkpoint.png": "448ff295824a13188fa88283759a90343d56cbb62c3d6d43c6c8e0a652488975",
+    "final-5089228/terminal.txt": "861133c2651c0061534020dcef5956fcbfb4b81882f4a84db078d9b3a2f2ac65"
+  },
+  "runtimeObserved": {
+    "scene": "physical terrain seed1 and aggressive officer decisions survive a UI checkpoint/page reload/resume; FRONTS remains displayed",
+    "rescue": "existing allocated ally appeared after13 normal60Hz strategic updates (0.25 simulation seconds); no actor injection; one medicomp consumed after3seconds; saved and resumed status rescued",
+    "airSupport": "actual la-helipad-deck blocks sky;2sorties/12rockets/6napalm unchanged after refusal; actual2500HPAPC destroyed and physical collider removed",
+    "prey": "actual E pickups grant6arrows/4axe swings; real wheel/click arrow hits only first existing enemy(120→0), second remains85HP; arrows6→5, plasma100 unchanged, score0→150, kills0→1; axe4→3"
+  },
+  "attemptNotes": {
+    "a2252775": "first UI fixture failure preserved: pause screen after command map, then hidden save button",
+    "a2252775-2": "three cases passed; actual PREY E blocked before pickup",
+    "a2252775-prey-diagnostic": "actual E chain confirmed successful=false sentry reload object was treated as truthy; production fix subsequently tested",
+    "5089228": "first fixture assumed materialization after one16ms strategic update; corrected bounded real60Hz wait before final four-case run"
+  }
+}

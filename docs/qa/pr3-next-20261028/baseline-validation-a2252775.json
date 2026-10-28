@@ -1,0 +1,103 @@
+{
+  "status": "superseded_after_integrated_findings",
+  "branch": "codex/depth-pr3-20261028",
+  "build": {
+    "success": true,
+    "source_commit": "a225277531e7e10b64ab2b880ff7c8554fa815b2",
+    "source_fingerprint": "430aab5021e1124b194d1adae7422a39c5ac964949e2cb3e0e49c201384bfa3d",
+    "source_tree_dirty": false,
+    "index_sha256": "52a750c9472d381d9016f29b0e15a6a3020df28a802c49ac2fa94cff515cb538",
+    "build_info_sha256": "0280cb374a3a0eba2a6639b23498e01f41edf6917bc70d5c20245af24f9842ce",
+    "static_files": 30,
+    "models": 12,
+    "bundles": 5,
+    "proof": "docs/qa/pr3-next-20261028/build-final-3.txt",
+    "manifest": "docs/qa/pr3-next-20261028/build-files.json"
+  },
+  "cpu": {
+    "status": "passed",
+    "passed": 818,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "index_sha256": "52a750c9472d381d9016f29b0e15a6a3020df28a802c49ac2fa94cff515cb538",
+    "source_commit": "a225277531e7e10b64ab2b880ff7c8554fa815b2",
+    "source_fingerprint": "430aab5021e1124b194d1adae7422a39c5ac964949e2cb3e0e49c201384bfa3d",
+    "duration_ms": 738486.620642,
+    "proof": "docs/qa/pr3-next-20261028/cpu-final-2.txt",
+    "proof_sha256": "f9e6b1cc2e33d4ba1115a15e13caf2646c4a0f267a67ce8849505eaf832a87ae",
+    "command": "YAUTJA_RELEASE_PROFILE=pr3-next-20261028 node --max-old-space-size=2048 --test --test-concurrency=1 tests/*.test.js tests/browser-cleanup.test.mjs tests/pr3-publication.test.mjs tests/pr3-release-profiles.test.mjs"
+  },
+  "browser": {
+    "final_regression": {
+      "status": "passed",
+      "passed": 15,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "index_sha256": "52a750c9472d381d9016f29b0e15a6a3020df28a802c49ac2fa94cff515cb538",
+      "source_commit": "a225277531e7e10b64ab2b880ff7c8554fa815b2",
+      "duration_ms": 620333.936322,
+      "proof": "docs/qa/pr3-next-20261028/browser-final-2.txt",
+      "proof_sha256": "0b7c69b9430c4cb630ac2a33764ac8ab1640a03ed57fa380e7bb1bbee8c94f1d",
+      "source_unchanged": true
+    },
+    "final_runtime": {
+      "status": "pending",
+      "index_sha256": null,
+      "errors": null,
+      "failed_requests": null,
+      "external_requests": null,
+      "checks": [],
+      "proof": null
+    }
+  },
+  "scope": {
+    "human_testers": 0,
+    "fidelity_1_to_1_verified": false,
+    "additional_meshy_credits_spent": 0
+  },
+  "limitations": [
+    "Ce document est un emplacement de résultats : aucun résultat de la version précédente ne vaut validation de ce build.",
+    "Les tests locaux de composants ne constituent pas une validation navigateur intégrée, humaine, matérielle ou de fidélité 1:1."
+  ],
+  "history": [
+    {
+      "attempt": "cpu-preflight-1",
+      "passed": 784,
+      "failed": 1,
+      "final_evidence": false,
+      "reason": "Boss now uses a grounded root wrapper. The cleanup fixture was adapted to observe every descendant geometry; its eight tests then passed."
+    },
+    {
+      "attempt": "cpu-final-1 and browser-final-1",
+      "status": "interrupted_by_coordinator",
+      "final_evidence": false,
+      "reason": "Stopped before completion to correct the front counter and two independently reproduced integration defects; raw outputs retained."
+    }
+  ],
+  "reproducibility": {
+    "status": "passed",
+    "identical_files": 30,
+    "proof": "docs/qa/pr3-next-20261028/reproducibility/report.json"
+  },
+  "integrated_findings": [
+    {
+      "issue": "NPCs return to elevated insertion center rather than exiting the LA helipad",
+      "status": "fix_targeted_tests_passed",
+      "proof": "docs/qa/pr3-next-20261028/helipad-navigation-fix/manifest.json"
+    },
+    {
+      "issue": "A refused sentry reload returns an object, which incorrectly consumed the E interaction before PREY pickups",
+      "status": "fix_in_progress",
+      "proof": "/workspace/qa/pr3-next-20261028/integrated-features-a2252775-prey-diagnostic/report.json"
+    }
+  ],
+  "complete_contexts_baseline": {
+    "passed": 21,
+    "failed": 1,
+    "build_index": "52a750c9472d381d9016f29b0e15a6a3020df28a802c49ac2fa94cff515cb538",
+    "status": "failed",
+    "proof": "/workspace/qa/pr3-next-20261028/complete-contexts-a2252775/report.json"
+  }
+}

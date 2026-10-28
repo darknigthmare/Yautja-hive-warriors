@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "label": "baseline-writer",
+  "startedAt": "2026-10-28T07:52:03.595Z",
+  "scope": "Explicit automated CPU suite. No browser, human playtest, hardware performance or visual fidelity certification.",
+  "command": [
+    "node",
+    "--max-old-space-size=2048",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=tap",
+    "tests/audit-progress.test.js"
+  ],
+  "cwd": "/workspace/Yautja-next-20261028",
+  "node": "v24.19.0",
+  "platform": "linux",
+  "arch": "x64",
+  "sourceHeadBefore": "a8aa85762365f1824c2772883a4ddb3fb708cc1e",
+  "sourceBefore": {
+    "sha256": "13e30ad16a48715f86b7e57527624cbd279c0450f346a8b257c9a49aea2c36a6",
+    "files": 144
+  },
+  "testsBefore": [
+    {
+      "path": "tests/audit-progress.test.js",
+      "sha256": "bfe109fbcd42deefd32f1fc8613fcdd014ce9b9709cf5ceb8cc35f1af47c4b4f"
+    }
+  ],
+  "rawOutput": "output.txt",
+  "humanTesters": 0,
+  "browserSessions": 0,
+  "fidelity1to1Verified": false,
+  "exitCode": 0,
+  "signal": null,
+  "result": {
+    "tests": 3,
+    "pass": 3,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "sourceHeadAfter": "a8aa85762365f1824c2772883a4ddb3fb708cc1e",
+  "sourceAfter": {
+    "sha256": "13e30ad16a48715f86b7e57527624cbd279c0450f346a8b257c9a49aea2c36a6",
+    "files": 144
+  },
+  "testsAfter": [
+    {
+      "path": "tests/audit-progress.test.js",
+      "sha256": "bfe109fbcd42deefd32f1fc8613fcdd014ce9b9709cf5ceb8cc35f1af47c4b4f"
+    }
+  ],
+  "runtimeSourceUnchanged": true,
+  "testsUnchanged": true,
+  "rawSha256": "16b44ed08954a5d323339e530e4bb6ceed718a0342277813140d088096a804b5",
+  "endedAt": "2026-10-28T07:52:05.881Z",
+  "durationSeconds": 2.286
+}

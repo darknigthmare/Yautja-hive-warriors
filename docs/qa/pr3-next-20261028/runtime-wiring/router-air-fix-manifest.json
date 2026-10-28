@@ -1,0 +1,25 @@
+{
+  "status": "source-frozen-after-observed-browser-router-bug",
+  "tests": 14,
+  "pass": 14,
+  "fail": 0,
+  "proof": "runtime-14-tests.txt",
+  "browserDiagnostic": "/workspace/qa/pr3-next-20261028/integrated-features-a2252775-prey-diagnostic/report.json",
+  "observedBug": "SentryGun.reloadSentry returns an object even on too_far/full refusal; a truthy condition consumed E before later world pickups.",
+  "fixes": [
+    "test actual success field before consuming E",
+    "align Taabe prompt with reachable-ground pickup range4.5",
+    "qualify Sarii orders as gameplay adaptations and name Feral stock flechettes",
+    "wire shared air-access context to new players and orbital manager",
+    "preflight planetary barrage footprints before honor spending; filter every physical target and bound direct boss damage to60U"
+  ],
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "sha256": {
+    "js/main.js": "162dbb1147256f251baebbfe1dbd8e545747f51a5ec5330c526189ef98659204",
+    "index.html": "c99f31fa9c18b17552df157e521196f7e4d1b3daf7a7f5e8fccb025d948040c7",
+    "js/entities/ReferenceEnvironmentMechanisms.js": "1b1333ecd8370367a43aa98b2e8d2c544140fca37e51f6a20f017ae741ef5087",
+    "tests/runtime-final-wiring.test.js": "3dbd53a45f59c51bf94562b7079ea2e1ea6e9ab154a38898633c6ab63330ff24",
+    "docs/qa/pr3-next-20261028/integrated-features/run-integrated-features.mjs": "ad83e5c33bb4c9a6268e4423a0f071ec98cdbeeed235f81c21a1ed947e14fd0b"
+  }
+}

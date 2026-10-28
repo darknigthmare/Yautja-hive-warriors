@@ -1,0 +1,127 @@
+{
+  "status": "frozen_historical_protocol_B_pass_and_unmodified_A_failure_comparison",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 3289,
+      "sha256": "6d27022f3912a7554feaa1b8cf2745e31c8d734df7ad9577340feb0633812239"
+    },
+    {
+      "path": "active-last-cycle.png",
+      "bytes": 131730,
+      "sha256": "d3be864d7dc3dc0d67fd97fe9364db92f20b8ebac9a12c8bf6cadd5839304308"
+    },
+    {
+      "path": "comparison.json",
+      "bytes": 8582,
+      "sha256": "7a65c759f43287e87ee41583d265dba13160b6c5518f766db2c4c9e2b646def1"
+    },
+    {
+      "path": "geometry-trace-table.csv",
+      "bytes": 2687,
+      "sha256": "aa73230a7fbefea5f42d8070753c51b5e8e0624b6b72c29207a05ef634955c57"
+    },
+    {
+      "path": "geometry-upload-events.json",
+      "bytes": 14683,
+      "sha256": "4b7617a95b7f87dd5ac1019450c3b526aefe1ad9bb68955fccae9b47de0bd949"
+    },
+    {
+      "path": "harness-README.md",
+      "bytes": 2650,
+      "sha256": "782c080b186c8070c819f53a712e3f922b413772123f8d7894ed3dd2bbc99cc8"
+    },
+    {
+      "path": "harness-stdout.txt",
+      "bytes": 4556,
+      "sha256": "f6f3e10d2974e1a2b6ce577e1efb815e52ba3bf26679965388e55599694fd1a8"
+    },
+    {
+      "path": "heap-analysis.stdout.txt",
+      "bytes": 797,
+      "sha256": "2b7ba6751aaf64a3204d3cd5df7c0c55ac581a6a85dbd0cd0900f27ce6552fb2"
+    },
+    {
+      "path": "heap-summary.json",
+      "bytes": 6876,
+      "sha256": "d6aa04367c2d9cfc37f268dd39aa17c4cfdd742a3e56b38dfd2dc70fbc1f7bfc"
+    },
+    {
+      "path": "menu-after-ten-restarts.png",
+      "bytes": 128306,
+      "sha256": "4213d5b07e827bf60573b785ee14fe6bd46a6e01f38b05066d30e4f598056670"
+    },
+    {
+      "path": "report.json",
+      "bytes": 2825021,
+      "sha256": "63328ef79bc1659e4f042b48a2e52bbd5c7e055b8a1956a6856f69b774086db2"
+    }
+  ],
+  "original_copies": [
+    {
+      "source": "/workspace/qa/pr3-next-20261028/resource-restarts-historical20-5089228/report.json",
+      "archive": "report.json",
+      "bytes": 2825021,
+      "sha256": "63328ef79bc1659e4f042b48a2e52bbd5c7e055b8a1956a6856f69b774086db2"
+    },
+    {
+      "source": "/workspace/qa/pr3-next-20261028/resource-restarts-historical20-5089228/active-last-cycle.png",
+      "archive": "active-last-cycle.png",
+      "bytes": 131730,
+      "sha256": "d3be864d7dc3dc0d67fd97fe9364db92f20b8ebac9a12c8bf6cadd5839304308"
+    },
+    {
+      "source": "/workspace/qa/pr3-next-20261028/resource-restarts-historical20-5089228/menu-after-ten-restarts.png",
+      "archive": "menu-after-ten-restarts.png",
+      "bytes": 128306,
+      "sha256": "4213d5b07e827bf60573b785ee14fe6bd46a6e01f38b05066d30e4f598056670"
+    },
+    {
+      "source": "/workspace/qa/pr3-next-20261028/resource-restarts-historical20-5089228/heap-summary.json",
+      "archive": "heap-summary.json",
+      "bytes": 6876,
+      "sha256": "d6aa04367c2d9cfc37f268dd39aa17c4cfdd742a3e56b38dfd2dc70fbc1f7bfc"
+    },
+    {
+      "source": "/workspace/qa/pr3-next-20261028/resource-restarts-historical20-5089228/README.md",
+      "archive": "harness-README.md",
+      "bytes": 2650,
+      "sha256": "782c080b186c8070c819f53a712e3f922b413772123f8d7894ed3dd2bbc99cc8"
+    },
+    {
+      "source": "/workspace/qa/pr3-next-20261028/resource-restarts-historical20-5089228/heap-analysis.stdout.txt",
+      "archive": "heap-analysis.stdout.txt",
+      "bytes": 797,
+      "sha256": "2b7ba6751aaf64a3204d3cd5df7c0c55ac581a6a85dbd0cd0900f27ce6552fb2"
+    },
+    {
+      "source": "/workspace/qa/pr3-next-20261028/resource-restarts-historical20-5089228.stdout.txt",
+      "archive": "harness-stdout.txt",
+      "bytes": 4556,
+      "sha256": "f6f3e10d2974e1a2b6ce577e1efb815e52ba3bf26679965388e55599694fd1a8"
+    }
+  ],
+  "harness_sources": [
+    {
+      "path": "docs/qa/pr3-next-20261028/resource-restarts/harness-historical-20warm.mjs",
+      "bytes": 17366,
+      "sha256": "eadb01b5f6c049ef74c4be6937e043412a1724802bcf1d6d58292561e8855e3f"
+    },
+    {
+      "path": "docs/qa/pr3-next-20261028/resource-restarts/geometry-trace.mjs",
+      "bytes": 2626,
+      "sha256": "cbe603dcb28b822f0e641e7e8731ce8e0fff9d733eb017e26cb4e5571a61b67a"
+    },
+    {
+      "path": "docs/qa/pr3-next-20261028/resource-restarts/harness-lib.mjs",
+      "bytes": 10086,
+      "sha256": "348ac5d779b4a5455856e0e8b1063ced7d9d96a807884fe7bed99d6056ab44b8"
+    },
+    {
+      "path": "docs/qa/pr3-next-20261028/resource-restarts/analyze-heaps.py",
+      "bytes": 4594,
+      "sha256": "9291e14d620e6e1748f2aef1b950d1ee15a9357caad86695165cd7e2a4e4fe09"
+    }
+  ],
+  "original_A_manifest_sha256": "6b0d063c46207a8a0a9c718cd33a79f599175943ba174e095bdbd7f16dd098de"
+}

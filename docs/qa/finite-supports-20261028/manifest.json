@@ -1,0 +1,40 @@
+{
+  "status": "frozen_component_evidence",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 4753,
+      "sha256": "0cdabbf79d55a4bce89013693996c00104ed9f600171c6436c97fce3745a4519"
+    },
+    {
+      "path": "policy-10-tests.txt",
+      "bytes": 1196,
+      "sha256": "cf2d5f2e1e9d1e2c9a2c27f6581c2d426640722b4554f1a87484a9cbff2cc1cb"
+    },
+    {
+      "path": "policy-9-tests.txt",
+      "bytes": 1094,
+      "sha256": "f3d5fe63c60039c133c302f544bfa787574eda5aa7bc262d8ab2fa7a52025d5b"
+    },
+    {
+      "path": "policy-collisionowner-10-tests.txt",
+      "bytes": 1196,
+      "sha256": "d823061f4d945d14ff03c63705baa7396f5d8e6377150e19dbf183811440b4a6"
+    },
+    {
+      "path": "regression-72-tests.txt",
+      "bytes": 7303,
+      "sha256": "efec70e27e46c2172fc46b50868057e963123d5c12664e1579a92bd79cd93d00"
+    },
+    {
+      "path": "regression-73-tests.txt",
+      "bytes": 7410,
+      "sha256": "b27af525c4255f821aed6bab8962684b216b459ee61ae2442753fec231ba7fe3"
+    },
+    {
+      "path": "validation.json",
+      "bytes": 1015,
+      "sha256": "dbc65562d6e97971143241237f856a3e131d8cbb09ca195e1b86411ae0c4960c"
+    }
+  ]
+}

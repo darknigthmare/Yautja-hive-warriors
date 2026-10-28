@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "5089228a12ac2985ef03e72782fd29e8687f6b33",
+  "sourceFingerprint": "6958b3dfe9552d85fc8ce08c86acfe5e4cf5188808656b707a548376997cddfe",
+  "indexSha256": "643b94f665f1eb3057d35e74b8313968683372f709fdeed671b0c1045b66db0d",
+  "acceptedCriterion": "AUD-071",
+  "scope": "All11 current level/boss bindings, preflight rejection and full assisted objective routes; no natural-human victory, fidelity1:1 or hardware certification.",
+  "review": "Les onze cartes construites ont été sélectionnées dans la vraie interface, insertion terminée, six secteurs atteints et cinq objectifs/portes réellement accomplis avant présence du boss annoncé vivant. Chaque BossManager subit ensuite les dégâts assistés, son vrai décès déclenche la victoire et le nettoyage est vérifié. Le préflight négatif CPU refuse configuration inconnue/mauvaise identité/renderer avant changement de scène. La routeLA échouée sura225 a révélé un vrai guidageNPC erroné ; la correction testée70cas et le helper physiquement recalé permettent sa victoire sur5089228. L’ancien essai négatif reste conservé.",
+  "positiveReport": {
+    "path": "docs/qa/pr3-next-20261028/complete-contexts-final-victories/report.json",
+    "sha256": "a9e203a90cc4df69216ae78885efcc08bd046cdea04c93b08c867914fc6a3c13",
+    "passed": 11,
+    "defeatsRun": 0
+  },
+  "manifest": {
+    "path": "docs/qa/pr3-next-20261028/complete-contexts-final-victories/manifest.json",
+    "sha256": "c0964de435527e43bfd472e7d86688016fa8ed1bff47621d5b0f09d69e1fc1d9"
+  },
+  "cpu": {
+    "path": "docs/qa/pr3-next-20261028/cpu-final-3.txt",
+    "sha256": "abb934263e5927e7b22a6abc12912f7c9b5defd087af48bd105d5b9682d47a13",
+    "passed": 833,
+    "failed": 0
+  },
+  "negativeHistoricalAttempt": "docs/qa/pr3-next-20261028/complete-contexts-initial/report.json",
+  "oldDefeatScope": "The11 controlled defeats belong to sourcea2252775 only; this new run is11 victories, not22 new outcomes.",
+  "humanTesters": 0,
+  "fidelity1to1Verified": false
+}

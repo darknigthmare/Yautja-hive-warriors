@@ -1,0 +1,94 @@
+{
+  "createdAt": "2026-10-28T09:00:00.170285+00:00",
+  "worktree": "/workspace/Yautja-next-20261028",
+  "branch": "codex/depth-pr3-20261028",
+  "sourceFrozen": true,
+  "checks": [
+    {
+      "command": "node --test tests/world-depth-seeds.test.js tests/reference-walk-surfaces.test.js tests/world-depth-streaming.test.js",
+      "log": "docs/qa/pr3-next-20261028/world-depth/new-tests.txt",
+      "tests": 44,
+      "passed": 44,
+      "failed": 0,
+      "nodeTestDurationMs": 150510.701726
+    },
+    {
+      "command": "node --test tests/levels.test.js tests/battlefield-layout.test.js tests/battlefield-map-variants.test.js tests/battlefield-sector-details.test.js tests/tactical-bridge.test.js tests/world-geometry-streaming.test.js",
+      "log": "docs/qa/pr3-next-20261028/world-depth/regression-tests.txt",
+      "tests": 89,
+      "passed": 89,
+      "failed": 0,
+      "nodeTestDurationMs": 90527.980536
+    }
+  ],
+  "passedTotal": 133,
+  "scope": {
+    "AUD058": "34 maps, seeds 17 and 90210: reproducible stable IDs, distinct physical coordinates, continuous route checks and cleanup. Default-seed regression also passed.",
+    "AUD064": "Explicitly registered industrial decks/ramps, solid helipad, resin decks/ramps, acid grates and tactical bridges. Mesh triangle traces, ceilings, lower/upper layers, actual USCM access. Legacy decorative perches are not a universal validated navmesh.",
+    "AUD067": "Physical upward-facing main/flank chevrons linked to actual gate IDs. Human comprehension and rendered contrast remain unvalidated.",
+    "AUD112": "CPU buffer preparation budget, mandatory terrain priority for either player, three real sectors then return preserving objective/destruction and CPU arrays. Rendered crossings, driver uploads, VRAM and device pauses remain unvalidated."
+  },
+  "measurements": [
+    {
+      "measurement": "Node CPU buffer preparation; no rendered GPU frame or actual VRAM measurement",
+      "budgetBytes": 2097152,
+      "measurements": [
+        {
+          "sector": "insertion",
+          "preparationCpuMs": 0.1321109999989858,
+          "aheadPreparedBytes": 0,
+          "mandatoryPreparedBytes": 0,
+          "pendingBytes": 0,
+          "eligibleGpuBytes": 4980516
+        },
+        {
+          "sector": "area-6",
+          "preparationCpuMs": 0.5010559999991528,
+          "aheadPreparedBytes": 0,
+          "mandatoryPreparedBytes": 1224568,
+          "pendingBytes": 0,
+          "eligibleGpuBytes": 5196960
+        },
+        {
+          "sector": "nest",
+          "preparationCpuMs": 0.15635400000064692,
+          "aheadPreparedBytes": 0,
+          "mandatoryPreparedBytes": 1309304,
+          "pendingBytes": 0,
+          "eligibleGpuBytes": 5281696
+        },
+        {
+          "sector": "insertion",
+          "preparationCpuMs": 0.25096599999960745,
+          "aheadPreparedBytes": 0,
+          "mandatoryPreparedBytes": 1008124,
+          "pendingBytes": 0,
+          "eligibleGpuBytes": 4980516
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "No browser, human testers, hardware GPU frame timing or physical location/costume 1:1 certification in this lot.",
+    "No original-worktree writes, Git mutations, builds, deployments or paid Meshy actions by this agent.",
+    "ReferenceEnvironmentMechanisms.js is shared with the separate Prey interaction contract work; full-file hash records the combined source snapshot."
+  ],
+  "sourceSha256": {
+    "js/data/BattlefieldTopology.js": "72cc7e66e5ee5a53659dd34bfd60ebb4de96cf78fed7e908302ecfb401e93aa6",
+    "js/data/BattlefieldLayouts.js": "60facfbbea8e907236ee1e39a5acc7e2f06aafb541d3513211f889a061b0bafe",
+    "js/engine/BattlefieldNavigation.js": "d7cb47306d8d93eb32359c4fff0c66b2e8d86c06778f52cdf24034fc942e0819",
+    "js/entities/Environment.js": "4dfb1f510eacd9d70702f5c5441a41eb568dc14cf7a04f25ed8b2ee3d9a80845",
+    "js/entities/ReferenceWalkSurfaces.js": "7c3236b91aa5658db7a086762c2978f3cdd114b7551ee2b6f9de84e41b94e489",
+    "js/entities/ReferenceEnvironmentMechanisms.js": "c21e65a7762b720087bb1fb01cdf3f64c245182953f4d4726e58e4b0f27bc53b",
+    "js/entities/ColonialMarines.js": "a5f07ca6f95caa22ad0babcefda7ce96bbfac575907f057a1d4aefb5b73bc395",
+    "js/graphics/BattlefieldSectorDetails.js": "6436076f99499ead8e029a95487d8e06acda9dd6b0b333d1ca597831f4e39ef9",
+    "js/graphics/BattlefieldWayfinding.js": "4f8afe095b1d6fd49a3bdad58e6327a7467dcd508e50af04917faab8357cc307",
+    "js/graphics/WorldGeometryStreaming.js": "21a8544dc3e62fa74375bbd740ce09c94a2ca3486853f1b622790e7eaea0bd42",
+    "tests/world-depth-seeds.test.js": "00df780cec322bd861051c9113cfdee022cd2f8f51b5cc39fd6651b2ad2f1fb3",
+    "tests/reference-walk-surfaces.test.js": "8497fded1f5edfaf5a2324089c7bd3cc00ddcb2e41348606460fcb04249c9f20",
+    "tests/world-depth-streaming.test.js": "58fc408bc8749bfec961b164a2e651c8a224e3a0e210d2f80aa82f6b6e51f621",
+    "tests/levels.test.js": "49fbfa23c72371b28d0439d8ece0498dc394b709900f2ede540fd8bd38a91d06",
+    "tests/battlefield-layout.test.js": "f67b0c408ddb5185116f31cc2f3eb8cae595dea425e9fe44dd88269efaf7a57b",
+    "docs/WORLD-DEPTH.md": "f2c1955dcc6211b74995ca48e69a01bd8bea39630bbb6ae71dd833bdbb7126d8"
+  }
+}

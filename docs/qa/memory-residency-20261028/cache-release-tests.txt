@@ -1,0 +1,15 @@
+✔ wave cleanup releases both cached cooperative player graphs and only the next run supplies new targets (7.676637ms)
+✔ all hostile factions share startup grace and one prepared attack turn; cleanup releases every marker and reservation (40.847103ms)
+✔ USCM holds cover when the hive is gone and only fires on actual hive targets by default (4.482564ms)
+✔ faction fire cadence uses simulation seconds and stays bounded at10fps,60fps and120fps (7.179524ms)
+✔ cooperative hostile targeting chooses the nearest living player and transfers a winding attack after death (2.912955ms)
+✔ boss embryo volley cannot apply three stacked hits to one player in one frame (2.379769ms)
+✔ preparation warning stays on the visible combat plane for scaled and vertically animated actors (0.470242ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 284.896546

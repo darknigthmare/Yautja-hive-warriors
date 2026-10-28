@@ -4,10 +4,10 @@
   "followupColumn": "N",
   "counts": {
     "Bloqué": 0,
-    "En cours": 25,
-    "Terminé": 54,
+    "En cours": 15,
+    "Terminé": 67,
     "À faire": 0,
-    "À valider": 47
+    "À valider": 44
   },
   "changedMembers": [
     "xl/worksheets/sheet3.xml"
@@ -170,6 +170,16 @@
       "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
     },
     {
+      "action": "AUD-016",
+      "path": "docs/qa/pr3-next-20261028/strategy-rescue-integration/report.json",
+      "sha256": "bbb55b99620edcdc18b1d7aecfb5627e899d695a4c8d7253102c1041d7c8b169"
+    },
+    {
+      "action": "AUD-016",
+      "path": "docs/qa/pr3-next-20261028/accepted-cpu-behaviors-20261028.json",
+      "sha256": "e4157a8cb6a07118adf97d93cb771724005beb901d93a1d555c9daee5621736e"
+    },
+    {
       "action": "AUD-017",
       "path": "docs/audits/2026-10-26/qa/combat-phase2-71-tests.txt",
       "sha256": "6e20e10df3b68727b9630ffdc3270aef6f3cdd5839d634847fc8f27c4663d3c5"
@@ -255,6 +265,21 @@
       "sha256": "2b737ee19d428e27f97d7746e72e8cd23cbc9d04409a2ebf21e9ff410b4b101a"
     },
     {
+      "action": "AUD-035",
+      "path": "docs/qa/pr3-next-20261028/strategy-rescue-integration/report.json",
+      "sha256": "bbb55b99620edcdc18b1d7aecfb5627e899d695a4c8d7253102c1041d7c8b169"
+    },
+    {
+      "action": "AUD-035",
+      "path": "docs/qa/pr3-next-20261028/accepted-cpu-behaviors-20261028.json",
+      "sha256": "e4157a8cb6a07118adf97d93cb771724005beb901d93a1d555c9daee5621736e"
+    },
+    {
+      "action": "AUD-035",
+      "path": "docs/qa/pr3-next-20261028/coordination-rescue-final/report.json",
+      "sha256": "e0a666cdd60e4910e749204674ca0a06b771c5abe94df1f033d961619e5cf4c2"
+    },
+    {
       "action": "AUD-038",
       "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
       "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c"
@@ -270,6 +295,26 @@
       "sha256": "3c18aa7c338f3054eb88188531e5696173032411dc94c2a3035e8551aaa121cf"
     },
     {
+      "action": "AUD-039",
+      "path": "docs/qa/pr3-next-20261028/post-freeze-contract-review.json",
+      "sha256": "e3d3077970260a83349a58c10f5c621becf07cd5f52e4f8196d10cb17c2ac4d2"
+    },
+    {
+      "action": "AUD-039",
+      "path": "docs/qa/pr3-next-20261028/integrated-features/final-5089228/report.json",
+      "sha256": "959d6122e1edeb1376e626e3e709d69e36df4a3fffb4d7d43d3dbc79495f8ed3"
+    },
+    {
+      "action": "AUD-039",
+      "path": "docs/qa/pr3-next-20261028/integrated-contracts-reviewed.json",
+      "sha256": "8527836146929a01307c6c40f100d6c7a4aca4f3360e697fb13c00e7a6383fd9"
+    },
+    {
+      "action": "AUD-039",
+      "path": "docs/qa/pr3-next-20261028/cpu-final-3.txt",
+      "sha256": "abb934263e5927e7b22a6abc12912f7c9b5defd087af48bd105d5b9682d47a13"
+    },
+    {
       "action": "AUD-040",
       "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
       "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c"
@@ -318,6 +363,16 @@
       "action": "AUD-045",
       "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
       "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-046",
+      "path": "docs/qa/pr3-next-20261028/strategy-rescue-integration/report.json",
+      "sha256": "bbb55b99620edcdc18b1d7aecfb5627e899d695a4c8d7253102c1041d7c8b169"
+    },
+    {
+      "action": "AUD-046",
+      "path": "docs/qa/pr3-next-20261028/accepted-cpu-behaviors-20261028.json",
+      "sha256": "e4157a8cb6a07118adf97d93cb771724005beb901d93a1d555c9daee5621736e"
     },
     {
       "action": "AUD-048",
@@ -385,6 +440,26 @@
       "sha256": "a7b7145bc28bc0efc5ad78175c8d3f4eb74ab4025f768c6d000d4b27b097156c"
     },
     {
+      "action": "AUD-058",
+      "path": "docs/qa/pr3-next-20261028/world-depth-reviewed.json",
+      "sha256": "2d82539de6d1864ae7994f1e32b170fb613821811803371c0898aee0812d5df3"
+    },
+    {
+      "action": "AUD-058",
+      "path": "docs/qa/pr3-next-20261028/world-depth/manifest.json",
+      "sha256": "779603b9394b25c4de7251e90ffaa8e78b100b4467f54e0a6794ef22548f9194"
+    },
+    {
+      "action": "AUD-058",
+      "path": "docs/qa/pr3-next-20261028/world-depth/new-tests.txt",
+      "sha256": "6554ad1a983a27b924a189662bd7ac7554db2c64a27438133641ab68536ce052"
+    },
+    {
+      "action": "AUD-058",
+      "path": "docs/qa/pr3-next-20261028/world-depth/regression-tests.txt",
+      "sha256": "e899fc3c946eae84eec7eb1a8d364859c416d3493c249bbed8dc2432ddb5a082"
+    },
+    {
       "action": "AUD-061",
       "path": "docs/audits/2026-10-26/qa/world-phase2-construction-transport-stream-44-tests.txt",
       "sha256": "3213ed0c76d8bc23fce37272f7de927fe76ef5da5f9c338e15440034f0c1fa09"
@@ -415,6 +490,36 @@
       "sha256": "a7b7145bc28bc0efc5ad78175c8d3f4eb74ab4025f768c6d000d4b27b097156c"
     },
     {
+      "action": "AUD-064",
+      "path": "docs/qa/pr3-next-20261028/world-depth-reviewed.json",
+      "sha256": "2d82539de6d1864ae7994f1e32b170fb613821811803371c0898aee0812d5df3"
+    },
+    {
+      "action": "AUD-064",
+      "path": "docs/qa/pr3-next-20261028/world-depth/manifest.json",
+      "sha256": "779603b9394b25c4de7251e90ffaa8e78b100b4467f54e0a6794ef22548f9194"
+    },
+    {
+      "action": "AUD-064",
+      "path": "docs/qa/pr3-next-20261028/world-depth/new-tests.txt",
+      "sha256": "6554ad1a983a27b924a189662bd7ac7554db2c64a27438133641ab68536ce052"
+    },
+    {
+      "action": "AUD-064",
+      "path": "docs/qa/pr3-next-20261028/world-depth/regression-tests.txt",
+      "sha256": "e899fc3c946eae84eec7eb1a8d364859c416d3493c249bbed8dc2432ddb5a082"
+    },
+    {
+      "action": "AUD-064",
+      "path": "docs/qa/pr3-next-20261028/helipad-navigation-reviewed.json",
+      "sha256": "cbce5b826bbb8e503e5297ffe4d2ea10342d9a8880489085783a59ee67acc050"
+    },
+    {
+      "action": "AUD-064",
+      "path": "docs/qa/pr3-next-20261028/complete-contexts-final-victories/report.json",
+      "sha256": "a9e203a90cc4df69216ae78885efcc08bd046cdea04c93b08c867914fc6a3c13"
+    },
+    {
       "action": "AUD-065",
       "path": "docs/audits/2026-10-26/qa/world-phase2-construction-transport-stream-44-tests.txt",
       "sha256": "3213ed0c76d8bc23fce37272f7de927fe76ef5da5f9c338e15440034f0c1fa09"
@@ -435,6 +540,26 @@
       "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
     },
     {
+      "action": "AUD-071",
+      "path": "docs/qa/pr3-next-20261028/complete-contexts-initial/report.json",
+      "sha256": "ba0a58e3c2df128a4451d6ed8ead0ce2ee55a5dba16e7650ac3aff96af9d2137"
+    },
+    {
+      "action": "AUD-071",
+      "path": "docs/qa/pr3-next-20261028/complete-contexts-final-victories/report.json",
+      "sha256": "a9e203a90cc4df69216ae78885efcc08bd046cdea04c93b08c867914fc6a3c13"
+    },
+    {
+      "action": "AUD-071",
+      "path": "docs/qa/pr3-next-20261028/complete-boss-bindings-reviewed.json",
+      "sha256": "385b303710061992f3d15363cf9766622e57f36dec521395ea5688e92c7069eb"
+    },
+    {
+      "action": "AUD-071",
+      "path": "docs/qa/pr3-next-20261028/cpu-final-3.txt",
+      "sha256": "abb934263e5927e7b22a6abc12912f7c9b5defd087af48bd105d5b9682d47a13"
+    },
+    {
       "action": "AUD-072",
       "path": "docs/audits/2026-10-26/qa/boss-honor-acceptance-tests.txt",
       "sha256": "b65dc2b3050cca077bbf0e3bc27ea4e516352689cd1104793f0e5c1a4fa7e2cb"
@@ -445,6 +570,36 @@
       "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
     },
     {
+      "action": "AUD-073",
+      "path": "docs/qa/pr3-next-20261028/boss-depth-reviewed.json",
+      "sha256": "b888ff177dfbef2ba9853ceb97596396145d93b2d9b2a6273b1b5f38ce8497ff"
+    },
+    {
+      "action": "AUD-073",
+      "path": "docs/audits/2026-10-28/qa/boss-encounters-verification.json",
+      "sha256": "37443f828af9c383357aced747cc97d5b4c1a2cf13e1ee8bf67a8ffb901242e8"
+    },
+    {
+      "action": "AUD-073",
+      "path": "docs/audits/2026-10-28/qa/boss-encounters-tests.txt",
+      "sha256": "6ee19a6b07fde3b38d562c4849a62daa7c915d2cd9b8b3032ce4f69cbda8971e"
+    },
+    {
+      "action": "AUD-074",
+      "path": "docs/qa/pr3-next-20261028/coordination-rescue-final/report.json",
+      "sha256": "e0a666cdd60e4910e749204674ca0a06b771c5abe94df1f033d961619e5cf4c2"
+    },
+    {
+      "action": "AUD-074",
+      "path": "docs/qa/pr3-next-20261028/coordination-feedback-reviewed.json",
+      "sha256": "2fe86a04e7e614e272d58d07ac4fb58990a3f47aa71a1601e9619343ad926621"
+    },
+    {
+      "action": "AUD-074",
+      "path": "docs/qa/pr3-next-20261028/strategy-rescue-integration/report.json",
+      "sha256": "bbb55b99620edcdc18b1d7aecfb5627e899d695a4c8d7253102c1041d7c8b169"
+    },
+    {
       "action": "AUD-077",
       "path": "docs/audits/2026-10-26/qa/boss-honor-acceptance-tests.txt",
       "sha256": "b65dc2b3050cca077bbf0e3bc27ea4e516352689cd1104793f0e5c1a4fa7e2cb"
@@ -453,6 +608,21 @@
       "action": "AUD-077",
       "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
       "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-078",
+      "path": "docs/qa/pr3-next-20261028/boss-depth-reviewed.json",
+      "sha256": "b888ff177dfbef2ba9853ceb97596396145d93b2d9b2a6273b1b5f38ce8497ff"
+    },
+    {
+      "action": "AUD-078",
+      "path": "docs/audits/2026-10-28/qa/boss-encounters-verification.json",
+      "sha256": "37443f828af9c383357aced747cc97d5b4c1a2cf13e1ee8bf67a8ffb901242e8"
+    },
+    {
+      "action": "AUD-078",
+      "path": "docs/audits/2026-10-28/qa/boss-encounters-tests.txt",
+      "sha256": "6ee19a6b07fde3b38d562c4849a62daa7c915d2cd9b8b3032ce4f69cbda8971e"
     },
     {
       "action": "AUD-081",
@@ -600,6 +770,56 @@
       "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
     },
     {
+      "action": "AUD-105",
+      "path": "docs/qa/pr3-next-20261028/memory-evidence-review.json",
+      "sha256": "0578659ee448a89bf91c95cf62c6b4fc6c71309d227af2c0b9032728aeb89b6d"
+    },
+    {
+      "action": "AUD-105",
+      "path": "docs/qa/pr3-next-20261028/resource-restarts/final-5089228/analysis.json",
+      "sha256": "2654aaa37edc1e1d400353effc72089700133e3df27f3b8a1096130169507ffa"
+    },
+    {
+      "action": "AUD-105",
+      "path": "docs/qa/pr3-next-20261028/resource-strict-failure-reviewed.json",
+      "sha256": "66c6cdba2f8d50bd3354ecf3fe359703655a335055b8620f74e67a571b9f1240"
+    },
+    {
+      "action": "AUD-105",
+      "path": "docs/qa/pr3-next-20261028/resource-restarts/historical20-5089228/report.json",
+      "sha256": "63328ef79bc1659e4f042b48a2e52bbd5c7e055b8a1956a6856f69b774086db2"
+    },
+    {
+      "action": "AUD-105",
+      "path": "docs/qa/pr3-next-20261028/resource-historical20-reviewed.json",
+      "sha256": "63ab8869d5851bf14985eb016f0449342ac67bebb350aec3c83776716b67ff46"
+    },
+    {
+      "action": "AUD-105",
+      "path": "docs/qa/pr3-next-20261028/resource-restarts/historical20-5089228/comparison.json",
+      "sha256": "7a65c759f43287e87ee41583d265dba13160b6c5518f766db2c4c9e2b646def1"
+    },
+    {
+      "action": "AUD-107",
+      "path": "docs/qa/pr3-next-20261028/strategy-rescue-integration/report.json",
+      "sha256": "bbb55b99620edcdc18b1d7aecfb5627e899d695a4c8d7253102c1041d7c8b169"
+    },
+    {
+      "action": "AUD-107",
+      "path": "docs/qa/pr3-next-20261028/accepted-cpu-behaviors-20261028.json",
+      "sha256": "e4157a8cb6a07118adf97d93cb771724005beb901d93a1d555c9daee5621736e"
+    },
+    {
+      "action": "AUD-107",
+      "path": "docs/qa/strategic-depth-20261028/targeting-benchmark.json",
+      "sha256": "b3b5b98ba049b2f57f00f1d1c599fe1c78834d82cb262334eca6f44e6bfcd59c"
+    },
+    {
+      "action": "AUD-107",
+      "path": "docs/qa/pr3-next-20261028/targeting-benchmark-integrated.json",
+      "sha256": "eb25443ec25b88367612ebc7befd437d2430c643959c26db18cee1f863ef6e13"
+    },
+    {
       "action": "AUD-110",
       "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
       "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c"
@@ -728,14 +948,66 @@
       "action": "AUD-125",
       "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
       "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-126",
+      "path": "docs/qa/pr3-next-20261028/prey-contract-defects-baseline.json",
+      "sha256": "5999b512e56d4c72534a978b421a1776a9a2797dff824a5545950ec8b163affb"
+    },
+    {
+      "action": "AUD-126",
+      "path": "docs/qa/pr3-next-20261028/prey-contract-defects-expanded.json",
+      "sha256": "9eba9e484f3bbffcf9f70183563269bc5a4344923d2627137a56eda835e18eb3"
+    },
+    {
+      "action": "AUD-126",
+      "path": "docs/qa/pr3-next-20261028/prey-environment-contracts/report.json",
+      "sha256": "9a22072648a26f0f18532534c9354ab121c4acfd8447811a324cf97a7d335e5d"
+    },
+    {
+      "action": "AUD-126",
+      "path": "docs/qa/pr3-next-20261028/prey-player-reviewed/report.json",
+      "sha256": "0fd8e275e4ceff8bd03866eda416f0212d478e980b791c915062dc89f854cacf"
+    },
+    {
+      "action": "AUD-126",
+      "path": "docs/qa/pr3-next-20261028/prey-player-reviewed/tests.txt",
+      "sha256": "4b2e27eefe37fbbbacdc43ffc2e52b6694f93af4b7cb1c439c2c622a2d64427d"
+    },
+    {
+      "action": "AUD-126",
+      "path": "docs/qa/pr3-next-20261028/prey-checkpoint-contracts/report.json",
+      "sha256": "28d5c55761232c8bb35c9d848bc80b7fd7e27fc13e60225f482cc5cbea5e392c"
+    },
+    {
+      "action": "AUD-126",
+      "path": "docs/qa/pr3-next-20261028/runtime-wiring/manifest.json",
+      "sha256": "69db335b425af875b50974d9a5399efe8fe6525b1b74f070feb62ba04a320622"
+    },
+    {
+      "action": "AUD-126",
+      "path": "docs/qa/pr3-next-20261028/post-freeze-contract-review.json",
+      "sha256": "e3d3077970260a83349a58c10f5c621becf07cd5f52e4f8196d10cb17c2ac4d2"
+    },
+    {
+      "action": "AUD-126",
+      "path": "docs/qa/pr3-next-20261028/integrated-features/final-5089228/report.json",
+      "sha256": "959d6122e1edeb1376e626e3e709d69e36df4a3fffb4d7d43d3dbc79495f8ed3"
+    },
+    {
+      "action": "AUD-126",
+      "path": "docs/qa/pr3-next-20261028/integrated-contracts-reviewed.json",
+      "sha256": "8527836146929a01307c6c40f100d6c7a4aca4f3360e697fb13c00e7a6383fd9"
+    },
+    {
+      "action": "AUD-126",
+      "path": "docs/qa/pr3-next-20261028/cpu-final-3.txt",
+      "sha256": "abb934263e5927e7b22a6abc12912f7c9b5defd087af48bd105d5b9682d47a13"
     }
   ],
   "sourceWorkbookSha256": "d3f88eee0e88deb4dbc2247f8b295c6c5a6de91ff9626ea94b0d274f08e652b5",
-  "workingWorkbookSha256": "849fe2e1d5a7c21a85ed2f1c4e1ecbb565da96ca0f6dad18cd003209f378c871",
-  "remainingP0": [
-    "AUD-071",
-    "AUD-105"
-  ],
+  "workingWorkbookSha256": "9d7798f65c2c38f86937eaebde7513aac2f832925170e1835c1f4f4572abf1ce",
+  "remainingP0": [],
   "humanTesters": 0,
   "fidelity1to1Verified": false
 }

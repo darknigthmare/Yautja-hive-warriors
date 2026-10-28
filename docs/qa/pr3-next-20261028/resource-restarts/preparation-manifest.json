@@ -1,0 +1,35 @@
+{
+  "status": "frozen_cpu_preparation_only",
+  "files": [
+    {
+      "path": "preparation-README.md",
+      "bytes": 4034,
+      "sha256": "0e547485b39182da4a2de16a10c42c0df21463445a672b2a891f92b59babcb4c"
+    },
+    {
+      "path": "cpu-checks.mjs",
+      "bytes": 6863,
+      "sha256": "d9997a755acc9f80b4b5b86f8e3d6965df389ede74f4667101985050c0df1e6b"
+    },
+    {
+      "path": "harness-lib.mjs",
+      "bytes": 10086,
+      "sha256": "348ac5d779b4a5455856e0e8b1063ced7d9d96a807884fe7bed99d6056ab44b8"
+    },
+    {
+      "path": "harness.mjs",
+      "bytes": 16325,
+      "sha256": "d2bb6ef7364c9b7eb2e5674b38898792a1b19be5a0ec5e664de76cfc0ec4959b"
+    },
+    {
+      "path": "preparation-cpu-tests.txt",
+      "bytes": 1075,
+      "sha256": "5071d9bf064fb6600d8542a16de75ae64328d4386421dc897d6c984f50f5dc19"
+    },
+    {
+      "path": "preparation.json",
+      "bytes": 1158,
+      "sha256": "aee66ce2e77c098d637e6edd7c21bb6dd82920bfe0f16a05a9911f80d46c6dca"
+    }
+  ]
+}

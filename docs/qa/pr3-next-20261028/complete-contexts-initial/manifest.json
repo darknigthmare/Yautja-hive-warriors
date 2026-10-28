@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 1,
+  "scope": "Unmodified first production attempt,21 passed paths and1 LA victory route failure; no failed case relabelled. Includes route stages, output screenshots and helper source snapshots.",
+  "sourceCommit": "a225277531e7e10b64ab2b880ff7c8554fa815b2",
+  "indexSha256": "52a750c9472d381d9016f29b0e15a6a3020df28a802c49ac2fa94cff515cb538",
+  "status": "failed",
+  "passedCases": 21,
+  "failedCases": 1,
+  "distUnchanged": true,
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "files": [
+    {
+      "path": "antarctic_pyramid-defeat.png",
+      "bytes": 143203,
+      "sha256": "7114eaa19ac191b7e54532b6ace3f0feb652882d0726f2be00687084d1690674"
+    },
+    {
+      "path": "antarctic_pyramid-victory.png",
+      "bytes": 121048,
+      "sha256": "193319385353ac3e7d9d36022d10021db0ae37aca87005a7ceae7b871fbaa606"
+    },
+    {
+      "path": "charon_rogue_base-defeat.png",
+      "bytes": 79075,
+      "sha256": "5f8a926ecdd00537730e8faf937e6535c47abbbf662bf1d74b038f9476a221d8"
+    },
+    {
+      "path": "charon_rogue_base-victory.png",
+      "bytes": 101930,
+      "sha256": "539a9ebb9a30840d226619de51b3280f831304764d3f284785786cbdf1f26c85"
+    },
+    {
+      "path": "game_preserve_planet-defeat.png",
+      "bytes": 135963,
+      "sha256": "5937cc5668a17332e2b3aa6c936ae92535632d2442a1f18c5ed1502c84bec540"
+    },
+    {
+      "path": "game_preserve_planet-victory.png",
+      "bytes": 110838,
+      "sha256": "1f984c9dc4ccef90d70dae1b69e13f0bb190014f8d75f6c306903a1cc3ef481b"
+    },
+    {
+      "path": "gunnison_forest-defeat.png",
+      "bytes": 118712,
+      "sha256": "7b23dfd456f32d1f941c4262dfd9f91feb4e6e02c792e848ac1d23a2920165d8"
+    },
+    {
+      "path": "gunnison_forest-victory.png",
+      "bytes": 93520,
+      "sha256": "9e9c95875db02b2a5d8444f0a93715f35ab00318361dbfc7f42aaa0c0aa3bad7"
+    },
+    {
+      "path": "harness-source.mjs",
+      "bytes": 13176,
+      "sha256": "b98a74cd4f88b2e5d5cce998c936e8780a0d86c263a320b4c1361a75883f420b"
+    },
+    {
+      "path": "helper-source-snapshots.json",
+      "bytes": 899,
+      "sha256": "fc8230c224594294be059176d817a0dc43b8f32b6831064a923a08b864a4f163"
+    },
+    {
+      "path": "insertion-helper-source.mjs",
+      "bytes": 893,
+      "sha256": "e62b36a664dd2fadaee8804fc70b75d7afa10ebd2345abdb645e806a7b899a43"
+    },
+    {
+      "path": "killer_of_killers_arena-defeat.png",
+      "bytes": 93618,
+      "sha256": "e5205638b96b4ef801316c969c4b92f1fee567c0f67481ea084cb7f52557decc"
+    },
+    {
+      "path": "killer_of_killers_arena-victory.png",
+      "bytes": 76926,
+      "sha256": "9d4e8acc876c3c755dcf49d584ea22c276b9100b1d6444186e4dc528aac6799e"
+    },
+    {
+      "path": "la_rooftops-defeat.png",
+      "bytes": 106725,
+      "sha256": "1c781d781abf18a73ac486a9b3eabc891594052a1e3f9428751591053991ca9e"
+    },
+    {
+      "path": "la_rooftops-victory-failure.png",
+      "bytes": 401091,
+      "sha256": "ec9d02fc120816734beb6e3289324cb78f92dce5fe3725f4796ae27d73cc4568"
+    },
+    {
+      "path": "prey_comanche_territory-defeat.png",
+      "bytes": 124807,
+      "sha256": "c91d457de20da47f6d46dad6b71bd86329ab8e2ea4ac2dcc75229a785dc571af"
+    },
+    {
+      "path": "prey_comanche_territory-victory.png",
+      "bytes": 83545,
+      "sha256": "6d774050dd402ec33bd8ba297155644c2fc7a67317cd19bc52f563b0a1c23bf2"
+    },
+    {
+      "path": "report.json",
+      "bytes": 51207,
+      "sha256": "ba0a58e3c2df128a4451d6ed8ead0ce2ee55a5dba16e7650ac3aff96af9d2137"
+    },
+    {
+      "path": "romulus_station-defeat.png",
+      "bytes": 97320,
+      "sha256": "466c5dab6cfea87fa2ae37664f9209dc225a53884fe36727cf98cd4d3014f9ea"
+    },
+    {
+      "path": "romulus_station-victory.png",
+      "bytes": 107994,
+      "sha256": "dddb8bfa9ae53f66869f33d86adafc3dc2d11d5d908b52f52658da0d201f721e"
+    },
+    {
+      "path": "route-helper-source.mjs",
+      "bytes": 6499,
+      "sha256": "e7af9e4bef2a0608226c671cc50ed365f74ab114c9167d2930fdb96511720c6a"
+    },
+    {
+      "path": "stargazer_facility-defeat.png",
+      "bytes": 118671,
+      "sha256": "a93c8db27f33b7b2f97e3b36d2435314d17f12b0bb5adf179a896750a5e994c5"
+    },
+    {
+      "path": "stargazer_facility-victory.png",
+      "bytes": 87331,
+      "sha256": "669cc1dfdeca52e14c2a7e78dcc58d588963b31db5fbce1e21051fcb378c79ee"
+    },
+    {
+      "path": "val_verde_jungle-defeat.png",
+      "bytes": 136571,
+      "sha256": "72cf2ff901c1d177ac7f7e958222cba24e925fa9d312fb3a97eef56cff016007"
+    },
+    {
+      "path": "val_verde_jungle-victory.png",
+      "bytes": 115794,
+      "sha256": "158388f81d3e55b1e5781b28a2f16c45f3696a4f8b758601edfe0030f5603e67"
+    },
+    {
+      "path": "xenomorph_prime-defeat.png",
+      "bytes": 86576,
+      "sha256": "c72fe589ca9876213b8180ed71d05a8c4d5965f4699fcb34033bd459fd0b0836"
+    },
+    {
+      "path": "xenomorph_prime-victory.png",
+      "bytes": 77800,
+      "sha256": "b75252c3982cf08502b8b596fb0d85423ff63335f163e9952994e5c1d6c76a68"
+    }
+  ]
+}

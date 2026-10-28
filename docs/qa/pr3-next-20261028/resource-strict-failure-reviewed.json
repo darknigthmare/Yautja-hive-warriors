@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "scope": "Independent review of the complete first strict final resource window. Negative evidence preserved; not automatic leak diagnosis or a successful criterion.",
+  "sourceCommit": "5089228a12ac2985ef03e72782fd29e8687f6b33",
+  "indexSha256": "643b94f665f1eb3057d35e74b8313968683372f709fdeed671b0c1045b66db0d",
+  "filesVerified": 7,
+  "strictWarmups": 5,
+  "strictMeasured": 10,
+  "status": "AUD105 remains open",
+  "failedCounter": {
+    "values": [
+      95,
+      95,
+      95,
+      95,
+      102,
+      102,
+      102,
+      102,
+      102,
+      102
+    ],
+    "min": 95,
+    "max": 102,
+    "firstToLast": 7,
+    "growthSteps": 1,
+    "allTenStable": false
+  },
+  "stableOtherCounters": {
+    "textures": 50,
+    "programs": 17,
+    "sceneChildren": 12,
+    "sceneNodes": 340,
+    "sceneGeometries": 98,
+    "sceneMaterials": 70
+  },
+  "sharedImportedTexturesResident": 6,
+  "cachedPlayersAfterCleanup": 0,
+  "heapAfterGCChangeBytes": 1102688,
+  "heapAfterGCChangePercent": 6.92166004141868,
+  "negativeManifest": {
+    "path": "docs/qa/pr3-next-20261028/resource-restarts/final-5089228/manifest.json",
+    "sha256": "6b0d063c46207a8a0a9c718cd33a79f599175943ba174e095bdbd7f16dd098de"
+  },
+  "analysis": {
+    "path": "docs/qa/pr3-next-20261028/resource-restarts/final-5089228/analysis.json",
+    "sha256": "2654aaa37edc1e1d400353effc72089700133e3df27f3b8a1096130169507ffa"
+  },
+  "interpretation": "Le compteur GPU augmente de95à102 pendant les dix mesures ; il ne peut être déclaré stable. Textures partagées, programmes, nœuds et caches de joueurs passent ; la cause précise des sept géométries GPU n’est pas prouvée. Aucun décalage de fenêtre ni assimilation des seuls derniers cycles à un succès. Aucun constat général de fuite/VRAM/hardware/humain/1:1."
+}

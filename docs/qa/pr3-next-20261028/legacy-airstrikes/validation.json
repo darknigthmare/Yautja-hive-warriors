@@ -1,0 +1,29 @@
+{
+  "status": "passed_cpu_components_waiting_final_build",
+  "focused": {
+    "passed": 6,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "proof": "legacy-airstrike-roof-tests.txt"
+  },
+  "regression": {
+    "passed": 29,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "proof": "legacy-airstrike-systems-regression.txt"
+  },
+  "source_ownership": [
+    "js/entities/Player.js",
+    "js/engine/OrbitalStrike.js",
+    "js/engine/LegacyAirstrikePolicy.js",
+    "tests/systems.test.js",
+    "tests/legacy-airstrike-roof.test.js"
+  ],
+  "third_entrypoint": "main.js integration and tests supplied separately by finish_runtime_wiring",
+  "browser_started": false,
+  "build_executed": false,
+  "git_executed": false,
+  "remote_requests_executed": false
+}

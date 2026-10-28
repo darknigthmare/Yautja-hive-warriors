@@ -1,0 +1,14 @@
+✔ legacy access uses physical sky rays for every footprint point and refuses unknown/era contexts (2.058562ms)
+✔ orbital refuses a hangar before cooldown, effects, actor damage or boss damage and permits outdoors (2.381754ms)
+✔ an open orbital origin cannot damage a separate covered boss or alien within its radius (1.216815ms)
+✔ infiltration refuses a covered distant impact before any cooldown, resource or scheduled effect changes (0.840871ms)
+✔ an accepted infiltration rechecks the real roof at delayed impacts and cancels pending damage (2.642068ms)
+✔ outdoor infiltration emits its six existing impacts and closed roofs also stop subsequent burn ticks (4.021789ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 168.980931

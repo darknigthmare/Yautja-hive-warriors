@@ -1,0 +1,200 @@
+{
+  "schemaVersion": 1,
+  "status": "failed",
+  "startedAt": "2026-10-28T10:11:25.726Z",
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "selectedCases": [
+    "prey-tools-real-pickups-first-arrow"
+  ],
+  "fullFourCaseCoverage": false,
+  "scope": "Controlled UI and actual runtime integration acceptance; not natural victories, human playtesting or a measured reproduction of a film.",
+  "assistances": [
+    "deterministic advancement through the actual insertion cinematic",
+    "paused fixture setup between steps",
+    "player placement beside actual world pickups and an actual allocated ally",
+    "camera framing of the existing actors",
+    "controlled fatal callback on an actual allocated allied actor and 0.35 s of its real falling posture",
+    "deterministic advancement of the actual three-second rescue channel",
+    "placement of two existing hostile actors on a physically clear shooting lane",
+    "direct damage through an active APC combatant to exercise destruction"
+  ],
+  "cases": [
+    {
+      "id": "prey-tools-real-pickups-first-arrow",
+      "status": "failed",
+      "insertion": {
+        "simulated": 4.24999999999999,
+        "phase": "complete",
+        "visible": true
+      },
+      "bowPosition": {
+        "placement": {
+          "requested": [
+            -22,
+            3.8,
+            14
+          ],
+          "placementHeight": 0,
+          "elevationWithCurrentY": 0
+        },
+        "beforeInput": {
+          "actual": [
+            -22,
+            3.8,
+            14
+          ],
+          "distance": 0,
+          "paused": false,
+          "level": "prey_comanche_territory"
+        },
+        "afterInput": {
+          "actual": [
+            -22,
+            0.011866939561896425,
+            14
+          ],
+          "events": [
+            {
+              "before": {
+                "position": [
+                  -22,
+                  3.8,
+                  14
+                ],
+                "paused": false,
+                "visible": true,
+                "drop": false
+              },
+              "checks": [
+                {
+                  "name": "checkTacticalBridgeInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkPlasmaTerminalInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkHydraulicLiftInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkFoundryValveInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkSmartgunInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkCraneConsoleInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkAPCInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkReactorConsoleInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkElectricGridInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkDeconInteraction",
+                  "result": false
+                }
+              ],
+              "after": {
+                "position": [
+                  -22,
+                  3.8,
+                  14
+                ],
+                "arsenal": null,
+                "equipment": {
+                  "version": 1,
+                  "sourceLevelId": null,
+                  "hasTaabeBow": false,
+                  "hasNaruAxe": false,
+                  "taabeArrowAmmo": 0,
+                  "naruAxeCharges": 0,
+                  "selected": null,
+                  "bowCooldown": 0,
+                  "orangeFlowerRemaining": 0,
+                  "taabeWarRemaining": 0,
+                  "mudRemaining": 30
+                }
+              }
+            }
+          ]
+        }
+      },
+      "bow": {
+        "equipment": {
+          "version": 1,
+          "sourceLevelId": null,
+          "hasTaabeBow": false,
+          "hasNaruAxe": false,
+          "taabeArrowAmmo": 0,
+          "naruAxeCharges": 0,
+          "selected": null,
+          "bowCooldown": 0,
+          "orangeFlowerRemaining": 0,
+          "taabeWarRemaining": 0,
+          "mudRemaining": 29.679499999999997
+        },
+        "claimed": false,
+        "weapon": {
+          "id": "wristblades",
+          "fidelityMode": "adapted",
+          "action": "melee",
+          "actionMethod": "lightAttack",
+          "damage": 141.75,
+          "radius": 4.028,
+          "timing": 1,
+          "actionDamage": 141.75,
+          "actionRange": 4.028,
+          "actionResource": "stamina",
+          "actionCost": 3.8,
+          "actionCooldown": 0,
+          "actionCooldownRemaining": 0,
+          "boltAmmo": 12,
+          "boltCooldown": 0,
+          "plasmaEnergy": 100,
+          "plasmaCost": 15,
+          "rangedResource": "plasma",
+          "rangedCost": 15,
+          "stamina": 100,
+          "lightCost": 3.8,
+          "heavyCost": 21
+        }
+      },
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\nfalse !== true\n\n    at file:///workspace/Yautja-next-20261028/docs/qa/pr3-next-20261028/integrated-features/run-integrated-features.mjs:175:12\n    at async caseRun (file:///workspace/Yautja-next-20261028/docs/qa/pr3-next-20261028/integrated-features/run-integrated-features.mjs:95:9)\n    at async file:///workspace/Yautja-next-20261028/docs/qa/pr3-next-20261028/integrated-features/run-integrated-features.mjs:160:3"
+    }
+  ],
+  "errors": [],
+  "failedRequests": [],
+  "externalRequests": [],
+  "indexSha256": "52a750c9472d381d9016f29b0e15a6a3020df28a802c49ac2fa94cff515cb538",
+  "distTreeSha256": "ecc1899944c22d7a3de9cdac25fea66b8906afde239ce63b82e4081d23936ade",
+  "buildInfo": {
+    "schemaVersion": 1,
+    "contentVersion": "v67-pr3-depth-20261028",
+    "sourceCommit": "a225277531e7e10b64ab2b880ff7c8554fa815b2",
+    "sourceBranch": "codex/depth-pr3-20261028",
+    "sourceFingerprint": "430aab5021e1124b194d1adae7422a39c5ac964949e2cb3e0e49c201384bfa3d",
+    "sourceFiles": 150,
+    "sourceTreeDirty": false,
+    "buildEpoch": 1793180507,
+    "reproducibleBuildDate": "2026-10-28T09:41:47.000Z",
+    "deploymentProof": "https://github.com/darknigthmare/Yautja-hive-warriors/blob/codex/depth-pr3-20261028/docs/qa/pr3-next-validation.json"
+  },
+  "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\nfalse !== true\n\n    at file:///workspace/Yautja-next-20261028/docs/qa/pr3-next-20261028/integrated-features/run-integrated-features.mjs:175:12\n    at async caseRun (file:///workspace/Yautja-next-20261028/docs/qa/pr3-next-20261028/integrated-features/run-integrated-features.mjs:95:9)\n    at async file:///workspace/Yautja-next-20261028/docs/qa/pr3-next-20261028/integrated-features/run-integrated-features.mjs:160:3",
+  "distUnchanged": true,
+  "endedAt": "2026-10-28T10:12:13.868Z",
+  "durationSeconds": 48.142
+}

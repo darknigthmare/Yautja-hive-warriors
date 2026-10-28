@@ -1,0 +1,1545 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "startedAt": "2026-10-28T10:39:42.356Z",
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "selectedCases": null,
+  "fullFourCaseCoverage": true,
+  "scope": "Controlled UI and actual runtime integration acceptance; not natural victories, human playtesting or a measured reproduction of a film.",
+  "assistances": [
+    "deterministic advancement through the actual insertion cinematic",
+    "paused fixture setup between steps",
+    "up to five seconds of normal strategic updates at60Hz to wait for actual allocated allies to materialize; placement25U from an existing group only if needed",
+    "player placement beside actual world pickups and an actual allocated ally",
+    "camera framing of the existing actors",
+    "controlled fatal callback on an actual allocated allied actor and 0.35 s of its real falling posture",
+    "deterministic advancement of the actual three-second rescue channel",
+    "placement of two existing hostile actors on a physically clear shooting lane",
+    "direct damage through an active APC combatant to exercise destruction"
+  ],
+  "cases": [
+    {
+      "id": "scene-seed-difficulty-checkpoint",
+      "status": "passed",
+      "insertion": {
+        "simulated": 4.34999999999999,
+        "phase": "complete",
+        "visible": true
+      },
+      "before": {
+        "seed": 1,
+        "layoutSeed": 1,
+        "difficulty": "aggressive",
+        "difficultyConfig": {
+          "id": "aggressive",
+          "label": "Offensif",
+          "scope": "officer_decisions_only",
+          "populationChanged": false
+        },
+        "id": "mission-0a9b628c-5be3-46c6-b06a-53f0d3f86cf9",
+        "hud": "3 FRONTS · RÉSERVES FINIES",
+        "score": 0,
+        "skulls": 0,
+        "conserved": true
+      },
+      "commandMap": "Bataille alternative à trois camps · Commandement Offensif · Terrain 1",
+      "checkpoint": {
+        "scene": {
+          "mapSeed": 1,
+          "difficultyId": "aggressive"
+        },
+        "campaignRunId": "mission-0a9b628c-5be3-46c6-b06a-53f0d3f86cf9",
+        "supportMission": "mission-0a9b628c-5be3-46c6-b06a-53f0d3f86cf9"
+      },
+      "after": {
+        "seed": 1,
+        "difficulty": "aggressive",
+        "id": "mission-0a9b628c-5be3-46c6-b06a-53f0d3f86cf9",
+        "supportId": "mission-0a9b628c-5be3-46c6-b06a-53f0d3f86cf9",
+        "hud": "3 FRONTS · RÉSERVES FINIES",
+        "conserved": true,
+        "score": 0,
+        "skulls": 0
+      }
+    },
+    {
+      "id": "allocated-ally-three-second-rescue",
+      "status": "passed",
+      "materialization": {
+        "found": "gunnison_forest:player_clan:0:0",
+        "steps": 13,
+        "simulationSeconds": 0.25,
+        "repositioned": null,
+        "actorCount": 8,
+        "conserved": true,
+        "groups": [
+          {
+            "id": "gunnison_forest:player_clan:0",
+            "state": "active",
+            "materialized": true,
+            "position": [
+              34,
+              0
+            ]
+          },
+          {
+            "id": "gunnison_forest:player_clan:1",
+            "state": "distant",
+            "materialized": false,
+            "position": [
+              -4.380712806047837,
+              33.716603555383934
+            ]
+          },
+          {
+            "id": "gunnison_forest:player_clan:2",
+            "state": "active",
+            "materialized": true,
+            "position": [
+              -32.871138547701676,
+              -8.688397468912262
+            ]
+          },
+          {
+            "id": "gunnison_forest:player_clan:3",
+            "state": "distant",
+            "materialized": false,
+            "position": [
+              12.851243252241328,
+              -31.477699199142904
+            ]
+          },
+          {
+            "id": "gunnison_forest:player_clan:4",
+            "state": "reserve",
+            "materialized": false,
+            "position": [
+              29.55951467189406,
+              16.799853938712676
+            ]
+          }
+        ],
+        "journal": [
+          {
+            "id": 1,
+            "time": 0.25,
+            "type": "group_materialized",
+            "priority": 1,
+            "groupId": "gunnison_forest:player_clan:0",
+            "count": 4,
+            "reportAge": 0
+          },
+          {
+            "id": 2,
+            "time": 0.25,
+            "type": "group_materialized",
+            "priority": 1,
+            "groupId": "gunnison_forest:player_clan:2",
+            "count": 4,
+            "reportAge": 0
+          }
+        ]
+      },
+      "fixture": {
+        "id": "gunnison_forest:player_clan:0:0",
+        "hp": 400,
+        "maxHp": 400,
+        "medicomps": 3,
+        "dead": 0,
+        "score": 0,
+        "skulls": 0,
+        "downed": true,
+        "posture": "downed",
+        "unit": true,
+        "prompt": {
+          "unitId": "gunnison_forest:player_clan:0:0",
+          "channeling": false,
+          "progress": 0,
+          "label": "[E] SECOURIR L’ALLIÉ — 1 MEDICOMP · 25 s"
+        },
+        "position": [
+          39,
+          0,
+          0
+        ]
+      },
+      "channel": {
+        "partial": {
+          "record": {
+            "unitId": "gunnison_forest:player_clan:0:0",
+            "status": "downed",
+            "remaining": 21.749,
+            "position": [
+              37,
+              0,
+              0
+            ],
+            "maxHp": 400,
+            "downedOnce": true,
+            "recoveryRemaining": 0,
+            "cause": "controlled-browser-fixture-lethal-callback",
+            "killerFaction": "hive"
+          },
+          "channel": {
+            "playerId": "player1",
+            "unitId": "gunnison_forest:player_clan:0:0",
+            "progress": 2.9,
+            "start": [
+              39,
+              0,
+              0
+            ],
+            "previousHp": 1000
+          },
+          "stock": 3
+        },
+        "after": {
+          "unitId": "gunnison_forest:player_clan:0:0",
+          "status": "rescued",
+          "remaining": 0,
+          "position": [
+            37,
+            0,
+            0
+          ],
+          "maxHp": 400,
+          "downedOnce": true,
+          "recoveryRemaining": 0.449,
+          "cause": "controlled-browser-fixture-lethal-callback",
+          "killerFaction": "hive"
+        },
+        "stock": 2,
+        "actorHp": 100,
+        "unit": {
+          "id": "gunnison_forest:player_clan:0:0",
+          "profileId": "original-clan-officer",
+          "groupId": "gunnison_forest:player_clan:0",
+          "factionId": "player_clan",
+          "species": "yautja",
+          "role": "officer",
+          "actorType": "yautja",
+          "profileName": "original-clan-officer",
+          "sourceBossId": null,
+          "sourceBossType": null,
+          "visualFidelity1to1Verified": false,
+          "officer": true,
+          "uniqueId": null,
+          "state": "active",
+          "hp": 100,
+          "maxHp": 400,
+          "position": [
+            37,
+            0
+          ],
+          "nextAttack": 0.07,
+          "damageTaken": 0,
+          "incapacitated": false
+        },
+        "dead": 0,
+        "score": 0,
+        "skulls": 0
+      },
+      "saved": {
+        "record": {
+          "unitId": "gunnison_forest:player_clan:0:0",
+          "status": "rescued",
+          "remaining": 0,
+          "position": [
+            37,
+            0,
+            0
+          ],
+          "maxHp": 400,
+          "downedOnce": true,
+          "recoveryRemaining": 0.449,
+          "cause": "controlled-browser-fixture-lethal-callback",
+          "killerFaction": "hive"
+        },
+        "stock": 2,
+        "run": "mission-0a9b628c-5be3-46c6-b06a-53f0d3f86cf9"
+      },
+      "resumed": {
+        "record": {
+          "unitId": "gunnison_forest:player_clan:0:0",
+          "status": "rescued",
+          "remaining": 0,
+          "position": [
+            37,
+            0,
+            0
+          ],
+          "maxHp": 400,
+          "downedOnce": true,
+          "recoveryRemaining": 0.43233333333333335,
+          "cause": "controlled-browser-fixture-lethal-callback",
+          "killerFaction": "hive"
+        },
+        "stock": 2,
+        "run": "mission-0a9b628c-5be3-46c6-b06a-53f0d3f86cf9",
+        "conserved": true
+      }
+    },
+    {
+      "id": "finite-support-roof-refusal-destruction",
+      "status": "passed",
+      "insertion": {
+        "simulated": 4.34999999999999,
+        "phase": "complete",
+        "visible": true
+      },
+      "refusal": {
+        "surface": "la-helipad-deck",
+        "roofOwner": "la-helipad-deck",
+        "target": [
+          0,
+          0,
+          0
+        ],
+        "answer": {
+          "accepted": false,
+          "reason": "air_blocked",
+          "message": "Appui aérien refusé : la zone est couverte ou son accès est fermé."
+        },
+        "before": {
+          "version": 1,
+          "kind": "cheyenne",
+          "missionId": "mission-00cb30c2-477d-4bb9-a111-5c0e28ae3de4",
+          "hp": 1800,
+          "remaining": {
+            "sorties": 2,
+            "rockets": 12,
+            "napalm": 6
+          },
+          "maxHp": 1800,
+          "allowed": true,
+          "factionId": "player_clan",
+          "lastRefusal": null,
+          "refusalMessage": null,
+          "flying": false,
+          "cooldown": 0
+        },
+        "after": {
+          "version": 1,
+          "kind": "cheyenne",
+          "missionId": "mission-00cb30c2-477d-4bb9-a111-5c0e28ae3de4",
+          "hp": 1800,
+          "remaining": {
+            "sorties": 2,
+            "rockets": 12,
+            "napalm": 6
+          },
+          "maxHp": 1800,
+          "allowed": true,
+          "factionId": "player_clan",
+          "lastRefusal": "air_blocked",
+          "refusalMessage": "Appui aérien refusé : la zone est couverte ou son accès est fermé.",
+          "flying": false,
+          "cooldown": 0
+        }
+      },
+      "apc": {
+        "before": {
+          "hp": 2500,
+          "colliderPresent": true,
+          "stocks": {
+            "rounds": 48
+          }
+        },
+        "applied": 2500,
+        "damageSource": "controlled-direct-damage-without-attacker",
+        "after": {
+          "version": 1,
+          "kind": "apc",
+          "missionId": "mission-00cb30c2-477d-4bb9-a111-5c0e28ae3de4",
+          "hp": 0,
+          "remaining": {
+            "rounds": 48
+          },
+          "maxHp": 2500,
+          "allowed": false,
+          "factionId": "player_clan",
+          "lastRefusal": "destroyed",
+          "refusalMessage": "Cet appui a été détruit pour cette mission.",
+          "deployed": false,
+          "cooldown": 0
+        },
+        "meshPresent": false,
+        "colliderPresent": false,
+        "activeCollider": false,
+        "targetHp": 0,
+        "providerIds": [],
+        "hud": "APC DÉTRUIT | CHEYENNE 1800 PV · 2/2 SORTIES · 12/12 ROQUETTES · 6/6 INCENDIAIRES · Dernier refus : Appui aérien refusé : la zone est couverte ou son accès est fermé."
+      }
+    },
+    {
+      "id": "prey-tools-real-pickups-first-arrow",
+      "status": "passed",
+      "insertion": {
+        "simulated": 4.34999999999999,
+        "phase": "complete",
+        "visible": true
+      },
+      "bowPosition": {
+        "placement": {
+          "requested": [
+            -22,
+            3.8,
+            14
+          ],
+          "placementHeight": 0,
+          "elevationWithCurrentY": 0
+        },
+        "beforeInput": {
+          "actual": [
+            -22,
+            2.869681555593035,
+            14
+          ],
+          "distance": 0.9303184444069648,
+          "paused": false,
+          "level": "prey_comanche_territory"
+        },
+        "afterInput": {
+          "actual": [
+            -22,
+            0.07841038233713887,
+            14
+          ],
+          "events": [
+            {
+              "before": {
+                "position": [
+                  -22,
+                  2.869681555593035,
+                  14
+                ],
+                "paused": false,
+                "visible": true,
+                "drop": false
+              },
+              "checks": [
+                {
+                  "name": "checkTacticalBridgeInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkPlasmaTerminalInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkHydraulicLiftInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkFoundryValveInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkSmartgunInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkCraneConsoleInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkAPCInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkReactorConsoleInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkElectricGridInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkDeconInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkAirlockConsoleInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkCocoonInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkMarineScavengeInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkCryoMedBayInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkSupplyInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkCryoVentInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkAurigaBreakerInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkAncientShrineInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkRailCannonInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkCryoPodInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkEngineerSarcophagusInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkPowerLoaderInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkCrucifiedPredatorInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkMudPitInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkValVerdeRadioInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkPyramidAltarInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkRomulusZeroGInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkRookConsoleInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkRoyalJellyHarvestInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkCryptReliquaryInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkNeuralInhibitorInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkBoulderDeadfallInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkBillyMacheteInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkHopperSatchelInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkOldPainlessInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkExplosiveArrowsInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkRebelMapsInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkRoastingSpitInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkGlowingBloodInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkKingWillieAltarInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkDannyBoyNetgunInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkLostTribeTrophyInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkCityHunterSurgeryInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkSmartDiscGirderInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkSubwayTrainMassacreInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkOWLFVanConsoleInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkNolandHideoutInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkTrackerWhistleInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkNikolaiClaymoreInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkHanzoArenaInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkRoyceCliffLeapInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkSuperPredatorShipInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkFalconerRoostInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkCuchilloDecoyInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkBoneGongInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkDillonStandInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkPonchoStashInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkHawkinsRelayInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkStargazerVivisectionInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkPredatorKillerPodInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkQuinnSniperPerchInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkTraegerWeaponsLockerInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkLooniesBusInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkFugitiveLockerInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkFriendlyLoboInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkBaxleyCoyleBunkerInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkRoryTranslatorInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkBoneMaskDecoyInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkOrangeFlowerInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkAdoliniPistolInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkTaabeWarBowInteraction",
+                  "result": true
+                }
+              ],
+              "after": {
+                "position": [
+                  -22,
+                  2.869681555593035,
+                  14
+                ],
+                "arsenal": null,
+                "equipment": {
+                  "version": 1,
+                  "sourceLevelId": "prey_comanche_territory",
+                  "hasTaabeBow": true,
+                  "hasNaruAxe": false,
+                  "taabeArrowAmmo": 6,
+                  "naruAxeCharges": 0,
+                  "selected": "taabe_bow",
+                  "bowCooldown": 0,
+                  "orangeFlowerRemaining": 0,
+                  "taabeWarRemaining": 25,
+                  "mudRemaining": 29.984400000035762
+                }
+              }
+            }
+          ]
+        }
+      },
+      "bow": {
+        "equipment": {
+          "version": 1,
+          "sourceLevelId": "prey_comanche_territory",
+          "hasTaabeBow": true,
+          "hasNaruAxe": false,
+          "taabeArrowAmmo": 6,
+          "naruAxeCharges": 0,
+          "selected": "taabe_bow",
+          "bowCooldown": 0,
+          "orangeFlowerRemaining": 0,
+          "taabeWarRemaining": 24.799999999999997,
+          "mudRemaining": 29.78440000003576
+        },
+        "claimed": true,
+        "weapon": {
+          "id": "taabe_bow",
+          "fidelityMode": "adapted",
+          "definition": "adapted_human_reference_tool",
+          "fidelity1to1Verified": false,
+          "action": "projectile",
+          "actionMethod": "fireCompoundBow",
+          "damage": 99.22500000000001,
+          "radius": 2.968,
+          "timing": 1.1,
+          "actionDamage": 240,
+          "actionRange": 72,
+          "actionResource": "arrows",
+          "actionCost": 1,
+          "actionAmmo": 6,
+          "actionCooldown": 0.9,
+          "actionCooldownRemaining": 0,
+          "rangedResource": "arrows",
+          "rangedCost": 1,
+          "plasmaEnergy": 100,
+          "plasmaCost": 0,
+          "stamina": 100,
+          "lightCost": 3.8,
+          "heavyCost": 21
+        }
+      },
+      "axePosition": {
+        "placement": {
+          "requested": [
+            -8,
+            1.8,
+            18
+          ],
+          "placementHeight": 0,
+          "elevationWithCurrentY": 0
+        },
+        "beforeInput": {
+          "actual": [
+            -8,
+            1.8,
+            18
+          ],
+          "distance": 0,
+          "paused": false,
+          "level": "prey_comanche_territory"
+        },
+        "afterInput": {
+          "actual": [
+            -8,
+            0.22108382845764385,
+            18
+          ],
+          "events": [
+            {
+              "before": {
+                "position": [
+                  -22,
+                  2.869681555593035,
+                  14
+                ],
+                "paused": false,
+                "visible": true,
+                "drop": false
+              },
+              "checks": [
+                {
+                  "name": "checkTacticalBridgeInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkPlasmaTerminalInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkHydraulicLiftInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkFoundryValveInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkSmartgunInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkCraneConsoleInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkAPCInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkReactorConsoleInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkElectricGridInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkDeconInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkAirlockConsoleInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkCocoonInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkMarineScavengeInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkCryoMedBayInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkSupplyInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkCryoVentInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkAurigaBreakerInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkAncientShrineInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkRailCannonInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkCryoPodInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkEngineerSarcophagusInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkPowerLoaderInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkCrucifiedPredatorInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkMudPitInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkValVerdeRadioInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkPyramidAltarInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkRomulusZeroGInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkRookConsoleInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkRoyalJellyHarvestInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkCryptReliquaryInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkNeuralInhibitorInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkBoulderDeadfallInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkBillyMacheteInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkHopperSatchelInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkOldPainlessInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkExplosiveArrowsInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkRebelMapsInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkRoastingSpitInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkGlowingBloodInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkKingWillieAltarInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkDannyBoyNetgunInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkLostTribeTrophyInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkCityHunterSurgeryInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkSmartDiscGirderInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkSubwayTrainMassacreInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkOWLFVanConsoleInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkNolandHideoutInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkTrackerWhistleInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkNikolaiClaymoreInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkHanzoArenaInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkRoyceCliffLeapInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkSuperPredatorShipInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkFalconerRoostInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkCuchilloDecoyInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkBoneGongInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkDillonStandInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkPonchoStashInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkHawkinsRelayInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkStargazerVivisectionInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkPredatorKillerPodInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkQuinnSniperPerchInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkTraegerWeaponsLockerInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkLooniesBusInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkFugitiveLockerInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkFriendlyLoboInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkBaxleyCoyleBunkerInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkRoryTranslatorInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkBoneMaskDecoyInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkOrangeFlowerInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkAdoliniPistolInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkTaabeWarBowInteraction",
+                  "result": true
+                }
+              ],
+              "after": {
+                "position": [
+                  -22,
+                  2.869681555593035,
+                  14
+                ],
+                "arsenal": null,
+                "equipment": {
+                  "version": 1,
+                  "sourceLevelId": "prey_comanche_territory",
+                  "hasTaabeBow": true,
+                  "hasNaruAxe": false,
+                  "taabeArrowAmmo": 6,
+                  "naruAxeCharges": 0,
+                  "selected": "taabe_bow",
+                  "bowCooldown": 0,
+                  "orangeFlowerRemaining": 0,
+                  "taabeWarRemaining": 25,
+                  "mudRemaining": 29.984400000035762
+                }
+              }
+            },
+            {
+              "before": {
+                "position": [
+                  -8,
+                  1.8,
+                  18
+                ],
+                "paused": false,
+                "visible": true,
+                "drop": false
+              },
+              "checks": [
+                {
+                  "name": "checkTacticalBridgeInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkPlasmaTerminalInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkHydraulicLiftInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkFoundryValveInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkSmartgunInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkCraneConsoleInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkAPCInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkReactorConsoleInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkElectricGridInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkDeconInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkAirlockConsoleInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkCocoonInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkMarineScavengeInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkCryoMedBayInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkSupplyInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkCryoVentInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkAurigaBreakerInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkAncientShrineInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkRailCannonInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkCryoPodInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkEngineerSarcophagusInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkPowerLoaderInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkCrucifiedPredatorInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkMudPitInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkValVerdeRadioInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkPyramidAltarInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkRomulusZeroGInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkRookConsoleInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkRoyalJellyHarvestInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkCryptReliquaryInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkNeuralInhibitorInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkBoulderDeadfallInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkBillyMacheteInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkHopperSatchelInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkOldPainlessInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkExplosiveArrowsInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkRebelMapsInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkRoastingSpitInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkGlowingBloodInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkKingWillieAltarInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkDannyBoyNetgunInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkLostTribeTrophyInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkCityHunterSurgeryInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkSmartDiscGirderInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkSubwayTrainMassacreInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkOWLFVanConsoleInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkNolandHideoutInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkTrackerWhistleInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkNikolaiClaymoreInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkHanzoArenaInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkRoyceCliffLeapInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkSuperPredatorShipInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkFalconerRoostInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkCuchilloDecoyInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkBoneGongInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkDillonStandInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkPonchoStashInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkHawkinsRelayInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkStargazerVivisectionInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkPredatorKillerPodInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkQuinnSniperPerchInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkTraegerWeaponsLockerInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkLooniesBusInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkFugitiveLockerInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkFriendlyLoboInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkBaxleyCoyleBunkerInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkRoryTranslatorInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkBoneMaskDecoyInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkOrangeFlowerInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkAdoliniPistolInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkTaabeWarBowInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkGrizzlyBearTrophyInteraction",
+                  "result": false
+                },
+                {
+                  "name": "checkNaruTomahawkInteraction",
+                  "result": true
+                }
+              ],
+              "after": {
+                "position": [
+                  -8,
+                  1.8,
+                  18
+                ],
+                "arsenal": null,
+                "equipment": {
+                  "version": 1,
+                  "sourceLevelId": "prey_comanche_territory",
+                  "hasTaabeBow": true,
+                  "hasNaruAxe": true,
+                  "taabeArrowAmmo": 6,
+                  "naruAxeCharges": 4,
+                  "selected": "naru_axe",
+                  "bowCooldown": 0,
+                  "orangeFlowerRemaining": 0,
+                  "taabeWarRemaining": 24.799999999999997,
+                  "mudRemaining": 29.78440000003576
+                }
+              }
+            }
+          ]
+        }
+      },
+      "axe": {
+        "equipment": {
+          "version": 1,
+          "sourceLevelId": "prey_comanche_territory",
+          "hasTaabeBow": true,
+          "hasNaruAxe": true,
+          "taabeArrowAmmo": 6,
+          "naruAxeCharges": 4,
+          "selected": "naru_axe",
+          "bowCooldown": 0,
+          "orangeFlowerRemaining": 0,
+          "taabeWarRemaining": 24.683499999999995,
+          "mudRemaining": 29.667900000035758
+        },
+        "claimed": true
+      },
+      "wheel": "🔪 Wristblades🗡️ Combistick Spear🛸 Smart-Disc☸️ 6-Blade Shuriken⚔️ Samurai Katana🦴 Alpha Bone Sickle🪓 Viking Axe🏹 Compound Bow🏹 Arc de Taabe · 6 flèches🪓 Hache de Naru · 4 coups",
+      "lane": {
+        "actors": [
+          {
+            "id": null,
+            "hp": 120,
+            "position": [
+              0,
+              0,
+              12
+            ]
+          },
+          {
+            "id": null,
+            "hp": 85,
+            "position": [
+              0,
+              0,
+              16
+            ]
+          }
+        ],
+        "origin": [
+          0,
+          0,
+          0
+        ],
+        "angle": 0,
+        "energy": 100,
+        "ammo": 6,
+        "score": 0,
+        "skulls": 0,
+        "dead": 0
+      },
+      "shot": {
+        "before": {
+          "kind": "taabe_arrow",
+          "mesh": "taabe-wooden-arrow",
+          "singleMesh": true,
+          "pierce": 0
+        },
+        "simulated": 0.21666666666666665,
+        "remaining": 0,
+        "firstHp": 0,
+        "secondHp": 85,
+        "ammo": 5,
+        "energy": 100,
+        "active": "taabe_bow",
+        "hud": "FLÈCHES DE TAABE : 5/12",
+        "score": 150,
+        "skulls": 0,
+        "dead": 1
+      },
+      "axeSwing": {
+        "charges": 3,
+        "weapon": "naru_axe",
+        "held": true
+      }
+    }
+  ],
+  "errors": [],
+  "failedRequests": [],
+  "externalRequests": [],
+  "indexSha256": "643b94f665f1eb3057d35e74b8313968683372f709fdeed671b0c1045b66db0d",
+  "distTreeSha256": "4c75c2622c0b6fa2b2458bf77cf4992b3b7c1e1de871fd153dc7161015d7fad5",
+  "buildInfo": {
+    "schemaVersion": 1,
+    "contentVersion": "v67-pr3-depth-20261028",
+    "sourceCommit": "5089228a12ac2985ef03e72782fd29e8687f6b33",
+    "sourceBranch": "codex/depth-pr3-20261028",
+    "sourceFingerprint": "6958b3dfe9552d85fc8ce08c86acfe5e4cf5188808656b707a548376997cddfe",
+    "sourceFiles": 151,
+    "sourceTreeDirty": false,
+    "buildEpoch": 1793182772,
+    "reproducibleBuildDate": "2026-10-28T10:19:32.000Z",
+    "deploymentProof": "https://github.com/darknigthmare/Yautja-hive-warriors/blob/codex/depth-pr3-20261028/docs/qa/pr3-next-validation.json"
+  },
+  "distUnchanged": true,
+  "endedAt": "2026-10-28T10:42:10.069Z",
+  "durationSeconds": 147.713
+}

@@ -1,0 +1,282 @@
+{
+  "status": "failed_strict_resource_stability_with_shared_textures_resident",
+  "criterion": "AUD-105: ten mission restarts must not grow resource counters; shared textures must remain intact",
+  "build": {
+    "indexSha256": "643b94f665f1eb3057d35e74b8313968683372f709fdeed671b0c1045b66db0d",
+    "treeSha256": "4c75c2622c0b6fa2b2458bf77cf4992b3b7c1e1de871fd153dc7161015d7fad5",
+    "buildInfoSha256": "e0553896eeeb4c21b3b8eb392dc08b270926974ff3efed57c9733617416af50a",
+    "buildInfo": {
+      "schemaVersion": 1,
+      "contentVersion": "v67-pr3-depth-20261028",
+      "sourceCommit": "5089228a12ac2985ef03e72782fd29e8687f6b33",
+      "sourceBranch": "codex/depth-pr3-20261028",
+      "sourceFingerprint": "6958b3dfe9552d85fc8ce08c86acfe5e4cf5188808656b707a548376997cddfe",
+      "sourceFiles": 151,
+      "sourceTreeDirty": false,
+      "buildEpoch": 1793182772,
+      "reproducibleBuildDate": "2026-10-28T10:19:32.000Z",
+      "deploymentProof": "https://github.com/darknigthmare/Yautja-hive-warriors/blob/codex/depth-pr3-20261028/docs/qa/pr3-next-validation.json"
+    },
+    "files": 30
+  },
+  "completed": {
+    "warmups": 5,
+    "measured": 10,
+    "total": 15
+  },
+  "duration_seconds": 107.675,
+  "strict_window_preserved": true,
+  "resource_assessment": {
+    "countersStable": false,
+    "texturesResident": true,
+    "playersReleased": true,
+    "failedCounters": [
+      "gpuGeometries"
+    ],
+    "gpu_geometries": {
+      "values": [
+        95,
+        95,
+        95,
+        95,
+        102,
+        102,
+        102,
+        102,
+        102,
+        102
+      ],
+      "min": 95,
+      "max": 102,
+      "firstToLast": 7,
+      "growthSteps": 1,
+      "allTenStable": false
+    },
+    "gpu_textures": {
+      "values": [
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50
+      ],
+      "min": 50,
+      "max": 50,
+      "firstToLast": 0,
+      "growthSteps": 0,
+      "allTenStable": true
+    },
+    "gpu_programs": {
+      "values": [
+        17,
+        17,
+        17,
+        17,
+        17,
+        17,
+        17,
+        17,
+        17,
+        17
+      ],
+      "min": 17,
+      "max": 17,
+      "firstToLast": 0,
+      "growthSteps": 0,
+      "allTenStable": true
+    },
+    "scene": {
+      "sceneChildren": {
+        "values": [
+          12,
+          12,
+          12,
+          12,
+          12,
+          12,
+          12,
+          12,
+          12,
+          12
+        ],
+        "min": 12,
+        "max": 12,
+        "firstToLast": 0,
+        "growthSteps": 0,
+        "allTenStable": true
+      },
+      "sceneNodes": {
+        "values": [
+          340,
+          340,
+          340,
+          340,
+          340,
+          340,
+          340,
+          340,
+          340,
+          340
+        ],
+        "min": 340,
+        "max": 340,
+        "firstToLast": 0,
+        "growthSteps": 0,
+        "allTenStable": true
+      },
+      "sceneRenderableNodes": {
+        "values": [
+          257,
+          257,
+          257,
+          257,
+          257,
+          257,
+          257,
+          257,
+          257,
+          257
+        ],
+        "min": 257,
+        "max": 257,
+        "firstToLast": 0,
+        "growthSteps": 0,
+        "allTenStable": true
+      },
+      "sceneGeometries": {
+        "values": [
+          98,
+          98,
+          98,
+          98,
+          98,
+          98,
+          98,
+          98,
+          98,
+          98
+        ],
+        "min": 98,
+        "max": 98,
+        "firstToLast": 0,
+        "growthSteps": 0,
+        "allTenStable": true
+      },
+      "sceneMaterials": {
+        "values": [
+          70,
+          70,
+          70,
+          70,
+          70,
+          70,
+          70,
+          70,
+          70,
+          70
+        ],
+        "min": 70,
+        "max": 70,
+        "firstToLast": 0,
+        "growthSteps": 0,
+        "allTenStable": true
+      },
+      "sceneTextures": {
+        "values": [
+          15,
+          15,
+          15,
+          15,
+          15,
+          15,
+          15,
+          15,
+          15,
+          15
+        ],
+        "min": 15,
+        "max": 15,
+        "firstToLast": 0,
+        "growthSteps": 0,
+        "allTenStable": true
+      }
+    },
+    "shared_texture_uuids": [
+      "3356c616-48a9-4987-8cd2-2565fd188979",
+      "429b2b56-70c1-4fa1-918a-09eb6461e400",
+      "599a2885-05d6-4a4d-aebd-04b47039c16b",
+      "a3d4938b-2aa7-465a-a67e-4521e3fd3d70",
+      "b73abb26-3577-4459-9e56-f4cedd97025c",
+      "be5d6868-256a-4c2d-a277-b6a48f364192"
+    ],
+    "shared_texture_count": 6,
+    "horde_cached_players_active": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "horde_cached_players_after_cleanup": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "cpu_heap_after_gc": {
+    "values": [
+      15930976,
+      16069960,
+      16194976,
+      16494904,
+      16531048,
+      16544552,
+      16584336,
+      16673680,
+      16745308,
+      17033664
+    ],
+    "min": 15930976,
+    "max": 17033664,
+    "firstToLast": 1102688,
+    "growthSteps": 9,
+    "allTenStable": false,
+    "kind": "CPU JavaScript heap after forced CDP GC; not VRAM, RSS or ordinary play usage",
+    "firstToLastPercent": 6.92166004141868,
+    "assessment": "positive_delta_observed_no_general_leak_claim"
+  },
+  "runtime": {
+    "errors": 0,
+    "failed_requests": 0,
+    "http_errors": 0,
+    "external_requests": 0
+  },
+  "browser_closed": true,
+  "preview_closed": true,
+  "dist_unchanged": true,
+  "interpretation": "One GPU geometry-counter increase from95 to102 during the strict measured window prevents closing AUD105. Textures/programs/scene counters, shared imported texture residency and player-cache release passed. The precise cause of the seven additional GPU geometries is not established by this run.",
+  "limits": [
+    "Fixed configuration and native RNG, assisted direct launches/insertion/updates, no real mission victory claimed.",
+    "Ten forced-GC CPU heap samples grow by1,102,688 bytes(+6.92%); this report does not certify general leak freedom.",
+    "Renderer counts are not VRAM bytes, and SwiftShader does not measure player-device hardware performance.",
+    "No new trial, shifted measurement window, runtime edit, build, Git or remote publication was performed.",
+    "Five warmups proved insufficient for strict GPU-counter stability in this actual run; this fact is retained, not corrected by relabeling cycles."
+  ]
+}

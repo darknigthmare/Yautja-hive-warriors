@@ -1,0 +1,25 @@
+{
+  "status": "frozen_local_script_test_evidence",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 2029,
+      "sha256": "85087e6f1d77a041d79bf72d83299cb512a40b898c868c71fe33c81602460d20"
+    },
+    {
+      "path": "publication-profile-default-tests.txt",
+      "bytes": 1408,
+      "sha256": "3d7baf89f123ade41bd118a2d58fc23bb5031b171bf231a71e52a61e62a0593c"
+    },
+    {
+      "path": "publication-profile-next-tests.txt",
+      "bytes": 1409,
+      "sha256": "063e378f844668c29882545c2eed1b43d19405f4c844c7655a24f75a0595a024"
+    },
+    {
+      "path": "validation.json",
+      "bytes": 1241,
+      "sha256": "4aa79bc30acc6f86cbdef77c31d9e99aea11ee314e6d2a0a7746d009de3bcfdc"
+    }
+  ]
+}

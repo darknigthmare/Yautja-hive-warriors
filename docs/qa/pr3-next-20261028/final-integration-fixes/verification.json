@@ -1,0 +1,85 @@
+{
+  "status": "passed",
+  "scope": "Two bounded integration regressions: hive officer mechanical feedback and rescued ally terminal-state reconciliation",
+  "command": "node --test --test-concurrency=1 tests/ally-rescue.test.js tests/hive-coordination-feedback.test.js tests/operation-alerts.test.js",
+  "provenance": {
+    "testOutput": "Verbatim copy of completed exec session 46363; not a new execution during final proof copying",
+    "exitCode": 0,
+    "parentReportedIntegratedCommit": "a225277",
+    "parentProvidedFinalSourceHash": "430aab5021e1124b194d1adae7422a39c5ac964949e2cb3e0e49c201384bfa3d",
+    "sourceHashStatement": "Parent-provided final aggregate hash; individual current file hashes below were read during proof copying"
+  },
+  "counts": {
+    "tests": 24,
+    "pass": 24,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0
+  },
+  "duration_ms": 6329.597748,
+  "suites": {
+    "ally-rescue.test.js": 17,
+    "hive-coordination-feedback.test.js": 4,
+    "operation-alerts.test.js": 3
+  },
+  "log": {
+    "path": "docs/qa/pr3-next-20261028/final-integration-fixes/test-output.txt",
+    "sha256": "df92a023890580f375d46a930762376bc5da0c3aa8e3b17275806e791fc7b5a6"
+  },
+  "files": [
+    {
+      "path": "js/main.js",
+      "sha256": "ef6398ac6fb45464c1146627e83927399fa4a1e43a49a3cd08749404465ce22b"
+    },
+    {
+      "path": "js/ui/OperationPanel.js",
+      "sha256": "4dcccb2ee0a37d76fccaaba7838c178dbcd1308e4ead098211d4efebc2dbbc7a"
+    },
+    {
+      "path": "js/ui/CommandMap.js",
+      "sha256": "94e3d60aa7c8c6f964afd1b5329dcaadca2431f91010ae8b5d7a341d7de7e15d"
+    },
+    {
+      "path": "js/ui/UIManager.js",
+      "sha256": "b638044d50a0c18b51b896bf359e53f6569f968b71987feddfc021203daa739f"
+    },
+    {
+      "path": "js/battlefield/AllyRescueSystem.js",
+      "sha256": "4815f2ceb486a49b7b44fcf7b0a8ffbff6b5a0f53698f99b86a6d08c9ab84547"
+    },
+    {
+      "path": "tests/ally-rescue.test.js",
+      "sha256": "4109c601402a9528b8dab6596f3cf1b9b8c1dd7ff77effacf3c1ed931335ddc9"
+    },
+    {
+      "path": "tests/hive-coordination-feedback.test.js",
+      "sha256": "a3c2265af103965372074e8050bf3368d7354918d070fff0f67402c3046b705e"
+    },
+    {
+      "path": "tests/operation-alerts.test.js",
+      "sha256": "dcb62e354843f73aa8d1836ea62634697fc640e2954d4e4a4cabe12d753198e1"
+    }
+  ],
+  "verified": [
+    "A real hive officer death changes coordinationStrength to .65 while hive morale stays unchanged.",
+    "The HUD names the affected group/front and mechanical consequence even when unit_died has higher priority.",
+    "Command-map journal and final debrief render the consequence, including labels after simulation disposal.",
+    "A rescued ally later lost offscreen becomes dead in medical history exactly once without another death-ledger entry or medicomp charge.",
+    "Update, serialization and restore reconcile prior rescued records with authoritative engine loss.",
+    "Evacuation and campaign-confirmed capture close prior rescue history without declaring a death.",
+    "Existing critical HUD priorities, rescue timing, offscreen casualties and Bridge rescue contracts remain covered."
+  ],
+  "syntaxChecks": {
+    "status": "passed",
+    "files": [
+      "js/main.js",
+      "js/ui/CommandMap.js",
+      "js/ui/UIManager.js",
+      "js/battlefield/AllyRescueSystem.js"
+    ]
+  },
+  "limits": [
+    "CPU tests and minimal DOM fixtures only; no browser screenshots, GPU performance, human playtest or visual fidelity certification.",
+    "No runtime, test, Git, build or browser action was performed while copying this proof."
+  ]
+}

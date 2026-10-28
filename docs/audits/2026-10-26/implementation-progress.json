@@ -356,14 +356,27 @@
       "notes": "Cadence, délai d’annonce et lots viennent des profils ; les misesàjour utilisent les secondes de simulation. Modifier ces données ne modifie pas le code des créatures ; pause et reprise conservent les échéances."
     },
     "AUD-016": {
-      "status": "En cours",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Effectifs et foule",
       "item": "Dissocier population et difficulté",
       "acceptance": "Deux difficultés peuvent garder une même armée lisible tout en changeant tactique et tolérance, sans gonfler tous les PV.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Population, plafond de rendu et dégâts sont séparés ; comparaison de deux difficultés avec même armée et tactiques différentes encore partielle."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/qa/pr3-next-20261028/strategy-rescue-integration/report.json",
+          "sha256": "bbb55b99620edcdc18b1d7aecfb5627e899d695a4c8d7253102c1041d7c8b169",
+          "scope": "83/83 tests CPU indépendants, empreinte runtime inchangée pendant le passage ; cas métier et intégration vrais gestionnaires/Bridge/moteur. Aucune recette humaine ou mesure GPU revendiquée."
+        },
+        {
+          "kind": "review",
+          "path": "docs/qa/pr3-next-20261028/accepted-cpu-behaviors-20261028.json",
+          "sha256": "e4157a8cb6a07118adf97d93cb771724005beb901d93a1d555c9daee5621736e",
+          "scope": "applyBattleDifficulty clone sans mutation des allocations; test deux difficultés mêmes groupes/profils/budgets/fronts/routes; décisions différentes observées dans events; menu operation-difficulty-select -> operationDifficulty -> createOperationScene; snapshot.scene.difficultyId et restauration startMission"
+        }
+      ],
+      "notes": "Les profils Prudent et Offensif conservent groupes, profils, PV, budgets, fronts, routes et identités, mais produisent des décisions d’officiers différentes. Le menu transmet difficultyId à la préparation et au lancement, et la sauvegarde conserve la scène et le profil. La comparaison ne gonfle ni armée ni PV ; elle ne constitue pas une mesure de lisibilité humaine."
     },
     "AUD-017": {
       "status": "Terminé",
@@ -654,14 +667,33 @@
       "notes": "Délégation de capitaine et autonomie distante sont fonctionnelles et testées ; victoire/perte d’un front délégué observée dans le jeu complet encore à prouver."
     },
     "AUD-035": {
-      "status": "En cours",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Alliés et commandement",
       "item": "Rendre la survie des alliés significative",
       "acceptance": "Un allié peut être mis à terre et secouru; son absence change l’action du groupe sans provoquer un échec arbitraire.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Soins de compagnons, blessures et retraite sont réels ; cela ne constitue pas une boucle complète allié misàterre puis secouru/réanimé."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/qa/pr3-next-20261028/strategy-rescue-integration/report.json",
+          "sha256": "bbb55b99620edcdc18b1d7aecfb5627e899d695a4c8d7253102c1041d7c8b169",
+          "scope": "83/83 tests CPU indépendants, empreinte runtime inchangée pendant le passage ; cas métier et intégration vrais gestionnaires/Bridge/moteur. Aucune recette humaine ou mesure GPU revendiquée."
+        },
+        {
+          "kind": "review",
+          "path": "docs/qa/pr3-next-20261028/accepted-cpu-behaviors-20261028.json",
+          "sha256": "e4157a8cb6a07118adf97d93cb771724005beb901d93a1d555c9daee5621736e",
+          "scope": "tryDown avant le registre dans manager/Bridge; setUnitIncapacitated enlève attaque/déplacement/capture; main startBattleOperation bindManager + restore; main updateBattleOperation update/getPrompt et snapshot.rescue; E/Entrée appellent interact pour leur joueur"
+        },
+        {
+          "kind": "test",
+          "path": "docs/qa/pr3-next-20261028/coordination-rescue-final/report.json",
+          "sha256": "e0a666cdd60e4910e749204674ca0a06b771c5abe94df1f033d961619e5cf4c2",
+          "scope": "Régression finale24/24 au gela2252775 ; ajoute réconciliation d’un allié déjà secouru devenu mort/capturé/évacué à distance, sauvegarde/reprise sans doublon de mort."
+        }
+      ],
+      "notes": "Un vrai allié Yautja passe à terre avant le registre des morts et cesse de tirer, se déplacer et capturer. Le secours de3s consomme un medicomp au succès, restaure la contribution sans nouvel ID ; interruption, pause, coop, cull, rematérialisation, checkpoint, expiration et coup de grâce sont testés. Le main relie le système au Bridge/manager et fournit les entrées, prompts et sauvegarde. Ce comportement est une règle originale de jeu, pas une scène 1:1. Deux régressions finales confirment aussi la réconciliation des statuts secouru→mort/capturé/évacué à distance et à la reprise, sans doublon de mort."
     },
     "AUD-036": {
       "status": "À valider",
@@ -713,14 +745,39 @@
       "notes": "DonneursP1/P2 et séquences sont explicites : le dernier ordre accepté remplace le précédent une seulefois, sans empilement de chemins. Les tests d’ordres concurrents et navigation de menus virtuels couvrent l’arbitrage."
     },
     "AUD-039": {
-      "status": "En cours",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Alliés et commandement",
       "item": "Limiter et justifier les appuis lourds",
       "acceptance": "Un hangar fermé ne reçoit pas une frappe aérienne arbitraire; un appui perdu ou privé de munitions cesse d’agir.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Soutiens/transports et tirs réels sont conservés ; restrictions de hangars, munitions/perte de chaque appui lourd ne sont pas toutes certifiées."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "review",
+          "path": "docs/qa/pr3-next-20261028/post-freeze-contract-review.json",
+          "sha256": "e3d3077970260a83349a58c10f5c621becf07cd5f52e4f8196d10cb17c2ac4d2",
+          "scope": "APC/Cheyenne disposent de HP/munitions/sorties finis, destruction réellement ciblable, collider retiré, reprise sans recharge et contrôle physique du ciel avant/pendant les frappes. Les trois frappes héritées autrefois non gardées partagent désormais cette autorité de lieu/époque/toit, contrôlent les empreintes et les vraies cibles ; le barrage refuse avant la dépense d’honneur et son boss direct est borné à60unités. Les six cas toiture,29régressions et14routeur main couvrent le défaut identifié. Les pouvoirs hérités gardent leurs coûts/cooldowns existants ; aucun nouvel inventaire de munitions ni fidélité au cinéma n’est revendiqué. Validation navigateur du nouveau gel encore attendue, pas de clôture par ces seules preuves."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/qa/pr3-next-20261028/integrated-features/final-5089228/report.json",
+          "sha256": "959d6122e1edeb1376e626e3e709d69e36df4a3fffb4d7d43d3dbc79495f8ed3",
+          "scope": "4/4 cas intégrés du gel5089228/index643b94, vrais E/roue/clics Prey, refus de frappe sous vrai héliport et destruction collider APC ;0erreurJS/requête, dist inchangé. Parcours assistés, aucun humain/1:1."
+        },
+        {
+          "kind": "review",
+          "path": "docs/qa/pr3-next-20261028/integrated-contracts-reviewed.json",
+          "sha256": "8527836146929a01307c6c40f100d6c7a4aca4f3360e697fb13c00e7a6383fd9",
+          "scope": "APC/Cheyenne ont HP/munitions/sorties finis, disparaissent et cessent leur action à la destruction/épuisement, sans recharge par rappel/checkpoint. Le vrai tablier d’héliport bloque une frappe sans consommer de sortie/roquette/napalm ; détruire le vrai APC2500PV enlève son collider. CPU vérifie épuisement, fermeture du toit entre demande/impact et filtres de cibles. Les trois frappes héritées reçoivent le même contrôle physique de scénario/époque/ciel ; le barrage refuse avant honneur et borne son boss. Les pouvoirs conservent leurs coûts/cooldowns existants, sans inventaire ou fidélité canonique ajoutés."
+        },
+        {
+          "kind": "test",
+          "path": "docs/qa/pr3-next-20261028/cpu-final-3.txt",
+          "sha256": "abb934263e5927e7b22a6abc12912f7c9b5defd087af48bd105d5b9682d47a13",
+          "scope": "833/833 tests du même gel, dont ressources/expiration/LOS/coop/checkpoints stricts, épuisement des appuis et gardes des frappes héritées."
+        }
+      ],
+      "notes": "APC/Cheyenne ont HP/munitions/sorties finis, disparaissent et cessent leur action à la destruction/épuisement, sans recharge par rappel/checkpoint. Le vrai tablier d’héliport bloque une frappe sans consommer de sortie/roquette/napalm ; détruire le vrai APC2500PV enlève son collider. CPU vérifie épuisement, fermeture du toit entre demande/impact et filtres de cibles. Les trois frappes héritées reçoivent le même contrôle physique de scénario/époque/ciel ; le barrage refuse avant honneur et borne son boss. Les pouvoirs conservent leurs coûts/cooldowns existants, sans inventaire ou fidélité canonique ajoutés."
     },
     "AUD-040": {
       "status": "Terminé",
@@ -848,14 +905,27 @@
       "notes": "La ruche utilise pression/coordination, sans peur humaine ni retraite automatique. La destruction de ses sources réduit son rendement de combat distant et interrompt ses renforts ; les tests observent ces changements causaux."
     },
     "AUD-046": {
-      "status": "En cours",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Fronts et objectifs",
       "item": "Ajouter retraite et regroupement",
       "acceptance": "Une unité en difficulté quitte le front par un trajet réel, conserve ses pertes et revient seulement si renforcée.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Retraite et regroupement réels conservent pertes et trajets. La condition systématique de retour seulement après renforcement ne doit pas être déduite de la seule remontée du moral."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/qa/pr3-next-20261028/strategy-rescue-integration/report.json",
+          "sha256": "bbb55b99620edcdc18b1d7aecfb5627e899d695a4c8d7253102c1041d7c8b169",
+          "scope": "83/83 tests CPU indépendants, empreinte runtime inchangée pendant le passage ; cas métier et intégration vrais gestionnaires/Bridge/moteur. Aucune recette humaine ou mesure GPU revendiquée."
+        },
+        {
+          "kind": "review",
+          "path": "docs/qa/pr3-next-20261028/accepted-cpu-behaviors-20261028.json",
+          "sha256": "e4157a8cb6a07118adf97d93cb771724005beb901d93a1d555c9daee5621736e",
+          "scope": "positions intermédiaires sur route physique; mort ally-1 conservée et identités/HP totaux inchangés; moral80 seul ne libère pas le regroupement; soutien alloué finit sa route avant group_reconstituted; source coupée interdit la récupération; checkpoint reconstitution et refus traduit dans CommandMap"
+        }
+      ],
+      "notes": "La retraite conserve le trajet réel et les pertes. Le regroupement ne peut pas être quitté sur simple remontée du moral : un groupe de soutien déjà alloué doit réellement arriver, avec une source encore utilisable, avant le retour. Les réserves restent finies, sans création d’unités ni guérison ; la reprise conserve cet état. CommandMap affiche le refus reconstitution_required."
     },
     "AUD-047": {
       "status": "À valider",
@@ -1051,14 +1121,39 @@
       "notes": "Distances/populations/corridors sont explicites ; justification et validation de densité/temps de déplacement pour chaque lieu restent partielles."
     },
     "AUD-058": {
-      "status": "En cours",
+      "status": "Terminé",
       "priority": "P2",
       "domain": "Level design",
       "item": "Établir une grammaire d’assemblage modulaire",
       "acceptance": "Des graines différentes produisent des cartes jouables différentes, avec chemins complets et décors compatibles.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "34variantes déterministes réelles, pas34alias. Plusieurs graines jouables différentes pour une même proposition ne sont pas encore démontrées."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "review",
+          "path": "docs/qa/pr3-next-20261028/world-depth-reviewed.json",
+          "sha256": "2d82539de6d1864ae7994f1e32b170fb613821811803371c0898aee0812d5df3",
+          "scope": "34 propositions, deux graines chacune, identifiants/ancrages stables et coordonnées différentes ;68 constructions effectivement parcourues avec pas≤1 et ΔY≤0,66. Les34 graines par défaut passent aussi leurs régressions. La compatibilité des builders reste celle des profils de référence/contextes sélectionnés, sans certification géographique1:1."
+        },
+        {
+          "kind": "test",
+          "path": "docs/qa/pr3-next-20261028/world-depth/manifest.json",
+          "sha256": "779603b9394b25c4de7251e90ffaa8e78b100b4467f54e0a6794ef22548f9194",
+          "scope": "133/133 tests CPU de monde, dont68 constructions semées marchées et34 variantes par défaut ; manifeste des sources/commandes et limites. Aucune recette rendue GPU ou humaine."
+        },
+        {
+          "kind": "test",
+          "path": "docs/qa/pr3-next-20261028/world-depth/new-tests.txt",
+          "sha256": "6554ad1a983a27b924a189662bd7ac7554db2c64a27438133641ab68536ce052",
+          "scope": "Journal CPU durable44nouveaux tests ou89régressions, sans échec ; accès, plans et ressources monde vérifiés selon la revue locale."
+        },
+        {
+          "kind": "test",
+          "path": "docs/qa/pr3-next-20261028/world-depth/regression-tests.txt",
+          "sha256": "e899fc3c946eae84eec7eb1a8d364859c416d3493c249bbed8dc2432ddb5a082",
+          "scope": "Journal CPU durable44nouveaux tests ou89régressions, sans échec ; accès, plans et ressources monde vérifiés selon la revue locale."
+        }
+      ],
+      "notes": "34 propositions, deux graines chacune, identifiants/ancrages stables et coordonnées différentes ;68 constructions effectivement parcourues avec pas≤1 et ΔY≤0,66. Les34 graines par défaut passent aussi leurs régressions. La compatibilité des builders reste celle des profils de référence/contextes sélectionnés, sans certification géographique1:1."
     },
     "AUD-059": {
       "status": "En cours",
@@ -1149,14 +1244,51 @@
       "notes": "Détours, formations et navigation évitent les blocages structurels ; aucun stress test exhaustif d’assaut/évacuation opposés aux goulets n’est fourni."
     },
     "AUD-064": {
-      "status": "En cours",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Level design",
       "item": "Rendre la verticalité tactiquement utilisable",
       "acceptance": "Les IA utilisent les bons accès; les tirs et sauts respectent hauteur, plafonds et visibilité.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Une vraie rampe0→3→0 et unUSCM traversant le pont sont testés ; pas de navmesh complet multiétages ni validation de tous accès verticaux."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "review",
+          "path": "docs/qa/pr3-next-20261028/world-depth-reviewed.json",
+          "sha256": "2d82539de6d1864ae7994f1e32b170fb613821811803371c0898aee0812d5df3",
+          "scope": "Les surfaces tactiques enregistrées (rampes/tabliers industriels, héliport, résine, caillebotis acide, ponts) possèdent accès et triangles physiques cohérents. Un vrai USCM quitte le dessous, utilise la rampe et atteint le tablier sans téléportation ; hauteurs haut/bas, rayons, plafonds et saut du vrai Player sont testés. Cette validation porte sur les surfaces jouables déclarées, pas sur un navmesh universel des accessoires décoratifs hérités."
+        },
+        {
+          "kind": "test",
+          "path": "docs/qa/pr3-next-20261028/world-depth/manifest.json",
+          "sha256": "779603b9394b25c4de7251e90ffaa8e78b100b4467f54e0a6794ef22548f9194",
+          "scope": "133/133 tests CPU de monde, dont68 constructions semées marchées et34 variantes par défaut ; manifeste des sources/commandes et limites. Aucune recette rendue GPU ou humaine."
+        },
+        {
+          "kind": "test",
+          "path": "docs/qa/pr3-next-20261028/world-depth/new-tests.txt",
+          "sha256": "6554ad1a983a27b924a189662bd7ac7554db2c64a27438133641ab68536ce052",
+          "scope": "Journal CPU durable44nouveaux tests ou89régressions, sans échec ; accès, plans et ressources monde vérifiés selon la revue locale."
+        },
+        {
+          "kind": "test",
+          "path": "docs/qa/pr3-next-20261028/world-depth/regression-tests.txt",
+          "sha256": "e899fc3c946eae84eec7eb1a8d364859c416d3493c249bbed8dc2432ddb5a082",
+          "scope": "Journal CPU durable44nouveaux tests ou89régressions, sans échec ; accès, plans et ressources monde vérifiés selon la revue locale."
+        },
+        {
+          "kind": "review",
+          "path": "docs/qa/pr3-next-20261028/helipad-navigation-reviewed.json",
+          "sha256": "cbce5b826bbb8e503e5297ffe4d2ea10342d9a8880489085783a59ee67acc050",
+          "scope": "Le joueur manuel réel sortait de la rampe ; le Joe réel suivant un but au sol restait au pied car la navigation renvoyait vers le centre sous la plateforme. Le correctif de cinq lignes ne retire ce premier centre que lorsque le segment vers le point suivant possède un sol continu et est dégagé. Le Joe atteint maintenant sa portée de mêlée par pas ordinaires ; porte fermée, mur et angle sans sol diagonal restent bloquants.25tests ciblés et45régressions passent. Le helper accéléré reçoit une projection mesurée du but/pied avant navigation et du prochain pas avant collision ; il garde les portes, la navigation réelle et la capsule."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/qa/pr3-next-20261028/complete-contexts-final-victories/report.json",
+          "sha256": "a9e203a90cc4df69216ae78885efcc08bd046cdea04c93b08c867914fc6a3c13",
+          "scope": "Après correction du vrai guidageNPC de l’héliport, les11routes de victoire passent avec navigation/portes/capsule réelles, pas horizontal≤0,7 et correction verticale≤0,66. La routeLA n’utilise plus la hauteur de départ comme but permanent ; aucun TP pour franchir le défaut."
+        }
+      ],
+      "notes": "Les surfaces tactiques enregistrées (rampes/tabliers industriels, héliport, résine, caillebotis acide, ponts) possèdent accès et triangles physiques cohérents. Un vrai USCM quitte le dessous, utilise la rampe et atteint le tablier sans téléportation ; hauteurs haut/bas, rayons, plafonds et saut du vrai Player sont testés. Cette validation porte sur les surfaces jouables déclarées, pas sur un navmesh universel des accessoires décoratifs hérités. Le premier essai de production a225 révèle ensuite un vrai défaut de guidage NPC à la sortie de l’héliport, malgré une sortie manuelle Player correcte : le but au sol renvoie vers le centre sous la plateforme. La reproduction négative est conservée. La correction minimale de navigation, protégée par sol continu/segment dégagé, passe70tests CPU dont vraie Joe, porte fermée, mur et angle sans sol diagonal. Le nouveau parcours rendu reste à rejouer sur le prochain gel ; le premier essai négatif n’est pas requalifié. Le nouveau gel5089228 valide ensuite11/11routes de victoire, LA comprise, avec helper et dist inchangés ; correction verticale maximale0,45 et pas horizontal0,7. Le défaut initial reste conservé comme essai négatif."
     },
     "AUD-065": {
       "status": "Terminé",
@@ -1245,14 +1377,39 @@
       "notes": "Les fonctions de fronts existent ; mesure de densité utile et zones calmes pour chaque grande extension nonréalisée."
     },
     "AUD-071": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P0",
       "domain": "Boss et mini-boss",
       "item": "Corriger les modèles des boss sélectionnés",
       "acceptance": "Les 10 cartes génèrent leur boss annoncé et une erreur de configuration est détectée avant la partie.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "18constructeurs stricts,11mappings de lieux et vraieQueen allouée sont couverts ; les11rencontres finales ne sont pas toutes lancées/jouées et la détection universelle de configuration invalide avant lancement reste à confirmer."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "runtime",
+          "path": "docs/qa/pr3-next-20261028/complete-contexts-initial/report.json",
+          "sha256": "ba0a58e3c2df128a4451d6ed8ead0ce2ee55a5dba16e7650ac3aff96af9d2137",
+          "scope": "Premier essai production a2252775/index52a750 :22 chemins contrôlés,21PASS, seule victoireLA échoue à la descente/route héliport. Dix vrais boss finaux atteints après six secteurs/cinq portes, vaincus via manager ; onze défaites/nettoyages passent.0erreurJS/requête, dist inchangé. LA ne compte pas comme victoire validée."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/qa/pr3-next-20261028/complete-contexts-final-victories/report.json",
+          "sha256": "a9e203a90cc4df69216ae78885efcc08bd046cdea04c93b08c867914fc6a3c13",
+          "scope": "11/11 victoires assistées du gel5089228/index643b94,six secteurs/cinqportes par carte, vrai boss annoncé/gestionnaire/décès/nettoyage ;0erreurJS/HTTP/externes, dist/helpers inchangés. Aucune défaite nouvelle ni partie humaine."
+        },
+        {
+          "kind": "review",
+          "path": "docs/qa/pr3-next-20261028/complete-boss-bindings-reviewed.json",
+          "sha256": "385b303710061992f3d15363cf9766622e57f36dec521395ea5688e92c7069eb",
+          "scope": "Les onze cartes construites ont été sélectionnées dans la vraie interface, insertion terminée, six secteurs atteints et cinq objectifs/portes réellement accomplis avant présence du boss annoncé vivant. Chaque BossManager subit ensuite les dégâts assistés, son vrai décès déclenche la victoire et le nettoyage est vérifié. Le préflight négatif CPU refuse configuration inconnue/mauvaise identité/renderer avant changement de scène. La routeLA échouée sura225 a révélé un vrai guidageNPC erroné ; la correction testée70cas et le helper physiquement recalé permettent sa victoire sur5089228. L’ancien essai négatif reste conservé."
+        },
+        {
+          "kind": "test",
+          "path": "docs/qa/pr3-next-20261028/cpu-final-3.txt",
+          "sha256": "abb934263e5927e7b22a6abc12912f7c9b5defd087af48bd105d5b9682d47a13",
+          "scope": "833/833 tests CPU du gel5089228, dont validation préflight négative avant partie,18constructeurs et11contextes actuels. Pas de fidélité1:1 déduite."
+        }
+      ],
+      "notes": "Les onze cartes construites ont été sélectionnées dans la vraie interface, insertion terminée, six secteurs atteints et cinq objectifs/portes réellement accomplis avant présence du boss annoncé vivant. Chaque BossManager subit ensuite les dégâts assistés, son vrai décès déclenche la victoire et le nettoyage est vérifié. Le préflight négatif CPU refuse configuration inconnue/mauvaise identité/renderer avant changement de scène. La routeLA échouée sura225 a révélé un vrai guidageNPC erroné ; la correction testée70cas et le helper physiquement recalé permettent sa victoire sur5089228. L’ancien essai négatif reste conservé. Onze défaites antérieures demeurent une preuve distincte dua225, aucune nouvelle défaite508 revendiquée."
     },
     "AUD-072": {
       "status": "Terminé",
@@ -1278,24 +1435,62 @@
       "notes": "Les données des11lieux désignent leurs rencontres et le routeur transmet le type du lieu au registre strict. Les constructeurs correspondant à ces types existent ; aucun boss inconnu n’est remplacé silencieusement par une Queen. Ce contrôle de raccordement ne vaut pas onzecombats finaux joués."
     },
     "AUD-073": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Boss et mini-boss",
       "item": "Permettre plusieurs officiers et mini-boss simultanés",
       "acceptance": "Deux mini-boss sur deux fronts gardent chacun état et cible; faire apparaître le boss majeur n’en efface aucun.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Plusieurs officiers/Praetorians gardent leurs états ; un seul bossmajeur est volontaire. La coexistence visuelle de deuxminiboss sur deuxfronts et du majeur reste à vérifier."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "review",
+          "path": "docs/qa/pr3-next-20261028/boss-depth-reviewed.json",
+          "sha256": "b888ff177dfbef2ba9853ceb97596396145d93b2d9b2a6273b1b5f38ce8497ff",
+          "scope": "Deux vrais Prétoriens mini-boss à positions/fronts distincts gardent HP et cibles de groupe différents lors de la construction, des dégâts et de la destruction du majeur Queen. Les meshes et identités restent séparés ; détruire un mini ne détruit pas l’autre. Test sur les vrais modèles Horde/BossManager et registre unique, sans qualification visuelle humaine."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-28/qa/boss-encounters-verification.json",
+          "sha256": "37443f828af9c383357aced747cc97d5b4c1a2cf13e1ee8bf67a8ffb901242e8",
+          "scope": "79/79 tests CPU, vrais modèles/managers, préflight, phases, coexistence et persistance ; sources/artefacts/dépendances revérifiés."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-28/qa/boss-encounters-tests.txt",
+          "sha256": "6ee19a6b07fde3b38d562c4849a62daa7c915d2cd9b8b3032ce4f69cbda8971e",
+          "scope": "Journal79 tests sans échec ni skip, dont coexistence de deux mini-boss et majeur ainsi que menaces de phase réelles, issues et reprise."
+        }
+      ],
+      "notes": "Deux vrais Prétoriens mini-boss à positions/fronts distincts gardent HP et cibles de groupe différents lors de la construction, des dégâts et de la destruction du majeur Queen. Les meshes et identités restent séparés ; détruire un mini ne détruit pas l’autre. Test sur les vrais modèles Horde/BossManager et registre unique, sans qualification visuelle humaine."
     },
     "AUD-074": {
-      "status": "En cours",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Boss et mini-boss",
       "item": "Donner une fonction stratégique à chaque officier",
       "acceptance": "Vaincre l’officier change immédiatement une capacité de son groupe ou de son front, annoncée au joueur.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Perte des officiers humains/clans change moral et front ; l’impact stratégique spécifique de chaque officier de ruche ne doit pas être réduit à une annonce."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/qa/pr3-next-20261028/coordination-rescue-final/report.json",
+          "sha256": "e0a666cdd60e4910e749204674ca0a06b771c5abe94df1f033d961619e5cf4c2",
+          "scope": "24/24 tests indépendants sur le gel finala2252775/fingerprint430aab50, sources/tests inchangés. Vrai décès de contrôleur et conséquence65%, HUD/journaux DOM, reprise secours et alertes prioritaires."
+        },
+        {
+          "kind": "review",
+          "path": "docs/qa/pr3-next-20261028/coordination-feedback-reviewed.json",
+          "sha256": "2fe86a04e7e614e272d58d07ac4fb58990a3f47aa71a1601e9619343ad926621",
+          "scope": "Le vrai décès du contrôleur alloué réduit la coordination de son groupe à65%, sans peur/moral humain inventé pour une ruche. La même conséquence nomme le groupe, le front et65% dans le HUD, la carte/journal et le débrief après destruction de la scène. Le routeur main affiche explicitement ce message dès l’événement. Les tests de dégâts détaillés existants appliquent65% au vrai attaquant ; les groupes humains/clans gardent leur baisse de moral et conséquences testées. Aucun second décès n’est produit par le rendu du rapport."
+        },
+        {
+          "kind": "test",
+          "path": "docs/qa/pr3-next-20261028/strategy-rescue-integration/report.json",
+          "sha256": "bbb55b99620edcdc18b1d7aecfb5627e899d695a4c8d7253102c1041d7c8b169",
+          "scope": "83/83 tests antérieurs : coordination et dégâts appliqués par attaquant, morale/commandement des autres factions et refus des métadonnées de sauvegarde forgées."
+        }
+      ],
+      "notes": "Le vrai décès du contrôleur alloué réduit la coordination de son groupe à65%, sans peur/moral humain inventé pour une ruche. La même conséquence nomme le groupe, le front et65% dans le HUD, la carte/journal et le débrief après destruction de la scène. Le routeur main affiche explicitement ce message dès l’événement. Les tests de dégâts détaillés existants appliquent65% au vrai attaquant ; les groupes humains/clans gardent leur baisse de moral et conséquences testées. Aucun second décès n’est produit par le rendu du rapport."
     },
     "AUD-075": {
       "status": "À valider",
@@ -1341,14 +1536,33 @@
       "notes": "Les contre-attaques sont typées : géants, lourds, acide et projectiles ne reçoivent pas une parade universelle de lame humaine. Conditions anatomiques, garde/parade et signal de préparation partagé sont testés."
     },
     "AUD-078": {
-      "status": "En cours",
+      "status": "Terminé",
       "priority": "P2",
       "domain": "Boss et mini-boss",
       "item": "Rééquilibrer les phases avec la bataille environnante",
       "acceptance": "Une phase peut menacer un objectif secondaire, mais conserve des issues et ne remet pas gratuitement à zéro les victoires antérieures.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Les fronts et objectifs subsistent autour des boss ; phases menaçant des objectifs secondaires et leurs issues restent partielles."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "review",
+          "path": "docs/qa/pr3-next-20261028/boss-depth-reviewed.json",
+          "sha256": "b888ff177dfbef2ba9853ceb97596396145d93b2d9b2a6273b1b5f38ce8497ff",
+          "scope": "La phase annonce une attaque12s avant un ordre réel, par un groupe déjà déployé vers un front secondaire allié non critique. Capture, trêve, route fermée, disparition LOD, pause et reprise sont exercées ; objectifs déjà accomplis et front critique restent conservés, aucune unité créée. Le main et la carte reçoivent les menaces réelles ; le panneau visible peut présenter leur échéance."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-28/qa/boss-encounters-verification.json",
+          "sha256": "37443f828af9c383357aced747cc97d5b4c1a2cf13e1ee8bf67a8ffb901242e8",
+          "scope": "79/79 tests CPU, vrais modèles/managers, préflight, phases, coexistence et persistance ; sources/artefacts/dépendances revérifiés."
+        },
+        {
+          "kind": "test",
+          "path": "docs/audits/2026-10-28/qa/boss-encounters-tests.txt",
+          "sha256": "6ee19a6b07fde3b38d562c4849a62daa7c915d2cd9b8b3032ce4f69cbda8971e",
+          "scope": "Journal79 tests sans échec ni skip, dont coexistence de deux mini-boss et majeur ainsi que menaces de phase réelles, issues et reprise."
+        }
+      ],
+      "notes": "La phase annonce une attaque12s avant un ordre réel, par un groupe déjà déployé vers un front secondaire allié non critique. Capture, trêve, route fermée, disparition LOD, pause et reprise sont exercées ; objectifs déjà accomplis et front critique restent conservés, aucune unité créée. Le main et la carte reçoivent les menaces réelles ; le panneau visible peut présenter leur échéance."
     },
     "AUD-079": {
       "status": "À valider",
@@ -1798,14 +2012,51 @@
       "notes": "La caméra résout les volumes physiques, bornes de cadrage et proximité ; visibilité du joueur/danger dans chaque phase et scénario reste à contrôler."
     },
     "AUD-105": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P0",
       "domain": "Performance et QA",
       "item": "Réutiliser la gestion correcte des ressources",
       "acceptance": "Dix relances d’une mission ne font pas croître les compteurs de ressources; aucune texture partagée ne disparaît.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Les ressources sont libérées une fois et11démarrages/nettoyages ont passé ; dixrelances identiques d’une même mission avec plateau mesuré restent à documenter."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "review",
+          "path": "docs/qa/pr3-next-20261028/memory-evidence-review.json",
+          "sha256": "0578659ee448a89bf91c95cf62c6b4fc6c71309d227af2c0b9032728aeb89b6d",
+          "scope": "Vérification indépendante des dix-neuf fichiers épinglés, des dix compteurs identiques et des six textures GPU partagées du build diagnostique seulement. Aucun nouveau statut Terminé pour le futur build intégré."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/qa/pr3-next-20261028/resource-restarts/final-5089228/analysis.json",
+          "sha256": "2654aaa37edc1e1d400353effc72089700133e3df27f3b8a1096130169507ffa",
+          "scope": "Échec strict conservé du gel5089228 :5préchauffages puis10relances mesurées, géométriesGPU95→102 durant la fenêtre ; textures50/programmes17/scene340 et6textures importées résidentes stables, cachejoueurs0. HeapGC+1102688octets observé, pas une mesureVRAM. Ceci maintient105ouvert."
+        },
+        {
+          "kind": "review",
+          "path": "docs/qa/pr3-next-20261028/resource-strict-failure-reviewed.json",
+          "sha256": "66c6cdba2f8d50bd3354ecf3fe359703655a335055b8620f74e67a571b9f1240",
+          "scope": "Le compteur GPU augmente de95à102 pendant les dix mesures ; il ne peut être déclaré stable. Textures partagées, programmes, nœuds et caches de joueurs passent ; la cause précise des sept géométries GPU n’est pas prouvée. Aucun décalage de fenêtre ni assimilation des seuls derniers cycles à un succès. Aucun constat général de fuite/VRAM/hardware/humain/1:1."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/qa/pr3-next-20261028/resource-restarts/historical20-5089228/report.json",
+          "sha256": "63328ef79bc1659e4f042b48a2e52bbd5c7e055b8a1956a6856f69b774086db2",
+          "scope": "ProtocoleB complet20préchauffages puis10relances mesurées21–30 identiques115/50/17 ; six textures importées résidentes, cachesjoueurs/managers0,0erreurs et dist inchangé. Le protocoleA5/10 échoué est conservé, non requalifié."
+        },
+        {
+          "kind": "review",
+          "path": "docs/qa/pr3-next-20261028/resource-historical20-reviewed.json",
+          "sha256": "63ab8869d5851bf14985eb016f0449342ac67bebb350aec3c83776716b67ff46",
+          "scope": "Nouvelle passe complèteB de30cycles, vingt préchauffages puis les dixmesures fixées21–30, toutes strictement identiques :115géométriesGPU/50textures/17programmes,12enfants/340nœuds, mêmes sixtextures importées uploadées et jamais disposées, cachesjoueurs/managers vides. TraceB attribue ses hausses de préchauffage aux premiersdrawsRunnerLOD1 etWarriorLOD1, cacheCPUHorde68constant, puis plateau9–30. V8:0PlayerLike20→30 et comptes des classesThree identiques. Le protocoleA5/10 reste échoué95→102, intact ; ses septgéométries exactes ne sont pas attribuées par extrapolation deB. Le heapGC B augmente400124octets(+2,36%) ; aucune absence générale de fuite/VRAM/FPS/humain/1:1 certifiée."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/qa/pr3-next-20261028/resource-restarts/historical20-5089228/comparison.json",
+          "sha256": "7a65c759f43287e87ee41583d265dba13160b6c5518f766db2c4c9e2b646def1",
+          "scope": "ComparaisonAéchoué/Bpassé et trace des premiersdrawsLOD dansB, cachesCP68constants, V8PlayerLike0→0/classesThree constantes ; heap+400124octets explicite, aucune extrapolation auxseptgéométriesA."
+        }
+      ],
+      "notes": "Nouvelle passe complèteB de30cycles, vingt préchauffages puis les dixmesures fixées21–30, toutes strictement identiques :115géométriesGPU/50textures/17programmes,12enfants/340nœuds, mêmes sixtextures importées uploadées et jamais disposées, cachesjoueurs/managers vides. TraceB attribue ses hausses de préchauffage aux premiersdrawsRunnerLOD1 etWarriorLOD1, cacheCPUHorde68constant, puis plateau9–30. V8:0PlayerLike20→30 et comptes des classesThree identiques. Le protocoleA5/10 reste échoué95→102, intact ; ses septgéométries exactes ne sont pas attribuées par extrapolation deB. Le heapGC B augmente400124octets(+2,36%) ; aucune absence générale de fuite/VRAM/FPS/humain/1:1 certifiée."
     },
     "AUD-106": {
       "status": "En cours",
@@ -1818,14 +2069,39 @@
       "notes": "Le rendu respecte capprovisoire32 etLOD ; budget de rendu/silhouettes sur matériels cibles nonmesuré."
     },
     "AUD-107": {
-      "status": "En cours",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Performance et QA",
       "item": "Échelonner les calculs IA et requêtes de proximité",
       "acceptance": "La recherche de cibles ne domine pas le temps CPU lorsque l’effectif double; les résultats restent déterministes pour le test.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Moteur à pasfixe et recherche groupée ; courbe CPU à effectif doublé nonmesurée."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/qa/pr3-next-20261028/strategy-rescue-integration/report.json",
+          "sha256": "bbb55b99620edcdc18b1d7aecfb5627e899d695a4c8d7253102c1041d7c8b169",
+          "scope": "83/83 tests CPU indépendants, empreinte runtime inchangée pendant le passage ; cas métier et intégration vrais gestionnaires/Bridge/moteur. Aucune recette humaine ou mesure GPU revendiquée."
+        },
+        {
+          "kind": "review",
+          "path": "docs/qa/pr3-next-20261028/accepted-cpu-behaviors-20261028.json",
+          "sha256": "e4157a8cb6a07118adf97d93cb771724005beb901d93a1d555c9daee5621736e",
+          "scope": "profil Node inspector inclusif selectBattleTarget sur vraies mises à jour; deux répétitions déterministes par effectif avec hash cibles/état; 16→32, plafond détaillé32 inchangé; benchmark sources avant/après identiques et revérifiées pendant cette revue; remoteCombatShare explicitement séparé de detailedTargetSearch; parts mesurées33.46% et42.61%, pas budget matériel universel"
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/qa/strategic-depth-20261028/targeting-benchmark.json",
+          "sha256": "b3b5b98ba049b2f57f00f1d1c599fe1c78834d82cb262334eca6f44e6bfcd59c",
+          "scope": "Mesure CPU Node seulement : recherche détaillée16→32 sous50% dans ce cas, empreintes déterministes ; phase de combat distante512→1024 mesurée séparément, aucune certification FPS/GPU."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/qa/pr3-next-20261028/targeting-benchmark-integrated.json",
+          "sha256": "eb25443ec25b88367612ebc7befd437d2430c643959c26db18cee1f863ef6e13",
+          "scope": "Répétition après changements verticaux/cibles de la horde, sources mesurées stables : recherche détaillée max35,91%→39,06% pour16→32 acteurs, empreintes déterministes ; temps managers×3,63 et combat distant×3,28 tels qu’observés. Le rapport ne mesure pas des FPS/GPU ni un budget universel."
+        }
+      ],
+      "notes": "Le benchmark Node sur les vrais gestionnaires Horde/Marines double16→32 acteurs, sans relever le plafond32. La part inclusive de selectBattleTarget reste sous50% dans les répétitions mesurées (maximum33,46% puis42,61%), avec empreintes d’état et de cibles identiques. Les compteurs distants512→1024 croissent linéairement ; le temps de combat distant complet63,75% comprend dégâts/morts et n’est pas une mesure de recherche seule. Aucune mesure universelle, FPS, GPU ou matérielle des joueurs n’est certifiée. Une répétition après les dernières modifications de la horde confirme les empreintes déterministes et des parts de recherche détaillée35,91% puis39,06%, sources mesurées inchangées. Dans cette passe les temps managers doublés valent×3,63 et le combat distant×3,28 ; aucune accélération globale n’est déduite des parts sous50% et aucune mesure matérielle universelle n’est revendiquée."
     },
     "AUD-108": {
       "status": "À valider",
@@ -2172,17 +2448,84 @@
       "notes": "Feral exécute ses branches sans acide ni queue. Le masque arme un vrai projectile guidé ; aucunHP n’est retiré à l’activation. Esquive, obstacle, impact réel, pause et nettoyage des attaques différées sont testés."
     },
     "AUD-126": {
-      "status": "En cours",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Combat et rôles",
       "item": "Rendre les dix interactions Prey et leurs effets conformes aux annonces et sources",
       "acceptance": "Les dix prompts correspondent aux effets observés. Taabe modifie réellement la mobilité ; arc et hache utilisent les ressources annoncées ; le pistolet respecte portée et obstacle. La boue ne se déclenche que dans un volume présent et applique le bonus annoncé une fois, avec expiration. Souffle et feu affichent leur rayon distinct. Sariska, 0 °C, matériaux et rôle de Sarii sont sourcés ou présentés comme adaptations.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Sarii, boue, masque, ressources et interactions principales sont mieuxdéveloppés ; puma reste accessoire sansIA et les dixprompts/annonces/sources ne sont pas tous certifiés."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "review",
+          "path": "docs/qa/pr3-next-20261028/prey-contract-defects-baseline.json",
+          "sha256": "5999b512e56d4c72534a978b421a1776a9a2797dff824a5545950ec8b163affb",
+          "scope": "Reproduction CPU de défauts encore ouverts, pas une preuve de conformité : pistolet touchant un boss distant sans portée/LOS ni ledger, et arc donnant des disques tout en annonçant des flèches."
+        },
+        {
+          "kind": "review",
+          "path": "docs/qa/pr3-next-20261028/prey-contract-defects-expanded.json",
+          "sha256": "9eba9e484f3bbffcf9f70183563269bc5a4344923d2627137a56eda835e18eb3",
+          "scope": "Défauts reproduits sur un vrai Player horsligne et un vrai acteur de horde : Taabe ne modifie pas la marche, hache donnant des munitions M41A, chaudron ne touchant aucun acteur au format réel. Ceci maintient le critère ouvert."
+        },
+        {
+          "kind": "test",
+          "path": "docs/qa/pr3-next-20261028/prey-environment-contracts/report.json",
+          "sha256": "9a22072648a26f0f18532534c9354ab121c4acfd8447811a324cf97a7d335e5d",
+          "scope": "13/13 tests CPU sur vrais gestionnaires Horde/Boss et registre de morts : pistolet visé borné et bloqué par obstacles, ressources distinctes et plafonnées, souffle/feu distincts, expiration de feu30/60/120Hz et géométrie libérée, chaudron réel, boue une fois par entrée et deux joueurs, pause. Les API Player sont encore doublées dans ces nouveaux tests : intégration consommation/mobilité et prompts attendue avant clôture."
+        },
+        {
+          "kind": "test",
+          "path": "docs/qa/pr3-next-20261028/prey-player-reviewed/report.json",
+          "sha256": "0fd8e275e4ceff8bd03866eda416f0212d478e980b791c915062dc89f854cacf",
+          "scope": "Revue indépendante des vraies interactions Environment→Player et gestionnaires : 41/41 tests passent, quinze sources/tests SHA identiques avant/après. Consommation arc/hache, mobilité, thermique, acide, fin de durée, coopération, dégâts et checkpoint des récupérations HP sont réels. Projectile/main, prompts et checkpoint complet de scène ne sont pas compris."
+        },
+        {
+          "kind": "test",
+          "path": "docs/qa/pr3-next-20261028/prey-player-reviewed/tests.txt",
+          "sha256": "4b2e27eefe37fbbbacdc43ffc2e52b6694f93af4b7cb1c439c2c622a2d64427d",
+          "scope": "Sortie brute des41 tests réussis après correction des faux bonus shield. Le dixième test Player vérifie +150PV grizzly, +100PV et+6fléchettes arsenal, consommation réelle des PV, limites et sauvegarde ; aucune protection shield fictive n’est déduite du compteur."
+        },
+        {
+          "kind": "test",
+          "path": "docs/qa/pr3-next-20261028/prey-checkpoint-contracts/report.json",
+          "sha256": "28d5c55761232c8bb35c9d848bc80b7fd7e27fc13e60225f482cc5cbea5e392c",
+          "scope": "19/19 tests CPU après ajout du checkpoint de scène : flags consommés sans remboursement, feu restant sans souffle rejoué/temps prolongé, propriétaire coop et blessures Sarii, boue sans refresh à la reprise, rejet atomique des versions/profils/props invalides et annulation des tirs transitoires du masque. Empreinte runtime inchangée pendant ce passage ; appel main final encore séparé."
+        },
+        {
+          "kind": "test",
+          "path": "docs/qa/pr3-next-20261028/runtime-wiring/manifest.json",
+          "sha256": "69db335b425af875b50974d9a5399efe8fe6525b1b74f070feb62ba04a320622",
+          "scope": "9/9 tests des vraies méthodes du routeur main via VM : flèche Taabe physique au premier impact, inventaire Player imbriqué avant sélection, roue J2 et supports/menaces ; APIs de scène Prey branchées après décor/joueurs avec rejet false. Ce résultat ne qualifie pas visuellement les dix prompts dans le navigateur."
+        },
+        {
+          "kind": "review",
+          "path": "docs/qa/pr3-next-20261028/post-freeze-contract-review.json",
+          "sha256": "e3d3077970260a83349a58c10f5c621becf07cd5f52e4f8196d10cb17c2ac4d2",
+          "scope": "Dix contrats corrigés et testés, vraies ressources Player flèches/frappes, mobilité×1,3, effets thermique/acide bornés, pistolet visé/LOS, boue une fois par entrée et feu/souffle distincts. Main projette une vraie flèche non perforante, roue J2 et checkpoint imbriqué/scène sont branchés. Le SentryGun object false qui absorbait E est corrigé et couvert par14tests routeur. Textes Sarii explicitement ordres adaptés pour le jeu et stock Feral nommé fléchettes ; Sariska/0°C non certifiés retirés des promesses visibles. Validation navigateur du nouveau gel encore attendue, pas de clôture par ces seules preuves."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/qa/pr3-next-20261028/integrated-features/final-5089228/report.json",
+          "sha256": "959d6122e1edeb1376e626e3e709d69e36df4a3fffb4d7d43d3dbc79495f8ed3",
+          "scope": "4/4 cas intégrés du gel5089228/index643b94, vrais E/roue/clics Prey, refus de frappe sous vrai héliport et destruction collider APC ;0erreurJS/requête, dist inchangé. Parcours assistés, aucun humain/1:1."
+        },
+        {
+          "kind": "review",
+          "path": "docs/qa/pr3-next-20261028/integrated-contracts-reviewed.json",
+          "sha256": "8527836146929a01307c6c40f100d6c7a4aca4f3360e697fb13c00e7a6383fd9",
+          "scope": "Les dix prompts et le chaudron correspondent aux contrats revus ; vraie toucheE, roue et clics accordent6flèches/4frappes puis consomment5/3 après usage, plasma100 inchangé. La flèche physique n’endommage que le premier vrai ennemi existant, avec un seul décès/score. Les autres effets sont vérifiés sur vrais Player/Environment/gestionnaires : Taabe×1,3 borné, acide×0,6 et signature temporaire, pistolet visé/portée/obstacle, boue une fois par entrée et checkpoint, souffle16 distinct du feu8,5/18s. Les pickups de scène ne rejouent ni gains ni souffle ; Sarii garde owner/blessures et ses ordres sont explicitement adaptés. Sariska/0°C non certifiés ne sont plus promis. Matériaux/équipements restent des interprétations de jeu."
+        },
+        {
+          "kind": "test",
+          "path": "docs/qa/pr3-next-20261028/cpu-final-3.txt",
+          "sha256": "abb934263e5927e7b22a6abc12912f7c9b5defd087af48bd105d5b9682d47a13",
+          "scope": "833/833 tests du même gel, dont ressources/expiration/LOS/coop/checkpoints stricts, épuisement des appuis et gardes des frappes héritées."
+        }
+      ],
+      "notes": "Les dix prompts et le chaudron correspondent aux contrats revus ; vraie toucheE, roue et clics accordent6flèches/4frappes puis consomment5/3 après usage, plasma100 inchangé. La flèche physique n’endommage que le premier vrai ennemi existant, avec un seul décès/score. Les autres effets sont vérifiés sur vrais Player/Environment/gestionnaires : Taabe×1,3 borné, acide×0,6 et signature temporaire, pistolet visé/portée/obstacle, boue une fois par entrée et checkpoint, souffle16 distinct du feu8,5/18s. Les pickups de scène ne rejouent ni gains ni souffle ; Sarii garde owner/blessures et ses ordres sont explicitement adaptés. Sariska/0°C non certifiés ne sont plus promis. Matériaux/équipements restent des interprétations de jeu."
     }
   },
-  "reviewStage": "final_54_criteria_verified_including_two_clean_reproductions_and_15_qualified_browser_regressions; restart_measurement_pending",
+  "reviewStage": "Gel5089228 revu : treize critères035/016/039/046/058/064/071/073/074/078/105/107/126 clôturés. CPU833,11victoires assistées,4cas intégrés et protocoleB20warm+10mesurés ; ancienA5/10échoué et11défaitesa225 distincts préservés. Aucun P0 restant ; aucune certification humaine/FPS/VRAM/1:1.",
   "validatedRuntimeSource": "48b5bd5aa9d35fd3919ade38cf2aef55389bec5b",
   "runtimeEvidence": {
     "fullStartups": "docs/audits/2026-10-26/qa/runtime-c518-11-biomes-4-ops.json",

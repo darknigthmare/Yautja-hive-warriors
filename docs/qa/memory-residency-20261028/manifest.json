@@ -1,0 +1,100 @@
+{
+  "status": "frozen_scoped_evidence",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 4414,
+      "sha256": "93d9ebb51ddba1bc2ec4ef7bdbb9381f45800867296739ed7329a98145c886f3"
+    },
+    {
+      "path": "analysis.json",
+      "bytes": 4057,
+      "sha256": "0ae0ea4f957dbf381d6b5ec550e0dd83c8a567652a219fd54db33471c7909841"
+    },
+    {
+      "path": "cache-release-corrected/README.md",
+      "bytes": 2881,
+      "sha256": "b58549a12657c6673f0bfd239efd3b554b58041732e777f3b0e8aeaf7f32154e"
+    },
+    {
+      "path": "cache-release-corrected/active-last-cycle.png",
+      "bytes": 135478,
+      "sha256": "0bba3399065f1d64cb397b46fe0ab1918c230513e378ea8c1004e3e6e068a2c7"
+    },
+    {
+      "path": "cache-release-corrected/harness.mjs",
+      "bytes": 17805,
+      "sha256": "6995a67c181b6a8beb86416365a1be1e041d61da89e7d4cb659d7f39f71a9b0c"
+    },
+    {
+      "path": "cache-release-corrected/menu-after-ten-restarts.png",
+      "bytes": 127366,
+      "sha256": "77125199b3cdac4bd1c5fabf6f8d0e0cc529bc64322db28517265be08b938f16"
+    },
+    {
+      "path": "cache-release-corrected/report.json",
+      "bytes": 855545,
+      "sha256": "8a0086640c20c814cc5ea6fd96e70159bd186a8d92fb9bd82d45daa4989e1b3f"
+    },
+    {
+      "path": "cache-release-tests.txt",
+      "bytes": 911,
+      "sha256": "0c5a95e22d35f4397fb6de098eaefd0a2091fca733b635ae0e0c4556cfa4fecc"
+    },
+    {
+      "path": "heap-summary.json",
+      "bytes": 6466,
+      "sha256": "4974c70310783bbfbff732d76a3c03ac8925f8606fdbf8c3a462fa874bb91111"
+    },
+    {
+      "path": "isolated-patch.json",
+      "bytes": 504,
+      "sha256": "97fd921453b6dc9a4ee97b11534140307e594717fc24c7ad311f3a6e10e80c95"
+    },
+    {
+      "path": "original-build-restoration.json",
+      "bytes": 420,
+      "sha256": "080182e3b07faa297c5915507eef7e02ac5430fac354bba91e3b564788fec2fa"
+    },
+    {
+      "path": "structural-heap-counts.json",
+      "bytes": 851,
+      "sha256": "3c528de0f2a2c9793cf762dd368c75454086a82cfe4721f7ebef7bd27c0e8143"
+    },
+    {
+      "path": "structural-heaps.py",
+      "bytes": 1565,
+      "sha256": "0cfd65563a7a9a16c946d68119454a0de49099040e3dc2089113505385e165b1"
+    },
+    {
+      "path": "summarize-heaps.py",
+      "bytes": 2868,
+      "sha256": "2d14a3233b90d857818d054780efab48662393b5e69354fca91bdc828904e642"
+    },
+    {
+      "path": "timer-ablation/README.md",
+      "bytes": 904,
+      "sha256": "c9b7a05b314a89531c7e8ed2ce4a77c8c30f8459f534abfa0e73817cbc598882"
+    },
+    {
+      "path": "timer-ablation/active-last-cycle.png",
+      "bytes": 137343,
+      "sha256": "f701b0f6f9f0db752da3c358c3981c8288e45ba5baa75bcd3bcec422a8c07025"
+    },
+    {
+      "path": "timer-ablation/harness.mjs",
+      "bytes": 17069,
+      "sha256": "298ccd1d302ab1c003cd5e744369af8cbd3a1a49cf91d3b2ce8f03f330ec750c"
+    },
+    {
+      "path": "timer-ablation/menu-after-ten-restarts.png",
+      "bytes": 126082,
+      "sha256": "f124049fa84e4d4031bf3df48d4abcad3d84811d626f37f988ce4c1c67874dcb"
+    },
+    {
+      "path": "timer-ablation/report.json",
+      "bytes": 596780,
+      "sha256": "4f82b6fccfa86ceca6f281183b962acbf02725866ca26774f7e81924ff0d3079"
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "method": "Count reachable V8 object nodes with own Three identity flags or required skeleton/player properties; not driver memory. Raw snapshots remain outside the repository.",
+  "before": {
+    "isObject3D": 810,
+    "isMesh": 456,
+    "isBone": 290,
+    "isMaterial": 164,
+    "isTexture": 61,
+    "isBufferGeometry": 352,
+    "isBufferAttribute": 1601,
+    "skeletonLike": 46,
+    "playerLike": 0
+  },
+  "after": {
+    "isObject3D": 810,
+    "isMesh": 456,
+    "isBone": 290,
+    "isMaterial": 164,
+    "isTexture": 61,
+    "isBufferGeometry": 352,
+    "isBufferAttribute": 1601,
+    "skeletonLike": 46,
+    "playerLike": 0
+  },
+  "delta": {
+    "isObject3D": 0,
+    "isMesh": 0,
+    "isBone": 0,
+    "isMaterial": 0,
+    "isTexture": 0,
+    "isBufferGeometry": 0,
+    "isBufferAttribute": 0,
+    "skeletonLike": 0,
+    "playerLike": 0
+  }
+}

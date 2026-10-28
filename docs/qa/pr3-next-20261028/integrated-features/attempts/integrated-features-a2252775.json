@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "status": "failed",
+  "startedAt": "2026-10-28T10:03:57.060Z",
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "scope": "Controlled UI and actual runtime integration acceptance; not natural victories, human playtesting or a measured reproduction of a film.",
+  "assistances": [
+    "deterministic advancement through the actual insertion cinematic",
+    "paused fixture setup between steps",
+    "player placement beside actual world pickups and an actual allocated ally",
+    "camera framing of the existing actors",
+    "controlled fatal callback on an actual allocated allied actor and 0.35 s of its real falling posture",
+    "deterministic advancement of the actual three-second rescue channel",
+    "placement of two existing hostile actors on a physically clear shooting lane",
+    "direct damage through an active APC combatant to exercise destruction"
+  ],
+  "cases": [
+    {
+      "id": "scene-seed-difficulty-checkpoint",
+      "status": "failed",
+      "insertion": {
+        "simulated": 4.149999999999991,
+        "phase": "complete",
+        "visible": true
+      },
+      "before": {
+        "seed": 1,
+        "layoutSeed": 1,
+        "difficulty": "aggressive",
+        "difficultyConfig": {
+          "id": "aggressive",
+          "label": "Offensif",
+          "scope": "officer_decisions_only",
+          "populationChanged": false
+        },
+        "id": "mission-cba1b433-ba72-4bc5-a202-8bc513f7781d",
+        "hud": "3 FRONTS · RÉSERVES FINIES",
+        "score": 0,
+        "skulls": 0,
+        "conserved": true
+      },
+      "commandMap": "Bataille alternative à trois camps · Commandement Offensif · Terrain 1",
+      "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#operation-panel [data-save]')\u001b[22m\n\u001b[2m    - locator resolved to <button data-save=\"\">SAUVEGARDER</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    52 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n    at checkpoint (/workspace/Yautja-next-20261028/docs/qa/pr3-next-20261028/integrated-features/run-integrated-features.mjs:78:169)\n    at async file:///workspace/Yautja-next-20261028/docs/qa/pr3-next-20261028/integrated-features/run-integrated-features.mjs:97:17\n    at async caseRun (/workspace/Yautja-next-20261028/docs/qa/pr3-next-20261028/integrated-features/run-integrated-features.mjs:88:9)\n    at async file:///workspace/Yautja-next-20261028/docs/qa/pr3-next-20261028/integrated-features/run-integrated-features.mjs:92:3"
+    }
+  ],
+  "errors": [],
+  "failedRequests": [],
+  "externalRequests": [],
+  "indexSha256": "52a750c9472d381d9016f29b0e15a6a3020df28a802c49ac2fa94cff515cb538",
+  "distTreeSha256": "ecc1899944c22d7a3de9cdac25fea66b8906afde239ce63b82e4081d23936ade",
+  "buildInfo": {
+    "schemaVersion": 1,
+    "contentVersion": "v67-pr3-depth-20261028",
+    "sourceCommit": "a225277531e7e10b64ab2b880ff7c8554fa815b2",
+    "sourceBranch": "codex/depth-pr3-20261028",
+    "sourceFingerprint": "430aab5021e1124b194d1adae7422a39c5ac964949e2cb3e0e49c201384bfa3d",
+    "sourceFiles": 150,
+    "sourceTreeDirty": false,
+    "buildEpoch": 1793180507,
+    "reproducibleBuildDate": "2026-10-28T09:41:47.000Z",
+    "deploymentProof": "https://github.com/darknigthmare/Yautja-hive-warriors/blob/codex/depth-pr3-20261028/docs/qa/pr3-next-validation.json"
+  },
+  "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#operation-panel [data-save]')\u001b[22m\n\u001b[2m    - locator resolved to <button data-save=\"\">SAUVEGARDER</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    52 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n    at checkpoint (/workspace/Yautja-next-20261028/docs/qa/pr3-next-20261028/integrated-features/run-integrated-features.mjs:78:169)\n    at async file:///workspace/Yautja-next-20261028/docs/qa/pr3-next-20261028/integrated-features/run-integrated-features.mjs:97:17\n    at async caseRun (/workspace/Yautja-next-20261028/docs/qa/pr3-next-20261028/integrated-features/run-integrated-features.mjs:88:9)\n    at async file:///workspace/Yautja-next-20261028/docs/qa/pr3-next-20261028/integrated-features/run-integrated-features.mjs:92:3",
+  "distUnchanged": true,
+  "endedAt": "2026-10-28T10:04:57.781Z",
+  "durationSeconds": 60.721
+}

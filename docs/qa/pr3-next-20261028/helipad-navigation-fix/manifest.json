@@ -1,0 +1,21 @@
+{
+  "createdAt": "2026-10-28T10:11:42.733537+00:00",
+  "baselineCommit": "a225277531e7e10b64ab2b880ff7c8554fa815b2",
+  "status": "Five-line navigation correction in working tree, pending parent commit/build and browser validation.",
+  "baselineProof": {
+    "normalInput": "Real Player and actual open DropPodEntrance at elevation 4.5. At 60 Hz and the real movement speed of 16 units/s, the player reaches z=30.1 at ground level; HP stays at 1000 and pod correction is approximately zero.",
+    "assistedTravel": "Original helper pattern of 0.7-unit horizontal increments with 0.001-second smoothing reproduces oscillation at z=7.3. Ground projection alone then stalls at z=14.",
+    "normalNPC": "An actual Working Joe at 60 Hz and speed 7.5 units/s, with ground target [0,0,170], stalls at z=13.875 on baseline. The temporary proposed-navigation copy reaches z=167.9, within its 2.1-unit melee reach, with maximum ordinary step 0.148601."
+  },
+  "runtimeChange": "Discard the current room center only if the next existing strategic-path point has both continuous physical floor and a clear segment. No gate or collision changes.",
+  "targetedCommand": "node --test tests/helipad-navigation-regression.test.js tests/actor-vertical-support-targets.test.js tests/tactical-bridge.test.js tests/battlefield-layout.test.js",
+  "targetedTests": 25,
+  "targetedPassed": 25,
+  "runtimeSha256": "0a1708885c6b7926a915058bc2610731f80f7f14d2756c497f6332d13be29225",
+  "testSha256": "fe595d1acd89086d1df2224b4d3594eade572fb114709b0aacb3205a5ad1b77a",
+  "scope": "Node CPU reproduction; no browser/GPU or complete human playthrough. Previous baseline evidence retained.",
+  "regressionCommand": "node --test tests/levels.test.js tests/combat-director.test.js tests/hostile-pressure.test.js tests/formation-companions.test.js",
+  "regressionTests": 45,
+  "regressionPassed": 45,
+  "passedTotal": 70
+}

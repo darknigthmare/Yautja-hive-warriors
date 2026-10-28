@@ -1,0 +1,34 @@
+{
+  "status": "prepared_cpu_only_waiting_exclusive_root_go",
+  "cpu_checks": {
+    "passed": 9,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "proof": "preparation-cpu-tests.txt"
+  },
+  "syntax": "passed_harness_and_library",
+  "import_and_early_pin_rejection": "passed_no_browser_or_preview",
+  "configuration": {
+    "warmups": 5,
+    "measured": 10,
+    "strict_all_ten_counter_stability": true,
+    "texture_uuid_dimensions_upload_non_dispose": true,
+    "horde_player_cache_zero": true,
+    "native_rng_unchanged": true
+  },
+  "browser_started": false,
+  "preview_started": false,
+  "build_executed": false,
+  "git_executed": false,
+  "original_modified": false,
+  "runtime_result": null,
+  "limits": [
+    "Preparation only. No actual final-build restart result exists yet.",
+    "Forced-GC JavaScript heap is reported separately and cannot certify VRAM, hardware performance or general absence of leaks."
+  ],
+  "required_final_pins": {
+    "expected_index": "Mandatory explicit CLI --expected-index from the next final root freeze",
+    "expected_source": "Mandatory explicit CLI --expected-source from the next final root freeze"
+  }
+}

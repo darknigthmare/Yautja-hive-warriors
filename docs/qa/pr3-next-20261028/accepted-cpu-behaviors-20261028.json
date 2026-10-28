@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-28",
+  "reviewScope": "CPU behavior acceptance and inspection of present integration hooks; not certification of the unpublished complete build, human experience, FPS, GPU or 1:1 assets.",
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "cpuProof": {
+    "path": "docs/qa/pr3-next-20261028/strategy-rescue-integration/report.json",
+    "sha256": "bbb55b99620edcdc18b1d7aecfb5627e899d695a4c8d7253102c1041d7c8b169",
+    "tests": 83,
+    "pass": 83,
+    "runtimeSourceUnchangedDuringRun": true
+  },
+  "sourceFilesReviewed": {
+    "js/main.js": "b89562a18e5f1b6dfc9fd556aa736406c5fef8d1ce672fee8cd2d4b18c3ad591",
+    "js/ui/CommandMap.js": "488c212b0936566b596190b58f3d0f4e650a142f1eb6dffc1bfe0591a6f5b13b",
+    "js/battlefield/OperationScene.js": "2ebd9276113b9f396c0c7b1443094236a2cf11b3dbe7a9c53ff8cef70ffcbec5",
+    "js/battlefield/BattleSimulation.js": "ea83d6368d93efde22826dcc1113b84526806198a9adf8652fee27f02ff4a487",
+    "js/battlefield/AllyRescueSystem.js": "596184e76bf4d1670a5a6d328cde1f6743101f611bce5a023372e24fd7563568",
+    "js/battlefield/BattleActorBridge.js": "a4bdaf5249433300d1c55188dcad0f827a9bd0f5005adb0acc8ededb8c3dbaca",
+    "js/engine/BattleActorSupport.js": "9e83d1dcc1b004ba04170d845c8b362712d008b1bdb37b89e721065b908d7370",
+    "index.html": "1957af02b1b9e7df98d64b29c7ca4880d35f6fdf0cfcc712c9a326d0ba552657"
+  },
+  "criteria": {
+    "AUD-035": {
+      "originalAcceptance": "Un allié peut être mis à terre et secouru; son absence change l’action du groupe sans provoquer un échec arbitraire.",
+      "accepted": true,
+      "review": "Un vrai allié Yautja passe à terre avant le registre des morts et cesse de tirer, se déplacer et capturer. Le secours de3s consomme un medicomp au succès, restaure la contribution sans nouvel ID ; interruption, pause, coop, cull, rematérialisation, checkpoint, expiration et coup de grâce sont testés. Le main relie le système au Bridge/manager et fournit les entrées, prompts et sauvegarde. Ce comportement est une règle originale de jeu, pas une scène 1:1.",
+      "checks": [
+        "tryDown avant le registre dans manager/Bridge",
+        "setUnitIncapacitated enlève attaque/déplacement/capture",
+        "main startBattleOperation bindManager + restore",
+        "main updateBattleOperation update/getPrompt et snapshot.rescue",
+        "E/Entrée appellent interact pour leur joueur"
+      ]
+    },
+    "AUD-016": {
+      "originalAcceptance": "Deux difficultés peuvent garder une même armée lisible tout en changeant tactique et tolérance, sans gonfler tous les PV.",
+      "accepted": true,
+      "review": "Les profils Prudent et Offensif conservent groupes, profils, PV, budgets, fronts, routes et identités, mais produisent des décisions d’officiers différentes. Le menu transmet difficultyId à la préparation et au lancement, et la sauvegarde conserve la scène et le profil. La comparaison ne gonfle ni armée ni PV ; elle ne constitue pas une mesure de lisibilité humaine.",
+      "checks": [
+        "applyBattleDifficulty clone sans mutation des allocations",
+        "test deux difficultés mêmes groupes/profils/budgets/fronts/routes",
+        "décisions différentes observées dans events",
+        "menu operation-difficulty-select -> operationDifficulty -> createOperationScene",
+        "snapshot.scene.difficultyId et restauration startMission"
+      ]
+    },
+    "AUD-046": {
+      "originalAcceptance": "Une unité en difficulté quitte le front par un trajet réel, conserve ses pertes et revient seulement si renforcée.",
+      "accepted": true,
+      "review": "La retraite conserve le trajet réel et les pertes. Le regroupement ne peut pas être quitté sur simple remontée du moral : un groupe de soutien déjà alloué doit réellement arriver, avec une source encore utilisable, avant le retour. Les réserves restent finies, sans création d’unités ni guérison ; la reprise conserve cet état. CommandMap affiche le refus reconstitution_required.",
+      "checks": [
+        "positions intermédiaires sur route physique",
+        "mort ally-1 conservée et identités/HP totaux inchangés",
+        "moral80 seul ne libère pas le regroupement",
+        "soutien alloué finit sa route avant group_reconstituted",
+        "source coupée interdit la récupération",
+        "checkpoint reconstitution et refus traduit dans CommandMap"
+      ]
+    },
+    "AUD-107": {
+      "originalAcceptance": "La recherche de cibles ne domine pas le temps CPU lorsque l’effectif double; les résultats restent déterministes pour le test.",
+      "accepted": true,
+      "review": "Le benchmark Node sur les vrais gestionnaires Horde/Marines double16→32 acteurs, sans relever le plafond32. La part inclusive de selectBattleTarget reste sous50% dans les répétitions mesurées (maximum33,46% puis42,61%), avec empreintes d’état et de cibles identiques. Les compteurs distants512→1024 croissent linéairement ; le temps de combat distant complet63,75% comprend dégâts/morts et n’est pas une mesure de recherche seule. Aucune mesure universelle, FPS, GPU ou matérielle des joueurs n’est certifiée.",
+      "checks": [
+        "profil Node inspector inclusif selectBattleTarget sur vraies mises à jour",
+        "deux répétitions déterministes par effectif avec hash cibles/état",
+        "16→32, plafond détaillé32 inchangé",
+        "benchmark sources avant/après identiques et revérifiées pendant cette revue",
+        "remoteCombatShare explicitement séparé de detailedTargetSearch",
+        "parts mesurées33.46% et42.61%, pas budget matériel universel"
+      ]
+    }
+  },
+  "benchmark": {
+    "path": "docs/qa/strategic-depth-20261028/targeting-benchmark.json",
+    "sha256": "b3b5b98ba049b2f57f00f1d1c599fe1c78834d82cb262334eca6f44e6bfcd59c",
+    "sourceHashesMatchAtReview": true,
+    "detailed16MaximumShare": 0.33459568229169756,
+    "detailed32MaximumShare": 0.42610359943199355,
+    "detailedDoublingRatio": 1.8026157195431982,
+    "remoteDoublingRatio": 1.8099878265397076,
+    "remoteScope": "complete _remoteCombat phase, not pure search"
+  }
+}

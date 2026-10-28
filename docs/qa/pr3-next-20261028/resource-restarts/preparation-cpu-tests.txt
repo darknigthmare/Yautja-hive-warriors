@@ -1,0 +1,17 @@
+✔ final index and source pins are mandatory before a run, with ten measured cycles fixed (3.228967ms)
+✔ successful asset settlement cancels its loser timer and returns no fulfilled resource graph (2.067929ms)
+✔ asset timeout clears its deadline even when the model promise never resolves (5.532972ms)
+✔ resource observers share one listener and retain only shared UUID strings beyond weak references (0.638905ms)
+✔ all ten stable cleanup samples and actual resident textures pass without declaring a stable heap (1.287514ms)
+✔ an intermediate resource increase fails even when first and last samples match (0.427655ms)
+✔ changed UUID, missing upload, disposal or invalid image dimensions each fail shared-texture residency (2.835575ms)
+✔ retained Horde players or combat actors fail cleanup independently of stable GPU counters (1.116047ms)
+✔ an incomplete or shorter measured window can never be reported as ten passed restarts (1.122431ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 141.506409

@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "acceptedCriterion": "AUD-105",
+  "sourceCommit": "5089228a12ac2985ef03e72782fd29e8687f6b33",
+  "sourceFingerprint": "6958b3dfe9552d85fc8ce08c86acfe5e4cf5188808656b707a548376997cddfe",
+  "indexSha256": "643b94f665f1eb3057d35e74b8313968683372f709fdeed671b0c1045b66db0d",
+  "scope": "Exact ten-restart criterion after the predeclared historical20warmup protocol; one City Hunter/LA sandbox workload, not all contexts, cold starts or general leak freedom.",
+  "review": "Nouvelle passe complèteB de30cycles, vingt préchauffages puis les dixmesures fixées21–30, toutes strictement identiques :115géométriesGPU/50textures/17programmes,12enfants/340nœuds, mêmes sixtextures importées uploadées et jamais disposées, cachesjoueurs/managers vides. TraceB attribue ses hausses de préchauffage aux premiersdrawsRunnerLOD1 etWarriorLOD1, cacheCPUHorde68constant, puis plateau9–30. V8:0PlayerLike20→30 et comptes des classesThree identiques. Le protocoleA5/10 reste échoué95→102, intact ; ses septgéométries exactes ne sont pas attribuées par extrapolation deB. Le heapGC B augmente400124octets(+2,36%) ; aucune absence générale de fuite/VRAM/FPS/humain/1:1 certifiée.",
+  "protocol_A_preserved": {
+    "report": "docs/qa/pr3-next-20261028/resource-restarts/final-5089228/report.json",
+    "manifestSha256": "6b0d063c46207a8a0a9c718cd33a79f599175943ba174e095bdbd7f16dd098de",
+    "status": "failed5warm10measured"
+  },
+  "protocol_B": {
+    "warmups": 20,
+    "measuredIndices": [
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30
+    ],
+    "allTenCountersEqual": true,
+    "sharedTextureUUIDs": [
+      "7b629842-7292-497c-940e-89137e4c1c41",
+      "9479eb1f-eb4d-444c-8ffa-4be668fad213",
+      "a59c9e03-e9fe-455e-8559-684d32cc9263",
+      "c001f022-7afe-441a-8235-80d6caca5b71",
+      "dfc1854a-642a-4f1a-ab34-e5de7e481e8e",
+      "f019b359-5db0-4ff4-955f-e8a28adcab7d"
+    ],
+    "heapAfterGCDeltaBytes": 400124,
+    "heapAfterGCDeltaPercent": 2.3606341813486043
+  },
+  "proofs": [
+    {
+      "path": "docs/qa/pr3-next-20261028/resource-restarts/historical20-5089228/manifest.json",
+      "sha256": "217b67ab20686c1b2a692ccf8a523f0dedd0ce44c77762033e7d0757c0ba4bb4"
+    },
+    {
+      "path": "docs/qa/pr3-next-20261028/resource-restarts/historical20-5089228/report.json",
+      "sha256": "63328ef79bc1659e4f042b48a2e52bbd5c7e055b8a1956a6856f69b774086db2"
+    },
+    {
+      "path": "docs/qa/pr3-next-20261028/resource-restarts/historical20-5089228/comparison.json",
+      "sha256": "7a65c759f43287e87ee41583d265dba13160b6c5518f766db2c4c9e2b646def1"
+    },
+    {
+      "path": "docs/qa/pr3-next-20261028/resource-restarts/historical20-5089228/heap-summary.json",
+      "sha256": "d6aa04367c2d9cfc37f268dd39aa17c4cfdd742a3e56b38dfd2dc70fbc1f7bfc"
+    },
+    {
+      "path": "docs/qa/pr3-next-20261028/resource-restarts/historical20-5089228/geometry-upload-events.json",
+      "sha256": "4b7617a95b7f87dd5ac1019450c3b526aefe1ad9bb68955fccae9b47de0bd949"
+    },
+    {
+      "path": "docs/qa/pr3-next-20261028/resource-restarts/historical20-5089228/geometry-trace-table.csv",
+      "sha256": "aa73230a7fbefea5f42d8070753c51b5e8e0624b6b72c29207a05ef634955c57"
+    }
+  ],
+  "humanTesters": 0,
+  "fidelity1to1Verified": false
+}

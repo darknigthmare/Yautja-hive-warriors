@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-28",
+  "scope": "CPU physical-world behavior review, not rendered GPU crossing, human wayfinding or 1:1 certification.",
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "manifest": {
+    "path": "docs/qa/pr3-next-20261028/world-depth/manifest.json",
+    "sha256": "779603b9394b25c4de7251e90ffaa8e78b100b4467f54e0a6794ef22548f9194"
+  },
+  "logs": [
+    {
+      "path": "docs/qa/pr3-next-20261028/world-depth/new-tests.txt",
+      "sha256": "6554ad1a983a27b924a189662bd7ac7554db2c64a27438133641ab68536ce052"
+    },
+    {
+      "path": "docs/qa/pr3-next-20261028/world-depth/regression-tests.txt",
+      "sha256": "e899fc3c946eae84eec7eb1a8d364859c416d3493c249bbed8dc2432ddb5a082"
+    }
+  ],
+  "passedTests": 133,
+  "sourceComparison": {
+    "allOtherRecordedSourcesAndTestsMatch": true,
+    "changedSource": {
+      "js/entities/ReferenceEnvironmentMechanisms.js": {
+        "recorded": "c21e65a7762b720087bb1fb01cdf3f64c245182953f4d4726e58e4b0f27bc53b",
+        "current": "9d1e72cde894d11394c9330592f343c42062375a573d8dba6213bb8345272523"
+      }
+    },
+    "reason": "Shared Reference file received only separately authorized Prey checkpoint APIs/helpers and one fire factory extraction after the world run; world builders, access surfaces and navigation were not modified by those changes."
+  },
+  "accepted": {
+    "AUD-058": {
+      "review": "34 propositions, deux graines chacune, identifiants/ancrages stables et coordonnées différentes ;68 constructions effectivement parcourues avec pas≤1 et ΔY≤0,66. Les34 graines par défaut passent aussi leurs régressions. La compatibilité des builders reste celle des profils de référence/contextes sélectionnés, sans certification géographique1:1."
+    },
+    "AUD-064": {
+      "review": "Les surfaces tactiques enregistrées (rampes/tabliers industriels, héliport, résine, caillebotis acide, ponts) possèdent accès et triangles physiques cohérents. Un vrai USCM quitte le dessous, utilise la rampe et atteint le tablier sans téléportation ; hauteurs haut/bas, rayons, plafonds et saut du vrai Player sont testés. Cette validation porte sur les surfaces jouables déclarées, pas sur un navmesh universel des accessoires décoratifs hérités."
+    }
+  },
+  "remainOpen": {
+    "AUD-067": "La compréhension humaine des chemins et le contraste rendu ne sont pas prouvés par des coordonnées ou maillages seuls.",
+    "AUD-112": "Le parcours CPU trois zones/retour garde objectifs/destruction/buffers ; franchissements rendus, uploads du pilote et pauses des appareils restent hors de cette preuve."
+  }
+}

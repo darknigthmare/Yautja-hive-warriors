@@ -1,0 +1,23 @@
+# Alliés à terre et secours — AUD-035
+
+Le système s'applique aux Yautja alliés possédant une identité militaire préallouée. Leur premier impact létal les met à terre une fois : ils gardent 1 PV et leur identité, restent comptés dans l'armée et dans le budget des acteurs détaillés, mais le moteur marque `incapacitated`. Leurs attaques, déplacements, capture et commandement sont suspendus. Cela ne produit ni mort, ni score, ni récompense de trophée. Un profil peut refuser cette règle avec `rescuable: false`. Les renforts ordinaires non alloués et les deux joueurs ne sont pas transformés en nouveaux bénéficiaires de cette règle.
+
+Le secours de proximité prend trois secondes et coûte un medicomp au succès. Un impact reçu par le sauveteur, un déplacement supérieur à 0,65 unité, un obstacle, un écart de hauteur excessif ou la perte du patient interrompt sans dépenser. Les deux joueurs peuvent secourir, mais un seul canal peut concerner un patient à la fois. Une admission répétée ne remet pas sa progression à zéro. Une charge dépensée pendant le canal par une autre action peut empêcher son achèvement ; le stock n'est jamais négatif.
+
+L'allié secouru retrouve 25 % de ses PV maximaux et une brève récupération de 0,45 seconde. Il ne peut plus recevoir une autre vie à terre : son prochain impact létal est une vraie mort. Un allié non secouru succombe après 25 secondes de simulation, même si son corps est désormais hors champ. Un coup de grâce peut l'achever plus tôt. La pause et un delta nul figent ces temporisations. Si une complétion de secours et un saignement arrivent dans la même frame, leur ordre temporel réel est résolu ; une égalité exacte donne priorité à la mort. Les contrôles couvrent 30, 60 et 120 Hz.
+
+La posture est une rotation procédurale du modèle entier via un pivot enfant. Elle ne découpe aucun corps, ne pondère aucun nouveau squelette, ne change aucune texture et n'est pas présentée comme une animation de film ou une simulation anatomique 1:1. La projection conserve la résolution physique X/Z et demande au terrain la couche verticale sauvegardée, afin de ne pas replacer un corps dans un pont ou un volume modifié.
+
+## Persistance et raccordement
+
+`AllyRescueSystem` reçoit le moteur, la Map du Bridge, un fournisseur des joueurs et le décor. `bindManager(allies)` active l'interception dans `YautjaAlliesManager.defeatCombatant`. L'instance expose `tryDown`, `onMaterialize`, `onDematerialize`, `hasDowned`, `interact`, `getPrompt`, `update`, `serialize`, `restore` et `dispose`. Le prompt est un objet avec `label`, `unitId`, `channeling` et `progress`.
+
+La collecte d'un acteur HP0 par `BattleActorBridge.sync` appelle d'abord le gestionnaire puis réévalue ses PV : une interception à 1 PV ne doit pas ensuite appeler les registres de décès. Le résultat d'une frappe est lui aussi recalculé après cette interception. Le retour au niveau distant conserve les PV, la position, la durée et le drapeau d'incapacité, puis libère réellement le corps local. Le retour proche d'un groupe allié contenant un patient connu réutilise les mêmes identités sous le même plafond, sans offrir cette exception aux ennemis.
+
+Les sauvegardes distinguent patient à terre, secouru, mort, capturé et évacué. Les durées, l'utilisation de cette chance unique, les canaux et leurs ressources restent liés à l'opération. Une reprise attend le vrai retour du corps avant de poursuivre un canal sauvegardé ; elle n'accorde pas de soin à une projection absente. Une évacuation réelle ferme ce secours sans créer une fausse mort. Un ancien medicomp de soin ordinaire ne réanime pas un acteur à terre : cette admission est refusée avant sa dépense.
+
+## Vérification
+
+`tests/ally-rescue.test.js` vérifie les vrais gestionnaires et le moteur : premiers impacts, contribution perdue puis retrouvée, interruption, coopération, achèvement, saignement hors champ, évacuation, sauvegarde/reprise et ordre des événements. Les essais transverses utilisent le vrai Bridge pour HP0 observé avant mise à jour du gestionnaire, la différence entre blessure et kill, et la disparition/réapparition du même groupe allié suivie d'un secours effectif. Le test de navigation suit l'accès physique vers une cible en hauteur et laisse l'allié à terre immobile.
+
+La passe de livraison [35 tests](qa/ally-rescue-35-tests.txt) combine ces quinze cas avec les régressions de formations, compagnons et identités de combat. Les tirs, positions et quelques transitions LOD de ces essais CPU sont des fixtures contrôlées. Ils ne constituent pas des playtests humains, une certification de fidélité visuelle ou une mesure matérielle. Le routage final des touches E/Entrée, le HUD et la recette visuelle appartiennent à la validation globale du coordinateur.
