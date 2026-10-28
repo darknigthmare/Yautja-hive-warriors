@@ -7,6 +7,8 @@ import { createCreatureModel, animateCreatureModel } from '../graphics/CreatureM
 import { buildHunterModel } from '../graphics/HunterModel.js';
 import { CHARACTERS_DATA } from '../data/charactersData.js';
 import { getBossDefinition, bossCanAttack } from '../data/BossRegistry.js';
+import { validatePreparedBossEncounter, validateBossCombatState, BOSS_COOLDOWN_KEYS } from '../data/BossEncounterValidation.js';
+import { getBossCombatPattern } from '../data/BossCombatPatterns.js';
 import { applyBattleUnit, selectBattleTarget, listBattleTargets, moveBattleOrder, requestNPCStrike } from '../engine/BattleActorSupport.js';
 import { recordCombatDeath } from '../engine/CombatEvents.js';
 
@@ -23,30 +25,45 @@ export class BossManager {
     this.pendingActions = [];
     this.effects = [];
     this.time = 0;
+    this.suspendedCombat = null;
   }
 
 
-  spawnBoss(type, spawnPos) {
-    const definition = getBossDefinition(type); // Validate before clearing a live encounter.
+  spawnBoss(type, spawnPos, prepared = null) {
+    const definition = prepared ? validatePreparedBossEncounter(prepared, type) : getBossDefinition(type);
     if (!spawnPos?.isVector3 || !spawnPos.toArray().every(Number.isFinite)) throw new TypeError('Boss spawn position must be finite');
-    this.clear();
-    const mesh = this.createBossMesh(type);
-    mesh.position.copy(spawnPos);
-    mesh.traverse(child => { if (child.isMesh) child.castShadow = true; });
-    mesh.updateMatrixWorld(true);
-    const bounds = new THREE.Box3().setFromObject(mesh, true), height = bounds.max.y - bounds.min.y;
-    if (Number.isFinite(height) && height > 1e-5) mesh.scale.multiplyScalar(definition.height / height);
+    type = definition.id;
+    // Construction must also succeed before replacing an existing encounter.
+    const visualModel = this.createBossMesh(type);
+    if (!visualModel?.isObject3D) throw new TypeError('Boss builder must return a scene object');
+    visualModel.traverse(child => { if (child.isMesh) child.castShadow = true; });
+    visualModel.updateMatrixWorld(true);
+    const bounds = new THREE.Box3().setFromObject(visualModel, true), height = bounds.max.y - bounds.min.y;
+    if (!bounds.isEmpty() && ![...bounds.min.toArray(), ...bounds.max.toArray()].every(Number.isFinite)) {
+      disposeObject(visualModel, this.sharedResources); throw new TypeError('Boss builder produced nonfinite geometry');
+    }
+    if (Number.isFinite(height) && height > 1e-5) {
+      visualModel.scale.multiplyScalar(definition.height / height); visualModel.updateMatrixWorld(true);
+      bounds.setFromObject(visualModel, true); visualModel.position.y -= bounds.min.y;
+    }
+    // The actor's root is its feet. Keep visual normalization separate from
+    // physical movement, so bridges/culls cannot sink a tall model again.
+    const mesh = new THREE.Group(); mesh.name = `boss-${type}`; mesh.add(visualModel); mesh.position.copy(spawnPos);
+    Object.assign(mesh.userData, visualModel.userData); mesh._bossHunterOwner = visualModel._bossHunterOwner;
     mesh.userData.encounterProfile = definition.id; mesh.userData.assetFidelity = definition.assetFidelity;
-    this.scene.add(mesh);
-    this.activeBoss = { type, definition, mesh, hp: definition.hp, maxHp: definition.hp,
+    this.clear(); this.scene.add(mesh);
+    this.activeBoss = { type, definition, mesh, visualModel, hp: definition.hp, maxHp: definition.hp,
       phase: 1, isStunned: false, stunTimer: 0, hasEnteredStun: false,
       contactCooldown: 1.4, tailWhipCooldown: 3.5, spitCooldown: 4,
       regurgitateCooldown: 5, shriekCooldown: 4, specialCooldown: 5,
-      phaseShieldHp: 1800, hasPhaseShield: false, broodAllowance: 6, shieldUntil: 0 };
+      phaseShieldHp: 1800, hasPhaseShield: false, broodAllowance: 6, shieldUntil: 0,
+      preparedEncounter: prepared ? { ...prepared } : null, pattern: getBossCombatPattern(type),
+      weaponSequence: 0, pressureAim: null, exposedUntil: 0 };
     this.activeBoss.combatManager = this;
     this.activeBoss.takeDamage = (amount, details = {}) => this.takeDamage(amount, null, { killerFaction: 'player_clan', ...details });
     const cue = type === 'feral_predator_boss' ? 'playFeralPredatorPrimalRoar'
       : type === 'the_offspring' ? 'playOffspringShriek' : 'playYautjaRoar';
+    this._updateAttackReadout(this.activeBoss);
     this.audioEngine?.[cue]?.();
     return this.activeBoss;
   }
@@ -112,9 +129,22 @@ export class BossManager {
   takeDamage(amount, horde = null, details = {}) {
     const boss = this.activeBoss;
     if (!boss || boss.hp <= 0 || !Number.isFinite(amount) || amount <= 0) return null;
+    const heavy = ['heavy', 'charged', 'heavy-melee'].includes(details.attackKind ?? details.cause);
+    const origin = details.origin ?? details.attacker?.position;
+    if (boss.pattern?.frontalArmor && origin?.isVector3 && this.time >= boss.exposedUntil) {
+      const direction = origin.clone().sub(boss.mesh.position).setY(0).normalize();
+      const forward = new THREE.Vector3(Math.sin(boss.mesh.rotation.y), 0, Math.cos(boss.mesh.rotation.y));
+      if (forward.dot(direction) > .45) amount *= boss.pattern.frontalArmor;
+    }
+    if (heavy && ((boss.pattern?.mechanic === 'interruptible-brood' && boss.pressureAction === 'embryos') ||
+      (boss.pattern?.mechanic === 'heavy-charge-interrupt' && boss.pressureAction === 'charge'))) {
+      releaseHostileAttack(this, boss); boss.pressureAction = null; boss.pressureAim = null;
+      boss.isStunned = true; boss.stunTimer = 1.8; boss.specialCooldown = 5; boss.regurgitateCooldown = 5;
+      boss.exposedUntil = this.time + 2.5; this.onCounterplay?.({ bossType: boss.type, reason: 'heavy_interrupt', duration: 1.8 });
+    }
     if (boss.hasPhaseShield) {
       const absorbed = Math.min(boss.phaseShieldHp, amount * .6);
-      boss.phaseShieldHp -= absorbed; amount -= absorbed;
+      boss.phaseShieldHp -= Math.min(boss.phaseShieldHp, absorbed * (heavy ? 2 : 1)); amount -= absorbed;
       if (boss.phaseShieldHp <= 0) { boss.hasPhaseShield = false; if (boss.mesh.userData.phaseShield) boss.mesh.userData.phaseShield.visible = false; this.audioEngine?.playEngineerBioArmorShatter?.(); }
     }
     if (boss.definition?.shield && this.time < boss.shieldUntil && details.cause !== 'reflected-bolt') amount *= .45;
@@ -123,14 +153,20 @@ export class BossManager {
       const event = recordCombatDeath(this, boss, { kind: boss.type, isBoss: true, cause: details.cause ?? 'combat', ...details });
       this.lastDeathEvent = event; this.onDefeated?.(event); this.clear(); return event;
     }
+    this._syncPhaseFromHealth(boss, horde);
+    this._updateAttackReadout(boss);
+    return null;
+  }
+
+  _syncPhaseFromHealth(boss, horde = null) {
     const nextPhase = boss.hp <= boss.maxHp * .3 ? 3 : boss.hp <= boss.maxHp * .65 ? 2 : 1;
     if (nextPhase > boss.phase) {
       boss.phase = nextPhase;
+      this.onPhaseChanged?.({ bossType: boss.type, bossId: boss.battleUnitId ?? boss.type, phase: boss.phase, hp: boss.hp, maxHp: boss.maxHp });
       if (boss.type === 'awakened_engineer' && nextPhase === 2) { boss.hasPhaseShield = true; if (boss.mesh.userData.phaseShield) boss.mesh.userData.phaseShield.visible = true; }
       if (boss.type.includes('predalien') && horde) this.triggerPregnantBurstFrenzy(horde);
     }
     if (nextPhase === 3 && !boss.hasEnteredStun) { boss.isStunned = true; boss.hasEnteredStun = true; boss.stunTimer = 3.5; }
-    return null;
   }
 
   executeBoss(victim, { player, range = 6, killerFaction = 'player_clan' } = {}) {
@@ -150,7 +186,11 @@ export class BossManager {
     const boss = this.activeBoss;
     if (!boss || !bossCanAttack(boss.type, 'tail')) return false;
     this.audioEngine?.playQueenTailWhip?.(); boss.tailSpinLife = .32;
-    if (boss.mesh.position.distanceTo(player.position) <= 8.5) {
+    const pattern = boss.pattern?.mechanic;
+    const aimed = pattern === 'frontal-tail-pounce' ? this._insideAttackCone(player, Math.PI * .8)
+      : pattern === 'frontal-carapace' ? this._insideAttackCone(player, Math.PI, true) : true;
+    if (Math.hypot(boss.mesh.position.x - player.position.x, boss.mesh.position.z - player.position.z) <= 8.5 &&
+        player.position.y < boss.mesh.position.y + 1.2 && aimed) {
       this.applyBossDamage(player, 100, 'tail', boss);
       const direction = player.position.clone().sub(boss.mesh.position).setY(0).normalize();
       player.position.addScaledVector(direction, 4); player.mesh?.position.copy(player.position);
@@ -163,7 +203,7 @@ export class BossManager {
     this.audioEngine.playQueenAcidSpit();
 
     const origin = this.activeBoss.mesh.position.clone().add(new THREE.Vector3(0, 4.0, 0));
-    const target = player.position.clone();
+    const target = (this.activeBoss.pressureAim ?? player.position).clone();
     const spitDir = target.clone().sub(origin).normalize();
 
     const acidGeo = new THREE.SphereGeometry(0.4, 8, 8);
@@ -189,6 +229,7 @@ export class BossManager {
     for (const list of [this.acidSpitProjectiles, this.embryoProjectiles, this.weaponProjectiles, this.effects]) for (const item of list ?? []) disposeObject(item.mesh);
     this.acidSpitProjectiles = []; this.embryoProjectiles = []; this.weaponProjectiles = []; this.effects = [];
     this.pendingHatches = []; this.pendingActions = []; this.maskTarget = null;
+    this.suspendedCombat = null;
   }
 
   update(delta, player, horde = null) {
@@ -196,10 +237,19 @@ export class BossManager {
     this.time += delta;
     const boss = this.activeBoss;
     if (boss.hp <= 0) { const event = recordCombatDeath(this, boss, { kind: boss.type, isBoss: true, killerFaction: boss.lastDamageFaction }); this.lastDeathEvent = event; if (event) this.onDefeated?.(event); this.clear(); return; }
+    this._syncPhaseFromHealth(boss, horde);
     const living = this.combatDirector?.livingPlayers?.length ? this.combatDirector.livingPlayers : (Array.isArray(player) ? player : [player]);
     const players = boss.battleUnitId && this.battleSimulation ? listBattleTargets(this, boss, living) : living.filter(target => target?.hp > 0 && target.position);
     const collisionTarget = (position, radius) => players.filter(target => position.distanceTo(target.position) < radius)
       .sort((a, b) => position.distanceToSquared(a.position) - position.distanceToSquared(b.position))[0];
+    for (let i = this.pendingActions.length - 1; i >= 0; i--) {
+      const action = this.pendingActions[i]; action.life -= delta;
+      if (action.life > 1e-8) continue;
+      this.pendingActions.splice(i, 1);
+      if (action.owner !== boss) continue;
+      if (action.kind === 'burst') this.fireBossWeapon(action.target, action.weapon, { aim: action.aim, volley: action.volley, burstChild: true });
+      else if (action.kind === 'shockwave') players.forEach((target, index) => this._shockwave(target, action.radius, action.damage, action.color, { innerRadius: action.innerRadius, visual: index === 0 }));
+    }
     this._updateWeaponProjectiles(delta, players);
     if (this.activeBoss !== boss) return;
     for (let i = this.effects.length - 1; i >= 0; i--) {
@@ -223,6 +273,13 @@ export class BossManager {
       if (target || cover || projectile.mesh.position.y <= .1 || projectile.life <= 0) { disposeObject(projectile.mesh); this[key].splice(i, 1); }
     }
     player = boss.battleUnitId && this.battleSimulation ? selectBattleTarget(this, boss, living) : selectHostileTarget(this, boss.mesh.position, Array.isArray(player) ? players[0] : player);
+    if (boss.type === 'feral_predator_boss') {
+      const detectable = players.filter(target => this._canFeralAcquire(target)).sort((a, b) => boss.mesh.position.distanceToSquared(a.position) - boss.mesh.position.distanceToSquared(b.position));
+      if (!player || !this._canFeralAcquire(player)) player = detectable[0] ?? null;
+      const signature = (player ?? players[0])?.getThermalSignatureMultiplier?.() ?? 1;
+      boss.thermalAcquireRange = 35 * (Number.isFinite(signature) ? Math.max(.1, Math.min(1, signature)) : 1);
+      if (player) boss.lastKnownTarget = { position: player.position.clone(), time: this.time };
+    }
     if (this.maskTarget) { this.maskTarget.life -= delta; if (this.maskTarget.life <= 0) this.maskTarget = null; }
     if (boss.charge) {
       const charge = boss.charge; charge.life -= delta;
@@ -230,16 +287,36 @@ export class BossManager {
       boss.mesh.position.addScaledVector(charge.direction, charge.speed * delta);
       if (charge.kind === 'leap') boss.mesh.position.y = charge.startY + Math.sin(Math.PI * Math.min(1, 1 - charge.life / charge.duration)) * 2.4;
       this.environment?.resolveMovement?.(boss.mesh.position, 2.0);
+      if (charge.kind === 'charge' && boss.pattern?.mechanic === 'wall-stagger' &&
+          Math.hypot(boss.mesh.position.x - before.x, boss.mesh.position.z - before.z) < charge.speed * delta * .25) {
+        boss.charge = null; boss.isLeaping = false; boss.isStunned = true; boss.stunTimer = 2.6; boss.exposedUntil = this.time + 3.2;
+        this.onCounterplay?.({ bossType: boss.type, reason: 'charge_hit_cover', duration: 2.6 }); return;
+      }
       const path = new THREE.Line3(before, boss.mesh.position), nearest = new THREE.Vector3();
       for (const target of players) if (!charge.hit.has(target)) {
         path.closestPointToPoint(target.position, true, nearest);
-        if (nearest.distanceTo(target.position) <= 2.5 && target.position.y < 1.4) { charge.hit.add(target); this.applyBossDamage(target, charge.damage, charge.kind, boss); }
+        if (nearest.distanceTo(target.position) <= 2.5 && target.position.y < charge.startY + 1.4) { charge.hit.add(target); this.applyBossDamage(target, charge.damage, charge.kind, boss); }
       }
-      if (charge.life <= 0) { if (charge.kind === 'leap') boss.mesh.position.y = charge.startY; boss.charge = null; }
-      return;
+      if (charge.life <= 0) {
+        if (charge.kind === 'leap') boss.mesh.position.y = charge.startY;
+        boss.charge = null; boss.isLeaping = false; boss.exposedUntil = this.time + 1.4;
+        if (charge.kind === 'leap' && boss.pattern?.mechanic === 'landing-aftershock') this.pendingActions.push({ kind: 'shockwave', owner: boss, life: .65, radius: 7, innerRadius: 0, damage: 55, color: 0xffb36b });
+      }
+      this._updateAttackReadout(boss); return;
     }
-    if (!player || player.hp <= 0) { releaseHostileAttack(this, boss); if (boss.battleUnitId) moveBattleOrder(this, boss, delta, 7.5); return; }
-    if (boss.isStunned) { releaseHostileAttack(this, boss); boss.pressureAction = null; boss.stunTimer -= delta; if (boss.stunTimer <= 0) boss.isStunned = false; return; }
+    if (!player || player.hp <= 0) {
+      releaseHostileAttack(this, boss); boss.pressureAction = null; boss.pressureAim = null;
+      if (boss.battleUnitId) moveBattleOrder(this, boss, delta, 7.5);
+      else if (boss.lastKnownTarget && this.time - boss.lastKnownTarget.time <= 4) {
+        const toward = boss.lastKnownTarget.position.clone().sub(boss.mesh.position).setY(0), distance = toward.length();
+        if (distance > 3) {
+          const step = Math.min(7.5 * delta, distance - 3); boss.mesh.position.addScaledVector(toward.normalize(), step);
+          this.environment?.resolveAgentMovement?.(boss.mesh.position, boss.lastKnownTarget.position, step, 1.8);
+        }
+      }
+      this._updateAttackReadout(boss); return;
+    }
+    if (boss.isStunned) { releaseHostileAttack(this, boss); boss.pressureAction = null; boss.pressureAim = null; boss.stunTimer -= delta; if (boss.stunTimer <= 0) boss.isStunned = false; this._updateAttackReadout(boss); return; }
     for (const [key, initial] of [['tailWhipCooldown', 3.5], ['spitCooldown', 4], ['regurgitateCooldown', 5], ['shriekCooldown', 4], ['contactCooldown', 1.4], ['specialCooldown', 5]]) boss[key] = Math.max(0, (boss[key] ?? initial) - delta);
     const dir = player.position.clone().sub(boss.mesh.position); dir.y = 0;
     boss.weaponRecovery = Math.max(0, (boss.weaponRecovery ?? 0) - delta);
@@ -254,31 +331,42 @@ export class BossManager {
       else if (distance <= 16 && boss.shriekCooldown <= 0 && choose('shriek')) boss.pressureAction = 'shriek';
       else if (distance > 6 && distance < 24 && boss.specialCooldown <= 0 && (choose('charge') || choose('leap'))) boss.pressureAction = choose('charge') ? 'charge' : 'leap';
       else if (distance > 5 && distance < 28 && boss.regurgitateCooldown <= 0 && choose('embryos')) boss.pressureAction = 'embryos';
-      else if (distance > 7 && distance < 35 && boss.spitCooldown <= 0) boss.pressureAction = ['bolt', 'plasma', 'disc', 'spit'].find(choose) ?? null;
+      else if (distance > 7 && distance < 35 && boss.spitCooldown <= 0) {
+        const sequence = boss.pattern.weapons ?? ['bolt', 'plasma', 'disc', 'spit'];
+        boss.pressureAction = sequence[boss.weaponSequence % sequence.length];
+        if (!choose(boss.pressureAction)) boss.pressureAction = sequence.find(choose) ?? null;
+      }
       else if (distance <= 3.8 && boss.contactCooldown <= 0) boss.pressureAction = 'melee';
+      if (boss.pressureAction) boss.pressureAim = player.position.clone();
     }
     const action = boss.pressureAction;
     const ranges = { tail: 8.5, gale: 11, slam: 10, vortex: 14, constrict: 6, shriek: 16, charge: 24, leap: 24, embryos: 28, bolt: 35, plasma: 35, disc: 35, spit: 35, melee: 4.5 };
-    if (action && distance > ranges[action] + 1) { releaseHostileAttack(this, boss); boss.pressureAction = null; }
+    if (action && distance > ranges[action] + 1) { releaseHostileAttack(this, boss); boss.pressureAction = null; boss.pressureAim = null; }
     else if (action && (player.isBattleNPC ? requestNPCStrike(boss, player, delta, {windup: action === 'melee' ? .95 : 1.25, recovery:1.8}) : requestHostileAttack(this, boss, player, delta, { kind: 'boss', windup: action === 'melee' ? .95 : 1.25, recovery: 1.8, duration: ['spit', 'embryos', 'bolt', 'plasma', 'disc'].includes(action) ? 2.5 : .65 }))) {
       if (action === 'tail') { boss.tailWhipCooldown = 4.8; this.triggerTailWhip(player); }
       else if (action === 'gale') { boss.specialCooldown = 7; this.triggerEmpressGale(player, horde); }
       else if (action === 'spit') { boss.spitCooldown = 5; this.spitAcidMortar(player); }
       else if (action === 'embryos') { boss.regurgitateCooldown = 7; this.regurgitateChestbursters(player, horde); }
-      else if (['bolt', 'plasma', 'disc'].includes(action)) { boss.spitCooldown = action === 'bolt' ? 5 : 5.8; this.fireBossWeapon(player, action); }
+      else if (['bolt', 'plasma', 'disc'].includes(action)) { boss.spitCooldown = action === 'bolt' ? 5 : 5.8; this.fireBossWeapon(player, action); boss.weaponSequence++; }
       else if (action === 'slam') { boss.specialCooldown = 7; this.triggerMatriarchRoyalSlam(player, horde); }
       else if (action === 'vortex') { boss.specialCooldown = 8; this.triggerEngineerGravitationalVortex(player, horde); }
       else if (action === 'constrict') { boss.specialCooldown = 6; this.triggerTrilobiteConstrict(player); }
-      else if (action === 'charge' || action === 'leap') { const duration = action === 'leap' ? .85 : .7; boss.specialCooldown = 7; boss.charge = { kind: action, direction: dir.normalize(), life: duration, duration, startY: boss.mesh.position.y, speed: action === 'leap' ? Math.min(26, Math.max(12, distance / duration)) : 16, damage: 70, hit: new Set() }; }
-      else if (action === 'shriek') { boss.shriekCooldown = 6; this.audioEngine?.playOffspringShriek?.(); if (distance <= 10 && player.position.y < 1.2) { this.applyBossDamage(player, 60, 'shriek', boss); if (Number.isFinite(player.plasmaEnergy)) player.plasmaEnergy = Math.max(0, player.plasmaEnergy - 25); } }
+      else if (action === 'charge' || action === 'leap') { const duration = action === 'leap' ? .85 : .7; boss.specialCooldown = 7; boss.isLeaping = action === 'leap'; boss.charge = { kind: action, direction: (boss.pressureAim ?? player.position).clone().sub(boss.mesh.position).setY(0).normalize(), life: duration, duration, startY: boss.mesh.position.y, speed: action === 'leap' ? Math.min(26, Math.max(12, distance / duration)) : 16, damage: 70, hit: new Set() }; }
+      else if (action === 'shriek') { boss.shriekCooldown = 6; this.audioEngine?.playOffspringShriek?.(); if (distance <= 10 && this._insideAttackCone(player, Math.PI * .7) && this.applyBossDamage(player, 60, 'shriek', boss) && Number.isFinite(player.plasmaEnergy)) player.plasmaEnergy = Math.max(0, player.plasmaEnergy - 25); }
       else { boss.contactCooldown = 2.1; boss.shieldUntil = this.time + .85; if (distance <= 4.5) this.applyBossDamage(player, boss.definition.species === 'yautja' ? 65 : boss.type === 'the_offspring' ? 50 : 35, 'melee', boss); }
-      boss.pressureAction = null;
+      boss.pressureAction = null; boss.pressureAim = null; boss.exposedUntil = Math.max(boss.exposedUntil, this.time + .6);
     }
-    syncHostileWarning(this, boss, 3.2);
+    const warningRadius = ({ tail: 8.5, gale: 11, slam: boss.pattern.mechanic === 'three-seismic-pulses' ? 5 : 9,
+      constrict: 5, shriek: 10, vortex: 14, melee: 4.5 })[boss.pressureAction] ?? 3.2;
+    if (boss.attackWarning && Math.abs((boss.attackWarning.geometry.parameters.outerRadius ?? 0) - warningRadius) > .001) {
+      boss.attackWarning.geometry.dispose(); boss.attackWarning.geometry = new THREE.RingGeometry(warningRadius * .82, warningRadius, 28);
+    }
+    boss.warningRadius = warningRadius; syncHostileWarning(this, boss, warningRadius);
+    this._updateAttackReadout(boss);
     const preparing = this.combatDirector?.getAttackState(boss)?.phase === 'windup' || boss._localAttackPreparation;
     const moving = distance > 3.1 && !preparing && boss.weaponRecovery <= 0;
     boss.visualPhase = (boss.visualPhase || 0) + delta * 5;
-    animateCreatureModel(boss.mesh, boss.visualPhase, moving);
+    animateCreatureModel(boss.visualModel ?? boss.mesh, boss.visualPhase, moving);
     const owner = boss.mesh._bossHunterOwner;
     if (owner) for (const [role, sign] of [['leftArm',-1],['rightArm',1],['leftLeg',1],['rightLeg',-1]]) if (owner[role]) owner[role].rotation.x = moving ? Math.sin(boss.visualPhase) * sign * .22 : 0;
     if (boss.tailSpinLife > 0) { boss.tailSpinLife = Math.max(0, boss.tailSpinLife - delta); boss.mesh.rotation.y += Math.PI * 2 * delta / .32; }
@@ -1094,7 +1182,14 @@ export class BossManager {
     if (!this.activeBoss || !bossCanAttack(this.activeBoss.type, 'vortex')) return false;
     this.audioEngine?.playEngineerGravitationalVortex?.();
     const distance = player.position.distanceTo(this.activeBoss.mesh.position);
-    if (distance > 3 && distance <= 14) { const direction = this.activeBoss.mesh.position.clone().sub(player.position).setY(0).normalize(); player.position.addScaledVector(direction, Math.min(2.5, distance - 3)); player.mesh?.position.copy(player.position); }
+    const from = this.activeBoss.mesh.position.clone().add(new THREE.Vector3(0, 1.8, 0)), to = player.position.clone().add(new THREE.Vector3(0, 1.6, 0));
+    if (this.environment?.hasLineOfSight?.(from, to) === false) return false;
+    if (distance > 3 && distance <= 14) {
+      const direction = this.activeBoss.mesh.position.clone().sub(player.position).setY(0).normalize();
+      const requested = player.position.clone().addScaledVector(direction, Math.min(2.5, distance - 3));
+      this.environment?.resolveMovement?.(requested, player.radius ?? 1);
+      player.position.copy(requested); player.mesh?.position.copy(player.position);
+    }
     return this._shockwave(player, 6, 75, 0x70afbd);
   }
 
@@ -1103,6 +1198,12 @@ export class BossManager {
   triggerMatriarchRoyalSlam(player, horde) {
     if (!this.activeBoss || !bossCanAttack(this.activeBoss.type, 'slam')) return false;
     this.audioEngine?.playRogueKingEarthquakeRoar?.();
+    const boss = this.activeBoss;
+    if (boss.pattern?.mechanic === 'annular-aftershock') this.pendingActions.push({ kind: 'shockwave', owner: boss, life: .85, radius: 15, innerRadius: 9, damage: 65, color: 0xffb57f });
+    else if (boss.pattern?.mechanic === 'three-seismic-pulses') {
+      for (const [life, radius] of [[.65, 10], [1.3, 15]]) this.pendingActions.push({ kind: 'shockwave', owner: boss, life, radius, innerRadius: 0, damage: 55, color: 0xdb947f });
+      return this._shockwave(player, 5, 65, 0xc38e62);
+    }
     return this._shockwave(player, 9, 85, 0xc38e62);
   }
 
@@ -1124,7 +1225,13 @@ export class BossManager {
   triggerEmpressGale(player, horde) {
     if (!this.activeBoss || !bossCanAttack(this.activeBoss.type, 'gale')) return false;
     this.audioEngine?.playQueenTailWhip?.();
-    return this._shockwave(player, 11, 65, 0xb880d4);
+    if (!this._insideAttackCone(player, Math.PI * .85)) return false;
+    const boss = this.activeBoss, damaged = this._shockwave(player, 11, 65, 0xb880d4);
+    if (damaged && player.position.y < boss.mesh.position.y + 1.2) {
+      const requested = player.position.clone().addScaledVector(player.position.clone().sub(boss.mesh.position).setY(0).normalize(), 3);
+      this.environment?.resolveMovement?.(requested, player.radius ?? 1); player.position.copy(requested); player.mesh?.position.copy(requested);
+    }
+    return damaged;
   }
 
   createRecentBossMesh(type) {
@@ -1365,20 +1472,25 @@ export class BossManager {
     return true; // Signal only. Damage requires a later, visible bolt collision.
   }
 
-  fireBossWeapon(player, kind = 'bolt') {
+  fireBossWeapon(player, kind = 'bolt', { aim = null, volley = null, burstChild = false } = {}) {
     const boss = this.activeBoss;
-    if (!boss || !bossCanAttack(boss.type, kind)) return false;
+    if (!boss || !player?.position?.isVector3 || !bossCanAttack(boss.type, kind)) return false;
     const mesh = kind === 'bolt' ? new THREE.Mesh(new THREE.CylinderGeometry(.055, .055, .9, 8), new THREE.MeshStandardMaterial({ color: 0xa8b0b3, metalness: .8, roughness: .3 }))
       : kind === 'disc' ? new THREE.Mesh(new THREE.TorusGeometry(.35, .065, 8, 24), new THREE.MeshStandardMaterial({ color: 0xc8c1a0, metalness: .85, roughness: .3 }))
       : new THREE.Mesh(new THREE.SphereGeometry(.22, 12, 8), new THREE.MeshBasicMaterial({ color: 0x6fd9ff }));
-    const target = player.position.clone().add(new THREE.Vector3(0, 1.7, 0));
+    const aimedPosition = (aim ?? boss.pressureAim ?? player.position).clone();
+    const target = aimedPosition.clone().add(new THREE.Vector3(0, 1.7, 0));
     const origin = boss.mesh.position.clone().add(new THREE.Vector3(0, 2.2, 0));
     const direction = target.sub(origin).normalize(); mesh.position.copy(origin);
     if (kind === 'bolt') mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0), direction);
     this.scene.add(mesh);
     boss.weaponRecovery = .95;
+    const hitPlayers = volley ?? new Set();
     this.weaponProjectiles.push({ mesh, velocity: direction.multiplyScalar(kind === 'bolt' ? 22 : 19), kind, life: 3, age: 0, damage: kind === 'bolt' ? 55 : 60, radius: .25,
-      owner: boss, hitPlayers: new Set(), redirected: false, guidance: kind === 'bolt' && this.maskTarget ? this.maskTarget.aim.clone() : null });
+      owner: boss, hitPlayers, redirected: false, returning: false, travelled: 0, outboundDistance: Math.min(23, origin.distanceTo(target)), guidance: kind === 'bolt' && this.maskTarget ? this.maskTarget.aim.clone() : null });
+    if (!burstChild && kind === 'plasma' && boss.pattern?.mechanic === 'shared-plasma-burst') {
+      for (const life of [.18, .36]) this.pendingActions.push({ kind: 'burst', owner: boss, target: player, weapon: kind, life, aim: aimedPosition.clone(), volley: hitPlayers });
+    }
     this.audioEngine?.[kind === 'bolt' ? 'playFeralPredatorBoltFire' : 'playPlasmaShot']?.();
     return true;
   }
@@ -1389,29 +1501,131 @@ export class BossManager {
       const shot = this.weaponProjectiles[i]; shot.life -= delta; shot.age += delta;
       if (shot.guidance && !shot.redirected && shot.age >= .35) { shot.velocity.copy(shot.guidance).sub(shot.mesh.position).normalize().multiplyScalar(22); shot.redirected = true; }
       segment.start.copy(shot.mesh.position); shot.mesh.position.addScaledVector(shot.velocity, delta); segment.end.copy(shot.mesh.position);
+      shot.travelled += segment.start.distanceTo(segment.end);
       const cover = this.environment?.traceSegment?.(segment.start, segment.end, { radius: shot.radius });
       if (cover) { segment.end.copy(cover.point); shot.mesh.position.copy(cover.point); }
       if (shot.kind === 'bolt' && shot.velocity.lengthSq() > 0) shot.mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0), shot.velocity.clone().normalize());
       let consumed = false;
+      if (shot.kind === 'disc' && shot.owner.pattern?.mechanic === 'returning-disc') {
+        const holder = shot.owner.mesh.position.clone().add(new THREE.Vector3(0, 2.2, 0));
+        if (!shot.returning && shot.travelled >= shot.outboundDistance) shot.returning = true;
+        if (shot.returning) {
+          segment.closestPointToPoint(holder, true, nearest);
+          if (nearest.distanceTo(holder) < 1) consumed = true;
+          else shot.velocity.copy(holder).sub(shot.mesh.position).normalize().multiplyScalar(22);
+        }
+        shot.mesh.rotation.y += delta * 16;
+      }
       if (shot.redirected && this.activeBoss === shot.owner) {
         body.copy(shot.owner.mesh.position).add(new THREE.Vector3(0, 2.1, 0)); segment.closestPointToPoint(body, true, nearest);
         if (nearest.distanceTo(body) < 1.1) { const boss = shot.owner; this.takeDamage(1200, null, { cause: 'reflected-bolt', killerFaction: 'player_clan' }); if (this.activeBoss !== boss) return; boss.isStunned = true; boss.stunTimer = 2.2; consumed = true; }
       }
       if (!consumed) for (const player of players) if (!shot.hitPlayers.has(player)) {
         body.copy(player.position).add(new THREE.Vector3(0, 1.6, 0)); segment.closestPointToPoint(body, true, nearest);
-        if (nearest.distanceTo(body) <= (player.radius ?? 1) * .65 + shot.radius) { shot.hitPlayers.add(player); this.applyBossDamage(player, shot.damage, shot.kind, shot.owner); consumed = true; break; }
+        if (nearest.distanceTo(body) <= (player.radius ?? 1) * .65 + shot.radius) { shot.hitPlayers.add(player); this.applyBossDamage(player, shot.damage, shot.kind, shot.owner); consumed = shot.kind !== 'disc'; break; }
       }
       if (consumed || cover || shot.life <= 1e-8 || shot.mesh.position.y < -.1) { disposeObject(shot.mesh); const index = this.weaponProjectiles.indexOf(shot); if (index >= 0) this.weaponProjectiles.splice(index, 1); }
     }
   }
 
-  _shockwave(player, radius, damage, color = 0xb99969) {
+  _shockwave(player, radius, damage, color = 0xb99969, { innerRadius = 0, visual = true } = {}) {
     const boss = this.activeBoss; if (!boss) return false;
-    const mesh = new THREE.Mesh(new THREE.RingGeometry(radius * .9, radius, 48), new THREE.MeshBasicMaterial({ color, side: THREE.DoubleSide, transparent: true, opacity: .65, depthWrite: false }));
-    mesh.rotation.x = -Math.PI / 2; mesh.position.copy(boss.mesh.position); mesh.position.y = .05; this.scene.add(mesh);
-    this.effects.push({ mesh, life: .5, duration: .5 });
-    if (player?.hp > 0 && player.position.y < 1.2 && boss.mesh.position.distanceTo(player.position) <= radius ) this.applyBossDamage(player, damage, 'shockwave', boss);
-    return true;
+    if (visual) {
+      const mesh = new THREE.Mesh(new THREE.RingGeometry(innerRadius || radius * .9, radius, 48), new THREE.MeshBasicMaterial({ color, side: THREE.DoubleSide, transparent: true, opacity: .65, depthWrite: false }));
+      mesh.rotation.x = -Math.PI / 2; mesh.position.copy(boss.mesh.position); mesh.position.y += .05; this.scene.add(mesh);
+      this.effects.push({ mesh, life: .5, duration: .5 });
+    }
+    const distance = player?.position ? Math.hypot(player.position.x - boss.mesh.position.x, player.position.z - boss.mesh.position.z) : Infinity;
+    if (player?.hp > 0 && player.position.y < boss.mesh.position.y + 1.2 && distance >= innerRadius && distance <= radius) return this.applyBossDamage(player, damage, 'shockwave', boss);
+    return false;
+  }
+
+  _insideAttackCone(player, angle, rear = false) {
+    const boss = this.activeBoss; if (!boss || !player?.position) return false;
+    const forward = !rear && boss.pressureAim ? boss.pressureAim.clone().sub(boss.mesh.position).setY(0).normalize()
+      : new THREE.Vector3(Math.sin(boss.mesh.rotation.y), 0, Math.cos(boss.mesh.rotation.y));
+    if (rear) forward.negate();
+    const direction = player.position.clone().sub(boss.mesh.position).setY(0).normalize();
+    return forward.dot(direction) >= Math.cos(angle / 2);
+  }
+
+  _canFeralAcquire(target) {
+    const boss = this.activeBoss; if (!boss || !target?.position || !(target.hp > 0)) return false;
+    const raw = target.getThermalSignatureMultiplier?.() ?? 1, signature = Number.isFinite(raw) ? Math.max(.1, Math.min(1, raw)) : 1;
+    const distance = boss.mesh.position.distanceTo(target.position);
+    if (distance <= 8) return true;
+    const visible = this.environment?.hasLineOfSight?.(boss.mesh.position.clone().add(new THREE.Vector3(0, 3.2, 0)), target.position.clone().add(new THREE.Vector3(0, 1.6, 0))) !== false;
+    return visible && distance <= Math.max(18, 35 * signature);
+  }
+
+  _updateAttackReadout(boss) {
+    const local = boss._localAttackPreparation;
+    const state = this.combatDirector?.getAttackState(boss) ?? (local ? { phase: 'windup', progress: local.elapsed / local.windup } : null);
+    const preparing = state?.phase === 'windup';
+    const readout = boss.encounterReadout ??= {};
+    Object.assign(readout, { bossType: boss.type, label: boss.definition.label, phase: boss.phase, mechanic: boss.pattern.mechanic,
+      preparing, action: boss.pressureAction ?? null, progress: preparing ? Math.max(0, Math.min(1, state.progress ?? 0)) : 0,
+      read: boss.pattern.read, response: boss.pattern.response, exposedFor: Math.max(0, boss.exposedUntil - this.time), thermalAcquireRange: boss.thermalAcquireRange ?? null,
+      warningRadius: boss.warningRadius ?? null });
+    boss.mesh.userData.encounterReadout = readout;
+    if (boss.attackWarning) boss.attackWarning.position.y = .035;
+    const laser = preparing && boss.pattern.mechanic === 'laser-committed-plasma' && boss.pressureAction === 'plasma' && boss.pressureAim;
+    if (laser && !boss.aimBeam) {
+      const geometry = new THREE.BufferGeometry(); geometry.setAttribute('position', new THREE.Float32BufferAttribute(new Float32Array(18), 3));
+      boss.aimBeam = new THREE.LineSegments(geometry, new THREE.LineBasicMaterial({ color: 0xe74236, transparent: true, opacity: .65 }));
+      boss.aimBeam.name = 'boss-committed-laser'; boss.aimBeam.frustumCulled = false; boss.mesh.add(boss.aimBeam);
+    }
+    if (boss.aimBeam) {
+      boss.aimBeam.visible = Boolean(laser);
+      if (laser) {
+        boss.mesh.updateMatrixWorld(true); const attribute = boss.aimBeam.geometry.attributes.position;
+        for (let index = 0; index < 3; index++) {
+          const from = boss.mesh.worldToLocal(boss.mesh.position.clone().add(new THREE.Vector3((index - 1) * .09, 2.2, 0)));
+          const to = boss.mesh.worldToLocal(boss.pressureAim.clone().add(new THREE.Vector3((index - 1) * .025, 1.7, 0)));
+          attribute.setXYZ(index * 2, from.x, from.y, from.z); attribute.setXYZ(index * 2 + 1, to.x, to.y, to.z);
+        }
+        attribute.needsUpdate = true;
+      }
+    }
+  }
+
+  getEncounterReadout() { return this.activeBoss?.encounterReadout ? { ...this.activeBoss.encounterReadout } : null; }
+
+  serializeCombatState() {
+    const boss = this.activeBoss; if (!boss || boss.hp <= 0) return null;
+    this._syncPhaseFromHealth(boss);
+    const cooldowns = Object.fromEntries(BOSS_COOLDOWN_KEYS
+      .map(key => [key, Math.max(0, boss[key] ?? 0)]));
+    return { version: 1, bossType: boss.type, battleUnitId: boss.battleUnitId ?? null,
+      hp: boss.hp, maxHp: boss.maxHp, position: boss.mesh.position.toArray(), phase: boss.phase,
+      isStunned: boss.isStunned, stunTimer: Math.max(0, boss.stunTimer), hasEnteredStun: boss.hasEnteredStun,
+      phaseShieldHp: boss.phaseShieldHp, hasPhaseShield: boss.hasPhaseShield, broodAllowance: boss.broodAllowance,
+      weaponSequence: boss.weaponSequence, shieldRemaining: Math.max(0, boss.shieldUntil - this.time), exposedRemaining: Math.max(0, boss.exposedUntil - this.time),
+      cooldowns, attackWasInProgress: Boolean(boss.pressureAction || boss.charge || this.pendingActions.length || this.weaponProjectiles.length || this.pendingHatches.length),
+      simulationTime: this.battleSimulation?.time ?? null };
+  }
+
+  restoreCombatState(state, { preserveHealth = false, elapsed = 0 } = {}) {
+    const boss = this.activeBoss;
+    if (!boss || !Number.isFinite(elapsed) || elapsed < 0 || elapsed > 1e9) throw new TypeError('Invalid boss combat checkpoint');
+    state = validateBossCombatState(state, { bossType: boss.type, battleUnitId: boss.battleUnitId ?? null, maxHp: boss.maxHp });
+    const hp = preserveHealth ? boss.hp : state.hp, derivedPhase = hp <= boss.maxHp * .3 ? 3 : hp <= boss.maxHp * .65 ? 2 : 1;
+    boss.hp = hp; boss.phase = Math.max(state.phase, derivedPhase); boss.mesh.position.fromArray(state.position);
+    const enteredThirdPhase = derivedPhase === 3 && state.phase < 3 && !state.hasEnteredStun;
+    boss.isStunned = enteredThirdPhase || state.isStunned && state.stunTimer > elapsed; boss.stunTimer = enteredThirdPhase ? 3.5 : Math.max(0, state.stunTimer - elapsed);
+    boss.hasEnteredStun = state.hasEnteredStun || boss.phase === 3;
+    boss.phaseShieldHp = state.phaseShieldHp; boss.hasPhaseShield = state.hasPhaseShield && state.phaseShieldHp > 0;
+    if (boss.mesh.userData.phaseShield) boss.mesh.userData.phaseShield.visible = boss.hasPhaseShield;
+    boss.broodAllowance = state.broodAllowance; boss.weaponSequence = state.weaponSequence;
+    boss.shieldUntil = this.time + Math.max(0, state.shieldRemaining - elapsed); boss.exposedUntil = this.time + Math.max(0, state.exposedRemaining - elapsed);
+    for (const key of BOSS_COOLDOWN_KEYS) boss[key] = Math.max(0, state.cooldowns[key] - elapsed);
+    releaseHostileAttack(this, boss); boss.pressureAction = null; boss.pressureAim = null; boss.charge = null; boss.isLeaping = false;
+    // Consumed volleys/charges are not refunded or replayed by a checkpoint.
+    // Restoring an attack's exact trajectory is deliberately not claimed.
+    for (const list of [this.acidSpitProjectiles, this.embryoProjectiles, this.weaponProjectiles, this.effects]) for (const item of list) disposeObject(item.mesh);
+    this.acidSpitProjectiles = []; this.embryoProjectiles = []; this.weaponProjectiles = []; this.effects = []; this.pendingHatches = []; this.pendingActions = [];
+    if (state.attackWasInProgress) boss.contactCooldown = Math.max(.75, boss.contactCooldown);
+    this._updateAttackReadout(boss); return true;
   }
 
   applyBossDamage(player, amount, attackKind, boss = this.activeBoss) {
@@ -1430,8 +1644,14 @@ export class BossManager {
     const type = unit.sourceBossType ?? unit.bossType ?? unit.actorType;
     getBossDefinition(type);
     if (this.activeBoss) return this.activeBoss.battleUnitId === unit.id ? this.activeBoss : null;
+    const suspended = unit.encounterState ?? (this.suspendedCombat?.battleUnitId === unit.id ? this.suspendedCombat : null);
     const actor = this.spawnBoss(type, new THREE.Vector3(unit.position[0], 0, unit.position[1]));
     applyBattleUnit(this, actor, unit, group);
+    actor.phase = actor.hp <= actor.maxHp * .3 ? 3 : actor.hp <= actor.maxHp * .65 ? 2 : 1;
+    if (suspended) {
+      this.restoreCombatState(suspended, { preserveHealth: true, elapsed: Math.max(0, (this.battleSimulation?.time ?? 0) - (suspended.simulationTime ?? 0)) });
+      actor.mesh.position.set(unit.position[0], this.environment?.getElevationAt?.(unit.position[0], unit.position[1], actor.mesh.position.y) ?? 0, unit.position[1]);
+    }
     return actor;
   }
 
@@ -1443,7 +1663,9 @@ export class BossManager {
       const event = recordCombatDeath(this, actor, { kind: actor.type, isBoss: true, cause: 'synchronized-actor-death', killerFaction: actor.lastDamageFaction });
       if (event) { this.lastDeathEvent = event; this.onDefeated?.(event); }
     }
-    this.clear(); return snapshot;
+    const suspended = actor.hp > 0 ? this.serializeCombatState() : null;
+    if (suspended) snapshot.encounterState = suspended;
+    this.clear(); this.suspendedCombat = suspended; return snapshot;
   }
 
 }

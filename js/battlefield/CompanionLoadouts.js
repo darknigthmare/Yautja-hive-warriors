@@ -43,6 +43,8 @@ export class CompanionLoadouts {
     const entry=this.roster.get(unitId),unit=this.simulation.getUnit(unitId);
     if(!entry || !unit || unit.hp<=0 || this.simulation.disposed || this.simulation.result || !COMPANION_KITS[entry.kitId].abilities.includes(order.type) || this.simulation.relationship(unit.factionId,this.simulation.config.playerFaction)!=='allied')return refused('eligible_equipped_companion_required');
     if((entry.charges[order.type]??0)<=0)return refused('charges_exhausted');
+    if(unit.incapacitated || this._actor(unitId)?.isDowned)return refused('companion_incapacitated_requires_rescue');
+    if(order.type==='heal'&&this._orderTarget(order)?.isDowned)return refused('downed_patient_requires_rescue');
     const request=Object.fromEntries(['type','targetUnitId','targetPlayerId','targetGroupId','frontId'].filter(key=>typeof order[key]==='string'&&order[key].length<=128).map(key=>[key,order[key]]));
     entry.pending={order:request,enqueuedAt:this.time,expiresAt:this.time+60};return {accepted:true,queued:true,unitId};
   }
@@ -55,6 +57,7 @@ export class CompanionLoadouts {
     const entry=this.roster.get(unitId),actor=this._actor(unitId),unit=this.simulation.getUnit(unitId),ability=ABILITIES[order.type];
     if(this.simulation.disposed || this.simulation.result || this.simulation.paused)return refused('operation_unavailable');
     if(!entry || !actor || !(actor.hp>0) || !unit || unit.state!=='active' || !ability || !COMPANION_KITS[entry.kitId].abilities.includes(order.type))return refused('equipped_active_companion_required');
+    if(actor.isDowned || unit.incapacitated)return refused('companion_incapacitated_requires_rescue');
     if((entry.charges[order.type]??0)<=0)return refused('charges_exhausted');
     if((entry.cooldowns[order.type]??0)>this.time)return refused('ability_cooling_down');
     if(this.simulation.relationship(unit.factionId,this.simulation.config.playerFaction)!=='allied')return refused('companion_no_longer_allied');
@@ -62,6 +65,7 @@ export class CompanionLoadouts {
     if(order.type==='heal') {
       const target=order.targetUnitId ? this._actor(order.targetUnitId) : this._players().find(player=>order.targetPlayerId==='player2' ? player.isPlayer2===true : player.isPlayer2!==true);
       const faction=target?.factionId ?? this.simulation.config.playerFaction;
+      if(target?.isDowned || order.targetUnitId&&this.simulation.getUnit(order.targetUnitId)?.incapacitated)return refused('downed_patient_requires_rescue');
       if(!target || !(target.hp>0) || this.simulation.relationship(unit.factionId,faction)!=='allied')return refused('living_allied_patient_required');
       const maximum=target.maxHp??target.maxHP??target.maxHealth??1000;
       if(target.hp>=maximum)return refused('patient_not_wounded');

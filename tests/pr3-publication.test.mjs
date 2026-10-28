@@ -1,19 +1,19 @@
-// Publication guard tests use temporary local fixtures only. No child process,
-// request, real stage, repository Git operation, build or browser is executed.
+// Publication guard tests use temporary local fixtures only. No request, real
+// stage, repository Git operation, build or browser is executed.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { parseOptions } from '../scripts/publish-verified-pr3.mjs';
-import { assertHttpHeaders, assertQaReport, expectedHeaders, readPins, validateBuildIdentity } from '../scripts/publication-pr3-lib.mjs';
+import { parseOptions, waitForCanonicalIndex } from '../scripts/publish-verified-pr3.mjs';
+import { DEFAULT_PINS, assertHttpHeaders, assertQaReport, expectedHeaders, readPins, validateBuildIdentity } from '../scripts/publication-pr3-lib.mjs';
 
 const sha = value => createHash('sha256').update(value).digest('hex');
 const clone = value => structuredClone(value);
 async function fixtures() {
-  const pins = JSON.parse(await readFile(new URL('../docs/qa/pr3-publication-pins.json', import.meta.url), 'utf8'));
-  return { ...pins, status: 'frozen', sourceCommit: 'a'.repeat(40), sourceFingerprint: 'b'.repeat(64), indexSha256: 'c'.repeat(64), buildInfoSha256: 'd'.repeat(64), artifactManifestSha256: 'e'.repeat(64), outputConfigSha256: 'f'.repeat(64), projectLinkSha256: '1'.repeat(64), qaReportSha256: '2'.repeat(64), cpuPassed: 731, browserRegressionPassed: 19, expectedRuntimeChecks: ['real_queen', 'fronts_coop'] };
+  const pins = JSON.parse(await readFile(DEFAULT_PINS, 'utf8'));
+  return { ...pins, status: 'frozen', sourceCommit: 'a'.repeat(40), sourceFingerprint: 'b'.repeat(64), indexSha256: 'c'.repeat(64), buildInfoSha256: 'd'.repeat(64), previousPublicIndexSha256: '3'.repeat(64), artifactManifestSha256: 'e'.repeat(64), outputConfigSha256: 'f'.repeat(64), projectLinkSha256: '1'.repeat(64), qaReportSha256: '2'.repeat(64), cpuPassed: 731, browserRegressionPassed: 19, expectedRuntimeChecks: ['real_queen', 'fronts_coop'] };
 }
 function qa(pins) {
   const suite = passed => ({ status: 'passed', passed, failed: 0, skipped: 0, cancelled: 0, index_sha256: pins.indexSha256 });
@@ -25,6 +25,29 @@ test('remote operations require explicit compatible flags and a bounded real dep
   assert.equal(parseOptions([]).deploy, false); assert.equal(parseOptions(['--check-only']).checkOnly, true);
   for (const args of [['--check-only', '--deploy'], ['--check-only', '--deployment', 'dpl_one'], ['--promote'], ['--deploy', '--deployment', 'dpl_two'], ['--deployment', 'https://elsewhere.test'], ['--ready-timeout-ms', 'Infinity'], ['--ready-timeout-ms', '900001']]) assert.throws(() => parseOptions(args));
   assert.equal(parseOptions(['--deployment', 'dpl_realID42', '--promote']).deploymentId, 'dpl_realID42');
+});
+
+test('promotion waits through only the known previous index until new canonical bytes appear', async () => {
+  const values = ['old', 'old', 'new'], delays = []; let clock = 0, calls = 0;
+  const result = await waitForCanonicalIndex({ indexSha256: 'new', previousIndexSha256: 'old', deploymentId: 'dpl_one',
+    now: () => clock, wait: async ms => { delays.push(ms); clock += ms; },
+    snapshot: async timeout => { assert.ok(timeout > 0 && timeout <= 30000); calls++; return { sha256: values.shift() }; } });
+  assert.equal(result.sha256, 'new'); assert.equal(calls, 3); assert.deepEqual(delays, [2000, 2000]);
+});
+
+test('promotion immediately rejects unknown canonical bytes and never retries them', async () => {
+  let calls = 0, waits = 0;
+  await assert.rejects(waitForCanonicalIndex({ indexSha256: 'new', previousIndexSha256: 'old', deploymentId: 'dpl_one',
+    snapshot: async () => { calls++; return { sha256: 'unknown' }; }, wait: async () => { waits++; } }), /Canonical changed to another build/);
+  assert.equal(calls, 1); assert.equal(waits, 0);
+});
+
+test('canonical propagation deadline preserves the existing deployment ID for resume', async () => {
+  let clock = 0, calls = 0;
+  await assert.rejects(waitForCanonicalIndex({ indexSha256: 'new', previousIndexSha256: 'old', deploymentId: 'dpl_resume42',
+    now: () => clock, wait: async ms => { assert.ok(ms <= 2000); clock += ms; }, snapshot: async () => { calls++; return { sha256: 'old' }; } }),
+  error => error.waiting === true && /resume with --deployment dpl_resume42/.test(error.message));
+  assert.equal(clock, 60000); assert.equal(calls, 30);
 });
 
 test('frozen pins bind the existing project, code identity, final measured counts and actual runtime IDs', async () => {

@@ -1,5 +1,14 @@
 La passe PR3 utilise ses propres pins, son rapport final et son dossier QA. Les preuves de `fidelity-20261025` restent intactes. Seul son lanceur CLI existant est réutilisé pour la session Vercel ; aucun script ne lit ou n'affiche les identifiants de connexion.
 
+Le profil par défaut reste `pr3-20261026`, avec les chemins et garde-fous décrits ci-dessous. La nouvelle passe choisit explicitement `YAUTJA_RELEASE_PROFILE=pr3-next-20261028` pour **chaque** commande de préparation, publication et vérification. Les seules valeurs acceptées sont ces deux profils ; une valeur inconnue arrête le script avant toute action. Le profil NEXT emploie `docs/qa/pr3-next-publication-pins.json`, `docs/qa/pr3-next-validation.json` et `/workspace/qa/pr3-next-20261028/vercel-static-prebuilt`. Son wrapper `/workspace/qa/pr3-next-20261028/vercel-cli.sh` délègue au même lanceur authentifié existant. Le nombre de fichiers reste vérifié intégralement depuis le manifeste du candidat (30 dans la version précédente).
+
+Les deux documents NEXT commencent sans pins ni résultats réussis. Le coordinateur les renseigne à partir du vrai build et de sa QA, puis les gèle selon le même processus. Les pins d'un profil sont refusés sous l'autre, y compris avec `--pins`. Exemple de préparation NEXT, après le commit et le build vérifiés :
+
+```sh
+YAUTJA_RELEASE_PROFILE=pr3-next-20261028 node scripts/prepare-verified-pr3.mjs
+YAUTJA_RELEASE_PROFILE=pr3-next-20261028 node scripts/publish-verified-pr3.mjs --check-only
+```
+
 Le coordinateur termine le commit de code et le build, puis relève les valeurs exactes de `dist/index.html` et `dist/build-info.json`. Dans `docs/qa/pr3-publication-pins.json`, il renseigne `sourceCommit`, `sourceFingerprint`, `indexSha256` et `buildInfoSha256` depuis ce build déjà vérifié. `previousPublicIndexSha256` doit être le hash de la version publique réellement constatée. Les champs restants peuvent encore être vides à la préparation.
 
 ```sh
@@ -62,6 +71,8 @@ Une exécution unique `--deploy --promote` réalise également cette séquence c
 
 Après un délai READY, une panne réseau, une limite de déploiement ou une réponse de soumission ambiguë, le script ne crée aucun candidat de remplacement automatiquement. Reprendre avec `--deployment` dès que son ID réel a été identifié. Un verrou `publication-remote.lock` empêche deux soumissions parallèles ; s'il subsiste après un arrêt brutal, le coordinateur doit d'abord vérifier si un candidat a été créé avant de lever le verrou. Une version publique ayant changé vers un hash non prévu bloque la promotion.
 
+Après une promotion réussie, le script laisse jusqu'à 60 secondes au domaine canonique pour servir le nouvel index, avec une attente maximale de deux secondes entre les lectures. Seul le hash précédent épinglé est toléré durant cette propagation ; tout hash inconnu interrompt immédiatement. À expiration, l'état reste `promoted_waiting_for_public_bytes`, le code de sortie vaut 3 et le message donne le même ID à reprendre avec `--deployment`, sans nouvelle soumission. Les vérifications HTTP de tous les fichiers commencent après constat du nouvel index.
+
 Les preuves de chaque exécution ont un nom unique `publication-<date>.json`, `http-candidate-<date>/report.json` et `http-public-<date>/report.json`. Les fichiers `vercel-*-verification.json` et `vercel-delivery-status.json` désignent l'état le plus récent. Les corps des modèles sont entièrement hachés puis retirés du cache de vérification ; les digests, tailles et en-têtes restent dans les preuves. Le rapport QA épinglé n'est jamais réécrit par une publication.
 
-Les petits lanceurs sous `/workspace/qa/pr3-20261026/` délèguent à ces scripts versionnés. Ils n'apportent aucun changement aux anciens fichiers de preuves. Les contrôles des scripts eux-mêmes se font avec `node --check` et `node --test tests/pr3-publication.test.mjs`, sans réseau, Git, build ou navigateur.
+Les petits lanceurs sous `/workspace/qa/pr3-20261026/` délèguent à ces scripts versionnés. Ils n'apportent aucun changement aux anciens fichiers de preuves. Les contrôles des scripts eux-mêmes se font avec `node --check` et `node --test tests/pr3-publication.test.mjs tests/pr3-release-profiles.test.mjs`, puis la même commande sous `YAUTJA_RELEASE_PROFILE=pr3-next-20261028`, sans réseau, Git, build ou navigateur.

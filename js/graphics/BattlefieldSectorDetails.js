@@ -321,6 +321,16 @@ export function buildBattlefieldCorridorDetails(env, corridor, parent) {
   const name = `battlefield-corridor-architecture-${corridor.id}`;
   const existing = parent.getObjectByName(name); if (existing) return existing;
   const b = builder(env, parent, name, corridor.center, corridor.axis === 'x' ? Math.PI / 2 : 0), m = b.mats;
+  const reservedPost = (x, z) => {
+    const worldX = corridor.center[0] + (corridor.axis === 'x' ? z : x);
+    const worldZ = corridor.center[1] + (corridor.axis === 'x' ? -x : z);
+    for (const route of env.battlefieldLayout?.strategicRoutes ?? []) for (let i = 1; i < route.waypoints.length; i++) {
+      const a = route.waypoints[i - 1], c = route.waypoints[i], dx = c[0] - a[0], dz = c[1] - a[1];
+      const t = THREE.MathUtils.clamp(((worldX - a[0]) * dx + (worldZ - a[1]) * dz) / (dx * dx + dz * dz), 0, 1);
+      if (Math.hypot(worldX - a[0] - dx * t, worldZ - a[1] - dz * t) < 2) return true;
+    }
+    return false;
+  };
   // Station corridors reuse their painted structural surface for the small
   // recess/drain pieces. Keep the separate edge and warm signal surfaces;
   // this removes one draw per corridor in the shared cooperative scene.
@@ -330,11 +340,13 @@ export function buildBattlefieldCorridorDetails(env, corridor, parent) {
   for (const z of [-13, 13]) {
     if (env.type === 'hive') {
       for (const side of [-1, 1]) {
+        if (reservedPost(side * 9.25, z)) continue;
         b.solidBox(m.resin, [side * 9.25, 3, z], [0.65, 6, 1.1]);
         b.pipe(m.resin, [[side * 9.1, 0.1, z], [side * 8.8, 4.8, z], [side * 6.1, 8.9, z], [side * 1.7, 10.2, z]], 0.28, 16);
       }
     } else {
       for (const side of [-1, 1]) {
+        if (reservedPost(side * 9.35, z)) continue;
         const height = env.type === 'temple' || env.type === 'jungle' ? 8.6 : 7.1;
         b.solidBox(m.structure, [side * 9.35, height / 2, z], [0.65, height, 1]);
         b.box(m.edge, [side * 9.35, height, z], [1.4, 0.3, 1.4]);

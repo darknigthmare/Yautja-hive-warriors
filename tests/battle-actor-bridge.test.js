@@ -6,6 +6,7 @@ import { BattleSimulation } from '../js/battlefield/BattleSimulation.js';
 import { createBattlefieldOperation } from '../js/battlefield/BattlefieldOperation.js';
 import { createBattlefieldLayout } from '../js/data/BattlefieldLayouts.js';
 import { LEVELS_DATA } from '../js/data/levelsData.js';
+import { CombatDirector } from '../js/engine/CombatDirector.js';
 
 function fixture() {
   const player = { hp: 1000, position: new THREE.Vector3() };
@@ -89,14 +90,16 @@ test('physical cover rejects an otherwise in-range strike against a materialized
 test('a Queen uses the actual boss model, keeps its allocated identity, and leaves detail without dying',async()=>{
   const {BossManager}=await import('../js/entities/Bosses.js');
   const {game,bridge,simulation}=fixture();bridge.dispose();
-  const scene=new THREE.Scene(),audio=new Proxy({}, {get:()=>()=>{}});game.bosses=new BossManager(scene,audio);game.combatDirector={release(){}};
+  const scene=new THREE.Scene(),audio=new Proxy({}, {get:()=>()=>{}});game.bosses=new BossManager(scene,audio);game.combatDirector=new CombatDirector();
   const queenBridge=new BattleActorBridge(game);queenBridge.bind(simulation);
   const unit={id:'allocated-queen',profileId:'queen-profile',groupId:'queen-group',species:'xenomorph',actorType:'queen',sourceBossType:'xenomorph_queen',hp:1777,maxHp:3000,position:[70,-70],factionId:'hive',officer:true};
   const group={id:'queen-group',species:'xenomorph',factionId:'hive'};
   assert.equal(queenBridge.spawnGroup(group,[unit]),true);
   assert.equal(game.bosses.activeBoss.type,'xenomorph_queen');assert.equal(game.bosses.activeBoss.battleUnitId,unit.id);
   assert.equal(game.bosses.activeBoss.hp,1777);assert.equal(game.bosses.activeBoss.maxHp,3000);
-  assert.ok(game.bosses.activeBoss.mesh.children.length>5);
+  let renderedMeshes=0,triangles=0;
+  game.bosses.activeBoss.mesh.traverse(node=>{if(node.isMesh){renderedMeshes++;triangles+=(node.geometry.index?.count??node.geometry.attributes.position.count)/3;}});
+  assert.ok(renderedMeshes>5&&triangles>1000,'The grounded boss root contains the actual rendered Queen model.');
   const snapshots=queenBridge.despawnGroup(group,[unit]);assert.equal(snapshots[0].hp,1777);assert.equal(game.bosses.activeBoss,null);
   assert.equal(simulation.deaths.size,0);queenBridge.dispose();simulation.dispose();
 });

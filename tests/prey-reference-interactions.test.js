@@ -73,7 +73,7 @@ test('the three-laser bone mask arms a real projectile trap and never applies in
 
 test('the origin of another biome cannot grant Prey mud camouflage without an actual mud basin', () => {
   const environment = new EnvironmentManager(new THREE.Scene()), coatings = [];
-  const owner = { hp: 850, position: new THREE.Vector3(), applyMudCamouflage: seconds => coatings.push(seconds) };
+  const owner = { hp: 850, position: new THREE.Vector3(), applyPreyMudCamouflage: seconds => coatings.push(seconds) };
   environment.updateLevelDesignV56(1 / 60, owner); assert.deepEqual(coatings, []);
   environment.preyMudSinkhole = { pos: new THREE.Vector3(20, 0, 10), radius: 5.5 };
   environment.updateLevelDesignV56(1 / 60, owner); assert.deepEqual(coatings, []);

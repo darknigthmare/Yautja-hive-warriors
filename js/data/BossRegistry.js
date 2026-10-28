@@ -1,19 +1,25 @@
 /* Encounter identities and allowed attacks, not a claim of scanned/1:1 assets.
  * Named individuals never enter the ordinary reinforcement pool. HP, dimensions
  * and phases below are gameplay choices in game units. */
+const LABELS = Object.freeze({ xenomorph_queen: 'Reine xénomorphe', praetorian: 'Prétorien', predalien: 'Predalien', predalien_queen: 'Predalien de Gunnison',
+  imperial_queen: 'Reine impériale', empress_matriarch: 'Impératrice matriarche', the_offspring: 'Offspring', predalien_abomination: 'Abomination prédalienne',
+  predalien_matriarch_titan: 'Titan prédalien', rogue_king_prime: 'Roi de Charon', awakened_engineer: 'Ingénieur éveillé', trilobite_prime: 'Trilobite',
+  berserker_super_predator: 'Berserker', ultimate_upgrade_predator: 'Upgrade Predator', feral_predator_boss: 'Feral', apex_gladiator_predator: 'Gladiateur de l’arène',
+  jungle_hunter_boss: 'Jungle Hunter', city_hunter_boss: 'City Hunter' });
 const define = (id, species, source, hp, height, attacks, levels = [], extra = {}) => Object.freeze({
+  label: LABELS[id],
   id, species, source, hp, height, attacks: Object.freeze(attacks), levels: Object.freeze(levels),
   unique: true, ordinarySpawn: false, assetFidelity: 'interpreted-game-model', ...extra
 });
 export const BOSS_REGISTRY = Object.freeze({
   xenomorph_queen: define('xenomorph_queen', 'xenomorph', 'Aliens (1986) / Alien vs. Predator (2004)', 3000, 6.2, ['tail', 'spit', 'melee'], ['antarctic_pyramid']),
   praetorian: define('praetorian', 'xenomorph', 'Praetorian game caste; encounter adaptation', 3000, 5.2, ['tail', 'spit', 'melee']),
-  predalien: define('predalien', 'xenomorph', 'Alien vs. Predator game hybrid', 3000, 5.4, ['tail', 'spit', 'melee']),
+  predalien: define('predalien', 'xenomorph', 'Alien vs. Predator game hybrid', 3000, 5.4, ['tail', 'spit', 'leap', 'melee']),
   predalien_queen: define('predalien_queen', 'xenomorph', 'AVP: Requiem (2007), gameplay adaptation of the Predalien; queen title is not a film caste', 5000, 5.8, ['tail', 'embryos', 'melee'], ['gunnison_forest']),
   imperial_queen: define('imperial_queen', 'xenomorph', 'AVP: Extinction game encounter adaptation', 8000, 8.2, ['tail', 'spit', 'slam', 'melee']),
   empress_matriarch: define('empress_matriarch', 'xenomorph', 'AVP game/comic encounter adaptation; flight is a project mechanic', 6000, 7.5, ['tail', 'spit', 'gale', 'melee'], ['xenomorph_prime']),
   the_offspring: define('the_offspring', 'hybrid', 'Alien: Romulus (2024)', 4500, 6.0, ['shriek', 'melee'], ['romulus_station']),
-  predalien_abomination: define('predalien_abomination', 'xenomorph', 'AVP: Requiem-inspired project encounter', 6500, 6.2, ['tail', 'embryos', 'melee']),
+  predalien_abomination: define('predalien_abomination', 'xenomorph', 'AVP: Requiem-inspired project encounter', 6500, 6.2, ['tail', 'embryos', 'leap', 'melee']),
   predalien_matriarch_titan: define('predalien_matriarch_titan', 'xenomorph', 'Original project titan inspired by AVP game roles', 10000, 8.0, ['tail', 'embryos', 'slam', 'melee'], [], { original: true }),
   rogue_king_prime: define('rogue_king_prime', 'xenomorph', 'Aliens: Rogue (1993), game adaptation of the King', 9500, 7.5, ['slam', 'charge', 'melee'], ['charon_rogue_base']),
   awakened_engineer: define('awakened_engineer', 'engineer', 'Prometheus (2012), original shield/vortex encounter mechanics', 8500, 5.8, ['vortex', 'slam', 'melee'], [], { adaptedArsenal: ['phase-shield', 'gravity-vortex'] }),

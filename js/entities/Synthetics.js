@@ -222,17 +222,21 @@ export class SyntheticsManager {
       if (isXeno && (this.combatDirector?.getAttackState(syn)?.phase === 'windup' || syn._localAttackPreparation)) releaseHostileAttack(this, syn);
       const dir = targetPos.clone().sub(syn.mesh.position);
       dir.y = 0;
-      const dist = dir.length();
+      const dist = syn.mesh.position.distanceTo(targetPos);
 
-      const covered = this.environment?.hasLineOfSight && !this.environment.hasLineOfSight(syn.mesh.position.clone().add(new THREE.Vector3(0, syn.isBisected ? .6 : 2, 0)), targetPos.clone().add(new THREE.Vector3(0,1.6,0)));
+      const covered = this.environment?.hasLineOfSight && !this.environment.hasLineOfSight(syn.mesh.position.clone().add(new THREE.Vector3(0, syn.isBisected ? .6 : 2, 0)), targetPos.clone().add(new THREE.Vector3(0,1.6,0)), { ignoreOwner: npcTarget?.isSupport ? npcTarget.collisionOwner : undefined });
       const joe = syn.type === 'working_joe';
-      const stopDist = joe ? 2.1 : syn.isBisected ? 6.0 : (isXeno ? 10.0 : 12.0);
+      const stopDist = (joe ? 2.1 : syn.isBisected ? 6.0 : (isXeno ? 10.0 : 12.0)) + (npcTarget?.isSupport ? npcTarget.radius ?? 0 : 0);
       syn.shootCooldown = Math.max(0, (syn.shootCooldown ?? 2) - delta);
 
-      if (dist > stopDist + 1e-5 || covered) {
+      const access = this.environment?.getVerticalNavigationTarget?.(syn.mesh.position, targetPos);
+      if (access || dist > stopDist + 1e-5 || covered) {
+        const previous = syn.mesh.position.clone();
+        dir.copy(access ?? targetPos).sub(previous).setY(0);
+        const step = Math.min(syn.speed * delta, dir.length(), access || covered ? Infinity : Math.max(0, dist - stopDist));
         dir.normalize();
-        syn.mesh.position.addScaledVector(dir, covered ? syn.speed * delta : Math.min(syn.speed * delta, dist - stopDist));
-        this.environment?.resolveAgentMovement?.(syn.mesh.position, targetPos, syn.speed * delta, .9);
+        syn.mesh.position.addScaledVector(dir, step);
+        this.environment?.resolveAgentMovement?.(syn.mesh.position, targetPos, step, .9, previous);
         releaseHostileAttack(this, syn);
         syn.mesh.rotation.y = Math.atan2(dir.x, dir.z);
       } else {
@@ -242,7 +246,7 @@ export class SyntheticsManager {
           syn.shootCooldown = syn.isBisected ? 2.6 : 1.9;
           if (joe) this.audioEngine?.playSyntheticShortCircuit?.(); else this.audioEngine.playPulseRifleBurst();
           if (isXeno) {
-            if (npcTarget) npcTarget.takeDamage(syn.damage); else horde.checkMeleeHits({ origin: targetPos, radius: 1.5, damage: syn.damage, killerFaction: syn.factionId ?? 'weyland_yutani', type: 'synthetic-ballistic' });
+            if (npcTarget) npcTarget.takeDamage(syn.damage, syn); else horde.checkMeleeHits({ origin: targetPos, radius: 1.5, damage: syn.damage, killerFaction: syn.factionId ?? 'weyland_yutani', type: 'synthetic-ballistic' });
           } else {
             targetPlayer.takeDamage(syn.damage * .4, false, syn, { attackKind: joe ? 'grab' : 'ballistic', blockable: false, parryable: false });
           }
@@ -259,6 +263,7 @@ export class SyntheticsManager {
     const faction = attack.killerFaction ?? this.battleSimulation?.config.playerFaction ?? 'player_clan';
     for (let i = this.androids.length - 1; i >= 0; i--) {
       const syn = this.androids[i];
+      if (attack.targetOnly && syn !== attack.targetOnly) continue;
       if (this.battleSimulation && syn.factionId && !this.battleSimulation.areHostile(faction, syn.factionId)) continue;
       if (this.environment?.hasLineOfSight && !this.environment.hasLineOfSight(attack.origin.clone().add(new THREE.Vector3(0,1.2,0)), syn.mesh.position.clone().add(new THREE.Vector3(0,1.2,0)))) continue;
       if (syn.mesh.position.distanceTo(attack.origin) <= attack.radius) {

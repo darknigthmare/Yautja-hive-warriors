@@ -5,6 +5,9 @@ export class OperationBriefing {
   const line=text=>{const p=document.createElement('p');p.textContent=text;summary.append(p);};line(config.label??config.id);line(`${variant?.name??level.name} · ${layout.sectors.length} secteurs · ${config.fronts.length} fronts · positions en unités de jeu.`);
   line('Forces alliées : '+config.groups.filter(group=>group.factionId===config.playerFaction).reduce((sum,group)=>sum+group.units.length,0)+' combattants alloués. Forces adverses : présence signalée ; réserves à confirmer par reconnaissance.');
   line(`Plafond de proximité : ${config.budgets.active} combattants. Les forces distantes restent actives ; leur position est connue par rapports, avec incertitude.`);
+  if(config.difficulty)line(`Commandement adverse : ${config.difficulty.label}. Les effectifs, PV et dégâts restent identiques ; les décisions et prises de risque changent.`);
+  if(layout.mapSeed)line('Disposition alternative : les mêmes fronts disposent de distances et de passages différents.');
+  if(config.objectives.defeatWindow)line(`Front essentiel perdu : ${Math.ceil(config.objectives.defeatGraceSeconds)} s au minimum pour revenir et le reprendre, selon les voies ouvertes.`);
   if(config.detailedBudgetNotice)line(config.detailedBudgetNotice);
   if(scene.characterBriefing){line(scene.characterBriefing.scopeNote);line(scene.characterBriefing.recognition.label+' · statut narratif inchangé.');if(scene.characterBriefing.relevantNamedConsequences.length)line('Pertes nommées déjà confirmées : '+scene.characterBriefing.relevantNamedConsequences.map(item=>item.uniqueId).join(', '));}
   if(config.hiveConflict?.briefing)line(config.hiveConflict.briefing);

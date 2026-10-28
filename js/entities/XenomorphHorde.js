@@ -22,6 +22,7 @@ export class XenomorphHorde {
     this.deadCount = 0;
     this.combatDirector = null;
     this.spawnPositionProvider = null;
+    this.supportTargetsProvider = null;
     this.pendingSpawns = [];
     this.spawnTimer = 0;
     this.spawnSequence = 0;
@@ -172,6 +173,33 @@ export class XenomorphHorde {
     return livingPlayers.reduce((nearest, candidate) => !nearest || candidate.position.distanceToSquared(position) < nearest.position.distanceToSquared(position) ? candidate : nearest, null);
   }
 
+  _supportTargets() {
+    return (this.supportTargetsProvider?.() ?? []).filter(target => target?.isSupport && target.isBattleNPC && target.hp > 0 &&
+      typeof target.takeDamage === 'function' && target.position?.isVector3 && target.position.toArray().every(Number.isFinite));
+  }
+
+  _canParasitize(target, royal = false) {
+    const actor = target?.actor ?? target;
+    return !!target && !target.isSupport && target.canBeFacehugged !== false && actor.canBeFacehugged !== false &&
+      !['synthetic', 'weyland_combat', 'working_joe'].includes(actor.type) && (royal || typeof target.triggerFacehuggerLatch === 'function');
+  }
+
+  _pursuitTarget(actor, livingPlayers, supports = []) {
+    const royal = this.royalFacehuggers.includes(actor), parasite = actor.type === 'facehugger' || royal;
+    const eligible = target => (!parasite || this._canParasitize(target, royal)) &&
+      (!target.isSupport || !target.isAirborne || this.mantaSwarmers.includes(actor));
+    const fallbacks = [...livingPlayers, ...supports].filter(target => eligible(target) && battleHostile(this, actor, target));
+    if (!actor.battleUnitId || !this.battleSimulation) return this._nearestPlayer(actor.mesh.position, fallbacks);
+    const target = selectBattleTarget(this, actor, fallbacks);
+    if (!target || eligible(target)) return target;
+    // A shared battle provider may contain vehicles too. Parasites retarget an
+    // eligible organic combatant without changing formation/defend constraints.
+    const formation = actor.battleFormationTarget, defend = actor.battleOrder?.type === 'defend' ? actor.battleOrderTarget : null;
+    return this._nearestPlayer(actor.mesh.position, listBattleTargets(this, actor, fallbacks).filter(candidate => eligible(candidate) &&
+      (!Array.isArray(formation) || Math.hypot(candidate.position.x - formation[0], candidate.position.z - formation[1]) <= 28) &&
+      (!Array.isArray(defend) || Math.hypot(candidate.position.x - defend[0], candidate.position.z - defend[1]) <= 24)));
+  }
+
 
   _spawnPosition(playerPos, distance = 34) {
     if (this.spawnPositionProvider) {
@@ -292,7 +320,7 @@ export class XenomorphHorde {
     const group=this.battleSimulation?.groups?.get(enemy.battleGroupId);
     if((group?.rootUntil ?? 0)>(this.battleSimulation?.time ?? 0))return false;
     if((group?.suppressedUntil ?? 0)>(this.battleSimulation?.time ?? 0))options={...options,windup:(options.windup ?? .8)*1.6};
-    if (this.environment?.hasLineOfSight && !this.environment.hasLineOfSight(enemy.mesh.position.clone().add(new THREE.Vector3(0,1.4,0)), player.position.clone().add(new THREE.Vector3(0,1.6,0)))) { this.combatDirector?.release(enemy); this._clearAttackCue(enemy); return false; }
+    if (this.environment?.hasLineOfSight && !this.environment.hasLineOfSight(enemy.mesh.position.clone().add(new THREE.Vector3(0,1.4,0)), player.position.clone().add(new THREE.Vector3(0,1.6,0)), { ignoreOwner: player.isSupport ? player.collisionOwner : undefined })) { this.combatDirector?.release(enemy); this._clearAttackCue(enemy); return false; }
     if (player.isBattleNPC) return requestNPCStrike(enemy, player, this._simulationDelta ?? 1/60, options);
     if (!this.combatDirector) return requestNPCStrike(enemy, player, this._simulationDelta ?? 1/60, options);
     const allowed = this.combatDirector.requestAttack(enemy, player, options);
@@ -302,6 +330,7 @@ export class XenomorphHorde {
 
 
   _hazardDamage(source, player, amount) {
+    if (player.isSupport) return player.takeDamage(amount, source);
     if (player.isBattleNPC) { player.takeDamage(amount, true, source); return amount; }
     if (this.combatDirector) return this.combatDirector.applyHazardDamage(source, player, amount);
     player.takeDamage(amount, true);
@@ -436,6 +465,7 @@ export class XenomorphHorde {
 
     for (let i = this.aliens.length - 1; i >= 0; i--) {
       const a = this.aliens[i];
+      if (attack.targetOnly && a !== attack.targetOnly) continue;
       if (a.isLatched) continue;
       if (this.battleSimulation && a.factionId && !this.battleSimulation.areHostile(attackingFaction, a.factionId)) continue;
       if (this.environment?.hasLineOfSight && !this.environment.hasLineOfSight(attack.origin.clone().add(new THREE.Vector3(0,1.2,0)), a.mesh.position.clone().add(new THREE.Vector3(0,1.2,0)))) continue;
@@ -514,6 +544,7 @@ export class XenomorphHorde {
 
     for (let i = this.eggs.length - 1; i >= 0; i--) {
       const egg = this.eggs[i];
+      if (attack.targetOnly && egg !== attack.targetOnly) continue;
       if (egg.mesh.position.distanceTo(attack.origin) <= attack.radius + 1.0) {
         this.spawnAcidPool(egg.mesh.position);
         const event = recordCombatDeath(this, egg, { kind: 'ovimorph', cause: attack.type ?? 'melee', objectiveCredit: false });
@@ -529,6 +560,7 @@ export class XenomorphHorde {
 
     for (let i = this.chestbursters.length - 1; i >= 0; i--) {
       const cb = this.chestbursters[i];
+      if (attack.targetOnly && cb !== attack.targetOnly) continue;
       if (cb.mesh.position.distanceTo(attack.origin) > attack.radius + 0.5) continue;
       cb.hp -= attack.damage;
       const killed = cb.hp <= 0;
@@ -795,15 +827,14 @@ export class XenomorphHorde {
       }
     }
 
-    this._updateExtraActors(delta, livingPlayers);
+    const supportTargets = this._supportTargets();
+    this._updateExtraActors(delta, livingPlayers, supportTargets);
 
     // 4. Horde AI (Crusher, Praetorian, Warriors, Facehuggers, Officers)
     this.aliens.forEach(a => {
       this._showAttackCue(a);
       if(!a.isAirborne && !a.isLeaping && !a.isLatched && maintainBattleFormation(this,a,delta,a.speed))return;
-      const targetPlayer = a.battleUnitId && this.battleSimulation
-        ? selectBattleTarget(this, a, livingPlayers)
-        : this._nearestPlayer(a.mesh.position, livingPlayers);
+      const targetPlayer = this._pursuitTarget(a, livingPlayers, supportTargets);
       if (!targetPlayer) { this.combatDirector?.release(a); this._clearAttackCue(a); moveBattleOrder(this, a, delta, a.speed); return; }
       if (a.isFeared) { a.fearTimer -= delta; if (a.fearTimer <= 0) a.isFeared = false; else { a.mesh.position.addScaledVector(a.fearDir, a.speed * delta * .7); this.environment?.resolveMovement?.(a.mesh.position, a.radius); return; } }
       if (a.regenActive && a.hp > 0) a.hp = Math.min(a.maxHp, a.hp + 35 * delta);
@@ -1065,26 +1096,32 @@ export class XenomorphHorde {
       // Hive rivalry uses the same prepared faction-targeted strike as every
       // other NPC engagement. Color never adds a second per-frame damage loop.
 
-      const covered = this.environment?.hasLineOfSight && !this.environment.hasLineOfSight(a.mesh.position.clone().add(new THREE.Vector3(0,1.4,0)), targetPlayer.position.clone().add(new THREE.Vector3(0,1.6,0)));
-      if (dist > (a.radius || 1.2) + (this.combatDirector ? 1.2 : 0) || covered) {
-        dir.normalize();
-        a.mesh.position.addScaledVector(dir, a.speed * delta);
+      const covered = this.environment?.hasLineOfSight && !this.environment.hasLineOfSight(a.mesh.position.clone().add(new THREE.Vector3(0,1.4,0)), targetPlayer.position.clone().add(new THREE.Vector3(0,1.6,0)), { ignoreOwner: targetPlayer.isSupport ? targetPlayer.collisionOwner : undefined });
+      const access = !a.isCharging && this.environment?.getVerticalNavigationTarget?.(a.mesh.position, targetPlayer.position);
+      const attackRange = (a.radius || 1.2) + (this.combatDirector ? 1.2 : 0) + (targetPlayer.isSupport ? targetPlayer.radius ?? 0 : 0);
+      if (access || a.mesh.position.distanceTo(targetPlayer.position) > attackRange || covered) {
+        const previous = a.mesh.position.clone();
+        const movement = (access ?? targetPlayer.position).clone().sub(previous).setY(0), step = Math.min(a.speed * delta, movement.length());
+        movement.normalize();
+        a.mesh.position.addScaledVector(movement, step);
         // Only normal ground pursuit skirts solid scenery. Juggles, ceiling
         // ambushes, pounces and active Crusher dashes keep their own movement.
-        if (!a.isCharging && a.mesh.position.y <= 0.2) {
+        if (!a.isCharging) {
           const navigationRadius = Math.max(0.5, Math.min(a.radius || 0.65, 1.2));
-          this.environment?.resolveAgentMovement(a.mesh.position, targetPlayer.position, a.speed * delta, navigationRadius);
+          this.environment?.resolveAgentMovement(a.mesh.position, targetPlayer.position, step, navigationRadius, previous);
         }
-        a.mesh.rotation.y = Math.atan2(dir.x, dir.z);
+        this.combatDirector?.release(a); this._clearAttackCue(a); a._npcPreparation = 0;
+        a.mesh.rotation.y = Math.atan2(movement.x, movement.z);
       } else {
         const granted = this._requestAttack(a, targetPlayer, { windup: a.type === 'facehugger' ? 1 : 0.7, recovery: 1.6 });
         if (!granted) return;
-        if (a.type === 'facehugger' && !targetPlayer.isFacehuggerLatched) {
+        if (a.type === 'facehugger' && this._canParasitize(targetPlayer) && !targetPlayer.isFacehuggerLatched) {
           targetPlayer.triggerFacehuggerLatch();
           a.isLatched = true;
           disposeObject(a.mesh, this.sharedResources);
         } else {
-          targetPlayer.takeDamage(a.damage, false, a, { attackKind: 'melee', blockable: !['crusher','rogue_king','gestating_matriarch','deacon_titan'].includes(a.type), parryable: ['warrior','runner','spitter','red_warrior','grid_alien','officer'].includes(a.type) }); a.revealTimer = 2;
+          if (targetPlayer.isSupport) targetPlayer.takeDamage(a.damage, a);
+          else targetPlayer.takeDamage(a.damage, false, a, { attackKind: 'melee', blockable: !['crusher','rogue_king','gestating_matriarch','deacon_titan'].includes(a.type), parryable: ['warrior','runner','spitter','red_warrior','grid_alien','officer'].includes(a.type) }); a.revealTimer = 2;
         }
       }
     });
@@ -1123,6 +1160,9 @@ export class XenomorphHorde {
 
 
   clearWave() {
+    // A menu cleanup also removes players. Do not keep their disposed visual
+    // graphs alive through the target list from the last simulation frame.
+    this._livingPlayers = [];
     this.pendingBoilerDetonations=[];
     for (const key of ['microSwarms','mantaSwarmers','royalFacehuggers','biomechanicalEggs','cyberSpineDarts','spitterMortars']) {
       for (const actor of this[key] ?? []) { this.combatDirector?.release(actor); this._clearAttackCue(actor); disposeObject(actor.mesh ?? actor.group, this.sharedResources); if (actor.indicatorMesh) disposeObject(actor.indicatorMesh); }
@@ -2294,11 +2334,11 @@ export class XenomorphHorde {
     return actors;
   }
 
-  _updateExtraActors(delta, livingPlayers) {
+  _updateExtraActors(delta, livingPlayers, supportTargets = []) {
     for (const actor of [...this.mantaSwarmers, ...this.microSwarms, ...this.royalFacehuggers]) {
       actor.mesh ??= actor.group; actor.combatManager = this;
       if (actor.hp <= 0) { this.defeatAlien(actor); continue; }
-      const target = actor.battleUnitId && this.battleSimulation ? selectBattleTarget(this, actor, livingPlayers) : this._nearestPlayer(actor.mesh.position, livingPlayers);
+      const target = this._pursuitTarget(actor, livingPlayers, supportTargets);
       if (!target) { moveBattleOrder(this, actor, delta, actor.speed ?? 10); continue; }
       const position = actor.mesh.position, direction = target.position.clone().sub(position), distance = direction.length();
       if (this.mantaSwarmers.includes(actor)) {
@@ -2308,7 +2348,13 @@ export class XenomorphHorde {
         if (actor.divePhase === 'diving') {
           const descent = actor.diveTarget.clone().sub(position), gap = descent.length(), step = actor.diveSpeed * delta;
           position.addScaledVector(descent.normalize(), Math.min(step, gap));
-          if (gap <= step + .1) { if (target.position.distanceTo(actor.diveTarget) <= 2) target.takeDamage(actor.damage, false, actor, { attackKind: 'dive', blockable: false, parryable: false }); actor.divePhase = 'ascending'; actor.diveCooldown = 5; }
+          if (gap <= step + .1) {
+            if (target.position.distanceTo(actor.diveTarget) <= 2) {
+              if (target.isSupport) target.takeDamage(actor.damage, actor);
+              else target.takeDamage(actor.damage, false, actor, { attackKind: 'dive', blockable: false, parryable: false });
+            }
+            actor.divePhase = 'ascending'; actor.diveCooldown = 5;
+          }
         } else if (actor.divePhase === 'ascending') { position.y = Math.min(actor.cruiseAltitude, position.y + 12 * delta); if (position.y >= actor.cruiseAltitude) actor.divePhase = 'cruising'; }
         else {
           position.y = actor.cruiseAltitude + Math.sin(actor.flutterPhase * .4) * .3;

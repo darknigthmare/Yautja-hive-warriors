@@ -18,6 +18,8 @@ import { installCityHunterRightGauntlet } from '../graphics/CityHunterRightGaunt
 import { CITY_HUNTER_RIGHT_GAUNTLET } from '../graphics/CityHunterRightGauntletCalibration.js';
 import { HUNTER_WEAPON_PROFILES, HUNTER_ARSENAL_PROFILES, HUNTER_ACTION_EQUIPMENT, resolveHunterLoadout } from '../data/hunterArsenal.js';
 import { hunterCombatStyle } from '../data/hunterCombatStyles.js';
+import { battleCoordinationDamage } from '../engine/BattleActorSupport.js';
+import { PREY_LEVEL_ID, PREY_WEAPON_PROFILES, createPreyWeaponVisual } from '../graphics/PreyEquipment.js';
 
 const REQUIRED_RIG_BONES = ['hips', 'head', 'leftArm', 'rightArm', 'leftForeArm', 'rightForeArm', 'leftHand', 'rightHand', 'leftLeg', 'rightLeg', 'leftFoot', 'rightFoot'];
 const REQUIRED_ACCESSORIES = ['blade1', 'blade2', 'shieldMesh', 'secWeaponMesh', 'plasmaGlaiveMesh', 'clanMarkMesh'];
@@ -51,6 +53,8 @@ export class Player {
       (imported?.adapter.visualGroundOffsetY ?? this._proceduralMotionRoot?.position.y ?? 0)) * (this.mesh?.scale.y ?? 1);
   }
 
+  getCollisionHeight() { return Math.max(2.4, this.cameraEyeHeight + .35); }
+
   constructor(scene, charData, audioEngine, isPlayer2 = false, particles = null) {
     this.scene = scene;
     this.data = charData;
@@ -77,6 +81,12 @@ export class Player {
     this.fidelityMode = 'adapted';
     this.lastArsenalRefusal = null;
     this.feralBoltAmmo = 12; this.feralBoltCooldown = 0;
+    this.hasTaabeBow = false; this.hasNaruAxe = false;
+    this.taabeArrowAmmo = 0; this.naruAxeCharges = 0;
+    this.preyEquipmentSourceLevel = null;
+    this._preyWeaponVisuals = new Map();
+    this.orangeFlowerTimer = 0; this.isOrangeFlowerActive = false;
+    this.taabeWarTimer = 0; this.isTaabeWarActive = false;
     this.activeWeapon = 'wristblades';
     this.weaponProfile = { damage: 1, reach: 3.8, timing: 1 };
     this.bearTrapCharges = 3;
@@ -576,6 +586,8 @@ export class Player {
   _removeImportedCharacter() {
     const imported = this._importedCharacter;
     if (!imported) return;
+    // Held props belong to Player, not the replaceable native GLB template.
+    for (const visual of this._preyWeaponVisuals.values()) this.mesh.add(visual);
     for (const record of imported.records) {
       record.parent.add(record.object); record.object.position.copy(record.position);
       record.object.quaternion.copy(record.quaternion); record.object.scale.copy(record.scale);
@@ -1347,6 +1359,15 @@ export class Player {
   }
 
   fireCompoundBow() {
+    if (this.activeWeapon === 'taabe_bow') {
+      if (this._disposed || this.hp <= 0 || this.isFacehuggerLatched || !this.canUseArsenalEquipment('taabe_bow') || this.compoundBowCooldown > 0 || !Number.isInteger(this.taabeArrowAmmo) || this.taabeArrowAmmo < 1 || this.taabeArrowAmmo > 12) return null;
+      this.taabeArrowAmmo--; this.compoundBowCooldown = PREY_WEAPON_PROFILES.taabe_bow.cooldown;
+      this.audioEngine.playCompoundBowFire?.();
+      return { projectileKind: 'taabe_arrow', origin: this.position.clone().add(new THREE.Vector3(0, Math.min(2.2, this.cameraEyeHeight * .8), 0)),
+        direction: new THREE.Vector3(Math.sin(this.rotationY),0,Math.cos(this.rotationY)), speed:48,
+        damage:PREY_WEAPON_PROFILES.taabe_bow.projectileDamage, pierceRemaining:0, life:1.5, ammoCost:1, energyCost:0 };
+    }
+    if (this._disposed || this.hp <= 0) return null;
     if (!this.canUseArsenalEquipment('compound_bow')) return false;
     if (this.compoundBowCooldown > 0 || this.isFacehuggerLatched) return null;
     this.compoundBowCooldown = HUNTER_WEAPON_PROFILES.compound_bow.cooldown;
@@ -1657,6 +1678,7 @@ export class Player {
     this.locomotion.dispose();
     this._removeImportedCharacter();
     disposeObject(this.mesh);
+    this._preyWeaponVisuals.clear();
   }
 
   applyLoadout(config = {}) {
@@ -1675,6 +1697,7 @@ export class Player {
   }
 
   canUseArsenalEquipment(id) {
+    if (PREY_WEAPON_PROFILES[id]) return this._canUsePreyEquipment(id);
     if (this.fidelityMode !== 'faithful') return true;
     const reference = HUNTER_ARSENAL_PROFILES[this.data.id];
     if (reference?.weapons.includes(id) || this.loadout.gadgets.includes(id)) return true;
@@ -1693,6 +1716,18 @@ export class Player {
   }
 
   getWeaponState() {
+    if (PREY_WEAPON_PROFILES[this.activeWeapon]) {
+      const bow = this.activeWeapon === 'taabe_bow', profile = this.weaponProfile;
+      return { id:this.activeWeapon, fidelityMode:this.fidelityMode, definition:'adapted_human_reference_tool', fidelity1to1Verified:false,
+        action:bow?'projectile':'melee', actionMethod:bow?'fireCompoundBow':'lightAttack',
+        damage:this.meleeDamage*profile.damage*this.combatStyle.damage, radius:profile.reach*this.combatStyle.reach,
+        timing:profile.timing*(this.attackCooldownFactor||1), actionDamage:bow?profile.projectileDamage:this.meleeDamage*profile.damage*this.combatStyle.damage,
+        actionRange:bow?profile.projectileRange:profile.reach*this.combatStyle.reach, actionResource:bow?'arrows':'axe_charges',
+        actionCost:1, actionAmmo:bow?this.taabeArrowAmmo:this.naruAxeCharges, actionCooldown:bow?profile.cooldown:0,
+        actionCooldownRemaining:bow?this.compoundBowCooldown:0, rangedResource:bow?'arrows':'none', rangedCost:bow?1:0,
+        plasmaEnergy:this.plasmaEnergy, plasmaCost:0, stamina:this.stamina, lightCost:this.combatStyle.lightCost,
+        heavyCost:this.combatStyle.heavyCost*(1+Math.min(5,this.attackComboStep)*.12) };
+    }
     const actions = { smart_disc: 'throwSmartDisc', shuriken: 'throwShuriken', compound_bow: 'fireCompoundBow', crossbow: 'fireRangedShot' };
     const actionMethod = actions[this.activeWeapon] ?? 'lightAttack';
     const bolt = this.activeWeapon === 'crossbow' || (this.fidelityMode === 'faithful' && this.data.id === 'feral_predator');
@@ -1718,6 +1753,83 @@ export class Player {
     if (this._plasmaCasterVisual) this._plasmaCasterVisual.visible = !referenceFeral;
     if (this._feralFoldedShield) this._feralFoldedShield.visible = referenceFeral && this.loadout.gadgets.includes('feral_shield') && !this.isBlocking;
     if (this.shieldMesh && this.fidelityMode === 'faithful') this.shieldMesh.visible = this.isBlocking && this.loadout.gadgets.includes('feral_shield');
+    this._syncPreyWeaponVisuals();
+  }
+
+  _preyContextIsValid(sourceLevelId) {
+    const context = this.gameContext;
+    if (context) return (context.ui?.selectedLevel?.id ?? context.level?.id ?? context.levelData?.id ?? context.selectedLevel?.id) === PREY_LEVEL_ID;
+    return (sourceLevelId ?? this.preyEquipmentSourceLevel) === PREY_LEVEL_ID;
+  }
+
+  _canUsePreyEquipment(id, { allowLocked = false, sourceLevelId } = {}) {
+    const unlocked = id === 'taabe_bow' ? this.hasTaabeBow : id === 'naru_axe' && this.hasNaruAxe;
+    if (!PREY_WEAPON_PROFILES[id] || this._disposed || this.fidelityMode === 'faithful' || !this._preyContextIsValid(sourceLevelId) || (!allowLocked && !unlocked)) {
+      this.lastArsenalRefusal = { equipment:id, reason:this.fidelityMode==='faithful'?'unattested_in_reference_kit':'prey_tool_requires_mission_pickup', message:'Outil humain réservé aux trouvailles PREY du mode adapté.' };
+      return false;
+    }
+    return true;
+  }
+
+  equipPreyWeapon(id, { sourceLevelId } = {}) {
+    if (this.hp <= 0 || !this._canUsePreyEquipment(id,{allowLocked:true,sourceLevelId})) return false;
+    this.preyEquipmentSourceLevel = PREY_LEVEL_ID;
+    if (id === 'taabe_bow') this.hasTaabeBow = true; else this.hasNaruAxe = true;
+    return this.selectWeapon(id, false);
+  }
+
+  serializePreyEquipment() {
+    return { version:1, sourceLevelId:this.preyEquipmentSourceLevel, hasTaabeBow:this.hasTaabeBow, hasNaruAxe:this.hasNaruAxe,
+      taabeArrowAmmo:this.taabeArrowAmmo, naruAxeCharges:this.naruAxeCharges, selected:PREY_WEAPON_PROFILES[this.activeWeapon]?this.activeWeapon:null,
+      bowCooldown:Math.max(0,this.compoundBowCooldown), orangeFlowerRemaining:Math.max(0,this.orangeFlowerTimer),
+      taabeWarRemaining:Math.max(0,this.taabeWarTimer), mudRemaining:Math.max(0,this.mudCoatedTimer) };
+  }
+
+  restorePreyEquipment(saved) {
+    if (!saved || saved.version!==1 || this._disposed || (saved.sourceLevelId!==null && saved.sourceLevelId!==PREY_LEVEL_ID) ||
+      typeof saved.hasTaabeBow!=='boolean' || typeof saved.hasNaruAxe!=='boolean' ||
+      !Number.isInteger(saved.taabeArrowAmmo) || saved.taabeArrowAmmo<0 || saved.taabeArrowAmmo>12 ||
+      !Number.isInteger(saved.naruAxeCharges) || saved.naruAxeCharges<0 || saved.naruAxeCharges>4 ||
+      (!saved.hasTaabeBow&&saved.taabeArrowAmmo!==0) || (!saved.hasNaruAxe&&saved.naruAxeCharges!==0) ||
+      ((saved.hasTaabeBow||saved.hasNaruAxe)&&saved.sourceLevelId!==PREY_LEVEL_ID) ||
+      (saved.selected!==null && !PREY_WEAPON_PROFILES[saved.selected]) ||
+      (saved.selected==='taabe_bow'&&!saved.hasTaabeBow) || (saved.selected==='naru_axe'&&!saved.hasNaruAxe)) return false;
+    const durations = [['bowCooldown',10],['orangeFlowerRemaining',35],['taabeWarRemaining',25],['mudRemaining',30]];
+    if (durations.some(([key,max])=>!Number.isFinite(saved[key]??0)||(saved[key]??0)<0||(saved[key]??0)>max)) return false;
+    if (saved.sourceLevelId && !this._preyContextIsValid(saved.sourceLevelId)) return false;
+    this.preyEquipmentSourceLevel=saved.sourceLevelId; this.hasTaabeBow=saved.hasTaabeBow; this.hasNaruAxe=saved.hasNaruAxe;
+    this.taabeArrowAmmo=saved.taabeArrowAmmo; this.naruAxeCharges=saved.naruAxeCharges;
+    this.compoundBowCooldown=saved.bowCooldown??0;
+    this.orangeFlowerTimer=saved.orangeFlowerRemaining??0; this.isOrangeFlowerActive=this.orangeFlowerTimer>0;
+    this.taabeWarTimer=saved.taabeWarRemaining??0; this.isTaabeWarActive=this.taabeWarTimer>0;
+    this.mudCoatedTimer=saved.mudRemaining??0; this.isMudCoated=this.mudCoatedTimer>0;
+    if (saved.selected && this.fidelityMode!=='faithful') this.selectWeapon(saved.selected,false);
+    else if (PREY_WEAPON_PROFILES[this.activeWeapon]) this.selectWeapon(this.loadout.primary,false);
+    return true;
+  }
+
+  _syncPreyWeaponVisuals() {
+    if (!this._preyWeaponVisuals || !this.mesh) return;
+    const selected = PREY_WEAPON_PROFILES[this.activeWeapon] && this.fidelityMode!=='faithful' && this._preyContextIsValid() ? this.activeWeapon : null;
+    if (selected && !this._preyWeaponVisuals.has(selected)) this._preyWeaponVisuals.set(selected,createPreyWeaponVisual(selected));
+    if (selected && this.secWeaponMesh) this.secWeaponMesh.visible=false;
+    for (const [id,visual] of this._preyWeaponVisuals) {
+      const side=id==='taabe_bow'?'left':'right', native=this._importedCharacter?.adapter.sockets?.[`${side}Hand`];
+      const parent=native??this[`${side}Arm`]??this.mesh;
+      if (visual.parent!==parent) parent.add(visual);
+      visual.position.set(0,native?0:-1.3,native?0:.2); visual.rotation.set(0,0,id==='naru_axe'?-.12:0);
+      this.mesh.updateWorldMatrix(true,false); parent.updateWorldMatrix(true,false);
+      const parentScale=parent.getWorldScale(new THREE.Vector3()), ownerScale=this.mesh.getWorldScale(new THREE.Vector3());
+      visual.scale.set(Math.abs(ownerScale.x/parentScale.x),Math.abs(ownerScale.y/parentScale.y),Math.abs(ownerScale.z/parentScale.z));
+      visual.visible=id===selected;
+      visual.traverse(part=>{if(part.isMesh)part.visible=true;if(!part.material)return;
+        for(const material of(Array.isArray(part.material)?part.material:[part.material])) {
+          if(!this.armorMaterials.includes(material))this.armorMaterials.push(material);
+          if(this._uncloakedSurfaces&&!this._uncloakedSurfaces.has(material))this._uncloakedSurfaces.set(material,surfaceState(material));
+          if(this.isCloaked){material.transparent=true;material.opacity=.22;material.depthWrite=false;}
+        }
+      });
+    }
   }
 
   fireRangedShot(isCharged = false) {
@@ -1745,7 +1857,7 @@ export class Player {
   }
 
   selectWeapon(id, playSound = true) {
-    const selected = HUNTER_WEAPON_PROFILES[id];
+    const selected = PREY_WEAPON_PROFILES[id] ?? HUNTER_WEAPON_PROFILES[id];
     if (!selected || !this.canUseArsenalEquipment(id)) return false;
     this.lastArsenalRefusal = null;
     this.activeWeapon = id;
@@ -1754,8 +1866,10 @@ export class Player {
     this.secWeaponMesh.visible = this.isSecondaryWeapon;
     this._syncWristbladeVisuals();
     // Give selected melee tools a distinct silhouette without changing shared materials.
-    this.secWeaponMesh.geometry.dispose();
-    this.secWeaponMesh.geometry = createHunterWeaponGeometry(id);
+    if (!PREY_WEAPON_PROFILES[id]) {
+      this.secWeaponMesh.geometry.dispose();
+      this.secWeaponMesh.geometry = createHunterWeaponGeometry(id);
+    }
     this._syncArsenalVisuals();
     if (playSound) this.audioEngine.playWeaponSwap();
     return true;
@@ -1794,6 +1908,7 @@ export class Player {
       let speedMult = (this.warhornBuffTimer > 0 ? 1.4 : 1.0) * (this.isBerserkerActive ? 1.45 : 1.0);
       if (this.isExosuitActive) speedMult *= 1.25;
       if (this.isComancheWarPaintActive) speedMult *= 1.30; // +30% Comanche War Paint Spirit Agility (Prey 2022)
+      if (this.isTaabeWarActive && this.taabeWarTimer > 0) speedMult *= 1.30;
       if (this.isKenjiReflexesActive) speedMult *= 1.25; // +25% Ninja Agility (Killer of Killers 2025)
       if (this.isSyntheticAnkleGrabbed) speedMult *= 0.2;
       const moveDistance = this.moveSpeed * speedMult * delta;
@@ -1815,6 +1930,7 @@ export class Player {
       this.position.y = THREE.MathUtils.lerp(this.position.y, groundY, 1 - Math.exp(-18 * delta));
     }
 
+    this.gameContext?.env?.resolveMovement?.(this.position, .75, this.getCollisionHeight());
     this.mesh.position.copy(this.position);
     this.mesh.rotation.y = this.rotationY;
   }
@@ -1880,7 +1996,10 @@ export class Player {
 
   lightAttack() {
     if (this._disposed || this.hp <= 0 || this.isAttacking || this.isBlocking || this.isFacehuggerLatched) return null;
+    if (this.activeWeapon==='taabe_bow') { this.lastCombatRefusal='projectile_action_required'; return null; }
+    if (this.activeWeapon==='naru_axe' && (!this.canUseArsenalEquipment('naru_axe') || !Number.isInteger(this.naruAxeCharges) || this.naruAxeCharges<1 || this.naruAxeCharges>4)) { this.lastCombatRefusal='axe_charges'; return null; }
     if (!this._spendCombatStamina(this.combatStyle.lightCost)) return null;
+    if (this.activeWeapon==='naru_axe') this.naruAxeCharges--;
     this.isAttacking = true;
     this.attackComboStep = (this.attackComboStep % this.combatStyle.lightChainLength) + 1;
     this.attackTimer = 0.28 * this.weaponProfile.timing * (this.attackCooldownFactor || 1);
@@ -1937,6 +2056,19 @@ export class Player {
 
   heavyAttack() {
     if (this._disposed || this.hp <= 0 || this.isAttacking || this.isBlocking || this.isFacehuggerLatched) return null;
+    if (this.activeWeapon==='taabe_bow') { this.lastCombatRefusal='projectile_action_required'; return null; }
+    if (this.activeWeapon==='naru_axe') {
+      if (!this.canUseArsenalEquipment('naru_axe') || !Number.isInteger(this.naruAxeCharges) || this.naruAxeCharges<1 || this.naruAxeCharges>4) { this.lastCombatRefusal='axe_charges'; return null; }
+      const cost=this.combatStyle.heavyCost;
+      if(!this._spendCombatStamina(cost))return null;
+      this.naruAxeCharges--; this.isAttacking=true; this.attackComboStep=0; this.comboResetTimer=0;
+      this.rightArm.rotation.x=-Math.PI*.7; this.rightArm.rotation.y=.2;
+      this.audioEngine.playSlash?.();
+      const window=this._beginCombatWindow('heavy',cost,.65);
+      return {...window,type:'heavy',step:0,chargeType:'prey_axe',chargeName:'HACHE À LIEN — FRAPPE LOURDE',
+        damage:this.meleeDamage*this.weaponProfile.damage*this.combatStyle.damage*2,
+        radius:this.weaponProfile.reach*this.combatStyle.reach,angle:Math.PI*.65,knockback:2.5};
+    }
     const step = this.attackComboStep;
     if (step >= 3 && this.crowdAttackCooldown > 0) { this.lastCombatRefusal = 'crowd_cooldown'; return null; }
     const staminaCost = this.combatStyle.heavyCost * (1 + Math.min(5, step) * .12);
@@ -2111,12 +2243,6 @@ export class Player {
     if (this.isRoryTelemetryActive) {
       dmg *= 1.35; // +35% decoded Yautja telemetry critical damage boost (The Predator 2018)
     }
-    if (this.isOrangeFlowerActive) {
-      dmg *= 1.50; // +50% thermal stealth critical strike (Prey 2022)
-    }
-    if (this.isMudCoated) {
-      dmg *= 1.40; // +40% mud-masked ambush strike (Prey 2022)
-    }
     if (this.isComancheWarPaintActive) {
       dmg *= 1.25; // +25% Comanche War Paint kinetic force (Prey 2022)
     }
@@ -2149,6 +2275,7 @@ export class Player {
 
   takeDamage(amount, isAcid = false, attacker = null, attackContext = {}) {
     if (!Number.isFinite(amount) || amount <= 0 || this._disposed) return this.hp;
+    if(attacker?.battleUnitId)amount=battleCoordinationDamage(attacker,amount);
     if (!attackContext || typeof attackContext !== 'object') attackContext = {};
     // Chantier 4 & Lucas QA (v51.0): Dedicated Active Wristblade Parry Deflection [F]
     const parryable = !isAcid && attackContext.parryable === true;
@@ -2256,6 +2383,7 @@ export class Player {
     if (isAcid && this.hasEnkiduArmor) {
       amount *= (1.0 - (this.acidResistance || 0.40));
     }
+    if (isAcid && this.isMudCoated && this.mudCoatedTimer>0) amount *= .6;
     // Chantier 10 (v54.0): Cauterizing Wristblade 30% Acid Reduction
     if (isAcid && this.hasCauterizingWristblade) {
       amount *= 0.70;
@@ -2575,7 +2703,7 @@ export class Player {
       const previousY = this.position.y;
       this.leapVelocityY -= grav * delta;
       this.position.y += this.leapVelocityY * delta;
-      const vertical = this.gameContext?.env?.resolveVerticalMovement?.(this.position, previousY, 2.4);
+      const vertical = this.gameContext?.env?.resolveVerticalMovement?.(this.position, previousY, this.getCollisionHeight());
       if (vertical?.blocked) { this.position.copy(vertical.point); this.leapVelocityY = 0; }
 
       if (this.position.y <= groundY) {
@@ -4692,15 +4820,15 @@ export class Player {
       if (this.caseyDeconTimer <= 0) this.isCaseyDeconActive = false;
     }
     if (this.orangeFlowerTimer > 0) {
-      this.orangeFlowerTimer -= delta;
+      this.orangeFlowerTimer = Math.max(0,this.orangeFlowerTimer-delta);
       if (this.orangeFlowerTimer <= 0) this.isOrangeFlowerActive = false;
     }
     if (this.taabeWarTimer > 0) {
-      this.taabeWarTimer -= delta;
+      this.taabeWarTimer = Math.max(0,this.taabeWarTimer-delta);
       if (this.taabeWarTimer <= 0) this.isTaabeWarActive = false;
     }
     if (this.mudCoatedTimer > 0) {
-      this.mudCoatedTimer -= delta;
+      this.mudCoatedTimer = Math.max(0,this.mudCoatedTimer-delta);
       if (this.mudCoatedTimer <= 0) this.isMudCoated = false;
     }
     if (this.comancheWarPaintTimer > 0) {
@@ -4763,20 +4891,30 @@ export class Player {
   }
 
   applyPreyMudCamouflage(duration = 30.0) {
-    this.mudCoatedTimer = duration;
+    if(this._disposed||this.hp<=0||!Number.isFinite(duration)||duration<=0)return false;
+    this.mudCoatedTimer = Math.min(30,duration);
     this.isMudCoated = true;
-    if (!this.isCloaked) this.toggleCloak();
+    return true;
   }
 
   applyOrangeFlowerBuff(duration = 35.0) {
-    this.orangeFlowerTimer = duration;
+    if(this._disposed||this.hp<=0||!Number.isFinite(duration)||duration<=0)return false;
+    this.orangeFlowerTimer = Math.min(35,duration);
     this.isOrangeFlowerActive = true;
-    this.isCloaked = true;
+    return true;
   }
 
   applyTaabeWarAgility(duration = 25.0) {
-    this.taabeWarTimer = duration;
+    if(this._disposed||this.hp<=0||!Number.isFinite(duration)||duration<=0)return false;
+    this.taabeWarTimer = Math.min(25,duration);
     this.isTaabeWarActive = true;
+    return true;
+  }
+
+  getThermalSignatureMultiplier() {
+    if(this.isOrangeFlowerActive&&this.orangeFlowerTimer>0)return .35;
+    if(this.isMudCoated&&this.mudCoatedTimer>0)return .6;
+    return 1;
   }
 
   applyFriendlyLobo(duration = 35.0) {

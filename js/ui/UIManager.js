@@ -298,10 +298,15 @@ export class UIManager {
     const plasmaPct = (player.plasmaEnergy / player.maxPlasmaEnergy) * 100;
     this.hudPlasmaFill.style.width = `${plasmaPct}%`;
     const combat = player.getCombatState?.(), weapon = player.getWeaponState?.();
-    this.hudPlasmaText.innerText = weapon?.rangedResource === 'bolts' ? `BOULONS : ${weapon?.boltAmmo ?? player.boltAmmo ?? 0}` : `ÉNERGIE PLASMA : ${Math.ceil(plasmaPct)}%`;
+    this.hudPlasmaText.innerText = weapon?.actionResource === 'arrows' ? `FLÈCHES DE TAABE : ${weapon.actionAmmo}/12` : weapon?.actionResource === 'axe_charges' ? `HACHE DE NARU : ${weapon.actionAmmo}/4 COUPS` : weapon?.rangedResource === 'bolts' ? `BOULONS : ${weapon?.boltAmmo ?? player.boltAmmo ?? 0}` : `ÉNERGIE PLASMA : ${Math.ceil(plasmaPct)}%`;
     if(combat){const staminaFill=document.getElementById('hud-stamina-fill'),staminaText=document.getElementById('hud-stamina-text');if(staminaFill)staminaFill.style.width=`${Math.max(0,combat.stamina/combat.maxStamina*100)}%`;if(staminaText)staminaText.textContent=`ENDURANCE ${Math.ceil(combat.stamina)}/${combat.maxStamina}`;}
     document.getElementById('wrist-ecg-holoscan')?.classList.toggle('is-critical',Boolean(player.isChestbursterImplanted||player.isFacehuggerLatched));
-    const activeWeapon=document.getElementById('hud-active-weapon');if(activeWeapon)activeWeapon.textContent=({wristblades:'LAMES DE POIGNET',combistick:'COMBISTICK',smart_disc:'SMART-DISC',crossbow:'LANCE-BOULONS',shuriken:'SHURIKEN',compound_bow:'ARC COMPOSÉ',katana:'KATANA',viking_axe:'HACHE',alpha_sickle:'FAUCILLE'})[weapon?.id]??'ARME PRINCIPALE';
+    const activeWeapon=document.getElementById('hud-active-weapon');if(activeWeapon)activeWeapon.textContent=({wristblades:'LAMES DE POIGNET',combistick:'COMBISTICK',smart_disc:'SMART-DISC',crossbow:'LANCE-BOULONS',shuriken:'SHURIKEN',compound_bow:'ARC COMPOSÉ',taabe_bow:'ARC DE TAABE',naru_axe:'HACHE DE NARU',katana:'KATANA',viking_axe:'HACHE',alpha_sickle:'FAUCILLE'})[weapon?.id]??'ARME PRINCIPALE';
+    const supportStatus=document.getElementById('hud-support-status');
+    if(supportStatus&&factions.supports){const {apc,cheyenne}=factions.supports;
+      const label=(state,name,ammunition)=>state.hp<=0?`${name} DÉTRUIT`:!state.allowed?`${name} INDISPONIBLE`:`${name} ${Math.ceil(state.hp)} PV · ${ammunition}${state.lastRefusal?' · Dernier refus : '+state.refusalMessage:''}`;
+      supportStatus.textContent=`${label(apc,'APC',`${apc.remaining.rounds}/48 OBUS`)} | ${label(cheyenne,'CHEYENNE',`${cheyenne.remaining.sorties}/2 SORTIES · ${cheyenne.remaining.rockets}/12 ROQUETTES · ${cheyenne.remaining.napalm}/6 INCENDIAIRES`)}`;
+    }
 
     // Musou Gauge
     const musouPct = (player.musouEnergy / player.maxMusouEnergy) * 100;

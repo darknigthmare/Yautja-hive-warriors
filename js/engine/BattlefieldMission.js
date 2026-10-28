@@ -4,9 +4,9 @@ import { BattlefieldProgression } from './BattlefieldProgression.js';
 // Connect objective state to real encounters. Opening a gate never teleports
 // the player: the next encounter starts only when a living player walks in.
 export class BattlefieldMission {
-  constructor({ environment, horde, bosses, level, onAnnouncement = () => {}, onSectorEntered = () => {} }) {
+  constructor({ environment, horde, bosses, level, preparedEncounter = null, onAnnouncement = () => {}, onSectorEntered = () => {} }) {
     if (!environment.battlefieldLayout) throw new Error('BattlefieldMission requires a built connected map');
-    Object.assign(this, { environment, horde, bosses, level, onAnnouncement, onSectorEntered });
+    Object.assign(this, { environment, horde, bosses, level, preparedEncounter, onAnnouncement, onSectorEntered });
     this.progression = new BattlefieldProgression(environment.battlefieldLayout);
     this.disposed = false;
     this._bossSectorId = null;
@@ -111,7 +111,7 @@ export class BattlefieldMission {
       }
     } else if (sector.objective.type === 'boss') {
       const position = new THREE.Vector3(sector.objective.position[0], 0, sector.objective.position[1]);
-      this.bosses.spawnBoss(this.level.bossType ?? 'xenomorph_queen', position);
+      this.bosses.spawnBoss(this.level.bossType ?? 'xenomorph_queen', position,this.preparedEncounter??undefined);
       if (!this.bosses.activeBoss) throw new Error('The final battlefield boss could not be created');
       this._bossSectorId = id;
       this._bossEncounter = this.bosses.activeBoss;

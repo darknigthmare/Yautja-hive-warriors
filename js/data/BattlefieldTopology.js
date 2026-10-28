@@ -1,13 +1,27 @@
 /* Orthogonal traversable regions and their true union boundary. Tactical
  * detours are physical corridors, not a second line painted on the minimap. */
-export function variantSectorCenters(variant) {
+export function normalizeBattlefieldSeed(seed = 0) {
+  if (!Number.isInteger(seed) || seed < 0 || seed > 0xffffffff) throw new RangeError('Map seed must be an unsigned 32-bit integer');
+  return seed;
+}
+
+export function variantSectorCenters(variant, seed = 0) {
+  seed = normalizeBattlefieldSeed(seed);
   const columns = variant.columns, rows = Math.ceil(variant.sectors / columns);
   const gapX = Math.max(185, (variant.width - 132) / (columns - 1));
   const gapZ = Math.max(185, (variant.depth - 132) / (rows - 1));
+  let randomState = (seed ^ Math.imul(Number(variant.id.slice(3)), 2654435761)) >>> 0;
+  const random = () => { randomState = (Math.imul(randomState, 1664525) + 1013904223) >>> 0; return randomState / 0x100000000; };
+  const coordinates = (count, gap) => {
+    const values = [0];
+    for (let i = 1; i < count; i++) values.push(seed === 0 ? i * gap : values[i - 1] + Math.max(185, gap * .9) + random() * gap * .2);
+    return values;
+  };
+  const xs = coordinates(columns, gapX), zs = coordinates(rows, gapZ);
   const flip = ['parallel-lines', 'bastion', 'split-wing'].includes(variant.pattern) ? -1 : 1;
   return Array.from({ length: variant.sectors }, (_, index) => {
     const row = Math.floor(index / columns), col = index % columns;
-    return [flip * (row % 2 ? columns - 1 - col : col) * gapX, -row * gapZ];
+    return [flip * xs[row % 2 ? columns - 1 - col : col], -zs[row]];
   });
 }
 

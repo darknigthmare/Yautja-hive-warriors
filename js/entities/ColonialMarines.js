@@ -75,10 +75,12 @@ export class ColonialMarinesManager {
         if (targetsPlayer) { if (!this.hostileToPlayers || !targetPlayer || targetPlayer.hp <= 0) { releaseHostileAttack(this, m); continue; } targetPos = targetPlayer.position; target = targetPlayer; }
       }
       m.shootCooldown = Math.max(0, (m.shootCooldown ?? 1.4) - delta); m.grenadeCooldown = Math.max(0, (m.grenadeCooldown ?? 7) - delta);
-      const direction = targetPos.clone().sub(m.mesh.position).setY(0), distance = direction.length(); m.mesh.rotation.y = Math.atan2(direction.x, direction.z);
+      const distance = targetPos.distanceTo(m.mesh.position);
+      const access = this.environment?.getVerticalNavigationTarget?.(m.mesh.position, targetPos);
+      const direction = (access ?? targetPos).clone().sub(m.mesh.position).setY(0), moveDistance = direction.length(); m.mesh.rotation.y = Math.atan2(direction.x, direction.z);
       const range = m.type === 'flametrooper' ? 5 : 20, stopping = m.type === 'flametrooper' ? 3.5 : 12;
       const covered = this.environment?.hasLineOfSight && !this.environment.hasLineOfSight(m.mesh.position.clone().add(new THREE.Vector3(0, 2, 0)), targetPos.clone().add(new THREE.Vector3(0, 1.6, 0)));
-      if (distance > stopping || covered) { const step = covered ? m.speed * delta : Math.min(m.speed * delta, distance - stopping); m.mesh.position.addScaledVector(direction.normalize(), step); this.environment?.resolveAgentMovement?.(m.mesh.position, targetPos, step, .8); }
+      if (distance > stopping || covered || access && distance > range) { const step = access || covered ? Math.min(m.speed * delta, moveDistance || m.speed * delta) : Math.min(m.speed * delta, distance - stopping); const previous = m.mesh.position.clone(); m.mesh.position.addScaledVector(direction.normalize(), step); this.environment?.resolveAgentMovement?.(m.mesh.position, targetPos, step, .8, previous); }
       if (covered || distance > range) { releaseHostileAttack(this, m); m.pressureAction = null; continue; }
       if (m.shootCooldown > 0) continue;
       const granted = targetsPlayer ? requestHostileAttack(this, m, targetPlayer, delta, { kind: 'ranged', windup: .8, recovery: 1.5, duration: .3 })

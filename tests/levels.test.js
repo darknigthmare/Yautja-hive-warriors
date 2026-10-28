@@ -18,13 +18,16 @@ for (const level of LEVELS_DATA) {
     const initialLayout = JSON.stringify(environment.colliders);
     for (const x of [0, 4]) {
       const insertion = new THREE.Vector3(x, 0, 0);
+      insertion.y = environment.getPlacementElevationAt(x, 0);
+      const expected = insertion.toArray();
       environment.resolveMovement(insertion);
-      assert.deepEqual(insertion.toArray(), [x, 0, 0], 'single and co-op spawns stay clear');
+      assert.deepEqual(insertion.toArray(), expected, 'single and co-op spawns stay clear at their actual placement height');
     }
     // The four cardinal routes and the circular route must stay traversable.
     for (let direction = 0; direction < 4; direction++) {
       for (let distance = 0; distance <= 60; distance += 3) {
         const position = new THREE.Vector3(Math.sin(direction * Math.PI / 2) * distance, 0, Math.cos(direction * Math.PI / 2) * distance);
+        position.y = environment.getPlacementElevationAt(position.x, position.z);
         const original = position.clone();
         environment.resolveMovement(position);
         assert.ok(position.distanceTo(original) < 0.001, `blocked cardinal lane at ${distance}`);
@@ -32,6 +35,7 @@ for (const level of LEVELS_DATA) {
     }
     for (let angle = 0; angle < Math.PI * 2; angle += Math.PI / 24) {
       const position = new THREE.Vector3(Math.sin(angle) * 28, 0, Math.cos(angle) * 28);
+      position.y = environment.getPlacementElevationAt(position.x, position.z);
       const original = position.clone();
       environment.resolveMovement(position);
       assert.ok(position.distanceTo(original) < 0.001, 'blocked circulation loop');
@@ -81,6 +85,7 @@ for (const level of LEVELS_DATA) {
     environment.buildLevelEnvironment(level);
     for (const [x, z] of [[0, 0], [20, 0], [0, -30], [-40, 0]]) {
       const target = new THREE.Vector3(x, 0, z);
+      target.y = environment.getPlacementElevationAt(x, z);
       for (let direction = 0; direction < 32; direction++) {
         const angle = direction / 32 * Math.PI * 2;
         const position = new THREE.Vector3(Math.cos(angle) * 60, 0, Math.sin(angle) * 60);

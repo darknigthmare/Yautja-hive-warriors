@@ -8,6 +8,82 @@
 
 import * as THREE from 'three';
 import { prepareSarii, orderSarii, damageSarii, updateSarii } from './SariiCompanion.js';
+import { walkRampGeometry } from './ReferenceWalkSurfaces.js';
+
+// These are explicit game-unit contracts, not measurements of film weapons.
+export const PREY_INTERACTION_RULES = Object.freeze({
+  pistolRange: 28, pistolDamage: 1200, flowerSeconds: 35, taabeSeconds: 25,
+  arrowsGranted: 6, maxArrows: 12, axeChargesGranted: 4, maxAxeCharges: 4,
+  powderBlastRadius: 16, powderBlastDamage: 750, powderFireRadius: 8.5,
+  powderFireSeconds: 18, powderFireDamagePerSecond: 110,
+  cauldronRadius: 7.5, cauldronDamage: 500, mudSeconds: 30
+});
+
+function preyCanInteract(environment, player, prop, usedFlag, range) {
+  return !!prop && !!player?.position?.isVector3 && player.hp > 0 && !prop[usedFlag] &&
+    !environment.game?.isPaused && !environment.game?.photoMode?.isActive &&
+    !environment.game?.dropPod?.isActive && player.position.distanceTo(prop.pos) <= range;
+}
+
+function preyFaction(environment, player, horde) {
+  return player?.factionId ?? environment.game?.battleSimulation?.config.playerFaction ?? horde?.battleSimulation?.config.playerFaction ?? 'player_clan';
+}
+
+function preyTargets(environment, horde, bosses) {
+  return [...new Set([...(horde?.getActiveCombatants?.() ?? horde?.aliens ?? []), bosses?.activeBoss,
+    ...[...(environment.game?.battleBridge?.actors?.values?.() ?? [])].map(entry => entry.actor)])]
+    .filter(actor => actor?.hp > 0 && actor.mesh?.position?.isVector3);
+}
+
+function preyCanHit(environment, target, faction, horde) {
+  const simulation = environment.game?.battleSimulation ?? horde?.battleSimulation;
+  return !simulation || !target.factionId || simulation.areHostile(faction, target.factionId);
+}
+
+function preyClearShot(environment, from, to, ignoredRoot = null) {
+  const ignore = new Set();
+  if (ignoredRoot) for (const contact of environment.referenceContacts ?? []) {
+    for (let node = contact.mesh; node; node = node.parent) if (node === ignoredRoot) { ignore.add(contact.collider); break; }
+  }
+  return environment.hasLineOfSight?.(from, to, { radius: .025, ignore }) !== false;
+}
+
+function preyDamage(environment, actor, amount, horde, bosses, faction, cause) {
+  if (!(amount > 0) || !Number.isFinite(amount) || !(actor?.hp > 0) || !preyCanHit(environment, actor, faction, horde)) return 0;
+  const before = actor.hp, details = { cause, killerFaction: faction };
+  if (actor === bosses?.activeBoss) {
+    if (typeof bosses.takeDamage !== 'function') return 0;
+    bosses.takeDamage(amount, horde, details);
+  } else if ((horde?.getActiveCombatants?.() ?? horde?.aliens ?? []).includes(actor)) {
+    if (typeof horde.applyDamage !== 'function') return 0;
+    horde.applyDamage(actor, amount, details);
+  } else {
+    const manager = actor.combatManager;
+    if (!manager?.defeatCombatant && !manager?.defeatSynthetic) return 0;
+    actor.hp = Math.max(0, actor.hp - amount); actor.lastDamageFaction = faction;
+    if (actor.hp === 0) (manager.defeatCombatant ?? manager.defeatSynthetic).call(manager, actor, details);
+  }
+  return Math.max(0, before - actor.hp);
+}
+
+function preyStock(player, key, extra, maximum) {
+  const raw = player[key], before = Number.isFinite(raw) && raw >= 0 ? Math.floor(raw) : 0;
+  player[key] = Math.min(maximum, before + extra); return player[key] - before;
+}
+
+const PREY_SAVE_PROPS = Object.freeze({ boneMaskDecoy: null, orangeFlowerPatch: 'isHarvested',
+  adoliniPistolPedestal: 'isClaimed', taabeRockPerch: 'isClaimed', grizzlyBearCarcass: 'isSkinned',
+  naruTomahawkTree: 'isClaimed', trapperMedicalTent: 'isLooted', feralArsenalStation: 'isClaimed',
+  sariiCompanion: 'isTamed', trapperBaitTree: 'isDetonated', trapperCampfireSpit: 'isToppled', preyMudSinkhole: null });
+const PREY_SOURCE_LEVEL = 'prey_comanche_territory';
+const preyFinitePoint = value => Array.isArray(value) && value.length === 3 && value.every(number => Number.isFinite(number) && Math.abs(number) <= 1e6);
+const preyPlayers = environment => [environment.game?.player, environment.game?.player2];
+function preyCreatePowderFire(environment, position, timer, ownerFaction) {
+  const mesh = new THREE.Mesh(new THREE.CylinderGeometry(8.5, 8.5, .4, 24),
+    new THREE.MeshBasicMaterial({ color: 0xf97316, transparent: true, opacity: .65 }));
+  mesh.position.copy(position); environment.addReferenceObject(mesh);
+  return { mesh, pos: position.clone(), timer, ownerFaction };
+}
 
 export class ReferenceEnvironmentMechanisms {
   constructor(scene) {
@@ -2164,34 +2240,38 @@ export class ReferenceEnvironmentMechanisms {
 
       // Inclined Access Ramp
       const rampLength = 14.0;
-      const rampGeo = new THREE.BoxGeometry(p.width, 0.3, rampLength);
-      const rampAngle = Math.atan2(p.height, rampLength);
-      const ramp = new THREE.Mesh(rampGeo, metalMat);
-      const rampZ = p.z + (p.rampSide * (p.length / 2 + rampLength / 2 * Math.cos(rampAngle)));
-      ramp.position.set(p.x, p.height / 2, rampZ);
-      ramp.rotation.x = p.rampSide * rampAngle;
+      const deckTop = p.height + .2;
+      const ramp = new THREE.Mesh(walkRampGeometry(p.width, rampLength, deckTop), metalMat);
+      const rampZ = p.z + p.rampSide * (p.length / 2 + rampLength / 2);
+      ramp.position.set(p.x, 0, rampZ);
+      if (p.rampSide > 0) ramp.rotation.y = Math.PI;
       ramp.receiveShadow = true;
       group.add(ramp);
 
       this.addReferenceObject(group);
       this.envObjects.push(group);
 
-      this.catwalks.push({
+      const record = {
         minX: p.x - p.width / 2,
         maxX: p.x + p.width / 2,
         minZ: p.z - p.length / 2,
         maxZ: p.z + p.length / 2,
-        height: p.height,
+        height: deckTop,
         ramp: {
           minX: p.x - p.width / 2,
           maxX: p.x + p.width / 2,
-          minZ: Math.min(p.z + p.rampSide * (p.length / 2), rampZ + p.rampSide * (rampLength / 2)),
-          maxZ: Math.max(p.z + p.rampSide * (p.length / 2), rampZ + p.rampSide * (rampLength / 2)),
+          minZ: Math.min(p.z + p.rampSide * (p.length / 2), rampZ + p.rampSide * rampLength / 2),
+          maxZ: Math.max(p.z + p.rampSide * (p.length / 2), rampZ + p.rampSide * rampLength / 2),
           bottomZ: rampZ + p.rampSide * (rampLength / 2),
           topZ: p.z + p.rampSide * (p.length / 2),
-          height: p.height
+          height: deckTop
         }
-      });
+      };
+      this.catwalks.push(record);
+      const bottom = [p.x, 0, record.ramp.bottomZ], top = [p.x, deckTop, record.ramp.topZ], accesses = [{ bottom, top }];
+      this.registerReferenceWalkSurface?.(deck, { id: `catwalk-${p.x}-deck`, bounds: record, heightAt: () => deckTop, accesses });
+      this.registerReferenceWalkSurface?.(ramp, { id: `catwalk-${p.x}-ramp`, bounds: record.ramp,
+        heightAt: (_x, z) => THREE.MathUtils.clamp(Math.abs(z - record.ramp.bottomZ) / rampLength, 0, 1) * deckTop, accesses, kind: 'ramp' });
     });
   }
 
@@ -3015,9 +3095,10 @@ export class ReferenceEnvironmentMechanisms {
         group.add(chevron);
       });
 
-      // 2 Industrial Metal Grating Bridges crossing the trench
+      // Connected maps keep the reserved central circulation route on a real
+      // grating as well as the two historical offset crossings.
       const bridges = [];
-      [-16, 16].forEach(bx => {
+      (this.battlefieldLayout ? [-16, 0, 16] : [-16, 16]).forEach(bx => {
         const bridgeGeo = new THREE.BoxGeometry(4.5, 0.35, cfg.width + 0.8);
         const bridge = new THREE.Mesh(bridgeGeo, gratingMat);
         bridge.position.set(bx, 0.18, cfg.z);
@@ -3031,12 +3112,14 @@ export class ReferenceEnvironmentMechanisms {
           group.add(rail);
         });
 
-        bridges.push({
+        const bounds = {
           minX: bx - 2.25,
           maxX: bx + 2.25,
           minZ: cfg.z - halfW - 0.4,
           maxZ: cfg.z + halfW + 0.4
-        });
+        };
+        bridges.push(bounds);
+        this.registerReferenceWalkSurface?.(bridge, { id: `acid-trench-${cfg.z}-grate-${bx}`, kind: 'grate', bounds, heightAt: () => .355 });
       });
 
       this.addReferenceObject(group);
@@ -10356,11 +10439,31 @@ export class ReferenceEnvironmentMechanisms {
     helipadGroup.add(hBar2);
     helipadGroup.add(hCross);
 
-    // Access ramp from south (z = -14 to -7)
-    const ramp = new THREE.Mesh(new THREE.BoxGeometry(4.8, 0.3, 7.2), concreteMat);
-    ramp.position.set(0, 2.25, -10.5);
-    ramp.rotation.x = Math.atan2(4.5, 7.0);
-    helipadGroup.add(ramp);
+    // Four original access slopes preserve every cardinal route out of the
+    // insertion sector; this gameplay layout is not a measured film helipad.
+    const accesses = [], rampRecords = [];
+    for (const [id, x, z, yaw, bottom, top, bounds, heightAt] of [
+      ['south', 0, -10.5, 0, [0, 0, -14], [0, 4.5, -7], { minX: -2.4, maxX: 2.4, minZ: -14, maxZ: -7 }, (_x, z) => (z + 14) / 7 * 4.5],
+      ['north', 0, 10.5, Math.PI, [0, 0, 14], [0, 4.5, 7], { minX: -2.4, maxX: 2.4, minZ: 7, maxZ: 14 }, (_x, z) => (14 - z) / 7 * 4.5],
+      ['west', -10.5, 0, Math.PI / 2, [-14, 0, 0], [-7, 4.5, 0], { minX: -14, maxX: -7, minZ: -2.4, maxZ: 2.4 }, (x) => (x + 14) / 7 * 4.5],
+      ['east', 10.5, 0, -Math.PI / 2, [14, 0, 0], [7, 4.5, 0], { minX: 7, maxX: 14, minZ: -2.4, maxZ: 2.4 }, (x) => (14 - x) / 7 * 4.5]
+    ]) {
+      const ramp = new THREE.Mesh(walkRampGeometry(4.8, 7, 4.5), concreteMat); ramp.position.set(x, 0, z); ramp.rotation.y = yaw; helipadGroup.add(ramp);
+      const access = { bottom, top }; accesses.push(access); rampRecords.push({ mesh: ramp, id, bounds, heightAt, accesses: [access] });
+    }
+    const onAccess = position => rampRecords.some(ramp => position.x >= ramp.bounds.minX - .3 && position.x <= ramp.bounds.maxX + .3 && position.z >= ramp.bounds.minZ - .3 && position.z <= ramp.bounds.maxZ + .3 && position.y >= ramp.heightAt(position.x, position.z) - .65);
+    const resolveBody = (position, radius) => {
+      if (position.y >= 4.4 || onAccess(position)) return;
+      const distance = Math.hypot(position.x, position.z), clearance = 7.4 + radius;
+      if (distance >= clearance) return;
+      if (distance < 1e-6) { position.z = clearance; return; }
+      position.x *= clearance / distance; position.z *= clearance / distance;
+    };
+    this.registerReferenceWalkSurface?.(deck, { id: 'la-helipad-deck', kind: 'solid-deck', bounds: { minX: -7, maxX: 7, minZ: -7, maxZ: 7 },
+      heightAt: (x, z) => Math.hypot(x, z) <= 7 ? 4.5 : null, accesses });
+    for (const record of rampRecords) this.registerReferenceWalkSurface?.(record.mesh, { id: `la-helipad-${record.id}-ramp`, kind: 'ramp', bounds: record.bounds, heightAt: record.heightAt, accesses: record.accesses });
+    this.colliders.push({ x: 0, z: 0, radius: 7.4, baseY: 0, height: 4.25, owner: 'la-helipad-body',
+      resolveMovement: resolveBody, isNavigationActive: position => !onAccess(position) });
 
     // 8 perimeter yellow caution beacon lights
     for (let b = 0; b < 8; b++) {
@@ -11835,20 +11938,33 @@ export class ReferenceEnvironmentMechanisms {
     });
 
     // 1. Hardened Chitin Webbing Bridges spanning acid pits at +4.5m
-    const bridge1 = new THREE.Mesh(new THREE.BoxGeometry(6.4, 0.4, 50.0), resinMat);
-    bridge1.position.set(0, 4.5, 0);
+    const bridge1 = new THREE.Mesh(new THREE.BoxGeometry(6.4, 0.4, 36.0), resinMat);
+    bridge1.position.set(40, 4.5, 40);
     bridge1.receiveShadow = true;
     group.add(bridge1);
 
-    const bridge2 = new THREE.Mesh(new THREE.BoxGeometry(50.0, 0.4, 6.4), resinMat);
-    bridge2.position.set(0, 4.5, 0);
+    const bridge2 = new THREE.Mesh(new THREE.BoxGeometry(36.0, 0.4, 6.4), resinMat);
+    bridge2.position.set(40, 4.5, 40);
     bridge2.receiveShadow = true;
     group.add(bridge2);
 
     const bridges = [
-      { minX: -3.2, maxX: 3.2, minZ: -25.0, maxZ: 25.0 },
-      { minX: -25.0, maxX: 25.0, minZ: -3.2, maxZ: 3.2 }
+      { minX: 36.8, maxX: 43.2, minZ: 22.0, maxZ: 58.0 },
+      { minX: 22.0, maxX: 58.0, minZ: 36.8, maxZ: 43.2 }
     ];
+    // Keep the insertion capsule's airspace clear. Both raised arms have a real
+    // access slope; a ground-level pedestrian remains below the deck.
+    const southAccess = [{ bottom: [40, 0, 8], top: [40, 4.7, 22] }];
+    const westAccess = [{ bottom: [8, 0, 40], top: [22, 4.7, 40] }];
+    this.registerReferenceWalkSurface?.(bridge1, { id: 'hive-resin-north-deck', bounds: bridges[0], heightAt: () => 4.7, accesses: southAccess });
+    this.registerReferenceWalkSurface?.(bridge2, { id: 'hive-resin-east-deck', bounds: bridges[1], heightAt: () => 4.7, accesses: westAccess });
+    for (const [id, x, z, yaw, bounds, heightAt, accesses] of [
+      ['hive-resin-south-ramp', 40, 15, 0, { minX: 36.8, maxX: 43.2, minZ: 8, maxZ: 22 }, (_x, z) => (z - 8) / 14 * 4.7, southAccess],
+      ['hive-resin-west-ramp', 15, 40, Math.PI / 2, { minX: 8, maxX: 22, minZ: 36.8, maxZ: 43.2 }, (x) => (x - 8) / 14 * 4.7, westAccess]
+    ]) {
+      const ramp = new THREE.Mesh(walkRampGeometry(6.4, 14, 4.7), resinMat); ramp.position.set(x, 0, z); ramp.rotation.y = yaw; ramp.receiveShadow = true; group.add(ramp);
+      this.registerReferenceWalkSurface?.(ramp, { id, kind: 'ramp', bounds, heightAt, accesses });
+    }
 
     // 2. Harvestable Royal Jelly Resin Nodes on walls
     this.harvestableRoyalJelly = [];
@@ -13710,6 +13826,7 @@ export class ReferenceEnvironmentMechanisms {
 
   /* === v56.0 Master Level Design Combined Update Helper === */
   updateLevelDesignV56(delta, player, horde, bosses, audio, particles, ui) {
+    if (!Number.isFinite(delta) || delta <= 0 || this.game?.isPaused || this.game?.photoMode?.isActive) return;
     this.updateEnvironmentV55(delta, player, horde, audio, particles, ui);
     this.updateFixedSentries(delta, horde, audio, particles);
     this.updateAmmoniaClouds(delta, horde, particles);
@@ -14087,7 +14204,7 @@ export class ReferenceEnvironmentMechanisms {
     if (this.crashedArkTurbine && this.crashedArkTurbine.rotor && !this.crashedArkTurbine.isDetonated) {
       this.crashedArkTurbine.rotor.rotation.z += delta * 7.5;
     }
-    if (this.stargazerEnergyDome && this.stargazerEnergyDome.material) {
+    if (this.stargazerEnergyDome && this.stargazerEnergyDome.material && this.stargazerEnergyDome.userData.arenaConfinement !== false) {
       this.stargazerEnergyDome.material.opacity = 0.16 + Math.sin((this.referenceTime * 1000) * 0.003) * 0.08;
       if (player && player.position) {
         const flatDist = Math.sqrt(player.position.x * player.position.x + player.position.z * player.position.z);
@@ -14149,17 +14266,6 @@ export class ReferenceEnvironmentMechanisms {
       this.preyMudSinkhole.bubbles.forEach((b, idx) => {
         b.position.y = 0.2 + Math.sin((this.referenceTime * 1000) * 0.005 + idx * 1.5) * 0.12;
       });
-      if (horde && horde.aliens) {
-        horde.aliens.forEach(alien => {
-          if (alien && alien.mesh && alien.hp > 0) {
-            const mDist = Math.sqrt(alien.mesh.position.x * alien.mesh.position.x + alien.mesh.position.z * alien.mesh.position.z);
-            if (mDist <= 5.5) {
-              alien.hp -= delta * 60;
-              alien.speedMult = 0.15;
-            }
-          }
-        });
-      }
     }
     if (this.boneMaskDecoy && this.boneMaskDecoy.lasers && this.boneMaskDecoy.isArmed) {
       this.boneMaskDecoy.armedRemaining = Math.max(0, this.boneMaskDecoy.armedRemaining - delta);
@@ -14199,36 +14305,40 @@ export class ReferenceEnvironmentMechanisms {
     // Explicit companion orders/injuries replace automatic proximity damage.
     updateSarii(this, delta, player, horde);
 
-    // Mud Sinkhole Player Camouflage Coating
-    if (this.preyMudSinkhole && player && player.position) {
+    // One coating per entry in an actual volume. Weak membership cannot retain
+    // players across hunts, and standing inside never refreshes an expired buff.
+    if (this.preyMudSinkhole) {
       const mud = this.preyMudSinkhole;
-      const flatMudDist = Math.hypot(player.position.x - mud.pos.x, player.position.z - mud.pos.z);
-      if (flatMudDist <= mud.radius && player.position.y <= mud.pos.y + 0.8) {
-        if (!player.isMudCoated) {
-          if (player.applyMudCamouflage) player.applyMudCamouflage(30.0);
-          if (audio && audio.playMudSplashWade && (!this._lastMudSound || (this.referenceTime * 1000) - this._lastMudSound > 2500)) {
-            this._lastMudSound = (this.referenceTime * 1000);
-            audio.playMudSplashWade();
-            if (ui && ui.showAnnouncement) {
-              ui.showAnnouncement('🌿 ENSEVELI DANS LA BOUE DE TOURBIÈRE (PREY 2022) : TEMPÉRATURE MASQUÉE & RÉSISTANCE ACIDE +40% (30S) !', 'success');
-            }
-          }
-        }
+      mud.coatedPlayers ??= new WeakSet();
+      for (const hunter of new Set([player, this.game?.player2].filter(Boolean))) {
+        const inside = hunter.hp > 0 && hunter.position?.isVector3 &&
+          Math.hypot(hunter.position.x - mud.pos.x, hunter.position.z - mud.pos.z) <= mud.radius &&
+          Math.abs(hunter.position.y - mud.pos.y) <= .8;
+        if (!inside) { mud.coatedPlayers.delete(hunter); continue; }
+        if (mud.coatedPlayers.has(hunter) || typeof hunter.applyPreyMudCamouflage !== 'function') continue;
+        mud.coatedPlayers.add(hunter);
+        if (hunter.isMudCoated) continue;
+        hunter.applyPreyMudCamouflage(PREY_INTERACTION_RULES.mudSeconds);
+        audio?.playMudSplashWade?.();
+        ui?.showAnnouncement?.('BOUE : SIGNATURE THERMIQUE ATTÉNUÉE ET DÉGÂTS ACIDES RÉDUITS DE 40 % PENDANT 30 S ; UNE APPLICATION PAR ENTRÉE. BONUS ADAPTÉS POUR LE JEU.', 'success');
       }
     }
 
     // Active Powder Keg Firestorm
     if (this.activePowderKegFire) {
-      this.activePowderKegFire.timer -= delta;
-      if (horde && horde.aliens) {
-        horde.aliens.forEach(alien => {
-          if (alien && alien.mesh && alien.hp > 0 && alien.mesh.position.distanceTo(this.activePowderKegFire.pos) <= 8.5) {
-            alien.hp -= delta * 110;
-          }
-        });
+      const fire = this.activePowderKegFire, step = Math.min(delta, Math.max(0, fire.timer));
+      const origin = fire.pos.clone().add(new THREE.Vector3(0, .8, 0));
+      for (const target of preyTargets(this, horde, bosses)) {
+        const point = target.mesh.position.clone().add(new THREE.Vector3(0, .8, 0));
+        if (target.mesh.position.distanceTo(fire.pos) <= PREY_INTERACTION_RULES.powderFireRadius &&
+          preyClearShot(this, origin, point, this.trapperBaitTree?.group)) {
+          preyDamage(this, target, PREY_INTERACTION_RULES.powderFireDamagePerSecond * step,
+            horde, bosses, fire.ownerFaction, 'trapper_powder_fire');
+        }
       }
-      if (this.activePowderKegFire.timer <= 0) {
-        if (this.activePowderKegFire.mesh) this.removeReferenceObject(this.activePowderKegFire.mesh);
+      fire.timer = Math.max(0, fire.timer - step);
+      if (fire.timer <= 1e-9) {
+        if (fire.mesh) this.removeReferenceObject(fire.mesh);
         this.activePowderKegFire = null;
       }
     }
@@ -14683,6 +14793,11 @@ export class ReferenceEnvironmentMechanisms {
     });
     const energyDome = new THREE.Mesh(domeGeo, domeMat);
     energyDome.position.set(0, 0, 0);
+    // The former radius42 arena boundary would teleport every distant front
+    // back into the insertion room. Connected maps keep their physical sector
+    // boundaries; this unsupported global enclosure is not drawn there.
+    energyDome.userData.arenaConfinement = !this.battlefieldLayout;
+    energyDome.visible = !this.battlefieldLayout;
     this.addReferenceObject(energyDome);
     this.stargazerEnergyDome = energyDome;
     this.envObjects.push(energyDome);
@@ -15738,9 +15853,90 @@ export class ReferenceEnvironmentMechanisms {
   }
 
   // Prey Interaction: Feral Bone Mask & 3-Laser Homing Decoy Rig
+  serializePreyInteractions() {
+    const props = Object.fromEntries(Object.entries(PREY_SAVE_PROPS).map(([name, flag]) =>
+      [name, { present: !!this[name], consumed: !!(flag && this[name]?.[flag]) }]));
+    const present = Object.values(props).some(prop => prop.present), profileId = this.referenceProfile?.id ?? null;
+    if (present && profileId !== PREY_SOURCE_LEVEL) throw new TypeError('Prey props require their actual reference profile');
+    const dog = this.sariiCompanion, players = preyPlayers(this);
+    const ownerId = dog?.isTamed ? (dog.owner === players[0] && players[0] ? 'player1' : dog.owner === players[1] && players[1] ? 'player2' : null) : null;
+    if (dog?.isTamed && !ownerId) throw new TypeError('A tamed Sarii requires its actual cooperative owner');
+    const fire = this.activePowderKegFire;
+    return { version: 1, sourceLevelId: present ? PREY_SOURCE_LEVEL : null, profileId, props,
+      maskGuidance: 'cancel_on_resume',
+      fire: fire ? { position: fire.pos.toArray(), remaining: Math.max(0, fire.timer), ownerFaction: fire.ownerFaction } : null,
+      mudEntries: players.flatMap((player, index) => player && this.preyMudSinkhole?.coatedPlayers?.has(player) ? [index ? 'player2' : 'player1'] : []),
+      sarii: dog ? { ownerId, hp: dog.hp, order: dog.order, wounded: !!dog.wounded, retired: !!dog.retired,
+        position: dog.pos.toArray(), home: dog.home.toArray(), holdPosition: dog.holdPosition.toArray(),
+        biteCooldown: dog.biteCooldown, injuryCooldown: dog.injuryCooldown, withdrawals: dog.withdrawals } : null };
+  }
+
+  restorePreyInteractions(saved) {
+    const names = Object.keys(PREY_SAVE_PROPS), finite = (value, min, max) => Number.isFinite(value) && value >= min && value <= max;
+    const profileId = this.referenceProfile?.id ?? null, players = preyPlayers(this);
+    if (!saved || saved.version !== 1 || saved.profileId !== profileId || saved.maskGuidance !== 'cancel_on_resume' ||
+      !saved.props || Object.keys(saved.props).length !== names.length || !Array.isArray(saved.mudEntries) ||
+      new Set(saved.mudEntries).size !== saved.mudEntries.length || saved.mudEntries.some(id => !['player1', 'player2'].includes(id))) return false;
+    for (const name of names) {
+      const prop = saved.props[name];
+      if (!prop || Object.keys(prop).length !== 2 || typeof prop.present !== 'boolean' || typeof prop.consumed !== 'boolean' ||
+        prop.present !== !!this[name] || prop.consumed && (!prop.present || !PREY_SAVE_PROPS[name])) return false;
+    }
+    const present = names.some(name => saved.props[name].present);
+    if (saved.sourceLevelId !== (present ? PREY_SOURCE_LEVEL : null) || present && profileId !== PREY_SOURCE_LEVEL ||
+      saved.mudEntries.length && !this.preyMudSinkhole || saved.mudEntries.some(id => !players[id === 'player2' ? 1 : 0])) return false;
+    const fire = saved.fire;
+    if (fire !== null && (!saved.props.trapperBaitTree.consumed || !preyFinitePoint(fire?.position) ||
+      !finite(fire.remaining, 0, PREY_INTERACTION_RULES.powderFireSeconds) || typeof fire.ownerFaction !== 'string' ||
+      !/^[A-Za-z0-9_-]{1,64}$/.test(fire.ownerFaction) ||
+      this.trapperBaitTree.pos.distanceTo(new THREE.Vector3(...fire.position)) > 1e-6)) return false;
+    const dog = saved.sarii;
+    if (!!dog !== !!this.sariiCompanion) return false;
+    if (dog) {
+      const tamed = saved.props.sariiCompanion.consumed, ownerIndex = dog.ownerId === 'player2' ? 1 : 0;
+      if (!finite(dog.hp, 0, 120) || !['follow', 'hold', 'guard', 'retreat'].includes(dog.order) ||
+        typeof dog.wounded !== 'boolean' || typeof dog.retired !== 'boolean' ||
+        ![dog.position, dog.home, dog.holdPosition].every(preyFinitePoint) ||
+        !finite(dog.biteCooldown, 0, .8) || !finite(dog.injuryCooldown, 0, .75) ||
+        !Number.isInteger(dog.withdrawals) || dog.withdrawals < 0 || dog.withdrawals > 1 ||
+        (tamed ? !['player1', 'player2'].includes(dog.ownerId) || !players[ownerIndex] : dog.ownerId !== null) ||
+        (dog.wounded || dog.retired) && dog.order !== 'retreat' ||
+        this.sariiCompanion.isTamed && (!tamed || this.sariiCompanion.owner !== players[ownerIndex])) return false;
+    }
+    // All validation precedes mutation. In-place restores never refund a used
+    // pickup, extend an existing fire, revive a retired dog or grant inventory.
+    const alreadyDetonated = this.trapperBaitTree?.isDetonated;
+    const priorFire = this.activePowderKegFire, remaining = fire ? (alreadyDetonated ? Math.min(priorFire?.timer ?? 0, fire.remaining) : fire.remaining) : 0;
+    for (const [name, flag] of Object.entries(PREY_SAVE_PROPS)) if (flag && this[name]) this[name][flag] ||= saved.props[name].consumed;
+    if (priorFire?.mesh) this.removeReferenceObject(priorFire.mesh);
+    this.activePowderKegFire = remaining > 1e-9 ? preyCreatePowderFire(this, new THREE.Vector3(...fire.position), remaining, fire.ownerFaction) : null;
+    if (this.boneMaskDecoy) {
+      this.boneMaskDecoy.isArmed = false; this.boneMaskDecoy.armedRemaining = 0;
+      this.boneMaskDecoy.lasers?.forEach(beam => { beam.visible = false; });
+      if (this.game?.bosses) this.game.bosses.maskTarget = null;
+    }
+    if (this.preyMudSinkhole) {
+      this.preyMudSinkhole.coatedPlayers ??= new WeakSet();
+      for (const id of saved.mudEntries) this.preyMudSinkhole.coatedPlayers.add(players[id === 'player2' ? 1 : 0]);
+    }
+    if (dog) {
+      const state = this.sariiCompanion, wasTamed = !!state.owner;
+      state.hp = wasTamed ? Math.min(state.hp, dog.hp) : dog.hp;
+      state.wounded ||= dog.wounded; state.retired ||= dog.retired;
+      state.order = state.wounded || state.retired ? 'retreat' : dog.order;
+      state.owner = dog.ownerId ? players[dog.ownerId === 'player2' ? 1 : 0] : null;
+      state.withdrawals = Math.max(state.withdrawals, dog.withdrawals);
+      state.pos.fromArray(dog.position); state.group.position.copy(state.pos);
+      state.home.fromArray(dog.home); state.holdPosition.fromArray(dog.holdPosition);
+      state.biteCooldown = dog.biteCooldown; state.injuryCooldown = dog.injuryCooldown;
+      state.group.userData.companion = { id: state.id, order: state.order, hp: state.hp, wounded: state.wounded, retired: state.retired };
+    }
+    return true;
+  }
+
   checkBoneMaskDecoyInteraction(player, ui, audio, bosses) {
     const mask = this.boneMaskDecoy;
-    if (!mask || !player?.position || player.position.distanceTo(mask.pos) > 4.2) return false;
+    if (!preyCanInteract(this, player, mask, 'unused', 4.2)) return false;
     const active = bosses?.activeBoss;
     if (active?.type !== 'feral_predator_boss' || active.hp <= 0 || !active.mesh || !bosses.armFeralMaskTrap) {
       ui?.showAnnouncement?.('MASQUE D’OS : ATTENDEZ LE TIREUR FERAL POUR ALIGNER LES TROIS LASERS.', 'info');
@@ -15763,157 +15959,116 @@ export class ReferenceEnvironmentMechanisms {
     return true;
   }
 
-  // Prey Interaction: Naru's Orange Flower (Sariska) Meadow
+  // Prey Interaction: orange-flower signature effect (species not certified).
   checkOrangeFlowerInteraction(player, ui, audio) {
-    if (!this.orangeFlowerPatch || !player || !player.position || this.orangeFlowerPatch.isHarvested) return false;
-    if (player.position.distanceTo(this.orangeFlowerPatch.pos) <= 4.2) {
-      this.orangeFlowerPatch.isHarvested = true;
-      if (audio && audio.playOrangeFlowerHerbalDrink) audio.playOrangeFlowerHerbalDrink();
-
-      if (player.applyOrangeFlowerBuff) player.applyOrangeFlowerBuff(35.0);
-      if (player.addScore) player.addScore(2000);
-
-      if (ui && ui.showAnnouncement) {
-        ui.showAnnouncement('🌿 FLEURS D\'ORANGE SARISKA CONSOMMÉES (PREY 2022) : TEMPÉRATURE 0°C & INVISIBILITÉ THERMIQUE (35S, +2000 SCORE) !', 'success');
-      }
-      return true;
-    }
-    return false;
+    const prop = this.orangeFlowerPatch;
+    if (!preyCanInteract(this, player, prop, 'isHarvested', 4.2) || typeof player.applyOrangeFlowerBuff !== 'function') return false;
+    prop.isHarvested = true;
+    player.applyOrangeFlowerBuff(PREY_INTERACTION_RULES.flowerSeconds);
+    audio?.playOrangeFlowerHerbalDrink?.();
+    ui?.showAnnouncement?.('INFUSION DE FLEUR : SIGNATURE THERMIQUE ATTÉNUÉE 35 S. EFFET ADAPTÉ POUR LE JEU ; ESPÈCE ET TEMPÉRATURE NON CERTIFIÉES.', 'success');
+    return true;
   }
 
   // Prey Interaction: Raphael Adolini 1715 Flintlock Pistol
   checkAdoliniPistolInteraction(player, ui, audio, horde, bosses, particles) {
-    if (!this.adoliniPistolPedestal || !player || !player.position || this.adoliniPistolPedestal.isClaimed) return false;
-    if (player.position.distanceTo(this.adoliniPistolPedestal.pos) <= 4.2) {
-      this.adoliniPistolPedestal.isClaimed = true;
-      if (audio && audio.playFlintlockPistolShot) audio.playFlintlockPistolShot();
-
-      let target = null;
-      if (bosses && bosses.activeBoss && bosses.activeBoss.hp > 0) {
-        target = bosses.activeBoss;
-        target.hp -= 1200;
-        target.isStunned = true;
-        target.stunTimer = 4.0;
-      } else if (horde && horde.aliens) {
-        for (let a = 0; a < horde.aliens.length; a++) {
-          const alien = horde.aliens[a];
-          if (alien && alien.hp > 0) {
-            target = alien;
-            target.hp -= 1200;
-            break;
-          }
-        }
-      }
-
-      if (particles && target && target.mesh) {
-        particles.emitSparks(target.mesh.position, 30);
-      }
-      if (player.addScore) player.addScore(2500);
-
-      if (ui && ui.showAnnouncement) {
-        ui.showAnnouncement('🏴‍☠️ PISTOLET À SILEX DE RAPHAEL ADOLINI 1715 RÉCUPÉRÉ (PREY 2022) : DÉCHARGE PERFORANTE (1200 DMG, +2500 SCORE) !', 'success');
-      }
-      return true;
+    const prop = this.adoliniPistolPedestal;
+    if (!preyCanInteract(this, player, prop, 'isClaimed', 4.2)) return false;
+    prop.isClaimed = true; // One loaded shot; a miss still consumes the charge.
+    const origin = player.position.clone().add(new THREE.Vector3(0, 1.4, 0));
+    const yaw = Number.isFinite(player.rotationY) ? player.rotationY : player.mesh?.rotation.y ?? 0;
+    const direction = new THREE.Vector3(Math.sin(yaw), 0, Math.cos(yaw));
+    const faction = preyFaction(this, player, horde), candidates = [];
+    for (const target of preyTargets(this, horde, bosses)) {
+      if (!preyCanHit(this, target, faction, horde)) continue;
+      const center = target.mesh.position.clone().add(new THREE.Vector3(0, 1.4, 0));
+      const radius = Math.max(.6, Math.min(2.2, target.radius ?? (target === bosses?.activeBoss ? 1.8 : 1.1)));
+      const offset = origin.clone().sub(center), b = offset.dot(direction), c = offset.lengthSq() - radius * radius;
+      const discriminant = b * b - c; if (discriminant < 0) continue;
+      const first = -b - Math.sqrt(discriminant), last = -b + Math.sqrt(discriminant);
+      if (last < 0 || first > PREY_INTERACTION_RULES.pistolRange) continue;
+      const distance = Math.max(0, first), impact = origin.clone().addScaledVector(direction, distance);
+      if (!preyClearShot(this, origin, impact, prop.group)) continue;
+      candidates.push({ target, impact, distance });
     }
-    return false;
+    candidates.sort((a, b) => a.distance - b.distance);
+    const hit = candidates[0], dealt = hit ? preyDamage(this, hit.target, PREY_INTERACTION_RULES.pistolDamage, horde, bosses, faction, 'adolini_flintlock') : 0;
+    audio?.playFlintlockPistolShot?.();
+    if (hit && dealt > 0) particles?.emitSparks?.(hit.impact, 18);
+    ui?.showAnnouncement?.(`PISTOLET ADOLINI : COUP UNIQUE VISÉ, PORTÉE 28 U, JUSQU’À 1200 DÉGÂTS. ${dealt > 0 ? 'CIBLE ATTEINTE.' : 'AUCUNE CIBLE ATTEINTE.'} RÉGLAGES ADAPTÉS POUR LE JEU.`, 'info');
+    return true;
   }
 
   // Prey Interaction: Taabe's Comanche War Horse & Rock Overlook
   checkTaabeWarBowInteraction(player, ui, audio) {
-    if (!this.taabeRockPerch || !player || !player.position || this.taabeRockPerch.isClaimed) return false;
-    if (player.position.distanceTo(this.taabeRockPerch.pos) <= 4.5) {
-      this.taabeRockPerch.isClaimed = true;
-      if (audio && audio.playCrossbowHomingDarts) audio.playCrossbowHomingDarts();
-
-      if (player.applyTaabeWarAgility) player.applyTaabeWarAgility(25.0);
-      player.smartDiscCharges = Math.min(8, (player.smartDiscCharges || 0) + 6);
-      if (player.addScore) player.addScore(2000);
-
-      if (ui && ui.showAnnouncement) {
-        ui.showAnnouncement('🏹 ARC DE GUERRE DE TAABE DÉPLOYÉ (PREY 2022) : AGILITÉ COMANCHE +30% & FLÈCHES SILENCIEUSES (+6 DISCS, +2000 SCORE) !', 'success');
-      }
-      return true;
+    const prop = this.taabeRockPerch;
+    if (!preyCanInteract(this, player, prop, 'isClaimed', 4.5)) return false;
+    if (!player.equipPreyWeapon?.('taabe_bow')) {
+      ui?.showAnnouncement?.('ARC DE TAABE : L’EMPRUNT DE CETTE ARME EST RÉSERVÉ AU MODE ADAPTÉ.', 'info'); return true;
     }
-    return false;
+    prop.isClaimed = true; player.hasTaabeBow = true;
+    const arrows = preyStock(player, 'taabeArrowAmmo', PREY_INTERACTION_RULES.arrowsGranted, PREY_INTERACTION_RULES.maxArrows);
+    player.applyTaabeWarAgility?.(PREY_INTERACTION_RULES.taabeSeconds);
+    audio?.playCrossbowHomingDarts?.();
+    ui?.showAnnouncement?.(`ARC DE TAABE ÉQUIPÉ : +${arrows} FLÈCHES, MAXIMUM 12 ; MOBILITÉ +30 % PENDANT 25 S. EMPRUNT ET BONUS ADAPTÉS POUR LE JEU.`, 'success');
+    return true;
   }
 
   // Prey Interaction: Giant Slain Grizzly Bear Carcass
   checkGrizzlyBearTrophyInteraction(player, ui, audio) {
-    if (!this.grizzlyBearCarcass || !player || !player.position || this.grizzlyBearCarcass.isSkinned) return false;
-    if (player.position.distanceTo(this.grizzlyBearCarcass.pos) <= 4.5) {
-      this.grizzlyBearCarcass.isSkinned = true;
-      if (audio && audio.playCeramicArmorDeflection) audio.playCeramicArmorDeflection();
-
-      player.shield = Math.min(200, (player.shield || 0) + 150);
-      if (player.addScore) player.addScore(2000);
-
-      if (ui && ui.showAnnouncement) {
-        ui.showAnnouncement('🐻 FOURRURE DU GRIZZLY ÉCORCHÉE (PREY 2022) : CUIRASSE ÉPAISSE (+150 BOUCLIER, +2000 HONNEUR) !', 'success');
-      }
-      return true;
-    }
-    return false;
+    const prop = this.grizzlyBearCarcass;
+    if (!preyCanInteract(this, player, prop, 'isSkinned', 4.5)) return false;
+    const before = player.hp; player.hp = Math.min(player.maxHp ?? before, before + 150); prop.isSkinned = true;
+    audio?.playCeramicArmorDeflection?.();
+    ui?.showAnnouncement?.(`TROPHÉE DU GRIZZLY RÉCUPÉRÉ : RÉCUPÉRATION +${player.hp - before} PV, LIMITÉE AUX PV MAXIMUM. BONUS ADAPTÉ POUR LE JEU.`, 'success');
+    return true;
   }
 
   // Prey Interaction: Naru's Tethered Tomahawk
   checkNaruTomahawkInteraction(player, ui, audio) {
-    if (!this.naruTomahawkTree || !player || !player.position || this.naruTomahawkTree.isClaimed) return false;
-    if (player.position.distanceTo(this.naruTomahawkTree.pos) <= 4.2) {
-      this.naruTomahawkTree.isClaimed = true;
-      if (audio && audio.playTomahawkRopeWhistle) audio.playTomahawkRopeWhistle();
-
-      player.m41aGrenadeCharges = Math.min(8, (player.m41aGrenadeCharges || 0) + 4);
-      if (player.addScore) player.addScore(1800);
-
-      if (ui && ui.showAnnouncement) {
-        ui.showAnnouncement('🪓 HACHETTE À RAPPEL DE NARU RÉCUPÉRÉE (PREY 2022) : FRAPPE CINÉTIQUE (+4 CHARGES, +1800 SCORE) !', 'success');
-      }
-      return true;
+    const prop = this.naruTomahawkTree;
+    if (!preyCanInteract(this, player, prop, 'isClaimed', 4.2)) return false;
+    if (!player.equipPreyWeapon?.('naru_axe')) {
+      ui?.showAnnouncement?.('HACHE DE NARU : L’EMPRUNT DE CETTE ARME EST RÉSERVÉ AU MODE ADAPTÉ.', 'info'); return true;
     }
-    return false;
+    prop.isClaimed = true; player.hasNaruAxe = true;
+    const charges = preyStock(player, 'naruAxeCharges', PREY_INTERACTION_RULES.axeChargesGranted, PREY_INTERACTION_RULES.maxAxeCharges);
+    audio?.playTomahawkRopeWhistle?.();
+    ui?.showAnnouncement?.(`HACHE DE NARU ÉQUIPÉE : +${charges} FRAPPES DE HACHE, MAXIMUM 4. UNE FRAPPE ADMISE CONSOMME UNE CHARGE ; ADAPTATION DE JEU.`, 'success');
+    return true;
   }
 
   // Prey Interaction: Trapper Field Medical Tent
   checkTrapperMedicalTentInteraction(player, ui, audio) {
-    if (!this.trapperMedicalTent || !player || !player.position || this.trapperMedicalTent.isLooted) return false;
-    if (player.position.distanceTo(this.trapperMedicalTent.pos) <= 4.2) {
-      this.trapperMedicalTent.isLooted = true;
-      if (audio && audio.playSyntheticWhiteFluidLeak) audio.playSyntheticWhiteFluidLeak();
-
-      player.hp = Math.min(player.maxHp || 100, (player.hp || 0) + 85);
-      if (player.medicompCharges !== undefined) player.medicompCharges = Math.min(6, player.medicompCharges + 3);
-      if (player.addScore) player.addScore(1500);
-
-      if (ui && ui.showAnnouncement) {
-        ui.showAnnouncement('⛺ CAMP MÉDICAL DES TRAPPEURS PILLÉ (PREY 2022) : SOINS +85 PV & +3 TROUSSES MEDICOMP (+1500 SCORE) !', 'success');
-      }
-      return true;
-    }
-    return false;
+    const prop = this.trapperMedicalTent;
+    if (!preyCanInteract(this, player, prop, 'isLooted', 4.2)) return false;
+    prop.isLooted = true;
+    const before = player.hp; player.hp = Math.min(player.maxHp ?? before, before + 85);
+    const charges = player.canUseArsenalEquipment?.('medicomp') === false ? 0 : preyStock(player, 'medicompCharges', 3, 6);
+    audio?.playMedicompCauterize?.();
+    ui?.showAnnouncement?.(`SOINS DES TRAPPEURS : +${player.hp - before} PV, +${charges} CHARGES DE SOINS COMPATIBLES, MAXIMUM 6. RECONDITIONNEMENT ADAPTÉ POUR LE JEU.`, 'success');
+    return true;
   }
 
   // Prey Interaction: Archaic Feral Weapon Rack
   checkFeralArsenalInteraction(player, ui, audio) {
-    if (!this.feralArsenalStation || !player || !player.position || this.feralArsenalStation.isClaimed) return false;
-    if (player.position.distanceTo(this.feralArsenalStation.pos) <= 4.2) {
-      this.feralArsenalStation.isClaimed = true;
-      if (audio && audio.playFeralShieldDeploy) audio.playFeralShieldDeploy();
-
-      player.plasmaEnergy = player.maxPlasmaEnergy || 100;
-      if (player.addScore) player.addScore(2500);
-
-      if (ui && ui.showAnnouncement) {
-        ui.showAnnouncement('🛡️ ARSENAL ARCHAÏQUE DU FERAL PREDATOR (PREY 2022) : LANCE TÉLESCOPIQUE & BOUCLIER D\'OS (+2500 HONNEUR, PLASMA 100%) !', 'success');
-      }
-      return true;
+    const prop = this.feralArsenalStation;
+    if (!preyCanInteract(this, player, prop, 'isClaimed', 4.2)) return false;
+    if (player.canUseArsenalEquipment?.('crossbow') === false || player.selectWeapon?.('crossbow', false) !== true) {
+      ui?.showAnnouncement?.('ARSENAL DU FERAL : ÉQUIPEMENT INCOMPATIBLE AVEC LE PROFIL CHOISI.', 'info'); return true;
     }
-    return false;
+    prop.isClaimed = true;
+    const bolts = preyStock(player, 'feralBoltAmmo', 6, 12), before = player.hp;
+    player.hp = Math.min(player.maxHp ?? before, before + 100);
+    audio?.playFeralShieldDeploy?.();
+    ui?.showAnnouncement?.(`ÉQUIPEMENT FERAL : LANCE-FLÉCHETTES SÉLECTIONNÉ, +${bolts} FLÉCHETTES (MAXIMUM 12), RÉCUPÉRATION +${player.hp - before} PV. ADAPTATION DE JEU.`, 'success');
+    return true;
   }
 
   // Prey Interaction: Sarii (Naru's Faithful Carolina Dog Companion)
   checkSariiCompanionInteraction(player, ui, audio) {
     const state = this.sariiCompanion;
-    if (!state || !player?.position || player.position.distanceTo(state.pos) > 4.5) return false;
+    if (!preyCanInteract(this, player, state, 'unused', 4.5)) return false;
     if (!orderSarii(this, player)) return false;
     audio?.playSariiLoyalBark?.();
     const labels = { follow: 'suit le chasseur', hold: 'reste en position', guard: 'protège le chasseur', retreat: 'se replie' };
@@ -15926,47 +16081,22 @@ export class ReferenceEnvironmentMechanisms {
 
   // Prey Interaction: French Trappers' Bait Tree & Black Powder Kegs
   checkTrapperBaitTreeInteraction(player, ui, audio, horde, bosses, particles) {
-    if (!this.trapperBaitTree || !player || !player.position || this.trapperBaitTree.isDetonated) return false;
-    if (player.position.distanceTo(this.trapperBaitTree.pos) <= 4.5) {
-      this.trapperBaitTree.isDetonated = true;
-      if (audio && audio.playBlackPowderKegIgnition) audio.playBlackPowderKegIgnition();
-
-      let vaporizedCount = 0;
-      if (horde && horde.aliens) {
-        horde.aliens.forEach(alien => {
-          if (alien && alien.mesh && alien.hp > 0 && alien.mesh.position.distanceTo(this.trapperBaitTree.pos) <= 16.0) {
-            alien.hp -= 750;
-            vaporizedCount++;
-            if (particles && particles.emitSparks) {
-              particles.emitSparks(alien.mesh.position, 20);
-            }
-          }
-        });
+    const prop = this.trapperBaitTree;
+    if (!preyCanInteract(this, player, prop, 'isDetonated', 4.5)) return false;
+    prop.isDetonated = true; audio?.playBlackPowderKegIgnition?.();
+    const ownerFaction = preyFaction(this, player, horde), origin = prop.pos.clone().add(new THREE.Vector3(0, .8, 0));
+    let hitCount = 0;
+    for (const target of preyTargets(this, horde, bosses)) {
+      const point = target.mesh.position.clone().add(new THREE.Vector3(0, .8, 0));
+      if (target.mesh.position.distanceTo(prop.pos) <= PREY_INTERACTION_RULES.powderBlastRadius &&
+        preyClearShot(this, origin, point, prop.group) &&
+        preyDamage(this, target, PREY_INTERACTION_RULES.powderBlastDamage, horde, bosses, ownerFaction, 'trapper_powder_blast') > 0) {
+        hitCount++; particles?.emitSparks?.(point, 20);
       }
-
-      if (bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
-        if (bosses.activeBoss.mesh.position.distanceTo(this.trapperBaitTree.pos) <= 18.0) {
-          bosses.activeBoss.hp -= 750;
-          bosses.activeBoss.isStunned = true;
-          bosses.activeBoss.stunTimer = 4.5;
-        }
-      }
-
-      const fireGeo = new THREE.CylinderGeometry(8.5, 9.0, 0.4, 16);
-      const fireMat = new THREE.MeshBasicMaterial({ color: 0xf97316, transparent: true, opacity: 0.65 });
-      const fireMesh = new THREE.Mesh(fireGeo, fireMat);
-      fireMesh.position.copy(this.trapperBaitTree.pos);
-      this.addReferenceObject(fireMesh);
-      this.activePowderKegFire = { mesh: fireMesh, pos: this.trapperBaitTree.pos.clone(), timer: 18.0 };
-
-      if (player.addScore) player.addScore(2500);
-
-      if (ui && ui.showAnnouncement) {
-        ui.showAnnouncement(`💣 BARILS DE POUDRE DES TRAPPEURS EN DÉFLAGRATION (PREY 2022) : BARRAGE DE FLAMMES (${vaporizedCount} ENNEMIS, 750 DMG, 16M) !`, 'error');
-      }
-      return true;
     }
-    return false;
+    this.activePowderKegFire = preyCreatePowderFire(this, prop.pos, PREY_INTERACTION_RULES.powderFireSeconds, ownerFaction);
+    ui?.showAnnouncement?.(`POUDRE : SOUFFLE 16 U, JUSQU’À 750 DÉGÂTS (${hitCount} CIBLES) ; FEU 8,5 U, 110 PV/S PENDANT 18 S. LES OBSTACLES PROTÈGENT ; ADAPTATION DE JEU.`, 'warning');
+    return true;
   }
 
   // Prey Interaction: French Voyageurs' River Raft & Fur Trade Cache
@@ -16029,32 +16159,21 @@ export class ReferenceEnvironmentMechanisms {
 
   // Prey Interaction: French Trappers' Campfire Cauldron Topple
   checkTrapperCampfireInteraction(player, ui, audio, horde, particles) {
-    if (!this.trapperCampfireSpit || !player || !player.position || this.trapperCampfireSpit.isToppled) return false;
-    if (player.position.distanceTo(this.trapperCampfireSpit.pos) <= 4.5) {
-      this.trapperCampfireSpit.isToppled = true;
-      if (audio && audio.playCampfireCauldronScald) audio.playCampfireCauldronScald();
-
-      if (horde && horde.aliens) {
-        horde.aliens.forEach(alien => {
-          if (alien.isAlive && alien.position.distanceTo(this.trapperCampfireSpit.pos) <= 7.5) {
-            alien.takeDamage(500, true);
-          }
-        });
+    const prop = this.trapperCampfireSpit;
+    if (!preyCanInteract(this, player, prop, 'isToppled', 4.5)) return false;
+    prop.isToppled = true; audio?.playCampfireCauldronScald?.();
+    const faction = preyFaction(this, player, horde), bosses = this.game?.bosses;
+    const origin = prop.pos.clone().add(new THREE.Vector3(0, .8, 0));
+    for (const target of preyTargets(this, horde, bosses)) {
+      const point = target.mesh.position.clone().add(new THREE.Vector3(0, .8, 0));
+      if (target.mesh.position.distanceTo(prop.pos) <= PREY_INTERACTION_RULES.cauldronRadius && preyClearShot(this, origin, point, prop.group)) {
+        preyDamage(this, target, PREY_INTERACTION_RULES.cauldronDamage, horde, bosses, faction, 'trapper_cauldron');
       }
-
-      player.hp = Math.min(player.maxHp || 100, (player.hp || 0) + 75);
-      if (player.addScore) player.addScore(1500);
-
-      if (particles && particles.emitExplosion) {
-        particles.emitExplosion(this.trapperCampfireSpit.pos, 0xff4500, 45);
-      }
-
-      if (ui && ui.showAnnouncement) {
-        ui.showAnnouncement('🔥 CHAUDRON D\'HUILE BOUILLANTE RENVERSÉ (PREY 2022) : 500 DMG FEU DE ZONE & RATIONS (+75 PV, +1500 SCORE) !', 'success');
-      }
-      return true;
     }
-    return false;
+    const before = player.hp; player.hp = Math.min(player.maxHp ?? before, before + 75);
+    particles?.emitExplosion?.(prop.pos, 0xff4500, 45);
+    ui?.showAnnouncement?.(`CHAUDRON : JUSQU’À 500 DÉGÂTS DANS 7,5 U, BLOQUÉS PAR LES OBSTACLES ; RATIONS +${player.hp - before} PV. ADAPTATION DE JEU.`, 'success');
+    return true;
   }
 
   // Prey Interaction: Comanche Buffalo Skull Trail Marker Cairn

@@ -3,6 +3,8 @@
  * This is a game simulation, not a claim about canonical army organization. */
 
 import { BattleIntel } from './BattleIntel.js';
+import { measureDefeatReturn } from './BattleStrategy.js';
+import { validateBossCombatState } from '../data/BossEncounterValidation.js';
 import { initializeFormation, updateFormation, formationTargetForUnit, formationAttackMultiplier, normalizeFormation, FORMATION_PROFILES } from './FormationTactics.js';
 
 const STATES = new Set(['active', 'distant', 'reserve', 'dead', 'evacuated', 'captured']);
@@ -17,6 +19,7 @@ const number = (value, min, max) => Number.isFinite(value) && value >= min && va
 const point = value => Array.isArray(value) && value.length === 2 && value.every(Number.isFinite);
 const dist = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]);
 const alive = unit => unit.hp > 0 && !['dead', 'evacuated', 'captured'].includes(unit.state);
+const combatReady = unit => alive(unit) && unit.incapacitated !== true;
 const pair = (a, b) => a < b ? `${a}|${b}` : `${b}|${a}`;
 function ordered(value) {
   if (Array.isArray(value)) return value.map(ordered);
@@ -48,7 +51,8 @@ export class BattleSimulation {
     this.time = 0; this.accumulator = 0; this.step = .25; this.tick = 0;
     this.disposed = false; this.result = null; this.paused = false;
     this.events = []; this.eventsDropped = 0; this.eventSequence = 0;
-    this.deaths = new Map(); this.unique = new Map(); this.players = [];
+    this.deaths = new Map(); this.unique = new Map(); this.players = []; this.attackSeeds = new Map();
+    this.criticalLosses = new Map(); this.routeRevision = 0; this.targetingCounters = { groupVisits: 0, attackerVisits: 0, targetCandidateEntries: 0, attacksResolved: 0 };
     this.factions = new Map(); this.fronts = new Map(); this.routes = new Map();
     this.profiles = new Map(); this.groups = new Map(); this.units = new Map();
     this.relations = new Map(); this.orders = new Map(); this.nextReinforcement = new Map();
@@ -61,10 +65,11 @@ export class BattleSimulation {
       if (!number(this.budgets[key], min, max) || ['active', 'arrivalsPerTick'].includes(key) && !Number.isInteger(this.budgets[key])) fail(`invalid ${key} budget`);
     }
     if (this.config.ai?.interval !== undefined && !number(this.config.ai.interval, 1, 300) || this.config.ai?.minimumGarrisonGroups !== undefined && (!Number.isInteger(this.config.ai.minimumGarrisonGroups) || this.config.ai.minimumGarrisonGroups < 1 || this.config.ai.minimumGarrisonGroups > 64)) fail('invalid officer decision cadence');
+    if (this.config.ai?.assaultMinRatio !== undefined && !number(this.config.ai.assaultMinRatio, .1, 4) || this.config.ai?.targetPreference !== undefined && !['weakest', 'supply'].includes(this.config.ai.targetPreference)) fail('invalid officer risk profile');
     this._initialize();
     for (const uniqueId of callbacks.history?.capturedUniqueIds ?? []) {
       const unit = this.units.get(this.unique.get(uniqueId));
-      if (unit) unit.state = 'captured';
+      if (unit) { unit.state = 'captured'; unit.incapacitated = false; }
     }
     for (const uniqueId of callbacks.history?.defeatedUniqueIds ?? []) {
       const unit = this.units.get(this.unique.get(uniqueId));
@@ -73,6 +78,7 @@ export class BattleSimulation {
       this.deaths.set(unit.id, { entityId: unit.id, groupId: unit.groupId, factionId: unit.factionId,
         killerFaction: null, cause: 'prior_operation', time: 0, officer: unit.officer, uniqueId, inherited: true });
     }
+    for (const group of this.groups.values()) if (this.factions.get(group.factionId).moraleModel === 'hive' && this.units.get(group.officerId)?.state === 'dead') group.coordinationStrength = .65;
     this.intel = new BattleIntel(this, this.config.intelligence);
   }
 
@@ -126,7 +132,8 @@ export class BattleSimulation {
         units: [], morale: specification.morale ?? 70, state, path: [], travelProgress: 0, waypointIndex: 1, materialized: false,
         reportAge: 0, lastSeenAt: 0, reportPosition: [...(specification.position ?? this.fronts.get(specification.frontId).position)],
         order: { type: 'defend', frontId: specification.frontId, issuer: 'scenario' },
-        formation: specification.formation ?? 'line', officerId: null, delegated: false, tactic: null, detailRetryAt: 0 };
+        formation: specification.formation ?? 'line', officerId: null, delegated: false, tactic: null, detailRetryAt: 0,
+        coordinationStrength: 1, reconstitution: null, supportsReconstitutionOf: null, lastReinforcementArrival: null, reinforcementDestination: null };
       if (!point(group.position) || !number(group.morale, 0, 100) || !this.fronts.has(group.reserveOriginId)) fail('invalid group position, reserve origin or morale');
       for (let index = 0; index < specification.units.length; index++) {
         const spec = specification.units[index], profile = this.profiles.get(spec.profileId), faction = this.factions.get(group.factionId);
@@ -145,8 +152,8 @@ export class BattleSimulation {
           species: profile.species, role: officer ? 'officer' : profile.role, actorType: profile.actorType ?? profile.species,
           profileName: profile.name ?? profile.id, sourceBossId: profile.sourceBossId ?? null, sourceBossType: profile.sourceBossType ?? null, visualFidelity1to1Verified: profile.visualFidelity1to1Verified === true,
           officer, uniqueId, state, hp: profile.maxHp, maxHp: profile.maxHp, position: [...position],
-          nextAttack: profile.attackInterval * (hash(spec.id) % 1000) / 1000, damageTaken: 0 };
-        this.units.set(unit.id, unit); group.units.push(unit.id);
+          nextAttack: profile.attackInterval * (hash(spec.id) % 1000) / 1000, damageTaken: 0, incapacitated: false };
+        this.units.set(unit.id, unit); this.attackSeeds.set(unit.id, hash(unit.id)); group.units.push(unit.id);
       }
       const heavy = group.units.filter(unitId => this.units.get(unitId).role === 'heavy').length;
       if (heavy > 1 && heavy > Math.ceil(group.units.length / 3) && specification.allowHeavyFormation !== true) fail('a normal group cannot consist only of heavy weapons');
@@ -196,7 +203,9 @@ export class BattleSimulation {
         if (condition.type === 'evacuate' && !this.groups.has(condition.groupId)) fail('victory strategy requires an allocated group');
       }
     }
-    if (objectives.defeatGraceSeconds !== undefined && !number(objectives.defeatGraceSeconds, 1, 300)) fail('invalid strategic defeat grace');
+    if (objectives.defeatGraceSeconds !== undefined && !number(objectives.defeatGraceSeconds, 1, 7200)) fail('invalid strategic defeat grace');
+    const window = objectives.defeatWindow;
+    if (window && (window.version !== 1 || !number(window.sourceGraceSeconds, 1, 7200) || !number(window.playerSpeed, 1, 50) || !number(window.reactionSeconds, 0, 120) || !number(window.maneuverFactor, 1, 3) || !window.byFront || Object.entries(window.byFront).some(([frontId, item]) => !(objectives.loseFronts ?? []).includes(frontId) || !number(item.graceSeconds, window.sourceGraceSeconds, 7200) || !number(item.returnTravelSeconds, 0, item.graceSeconds) || !number(item.recaptureSeconds, 0, item.graceSeconds) || !number(item.longestRouteDistance, 0, 1e7) || !number(item.localApproachDistance, 0, 1000)))) fail('invalid physical return-window calibration');
     if (objectives.timeLimit !== undefined && !number(objectives.timeLimit, 1, 1e7)) fail('invalid operation time limit');
   }
 
@@ -242,7 +251,7 @@ export class BattleSimulation {
     const route = this.routes.get(routeId);
     if (!route || this.disposed || this.result || route.open === Boolean(open)) return false;
     if (open && this.routeAvailabilityProvider?.(clone(route)) === false) return false;
-    route.open = Boolean(open); this._emit('route_changed', { routeId, open: route.open, reason }, 2);
+    route.open = Boolean(open); this.routeRevision++; this._emit('route_changed', { routeId, open: route.open, reason }, 2);
     for (const group of this.groups.values()) if (group.path.some(segment => segment.routeId === routeId) && !route.open) {
       // A group already between junctions holds its actual position when a
       // bridge closes. It does not jump back to its previous logical front.
@@ -259,12 +268,18 @@ export class BattleSimulation {
     if (!group || this.disposed || this.result || !ORDERS.has(type) || !this.fronts.has(target) || !group.units.some(unitId => alive(this.units.get(unitId)))) return { accepted: false, reason: 'invalid_group_or_order' };
     if (group.units.every(unitId => this.units.get(unitId).state === 'reserve' || !alive(this.units.get(unitId)))) return { accepted: false, reason: 'group_in_reserve' };
     if (group.path.length && !this.routes.get(group.path[0].routeId).open && dist(group.position, this.fronts.get(group.frontId).position) > this.fronts.get(group.frontId).radius) return { accepted: false, reason: 'route_closed_in_transit' };
+    if (group.reconstitution?.required && !['retreat', 'regroup'].includes(type)) return { accepted: false, reason: 'reconstitution_required' };
     const path = this._path(group.frontId, target);
     if (!path) return { accepted: false, reason: 'no_open_route' };
     const issuer = specification.issuer ?? 'player1';
     if (!id(issuer)) return { accepted: false, reason: 'invalid_issuer' };
     // A newer accepted order replaces the previous one exactly once. Two local
     // players cannot accumulate competing paths that oscillate every frame.
+    if (type === 'retreat' && !group.reconstitution?.required) {
+      group.reconstitution = { required: true, startedAt: this.time, returnFrontId: group.order.frontId, returnOrderType: group.order.type, autoReturn: issuer === 'officer',
+        recoverySeconds: 0, supportGroupId: null, nextSupportRequestAt: this.time, lastBlockedReason: null, readyAt: null };
+      this._emit('group_reconstitution_required', { groupId: group.id, frontId: target, reason: 'retreat_requires_finite_reinforcement' }, 2);
+    }
     group.order = { type, frontId: target, issuer, issuedAt: this.time, sequence: this.eventSequence + 1 };
     group.path = path; group.travelProgress = 0; group.waypointIndex = dist(group.position, this.fronts.get(group.frontId).position) > EPSILON ? 0 : 1;
     this.orders.set(group.id, clone(group.order));
@@ -274,7 +289,7 @@ export class BattleSimulation {
 
   delegateFront(groupId, frontId, issuer = 'player1') {
     const group = this.groups.get(groupId);
-    if (!group?.officerId || !alive(this.units.get(group.officerId))) return { accepted: false, reason: 'living_officer_required' };
+    if (!group?.officerId || !combatReady(this.units.get(group.officerId))) return { accepted: false, reason: 'living_officer_required' };
     const answer = this.issueOrder(groupId, { type: 'defend', frontId, issuer });
     if (answer.accepted) { group.delegated = true; this._emit('front_delegated', { groupId, frontId, officerId: group.officerId }, 2); }
     return answer;
@@ -284,6 +299,7 @@ export class BattleSimulation {
     if (!['pincer', 'hold_line', 'ambush', 'fallback'].includes(type) || !this.fronts.has(frontId) || !Array.isArray(groupIds) || !groupIds.length || groupIds.length > 8) return { accepted: false, reason: 'invalid_tactic' };
     const groups = [...new Set(groupIds)].map(groupId => this.groups.get(groupId));
     if (groups.some(group => !group || !group.units.some(unitId => alive(this.units.get(unitId)) && this.units.get(unitId).state !== 'reserve') || this.relationship(group.factionId, this.config.playerFaction) !== 'allied')) return { accepted: false, reason: 'allied_available_groups_required' };
+    if (type !== 'fallback' && groups.some(group => group.reconstitution?.required)) return { accepted: false, reason: 'reconstitution_required' };
     if (type === 'pincer' && groups.length < 2) return { accepted: false, reason: 'two_groups_required' };
     if ((this.tacticCooldowns.get(type) ?? 0) > this.time) return { accepted: false, reason: 'tactic_cooling_down' };
     if (groups.some(group => this._path(group.frontId, frontId) === null || group.path.length && !this.routes.get(group.path[0].routeId).open)) return { accepted: false, reason: 'no_open_route' };
@@ -298,23 +314,47 @@ export class BattleSimulation {
     return { accepted: true, type, groups: groups.map(group => group.id), cooldownUntil: this.time + 30 };
   }
 
+  _groupsByFront() {
+    const index = new Map([...this.fronts.keys()].map(frontId => [frontId, []]));
+    for (const group of this.groups.values()) index.get(group.frontId).push(group);
+    return index;
+  }
+
   _strategicOrders() {
     if (this.config.ai?.enabled === false || this.time + EPSILON < this.nextStrategicOrder) return;
     this.nextStrategicOrder = this.time + (this.config.ai?.interval ?? 20);
+    const byFaction = new Map(), strength = new Map(), garrisons = new Map();
+    for (const group of this.groups.values()) {
+      const ready = group.units.filter(unitId => combatReady(this.units.get(unitId)) && this.units.get(unitId).state !== 'reserve').length;
+      if (!ready || group.path.length) continue;
+      if (!byFaction.has(group.factionId)) byFaction.set(group.factionId, []);
+      byFaction.get(group.factionId).push(group);
+      const key = `${group.factionId}:${group.frontId}`;
+      strength.set(key, (strength.get(key) ?? 0) + ready); garrisons.set(key, (garrisons.get(key) ?? 0) + 1);
+    }
     for (const faction of this.factions.values()) {
-      const friendly = [...this.groups.values()].filter(group => group.factionId === faction.id && !group.path.length && group.units.some(unitId => alive(this.units.get(unitId)) && this.units.get(unitId).state !== 'reserve'));
-      for (const group of friendly) {
-        if (group.materialized || !group.officerId || !alive(this.units.get(group.officerId))) continue;
+      for (const group of byFaction.get(faction.id) ?? []) {
+        if (group.materialized || group.reconstitution?.required || !group.officerId || !combatReady(this.units.get(group.officerId))) continue;
         const alliedToPlayer = this.relationship(faction.id, this.config.playerFaction) === 'allied';
         if (alliedToPlayer && !group.delegated || faction.moraleModel !== 'hive' && group.morale < 35) continue;
-        const garrison = friendly.filter(other => other.frontId === group.frontId && other.id !== group.id).length;
+        const garrison = (garrisons.get(`${faction.id}:${group.frontId}`) ?? 1) - 1;
         if (this.fronts.get(group.frontId).owner === faction.id && garrison < (this.config.ai?.minimumGarrisonGroups ?? 1)) continue;
+        const attackers = group.units.filter(unitId => combatReady(this.units.get(unitId))).length;
+        const defenders = front => [...this.factions.keys()].filter(id => this.areHostile(faction.id, id)).reduce((sum, id) => sum + (strength.get(`${id}:${front.id}`) ?? 0), 0);
         const neighbours = [...this.routes.values()].filter(route => route.open && [route.from, route.to].includes(group.frontId)).map(route => this.fronts.get(route.from === group.frontId ? route.to : route.from));
-        const target = neighbours.filter(front => front.owner === null || this.areHostile(faction.id, front.owner)).sort((a, b) => {
-          const defenders = front => [...this.groups.values()].filter(enemy => enemy.frontId === front.id && this.areHostile(faction.id, enemy.factionId)).reduce((sum, enemy) => sum + enemy.units.filter(unitId => alive(this.units.get(unitId)) && this.units.get(unitId).state !== 'reserve').length, 0);
+        const target = neighbours.filter(front => (front.owner === null || this.areHostile(faction.id, front.owner)) && attackers >= defenders(front) * (this.config.ai?.assaultMinRatio ?? 0)).sort((a, b) => {
+          if (this.config.ai?.targetPreference === 'supply') {
+            const supply = Number(b.reinforcementSource && b.sourceHP > 0) - Number(a.reinforcementSource && a.sourceHP > 0);
+            if (supply) return supply;
+          }
           return defenders(a) - defenders(b) || a.id.localeCompare(b.id);
         })[0];
-        if (target) { this.issueOrder(group.id, { type: 'attack', frontId: target.id, issuer: 'officer' }); this._emit('officer_decision', { groupId: group.id, from: group.frontId, target: target.id, reason: 'open_hostile_front' }, 1); break; }
+        if (target) {
+          const answer = this.issueOrder(group.id, { type: 'attack', frontId: target.id, issuer: 'officer' });
+          if (answer.accepted) this._emit('officer_decision', { groupId: group.id, from: group.frontId, target: target.id,
+            reason: this.config.ai?.targetPreference === 'supply' && target.reinforcementSource ? 'open_supply_front' : 'open_hostile_front', difficultyId: this.config.difficulty?.id ?? 'scenario' }, 1);
+          break;
+        }
       }
     }
   }
@@ -322,12 +362,12 @@ export class BattleSimulation {
   _moveGroups(dt) {
     for (const group of this.groups.values()) {
       if (group.rootUntil > this.time) continue;
-      if (!group.path.length || !group.units.some(unitId => alive(this.units.get(unitId)) && this.units.get(unitId).state !== 'reserve')) continue;
+      if (!group.path.length || !group.units.some(unitId => combatReady(this.units.get(unitId)) && this.units.get(unitId).state !== 'reserve')) continue;
       const segment = group.path[0], route = this.routes.get(segment.routeId), target = this.fronts.get(segment.to);
       const waypoints = segment.from === route.from ? route.waypoints : [...route.waypoints].reverse();
       if (!route.open) continue;
       if (group.materialized && this.callbacks.spawnGroup) {
-        const live = group.units.map(unitId => this.units.get(unitId)).filter(unit => alive(unit) && unit.state === 'active');
+        const live = group.units.map(unitId => this.units.get(unitId)).filter(unit => combatReady(unit) && unit.state === 'active');
         if (live.length) group.position = [live.reduce((sum, unit) => sum + unit.position[0], 0) / live.length, live.reduce((sum, unit) => sum + unit.position[1], 0) / live.length];
         const waypoint = waypoints[group.waypointIndex] ?? target.position;
         if (dist(group.position, waypoint) > Math.max(4, Math.min(8, target.radius * .2))) continue;
@@ -340,7 +380,7 @@ export class BattleSimulation {
           const next = [group.position[0] + (waypoint[0] - group.position[0]) * amount, group.position[1] + (waypoint[1] - group.position[1]) * amount];
           const shift = [next[0] - group.position[0], next[1] - group.position[1]];
           group.position = next; distanceBudget -= remaining * amount;
-          for (const unitId of group.units) { const unit = this.units.get(unitId); if (alive(unit) && unit.state !== 'reserve') { unit.position[0] += shift[0]; unit.position[1] += shift[1]; } }
+          for (const unitId of group.units) { const unit = this.units.get(unitId); if (combatReady(unit) && unit.state !== 'reserve') { unit.position[0] += shift[0]; unit.position[1] += shift[1]; } }
           if (remaining <= EPSILON || amount >= 1) group.waypointIndex++;
           else break;
         }
@@ -350,15 +390,22 @@ export class BattleSimulation {
       group.frontId = segment.to; group.path.shift(); group.travelProgress = 0; group.waypointIndex = 1;
       this._emit('group_arrived', { groupId: group.id, frontId: group.frontId });
       if (group.order.type === 'retreat' && !group.path.length) { group.order.type = 'regroup'; group.morale = Math.min(100, group.morale + 10); }
+      if (!group.path.length) {
+        if (group.reinforcementDestination === group.frontId) { group.lastReinforcementArrival = this.time; group.reinforcementDestination = null; }
+        this._markReconstitutionSupport(group);
+      }
     }
   }
 
   _detailStep() {
     const activeFronts = new Set();
     for (const player of this.players) if (player.hp > 0) for (const front of this.fronts.values()) if (dist(player.position, front.position) <= front.radius * 1.5) activeFronts.add(front.id);
-    const nearby = [...this.groups.values()].filter(group => activeFronts.has(group.frontId) && group.units.some(unitId => alive(this.units.get(unitId)) && this.units.get(unitId).state !== 'reserve'));
     const livingPlayers = this.players.filter(player => player.hp > 0);
-    nearby.sort((a, b) => Number(Boolean(b.officerId)) - Number(Boolean(a.officerId)) || Math.min(...livingPlayers.map(player => dist(a.position, player.position))) - Math.min(...livingPlayers.map(player => dist(b.position, player.position))) || a.id.localeCompare(b.id));
+    const knownWounded = unit => unit.incapacitated && this.relationship(unit.factionId, this.config.playerFaction) === 'allied';
+    const woundedDistance = group => Math.min(...livingPlayers.flatMap(player => group.units.map(unitId => this.units.get(unitId)).filter(unit => alive(unit) && knownWounded(unit)).map(unit => dist(unit.position, player.position))));
+    const distanceToPlayers = group => Math.min(woundedDistance(group), ...livingPlayers.map(player => dist(group.position, player.position)));
+    const nearby = [...this.groups.values()].filter(group => (activeFronts.has(group.frontId) || woundedDistance(group) <= 65) && group.units.some(unitId => alive(this.units.get(unitId)) && this.units.get(unitId).state !== 'reserve'));
+    nearby.sort((a, b) => Number(Boolean(b.officerId)) - Number(Boolean(a.officerId)) || distanceToPlayers(a) - distanceToPlayers(b) || a.id.localeCompare(b.id));
     const buckets = new Map();
     for (const group of nearby) { const key = `${group.frontId}:${group.factionId}`; if (!buckets.has(key)) buckets.set(key, []); buckets.get(key).push(group); }
     const candidates = [];
@@ -370,7 +417,8 @@ export class BattleSimulation {
       if (count + units.length > this.budgets.active || (perFaction.get(group.factionId) ?? 0) + units.length > limit) continue;
       // New materializations never appear already inside either living player.
       // Existing detailed actors are not demoted merely because combat closes.
-      if (!group.materialized && (group.detailRetryAt > this.time || units.some(unit => this.players.some(player => player.hp > 0 && dist(unit.position, player.position) < this.budgets.spawnDistance)))) continue;
+      const returningWoundedAllies = this.relationship(group.factionId, this.config.playerFaction) === 'allied' && units.some(knownWounded);
+      if (!group.materialized && (group.detailRetryAt > this.time || !returningWoundedAllies && units.some(unit => this.players.some(player => player.hp > 0 && dist(unit.position, player.position) < this.budgets.spawnDistance)))) continue;
       selected.add(group.id); count += units.length; perFaction.set(group.factionId, (perFaction.get(group.factionId) ?? 0) + units.length);
     }
     for (const group of this.groups.values()) if (group.materialized && !selected.has(group.id)) this._dematerialize(group);
@@ -425,26 +473,42 @@ export class BattleSimulation {
   syncUnit(unitId, state = {}) {
     const unit = this.units.get(unitId);
     if (!unit || this.disposed || this.result || !alive(unit)) return false;
+    let encounterState;
+    if (state.encounterState !== undefined) {
+      if (unit.actorType !== 'queen' || !unit.sourceBossType) return false;
+      try { encounterState = validateBossCombatState(state.encounterState, { bossType: unit.sourceBossType, battleUnitId: unit.id, maxHp: unit.maxHp }); }
+      catch { return false; }
+    }
     if (state.position !== undefined) { if (!point(state.position)) return false; unit.position = [...state.position]; }
     if (state.hp !== undefined) {
       if (!number(state.hp, 0, unit.maxHp)) return false;
       unit.hp = state.hp;
       if (!unit.hp) return this.recordDeath({ entityId: unit.id, cause: 'synchronized_actor_death' });
     }
+    if (encounterState !== undefined) unit.encounterState = encounterState;
+    return true;
+  }
+
+  setUnitIncapacitated(unitId, incapacitated) {
+    const unit = this.units.get(unitId);
+    if (!unit || this.disposed || this.result || !alive(unit) || !['active', 'distant'].includes(unit.state) || typeof incapacitated !== 'boolean') return false;
+    if (unit.incapacitated === incapacitated) return false;
+    unit.incapacitated = incapacitated;
+    this._emit(incapacitated ? 'unit_incapacitated' : 'unit_recovered', { unitId, groupId: unit.groupId, frontId: this.groups.get(unit.groupId).frontId }, 2);
     return true;
   }
 
   recordDeath(event = {}) {
     const unit = this.units.get(event.entityId ?? event.unitId);
     if (!unit || this.disposed || this.result || this.deaths.has(unit.id) || ['evacuated', 'captured'].includes(unit.state)) return false;
-    unit.hp = 0; unit.state = 'dead';
+    unit.hp = 0; unit.state = 'dead'; unit.incapacitated = false; delete unit.encounterState;
     const killerFaction = this.factions.has(event.killerFaction) ? event.killerFaction : null;
     const death = { entityId: unit.id, groupId: unit.groupId, factionId: unit.factionId, killerFaction,
       cause: typeof event.cause === 'string' ? event.cause.slice(0, 80) : 'combat', time: this.time, officer: unit.officer, uniqueId: unit.uniqueId };
     this.deaths.set(unit.id, death); this._emit('unit_died', death, unit.officer ? 3 : 0);
     const group = this.groups.get(unit.groupId), faction = this.factions.get(unit.factionId);
     if (faction.moraleModel !== 'hive') this._changeMorale(group, unit.officer ? -25 : -2, unit.officer ? 'officer_lost' : 'casualty');
-    else if (unit.officer) this._emit('hive_coordination_disrupted', { factionId: unit.factionId, frontId: group.frontId, groupId: group.id }, 2);
+    else if (unit.officer) { group.coordinationStrength = .65; this._emit('hive_coordination_disrupted', { factionId: unit.factionId, frontId: group.frontId, groupId: group.id, coordinationStrength: .65, reason: 'allocated_controller_lost' }, 2); }
     if (unit.officer) for (const neighbour of this.groups.values()) if (neighbour.id !== group.id && neighbour.factionId === unit.factionId && neighbour.frontId === group.frontId && faction.moraleModel !== 'hive') this._changeMorale(neighbour, -8, 'nearby_officer_lost');
     return true;
   }
@@ -455,38 +519,48 @@ export class BattleSimulation {
   }
 
   _remoteCombat() {
-    const pending = new Map();
+    const pending = new Map(), frontGroups = this._groupsByFront();
+    const coordination = new Map([...this.factions.values()].map(faction => [faction.id, faction.moraleModel === 'hive' && !this._sourcesFor(faction.id).length ? .65 : 1]));
+    this.targetingCounters = { groupVisits: this.groups.size, attackerVisits: 0, targetCandidateEntries: 0, attacksResolved: 0 };
     for (const front of this.fronts.values()) {
-      const fighting = [...this.groups.values()].filter(group => group.frontId === front.id && !group.path.length && dist(group.position, front.position) <= front.radius && group.order.type !== 'retreat');
       const byFaction = new Map();
-      for (const group of fighting) for (const unitId of group.units) {
-        const unit = this.units.get(unitId);
-        if (alive(unit) && unit.state === 'distant') { if (!byFaction.has(unit.factionId)) byFaction.set(unit.factionId, []); byFaction.get(unit.factionId).push(unit); }
+      for (const group of frontGroups.get(front.id)) {
+        if (group.path.length || dist(group.position, front.position) > front.radius || group.order.type === 'retreat') continue;
+        for (const unitId of group.units) {
+          const unit = this.units.get(unitId);
+          if (alive(unit) && unit.state === 'distant' && (!unit.incapacitated || dist(unit.position, front.position) <= front.radius)) {
+            if (!byFaction.has(unit.factionId)) byFaction.set(unit.factionId, []);
+            byFaction.get(unit.factionId).push(unit);
+          }
+        }
       }
       for (const [factionId, attackers] of byFaction) {
         const targets = [...byFaction].filter(([targetFaction]) => this.areHostile(factionId, targetFaction)).flatMap(([, units]) => units);
+        this.targetingCounters.targetCandidateEntries += targets.length;
         if (!targets.length) continue;
         for (const attacker of attackers) {
-          const profile = this.profiles.get(attacker.profileId);
-          if (attacker.nextAttack > this.time + EPSILON || profile.damage <= 0) continue;
+          this.targetingCounters.attackerVisits++;
+          if (!combatReady(attacker)) continue;
+          const profile = this.profiles.get(attacker.profileId), group = this.groups.get(attacker.groupId), faction = this.factions.get(factionId);
+          if (group.reconstitution?.required || ['retreat', 'regroup'].includes(group.order.type) || attacker.nextAttack > this.time + EPSILON || profile.damage <= 0) continue;
           attacker.nextAttack = this.time + profile.attackInterval;
-          const group = this.groups.get(attacker.groupId), faction = this.factions.get(factionId);
-          const target = targets[(hash(attacker.id) + this.tick) % targets.length];
+          const target = targets[(this.attackSeeds.get(attacker.id) + this.tick) % targets.length];
           const tacticMultiplier = group.tactic && group.tactic.expires > this.time ? { pincer: 1.2, hold_line: 1.05, ambush: 1.15, fallback: .5 }[group.tactic.type] ?? 1 : 1;
-          const orderMultiplier = ({ attack: 1, defend: .85, regroup: .35, escort: .6, retreat: 0 }[group.order.type] ?? .85) * tacticMultiplier;
-          const moraleMultiplier = faction.moraleModel === 'hive' ? (this._sourcesFor(factionId).length ? 1 : .65) : .5 + group.morale / 200;
+          const orderMultiplier = ({ attack: 1, defend: .85, escort: .6 }[group.order.type] ?? .85) * tacticMultiplier;
+          const moraleMultiplier = faction.moraleModel === 'hive' ? coordination.get(factionId) * group.coordinationStrength : .5 + group.morale / 200;
           if (!pending.has(target.id)) pending.set(target.id, { damage: 0, killerFaction: factionId });
           pending.get(target.id).damage += profile.damage * orderMultiplier * moraleMultiplier * formationAttackMultiplier(group, this.time);
+          this.targetingCounters.attacksResolved++;
         }
       }
     }
-    // Simultaneous damage makes the distant battle reciprocal and independent
-    // of faction insertion order. Detailed units are deliberately never targets.
     for (const [unitId, hit] of pending) {
       const unit = this.units.get(unitId); unit.hp = Math.max(0, unit.hp - hit.damage); unit.damageTaken += hit.damage;
       if (!unit.hp) this.recordDeath({ entityId: unitId, killerFaction: hit.killerFaction, cause: 'distant_combat' });
     }
   }
+
+  getTargetingCounters() { return { ...this.targetingCounters, scope: 'last fixed strategic tick; operation counts, not hardware frame time' }; }
 
   _sourcesFor(factionId) { return [...this.fronts.values()].filter(front => front.reinforcementSource && front.sourceHP > 0 && front.owner === factionId); }
 
@@ -513,9 +587,11 @@ export class BattleSimulation {
       if (!source.reinforcementSource || !source.sourceHP || source.owner !== arrival.factionId || this._path(source.id, arrival.frontId) === null) {
         this._emit('reinforcements_cancelled', { groupId: group.id, sourceId: source.id, reason: 'source_or_route_lost' }, 2); continue;
       }
-      group.frontId = source.id; group.state = 'distant';
+      group.frontId = source.id; group.state = 'distant'; group.reinforcementDestination = arrival.frontId;
       for (const unitId of group.units) { const unit = this.units.get(unitId); if (unit.state === 'reserve' && alive(unit)) unit.state = 'distant'; }
       this.issueOrder(group.id, { type: 'attack', frontId: arrival.frontId, issuer: 'scenario' });
+      if (arrival.supportForGroupId) group.supportsReconstitutionOf = arrival.supportForGroupId;
+      if (!group.path.length) { group.lastReinforcementArrival = this.time; group.reinforcementDestination = null; this._markReconstitutionSupport(group); }
       this._emit('reinforcements_arrived', { groupId: group.id, sourceId: source.id, targetFrontId: arrival.frontId }, 2);
     }
     for (const factionId of this.factions.keys()) {
@@ -548,21 +624,88 @@ export class BattleSimulation {
   }
 
   _captureStep(dt) {
+    const frontGroups = this._groupsByFront();
     for (const front of this.fronts.values()) {
-      const strength = new Map();
-      for (const group of this.groups.values()) if (group.frontId === front.id && !group.path.length && dist(group.position, front.position) <= front.radius) {
-        const count = group.units.reduce((sum, unitId) => sum + Number(alive(this.units.get(unitId)) && ['active', 'distant'].includes(this.units.get(unitId).state)), 0);
-        if (count) strength.set(group.factionId, (strength.get(group.factionId) ?? 0) + count);
+      const strength = new Map(), coordination = new Map(), bodies = new Map();
+      for (const group of frontGroups.get(front.id)) if (!group.path.length && dist(group.position, front.position) <= front.radius && group.order.type !== 'retreat' && !group.reconstitution?.required) {
+        const count = group.units.reduce((sum, unitId) => sum + Number(combatReady(this.units.get(unitId)) && ['active', 'distant'].includes(this.units.get(unitId).state)), 0);
+        if (!count) continue;
+        const multiplier = this.factions.get(group.factionId).moraleModel === 'hive' ? group.coordinationStrength : 1;
+        strength.set(group.factionId, (strength.get(group.factionId) ?? 0) + count * multiplier);
+        coordination.set(group.factionId, (coordination.get(group.factionId) ?? 0) + count * multiplier);
+        bodies.set(group.factionId, (bodies.get(group.factionId) ?? 0) + count);
       }
-      for (const player of this.players) if (player.hp > 0 && dist(player.position, front.position) <= front.radius * .7) strength.set(this.config.playerFaction, (strength.get(this.config.playerFaction) ?? 0) + 2);
+      for (const player of this.players) if (player.hp > 0 && dist(player.position, front.position) <= front.radius * .7) {
+        const faction = this.config.playerFaction; strength.set(faction, (strength.get(faction) ?? 0) + 2);
+        coordination.set(faction, (coordination.get(faction) ?? 0) + 2); bodies.set(faction, (bodies.get(faction) ?? 0) + 2);
+      }
       const present = [...strength.keys()];
       front.contested = present.some(a => present.some(b => this.areHostile(a, b)));
       if (front.contested || !present.length) continue;
       const candidates = present.filter(factionId => factionId !== front.owner && (front.owner === null || this.areHostile(factionId, front.owner)));
       if (!candidates.length) continue;
       const contender = candidates.sort((a, b) => strength.get(b) - strength.get(a) || a.localeCompare(b))[0];
-      front.capture[contender] = (front.capture[contender] ?? 0) + dt;
+      front.capture[contender] = (front.capture[contender] ?? 0) + dt * coordination.get(contender) / bodies.get(contender);
       if (front.capture[contender] + EPSILON >= front.captureThreshold) this.captureBase(front.id, contender, 'unopposed_presence');
+    }
+  }
+
+  requestReconstitutionSupport(groupId) {
+    const group = this.groups.get(groupId), recovery = group?.reconstitution;
+    if (!recovery?.required || group.path.length || group.order.type !== 'regroup') return { accepted: false, reason: 'regroup_at_destination_required' };
+    const existing = recovery.supportGroupId && this.groups.get(recovery.supportGroupId);
+    if (existing && (this.pendingArrivals.some(arrival => arrival.groupId === existing.id) || existing.supportsReconstitutionOf === group.id && existing.units.filter(unitId => combatReady(this.units.get(unitId)) && this.units.get(unitId).state !== 'reserve').length >= 2)) return { accepted: false, reason: 'support_already_assigned' };
+    const answer = this.requestReinforcements(group.factionId, group.frontId);
+    if (answer.accepted) {
+      const arrival = this.pendingArrivals.find(item => item.groupId === answer.groupId);
+      arrival.supportForGroupId = group.id; recovery.supportGroupId = answer.groupId;
+    }
+    return answer;
+  }
+
+  _markReconstitutionSupport(support) {
+    const group = this.groups.get(support.supportsReconstitutionOf), recovery = group?.reconstitution;
+    if (!recovery?.required || support.path.length || support.frontId !== group.frontId || dist(support.position, this.fronts.get(group.frontId).position) > this.fronts.get(group.frontId).radius) return;
+    recovery.supportGroupId = support.id;
+    if (!recovery.supportArrivedAt) {
+      recovery.supportArrivedAt = this.time;
+      this._emit('reconstitution_support_arrived', { groupId: group.id, supportGroupId: support.id, frontId: group.frontId }, 2);
+    }
+  }
+
+  _reconstitutionStep(dt) {
+    for (const group of this.groups.values()) {
+      const recovery = group.reconstitution;
+      if (!recovery?.required || group.path.length || !group.units.some(unitId => combatReady(this.units.get(unitId)))) continue;
+      if (group.order.type === 'retreat') group.order.type = 'regroup';
+      if (group.order.type !== 'regroup') continue;
+      const front = this.fronts.get(group.frontId), supply = this._sourcesFor(group.factionId).find(source => this._path(source.id, front.id) !== null);
+      if (!recovery.supportGroupId) {
+        const arrived = [...this.groups.values()].find(candidate => candidate.id !== group.id && candidate.factionId === group.factionId && !candidate.supportsReconstitutionOf && candidate.lastReinforcementArrival !== null && candidate.lastReinforcementArrival >= recovery.startedAt && candidate.frontId === group.frontId && !candidate.path.length && candidate.units.filter(unitId => combatReady(this.units.get(unitId)) && this.units.get(unitId).state !== 'reserve').length >= 2);
+        if (arrived) { arrived.supportsReconstitutionOf = group.id; recovery.supportGroupId = arrived.id; this._markReconstitutionSupport(arrived); }
+      }
+      const support = recovery.supportGroupId && this.groups.get(recovery.supportGroupId);
+      if (support && !support.path.length && support.frontId !== group.frontId && support.supportsReconstitutionOf === group.id) this.issueOrder(support.id, { type: 'escort', frontId: group.frontId, issuer: 'officer' });
+      const supportReady = support && !support.path.length && support.frontId === group.frontId &&
+        support.units.filter(unitId => combatReady(this.units.get(unitId)) && this.units.get(unitId).state !== 'reserve').length >= 2 &&
+        dist(support.position, front.position) <= front.radius && support.supportsReconstitutionOf === group.id;
+      const supplied = supply && this.relationship(front.owner, group.factionId) === 'allied' && !front.contested && dist(group.position, front.position) <= front.radius;
+      if (!supportReady && this.time + EPSILON >= recovery.nextSupportRequestAt) {
+        recovery.nextSupportRequestAt = this.time + this.budgets.spawnInterval;
+        const answer = this.requestReconstitutionSupport(group.id);
+        if (!answer.accepted && answer.reason !== recovery.lastBlockedReason) {
+          recovery.lastBlockedReason = answer.reason;
+          this._emit('reconstitution_waiting', { groupId: group.id, frontId: group.frontId, reason: answer.reason }, 1);
+        }
+      }
+      if (!supplied || !supportReady) { recovery.recoverySeconds = 0; continue; }
+      recovery.recoverySeconds += dt;
+      if (recovery.recoverySeconds + EPSILON < 6) continue;
+      recovery.required = false; recovery.readyAt = this.time;
+      this._changeMorale(group, Math.max(0, 40 - group.morale), 'finite_reinforcement_received');
+      this._emit('group_reconstituted', { groupId: group.id, frontId: group.frontId, supportGroupId: support.id,
+        survivors: group.units.filter(unitId => combatReady(this.units.get(unitId))).length, newUnitsCreated: 0 }, 2);
+      if (recovery.autoReturn && combatReady(this.units.get(group.officerId)) && this._path(group.frontId, recovery.returnFrontId) !== null) this.issueOrder(group.id, { type: recovery.returnOrderType, frontId: recovery.returnFrontId, issuer: 'officer' });
     }
   }
 
@@ -571,7 +714,7 @@ export class BattleSimulation {
       group.reportAge = Math.max(0, this.time - group.lastSeenAt);
       if (this.factions.get(group.factionId).moraleModel === 'hive' || group.state === 'reserve') continue;
       if (group.order.type === 'regroup' && !group.path.length && this.fronts.get(group.frontId).owner === group.factionId) group.morale = Math.min(80, group.morale + dt * .4);
-      if (group.morale > 20 || group.path.length || group.order.type === 'retreat' || !group.units.some(unitId => alive(this.units.get(unitId)))) continue;
+      if (group.reconstitution?.required || group.morale > 20 || group.path.length || group.order.type === 'retreat' || !group.units.some(unitId => alive(this.units.get(unitId)))) continue;
       const safe = [...this.fronts.values()].filter(front => front.id !== group.frontId && this.relationship(front.owner, group.factionId) === 'allied' && this._path(group.frontId, front.id) !== null).sort((a, b) => dist(group.position, a.position) - dist(group.position, b.position))[0];
       if (safe) this.issueOrder(group.id, { type: 'retreat', frontId: safe.id, issuer: 'officer' });
     }
@@ -585,13 +728,42 @@ export class BattleSimulation {
     return false;
   }
 
+  _criticalReturnWindow(frontId) {
+    const objectives = this.config.objectives ?? {}, policy = objectives.defeatWindow;
+    const baseline = policy?.byFront?.[frontId];
+    if (!policy || !baseline) return { graceSeconds: objectives.defeatGraceSeconds ?? 30, returnTravelSeconds: null, unreachableFrontIds: [] };
+    const observed = measureDefeatReturn({ fronts: [...this.fronts.values()], routes: [...this.routes.values()].map(route => ({ ...route,
+      open: route.open && this.routeAvailabilityProvider?.(clone(route)) !== false })) }, frontId,
+    { playerSpeed: policy.playerSpeed, reactionSeconds: policy.reactionSeconds, maneuverFactor: policy.maneuverFactor, sourceGraceSeconds: baseline.graceSeconds });
+    return { ...observed, returnTravelSeconds: Math.max(baseline.returnTravelSeconds, observed.returnTravelSeconds) };
+  }
+
   _objectives() {
     const objectives = this.config.objectives ?? {};
     const threatened = (objectives.loseFronts ?? []).filter(frontId => this.relationship(this.fronts.get(frontId).owner, this.config.playerFaction) !== 'allied');
-    if (threatened.length) {
-      if (this.defeatSince === null) { this.defeatSince = this.time; this._emit('critical_front_lost', { fronts: threatened, deadline: this.time + (objectives.defeatGraceSeconds ?? 30) }, 4); }
-      if (this.time - this.defeatSince + EPSILON >= (objectives.defeatGraceSeconds ?? 30)) { this._finish('defeat', 'critical_front_lost', { fronts: threatened }); return; }
-    } else if (this.defeatSince !== null) { this.defeatSince = null; this._emit('critical_front_recovered', {}, 3); }
+    for (const [frontId] of this.criticalLosses) if (!threatened.includes(frontId)) {
+      this.criticalLosses.delete(frontId); this._emit('critical_front_recovered', { fronts: [frontId], frontId }, 3);
+    }
+    for (const frontId of threatened) if (!this.criticalLosses.has(frontId)) {
+      const calibration = this._criticalReturnWindow(frontId), graceSeconds = calibration.graceSeconds;
+      const loss = { frontId, since: this.time, deadline: this.time + graceSeconds, graceSeconds, routeRevision: this.routeRevision,
+        returnTravelSeconds: calibration.returnTravelSeconds, unreachableFrontIds: calibration.unreachableFrontIds };
+      this.criticalLosses.set(frontId, loss);
+      this._emit('critical_front_lost', { fronts: [frontId], frontId, deadline: loss.deadline, graceSeconds,
+        returnTravelSeconds: calibration.returnTravelSeconds, unreachableFrontIds: calibration.unreachableFrontIds }, 4);
+      if (calibration.unreachableFrontIds.length) this._emit('critical_return_route_blocked', { frontId, fronts: [frontId], unreachableFrontIds: calibration.unreachableFrontIds, deadline: loss.deadline, reason: 'reopen_a_route_to_return' }, 4);
+    }
+    for (const loss of this.criticalLosses.values()) if (loss.routeRevision !== this.routeRevision) {
+      const calibration = this._criticalReturnWindow(loss.frontId), before = loss.deadline;
+      loss.graceSeconds = Math.max(loss.graceSeconds, calibration.graceSeconds); loss.deadline = loss.since + loss.graceSeconds;
+      loss.returnTravelSeconds = calibration.returnTravelSeconds; loss.unreachableFrontIds = calibration.unreachableFrontIds; loss.routeRevision = this.routeRevision;
+      this._emit(calibration.unreachableFrontIds.length ? 'critical_return_route_blocked' : 'critical_return_route_changed', {
+        frontId: loss.frontId, fronts: [loss.frontId], deadline: loss.deadline, previousDeadline: before, returnTravelSeconds: calibration.returnTravelSeconds,
+        unreachableFrontIds: calibration.unreachableFrontIds, reason: calibration.unreachableFrontIds.length ? 'reopen_a_route_to_return' : 'physical_route_distance_changed' }, 4);
+    }
+    this.defeatSince = this.criticalLosses.size ? Math.min(...[...this.criticalLosses.values()].map(loss => loss.since)) : null;
+    const expired = [...this.criticalLosses.values()].filter(loss => this.time + EPSILON >= loss.deadline);
+    if (expired.length) { this._finish('defeat', 'critical_front_lost', { fronts: expired.map(loss => loss.frontId) }); return; }
     if (objectives.timeLimit && this.time >= objectives.timeLimit) { this._finish('defeat', 'operation_timeout'); return; }
     if (objectives.externalVictory === true) return;
     const strategies = objectives.strategies ?? [];
@@ -618,7 +790,8 @@ export class BattleSimulation {
     if (!group || this.disposed || this.result || this.relationship(this.fronts.get(group.frontId).owner, group.factionId) !== 'allied' || group.path.length) return false;
     if (group.materialized) this._dematerialize(group);
     let count = 0;
-    for (const unitId of group.units) { const unit = this.units.get(unitId); if (alive(unit) && unit.state !== 'reserve') { unit.state = 'evacuated'; count++; } }
+    if (group.units.some(unitId => { const unit = this.units.get(unitId); return alive(unit) && unit.incapacitated && dist(unit.position, this.fronts.get(group.frontId).position) > this.fronts.get(group.frontId).radius; })) return false;
+    for (const unitId of group.units) { const unit = this.units.get(unitId); if (alive(unit) && unit.state !== 'reserve') { unit.state = 'evacuated'; unit.incapacitated = false; count++; } }
     if (!count) return false;
     group.state = 'evacuated'; this._emit('group_evacuated', { groupId, count }, 2); return true;
   }
@@ -649,24 +822,26 @@ export class BattleSimulation {
     this.accumulator += delta;
     while (this.accumulator + EPSILON >= this.step && !this.result) {
       this.accumulator = Math.max(0, this.accumulator - this.step); this.time += this.step; this.tick++;
-      for (const group of this.groups.values()) updateFormation(group, this.step, this.time, { officerAlive: !!group.officerId && alive(this.units.get(group.officerId)) });
-      this._moveGroups(this.step); this._detailStep(); this._remoteCombat(); this._captureStep(this.step); this._reinforcements(); this._moraleStep(this.step); this._strategicOrders(); this._objectives(); this.intel.update();
+      for (const group of this.groups.values()) updateFormation(group, this.step, this.time, { officerAlive: !!group.officerId && combatReady(this.units.get(group.officerId)) });
+      this._moveGroups(this.step); this._detailStep(); this._remoteCombat(); this._captureStep(this.step); this._reinforcements(); this._reconstitutionStep(this.step); this._moraleStep(this.step); this._strategicOrders(); this._objectives(); this.intel.update();
     }
     return true;
   }
 
   _groupSnapshot(group) {
-    const faction = this.factions.get(group.factionId), coordinated = faction.moraleModel !== 'hive' || this._sourcesFor(group.factionId).length > 0;
+    const faction = this.factions.get(group.factionId), sourceCoordinated = faction.moraleModel !== 'hive' || this._sourcesFor(group.factionId).length > 0;
+    const coordinated = sourceCoordinated && (faction.moraleModel !== 'hive' || group.coordinationStrength === 1);
     const positionTarget = group.path.length ? [...((group.path[0].from === this.routes.get(group.path[0].routeId).from ? this.routes.get(group.path[0].routeId).waypoints : [...this.routes.get(group.path[0].routeId).waypoints].reverse())[group.waypointIndex] ?? this.fronts.get(group.path[0].to).position)] : [...this.fronts.get(group.order.frontId).position];
     if (!group.path.length && group.tactic?.expires > this.time && group.tactic.flank) positionTarget[0] += group.tactic.flank * 12;
     return { id: group.id, label: group.label, factionId: group.factionId, species: faction.species,
-      frontId: group.frontId, position: [...group.position], morale: faction.moraleModel === 'hive' ? coordinated ? 70 : 45 : group.morale,
+      frontId: group.frontId, position: [...group.position], morale: faction.moraleModel === 'hive' ? sourceCoordinated ? 70 : 45 : group.morale,
       moraleModel: faction.moraleModel, moraleLabel: faction.moraleModel === 'hive' ? 'Pression de ruche' : faction.moraleModel === 'clan' ? 'Cohésion' : 'Moral', coordinated,
       formation: group.formation, delegated: group.delegated, tactic: group.tactic && group.tactic.expires > this.time ? clone(group.tactic) : null,
+      coordinationStrength: group.coordinationStrength, reconstitution: group.reconstitution ? clone(group.reconstitution) : null,
       state: group.state, officerId: group.officerId, officerHP: group.officerId ? this.units.get(group.officerId).hp : null, officerMaxHP: group.officerId ? this.units.get(group.officerId).maxHp : null,
       cohesion: group.cohesion, rootUntil: group.rootUntil, suppressedUntil: group.suppressedUntil, officerThreatUntil: group.officerThreatUntil, revealedUntil: group.revealedUntil,
       order: clone(group.order), targetPosition: positionTarget,
-      path: clone(group.path), alive: group.units.filter(unitId => alive(this.units.get(unitId))).length, units: [...group.units], materialized: group.materialized,
+      path: clone(group.path), incapacitated: group.units.filter(unitId => alive(this.units.get(unitId)) && this.units.get(unitId).incapacitated).length, combatReady: group.units.filter(unitId => combatReady(this.units.get(unitId))).length, alive: group.units.filter(unitId => alive(this.units.get(unitId))).length, units: [...group.units], materialized: group.materialized,
       reportAge: group.reportAge, precisePositionKnown: group.materialized || group.reportAge < 5 };
   }
   getGroup(groupId) { const group = this.groups.get(groupId); return group ? this._groupSnapshot(group) : null; }
@@ -687,7 +862,8 @@ export class BattleSimulation {
       return { ...unit, order: clone(group.order), targetPosition: formationTargetForUnit(this.groups.get(unit.groupId), this.groups.get(unit.groupId).units.filter(unitId => alive(this.units.get(unitId))), unit.id, { origin: group.path.length ? group.position : group.targetPosition, target: group.targetPosition }) ?? [...group.targetPosition], formation: group.formation,
         cohesion: group.cohesion, rootUntil: group.rootUntil, suppressedUntil: group.suppressedUntil, officerThreatUntil: group.officerThreatUntil,
         tactic: group.tactic ? clone(group.tactic) : null, morale: group.morale, moraleModel: group.moraleModel, coordinated: group.coordinated,
-        canAttack: group.rootUntil <= this.time && !['retreat', 'regroup'].includes(group.order.type) };
+        coordinationStrength: group.coordinationStrength, reconstitution: group.reconstitution,
+        canAttack: !unit.incapacitated && !group.reconstitution?.required && group.rootUntil <= this.time && !['retreat', 'regroup'].includes(group.order.type) };
     });
   }
 
@@ -719,7 +895,8 @@ export class BattleSimulation {
         reportAge: Math.max(0, this.time - front.lastReportAt) })),
       groups, routes: [...this.routes.values()].map(clone),
       alerts: this.events.filter(event => this.intel.allowsEvent(event) && event.priority >= 2 && this.time - event.time <= 30).sort((a, b) => b.priority - a.priority || b.id - a.id).slice(0, 8).map(clone),
-      criticalDeadline: this.defeatSince === null ? null : this.defeatSince + (this.config.objectives?.defeatGraceSeconds ?? 30),
+      criticalDeadline: this.criticalLosses.size ? Math.min(...[...this.criticalLosses.values()].map(loss => loss.deadline)) : null,
+      criticalFronts: [...this.criticalLosses.values()].map(clone), difficulty: this.config.difficulty ? clone(this.config.difficulty) : null,
       pendingArrivals: this.pendingArrivals.filter(arrival => this.result || this.relationship(arrival.factionId, this.config.playerFaction) === 'allied' || this.intel.allowsEvent({ groupId: arrival.groupId, time: arrival.due - this.budgets.announcementSeconds })).map(clone), journal: this.getTacticalJournal(), casualties: [...this.deaths.values()].filter(death => !death.inherited).length,
       inheritedLosses: [...this.deaths.values()].filter(death => death.inherited).length, eventsDropped: this.eventsDropped };
   }
@@ -740,7 +917,7 @@ export class BattleSimulation {
       fronts: [...this.fronts.values()].map(clone), routes: [...this.routes.values()].map(clone), relations: [...this.relations],
       deaths: [...this.deaths.values()].map(clone), events: this.events.map(clone), eventsDropped: this.eventsDropped, eventSequence: this.eventSequence,
       pendingArrivals: this.pendingArrivals.map(clone), nextReinforcement: [...this.nextReinforcement], objectiveKeys: [...this.objectiveKeys],
-      intelligence: this.intel.serialize(), defeatSince: this.defeatSince, nextStrategicOrder: this.nextStrategicOrder, tacticCooldowns: [...this.tacticCooldowns], result: this.result ? clone(this.result) : null };
+      intelligence: this.intel.serialize(), defeatSince: this.defeatSince, criticalLosses: [...this.criticalLosses.values()].map(clone), routeRevision: this.routeRevision, nextStrategicOrder: this.nextStrategicOrder, tacticCooldowns: [...this.tacticCooldowns], result: this.result ? clone(this.result) : null };
   }
 
   static fromState(configuration, saved, callbacks = {}) {
@@ -754,6 +931,13 @@ export class BattleSimulation {
     const units = new Map(saved.units.map(unit => [unit.id, clone(unit)]));
     for (const [unitId, unit] of units) {
       const original = simulation.units.get(unitId);
+      if (unit.encounterState !== undefined) {
+        if (unit.actorType !== 'queen' || !unit.sourceBossType) fail('saved boss metadata belongs to a non-boss unit');
+        try { unit.encounterState = validateBossCombatState(unit.encounterState, { bossType: unit.sourceBossType, battleUnitId: unit.id, maxHp: unit.maxHp }); }
+        catch { fail('invalid saved boss combat metadata'); }
+      }
+      unit.incapacitated ??= false;
+      if (typeof unit.incapacitated !== 'boolean' || unit.incapacitated && (!alive(unit) || !['active', 'distant'].includes(unit.state))) fail('invalid saved incapacitation');
       for (const key of ['profileId', 'factionId', 'groupId', 'maxHp', 'uniqueId', 'officer', 'species', 'role', 'actorType', 'profileName', 'sourceBossId', 'sourceBossType', 'visualFidelity1to1Verified']) if (unit[key] !== original[key]) fail('save rewrites an allocated identity');
       if (!STATES.has(unit.state) || !number(unit.hp, 0, unit.maxHp) || !point(unit.position) || !number(unit.nextAttack, 0, saved.time + simulation.profiles.get(unit.profileId).attackInterval + simulation.step) || !number(unit.damageTaken, 0, 1e12)) fail('invalid saved unit state');
       if (original.state === 'dead' && unit.state !== 'dead') fail('saved checkpoint would revive an individual confirmed dead in this campaign');
@@ -763,6 +947,12 @@ export class BattleSimulation {
       if (unit.state === 'active') unit.state = 'distant';
     }
     for (const group of saved.groups) {
+      const expectedCoordination = simulation.factions.get(group.factionId)?.moraleModel === 'hive' && units.get(group.officerId)?.state === 'dead' ? .65 : 1;
+      group.coordinationStrength ??= expectedCoordination; group.reconstitution ??= null; group.supportsReconstitutionOf ??= null; group.lastReinforcementArrival ??= null; group.reinforcementDestination ??= null;
+      if (group.lastReinforcementArrival !== null && !number(group.lastReinforcementArrival, 0, saved.time) || group.reinforcementDestination !== null && !simulation.fronts.has(group.reinforcementDestination)) fail('invalid saved reinforcement destination');
+      if (group.coordinationStrength !== expectedCoordination || group.supportsReconstitutionOf !== null && (!simulation.groups.has(group.supportsReconstitutionOf) || group.supportsReconstitutionOf === group.id || simulation.groups.get(group.supportsReconstitutionOf).factionId !== group.factionId)) fail('invalid saved coordination/support');
+      const recovery = group.reconstitution;
+      if (recovery && (recovery.required && !['retreat', 'regroup'].includes(group.order?.type) || recovery.required && recovery.readyAt !== null || !recovery.required && recovery.readyAt === null || typeof recovery.required !== 'boolean' || !number(recovery.startedAt, 0, saved.time) || !simulation.fronts.has(recovery.returnFrontId) || !ORDERS.has(recovery.returnOrderType) || typeof recovery.autoReturn !== 'boolean' || !number(recovery.recoverySeconds, 0, 6 + simulation.step) || !number(recovery.nextSupportRequestAt, 0, saved.time + simulation.budgets.spawnInterval) || recovery.readyAt !== null && !number(recovery.readyAt, recovery.startedAt, saved.time) || recovery.supportArrivedAt !== undefined && !number(recovery.supportArrivedAt, recovery.startedAt, saved.time) || recovery.supportGroupId !== null && (!simulation.groups.has(recovery.supportGroupId) || recovery.supportGroupId === group.id || simulation.groups.get(recovery.supportGroupId).factionId !== group.factionId) || recovery.lastBlockedReason !== null && (typeof recovery.lastBlockedReason !== 'string' || recovery.lastBlockedReason.length > 120))) fail('invalid saved reconstitution');
       if (!Object.hasOwn(FORMATION_PROFILES, group.formation) || !number(group.cohesion, 0, 100) || ['rootUntil', 'suppressedUntil', 'officerThreatUntil', 'revealedUntil'].some(key => !number(group[key], 0, saved.time + 120)) || group.lastFormationImpact !== undefined && !number(group.lastFormationImpact, 0, saved.time) || group._formationImpacts && (Object.keys(group._formationImpacts).length > 128 || Object.entries(group._formationImpacts).some(([key, time]) => key.length > 256 || !number(time, 0, saved.time)))) fail('invalid saved formation state');
       const original = simulation.groups.get(group.id);
       if (group.factionId !== original.factionId || group.officerId !== original.officerId || group.reserveOriginId !== original.reserveOriginId || JSON.stringify(group.units) !== JSON.stringify(original.units) || !simulation.fronts.has(group.frontId) || !point(group.position) || !point(group.reportPosition) || !number(group.morale, 0, 100) || !ORDERS.has(group.order?.type) || !id(group.order.issuer) || !simulation.fronts.has(group.order.frontId) || !Array.isArray(group.path) || group.path.length > simulation.fronts.size || !number(group.travelProgress, 0, 1) || !number(group.detailRetryAt, 0, saved.time + 3) || !number(group.lastSeenAt, 0, saved.time) || !number(group.reportAge, 0, saved.time)) fail('invalid saved group');
@@ -788,7 +978,7 @@ export class BattleSimulation {
     })) fail('invalid death ledger');
     if ([...units.values()].filter(unit => unit.state === 'dead').length !== saved.deaths.length) fail('saved losses do not reconcile with the ledger');
     if (!Array.isArray(saved.relations) || saved.relations.length !== simulation.relations.size || new Set(saved.relations.map(([key]) => key)).size !== simulation.relations.size || saved.relations.some(([key, state]) => !simulation.relations.has(key) || !RELATIONS.has(state))) fail('invalid saved faction relationships');
-    if (!Array.isArray(saved.pendingArrivals) || new Set(saved.pendingArrivals.map(arrival => arrival.groupId)).size !== saved.pendingArrivals.length || saved.pendingArrivals.some(arrival => !simulation.groups.has(arrival.groupId) || !simulation.fronts.has(arrival.frontId) || !simulation.fronts.has(arrival.sourceId) || simulation.groups.get(arrival.groupId).factionId !== arrival.factionId || !number(arrival.due, saved.time, saved.time + simulation.budgets.announcementSeconds) || !simulation.groups.get(arrival.groupId).units.some(unitId => units.get(unitId).state === 'reserve'))) fail('invalid saved arrival');
+    if (!Array.isArray(saved.pendingArrivals) || new Set(saved.pendingArrivals.map(arrival => arrival.groupId)).size !== saved.pendingArrivals.length || saved.pendingArrivals.some(arrival => !simulation.groups.has(arrival.groupId) || !simulation.fronts.has(arrival.frontId) || !simulation.fronts.has(arrival.sourceId) || simulation.groups.get(arrival.groupId).factionId !== arrival.factionId || !number(arrival.due, saved.time, saved.time + simulation.budgets.announcementSeconds) || !simulation.groups.get(arrival.groupId).units.some(unitId => units.get(unitId).state === 'reserve') || arrival.supportForGroupId !== undefined && (!simulation.groups.has(arrival.supportForGroupId) || simulation.groups.get(arrival.supportForGroupId).factionId !== arrival.factionId))) fail('invalid saved arrival');
     if (!Array.isArray(saved.events) || saved.events.length > 512 || !Number.isInteger(saved.eventSequence) || saved.eventSequence < saved.events.length || !Number.isInteger(saved.eventsDropped) || saved.eventsDropped < 0 || saved.events.some(event => !Number.isInteger(event.id) || event.id < 1 || event.id > saved.eventSequence || !number(event.time, 0, saved.time) || !number(event.priority, 0, 4) || typeof event.type !== 'string' || event.type.length > 80) || new Set(saved.events.map(event => event.id)).size !== saved.events.length) fail('invalid bounded event journal');
     if (!Array.isArray(saved.nextReinforcement) || saved.nextReinforcement.length !== simulation.factions.size || saved.nextReinforcement.some(([factionId, time]) => !simulation.factions.has(factionId) || !number(time, 0, 1e9))) fail('invalid saved reinforcement timers');
     simulation.units = units; simulation.groups = new Map(saved.groups.map(group => [group.id, { ...clone(group), materialized: false, state: group.state === 'active' ? 'distant' : group.state }]));
@@ -797,6 +987,19 @@ export class BattleSimulation {
     simulation.events = saved.events.map(clone); simulation.eventsDropped = saved.eventsDropped; simulation.eventSequence = saved.eventSequence;
     simulation.pendingArrivals = saved.pendingArrivals.map(clone); simulation.nextReinforcement = new Map(saved.nextReinforcement);
     simulation.objectiveKeys = new Set(saved.objectiveKeys ?? []); simulation.defeatSince = saved.defeatSince; simulation.result = saved.result ? clone(saved.result) : null;
+    const criticalLosses = saved.criticalLosses ?? (saved.defeatSince === null ? [] : (configuration.objectives?.loseFronts ?? []).filter(frontId => simulation.relationship(simulation.fronts.get(frontId).owner, configuration.playerFaction) !== 'allied').map(frontId => ({ frontId, since: saved.defeatSince, deadline: saved.defeatSince + (configuration.objectives?.defeatWindow?.byFront?.[frontId]?.graceSeconds ?? configuration.objectives?.defeatGraceSeconds ?? 30) })));
+    const routeRevision = saved.routeRevision ?? 0;
+    if (!Number.isSafeInteger(routeRevision) || routeRevision < 0) fail('invalid saved route revision');
+    if (!Array.isArray(criticalLosses) || criticalLosses.length > simulation.fronts.size || new Set(criticalLosses.map(loss => loss?.frontId)).size !== criticalLosses.length) fail('invalid saved critical-front timer');
+    for (const loss of criticalLosses) {
+      if (!loss || !(configuration.objectives?.loseFronts ?? []).includes(loss.frontId)) fail('invalid saved critical-front timer');
+      loss.graceSeconds ??= loss.deadline - loss.since; loss.routeRevision ??= routeRevision; loss.unreachableFrontIds ??= [];
+      loss.returnTravelSeconds ??= configuration.objectives?.defeatWindow?.byFront?.[loss.frontId]?.returnTravelSeconds ?? null;
+      const minimum = configuration.objectives?.defeatWindow?.byFront?.[loss.frontId]?.graceSeconds ?? configuration.objectives?.defeatGraceSeconds ?? 30;
+      if (!number(loss.since, 0, saved.time) || !number(loss.deadline, loss.since + 1, loss.since + 7200) || !number(loss.graceSeconds, minimum, 7200) || !configuration.objectives?.defeatWindow && loss.graceSeconds !== minimum || Math.abs(loss.deadline - loss.since - loss.graceSeconds) > EPSILON || !Number.isInteger(loss.routeRevision) || loss.routeRevision < 0 || loss.routeRevision > routeRevision || !Array.isArray(loss.unreachableFrontIds) || loss.unreachableFrontIds.length > simulation.fronts.size || loss.unreachableFrontIds.some(frontId => !simulation.fronts.has(frontId)) || loss.returnTravelSeconds !== null && !number(loss.returnTravelSeconds, 0, loss.graceSeconds)) fail('invalid saved critical-front timer');
+    }
+    simulation.routeRevision = routeRevision;
+    simulation.criticalLosses = new Map(criticalLosses.map(loss => [loss.frontId, clone(loss)]));
     if (!number(saved.nextStrategicOrder, 0, 1e9) || !Array.isArray(saved.tacticCooldowns) || saved.tacticCooldowns.some(([type, time]) => !['pincer', 'hold_line', 'ambush', 'fallback'].includes(type) || !number(time, 0, 1e9))) fail('invalid saved tactics clock');
     simulation.nextStrategicOrder = saved.nextStrategicOrder; simulation.tacticCooldowns = new Map(saved.tacticCooldowns);
     simulation.time = saved.time; simulation.tick = saved.tick; simulation.accumulator = saved.accumulator;

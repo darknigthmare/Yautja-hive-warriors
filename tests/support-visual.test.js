@@ -1,3 +1,4 @@
+import { configureSupportFixture } from './helpers/finite-support-fixture.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
@@ -81,7 +82,7 @@ test('synthetic bisection retains its named pivots and material ownership', () =
 });
 
 test('vehicle turret and capsule hatch remain independently movable and cleanup owns every buffer', () => {
-  const scene = new THREE.Scene(), apc = new APCVehicle(scene, audio, null), pod = new DropPodEntrance(scene, audio, null);
+  const scene = new THREE.Scene(), apc = configureSupportFixture(new APCVehicle(scene, audio, null)), pod = new DropPodEntrance(scene, audio, null);
   apc.spawn(origin());
   assert.ok(apc.turretMesh.parent === apc.mesh);
   apc.turretMesh.rotation.y = 0.8;
@@ -122,7 +123,7 @@ test('detailed support squads and persistent equipment still follow gameplay lif
 });
 
 test('dropship keeps strike cancellation while replacing the box hull', () => {
-  const scene = new THREE.Scene(), ship = new CheyenneDropship(scene, audio, null);
+  const scene = new THREE.Scene(), ship = configureSupportFixture(new CheyenneDropship(scene, audio, null));
   ship.triggerAirstrike(origin(), { checkMeleeHits() {} });
   assert.ok(stats(ship.shipMesh).triangles > 3000);
   assert.equal(ship.pendingStrikes.length, 5);

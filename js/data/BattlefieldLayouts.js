@@ -1,6 +1,6 @@
 import { makeTacticalBridgeSpec } from '../entities/TacticalBridge.js';
 import { getBattlefieldMapVariant } from './BattlefieldMapVariants.js';
-import { variantSectorCenters, createStrategicRoutes } from './BattlefieldTopology.js';
+import { variantSectorCenters, createStrategicRoutes, normalizeBattlefieldSeed } from './BattlefieldTopology.js';
 /* Six connected combat sectors. Coordinates are in the game's world units. */
 const IDS = ['insertion', 'approach', 'relay', 'foundry', 'command', 'nest'];
 const CENTERS = [[0, 0], [0, -170], [170, -170], [170, -340], [0, -340], [0, -510]];
@@ -28,7 +28,8 @@ export const pointInBattlefieldRect = (position, bounds, inset = 0) => position.
 export function createBattlefieldLayout(level = {}) {
   const type = level.environmentType ?? 'forest';
   const variant = getBattlefieldMapVariant(level.mapId ?? level.auditMapId);
-  const sourceCenters = variant ? variantSectorCenters(variant) : CENTERS;
+  const mapSeed = normalizeBattlefieldSeed(level.mapSeed ?? 0);
+  const sourceCenters = variant ? variantSectorCenters(variant, mapSeed) : CENTERS;
   const ids = sourceCenters.map((_, index) => index === sourceCenters.length - 1 ? 'nest' : IDS[index] === 'nest' || index >= IDS.length ? `area-${index}` : IDS[index]);
   const corridorWidth = variant?.corridorWidth ?? 18;
   const orientation = { forest: 0, hive: 1, temple: 0, rooftop: 2, jungle: 3, station: 1 }[type] ?? 0;
@@ -78,7 +79,9 @@ export function createBattlefieldLayout(level = {}) {
   const bounds = { minX: Math.min(...sectors.map(sector => sector.bounds.minX)), maxX: Math.max(...sectors.map(sector => sector.bounds.maxX)), minZ: Math.min(...sectors.map(sector => sector.bounds.minZ)), maxZ: Math.max(...sectors.map(sector => sector.bounds.maxZ)) };
   const layout = { version: variant ? 2 : 1, id: `battlefield-${variant?.id ?? level.id ?? type}`, entrySectorId: ids[0], sectors, corridors, gates, bounds,
     dimensions: { width: bounds.maxX - bounds.minX, depth: bounds.maxZ - bounds.minZ }, sectorHalfSize: 66, corridorWidth,
-    strategicMode: level.strategicMode === true, ...(variant ? { variant, mapId: variant.id } : {}) };
+    strategicMode: level.strategicMode === true, mapSeed,
+    generation: { seed: mapSeed, algorithm: 'orthogonal-variable-spacing-v1', coordinates: 'original-game-units', insertionAnchorFixed: true },
+    ...(variant ? { variant, mapId: variant.id } : {}) };
   const strategic = createStrategicRoutes(layout);
   layout.strategicRoutes = strategic.routes; layout.frontAnchorIds = strategic.frontAnchorIds;
   layout.corridors.push(...strategic.tactical);

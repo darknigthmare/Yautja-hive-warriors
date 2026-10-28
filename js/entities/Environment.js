@@ -1,5 +1,6 @@
 import { WorldGeometryStreaming } from '../graphics/WorldGeometryStreaming.js';
 import { TacticalBridge } from './TacticalBridge.js';
+import { registerReferenceWalkSurface, referenceWalkElevation, referenceGroundElevation, referenceAccessWaypoint } from './ReferenceWalkSurfaces.js';
 import { BattlefieldNavigation } from '../engine/BattlefieldNavigation.js';
 import { traceCombatSegment, hasCombatLineOfSight } from '../engine/CombatGeometry.js';
 import { updateReferenceContacts, updateReferenceInterest } from '../graphics/ReferenceWorldContacts.js';
@@ -16,6 +17,7 @@ import { beveledBlockGeometry, buildDetailedForest, buildBiomeDetails, projectGr
 import { wornTrailGeometry, weatherGroundRing, naturalBoundaryGeometry, resinColumnGeometry, erodedObeliskGeometry } from '../graphics/EnvironmentSculpt.js';
 import { buildBattlefieldRelay } from '../graphics/BattlefieldRelay.js';
 import { buildBattlefieldSectorDetails, buildBattlefieldCorridorDetails } from '../graphics/BattlefieldSectorDetails.js';
+import { buildBattlefieldWayfinding } from '../graphics/BattlefieldWayfinding.js';
 
 export class EnvironmentManager extends ReferenceEnvironmentMechanisms {
   constructor(scene) {
@@ -37,7 +39,10 @@ export class EnvironmentManager extends ReferenceEnvironmentMechanisms {
     this.relayVisuals = new Map();
     this.corridorVisuals = new Map();
     this.tacticalBridges = new Map();
+    this.referenceWalkSurfaces = [];
+    this.routeCues = [];
     this.navigation = new BattlefieldNavigation(this);
+    this.agentMovementOrigins = new WeakMap();
   }
 
   clearEnvironment() {
@@ -57,6 +62,8 @@ export class EnvironmentManager extends ReferenceEnvironmentMechanisms {
     this.clearReferenceState();
     for (const bridge of this.tacticalBridges?.values() ?? []) bridge.dispose();
     this.tacticalBridges?.clear();
+    this.referenceWalkSurfaces.length = 0;
+    this.routeCues.length = 0;
     this.referenceTimers.length = 0; this.referenceTime = 0; this.referenceBatches = null; this.referenceContacts = []; this.referenceInterest = [];
     this.referenceOwnedRoots.clear(); this.referenceResourceRefs.clear();
     this.envObjects = []; this.colliders = [];
@@ -67,6 +74,7 @@ export class EnvironmentManager extends ReferenceEnvironmentMechanisms {
     this.relayVisuals = new Map(); this.corridorVisuals = new Map();
     this.activeSectorId = null; this._battlefieldRectsCache = null;
     this.navigation = new BattlefieldNavigation(this);
+    this.agentMovementOrigins = new WeakMap();
     this._referenceClearing = false;
   }
 
@@ -244,6 +252,7 @@ export class EnvironmentManager extends ReferenceEnvironmentMechanisms {
     this.referenceRoot = new THREE.Group(); this.referenceRoot.name = `reference-landmarks-${levelConfig.id}`;
     (this.sectorVisuals.get('insertion') ?? this.root).add(this.referenceRoot);
     buildReferenceLevelMechanisms(this, levelConfig);
+    this.routeCues = buildBattlefieldWayfinding(this);
     for (const object of this.referenceOwnedRoots.keys()) this.trackReferenceObject(object);
     this.updateBattlefieldVisibility([{ x: 0, z: 0 }]);
     // Reference builders may register their roots as well; only the owned arena
@@ -955,7 +964,20 @@ export class EnvironmentManager extends ReferenceEnvironmentMechanisms {
 
   // Lightweight local steering for existing seek-based AI. It slides around a
   // convex prop instead of continually walking into it; it is not a navmesh.
-  resolveAgentMovement(position, target, stepDistance, radius = 0.65) {
+  resolveAgentMovement(position, target, stepDistance, radius = 0.65, previousPosition = null) {
+    if (previousPosition?.isVector3) this.agentMovementOrigins.set(position, previousPosition.clone());
+    const currentY = position.y;
+    position.y = this.getElevationAt(position.x, position.z, currentY);
+    this.resolveAgentMovementXZ(position, target, stepDistance, radius);
+    position.y = this.getElevationAt(position.x, position.z, currentY);
+    // A layer transition can bring the capsule into a prop that was below its
+    // previous collision band (for example the lip of a recessed floor).
+    this.resolveMovement(position, radius);
+    this.agentMovementOrigins.set(position, position.clone());
+    return position;
+  }
+
+  resolveAgentMovementXZ(position, target, stepDistance, radius = 0.65) {
     const attemptX = position.x, attemptZ = position.z;
     let blocker = null;
     let closest = Infinity;
@@ -978,11 +1000,13 @@ export class EnvironmentManager extends ReferenceEnvironmentMechanisms {
         blocker = collider;
       }
     }
-    if (target && Number.isFinite(stepDistance) && stepDistance > 0 && (blocker || this.navigation.actorPaths.has(position))) {
+    if (target && Number.isFinite(stepDistance) && stepDistance > 0 && (blocker || this.acidTrenches.length || this.navigation.actorPaths.has(position) || referenceAccessWaypoint(this, position, target))) {
       // The seek caller has already advanced once toward its target. Recover
       // that origin, then consume this step along the persistent planned path.
       const direction = new THREE.Vector3(target.x - attemptX, 0, target.z - attemptZ).normalize();
-      position.set(attemptX - direction.x * stepDistance, position.y, attemptZ - direction.z * stepDistance);
+      const previous = this.agentMovementOrigins.get(position);
+      if (previous && Math.hypot(previous.x - attemptX, previous.z - attemptZ) <= Math.max(.2, stepDistance * 2.1) && Math.abs(previous.y - position.y) < 1) position.copy(previous);
+      else position.set(attemptX - direction.x * stepDistance, position.y, attemptZ - direction.z * stepDistance);
       this.resolveMovement(position, radius);
       const waypoint = this.getNavigationWaypoint(position, target, radius);
       if (waypoint && waypoint.distanceTo(position) > .05) {
@@ -1011,7 +1035,17 @@ export class EnvironmentManager extends ReferenceEnvironmentMechanisms {
       const height = bridge.elevationAt(x, z);
       if (height !== null) return !bridge.destroyed && Number.isFinite(currentY) && currentY + .65 < height ? -5 : height;
     }
-    return super.getElevationAt(x, z);
+    return referenceWalkElevation(this, x, z, currentY, super.getElevationAt(x, z));
+  }
+
+  getPlacementElevationAt(x, z) {
+    // Initial placement uses measured floors, not historical nominal heights
+    // attached to decorative rooftops without a traversable access route.
+    for (const bridge of this.tacticalBridges.values()) {
+      const height = bridge.elevationAt(x, z);
+      if (height !== null) return height;
+    }
+    return referenceWalkElevation(this, x, z, undefined, referenceGroundElevation(this, x, z));
   }
 
   resolveVerticalMovement(position, previousY, bodyHeight = 2.4) {
@@ -1020,6 +1054,9 @@ export class EnvironmentManager extends ReferenceEnvironmentMechanisms {
     let closest = null;
     for (const bridge of this.tacticalBridges.values()) {
       const hit = bridge.traceDeck(from, to); if (hit && (!closest || hit.distance < closest.distance)) closest = hit;
+    }
+    for (const surface of this.referenceWalkSurfaces) {
+      const hit = surface.collider.traceSegment(from, to); if (hit && (!closest || hit.distance < closest.distance)) closest = hit;
     }
     if (!closest) return { blocked: false };
     position.y = Math.min(position.y, closest.point.y - bodyHeight - .025);
@@ -1048,14 +1085,21 @@ export class EnvironmentManager extends ReferenceEnvironmentMechanisms {
     position.y = this.getElevationAt(position.x, position.z, position.y); return position;
   }
 
-  getNavigationWaypoint(position, target, radius = .65) { return this.navigation.waypoint(position, target, radius); }
+  registerReferenceWalkSurface(mesh, specification) { return registerReferenceWalkSurface(this, mesh, specification); }
+  getVerticalNavigationTarget(position, target) { return referenceAccessWaypoint(this, position, target); }
+  getNavigationWaypoint(position, target, radius = .65) {
+    const access = referenceAccessWaypoint(this, position, target);
+    this.navigation.usingVerticalAccess = !!access;
+    try { return this.navigation.waypoint(position, access ?? target, radius); }
+    finally { this.navigation.usingVerticalAccess = false; }
+  }
 
   traceSegment(from, to, options) { return traceCombatSegment(from, to, this.colliders, options); }
   hasLineOfSight(from, to, options) { return hasCombatLineOfSight(from, to, this.colliders, options); }
 
   // Resolve against the visible perimeter and only solid, waist-high props.
   // Called after movement by the game loop; y remains untouched for jump physics.
-  resolveMovement(position, radius = 0.75) {
+  resolveMovement(position, radius = 0.75, bodyHeight = 1.4) {
     const limit = this.halfSize - radius;
     if (!this.projectToBattlefield(position, radius)) {
       position.x = THREE.MathUtils.clamp(position.x, -limit, limit);
@@ -1067,10 +1111,10 @@ export class EnvironmentManager extends ReferenceEnvironmentMechanisms {
         // Moving mechanisms can supply their actual shape while retaining a
         // conservative outline for spawn clearance and local AI steering.
         if (typeof collider.resolveMovement === 'function') {
-          collider.resolveMovement(position, radius);
+          collider.resolveMovement(position, radius, bodyHeight);
           continue;
         }
-      if (position.y > (collider.baseY ?? 0) + collider.height + 0.2 || position.y + 1.4 < (collider.baseY ?? 0)) continue;
+      if (position.y > (collider.baseY ?? 0) + collider.height + 0.2 || position.y + bodyHeight < (collider.baseY ?? 0)) continue;
         const dx = position.x - collider.x, dz = position.z - collider.z;
         if (collider.halfWidth != null) {
           // Work in the prop's local space, including rounded outside corners.

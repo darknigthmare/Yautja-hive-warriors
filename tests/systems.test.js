@@ -1,3 +1,4 @@
+import { configureSupportFixture } from './helpers/finite-support-fixture.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
@@ -123,7 +124,7 @@ test('Offspring drains the actual plasma meter and never refills empty energy', 
 
 test('airstrike snapshots target position and cannot leak napalm into the next mission', () => {
   const scene = new THREE.Scene();
-  const ship = new CheyenneDropship(scene, audio);
+  const ship = configureSupportFixture(new CheyenneDropship(scene, audio));
   let hits = 0;
   const horde = { checkMeleeHits() { hits++; return []; } };
   const target = origin();

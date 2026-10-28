@@ -1,5 +1,7 @@
 /* Playable, explicitly original three-front preset. Coordinates and routes are
  * bound to the built level; no quoted figure/statue establishes a metric map. */
+import { calibrateDefeatWindow } from './BattleStrategy.js';
+
 const copy = value => JSON.parse(JSON.stringify(value));
 const routeLength = waypoints => waypoints.slice(1).reduce((sum, point, index) => sum + Math.hypot(point[0] - waypoints[index][0], point[1] - waypoints[index][1]), 0);
 function physicalWaypoints(layout, from, to) {
@@ -54,7 +56,7 @@ export function bindBattleOperationToLayout(configuration, layout) {
   result.context = { ...result.context, requiresSceneBinding: false, sceneBinding: 'adapted-built-level', visualFidelity1to1Verified: false };
   result.sceneBinding = { layoutId: layout.id, originalMapId: configuration.mapId ?? null, originalRoutes,
     originalGeographicProposalConstructed: false, frontSectorIds: indices.map(index => layout.sectors[index].id), usesPhysicalStrategicRoutes: Boolean(layout.strategicRoutes?.length) };
-  return result;
+  return calibrateDefeatWindow(result);
 }
 
 /** Returns a serializable configuration, not a running simulation. */
@@ -113,7 +115,7 @@ export function createBattlefieldOperation(layout, { levelId = 'unknown', mode =
   for (let index = 0; index < 5; index++) group('player_clan', index, 0, index === 4);
   for (let index = 0; index < 16; index++) group('hive', index, index < 4 ? 1 : 2, index >= 12);
   for (let index = 0; index < 12; index++) group('human_force', index, index < 4 || index >= 8 ? 1 : 2, index >= 8);
-  return {
+  return calibrateDefeatWindow({
     id: `three-fronts:${levelId}`, label: 'Bataille alternative à trois camps', mode, levelId,
     context: { era: 'alternative', works: ['Alien / Predator — scénario original'], continuities: ['original-game-scenario'],
       allowAdaptations: true, sourceLevelId: levelId, players, visualFidelity1to1Verified: false },
@@ -131,5 +133,5 @@ export function createBattlefieldOperation(layout, { levelId = 'unknown', mode =
       strategies: [{ id: 'control', conditions: [{ type: 'capture', frontId: fronts[1].id }, { type: 'capture', frontId: fronts[2].id }] },
         { id: 'isolate', conditions: [{ type: 'source_disabled', frontId: fronts[1].id }, { type: 'source_disabled', frontId: fronts[2].id }, { type: 'capture', frontId: fronts[2].id }] }] },
     designLimits: { originalScenario: true, legacySingleRouteFallback: !layout.strategicRoutes?.length, physicalUnitsCertified: false }
-  };
+  });
 }

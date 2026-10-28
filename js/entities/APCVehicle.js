@@ -5,6 +5,7 @@ import { createAPCModel } from '../graphics/SupportModels.js';
 import { APC_DEPLOYMENT_SECONDS, APC_NAVIGATION } from '../graphics/APCModel.js';
 import { disposeObject } from '../engine/SceneResources.js';
 import { traceCombatSegment } from '../engine/CombatGeometry.js';
+import { FiniteSupportPolicy, createSupportCombatant, supportDestroyedEvent } from '../engine/FiniteSupportPolicy.js';
 
 // Circle against the horizontal projection of an actor-height clipped part.
 function resolveCirclePolygon(point, radius, polygon) {
@@ -42,8 +43,10 @@ export class APCVehicle {
     this.fireCooldown = 0;
     this.targetPos = new THREE.Vector3();
     this.tracers = [];
-    this.hp = 2500;
     this.maxHp = 2500;
+    this.policy = new FiniteSupportPolicy('apc', { maxHp: this.maxHp, ammunition: { rounds: 48 } });
+    this.lastPosition = new THREE.Vector3();
+    this.combatant = createSupportCombatant(this, { kind: 'apc', radius: 3.1 });
     this.model = null;
     this.deployment = 0;
     this.recoil = 0;
@@ -51,16 +54,52 @@ export class APCVehicle {
     this.navigationRadius = APC_NAVIGATION.radius;
   }
 
+  get hp() { return this.policy.hp; }
+  beginMission(context) {
+    const answer = this.policy.beginMission(context);
+    if (answer.newMission) { this.clear(); this.fireCooldown = 0; }
+    else if (!answer.accepted) this.clear();
+    return answer;
+  }
+  isSupportActive() { return this.isActive && !!this.mesh && this.policy.available; }
+  getCombatant() { return this.isSupportActive() ? this.combatant : null; }
+  getSupportState() { return { ...this.policy.getState(), deployed: this.isSupportActive(), cooldown: this.fireCooldown }; }
+  takeDamage(amount, source) {
+    if (!this.isSupportActive()) return 0;
+    const dealt = this.policy.damage(amount);
+    if (dealt && this.hp === 0) { this.clear(); this.policy.context?.onDestroyed?.(supportDestroyedEvent('apc', source)); }
+    return dealt;
+  }
+  serialize() { return { version: 1, policy: this.policy.serialize(), deployed: this.isActive,
+    position: (this.mesh?.position ?? this.lastPosition).toArray(), rotation: this.mesh?.rotation.y ?? 0,
+    deployment: this.deployment, cooldown: this.fireCooldown }; }
+  restore(state) {
+    if (!state || state.version !== 1 || !Array.isArray(state.position) || state.position.length !== 3 || !state.position.every(Number.isFinite) ||
+      !Number.isFinite(state.rotation) || typeof state.deployed !== 'boolean' || !Number.isFinite(state.cooldown) || state.cooldown < 0 || state.cooldown > 1.1 ||
+      !Number.isFinite(state.deployment) || state.deployment < 0 || state.deployment > 1 || !this.policy.restore(state.policy)) return false;
+    const cooldown = Math.max(this.fireCooldown, state.cooldown); this.clear(); this.fireCooldown = cooldown;
+    this.lastPosition.fromArray(state.position);
+    if (state.deployed && this.policy.permission().accepted) {
+      this.spawn(this.lastPosition); this.mesh.rotation.y = state.rotation; this.deployment = state.deployment;
+      this.model.setTurretDeployment(this.deployment * this.deployment * (3 - 2 * this.deployment));
+    }
+    return true;
+  }
+
   getNavigationCollider() {
-    if (!this.isActive || !this.mesh) return null;
+    if (!this.isSupportActive()) return null;
     const center = new THREE.Vector3(0, 0, APC_NAVIGATION.centerZ).applyAxisAngle(new THREE.Vector3(0, 1, 0), this.mesh.rotation.y).add(this.mesh.position);
     return { x: center.x, z: center.z, halfWidth: APC_NAVIGATION.halfWidth, halfDepth: APC_NAVIGATION.halfDepth,
       height: APC_NAVIGATION.height, rotation: this.mesh.rotation.y, owner: 'apc',
+      isCollisionActive: () => this.isSupportActive(),
       traceSegment: (from, to, options) => this.traceSegment(from, to, options),
       resolveMovement: (position, radius, height) => this.resolveMovement(position, radius, height) };
   }
 
   spawn(pos) {
+    const permission = this.policy.permission();
+    if (!pos?.isVector3 || ![pos.x, pos.y, pos.z].every(Number.isFinite)) { this.policy.refuse('invalid'); return false; }
+    if (!permission.accepted) { this.policy.refuse(permission.reason); return false; }
     if (this.mesh) {
       disposeObject(this.mesh);
     }
@@ -71,19 +110,19 @@ export class APCVehicle {
     this.turretMesh = turret;
 
     group.position.copy(pos);
+    this.lastPosition.copy(pos);
     this.scene.add(group);
     this.mesh = group;
     this.isActive = true;
-    this.hp = this.maxHp;
-    this.fireCooldown = 0;
     this.deployment = 0;
     this.recoil = 0;
     this.weaponFlash = 0;
     model.setTurretDeployment(0);
+    return true;
   }
 
   traceSegment(from, to) {
-    if (!this.isActive || !this.mesh) return null;
+    if (!this.isSupportActive()) return null;
     const start = from?.isVector3 ? from : new THREE.Vector3(...from), end = to?.isVector3 ? to : new THREE.Vector3(...to);
     const nav = this.getNavigationCollider(); delete nav.traceSegment; delete nav.resolveMovement;
     nav.height = 6;
@@ -96,7 +135,8 @@ export class APCVehicle {
   }
 
   update(delta, horde, bosses = null) {
-    if (!this.isActive || !this.mesh || !Number.isFinite(delta) || delta <= 0) return;
+    if (this.isActive && !this.policy.permission().accepted) this.clear();
+    if (!this.isSupportActive() || !Number.isFinite(delta) || delta <= 0) return;
 
     this.fireCooldown = Math.max(0, this.fireCooldown - delta);
     this.deployment = Math.min(1, this.deployment + delta / APC_DEPLOYMENT_SECONDS);
@@ -124,18 +164,27 @@ export class APCVehicle {
     if (horde && horde.aliens) {
       horde.aliens.forEach(a => {
         if (!a?.mesh?.position || a.hp <= 0) return;
+        if (horde.battleSimulation && a.factionId && !horde.battleSimulation.areHostile(this.policy.context?.factionId ?? 'player_clan', a.factionId)) return;
         const d = this.mesh.position.distanceTo(a.mesh.position);
         if (d < 30) candidates.push({ alien: a, distance: d });
       });
     }
     const boss = bosses?.activeBoss;
-    if (boss?.mesh && boss.hp > 0 && this.mesh.position.distanceTo(boss.mesh.position) < 38) candidates.push({ alien: boss, distance: this.mesh.position.distanceTo(boss.mesh.position), boss: true });
+    if (boss?.mesh && boss.hp > 0 && (!bosses?.battleSimulation || !boss.factionId || bosses.battleSimulation.areHostile(this.policy.context?.factionId ?? 'player_clan', boss.factionId)) && this.mesh.position.distanceTo(boss.mesh.position) < 38) candidates.push({ alien: boss, distance: this.mesh.position.distanceTo(boss.mesh.position), boss: true });
     const priority = candidate => candidate.boss ? 2 : candidate.alien.isOfficer || ['praetorian', 'crusher'].includes(candidate.alien.type) ? 1 : 0;
     candidates.sort((a, b) => priority(b) - priority(a) || a.distance - b.distance);
     for (const { alien } of candidates) {
       this.targetPos.copy(alien.mesh.position);
       this.targetPos.y += alien.type === 'facehugger' ? 0.2 : 1.25;
-      if (this.model?.setTurretAim(this.targetPos)) { nearestTarget = alien; break; }
+      if (this.model?.setTurretAim(this.targetPos)) {
+        if (typeof this.policy.context?.canFireAt === 'function') {
+          this.mesh.updateMatrixWorld(true);
+          const muzzle = this.model.muzzleSockets.reduce((sum, socket) => sum.add(socket.getWorldPosition(new THREE.Vector3())), new THREE.Vector3()).multiplyScalar(1 / this.model.muzzleSockets.length);
+          let clear = false; try { clear = this.policy.context.canFireAt(muzzle, this.targetPos.clone()) === true; } catch { /* Unknown cover blocks the shot. */ }
+          if (!clear) continue;
+        }
+        nearestTarget = alien; break;
+      }
     }
     if (!nearestTarget && candidates.length) {
       const nearest = candidates[0].alien;
@@ -148,6 +197,7 @@ export class APCVehicle {
 
       // Fire twin 20mm autocannon bursts
       if (this.fireCooldown <= 0 && this.deployment >= 1) {
+        if (!this.policy.spend({ rounds: 2 }).accepted) return;
         this.fireCooldown = 1.1;
         this.recoil = 1;
         this.weaponFlash = 1;
@@ -165,13 +215,14 @@ export class APCVehicle {
 
         // Heavy suppressive fire damage
         if (nearestTarget === bosses?.activeBoss) {
-          bosses.takeDamage(240);
+          bosses.takeDamage(240, horde, { cause: 'apc-cannon', killerFaction: this.policy.context?.factionId ?? 'player_clan' });
         } else if (horde) {
           horde.checkMeleeHits({
             origin: nearestTarget.mesh.position,
             radius: 3.5,
             damage: 240,
-            type: 'heavy'
+            type: 'heavy',
+            killerFaction: this.policy.context?.factionId ?? 'player_clan'
           });
 
           this.particles?.emitSparks?.(nearestTarget.mesh.position, 12);
@@ -184,7 +235,7 @@ export class APCVehicle {
    * shoulders extend beyond the narrower door section; roof-height jumps do
    * not collide with an invisible full-height box around the whole vehicle. */
   resolveMovement(position, radius = 0.75, actorHeight = 3.8) {
-    if (!this.isActive || !this.mesh || !position?.isVector3 || !Number.isFinite(radius) || radius < 0 || !Number.isFinite(actorHeight) || actorHeight < 0) return position;
+    if (!this.isSupportActive() || !position?.isVector3 || !Number.isFinite(radius) || radius < 0 || !Number.isFinite(actorHeight) || actorHeight < 0) return position;
     const dxWorld = position.x - this.mesh.position.x, dzWorld = position.z - this.mesh.position.z;
     if (dxWorld * dxWorld + dzWorld * dzWorld > (this.navigationRadius + radius) ** 2) return position;
     const local = position.clone().sub(this.mesh.position).applyAxisAngle(new THREE.Vector3(0, 1, 0), -this.mesh.rotation.y);
@@ -220,16 +271,16 @@ export class APCVehicle {
     for (const tracer of this.tracers) disposeObject(tracer.mesh);
     this.tracers = [];
     if (this.mesh) {
+      this.lastPosition.copy(this.mesh.position);
       disposeObject(this.mesh);
       this.mesh = null;
       this.turretMesh = null;
-      this.isActive = false;
     }
+    this.isActive = false;
     this.model = null;
     this.deployment = 0;
     this.recoil = 0;
     this.weaponFlash = 0;
-    this.fireCooldown = 0;
   }
 
   spawnTracer(startPos, targetPos) {

@@ -28,7 +28,7 @@ export class BattleActorBridge {
   bind(simulation) {
     if (this.simulation || this.disposed) throw new Error('A battle projection can be bound only once');
     this.simulation = simulation;
-    const provider = () => [...new Set([this.game.player, this.game.player2, ...(this.game.horde.getActiveCombatants?.() ?? []), ...(this.game.operationWorld?.combatants ?? []), ...this.actors.values()].map(item => item?.actor ?? item).filter(Boolean))];
+    const provider = () => [...new Set([this.game.player, this.game.player2, ...(this.game.horde.getActiveCombatants?.() ?? []), ...(this.game.operationWorld?.combatants ?? []), ...(this.game.getSupportCombatants?.()??[]), ...this.actors.values()].map(item => item?.actor ?? item).filter(Boolean))];
     for (const manager of new Set(Object.values(this.managers))) {
       this.previous.set(manager, { battleSimulation: manager.battleSimulation, provider: manager.combatActorsProvider, director: manager.combatDirector, environment: manager.environment });
       manager.battleSimulation = simulation;manager.environment=this.game.env;
@@ -43,6 +43,7 @@ export class BattleActorBridge {
 
   spawnGroup(group, units) {
     if (this.disposed) return false;
+    const returningWoundedGroup=this.simulation.relationship(group.factionId,this.simulation.config.playerFaction)==='allied'&&units.some(unit=>unit.incapacitated&&this.game.allyRescue?.hasDowned(unit.id));
     const added = [];
     try {
       for (const unit of units) {
@@ -57,8 +58,9 @@ export class BattleActorBridge {
         this.actors.set(unit.id, entry); added.push(entry);
         this.game.env.resolveMovement(actor.mesh.position, actor.radius ?? 1);
         if(!actor.isFlying&&!actor._terrainFall)actor.mesh.position.y=this.game.env.getElevationAt?.(actor.mesh.position.x,actor.mesh.position.z)??actor.mesh.position.y;
+        this.game.allyRescue?.onMaterialize(actor);
         const minimum = this.simulation.budgets.spawnDistance;
-        if ([this.game.player, this.game.player2].some(player => player?.hp > 0 && Math.hypot(player.position.x-actor.mesh.position.x,player.position.z-actor.mesh.position.z)<minimum)) throw new Error('The physical spawn would breach player insertion distance');
+        if (!returningWoundedGroup&&[this.game.player, this.game.player2].some(player => player?.hp > 0 && Math.hypot(player.position.x-actor.mesh.position.x,player.position.z-actor.mesh.position.z)<minimum)) throw new Error('The physical spawn would breach player insertion distance');
       }
       return true;
     } catch (error) {
@@ -75,6 +77,7 @@ export class BattleActorBridge {
       if (!entry) continue;
       const snapshot = entry.manager.despawnBattleUnit(unit.id);
       if (snapshot) snapshots.push(snapshot);
+      this.game.allyRescue?.onDematerialize(unit.id,snapshot);
       this.actors.delete(unit.id);
     }
     return snapshots;
@@ -88,6 +91,7 @@ export class BattleActorBridge {
         entry.actor.battleOrderTarget = [...directive.targetPosition];
         entry.actor.battleFormationTarget=[...directive.targetPosition];
         entry.actor.battleOrder = directive.order;
+        entry.actor.coordinationStrength=directive.coordinationStrength??1;
       }
     }
     const unavailableGroups = new Set();
@@ -103,11 +107,12 @@ export class BattleActorBridge {
         else if (manager.defeatSynthetic) manager.defeatSynthetic(actor, details);
         else if (manager.defeatCombatant) manager.defeatCombatant(actor, details);
         else if (manager === this.game.bosses) manager.despawnBattleUnit(unitId);
+        if(actor.hp>0&&actor.isDowned){this.simulation.syncUnit(unitId,{hp:actor.hp,position:[actor.mesh.position.x,actor.mesh.position.z]});continue;}
         recordCombatDeath(manager, actor, details);
         this.simulation.recordDeath({ entityId: unitId, cause: 'detailed-combat', killerFaction: actor.lastDamageFaction });
         if (present) manager.despawnBattleUnit(unitId);
         this.actors.delete(unitId);
-      } else this.simulation.syncUnit(unitId, { hp: actor.hp, position: [actor.mesh.position.x, actor.mesh.position.z] });
+      } else this.simulation.syncUnit(unitId, { hp: actor.hp, position: [actor.mesh.position.x, actor.mesh.position.z],...(manager===this.game.bosses?{encounterState:manager.serializeCombatState?.()}: {}) });
     }
     for (const groupId of unavailableGroups) this.simulation.releaseGroupDetail?.(groupId, 'detailed-actor-unavailable');
   }
@@ -119,13 +124,13 @@ export class BattleActorBridge {
     // Synthetics have their own public hit API, already called by player skills.
     // Only human/clan units need this extension of the historical hive query.
     for (const { actor, manager } of [...this.actors.values()]) {
-      if (manager === this.game.horde || manager === this.game.synthetics || manager === this.game.bosses || actor.hp <= 0 ||
+      if ((attack.targetOnly&&actor!==attack.targetOnly) || manager === this.game.horde || manager === this.game.synthetics || manager === this.game.bosses || actor.hp <= 0 ||
           !this.simulation.areHostile(faction, actor.factionId) || actor.mesh.position.distanceTo(attack.origin) > attack.radius + (actor.radius ?? 1) ||
           this.game.env.hasLineOfSight?.(attack.origin.clone().add({x:0,y:1.2,z:0}),actor.mesh.position.clone().add({x:0,y:1.2,z:0})) === false) continue;
       const dealt=applyBattleFormationHit(manager,actor,attack);
       actor.hp = Math.max(0, actor.hp - dealt);
+      const event = actor.hp <= 0 ? manager.defeatCombatant(actor, { cause: attack.type ?? 'player-hit', killerFaction: faction }) : null;
       const killed = actor.hp <= 0;
-      const event = killed ? manager.defeatCombatant(actor, { cause: attack.type ?? 'player-hit', killerFaction: faction }) : null;
       hits.push({ pos: actor.mesh.position.clone(), damage: dealt, killed, event, isOfficer: actor.isOfficer === true });
     }
     return hits;

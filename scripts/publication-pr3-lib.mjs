@@ -6,11 +6,20 @@ import { dirname, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 export const REPO = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-export const QA = '/workspace/qa/pr3-20261026';
+export const RELEASE_PROFILES = Object.freeze({
+  'pr3-20261026': Object.freeze({ qaDirectory: '/workspace/qa/pr3-20261026', pins: 'docs/qa/pr3-publication-pins.json', qaReport: 'docs/qa/pr3-validation.json' }),
+  'pr3-next-20261028': Object.freeze({ qaDirectory: '/workspace/qa/pr3-next-20261028', pins: 'docs/qa/pr3-next-publication-pins.json', qaReport: 'docs/qa/pr3-next-validation.json' })
+});
+export function resolveReleaseProfile(name = process.env.YAUTJA_RELEASE_PROFILE ?? 'pr3-20261026') {
+  assert.ok(typeof name === 'string' && Object.hasOwn(RELEASE_PROFILES, name), 'Unknown YAUTJA_RELEASE_PROFILE; expected pr3-20261026 or pr3-next-20261028');
+  return { name, ...RELEASE_PROFILES[name] };
+}
+export const RELEASE = Object.freeze(resolveReleaseProfile());
+export const QA = RELEASE.qaDirectory;
 export const STAGE = QA + '/vercel-static-prebuilt';
 export const ORIGIN = 'https://yautja-hive-warriors.vercel.app';
 export const PROJECT = Object.freeze({ projectName: 'yautja-hive-warriors', projectId: 'prj_zA8CZlvC2NrLJFia0lVUFwUVuTZQ', orgId: 'team_VrIjq2UWV6VaHZr7DdQFwvfu', contextName: 'darknigthmares-projects' });
-export const DEFAULT_PINS = REPO + '/docs/qa/pr3-publication-pins.json';
+export const DEFAULT_PINS = REPO + '/' + RELEASE.pins;
 export const SHA = /^[a-f0-9]{64}$/;
 export const COMMIT = /^[a-f0-9]{40}$/;
 export const jsonFile = async path => JSON.parse(await readFile(path, 'utf8'));
@@ -37,7 +46,7 @@ export async function readPins(path = DEFAULT_PINS, frozen = true) {
   assert.equal(pins.origin, ORIGIN, 'Only the existing canonical project is authorized');
   assert.equal(pins.qaDirectory, QA); assert.equal(pins.stageDirectory, STAGE);
   assert.equal(pins.cliWrapper, QA + '/vercel-cli.sh');
-  assert.equal(pins.qaReport, 'docs/qa/pr3-validation.json');
+  assert.equal(pins.qaReport, RELEASE.qaReport);
   assert.match(pins.sourceCommit ?? '', COMMIT, 'Pin the reviewed source commit');
   for (const key of ['indexSha256', 'buildInfoSha256', 'sourceFingerprint']) assert.match(pins[key] ?? '', SHA, 'Missing reviewed pin: ' + key);
   assert.match(pins.previousPublicIndexSha256 ?? '', SHA, 'Pin the previously public index');

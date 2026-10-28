@@ -190,6 +190,8 @@
       <div class="operation-setup">
         <label>Déroulement<select id="mission-mode-select"><option value="hunt">Chasse : six secteurs, portes et boss final</option><option value="fronts">Guerre : trois fronts, réserves finies et ordres</option><option value="survival">Survie infinie : vagues sans victoire finale</option></select></label>
         <label id="operation-select-label" class="hidden">Opération originale<select id="operation-select"><option value="pilot">Trois fronts — terrain sélectionné</option></select></label>
+        <label id="operation-difficulty-label" class="hidden">Style du commandement adverse<select id="operation-difficulty-select"><option value="cautious">Prudent — consolide et se replie</option><option value="standard" selected>Équilibré</option><option value="aggressive">Offensif — prend davantage de risques</option></select></label>
+        <label id="operation-layout-label" class="hidden">Disposition du terrain<select id="operation-layout-select"><option value="0">Tracé initial</option><option value="1">Tracé alternatif A</option><option value="2">Tracé alternatif B</option></select></label>
         <label id="campaign-arc-label" class="hidden"><span><input id="campaign-arc-enabled" type="checkbox"> Lier AFF-01 à AFF-05 dans l’arc original « Conflits de clans »</span></label>
         <p id="campaign-arc-debrief" class="operation-provenance"></p>
         <button id="btn-reset-campaign-arc" class="btn-secondary">RÉINITIALISER UNIQUEMENT CET ARC</button>
@@ -419,7 +421,9 @@
       </div>
 
       <p id="tactical-world-prompt" class="tactical-world-prompt hidden" role="status"></p>
+      <p id="ally-rescue-prompt" class="ally-rescue-prompt hidden" role="status"></p>
       <nav id="hud-combat-controls" aria-label="Actions de combat"><span id="hud-active-weapon">LAMES DE POIGNET</span><button id="btn-hud-weapons" type="button">ARMES · TAB</button><button id="btn-hud-map" type="button">CARTE · ²</button><button id="btn-hud-details" type="button">TÉLÉMÉTRIE</button></nav>
+      <div id="hud-support-status" class="hud-support-status" aria-label="État des appuis"></div>
 
       <!-- DYNASTY WARRIORS / MUSOU 1:1 OFFICER DEFEATED BANNER -->
       <div id="officer-defeated-banner" class="musou-officer-banner hidden">
@@ -856,52 +860,52 @@
 
       <div id="bone-mask-prompt" class="apc-mount-box hidden">
         <div class="apc-key">[ E ]</div>
-        <div class="apc-text">MASQUE D'OS DU FERAL (PREY 2022) // ARMER LE PIÈGE DE GUIDAGE LASER SUR LA TOURBIÈRE (1500 DMG RÉFLÉCHIS)</div>
+        <div class="apc-text">MASQUE D'OS DU FERAL (PREY) // GUIDAGE DU PIÈGE PENDANT 16 S — AUCUN DÉGÂT INSTANTANÉ</div>
       </div>
 
       <div id="orange-flower-prompt" class="apc-mount-box hidden">
         <div class="apc-key">[ E ]</div>
-        <div class="apc-text">FLEURS D'ORANGE SARISKA (PREY 2022) // INGÉRER L'ÉLIXIR (TEMPÉRATURE 0°C, FURTIVITÉ THERMIQUE 35S)</div>
+        <div class="apc-text">FLEURS ORANGE (PREY) // RÉDUIRE LA SIGNATURE THERMIQUE PENDANT 35 S</div>
       </div>
 
       <div id="adolini-pistol-prompt" class="apc-mount-box hidden">
         <div class="apc-key">[ E ]</div>
-        <div class="apc-text">PISTOLET À SILEX DE RAPHAEL ADOLINI 1715 (PREY 2022) // TIR DE POUDRE NOIRE PERFORANT (1200 DMG)</div>
+        <div class="apc-text">PISTOLET ADOLINI 1715 (PREY) // UN TIR VISÉ — PORTÉE 28 M, 1200 DÉGÂTS MAXIMUM, ARRÊTÉ PAR LES OBSTACLES</div>
       </div>
 
       <div id="taabe-bow-prompt" class="apc-mount-box hidden">
         <div class="apc-key">[ E ]</div>
-        <div class="apc-text">ARC DE GUERRE DE TAABE (PREY 2022) // FLÈCHES SILENCIEUSES & VÉLOCITÉ COMANCHE +30% (+6 DISCS)</div>
+        <div class="apc-text">ARC DE TAABE (PREY) // +6 FLÈCHES (MAX. 12) · MOBILITÉ +30% PENDANT 25 S — MODE ADAPTÉ</div>
       </div>
 
       <div id="grizzly-trophy-prompt" class="apc-mount-box hidden">
         <div class="apc-key">[ E ]</div>
-        <div class="apc-text">GRIZZLY TERRASSÉ (PREY 2022) // ÉCORCHER LA FOURRURE & ÉPANCHER LE SANG VERT (+150 BOUCLIER)</div>
+        <div class="apc-text">GRIZZLY TERRASSÉ (PREY) // RÉCUPÉRATION : +150 PV</div>
       </div>
 
       <div id="naru-tomahawk-prompt" class="apc-mount-box hidden">
         <div class="apc-key">[ E ]</div>
-        <div class="apc-text">HACHETTE À RAPPEL DE NARU (PREY 2022) // RÉCUPÉRER LA TOMAHAWK (+4 CHARGES, +1800 SCORE)</div>
+        <div class="apc-text">HACHETTE DE NARU (PREY) // QUATRE FRAPPES DE MÊLÉE (MAX. 4) — MODE ADAPTÉ</div>
       </div>
 
       <div id="trapper-med-prompt" class="apc-mount-box hidden">
         <div class="apc-key">[ E ]</div>
-        <div class="apc-text">CAMP MÉDICAL DES TRAPPEURS (PREY 2022) // PILLER LES SOINS & ÉTHER (+85 PV, +3 TROUSSES MEDICOMP)</div>
+        <div class="apc-text">CAMP MÉDICAL DES TRAPPEURS (PREY) // +85 PV · +3 MEDICOMPS (MAX. 6), SI VOTRE ARSENAL LES AUTORISE</div>
       </div>
 
       <div id="feral-arsenal-prompt" class="apc-mount-box hidden">
         <div class="apc-key">[ E ]</div>
-        <div class="apc-text">ARSENAL ARCHAÏQUE DU FERAL (PREY 2022) // LANCE D'OBSIDIENNE & BOUCLIER D'OS (+2500 HONNEUR, PLASMA 100%)</div>
+        <div class="apc-text">ARSENAL DU FERAL (PREY) // +6 BOULONS (MAX. 12) · +100 PV</div>
       </div>
 
       <div id="sarii-companion-prompt" class="apc-mount-box hidden">
         <div class="apc-key">[ E ]</div>
-        <div class="apc-text">CHIENNE DE GUERRE SARII (PREY 2022) // RECRUTER LA COMPAGNONNE LOYALE (+4 DISCS, +2 MEDICOMP, ALLIÉE DE CHASSE)</div>
+        <div class="apc-text">SARII (PREY) // RECRUTER, PUIS [E] : SUIVRE, ATTENDRE, PROTÉGER OU SE REPLIER — AUCUN BUTIN</div>
       </div>
 
       <div id="trapper-bait-prompt" class="apc-mount-box hidden">
         <div class="apc-key">[ E ]</div>
-        <div class="apc-text">ARBRE D'APPÂT DES TRAPPEURS (PREY 2022) // METTRE À FEU LES BARILS DE POUDRE (750 DMG & BARRAGE DE FLAMMES 16M)</div>
+        <div class="apc-text">POUDRE DES TRAPPEURS (PREY) // SOUFFLE : 750 DÉGÂTS SUR 16 M · FEU : 110 PV/S SUR 8,5 M PENDANT 18 S</div>
       </div>
 
       <div id="voyageur-raft-prompt" class="apc-mount-box hidden">
@@ -921,7 +925,7 @@
 
       <div id="trapper-spit-prompt" class="apc-mount-box hidden">
         <div class="apc-key">[ E ]</div>
-        <div class="apc-text">CAMPEMENT DES COUREURS DES BOIS (PREY 2022) // RENVERSER LE CHAUDRON D'HUILE BOUILLANTE (500 DMG FEU, +75 PV)</div>
+        <div class="apc-text">CHAUDRON DES TRAPPEURS (PREY) // 500 DÉGÂTS SUR 7,5 M · +75 PV</div>
       </div>
 
       <div id="buffalo-cairn-prompt" class="apc-mount-box hidden">

@@ -1,3 +1,4 @@
+import { configureSupportFixture } from './helpers/finite-support-fixture.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
@@ -39,7 +40,7 @@ test('custom physics must provide a physical ray test; its broad navigation enve
 });
 
 test('APC rays hit its actual hull, follow stowed parts and allow empty space inside its conservative outline', () => {
-  const apc = new APCVehicle(new THREE.Scene(), null, null); apc.spawn(new THREE.Vector3());
+  const apc = configureSupportFixture(new APCVehicle(new THREE.Scene(), null, null)); apc.spawn(new THREE.Vector3());
   const collider = apc.getNavigationCollider();
   assert.ok(traceCombatSegment(vec(-10, 1), vec(10, 1), [collider]));
   assert.equal(traceCombatSegment(vec(-10, 5), vec(10, 5), [collider]), null);

@@ -4,9 +4,22 @@
 import * as THREE from 'three';
 
 const distance = (a, b) => Math.hypot(a.x - b.x, a.z - b.z);
-function active(c) { return c.blocksNavigation !== false && c.enabled !== false && c.solid !== false && (!c.isCollisionActive || c.isCollisionActive()); }
+function trenchAt(point, trench, margin = 0) {
+  return point.x >= trench.minX - margin && point.x <= trench.maxX + margin && point.z >= trench.minZ - margin && point.z <= trench.maxZ + margin &&
+    !(trench.bridges ?? []).some(bridge => point.x >= bridge.minX + margin && point.x <= bridge.maxX - margin && point.z >= bridge.minZ - margin && point.z <= bridge.maxZ + margin);
+}
+function segmentRectangle(from, to, minX, maxX, minZ, maxZ) {
+  let low = 0, high = 1;
+  for (const [origin, delta, min, max] of [[from.x, to.x - from.x, minX, maxX], [from.z, to.z - from.z, minZ, maxZ]]) {
+    if (Math.abs(delta) < 1e-9) { if (origin < min || origin > max) return false; }
+    else { const a = (min - origin) / delta, b = (max - origin) / delta; low = Math.max(low, Math.min(a, b)); high = Math.min(high, Math.max(a, b)); }
+  }
+  return low < high - 1e-7 && high > 1e-7 && low < 1 - 1e-7;
+}
+function active(c, point) { return c.blocksNavigation !== false && c.enabled !== false && c.solid !== false && (!c.isCollisionActive || c.isCollisionActive()) && (!point || !c.isNavigationActive || c.isNavigationActive(point)); }
 function intersects(point, collider, radius) {
-  if (!active(collider) || point.y > (collider.baseY ?? 0) + collider.height + .2 || point.y + 1.4 < (collider.baseY ?? 0)) return false;
+  if (!active(collider, point) || point.y > (collider.baseY ?? 0) + collider.height + .2 || point.y + 1.4 < (collider.baseY ?? 0)) return false;
+  if (collider.navigationTest) return collider.navigationTest(point, radius);
   const dx = point.x - collider.x, dz = point.z - collider.z;
   if (collider.halfWidth == null) return Math.hypot(dx, dz) < collider.radius + radius;
   const cos = Math.cos(collider.rotation ?? 0), sin = Math.sin(collider.rotation ?? 0);
@@ -14,10 +27,25 @@ function intersects(point, collider, radius) {
   return Math.hypot(x - THREE.MathUtils.clamp(x, -collider.halfWidth, collider.halfWidth), z - THREE.MathUtils.clamp(z, -collider.halfDepth, collider.halfDepth)) < radius;
 }
 function clearSegment(environment, from, to, radius) {
+  for (const trench of environment.acidTrenches ?? []) {
+    if (from.y > .65 || trenchAt(from, trench)) continue;
+    if (trench.maxX + radius < Math.min(from.x, to.x) || trench.minX - radius > Math.max(from.x, to.x) || trench.maxZ + radius < Math.min(from.z, to.z) || trench.minZ - radius > Math.max(from.z, to.z)) continue;
+    let cursor = trench.minX - radius;
+    for (const bridge of [...trench.bridges].sort((a, b) => a.minX - b.minX)) {
+      if (segmentRectangle(from, to, cursor, bridge.minX + radius, trench.minZ - radius, trench.maxZ + radius)) return false;
+      cursor = Math.max(cursor, bridge.maxX - radius);
+    }
+    if (segmentRectangle(from, to, cursor, trench.maxX + radius, trench.minZ - radius, trench.maxZ + radius)) return false;
+  }
   for (const c of environment.colliders) {
-    if (!active(c) || from.y > (c.baseY ?? 0) + c.height + .2 || from.y + 1.4 < (c.baseY ?? 0)) continue;
+    if (!active(c, from) || from.y > (c.baseY ?? 0) + c.height + .2 || from.y + 1.4 < (c.baseY ?? 0)) continue;
     const extent = (c.radius ?? Math.hypot(c.halfWidth, c.halfDepth)) + radius;
     if (c.x + extent < Math.min(from.x, to.x) || c.x - extent > Math.max(from.x, to.x) || c.z + extent < Math.min(from.z, to.z) || c.z - extent > Math.max(from.z, to.z)) continue;
+    if (c.navigationTest) {
+      const steps = Math.max(1, Math.ceil(distance(from, to) / .5));
+      for (let i = 0; i <= steps; i++) if (c.navigationTest(new THREE.Vector3(THREE.MathUtils.lerp(from.x, to.x, i / steps), from.y, THREE.MathUtils.lerp(from.z, to.z, i / steps)), radius)) return false;
+      continue;
+    }
     if (c.halfWidth == null) {
       const dx = to.x - from.x, dz = to.z - from.z, lengthSq = dx * dx + dz * dz;
       const t = lengthSq ? THREE.MathUtils.clamp(((c.x - from.x) * dx + (c.z - from.z) * dz) / lengthSq, 0, 1) : 0;
@@ -109,7 +137,7 @@ export class BattlefieldNavigation {
     if (!room || environment.getSectorAt(target)?.id !== room.id) return [target.clone()];
     const step = 3, b = room.bounds, width = Math.floor((b.maxX - b.minX - 2) / step) + 1;
     const depth = Math.floor((b.maxZ - b.minZ - 2) / step) + 1;
-    const key = `${room.id}/${Math.ceil(radius * 10)}/${Math.round(from.y)}/${environment.openGates.size}`;
+    const key = `${room.id}/${Math.ceil(radius * 10)}/${from.y.toFixed(3)}/${environment.openGates.size}/${this.usingVerticalAccess ? 1 : 0}`;
     let grid = this.gridCache.get(key);
     if (!grid) {
       const clear = new Uint8Array(width * depth), candidates = environment.colliders.filter(c => {
@@ -118,9 +146,11 @@ export class BattlefieldNavigation {
       });
       for (let z = 0; z < depth; z++) for (let x = 0; x < width; x++) {
         const point = new THREE.Vector3(b.minX + 1 + x * step, from.y, b.minZ + 1 + z * step);
-        clear[z * width + x] = candidates.some(c => intersects(point, c, radius + .12)) ? 0 : 1;
+        const unsafeFloor = from.y <= .65 && (environment.acidTrenches ?? []).some(trench => trenchAt(point, trench, radius + .12));
+        clear[z * width + x] = unsafeFloor || candidates.some(c => intersects(point, c, radius + .12)) ? 0 : 1;
       }
       grid = { clear }; this.gridCache.set(key, grid);
+      if (this.gridCache.size > 32) this.gridCache.delete(this.gridCache.keys().next().value);
     }
     const pointAt = id => new THREE.Vector3(b.minX + 1 + id % width * step, from.y, b.minZ + 1 + Math.floor(id / width) * step);
     const nearest = point => {
@@ -171,7 +201,7 @@ export class BattlefieldNavigation {
       }
     }
     if (clearSegment(environment, from, goal, radius)) { this.actorPaths.delete(from); return goal.clone(); }
-    const signature = `${Math.round(goal.x)},${Math.round(goal.z)},${Math.round(from.y)},${environment.openGates.size}`;
+    const signature = `${Math.round(goal.x)},${Math.round(goal.z)},${Math.round(from.y)},${environment.openGates.size},${this.usingVerticalAccess ? 1 : 0}`;
     let cached = this.actorPaths.get(from);
     if (!cached || cached.signature !== signature || !cached.points.length) {
       cached = { signature, points: this.localPath(from, goal, radius) }; this.actorPaths.set(from, cached);

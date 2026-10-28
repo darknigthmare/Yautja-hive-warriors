@@ -5,9 +5,12 @@ export function disposeBattleOperation(game) {
   const simulation=game.battleSimulation, bridge=game.battleBridge;
   try { simulation?.dispose(); }
   finally {
+    game.allyRescue?.dispose();game.allyRescue=null;
+    game.bossPhasePressure?.dispose();game.bossPhasePressure=null;
     bridge?.dispose();
     game.operationObjectives?.dispose();game.operationWorld?.dispose();
     game.battleSimulation=null;game.battleBridge=null;game.operationObjectives=null;game.operationWorld=null;
     game.operationPanel?.update(null);game.ui?.updateOperationHUD?.(null);
+    globalThis.document?.getElementById('ally-rescue-prompt')?.classList.add('hidden');
   }
 }

@@ -24,6 +24,10 @@ export class BattleIntel {
     const officer = sim.units.get(value.officerId), faction = sim.factions.get(value.factionId);
     return { id: value.id, label: value.label, factionId: value.factionId, frontId: value.frontId, position: [...value.position],
       alive: value.units.filter(id => living(sim.units.get(id))).length,
+      incapacitated: value.units.filter(id => living(sim.units.get(id)) && sim.units.get(id).incapacitated).length,
+      combatReady: value.units.filter(id => living(sim.units.get(id)) && !sim.units.get(id).incapacitated).length,
+      coordinationStrength: value.coordinationStrength ?? 1,
+      reconstitution: value.reconstitution ? { required: value.reconstitution.required, recoverySeconds: value.reconstitution.recoverySeconds, readyAt: value.reconstitution.readyAt } : null,
       officerId: value.officerId, officerHP: officer?.hp ?? null, officerMaxHP: officer?.maxHp ?? null,
       morale: value.morale, moraleModel: faction.moraleModel, cohesion: value.cohesion,
       state: value.state, order: copy(value.order), delegated: value.delegated };
@@ -50,10 +54,12 @@ export class BattleIntel {
     if (sim.paused || sim.disposed) return;
     for (const [key, report] of this.pending) if (report.receivedAt <= sim.time) { this._deliver(report, sim.time); this.pending.delete(key); }
     const players = sim.players.filter(player => player.hp > 0), direct = value => players.some(player => distance(player.position, value.position) <= this.options.visionRadius && sim.callbacks.canObserve?.(value, player) !== false);
-    const observers = [...sim.groups.values()].filter(group => sim.relationship(group.factionId, sim.config.playerFaction) === 'allied' && group.units.some(id => living(sim.units.get(id)) && sim.units.get(id).state !== 'reserve'));
+    const observers = [...sim.groups.values()].filter(group => sim.relationship(group.factionId, sim.config.playerFaction) === 'allied' && group.units.some(id => living(sim.units.get(id)) && !sim.units.get(id).incapacitated && sim.units.get(id).state !== 'reserve'));
+    const observersByFront = new Map();
+    for (const observer of observers) { if (!observersByFront.has(observer.frontId)) observersByFront.set(observer.frontId, []); observersByFront.get(observer.frontId).push(observer); }
     for (const front of sim.fronts.values()) {
       if (direct(front)) this._observe('front', front, 'player_sight', sim.time, false);
-      else if (observers.some(observer => observer.frontId === front.id && distance(observer.position, front.position) <= front.radius)) this._radio('front', front, 'garrison_report');
+      else if ((observersByFront.get(front.id) ?? []).some(observer => distance(observer.position, front.position) <= front.radius)) this._radio('front', front, 'garrison_report');
     }
     for (const group of sim.groups.values()) {
       const own = sim.relationship(group.factionId, sim.config.playerFaction) === 'allied';
@@ -61,7 +67,7 @@ export class BattleIntel {
       if ((group.revealedUntil ?? 0) > sim.time) this._observe('group', group, 'recon', sim.time, false);
       else if (deployed && direct(group)) this._observe('group', group, 'player_sight', sim.time, false);
       else if (own) this._radio('group', group, 'squad_report');
-      else if (deployed && observers.some(observer => observer.frontId === group.frontId && distance(observer.position, group.position) <= this.options.visionRadius && sim.callbacks.canObserve?.(group, observer) !== false)) this._radio('group', group, 'allied_scout');
+      else if (deployed && (observersByFront.get(group.frontId) ?? []).some(observer => distance(observer.position, group.position) <= this.options.visionRadius && sim.callbacks.canObserve?.(group, observer) !== false)) this._radio('group', group, 'allied_scout');
     }
   }
 
@@ -94,6 +100,7 @@ export class BattleIntel {
       order: allied ? raw.order : { type: 'unknown', frontId: report.snapshot.frontId, issuer: 'unknown' },
       targetPosition: allied ? raw.targetPosition : [...report.snapshot.position], path: allied ? raw.path : [],
       units: allied ? raw.units : [], tactic: allied ? raw.tactic : null,
+      reconstitution: allied ? raw.reconstitution : report.snapshot.reconstitution ?? null,
       rootUntil: known.precisePositionKnown ? raw.rootUntil : 0, suppressedUntil: known.precisePositionKnown ? raw.suppressedUntil : 0,
       officerThreatUntil: allied ? raw.officerThreatUntil : 0 };
   }
