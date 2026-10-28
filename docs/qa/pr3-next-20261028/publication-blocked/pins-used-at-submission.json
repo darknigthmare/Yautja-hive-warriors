@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "status": "frozen",
+  "sourceCommit": "5089228a12ac2985ef03e72782fd29e8687f6b33",
+  "sourceFingerprint": "6958b3dfe9552d85fc8ce08c86acfe5e4cf5188808656b707a548376997cddfe",
+  "indexSha256": "643b94f665f1eb3057d35e74b8313968683372f709fdeed671b0c1045b66db0d",
+  "buildInfoSha256": "e0553896eeeb4c21b3b8eb392dc08b270926974ff3efed57c9733617416af50a",
+  "previousPublicIndexSha256": "124d7735003c245bc60814e6004c35ace77bd4011b31d448a6aa6c4c41dad185",
+  "artifactManifestSha256": "34677f79fea4e54db46aa48a692f590688cef6288923c403ac66a3d58037676d",
+  "outputConfigSha256": "fff4229af49c3a7397bd4aed332a50e94f7856a0366cfab2c2e2478a779b409b",
+  "projectLinkSha256": "77454d4ed9af5d8736994c6061dadc515966445cabaa602b75ee4482fffb8505",
+  "qaReportSha256": "61652b3cacf19edff4064c7a80c2760f2795530d5100cf8ff0ba68210574d3f8",
+  "cpuPassed": 833,
+  "browserRegressionPassed": 8,
+  "expectedRuntimeChecks": [
+    "eleven_map_victory_routes",
+    "la_helipad_physical_exit",
+    "scene-seed-difficulty-checkpoint",
+    "allocated-ally-three-second-rescue",
+    "finite-support-roof-refusal-destruction",
+    "prey-tools-real-pickups-first-arrow",
+    "ten_restarts_after_twenty_warmups",
+    "shared_imported_textures_resident",
+    "frozen_dist_and_source"
+  ],
+  "origin": "https://yautja-hive-warriors.vercel.app",
+  "qaDirectory": "/workspace/qa/pr3-next-20261028",
+  "stageDirectory": "/workspace/qa/pr3-next-20261028/vercel-static-prebuilt",
+  "cliWrapper": "/workspace/qa/pr3-next-20261028/vercel-cli.sh",
+  "qaReport": "docs/qa/pr3-next-validation.json"
+}

@@ -1,0 +1,38 @@
+{
+  "status": "stopped_before_further_remote_actions",
+  "releaseProfile": "pr3-next-20261028",
+  "startedAt": "2026-10-28T11:04:11.445Z",
+  "sourceCommit": "5089228a12ac2985ef03e72782fd29e8687f6b33",
+  "index_sha256": "643b94f665f1eb3057d35e74b8313968683372f709fdeed671b0c1045b66db0d",
+  "build_info_sha256": "e0553896eeeb4c21b3b8eb392dc08b270926974ff3efed57c9733617416af50a",
+  "stage": "/workspace/qa/pr3-next-20261028/vercel-static-prebuilt",
+  "promotion_executed": false,
+  "deployment_id": null,
+  "submission_attempted": true,
+  "remoteActionsExecuted": true,
+  "other_projects_changed": false,
+  "billing_changed": false,
+  "globalQa": {
+    "passed": true,
+    "cpuPassed": 833,
+    "regressionPassed": 8,
+    "runtimeChecksPassed": 9,
+    "path": "/workspace/Yautja-next-20261028/docs/qa/pr3-next-validation.json",
+    "sha256": "61652b3cacf19edff4064c7a80c2760f2795530d5100cf8ff0ba68210574d3f8"
+  },
+  "sourceCommitIsAncestorOfRelease": true,
+  "localFilesVerified": 30,
+  "localModelsVerified": 12,
+  "localBundlesVerified": 5,
+  "canonical_before": {
+    "http": 200,
+    "sha256": "124d7735003c245bc60814e6004c35ace77bd4011b31d448a6aa6c4c41dad185",
+    "checkedAt": "2026-10-28T11:04:12.708Z"
+  },
+  "updatedAt": "2026-10-28T11:04:16.449Z",
+  "submissionEvidence": [
+    "/workspace/qa/pr3-next-20261028/publication-2026-10-28T11-04-11-445Z-submission.stdout",
+    "/workspace/qa/pr3-next-20261028/publication-2026-10-28T11-04-11-445Z-submission.log"
+  ],
+  "error": "Resource is limited - try again in 24 hours (more than 100, code: \"api-deployments-free-per-day\")."
+}

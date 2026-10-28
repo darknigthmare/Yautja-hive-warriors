@@ -181,5 +181,65 @@
     "requires_environment_settings_publication": true,
     "proof": "docs/qa/pr3-next-20261028/cloud-setup/draft-save.json",
     "fresh_task_restore_verified": false
-  }
+  },
+  "publication": {
+    "status": "blocked_daily_quota",
+    "quotaCode": "api-deployments-free-per-day",
+    "serviceMessage": "Resource is limited - try again in 24 hours (more than 100, code: \"api-deployments-free-per-day\").",
+    "productionCandidate": null,
+    "promotion": false,
+    "ready": false,
+    "submissionAttempted": true,
+    "automaticRetry": false,
+    "blockedAt": "2026-10-28T11:04:16.449Z",
+    "proof": "docs/qa/pr3-next-20261028/publication-blocked/publication-run.json",
+    "submissionEvidence": [
+      "docs/qa/pr3-next-20261028/publication-blocked/submission-response.json",
+      "docs/qa/pr3-next-20261028/publication-blocked/submission.stderr.txt"
+    ],
+    "qaReportUsedAtSubmission": "docs/qa/pr3-next-20261028/publication-blocked/qa-report-used-at-submission.json",
+    "qaReportUsedAtSubmissionSha256": "61652b3cacf19edff4064c7a80c2760f2795530d5100cf8ff0ba68210574d3f8",
+    "registrySnapshot": "docs/qa/pr3-next-20261028/publication-blocked/vercel-delivery-status.snapshot.json",
+    "registryRawPreserved": true,
+    "projectInventory": {
+      "completeAtObservation": true,
+      "total": 12,
+      "counts": {
+        "QUEUED": 3,
+        "READY": 6,
+        "ERROR": 3
+      },
+      "proof": "docs/qa/pr3-next-20261028/publication-blocked/existing-all-deployments.summary.json",
+      "readyProof": "docs/qa/pr3-next-20261028/publication-blocked/existing-ready-deployments.summary.json"
+    },
+    "gitPreview": {
+      "deploymentId": "dpl_3cEiD4t4XxRBVHqhrXU7bU4c51x5",
+      "sourceCommit": "5089228a12ac2985ef03e72782fd29e8687f6b33",
+      "url": "https://yautja-hive-warriors-qd6rxocpz-darknigthmares-projects.vercel.app",
+      "state": "QUEUED",
+      "target": "preview",
+      "ready": false,
+      "bytesVerified": false,
+      "productionCandidate": false,
+      "proof": "docs/qa/pr3-next-20261028/publication-blocked/existing-5089228-inspect.summary.json"
+    },
+    "previousPublicRelease": {
+      "status": "unchanged_verified_by_recorded_observation",
+      "origin": "https://yautja-hive-warriors.vercel.app",
+      "sourceCommit": "48b5bd5aa9d35fd3919ade38cf2aef55389bec5b",
+      "indexSha256": "124d7735003c245bc60814e6004c35ace77bd4011b31d448a6aa6c4c41dad185",
+      "buildInfoSha256": "ca39fd23d605d11f8ae9810e233248ae7426a91514c8f8cc9dade4d426869b9b",
+      "observedAt": "2026-10-28T11:09:58.139Z",
+      "proof": "docs/qa/pr3-next-20261028/publication-blocked/canonical-after-rejection.json"
+    },
+    "retryConstraints": [
+      "Vercel requests waiting24 hours; the actual quota reset has not been verified.",
+      "Before another single authorized submission, confirm no production deployment ID was created and preserve the rejected attempt.",
+      "The current publisher refuses another --deploy while submission_attempted is true; the saved state needs explicit coordinator handling without deleting its evidence.",
+      "The queued Git preview is not a READY verified production candidate."
+    ],
+    "billingChanged": false,
+    "credentialsChanged": false
+  },
+  "delivery_proof": "docs/qa/pr3-next-20261028/publication-blocked/summary.json"
 }

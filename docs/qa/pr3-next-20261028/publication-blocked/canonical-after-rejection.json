@@ -1,0 +1,28 @@
+{
+  "status": "previous_verified_public_release_unchanged",
+  "origin": "https://yautja-hive-warriors.vercel.app",
+  "observedAt": "2026-10-28T11:09:58.139Z",
+  "index": {
+    "status": 200,
+    "sha256": "124d7735003c245bc60814e6004c35ace77bd4011b31d448a6aa6c4c41dad185",
+    "bytes": 101970
+  },
+  "build": {
+    "status": 200,
+    "sha256": "ca39fd23d605d11f8ae9810e233248ae7426a91514c8f8cc9dade4d426869b9b",
+    "bytes": 542,
+    "buildInfo": {
+      "schemaVersion": 1,
+      "contentVersion": "v67-pr3-integration",
+      "sourceCommit": "48b5bd5aa9d35fd3919ade38cf2aef55389bec5b",
+      "sourceBranch": "codex/complete-pr3-20261026",
+      "sourceFingerprint": "8e45634c13e3d51b1d706bdc387b1b5c43fc82e65f34b959a999530b8c75a423",
+      "sourceFiles": 139,
+      "sourceTreeDirty": false,
+      "buildEpoch": 1793022277,
+      "reproducibleBuildDate": "2026-10-26T13:44:37.000Z",
+      "deploymentProof": "https://github.com/darknigthmare/Yautja-hive-warriors/blob/codex/complete-pr3-20261026/docs/qa/pr3-validation.json"
+    }
+  },
+  "newBuildPublished": false
+}

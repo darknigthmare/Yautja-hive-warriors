@@ -1,5 +1,5 @@
 {
-  "status": "prepared_awaiting_final_vercel_go_and_exclusive_chromium",
+  "status": "blocked_by_vercel_daily_quota",
   "preparedDate": "2026-10-28",
   "origin": "https://yautja-hive-warriors.vercel.app",
   "expected": {
@@ -8,6 +8,28 @@
     "buildInfo": "e0553896eeeb4c21b3b8eb392dc08b270926974ff3efed57c9733617416af50a"
   },
   "deployment": null,
+  "publicationBlock": {
+    "provider": "Vercel",
+    "code": "api-deployments-free-per-day",
+    "reason": "The provider rejected the first NEXT --deploy attempt because the free daily API deployment limit of 100 had been exceeded. No production deployment ID was created and no promotion occurred.",
+    "reportedBy": "root",
+    "retryOrPromotionAuthorizedByThisPreparation": false
+  },
+  "existingGitPreview": {
+    "id": "dpl_3cEiD4t4XxRBVHqhrXU7bU4c51x5",
+    "url": "https://yautja-hive-warriors-qd6rxocpz-darknigthmares-projects.vercel.app",
+    "sourceCommit": "5089228a12ac2985ef03e72782fd29e8687f6b33",
+    "state": "QUEUED",
+    "stateSource": "root read-only CLI observation; reported queued since 10:22 UTC on 2026-10-28",
+    "ready": false,
+    "validated": false,
+    "productionCandidate": false
+  },
+  "lastVerifiedPublicRelease": {
+    "sourceCommit": "48b5bd5aa9d35fd3919ade38cf2aef55389bec5b",
+    "indexSha256": "124d7735003c245bc60814e6004c35ace77bd4011b31d448a6aa6c4c41dad185",
+    "deployment": "dpl_9SeDzvFvnrj9KuwGY3KYBqV6Li7N"
+  },
   "browserLaunchedForNextPublicQa": false,
   "publicNetworkAccessedForNextQa": false,
   "validation": {
@@ -19,6 +41,6 @@
   "humanTesters": 0,
   "fidelity1to1Verified": false,
   "result": null,
-  "freezeRevisionReason": "Root replaced the previous a225277 freeze after fixing NPC helipad exit blocking, false sentry interaction interception of E, and legacy rooftop air guards. No public NEXT deployment exists yet; local QA is still in progress.",
-  "instruction": "This is preparation only. Do not run the public browser QA until root supplies the real NEXT deployment ID and explicitly releases the exclusive Chromium slot after final publication."
+  "freezeRevisionReason": "Root replaced the previous a225277 freeze after fixing NPC helipad exit blocking, false sentry interaction interception of E, and legacy rooftop air guards. NEXT 5089228 has not been published to production.",
+  "instruction": "Preparation is frozen while Vercel's daily deployment quota blocks publication. Do not launch Chromium or run the public NEXT QA. The QUEUED Git preview is not a ready, validated production candidate. Resume only after root supplies the real promoted NEXT deployment ID and explicitly releases the exclusive Chromium slot."
 }
