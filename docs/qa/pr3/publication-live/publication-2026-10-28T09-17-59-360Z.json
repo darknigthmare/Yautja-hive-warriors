@@ -1,0 +1,41 @@
+{
+  "status": "stopped_before_further_remote_actions",
+  "startedAt": "2026-10-28T09:17:59.361Z",
+  "sourceCommit": "48b5bd5aa9d35fd3919ade38cf2aef55389bec5b",
+  "index_sha256": "124d7735003c245bc60814e6004c35ace77bd4011b31d448a6aa6c4c41dad185",
+  "build_info_sha256": "ca39fd23d605d11f8ae9810e233248ae7426a91514c8f8cc9dade4d426869b9b",
+  "stage": "/workspace/qa/pr3-20261026/vercel-static-prebuilt",
+  "promotion_executed": true,
+  "deployment_id": "dpl_9SeDzvFvnrj9KuwGY3KYBqV6Li7N",
+  "submission_attempted": true,
+  "remoteActionsExecuted": true,
+  "other_projects_changed": false,
+  "billing_changed": false,
+  "globalQa": {
+    "passed": true,
+    "cpuPassed": 653,
+    "regressionPassed": 15,
+    "runtimeChecksPassed": 12,
+    "path": "/workspace/Yautja-hive-warriors/docs/qa/pr3-validation.json",
+    "sha256": "92f7daa26872333bae9a13fd3738cdc6c29dd11a1ea20bdb15b7e450c00cbfed"
+  },
+  "sourceCommitIsAncestorOfRelease": true,
+  "localFilesVerified": 30,
+  "localModelsVerified": 12,
+  "localBundlesVerified": 5,
+  "canonical_before": {
+    "http": 200,
+    "sha256": "cb19eded36c19e20a5c50b94daad56d1d8550cf1c9ddff08df6d0167d7a03910",
+    "checkedAt": "2026-10-28T09:18:01.534Z"
+  },
+  "ready_state": "READY",
+  "candidate_url": "https://yautja-hive-warriors-5f5m1cwo7-darknigthmares-projects.vercel.app",
+  "updatedAt": "2026-10-28T09:18:56.442Z",
+  "candidateProof": "/workspace/qa/pr3-20261026/http-candidate-2026-10-28T09-17-59-360Z/report.json",
+  "canonical_after": {
+    "http": 200,
+    "sha256": "cb19eded36c19e20a5c50b94daad56d1d8550cf1c9ddff08df6d0167d7a03910",
+    "checkedAt": "2026-10-28T09:18:56.440Z"
+  },
+  "error": "Canonical index has not switched to the frozen build\n+ actual - expected\n\n+ 'cb19eded36c19e20a5c50b94daad56d1d8550cf1c9ddff08df6d0167d7a03910'\n- '124d7735003c245bc60814e6004c35ace77bd4011b31d448a6aa6c4c41dad185'\n"
+}

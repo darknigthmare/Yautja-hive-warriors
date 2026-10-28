@@ -1,0 +1,9 @@
+http_code:200
+content-type:model/gltf-binary
+content-security-policy:default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'
+content-disposition:inline; filename="city-hunter-rigged.glb"
+cache-control:public, max-age=0, must-revalidate
+x-content-type-options:nosniff
+x-frame-options:DENY
+referrer-policy:strict-origin-when-cross-origin
+permissions-policy:camera=(), microphone=(), geolocation=()

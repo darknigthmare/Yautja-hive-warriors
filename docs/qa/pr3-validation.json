@@ -1,5 +1,5 @@
 {
-  "status": "passed_locally_waiting_publication",
+  "status": "published_and_verified",
   "branch": "codex/complete-pr3-20261026",
   "source_history": {
     "validated": "1d52d9ff91dbe85c08256f44f8b72086ab65200a",
@@ -163,6 +163,28 @@
       "duration_seconds": 397.404,
       "scope": "Real mouse/keyboard menus/F/E, assisted player placement, one-enemy startup fixtures, deterministic simulation stepping and an assisted player-death debrief; no DOM-click fallback, budget override, full victories, hardware or human certification",
       "dist_unchanged": true
+    },
+    "public_canonical": {
+      "status": "passed",
+      "checks_passed": 21,
+      "proof": "docs/qa/pr3/public-live/publication-20261028.json",
+      "human_testers": 0,
+      "renderer": "Chromium SwiftShader software WebGL",
+      "active_actors": 8,
+      "actor_cap": 32,
+      "finite_unit_ids": 132,
+      "assisted_gameplay_seconds": 3,
+      "errors": {
+        "errors": 0,
+        "failedRequests": 0,
+        "httpErrors": 0,
+        "externalRequests": 0
+      },
+      "full_mission_victory_verified": false,
+      "fidelity_1_to_1_verified": false,
+      "hardware_performance_measured": false,
+      "index_sha256": "124d7735003c245bc60814e6004c35ace77bd4011b31d448a6aa6c4c41dad185",
+      "verified_at": "2026-10-28T09:33:07.114Z"
     }
   },
   "scope": {
@@ -187,14 +209,16 @@
     "Les essais contrôlés emploient des fixtures, placements assistés et pas de simulation déclarés ; ils ne constituent pas 25 victoires jouées, cinq testeurs humains ou une mesure matérielle PC/mobile.",
     "Le plafond32 et les compteurs de buffers ne certifient pas la fréquence d’affichage ni la mémoire du pilote graphique sur les appareils des joueurs.",
     "La trêve a été vérifiée comme interaction interruptible en navigateur ; sa réalisation diplomatique complète est vérifiée par tests de composants, pas par le smoke sous tirs.",
-    "Les critères restant ouverts du classeur gardent leur état et leur limite de preuve."
+    "Les critères restant ouverts du classeur gardent leur état et leur limite de preuve.",
+    "Le smoke public ciblé observe encore le libellé VAGUE 1/3 en mode fronts ; la livraison fonctionnelle ne vaut pas correction de ce défaut HUD secondaire."
   ],
   "prior_failures_preserved": [
     "docs/qa/pr3/attempts/cpu-fixture-failure.txt",
     "docs/qa/pr3/attempts/runtime-charon-failure.json",
-    "docs/qa/pr3/attempts/browser-photo-coop-fixture-failures.txt"
+    "docs/qa/pr3/attempts/browser-photo-coop-fixture-failures.txt",
+    "docs/qa/pr3/publication-live/publication-2026-10-28T09-17-59-360Z.json"
   ],
-  "delivery_proof": "docs/qa/pr3/vercel-delivery.json",
+  "delivery_proof": "docs/qa/pr3/publication-live/delivery-summary.json",
   "reproducibility": {
     "status": "passed",
     "clean_installs": 2,
@@ -205,7 +229,7 @@
     "proof": "docs/qa/pr3/reproducibility/report.json"
   },
   "resource_restarts": {
-    "status": "gpu_counters_stable_cpu_heap_trend_unresolved",
+    "status": "reviewed_with_limitations",
     "measured_restarts": 10,
     "warmups": 2,
     "geometries_after_cleanup": 84,
@@ -214,6 +238,24 @@
     "heap_first_bytes": 15537020,
     "heap_last_bytes": 17736948,
     "proof": "docs/qa/pr3/resource-restarts/report.json",
-    "promotion_waits_for_cpu_heap_review": true
+    "promotion_waits_for_cpu_heap_review": false,
+    "review": "The original ten-run report has stable GPU/scene counters. Subsequent isolated diagnosis identified uncancelled harness timers and one bounded last-player cache reference; the runtime fix is in the next branch, not this frozen build. No general leak-freedom certification."
+  },
+  "publication": {
+    "status": "published_and_public_all_bytes_verified",
+    "public_url": "https://yautja-hive-warriors.vercel.app",
+    "deployment_id": "dpl_9SeDzvFvnrj9KuwGY3KYBqV6Li7N",
+    "promotion_executed": true,
+    "promotion_report": "docs/qa/pr3/publication-live/publication-2026-10-28T09-17-59-360Z.json",
+    "public_verification_report": "docs/qa/pr3/publication-live/publication-2026-10-28T09-21-24-332Z.json",
+    "public_all_bytes_report": "docs/qa/pr3/publication-live/http-public-2026-10-28T09-21-24-332Z/report.json",
+    "verified_at": "2026-10-28T09:21:35.854Z",
+    "public_files_verified": 30,
+    "public_models_verified": 12,
+    "public_bundles_verified": 5,
+    "build_info_verified": true,
+    "qa_report_used_at_publication_sha256": "92f7daa26872333bae9a13fd3738cdc6c29dd11a1ea20bdb15b7e450c00cbfed",
+    "qa_report_used_at_publication": "docs/qa/pr3/publication-live/qa-report-used-at-publication.json",
+    "note": "The 09:17 promotion succeeded; its immediate old-index propagation check stopped. The 09:21 verification resumed the same deployment without new submission or promotion and passed all 30 public files."
   }
 }
