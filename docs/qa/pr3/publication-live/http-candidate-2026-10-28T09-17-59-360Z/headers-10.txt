@@ -1,0 +1,9 @@
+http_code:200
+content-type:font/woff2
+content-security-policy:default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'
+content-disposition:inline; filename="rajdhani-latin-600-normal-CXCVEoA9.woff2"
+cache-control:public, max-age=31536000, immutable
+x-content-type-options:nosniff
+x-frame-options:DENY
+referrer-policy:strict-origin-when-cross-origin
+permissions-policy:camera=(), microphone=(), geolocation=()
