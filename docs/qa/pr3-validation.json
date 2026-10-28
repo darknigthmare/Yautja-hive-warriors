@@ -205,7 +205,15 @@
     "proof": "docs/qa/pr3/reproducibility/report.json"
   },
   "resource_restarts": {
-    "status": "additional_check_pending",
-    "promotion_waits_for_result": true
+    "status": "gpu_counters_stable_cpu_heap_trend_unresolved",
+    "measured_restarts": 10,
+    "warmups": 2,
+    "geometries_after_cleanup": 84,
+    "textures_after_cleanup": 50,
+    "programs_after_cleanup": 17,
+    "heap_first_bytes": 15537020,
+    "heap_last_bytes": 17736948,
+    "proof": "docs/qa/pr3/resource-restarts/report.json",
+    "promotion_waits_for_cpu_heap_review": true
   }
 }

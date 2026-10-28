@@ -85,6 +85,11 @@
       "sha256": "3213ed0c76d8bc23fce37272f7de927fe76ef5da5f9c338e15440034f0c1fa09"
     },
     {
+      "action": "AUD-005",
+      "path": "docs/audits/2026-10-26/qa/browser-48b5-15-regressions.txt",
+      "sha256": "3c18aa7c338f3054eb88188531e5696173032411dc94c2a3035e8551aaa121cf"
+    },
+    {
       "action": "AUD-006",
       "path": "docs/audits/2026-10-26/qa/combat-phase2-71-tests.txt",
       "sha256": "6e20e10df3b68727b9630ffdc3270aef6f3cdd5839d634847fc8f27c4663d3c5"
@@ -95,6 +100,11 @@
       "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
     },
     {
+      "action": "AUD-006",
+      "path": "docs/audits/2026-10-26/qa/browser-48b5-15-regressions.txt",
+      "sha256": "3c18aa7c338f3054eb88188531e5696173032411dc94c2a3035e8551aaa121cf"
+    },
+    {
       "action": "AUD-007",
       "path": "docs/audits/2026-10-26/qa/combat-phase2-71-tests.txt",
       "sha256": "6e20e10df3b68727b9630ffdc3270aef6f3cdd5839d634847fc8f27c4663d3c5"
@@ -103,6 +113,11 @@
       "action": "AUD-007",
       "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
       "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-007",
+      "path": "docs/audits/2026-10-26/qa/browser-48b5-15-regressions.txt",
+      "sha256": "3c18aa7c338f3054eb88188531e5696173032411dc94c2a3035e8551aaa121cf"
     },
     {
       "action": "AUD-008",
@@ -165,6 +180,11 @@
       "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
     },
     {
+      "action": "AUD-017",
+      "path": "docs/audits/2026-10-26/qa/browser-48b5-15-regressions.txt",
+      "sha256": "3c18aa7c338f3054eb88188531e5696173032411dc94c2a3035e8551aaa121cf"
+    },
+    {
       "action": "AUD-018",
       "path": "docs/audits/2026-10-26/qa/combat-phase2-71-tests.txt",
       "sha256": "6e20e10df3b68727b9630ffdc3270aef6f3cdd5839d634847fc8f27c4663d3c5"
@@ -178,6 +198,11 @@
       "action": "AUD-018",
       "path": "docs/audits/2026-10-26/qa/forge-ledger-acceptance-tests.txt",
       "sha256": "32dd096aa7aed6655a079b4e30eb153ecd5de4ee5c2be698e56a352b34305bae"
+    },
+    {
+      "action": "AUD-018",
+      "path": "docs/audits/2026-10-26/qa/browser-48b5-15-regressions.txt",
+      "sha256": "3c18aa7c338f3054eb88188531e5696173032411dc94c2a3035e8551aaa121cf"
     },
     {
       "action": "AUD-022",
@@ -238,6 +263,11 @@
       "action": "AUD-038",
       "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
       "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-038",
+      "path": "docs/audits/2026-10-26/qa/browser-48b5-15-regressions.txt",
+      "sha256": "3c18aa7c338f3054eb88188531e5696173032411dc94c2a3035e8551aaa121cf"
     },
     {
       "action": "AUD-040",
@@ -445,9 +475,19 @@
       "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
     },
     {
+      "action": "AUD-083",
+      "path": "docs/audits/2026-10-26/qa/browser-48b5-15-regressions.txt",
+      "sha256": "3c18aa7c338f3054eb88188531e5696173032411dc94c2a3035e8551aaa121cf"
+    },
+    {
       "action": "AUD-084",
       "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
       "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-084",
+      "path": "docs/audits/2026-10-26/qa/browser-48b5-15-regressions.txt",
+      "sha256": "3c18aa7c338f3054eb88188531e5696173032411dc94c2a3035e8551aaa121cf"
     },
     {
       "action": "AUD-085",
@@ -513,6 +553,11 @@
       "action": "AUD-096",
       "path": "docs/audits/2026-10-26/qa/runtime-48b5-incremental-charon-4-ops-photo.json",
       "sha256": "2b737ee19d428e27f97d7746e72e8cd23cbc9d04409a2ebf21e9ff410b4b101a"
+    },
+    {
+      "action": "AUD-096",
+      "path": "docs/audits/2026-10-26/qa/browser-48b5-15-regressions.txt",
+      "sha256": "3c18aa7c338f3054eb88188531e5696173032411dc94c2a3035e8551aaa121cf"
     },
     {
       "action": "AUD-098",
@@ -585,6 +630,11 @@
       "sha256": "2b737ee19d428e27f97d7746e72e8cd23cbc9d04409a2ebf21e9ff410b4b101a"
     },
     {
+      "action": "AUD-111",
+      "path": "docs/audits/2026-10-26/qa/browser-48b5-15-regressions.txt",
+      "sha256": "3c18aa7c338f3054eb88188531e5696173032411dc94c2a3035e8551aaa121cf"
+    },
+    {
       "action": "AUD-114",
       "path": "docs/qa/pr3/reproducibility/report.json",
       "sha256": "7807fc7e52068c31f6829eb60c4a7275da3e9e1558121515101377816c701a5e"
@@ -620,6 +670,11 @@
       "sha256": "2b737ee19d428e27f97d7746e72e8cd23cbc9d04409a2ebf21e9ff410b4b101a"
     },
     {
+      "action": "AUD-116",
+      "path": "docs/audits/2026-10-26/qa/browser-48b5-15-regressions.txt",
+      "sha256": "3c18aa7c338f3054eb88188531e5696173032411dc94c2a3035e8551aaa121cf"
+    },
+    {
       "action": "AUD-117",
       "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
       "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
@@ -638,6 +693,11 @@
       "action": "AUD-120",
       "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
       "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
+    },
+    {
+      "action": "AUD-120",
+      "path": "docs/audits/2026-10-26/qa/browser-48b5-15-regressions.txt",
+      "sha256": "3c18aa7c338f3054eb88188531e5696173032411dc94c2a3035e8551aaa121cf"
     },
     {
       "action": "AUD-122",

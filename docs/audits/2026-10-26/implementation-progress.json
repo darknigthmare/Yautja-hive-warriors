@@ -143,6 +143,12 @@
           "path": "docs/audits/2026-10-26/qa/world-phase2-construction-transport-stream-44-tests.txt",
           "sha256": "3213ed0c76d8bc23fce37272f7de927fe76ef5da5f9c338e15440034f0c1fa09",
           "scope": "44/44 :34terrains construits, trajets physiques, transport, pont destructible/réparable et streaming des allocations GPU testé côté CPU."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/audits/2026-10-26/qa/browser-48b5-15-regressions.txt",
+          "sha256": "3c18aa7c338f3054eb88188531e5696173032411dc94c2a3035e8551aaa121cf",
+          "scope": "15régressions navigateur : acquis menus/prefs, entrée masquée et sortie de capsule, sixsecteurs/relais, campagne, ressources/cleanup, rendu et coopération. Rencontres/positions/dégâts sont assistés ; pas quinzeplaytests humains."
         }
       ],
       "notes": "La revue des fondations et la suite653 conservent secteurs/relais/portes, pression d’attaque, progression, ressources, insertion et modèles validés. Les changements interprétés restent documentés ; aucune fidélité visuelle1:1 n’est déduite de la fusion."
@@ -166,6 +172,12 @@
           "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
           "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
           "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/audits/2026-10-26/qa/browser-48b5-15-regressions.txt",
+          "sha256": "3c18aa7c338f3054eb88188531e5696173032411dc94c2a3035e8551aaa121cf",
+          "scope": "Campagne terminée sur cinqvraislieux et survie/sandbox distingués ; les victoires de test sont provoquées par dégâts contrôlés aux vraisboss, via la vraie progression et les écrans de fin."
         }
       ],
       "notes": "Les missions finies, résultat unique et progression de campagne sont raccordés ; la survie est explicitement sélectionnée et seule reste sans victoire finale. Tests de progression/quotas et revue du routeur intégrés."
@@ -189,9 +201,15 @@
           "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
           "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
           "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/audits/2026-10-26/qa/browser-48b5-15-regressions.txt",
+          "sha256": "3c18aa7c338f3054eb88188531e5696173032411dc94c2a3035e8551aaa121cf",
+          "scope": "La régression parcourt les cinqarènes réelles, vérifie les passages et demande la suivante après défaite contrôlée du vraiBossManager. Pas cinqchasses gagnées naturellement."
         }
       ],
-      "notes": "Les cinq chapitres désignent des niveaux existants ; le routeur sélectionne explicitement le chapitre demandé et le bouton suivant applique sa destination. La campagne complète une seulefois ses cinqétapes dans les tests."
+      "notes": "Les cinq chapitres désignent des niveaux existants ; le routeur sélectionne explicitement le chapitre demandé et le bouton suivant applique sa destination. La campagne complète une seulefois ses cinqétapes dans les tests. Les quinze régressions navigateur ajoutent la progression réelle des cinqarènes ; les dégâts de victoire sont assistés et explicitement qualifiés."
     },
     "AUD-008": {
       "status": "Terminé",
@@ -366,6 +384,12 @@
           "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
           "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
           "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/audits/2026-10-26/qa/browser-48b5-15-regressions.txt",
+          "sha256": "3c18aa7c338f3054eb88188531e5696173032411dc94c2a3035e8551aaa121cf",
+          "scope": "Les tests navigateur exercent relais/quota réel, dernierboss, sandbox et misesàmort contrôlées ; ils complètent les tests de comptage des menaces secondaires."
         }
       ],
       "notes": "Le comptage central couvre les listes de menaces et décès secondaires ; alliés, parasites consommés et dégâts de décor ne bloquent plus les quotas. Les éventuels manquants d’un quota fini passent par une file réelle."
@@ -395,6 +419,12 @@
           "path": "docs/audits/2026-10-26/qa/forge-ledger-acceptance-tests.txt",
           "sha256": "32dd096aa7aed6655a079b4e30eb153ecd5de4ee5c2be698e56a352b34305bae",
           "scope": "7/7 : vraieForgeShop, deux achats successifs débités puisrechargement ; scorefourni ne crée aucunfonds ; ledger/migration/quota/pending/idempotence."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/audits/2026-10-26/qa/browser-48b5-15-regressions.txt",
+          "sha256": "3c18aa7c338f3054eb88188531e5696173032411dc94c2a3035e8551aaa121cf",
+          "scope": "Mêlée et exécution rapprochée d’un vraiBossManager enregistrent la victoire unefois ; décès/valeurs de vie sont contrôlés dans le test, pas un kill humain."
         }
       ],
       "notes": "Une identité de vie/armée produit une seule mort, un seul crédit et la bonne conséquence, y compris sources concurrentes, callbackréentrant, décor, allié et sortie de détail. Les culls vivants ne comptent pas comme morts."
@@ -672,6 +702,12 @@
           "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
           "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
           "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/audits/2026-10-26/qa/browser-48b5-15-regressions.txt",
+          "sha256": "3c18aa7c338f3054eb88188531e5696173032411dc94c2a3035e8551aaa121cf",
+          "scope": "Deuxjoueurs ont mouvement/combat indépendants, pause/cleanup communs et survie si l’un vit encore ; l’arbitrage d’ordres contradictoires reste la preuveCPU, nonun test manuel de deuxcapitaines."
         }
       ],
       "notes": "DonneursP1/P2 et séquences sont explicites : le dernier ordre accepté remplace le précédent une seulefois, sans empilement de chemins. Les tests d’ordres concurrents et navigation de menus virtuels couvrent l’arbitrage."
@@ -1387,6 +1423,12 @@
           "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
           "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
           "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/audits/2026-10-26/qa/browser-48b5-15-regressions.txt",
+          "sha256": "3c18aa7c338f3054eb88188531e5696173032411dc94c2a3035e8551aaa121cf",
+          "scope": "Un loadout sélectionné par les vraismenus produit les actions attendues dans le navigateur ; les restrictions de tousprofils demeurent vérifiées par les testsCPU."
         }
       ],
       "notes": "Le kit fidèle à l’incarnation refuse les équipements horsprofil et les anciennes voies d’action nonpermises ; les choix croisés restent explicitement adaptés. Feral utilise ses bolts finis et ne reçoit pas de plasma forcé."
@@ -1404,6 +1446,12 @@
           "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
           "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
           "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/audits/2026-10-26/qa/browser-48b5-15-regressions.txt",
+          "sha256": "3c18aa7c338f3054eb88188531e5696173032411dc94c2a3035e8551aaa121cf",
+          "scope": "Le parcours solo change le loadout puis exerce actions, mouvement, défaite/replay et cleanup ; les variantes et coûts de toute la roue restent couverts par les testsCPU."
         }
       ],
       "notes": "Une sélection d’arme unique commande géométrie tenue, prochain projectile, dégâts, coût, cooldown et ressource affichée. Les changements répétés ne cumulent pas les statistiques ; les tests couvrent toutes les entrées de roue."
@@ -1607,6 +1655,12 @@
           "path": "docs/audits/2026-10-26/qa/runtime-48b5-incremental-charon-4-ops-photo.json",
           "sha256": "2b737ee19d428e27f97d7746e72e8cd23cbc9d04409a2ebf21e9ff410b4b101a",
           "scope": "DeltaUI source48b5/index124d7735 : Charon et4opérations, vraiOphotoouvrir/fermer, mêmesIDs/caps/E/save/carte/Queen/bilanFR. Les11biomes complets restent couverts par le rapport antérieurc518. Trêve interrompue par dégâts ; completion nonrevendiquée."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/audits/2026-10-26/qa/browser-48b5-15-regressions.txt",
+          "sha256": "3c18aa7c338f3054eb88188531e5696173032411dc94c2a3035e8551aaa121cf",
+          "scope": "Les menus réels, défaite/replay et cleanup sont exercés ; la sauvegarde d’archive/reprise parIDs demeure la preuve distincte des4smokes d’opération."
         }
       ],
       "notes": "La reprise via les vraismenus conserve unités/identités, blessés, pertes, fronts, routes, cooldowns, inventaires et objectifs. L’archive reste portée après suspension/reprise ; les crédits d’une même identité/session ne sont pas repayés."
@@ -1847,6 +1901,12 @@
           "path": "docs/audits/2026-10-26/qa/runtime-48b5-incremental-charon-4-ops-photo.json",
           "sha256": "2b737ee19d428e27f97d7746e72e8cd23cbc9d04409a2ebf21e9ff410b4b101a",
           "scope": "DeltaUI source48b5/index124d7735 : Charon et4opérations, vraiOphotoouvrir/fermer, mêmesIDs/caps/E/save/carte/Queen/bilanFR. Les11biomes complets restent couverts par le rapport antérieurc518. Trêve interrompue par dégâts ; completion nonrevendiquée."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/audits/2026-10-26/qa/browser-48b5-15-regressions.txt",
+          "sha256": "3c18aa7c338f3054eb88188531e5696173032411dc94c2a3035e8551aaa121cf",
+          "scope": "La vraiepause et le modephoto figent les tâches de mission ; le retour au menu annule effets/timers. Oouvre la photo, l’orbite/zoom, exportimage et fermeture sont testés réellement."
         }
       ],
       "notes": "La pause fige les horloges du moteur, mécanismes, attaques et objectifs ; dispose/clear annulent leurs actions.60secondes de misesàjour en pause dans la vraiecarte ne changent pas le temps stratégique. Il ne s’agit pas d’un chronométrage humain de60s."
@@ -1941,6 +2001,12 @@
           "path": "docs/audits/2026-10-26/qa/runtime-48b5-incremental-charon-4-ops-photo.json",
           "sha256": "2b737ee19d428e27f97d7746e72e8cd23cbc9d04409a2ebf21e9ff410b4b101a",
           "scope": "DeltaUI source48b5/index124d7735 : Charon et4opérations, vraiOphotoouvrir/fermer, mêmesIDs/caps/E/save/carte/Queen/bilanFR. Les11biomes complets restent couverts par le rapport antérieurc518. Trêve interrompue par dégâts ; completion nonrevendiquée."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/audits/2026-10-26/qa/browser-48b5-15-regressions.txt",
+          "sha256": "3c18aa7c338f3054eb88188531e5696173032411dc94c2a3035e8551aaa121cf",
+          "scope": "Le navigateur vérifie des vuesP1/P2 indépendantes et une mission continue siP2vit encore ; la conservation des unités stratégiques reste vérifiée par les4smokes/contratsCPU, pas par deuxfronts humains simultanés."
         }
       ],
       "notes": "Les transitions distant/détaillé conservent états, HP, IDs et pertes. Les4smokes réels réconcilient acteurs et compteurs sous le plafond32, avec une vraieQueen allouée ; sortir du détail ne produit pas une mort."
@@ -2007,6 +2073,12 @@
           "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
           "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790",
           "scope": "653/653 contrôles CPU passés,0échec/ignoré ; tests de composants, contrats et intégration, pas653parcours de jeu."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/audits/2026-10-26/qa/browser-48b5-15-regressions.txt",
+          "sha256": "3c18aa7c338f3054eb88188531e5696173032411dc94c2a3035e8551aaa121cf",
+          "scope": "Les presets de rendu compilent et exportent une vraieimage avec vuescoop indépendantes. Cela vérifie le rendu fonctionnel, aucune fidélité visuelle1:1 ni performance sur machines cibles."
         }
       ],
       "notes": "La revue liste correspondances et limites pour silhouette/anatomie/armure/armes/animations des modèles existants ; les12GLB restent identiques. Cette clôture valide la qualification honnête des écarts, jamais une fidélité visuelle1:1 ni les cinqmodèles encore absents."
@@ -2110,7 +2182,7 @@
       "notes": "Sarii, boue, masque, ressources et interactions principales sont mieuxdéveloppés ; puma reste accessoire sansIA et les dixprompts/annonces/sources ne sont pas tous certifiés."
     }
   },
-  "reviewStage": "final_scoped_review_653_cpu_tests_11_prior_biome_startups_and_48b5_incremental_browser_validation",
+  "reviewStage": "final_54_criteria_verified_including_two_clean_reproductions_and_15_qualified_browser_regressions; restart_measurement_pending",
   "validatedRuntimeSource": "48b5bd5aa9d35fd3919ade38cf2aef55389bec5b",
   "runtimeEvidence": {
     "fullStartups": "docs/audits/2026-10-26/qa/runtime-c518-11-biomes-4-ops.json",

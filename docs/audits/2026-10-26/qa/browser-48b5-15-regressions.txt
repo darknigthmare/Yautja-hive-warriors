@@ -1,0 +1,103 @@
+TAP version 13
+# Subtest: production: self-hosted startup tolerates damaged saved data
+ok 1 - production: self-hosted startup tolerates damaged saved data
+  ---
+  duration_ms: 6134.429414
+  type: 'test'
+  ...
+# Subtest: menus: every modal closes cleanly, settings persist, keyboard focus is visible
+ok 2 - menus: every modal closes cleanly, settings persist, keyboard focus is visible
+  ---
+  duration_ms: 11179.081336
+  type: 'test'
+  ...
+# Subtest: solo: selected loadout, movement, pause, photo, defeat, replay and cleanup
+ok 3 - solo: selected loadout, movement, pause, photo, defeat, replay and cleanup
+  ---
+  duration_ms: 48796.815639
+  type: 'test'
+  ...
+# Subtest: campaign: a boss victory advances the chapter and loads its actual arena
+ok 4 - campaign: a boss victory advances the chapter and loads its actual arena
+  ---
+  duration_ms: 39641.876692
+  type: 'test'
+  ...
+# Subtest: coop: two players render at correct aspect and share pause/cleanup
+ok 5 - coop: two players render at correct aspect and share pause/cleanup
+  ---
+  duration_ms: 52326.684914
+  type: 'test'
+  ...
+# Subtest: mobile: 390px menus have no horizontal overflow and remain navigable
+ok 6 - mobile: 390px menus have no horizontal overflow and remain navigable
+  ---
+  duration_ms: 7501.542909
+  type: 'test'
+  ...
+# Insertion phase checks: {"initial":{"phase":"descending","active":true,"progress":0,"elapsed":0,"visible":false,"position":[0,0,0],"hatchOpening":0,"hp":1000,"directorTime":0,"pending":12,"bladeFrontMax":0.9792598715668803,"enemies":[[2.9724590786421894,0,-33.86981675512576],[20.68693986918521,0,26.9824112867756],[-33.48026394269398,0,-5.922155547395355],[38.9483359390932,0,2.006770434190495],[-8.826501108747966,0,32.834324695008895],[-15.670887361849378,0,-30.17322139401475]]},"input":{"attacking":false,"blocking":false,"photo":false,"wheel":false,"mounted":false},"pausedBefore":{"phase":"descending","active":true,"progress":0,"elapsed":0,"visible":false,"position":[0,0,0],"hatchOpening":0,"hp":1000,"directorTime":0,"pending":12,"bladeFrontMax":0.9792598715668803,"enemies":[[2.9724590786421894,0,-33.86981675512576],[20.68693986918521,0,26.9824112867756],[-33.48026394269398,0,-5.922155547395355],[38.9483359390932,0,2.006770434190495],[-8.826501108747966,0,32.834324695008895],[-15.670887361849378,0,-30.17322139401475]]},"pausedAfter":{"phase":"descending","active":true,"progress":0,"elapsed":0,"visible":false,"position":[0,0,0],"hatchOpening":0,"hp":1000,"directorTime":0,"pending":12,"bladeFrontMax":0.9792598715668803,"enemies":[[2.9724590786421894,0,-33.86981675512576],[20.68693986918521,0,26.9824112867756],[-33.48026394269398,0,-5.922155547395355],[38.9483359390932,0,2.006770434190495],[-8.826501108747966,0,32.834324695008895],[-15.670887361849378,0,-30.17322139401475]]},"settled":{"phase":"settling","active":true,"progress":0.23333333333333303,"elapsed":1.1083333333333318,"visible":false,"position":[0,0,0],"hatchOpening":0,"hp":1000,"directorTime":0,"pending":12,"bladeFrontMax":0.9792598715668803,"enemies":[[2.9724590786421894,0,-33.86981675512576],[20.68693986918521,0,26.9824112867756],[-33.48026394269398,0,-5.922155547395355],[38.9483359390932,0,2.006770434190495],[-8.826501108747966,0,32.834324695008895],[-15.670887361849378,0,-30.17322139401475]]},"openingStart":{"phase":"opening","active":true,"progress":0.3175438596491222,"elapsed":1.5083333333333304,"visible":true,"position":[0,0,0],"hatchOpening":0.00009870873784926508,"hp":1000,"directorTime":0,"pending":12,"bladeFrontMax":0.9792598715668803,"enemies":[[2.9724590786421894,0,-33.86981675512576],[20.68693986918521,0,26.9824112867756],[-33.48026394269398,0,-5.922155547395355],[38.9483359390932,0,2.006770434190495],[-8.826501108747966,0,32.834324695008895],[-15.670887361849378,0,-30.17322139401475]]},"openingMid":{"phase":"opening","active":true,"progress":0.41228070175438536,"elapsed":1.9583333333333304,"visible":true,"position":[0,0,0],"hatchOpening":0.23657826919542999,"hp":1000,"directorTime":0,"pending":12,"bladeFrontMax":0.9792598715668803,"enemies":[[2.9724590786421894,0,-33.86981675512576],[20.68693986918521,0,26.9824112867756],[-33.48026394269398,0,-5.922155547395355],[38.9483359390932,0,2.006770434190495],[-8.826501108747966,0,32.834324695008895],[-15.670887361849378,0,-30.17322139401475]]},"exitStart":{"phase":"exiting","active":true,"progress":0.6228070175438583,"elapsed":2.958333333333327,"visible":true,"position":[0,0,0.0002692282045415589],"hatchOpening":1,"hp":1000,"directorTime":0,"pending":12,"bladeFrontMax":0.9797319020665249,"enemies":[[2.9724590786421894,0,-33.86981675512576],[20.68693986918521,0,26.9824112867756],[-33.48026394269398,0,-5.922155547395355],[38.9483359390932,0,2.006770434190495],[-8.826501108747966,0,32.834324695008895],[-15.670887361849378,0,-30.17322139401475]]},"exitMid":{"phase":"exiting","active":true,"progress":0.7596491228070161,"elapsed":3.6083333333333267,"visible":true,"position":[0,0,1.2744954799191979],"hatchOpening":1,"hp":1000,"directorTime":0,"pending":12,"bladeFrontMax":3.231832331127009,"enemies":[[2.9724590786421894,0,-33.86981675512576],[20.68693986918521,0,26.9824112867756],[-33.48026394269398,0,-5.922155547395355],[38.9483359390932,0,2.006770434190495],[-8.826501108747966,0,32.834324695008895],[-15.670887361849378,0,-30.17322139401475]]},"complete":{"phase":"complete","active":false,"progress":1,"elapsed":4.75,"visible":true,"position":[0,0,4.2],"hatchOpening":1,"hp":1000,"directorTime":0,"pending":12,"bladeFrontMax":6.0413130760192875,"enemies":[[2.9724590786421894,0,-33.86981675512576],[20.68693986918521,0,26.9824112867756],[-33.48026394269398,0,-5.922155547395355],[38.9483359390932,0,2.006770434190495],[-8.826501108747966,0,32.834324695008895],[-15.670887361849378,0,-30.17322139401475]]},"graceRemaining":7}
+# Subtest: insertion hides hunters until touchdown, opens occupied capsules and survives pause, co-op and replay
+ok 7 - insertion hides hunters until touchdown, opens occupied capsules and survives pause, co-op and replay
+  ---
+  duration_ms: 20502.556602
+  type: 'test'
+  ...
+# Subtest: connected battlefield leaves time to act before reinforcements and keeps combat responsive
+ok 8 - connected battlefield leaves time to act before reinforcements and keeps combat responsive
+  ---
+  duration_ms: 41459.586437
+  type: 'test'
+  ...
+# Relay defense state checks: {"target":8,"beforeActivation":{"entered":true,"completed":false,"kills":0,"defenseKills":0,"commanderDefeated":false,"bossDefeated":false,"interacted":false,"relayPhase":"awaiting-activation","active":0,"queued":10,"gate":false,"objective":"Réactivez le relais de surveillance — APPROCHEZ ET INTERAGISSEZ · CONTRE-ATTAQUE : 8 ENNEMIS"},"activated":{"entered":true,"completed":false,"kills":0,"defenseKills":0,"commanderDefeated":false,"bossDefeated":false,"interacted":true,"relayPhase":"counterattack","active":0,"queued":22,"gate":false,"objective":"Repoussez la contre-attaque du relais : 0/8"},"firstBatchWait":5.299999999999997,"partial":{"entered":true,"completed":false,"kills":0,"defenseKills":1,"commanderDefeated":false,"bossDefeated":false,"interacted":true,"relayPhase":"counterattack","active":3,"queued":18,"gate":false,"objective":"Repoussez la contre-attaque du relais : 1/8"},"complete":{"entered":true,"completed":true,"kills":0,"defenseKills":8,"commanderDefeated":false,"bossDefeated":false,"interacted":true,"relayPhase":"secured","active":0,"queued":0,"gate":true,"objective":"PASSAGE OUVERT — REJOIGNEZ Gorge des chasseurs"},"missionAlive":true}
+# Subtest: relay activation keeps its gate locked until the real counterattack is defeated
+ok 9 - relay activation keeps its gate locked until the real counterattack is defeated
+  ---
+  duration_ms: 25695.364474
+  type: 'test'
+  ...
+# Subtest: campaign advances through five real maps and finishes after the final boss
+ok 10 - campaign advances through five real maps and finishes after the final boss
+  ---
+  duration_ms: 104113.389639
+  type: 'test'
+  ...
+# Paused visual settlement: {"promises":4,"readyEvents":[{"paused":true,"frame":44,"needsRender":true},{"paused":true,"frame":44,"needsRender":true},{"paused":true,"frame":44,"needsRender":true},{"paused":true,"frame":45,"needsRender":true}]}
+# Subtest: pause and photo mode freeze mission tasks; menu return cancels effects and timers
+ok 11 - pause and photo mode freeze mission tasks; menu return cancels effects and timers
+  ---
+  duration_ms: 45386.546192
+  type: 'test'
+  ...
+# Subtest: sandbox honors the enemy slider and can be completed without spawning another boss
+ok 12 - sandbox honors the enemy slider and can be completed without spawning another boss
+  ---
+  duration_ms: 28970.189813
+  type: 'test'
+  ...
+# Subtest: melee damages bosses and a close-range trophy execution records a real final victory and releases its visual
+ok 13 - melee damages bosses and a close-range trophy execution records a real final victory and releases its visual
+  ---
+  duration_ms: 33738.958137
+  type: 'test'
+  ...
+# Subtest: co-op has independent movement and combat and continues while one hunter survives
+ok 14 - co-op has independent movement and combat and continues while one hunter survives
+  ---
+  duration_ms: 50295.144951
+  type: 'test'
+  ...
+# Subtest: production rendering presets compile, export an image and preserve independent co-op viewports
+ok 15 - production rendering presets compile, export an image and preserve independent co-op viewports
+  ---
+  duration_ms: 30836.834495
+  type: 'test'
+  ...
+1..15
+# tests 15
+# suites 0
+# pass 15
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 548000.573046

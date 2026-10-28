@@ -22,3 +22,5 @@ Two warmups followed by ten identical-configuration City Hunter / Los Angeles / 
 last-five-post-cleanup GPU/scene counters plateau; retained caches are included, no claim about all gameplay/resource paths
 
 Renderer counters count live WebGL resources, not allocated VRAM bytes. Shared asset/creature caches and the retained level/menu remain present. Manager container counts, scene resources and observed dispose events appear in report.json. Dispose listeners only observe sampled resources; they do not instrument every allocation. Optional CDP forced GC measures CPU JS heap, not GPU memory, process RSS or normal-play usage. SwiftShader/CI results are not a hardware performance certification. No human tester or visual 1:1 certification is claimed.
+
+CPU limitation: explicit-GC JS heap increased from **15,537,020 to 17,736,948 bytes** across the ten measured restarts (**+2,199,928 bytes**, nine increases). Its cause was not profiled. GPU/scene counters plateaued, but **general memory leak freedom is not certified**.

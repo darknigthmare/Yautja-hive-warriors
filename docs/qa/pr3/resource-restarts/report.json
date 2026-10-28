@@ -11389,5 +11389,12 @@
     "treeSha256": "189ab2d25fdadcd802005ce8ddd77ea8da9cb27f53d3aa4a1060aefff9027642"
   },
   "distUnchanged": true,
-  "finishedAt": "2026-10-26T14:06:58.725Z"
+  "finishedAt": "2026-10-26T14:06:58.725Z",
+  "postRunAssessment": {
+    "gpuAndScenePlateau": "observed across all ten measured cleanup samples",
+    "cpuHeapPlateau": "not observed",
+    "cpuHeapFirstToLastBytes": 2199928,
+    "generalMemoryLeakFreedomCertified": false,
+    "note": "Optional explicit-GC CPU JS heap grows monotonically. This run does not establish its cause and does not certify absence of CPU retention."
+  }
 }
