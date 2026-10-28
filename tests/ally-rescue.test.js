@@ -11,8 +11,9 @@ import { CombatDirector } from '../js/engine/CombatDirector.js';
 import { BattleActorBridge } from '../js/battlefield/BattleActorBridge.js';
 import { selectBattleTarget, maintainBattleFormation, requestNPCStrike } from '../js/engine/BattleActorSupport.js';
 
-function setup() {
+function setup({ uniqueAllyId = null } = {}) {
   const config = createBattlefieldOperation(createBattlefieldLayout({ environmentType: 'forest' }));
+  if (uniqueAllyId) config.groups.find(group => group.factionId === config.playerFaction).units[0].uniqueId = uniqueAllyId;
   config.ai = { ...config.ai, enabled: false }; config.profiles.forEach(profile => { profile.damage = 0; });
   const simulation = new BattleSimulation(config, { spawnGroup: () => true });
   simulation.update(.25, { players: [{ id: 'player1', hp: 1000, position: config.fronts[0].position }] });
@@ -59,6 +60,46 @@ test('three seconds of real channeling costs one medicomp only at completion and
   f.actor.hp = 0; f.manager.defeatCombatant(f.actor, { cause: 'second-lethal-hit', killerFaction: 'hive' });
   assert.equal(f.deaths.length, 1); assert.equal(f.simulation.deaths.size, 1); assert.equal(f.manager.allies.length, 0);
   assert.equal(f.unit.state, 'dead'); assert.equal(f.simulation.assertConservation(), true); f.cleanup();
+});
+
+test('a rescued ally lost offscreen reconciles medical history once without a second death or charge', () => {
+  for (const reconcile of ['update', 'serialize']) {
+    const f = setup(); f.down(); f.rescue.interact(f.p1); f.rescue.update(3.1);
+    const originalMedicalState = f.rescue.serialize();
+    const snapshot = f.manager.despawnBattleUnit(f.unit.id); f.actors.delete(f.unit.id);
+    f.simulation.syncUnit(f.unit.id, snapshot); f.simulation.releaseGroupDetail(f.unit.groupId);
+    assert.equal(f.simulation.recordDeath({ entityId: f.unit.id, cause: 'distant_combat', killerFaction: 'hive' }), true);
+    const ledger = structuredClone([...f.simulation.deaths.values()]);
+    if (reconcile === 'update') f.rescue.update(.1);
+    assert.equal(f.rescue.serialize().records[0].status, 'dead');
+    f.rescue.update(.1); f.rescue.serialize();
+    assert.deepEqual([...f.simulation.deaths.values()], ledger);
+    assert.equal(f.rescue.getState().events.filter(event => event.type === 'ally_rescue_lost').length, 1);
+    assert.equal(f.deaths.length, 0); assert.equal(f.p1.medicompCharges, 1);
+    // Older medical snapshots are also normalized against the engine's
+    // authoritative loss when loaded, without rewriting its death ledger.
+    const resumed = new AllyRescueSystem({ simulation: f.simulation, actors: new Map(), players: () => [f.p1] });
+    resumed.restore(originalMedicalState);
+    assert.equal(resumed.serialize().records[0].status, 'dead');
+    assert.deepEqual([...f.simulation.deaths.values()], ledger); resumed.dispose(); f.cleanup();
+  }
+});
+
+test('evacuation and a campaign-confirmed capture close a previously rescued ally without declaring a death', () => {
+  const f = setup({ uniqueAllyId: 'rescue-persistent-ally' }); f.down(); f.rescue.interact(f.p1); f.rescue.update(3.1);
+  const medicalState = f.rescue.serialize();
+  assert.equal(f.simulation.evacuateGroup(f.unit.groupId), true);
+  f.rescue.update(.1);
+  assert.equal(f.rescue.serialize().records[0].status, 'evacuated');
+  assert.equal(f.manager.allies.length, 0); assert.equal(f.simulation.deaths.size, 0);
+  const captured = new BattleSimulation(f.config, { history: { capturedUniqueIds: ['rescue-persistent-ally'] } });
+  const resumed = new AllyRescueSystem({ simulation: captured, actors: new Map(), players: () => [f.p1] });
+  resumed.restore(medicalState);
+  assert.equal(captured.getUnit(f.unit.id).state, 'captured');
+  assert.equal(resumed.serialize().records[0].status, 'captured');
+  assert.equal(resumed.getState().events.filter(event => event.type === 'ally_rescue_unavailable').length, 1);
+  assert.equal(captured.deaths.size, 0); assert.equal(f.deaths.length, 0); assert.equal(f.p1.medicompCharges, 1);
+  resumed.dispose(); captured.dispose(); f.cleanup();
 });
 
 test('impact, movement, vertical separation and cover interrupt without consuming the medical resource', () => {

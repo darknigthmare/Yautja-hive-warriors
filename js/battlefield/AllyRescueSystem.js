@@ -172,6 +172,18 @@ export class AllyRescueSystem {
     return true;
   }
 
+  _observeRescuedTerminal(record, unit) {
+    if (record.status !== 'rescued') return false;
+    if (this._observeExit(record, unit)) return true;
+    if (unit?.state !== 'dead') return false;
+    // The strategic engine already owns this loss. Reconcile our medical
+    // history without submitting another death or a second combat reward.
+    record.status = 'dead'; record.remaining = 0; record.recoveryRemaining = 0;
+    this._cancelPatient(record.unitId, 'ally_lost');
+    this._emit('ally_rescue_lost', { unitId: record.unitId, reason: 'distant_combat', label: 'Un allié précédemment secouru a été perdu au combat.' });
+    return true;
+  }
+
   update(delta) {
     if (this.disposed || !Number.isFinite(delta) || delta <= 0 || this.simulation.paused || this.simulation.disposed || this.simulation.result) return false;
     const rescuedAt = new Map();
@@ -211,6 +223,7 @@ export class AllyRescueSystem {
         record.remaining = Math.max(0, record.remaining - delta);
         if (record.remaining <= 1e-8) this._die(record, 'bleedout');
       } else if (record.status === 'rescued') {
+        if (this._observeRescuedTerminal(record, unit)) continue;
         const recoveryStep = Math.max(0, delta - (rescuedAt.get(record.unitId) ?? 0));
         record.recoveryRemaining = Math.max(0, record.recoveryRemaining - recoveryStep);
         if (actor) { actor.isRescueRecovering = record.recoveryRemaining > 0; this._pose(actor, false, delta); }
@@ -228,7 +241,11 @@ export class AllyRescueSystem {
   }
   getState() { return { version: 1, operationId: this.simulation.config.id, rules: { bleedoutSeconds: this.bleedoutSeconds, channelSeconds: this.channelSeconds, rescueRange: this.rescueRange, reviveFraction: this.reviveFraction }, records: [...this.records.values()].map(copy), channels: [...this.channels.values()].map(copy), events: this.events.map(copy) }; }
   serialize() {
-    for (const record of this.records.values()) if (record.status === 'downed') this._observeExit(record, this.simulation.getUnit(record.unitId));
+    for (const record of this.records.values()) {
+      const unit = this.simulation.getUnit(record.unitId);
+      if (record.status === 'downed') this._observeExit(record, unit);
+      else this._observeRescuedTerminal(record, unit);
+    }
     return this.getState();
   }
 
@@ -247,6 +264,7 @@ export class AllyRescueSystem {
       channels.set(channel.playerId, { ...Object.fromEntries(['playerId', 'unitId', 'progress', 'start', 'previousHp'].map(key => [key, copy(channel[key])])), resumePending: true });
     }
     this.records = records; this.channels = channels; this.events = Array.isArray(saved.events) ? copy(saved.events).slice(-64) : [];
+    for (const record of records.values()) this._observeRescuedTerminal(record, this.simulation.getUnit(record.unitId));
     for (const [id] of this._actors()) this.onMaterialize(this._entry(id)?.actor);
     return true;
   }

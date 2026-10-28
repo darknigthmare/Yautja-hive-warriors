@@ -24,7 +24,7 @@ import { BossPhasePressure } from './battlefield/BossPhasePressure.js';
 import { CompanionLoadouts, COMPANION_KITS } from './battlefield/CompanionLoadouts.js';
 import { HIVE_CONFLICT_ID } from './battlefield/HiveConflictScenario.js';
 import { OperationTransport } from './entities/OperationTransport.js';
-import { operationAlertState, captureBattleDebrief } from './ui/OperationPanel.js';
+import { operationAlertState, captureBattleDebrief, hiveCoordinationFeedback } from './ui/OperationPanel.js';
 import { OperationObjectives } from './battlefield/OperationObjectives.js';
 import { createOperationScene } from './battlefield/OperationScene.js';
 import { OperationBriefing } from './ui/OperationBriefing.js';
@@ -320,6 +320,10 @@ class GameApp {
   handleBattleAnnouncement(event) {
     if(event.type==='route_changed')this.syncOperationRoute(event.routeId,event.open);
     if(event.type==='unit_died')this.observeBattleCampaign();
+    if(event.type==='hive_coordination_disrupted') {
+      const message=hiveCoordinationFeedback(event,[...(this.battleSimulation?.groups.values()??[])],[...(this.battleSimulation?.fronts.values()??[])]);
+      this.operationPanel.feedback(message);this.ui.showAnnouncement(message);
+    }
 
   }
 
