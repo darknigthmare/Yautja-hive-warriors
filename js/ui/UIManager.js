@@ -317,7 +317,9 @@ export class UIManager {
     this.hudKoCount.innerText = factions.sessionDefeats ?? horde.deadCount;
     this.hudHonorScore.innerText = `${score} PTS`;
     this.hudLevelName.innerText = this.selectedLevel.name;
-    this.hudWaveCounter.innerText = `VAGUE ${waveIndex}/${totalWaves}`;
+    this.hudWaveCounter.innerText = this._operationHUD
+      ? `${this._operationHUD.state.fronts.length} FRONTS · RÉSERVES FINIES`
+      : `VAGUE ${waveIndex}/${totalWaves}`;
 
     // Chantier 1: Grand Musou Boss Health Gauge
     const bossContainer = document.getElementById('hud-boss-container');
