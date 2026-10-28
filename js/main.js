@@ -64,6 +64,7 @@ import { disposeObject } from './engine/SceneResources.js';
 import { createPreyArrowMesh } from './graphics/PreyEquipment.js';
 import { operationSceneOptions, createMissionSupportContext } from './engine/MissionRuntimeContext.js';
 import { traceSingleProjectileImpact } from './engine/SingleProjectileImpact.js';
+import { canAccessLegacyAir, canHitLegacyAirTarget } from './engine/LegacyAirstrikePolicy.js';
 
 class GameApp {
   constructor() {
@@ -1367,7 +1368,7 @@ class GameApp {
       // Handled High-Voltage Electric Floor Grid activation!
     } else if (this.env && this.env.checkDeconInteraction(player.position, player, this.ui, this.audio, this.particles)) {
       // Handled Med-Lab Decontamination Airlock purge & restoration!
-    } else if (this.sentryGun && this.sentryGun.reloadSentry(player.position, 250)) {
+    } else if (this.sentryGun?.reloadSentry(player.position, 250)?.success === true) {
       if (this.audio && this.audio.playSentrySpinUp) this.audio.playSentrySpinUp();
       this.ui.showAnnouncement('🔋 SENTINELLE UA 571-C : CHARGEUR RECHARGÉ (+250 RDS) !');
     } else if (this.env && this.env.checkAirlockConsoleInteraction(player.position, this.ui, this.audio, this.particles)) {
@@ -1874,6 +1875,7 @@ class GameApp {
       this.player2 = null;
     }
 
+    for(const player of [this.player,this.player2].filter(Boolean))player.missionSupportContext=this.missionSupportContext;
     if(options.resumeOperation?.playerStates)for(const[index,player]of[this.player,this.player2].entries())if(player&&options.resumeOperation.playerStates[index])restoreOperationPlayer(player,options.resumeOperation.playerStates[index],this.env);
     if(options.resumeOperation?.preyInteractions&&this.env.restorePreyInteractions?.(options.resumeOperation.preyInteractions)!==true)throw new Error('Incompatible PREY interaction checkpoint');
 
@@ -1963,6 +1965,8 @@ class GameApp {
   initializeMissionSupports(saved) {
     const context=createMissionSupportContext({missionId:saved?.campaignRunId??this.missionRun,levelId:this.ui.selectedLevel.id,fidelityMode:this.activeLoadout.fidelityMode,environment:this.env,
       onDestroyed:event=>{if(event.kind==='apc')this.clearAPCSupport();this.ui.showAnnouncement(event.kind==='apc'?'APC M577 DÉTRUIT — APPUI PERDU POUR CETTE MISSION.':'CHEYENNE DÉTRUIT — APPUI PERDU POUR CETTE MISSION.');}});
+    this.missionSupportContext=context;
+    this.orbital.supportContext=context;
     this.apc.beginMission(context);this.dropship.beginMission(context);
   }
 
@@ -4623,7 +4627,7 @@ class GameApp {
         else adoliniPrompt.classList.add('hidden');
       }
 
-      const isNearTaabe = this.env.taabeRockPerch && !this.env.taabeRockPerch.isClaimed && this.player && this.player.position.y >= 3.0 && this.player.position.distanceTo(this.env.taabeRockPerch.pos) <= 4.8;
+      const isNearTaabe = this.env.taabeRockPerch && !this.env.taabeRockPerch.isClaimed && this.player && this.player.position.distanceTo(this.env.taabeRockPerch.pos) <= 4.5;
       const taabePrompt = document.getElementById('taabe-bow-prompt');
       if (taabePrompt) {
         if (isNearTaabe) taabePrompt.classList.remove('hidden');
@@ -5326,7 +5330,12 @@ class GameApp {
       }
       return;
     }
-    if (!this.forge.honorLedger.spend({ id: `${this.missionRun}:support:${++this._supportTransaction}`, amount: cost, kind: 'support' })) return;
+    const origin=this.player.position.clone();
+    const impacts=Array.from({length:8},(_,index)=>origin.clone().add(new THREE.Vector3(Math.cos(index*Math.PI/4)*25,0,Math.sin(index*Math.PI/4)*25)));
+    if(!canAccessLegacyAir(this.missionSupportContext,origin,60)||impacts.some(point=>!canAccessLegacyAir(this.missionSupportContext,point,2))){
+      this.ui.showAnnouncement('BARRAGE REFUSÉ : LE SCÉNARIO OU L’ACCÈS PHYSIQUE AU CIEL NE PERMET PAS CETTE FRAPPE.');return false;
+    }
+    if (!this.forge.honorLedger.spend({ id: `${this.missionRun}:support:${++this._supportTransaction}`, amount: cost, kind: 'support' })) return false;
     this.refreshMothershipBridgeUI();
     this.closeTacticalModal('mothership-bridge-modal');
 
@@ -5335,30 +5344,30 @@ class GameApp {
     }
     this.triggerCameraShake(2.5, 2.0);
 
-    // Saturation strike dealing 1400 damage across the arena
+    // Each actual target also needs its own physical sky access; the area
+    // footprint cannot authorize damage through a smaller roof between samples.
+    const attack={origin,radius:60,damage:1400,type:'plasma',killerFaction:this.battleSimulation?.config.playerFaction??'player_clan'};
     if (this.horde) {
-      const hits = this.horde.checkMeleeHits({ origin: this.player ? this.player.position : new THREE.Vector3(0, 0, 0), radius: 60, damage: 1400, type: 'plasma' });
-      this.registerHits(hits);
+      const actors=new Set([...(this.horde.aliens??[]),...(this.horde.eggs??[]),...(this.horde.chestbursters??[]),
+        ...[...(this.battleBridge?.actors?.values()??[])].filter(entry=>entry.manager!==this.synthetics&&entry.manager!==this.bosses).map(entry=>entry.actor)]);
+      for(const actor of actors)if(actor.mesh?.position.distanceTo(origin)<=60&&canHitLegacyAirTarget(this.missionSupportContext,actor))this.registerHits(this.horde.checkMeleeHits({...attack,targetOnly:actor}));
     }
-    if (this.bosses && this.bosses.activeBoss) {
-      this.bosses.takeDamage(1400);
+    if (this.bosses?.activeBoss?.mesh.position.distanceTo(origin)<=60&&canHitLegacyAirTarget(this.missionSupportContext,this.bosses.activeBoss)) {
+      this.bosses.takeDamage(1400,this.horde,{cause:'orbital-barrage',killerFaction:attack.killerFaction});
     }
-    if (this.badBlood && this.badBlood.isActive) {
+    if (this.badBlood?.isActive&&this.badBlood.badBlood?.mesh.position.distanceTo(origin)<=60&&canHitLegacyAirTarget(this.missionSupportContext,this.badBlood.badBlood)) {
       this.badBlood.takeDamage(1400);
     }
     if (this.synthetics) {
-      this.synthetics.checkHits({ origin: this.player ? this.player.position : new THREE.Vector3(0, 0, 0), radius: 60, damage: 1400 });
+      for(const actor of this.synthetics.androids??[])if(actor.mesh?.position.distanceTo(origin)<=60&&canHitLegacyAirTarget(this.missionSupportContext,actor))this.synthetics.checkHits({...attack,targetOnly:actor});
     }
     if (this.particles && this.particles.emitExplosion) {
-      for (let i = 0; i < 8; i++) {
-        const rx = (Math.random() - 0.5) * 50;
-        const rz = (Math.random() - 0.5) * 50;
-        this.particles.emitExplosion(new THREE.Vector3(rx, 0, rz), 25);
-      }
+      for(const point of impacts)this.particles.emitExplosion(point,25);
     }
     if (this.ui && this.ui.showAnnouncement) {
       this.ui.showAnnouncement('🚀 BARRAGE PLANÉTAIRE ORBITAL DÉPLOYÉ : 1400 DÉGÂTS DE SATURATION !');
     }
+    return true;
   }
 
   callOrbitalDropPodResupply() {

@@ -16,18 +16,21 @@ import { CHARACTERS_DATA } from '../js/data/charactersData.js';
 import { snapshotOperationPlayer, restoreOperationPlayer } from '../js/battlefield/OperationPlayerState.js';
 import { WeaponWheel } from '../js/ui/WeaponWheel.js';
 import { commandMapMissionStatus } from '../js/ui/CommandMap.js';
+import { SentryGun } from '../js/entities/SentryGun.js';
+import { EnvironmentManager } from '../js/entities/Environment.js';
+import { canAccessLegacyAir, canHitLegacyAirTarget } from '../js/engine/LegacyAirstrikePolicy.js';
 
 // Exercise the real router methods without constructing WebGL/audio/browser
 // services. No router method is rewritten or duplicated by this fixture.
 const source=readFileSync(new URL('../js/main.js',import.meta.url),'utf8');
-const GameApp=vm.runInNewContext(`${source.slice(source.indexOf('class GameApp'),source.indexOf("window.addEventListener('DOMContentLoaded'"))};GameApp`,{THREE,createMissionSupportContext,operationSceneOptions,traceSingleProjectileImpact,createPreyArrowMesh});
+const GameApp=vm.runInNewContext(`${source.slice(source.indexOf('class GameApp'),source.indexOf("window.addEventListener('DOMContentLoaded'"))};GameApp`,{THREE,createMissionSupportContext,operationSceneOptions,traceSingleProjectileImpact,createPreyArrowMesh,canAccessLegacyAir,canHitLegacyAirTarget});
 const audio=new Proxy({}, {get:()=>()=>{}});
 const environment=(colliders=[])=>({colliders,navigation:{gridCache:new Map(),actorPaths:new WeakMap()},resolveMovement(){},getPlacementElevationAt:()=>0,
   traceSegment(from,to,options){return traceCombatSegment(from,to,this.colliders,options);},
   hasLineOfSight(from,to,options){return hasCombatLineOfSight(from,to,this.colliders,options);}});
 function supportGame(levelId='gunnison_forest',fidelityMode='adapted'){
   const scene=new THREE.Scene(),game=Object.create(GameApp.prototype);
-  Object.assign(game,{missionRun:'current-render-run',activeLoadout:{fidelityMode},env:environment(),ui:{selectedLevel:{id:levelId},showAnnouncement(){}},apc:new APCVehicle(scene,null,null),dropship:new CheyenneDropship(scene,null,null)});
+  Object.assign(game,{missionRun:'current-render-run',activeLoadout:{fidelityMode},env:environment(),orbital:{},ui:{selectedLevel:{id:levelId},showAnnouncement(){}},apc:new APCVehicle(scene,null,null),dropship:new CheyenneDropship(scene,null,null)});
   return game;
 }
 
@@ -118,4 +121,51 @@ test('wheel adds only the current input owner’s actually acquired PREY tools',
     wheel.open();assert.ok(wheel.weapons.find(row=>row.id==='taabe_bow'));assert.equal(wheel.weapons.some(row=>row.id==='naru_axe'),false);
     wheel.close();wheel.inputOwner={serializePreyEquipment:()=>({hasNaruAxe:true,naruAxeCharges:2})};wheel.open();assert.equal(wheel.weapons.some(row=>row.id==='taabe_bow'),false);assert.ok(wheel.weapons.find(row=>row.id==='naru_axe'));
   }finally{globalThis.document=previous;globalThis.HTMLElement=previousHTMLElement;}
+});
+
+function realInteractionFixture(){
+  class OfflinePlayer extends Player{loadGeneratedVisual(){return Promise.resolve(false);}}
+  const scene=new THREE.Scene(),game=Object.create(GameApp.prototype),environment=new EnvironmentManager(scene),player=new OfflinePlayer(scene,CHARACTERS_DATA.find(row=>row.id==='feral_predator'),audio),messages=[];
+  Object.assign(game,{isPlaying:true,isPaused:false,player,dropPod:{isActive:false},photoMode:{isActive:false},env:environment,sentryGun:new SentryGun(scene,audio,null),audio,ui:{selectedLevel:{id:'prey_comanche_territory'},showAnnouncement:message=>messages.push(message)},horde:{aliens:[]},bosses:{activeBoss:null}});environment.game=game;
+  environment.taabeRockPerch={pos:new THREE.Vector3(-22,3.8,14),isClaimed:false};environment.naruTomahawkTree={pos:new THREE.Vector3(-8,1.8,18),isClaimed:false};
+  const previous=globalThis.window;globalThis.window={game};
+  return {game,player,environment,messages,dispose(){game.sentryGun.clear();player.dispose();environment.clearEnvironment();globalThis.window=previous;}};
+}
+
+test('real E router falls through the real no-sentry refusal object and acquires Taabe from reachable ground',()=>{
+  const fixture=realInteractionFixture();try{
+    const {game,player,environment,messages}=fixture;player.position.set(-22,0,14);
+    assert.deepEqual(game.sentryGun.reloadSentry(player.position,250),{success:false,reason:'too_far'});
+    game.handlePlayerInteraction(player);
+    assert.equal(environment.taabeRockPerch.isClaimed,true);assert.equal(player.hasTaabeBow,true);assert.equal(player.taabeArrowAmmo,6);assert.equal(player.activeWeapon,'taabe_bow');assert.equal(messages.some(message=>message.includes('CHARGEUR RECHARGÉ')),false);
+  }finally{fixture.dispose();}
+});
+
+test('real E router falls through a full nearby real sentry and acquires Naru without reloading it',()=>{
+  const fixture=realInteractionFixture();try{
+    const {game,player,environment,messages}=fixture;player.position.copy(environment.naruTomahawkTree.pos);game.sentryGun.deploySentry(player.position.clone());const sentry=game.sentryGun.sentries[0];sentry.ammo=sentry.maxAmmo;
+    assert.deepEqual(game.sentryGun.reloadSentry(player.position,250),{success:false,reason:'full'});
+    game.handlePlayerInteraction(player);assert.equal(environment.naruTomahawkTree.isClaimed,true);assert.equal(player.naruAxeCharges,4);assert.equal(player.activeWeapon,'naru_axe');assert.equal(sentry.ammo,sentry.maxAmmo);assert.equal(messages.some(message=>message.includes('CHARGEUR RECHARGÉ')),false);
+  }finally{fixture.dispose();}
+});
+
+test('a real successful sentry reload still consumes E once and leaves a nearby PREY pickup untouched',()=>{
+  const fixture=realInteractionFixture();try{
+    const {game,player,environment,messages}=fixture;player.position.copy(environment.naruTomahawkTree.pos);game.sentryGun.deploySentry(player.position.clone());const sentry=game.sentryGun.sentries[0];sentry.ammo=sentry.maxAmmo-300;
+    const before=sentry.ammo;game.handlePlayerInteraction(player);assert.equal(sentry.ammo,before+250);assert.equal(environment.naruTomahawkTree.isClaimed,false);assert.equal(player.hasNaruAxe,false);assert.equal(messages.filter(message=>message.includes('CHARGEUR RECHARGÉ')).length,1);
+  }finally{fixture.dispose();}
+});
+
+test('planetary barrage refuses a real roof or unknown context before spending any honor',()=>{
+  const game=supportGame();game.initializeMissionSupports();let spent=0,hit=0;
+  Object.assign(game,{player:{position:new THREE.Vector3()},forge:{getBalance:()=>8000,honorLedger:{spend(){spent++;return true;}}},horde:{aliens:[],checkMeleeHits(){hit++;return[];}},bosses:{activeBoss:null}});
+  game.env.colliders.push({x:0,z:0,halfWidth:10,halfDepth:10,baseY:5,height:.5});assert.equal(game.callPlanetaryOrbitalBarrage(),false);assert.equal(spent,0);assert.equal(hit,0);
+  game.env.colliders=[];game.missionSupportContext=null;assert.equal(game.callPlanetaryOrbitalBarrage(),false);assert.equal(spent,0);assert.equal(hit,0);
+});
+
+test('planetary barrage spends once for open footprints and excludes a covered boss and a distant boss from direct damage',()=>{
+  const game=supportGame();game.initializeMissionSupports();let spent=0,bossHits=0,explosions=0;const boss={hp:5000,mesh:new THREE.Group()};boss.mesh.position.set(11,0,0);
+  Object.assign(game,{player:{position:new THREE.Vector3()},forge:{getBalance:()=>8000,honorLedger:{spend(){spent++;return true;}}},horde:{aliens:[],eggs:[],chestbursters:[],checkMeleeHits(){return[];}},bosses:{activeBoss:boss,takeDamage(){bossHits++;}},synthetics:{androids:[]},particles:{emitExplosion(){explosions++;}},_supportTransaction:0,refreshMothershipBridgeUI(){},closeTacticalModal(){},triggerCameraShake(){}});
+  game.env.colliders.push({x:11,z:0,halfWidth:1,halfDepth:1,baseY:5,height:.5});assert.equal(game.callPlanetaryOrbitalBarrage(),true);assert.equal(spent,1);assert.equal(bossHits,0);assert.equal(explosions,8);
+  game.env.colliders=[];boss.mesh.position.set(0,0,90);assert.equal(game.callPlanetaryOrbitalBarrage(),true);assert.equal(spent,2);assert.equal(bossHits,0);
 });

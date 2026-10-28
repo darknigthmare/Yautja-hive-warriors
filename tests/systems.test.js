@@ -215,6 +215,7 @@ test('particles and decals stay within a bounded resource budget and clear compl
 test('orbital strike respects boss distance and releases its beam', () => {
   const scene = new THREE.Scene();
   const orbital = new OrbitalStrikeManager(scene, audio);
+  orbital.supportContext = { allowed: true, canAccessAir: () => true };
   let bossDamage = 0;
   const boss = { activeBoss: { mesh: new THREE.Group() }, takeDamage(amount) { bossDamage += amount; } };
   boss.activeBoss.mesh.position.x = 100;

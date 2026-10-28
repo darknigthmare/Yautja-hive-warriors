@@ -9,20 +9,35 @@ export async function reachBattlefieldSector(page, stopAtSectorIndex = 5) {
     const g = window.game, mission = g.battlefield, progression = g.battlefieldProgression;
     if (!mission || !progression || !g.env.battlefieldLayout) throw new Error('Connected battlefield mission missing');
     const player = g.player, layout = g.env.battlefieldLayout, visited = [];
+    const movementMetrics = { maximumGroundCorrection: 0, maximumRequestedHorizontalStep: 0 };
+    const ground = point => {
+      const height = g.env.getElevationAt(point.x, point.z, point.y), correction = Math.abs(height - point.y);
+      if (!Number.isFinite(height) || correction > .66) throw new Error(`Assisted route would skip a physical height: ${point.toArray()} to ${height}`);
+      movementMetrics.maximumGroundCorrection = Math.max(movementMetrics.maximumGroundCorrection, correction);
+      point.y = height;
+    };
     const step = (delta = 0.001) => {
       g.update(delta);
       if (!g.isPlaying || !g.player) throw new Error('Mission ended before its final battlefield encounter');
     };
     const moveTo = target => {
-      const destination = player.position.clone().set(target[0], player.position.y, target[1]);
+      const targetHeight = g.env.getPlacementElevationAt?.(target[0], target[1]) ?? g.env.getElevationAt(target[0], target[1], 0);
+      const destination = player.position.clone().set(target[0], targetHeight, target[1]);
       const remaining = () => Math.hypot(player.position.x - destination.x, player.position.z - destination.z);
       for (let index = 0; remaining() > 0.01 && index < 1000; index++) {
+        // The fixture advances X/Z faster than simulation time. Use the actual
+        // measured floor before asking production navigation for its next leg,
+        // rather than carrying the departure platform's height toward all goals.
+        ground(player.position); player.mesh.position.copy(player.position);
         const waypoint = g.env.getNavigationWaypoint?.(player.position, destination, .65) ?? destination;
         const direction = waypoint.clone().sub(player.position); direction.y = 0;
         const distance = direction.length();
         const requested = player.position.clone().addScaledVector(direction.normalize(), Math.min(0.7, distance));
-        g.env.resolveMovement(requested);
-        g.dropPod.resolveMovement?.(requested);
+        movementMetrics.maximumRequestedHorizontalStep = Math.max(movementMetrics.maximumRequestedHorizontalStep,
+          Math.hypot(requested.x - player.position.x, requested.z - player.position.z));
+        ground(requested);
+        g.env.resolveMovement(requested, .75, player.getCollisionHeight?.() ?? 2.4);
+        g.dropPod.resolveMovement?.(requested, .75, player.getCollisionHeight?.() ?? 2.4);
         if (requested.distanceTo(player.position) < 0.001) throw new Error('Blocked battlefield route before ' + destination.toArray());
         player.position.copy(requested); player.mesh.position.copy(requested); step();
       }
@@ -51,11 +66,11 @@ export async function reachBattlefieldSector(page, stopAtSectorIndex = 5) {
       if (progression.currentSector.id !== sector.id || !progression.currentState.entered) throw new Error('Sector did not start on physical entry: ' + sector.id);
       visited.push(sector.id);
       if (sector.index === stopAtSectorIndex && sector.objective.type !== 'boss') {
-        return { visited, completed: progression.completedSectorIds, openGates: progression.openGateIds, boss: null };
+        return { visited, completed: progression.completedSectorIds, openGates: progression.openGateIds, boss: null, movementMetrics };
       }
       if (sector.objective.type === 'boss') {
         if (!g.bosses.activeBoss || !g.bossSpawned) throw new Error('Final sector did not spawn its actual boss');
-        return { visited, completed: progression.completedSectorIds, openGates: progression.openGateIds, boss: g.bosses.activeBoss.type };
+        return { visited, completed: progression.completedSectorIds, openGates: progression.openGateIds, boss: g.bosses.activeBoss.type, movementMetrics };
       }
       if (sector.objective.type === 'interact' && !progression.currentState.completed) {
         // The terminal is now a solid prop; approach its usable front edge.

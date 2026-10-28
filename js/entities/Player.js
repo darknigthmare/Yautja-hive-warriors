@@ -19,6 +19,7 @@ import { CITY_HUNTER_RIGHT_GAUNTLET } from '../graphics/CityHunterRightGauntletC
 import { HUNTER_WEAPON_PROFILES, HUNTER_ARSENAL_PROFILES, HUNTER_ACTION_EQUIPMENT, resolveHunterLoadout } from '../data/hunterArsenal.js';
 import { hunterCombatStyle } from '../data/hunterCombatStyles.js';
 import { battleCoordinationDamage } from '../engine/BattleActorSupport.js';
+import { canAccessLegacyAir, canHitLegacyAirTarget } from '../engine/LegacyAirstrikePolicy.js';
 import { PREY_LEVEL_ID, PREY_WEAPON_PROFILES, createPreyWeaponVisual } from '../graphics/PreyEquipment.js';
 
 const REQUIRED_RIG_BONES = ['hips', 'head', 'leftArm', 'rightArm', 'leftForeArm', 'rightForeArm', 'leftHand', 'rightHand', 'leftLeg', 'rightLeg', 'leftFoot', 'rightFoot'];
@@ -4380,14 +4381,17 @@ export class Player {
   callInfiltrationDropshipBombing(horde, bosses, particles, audio, ui = null) {
     if (!this.canUseArsenalEquipment('dropship_bombing')) return false;
     if (this.dropshipBombingCooldown > 0) return false;
+    const forward = new THREE.Vector3(Math.sin(this.rotationY), 0, Math.cos(this.rotationY)).normalize();
+    const startPos = this.position.clone();
+    const impacts = Array.from({ length: 6 }, (_, index) => {
+      const point = startPos.clone().addScaledVector(forward, (index + 1) * 4.2); point.y = .2; return point;
+    });
+    if (!impacts.every(point => canAccessLegacyAir(this.missionSupportContext, point, 4.8))) return false;
     this.dropshipBombingCooldown = 28.0;
 
     if (audio && audio.playYautjaDropshipSwoop) {
       audio.playYautjaDropshipSwoop();
     }
-
-    const forward = new THREE.Vector3(Math.sin(this.rotationY), 0, Math.cos(this.rotationY)).normalize();
-    const startPos = this.position.clone();
 
     // Swooping 3D Yautja Stealth Infiltration Dropship
     const dropshipGroup = new THREE.Group();
@@ -4432,8 +4436,8 @@ export class Player {
     // Drop 6 plasma cluster bomblets along 25m corridor
     for (let b = 1; b <= 6; b++) {
       this.schedule(() => {
-        const bombPos = startPos.clone().add(forward.clone().multiplyScalar(b * 4.2));
-        bombPos.y = 0.2;
+        const bombPos = impacts[b - 1].clone();
+        if (!canAccessLegacyAir(this.missionSupportContext, bombPos, 4.8)) return;
 
         // Plasma napalm fireball explosion
         const fireGeo = new THREE.SphereGeometry(2.4, 12, 12);
@@ -4469,7 +4473,7 @@ export class Player {
             const a = horde.aliens[j];
           if (!this._canDamageLegacyAlien(horde, a)) continue;
             if (!a || a.hp <= 0 || !a.mesh) continue;
-            if (a.mesh.position.distanceTo(bombPos) <= 4.8) {
+            if (a.mesh.position.distanceTo(bombPos) <= 4.8 && canHitLegacyAirTarget(this.missionSupportContext, a)) {
               a.hp -= 420;
               if (a.hp <= 0) {
                 if (horde.goreEngine) horde.goreEngine.spawnDismemberment(a.mesh.position, 'plasma');
@@ -4480,7 +4484,7 @@ export class Player {
         }
 
         if (bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
-          if (bosses.activeBoss.mesh.position.distanceTo(bombPos) <= 5.5) {
+          if (bosses.activeBoss.mesh.position.distanceTo(bombPos) <= 5.5 && canHitLegacyAirTarget(this.missionSupportContext, bosses.activeBoss)) {
             bosses.takeDamage(380, horde);
           }
         }
@@ -4544,13 +4548,14 @@ export class Player {
     // Update active persistent napalm fire patches
     for (let i = this.activeDropshipBombs.length - 1; i >= 0; i--) {
       const p = this.activeDropshipBombs[i];
+      if (!canAccessLegacyAir(this.missionSupportContext, p.pos, p.radius)) { this.activeDropshipBombs.splice(i, 1); continue; }
       p.timer -= delta;
       if (horde && horde.aliens) {
         for (let j = horde.aliens.length - 1; j >= 0; j--) {
           const a = horde.aliens[j];
           if (!this._canDamageLegacyAlien(horde, a)) continue;
           if (!a || a.hp <= 0 || !a.mesh) continue;
-          if (a.mesh.position.distanceTo(p.pos) <= p.radius) {
+          if (a.mesh.position.distanceTo(p.pos) <= p.radius && canHitLegacyAirTarget(this.missionSupportContext, a)) {
             if (!this._canHitLegacyAlien(horde, a, p.pos)) continue;
             a.hp -= p.dps * delta;
             if (a.hp <= 0) {

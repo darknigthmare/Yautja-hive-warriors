@@ -190,6 +190,11 @@ export class BattlefieldNavigation {
     if (environment.getSectorAt(from)?.id !== environment.getSectorAt(target)?.id || !environment.getSectorAt(from)) {
       const path = this.strategicPath(from, target);
       if (!path.length) return from.clone();
+      // A raised insertion can make the room center inaccessible from the
+      // ramp foot. Advance only when the next actual route segment is safe.
+      const room = environment.getSectorAt(from);
+      if (room && path.length > 1 && path[0].x === room.center[0] && path[0].z === room.center[1] &&
+          floorSegment(environment, from, path[1], radius) && clearSegment(environment, from, path[1], radius)) path.shift();
       goal = path.find(point => distance(point, from) > 1.5) ?? target;
       // A follower already inside the room need not return to its exact center
       // each frame. Advance past centers only while the real floor connects

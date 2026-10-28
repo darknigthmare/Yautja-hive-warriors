@@ -16072,7 +16072,7 @@ export class ReferenceEnvironmentMechanisms {
     if (!orderSarii(this, player)) return false;
     audio?.playSariiLoyalBark?.();
     const labels = { follow: 'suit le chasseur', hold: 'reste en position', guard: 'protège le chasseur', retreat: 'se replie' };
-    ui?.showAnnouncement?.(`SARII : ${labels[state.order].toUpperCase()} — ${state.hp}/${state.maxHp} PV`, 'info');
+    ui?.showAnnouncement?.(`SARII : ${labels[state.order].toUpperCase()} — ${state.hp}/${state.maxHp} PV · ORDRES ADAPTÉS POUR LE JEU.`, 'info');
     return true;
   }
 
