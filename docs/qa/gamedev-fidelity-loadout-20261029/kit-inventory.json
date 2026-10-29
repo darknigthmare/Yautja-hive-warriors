@@ -1,0 +1,811 @@
+{
+  "schemaVersion": 1,
+  "scope": "Seven playable reference kits and the preparation UI. This is not the full 115-profile battle catalogue or an exhaustive franchise audit.",
+  "counts": {
+    "characters": 7,
+    "implementedSlotIds": 10,
+    "gadgetIds": 6,
+    "crossMediaIndexEntries": 36
+  },
+  "checksPassed": true,
+  "fidelity1to1Verified": false,
+  "characters": [
+    {
+      "id": "jungle_hunter",
+      "name": "JUNGLE HUNTER (1987)",
+      "continuity": "Predator (1987)",
+      "defaultKit": {
+        "fidelityMode": "faithful",
+        "primary": "wristblades",
+        "secondary": "wristblades",
+        "gadgets": [
+          "medicomp",
+          "nuke"
+        ],
+        "ranged": "plasma_caster",
+        "referenceKnown": true
+      },
+      "selectableWeapons": [
+        "wristblades"
+      ],
+      "selectableGadgets": [
+        "medicomp",
+        "nuke"
+      ],
+      "card": {
+        "primary": "Lames de poignet",
+        "secondary": "Même arme : Lames de poignet",
+        "special": "Canon plasma d’épaule",
+        "gadgets": "Médicomp · Dispositif d’autodestruction"
+      },
+      "sourceUrls": [
+        "https://store.necaonline.com/products/predator-ultimate-jungle-hunter-7-scale-action-figure"
+      ],
+      "referenceScope": "equipment-restricted-default; not an exhaustive scene inventory",
+      "fidelity1to1Verified": false
+    },
+    {
+      "id": "wolf_predator",
+      "name": "WOLF PREDATOR (AVP REQUIEM)",
+      "continuity": "AVP: Requiem (2007)",
+      "defaultKit": {
+        "fidelityMode": "faithful",
+        "primary": "wristblades",
+        "secondary": "plasma_whip",
+        "gadgets": [
+          "medicomp",
+          "acid_solvent"
+        ],
+        "ranged": "dual_caster",
+        "referenceKnown": true
+      },
+      "selectableWeapons": [
+        "wristblades",
+        "combistick",
+        "shuriken",
+        "plasma_whip"
+      ],
+      "selectableGadgets": [
+        "medicomp",
+        "acid_solvent",
+        "mines"
+      ],
+      "card": {
+        "primary": "Lames de poignet",
+        "secondary": "Fouet segmenté de Wolf",
+        "special": "Deux canons plasma d’épaule",
+        "gadgets": "Médicomp · Liquide dissolvant de Wolf"
+      },
+      "sourceUrls": [
+        "https://www.prime1studio.com/avpr-wolf-predator/REMAVP-01DXS.html"
+      ],
+      "referenceScope": "equipment-restricted-default; not an exhaustive scene inventory",
+      "fidelity1to1Verified": false
+    },
+    {
+      "id": "alpha_predator",
+      "name": "ALPHA PREDATOR (HUNTING GROUNDS)",
+      "continuity": "Predator: Hunting Grounds — game adaptation",
+      "defaultKit": {
+        "fidelityMode": "faithful",
+        "primary": "alpha_sickle",
+        "secondary": "compound_bow",
+        "gadgets": [
+          "medicomp",
+          "bear_trap"
+        ],
+        "ranged": "plasma_caster",
+        "referenceKnown": true
+      },
+      "selectableWeapons": [
+        "wristblades",
+        "combistick",
+        "alpha_sickle",
+        "smart_disc",
+        "compound_bow"
+      ],
+      "selectableGadgets": [
+        "medicomp",
+        "bear_trap",
+        "mines"
+      ],
+      "card": {
+        "primary": "Faucille Alpha (Hunting Grounds)",
+        "secondary": "Arc composite Yautja",
+        "special": "Canon plasma d’épaule",
+        "gadgets": "Médicomp · Piège de chasse (Hunting Grounds)"
+      },
+      "sourceUrls": [
+        "https://predator.illfonic.com/the-predator/",
+        "https://blog.playstation.com/2020/07/17/july-free-update-comes-to-predator-hunting-grounds/"
+      ],
+      "referenceScope": "equipment-restricted-default; not an exhaustive scene inventory",
+      "fidelity1to1Verified": false
+    },
+    {
+      "id": "feral_predator",
+      "name": "FERAL PREDATOR (PREY 2022)",
+      "continuity": "Prey — Northern Great Plains 1719",
+      "defaultKit": {
+        "fidelityMode": "faithful",
+        "primary": "wristblades",
+        "secondary": "crossbow",
+        "gadgets": [
+          "medicomp",
+          "feral_shield"
+        ],
+        "ranged": "crossbow",
+        "referenceKnown": true
+      },
+      "selectableWeapons": [
+        "wristblades",
+        "combistick",
+        "crossbow"
+      ],
+      "selectableGadgets": [
+        "medicomp",
+        "feral_shield"
+      ],
+      "card": {
+        "primary": "Lames de poignet",
+        "secondary": "Lance-projectiles guidés du Feral",
+        "special": "Lance-projectiles guidés du Feral",
+        "gadgets": "Médicomp · Bouclier rétractable du Feral"
+      },
+      "sourceUrls": [
+        "https://www.prime1studio.com/fp-feral-predator/MMPR-07DXS.html",
+        "https://store.necaonline.com/collections/pre-orders/products/prey-ultramate-feral-predator-7-inch-scale-action-figure"
+      ],
+      "referenceScope": "equipment-restricted-default; not an exhaustive scene inventory",
+      "fidelity1to1Verified": false
+    },
+    {
+      "id": "samurai_predator",
+      "name": "SAMURAI PREDATOR (PHG DLC)",
+      "continuity": "Predator: Hunting Grounds — game adaptation",
+      "defaultKit": {
+        "fidelityMode": "faithful",
+        "primary": "katana",
+        "secondary": "smart_disc",
+        "gadgets": [
+          "medicomp",
+          "bear_trap"
+        ],
+        "ranged": "plasma_caster",
+        "referenceKnown": true
+      },
+      "selectableWeapons": [
+        "wristblades",
+        "combistick",
+        "katana",
+        "smart_disc"
+      ],
+      "selectableGadgets": [
+        "medicomp",
+        "bear_trap",
+        "mines"
+      ],
+      "card": {
+        "primary": "Katana du Samurai (Hunting Grounds)",
+        "secondary": "Disque de chasse Smart-Disc",
+        "special": "Canon plasma d’épaule",
+        "gadgets": "Médicomp · Piège de chasse (Hunting Grounds)"
+      },
+      "sourceUrls": [
+        "https://predator.illfonic.com/the-predator/",
+        "https://predator.illfonic.com/"
+      ],
+      "referenceScope": "equipment-restricted-default; not an exhaustive scene inventory",
+      "fidelity1to1Verified": false
+    },
+    {
+      "id": "viking_predator",
+      "name": "VIKING PREDATOR (PHG DLC)",
+      "continuity": "Predator: Hunting Grounds — game adaptation",
+      "defaultKit": {
+        "fidelityMode": "faithful",
+        "primary": "viking_axe",
+        "secondary": "smart_disc",
+        "gadgets": [
+          "medicomp",
+          "bear_trap"
+        ],
+        "ranged": "plasma_caster",
+        "referenceKnown": true
+      },
+      "selectableWeapons": [
+        "wristblades",
+        "combistick",
+        "viking_axe",
+        "smart_disc"
+      ],
+      "selectableGadgets": [
+        "medicomp",
+        "bear_trap",
+        "mines"
+      ],
+      "card": {
+        "primary": "Hache de combat Viking (Hunting Grounds)",
+        "secondary": "Disque de chasse Smart-Disc",
+        "special": "Canon plasma d’épaule",
+        "gadgets": "Médicomp · Piège de chasse (Hunting Grounds)"
+      },
+      "sourceUrls": [
+        "https://predator.illfonic.com/the-predator/",
+        "https://predator.illfonic.com/"
+      ],
+      "referenceScope": "equipment-restricted-default; not an exhaustive scene inventory",
+      "fidelity1to1Verified": false
+    },
+    {
+      "id": "city_hunter",
+      "name": "CITY HUNTER (PREDATOR 2)",
+      "continuity": "Predator 2 — Los Angeles 1997",
+      "defaultKit": {
+        "fidelityMode": "faithful",
+        "primary": "combistick",
+        "secondary": "smart_disc",
+        "gadgets": [
+          "medicomp",
+          "nuke"
+        ],
+        "ranged": "plasma_caster",
+        "referenceKnown": true
+      },
+      "selectableWeapons": [
+        "wristblades",
+        "combistick",
+        "smart_disc"
+      ],
+      "selectableGadgets": [
+        "medicomp",
+        "nuke"
+      ],
+      "card": {
+        "primary": "Lance télescopique Combistick",
+        "secondary": "Disque de chasse Smart-Disc",
+        "special": "Canon plasma d’épaule",
+        "gadgets": "Médicomp · Dispositif d’autodestruction"
+      },
+      "sourceUrls": [
+        "https://store.necaonline.com/blogs/news/shipping-this-week-predator-2-ultimate-city-hunter-action-figure"
+      ],
+      "referenceScope": "equipment-restricted-default; not an exhaustive scene inventory",
+      "fidelity1to1Verified": false
+    }
+  ],
+  "armory": [
+    {
+      "id": "wristblades",
+      "displayName": "Dual Retractable Wristblades",
+      "declaredOrigin": "Predator 1987 / AVP",
+      "originReverifiedInThisPass": false,
+      "selectableSlot": true,
+      "selectableGadget": false,
+      "guardedActions": [],
+      "referenceKits": [
+        "jungle_hunter",
+        "city_hunter",
+        "wolf_predator",
+        "feral_predator",
+        "alpha_predator",
+        "samurai_predator",
+        "viking_predator"
+      ],
+      "executionVerifiedInThisPass": false
+    },
+    {
+      "id": "single_scythe",
+      "displayName": "Extended Single Scythe Wristblade",
+      "declaredOrigin": "Predators 2010",
+      "originReverifiedInThisPass": false,
+      "selectableSlot": false,
+      "selectableGadget": false,
+      "guardedActions": [],
+      "referenceKits": [],
+      "executionVerifiedInThisPass": false
+    },
+    {
+      "id": "super_cleaver",
+      "displayName": "Super Scythe Arm Cleaver",
+      "declaredOrigin": "Predator Concrete Jungle",
+      "originReverifiedInThisPass": false,
+      "selectableSlot": false,
+      "selectableGadget": false,
+      "guardedActions": [],
+      "referenceKits": [],
+      "executionVerifiedInThisPass": false
+    },
+    {
+      "id": "tri_maul",
+      "displayName": "Tri-Blade Maul",
+      "declaredOrigin": "Concrete Jungle / AVP Capcom 1994",
+      "originReverifiedInThisPass": false,
+      "selectableSlot": false,
+      "selectableGadget": false,
+      "guardedActions": [
+        "performMaulEarthshaker"
+      ],
+      "referenceKits": [],
+      "executionVerifiedInThisPass": false
+    },
+    {
+      "id": "broadsword",
+      "displayName": "Ceremonial Yautja Broadsword",
+      "declaredOrigin": "AVP Extinction",
+      "originReverifiedInThisPass": false,
+      "selectableSlot": false,
+      "selectableGadget": false,
+      "guardedActions": [],
+      "referenceKits": [],
+      "executionVerifiedInThisPass": false
+    },
+    {
+      "id": "katana",
+      "displayName": "Samurai Yautja Katana",
+      "declaredOrigin": "Hunting Grounds",
+      "originReverifiedInThisPass": false,
+      "selectableSlot": true,
+      "selectableGadget": false,
+      "guardedActions": [
+        "performIaijutsuSlash"
+      ],
+      "referenceKits": [
+        "samurai_predator"
+      ],
+      "executionVerifiedInThisPass": false
+    },
+    {
+      "id": "alpha_sickle",
+      "displayName": "Alpha Bone Sickle",
+      "declaredOrigin": "Hunting Grounds",
+      "originReverifiedInThisPass": false,
+      "selectableSlot": true,
+      "selectableGadget": false,
+      "guardedActions": [],
+      "referenceKits": [
+        "alpha_predator"
+      ],
+      "executionVerifiedInThisPass": false
+    },
+    {
+      "id": "viking_axe",
+      "displayName": "Viking Battle Axe",
+      "declaredOrigin": "Hunting Grounds",
+      "originReverifiedInThisPass": true,
+      "selectableSlot": true,
+      "selectableGadget": false,
+      "guardedActions": [],
+      "referenceKits": [
+        "viking_predator"
+      ],
+      "executionVerifiedInThisPass": false
+    },
+    {
+      "id": "daggers",
+      "displayName": "Ceremonial Yautja Daggers",
+      "declaredOrigin": "Predator 2 / AVP",
+      "originReverifiedInThisPass": false,
+      "selectableSlot": false,
+      "selectableGadget": false,
+      "guardedActions": [],
+      "referenceKits": [],
+      "executionVerifiedInThisPass": false
+    },
+    {
+      "id": "war_club",
+      "displayName": "Bone War Club",
+      "declaredOrigin": "Hunting Grounds",
+      "originReverifiedInThisPass": false,
+      "selectableSlot": false,
+      "selectableGadget": false,
+      "guardedActions": [],
+      "referenceKits": [],
+      "executionVerifiedInThisPass": false
+    },
+    {
+      "id": "feral_shield",
+      "displayName": "Feral Shield & Cut Blade",
+      "declaredOrigin": "Prey 2022",
+      "originReverifiedInThisPass": false,
+      "selectableSlot": false,
+      "selectableGadget": true,
+      "guardedActions": [],
+      "referenceKits": [
+        "feral_predator"
+      ],
+      "executionVerifiedInThisPass": false
+    },
+    {
+      "id": "pirate_hook",
+      "displayName": "Pirate Arm Hook",
+      "declaredOrigin": "Hunting Grounds",
+      "originReverifiedInThisPass": false,
+      "selectableSlot": false,
+      "selectableGadget": false,
+      "guardedActions": [],
+      "referenceKits": [],
+      "executionVerifiedInThisPass": false
+    },
+    {
+      "id": "combistick",
+      "displayName": "Telescopic Combistick Spear",
+      "declaredOrigin": "Predator 2 1990",
+      "originReverifiedInThisPass": false,
+      "selectableSlot": true,
+      "selectableGadget": false,
+      "guardedActions": [
+        "throwCombiStick",
+        "performCombistickPoleVault",
+        "performCombistickCycloneWhirl"
+      ],
+      "referenceKits": [
+        "city_hunter",
+        "wolf_predator",
+        "feral_predator",
+        "alpha_predator",
+        "samurai_predator",
+        "viking_predator"
+      ],
+      "executionVerifiedInThisPass": false
+    },
+    {
+      "id": "glaive",
+      "displayName": "Yautja Glaive Spear",
+      "declaredOrigin": "Concrete Jungle",
+      "originReverifiedInThisPass": false,
+      "selectableSlot": false,
+      "selectableGadget": false,
+      "guardedActions": [
+        "triggerPlasmaGlaive",
+        "toggleWhirlShield"
+      ],
+      "referenceKits": [],
+      "executionVerifiedInThisPass": false
+    },
+    {
+      "id": "smart_disc",
+      "displayName": "Smart-Disc Laser Rotor",
+      "declaredOrigin": "Predator 2",
+      "originReverifiedInThisPass": false,
+      "selectableSlot": true,
+      "selectableGadget": false,
+      "guardedActions": [
+        "throwSmartDisc",
+        "startSmartDiscRemoteGuidance",
+        "performSmartDiscMultiLock"
+      ],
+      "referenceKits": [
+        "city_hunter",
+        "alpha_predator",
+        "samurai_predator",
+        "viking_predator"
+      ],
+      "executionVerifiedInThisPass": false
+    },
+    {
+      "id": "shuriken",
+      "displayName": "6-Blade Telescopic Shuriken",
+      "declaredOrigin": "AVP 2004",
+      "originReverifiedInThisPass": false,
+      "selectableSlot": true,
+      "selectableGadget": false,
+      "guardedActions": [
+        "throwShuriken"
+      ],
+      "referenceKits": [
+        "wolf_predator"
+      ],
+      "executionVerifiedInThisPass": false
+    },
+    {
+      "id": "compound_bow",
+      "displayName": "Yautja Compound Bow",
+      "declaredOrigin": "Hunting Grounds",
+      "originReverifiedInThisPass": false,
+      "selectableSlot": true,
+      "selectableGadget": false,
+      "guardedActions": [
+        "fireCompoundBow"
+      ],
+      "referenceKits": [
+        "alpha_predator"
+      ],
+      "executionVerifiedInThisPass": false
+    },
+    {
+      "id": "crossbow",
+      "displayName": "Feral Guided Bolt Launcher",
+      "declaredOrigin": "Prey 2022",
+      "originReverifiedInThisPass": true,
+      "selectableSlot": true,
+      "selectableGadget": false,
+      "guardedActions": [
+        "triggerFlechetteVolley"
+      ],
+      "referenceKits": [
+        "feral_predator"
+      ],
+      "executionVerifiedInThisPass": false
+    },
+    {
+      "id": "speargun",
+      "displayName": "Laser Needle SpearGun",
+      "declaredOrigin": "Predator 2 / AVP 1999 PC",
+      "originReverifiedInThisPass": false,
+      "selectableSlot": false,
+      "selectableGadget": false,
+      "guardedActions": [
+        "fireFlechetteNeedler"
+      ],
+      "referenceKits": [],
+      "executionVerifiedInThisPass": false
+    },
+    {
+      "id": "plasma_caster",
+      "displayName": "Shoulder Plasma Caster (Single)",
+      "declaredOrigin": "Predator 1987",
+      "originReverifiedInThisPass": false,
+      "selectableSlot": false,
+      "selectableGadget": false,
+      "guardedActions": [
+        "toggleSniperPlasmaMode",
+        "fireSniperPlasmaLance"
+      ],
+      "referenceKits": [
+        "jungle_hunter",
+        "city_hunter",
+        "wolf_predator",
+        "alpha_predator",
+        "samurai_predator",
+        "viking_predator"
+      ],
+      "executionVerifiedInThisPass": false
+    },
+    {
+      "id": "dual_caster",
+      "displayName": "Dual Shoulder Plasma Cannons",
+      "declaredOrigin": "AVP Requiem (Wolf)",
+      "originReverifiedInThisPass": false,
+      "selectableSlot": false,
+      "selectableGadget": false,
+      "guardedActions": [
+        "fireDualPlasmaOverchargeBeam"
+      ],
+      "referenceKits": [
+        "wolf_predator"
+      ],
+      "executionVerifiedInThisPass": false
+    },
+    {
+      "id": "plasma_pistol",
+      "displayName": "Handheld Plasma Pistol",
+      "declaredOrigin": "AVP Requiem",
+      "originReverifiedInThisPass": false,
+      "selectableSlot": false,
+      "selectableGadget": false,
+      "guardedActions": [
+        "firePlasmaPistol"
+      ],
+      "referenceKits": [
+        "wolf_predator"
+      ],
+      "executionVerifiedInThisPass": false
+    },
+    {
+      "id": "gatling_plasma",
+      "displayName": "Gatling Plasma Heavy Cannon",
+      "declaredOrigin": "Predators 2010",
+      "originReverifiedInThisPass": false,
+      "selectableSlot": false,
+      "selectableGadget": false,
+      "guardedActions": [],
+      "referenceKits": [],
+      "executionVerifiedInThisPass": false
+    },
+    {
+      "id": "burner_rifle",
+      "displayName": "Burner Plasma Rifle",
+      "declaredOrigin": "AVP Extinction",
+      "originReverifiedInThisPass": false,
+      "selectableSlot": false,
+      "selectableGadget": false,
+      "guardedActions": [
+        "fireBurnerHeavyPlasma"
+      ],
+      "referenceKits": [],
+      "executionVerifiedInThisPass": false
+    },
+    {
+      "id": "plasma_whip",
+      "displayName": "Wolf Segmented Whip",
+      "declaredOrigin": "AVP Requiem",
+      "originReverifiedInThisPass": true,
+      "selectableSlot": true,
+      "selectableGadget": false,
+      "guardedActions": [
+        "triggerSpineWhipSlash"
+      ],
+      "referenceKits": [
+        "wolf_predator"
+      ],
+      "executionVerifiedInThisPass": false
+    },
+    {
+      "id": "netgun",
+      "displayName": "Razor-Wire Netgun",
+      "declaredOrigin": "Predator 2",
+      "originReverifiedInThisPass": false,
+      "selectableSlot": false,
+      "selectableGadget": false,
+      "guardedActions": [
+        "fireNetgun"
+      ],
+      "referenceKits": [
+        "city_hunter"
+      ],
+      "executionVerifiedInThisPass": false
+    },
+    {
+      "id": "plasma_turret",
+      "displayName": "Plasma Deployable Sentry Turret",
+      "declaredOrigin": "AVP Extinction",
+      "originReverifiedInThisPass": false,
+      "selectableSlot": false,
+      "selectableGadget": false,
+      "guardedActions": [],
+      "referenceKits": [],
+      "executionVerifiedInThisPass": false
+    },
+    {
+      "id": "plasma_mines",
+      "displayName": "Proximity Plasma Trip-Mines",
+      "declaredOrigin": "AVP 2010",
+      "originReverifiedInThisPass": false,
+      "selectableSlot": false,
+      "selectableGadget": false,
+      "guardedActions": [],
+      "referenceKits": [],
+      "executionVerifiedInThisPass": false
+    },
+    {
+      "id": "emp_mine",
+      "displayName": "Sonic EMP Disruption Mine",
+      "declaredOrigin": "The Predator 2018",
+      "originReverifiedInThisPass": false,
+      "selectableSlot": false,
+      "selectableGadget": false,
+      "guardedActions": [
+        "triggerGauntletEMP"
+      ],
+      "referenceKits": [],
+      "executionVerifiedInThisPass": false
+    },
+    {
+      "id": "bear_trap",
+      "displayName": "Yautja Steel Bear Trap",
+      "declaredOrigin": "Hunting Grounds",
+      "originReverifiedInThisPass": false,
+      "selectableSlot": false,
+      "selectableGadget": true,
+      "guardedActions": [],
+      "referenceKits": [
+        "alpha_predator",
+        "samurai_predator",
+        "viking_predator"
+      ],
+      "executionVerifiedInThisPass": false
+    },
+    {
+      "id": "audio_lure",
+      "displayName": "Audio Lure & Voice Mimicry Module",
+      "declaredOrigin": "Predator 1987",
+      "originReverifiedInThisPass": false,
+      "selectableSlot": false,
+      "selectableGadget": false,
+      "guardedActions": [],
+      "referenceKits": [
+        "jungle_hunter"
+      ],
+      "executionVerifiedInThisPass": false
+    },
+    {
+      "id": "medicomp",
+      "displayName": "Medicomp Bio-Gel Injection Kit",
+      "declaredOrigin": "Predator 1987",
+      "originReverifiedInThisPass": false,
+      "selectableSlot": false,
+      "selectableGadget": true,
+      "guardedActions": [],
+      "referenceKits": [
+        "jungle_hunter",
+        "city_hunter",
+        "wolf_predator",
+        "feral_predator",
+        "alpha_predator",
+        "samurai_predator",
+        "viking_predator"
+      ],
+      "executionVerifiedInThisPass": false
+    },
+    {
+      "id": "acid_solvent",
+      "displayName": "Dissolving Blue Acid Solvent Flask",
+      "declaredOrigin": "AVP Requiem",
+      "originReverifiedInThisPass": false,
+      "selectableSlot": false,
+      "selectableGadget": true,
+      "guardedActions": [],
+      "referenceKits": [
+        "wolf_predator"
+      ],
+      "executionVerifiedInThisPass": false
+    },
+    {
+      "id": "cloak",
+      "displayName": "Active Camouflage Cloaking Device",
+      "declaredOrigin": "All Lore",
+      "originReverifiedInThisPass": false,
+      "selectableSlot": false,
+      "selectableGadget": false,
+      "guardedActions": [],
+      "referenceKits": [],
+      "executionVerifiedInThisPass": false
+    },
+    {
+      "id": "thermal_mask",
+      "displayName": "Thermal Multi-Vision Bio-Mask",
+      "declaredOrigin": "All Lore",
+      "originReverifiedInThisPass": false,
+      "selectableSlot": false,
+      "selectableGadget": false,
+      "guardedActions": [],
+      "referenceKits": [],
+      "executionVerifiedInThisPass": false
+    },
+    {
+      "id": "nuke_gauntlet",
+      "displayName": "Tactical Nuke Wrist Computer",
+      "declaredOrigin": "Predator 1987",
+      "originReverifiedInThisPass": false,
+      "selectableSlot": false,
+      "selectableGadget": false,
+      "guardedActions": [],
+      "referenceKits": [],
+      "executionVerifiedInThisPass": false
+    }
+  ],
+  "limitations": [
+    "Index ids such as nuke_gauntlet/plasma_mines differ from runtime nuke/mines; absence of an exact-id match is not proof of missing implementation.",
+    "Existing permission sets and all combat statistics were preserved, not re-certified as exhaustive source inventories.",
+    "Licensed miniature/statue descriptions identify equipment cues, not film-prop measurements.",
+    "No new model, texture, rig, animation, boss, faction or map was generated by this UI/data pass."
+  ],
+  "remaining": [
+    {
+      "id": "FID-ASSETS",
+      "status": "not_verified",
+      "requirement": "Compare every model, mask, costume, weapon, material and rig against its specific source incarnation at real gameplay scale."
+    },
+    {
+      "id": "FID-ACTIONS",
+      "status": "not_verified",
+      "requirement": "Audit the actual actions, targeting, timing, reloads and effects; a selectable id or guard is not proof of 1:1 behaviour."
+    },
+    {
+      "id": "FID-CASTS",
+      "status": "outside_this_pass",
+      "requirement": "Review human/synthetic/xenomorph/Yautja projections independently; do not substitute a generic actor for a distinct caste, faction or named incarnation."
+    },
+    {
+      "id": "FID-MAPS",
+      "status": "not_measured",
+      "requirement": "Source the location topology, dimensions, traversal and architecture; existing original musou layouts are not film reconstructions."
+    },
+    {
+      "id": "FID-INTEGRATION",
+      "status": "pending",
+      "requirement": "Run the locked full build and actual gameplay, checkpoint, campaign, cooperative and gamepad paths; isolated DOM tests do not cover them."
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+PASS jungle_hunter: reference choices, summary and confirmed kit agree
+PASS wolf_predator: reference choices, summary and confirmed kit agree
+PASS alpha_predator: reference choices, summary and confirmed kit agree
+PASS feral_predator: reference choices, summary and confirmed kit agree
+PASS samurai_predator: reference choices, summary and confirmed kit agree
+PASS viking_predator: reference choices, summary and confirmed kit agree
+PASS city_hunter: reference choices, summary and confirmed kit agree
+PASS adapted mode exposes ten implemented choices in each slot and six gadgets
+PASS reference mode rejects a synthetic click on hidden disallowed equipment
+PASS mode and character changes retain separate chosen kits
+PASS gadget cap has feedback, replacing and selecting zero gadgets remain possible
+PASS the real screen-opening observer refreshes a changed character on replay
+PASS unknown and inherited-property reference ids cannot deploy
+PASS confirmation revalidates changed fields and mode without trusting the preview
+PASS repeated confirmation is single-use until the screen is reopened
+PASS confirmation hands off a private gadget array
+PASS a failed deployment restores the same kit and exposes a retry message
+PASS focus moves away from a disallowed option and keyboard confirmation works
+PASS references remain inspectable and do not claim a certified 1:1 asset
+PASS dispose is idempotent, removes listeners and reconstruction adds no duplicate controls
+{"tests":20,"passed":20,"failed":0}
