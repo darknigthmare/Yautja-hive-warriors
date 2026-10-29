@@ -2317,8 +2317,21 @@
       "item": "Vérifier les sauvegardes et migrations",
       "acceptance": "Une sauvegarde ancienne, partielle ou invalide ne bloque pas le lancement et n’efface pas silencieusement des trophées valides.",
       "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Checkpoints, incompatibilités, corruption et reçus ont tests ; toutes les migrations d’anciennes sauvegardes/trophées valides restent à vérifier."
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/qa/gamedev-save-reliability-20261029/targeted-tests.txt",
+          "sha256": "a8838ef920e88bea8e026fd28330992d3dd7cda37c0dcdc2837c778e12ffe3da",
+          "scope": "72 tests Node ciblés : honneur, reçus Forge/clan, méthodes UI, checkpoints et stratégie. Fixtures DOM/Player sans scène WebGL ; pas 72 parcours navigateur."
+        },
+        {
+          "kind": "review",
+          "path": "docs/qa/gamedev-save-reliability-20261029/validation.json",
+          "sha256": "6d0f72bebabb74f02eb7011ef29668ccae5ec916c516ec677f92e9673ece24cb",
+          "scope": "Sources et guides épinglés, empreintes des fichiers testés, limites de migration et conditions de validation. AUD-118 reste partiel."
+        }
+      ],
+      "notes": "Checkpoints, incompatibilités, corruption et reçus ont tests ; toutes les migrations d’anciennes sauvegardes/trophées valides restent à vérifier. Application ciblée du 29/10/2026 : protection des registres illisibles/futurs et trophées lisibles, récupération explicite des crédits/reçus, restauration des achats Forge/clan, alias tactiques et checkpoints terminaux nouveaux. 72 tests ciblés réussis ; rapport docs/qa/gamedev-save-reliability-20261029/README.md. Les anciens checkpoints terminaux déjà invalides et les autres migrations restent à vérifier ; aucun parcours WebGL ni recette humaine ne découle de ces tests."
     },
     "AUD-119": {
       "status": "À valider",

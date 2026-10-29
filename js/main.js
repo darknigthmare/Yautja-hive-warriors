@@ -5142,32 +5142,36 @@ class GameApp {
     const modal = document.getElementById('clan-honor-vault-modal');
     if (!modal) return;
     const isHidden = this.toggleTacticalModal(modal.id);
-    if (!isHidden) {
-      this.forge.honorLedger?.retryPending?.();
-      const ledger = this.forge.honorLedger?.getSnapshot() ?? { earned: 0, balance: 0, trophies: [] };
-      const data = { lifetimeHonor: ledger.earned, lifetimeSkulls: this.ui.trophyStats.skullsCollected, highestCombo: this.ui.trophyStats.highestCombo, maxWave: this.waveIndex, trophies: ledger.trophies };
+    if (!isHidden) this.refreshClanHonorVaultUI();
+  }
 
-      const honorElem = document.getElementById('vault-lifetime-honor');
-      if (honorElem) honorElem.innerText = `${(data.lifetimeHonor || 0).toLocaleString()} PTS${ledger.pendingHonor>0?' · '+ledger.pendingHonor+' en attente de crédit':''}`;
-      const skullsElem = document.getElementById('vault-lifetime-skulls');
-      if (skullsElem) skullsElem.innerText = `${data.lifetimeSkulls || this.sessionSkulls || 0} CRÂNES`;
-      const comboElem = document.getElementById('vault-highest-combo');
-      if (comboElem) comboElem.innerText = `${Math.max(data.highestCombo || 0, this.comboHits || 0)} HITS`;
-      const waveElem = document.getElementById('vault-max-wave');
-      if (waveElem) waveElem.innerText = `VAGUE ${Math.max(data.maxWave || 1, this.waveIndex || 1)}`;
+  refreshClanHonorVaultUI() {
+    this.forge.honorLedger?.retryPending?.();
+    this.forge.renderSaveStatus();
+    const ledger = this.forge.honorLedger?.getSnapshot() ?? { earned: 0, balance: 0, trophies: [] };
+    const data = { lifetimeHonor: ledger.earned, lifetimeSkulls: this.ui.trophyStats.skullsCollected, highestCombo: this.ui.trophyStats.highestCombo, maxWave: this.waveIndex, trophies: ledger.trophies };
 
-      const listElem = document.getElementById('vault-trophies-list');
-      if (listElem) {
-        listElem.innerHTML = '';
-        const allTrophies = data.trophies;
-        if (!allTrophies.length) listElem.textContent = 'Aucun trophée récolté.';
-        allTrophies.forEach(t => {
-          const item = document.createElement('div');
-          item.className = 'vault-trophy-item';
-          item.innerText = `🏆 ${t}`;
-          listElem.appendChild(item);
-        });
-      }
+    const honorElem = document.getElementById('vault-lifetime-honor');
+    if (honorElem) honorElem.innerText = ledger.recoveryRequired ? 'À RÉCUPÉRER'
+      : `${(data.lifetimeHonor || 0).toLocaleString()} PTS${ledger.pendingHonor>0?' · '+ledger.pendingHonor+' en attente de crédit':''}`;
+    const skullsElem = document.getElementById('vault-lifetime-skulls');
+    if (skullsElem) skullsElem.innerText = `${data.lifetimeSkulls || this.sessionSkulls || 0} CRÂNES`;
+    const comboElem = document.getElementById('vault-highest-combo');
+    if (comboElem) comboElem.innerText = `${Math.max(data.highestCombo || 0, this.comboHits || 0)} HITS`;
+    const waveElem = document.getElementById('vault-max-wave');
+    if (waveElem) waveElem.innerText = `VAGUE ${Math.max(data.maxWave || 1, this.waveIndex || 1)}`;
+
+    const listElem = document.getElementById('vault-trophies-list');
+    if (listElem) {
+      listElem.innerHTML = '';
+      const allTrophies = data.trophies;
+      if (!allTrophies.length) listElem.textContent = 'Aucun trophée récolté.';
+      allTrophies.forEach(t => {
+        const item = document.createElement('div');
+        item.className = 'vault-trophy-item';
+        item.innerText = `🏆 ${t}`;
+        listElem.appendChild(item);
+      });
     }
   }
 
@@ -5210,9 +5214,10 @@ class GameApp {
 
   refreshClanForgeUI() {
     if (!this.player) return;
+    const saveNotice = this.forge.renderSaveStatus();
     this.player.loadClanForgeUpgrades();
     const honorEl = document.getElementById('clan-forge-honor-balance');
-    if (honorEl) honorEl.innerText = `${this.forge.getBalance().toLocaleString()} PTS`;
+    if (honorEl) honorEl.innerText = saveNotice.blocked ? 'À RÉCUPÉRER' : `${this.forge.getBalance().toLocaleString()} PTS`;
     const jellyEl = document.getElementById('forge-jelly-balance');
     if (jellyEl) jellyEl.innerText = `${this.player.royalJellyFlasks || 0} FIOLES`;
 
@@ -5238,7 +5243,7 @@ class GameApp {
           btn.classList.add('btn-forged');
         } else {
           btn.innerText = `FORGER (${u.costHonor} PTS + ${u.costJelly} GELÉES)`;
-          btn.disabled = false;
+          btn.disabled = saveNotice.blocked;
           btn.classList.remove('btn-forged');
           btn.onclick = () => this.purchaseClanForgeUpgrade(u.key, u.costHonor, u.costJelly);
         }
@@ -5247,6 +5252,7 @@ class GameApp {
   }
 
   purchaseClanForgeUpgrade(key, costHonor, costJelly) {
+    if (!this.forge.ensureHonorReady()) return;
     if (!this.player || this.player.forgeUpgrades?.[key] || this.forge.getBalance() < costHonor || (this.player.royalJellyFlasks || 0) < costJelly) {
       if (this.ui && this.ui.showAnnouncement) {
         this.ui.showAnnouncement('⚠️ RESSOURCES INSUFFISANTES POUR CETTE FORGE SACRÉE !');
@@ -5254,7 +5260,7 @@ class GameApp {
       return;
     }
 
-    if (!this.forge.honorLedger.spend({ id: `clan-forge:${key}`, amount: costHonor, kind: 'clan-upgrade' })) return;
+    if (!this.forge.honorLedger.spend({ id: `clan-forge:${key}`, amount: costHonor, kind: 'clan-upgrade' })) { this.forge.renderSaveStatus(); return; }
     this.player.royalJellyFlasks -= costJelly;
     this.player.forgeUpgrades[key] = true;
 
@@ -5304,25 +5310,27 @@ class GameApp {
 
   refreshMothershipBridgeUI() {
     const currentHonor = this.forge.getBalance();
+    const saveNotice = this.forge.renderSaveStatus();
     const btnBarrage = document.getElementById('btn-orbital-barrage');
     const btnResupply = document.getElementById('btn-drop-pod-resupply');
     const btnBlessing = document.getElementById('btn-elders-blessing');
 
     if (btnBarrage) {
-      btnBarrage.disabled = currentHonor < 4000;
-      btnBarrage.style.opacity = currentHonor < 4000 ? '0.5' : '1.0';
+      btnBarrage.disabled = saveNotice.blocked || currentHonor < 4000;
+      btnBarrage.style.opacity = btnBarrage.disabled ? '0.5' : '1.0';
     }
     if (btnResupply) {
-      btnResupply.disabled = currentHonor < 2500;
-      btnResupply.style.opacity = currentHonor < 2500 ? '0.5' : '1.0';
+      btnResupply.disabled = saveNotice.blocked || currentHonor < 2500;
+      btnResupply.style.opacity = btnResupply.disabled ? '0.5' : '1.0';
     }
     if (btnBlessing) {
-      btnBlessing.disabled = currentHonor < 3000;
-      btnBlessing.style.opacity = currentHonor < 3000 ? '0.5' : '1.0';
+      btnBlessing.disabled = saveNotice.blocked || currentHonor < 3000;
+      btnBlessing.style.opacity = btnBlessing.disabled ? '0.5' : '1.0';
     }
   }
 
   callPlanetaryOrbitalBarrage() {
+    if (!this.forge.ensureHonorReady()) return false;
     const cost = 4000;
     if (!this.player || this.forge.getBalance() < cost) {
       if (this.ui && this.ui.showAnnouncement) {
@@ -5335,7 +5343,7 @@ class GameApp {
     if(!canAccessLegacyAir(this.missionSupportContext,origin,60)||impacts.some(point=>!canAccessLegacyAir(this.missionSupportContext,point,2))){
       this.ui.showAnnouncement('BARRAGE REFUSÉ : LE SCÉNARIO OU L’ACCÈS PHYSIQUE AU CIEL NE PERMET PAS CETTE FRAPPE.');return false;
     }
-    if (!this.forge.honorLedger.spend({ id: `${this.missionRun}:support:${++this._supportTransaction}`, amount: cost, kind: 'support' })) return false;
+    if (!this.forge.honorLedger.spend({ id: `${this.missionRun}:support:${++this._supportTransaction}`, amount: cost, kind: 'support' })) { this.forge.renderSaveStatus(); return false; }
     this.refreshMothershipBridgeUI();
     this.closeTacticalModal('mothership-bridge-modal');
 
@@ -5371,6 +5379,7 @@ class GameApp {
   }
 
   callOrbitalDropPodResupply() {
+    if (!this.forge.ensureHonorReady()) return;
     const cost = 2500;
     if (!this.player || this.forge.getBalance() < cost) {
       if (this.ui && this.ui.showAnnouncement) {
@@ -5378,7 +5387,7 @@ class GameApp {
       }
       return;
     }
-    if (!this.forge.honorLedger.spend({ id: `${this.missionRun}:support:${++this._supportTransaction}`, amount: cost, kind: 'support' })) return;
+    if (!this.forge.honorLedger.spend({ id: `${this.missionRun}:support:${++this._supportTransaction}`, amount: cost, kind: 'support' })) { this.forge.renderSaveStatus(); return; }
     this.refreshMothershipBridgeUI();
     this.closeTacticalModal('mothership-bridge-modal');
 
@@ -5389,6 +5398,7 @@ class GameApp {
   }
 
   callEldersEmergencyBlessing() {
+    if (!this.forge.ensureHonorReady()) return;
     const cost = 3000;
     if (!this.player || this.forge.getBalance() < cost) {
       if (this.ui && this.ui.showAnnouncement) {
@@ -5396,7 +5406,7 @@ class GameApp {
       }
       return;
     }
-    if (!this.forge.honorLedger.spend({ id: `${this.missionRun}:support:${++this._supportTransaction}`, amount: cost, kind: 'support' })) return;
+    if (!this.forge.honorLedger.spend({ id: `${this.missionRun}:support:${++this._supportTransaction}`, amount: cost, kind: 'support' })) { this.forge.renderSaveStatus(); return; }
     this.refreshMothershipBridgeUI();
     this.closeTacticalModal('mothership-bridge-modal');
 

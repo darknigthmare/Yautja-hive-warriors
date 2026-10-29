@@ -307,7 +307,7 @@ export class BattleSimulation {
     groups.forEach((group, index) => {
       const orderType = { pincer: 'attack', hold_line: 'defend', ambush: 'defend', fallback: 'retreat' }[type];
       this.issueOrder(group.id, { type: orderType, frontId, issuer });
-      group.formation = type === 'pincer' ? 'flank' : type === 'hold_line' ? 'line' : type === 'ambush' ? 'dispersed' : 'column';
+      group.formation = normalizeFormation(type === 'pincer' ? 'flank' : type === 'hold_line' ? 'line' : type === 'ambush' ? 'dispersed' : 'column');
       group.tactic = { type, expires: this.time + 20, flank: type === 'pincer' ? (index % 2 ? -1 : 1) : 0 };
     });
     this._emit('tactic_ordered', { type, frontId, groupIds: groups.map(group => group.id), expires: this.time + 20 }, 2);
@@ -775,6 +775,9 @@ export class BattleSimulation {
   _finish(outcome, reason, details = {}) {
     if (this.result) return;
     this.result = { ...details, outcome, reason, time: this.time };
+    // No more simulation steps can consume this frame's remaining time. A
+    // checkpoint made by an observer must already contain a valid stopped clock.
+    this.accumulator = 0;
     this._emit('operation_finished', this.result, 4); this.callbacks.objective?.(clone(this.result));
   }
 
@@ -946,7 +949,11 @@ export class BattleSimulation {
       // through the detail budget on the next update, keeping health and losses.
       if (unit.state === 'active') unit.state = 'distant';
     }
-    for (const group of saved.groups) {
+    const groups = saved.groups.map(clone);
+    for (const group of groups) {
+      // Earlier tactical orders could be saved before the next formation tick
+      // converted these two aliases. Keep unknown save values invalid.
+      if (['flank', 'column'].includes(group.formation)) group.formation = normalizeFormation(group.formation);
       const expectedCoordination = simulation.factions.get(group.factionId)?.moraleModel === 'hive' && units.get(group.officerId)?.state === 'dead' ? .65 : 1;
       group.coordinationStrength ??= expectedCoordination; group.reconstitution ??= null; group.supportsReconstitutionOf ??= null; group.lastReinforcementArrival ??= null; group.reinforcementDestination ??= null;
       if (group.lastReinforcementArrival !== null && !number(group.lastReinforcementArrival, 0, saved.time) || group.reinforcementDestination !== null && !simulation.fronts.has(group.reinforcementDestination)) fail('invalid saved reinforcement destination');
@@ -981,7 +988,7 @@ export class BattleSimulation {
     if (!Array.isArray(saved.pendingArrivals) || new Set(saved.pendingArrivals.map(arrival => arrival.groupId)).size !== saved.pendingArrivals.length || saved.pendingArrivals.some(arrival => !simulation.groups.has(arrival.groupId) || !simulation.fronts.has(arrival.frontId) || !simulation.fronts.has(arrival.sourceId) || simulation.groups.get(arrival.groupId).factionId !== arrival.factionId || !number(arrival.due, saved.time, saved.time + simulation.budgets.announcementSeconds) || !simulation.groups.get(arrival.groupId).units.some(unitId => units.get(unitId).state === 'reserve') || arrival.supportForGroupId !== undefined && (!simulation.groups.has(arrival.supportForGroupId) || simulation.groups.get(arrival.supportForGroupId).factionId !== arrival.factionId))) fail('invalid saved arrival');
     if (!Array.isArray(saved.events) || saved.events.length > 512 || !Number.isInteger(saved.eventSequence) || saved.eventSequence < saved.events.length || !Number.isInteger(saved.eventsDropped) || saved.eventsDropped < 0 || saved.events.some(event => !Number.isInteger(event.id) || event.id < 1 || event.id > saved.eventSequence || !number(event.time, 0, saved.time) || !number(event.priority, 0, 4) || typeof event.type !== 'string' || event.type.length > 80) || new Set(saved.events.map(event => event.id)).size !== saved.events.length) fail('invalid bounded event journal');
     if (!Array.isArray(saved.nextReinforcement) || saved.nextReinforcement.length !== simulation.factions.size || saved.nextReinforcement.some(([factionId, time]) => !simulation.factions.has(factionId) || !number(time, 0, 1e9))) fail('invalid saved reinforcement timers');
-    simulation.units = units; simulation.groups = new Map(saved.groups.map(group => [group.id, { ...clone(group), materialized: false, state: group.state === 'active' ? 'distant' : group.state }]));
+    simulation.units = units; simulation.groups = new Map(groups.map(group => [group.id, { ...group, materialized: false, state: group.state === 'active' ? 'distant' : group.state }]));
     simulation.fronts = new Map(saved.fronts.map(front => [front.id, clone(front)])); simulation.routes = new Map(saved.routes.map(route => [route.id, clone(route)]));
     simulation.relations = new Map(saved.relations); simulation.deaths = new Map(saved.deaths.map(death => [death.entityId, clone(death)]));
     simulation.events = saved.events.map(clone); simulation.eventsDropped = saved.eventsDropped; simulation.eventSequence = saved.eventSequence;

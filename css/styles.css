@@ -3877,6 +3877,11 @@ input[type=range] { width: 100%; accent-color: #b7df83; min-height: 30px; }
 .forge-balance { padding: 15px; border: 1px solid #4e653b; background: #1a2b1a; font-size: 0.85rem; color: #bbd69c; }
 .forge-balance strong { display: block; font-size: 1.7rem; color: #e3f4d0; }
 .forge-balance p { font-size: 0.93rem; color: #bbcbb2; }
+.honor-save-status { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 12px 0; padding: 14px 16px; border: 1px solid #826a3f; border-radius: 8px; background: #2b251b; color: #f4ddb2; }
+.honor-save-status[hidden], .honor-save-status button[hidden] { display: none; }
+.honor-save-status p { flex: 1 1 260px; margin: 0; font-size: 1rem; line-height: 1.5; overflow-wrap: anywhere; }
+.honor-save-status .btn-secondary { flex: 0 1 auto; min-height: 44px; white-space: normal; color: #f8e8cb; border-color: #a58a54; }
+.honor-save-status .btn-secondary:focus-visible { outline: 3px solid #f2d38c; outline-offset: 3px; }
 .upgrade-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 0; border-bottom: 1px solid #30403b; }
 .upgrade-row > span { flex: 1; }
 .upgrade-row button { font-size: 0.8rem; letter-spacing: 0; }

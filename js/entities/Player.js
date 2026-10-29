@@ -5017,37 +5017,45 @@ export class Player {
 
   /* === CHANTIER 1 (v51.0): Clan Weapon Forge Persistent Upgrades === */
   loadClanForgeUpgrades() {
+    const keys = ['barbedCombiStick', 'serratedSmartDisc', 'overchargedCoil', 'masterWristblades', 'enkiduBattleplate',
+      'burnerPlasmaCoil', 'cauterizingWristblade', 'ceramicThermalArmor', 'dlexTargetingHUD'];
+    const current = this.forgeUpgrades ?? {};
+    const upgrades = Object.fromEntries(keys.map(key => [key, Object.hasOwn(current, key) && current[key] === true]));
     try {
-      if (typeof localStorage === 'undefined') return;
-      const saved = localStorage.getItem('yautja_clan_forge');
+      const saved = typeof localStorage === 'undefined' ? null : localStorage.getItem('yautja_clan_forge');
       if (saved) {
         const parsed = JSON.parse(saved);
-        this.forgeUpgrades = { ...this.forgeUpgrades, ...parsed };
-        if (this.forgeUpgrades.masterWristblades) {
-          this.parryWindowDuration = 0.58;
-        }
-        if (this.forgeUpgrades.enkiduBattleplate) {
-          this.hasEnkiduArmor = true;
-          this.acidResistance = 0.40;
-          this.gauntletCooldownReduction = 0.80;
-          this.maxHp = (this.data && this.data.stats && this.data.stats.maxHp ? this.data.stats.maxHp : 1000) + 250;
-        }
-        if (this.forgeUpgrades.burnerPlasmaCoil) {
-          this.hasBurnerCoil = true;
-        }
-        if (this.forgeUpgrades.cauterizingWristblade) {
-          this.hasCauterizingWristblade = true;
-        }
-        if (this.forgeUpgrades.ceramicThermalArmor) {
-          this.hasCeramicThermalArmor = true;
-        }
-        if (this.forgeUpgrades.dlexTargetingHUD) {
-          this.hasDlexTargetingHUD = true;
+        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+          for (const key of keys) if (Object.hasOwn(parsed, key) && parsed[key] === true) upgrades[key] = true;
         }
       }
     } catch (e) {
       console.warn('Failed to load forge upgrades:', e);
     }
+    // The honor debit is committed before the separate clan slot. Its receipt
+    // restores a paid upgrade when the second write failed, without charging again.
+    const ledger = this.gameContext?.forge?.honorLedger;
+    const state = ledger?.getSnapshot?.();
+    if (state?.recoveryRequired === false && state.readOnly === false) {
+      for (const key of keys) {
+        const id = `clan-forge:${key}`;
+        const receipt = Object.hasOwn(ledger.transactions, id) ? ledger.transactions[id] : null;
+        if (receipt?.kind === 'clan-upgrade' && Number.isSafeInteger(receipt.amount) && receipt.amount < 0) upgrades[key] = true;
+      }
+    }
+    this.forgeUpgrades = upgrades;
+    if (upgrades.masterWristblades) this.parryWindowDuration = 0.58;
+    if (upgrades.enkiduBattleplate) {
+      // Reopening the forge or recovering a save must preserve other HP bonuses.
+      if (!this.hasEnkiduArmor) this.maxHp += 250;
+      this.hasEnkiduArmor = true;
+      this.acidResistance = 0.40;
+      this.gauntletCooldownReduction = 0.80;
+    }
+    if (upgrades.burnerPlasmaCoil) this.hasBurnerCoil = true;
+    if (upgrades.cauterizingWristblade) this.hasCauterizingWristblade = true;
+    if (upgrades.ceramicThermalArmor) this.hasCeramicThermalArmor = true;
+    if (upgrades.dlexTargetingHUD) this.hasDlexTargetingHUD = true;
   }
 
   /* === CHANTIER 4 & LUCAS QA (v51.0): Dedicated Wristblade Parry Action [F] (AVP 2010 / Hunting Grounds) === */
