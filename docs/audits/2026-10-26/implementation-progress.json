@@ -1734,8 +1734,27 @@
       "item": "Rendre coups et tirs respectueux du décor",
       "acceptance": "Un tir ordinaire ne traverse pas une paroi; une arme perforante le fait seulement dans ses limites annoncées.",
       "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Murs et couverts partagés arrêtent mêlée/tirs/projectiles, ycompris NPC. Les limites de perforation de toutes les armes ne sont pas encore certifiées."
+      "evidence": [
+        {
+          "kind": "review",
+          "path": "docs/qa/gamedev-combat-cover-20261029/README.md",
+          "sha256": "034fc4577d1d2dfc0130f943b0e55cf2a1ec6f046083753cb4057019a6e9a14c",
+          "scope": "Périmètre des cinq armes, défauts reproduits, revue indépendante et limites de visuel/interactions de décor. AUD-090 reste partiel."
+        },
+        {
+          "kind": "test",
+          "path": "docs/qa/gamedev-combat-cover-20261029/validation.json",
+          "sha256": "d1ee211367da26095a070c1fc21197ccceee8e5bbe8c8540f733720ac5084ae3",
+          "scope": "Empreintes des sources, 56 tests CPU réussis, 14 cas en échec sur baseline, sélections existantes explicites, build et navigateur non validés."
+        },
+        {
+          "kind": "test",
+          "path": "docs/qa/gamedev-combat-cover-20261029/targeted-tests.txt",
+          "sha256": "6fb5d7fbccc97b4e870ec4bb15c9a62c250d72dd8f714c3d15882d3e9590f6bd",
+          "scope": "Journal consolidé : 17 hitscan, 12 projectiles, 15 interactions J2, 6 récupération clan et 6 cas géométrie/flèche sélectionnés ; 56/56."
+        }
+      ],
+      "notes": "Murs et couverts partagés arrêtent mêlée/tirs/projectiles, ycompris NPC. Les limites de perforation de toutes les armes ne sont pas encore certifiées. Passe du 29/10/2026 depuis c6ebf48 : défauts reproduits puis corrigés pour les dégâts directs du pistolet plasma, du Seegson et des impacts de proximité smart disc/combistick/shuriken sur boss protégés. Origines réelles, murs proches/bas et effets d'impact vérifiés ; 56 tests CPU réussis, dont 29 nouveaux cas et 27 régressions/cas existants. Le faisceau visuel Seegson, l'interaction électrique distante du pistolet et les autres armes restent hors de cette preuve. Build local indisponible (Vite absent), aucune recette navigateur ni certification globale de perforation. Voir docs/qa/gamedev-combat-cover-20261029/."
     },
     "AUD-091": {
       "status": "À valider",

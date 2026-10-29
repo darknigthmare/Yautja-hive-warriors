@@ -1624,9 +1624,12 @@ export class Player {
     return !simulation || !actor.factionId || simulation.areHostile(simulation.config.playerFaction, actor.factionId);
   }
 
-  _canHitLegacyAlien(horde, actor, origin = null) {
+  _canHitLegacyAlien(horde, actor, origin = null, environment = this.gameContext?.env) {
     if (!this._canDamageLegacyAlien(horde, actor)) return false;
-    const environment = this.gameContext?.env;
+    return this._hasLegacyLineOfSight(actor, origin, environment);
+  }
+
+  _hasLegacyLineOfSight(actor, origin = null, environment = this.gameContext?.env) {
     const visual = actor.mesh ?? actor.group;
     if (!environment?.hasLineOfSight || !visual) return true;
     const from = origin ?? this.position.clone().add(new THREE.Vector3(0, 2, 0));
@@ -3086,16 +3089,17 @@ export class Player {
         const boltPos = origin.clone().addScaledVector(forward, 24.0);
 
         // Check boss hit
-        if (bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
-          const bossDist = bosses.activeBoss.mesh.position.distanceTo(origin);
+        const boss = bosses?.activeBoss;
+        if (boss?.mesh) {
+          const bossDist = boss.mesh.position.distanceTo(origin);
           if (bossDist <= 28.0) {
-            const toBoss = bosses.activeBoss.mesh.position.clone().sub(origin).normalize();
-            if (forward.dot(toBoss) > 0.88) {
+            const toBoss = boss.mesh.position.clone().sub(origin).normalize();
+            if (forward.dot(toBoss) > 0.88 && this._hasLegacyLineOfSight(boss, origin, environment)) {
               const isCrit = Math.random() < 0.45;
               const dmg = 95 * (isCrit ? 3.0 : 1.0);
               bosses.takeDamage(dmg, horde);
               hitTarget = true;
-              if (particles && particles.emitSparks) particles.emitSparks(bosses.activeBoss.mesh.position, 8);
+              if (particles && particles.emitSparks) particles.emitSparks(boss.mesh.position, 8);
               if (isCrit && this.gameContext && this.gameContext.ui) {
                 this.gameContext.ui.showAnnouncement('💥 TIR CRITIQUE PISTOLET PLASMA (AVP-R) : 285 DÉGÂTS D\'ÉNERGIE PURE !');
               }
@@ -3116,7 +3120,7 @@ export class Player {
               if (forward.dot(toAlien) > 0.88) {
                 const isCrit = Math.random() < 0.5;
                 const dmg = 95 * (isCrit ? 3.0 : 1.0);
-                if (!this._canHitLegacyAlien(horde, a, boltOrigin)) continue;
+                if (!this._canHitLegacyAlien(horde, a, origin, environment)) continue;
                 a.hp -= dmg;
                 hitTarget = true;
 
@@ -4297,7 +4301,7 @@ export class Player {
           const proj = toEnemy.dot(forward);
           const perpDist = Math.sqrt(Math.max(0, dist * dist - proj * proj));
           if (proj > 0 && perpDist <= (a.radius || 1.2) + 0.85) {
-            if (!this._canHitLegacyAlien(horde, a, null)) continue;
+            if (!this._canHitLegacyAlien(horde, a, startPos)) continue;
             a.hp -= 680;
             // Cauterizes Ancient Predalien Elder regeneration and bypasses frontal armor!
             a.regenActive = false;
@@ -4320,10 +4324,11 @@ export class Player {
       }
     }
 
-    if (!hitTarget && bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
-      const toBoss = bosses.activeBoss.mesh.position.clone().sub(this.position);
+    const boss = bosses?.activeBoss;
+    if (!hitTarget && boss?.mesh) {
+      const toBoss = boss.mesh.position.clone().sub(this.position);
       toBoss.y = 0;
-      if (toBoss.length() <= 38.0 && toBoss.normalize().dot(forward) > 0.86) {
+      if (toBoss.length() <= 38.0 && toBoss.normalize().dot(forward) > 0.86 && this._hasLegacyLineOfSight(boss, startPos)) {
         bosses.takeDamage(680, horde);
         hitTarget = true;
       }

@@ -2713,6 +2713,15 @@ class GameApp {
     return true;
   }
 
+  canProjectileHitBoss(projectile, range = 4) {
+    const boss = this.bosses?.activeBoss, origin = projectile?.mesh?.position;
+    if (!boss || !(boss.hp > 0) || !origin?.isVector3 || !(origin.distanceTo(boss.mesh.position) <= range)) return false;
+    // A nearby boss may still be behind cover that this projectile has not
+    // reached. Trace from its actual height, without the melee origin offset.
+    const target = boss.mesh.position.clone().add(new THREE.Vector3(0, 1.5, 0));
+    return this.env.hasLineOfSight?.(origin, target) !== false;
+  }
+
   hitBossFromPlayer(damage, origin, attackKind='light', impactOrigin=origin) {
     const boss=this.bosses.activeBoss;
     if(!boss||!origin?.isVector3)return null;
@@ -3716,7 +3725,7 @@ class GameApp {
           this.registerHits(hits);
         }
 
-        if (this.bosses && this.bosses.activeBoss && p.mesh.position.distanceTo(this.bosses.activeBoss.mesh.position) <= 4.0) {
+        if (this.canProjectileHitBoss(p)) {
           this.bosses.takeDamage(p.damage);
           this.particles.emitSparks(p.mesh.position, 8);
           if (this.gore && this.gore.spawnDismemberment) {
@@ -3756,7 +3765,7 @@ class GameApp {
           p.pierceRemaining -= hits.length;
         }
 
-        if (this.bosses.activeBoss && p.mesh.position.distanceTo(this.bosses.activeBoss.mesh.position) <= 4.0) {
+        if (this.canProjectileHitBoss(p)) {
           this.bosses.takeDamage(p.damage);
           this.audio.playCombiStickImpale();
           p.pierceRemaining--;
@@ -3784,7 +3793,7 @@ class GameApp {
           p.pierceRemaining -= hits.length;
         }
 
-        if (this.bosses.activeBoss && p.mesh.position.distanceTo(this.bosses.activeBoss.mesh.position) <= 4.0) {
+        if (this.canProjectileHitBoss(p)) {
           this.bosses.takeDamage(p.damage);
           this.audio.playShurikenSlice();
           p.pierceRemaining--;
