@@ -67,6 +67,53 @@ test('finalized run IDs survive the 64-receipt debrief ring and a temporary quot
   assert.equal(new BattleCampaignRecord({ storage: disk, now }).getDebrief().recordedRuns, 71);
 });
 
+test('observing the same named loss retries a recovered store and prevents resurrection after reload', () => {
+  const disk = storage(), book = new BattleCampaignRecord({ storage: disk, now }), { config, sim } = mission();
+  const options = { arcId, runId: 'named-loss-retry' }, named = [...sim.units.values()].find(unit => unit.uniqueId === 'BOS-26');
+  assert.equal(sim.recordDeath({ entityId: named.id, killerFaction: config.playerFaction }), true);
+  disk.blocked = true;
+  const first = book.observe(config, sim, options);
+  assert.equal(first.recorded, true); assert.equal(first.persisted, false); assert.equal(book.writes, 0);
+  disk.blocked = false;
+  const retry = book.observe(config, sim, options);
+  assert.equal(retry.recorded, false); assert.equal(retry.persisted, true); assert.equal(book.writes, 1);
+  assert.equal(book.status, 'saved'); assert.equal(book.lastError, null);
+  const reloaded = new BattleCampaignRecord({ storage: disk, now }), laterConfig = getBattleOperationConfig('AFF-03');
+  const history = reloaded.historyFor(laterConfig, { arcId });
+  assert.deepEqual(history.defeatedUniqueIds, ['BOS-26']);
+  const later = new BattleSimulation(laterConfig, { history }), laterNamed = [...later.units.values()].find(unit => unit.uniqueId === 'BOS-26');
+  assert.equal(laterNamed.state, 'dead'); assert.equal(laterNamed.hp, 0); assert.equal(later.assertConservation(), true);
+  assert.equal(book.observe(config, sim, options).persisted, true); assert.equal(book.writes, 1);
+  assert.equal(book.data.arcs[0].individuals.length, 1); assert.equal(book.getDebrief().recordedRuns, 0);
+  assert.equal(disk.values.get('yautja-honor'), '{"balance":42}'); assert.equal(disk.values.get('yautja-trophies'), '["existing"]');
+});
+
+test('an unchanged named loss never reports persisted while the store remains unavailable', () => {
+  const disk = storage(), key = 'yautja-battle-campaign-v1', previous = JSON.stringify({ version: 1, arcs: [] });
+  disk.values.set(key, previous);
+  const book = new BattleCampaignRecord({ storage: disk, now }), { config, sim } = mission(), options = { arcId, runId: 'named-loss-blocked' };
+  sim.recordDeath({ entityId: [...sim.units.values()].find(unit => unit.uniqueId === 'BOS-26').id });
+  disk.blocked = true;
+  assert.equal(book.observe(config, sim, options).persisted, false);
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const response = book.observe(config, sim, options);
+    assert.equal(response.recorded, false); assert.equal(response.persisted, false);
+    assert.equal(book.status, 'storage_unavailable'); assert.equal(book.writes, 0);
+    assert.equal(disk.values.get(key), previous);
+    assert.deepEqual(response.history.defeatedUniqueIds, ['BOS-26']);
+  }
+});
+
+test('observing a named loss already loaded from a valid store performs no redundant write', () => {
+  const disk = storage(), book = new BattleCampaignRecord({ storage: disk, now }), { config, sim } = mission(), options = { arcId, runId: 'named-loss-loaded' };
+  sim.recordDeath({ entityId: [...sim.units.values()].find(unit => unit.uniqueId === 'BOS-26').id });
+  assert.equal(book.observe(config, sim, options).persisted, true);
+  const previous = disk.values.get(book.key), reloaded = new BattleCampaignRecord({ storage: disk, now });
+  const response = reloaded.observe(config, sim, options);
+  assert.equal(response.recorded, false); assert.equal(response.persisted, true);
+  assert.equal(reloaded.status, 'loaded'); assert.equal(reloaded.writes, 0); assert.equal(disk.values.get(book.key), previous);
+});
+
 test('incompatible records remain untouched until explicit reset, isolated from existing stores', () => {
   const disk = storage(), key = 'yautja-battle-campaign-v1', corrupt = '{"version":999,"arcs":[]}'; disk.values.set(key, corrupt);
   const book = new BattleCampaignRecord({ storage: disk, now }), { config, sim } = mission(); win(sim);
@@ -80,7 +127,8 @@ test('incompatible records remain untouched until explicit reset, isolated from 
 test('an older checkpoint cannot revive a unique individual already confirmed dead by the campaign', () => {
   const book = new BattleCampaignRecord({ now }), { config, sim } = mission(), older = sim.saveState();
   sim.recordDeath({ entityId: [...sim.units.values()].find(unit => unit.uniqueId).id });
-  book.observe(config, sim, { arcId, runId: 'loss-before-reload' });
+  assert.equal(book.observe(config, sim, { arcId, runId: 'loss-before-reload' }).persisted, true);
+  assert.equal(book.status, 'memory_only'); assert.equal(book.writes, 0);
   assert.throws(() => BattleSimulation.fromState(config, older, { history: book.historyFor(config, { arcId }) }), /revive/);
   const restored = BattleSimulation.fromState(config, sim.saveState(), { history: book.historyFor(config, { arcId }) });
   assert.equal(restored.assertConservation(), true);

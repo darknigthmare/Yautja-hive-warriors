@@ -573,8 +573,15 @@ class GameApp {
       if (this.weaponWheel.isOpen && e.code !== 'KeyR') return;
       if (this.isCoOp && this.player2 && ['Enter', 'Numpad0', 'NumpadDecimal'].includes(e.code)) {
         e.preventDefault();
-        if (e.code === 'Enter' && this.allyRescue?.interact(this.player2).accepted) return;
-        if (e.code === 'Enter' && this.battlefield?.interact(this.player2)) return;
+        if (this.player2.hp <= 0) return;
+        if (this.player2.isFacehuggerLatched || this.player2.isRoyalFacehuggerLatched) {
+          if (e.code === 'Enter') {
+            if (this.player2.isRoyalFacehuggerLatched) this.horde.struggleRoyalFacehugger(this.player2);
+            else this.handlePlayerInteraction(this.player2);
+          }
+          return;
+        }
+        if (e.code === 'Enter' && this.handlePlayerInteraction(this.player2)) return;
         this.performCoopAttack(e.code);
         return;
       }
@@ -1568,7 +1575,7 @@ class GameApp {
     } else if (this.checkCatwalkPlungingExecution(player)) {
       // Handled Catwalk Plunging Execution Drop (v53.0)!
     } else {
-      this.checkTrophyExecution(player);
+      return this.checkTrophyExecution(player);
     }
     return true;
   }
@@ -2819,7 +2826,7 @@ class GameApp {
         this.bosses.activeBoss.mesh.position.distanceTo(player.position) <= 8) {
       const victim = this.bosses.activeBoss;
       const death = this.bosses.executeBoss(victim, {player:player,range:8,killerFaction:this.battleSimulation?.config.playerFaction??'player_clan'});
-      if (!death) return;
+      if (!death) return false;
       player.executeSpineRip(victim.type || 'queen');
 
       // Chantier 9 (v48): Bullet-Time 360° Trophy Execution Camera
@@ -2911,7 +2918,7 @@ class GameApp {
       if (this.waveIndex >= 5) {
         this.triggerSacredBloodRitualEpilogue();
       }
-      return;
+      return true;
     }
 
     // 2. Sub-Boss Execution (Crusher Titan, Praetorian, Grid Alien, Marvel Alpha, Deacon, Rogue King, Raven, Ancient Predalien, Gestating Matriarch)
@@ -3014,7 +3021,7 @@ class GameApp {
           this.triggerCameraShake(0.9, 0.5);
           this.ui.showAnnouncement(`🏆 TROPHÉE DE CHASSE : ${tName} (+${tHonor} HONNEUR, MORAL +18%) !`);
           this.ui.showExecutionPrompt(false);
-          return;
+          return true;
         }
       }
     }
@@ -3049,10 +3056,11 @@ class GameApp {
           this.triggerCameraShake(0.85, 0.4);
           this.ui.showAnnouncement(`🏆 TROPHÉE CYBERNÉTIQUE ARRACHÉ : ${tName} (+${tHonor} HONNEUR, +40 ÉNERGIE) !`);
           this.ui.showExecutionPrompt(false);
-          return;
+          return true;
         }
       }
     }
+    return false;
   }
 
   /* Chantier 10: Marvel Alpha Spine Trophy Execution & Eldritch Hallucination Pulse (Marvel Alien 2021) */

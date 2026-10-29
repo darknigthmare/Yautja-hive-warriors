@@ -1919,8 +1919,21 @@
       "item": "Créer une carte de commandement complète",
       "acceptance": "Le joueur peut comparer les fronts et envoyer une unité depuis la carte sans perdre la compréhension de la situation.",
       "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Carte réelle zoom/pan, sélection groupe/front, ordres, tactiques, délégation et journal. Le clic transmettre est validé ; toutes les combinaisons de choix/trajectoires depuis la carte ne sont pas parcourues."
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/qa/gamedev-coop-continuity-20261029/targeted-tests.txt",
+          "sha256": "6f41f12a08a615679b9845b647428a69f367eae7b308a5829d8174112db4598c",
+          "scope": "Carte de commandement, passe du 29/10/2026 : retour coop→solo réinitialise le donneur d’ordre et le bénéficiaire du soin sur J1, sans perdre groupes/front/vue. 4 tests de transition DOM simulé ; pas de validation intégrale de tous parcours/trajectoires. Suite consolidée : 44 tests Node réussis, aucun échec/ignoré."
+        },
+        {
+          "kind": "review",
+          "path": "docs/qa/gamedev-coop-continuity-20261029/validation.json",
+          "sha256": "54bbb564517b2d944df4f0755f742ff28898fc918c7eb0dd61765273cd46376d",
+          "scope": "Régressions avant correction, empreintes des sources testées et limites ; aucune recette WebGL ou certification matérielle."
+        }
+      ],
+      "notes": "Carte réelle zoom/pan, sélection groupe/front, ordres, tactiques, délégation et journal. Le clic transmettre est validé ; toutes les combinaisons de choix/trajectoires depuis la carte ne sont pas parcourues. Carte de commandement, passe du 29/10/2026 : retour coop→solo réinitialise le donneur d’ordre et le bénéficiaire du soin sur J1, sans perdre groupes/front/vue. 4 tests de transition DOM simulé ; pas de validation intégrale de tous parcours/trajectoires. Rapport : docs/qa/gamedev-coop-continuity-20261029/README.md."
     },
     "AUD-100": {
       "status": "Terminé",
@@ -2110,8 +2123,21 @@
       "item": "Gérer deux fronts visibles en coopération",
       "acceptance": "P1 etP2 peuvent combattre sur deux fronts avec menaces équitables, objectifs partagés et budget mesuré.",
       "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Budgets communs et acteurs des deuxjoueurs sont testés côté moteur/contrôles ; deuxfronts réellement visibles en coopération avec mesures restent à vérifier."
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/qa/gamedev-coop-continuity-20261029/targeted-tests.txt",
+          "sha256": "6f41f12a08a615679b9845b647428a69f367eae7b308a5829d8174112db4598c",
+          "scope": "Commandes coop, passe du 29/10/2026 : Entrée J2 utilise l’interaction commune, conserve secours/objectifs/QTE et attaque de repli, sans double action ni dépendance à la survie de J1. 15 tests de listener/méthodes de production et 17 contrôles manette adjacents ; deux fronts rendus et budget matériel restent à vérifier. Suite consolidée : 44 tests Node réussis, aucun échec/ignoré."
+        },
+        {
+          "kind": "review",
+          "path": "docs/qa/gamedev-coop-continuity-20261029/validation.json",
+          "sha256": "54bbb564517b2d944df4f0755f742ff28898fc918c7eb0dd61765273cd46376d",
+          "scope": "Régressions avant correction, empreintes des sources testées et limites ; aucune recette WebGL ou certification matérielle."
+        }
+      ],
+      "notes": "Budgets communs et acteurs des deuxjoueurs sont testés côté moteur/contrôles ; deuxfronts réellement visibles en coopération avec mesures restent à vérifier. Commandes coop, passe du 29/10/2026 : Entrée J2 utilise l’interaction commune, conserve secours/objectifs/QTE et attaque de repli, sans double action ni dépendance à la survie de J1. 15 tests de listener/méthodes de production et 17 contrôles manette adjacents ; deux fronts rendus et budget matériel restent à vérifier. Rapport : docs/qa/gamedev-coop-continuity-20261029/README.md."
     },
     "AUD-109": {
       "status": "À valider",
@@ -2329,9 +2355,21 @@
           "path": "docs/qa/gamedev-save-reliability-20261029/validation.json",
           "sha256": "6d0f72bebabb74f02eb7011ef29668ccae5ec916c516ec677f92e9673ece24cb",
           "scope": "Sources et guides épinglés, empreintes des fichiers testés, limites de migration et conditions de validation. AUD-118 reste partiel."
+        },
+        {
+          "kind": "test",
+          "path": "docs/qa/gamedev-coop-continuity-20261029/targeted-tests.txt",
+          "sha256": "6f41f12a08a615679b9845b647428a69f367eae7b308a5829d8174112db4598c",
+          "scope": "Continuité de campagne, passe du 29/10/2026 : observe réessaie une écriture échouée même sans nouvelle conséquence ; son résultat ne prétend plus à une persistance inexistante. 8 tests de campagne passent, avec BOS-26 toujours mort dans AFF-03 reconstruit après panne temporaire. Les autres migrations restent ouvertes. Suite consolidée : 44 tests Node réussis, aucun échec/ignoré."
+        },
+        {
+          "kind": "review",
+          "path": "docs/qa/gamedev-coop-continuity-20261029/validation.json",
+          "sha256": "54bbb564517b2d944df4f0755f742ff28898fc918c7eb0dd61765273cd46376d",
+          "scope": "Régressions avant correction, empreintes des sources testées et limites ; aucune recette WebGL ou certification matérielle."
         }
       ],
-      "notes": "Checkpoints, incompatibilités, corruption et reçus ont tests ; toutes les migrations d’anciennes sauvegardes/trophées valides restent à vérifier. Application ciblée du 29/10/2026 : protection des registres illisibles/futurs et trophées lisibles, récupération explicite des crédits/reçus, restauration des achats Forge/clan, alias tactiques et checkpoints terminaux nouveaux. 72 tests ciblés réussis ; rapport docs/qa/gamedev-save-reliability-20261029/README.md. Les anciens checkpoints terminaux déjà invalides et les autres migrations restent à vérifier ; aucun parcours WebGL ni recette humaine ne découle de ces tests."
+      "notes": "Checkpoints, incompatibilités, corruption et reçus ont tests ; toutes les migrations d’anciennes sauvegardes/trophées valides restent à vérifier. Application ciblée du 29/10/2026 : protection des registres illisibles/futurs et trophées lisibles, récupération explicite des crédits/reçus, restauration des achats Forge/clan, alias tactiques et checkpoints terminaux nouveaux. 72 tests ciblés réussis ; rapport docs/qa/gamedev-save-reliability-20261029/README.md. Les anciens checkpoints terminaux déjà invalides et les autres migrations restent à vérifier ; aucun parcours WebGL ni recette humaine ne découle de ces tests. Continuité de campagne, passe du 29/10/2026 : observe réessaie une écriture échouée même sans nouvelle conséquence ; son résultat ne prétend plus à une persistance inexistante. 8 tests de campagne passent, avec BOS-26 toujours mort dans AFF-03 reconstruit après panne temporaire. Les autres migrations restent ouvertes. Rapport : docs/qa/gamedev-coop-continuity-20261029/README.md."
     },
     "AUD-119": {
       "status": "À valider",

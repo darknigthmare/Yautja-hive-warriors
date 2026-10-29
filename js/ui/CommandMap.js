@@ -24,10 +24,15 @@ export class CommandMap {
   this.canvas.addEventListener('pointermove',event=>{if(!this.drag)return;const dx=event.clientX-this.drag.x,dy=event.clientY-this.drag.y;if(Math.hypot(dx,dy)>5)this.drag.moved=true;if(this.drag.moved){this.pan=[this.drag.pan[0]+dx,this.drag.pan[1]+dy];this.draw();}});
   this.canvas.addEventListener('pointerup',event=>{if(this.drag&&!this.drag.moved)this.pick(event);this.drag=null;});
  }
- update(state,layout,players,coOp=false,extras={}){this.extras=extras;this.state=state;this.layout=layout;this.players=players;this.root.querySelector('[data-issuer] option[value="player2"]').disabled=!coOp;
+ update(state,layout,players,coOp=false,extras={}){this.extras=extras;this.state=state;this.layout=layout;this.players=players;
+  // This map survives mission changes. Disabling an option does not deselect it.
+  for(const selector of ['[data-issuer]','[data-player-target]']){
+   const node=this.root.querySelector(selector);node.querySelector('option[value="player2"]').disabled=!coOp;
+   if(!coOp)node.value='player1';
+  }
   let status=this.root.querySelector('[data-mission-status]');if(!status){status=document.createElement('p');status.dataset.missionStatus='';status.setAttribute('role','status');this.root.querySelector('.screen-header').append(status);}status.textContent=commandMapMissionStatus(state,extras);
   const options=(selector,rows)=>{const node=this.root.querySelector(selector),selected=new Set([...node.selectedOptions].map(option=>option.value));node.replaceChildren(...rows.map(row=>{const option=document.createElement('option');option.value=row.id;option.textContent=row.label;option.selected=selected.has(row.id);return option;}));if(!node.selectedOptions.length&&node.options.length)node.options[0].selected=true;};
-  options('[data-groups]',state.groups.filter(group=>group.factionId===state.playerFaction&&group.alive>0));options('[data-front]',state.fronts);options('[data-companion]',extras.units??[]);options('[data-enemy-target]',extras.hostileGroups??[]);this.root.querySelector('[data-player-target] option[value="player2"]').disabled=!coOp;this.draw();this.report();this.updateJournal();
+  options('[data-groups]',state.groups.filter(group=>group.factionId===state.playerFaction&&group.alive>0));options('[data-front]',state.fronts);options('[data-companion]',extras.units??[]);options('[data-enemy-target]',extras.hostileGroups??[]);this.draw();this.report();this.updateJournal();
  }
  project(point){const b=this.layout.bounds,scale=Math.min(680/(b.maxX-b.minX),440/(b.maxZ-b.minZ))*this.zoom;return[360+(point[0]-(b.minX+b.maxX)/2)*scale+this.pan[0],240+(point[1]-(b.minZ+b.maxZ)/2)*scale+this.pan[1]];}
  pick(event){if(!this.state)return;const rect=this.canvas.getBoundingClientRect(),point=[(event.clientX-rect.left)*720/rect.width,(event.clientY-rect.top)*480/rect.height];const nearest=rows=>rows.map(row=>({row,d:Math.hypot(this.project(row.position)[0]-point[0],this.project(row.position)[1]-point[1])})).sort((a,b)=>a.d-b.d)[0];const group=nearest(this.state.groups.filter(row=>row.factionId===this.state.playerFaction&&row.alive>0));if(group?.d<14){const node=this.root.querySelector('[data-groups]');for(const option of node.options)option.selected=option.value===group.row.id||(event.shiftKey&&option.selected);}else{const front=nearest(this.state.fronts);if(front?.d<26)this.root.querySelector('[data-front]').value=front.row.id;}this.report();}
