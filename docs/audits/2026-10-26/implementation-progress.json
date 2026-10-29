@@ -1770,9 +1770,27 @@
           "path": "docs/qa/gamedev-weapon-feedback-20261029/targeted-tests.txt",
           "sha256": "a9eb5e1dbd99f4e834b0546136c745ac9c36ed6ac4fb66389730ab8ce0ccdf5c",
           "scope": "46/46 : 9 Seegson, 14 grille/pistolet, 17 dégâts directs hérités, 6 récupération clan ; aucun test ignoré."
+        },
+        {
+          "kind": "review",
+          "path": "docs/qa/gamedev-heavy-weapons-20261029/README.md",
+          "sha256": "44af18e17936e49c94d6247e7a4381fda9dfe4d68f7a3ea3d270d3264acc0ec2",
+          "scope": "M77/sniper : contacts physiques, admission bornée, factions/crédit, propriété des effets, revue indépendante et limites WebGL."
+        },
+        {
+          "kind": "test",
+          "path": "docs/qa/gamedev-heavy-weapons-20261029/validation.json",
+          "sha256": "00d4d6fd9b98145d4e98bec8ac6403e819733765f7f5728eb6ca5a8129a402c9",
+          "scope": "Empreintes des sources et 121 tests CPU réussis ; 75 cas rejoués sur 492e732 (18 réussites/57 échecs), build bloqué par Vite absent."
+        },
+        {
+          "kind": "test",
+          "path": "docs/qa/gamedev-heavy-weapons-20261029/targeted-tests.txt",
+          "sha256": "d53211cb0b6d4e7592050f5feefa080d2a085002ea880237d5f9d273f288a4dd",
+          "scope": "Journal final : 38 cas M77, 37 sniper, 46 régressions existantes ; 121/121 sans échec ni test ignoré."
         }
       ],
-      "notes": "Murs et couverts partagés arrêtent mêlée/tirs/projectiles, ycompris NPC. Les limites de perforation de toutes les armes ne sont pas encore certifiées. Passe du 29/10/2026 depuis c6ebf48 : défauts reproduits puis corrigés pour les dégâts directs du pistolet plasma, du Seegson et des impacts de proximité smart disc/combistick/shuriken sur boss protégés. Origines réelles, murs proches/bas et effets d'impact vérifiés ; 56 tests CPU réussis, dont 29 nouveaux cas et 27 régressions/cas existants. Le faisceau visuel Seegson, l'interaction électrique distante du pistolet et les autres armes restent hors de cette preuve. Build local indisponible (Vite absent), aucune recette navigateur ni certification globale de perforation. Voir docs/qa/gamedev-combat-cover-20261029/. Passe suivante du 29/10/2026 depuis 570e443 : les deux limites précédentes sont traitées. Faisceau Seegson borné au premier obstacle avec son rayon réel, étincelles du pistolet bornées, grille choisie selon impact physique et visibilité, aucun double effet grille après impact acteur. 46 tests CPU réussis (23 nouveaux + 23 régressions), dont vrais sommets du maillage et vraies méthodes du mécanisme. Commandes manuelles et paramètres électriques conservés. La priorité/cône d'acteurs, les dégâts de zone après activation, les autres armes et la recette WebGL restent hors de cette preuve. Voir docs/qa/gamedev-weapon-feedback-20261029/."
+      "notes": "Murs et couverts partagés arrêtent mêlée/tirs/projectiles, ycompris NPC. Les limites de perforation de toutes les armes ne sont pas encore certifiées. Passe du 29/10/2026 depuis c6ebf48 : défauts reproduits puis corrigés pour les dégâts directs du pistolet plasma, du Seegson et des impacts de proximité smart disc/combistick/shuriken sur boss protégés. Origines réelles, murs proches/bas et effets d'impact vérifiés ; 56 tests CPU réussis, dont 29 nouveaux cas et 27 régressions/cas existants. Le faisceau visuel Seegson, l'interaction électrique distante du pistolet et les autres armes restent hors de cette preuve. Build local indisponible (Vite absent), aucune recette navigateur ni certification globale de perforation. Voir docs/qa/gamedev-combat-cover-20261029/. Passe suivante du 29/10/2026 depuis 570e443 : les deux limites précédentes sont traitées. Faisceau Seegson borné au premier obstacle avec son rayon réel, étincelles du pistolet bornées, grille choisie selon impact physique et visibilité, aucun double effet grille après impact acteur. 46 tests CPU réussis (23 nouveaux + 23 régressions), dont vrais sommets du maillage et vraies méthodes du mécanisme. Commandes manuelles et paramètres électriques conservés. La priorité/cône d'acteurs, les dégâts de zone après activation, les autres armes et la recette WebGL restent hors de cette preuve. Voir docs/qa/gamedev-weapon-feedback-20261029/. Passe M77/sniper du 29/10/2026 depuis 492e732 : M77 arrêté au premier couvert, boss protégés, anneaux contenus et nettoyage des effets détachés confié au propriétaire ; sniper r160 sans subScaledVector, origine réelle, acteurs et effets bornés, synthétiques alliés/neutres exclus, crédit alien/synthétique conservé par leurs gestionnaires, horde transmise aux phases du boss. Une cible latérale ou surélevée ne contourne plus le premier obstacle de l’axe du tir. 121 tests CPU réussis, dont 75 cas M77/sniper et 46 régressions. Les points d’émission des particules sont vérifiés, pas leur animation complète ; enveloppe des anneaux conservatrice. Build local encore indisponible (Vite 8.3.4 absent), recette WebGL non validée. Voir docs/qa/gamedev-heavy-weapons-20261029/."
     },
     "AUD-091": {
       "status": "À valider",

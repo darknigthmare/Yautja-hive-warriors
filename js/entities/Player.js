@@ -3915,27 +3915,42 @@ export class Player {
     const forward = new THREE.Vector3(Math.sin(this.rotationY), 0, Math.cos(this.rotationY)).normalize();
     const origin = this.position.clone().add(new THREE.Vector3(0, 1.8, 0));
 
-    // 45m Hypersonic Linear Railgun Beam + 6 Blue Ionization Shock Rings
-    const railGroup = new THREE.Group();
-    const beamGeo = new THREE.CylinderGeometry(0.08, 0.08, 45.0, 8);
-    beamGeo.rotateX(Math.PI / 2);
-    const beamMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.95 });
-    const beamMesh = new THREE.Mesh(beamGeo, beamMat);
-    beamMesh.position.copy(origin).addScaledVector(forward, 22.5);
-    beamMesh.lookAt(origin.clone().addScaledVector(forward, 45.0));
-    railGroup.add(beamMesh);
+    const range = 45.0;
+    const shotEnvironment = environment ?? this.gameContext?.env;
+    const beamEnd = origin.clone().addScaledVector(forward, range);
+    const wall = shotEnvironment?.traceSegment?.(origin, beamEnd, { radius: 0.08 });
+    const beamLength = range * (Number.isFinite(wall?.t) ? THREE.MathUtils.clamp(wall.t, 0, 1) : 1);
 
-    for (let r = 1; r <= 6; r++) {
-      const ringGeo = new THREE.TorusGeometry(0.45 + r * 0.08, 0.04, 6, 16);
-      const ringMat = new THREE.MeshBasicMaterial({ color: 0x00f2fe, transparent: true, opacity: 0.85 });
-      const ring = new THREE.Mesh(ringGeo, ringMat);
-      ring.position.copy(origin).addScaledVector(forward, r * 6.5);
-      ring.lookAt(origin.clone().addScaledVector(forward, 45.0));
-      railGroup.add(ring);
+    // Pierce actors, but stop the rail and its effects at the first physical cover.
+    if (beamLength > 0) {
+      const railGroup = new THREE.Group();
+      const beamGeo = new THREE.CylinderGeometry(0.08, 0.08, beamLength, 8);
+      beamGeo.rotateX(Math.PI / 2);
+      const beamMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.95 });
+      const beamMesh = new THREE.Mesh(beamGeo, beamMat);
+      beamMesh.position.copy(origin).addScaledVector(forward, beamLength / 2);
+      beamMesh.lookAt(beamEnd);
+      railGroup.add(beamMesh);
+
+      for (let r = 1; r <= 6; r++) {
+        const distance = r * 6.5, ringRadius = 0.45 + r * 0.08, tubeRadius = 0.04;
+        if (distance + tubeRadius > beamLength) continue;
+        const ringPosition = origin.clone().addScaledVector(forward, distance);
+        // A conservative swept envelope also keeps wide cosmetic rings out of
+        // side walls. It never changes the narrower rail's damage trajectory.
+        if (shotEnvironment?.traceSegment?.(origin, ringPosition, { radius: ringRadius + tubeRadius })) continue;
+        const ringGeo = new THREE.TorusGeometry(ringRadius, tubeRadius, 6, 16);
+        const ringMat = new THREE.MeshBasicMaterial({ color: 0x00f2fe, transparent: true, opacity: 0.85 });
+        const ring = new THREE.Mesh(ringGeo, ringMat);
+        ring.position.copy(ringPosition);
+        ring.lookAt(beamEnd);
+        railGroup.add(ring);
+      }
+
+      this._addOwnedEffect(railGroup);
+      // Ownership, not scene attachment, controls disposal after early detach.
+      this.schedule(() => this._removeOwnedEffect(railGroup), 220);
     }
-
-    this._addOwnedEffect(railGroup);
-    this.schedule(() => this._removeOwnedEffect(railGroup), 220);
 
     // Pierce up to 15 enemies in a 45m line (550 armor-piercing damage, ignores 100% ballistic armor)
     let piercedCount = 0;
@@ -3948,11 +3963,11 @@ export class Player {
         const toEnemy = a.mesh.position.clone().sub(this.position);
         toEnemy.y = 0;
         const dist = toEnemy.length();
-        if (dist <= 45.0) {
+        if (dist <= range) {
           const proj = toEnemy.dot(forward);
           const perpDist = Math.sqrt(Math.max(0, dist * dist - proj * proj));
-          if (proj > 0 && perpDist <= (a.radius || 1.2) + 0.95) {
-            if (!this._canHitLegacyAlien(horde, a, origin)) continue;
+          if (proj > 0 && proj <= beamLength && perpDist <= (a.radius || 1.2) + 0.95) {
+            if (!this._canHitLegacyAlien(horde, a, origin, shotEnvironment)) continue;
             a.hp -= 550;
             piercedCount++;
             if (particles && particles.emitSparks) {
@@ -3972,12 +3987,15 @@ export class Player {
       }
     }
 
-    // Pierce active boss
-    if (bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
-      const toBoss = bosses.activeBoss.mesh.position.clone().sub(this.position);
+    // Pierce the active boss only along the accessible segment from the muzzle.
+    const boss = bosses?.activeBoss;
+    if (boss?.mesh && boss.hp > 0) {
+      const toBoss = boss.mesh.position.clone().sub(this.position);
       toBoss.y = 0;
       const dist = toBoss.length();
-      if (dist <= 45.0 && toBoss.normalize().dot(forward) > 0.88) {
+      const proj = toBoss.dot(forward);
+      if (dist <= range && proj <= beamLength && toBoss.normalize().dot(forward) > 0.88 &&
+        this._hasLegacyLineOfSight(boss, origin, shotEnvironment)) {
         bosses.takeDamage(550, horde);
         piercedCount++;
       }
@@ -5530,14 +5548,20 @@ export class Player {
 
     // Direct linear piercing beam
     const beamStart = this.position.clone().add(new THREE.Vector3(0, 1.8, 0));
+    const environment = this.gameContext?.env;
     const beamEnd = beamStart.clone().addScaledVector(forward, range);
+    const wall = environment?.traceSegment?.(beamStart, beamEnd, { radius: 0.03 });
+    const beamLength = range * (Number.isFinite(wall?.t) ? THREE.MathUtils.clamp(wall.t, 0, 1) : 1);
+    beamEnd.copy(beamStart).addScaledVector(forward, beamLength);
 
-    if (particles && particles.emitExplosion) {
+    if (beamLength > 0 && particles && particles.emitExplosion) {
       particles.emitExplosion(beamEnd, 24);
     }
-    if (particles && particles.emitSparks) {
+    if (beamLength > 0 && particles && particles.emitSparks) {
       for (let step = 1; step <= 8; step++) {
-        const p = beamStart.clone().addScaledVector(forward, step * 5.0);
+        const distance = step * 5.0;
+        if (distance > beamLength) break;
+        const p = beamStart.clone().addScaledVector(forward, distance);
         particles.emitSparks(p, 6);
       }
     }
@@ -5551,10 +5575,11 @@ export class Player {
         if (alien && alien.mesh) {
           const toAlien = alien.mesh.position.clone().sub(beamStart);
           const projDist = toAlien.dot(forward);
-          if (projDist > 0 && projDist <= range) {
-            const perp = toAlien.clone().subScaledVector(forward, projDist);
+          if (projDist > 0 && projDist <= beamLength) {
+            const perp = toAlien.clone().addScaledVector(forward, -projDist);
             if (perp.length() <= 1.8) {
-              if (!this._canHitLegacyAlien(horde, alien, null)) return;
+              if (!this._canHitLegacyAlien(horde, alien, beamStart, environment)) return;
+              alien.lastDamageFaction = horde.battleSimulation?.config.playerFaction ?? 'player_clan';
               alien.hp -= lanceDamage;
               hitsCount++;
               if (particles && particles.emitAlienBloodSpurt) {
@@ -5567,13 +5592,14 @@ export class Player {
     }
 
     // Check piercing hit on boss
-    if (bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
-      const toBoss = bosses.activeBoss.mesh.position.clone().sub(beamStart);
+    const boss = bosses?.activeBoss;
+    if (boss?.mesh && boss.hp > 0) {
+      const toBoss = boss.mesh.position.clone().sub(beamStart);
       const projDist = toBoss.dot(forward);
-      if (projDist > 0 && projDist <= range) {
-        const perp = toBoss.clone().subScaledVector(forward, projDist);
-        if (perp.length() <= 3.2) {
-          bosses.takeDamage(lanceDamage);
+      if (projDist > 0 && projDist <= beamLength) {
+        const perp = toBoss.clone().addScaledVector(forward, -projDist);
+        if (perp.length() <= 3.2 && this._hasLegacyLineOfSight(boss, beamStart, environment)) {
+          bosses.takeDamage(lanceDamage, horde);
           hitsCount++;
         }
       }
@@ -5581,13 +5607,17 @@ export class Player {
 
     // Check piercing hit on synthetics
     if (synthetics && synthetics.androids) {
+      const simulation = synthetics.battleSimulation;
+      const playerFaction = simulation?.config.playerFaction ?? 'player_clan';
       synthetics.androids.forEach(syn => {
-        if (syn && syn.mesh) {
+        if (syn?.mesh && syn.hp > 0) {
+          if (simulation && syn.factionId && !simulation.areHostile(playerFaction, syn.factionId)) return;
           const toSyn = syn.mesh.position.clone().sub(beamStart);
           const projDist = toSyn.dot(forward);
-          if (projDist > 0 && projDist <= range) {
-            const perp = toSyn.clone().subScaledVector(forward, projDist);
-            if (perp.length() <= 1.8) {
+          if (projDist > 0 && projDist <= beamLength) {
+            const perp = toSyn.clone().addScaledVector(forward, -projDist);
+            if (perp.length() <= 1.8 && this._hasLegacyLineOfSight(syn, beamStart, environment)) {
+              syn.lastDamageFaction = playerFaction;
               syn.hp -= lanceDamage;
               hitsCount++;
             }
