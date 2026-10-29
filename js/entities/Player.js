@@ -3079,14 +3079,19 @@ export class Player {
     // Emit 3 rapid ionized azure/violet plasma burst sparks
     for (let b = 0; b < 3; b++) {
       this.schedule(() => {
-        const boltOrigin = origin.clone().addScaledVector(forward, 1.5 + b * 0.4);
+        const boltPos = origin.clone().addScaledVector(forward, 24.0);
+        const wallHit = environment?.traceSegment?.(origin, boltPos, { radius: .03 });
+        const impactFraction = Number.isFinite(wallHit?.t) ? THREE.MathUtils.clamp(wallHit.t, 0, 1) : 1;
+        // Custom colliders may supply only t. Keep the effect and interaction
+        // on the same finite segment, including a wall immediately at the muzzle.
+        const impactPos = origin.clone().lerp(boltPos, impactFraction);
+        const boltOrigin = origin.clone().addScaledVector(forward, Math.min(1.5 + b * 0.4, 24 * impactFraction));
         if (particles && particles.emitSparks) {
           particles.emitSparks(boltOrigin, 5);
         }
 
         // Raycast hit check along trajectory
         let hitTarget = false;
-        const boltPos = origin.clone().addScaledVector(forward, 24.0);
 
         // Check boss hit
         const boss = bosses?.activeBoss;
@@ -3141,9 +3146,10 @@ export class Player {
           }
         }
 
-        // Trigger electric floor grid if bolt lands on it
-        if (environment && environment.checkElectricGridInteraction) {
-          environment.checkElectricGridInteraction(boltPos, this, this.gameContext ? this.gameContext.ui : null, this.audioEngine, particles, horde);
+        // An actor consumes this bolt. Otherwise the grid owner checks the
+        // physical impact and visibility to the actual candidate grid.
+        if (!hitTarget && environment && environment.checkElectricGridInteraction) {
+          environment.checkElectricGridInteraction(impactPos, this, this.gameContext ? this.gameContext.ui : null, this.audioEngine, particles, horde, origin);
         }
       }, b * 85);
     }
@@ -4275,18 +4281,26 @@ export class Player {
     const forward = new THREE.Vector3(Math.sin(this.rotationY), 0, Math.cos(this.rotationY)).normalize();
     const startPos = this.position.clone().add(new THREE.Vector3(0, 2.3, 0));
 
-    // Incandescent orange-white tungsten spike beam
-    const spikeGeo = new THREE.CylinderGeometry(0.06, 0.06, 38.0, 8);
-    spikeGeo.rotateX(Math.PI / 2);
-    const spikeMat = new THREE.MeshBasicMaterial({ color: 0xfb923c, transparent: true, opacity: 0.95 });
-    const spikeMesh = new THREE.Mesh(spikeGeo, spikeMat);
-    spikeMesh.position.copy(startPos).add(forward.clone().multiplyScalar(19.0));
-    spikeMesh.lookAt(startPos.clone().add(forward.clone().multiplyScalar(38.0)));
-    this._addOwnedEffect(spikeMesh);
+    const range = 38.0;
+    const endPos = startPos.clone().addScaledVector(forward, range);
+    const wall = this.gameContext?.env?.traceSegment?.(startPos, endPos, { radius: 0.06 });
+    // Custom physical colliders may report only the normalized hit fraction.
+    const beamLength = wall ? range * Math.max(0, Math.min(1, wall.t)) : range;
 
-    this.schedule(() => {
-      if (spikeMesh.parent) this._removeOwnedEffect(spikeMesh);
-    }, 180);
+    // Incandescent orange-white tungsten spike beam, ending at physical cover.
+    if (beamLength > 0) {
+      const spikeGeo = new THREE.CylinderGeometry(0.06, 0.06, beamLength, 8);
+      spikeGeo.rotateX(Math.PI / 2);
+      const spikeMat = new THREE.MeshBasicMaterial({ color: 0xfb923c, transparent: true, opacity: 0.95 });
+      const spikeMesh = new THREE.Mesh(spikeGeo, spikeMat);
+      spikeMesh.position.copy(startPos).addScaledVector(forward, beamLength / 2);
+      spikeMesh.lookAt(endPos);
+      this._addOwnedEffect(spikeMesh);
+
+      this.schedule(() => {
+        if (spikeMesh.parent) this._removeOwnedEffect(spikeMesh);
+      }, 180);
+    }
 
     let hitTarget = false;
     if (horde && horde.aliens) {

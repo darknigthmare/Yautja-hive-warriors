@@ -1752,9 +1752,27 @@
           "path": "docs/qa/gamedev-combat-cover-20261029/targeted-tests.txt",
           "sha256": "6fb5d7fbccc97b4e870ec4bb15c9a62c250d72dd8f714c3d15882d3e9590f6bd",
           "scope": "Journal consolidé : 17 hitscan, 12 projectiles, 15 interactions J2, 6 récupération clan et 6 cas géométrie/flèche sélectionnés ; 56/56."
+        },
+        {
+          "kind": "review",
+          "path": "docs/qa/gamedev-weapon-feedback-20261029/README.md",
+          "sha256": "560de14ad1419cfe3d92e6d03c7912ccc4b68ad8b0d1a4ce5c90d80f51c36228",
+          "scope": "Correctifs des limites Seegson/pistolet précédemment identifiées, revue indépendante et périmètre restant."
+        },
+        {
+          "kind": "test",
+          "path": "docs/qa/gamedev-weapon-feedback-20261029/validation.json",
+          "sha256": "abb57d6dfb1ccee8b9af26dc9398b45a3e2b7c550dbca6853c0f87ce4a2bf419",
+          "scope": "Sources et empreintes de 46 tests CPU, 17 cas en échec avant correction, build local 127 ; état distant et navigateur dans la PR."
+        },
+        {
+          "kind": "test",
+          "path": "docs/qa/gamedev-weapon-feedback-20261029/targeted-tests.txt",
+          "sha256": "a9eb5e1dbd99f4e834b0546136c745ac9c36ed6ac4fb66389730ab8ce0ccdf5c",
+          "scope": "46/46 : 9 Seegson, 14 grille/pistolet, 17 dégâts directs hérités, 6 récupération clan ; aucun test ignoré."
         }
       ],
-      "notes": "Murs et couverts partagés arrêtent mêlée/tirs/projectiles, ycompris NPC. Les limites de perforation de toutes les armes ne sont pas encore certifiées. Passe du 29/10/2026 depuis c6ebf48 : défauts reproduits puis corrigés pour les dégâts directs du pistolet plasma, du Seegson et des impacts de proximité smart disc/combistick/shuriken sur boss protégés. Origines réelles, murs proches/bas et effets d'impact vérifiés ; 56 tests CPU réussis, dont 29 nouveaux cas et 27 régressions/cas existants. Le faisceau visuel Seegson, l'interaction électrique distante du pistolet et les autres armes restent hors de cette preuve. Build local indisponible (Vite absent), aucune recette navigateur ni certification globale de perforation. Voir docs/qa/gamedev-combat-cover-20261029/."
+      "notes": "Murs et couverts partagés arrêtent mêlée/tirs/projectiles, ycompris NPC. Les limites de perforation de toutes les armes ne sont pas encore certifiées. Passe du 29/10/2026 depuis c6ebf48 : défauts reproduits puis corrigés pour les dégâts directs du pistolet plasma, du Seegson et des impacts de proximité smart disc/combistick/shuriken sur boss protégés. Origines réelles, murs proches/bas et effets d'impact vérifiés ; 56 tests CPU réussis, dont 29 nouveaux cas et 27 régressions/cas existants. Le faisceau visuel Seegson, l'interaction électrique distante du pistolet et les autres armes restent hors de cette preuve. Build local indisponible (Vite absent), aucune recette navigateur ni certification globale de perforation. Voir docs/qa/gamedev-combat-cover-20261029/. Passe suivante du 29/10/2026 depuis 570e443 : les deux limites précédentes sont traitées. Faisceau Seegson borné au premier obstacle avec son rayon réel, étincelles du pistolet bornées, grille choisie selon impact physique et visibilité, aucun double effet grille après impact acteur. 46 tests CPU réussis (23 nouveaux + 23 régressions), dont vrais sommets du maillage et vraies méthodes du mécanisme. Commandes manuelles et paramètres électriques conservés. La priorité/cône d'acteurs, les dégâts de zone après activation, les autres armes et la recette WebGL restent hors de cette preuve. Voir docs/qa/gamedev-weapon-feedback-20261029/."
     },
     "AUD-091": {
       "status": "À valider",

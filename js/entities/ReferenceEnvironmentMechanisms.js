@@ -4985,11 +4985,12 @@ export class ReferenceEnvironmentMechanisms {
     });
   }
 
-  checkElectricGridInteraction(playerPos, player, ui, audioEngine, particles, horde) {
+  checkElectricGridInteraction(playerPos, player, ui, audioEngine, particles, horde, projectileOrigin = null) {
     for (let i = 0; i < this.electricFloorGrids.length; i++) {
       const grid = this.electricFloorGrids[i];
       if (playerPos.distanceTo(grid.pos) <= 5.5) {
         if (!grid.isActive) {
+          if (projectileOrigin && this.hasLineOfSight?.(projectileOrigin, grid.pos, { radius: .03 }) === false) continue;
           this.electrifyGrid(i, audioEngine, particles, horde);
           if (ui && ui.showAnnouncement) {
             ui.showAnnouncement('⚡ GRILLE HAUTE-TENSION DÉCHARGÉE (15 kV) : 280 DÉGÂTS D\'ÉLECTROCUTION ET PARALYSIE !');
