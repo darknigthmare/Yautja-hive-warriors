@@ -4,7 +4,8 @@
 
 Ce document adapte des méthodes de développement aux systèmes du jeu déjà présents.
 Il sert à choisir un chantier, préserver ses contrats et produire une preuve vérifiable.
-L'ajout de ce guide ne modifie ni le gameplay ni un déploiement Vercel.
+Cette intégration porte sur les consignes de développement ; aucune publication en production n'est demandée.
+L'intégration Git peut lancer un aperçu Vercel automatique, dont l'état doit être vérifié séparément.
 
 | Référence | État retenu |
 | --- | --- |

@@ -204,6 +204,7 @@
     "gameplayTestsRunForThisChange": false,
     "browserTestsRunForThisChange": false,
     "hardwarePerformanceMeasured": false,
-    "deployedByThisChange": false
+    "productionDeploymentRequested": false,
+    "automaticGitPreview": "Possible ; état à vérifier séparément sur le commit concerné."
   }
 }
