@@ -3,6 +3,10 @@
  * This is a game simulation, not a claim about canonical army organization. */
 
 import { BattleIntel } from './BattleIntel.js';
+import { createHiveEcology, awardHiveInfestation, buildHiveNode, healHiveSpace,
+  damageHiveNode as damageEcologyNode, snapshotHiveEcology, restoreHiveEcology } from './HiveNodeEcology.js';
+import { sourceUnitVisualKind } from '../data/SourceActorPresentation.js';
+import { initialSpecialistStocks, restoreSpecialistStocks, sourceSpecialistRole, SPECIALIST_ATTACKS } from '../data/SourceSpecialistCombat.js';
 import { measureDefeatReturn } from './BattleStrategy.js';
 import { validateBossCombatState } from '../data/BossEncounterValidation.js';
 import { initializeFormation, updateFormation, formationTargetForUnit, formationAttackMultiplier, normalizeFormation, FORMATION_PROFILES } from './FormationTactics.js';
@@ -79,6 +83,9 @@ export class BattleSimulation {
         killerFaction: null, cause: 'prior_operation', time: 0, officer: unit.officer, uniqueId, inherited: true });
     }
     for (const group of this.groups.values()) if (this.factions.get(group.factionId).moraleModel === 'hive' && this.units.get(group.officerId)?.state === 'dead') group.coordinationStrength = .65;
+    // Pure objective-side ecology; nodes are not battle units and cannot alter
+    // the signed strategic roster. Older saves have no ecology and recover empty.
+    this.hiveEcology = createHiveEcology(this.config.id, [...this.factions.values()]);
     this.intel = new BattleIntel(this, this.config.intelligence);
   }
 
@@ -153,6 +160,11 @@ export class BattleSimulation {
           profileName: profile.name ?? profile.id, sourceBossId: profile.sourceBossId ?? null, sourceBossType: profile.sourceBossType ?? null, visualFidelity1to1Verified: profile.visualFidelity1to1Verified === true,
           officer, uniqueId, state, hp: profile.maxHp, maxHp: profile.maxHp, position: [...position],
           nextAttack: profile.attackInterval * (hash(spec.id) % 1000) / 1000, damageTaken: 0, incapacitated: false };
+        // Two sealed field treatments for new Extinction Medic identities.
+        // Existing source-v1 saves lacked this field and load with zero rather
+        // than receiving free new supplies on every rematerialization.
+        if (sourceUnitVisualKind(unit) === 'medic') unit.medicalSupply = 2;
+        Object.assign(unit, initialSpecialistStocks(unit));
         this.units.set(unit.id, unit); this.attackSeeds.set(unit.id, hash(unit.id)); group.units.push(unit.id);
       }
       const heavy = group.units.filter(unitId => this.units.get(unitId).role === 'heavy').length;
@@ -307,7 +319,7 @@ export class BattleSimulation {
     groups.forEach((group, index) => {
       const orderType = { pincer: 'attack', hold_line: 'defend', ambush: 'defend', fallback: 'retreat' }[type];
       this.issueOrder(group.id, { type: orderType, frontId, issuer });
-      group.formation = type === 'pincer' ? 'flank' : type === 'hold_line' ? 'line' : type === 'ambush' ? 'dispersed' : 'column';
+      group.formation = normalizeFormation(type === 'pincer' ? 'flank' : type === 'hold_line' ? 'line' : type === 'ambush' ? 'dispersed' : 'column');
       group.tactic = { type, expires: this.time + 20, flank: type === 'pincer' ? (index % 2 ? -1 : 1) : 0 };
     });
     this._emit('tactic_ordered', { type, frontId, groupIds: groups.map(group => group.id), expires: this.time + 20 }, 2);
@@ -489,6 +501,72 @@ export class BattleSimulation {
     return true;
   }
 
+  /** Medical charges live on the finite strategic identity, not its renderer.
+   * A healer cannot revive dead/downed soldiers, cure synthetic circuitry,
+   * heal across a distant front or restock by leaving camera range. */
+  applyMedicHeal(medicId, patientId) {
+    const medic = this.units.get(medicId), patient = this.units.get(patientId);
+    if (this.disposed || this.paused || this.result || !medic || !patient || medicId === patientId ||
+        sourceUnitVisualKind(medic) !== 'medic' || !Number.isInteger(medic.medicalSupply) || medic.medicalSupply <= 0 ||
+        medic.state !== 'active' || patient.state !== 'active' || medic.incapacitated || patient.incapacitated ||
+        medic.factionId !== patient.factionId || medic.species !== 'human' || patient.species !== 'human' ||
+        medic.hp <= 0 || patient.hp <= 0 || patient.hp >= patient.maxHp ||
+        dist(medic.position, patient.position) > 10) return null;
+    const amount = Math.min(90, patient.maxHp - patient.hp);
+    if (!(amount > 0)) return null;
+    medic.medicalSupply--;
+    patient.hp += amount;
+    this._emit('field_medic_treatment', { medicId, patientId, amount, chargesRemaining: medic.medicalSupply }, 1);
+    return { amount, hp: patient.hp, chargesRemaining: medic.medicalSupply };
+  }
+
+  /** A fired shot consumes the exact specialist's stored ammunition once,
+   * independent of renderer lifetime and without changing unit IDs or budgets. */
+  consumeSpecialistAmmo(unitId, role) {
+    const unit = this.units.get(unitId), field = role === 'sniper' ? 'sniperRounds' : role === 'sadar' ? 'sadarMissiles' : null;
+    if (!field || this.disposed || this.paused || this.result || !unit ||
+        sourceSpecialistRole(unit) !== role || unit.state !== 'active' || unit.incapacitated ||
+        unit.hp <= 0 || !Number.isInteger(unit[field]) || unit[field] <= 0) return null;
+    unit[field]--;
+    this._emit('specialist_round_fired', { unitId, role, roundsRemaining: unit[field] }, 0);
+    return { unitId, role, roundsRemaining: unit[field] };
+  }
+
+  /** CommTech repairs existing mechanics: never civilians, dead units,
+   * distant units or a new synthetic. Supplies are a project adaptation. */
+  applyCommTechRepair(commTechId, targetId) {
+    const tech = this.units.get(commTechId), target = this.units.get(targetId);
+    if (this.disposed || this.paused || this.result || !tech || !target ||
+        commTechId === targetId || sourceSpecialistRole(tech) !== 'commtech' ||
+        !Number.isInteger(tech.repairParts) || tech.repairParts <= 0 ||
+        tech.state !== 'active' || target.state !== 'active' || tech.incapacitated ||
+        target.incapacitated || tech.hp <= 0 || target.hp <= 0 ||
+        tech.factionId !== target.factionId || tech.species !== 'human' ||
+        target.hp >= target.maxHp || dist(tech.position, target.position) > 8 ||
+        !(target.species === 'synthetic' || sourceSpecialistRole(target) === 'exosuit')) return null;
+    const amount = Math.min(100, target.maxHp - target.hp);
+    if (!(amount > 0)) return null;
+    tech.repairParts--;
+    target.hp += amount;
+    this._emit('field_technical_repair', {
+      technicianId: commTechId, targetId, amount, partsRemaining: tech.repairParts
+    }, 1);
+    return { amount, hp: target.hp, partsRemaining: tech.repairParts };
+  }
+
+  /** Plating is a finite armor buffer for the single Exosuit+pilot unit.
+   * Both close-combat and NPC damage paths call this before subtracting HP. */
+  absorbExosuitDamage(unitId, damage) {
+    const unit = this.units.get(unitId);
+    if (!Number.isFinite(damage) || damage <= 0 || !unit ||
+        this.disposed || this.result || !['active', 'distant'].includes(unit.state) || unit.hp <= 0 ||
+        sourceSpecialistRole(unit) !== 'exosuit' ||
+        !Number.isInteger(unit.exosuitArmor) || unit.exosuitArmor <= 0) return damage;
+    const absorbed = Math.min(unit.exosuitArmor, Math.floor(damage * 0.5));
+    unit.exosuitArmor -= absorbed;
+    return damage - absorbed;
+  }
+
   setUnitIncapacitated(unitId, incapacitated) {
     const unit = this.units.get(unitId);
     if (!unit || this.disposed || this.result || !alive(unit) || !['active', 'distant'].includes(unit.state) || typeof incapacitated !== 'boolean') return false;
@@ -506,11 +584,43 @@ export class BattleSimulation {
     const death = { entityId: unit.id, groupId: unit.groupId, factionId: unit.factionId, killerFaction,
       cause: typeof event.cause === 'string' ? event.cause.slice(0, 80) : 'combat', time: this.time, officer: unit.officer, uniqueId: unit.uniqueId };
     this.deaths.set(unit.id, death); this._emit('unit_died', death, unit.officer ? 3 : 0);
+    if (awardHiveInfestation(this.hiveEcology, killerFaction, unit.factionId,
+      killerFaction && this.areHostile(killerFaction, unit.factionId))) {
+      this._emit('hive_infestation_gained', { factionId: killerFaction, sourceUnitId: unit.id }, 0);
+    }
     const group = this.groups.get(unit.groupId), faction = this.factions.get(unit.factionId);
     if (faction.moraleModel !== 'hive') this._changeMorale(group, unit.officer ? -25 : -2, unit.officer ? 'officer_lost' : 'casualty');
     else if (unit.officer) { group.coordinationStrength = .65; this._emit('hive_coordination_disrupted', { factionId: unit.factionId, frontId: group.frontId, groupId: group.id, coordinationStrength: .65, reason: 'allocated_controller_lost' }, 2); }
     if (unit.officer) for (const neighbour of this.groups.values()) if (neighbour.id !== group.id && neighbour.factionId === unit.factionId && neighbour.frontId === group.frontId && faction.moraleModel !== 'hive') this._changeMorale(neighbour, -8, 'nearby_officer_lost');
     return true;
+  }
+
+  /** Hive nodes belong to the strategic simulation, even if their meshes
+   * disappear. A damaged/destroyed node never returns its spent infestation. */
+  damageHiveNode(nodeId, damage, sourceFaction) {
+    if (this.disposed || this.paused || this.result || !this.factions.has(sourceFaction)) return null;
+    const node = this.hiveEcology.nodes.find(item => item.id === nodeId);
+    if (!node) return null;
+    const result = damageEcologyNode(this.hiveEcology, nodeId, damage,
+      this.areHostile(sourceFaction, node.factionId));
+    if (result?.destroyed) this._emit('hive_node_destroyed', {
+      nodeId, factionId: node.factionId, killerFaction: sourceFaction
+    }, 2);
+    return result;
+  }
+
+  getHiveNodeState() { return snapshotHiveEcology(this.hiveEcology); }
+
+  _hiveNodeStep(dt) {
+    if (!this.hiveEcology.banks.length) return;
+    const created = buildHiveNode(this.hiveEcology, this.units.values(), this.time);
+    if (created) this._emit('hive_node_constructed', {
+      nodeId: created.id, builderId: created.builderId, factionId: created.factionId
+    }, 2);
+    healHiveSpace(this.hiveEcology, this.units.values(), dt, info => {
+      // Detailed actors and distant state must see the same current HP.
+      this.callbacks.healBattleUnit?.(info.unitId, info.hp);
+    });
   }
 
   _changeMorale(group, amount, reason) {
@@ -543,19 +653,29 @@ export class BattleSimulation {
           if (!combatReady(attacker)) continue;
           const profile = this.profiles.get(attacker.profileId), group = this.groups.get(attacker.groupId), faction = this.factions.get(factionId);
           if (group.reconstitution?.required || ['retreat', 'regroup'].includes(group.order.type) || attacker.nextAttack > this.time + EPSILON || profile.damage <= 0) continue;
-          attacker.nextAttack = this.time + profile.attackInterval;
+          const role = sourceSpecialistRole(attacker), rule = SPECIALIST_ATTACKS[role];
+          const ammunition = role === 'sniper' ? 'sniperRounds' : role === 'sadar' ? 'sadarMissiles' : null;
+          // The distant front cannot fire unlimited specialist weapons just
+          // because the physical model is not currently materialized.
+          if (ammunition) {
+            if (!Number.isInteger(attacker[ammunition]) || attacker[ammunition] <= 0) continue;
+            attacker[ammunition]--;
+          }
+          attacker.nextAttack = this.time + Math.max(profile.attackInterval, rule?.cooldown ?? 0);
           const target = targets[(this.attackSeeds.get(attacker.id) + this.tick) % targets.length];
           const tacticMultiplier = group.tactic && group.tactic.expires > this.time ? { pincer: 1.2, hold_line: 1.05, ambush: 1.15, fallback: .5 }[group.tactic.type] ?? 1 : 1;
           const orderMultiplier = ({ attack: 1, defend: .85, escort: .6 }[group.order.type] ?? .85) * tacticMultiplier;
           const moraleMultiplier = faction.moraleModel === 'hive' ? coordination.get(factionId) * group.coordinationStrength : .5 + group.morale / 200;
           if (!pending.has(target.id)) pending.set(target.id, { damage: 0, killerFaction: factionId });
-          pending.get(target.id).damage += profile.damage * orderMultiplier * moraleMultiplier * formationAttackMultiplier(group, this.time);
+          pending.get(target.id).damage += (rule?.damage ?? profile.damage) * orderMultiplier * moraleMultiplier * formationAttackMultiplier(group, this.time);
           this.targetingCounters.attacksResolved++;
         }
       }
     }
     for (const [unitId, hit] of pending) {
-      const unit = this.units.get(unitId); unit.hp = Math.max(0, unit.hp - hit.damage); unit.damageTaken += hit.damage;
+      const unit = this.units.get(unitId);
+      const actual = this.absorbExosuitDamage(unitId, hit.damage);
+      unit.hp = Math.max(0, unit.hp - actual); unit.damageTaken += actual;
       if (!unit.hp) this.recordDeath({ entityId: unitId, killerFaction: hit.killerFaction, cause: 'distant_combat' });
     }
   }
@@ -775,6 +895,9 @@ export class BattleSimulation {
   _finish(outcome, reason, details = {}) {
     if (this.result) return;
     this.result = { ...details, outcome, reason, time: this.time };
+    // No more simulation steps can consume this frame's remaining time. A
+    // checkpoint made by an observer must already contain a valid stopped clock.
+    this.accumulator = 0;
     this._emit('operation_finished', this.result, 4); this.callbacks.objective?.(clone(this.result));
   }
 
@@ -823,7 +946,7 @@ export class BattleSimulation {
     while (this.accumulator + EPSILON >= this.step && !this.result) {
       this.accumulator = Math.max(0, this.accumulator - this.step); this.time += this.step; this.tick++;
       for (const group of this.groups.values()) updateFormation(group, this.step, this.time, { officerAlive: !!group.officerId && combatReady(this.units.get(group.officerId)) });
-      this._moveGroups(this.step); this._detailStep(); this._remoteCombat(); this._captureStep(this.step); this._reinforcements(); this._reconstitutionStep(this.step); this._moraleStep(this.step); this._strategicOrders(); this._objectives(); this.intel.update();
+      this._moveGroups(this.step); this._detailStep(); this._remoteCombat(); this._hiveNodeStep(this.step); this._captureStep(this.step); this._reinforcements(); this._reconstitutionStep(this.step); this._moraleStep(this.step); this._strategicOrders(); this._objectives(); this.intel.update();
     }
     return true;
   }
@@ -917,7 +1040,7 @@ export class BattleSimulation {
       fronts: [...this.fronts.values()].map(clone), routes: [...this.routes.values()].map(clone), relations: [...this.relations],
       deaths: [...this.deaths.values()].map(clone), events: this.events.map(clone), eventsDropped: this.eventsDropped, eventSequence: this.eventSequence,
       pendingArrivals: this.pendingArrivals.map(clone), nextReinforcement: [...this.nextReinforcement], objectiveKeys: [...this.objectiveKeys],
-      intelligence: this.intel.serialize(), defeatSince: this.defeatSince, criticalLosses: [...this.criticalLosses.values()].map(clone), routeRevision: this.routeRevision, nextStrategicOrder: this.nextStrategicOrder, tacticCooldowns: [...this.tacticCooldowns], result: this.result ? clone(this.result) : null };
+      intelligence: this.intel.serialize(), hiveEcology: this.getHiveNodeState(), defeatSince: this.defeatSince, criticalLosses: [...this.criticalLosses.values()].map(clone), routeRevision: this.routeRevision, nextStrategicOrder: this.nextStrategicOrder, tacticCooldowns: [...this.tacticCooldowns], result: this.result ? clone(this.result) : null };
   }
 
   static fromState(configuration, saved, callbacks = {}) {
@@ -936,17 +1059,35 @@ export class BattleSimulation {
         try { unit.encounterState = validateBossCombatState(unit.encounterState, { bossType: unit.sourceBossType, battleUnitId: unit.id, maxHp: unit.maxHp }); }
         catch { fail('invalid saved boss combat metadata'); }
       }
+      if (sourceUnitVisualKind(original) === 'medic') {
+        unit.medicalSupply ??= 0; // source-v1 saves have no medical stock.
+        if (!Number.isInteger(unit.medicalSupply) || unit.medicalSupply < 0 || unit.medicalSupply > 2)
+          fail('invalid saved medical stock');
+      } else if (unit.medicalSupply !== undefined) fail('non-medic cannot own medical stock');
+      try { restoreSpecialistStocks(unit, original); }
+      catch { fail('invalid saved specialist stock'); }
       unit.incapacitated ??= false;
       if (typeof unit.incapacitated !== 'boolean' || unit.incapacitated && (!alive(unit) || !['active', 'distant'].includes(unit.state))) fail('invalid saved incapacitation');
       for (const key of ['profileId', 'factionId', 'groupId', 'maxHp', 'uniqueId', 'officer', 'species', 'role', 'actorType', 'profileName', 'sourceBossId', 'sourceBossType', 'visualFidelity1to1Verified']) if (unit[key] !== original[key]) fail('save rewrites an allocated identity');
-      if (!STATES.has(unit.state) || !number(unit.hp, 0, unit.maxHp) || !point(unit.position) || !number(unit.nextAttack, 0, saved.time + simulation.profiles.get(unit.profileId).attackInterval + simulation.step) || !number(unit.damageTaken, 0, 1e12)) fail('invalid saved unit state');
+      // Remote specialist attacks may have a longer, source-scoped recovery
+      // than the generic profile. Reject forged clocks but accept legitimate
+      // Sniper/SADAR cooldowns created by this very simulation.
+      const allowedAttackInterval = Math.max(simulation.profiles.get(unit.profileId).attackInterval,
+        SPECIALIST_ATTACKS[sourceSpecialistRole(original)]?.cooldown ?? 0);
+      if (!STATES.has(unit.state) || !number(unit.hp, 0, unit.maxHp) || !point(unit.position) ||
+          !number(unit.nextAttack, 0, saved.time + allowedAttackInterval + simulation.step) ||
+          !number(unit.damageTaken, 0, 1e12)) fail('invalid saved unit state');
       if (original.state === 'dead' && unit.state !== 'dead') fail('saved checkpoint would revive an individual confirmed dead in this campaign');
       if (original.state === 'captured' && !['captured', 'dead', 'evacuated'].includes(unit.state)) fail('saved checkpoint would silently release a captured campaign individual');
       // No world actors survive a scene reload. Recreate the same living IDs
       // through the detail budget on the next update, keeping health and losses.
       if (unit.state === 'active') unit.state = 'distant';
     }
-    for (const group of saved.groups) {
+    const groups = saved.groups.map(clone);
+    for (const group of groups) {
+      // Earlier tactical orders could be saved before the next formation tick
+      // converted these two aliases. Keep unknown save values invalid.
+      if (['flank', 'column'].includes(group.formation)) group.formation = normalizeFormation(group.formation);
       const expectedCoordination = simulation.factions.get(group.factionId)?.moraleModel === 'hive' && units.get(group.officerId)?.state === 'dead' ? .65 : 1;
       group.coordinationStrength ??= expectedCoordination; group.reconstitution ??= null; group.supportsReconstitutionOf ??= null; group.lastReinforcementArrival ??= null; group.reinforcementDestination ??= null;
       if (group.lastReinforcementArrival !== null && !number(group.lastReinforcementArrival, 0, saved.time) || group.reinforcementDestination !== null && !simulation.fronts.has(group.reinforcementDestination)) fail('invalid saved reinforcement destination');
@@ -981,7 +1122,7 @@ export class BattleSimulation {
     if (!Array.isArray(saved.pendingArrivals) || new Set(saved.pendingArrivals.map(arrival => arrival.groupId)).size !== saved.pendingArrivals.length || saved.pendingArrivals.some(arrival => !simulation.groups.has(arrival.groupId) || !simulation.fronts.has(arrival.frontId) || !simulation.fronts.has(arrival.sourceId) || simulation.groups.get(arrival.groupId).factionId !== arrival.factionId || !number(arrival.due, saved.time, saved.time + simulation.budgets.announcementSeconds) || !simulation.groups.get(arrival.groupId).units.some(unitId => units.get(unitId).state === 'reserve') || arrival.supportForGroupId !== undefined && (!simulation.groups.has(arrival.supportForGroupId) || simulation.groups.get(arrival.supportForGroupId).factionId !== arrival.factionId))) fail('invalid saved arrival');
     if (!Array.isArray(saved.events) || saved.events.length > 512 || !Number.isInteger(saved.eventSequence) || saved.eventSequence < saved.events.length || !Number.isInteger(saved.eventsDropped) || saved.eventsDropped < 0 || saved.events.some(event => !Number.isInteger(event.id) || event.id < 1 || event.id > saved.eventSequence || !number(event.time, 0, saved.time) || !number(event.priority, 0, 4) || typeof event.type !== 'string' || event.type.length > 80) || new Set(saved.events.map(event => event.id)).size !== saved.events.length) fail('invalid bounded event journal');
     if (!Array.isArray(saved.nextReinforcement) || saved.nextReinforcement.length !== simulation.factions.size || saved.nextReinforcement.some(([factionId, time]) => !simulation.factions.has(factionId) || !number(time, 0, 1e9))) fail('invalid saved reinforcement timers');
-    simulation.units = units; simulation.groups = new Map(saved.groups.map(group => [group.id, { ...clone(group), materialized: false, state: group.state === 'active' ? 'distant' : group.state }]));
+    simulation.units = units; simulation.groups = new Map(groups.map(group => [group.id, { ...group, materialized: false, state: group.state === 'active' ? 'distant' : group.state }]));
     simulation.fronts = new Map(saved.fronts.map(front => [front.id, clone(front)])); simulation.routes = new Map(saved.routes.map(route => [route.id, clone(route)]));
     simulation.relations = new Map(saved.relations); simulation.deaths = new Map(saved.deaths.map(death => [death.entityId, clone(death)]));
     simulation.events = saved.events.map(clone); simulation.eventsDropped = saved.eventsDropped; simulation.eventSequence = saved.eventSequence;
@@ -1004,6 +1145,8 @@ export class BattleSimulation {
     simulation.nextStrategicOrder = saved.nextStrategicOrder; simulation.tacticCooldowns = new Map(saved.tacticCooldowns);
     simulation.time = saved.time; simulation.tick = saved.tick; simulation.accumulator = saved.accumulator;
     if (saved.intelligence) simulation.intel.restore(saved.intelligence);
+    simulation.hiveEcology = restoreHiveEcology(simulation.hiveEcology,
+      saved.hiveEcology, simulation.units, saved.time, simulation.deaths);
     simulation.assertConservation(); return simulation;
   }
 

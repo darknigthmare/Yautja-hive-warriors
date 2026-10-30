@@ -1624,9 +1624,12 @@ export class Player {
     return !simulation || !actor.factionId || simulation.areHostile(simulation.config.playerFaction, actor.factionId);
   }
 
-  _canHitLegacyAlien(horde, actor, origin = null) {
+  _canHitLegacyAlien(horde, actor, origin = null, environment = this.gameContext?.env) {
     if (!this._canDamageLegacyAlien(horde, actor)) return false;
-    const environment = this.gameContext?.env;
+    return this._hasLegacyLineOfSight(actor, origin, environment);
+  }
+
+  _hasLegacyLineOfSight(actor, origin = null, environment = this.gameContext?.env) {
     const visual = actor.mesh ?? actor.group;
     if (!environment?.hasLineOfSight || !visual) return true;
     const from = origin ?? this.position.clone().add(new THREE.Vector3(0, 2, 0));
@@ -3076,26 +3079,32 @@ export class Player {
     // Emit 3 rapid ionized azure/violet plasma burst sparks
     for (let b = 0; b < 3; b++) {
       this.schedule(() => {
-        const boltOrigin = origin.clone().addScaledVector(forward, 1.5 + b * 0.4);
+        const boltPos = origin.clone().addScaledVector(forward, 24.0);
+        const wallHit = environment?.traceSegment?.(origin, boltPos, { radius: .03 });
+        const impactFraction = Number.isFinite(wallHit?.t) ? THREE.MathUtils.clamp(wallHit.t, 0, 1) : 1;
+        // Custom colliders may supply only t. Keep the effect and interaction
+        // on the same finite segment, including a wall immediately at the muzzle.
+        const impactPos = origin.clone().lerp(boltPos, impactFraction);
+        const boltOrigin = origin.clone().addScaledVector(forward, Math.min(1.5 + b * 0.4, 24 * impactFraction));
         if (particles && particles.emitSparks) {
           particles.emitSparks(boltOrigin, 5);
         }
 
         // Raycast hit check along trajectory
         let hitTarget = false;
-        const boltPos = origin.clone().addScaledVector(forward, 24.0);
 
         // Check boss hit
-        if (bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
-          const bossDist = bosses.activeBoss.mesh.position.distanceTo(origin);
+        const boss = bosses?.activeBoss;
+        if (boss?.mesh) {
+          const bossDist = boss.mesh.position.distanceTo(origin);
           if (bossDist <= 28.0) {
-            const toBoss = bosses.activeBoss.mesh.position.clone().sub(origin).normalize();
-            if (forward.dot(toBoss) > 0.88) {
+            const toBoss = boss.mesh.position.clone().sub(origin).normalize();
+            if (forward.dot(toBoss) > 0.88 && this._hasLegacyLineOfSight(boss, origin, environment)) {
               const isCrit = Math.random() < 0.45;
               const dmg = 95 * (isCrit ? 3.0 : 1.0);
               bosses.takeDamage(dmg, horde);
               hitTarget = true;
-              if (particles && particles.emitSparks) particles.emitSparks(bosses.activeBoss.mesh.position, 8);
+              if (particles && particles.emitSparks) particles.emitSparks(boss.mesh.position, 8);
               if (isCrit && this.gameContext && this.gameContext.ui) {
                 this.gameContext.ui.showAnnouncement('💥 TIR CRITIQUE PISTOLET PLASMA (AVP-R) : 285 DÉGÂTS D\'ÉNERGIE PURE !');
               }
@@ -3116,7 +3125,7 @@ export class Player {
               if (forward.dot(toAlien) > 0.88) {
                 const isCrit = Math.random() < 0.5;
                 const dmg = 95 * (isCrit ? 3.0 : 1.0);
-                if (!this._canHitLegacyAlien(horde, a, boltOrigin)) continue;
+                if (!this._canHitLegacyAlien(horde, a, origin, environment)) continue;
                 a.hp -= dmg;
                 hitTarget = true;
 
@@ -3137,9 +3146,10 @@ export class Player {
           }
         }
 
-        // Trigger electric floor grid if bolt lands on it
-        if (environment && environment.checkElectricGridInteraction) {
-          environment.checkElectricGridInteraction(boltPos, this, this.gameContext ? this.gameContext.ui : null, this.audioEngine, particles, horde);
+        // An actor consumes this bolt. Otherwise the grid owner checks the
+        // physical impact and visibility to the actual candidate grid.
+        if (!hitTarget && environment && environment.checkElectricGridInteraction) {
+          environment.checkElectricGridInteraction(impactPos, this, this.gameContext ? this.gameContext.ui : null, this.audioEngine, particles, horde, origin);
         }
       }, b * 85);
     }
@@ -3905,27 +3915,42 @@ export class Player {
     const forward = new THREE.Vector3(Math.sin(this.rotationY), 0, Math.cos(this.rotationY)).normalize();
     const origin = this.position.clone().add(new THREE.Vector3(0, 1.8, 0));
 
-    // 45m Hypersonic Linear Railgun Beam + 6 Blue Ionization Shock Rings
-    const railGroup = new THREE.Group();
-    const beamGeo = new THREE.CylinderGeometry(0.08, 0.08, 45.0, 8);
-    beamGeo.rotateX(Math.PI / 2);
-    const beamMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.95 });
-    const beamMesh = new THREE.Mesh(beamGeo, beamMat);
-    beamMesh.position.copy(origin).addScaledVector(forward, 22.5);
-    beamMesh.lookAt(origin.clone().addScaledVector(forward, 45.0));
-    railGroup.add(beamMesh);
+    const range = 45.0;
+    const shotEnvironment = environment ?? this.gameContext?.env;
+    const beamEnd = origin.clone().addScaledVector(forward, range);
+    const wall = shotEnvironment?.traceSegment?.(origin, beamEnd, { radius: 0.08 });
+    const beamLength = range * (Number.isFinite(wall?.t) ? THREE.MathUtils.clamp(wall.t, 0, 1) : 1);
 
-    for (let r = 1; r <= 6; r++) {
-      const ringGeo = new THREE.TorusGeometry(0.45 + r * 0.08, 0.04, 6, 16);
-      const ringMat = new THREE.MeshBasicMaterial({ color: 0x00f2fe, transparent: true, opacity: 0.85 });
-      const ring = new THREE.Mesh(ringGeo, ringMat);
-      ring.position.copy(origin).addScaledVector(forward, r * 6.5);
-      ring.lookAt(origin.clone().addScaledVector(forward, 45.0));
-      railGroup.add(ring);
+    // Pierce actors, but stop the rail and its effects at the first physical cover.
+    if (beamLength > 0) {
+      const railGroup = new THREE.Group();
+      const beamGeo = new THREE.CylinderGeometry(0.08, 0.08, beamLength, 8);
+      beamGeo.rotateX(Math.PI / 2);
+      const beamMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.95 });
+      const beamMesh = new THREE.Mesh(beamGeo, beamMat);
+      beamMesh.position.copy(origin).addScaledVector(forward, beamLength / 2);
+      beamMesh.lookAt(beamEnd);
+      railGroup.add(beamMesh);
+
+      for (let r = 1; r <= 6; r++) {
+        const distance = r * 6.5, ringRadius = 0.45 + r * 0.08, tubeRadius = 0.04;
+        if (distance + tubeRadius > beamLength) continue;
+        const ringPosition = origin.clone().addScaledVector(forward, distance);
+        // A conservative swept envelope also keeps wide cosmetic rings out of
+        // side walls. It never changes the narrower rail's damage trajectory.
+        if (shotEnvironment?.traceSegment?.(origin, ringPosition, { radius: ringRadius + tubeRadius })) continue;
+        const ringGeo = new THREE.TorusGeometry(ringRadius, tubeRadius, 6, 16);
+        const ringMat = new THREE.MeshBasicMaterial({ color: 0x00f2fe, transparent: true, opacity: 0.85 });
+        const ring = new THREE.Mesh(ringGeo, ringMat);
+        ring.position.copy(ringPosition);
+        ring.lookAt(beamEnd);
+        railGroup.add(ring);
+      }
+
+      this._addOwnedEffect(railGroup);
+      // Ownership, not scene attachment, controls disposal after early detach.
+      this.schedule(() => this._removeOwnedEffect(railGroup), 220);
     }
-
-    this._addOwnedEffect(railGroup);
-    this.schedule(() => this._removeOwnedEffect(railGroup), 220);
 
     // Pierce up to 15 enemies in a 45m line (550 armor-piercing damage, ignores 100% ballistic armor)
     let piercedCount = 0;
@@ -3938,11 +3963,11 @@ export class Player {
         const toEnemy = a.mesh.position.clone().sub(this.position);
         toEnemy.y = 0;
         const dist = toEnemy.length();
-        if (dist <= 45.0) {
+        if (dist <= range) {
           const proj = toEnemy.dot(forward);
           const perpDist = Math.sqrt(Math.max(0, dist * dist - proj * proj));
-          if (proj > 0 && perpDist <= (a.radius || 1.2) + 0.95) {
-            if (!this._canHitLegacyAlien(horde, a, origin)) continue;
+          if (proj > 0 && proj <= beamLength && perpDist <= (a.radius || 1.2) + 0.95) {
+            if (!this._canHitLegacyAlien(horde, a, origin, shotEnvironment)) continue;
             a.hp -= 550;
             piercedCount++;
             if (particles && particles.emitSparks) {
@@ -3962,12 +3987,15 @@ export class Player {
       }
     }
 
-    // Pierce active boss
-    if (bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
-      const toBoss = bosses.activeBoss.mesh.position.clone().sub(this.position);
+    // Pierce the active boss only along the accessible segment from the muzzle.
+    const boss = bosses?.activeBoss;
+    if (boss?.mesh && boss.hp > 0) {
+      const toBoss = boss.mesh.position.clone().sub(this.position);
       toBoss.y = 0;
       const dist = toBoss.length();
-      if (dist <= 45.0 && toBoss.normalize().dot(forward) > 0.88) {
+      const proj = toBoss.dot(forward);
+      if (dist <= range && proj <= beamLength && toBoss.normalize().dot(forward) > 0.88 &&
+        this._hasLegacyLineOfSight(boss, origin, shotEnvironment)) {
         bosses.takeDamage(550, horde);
         piercedCount++;
       }
@@ -4271,18 +4299,26 @@ export class Player {
     const forward = new THREE.Vector3(Math.sin(this.rotationY), 0, Math.cos(this.rotationY)).normalize();
     const startPos = this.position.clone().add(new THREE.Vector3(0, 2.3, 0));
 
-    // Incandescent orange-white tungsten spike beam
-    const spikeGeo = new THREE.CylinderGeometry(0.06, 0.06, 38.0, 8);
-    spikeGeo.rotateX(Math.PI / 2);
-    const spikeMat = new THREE.MeshBasicMaterial({ color: 0xfb923c, transparent: true, opacity: 0.95 });
-    const spikeMesh = new THREE.Mesh(spikeGeo, spikeMat);
-    spikeMesh.position.copy(startPos).add(forward.clone().multiplyScalar(19.0));
-    spikeMesh.lookAt(startPos.clone().add(forward.clone().multiplyScalar(38.0)));
-    this._addOwnedEffect(spikeMesh);
+    const range = 38.0;
+    const endPos = startPos.clone().addScaledVector(forward, range);
+    const wall = this.gameContext?.env?.traceSegment?.(startPos, endPos, { radius: 0.06 });
+    // Custom physical colliders may report only the normalized hit fraction.
+    const beamLength = wall ? range * Math.max(0, Math.min(1, wall.t)) : range;
 
-    this.schedule(() => {
-      if (spikeMesh.parent) this._removeOwnedEffect(spikeMesh);
-    }, 180);
+    // Incandescent orange-white tungsten spike beam, ending at physical cover.
+    if (beamLength > 0) {
+      const spikeGeo = new THREE.CylinderGeometry(0.06, 0.06, beamLength, 8);
+      spikeGeo.rotateX(Math.PI / 2);
+      const spikeMat = new THREE.MeshBasicMaterial({ color: 0xfb923c, transparent: true, opacity: 0.95 });
+      const spikeMesh = new THREE.Mesh(spikeGeo, spikeMat);
+      spikeMesh.position.copy(startPos).addScaledVector(forward, beamLength / 2);
+      spikeMesh.lookAt(endPos);
+      this._addOwnedEffect(spikeMesh);
+
+      this.schedule(() => {
+        if (spikeMesh.parent) this._removeOwnedEffect(spikeMesh);
+      }, 180);
+    }
 
     let hitTarget = false;
     if (horde && horde.aliens) {
@@ -4297,7 +4333,7 @@ export class Player {
           const proj = toEnemy.dot(forward);
           const perpDist = Math.sqrt(Math.max(0, dist * dist - proj * proj));
           if (proj > 0 && perpDist <= (a.radius || 1.2) + 0.85) {
-            if (!this._canHitLegacyAlien(horde, a, null)) continue;
+            if (!this._canHitLegacyAlien(horde, a, startPos)) continue;
             a.hp -= 680;
             // Cauterizes Ancient Predalien Elder regeneration and bypasses frontal armor!
             a.regenActive = false;
@@ -4320,10 +4356,11 @@ export class Player {
       }
     }
 
-    if (!hitTarget && bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
-      const toBoss = bosses.activeBoss.mesh.position.clone().sub(this.position);
+    const boss = bosses?.activeBoss;
+    if (!hitTarget && boss?.mesh) {
+      const toBoss = boss.mesh.position.clone().sub(this.position);
       toBoss.y = 0;
-      if (toBoss.length() <= 38.0 && toBoss.normalize().dot(forward) > 0.86) {
+      if (toBoss.length() <= 38.0 && toBoss.normalize().dot(forward) > 0.86 && this._hasLegacyLineOfSight(boss, startPos)) {
         bosses.takeDamage(680, horde);
         hitTarget = true;
       }
@@ -5017,37 +5054,45 @@ export class Player {
 
   /* === CHANTIER 1 (v51.0): Clan Weapon Forge Persistent Upgrades === */
   loadClanForgeUpgrades() {
+    const keys = ['barbedCombiStick', 'serratedSmartDisc', 'overchargedCoil', 'masterWristblades', 'enkiduBattleplate',
+      'burnerPlasmaCoil', 'cauterizingWristblade', 'ceramicThermalArmor', 'dlexTargetingHUD'];
+    const current = this.forgeUpgrades ?? {};
+    const upgrades = Object.fromEntries(keys.map(key => [key, Object.hasOwn(current, key) && current[key] === true]));
     try {
-      if (typeof localStorage === 'undefined') return;
-      const saved = localStorage.getItem('yautja_clan_forge');
+      const saved = typeof localStorage === 'undefined' ? null : localStorage.getItem('yautja_clan_forge');
       if (saved) {
         const parsed = JSON.parse(saved);
-        this.forgeUpgrades = { ...this.forgeUpgrades, ...parsed };
-        if (this.forgeUpgrades.masterWristblades) {
-          this.parryWindowDuration = 0.58;
-        }
-        if (this.forgeUpgrades.enkiduBattleplate) {
-          this.hasEnkiduArmor = true;
-          this.acidResistance = 0.40;
-          this.gauntletCooldownReduction = 0.80;
-          this.maxHp = (this.data && this.data.stats && this.data.stats.maxHp ? this.data.stats.maxHp : 1000) + 250;
-        }
-        if (this.forgeUpgrades.burnerPlasmaCoil) {
-          this.hasBurnerCoil = true;
-        }
-        if (this.forgeUpgrades.cauterizingWristblade) {
-          this.hasCauterizingWristblade = true;
-        }
-        if (this.forgeUpgrades.ceramicThermalArmor) {
-          this.hasCeramicThermalArmor = true;
-        }
-        if (this.forgeUpgrades.dlexTargetingHUD) {
-          this.hasDlexTargetingHUD = true;
+        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+          for (const key of keys) if (Object.hasOwn(parsed, key) && parsed[key] === true) upgrades[key] = true;
         }
       }
     } catch (e) {
       console.warn('Failed to load forge upgrades:', e);
     }
+    // The honor debit is committed before the separate clan slot. Its receipt
+    // restores a paid upgrade when the second write failed, without charging again.
+    const ledger = this.gameContext?.forge?.honorLedger;
+    const state = ledger?.getSnapshot?.();
+    if (state?.recoveryRequired === false && state.readOnly === false) {
+      for (const key of keys) {
+        const id = `clan-forge:${key}`;
+        const receipt = Object.hasOwn(ledger.transactions, id) ? ledger.transactions[id] : null;
+        if (receipt?.kind === 'clan-upgrade' && Number.isSafeInteger(receipt.amount) && receipt.amount < 0) upgrades[key] = true;
+      }
+    }
+    this.forgeUpgrades = upgrades;
+    if (upgrades.masterWristblades) this.parryWindowDuration = 0.58;
+    if (upgrades.enkiduBattleplate) {
+      // Reopening the forge or recovering a save must preserve other HP bonuses.
+      if (!this.hasEnkiduArmor) this.maxHp += 250;
+      this.hasEnkiduArmor = true;
+      this.acidResistance = 0.40;
+      this.gauntletCooldownReduction = 0.80;
+    }
+    if (upgrades.burnerPlasmaCoil) this.hasBurnerCoil = true;
+    if (upgrades.cauterizingWristblade) this.hasCauterizingWristblade = true;
+    if (upgrades.ceramicThermalArmor) this.hasCeramicThermalArmor = true;
+    if (upgrades.dlexTargetingHUD) this.hasDlexTargetingHUD = true;
   }
 
   /* === CHANTIER 4 & LUCAS QA (v51.0): Dedicated Wristblade Parry Action [F] (AVP 2010 / Hunting Grounds) === */
@@ -5503,14 +5548,20 @@ export class Player {
 
     // Direct linear piercing beam
     const beamStart = this.position.clone().add(new THREE.Vector3(0, 1.8, 0));
+    const environment = this.gameContext?.env;
     const beamEnd = beamStart.clone().addScaledVector(forward, range);
+    const wall = environment?.traceSegment?.(beamStart, beamEnd, { radius: 0.03 });
+    const beamLength = range * (Number.isFinite(wall?.t) ? THREE.MathUtils.clamp(wall.t, 0, 1) : 1);
+    beamEnd.copy(beamStart).addScaledVector(forward, beamLength);
 
-    if (particles && particles.emitExplosion) {
+    if (beamLength > 0 && particles && particles.emitExplosion) {
       particles.emitExplosion(beamEnd, 24);
     }
-    if (particles && particles.emitSparks) {
+    if (beamLength > 0 && particles && particles.emitSparks) {
       for (let step = 1; step <= 8; step++) {
-        const p = beamStart.clone().addScaledVector(forward, step * 5.0);
+        const distance = step * 5.0;
+        if (distance > beamLength) break;
+        const p = beamStart.clone().addScaledVector(forward, distance);
         particles.emitSparks(p, 6);
       }
     }
@@ -5524,10 +5575,11 @@ export class Player {
         if (alien && alien.mesh) {
           const toAlien = alien.mesh.position.clone().sub(beamStart);
           const projDist = toAlien.dot(forward);
-          if (projDist > 0 && projDist <= range) {
-            const perp = toAlien.clone().subScaledVector(forward, projDist);
+          if (projDist > 0 && projDist <= beamLength) {
+            const perp = toAlien.clone().addScaledVector(forward, -projDist);
             if (perp.length() <= 1.8) {
-              if (!this._canHitLegacyAlien(horde, alien, null)) return;
+              if (!this._canHitLegacyAlien(horde, alien, beamStart, environment)) return;
+              alien.lastDamageFaction = horde.battleSimulation?.config.playerFaction ?? 'player_clan';
               alien.hp -= lanceDamage;
               hitsCount++;
               if (particles && particles.emitAlienBloodSpurt) {
@@ -5540,13 +5592,14 @@ export class Player {
     }
 
     // Check piercing hit on boss
-    if (bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
-      const toBoss = bosses.activeBoss.mesh.position.clone().sub(beamStart);
+    const boss = bosses?.activeBoss;
+    if (boss?.mesh && boss.hp > 0) {
+      const toBoss = boss.mesh.position.clone().sub(beamStart);
       const projDist = toBoss.dot(forward);
-      if (projDist > 0 && projDist <= range) {
-        const perp = toBoss.clone().subScaledVector(forward, projDist);
-        if (perp.length() <= 3.2) {
-          bosses.takeDamage(lanceDamage);
+      if (projDist > 0 && projDist <= beamLength) {
+        const perp = toBoss.clone().addScaledVector(forward, -projDist);
+        if (perp.length() <= 3.2 && this._hasLegacyLineOfSight(boss, beamStart, environment)) {
+          bosses.takeDamage(lanceDamage, horde);
           hitsCount++;
         }
       }
@@ -5554,13 +5607,17 @@ export class Player {
 
     // Check piercing hit on synthetics
     if (synthetics && synthetics.androids) {
+      const simulation = synthetics.battleSimulation;
+      const playerFaction = simulation?.config.playerFaction ?? 'player_clan';
       synthetics.androids.forEach(syn => {
-        if (syn && syn.mesh) {
+        if (syn?.mesh && syn.hp > 0) {
+          if (simulation && syn.factionId && !simulation.areHostile(playerFaction, syn.factionId)) return;
           const toSyn = syn.mesh.position.clone().sub(beamStart);
           const projDist = toSyn.dot(forward);
-          if (projDist > 0 && projDist <= range) {
-            const perp = toSyn.clone().subScaledVector(forward, projDist);
-            if (perp.length() <= 1.8) {
+          if (projDist > 0 && projDist <= beamLength) {
+            const perp = toSyn.clone().addScaledVector(forward, -projDist);
+            if (perp.length() <= 1.8 && this._hasLegacyLineOfSight(syn, beamStart, environment)) {
+              syn.lastDamageFaction = playerFaction;
               syn.hp -= lanceDamage;
               hitsCount++;
             }

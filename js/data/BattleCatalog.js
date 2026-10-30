@@ -1,3 +1,4 @@
+import { sourceSquadSlots, sourceCommanderSlot, SOURCE_BOSS_SPECIES } from './SourceBattleRoster.js';
 /* PR #3 source catalogue. A sourced profile, a proposed operation and a rendered
  * character are separate records; none of these exports certifies a 1:1 asset. */
 import { BATTLE_CATALOG_DATA as source } from './BattleCatalogData.js';
@@ -183,6 +184,34 @@ function commanderProfile(speciesId, boss) {
   return profile;
 }
 
+// A new battle may use source-role presets. Legacy checkpoints still reconstruct
+// the original generic profiles and exact config digest.
+function applySourceSquadProfiles(group, entry, faction, profiles) {
+  const slots = sourceSquadSlots(entry.groupId, entry.profile, group.units.length);
+  if (!slots) return;
+  const preset = (entry.profile ?? 'default').replace(/[^a-zA-Z0-9_-]/g, '_');
+  slots.forEach((slot, index) => {
+    const id = `source_${faction.id}_${entry.groupId}_${preset}_${index}`;
+    if (!profiles.some(profile => profile.id === id)) profiles.push({
+      ...genericProfile(slot.species), id, name: slot.sourceRole, species: slot.species,
+      actorType: slot.actorType, role: 'soldier', sourceRole: slot.sourceRole,
+      sourceTemplateId: entry.groupId, visualStatus: slot.visual,
+      visualFidelity1to1Verified: false, fidelity: 'adaptation',
+      allowedFactions: [faction.id],
+      provenance: 'Audit composition mapped to existing identities; visual/actions are not certified as 1:1.'
+    });
+    group.units[index].profileId = id;
+  });
+}
+function assignSourceCommander(group, boss, speciesId, profiles, slotIndex = 0) {
+  const profile = commanderProfile(speciesId, boss);
+  if (profiles.some(item => item.id === profile.id)) return false;
+  profiles.push(profile);
+  if (slotIndex !== 0) group.units[0].officer = false;
+  group.units[slotIndex] = { ...group.units[slotIndex], profileId: profile.id, uniqueId: boss.id, officer: true };
+  return true;
+}
+
 function capDetailedAgents(byFaction, groups, ceiling) {
   const desired = Object.values(byFaction).reduce((sum, allocation) => sum + allocation.active, 0);
   const active = Math.min(desired, ceiling), original = clone(byFaction);
@@ -214,7 +243,8 @@ function capDetailedAgents(byFaction, groups, ceiling) {
  * Positions are overridable by the actual scene layout; source dimensions are
  * not silently treated as a constructed or certified map. */
 export function getBattleOperationConfig(operationId, { playerCount = 1, budgetId, frontPositions, allowHumanController = false,
-  maxDetailedAgents = 32, experimentalDetailBudget = false } = {}) {
+  maxDetailedAgents = 32, experimentalDetailBudget = false, rosterDetail = 'source' } = {}) {
+  if (!['source', 'legacy'].includes(rosterDetail)) fail('unknown roster detail policy');
   const operation = getBattleOperation(operationId), map = getBattleMap(operation.mapId), frontSpec = getBattleFront(operation.frontId), budget = getBattleBudget(budgetId ?? operation.budgetId);
   if (!Number.isInteger(playerCount) || playerCount < 1 || playerCount > 2) fail('one or two players are required');
   if (!Number.isInteger(maxDetailedAgents) || maxDetailedAgents < 1 || maxDetailedAgents > 512) fail('detail ceiling must be an integer from 1 to 512');
@@ -253,9 +283,11 @@ export function getBattleOperationConfig(operationId, { playerCount = 1, budgetI
       const group = { id, factionId: faction.id, frontId: fronts[Math.max(0, frontIndex)]?.id ?? fronts[0].id,
         state: category === 'reserve' ? 'reserve' : 'distant', sourceState: category, sourceTemplateIds: [entry.groupId],
         units: Array.from({ length: quantity }, (_, index) => ({ id: `${id}:${index}`, profileId: `original_${faction.species}_${index === 0 ? 'officer' : 'soldier'}`, officer: index === 0 })) };
+      if (rosterDetail === 'source') applySourceSquadProfiles(group, entry, faction, profiles);
       if (entry.bossId && !assignedBosses.has(entry.bossId)) {
-        const boss = getBattleBoss(entry.bossId), profile = commanderProfile(faction.species, boss);
-        profiles.push(profile); group.units[0] = { ...group.units[0], profileId: profile.id, uniqueId: boss.id, officer: true }; assignedBosses.add(boss.id);
+        const boss = getBattleBoss(entry.bossId);
+        const slot = rosterDetail === 'source' ? sourceCommanderSlot(entry.groupId, entry.profile, boss.id, quantity) : 0;
+        if (assignSourceCommander(group, boss, faction.species, profiles, slot)) assignedBosses.add(boss.id);
       }
       if (entry.groupId === 'GRP-57') {
         const theta = getBattleProfile('HUM-032'), profile = { ...genericProfile('human', 'officer'), id: 'adapted_theta', name: theta.name, unique: true, fidelity: 'adaptation', sourceProfileId: theta.id };
@@ -263,6 +295,23 @@ export function getBattleOperationConfig(operationId, { playerCount = 1, budgetI
         group.units[0] = { ...group.units[0], profileId: profile.id, uniqueId: 'HUM-032', officer: true };
       }
       groups.push(group);
+    }
+  }
+  if (rosterDetail === 'source') {
+    // Preserve historical faction and budget IDs, but identify synthetic-only
+    // camps by their actual species rather than renaming their robots Marines.
+    for (const faction of factions.filter(item => item.id !== playerFaction)) {
+      const allocated = groups.filter(group => group.factionId === faction.id).flatMap(group => group.units);
+      if (allocated.length && allocated.every(unit => profiles.find(profile => profile.id === unit.profileId)?.species === 'synthetic')) {
+        faction.species = 'synthetic';
+        faction.label = operationId === 'AFF-13' ? 'Working Joes Seegson' : 'Synthétiques Weyland-Yutani';
+        faction.simulationLimitation = 'Current tactical morale model is a proxy, not a synthetic protocol simulation.';
+      }
+    }
+    // Working Joes at Sevastopol are not automatically a third anti-xeno army.
+    if (operationId === 'AFF-13') {
+      const relation = relations.find(item => [item.a, item.b].sort().join('|') === ['hive', 'human_force'].sort().join('|'));
+      if (relation) relation.state = 'neutral';
     }
   }
   const enemyTotal = sides.reduce((sum, camp) => sum + byFaction[camp.id].total, 0);
@@ -283,13 +332,16 @@ export function getBattleOperationConfig(operationId, { playerCount = 1, budgetI
   // finite force count, and repeated access to this factory does not spawn it.
   for (let index = 0; index < operation.bossIds.length; index++) {
     if (assignedBosses.has(operation.bossIds[index])) continue;
-    const faction = factions[1 + index % sides.length];
-    const preferredTemplate = faction.species === 'human' ? 'GRP-42' : faction.species === 'yautja' ? 'GRP-36' : 'GRP-62';
+    const boss = getBattleBoss(operation.bossIds[index]);
+    const expectedSpecies = rosterDetail === 'source' ? SOURCE_BOSS_SPECIES[boss.id] : null;
+    const faction = expectedSpecies ? sides.find(side => side.species === expectedSpecies) ?? sides[index % sides.length] : sides[index % sides.length];
+    const preferredTemplate = boss.id === 'BOS-32' ? 'GRP-45' : boss.id === 'BOS-33' ? 'GRP-44'
+      : faction.species === 'human' ? 'GRP-42' : faction.species === 'yautja' ? 'GRP-36' : 'GRP-62';
     const group = groups.find(item => item.factionId === faction.id && item.state === 'distant' && item.sourceTemplateIds.includes(preferredTemplate))
       ?? groups.find(item => item.factionId === faction.id && item.state === 'distant');
     if (!group) continue;
-    const boss = getBattleBoss(operation.bossIds[index]), profile = commanderProfile(faction.species, boss);
-    profiles.push(profile); group.units[0] = { ...group.units[0], profileId: profile.id, uniqueId: boss.id, officer: true };
+    const slot = rosterDetail === 'source' ? sourceCommanderSlot(group.sourceTemplateIds[0], null, boss.id, group.units.length) : 0;
+    assignSourceCommander(group, boss, faction.species, profiles, slot);
   }
   const detail = capDetailedAgents(byFaction, groups, maxDetailedAgents);
   const configuration = { id: operationId, name: operation.title, mode: 'original', playerFaction,

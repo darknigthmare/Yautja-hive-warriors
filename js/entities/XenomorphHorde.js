@@ -6,6 +6,7 @@ import { requestHostileAttack } from '../engine/HostilePressure.js';
 import { recordCombatDeath } from '../engine/CombatEvents.js';
 import { disposeObject } from '../engine/SceneResources.js';
 import { createCreatureModel, createEggModel, animateCreatureModel } from '../graphics/CreatureModels.js';
+import { sourceUnitVisualKind } from '../data/SourceActorPresentation.js';
 
 export class XenomorphHorde {
   constructor(scene, audioEngine, goreEngine = null) {
@@ -2316,8 +2317,15 @@ export class XenomorphHorde {
     const type = unit.actorType === 'xenomorph' ? 'warrior' : unit.actorType;
     const allowed = new Set(['warrior','runner','spitter','boiler','neomorph','praetomorph','red_warrior','facehugger','officer','crusher','praetorian','grid_alien','cyber_xeno','cryo_xeno']);
     if (!allowed.has(type)) throw new RangeError(`Unsupported detailed xenomorph profile: ${type}`);
-    const mesh = ['officer','crusher','praetorian','grid_alien'].includes(type) ? createCreatureModel(type, this.sharedResources) : this.createAlienMesh(type === 'facehugger', type === 'boiler', type === 'neomorph', type === 'praetomorph', type === 'red_warrior', type === 'spitter', type === 'runner', type === 'cryo_xeno', type === 'cyber_xeno');
-    const actor = { mesh, type, pressureId: this.spawnSequence++, speed: type === 'runner' ? 16 : 10,
+    const sourceVisual = sourceUnitVisualKind(unit);
+    const modelKind = sourceVisual === 'drone' ? 'drone' : type;
+    // A source-role visual is not a new strategic caste. In particular, saved
+    // GRP-58/59 Drone IDs still retain actorType "warrior" in BattleSimulation.
+    const mesh = sourceVisual === 'drone' || ['officer','crusher','praetorian','grid_alien'].includes(type)
+      ? createCreatureModel(modelKind, this.sharedResources)
+      : this.createAlienMesh(type === 'facehugger', type === 'boiler', type === 'neomorph', type === 'praetomorph', type === 'red_warrior', type === 'spitter', type === 'runner', type === 'cryo_xeno', type === 'cyber_xeno');
+    const actor = { mesh, type: modelKind, sourceVisualKind: sourceVisual, visualFidelity1to1Verified: false,
+      pressureId: this.spawnSequence++, speed: type === 'runner' ? 16 : sourceVisual === 'drone' ? 11.5 : 10,
       damage: unit.officer ? 38 : 25, radius: type === 'facehugger' ? .6 : 1.1, isLatched: false, isWallStalker: false,
       leapCooldown: 3, spitCooldown: 3.5, frostBreathCooldown: 4, cyberDartCooldown: 4, isLeaping: false, leapVelY: 0,
       isAirborne: false, airborneVelY: 0, airborneVelHoriz: new THREE.Vector3() };

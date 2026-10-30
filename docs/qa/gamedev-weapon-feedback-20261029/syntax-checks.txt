@@ -1,0 +1,11 @@
+node --check js/entities/Player.js
+exitCode: 0
+
+node --check js/entities/ReferenceEnvironmentMechanisms.js
+exitCode: 0
+
+node --check tests/seegson-beam-cover.test.js
+exitCode: 0
+
+node --check tests/plasma-pistol-electric-grid.test.js
+exitCode: 0

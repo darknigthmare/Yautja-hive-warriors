@@ -1,0 +1,44 @@
+✔ jungle_hunter: reference defaults retain the original runtime equipment (2.242803ms)
+✔ jungle_hunter: character card names the resolved reference kit, not another hunter's equipment (0.176505ms)
+✔ jungle_hunter: every proposed UI slot is accepted unchanged by the runtime resolver (0.365359ms)
+✔ jungle_hunter: health, speed, damage, palette and character order are unchanged (0.16606ms)
+✔ wolf_predator: reference defaults retain the original runtime equipment (0.11984ms)
+✔ wolf_predator: character card names the resolved reference kit, not another hunter's equipment (0.061983ms)
+✔ wolf_predator: every proposed UI slot is accepted unchanged by the runtime resolver (0.256666ms)
+✔ wolf_predator: health, speed, damage, palette and character order are unchanged (0.061022ms)
+✔ alpha_predator: reference defaults retain the original runtime equipment (0.196195ms)
+✔ alpha_predator: character card names the resolved reference kit, not another hunter's equipment (0.423427ms)
+✔ alpha_predator: every proposed UI slot is accepted unchanged by the runtime resolver (0.166321ms)
+✔ alpha_predator: health, speed, damage, palette and character order are unchanged (0.055314ms)
+✔ feral_predator: reference defaults retain the original runtime equipment (0.042845ms)
+✔ feral_predator: character card names the resolved reference kit, not another hunter's equipment (0.036274ms)
+✔ feral_predator: every proposed UI slot is accepted unchanged by the runtime resolver (0.059098ms)
+✔ feral_predator: health, speed, damage, palette and character order are unchanged (0.035173ms)
+✔ samurai_predator: reference defaults retain the original runtime equipment (0.034482ms)
+✔ samurai_predator: character card names the resolved reference kit, not another hunter's equipment (0.031788ms)
+✔ samurai_predator: every proposed UI slot is accepted unchanged by the runtime resolver (0.239941ms)
+✔ samurai_predator: health, speed, damage, palette and character order are unchanged (0.043446ms)
+✔ viking_predator: reference defaults retain the original runtime equipment (0.052599ms)
+✔ viking_predator: character card names the resolved reference kit, not another hunter's equipment (0.096245ms)
+✔ viking_predator: every proposed UI slot is accepted unchanged by the runtime resolver (0.173441ms)
+✔ viking_predator: health, speed, damage, palette and character order are unchanged (0.047752ms)
+✔ city_hunter: reference defaults retain the original runtime equipment (0.044296ms)
+✔ city_hunter: character card names the resolved reference kit, not another hunter's equipment (0.038498ms)
+✔ city_hunter: every proposed UI slot is accepted unchanged by the runtime resolver (0.070205ms)
+✔ city_hunter: health, speed, damage, palette and character order are unchanged (0.038828ms)
+✔ unknown and prototype-property character ids cannot masquerade as a reference kit (0.170746ms)
+✔ invalid weapon values are rejected without coercing executable object keys (0.127011ms)
+✔ null and array configurations cannot inject a faithful kit (0.093351ms)
+✔ adapted mode preserves all implemented slot choices and the six existing gadgets (0.208824ms)
+✔ gadgets remain optional, unique, permitted and capped at two without mutating input (0.096996ms)
+✔ returned options, cards and defaults never expose mutable registry arrays (0.936559ms)
+✔ all reference equipment has an explicit label and source scope without certifying a model (0.410708ms)
+✔ cross-media armory ids are retained while the Feral launcher and Wolf whip lose misleading display names (0.850219ms)
+ℹ tests 36
+ℹ suites 0
+ℹ pass 36
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 85.443626

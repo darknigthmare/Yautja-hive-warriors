@@ -1,0 +1,222 @@
+{
+  "schemaVersion": 1,
+  "checkedAtUtc": "2026-10-29T14:38:49.182343+00:00",
+  "checkedAtEuropeParis": "2026-10-29T15:38:49.182470+01:00",
+  "repository": "darknigthmare/Yautja-hive-warriors",
+  "pullRequest": 5,
+  "baseCommit": "570e443109cde26f63a8d9024213f1b4ed997aa0",
+  "baseTree": "3dd1a7393391fe3947fe5e8d78e9cd99fee3a7aa",
+  "guidesSourceCommit": "19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9",
+  "guidesMainCommitVerifiedDuringPass": "19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9",
+  "guides": [
+    {
+      "id": "game-feel",
+      "use": "core",
+      "sourcePath": "skills/disciplines/game-feel/SKILL.md",
+      "gitBlobSha": "3dafb5b3f2d9a56f9e9eb8c3bae1805800de6fda",
+      "url": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills/blob/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/disciplines/game-feel/SKILL.md",
+      "purpose": "Retours de combat liés aux événements et hiérarchie des impacts."
+    },
+    {
+      "id": "physics-tuning",
+      "use": "on_demand",
+      "sourcePath": "skills/disciplines/physics-tuning/SKILL.md",
+      "gitBlobSha": "4f22e28ebd21d74a40b52951a41f57c73a46d964",
+      "url": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills/blob/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/disciplines/physics-tuning/SKILL.md",
+      "purpose": "Temps de simulation, contacts, rayons et collisions."
+    }
+  ],
+  "nodeVersion": "v24.22.1",
+  "three": {
+    "lockedVersion": "0.160.1",
+    "testBuildRevision": "160",
+    "sha256": "76dea8151bc9352aef3528b4262e249b2604f62543828328db978d060d61a495",
+    "installation": "Official core bytes and test-only descriptor; no npm ci."
+  },
+  "targetedTests": {
+    "command": [
+      "node",
+      "--test",
+      "--test-isolation=none",
+      "--test-reporter=spec",
+      "tests/seegson-beam-cover.test.js",
+      "tests/plasma-pistol-electric-grid.test.js",
+      "tests/legacy-hitscan-cover.test.js",
+      "tests/clan-forge-recovery.test.js"
+    ],
+    "exitCode": 0,
+    "summary": {
+      "tests": 46,
+      "pass": 46,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  "testGroups": [
+    {
+      "path": "tests/seegson-beam-cover.test.js",
+      "tests": 9,
+      "new": true
+    },
+    {
+      "path": "tests/plasma-pistol-electric-grid.test.js",
+      "tests": 14,
+      "new": true
+    },
+    {
+      "path": "tests/legacy-hitscan-cover.test.js",
+      "tests": 17,
+      "new": false
+    },
+    {
+      "path": "tests/clan-forge-recovery.test.js",
+      "tests": 6,
+      "new": false
+    }
+  ],
+  "baselineReproductions": [
+    {
+      "system": "Seegson visual beam",
+      "passed": 3,
+      "failed": 6
+    },
+    {
+      "system": "Pistol sparks and electric grid",
+      "passed": 3,
+      "failed": 11
+    }
+  ],
+  "syntaxChecks": 4,
+  "independentReview": {
+    "completed": true,
+    "type": "Source and test review; no duplicate full test execution claimed.",
+    "humanTesters": 0
+  },
+  "validationScope": {
+    "productionWeaponMethods": true,
+    "productionGridOwner": true,
+    "productionEnvironmentQueries": true,
+    "realCombatGeometry": true,
+    "realTransformedBeamVertices": true,
+    "controlledRenderAudioAndClockServices": true,
+    "browserGameplay": false,
+    "hardwarePerformanceMeasurement": false,
+    "humanTesters": 0,
+    "fidelity1to1Verified": false
+  },
+  "localBuild": {
+    "passed": false,
+    "command": "npm run build",
+    "exitCode": 127,
+    "reason": "vite: not found; locked Vite 8.3.4 absent. No dependency or network configuration changed."
+  },
+  "postPublicationValidation": "Exact new-commit Vercel state and browser observation recorded separately in the PR.",
+  "auditActions": {
+    "AUD-090": "À valider"
+  },
+  "limitations": [
+    "Actor cones and historical actor priority remain unchanged.",
+    "The electric area damage after activation and manual grid interactions are unchanged.",
+    "Other weapons, full WebGL rendering and hardware performance remain outside this proof."
+  ],
+  "files": [
+    {
+      "path": "js/entities/Player.js",
+      "baseGitBlobSha": "59e7793de1dd35e291c35c7ac8393aa0a70f0b47",
+      "testedGitBlobSha": "b2c59d8cd12853a847825e091d36a8026504a712",
+      "sha256": "1fbdf289f87121a9813f8350ec0cded4b5cfea95c85ce6173af36f086067d1c7"
+    },
+    {
+      "path": "js/entities/ReferenceEnvironmentMechanisms.js",
+      "baseGitBlobSha": "44d85a47a759cd35acd8fc924ff844e92f01210b",
+      "testedGitBlobSha": "511751917fe33bab2168c5dc422503e647f4f922",
+      "sha256": "b4550261b0ce8d521ef90c7d4df16202cb43a763651a99c49fe5226adf0b55eb"
+    },
+    {
+      "path": "js/entities/Environment.js",
+      "baseGitBlobSha": "23196bbf108fd8ccf080193c9f380ed60331e052",
+      "testedGitBlobSha": "23196bbf108fd8ccf080193c9f380ed60331e052",
+      "sha256": "4dfb1f510eacd9d70702f5c5441a41eb568dc14cf7a04f25ed8b2ee3d9a80845"
+    },
+    {
+      "path": "js/entities/Bosses.js",
+      "baseGitBlobSha": "a5ecbe14713f89dac1ba9ba064bcd0fdd21ae3ea",
+      "testedGitBlobSha": "a5ecbe14713f89dac1ba9ba064bcd0fdd21ae3ea",
+      "sha256": "ceb7dd792d5793331636dc09a0912e802f9a9f132c0367395ab000b6754e4871"
+    },
+    {
+      "path": "js/engine/CombatGeometry.js",
+      "baseGitBlobSha": "b178b47897dd1538e1b71df2981d179a1c9fa96f",
+      "testedGitBlobSha": "b178b47897dd1538e1b71df2981d179a1c9fa96f",
+      "sha256": "70d44958e505f80f5b3f8673d7bd896df680e46842855d119d1d9f86118af677"
+    },
+    {
+      "path": "tests/seegson-beam-cover.test.js",
+      "baseGitBlobSha": null,
+      "testedGitBlobSha": "1ea54721f76b991cdc9bddeec118a0b73a90e95f",
+      "sha256": "d145588c8e6f1ab96722e804ce03e1476a55b4bf08724a6045f0706af8c4462d"
+    },
+    {
+      "path": "tests/plasma-pistol-electric-grid.test.js",
+      "baseGitBlobSha": null,
+      "testedGitBlobSha": "81ec632e8d8ecda745e57c9e001a8a8c2e8f1b53",
+      "sha256": "c7b53338c69872e4858da1b827adc758de9114c7abcc3ecaa13a9d20fd75419c"
+    },
+    {
+      "path": "tests/legacy-hitscan-cover.test.js",
+      "baseGitBlobSha": "d23280f9e0169ebe60f793484c813f954f5cf75f",
+      "testedGitBlobSha": "d23280f9e0169ebe60f793484c813f954f5cf75f",
+      "sha256": "9a4dbf46bf875e417406a102c819ebd8de0dceac95053f5a7d790e6e6f85966d"
+    },
+    {
+      "path": "tests/clan-forge-recovery.test.js",
+      "baseGitBlobSha": "40fbe2bbded731b3e5a712dbd96fa457b336a1a1",
+      "testedGitBlobSha": "40fbe2bbded731b3e5a712dbd96fa457b336a1a1",
+      "sha256": "3db58f04d7466eebfc472d424aa7af4244e5b0b53ae58f6918c716b842844c2e"
+    }
+  ],
+  "preservedFiles": [
+    {
+      "path": "js/main.js",
+      "baseGitBlobSha": "6c6c75577fcb701e1f4b392aab70bc31c08e60c5",
+      "testedGitBlobSha": "6c6c75577fcb701e1f4b392aab70bc31c08e60c5",
+      "sha256": "18abbb4b35ef04944fb5b481ac7d53e22a0795d5afd9808abc0c57ac794ec727"
+    },
+    {
+      "path": "package.json",
+      "baseGitBlobSha": "a06b23ff68f25547bc067c815db94c5af290aeed",
+      "testedGitBlobSha": "a06b23ff68f25547bc067c815db94c5af290aeed",
+      "sha256": "77d06a70947c0bd9f57d0a4418b491a49d6a99fdbef09a374c079b6045da1fd9"
+    },
+    {
+      "path": "package-lock.json",
+      "baseGitBlobSha": "07c27a597c97751e00742ba2be0f92fd446cd992",
+      "testedGitBlobSha": "07c27a597c97751e00742ba2be0f92fd446cd992",
+      "sha256": "71bbab4314405dccccb191681669d14f7bc70e0d0787bca8ad4119737e0bf9bc"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "docs/qa/gamedev-weapon-feedback-20261029/README.md",
+      "sha256": "560de14ad1419cfe3d92e6d03c7912ccc4b68ad8b0d1a4ce5c90d80f51c36228"
+    },
+    {
+      "path": "docs/qa/gamedev-weapon-feedback-20261029/targeted-tests.txt",
+      "sha256": "a9eb5e1dbd99f4e834b0546136c745ac9c36ed6ac4fb66389730ab8ce0ccdf5c"
+    },
+    {
+      "path": "docs/qa/gamedev-weapon-feedback-20261029/baseline-regressions.txt",
+      "sha256": "4a22442da9b9b19a15ad3d929e377c80fdb6514064939bafdf83f85581481349"
+    },
+    {
+      "path": "docs/qa/gamedev-weapon-feedback-20261029/syntax-checks.txt",
+      "sha256": "e5209b9aa3c48d18f9d99c29aed970426cb4e7d18c40e1d2bb424f59885ae536"
+    },
+    {
+      "path": "docs/qa/gamedev-weapon-feedback-20261029/build-attempt.txt",
+      "sha256": "ed79552d1dad42c5d01f7da9aeac5bd450b8f6c7d35dc9932088ab8defc7ecb6"
+    }
+  ]
+}

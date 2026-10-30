@@ -1,0 +1,82 @@
+{
+  "checkedAtUtc": "2026-10-29T15:57:00.761824+00:00",
+  "baseline": {
+    "command": [
+      "node",
+      "--test",
+      "--test-isolation=none",
+      "--test-reporter=spec",
+      "tests/m77-gauss-cover.test.js",
+      "tests/sniper-plasma-cover.test.js",
+      "tests/m77-cover.test.js",
+      "tests/sniper-cover.test.js"
+    ],
+    "exitCode": 1,
+    "summary": {
+      "tests": 75,
+      "pass": 18,
+      "fail": 57,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  "final": {
+    "command": [
+      "node",
+      "--test",
+      "--test-isolation=none",
+      "--test-reporter=spec",
+      "tests/m77-gauss-cover.test.js",
+      "tests/sniper-plasma-cover.test.js",
+      "tests/m77-cover.test.js",
+      "tests/sniper-cover.test.js",
+      "tests/seegson-beam-cover.test.js",
+      "tests/plasma-pistol-electric-grid.test.js",
+      "tests/legacy-hitscan-cover.test.js",
+      "tests/clan-forge-recovery.test.js"
+    ],
+    "exitCode": 0,
+    "summary": {
+      "tests": 121,
+      "pass": 121,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  "syntax": [
+    {
+      "file": "js/entities/Player.js",
+      "exitCode": 0
+    },
+    {
+      "file": "tests/m77-gauss-cover.test.js",
+      "exitCode": 0
+    },
+    {
+      "file": "tests/sniper-plasma-cover.test.js",
+      "exitCode": 0
+    },
+    {
+      "file": "tests/m77-cover.test.js",
+      "exitCode": 0
+    },
+    {
+      "file": "tests/sniper-cover.test.js",
+      "exitCode": 0
+    }
+  ],
+  "build": {
+    "command": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "exitCode": 127,
+    "summary": {}
+  },
+  "nodeVersion": "v24.22.1",
+  "threeCoreSha256": "76dea8151bc9352aef3528b4262e249b2604f62543828328db978d060d61a495"
+}

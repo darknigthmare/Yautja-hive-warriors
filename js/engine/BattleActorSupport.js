@@ -119,6 +119,17 @@ export function selectBattleTarget(manager, actor, fallbacks = [], others = []) 
 
 const targetViews = new WeakMap();
 function targetView(actor, attacker) {
+  // Node proxies have no soldier identity and require the actual attacker
+  // faction for damage policy. A bare target would silently attribute NPC
+  // fire to the player clan or reject it because the source is unknown.
+  if (actor?.isHiveNodeProxy && actor.position?.isVector3) return {
+    isBattleNPC: true, isHiveNodeProxy: true, actor, factionId: actor.factionId,
+    get position() { return actor.position; },
+    get mesh() { return actor.mesh; },
+    get hp() { return actor.hp; },
+    get radius() { return actor.radius; },
+    takeDamage(amount) { return actor.takeDamage(amount, attacker?.factionId ?? null); }
+  };
   if (typeof actor.takeDamage === 'function' && actor.position?.isVector3) return actor;
   // Each source keeps its live coordination and credit context. A faction-wide
   // view captured the first attacker, and a strong per-actor Map would retain
@@ -135,6 +146,9 @@ function targetView(actor, attacker) {
     takeDamage(amount) {
       if (!Number.isFinite(amount) || amount <= 0 || actor.hp <= 0) return;
       amount = battleCoordinationDamage(attacker, amount);
+      amount = actor.battleUnitId
+        ? actor.combatManager?.battleSimulation?.absorbExosuitDamage?.(actor.battleUnitId, amount) ?? amount
+        : amount;
       if (actor.combatManager?.activeBoss === actor) { actor.combatManager.takeDamage(amount, null, { cause: 'faction-combat', killerFaction: attacker.factionId }); return; }
       actor.hp = Math.max(0, actor.hp - amount);
       actor.lastDamageFaction = attacker.factionId ?? null;
@@ -150,6 +164,32 @@ function targetView(actor, attacker) {
     applyEMP(duration = 2) { actor.isEMPStunned = true; actor.empStunTimer = duration; }
   };
   cache.set(identity, view); return view;
+}
+
+/** Damage only visible, hostile units at the missile impact. The target
+ * already hit by direct missile damage is excluded from the secondary splash.
+ * Every physical target remains owned by its original combat manager. */
+export function applyBattleSplashDamage(manager, attacker, center, { radius, damage, exclude = null } = {}) {
+  if (!center?.isVector3 || !Number.isFinite(radius) || radius <= 0 || radius > 12 ||
+      !Number.isFinite(damage) || damage <= 0 || !manager?.battleSimulation) return [];
+  const primary = exclude?.actor ?? exclude, hits = [], seen = new Set();
+  for (const candidate of manager.combatActorsProvider?.() ?? []) {
+    const actor = candidate?.actor ?? candidate;
+    if (!actor || actor === attacker || actor === primary || seen.has(actor) || !(actor.hp > 0) ||
+        actor._combatDisposed || !battleHostile(manager, attacker, actor)) continue;
+    const position = actor.position ?? actor.mesh?.position;
+    if (!position?.isVector3) continue;
+    const separation = position.distanceTo(center);
+    if (separation > radius + Math.min(actor.radius ?? 0, 1)) continue;
+    if (manager.environment?.hasLineOfSight &&
+        !manager.environment.hasLineOfSight(center.clone().add(new THREE.Vector3(0, .25, 0)),
+          position.clone().add(new THREE.Vector3(0, .9, 0)))) continue;
+    const amount = damage * Math.max(.30, 1 - separation / (radius + Math.min(actor.radius ?? 0, 1)));
+    seen.add(actor);
+    targetView(actor, attacker).takeDamage(amount);
+    hits.push({ actorId: actor.battleUnitId ?? null, damage: amount });
+  }
+  return hits;
 }
 
 export function moveBattleOrder(manager, actor, delta, speed) {

@@ -1,0 +1,287 @@
+{
+  "schemaVersion": 1,
+  "checkedAtUtc": "2026-10-29T15:57:00.761824+00:00",
+  "repository": "darknigthmare/Yautja-hive-warriors",
+  "pullRequest": 5,
+  "baseCommit": "492e732dee45715d2fc2ece9ead05621b02aa272",
+  "baseTree": "83d592f0be348281f9841e0cbf4c3a13e1a4e4f3",
+  "guidesSourceCommit": "19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9",
+  "guides": [
+    "physics-tuning",
+    "game-feel"
+  ],
+  "nodeVersion": "v24.22.1",
+  "three": {
+    "lockedVersion": "0.160.1",
+    "testBuildRevision": "160",
+    "sha256": "76dea8151bc9352aef3528b4262e249b2604f62543828328db978d060d61a495",
+    "installation": "Unchanged official r160 core bytes matching the 0.160.1 distribution; test-only descriptor, not a full npm ci."
+  },
+  "targetedTests": {
+    "command": [
+      "node",
+      "--test",
+      "--test-isolation=none",
+      "--test-reporter=spec",
+      "tests/m77-gauss-cover.test.js",
+      "tests/sniper-plasma-cover.test.js",
+      "tests/m77-cover.test.js",
+      "tests/sniper-cover.test.js",
+      "tests/seegson-beam-cover.test.js",
+      "tests/plasma-pistol-electric-grid.test.js",
+      "tests/legacy-hitscan-cover.test.js",
+      "tests/clan-forge-recovery.test.js"
+    ],
+    "exitCode": 0,
+    "summary": {
+      "tests": 121,
+      "pass": 121,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  "baselineReproduction": {
+    "sourceGitBlobSha": "b2c59d8cd12853a847825e091d36a8026504a712",
+    "command": [
+      "node",
+      "--test",
+      "--test-isolation=none",
+      "--test-reporter=spec",
+      "tests/m77-gauss-cover.test.js",
+      "tests/sniper-plasma-cover.test.js",
+      "tests/m77-cover.test.js",
+      "tests/sniper-cover.test.js"
+    ],
+    "exitCode": 1,
+    "summary": {
+      "tests": 75,
+      "pass": 18,
+      "fail": 57,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "note": "57 failing test cases are not 57 independent defects."
+  },
+  "syntaxChecks": [
+    {
+      "file": "js/entities/Player.js",
+      "exitCode": 0
+    },
+    {
+      "file": "tests/m77-gauss-cover.test.js",
+      "exitCode": 0
+    },
+    {
+      "file": "tests/sniper-plasma-cover.test.js",
+      "exitCode": 0
+    },
+    {
+      "file": "tests/m77-cover.test.js",
+      "exitCode": 0
+    },
+    {
+      "file": "tests/sniper-cover.test.js",
+      "exitCode": 0
+    }
+  ],
+  "localBuild": {
+    "command": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "exitCode": 127,
+    "summary": {},
+    "passed": false,
+    "reason": "vite: not found; pinned Vite 8.3.4 absent and not available in local cache."
+  },
+  "independentReview": {
+    "completed": true,
+    "scope": "Source and test review, including recovered faction/credit guards and real cleanup of detached owned effects; no independent duplicate test run claimed.",
+    "humanTesters": 0
+  },
+  "validationScope": {
+    "productionWeaponMethods": true,
+    "realCombatGeometry": true,
+    "realThreeMeshVertices": true,
+    "productionBossDamageAndPhases": true,
+    "productionSyntheticBisectionAndDeactivation": true,
+    "productionM77EffectOwnership": true,
+    "controlledSceneClockAudioAndParticles": true,
+    "browserGameplay": false,
+    "hardwarePerformanceMeasurement": false,
+    "fidelity1to1Verified": false
+  },
+  "intentionalBehaviorChanges": [
+    "The first central obstacle bounds assisted actor admission; a clear individual sight line cannot bypass it.",
+    "A zero-length sniper trajectory emits no explosion or sparks.",
+    "Sniper boss damage receives the horde for phase behavior."
+  ],
+  "recoveredPendingWorkPreserved": [
+    "Synthetic faction and damage-credit filtering.",
+    "Alien admitted-hit damage credit.",
+    "Owner-managed synthetic bisection and deactivation.",
+    "Real effect-owner cleanup after detachment."
+  ],
+  "productionFilesChanged": [
+    "js/entities/Player.js"
+  ],
+  "methodsChanged": [
+    "fireM77GaussRifle",
+    "fireSniperPlasmaLance"
+  ],
+  "allOtherPlayerMethodsPreserved": true,
+  "auditActions": {
+    "AUD-090": {
+      "status": "À valider",
+      "acceptanceVerified": false
+    }
+  },
+  "auditAndCatalogChecks": "See audit-checks.txt for the final consistency commands; no workbook or catalog content changed.",
+  "limitations": [
+    "CPU evidence does not validate a browser playthrough or rendering.",
+    "Particle emission points are checked, not their subsequent motion or volume.",
+    "Ring clearance uses a conservative swept envelope.",
+    "Other weapons and the complete campaign/score lifecycle remain outside this evidence.",
+    "Boss damage attribution is not changed or certified by the alien/synthetic credit fix."
+  ],
+  "files": [
+    {
+      "path": "js/entities/Player.js",
+      "baseGitBlobSha": "b2c59d8cd12853a847825e091d36a8026504a712",
+      "testedGitBlobSha": "c3997d66b79a1afbc55d80de744437342a0a923e",
+      "sha256": "affd8f427467c0cedb42f2d65c1d3ccabe20912eaedc5875a497f6ed05076c2a"
+    },
+    {
+      "path": "js/entities/Bosses.js",
+      "baseGitBlobSha": "a5ecbe14713f89dac1ba9ba064bcd0fdd21ae3ea",
+      "testedGitBlobSha": "a5ecbe14713f89dac1ba9ba064bcd0fdd21ae3ea",
+      "sha256": "ceb7dd792d5793331636dc09a0912e802f9a9f132c0367395ab000b6754e4871"
+    },
+    {
+      "path": "js/entities/Synthetics.js",
+      "baseGitBlobSha": "5f42dfaecf231655c07f1a1bd86319402b5ff55c",
+      "testedGitBlobSha": "5f42dfaecf231655c07f1a1bd86319402b5ff55c",
+      "sha256": "e2f8ce352e999590c891be066aeeb7682c79a117f9660dbf0eb98e58beb95790"
+    },
+    {
+      "path": "js/entities/Environment.js",
+      "baseGitBlobSha": "23196bbf108fd8ccf080193c9f380ed60331e052",
+      "testedGitBlobSha": "23196bbf108fd8ccf080193c9f380ed60331e052",
+      "sha256": "4dfb1f510eacd9d70702f5c5441a41eb568dc14cf7a04f25ed8b2ee3d9a80845"
+    },
+    {
+      "path": "js/entities/ReferenceEnvironmentMechanisms.js",
+      "baseGitBlobSha": "511751917fe33bab2168c5dc422503e647f4f922",
+      "testedGitBlobSha": "511751917fe33bab2168c5dc422503e647f4f922",
+      "sha256": "b4550261b0ce8d521ef90c7d4df16202cb43a763651a99c49fe5226adf0b55eb"
+    },
+    {
+      "path": "js/engine/CombatGeometry.js",
+      "baseGitBlobSha": "b178b47897dd1538e1b71df2981d179a1c9fa96f",
+      "testedGitBlobSha": "b178b47897dd1538e1b71df2981d179a1c9fa96f",
+      "sha256": "70d44958e505f80f5b3f8673d7bd896df680e46842855d119d1d9f86118af677"
+    },
+    {
+      "path": "js/engine/CombatEvents.js",
+      "baseGitBlobSha": "72259d46288719470832eac5ac815b32a7a1ba5c",
+      "testedGitBlobSha": "72259d46288719470832eac5ac815b32a7a1ba5c",
+      "sha256": "554e6b3afd0422fc799ff1441f1e20ec2c3216c301b71a145e7aa1efab65b4f8"
+    },
+    {
+      "path": "js/engine/SceneResources.js",
+      "baseGitBlobSha": "40283c0ac4af4914b56e622ecabd4b33ae5dd2e3",
+      "testedGitBlobSha": "40283c0ac4af4914b56e622ecabd4b33ae5dd2e3",
+      "sha256": "d5149704e46fa8f61b316f21973efb684f29cc6d148e7f4ebd9c29fb143115c1"
+    },
+    {
+      "path": "js/engine/HonorLedger.js",
+      "baseGitBlobSha": "3caf5e8bea6ab5f9417f38639bcbbb169b129317",
+      "testedGitBlobSha": "3caf5e8bea6ab5f9417f38639bcbbb169b129317",
+      "sha256": "7e904e47e138b3464c7fe5fbc82808630c9e8c36736128008e69739155b63f59"
+    },
+    {
+      "path": "js/ui/ForgeShop.js",
+      "baseGitBlobSha": "5bc9ca6f5a3d9ea9d1e3416bea0460029579393d",
+      "testedGitBlobSha": "5bc9ca6f5a3d9ea9d1e3416bea0460029579393d",
+      "sha256": "b0dff832caf2d9a835c3b206e000a4496696bdfa1622ed4be93229d8b124e610"
+    },
+    {
+      "path": "js/ui/storage.js",
+      "baseGitBlobSha": "8053d02c1a70e73b9cecd05b64a0c385b5e4b3d1",
+      "testedGitBlobSha": "8053d02c1a70e73b9cecd05b64a0c385b5e4b3d1",
+      "sha256": "2855f149ed2ec9c57b926b424bc389380200052f179db790297439506bd400da"
+    },
+    {
+      "path": "js/main.js",
+      "baseGitBlobSha": "6c6c75577fcb701e1f4b392aab70bc31c08e60c5",
+      "testedGitBlobSha": "6c6c75577fcb701e1f4b392aab70bc31c08e60c5",
+      "sha256": "18abbb4b35ef04944fb5b481ac7d53e22a0795d5afd9808abc0c57ac794ec727"
+    },
+    {
+      "path": "package.json",
+      "baseGitBlobSha": "a06b23ff68f25547bc067c815db94c5af290aeed",
+      "testedGitBlobSha": "a06b23ff68f25547bc067c815db94c5af290aeed",
+      "sha256": "77d06a70947c0bd9f57d0a4418b491a49d6a99fdbef09a374c079b6045da1fd9"
+    },
+    {
+      "path": "package-lock.json",
+      "baseGitBlobSha": "07c27a597c97751e00742ba2be0f92fd446cd992",
+      "testedGitBlobSha": "07c27a597c97751e00742ba2be0f92fd446cd992",
+      "sha256": "71bbab4314405dccccb191681669d14f7bc70e0d0787bca8ad4119737e0bf9bc"
+    },
+    {
+      "path": "tests/m77-gauss-cover.test.js",
+      "baseGitBlobSha": null,
+      "testedGitBlobSha": "30f573e02c82bb2859d95f96b5b023ab4327a123",
+      "sha256": "64390719fabfedb8846830380df855b342c306899a68cc176b527eda3463e954"
+    },
+    {
+      "path": "tests/sniper-plasma-cover.test.js",
+      "baseGitBlobSha": null,
+      "testedGitBlobSha": "161a58aa069c2c290048f95ed5e7e78cbeb63146",
+      "sha256": "3a7274130fdfcc7fd912293c389d94419d117914e74ec4a141ed5817088525d8"
+    },
+    {
+      "path": "tests/m77-cover.test.js",
+      "baseGitBlobSha": null,
+      "testedGitBlobSha": "d2a378a34ba49921b6777a94c16047c40a339f40",
+      "sha256": "b4271278b6f117ee0cbb5156acf6cc61a1e69365881fbf3c966bc5c71c0c6dc9"
+    },
+    {
+      "path": "tests/sniper-cover.test.js",
+      "baseGitBlobSha": null,
+      "testedGitBlobSha": "b7f5538eaf8ac753450d6f7c6787212bbb5fc084",
+      "sha256": "5fa93e02e4819d53bc69a28d05daffcbe3421a70c5327f3173bf9add7d6ec527"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "docs/qa/gamedev-heavy-weapons-20261029/README.md",
+      "sha256": "44af18e17936e49c94d6247e7a4381fda9dfe4d68f7a3ea3d270d3264acc0ec2"
+    },
+    {
+      "path": "docs/qa/gamedev-heavy-weapons-20261029/targeted-tests.txt",
+      "sha256": "d53211cb0b6d4e7592050f5feefa080d2a085002ea880237d5f9d273f288a4dd"
+    },
+    {
+      "path": "docs/qa/gamedev-heavy-weapons-20261029/baseline-regressions.txt",
+      "sha256": "f1c8dbfe86aaec15d748ef4b638102747d650905fe91debe3da3627d33f9521a"
+    },
+    {
+      "path": "docs/qa/gamedev-heavy-weapons-20261029/syntax-checks.txt",
+      "sha256": "21f6917ee693da9c3b9be8e259a9b91270febe93e497774e00b67d5791eb2e99"
+    },
+    {
+      "path": "docs/qa/gamedev-heavy-weapons-20261029/build-attempt.txt",
+      "sha256": "ea69fb021cb9ccd41f878f65ba58165c05122f7268768883e1dcb9458c1181de"
+    },
+    {
+      "path": "docs/qa/gamedev-heavy-weapons-20261029/run-metadata.json",
+      "sha256": "8e3c1852fb28cb272efc0f52edf0d5ece27369f776e42360bded69d6f1fee6fb"
+    }
+  ]
+}

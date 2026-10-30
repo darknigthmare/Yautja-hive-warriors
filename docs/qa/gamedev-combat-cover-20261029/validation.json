@@ -1,0 +1,254 @@
+{
+  "schemaVersion": 1,
+  "checkedAtUtc": "2026-10-29T13:42:05.274345+00:00",
+  "repository": "darknigthmare/Yautja-hive-warriors",
+  "pullRequest": 5,
+  "baseCommit": "c6ebf48b772b8293cdad35ab1302406e73c957ec",
+  "baseTree": "830a2b920b029d01d451493f5714880f28ad4765",
+  "guidesSourceCommit": "19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9",
+  "guidesMainCommitVerifiedDuringPass": "19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9",
+  "guides": [
+    {
+      "id": "game-feel",
+      "use": "core",
+      "sourcePath": "skills/disciplines/game-feel/SKILL.md",
+      "gitBlobSha": "3dafb5b3f2d9a56f9e9eb8c3bae1805800de6fda",
+      "url": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills/blob/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/disciplines/game-feel/SKILL.md",
+      "purpose": "Retours de combat liés aux événements et hiérarchie des impacts."
+    },
+    {
+      "id": "physics-tuning",
+      "use": "on_demand",
+      "sourcePath": "skills/disciplines/physics-tuning/SKILL.md",
+      "gitBlobSha": "4f22e28ebd21d74a40b52951a41f57c73a46d964",
+      "url": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills/blob/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/disciplines/physics-tuning/SKILL.md",
+      "purpose": "Temps de simulation, contacts, rayons et collisions."
+    }
+  ],
+  "nodeVersion": "v24.22.1",
+  "three": {
+    "lockedVersion": "0.160.1",
+    "testBuildRevision": "160",
+    "sha256": "76dea8151bc9352aef3528b4262e249b2604f62543828328db978d060d61a495",
+    "installation": "Official core bytes with test-only local descriptor; no npm ci."
+  },
+  "targetedTests": {
+    "command": [
+      "node",
+      "--test",
+      "--test-isolation=none",
+      "--test-reporter=spec",
+      "tests/legacy-hitscan-cover.test.js",
+      "tests/projectile-boss-cover.test.js",
+      "tests/co-op-keyboard-interactions.test.js",
+      "tests/clan-forge-recovery.test.js",
+      "docs/qa/gamedev-combat-cover-20261029/replay-existing-collision-checks.mjs"
+    ],
+    "exitCode": 0,
+    "summary": {
+      "tests": 56,
+      "pass": 56,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  "testGroups": [
+    {
+      "path": "tests/legacy-hitscan-cover.test.js",
+      "tests": 17,
+      "pass": 17,
+      "new": true
+    },
+    {
+      "path": "tests/projectile-boss-cover.test.js",
+      "tests": 12,
+      "pass": 12,
+      "new": true
+    },
+    {
+      "path": "tests/co-op-keyboard-interactions.test.js",
+      "tests": 15,
+      "pass": 15,
+      "new": false
+    },
+    {
+      "path": "tests/clan-forge-recovery.test.js",
+      "tests": 6,
+      "pass": 6,
+      "new": false
+    },
+    {
+      "path": "docs/qa/gamedev-combat-cover-20261029/replay-existing-collision-checks.mjs",
+      "tests": 6,
+      "pass": 6,
+      "new": false,
+      "selection": "5 unchanged CombatGeometry cases excluding APC construction, plus 1 unchanged wooden-arrow first-impact case. Not the two complete source suites."
+    }
+  ],
+  "baselineReproductions": [
+    {
+      "system": "Player hitscan",
+      "passed": 9,
+      "failed": 8,
+      "sourceGitBlobSha": "566c3d0979ce57349be3fb3512793269ea282326"
+    },
+    {
+      "system": "Projectile proximity",
+      "passed": 6,
+      "failed": 6,
+      "sourceGitBlobSha": "f307a7e48f5f4c5fb2c614a49219a0058d48a1c9"
+    }
+  ],
+  "syntaxChecks": 5,
+  "independentReview": {
+    "completed": true,
+    "scope": "Actual shot/projectile origins, close and low cover, unchanged costs/damage/ranges, target feedback only after geometric admission, null nonlethal damage return, preservation of legacy callers.",
+    "humanTesters": 0
+  },
+  "validationScope": {
+    "productionWeaponMethods": true,
+    "productionProjectileLoop": true,
+    "productionBossDamageMethods": true,
+    "realCombatGeometry": true,
+    "stubbedRenderAudioServices": true,
+    "fullWebGLGame": false,
+    "fullCombatGeometryAndRuntimeWiringSuites": false,
+    "browserGameplay": false,
+    "hardwarePerformanceMeasurement": false,
+    "humanTesters": 0,
+    "fidelity1to1Verified": false
+  },
+  "localBuild": {
+    "passed": false,
+    "command": "npm run build",
+    "exitCode": 127,
+    "reason": "vite: not found; locked Vite 8.3.4 unavailable. No dependency or network configuration changed.",
+    "artifact": "docs/qa/gamedev-combat-cover-20261029/build-attempt.txt"
+  },
+  "browserValidation": {
+    "passed": false,
+    "reason": "No local browser executable. Exact new-commit Git preview status is recorded separately in the PR."
+  },
+  "auditActions": {
+    "AUD-090": "À valider"
+  },
+  "limitations": [
+    "Only direct damage and target-impact feedback of the five named weapon paths are covered.",
+    "The Seegson visual beam remains 38 units long even when cover rejects direct damage.",
+    "The pistol electric-grid interaction at the distant 24-unit point remains unchanged and is not occlusion-certified.",
+    "M77, sniper, synthetic-specific paths and other legacy gadgets remain outside this correction.",
+    "CPU checks do not certify WebGL appearance, game feel, hardware performance or all penetration limits."
+  ],
+  "files": [
+    {
+      "path": "js/main.js",
+      "baseGitBlobSha": "f307a7e48f5f4c5fb2c614a49219a0058d48a1c9",
+      "testedGitBlobSha": "6c6c75577fcb701e1f4b392aab70bc31c08e60c5",
+      "sha256": "18abbb4b35ef04944fb5b481ac7d53e22a0795d5afd9808abc0c57ac794ec727"
+    },
+    {
+      "path": "js/entities/Player.js",
+      "baseGitBlobSha": "566c3d0979ce57349be3fb3512793269ea282326",
+      "testedGitBlobSha": "59e7793de1dd35e291c35c7ac8393aa0a70f0b47",
+      "sha256": "68313e4d538b5c41900981543a80a7cdb0b16a4308eb628b9bbc762b87c416ed"
+    },
+    {
+      "path": "tests/legacy-hitscan-cover.test.js",
+      "baseGitBlobSha": null,
+      "testedGitBlobSha": "d23280f9e0169ebe60f793484c813f954f5cf75f",
+      "sha256": "9a4dbf46bf875e417406a102c819ebd8de0dceac95053f5a7d790e6e6f85966d"
+    },
+    {
+      "path": "tests/projectile-boss-cover.test.js",
+      "baseGitBlobSha": null,
+      "testedGitBlobSha": "a7abdd5ed6fd783eec6b8718743f2a201ec63a9e",
+      "sha256": "58a3e9204a613260b139dbeaecaffcfcb51b15e9c14265aa2ff592fa88b02cfc"
+    },
+    {
+      "path": "tests/co-op-keyboard-interactions.test.js",
+      "baseGitBlobSha": "5a950d23c3ca4a7624d846289cfe018755683e7d",
+      "testedGitBlobSha": "5a950d23c3ca4a7624d846289cfe018755683e7d",
+      "sha256": "2485374b53a9472fac494b2b20159b229e7eddc50392bdb994560e457f78a050"
+    },
+    {
+      "path": "tests/clan-forge-recovery.test.js",
+      "baseGitBlobSha": "40fbe2bbded731b3e5a712dbd96fa457b336a1a1",
+      "testedGitBlobSha": "40fbe2bbded731b3e5a712dbd96fa457b336a1a1",
+      "sha256": "3db58f04d7466eebfc472d424aa7af4244e5b0b53ae58f6918c716b842844c2e"
+    },
+    {
+      "path": "js/entities/Bosses.js",
+      "baseGitBlobSha": "a5ecbe14713f89dac1ba9ba064bcd0fdd21ae3ea",
+      "testedGitBlobSha": "a5ecbe14713f89dac1ba9ba064bcd0fdd21ae3ea",
+      "sha256": "ceb7dd792d5793331636dc09a0912e802f9a9f132c0367395ab000b6754e4871"
+    },
+    {
+      "path": "js/engine/CombatGeometry.js",
+      "baseGitBlobSha": "b178b47897dd1538e1b71df2981d179a1c9fa96f",
+      "testedGitBlobSha": "b178b47897dd1538e1b71df2981d179a1c9fa96f",
+      "sha256": "70d44958e505f80f5b3f8673d7bd896df680e46842855d119d1d9f86118af677"
+    },
+    {
+      "path": "js/engine/SingleProjectileImpact.js",
+      "baseGitBlobSha": "40c5d11abf9c507fcc62e7e057760d8f81713920",
+      "testedGitBlobSha": "40c5d11abf9c507fcc62e7e057760d8f81713920",
+      "sha256": "cdcc94c66c867528084cc8b3abba4156333dee2f6c1cc05704c1d9217267c148"
+    },
+    {
+      "path": "tests/combat-geometry.test.js",
+      "baseGitBlobSha": "480bd83c5bb135a4a91b51b6f9dfdc2e4544eee6",
+      "testedGitBlobSha": "480bd83c5bb135a4a91b51b6f9dfdc2e4544eee6",
+      "sha256": "1a8c372c5fb99be0ab8fe9df801284bb9b64f341f36e45fa43d665b14ee897de"
+    },
+    {
+      "path": "tests/runtime-final-wiring.test.js",
+      "baseGitBlobSha": "cbc9b666d6d51edbb7497d9c4945bfe9aed51009",
+      "testedGitBlobSha": "cbc9b666d6d51edbb7497d9c4945bfe9aed51009",
+      "sha256": "3dbd53a45f59c51bf94562b7079ea2e1ea6e9ab154a38898633c6ab63330ff24"
+    },
+    {
+      "path": "docs/qa/gamedev-combat-cover-20261029/replay-existing-collision-checks.mjs",
+      "baseGitBlobSha": null,
+      "testedGitBlobSha": "9ac1c8ebd2c2f0adf11ba5846dbc6d5c81215d00",
+      "sha256": "78f09e9ea80b76d21c81a1405b9a720cd568c65cdadb33199f5b87e43a211245"
+    }
+  ],
+  "unchangedDependencyFiles": [
+    {
+      "path": "package.json",
+      "baseGitBlobSha": "a06b23ff68f25547bc067c815db94c5af290aeed",
+      "testedGitBlobSha": "a06b23ff68f25547bc067c815db94c5af290aeed",
+      "sha256": "77d06a70947c0bd9f57d0a4418b491a49d6a99fdbef09a374c079b6045da1fd9"
+    },
+    {
+      "path": "package-lock.json",
+      "baseGitBlobSha": "07c27a597c97751e00742ba2be0f92fd446cd992",
+      "testedGitBlobSha": "07c27a597c97751e00742ba2be0f92fd446cd992",
+      "sha256": "71bbab4314405dccccb191681669d14f7bc70e0d0787bca8ad4119737e0bf9bc"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "docs/qa/gamedev-combat-cover-20261029/targeted-tests.txt",
+      "sha256": "6fb5d7fbccc97b4e870ec4bb15c9a62c250d72dd8f714c3d15882d3e9590f6bd"
+    },
+    {
+      "path": "docs/qa/gamedev-combat-cover-20261029/baseline-regressions.txt",
+      "sha256": "3fcf86481f9c20b3066f8ea762e67918f63cdec66819780865730bdc9d14d2cd"
+    },
+    {
+      "path": "docs/qa/gamedev-combat-cover-20261029/syntax-checks.txt",
+      "sha256": "49205c9305d7d12ff94e6b3b8edcd5c357e92fdbf7a5a9bb12b285ac0fab654f"
+    },
+    {
+      "path": "docs/qa/gamedev-combat-cover-20261029/build-attempt.txt",
+      "sha256": "ed79552d1dad42c5d01f7da9aeac5bd450b8f6c7d35dc9932088ab8defc7ecb6"
+    },
+    {
+      "path": "docs/qa/gamedev-combat-cover-20261029/README.md",
+      "sha256": "034fc4577d1d2dfc0130f943b0e55cf2a1ec6f046083753cb4057019a6e9a14c"
+    }
+  ]
+}

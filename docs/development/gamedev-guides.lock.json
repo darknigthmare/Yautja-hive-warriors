@@ -1,0 +1,210 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Références de développement du dépôt ; aucun runtime ni skill personnelle installée.",
+  "reviewedOn": "2026-10-29",
+  "sourceRepository": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills",
+  "sourceCommit": "19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9",
+  "sourceLicense": "Apache-2.0",
+  "sourcePolicy": "Liens épinglés et adaptation locale ; lire seulement les guides nécessaires, ne pas exécuter leurs exemples sans vérifier la version du projet.",
+  "project": {
+    "repository": "darknigthmare/Yautja-hive-warriors",
+    "gameplayBase": {
+      "branch": "codex/depth-pr3-20261028",
+      "commit": "e66e51e9759db970dec30fba51bade16c0873d26",
+      "tree": "b2584e9a13f1c73ce433bfc05e9d46098d518c1d"
+    },
+    "documentaryBase": {
+      "branch": "codex/complete-pr3-20261026",
+      "commit": "2fa875e0cbf80d42a0d197874dbb9b24131882fd",
+      "tree": "685b94e9499ecb83140d012595c7543052377da2"
+    },
+    "engine": "three",
+    "lockedEngineVersion": "0.160.1",
+    "upstreamThreeBaseline": "r186",
+    "runtimeLanguage": "JavaScript ES modules",
+    "lockedViteVersion": "8.3.4",
+    "lockedPlaywrightVersion": "1.64.1",
+    "recommendedNodeMajor": 24,
+    "detailedActorCapAtBaseline": 32,
+    "performanceCertification": false
+  },
+  "consolidation": {
+    "method": "Arbre gameplay conservé ; ajout exact des seuls trois fichiers d'audit absents.",
+    "mergeBase": "a8aa85762365f1824c2772883a4ddb3fb708cc1e",
+    "documentaryChangesSinceMergeBase": 56,
+    "documentaryChangesAlreadyIdenticalInGameplayBase": 53,
+    "importedFiles": [
+      {
+        "path": "docs/audits/2026-10-27/README.md",
+        "gitBlobSha": "f9ff2601139ef8279ddbcc4514ef1fa6c9f88d29",
+        "mode": "100644",
+        "size": 16403
+      },
+      {
+        "path": "docs/audits/2026-10-27/Yautja_Hive_Warriors_Controle_Completude_2026-10-27.xlsx",
+        "gitBlobSha": "42168c7f4feb2e2843d16960648996bc4dc098af",
+        "mode": "100644",
+        "size": 383468
+      },
+      {
+        "path": "docs/audits/2026-10-27/completeness-audit.json",
+        "gitBlobSha": "b45b1aa3b64fae8991508fdb6044ed6d019aa9b2",
+        "mode": "100644",
+        "size": 1372337
+      }
+    ],
+    "historicalAuditReevaluated": false
+  },
+  "guides": [
+    {
+      "id": "router",
+      "use": "routing",
+      "sourcePath": "router/SKILL.md",
+      "gitBlobSha": "f19eacd9d68dbe8d4c1289032b5957db30ecc41e",
+      "url": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills/blob/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/router/SKILL.md",
+      "purpose": "Sélection minimale des guides selon le moteur et le chantier."
+    },
+    {
+      "id": "threejs-scene-setup",
+      "use": "core",
+      "sourcePath": "skills/web-engines/threejs-scene-setup/SKILL.md",
+      "gitBlobSha": "fad847ff0804def000b3f17fe5b062302eb7312e",
+      "url": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills/blob/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/web-engines/threejs-scene-setup/SKILL.md",
+      "purpose": "Rendu, boucle et ressources ; exemples r186 à adapter au r160 du projet."
+    },
+    {
+      "id": "performance-optimization",
+      "use": "core",
+      "sourcePath": "skills/disciplines/performance-optimization/SKILL.md",
+      "gitBlobSha": "e6878a4552be445b54988bd2fb93619d561f38f3",
+      "url": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills/blob/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/disciplines/performance-optimization/SKILL.md",
+      "purpose": "Mesure reproductible avant/après, coûts CPU et GPU distincts."
+    },
+    {
+      "id": "game-ai",
+      "use": "core",
+      "sourcePath": "skills/disciplines/game-ai/SKILL.md",
+      "gitBlobSha": "6b90b505ef635cb7f0917de3416670ad1d404790",
+      "url": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills/blob/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/disciplines/game-ai/SKILL.md",
+      "purpose": "Décision, déplacement local et chemins séparés."
+    },
+    {
+      "id": "ai-behavior-trees-utility-ai",
+      "use": "on_demand",
+      "sourcePath": "skills/disciplines/ai-behavior-trees-utility-ai/SKILL.md",
+      "gitBlobSha": "9c54c534667c59552964437ad1075f693c8c7933",
+      "url": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills/blob/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/disciplines/ai-behavior-trees-utility-ai/SKILL.md",
+      "purpose": "Arbitrages d'officiers ou de boss, interruptions et stabilité des décisions."
+    },
+    {
+      "id": "level-design",
+      "use": "core",
+      "sourcePath": "skills/disciplines/level-design/SKILL.md",
+      "gitBlobSha": "14337635666aaa38bce83ce797aa89f89e964cc4",
+      "url": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills/blob/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/disciplines/level-design/SKILL.md",
+      "purpose": "Parcours, objectifs, accès et rythme des cartes."
+    },
+    {
+      "id": "game-feel",
+      "use": "core",
+      "sourcePath": "skills/disciplines/game-feel/SKILL.md",
+      "gitBlobSha": "3dafb5b3f2d9a56f9e9eb8c3bae1805800de6fda",
+      "url": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills/blob/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/disciplines/game-feel/SKILL.md",
+      "purpose": "Retours de combat liés aux événements et hiérarchie des impacts."
+    },
+    {
+      "id": "create-game-assets",
+      "use": "core",
+      "sourcePath": "skills/disciplines/create-game-assets/SKILL.md",
+      "gitBlobSha": "e2e6ecad398e46b0a8b4f910ec75b82885505f8b",
+      "url": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills/blob/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/disciplines/create-game-assets/SKILL.md",
+      "purpose": "Direction artistique, familles de ressources et validation en contexte."
+    },
+    {
+      "id": "threejs-gltf-loading",
+      "use": "on_demand",
+      "sourcePath": "skills/web-engines/threejs-gltf-loading/SKILL.md",
+      "gitBlobSha": "4fa63eeca3ca4e73f4834d4bd07a37f31ca4f94a",
+      "url": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills/blob/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/web-engines/threejs-gltf-loading/SKILL.md",
+      "purpose": "Modèles GLB, animations et propriété des ressources ; adapter à r160."
+    },
+    {
+      "id": "threejs-materials-lighting",
+      "use": "on_demand",
+      "sourcePath": "skills/web-engines/threejs-materials-lighting/SKILL.md",
+      "gitBlobSha": "5087660b2ee598655d66d8a1da3f4b805738301e",
+      "url": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills/blob/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/web-engines/threejs-materials-lighting/SKILL.md",
+      "purpose": "Matériaux, lumières et ombres compatibles avec les API verrouillées."
+    },
+    {
+      "id": "save-systems",
+      "use": "on_demand",
+      "sourcePath": "skills/disciplines/save-systems/SKILL.md",
+      "gitBlobSha": "dbfa017473dd69f28217a620bb1fb73621913d36",
+      "url": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills/blob/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/disciplines/save-systems/SKILL.md",
+      "purpose": "Versionnement, rechargement et continuité des identités."
+    },
+    {
+      "id": "input-systems",
+      "use": "on_demand",
+      "sourcePath": "skills/disciplines/input-systems/SKILL.md",
+      "gitBlobSha": "d20f5a0bdfb5f6c41822dcd138cba305e2ab0d64",
+      "url": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills/blob/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/disciplines/input-systems/SKILL.md",
+      "purpose": "Commandes, buffers, focus et coopération locale."
+    },
+    {
+      "id": "physics-tuning",
+      "use": "on_demand",
+      "sourcePath": "skills/disciplines/physics-tuning/SKILL.md",
+      "gitBlobSha": "4f22e28ebd21d74a40b52951a41f57c73a46d964",
+      "url": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills/blob/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/disciplines/physics-tuning/SKILL.md",
+      "purpose": "Temps de simulation, contacts, rayons et collisions."
+    },
+    {
+      "id": "camera-systems",
+      "use": "on_demand",
+      "sourcePath": "skills/disciplines/camera-systems/SKILL.md",
+      "gitBlobSha": "df9af28277ee78f21837f462438a09f86803dddd",
+      "url": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills/blob/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/disciplines/camera-systems/SKILL.md",
+      "purpose": "Suivi, obstacles, deux vues et lisibilité des retours."
+    },
+    {
+      "id": "audio-design",
+      "use": "on_demand",
+      "sourcePath": "skills/disciplines/audio-design/SKILL.md",
+      "gitBlobSha": "37996996f5d9fe438a43d39bfe58004dc0b1e6d8",
+      "url": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills/blob/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/disciplines/audio-design/SKILL.md",
+      "purpose": "Hiérarchie sonore, événements et budget de voix."
+    },
+    {
+      "id": "game-ui-ux",
+      "use": "on_demand",
+      "sourcePath": "skills/disciplines/game-ui-ux/SKILL.md",
+      "gitBlobSha": "c7088f7d340dd3d68848f7d0d9a954577fde86b3",
+      "url": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills/blob/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/disciplines/game-ui-ux/SKILL.md",
+      "purpose": "HUD des fronts, commandes et informations de bataille."
+    },
+    {
+      "id": "procedural-gen",
+      "use": "on_demand",
+      "sourcePath": "skills/disciplines/procedural-gen/SKILL.md",
+      "gitBlobSha": "10b58ce76370179deb8fc064deeb977e5b577ffd",
+      "url": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills/blob/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/disciplines/procedural-gen/SKILL.md",
+      "purpose": "Graines reproductibles et variantes de cartes validées."
+    }
+  ],
+  "validationScope": {
+    "currentChange": "Documentation et rapprochement de fichiers d'audit existants.",
+    "checks": [
+      "Sources et chemins contrôlés sur les arbres Git épinglés",
+      "Versions contrôlées dans les métadonnées du projet",
+      "Conservation exacte des blobs de l'audit du 27 octobre",
+      "Conservation de tous les fichiers du gameplay de base"
+    ],
+    "gameplayTestsRunForThisChange": false,
+    "browserTestsRunForThisChange": false,
+    "hardwarePerformanceMeasured": false,
+    "productionDeploymentRequested": false,
+    "automaticGitPreview": "Possible ; état à vérifier séparément sur le commit concerné."
+  }
+}

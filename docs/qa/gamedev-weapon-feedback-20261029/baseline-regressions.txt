@@ -1,0 +1,401 @@
+Baseline commit: 570e443109cde26f63a8d9024213f1b4ed997aa0
+Expected failing behavior checks before source corrections.
+
+Seegson visual beam — exact 570e443 baseline
+
+✔ Seegson retains its full visible range, actual muzzle height and shot cost in clear space (4.810293ms)
+✖ Seegson visible vertices stop at the nearest physical wall, including close or render-hidden cover (1.277506ms)
+✖ Seegson transformed beam endpoints follow the player and real rotated or cylindrical cover (0.848029ms)
+✖ Seegson beam respects its real height and radius beside floors and overhead cover (5.126851ms)
+✖ Seegson visible radius cannot pass through cover missed by its center line (1.148261ms)
+✔ Seegson keeps full range past distant, disabled, nonblocking or destroyed cover (3.15684ms)
+✖ Seegson accepts a physical custom collider that reports only a normalized hit fraction (0.359111ms)
+✖ Seegson does not allocate a visible beam or cleanup timer when its muzzle is inside cover (0.673626ms)
+✔ Seegson cleans only its own beam after 180ms and cannot repeat cleanup after early removal (0.727137ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 3
+ℹ fail 6
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 82.266087
+
+✖ failing tests:
+
+test at tests/seegson-beam-cover.test.js:87:1
+✖ Seegson visible vertices stop at the nearest physical wall, including close or render-hidden cover (1.277506ms)
+  AssertionError [ERR_ASSERTION]: beam center: expected 0, got 16.78
+      at near (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/seegson-beam-cover.test.js:49:10)
+      at assertBeam (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/seegson-beam-cover.test.js:64:3)
+      at TestContext.<anonymous> (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/seegson-beam-cover.test.js:94:5)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/seegson-beam-cover.test.js:99:1
+✖ Seegson transformed beam endpoints follow the player and real rotated or cylindrical cover (0.848029ms)
+  AssertionError [ERR_ASSERTION]: beam center: expected 0, got 14.280000000000001
+      at near (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/seegson-beam-cover.test.js:49:10)
+      at assertBeam (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/seegson-beam-cover.test.js:64:3)
+      at TestContext.<anonymous> (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/seegson-beam-cover.test.js:108:35)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/seegson-beam-cover.test.js:112:1
+✖ Seegson beam respects its real height and radius beside floors and overhead cover (5.126851ms)
+  AssertionError [ERR_ASSERTION]: beam center: expected 0, got 16.78
+      at near (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/seegson-beam-cover.test.js:49:10)
+      at assertBeam (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/seegson-beam-cover.test.js:64:3)
+      at TestContext.<anonymous> (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/seegson-beam-cover.test.js:120:35)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/seegson-beam-cover.test.js:124:1
+✖ Seegson visible radius cannot pass through cover missed by its center line (1.148261ms)
+  AssertionError [ERR_ASSERTION]: beam center: expected 0, got 16.78
+      at near (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/seegson-beam-cover.test.js:49:10)
+      at assertBeam (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/seegson-beam-cover.test.js:64:3)
+      at TestContext.<anonymous> (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/seegson-beam-cover.test.js:129:35)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/seegson-beam-cover.test.js:144:1
+✖ Seegson accepts a physical custom collider that reports only a normalized hit fraction (0.359111ms)
+  AssertionError [ERR_ASSERTION]: beam center: expected 0, got 14.25
+      at near (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/seegson-beam-cover.test.js:49:10)
+      at assertBeam (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/seegson-beam-cover.test.js:64:3)
+      at TestContext.<anonymous> (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/seegson-beam-cover.test.js:147:33)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/seegson-beam-cover.test.js:152:1
+✖ Seegson does not allocate a visible beam or cleanup timer when its muzzle is inside cover (0.673626ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/seegson-beam-cover.test.js:155:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+Plasma pistol grid and sparks — exact 570e443 baseline
+
+✔ an unobstructed burst activates the real grid once, retaining its damage, duration and shot cadence (4.056637ms)
+✖ a frontal wall prevents a remote grid discharge and its real collateral damage (1.505239ms)
+✖ a grid before the nearest wall can activate at that wall impact instead of the unreachable endpoint (0.323808ms)
+✖ a grid just behind the first wall stays protected even inside the interaction radius of its impact (5.57872ms)
+✖ a lateral wall blocks the actual grid candidate even when the shot axis reaches its endpoint (0.496087ms)
+✖ the grid owner skips a hidden candidate and can still activate the next visible inactive grid (0.468066ms)
+✔ manual grid interactions retain historical order, active-grid skipping and the 3D radius without projectile filtering (0.368516ms)
+✔ disabled cover and walls beyond the shot do not block an otherwise reachable grid (0.418891ms)
+✖ a custom physical collider returning only t still supplies the correct interaction point (0.415817ms)
+✖ an obstacle before the first cosmetic spark bounds all three sparks at the real first impact (0.414235ms)
+✖ a successful alien impact consumes each bolt instead of also activating a distant grid (1.271738ms)
+✖ a successful boss impact consumes each bolt instead of also activating a distant grid (0.960047ms)
+✖ later bolts can reach a grid after an earlier bolt kills and clears the boss (0.41766ms)
+✖ each callback reevaluates a changing obstacle before grid activation (0.342517ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 3
+ℹ fail 11
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 33.021969
+
+✖ failing tests:
+
+test at ../../../../tmp/yautja-plasma-grid-baseline.test.mjs:86:1
+✖ a frontal wall prevents a remote grid discharge and its real collateral damage (1.505239ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///tmp/yautja-plasma-grid-baseline.test.mjs:89:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../../tmp/yautja-plasma-grid-baseline.test.mjs:95:1
+✖ a grid before the nearest wall can activate at that wall impact instead of the unreachable endpoint (0.323808ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///tmp/yautja-plasma-grid-baseline.test.mjs:98:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../../tmp/yautja-plasma-grid-baseline.test.mjs:102:1
+✖ a grid just behind the first wall stays protected even inside the interaction radius of its impact (5.57872ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(f.checks[0].point.distanceTo(f.grids[0].pos) < 5.5)
+  
+      at TestContext.<anonymous> (file:///tmp/yautja-plasma-grid-baseline.test.mjs:106:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at ../../../../tmp/yautja-plasma-grid-baseline.test.mjs:109:1
+✖ a lateral wall blocks the actual grid candidate even when the shot axis reaches its endpoint (0.496087ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///tmp/yautja-plasma-grid-baseline.test.mjs:112:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../../tmp/yautja-plasma-grid-baseline.test.mjs:117:1
+✖ the grid owner skips a hidden candidate and can still activate the next visible inactive grid (0.468066ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///tmp/yautja-plasma-grid-baseline.test.mjs:120:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../../tmp/yautja-plasma-grid-baseline.test.mjs:145:1
+✖ a custom physical collider returning only t still supplies the correct interaction point (0.415817ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///tmp/yautja-plasma-grid-baseline.test.mjs:152:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../../tmp/yautja-plasma-grid-baseline.test.mjs:156:1
+✖ an obstacle before the first cosmetic spark bounds all three sparks at the real first impact (0.414235ms)
+  AssertionError [ERR_ASSERTION]: 1.8 ≈ 0.67
+      at close (file:///tmp/yautja-plasma-grid-baseline.test.mjs:35:44)
+      at TestContext.<anonymous> (file:///tmp/yautja-plasma-grid-baseline.test.mjs:161:93)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at ../../../../tmp/yautja-plasma-grid-baseline.test.mjs:167:3
+✖ a successful alien impact consumes each bolt instead of also activating a distant grid (1.271738ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///tmp/yautja-plasma-grid-baseline.test.mjs:174:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../../tmp/yautja-plasma-grid-baseline.test.mjs:167:3
+✖ a successful boss impact consumes each bolt instead of also activating a distant grid (0.960047ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///tmp/yautja-plasma-grid-baseline.test.mjs:174:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../../tmp/yautja-plasma-grid-baseline.test.mjs:179:1
+✖ later bolts can reach a grid after an earlier bolt kills and clears the boss (0.41766ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///tmp/yautja-plasma-grid-baseline.test.mjs:183:51)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../../../../tmp/yautja-plasma-grid-baseline.test.mjs:188:1
+✖ each callback reevaluates a changing obstacle before grid activation (0.342517ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///tmp/yautja-plasma-grid-baseline.test.mjs:191:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

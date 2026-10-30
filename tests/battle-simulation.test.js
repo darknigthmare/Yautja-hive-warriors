@@ -268,6 +268,63 @@ test('hive source disruption changes coordination without human fear or an autom
   assert.equal(simulation.getGroup('third').coordinated, false); assert.equal(simulation.getGroup('third').morale, 45); assert.notEqual(simulation.getGroup('third').order.type, 'retreat');
 });
 
+for (const type of ['pincer', 'fallback']) for (const legacy of [false, true]) {
+  test(`${type} ${legacy ? 'legacy' : 'current'} checkpoints preserve two-front movement, wounds and finite reserves`, () => {
+    const config = fixture({ reserves: true }), extra = copy(config.groups[0]);
+    extra.id = 'ally2'; extra.units.forEach(unit => { unit.id = unit.id.replace('ally', 'ally2'); });
+    config.groups.push(extra); config.budgets.byFaction.clan.total += 4;
+    if (type === 'fallback') for (const group of [config.groups[0], extra]) {
+      group.frontId = 'b'; group.position[0] += 100; group.units.forEach(unit => { unit.position[0] += 100; });
+    }
+    const simulation = new BattleSimulation(config), targetFront = type === 'pincer' ? 'b' : 'a';
+    const identities = [...simulation.units.keys()];
+    assert.equal(simulation.syncUnit('ally-1', { hp: 37 }), true);
+    assert.equal(simulation.recordDeath({ entityId: 'enemy-1', killerFaction: 'clan', cause: 'trap' }), true);
+    assert.equal(simulation.issueOrder('third', { type: 'attack', frontId: 'b' }).accepted, true);
+    assert.equal(simulation.requestReinforcements('clan', 'a').accepted, true);
+    advance(simulation, 1);
+    assert.equal(simulation.issueTactic(['ally', 'ally2'], { type, frontId: targetFront }).accepted, true);
+    const state = simulation.saveState();
+    if (!legacy) for (const group of state.groups.filter(group => ['ally', 'ally2'].includes(group.id))) assert.equal(group.formation, 'wedge');
+    if (legacy) for (const group of state.groups.filter(group => ['ally', 'ally2'].includes(group.id))) group.formation = type === 'pincer' ? 'flank' : 'column';
+    const serialized = JSON.stringify(state), restored = BattleSimulation.fromState(config, state);
+    assert.equal(JSON.stringify(state), serialized, 'loading a legacy formation does not rewrite the checkpoint object');
+    for (const groupId of ['ally', 'ally2']) {
+      assert.equal(restored.getGroup(groupId).formation, 'wedge');
+      assert.deepEqual(restored.getGroup(groupId).order, simulation.getGroup(groupId).order);
+      assert.deepEqual(restored.getGroup(groupId).tactic, simulation.getGroup(groupId).tactic);
+    }
+    assert.equal(restored.getCounts().clan.reserve, 4, 'announced reserves have not arrived at the checkpoint');
+    assert.equal(restored.issueTactic(['ally', 'ally2'], { type, frontId: targetFront }).reason, 'tactic_cooling_down');
+    advance(simulation, 15); advance(restored, 15);
+    assert.deepEqual(restored.saveState(), simulation.saveState());
+    assert.equal(restored.getGroup('ally').frontId, targetFront); assert.equal(restored.getGroup('third').frontId, 'b');
+    assert.equal(restored.getGroup('ally').targetPosition[0], type === 'pincer' ? 112 : 0);
+    assert.equal(restored.getGroup('ally2').targetPosition[0], type === 'pincer' ? 88 : 0);
+    assert.equal(restored.getUnit('ally-1').hp, 37); assert.equal(restored.getUnit('enemy-1').state, 'dead');
+    assert.equal(restored.getCounts().clan.reserve, 0); assert.deepEqual([...restored.units.keys()], identities);
+    assert.equal(restored.assertConservation(), true);
+    assert.doesNotThrow(() => BattleSimulation.fromState(config, restored.saveState()));
+  });
+}
+
+test('finishing within a multi-step update produces reloadable terminal checkpoints before notifying observers', () => {
+  for (const outcome of ['victory', 'defeat']) for (const delta of [1, 60, .25, .5]) {
+    const config = fixture({ objectives: outcome === 'victory' ? { captureFronts: ['a'] } : { timeLimit: 1 } });
+    const observed = [];
+    const simulation = new BattleSimulation(config, { objective: () => observed.push(simulation.saveState()) });
+    if (outcome === 'defeat') advance(simulation, .75);
+    assert.equal(simulation.update(delta), true); assert.equal(observed.length, 1);
+    assert.equal(simulation.result.outcome, outcome); assert.equal(simulation.result.time, outcome === 'victory' ? .25 : 1);
+    for (const state of [...observed, simulation.saveState()]) {
+      const restored = BattleSimulation.fromState(config, state);
+      assert.deepEqual(restored.saveState(), state); assert.equal(restored.accumulator, 0);
+      assert.equal(restored.update(60), false); assert.deepEqual(restored.saveState(), state);
+      assert.equal(restored.events.filter(event => event.type === 'operation_finished').length, 1);
+    }
+  }
+});
+
 test('20 minutes of the same deterministic battle agree at 30, 60 and 120 FPS; pause and dispose stop all clocks', () => {
   const configuration = fixture({ combat: true, reserves: true });
   const simulations = [30, 60, 120].map(fps => { const simulation = new BattleSimulation(configuration); advance(simulation, 1200, {}, fps); return simulation; });
@@ -315,5 +372,8 @@ test('context, unique identities, profiles and malformed saved states fail close
   assert.throws(corrupt(s => { s.fronts[0].radius = 9999; }), /built front geometry/);
   assert.throws(corrupt(s => { s.relations[1] = copy(s.relations[0]); }), /faction relationships/);
   assert.throws(corrupt(s => { s.groups[0].officerId = 'enemy-0'; }), /invalid saved group/);
+  for (const formation of ['swarm', 'unknown', '', null, '__proto__', 'toString']) {
+    assert.throws(corrupt(s => { s.groups[0].formation = formation; }), /invalid saved formation/);
+  }
   const crossover = copy(config); crossover.mode = 'crossover'; crossover.context.era = '2179'; crossover.profiles[0].allowedEras = ['1719']; assert.doesNotThrow(() => new BattleSimulation(crossover));
 });
