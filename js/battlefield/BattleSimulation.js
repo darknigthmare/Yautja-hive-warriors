@@ -3,8 +3,9 @@
  * This is a game simulation, not a claim about canonical army organization. */
 
 import { BattleIntel } from './BattleIntel.js';
+import { applyFacehuggerExposure } from './FacehuggerExposure.js';
 import { infectHost, completeHostInfections, validateHostInfestation } from './HostInfestation.js';
-import { createHiveEcology, awardHiveInfestation, buildHiveNode, healHiveSpace,
+import { HIVE_NODE_RULES, createHiveEcology, awardHiveInfestation, buildHiveNode, healHiveSpace,
   damageHiveNode as damageEcologyNode, snapshotHiveEcology, restoreHiveEcology } from './HiveNodeEcology.js';
 import { sourceUnitVisualKind } from '../data/SourceActorPresentation.js';
 import { initialSpecialistStocks, restoreSpecialistStocks, sourceSpecialistRole, SPECIALIST_ATTACKS } from '../data/SourceSpecialistCombat.js';
@@ -633,6 +634,16 @@ export class BattleSimulation {
       // Detailed actors and distant state must see the same current HP.
       this.callbacks.healBattleUnit?.(info.unitId, info.hp);
     });
+    // Outside their own Hive-space, allocated Facehuggers gradually weaken.
+    // Damage is owned by this exact identity, not by LOD or renderer state.
+    // A fatal exposure consumes a real life; it never triggers free spawning.
+    const exposed = applyFacehuggerExposure(this.hiveEcology, this.units.values(),
+      dt, HIVE_NODE_RULES.radius);
+    for (const loss of exposed) {
+      this.callbacks.healBattleUnit?.(loss.unitId, loss.hp);
+      if (loss.expired) this.recordDeath({ entityId: loss.unitId,
+        cause: 'facehugger_outside_hive_space', killerFaction: null });
+    }
   }
 
   _changeMorale(group, amount, reason) {
