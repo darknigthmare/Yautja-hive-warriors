@@ -85,14 +85,33 @@
       "passed": true
     },
     "nodeIntegrationTests": {
-      "authored": 7,
+      "authored": 8,
       "executed": 0
     },
     "fullNpmCi": false,
     "fullViteBuild": false,
     "fullBrowserWebGL": false,
     "realGPUPerformance": false,
-    "visualFidelity1to1Verified": false
+    "visualFidelity1to1Verified": false,
+    "realStrategicStepAfterFix": {
+      "operationIds": [
+        "AFF-27",
+        "AFF-16",
+        "AFF-13",
+        "AFF-25"
+      ],
+      "fixedTickSeconds": 0.25,
+      "saveRoundTripsPassed": 4,
+      "failed": 0,
+      "method": "Real BattleSimulation.update and fromState with actual formation/intel/strategy; BossEncounterValidation stub, no WebGL",
+      "aff27": {
+        "units": 952,
+        "nodeCountAfterSave": 1,
+        "nodeCountAfterResume": 1
+      },
+      "regression": "SADAR/Sniper nextAttack may legitimately exceed generic attackInterval; bounded specialist cooldown accepted",
+      "maliciousCooldownBeyondBound": "authored regression test, not yet executed on whole Node/Three installation"
+    }
   },
   "omissions": [
     "Host transport and infection/Facehugger reproduction not implemented",

@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import { BattleSimulation } from '../js/battlefield/BattleSimulation.js';
 import { getBattleOperationConfig } from '../js/data/BattleCatalog.js';
 import { sourceUnitVisualKind } from '../js/data/SourceActorPresentation.js';
+import { sourceSpecialistRole, SPECIALIST_ATTACKS } from '../js/data/SourceSpecialistCombat.js';
 import { HiveNodeWorld } from '../js/battlefield/HiveNodeWorld.js';
 import { selectBattleTarget } from '../js/engine/BattleActorSupport.js';
 import {
@@ -183,6 +184,34 @@ test('node visual is a destructible NPC target, not a new combat-unit ID',()=>{
     assert.equal(world.combatants.length,0);
     assert.equal(sim.units.size,before);
   }finally{world?.dispose();sim.dispose();}
+});
+
+
+test('a real distant-combat tick saves and reloads valid SADAR/Sniper recovery clocks',()=>{
+  const battleConfig=config(), simulation=new BattleSimulation(battleConfig);
+  try {
+    earnNodes(simulation);
+    assert.equal(simulation.update(.25,{players:[],paused:false}),true);
+    const saved=simulation.saveState();
+    const longClocks=saved.units.filter(unit => {
+      const role=sourceSpecialistRole(unit);
+      return ['sniper','sadar'].includes(role) &&
+        unit.nextAttack > saved.time + simulation.profiles.get(unit.profileId).attackInterval + simulation.step;
+    });
+    assert.ok(longClocks.length>0,
+      'the real specialist recovery must exceed the generic profile interval');
+    const loaded=BattleSimulation.fromState(battleConfig,saved);
+    try {
+      assert.equal(loaded.assertConservation(),true);
+      assert.deepEqual(loaded.getHiveNodeState(),saved.hiveEcology);
+    } finally { loaded.dispose(); }
+    const forged=structuredClone(saved), victim=forged.units.find(unit=>unit.id===longClocks[0].id);
+    const rule=SPECIALIST_ATTACKS[sourceSpecialistRole(victim)];
+    victim.nextAttack=saved.time + Math.max(simulation.profiles.get(victim.profileId).attackInterval,
+      rule.cooldown) + simulation.step + .5;
+    assert.throws(()=>BattleSimulation.fromState(battleConfig,forged),
+      /invalid saved unit state/,'a fraudulent extra cooldown is still rejected');
+  } finally { simulation.dispose(); }
 });
 
 test('node ecology remains dormant outside the Extinction LV-742 operation',()=>{

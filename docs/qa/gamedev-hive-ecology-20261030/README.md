@@ -138,7 +138,24 @@ ressource gratuite**.
   attaque du joueur, blocage par obstacle, anti-double-impact,
   destruction et nettoyage — **réussis**.
 
-Les tests Node/Three supplémentaires se trouvent dans
+### Régression de checkpoint détectée et corrigée
+
+Un contrôle supplémentaire du **vrai pas fixe de combat AFF-27** a
+révélé un défaut antérieur : `BattleSimulation.fromState`
+n'acceptait que le cooldown générique du profil, alors que
+les Snipers/SADAR distants disposent d'un délai de tir spécialisé
+plus long. Une sauvegarde produite après un tir réel
+pouvait être rejetée avec `invalid saved unit state`.
+
+La borne de validation de `nextAttack` prend maintenant le
+maximum entre le délai normal et le cooldown spécialiste ;
+**une horloge falsifiée au-delà de cette borne reste refusée**.
+Les essais isolés avec les vraies méthodes de simulation ont
+fait avancer `BattleSimulation.update(.25)`, puis ont sauvegardé
+et rechargé AFF-27, AFF-16, AFF-13 et AFF-25 avec succès,
+en conservant le nodule de LV-742.
+
+Les **8 tests Node/Three** supplémentaires se trouvent dans
 `tests/hive-node-ecology.test.js`. Leur **exécution complète
 dans le navigateur, la présence du package Three sur ce
 checkout et un build Vite ne sont pas démontrés ici**.

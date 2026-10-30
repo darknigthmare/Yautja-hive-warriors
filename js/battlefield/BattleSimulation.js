@@ -1069,7 +1069,14 @@ export class BattleSimulation {
       unit.incapacitated ??= false;
       if (typeof unit.incapacitated !== 'boolean' || unit.incapacitated && (!alive(unit) || !['active', 'distant'].includes(unit.state))) fail('invalid saved incapacitation');
       for (const key of ['profileId', 'factionId', 'groupId', 'maxHp', 'uniqueId', 'officer', 'species', 'role', 'actorType', 'profileName', 'sourceBossId', 'sourceBossType', 'visualFidelity1to1Verified']) if (unit[key] !== original[key]) fail('save rewrites an allocated identity');
-      if (!STATES.has(unit.state) || !number(unit.hp, 0, unit.maxHp) || !point(unit.position) || !number(unit.nextAttack, 0, saved.time + simulation.profiles.get(unit.profileId).attackInterval + simulation.step) || !number(unit.damageTaken, 0, 1e12)) fail('invalid saved unit state');
+      // Remote specialist attacks may have a longer, source-scoped recovery
+      // than the generic profile. Reject forged clocks but accept legitimate
+      // Sniper/SADAR cooldowns created by this very simulation.
+      const allowedAttackInterval = Math.max(simulation.profiles.get(unit.profileId).attackInterval,
+        SPECIALIST_ATTACKS[sourceSpecialistRole(original)]?.cooldown ?? 0);
+      if (!STATES.has(unit.state) || !number(unit.hp, 0, unit.maxHp) || !point(unit.position) ||
+          !number(unit.nextAttack, 0, saved.time + allowedAttackInterval + simulation.step) ||
+          !number(unit.damageTaken, 0, 1e12)) fail('invalid saved unit state');
       if (original.state === 'dead' && unit.state !== 'dead') fail('saved checkpoint would revive an individual confirmed dead in this campaign');
       if (original.state === 'captured' && !['captured', 'dead', 'evacuated'].includes(unit.state)) fail('saved checkpoint would silently release a captured campaign individual');
       // No world actors survive a scene reload. Recreate the same living IDs
