@@ -43,6 +43,7 @@ jobs:
             tests/hive-node-ecology.test.js \
             tests/facehugger-exposure.test.js \
             tests/hive-spore-sight.test.js \
+            tests/musou-battle-flow.test.js \
             tests/hive-node-remote-combat.test.js \
             tests/host-infestation.test.js \
             tests/source-specialist-combat.test.js \

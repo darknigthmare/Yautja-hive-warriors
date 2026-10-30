@@ -3,6 +3,7 @@
  * This is a game simulation, not a claim about canonical army organization. */
 
 import { BattleIntel } from './BattleIntel.js';
+import { applyMusouOfficerBreak } from './MusouBattleFlow.js';
 import { applyFacehuggerExposure } from './FacehuggerExposure.js';
 import { HIVE_SPORE_RULES, updateHiveSporeSight, getHiveSporeContacts,
   restoreHiveSporeSight } from './HiveSporeSight.js';
@@ -615,6 +616,9 @@ export class BattleSimulation {
     if (faction.moraleModel !== 'hive') this._changeMorale(group, unit.officer ? -25 : -2, unit.officer ? 'officer_lost' : 'casualty');
     else if (unit.officer) { group.coordinationStrength = .65; this._emit('hive_coordination_disrupted', { factionId: unit.factionId, frontId: group.frontId, groupId: group.id, coordinationStrength: .65, reason: 'allocated_controller_lost' }, 2); }
     if (unit.officer) for (const neighbour of this.groups.values()) if (neighbour.id !== group.id && neighbour.factionId === unit.factionId && neighbour.frontId === group.frontId && faction.moraleModel !== 'hive') this._changeMorale(neighbour, -8, 'nearby_officer_lost');
+    // Musou action consequence: a genuinely defeated enemy officer lifts
+    // local allied morale. Zero new soldiers, reserve or extra kill credit.
+    applyMusouOfficerBreak(this, death);
     return true;
   }
 
