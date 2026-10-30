@@ -215,3 +215,24 @@ test('a checkpoint re-materializes an infected Marine with its visible attached 
     }finally{restored.dispose();}
   }finally{manager.clearSquad();sim.dispose();}
 });
+
+test('an incubating Marine remains motionless even when its formation slot moves',()=>{
+  const scene=new THREE.Scene(),manager=new ColonialMarinesManager(scene,{});
+  const actor={mesh:new THREE.Group(),battleUnitId:'host',battleGroupId:'g',
+    factionId:'human_force',type:'marine',speed:8,hp:100,maxHp:100,
+    battleOrder:{type:'attack'},battleFormationTarget:[25,0],
+    isFacehuggerLatched:true,facehuggerHold:8};
+  scene.add(actor.mesh);
+  manager.marines.push(actor);
+  manager.battleSimulation={time:1,groups:new Map([['g',{
+    id:'g',cohesion:100,rootUntil:0,order:{type:'attack'}
+  }]])};
+  manager.environment={resolveAgentMovement(){throw new Error('infected host moved while immobilized');}};
+  try{
+    manager.update(.25,null,{aliens:[]});
+    assert.equal(actor.mesh.position.x,0);
+    assert.equal(actor.mesh.position.z,0);
+    assert.equal(actor.facehuggerHold,7.75);
+    assert.equal(actor.isFacehuggerLatched,true);
+  }finally{manager.clearSquad();}
+});

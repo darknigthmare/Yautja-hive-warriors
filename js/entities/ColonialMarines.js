@@ -131,8 +131,14 @@ export class ColonialMarinesManager {
     if (this.airSupportPending) { this.airSupportTimer -= delta; if (this.airSupportTimer <= 0) { this.airSupportPending = false; if (horde) horde.checkMeleeHits({ origin: this.strafeCenter, radius: 7, damage: 180, type: 'gunship', killerFaction: this.factionId ?? 'uscm' }); } }
     for (const m of [...this.marines]) {
       if (m.hp <= 0) { this.defeatCombatant(m, { cause: 'combat', killerFaction: m.lastDamageFaction }); continue; }
+      // A paralyzed host must never walk to formation or start an attack
+      // while its Facehugger is attached, even if its battle slot moved.
+      if (m.isFacehuggerLatched) {
+        m.facehuggerHold -= delta;
+        if (m.facehuggerHold > 0) { releaseHostileAttack(this,m); continue; }
+        m.isFacehuggerLatched = false;
+      }
       if(maintainBattleFormation(this,m,delta,m.speed))continue;
-      if (m.isFacehuggerLatched) { m.facehuggerHold -= delta; if (m.facehuggerHold > 0) continue; m.isFacehuggerLatched = false; }
       if (m.sourceVisualKind === 'medic' && m.battleUnitId && this.battleSimulation) {
         m.medicCooldown = Math.max(0, (m.medicCooldown ?? 0) - delta);
         if (m.medicCooldown <= 0) {

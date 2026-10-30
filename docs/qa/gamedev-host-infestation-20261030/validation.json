@@ -61,11 +61,30 @@
       "failed": 0,
       "details": "HostInfestation, BattleSimulation, ActorSupport, Horde, Bridge and Node tests parsed with imports removed"
     },
-    "authoredNodeTests": 8,
+    "authoredNodeTests": 9,
     "latestCIRunPending": true,
     "wasmBuild": false,
     "webglCapture": false,
-    "performanceMeasured": false
+    "performanceMeasured": false,
+    "lastPublishedCI": {
+      "sha": "aa9df7f312aa43e20b87ef29581217a9c977e700",
+      "build": "success",
+      "catalogueAudit": "success",
+      "nodeTargetedTests": {
+        "passed": 79,
+        "failed": 0
+      },
+      "chromiumJob": "queued at last observation"
+    },
+    "physicalFormationGuard": {
+      "sourceMethod": "ColonialMarines.update",
+      "delta": 0.25,
+      "holdBefore": 8,
+      "holdAfter": 7.75,
+      "formationMoves": 0,
+      "releaseCalls": 1,
+      "isolationVerified": true
+    }
   },
   "missing": [
     "Host gathering and drag physics",

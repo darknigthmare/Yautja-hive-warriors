@@ -174,3 +174,23 @@ Les tests du lot passent de 6 à **8 scénarios écrits**
 Les deux tests additionnels de sécurité du journal de
 consommation et d'anti-double-implantation sont intégrés au
 scénario de checkpoint. Ces tests seront rejoués sur la PR #6.
+
+## Garde de formation du Marine infesté
+
+Un dernier contrôle a révélé qu'un Marine latched pouvait
+encore suivre un déplacement de formation : le gestionnaire
+traitait `maintainBattleFormation()` avant le drapeau
+`isFacehuggerLatched`. L'ordre est inversé. Le soldat
+reste immobile et incapable de lancer un tir tant que
+l'incubation est active ; le gestionnaire libère aussi
+les demandes d'attaque en cours. Cette garde s'applique
+dès le latch physique, sans attendre une sauvegarde.
+
+Un essai de la méthode réelle `ColonialMarines.update`
+dans un état minimal a observé une durée qui passe de
+8 à 7,75 secondes, **zéro déplacement de formation**
+et une interruption de l'attaque. Le neuvième test
+Node du fichier `tests/host-infestation.test.js`
+rejoue cette protection avec une vraie scène
+Three.js et un objectif de formation déporté.
+La fidélité visuelle du parasite reste à comparer.
