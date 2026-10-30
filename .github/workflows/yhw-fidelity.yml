@@ -1,0 +1,70 @@
+name: YHW - build, catalogue and battle fidelity
+
+on:
+  push:
+    branches:
+      - codex/gamedev-guides-20261029
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: yhw-validation-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Build and source-bound battle tests (Node 24)
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Checkout exact revision
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Node 24
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Check generated source catalogue
+        run: node scripts/sync-battle-catalog.mjs --check
+      - name: Check preserved audit and Excel evidence
+        run: python3 scripts/update-audit-progress.py --check
+      - name: Build the production bundle
+        run: npm run build
+      - name: Battle ecology, specialists and checkpoint regressions
+        run: |
+          node --test --test-concurrency=1 \
+            tests/hive-node-ecology.test.js \
+            tests/source-specialist-combat.test.js \
+            tests/source-actor-presentation.test.js \
+            tests/source-battle-roster.test.js \
+            tests/battle-simulation.test.js \
+            tests/battle-catalog.test.js
+
+  browser:
+    name: Chromium browser and complete test suite
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    needs: verify
+    steps:
+      - name: Checkout exact revision
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Node 24
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Install Chromium for the actual browser tests
+        run: npx playwright install --with-deps chromium
+      - name: Execute complete build and Node/Chromium suite
+        run: npm test
