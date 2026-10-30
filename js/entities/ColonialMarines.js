@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import { applyBattleUnit, despawnBattleActor, selectBattleTarget, battleHostile, moveBattleOrder, requestNPCStrike, maintainBattleFormation } from '../engine/BattleActorSupport.js';
 import { recordCombatDeath } from '../engine/CombatEvents.js';
 import { createMarineModel, addSentryMechanicalDetails } from '../graphics/SupportModels.js';
+import { sourceUnitVisualKind } from '../data/SourceActorPresentation.js';
 import { disposeObject } from '../engine/SceneResources.js';
 import { selectHostileTarget, requestHostileAttack, syncHostileWarning, releaseHostileAttack } from '../engine/HostilePressure.js';
 
@@ -62,6 +63,37 @@ export class ColonialMarinesManager {
       if (m.hp <= 0) { this.defeatCombatant(m, { cause: 'combat', killerFaction: m.lastDamageFaction }); continue; }
       if(maintainBattleFormation(this,m,delta,m.speed))continue;
       if (m.isFacehuggerLatched) { m.facehuggerHold -= delta; if (m.facehuggerHold > 0) continue; m.isFacehuggerLatched = false; }
+      if (m.sourceVisualKind === 'medic' && m.battleUnitId && this.battleSimulation) {
+        m.medicCooldown = Math.max(0, (m.medicCooldown ?? 0) - delta);
+        if (m.medicCooldown <= 0) {
+          // Only actual allocated human allies can receive a field treatment.
+          // The simulation owns the two finite charges and persists their use.
+          const patients = this.marines.filter(other => other !== m && other.battleUnitId &&
+            other.factionId === m.factionId && other.hp > 0 && other.hp < other.maxHp &&
+            !other.isDowned && !other.isRescueRecovering &&
+            m.mesh.position.distanceToSquared(other.mesh.position) <= 100 &&
+            (!this.environment?.hasLineOfSight || this.environment.hasLineOfSight(
+              m.mesh.position.clone().add(new THREE.Vector3(0, 1.8, 0)),
+              other.mesh.position.clone().add(new THREE.Vector3(0, 1.6, 0)))));
+          patients.sort((a, b) => a.hp / a.maxHp - b.hp / b.maxHp ||
+            a.mesh.position.distanceToSquared(m.mesh.position) - b.mesh.position.distanceToSquared(m.mesh.position));
+          for (const patient of patients) {
+            // The render-side HP and positions are authoritative for the
+            // ongoing frame. Sync them before spending a finite treatment.
+            if (!this.battleSimulation.syncUnit(m.battleUnitId, {
+              hp: m.hp, position: [m.mesh.position.x, m.mesh.position.z] })) continue;
+            if (!this.battleSimulation.syncUnit(patient.battleUnitId, {
+              hp: patient.hp, position: [patient.mesh.position.x, patient.mesh.position.z] })) continue;
+            const healed = this.battleSimulation.applyMedicHeal(m.battleUnitId, patient.battleUnitId);
+            if (!healed) continue;
+            patient.hp = healed.hp;
+            m.medicCooldown = 6;
+            this.audioEngine?.playMedicTreatment?.();
+            break;
+          }
+          if (m.medicCooldown > 0) continue;
+        }
+      }
       let targetPlayer = null, targetPos = null, target = null, targetsPlayer = false;
       if (m.battleUnitId && this.battleSimulation) {
         target = selectBattleTarget(this, m, player, horde?.getActiveCombatants?.() ?? horde?.aliens ?? []);
@@ -194,7 +226,11 @@ export class ColonialMarinesManager {
     const existing = this.marines.find(actor => actor.battleUnitId === unit.id); if (existing) return existing;
     if (!['marine','human','smartgunner','flametrooper'].includes(unit.actorType)) throw new RangeError(`Unsupported detailed human profile: ${unit.actorType}`);
     const weaponKind = ['flametrooper', 'smartgunner'].includes(unit.actorType) ? unit.actorType : 'marine';
-    const actor = { mesh: this.createMarineMesh(weaponKind), type: weaponKind,
+    const sourceVisualKind = sourceUnitVisualKind(unit);
+    // Visual role can change without mutating the persistent strategic
+    // actorType or claiming that its specialist ability is implemented.
+    const actor = { mesh: this.createMarineMesh(sourceVisualKind ?? weaponKind), type: weaponKind,
+      sourceVisualKind, visualFidelity1to1Verified: false,
       damage: weaponKind === 'flametrooper' ? 35 : 20, speed: 8,
       radius: .8, shootCooldown: 1.5, grenadeCooldown: 7 };
     this.marines.push(applyBattleUnit(this, actor, unit, group)); return actor;

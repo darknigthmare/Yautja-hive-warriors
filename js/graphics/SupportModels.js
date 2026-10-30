@@ -185,9 +185,69 @@ function addFlamethrower(parts, mats) {
   parts.box(mats.armor, [0, 2.16, -0.65], [0.58, 0.87, 0.24], true);
 }
 
+// Source-role silhouettes for AVP: Extinction squads. These are integrated
+// meshes, not claims of exact licensed prop geometry or functional abilities.
+function addMedicalPack(parts, mats) {
+  parts.box(mats.armor, [0, 2.25, -0.42], [0.64, 0.72, 0.31], true);
+  for (const x of [-0.20, 0.20]) {
+    parts.box(mats.rubber, [x, 2.31, -0.60], [0.12, 0.46, 0.06], true);
+    parts.cylinder(mats.steel, [x, 2.02, -0.62], [0.055, 0.055], 0.14, [0, 0, 0], 12);
+  }
+  const cross = glow(0x9bd3ac); cross.emissiveIntensity = 0.6;
+  parts.box(cross, [0, 2.39, -0.589], [0.08, 0.32, 0.023]);
+  parts.box(cross, [0, 2.39, -0.602], [0.31, 0.08, 0.023]);
+  for (const side of [-1, 1]) {
+    parts.box(mats.armor, [side * 0.40, 1.74, 0.12], [0.16, 0.33, 0.25], true);
+    parts.box(mats.steel, [side * 0.40, 1.9, 0.255], [0.14, 0.04, 0.05]);
+  }
+}
+function addCommtechPack(parts, mats) {
+  parts.box(mats.dark, [0, 2.27, -0.43], [0.58, 0.75, 0.28], true);
+  parts.box(mats.armor, [0.28, 2.46, -0.56], [0.17, 0.24, 0.06], true);
+  parts.bone(mats.steel, [0.32, 2.56, -0.45], [0.35, 3.65, -0.42], 0.018, 0.01, 10);
+  const signal = glow(0x76cbb5); signal.emissiveIntensity = 0.55;
+  parts.box(signal, [0, 2.31, -0.595], [0.34, 0.09, 0.02]);
+  parts.box(mats.dark, [-0.43, 1.99, 0.46], [0.34, 0.20, 0.08], true);
+  parts.box(signal, [-0.43, 2.0, 0.512], [0.25, 0.12, 0.016]);
+}
+function addSniperEquipment(parts, mats) {
+  addRifle(parts, mats, false);
+  parts.cylinder(mats.dark, [0.30, 2.10, 1.94], [0.025, 0.03], 0.66, [Math.PI / 2, 0, 0], 32);
+  parts.cylinder(mats.steel, [0.30, 2.10, 2.29], [0.055, 0.055], 0.11, [Math.PI / 2, 0, 0], 24);
+  parts.cylinder(mats.dark, [0.30, 2.29, 0.95], [0.068, 0.068], 0.53, [Math.PI / 2, 0, 0], 24);
+  parts.cylinder(mats.steel, [0.30, 2.29, 1.225], [0.075, 0.075], 0.035, [Math.PI / 2, 0, 0], 24);
+  for (const side of [-1, 1]) {
+    parts.bone(mats.steel, [0.30, 2.05, 1.60], [0.30 + side * 0.22, 1.65, 1.62], 0.022, 0.014, 8);
+  }
+}
+function addSadarLauncher(parts, mats) {
+  // Shoulder-mounted launcher volume; firing model must be added separately.
+  parts.cylinder(mats.armor, [-0.54, 2.56, 0.68], [0.18, 0.21], 1.88, [Math.PI / 2, 0, 0], 32);
+  parts.cylinder(mats.dark, [-0.54, 2.56, 1.68], [0.14, 0.14], 0.11, [Math.PI / 2, 0, 0], 24);
+  parts.cylinder(mats.steel, [-0.54, 2.56, -0.34], [0.23, 0.23], 0.12, [Math.PI / 2, 0, 0], 24);
+  parts.box(mats.rubber, [-0.53, 2.23, 0.65], [0.15, 0.45, 0.18], true);
+  parts.box(mats.dark, [-0.37, 2.84, 0.65], [0.23, 0.11, 0.45], true);
+}
+function addExosuitFrame(parts, mats) {
+  // Mechanical braces retain the same pilot identity; no separate soldier is created.
+  parts.box(mats.armor, [0, 2.48, -0.46], [0.94, 1.15, 0.41], true);
+  parts.box(mats.dark, [0, 1.58, -0.35], [0.82, 0.29, 0.51], true);
+  for (const side of [-1, 1]) {
+    const x = side * 0.55;
+    parts.box(mats.steel, [x, 2.49, 0.02], [0.26, 0.63, 0.39], true);
+    parts.bone(mats.dark, [x, 2.49, 0.05], [side * 0.77, 1.65, 0.18], 0.095, 0.073, 12);
+    parts.box(mats.armor, [side * 0.77, 1.56, 0.18], [0.33, 0.39, 0.34], true);
+    parts.bone(mats.steel, [side * 0.43, 1.55, -0.25], [side * 0.47, 0.55, -0.13], 0.11, 0.085, 12);
+    parts.box(mats.armor, [side * 0.48, 0.65, -0.16], [0.30, 0.76, 0.28], true);
+    parts.box(mats.dark, [side * 0.48, 0.17, 0.11], [0.37, 0.26, 0.65], true);
+  }
+  parts.box(mats.dark, [0.3, 2.14, 0.87], [0.25, 0.29, 0.84], true);
+  parts.cylinder(mats.steel, [0.3, 2.14, 1.47], [0.10, 0.12], 0.75, [Math.PI / 2, 0, 0], 24);
+}
+
 export function createMarineModel(smartgunner = true) {
   const weaponKind = typeof smartgunner === 'string' ? smartgunner : smartgunner ? 'smartgunner' : 'flametrooper';
-  if (!['marine', 'smartgunner', 'flametrooper'].includes(weaponKind)) throw new RangeError('Unknown Marine weapon silhouette');
+  if (!['marine', 'smartgunner', 'flametrooper', 'medic', 'commtech', 'sniper', 'sadar', 'exosuit'].includes(weaponKind)) throw new RangeError('Unknown Marine weapon silhouette');
   const mats = surfaces(weaponKind === 'smartgunner' ? 0x65715f : 0x766d54), parts = new Assembly('colonial-marine');
   addHumanTorso(parts, mats); addHumanLegs(parts, mats); addArms(parts, mats); addFace(parts, mats);
   // Fitted ballistic vest follows the chest profile; thin plates stay over the body.
@@ -202,9 +262,16 @@ export function createMarineModel(smartgunner = true) {
   parts.cylinder(mats.dark, [0.187, 3.18, -0.01], [0.045, 0.045], 0.04, [0, 0, Math.PI / 2], 24);
   parts.box(glow(0x9a594b), [0.13, 3.22, 0.19], [0.038, 0.018, 0.025], true);
   if (weaponKind === 'flametrooper') addFlamethrower(parts, mats);
+  else if (weaponKind === 'medic') { addRifle(parts, mats, false); addMedicalPack(parts, mats); }
+  else if (weaponKind === 'commtech') { addRifle(parts, mats, false); addCommtechPack(parts, mats); }
+  else if (weaponKind === 'sniper') addSniperEquipment(parts, mats);
+  else if (weaponKind === 'sadar') addSadarLauncher(parts, mats);
+  else if (weaponKind === 'exosuit') addExosuitFrame(parts, mats);
   else addRifle(parts, mats, weaponKind === 'smartgunner');
   const group = parts.finish(); group.userData.anatomy = { headHeight: 0.46, standingHeight: 3.44, headsTall: 7.48 };
   group.userData.weaponKind = weaponKind;
+  group.userData.visualSource = 'procedural-role-study';
+  group.userData.behaviorFidelity1to1Verified = false;
   group.userData.visualFidelity1to1Verified = false;
   return group;
 }

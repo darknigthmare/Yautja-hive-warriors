@@ -3,6 +3,7 @@
  * This is a game simulation, not a claim about canonical army organization. */
 
 import { BattleIntel } from './BattleIntel.js';
+import { sourceUnitVisualKind } from '../data/SourceActorPresentation.js';
 import { measureDefeatReturn } from './BattleStrategy.js';
 import { validateBossCombatState } from '../data/BossEncounterValidation.js';
 import { initializeFormation, updateFormation, formationTargetForUnit, formationAttackMultiplier, normalizeFormation, FORMATION_PROFILES } from './FormationTactics.js';
@@ -153,6 +154,10 @@ export class BattleSimulation {
           profileName: profile.name ?? profile.id, sourceBossId: profile.sourceBossId ?? null, sourceBossType: profile.sourceBossType ?? null, visualFidelity1to1Verified: profile.visualFidelity1to1Verified === true,
           officer, uniqueId, state, hp: profile.maxHp, maxHp: profile.maxHp, position: [...position],
           nextAttack: profile.attackInterval * (hash(spec.id) % 1000) / 1000, damageTaken: 0, incapacitated: false };
+        // Two sealed field treatments for new Extinction Medic identities.
+        // Existing source-v1 saves lacked this field and load with zero rather
+        // than receiving free new supplies on every rematerialization.
+        if (sourceUnitVisualKind(unit) === 'medic') unit.medicalSupply = 2;
         this.units.set(unit.id, unit); this.attackSeeds.set(unit.id, hash(unit.id)); group.units.push(unit.id);
       }
       const heavy = group.units.filter(unitId => this.units.get(unitId).role === 'heavy').length;
@@ -487,6 +492,25 @@ export class BattleSimulation {
     }
     if (encounterState !== undefined) unit.encounterState = encounterState;
     return true;
+  }
+
+  /** Medical charges live on the finite strategic identity, not its renderer.
+   * A healer cannot revive dead/downed soldiers, cure synthetic circuitry,
+   * heal across a distant front or restock by leaving camera range. */
+  applyMedicHeal(medicId, patientId) {
+    const medic = this.units.get(medicId), patient = this.units.get(patientId);
+    if (this.disposed || this.paused || this.result || !medic || !patient || medicId === patientId ||
+        sourceUnitVisualKind(medic) !== 'medic' || !Number.isInteger(medic.medicalSupply) || medic.medicalSupply <= 0 ||
+        medic.state !== 'active' || patient.state !== 'active' || medic.incapacitated || patient.incapacitated ||
+        medic.factionId !== patient.factionId || medic.species !== 'human' || patient.species !== 'human' ||
+        medic.hp <= 0 || patient.hp <= 0 || patient.hp >= patient.maxHp ||
+        dist(medic.position, patient.position) > 10) return null;
+    const amount = Math.min(90, patient.maxHp - patient.hp);
+    if (!(amount > 0)) return null;
+    medic.medicalSupply--;
+    patient.hp += amount;
+    this._emit('field_medic_treatment', { medicId, patientId, amount, chargesRemaining: medic.medicalSupply }, 1);
+    return { amount, hp: patient.hp, chargesRemaining: medic.medicalSupply };
   }
 
   setUnitIncapacitated(unitId, incapacitated) {
@@ -939,6 +963,11 @@ export class BattleSimulation {
         try { unit.encounterState = validateBossCombatState(unit.encounterState, { bossType: unit.sourceBossType, battleUnitId: unit.id, maxHp: unit.maxHp }); }
         catch { fail('invalid saved boss combat metadata'); }
       }
+      if (sourceUnitVisualKind(original) === 'medic') {
+        unit.medicalSupply ??= 0; // source-v1 saves have no medical stock.
+        if (!Number.isInteger(unit.medicalSupply) || unit.medicalSupply < 0 || unit.medicalSupply > 2)
+          fail('invalid saved medical stock');
+      } else if (unit.medicalSupply !== undefined) fail('non-medic cannot own medical stock');
       unit.incapacitated ??= false;
       if (typeof unit.incapacitated !== 'boolean' || unit.incapacitated && (!alive(unit) || !['active', 'distant'].includes(unit.state))) fail('invalid saved incapacitation');
       for (const key of ['profileId', 'factionId', 'groupId', 'maxHp', 'uniqueId', 'officer', 'species', 'role', 'actorType', 'profileName', 'sourceBossId', 'sourceBossType', 'visualFidelity1to1Verified']) if (unit[key] !== original[key]) fail('save rewrites an allocated identity');

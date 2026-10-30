@@ -13,13 +13,13 @@ const cameraPositions = [new THREE.Vector3(), new THREE.Vector3()];
 let cameraCount = 0;
 function createProfile(kind) {
   const pale = PALE.has(kind), egg = kind === 'egg';
-  const color = ({ runner: 0x55443a, red_warrior: 0x5c3030, officer: 0x3c2e31, neomorph: 0xbeb4a6,
+  const color = ({ drone: 0x242a2c, runner: 0x55443a, red_warrior: 0x5c3030, officer: 0x3c2e31, neomorph: 0xbeb4a6,
     facehugger: 0xac987d, chestburster: 0xb1967a, offspring: 0xc8c1b1, egg: 0x6b5d49,
     predalien: 0x494638, empress: 0x35313f })[kind] ?? 0x30363b;
   const materialType = egg ? 'leather' : pale ? 'skin' : 'chitin';
   const materials = {
     body: createSurfaceMaterial(materialType, { color, roughness: pale ? 0.65 : 0.52, metalness: pale ? 0.01 : 0.035, envMapIntensity: 0.62 }),
-    skull: createSurfaceMaterial(pale ? 'skin' : 'chitin', { color, roughness: pale ? 0.58 : 0.3, metalness: pale ? 0 : 0.04, envMapIntensity: 0.7 }),
+    skull: createSurfaceMaterial(pale ? 'skin' : 'chitin', { color, roughness: pale ? 0.58 : kind === 'drone' ? 0.21 : 0.3, metalness: pale ? 0 : 0.04, envMapIntensity: kind === 'drone' ? 0.9 : 0.7 }),
     ridges: createSurfaceMaterial(pale ? 'skin' : 'chitin', { color: pale ? 0xaaa090 : 0x303b3e, roughness: 0.54, metalness: 0.02, envMapIntensity: 0.5 }),
     tooth: createSurfaceMaterial('bone', { color: pale ? 0xbdb3a0 : 0x939989, roughness: 0.4, metalness: 0.08, envMapIntensity: 0.5 }),
     dark: createSurfaceMaterial(pale ? 'skin' : 'chitin', { color: 0x101316, roughness: 0.58, metalness: 0.01 }),
@@ -114,12 +114,13 @@ export function updateCreatureDetail(scene, cameras) {
 export function animateCreatureModel(group, phase, moving = true) {
   const rig = group?._creatureRig;
   if (!rig) return;
-  const stride = moving ? Math.sin(phase) * 0.24 : 0;
+  const drone = group.userData.visualProfile?.kind === 'drone';
+  const stride = moving ? Math.sin(phase) * (drone ? 0.18 : 0.24) : 0;
   if (rig['leg-left']) rig['leg-left'].rotation.x = stride;
   if (rig['leg-right']) rig['leg-right'].rotation.x = -stride * 0.92;
-  if (rig['arm-left']) rig['arm-left'].rotation.x = -stride * 0.55 - 0.07;
-  if (rig['arm-right']) rig['arm-right'].rotation.x = stride * 0.68 + 0.1;
-  if (rig.cranium) rig.cranium.rotation.x = Math.sin(phase * 0.35) * 0.008;
+  if (rig['arm-left']) rig['arm-left'].rotation.x = -stride * 0.55 - (drone ? 0.19 : 0.07);
+  if (rig['arm-right']) rig['arm-right'].rotation.x = stride * 0.68 + (drone ? 0.19 : 0.1);
+  if (rig.cranium) rig.cranium.rotation.x = Math.sin(phase * (drone ? 0.22 : 0.35)) * (drone ? 0.013 : 0.008);
   if (rig.tail) rig.tail.rotation.y = Math.sin(phase * 0.38) * 0.11;
   if (rig['wing-left']) rig['wing-left'].rotation.y = Math.sin(phase * 0.55) * 0.12;
   if (rig['wing-right']) rig['wing-right'].rotation.y = -Math.sin(phase * 0.55) * 0.12;
