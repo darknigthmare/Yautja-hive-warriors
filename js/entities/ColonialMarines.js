@@ -1,10 +1,11 @@
 /* Colonial Marines USCM support against the hive. */
 
 import * as THREE from 'three';
-import { applyBattleUnit, despawnBattleActor, selectBattleTarget, battleHostile, moveBattleOrder, requestNPCStrike, maintainBattleFormation } from '../engine/BattleActorSupport.js';
+import { applyBattleUnit, despawnBattleActor, selectBattleTarget, battleHostile, moveBattleOrder, requestNPCStrike, maintainBattleFormation, applyBattleSplashDamage } from '../engine/BattleActorSupport.js';
 import { recordCombatDeath } from '../engine/CombatEvents.js';
 import { createMarineModel, addSentryMechanicalDetails } from '../graphics/SupportModels.js';
 import { sourceUnitVisualKind } from '../data/SourceActorPresentation.js';
+import { SPECIALIST_ATTACKS } from '../data/SourceSpecialistCombat.js';
 import { disposeObject } from '../engine/SceneResources.js';
 import { selectHostileTarget, requestHostileAttack, syncHostileWarning, releaseHostileAttack } from '../engine/HostilePressure.js';
 
@@ -13,6 +14,7 @@ export class ColonialMarinesManager {
     this.scene = scene;
     this.audioEngine = audioEngine;
     this.marines = [];
+    this.specialistMissiles = [];
     this.sentryGun = null;
     this.distressBeacon = null; this.beaconTriggered = false; this.airSupportPending = false; this.airSupportTimer = 0; this.strafeCenter = null;
     this.hostileToPlayers = false; // USCM support fights the hive, then holds cover.
@@ -54,9 +56,76 @@ export class ColonialMarinesManager {
   }
 
 
+  /** One missile belongs to the physical shooter but not to a new soldier.
+   * Terrain blocks each guided step; cleanup never grants the ammunition back. */
+  queueSadarMissile(shooter, target, targetsPlayer, horde) {
+    const rule = SPECIALIST_ATTACKS.sadar;
+    const origin = shooter.mesh.position.clone().add(new THREE.Vector3(0, 2.45, .4));
+    const geometry = new THREE.CylinderGeometry(.055, .085, .56, 8);
+    const material = new THREE.MeshStandardMaterial({ color: 0x727e7e, metalness: .73, roughness: .33,
+      emissive: 0x28352b, emissiveIntensity: .25 });
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.name = 'sadar-guided-projectile'; mesh.position.copy(origin);
+    const exhaust = new THREE.Mesh(new THREE.ConeGeometry(.095, .28, 8),
+      new THREE.MeshBasicMaterial({ color: 0xff8e32, transparent: true, opacity: .83, depthWrite: false }));
+    exhaust.name = 'sadar-exhaust'; exhaust.position.y = -.39;
+    exhaust.rotation.z = Math.PI;
+    mesh.add(exhaust);
+    this.scene.add(mesh);
+    this.specialistMissiles.push({ mesh, shooter, target, targetsPlayer, horde,
+      travelled: 0, life: 0, lastDestination: target.position?.clone?.() ?? target.mesh.position.clone() });
+  }
+
+  updateSpecialistMissiles(delta) {
+    const rule = SPECIALIST_ATTACKS.sadar;
+    for (let i = this.specialistMissiles.length - 1; i >= 0; i--) {
+      const missile = this.specialistMissiles[i];
+      const target = missile.target, live = target?.hp > 0;
+      if (live) missile.lastDestination.copy(target.position ?? target.mesh.position);
+      const destination = missile.lastDestination.clone().add(new THREE.Vector3(0, 1.1, 0));
+      const vector = destination.sub(missile.mesh.position);
+      const remaining = vector.length(), step = Math.min(remaining, rule.missileSpeed * delta);
+      missile.life += delta;
+      const next = missile.mesh.position.clone().addScaledVector(vector.normalize(), step);
+      const blocked = this.environment?.hasLineOfSight &&
+        !this.environment.hasLineOfSight(missile.mesh.position, next);
+      const exhausted = missile.travelled + step > rule.range || missile.life > 4;
+      if (blocked || exhausted) {
+        disposeObject(missile.mesh); this.specialistMissiles.splice(i, 1); continue;
+      }
+      missile.mesh.position.copy(next);
+      missile.mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), vector);
+      missile.travelled += step;
+      if (remaining > step + .75) continue;
+      // The projectile has reached its real, terrain-tested impact point.
+      // Do not damage dead/disposed/friendly targets or through a final wall.
+      const primary = target?.actor ?? target;
+      if (live && battleHostile(this, missile.shooter, primary) &&
+          (!this.environment?.hasLineOfSight ||
+            this.environment.hasLineOfSight(missile.mesh.position,
+              (target.position ?? target.mesh.position).clone().add(new THREE.Vector3(0, 1, 0))))) {
+        if (missile.targetsPlayer) {
+          target.takeDamage(rule.playerDamage, false, missile.shooter,
+            { attackKind: 'explosive', blockable: false, parryable: false });
+        } else if (target.isBattleNPC) target.takeDamage(rule.damage);
+        else {
+          target.hp -= rule.damage; target.lastDamageFaction = missile.shooter.factionId ?? 'uscm';
+          if (target.hp <= 0) missile.horde?.defeatAlien?.(target,
+            { cause: 'sadar', killerFaction: target.lastDamageFaction });
+        }
+      }
+      applyBattleSplashDamage(this, missile.shooter, missile.mesh.position, {
+        radius: rule.splashRadius, damage: rule.splashDamage, exclude: target
+      });
+      this.audioEngine?.playExplosion?.();
+      disposeObject(missile.mesh); this.specialistMissiles.splice(i, 1);
+    }
+  }
+
   update(delta, player, horde) {
     if (!Number.isFinite(delta) || delta <= 0) return;
     this.time = (this.time ?? 0) + delta;
+    this.updateSpecialistMissiles(delta);
     if (this.distressBeacon) { this.distressBeacon.life -= delta; if (this.distressBeacon.life <= 0) { disposeObject(this.distressBeacon.mesh); this.distressBeacon = null; } }
     if (this.airSupportPending) { this.airSupportTimer -= delta; if (this.airSupportTimer <= 0) { this.airSupportPending = false; if (horde) horde.checkMeleeHits({ origin: this.strafeCenter, radius: 7, damage: 180, type: 'gunship', killerFaction: this.factionId ?? 'uscm' }); } }
     for (const m of [...this.marines]) {
@@ -94,6 +163,36 @@ export class ColonialMarinesManager {
           if (m.medicCooldown > 0) continue;
         }
       }
+      if (m.sourceVisualKind === 'commtech' && m.battleUnitId && this.battleSimulation) {
+        m.repairCooldown = Math.max(0, (m.repairCooldown ?? 0) - delta);
+        if (m.repairCooldown <= 0) {
+          const candidates = (this.combatActorsProvider?.() ?? []).filter(other =>
+            other !== m && other?.battleUnitId && other.hp > 0 &&
+            other.hp < other.maxHp && other.factionId === m.factionId &&
+            !other.isBisected && !other.isDowned && !other.isRescueRecovering &&
+            m.mesh.position.distanceToSquared(other.mesh.position) <= 64 &&
+            (!this.environment?.hasLineOfSight || this.environment.hasLineOfSight(
+              m.mesh.position.clone().add(new THREE.Vector3(0, 1.8, 0)),
+              other.mesh.position.clone().add(new THREE.Vector3(0, 1.5, 0)))));
+          candidates.sort((a, b) => a.hp / a.maxHp - b.hp / b.maxHp);
+          for (const patient of candidates) {
+            const unit = this.battleSimulation.getUnit(patient.battleUnitId);
+            if (unit?.species !== 'synthetic' && sourceUnitVisualKind(unit) !== 'exosuit') continue;
+            if (!this.battleSimulation.syncUnit(m.battleUnitId,
+              { hp: m.hp, position: [m.mesh.position.x, m.mesh.position.z] }) ||
+                !this.battleSimulation.syncUnit(patient.battleUnitId,
+              { hp: patient.hp, position: [patient.mesh.position.x, patient.mesh.position.z] })) continue;
+            const repaired = this.battleSimulation.applyCommTechRepair(m.battleUnitId, patient.battleUnitId);
+            if (!repaired) continue;
+            patient.hp = repaired.hp;
+            m.repairCooldown = 7;
+            this.audioEngine?.playMedicTreatment?.();
+            break;
+          }
+          if (m.repairCooldown <= 0) m.repairCooldown = .5;
+          if (m.repairCooldown > 1) continue;
+        }
+      }
       let targetPlayer = null, targetPos = null, target = null, targetsPlayer = false;
       if (m.battleUnitId && this.battleSimulation) {
         target = selectBattleTarget(this, m, player, horde?.getActiveCombatants?.() ?? horde?.aliens ?? []);
@@ -110,20 +209,41 @@ export class ColonialMarinesManager {
       const distance = targetPos.distanceTo(m.mesh.position);
       const access = this.environment?.getVerticalNavigationTarget?.(m.mesh.position, targetPos);
       const direction = (access ?? targetPos).clone().sub(m.mesh.position).setY(0), moveDistance = direction.length(); m.mesh.rotation.y = Math.atan2(direction.x, direction.z);
-      const range = m.type === 'flametrooper' ? 5 : 20, stopping = m.type === 'flametrooper' ? 3.5 : 12;
+      const specialist = SPECIALIST_ATTACKS[m.sourceVisualKind];
+      const range = specialist?.range ?? (m.type === 'flametrooper' ? 5 : 20);
+      const stopping = specialist?.stopping ?? (m.type === 'flametrooper' ? 3.5 : 12);
       const covered = this.environment?.hasLineOfSight && !this.environment.hasLineOfSight(m.mesh.position.clone().add(new THREE.Vector3(0, 2, 0)), targetPos.clone().add(new THREE.Vector3(0, 1.6, 0)));
       if (distance > stopping || covered || access && distance > range) { const step = access || covered ? Math.min(m.speed * delta, moveDistance || m.speed * delta) : Math.min(m.speed * delta, distance - stopping); const previous = m.mesh.position.clone(); m.mesh.position.addScaledVector(direction.normalize(), step); this.environment?.resolveAgentMovement?.(m.mesh.position, targetPos, step, .8, previous); }
       if (covered || distance > range) { releaseHostileAttack(this, m); m.pressureAction = null; continue; }
       if (m.shootCooldown > 0) continue;
-      const granted = targetsPlayer ? requestHostileAttack(this, m, targetPlayer, delta, { kind: 'ranged', windup: .8, recovery: 1.5, duration: .3 })
-        : !target.isBattleNPC || requestNPCStrike(m, target, delta, { windup: .6, recovery: 1.45 });
+      const granted = targetsPlayer ? requestHostileAttack(this, m, targetPlayer, delta, { kind: 'ranged', windup: specialist?.windup ?? .8, recovery: specialist?.recovery ?? 1.5, duration: .3 })
+        : !target.isBattleNPC || requestNPCStrike(m, target, delta, { windup: specialist?.windup ?? .6, recovery: specialist?.recovery ?? 1.45 });
       if (!granted) { if (targetsPlayer) syncHostileWarning(this, m); continue; }
-      m.shootCooldown = m.type === 'flametrooper' ? 1.65 : 1.45;
-      if (m.type === 'flametrooper') (this.audioEngine.playFlamethrowerBurn ?? this.audioEngine.playAcidSizzle)?.call(this.audioEngine);
-      else (this.audioEngine.playPulseRifleBurst ?? this.audioEngine.playPlasmaShot)?.call(this.audioEngine);
-      if (targetsPlayer) targetPlayer.takeDamage(m.type === 'flametrooper' ? 12 : 9, m.type === 'flametrooper', m, { attackKind: m.type === 'flametrooper' ? 'fire' : 'ballistic', blockable: false, parryable: false });
-      else if (target.isBattleNPC) target.takeDamage(m.damage);
-      else { target.hp -= m.damage; if (target.hp <= 0) horde.defeatAlien?.(target, { cause: m.type, killerFaction: m.factionId ?? 'uscm' }); }
+      if (['sniper', 'sadar'].includes(m.sourceVisualKind) &&
+          !this.battleSimulation?.consumeSpecialistAmmo(m.battleUnitId, m.sourceVisualKind)) {
+        m.shootCooldown = .65; releaseHostileAttack(this, m); continue;
+      }
+      m.shootCooldown = specialist?.cooldown ?? (m.type === 'flametrooper' ? 1.65 : 1.45);
+      if (m.sourceVisualKind === 'sadar') {
+        this.queueSadarMissile(m, target, targetsPlayer, horde);
+        (this.audioEngine?.playMissileLaunch ?? this.audioEngine?.playPulseRifleBurst)?.call(this.audioEngine);
+        releaseHostileAttack(this, m);
+        continue;
+      }
+      const shotSound = m.sourceVisualKind === 'sniper' ? this.audioEngine?.playSniperRifleShot
+        : m.sourceVisualKind === 'medic' ? this.audioEngine?.playPistolShot
+        : m.sourceVisualKind === 'commtech' ? this.audioEngine?.playSMGBurst
+        : null;
+      if (m.type === 'flametrooper') (this.audioEngine?.playFlamethrowerBurn ?? this.audioEngine?.playAcidSizzle)?.call(this.audioEngine);
+      else (shotSound ?? this.audioEngine?.playPulseRifleBurst ?? this.audioEngine?.playPlasmaShot)?.call(this.audioEngine);
+      if (targetsPlayer) targetPlayer.takeDamage(specialist?.playerDamage ?? (m.type === 'flametrooper' ? 12 : 9),
+        m.type === 'flametrooper', m, { attackKind: m.type === 'flametrooper' ? 'fire' : 'ballistic', blockable: false, parryable: false });
+      else if (target.isBattleNPC) target.takeDamage(specialist?.damage ?? m.damage);
+      else {
+        target.hp -= specialist?.damage ?? m.damage;
+        target.lastDamageFaction = m.factionId ?? 'uscm';
+        if (target.hp <= 0) horde.defeatAlien?.(target, { cause: m.type, killerFaction: target.lastDamageFaction });
+      }
       syncHostileWarning(this, m);
     }
     if (this.sentryGun?.ammo > 0) {
@@ -199,6 +319,8 @@ export class ColonialMarinesManager {
 
 
   clearSquad() {
+    for (const missile of this.specialistMissiles) disposeObject(missile.mesh);
+    this.specialistMissiles = [];
     if (this.distressBeacon) disposeObject(this.distressBeacon.mesh); this.distressBeacon = null; this.airSupportPending = false; this.beaconTriggered = false;
     this.marines.forEach(m => { releaseHostileAttack(this, m); disposeObject(m.mesh); });
     this.marines = [];
@@ -229,10 +351,12 @@ export class ColonialMarinesManager {
     const sourceVisualKind = sourceUnitVisualKind(unit);
     // Visual role can change without mutating the persistent strategic
     // actorType or claiming that its specialist ability is implemented.
+    const heavyFrame = sourceVisualKind === 'exosuit';
     const actor = { mesh: this.createMarineMesh(sourceVisualKind ?? weaponKind), type: weaponKind,
       sourceVisualKind, visualFidelity1to1Verified: false,
-      damage: weaponKind === 'flametrooper' ? 35 : 20, speed: 8,
-      radius: .8, shootCooldown: 1.5, grenadeCooldown: 7 };
+      damage: heavyFrame ? SPECIALIST_ATTACKS.exosuit.damage : weaponKind === 'flametrooper' ? 35 : 20,
+      speed: heavyFrame ? 5.0 : 8, radius: heavyFrame ? 1.12 : .8,
+      shootCooldown: 1.5, grenadeCooldown: 7 };
     this.marines.push(applyBattleUnit(this, actor, unit, group)); return actor;
   }
 

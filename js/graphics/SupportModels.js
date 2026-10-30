@@ -187,6 +187,27 @@ function addFlamethrower(parts, mats) {
 
 // Source-role silhouettes for AVP: Extinction squads. These are integrated
 // meshes, not claims of exact licensed prop geometry or functional abilities.
+// Canonical weapon families: the Extinction Medic uses a sidearm and the
+// CommTech a compact close-assault MP9. These are original low-poly studies,
+// not measured copies of the film/game meshes.
+function addMedicSidearm(parts, mats) {
+  const x = .35, y = 2.06, z = .7;
+  parts.box(mats.dark, [x, y, z], [.19, .20, .43], true);
+  parts.box(mats.steel, [x, y + .10, z + .055], [.18, .06, .41], true);
+  parts.box(mats.rubber, [x, y - .21, z - .11], [.12, .34, .14], true, [-.17, 0, 0]);
+  parts.cylinder(mats.steel, [x, y + .01, z + .27], [.029, .029], .12, [Math.PI / 2, 0, 0], 16);
+  parts.box(mats.dark, [x, y + .14, z + .12], [.04, .06, .03], true);
+}
+function addCommtechMP9(parts, mats) {
+  const x = .31, y = 2.07;
+  parts.box(mats.dark, [x, y, .72], [.20, .18, .55], true);
+  parts.box(mats.armor, [x, y + .10, .78], [.16, .07, .33], true);
+  parts.box(mats.rubber, [x, y - .21, .62], [.11, .31, .13], true, [.10, 0, 0]);
+  parts.box(mats.dark, [x, y - .15, .90], [.09, .29, .09], true, [-.12, 0, 0]);
+  parts.cylinder(mats.steel, [x, y, 1.1], [.035, .038], .33, [Math.PI / 2, 0, 0], 18);
+  parts.box(mats.dark, [x, y + .19, .72], [.15, .13, .08], true);
+  parts.box(mats.rubber, [x, y + .02, .25], [.17, .13, .23], true);
+}
 function addMedicalPack(parts, mats) {
   parts.box(mats.armor, [0, 2.25, -0.42], [0.64, 0.72, 0.31], true);
   for (const x of [-0.20, 0.20]) {
@@ -262,8 +283,8 @@ export function createMarineModel(smartgunner = true) {
   parts.cylinder(mats.dark, [0.187, 3.18, -0.01], [0.045, 0.045], 0.04, [0, 0, Math.PI / 2], 24);
   parts.box(glow(0x9a594b), [0.13, 3.22, 0.19], [0.038, 0.018, 0.025], true);
   if (weaponKind === 'flametrooper') addFlamethrower(parts, mats);
-  else if (weaponKind === 'medic') { addRifle(parts, mats, false); addMedicalPack(parts, mats); }
-  else if (weaponKind === 'commtech') { addRifle(parts, mats, false); addCommtechPack(parts, mats); }
+  else if (weaponKind === 'medic') { addMedicSidearm(parts, mats); addMedicalPack(parts, mats); }
+  else if (weaponKind === 'commtech') { addCommtechMP9(parts, mats); addCommtechPack(parts, mats); }
   else if (weaponKind === 'sniper') addSniperEquipment(parts, mats);
   else if (weaponKind === 'sadar') addSadarLauncher(parts, mats);
   else if (weaponKind === 'exosuit') addExosuitFrame(parts, mats);

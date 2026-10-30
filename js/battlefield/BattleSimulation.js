@@ -4,6 +4,7 @@
 
 import { BattleIntel } from './BattleIntel.js';
 import { sourceUnitVisualKind } from '../data/SourceActorPresentation.js';
+import { initialSpecialistStocks, restoreSpecialistStocks, sourceSpecialistRole, SPECIALIST_ATTACKS } from '../data/SourceSpecialistCombat.js';
 import { measureDefeatReturn } from './BattleStrategy.js';
 import { validateBossCombatState } from '../data/BossEncounterValidation.js';
 import { initializeFormation, updateFormation, formationTargetForUnit, formationAttackMultiplier, normalizeFormation, FORMATION_PROFILES } from './FormationTactics.js';
@@ -158,6 +159,7 @@ export class BattleSimulation {
         // Existing source-v1 saves lacked this field and load with zero rather
         // than receiving free new supplies on every rematerialization.
         if (sourceUnitVisualKind(unit) === 'medic') unit.medicalSupply = 2;
+        Object.assign(unit, initialSpecialistStocks(unit));
         this.units.set(unit.id, unit); this.attackSeeds.set(unit.id, hash(unit.id)); group.units.push(unit.id);
       }
       const heavy = group.units.filter(unitId => this.units.get(unitId).role === 'heavy').length;
@@ -513,6 +515,53 @@ export class BattleSimulation {
     return { amount, hp: patient.hp, chargesRemaining: medic.medicalSupply };
   }
 
+  /** A fired shot consumes the exact specialist's stored ammunition once,
+   * independent of renderer lifetime and without changing unit IDs or budgets. */
+  consumeSpecialistAmmo(unitId, role) {
+    const unit = this.units.get(unitId), field = role === 'sniper' ? 'sniperRounds' : role === 'sadar' ? 'sadarMissiles' : null;
+    if (!field || this.disposed || this.paused || this.result || !unit ||
+        sourceSpecialistRole(unit) !== role || unit.state !== 'active' || unit.incapacitated ||
+        unit.hp <= 0 || !Number.isInteger(unit[field]) || unit[field] <= 0) return null;
+    unit[field]--;
+    this._emit('specialist_round_fired', { unitId, role, roundsRemaining: unit[field] }, 0);
+    return { unitId, role, roundsRemaining: unit[field] };
+  }
+
+  /** CommTech repairs existing mechanics: never civilians, dead units,
+   * distant units or a new synthetic. Supplies are a project adaptation. */
+  applyCommTechRepair(commTechId, targetId) {
+    const tech = this.units.get(commTechId), target = this.units.get(targetId);
+    if (this.disposed || this.paused || this.result || !tech || !target ||
+        commTechId === targetId || sourceSpecialistRole(tech) !== 'commtech' ||
+        !Number.isInteger(tech.repairParts) || tech.repairParts <= 0 ||
+        tech.state !== 'active' || target.state !== 'active' || tech.incapacitated ||
+        target.incapacitated || tech.hp <= 0 || target.hp <= 0 ||
+        tech.factionId !== target.factionId || tech.species !== 'human' ||
+        target.hp >= target.maxHp || dist(tech.position, target.position) > 8 ||
+        !(target.species === 'synthetic' || sourceSpecialistRole(target) === 'exosuit')) return null;
+    const amount = Math.min(100, target.maxHp - target.hp);
+    if (!(amount > 0)) return null;
+    tech.repairParts--;
+    target.hp += amount;
+    this._emit('field_technical_repair', {
+      technicianId: commTechId, targetId, amount, partsRemaining: tech.repairParts
+    }, 1);
+    return { amount, hp: target.hp, partsRemaining: tech.repairParts };
+  }
+
+  /** Plating is a finite armor buffer for the single Exosuit+pilot unit.
+   * Both close-combat and NPC damage paths call this before subtracting HP. */
+  absorbExosuitDamage(unitId, damage) {
+    const unit = this.units.get(unitId);
+    if (!Number.isFinite(damage) || damage <= 0 || !unit ||
+        this.disposed || this.result || !['active', 'distant'].includes(unit.state) || unit.hp <= 0 ||
+        sourceSpecialistRole(unit) !== 'exosuit' ||
+        !Number.isInteger(unit.exosuitArmor) || unit.exosuitArmor <= 0) return damage;
+    const absorbed = Math.min(unit.exosuitArmor, Math.floor(damage * 0.5));
+    unit.exosuitArmor -= absorbed;
+    return damage - absorbed;
+  }
+
   setUnitIncapacitated(unitId, incapacitated) {
     const unit = this.units.get(unitId);
     if (!unit || this.disposed || this.result || !alive(unit) || !['active', 'distant'].includes(unit.state) || typeof incapacitated !== 'boolean') return false;
@@ -567,19 +616,29 @@ export class BattleSimulation {
           if (!combatReady(attacker)) continue;
           const profile = this.profiles.get(attacker.profileId), group = this.groups.get(attacker.groupId), faction = this.factions.get(factionId);
           if (group.reconstitution?.required || ['retreat', 'regroup'].includes(group.order.type) || attacker.nextAttack > this.time + EPSILON || profile.damage <= 0) continue;
-          attacker.nextAttack = this.time + profile.attackInterval;
+          const role = sourceSpecialistRole(attacker), rule = SPECIALIST_ATTACKS[role];
+          const ammunition = role === 'sniper' ? 'sniperRounds' : role === 'sadar' ? 'sadarMissiles' : null;
+          // The distant front cannot fire unlimited specialist weapons just
+          // because the physical model is not currently materialized.
+          if (ammunition) {
+            if (!Number.isInteger(attacker[ammunition]) || attacker[ammunition] <= 0) continue;
+            attacker[ammunition]--;
+          }
+          attacker.nextAttack = this.time + Math.max(profile.attackInterval, rule?.cooldown ?? 0);
           const target = targets[(this.attackSeeds.get(attacker.id) + this.tick) % targets.length];
           const tacticMultiplier = group.tactic && group.tactic.expires > this.time ? { pincer: 1.2, hold_line: 1.05, ambush: 1.15, fallback: .5 }[group.tactic.type] ?? 1 : 1;
           const orderMultiplier = ({ attack: 1, defend: .85, escort: .6 }[group.order.type] ?? .85) * tacticMultiplier;
           const moraleMultiplier = faction.moraleModel === 'hive' ? coordination.get(factionId) * group.coordinationStrength : .5 + group.morale / 200;
           if (!pending.has(target.id)) pending.set(target.id, { damage: 0, killerFaction: factionId });
-          pending.get(target.id).damage += profile.damage * orderMultiplier * moraleMultiplier * formationAttackMultiplier(group, this.time);
+          pending.get(target.id).damage += (rule?.damage ?? profile.damage) * orderMultiplier * moraleMultiplier * formationAttackMultiplier(group, this.time);
           this.targetingCounters.attacksResolved++;
         }
       }
     }
     for (const [unitId, hit] of pending) {
-      const unit = this.units.get(unitId); unit.hp = Math.max(0, unit.hp - hit.damage); unit.damageTaken += hit.damage;
+      const unit = this.units.get(unitId);
+      const actual = this.absorbExosuitDamage(unitId, hit.damage);
+      unit.hp = Math.max(0, unit.hp - actual); unit.damageTaken += actual;
       if (!unit.hp) this.recordDeath({ entityId: unitId, killerFaction: hit.killerFaction, cause: 'distant_combat' });
     }
   }
@@ -968,6 +1027,8 @@ export class BattleSimulation {
         if (!Number.isInteger(unit.medicalSupply) || unit.medicalSupply < 0 || unit.medicalSupply > 2)
           fail('invalid saved medical stock');
       } else if (unit.medicalSupply !== undefined) fail('non-medic cannot own medical stock');
+      try { restoreSpecialistStocks(unit, original); }
+      catch { fail('invalid saved specialist stock'); }
       unit.incapacitated ??= false;
       if (typeof unit.incapacitated !== 'boolean' || unit.incapacitated && (!alive(unit) || !['active', 'distant'].includes(unit.state))) fail('invalid saved incapacitation');
       for (const key of ['profileId', 'factionId', 'groupId', 'maxHp', 'uniqueId', 'officer', 'species', 'role', 'actorType', 'profileName', 'sourceBossId', 'sourceBossType', 'visualFidelity1to1Verified']) if (unit[key] !== original[key]) fail('save rewrites an allocated identity');

@@ -127,7 +127,9 @@ export class BattleActorBridge {
       if ((attack.targetOnly&&actor!==attack.targetOnly) || manager === this.game.horde || manager === this.game.synthetics || manager === this.game.bosses || actor.hp <= 0 ||
           !this.simulation.areHostile(faction, actor.factionId) || actor.mesh.position.distanceTo(attack.origin) > attack.radius + (actor.radius ?? 1) ||
           this.game.env.hasLineOfSight?.(attack.origin.clone().add({x:0,y:1.2,z:0}),actor.mesh.position.clone().add({x:0,y:1.2,z:0})) === false) continue;
-      const dealt=applyBattleFormationHit(manager,actor,attack);
+      const raw=applyBattleFormationHit(manager,actor,attack);
+      const dealt=this.simulation.absorbExosuitDamage?.(actor.battleUnitId,raw) ?? raw;
+      actor.lastDamageFaction=faction;
       actor.hp = Math.max(0, actor.hp - dealt);
       const event = actor.hp <= 0 ? manager.defeatCombatant(actor, { cause: attack.type ?? 'player-hit', killerFaction: faction }) : null;
       const killed = actor.hp <= 0;
