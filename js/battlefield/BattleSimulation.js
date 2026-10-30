@@ -4,6 +4,8 @@
 
 import { BattleIntel } from './BattleIntel.js';
 import { applyFacehuggerExposure } from './FacehuggerExposure.js';
+import { HIVE_SPORE_RULES, updateHiveSporeSight, getHiveSporeContacts,
+  restoreHiveSporeSight } from './HiveSporeSight.js';
 import { infectHost, completeHostInfections, validateHostInfestation } from './HostInfestation.js';
 import { HIVE_NODE_RULES, createHiveEcology, awardHiveInfestation, buildHiveNode, healHiveSpace,
   damageHiveNode as damageEcologyNode, snapshotHiveEcology, restoreHiveEcology } from './HiveNodeEcology.js';
@@ -347,6 +349,9 @@ export class BattleSimulation {
       strength.set(key, (strength.get(key) ?? 0) + ready); garrisons.set(key, (garrisons.get(key) ?? 0) + 1);
     }
     for (const faction of this.factions.values()) {
+      const sporeFronts = faction.moraleModel === 'hive'
+        ? new Set(this.getHiveSporeContacts(faction.id).map(contact => contact.frontId))
+        : new Set();
       for (const group of byFaction.get(faction.id) ?? []) {
         if (group.materialized || group.reconstitution?.required || !group.officerId || !combatReady(this.units.get(group.officerId))) continue;
         const alliedToPlayer = this.relationship(faction.id, this.config.playerFaction) === 'allied';
@@ -357,6 +362,8 @@ export class BattleSimulation {
         const defenders = front => [...this.factions.keys()].filter(id => this.areHostile(faction.id, id)).reduce((sum, id) => sum + (strength.get(`${id}:${front.id}`) ?? 0), 0);
         const neighbours = [...this.routes.values()].filter(route => route.open && [route.from, route.to].includes(group.frontId)).map(route => this.fronts.get(route.from === group.frontId ? route.to : route.from));
         const target = neighbours.filter(front => (front.owner === null || this.areHostile(faction.id, front.owner)) && attackers >= defenders(front) * (this.config.ai?.assaultMinRatio ?? 0)).sort((a, b) => {
+          const sporePriority = Number(sporeFronts.has(b.id)) - Number(sporeFronts.has(a.id));
+          if (sporePriority) return sporePriority;
           if (this.config.ai?.targetPreference === 'supply') {
             const supply = Number(b.reinforcementSource && b.sourceHP > 0) - Number(a.reinforcementSource && a.sourceHP > 0);
             if (supply) return supply;
@@ -366,7 +373,10 @@ export class BattleSimulation {
         if (target) {
           const answer = this.issueOrder(group.id, { type: 'attack', frontId: target.id, issuer: 'officer' });
           if (answer.accepted) this._emit('officer_decision', { groupId: group.id, from: group.frontId, target: target.id,
-            reason: this.config.ai?.targetPreference === 'supply' && target.reinforcementSource ? 'open_supply_front' : 'open_hostile_front', difficultyId: this.config.difficulty?.id ?? 'scenario' }, 1);
+            reason: sporeFronts.has(target.id) ? 'spore_tracked_hostile_front'
+              : this.config.ai?.targetPreference === 'supply' && target.reinforcementSource
+              ? 'open_supply_front' : 'open_hostile_front',
+            difficultyId: this.config.difficulty?.id ?? 'scenario' }, 1);
           break;
         }
       }
@@ -622,7 +632,17 @@ export class BattleSimulation {
     return result;
   }
 
-  getHiveNodeState() { return snapshotHiveEcology(this.hiveEcology); }
+  getHiveNodeState({ nodesOnly = false } = {}) {
+    if (nodesOnly) return { nodes: this.hiveEcology.nodes.map(node =>
+      ({...node, position: [...node.position]})) };
+    return snapshotHiveEcology(this.hiveEcology);
+  }
+
+  /** Tactical knowledge belongs only to the sensing Hive. The Yautja player
+   * does not receive these contacts as its own reconnaissance reports. */
+  getHiveSporeContacts(factionId) {
+    return getHiveSporeContacts(this.hiveEcology, factionId, this.time);
+  }
 
   _hiveNodeStep(dt) {
     if (!this.hiveEcology.banks.length) return;
@@ -643,6 +663,12 @@ export class BattleSimulation {
       this.callbacks.healBattleUnit?.(loss.unitId, loss.hp);
       if (loss.expired) this.recordDeath({ entityId: loss.unitId,
         cause: 'facehugger_outside_hive_space', killerFaction: null });
+    }
+    // Sample at most once per simulated second, not once per rendered frame.
+    // Last-seen coordinates expire even if the enemy is no longer visible.
+    if (this.tick % HIVE_SPORE_RULES.sampleEveryTicks === 0) {
+      updateHiveSporeSight(this.hiveEcology, this.units.values(), this.groups,
+        this.fronts, (a,b) => this.areHostile(a,b), this.time);
     }
   }
 
@@ -1200,6 +1226,11 @@ export class BattleSimulation {
     if (saved.intelligence) simulation.intel.restore(saved.intelligence);
     simulation.hiveEcology = restoreHiveEcology(simulation.hiveEcology,
       saved.hiveEcology, simulation.units, saved.time, simulation.deaths);
+    try {
+      simulation.hiveEcology.spores = restoreHiveSporeSight(
+        saved.hiveEcology?.spores, simulation.hiveEcology,
+        simulation.units, simulation.fronts, saved.time);
+    } catch { fail('invalid saved hive spore sight'); }
     simulation.assertConservation(); return simulation;
   }
 
