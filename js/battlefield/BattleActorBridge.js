@@ -1,6 +1,7 @@
 import { applyBattleFormationHit } from '../engine/BattleActorSupport.js';
 import { recordCombatDeath } from '../engine/CombatEvents.js';
 import { sourceUnitVisualKind } from '../data/SourceActorPresentation.js';
+import { originalMusouSquadRole } from '../data/OriginalMusouSquadRoles.js';
 const ACTOR_TYPES = {
   xenomorph: new Set(['warrior', 'runner', 'spitter', 'boiler', 'neomorph', 'praetomorph', 'red_warrior', 'facehugger', 'officer', 'crusher', 'praetorian', 'grid_alien', 'cyber_xeno', 'cryo_xeno', 'xenomorph', 'queen']),
   human: new Set(['marine', 'human', 'smartgunner', 'flametrooper']),
@@ -54,9 +55,14 @@ export class BattleActorBridge {
         if (!manager?.spawnBattleUnit) throw new Error(`No detailed combat manager for ${unit.species ?? group.species}`);
         const actor = manager.spawnBattleUnit(unit, group);
         if (!actor?.mesh || actor.battleUnitId !== unit.id) throw new Error('The combat manager did not preserve its allocated identity');
+        const sourceSlot=originalMusouSquadRole(this.simulation.config,group,unit);
         actor.profileName = sourceUnitVisualKind(unit) === 'drone'
           ? 'Drone — constructeur de nodules (modèle procédural)'
-          : unit.profileName ?? actor.profileName;
+          : sourceSlot?.label ?? unit.profileName ?? actor.profileName;
+        if (sourceSlot) {
+          actor.originalMusouRole = sourceSlot; // No change to actorType or combat stats.
+          if(actor.mesh.userData)actor.mesh.userData.originalMusouRole = sourceSlot.role;
+        }
         const entry = { actor, manager, groupId: group.id, unitId: unit.id };
         this.actors.set(unit.id, entry); added.push(entry);
         this.game.env.resolveMovement(actor.mesh.position, actor.radius ?? 1);
