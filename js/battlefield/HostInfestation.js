@@ -60,17 +60,23 @@ export function completeHostInfections(sim) {
   return completed;
 }
 
-export function validateHostInfestation(unit, originals, allSavedUnits, savedTime) {
+export function validateHostInfestation(unit, originals, allSavedUnits, savedTime, deathLedger = []) {
   const infection=unit?.infection;
   if (infection===undefined) return;
   const original=originals.get(unit.id);
   const parasite=allSavedUnits.get(infection?.sourceUnitId);
   const originalParasite=originals.get(infection?.sourceUnitId);
+  const consumption=Array.isArray(deathLedger)
+    ? deathLedger.find(death=>death.entityId===infection?.sourceUnitId)
+    : null;
   if (!infection || !original || !parasite || !originalParasite ||
       original.species!=='human' ||
       originalParasite.species!=='xenomorph' || originalParasite.actorType!=='facehugger' ||
       infection.sourceFaction!==originalParasite.factionId ||
       original.factionId===originalParasite.factionId ||
+      !consumption || consumption.cause!=='facehugger-implantation' ||
+      consumption.killerFaction!==null ||
+      consumption.time!==infection.startedAt ||
       parasite.state!=='dead' ||
       !['active','distant'].includes(unit.state) || unit.incapacitated!==true || !(unit.hp>0) ||
       HOST_INFESTATION_RULES.immuneActorTypes.includes(original.actorType) ||

@@ -5,6 +5,7 @@ import { applyBattleUnit, despawnBattleActor, selectBattleTarget, battleHostile,
 import { recordCombatDeath } from '../engine/CombatEvents.js';
 import { createMarineModel, addSentryMechanicalDetails } from '../graphics/SupportModels.js';
 import { sourceUnitVisualKind } from '../data/SourceActorPresentation.js';
+import { attachHostParasiteVisual } from '../graphics/HostParasiteAttachment.js';
 import { SPECIALIST_ATTACKS } from '../data/SourceSpecialistCombat.js';
 import { disposeObject } from '../engine/SceneResources.js';
 import { selectHostileTarget, requestHostileAttack, syncHostileWarning, releaseHostileAttack } from '../engine/HostilePressure.js';
@@ -357,6 +358,7 @@ export class ColonialMarinesManager {
       damage: heavyFrame ? SPECIALIST_ATTACKS.exosuit.damage : weaponKind === 'flametrooper' ? 35 : 20,
       speed: heavyFrame ? 5.0 : 8, radius: heavyFrame ? 1.12 : .8,
       shootCooldown: 1.5, grenadeCooldown: 7 };
+    if (unit.infection) attachHostParasiteVisual(actor.mesh);
     this.marines.push(applyBattleUnit(this, actor, unit, group)); return actor;
   }
 

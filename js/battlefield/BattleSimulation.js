@@ -1089,6 +1089,9 @@ export class BattleSimulation {
       if (!Array.isArray(source) || source.length !== expected.size || new Set(source.map(item => item.id)).size !== expected.size || source.some(item => !expected.has(item.id))) fail(`save ${name} identities do not match`);
     }
     const units = new Map(saved.units.map(unit => [unit.id, clone(unit)]));
+    const pendingInfestations = [...units.values()].filter(unit => unit.infection).map(unit => unit.infection.sourceUnitId);
+    if (new Set(pendingInfestations).size !== pendingInfestations.length)
+      fail('duplicated saved host infestation source');
     for (const [unitId, unit] of units) {
       const original = simulation.units.get(unitId);
       if (unit.encounterState !== undefined) {
@@ -1104,7 +1107,7 @@ export class BattleSimulation {
       try { restoreSpecialistStocks(unit, original); }
       catch { fail('invalid saved specialist stock'); }
       unit.incapacitated ??= false;
-      try { validateHostInfestation(unit, simulation.units, units, saved.time); }
+      try { validateHostInfestation(unit, simulation.units, units, saved.time, saved.deaths); }
       catch { fail('invalid saved host infestation'); }
       if (typeof unit.incapacitated !== 'boolean' || unit.incapacitated && (!alive(unit) || !['active', 'distant'].includes(unit.state))) fail('invalid saved incapacitation');
       for (const key of ['profileId', 'factionId', 'groupId', 'maxHp', 'uniqueId', 'officer', 'species', 'role', 'actorType', 'profileName', 'sourceBossId', 'sourceBossType', 'visualFidelity1to1Verified']) if (unit[key] !== original[key]) fail('save rewrites an allocated identity');

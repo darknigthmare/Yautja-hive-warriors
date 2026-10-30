@@ -8,6 +8,10 @@ import { HOST_INFESTATION_RULES } from '../js/battlefield/HostInfestation.js';
 import { selectBattleTarget } from '../js/engine/BattleActorSupport.js';
 import { BattleActorBridge } from '../js/battlefield/BattleActorBridge.js';
 import { XenomorphHorde } from '../js/entities/XenomorphHorde.js';
+import { ColonialMarinesManager } from '../js/entities/ColonialMarines.js';
+import { createMarineModel } from '../js/graphics/SupportModels.js';
+import { attachHostParasiteVisual } from '../js/graphics/HostParasiteAttachment.js';
+import { disposeObject } from '../js/engine/SceneResources.js';
 
 const config=()=>getBattleOperationConfig('AFF-27');
 const make=()=>new BattleSimulation(config());
@@ -89,6 +93,7 @@ test('target-view permission refuses armored NPCs and links an accepted latch to
     const actor={hp:host.hp,maxHp:host.maxHp,battleUnitId:host.id,factionId:host.factionId,
       type:'marine',mesh:new THREE.Group(),combatManager:{battleSimulation:sim}};
     actor.mesh.position.copy(source.mesh.position);
+    const scene=new THREE.Scene();scene.add(actor.mesh);
     const manager={battleSimulation:sim,combatActorsProvider:()=>[actor],time:1};
     const selected=selectBattleTarget(manager,source);
     assert.ok(selected?.isBattleNPC);
@@ -146,6 +151,18 @@ test('invalid infection checkpoint metadata cannot rewrite an existing human or 
     const sourceAlive=structuredClone(saved);
     sourceAlive.units.find(u=>u.id===facehugger.id).state='distant';
     assert.throws(()=>BattleSimulation.fromState(config(),sourceAlive),/invalid saved host infestation/);
+    const forgedCause=structuredClone(saved);
+    forgedCause.deaths.find(death=>death.entityId===facehugger.id).cause='unrelated-combat';
+    assert.throws(()=>BattleSimulation.fromState(config(),forgedCause),
+      /invalid saved host infestation/,'a combat casualty cannot be forged into a consumed parasite');
+    const duplicatedSource=structuredClone(saved);
+    const secondHost=duplicatedSource.units.find(u=>u.species==='human' &&
+      u.factionId===host.factionId && u.id!==host.id && u.hp>0 && u.state==='distant');
+    assert.ok(secondHost);
+    secondHost.infection=structuredClone(inf);
+    secondHost.incapacitated=true;
+    assert.throws(()=>BattleSimulation.fromState(config(),duplicatedSource),
+      /duplicated saved host infestation source/,'one parasite cannot impregnate two hosts');
     const legacy=structuredClone(saved);
     delete legacy.units.find(u=>u.id===host.id).infection;
     legacy.units.find(u=>u.id===host.id).incapacitated=false;
@@ -161,4 +178,40 @@ test('the physical horde keeps a Facehugger when the target explicitly rejects i
   assert.equal(horde._canParasitize(protectedMarine),true,
     'legacy physical target needs the explicit refusal, not a fabricated successful infection');
   assert.equal(protectedMarine.triggerFacehuggerLatch(),false);
+});
+
+test('procedural Facehugger-on-host visual is unique, attached and cleaned with the host',()=>{
+  const marine=createMarineModel('marine');
+  try{
+    const first=attachHostParasiteVisual(marine);
+    assert.ok(first);
+    assert.equal(first.name,'facehugger-host-attachment');
+    assert.equal(first.userData.visualFidelity1to1Verified,false);
+    assert.ok(first.children.length>=10,'visible body, gripping legs and curved tail are real geometry');
+    const second=attachHostParasiteVisual(marine);
+    assert.equal(second,first,'no duplicate visual on repeated latch');
+    assert.equal(marine.children.filter(child=>child.name===first.name).length,1);
+  }finally{disposeObject(marine);}
+});
+
+test('a checkpoint re-materializes an infected Marine with its visible attached parasite',()=>{
+  const sim=make(),scene=new THREE.Scene(),manager=new ColonialMarinesManager(scene,{});
+  try{
+    const {facehugger,host}=get(sim);
+    assert.ok(sim.beginHostInfestation(facehugger.id,host.id));
+    const saved=sim.saveState();
+    const restored=BattleSimulation.fromState(config(),saved);
+    try{
+      const unit=restored.getUnit(host.id);
+      assert.ok(unit.infection);
+      const actor=manager.spawnBattleUnit(unit,restored.groups.get(unit.groupId));
+      assert.equal(actor.battleUnitId,unit.id);
+      assert.equal(actor.isDowned,true,'incubating Marine may not fight after materialization');
+      const attachment=actor.mesh.getObjectByName('facehugger-host-attachment');
+      assert.ok(attachment);
+      assert.equal(attachment.userData.visualFidelity1to1Verified,false);
+      assert.ok(manager.despawnBattleUnit(unit.id));
+      assert.equal(scene.children.length,0);
+    }finally{restored.dispose();}
+  }finally{manager.clearSquad();sim.dispose();}
 });

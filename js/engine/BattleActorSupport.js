@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { attachHostParasiteVisual } from '../graphics/HostParasiteAttachment.js';
 import { disposeObject } from './SceneResources.js';
 import { releaseHostileAttack } from './HostilePressure.js';
 import { applyFormationImpact, formationAttackKind, formationDamageMultiplier } from '../battlefield/FormationTactics.js';
@@ -171,6 +172,7 @@ function targetView(actor, attacker) {
         if (!infection) return false;
         actor.isFacehuggerLatched = true;
         actor.facehuggerHold = Math.max(4, infection.completesAt - simulation.time + 1);
+        attachHostParasiteVisual(actor.mesh);
         return true;
       }
       actor.isFacehuggerLatched = true;

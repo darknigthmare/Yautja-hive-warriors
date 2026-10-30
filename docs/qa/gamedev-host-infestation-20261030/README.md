@@ -14,7 +14,13 @@ Références :
 - [AvP Galaxy, formes et hôtes](https://www.avpgalaxy.net/games/avp-extinction/aliens/)
 
 Les **8 secondes** d’incubation et les règles de portée sont des
-choix du projet, pas des valeurs reprises du jeu. Le système
+choix du projet, pas des valeurs reprises du jeu. Une nouvelle
+projection `HostParasiteAttachment.js` dessine sur le visage du
+Marine une étude procédurale de Facehugger à huit doigts, queue
+incurvée et carapace. Elle reste attachée après reprise de
+checkpoint, sans duplication de maillage ; elle est détruite
+avec l'acteur physique. **Ce n'est pas un scan ni une silhouette
+1:1 vérifiée**. Le système
 **ne génère pas encore de Chestburster ni d’adulte** : il retire
 définitivement l’hôte au terme du délai, avec un événement
 `adultGenerated:false`. Cela évite de créer un Alien gratuit
@@ -142,3 +148,29 @@ La présente passe est **un correctif de continuité
 et une première étape du cycle d’hôte**. Elle ne
 constitue pas une reproduction mécanique ou
 visuelle 1:1 complète du RTS source.
+
+## Durcissement additionnel des checkpoints
+
+Le journal de pertes doit désormais prouver la disparition du
+Facehugger avec la cause exacte `facehugger-implantation`, la
+bonne date et aucun auteur de kill. Plusieurs infections ne
+peuvent pas réutiliser la même source. Ces vérifications
+refusent la fabrication d'infections depuis un cadavre
+d'origine différente.
+
+## Exécution CI de la première version
+
+Sur le commit `28289af1`, GitHub Actions a validé le build
+Vite, le catalogue et le suivi d'audit ; **76 tests ciblés sur 77**
+ont réussi. L'unique fixture défaillante créait un Marine sans
+parent de scène, donc écarté à raison par `selectBattleTarget`.
+La fixture est corrigée en ajoutant son maillage à une scène
+réelle Three.js ; **aucune règle de filtrage n'est affaiblie**.
+Le dernier état de la suite mise à jour sera pris dans
+GitHub Actions, il n'est pas encore revendiqué réussi ici.
+
+Les tests du lot passent de 6 à **8 scénarios écrits**
+(visualisation procédurale et matérialisation après reprise).
+Les deux tests additionnels de sécurité du journal de
+consommation et d'anti-double-implantation sont intégrés au
+scénario de checkpoint. Ces tests seront rejoués sur la PR #6.
