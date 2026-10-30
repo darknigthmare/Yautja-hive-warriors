@@ -167,8 +167,28 @@ function addRifle(parts, mats, smartgun = false) {
   } else parts.cylinder(mats.armor, [x, y - 0.14, 1.03], [0.08, 0.08], 0.4, [Math.PI / 2, 0, 0], 32);
 }
 
+// Functional silhouettes for the three actual human weapon types. These are
+// in-game interpretations, not scans or proportion-verified film props.
+function addFlamethrower(parts, mats) {
+  const x = 0.30, y = 2.10;
+  parts.box(mats.dark, [x, y, 0.70], [0.22, 0.21, 0.90], true);
+  parts.box(mats.armor, [x, y + 0.12, 0.88], [0.22, 0.09, 0.42], true);
+  parts.cylinder(mats.dark, [x, y + 0.01, 1.30], [0.095, 0.105], 0.57, [Math.PI / 2, 0, 0], 24);
+  parts.cylinder(mats.steel, [x, y + 0.01, 1.63], [0.12, 0.12], 0.17, [Math.PI / 2, 0, 0], 24);
+  parts.cylinder(mats.dark, [x, y + 0.01, 1.74], [0.065, 0.065], 0.025, [Math.PI / 2, 0, 0], 24);
+  parts.box(mats.rubber, [x, y - 0.17, 0.48], [0.10, 0.35, 0.15], true);
+  for (const side of [-1, 1]) {
+    parts.cylinder(mats.armor, [side * 0.21, 2.13, -0.45], [0.13, 0.13], 0.76, [0, 0, 0], 20);
+    parts.cylinder(mats.steel, [side * 0.21, 2.53, -0.45], [0.14, 0.14], 0.075, [0, 0, 0], 20);
+  }
+  parts.tube(mats.rubber, [[0.22, 1.85, -0.51], [0.58, 1.84, -0.22], [0.57, 1.96, 0.42], [x, 2.04, 0.85]], 0.036, 26, 10);
+  parts.box(mats.armor, [0, 2.16, -0.65], [0.58, 0.87, 0.24], true);
+}
+
 export function createMarineModel(smartgunner = true) {
-  const mats = surfaces(smartgunner ? 0x65715f : 0x766d54), parts = new Assembly('colonial-marine');
+  const weaponKind = typeof smartgunner === 'string' ? smartgunner : smartgunner ? 'smartgunner' : 'flametrooper';
+  if (!['marine', 'smartgunner', 'flametrooper'].includes(weaponKind)) throw new RangeError('Unknown Marine weapon silhouette');
+  const mats = surfaces(weaponKind === 'smartgunner' ? 0x65715f : 0x766d54), parts = new Assembly('colonial-marine');
   addHumanTorso(parts, mats); addHumanLegs(parts, mats); addArms(parts, mats); addFace(parts, mats);
   // Fitted ballistic vest follows the chest profile; thin plates stay over the body.
   parts.add(loftGeometry([[1.74, 0.305, 0.235], [1.97, 0.31, 0.25], [2.2, 0.375, 0.275], [2.43, 0.43, 0.285], [2.62, 0.445, 0.26], [2.72, 0.4, 0.23]], { radial: 36, rows: 26, superellipse: 2.5 }), mats.armor);
@@ -181,8 +201,11 @@ export function createMarineModel(smartgunner = true) {
   parts.box(mats.armor, [0, 3.256, 0.148], [0.345, 0.022, 0.078], true, [-0.08, 0, 0]);
   parts.cylinder(mats.dark, [0.187, 3.18, -0.01], [0.045, 0.045], 0.04, [0, 0, Math.PI / 2], 24);
   parts.box(glow(0x9a594b), [0.13, 3.22, 0.19], [0.038, 0.018, 0.025], true);
-  addRifle(parts, mats, smartgunner);
+  if (weaponKind === 'flametrooper') addFlamethrower(parts, mats);
+  else addRifle(parts, mats, weaponKind === 'smartgunner');
   const group = parts.finish(); group.userData.anatomy = { headHeight: 0.46, standingHeight: 3.44, headsTall: 7.48 };
+  group.userData.weaponKind = weaponKind;
+  group.userData.visualFidelity1to1Verified = false;
   return group;
 }
 

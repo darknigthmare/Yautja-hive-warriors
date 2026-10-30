@@ -233,7 +233,8 @@ class GameApp {
 
   startBattleOperation(saved = null) {
     for (const gate of this.env.battlefieldLayout.gates) this.env.openGate(gate.id);
-    const {config}=createOperationScene({operationId:this.operationId,level:this.ui.selectedLevel,players:this.isCoOp?2:1,layout:this.env.battlefieldLayout,mapSeed:this.operationMapSeed,difficultyId:this.operationDifficulty});
+    const sceneOptions={operationId:this.operationId,level:this.ui.selectedLevel,players:this.isCoOp?2:1,layout:this.env.battlefieldLayout,mapSeed:this.operationMapSeed,difficultyId:this.operationDifficulty};
+    let {config}=createOperationScene(sceneOptions);
     this.campaignArcId=saved?.campaignArcId??(document.getElementById('campaign-arc-enabled').checked&&/^AFF-0[1-5]$/.test(this.operationId)?CLAN_CAMPAIGN_ARC_ID:null);
     this.campaignRunId=saved?.campaignRunId??this.missionRun;
     this.rewardSessionId=this.campaignRunId;
@@ -241,7 +242,16 @@ class GameApp {
     if(unsupported.length) throw new Error(`Profils sans acteur de combat : ${unsupported.join(', ')}`);
     const bridge=this.battleBridge=new BattleActorBridge(this);
     const callbacks={canObserve:(value,observer)=>this.env.hasLineOfSight(new THREE.Vector3(observer.position[0],(this.env.getElevationAt(observer.position[0],observer.position[1])??0)+1.5,observer.position[1]),new THREE.Vector3(value.position[0],(this.env.getElevationAt(value.position[0],value.position[1])??0)+1.5,value.position[1])),history:this.battleCampaign.historyFor(config,{arcId:this.campaignArcId}),spawnGroup:(group,units)=>bridge.spawnGroup(group,units),despawnGroup:(group,units)=>bridge.despawnGroup(group,units),announce:event=>this.handleBattleAnnouncement(event)};
-    this.battleSimulation=saved?BattleSimulation.fromState(config,saved.simulation,callbacks):new BattleSimulation(config,callbacks);
+    try {
+      this.battleSimulation=saved?BattleSimulation.fromState(config,saved.simulation,callbacks):new BattleSimulation(config,callbacks);
+    } catch (error) {
+      // Old checkpoints were signed against the generic roster. Never rewrite
+      // their identities, wounds or group types to force a new source preset.
+      if (!saved || !/^AFF-/.test(config.id) || !/save does not match this operation or has an invalid clock/.test(error.message)) throw error;
+      const compatible=createOperationScene({...sceneOptions,legacyRoster:true}).config;
+      this.battleSimulation=BattleSimulation.fromState(compatible,saved.simulation,callbacks);
+      config=compatible;
+    }
     this.battleBridge.bind(this.battleSimulation);
     this.allyRescue=new AllyRescueSystem({simulation:this.battleSimulation,actors:bridge.actors,players:()=>[this.player,this.player2].filter(Boolean),environment:this.env});
     this.allyRescue.bindManager(this.allies);

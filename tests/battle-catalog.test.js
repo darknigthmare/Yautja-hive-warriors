@@ -97,7 +97,13 @@ test('three independent camps preserve the exact per-species allocations in the 
   for (const [id, factions] of Object.entries(expected)) {
     const config = getBattleOperationConfig(id); assert.equal(config.factions.length, 3);
     for (const [faction, total] of Object.entries(factions)) assert.equal(config.budgets.byFaction[faction].total, total, `${id}/${faction}`);
-    assert.equal(config.relations.length, 3); assert.ok(config.relations.every(relation => relation.state === 'hostile' && relation.a !== relation.b));
+    assert.equal(config.relations.length, 3);
+    for (const relation of config.relations) {
+      const pair=[relation.a,relation.b].sort().join('|');
+      assert.notEqual(relation.a,relation.b);
+      assert.equal(relation.state,id==='AFF-13'&&pair==='hive|human_force'?'neutral':'hostile',
+        `${id}:${pair} must obey the source-scoped relations`);
+    }
   }
 });
 

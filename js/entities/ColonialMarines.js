@@ -193,8 +193,9 @@ export class ColonialMarinesManager {
   spawnBattleUnit(unit, group) {
     const existing = this.marines.find(actor => actor.battleUnitId === unit.id); if (existing) return existing;
     if (!['marine','human','smartgunner','flametrooper'].includes(unit.actorType)) throw new RangeError(`Unsupported detailed human profile: ${unit.actorType}`);
-    const heavy = unit.actorType === 'flametrooper';
-    const actor = { mesh: this.createMarineMesh(!heavy), type: heavy ? 'flametrooper' : 'smartgunner', damage: heavy ? 35 : 20, speed: 8,
+    const weaponKind = ['flametrooper', 'smartgunner'].includes(unit.actorType) ? unit.actorType : 'marine';
+    const actor = { mesh: this.createMarineMesh(weaponKind), type: weaponKind,
+      damage: weaponKind === 'flametrooper' ? 35 : 20, speed: 8,
       radius: .8, shootCooldown: 1.5, grenadeCooldown: 7 };
     this.marines.push(applyBattleUnit(this, actor, unit, group)); return actor;
   }
