@@ -99,6 +99,14 @@ export class BattleActorBridge {
     }
     const unavailableGroups = new Set();
     for (const [unitId, { actor, manager, groupId }] of this.actors) {
+      // A persistent death may be owned by a non-rendered system (incubation,
+      // campaign consequence, environmental effect). Never resurrect that ID
+      // from a stale still-alive mesh or mark its whole group unavailable.
+      if (this.simulation.units.get(unitId)?.state === 'dead') {
+        manager.despawnBattleUnit?.(unitId);
+        this.actors.delete(unitId);
+        continue;
+      }
       if(!actor.isFlying&&!actor.isLeaping&&!actor._terrainFall)actor.mesh.position.y=this.game.env.getElevationAt?.(actor.mesh.position.x,actor.mesh.position.z,actor.mesh.position.y)??actor.mesh.position.y;
       const present = manager === this.game.bosses ? manager.activeBoss === actor : manager[this.arrayKeys.get(manager)]?.includes(actor);
       if (!present && actor.hp > 0) {

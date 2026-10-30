@@ -42,6 +42,7 @@ jobs:
           node --test --test-concurrency=1 \
             tests/hive-node-ecology.test.js \
             tests/hive-node-remote-combat.test.js \
+            tests/host-infestation.test.js \
             tests/source-specialist-combat.test.js \
             tests/source-actor-presentation.test.js \
             tests/source-battle-roster.test.js \

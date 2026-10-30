@@ -1117,9 +1117,14 @@ export class XenomorphHorde {
         const granted = this._requestAttack(a, targetPlayer, { windup: a.type === 'facehugger' ? 1 : 0.7, recovery: 1.6 });
         if (!granted) return;
         if (a.type === 'facehugger' && this._canParasitize(targetPlayer) && !targetPlayer.isFacehuggerLatched) {
-          targetPlayer.triggerFacehuggerLatch();
-          a.isLatched = true;
-          disposeObject(a.mesh, this.sharedResources);
+          // The battle simulation may refuse the implantation (armor, faction,
+          // already infected or distance). Never consume a finite Facehugger
+          // or detach its mesh when the target rejects the attempt.
+          const accepted = targetPlayer.triggerFacehuggerLatch();
+          if (accepted !== false) {
+            a.isLatched = true;
+            disposeObject(a.mesh, this.sharedResources);
+          }
         } else {
           if (targetPlayer.isSupport) targetPlayer.takeDamage(a.damage, a);
           else targetPlayer.takeDamage(a.damage, false, a, { attackKind: 'melee', blockable: !['crusher','rogue_king','gestating_matriarch','deacon_titan'].includes(a.type), parryable: ['warrior','runner','spitter','red_warrior','grid_alien','officer'].includes(a.type) }); a.revealTimer = 2;

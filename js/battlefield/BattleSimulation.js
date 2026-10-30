@@ -3,6 +3,7 @@
  * This is a game simulation, not a claim about canonical army organization. */
 
 import { BattleIntel } from './BattleIntel.js';
+import { infectHost, completeHostInfections, validateHostInfestation } from './HostInfestation.js';
 import { createHiveEcology, awardHiveInfestation, buildHiveNode, healHiveSpace,
   damageHiveNode as damageEcologyNode, snapshotHiveEcology, restoreHiveEcology } from './HiveNodeEcology.js';
 import { sourceUnitVisualKind } from '../data/SourceActorPresentation.js';
@@ -501,6 +502,16 @@ export class BattleSimulation {
     return true;
   }
 
+  /** One allocated Facehugger can immobilize one susceptible allocated host.
+   * The parasite is consumed in the existing death ledger, not respawned. */
+  beginHostInfestation(facehuggerId, hostId) {
+    return infectHost(this, facehuggerId, hostId);
+  }
+
+  _hostInfestationStep() {
+    return completeHostInfections(this);
+  }
+
   /** Medical charges live on the finite strategic identity, not its renderer.
    * A healer cannot revive dead/downed soldiers, cure synthetic circuitry,
    * heal across a distant front or restock by leaving camera range. */
@@ -579,7 +590,8 @@ export class BattleSimulation {
   recordDeath(event = {}) {
     const unit = this.units.get(event.entityId ?? event.unitId);
     if (!unit || this.disposed || this.result || this.deaths.has(unit.id) || ['evacuated', 'captured'].includes(unit.state)) return false;
-    unit.hp = 0; unit.state = 'dead'; unit.incapacitated = false; delete unit.encounterState;
+    unit.hp = 0; unit.state = 'dead'; unit.incapacitated = false;
+    delete unit.encounterState; delete unit.infection;
     const killerFaction = this.factions.has(event.killerFaction) ? event.killerFaction : null;
     const death = { entityId: unit.id, groupId: unit.groupId, factionId: unit.factionId, killerFaction,
       cause: typeof event.cause === 'string' ? event.cause.slice(0, 80) : 'combat', time: this.time, officer: unit.officer, uniqueId: unit.uniqueId };
@@ -971,7 +983,7 @@ export class BattleSimulation {
     while (this.accumulator + EPSILON >= this.step && !this.result) {
       this.accumulator = Math.max(0, this.accumulator - this.step); this.time += this.step; this.tick++;
       for (const group of this.groups.values()) updateFormation(group, this.step, this.time, { officerAlive: !!group.officerId && combatReady(this.units.get(group.officerId)) });
-      this._moveGroups(this.step); this._detailStep(); this._remoteCombat(); this._hiveNodeStep(this.step); this._captureStep(this.step); this._reinforcements(); this._reconstitutionStep(this.step); this._moraleStep(this.step); this._strategicOrders(); this._objectives(); this.intel.update();
+      this._moveGroups(this.step); this._detailStep(); this._remoteCombat(); this._hostInfestationStep(); this._hiveNodeStep(this.step); this._captureStep(this.step); this._reinforcements(); this._reconstitutionStep(this.step); this._moraleStep(this.step); this._strategicOrders(); this._objectives(); this.intel.update();
     }
     return true;
   }
@@ -1092,6 +1104,8 @@ export class BattleSimulation {
       try { restoreSpecialistStocks(unit, original); }
       catch { fail('invalid saved specialist stock'); }
       unit.incapacitated ??= false;
+      try { validateHostInfestation(unit, simulation.units, units, saved.time); }
+      catch { fail('invalid saved host infestation'); }
       if (typeof unit.incapacitated !== 'boolean' || unit.incapacitated && (!alive(unit) || !['active', 'distant'].includes(unit.state))) fail('invalid saved incapacitation');
       for (const key of ['profileId', 'factionId', 'groupId', 'maxHp', 'uniqueId', 'officer', 'species', 'role', 'actorType', 'profileName', 'sourceBossId', 'sourceBossType', 'visualFidelity1to1Verified']) if (unit[key] !== original[key]) fail('save rewrites an allocated identity');
       // Remote specialist attacks may have a longer, source-scoped recovery
