@@ -156,16 +156,28 @@ test('a real successful sentry reload still consumes E once and leaves a nearby 
   }finally{fixture.dispose();}
 });
 
+test('planetary barrage blocks a protected or unavailable honor ledger before any cost or effect',()=>{
+  const game=supportGame();
+  let checked=0;
+  game.forge={
+    ensureHonorReady(){checked++;return false;},
+    getBalance(){throw new Error('must never read funds while ledger is protected');},
+    honorLedger:{spend(){throw new Error('must never spend protected honor');}}
+  };
+  assert.equal(game.callPlanetaryOrbitalBarrage(),false);
+  assert.equal(checked,1);
+});
+
 test('planetary barrage refuses a real roof or unknown context before spending any honor',()=>{
   const game=supportGame();game.initializeMissionSupports();let spent=0,hit=0;
-  Object.assign(game,{player:{position:new THREE.Vector3()},forge:{getBalance:()=>8000,honorLedger:{spend(){spent++;return true;}}},horde:{aliens:[],checkMeleeHits(){hit++;return[];}},bosses:{activeBoss:null}});
+  Object.assign(game,{player:{position:new THREE.Vector3()},forge:{ensureHonorReady:()=>true,getBalance:()=>8000,honorLedger:{spend(){spent++;return true;}}},horde:{aliens:[],checkMeleeHits(){hit++;return[];}},bosses:{activeBoss:null}});
   game.env.colliders.push({x:0,z:0,halfWidth:10,halfDepth:10,baseY:5,height:.5});assert.equal(game.callPlanetaryOrbitalBarrage(),false);assert.equal(spent,0);assert.equal(hit,0);
   game.env.colliders=[];game.missionSupportContext=null;assert.equal(game.callPlanetaryOrbitalBarrage(),false);assert.equal(spent,0);assert.equal(hit,0);
 });
 
 test('planetary barrage spends once for open footprints and excludes a covered boss and a distant boss from direct damage',()=>{
   const game=supportGame();game.initializeMissionSupports();let spent=0,bossHits=0,explosions=0;const boss={hp:5000,mesh:new THREE.Group()};boss.mesh.position.set(11,0,0);
-  Object.assign(game,{player:{position:new THREE.Vector3()},forge:{getBalance:()=>8000,honorLedger:{spend(){spent++;return true;}}},horde:{aliens:[],eggs:[],chestbursters:[],checkMeleeHits(){return[];}},bosses:{activeBoss:boss,takeDamage(){bossHits++;}},synthetics:{androids:[]},particles:{emitExplosion(){explosions++;}},_supportTransaction:0,refreshMothershipBridgeUI(){},closeTacticalModal(){},triggerCameraShake(){}});
+  Object.assign(game,{player:{position:new THREE.Vector3()},forge:{ensureHonorReady:()=>true,getBalance:()=>8000,honorLedger:{spend(){spent++;return true;}}},horde:{aliens:[],eggs:[],chestbursters:[],checkMeleeHits(){return[];}},bosses:{activeBoss:boss,takeDamage(){bossHits++;}},synthetics:{androids:[]},particles:{emitExplosion(){explosions++;}},_supportTransaction:0,refreshMothershipBridgeUI(){},closeTacticalModal(){},triggerCameraShake(){}});
   game.env.colliders.push({x:11,z:0,halfWidth:1,halfDepth:1,baseY:5,height:.5});assert.equal(game.callPlanetaryOrbitalBarrage(),true);assert.equal(spent,1);assert.equal(bossHits,0);assert.equal(explosions,8);
   game.env.colliders=[];boss.mesh.position.set(0,0,90);assert.equal(game.callPlanetaryOrbitalBarrage(),true);assert.equal(spent,2);assert.equal(bossHits,0);
 });
