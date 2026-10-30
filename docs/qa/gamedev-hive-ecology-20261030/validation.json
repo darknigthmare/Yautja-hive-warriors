@@ -1,0 +1,105 @@
+{
+  "artifact": "Yautja Hive Warriors — finite Hive Node ecology",
+  "generatedAtDate": "2026-10-30",
+  "parentCommit": "da572ab22e3a089c7b9525ebbdaa2ae3abd9cafd",
+  "gameOperation": "AFF-27",
+  "scope": "source-scoped game adaptation; no 1:1 asset certification",
+  "referenceSources": [
+    {
+      "title": "GameSpot AVP Extinction review",
+      "url": "https://www.gamespot.com/reviews/aliens-versus-predator-extinction-review/1900-6072952/"
+    },
+    {
+      "title": "StrategyWiki Extinction walkthrough",
+      "url": "https://strategywiki.org/wiki/Aliens_versus_Predator%3A_Extinction/Walkthrough"
+    },
+    {
+      "title": "Xenopedia Extinction bestiary",
+      "url": "https://avp.fandom.com/wiki/Aliens_versus_Predator%3A_Extinction_Bestiary"
+    }
+  ],
+  "gameplayParameters": {
+    "killCredit": 1,
+    "nodeCost": 3,
+    "bankCap": 12,
+    "maxNodesPerFaction": 3,
+    "oneBuildPerDrone": true,
+    "nodeHP": 280,
+    "healRadius": 11,
+    "healPerSecond": 8,
+    "minNodeSpacing": 16
+  },
+  "changes": {
+    "sourceFile": "js/battlefield/HiveNodeEcology.js",
+    "worldFile": "js/battlefield/HiveNodeWorld.js",
+    "simulation": "js/battlefield/BattleSimulation.js",
+    "targeting": "js/engine/BattleActorSupport.js; js/battlefield/BattleActorBridge.js",
+    "gameWiring": "js/main.js; js/battlefield/BattleOperationLifecycle.js",
+    "tests": "tests/hive-node-ecology.test.js"
+  },
+  "validation": {
+    "isolatedJsParser": {
+      "passed": 8,
+      "failed": 0,
+      "method": "V8 new Function after removing ES module imports and exports"
+    },
+    "operationCatalogConfigurations": {
+      "generated": 27,
+      "total": 27,
+      "failed": 0,
+      "method": "Real BattleCatalog & OperationObjectiveSpecs evaluated as JS functions"
+    },
+    "battleSimulationInstances": {
+      "constructed": 27,
+      "total": 27,
+      "failed": 0,
+      "method": "Real BattleSimulation, FormationTactics, BattleIntel and BattleStrategy; BossEncounterValidation not exercised; dependencies dynamically wired"
+    },
+    "AFF27": {
+      "units": 952,
+      "groups": 122,
+      "distantDronesAvailable": 65,
+      "confirmedHostileKills": 3,
+      "hiveNodesBuilt": 1,
+      "saveResumeNodes": 1,
+      "legacyCheckpointNodes": 0,
+      "tamperedBankRejected": true,
+      "conservation": true
+    },
+    "pureHiveEcology": {
+      "fakeSaveMutationsRejected": 9,
+      "nodesConstructedWith12ConfirmedKills": 4,
+      "maxConcurrentNodes": 3,
+      "noUnitCreation": true,
+      "noRefundAfterDestruction": true,
+      "allScenariosPassed": true
+    },
+    "projectedWorld": {
+      "mode": "Three-compatible geometry/vector mocks; no WebGL",
+      "targetFactionBinding": true,
+      "physicalMeleeDamage": true,
+      "blockedWall": true,
+      "repeatHitIgnored": true,
+      "destruction": true,
+      "dispose": true,
+      "passed": true
+    },
+    "nodeIntegrationTests": {
+      "authored": 7,
+      "executed": 0
+    },
+    "fullNpmCi": false,
+    "fullViteBuild": false,
+    "fullBrowserWebGL": false,
+    "realGPUPerformance": false,
+    "visualFidelity1to1Verified": false
+  },
+  "omissions": [
+    "Host transport and infection/Facehugger reproduction not implemented",
+    "Alien brood does not grow from hive nodes",
+    "Hive Node route-blocking collisions not implemented",
+    "Remote offscreen attacks on nodes not implemented",
+    "Visual geometry is original procedural study, not measured licensed mesh",
+    "Source game joystick action replaced by NPC autonomous node placement"
+  ]
+}

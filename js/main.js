@@ -29,6 +29,7 @@ import { OperationObjectives } from './battlefield/OperationObjectives.js';
 import { createOperationScene } from './battlefield/OperationScene.js';
 import { OperationBriefing } from './ui/OperationBriefing.js';
 import { OperationWorld } from './battlefield/OperationWorld.js';
+import { HiveNodeWorld } from './battlefield/HiveNodeWorld.js';
 import { mountSourceCatalogue } from './ui/SourceCatalogue.js';
 import { CommandMap, battleCommandFeedback } from './ui/CommandMap.js';
 import { OperationPanel } from './ui/OperationPanel.js';
@@ -146,6 +147,7 @@ class GameApp {
     this.battleBridge = null;
     this.operationObjectives = null;
     this.operationWorld = null;
+    this.hiveNodeWorld = null;
     this.commandMap = new CommandMap({preferences:()=>this.ui.presentationPreferences.get(),onClose:()=>this.closeTacticalModal('command-map-modal'),onCommand:command=>this.dispatchBattleCommand(command)});
     this.operationBriefing = new OperationBriefing(document.getElementById('loadout-prep-screen'));
     this.operationPanel = new OperationPanel({ onOrder: (id, order) => this.issueBattleOrder(id, order), onAction: (type, frontId) => this.battleAction(type, frontId), onCheckpoint: () => this.saveOperation(), onMap: () => this.openCommandMap() });
@@ -241,7 +243,7 @@ class GameApp {
     const unsupported=BattleActorBridge.unsupportedProfiles(config);
     if(unsupported.length) throw new Error(`Profils sans acteur de combat : ${unsupported.join(', ')}`);
     const bridge=this.battleBridge=new BattleActorBridge(this);
-    const callbacks={canObserve:(value,observer)=>this.env.hasLineOfSight(new THREE.Vector3(observer.position[0],(this.env.getElevationAt(observer.position[0],observer.position[1])??0)+1.5,observer.position[1]),new THREE.Vector3(value.position[0],(this.env.getElevationAt(value.position[0],value.position[1])??0)+1.5,value.position[1])),history:this.battleCampaign.historyFor(config,{arcId:this.campaignArcId}),spawnGroup:(group,units)=>bridge.spawnGroup(group,units),despawnGroup:(group,units)=>bridge.despawnGroup(group,units),announce:event=>this.handleBattleAnnouncement(event)};
+    const callbacks={canObserve:(value,observer)=>this.env.hasLineOfSight(new THREE.Vector3(observer.position[0],(this.env.getElevationAt(observer.position[0],observer.position[1])??0)+1.5,observer.position[1]),new THREE.Vector3(value.position[0],(this.env.getElevationAt(value.position[0],value.position[1])??0)+1.5,value.position[1])),history:this.battleCampaign.historyFor(config,{arcId:this.campaignArcId}),spawnGroup:(group,units)=>bridge.spawnGroup(group,units),despawnGroup:(group,units)=>bridge.despawnGroup(group,units),healBattleUnit:(id,hp)=>{const actor=bridge.actors.get(id)?.actor;if(actor?.hp>0)actor.hp=Math.min(actor.maxHp??hp,hp);},announce:event=>this.handleBattleAnnouncement(event)};
     try {
       this.battleSimulation=saved?BattleSimulation.fromState(config,saved.simulation,callbacks):new BattleSimulation(config,callbacks);
     } catch (error) {
@@ -253,6 +255,10 @@ class GameApp {
       config=compatible;
     }
     this.battleBridge.bind(this.battleSimulation);
+    if (config.id === 'AFF-27') {
+      this.hiveNodeWorld = new HiveNodeWorld(this.renderer.scene, this.env, this.battleSimulation);
+      this.hiveNodeWorld.update();
+    }
     this.allyRescue=new AllyRescueSystem({simulation:this.battleSimulation,actors:bridge.actors,players:()=>[this.player,this.player2].filter(Boolean),environment:this.env});
     this.allyRescue.bindManager(this.allies);
     if(saved?.rescue)this.allyRescue.restore(saved.rescue);
@@ -291,6 +297,7 @@ class GameApp {
     if(!this.battleSimulation)return;
     const players=[this.player,this.player2].filter(Boolean).map((player,index)=>({id:index?'player2':'player1',position:[player.position.x,player.position.z],hp:player.hp}));
     this.battleBridge.sync();this.battleSimulation.update(delta,{players,paused:false});
+    this.hiveNodeWorld?.update();
     this.allyRescue?.update(delta);
     this.bossPhasePressure?.update(delta);
     this.companionLoadouts?.update(delta);

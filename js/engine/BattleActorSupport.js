@@ -119,6 +119,17 @@ export function selectBattleTarget(manager, actor, fallbacks = [], others = []) 
 
 const targetViews = new WeakMap();
 function targetView(actor, attacker) {
+  // Node proxies have no soldier identity and require the actual attacker
+  // faction for damage policy. A bare target would silently attribute NPC
+  // fire to the player clan or reject it because the source is unknown.
+  if (actor?.isHiveNodeProxy && actor.position?.isVector3) return {
+    isBattleNPC: true, isHiveNodeProxy: true, actor, factionId: actor.factionId,
+    get position() { return actor.position; },
+    get mesh() { return actor.mesh; },
+    get hp() { return actor.hp; },
+    get radius() { return actor.radius; },
+    takeDamage(amount) { return actor.takeDamage(amount, attacker?.factionId ?? null); }
+  };
   if (typeof actor.takeDamage === 'function' && actor.position?.isVector3) return actor;
   // Each source keeps its live coordination and credit context. A faction-wide
   // view captured the first attacker, and a strong per-actor Map would retain

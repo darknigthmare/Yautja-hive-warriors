@@ -3,6 +3,8 @@
  * This is a game simulation, not a claim about canonical army organization. */
 
 import { BattleIntel } from './BattleIntel.js';
+import { createHiveEcology, awardHiveInfestation, buildHiveNode, healHiveSpace,
+  damageHiveNode as damageEcologyNode, snapshotHiveEcology, restoreHiveEcology } from './HiveNodeEcology.js';
 import { sourceUnitVisualKind } from '../data/SourceActorPresentation.js';
 import { initialSpecialistStocks, restoreSpecialistStocks, sourceSpecialistRole, SPECIALIST_ATTACKS } from '../data/SourceSpecialistCombat.js';
 import { measureDefeatReturn } from './BattleStrategy.js';
@@ -81,6 +83,9 @@ export class BattleSimulation {
         killerFaction: null, cause: 'prior_operation', time: 0, officer: unit.officer, uniqueId, inherited: true });
     }
     for (const group of this.groups.values()) if (this.factions.get(group.factionId).moraleModel === 'hive' && this.units.get(group.officerId)?.state === 'dead') group.coordinationStrength = .65;
+    // Pure objective-side ecology; nodes are not battle units and cannot alter
+    // the signed strategic roster. Older saves have no ecology and recover empty.
+    this.hiveEcology = createHiveEcology(this.config.id, [...this.factions.values()]);
     this.intel = new BattleIntel(this, this.config.intelligence);
   }
 
@@ -579,11 +584,43 @@ export class BattleSimulation {
     const death = { entityId: unit.id, groupId: unit.groupId, factionId: unit.factionId, killerFaction,
       cause: typeof event.cause === 'string' ? event.cause.slice(0, 80) : 'combat', time: this.time, officer: unit.officer, uniqueId: unit.uniqueId };
     this.deaths.set(unit.id, death); this._emit('unit_died', death, unit.officer ? 3 : 0);
+    if (awardHiveInfestation(this.hiveEcology, killerFaction, unit.factionId,
+      killerFaction && this.areHostile(killerFaction, unit.factionId))) {
+      this._emit('hive_infestation_gained', { factionId: killerFaction, sourceUnitId: unit.id }, 0);
+    }
     const group = this.groups.get(unit.groupId), faction = this.factions.get(unit.factionId);
     if (faction.moraleModel !== 'hive') this._changeMorale(group, unit.officer ? -25 : -2, unit.officer ? 'officer_lost' : 'casualty');
     else if (unit.officer) { group.coordinationStrength = .65; this._emit('hive_coordination_disrupted', { factionId: unit.factionId, frontId: group.frontId, groupId: group.id, coordinationStrength: .65, reason: 'allocated_controller_lost' }, 2); }
     if (unit.officer) for (const neighbour of this.groups.values()) if (neighbour.id !== group.id && neighbour.factionId === unit.factionId && neighbour.frontId === group.frontId && faction.moraleModel !== 'hive') this._changeMorale(neighbour, -8, 'nearby_officer_lost');
     return true;
+  }
+
+  /** Hive nodes belong to the strategic simulation, even if their meshes
+   * disappear. A damaged/destroyed node never returns its spent infestation. */
+  damageHiveNode(nodeId, damage, sourceFaction) {
+    if (this.disposed || this.paused || this.result || !this.factions.has(sourceFaction)) return null;
+    const node = this.hiveEcology.nodes.find(item => item.id === nodeId);
+    if (!node) return null;
+    const result = damageEcologyNode(this.hiveEcology, nodeId, damage,
+      this.areHostile(sourceFaction, node.factionId));
+    if (result?.destroyed) this._emit('hive_node_destroyed', {
+      nodeId, factionId: node.factionId, killerFaction: sourceFaction
+    }, 2);
+    return result;
+  }
+
+  getHiveNodeState() { return snapshotHiveEcology(this.hiveEcology); }
+
+  _hiveNodeStep(dt) {
+    if (!this.hiveEcology.banks.length) return;
+    const created = buildHiveNode(this.hiveEcology, this.units.values(), this.time);
+    if (created) this._emit('hive_node_constructed', {
+      nodeId: created.id, builderId: created.builderId, factionId: created.factionId
+    }, 2);
+    healHiveSpace(this.hiveEcology, this.units.values(), dt, info => {
+      // Detailed actors and distant state must see the same current HP.
+      this.callbacks.healBattleUnit?.(info.unitId, info.hp);
+    });
   }
 
   _changeMorale(group, amount, reason) {
@@ -909,7 +946,7 @@ export class BattleSimulation {
     while (this.accumulator + EPSILON >= this.step && !this.result) {
       this.accumulator = Math.max(0, this.accumulator - this.step); this.time += this.step; this.tick++;
       for (const group of this.groups.values()) updateFormation(group, this.step, this.time, { officerAlive: !!group.officerId && combatReady(this.units.get(group.officerId)) });
-      this._moveGroups(this.step); this._detailStep(); this._remoteCombat(); this._captureStep(this.step); this._reinforcements(); this._reconstitutionStep(this.step); this._moraleStep(this.step); this._strategicOrders(); this._objectives(); this.intel.update();
+      this._moveGroups(this.step); this._detailStep(); this._remoteCombat(); this._hiveNodeStep(this.step); this._captureStep(this.step); this._reinforcements(); this._reconstitutionStep(this.step); this._moraleStep(this.step); this._strategicOrders(); this._objectives(); this.intel.update();
     }
     return true;
   }
@@ -1003,7 +1040,7 @@ export class BattleSimulation {
       fronts: [...this.fronts.values()].map(clone), routes: [...this.routes.values()].map(clone), relations: [...this.relations],
       deaths: [...this.deaths.values()].map(clone), events: this.events.map(clone), eventsDropped: this.eventsDropped, eventSequence: this.eventSequence,
       pendingArrivals: this.pendingArrivals.map(clone), nextReinforcement: [...this.nextReinforcement], objectiveKeys: [...this.objectiveKeys],
-      intelligence: this.intel.serialize(), defeatSince: this.defeatSince, criticalLosses: [...this.criticalLosses.values()].map(clone), routeRevision: this.routeRevision, nextStrategicOrder: this.nextStrategicOrder, tacticCooldowns: [...this.tacticCooldowns], result: this.result ? clone(this.result) : null };
+      intelligence: this.intel.serialize(), hiveEcology: this.getHiveNodeState(), defeatSince: this.defeatSince, criticalLosses: [...this.criticalLosses.values()].map(clone), routeRevision: this.routeRevision, nextStrategicOrder: this.nextStrategicOrder, tacticCooldowns: [...this.tacticCooldowns], result: this.result ? clone(this.result) : null };
   }
 
   static fromState(configuration, saved, callbacks = {}) {
@@ -1101,6 +1138,8 @@ export class BattleSimulation {
     simulation.nextStrategicOrder = saved.nextStrategicOrder; simulation.tacticCooldowns = new Map(saved.tacticCooldowns);
     simulation.time = saved.time; simulation.tick = saved.tick; simulation.accumulator = saved.accumulator;
     if (saved.intelligence) simulation.intel.restore(saved.intelligence);
+    simulation.hiveEcology = restoreHiveEcology(simulation.hiveEcology,
+      saved.hiveEcology, simulation.units, saved.time, simulation.deaths);
     simulation.assertConservation(); return simulation;
   }
 

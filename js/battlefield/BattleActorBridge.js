@@ -1,5 +1,6 @@
 import { applyBattleFormationHit } from '../engine/BattleActorSupport.js';
 import { recordCombatDeath } from '../engine/CombatEvents.js';
+import { sourceUnitVisualKind } from '../data/SourceActorPresentation.js';
 const ACTOR_TYPES = {
   xenomorph: new Set(['warrior', 'runner', 'spitter', 'boiler', 'neomorph', 'praetomorph', 'red_warrior', 'facehugger', 'officer', 'crusher', 'praetorian', 'grid_alien', 'cyber_xeno', 'cryo_xeno', 'xenomorph', 'queen']),
   human: new Set(['marine', 'human', 'smartgunner', 'flametrooper']),
@@ -28,7 +29,7 @@ export class BattleActorBridge {
   bind(simulation) {
     if (this.simulation || this.disposed) throw new Error('A battle projection can be bound only once');
     this.simulation = simulation;
-    const provider = () => [...new Set([this.game.player, this.game.player2, ...(this.game.horde.getActiveCombatants?.() ?? []), ...(this.game.operationWorld?.combatants ?? []), ...(this.game.getSupportCombatants?.()??[]), ...this.actors.values()].map(item => item?.actor ?? item).filter(Boolean))];
+    const provider = () => [...new Set([this.game.player, this.game.player2, ...(this.game.horde.getActiveCombatants?.() ?? []), ...(this.game.operationWorld?.combatants ?? []), ...(this.game.hiveNodeWorld?.combatants ?? []), ...(this.game.getSupportCombatants?.()??[]), ...this.actors.values()].map(item => item?.actor ?? item).filter(Boolean))];
     for (const manager of new Set(Object.values(this.managers))) {
       this.previous.set(manager, { battleSimulation: manager.battleSimulation, provider: manager.combatActorsProvider, director: manager.combatDirector, environment: manager.environment });
       manager.battleSimulation = simulation;manager.environment=this.game.env;
@@ -53,7 +54,9 @@ export class BattleActorBridge {
         if (!manager?.spawnBattleUnit) throw new Error(`No detailed combat manager for ${unit.species ?? group.species}`);
         const actor = manager.spawnBattleUnit(unit, group);
         if (!actor?.mesh || actor.battleUnitId !== unit.id) throw new Error('The combat manager did not preserve its allocated identity');
-        actor.profileName = unit.profileName ?? actor.profileName;
+        actor.profileName = sourceUnitVisualKind(unit) === 'drone'
+          ? 'Drone — constructeur de nodules (modèle procédural)'
+          : unit.profileName ?? actor.profileName;
         const entry = { actor, manager, groupId: group.id, unitId: unit.id };
         this.actors.set(unit.id, entry); added.push(entry);
         this.game.env.resolveMovement(actor.mesh.position, actor.radius ?? 1);
@@ -135,6 +138,7 @@ export class BattleActorBridge {
       const killed = actor.hp <= 0;
       hits.push({ pos: actor.mesh.position.clone(), damage: dealt, killed, event, isOfficer: actor.isOfficer === true });
     }
+    hits.push(...(this.game.hiveNodeWorld?.hitWithAttack(attack, faction) ?? []));
     return hits;
   }
 
