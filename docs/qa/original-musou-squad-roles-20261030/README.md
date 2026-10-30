@@ -139,3 +139,63 @@ L'identité du jeu reste **Musou en 3D**,
 et les spécificités des œuvres restent
 des contenus à transposer, jamais
 la boucle de gameplay d'un RTS.
+
+## Passe graphique complémentaire — accessoires originaux
+
+`js/graphics/OriginalMusouFieldGear.js`
+ajoute des **géométries Three.js réelles** aux
+acteurs humains des cinq opérations, selon
+leur poste d'escouade déjà résolu :
+
+- AFF-06/07 : gilet/harnais et bandeau de casque
+  d'une sécurité contemporaine originale,
+  pour distinguer visuellement le contexte
+  du port et de l'industrie des Marines
+  coloniaux futuristes ;
+- spécialistes de capture : outil de
+  contention et accessoires de terrain ;
+- radio et chefs : sac, antenne, microphone,
+  marqueurs de commandement ;
+- sapeurs / techniciens : équipements de
+  maintenance et terminal de poignet ;
+- observateurs : jumelles/système optique ;
+- appui/smartgunner : réserve de munitions ;
+- sûreté orbitale : **prototype de bouclier**
+  porté, sans simulation de blocage ;
+- agent de liaison : sacoche de mission.
+
+Chaque accessoire :
+- est enfant du **maillage existant** ;
+- ne crée aucune unité ni source de dégât ;
+- ne modifie ni `BattleSimulation`,
+  `configDigest`, `actorType`, PV ou
+  comportement du soldat ;
+- n'est installé qu'une fois sur l'acteur,
+  même après une tentative répétée ;
+- est libéré lorsque le modèle propriétaire
+  disparaît ;
+- conserve `visualFidelity1to1Verified:false`
+  et `operationalAbilityImplemented:false`.
+
+Les figurines Yautja ne reçoivent pas
+automatiquement d'accessoires humains :
+leurs armes, masques, armures et peaux doivent
+rester rattachés à leur source et à leurs
+futurs GLB/PNG distincts, sans doublons.
+
+Quatre tests dans
+`tests/original-musou-field-gear.test.js`
+vérifient les silhouettes de capture/radio,
+le bouclier orbital, les exclusions
+d'espèce/continuité, et l'installation dans
+`BattleActorBridge` en utilisant de vrais
+`THREE.Group`. Leur réussite CI doit encore
+être confirmée sur le commit de publication.
+
+**Limite :** l'équipement est un habillage
+procédural de la base de Marine actuelle ;
+le remplacement complet de la coupe USCM
+par un modèle contemporain anatomiquement
+cohérent pour AFF-06/07 reste à faire.
+La présente passe ne fournit aucun
+asset officiel 1:1.

@@ -45,6 +45,7 @@ jobs:
             tests/hive-spore-sight.test.js \
             tests/musou-battle-flow.test.js \
             tests/original-musou-squad-roles.test.js \
+            tests/original-musou-field-gear.test.js \
             tests/hive-node-remote-combat.test.js \
             tests/host-infestation.test.js \
             tests/source-specialist-combat.test.js \

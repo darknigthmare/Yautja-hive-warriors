@@ -2,6 +2,7 @@ import { applyBattleFormationHit } from '../engine/BattleActorSupport.js';
 import { recordCombatDeath } from '../engine/CombatEvents.js';
 import { sourceUnitVisualKind } from '../data/SourceActorPresentation.js';
 import { originalMusouSquadRole } from '../data/OriginalMusouSquadRoles.js';
+import { attachOriginalMusouFieldGear } from '../graphics/OriginalMusouFieldGear.js';
 const ACTOR_TYPES = {
   xenomorph: new Set(['warrior', 'runner', 'spitter', 'boiler', 'neomorph', 'praetomorph', 'red_warrior', 'facehugger', 'officer', 'crusher', 'praetorian', 'grid_alien', 'cyber_xeno', 'cryo_xeno', 'xenomorph', 'queen']),
   human: new Set(['marine', 'human', 'smartgunner', 'flametrooper']),
@@ -62,6 +63,7 @@ export class BattleActorBridge {
         if (sourceSlot) {
           actor.originalMusouRole = sourceSlot; // No change to actorType or combat stats.
           if(actor.mesh.userData)actor.mesh.userData.originalMusouRole = sourceSlot.role;
+          if(sourceSlot.species==='human')attachOriginalMusouFieldGear(actor.mesh,sourceSlot);
         }
         const entry = { actor, manager, groupId: group.id, unitId: unit.id };
         this.actors.set(unit.id, entry); added.push(entry);
