@@ -629,7 +629,7 @@ export class BattleSimulation {
   }
 
   _remoteCombat() {
-    const pending = new Map(), frontGroups = this._groupsByFront();
+    const pending = new Map(), pendingNodes = new Map(), frontGroups = this._groupsByFront();
     const coordination = new Map([...this.factions.values()].map(faction => [faction.id, faction.moraleModel === 'hive' && !this._sourcesFor(faction.id).length ? .65 : 1]));
     this.targetingCounters = { groupVisits: this.groups.size, attackerVisits: 0, targetCandidateEntries: 0, attacksResolved: 0 };
     for (const front of this.fronts.values()) {
@@ -646,13 +646,27 @@ export class BattleSimulation {
       }
       for (const [factionId, attackers] of byFaction) {
         const targets = [...byFaction].filter(([targetFaction]) => this.areHostile(factionId, targetFaction)).flatMap(([, units]) => units);
-        this.targetingCounters.targetCandidateEntries += targets.length;
-        if (!targets.length) continue;
+        // Nodes are valid strategic targets only after the local hostile
+        // soldiers have been cleared. This keeps each existing shooter on
+        // ONE attack budget per tick (soldier OR structure, never both).
+        // An offscreen node may still be defended by active physical actors.
+        const nodes = !targets.length ? this.hiveEcology.nodes.filter(node =>
+          this.areHostile(factionId, node.factionId) &&
+          dist(node.position, front.position) <= front.radius) : [];
+        this.targetingCounters.targetCandidateEntries += targets.length + nodes.length;
+        if (!targets.length && !nodes.length) continue;
         for (const attacker of attackers) {
           this.targetingCounters.attackerVisits++;
           if (!combatReady(attacker)) continue;
           const profile = this.profiles.get(attacker.profileId), group = this.groups.get(attacker.groupId), faction = this.factions.get(factionId);
           if (group.reconstitution?.required || ['retreat', 'regroup'].includes(group.order.type) || attacker.nextAttack > this.time + EPSILON || profile.damage <= 0) continue;
+          const nodeTarget = targets.length ? null : nodes
+            .filter(node => (pendingNodes.get(node.id)?.attackers ?? 0) < 4 &&
+              dist(attacker.position, node.position) <= Math.min(24,
+              SPECIALIST_ATTACKS[sourceSpecialistRole(attacker)]?.range ?? 20))
+            .sort((a, b) => dist(attacker.position, a.position) - dist(attacker.position, b.position) ||
+              a.id.localeCompare(b.id))[0];
+          if (!targets.length && !nodeTarget) continue;
           const role = sourceSpecialistRole(attacker), rule = SPECIALIST_ATTACKS[role];
           const ammunition = role === 'sniper' ? 'sniperRounds' : role === 'sadar' ? 'sadarMissiles' : null;
           // The distant front cannot fire unlimited specialist weapons just
@@ -662,12 +676,15 @@ export class BattleSimulation {
             attacker[ammunition]--;
           }
           attacker.nextAttack = this.time + Math.max(profile.attackInterval, rule?.cooldown ?? 0);
-          const target = targets[(this.attackSeeds.get(attacker.id) + this.tick) % targets.length];
+          const target = nodeTarget ?? targets[(this.attackSeeds.get(attacker.id) + this.tick) % targets.length];
           const tacticMultiplier = group.tactic && group.tactic.expires > this.time ? { pincer: 1.2, hold_line: 1.05, ambush: 1.15, fallback: .5 }[group.tactic.type] ?? 1 : 1;
           const orderMultiplier = ({ attack: 1, defend: .85, escort: .6 }[group.order.type] ?? .85) * tacticMultiplier;
           const moraleMultiplier = faction.moraleModel === 'hive' ? coordination.get(factionId) * group.coordinationStrength : .5 + group.morale / 200;
-          if (!pending.has(target.id)) pending.set(target.id, { damage: 0, killerFaction: factionId });
-          pending.get(target.id).damage += (rule?.damage ?? profile.damage) * orderMultiplier * moraleMultiplier * formationAttackMultiplier(group, this.time);
+          const queue = nodeTarget ? pendingNodes : pending;
+          if (!queue.has(target.id)) queue.set(target.id, { damage: 0, killerFaction: factionId,
+            attackers: 0 });
+          queue.get(target.id).damage += (rule?.damage ?? profile.damage) * orderMultiplier * moraleMultiplier * formationAttackMultiplier(group, this.time);
+          if (nodeTarget) queue.get(target.id).attackers++;
           this.targetingCounters.attacksResolved++;
         }
       }
@@ -677,6 +694,14 @@ export class BattleSimulation {
       const actual = this.absorbExosuitDamage(unitId, hit.damage);
       unit.hp = Math.max(0, unit.hp - actual); unit.damageTaken += actual;
       if (!unit.hp) this.recordDeath({ entityId: unitId, killerFaction: hit.killerFaction, cause: 'distant_combat' });
+    }
+    // The node owner (not the 3D proxy) authoritatively applies the remote hit.
+    // No new soldier, no additional shot, no death event/infestation credit.
+    for (const [nodeId, hit] of pendingNodes) {
+      // A garrison may only engage one node with four remote attackers per
+      // strategic tick, and this hard damage cap prevents 100 distant soldiers
+      // from deleting a newly rendered structure in the same 250 ms step.
+      this.damageHiveNode(nodeId, Math.min(32, hit.damage), hit.killerFaction);
     }
   }
 
