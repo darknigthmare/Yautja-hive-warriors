@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import * as THREE from 'three';
 import { getBattleOperationConfig } from '../js/data/BattleCatalog.js';
 import { BattleSimulation } from '../js/battlefield/BattleSimulation.js';
-import { canBoardM577Unit, canCrewM577Unit, planM577Embark, validateM577CarrierCheckpoint, APC_SECTION_RULES }
+import { canBoardM577Unit, canCrewM577Unit, planM577Embark, validateM577CarrierCheckpoint, m577RouteWaypoints, m577PositionOnRoute, APC_SECTION_RULES }
   from '../js/battlefield/APCSectionManifest.js';
 import { APCMarineService } from '../js/battlefield/APCMarineService.js';
 
@@ -332,5 +332,70 @@ test('sequential finite APC moves stop at a front boundary and remain restorable
       assert.equal(reloaded.units.size,before);
       assert.equal(reloaded.assertConservation(),true);
     }finally{reloaded.dispose();}
+  }finally{sim.dispose();}
+});
+
+test('road transit preserves finite USCM identities and checkpoint geometry between front circles',()=>{
+  const sim=create();
+  try{
+    const {manifest}=board(sim),route=[...sim.routes.values()]
+      .find(row=>row.from===manifest.frontId||row.to===manifest.frontId);
+    assert.ok(route,'the signed battle has a source-connected road');
+    const target=route.from===manifest.frontId?route.to:route.from;
+    const path=route.from===manifest.frontId?route.waypoints:[...route.waypoints].reverse();
+    const anchor=path[0], start=sim.getAPCManifest().position;
+    const approach=Math.ceil(Math.hypot(anchor[0]-start[0],anchor[1]-start[1])/3);
+    for(let i=1;i<=approach;i++){
+      const current=sim.getAPCManifest().position;
+      const remaining=Math.hypot(anchor[0]-current[0],anchor[1]-current[1]);
+      const move=Math.min(3,remaining);
+      if(remaining>0.001)assert.equal(sim.moveAPCManifest([
+        current[0]+(anchor[0]-current[0])/remaining*move,
+        current[1]+(anchor[1]-current[1])/remaining*move]),true);
+    }
+    assert.equal(sim.beginAPCTransit(route.id,target),true);
+    assert.equal(sim.disembarkAPC([],manifest.frontId).accepted,false);
+    let sampled=false;
+    for(let segment=1;segment<path.length;segment++){
+      const a=path[segment-1],b=path[segment],length=Math.hypot(b[0]-a[0],b[1]-a[1]);
+      const steps=Math.max(1,Math.ceil(length/2));
+      for(let step=1;step<=steps;step++){
+        const next=[a[0]+(b[0]-a[0])*step/steps,a[1]+(b[1]-a[1])*step/steps];
+        assert.equal(sim.moveAPCManifest(next),true);
+        if(!sampled&&segment===1&&step>=Math.floor(steps/2)){
+          const current=sim.saveState(),restored=BattleSimulation.fromState(getBattleOperationConfig('AFF-27'),current);
+          try{assert.deepEqual(restored.getAPCManifest(),sim.getAPCManifest());
+            assert.equal(restored.assertConservation(),true);}finally{restored.dispose();}
+          sampled=true;
+        }
+      }
+    }
+    assert.equal(sim.completeAPCTransit(),true);
+    assert.equal(sim.getAPCManifest().frontId,target);
+    assert.equal(sim.getAPCManifest().transit,undefined);
+    assert.equal(sim.units.size,sim.initialAllocated);
+    assert.equal(sim.assertConservation(),true);
+  }finally{sim.dispose();}
+});
+
+test('transit route identity, geometry and gate state are validated rather than enabling teleports',()=>{
+  const sim=create();
+  try{
+    const {manifest}=board(sim),route=[...sim.routes.values()]
+      .find(row=>row.from===manifest.frontId||row.to===manifest.frontId);
+    const target=route.from===manifest.frontId?route.to:route.from;
+    const base=sim.saveState();
+    const fake=structuredClone(base);
+    fake.apcManifest.transit={routeId:'invalid',fromFrontId:manifest.frontId,toFrontId:target};
+    assert.throws(()=>BattleSimulation.fromState(getBattleOperationConfig('AFF-27'),fake),
+      /invalid saved APC marine manifest/);
+    route.open=false;
+    assert.equal(sim.beginAPCTransit(route.id,target),false);
+    route.open=true;
+    sim.routeAvailabilityProvider=()=>false;
+    assert.equal(sim.beginAPCTransit(route.id,target),false);
+    assert.equal(sim.assertConservation(),true);
+    assert.equal(m577PositionOnRoute([9999,9999],route.waypoints),false);
+    assert.equal(m577RouteWaypoints(sim,{routeId:route.id,fromFrontId:manifest.frontId,toFrontId:'FAKE'},manifest.frontId),null);
   }finally{sim.dispose();}
 });

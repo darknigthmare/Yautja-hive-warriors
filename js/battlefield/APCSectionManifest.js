@@ -27,6 +27,36 @@ export function validateM577CarrierCheckpoint(manifest,supports){
     point(manifest.position)&&dist([position[0],position[2]],manifest.position)<=.05;
 }
 const fail=()=>{throw new Error('invalid saved APC marine manifest');};
+
+/** The carrier's route is the signed battle route, never a free map teleport.
+ * A loaded M577 can be saved between front circles only while its location
+ * remains on a declared route (including the reversed direction). */
+export const M577_ROUTE_RULES=Object.freeze({maxRouteOffset:6,maxMoveStep:5,routeStartDistance:3,arrivalDistance:2});
+export function m577RouteWaypoints(sim,transit,frontId) {
+  if(!transit||typeof transit!=='object'||Array.isArray(transit)||
+    Object.keys(transit).sort().join('|')!=='fromFrontId|routeId|toFrontId'||
+    !id(transit.routeId)||!id(transit.fromFrontId)||!id(transit.toFrontId)||
+    transit.fromFrontId!==frontId||transit.fromFrontId===transit.toFrontId)return null;
+  const route=sim?.routes?.get(transit.routeId);
+  if(!route||![route.from,route.to].includes(transit.fromFrontId)||
+    ![route.from,route.to].includes(transit.toFrontId))return null;
+  if(!((route.from===transit.fromFrontId&&route.to===transit.toFrontId)||
+       (route.to===transit.fromFrontId&&route.from===transit.toFrontId)))return null;
+  return route.from===transit.fromFrontId?route.waypoints:[...route.waypoints].reverse();
+}
+export function m577PositionOnRoute(position,waypoints) {
+  if(!point(position)||!Array.isArray(waypoints)||waypoints.length<2)return false;
+  for(let i=1;i<waypoints.length;i++){
+    const a=waypoints[i-1],b=waypoints[i];
+    if(!point(a)||!point(b))return false;
+    const dx=b[0]-a[0],dz=b[1]-a[1],length=dx*dx+dz*dz;
+    const t=length>1e-9?Math.max(0,Math.min(1,
+      ((position[0]-a[0])*dx+(position[1]-a[1])*dz)/length)):0;
+    if(Math.hypot(position[0]-a[0]-t*dx,position[1]-a[1]-t*dz)<=
+      M577_ROUTE_RULES.maxRouteOffset)return true;
+  }
+  return false;
+}
 const active=u=>u&&u.hp>0&&['active','distant'].includes(u.state);
 const boarded=u=>u.apcSeat!==undefined||u.apcCrewRole!==undefined;
 const marine=u=>u?.species==='human'&&
@@ -86,6 +116,10 @@ export function validateM577Manifest(manifest,sim,units,groups,savedTime){
     return null;
   }
   const group=groups.get(manifest?.groupId);
+  const waypoints=manifest?.transit===undefined?null:
+    m577RouteWaypoints(sim,manifest.transit,manifest.frontId);
+  if(manifest?.transit!==undefined&&
+    (!waypoints||!m577PositionOnRoute(manifest.position,waypoints)))fail();
   if(!manifest||manifest.version!==1||manifest.vehicleId!==APC_SECTION_RULES.vehicleId||
     !id(manifest.groupId)||!group||!id(manifest.factionId)||
     !id(manifest.ownerFaction)||!sim.factions.has(manifest.ownerFaction)||
@@ -97,8 +131,8 @@ export function validateM577Manifest(manifest,sim,units,groups,savedTime){
     group.state!=='distant'||group.materialized===true||group.path.length>0||
     group.apcCarrierId!==manifest.vehicleId||
     !point(manifest.position)||!eq(group.position,manifest.position)||
-    dist(manifest.position,sim.fronts.get(manifest.frontId).position)>
-      sim.fronts.get(manifest.frontId).radius+15||
+    (!waypoints&&dist(manifest.position,sim.fronts.get(manifest.frontId).position)>
+      sim.fronts.get(manifest.frontId).radius+15)||
     !Number.isFinite(manifest.boardedAt)||manifest.boardedAt<0||
     manifest.boardedAt>savedTime||
     !Array.isArray(manifest.passengers)||!Array.isArray(manifest.crew)||

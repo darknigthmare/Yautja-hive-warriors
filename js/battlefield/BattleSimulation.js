@@ -4,7 +4,7 @@
 
 import { BattleIntel } from './BattleIntel.js';
 import { applyMusouOfficerBreak } from './MusouBattleFlow.js';
-import { APC_SECTION_RULES, planM577Embark, validateM577Manifest } from './APCSectionManifest.js';
+import { APC_SECTION_RULES, M577_ROUTE_RULES, m577RouteWaypoints, m577PositionOnRoute, planM577Embark, validateM577Manifest } from './APCSectionManifest.js';
 import { applyFacehuggerExposure } from './FacehuggerExposure.js';
 import { HIVE_SPORE_RULES, updateHiveSporeSight, getHiveSporeContacts,
   restoreHiveSporeSight } from './HiveSporeSight.js';
@@ -1100,22 +1100,32 @@ export class BattleSimulation {
     return {accepted:true,passengers:[...passengers],crew:[...crew],seatCapacity:APC_SECTION_RULES.passengerSeats};
   }
 
-  /** Driven only by a physically verified APC movement step. */
+  /** A single, source-authored road leg. The real driving service checks
+   * every hull pose against built terrain before any strategic mutation. */
+  beginAPCTransit(routeId,toFrontId){
+    const manifest=this.apcManifest,route=this.routes.get(routeId);
+    if(!manifest||manifest.transit!==undefined||this.disposed||this.result||
+      !route?.open||this.routeAvailabilityProvider?.(clone(route))===false)return false;
+    const transit={routeId,fromFrontId:manifest.frontId,toFrontId};
+    const path=m577RouteWaypoints(this,transit,manifest.frontId);
+    if(!path||dist(manifest.position,path[0])>M577_ROUTE_RULES.routeStartDistance)return false;
+    manifest.transit=transit;
+    return true;
+  }
+
+  /** Only the point actually reached on the physical road is committed.
+   * No generic change of frontId is allowed via repeated small steps. */
   moveAPCManifest(position,frontId=this.apcManifest?.frontId) {
     const manifest=this.apcManifest,front=this.fronts.get(frontId);
-    // A stream of individually short moves must not put a loaded APC beyond
-    // the source front's restorable geographic envelope. Transferring fronts
-    // additionally needs an open, physically authorized strategic connection.
-    const connected=frontId===manifest?.frontId||
-      [...this.routes.values()].some(route=>
-        route.open&&
-        ((route.from===manifest?.frontId&&route.to===frontId)||
-         (route.to===manifest?.frontId&&route.from===frontId))&&
-        this.routeAvailabilityProvider?.(clone(route))!==false);
     if(!manifest||this.disposed||this.result||!point(position)||!front||
-       dist(position,manifest.position)>5||
-       dist(position,front.position)>front.radius+15||!connected)
-      return false;
+      frontId!==manifest.frontId||
+      dist(position,manifest.position)>M577_ROUTE_RULES.maxMoveStep)return false;
+    if(manifest.transit!==undefined){
+      const route=this.routes.get(manifest.transit.routeId);
+      const path=m577RouteWaypoints(this,manifest.transit,manifest.frontId);
+      if(!route?.open||this.routeAvailabilityProvider?.(clone(route))===false||
+        !path||!m577PositionOnRoute(position,path))return false;
+    }else if(dist(position,front.position)>front.radius+15)return false;
     const group=this.groups.get(manifest.groupId);
     manifest.position=[...position];manifest.frontId=frontId;
     group.position=[...position];group.frontId=frontId;
@@ -1123,11 +1133,27 @@ export class BattleSimulation {
     return true;
   }
 
+  completeAPCTransit(){
+    const manifest=this.apcManifest,transit=manifest?.transit;
+    const route=this.routes.get(transit?.routeId),path=transit&&
+      m577RouteWaypoints(this,transit,manifest.frontId);
+    if(!manifest||!path||!route?.open||
+      this.routeAvailabilityProvider?.(clone(route))===false||
+      dist(manifest.position,path.at(-1))>M577_ROUTE_RULES.arrivalDistance)return false;
+    const destination=transit.toFrontId,group=this.groups.get(manifest.groupId);
+    if(!this.fronts.has(destination)||!group)return false;
+    manifest.frontId=destination;group.frontId=destination;
+    group.order={type:'defend',frontId:destination,issuer:'apc',issuedAt:this.time};
+    delete manifest.transit;
+    this._emit('apc_convoy_arrived',{groupId:group.id,frontId:destination},2);
+    return true;
+  }
+
   /** Coordinates are supplied only after the real navigation tested all exits.
    * This is all-or-nothing: no partial passenger duplication or teleport. */
   disembarkAPC(placements,frontId=this.apcManifest?.frontId) {
     const manifest=this.apcManifest;
-    if(!manifest||this.disposed||this.result||!Array.isArray(placements)||
+    if(!manifest||manifest.transit!==undefined||this.disposed||this.result||!Array.isArray(placements)||
       placements.length!==manifest.crew.length+manifest.passengers.length||
       !this.fronts.has(frontId)||frontId!==manifest.frontId||
       new Set(placements.map(x=>x?.unitId)).size!==placements.length)return{accepted:false,reason:'invalid_manifest_or_exit'};
