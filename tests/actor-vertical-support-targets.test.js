@@ -88,7 +88,8 @@ test('an allocated Working Joe respects real wall cover then destroys a hostile 
   assert.equal(apc.hp, 2500, 'ignoring the target hull must not ignore a separate wall');
   e.colliders.splice(e.colliders.indexOf(wall), 1);
   for (let frame = 0; frame < 30000 && apc.hp > 0; frame++) manager.update(1 / 60, target, { aliens: [] });
-  assert.equal(apc.hp, 0); assert.equal(deaths.length, 1); assert.equal(deaths[0].killerFaction, actor.factionId); assert.equal(target.hp, 1000);
+  assert.equal(apc.hp, 0, `Working Joe failed to reach actual APC hull: actor=${actor.mesh.position.toArray()}, cooldown=${actor.shootCooldown}, preparation=${actor._npcPreparation??0}, faction=${actor.factionId}`);
+  assert.equal(deaths.length, 1); assert.equal(deaths[0].killerFaction, actor.factionId); assert.equal(target.hp, 1000);
   manager.clearSquad(); apc.clear(); e.clearEnvironment();
 });
 

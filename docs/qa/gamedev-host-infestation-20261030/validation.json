@@ -1,0 +1,97 @@
+{
+  "schema": "yhw-host-infestation-qa-v1",
+  "date": "2026-10-30",
+  "repository": "darknigthmare/Yautja-hive-warriors",
+  "branch": "codex/hive-nodes-ci-20261030",
+  "parentCommit": "28289af17caf8a9a5e5af98c7248661918d6c72a",
+  "fidelity": {
+    "visualFidelity1to1Verified": false,
+    "fullReproductionImplemented": false,
+    "adultGeneration": false,
+    "sourceTitle": "Aliens versus Predator: Extinction"
+  },
+  "codeFiles": [
+    "js/battlefield/HostInfestation.js",
+    "js/battlefield/BattleSimulation.js",
+    "js/engine/BattleActorSupport.js",
+    "js/entities/XenomorphHorde.js",
+    "js/battlefield/BattleActorBridge.js",
+    "js/graphics/HostParasiteAttachment.js",
+    "js/entities/ColonialMarines.js"
+  ],
+  "checks": {
+    "originalFirstCI": {
+      "sha": "28289af17caf8a9a5e5af98c7248661918d6c72a",
+      "build": "success",
+      "catalogueAudit": "success",
+      "nodeTargetedTests": {
+        "passed": 76,
+        "failed": 1
+      },
+      "failure": "Fixture candidate is not added to THREE.Scene and is intentionally filtered by selectBattleTarget",
+      "chromiumJob": "skipped"
+    },
+    "sourceMethodHostSim": {
+      "tested": true,
+      "operation": "AFF-27",
+      "hostInfected": true,
+      "facehuggerConsumed": true,
+      "unitIdsBefore": 952,
+      "unitIdsAfter": 952,
+      "saveRoundtripPassed": true,
+      "completedAfterSeconds": 8,
+      "adultGenerated": false,
+      "forgedDueRejected": true
+    },
+    "deathLedger": {
+      "forgedCauseRejected": true,
+      "forgedKillerRejected": true,
+      "badTimestampRejected": true,
+      "duplicateSourceRejected": "authored Node regression case"
+    },
+    "visualAttachment": {
+      "modelType": "original procedural scene-owned Three.js geometry",
+      "builtIn": "js/graphics/HostParasiteAttachment.js",
+      "uniquePerHost": true,
+      "survivesCheckpoint": true,
+      "geometryAndRendererTestAuthored": true
+    },
+    "parser": {
+      "passed": 6,
+      "failed": 0,
+      "details": "HostInfestation, BattleSimulation, ActorSupport, Horde, Bridge and Node tests parsed with imports removed"
+    },
+    "authoredNodeTests": 9,
+    "latestCIRunPending": true,
+    "wasmBuild": false,
+    "webglCapture": false,
+    "performanceMeasured": false,
+    "lastPublishedCI": {
+      "sha": "aa9df7f312aa43e20b87ef29581217a9c977e700",
+      "build": "success",
+      "catalogueAudit": "success",
+      "nodeTargetedTests": {
+        "passed": 79,
+        "failed": 0
+      },
+      "chromiumJob": "queued at last observation"
+    },
+    "physicalFormationGuard": {
+      "sourceMethod": "ColonialMarines.update",
+      "delta": 0.25,
+      "holdBefore": 8,
+      "holdAfter": 7.75,
+      "formationMoves": 0,
+      "releaseCalls": 1,
+      "isolationVerified": true
+    }
+  },
+  "missing": [
+    "Host gathering and drag physics",
+    "Reproductive egg spawning and cocoon animation",
+    "Caste from original host species",
+    "Real Chestburster strategic identity",
+    "Integration in co-op and gameplay rendered",
+    "Full 1:1 mesh certification"
+  ]
+}

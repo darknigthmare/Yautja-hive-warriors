@@ -8,6 +8,7 @@ export function disposeBattleOperation(game) {
     game.allyRescue?.dispose();game.allyRescue=null;
     game.bossPhasePressure?.dispose();game.bossPhasePressure=null;
     bridge?.dispose();
+    game.battleCrowd?.dispose();game.battleCrowd=null;
     game.hiveNodeWorld?.dispose();game.hiveNodeWorld=null;
     game.operationObjectives?.dispose();game.operationWorld?.dispose();
     game.battleSimulation=null;game.battleBridge=null;game.operationObjectives=null;game.operationWorld=null;

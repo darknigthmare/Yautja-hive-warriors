@@ -1,0 +1,2007 @@
+{
+  "schema": "yhw-musou-crossmedia-gap-matrix-v1",
+  "created": "2026-10-30",
+  "source": "js/data/BattleCatalogData.js; audit proposal, not a certified rendered content inventory",
+  "primaryGameplay": "action musou (Dynasty Warriors-like), 1 against large armies plus allied fronts",
+  "notMainGameplay": "Aliens versus Predator: Extinction RTS; its unique lore/castes/special equipment used as content and combat properties",
+  "keys": {
+    "finiteAllocatedNpc": "Declared per-operation budget by battle state (active/distant/reserve), including five fallback operations; not simultaneously rendered actors.",
+    "physicalMap1to1Confirmed": "false means no multi-angle/measured-world certification in this report, not that a map is necessarily absent.",
+    "combatAnimation1to1Confirmed": "false means not certified against exact media source.",
+    "sourceEraSpeciesCrosschecked": "requires source-by-source verification (film/game/comic/series).",
+    "explicitSourceAllocation": "Original source-front plan only when provided; null means fallback by budget.",
+    "runtimeFrontPlan": "A structured deployment was implemented from original source audit prose; it does not turn the original source into a canonical/media reconstruction or rewrite historical checkpoints."
+  },
+  "operationCount": 27,
+  "operations": [
+    {
+      "id": "AFF-01",
+      "title": "Le registre des routes saisies",
+      "operationType": "Raid et capture",
+      "playerSide": "Clan des Cendres Veilleuses — création originale",
+      "mediaContext": "Scénario original de conflit entre deux clans Yautja inventés ; aucune guerre, coutume, hiérarchie ou règle de duel n’est présentée comme canonique ou universelle. Mission indépendante par défaut ; en campagne, conserver l’état de Kher et du registre.",
+      "map": {
+        "id": "LD-14",
+        "place": "Anneau des Trois Docks — raid de clan",
+        "sourceContinuity": "Scénario original de conflit entre deux clans Yautja inventés ; aucune guerre, coutume, hiérarchie ou règle de duel n’est présentée comme canonique ou universelle.",
+        "proposalStatus": "Trois fronts restent connectés. Une escouade de quatre peut se croiser sur les passages prévus. Les réserves arrivent par un quai contrôlé ; ni apparition dans le dépôt ni combat sous un plancher sans accès.\nOpération liée : FR-14\nGabarit lié : EFF-09"
+      },
+      "finiteAllocatedNpc": {
+        "active": {
+          "enemy": 16,
+          "ally": 8
+        },
+        "distant": {
+          "enemy": 32,
+          "ally": 8
+        },
+        "reserve": {
+          "enemy": 16,
+          "ally": 4
+        }
+      },
+      "enemyGroupIds": [
+        "GRP-31",
+        "GRP-32",
+        "GRP-33",
+        "GRP-34",
+        "GRP-35",
+        "GRP-36"
+      ],
+      "alliedGroupIds": [
+        "GRP-31",
+        "GRP-33",
+        "GRP-34",
+        "GRP-35"
+      ],
+      "namedCommanders": [
+        {
+          "id": "BOS-26",
+          "name": "Kher, pisteur des Lames de Basalte",
+          "fidelity": "Nom, rôle et tactique originaux. Pas de pouvoir psychique, de téléportation ni de rang Yautja universel déduits du rôle."
+        }
+      ],
+      "gameplayMain": "musou-action-fronts-officers",
+      "avpExtinctionUsage": "source-content-and-in-universe-role-only; never RTS control scheme",
+      "checks": {
+        "finitePopulationDeclared": true,
+        "sourceRosterRecorded": true,
+        "physicalMap1to1Confirmed": false,
+        "bossVisual1to1Confirmed": false,
+        "combatAnimation1to1Confirmed": false,
+        "fullMissionPlaythroughConfirmed": false,
+        "multiplayerFullQaConfirmed": false,
+        "sourceEraSpeciesCrosschecked": false,
+        "explicitFrontGroupCompositionConfirmed": true
+      },
+      "explicitSourceAllocation": {
+        "active": {
+          "enemy": 16,
+          "ally": 8
+        },
+        "distant": {
+          "enemy": 32,
+          "ally": 8
+        },
+        "reserve": {
+          "enemy": 16,
+          "ally": 4
+        }
+      },
+      "allocationProvenance": "source-front-allocation-present"
+    },
+    {
+      "id": "AFF-02",
+      "title": "La Citadelle tient ses départs",
+      "operationType": "Siège et défense mobile",
+      "playerSide": "Clan des Cendres Veilleuses — création originale",
+      "mediaContext": "Scénario original de conflit entre deux clans Yautja inventés ; aucune guerre, coutume, hiérarchie ou règle de duel n’est présentée comme canonique ou universelle. Réutilise LD-12 avec quatre axes ; toute architecture ou vie de clan supplémentaire reste une création de cette citadelle.",
+      "map": {
+        "id": "LD-12",
+        "place": "Citadelle attaquée / monde du clan",
+        "sourceContinuity": "Création de guerre Yautja annoncée comme originale",
+        "proposalStatus": "Citadelle ne devient pas une grille de six carrés identiques ; civils et combattants séparés"
+      },
+      "finiteAllocatedNpc": {
+        "active": {
+          "enemy": 32,
+          "ally": 16
+        },
+        "distant": {
+          "enemy": 64,
+          "ally": 32
+        },
+        "reserve": {
+          "enemy": 32,
+          "ally": 16
+        }
+      },
+      "enemyGroupIds": [
+        "GRP-31",
+        "GRP-32",
+        "GRP-33",
+        "GRP-34",
+        "GRP-35",
+        "GRP-36"
+      ],
+      "alliedGroupIds": [
+        "GRP-31",
+        "GRP-33",
+        "GRP-34",
+        "GRP-35"
+      ],
+      "namedCommanders": [
+        {
+          "id": "BOS-27",
+          "name": "Raan, commandante du siège",
+          "fidelity": "Fonction de commandement inventée pour ce conflit. Sa taille, ses armes et ses défenses restent à vérifier contre le profil Yautja choisi ; aucun rang canonique nouveau."
+        }
+      ],
+      "gameplayMain": "musou-action-fronts-officers",
+      "avpExtinctionUsage": "source-content-and-in-universe-role-only; never RTS control scheme",
+      "checks": {
+        "finitePopulationDeclared": true,
+        "sourceRosterRecorded": true,
+        "physicalMap1to1Confirmed": false,
+        "bossVisual1to1Confirmed": false,
+        "combatAnimation1to1Confirmed": false,
+        "fullMissionPlaythroughConfirmed": false,
+        "multiplayerFullQaConfirmed": false,
+        "sourceEraSpeciesCrosschecked": false,
+        "explicitFrontGroupCompositionConfirmed": true
+      },
+      "explicitSourceAllocation": {
+        "active": {
+          "enemy": 32,
+          "ally": 16
+        },
+        "distant": {
+          "enemy": 64,
+          "ally": 32
+        },
+        "reserve": {
+          "enemy": 32,
+          "ally": 16
+        }
+      },
+      "allocationProvenance": "source-front-allocation-present"
+    },
+    {
+      "id": "AFF-03",
+      "title": "Couper la route du Convoi gris",
+      "operationType": "Poursuite et interception",
+      "playerSide": "Clan des Cendres Veilleuses — création originale",
+      "mediaContext": "Scénario original de conflit entre deux clans Yautja inventés ; aucune guerre, coutume, hiérarchie ou règle de duel n’est présentée comme canonique ou universelle. Les modules et itinéraires sont inventés. Si AFF-01 précède cette mission, réutiliser ses renseignements et l’état de Kher ; les opérations peuvent aussi être jouées séparément.",
+      "map": {
+        "id": "LD-15",
+        "place": "Ravines du Convoi gris — poursuite et interception",
+        "sourceContinuity": "Scénario original de conflit entre deux clans Yautja inventés ; aucune guerre, coutume, hiérarchie ou règle de duel n’est présentée comme canonique ou universelle.",
+        "proposalStatus": "Les raccourcis permettent d’intercepter le convoi avec le chasseur lent. Les pilotes font partie des escouades comptées ; les modules ne génèrent pas de combattants supplémentaires. Aucune zone de transition ne téléporte le convoi.\nOpération liée : FR-16\nGabarit lié : EFF-09"
+      },
+      "finiteAllocatedNpc": {
+        "active": {
+          "enemy": 16,
+          "ally": 8
+        },
+        "distant": {
+          "enemy": 32,
+          "ally": 8
+        },
+        "reserve": {
+          "enemy": 16,
+          "ally": 4
+        }
+      },
+      "enemyGroupIds": [
+        "GRP-31",
+        "GRP-32",
+        "GRP-33",
+        "GRP-35",
+        "GRP-36"
+      ],
+      "alliedGroupIds": [
+        "GRP-31",
+        "GRP-32",
+        "GRP-34",
+        "GRP-35"
+      ],
+      "namedCommanders": [
+        {
+          "id": "BOS-26",
+          "name": "Kher, pisteur des Lames de Basalte",
+          "fidelity": "Nom, rôle et tactique originaux. Pas de pouvoir psychique, de téléportation ni de rang Yautja universel déduits du rôle."
+        }
+      ],
+      "gameplayMain": "musou-action-fronts-officers",
+      "avpExtinctionUsage": "source-content-and-in-universe-role-only; never RTS control scheme",
+      "checks": {
+        "finitePopulationDeclared": true,
+        "sourceRosterRecorded": true,
+        "physicalMap1to1Confirmed": false,
+        "bossVisual1to1Confirmed": false,
+        "combatAnimation1to1Confirmed": false,
+        "fullMissionPlaythroughConfirmed": false,
+        "multiplayerFullQaConfirmed": false,
+        "sourceEraSpeciesCrosschecked": false,
+        "explicitFrontGroupCompositionConfirmed": true
+      },
+      "explicitSourceAllocation": {
+        "active": {
+          "enemy": 16,
+          "ally": 8
+        },
+        "distant": {
+          "enemy": 32,
+          "ally": 8
+        },
+        "reserve": {
+          "enemy": 16,
+          "ally": 4
+        }
+      },
+      "allocationProvenance": "source-front-allocation-present"
+    },
+    {
+      "id": "AFF-04",
+      "title": "L’incident des Deux Balises",
+      "operationType": "Frontière, identification et désescalade",
+      "playerSide": "Clan des Cendres Veilleuses — création originale",
+      "mediaContext": "Scénario original de conflit entre deux clans Yautja inventés ; aucune guerre, coutume, hiérarchie ou règle de duel n’est présentée comme canonique ou universelle. Les droits de passage, règles de tension et solutions négociées sont propres à ce conflit fictif, sans prétention sur une loi Yautja générale.",
+      "map": {
+        "id": "LD-16",
+        "place": "Col des Deux Balises — crise de frontière",
+        "sourceContinuity": "Scénario original de conflit entre deux clans Yautja inventés ; aucune guerre, coutume, hiérarchie ou règle de duel n’est présentée comme canonique ou universelle.",
+        "proposalStatus": "Toute incursion est détectable avant les hostilités. Les patrouilles peuvent se retirer sans entrer dans un autre combat forcé ; le joueur peut atteindre le relais avant une escalade annoncée.\nOpération liée : FR-17\nGabarit lié : EFF-09"
+      },
+      "finiteAllocatedNpc": {
+        "active": {
+          "enemy": 16,
+          "ally": 8
+        },
+        "distant": {
+          "enemy": 32,
+          "ally": 8
+        },
+        "reserve": {
+          "enemy": 16,
+          "ally": 4
+        }
+      },
+      "enemyGroupIds": [
+        "GRP-31",
+        "GRP-32",
+        "GRP-33",
+        "GRP-35",
+        "GRP-36"
+      ],
+      "alliedGroupIds": [
+        "GRP-31",
+        "GRP-33",
+        "GRP-35"
+      ],
+      "namedCommanders": [],
+      "gameplayMain": "musou-action-fronts-officers",
+      "avpExtinctionUsage": "source-content-and-in-universe-role-only; never RTS control scheme",
+      "checks": {
+        "finitePopulationDeclared": true,
+        "sourceRosterRecorded": true,
+        "physicalMap1to1Confirmed": false,
+        "bossVisual1to1Confirmed": false,
+        "combatAnimation1to1Confirmed": false,
+        "fullMissionPlaythroughConfirmed": false,
+        "multiplayerFullQaConfirmed": false,
+        "sourceEraSpeciesCrosschecked": false,
+        "explicitFrontGroupCompositionConfirmed": true
+      },
+      "explicitSourceAllocation": {
+        "active": {
+          "enemy": 16,
+          "ally": 8
+        },
+        "distant": {
+          "enemy": 32,
+          "ally": 8
+        },
+        "reserve": {
+          "enemy": 16,
+          "ally": 4
+        }
+      },
+      "allocationProvenance": "source-front-allocation-present"
+    },
+    {
+      "id": "AFF-05",
+      "title": "Un accord pendant que les fronts reculent",
+      "operationType": "Duel négocié et cessation des combats",
+      "playerSide": "Clan des Cendres Veilleuses — création originale",
+      "mediaContext": "Scénario original de conflit entre deux clans Yautja inventés ; aucune guerre, coutume, hiérarchie ou règle de duel n’est présentée comme canonique ou universelle. Les conditions du duel sont proposées, acceptées ou refusées à l’écran pour cette opération uniquement. Le statut de Sel et les survivants sont persistants.",
+      "map": {
+        "id": "LD-17",
+        "place": "Plateau des Arches silencieuses — accord sous tension",
+        "sourceContinuity": "Scénario original de conflit entre deux clans Yautja inventés ; aucune guerre, coutume, hiérarchie ou règle de duel n’est présentée comme canonique ou universelle.",
+        "proposalStatus": "Aucun verrou de caméra ne suspend B ou C. La victoire du duel n’efface aucune unité : l’ordre de retrait doit circuler. Les sorties restent utilisables en cas de rupture de l’accord.\nOpération liée : FR-18\nGabarit lié : EFF-09"
+      },
+      "finiteAllocatedNpc": {
+        "active": {
+          "enemy": 16,
+          "ally": 8
+        },
+        "distant": {
+          "enemy": 32,
+          "ally": 8
+        },
+        "reserve": {
+          "enemy": 16,
+          "ally": 4
+        }
+      },
+      "enemyGroupIds": [
+        "GRP-31",
+        "GRP-32",
+        "GRP-33",
+        "GRP-35",
+        "GRP-36"
+      ],
+      "alliedGroupIds": [
+        "GRP-31",
+        "GRP-33",
+        "GRP-35",
+        "GRP-36"
+      ],
+      "namedCommanders": [
+        {
+          "id": "BOS-28",
+          "name": "Sel, porte-parole armée du clan rival",
+          "fidelity": "Duel et limites convenus par ces deux délégations fictives ; aucune obligation de duel ni règle d’honneur présentée comme commune à tous les Yautja."
+        }
+      ],
+      "gameplayMain": "musou-action-fronts-officers",
+      "avpExtinctionUsage": "source-content-and-in-universe-role-only; never RTS control scheme",
+      "checks": {
+        "finitePopulationDeclared": true,
+        "sourceRosterRecorded": true,
+        "physicalMap1to1Confirmed": false,
+        "bossVisual1to1Confirmed": false,
+        "combatAnimation1to1Confirmed": false,
+        "fullMissionPlaythroughConfirmed": false,
+        "multiplayerFullQaConfirmed": false,
+        "sourceEraSpeciesCrosschecked": false,
+        "explicitFrontGroupCompositionConfirmed": true
+      },
+      "explicitSourceAllocation": {
+        "active": {
+          "enemy": 16,
+          "ally": 8
+        },
+        "distant": {
+          "enemy": 32,
+          "ally": 8
+        },
+        "reserve": {
+          "enemy": 16,
+          "ally": 4
+        }
+      },
+      "allocationProvenance": "source-front-allocation-present"
+    },
+    {
+      "id": "AFF-06",
+      "title": "Reprendre le matériel capturé au port",
+      "operationType": "Yautja contre force humaine de capture — mission originale contemporaine",
+      "playerSide": "Un chasseur du clan et un contingent limité de 8 alliés PNJ ; personnages et guerre originaux",
+      "mediaContext": "Fiction originale. Inspiration générale de chasse et de capture humaine ; ni déroulé canonique de film, ni effectif militaire officiel. Armes, dates et groupes contemporains séparés de l’univers colonial futur.",
+      "map": {
+        "id": "LD-18",
+        "place": "Port de récupération — entrepôts, quais et zone de capture",
+        "sourceContinuity": "Conflit contemporain original de Yautja contre une force humaine de capture ; ni reconstitution de Predator 2 ni site Stargazer canonique",
+        "proposalStatus": "Routes de renfort et d’extraction praticables ; équipements contemporains ; plateformes et volumes visibles concordent avec les accès"
+      },
+      "finiteAllocatedNpc": {
+        "active": {
+          "enemy": 64,
+          "ally": 4
+        },
+        "distant": {
+          "enemy": 128,
+          "ally": 4
+        },
+        "reserve": {
+          "enemy": 64,
+          "ally": 0
+        }
+      },
+      "enemyGroupIds": [
+        "GRP-37",
+        "GRP-42"
+      ],
+      "alliedGroupIds": [
+        "GRP-12",
+        "GRP-13"
+      ],
+      "namedCommanders": [
+        {
+          "id": "BOS-29",
+          "name": "Commandant de la force de capture",
+          "fidelity": "Création originale ; équipements contemporains. Difficulté issue du terrain, du commandement et des gardes, sans invulnérabilité ni PV de monstre."
+        }
+      ],
+      "gameplayMain": "musou-action-fronts-officers",
+      "avpExtinctionUsage": "source-content-and-in-universe-role-only; never RTS control scheme",
+      "checks": {
+        "finitePopulationDeclared": true,
+        "sourceRosterRecorded": true,
+        "physicalMap1to1Confirmed": false,
+        "bossVisual1to1Confirmed": false,
+        "combatAnimation1to1Confirmed": false,
+        "fullMissionPlaythroughConfirmed": false,
+        "multiplayerFullQaConfirmed": false,
+        "sourceEraSpeciesCrosschecked": false,
+        "explicitFrontGroupCompositionConfirmed": false
+      },
+      "explicitSourceAllocation": null,
+      "allocationProvenance": "budget-fallback-no-source-front-composition",
+      "runtimeFrontPlan": {
+        "version": "original-audit-front-v1",
+        "sourceModule": "js/data/OriginalMusouFrontAllocations.js",
+        "bindingStatus": "audited-original-Musou-scenario; from initialDeployment prose",
+        "battleMain": "action-musou-not-RTS",
+        "commander": {
+          "front": "C",
+          "sourceBossId": "BOS-29",
+          "assignedGroupId": "GRP-42",
+          "countsAsNewUnit": false
+        },
+        "preservesHistoricalGroupAndMemberIds": true,
+        "sourceBudgetIdentical": true,
+        "newSaves": "deploymentPlan:authored",
+        "olderSaves": "deploymentPlan:historical-fallback",
+        "canonicalMedia1to1": false,
+        "realSceneGeometryVerified": false,
+        "fullGameQaVerified": false
+      }
+    },
+    {
+      "id": "AFF-07",
+      "title": "Interrompre la livraison industrielle",
+      "operationType": "Yautja contre mercenaires de sécurité — mission originale contemporaine",
+      "playerSide": "Un chasseur original et 8 alliés Yautja PNJ chargés de reprendre une technologie du clan",
+      "mediaContext": "Entreprise, conflit et chef originaux. Technologie humaine contemporaine, équipement Yautja choisi pour les chasseurs originaux. Aucun catalogue de figurines n’est présenté comme preuve du plan ou de l’effectif.",
+      "map": {
+        "id": "LD-19",
+        "place": "Bassin industriel sous contrat — usine, voies ferrées et dépôts",
+        "sourceContinuity": "Époque contemporaine fictive ; société et mercenaires originaux, sans armes USCM ni technologie de station spatiale",
+        "proposalStatus": "Aucun convoyeur décoratif utilisé comme route sans collision ; véhicules dans leur gabarit ; arrêt de l’énergie modifie réellement projecteurs et portails"
+      },
+      "finiteAllocatedNpc": {
+        "active": {
+          "enemy": 64,
+          "ally": 4
+        },
+        "distant": {
+          "enemy": 128,
+          "ally": 4
+        },
+        "reserve": {
+          "enemy": 64,
+          "ally": 0
+        }
+      },
+      "enemyGroupIds": [
+        "GRP-38",
+        "GRP-42"
+      ],
+      "alliedGroupIds": [
+        "GRP-12",
+        "GRP-13"
+      ],
+      "namedCommanders": [
+        {
+          "id": "BOS-30",
+          "name": "Responsable tactique de sécurité",
+          "fidelity": "Les deux périodes partagent un rôle de conception, pas la même identité ni le même équipement. Toute résistance provient de couverts ou protections visibles destructibles."
+        }
+      ],
+      "gameplayMain": "musou-action-fronts-officers",
+      "avpExtinctionUsage": "source-content-and-in-universe-role-only; never RTS control scheme",
+      "checks": {
+        "finitePopulationDeclared": true,
+        "sourceRosterRecorded": true,
+        "physicalMap1to1Confirmed": false,
+        "bossVisual1to1Confirmed": false,
+        "combatAnimation1to1Confirmed": false,
+        "fullMissionPlaythroughConfirmed": false,
+        "multiplayerFullQaConfirmed": false,
+        "sourceEraSpeciesCrosschecked": false,
+        "explicitFrontGroupCompositionConfirmed": false
+      },
+      "explicitSourceAllocation": null,
+      "allocationProvenance": "budget-fallback-no-source-front-composition",
+      "runtimeFrontPlan": {
+        "version": "original-audit-front-v1",
+        "sourceModule": "js/data/OriginalMusouFrontAllocations.js",
+        "bindingStatus": "audited-original-Musou-scenario; from initialDeployment prose",
+        "battleMain": "action-musou-not-RTS",
+        "commander": {
+          "front": "A",
+          "sourceBossId": "BOS-30",
+          "assignedGroupId": "GRP-42",
+          "countsAsNewUnit": false
+        },
+        "preservesHistoricalGroupAndMemberIds": true,
+        "sourceBudgetIdentical": true,
+        "newSaves": "deploymentPlan:authored",
+        "olderSaves": "deploymentPlan:historical-fallback",
+        "canonicalMedia1to1": false,
+        "realSceneGeometryVerified": false,
+        "fullGameQaVerified": false
+      }
+    },
+    {
+      "id": "AFF-08",
+      "title": "Reprendre une installation de la colonie",
+      "operationType": "Yautja contre force coloniale militaire — bataille originale future",
+      "playerSide": "Un chasseur du clan avec 32 alliés Yautja PNJ répartis entre attaque, soutien et réserve ; guerre originale explicitée",
+      "mediaContext": "Campagne originale future inspirée du périmètre colonial Alien/AVP. LD-11 n’est pas présentée comme le plan exact de LV-426. Aucun roster nommé du film, aucune hostilité universelle et aucune caste biologique injectée par défaut.",
+      "map": {
+        "id": "LD-11",
+        "place": "Colonie / processeur atmosphérique",
+        "sourceContinuity": "Opération originale inspirée Aliens, nom et date propres",
+        "proposalStatus": "Population/industries expliquent densité d’hôtes et infrastructure ; aucune copie prétendue du plan LV-426"
+      },
+      "finiteAllocatedNpc": {
+        "active": {
+          "enemy": 128,
+          "ally": 12
+        },
+        "distant": {
+          "enemy": 384,
+          "ally": 12
+        },
+        "reserve": {
+          "enemy": 256,
+          "ally": 8
+        }
+      },
+      "enemyGroupIds": [
+        "GRP-39",
+        "GRP-42"
+      ],
+      "alliedGroupIds": [
+        "GRP-11",
+        "GRP-13"
+      ],
+      "namedCommanders": [
+        {
+          "id": "BOS-31",
+          "name": "Commandant expéditionnaire de la force humaine",
+          "fidelity": "Pas de personnage canonique transformé en antagoniste sans scénario. Armure, taille et dégâts humains ; aucun commandant géant à santé artificiellement illimitée."
+        }
+      ],
+      "gameplayMain": "musou-action-fronts-officers",
+      "avpExtinctionUsage": "source-content-and-in-universe-role-only; never RTS control scheme",
+      "checks": {
+        "finitePopulationDeclared": true,
+        "sourceRosterRecorded": true,
+        "physicalMap1to1Confirmed": false,
+        "bossVisual1to1Confirmed": false,
+        "combatAnimation1to1Confirmed": false,
+        "fullMissionPlaythroughConfirmed": false,
+        "multiplayerFullQaConfirmed": false,
+        "sourceEraSpeciesCrosschecked": false,
+        "explicitFrontGroupCompositionConfirmed": false
+      },
+      "explicitSourceAllocation": null,
+      "allocationProvenance": "budget-fallback-no-source-front-composition",
+      "runtimeFrontPlan": {
+        "version": "original-audit-front-v1",
+        "sourceModule": "js/data/OriginalMusouFrontAllocations.js",
+        "bindingStatus": "audited-original-Musou-scenario; from initialDeployment prose",
+        "battleMain": "action-musou-not-RTS",
+        "commander": {
+          "front": "A",
+          "sourceBossId": "BOS-31",
+          "assignedGroupId": "GRP-42",
+          "countsAsNewUnit": false
+        },
+        "preservesHistoricalGroupAndMemberIds": true,
+        "sourceBudgetIdentical": true,
+        "newSaves": "deploymentPlan:authored",
+        "olderSaves": "deploymentPlan:historical-fallback",
+        "canonicalMedia1to1": false,
+        "realSceneGeometryVerified": false,
+        "fullGameQaVerified": false
+      }
+    },
+    {
+      "id": "AFF-09",
+      "title": "Libérer la navette du chantier orbital",
+      "operationType": "Yautja contre sûreté humaine orbitale — opération originale future",
+      "playerSide": "Un chasseur original et 32 alliés Yautja PNJ affectés aux modules, au quai et à la réserve",
+      "mediaContext": "Station, société, commandant et conflit originaux du futur. La carte n’est ni Renaissance ni Nostromo ; pas d’Offspring, Rogue ou xénomorphes par défaut. La présence de synthétiques suit un protocole de maintenance séparé.",
+      "map": {
+        "id": "LD-20",
+        "place": "Chantier orbital — anneau de service, modules et quais d’embarquement",
+        "sourceContinuity": "Futur spatial original inspiré du périmètre Alien/Predator ; station, société et plan inventés, distincts de Renaissance et du Nostromo",
+        "proposalStatus": "Pas d’APC dans les coursives ; humains, chasseurs et matériel possèdent des routes de taille adaptée. Une décompression ne traverse pas un sas fermé sans règle physique explicite."
+      },
+      "finiteAllocatedNpc": {
+        "active": {
+          "enemy": 128,
+          "ally": 12
+        },
+        "distant": {
+          "enemy": 384,
+          "ally": 12
+        },
+        "reserve": {
+          "enemy": 256,
+          "ally": 8
+        }
+      },
+      "enemyGroupIds": [
+        "GRP-40",
+        "GRP-42"
+      ],
+      "alliedGroupIds": [
+        "GRP-11",
+        "GRP-13"
+      ],
+      "namedCommanders": [
+        {
+          "id": "BOS-30",
+          "name": "Responsable tactique de sécurité",
+          "fidelity": "Les deux périodes partagent un rôle de conception, pas la même identité ni le même équipement. Toute résistance provient de couverts ou protections visibles destructibles."
+        }
+      ],
+      "gameplayMain": "musou-action-fronts-officers",
+      "avpExtinctionUsage": "source-content-and-in-universe-role-only; never RTS control scheme",
+      "checks": {
+        "finitePopulationDeclared": true,
+        "sourceRosterRecorded": true,
+        "physicalMap1to1Confirmed": false,
+        "bossVisual1to1Confirmed": false,
+        "combatAnimation1to1Confirmed": false,
+        "fullMissionPlaythroughConfirmed": false,
+        "multiplayerFullQaConfirmed": false,
+        "sourceEraSpeciesCrosschecked": false,
+        "explicitFrontGroupCompositionConfirmed": false
+      },
+      "explicitSourceAllocation": null,
+      "allocationProvenance": "budget-fallback-no-source-front-composition",
+      "runtimeFrontPlan": {
+        "version": "original-audit-front-v1",
+        "sourceModule": "js/data/OriginalMusouFrontAllocations.js",
+        "bindingStatus": "audited-original-Musou-scenario; from initialDeployment prose",
+        "battleMain": "action-musou-not-RTS",
+        "commander": {
+          "front": "A",
+          "sourceBossId": "BOS-30",
+          "assignedGroupId": "GRP-42",
+          "countsAsNewUnit": false
+        },
+        "preservesHistoricalGroupAndMemberIds": true,
+        "sourceBudgetIdentical": true,
+        "newSaves": "deploymentPlan:authored",
+        "olderSaves": "deploymentPlan:historical-fallback",
+        "canonicalMedia1to1": false,
+        "realSceneGeometryVerified": false,
+        "fullGameQaVerified": false
+      }
+    },
+    {
+      "id": "AFF-10",
+      "title": "Extraire le captif de la cité-port",
+      "operationType": "Yautja contre cordon humain — bataille originale future avec évacuation civile",
+      "playerSide": "Un chasseur et 32 alliés Yautja PNJ ; un captif Yautja non combattant constitue l’objectif et reste dans un registre distinct",
+      "mediaContext": "Ville, captif, officiers et conflit originaux dans un futur colonial. Aucun peuple ni groupe civil n’est ennemi par défaut ; coopération éventuelle avec les secours découle d’un événement explicite, sans alliance universelle humain/Yautja.",
+      "map": {
+        "id": "LD-21",
+        "place": "Cité-port en évacuation — quartiers, centre médical et terminal",
+        "sourceContinuity": "Ville coloniale future originale ; conflit Yautja contre un cordon militaire humain, avec civils neutres et sans alliance automatique",
+        "proposalStatus": "Les civils conservent une route crédible vers leurs refuges ; destructions, barrages et trafic modifient les parcours sans effacer les habitants"
+      },
+      "finiteAllocatedNpc": {
+        "active": {
+          "enemy": 128,
+          "ally": 12
+        },
+        "distant": {
+          "enemy": 384,
+          "ally": 12
+        },
+        "reserve": {
+          "enemy": 256,
+          "ally": 8
+        }
+      },
+      "enemyGroupIds": [
+        "GRP-41",
+        "GRP-42"
+      ],
+      "alliedGroupIds": [
+        "GRP-11",
+        "GRP-13"
+      ],
+      "namedCommanders": [
+        {
+          "id": "BOS-31",
+          "name": "Commandant expéditionnaire de la force humaine",
+          "fidelity": "Pas de personnage canonique transformé en antagoniste sans scénario. Armure, taille et dégâts humains ; aucun commandant géant à santé artificiellement illimitée."
+        }
+      ],
+      "gameplayMain": "musou-action-fronts-officers",
+      "avpExtinctionUsage": "source-content-and-in-universe-role-only; never RTS control scheme",
+      "checks": {
+        "finitePopulationDeclared": true,
+        "sourceRosterRecorded": true,
+        "physicalMap1to1Confirmed": false,
+        "bossVisual1to1Confirmed": false,
+        "combatAnimation1to1Confirmed": false,
+        "fullMissionPlaythroughConfirmed": false,
+        "multiplayerFullQaConfirmed": false,
+        "sourceEraSpeciesCrosschecked": false,
+        "explicitFrontGroupCompositionConfirmed": false
+      },
+      "explicitSourceAllocation": null,
+      "allocationProvenance": "budget-fallback-no-source-front-composition",
+      "runtimeFrontPlan": {
+        "version": "original-audit-front-v1",
+        "sourceModule": "js/data/OriginalMusouFrontAllocations.js",
+        "bindingStatus": "audited-original-Musou-scenario; from initialDeployment prose",
+        "battleMain": "action-musou-not-RTS",
+        "commander": {
+          "front": "B",
+          "sourceBossId": "BOS-31",
+          "assignedGroupId": "GRP-42",
+          "countsAsNewUnit": false
+        },
+        "preservesHistoricalGroupAndMemberIds": true,
+        "sourceBudgetIdentical": true,
+        "newSaves": "deploymentPlan:authored",
+        "olderSaves": "deploymentPlan:historical-fallback",
+        "canonicalMedia1to1": false,
+        "realSceneGeometryVerified": false,
+        "fullGameQaVerified": false
+      }
+    },
+    {
+      "id": "AFF-11",
+      "title": "Convergence sur la colonie",
+      "operationType": "Trois camps : clan du joueur, clan rival, force humaine",
+      "playerSide": "Détachement du clan du joueur, 32 alliés PNJ alloués et un joueur",
+      "mediaContext": "Mission de guerre originale du futur sur la carte de colonie proposée. Noms de clans et chaîne d’événements inventés pour le projet. Aucun effectif de film ni plan de LV-426 certifié.",
+      "map": {
+        "id": "LD-11",
+        "place": "Colonie / processeur atmosphérique",
+        "sourceContinuity": "Opération originale inspirée Aliens, nom et date propres",
+        "proposalStatus": "Population/industries expliquent densité d’hôtes et infrastructure ; aucune copie prétendue du plan LV-426"
+      },
+      "finiteAllocatedNpc": {
+        "active": {
+          "enemy": 96,
+          "ally": 12
+        },
+        "distant": {
+          "enemy": 192,
+          "ally": 12
+        },
+        "reserve": {
+          "enemy": 96,
+          "ally": 8
+        }
+      },
+      "enemyGroupIds": [
+        "GRP-36",
+        "GRP-42",
+        "GRP-39",
+        "GRP-31",
+        "GRP-32",
+        "GRP-33",
+        "GRP-35"
+      ],
+      "alliedGroupIds": [
+        "GRP-13",
+        "GRP-31",
+        "GRP-35",
+        "GRP-33",
+        "GRP-34"
+      ],
+      "namedCommanders": [
+        {
+          "id": "BOS-26",
+          "name": "Kher, pisteur des Lames de Basalte",
+          "fidelity": "Nom, rôle et tactique originaux. Pas de pouvoir psychique, de téléportation ni de rang Yautja universel déduits du rôle."
+        },
+        {
+          "id": "BOS-31",
+          "name": "Commandant expéditionnaire de la force humaine",
+          "fidelity": "Pas de personnage canonique transformé en antagoniste sans scénario. Armure, taille et dégâts humains ; aucun commandant géant à santé artificiellement illimitée."
+        }
+      ],
+      "gameplayMain": "musou-action-fronts-officers",
+      "avpExtinctionUsage": "source-content-and-in-universe-role-only; never RTS control scheme",
+      "checks": {
+        "finitePopulationDeclared": true,
+        "sourceRosterRecorded": true,
+        "physicalMap1to1Confirmed": false,
+        "bossVisual1to1Confirmed": false,
+        "combatAnimation1to1Confirmed": false,
+        "fullMissionPlaythroughConfirmed": false,
+        "multiplayerFullQaConfirmed": false,
+        "sourceEraSpeciesCrosschecked": false,
+        "explicitFrontGroupCompositionConfirmed": true
+      },
+      "explicitSourceAllocation": {
+        "active": {
+          "enemy": 96,
+          "ally": 12
+        },
+        "distant": {
+          "enemy": 192,
+          "ally": 12
+        },
+        "reserve": {
+          "enemy": 96,
+          "ally": 8
+        }
+      },
+      "allocationProvenance": "source-front-allocation-present"
+    },
+    {
+      "id": "AFF-12",
+      "title": "Citadelle sous double pression",
+      "operationType": "Défense du clan contre deux camps aux objectifs différents",
+      "playerSide": "Garnison originale du clan du joueur : 32 alliés PNJ alloués et un joueur",
+      "mediaContext": "Citadelle, clans et incursion future originaux. La présence de non-combattants et l’accord de cessez-le-feu sont des règles de ce scénario, sans prétendre définir toutes les sociétés Yautja.",
+      "map": {
+        "id": "LD-12",
+        "place": "Citadelle attaquée / monde du clan",
+        "sourceContinuity": "Création de guerre Yautja annoncée comme originale",
+        "proposalStatus": "Citadelle ne devient pas une grille de six carrés identiques ; civils et combattants séparés"
+      },
+      "finiteAllocatedNpc": {
+        "active": {
+          "enemy": 96,
+          "ally": 12
+        },
+        "distant": {
+          "enemy": 192,
+          "ally": 12
+        },
+        "reserve": {
+          "enemy": 96,
+          "ally": 8
+        }
+      },
+      "enemyGroupIds": [
+        "GRP-41",
+        "GRP-36",
+        "GRP-32",
+        "GRP-31",
+        "GRP-42",
+        "GRP-33",
+        "GRP-35"
+      ],
+      "alliedGroupIds": [
+        "GRP-33",
+        "GRP-13",
+        "GRP-34",
+        "GRP-35",
+        "GRP-31"
+      ],
+      "namedCommanders": [
+        {
+          "id": "BOS-27",
+          "name": "Raan, commandante du siège",
+          "fidelity": "Fonction de commandement inventée pour ce conflit. Sa taille, ses armes et ses défenses restent à vérifier contre le profil Yautja choisi ; aucun rang canonique nouveau."
+        },
+        {
+          "id": "BOS-31",
+          "name": "Commandant expéditionnaire de la force humaine",
+          "fidelity": "Pas de personnage canonique transformé en antagoniste sans scénario. Armure, taille et dégâts humains ; aucun commandant géant à santé artificiellement illimitée."
+        }
+      ],
+      "gameplayMain": "musou-action-fronts-officers",
+      "avpExtinctionUsage": "source-content-and-in-universe-role-only; never RTS control scheme",
+      "checks": {
+        "finitePopulationDeclared": true,
+        "sourceRosterRecorded": true,
+        "physicalMap1to1Confirmed": false,
+        "bossVisual1to1Confirmed": false,
+        "combatAnimation1to1Confirmed": false,
+        "fullMissionPlaythroughConfirmed": false,
+        "multiplayerFullQaConfirmed": false,
+        "sourceEraSpeciesCrosschecked": false,
+        "explicitFrontGroupCompositionConfirmed": true
+      },
+      "explicitSourceAllocation": {
+        "active": {
+          "enemy": 96,
+          "ally": 12
+        },
+        "distant": {
+          "enemy": 192,
+          "ally": 12
+        },
+        "reserve": {
+          "enemy": 96,
+          "ally": 8
+        }
+      },
+      "allocationProvenance": "source-front-allocation-present"
+    },
+    {
+      "id": "AFF-13",
+      "title": "Sevastopol — ouvrir une issue sans réveiller toute la station",
+      "operationType": "Y-X avec réseau synthétique tiers",
+      "playerSide": "Un joueur Yautja et 4 chasseurs alliés PNJ originaux.",
+      "mediaContext": "Isolation ; intrusion Yautja originale. Profil local XEN-034, HUM-016. Le traqueur BOS-34 remplace l’adulte actif du front A. Plan, nombres et enchaînement de bataille originaux ; source du lieu dans Lieux_medias.",
+      "map": {
+        "id": "LD-22",
+        "place": "Sevastopol — réseaux publics et techniques",
+        "sourceContinuity": "Alien: Isolation ; insertion Yautja entièrement originale Lieu sourcé : H-L01 ; X-L05.",
+        "proposalStatus": "Maintenir faible densité et menace persistante ; deux Xénomorphes détaillés au plus selon EFF-15. Vérifier portes, navigation par gabarit et état identique en revenant sur zone.\nLieux documentés : H-L01 — Sevastopol ; X-L05 — Sevastopol"
+      },
+      "finiteAllocatedNpc": {
+        "active": {
+          "enemy": 12,
+          "ally": 2
+        },
+        "distant": {
+          "enemy": 20,
+          "ally": 2
+        },
+        "reserve": {
+          "enemy": 8,
+          "ally": 0
+        }
+      },
+      "enemyGroupIds": [
+        "GRP-43",
+        "GRP-50"
+      ],
+      "alliedGroupIds": [
+        "GRP-51"
+      ],
+      "namedCommanders": [
+        {
+          "id": "BOS-34",
+          "name": "Adulte traqueur de Sevastopol",
+          "fidelity": "Aucun statut de personnage canonique nommé ni pouvoir Fireteam attribué Profil XEN-034.\nProfils du catalogue : XEN-034 — Xénomorphe de Sevastopol"
+        }
+      ],
+      "gameplayMain": "musou-action-fronts-officers",
+      "avpExtinctionUsage": "source-content-and-in-universe-role-only; never RTS control scheme",
+      "checks": {
+        "finitePopulationDeclared": true,
+        "sourceRosterRecorded": true,
+        "physicalMap1to1Confirmed": false,
+        "bossVisual1to1Confirmed": false,
+        "combatAnimation1to1Confirmed": false,
+        "fullMissionPlaythroughConfirmed": false,
+        "multiplayerFullQaConfirmed": false,
+        "sourceEraSpeciesCrosschecked": false,
+        "explicitFrontGroupCompositionConfirmed": true
+      },
+      "explicitSourceAllocation": {
+        "active": {
+          "enemy": 12,
+          "ally": 2
+        },
+        "distant": {
+          "enemy": 20,
+          "ally": 2
+        },
+        "reserve": {
+          "enemy": 8,
+          "ally": 0
+        }
+      },
+      "allocationProvenance": "source-front-allocation-present"
+    },
+    {
+      "id": "AFF-14",
+      "title": "Lethe — briser la pression sur le corridor d’évacuation",
+      "operationType": "Y-X, humains secourus neutres",
+      "playerSide": "Un joueur Yautja et 48 chasseurs alliés PNJ originaux.",
+      "mediaContext": "Dark Descent ; mission Yautja alternative. Adultes locaux GRP-62 / XEN-037 ; aucune règle AVP 2010 n’est transférée. Plan, nombres et enchaînement de bataille originaux ; source du lieu dans Lieux_medias.",
+      "map": {
+        "id": "LD-23",
+        "place": "Lethe — colonie, usine et accès de ruche",
+        "sourceContinuity": "Dark Descent ; opération étendue et présence Yautja originales Lieu sourcé : H-L02 ; X-L04.",
+        "proposalStatus": "Pioneer Station reste un site distinct ; les variantes humaine et Yautja ne partagent pas le même joueur par accident. Vérifier portes, navigation par gabarit et état identique en revenant sur zone.\nLieux documentés : H-L02 — Lethe ; X-L04 — Lethe — colonie et liaison Pioneer"
+      },
+      "finiteAllocatedNpc": {
+        "active": {
+          "enemy": 128,
+          "ally": 16
+        },
+        "distant": {
+          "enemy": 512,
+          "ally": 24
+        },
+        "reserve": {
+          "enemy": 360,
+          "ally": 8
+        }
+      },
+      "enemyGroupIds": [
+        "GRP-62",
+        "GRP-45"
+      ],
+      "alliedGroupIds": [
+        "GRP-51"
+      ],
+      "namedCommanders": [
+        {
+          "id": "BOS-32",
+          "name": "Praetorian du passage de Lethe",
+          "fidelity": "Pas de reine miniature ni de pouvoirs du jeu Extinction importés Profil XEN-008.\nProfils du catalogue : XEN-008 — Praetorian"
+        }
+      ],
+      "gameplayMain": "musou-action-fronts-officers",
+      "avpExtinctionUsage": "source-content-and-in-universe-role-only; never RTS control scheme",
+      "checks": {
+        "finitePopulationDeclared": true,
+        "sourceRosterRecorded": true,
+        "physicalMap1to1Confirmed": false,
+        "bossVisual1to1Confirmed": false,
+        "combatAnimation1to1Confirmed": false,
+        "fullMissionPlaythroughConfirmed": false,
+        "multiplayerFullQaConfirmed": false,
+        "sourceEraSpeciesCrosschecked": false,
+        "explicitFrontGroupCompositionConfirmed": true
+      },
+      "explicitSourceAllocation": {
+        "active": {
+          "enemy": 128,
+          "ally": 16
+        },
+        "distant": {
+          "enemy": 512,
+          "ally": 24
+        },
+        "reserve": {
+          "enemy": 360,
+          "ally": 8
+        }
+      },
+      "allocationProvenance": "source-front-allocation-present"
+    },
+    {
+      "id": "AFF-15",
+      "title": "Freya Prospect — trois armées pour un même complexe",
+      "operationType": "X-Y-H, trois camps indépendants",
+      "playerSide": "Un joueur Yautja et 24 chasseurs alliés PNJ originaux.",
+      "mediaContext": "Cadre AVP 2010 ; acteurs génériques et bataille originale. Les gardes GRP-49 deviennent du personnel de sécurité original de ce complexe. Plan, nombres et enchaînement de bataille originaux ; source du lieu dans Lieux_medias.",
+      "map": {
+        "id": "LD-24",
+        "place": "Freya Prospect — complexe, ruines et extraction",
+        "sourceContinuity": "Aliens vs. Predator 2010 ; guerre musou originale dans ce cadre Lieu sourcé : Y-L02.",
+        "proposalStatus": "Les trois camps se battent hors caméra ; aucun équipement Fireteam ou Pathogen ajouté par hasard. Vérifier portes, navigation par gabarit et état identique en revenant sur zone.\nLieux documentés : Y-L02 — Freya Prospect et environs"
+      },
+      "finiteAllocatedNpc": {
+        "active": {
+          "enemy": 128,
+          "ally": 8
+        },
+        "distant": {
+          "enemy": 480,
+          "ally": 8
+        },
+        "reserve": {
+          "enemy": 320,
+          "ally": 8
+        }
+      },
+      "enemyGroupIds": [
+        "GRP-54",
+        "GRP-49"
+      ],
+      "alliedGroupIds": [
+        "GRP-51"
+      ],
+      "namedCommanders": [],
+      "gameplayMain": "musou-action-fronts-officers",
+      "avpExtinctionUsage": "source-content-and-in-universe-role-only; never RTS control scheme",
+      "checks": {
+        "finitePopulationDeclared": true,
+        "sourceRosterRecorded": true,
+        "physicalMap1to1Confirmed": false,
+        "bossVisual1to1Confirmed": false,
+        "combatAnimation1to1Confirmed": false,
+        "fullMissionPlaythroughConfirmed": false,
+        "multiplayerFullQaConfirmed": false,
+        "sourceEraSpeciesCrosschecked": false,
+        "explicitFrontGroupCompositionConfirmed": true
+      },
+      "explicitSourceAllocation": {
+        "active": {
+          "enemy": 128,
+          "ally": 8
+        },
+        "distant": {
+          "enemy": 480,
+          "ally": 8
+        },
+        "reserve": {
+          "enemy": 320,
+          "ally": 8
+        }
+      },
+      "allocationProvenance": "source-front-allocation-present"
+    },
+    {
+      "id": "AFF-16",
+      "title": "LV-895 — prendre le relais entre ruines et complexe",
+      "operationType": "X-Y-H, synthétiques corporatistes indépendants",
+      "playerSide": "Un joueur Yautja et 24 chasseurs alliés PNJ originaux.",
+      "mediaContext": "Fireteam Elite ; campagne Yautja originale, XEN-006/012 et HUM-015. BOS-33 remplace un Spitter du GRP-44 déjà actif au front C. Plan, nombres et enchaînement de bataille originaux ; source du lieu dans Lieux_medias.",
+      "map": {
+        "id": "LD-25",
+        "place": "LV-895 — périphérie industrielle et ruines",
+        "sourceContinuity": "Fireteam Elite ; campagne alternative Yautja, preset standard hors Pathogen Lieu sourcé : X-L03.",
+        "proposalStatus": "Le foyer Pathogen reste absent de cette opération standard ; ne pas mélanger chaque mutation dans les vagues. Vérifier portes, navigation par gabarit et état identique en revenant sur zone.\nLieux documentés : X-L03 — LV-895 — ruines des Engineers et foyer Pathogen"
+      },
+      "finiteAllocatedNpc": {
+        "active": {
+          "enemy": 128,
+          "ally": 8
+        },
+        "distant": {
+          "enemy": 480,
+          "ally": 8
+        },
+        "reserve": {
+          "enemy": 320,
+          "ally": 8
+        }
+      },
+      "enemyGroupIds": [
+        "GRP-44",
+        "GRP-46"
+      ],
+      "alliedGroupIds": [
+        "GRP-51"
+      ],
+      "namedCommanders": [
+        {
+          "id": "BOS-33",
+          "name": "Spitter en position dominante",
+          "fidelity": "Elite par sa position et son IA ; pas une nouvelle caste géante Profil XEN-012.\nProfils du catalogue : XEN-012 — Spitter de Fireteam Elite"
+        }
+      ],
+      "gameplayMain": "musou-action-fronts-officers",
+      "avpExtinctionUsage": "source-content-and-in-universe-role-only; never RTS control scheme",
+      "checks": {
+        "finitePopulationDeclared": true,
+        "sourceRosterRecorded": true,
+        "physicalMap1to1Confirmed": false,
+        "bossVisual1to1Confirmed": false,
+        "combatAnimation1to1Confirmed": false,
+        "fullMissionPlaythroughConfirmed": false,
+        "multiplayerFullQaConfirmed": false,
+        "sourceEraSpeciesCrosschecked": false,
+        "explicitFrontGroupCompositionConfirmed": true
+      },
+      "explicitSourceAllocation": {
+        "active": {
+          "enemy": 128,
+          "ally": 8
+        },
+        "distant": {
+          "enemy": 480,
+          "ally": 8
+        },
+        "reserve": {
+          "enemy": 320,
+          "ally": 8
+        }
+      },
+      "allocationProvenance": "source-front-allocation-present"
+    },
+    {
+      "id": "AFF-17",
+      "title": "Prodigy City — récupérer, contenir et évacuer",
+      "operationType": "X-Y-H, variante de guerre de 2120",
+      "playerSide": "Un joueur Yautja et 24 chasseurs alliés PNJ originaux.",
+      "mediaContext": "Alien: Earth ; invasion étendue et Yautja totalement originaux, sans prétendre reproduire l’épisode. Profil adulte XEN-036 ; BOS-35 remplace un garde Prodigy au front A. Plan, nombres et enchaînement de bataille originaux ; source du lieu dans Lieux_medias.",
+      "map": {
+        "id": "LD-26",
+        "place": "Prodigy City — cordon autour du Maginot",
+        "sourceContinuity": "Alien: Earth ; variante de guerre et intrusion Yautja originales Lieu sourcé : H-L05 ; X-L08.",
+        "proposalStatus": "Conserver le cadre 2120 ; aucune escouade de Wendy, aucun bataillon USCM ; autres organismes gérés individuellement. Vérifier portes, navigation par gabarit et état identique en revenant sur zone.\nLieux documentés : H-L05 — Prodigy City et épave de l’USCSS Maginot ; X-L08 — USCSS Maginot — confinement des spécimens"
+      },
+      "finiteAllocatedNpc": {
+        "active": {
+          "enemy": 128,
+          "ally": 8
+        },
+        "distant": {
+          "enemy": 480,
+          "ally": 8
+        },
+        "reserve": {
+          "enemy": 320,
+          "ally": 8
+        }
+      },
+      "enemyGroupIds": [
+        "GRP-43",
+        "GRP-48"
+      ],
+      "alliedGroupIds": [
+        "GRP-51"
+      ],
+      "namedCommanders": [
+        {
+          "id": "BOS-35",
+          "name": "Responsable du cordon Prodigy",
+          "fidelity": "Ni Hermit ni Morrow cloné ; santé et résistance humaines liées à protections visibles Profil HUM-021.\nProfils du catalogue : HUM-021 — Soldats tactiques de Prodigy"
+        }
+      ],
+      "gameplayMain": "musou-action-fronts-officers",
+      "avpExtinctionUsage": "source-content-and-in-universe-role-only; never RTS control scheme",
+      "checks": {
+        "finitePopulationDeclared": true,
+        "sourceRosterRecorded": true,
+        "physicalMap1to1Confirmed": false,
+        "bossVisual1to1Confirmed": false,
+        "combatAnimation1to1Confirmed": false,
+        "fullMissionPlaythroughConfirmed": false,
+        "multiplayerFullQaConfirmed": false,
+        "sourceEraSpeciesCrosschecked": false,
+        "explicitFrontGroupCompositionConfirmed": true
+      },
+      "explicitSourceAllocation": {
+        "active": {
+          "enemy": 128,
+          "ally": 8
+        },
+        "distant": {
+          "enemy": 480,
+          "ally": 8
+        },
+        "reserve": {
+          "enemy": 320,
+          "ally": 8
+        }
+      },
+      "allocationProvenance": "source-front-allocation-present"
+    },
+    {
+      "id": "AFF-18",
+      "title": "Tobler-9 — garder le refuge ouvert",
+      "operationType": "Y-X, pacte local avec les survivants",
+      "playerSide": "Un joueur Yautja et 48 chasseurs alliés PNJ originaux.",
+      "mediaContext": "Arc Marvel 2022 ; mission Yautja originale, profil local XEN-035. Steel Team est un événement narratif optionnel dont la composition exacte doit être relevée avant ajout. Plan, nombres et enchaînement de bataille originaux ; source du lieu dans Lieux_medias. Sélecteur obligatoire XEN-035 : Tobler-9, Marvel2022 ; aucun tirage mélangeant les trois arcs.",
+      "map": {
+        "id": "LD-27",
+        "place": "Tobler-9 — avant-poste, refuge et sous-sol",
+        "sourceContinuity": "Alien Marvel 2022 ; intervention Yautja et grands effectifs originaux Lieu sourcé : H-L06.",
+        "proposalStatus": "Séparer survivants, synthétiques et Xénomorphes ; aucun membre nommé Steel Team cloné ou ressuscité. Vérifier portes, navigation par gabarit et état identique en revenant sur zone.\nLieux documentés : H-L06 — Tobler-9"
+      },
+      "finiteAllocatedNpc": {
+        "active": {
+          "enemy": 128,
+          "ally": 16
+        },
+        "distant": {
+          "enemy": 512,
+          "ally": 24
+        },
+        "reserve": {
+          "enemy": 360,
+          "ally": 8
+        }
+      },
+      "enemyGroupIds": [
+        "GRP-43"
+      ],
+      "alliedGroupIds": [
+        "GRP-51"
+      ],
+      "namedCommanders": [],
+      "gameplayMain": "musou-action-fronts-officers",
+      "avpExtinctionUsage": "source-content-and-in-universe-role-only; never RTS control scheme",
+      "checks": {
+        "finitePopulationDeclared": true,
+        "sourceRosterRecorded": true,
+        "physicalMap1to1Confirmed": false,
+        "bossVisual1to1Confirmed": false,
+        "combatAnimation1to1Confirmed": false,
+        "fullMissionPlaythroughConfirmed": false,
+        "multiplayerFullQaConfirmed": false,
+        "sourceEraSpeciesCrosschecked": false,
+        "explicitFrontGroupCompositionConfirmed": true
+      },
+      "explicitSourceAllocation": {
+        "active": {
+          "enemy": 128,
+          "ally": 16
+        },
+        "distant": {
+          "enemy": 512,
+          "ally": 24
+        },
+        "reserve": {
+          "enemy": 360,
+          "ally": 8
+        }
+      },
+      "allocationProvenance": "source-front-allocation-present"
+    },
+    {
+      "id": "AFF-19",
+      "title": "Epsilon — ouvrir le quai avant le transfert",
+      "operationType": "X-Y-H, infiltration localisée",
+      "playerSide": "Un joueur Yautja et 4 chasseurs alliés PNJ originaux.",
+      "mediaContext": "Arc Marvel 2021 ; intrusion Yautja et gardes corporatistes originaux, adultes locaux XEN-035. Plan, nombres et enchaînement de bataille originaux ; source du lieu dans Lieux_medias. Sélecteur obligatoire XEN-035 : Epsilon, Marvel2021 ; aucun tirage mélangeant les trois arcs.",
+      "map": {
+        "id": "LD-28",
+        "place": "Station Epsilon — sas, laboratoires et quai",
+        "sourceContinuity": "Alien Marvel 2021 ; récupération Yautja originale Lieu sourcé : H-L07.",
+        "proposalStatus": "Utiliser le budget localisé EFF-15 ; huit adultes alloués au maximum dans cette variante, sans prétendre au nombre du comic. Vérifier portes, navigation par gabarit et état identique en revenant sur zone.\nLieux documentés : H-L07 — Station Epsilon"
+      },
+      "finiteAllocatedNpc": {
+        "active": {
+          "enemy": 12,
+          "ally": 2
+        },
+        "distant": {
+          "enemy": 20,
+          "ally": 2
+        },
+        "reserve": {
+          "enemy": 8,
+          "ally": 0
+        }
+      },
+      "enemyGroupIds": [
+        "GRP-43",
+        "GRP-49"
+      ],
+      "alliedGroupIds": [
+        "GRP-51"
+      ],
+      "namedCommanders": [],
+      "gameplayMain": "musou-action-fronts-officers",
+      "avpExtinctionUsage": "source-content-and-in-universe-role-only; never RTS control scheme",
+      "checks": {
+        "finitePopulationDeclared": true,
+        "sourceRosterRecorded": true,
+        "physicalMap1to1Confirmed": false,
+        "bossVisual1to1Confirmed": false,
+        "combatAnimation1to1Confirmed": false,
+        "fullMissionPlaythroughConfirmed": false,
+        "multiplayerFullQaConfirmed": false,
+        "sourceEraSpeciesCrosschecked": false,
+        "explicitFrontGroupCompositionConfirmed": true
+      },
+      "explicitSourceAllocation": {
+        "active": {
+          "enemy": 12,
+          "ally": 2
+        },
+        "distant": {
+          "enemy": 20,
+          "ally": 2
+        },
+        "reserve": {
+          "enemy": 8,
+          "ally": 0
+        }
+      },
+      "allocationProvenance": "source-front-allocation-present"
+    },
+    {
+      "id": "AFF-20",
+      "title": "Neonopolis — la route des technologies dérobées",
+      "operationType": "Yautja contre sécurité humaine ; raid de grande ampleur original",
+      "playerSide": "Clan des Cendres Veilleuses, création originale ; chasseur du joueur inédit. Scarface et Stone Heart non déployés dans le preset.",
+      "mediaContext": "Scénario et personnages additionnels originaux, non reconstitution du déroulement de l’œuvre. Effectifs, objectifs, groupes et dimensions sont des propositions de jeu. Inspiration : Y-L03 / Y-S22 et Y-S23. 768 humains et 32 alliés sont un budget de guerre original, pas un recensement de Neonopolis.",
+      "map": {
+        "id": "LD-29",
+        "place": "Neonopolis — récupération technologique dans les quartiers industriels",
+        "sourceContinuity": "Lieu média Y-L03 ; Concrete Jungle (2005). NECA confirme Neonopolis et la récupération technologique de Scarface : https://store.necaonline.com/blogs/behind-the-scenes/closer-look-video-game-appearance-ultimate-scarface-predator . Scénario et personnages additionnels originaux, non reconstitution du déroulement de l’œuvre. Effectifs, objectifs, groupes et dimensions sont des propositions de jeu.",
+        "proposalStatus": "Le transport du module reste physiquement possible ; les accès de toiture possèdent retours et contre-approches ; aucun bâtiment canonique n’est déduit de cette disposition originale."
+      },
+      "finiteAllocatedNpc": {
+        "active": {
+          "enemy": 128,
+          "ally": 12
+        },
+        "distant": {
+          "enemy": 384,
+          "ally": 12
+        },
+        "reserve": {
+          "enemy": 256,
+          "ally": 8
+        }
+      },
+      "enemyGroupIds": [
+        "GRP-55"
+      ],
+      "alliedGroupIds": [
+        "GRP-31",
+        "GRP-33",
+        "GRP-34",
+        "GRP-35"
+      ],
+      "namedCommanders": [
+        {
+          "id": "BOS-36",
+          "name": "Mara Voss, responsable du transfert industriel",
+          "fidelity": "Identité et tactique originales ; aucune immunité humaine ou compétence canonique inventée."
+        }
+      ],
+      "gameplayMain": "musou-action-fronts-officers",
+      "avpExtinctionUsage": "source-content-and-in-universe-role-only; never RTS control scheme",
+      "checks": {
+        "finitePopulationDeclared": true,
+        "sourceRosterRecorded": true,
+        "physicalMap1to1Confirmed": false,
+        "bossVisual1to1Confirmed": false,
+        "combatAnimation1to1Confirmed": false,
+        "fullMissionPlaythroughConfirmed": false,
+        "multiplayerFullQaConfirmed": false,
+        "sourceEraSpeciesCrosschecked": false,
+        "explicitFrontGroupCompositionConfirmed": true
+      },
+      "explicitSourceAllocation": {
+        "active": {
+          "enemy": 128,
+          "ally": 12
+        },
+        "distant": {
+          "enemy": 384,
+          "ally": 12
+        },
+        "reserve": {
+          "enemy": 256,
+          "ally": 8
+        }
+      },
+      "allocationProvenance": "source-front-allocation-present"
+    },
+    {
+      "id": "AFF-21",
+      "title": "Genna — balise disputée entre deux clans",
+      "operationType": "Yautja contre Yautja ; conflit original sur lieu de film",
+      "playerSide": "Clan des Cendres Veilleuses, original ; aucun lien revendiqué avec la famille de Dek.",
+      "mediaContext": "Scénario et personnages additionnels originaux, non reconstitution du déroulement de l’œuvre. Effectifs, objectifs, groupes et dimensions sont des propositions de jeu. Lieu sourcé Y-L01 / Y-S17 ; la présence de ces deux clans sur Genna, leurs armes et ce conflit ne sont pas des faits de Badlands.",
+      "map": {
+        "id": "LD-30",
+        "place": "Genna — trois voies de récupération d’une balise de clan",
+        "sourceContinuity": "Lieu média Y-L01 ; Badlands (2025). Disney+ nomme Genna : https://www.disneyplus.com/explore/articles/predator-badlands-movie . Guerre entre deux clans inventés, hors histoire de Dek ; Scénario et personnages additionnels originaux, non reconstitution du déroulement de l’œuvre. Effectifs, objectifs, groupes et dimensions sont des propositions de jeu.",
+        "proposalStatus": "Le relief permet un déplacement lisible des grands acteurs ; chaque groupe garde une route de repli. Le preset exclut Dek, Thia et tout animal nommé du film."
+      },
+      "finiteAllocatedNpc": {
+        "active": {
+          "enemy": 16,
+          "ally": 8
+        },
+        "distant": {
+          "enemy": 32,
+          "ally": 8
+        },
+        "reserve": {
+          "enemy": 16,
+          "ally": 4
+        }
+      },
+      "enemyGroupIds": [
+        "GRP-31",
+        "GRP-32",
+        "GRP-33",
+        "GRP-35",
+        "GRP-36"
+      ],
+      "alliedGroupIds": [
+        "GRP-31",
+        "GRP-33",
+        "GRP-34",
+        "GRP-35"
+      ],
+      "namedCommanders": [
+        {
+          "id": "BOS-37",
+          "name": "Vorrek, chef de la récupération rivale",
+          "fidelity": "Pas de rang universel, de lien familial avec Dek ni d’autorité sur tous les Yautja de Genna."
+        }
+      ],
+      "gameplayMain": "musou-action-fronts-officers",
+      "avpExtinctionUsage": "source-content-and-in-universe-role-only; never RTS control scheme",
+      "checks": {
+        "finitePopulationDeclared": true,
+        "sourceRosterRecorded": true,
+        "physicalMap1to1Confirmed": false,
+        "bossVisual1to1Confirmed": false,
+        "combatAnimation1to1Confirmed": false,
+        "fullMissionPlaythroughConfirmed": false,
+        "multiplayerFullQaConfirmed": false,
+        "sourceEraSpeciesCrosschecked": false,
+        "explicitFrontGroupCompositionConfirmed": true
+      },
+      "explicitSourceAllocation": {
+        "active": {
+          "enemy": 16,
+          "ally": 8
+        },
+        "distant": {
+          "enemy": 32,
+          "ally": 8
+        },
+        "reserve": {
+          "enemy": 16,
+          "ally": 4
+        }
+      },
+      "allocationProvenance": "source-front-allocation-present"
+    },
+    {
+      "id": "AFF-22",
+      "title": "The Last Hunt — libération dans une réserve alternative",
+      "operationType": "Yautja contre ravisseurs Yautja ; humains à secourir",
+      "playerSide": "Détachement original des Cendres Veilleuses, engagé pour cette mission de secours.",
+      "mediaContext": "Scénario et personnages additionnels originaux, non reconstitution du déroulement de l’œuvre. Effectifs, objectifs, groupes et dimensions sont des propositions de jeu. Lieu inspiré de Y-L04 / Y-S21 ; les captifs, leur nombre, Narek, le motif de secours et les trois abris sont inventés pour cette variante. Theta et le Super Predator du comic ne sont pas déployés.",
+      "map": {
+        "id": "LD-31",
+        "place": "Réserve de The Last Hunt — opération de libération alternative",
+        "sourceContinuity": "Lieu média Y-L04 ; Predator: The Last Hunt (2024), notice Marvel : https://www.marvel.com/comics/collection/110461/predator_the_last_hunt_trade_paperback . Site exact à vérifier dans les pages ; Scénario et personnages additionnels originaux, non reconstitution du déroulement de l’œuvre. Effectifs, objectifs, groupes et dimensions sont des propositions de jeu.",
+        "proposalStatus": "Une fermeture coupe une route précise sans enfermer arbitrairement les civils ; le registre réconcilie 24 captifs entre rétention, déplacement, secours et pertes. Ne pas fusionner plusieurs planètes du comic."
+      },
+      "finiteAllocatedNpc": {
+        "active": {
+          "enemy": 16,
+          "ally": 8
+        },
+        "distant": {
+          "enemy": 32,
+          "ally": 8
+        },
+        "reserve": {
+          "enemy": 16,
+          "ally": 4
+        }
+      },
+      "enemyGroupIds": [
+        "GRP-31",
+        "GRP-32",
+        "GRP-33",
+        "GRP-35",
+        "GRP-36"
+      ],
+      "alliedGroupIds": [
+        "GRP-32",
+        "GRP-33",
+        "GRP-34",
+        "GRP-35"
+      ],
+      "namedCommanders": [
+        {
+          "id": "BOS-38",
+          "name": "Narek, gardien rival du site de captivité",
+          "fidelity": "Rôle et dispositions originaux ; aucune fusion avec Mr. Black ni avec une caste Super Predator universelle."
+        }
+      ],
+      "gameplayMain": "musou-action-fronts-officers",
+      "avpExtinctionUsage": "source-content-and-in-universe-role-only; never RTS control scheme",
+      "checks": {
+        "finitePopulationDeclared": true,
+        "sourceRosterRecorded": true,
+        "physicalMap1to1Confirmed": false,
+        "bossVisual1to1Confirmed": false,
+        "combatAnimation1to1Confirmed": false,
+        "fullMissionPlaythroughConfirmed": false,
+        "multiplayerFullQaConfirmed": false,
+        "sourceEraSpeciesCrosschecked": false,
+        "explicitFrontGroupCompositionConfirmed": true
+      },
+      "explicitSourceAllocation": {
+        "active": {
+          "enemy": 16,
+          "ally": 8
+        },
+        "distant": {
+          "enemy": 32,
+          "ally": 8
+        },
+        "reserve": {
+          "enemy": 16,
+          "ally": 4
+        }
+      },
+      "allocationProvenance": "source-front-allocation-present"
+    },
+    {
+      "id": "AFF-23",
+      "title": "Toundra — rencontre alternative avec Theta",
+      "operationType": "Traque Yautja/humains restreinte ; trêve locale possible",
+      "playerSide": "Chasseur Yautja inédit et 4 éclaireurs alliés originaux ; aucun clan canonique revendiqué.",
+      "mediaContext": "Scénario et personnages additionnels originaux, non reconstitution du déroulement de l’œuvre. Effectifs, objectifs, groupes et dimensions sont des propositions de jeu. H-L09 et HUM-032 ; Marvel Predator (2022) #2 établit seulement Theta échouée, l’avant-poste et une traque. La balise, les sept gardes, les quatre alliés et l’issue négociée sont inventés.",
+      "map": {
+        "id": "LD-32",
+        "place": "Planète de toundra — épave de Theta et approche de l’avant-poste",
+        "sourceContinuity": "Lieu média H-L09 ; Predator (2022) #2. Marvel décrit Theta échouée, une marche vers un avant-poste et une traque : https://www.marvel.com/comics/issue/89619/predator . Scénario et personnages additionnels originaux, non reconstitution du déroulement de l’œuvre. Effectifs, objectifs, groupes et dimensions sont des propositions de jeu.",
+        "proposalStatus": "Chaque camp peut rejoindre l’objectif sans sprint obligatoire ; les traces se dégradent sans fournir une détection parfaite. Theta demeure unique et les sept gardes originaux sont distincts."
+      },
+      "finiteAllocatedNpc": {
+        "active": {
+          "enemy": 4,
+          "ally": 2
+        },
+        "distant": {
+          "enemy": 4,
+          "ally": 2
+        },
+        "reserve": {
+          "enemy": 0,
+          "ally": 0
+        }
+      },
+      "enemyGroupIds": [
+        "GRP-56",
+        "GRP-57"
+      ],
+      "alliedGroupIds": [
+        "GRP-12"
+      ],
+      "namedCommanders": [],
+      "gameplayMain": "musou-action-fronts-officers",
+      "avpExtinctionUsage": "source-content-and-in-universe-role-only; never RTS control scheme",
+      "checks": {
+        "finitePopulationDeclared": true,
+        "sourceRosterRecorded": true,
+        "physicalMap1to1Confirmed": false,
+        "bossVisual1to1Confirmed": false,
+        "combatAnimation1to1Confirmed": false,
+        "fullMissionPlaythroughConfirmed": false,
+        "multiplayerFullQaConfirmed": false,
+        "sourceEraSpeciesCrosschecked": false,
+        "explicitFrontGroupCompositionConfirmed": true
+      },
+      "explicitSourceAllocation": {
+        "active": {
+          "enemy": 4,
+          "ally": 2
+        },
+        "distant": {
+          "enemy": 4,
+          "ally": 2
+        },
+        "reserve": {
+          "enemy": 0,
+          "ally": 0
+        }
+      },
+      "allocationProvenance": "source-front-allocation-present"
+    },
+    {
+      "id": "AFF-24",
+      "title": "Lune des Spinners — secourir l’habitat",
+      "operationType": "Y-X, colonie humaine à évacuer",
+      "playerSide": "Un joueur Yautja et 48 chasseurs alliés PNJ originaux.",
+      "mediaContext": "Arc Marvel 2021 ; monde nommé prudemment, intervention Yautja et effectifs de guerre originaux. Profil local XEN-035. Plan, nombres et enchaînement de bataille originaux ; source du lieu dans Lieux_medias. Sélecteur obligatoire XEN-035 : Spinners / Revival, Marvel2021 ; aucun tirage mélangeant les trois arcs.",
+      "map": {
+        "id": "LD-33",
+        "place": "Lune des Spinners — habitat et terraformation",
+        "sourceContinuity": "Alien Marvel 2021 ; nom du lieu à confirmer, secours Yautja original Lieu sourcé : H-L08.",
+        "proposalStatus": "Nom de lune non inventé ; Spinners civils distincts d’une garnison ajoutée par conception. Vérifier portes, navigation par gabarit et état identique en revenant sur zone.\nLieux documentés : H-L08 — Lune des Spinners — nom à confirmer"
+      },
+      "finiteAllocatedNpc": {
+        "active": {
+          "enemy": 128,
+          "ally": 16
+        },
+        "distant": {
+          "enemy": 512,
+          "ally": 24
+        },
+        "reserve": {
+          "enemy": 360,
+          "ally": 8
+        }
+      },
+      "enemyGroupIds": [
+        "GRP-43"
+      ],
+      "alliedGroupIds": [
+        "GRP-51"
+      ],
+      "namedCommanders": [],
+      "gameplayMain": "musou-action-fronts-officers",
+      "avpExtinctionUsage": "source-content-and-in-universe-role-only; never RTS control scheme",
+      "checks": {
+        "finitePopulationDeclared": true,
+        "sourceRosterRecorded": true,
+        "physicalMap1to1Confirmed": false,
+        "bossVisual1to1Confirmed": false,
+        "combatAnimation1to1Confirmed": false,
+        "fullMissionPlaythroughConfirmed": false,
+        "multiplayerFullQaConfirmed": false,
+        "sourceEraSpeciesCrosschecked": false,
+        "explicitFrontGroupCompositionConfirmed": true
+      },
+      "explicitSourceAllocation": {
+        "active": {
+          "enemy": 128,
+          "ally": 16
+        },
+        "distant": {
+          "enemy": 512,
+          "ally": 24
+        },
+        "reserve": {
+          "enemy": 360,
+          "ally": 8
+        }
+      },
+      "allocationProvenance": "source-front-allocation-present"
+    },
+    {
+      "id": "AFF-25",
+      "title": "Lethe — variante Colonial Marines contre la ruche",
+      "operationType": "X-H, mode humain secondaire optionnel",
+      "playerSide": "Un joueur humain original à créer ; 32 alliés PNJ. Mode secondaire optionnel, dépend d’un contrôleur humain jouable absent du périmètre validé.",
+      "mediaContext": "Dark Descent ; déroulement et nombres originaux. Adultes locaux GRP-62 / XEN-037, sans règles AVP 2010. Plan, nombres et enchaînement de bataille originaux ; source du lieu dans Lieux_medias.",
+      "map": {
+        "id": "LD-23",
+        "place": "Lethe — colonie, usine et accès de ruche",
+        "sourceContinuity": "Dark Descent ; opération étendue et présence Yautja originales Lieu sourcé : H-L02 ; X-L04.",
+        "proposalStatus": "Pioneer Station reste un site distinct ; les variantes humaine et Yautja ne partagent pas le même joueur par accident. Vérifier portes, navigation par gabarit et état identique en revenant sur zone.\nLieux documentés : H-L02 — Lethe ; X-L04 — Lethe — colonie et liaison Pioneer"
+      },
+      "finiteAllocatedNpc": {
+        "active": {
+          "enemy": 96,
+          "ally": 12
+        },
+        "distant": {
+          "enemy": 288,
+          "ally": 12
+        },
+        "reserve": {
+          "enemy": 192,
+          "ally": 8
+        }
+      },
+      "enemyGroupIds": [
+        "GRP-62",
+        "GRP-45"
+      ],
+      "alliedGroupIds": [
+        "GRP-53"
+      ],
+      "namedCommanders": [
+        {
+          "id": "BOS-32",
+          "name": "Praetorian du passage de Lethe",
+          "fidelity": "Pas de reine miniature ni de pouvoirs du jeu Extinction importés Profil XEN-008.\nProfils du catalogue : XEN-008 — Praetorian"
+        }
+      ],
+      "gameplayMain": "musou-action-fronts-officers",
+      "avpExtinctionUsage": "source-content-and-in-universe-role-only; never RTS control scheme",
+      "checks": {
+        "finitePopulationDeclared": true,
+        "sourceRosterRecorded": true,
+        "physicalMap1to1Confirmed": false,
+        "bossVisual1to1Confirmed": false,
+        "combatAnimation1to1Confirmed": false,
+        "fullMissionPlaythroughConfirmed": false,
+        "multiplayerFullQaConfirmed": false,
+        "sourceEraSpeciesCrosschecked": false,
+        "explicitFrontGroupCompositionConfirmed": true
+      },
+      "explicitSourceAllocation": {
+        "active": {
+          "enemy": 96,
+          "ally": 12
+        },
+        "distant": {
+          "enemy": 288,
+          "ally": 12
+        },
+        "reserve": {
+          "enemy": 192,
+          "ally": 8
+        }
+      },
+      "allocationProvenance": "source-front-allocation-present"
+    },
+    {
+      "id": "AFF-26",
+      "title": "Tobler-9 — variante défense des survivants",
+      "operationType": "X-H, humains et coopération synthétique scénarisée",
+      "playerSide": "Un joueur humain original à créer ; 32 alliés PNJ. Mode secondaire optionnel, dépend d’un contrôleur humain jouable absent du périmètre validé.",
+      "mediaContext": "Arc Marvel 2022 ; mode humain et composition originaux. Un accord avec Steel Team peut être un événement unique après vérification de ses membres ; aucun clone dans GRP-52. Plan, nombres et enchaînement de bataille originaux ; source du lieu dans Lieux_medias. Sélecteur obligatoire XEN-035 : Tobler-9, Marvel2022 ; aucun tirage mélangeant les trois arcs.",
+      "map": {
+        "id": "LD-27",
+        "place": "Tobler-9 — avant-poste, refuge et sous-sol",
+        "sourceContinuity": "Alien Marvel 2022 ; intervention Yautja et grands effectifs originaux Lieu sourcé : H-L06.",
+        "proposalStatus": "Séparer survivants, synthétiques et Xénomorphes ; aucun membre nommé Steel Team cloné ou ressuscité. Vérifier portes, navigation par gabarit et état identique en revenant sur zone.\nLieux documentés : H-L06 — Tobler-9"
+      },
+      "finiteAllocatedNpc": {
+        "active": {
+          "enemy": 96,
+          "ally": 12
+        },
+        "distant": {
+          "enemy": 288,
+          "ally": 12
+        },
+        "reserve": {
+          "enemy": 192,
+          "ally": 8
+        }
+      },
+      "enemyGroupIds": [
+        "GRP-43"
+      ],
+      "alliedGroupIds": [
+        "GRP-52"
+      ],
+      "namedCommanders": [],
+      "gameplayMain": "musou-action-fronts-officers",
+      "avpExtinctionUsage": "source-content-and-in-universe-role-only; never RTS control scheme",
+      "checks": {
+        "finitePopulationDeclared": true,
+        "sourceRosterRecorded": true,
+        "physicalMap1to1Confirmed": false,
+        "bossVisual1to1Confirmed": false,
+        "combatAnimation1to1Confirmed": false,
+        "fullMissionPlaythroughConfirmed": false,
+        "multiplayerFullQaConfirmed": false,
+        "sourceEraSpeciesCrosschecked": false,
+        "explicitFrontGroupCompositionConfirmed": true
+      },
+      "explicitSourceAllocation": {
+        "active": {
+          "enemy": 96,
+          "ally": 12
+        },
+        "distant": {
+          "enemy": 288,
+          "ally": 12
+        },
+        "reserve": {
+          "enemy": 192,
+          "ally": 8
+        }
+      },
+      "allocationProvenance": "source-front-allocation-present"
+    },
+    {
+      "id": "AFF-27",
+      "title": "LV-742 : les quatre fronts de la ruche des failles",
+      "operationType": "Guerre à trois espèces — sabotage logistique, rivalité de routes et assaut de ruche",
+      "playerSide": "Un chasseur joueur et 24 Yautja PNJ du clan original de l’opération ; huit PNJ actifs au plafond initial.",
+      "mediaContext": "Opération originale située sur LV-742 dans le cadre de Aliens versus Predator: Extinction. Espèces et unités sont celles du jeu ; intrigue, terrain, objectifs, effectifs et formations ci-dessous sont des propositions musou, sans prétendre reproduire une mission ni un plan officiel. Tous les profils médiatiques sélectionnés sont Extinction ; aucune contamination par Pathogen, Neomorph, Grid, Alpha, Offspring ou héros de films. Les effectifs, le clan et le nom de ruche sont originaux.\nProfils du catalogue : XEN-001 ; XEN-002 ; XEN-004 ; XEN-005 ; XEN-006 ; XEN-007 ; XEN-008 ; HUM-001 ; HUM-002 ; HUM-003 ; HUM-036 ; HUM-037 ; HUM-038 ; HUM-039 ; HUM-040 ; HUM-041 ; YAU-029 ; YAU-030 ; YAU-031 ; YAU-032 ; YAU-033 ; YAU-034 ; YAU-035 ; YAU-036 ; YAU-037\nX-S01 — Aliens versus Predator: Extinction — manuel officiel PS2\nhttps://gamingalexandria.com/ps2/Aliens%20Versus%20Predator%20Extinction/Aliens%20Versus%20Predator%20Extinction%20-%20Manual.pdf",
+      "map": {
+        "id": "LD-34",
+        "place": "LV-742 — bassin atmosphérique et ruche des failles",
+        "sourceContinuity": "Opération originale située sur LV-742 dans le cadre de Aliens versus Predator: Extinction. Espèces et unités sont celles du jeu ; intrigue, terrain, objectifs, effectifs et formations ci-dessous sont des propositions musou, sans prétendre reproduire une mission ni un plan officiel.",
+        "proposalStatus": "Chaque front possède au moins deux routes praticables ; tout blocage conserve un détour mesurable. La taille des galeries filtre les grosses unités. Renforts humains par balise, Xénomorphes par conduits tracés, Yautja par route du sanctuaire. La reine ne bouche pas l’unique sortie.\nOpération liée : FR-40\nGabarit lié : EFF-14\nLieux documentés : X-L01 — LV-742 — zones de guerre d’Extinction\nX-S01 — Aliens versus Predator: Extinction — manuel officiel PS2\nhttps://gamingalexandria.com/ps2/Aliens%20Versus%20Predator%20Extinction/Aliens%20Versus%20Predator%20Extinction%20-%20Manual.pdf"
+      },
+      "finiteAllocatedNpc": {
+        "active": {
+          "enemy": 128,
+          "ally": 8
+        },
+        "distant": {
+          "enemy": 480,
+          "ally": 8
+        },
+        "reserve": {
+          "enemy": 320,
+          "ally": 8
+        }
+      },
+      "enemyGroupIds": [
+        "GRP-58",
+        "GRP-59",
+        "GRP-60"
+      ],
+      "alliedGroupIds": [
+        "GRP-61"
+      ],
+      "namedCommanders": [
+        {
+          "id": "BOS-39",
+          "name": "Reine de la ruche des failles de LV-742",
+          "fidelity": "Reine du roster Extinction ; nom de ruche et rencontre originaux. Aucun vol, pouvoir de glace, téléportation ou absorption d’énergie ajouté sans source. Une reine par opération est une limite de conception, pas une règle universelle du vivant.\nProfils du catalogue : XEN-007 — Reine Xénomorphe\nX-S01 — Aliens versus Predator: Extinction — manuel officiel PS2\nhttps://gamingalexandria.com/ps2/Aliens%20Versus%20Predator%20Extinction/Aliens%20Versus%20Predator%20Extinction%20-%20Manual.pdf"
+        }
+      ],
+      "gameplayMain": "musou-action-fronts-officers",
+      "avpExtinctionUsage": "source-content-and-in-universe-role-only; never RTS control scheme",
+      "checks": {
+        "finitePopulationDeclared": true,
+        "sourceRosterRecorded": true,
+        "physicalMap1to1Confirmed": false,
+        "bossVisual1to1Confirmed": false,
+        "combatAnimation1to1Confirmed": false,
+        "fullMissionPlaythroughConfirmed": false,
+        "multiplayerFullQaConfirmed": false,
+        "sourceEraSpeciesCrosschecked": false,
+        "explicitFrontGroupCompositionConfirmed": true
+      },
+      "explicitSourceAllocation": {
+        "active": {
+          "enemy": 128,
+          "ally": 8
+        },
+        "distant": {
+          "enemy": 480,
+          "ally": 8
+        },
+        "reserve": {
+          "enemy": 320,
+          "ally": 8
+        }
+      },
+      "allocationProvenance": "source-front-allocation-present"
+    }
+  ],
+  "crossMediaGaps": [
+    {
+      "id": "musou-primary-loop",
+      "status": "runtime-action-already-present; audit high-density offline battles",
+      "next": "Officer break morale, ally pressure, timed objectives and tactical updates"
+    },
+    {
+      "id": "extinction-only-content",
+      "status": "partial; source roles and silhouettes, hive-space and spores, facings unverified",
+      "next": "Host-based infestation costs and caste-specific biological outcomes"
+    },
+    {
+      "id": "xeno-caste-mesh-fidelity",
+      "status": "unverified",
+      "next": "Drone/Warrior/Runner/Facehugger/Praetorian/Queen measured, textured multi-angle assets"
+    },
+    {
+      "id": "yautja-race-equipment",
+      "status": "unverified",
+      "next": "Full source-specific masks, dreadlocks, armor, melee weapons and attacks by continuity"
+    },
+    {
+      "id": "human-synthetic-distinction",
+      "status": "partial",
+      "next": "USCM armor and weapon variants, Weyland-Yutani and Seegson tech identification"
+    },
+    {
+      "id": "map-location-geography",
+      "status": "proposal recorded; physical 1:1 unverified",
+      "next": "Altitude, planets, Earth geography, walkable roads/seams, cover and biome coherence"
+    },
+    {
+      "id": "large-army-scale",
+      "status": "finite virtual armies, detail actor ceiling 32",
+      "next": "Hardware benchmark for increased visible crowd, no unsupported 1,000-rendered claim"
+    },
+    {
+      "id": "co-op-factions",
+      "status": "2-player local mode present; full operation QA pending",
+      "next": "Split-screen objectives, target ownership, saves and local faction battle consequences"
+    }
+  ],
+  "allocationAudit": {
+    "sourceDeclaredBudgetSumAllOperations": {
+      "enemy": 12816,
+      "ally": 708
+    },
+    "explicitSourceFrontAllocationCount": 22,
+    "inferredBudgetAllocationCount": 5,
+    "inferredBudgetOperationIds": [
+      "AFF-06",
+      "AFF-07",
+      "AFF-08",
+      "AFF-09",
+      "AFF-10"
+    ],
+    "warning": "AFF-06..AFF-10 have source budgets and group IDs but no detailed per-front forceAllocation records; generated fallback must not be presented as a 1:1 source composition",
+    "accuracy": "budget totals 13,524 across 27 scenarios, not one simultaneous battle",
+    "runtimeAuditedOriginalFrontPlans": 5,
+    "runtimeFallbacksRemainingForTheseFive": 0,
+    "runtimeNote": "Original AFF-06..10 battle prose is now explicit in a versioned runtime Musou front plan; source JSON still lacks forceAllocation, and neither plan is canonical media reconstruction."
+  }
+}

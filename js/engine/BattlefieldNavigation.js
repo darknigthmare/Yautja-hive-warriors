@@ -42,8 +42,15 @@ function clearSegment(environment, from, to, radius) {
     const extent = (c.radius ?? Math.hypot(c.halfWidth, c.halfDepth)) + radius;
     if (c.x + extent < Math.min(from.x, to.x) || c.x - extent > Math.max(from.x, to.x) || c.z + extent < Math.min(from.z, to.z) || c.z - extent > Math.max(from.z, to.z)) continue;
     if (c.navigationTest) {
-      const steps = Math.max(1, Math.ceil(distance(from, to) / .5));
-      for (let i = 0; i <= steps; i++) if (c.navigationTest(new THREE.Vector3(THREE.MathUtils.lerp(from.x, to.x, i / steps), from.y, THREE.MathUtils.lerp(from.z, to.z, i / steps)), radius)) return false;
+      const length=distance(from,to),steps=Math.max(1,Math.ceil(length/.5));
+      // A raised ramp's navigation margin can touch the currently resolved
+      // capsule by a few centimetres. Allow an IMMEDIATE exit from that
+      // margin, but never an entrance, a crossing or movement within cover.
+      const at=t=>new THREE.Vector3(THREE.MathUtils.lerp(from.x,to.x,t),
+        from.y,THREE.MathUtils.lerp(from.z,to.z,t));
+      const onEdge=c.navigationTest(from,radius);
+      if(onEdge && length>.11 && c.navigationTest(at(.1/length),radius))return false;
+      for(let i=onEdge?1:0;i<=steps;i++)if(c.navigationTest(at(i/steps),radius))return false;
       continue;
     }
     if (c.halfWidth == null) {
@@ -94,7 +101,31 @@ function shortest(nodes, edges, start, end) {
 }
 
 export class BattlefieldNavigation {
-  constructor(environment) { this.environment = environment; this.actorPaths = new WeakMap(); this.gridCache = new Map(); }
+  constructor(environment) {
+    this.environment = environment; this.actorPaths = new WeakMap();
+    this.gridCache = new Map(); this.colliderStamp = null;
+  }
+
+  /** The physical scenery can change without any route/order event: an APC
+   * may be destroyed and a temporary wall or ramp collider removed.
+   * Never keep an A* grid built against the previous collider set.
+   * Count and active flags are O(n) only when pathfinding is requested. */
+  _refreshObstacleCache() {
+    const colliders = this.environment.colliders ?? [];
+    let live = 0, moving = '';
+    for (const c of colliders) {
+      if (active(c)) live++;
+      if (c.isCollisionActive || c.isNavigationActive) {
+        moving += `/${Math.round((c.x ?? 0) * 10)},${Math.round((c.z ?? 0) * 10)},${active(c) ? 1 : 0}`;
+      }
+    }
+    const stamp = `${colliders.length}:${live}${moving}`;
+    if (stamp !== this.colliderStamp) {
+      this.colliderStamp = stamp;
+      this.gridCache.clear();
+      this.actorPaths = new WeakMap();
+    }
+  }
 
   strategicPath(from, target) {
     const environment = this.environment, layout = environment.battlefieldLayout;
@@ -133,9 +164,24 @@ export class BattlefieldNavigation {
   }
 
   localPath(from, target, radius) {
-    const environment = this.environment, room = environment.getSectorAt(from);
-    if (!room || environment.getSectorAt(target)?.id !== room.id) return [target.clone()];
-    const step = 3, b = room.bounds, width = Math.floor((b.maxX - b.minX - 2) / step) + 1;
+    this._refreshObstacleCache();
+    const environment = this.environment, sector = environment.getSectorAt(from);
+    if (sector && environment.getSectorAt(target)?.id !== sector.id) return [];
+    // Non-battlefield arenas also contain real meshes and hulls but do not
+    // expose a 6-sector battlefieldLayout. A direct target fallback there
+    // silently disables A* exactly when an enemy must skirt a prop.
+    const half = environment.halfSize;
+    if (!sector && (environment.battlefieldLayout || !Number.isFinite(half) || half <= 0)) return [];
+    const span = Math.max(Math.abs(target.x-from.x), Math.abs(target.z-from.z));
+    const padding = Math.min(45, Math.max(28, span * .4));
+    const bounds = sector?.bounds ?? (half <= 100
+      ? { minX:-half, maxX:half, minZ:-half, maxZ:half }
+      : { minX:Math.max(-half, Math.floor((Math.min(from.x,target.x)-padding)/6)*6),
+          maxX:Math.min(half, Math.ceil((Math.max(from.x,target.x)+padding)/6)*6),
+          minZ:Math.max(-half, Math.floor((Math.min(from.z,target.z)-padding)/6)*6),
+          maxZ:Math.min(half, Math.ceil((Math.max(from.z,target.z)+padding)/6)*6) });
+    const room = sector ?? { id:`arena:${bounds.minX}:${bounds.maxX}:${bounds.minZ}:${bounds.maxZ}`, bounds };
+    const step = sector ? 3 : 2, b = room.bounds, width = Math.floor((b.maxX - b.minX - 2) / step) + 1;
     const depth = Math.floor((b.maxZ - b.minZ - 2) / step) + 1;
     const key = `${room.id}/${Math.ceil(radius * 10)}/${from.y.toFixed(3)}/${environment.openGates.size}/${this.usingVerticalAccess ? 1 : 0}`;
     let grid = this.gridCache.get(key);
@@ -147,7 +193,11 @@ export class BattlefieldNavigation {
       for (let z = 0; z < depth; z++) for (let x = 0; x < width; x++) {
         const point = new THREE.Vector3(b.minX + 1 + x * step, from.y, b.minZ + 1 + z * step);
         const unsafeFloor = from.y <= .65 && (environment.acidTrenches ?? []).some(trench => trenchAt(point, trench, radius + .12));
-        clear[z * width + x] = unsafeFloor || candidates.some(c => intersects(point, c, radius + .12)) ? 0 : 1;
+        // The collision grid must also obey the actually constructed floor
+        // union. Otherwise A* may walk through empty space between two rooms.
+        const absentFloor = !floorSegment(environment, point, point, radius + .12);
+        clear[z * width + x] = absentFloor || unsafeFloor ||
+          candidates.some(c => intersects(point, c, radius + .12)) ? 0 : 1;
       }
       grid = { clear }; this.gridCache.set(key, grid);
       if (this.gridCache.size > 32) this.gridCache.delete(this.gridCache.keys().next().value);
@@ -157,11 +207,28 @@ export class BattlefieldNavigation {
       let best = Infinity, result = -1;
       for (let id = 0; id < grid.clear.length; id++) if (grid.clear[id]) {
         const p = pointAt(id), d = distance(point, p);
-        if (d < best && clearSegment(environment, point, p, radius)) { best = d; result = id; }
+        if (d < best && floorSegment(environment, point, p, radius) && clearSegment(environment, point, p, radius)) { best = d; result = id; }
       }
       return result;
     };
-    const start = nearest(from), end = nearest(target);
+    const blockedGoal = !clearSegment(environment, target, target, radius) ||
+      !floorSegment(environment, target, target, radius);
+    // An APC's centre or a hostile inside a pillar is not navigable. Select
+    // a real contact cell on its outside, never a point through the hull.
+    const start = nearest(from);
+    let end = blockedGoal ? -1 : nearest(target);
+    if (blockedGoal) {
+      let best = Infinity, bestApproach = Infinity;
+      for (let id = 0; id < grid.clear.length; id++) if (grid.clear[id]) {
+        const p = pointAt(id), d = distance(target,p), approach = distance(from,p);
+        // Both sides of a vehicle have equally close hull cells. The old
+        // raster-order tie picked the OPPOSITE side, sending a nearby Joe
+        // around the entire APC instead of to its reachable near flank.
+        if (d < best - 1e-7 || Math.abs(d-best) <= 1e-7 && approach < bestApproach) {
+          best = d; bestApproach = approach; end = id;
+        }
+      }
+    }
     if (start < 0 || end < 0) return [];
     const costs = new Map([[start, 0]]), parent = new Map(), open = new Set([start]);
     while (open.size) {
@@ -173,19 +240,69 @@ export class BattlefieldNavigation {
       for (const [dx, dz] of [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [1, -1], [-1, 1], [-1, -1]]) {
         const nx = x + dx, nz = z + dz, next = nz * width + nx;
         if (nx < 0 || nz < 0 || nx >= width || nz >= depth || !grid.clear[next]) continue;
-        if (!clearSegment(environment, pointAt(current), pointAt(next), radius)) continue;
+        if (!floorSegment(environment, pointAt(current), pointAt(next), radius) || !clearSegment(environment, pointAt(current), pointAt(next), radius)) continue;
         const cost = costs.get(current) + Math.hypot(dx, dz) * step;
         if (cost + 1e-6 < (costs.get(next) ?? Infinity)) { costs.set(next, cost); parent.set(next, current); open.add(next); }
       }
     }
     if (!costs.has(end)) return [];
     const path = [end]; while (path[0] !== start) path.unshift(parent.get(path[0]));
-    return [...path.map(pointAt), target.clone()];
+    return blockedGoal ? path.map(pointAt) : [...path.map(pointAt), target.clone()];
+  }
+
+  /** Authoritative occupancy of the built scene, including real colliders,
+   * trenches, closed gates, floor union and elevation. Intended for materializing
+   * an already allocated Musou identity; never changes its ID or its budget. */
+  canStand(position, radius = .65) {
+    if (!position?.isVector3 || ![position.x, position.y, position.z, radius].every(Number.isFinite) ||
+        radius <= 0 || radius > 6) return false;
+    const env = this.environment;
+    if (!floorSegment(env, position, position, radius)) return false;
+    if (position.y <= .65 && (env.acidTrenches ?? []).some(trench => trenchAt(position, trench, radius))) return false;
+    return !(env.colliders ?? []).some(collider => intersects(position, collider, radius));
+  }
+
+  /** Find a deterministic, short, SAME-sector spawn detour around a collider.
+   * Another visible soldier's capsule is reserved as well. Returning null
+   * means defer the whole group; do not silently place a unit in a wall. */
+  safeSpawnNear(origin, radius = .75, occupied = [], maxDistance = 18) {
+    if (!origin?.isVector3 || ![origin.x, origin.y, origin.z, radius, maxDistance].every(Number.isFinite) ||
+        radius <= 0 || radius > 6 || maxDistance < 0 || maxDistance > 24) return null;
+    const env = this.environment, sourceSector = env.getSectorAt?.(origin)?.id ?? null;
+    const valid = (x, z) => {
+      const candidate = new THREE.Vector3(x, origin.y, z);
+      if (sourceSector && env.getSectorAt?.(candidate)?.id !== sourceSector) return null;
+      const elevation = env.getElevationAt?.(x, z, origin.y);
+      if (Number.isFinite(elevation)) candidate.y = elevation;
+      if (!this.canStand(candidate, radius)) return null;
+      if (occupied.some(item => {
+        const position = item?.position ?? item?.mesh?.position, otherRadius = item?.radius ?? 1;
+        return position?.isVector3 && Math.abs(position.y - candidate.y) <= 2.5 &&
+          Math.hypot(position.x - x, position.z - z) < radius + otherRadius + .25;
+      })) return null;
+      return candidate;
+    };
+    const start = valid(origin.x, origin.z);
+    if (start) return start;
+    for (let distance = 3; distance <= maxDistance + 1e-7; distance += 3) {
+      for (let direction = 0; direction < 16; direction++) {
+        const angle = direction * Math.PI / 8;
+        const candidate = valid(origin.x + Math.cos(angle) * distance,
+          origin.z + Math.sin(angle) * distance);
+        if (candidate) return candidate;
+      }
+    }
+    return null;
   }
 
   waypoint(from, target, radius = .65) {
     if (!from || !target || ![from.x, from.z, target.x, target.z].every(Number.isFinite)) return null;
+    this._refreshObstacleCache();
     const environment = this.environment;
+    // Never return an unobstructed *line* that crosses a missing floor
+    // polygon, nor a destination when A* found no physical route.
+    const navigable = point => floorSegment(environment, from, point, radius) &&
+      clearSegment(environment, from, point, radius);
     let goal = target;
     if (environment.getSectorAt(from)?.id !== environment.getSectorAt(target)?.id || !environment.getSectorAt(from)) {
       const path = this.strategicPath(from, target);
@@ -205,19 +322,22 @@ export class BattlefieldNavigation {
         goal = point;
       }
     }
-    if (clearSegment(environment, from, goal, radius)) { this.actorPaths.delete(from); return goal.clone(); }
+    if (navigable(goal)) { this.actorPaths.delete(from); return goal.clone(); }
     const signature = `${Math.round(goal.x)},${Math.round(goal.z)},${Math.round(from.y)},${environment.openGates.size},${this.usingVerticalAccess ? 1 : 0}`;
     let cached = this.actorPaths.get(from);
     if (!cached || cached.signature !== signature || !cached.points.length) {
       cached = { signature, points: this.localPath(from, goal, radius) }; this.actorPaths.set(from, cached);
     }
     while (cached.points.length > 1 && distance(from, cached.points[0]) < 1) cached.points.shift();
-    if (cached.points.length && !clearSegment(environment, from, cached.points[0], radius)) {
+    if (cached.points.length && !navigable(cached.points[0])) {
       // Lifts, vehicles and removable cover can change after grid creation.
       this.gridCache.clear(); cached.points = this.localPath(from, goal, radius);
     }
     // Skip visible intermediate grid points, without cutting a cover corner.
-    while (cached.points.length > 1 && clearSegment(environment, from, cached.points[1], radius)) cached.points.shift();
-    return cached.points[0]?.clone() ?? goal.clone();
+    while (cached.points.length > 1 && navigable(cached.points[1])) cached.points.shift();
+    // A wall spanning the entire room or a void between decks has no safe
+    // detour. Hold the actor in place rather than force it through geometry.
+    const next = cached.points[0];
+    return next && navigable(next) ? next.clone() : from.clone();
   }
 }

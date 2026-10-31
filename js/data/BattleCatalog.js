@@ -1,4 +1,5 @@
 import { sourceSquadSlots, sourceCommanderSlot, SOURCE_BOSS_SPECIES } from './SourceBattleRoster.js';
+import { getOriginalMusouFrontPlan } from './OriginalMusouFrontAllocations.js';
 /* PR #3 source catalogue. A sourced profile, a proposed operation and a rendered
  * character are separate records; none of these exports certifies a 1:1 asset. */
 import { BATTLE_CATALOG_DATA as source } from './BattleCatalogData.js';
@@ -148,8 +149,11 @@ function allocatedCamp(entry, side, playerSpecies) {
   if (/yautja|clan rival/.test(hint) && !/force humaine/.test(hint)) return { id: 'rival_clan', species: 'yautja' };
   return { id: 'human_force', species: 'human' };
 }
-function proposedAllocation(operation) {
+function proposedAllocation(operation, deploymentPlan = 'authored') {
   if (operation.forceAllocation) return operation.forceAllocation;
+  const authored = deploymentPlan === 'authored'
+    ? getOriginalMusouFrontPlan(operation.id) : null;
+  if (authored) return authored;
   // AFF-06..10 describe exact counts in prose rather than forceAllocation.
   // This is a reviewed translation of those five rows, not a text parser.
   const small = ['AFF-06', 'AFF-07'].includes(operation.id);
@@ -243,8 +247,10 @@ function capDetailedAgents(byFaction, groups, ceiling) {
  * Positions are overridable by the actual scene layout; source dimensions are
  * not silently treated as a constructed or certified map. */
 export function getBattleOperationConfig(operationId, { playerCount = 1, budgetId, frontPositions, allowHumanController = false,
-  maxDetailedAgents = 32, experimentalDetailBudget = false, rosterDetail = 'source' } = {}) {
+  maxDetailedAgents = 32, experimentalDetailBudget = false, rosterDetail = 'source',
+  deploymentPlan = 'authored' } = {}) {
   if (!['source', 'legacy'].includes(rosterDetail)) fail('unknown roster detail policy');
+  if (!['authored', 'historical-fallback'].includes(deploymentPlan)) fail('unknown front deployment plan');
   const operation = getBattleOperation(operationId), map = getBattleMap(operation.mapId), frontSpec = getBattleFront(operation.frontId), budget = getBattleBudget(budgetId ?? operation.budgetId);
   if (!Number.isInteger(playerCount) || playerCount < 1 || playerCount > 2) fail('one or two players are required');
   if (!Number.isInteger(maxDetailedAgents) || maxDetailedAgents < 1 || maxDetailedAgents > 512) fail('detail ceiling must be an integer from 1 to 512');
@@ -252,7 +258,7 @@ export function getBattleOperationConfig(operationId, { playerCount = 1, budgetI
   if (operation.requiresHumanController && !allowHumanController) fail(`${operation.id}: optional human controller is not implemented by this catalogue`);
   const count = Math.max(3, Math.min(5, budget.fronts)), positions = frontPositions ?? Array.from({ length: count }, (_, index) => [Math.cos(index / count * Math.PI * 2) * 120, Math.sin(index / count * Math.PI * 2) * 120]);
   if (!Array.isArray(positions) || positions.length !== count || positions.some(position => !Array.isArray(position) || position.length !== 2 || position.some(value => !Number.isFinite(value)))) fail(`exactly ${count} finite front positions are required`);
-  const playerFaction = 'player_clan', camps = new Map(), forceAllocation = proposedAllocation(operation), playerFrontIndex = operationId === 'AFF-27' ? 3 : 0;
+  const playerFaction = 'player_clan', camps = new Map(), forceAllocation = proposedAllocation(operation, deploymentPlan), playerFrontIndex = operationId === 'AFF-27' ? 3 : 0;
   for (const category of ['active', 'distant', 'reserve']) for (const placement of forceAllocation[category]) for (const side of ['enemy', 'ally']) for (const entry of placement[side]) {
     const camp = allocatedCamp(entry, side, operation.playerSpecies); camps.set(camp.id, camp);
   }
@@ -287,7 +293,14 @@ export function getBattleOperationConfig(operationId, { playerCount = 1, budgetI
       if (entry.bossId && !assignedBosses.has(entry.bossId)) {
         const boss = getBattleBoss(entry.bossId);
         const slot = rosterDetail === 'source' ? sourceCommanderSlot(entry.groupId, entry.profile, boss.id, quantity) : 0;
-        if (assignSourceCommander(group, boss, faction.species, profiles, slot)) assignedBosses.add(boss.id);
+        if (assignSourceCommander(group, boss, faction.species, profiles, slot)) {
+          // BOS-30 and BOS-31 are distinct original humans across missions.
+          // Keep sourceBossId intact, scope the allocated individual's ID.
+          if (deploymentPlan === 'authored' && getOriginalMusouFrontPlan(operationId) &&
+              ['BOS-30','BOS-31'].includes(boss.id))
+            group.units[slot].uniqueId = `${operationId}:${boss.id}`;
+          assignedBosses.add(boss.id);
+        }
       }
       if (entry.groupId === 'GRP-57') {
         const theta = getBattleProfile('HUM-032'), profile = { ...genericProfile('human', 'officer'), id: 'adapted_theta', name: theta.name, unique: true, fidelity: 'adaptation', sourceProfileId: theta.id };
@@ -347,7 +360,9 @@ export function getBattleOperationConfig(operationId, { playerCount = 1, budgetI
   const configuration = { id: operationId, name: operation.title, mode: 'original', playerFaction,
     mapId: map.id, levelId: getBattleOperationScene(operationId).levelId, sceneRecommendation: getBattleOperationScene(operationId), frontId: frontSpec.id, budgetId: budget.id,
     context: { era: 'operation_specific', works: [map.continuity], continuities: [operation.continuity], players: playerCount,
-      designOrigin: 'audit_operation_proposal', allowAdaptations: true, requiresSceneBinding: true, visualFidelity1to1Verified: false },
+      designOrigin: 'audit_operation_proposal', allowAdaptations: true, requiresSceneBinding: true, visualFidelity1to1Verified: false,
+       ...(deploymentPlan === 'authored' && getOriginalMusouFrontPlan(operationId)
+         ? { frontAllocationProvenance: 'original-audit-front-v1; not canon' } : {}) },
     desiredDetailedBudget: detail.desired, sourceDetailedBudget: { budgetId: budget.id, active: detail.desired, byFaction: detail.original },
     detailBudgetPolicy: { maxDetailedAgents, capped: detail.active < detail.desired, experimental: maxDetailedAgents > 32, hardwareProfiled: false },
     detailedBudgetNotice: `Plafond provisoire : ${detail.active} combattants proches ; proposition source : ${detail.desired}. Les unités excédentaires restent simulées à distance. Performances sur matériel non mesurées.`,

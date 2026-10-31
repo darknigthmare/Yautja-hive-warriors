@@ -24,12 +24,14 @@ import { BossPhasePressure } from './battlefield/BossPhasePressure.js';
 import { CompanionLoadouts, COMPANION_KITS } from './battlefield/CompanionLoadouts.js';
 import { HIVE_CONFLICT_ID } from './battlefield/HiveConflictScenario.js';
 import { OperationTransport } from './entities/OperationTransport.js';
+import { physicalOperationRouteAvailable } from './battlefield/PhysicalRouteAvailability.js';
 import { operationAlertState, captureBattleDebrief, hiveCoordinationFeedback } from './ui/OperationPanel.js';
 import { OperationObjectives } from './battlefield/OperationObjectives.js';
 import { createOperationScene } from './battlefield/OperationScene.js';
 import { OperationBriefing } from './ui/OperationBriefing.js';
 import { OperationWorld } from './battlefield/OperationWorld.js';
 import { HiveNodeWorld } from './battlefield/HiveNodeWorld.js';
+import { BattleCrowdProjection } from './graphics/BattleCrowdProjection.js';
 import { mountSourceCatalogue } from './ui/SourceCatalogue.js';
 import { CommandMap, battleCommandFeedback } from './ui/CommandMap.js';
 import { OperationPanel } from './ui/OperationPanel.js';
@@ -235,7 +237,10 @@ class GameApp {
 
   startBattleOperation(saved = null) {
     for (const gate of this.env.battlefieldLayout.gates) this.env.openGate(gate.id);
-    const sceneOptions={operationId:this.operationId,level:this.ui.selectedLevel,players:this.isCoOp?2:1,layout:this.env.battlefieldLayout,mapSeed:this.operationMapSeed,difficultyId:this.operationDifficulty};
+    this.operationDeploymentPlan=saved?.scene?.deploymentPlan ??
+      (saved ? 'historical-fallback' : (this.operationDeploymentPlan ?? 'authored'));
+    const sceneOptions={operationId:this.operationId,level:this.ui.selectedLevel,players:this.isCoOp?2:1,layout:this.env.battlefieldLayout,mapSeed:this.operationMapSeed,difficultyId:this.operationDifficulty,
+      deploymentPlan:this.operationDeploymentPlan};
     let {config}=createOperationScene(sceneOptions);
     this.campaignArcId=saved?.campaignArcId??(document.getElementById('campaign-arc-enabled').checked&&/^AFF-0[1-5]$/.test(this.operationId)?CLAN_CAMPAIGN_ARC_ID:null);
     this.campaignRunId=saved?.campaignRunId??this.missionRun;
@@ -255,6 +260,9 @@ class GameApp {
       config=compatible;
     }
     this.battleBridge.bind(this.battleSimulation);
+    // Four tiny instanced visual pools reuse EXISTING distant soldier IDs.
+    // They never participate in combat, awards, spawning or save contracts.
+    this.battleCrowd = new BattleCrowdProjection(this.renderer.scene,this.env,this.battleSimulation);
     if (config.id === 'AFF-27') {
       this.hiveNodeWorld = new HiveNodeWorld(this.renderer.scene, this.env, this.battleSimulation);
       this.hiveNodeWorld.update();
@@ -264,7 +272,7 @@ class GameApp {
     if(saved?.rescue)this.allyRescue.restore(saved.rescue);
     this.bossPhasePressure=new BossPhasePressure({simulation:this.battleSimulation,getBoss:()=>this.bosses.activeBoss,announce:event=>this.operationPanel.feedback(event.label)});
     if(saved?.bossPressure)this.bossPhasePressure.restore(saved.bossPressure);
-    this.battleSimulation.routeAvailabilityProvider=route=>this.env.isTacticalRouteAvailable?.(route.physicalRouteId??route.id.replace(/^bound-/,''))!==false;
+    this.battleSimulation.routeAvailabilityProvider=(route, options)=>physicalOperationRouteAvailable(this.env,route,options);
     if(saved?.tacticalWorld)this.env.restoreTacticalWorld?.(saved.tacticalWorld);
     this.companionLoadouts=new CompanionLoadouts({simulation:this.battleSimulation,actors:bridge.actors,players:()=>[this.player,this.player2].filter(Boolean),environment:this.env});
     if(saved?.companions)this.companionLoadouts.restore(saved.companions);
@@ -297,6 +305,7 @@ class GameApp {
     if(!this.battleSimulation)return;
     const players=[this.player,this.player2].filter(Boolean).map((player,index)=>({id:index?'player2':'player1',position:[player.position.x,player.position.z],hp:player.hp}));
     this.battleBridge.sync();this.battleSimulation.update(delta,{players,paused:false});
+    this.battleCrowd?.update(delta,[this.player,this.player2].filter(Boolean));
     this.hiveNodeWorld?.update();
     this.allyRescue?.update(delta);
     this.bossPhasePressure?.update(delta);
@@ -397,7 +406,8 @@ class GameApp {
   saveOperation() {
     if(!this.battleSimulation||!this.isPlaying||this.dropPod.isActive)return;
     this.battleBridge.sync();
-    const snapshot={version:1,score:this.score,sessionSkulls:this.sessionSkulls,sessionDefeats:this._sessionDefeats,campaignArcId:this.campaignArcId,campaignRunId:this.campaignRunId,levelId:this.ui.selectedLevel.id,operationId:this.operationId,players:this.isCoOp?2:1,characterId:this.ui.selectedChar.id,loadout:this.activeLoadout,scene:{mapSeed:this.operationMapSeed,difficultyId:this.operationDifficulty},simulation:this.battleSimulation.saveState(),objectives:this.operationObjectives?.serialize(),tacticalWorld:this.env.serializeTacticalWorld?.(),preyInteractions:this.env.serializePreyInteractions?.(),supports:{version:1,apc:this.apc.serialize(),cheyenne:this.dropship.serialize()},companions:this.companionLoadouts?.serialize(),rescue:this.allyRescue?.serialize(),bossPressure:this.bossPhasePressure?.serialize(),playerStates:[this.player,this.player2].filter(Boolean).map(snapshotOperationPlayer)};
+    const snapshot={version:1,score:this.score,sessionSkulls:this.sessionSkulls,sessionDefeats:this._sessionDefeats,campaignArcId:this.campaignArcId,campaignRunId:this.campaignRunId,levelId:this.ui.selectedLevel.id,operationId:this.operationId,players:this.isCoOp?2:1,characterId:this.ui.selectedChar.id,loadout:this.activeLoadout,scene:{mapSeed:this.operationMapSeed,difficultyId:this.operationDifficulty,
+      deploymentPlan:this.operationDeploymentPlan??'authored'},simulation:this.battleSimulation.saveState(),objectives:this.operationObjectives?.serialize(),tacticalWorld:this.env.serializeTacticalWorld?.(),preyInteractions:this.env.serializePreyInteractions?.(),supports:{version:1,apc:this.apc.serialize(),cheyenne:this.dropship.serialize()},companions:this.companionLoadouts?.serialize(),rescue:this.allyRescue?.serialize(),bossPressure:this.bossPhasePressure?.serialize(),playerStates:[this.player,this.player2].filter(Boolean).map(snapshotOperationPlayer)};
     try{localStorage.setItem('yautja-operation-checkpoint-v1',JSON.stringify(snapshot));this.operationPanel.feedback('Opération sauvegardée : identités, blessures, pertes et objectifs conservés.');document.getElementById('btn-resume-operation').classList.remove('hidden');}catch{this.operationPanel.feedback('Stockage indisponible : la partie reste active en mémoire.');}
   }
 
@@ -1815,9 +1825,16 @@ class GameApp {
     const sceneOptions=operationSceneOptions(options.resumeOperation,{mapSeed:this.operationMapSeed,difficultyId:this.operationDifficulty});
     this.operationMapSeed=this.missionMode==='fronts'?sceneOptions.mapSeed:0;
     this.operationDifficulty=this.missionMode==='fronts'?sceneOptions.difficultyId:'standard';
+    // Old checkpoints lack a deployment marker and must preserve their signed
+    // historical budget projection. New missions use the audited front plan.
+    this.operationDeploymentPlan = this.missionMode==='fronts'
+      ? (options.resumeOperation?.scene?.deploymentPlan ??
+          (options.resumeOperation ? 'historical-fallback' : 'authored'))
+      : 'authored';
     let preparedOperation=null;
     try{
-      preparedOperation=this.missionMode==='fronts'?createOperationScene({operationId:this.operationId,level:selectedLevel,players:this.isCoOp?2:1,mapSeed:this.operationMapSeed,difficultyId:this.operationDifficulty}):null;
+      preparedOperation=this.missionMode==='fronts'?createOperationScene({operationId:this.operationId,level:selectedLevel,players:this.isCoOp?2:1,mapSeed:this.operationMapSeed,difficultyId:this.operationDifficulty,
+          deploymentPlan:this.operationDeploymentPlan}):null;
       this.preparedBossEncounter=preparedOperation?null:prepareBossEncounter({level:selectedLevel,bossType:options.bossType??selectedLevel.bossType,mode:this.missionMode==='sandbox'?'sandbox':'level'});
     }catch{
       this.ui.showAnnouncement('Cet affrontement ne peut pas être préparé : vérifiez le terrain et le boss sélectionnés.');

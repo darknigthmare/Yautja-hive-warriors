@@ -1,6 +1,8 @@
 import { applyBattleFormationHit } from '../engine/BattleActorSupport.js';
 import { recordCombatDeath } from '../engine/CombatEvents.js';
 import { sourceUnitVisualKind } from '../data/SourceActorPresentation.js';
+import { originalMusouSquadRole } from '../data/OriginalMusouSquadRoles.js';
+import { attachOriginalMusouFieldGear } from '../graphics/OriginalMusouFieldGear.js';
 const ACTOR_TYPES = {
   xenomorph: new Set(['warrior', 'runner', 'spitter', 'boiler', 'neomorph', 'praetomorph', 'red_warrior', 'facehugger', 'officer', 'crusher', 'praetorian', 'grid_alien', 'cyber_xeno', 'cryo_xeno', 'xenomorph', 'queen']),
   human: new Set(['marine', 'human', 'smartgunner', 'flametrooper']),
@@ -54,11 +56,29 @@ export class BattleActorBridge {
         if (!manager?.spawnBattleUnit) throw new Error(`No detailed combat manager for ${unit.species ?? group.species}`);
         const actor = manager.spawnBattleUnit(unit, group);
         if (!actor?.mesh || actor.battleUnitId !== unit.id) throw new Error('The combat manager did not preserve its allocated identity');
+        const sourceSlot=originalMusouSquadRole(this.simulation.config,group,unit);
         actor.profileName = sourceUnitVisualKind(unit) === 'drone'
           ? 'Drone — constructeur de nodules (modèle procédural)'
-          : unit.profileName ?? actor.profileName;
+          : sourceSlot?.label ?? unit.profileName ?? actor.profileName;
+        if (sourceSlot) {
+          actor.originalMusouRole = sourceSlot; // No change to actorType or combat stats.
+          if(actor.mesh.userData)actor.mesh.userData.originalMusouRole = sourceSlot.role;
+          if(sourceSlot.species==='human')attachOriginalMusouFieldGear(actor.mesh,sourceSlot);
+        }
         const entry = { actor, manager, groupId: group.id, unitId: unit.id };
         this.actors.set(unit.id, entry); added.push(entry);
+        if (this.simulation.config.context?.frontAllocationProvenance === 'original-audit-front-v1; not canon' &&
+            this.game.env.navigation?.safeSpawnNear) {
+          // Real props/gates are only known after Environment.buildLevelEnvironment.
+          // Reposition the rendered actor locally without editing the signed
+          // battle group, its IDs, supply, budget or historical checkpoint.
+          const occupied = [...this.actors.values()].filter(item => item.actor !== actor)
+            .map(item => ({ position: item.actor.mesh.position, radius: item.actor.radius ?? 1 }));
+          const safe = this.game.env.navigation.safeSpawnNear(
+            actor.mesh.position, actor.radius ?? 1, occupied);
+          if (!safe) throw new Error('No physically safe Musou squad spawn in this constructed sector');
+          actor.mesh.position.copy(safe);
+        }
         this.game.env.resolveMovement(actor.mesh.position, actor.radius ?? 1);
         if(!actor.isFlying&&!actor._terrainFall)actor.mesh.position.y=this.game.env.getElevationAt?.(actor.mesh.position.x,actor.mesh.position.z)??actor.mesh.position.y;
         this.game.allyRescue?.onMaterialize(actor);
@@ -99,6 +119,14 @@ export class BattleActorBridge {
     }
     const unavailableGroups = new Set();
     for (const [unitId, { actor, manager, groupId }] of this.actors) {
+      // A persistent death may be owned by a non-rendered system (incubation,
+      // campaign consequence, environmental effect). Never resurrect that ID
+      // from a stale still-alive mesh or mark its whole group unavailable.
+      if (this.simulation.units.get(unitId)?.state === 'dead') {
+        manager.despawnBattleUnit?.(unitId);
+        this.actors.delete(unitId);
+        continue;
+      }
       if(!actor.isFlying&&!actor.isLeaping&&!actor._terrainFall)actor.mesh.position.y=this.game.env.getElevationAt?.(actor.mesh.position.x,actor.mesh.position.z,actor.mesh.position.y)??actor.mesh.position.y;
       const present = manager === this.game.bosses ? manager.activeBoss === actor : manager[this.arrayKeys.get(manager)]?.includes(actor);
       if (!present && actor.hp > 0) {

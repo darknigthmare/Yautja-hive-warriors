@@ -1,6 +1,7 @@
 /* Playable, explicitly original three-front preset. Coordinates and routes are
  * bound to the built level; no quoted figure/statue establishes a metric map. */
 import { calibrateDefeatWindow } from './BattleStrategy.js';
+import { stageOriginalMusouGroups } from './OriginalMusouStaging.js';
 
 const copy = value => JSON.parse(JSON.stringify(value));
 const routeLength = waypoints => waypoints.slice(1).reduce((sum, point, index) => sum + Math.hypot(point[0] - waypoints[index][0], point[1] - waypoints[index][1]), 0);
@@ -44,7 +45,12 @@ export function bindBattleOperationToLayout(configuration, layout) {
     routes.push({ ...copy(route), id: `bound-${route.id}`, physicalRouteId: route.id, from: sectorToFront.get(route.from), to: sectorToFront.get(route.to), open: true });
   }
   result.routes = routes;
-  for (let index = 0; index < result.groups.length; index++) {
+  // Source-audited ORIGINAL Musou battles get finite staged squads inside
+  // their actual loaded sector bounds. Old saves and all other operations
+  // retain the exact historical ring positions and signed config digest.
+  const musouStaging = stageOriginalMusouGroups(result, layout,
+    indices.map(index => layout.sectors[index].id));
+  if (!musouStaging) for (let index = 0; index < result.groups.length; index++) {
     const group = result.groups[index], front = result.fronts.find(item => item.id === group.frontId);
     if (!front) throw new Error('BattlefieldOperation: group has no bound front');
     const angle = index * 2.399963229728653;
@@ -55,7 +61,8 @@ export function bindBattleOperationToLayout(configuration, layout) {
   result.label = configuration.label ?? configuration.name ?? configuration.id;
   result.context = { ...result.context, requiresSceneBinding: false, sceneBinding: 'adapted-built-level', visualFidelity1to1Verified: false };
   result.sceneBinding = { layoutId: layout.id, originalMapId: configuration.mapId ?? null, originalRoutes,
-    originalGeographicProposalConstructed: false, frontSectorIds: indices.map(index => layout.sectors[index].id), usesPhysicalStrategicRoutes: Boolean(layout.strategicRoutes?.length) };
+    originalGeographicProposalConstructed: false, frontSectorIds: indices.map(index => layout.sectors[index].id), usesPhysicalStrategicRoutes: Boolean(layout.strategicRoutes?.length),
+    ...(musouStaging ? { musouStaging } : {}) };
   return calibrateDefeatWindow(result);
 }
 

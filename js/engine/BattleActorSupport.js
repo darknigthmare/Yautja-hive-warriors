@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { attachHostParasiteVisual } from '../graphics/HostParasiteAttachment.js';
 import { disposeObject } from './SceneResources.js';
 import { releaseHostileAttack } from './HostilePressure.js';
 import { applyFormationImpact, formationAttackKind, formationDamageMultiplier } from '../battlefield/FormationTactics.js';
@@ -142,6 +143,10 @@ function targetView(actor, attacker) {
     get hp() { return actor.hp; }, get radius() { return actor.radius ?? 1; },
     get isBlocking() { return false; }, get isFacehuggerLatched() { return actor.isFacehuggerLatched === true; },
     get isCloaked() { return actor.isCloaked === true; },
+    get canBeFacehugged() {
+      return !['synthetic', 'weyland_combat', 'working_joe', 'flametrooper'].includes(actor.type)
+        && actor.sourceVisualKind !== 'exosuit' && actor.canBeFacehugged !== false;
+    },
     audioEngine: actor.combatManager?.audioEngine,
     takeDamage(amount) {
       if (!Number.isFinite(amount) || amount <= 0 || actor.hp <= 0) return;
@@ -160,7 +165,20 @@ function targetView(actor, attacker) {
         else manager?.defeatCombatant?.(actor, { cause: 'faction-combat', killerFaction: attacker.factionId });
       }
     },
-    triggerFacehuggerLatch() { actor.isFacehuggerLatched = true; actor.facehuggerHold = 4; },
+    triggerFacehuggerLatch() {
+      const simulation = actor.combatManager?.battleSimulation;
+      if (simulation && actor.battleUnitId && attacker?.battleUnitId) {
+        const infection = simulation.beginHostInfestation?.(attacker.battleUnitId, actor.battleUnitId);
+        if (!infection) return false;
+        actor.isFacehuggerLatched = true;
+        actor.facehuggerHold = Math.max(4, infection.completesAt - simulation.time + 1);
+        attachHostParasiteVisual(actor.mesh);
+        return true;
+      }
+      actor.isFacehuggerLatched = true;
+      actor.facehuggerHold = 4;
+      return true;
+    },
     applyEMP(duration = 2) { actor.isEMPStunned = true; actor.empStunTimer = duration; }
   };
   cache.set(identity, view); return view;
