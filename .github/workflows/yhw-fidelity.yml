@@ -61,6 +61,8 @@ jobs:
             tests/musou-front-visibility.test.js \
             tests/apc-marine-section.test.js \
             tests/apc-convoy-road.test.js \
+            tests/apc-detail.test.js \
+            tests/runtime-final-wiring.test.js \
             tests/operation-transport.test.js \
             tests/original-musou-field-gear.test.js \
             tests/hive-node-remote-combat.test.js \
