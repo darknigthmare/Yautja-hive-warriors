@@ -8,6 +8,7 @@ import { traceSingleProjectileImpact } from '../js/engine/SingleProjectileImpact
 import { traceCombatSegment, hasCombatLineOfSight } from '../js/engine/CombatGeometry.js';
 import { createPreyArrowMesh } from '../js/graphics/PreyEquipment.js';
 import { APCVehicle } from '../js/entities/APCVehicle.js';
+import { validateM577CarrierCheckpoint } from '../js/battlefield/APCSectionManifest.js';
 import { CheyenneDropship } from '../js/entities/CheyenneDropship.js';
 import { XenomorphHorde } from '../js/entities/XenomorphHorde.js';
 import { BossManager } from '../js/entities/Bosses.js';
@@ -23,7 +24,7 @@ import { canAccessLegacyAir, canHitLegacyAirTarget } from '../js/engine/LegacyAi
 // Exercise the real router methods without constructing WebGL/audio/browser
 // services. No router method is rewritten or duplicated by this fixture.
 const source=readFileSync(new URL('../js/main.js',import.meta.url),'utf8');
-const GameApp=vm.runInNewContext(`${source.slice(source.indexOf('class GameApp'),source.indexOf("window.addEventListener('DOMContentLoaded'"))};GameApp`,{THREE,createMissionSupportContext,operationSceneOptions,traceSingleProjectileImpact,createPreyArrowMesh,canAccessLegacyAir,canHitLegacyAirTarget});
+const GameApp=vm.runInNewContext(`${source.slice(source.indexOf('class GameApp'),source.indexOf("window.addEventListener('DOMContentLoaded'"))};GameApp`,{THREE,createMissionSupportContext,operationSceneOptions,traceSingleProjectileImpact,createPreyArrowMesh,canAccessLegacyAir,canHitLegacyAirTarget,validateM577CarrierCheckpoint});
 const audio=new Proxy({}, {get:()=>()=>{}});
 const environment=(colliders=[])=>({colliders,navigation:{gridCache:new Map(),actorPaths:new WeakMap()},resolveMovement(){},getPlacementElevationAt:()=>0,
   traceSegment(from,to,options){return traceCombatSegment(from,to,this.colliders,options);},
