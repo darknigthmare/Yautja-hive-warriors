@@ -169,8 +169,15 @@ export class APCConvoyDrive {
       }
       const gap=distance([current.x,current.z],target);
       if(gap<=.2){
-        if(j.index===0&&!m.transit&&!sim.beginAPCTransit(j.routeId,j.targetFrontId)){
-          this.stop('transit_not_authorized');return false;
+        if(j.index===0&&!m.transit){
+          // An invalid floor or obstructed body cannot even mark a parked
+          // carrier as "in transit" before its first genuine wheel movement.
+          if(!this._canOccupy(current,s.apc.mesh.rotation.y)){
+            this.stop('terrain_or_collision_blocked');return false;
+          }
+          if(!sim.beginAPCTransit(j.routeId,j.targetFrontId)){
+            this.stop('transit_not_authorized');return false;
+          }
         }
         j.index++;continue;
       }
