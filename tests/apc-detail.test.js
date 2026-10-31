@@ -343,9 +343,13 @@ test('four actual M577 wheels share ONE instanced multi-material geometry and ro
       model.wheelInstances.getMatrixAt(i,after);
       const position=new THREE.Vector3(),quaternion=new THREE.Quaternion(),scale=new THREE.Vector3();
       after.decompose(position,quaternion,scale);
-      assert.ok(Math.abs(position.x-model.wheels[i].x)<1e-8);
-      assert.ok(Math.abs(position.z-model.wheels[i].z)<1e-8);
-      assert.ok(Math.abs(position.y-model.wheels[i].y)<=APC_RUNNING_GEAR.maxTravel+1e-8);
+      // InstancedMesh stores each matrix in Float32Array, not JS doubles.
+      // Verify a sub-millimetric geometric tolerance without relaxing any
+      // collision or actual world/strategic coordinate invariant.
+      const matrixTolerance=1e-5;
+      assert.ok(Math.abs(position.x-model.wheels[i].x)<matrixTolerance);
+      assert.ok(Math.abs(position.z-model.wheels[i].z)<matrixTolerance);
+      assert.ok(Math.abs(position.y-model.wheels[i].y)<=APC_RUNNING_GEAR.maxTravel+matrixTolerance);
     }
     const fixed=model.wheelInstances.instanceMatrix.array.slice();
     for(const distance of [NaN,-2,Infinity,50])
