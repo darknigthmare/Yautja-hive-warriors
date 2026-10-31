@@ -34,9 +34,13 @@ sur un quadrillage intérieur de l'actuelle zone de gameplay :
   de hitbox, de profil ou de dégâts.
 - Un groupe ne peut pas occuper le centre d'une interaction
   déclarée dans `sector.objective`, ni un passage de porte
-  connu dans `layout.gates`. Les mécanismes précis des
-  objectifs narratifs et les obstacles bâtis **non exposés
-  à ce layout** restent à contrôler en scène.
+  connu dans `layout.gates`. La passe de contrôle suivante
+  réserve également les **zones d'interaction narrative**
+  (`operationObjectives.tasks`) : leurs offsets sont projetés
+  sur les centres de front physiques et les escouades restent
+  au-delà du rayon d'action + 6,1 unités.
+  Les obstacles bâtis **non exposés à ce layout**
+  restent à contrôler en scène.
 - Un groupe allié est préféré sur une aile et un groupe
   hostile sur l'autre ; les réservistes sont placés
   après les combattants actifs et distants, sans être

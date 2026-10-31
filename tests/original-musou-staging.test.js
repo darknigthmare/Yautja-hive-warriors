@@ -33,6 +33,18 @@ test('five authored ORIGINAL Musou maps stage all existing soldiers on unique se
        assert.ok(within(group.position,sector.bounds,7),id+'/'+group.id+'/stage-bounds');
        assert.ok(squared(group.position,sector.objective.position)>=
          (Math.max(9,(sector.objective.radius??0)+5)-1e-3)**2,id+'/'+group.id+'/free-objective');
+       for(const task of config.operationObjectives?.tasks??[]){
+         if(task.frontId!==front.id)continue;
+         assert.ok(Math.sqrt(squared(group.position,task.position))>=
+           Math.max(10,(task.radius??4.5)+6.1)-.01,
+           id+'/'+group.id+'/'+task.id+'/narrative-interaction-clearance');
+       }
+       for(const gate of layout.gates){
+         if(!Array.isArray(gate.center))continue;
+         assert.ok(Math.sqrt(squared(group.position,gate.center))>=
+           Math.max(5,(layout.corridorWidth??18)/2+2)-.01,
+           id+'/'+group.id+'/'+gate.id+'/gate-clearance');
+       }
        for(const unit of group.units){
          assert.ok(within(unit.position,sector.bounds,3.5),id+'/'+unit.id+'/member-bounds');
          assert.ok(squared(unit.position,group.position)<=3.2**2,id+'/'+unit.id+'/formation-radius');

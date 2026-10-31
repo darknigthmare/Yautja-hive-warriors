@@ -9,7 +9,7 @@ const between=(value,min,max)=>value>=min&&value<=max;
 const stateRank=Object.freeze({active:0,distant:1,reserve:2});
 const round=(value)=>Math.round(value*1000)/1000;
 
-function sectorSlots(sector, layout){
+function sectorSlots(sector, layout, protectedSites = []){
   const bounds=sector?.bounds;
   if(!bounds||!point(sector.center)||!Number.isFinite(bounds.minX)||
     !Number.isFinite(bounds.maxX)||!Number.isFinite(bounds.minZ)||
@@ -23,6 +23,12 @@ function sectorSlots(sector, layout){
       // directly onto a cargo lift, terminal or interaction hotspot.
       if(point(task?.position)&&Math.hypot(x-task.position[0],z-task.position[1])<
         Math.max(9,(task?.radius??0)+5))continue;
+      // OperationObjectives binds these narrative interaction centers AFTER
+      // BattlefieldOperation. The original task offset is already available
+      // here, so keep room for the hero, carried cargo and a co-op partner.
+      if(protectedSites.some(site=>point(site.position)&&
+        Math.hypot(x-site.position[0],z-site.position[1])<
+          Math.max(10,(site.radius??4.5)+6.1)))continue;
       const at=[round(x),round(z)];
       if((layout?.gates??[]).some(gate=>point(gate.center)&&
         Math.hypot(gate.center[0]-at[0],gate.center[1]-at[1])<
@@ -49,7 +55,11 @@ export function stageOriginalMusouGroups(configuration,layout,anchorSectorIds){
     const groups=configuration.groups.filter(group=>group.frontId===front.id).sort((a,b)=>
       (stateRank[a.sourceState]??9)-(stateRank[b.sourceState]??9)||
       a.id.localeCompare(b.id));
-    const candidates=sectorSlots(sector,layout);
+    const sites=(configuration.operationObjectives?.tasks??[])
+      .filter(task=>task.frontId===front.id&&point(task.offset))
+      .map(task=>({position:[front.position[0]+task.offset[0],
+        front.position[1]+task.offset[1]],radius:task.radius}));
+    const candidates=sectorSlots(sector,layout,sites);
     if(candidates.length<groups.length)
       throw new Error(`OriginalMusouStaging: ${front.id} cannot fit ${groups.length} distinct groups on real floor (${candidates.length} safe cells)`);
     const halfWidth=(sector.bounds.maxX-sector.bounds.minX)/2;
