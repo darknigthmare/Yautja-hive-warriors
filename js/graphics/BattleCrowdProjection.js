@@ -4,6 +4,7 @@
  * models. A proxy disappears as soon as its source unit is materialized.
  */
 import * as THREE from 'three';
+import { distantCrowdAppearance } from './DistantCrowdRoleAppearance.js';
 
 export const CROWD_VISUAL_POLICY = Object.freeze({
   version: 'musou-distant-instancing-v1',
@@ -36,10 +37,11 @@ export class BattleCrowdProjection {
     this.elapsed=0;this.disposed=false;this.refreshes=0;
     this.geometry=new THREE.CapsuleGeometry(.25,.82,2,5);
     this.meshes=new Map();this.materials=new Map();this.dummy=new THREE.Object3D();
+    this.colors=new Map();this.byRole={};
     this.visibleCounts=Object.fromEntries(Object.keys(TYPES).map(id=>[id,0]));
     this.sourceCount=0;
     for(const [type,look] of Object.entries(TYPES)) {
-      const material=new THREE.MeshLambertMaterial({color:look.color,transparent:true,
+      const material=new THREE.MeshLambertMaterial({color:0xffffff,transparent:true,
         opacity:.65,depthWrite:false,side:THREE.FrontSide});
       const mesh=new THREE.InstancedMesh(this.geometry,material,CROWD_VISUAL_POLICY.maxPerSpecies);
       mesh.name=`musou-distant-${type}`;mesh.count=0;mesh.frustumCulled=false;
@@ -68,8 +70,10 @@ export class BattleCrowdProjection {
       let nearest=Infinity;
       for(const observer of observers)nearest=Math.min(nearest,distanceSquared(observer,unit.position));
       if(nearest<near2||nearest>far2)continue;
-      list.push({id:unit.id,position:unit.position,distSq:nearest});
+      list.push({id:unit.id,position:unit.position,distSq:nearest,
+        appearance:distantCrowdAppearance(unit)});
     }
+    this.byRole={};
     for(const [type,look] of Object.entries(TYPES)){
       const list=buckets.get(type).sort((a,b)=>a.distSq-b.distSq||
         a.id.localeCompare(b.id)).slice(0,CROWD_VISUAL_POLICY.maxPerSpecies);
@@ -82,15 +86,22 @@ export class BattleCrowdProjection {
         const ground=new THREE.Vector3(x,y,z);
         if(this.environment?.navigation?.canStand &&
           !this.environment.navigation.canStand(ground,.35))continue;
-        const index=current.length;
-        this.dummy.position.set(x,y+.73*look.height,z);
+        const index=current.length,visual=entry.appearance;
+        const width=look.width*(visual?.width??1),height=look.height*(visual?.height??1);
+        this.dummy.position.set(x,y+.73*height,z);
         this.dummy.rotation.set(0,0,0);
-        this.dummy.scale.set(look.width,look.height,look.width);
+        this.dummy.scale.set(width,height,width);
         this.dummy.updateMatrix();mesh.setMatrixAt(index,this.dummy.matrix);
+        const color=visual?.color??look.color;
+        if(!this.colors.has(color))this.colors.set(color,new THREE.Color(color));
+        mesh.setColorAt(index,this.colors.get(color));
+        this.byRole[`${type}:${visual?.role??'default'}`]=
+          (this.byRole[`${type}:${visual?.role??'default'}`]??0)+1;
         current.push(entry.id);
       }
       mesh.count=current.length;
       mesh.instanceMatrix.needsUpdate=true;
+      if(mesh.instanceColor)mesh.instanceColor.needsUpdate=true;
       this.visibleCounts[type]=current.length;
     }
     return true;
@@ -100,7 +111,7 @@ export class BattleCrowdProjection {
     return {policy:CROWD_VISUAL_POLICY.version,drawCallsAtMost:this.meshes.size,
       instanceCapacity:this.meshes.size*CROWD_VISUAL_POLICY.maxPerSpecies,
       visible:Object.values(this.visibleCounts).reduce((a,b)=>a+b,0),
-      bySpecies:{...this.visibleCounts},sourceDistantUnits:this.sourceCount,
+      bySpecies:{...this.visibleCounts},byRole:{...this.byRole},sourceDistantUnits:this.sourceCount,
       refreshes:this.refreshes,visualFidelity1to1Verified:false};
   }
 
@@ -109,7 +120,7 @@ export class BattleCrowdProjection {
     this.disposed=true;
     for(const mesh of this.meshes.values())this.scene.remove(mesh);
     for(const material of this.materials.values())material.dispose();
-    this.geometry.dispose();this.meshes.clear();this.materials.clear();
+    this.geometry.dispose();this.meshes.clear();this.materials.clear();this.colors.clear();
     this.simulation=null;this.environment=null;this.scene=null;
   }
 }
