@@ -52,6 +52,7 @@ jobs:
             tests/helipad-navigation-regression.test.js \
             tests/musou-physical-routes.test.js \
             tests/operation-transport-vertical.test.js \
+            tests/musou-distant-crowd.test.js \
             tests/operation-transport.test.js \
             tests/original-musou-field-gear.test.js \
             tests/hive-node-remote-combat.test.js \

@@ -31,6 +31,7 @@ import { createOperationScene } from './battlefield/OperationScene.js';
 import { OperationBriefing } from './ui/OperationBriefing.js';
 import { OperationWorld } from './battlefield/OperationWorld.js';
 import { HiveNodeWorld } from './battlefield/HiveNodeWorld.js';
+import { BattleCrowdProjection } from './graphics/BattleCrowdProjection.js';
 import { mountSourceCatalogue } from './ui/SourceCatalogue.js';
 import { CommandMap, battleCommandFeedback } from './ui/CommandMap.js';
 import { OperationPanel } from './ui/OperationPanel.js';
@@ -259,6 +260,9 @@ class GameApp {
       config=compatible;
     }
     this.battleBridge.bind(this.battleSimulation);
+    // Four tiny instanced visual pools reuse EXISTING distant soldier IDs.
+    // They never participate in combat, awards, spawning or save contracts.
+    this.battleCrowd = new BattleCrowdProjection(this.renderer.scene,this.env,this.battleSimulation);
     if (config.id === 'AFF-27') {
       this.hiveNodeWorld = new HiveNodeWorld(this.renderer.scene, this.env, this.battleSimulation);
       this.hiveNodeWorld.update();
@@ -301,6 +305,7 @@ class GameApp {
     if(!this.battleSimulation)return;
     const players=[this.player,this.player2].filter(Boolean).map((player,index)=>({id:index?'player2':'player1',position:[player.position.x,player.position.z],hp:player.hp}));
     this.battleBridge.sync();this.battleSimulation.update(delta,{players,paused:false});
+    this.battleCrowd?.update(delta,[this.player,this.player2].filter(Boolean));
     this.hiveNodeWorld?.update();
     this.allyRescue?.update(delta);
     this.bossPhasePressure?.update(delta);
