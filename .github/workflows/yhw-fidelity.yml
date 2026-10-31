@@ -46,6 +46,7 @@ jobs:
             tests/musou-battle-flow.test.js \
             tests/original-musou-squad-roles.test.js \
             tests/original-musou-front-allocation.test.js \
+            tests/original-musou-staging.test.js \
             tests/original-musou-field-gear.test.js \
             tests/hive-node-remote-combat.test.js \
             tests/host-infestation.test.js \
