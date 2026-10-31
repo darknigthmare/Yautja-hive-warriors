@@ -52,16 +52,49 @@ export class OperationTransport {
     if (!this._safeFront(from)) return [];
     return [...this.simulation.fronts.values()].filter(front => front.id !== from.id && this._safeFront(front) && this._path(from.id, front.id)).map(front => ({ id: front.id, label: front.label }));
   }
+  _safeDismount() {
+    const origin=this.skimmer.position,heading=this.skimmer.rotationY??0;
+    // Dismount at the current deck, never at another deck with the same XZ.
+    // Probe the four sides of the real mount before considering a small local
+    // clearance. These checks do not mutate the signed strategic battle.
+    for (const [dx,dz] of [[3.5,0],[-3.5,0],[0,3.5],[0,-3.5]]) {
+      const candidate=origin.clone().add(new THREE.Vector3(
+        dx*Math.cos(heading)+dz*Math.sin(heading),0,
+        -dx*Math.sin(heading)+dz*Math.cos(heading)));
+      const floor=this.environment.getElevationAt?.(candidate.x,candidate.z,origin.y);
+      if (!Number.isFinite(floor) || Math.abs(origin.y-.5-floor)>1.5) continue;
+      candidate.y=floor;
+      const nav=this.environment.navigation;
+      if (nav?.canStand && !nav.canStand(candidate,.75)) continue;
+      const exit=nav?.safeSpawnNear
+        ? nav.safeSpawnNear(candidate,.75,[{position:origin,radius:1.4}],3)
+        : candidate;
+      if (!exit?.isVector3 || ![exit.x,exit.y,exit.z].every(Number.isFinite) ||
+          Math.abs(exit.y-floor)>1 || Math.abs(exit.y-origin.y)>2 ||
+          Math.hypot(exit.x-origin.x,exit.z-origin.z)<2.25 ||
+          (nav?.canStand && !nav.canStand(exit,.75))) continue;
+      return exit;
+    }
+    return null;
+  }
   interact(player) {
     if (!player?.position || player.hp <= 0 || this.skimmer.mountCooldown > 0) return false;
     if (this.isPassenger(player)) {
       if (this.journey) { this.cancel('manual_stop'); return true; }
+      const exit=this._safeDismount();
+      if (!exit) {
+        this.lastResult={accepted:false,reason:'no_safe_dismount'};
+        this.feedback('Débarquement impossible : aucun sol sûr au niveau du Skimmer.');
+        return false;
+      }
       this.skimmer.isMounted = false; this.skimmer.mountCooldown = .5; player.mesh.visible = true;
-      const exit = this.skimmer.position.clone().add(new THREE.Vector3(3, 0, 0)); this.environment.resolveMovement(exit, .75);
-      player.position.copy(exit); player.position.y = this.environment.getElevationAt(exit.x, exit.z); player.mesh.position.copy(player.position); this.driver = null;
+      player.position.copy(exit); player.mesh.position.copy(exit); this.driver = null;
       return true;
     }
-    if (this.skimmer.isMounted || !this.skimmer.mesh.visible || planarDistance(player.position, this.skimmer.position) > 4.5) return false;
+    if (this.skimmer.isMounted || !this.skimmer.mesh.visible ||
+        planarDistance(player.position, this.skimmer.position) > 4.5 ||
+        !Number.isFinite(player.position.y) || !Number.isFinite(this.skimmer.position.y) ||
+        Math.abs(player.position.y-this.skimmer.position.y)>1.8) return false;
     this.driver = player; this.skimmer.isMounted = true; this.skimmer.mountCooldown = .5;
     player.mesh.visible = false; player.position.copy(this.skimmer.position); return true;
   }
