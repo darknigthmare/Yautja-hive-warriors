@@ -226,3 +226,19 @@ test('rendered carrier wheels spin after physical convoy movement but freeze on 
     assert.equal(f.sim.assertConservation(),true);
   }finally{f.dispose();apc.clear();}
 });
+
+test('replacing and clearing a rendered M577 release each owned wheel instance GPU buffer exactly once',()=>{
+  const apc=new APCVehicle(new THREE.Scene(),null,null);
+  apc.beginMission({missionId:'m577-wheel-disposal',allowed:true,factionId:'human_force'});
+  assert.equal(apc.spawn(new THREE.Vector3(0,0,0)),true);
+  const old=apc.model.wheelInstances;let oldDisposals=0;
+  old.addEventListener('dispose',()=>oldDisposals++);
+  assert.equal(apc.spawn(new THREE.Vector3(8,0,0)),true);
+  assert.equal(oldDisposals,1,'replacement disposes old instance buffers once');
+  const current=apc.model.wheelInstances;let newDisposals=0;
+  current.addEventListener('dispose',()=>newDisposals++);
+  apc.clear();apc.clear();
+  assert.equal(newDisposals,1,'repeated clear never frees instances twice');
+  assert.equal(apc.model,null);
+  assert.equal(apc.mesh,null);
+});

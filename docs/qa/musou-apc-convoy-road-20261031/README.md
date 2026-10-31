@@ -66,3 +66,12 @@ doivent être confirmés par le workflow du commit publié.
 **Limites :** ressorts articulés, déformation des pneus, cinématique
 de direction automobile, roulis complet et dimensions exactes du
 véhicule filmé restent à traiter. Études procédurales, non 1:1 certifié.
+
+## Cycle de vie GPU du modèle instancié
+
+`APCVehicle.spawn` et `APCVehicle.clear` déclenchent maintenant
+explicitement `wheelInstances.dispose()` avant la libération habituelle
+des géométries et matériaux. Cela protège le buffer des matrices
+d'instances lors des redéploiements, destructions et changements de
+mission. Le test couvre remplacement puis deux `clear` successifs,
+avec exactement un événement de libération par instance réelle.
