@@ -4,6 +4,7 @@
 
 import { BattleIntel } from './BattleIntel.js';
 import { applyMusouOfficerBreak } from './MusouBattleFlow.js';
+import { APC_SECTION_RULES, planM577Embark, validateM577Manifest } from './APCSectionManifest.js';
 import { applyFacehuggerExposure } from './FacehuggerExposure.js';
 import { HIVE_SPORE_RULES, updateHiveSporeSight, getHiveSporeContacts,
   restoreHiveSporeSight } from './HiveSporeSight.js';
@@ -28,7 +29,7 @@ const number = (value, min, max) => Number.isFinite(value) && value >= min && va
 const point = value => Array.isArray(value) && value.length === 2 && value.every(Number.isFinite);
 const dist = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]);
 const alive = unit => unit.hp > 0 && !['dead', 'evacuated', 'captured'].includes(unit.state);
-const combatReady = unit => alive(unit) && unit.incapacitated !== true;
+const combatReady = unit => alive(unit) && unit.incapacitated !== true && unit.apcSeat === undefined && unit.apcCrewRole === undefined;
 const pair = (a, b) => a < b ? `${a}|${b}` : `${b}|${a}`;
 function ordered(value) {
   if (Array.isArray(value)) return value.map(ordered);
@@ -66,6 +67,7 @@ export class BattleSimulation {
     this.profiles = new Map(); this.groups = new Map(); this.units = new Map();
     this.relations = new Map(); this.orders = new Map(); this.nextReinforcement = new Map();
     this.defeatSince = null; this.pendingArrivals = []; this.objectiveKeys = new Set();
+    this.apcManifest = null; // Bound, authenticated passengers on the existing M577 support vehicle.
     this.nextStrategicOrder = this.config.ai?.interval ?? 20;
     this.tacticCooldowns = new Map();
     this.budgets = { active: 32, byFaction: {}, spawnInterval: 8, arrivalsPerTick: 4, spawnDistance: 24,
@@ -288,6 +290,7 @@ export class BattleSimulation {
 
   issueOrder(groupId, specification = {}) {
     const group = this.groups.get(groupId), type = specification.type, target = specification.frontId ?? group?.frontId;
+    if (group?.apcCarrierId) return { accepted: false, reason: 'group_aboard_apc' };
     if (!group || this.disposed || this.result || !ORDERS.has(type) || !this.fronts.has(target) || !group.units.some(unitId => alive(this.units.get(unitId)))) return { accepted: false, reason: 'invalid_group_or_order' };
     if (group.units.every(unitId => this.units.get(unitId).state === 'reserve' || !alive(this.units.get(unitId)))) return { accepted: false, reason: 'group_in_reserve' };
     if (group.path.length && !this._routeTraversable(this.routes.get(group.path[0].routeId)) && dist(group.position, this.fronts.get(group.frontId).position) > this.fronts.get(group.frontId).radius) return { accepted: false, reason: 'route_closed_in_transit' };
@@ -437,7 +440,7 @@ export class BattleSimulation {
     const knownWounded = unit => unit.incapacitated && this.relationship(unit.factionId, this.config.playerFaction) === 'allied';
     const woundedDistance = group => Math.min(...livingPlayers.flatMap(player => group.units.map(unitId => this.units.get(unitId)).filter(unit => alive(unit) && knownWounded(unit)).map(unit => dist(unit.position, player.position))));
     const distanceToPlayers = group => Math.min(woundedDistance(group), ...livingPlayers.map(player => dist(group.position, player.position)));
-    const nearby = [...this.groups.values()].filter(group => (activeFronts.has(group.frontId) || woundedDistance(group) <= 65) && group.units.some(unitId => alive(this.units.get(unitId)) && this.units.get(unitId).state !== 'reserve'));
+    const nearby = [...this.groups.values()].filter(group => !group.apcCarrierId && (activeFronts.has(group.frontId) || woundedDistance(group) <= 65) && group.units.some(unitId => alive(this.units.get(unitId)) && this.units.get(unitId).state !== 'reserve'));
     nearby.sort((a, b) => Number(Boolean(b.officerId)) - Number(Boolean(a.officerId)) || distanceToPlayers(a) - distanceToPlayers(b) || a.id.localeCompare(b.id));
     const buckets = new Map();
     for (const group of nearby) { const key = `${group.frontId}:${group.factionId}`; if (!buckets.has(key)) buckets.set(key, []); buckets.get(key).push(group); }
@@ -609,7 +612,11 @@ export class BattleSimulation {
 
   recordDeath(event = {}) {
     const unit = this.units.get(event.entityId ?? event.unitId);
-    if (!unit || this.disposed || this.result || this.deaths.has(unit.id) || ['evacuated', 'captured'].includes(unit.state)) return false;
+    if (!unit || this.disposed || this.result || this.deaths.has(unit.id) ||
+        ['evacuated', 'captured'].includes(unit.state) ||
+        unit.apcSeat !== undefined || unit.apcCrewRole !== undefined) return false;
+    // An M577 passenger is protected by its actual vehicle until that vehicle
+    // is destroyed; destroyAPCManifest clears each seat before recording loss.
     unit.hp = 0; unit.state = 'dead'; unit.incapacitated = false;
     delete unit.encounterState; delete unit.infection;
     const killerFaction = this.factions.has(event.killerFaction) ? event.killerFaction : null;
@@ -699,7 +706,7 @@ export class BattleSimulation {
         if (group.path.length || dist(group.position, front.position) > front.radius || group.order.type === 'retreat') continue;
         for (const unitId of group.units) {
           const unit = this.units.get(unitId);
-          if (alive(unit) && unit.state === 'distant' && (!unit.incapacitated || dist(unit.position, front.position) <= front.radius)) {
+          if (alive(unit) && unit.state === 'distant' && unit.apcSeat === undefined && unit.apcCrewRole === undefined && (!unit.incapacitated || dist(unit.position, front.position) <= front.radius)) {
             if (!byFaction.has(unit.factionId)) byFaction.set(unit.factionId, []);
             byFaction.get(unit.factionId).push(unit);
           }
@@ -1061,6 +1068,107 @@ export class BattleSimulation {
     return front ? { id: front.id, owner: front.owner, sourceHP: front.sourceHP, contested: front.contested, reinforcementSource: front.reinforcementSource } : null;
   }
   getResult() { return this.result ? clone(this.result) : null; }
+  /** The M577 carries existing finite USCM identities, never a new platoon.
+   * The transport vehicle and its physical hull are owned by the game. */
+  boardAPC(groupId, carrier) {
+    const plan=planM577Embark(this,groupId,carrier);
+    if(!plan.accepted)return plan;
+    const group=this.groups.get(groupId);
+    if(group.materialized)this._dematerialize(group);
+    // Re-check after the live bridge's final HP snapshot, before moving IDs.
+    const checked=planM577Embark(this,groupId,carrier);
+    if(!checked.accepted)return checked;
+    group.apcCarrierId=APC_SECTION_RULES.vehicleId;
+    group.path=[];group.travelProgress=0;group.waypointIndex=1;
+    group.position=[...checked.position];group.state='distant';
+    const passengers=checked.passengers,crew=checked.crew;
+    for(let seat=0;seat<crew.length;seat++){
+      const unit=this.units.get(crew[seat]);
+      unit.apcCrewRole=seat===0?'driver':'commander';
+      unit.state='distant';unit.position=[...checked.position];
+    }
+    for(let seat=0;seat<passengers.length;seat++){
+      const unit=this.units.get(passengers[seat]);
+      unit.apcSeat=seat;unit.state='distant';unit.position=[...checked.position];
+    }
+    this.apcManifest={version:1,vehicleId:APC_SECTION_RULES.vehicleId,
+      groupId,ownerFaction:checked.ownerFaction,factionId:group.factionId,
+      frontId:group.frontId,position:[...checked.position],crew:[...crew],
+      passengers:[...passengers],boardedAt:this.time};
+    this._emit('apc_marines_boarded',{groupId,frontId:group.frontId,
+      passengerCount:passengers.length,crewCount:crew.length},2);
+    return {accepted:true,passengers:[...passengers],crew:[...crew],seatCapacity:APC_SECTION_RULES.passengerSeats};
+  }
+
+  /** Driven only by a physically verified APC movement step. */
+  moveAPCManifest(position,frontId=this.apcManifest?.frontId) {
+    const manifest=this.apcManifest;
+    if(!manifest||this.disposed||this.result||!point(position)||
+       !this.fronts.has(frontId)||dist(position,manifest.position)>5||
+       (frontId!==manifest.frontId&&
+         dist(position,this.fronts.get(frontId).position)>this.fronts.get(frontId).radius))
+      return false;
+    const group=this.groups.get(manifest.groupId);
+    manifest.position=[...position];manifest.frontId=frontId;
+    group.position=[...position];group.frontId=frontId;
+    for(const unitId of [...manifest.crew,...manifest.passengers])this.units.get(unitId).position=[...position];
+    return true;
+  }
+
+  /** Coordinates are supplied only after the real navigation tested all exits.
+   * This is all-or-nothing: no partial passenger duplication or teleport. */
+  disembarkAPC(placements,frontId=this.apcManifest?.frontId) {
+    const manifest=this.apcManifest;
+    if(!manifest||this.disposed||this.result||!Array.isArray(placements)||
+      placements.length!==manifest.crew.length+manifest.passengers.length||
+      !this.fronts.has(frontId)||frontId!==manifest.frontId||
+      new Set(placements.map(x=>x?.unitId)).size!==placements.length)return{accepted:false,reason:'invalid_manifest_or_exit'};
+    const occupants=[...manifest.crew,...manifest.passengers];
+    for(let seat=0;seat<placements.length;seat++){
+      const passenger=placements[seat];
+      if(passenger?.unitId!==occupants[seat]||
+        !point(passenger.position)||
+        dist(passenger.position,manifest.position)>APC_SECTION_RULES.maxExitDistance||
+        placements.slice(0,seat).some(other=>dist(passenger.position,other.position)<1.5))
+        return{accepted:false,reason:'unsafe_passenger_exit'};
+    }
+    const group=this.groups.get(manifest.groupId);
+    for(const placement of placements){
+      const unit=this.units.get(placement.unitId);
+      delete unit.apcSeat;delete unit.apcCrewRole;unit.position=[...placement.position];
+    }
+    delete group.apcCarrierId;group.materialized=false;group.state='distant';
+    group.position=[placements.reduce((x,p)=>x+p.position[0],0)/placements.length,
+      placements.reduce((z,p)=>z+p.position[1],0)/placements.length];
+    group.detailRetryAt=this.time+1;
+    group.order={type:'defend',frontId,issuer:'apc',issuedAt:this.time};
+    this.apcManifest=null;
+    this._emit('apc_marines_disembarked',{groupId:group.id,frontId,
+      occupantCount:placements.length,passengerCount:manifest.passengers.length},2);
+    return{accepted:true,occupantCount:placements.length,passengerCount:manifest.passengers.length};
+  }
+
+  /** An actual support carrier destruction is a finite hostile loss.
+   * Passengers cannot respawn as distant combatants after the hull explodes. */
+  destroyAPCManifest(killerFaction=null) {
+    const manifest=this.apcManifest;
+    if(!manifest)return{accepted:false,reason:'no_passengers'};
+    if(killerFaction!==null&&!this.factions.has(killerFaction))return{accepted:false,reason:'invalid_attacker'};
+    const group=this.groups.get(manifest.groupId);
+    this.apcManifest=null;delete group.apcCarrierId;
+    for(const unitId of [...manifest.crew,...manifest.passengers]){
+      const unit=this.units.get(unitId);
+      delete unit.apcSeat;delete unit.apcCrewRole;
+      this.recordDeath({entityId:unitId,killerFaction,
+        cause:'m577_apc_destroyed_with_passengers'});
+    }
+    this._emit('apc_passengers_lost',{groupId:group.id,
+      occupantCount:manifest.crew.length+manifest.passengers.length},3);
+    return{accepted:true,occupantCount:manifest.crew.length+manifest.passengers.length,passengerCount:manifest.passengers.length};
+  }
+
+  getAPCManifest(){return this.apcManifest?clone(this.apcManifest):null;}
+
   getUnit(unitId) { const unit = this.units.get(unitId); return unit ? clone(unit) : null; }
   getActiveUnits() { return [...this.units.values()].filter(unit => unit.state === 'active').map(clone); }
   getActorDirectives() {
@@ -1103,6 +1211,9 @@ export class BattleSimulation {
         contested: front.contested, sourceHP: front.sourceHP, reinforcementSource: front.reinforcementSource, capture: clone(front.capture),
         reportAge: Math.max(0, this.time - front.lastReportAt) })),
       groups, routes: [...this.routes.values()].map(clone),
+      ...(this.apcManifest && this.relationship(this.config.playerFaction,this.apcManifest.factionId)==='allied'
+        ? {apcPassengers:{count:this.apcManifest.passengers.length,capacity:APC_SECTION_RULES.passengerSeats,frontId:this.apcManifest.frontId}}
+        : {}),
       alerts: this.events.filter(event => this.intel.allowsEvent(event) && event.priority >= 2 && this.time - event.time <= 30).sort((a, b) => b.priority - a.priority || b.id - a.id).slice(0, 8).map(clone),
       criticalDeadline: this.criticalLosses.size ? Math.min(...[...this.criticalLosses.values()].map(loss => loss.deadline)) : null,
       criticalFronts: [...this.criticalLosses.values()].map(clone), difficulty: this.config.difficulty ? clone(this.config.difficulty) : null,
@@ -1126,7 +1237,7 @@ export class BattleSimulation {
       fronts: [...this.fronts.values()].map(clone), routes: [...this.routes.values()].map(clone), relations: [...this.relations],
       deaths: [...this.deaths.values()].map(clone), events: this.events.map(clone), eventsDropped: this.eventsDropped, eventSequence: this.eventSequence,
       pendingArrivals: this.pendingArrivals.map(clone), nextReinforcement: [...this.nextReinforcement], objectiveKeys: [...this.objectiveKeys],
-      intelligence: this.intel.serialize(), hiveEcology: this.getHiveNodeState(), defeatSince: this.defeatSince, criticalLosses: [...this.criticalLosses.values()].map(clone), routeRevision: this.routeRevision, nextStrategicOrder: this.nextStrategicOrder, tacticCooldowns: [...this.tacticCooldowns], result: this.result ? clone(this.result) : null };
+      intelligence: this.intel.serialize(), hiveEcology: this.getHiveNodeState(), apcManifest:this.getAPCManifest(), defeatSince: this.defeatSince, criticalLosses: [...this.criticalLosses.values()].map(clone), routeRevision: this.routeRevision, nextStrategicOrder: this.nextStrategicOrder, tacticCooldowns: [...this.tacticCooldowns], result: this.result ? clone(this.result) : null };
   }
 
   static fromState(configuration, saved, callbacks = {}) {
@@ -1213,7 +1324,10 @@ export class BattleSimulation {
     if (!Array.isArray(saved.pendingArrivals) || new Set(saved.pendingArrivals.map(arrival => arrival.groupId)).size !== saved.pendingArrivals.length || saved.pendingArrivals.some(arrival => !simulation.groups.has(arrival.groupId) || !simulation.fronts.has(arrival.frontId) || !simulation.fronts.has(arrival.sourceId) || simulation.groups.get(arrival.groupId).factionId !== arrival.factionId || !number(arrival.due, saved.time, saved.time + simulation.budgets.announcementSeconds) || !simulation.groups.get(arrival.groupId).units.some(unitId => units.get(unitId).state === 'reserve') || arrival.supportForGroupId !== undefined && (!simulation.groups.has(arrival.supportForGroupId) || simulation.groups.get(arrival.supportForGroupId).factionId !== arrival.factionId))) fail('invalid saved arrival');
     if (!Array.isArray(saved.events) || saved.events.length > 512 || !Number.isInteger(saved.eventSequence) || saved.eventSequence < saved.events.length || !Number.isInteger(saved.eventsDropped) || saved.eventsDropped < 0 || saved.events.some(event => !Number.isInteger(event.id) || event.id < 1 || event.id > saved.eventSequence || !number(event.time, 0, saved.time) || !number(event.priority, 0, 4) || typeof event.type !== 'string' || event.type.length > 80) || new Set(saved.events.map(event => event.id)).size !== saved.events.length) fail('invalid bounded event journal');
     if (!Array.isArray(saved.nextReinforcement) || saved.nextReinforcement.length !== simulation.factions.size || saved.nextReinforcement.some(([factionId, time]) => !simulation.factions.has(factionId) || !number(time, 0, 1e9))) fail('invalid saved reinforcement timers');
-    simulation.units = units; simulation.groups = new Map(groups.map(group => [group.id, { ...group, materialized: false, state: group.state === 'active' ? 'distant' : group.state }]));
+    const manifest=validateM577Manifest(saved.apcManifest,simulation,units,
+      new Map(groups.map(group=>[group.id,group])),saved.time);
+    simulation.units = units;simulation.apcManifest=manifest;
+    simulation.groups = new Map(groups.map(group => [group.id, { ...group, materialized: false, state: group.state === 'active' ? 'distant' : group.state }]));
     simulation.fronts = new Map(saved.fronts.map(front => [front.id, clone(front)])); simulation.routes = new Map(saved.routes.map(route => [route.id, clone(route)]));
     simulation.relations = new Map(saved.relations); simulation.deaths = new Map(saved.deaths.map(death => [death.entityId, clone(death)]));
     simulation.events = saved.events.map(clone); simulation.eventsDropped = saved.eventsDropped; simulation.eventSequence = saved.eventSequence;

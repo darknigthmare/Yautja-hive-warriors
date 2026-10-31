@@ -24,6 +24,7 @@ import { BossPhasePressure } from './battlefield/BossPhasePressure.js';
 import { CompanionLoadouts, COMPANION_KITS } from './battlefield/CompanionLoadouts.js';
 import { HIVE_CONFLICT_ID } from './battlefield/HiveConflictScenario.js';
 import { OperationTransport } from './entities/OperationTransport.js';
+import { APCMarineService } from './battlefield/APCMarineService.js';
 import { physicalOperationRouteAvailable } from './battlefield/PhysicalRouteAvailability.js';
 import { operationAlertState, captureBattleDebrief, hiveCoordinationFeedback } from './ui/OperationPanel.js';
 import { OperationObjectives } from './battlefield/OperationObjectives.js';
@@ -147,6 +148,7 @@ class GameApp {
     this.campaignArcId = null; this.campaignRunId = null;
     this.battleSimulation = null;
     this.battleBridge = null;
+    this.apcMarineService = null;
     this.operationObjectives = null;
     this.operationWorld = null;
     this.hiveNodeWorld = null;
@@ -260,6 +262,10 @@ class GameApp {
       config=compatible;
     }
     this.battleBridge.bind(this.battleSimulation);
+    this.apcMarineService=new APCMarineService(this.apc,this.battleSimulation,this.env,{
+      actors:()=>[...this.battleBridge.actors.values()],
+      feedback:message=>this.operationPanel.feedback(message)
+    });
     // Four tiny instanced visual pools reuse EXISTING distant soldier IDs.
     // They never participate in combat, awards, spawning or save contracts.
     this.battleCrowd = new BattleCrowdProjection(this.renderer.scene,this.env,this.battleSimulation);
@@ -312,6 +318,7 @@ class GameApp {
     this.companionLoadouts?.update(delta);
     this.operationObjectives?.update(delta,players);
     const state=this.battleSimulation.getHUDState(), objectives=this.operationObjectives?.getHUDState();
+    state.apcTransport=this.apcMarineService?.getHUDState()??null;
     state.phaseThreats=this.bossPhasePressure?.getHUDState().threats??[];
     state.rescue=this.allyRescue?.getState();
     const rescuePrompts=[this.player,this.player2].map((player,index)=>{const prompt=player&&this.allyRescue?.getPrompt(player);return prompt?`${this.isCoOp?`J${index+1} : `:''}${prompt.label.replace('[E]',this.gamepadBridge.inputMode==='gamepad'?'[X]':index?'[ENTRÉE]':'[E]')}`:null;}).filter(Boolean),rescueNode=document.getElementById('ally-rescue-prompt');
@@ -389,6 +396,16 @@ class GameApp {
 
   battleAction(type, frontId) {
     if(!this.battleSimulation||!this.player||this.dropPod.isActive)return;
+    if(type==='apc-board'||type==='apc-disembark'){
+      const service=this.apcMarineService,owner=service?.ownerFaction;
+      const authorized=service?.available&&this.player.position.distanceTo(this.apc.mesh.position)<=22&&
+        (owner===this.battleSimulation.config.playerFaction||
+          this.battleSimulation.relationship(owner,this.battleSimulation.config.playerFaction)==='allied');
+      if(!authorized){this.operationPanel.feedback('APC USCM : assistance inaccessible ou trop éloignée.');return;}
+      const answer=type==='apc-board'?service.boardNearest():service.disembark();
+      if(!answer.accepted)this.operationPanel.feedback('APC USCM : '+answer.reason);
+      return;
+    }
     const result=this.battleSimulation.interact({id:'player1',position:[this.player.position.x,this.player.position.z],hp:this.player.hp},{type,frontId});
     this.operationPanel.feedback(result.accepted?'Action effectuée sur le front.':result.reason??'Approchez-vous du front.');
   }
@@ -1973,16 +1990,24 @@ class GameApp {
   }
 
   clearAPCSupport() {
+    // Redeployment must not vaporize an already seated finite USCM section.
+    // An unsafe dock refuses the reset; a destroyed hull uses the separate
+    // onDestroyed casualty path and has already emptied the manifest.
+    if(this.apcMarineService?.manifest){
+      const exit=this.apcMarineService.beforeRedeploy();
+      if(!exit.accepted)return false;
+    }
     if (this._apcNavigationCollider) {
       this.env.colliders = this.env.colliders.filter(collider => collider !== this._apcNavigationCollider);
       this._apcNavigationCollider = null;
       this.invalidateSupportNavigation();
     }
     this.apc.clear();
+    return true;
   }
 
   spawnAPCSupport(position) {
-    this.clearAPCSupport();
+    if(this.clearAPCSupport()===false)return false;
     this.env.resolveMovement(position, this.apc.navigationRadius);
     position.y=this.env.getPlacementElevationAt?.(position.x,position.z)??position.y;
     if(!this.apc.spawn(position))return false;
@@ -2005,7 +2030,14 @@ class GameApp {
 
   initializeMissionSupports(saved) {
     const context=createMissionSupportContext({missionId:saved?.campaignRunId??this.missionRun,levelId:this.ui.selectedLevel.id,fidelityMode:this.activeLoadout.fidelityMode,environment:this.env,
-      onDestroyed:event=>{if(event.kind==='apc')this.clearAPCSupport();this.ui.showAnnouncement(event.kind==='apc'?'APC M577 DÉTRUIT — APPUI PERDU POUR CETTE MISSION.':'CHEYENNE DÉTRUIT — APPUI PERDU POUR CETTE MISSION.');}});
+      onDestroyed:event=>{
+        if(event.kind==='apc'){
+          const killer=this.battleSimulation?.factions.has(event.killerFaction)?event.killerFaction:null;
+          this.apcMarineService?.carrierDestroyed(killer);
+          this.clearAPCSupport();
+        }
+        this.ui.showAnnouncement(event.kind==='apc'?'APC M577 DÉTRUIT — APPUI PERDU POUR CETTE MISSION.':'CHEYENNE DÉTRUIT — APPUI PERDU POUR CETTE MISSION.');
+      }});
     this.missionSupportContext=context;
     this.orbital.supportContext=context;
     this.apc.beginMission(context);this.dropship.beginMission(context);
@@ -2018,6 +2050,8 @@ class GameApp {
     this._apcNavigationCollider=this.apc.getNavigationCollider();
     if(this._apcNavigationCollider)this.env.colliders.push(this._apcNavigationCollider);
     this.invalidateSupportNavigation();
+    if(this.battleSimulation?.apcManifest&&!this.apc.isSupportActive())
+      throw new Error('Incompatible APC passenger checkpoint: carrier is not deployed');
   }
 
   enterBattlefieldSector(sector) {

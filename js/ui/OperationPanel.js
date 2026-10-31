@@ -23,12 +23,14 @@ export class OperationPanel {
   constructor({ onOrder, onAction, onCheckpoint, onMap } = {}) {
     this.root = document.createElement('section'); this.root.id = 'operation-panel';
     this.root.className = 'operation-panel hidden'; this.root.setAttribute('aria-label', 'Commandement des fronts');
-    this.root.innerHTML = `<strong data-title>BATAILLE MUSOU</strong><p data-musou aria-live="off"></p><p data-counts></p><p data-fronts></p><p data-alert role="status"></p><p data-rescue role="status"></p><p data-tasks></p><p data-report-age></p><details><summary>TACTIQUES D'APPUI (OPTIONNELLES)</summary><label>Groupe <select data-group aria-label="Groupe allié"></select></label><label>Front <select data-front aria-label="Front cible"></select></label><label>Ordre <select data-order aria-label="Ordre"><option value="attack">Attaquer</option><option value="defend">Défendre</option><option value="regroup">Regrouper</option><option value="escort">Escorter</option><option value="retreat">Replier</option></select></label><div><button data-map>CARTE / ORDRES</button><button data-send>TRANSMETTRE</button><button data-rally>RALLIER</button><button data-sabotage>SABOTER</button><button data-save>SAUVEGARDER</button></div><small data-feedback></small></details>`;
+    this.root.innerHTML = `<strong data-title>BATAILLE MUSOU</strong><p data-musou aria-live="off"></p><p data-counts></p><p data-fronts></p><p data-alert role="status"></p><p data-rescue role="status"></p><p data-tasks></p><p data-report-age></p><details><summary>TACTIQUES D'APPUI (OPTIONNELLES)</summary><label>Groupe <select data-group aria-label="Groupe allié"></select></label><label>Front <select data-front aria-label="Front cible"></select></label><label>Ordre <select data-order aria-label="Ordre"><option value="attack">Attaquer</option><option value="defend">Défendre</option><option value="regroup">Regrouper</option><option value="escort">Escorter</option><option value="retreat">Replier</option></select></label><div><button data-map>CARTE / ORDRES</button><button data-send>TRANSMETTRE</button><button data-rally>RALLIER</button><button data-sabotage>SABOTER</button><button data-apc-board>USCM M577 : EMBARQUER</button><button data-apc-exit>USCM M577 : DÉBARQUER</button><button data-save>SAUVEGARDER</button></div><small data-feedback></small></details>`;
     document.getElementById('in-game-hud').append(this.root);
     this.root.querySelector('[data-map]').onclick = () => onMap?.();
     this.root.querySelector('[data-send]').onclick = () => onOrder?.(this.root.querySelector('[data-group]').value, { type: this.root.querySelector('[data-order]').value, frontId: this.root.querySelector('[data-front]').value });
     this.root.querySelector('[data-rally]').onclick = () => onAction?.('rally', this.root.querySelector('[data-front]').value);
     this.root.querySelector('[data-sabotage]').onclick = () => onAction?.('sabotage', this.root.querySelector('[data-front]').value);
+    this.root.querySelector('[data-apc-board]').onclick = () => onAction?.('apc-board', this.root.querySelector('[data-front]').value);
+    this.root.querySelector('[data-apc-exit]').onclick = () => onAction?.('apc-disembark', this.root.querySelector('[data-front]').value);
     this.root.querySelector('[data-save]').onclick = () => onCheckpoint?.();
   }
   feedback(message) { this.root.querySelector('[data-feedback]').textContent = message; }
@@ -46,6 +48,10 @@ export class OperationPanel {
     this.root.querySelector('[data-musou]').textContent =
       `${pulse.largeArmyLabel}  ·  ${header}${reserve?`  ·  Alliés déployés : ${reserve.deployed} / réserve ${reserve.reserves}`:''}`;
     this.root.querySelector('[data-counts]').textContent = Object.entries(state.intelCounts??{}).map(([id,c])=>c.exact?`${c.label??id} : ${state.counts[id].active} détaillés / ${state.counts[id].distant} distants / ${state.counts[id].reserve} réserve / ${state.counts[id].dead} pertes`:`${c.label??id} : ${c.knownAlive??0} signalés · réserves inconnues`).join(' · ');
+    const apc=state.apcTransport;
+    const boarded=apc?.passengers??0;
+    this.root.querySelector('[data-apc-board]').disabled=!apc?.available||boarded>0;
+    this.root.querySelector('[data-apc-exit]').disabled=!apc?.available||boarded===0;
     this.root.querySelector('[data-fronts]').textContent = state.fronts.map(front => `${front.label} : ${front.intelState==='unknown'?'inconnu':front.owner??'neutre'}${front.contested ? ' ⚔' : ''}`).join(' · ');
     this.root.querySelector('[data-alert]').textContent = operationAlertState(state,objectives,players).text;
     const patients=state.rescue?.records?.filter(record=>record.status==='downed')??[];

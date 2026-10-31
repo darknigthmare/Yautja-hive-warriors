@@ -59,6 +59,7 @@ jobs:
             tests/musou-distant-crowd.test.js \
             tests/musou-distant-role-appearance.test.js \
             tests/musou-front-visibility.test.js \
+            tests/apc-marine-section.test.js \
             tests/operation-transport.test.js \
             tests/original-musou-field-gear.test.js \
             tests/hive-node-remote-combat.test.js \
