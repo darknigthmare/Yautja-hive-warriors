@@ -110,9 +110,9 @@ export class APCConvoyDrive {
       const actor=entry?.actor??entry,p=actor?.mesh?.position??actor?.position;
       if(!isVector(p)||!(actor?.hp>0))continue;
       if(Math.abs(p.y-position.y)>3.5)continue;
-      const relative=p.clone().sub(position),angle=-yaw,
-        side=relative.x*Math.cos(angle)-relative.z*Math.sin(angle),
-        fore=relative.x*Math.sin(angle)+relative.z*Math.cos(angle);
+      const relative=p.clone().sub(position),
+        side=relative.x*Math.cos(yaw)-relative.z*Math.sin(yaw),
+        fore=relative.x*Math.sin(yaw)+relative.z*Math.cos(yaw);
       const r=actor.radius??.75;
       if(Math.abs(side)<APC_NAVIGATION.halfWidth+r&&
         Math.abs(fore)<APC_NAVIGATION.halfDepth+r)return false;
@@ -134,7 +134,10 @@ export class APCConvoyDrive {
     const yaw=Math.atan2(dx,dz);
     // Check both the old and the new footprint orientation: a sharp turn
     // cannot swing the long rear hull through a closed wall or missing floor.
-    if(!this._canOccupy(next,p.y===next.y?apc.mesh.rotation.y:apc.mesh.rotation.y)||
+    const startYaw=apc.mesh.rotation.y;
+    const turn=Math.atan2(Math.sin(yaw-startYaw),Math.cos(yaw-startYaw));
+    if(!this._canOccupy(next,startYaw)||
+       !this._canOccupy(next,startYaw+turn*.5)||
        !this._canOccupy(next,yaw))return false;
     // The signed battle state accepts the step before the physical mesh moves.
     if(!s.simulation.moveAPCManifest([next.x,next.z],m.frontId))return false;
@@ -157,7 +160,7 @@ export class APCConvoyDrive {
     for(let tries=0;tries<M577_DRIVE_POLICY.maxStepsPerUpdate&&remaining>1e-6&&this.journey;tries++){
       const current=s.apc.mesh.position,target=j.waypoints[j.index];
       if(!target){
-        if(!m.transit||!sim.completeAPCTransit()){
+        if(!s.manifest?.transit||!sim.completeAPCTransit()){
           this.stop('arrival_not_authorized');return false;
         }
         this.journey=null;this._result(true,'arrived',{targetFrontId:j.targetFrontId});

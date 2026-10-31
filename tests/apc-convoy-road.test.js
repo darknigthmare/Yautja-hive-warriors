@@ -7,6 +7,8 @@ import { planM577Embark } from '../js/battlefield/APCSectionManifest.js';
 import { APCMarineService } from '../js/battlefield/APCMarineService.js';
 import { M577_DRIVE_POLICY } from '../js/battlefield/APCConvoyDrive.js';
 import { BattlefieldNavigation } from '../js/engine/BattlefieldNavigation.js';
+import { APCVehicle } from '../js/entities/APCVehicle.js';
+import { APC_NAVIGATION } from '../js/graphics/APCModel.js';
 
 const create=()=>new BattleSimulation(getBattleOperationConfig('AFF-27'));
 const distance=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1]);
@@ -26,7 +28,7 @@ function fixture({blocked=false,owner=true}={}){
     sim.fronts.get(target).owner=group.factionId;
     sim.relations.set([sim.config.playerFaction,group.factionId].sort().join('|'),'allied');
   }
-  route.physicalGateIds??=[];
+  route.physicalGateIds=[...(route.physicalGateIds??[]),'M577_TEST_GATE'];
   route.physicalRouteId??=null;
   const gates=route.physicalGateIds.map(id=>({id}));
   let gateOpen=true,canStand=!blocked,moved=0;
@@ -178,4 +180,23 @@ test('a mid-route checkpoint restarts at its actual 3D position and never duplic
       assert.equal(restored.digest,f.sim.digest);
     }finally{retry.dispose();restored.dispose();}
   }finally{f.dispose();}
+});
+
+test('a real registered M577 collision object follows the same hull without replacing its identity',()=>{
+  const apc=new APCVehicle(new THREE.Scene(),null,null);
+  apc.mesh=new THREE.Group();apc.isActive=true;apc.policy={available:true};
+  apc.mesh.position.set(2,0,5);
+  const collider=apc.getNavigationCollider(),original=collider;
+  assert.ok(collider);
+  const old=[collider.x,collider.z,collider.rotation];
+  apc.mesh.position.set(17,0,11);apc.mesh.rotation.y=Math.PI/3;
+  assert.equal(apc.syncNavigationCollider(collider),true);
+  assert.equal(collider,original,'the same registered collider is updated in-place');
+  assert.notDeepEqual([collider.x,collider.z,collider.rotation],old);
+  const expected=new THREE.Vector3(0,0,APC_NAVIGATION.centerZ)
+    .applyAxisAngle(new THREE.Vector3(0,1,0),apc.mesh.rotation.y)
+    .add(apc.mesh.position);
+  assert.ok(Math.abs(collider.x-expected.x)<.001);
+  assert.ok(Math.abs(collider.z-expected.z)<.001);
+  apc.mesh=null;apc.isActive=false;
 });

@@ -264,7 +264,7 @@ class GameApp {
     }
     this.battleBridge.bind(this.battleSimulation);
     this.apcMarineService=new APCMarineService(this.apc,this.battleSimulation,this.env,{
-      actors:()=>[...this.battleBridge.actors.values()],
+      actors:()=>[...this.battleBridge.actors.values(),this.player,this.player2].filter(Boolean),
       feedback:message=>this.operationPanel.feedback(message),
       onMove:()=>{
         if(this._apcNavigationCollider){
