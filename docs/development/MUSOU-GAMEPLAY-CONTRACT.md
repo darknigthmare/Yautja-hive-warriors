@@ -81,16 +81,19 @@ Les 27 scénarios du catalogue source déclarent
 **12 816 PNJ ennemis et 708 PNJ alliés cumulés
 entre scénarios**, soit **13 524 allocations**,
 pas dans une seule bataille. Ces effectifs
-incluent cinq opérations où le catalogue
-retombe sur une répartition automatique
-par budgets (**AFF-06 à AFF-10**), faute de
-compositions détaillées par front. On ne
-présente donc pas leurs troupes de secours
-comme une formation canonique. Leurs
-noms, gabarits,
-biomes, castes et chefs restent à certifier
-source par source. Un nombre d'entrées de
-catalogue n'est jamais un modèle 3D livré.
+incluent cinq opérations (**AFF-06 à AFF-10**)
+dont l'audit avait précisé le déploiement dans
+son texte, sans `forceAllocation` structuré.
+`OriginalMusouFrontAllocations.js` rend désormais
+leur répartition originale **explicite et vérifiable
+par front**, sans changer les nombres, les IDs ni
+les réserves. Ce sont des projets de bataille
+originaux, **pas des formations canoniques**
+empruntées à un film ou au RTS Extinction.
+Leurs noms, gabarits, biomes, castes et chefs
+restent à certifier source par source. Un
+nombre d'entrées de catalogue n'est jamais
+un modèle 3D livré.
 
 ## Grille de complétude
 
@@ -119,17 +122,21 @@ par état, et signale explicitement ce qui reste
   et synchronisation des vues physiques/distance.
 
 Les opérations **AFF-06, AFF-07, AFF-08, AFF-09
-et AFF-10** ont des budgets source cohérents
-mais pas de `forceAllocation` explicite par
-front dans le JSON historique. Le jeu les
-génère par défaut. La matrice distingue
-donc `budget-fallback-no-source-front-composition`
-de `source-front-allocation-present`.
-La prochaine passe dédiée devra établir
-les castes/équipes, commandements et
-positions de chaque front, avec une
-traçabilité média, sans casser les
-sauvegardes existantes.
+et AFF-10** avaient des budgets source cohérents
+mais pas de `forceAllocation` explicite dans le
+JSON historique. Les positions A/B/C/D, sections
+et cellules de commandement sont désormais
+déclarées dans le **nouveau contrat original
+Musou**, sans réécrire le JSON source de l'audit.
+Les anciennes sauvegardes sans version continuent
+d'utiliser la répartition historique ; les
+nouvelles parties activent `deploymentPlan:'authored'`.
+La matrice conserve le statut historique
+`budget-fallback-no-source-front-composition`
+pour la *source brute*, mais peut signaler
+`runtimeFrontPlan` pour la *réalisation actuelle*.
+Le niveau, les costumes et les comportements
+restent à vérifier physiquement et visuellement.
 
 Les champs `false` signifient « non certifié
 par cet audit », pas automatiquement « absent ».

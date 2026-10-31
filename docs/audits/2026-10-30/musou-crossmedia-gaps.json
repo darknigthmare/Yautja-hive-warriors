@@ -9,7 +9,8 @@
     "physicalMap1to1Confirmed": "false means no multi-angle/measured-world certification in this report, not that a map is necessarily absent.",
     "combatAnimation1to1Confirmed": "false means not certified against exact media source.",
     "sourceEraSpeciesCrosschecked": "requires source-by-source verification (film/game/comic/series).",
-    "explicitSourceAllocation": "Original source-front plan only when provided; null means fallback by budget."
+    "explicitSourceAllocation": "Original source-front plan only when provided; null means fallback by budget.",
+    "runtimeFrontPlan": "A structured deployment was implemented from original source audit prose; it does not turn the original source into a canonical/media reconstruction or rewrite historical checkpoints."
   },
   "operationCount": 27,
   "operations": [
@@ -438,7 +439,26 @@
         "explicitFrontGroupCompositionConfirmed": false
       },
       "explicitSourceAllocation": null,
-      "allocationProvenance": "budget-fallback-no-source-front-composition"
+      "allocationProvenance": "budget-fallback-no-source-front-composition",
+      "runtimeFrontPlan": {
+        "version": "original-audit-front-v1",
+        "sourceModule": "js/data/OriginalMusouFrontAllocations.js",
+        "bindingStatus": "audited-original-Musou-scenario; from initialDeployment prose",
+        "battleMain": "action-musou-not-RTS",
+        "commander": {
+          "front": "C",
+          "sourceBossId": "BOS-29",
+          "assignedGroupId": "GRP-42",
+          "countsAsNewUnit": false
+        },
+        "preservesHistoricalGroupAndMemberIds": true,
+        "sourceBudgetIdentical": true,
+        "newSaves": "deploymentPlan:authored",
+        "olderSaves": "deploymentPlan:historical-fallback",
+        "canonicalMedia1to1": false,
+        "realSceneGeometryVerified": false,
+        "fullGameQaVerified": false
+      }
     },
     {
       "id": "AFF-07",
@@ -495,7 +515,26 @@
         "explicitFrontGroupCompositionConfirmed": false
       },
       "explicitSourceAllocation": null,
-      "allocationProvenance": "budget-fallback-no-source-front-composition"
+      "allocationProvenance": "budget-fallback-no-source-front-composition",
+      "runtimeFrontPlan": {
+        "version": "original-audit-front-v1",
+        "sourceModule": "js/data/OriginalMusouFrontAllocations.js",
+        "bindingStatus": "audited-original-Musou-scenario; from initialDeployment prose",
+        "battleMain": "action-musou-not-RTS",
+        "commander": {
+          "front": "A",
+          "sourceBossId": "BOS-30",
+          "assignedGroupId": "GRP-42",
+          "countsAsNewUnit": false
+        },
+        "preservesHistoricalGroupAndMemberIds": true,
+        "sourceBudgetIdentical": true,
+        "newSaves": "deploymentPlan:authored",
+        "olderSaves": "deploymentPlan:historical-fallback",
+        "canonicalMedia1to1": false,
+        "realSceneGeometryVerified": false,
+        "fullGameQaVerified": false
+      }
     },
     {
       "id": "AFF-08",
@@ -552,7 +591,26 @@
         "explicitFrontGroupCompositionConfirmed": false
       },
       "explicitSourceAllocation": null,
-      "allocationProvenance": "budget-fallback-no-source-front-composition"
+      "allocationProvenance": "budget-fallback-no-source-front-composition",
+      "runtimeFrontPlan": {
+        "version": "original-audit-front-v1",
+        "sourceModule": "js/data/OriginalMusouFrontAllocations.js",
+        "bindingStatus": "audited-original-Musou-scenario; from initialDeployment prose",
+        "battleMain": "action-musou-not-RTS",
+        "commander": {
+          "front": "A",
+          "sourceBossId": "BOS-31",
+          "assignedGroupId": "GRP-42",
+          "countsAsNewUnit": false
+        },
+        "preservesHistoricalGroupAndMemberIds": true,
+        "sourceBudgetIdentical": true,
+        "newSaves": "deploymentPlan:authored",
+        "olderSaves": "deploymentPlan:historical-fallback",
+        "canonicalMedia1to1": false,
+        "realSceneGeometryVerified": false,
+        "fullGameQaVerified": false
+      }
     },
     {
       "id": "AFF-09",
@@ -609,7 +667,26 @@
         "explicitFrontGroupCompositionConfirmed": false
       },
       "explicitSourceAllocation": null,
-      "allocationProvenance": "budget-fallback-no-source-front-composition"
+      "allocationProvenance": "budget-fallback-no-source-front-composition",
+      "runtimeFrontPlan": {
+        "version": "original-audit-front-v1",
+        "sourceModule": "js/data/OriginalMusouFrontAllocations.js",
+        "bindingStatus": "audited-original-Musou-scenario; from initialDeployment prose",
+        "battleMain": "action-musou-not-RTS",
+        "commander": {
+          "front": "A",
+          "sourceBossId": "BOS-30",
+          "assignedGroupId": "GRP-42",
+          "countsAsNewUnit": false
+        },
+        "preservesHistoricalGroupAndMemberIds": true,
+        "sourceBudgetIdentical": true,
+        "newSaves": "deploymentPlan:authored",
+        "olderSaves": "deploymentPlan:historical-fallback",
+        "canonicalMedia1to1": false,
+        "realSceneGeometryVerified": false,
+        "fullGameQaVerified": false
+      }
     },
     {
       "id": "AFF-10",
@@ -666,7 +743,26 @@
         "explicitFrontGroupCompositionConfirmed": false
       },
       "explicitSourceAllocation": null,
-      "allocationProvenance": "budget-fallback-no-source-front-composition"
+      "allocationProvenance": "budget-fallback-no-source-front-composition",
+      "runtimeFrontPlan": {
+        "version": "original-audit-front-v1",
+        "sourceModule": "js/data/OriginalMusouFrontAllocations.js",
+        "bindingStatus": "audited-original-Musou-scenario; from initialDeployment prose",
+        "battleMain": "action-musou-not-RTS",
+        "commander": {
+          "front": "B",
+          "sourceBossId": "BOS-31",
+          "assignedGroupId": "GRP-42",
+          "countsAsNewUnit": false
+        },
+        "preservesHistoricalGroupAndMemberIds": true,
+        "sourceBudgetIdentical": true,
+        "newSaves": "deploymentPlan:authored",
+        "olderSaves": "deploymentPlan:historical-fallback",
+        "canonicalMedia1to1": false,
+        "realSceneGeometryVerified": false,
+        "fullGameQaVerified": false
+      }
     },
     {
       "id": "AFF-11",
@@ -1903,6 +1999,9 @@
       "AFF-10"
     ],
     "warning": "AFF-06..AFF-10 have source budgets and group IDs but no detailed per-front forceAllocation records; generated fallback must not be presented as a 1:1 source composition",
-    "accuracy": "budget totals 13,524 across 27 scenarios, not one simultaneous battle"
+    "accuracy": "budget totals 13,524 across 27 scenarios, not one simultaneous battle",
+    "runtimeAuditedOriginalFrontPlans": 5,
+    "runtimeFallbacksRemainingForTheseFive": 0,
+    "runtimeNote": "Original AFF-06..10 battle prose is now explicit in a versioned runtime Musou front plan; source JSON still lacks forceAllocation, and neither plan is canonical media reconstruction."
   }
 }
