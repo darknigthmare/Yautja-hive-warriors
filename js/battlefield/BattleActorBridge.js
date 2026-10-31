@@ -67,6 +67,18 @@ export class BattleActorBridge {
         }
         const entry = { actor, manager, groupId: group.id, unitId: unit.id };
         this.actors.set(unit.id, entry); added.push(entry);
+        if (this.simulation.config.context?.frontAllocationProvenance === 'original-audit-front-v1; not canon' &&
+            this.game.env.navigation?.safeSpawnNear) {
+          // Real props/gates are only known after Environment.buildLevelEnvironment.
+          // Reposition the rendered actor locally without editing the signed
+          // battle group, its IDs, supply, budget or historical checkpoint.
+          const occupied = [...this.actors.values()].filter(item => item.actor !== actor)
+            .map(item => ({ position: item.actor.mesh.position, radius: item.actor.radius ?? 1 }));
+          const safe = this.game.env.navigation.safeSpawnNear(
+            actor.mesh.position, actor.radius ?? 1, occupied);
+          if (!safe) throw new Error('No physically safe Musou squad spawn in this constructed sector');
+          actor.mesh.position.copy(safe);
+        }
         this.game.env.resolveMovement(actor.mesh.position, actor.radius ?? 1);
         if(!actor.isFlying&&!actor._terrainFall)actor.mesh.position.y=this.game.env.getElevationAt?.(actor.mesh.position.x,actor.mesh.position.z)??actor.mesh.position.y;
         this.game.allyRescue?.onMaterialize(actor);

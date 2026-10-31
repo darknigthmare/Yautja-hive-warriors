@@ -187,6 +187,51 @@ export class BattlefieldNavigation {
     return [...path.map(pointAt), target.clone()];
   }
 
+  /** Authoritative occupancy of the built scene, including real colliders,
+   * trenches, closed gates, floor union and elevation. Intended for materializing
+   * an already allocated Musou identity; never changes its ID or its budget. */
+  canStand(position, radius = .65) {
+    if (!position?.isVector3 || ![position.x, position.y, position.z, radius].every(Number.isFinite) ||
+        radius <= 0 || radius > 6) return false;
+    const env = this.environment;
+    if (!floorSegment(env, position, position, radius)) return false;
+    if (position.y <= .65 && (env.acidTrenches ?? []).some(trench => trenchAt(position, trench, radius))) return false;
+    return !(env.colliders ?? []).some(collider => intersects(position, collider, radius));
+  }
+
+  /** Find a deterministic, short, SAME-sector spawn detour around a collider.
+   * Another visible soldier's capsule is reserved as well. Returning null
+   * means defer the whole group; do not silently place a unit in a wall. */
+  safeSpawnNear(origin, radius = .75, occupied = [], maxDistance = 18) {
+    if (!origin?.isVector3 || ![origin.x, origin.y, origin.z, radius, maxDistance].every(Number.isFinite) ||
+        radius <= 0 || radius > 6 || maxDistance < 0 || maxDistance > 24) return null;
+    const env = this.environment, sourceSector = env.getSectorAt?.(origin)?.id ?? null;
+    const valid = (x, z) => {
+      const candidate = new THREE.Vector3(x, origin.y, z);
+      if (sourceSector && env.getSectorAt?.(candidate)?.id !== sourceSector) return null;
+      const elevation = env.getElevationAt?.(x, z, origin.y);
+      if (Number.isFinite(elevation)) candidate.y = elevation;
+      if (!this.canStand(candidate, radius)) return null;
+      if (occupied.some(item => {
+        const position = item?.position ?? item?.mesh?.position, otherRadius = item?.radius ?? 1;
+        return position?.isVector3 && Math.abs(position.y - candidate.y) <= 2.5 &&
+          Math.hypot(position.x - x, position.z - z) < radius + otherRadius + .25;
+      })) return null;
+      return candidate;
+    };
+    const start = valid(origin.x, origin.z);
+    if (start) return start;
+    for (let distance = 3; distance <= maxDistance + 1e-7; distance += 3) {
+      for (let direction = 0; direction < 16; direction++) {
+        const angle = direction * Math.PI / 8;
+        const candidate = valid(origin.x + Math.cos(angle) * distance,
+          origin.z + Math.sin(angle) * distance);
+        if (candidate) return candidate;
+      }
+    }
+    return null;
+  }
+
   waypoint(from, target, radius = .65) {
     if (!from || !target || ![from.x, from.z, target.x, target.z].every(Number.isFinite)) return null;
     const environment = this.environment;

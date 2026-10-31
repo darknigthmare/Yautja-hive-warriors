@@ -135,3 +135,68 @@ node --test --test-concurrency=1 \
 npm run build
 npm test
 ```
+
+## Deuxième passe — matérialisation dans le décor réellement construit
+
+Le placement logique de `OriginalMusouStaging` fonctionne dans
+les bornes des secteurs, mais certains **piliers, caisses,
+mécanismes et portes fermées** ne sont installés que lors de
+`Environment.buildLevelEnvironment`. Un point situé sur
+le sol du secteur peut donc rester bloqué par un objet 3D.
+
+Pour les **nouveaux scénarios AFF-06..10 en
+`deploymentPlan:'authored'` uniquement**, le
+`BattleActorBridge.spawnGroup` consulte maintenant
+`BattlefieldNavigation.safeSpawnNear` :
+
+- Contrôle la présence réelle du sol et la hauteur locale.
+- Contrôle les obstacles/colliders physiques actuellement actifs,
+  y compris les portes fermées et les tranchées dangereuses.
+- Réserve l'empreinte des autres acteurs déjà matérialisés,
+  sur le même niveau, pour éviter leur chevauchement.
+- Recherche une solution déterministe **dans le même secteur**,
+  au plus à **18 unités** de l'emplacement prévu. Les
+  positions de groupe et d'unité signées par la simulation
+  ne sont jamais éditées en secret ; seule la position
+  de l'acteur physique nouvellement matérialisé est adaptée,
+  avant la synchronisation normale de ses coordonnées.
+- Si aucune place légale n'existe, la matérialisation du
+  **groupe entier échoue atomiquement**, tous les acteurs
+  déjà créés dans cette tentative sont supprimés, et la
+  simulation conserve ses identités distantes pour une
+  nouvelle tentative. Aucun PNJ n'est jeté dans un mur.
+
+Ce contrôle est **exclu des checkpoints
+`historical-fallback`** pour ne pas modifier leurs
+anciennes positions ou leur logique. Les autres
+opérations ne changent pas.
+
+### Preuves additionnelles
+
+- Un test V8 isolé utilisant les véritables corps
+  `BattlefieldNavigation.safeSpawnNear` et
+  `BattleActorBridge.spawnGroup` a projeté
+  **4 combattants originaux** autour d'un pilier
+  de 6 × 6 unités, conservé les positions
+  stratégiques et vérifié la distance entre
+  les acteurs (**2,44 unités minimum observées**).
+- Le même essai avec une pièce intégralement
+  obstruée a déclenché un **refus complet et
+  rollback sans aucun acteur résiduel**.
+- **5 tests Three.js** sont ajoutés dans
+  `tests/musou-spawn-clearance.test.js` :
+  placement physique autour d'un pilier,
+  rollback complet, maintien d'un point déjà
+  libre, non-migration historique et
+  conformité aux portes réellement fermées.
+  Ils doivent passer la CI complète du
+  nouveau commit avant toute affirmation
+  de validation intégrée.
+
+Ces solutions sont des règles de mouvement
+originales pour un Musou et non une reproduction
+du contrôle RTS d'*AVP: Extinction*. La présence
+de plusieurs niveaux, les plateformes suspendues,
+les volumineux véhicules et les boucles de groupe
+sur des routes longues nécessitent une vérification
+WebGL et des tests avec du vrai matériel.
