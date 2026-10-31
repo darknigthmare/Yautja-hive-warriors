@@ -1,20 +1,18 @@
-/* The support M577 boards an EXISTING finite Colonial Marine group.
- * Boarding is optional and source-faction constrained, never an RTS-spawn order.
- * Until driving is separately authorized on a physical route, this service
- * protects a parked carrier's finite troop compartment and exit geometry.
- */
+/* The M577 carries EXISTING finite USCM identities, and uses the declared
+ * physical battle route for optional one-leg movement. Never an RTS factory. */
 import * as THREE from 'three';
 import { APC_SECTION_RULES } from './APCSectionManifest.js';
+import { APCConvoyDrive } from './APCConvoyDrive.js';
 
 const point = p => Array.isArray(p)&&p.length===2&&p.every(Number.isFinite);
 const valid = p => p?.isVector3&&[p.x,p.y,p.z].every(Number.isFinite);
 const dist = (a,b) => Math.hypot(a[0]-b[0],a[1]-b[1]);
 
 export class APCMarineService {
-  constructor(apc,simulation,environment,{feedback=()=>{},actors=()=>[]}={}){
+  constructor(apc,simulation,environment,{feedback=()=>{},actors=()=>[],onMove=()=>{}}={}){
     this.apc=apc;this.simulation=simulation;this.environment=environment;
-    this.feedback=feedback;this.actors=actors;
-    this.disposed=false;this.lastResult=null;
+    this.feedback=feedback;this.actors=actors;this.onMove=onMove;
+    this.disposed=false;this.lastResult=null;this.drive=new APCConvoyDrive(this);
   }
 
   get ownerFaction(){return this.apc?.policy?.context?.factionId??null;}
@@ -39,10 +37,13 @@ export class APCMarineService {
     const allied=this.ownerFaction&&playerFaction&&
       (this.ownerFaction===playerFaction||
         this.simulation?.relationship?.(this.ownerFaction,playerFaction)==='allied');
-    return {available:this.available&&!!allied&&this.validateCarrierPosition().accepted,passengers:m?.passengers.length??0,
+    const available=this.available&&!!allied&&this.validateCarrierPosition().accepted;
+    return {available,passengers:m?.passengers.length??0,
       crew:m?.crew.length??0,
       capacity:APC_SECTION_RULES.passengerSeats,crewPositions:APC_SECTION_RULES.crewPositions,
-      frontId:m?.frontId??null,visualFidelity1to1Verified:false};
+      frontId:m?.frontId??null,canDrive:!!m&&!!m.crew.length&&!this.drive.active&&available,
+      canStop:this.drive.active&&available,canDisembark:available&&!!m&&!m.transit&&!this.drive.active,
+      ...this.drive.state(),visualFidelity1to1Verified:false};
   }
   _result(result){
     this.lastResult=result;
@@ -89,12 +90,18 @@ export class APCMarineService {
     return this._result({accepted:false,reason:'no_allied_marine_group_in_range'});
   }
 
+  requestTravel(targetFrontId){return this.drive.request(targetFrontId);}
+  stopTravel(){return this.drive.stop();}
+  update(delta){return this.drive.update(delta);}
+
   /** The carrier's real starboard side, then fallback around the back.
    * Every passenger is placed atomically, and none are teleported across decks.
    */
   disembark(){
     const manifest=this.manifest;
     if(!this.available||!manifest)return this._result({accepted:false,reason:'apc_or_manifest_unavailable'});
+    if(this.drive.active||manifest.transit!==undefined)
+      return this._result({accepted:false,reason:'carrier_in_transit'});
     const consistency=this.validateCarrierPosition();
     if(!consistency.accepted)return this._result(consistency);
     const apc=this.apc.mesh,origin=apc.position,heading=apc.rotation.y;
@@ -141,6 +148,7 @@ export class APCMarineService {
   }
 
   carrierDestroyed(killerFaction=null){
+    this.drive.stop('carrier_destroyed');
     return this.simulation?.destroyAPCManifest(killerFaction)??{accepted:false,reason:'no_simulation'};
   }
 
@@ -151,5 +159,5 @@ export class APCMarineService {
     return this.disembark();
   }
 
-  dispose(){this.disposed=true;this.apc=null;this.simulation=null;this.environment=null;this.actors=()=>{};}
+  dispose(){this.drive.dispose();this.disposed=true;this.apc=null;this.simulation=null;this.environment=null;this.actors=()=>{};this.onMove=()=>{};}
 }

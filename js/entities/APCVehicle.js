@@ -86,6 +86,16 @@ export class APCVehicle {
     return true;
   }
 
+  /** Keep the original registered collider object live as the carrier moves.
+   * Replacing it would leave stale references in physics and pathfinding. */
+  syncNavigationCollider(collider){
+    if(!collider||collider.owner!=='apc')return false;
+    const current=this.getNavigationCollider();
+    if(!current)return false;
+    for(const key of ['x','z','rotation'])collider[key]=current[key];
+    return true;
+  }
+
   getNavigationCollider() {
     if (!this.isSupportActive()) return null;
     const center = new THREE.Vector3(0, 0, APC_NAVIGATION.centerZ).applyAxisAngle(new THREE.Vector3(0, 1, 0), this.mesh.rotation.y).add(this.mesh.position);

@@ -265,7 +265,13 @@ class GameApp {
     this.battleBridge.bind(this.battleSimulation);
     this.apcMarineService=new APCMarineService(this.apc,this.battleSimulation,this.env,{
       actors:()=>[...this.battleBridge.actors.values()],
-      feedback:message=>this.operationPanel.feedback(message)
+      feedback:message=>this.operationPanel.feedback(message),
+      onMove:()=>{
+        if(this._apcNavigationCollider){
+          this.apc.syncNavigationCollider(this._apcNavigationCollider);
+          this.invalidateSupportNavigation();
+        }
+      }
     });
     // Four tiny instanced visual pools reuse EXISTING distant soldier IDs.
     // They never participate in combat, awards, spawning or save contracts.
@@ -312,6 +318,7 @@ class GameApp {
     if(!this.battleSimulation)return;
     const players=[this.player,this.player2].filter(Boolean).map((player,index)=>({id:index?'player2':'player1',position:[player.position.x,player.position.z],hp:player.hp}));
     this.battleBridge.sync();this.battleSimulation.update(delta,{players,paused:false});
+    this.apcMarineService?.update(delta);
     this.battleCrowd?.update(delta,[this.player,this.player2].filter(Boolean));
     this.hiveNodeWorld?.update();
     this.allyRescue?.update(delta);
@@ -397,13 +404,17 @@ class GameApp {
 
   battleAction(type, frontId) {
     if(!this.battleSimulation||!this.player||this.dropPod.isActive)return;
-    if(type==='apc-board'||type==='apc-disembark'){
+    if(['apc-board','apc-disembark','apc-travel','apc-stop'].includes(type)){
       const service=this.apcMarineService,owner=service?.ownerFaction;
-      const authorized=service?.available&&this.player.position.distanceTo(this.apc.mesh.position)<=22&&
+      const radioStop=type==='apc-stop';
+      const authorized=service?.available&&
+        (radioStop||this.player.position.distanceTo(this.apc.mesh.position)<=22)&&
         (owner===this.battleSimulation.config.playerFaction||
           this.battleSimulation.relationship(owner,this.battleSimulation.config.playerFaction)==='allied');
       if(!authorized){this.operationPanel.feedback('APC USCM : assistance inaccessible ou trop éloignée.');return;}
-      const answer=type==='apc-board'?service.boardNearest():service.disembark();
+      const answer=type==='apc-board'?service.boardNearest():
+        type==='apc-disembark'?service.disembark():
+        type==='apc-travel'?service.requestTravel(frontId):service.stopTravel();
       if(!answer.accepted)this.operationPanel.feedback('APC USCM : '+answer.reason);
       return;
     }

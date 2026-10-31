@@ -253,13 +253,14 @@ export class BattlefieldNavigation {
   /** Authoritative occupancy of the built scene, including real colliders,
    * trenches, closed gates, floor union and elevation. Intended for materializing
    * an already allocated Musou identity; never changes its ID or its budget. */
-  canStand(position, radius = .65) {
+  canStand(position, radius = .65, {ignoreOwner=null} = {}) {
     if (!position?.isVector3 || ![position.x, position.y, position.z, radius].every(Number.isFinite) ||
         radius <= 0 || radius > 6) return false;
     const env = this.environment;
     if (!floorSegment(env, position, position, radius)) return false;
     if (position.y <= .65 && (env.acidTrenches ?? []).some(trench => trenchAt(position, trench, radius))) return false;
-    return !(env.colliders ?? []).some(collider => intersects(position, collider, radius));
+    return !(env.colliders ?? []).some(collider =>
+      !(ignoreOwner&&collider.owner===ignoreOwner)&&intersects(position, collider, radius));
   }
 
   /** Find a deterministic, short, SAME-sector spawn detour around a collider.
