@@ -244,6 +244,12 @@ export class BattleSimulation {
     return event;
   }
 
+  /** A strategic route may be logically open but physically sealed by a gate
+   * or destroyed bridge. Do not advance its finite actors in that case. */
+  _routeTraversable(route) {
+    return !!route?.open && this.routeAvailabilityProvider?.(clone(route)) !== false;
+  }
+
   _path(from, to, ignoreClosed = false) {
     if (from === to) return [];
     const queue = [{ node: from, path: [], cost: 0 }], visited = new Set();
@@ -254,7 +260,7 @@ export class BattleSimulation {
       if (node === to) return path;
       visited.add(node);
       for (const route of this.routes.values()) {
-        if (!ignoreClosed && !route.open) continue;
+        if (!ignoreClosed && !this._routeTraversable(route)) continue;
         const next = route.from === node ? route.to : route.to === node ? route.from : null;
         if (!next || visited.has(next)) continue;
         const result = [...path, { routeId: route.id, from: node, to: next }];
@@ -267,7 +273,7 @@ export class BattleSimulation {
   setRouteOpen(routeId, open, reason = 'terrain_changed') {
     const route = this.routes.get(routeId);
     if (!route || this.disposed || this.result || route.open === Boolean(open)) return false;
-    if (open && this.routeAvailabilityProvider?.(clone(route)) === false) return false;
+    if (open && this.routeAvailabilityProvider?.(clone(route), { opening: true }) === false) return false;
     route.open = Boolean(open); this.routeRevision++; this._emit('route_changed', { routeId, open: route.open, reason }, 2);
     for (const group of this.groups.values()) if (group.path.some(segment => segment.routeId === routeId) && !route.open) {
       // A group already between junctions holds its actual position when a
@@ -284,7 +290,7 @@ export class BattleSimulation {
     const group = this.groups.get(groupId), type = specification.type, target = specification.frontId ?? group?.frontId;
     if (!group || this.disposed || this.result || !ORDERS.has(type) || !this.fronts.has(target) || !group.units.some(unitId => alive(this.units.get(unitId)))) return { accepted: false, reason: 'invalid_group_or_order' };
     if (group.units.every(unitId => this.units.get(unitId).state === 'reserve' || !alive(this.units.get(unitId)))) return { accepted: false, reason: 'group_in_reserve' };
-    if (group.path.length && !this.routes.get(group.path[0].routeId).open && dist(group.position, this.fronts.get(group.frontId).position) > this.fronts.get(group.frontId).radius) return { accepted: false, reason: 'route_closed_in_transit' };
+    if (group.path.length && !this._routeTraversable(this.routes.get(group.path[0].routeId)) && dist(group.position, this.fronts.get(group.frontId).position) > this.fronts.get(group.frontId).radius) return { accepted: false, reason: 'route_closed_in_transit' };
     if (group.reconstitution?.required && !['retreat', 'regroup'].includes(type)) return { accepted: false, reason: 'reconstitution_required' };
     const path = this._path(group.frontId, target);
     if (!path) return { accepted: false, reason: 'no_open_route' };
@@ -319,7 +325,7 @@ export class BattleSimulation {
     if (type !== 'fallback' && groups.some(group => group.reconstitution?.required)) return { accepted: false, reason: 'reconstitution_required' };
     if (type === 'pincer' && groups.length < 2) return { accepted: false, reason: 'two_groups_required' };
     if ((this.tacticCooldowns.get(type) ?? 0) > this.time) return { accepted: false, reason: 'tactic_cooling_down' };
-    if (groups.some(group => this._path(group.frontId, frontId) === null || group.path.length && !this.routes.get(group.path[0].routeId).open)) return { accepted: false, reason: 'no_open_route' };
+    if (groups.some(group => this._path(group.frontId, frontId) === null || group.path.length && !this._routeTraversable(this.routes.get(group.path[0].routeId)))) return { accepted: false, reason: 'no_open_route' };
     this.tacticCooldowns.set(type, this.time + 30);
     groups.forEach((group, index) => {
       const orderType = { pincer: 'attack', hold_line: 'defend', ambush: 'defend', fallback: 'retreat' }[type];
@@ -361,7 +367,7 @@ export class BattleSimulation {
         if (this.fronts.get(group.frontId).owner === faction.id && garrison < (this.config.ai?.minimumGarrisonGroups ?? 1)) continue;
         const attackers = group.units.filter(unitId => combatReady(this.units.get(unitId))).length;
         const defenders = front => [...this.factions.keys()].filter(id => this.areHostile(faction.id, id)).reduce((sum, id) => sum + (strength.get(`${id}:${front.id}`) ?? 0), 0);
-        const neighbours = [...this.routes.values()].filter(route => route.open && [route.from, route.to].includes(group.frontId)).map(route => this.fronts.get(route.from === group.frontId ? route.to : route.from));
+        const neighbours = [...this.routes.values()].filter(route => this._routeTraversable(route) && [route.from, route.to].includes(group.frontId)).map(route => this.fronts.get(route.from === group.frontId ? route.to : route.from));
         const target = neighbours.filter(front => (front.owner === null || this.areHostile(faction.id, front.owner)) && attackers >= defenders(front) * (this.config.ai?.assaultMinRatio ?? 0)).sort((a, b) => {
           const sporePriority = Number(sporeFronts.has(b.id)) - Number(sporeFronts.has(a.id));
           if (sporePriority) return sporePriority;
@@ -390,7 +396,9 @@ export class BattleSimulation {
       if (!group.path.length || !group.units.some(unitId => combatReady(this.units.get(unitId)) && this.units.get(unitId).state !== 'reserve')) continue;
       const segment = group.path[0], route = this.routes.get(segment.routeId), target = this.fronts.get(segment.to);
       const waypoints = segment.from === route.from ? route.waypoints : [...route.waypoints].reverse();
-      if (!route.open) continue;
+      // A physical gate can close without a separate logical route order.
+      // Keep current coordinates and pending route until the obstruction is reopened.
+      if (!this._routeTraversable(route)) continue;
       if (group.materialized && this.callbacks.spawnGroup) {
         const live = group.units.map(unitId => this.units.get(unitId)).filter(unit => combatReady(unit) && unit.state === 'active');
         if (live.length) group.position = [live.reduce((sum, unit) => sum + unit.position[0], 0) / live.length, live.reduce((sum, unit) => sum + unit.position[1], 0) / live.length];

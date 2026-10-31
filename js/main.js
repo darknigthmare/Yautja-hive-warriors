@@ -24,6 +24,7 @@ import { BossPhasePressure } from './battlefield/BossPhasePressure.js';
 import { CompanionLoadouts, COMPANION_KITS } from './battlefield/CompanionLoadouts.js';
 import { HIVE_CONFLICT_ID } from './battlefield/HiveConflictScenario.js';
 import { OperationTransport } from './entities/OperationTransport.js';
+import { physicalOperationRouteAvailable } from './battlefield/PhysicalRouteAvailability.js';
 import { operationAlertState, captureBattleDebrief, hiveCoordinationFeedback } from './ui/OperationPanel.js';
 import { OperationObjectives } from './battlefield/OperationObjectives.js';
 import { createOperationScene } from './battlefield/OperationScene.js';
@@ -267,7 +268,7 @@ class GameApp {
     if(saved?.rescue)this.allyRescue.restore(saved.rescue);
     this.bossPhasePressure=new BossPhasePressure({simulation:this.battleSimulation,getBoss:()=>this.bosses.activeBoss,announce:event=>this.operationPanel.feedback(event.label)});
     if(saved?.bossPressure)this.bossPhasePressure.restore(saved.bossPressure);
-    this.battleSimulation.routeAvailabilityProvider=route=>this.env.isTacticalRouteAvailable?.(route.physicalRouteId??route.id.replace(/^bound-/,''))!==false;
+    this.battleSimulation.routeAvailabilityProvider=(route, options)=>physicalOperationRouteAvailable(this.env,route,options);
     if(saved?.tacticalWorld)this.env.restoreTacticalWorld?.(saved.tacticalWorld);
     this.companionLoadouts=new CompanionLoadouts({simulation:this.battleSimulation,actors:bridge.actors,players:()=>[this.player,this.player2].filter(Boolean),environment:this.env});
     if(saved?.companions)this.companionLoadouts.restore(saved.companions);

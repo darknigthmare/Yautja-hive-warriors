@@ -50,6 +50,7 @@ jobs:
             tests/battlefield-nav-safety.test.js \
             tests/musou-spawn-clearance.test.js \
             tests/helipad-navigation-regression.test.js \
+            tests/musou-physical-routes.test.js \
             tests/original-musou-field-gear.test.js \
             tests/hive-node-remote-combat.test.js \
             tests/host-infestation.test.js \
