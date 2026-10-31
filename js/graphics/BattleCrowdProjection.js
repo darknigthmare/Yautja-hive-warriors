@@ -5,6 +5,7 @@
  */
 import * as THREE from 'three';
 import { distantCrowdAppearance } from './DistantCrowdRoleAppearance.js';
+import { MUSOU_CROWD_FRONT_POLICY, selectMusouFrontCandidates } from './MusouFrontVisibility.js';
 
 export const CROWD_VISUAL_POLICY = Object.freeze({
   version: 'musou-distant-instancing-v1',
@@ -37,7 +38,7 @@ export class BattleCrowdProjection {
     this.elapsed=0;this.disposed=false;this.refreshes=0;
     this.geometry=new THREE.CapsuleGeometry(.25,.82,2,5);
     this.meshes=new Map();this.materials=new Map();this.dummy=new THREE.Object3D();
-    this.colors=new Map();this.byRole={};
+    this.colors=new Map();this.byRole={};this.byFront={};this.floorProbes=0;
     this.visibleCounts=Object.fromEntries(Object.keys(TYPES).map(id=>[id,0]));
     this.sourceCount=0;
     for(const [type,look] of Object.entries(TYPES)) {
@@ -70,15 +71,22 @@ export class BattleCrowdProjection {
       let nearest=Infinity;
       for(const observer of observers)nearest=Math.min(nearest,distanceSquared(observer,unit.position));
       if(nearest<near2||nearest>far2)continue;
-      list.push({id:unit.id,position:unit.position,distSq:nearest,
+      // The front belongs to the already allocated strategic group. Visual
+      // observation never reveals a hidden faction or creates tactical intel.
+      const frontId=this.simulation.groups?.get(unit.groupId)?.frontId??null;
+      list.push({id:unit.id,position:unit.position,distSq:nearest,frontId,
         appearance:distantCrowdAppearance(unit)});
     }
-    this.byRole={};
+    this.byRole={};this.byFront={};this.floorProbes=0;
     for(const [type,look] of Object.entries(TYPES)){
-      const list=buckets.get(type).sort((a,b)=>a.distSq-b.distSq||
-        a.id.localeCompare(b.id)).slice(0,CROWD_VISUAL_POLICY.maxPerSpecies);
+      const list=selectMusouFrontCandidates(buckets.get(type),
+        CROWD_VISUAL_POLICY.maxPerSpecies);
       const mesh=this.meshes.get(type),current=[];
+      let probes=0;
       for(const entry of list){
+        if(current.length>=CROWD_VISUAL_POLICY.maxPerSpecies ||
+          probes>=CROWD_VISUAL_POLICY.maxPerSpecies*MUSOU_CROWD_FRONT_POLICY.maxFloorProbesMultiplier)break;
+        probes++;this.floorProbes++;
         const [x,z]=entry.position;
         const y=this.environment?.getPlacementElevationAt?.(x,z) ??
           this.environment?.getElevationAt?.(x,z) ?? 0;
@@ -97,6 +105,10 @@ export class BattleCrowdProjection {
         mesh.setColorAt(index,this.colors.get(color));
         this.byRole[`${type}:${visual?.role??'default'}`]=
           (this.byRole[`${type}:${visual?.role??'default'}`]??0)+1;
+        if(entry.frontId){
+          const label=`${type}:${entry.frontId}`;
+          this.byFront[label]=(this.byFront[label]??0)+1;
+        }
         current.push(entry.id);
       }
       mesh.count=current.length;
@@ -111,7 +123,9 @@ export class BattleCrowdProjection {
     return {policy:CROWD_VISUAL_POLICY.version,drawCallsAtMost:this.meshes.size,
       instanceCapacity:this.meshes.size*CROWD_VISUAL_POLICY.maxPerSpecies,
       visible:Object.values(this.visibleCounts).reduce((a,b)=>a+b,0),
-      bySpecies:{...this.visibleCounts},byRole:{...this.byRole},sourceDistantUnits:this.sourceCount,
+      bySpecies:{...this.visibleCounts},byRole:{...this.byRole},
+      byFront:{...this.byFront},floorProbes:this.floorProbes,
+      sourceDistantUnits:this.sourceCount,
       refreshes:this.refreshes,visualFidelity1to1Verified:false};
   }
 
