@@ -43,3 +43,26 @@ Les tests couvrent l'empreinte, le trajet continu, les coupures de
 passages, la sauvegarde au milieu du trajet, la reprise et la
 non-duplication. Ne pas déclarer les tests réussis avant le
 résultat du workflow du commit.
+
+## 1er novembre 2026 — roues instanciées, braquage et débattement visuels
+
+La géométrie de la roue existante (pneu, disque blindé, 40 crampons,
+huit goujons et couronne) est instanciée **quatre fois** à partir d'une
+seule géométrie multi-matériau. Les garde-boue restent solidaires de
+la coque et les matériaux/proportions historiques sont conservés.
+
+Chaque roue tourne selon **la distance physique validée** par
+`APCConvoyDrive`. Les roues avant braquent légèrement suivant le virage,
+et les quatre roues ont un débattement vertical borné selon la
+hauteur du sol sous leurs positions réelles. Aucun mouvement sur une
+route refusée, pendant la pause, ni lors d'une demande non autorisée.
+La projection conserve son empreinte physique initiale.
+
+Les nouveaux tests vérifient les quatre géométries instanciées, leurs
+positions, leur mouvement, le blocage et l'invariance des PV,
+munitions, sauvegardes et identités des Marines. Les résultats
+doivent être confirmés par le workflow du commit publié.
+
+**Limites :** ressorts articulés, déformation des pneus, cinématique
+de direction automobile, roulis complet et dimensions exactes du
+véhicule filmé restent à traiter. Études procédurales, non 1:1 certifié.

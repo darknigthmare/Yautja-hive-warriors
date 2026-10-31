@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import * as THREE from 'three';
 import { createAPCModel } from '../js/graphics/SupportModels.js';
 import { APCVehicle } from '../js/entities/APCVehicle.js';
-import { APC_DEPLOYMENT_SECONDS, APC_ELEVATION } from '../js/graphics/APCModel.js';
+import { APC_DEPLOYMENT_SECONDS, APC_ELEVATION, APC_RUNNING_GEAR } from '../js/graphics/APCModel.js';
 import { EnvironmentManager } from '../js/entities/Environment.js';
 import { disposeObject } from '../js/engine/SceneResources.js';
 
@@ -169,7 +169,7 @@ test('APC surface detail remains finite within the existing mesh and triangle bu
   model.group.traverse(node => {
     if (!node.isMesh) return;
     meshes++;
-    triangles += (node.geometry.index?.count ?? node.geometry.attributes.position.count) / 3;
+    triangles += (node.geometry.index?.count ?? node.geometry.attributes.position.count) / 3 * (node.isInstancedMesh ? node.count : 1);
     for (const attribute of ['position', 'normal', 'uv']) assert.ok(node.geometry.attributes[attribute].array.every(Number.isFinite));
   });
   assert.ok(triangles >= 26000 && triangles <= 44000, `${triangles} triangles`);
@@ -322,4 +322,49 @@ test('environment delegates APC physics while retaining its conservative navigat
   }
   assert.equal(env.colliders[0].halfWidth, 2.52, 'navigation keeps the conservative wheel clearance');
   apc.clear();
+});
+
+test('four actual M577 wheels share ONE instanced multi-material geometry and roll only after admitted travel',()=>{
+  const model=createAPCModel();
+  try{
+    assert.equal(model.wheels.length,APC_RUNNING_GEAR.wheelCount);
+    assert.equal(model.wheelInstances.isInstancedMesh,true);
+    assert.equal(model.wheelInstances.count,4);
+    assert.equal(model.wheelInstances.material.length,4);
+    const before=new THREE.Matrix4(),after=new THREE.Matrix4();
+    model.wheelInstances.getMatrixAt(0,before);
+    assert.equal(model.setWheelMotion({distance:0}),true);
+    model.wheelInstances.getMatrixAt(0,after);
+    assert.ok(after.equals(before));
+    assert.equal(model.setWheelMotion({distance:0.8,heights:[0.08,-0.07,0.04,-0.06],steering:0.18}),true);
+    model.wheelInstances.getMatrixAt(0,after);
+    assert.ok(!after.equals(before));
+    for(let i=0;i<4;i++){
+      model.wheelInstances.getMatrixAt(i,after);
+      const position=new THREE.Vector3(),quaternion=new THREE.Quaternion(),scale=new THREE.Vector3();
+      after.decompose(position,quaternion,scale);
+      assert.ok(Math.abs(position.x-model.wheels[i].x)<1e-8);
+      assert.ok(Math.abs(position.z-model.wheels[i].z)<1e-8);
+      assert.ok(Math.abs(position.y-model.wheels[i].y)<=APC_RUNNING_GEAR.maxTravel+1e-8);
+    }
+    const fixed=model.wheelInstances.instanceMatrix.array.slice();
+    for(const distance of [NaN,-2,Infinity,50])
+      assert.equal(model.setWheelMotion({distance}),false);
+    assert.deepEqual(model.wheelInstances.instanceMatrix.array,fixed);
+  }finally{disposeObject(model.group);}
+});
+
+test('visual M577 tire motion does not change damage, ammunition, support policy or save state',()=>{
+  const apc=configureSupportFixture(new APCVehicle(new THREE.Scene(),audio));
+  assert.equal(apc.updateRunningGear(1),false);
+  apc.spawn(new THREE.Vector3());
+  try{
+    const before=apc.serialize(),previous=new THREE.Matrix4(),after=new THREE.Matrix4();
+    apc.model.wheelInstances.getMatrixAt(2,previous);
+    assert.equal(apc.updateRunningGear(1,[0.05,-0.04,0.02,-0.02],.08),true);
+    apc.model.wheelInstances.getMatrixAt(2,after);
+    assert.ok(!after.equals(previous));
+    assert.deepEqual(apc.serialize(),before);
+  }finally{apc.clear();}
+  assert.equal(apc.updateRunningGear(1),false);
 });

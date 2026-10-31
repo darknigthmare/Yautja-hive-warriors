@@ -96,6 +96,12 @@ export class APCVehicle {
     return true;
   }
 
+  /** Pure visual running gear fed only by movement accepted by the road sim. */
+  updateRunningGear(distance,heights=[0,0,0,0],steering=0){
+    if(!this.isSupportActive()||!this.model?.setWheelMotion)return false;
+    return this.model.setWheelMotion({distance,heights,steering});
+  }
+
   getNavigationCollider() {
     if (!this.isSupportActive()) return null;
     const center = new THREE.Vector3(0, 0, APC_NAVIGATION.centerZ).applyAxisAngle(new THREE.Vector3(0, 1, 0), this.mesh.rotation.y).add(this.mesh.position);

@@ -200,3 +200,29 @@ test('a real registered M577 collision object follows the same hull without repl
   assert.ok(Math.abs(collider.z-expected.z)<.001);
   apc.mesh=null;apc.isActive=false;
 });
+
+test('rendered carrier wheels spin after physical convoy movement but freeze on a blocked route',()=>{
+  const f=fixture();
+  const apc=new APCVehicle(new THREE.Scene(),null,null);
+  apc.beginMission({missionId:'m577-wheel-integration',allowed:true,
+    factionId:f.group.factionId});
+  try{
+    const start=f.apc.mesh.position;
+    assert.equal(apc.spawn(new THREE.Vector3(start.x,start.y,start.z)),true);
+    f.service.apc=apc;
+    const before=new THREE.Matrix4(),after=new THREE.Matrix4();
+    apc.model.wheelInstances.getMatrixAt(0,before);
+    assert.equal(f.service.requestTravel(f.target).accepted,true);
+    for(let i=0;i<5&&f.service.drive.active;i++)f.service.update(.25);
+    apc.model.wheelInstances.getMatrixAt(0,after);
+    assert.ok(!after.equals(before));
+    const strategic=f.sim.getAPCManifest(),support=apc.serialize();
+    assert.deepEqual(strategic.position,[support.position[0],support.position[2]]);
+    f.setStand(false);
+    const frozen=new THREE.Matrix4();apc.model.wheelInstances.getMatrixAt(0,frozen);
+    f.service.update(.25);
+    apc.model.wheelInstances.getMatrixAt(0,after);
+    assert.ok(after.equals(frozen));
+    assert.equal(f.sim.assertConservation(),true);
+  }finally{f.dispose();apc.clear();}
+});

@@ -143,6 +143,16 @@ export class APCConvoyDrive {
     if(!s.simulation.moveAPCManifest([next.x,next.z],m.frontId))return false;
     apc.mesh.position.copy(next);apc.mesh.rotation.y=yaw;
     apc.lastPosition?.copy?.(next);
+    // Cosmetic wheel movement follows the actual admitted physical step.
+    // A blocked road cannot spin wheels, change HP or mint new troops.
+    if(apc.model?.wheels?.length===4){
+      const elevations=apc.model.wheels.map(wheel=>{
+        const sample=rotated(next,wheel.x,wheel.z,yaw);
+        const floor=s.environment.getElevationAt?.(sample.x,sample.z,next.y);
+        return Number.isFinite(floor)?floor-next.y:0;
+      });
+      apc.updateRunningGear?.(stride,elevations,turn);
+    }
     s.onMove();
     return true;
   }
