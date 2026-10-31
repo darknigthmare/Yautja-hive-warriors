@@ -2,6 +2,7 @@
  * It drives the real vehicle along real corridors while the battle continues.
  * Ownership, contested fronts, closed terrain and nearby enemies can stop it. */
 import * as THREE from 'three';
+import { physicalOperationRouteAvailable } from '../battlefield/PhysicalRouteAvailability.js';
 
 const planarDistance = (a, b) => Math.hypot(a.x - b.x, a.z - b.z);
 const point = (p, y = .5) => new THREE.Vector3(p[0], y, p[1]);
@@ -27,9 +28,7 @@ export class OperationTransport {
     return false;
   }
   _safeRoute(route) {
-    const physicalId = route.physicalRouteId ?? route.id.replace(/^bound-/, '');
-    return route.open && this.environment.isTacticalRouteAvailable(physicalId) &&
-      (route.physicalGateIds ?? []).every(id => this.environment.isGateOpen(id)) &&
+    return route.open && physicalOperationRouteAvailable(this.environment, route) &&
       this._safeFront(this.simulation.fronts.get(route.from)) && this._safeFront(this.simulation.fronts.get(route.to)) &&
       Array.isArray(route.waypoints) && route.waypoints.length >= 2;
   }
@@ -111,7 +110,23 @@ export class OperationTransport {
       const stride = Math.min(remaining, distance, 1), next = this.skimmer.position.clone(), direction = target.clone().sub(next).setY(0).normalize();
       next.addScaledVector(direction, stride);
       if (this._threatAt(next)) { this.cancel('enemy_nearby'); this._syncPose(dt, true); return true; }
-      next.y = this.environment.getElevationAt(next.x, next.z) + .5;
+      const elevation = this.environment.getElevationAt(next.x, next.z);
+      if (!Number.isFinite(elevation)) {
+        this.cancel('route_terrain_unavailable'); this._syncPose(dt, false); return true;
+      }
+      const desiredAltitude = elevation + .5;
+      // Controlled assistance is NOT an instantaneous flight/teleport command.
+      // An unsupported multi-deck height jump cancels auto-pilot while manual
+      // anti-gravity flight remains available to the mounted player.
+      const maxAltitudeStep = Math.min(12, j.speed * .75) * dt + .075;
+      if (Math.abs(desiredAltitude - this.skimmer.position.y) > maxAltitudeStep) {
+        this.cancel('vertical_transfer_unavailable'); this._syncPose(dt, false); return true;
+      }
+      next.y = desiredAltitude;
+      if (this.environment.navigation?.canStand &&
+          !this.environment.navigation.canStand(next, 1.2)) {
+        this.cancel('route_terrain_unavailable'); this._syncPose(dt, false); return true;
+      }
       const desired = next.clone(); this.environment.resolveMovement(next, 1.2);
       if (planarDistance(next, desired) > .1) { j.stuck += dt; if (j.stuck > .4) this.cancel('physical_obstacle'); this._syncPose(dt, false); return true; }
       j.stuck = 0; this.skimmer.position.copy(next); remaining -= stride;
