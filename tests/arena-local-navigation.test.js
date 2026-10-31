@@ -32,6 +32,7 @@ test('a target inside a vehicle collider yields a reachable outer contact, not a
   assert.ok(path.length>0,'the seeker should approach the perimeter of a real APC');
   assert.ok(path.at(-1).distanceTo(to)>2,'target inside support geometry is not a legal footstep');
   assert.ok(path.at(-1).distanceTo(from)<from.distanceTo(to));
+  assert.ok(path.at(-1).x>0,'the closest point on a vehicle hull should be on the near flank');
   assert.ok(path.every(p=>env.navigation.canStand(p,.9)));
 });
 
@@ -69,4 +70,25 @@ test('APC length is taken from its navigation hull: the Working Joe hits it but 
       `Working Joe must engage APC surface (hp=${apc.hp}, x=${soldier.mesh.position.x.toFixed(2)}, z=${soldier.mesh.position.z.toFixed(2)}, prep=${soldier._npcPreparation ?? 0})`);
     assert.equal(p.hp,1000);
   }finally{manager.clearSquad();apc.clear();}
+});
+
+test('a ground actor brushing the edge of a raised Hive ramp may escape OUTWARD, never enter the ramp through its wall',()=>{
+  const ramp={x:40,z:15,halfWidth:3.2,halfDepth:7,baseY:0,height:Infinity,
+    owner:'hive-south-ramp',navigationTest(p,radius){
+      const x=Math.max(36.8,Math.min(43.2,p.x)),z=Math.max(8,Math.min(22,p.z));
+      if(Math.hypot(p.x-x,p.z-z)>=radius)return false;
+      const height=(z-8)/14*4.7;
+      return height>p.y+.15&&height<p.y+1.8;
+    }};
+  const env=arena([ramp]),navigator=env.navigation;
+  const from=point(36.19,13.27),goal=point(20,0);
+  const exit=navigator.waypoint(from,goal,.65);
+  assert.ok(exit.distanceTo(from)>1,
+    'a tiny residual ramp contact must not pin the agent against an open floor');
+  assert.ok(exit.x<from.x,'the egress must move away from the actual ramp edge');
+  assert.ok(navigator.localPath(from,goal,.65).length>0,
+    'A* must be allowed to attach from a capsule already touching its collision margin');
+  const entering=navigator.waypoint(from,point(40,15),.65);
+  assert.ok(Math.hypot(entering.x-40,entering.z-15)>2.5,
+    'a vertical ramp cannot be crossed straight through its raised collision wall');
 });

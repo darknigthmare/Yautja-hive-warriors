@@ -95,3 +95,51 @@ chaque œuvre *Alien/Predator*.
 Le gameplay principal reste un **Musou
 façon Dynasty Warriors**, pas une copie du
 RTS *Aliens versus Predator: Extinction*.
+
+## Révision diagnostiquée après le premier job ciblé
+
+Le commit initial de réparation a validé le build, le catalogue et
+**187 tests sur 189**, mais les deux scénarios historiques étaient
+encore rouges. Les nouveaux diagnostics montrent précisément :
+
+- Le Working Joe restait à **(7,2 ; 14,62)**, sans aucune phase de
+  préparation d'attaque, face à l'APC de 2500 PV.
+- La poursuite sur `xenomorph_prime` restait bloquée à
+  **(36,19 ; 13,27)** en visant (20 ; 0).
+
+Deux causes ont été identifiées dans le vrai routeur :
+
+1. **Cache périmé après retrait d'un obstacle physique** : les
+   cellules libres d'A* correspondaient encore au mur supprimé.
+   Le routeur invalide maintenant le cache et les chemins d'acteurs
+   dès que le nombre/l'état des colliders actifs change, notamment
+   lors de la destruction de véhicules. Il tient compte des
+   déplacements approximatifs des colliders dynamiques.
+2. **Approche du mauvais côté d'un obstacle** : plusieurs cellules
+   sont aussi proches du centre d'un APC. L'ancien tri par ordre du
+   tableau choisissait celle du côté opposé au poursuivant. Les
+   égalités sont désormais tranchées selon la **distance depuis
+   l'attaquant**, afin d'approcher la coque par sa face atteignable.
+3. **Contact de quelques centimètres avec une rampe relevée** :
+   le Xénomorphe se trouvait juste hors du bord de la rampe sud de
+   la ruche (environ x=36,19 au lieu de la limite x=36,8).
+   Une marge de navigation du collider pouvait encore déclarer
+   son point de départ bloqué. La trajectoire est autorisée
+   **seulement si la capsule quitte cette marge dans les 0,1
+   première unité du mouvement**. Entrer dans la rampe par le mur
+   ou traverser une cloison reste interdit.
+4. Les arènes sans secteurs disposent maintenant d'une résolution
+   de maillage **2 unités**, au lieu de 3, pour mieux reconnaître
+   les intervalles étroits entre les structures de ruche.
+
+Les méthodes exactes ont été essayées en JavaScript isolé avec
+vecteurs compatibles Three.js : un chemin derrière un mur
+reste bloqué et se réouvre quand le mur disparaît ; l'approche
+de l'APC choisit sa face proche ; une capsule au bord de la
+rampe se dégage vers le sol libre sans entrer dans la partie
+élevée. Un test de rampe supplémentaire est ajouté dans
+`arena-local-navigation.test.js`.
+
+**Le nouveau run CI Node/Three doit confirmer ces changements sur
+le vrai moteur : les essais isolés ne suffisent pas à certifier
+les anciennes régressions résolues.**

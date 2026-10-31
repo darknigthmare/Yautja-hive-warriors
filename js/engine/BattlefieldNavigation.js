@@ -42,8 +42,15 @@ function clearSegment(environment, from, to, radius) {
     const extent = (c.radius ?? Math.hypot(c.halfWidth, c.halfDepth)) + radius;
     if (c.x + extent < Math.min(from.x, to.x) || c.x - extent > Math.max(from.x, to.x) || c.z + extent < Math.min(from.z, to.z) || c.z - extent > Math.max(from.z, to.z)) continue;
     if (c.navigationTest) {
-      const steps = Math.max(1, Math.ceil(distance(from, to) / .5));
-      for (let i = 0; i <= steps; i++) if (c.navigationTest(new THREE.Vector3(THREE.MathUtils.lerp(from.x, to.x, i / steps), from.y, THREE.MathUtils.lerp(from.z, to.z, i / steps)), radius)) return false;
+      const length=distance(from,to),steps=Math.max(1,Math.ceil(length/.5));
+      // A raised ramp's navigation margin can touch the currently resolved
+      // capsule by a few centimetres. Allow an IMMEDIATE exit from that
+      // margin, but never an entrance, a crossing or movement within cover.
+      const at=t=>new THREE.Vector3(THREE.MathUtils.lerp(from.x,to.x,t),
+        from.y,THREE.MathUtils.lerp(from.z,to.z,t));
+      const onEdge=c.navigationTest(from,radius);
+      if(onEdge && length>.11 && c.navigationTest(at(.1/length),radius))return false;
+      for(let i=onEdge?1:0;i<=steps;i++)if(c.navigationTest(at(i/steps),radius))return false;
       continue;
     }
     if (c.halfWidth == null) {
@@ -94,7 +101,31 @@ function shortest(nodes, edges, start, end) {
 }
 
 export class BattlefieldNavigation {
-  constructor(environment) { this.environment = environment; this.actorPaths = new WeakMap(); this.gridCache = new Map(); }
+  constructor(environment) {
+    this.environment = environment; this.actorPaths = new WeakMap();
+    this.gridCache = new Map(); this.colliderStamp = null;
+  }
+
+  /** The physical scenery can change without any route/order event: an APC
+   * may be destroyed and a temporary wall or ramp collider removed.
+   * Never keep an A* grid built against the previous collider set.
+   * Count and active flags are O(n) only when pathfinding is requested. */
+  _refreshObstacleCache() {
+    const colliders = this.environment.colliders ?? [];
+    let live = 0, moving = '';
+    for (const c of colliders) {
+      if (active(c)) live++;
+      if (c.isCollisionActive || c.isNavigationActive) {
+        moving += `/${Math.round((c.x ?? 0) * 10)},${Math.round((c.z ?? 0) * 10)},${active(c) ? 1 : 0}`;
+      }
+    }
+    const stamp = `${colliders.length}:${live}${moving}`;
+    if (stamp !== this.colliderStamp) {
+      this.colliderStamp = stamp;
+      this.gridCache.clear();
+      this.actorPaths = new WeakMap();
+    }
+  }
 
   strategicPath(from, target) {
     const environment = this.environment, layout = environment.battlefieldLayout;
@@ -133,6 +164,7 @@ export class BattlefieldNavigation {
   }
 
   localPath(from, target, radius) {
+    this._refreshObstacleCache();
     const environment = this.environment, sector = environment.getSectorAt(from);
     if (sector && environment.getSectorAt(target)?.id !== sector.id) return [];
     // Non-battlefield arenas also contain real meshes and hulls but do not
@@ -149,7 +181,7 @@ export class BattlefieldNavigation {
           minZ:Math.max(-half, Math.floor((Math.min(from.z,target.z)-padding)/6)*6),
           maxZ:Math.min(half, Math.ceil((Math.max(from.z,target.z)+padding)/6)*6) });
     const room = sector ?? { id:`arena:${bounds.minX}:${bounds.maxX}:${bounds.minZ}:${bounds.maxZ}`, bounds };
-    const step = 3, b = room.bounds, width = Math.floor((b.maxX - b.minX - 2) / step) + 1;
+    const step = sector ? 3 : 2, b = room.bounds, width = Math.floor((b.maxX - b.minX - 2) / step) + 1;
     const depth = Math.floor((b.maxZ - b.minZ - 2) / step) + 1;
     const key = `${room.id}/${Math.ceil(radius * 10)}/${from.y.toFixed(3)}/${environment.openGates.size}/${this.usingVerticalAccess ? 1 : 0}`;
     let grid = this.gridCache.get(key);
@@ -186,10 +218,15 @@ export class BattlefieldNavigation {
     const start = nearest(from);
     let end = blockedGoal ? -1 : nearest(target);
     if (blockedGoal) {
-      let best = Infinity;
+      let best = Infinity, bestApproach = Infinity;
       for (let id = 0; id < grid.clear.length; id++) if (grid.clear[id]) {
-        const d = distance(target, pointAt(id));
-        if (d < best) { best = d; end = id; }
+        const p = pointAt(id), d = distance(target,p), approach = distance(from,p);
+        // Both sides of a vehicle have equally close hull cells. The old
+        // raster-order tie picked the OPPOSITE side, sending a nearby Joe
+        // around the entire APC instead of to its reachable near flank.
+        if (d < best - 1e-7 || Math.abs(d-best) <= 1e-7 && approach < bestApproach) {
+          best = d; bestApproach = approach; end = id;
+        }
       }
     }
     if (start < 0 || end < 0) return [];
@@ -260,6 +297,7 @@ export class BattlefieldNavigation {
 
   waypoint(from, target, radius = .65) {
     if (!from || !target || ![from.x, from.z, target.x, target.z].every(Number.isFinite)) return null;
+    this._refreshObstacleCache();
     const environment = this.environment;
     // Never return an unobstructed *line* that crosses a missing floor
     // polygon, nor a destination when A* found no physical route.
