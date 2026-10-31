@@ -11,23 +11,26 @@ import { selectHostileTarget, requestHostileAttack, syncHostileWarning, releaseH
  * approach that hull rather than the vehicle's internal centre point; treating
  * the centre as an ordinary NPC can leave it stalled against an APC side.
  * Returns the surface gap (not a free attack through another obstacle). */
-function supportSurfaceGap(environment, position, target) {
+function supportSurfaceGap(environment, position, target, attackerRadius = 0) {
   if (!target?.isSupport || !target.position?.isVector3) return null;
   const hull = (environment?.colliders ?? []).find(c =>
     c.owner === target.collisionOwner && c.enabled !== false && c.solid !== false &&
     (!c.isCollisionActive || c.isCollisionActive()));
   const differenceY = Math.abs(position.y - target.position.y);
-  if (!hull) return Math.hypot(Math.max(0,
+  if (!hull) return Math.max(0,Math.hypot(Math.max(0,
     Math.hypot(position.x-target.position.x,position.z-target.position.z) -
-      (target.radius ?? 0)),differenceY);
+      (target.radius ?? 0)),differenceY)-attackerRadius);
   const dx=position.x-hull.x, dz=position.z-hull.z;
   if (hull.halfWidth != null && hull.halfDepth != null) {
     const cosine=Math.cos(hull.rotation ?? 0),sine=Math.sin(hull.rotation ?? 0);
     const x=dx*cosine-dz*sine,z=dx*sine+dz*cosine;
-    return Math.hypot(Math.max(0,Math.abs(x)-hull.halfWidth),
-      Math.max(0,Math.abs(z)-hull.halfDepth),differenceY);
+    // A Working Joe's 0.9-unit capsule has reach BEFORE its centre reaches
+    // the APC plating. The grid stops at a legal cell outside the hull.
+    return Math.max(0,Math.hypot(Math.max(0,Math.abs(x)-hull.halfWidth),
+      Math.max(0,Math.abs(z)-hull.halfDepth),differenceY)-attackerRadius);
   }
-  return Math.hypot(Math.max(0,Math.hypot(dx,dz)-(hull.radius??target.radius??0)),differenceY);
+  return Math.max(0,Math.hypot(Math.max(0,Math.hypot(dx,dz)-
+    (hull.radius??target.radius??0)),differenceY)-attackerRadius);
 }
 
 export class SyntheticsManager {
@@ -245,7 +248,7 @@ export class SyntheticsManager {
       if (isXeno && (this.combatDirector?.getAttackState(syn)?.phase === 'windup' || syn._localAttackPreparation)) releaseHostileAttack(this, syn);
       const dir = targetPos.clone().sub(syn.mesh.position);
       dir.y = 0;
-      const supportGap = supportSurfaceGap(this.environment,syn.mesh.position,npcTarget);
+      const supportGap = supportSurfaceGap(this.environment,syn.mesh.position,npcTarget,syn.radius ?? .9);
       const dist = supportGap ?? syn.mesh.position.distanceTo(targetPos);
 
       const covered = this.environment?.hasLineOfSight && !this.environment.hasLineOfSight(syn.mesh.position.clone().add(new THREE.Vector3(0, syn.isBisected ? .6 : 2, 0)), targetPos.clone().add(new THREE.Vector3(0,1.6,0)), { ignoreOwner: npcTarget?.isSupport ? npcTarget.collisionOwner : undefined });

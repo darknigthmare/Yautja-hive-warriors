@@ -143,3 +143,29 @@ rampe se dégage vers le sol libre sans entrer dans la partie
 **Le nouveau run CI Node/Three doit confirmer ces changements sur
 le vrai moteur : les essais isolés ne suffisent pas à certifier
 les anciennes régressions résolues.**
+
+## Fin de l'analyse de portée APC après le second run
+
+Le commit `199264dd` a permis d'obtenir **189 tests réussis sur
+190** : le parcours de `xenomorph_prime` est désormais **vert**
+dans la véritable scène, et seul le Working Joe contre APC
+restait rouge. L'androïde atteignait maintenant une **cellule
+praticable (x=5,z=1)**, mais le calcul de portée mesurait
+la distance entre son centre et la carrosserie.
+
+Or les unités physiques possèdent déjà une **capsule de
+collision de rayon 0,9**. À (5,1) près de la coque orientée
+APC, le centre de l'androïde est à 2,48 unités de sa surface,
+mais sa capsule n'est plus qu'à **1,58 unité** de celle-ci :
+il est bien à portée de sa frappe nominale de 2,1 unités.
+Le calcul `supportSurfaceGap` soustrait désormais le rayon de
+la capsule attaquante de la distance au hull, en conservant
+la différence d'altitude. Les rayons et colliders de l'APC
+ne changent pas ; le test de **ligne de vue vers le support**
+continue de vérifier séparément les murs et obstacles
+indépendants, qui restent bloquants.
+
+Cette troisième passe vise précisément le dernier cas rouge,
+sans ajouter de dégâts, de munitions ou de portée magique.
+Le dernier état Node/Three et Chromium doit être contrôlé
+sur son propre SHA avant certification de ces régressions.
