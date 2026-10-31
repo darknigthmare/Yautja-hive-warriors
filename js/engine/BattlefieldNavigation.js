@@ -133,8 +133,22 @@ export class BattlefieldNavigation {
   }
 
   localPath(from, target, radius) {
-    const environment = this.environment, room = environment.getSectorAt(from);
-    if (!room || environment.getSectorAt(target)?.id !== room.id) return [target.clone()];
+    const environment = this.environment, sector = environment.getSectorAt(from);
+    if (sector && environment.getSectorAt(target)?.id !== sector.id) return [];
+    // Non-battlefield arenas also contain real meshes and hulls but do not
+    // expose a 6-sector battlefieldLayout. A direct target fallback there
+    // silently disables A* exactly when an enemy must skirt a prop.
+    const half = environment.halfSize;
+    if (!sector && (environment.battlefieldLayout || !Number.isFinite(half) || half <= 0)) return [];
+    const span = Math.max(Math.abs(target.x-from.x), Math.abs(target.z-from.z));
+    const padding = Math.min(45, Math.max(28, span * .4));
+    const bounds = sector?.bounds ?? (half <= 100
+      ? { minX:-half, maxX:half, minZ:-half, maxZ:half }
+      : { minX:Math.max(-half, Math.floor((Math.min(from.x,target.x)-padding)/6)*6),
+          maxX:Math.min(half, Math.ceil((Math.max(from.x,target.x)+padding)/6)*6),
+          minZ:Math.max(-half, Math.floor((Math.min(from.z,target.z)-padding)/6)*6),
+          maxZ:Math.min(half, Math.ceil((Math.max(from.z,target.z)+padding)/6)*6) });
+    const room = sector ?? { id:`arena:${bounds.minX}:${bounds.maxX}:${bounds.minZ}:${bounds.maxZ}`, bounds };
     const step = 3, b = room.bounds, width = Math.floor((b.maxX - b.minX - 2) / step) + 1;
     const depth = Math.floor((b.maxZ - b.minZ - 2) / step) + 1;
     const key = `${room.id}/${Math.ceil(radius * 10)}/${from.y.toFixed(3)}/${environment.openGates.size}/${this.usingVerticalAccess ? 1 : 0}`;
@@ -165,7 +179,19 @@ export class BattlefieldNavigation {
       }
       return result;
     };
-    const start = nearest(from), end = nearest(target);
+    const blockedGoal = !clearSegment(environment, target, target, radius) ||
+      !floorSegment(environment, target, target, radius);
+    // An APC's centre or a hostile inside a pillar is not navigable. Select
+    // a real contact cell on its outside, never a point through the hull.
+    const start = nearest(from);
+    let end = blockedGoal ? -1 : nearest(target);
+    if (blockedGoal) {
+      let best = Infinity;
+      for (let id = 0; id < grid.clear.length; id++) if (grid.clear[id]) {
+        const d = distance(target, pointAt(id));
+        if (d < best) { best = d; end = id; }
+      }
+    }
     if (start < 0 || end < 0) return [];
     const costs = new Map([[start, 0]]), parent = new Map(), open = new Set([start]);
     while (open.size) {
@@ -184,7 +210,7 @@ export class BattlefieldNavigation {
     }
     if (!costs.has(end)) return [];
     const path = [end]; while (path[0] !== start) path.unshift(parent.get(path[0]));
-    return [...path.map(pointAt), target.clone()];
+    return blockedGoal ? path.map(pointAt) : [...path.map(pointAt), target.clone()];
   }
 
   /** Authoritative occupancy of the built scene, including real colliders,

@@ -7,6 +7,29 @@ import { createSyntheticModel } from '../graphics/SupportModels.js';
 import { disposeObject } from '../engine/SceneResources.js';
 import { selectHostileTarget, requestHostileAttack, syncHostileWarning, releaseHostileAttack } from '../engine/HostilePressure.js';
 
+/** Real vehicle targets own an oriented collision hull. A Working Joe must
+ * approach that hull rather than the vehicle's internal centre point; treating
+ * the centre as an ordinary NPC can leave it stalled against an APC side.
+ * Returns the surface gap (not a free attack through another obstacle). */
+function supportSurfaceGap(environment, position, target) {
+  if (!target?.isSupport || !target.position?.isVector3) return null;
+  const hull = (environment?.colliders ?? []).find(c =>
+    c.owner === target.collisionOwner && c.enabled !== false && c.solid !== false &&
+    (!c.isCollisionActive || c.isCollisionActive()));
+  const differenceY = Math.abs(position.y - target.position.y);
+  if (!hull) return Math.hypot(Math.max(0,
+    Math.hypot(position.x-target.position.x,position.z-target.position.z) -
+      (target.radius ?? 0)),differenceY);
+  const dx=position.x-hull.x, dz=position.z-hull.z;
+  if (hull.halfWidth != null && hull.halfDepth != null) {
+    const cosine=Math.cos(hull.rotation ?? 0),sine=Math.sin(hull.rotation ?? 0);
+    const x=dx*cosine-dz*sine,z=dx*sine+dz*cosine;
+    return Math.hypot(Math.max(0,Math.abs(x)-hull.halfWidth),
+      Math.max(0,Math.abs(z)-hull.halfDepth),differenceY);
+  }
+  return Math.hypot(Math.max(0,Math.hypot(dx,dz)-(hull.radius??target.radius??0)),differenceY);
+}
+
 export class SyntheticsManager {
   constructor(scene, audioEngine, particles) {
     this.scene = scene;
@@ -222,11 +245,12 @@ export class SyntheticsManager {
       if (isXeno && (this.combatDirector?.getAttackState(syn)?.phase === 'windup' || syn._localAttackPreparation)) releaseHostileAttack(this, syn);
       const dir = targetPos.clone().sub(syn.mesh.position);
       dir.y = 0;
-      const dist = syn.mesh.position.distanceTo(targetPos);
+      const supportGap = supportSurfaceGap(this.environment,syn.mesh.position,npcTarget);
+      const dist = supportGap ?? syn.mesh.position.distanceTo(targetPos);
 
       const covered = this.environment?.hasLineOfSight && !this.environment.hasLineOfSight(syn.mesh.position.clone().add(new THREE.Vector3(0, syn.isBisected ? .6 : 2, 0)), targetPos.clone().add(new THREE.Vector3(0,1.6,0)), { ignoreOwner: npcTarget?.isSupport ? npcTarget.collisionOwner : undefined });
       const joe = syn.type === 'working_joe';
-      const stopDist = (joe ? 2.1 : syn.isBisected ? 6.0 : (isXeno ? 10.0 : 12.0)) + (npcTarget?.isSupport ? npcTarget.radius ?? 0 : 0);
+      const stopDist = joe ? 2.1 : syn.isBisected ? 6.0 : (isXeno ? 10.0 : 12.0);
       syn.shootCooldown = Math.max(0, (syn.shootCooldown ?? 2) - delta);
 
       const access = this.environment?.getVerticalNavigationTarget?.(syn.mesh.position, targetPos);

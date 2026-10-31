@@ -48,6 +48,9 @@ jobs:
             tests/original-musou-front-allocation.test.js \
             tests/original-musou-staging.test.js \
             tests/battlefield-nav-safety.test.js \
+            tests/arena-local-navigation.test.js \
+            tests/actor-vertical-support-targets.test.js \
+            tests/levels.test.js \
             tests/musou-spawn-clearance.test.js \
             tests/helipad-navigation-regression.test.js \
             tests/musou-physical-routes.test.js \
