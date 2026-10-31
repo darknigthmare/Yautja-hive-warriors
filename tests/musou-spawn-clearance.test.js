@@ -56,6 +56,7 @@ const box=(halfWidth,halfDepth)=>({
 
 test('new Musou platoon relocates its finite soldiers around a solid pillar without overlap',()=>{
   const f=scene({colliders:[box(3,3)]});
+  const originalPositions=f.units.map(unit=>[...unit.position]);
   try{
     assert.equal(f.bridge.spawnGroup(f.group,f.units),true);
     assert.equal(f.bridge.actors.size,4);
@@ -69,7 +70,7 @@ test('new Musou platoon relocates its finite soldiers around a solid pillar with
     for(let i=0;i<placed.length;i++)for(let j=i+1;j<placed.length;j++){
       assert.ok(placed[i].mesh.position.distanceTo(placed[j].mesh.position)>=2.25-.01);
     }
-    assert.deepEqual(f.units.map(u=>u.position),[[0,0],[1.3,0],[2.6,0],[3.9,0]],
+    assert.deepEqual(f.units.map(u=>u.position),originalPositions,
       'the strategic identities and signed positions remain unchanged by the physical projection');
   }finally{f.bridge.dispose();}
 });

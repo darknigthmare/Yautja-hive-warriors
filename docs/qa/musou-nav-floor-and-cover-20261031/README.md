@@ -200,3 +200,19 @@ de plusieurs niveaux, les plateformes suspendues,
 les volumineux véhicules et les boucles de groupe
 sur des routes longues nécessitent une vérification
 WebGL et des tests avec du vrai matériel.
+
+### Correction de la fixture de conservation (CI)
+
+Le premier job Node/Three après matérialisation a réussi
+**135 tests sur 136**. Le seul échec concernait le test de
+conservation du tableau de positions stratégiques : il comparait
+la multiplication JavaScript `3 * 1.3` à une valeur décimale
+littérale `3.9` via une égalité stricte. Les deux nombres
+sont proches mais non identiques en binaire.
+
+Le test a été corrigé pour **capturer les véritables coordonnées
+des quatre unités avant la matérialisation**, puis vérifier
+qu'elles sont strictement les mêmes après le placement physique.
+Aucun garde de collision du moteur ni aucune valeur de soldat
+n'ont été assouplis. Le nouveau job de CI doit encore rejouer
+l'ensemble des tests avant toute déclaration de réussite.
