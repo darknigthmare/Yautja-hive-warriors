@@ -14,6 +14,18 @@ const point=p=>Array.isArray(p)&&p.length===2&&p.every(n=>Number.isFinite(n)&&Ma
 const id=v=>typeof v==='string'&&/^[a-zA-Z0-9_.:-]{1,128}$/.test(v);
 const eq=(a,b)=>point(a)&&point(b)&&Math.hypot(a[0]-b[0],a[1]-b[1])<=.002;
 const dist=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1]);
+
+/** Cross-check the independently serialized support against already seated
+ * soldier identities. A saved manifest must never resurrect a missing M577
+ * or materialize its occupants at a different location from the real hull.
+ * This intentionally does not auto-reposition the vehicle or troops. */
+export function validateM577CarrierCheckpoint(manifest,supports){
+  if(!manifest)return true; // Legacy and unoccupied support saves.
+  const carrier=supports?.apc,position=carrier?.position;
+  return supports?.version===1&&carrier?.version===1&&carrier.deployed===true&&
+    Array.isArray(position)&&position.length===3&&position.every(Number.isFinite)&&
+    point(manifest.position)&&dist([position[0],position[2]],manifest.position)<=.05;
+}
 const fail=()=>{throw new Error('invalid saved APC marine manifest');};
 const active=u=>u&&u.hp>0&&['active','distant'].includes(u.state);
 const boarded=u=>u.apcSeat!==undefined||u.apcCrewRole!==undefined;

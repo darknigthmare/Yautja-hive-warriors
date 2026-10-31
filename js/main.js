@@ -25,6 +25,7 @@ import { CompanionLoadouts, COMPANION_KITS } from './battlefield/CompanionLoadou
 import { HIVE_CONFLICT_ID } from './battlefield/HiveConflictScenario.js';
 import { OperationTransport } from './entities/OperationTransport.js';
 import { APCMarineService } from './battlefield/APCMarineService.js';
+import { validateM577CarrierCheckpoint } from './battlefield/APCSectionManifest.js';
 import { physicalOperationRouteAvailable } from './battlefield/PhysicalRouteAvailability.js';
 import { operationAlertState, captureBattleDebrief, hiveCoordinationFeedback } from './ui/OperationPanel.js';
 import { OperationObjectives } from './battlefield/OperationObjectives.js';
@@ -422,6 +423,10 @@ class GameApp {
 
   saveOperation() {
     if(!this.battleSimulation||!this.isPlaying||this.dropPod.isActive)return;
+    if(this.apcMarineService?.manifest&&!this.apcMarineService.validateCarrierPosition().accepted){
+      this.operationPanel.feedback('M577 : véhicule et section désynchronisés ; sauvegarde refusée.');
+      return;
+    }
     this.battleBridge.sync();
     const snapshot={version:1,score:this.score,sessionSkulls:this.sessionSkulls,sessionDefeats:this._sessionDefeats,campaignArcId:this.campaignArcId,campaignRunId:this.campaignRunId,levelId:this.ui.selectedLevel.id,operationId:this.operationId,players:this.isCoOp?2:1,characterId:this.ui.selectedChar.id,loadout:this.activeLoadout,scene:{mapSeed:this.operationMapSeed,difficultyId:this.operationDifficulty,
       deploymentPlan:this.operationDeploymentPlan??'authored'},simulation:this.battleSimulation.saveState(),objectives:this.operationObjectives?.serialize(),tacticalWorld:this.env.serializeTacticalWorld?.(),preyInteractions:this.env.serializePreyInteractions?.(),supports:{version:1,apc:this.apc.serialize(),cheyenne:this.dropship.serialize()},companions:this.companionLoadouts?.serialize(),rescue:this.allyRescue?.serialize(),bossPressure:this.bossPhasePressure?.serialize(),playerStates:[this.player,this.player2].filter(Boolean).map(snapshotOperationPlayer)};
@@ -2044,6 +2049,8 @@ class GameApp {
   }
 
   restoreMissionSupports(saved) {
+    if(!validateM577CarrierCheckpoint(this.battleSimulation?.getAPCManifest?.(),saved))
+      throw new Error('Incompatible APC passenger checkpoint: absent or displaced carrier');
     if(!saved)return;
     if(saved.version!==1||!this.apc.restore(saved.apc)||!this.dropship.restore(saved.cheyenne))throw new Error('Incompatible support checkpoint');
     if(this._apcNavigationCollider)this.env.colliders=this.env.colliders.filter(collider=>collider!==this._apcNavigationCollider);
@@ -2052,6 +2059,9 @@ class GameApp {
     this.invalidateSupportNavigation();
     if(this.battleSimulation?.apcManifest&&!this.apc.isSupportActive())
       throw new Error('Incompatible APC passenger checkpoint: carrier is not deployed');
+    if(this.battleSimulation?.apcManifest&&
+       this.apcMarineService?.validateCarrierPosition().accepted!==true)
+      throw new Error('Incompatible APC passenger checkpoint: live carrier position differs from manifest');
   }
 
   enterBattlefieldSector(sector) {

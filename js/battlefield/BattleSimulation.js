@@ -1102,11 +1102,19 @@ export class BattleSimulation {
 
   /** Driven only by a physically verified APC movement step. */
   moveAPCManifest(position,frontId=this.apcManifest?.frontId) {
-    const manifest=this.apcManifest;
-    if(!manifest||this.disposed||this.result||!point(position)||
-       !this.fronts.has(frontId)||dist(position,manifest.position)>5||
-       (frontId!==manifest.frontId&&
-         dist(position,this.fronts.get(frontId).position)>this.fronts.get(frontId).radius))
+    const manifest=this.apcManifest,front=this.fronts.get(frontId);
+    // A stream of individually short moves must not put a loaded APC beyond
+    // the source front's restorable geographic envelope. Transferring fronts
+    // additionally needs an open, physically authorized strategic connection.
+    const connected=frontId===manifest?.frontId||
+      [...this.routes.values()].some(route=>
+        route.open&&
+        ((route.from===manifest?.frontId&&route.to===frontId)||
+         (route.to===manifest?.frontId&&route.from===frontId))&&
+        this.routeAvailabilityProvider?.(clone(route))!==false);
+    if(!manifest||this.disposed||this.result||!point(position)||!front||
+       dist(position,manifest.position)>5||
+       dist(position,front.position)>front.radius+15||!connected)
       return false;
     const group=this.groups.get(manifest.groupId);
     manifest.position=[...position];manifest.frontId=frontId;

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import * as THREE from 'three';
 import { getBattleOperationConfig } from '../js/data/BattleCatalog.js';
 import { BattleSimulation } from '../js/battlefield/BattleSimulation.js';
-import { canBoardM577Unit, canCrewM577Unit, planM577Embark, APC_SECTION_RULES }
+import { canBoardM577Unit, canCrewM577Unit, planM577Embark, validateM577CarrierCheckpoint, APC_SECTION_RULES }
   from '../js/battlefield/APCSectionManifest.js';
 import { APCMarineService } from '../js/battlefield/APCMarineService.js';
 
@@ -258,5 +258,79 @@ test('carrier positions are updated only in bounded same-front steps without ind
     const saved=sim.saveState(),reloaded=BattleSimulation.fromState(getBattleOperationConfig('AFF-27'),saved);
     try{assert.deepEqual(reloaded.getAPCManifest().position,pos);assert.equal(reloaded.assertConservation(),true);}
     finally{reloaded.dispose();}
+  }finally{sim.dispose();}
+});
+
+test('M577 checkpoint refuses missing, undeployed or displaced carrier without changing finite identities',()=>{
+  const sim=create();
+  try{
+    const {manifest}=board(sim),start=sim.saveState(),before=sim.units.size;
+    const carrier={version:1,deployed:true,
+      position:[manifest.position[0],0,manifest.position[1]]};
+    const valid={version:1,apc:carrier};
+    assert.equal(validateM577CarrierCheckpoint(manifest,valid),true);
+    assert.equal(validateM577CarrierCheckpoint(null,null),true,
+      'legacy snapshots without occupied M577 still load');
+    for(const unsafe of [null,{version:1},{...valid,apc:{...carrier,deployed:false}},
+      {...valid,apc:{...carrier,position:[carrier.position[0]+2,0,carrier.position[2]]}},
+      {...valid,apc:{...carrier,position:[Infinity,0,carrier.position[2]]}},
+      {...valid,apc:{...carrier,position:[carrier.position[0],0]}}]){
+      assert.equal(validateM577CarrierCheckpoint(manifest,unsafe),false);
+    }
+    assert.deepEqual(sim.saveState(),start);
+    assert.equal(sim.units.size,before);
+    assert.equal(sim.assertConservation(),true);
+  }finally{sim.dispose();}
+});
+
+test('M577 cannot disembark a squad from an unsynchronised hull; a bounded movement restores coherence',()=>{
+  const sim=create(),selection=choose(sim),f=mockedService(sim,selection);
+  try{
+    assert.equal(f.service.boardNearest().accepted,true);
+    const initial=sim.saveState(),manifest=sim.getAPCManifest();
+    assert.equal(f.service.validateCarrierPosition().accepted,true);
+    f.apc.mesh.position.x+=2;
+    assert.equal(f.service.validateCarrierPosition().reason,'carrier_manifest_position_mismatch');
+    const denied=f.service.disembark();
+    assert.equal(denied.accepted,false);
+    assert.equal(denied.reason,'carrier_manifest_position_mismatch');
+    assert.deepEqual(sim.saveState(),initial,
+      'an invalid physical exit never alters a seated soldier or its save');
+    assert.equal(sim.moveAPCManifest([manifest.position[0]+2,manifest.position[1]]),true);
+    assert.equal(f.service.validateCarrierPosition().accepted,true);
+    assert.equal(f.service.disembark().accepted,true);
+    assert.equal(sim.getAPCManifest(),null);
+    assert.equal(sim.assertConservation(),true);
+  }finally{f.service.dispose();sim.dispose();}
+});
+
+test('sequential finite APC moves stop at a front boundary and remain restorable',()=>{
+  const sim=create();
+  try{
+    const {manifest}=board(sim),front=sim.fronts.get(manifest.frontId);
+    const before=sim.units.size,signature=sim.digest;
+    const delta=[manifest.position[0]-front.position[0],
+      manifest.position[1]-front.position[1]];
+    const magnitude=Math.hypot(...delta);
+    const unit=magnitude>0.01?delta.map(x=>x/magnitude):[1,0];
+    let successful=0,refused=false;
+    for(let i=0;i<250;i++){
+      const current=sim.getAPCManifest().position;
+      const next=[current[0]+unit[0]*4,current[1]+unit[1]*4];
+      if(!sim.moveAPCManifest(next)){refused=true;break;}
+      successful++;
+    }
+    assert.equal(refused,true,'repeated 4-unit steps must not walk beyond the front');
+    assert.ok(successful>0);
+    const saved=sim.saveState();
+    assert.ok(Math.hypot(saved.apcManifest.position[0]-front.position[0],
+      saved.apcManifest.position[1]-front.position[1])<=front.radius+15);
+    const reloaded=BattleSimulation.fromState(getBattleOperationConfig('AFF-27'),saved);
+    try{
+      assert.deepEqual(reloaded.getAPCManifest(),sim.getAPCManifest());
+      assert.equal(reloaded.digest,signature);
+      assert.equal(reloaded.units.size,before);
+      assert.equal(reloaded.assertConservation(),true);
+    }finally{reloaded.dispose();}
   }finally{sim.dispose();}
 });

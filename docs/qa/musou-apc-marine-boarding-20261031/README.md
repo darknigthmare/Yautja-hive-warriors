@@ -179,3 +179,30 @@ avant de consulter le run du commit.**
 **Statut : fondation d'embarquement/protection/
 débarquement et persistance, pas encore
 transport routier complet ni fidélité visuelle 1:1.**
+
+## Passe de cohérence du transport (31 octobre 2026)
+
+Après la fondation d'embarquement, les sauvegardes possédant un manifeste
+ne sont désormais acceptées que si le support **M577 est réellement déployé
+à la même position X/Z** (tolérance 0,05 unité). Un support manquant,
+déployé ailleurs ou avec une position non finie est rejeté **avant**
+toute restauration de son état. Les sauvegardes anciennes sans passagers
+restent compatibles.
+
+Le service de débarquement vérifie également la position physique du
+véhicule au moment de l'action : un décalage refuse toute sortie sans
+modifier les sièges, pertes, PV ou identités. L'interface désactive
+les commandes en cas de désynchronisation, et une sauvegarde
+incohérente n'est pas écrite. Le déplacement stratégique du manifeste,
+réservé à un mouvement physique autorisé, est maintenant borné à
+l'enveloppe persistable du front et à une route ouverte et autorisée
+en cas de changement de front.
+
+Trois tests Node/Three couvrent la falsification du support enregistré,
+la sortie impossible suivie d'un réalignement réel et les petits
+déplacements répétés vers la frontière d'un front. **Leur réussite
+dépend du résultat du workflow GitHub sur ce nouveau commit**.
+
+La conduite routière complète du M577, les suspensions, la collision
+dynamique large, l'intérieur et les animations 1:1 restent à réaliser.
+Aucun modèle canonique ou nouvelle unité n'est affirmé ici.

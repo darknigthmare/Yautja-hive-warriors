@@ -21,13 +21,25 @@ export class APCMarineService {
   get manifest(){return this.simulation?.getAPCManifest?.()??null;}
   get available(){return !this.disposed&&!!this.simulation&&!this.simulation.disposed&&
     this.apc?.isSupportActive?.()===true&&!!this.ownerFaction;}
+  /** Live hull and persisted occupants must share the same XZ origin.
+   * The client must refuse an unsafe exit rather than silently teleport
+   * seated Marines when a support was moved without simulation authority. */
+  validateCarrierPosition(){
+    const manifest=this.manifest;
+    if(!manifest)return{accepted:true};
+    const position=this.apc?.mesh?.position;
+    if(!this.available||!valid(position)||!point(manifest.position)||
+      dist([position.x,position.z],manifest.position)>.05)
+      return{accepted:false,reason:'carrier_manifest_position_mismatch'};
+    return{accepted:true};
+  }
   getHUDState(){
     const m=this.manifest;
     const playerFaction=this.simulation?.config?.playerFaction;
     const allied=this.ownerFaction&&playerFaction&&
       (this.ownerFaction===playerFaction||
         this.simulation?.relationship?.(this.ownerFaction,playerFaction)==='allied');
-    return {available:this.available&&!!allied,passengers:m?.passengers.length??0,
+    return {available:this.available&&!!allied&&this.validateCarrierPosition().accepted,passengers:m?.passengers.length??0,
       crew:m?.crew.length??0,
       capacity:APC_SECTION_RULES.passengerSeats,crewPositions:APC_SECTION_RULES.crewPositions,
       frontId:m?.frontId??null,visualFidelity1to1Verified:false};
@@ -83,6 +95,8 @@ export class APCMarineService {
   disembark(){
     const manifest=this.manifest;
     if(!this.available||!manifest)return this._result({accepted:false,reason:'apc_or_manifest_unavailable'});
+    const consistency=this.validateCarrierPosition();
+    if(!consistency.accepted)return this._result(consistency);
     const apc=this.apc.mesh,origin=apc.position,heading=apc.rotation.y;
     const nav=this.environment.navigation;
     if(!nav?.canStand||!nav.safeSpawnNear)
