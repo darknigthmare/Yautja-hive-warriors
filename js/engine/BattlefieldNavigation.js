@@ -147,7 +147,11 @@ export class BattlefieldNavigation {
       for (let z = 0; z < depth; z++) for (let x = 0; x < width; x++) {
         const point = new THREE.Vector3(b.minX + 1 + x * step, from.y, b.minZ + 1 + z * step);
         const unsafeFloor = from.y <= .65 && (environment.acidTrenches ?? []).some(trench => trenchAt(point, trench, radius + .12));
-        clear[z * width + x] = unsafeFloor || candidates.some(c => intersects(point, c, radius + .12)) ? 0 : 1;
+        // The collision grid must also obey the actually constructed floor
+        // union. Otherwise A* may walk through empty space between two rooms.
+        const absentFloor = !floorSegment(environment, point, point, radius + .12);
+        clear[z * width + x] = absentFloor || unsafeFloor ||
+          candidates.some(c => intersects(point, c, radius + .12)) ? 0 : 1;
       }
       grid = { clear }; this.gridCache.set(key, grid);
       if (this.gridCache.size > 32) this.gridCache.delete(this.gridCache.keys().next().value);
@@ -157,7 +161,7 @@ export class BattlefieldNavigation {
       let best = Infinity, result = -1;
       for (let id = 0; id < grid.clear.length; id++) if (grid.clear[id]) {
         const p = pointAt(id), d = distance(point, p);
-        if (d < best && clearSegment(environment, point, p, radius)) { best = d; result = id; }
+        if (d < best && floorSegment(environment, point, p, radius) && clearSegment(environment, point, p, radius)) { best = d; result = id; }
       }
       return result;
     };
@@ -173,7 +177,7 @@ export class BattlefieldNavigation {
       for (const [dx, dz] of [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [1, -1], [-1, 1], [-1, -1]]) {
         const nx = x + dx, nz = z + dz, next = nz * width + nx;
         if (nx < 0 || nz < 0 || nx >= width || nz >= depth || !grid.clear[next]) continue;
-        if (!clearSegment(environment, pointAt(current), pointAt(next), radius)) continue;
+        if (!floorSegment(environment, pointAt(current), pointAt(next), radius) || !clearSegment(environment, pointAt(current), pointAt(next), radius)) continue;
         const cost = costs.get(current) + Math.hypot(dx, dz) * step;
         if (cost + 1e-6 < (costs.get(next) ?? Infinity)) { costs.set(next, cost); parent.set(next, current); open.add(next); }
       }
@@ -186,6 +190,10 @@ export class BattlefieldNavigation {
   waypoint(from, target, radius = .65) {
     if (!from || !target || ![from.x, from.z, target.x, target.z].every(Number.isFinite)) return null;
     const environment = this.environment;
+    // Never return an unobstructed *line* that crosses a missing floor
+    // polygon, nor a destination when A* found no physical route.
+    const navigable = point => floorSegment(environment, from, point, radius) &&
+      clearSegment(environment, from, point, radius);
     let goal = target;
     if (environment.getSectorAt(from)?.id !== environment.getSectorAt(target)?.id || !environment.getSectorAt(from)) {
       const path = this.strategicPath(from, target);
@@ -205,19 +213,22 @@ export class BattlefieldNavigation {
         goal = point;
       }
     }
-    if (clearSegment(environment, from, goal, radius)) { this.actorPaths.delete(from); return goal.clone(); }
+    if (navigable(goal)) { this.actorPaths.delete(from); return goal.clone(); }
     const signature = `${Math.round(goal.x)},${Math.round(goal.z)},${Math.round(from.y)},${environment.openGates.size},${this.usingVerticalAccess ? 1 : 0}`;
     let cached = this.actorPaths.get(from);
     if (!cached || cached.signature !== signature || !cached.points.length) {
       cached = { signature, points: this.localPath(from, goal, radius) }; this.actorPaths.set(from, cached);
     }
     while (cached.points.length > 1 && distance(from, cached.points[0]) < 1) cached.points.shift();
-    if (cached.points.length && !clearSegment(environment, from, cached.points[0], radius)) {
+    if (cached.points.length && !navigable(cached.points[0])) {
       // Lifts, vehicles and removable cover can change after grid creation.
       this.gridCache.clear(); cached.points = this.localPath(from, goal, radius);
     }
     // Skip visible intermediate grid points, without cutting a cover corner.
-    while (cached.points.length > 1 && clearSegment(environment, from, cached.points[1], radius)) cached.points.shift();
-    return cached.points[0]?.clone() ?? goal.clone();
+    while (cached.points.length > 1 && navigable(cached.points[1])) cached.points.shift();
+    // A wall spanning the entire room or a void between decks has no safe
+    // detour. Hold the actor in place rather than force it through geometry.
+    const next = cached.points[0];
+    return next && navigable(next) ? next.clone() : from.clone();
   }
 }
