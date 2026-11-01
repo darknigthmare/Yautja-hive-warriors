@@ -6075,6 +6075,2321 @@ export const ALIEN_BASE_PUBLIC_SNAPSHOT_V1 = Object.freeze({
         "missingWork": "QA coop et visuels/castes non certifiés",
         "verified1to1": false
       }
+    ],
+    "enemyFamilies": [
+      {
+        "id": "tantalus:enemy-family:001",
+        "name": "Ovomorph",
+        "biology": "xenomorph",
+        "gameCaste": "egg",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:002",
+        "name": "Facehugger",
+        "biology": "xenomorph",
+        "gameCaste": "parasite",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:003",
+        "name": "Chestburster",
+        "biology": "xenomorph",
+        "gameCaste": "juvenile",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:004",
+        "name": "Drone / Big Chap",
+        "biology": "xenomorph",
+        "gameCaste": "stalker",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:005",
+        "name": "Warrior",
+        "biology": "xenomorph",
+        "gameCaste": "assault",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:006",
+        "name": "Runner",
+        "biology": "xenomorph",
+        "gameCaste": "runner",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:007",
+        "name": "Praetorian",
+        "biology": "xenomorph",
+        "gameCaste": "guardian",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:008",
+        "name": "Queen",
+        "biology": "xenomorph",
+        "gameCaste": "royal",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:009",
+        "name": "Crusher",
+        "biology": "xenomorph",
+        "gameCaste": "siege",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:010",
+        "name": "Spitter",
+        "biology": "xenomorph",
+        "gameCaste": "ranged",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:011",
+        "name": "Lurker",
+        "biology": "xenomorph",
+        "gameCaste": "ambush",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:012",
+        "name": "Carrier",
+        "biology": "xenomorph",
+        "gameCaste": "carrier",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:013",
+        "name": "Ravager",
+        "biology": "xenomorph",
+        "gameCaste": "assault",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:014",
+        "name": "Boiler",
+        "biology": "xenomorph",
+        "gameCaste": "explosive",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:015",
+        "name": "Prowler",
+        "biology": "xenomorph",
+        "gameCaste": "ambush",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:016",
+        "name": "Burster",
+        "biology": "xenomorph",
+        "gameCaste": "explosive",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:017",
+        "name": "Monica Line",
+        "biology": "xenomorph",
+        "gameCaste": "stalker",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:018",
+        "name": "Specimen Six Line",
+        "biology": "xenomorph",
+        "gameCaste": "adaptive",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:019",
+        "name": "Red Xenomorph",
+        "biology": "xenomorph",
+        "gameCaste": "rival-hive",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:020",
+        "name": "K-Series Yellow Xenomorph",
+        "biology": "xenomorph",
+        "gameCaste": "rival-hive",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:021",
+        "name": "Neuro-Xeno Drone",
+        "biology": "xenomorph",
+        "gameCaste": "controlled",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:022",
+        "name": "Xenoborg",
+        "biology": "xenomorph",
+        "gameCaste": "cybernetic",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:023",
+        "name": "ATARAX Ripper",
+        "biology": "xenomorph",
+        "gameCaste": "armored",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:024",
+        "name": "Ripper Queen",
+        "biology": "xenomorph",
+        "gameCaste": "royal",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:025",
+        "name": "Foundry Drone",
+        "biology": "xenomorph",
+        "gameCaste": "concept-acm",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:026",
+        "name": "Foundry Crusher",
+        "biology": "xenomorph",
+        "gameCaste": "concept-acm",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:027",
+        "name": "Reef Stalker",
+        "biology": "xenomorph",
+        "gameCaste": "concept-acm",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:028",
+        "name": "Reef Spitter",
+        "biology": "xenomorph",
+        "gameCaste": "concept-acm",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:029",
+        "name": "Siege Royal",
+        "biology": "xenomorph",
+        "gameCaste": "concept-acm",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:030",
+        "name": "Pale Crucible Hunter",
+        "biology": "xenomorph",
+        "gameCaste": "concept-crucible",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:031",
+        "name": "Dust Runner",
+        "biology": "xenomorph",
+        "gameCaste": "concept-crucible",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:032",
+        "name": "Salvage Hive Brute",
+        "biology": "xenomorph",
+        "gameCaste": "concept-crucible",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:033",
+        "name": "Arcology Lurker",
+        "biology": "xenomorph",
+        "gameCaste": "concept-crucible",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:034",
+        "name": "Caravan Stalker",
+        "biology": "xenomorph",
+        "gameCaste": "concept-crucible",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:035",
+        "name": "Trilobite Echo",
+        "biology": "pathogen",
+        "gameCaste": "apex",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:036",
+        "name": "Deacon Line",
+        "biology": "pathogen",
+        "gameCaste": "apex",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:037",
+        "name": "Neomorph",
+        "biology": "pathogen",
+        "gameCaste": "stalker",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:038",
+        "name": "Protomorph",
+        "biology": "pathogen",
+        "gameCaste": "assault",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:039",
+        "name": "Abomination",
+        "biology": "pathogen",
+        "gameCaste": "brute",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:040",
+        "name": "Pathogen Mimic",
+        "biology": "pathogen",
+        "gameCaste": "adaptive",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:041",
+        "name": "Working Joe",
+        "biology": "synthetic",
+        "gameCaste": "security",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:042",
+        "name": "Combat Synthetic",
+        "biology": "synthetic",
+        "gameCaste": "assault",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:043",
+        "name": "Weyland-Yutani Commando",
+        "biology": "human",
+        "gameCaste": "assault",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:044",
+        "name": "UPP Vanguard",
+        "biology": "human",
+        "gameCaste": "assault",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:045",
+        "name": "Seegson Security",
+        "biology": "human",
+        "gameCaste": "security",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:046",
+        "name": "Colonial Raider",
+        "biology": "human",
+        "gameCaste": "ambush",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:047",
+        "name": "ATARAX Controller",
+        "biology": "human",
+        "gameCaste": "controller",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:048",
+        "name": "Cult Host",
+        "biology": "human",
+        "gameCaste": "cult",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:049",
+        "name": "Wild Boar Host",
+        "biology": "fauna",
+        "gameCaste": "host",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:050",
+        "name": "Korari Stalker",
+        "biology": "fauna",
+        "gameCaste": "predator",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:051",
+        "name": "Ceto Reef Predator",
+        "biology": "fauna",
+        "gameCaste": "aquatic",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "tantalus:enemy-family:052",
+        "name": "Tantalus Tunnel Vermin",
+        "biology": "fauna",
+        "gameCaste": "swarm",
+        "sourceStatus": "verify-work-and-variant-not-a-universal-class",
+        "referenceOnly": true,
+        "visual1to1": false
+      }
+    ],
+    "mediaCoverage": [
+      {
+        "id": "apex:media:film_predator_1987",
+        "name": "Predator",
+        "year": 1987,
+        "medium": "Film live action",
+        "evidenceStatus": "project-attributed-source-not-rechecked-in-this-import",
+        "sourceTier": "SCREEN",
+        "referenceOnly": true
+      },
+      {
+        "id": "apex:media:film_predator_2",
+        "name": "Predator 2",
+        "year": 1990,
+        "medium": "Film live action",
+        "evidenceStatus": "project-attributed-source-not-rechecked-in-this-import",
+        "sourceTier": "SCREEN",
+        "referenceOnly": true
+      },
+      {
+        "id": "apex:media:film_avp_2004",
+        "name": "Alien vs. Predator",
+        "year": 2004,
+        "medium": "Film live action",
+        "evidenceStatus": "project-attributed-source-not-rechecked-in-this-import",
+        "sourceTier": "AVP_SCREEN",
+        "referenceOnly": true
+      },
+      {
+        "id": "apex:media:film_avpr_2007",
+        "name": "Aliens vs. Predator: Requiem",
+        "year": 2007,
+        "medium": "Film live action",
+        "evidenceStatus": "project-attributed-source-not-rechecked-in-this-import",
+        "sourceTier": "AVP_SCREEN",
+        "referenceOnly": true
+      },
+      {
+        "id": "apex:media:film_predators_2010",
+        "name": "Predators",
+        "year": 2010,
+        "medium": "Film live action",
+        "evidenceStatus": "project-attributed-source-not-rechecked-in-this-import",
+        "sourceTier": "SCREEN",
+        "referenceOnly": true
+      },
+      {
+        "id": "apex:media:film_the_predator_2018",
+        "name": "The Predator",
+        "year": 2018,
+        "medium": "Film live action",
+        "evidenceStatus": "project-attributed-source-not-rechecked-in-this-import",
+        "sourceTier": "SCREEN",
+        "referenceOnly": true
+      },
+      {
+        "id": "apex:media:film_prey_2022",
+        "name": "Prey",
+        "year": 2022,
+        "medium": "Film live action",
+        "evidenceStatus": "project-attributed-source-not-rechecked-in-this-import",
+        "sourceTier": "SCREEN",
+        "referenceOnly": true
+      },
+      {
+        "id": "apex:media:film_kok_2025",
+        "name": "Predator: Killer of Killers",
+        "year": 2025,
+        "medium": "Film d’animation",
+        "evidenceStatus": "project-attributed-source-not-rechecked-in-this-import",
+        "sourceTier": "SCREEN",
+        "referenceOnly": true
+      },
+      {
+        "id": "apex:media:film_badlands_2025",
+        "name": "Predator: Badlands",
+        "year": 2025,
+        "medium": "Film live action",
+        "evidenceStatus": "project-attributed-source-not-rechecked-in-this-import",
+        "sourceTier": "SCREEN",
+        "referenceOnly": true
+      },
+      {
+        "id": "apex:media:bonus_the_chosen",
+        "name": "The Chosen",
+        "year": 2010,
+        "medium": "Court métrage officiel",
+        "evidenceStatus": "project-attributed-source-not-rechecked-in-this-import",
+        "sourceTier": "HOME_MEDIA",
+        "referenceOnly": true
+      },
+      {
+        "id": "apex:media:bonus_moments_extraction",
+        "name": "Moments of Extraction",
+        "year": 2010,
+        "medium": "Court métrage officiel",
+        "evidenceStatus": "project-attributed-source-not-rechecked-in-this-import",
+        "sourceTier": "HOME_MEDIA",
+        "referenceOnly": true
+      },
+      {
+        "id": "apex:media:bonus_crucified",
+        "name": "Crucified",
+        "year": 2010,
+        "medium": "Court métrage officiel",
+        "evidenceStatus": "project-attributed-source-not-rechecked-in-this-import",
+        "sourceTier": "HOME_MEDIA",
+        "referenceOnly": true
+      },
+      {
+        "id": "apex:media:promo_holiday_2018",
+        "name": "The Predator Holiday Special",
+        "year": 2018,
+        "medium": "Court promotionnel",
+        "evidenceStatus": "project-attributed-source-not-rechecked-in-this-import",
+        "sourceTier": "PROMO_NON_CANON",
+        "referenceOnly": true
+      },
+      {
+        "id": "apex:media:production_emissaries",
+        "name": "Emissary Predators — scènes supprimées",
+        "year": 2018,
+        "medium": "Archive de production",
+        "evidenceStatus": "project-attributed-source-not-rechecked-in-this-import",
+        "sourceTier": "PRODUCTION_ARCHIVE",
+        "referenceOnly": true
+      },
+      {
+        "id": "apex:media:production_avp_annihilation",
+        "name": "Alien vs. Predator: Annihilation",
+        "year": 2016,
+        "medium": "Série CG non publiée",
+        "evidenceStatus": "project-attributed-source-not-rechecked-in-this-import",
+        "sourceTier": "PRODUCTION_ARCHIVE",
+        "referenceOnly": true
+      },
+      {
+        "id": "apex:media:dh_avp_ryushi",
+        "name": "Aliens vs. Predator — saga de Ryushi",
+        "year": 1989,
+        "medium": "Comics",
+        "evidenceStatus": "project-attributed-source-not-rechecked-in-this-import",
+        "sourceTier": "LICENSED_DARK_HORSE",
+        "referenceOnly": true
+      },
+      {
+        "id": "apex:media:dh_bad_blood",
+        "name": "Predator: Bad Blood",
+        "year": 1993,
+        "medium": "Comics",
+        "evidenceStatus": "project-attributed-source-not-rechecked-in-this-import",
+        "sourceTier": "LICENSED_DARK_HORSE",
+        "referenceOnly": true
+      },
+      {
+        "id": "apex:media:dh_fire_life_death",
+        "name": "Fire and Stone / Life and Death",
+        "year": 2014,
+        "medium": "Cycle de comics",
+        "evidenceStatus": "project-attributed-source-not-rechecked-in-this-import",
+        "sourceTier": "LICENSED_DARK_HORSE",
+        "referenceOnly": true
+      },
+      {
+        "id": "apex:media:marvel_theta",
+        "name": "Predator — saga de Theta Berwick",
+        "year": 2022,
+        "medium": "Comics",
+        "evidenceStatus": "project-attributed-source-not-rechecked-in-this-import",
+        "sourceTier": "LICENSED_MARVEL",
+        "referenceOnly": true
+      },
+      {
+        "id": "apex:media:marvel_last_hunt",
+        "name": "Predator: The Last Hunt",
+        "year": 2024,
+        "medium": "Comics",
+        "evidenceStatus": "project-attributed-source-not-rechecked-in-this-import",
+        "sourceTier": "LICENSED_MARVEL",
+        "referenceOnly": true
+      },
+      {
+        "id": "apex:media:marvel_bwb",
+        "name": "Predator: Black, White & Blood",
+        "year": 2025,
+        "medium": "Anthologie comics",
+        "evidenceStatus": "project-attributed-source-not-rechecked-in-this-import",
+        "sourceTier": "LICENSED_MARVEL",
+        "referenceOnly": true
+      },
+      {
+        "id": "apex:media:marvel_badlands_prequel",
+        "name": "Predator: Badlands #1",
+        "year": 2025,
+        "medium": "Comics préquel",
+        "evidenceStatus": "project-attributed-source-not-rechecked-in-this-import",
+        "sourceTier": "LICENSED_MARVEL",
+        "referenceOnly": true
+      },
+      {
+        "id": "apex:media:marvel_bloodshed",
+        "name": "Predator: Bloodshed",
+        "year": 2026,
+        "medium": "Comics",
+        "evidenceStatus": "project-attributed-source-not-rechecked-in-this-import",
+        "sourceTier": "LICENSED_MARVEL",
+        "referenceOnly": true
+      },
+      {
+        "id": "apex:media:novel_rift_war",
+        "name": "Aliens vs. Predators: Rift War",
+        "year": 2022,
+        "medium": "Roman",
+        "evidenceStatus": "project-attributed-source-not-rechecked-in-this-import",
+        "sourceTier": "LICENSED_NOVEL",
+        "referenceOnly": true
+      },
+      {
+        "id": "apex:media:novel_rage_war",
+        "name": "Predator: Incursion / Rage War",
+        "year": 2015,
+        "medium": "Trilogie de romans",
+        "evidenceStatus": "project-attributed-source-not-rechecked-in-this-import",
+        "sourceTier": "LICENSED_NOVEL",
+        "referenceOnly": true
+      },
+      {
+        "id": "apex:media:novel_predator_omnibus",
+        "name": "Concrete Jungle, Cold War et Dark River",
+        "year": 1989,
+        "medium": "Comics et romans",
+        "evidenceStatus": "project-attributed-source-not-rechecked-in-this-import",
+        "sourceTier": "LICENSED_NOVEL",
+        "referenceOnly": true
+      },
+      {
+        "id": "apex:media:game_concrete_jungle",
+        "name": "Predator: Concrete Jungle",
+        "year": 2005,
+        "medium": "Jeu vidéo",
+        "evidenceStatus": "project-attributed-source-not-rechecked-in-this-import",
+        "sourceTier": "LICENSED_GAME",
+        "referenceOnly": true
+      },
+      {
+        "id": "apex:media:game_avp_extinction",
+        "name": "Aliens versus Predator: Extinction",
+        "year": 2003,
+        "medium": "Jeu vidéo",
+        "evidenceStatus": "project-attributed-source-not-rechecked-in-this-import",
+        "sourceTier": "LICENSED_GAME",
+        "referenceOnly": true
+      },
+      {
+        "id": "apex:media:alt_marvel_crossovers",
+        "name": "Predator vs. Marvel Universe",
+        "year": 2023,
+        "medium": "Crossovers comics",
+        "evidenceStatus": "project-attributed-source-not-rechecked-in-this-import",
+        "sourceTier": "ALT_CROSSOVER",
+        "referenceOnly": true
+      }
+    ],
+    "tcgCards": [
+      {
+        "id": "avptcg:card:X_OVOMORPH",
+        "legacyId": "X_OVOMORPH",
+        "name": "Ovomorphe",
+        "gameFaction": "XENO",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:X_FACEHUGGER",
+        "legacyId": "X_FACEHUGGER",
+        "name": "Facehugger",
+        "gameFaction": "XENO",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:X_CHESTBURSTER",
+        "legacyId": "X_CHESTBURSTER",
+        "name": "Chestburster",
+        "gameFaction": "XENO",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:X_DRONE",
+        "legacyId": "X_DRONE",
+        "name": "Drone Xénomorphe",
+        "gameFaction": "XENO",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:X_WARRIOR",
+        "legacyId": "X_WARRIOR",
+        "name": "Warrior Xénomorphe",
+        "gameFaction": "XENO",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:X_RUNNER",
+        "legacyId": "X_RUNNER",
+        "name": "Runner",
+        "gameFaction": "XENO",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:X_SPITTER",
+        "legacyId": "X_SPITTER",
+        "name": "Spitter",
+        "gameFaction": "XENO",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:X_STALKER",
+        "legacyId": "X_STALKER",
+        "name": "Stalker",
+        "gameFaction": "XENO",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:X_PRAETORIAN",
+        "legacyId": "X_PRAETORIAN",
+        "name": "Praetorian",
+        "gameFaction": "XENO",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:X_QUEEN",
+        "legacyId": "X_QUEEN",
+        "name": "Reine Xénomorphe",
+        "gameFaction": "XENO",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:X_QUEEN_MOTHER",
+        "legacyId": "X_QUEEN_MOTHER",
+        "name": "Queen Mother",
+        "gameFaction": "XENO",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:X_BIG_CHAP",
+        "legacyId": "X_BIG_CHAP",
+        "name": "Big Chap — Organisme parfait",
+        "gameFaction": "XENO",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:X_SCORCHED",
+        "legacyId": "X_SCORCHED",
+        "name": "Scorched Xenomorph",
+        "gameFaction": "XENO",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:X_GRID",
+        "legacyId": "X_GRID",
+        "name": "Grid",
+        "gameFaction": "HYBRID",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:X_RED",
+        "legacyId": "X_RED",
+        "name": "Red Xenomorph",
+        "gameFaction": "XENO",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:X_GORILLA",
+        "legacyId": "X_GORILLA",
+        "name": "Gorilla Alien",
+        "gameFaction": "XENO",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:X_BULL",
+        "legacyId": "X_BULL",
+        "name": "Bull Alien",
+        "gameFaction": "XENO",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:X_MANTIS",
+        "legacyId": "X_MANTIS",
+        "name": "Mantis Alien",
+        "gameFaction": "XENO",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:X_SNAKE",
+        "legacyId": "X_SNAKE",
+        "name": "Snake Alien",
+        "gameFaction": "XENO",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:X_FLYING_QUEEN",
+        "legacyId": "X_FLYING_QUEEN",
+        "name": "Flying Queen",
+        "gameFaction": "XENO",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:X_POPPER",
+        "legacyId": "X_POPPER",
+        "name": "Pathogen Popper",
+        "gameFaction": "ENGINEER",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:X_PATH_STALKER",
+        "legacyId": "X_PATH_STALKER",
+        "name": "Pathogen Stalker",
+        "gameFaction": "ENGINEER",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:X_PATH_BRUTE",
+        "legacyId": "X_PATH_BRUTE",
+        "name": "Pathogen Brute",
+        "gameFaction": "ENGINEER",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:X_PATH_QUEEN",
+        "legacyId": "X_PATH_QUEEN",
+        "name": "Pathogen Queen",
+        "gameFaction": "ENGINEER",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:X_WARDEN",
+        "legacyId": "X_WARDEN",
+        "name": "Warden",
+        "gameFaction": "XENO",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:X_SIREN",
+        "legacyId": "X_SIREN",
+        "name": "Siren",
+        "gameFaction": "XENO",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:X_NEOMORPH",
+        "legacyId": "X_NEOMORPH",
+        "name": "Neomorph",
+        "gameFaction": "ENGINEER",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:X_DEACON",
+        "legacyId": "X_DEACON",
+        "name": "Deacon",
+        "gameFaction": "ENGINEER",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:Y_UNBLOODED",
+        "legacyId": "Y_UNBLOODED",
+        "name": "Unblooded Yautja",
+        "gameFaction": "YAUTJA",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:Y_YOUNG_BLOOD",
+        "legacyId": "Y_YOUNG_BLOOD",
+        "name": "Young Blood",
+        "gameFaction": "YAUTJA",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:Y_ELITE",
+        "legacyId": "Y_ELITE",
+        "name": "Elite Predator",
+        "gameFaction": "YAUTJA",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:Y_ELDER",
+        "legacyId": "Y_ELDER",
+        "name": "Elder Predator",
+        "gameFaction": "YAUTJA",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:Y_CLAN_LEADER",
+        "legacyId": "Y_CLAN_LEADER",
+        "name": "Clan Leader",
+        "gameFaction": "YAUTJA",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:Y_ANCIENT",
+        "legacyId": "Y_ANCIENT",
+        "name": "Ancient Predator",
+        "gameFaction": "YAUTJA",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:Y_ENFORCER",
+        "legacyId": "Y_ENFORCER",
+        "name": "Enforcer",
+        "gameFaction": "YAUTJA",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:Y_BAD_BLOOD",
+        "legacyId": "Y_BAD_BLOOD",
+        "name": "Bad Blood",
+        "gameFaction": "YAUTJA",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:Y_JUNGLE_HUNTER",
+        "legacyId": "Y_JUNGLE_HUNTER",
+        "name": "Jungle Hunter",
+        "gameFaction": "YAUTJA",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:Y_CITY_HUNTER",
+        "legacyId": "Y_CITY_HUNTER",
+        "name": "City Hunter",
+        "gameFaction": "YAUTJA",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:Y_SCAR",
+        "legacyId": "Y_SCAR",
+        "name": "Scar",
+        "gameFaction": "YAUTJA",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:Y_CELTIC",
+        "legacyId": "Y_CELTIC",
+        "name": "Celtic",
+        "gameFaction": "YAUTJA",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:Y_CHOPPER",
+        "legacyId": "Y_CHOPPER",
+        "name": "Chopper",
+        "gameFaction": "YAUTJA",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:Y_WOLF",
+        "legacyId": "Y_WOLF",
+        "name": "Wolf Predator",
+        "gameFaction": "YAUTJA",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:Y_BERSERKER",
+        "legacyId": "Y_BERSERKER",
+        "name": "Berserker Predator",
+        "gameFaction": "YAUTJA",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:Y_FALCONER",
+        "legacyId": "Y_FALCONER",
+        "name": "Falconer Predator",
+        "gameFaction": "YAUTJA",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:Y_TRACKER",
+        "legacyId": "Y_TRACKER",
+        "name": "Tracker Predator",
+        "gameFaction": "YAUTJA",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:Y_HOUND",
+        "legacyId": "Y_HOUND",
+        "name": "Predator Hound",
+        "gameFaction": "YAUTJA",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:Y_FERAL",
+        "legacyId": "Y_FERAL",
+        "name": "Feral Predator",
+        "gameFaction": "YAUTJA",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:Y_SAMURAI",
+        "legacyId": "Y_SAMURAI",
+        "name": "Samurai Predator",
+        "gameFaction": "YAUTJA",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:Y_GLADIATOR",
+        "legacyId": "Y_GLADIATOR",
+        "name": "Gladiator Predator",
+        "gameFaction": "YAUTJA",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:Y_TEMPLE_GUARD",
+        "legacyId": "Y_TEMPLE_GUARD",
+        "name": "Temple Guard",
+        "gameFaction": "YAUTJA",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:Y_AHAB",
+        "legacyId": "Y_AHAB",
+        "name": "Ahab",
+        "gameFaction": "YAUTJA",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:Y_SHESH_KUK",
+        "legacyId": "Y_SHESH_KUK",
+        "name": "Shesh-Kuk",
+        "gameFaction": "YAUTJA",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:Y_YAQUITA",
+        "legacyId": "Y_YAQUITA",
+        "name": "Yaquita — Chasseur sans jambes",
+        "gameFaction": "YAUTJA",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:Y_EMISSARY_A",
+        "legacyId": "Y_EMISSARY_A",
+        "name": "Emissary Predator A",
+        "gameFaction": "YAUTJA",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:Y_EMISSARY_B",
+        "legacyId": "Y_EMISSARY_B",
+        "name": "Emissary Predator B",
+        "gameFaction": "YAUTJA",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:Y_SCIENTIST",
+        "legacyId": "Y_SCIENTIST",
+        "name": "Scientifique Yautja — Intelligentsia",
+        "gameFaction": "YAUTJA",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:H_COLONIAL_MARINE",
+        "legacyId": "H_COLONIAL_MARINE",
+        "name": "Colonial Marine",
+        "gameFaction": "HUMAN",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:H_SMARTGUNNER",
+        "legacyId": "H_SMARTGUNNER",
+        "name": "Smartgunner USCM",
+        "gameFaction": "HUMAN",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:H_RIPLEY",
+        "legacyId": "H_RIPLEY",
+        "name": "Ellen Ripley",
+        "gameFaction": "HUMAN",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:H_DALLAS",
+        "legacyId": "H_DALLAS",
+        "name": "Arthur Dallas",
+        "gameFaction": "HUMAN",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:H_PARKER",
+        "legacyId": "H_PARKER",
+        "name": "Dennis Parker",
+        "gameFaction": "HUMAN",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:H_LAMBERT",
+        "legacyId": "H_LAMBERT",
+        "name": "Joan Lambert",
+        "gameFaction": "HUMAN",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:H_ASH",
+        "legacyId": "H_ASH",
+        "name": "Ash — Officier scientifique",
+        "gameFaction": "HUMAN",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:H_HICKS",
+        "legacyId": "H_HICKS",
+        "name": "Dwayne Hicks",
+        "gameFaction": "HUMAN",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:H_HUDSON",
+        "legacyId": "H_HUDSON",
+        "name": "William Hudson",
+        "gameFaction": "HUMAN",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:H_VASQUEZ",
+        "legacyId": "H_VASQUEZ",
+        "name": "Jenette Vasquez",
+        "gameFaction": "HUMAN",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:H_APONE",
+        "legacyId": "H_APONE",
+        "name": "Al Apone",
+        "gameFaction": "HUMAN",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:H_BISHOP",
+        "legacyId": "H_BISHOP",
+        "name": "Bishop",
+        "gameFaction": "HUMAN",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:H_NEWT",
+        "legacyId": "H_NEWT",
+        "name": "Rebecca “Newt” Jorden",
+        "gameFaction": "HUMAN",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:H_DUTCH",
+        "legacyId": "H_DUTCH",
+        "name": "Dutch Schaefer",
+        "gameFaction": "HUMAN",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:H_HARRIGAN",
+        "legacyId": "H_HARRIGAN",
+        "name": "Mike Harrigan",
+        "gameFaction": "HUMAN",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:H_NARU",
+        "legacyId": "H_NARU",
+        "name": "Naru",
+        "gameFaction": "HUMAN",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:H_ROYCE",
+        "legacyId": "H_ROYCE",
+        "name": "Royce",
+        "gameFaction": "HUMAN",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:H_ALEXA",
+        "legacyId": "H_ALEXA",
+        "name": "Alexa Woods",
+        "gameFaction": "HUMAN",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:H_MACHIKO",
+        "legacyId": "H_MACHIKO",
+        "name": "Machiko Noguchi",
+        "gameFaction": "HUMAN",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:H_COMBAT_SYNTH",
+        "legacyId": "H_COMBAT_SYNTH",
+        "name": "Synthétique de combat",
+        "gameFaction": "HUMAN",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:H_WORKING_JOE",
+        "legacyId": "H_WORKING_JOE",
+        "name": "Working Joe",
+        "gameFaction": "HUMAN",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:H_WEYLAND_OP",
+        "legacyId": "H_WEYLAND_OP",
+        "name": "Agent Weyland-Yutani",
+        "gameFaction": "HUMAN",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:H_POWERLOADER_RIPLEY",
+        "legacyId": "H_POWERLOADER_RIPLEY",
+        "name": "Ripley — Power Loader",
+        "gameFaction": "HUMAN",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:E_ENGINEER",
+        "legacyId": "E_ENGINEER",
+        "name": "Engineer — Dernier pilote",
+        "gameFaction": "ENGINEER",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:E_SPACE_JOCKEY",
+        "legacyId": "E_SPACE_JOCKEY",
+        "name": "Space Jockey",
+        "gameFaction": "ENGINEER",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:E_DAVID",
+        "legacyId": "E_DAVID",
+        "name": "David 8 — Créateur",
+        "gameFaction": "ENGINEER",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:E_WALTER",
+        "legacyId": "E_WALTER",
+        "name": "Walter",
+        "gameFaction": "HUMAN",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:E_TRILOBITE",
+        "legacyId": "E_TRILOBITE",
+        "name": "Trilobite",
+        "gameFaction": "ENGINEER",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:E_HAMMERPEDE",
+        "legacyId": "E_HAMMERPEDE",
+        "name": "Hammerpede",
+        "gameFaction": "ENGINEER",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:E_BLACK_GOO_MUTANT",
+        "legacyId": "E_BLACK_GOO_MUTANT",
+        "name": "Mutant au Pathogène",
+        "gameFaction": "ENGINEER",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:H_PREDALIEN",
+        "legacyId": "H_PREDALIEN",
+        "name": "Predalien",
+        "gameFaction": "HYBRID",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:H_NEWBORN",
+        "legacyId": "H_NEWBORN",
+        "name": "Newborn",
+        "gameFaction": "HYBRID",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:H_RIPLEY8",
+        "legacyId": "H_RIPLEY8",
+        "name": "Ripley 8",
+        "gameFaction": "HYBRID",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:H_WHITE_HYBRID",
+        "legacyId": "H_WHITE_HYBRID",
+        "name": "White Hybrid",
+        "gameFaction": "HYBRID",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:H_ALIEN_KING",
+        "legacyId": "H_ALIEN_KING",
+        "name": "King Alien",
+        "gameFaction": "HYBRID",
+        "cardType": "UNIT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:T_X_ACID_BLOOD",
+        "legacyId": "T_X_ACID_BLOOD",
+        "name": "Sang acide",
+        "gameFaction": "XENO",
+        "cardType": "TACTIC",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:T_X_VENT_AMBUSH",
+        "legacyId": "T_X_VENT_AMBUSH",
+        "name": "Embuscade dans les conduits",
+        "gameFaction": "XENO",
+        "cardType": "TACTIC",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:T_X_RESIN",
+        "legacyId": "T_X_RESIN",
+        "name": "Résine de Ruche",
+        "gameFaction": "XENO",
+        "cardType": "TACTIC",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:T_X_SWARM",
+        "legacyId": "T_X_SWARM",
+        "name": "Déferlement de la Couvée",
+        "gameFaction": "XENO",
+        "cardType": "TACTIC",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:T_X_EGGMORPH",
+        "legacyId": "T_X_EGGMORPH",
+        "name": "Eggmorphing",
+        "gameFaction": "XENO",
+        "cardType": "TACTIC",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:T_X_ROYAL_JELLY",
+        "legacyId": "T_X_ROYAL_JELLY",
+        "name": "Gelée royale",
+        "gameFaction": "XENO",
+        "cardType": "TACTIC",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:T_X_CUT_POWER",
+        "legacyId": "T_X_CUT_POWER",
+        "name": "Couper l’alimentation",
+        "gameFaction": "XENO",
+        "cardType": "TACTIC",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:T_X_PERFECT",
+        "legacyId": "T_X_PERFECT",
+        "name": "Organisme parfait",
+        "gameFaction": "XENO",
+        "cardType": "TACTIC",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:T_Y_HUNT_CODE",
+        "legacyId": "T_Y_HUNT_CODE",
+        "name": "Code de la chasse",
+        "gameFaction": "YAUTJA",
+        "cardType": "TACTIC",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:T_Y_CLAIM_TROPHY",
+        "legacyId": "T_Y_CLAIM_TROPHY",
+        "name": "Réclamer le trophée",
+        "gameFaction": "YAUTJA",
+        "cardType": "TACTIC",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:T_Y_THERMAL",
+        "legacyId": "T_Y_THERMAL",
+        "name": "Vision thermique",
+        "gameFaction": "YAUTJA",
+        "cardType": "TACTIC",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:T_Y_CLOAK",
+        "legacyId": "T_Y_CLOAK",
+        "name": "Cycle de camouflage",
+        "gameFaction": "YAUTJA",
+        "cardType": "TACTIC",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:T_Y_SELF_DESTRUCT",
+        "legacyId": "T_Y_SELF_DESTRUCT",
+        "name": "Autodestruction du poignet",
+        "gameFaction": "YAUTJA",
+        "cardType": "TACTIC",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:T_Y_BLOODING",
+        "legacyId": "T_Y_BLOODING",
+        "name": "Rituel du Blooding",
+        "gameFaction": "YAUTJA",
+        "cardType": "TACTIC",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:T_Y_NET_TRAP",
+        "legacyId": "T_Y_NET_TRAP",
+        "name": "Piège au filet",
+        "gameFaction": "YAUTJA",
+        "cardType": "TACTIC",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:T_Y_CHALLENGE",
+        "legacyId": "T_Y_CHALLENGE",
+        "name": "Rugissement de défi",
+        "gameFaction": "YAUTJA",
+        "cardType": "TACTIC",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:T_H_MOTION",
+        "legacyId": "T_H_MOTION",
+        "name": "Ping du détecteur de mouvement",
+        "gameFaction": "HUMAN",
+        "cardType": "TACTIC",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:T_H_SEAL_DOOR",
+        "legacyId": "T_H_SEAL_DOOR",
+        "name": "Souder la porte",
+        "gameFaction": "HUMAN",
+        "cardType": "TACTIC",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:T_H_FIRETEAM",
+        "legacyId": "T_H_FIRETEAM",
+        "name": "Formation Fireteam",
+        "gameFaction": "HUMAN",
+        "cardType": "TACTIC",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:T_H_FLAMER",
+        "legacyId": "T_H_FLAMER",
+        "name": "Rafale de lance-flammes",
+        "gameFaction": "HUMAN",
+        "cardType": "TACTIC",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:T_H_NUKE",
+        "legacyId": "T_H_NUKE",
+        "name": "Détruire le site depuis l’orbite",
+        "gameFaction": "HUMAN",
+        "cardType": "TACTIC",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:T_H_FROSTY",
+        "legacyId": "T_H_FROSTY",
+        "name": "Restez sur vos gardes",
+        "gameFaction": "HUMAN",
+        "cardType": "TACTIC",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:T_H_EVAC",
+        "legacyId": "T_H_EVAC",
+        "name": "Évacuation d’urgence",
+        "gameFaction": "HUMAN",
+        "cardType": "TACTIC",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:T_H_QUARANTINE",
+        "legacyId": "T_H_QUARANTINE",
+        "name": "Protocole de quarantaine",
+        "gameFaction": "HUMAN",
+        "cardType": "TACTIC",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:T_E_BLACK_GOO",
+        "legacyId": "T_E_BLACK_GOO",
+        "name": "Libération du liquide noir",
+        "gameFaction": "ENGINEER",
+        "cardType": "TACTIC",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:T_E_CREATION",
+        "legacyId": "T_E_CREATION",
+        "name": "Cycle de création",
+        "gameFaction": "ENGINEER",
+        "cardType": "TACTIC",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:T_E_ORRERY",
+        "legacyId": "T_E_ORRERY",
+        "name": "Cartographie de l’orrery",
+        "gameFaction": "ENGINEER",
+        "cardType": "TACTIC",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:T_E_SACRIFICE",
+        "legacyId": "T_E_SACRIFICE",
+        "name": "Sacrifice de l’Ingénieur",
+        "gameFaction": "ENGINEER",
+        "cardType": "TACTIC",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:T_AVP_WHOEVER",
+        "legacyId": "T_AVP_WHOEVER",
+        "name": "Convergence sans survivants",
+        "gameFaction": "HYBRID",
+        "cardType": "TACTIC",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:T_AVP_ALLIANCE",
+        "legacyId": "T_AVP_ALLIANCE",
+        "name": "Alliance Blooded",
+        "gameFaction": "HYBRID",
+        "cardType": "TACTIC",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:T_AVP_3WW",
+        "legacyId": "T_AVP_3WW",
+        "name": "Three World War",
+        "gameFaction": "HYBRID",
+        "cardType": "TACTIC",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:T_AVP_HYBRIDIZE",
+        "legacyId": "T_AVP_HYBRIDIZE",
+        "name": "Hybridation forcée",
+        "gameFaction": "HYBRID",
+        "cardType": "TACTIC",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:EQ_PULSE_RIFLE",
+        "legacyId": "EQ_PULSE_RIFLE",
+        "name": "M41A Pulse Rifle",
+        "gameFaction": "HUMAN",
+        "cardType": "EQUIPMENT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:EQ_SMARTGUN",
+        "legacyId": "EQ_SMARTGUN",
+        "name": "M56 Smartgun",
+        "gameFaction": "HUMAN",
+        "cardType": "EQUIPMENT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:EQ_FLAMER",
+        "legacyId": "EQ_FLAMER",
+        "name": "Lance-flammes M240",
+        "gameFaction": "HUMAN",
+        "cardType": "EQUIPMENT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:EQ_MARINE_ARMOR",
+        "legacyId": "EQ_MARINE_ARMOR",
+        "name": "Armure de Marine colonial",
+        "gameFaction": "HUMAN",
+        "cardType": "EQUIPMENT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:EQ_POWER_LOADER",
+        "legacyId": "EQ_POWER_LOADER",
+        "name": "Power Loader",
+        "gameFaction": "HUMAN",
+        "cardType": "EQUIPMENT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:EQ_MOTION_TRACKER",
+        "legacyId": "EQ_MOTION_TRACKER",
+        "name": "Détecteur de mouvement",
+        "gameFaction": "HUMAN",
+        "cardType": "EQUIPMENT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:EQ_WRISTBLADES",
+        "legacyId": "EQ_WRISTBLADES",
+        "name": "Lames de poignet",
+        "gameFaction": "YAUTJA",
+        "cardType": "EQUIPMENT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:EQ_PLASMACASTER",
+        "legacyId": "EQ_PLASMACASTER",
+        "name": "Plasmacaster d’épaule",
+        "gameFaction": "YAUTJA",
+        "cardType": "EQUIPMENT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:EQ_COMBISTICK",
+        "legacyId": "EQ_COMBISTICK",
+        "name": "Combi-stick",
+        "gameFaction": "YAUTJA",
+        "cardType": "EQUIPMENT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:EQ_SMART_DISC",
+        "legacyId": "EQ_SMART_DISC",
+        "name": "Smart Disc",
+        "gameFaction": "YAUTJA",
+        "cardType": "EQUIPMENT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:EQ_NET_GUN",
+        "legacyId": "EQ_NET_GUN",
+        "name": "Net Gun",
+        "gameFaction": "YAUTJA",
+        "cardType": "EQUIPMENT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:EQ_BIOMASK",
+        "legacyId": "EQ_BIOMASK",
+        "name": "Bio-masque Yautja",
+        "gameFaction": "YAUTJA",
+        "cardType": "EQUIPMENT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:EQ_MEDICOMP",
+        "legacyId": "EQ_MEDICOMP",
+        "name": "Medicomp",
+        "gameFaction": "YAUTJA",
+        "cardType": "EQUIPMENT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:EQ_RAZOR_WHIP",
+        "legacyId": "EQ_RAZOR_WHIP",
+        "name": "Razor Whip",
+        "gameFaction": "YAUTJA",
+        "cardType": "EQUIPMENT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:EQ_FALCON_DRONE",
+        "legacyId": "EQ_FALCON_DRONE",
+        "name": "Module Falcon Drone",
+        "gameFaction": "YAUTJA",
+        "cardType": "EQUIPMENT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:EQ_ENGINEER_SUIT",
+        "legacyId": "EQ_ENGINEER_SUIT",
+        "name": "Combinaison biomécanique Engineer",
+        "gameFaction": "ENGINEER",
+        "cardType": "EQUIPMENT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:EQ_AMPule",
+        "legacyId": "EQ_AMPule",
+        "name": "Ampoule de Pathogène",
+        "gameFaction": "ENGINEER",
+        "cardType": "EQUIPMENT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:EQ_ACID_CARAPACE",
+        "legacyId": "EQ_ACID_CARAPACE",
+        "name": "Carapace acide",
+        "gameFaction": "XENO",
+        "cardType": "EQUIPMENT",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:L_NOSTROMO",
+        "legacyId": "L_NOSTROMO",
+        "name": "USCSS Nostromo",
+        "gameFaction": "HUMAN",
+        "cardType": "LOCATION",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:L_DERELICT",
+        "legacyId": "L_DERELICT",
+        "name": "Vaisseau Derelict de LV-426",
+        "gameFaction": "ENGINEER",
+        "cardType": "LOCATION",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:L_HADLEYS_HOPE",
+        "legacyId": "L_HADLEYS_HOPE",
+        "name": "Hadley’s Hope",
+        "gameFaction": "HUMAN",
+        "cardType": "LOCATION",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:L_PROCESSOR",
+        "legacyId": "L_PROCESSOR",
+        "name": "Processeur atmosphérique",
+        "gameFaction": "NEUTRAL",
+        "cardType": "LOCATION",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:L_SULACO",
+        "legacyId": "L_SULACO",
+        "name": "USS Sulaco — Hangar",
+        "gameFaction": "HUMAN",
+        "cardType": "LOCATION",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:L_SEVASTOPOL",
+        "legacyId": "L_SEVASTOPOL",
+        "name": "Station Sevastopol",
+        "gameFaction": "HUMAN",
+        "cardType": "LOCATION",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:L_VAL_VERDE",
+        "legacyId": "L_VAL_VERDE",
+        "name": "Jungle de Val Verde",
+        "gameFaction": "YAUTJA",
+        "cardType": "LOCATION",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:L_LA1997",
+        "legacyId": "L_LA1997",
+        "name": "Los Angeles, 1997",
+        "gameFaction": "YAUTJA",
+        "cardType": "LOCATION",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:L_PRESERVE",
+        "legacyId": "L_PRESERVE",
+        "name": "Planète-réserve",
+        "gameFaction": "YAUTJA",
+        "cardType": "LOCATION",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:L_BOUVET",
+        "legacyId": "L_BOUVET",
+        "name": "Pyramide de Bouvetøya",
+        "gameFaction": "HYBRID",
+        "cardType": "LOCATION",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:L_YAUTJA_SHIP",
+        "legacyId": "L_YAUTJA_SHIP",
+        "name": "Vaisseau mère Yautja",
+        "gameFaction": "YAUTJA",
+        "cardType": "LOCATION",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:L_JUGGERNAUT",
+        "legacyId": "L_JUGGERNAUT",
+        "name": "Juggernaut Engineer",
+        "gameFaction": "ENGINEER",
+        "cardType": "LOCATION",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:L_XENO_HIVE",
+        "legacyId": "L_XENO_HIVE",
+        "name": "Ruche de Hadley’s Hope",
+        "gameFaction": "XENO",
+        "cardType": "LOCATION",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:L_AURIGA",
+        "legacyId": "L_AURIGA",
+        "name": "Laboratoires de l’USM Auriga",
+        "gameFaction": "HYBRID",
+        "cardType": "LOCATION",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:L_FIORINA",
+        "legacyId": "L_FIORINA",
+        "name": "Fiorina 161",
+        "gameFaction": "HUMAN",
+        "cardType": "LOCATION",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:L_GUNNISON",
+        "legacyId": "L_GUNNISON",
+        "name": "Gunnison contaminée",
+        "gameFaction": "HYBRID",
+        "cardType": "LOCATION",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      },
+      {
+        "id": "avptcg:card:L_PROTO_LAB",
+        "legacyId": "L_PROTO_LAB",
+        "name": "Laboratoire Stargazer — version coupée",
+        "gameFaction": "YAUTJA",
+        "cardType": "LOCATION",
+        "provenance": "avptcg-gameplay-card",
+        "referenceOnly": true,
+        "visual1to1": false
+      }
     ]
   }
 });
