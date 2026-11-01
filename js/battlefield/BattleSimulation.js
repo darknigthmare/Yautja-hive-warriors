@@ -12,6 +12,8 @@ import { infectHost, completeHostInfections, validateHostInfestation } from './H
 import { HIVE_NODE_RULES, createHiveEcology, awardHiveInfestation, buildHiveNode, healHiveSpace,
   damageHiveNode as damageEcologyNode, snapshotHiveEcology, restoreHiveEcology } from './HiveNodeEcology.js';
 import { sourceUnitVisualKind } from '../data/SourceActorPresentation.js';
+import { planFiniteCarrierLoad, validateFiniteCarrierCargo,
+  releaseFiniteCarrierCargo } from './ExtinctionCarrierCargo.js';
 import { initialSpecialistStocks, restoreSpecialistStocks, sourceSpecialistRole, SPECIALIST_ATTACKS } from '../data/SourceSpecialistCombat.js';
 import { measureDefeatReturn } from './BattleStrategy.js';
 import { validateBossCombatState } from '../data/BossEncounterValidation.js';
@@ -29,7 +31,9 @@ const number = (value, min, max) => Number.isFinite(value) && value >= min && va
 const point = value => Array.isArray(value) && value.length === 2 && value.every(Number.isFinite);
 const dist = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]);
 const alive = unit => unit.hp > 0 && !['dead', 'evacuated', 'captured'].includes(unit.state);
-const combatReady = unit => alive(unit) && unit.incapacitated !== true && unit.apcSeat === undefined && unit.apcCrewRole === undefined;
+const combatReady = unit => alive(unit) && unit.incapacitated !== true &&
+  unit.apcSeat === undefined && unit.apcCrewRole === undefined &&
+  unit.carriedByCarrierId === undefined;
 const pair = (a, b) => a < b ? `${a}|${b}` : `${b}|${a}`;
 function ordered(value) {
   if (Array.isArray(value)) return value.map(ordered);
@@ -433,6 +437,38 @@ export class BattleSimulation {
     }
   }
 
+  /** The payload is SIX distinct, already allocated source Facehugger IDs.
+   * Loading is possible only offscreen; no instantaneous on-screen actors
+   * disappear and the upgraded 12-slot carrier is not silently unlocked. */
+  loadCarrierCargo(carrierId,facehuggerIds){
+    if(this.disposed||this.result||this.paused)
+      return {accepted:false,reason:'operation_unavailable'};
+    const plan=planFiniteCarrierLoad(this,carrierId,facehuggerIds);
+    if(!plan.accepted)return plan;
+    const carrier=this.units.get(carrierId);
+    carrier.carrierCargoIds=[...plan.facehuggerIds];
+    for(const id of carrier.carrierCargoIds){
+      const parasite=this.units.get(id);
+      parasite.carriedByCarrierId=carrierId;
+      parasite.position=[...carrier.position];
+    }
+    this._emit('carrier_cargo_boarded',{carrierId,count:carrier.carrierCargoIds.length},1);
+    return {accepted:true,carrierId,facehuggerIds:[...carrier.carrierCargoIds]};
+  }
+
+  /** This release is a strategic/offscreen operation. A detailed carrier
+   * never teleports a non-rendered Facehugger across the player's camera. */
+  releaseCarrierCargo(carrierId,count=Infinity){
+    const carrier=this.units.get(carrierId),group=this.groups.get(carrier?.groupId);
+    if(this.disposed||this.result||this.paused||!carrier||!group||
+       group.materialized||carrier.state!=='distant')
+      return {accepted:false,reason:'carrier_release_requires_distant_group'};
+    const ids=releaseFiniteCarrierCargo(carrier,this.units,count);
+    if(!ids.length)return{accepted:false,reason:'empty_carrier_cargo'};
+    this._emit('carrier_cargo_released',{carrierId,count:ids.length},1);
+    return {accepted:true,carrierId,facehuggerIds:ids};
+  }
+
   _detailStep() {
     const activeFronts = new Set();
     for (const player of this.players) if (player.hp > 0) for (const front of this.fronts.values()) if (dist(player.position, front.position) <= front.radius * 1.5) activeFronts.add(front.id);
@@ -448,7 +484,8 @@ export class BattleSimulation {
     while ([...buckets.values()].some(bucket => bucket.length)) for (const bucket of buckets.values()) if (bucket.length) candidates.push(bucket.shift());
     const selected = new Set(), perFaction = new Map(); let count = 0;
     for (const group of candidates) {
-      const units = group.units.map(unitId => this.units.get(unitId)).filter(unit => alive(unit) && unit.state !== 'reserve');
+      const units = group.units.map(unitId => this.units.get(unitId)).filter(unit =>
+        alive(unit) && unit.state !== 'reserve' && unit.carriedByCarrierId===undefined);
       const limit = this.budgets.byFaction?.[group.factionId]?.active ?? this.budgets.active;
       if (count + units.length > this.budgets.active || (perFaction.get(group.factionId) ?? 0) + units.length > limit) continue;
       // New materializations never appear already inside either living player.
@@ -459,7 +496,8 @@ export class BattleSimulation {
     }
     for (const group of this.groups.values()) if (group.materialized && !selected.has(group.id)) this._dematerialize(group);
     for (const group of candidates) if (selected.has(group.id) && !group.materialized) {
-      const units = group.units.map(unitId => this.units.get(unitId)).filter(unit => alive(unit) && unit.state === 'distant');
+      const units = group.units.map(unitId => this.units.get(unitId)).filter(unit =>
+        alive(unit) && unit.state === 'distant' && unit.carriedByCarrierId===undefined);
       let accepted;
       try { accepted = this.callbacks.spawnGroup?.(this._groupSnapshot(group), units.map(clone)); }
       catch (error) {
@@ -515,7 +553,17 @@ export class BattleSimulation {
       try { encounterState = validateBossCombatState(state.encounterState, { bossType: unit.sourceBossType, battleUnitId: unit.id, maxHp: unit.maxHp }); }
       catch { return false; }
     }
-    if (state.position !== undefined) { if (!point(state.position)) return false; unit.position = [...state.position]; }
+    if (state.position !== undefined) {
+      if (!point(state.position)) return false;
+      unit.position = [...state.position];
+      // One physically tracked Carrier owns the positions of its EXISTING
+      // attached parasites. No new object, ID, soldier or reserve is created.
+      for(const cargoId of unit.carrierCargoIds??[]){
+        const parasite=this.units.get(cargoId);
+        if(parasite?.carriedByCarrierId===unit.id)
+          parasite.position=[...state.position];
+      }
+    }
     if (state.hp !== undefined) {
       if (!number(state.hp, 0, unit.maxHp)) return false;
       unit.hp = state.hp;
@@ -614,9 +662,17 @@ export class BattleSimulation {
     const unit = this.units.get(event.entityId ?? event.unitId);
     if (!unit || this.disposed || this.result || this.deaths.has(unit.id) ||
         ['evacuated', 'captured'].includes(unit.state) ||
-        unit.apcSeat !== undefined || unit.apcCrewRole !== undefined) return false;
+        unit.apcSeat !== undefined || unit.apcCrewRole !== undefined ||
+        unit.carriedByCarrierId !== undefined) return false;
     // An M577 passenger is protected by its actual vehicle until that vehicle
     // is destroyed; destroyAPCManifest clears each seat before recording loss.
+    // A killed Carrier releases its existing payload at the same XZ point;
+    // we do NOT grant the upgraded acid burst/12 slots without provenance.
+    // The detailed projection will materialize them on its normal budget.
+    if(unit.carrierCargoIds?.length){
+      const released=releaseFiniteCarrierCargo(unit,this.units);
+      this._emit('carrier_cargo_scattered',{carrierId:unit.id,count:released.length},1);
+    }
     unit.hp = 0; unit.state = 'dead'; unit.incapacitated = false;
     delete unit.encounterState; delete unit.infection;
     const killerFaction = this.factions.has(event.killerFaction) ? event.killerFaction : null;
@@ -706,7 +762,10 @@ export class BattleSimulation {
         if (group.path.length || dist(group.position, front.position) > front.radius || group.order.type === 'retreat') continue;
         for (const unitId of group.units) {
           const unit = this.units.get(unitId);
-          if (alive(unit) && unit.state === 'distant' && unit.apcSeat === undefined && unit.apcCrewRole === undefined && (!unit.incapacitated || dist(unit.position, front.position) <= front.radius)) {
+          if (alive(unit) && unit.state === 'distant' &&
+              unit.apcSeat === undefined && unit.apcCrewRole === undefined &&
+              unit.carriedByCarrierId === undefined &&
+              (!unit.incapacitated || dist(unit.position, front.position) <= front.radius)) {
             if (!byFaction.has(unit.factionId)) byFaction.set(unit.factionId, []);
             byFaction.get(unit.factionId).push(unit);
           }
@@ -1358,6 +1417,8 @@ export class BattleSimulation {
     if (!Array.isArray(saved.pendingArrivals) || new Set(saved.pendingArrivals.map(arrival => arrival.groupId)).size !== saved.pendingArrivals.length || saved.pendingArrivals.some(arrival => !simulation.groups.has(arrival.groupId) || !simulation.fronts.has(arrival.frontId) || !simulation.fronts.has(arrival.sourceId) || simulation.groups.get(arrival.groupId).factionId !== arrival.factionId || !number(arrival.due, saved.time, saved.time + simulation.budgets.announcementSeconds) || !simulation.groups.get(arrival.groupId).units.some(unitId => units.get(unitId).state === 'reserve') || arrival.supportForGroupId !== undefined && (!simulation.groups.has(arrival.supportForGroupId) || simulation.groups.get(arrival.supportForGroupId).factionId !== arrival.factionId))) fail('invalid saved arrival');
     if (!Array.isArray(saved.events) || saved.events.length > 512 || !Number.isInteger(saved.eventSequence) || saved.eventSequence < saved.events.length || !Number.isInteger(saved.eventsDropped) || saved.eventsDropped < 0 || saved.events.some(event => !Number.isInteger(event.id) || event.id < 1 || event.id > saved.eventSequence || !number(event.time, 0, saved.time) || !number(event.priority, 0, 4) || typeof event.type !== 'string' || event.type.length > 80) || new Set(saved.events.map(event => event.id)).size !== saved.events.length) fail('invalid bounded event journal');
     if (!Array.isArray(saved.nextReinforcement) || saved.nextReinforcement.length !== simulation.factions.size || saved.nextReinforcement.some(([factionId, time]) => !simulation.factions.has(factionId) || !number(time, 0, 1e9))) fail('invalid saved reinforcement timers');
+    try{validateFiniteCarrierCargo(simulation,units);}
+    catch{fail('invalid saved Carrier cargo');}
     const manifest=validateM577Manifest(saved.apcManifest,simulation,units,
       new Map(groups.map(group=>[group.id,group])),saved.time);
     simulation.units = units;simulation.apcManifest=manifest;

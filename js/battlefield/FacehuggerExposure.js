@@ -24,6 +24,7 @@ export function applyFacehuggerExposure(ecology, units, delta, radius = 11) {
   const affected=[];
   for (const unit of units) {
     if (!unit || unit.species !== 'xenomorph' || unit.actorType !== 'facehugger' ||
+        unit.carriedByCarrierId !== undefined ||
         !['active','distant'].includes(unit.state) || !(unit.hp > 0) ||
         !Number.isFinite(unit.maxHp) || !finitePoint(unit.position) ||
         facehuggerOnHiveSpace(ecology,unit,radius)) continue;
