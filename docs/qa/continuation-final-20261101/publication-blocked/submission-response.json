@@ -1,0 +1,7 @@
+{
+  "status": "error",
+  "reason": "deploy_failed",
+  "message": "Resource is limited - try again in 1 day (more than 100, code: \"api-deployments-free-per-day\").",
+  "rawResponseSha256": "8cf51d9e9a6d80ff923c234e7e75a061b893e0dae62bbce04abfc8155f4ee63e",
+  "deploymentIdReturned": false
+}

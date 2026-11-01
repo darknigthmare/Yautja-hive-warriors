@@ -1,6 +1,6 @@
 # Reprise des chantiers — 1er novembre 2026
 
-Le candidat est **`a80070c4b5ed96fa839e840f17453bf5348a6cbb`**, issu de la base distante récupérée `03f37b4` et conservant les apports des PR #3, #4 et #5. Sa publication est encore en attente. [Le rapport intégré](qa/continuation-final-validation.json) et [les pins](qa/continuation-final-publication-pins.json) portent l’identité et l’état de livraison ; ce document sera complété après les dernières recettes et le contrôle public.
+Le candidat est **`a80070c4b5ed96fa839e840f17453bf5348a6cbb`**, issu de la base distante récupérée `03f37b4` et conservant les apports des PR #3, #4 et #5. Sa publication est bloquée par le quota gratuit Vercel : la tentative du 1er novembre à 02:05 UTC ne crée aucun candidat et ne promeut rien. [Le rapport intégré](qa/continuation-final-validation.json) et [les pins](qa/continuation-final-publication-pins.json) portent l’identité et l’état de livraison ; [les preuves du refus](qa/continuation-final-20261101/publication-blocked/) établissent que le site sert encore la source 48b5. Les 22 contrôles publics du nouveau build ne sont pas exécutés.
 
 Six agents logiciels ont repris les factions, le combat, les terrains, l’interface, les sauvegardes et le suivi. Aucun testeur humain n’est compté.
 

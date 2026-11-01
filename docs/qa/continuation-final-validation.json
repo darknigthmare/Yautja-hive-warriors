@@ -13,8 +13,18 @@
   "humanTesters": 0,
   "fidelity1to1Verified": false,
   "publication": {
-    "status": "not_submitted",
-    "deploymentId": null
+    "status": "blocked_by_vercel_daily_deployment_quota",
+    "attemptedAt": "2026-11-01T02:05:21.364Z",
+    "deploymentId": null,
+    "promotionExecuted": false,
+    "submissionAttempts": 1,
+    "errorCode": "api-deployments-free-per-day",
+    "message": "Resource is limited - try again in 1 day (more than 100, code: \"api-deployments-free-per-day\").",
+    "report": "docs/qa/continuation-final-20261101/publication-blocked/delivery-registry.json",
+    "submittedQa": "docs/qa/continuation-final-20261101/publication-submitted/qa-submitted.json",
+    "submittedPins": "docs/qa/continuation-final-20261101/publication-submitted/pins-submitted.json",
+    "publicUnchangedProof": "docs/qa/continuation-final-20261101/publication-blocked/public-unchanged.json",
+    "automaticRetry": false
   },
   "runtimeSourceCommit": "a80070c4b5ed96fa839e840f17453bf5348a6cbb",
   "testCommit": "a80070c4b5ed96fa839e840f17453bf5348a6cbb",
@@ -295,6 +305,10 @@
       "cancelled": 0,
       "log": "docs/qa/continuation-final-20261101/browser-regression-e524-baseline.txt",
       "scope": "Three existing browser suites on e524 before navigation-only correction. These15 are not claimed as new a800 executions."
+    },
+    "public_release": {
+      "status": "not_run_new_build_not_published",
+      "reason": "Canonical remains on48b5; running the new-release smoke would certify the wrong build."
     }
   },
   "revisionScope": "Only runtime difference from e524c2b: BattlefieldNavigation local destination completion, with continuous-floor, same-layer and capsule-clearance guards. Previous functional evidence stays explicitly attributed to e524c2b.",
@@ -323,5 +337,14 @@
     "manifestEntriesChecked": 141,
     "errors": 0,
     "scope": "SHA256 entries present in the two continuation proof trees before publication; publication evidence will be archived separately."
+  },
+  "audit": {
+    "criteria": 126,
+    "terminated": 77,
+    "toValidate": 37,
+    "inProgress": 12,
+    "newlyClosed": 10,
+    "excelVerification": "docs/audits/2026-10-26/implementation-verification.json",
+    "allNonFollowupContentPreserved": true
   }
 }
