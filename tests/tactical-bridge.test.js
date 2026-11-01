@@ -24,7 +24,9 @@ test('LD-01 raised crossing has continuous 0→3→0 ground for walkers and fini
   for (let at = -s.halfSpan; at <= s.halfSpan; at += .25) {
     const p = new THREE.Vector3(s.center[0] + at, 0, s.center[1]);
     p.y = e.getElevationAt(p.x, p.z); const expected = p.clone(); heights.push(p.y);
-    e.resolveGroundAgentMovement(p, new THREE.Vector3(s.center[0] + s.halfSpan + 2, 0, s.center[1]), .25, .65);
+    // This grid samples stationary physical support. Agent steering consumes
+    // a seek step and may deliberately change lanes in the same corridor.
+    e.resolveMovement(p, .65);
     assert.ok(p.distanceTo(expected) < 1e-5, `walker blocked at ${at}`);
   }
   assert.equal(heights[0], 0); assert.equal(heights.at(-1), 0); assert.equal(Math.max(...heights), 3);
@@ -41,6 +43,79 @@ test('LD-01 raised crossing has continuous 0→3→0 ground for walkers and fini
   assert.ok(jumper.y > .15 && jumper.y < .25, 'an ascending body stops against the real underside of the deck');
   assert.ok(e.root.getObjectByName('tactical-0-2').geometry.userData.bridgeGap);
   e.clearEnvironment();
+});
+
+test('a persistent walker crosses both bridge directions with one bounded seek step and exact ramp support', () => {
+  const { e, bridge, simulation } = fixture(), s = bridge.spec, stride = .25;
+  const slope = s.height / (s.halfSpan - s.plateauHalf);
+  try {
+    for (const sign of [-1, 1]) {
+      const position = new THREE.Vector3(s.center[0] - sign * (s.halfSpan + 1), 0, s.center[1]);
+      position.y = e.getElevationAt(position.x, position.z);
+      const target = new THREE.Vector3(s.center[0] + sign * (s.halfSpan + 2), 0, s.center[1]);
+      let peak = 0, frames = 0;
+      for (; frames < 400 && position.distanceTo(target) > .05; frames++) {
+        const previous = position.clone(), direction = target.clone().sub(position); direction.y = 0;
+        const step = Math.min(stride, direction.length());
+        position.addScaledVector(direction.normalize(), step);
+        e.resolveAgentMovement(position, target, step, .65, previous);
+        assert.ok(Math.hypot(position.x - previous.x, position.z - previous.z) <= step + 1e-7, 'steering spends only the already requested horizontal seek step');
+        assert.ok(Math.abs(position.y - previous.y) <= step * slope + 1e-7, 'the walker follows the physical ramp rather than snapping between layers');
+        assert.ok(sign * (position.x - previous.x) >= -1e-7, 'a lane change cannot send the walker backwards toward the near bank');
+        assert.ok(Math.abs(position.y - e.getElevationAt(position.x, position.z, position.y)) < 1e-5, 'the current foot lies on the exact surface at its actual lateral lane');
+        const supported = position.clone(); e.resolveMovement(supported, .65);
+        assert.ok(supported.distanceTo(position) < 1e-5, 'the returned capsule has no unresolved terrain collision');
+        peak = Math.max(peak, position.y);
+      }
+      assert.ok(frames < 400 && position.distanceTo(target) <= .05, 'the walker must reach its actual far-bank destination');
+      assert.equal(peak, s.height); assert.equal(position.y, 0);
+    }
+  } finally { simulation.dispose(); e.clearEnvironment(); }
+});
+
+test('local arrival cannot skip a closed gate, a wall, another height layer or a destroyed bank', () => {
+  const { e, bridge, simulation } = fixture(), s = bridge.spec;
+  const search = e.navigation.plannedStrategicPath.bind(e.navigation); let routeLookups = 0;
+  e.navigation.plannedStrategicPath = (...args) => { routeLookups++; return search(...args); };
+  const guarded = (from, target) => {
+    const before = routeLookups; e.getNavigationWaypoint(from, target, .65);
+    assert.ok(routeLookups > before, 'an obstructed or unsupported local approach must use the normal route planner');
+  };
+  const attempt = (position, target, frames = 40) => {
+    for (let frame = 0; frame < frames; frame++) {
+      const previous = position.clone(), direction = target.clone().sub(position); direction.y = 0;
+      const step = Math.min(.1, direction.length()); position.addScaledVector(direction.normalize(), step);
+      e.resolveAgentMovement(position, target, step, .65, previous);
+      assert.ok(Math.abs(position.y - e.getElevationAt(position.x, position.z, position.y)) < 1e-5);
+    }
+  };
+  try {
+    const gate = e.battlefieldLayout.gates.find(item => !item.tactical), axis = gate.axis;
+    e.closeGate(gate.id);
+    const beforeGate = new THREE.Vector3(gate.center[0], 0, gate.center[1]), afterGate = beforeGate.clone();
+    beforeGate[axis] -= 2; afterGate[axis] += 2;
+    guarded(beforeGate, afterGate); attempt(beforeGate, afterGate);
+    assert.ok(beforeGate[axis] < gate.center[axis === 'x' ? 0 : 1], 'the walker stays on its starting side of a closed door');
+    e.openGate(gate.id);
+
+    const wallX = s.center[0] - s.halfSpan - 2;
+    e.addBoxCollider(wallX, s.center[1], .3, 7.5, 6);
+    const beforeWall = new THREE.Vector3(wallX - 1.5, 0, s.center[1]), afterWall = new THREE.Vector3(wallX + 1.5, 0, s.center[1]);
+    guarded(beforeWall, afterWall); attempt(beforeWall, afterWall);
+    assert.ok(beforeWall.x <= wallX - .3 - .65 + 1e-6, 'capsule clearance holds at a solid wall even near the destination');
+    e.colliders.pop(); e.navigation.actorPaths = new WeakMap(); e.navigation.gridCache.clear();
+
+    const below = new THREE.Vector3(s.center[0], -5, s.center[1]), above = new THREE.Vector3(s.center[0] + 1, 3, s.center[1]);
+    guarded(below, above); attempt(below, above, 5);
+    assert.equal(below.y, -5, 'close horizontal proximity cannot place a person on the deck overhead');
+
+    e.damageTacticalBridge(bridge.id, s.maxHp);
+    const nearBank = new THREE.Vector3(s.center[0] - s.halfSpan - 1, 0, s.center[1]);
+    const absentDeck = new THREE.Vector3(s.center[0] - s.halfSpan + 1, 0, s.center[1]);
+    guarded(nearBank, absentDeck); attempt(nearBank, absentDeck);
+    assert.ok(nearBank.x <= s.center[0] - s.halfSpan - .65 + 1e-6, 'a destroyed physical gap cannot be crossed by the local arrival shortcut');
+    assert.equal(nearBank.y, 0);
+  } finally { simulation.dispose(); e.clearEnvironment(); }
 });
 
 test('destruction closes the real route for both camps, drops supported actors and preserves an alternative', () => {

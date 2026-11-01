@@ -6,6 +6,7 @@ import * as THREE from 'three';
 import { traceCombatSegment, hasCombatLineOfSight } from '../js/engine/CombatGeometry.js';
 import { CombatEvents, recordCombatDeath } from '../js/engine/CombatEvents.js';
 import { disposeObject } from '../js/engine/SceneResources.js';
+import { updateNPCShots } from '../js/graphics/NPCCombatFeedback.js';
 
 const load = path => fs.readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 const playerSource = process.env.YHW_PLAYER_SOURCE ? fs.readFileSync(process.env.YHW_PLAYER_SOURCE, 'utf8') : load('js/entities/Player.js');
@@ -27,7 +28,7 @@ const BossDamage = vm.runInNewContext(`(class { ${['takeDamage', '_syncPhaseFrom
   .map(name => method(bossSource, name)).join('\n')} })`, { THREE, recordCombatDeath });
 const math = Object.create(Math); math.random = () => 1;
 const SyntheticOwner = vm.runInNewContext(`(class { ${['update', 'bisectSynthetic', 'defeatSynthetic']
-  .map(name => method(syntheticSource, name)).join('\n')} })`, { THREE, Math: math, recordCombatDeath, disposeObject, releaseHostileAttack() {} });
+  .map(name => method(syntheticSource, name)).join('\n')} })`, { THREE, Math: math, recordCombatDeath, disposeObject, updateNPCShots, releaseHostileAttack() {} });
 
 const wall = (overrides = {}) => ({ x: 0, z: 5, halfWidth: 5, halfDepth: 0.5, height: 4, ...overrides });
 function actor(kind, position = new THREE.Vector3(0, 0, 10), hp = 5000) {

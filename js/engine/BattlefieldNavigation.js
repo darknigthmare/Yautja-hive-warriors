@@ -236,6 +236,12 @@ export class BattlefieldNavigation {
   waypoint(from, target, radius = .65) {
     if (!from || !target || ![from.x, from.z, target.x, target.z].every(Number.isFinite)) return null;
     const environment = this.environment;
+    // Near arrival, graph projections can include a distant corridor end.
+    // Finish on the actual destination instead of repeatedly skipping its
+    // <1.5-unit node and selecting that end behind the walker. This is only a
+    // local, supported approach on the same layer, with capsule clearance.
+    if (distance(from, target) <= 4 && Math.abs(from.y - target.y) <= .65 &&
+        floorSegment(environment, from, target, radius) && clearSegment(environment, from, target, radius)) return target.clone();
     let goal = target;
     if (environment.getSectorAt(from)?.id !== environment.getSectorAt(target)?.id || !environment.getSectorAt(from)) {
       const path = this.plannedStrategicPath(from, target);
