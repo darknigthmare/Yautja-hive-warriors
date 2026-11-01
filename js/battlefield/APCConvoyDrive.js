@@ -9,6 +9,7 @@ import { APC_NAVIGATION } from '../graphics/APCModel.js';
 
 export const M577_DRIVE_POLICY=Object.freeze({
   speed:4.8,stepLength:.6,maxDelta:.25,maxStepsPerUpdate:8,
+  sweepSpacing:.15,maxSweepSamples:8,
   maxCenterHeightStep:.75,maxBodyHeightDelta:1.25,
   hullSide:2.35,hullFore:4.5,collisionRadius:.4,
   visualFidelity1to1Verified:false
@@ -139,6 +140,16 @@ export class APCConvoyDrive {
     if(!this._canOccupy(next,startYaw)||
        !this._canOccupy(next,startYaw+turn*.5)||
        !this._canOccupy(next,yaw))return false;
+    // A thin solid prop may lie between two legal endpoint positions.
+    // Sweep the real 3x3 hull footprint with interpolated yaw/height:
+    // reject the WHOLE step before touching either the mesh or soldiers.
+    const samples=Math.min(M577_DRIVE_POLICY.maxSweepSamples,
+      Math.max(1,Math.ceil(stride/M577_DRIVE_POLICY.sweepSpacing)));
+    for(let i=1;i<samples;i++){
+      const alpha=i/samples;
+      if(!this._canOccupy(p.clone().lerp(next,alpha),
+        startYaw+turn*alpha))return false;
+    }
     // The signed battle state accepts the step before the physical mesh moves.
     if(!s.simulation.moveAPCManifest([next.x,next.z],m.frontId))return false;
     apc.mesh.position.copy(next);apc.mesh.rotation.y=yaw;
