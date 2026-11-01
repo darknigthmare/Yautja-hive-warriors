@@ -9,6 +9,7 @@ import { disposeObject } from '../engine/SceneResources.js';
 import { createCreatureModel, createEggModel, animateCreatureModel } from '../graphics/CreatureModels.js';
 import { sourceUnitVisualKind } from '../data/SourceActorPresentation.js';
 import { EXTINCTION_CASTE_PROFILES, validExtinctionCasteUnit } from '../battlefield/ExtinctionCastePolicy.js';
+import { advanceCarrierFacehuggerFlight } from '../battlefield/ExtinctionCarrierFlight.js';
 
 export class XenomorphHorde {
   constructor(scene, audioEngine, goreEngine = null) {
@@ -855,15 +856,7 @@ export class XenomorphHorde {
       this._showAttackCue(a);
       // The allocated Facehugger is a REAL airborne actor, not a spawned
       // particle. It can neither attack nor latch until landing on safe floor.
-      if(a.carrierFlight){
-        const flight=a.carrierFlight;
-        flight.elapsed=Math.min(flight.duration,flight.elapsed+delta);
-        const t=flight.elapsed/flight.duration;
-        a.mesh.position.copy(flight.start).lerp(flight.end,t);
-        a.mesh.position.y+=Math.sin(Math.PI*t)*2.2;
-        if(t>=1)a.carrierFlight=null;
-        return;
-      }
+      if(advanceCarrierFacehuggerFlight(a,delta))return;
       const sourceTarget=a.type==='carrier'?
         this._pursuitTarget(a,livingPlayers,supportTargets):null;
       if(a.type==='carrier'){

@@ -71,6 +71,7 @@ jobs:
             tests/extinction-carrier-cargo.test.js \
             tests/extinction-ravager-regenesis.test.js \
             tests/extinction-lv742-variant.test.js \
+            tests/extinction-carrier-live-launch.test.js \
             tests/support-visual.test.js \
             tests/browser-cleanup.test.mjs \
             tests/apc-detail.test.js \
