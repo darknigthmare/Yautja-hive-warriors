@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import { applyBattleFormationHit } from '../engine/BattleActorSupport.js';
 import { recordCombatDeath } from '../engine/CombatEvents.js';
 import { sourceUnitVisualKind } from '../data/SourceActorPresentation.js';
