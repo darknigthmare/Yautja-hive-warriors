@@ -1,0 +1,7 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {BATTLE_PROFILES} from '../js/data/BattleCatalog.js';
+import {ALIEN_BASE_PUBLIC_VERSION,ALIEN_BASE_REFERENCE_COUNTS,getAlienBaseRecord,getAlienBaseProfile,getAlienBaseWeapon,validateAlienBaseSnapshot} from '../js/data/AlienBaseRegistry.js';
+test('shared Alien_base snapshot integrity and continuity',()=>{const v=validateAlienBaseSnapshot();assert.deepEqual(v.errors,[]);assert.equal(v.valid,true);assert.equal(ALIEN_BASE_PUBLIC_VERSION.format,'alien-base-public-v1');assert.deepEqual(ALIEN_BASE_REFERENCE_COUNTS,{profiles:115,weapons:200,armory:36,vehicles:36,equipment:30,personnel:46,factions:12,locations:59,sources:70,vehicleGaps:14})});
+test('Yautja profile local savegame IDs remain valid and shared refs are explicit',()=>{for(const p of BATTLE_PROFILES){const s=getAlienBaseProfile(p.id);assert.ok(s,'missing shared dossier '+p.id);assert.equal(p.id,s.legacyId);assert.equal(p.sharedAlienBaseId,s.id);assert.equal(p.name,s.name);assert.equal(s.visual1to1,false)}});
+test('no guessed alias or research weapon admission',()=>{assert.equal(getAlienBaseProfile('NOT-A-CASTE'),null);assert.equal(getAlienBaseRecord('weapons','XEN-002'),null);assert.equal(getAlienBaseWeapon('nonexistent'),null);assert.equal(getAlienBaseRecord('__proto__','anything'),null);const w=getAlienBaseWeapon('proposed-m41a3-burst-rifle');assert.ok(w);assert.equal(w.admission,'research-only');assert.equal(w.visual1to1,false)});

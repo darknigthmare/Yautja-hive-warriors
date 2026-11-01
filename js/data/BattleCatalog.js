@@ -3,6 +3,7 @@ import { getOriginalMusouFrontPlan } from './OriginalMusouFrontAllocations.js';
 /* PR #3 source catalogue. A sourced profile, a proposed operation and a rendered
  * character are separate records; none of these exports certifies a 1:1 asset. */
 import { BATTLE_CATALOG_DATA as source } from './BattleCatalogData.js';
+import { getAlienBaseProfile } from './AlienBaseRegistry.js';
 import { ULTIMATE_YAUTJA_ARMORY } from './charactersData.js';
 import { createOperationObjectiveSpec } from '../battlefield/OperationObjectiveSpecs.js';
 
@@ -42,6 +43,7 @@ function species(row) {
 }
 export const BATTLE_PROFILES = freeze(source.profiles.map(row => ({
   id: row.id, name: row.name, species: species(row), sourceFamily: row.faction, kind: row.kind,
+  sharedAlienBaseId: getAlienBaseProfile(row.id)?.id ?? null,
   work: row.work, medium: row.medium, continuity: row.continuity, eligibility: eligibility(row),
   evidence: { status: row.evidenceStatus, fact: row.evidenceFact, sourceIds: [...row.sourceIds],
     urls: [...new Set(row.sourceIds.map(id => sourceIndex.get(id)?.url).filter(Boolean))] },
