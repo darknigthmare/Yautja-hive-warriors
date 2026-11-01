@@ -273,3 +273,33 @@ test('a clear M577 hull sweep preserves the finite USCM roster and admitted posi
     assert.equal(f.sim.assertConservation(),true);
   }finally{f.dispose();}
 });
+
+test('an incapacitated real M577 driver stops travel, preserves seats and can resume without a replacement',()=>{
+  const f=fixture();
+  try{
+    const driverId=f.sim.getAPCManifest().crew[0],
+      driver=f.sim.units.get(driverId),initial=f.sim.saveState();
+    assert.equal(driver.apcCrewRole,'driver');
+    assert.equal(f.service.requestTravel(f.target).accepted,true);
+    const pos=f.apc.mesh.position.clone();
+    f.sim.paused=true;
+    assert.equal(f.service.update(.25),false);
+    assert.ok(f.apc.mesh.position.equals(pos));
+    assert.deepEqual(f.sim.saveState(),initial);
+    f.sim.paused=false;
+    driver.incapacitated=true;
+    const manifest=f.sim.getAPCManifest();
+    assert.equal(f.service.update(.25),false);
+    assert.equal(f.service.drive.active,false);
+    assert.equal(f.service.drive.lastResult.reason,'driver_unavailable');
+    assert.ok(f.apc.mesh.position.equals(pos));
+    assert.deepEqual(f.sim.getAPCManifest(),manifest,'incapacitated crew does not disappear or teleport');
+    assert.equal(f.service.requestTravel(f.target).reason,'real_driver_required');
+    driver.incapacitated=false;
+    assert.equal(f.service.requestTravel(f.target).accepted,true);
+    driveToEnd(f);
+    assert.equal(f.service.drive.lastResult.reason,'arrived');
+    assert.equal(f.sim.units.size,initial.units.length);
+    assert.equal(f.sim.assertConservation(),true);
+  }finally{f.dispose();}
+});

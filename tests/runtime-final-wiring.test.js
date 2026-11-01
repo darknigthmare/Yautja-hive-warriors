@@ -182,3 +182,40 @@ test('planetary barrage spends once for open footprints and excludes a covered b
   game.env.colliders.push({x:11,z:0,halfWidth:1,halfDepth:1,baseY:5,height:.5});assert.equal(game.callPlanetaryOrbitalBarrage(),true);assert.equal(spent,1);assert.equal(bossHits,0);assert.equal(explosions,8);
   game.env.colliders=[];boss.mesh.position.set(0,0,90);assert.equal(game.callPlanetaryOrbitalBarrage(),true);assert.equal(spent,2);assert.equal(bossHits,0);
 });
+
+test('co-op tactical APC orders use a nearby living P2 rather than an absent P1, and reject defeated proximity',()=>{
+  const game=Object.create(GameApp.prototype),calls=[],feedback=[];
+  const service={available:true,ownerFaction:'uscm',
+    boardNearest(){calls.push('board');return{accepted:true};},
+    disembark(){calls.push('exit');return{accepted:true};},
+    requestTravel(frontId){calls.push(['travel',frontId]);return{accepted:true};},
+    stopTravel(){calls.push('stop');return{accepted:true};}};
+  const sim={config:{playerFaction:'yautja'},fronts:new Map([['east',{position:[12,0]}]]),
+    relationship:(a,b)=>a==='uscm'&&b==='yautja'?'allied':'hostile',
+    interact:(actor,action)=>{calls.push({actor,action});return{accepted:true};}};
+  Object.assign(game,{battleSimulation:sim,
+    player:{hp:100,position:new THREE.Vector3(140,0,0)},
+    player2:{hp:100,position:new THREE.Vector3(10,0,0)},
+    dropPod:{isActive:false},
+    apc:{mesh:{position:new THREE.Vector3(12,0,0)}},
+    apcMarineService:service,operationPanel:{feedback:x=>feedback.push(x)}});
+  game.battleAction('apc-board','east');
+  game.battleAction('apc-travel','east');
+  game.battleAction('rally','east');
+  assert.equal(calls[0],'board');
+  assert.deepEqual(calls[1],['travel','east']);
+  assert.equal(calls[2].actor.id,'player2');
+  assert.equal(calls[2].actor.position[0],10);
+  game.player2.hp=0;
+  game.battleAction('apc-disembark','east');
+  assert.equal(calls.length,3);
+  assert.match(feedback.at(-1),/trop éloignée/);
+  game.battleAction('rally','east');
+  assert.equal(calls[3].actor.id,'player1');
+  game.player.hp=0;
+  game.battleAction('apc-stop','east');
+  assert.equal(calls.length,4,'dead co-op party cannot radio a convoy');
+  game.player.hp=100;
+  game.battleAction('apc-stop','east');
+  assert.equal(calls.at(-1),'stop','a living allied hunter may use radio stop remotely');
+});

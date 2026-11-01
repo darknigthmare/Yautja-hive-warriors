@@ -40,6 +40,12 @@ export class APCConvoyDrive {
     const sim=this.service.simulation,front=sim?.fronts?.get(id);
     return !!front&&!front.contested&&relationOk(sim,owner,front.owner);
   }
+  _driverReady(manifest){
+    const driver=this.service.simulation?.units?.get(manifest?.crew?.[0]);
+    return !!driver&&driver.hp>0&&!driver.incapacitated&&
+      driver.state==='distant'&&driver.apcCrewRole==='driver'&&
+      driver.groupId===manifest.groupId&&driver.factionId===manifest.factionId;
+  }
   /** Only adjacent front legs, never an implicit multi-front jump.
    * Each subsequent leg requires a fresh order from an authorized player. */
   request(targetFrontId) {
@@ -47,9 +53,9 @@ export class APCConvoyDrive {
     if(this.active)return this._result(false,'convoy_already_moving');
     if(!s.available||!s.validateCarrierPosition().accepted)
       return this._result(false,'carrier_unavailable_or_desynced');
-    if(!m||!Array.isArray(m.crew)||m.crew.length<1||
-      !(sim.units.get(m.crew[0])?.hp>0))
+    if(!m||!this._driverReady(m))
       return this._result(false,'real_driver_required');
+    if(sim.paused)return this._result(false,'operation_paused');
     if(!this._frontFriendly(m.frontId,m.ownerFaction)||
       !this._frontFriendly(targetFrontId,m.ownerFaction)||
       m.frontId===targetFrontId)return this._result(false,'friendly_adjacent_front_required');
@@ -170,8 +176,11 @@ export class APCConvoyDrive {
   update(delta){
     const j=this.journey,s=this.service,m=s.manifest,sim=s.simulation;
     if(!j||!Number.isFinite(delta)||delta<=0)return false;
+    // Pause freezes both the physical hull and the finite manifest in place.
+    if(sim.paused)return false;
     if(!m||sim.disposed||sim.result||!s.available||
       !s.validateCarrierPosition().accepted){this.stop('carrier_unavailable');return false;}
+    if(!this._driverReady(m)){this.stop('driver_unavailable');return false;}
     const route=sim.routes.get(j.routeId);
     if(!this._routeOpen(route)){this.stop('physical_route_closed');return false;}
     if(!this._frontFriendly(j.targetFrontId,m.ownerFaction)){

@@ -406,12 +406,20 @@ class GameApp {
   }
 
   battleAction(type, frontId) {
-    if(!this.battleSimulation||!this.player||this.dropPod.isActive)return;
+    if(!this.battleSimulation||this.dropPod.isActive)return;
+    // A co-op Marine escort must be usable by either *living* hunter. Never
+    // issue a field order using a defeated player or P1's remote position
+    // when P2 is the only hunter physically near the tactical objective.
+    const hunters=[this.player,this.player2].map((player,index)=>({
+      player,id:index?'player2':'player1',index
+    })).filter(({player})=>player?.hp>0&&player.position?.isVector3);
+    if(!hunters.length)return;
     if(['apc-board','apc-disembark','apc-travel','apc-stop'].includes(type)){
       const service=this.apcMarineService,owner=service?.ownerFaction;
-      const radioStop=type==='apc-stop';
-      const authorized=service?.available&&
-        (radioStop||this.player.position.distanceTo(this.apc.mesh.position)<=22)&&
+      const radioStop=type==='apc-stop',apcPosition=this.apc?.mesh?.position;
+      const nearby=!!apcPosition&&hunters.some(({player})=>
+        player.position.distanceTo(apcPosition)<=22);
+      const authorized=service?.available&&(radioStop||nearby)&&
         (owner===this.battleSimulation.config.playerFaction||
           this.battleSimulation.relationship(owner,this.battleSimulation.config.playerFaction)==='allied');
       if(!authorized){this.operationPanel.feedback('APC USCM : assistance inaccessible ou trop éloignée.');return;}
@@ -421,7 +429,18 @@ class GameApp {
       if(!answer.accepted)this.operationPanel.feedback('APC USCM : '+answer.reason);
       return;
     }
-    const result=this.battleSimulation.interact({id:'player1',position:[this.player.position.x,this.player.position.z],hp:this.player.hp},{type,frontId});
+    const position=this.battleSimulation.fronts?.get(frontId)?.position;
+    const candidates=hunters.slice();
+    if(Array.isArray(position)&&position.length===2&&position.every(Number.isFinite))
+      candidates.sort((a,b)=>{
+        const distance=entry=>(entry.player.position.x-position[0])**2+
+          (entry.player.position.z-position[1])**2;
+        return distance(a)-distance(b)||a.index-b.index;
+      });
+    const hunter=candidates[0];
+    const result=this.battleSimulation.interact({id:hunter.id,
+      position:[hunter.player.position.x,hunter.player.position.z],
+      hp:hunter.player.hp},{type,frontId});
     this.operationPanel.feedback(result.accepted?'Action effectuée sur le front.':result.reason??'Approchez-vous du front.');
   }
 
