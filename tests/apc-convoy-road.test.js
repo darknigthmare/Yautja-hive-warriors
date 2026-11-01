@@ -9,6 +9,7 @@ import { M577_DRIVE_POLICY } from '../js/battlefield/APCConvoyDrive.js';
 import { BattlefieldNavigation } from '../js/engine/BattlefieldNavigation.js';
 import { APCVehicle } from '../js/entities/APCVehicle.js';
 import { APC_NAVIGATION } from '../js/graphics/APCModel.js';
+import { m577HullBlocked, m577HullIntersectsCollider } from '../js/battlefield/APCHullFootprint.js';
 
 const create=()=>new BattleSimulation(getBattleOperationConfig('AFF-27'));
 const distance=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1]);
@@ -396,4 +397,39 @@ test('M577 UI only enables driving with its actual conscious allocated crew',()=
     f.sim.paused=false;
     assert.equal(f.sim.assertConservation(),true);
   }finally{f.dispose();}
+});
+
+test('whole M577 hull sees an internal steel post that all nine ground samples miss',()=>{
+  const f=fixture();
+  try{
+    const p=f.apc.mesh.position.clone();
+    f.env.colliders.push({
+      x:p.x+1.12,z:p.z+1.20,halfWidth:.08,halfDepth:.08,height:2,owner:'steel-post'});
+    assert.equal(f.env.navigation.canStand(p,.4),true,'fixture floor sample is clear');
+    assert.equal(f.service.drive._canOccupy(p,0),false,
+      'full hull SAT must catch the post between floor probes');
+    const before=f.sim.saveState();
+    assert.equal(f.service.requestTravel(f.target).accepted,true);
+    f.service.update(.25);
+    assert.equal(f.service.drive.active,false);
+    assert.equal(f.service.drive.lastResult.reason,'terrain_or_collision_blocked');
+    assert.deepEqual(f.sim.saveState(),before);
+    assert.equal(f.sim.assertConservation(),true);
+  }finally{f.dispose();}
+});
+
+test('M577 hull footprint follows the real yaw and ignores distant decks and nonblocking props',()=>{
+  const p=new THREE.Vector3(0,0,0);
+  const wall={owner:'wall',x:4,z:0,halfWidth:.15,halfDepth:.15,
+    rotation:Math.PI/4,baseY:0,height:2};
+  assert.equal(m577HullBlocked(p,0,[wall]),false);
+  assert.equal(m577HullBlocked(p,Math.PI/2,[wall]),true,
+    'long vehicle rotated by 90 degrees has a different full hull');
+  assert.equal(m577HullIntersectsCollider(p,Math.PI/2,{...wall,baseY:10}),false);
+  assert.equal(m577HullIntersectsCollider(p,Math.PI/2,{...wall,blocksNavigation:false}),false);
+  assert.equal(m577HullIntersectsCollider(p,Math.PI/2,{...wall,isCollisionActive:()=>false}),false);
+  assert.equal(m577HullIntersectsCollider(p,0,{x:1,z:0,radius:.04,height:2}),true,
+    'even a tiny circle inside the large hull must block movement');
+  assert.equal(m577HullIntersectsCollider(p,0,{...wall,navigationTest:()=>false}),null,
+    'custom collision functions still use the existing real nav sampling');
 });

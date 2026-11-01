@@ -6,6 +6,7 @@ import * as THREE from 'three';
 import { M577_ROUTE_RULES } from './APCSectionManifest.js';
 import { physicalOperationRouteAvailable } from './PhysicalRouteAvailability.js';
 import { APC_NAVIGATION } from '../graphics/APCModel.js';
+import { m577HullBlocked } from './APCHullFootprint.js';
 
 export const M577_DRIVE_POLICY=Object.freeze({
   speed:4.8,acceleration:2.4,stepLength:.6,maxDelta:.25,maxStepsPerUpdate:8,
@@ -103,6 +104,9 @@ export class APCConvoyDrive {
   _canOccupy(position,yaw){
     const s=this.service,env=s.environment,nav=env?.navigation;
     if(!isVector(position)||!nav?.canStand||!env?.getElevationAt)return false;
+    // Nine floor/height samples can miss an object occupying the INSIDE
+    // of the hull. Check its entire conservative oriented footprint first.
+    if(m577HullBlocked(position,yaw,env.colliders??[]))return false;
     for(const side of [-M577_DRIVE_POLICY.hullSide,0,M577_DRIVE_POLICY.hullSide]){
       for(const longitudinal of [-M577_DRIVE_POLICY.hullFore,0,M577_DRIVE_POLICY.hullFore]){
         const sample=rotated(position,side,longitudinal,yaw);
