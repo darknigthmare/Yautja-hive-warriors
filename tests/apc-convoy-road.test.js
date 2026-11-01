@@ -242,3 +242,34 @@ test('replacing and clearing a rendered M577 release each owned wheel instance G
   assert.equal(apc.model,null);
   assert.equal(apc.mesh,null);
 });
+
+test('M577 swept 3x3 hull rejects a thin wall between two clear endpoint poses',()=>{
+  const f=fixture();
+  try{
+    const start=f.apc.mesh.position.clone(),before=f.sim.saveState();
+    const stripe=start.z+M577_DRIVE_POLICY.stepLength/2;
+    // The two endpoints are walkable, but a narrow threshold intersects
+    // the middle of the vehicle's real swept volume.
+    f.env.navigation.canStand=sample=>Math.abs(sample.z-stripe)>.025;
+    const target=[start.x,start.z+M577_DRIVE_POLICY.stepLength];
+    assert.equal(f.service.drive._canOccupy(start,0),true);
+    assert.equal(f.service.drive._canOccupy(
+      new THREE.Vector3(target[0],start.y,target[1]),0),true);
+    assert.equal(f.service.drive._moveToward(target,M577_DRIVE_POLICY.stepLength),false);
+    assert.ok(f.apc.mesh.position.equals(start));
+    assert.deepEqual(f.sim.saveState(),before);
+    assert.equal(f.sim.assertConservation(),true);
+  }finally{f.dispose();}
+});
+
+test('a clear M577 hull sweep preserves the finite USCM roster and admitted position',()=>{
+  const f=fixture();
+  try{
+    const start=f.apc.mesh.position.clone(),count=f.sim.units.size;
+    const target=[start.x,start.z+M577_DRIVE_POLICY.stepLength];
+    assert.equal(f.service.drive._moveToward(target,M577_DRIVE_POLICY.stepLength),true);
+    assert.ok(Math.abs(f.apc.mesh.position.z-target[1])<1e-9);
+    assert.equal(f.sim.units.size,count);
+    assert.equal(f.sim.assertConservation(),true);
+  }finally{f.dispose();}
+});
