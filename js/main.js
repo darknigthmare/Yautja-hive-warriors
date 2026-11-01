@@ -251,7 +251,7 @@ class GameApp {
       (saved ? 'historical-fallback' : (this.operationDeploymentPlan ?? 'authored'));
     const sceneOptions={operationId:this.operationId,level:this.ui.selectedLevel,players:this.isCoOp?2:1,layout:this.env.battlefieldLayout,mapSeed:this.operationMapSeed,difficultyId:this.operationDifficulty,
       deploymentPlan:this.operationDeploymentPlan,
-      extinctionVariant:saved?.scene?.extinctionVariant??this.extinctionVariant??'none'};
+      extinctionVariant:saved?saved.scene?.extinctionVariant??'none':this.extinctionVariant??'none'};
     let {config}=createOperationScene(sceneOptions);
     this.campaignArcId=saved?.campaignArcId??(document.getElementById('campaign-arc-enabled').checked&&/^AFF-0[1-5]$/.test(this.operationId)?CLAN_CAMPAIGN_ARC_ID:null);
     this.campaignRunId=saved?.campaignRunId??this.missionRun;
@@ -1896,7 +1896,8 @@ class GameApp {
     this.operationMapSeed=this.missionMode==='fronts'?sceneOptions.mapSeed:0;
     this.operationDifficulty=this.missionMode==='fronts'?sceneOptions.difficultyId:'standard';
     this.extinctionVariant=this.missionMode==='fronts'&&this.operationId==='AFF-27'?
-      options.resumeOperation?.scene?.extinctionVariant??this.extinctionVariant??'none':'none';
+      (options.resumeOperation?options.resumeOperation.scene?.extinctionVariant??'none':
+        this.extinctionVariant??'none'):'none';
     // Old checkpoints lack a deployment marker and must preserve their signed
     // historical budget projection. New missions use the audited front plan.
     this.operationDeploymentPlan = this.missionMode==='fronts'
