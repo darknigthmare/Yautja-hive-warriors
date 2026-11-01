@@ -5926,7 +5926,7 @@ export const ALIEN_BASE_PUBLIC_SNAPSHOT_V1 = Object.freeze({
       {
         "id": "yhw:H-S09",
         "name": "Alien: Earth — présentation de la série",
-        "url": "https://abc.com/show/95f00a9c-4cd4-4307-8eac-1485d9e439ea/about-the-show",
+        "url": null,
         "status": "project-cited-not-externally-rechecked-in-this-import"
       },
       {
