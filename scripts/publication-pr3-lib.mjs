@@ -8,10 +8,12 @@ import { fileURLToPath } from 'node:url';
 export const REPO = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 export const RELEASE_PROFILES = Object.freeze({
   'pr3-20261026': Object.freeze({ qaDirectory: '/workspace/qa/pr3-20261026', pins: 'docs/qa/pr3-publication-pins.json', qaReport: 'docs/qa/pr3-validation.json' }),
-  'pr3-next-20261028': Object.freeze({ qaDirectory: '/workspace/qa/pr3-next-20261028', pins: 'docs/qa/pr3-next-publication-pins.json', qaReport: 'docs/qa/pr3-next-validation.json' })
+  'pr3-next-20261028': Object.freeze({ qaDirectory: '/workspace/qa/pr3-next-20261028', pins: 'docs/qa/pr3-next-publication-pins.json', qaReport: 'docs/qa/pr3-next-validation.json' }),
+  'continuation-20261101': Object.freeze({ qaDirectory: '/workspace/qa/continuation-20261101', pins: 'docs/qa/continuation-publication-pins.json', qaReport: 'docs/qa/continuation-validation.json' }),
+  'continuation-final-20261101': Object.freeze({ qaDirectory: '/workspace/qa/continuation-final-20261101', pins: 'docs/qa/continuation-final-publication-pins.json', qaReport: 'docs/qa/continuation-final-validation.json' })
 });
 export function resolveReleaseProfile(name = process.env.YAUTJA_RELEASE_PROFILE ?? 'pr3-20261026') {
-  assert.ok(typeof name === 'string' && Object.hasOwn(RELEASE_PROFILES, name), 'Unknown YAUTJA_RELEASE_PROFILE; expected pr3-20261026 or pr3-next-20261028');
+  assert.ok(typeof name === 'string' && Object.hasOwn(RELEASE_PROFILES, name), 'Unknown YAUTJA_RELEASE_PROFILE; expected ' + Object.keys(RELEASE_PROFILES).join(', '));
   return { name, ...RELEASE_PROFILES[name] };
 }
 export const RELEASE = Object.freeze(resolveReleaseProfile());

@@ -1,0 +1,552 @@
+{
+  "baselineCommit": "e66e51e9759db970dec30fba51bade16c0873d26",
+  "scope": "Read-only inventory; no acceptance closures, no new runtime validation, no human tests or fidelity certification.",
+  "progressPath": "docs/audits/2026-10-26/implementation-progress.json",
+  "progressSha256": "9bfd54d9d76a6854fdd53c8da6ce67eea3b3402d6b33ea741740413d1d9eddf8",
+  "workingWorkbookPath": "docs/audits/2026-10-26/Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.xlsx",
+  "workingWorkbookSha256": "9d7798f65c2c38f86937eaebde7513aac2f832925170e1835c1f4f4572abf1ce",
+  "sourceWorkbookSha256": "d3f88eee0e88deb4dbc2247f8b295c6c5a6de91ff9626ea94b0d274f08e652b5",
+  "workbookCheck": {
+    "actionCount": 126,
+    "allAcceptanceTextsExactlyMatch": true,
+    "allFollowupStatusesExactlyMatch": true
+  },
+  "counts": {
+    "Terminé": 67,
+    "À valider": 44,
+    "En cours": 15
+  },
+  "openActions": [
+    {
+      "id": "AUD-004",
+      "status": "À valider",
+      "priority": "P1",
+      "domain": "Versions et fiabilité",
+      "item": "Tracer le SHA du code servi en production",
+      "acceptance": "L’URL publique et la preview de PR exposent un manifeste reproductible; la correspondance HTML documentée demeure vérifiable.",
+      "notes": "La chaîne de publication/manifeste est préservée. La correspondance du nouveau contenu avec URL publique et preview de PR n’a pas encore été vérifiée."
+    },
+    {
+      "id": "AUD-010",
+      "status": "En cours",
+      "priority": "P1",
+      "domain": "Effectifs et foule",
+      "item": "Établir des budgets d’agents par plateforme",
+      "acceptance": "Chaque profil tient sa cible de frame time dans une scène comparable; le nombre réellement actif est enregistré.",
+      "notes": "Plafond provisoire32 et budgets par faction appliqués, surplus distant sans perte d’identité. Télémétrie et compteurs scèneentière existent ; aucun profil matériel cible validé."
+    },
+    {
+      "id": "AUD-011",
+      "status": "À valider",
+      "priority": "P1",
+      "domain": "Effectifs et foule",
+      "item": "Densifier sans infliger toutes les attaques simultanément",
+      "acceptance": "La foule augmente sans chaînes de coups impossibles à éviter ni ennemi invisible capable de tuer.",
+      "notes": "Grâce d’entrée et directeur d’engagement couvrent toutes factions. Les démarrages gardent1000HP ; densité et difficulté humaines ne sont pas mesurées."
+    },
+    {
+      "id": "AUD-013",
+      "status": "À valider",
+      "priority": "P1",
+      "domain": "Effectifs et foule",
+      "item": "Faire entrer les renforts par des accès plausibles",
+      "acceptance": "Aucun spawn dans une paroi, le champ proche ou un secteur sans accès; une arrivée visible précède le contact.",
+      "notes": "Les groupes suivent des voies physiques et se matérialisent hors de la proximité des deux joueurs ; vérification visuelle des arrivées et collisions requise."
+    },
+    {
+      "id": "AUD-014",
+      "status": "À valider",
+      "priority": "P1",
+      "domain": "Effectifs et foule",
+      "item": "Éviter la disparition des survivants entre rencontres",
+      "acceptance": "Traverser un passage n’efface ni poursuivant, ni chef blessé, ni pertes déjà enregistrées.",
+      "notes": "Persistance et culls sont testés ; retour/poursuite des survivants dans tous les passages réels à confirmer lors de parcours complets."
+    },
+    {
+      "id": "AUD-019",
+      "status": "À valider",
+      "priority": "P1",
+      "domain": "Effectifs et foule",
+      "item": "Introduire une représentation distante de la bataille",
+      "acceptance": "Quitter puis rejoindre un front conserve effectifs, positions plausibles, moral et progression temporelle.",
+      "notes": "Simulation distante, HP, moral, temps et identité sont persistants ; observation répétée de retours blessés sur plusieurs fronts en session complète encore requise."
+    },
+    {
+      "id": "AUD-020",
+      "status": "À valider",
+      "priority": "P2",
+      "domain": "Effectifs et foule",
+      "item": "Donner une échelle perceptible au champ de bataille",
+      "acceptance": "Depuis les points hauts, le joueur identifie au moins deux combats réels et leurs voies d’accès.",
+      "notes": "Les34terrains et plusieurs combats distants sont réels ; aucune capture de deux combats visibles depuis un point haut n’est fournie."
+    },
+    {
+      "id": "AUD-021",
+      "status": "En cours",
+      "priority": "P1",
+      "domain": "Groupes et factions",
+      "item": "Créer des compositions de groupes par mission",
+      "acceptance": "Une même graine et un même profil produisent une composition autorisée; aucune caste exclue n’apparaît.",
+      "notes": "62modèles et27allocations sont consommables ; la réalisation actuelle utilise des archétypes adaptés explicites, pas les115silhouettes/castes différentes."
+    },
+    {
+      "id": "AUD-024",
+      "status": "À valider",
+      "priority": "P1",
+      "domain": "Groupes et factions",
+      "item": "Donner une vraie réciprocité aux combats entre IA",
+      "acceptance": "Un combat observé sans joueur au contact change les pertes des deux camps, avec actions et impacts visibles.",
+      "notes": "La réciprocité des pertes existe dans le moteur et les vrais managers ; une observation prolongée des impacts des deux camps sans joueur au contact reste à documenter."
+    },
+    {
+      "id": "AUD-025",
+      "status": "En cours",
+      "priority": "P1",
+      "domain": "Groupes et factions",
+      "item": "Composer des unités xénomorphes biologiquement crédibles",
+      "acceptance": "Chaque groupe possède une raison de présence et des comportements cohérents; les parasites ne remplacent pas une ligne d’assaut permanente.",
+      "notes": "Stades, espèces, exclusions et rares sont distingués. Tous les profils du registre n’ont pas encore acteur/comportement/silhouette distincts rendus."
+    },
+    {
+      "id": "AUD-026",
+      "status": "En cours",
+      "priority": "P1",
+      "domain": "Groupes et factions",
+      "item": "Former des patrouilles Yautja adaptées au clan",
+      "acceptance": "Une cellule garde son identité et ses équipements; son effectif reste justifié par le scénario de chasse ou de guerre.",
+      "notes": "Cellules et identité de clan sont persistantes et contextualisées ; les nombreux groupes proposés ne disposent pas tous d’équipement/modèle distinct fidèle."
+    },
+    {
+      "id": "AUD-027",
+      "status": "En cours",
+      "priority": "P1",
+      "domain": "Groupes et factions",
+      "item": "Diversifier les groupes humains avec une structure réelle",
+      "acceptance": "La composition autorise couverture, progression et replis; aucun groupe entier n’est composé de la même arme lourde.",
+      "notes": "Les compositions humaines et rôles existent ; les presets exécutables n’incarnent pas toutes les spécialisations sources et formations d’appui."
+    },
+    {
+      "id": "AUD-028",
+      "status": "À valider",
+      "priority": "P1",
+      "domain": "Groupes et factions",
+      "item": "Séparer synthétiques militaires, industriels et civils",
+      "acceptance": "Un profil de sécurité et un profil industriel réagissent différemment à une intrusion et restent limités à leur lieu.",
+      "notes": "Synthétiques militaires/industriels/civils sont contextualisés ; réactions distinctes et limites de lieu doivent encore être revues intégralement."
+    },
+    {
+      "id": "AUD-030",
+      "status": "À valider",
+      "priority": "P2",
+      "domain": "Groupes et factions",
+      "item": "Préserver la guerre entre ruches comme scénario spécifique",
+      "acceptance": "Le joueur comprend quel groupe appartient à quelle ruche et peut exploiter un conflit déjà actif.",
+      "notes": "Un scénario original de96identités Ambre/Obsidienne, territoires, réserves et hostilité de ruches est implémenté ; infight par couleur supprimé. AccèsUI/compréhension/affrontement visuel noncertifiés par les4smokes sélectionnés."
+    },
+    {
+      "id": "AUD-031",
+      "status": "En cours",
+      "priority": "P1",
+      "domain": "Groupes et factions",
+      "item": "Distinguer silhouettes, rangs et équipements",
+      "acceptance": "Un test de silhouette identifie chef, appui, parasite et lourd sans dépendre uniquement de la couleur.",
+      "notes": "Types/rangs équipés et chefs existent, mais test de silhouette sans couleur pour tous les rôles manque encore."
+    },
+    {
+      "id": "AUD-032",
+      "status": "À valider",
+      "priority": "P1",
+      "domain": "Groupes et factions",
+      "item": "Conserver des identités de groupe persistantes",
+      "acceptance": "Le même groupe conserve son identité lors d’un passage proche/lointain et dans le bilan de bataille.",
+      "notes": "IDs de groupes conservés dans moteur/LOD/checkpoints/journal ; leur suivi par le joueur sur l’ensemble des fronts/bilans reste à vérifier individuellement."
+    },
+    {
+      "id": "AUD-034",
+      "status": "À valider",
+      "priority": "P1",
+      "domain": "Alliés et commandement",
+      "item": "Déléguer un front à un capitaine",
+      "acceptance": "Pendant que le joueur agit ailleurs, le capitaine peut défendre ou perdre un objectif selon des règles visibles.",
+      "notes": "Délégation de capitaine et autonomie distante sont fonctionnelles et testées ; victoire/perte d’un front délégué observée dans le jeu complet encore à prouver."
+    },
+    {
+      "id": "AUD-036",
+      "status": "À valider",
+      "priority": "P1",
+      "domain": "Alliés et commandement",
+      "item": "Proposer des tactiques collectives Yautja",
+      "acceptance": "La tactique repositionne les unités et produit un effet mesurable; elle peut échouer si ses conditions ne sont plus remplies.",
+      "notes": "Quatre tactiques repositionnent les groupes, changent effets et refusent préconditions invalides. Leur lisibilité physique et usage UI répété restent à observer."
+    },
+    {
+      "id": "AUD-037",
+      "status": "À valider",
+      "priority": "P2",
+      "domain": "Alliés et commandement",
+      "item": "Rendre les compagnons spécialisés et équipables",
+      "acceptance": "Deux compagnons de rôles différents modifient le plan de bataille; aucun n’accède à une arme hors profil sans choix explicite.",
+      "notes": "Quatre kits de compagnons avec équipements autorisés, charges/cooldowns, marche, soins/recon/réparation/sabotage/suppression et checkpoints sont développés. Aucun parcours complet de deux rôles depuis les nouveauxmenus n’est revendiqué."
+    },
+    {
+      "id": "AUD-042",
+      "status": "À valider",
+      "priority": "P1",
+      "domain": "Fronts et objectifs",
+      "item": "Simuler plusieurs combats simultanés",
+      "acceptance": "Un enregistrement montre combat et décisions simultanés sur plusieurs fronts; éloigner le joueur ne fige pas le résultat.",
+      "notes": "Plusieurs fronts combattent à distance simultanément et conservent leurs résultats ; enregistrement visuel montrant deux combats/choix simultanés absent."
+    },
+    {
+      "id": "AUD-047",
+      "status": "À valider",
+      "priority": "P1",
+      "domain": "Fronts et objectifs",
+      "item": "Créer des conditions de défaite stratégiques",
+      "acceptance": "La défaite affiche sa cause vérifiable et laisse un temps de réaction cohérent avec la distance.",
+      "notes": "Défaites causales, fronts critiques et grâce sont testés ; la grâce fixe30s n’est pas encore calibrée aux retours depuis toutes les grandes cartes."
+    },
+    {
+      "id": "AUD-050",
+      "status": "À valider",
+      "priority": "P2",
+      "domain": "Fronts et objectifs",
+      "item": "Gérer lignes de ravitaillement et isolement",
+      "acceptance": "Couper une route réduit un type de renfort et le camp signale comment la rétablir.",
+      "notes": "Origines de réserve, routes et ponts conditionnent réellement le ravitaillement. La lisibilité de toutes les causes et réparations possibles dans une session complète reste à confirmer."
+    },
+    {
+      "id": "AUD-051",
+      "status": "À valider",
+      "priority": "P2",
+      "domain": "Fronts et objectifs",
+      "item": "Permettre victoire par plusieurs stratégies",
+      "acceptance": "Deux parcours gagnants mobilisent des objectifs différents avec conséquences et durées comparables.",
+      "notes": "Plusieurs stratégies réelles sont exécutables et testées ; durées et conséquences comparables en jeu humain ne sont pas mesurées."
+    },
+    {
+      "id": "AUD-053",
+      "status": "À valider",
+      "priority": "P2",
+      "domain": "Fronts et objectifs",
+      "item": "Ajouter renseignement et brouillard tactique",
+      "acceptance": "Une unité hors contact n’est pas suivie avec précision absolue; le joueur connaît l’âge de son dernier rapport.",
+      "notes": "Intel respecte murs, vue des deuxjoueurs, rapports retardés, incertitude, ancienneté et reconnaissance temporaire. Lisibilité de tous ces états sur la carte tactique en session complète à confirmer."
+    },
+    {
+      "id": "AUD-055",
+      "status": "À valider",
+      "priority": "P1",
+      "domain": "Level design",
+      "item": "Agrandir le terrain par des zones à fonctions distinctes",
+      "acceptance": "Chaque zone a rôle, capacité, au moins deux repères et passages dimensionnés; les dimensions sont exprimées en unités tant que l’échelle n’est pas calibrée.",
+      "notes": "Secteurs, capacités, objectifs, repères et dimensions en unités sont construits. Rôle perceptible et deuxrepères utiles dans chaque zone n’ont pas tous été recensés visuellement."
+    },
+    {
+      "id": "AUD-057",
+      "status": "En cours",
+      "priority": "P1",
+      "domain": "Level design",
+      "item": "Définir des échelles de bataille compatibles avec le lieu",
+      "acceptance": "Les grandes cartes possèdent distance, densité et temps de déplacement justifiés; aucun couloir de station n’accueille une armée impossible.",
+      "notes": "Distances/populations/corridors sont explicites ; justification et validation de densité/temps de déplacement pour chaque lieu restent partielles."
+    },
+    {
+      "id": "AUD-059",
+      "status": "En cours",
+      "priority": "P1",
+      "domain": "Level design",
+      "item": "Conserver des ancrages fixes pour les lieux iconiques",
+      "acceptance": "Chaque zone distingue reproduction documentée et extension originale; une variation ne déplace pas arbitrairement un repère essentiel.",
+      "notes": "Les extensions sont déclarées originales et nonmesurées ; ancrages géographiques précis des lieux iconiques noncertifiés."
+    },
+    {
+      "id": "AUD-060",
+      "status": "À valider",
+      "priority": "P1",
+      "domain": "Level design",
+      "item": "Filtrer les installations par cohérence de lieu",
+      "acceptance": "La jungle 1987 ne reçoit pas automatiquement un laboratoire spatial ou une matriarche; les exceptions sont des missions alternatives identifiées.",
+      "notes": "Le filtrage des mécanismes par contexte empêche les installations futuristes automatiques dePrey ; revue de tous décors/groupes/objets par contexte encore nécessaire."
+    },
+    {
+      "id": "AUD-063",
+      "status": "À valider",
+      "priority": "P1",
+      "domain": "Level design",
+      "item": "Gérer l’encombrement aux portes et ponts",
+      "acceptance": "Un flot d’assaut traverse un goulet et une évacuation inverse reste possible; aucun blocage prolongé.",
+      "notes": "Détours, formations et navigation évitent les blocages structurels ; aucun stress test exhaustif d’assaut/évacuation opposés aux goulets n’est fourni."
+    },
+    {
+      "id": "AUD-066",
+      "status": "À valider",
+      "priority": "P1",
+      "domain": "Level design",
+      "item": "Dimensionner des espaces spécifiques aux boss",
+      "acceptance": "Aucune attaque ou caméra traverse un volume majeur; le joueur peut lire le boss et se déplacer durant toutes ses phases.",
+      "notes": "Géométries et hauteurs de boss sont bornées et la caméra est physique ; chaque phase/caméra des18affrontements complets reste à examiner."
+    },
+    {
+      "id": "AUD-067",
+      "status": "À valider",
+      "priority": "P2",
+      "domain": "Level design",
+      "item": "Guider par le décor et les lignes de vue",
+      "acceptance": "Un joueur peut repérer la route principale et un contournement sans suivre uniquement un marqueur HUD.",
+      "notes": "Contournements/repères sont construits ; guidage des joueurs sans marqueurs HUD nonévalué."
+    },
+    {
+      "id": "AUD-069",
+      "status": "En cours",
+      "priority": "P1",
+      "domain": "Level design",
+      "item": "Calibrer les dimensions des acteurs et des lieux",
+      "acceptance": "Un tableau de mesures prouve les rapports d’échelle; chaque exception artistique est documentée.",
+      "notes": "Hauteurs de boss et dimensions de terrain sont mesurées en unités de jeu. Rapports d’échelle source/costume/acteur1:1 nonétablis."
+    },
+    {
+      "id": "AUD-070",
+      "status": "En cours",
+      "priority": "P2",
+      "domain": "Level design",
+      "item": "Valider la densité utile de chaque grande zone",
+      "acceptance": "La mesure distingue zones calmes, fronts denses et points de décision; aucune grande extension ne reste vide sans fonction.",
+      "notes": "Les fonctions de fronts existent ; mesure de densité utile et zones calmes pour chaque grande extension nonréalisée."
+    },
+    {
+      "id": "AUD-075",
+      "status": "À valider",
+      "priority": "P1",
+      "domain": "Boss et mini-boss",
+      "item": "Distinguer élite, mini-boss et boss",
+      "acceptance": "Le joueur reconnaît une escalade et bénéficie de respiration; les élites ne remplacent pas la majorité de l’armée.",
+      "notes": "Élites/mini-boss/boss sont catégorisés et bornés ; escalade perceptible et respiration en combat complet nonmesurées."
+    },
+    {
+      "id": "AUD-076",
+      "status": "À valider",
+      "priority": "P1",
+      "domain": "Boss et mini-boss",
+      "item": "Rendre chaque affrontement mécaniquement distinct",
+      "acceptance": "Chaque boss exige au moins une lecture et une réponse distinctes; aucune différence limitée aux PV et à la couleur.",
+      "notes": "Plusieurs contre-jeux sont réels ; aucune revue individuelle des18lectures/réponses de boss n’est revendiquée."
+    },
+    {
+      "id": "AUD-079",
+      "status": "À valider",
+      "priority": "P1",
+      "domain": "Boss et mini-boss",
+      "item": "Vérifier les boss hybrides et titres revendiqués canon",
+      "acceptance": "Chaque fiche distingue confirmé, interprétation et invention; aucun commentaire source n’est utilisé comme preuve externe.",
+      "notes": "Les39fiches distinguent sources/adaptations/titres ; vérification externe individuelle des revendications canoniques encore partielle."
+    },
+    {
+      "id": "AUD-080",
+      "status": "À valider",
+      "priority": "P1",
+      "domain": "Boss et mini-boss",
+      "item": "Intégrer les exécutions sans bloquer la bataille",
+      "acceptance": "Une exécution ne tue pas le joueur hors champ, n’efface pas le boss d’un autre front et ne répète pas son trophée.",
+      "notes": "Exécution portée/armure/idempotence est testée ; sécurité horschamp et coexistence de tous boss pendant cinématique restent à confirmer."
+    },
+    {
+      "id": "AUD-086",
+      "status": "À valider",
+      "priority": "P1",
+      "domain": "Combat et rôles",
+      "item": "Gérer ressources et fenêtres des attaques de masse",
+      "acceptance": "Un enchaînement dominant ne rend pas tous les groupes inoffensifs en permanence; les coûts sont visibles avant l’action.",
+      "notes": "Endurance, cooldowns et impacts finis empêchent les enchaînements gratuits dans les tests ; visibilité préalable de tous coûts et absence de domination permanente restent à observer."
+    },
+    {
+      "id": "AUD-087",
+      "status": "À valider",
+      "priority": "P2",
+      "domain": "Combat et rôles",
+      "item": "Créer des réponses adaptées aux formations",
+      "acceptance": "Une même compétence est efficace contre une ligne mais moins contre un groupe dispersé; l’IA réagit de manière lisible.",
+      "notes": "Formations à vrais slots, cohésion/root, dégâts différenciés ligne/dispersé et contre-jeu sont implémentés/testés ; présentation lisible de toutes les réponses en jeu encore noncertifiée."
+    },
+    {
+      "id": "AUD-088",
+      "status": "En cours",
+      "priority": "P1",
+      "domain": "Combat et rôles",
+      "item": "Conserver la spécificité de la chasse dans les batailles",
+      "acceptance": "Une approche furtive ouvre un avantage concret sans rendre obligatoire le combat frontal de toutes les unités.",
+      "notes": "Fcamouflage est rétabli et testé réellement. Bonus/backstab/résistance existent ; une approche furtive transformant concrètement tous les plans de masse reste à valider."
+    },
+    {
+      "id": "AUD-089",
+      "status": "À valider",
+      "priority": "P2",
+      "domain": "Combat et rôles",
+      "item": "Réviser pouvoirs et gadgets extrapolés",
+      "acceptance": "Aucune capacité originale ne porte une certification 1:1 sans référence et comparaison; les collisions et contre-effets sont testés.",
+      "notes": "Les nouveaux profils annoncent adaptations et fidélité noncertifiée ; collisions/contre-effets de chaque ancien gadget extrapolé ne sont pas tous certifiés."
+    },
+    {
+      "id": "AUD-090",
+      "status": "À valider",
+      "priority": "P1",
+      "domain": "Combat et rôles",
+      "item": "Rendre coups et tirs respectueux du décor",
+      "acceptance": "Un tir ordinaire ne traverse pas une paroi; une arme perforante le fait seulement dans ses limites annoncées.",
+      "notes": "Murs et couverts partagés arrêtent mêlée/tirs/projectiles, ycompris NPC. Les limites de perforation de toutes les armes ne sont pas encore certifiées."
+    },
+    {
+      "id": "AUD-091",
+      "status": "À valider",
+      "priority": "P1",
+      "domain": "Combat et rôles",
+      "item": "Éviter les effets superposés incontrôlables",
+      "acceptance": "Aucune combinaison ne laisse le personnage bloqué indéfiniment; chaque état possède une indication et une issue.",
+      "notes": "États et effets temporaires sont bornés dans les tests ; aucune matrice exhaustive des combinaisons de tous pouvoirs hérités n’est fournie."
+    },
+    {
+      "id": "AUD-094",
+      "status": "À valider",
+      "priority": "P2",
+      "domain": "Campagne et progression",
+      "item": "Donner aux personnages des enjeux et conséquences",
+      "acceptance": "Le briefing et le débrief réagissent au personnage et aux événements réellement accomplis.",
+      "notes": "Reconnaissances, données de briefing/débrief et arc réagissent au personnage/événements ; présentation complète des enjeux de tous personnages reste à vérifier."
+    },
+    {
+      "id": "AUD-097",
+      "status": "À valider",
+      "priority": "P2",
+      "domain": "Campagne et progression",
+      "item": "Faire varier la rejouabilité par conditions",
+      "acceptance": "Deux variantes d’une même carte demandent des décisions différentes tout en respectant la table de cohérence.",
+      "notes": "Variantes/cartes/plans ont conditions distinctes et cohérentes ; comparaison en jeu de deux variantes d’une même carte à documenter."
+    },
+    {
+      "id": "AUD-099",
+      "status": "À valider",
+      "priority": "P1",
+      "domain": "HUD et lisibilité",
+      "item": "Créer une carte de commandement complète",
+      "acceptance": "Le joueur peut comparer les fronts et envoyer une unité depuis la carte sans perdre la compréhension de la situation.",
+      "notes": "Carte réelle zoom/pan, sélection groupe/front, ordres, tactiques, délégation et journal. Le clic transmettre est validé ; toutes les combinaisons de choix/trajectoires depuis la carte ne sont pas parcourues."
+    },
+    {
+      "id": "AUD-103",
+      "status": "À valider",
+      "priority": "P2",
+      "domain": "HUD et lisibilité",
+      "item": "Préserver la lisibilité pour tous les profils visuels",
+      "acceptance": "Les objectifs et dangers restent distinguables avec couleurs simulées et effets réduits.",
+      "notes": "Contraste, focus, textes et effets réduits sont développés ; simulation complète des profils visuels et lecture des dangers noncertifiées."
+    },
+    {
+      "id": "AUD-104",
+      "status": "À valider",
+      "priority": "P1",
+      "domain": "HUD et lisibilité",
+      "item": "Adapter la caméra aux combats et au commandement",
+      "acceptance": "Le joueur et le danger principal restent visibles dans chaque scénario; la caméra ne traverse pas les parois.",
+      "notes": "La caméra résout les volumes physiques, bornes de cadrage et proximité ; visibilité du joueur/danger dans chaque phase et scénario reste à contrôler."
+    },
+    {
+      "id": "AUD-106",
+      "status": "En cours",
+      "priority": "P1",
+      "domain": "Performance et QA",
+      "item": "Établir un budget de rendu des armées",
+      "acceptance": "L’augmentation du nombre d’unités suit les budgets mesurés et conserve la silhouette de chaque rôle.",
+      "notes": "Le rendu respecte capprovisoire32 etLOD ; budget de rendu/silhouettes sur matériels cibles nonmesuré."
+    },
+    {
+      "id": "AUD-108",
+      "status": "À valider",
+      "priority": "P1",
+      "domain": "Performance et QA",
+      "item": "Gérer deux fronts visibles en coopération",
+      "acceptance": "P1 etP2 peuvent combattre sur deux fronts avec menaces équitables, objectifs partagés et budget mesuré.",
+      "notes": "Budgets communs et acteurs des deuxjoueurs sont testés côté moteur/contrôles ; deuxfronts réellement visibles en coopération avec mesures restent à vérifier."
+    },
+    {
+      "id": "AUD-109",
+      "status": "À valider",
+      "priority": "P1",
+      "domain": "Performance et QA",
+      "item": "Borner les effets secondaires et cadavres",
+      "acceptance": "Une bataille prolongée garde une mémoire stable et les effets obligatoires restent lisibles quand le budget est atteint.",
+      "notes": "Événements/effets/cadavres ont plafonds et cleanup ; stabilité mémoire d’une bataille interactive prolongée noncertifiée."
+    },
+    {
+      "id": "AUD-112",
+      "status": "À valider",
+      "priority": "P2",
+      "domain": "Performance et QA",
+      "item": "Préparer un chargement par zones",
+      "acceptance": "Le franchissement ne provoque ni terrain absent ni arrêt prolongé; revenir conserve objectifs et destructions.",
+      "notes": "Le streaming libère réellement les allocations de géométrie/instances en gardant les modèlesCPU et états du monde. ParcoursGPU de3zones puisretour et mesure de pause au franchissement restent à documenter."
+    },
+    {
+      "id": "AUD-113",
+      "status": "En cours",
+      "priority": "P1",
+      "domain": "Performance et QA",
+      "item": "Créer une mesure réelle des performances",
+      "acceptance": "Les promesses d’effectifs reposent sur une capture mesurée et reproductible, pas sur le seul nombre de triangles.",
+      "notes": "Télémétrie distingue duréeCPU, intervalles d’affichage, compteurs scèneentière et absence de timerGPU ; les captures SwiftShader ne valident pas les performances sur matériels cibles."
+    },
+    {
+      "id": "AUD-115",
+      "status": "À valider",
+      "priority": "P1",
+      "domain": "Performance et QA",
+      "item": "Vérifier les dix parcours complets",
+      "acceptance": "Un rapport récent relie chaque carte au SHA et prouve au moins une victoire et une défaite cohérentes.",
+      "notes": "11démarrages/insertion/nettoyage et4smokes opération passent ; il ne s’agit pas de11parcours complets chacun victoire/défaite."
+    },
+    {
+      "id": "AUD-118",
+      "status": "À valider",
+      "priority": "P1",
+      "domain": "Performance et QA",
+      "item": "Vérifier les sauvegardes et migrations",
+      "acceptance": "Une sauvegarde ancienne, partielle ou invalide ne bloque pas le lancement et n’efface pas silencieusement des trophées valides.",
+      "notes": "Checkpoints, incompatibilités, corruption et reçus ont tests ; toutes les migrations d’anciennes sauvegardes/trophées valides restent à vérifier."
+    },
+    {
+      "id": "AUD-119",
+      "status": "À valider",
+      "priority": "P2",
+      "domain": "Performance et QA",
+      "item": "Mesurer lisibilité et difficulté lors de playtests",
+      "acceptance": "Le rapport cite version, durée et problèmes observés; les conclusions ne prétendent pas mesurer ce qui n’a pas été testé.",
+      "notes": "Le rapport automatique cite source/version/durée/assistances et défauts observés ;0testeurhumain. Lisibilité/difficulté humaines nonmesurées."
+    },
+    {
+      "id": "AUD-121",
+      "status": "À valider",
+      "priority": "P1",
+      "domain": "Performance et QA",
+      "item": "Stabiliser l’expérience de bataille longue",
+      "acceptance": "Aucune croissance mémoire continue, objectif bloqué ou perte de commandes; les incidents sont liés à une chronologie reproductible.",
+      "notes": "20minutes simulées et smokes interactifs bornés passent ; aucune session interactive instrumentée60minutes n’est revendiquée."
+    },
+    {
+      "id": "AUD-123",
+      "status": "En cours",
+      "priority": "P1",
+      "domain": "Groupes et factions",
+      "item": "Définir le scénario Prey de 1719 et ses groupes autorisés",
+      "acceptance": "La version fidèle ne charge aucun groupe ou objet exclu par le profil 1719 ; les rencontres sont compatibles avec le lieu et leur source. Les variantes adaptées sont nommées dans la sélection.",
+      "notes": "Contexte1719 et filtrage des éléments sont explicités ; les batailles sont adaptées. Une reconstitution fidèle complète avec groupes/objets tousvalidés n’est pas fournie."
+    },
+    {
+      "id": "AUD-124",
+      "status": "En cours",
+      "priority": "P1",
+      "domain": "Boss et mini-boss",
+      "item": "Préserver la singularité du Feral entre personnage et boss",
+      "acceptance": "La mission Prey se conclut avec le boss prévu ; le choix du chasseur possède une justification cohérente ou une restriction explicite. Le modèle est mesuré par rapport au joueur et aux accès, sans déduire sa taille d’un commentaire.",
+      "notes": "Feralboss/personnage et équipements sont distincts ; modèle/échelle par références, accès et justification de sélection pour tous modes restent à compléter."
+    }
+  ]
+}

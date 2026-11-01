@@ -1,7 +1,10 @@
-/* Gore & Dismemberment Engine 2.0 - 1:1 Lore Body Part Severing Physics */
+/* Bounded gameplay gore effects; anatomical and physical adaptations. */
 
 import * as THREE from 'three';
 import { disposeObject } from './SceneResources.js';
+
+export const GORE_RESOURCE_LIMITS = Object.freeze({ severedParts: 90, acidGibs: 100, acidSlagDecals: 24 });
+const validPoint = point => point && [point.x, point.y, point.z].every(Number.isFinite);
 
 export class GoreEngine {
   constructor(scene) {
@@ -31,11 +34,14 @@ export class GoreEngine {
   }
 
   spawnDismemberment(pos, weaponType = 'wristblades') {
-    while (this.severedParts.length > 90) {
-      disposeObject(this.severedParts.shift().mesh, this.sharedResources);
-    }
+    if (!validPoint(pos)) return false;
     const isHeavyCut = weaponType === 'heavy' || weaponType === 'smart_disc' || weaponType === 'bone_scythe' || weaponType === 'spine_rip';
     const partsCount = isHeavyCut ? 3 : 2;
+    // Reserve the whole incoming burst, rather than exceeding the budget until
+    // the next death happens. Keep the most recent impact visible at saturation.
+    while (this.severedParts.length + partsCount > GORE_RESOURCE_LIMITS.severedParts) {
+      disposeObject(this.severedParts.shift().mesh, this.sharedResources);
+    }
 
     for (let i = 0; i < partsCount; i++) {
       let partType = 'head';
@@ -63,12 +69,15 @@ export class GoreEngine {
         velocity,
         rotSpeed,
         life: 15,
+        floorY: pos.y,
+        groundY: pos.y + 0.2,
         onGround: false
       });
     }
 
     // Spawn sizzling acid spray
     this.spawnAcidSplatter(pos);
+    return true;
   }
 
   createPartMesh(type) {
@@ -140,16 +149,18 @@ export class GoreEngine {
   }
 
   spawnAcidSplatter(pos) {
-    while (this.acidGibs.length >= 100) disposeObject(this.acidGibs.shift().mesh, this.sharedResources);
+    if (!validPoint(pos)) return false;
+    while (this.acidGibs.length >= GORE_RESOURCE_LIMITS.acidGibs) disposeObject(this.acidGibs.shift().mesh, this.sharedResources);
     const splashGeo = new THREE.CylinderGeometry(1.2 + Math.random() * 0.8, 1.2 + Math.random() * 0.8, 0.03, 10);
     const splash = new THREE.Mesh(splashGeo, this.acidGlowMat);
-    splash.position.set(pos.x + (Math.random() - 0.5) * 2, 0.02, pos.z + (Math.random() - 0.5) * 2);
+    splash.position.set(pos.x + (Math.random() - 0.5) * 2, pos.y + 0.02, pos.z + (Math.random() - 0.5) * 2);
     this.scene.add(splash);
 
     this.acidGibs.push({
       mesh: splash,
       life: 8
     });
+    return true;
   }
 
   _updateCore(delta) {
@@ -165,11 +176,11 @@ export class GoreEngine {
         part.mesh.rotation.y += part.rotSpeed.y * delta;
         part.mesh.rotation.z += part.rotSpeed.z * delta;
 
-        if (part.mesh.position.y <= 0.2) {
-          part.mesh.position.y = 0.2;
+        if (part.mesh.position.y <= part.groundY) {
+          part.mesh.position.y = part.groundY;
           part.onGround = true;
           part.velocity.set(0, 0, 0);
-          this.spawnAcidSplatter(part.mesh.position);
+          this.spawnAcidSplatter({ x: part.mesh.position.x, y: part.floorY, z: part.mesh.position.z });
         }
       }
 
@@ -191,15 +202,20 @@ export class GoreEngine {
   }
 
   _clearCore() {
-    this.severedParts.forEach(p => disposeObject(p.mesh), this.sharedResources);
+    this.severedParts.forEach(p => disposeObject(p.mesh, this.sharedResources));
     this.severedParts = [];
-    this.acidGibs.forEach(g => disposeObject(g.mesh), this.sharedResources);
+    this.acidGibs.forEach(g => disposeObject(g.mesh, this.sharedResources));
     this.acidGibs = [];
   }
 
   spawnAcidSlagDecal(pos, radius = 2.4, audioEngine = null) {
+    if (!validPoint(pos)) return false;
+    radius = Number.isFinite(radius) ? Math.max(0.25, Math.min(8, radius)) : 2.4;
+    while (this.acidSlagDecals.length >= GORE_RESOURCE_LIMITS.acidSlagDecals) {
+      disposeObject(this.acidSlagDecals.shift().group, this.sharedResources);
+    }
     const group = new THREE.Group();
-    group.position.set(pos.x, 0.03, pos.z);
+    group.position.set(pos.x, pos.y + 0.03, pos.z);
 
     // Deep caustic crater on metallic floor
     const craterGeo = new THREE.RingGeometry(0.2, radius, 16);
@@ -215,7 +231,9 @@ export class GoreEngine {
     // Sizzling acid fluorescent erosion veins
     const veinGeo = new THREE.RingGeometry(0.1, radius * 0.75, 12);
     veinGeo.rotateX(-Math.PI / 2);
-    const vein = new THREE.Mesh(veinGeo, this.acidGlowMat);
+    // Each fading decal owns its opacity. It must not fade a newer impact or
+    // blood spray by mutating the manager's shared acid material.
+    const vein = new THREE.Mesh(veinGeo, this.acidGlowMat.clone());
     vein.position.y = 0.01;
     group.add(vein);
 
@@ -241,6 +259,7 @@ export class GoreEngine {
     if (audioEngine && audioEngine.playAcidFloorHiss) {
       audioEngine.playAcidFloorHiss();
     }
+    return true;
   }
 
   update(delta) {

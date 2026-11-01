@@ -12,6 +12,7 @@ import { ReferenceEnvironmentMechanisms } from './ReferenceEnvironmentMechanisms
 import { buildReferenceLevelMechanisms, referenceLevelProfile } from '../data/ReferenceLevelMechanisms.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { createBattlefieldLayout, pointInBattlefieldRect } from '../data/BattlefieldLayouts.js';
+import { quietArrivalPocket } from '../data/BattlefieldSectorPlanning.js';
 import { createSurfaceMaterial } from '../graphics/SurfaceLibrary.js';
 import { beveledBlockGeometry, buildDetailedForest, buildBiomeDetails, projectGroundUV } from '../graphics/EnvironmentDetails.js';
 import { wornTrailGeometry, weatherGroundRing, naturalBoundaryGeometry, resinColumnGeometry, erodedObeliskGeometry } from '../graphics/EnvironmentSculpt.js';
@@ -94,7 +95,8 @@ export class EnvironmentManager extends ReferenceEnvironmentMechanisms {
   cancelReferenceTimer(timer) { if (timer) timer.cancelled = true; }
 
   update(delta, horde, audioEngine, player) {
-    if (!this.root || !Number.isFinite(delta) || delta <= 0) return;
+    if (!this.root || !Number.isFinite(delta) || delta <= 0 || this.game?.isPaused || this.game?.photoMode?.isActive) return;
+    this.environmentCombatEffects.update(delta);
     this.referenceTime += delta;
     for (const bridge of this.tacticalBridges.values()) bridge.update(delta);
     for (const timer of [...this.referenceTimers]) {
@@ -654,7 +656,7 @@ export class EnvironmentManager extends ReferenceEnvironmentMechanisms {
       const angle = (index * 2.399963 + attempt * 0.618034) % (Math.PI * 2);
       const origin = players[0] ?? { x: sector.center[0], z: sector.center[1] };
       const candidate = new THREE.Vector3(THREE.MathUtils.clamp(origin.x + Math.cos(angle) * (spacing + attempt % 3 * 5), sector.bounds.minX + 7, sector.bounds.maxX - 7), 0, THREE.MathUtils.clamp(origin.z + Math.sin(angle) * (spacing + attempt % 3 * 5), sector.bounds.minZ + 7, sector.bounds.maxZ - 7));
-      if (!clear(candidate)) continue;
+      if (!clear(candidate) || quietArrivalPocket(sector, candidate, 2.2)) continue;
       const nearest = players.length ? Math.min(...players.map(player => Math.hypot(candidate.x - player.x, candidate.z - player.z))) : Math.hypot(candidate.x - sector.center[0], candidate.z - sector.center[1]);
       if (nearest > bestDistance) { best = candidate; bestDistance = nearest; }
       if (nearest >= spacing) return candidate;
@@ -1000,7 +1002,7 @@ export class EnvironmentManager extends ReferenceEnvironmentMechanisms {
         blocker = collider;
       }
     }
-    if (target && Number.isFinite(stepDistance) && stepDistance > 0 && (blocker || this.acidTrenches.length || this.navigation.actorPaths.has(position) || referenceAccessWaypoint(this, position, target))) {
+    if (target && Number.isFinite(stepDistance) && stepDistance > 0 && (blocker || this.acidTrenches.length || this.navigation.actorPaths.has(position) || this.navigation.nearTrafficCorridor(position) || referenceAccessWaypoint(this, position, target))) {
       // The seek caller has already advanced once toward its target. Recover
       // that origin, then consume this step along the persistent planned path.
       const direction = new THREE.Vector3(target.x - attemptX, 0, target.z - attemptZ).normalize();

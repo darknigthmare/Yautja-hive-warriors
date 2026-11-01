@@ -1,0 +1,157 @@
+{
+  "checkedAt": "2026-11-01T02:07:30.248907+00:00",
+  "contextName": "darknigthmares-projects",
+  "observedDeployments": 20,
+  "pagination": {
+    "count": 20,
+    "next": 1793173066956,
+    "prev": 1793484353820
+  },
+  "rawEvidenceSha256": "26a826a25c9183ce707bd1c700c3fb43b3c33d72b558cf650236c3865623ba40",
+  "currentSourceCandidateObserved": false,
+  "deployments": [
+    {
+      "url": "yautja-hive-warriors-506mw4ka4-darknigthmares-projects.vercel.app",
+      "state": "READY",
+      "createdAt": 1793484353820,
+      "sourceCommit": "3fc620685d33f057f748913edc8d12d7d3d1deb5",
+      "sourceBranch": "codex/hive-nodes-ci-20261030"
+    },
+    {
+      "url": "yautja-hive-warriors-i1xvkbp0k-darknigthmares-projects.vercel.app",
+      "state": "CANCELED",
+      "createdAt": 1793484322569,
+      "sourceCommit": "e40eb8dcf92dca83a30674c3e1e53a591e617a4a",
+      "sourceBranch": "codex/hive-nodes-ci-20261030"
+    },
+    {
+      "url": "yautja-hive-warriors-fio67gy6h-darknigthmares-projects.vercel.app",
+      "state": "CANCELED",
+      "createdAt": 1793484119347,
+      "sourceCommit": "90f305a89daabb353e30b0a7b4a23c17e2f9555c",
+      "sourceBranch": "codex/hive-nodes-ci-20261030"
+    },
+    {
+      "url": "yautja-hive-warriors-d8r3agmwf-darknigthmares-projects.vercel.app",
+      "state": "CANCELED",
+      "createdAt": 1793483958876,
+      "sourceCommit": "347d87629b76a9475768beb5ac5e85cb5523b12a",
+      "sourceBranch": "codex/hive-nodes-ci-20261030"
+    },
+    {
+      "url": "yautja-hive-warriors-j539qroeh-darknigthmares-projects.vercel.app",
+      "state": "READY",
+      "createdAt": 1793483828939,
+      "sourceCommit": "c17e0679556e1f35e557885022167f8e2ff1682c",
+      "sourceBranch": "codex/hive-nodes-ci-20261030"
+    },
+    {
+      "url": "yautja-hive-warriors-ortd45kl4-darknigthmares-projects.vercel.app",
+      "state": "READY",
+      "createdAt": 1793463596942,
+      "sourceCommit": "2106d512eb7c750a55e82f86e50cc6e918c2df3b",
+      "sourceBranch": "codex/hive-nodes-ci-20261030"
+    },
+    {
+      "url": "yautja-hive-warriors-fervbnmkq-darknigthmares-projects.vercel.app",
+      "state": "READY",
+      "createdAt": 1793454331042,
+      "sourceCommit": "9be0c421690abdb6753dbfd7f596e960d9de91bf",
+      "sourceBranch": "codex/hive-nodes-ci-20261030"
+    },
+    {
+      "url": "yautja-hive-warriors-4z8plmgni-darknigthmares-projects.vercel.app",
+      "state": "READY",
+      "createdAt": 1793453247343,
+      "sourceCommit": "80beb790409c2683c99a4d995ab4dd690c42dbba",
+      "sourceBranch": "codex/hive-nodes-ci-20261030"
+    },
+    {
+      "url": "yautja-hive-warriors-34i5srxzs-darknigthmares-projects.vercel.app",
+      "state": "READY",
+      "createdAt": 1793450089535,
+      "sourceCommit": "d24407289bffce5f5e331a7ccd05f6e19446f05f",
+      "sourceBranch": "codex/hive-nodes-ci-20261030"
+    },
+    {
+      "url": "yautja-hive-warriors-l5qdkxg9h-darknigthmares-projects.vercel.app",
+      "state": "READY",
+      "createdAt": 1793448162877,
+      "sourceCommit": "93abbc3d651dc7cae7b10d0fadf84f8b2435df74",
+      "sourceBranch": "codex/hive-nodes-ci-20261030"
+    },
+    {
+      "url": "yautja-hive-warriors-dj9f4i2mb-darknigthmares-projects.vercel.app",
+      "state": "READY",
+      "createdAt": 1793447702096,
+      "sourceCommit": "95f3fe87673767db267ab40ab52e2bcb643a4d92",
+      "sourceBranch": "codex/hive-nodes-ci-20261030"
+    },
+    {
+      "url": "yautja-hive-warriors-cbgsjqj08-darknigthmares-projects.vercel.app",
+      "state": "READY",
+      "createdAt": 1793445810927,
+      "sourceCommit": "757aaca4171fcb8aee022b0c6c0b6d4cf86b3961",
+      "sourceBranch": "codex/hive-nodes-ci-20261030"
+    },
+    {
+      "url": "yautja-hive-warriors-95lx54put-darknigthmares-projects.vercel.app",
+      "state": "READY",
+      "createdAt": 1793313265739,
+      "sourceCommit": "e00500bc7e9240e6bd16275327cbbc4430aa466f",
+      "sourceBranch": "codex/gamedev-guides-20261029"
+    },
+    {
+      "url": "yautja-hive-warriors-nf4y84n3h-darknigthmares-projects.vercel.app",
+      "state": "READY",
+      "createdAt": 1793281454154,
+      "sourceCommit": "570e443109cde26f63a8d9024213f1b4ed997aa0",
+      "sourceBranch": "codex/gamedev-guides-20261029"
+    },
+    {
+      "url": "yautja-hive-warriors-a5zup9hx6-darknigthmares-projects.vercel.app",
+      "state": "READY",
+      "createdAt": 1793277780475,
+      "sourceCommit": "23649bf92d2132ca0d1b59f0b10e83feb6c809f5",
+      "sourceBranch": "codex/gamedev-guides-20261029"
+    },
+    {
+      "url": "yautja-hive-warriors-4n7nbptlk-darknigthmares-projects.vercel.app",
+      "state": "CANCELED",
+      "createdAt": 1793277711721,
+      "sourceCommit": "6b244985c67458614974da4ddd6e45989c7a0387",
+      "sourceBranch": "codex/gamedev-guides-20261029"
+    },
+    {
+      "url": "yautja-hive-warriors-qd6rxocpz-darknigthmares-projects.vercel.app",
+      "state": "READY",
+      "createdAt": 1793182962748,
+      "sourceCommit": "5089228a12ac2985ef03e72782fd29e8687f6b33",
+      "sourceBranch": "codex/depth-pr3-20261028"
+    },
+    {
+      "url": "yautja-hive-warriors-gjaj3ub14-darknigthmares-projects.vercel.app",
+      "state": "CANCELED",
+      "createdAt": 1793181970790,
+      "sourceCommit": "a225277531e7e10b64ab2b880ff7c8554fa815b2",
+      "sourceBranch": "codex/depth-pr3-20261028"
+    },
+    {
+      "url": "yautja-hive-warriors-p1dy7xp79-darknigthmares-projects.vercel.app",
+      "state": "READY",
+      "createdAt": 1793180252040,
+      "sourceCommit": "f9d87be75b0281ac7a150893a2b8a9fefe490f45",
+      "sourceBranch": "codex/complete-pr3-20261026"
+    },
+    {
+      "url": "yautja-hive-warriors-5f5m1cwo7-darknigthmares-projects.vercel.app",
+      "state": "READY",
+      "createdAt": 1793173066956,
+      "sourceCommit": null,
+      "sourceBranch": null
+    }
+  ],
+  "currentGitCommit": "11892b6dc01f6857839d4c729d9c9e889f20509a",
+  "currentRuntimeCommit": "a80070c4b5ed96fa839e840f17453bf5348a6cbb",
+  "scope": "Twenty most recent listed deployments, all created before this push; no exact current Git/runtime candidate observed. Pagination is preserved; no unrelated preview is promoted."
+}

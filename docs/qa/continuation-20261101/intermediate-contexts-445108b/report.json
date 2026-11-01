@@ -1,0 +1,2512 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "startedAt": "2026-11-01T00:48:03.792Z",
+  "scope": "Assisted complete objective paths and controlled player defeats in the production build. UI selection, physical route helper, real manager damage/death callbacks, real boss and end-screen transitions. Not natural combat victories or human playtests.",
+  "intendedCriteria": [
+    "AUD-071 positive map/boss bindings",
+    "AUD-115 coherent win/loss paths"
+  ],
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "hardwarePerformanceVerified": false,
+  "expectedContexts": 11,
+  "fullElevenContextCoverage": true,
+  "expectedOutcomes": [
+    "victory",
+    "defeat"
+  ],
+  "expectedPaths": 22,
+  "fullVictoryAndDefeatCoverage": true,
+  "inputAssistances": [
+    "deterministic walking in existing route helper",
+    "measured floor correction for accelerated assisted walking, vertical snap bounded to .66",
+    "large manager-applied damage to shorten encounters",
+    "controlled player HP=0 for defeat"
+  ],
+  "errors": [],
+  "failedRequests": [],
+  "externalRequests": [],
+  "cases": [
+    {
+      "levelId": "gunnison_forest",
+      "expectedBoss": "predalien_queen",
+      "intendedOutcome": "victory",
+      "status": "passed",
+      "started": {
+        "insertion": {
+          "simulated": 4.24999999999999,
+          "phase": "complete",
+          "visible": true
+        },
+        "state": {
+          "levelId": "gunnison_forest",
+          "expectedBoss": "predalien_queen",
+          "sectors": 6,
+          "playerVisible": true
+        }
+      },
+      "physicalStages": [
+        {
+          "requestedSectorIndex": 0,
+          "visited": [
+            "insertion"
+          ],
+          "completed": [],
+          "openGates": [],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000002
+          }
+        },
+        {
+          "requestedSectorIndex": 1,
+          "visited": [
+            "insertion",
+            "approach"
+          ],
+          "completed": [
+            "insertion"
+          ],
+          "openGates": [
+            "gate-insertion-approach"
+          ],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000028
+          }
+        },
+        {
+          "requestedSectorIndex": 2,
+          "visited": [
+            "approach",
+            "relay"
+          ],
+          "completed": [
+            "insertion",
+            "approach"
+          ],
+          "openGates": [
+            "gate-insertion-approach",
+            "gate-approach-relay"
+          ],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000113
+          }
+        },
+        {
+          "requestedSectorIndex": 3,
+          "visited": [
+            "relay",
+            "foundry"
+          ],
+          "completed": [
+            "insertion",
+            "approach",
+            "relay"
+          ],
+          "openGates": [
+            "gate-insertion-approach",
+            "gate-approach-relay",
+            "gate-relay-foundry"
+          ],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000217
+          }
+        },
+        {
+          "requestedSectorIndex": 4,
+          "visited": [
+            "foundry",
+            "command"
+          ],
+          "completed": [
+            "insertion",
+            "approach",
+            "relay",
+            "foundry"
+          ],
+          "openGates": [
+            "gate-insertion-approach",
+            "gate-approach-relay",
+            "gate-relay-foundry",
+            "gate-foundry-command"
+          ],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000088
+          }
+        },
+        {
+          "requestedSectorIndex": 5,
+          "visited": [
+            "command",
+            "nest"
+          ],
+          "completed": [
+            "insertion",
+            "approach",
+            "relay",
+            "foundry",
+            "command"
+          ],
+          "openGates": [
+            "gate-insertion-approach",
+            "gate-approach-relay",
+            "gate-relay-foundry",
+            "gate-foundry-command",
+            "gate-command-nest"
+          ],
+          "boss": "predalien_queen",
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000283
+          }
+        }
+      ],
+      "route": {
+        "visited": [
+          "insertion",
+          "approach",
+          "relay",
+          "foundry",
+          "command",
+          "nest"
+        ],
+        "completed": [
+          "insertion",
+          "approach",
+          "relay",
+          "foundry",
+          "command"
+        ],
+        "openGates": [
+          "gate-insertion-approach",
+          "gate-approach-relay",
+          "gate-relay-foundry",
+          "gate-foundry-command",
+          "gate-command-nest"
+        ],
+        "boss": "predalien_queen",
+        "movementMetrics": {
+          "maximumGroundCorrection": 0,
+          "maximumRequestedHorizontalStep": 0.7000000000000283
+        }
+      },
+      "boss": {
+        "type": "predalien_queen",
+        "hp": 5000,
+        "maxHp": 5000,
+        "meshPresent": true,
+        "configuredType": "predalien_queen"
+      },
+      "ended": {
+        "playing": false,
+        "playerCleared": true,
+        "title": "VICTOIRE GLORIEUSE !",
+        "subtitle": "La ruche a été anéantie. Votre clan honore cette victoire.",
+        "actualBossCleared": true,
+        "actors": 0,
+        "queues": 0,
+        "projectiles": 0,
+        "missionTasks": 0
+      }
+    },
+    {
+      "levelId": "gunnison_forest",
+      "expectedBoss": "predalien_queen",
+      "intendedOutcome": "defeat",
+      "status": "passed",
+      "started": {
+        "insertion": {
+          "simulated": 4.266666666666657,
+          "phase": "complete",
+          "visible": true
+        },
+        "state": {
+          "levelId": "gunnison_forest",
+          "expectedBoss": "predalien_queen",
+          "sectors": 6,
+          "playerVisible": true
+        }
+      },
+      "ended": {
+        "playing": false,
+        "playerCleared": true,
+        "title": "CHASSE TERMINÉE",
+        "subtitle": "Votre Yautja est tombé au combat. Préparez une nouvelle chasse.",
+        "actualBossCleared": true,
+        "actors": 0,
+        "queues": 0,
+        "projectiles": 0,
+        "missionTasks": 0
+      }
+    },
+    {
+      "levelId": "xenomorph_prime",
+      "expectedBoss": "empress_matriarch",
+      "intendedOutcome": "victory",
+      "status": "passed",
+      "started": {
+        "insertion": {
+          "simulated": 4.266666666666657,
+          "phase": "complete",
+          "visible": true
+        },
+        "state": {
+          "levelId": "xenomorph_prime",
+          "expectedBoss": "empress_matriarch",
+          "sectors": 6,
+          "playerVisible": true
+        }
+      },
+      "physicalStages": [
+        {
+          "requestedSectorIndex": 0,
+          "visited": [
+            "insertion"
+          ],
+          "completed": [],
+          "openGates": [],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000002
+          }
+        },
+        {
+          "requestedSectorIndex": 1,
+          "visited": [
+            "insertion",
+            "approach"
+          ],
+          "completed": [
+            "insertion"
+          ],
+          "openGates": [
+            "gate-insertion-approach"
+          ],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.700000000000007
+          }
+        },
+        {
+          "requestedSectorIndex": 2,
+          "visited": [
+            "approach",
+            "relay"
+          ],
+          "completed": [
+            "insertion",
+            "approach"
+          ],
+          "openGates": [
+            "gate-insertion-approach",
+            "gate-approach-relay"
+          ],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000113
+          }
+        },
+        {
+          "requestedSectorIndex": 3,
+          "visited": [
+            "relay",
+            "foundry"
+          ],
+          "completed": [
+            "insertion",
+            "approach",
+            "relay"
+          ],
+          "openGates": [
+            "gate-insertion-approach",
+            "gate-approach-relay",
+            "gate-relay-foundry"
+          ],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000272
+          }
+        },
+        {
+          "requestedSectorIndex": 4,
+          "visited": [
+            "foundry",
+            "command"
+          ],
+          "completed": [
+            "insertion",
+            "approach",
+            "relay",
+            "foundry"
+          ],
+          "openGates": [
+            "gate-insertion-approach",
+            "gate-approach-relay",
+            "gate-relay-foundry",
+            "gate-foundry-command"
+          ],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000088
+          }
+        },
+        {
+          "requestedSectorIndex": 5,
+          "visited": [
+            "command",
+            "nest"
+          ],
+          "completed": [
+            "insertion",
+            "approach",
+            "relay",
+            "foundry",
+            "command"
+          ],
+          "openGates": [
+            "gate-insertion-approach",
+            "gate-approach-relay",
+            "gate-relay-foundry",
+            "gate-foundry-command",
+            "gate-command-nest"
+          ],
+          "boss": "empress_matriarch",
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000283
+          }
+        }
+      ],
+      "route": {
+        "visited": [
+          "insertion",
+          "approach",
+          "relay",
+          "foundry",
+          "command",
+          "nest"
+        ],
+        "completed": [
+          "insertion",
+          "approach",
+          "relay",
+          "foundry",
+          "command"
+        ],
+        "openGates": [
+          "gate-insertion-approach",
+          "gate-approach-relay",
+          "gate-relay-foundry",
+          "gate-foundry-command",
+          "gate-command-nest"
+        ],
+        "boss": "empress_matriarch",
+        "movementMetrics": {
+          "maximumGroundCorrection": 0,
+          "maximumRequestedHorizontalStep": 0.7000000000000283
+        }
+      },
+      "boss": {
+        "type": "empress_matriarch",
+        "hp": 6000,
+        "maxHp": 6000,
+        "meshPresent": true,
+        "configuredType": "empress_matriarch"
+      },
+      "ended": {
+        "playing": false,
+        "playerCleared": true,
+        "title": "VICTOIRE GLORIEUSE !",
+        "subtitle": "La ruche a été anéantie. Votre clan honore cette victoire.",
+        "actualBossCleared": true,
+        "actors": 0,
+        "queues": 0,
+        "projectiles": 0,
+        "missionTasks": 0
+      }
+    },
+    {
+      "levelId": "xenomorph_prime",
+      "expectedBoss": "empress_matriarch",
+      "intendedOutcome": "defeat",
+      "status": "passed",
+      "started": {
+        "insertion": {
+          "simulated": 4.566666666666656,
+          "phase": "complete",
+          "visible": true
+        },
+        "state": {
+          "levelId": "xenomorph_prime",
+          "expectedBoss": "empress_matriarch",
+          "sectors": 6,
+          "playerVisible": true
+        }
+      },
+      "ended": {
+        "playing": false,
+        "playerCleared": true,
+        "title": "CHASSE TERMINÉE",
+        "subtitle": "Votre Yautja est tombé au combat. Préparez une nouvelle chasse.",
+        "actualBossCleared": true,
+        "actors": 0,
+        "queues": 0,
+        "projectiles": 0,
+        "missionTasks": 0
+      }
+    },
+    {
+      "levelId": "antarctic_pyramid",
+      "expectedBoss": "xenomorph_queen",
+      "intendedOutcome": "victory",
+      "status": "passed",
+      "started": {
+        "insertion": {
+          "simulated": 4.266666666666657,
+          "phase": "complete",
+          "visible": true
+        },
+        "state": {
+          "levelId": "antarctic_pyramid",
+          "expectedBoss": "xenomorph_queen",
+          "sectors": 6,
+          "playerVisible": true
+        }
+      },
+      "physicalStages": [
+        {
+          "requestedSectorIndex": 0,
+          "visited": [
+            "insertion"
+          ],
+          "completed": [],
+          "openGates": [],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000002
+          }
+        },
+        {
+          "requestedSectorIndex": 1,
+          "visited": [
+            "insertion",
+            "approach"
+          ],
+          "completed": [
+            "insertion"
+          ],
+          "openGates": [
+            "gate-insertion-approach"
+          ],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000028
+          }
+        },
+        {
+          "requestedSectorIndex": 2,
+          "visited": [
+            "approach",
+            "relay"
+          ],
+          "completed": [
+            "insertion",
+            "approach"
+          ],
+          "openGates": [
+            "gate-insertion-approach",
+            "gate-approach-relay"
+          ],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000113
+          }
+        },
+        {
+          "requestedSectorIndex": 3,
+          "visited": [
+            "relay",
+            "foundry"
+          ],
+          "completed": [
+            "insertion",
+            "approach",
+            "relay"
+          ],
+          "openGates": [
+            "gate-insertion-approach",
+            "gate-approach-relay",
+            "gate-relay-foundry"
+          ],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000254
+          }
+        },
+        {
+          "requestedSectorIndex": 4,
+          "visited": [
+            "foundry",
+            "command"
+          ],
+          "completed": [
+            "insertion",
+            "approach",
+            "relay",
+            "foundry"
+          ],
+          "openGates": [
+            "gate-insertion-approach",
+            "gate-approach-relay",
+            "gate-relay-foundry",
+            "gate-foundry-command"
+          ],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000088
+          }
+        },
+        {
+          "requestedSectorIndex": 5,
+          "visited": [
+            "command",
+            "nest"
+          ],
+          "completed": [
+            "insertion",
+            "approach",
+            "relay",
+            "foundry",
+            "command"
+          ],
+          "openGates": [
+            "gate-insertion-approach",
+            "gate-approach-relay",
+            "gate-relay-foundry",
+            "gate-foundry-command",
+            "gate-command-nest"
+          ],
+          "boss": "xenomorph_queen",
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000283
+          }
+        }
+      ],
+      "route": {
+        "visited": [
+          "insertion",
+          "approach",
+          "relay",
+          "foundry",
+          "command",
+          "nest"
+        ],
+        "completed": [
+          "insertion",
+          "approach",
+          "relay",
+          "foundry",
+          "command"
+        ],
+        "openGates": [
+          "gate-insertion-approach",
+          "gate-approach-relay",
+          "gate-relay-foundry",
+          "gate-foundry-command",
+          "gate-command-nest"
+        ],
+        "boss": "xenomorph_queen",
+        "movementMetrics": {
+          "maximumGroundCorrection": 0,
+          "maximumRequestedHorizontalStep": 0.7000000000000283
+        }
+      },
+      "boss": {
+        "type": "xenomorph_queen",
+        "hp": 3000,
+        "maxHp": 3000,
+        "meshPresent": true,
+        "configuredType": "xenomorph_queen"
+      },
+      "ended": {
+        "playing": false,
+        "playerCleared": true,
+        "title": "VICTOIRE GLORIEUSE !",
+        "subtitle": "La ruche a été anéantie. Votre clan honore cette victoire.",
+        "actualBossCleared": true,
+        "actors": 0,
+        "queues": 0,
+        "projectiles": 0,
+        "missionTasks": 0
+      }
+    },
+    {
+      "levelId": "antarctic_pyramid",
+      "expectedBoss": "xenomorph_queen",
+      "intendedOutcome": "defeat",
+      "status": "passed",
+      "started": {
+        "insertion": {
+          "simulated": 4.266666666666657,
+          "phase": "complete",
+          "visible": true
+        },
+        "state": {
+          "levelId": "antarctic_pyramid",
+          "expectedBoss": "xenomorph_queen",
+          "sectors": 6,
+          "playerVisible": true
+        }
+      },
+      "ended": {
+        "playing": false,
+        "playerCleared": true,
+        "title": "CHASSE TERMINÉE",
+        "subtitle": "Votre Yautja est tombé au combat. Préparez une nouvelle chasse.",
+        "actualBossCleared": true,
+        "actors": 0,
+        "queues": 0,
+        "projectiles": 0,
+        "missionTasks": 0
+      }
+    },
+    {
+      "levelId": "la_rooftops",
+      "expectedBoss": "city_hunter_boss",
+      "intendedOutcome": "victory",
+      "status": "passed",
+      "started": {
+        "insertion": {
+          "simulated": 4.266666666666657,
+          "phase": "complete",
+          "visible": true
+        },
+        "state": {
+          "levelId": "la_rooftops",
+          "expectedBoss": "city_hunter_boss",
+          "sectors": 6,
+          "playerVisible": true
+        }
+      },
+      "physicalStages": [
+        {
+          "requestedSectorIndex": 0,
+          "visited": [
+            "insertion"
+          ],
+          "completed": [],
+          "openGates": [],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.2999999999999998
+          }
+        },
+        {
+          "requestedSectorIndex": 1,
+          "visited": [
+            "insertion",
+            "approach"
+          ],
+          "completed": [
+            "insertion"
+          ],
+          "openGates": [
+            "gate-insertion-approach"
+          ],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0.4500000000000002,
+            "maximumRequestedHorizontalStep": 0.7000000000000111
+          }
+        },
+        {
+          "requestedSectorIndex": 2,
+          "visited": [
+            "approach",
+            "relay"
+          ],
+          "completed": [
+            "insertion",
+            "approach"
+          ],
+          "openGates": [
+            "gate-insertion-approach",
+            "gate-approach-relay"
+          ],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000113
+          }
+        },
+        {
+          "requestedSectorIndex": 3,
+          "visited": [
+            "relay",
+            "foundry"
+          ],
+          "completed": [
+            "insertion",
+            "approach",
+            "relay"
+          ],
+          "openGates": [
+            "gate-insertion-approach",
+            "gate-approach-relay",
+            "gate-relay-foundry"
+          ],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000265
+          }
+        },
+        {
+          "requestedSectorIndex": 4,
+          "visited": [
+            "foundry",
+            "command"
+          ],
+          "completed": [
+            "insertion",
+            "approach",
+            "relay",
+            "foundry"
+          ],
+          "openGates": [
+            "gate-insertion-approach",
+            "gate-approach-relay",
+            "gate-relay-foundry",
+            "gate-foundry-command"
+          ],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000088
+          }
+        },
+        {
+          "requestedSectorIndex": 5,
+          "visited": [
+            "command",
+            "nest"
+          ],
+          "completed": [
+            "insertion",
+            "approach",
+            "relay",
+            "foundry",
+            "command"
+          ],
+          "openGates": [
+            "gate-insertion-approach",
+            "gate-approach-relay",
+            "gate-relay-foundry",
+            "gate-foundry-command",
+            "gate-command-nest"
+          ],
+          "boss": "city_hunter_boss",
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000283
+          }
+        }
+      ],
+      "route": {
+        "visited": [
+          "insertion",
+          "approach",
+          "relay",
+          "foundry",
+          "command",
+          "nest"
+        ],
+        "completed": [
+          "insertion",
+          "approach",
+          "relay",
+          "foundry",
+          "command"
+        ],
+        "openGates": [
+          "gate-insertion-approach",
+          "gate-approach-relay",
+          "gate-relay-foundry",
+          "gate-foundry-command",
+          "gate-command-nest"
+        ],
+        "boss": "city_hunter_boss",
+        "movementMetrics": {
+          "maximumGroundCorrection": 0,
+          "maximumRequestedHorizontalStep": 0.7000000000000283
+        }
+      },
+      "boss": {
+        "type": "city_hunter_boss",
+        "hp": 7600,
+        "maxHp": 7600,
+        "meshPresent": true,
+        "configuredType": "city_hunter_boss"
+      },
+      "ended": {
+        "playing": false,
+        "playerCleared": true,
+        "title": "VICTOIRE GLORIEUSE !",
+        "subtitle": "La ruche a été anéantie. Votre clan honore cette victoire.",
+        "actualBossCleared": true,
+        "actors": 0,
+        "queues": 0,
+        "projectiles": 0,
+        "missionTasks": 0
+      }
+    },
+    {
+      "levelId": "la_rooftops",
+      "expectedBoss": "city_hunter_boss",
+      "intendedOutcome": "defeat",
+      "status": "passed",
+      "started": {
+        "insertion": {
+          "simulated": 4.266666666666657,
+          "phase": "complete",
+          "visible": true
+        },
+        "state": {
+          "levelId": "la_rooftops",
+          "expectedBoss": "city_hunter_boss",
+          "sectors": 6,
+          "playerVisible": true
+        }
+      },
+      "ended": {
+        "playing": false,
+        "playerCleared": true,
+        "title": "CHASSE TERMINÉE",
+        "subtitle": "Votre Yautja est tombé au combat. Préparez une nouvelle chasse.",
+        "actualBossCleared": true,
+        "actors": 0,
+        "queues": 0,
+        "projectiles": 0,
+        "missionTasks": 0
+      }
+    },
+    {
+      "levelId": "val_verde_jungle",
+      "expectedBoss": "jungle_hunter_boss",
+      "intendedOutcome": "victory",
+      "status": "passed",
+      "started": {
+        "insertion": {
+          "simulated": 4.266666666666657,
+          "phase": "complete",
+          "visible": true
+        },
+        "state": {
+          "levelId": "val_verde_jungle",
+          "expectedBoss": "jungle_hunter_boss",
+          "sectors": 6,
+          "playerVisible": true
+        }
+      },
+      "physicalStages": [
+        {
+          "requestedSectorIndex": 0,
+          "visited": [
+            "insertion"
+          ],
+          "completed": [],
+          "openGates": [],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000002
+          }
+        },
+        {
+          "requestedSectorIndex": 1,
+          "visited": [
+            "insertion",
+            "approach"
+          ],
+          "completed": [
+            "insertion"
+          ],
+          "openGates": [
+            "gate-insertion-approach"
+          ],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.700000000000007
+          }
+        },
+        {
+          "requestedSectorIndex": 2,
+          "visited": [
+            "approach",
+            "relay"
+          ],
+          "completed": [
+            "insertion",
+            "approach"
+          ],
+          "openGates": [
+            "gate-insertion-approach",
+            "gate-approach-relay"
+          ],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000113
+          }
+        },
+        {
+          "requestedSectorIndex": 3,
+          "visited": [
+            "relay",
+            "foundry"
+          ],
+          "completed": [
+            "insertion",
+            "approach",
+            "relay"
+          ],
+          "openGates": [
+            "gate-insertion-approach",
+            "gate-approach-relay",
+            "gate-relay-foundry"
+          ],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000274
+          }
+        },
+        {
+          "requestedSectorIndex": 4,
+          "visited": [
+            "foundry",
+            "command"
+          ],
+          "completed": [
+            "insertion",
+            "approach",
+            "relay",
+            "foundry"
+          ],
+          "openGates": [
+            "gate-insertion-approach",
+            "gate-approach-relay",
+            "gate-relay-foundry",
+            "gate-foundry-command"
+          ],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000088
+          }
+        },
+        {
+          "requestedSectorIndex": 5,
+          "visited": [
+            "command",
+            "nest"
+          ],
+          "completed": [
+            "insertion",
+            "approach",
+            "relay",
+            "foundry",
+            "command"
+          ],
+          "openGates": [
+            "gate-insertion-approach",
+            "gate-approach-relay",
+            "gate-relay-foundry",
+            "gate-foundry-command",
+            "gate-command-nest"
+          ],
+          "boss": "jungle_hunter_boss",
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000283
+          }
+        }
+      ],
+      "route": {
+        "visited": [
+          "insertion",
+          "approach",
+          "relay",
+          "foundry",
+          "command",
+          "nest"
+        ],
+        "completed": [
+          "insertion",
+          "approach",
+          "relay",
+          "foundry",
+          "command"
+        ],
+        "openGates": [
+          "gate-insertion-approach",
+          "gate-approach-relay",
+          "gate-relay-foundry",
+          "gate-foundry-command",
+          "gate-command-nest"
+        ],
+        "boss": "jungle_hunter_boss",
+        "movementMetrics": {
+          "maximumGroundCorrection": 0,
+          "maximumRequestedHorizontalStep": 0.7000000000000283
+        }
+      },
+      "boss": {
+        "type": "jungle_hunter_boss",
+        "hp": 7500,
+        "maxHp": 7500,
+        "meshPresent": true,
+        "configuredType": "jungle_hunter_boss"
+      },
+      "ended": {
+        "playing": false,
+        "playerCleared": true,
+        "title": "VICTOIRE GLORIEUSE !",
+        "subtitle": "La ruche a été anéantie. Votre clan honore cette victoire.",
+        "actualBossCleared": true,
+        "actors": 0,
+        "queues": 0,
+        "projectiles": 0,
+        "missionTasks": 0
+      }
+    },
+    {
+      "levelId": "val_verde_jungle",
+      "expectedBoss": "jungle_hunter_boss",
+      "intendedOutcome": "defeat",
+      "status": "passed",
+      "started": {
+        "insertion": {
+          "simulated": 4.266666666666657,
+          "phase": "complete",
+          "visible": true
+        },
+        "state": {
+          "levelId": "val_verde_jungle",
+          "expectedBoss": "jungle_hunter_boss",
+          "sectors": 6,
+          "playerVisible": true
+        }
+      },
+      "ended": {
+        "playing": false,
+        "playerCleared": true,
+        "title": "CHASSE TERMINÉE",
+        "subtitle": "Votre Yautja est tombé au combat. Préparez une nouvelle chasse.",
+        "actualBossCleared": true,
+        "actors": 0,
+        "queues": 0,
+        "projectiles": 0,
+        "missionTasks": 0
+      }
+    },
+    {
+      "levelId": "romulus_station",
+      "expectedBoss": "the_offspring",
+      "intendedOutcome": "victory",
+      "status": "passed",
+      "started": {
+        "insertion": {
+          "simulated": 4.266666666666657,
+          "phase": "complete",
+          "visible": true
+        },
+        "state": {
+          "levelId": "romulus_station",
+          "expectedBoss": "the_offspring",
+          "sectors": 6,
+          "playerVisible": true
+        }
+      },
+      "physicalStages": [
+        {
+          "requestedSectorIndex": 0,
+          "visited": [
+            "insertion"
+          ],
+          "completed": [],
+          "openGates": [],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000002
+          }
+        },
+        {
+          "requestedSectorIndex": 1,
+          "visited": [
+            "insertion",
+            "approach"
+          ],
+          "completed": [
+            "insertion"
+          ],
+          "openGates": [
+            "gate-insertion-approach"
+          ],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.700000000000007
+          }
+        },
+        {
+          "requestedSectorIndex": 2,
+          "visited": [
+            "approach",
+            "relay"
+          ],
+          "completed": [
+            "insertion",
+            "approach"
+          ],
+          "openGates": [
+            "gate-insertion-approach",
+            "gate-approach-relay"
+          ],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000113
+          }
+        },
+        {
+          "requestedSectorIndex": 3,
+          "visited": [
+            "relay",
+            "foundry"
+          ],
+          "completed": [
+            "insertion",
+            "approach",
+            "relay"
+          ],
+          "openGates": [
+            "gate-insertion-approach",
+            "gate-approach-relay",
+            "gate-relay-foundry"
+          ],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000269
+          }
+        },
+        {
+          "requestedSectorIndex": 4,
+          "visited": [
+            "foundry",
+            "command"
+          ],
+          "completed": [
+            "insertion",
+            "approach",
+            "relay",
+            "foundry"
+          ],
+          "openGates": [
+            "gate-insertion-approach",
+            "gate-approach-relay",
+            "gate-relay-foundry",
+            "gate-foundry-command"
+          ],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000088
+          }
+        },
+        {
+          "requestedSectorIndex": 5,
+          "visited": [
+            "command",
+            "nest"
+          ],
+          "completed": [
+            "insertion",
+            "approach",
+            "relay",
+            "foundry",
+            "command"
+          ],
+          "openGates": [
+            "gate-insertion-approach",
+            "gate-approach-relay",
+            "gate-relay-foundry",
+            "gate-foundry-command",
+            "gate-command-nest"
+          ],
+          "boss": "the_offspring",
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000283
+          }
+        }
+      ],
+      "route": {
+        "visited": [
+          "insertion",
+          "approach",
+          "relay",
+          "foundry",
+          "command",
+          "nest"
+        ],
+        "completed": [
+          "insertion",
+          "approach",
+          "relay",
+          "foundry",
+          "command"
+        ],
+        "openGates": [
+          "gate-insertion-approach",
+          "gate-approach-relay",
+          "gate-relay-foundry",
+          "gate-foundry-command",
+          "gate-command-nest"
+        ],
+        "boss": "the_offspring",
+        "movementMetrics": {
+          "maximumGroundCorrection": 0,
+          "maximumRequestedHorizontalStep": 0.7000000000000283
+        }
+      },
+      "boss": {
+        "type": "the_offspring",
+        "hp": 4500,
+        "maxHp": 4500,
+        "meshPresent": true,
+        "configuredType": "the_offspring"
+      },
+      "ended": {
+        "playing": false,
+        "playerCleared": true,
+        "title": "VICTOIRE GLORIEUSE !",
+        "subtitle": "La ruche a été anéantie. Votre clan honore cette victoire.",
+        "actualBossCleared": true,
+        "actors": 0,
+        "queues": 0,
+        "projectiles": 0,
+        "missionTasks": 0
+      }
+    },
+    {
+      "levelId": "romulus_station",
+      "expectedBoss": "the_offspring",
+      "intendedOutcome": "defeat",
+      "status": "passed",
+      "started": {
+        "insertion": {
+          "simulated": 4.566666666666656,
+          "phase": "complete",
+          "visible": true
+        },
+        "state": {
+          "levelId": "romulus_station",
+          "expectedBoss": "the_offspring",
+          "sectors": 6,
+          "playerVisible": true
+        }
+      },
+      "ended": {
+        "playing": false,
+        "playerCleared": true,
+        "title": "CHASSE TERMINÉE",
+        "subtitle": "Votre Yautja est tombé au combat. Préparez une nouvelle chasse.",
+        "actualBossCleared": true,
+        "actors": 0,
+        "queues": 0,
+        "projectiles": 0,
+        "missionTasks": 0
+      }
+    },
+    {
+      "levelId": "charon_rogue_base",
+      "expectedBoss": "rogue_king_prime",
+      "intendedOutcome": "victory",
+      "status": "passed",
+      "started": {
+        "insertion": {
+          "simulated": 4.266666666666657,
+          "phase": "complete",
+          "visible": true
+        },
+        "state": {
+          "levelId": "charon_rogue_base",
+          "expectedBoss": "rogue_king_prime",
+          "sectors": 6,
+          "playerVisible": true
+        }
+      },
+      "physicalStages": [
+        {
+          "requestedSectorIndex": 0,
+          "visited": [
+            "insertion"
+          ],
+          "completed": [],
+          "openGates": [],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000002
+          }
+        },
+        {
+          "requestedSectorIndex": 1,
+          "visited": [
+            "insertion",
+            "approach"
+          ],
+          "completed": [
+            "insertion"
+          ],
+          "openGates": [
+            "gate-insertion-approach"
+          ],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.700000000000007
+          }
+        },
+        {
+          "requestedSectorIndex": 2,
+          "visited": [
+            "approach",
+            "relay"
+          ],
+          "completed": [
+            "insertion",
+            "approach"
+          ],
+          "openGates": [
+            "gate-insertion-approach",
+            "gate-approach-relay"
+          ],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000113
+          }
+        },
+        {
+          "requestedSectorIndex": 3,
+          "visited": [
+            "relay",
+            "foundry"
+          ],
+          "completed": [
+            "insertion",
+            "approach",
+            "relay"
+          ],
+          "openGates": [
+            "gate-insertion-approach",
+            "gate-approach-relay",
+            "gate-relay-foundry"
+          ],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000269
+          }
+        },
+        {
+          "requestedSectorIndex": 4,
+          "visited": [
+            "foundry",
+            "command"
+          ],
+          "completed": [
+            "insertion",
+            "approach",
+            "relay",
+            "foundry"
+          ],
+          "openGates": [
+            "gate-insertion-approach",
+            "gate-approach-relay",
+            "gate-relay-foundry",
+            "gate-foundry-command"
+          ],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000088
+          }
+        },
+        {
+          "requestedSectorIndex": 5,
+          "visited": [
+            "command",
+            "nest"
+          ],
+          "completed": [
+            "insertion",
+            "approach",
+            "relay",
+            "foundry",
+            "command"
+          ],
+          "openGates": [
+            "gate-insertion-approach",
+            "gate-approach-relay",
+            "gate-relay-foundry",
+            "gate-foundry-command",
+            "gate-command-nest"
+          ],
+          "boss": "rogue_king_prime",
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000283
+          }
+        }
+      ],
+      "route": {
+        "visited": [
+          "insertion",
+          "approach",
+          "relay",
+          "foundry",
+          "command",
+          "nest"
+        ],
+        "completed": [
+          "insertion",
+          "approach",
+          "relay",
+          "foundry",
+          "command"
+        ],
+        "openGates": [
+          "gate-insertion-approach",
+          "gate-approach-relay",
+          "gate-relay-foundry",
+          "gate-foundry-command",
+          "gate-command-nest"
+        ],
+        "boss": "rogue_king_prime",
+        "movementMetrics": {
+          "maximumGroundCorrection": 0,
+          "maximumRequestedHorizontalStep": 0.7000000000000283
+        }
+      },
+      "boss": {
+        "type": "rogue_king_prime",
+        "hp": 9500,
+        "maxHp": 9500,
+        "meshPresent": true,
+        "configuredType": "rogue_king_prime"
+      },
+      "ended": {
+        "playing": false,
+        "playerCleared": true,
+        "title": "VICTOIRE GLORIEUSE !",
+        "subtitle": "La ruche a été anéantie. Votre clan honore cette victoire.",
+        "actualBossCleared": true,
+        "actors": 0,
+        "queues": 0,
+        "projectiles": 0,
+        "missionTasks": 0
+      }
+    },
+    {
+      "levelId": "charon_rogue_base",
+      "expectedBoss": "rogue_king_prime",
+      "intendedOutcome": "defeat",
+      "status": "passed",
+      "started": {
+        "insertion": {
+          "simulated": 4.266666666666657,
+          "phase": "complete",
+          "visible": true
+        },
+        "state": {
+          "levelId": "charon_rogue_base",
+          "expectedBoss": "rogue_king_prime",
+          "sectors": 6,
+          "playerVisible": true
+        }
+      },
+      "ended": {
+        "playing": false,
+        "playerCleared": true,
+        "title": "CHASSE TERMINÉE",
+        "subtitle": "Votre Yautja est tombé au combat. Préparez une nouvelle chasse.",
+        "actualBossCleared": true,
+        "actors": 0,
+        "queues": 0,
+        "projectiles": 0,
+        "missionTasks": 0
+      }
+    },
+    {
+      "levelId": "game_preserve_planet",
+      "expectedBoss": "berserker_super_predator",
+      "intendedOutcome": "victory",
+      "status": "passed",
+      "started": {
+        "insertion": {
+          "simulated": 4.266666666666657,
+          "phase": "complete",
+          "visible": true
+        },
+        "state": {
+          "levelId": "game_preserve_planet",
+          "expectedBoss": "berserker_super_predator",
+          "sectors": 6,
+          "playerVisible": true
+        }
+      },
+      "physicalStages": [
+        {
+          "requestedSectorIndex": 0,
+          "visited": [
+            "insertion"
+          ],
+          "completed": [],
+          "openGates": [],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000002
+          }
+        },
+        {
+          "requestedSectorIndex": 1,
+          "visited": [
+            "insertion",
+            "approach"
+          ],
+          "completed": [
+            "insertion"
+          ],
+          "openGates": [
+            "gate-insertion-approach"
+          ],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.700000000000007
+          }
+        },
+        {
+          "requestedSectorIndex": 2,
+          "visited": [
+            "approach",
+            "relay"
+          ],
+          "completed": [
+            "insertion",
+            "approach"
+          ],
+          "openGates": [
+            "gate-insertion-approach",
+            "gate-approach-relay"
+          ],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000113
+          }
+        },
+        {
+          "requestedSectorIndex": 3,
+          "visited": [
+            "relay",
+            "foundry"
+          ],
+          "completed": [
+            "insertion",
+            "approach",
+            "relay"
+          ],
+          "openGates": [
+            "gate-insertion-approach",
+            "gate-approach-relay",
+            "gate-relay-foundry"
+          ],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000274
+          }
+        },
+        {
+          "requestedSectorIndex": 4,
+          "visited": [
+            "foundry",
+            "command"
+          ],
+          "completed": [
+            "insertion",
+            "approach",
+            "relay",
+            "foundry"
+          ],
+          "openGates": [
+            "gate-insertion-approach",
+            "gate-approach-relay",
+            "gate-relay-foundry",
+            "gate-foundry-command"
+          ],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000088
+          }
+        },
+        {
+          "requestedSectorIndex": 5,
+          "visited": [
+            "command",
+            "nest"
+          ],
+          "completed": [
+            "insertion",
+            "approach",
+            "relay",
+            "foundry",
+            "command"
+          ],
+          "openGates": [
+            "gate-insertion-approach",
+            "gate-approach-relay",
+            "gate-relay-foundry",
+            "gate-foundry-command",
+            "gate-command-nest"
+          ],
+          "boss": "berserker_super_predator",
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000283
+          }
+        }
+      ],
+      "route": {
+        "visited": [
+          "insertion",
+          "approach",
+          "relay",
+          "foundry",
+          "command",
+          "nest"
+        ],
+        "completed": [
+          "insertion",
+          "approach",
+          "relay",
+          "foundry",
+          "command"
+        ],
+        "openGates": [
+          "gate-insertion-approach",
+          "gate-approach-relay",
+          "gate-relay-foundry",
+          "gate-foundry-command",
+          "gate-command-nest"
+        ],
+        "boss": "berserker_super_predator",
+        "movementMetrics": {
+          "maximumGroundCorrection": 0,
+          "maximumRequestedHorizontalStep": 0.7000000000000283
+        }
+      },
+      "boss": {
+        "type": "berserker_super_predator",
+        "hp": 8800,
+        "maxHp": 8800,
+        "meshPresent": true,
+        "configuredType": "berserker_super_predator"
+      },
+      "ended": {
+        "playing": false,
+        "playerCleared": true,
+        "title": "VICTOIRE GLORIEUSE !",
+        "subtitle": "La ruche a été anéantie. Votre clan honore cette victoire.",
+        "actualBossCleared": true,
+        "actors": 0,
+        "queues": 0,
+        "projectiles": 0,
+        "missionTasks": 0
+      }
+    },
+    {
+      "levelId": "game_preserve_planet",
+      "expectedBoss": "berserker_super_predator",
+      "intendedOutcome": "defeat",
+      "status": "passed",
+      "started": {
+        "insertion": {
+          "simulated": 4.266666666666657,
+          "phase": "complete",
+          "visible": true
+        },
+        "state": {
+          "levelId": "game_preserve_planet",
+          "expectedBoss": "berserker_super_predator",
+          "sectors": 6,
+          "playerVisible": true
+        }
+      },
+      "ended": {
+        "playing": false,
+        "playerCleared": true,
+        "title": "CHASSE TERMINÉE",
+        "subtitle": "Votre Yautja est tombé au combat. Préparez une nouvelle chasse.",
+        "actualBossCleared": true,
+        "actors": 0,
+        "queues": 0,
+        "projectiles": 0,
+        "missionTasks": 0
+      }
+    },
+    {
+      "levelId": "stargazer_facility",
+      "expectedBoss": "ultimate_upgrade_predator",
+      "intendedOutcome": "victory",
+      "status": "passed",
+      "started": {
+        "insertion": {
+          "simulated": 4.266666666666657,
+          "phase": "complete",
+          "visible": true
+        },
+        "state": {
+          "levelId": "stargazer_facility",
+          "expectedBoss": "ultimate_upgrade_predator",
+          "sectors": 6,
+          "playerVisible": true
+        }
+      },
+      "physicalStages": [
+        {
+          "requestedSectorIndex": 0,
+          "visited": [
+            "insertion"
+          ],
+          "completed": [],
+          "openGates": [],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000002
+          }
+        },
+        {
+          "requestedSectorIndex": 1,
+          "visited": [
+            "insertion",
+            "approach"
+          ],
+          "completed": [
+            "insertion"
+          ],
+          "openGates": [
+            "gate-insertion-approach"
+          ],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000028
+          }
+        },
+        {
+          "requestedSectorIndex": 2,
+          "visited": [
+            "approach",
+            "relay"
+          ],
+          "completed": [
+            "insertion",
+            "approach"
+          ],
+          "openGates": [
+            "gate-insertion-approach",
+            "gate-approach-relay"
+          ],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000113
+          }
+        },
+        {
+          "requestedSectorIndex": 3,
+          "visited": [
+            "relay",
+            "foundry"
+          ],
+          "completed": [
+            "insertion",
+            "approach",
+            "relay"
+          ],
+          "openGates": [
+            "gate-insertion-approach",
+            "gate-approach-relay",
+            "gate-relay-foundry"
+          ],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000217
+          }
+        },
+        {
+          "requestedSectorIndex": 4,
+          "visited": [
+            "foundry",
+            "command"
+          ],
+          "completed": [
+            "insertion",
+            "approach",
+            "relay",
+            "foundry"
+          ],
+          "openGates": [
+            "gate-insertion-approach",
+            "gate-approach-relay",
+            "gate-relay-foundry",
+            "gate-foundry-command"
+          ],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000088
+          }
+        },
+        {
+          "requestedSectorIndex": 5,
+          "visited": [
+            "command",
+            "nest"
+          ],
+          "completed": [
+            "insertion",
+            "approach",
+            "relay",
+            "foundry",
+            "command"
+          ],
+          "openGates": [
+            "gate-insertion-approach",
+            "gate-approach-relay",
+            "gate-relay-foundry",
+            "gate-foundry-command",
+            "gate-command-nest"
+          ],
+          "boss": "ultimate_upgrade_predator",
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000283
+          }
+        }
+      ],
+      "route": {
+        "visited": [
+          "insertion",
+          "approach",
+          "relay",
+          "foundry",
+          "command",
+          "nest"
+        ],
+        "completed": [
+          "insertion",
+          "approach",
+          "relay",
+          "foundry",
+          "command"
+        ],
+        "openGates": [
+          "gate-insertion-approach",
+          "gate-approach-relay",
+          "gate-relay-foundry",
+          "gate-foundry-command",
+          "gate-command-nest"
+        ],
+        "boss": "ultimate_upgrade_predator",
+        "movementMetrics": {
+          "maximumGroundCorrection": 0,
+          "maximumRequestedHorizontalStep": 0.7000000000000283
+        }
+      },
+      "boss": {
+        "type": "ultimate_upgrade_predator",
+        "hp": 9200,
+        "maxHp": 9200,
+        "meshPresent": true,
+        "configuredType": "ultimate_upgrade_predator"
+      },
+      "ended": {
+        "playing": false,
+        "playerCleared": true,
+        "title": "VICTOIRE GLORIEUSE !",
+        "subtitle": "La ruche a été anéantie. Votre clan honore cette victoire.",
+        "actualBossCleared": true,
+        "actors": 0,
+        "queues": 0,
+        "projectiles": 0,
+        "missionTasks": 0
+      }
+    },
+    {
+      "levelId": "stargazer_facility",
+      "expectedBoss": "ultimate_upgrade_predator",
+      "intendedOutcome": "defeat",
+      "status": "passed",
+      "started": {
+        "insertion": {
+          "simulated": 4.266666666666657,
+          "phase": "complete",
+          "visible": true
+        },
+        "state": {
+          "levelId": "stargazer_facility",
+          "expectedBoss": "ultimate_upgrade_predator",
+          "sectors": 6,
+          "playerVisible": true
+        }
+      },
+      "ended": {
+        "playing": false,
+        "playerCleared": true,
+        "title": "CHASSE TERMINÉE",
+        "subtitle": "Votre Yautja est tombé au combat. Préparez une nouvelle chasse.",
+        "actualBossCleared": true,
+        "actors": 0,
+        "queues": 0,
+        "projectiles": 0,
+        "missionTasks": 0
+      }
+    },
+    {
+      "levelId": "prey_comanche_territory",
+      "expectedBoss": "feral_predator_boss",
+      "intendedOutcome": "victory",
+      "status": "passed",
+      "started": {
+        "insertion": {
+          "simulated": 4.266666666666657,
+          "phase": "complete",
+          "visible": true
+        },
+        "state": {
+          "levelId": "prey_comanche_territory",
+          "expectedBoss": "feral_predator_boss",
+          "sectors": 6,
+          "playerVisible": true
+        }
+      },
+      "physicalStages": [
+        {
+          "requestedSectorIndex": 0,
+          "visited": [
+            "insertion"
+          ],
+          "completed": [],
+          "openGates": [],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000002
+          }
+        },
+        {
+          "requestedSectorIndex": 1,
+          "visited": [
+            "insertion",
+            "approach"
+          ],
+          "completed": [
+            "insertion"
+          ],
+          "openGates": [
+            "gate-insertion-approach"
+          ],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000028
+          }
+        },
+        {
+          "requestedSectorIndex": 2,
+          "visited": [
+            "approach",
+            "relay"
+          ],
+          "completed": [
+            "insertion",
+            "approach"
+          ],
+          "openGates": [
+            "gate-insertion-approach",
+            "gate-approach-relay"
+          ],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000113
+          }
+        },
+        {
+          "requestedSectorIndex": 3,
+          "visited": [
+            "relay",
+            "foundry"
+          ],
+          "completed": [
+            "insertion",
+            "approach",
+            "relay"
+          ],
+          "openGates": [
+            "gate-insertion-approach",
+            "gate-approach-relay",
+            "gate-relay-foundry"
+          ],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000217
+          }
+        },
+        {
+          "requestedSectorIndex": 4,
+          "visited": [
+            "foundry",
+            "command"
+          ],
+          "completed": [
+            "insertion",
+            "approach",
+            "relay",
+            "foundry"
+          ],
+          "openGates": [
+            "gate-insertion-approach",
+            "gate-approach-relay",
+            "gate-relay-foundry",
+            "gate-foundry-command"
+          ],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000088
+          }
+        },
+        {
+          "requestedSectorIndex": 5,
+          "visited": [
+            "command",
+            "nest"
+          ],
+          "completed": [
+            "insertion",
+            "approach",
+            "relay",
+            "foundry",
+            "command"
+          ],
+          "openGates": [
+            "gate-insertion-approach",
+            "gate-approach-relay",
+            "gate-relay-foundry",
+            "gate-foundry-command",
+            "gate-command-nest"
+          ],
+          "boss": "feral_predator_boss",
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000283
+          }
+        }
+      ],
+      "route": {
+        "visited": [
+          "insertion",
+          "approach",
+          "relay",
+          "foundry",
+          "command",
+          "nest"
+        ],
+        "completed": [
+          "insertion",
+          "approach",
+          "relay",
+          "foundry",
+          "command"
+        ],
+        "openGates": [
+          "gate-insertion-approach",
+          "gate-approach-relay",
+          "gate-relay-foundry",
+          "gate-foundry-command",
+          "gate-command-nest"
+        ],
+        "boss": "feral_predator_boss",
+        "movementMetrics": {
+          "maximumGroundCorrection": 0,
+          "maximumRequestedHorizontalStep": 0.7000000000000283
+        }
+      },
+      "boss": {
+        "type": "feral_predator_boss",
+        "hp": 8600,
+        "maxHp": 8600,
+        "meshPresent": true,
+        "configuredType": "feral_predator_boss"
+      },
+      "ended": {
+        "playing": false,
+        "playerCleared": true,
+        "title": "VICTOIRE GLORIEUSE !",
+        "subtitle": "La ruche a été anéantie. Votre clan honore cette victoire.",
+        "actualBossCleared": true,
+        "actors": 0,
+        "queues": 0,
+        "projectiles": 0,
+        "missionTasks": 0
+      }
+    },
+    {
+      "levelId": "prey_comanche_territory",
+      "expectedBoss": "feral_predator_boss",
+      "intendedOutcome": "defeat",
+      "status": "passed",
+      "started": {
+        "insertion": {
+          "simulated": 4.266666666666657,
+          "phase": "complete",
+          "visible": true
+        },
+        "state": {
+          "levelId": "prey_comanche_territory",
+          "expectedBoss": "feral_predator_boss",
+          "sectors": 6,
+          "playerVisible": true
+        }
+      },
+      "ended": {
+        "playing": false,
+        "playerCleared": true,
+        "title": "CHASSE TERMINÉE",
+        "subtitle": "Votre Yautja est tombé au combat. Préparez une nouvelle chasse.",
+        "actualBossCleared": true,
+        "actors": 0,
+        "queues": 0,
+        "projectiles": 0,
+        "missionTasks": 0
+      }
+    },
+    {
+      "levelId": "killer_of_killers_arena",
+      "expectedBoss": "apex_gladiator_predator",
+      "intendedOutcome": "victory",
+      "status": "passed",
+      "started": {
+        "insertion": {
+          "simulated": 4.266666666666657,
+          "phase": "complete",
+          "visible": true
+        },
+        "state": {
+          "levelId": "killer_of_killers_arena",
+          "expectedBoss": "apex_gladiator_predator",
+          "sectors": 6,
+          "playerVisible": true
+        }
+      },
+      "physicalStages": [
+        {
+          "requestedSectorIndex": 0,
+          "visited": [
+            "insertion"
+          ],
+          "completed": [],
+          "openGates": [],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000002
+          }
+        },
+        {
+          "requestedSectorIndex": 1,
+          "visited": [
+            "insertion",
+            "approach"
+          ],
+          "completed": [
+            "insertion"
+          ],
+          "openGates": [
+            "gate-insertion-approach"
+          ],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000028
+          }
+        },
+        {
+          "requestedSectorIndex": 2,
+          "visited": [
+            "approach",
+            "relay"
+          ],
+          "completed": [
+            "insertion",
+            "approach"
+          ],
+          "openGates": [
+            "gate-insertion-approach",
+            "gate-approach-relay"
+          ],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000113
+          }
+        },
+        {
+          "requestedSectorIndex": 3,
+          "visited": [
+            "relay",
+            "foundry"
+          ],
+          "completed": [
+            "insertion",
+            "approach",
+            "relay"
+          ],
+          "openGates": [
+            "gate-insertion-approach",
+            "gate-approach-relay",
+            "gate-relay-foundry"
+          ],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000254
+          }
+        },
+        {
+          "requestedSectorIndex": 4,
+          "visited": [
+            "foundry",
+            "command"
+          ],
+          "completed": [
+            "insertion",
+            "approach",
+            "relay",
+            "foundry"
+          ],
+          "openGates": [
+            "gate-insertion-approach",
+            "gate-approach-relay",
+            "gate-relay-foundry",
+            "gate-foundry-command"
+          ],
+          "boss": null,
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000088
+          }
+        },
+        {
+          "requestedSectorIndex": 5,
+          "visited": [
+            "command",
+            "nest"
+          ],
+          "completed": [
+            "insertion",
+            "approach",
+            "relay",
+            "foundry",
+            "command"
+          ],
+          "openGates": [
+            "gate-insertion-approach",
+            "gate-approach-relay",
+            "gate-relay-foundry",
+            "gate-foundry-command",
+            "gate-command-nest"
+          ],
+          "boss": "apex_gladiator_predator",
+          "movementMetrics": {
+            "maximumGroundCorrection": 0,
+            "maximumRequestedHorizontalStep": 0.7000000000000283
+          }
+        }
+      ],
+      "route": {
+        "visited": [
+          "insertion",
+          "approach",
+          "relay",
+          "foundry",
+          "command",
+          "nest"
+        ],
+        "completed": [
+          "insertion",
+          "approach",
+          "relay",
+          "foundry",
+          "command"
+        ],
+        "openGates": [
+          "gate-insertion-approach",
+          "gate-approach-relay",
+          "gate-relay-foundry",
+          "gate-foundry-command",
+          "gate-command-nest"
+        ],
+        "boss": "apex_gladiator_predator",
+        "movementMetrics": {
+          "maximumGroundCorrection": 0,
+          "maximumRequestedHorizontalStep": 0.7000000000000283
+        }
+      },
+      "boss": {
+        "type": "apex_gladiator_predator",
+        "hp": 9000,
+        "maxHp": 9000,
+        "meshPresent": true,
+        "configuredType": "apex_gladiator_predator"
+      },
+      "ended": {
+        "playing": false,
+        "playerCleared": true,
+        "title": "VICTOIRE GLORIEUSE !",
+        "subtitle": "La ruche a été anéantie. Votre clan honore cette victoire.",
+        "actualBossCleared": true,
+        "actors": 0,
+        "queues": 0,
+        "projectiles": 0,
+        "missionTasks": 0
+      }
+    },
+    {
+      "levelId": "killer_of_killers_arena",
+      "expectedBoss": "apex_gladiator_predator",
+      "intendedOutcome": "defeat",
+      "status": "passed",
+      "started": {
+        "insertion": {
+          "simulated": 4.466666666666656,
+          "phase": "complete",
+          "visible": true
+        },
+        "state": {
+          "levelId": "killer_of_killers_arena",
+          "expectedBoss": "apex_gladiator_predator",
+          "sectors": 6,
+          "playerVisible": true
+        }
+      },
+      "ended": {
+        "playing": false,
+        "playerCleared": true,
+        "title": "CHASSE TERMINÉE",
+        "subtitle": "Votre Yautja est tombé au combat. Préparez une nouvelle chasse.",
+        "actualBossCleared": true,
+        "actors": 0,
+        "queues": 0,
+        "projectiles": 0,
+        "missionTasks": 0
+      }
+    }
+  ],
+  "indexSha256": "8af6bd243df62fa4b9113d711bee3e011264d8e450ef399c49ed326024f17e83",
+  "distTreeSha256": "ec7db6d8953ab59135778677378d77ddce873d52686c57c4ad2611cc0c6bb105",
+  "buildInfo": {
+    "schemaVersion": 1,
+    "contentVersion": "v67-continuation-20261101",
+    "sourceCommit": "445108b1f191dfd3c6411e6df407c1c05c5b4388",
+    "sourceBranch": "codex/depth-pr3-20261028",
+    "sourceFingerprint": "b442dd89bc3130ae8dbd6a2c099b43865b8fa15dc5bf18710bcbc58a3124ec44",
+    "sourceFiles": 164,
+    "sourceTreeDirty": false,
+    "buildEpoch": 1793494058,
+    "reproducibleBuildDate": "2026-11-01T00:47:38.000Z",
+    "deploymentProof": "https://github.com/darknigthmare/Yautja-hive-warriors/blob/codex/depth-pr3-20261028/docs/qa/continuation-validation.json"
+  },
+  "helperSourcesBefore": [
+    {
+      "path": "docs/qa/pr3-next-20261028/run-complete-contexts.mjs",
+      "sha256": "c8eb455cecb143acd04150aad396cbef655de84a6e6016b258484b8fbb93c4c0",
+      "snapshot": "helper-source-0.mjs"
+    },
+    {
+      "path": "tests/helpers/complete-battlefield.mjs",
+      "sha256": "8fcbdcf2876f1127c7afb77931fdcc3fbd85457ef1757029ce42b50f7e3fe98d",
+      "snapshot": "helper-source-1.mjs"
+    },
+    {
+      "path": "tests/helpers/finish-insertion.mjs",
+      "sha256": "e62b36a664dd2fadaee8804fc70b75d7afa10ebd2345abdb645e806a7b899a43",
+      "snapshot": "helper-source-2.mjs"
+    }
+  ],
+  "helperSourcesAfter": [
+    {
+      "path": "docs/qa/pr3-next-20261028/run-complete-contexts.mjs",
+      "sha256": "c8eb455cecb143acd04150aad396cbef655de84a6e6016b258484b8fbb93c4c0"
+    },
+    {
+      "path": "tests/helpers/complete-battlefield.mjs",
+      "sha256": "8fcbdcf2876f1127c7afb77931fdcc3fbd85457ef1757029ce42b50f7e3fe98d"
+    },
+    {
+      "path": "tests/helpers/finish-insertion.mjs",
+      "sha256": "e62b36a664dd2fadaee8804fc70b75d7afa10ebd2345abdb645e806a7b899a43"
+    }
+  ],
+  "helpersUnchanged": true,
+  "distUnchanged": true,
+  "endedAt": "2026-11-01T00:56:12.576Z",
+  "durationSeconds": 488.784
+}

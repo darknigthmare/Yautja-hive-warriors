@@ -287,6 +287,20 @@ function stoneWorkshop(b) {
   for (let mark = 0; mark < 5; mark++) b.box(m.signal, [-1.5 + mark * 0.75, 0.026, 4.4], [0.18, 0.035, 1.2], [0, (mark % 2 ? 1 : -1) * 0.22, 0], true);
 }
 
+function resinButtress(b, royal) {
+  const m = b.mats;
+  // A split, tall rib silhouette contrasts with the low solid brood mound.
+  // The central opening is real: only the grounded side roots collide.
+  for (const side of [-1, 1]) {
+    b.solidSphere(m.resin, [side * 4.3, 1.5, 0], [1.4, 1.5, 3.6]);
+    for (let rib = 0; rib < 3; rib++) {
+      const z = -2.5 + rib * 2.4;
+      b.pipe(m.resin, [[side * 4.7, .2, z], [side * 4.9, 4.2, z], [side * 3.5, royal ? 9 : 8, z - .3], [side * 1.3, royal ? 11.4 : 10.2, z - .8]], .34, 16);
+      b.pipe(m.edge, [[side * 4.6, .3, z + .3], [side * 4.5, 3.6, z + .2], [side * 3, 7.5, z - .2]], .12, 12);
+    }
+  }
+}
+
 export function buildBattlefieldSectorDetails(env, sector, parent) {
   if (!sector || !parent?.isObject3D) throw new Error('Sector details require an actual sector parent');
   if (sector.index === 0) return null; // Preserve the already detailed insertion zone.
@@ -301,18 +315,26 @@ export function buildBattlefieldSectorDetails(env, sector, parent) {
     // below the existing foot clearance; they do not introduce a raised floor.
     b.box(b.mats.dark, [0, 0.0015, 0], [17, 0.003, 14], [0, 0, 0], true);
     for (const side of [-1, 1]) b.box(b.mats.edge, [side * 8.35, 0.003, 0], [0.07, 0.001, 13.5], [0, 0, 0], true);
-    if (type === 'hive' || role === 'nest' && (type === 'forest' || type === 'jungle')) resinGrowth(b, primary && (role === 'nest' || role === 'command'));
-    else if (type === 'temple' || type === 'jungle') role === 'foundry' && primary ? stoneWorkshop(b) : stoneMonument(b, primary && (role === 'command' || role === 'nest'));
+    const mark = (signature, build) => { site.signature = signature; build(); };
+    if (type === 'hive' || role === 'nest' && (type === 'forest' || type === 'jungle')) {
+      if (primary) mark('low-resin-brood-mound', () => resinGrowth(b, role === 'nest' || role === 'command'));
+      else mark('split-resin-rib-buttress', () => resinButtress(b, role === 'nest' || role === 'command'));
+    }
+    else if (type === 'temple' || type === 'jungle') {
+      if (primary) mark('split-stone-lintel', () => stoneMonument(b, role === 'command' || role === 'nest'));
+      else mark('low-stone-workshop', () => stoneWorkshop(b));
+    }
     else if (type === 'forest') {
-      if (role === 'foundry' && primary || role === 'approach' && site.quadrant === 3) timberWorks(b);
-      else if (role === 'relay' && primary || role === 'command' && site.quadrant === 3) relaySpire(b);
-      else fieldShelter(b, primary && role === 'command');
-    } else if (role === 'nest' && primary) specimenRack(b);
-    else if (role === 'relay' && primary) relaySpire(b);
-    else machineBank(b, primary && role === 'command');
+      if (role === 'foundry' && primary || site.quadrant === 3 && role !== 'command') mark('stacked-timber-works', () => timberWorks(b));
+      else if (role === 'relay' && primary || role === 'command' && site.quadrant === 3) mark('tiered-relay-mast', () => relaySpire(b));
+      else mark(primary && role === 'command' ? 'command-bivouac' : 'canvas-field-shelter', () => fieldShelter(b, primary && role === 'command'));
+    } else if (role === 'nest' && primary) mark('containment-vessel-rack', () => specimenRack(b));
+    else if (role === 'relay' ? primary : !primary) mark('tiered-relay-mast', () => relaySpire(b));
+    else mark(role === 'command' ? 'command-console-bank' : 'paired-industrial-machines', () => machineBank(b, role === 'command'));
   });
   b.group.userData.landmarks = sites;
   b.group.userData.role = `${type}-${role}`;
+  b.group.userData.sectorPlanning = sector.planning;
   return b.finish();
 }
 

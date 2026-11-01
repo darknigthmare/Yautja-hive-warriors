@@ -1,0 +1,226 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-11-01T01:13:05.436Z",
+  "status": "passed",
+  "scope": "Five real browser boot and playable insertion paths. Preserved raw rejected honor slots, partial v1 and legacy migration, malformed-operation fallback. Not exhaustive historical-save migration or human playtesting.",
+  "humanTesters": 0,
+  "hardwarePerformanceVerified": false,
+  "fidelity1to1Verified": false,
+  "assistances": [
+    "Real insertion advanced with game.update at 1/60 in existing helper; no combat victory or manually granted trophy"
+  ],
+  "indexSha256": "59955fb9eb9fea457916a52ccf19cb7ab2e19cea5b5c913c86467fa92005f5a8",
+  "sourceCommit": "e524c2b96ef35e80768295fb1a3dd06bea3b5d63",
+  "cases": [
+    {
+      "id": "legacy-counter-migration",
+      "status": "passed",
+      "loaded": {
+        "state": {
+          "earned": 1200,
+          "spent": 100,
+          "balance": 1100,
+          "trophies": [],
+          "persistent": true,
+          "status": "saved",
+          "readOnly": false,
+          "recoveryRequired": false,
+          "recoveryReason": null,
+          "pendingRewards": 0,
+          "pendingHonor": 0
+        },
+        "raw": "{\"version\":1,\"earned\":1200,\"spent\":100,\"transactions\":{},\"closedSessions\":{},\"trophies\":[]}"
+      },
+      "insertion": {
+        "simulated": 4.24999999999999,
+        "phase": "complete",
+        "visible": true
+      },
+      "active": {
+        "hp": 1000,
+        "isPlaying": true,
+        "visible": true,
+        "readOnly": false,
+        "raw": "{\"version\":1,\"earned\":1200,\"spent\":100,\"transactions\":{},\"closedSessions\":{},\"trophies\":[]}"
+      }
+    },
+    {
+      "id": "partial-version-one",
+      "status": "passed",
+      "loaded": {
+        "state": {
+          "earned": 900,
+          "spent": 100,
+          "balance": 800,
+          "trophies": [
+            "Crâne de Prétorien — sauvegarde conservée"
+          ],
+          "persistent": true,
+          "status": "loaded",
+          "readOnly": false,
+          "recoveryRequired": false,
+          "recoveryReason": null,
+          "pendingRewards": 0,
+          "pendingHonor": 0
+        },
+        "raw": "{\"version\":1,\"earned\":900,\"spent\":100,\"trophies\":[\"Crâne de Prétorien — sauvegarde conservée\"],\"migrationNote\":\"conserver\"}"
+      },
+      "insertion": {
+        "simulated": 4.34999999999999,
+        "phase": "complete",
+        "visible": true
+      },
+      "active": {
+        "hp": 1000,
+        "isPlaying": true,
+        "visible": true,
+        "readOnly": false,
+        "raw": "{\"version\":1,\"earned\":900,\"spent\":100,\"trophies\":[\"Crâne de Prétorien — sauvegarde conservée\"],\"migrationNote\":\"conserver\"}"
+      }
+    },
+    {
+      "id": "future-version-preserved",
+      "status": "passed",
+      "loaded": {
+        "state": {
+          "earned": 0,
+          "spent": 0,
+          "balance": 0,
+          "trophies": [
+            "Crâne de Prétorien — sauvegarde conservée"
+          ],
+          "persistent": false,
+          "status": "recovery_required",
+          "readOnly": true,
+          "recoveryRequired": true,
+          "recoveryReason": "unsupported_version",
+          "pendingRewards": 0,
+          "pendingHonor": 0
+        },
+        "raw": "{\"version\":2,\"earned\":900,\"spent\":100,\"trophies\":[\"Crâne de Prétorien — sauvegarde conservée\"]}"
+      },
+      "insertion": {
+        "simulated": 4.34999999999999,
+        "phase": "complete",
+        "visible": true
+      },
+      "active": {
+        "hp": 1000,
+        "isPlaying": true,
+        "visible": true,
+        "readOnly": true,
+        "raw": "{\"version\":2,\"earned\":900,\"spent\":100,\"trophies\":[\"Crâne de Prétorien — sauvegarde conservée\"]}"
+      }
+    },
+    {
+      "id": "invalid-balance-preserved",
+      "status": "passed",
+      "loaded": {
+        "state": {
+          "earned": 0,
+          "spent": 0,
+          "balance": 0,
+          "trophies": [
+            "Crâne de Prétorien — sauvegarde conservée"
+          ],
+          "persistent": false,
+          "status": "recovery_required",
+          "readOnly": true,
+          "recoveryRequired": true,
+          "recoveryReason": "invalid_record",
+          "pendingRewards": 0,
+          "pendingHonor": 0
+        },
+        "raw": "{\"version\":1,\"earned\":\"invalid\",\"spent\":100,\"trophies\":[\"Crâne de Prétorien — sauvegarde conservée\"]}"
+      },
+      "insertion": {
+        "simulated": 4.34999999999999,
+        "phase": "complete",
+        "visible": true
+      },
+      "active": {
+        "hp": 1000,
+        "isPlaying": true,
+        "visible": true,
+        "readOnly": true,
+        "raw": "{\"version\":1,\"earned\":\"invalid\",\"spent\":100,\"trophies\":[\"Crâne de Prétorien — sauvegarde conservée\"]}"
+      }
+    },
+    {
+      "id": "malformed-operation-checkpoint",
+      "status": "passed",
+      "loaded": {
+        "state": {
+          "earned": 900,
+          "spent": 100,
+          "balance": 800,
+          "trophies": [
+            "Crâne de Prétorien — sauvegarde conservée"
+          ],
+          "persistent": true,
+          "status": "loaded",
+          "readOnly": false,
+          "recoveryRequired": false,
+          "recoveryReason": null,
+          "pendingRewards": 0,
+          "pendingHonor": 0
+        },
+        "raw": "{\"version\":1,\"earned\":900,\"spent\":100,\"trophies\":[\"Crâne de Prétorien — sauvegarde conservée\"],\"migrationNote\":\"conserver\"}"
+      },
+      "rejectedCheckpoint": {
+        "playing": false,
+        "raw": "{broken"
+      },
+      "insertion": {
+        "simulated": 4.24999999999999,
+        "phase": "complete",
+        "visible": true
+      },
+      "active": {
+        "hp": 1000,
+        "isPlaying": true,
+        "visible": true,
+        "readOnly": false,
+        "raw": "{\"version\":1,\"earned\":900,\"spent\":100,\"trophies\":[\"Crâne de Prétorien — sauvegarde conservée\"],\"migrationNote\":\"conserver\"}"
+      }
+    }
+  ],
+  "errors": [],
+  "failedRequests": [],
+  "externalRequests": [],
+  "helperSourcesBefore": [
+    {
+      "path": "docs/qa/continuation-20261101/verify-save-startup.mjs",
+      "sha256": "fd34b9ffe0d4ac235e3eb5c0bd559d0eb369ca6cf36f415656738035a95e1d8f"
+    },
+    {
+      "path": "tests/helpers/finish-insertion.mjs",
+      "sha256": "e62b36a664dd2fadaee8804fc70b75d7afa10ebd2345abdb645e806a7b899a43"
+    }
+  ],
+  "buildInfo": {
+    "schemaVersion": 1,
+    "contentVersion": "v67-continuation-20261101",
+    "sourceCommit": "e524c2b96ef35e80768295fb1a3dd06bea3b5d63",
+    "sourceBranch": "codex/depth-pr3-20261028",
+    "sourceFingerprint": "5b78bf5edd21f837e6832a53cc345c4c268093e4b04264a10ce25c7505b69d6b",
+    "sourceFiles": 164,
+    "sourceTreeDirty": false,
+    "buildEpoch": 1793494979,
+    "reproducibleBuildDate": "2026-11-01T01:02:59.000Z",
+    "deploymentProof": "https://github.com/darknigthmare/Yautja-hive-warriors/blob/codex/depth-pr3-20261028/docs/qa/continuation-final-validation.json"
+  },
+  "finishedAt": "2026-11-01T01:15:11.664Z",
+  "helperSourcesAfter": [
+    {
+      "path": "docs/qa/continuation-20261101/verify-save-startup.mjs",
+      "sha256": "fd34b9ffe0d4ac235e3eb5c0bd559d0eb369ca6cf36f415656738035a95e1d8f"
+    },
+    {
+      "path": "tests/helpers/finish-insertion.mjs",
+      "sha256": "e62b36a664dd2fadaee8804fc70b75d7afa10ebd2345abdb645e806a7b899a43"
+    }
+  ],
+  "helpersUnchanged": true,
+  "distUnchanged": true
+}

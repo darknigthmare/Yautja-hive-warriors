@@ -1,0 +1,33 @@
+{
+  "reviewedAt": "2026-11-01T00:58:29.008837+00:00",
+  "headBeforeIntegration": "445108b1f191dfd3c6411e6df407c1c05c5b4388",
+  "sourceTreeDirty": true,
+  "status": "passed_targeted_waiting_integrated_release",
+  "tests": {
+    "passed": 34,
+    "failed": 0,
+    "durationMs": 18614.698509
+  },
+  "sourceFiles": {
+    "js/entities/Environment.js": "58361eee553c99668056a433a29ddcaa648e804c636af9423cd7f7b394a7e346",
+    "js/entities/ReferenceEnvironmentMechanisms.js": "5c805e8b23b1bf7b484d6292b52b12e264aaf6b2f89962b474b040bf1d164d8d",
+    "js/engine/TemporaryCombatEffects.js": "81d4b6c9ae991edb22068c67df02372fba6f14347d28e6df2fb9e0c70ecaca3e",
+    "tests/environment-temporary-effects.test.js": "da72fb9c2f717e8ca9eedfdbfdf0ebc0a847b4f9d4866ca423a92d6720d5efb9",
+    "tests/temporary-freeze-owner.test.js": "29fbb14256c027e8b0dc06abcfb09f98b38f56f18f43330b03a3191e0fd410c9",
+    "docs/qa/continuation-20261101/world/environment-effects-final.txt": "46b2a975c36580b1237a7c6d0577ff1f31ef5e4ed2153766db9ddbb2c9a91471"
+  },
+  "scope": [
+    "Real Horde movement stops then resumes after nitrogen exposure",
+    "No creature material or origColor mutation by frozen actor",
+    "Environment simulation clock pauses with pause/photo; level clear relinquishes only environmental owner",
+    "Steam is strongest slow rather than repeated multiplication; transformer expiry restores actual phase base",
+    "Cooling tower, stasis coolant, ammonia, HVAC freon, locker, tar and inhibitor have bounded motor effects",
+    "Actual interaction functions and 19 existing environment/Prey regressions"
+  ],
+  "limitations": [
+    "Zero-speed hold controls locomotion; it is not a new global attack stun",
+    "Existing explicitly timed stun behavior remains owned by Horde",
+    "No exhaustive legacy status matrix or AUD-091 closure",
+    "No new browser, performance or fidelity certification from these CPU tests"
+  ]
+}

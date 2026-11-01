@@ -1,6 +1,7 @@
 import { makeTacticalBridgeSpec } from '../entities/TacticalBridge.js';
 import { getBattlefieldMapVariant } from './BattlefieldMapVariants.js';
 import { variantSectorCenters, createStrategicRoutes, normalizeBattlefieldSeed } from './BattlefieldTopology.js';
+import { planBattlefieldSectors } from './BattlefieldSectorPlanning.js';
 /* Six connected combat sectors. Coordinates are in the game's world units. */
 const IDS = ['insertion', 'approach', 'relay', 'foundry', 'command', 'nest'];
 const CENTERS = [[0, 0], [0, -170], [170, -170], [170, -340], [0, -340], [0, -510]];
@@ -93,5 +94,5 @@ export function createBattlefieldLayout(level = {}) {
     layout.bounds.minZ = Math.min(layout.bounds.minZ, corridor.bounds.minZ); layout.bounds.maxZ = Math.max(layout.bounds.maxZ, corridor.bounds.maxZ);
   }
   layout.dimensions = { width: layout.bounds.maxX - layout.bounds.minX, depth: layout.bounds.maxZ - layout.bounds.minZ };
-  return layout;
+  return planBattlefieldSectors(layout);
 }

@@ -9,6 +9,8 @@ import { attachHostParasiteVisual } from '../graphics/HostParasiteAttachment.js'
 import { SPECIALIST_ATTACKS } from '../data/SourceSpecialistCombat.js';
 import { disposeObject } from '../engine/SceneResources.js';
 import { selectHostileTarget, requestHostileAttack, syncHostileWarning, releaseHostileAttack } from '../engine/HostilePressure.js';
+import { humanSquadRole, humanFireTeamState, hasFriendlyFireLane, moveSquadActor } from '../engine/FactionSquadRoles.js';
+import { emitNPCShot, updateNPCShots, clearNPCShots } from '../graphics/NPCCombatFeedback.js';
 
 export class ColonialMarinesManager {
   constructor(scene, audioEngine) {
@@ -126,6 +128,7 @@ export class ColonialMarinesManager {
   update(delta, player, horde) {
     if (!Number.isFinite(delta) || delta <= 0) return;
     this.time = (this.time ?? 0) + delta;
+    updateNPCShots(this, delta);
     this.updateSpecialistMissiles(delta);
     if (this.distressBeacon) { this.distressBeacon.life -= delta; if (this.distressBeacon.life <= 0) { disposeObject(this.distressBeacon.mesh); this.distressBeacon = null; } }
     if (this.airSupportPending) { this.airSupportTimer -= delta; if (this.airSupportTimer <= 0) { this.airSupportPending = false; if (horde) horde.checkMeleeHits({ origin: this.strafeCenter, radius: 7, damage: 180, type: 'gunship', killerFaction: this.factionId ?? 'uscm' }); } }
@@ -206,7 +209,7 @@ export class ColonialMarinesManager {
         if (!target) { releaseHostileAttack(this, m); moveBattleOrder(this, m, delta, m.speed); continue; }
         targetPos = target.position; targetsPlayer = !target.isBattleNPC; targetPlayer = target;
       } else {
-        targetPlayer = selectHostileTarget(this, m.mesh.position, player);
+        targetPlayer = selectHostileTarget(this, m, player);
         let nearestDist = Infinity;
         for (const alien of horde?.aliens ?? []) { if (alien.hp <= 0) continue; const distance = m.mesh.position.distanceTo(alien.mesh.position); if (distance < nearestDist) { nearestDist = distance; target = alien; targetPos = alien.mesh.position; } }
         targetsPlayer = !targetPos;
@@ -220,8 +223,26 @@ export class ColonialMarinesManager {
       const range = specialist?.range ?? (m.type === 'flametrooper' ? 5 : 20);
       const stopping = specialist?.stopping ?? (m.type === 'flametrooper' ? 3.5 : 12);
       const covered = this.environment?.hasLineOfSight && !this.environment.hasLineOfSight(m.mesh.position.clone().add(new THREE.Vector3(0, 2, 0)), targetPos.clone().add(new THREE.Vector3(0, 1.6, 0)));
-      if (distance > stopping || covered || access && distance > range) { const step = access || covered ? Math.min(m.speed * delta, moveDistance || m.speed * delta) : Math.min(m.speed * delta, distance - stopping); const previous = m.mesh.position.clone(); m.mesh.position.addScaledVector(direction.normalize(), step); this.environment?.resolveAgentMovement?.(m.mesh.position, targetPos, step, .8, previous); }
+      m.tacticalState = humanFireTeamState(m, this.marines, this.time, distance, covered, { range, stopping });
+      m.mesh.userData.tacticalState = m.tacticalState;
+      if (m.tacticalState === 'withdraw') {
+        // A wounded soldier creates a finite nine-unit gap, without healing,
+        // discarding its identity or ignoring collision/navigation constraints.
+        const away = m.mesh.position.clone().sub(targetPos).setY(0);
+        if (away.lengthSq() < .01) away.set(1, 0, 0);
+        const destination = m.mesh.position.clone().addScaledVector(away.normalize(), 10 - distance);
+        moveSquadActor(this, m, destination, delta, m.speed * .75);
+        releaseHostileAttack(this, m); m._npcPreparation = 0; continue;
+      }
+      if (m.tacticalState !== 'covering' && (distance > stopping || covered || access && distance > range)) { const step = access || covered ? Math.min(m.speed * delta, moveDistance || m.speed * delta) : Math.min(m.speed * delta, distance - stopping); const previous = m.mesh.position.clone(); m.mesh.position.addScaledVector(direction.normalize(), step); this.environment?.resolveAgentMovement?.(m.mesh.position, targetPos, step, .8, previous); }
       if (covered || distance > range) { releaseHostileAttack(this, m); m.pressureAction = null; continue; }
+      if (!hasFriendlyFireLane(m, targetPos, this.marines)) {
+        // Step out of a friendly silhouette instead of shooting through it.
+        const side = m.squadRole === 'pointman' ? 1 : -1;
+        const lane = m.mesh.position.clone().add(new THREE.Vector3(direction.z * side, 0, -direction.x * side).normalize().multiplyScalar(2));
+        moveSquadActor(this, m, lane, delta, m.speed * .5);
+        releaseHostileAttack(this, m); m._npcPreparation = 0; continue;
+      }
       if (m.shootCooldown > 0) continue;
       const granted = targetsPlayer ? requestHostileAttack(this, m, targetPlayer, delta, { kind: 'ranged', windup: specialist?.windup ?? .8, recovery: specialist?.recovery ?? 1.5, duration: .3 })
         : !target.isBattleNPC || requestNPCStrike(m, target, delta, { windup: specialist?.windup ?? .6, recovery: specialist?.recovery ?? 1.45 });
@@ -251,6 +272,8 @@ export class ColonialMarinesManager {
         target.lastDamageFaction = m.factionId ?? 'uscm';
         if (target.hp <= 0) horde.defeatAlien?.(target, { cause: m.type, killerFaction: target.lastDamageFaction });
       }
+      emitNPCShot(this, m.mesh.position.clone().add(new THREE.Vector3(0, 2, 0)),
+        targetPos.clone().add(new THREE.Vector3(0, 1.6, 0)), m.type === 'flametrooper' ? 'fire' : 'ballistic');
       syncHostileWarning(this, m);
     }
     if (this.sentryGun?.ammo > 0) {
@@ -326,6 +349,7 @@ export class ColonialMarinesManager {
 
 
   clearSquad() {
+    clearNPCShots(this);
     for (const missile of this.specialistMissiles) disposeObject(missile.mesh);
     this.specialistMissiles = [];
     if (this.distressBeacon) disposeObject(this.distressBeacon.mesh); this.distressBeacon = null; this.airSupportPending = false; this.beaconTriggered = false;
@@ -360,7 +384,7 @@ export class ColonialMarinesManager {
     // actorType or claiming that its specialist ability is implemented.
     const heavyFrame = sourceVisualKind === 'exosuit';
     const actor = { mesh: this.createMarineMesh(sourceVisualKind ?? weaponKind), type: weaponKind,
-      sourceVisualKind, visualFidelity1to1Verified: false,
+      sourceVisualKind, squadRole: humanSquadRole(unit, group), visualFidelity1to1Verified: false,
       damage: heavyFrame ? SPECIALIST_ATTACKS.exosuit.damage : weaponKind === 'flametrooper' ? 35 : 20,
       speed: heavyFrame ? 5.0 : 8, radius: heavyFrame ? 1.12 : .8,
       shootCooldown: 1.5, grenadeCooldown: 7 };

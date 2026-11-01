@@ -13,7 +13,7 @@ const ROLES = Object.freeze({
 const noop = () => {};
 function normalize(value, previous = ACCESSIBILITY_DEFAULTS) {
   const input = value && typeof value === 'object' && !Array.isArray(value) ? value : {};
-  return { version: 1, palette: ['default', 'accessible'].includes(input.palette) ? input.palette : previous.palette,
+  return { version: 1, palette: ['default', 'accessible', 'monochrome'].includes(input.palette) ? input.palette : previous.palette,
     symbols: typeof input.symbols === 'boolean' ? input.symbols : previous.symbols,
     reducedFlashes: typeof input.reducedFlashes === 'boolean' ? input.reducedFlashes : previous.reducedFlashes };
 }
@@ -49,9 +49,9 @@ export class AccessibilityPreferences {
     const body = this.document?.body, prefs = this.preferences;
     if (!body) return false;
     body.classList?.toggle('reduced-flashes', prefs.reducedFlashes);
-    body.classList?.toggle('accessible-colors', prefs.palette === 'accessible');
+    body.classList?.toggle('accessible-colors', prefs.palette !== 'default');
     body.classList?.toggle('marker-symbols', prefs.symbols);
-    for (const [role, appearance] of Object.entries(ROLES)) body.style?.setProperty(`--marker-${role}`, prefs.palette === 'accessible' ? appearance.accessible : appearance.color);
+    for (const [role, appearance] of Object.entries(ROLES)) body.style?.setProperty(`--marker-${role}`, prefs.palette === 'monochrome' ? '#FFFFFF' : prefs.palette === 'accessible' ? appearance.accessible : appearance.color);
     return true;
   }
   dispose() { this.listeners.clear(); this.disposed = true; }
@@ -68,7 +68,7 @@ function camp(factionId) {
 
 export function markerAppearance({ role = 'neutral', factionId = '', label = '' } = {}, preferences = ACCESSIBILITY_DEFAULTS) {
   const descriptor = ROLES[role] ?? ROLES.neutral, family = camp(factionId), accessible = preferences?.palette === 'accessible';
-  const color = accessible ? ((role === 'ally' || role === 'hostile' || role === 'neutral') && family ? family.color : descriptor.accessible) : descriptor.color;
+  const color = preferences?.palette === 'monochrome' ? '#FFFFFF' : accessible ? ((role === 'ally' || role === 'hostile' || role === 'neutral') && family ? family.color : descriptor.accessible) : descriptor.color;
   const glyph = ['player', 'objective', 'danger'].includes(role) ? descriptor.glyph : family?.glyph ?? descriptor.glyph;
   return { role: ROLES[role] ? role : 'neutral', color, shape: descriptor.shape,
     glyph: preferences?.symbols === false ? '' : glyph, symbols: preferences?.symbols !== false,

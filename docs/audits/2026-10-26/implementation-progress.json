@@ -463,14 +463,27 @@
       "notes": "Les34terrains et plusieurs combats distants sont réels ; aucune capture de deux combats visibles depuis un point haut n’est fournie."
     },
     "AUD-021": {
-      "status": "En cours",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Groupes et factions",
       "item": "Créer des compositions de groupes par mission",
       "acceptance": "Une même graine et un même profil produisent une composition autorisée; aucune caste exclue n’apparaît.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "62modèles et27allocations sont consommables ; la réalisation actuelle utilise des archétypes adaptés explicites, pas les115silhouettes/castes différentes."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "review",
+          "path": "docs/qa/continuation-final-20261101/strict-closure-review-a80070c.json",
+          "sha256": "a68a08476948ce3d630c466adcaeec8d35c07882a7279803eb8a4e39c1fd8213",
+          "scope": "Les 27 configurations d’opération et les fronts semés produisent des compositions autorisées et déterministes. Les gardes rejettent les profils exclus, les doublons uniques et les contextes incompatibles. Les tests de catalogue, roster et simulation passent dans la suite finale de 1185 tests CPU sur a80070c. Cette clôture concerne les compositions exécutables ; les 270 fiches documentaires et les modèles rendus restent des niveaux de réalisation distincts."
+        },
+        {
+          "kind": "test",
+          "path": "docs/qa/continuation-final-20261101/cpu-navigation-final.txt",
+          "sha256": "3e32f5914cde08acac445beeeca94c9a955544762f81e094d341e98f0a6e0ca4",
+          "scope": "1185/1185CPU sura800,0échec/saut/annulation ; contient19matrices/18boss, vraisrouteursP1/P2,armées/catalogue/états/UI."
+        }
+      ],
+      "notes": "Les 27 configurations d’opération et les fronts semés produisent des compositions autorisées et déterministes. Les gardes rejettent les profils exclus, les doublons uniques et les contextes incompatibles. Les tests de catalogue, roster et simulation passent dans la suite finale de 1185 tests CPU sur a80070c. Cette clôture concerne les compositions exécutables ; les 270 fiches documentaires et les modèles rendus restent des niveaux de réalisation distincts."
     },
     "AUD-022": {
       "status": "Terminé",
@@ -549,14 +562,33 @@
       "notes": "Cellules et identité de clan sont persistantes et contextualisées ; les nombreux groupes proposés ne disposent pas tous d’équipement/modèle distinct fidèle."
     },
     "AUD-027": {
-      "status": "En cours",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Groupes et factions",
       "item": "Diversifier les groupes humains avec une structure réelle",
       "acceptance": "La composition autorise couverture, progression et replis; aucun groupe entier n’est composé de la même arme lourde.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Les compositions humaines et rôles existent ; les presets exécutables n’incarnent pas toutes les spécialisations sources et formations d’appui."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "review",
+          "path": "docs/qa/continuation-final-20261101/strict-closure-review-a80070c.json",
+          "sha256": "a68a08476948ce3d630c466adcaeec8d35c07882a7279803eb8a4e39c1fd8213",
+          "scope": "Les vrais gestionnaires permettent la couverture, la progression alternée et le repli, avec une ligne de tir bloquée par les alliés. Le recensement de 650 groupes humains ne trouve aucun groupe composé uniquement de la même arme lourde. Les comportements passent les tests CPU sur a80070c ; deux scènes PNJ rendues confirment tirs réciproques et effets visibles. Les autres spécialisations et silhouettes restent suivies séparément."
+        },
+        {
+          "kind": "test",
+          "path": "docs/qa/continuation-final-20261101/cpu-navigation-final.txt",
+          "sha256": "3e32f5914cde08acac445beeeca94c9a955544762f81e094d341e98f0a6e0ca4",
+          "scope": "1185/1185CPU sura800,0échec/saut/annulation ; contient19matrices/18boss, vraisrouteursP1/P2,armées/catalogue/états/UI."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/qa/continuation-20261101/factions/final-a80070c/report.json",
+          "sha256": "a63236aeb5f7bfa0c63c4a529b483ff2fb6dbc9426647269f900a3f56bed4bd4",
+          "scope": "2/2composants rendus a800 avec vraies classes bundle ; tirs réciproques et warning industriel visibles, pertes et cleanup réels. Identitésfixture, pasmissioncomplète."
+        }
+      ],
+      "notes": "Les vrais gestionnaires permettent la couverture, la progression alternée et le repli, avec une ligne de tir bloquée par les alliés. Le recensement de 650 groupes humains ne trouve aucun groupe composé uniquement de la même arme lourde. Les comportements passent les tests CPU sur a80070c ; deux scènes PNJ rendues confirment tirs réciproques et effets visibles. Les autres spécialisations et silhouettes restent suivies séparément."
     },
     "AUD-028": {
       "status": "À valider",
@@ -935,7 +967,7 @@
       "acceptance": "La défaite affiche sa cause vérifiable et laisse un temps de réaction cohérent avec la distance.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Défaites causales, fronts critiques et grâce sont testés ; la grâce fixe30s n’est pas encore calibrée aux retours depuis toutes les grandes cartes."
+      "notes": "Défaites causales, fronts critiques et grâce sont testés ; la grâce fixe30s n’est pas encore calibrée aux retours depuis toutes les grandes cartes. Reprise du 1/11/2026 (gel a80070c) : Grâce de retour/recapture désormais calibrée selon les routes physiques et alerte préalable précise. Le résultat critical_front_lost conserve un fallback final générique sans nom du front perdu ; maintienÀvalider. Diagnostic réel e524, propriétaires UI identiques dansa800."
     },
     "AUD-048": {
       "status": "Terminé",
@@ -1045,14 +1077,33 @@
       "notes": "Briefing et lancement utilisent la même configuration liée au terrain : forces, routes, fronts, objectifs, échecs et équipement sont présentés avant déploiement. Les budgets annoncés24/32 concordent avec les4lancements réels ; plafonds provisoires et cibles source sont distingués."
     },
     "AUD-053": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P2",
       "domain": "Fronts et objectifs",
       "item": "Ajouter renseignement et brouillard tactique",
       "acceptance": "Une unité hors contact n’est pas suivie avec précision absolue; le joueur connaît l’âge de son dernier rapport.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Intel respecte murs, vue des deuxjoueurs, rapports retardés, incertitude, ancienneté et reconnaissance temporaire. Lisibilité de tous ces états sur la carte tactique en session complète à confirmer."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "review",
+          "path": "docs/qa/continuation-final-20261101/strict-closure-review-a80070c.json",
+          "sha256": "a68a08476948ce3d630c466adcaeec8d35c07882a7279803eb8a4e39c1fd8213",
+          "scope": "Hors contact, le renseignement conserve la dernière position connue et son âge ; un déplacement caché ne met pas cette position à jour. La carte et ses panneaux distinguent contact, rapport ancien et information inconnue avec âge et incertitude. Les tests du vrai moteur et les six scénarios UI sur a80070c passent. La compréhension humaine universelle ne découle pas de cette vérification."
+        },
+        {
+          "kind": "test",
+          "path": "docs/qa/continuation-final-20261101/cpu-navigation-final.txt",
+          "sha256": "3e32f5914cde08acac445beeeca94c9a955544762f81e094d341e98f0a6e0ca4",
+          "scope": "1185/1185CPU sura800,0échec/saut/annulation ; contient19matrices/18boss, vraisrouteursP1/P2,armées/catalogue/états/UI."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/qa/continuation-final-20261101/ui-final-a80070c/report.json",
+          "sha256": "094c18ecbdd58eabe1e247402ee19fe687b63ec701e2d795d7b73886842f23f6",
+          "scope": "6/6casUIa800 : carte3fronts/ordre réel, délégation/tactique, reprise132IDs, personnage/debrief, camouflage et préférences ;0JS/réseau/externe."
+        }
+      ],
+      "notes": "Hors contact, le renseignement conserve la dernière position connue et son âge ; un déplacement caché ne met pas cette position à jour. La carte et ses panneaux distinguent contact, rapport ancien et information inconnue avec âge et incertitude. Les tests du vrai moteur et les six scénarios UI sur a80070c passent. La compréhension humaine universelle ne découle pas de cette vérification."
     },
     "AUD-054": {
       "status": "Terminé",
@@ -1241,7 +1292,7 @@
       "acceptance": "Un flot d’assaut traverse un goulet et une évacuation inverse reste possible; aucun blocage prolongé.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Détours, formations et navigation évitent les blocages structurels ; aucun stress test exhaustif d’assaut/évacuation opposés aux goulets n’est fourni."
+      "notes": "Détours, formations et navigation évitent les blocages structurels ; aucun stress test exhaustif d’assaut/évacuation opposés aux goulets n’est fourni. Reprise du 1/11/2026 (gel a80070c) : Stress32capsules sur11contextes et routes réelles vérifié ; pasde collisions inter-acteurs ni stress exhaustif pontétroit/counterflow. Le correctif navigationa800 atteint les destinations proches sans rejouer les détours, mais le critère global resteÀvalider."
     },
     "AUD-064": {
       "status": "Terminé",
@@ -1374,7 +1425,7 @@
       "acceptance": "La mesure distingue zones calmes, fronts denses et points de décision; aucune grande extension ne reste vide sans fonction.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Les fonctions de fronts existent ; mesure de densité utile et zones calmes pour chaque grande extension nonréalisée."
+      "notes": "Les fonctions de fronts existent ; mesure de densité utile et zones calmes pour chaque grande extension nonréalisée. Reprise du 1/11/2026 (gel a80070c) : Zonescalmes/front/décision ont fonctions spatiales construites et exclusions de spawn ; les densités sont souhaitées et calculées paraire, sans mesure de présence/temps réels parzone. MaintienEncours."
     },
     "AUD-071": {
       "status": "Terminé",
@@ -1503,14 +1554,27 @@
       "notes": "Élites/mini-boss/boss sont catégorisés et bornés ; escalade perceptible et respiration en combat complet nonmesurées."
     },
     "AUD-076": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Boss et mini-boss",
       "item": "Rendre chaque affrontement mécaniquement distinct",
       "acceptance": "Chaque boss exige au moins une lecture et une réponse distinctes; aucune différence limitée aux PV et à la couleur.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Plusieurs contre-jeux sont réels ; aucune revue individuelle des18lectures/réponses de boss n’est revendiquée."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "review",
+          "path": "docs/qa/continuation-final-20261101/strict-closure-review-a80070c.json",
+          "sha256": "a68a08476948ce3d630c466adcaeec8d35c07882a7279803eb8a4e39c1fd8213",
+          "scope": "Les 18 boss possèdent chacun une lecture et une réponse mécaniques distinctes, vérifiées avec un témoin et un contre-jeu mesuré. Le vrai sélecteur du Gladiateur choisit maintenant le bond qui déclenche son onde de réception. La matrice de 19 tests, les régressions des boss et la suite CPU finale passent sur a80070c. Les caméras, sources canoniques et ressemblances visuelles restent des critères séparés."
+        },
+        {
+          "kind": "test",
+          "path": "docs/qa/continuation-final-20261101/cpu-navigation-final.txt",
+          "sha256": "3e32f5914cde08acac445beeeca94c9a955544762f81e094d341e98f0a6e0ca4",
+          "scope": "1185/1185CPU sura800,0échec/saut/annulation ; contient19matrices/18boss, vraisrouteursP1/P2,armées/catalogue/états/UI."
+        }
+      ],
+      "notes": "Les 18 boss possèdent chacun une lecture et une réponse mécaniques distinctes, vérifiées avec un témoin et un contre-jeu mesuré. Le vrai sélecteur du Gladiateur choisit maintenant le bond qui déclenche son onde de réception. La matrice de 19 tests, les régressions des boss et la suite CPU finale passent sur a80070c. Les caméras, sources canoniques et ressemblances visuelles restent des critères séparés."
     },
     "AUD-077": {
       "status": "Terminé",
@@ -1575,14 +1639,33 @@
       "notes": "Les39fiches distinguent sources/adaptations/titres ; vérification externe individuelle des revendications canoniques encore partielle."
     },
     "AUD-080": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Boss et mini-boss",
       "item": "Intégrer les exécutions sans bloquer la bataille",
       "acceptance": "Une exécution ne tue pas le joueur hors champ, n’efface pas le boss d’un autre front et ne répète pas son trophée.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Exécution portée/armure/idempotence est testée ; sécurité horschamp et coexistence de tous boss pendant cinématique restent à confirmer."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "review",
+          "path": "docs/qa/continuation-final-20261101/strict-closure-review-a80070c.json",
+          "sha256": "a68a08476948ce3d630c466adcaeec8d35c07882a7279803eb8a4e39c1fd8213",
+          "scope": "L’exécution exige une cible vivante et hostile, une fenêtre valide, la portée et une ligne de vue. Sa courte séquence protège uniquement son propriétaire pendant 2,2 secondes de simulation, sans rafraîchissement pendant cette protection ; le boss voisin reste vivant et le trophée est idempotent. Les vrais routeurs P1/P2, le registre de récompenses et la régression navigateur de victoire par exécution passent sur a80070c. La décoration du trophée dure 3,5 secondes et ne prolonge pas cette protection."
+        },
+        {
+          "kind": "test",
+          "path": "docs/qa/continuation-final-20261101/cpu-navigation-final.txt",
+          "sha256": "3e32f5914cde08acac445beeeca94c9a955544762f81e094d341e98f0a6e0ca4",
+          "scope": "1185/1185CPU sura800,0échec/saut/annulation ; contient19matrices/18boss, vraisrouteursP1/P2,armées/catalogue/états/UI."
+        },
+        {
+          "kind": "test",
+          "path": "docs/qa/continuation-final-20261101/gameplay-navigation-final.txt",
+          "sha256": "8c3828424b48cacd51998ff42fe2f40ac8b770bcad09a34432217c96aec99c01",
+          "scope": "8/8 régressions navigateur sur a80070c : insertion, engagement, relais, campagne, pause/photo, sandbox, exécution et coopération. Zéro échec, saut ou annulation. Le log terminé est conservé malgré une interruption de transport de la session outil."
+        }
+      ],
+      "notes": "L’exécution exige une cible vivante et hostile, une fenêtre valide, la portée et une ligne de vue. Sa courte séquence protège uniquement son propriétaire pendant 2,2 secondes de simulation, sans rafraîchissement pendant cette protection ; le boss voisin reste vivant et le trophée est idempotent. Les vrais routeurs P1/P2, le registre de récompenses et la régression navigateur de victoire par exécution passent sur a80070c. La décoration du trophée dure 3,5 secondes et ne prolonge pas cette protection."
     },
     "AUD-081": {
       "status": "Terminé",
@@ -1708,14 +1791,39 @@
       "notes": "Formations à vrais slots, cohésion/root, dégâts différenciés ligne/dispersé et contre-jeu sont implémentés/testés ; présentation lisible de toutes les réponses en jeu encore noncertifiée."
     },
     "AUD-088": {
-      "status": "En cours",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Combat et rôles",
       "item": "Conserver la spécificité de la chasse dans les batailles",
       "acceptance": "Une approche furtive ouvre un avantage concret sans rendre obligatoire le combat frontal de toutes les unités.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Fcamouflage est rétabli et testé réellement. Bonus/backstab/résistance existent ; une approche furtive transformant concrètement tous les plans de masse reste à valider."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "review",
+          "path": "docs/qa/continuation-final-20261101/strict-closure-review-a80070c.json",
+          "sha256": "a68a08476948ce3d630c466adcaeec8d35c07882a7279803eb8a4e39c1fd8213",
+          "scope": "Le camouflage réduit l’acquisition dans les batailles et les modes historiques, annule les préparations devenues impossibles et permet une embuscade dorsale sur une seule proie via les dégâts normaux. Attaque, tir ou blessure révèlent le chasseur pendant trois secondes de simulation. Les vrais routeurs P1/P2, les gestionnaires et la commande F dans le navigateur passent sur a80070c. Portées sensorielles et multiplicateurs restent des adaptations de gameplay."
+        },
+        {
+          "kind": "test",
+          "path": "docs/qa/continuation-final-20261101/cpu-navigation-final.txt",
+          "sha256": "3e32f5914cde08acac445beeeca94c9a955544762f81e094d341e98f0a6e0ca4",
+          "scope": "1185/1185CPU sura800,0échec/saut/annulation ; contient19matrices/18boss, vraisrouteursP1/P2,armées/catalogue/états/UI."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/qa/continuation-final-20261101/ui-final-a80070c/report.json",
+          "sha256": "094c18ecbdd58eabe1e247402ee19fe687b63ec701e2d795d7b73886842f23f6",
+          "scope": "6/6casUIa800 : carte3fronts/ordre réel, délégation/tactique, reprise132IDs, personnage/debrief, camouflage et préférences ;0JS/réseau/externe."
+        },
+        {
+          "kind": "test",
+          "path": "docs/qa/continuation-final-20261101/gameplay-navigation-final.txt",
+          "sha256": "8c3828424b48cacd51998ff42fe2f40ac8b770bcad09a34432217c96aec99c01",
+          "scope": "8/8 régressions navigateur sur a80070c : insertion, engagement, relais, campagne, pause/photo, sandbox, exécution et coopération. Zéro échec, saut ou annulation. Le log terminé est conservé malgré une interruption de transport de la session outil."
+        }
+      ],
+      "notes": "Le camouflage réduit l’acquisition dans les batailles et les modes historiques, annule les préparations devenues impossibles et permet une embuscade dorsale sur une seule proie via les dégâts normaux. Attaque, tir ou blessure révèlent le chasseur pendant trois secondes de simulation. Les vrais routeurs P1/P2, les gestionnaires et la commande F dans le navigateur passent sur a80070c. Portées sensorielles et multiplicateurs restent des adaptations de gameplay."
     },
     "AUD-089": {
       "status": "À valider",
@@ -1800,7 +1908,7 @@
       "acceptance": "Aucune combinaison ne laisse le personnage bloqué indéfiniment; chaque état possède une indication et une issue.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "États et effets temporaires sont bornés dans les tests ; aucune matrice exhaustive des combinaisons de tous pouvoirs hérités n’est fournie."
+      "notes": "États et effets temporaires sont bornés dans les tests ; aucune matrice exhaustive des combinaisons de tous pouvoirs hérités n’est fournie. Reprise du 1/11/2026 (gel a80070c) : Ralentissements sélectionnés, freezes environnementaux, prises et protections ont des sorties finies et propriétaires vérifiés. L’ancienne absence de dégelfreeze est corrigée ; la matrice complète de tous états/pouvoirs hérités demeure nonexhaustive, maintienÀvalider."
     },
     "AUD-092": {
       "status": "Terminé",
@@ -1867,14 +1975,33 @@
       "notes": "Les27plans distincts ont préconditions et changements causaux : preuve, source, portail, convoi, secours, défense, duel ou extraction. La seule capture générique ne gagne pas ces opérations ; les annonces conservent le contrôle du joueur."
     },
     "AUD-094": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P2",
       "domain": "Campagne et progression",
       "item": "Donner aux personnages des enjeux et conséquences",
       "acceptance": "Le briefing et le débrief réagissent au personnage et aux événements réellement accomplis.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Reconnaissances, données de briefing/débrief et arc réagissent au personnage/événements ; présentation complète des enjeux de tous personnages reste à vérifier."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "review",
+          "path": "docs/qa/continuation-final-20261101/strict-closure-review-a80070c.json",
+          "sha256": "a68a08476948ce3d630c466adcaeec8d35c07882a7279803eb8a4e39c1fd8213",
+          "scope": "Le briefing et le débrief utilisent le personnage réellement choisi, sa reconnaissance propre et les événements enregistrés. Objectifs accomplis ou ouverts, pertes et survivants sont photographiés avant le nettoyage. Les tests de campagne et de présentation passent ; la recette UI sur a80070c affiche le chasseur déployé et les conséquences réelles de délégation après reprise. Cette clôture ne constitue pas une reconstitution narrative de tous les films."
+        },
+        {
+          "kind": "test",
+          "path": "docs/qa/continuation-final-20261101/cpu-navigation-final.txt",
+          "sha256": "3e32f5914cde08acac445beeeca94c9a955544762f81e094d341e98f0a6e0ca4",
+          "scope": "1185/1185CPU sura800,0échec/saut/annulation ; contient19matrices/18boss, vraisrouteursP1/P2,armées/catalogue/états/UI."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/qa/continuation-final-20261101/ui-final-a80070c/report.json",
+          "sha256": "094c18ecbdd58eabe1e247402ee19fe687b63ec701e2d795d7b73886842f23f6",
+          "scope": "6/6casUIa800 : carte3fronts/ordre réel, délégation/tactique, reprise132IDs, personnage/debrief, camouflage et préférences ;0JS/réseau/externe."
+        }
+      ],
+      "notes": "Le briefing et le débrief utilisent le personnage réellement choisi, sa reconnaissance propre et les événements enregistrés. Objectifs accomplis ou ouverts, pertes et survivants sont photographiés avant le nettoyage. Les tests de campagne et de présentation passent ; la recette UI sur a80070c affiche le chasseur déployé et les conséquences réelles de délégation après reprise. Cette clôture ne constitue pas une reconstitution narrative de tous les films."
     },
     "AUD-095": {
       "status": "Terminé",
@@ -1968,12 +2095,12 @@
       "notes": "Les tableaux réels des managers et les IDs de faction alimentent le radar ; espèce/couleur ne décident pas de l’alliance. Les trois camps et les relations sont distingués par la même source d’état que le combat."
     },
     "AUD-099": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "HUD et lisibilité",
       "item": "Créer une carte de commandement complète",
       "acceptance": "Le joueur peut comparer les fronts et envoyer une unité depuis la carte sans perdre la compréhension de la situation.",
-      "acceptanceVerified": false,
+      "acceptanceVerified": true,
       "evidence": [
         {
           "kind": "test",
@@ -1986,9 +2113,27 @@
           "path": "docs/qa/gamedev-coop-continuity-20261029/validation.json",
           "sha256": "54bbb564517b2d944df4f0755f742ff28898fc918c7eb0dd61765273cd46376d",
           "scope": "Régressions avant correction, empreintes des sources testées et limites ; aucune recette WebGL ou certification matérielle."
+        },
+        {
+          "kind": "review",
+          "path": "docs/qa/continuation-final-20261101/strict-closure-review-a80070c.json",
+          "sha256": "a68a08476948ce3d630c466adcaeec8d35c07882a7279803eb8a4e39c1fd8213",
+          "scope": "La carte compare trois fronts avec contrôle, forces signalées, ravitaillement et âge du rapport. Elle prévisualise les routes ouvertes et transmet des ordres réels avec accusé. La destination, la délégation et la tactique conservent les mêmes 132 identités après sauvegarde et reprise. Les six scénarios UI sur a80070c et les tests de commande passent ; l’arrivée des groupes reste distincte de l’acceptation de leur ordre."
+        },
+        {
+          "kind": "test",
+          "path": "docs/qa/continuation-final-20261101/cpu-navigation-final.txt",
+          "sha256": "3e32f5914cde08acac445beeeca94c9a955544762f81e094d341e98f0a6e0ca4",
+          "scope": "1185/1185CPU sura800,0échec/saut/annulation ; contient19matrices/18boss, vraisrouteursP1/P2,armées/catalogue/états/UI."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/qa/continuation-final-20261101/ui-final-a80070c/report.json",
+          "sha256": "094c18ecbdd58eabe1e247402ee19fe687b63ec701e2d795d7b73886842f23f6",
+          "scope": "6/6casUIa800 : carte3fronts/ordre réel, délégation/tactique, reprise132IDs, personnage/debrief, camouflage et préférences ;0JS/réseau/externe."
         }
       ],
-      "notes": "Carte réelle zoom/pan, sélection groupe/front, ordres, tactiques, délégation et journal. Le clic transmettre est validé ; toutes les combinaisons de choix/trajectoires depuis la carte ne sont pas parcourues. Carte de commandement, passe du 29/10/2026 : retour coop→solo réinitialise le donneur d’ordre et le bénéficiaire du soin sur J1, sans perdre groupes/front/vue. 4 tests de transition DOM simulé ; pas de validation intégrale de tous parcours/trajectoires. Rapport : docs/qa/gamedev-coop-continuity-20261029/README.md."
+      "notes": "La carte compare trois fronts avec contrôle, forces signalées, ravitaillement et âge du rapport. Elle prévisualise les routes ouvertes et transmet des ordres réels avec accusé. La destination, la délégation et la tactique conservent les mêmes 132 identités après sauvegarde et reprise. Les six scénarios UI sur a80070c et les tests de commande passent ; l’arrivée des groupes reste distincte de l’acceptation de leur ordre."
     },
     "AUD-100": {
       "status": "Terminé",
@@ -2067,7 +2212,7 @@
       "acceptance": "Les objectifs et dangers restent distinguables avec couleurs simulées et effets réduits.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Contraste, focus, textes et effets réduits sont développés ; simulation complète des profils visuels et lecture des dangers noncertifiées."
+      "notes": "Contraste, focus, textes et effets réduits sont développés ; simulation complète des profils visuels et lecture des dangers noncertifiées. Reprise du 1/11/2026 (gel a80070c) : Symboles/formes/palettes et minimapdu modefronts améliorés ; couverture de tous dangers/profils visuels et anciens modes nonexhaustive, maintienÀvalider. Aucun playtest humain déduit."
     },
     "AUD-104": {
       "status": "À valider",
@@ -2276,7 +2421,7 @@
       "acceptance": "Le franchissement ne provoque ni terrain absent ni arrêt prolongé; revenir conserve objectifs et destructions.",
       "acceptanceVerified": false,
       "evidence": [],
-      "notes": "Le streaming libère réellement les allocations de géométrie/instances en gardant les modèlesCPU et états du monde. ParcoursGPU de3zones puisretour et mesure de pause au franchissement restent à documenter."
+      "notes": "Le streaming libère réellement les allocations de géométrie/instances en gardant les modèlesCPU et états du monde. ParcoursGPU de3zones puisretour et mesure de pause au franchissement restent à documenter. Reprise du 1/11/2026 (gel a80070c) : Rendu fonctionnel e524 :6jambes,453frames,1807pas,180évictions/162restaurations, mêmes templates et destructions/objectifs. IntervallesSwiftShader médiane1319,5ms,p952030,8ms,max3909,7ms ; préparationCPUmax1ms aux18frames de restauration. Absence générale d’arrêt prolongé nonprouvée, maintienÀvalider ; ne pas attribuer automatiquement la lenteur au streaming."
     },
     "AUD-113": {
       "status": "En cours",
@@ -2318,14 +2463,27 @@
       "notes": "Deux clones locaux propres du commit48b5, deux npmci standard et deux builds réussis. Les30fichiers,12GLB et build-info sont identiques octet par octet au stage fonctionnel et entre clones. Les gardes locales refusent une publication avec preuves/manifeste incohérents ; aucune protection GitHub/CI distante n’est revendiquée. PortéeLinux/Node24.19/npm11.9, pas crossOS."
     },
     "AUD-115": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Performance et QA",
       "item": "Vérifier les dix parcours complets",
       "acceptance": "Un rapport récent relie chaque carte au SHA et prouve au moins une victoire et une défaite cohérentes.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "11démarrages/insertion/nettoyage et4smokes opération passent ; il ne s’agit pas de11parcours complets chacun victoire/défaite."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "review",
+          "path": "docs/qa/continuation-final-20261101/strict-closure-review-a80070c.json",
+          "sha256": "a68a08476948ce3d630c466adcaeec8d35c07882a7279803eb8a4e39c1fd8213",
+          "scope": "Les 22 parcours sur a80070c couvrent les 11 cartes avec une victoire assistée et une défaite contrôlée chacune. Chaque victoire traverse six secteurs physiques, valide cinq portes et objectifs, puis abat le vrai boss par son gestionnaire ; les deux issues affichent un résultat cohérent et nettoient les acteurs, files et projectiles. Helpers et build restent inchangés, sans erreur JavaScript ou réseau. Marche, dégâts raccourcissant les combats et défaites contrôlées sont déclarés ; aucune difficulté naturelle ou participation humaine n’est certifiée."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/qa/continuation-final-20261101/complete-contexts-a80070c/report.json",
+          "sha256": "1168cd620043c2f413dd6b437cec769161796366fded7ee544427a77bf3d4bb2",
+          "scope": "22/22issues assistées a800,11cartes×victoire/défaite,helpers/diststables,0JS/réseau/externe."
+        }
+      ],
+      "notes": "Les 22 parcours sur a80070c couvrent les 11 cartes avec une victoire assistée et une défaite contrôlée chacune. Chaque victoire traverse six secteurs physiques, valide cinq portes et objectifs, puis abat le vrai boss par son gestionnaire ; les deux issues affichent un résultat cohérent et nettoient les acteurs, files et projectiles. Helpers et build restent inchangés, sans erreur JavaScript ou réseau. Marche, dégâts raccourcissant les combats et défaites contrôlées sont déclarés ; aucune difficulté naturelle ou participation humaine n’est certifiée."
     },
     "AUD-116": {
       "status": "Terminé",
@@ -2392,12 +2550,12 @@
       "notes": "Les115fiches et27allocations sont validées : uniques doublés, exclus, réserves nommées, contextes et arsenaux interdits échouent avec message. Les profils ne sont pas assimilés à115modèles rendus."
     },
     "AUD-118": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Performance et QA",
       "item": "Vérifier les sauvegardes et migrations",
       "acceptance": "Une sauvegarde ancienne, partielle ou invalide ne bloque pas le lancement et n’efface pas silencieusement des trophées valides.",
-      "acceptanceVerified": false,
+      "acceptanceVerified": true,
       "evidence": [
         {
           "kind": "test",
@@ -2422,9 +2580,39 @@
           "path": "docs/qa/gamedev-coop-continuity-20261029/validation.json",
           "sha256": "54bbb564517b2d944df4f0755f742ff28898fc918c7eb0dd61765273cd46376d",
           "scope": "Régressions avant correction, empreintes des sources testées et limites ; aucune recette WebGL ou certification matérielle."
+        },
+        {
+          "kind": "review",
+          "path": "docs/qa/continuation-final-20261101/strict-closure-review-a80070c.json",
+          "sha256": "a68a08476948ce3d630c466adcaeec8d35c07882a7279803eb8a4e39c1fd8213",
+          "scope": "Les cinq démarrages réels sur e524c2b couvrent compteurs historiques, registre v1 partiel, version future, solde invalide et checkpoint illisible. Ils conservent les trophées valides et les octets protégés, proposent un repli utilisable et lancent un joueur visible à 1000 PV. La seule modification runtime vers a80070c concerne la navigation ; les propriétaires de sauvegarde et de menus sont identiques. La reprise UI, les 22 lancements de parcours et la suite finale passent sur a80070c. Les formats inconnus sont protégés plutôt que réparés arbitrairement."
+        },
+        {
+          "kind": "test",
+          "path": "docs/qa/continuation-final-20261101/cpu-navigation-final.txt",
+          "sha256": "3e32f5914cde08acac445beeeca94c9a955544762f81e094d341e98f0a6e0ca4",
+          "scope": "1185/1185CPU sura800,0échec/saut/annulation ; contient19matrices/18boss, vraisrouteursP1/P2,armées/catalogue/états/UI."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/qa/continuation-final-20261101/save-startup-e524c2b/report.json",
+          "sha256": "a48dd23c6f2b2511da5df435f1688cfb4ea78e3a836fdf7ed99488acbe180e61",
+          "scope": "5démarrages e524 explicitementhistoriques ; propriétaires de sauvegarde identiques vsa800, repli/menu/trophées/octets protégés."
+        },
+        {
+          "kind": "review",
+          "path": "docs/qa/continuation-final-20261101/navigation-only-source-review.json",
+          "sha256": "772dc3478542b4cae0cf8d7a84b10da85d7efab817f18715cc3518b462f7ae0d",
+          "scope": "Seul fichier runtime modifié entree524 et a800 :BattlefieldNavigation ; autres propriétaires identiques."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/qa/continuation-final-20261101/ui-final-a80070c/report.json",
+          "sha256": "094c18ecbdd58eabe1e247402ee19fe687b63ec701e2d795d7b73886842f23f6",
+          "scope": "6/6casUIa800 : carte3fronts/ordre réel, délégation/tactique, reprise132IDs, personnage/debrief, camouflage et préférences ;0JS/réseau/externe."
         }
       ],
-      "notes": "Checkpoints, incompatibilités, corruption et reçus ont tests ; toutes les migrations d’anciennes sauvegardes/trophées valides restent à vérifier. Application ciblée du 29/10/2026 : protection des registres illisibles/futurs et trophées lisibles, récupération explicite des crédits/reçus, restauration des achats Forge/clan, alias tactiques et checkpoints terminaux nouveaux. 72 tests ciblés réussis ; rapport docs/qa/gamedev-save-reliability-20261029/README.md. Les anciens checkpoints terminaux déjà invalides et les autres migrations restent à vérifier ; aucun parcours WebGL ni recette humaine ne découle de ces tests. Continuité de campagne, passe du 29/10/2026 : observe réessaie une écriture échouée même sans nouvelle conséquence ; son résultat ne prétend plus à une persistance inexistante. 8 tests de campagne passent, avec BOS-26 toujours mort dans AFF-03 reconstruit après panne temporaire. Les autres migrations restent ouvertes. Rapport : docs/qa/gamedev-coop-continuity-20261029/README.md."
+      "notes": "Les cinq démarrages réels sur e524c2b couvrent compteurs historiques, registre v1 partiel, version future, solde invalide et checkpoint illisible. Ils conservent les trophées valides et les octets protégés, proposent un repli utilisable et lancent un joueur visible à 1000 PV. La seule modification runtime vers a80070c concerne la navigation ; les propriétaires de sauvegarde et de menus sont identiques. La reprise UI, les 22 lancements de parcours et la suite finale passent sur a80070c. Les formats inconnus sont protégés plutôt que réparés arbitrairement."
     },
     "AUD-119": {
       "status": "À valider",
@@ -2631,11 +2819,85 @@
       "notes": "Les dix prompts et le chaudron correspondent aux contrats revus ; vraie toucheE, roue et clics accordent6flèches/4frappes puis consomment5/3 après usage, plasma100 inchangé. La flèche physique n’endommage que le premier vrai ennemi existant, avec un seul décès/score. Les autres effets sont vérifiés sur vrais Player/Environment/gestionnaires : Taabe×1,3 borné, acide×0,6 et signature temporaire, pistolet visé/portée/obstacle, boue une fois par entrée et checkpoint, souffle16 distinct du feu8,5/18s. Les pickups de scène ne rejouent ni gains ni souffle ; Sarii garde owner/blessures et ses ordres sont explicitement adaptés. Sariska/0°C non certifiés ne sont plus promis. Matériaux/équipements restent des interprétations de jeu."
     }
   },
-  "reviewStage": "Gel5089228 revu : treize critères035/016/039/046/058/064/071/073/074/078/105/107/126 clôturés. CPU833,11victoires assistées,4cas intégrés et protocoleB20warm+10mesurés ; ancienA5/10échoué et11défaitesa225 distincts préservés. Aucun P0 restant ; aucune certification humaine/FPS/VRAM/1:1.",
-  "validatedRuntimeSource": "48b5bd5aa9d35fd3919ade38cf2aef55389bec5b",
+  "reviewStage": "Gel a80070c revu : dix critères 021/027/053/076/080/088/094/099/115/118 clôturés. 1185 tests CPU, 22 issues assistées sur 11 cartes, six scénarios UI, deux scènes PNJ rendues et huit régressions navigateur passent. Les cinq démarrages et le streaming e524 restent attribués à leur source ; seul le delta de navigation les sépare du gel final. Les critères 047/091/103/112/063/070 et les validations humaines, matérielles et 1:1 restent ouverts.",
+  "validatedRuntimeSource": "a80070c4b5ed96fa839e840f17453bf5348a6cbb",
   "runtimeEvidence": {
     "fullStartups": "docs/audits/2026-10-26/qa/runtime-c518-11-biomes-4-ops.json",
     "incrementalFinal": "docs/audits/2026-10-26/qa/runtime-48b5-incremental-charon-4-ops-photo.json",
-    "scope": "11biomes initialement, puisCharon+4smokes après correctifsUI. Aucun parcours complet gagné ni test humain ni performance matérielle certifiée."
-  }
+    "scope": "Les clés fullStartups et incrementalFinal conservent les preuves historiques c518/48b5. La validation courante est le bloc continuation20261101 ; les anciennes valeurs intégrales sont aussi conservées dans historicalValidationSnapshots.",
+    "historicalEntries": [
+      "fullStartups",
+      "incrementalFinal"
+    ],
+    "continuation20261101": {
+      "runtimeSourceCommit": "a80070c4b5ed96fa839e840f17453bf5348a6cbb",
+      "review": "docs/qa/continuation-final-20261101/strict-closure-review-a80070c.json",
+      "cpu": "docs/qa/continuation-final-20261101/cpu-navigation-final.txt",
+      "completePaths": "docs/qa/continuation-final-20261101/complete-contexts-a80070c/report.json",
+      "ui": "docs/qa/continuation-final-20261101/ui-final-a80070c/report.json",
+      "npcComponents": "docs/qa/continuation-20261101/factions/final-a80070c/report.json",
+      "gameplay": "docs/qa/continuation-final-20261101/gameplay-navigation-final.txt",
+      "historicalSaveStartup": {
+        "runtimeSourceCommit": "e524c2b96ef35e80768295fb1a3dd06bea3b5d63",
+        "report": "docs/qa/continuation-final-20261101/save-startup-e524c2b/report.json"
+      },
+      "navigationOnlyScopeReview": "docs/qa/continuation-final-20261101/navigation-only-source-review.json",
+      "scope": "Comportements et parcours assistés vérifiés ; les mesures humaines, matérielles et de fidélité 1:1 restent distinctes."
+    }
+  },
+  "continuationReview": {
+    "status": "passed_final_acceptance_review",
+    "sourceCommit": "a80070c4b5ed96fa839e840f17453bf5348a6cbb",
+    "review": "docs/qa/continuation-final-20261101/strict-closure-review-a80070c.json",
+    "candidateIds": [
+      "AUD-021",
+      "AUD-027",
+      "AUD-053",
+      "AUD-076",
+      "AUD-080",
+      "AUD-088",
+      "AUD-094",
+      "AUD-099",
+      "AUD-115",
+      "AUD-118"
+    ],
+    "actualCounts": {
+      "Terminé": 77,
+      "À valider": 37,
+      "En cours": 12
+    },
+    "cpuPassed": 1185,
+    "pathsPassed": 22,
+    "pending": [],
+    "humanTesters": 0,
+    "fidelity1to1Verified": false,
+    "hardwarePerformanceVerified": false,
+    "uiPassed": 6,
+    "factionComponentsPassed": 2,
+    "gameplayPassed": 8,
+    "acceptedIds": [
+      "AUD-021",
+      "AUD-027",
+      "AUD-053",
+      "AUD-076",
+      "AUD-080",
+      "AUD-088",
+      "AUD-094",
+      "AUD-099",
+      "AUD-115",
+      "AUD-118"
+    ]
+  },
+  "historicalValidationSnapshots": [
+    {
+      "label": "Valeurs conservées avant la reprise du 1er novembre 2026",
+      "validatedRuntimeSource": "48b5bd5aa9d35fd3919ade38cf2aef55389bec5b",
+      "reviewStage": "Gel5089228 revu : treize critères035/016/039/046/058/064/071/073/074/078/105/107/126 clôturés. CPU833,11victoires assistées,4cas intégrés et protocoleB20warm+10mesurés ; ancienA5/10échoué et11défaitesa225 distincts préservés. Aucun P0 restant ; aucune certification humaine/FPS/VRAM/1:1.",
+      "runtimeEvidence": {
+        "fullStartups": "docs/audits/2026-10-26/qa/runtime-c518-11-biomes-4-ops.json",
+        "incrementalFinal": "docs/audits/2026-10-26/qa/runtime-48b5-incremental-charon-4-ops-photo.json",
+        "scope": "11biomes initialement, puisCharon+4smokes après correctifsUI. Aucun parcours complet gagné ni test humain ni performance matérielle certifiée."
+      }
+    }
+  ]
 }

@@ -1,0 +1,243 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-11-01T01:58:51.182328+00:00",
+  "status": "open_visual_findings",
+  "sourceCommit": "a80070c4b5ed96fa839e840f17453bf5348a6cbb",
+  "indexSha256": "22f8dd3ddb3970acec7771fafac28d78a3d9e37b7e209a7d1b7170ee815061ad",
+  "method": "Inspection of the existing PNG plus source at the pinned commit. No new browser, scene build, runtime object inspection, raycast attribution or source edit.",
+  "evidence": {
+    "screenshot": {
+      "path": "docs/qa/continuation-final-20261101/ui-final-a80070c/combat-readability-real-cloak.png",
+      "sha256": "fac6f5b739693aa33661943cabcf5d62fec919515486d03de4799157d108120c",
+      "width": 1600,
+      "height": 1000
+    },
+    "uiReport": {
+      "path": "docs/qa/continuation-final-20261101/ui-final-a80070c/report.json",
+      "sha256": "094c18ecbdd58eabe1e247402ee19fe687b63ec701e2d795d7b73886842f23f6"
+    },
+    "context": {
+      "levelId": "val_verde_jungle",
+      "missionMode": "fronts",
+      "operationId": "pilot",
+      "mapSeed": 1,
+      "difficulty": "standard",
+      "fidelityMode": "adapted",
+      "hunter": "jungle_hunter",
+      "cloakConfirmedByUIReport": true,
+      "palette": "monochrome",
+      "reducedFlashes": true
+    }
+  },
+  "findings": [
+    {
+      "id": "VIS-20261101-01",
+      "priority": "P1",
+      "status": "open",
+      "observed": "A tall faceted translucent white cone occupies the left-center foreground. Its hard silhouette competes with terrain and nearby combat space.",
+      "likelySource": {
+        "confidence": "high static compatibility; no runtime mesh identity captured",
+        "owner": "WeatherSystem.spawnSteamVents / _updateMediaWeather",
+        "reason": "Mission startup calls spawnSteamVents(5) without a biome/profile check. It creates an open 12-sided ConeGeometry radius1.6, height8.5 with a white DoubleSide transparent MeshBasicMaterial. Its eruption reaches opacity0.75, matching the visible upright translucent cone and nearby metal/yellow grate. Locations and cycle times use Math.random, so the exact vent and phase cannot be recovered from this PNG alone.",
+        "references": [
+          {
+            "path": "js/main.js",
+            "line": 1864,
+            "scope": "Unconditional mission steam-vent creation"
+          },
+          {
+            "path": "js/engine/WeatherSystem.js",
+            "line": 466,
+            "scope": "Vent placement, collar, grate and cone geometry"
+          },
+          {
+            "path": "js/engine/WeatherSystem.js",
+            "line": 626,
+            "scope": "Eruption lifetime, opacity and expansion"
+          }
+        ]
+      },
+      "alternativeAssessment": "ReferenceEnvironmentMechanisms.buildSteamConduits also contains a white cone, but its conduit is wall-mounted, initially hidden, and the Val Verde profile does not select that builder. That alternative is weaker for this capture; it is not ruled out by a live object trace.",
+      "followup": "Capture vent mesh UUID/name, camera projection, opacity and cycle state in a future frozen browser run; compare eruption off/on from the same camera. Replace the faceted volume with a bounded soft plume or depth-faded material, retain a clear damaging-volume cue, and review which mission profiles authorize these original geothermal hazards.",
+      "openCriteria": [
+        "AUD-103",
+        "AUD-104",
+        "AUD-060"
+      ]
+    },
+    {
+      "id": "VIS-20261101-02",
+      "priority": "P1",
+      "status": "open",
+      "observed": "Large opaque beige chevrons appear above or across insertion foreground rather than reading as subtle ground inlays; another chevron appears near the pod roof silhouette.",
+      "likelySource": {
+        "confidence": "high shape/material match with a concrete static elevation counterexample; no per-pixel runtime attribution",
+        "owner": "BattlefieldWayfinding.buildBattlefieldWayfinding and legacy canopy elevation",
+        "reason": "The wayfinding material is beige 0xc2b79d and its two quads form the same V silhouette. Quad corners call getElevationAt without a current layer. The legacy canopy rectangles return6.8 over a broad central region. Thus an insertion marking can be wholly elevated despite the existing guard rejecting height differences greater than0.65 inside a quad.",
+        "staticCounterexample": {
+          "routeSampleCenter": [
+            0,
+            6
+          ],
+          "possibleQuadXZBounds": {
+            "minX": -1.15,
+            "maxX": 1.15,
+            "minZ": 5,
+            "maxZ": 7.05
+          },
+          "legacyCanopyRectangle": {
+            "minX": -2,
+            "maxX": 22,
+            "minZ": -2,
+            "maxZ": 38
+          },
+          "nominalMarkingY": 6.845,
+          "guardExplanation": "All corners can receive the same legacy6.8 height, so maxHeight-minus-minHeight is0 and the quad is retained. This is a static call-chain analysis, not an executed scene measurement."
+        },
+        "references": [
+          {
+            "path": "js/graphics/BattlefieldWayfinding.js",
+            "line": 8,
+            "scope": "Per-corner elevation and current inter-layer guard"
+          },
+          {
+            "path": "js/graphics/BattlefieldWayfinding.js",
+            "line": 19,
+            "scope": "Chevron shape"
+          },
+          {
+            "path": "js/graphics/BattlefieldWayfinding.js",
+            "line": 67,
+            "scope": "Beige organic inlay material"
+          },
+          {
+            "path": "js/entities/Environment.js",
+            "line": 1035,
+            "scope": "Walk elevation delegates to registered surfaces and inherited elevation"
+          },
+          {
+            "path": "js/entities/ReferenceWalkSurfaces.js",
+            "line": 68,
+            "scope": "Fallback to legacy height when no registered surface owns the point"
+          },
+          {
+            "path": "js/entities/ReferenceEnvironmentMechanisms.js",
+            "line": 2499,
+            "scope": "Broad legacy canopy height rectangles"
+          },
+          {
+            "path": "js/entities/ReferenceEnvironmentMechanisms.js",
+            "line": 9488,
+            "scope": "Canopy rectangle definitions"
+          }
+        ]
+      },
+      "followup": "In a separate patch, bind each marking to its intended route layer and actual supporting mesh/triangle rather than the unqualified legacy highest elevation. Cover a flat ground marking inside the canopy AABB and actual ramp/deck markings with CPU checks, then inspect the same insertion camera and both floor levels. Preserve the existing no-cross-layer guard and collision contracts.",
+      "openCriteria": [
+        "AUD-067",
+        "AUD-103",
+        "AUD-104",
+        "AUD-069"
+      ]
+    },
+    {
+      "id": "VIS-20261101-03",
+      "priority": "P1",
+      "status": "open",
+      "observed": "Long brown overhead beams cross the camera framing, while a dark flat roof/platform and thin posts occupy a substantial lower foreground area. The cloaked player remains present, but the image does not establish clear views of nearby threats across all camera positions.",
+      "likelySource": {
+        "confidence": "high compatibility for the long beam family; medium for the foreground roof/platform",
+        "owner": "Val Verde canopy-bough set and communications/watchtower props",
+        "reason": "The canopy builder creates four brown BoxGeometry(2,.25,41) beams atY6.8, forming a large diamond around insertion. The same profile adds the communications shack roof at[2,2.6,10] with5-by5 dimensions and the watchtower platform near[8,5.5,6], matching candidate foreground solid silhouettes. Exact ownership of each visible pixel cannot be resolved from the PNG.",
+        "references": [
+          {
+            "path": "js/entities/ReferenceEnvironmentMechanisms.js",
+            "line": 9486,
+            "scope": "Four canopy beams and their dimensions/poses"
+          },
+          {
+            "path": "js/entities/ReferenceEnvironmentMechanisms.js",
+            "line": 9253,
+            "scope": "Watchtower structure and platform family"
+          },
+          {
+            "path": "js/entities/ReferenceEnvironmentMechanisms.js",
+            "line": 9328,
+            "scope": "Communications shack roof"
+          },
+          {
+            "path": "js/engine/CameraCollision.js",
+            "line": 1,
+            "scope": "Physical boom collision deliberately hides no meshes"
+          },
+          {
+            "path": "js/graphics/ReferenceWorldContacts.js",
+            "line": 17,
+            "scope": "Grounded physical-contact filtering excludes many overhead visual surfaces"
+          },
+          {
+            "path": "js/main.js",
+            "line": 3572,
+            "scope": "Third-person camera target and final physical boom resolution"
+          }
+        ]
+      },
+      "followup": "Capture the actual occluder mesh names, geometry instance IDs and camera-to-player/primary-threat segments. Evaluate camera framing or a bounded occluder fade/cutaway for these specific large overhead pieces, while retaining physical surfaces, supports, impact collision and cooperative visibility. Validate walking below/on the canopy and the insertion exit before choosing a solution.",
+      "openCriteria": [
+        "AUD-104",
+        "AUD-103",
+        "AUD-066"
+      ]
+    }
+  ],
+  "recommendation": {
+    "releaseInterpretation": "The existing UI report passed its stated control/state checks. This separate visual review keeps graphic/readability work open and does not convert those checks into a visual-fidelity certificate. No runtime fix is requested inside the frozen milestone.",
+    "preserveOpenStatuses": {
+      "AUD-104": "À valider — primary criterion for foreground occlusion and player/threat visibility",
+      "AUD-103": "À valider — world hazards/markings must remain readable with the captured reduced/monochrome preferences",
+      "AUD-067": "À valider — route guidance must refer to the visible intended floor and be assessed without HUD-only navigation",
+      "AUD-060": "À valider — inspect context filtering of automatically created original weather hazards",
+      "AUD-069": "En cours — floating marking scale/height is not proof of source-calibrated dimensions",
+      "AUD-066": "À valider — this insertion image does not verify visibility/collision of all boss phases"
+    },
+    "doNotCloseGraphics": true,
+    "humanTesters": 0,
+    "fidelity1to1Verified": false
+  },
+  "limits": [
+    "Only one already captured frame was visually inspected.",
+    "No mesh UUID, camera pose or weather random state was recorded for this image.",
+    "Static source attribution is probable, not a live-render identity proof.",
+    "The canopy height counterexample follows the source call chain; it does not claim all beige surfaces have been individually attributed.",
+    "No additional Chrome, build, gameplay test, source mutation, GPU measurement or external search was performed."
+  ],
+  "sourcePins": {
+    "js/main.js": {
+      "sha256AtSourceCommit": "5f34be3e83642d396c491a0861a4a2d35480a784fdd85bc4df4c4c33149f3c41"
+    },
+    "js/engine/WeatherSystem.js": {
+      "sha256AtSourceCommit": "cd3d2cea8fd5090b3f5aec9b11460094471f1a6065fc34d58da33b1ecb02b409"
+    },
+    "js/graphics/BattlefieldWayfinding.js": {
+      "sha256AtSourceCommit": "6a04cc140092b4cdd693b3c1d40ff132285d1954c20757ade24a19f4ae5034fe"
+    },
+    "js/entities/Environment.js": {
+      "sha256AtSourceCommit": "58361eee553c99668056a433a29ddcaa648e804c636af9423cd7f7b394a7e346"
+    },
+    "js/entities/ReferenceEnvironmentMechanisms.js": {
+      "sha256AtSourceCommit": "5c805e8b23b1bf7b484d6292b52b12e264aaf6b2f89962b474b040bf1d164d8d"
+    },
+    "js/entities/ReferenceWalkSurfaces.js": {
+      "sha256AtSourceCommit": "7c3236b91aa5658db7a086762c2978f3cdd114b7551ee2b6f9de84e41b94e489"
+    },
+    "js/data/ReferenceLevelMechanisms.js": {
+      "sha256AtSourceCommit": "cd083735a5bf7cd03d0743b004c01949d95a67adbbf3bf3ada889cb56bf743ee"
+    },
+    "js/graphics/ReferenceWorldContacts.js": {
+      "sha256AtSourceCommit": "45e0dbfd9d83ef46c186280e5fc4696881550080ffd8308008170ed137d15824"
+    },
+    "js/engine/CameraCollision.js": {
+      "sha256AtSourceCommit": "fa7f5954acac0b20ff051a99d0953243e14be5d01c6bc5e55ee963f2d38144da"
+    }
+  }
+}

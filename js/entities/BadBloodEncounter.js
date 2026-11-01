@@ -115,7 +115,7 @@ export class BadBloodManager {
     if (this.badBlood.hp <= 0) { this.takeDamage(1, { cause: 'observed-encounter-death', killerFaction: this.badBlood.lastDamageFaction }); return; }
     if (this.isDueling) { this.updateDuel(delta, this.duelTarget ?? player, ui, gore, particles, game); return; }
     const bb = this.badBlood;
-    player = selectHostileTarget(this, bb.mesh.position, player);
+    player = selectHostileTarget(this, bb, player);
     if (!player || player.hp <= 0) { releaseHostileAttack(this, bb); return; }
     if (bb.hp <= 850 && !this.duelTriggered && player.position.distanceTo(bb.mesh.position) <= 4.5) { this.startHonorDuel(player, ui); return; }
 

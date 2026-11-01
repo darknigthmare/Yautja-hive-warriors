@@ -3,6 +3,7 @@ import { attachHostParasiteVisual } from '../graphics/HostParasiteAttachment.js'
 import { disposeObject } from './SceneResources.js';
 import { releaseHostileAttack } from './HostilePressure.js';
 import { applyFormationImpact, formationAttackKind, formationDamageMultiplier } from '../battlefield/FormationTactics.js';
+import { canDetectConcealedTarget } from './HunterStealth.js';
 const attackIdentities=new WeakMap();let attackSequence=0;
 
 export function applyBattleUnit(manager, actor, unit, group) {
@@ -99,6 +100,7 @@ export function selectBattleTarget(manager, actor, fallbacks = [], others = []) 
     if (!candidate || candidate === actor || !(candidate.hp > 0) || candidate._combatDisposed || candidate.combatManager && candidate.mesh?.parent === null || !factionAlreadyHostile && !battleHostile(manager, actor, candidate)) return;
     const position = candidate.position ?? candidate.mesh?.position;
     if (!position?.isVector3) return;
+    if (!canDetectConcealedTarget(actor, candidate, manager.environment)) return;
     if (formation && (position.x - formation[0]) ** 2 + (position.z - formation[1]) ** 2 > 28 ** 2) return;
     if (defend && (position.x - defend[0]) ** 2 + (position.z - defend[1]) ** 2 > 24 ** 2) return;
     const squared = position.distanceToSquared(origin);
@@ -271,7 +273,7 @@ export function maintainBattleFormation(manager,actor,delta,speed) {
 export function listBattleTargets(manager, actor, fallbacks = []) {
   if (actor.isDowned || actor.isRescueRecovering) return [];
   const candidates = new Set([...(manager.combatActorsProvider?.() ?? []), ...(Array.isArray(fallbacks) ? fallbacks : [fallbacks])]);
-  return [...candidates].filter(candidate => candidate && candidate !== actor && candidate.hp > 0 && (candidate.position ?? candidate.mesh?.position)?.isVector3 && battleHostile(manager, actor, candidate)).map(candidate => targetView(candidate, actor));
+  return [...candidates].filter(candidate => candidate && candidate !== actor && candidate.hp > 0 && (candidate.position ?? candidate.mesh?.position)?.isVector3 && battleHostile(manager, actor, candidate) && canDetectConcealedTarget(actor, candidate, manager.environment)).map(candidate => targetView(candidate, actor));
 }
 
 export function battleCoordinationDamage(actor, amount) {

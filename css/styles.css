@@ -455,6 +455,8 @@ body:has(#photo-mode-hud:not(.hidden)) #nuke-countdown-overlay {
   font-size: 0.9rem;
   line-height: 1.5;
 }
+.codex-entry-card .codex-entry-context{border-left:3px solid #c5e39f;padding-left:10px;color:#edf4e9;font-size:.92rem;}
+.codex-entry-sources{display:flex;flex-wrap:wrap;gap:8px;font-size:.9rem;}.codex-entry-sources a{color:#cae8ff;text-decoration:underline;text-underline-offset:3px;}.codex-entry-sources a:focus-visible{outline:2px solid #fff;outline-offset:3px;}
 
 /* Loadout Preparation Screen */
 #loadout-prep-screen {
@@ -4096,11 +4098,24 @@ input[type=range] { width: 100%; accent-color: #b7df83; min-height: 30px; }
 @media(max-width:800px) { .operation-panel { max-width:calc(100vw - 16px); } }
 .operation-briefing { display:grid;grid-template-columns:minmax(220px,360px) 1fr;gap:14px;max-width:1100px;width:100%;padding:18px;margin:0 auto 18px;text-align:left; }.operation-briefing h3 { grid-column:1/-1;color:#b9e5c9; }.operation-briefing canvas { max-width:100%;align-self:center; }.operation-briefing p { font-size:14px;line-height:1.35;margin:6px 0; }@media(max-width:800px){.operation-briefing{grid-template-columns:1fr;}.operation-briefing canvas{margin:auto;}}
 .command-map-card { max-width:1200px;width:95%;margin:20px auto;padding:18px;overflow:auto; }.command-map-layout { display:grid;grid-template-columns:minmax(280px,720px) minmax(230px,1fr);gap:20px; }.command-map-layout canvas { width:100%;height:auto;touch-action:none;background:#071a14;border:1px solid #518069; }.command-map-layout label { display:flex;flex-direction:column;margin-bottom:7px; }.command-map-layout select { background:#143326;color:#e3f5e9;padding:8px;border:1px solid #51745c; }.command-map-layout button { margin:3px;padding:8px;background:#234e36;color:#efffe9;border:1px solid #6b9973;cursor:pointer; }.command-map-layout [data-feedback] { color:#f3d690; }@media(max-width:850px){.command-map-layout{grid-template-columns:1fr;}.command-map-card{width:98%;}}
+.command-map-viewport { min-width:0; }
+.command-map-legend,.command-route-preview { font-size:14px;line-height:1.55;color:#f1f5e8;text-align:left; }
+.command-route-preview { border-left:3px solid #ecf1d9;padding:8px 12px;background:#0c211b; }
+.command-front-comparison { margin-top:18px;text-align:left; }
+.command-front-comparison h3 { font-size:17px;color:#f1f5e8; }
+.command-front-comparison [data-front-comparison] { display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:10px; }
+.command-front-comparison article { border:1px solid #7c9d89;padding:10px;background:#0c211b;font-size:14px;line-height:1.45;min-width:0;overflow-wrap:anywhere; }
+.command-front-comparison p { margin:5px 0; }
+.command-front-comparison button { font:inherit;font-weight:bold;text-align:left;white-space:normal;color:#fff;background:#244d39;padding:8px;border:1px solid #a5bca9;cursor:pointer;min-height:44px;width:100%; }
+.command-map-card :focus-visible { outline:3px solid #fff;outline-offset:3px; }
+.command-map-card [data-feedback] { min-height:2.8em;font-size:14px;line-height:1.5; }
+.reduced-flashes .command-route-preview,.reduced-motion .command-route-preview { animation:none; }
 .gamepad-hints { display:none;position:fixed;left:50%;bottom:8px;transform:translateX(-50%);max-width:90vw;background:#091b14e8;border:1px solid #72957c;color:#dceddb;border-radius:5px;padding:7px 12px;margin:0;z-index:50;font-size:12px;pointer-events:none;text-align:center; }.gamepad-input .gamepad-hints{display:block;}[data-gamepad-focus="true"]{outline:3px solid #e2ce86!important;outline-offset:3px;}option[data-gamepad-option]{background:#466d4c;color:white;}
 /* Compact combat HUD keeps the playable center visible; telemetry is optional. */
 #in-game-hud .hud-top-left { top:18px;left:18px;width:310px;padding:10px;gap:10px; }
 #in-game-hud .player-avatar-box { width:44px;height:52px;flex:0 0 44px; }.hud-name-row #hud-player-name{font-size:12px;}#hud-vision-tag{font-size:10px;}.hud-bar-container{height:15px;margin-bottom:5px;}.bar-label{font-size:10px;}
 .stamina-fill{background:linear-gradient(90deg,#c3a255,#e5d890);}.stamina-bar-bg{background:#1b2116;}
+.combat-readability{display:grid;gap:3px;font-size:11px;line-height:1.35;color:#eff6e8;text-align:left;}.combat-readability .is-impaired{border-left:3px solid currentColor;padding-left:5px;font-weight:bold;}.combat-readability #hud-combat-costs{color:#e5d890;}
 body:not(.hud-detailed) #wrist-ecg-holoscan,body:not(.hud-detailed) #wrist-verticality-hud,body:not(.hud-detailed) #diegetic-wrist-gauntlet-hud,body:not(.hud-detailed) #hud-equipped-slots-container,body:not(.hud-detailed) #battlefield-morale-container,body:not(.hud-detailed) #hud-hive-pressure-container{display:none!important;}
 #in-game-hud .hud-top-right{position:absolute;top:18px;right:18px;left:auto;width:214px;max-width:214px;}.minimap-card{padding:9px;}.minimap-card canvas{width:174px;height:174px;}.minimap-legend{gap:5px;font-size:10px;}.minimap-header{font-size:11px;}
 #hud-combat-controls{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);display:flex;gap:7px;align-items:center;pointer-events:auto;padding:6px 10px;border:1px solid #517363;border-radius:6px;background:#071b13de;white-space:nowrap;font-size:11px;}#hud-combat-controls button{background:#183d2b;color:#deedda;border:1px solid #4a785d;border-radius:3px;padding:7px;cursor:pointer;}#hud-active-weapon{color:#deceb0;max-width:140px;overflow:hidden;text-overflow:ellipsis;}

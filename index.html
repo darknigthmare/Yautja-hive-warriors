@@ -285,6 +285,7 @@
           </div>
 
           <div class="hud-bar-container stamina-bar-bg"><div id="hud-stamina-fill" class="bar-fill stamina-fill" style="width:100%"></div><span id="hud-stamina-text" class="bar-label">ENDURANCE 100/100</span></div>
+          <div class="combat-readability" aria-label="Coûts et état de combat"><span id="hud-combat-costs"></span><span id="hud-combat-state"></span><span id="hud-secondary-combat-state" class="hidden"></span></div>
 
           <!-- Chantier 5 & Marc UI QA (v54.0): Yautja Biometric ECG Holoscan & Z-01 Embryo Monitor -->
           <div id="wrist-ecg-holoscan" class="wrist-ecg-card">
@@ -360,16 +361,8 @@
             <span id="hud-wave-counter">VAGUE 1/5</span>
           </div>
           <canvas id="minimap-canvas" width="224" height="224" role="img" aria-label="Carte des ennemis à proximité"></canvas>
-          <div class="minimap-legend">
-            <span class="map-key map-key-player">Vous</span>
-            <span class="map-key map-key-enemy">Ennemis</span>
-            <span class="map-key map-key-objective">Objectif</span>
-            <span class="map-key map-key-gate">Porte fermée</span>
-            <span>🟢 Clan</span>
-            <span>🔴 Xéno</span>
-            <span>🔵 USCM</span>
-            <span>⚪ Synth</span>
-            <span>💀 BadBlood</span>
+          <div class="minimap-legend" aria-label="Légende des relations et des rapports">
+            <span>○ P Joueur</span><span>◇ Allié</span><span>△ Hostile</span><span>□ Autre groupe</span><span>★ Objectif</span><span>? Inconnu</span><span>Creux : dernier rapport</span><span>Pointillés : passage fermé</span>
           </div>
         </div>
           <div id="battlefield-objective" class="battlefield-objective glass-panel hidden">
@@ -1614,14 +1607,14 @@
     <div id="codex-modal" class="ui-screen hidden">
       <div class="glass-panel modal-card codex-card">
         <div class="modal-header">
-          <h2>📜 CODEX & ENCYCLOPÉDIE CANON AVP</h2>
+          <h2>CODEX — ŒUVRES ET RÈGLES DU JEU</h2>
           <button aria-label="Fermer et revenir" id="btn-close-codex" class="btn-close">✕</button>
         </div>
         <div class="codex-nav-tabs">
-          <button class="codex-tab-btn active" data-tab="ranks">Rangs Yautja</button>
-          <button class="codex-tab-btn" data-tab="code">Code d'Honneur</button>
-          <button class="codex-tab-btn" data-tab="xenomorphs">Castes Xenomorphes</button>
-          <button class="codex-tab-btn" data-tab="engineers">Ingénieurs Prometheus</button>
+          <button class="codex-tab-btn active" data-tab="ranks">Chasseurs Yautja</button>
+          <button class="codex-tab-btn" data-tab="code">Chasse et honneur</button>
+          <button class="codex-tab-btn" data-tab="xenomorphs">Cycle Alien</button>
+          <button class="codex-tab-btn" data-tab="engineers">Organismes et technologies</button>
         </div>
         <div class="codex-body" id="codex-content-container">
           <!-- Populated dynamically via LoreCodex.js -->
@@ -1738,7 +1731,7 @@
             <input id="setting-volume" type="range" min="0" max="100" value="30" aria-describedby="volume-help">
             <p id="volume-help">Réglez à 0 pour couper le son.</p>
             <label class="toggle-setting"><input id="setting-reduced-motion" type="checkbox"> Réduire les animations de l’interface</label>
-            <label>Palette de la carte<select id="setting-map-palette"><option value="default">Standard</option><option value="accessible">Contrastes accessibles</option></select></label>
+            <label>Palette de la carte<select id="setting-map-palette"><option value="default">Standard</option><option value="accessible">Contrastes accessibles</option><option value="monochrome">Monochrome · formes et lettres</option></select></label>
             <label class="toggle-setting"><input id="setting-marker-symbols" type="checkbox" checked> Symboles de relation indépendants des couleurs</label>
             <label class="toggle-setting"><input id="setting-reduced-flashes" type="checkbox"> Réduire les flashs et les secousses</label>
             <label class="toggle-setting"><input id="setting-detailed-hud" type="checkbox"> Afficher la télémétrie et tous les raccourcis</label>

@@ -1,0 +1,39 @@
+✔ a real warrior below a player uses the complete ramp before its first 3D melee strike (4356.39154ms)
+✔ a real Working Joe with zero initial XZ separation climbs the access and grabs only at its real height (3502.68754ms)
+✔ a real warrior destroys the actual finite APC without using it as a hunter, spawn anchor or parasite host (151.461298ms)
+✔ an allocated Working Joe respects real wall cover then destroys a hostile APC through the NPC damage contract (179.813783ms)
+✔ ordinary and royal facehuggers ignore both real supports and retarget an organic hunter (106.414052ms)
+✔ targetOnly applies an impact to one real actor without damaging nearby horde or synthetic actors (101.403817ms)
+✔ ordinary allocated soldiers retain rifle weapons and stable tactical roles after reverse materialization (2492.881928ms)
+✔ an actual fire team alternates movement and covering fire without changing damage or identity (56.16257ms)
+✔ a wounded human withdraws physically, releases its attack and gains neither HP nor immunity (28.017238ms)
+✔ a friendly body blocks an ordinary shot and the rear soldier finds a lateral lane (60.787343ms)
+✔ an industrial synthetic remains in its service area while security pursues the same distant intrusion (53.001992ms)
+✔ a Working Joe gives a visible timed warning before containment and a civilian never attacks (49.792708ms)
+✔ real hits emit bounded tracers and impacts, cover emits none, and all owned feedback buffers dispose (24.41228ms)
+✔ two real hostile NPC managers exchange damage and visible impacts while the player remains out of contact (47.378799ms)
+✔ all hostile factions share startup grace and one prepared attack turn; cleanup releases every marker and reservation (35.901225ms)
+✔ USCM holds cover when the hive is gone and only fires on actual hive targets by default (9.30887ms)
+✔ faction fire cadence uses simulation seconds and stays bounded at10fps,60fps and120fps (5.265141ms)
+✔ cooperative hostile targeting chooses the nearest living player and transfers a winding attack after death (2.090313ms)
+✔ boss embryo volley cannot apply three stacked hits to one player in one frame (1.330478ms)
+✔ preparation warning stays on the visible combat plane for scaled and vertically animated actors (0.42237ms)
+✔ raised industrial floors preserve the lower layer, use real access slopes and stop jumps at the visible underside (27.228639ms)
+✔ the solid helipad has four actual cardinal access routes rather than a step through its cylinder (25.747978ms)
+✔ resin walkways leave insertion airspace clear and preserve real lower and upper crossing layers (10.074954ms)
+✔ a real USCM flametrooper leaves the lower layer, uses the ramp and reaches firing range on the upper deck (2367.068173ms)
+✔ the legacy Stargazer radius42 enclosure cannot teleport distant fronts back into the insertion room (2419.949623ms)
+✔ source visual mapping is restricted to the published LV-742 identities (26.5749ms)
+✔ one Dragon-free Drone is a separate continuous three-LOD sculpt, not the Warrior mesh renamed (2852.827533ms)
+✔ Extinction source Marines have individually named visual kits with actual distinct geometry (2528.205274ms)
+✔ the physical managers materialize the right models without changing the saved strategic classes (45.408835ms)
+✔ medical stock is finite, faction-bound, locally gated and persists after a checkpoint (64.387478ms)
+✔ visual expansion never changes operational headcounts or the 27 source templates (20.179024ms)
+ℹ tests 31
+ℹ suites 0
+ℹ pass 31
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 22420.934193

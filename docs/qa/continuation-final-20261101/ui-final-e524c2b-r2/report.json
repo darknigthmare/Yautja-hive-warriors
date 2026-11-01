@@ -1,0 +1,1335 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "startedAt": "2026-11-01T01:30:07.551Z",
+  "sourceCommit": "e524c2b96ef35e80768295fb1a3dd06bea3b5d63",
+  "indexSha256": "59955fb9eb9fea457916a52ccf19cb7ab2e19cea5b5c913c86467fa92005f5a8",
+  "humanTesters": 0,
+  "hardwarePerformanceVerified": false,
+  "fidelity1to1Verified": false,
+  "scope": "Actual desktop UI controls, finite command state, preserved checkpoint and controlled defeat debrief. No natural victory, human comprehension, hardware FPS or source-film fidelity claimed.",
+  "priorAttempt": {
+    "path": "/workspace/qa/continuation-final-20261101/ui-final-e524c2b",
+    "result": "stopped on a30second Playwright map-button action timeout in SwiftShader, zero JavaScript/network errors; preserved separately, not classified as a product defect"
+  },
+  "assistances": [
+    "Insertion advanced by the existing actual game.update helper at1/60",
+    "strategic and rendering updates paused between input steps to preserve comparable state",
+    "controlled public update at1/60 after cloak key input",
+    "controlled player HP=0 followed by actual game.update to capture a real defeat debrief",
+    "finite CSS transitions completed only for static screenshot capture"
+  ],
+  "cases": [
+    {
+      "id": "preferences-monochrome-reduced",
+      "status": "passed",
+      "preferences": {
+        "version": 1,
+        "palette": "monochrome",
+        "symbols": true,
+        "reducedFlashes": true
+      }
+    },
+    {
+      "id": "codex-ranks-engineers",
+      "status": "passed",
+      "tabs": {
+        "ranks": [
+          {
+            "title": "UNBLOODED — AVANT L’ÉPREUVE",
+            "context": "Œuvre et adaptation du jeu · Cadre AVP (2004) / présentation Hunting Grounds",
+            "sources": [
+              {
+                "label": "IllFonic · trio AVP",
+                "url": "https://forum.predator.illfonic.com/t/hunting-party-dlc-pack-3/29879",
+                "rel": "noopener noreferrer"
+              }
+            ]
+          },
+          {
+            "title": "YOUNG BLOOD — LE TRIO D’AVP",
+            "context": "Repère d’œuvre · AVP (2004) / présentation Hunting Grounds",
+            "sources": [
+              {
+                "label": "IllFonic · trio AVP",
+                "url": "https://forum.predator.illfonic.com/t/hunting-party-dlc-pack-3/29879",
+                "rel": "noopener noreferrer"
+              }
+            ]
+          },
+          {
+            "title": "BLOODED — LE STATUT DE SCAR",
+            "context": "Œuvre et adaptation du jeu · AVP (2004) / présentation Hunting Grounds",
+            "sources": [
+              {
+                "label": "IllFonic · trio AVP",
+                "url": "https://forum.predator.illfonic.com/t/hunting-party-dlc-pack-3/29879",
+                "rel": "noopener noreferrer"
+              }
+            ]
+          },
+          {
+            "title": "VÉTÉRAN — WOLF",
+            "context": "Repère d’œuvre · AVP: Requiem / incarnation Hunting Grounds",
+            "sources": [
+              {
+                "label": "IllFonic · Hunting Grounds",
+                "url": "https://predator.illfonic.com/",
+                "rel": "noopener noreferrer"
+              }
+            ]
+          },
+          {
+            "title": "ELDER ET CHEF — GREYBACK",
+            "context": "Repère d’œuvre · Predator 2 · notice du personnage",
+            "sources": [
+              {
+                "label": "NECA · Greyback",
+                "url": "https://store.necaonline.com/blogs/news/shipping-predators-1-4-scale-nightmare-on-elm-st-series-4-kick-ass-2-prop-replicas",
+                "rel": "noopener noreferrer"
+              }
+            ]
+          },
+          {
+            "title": "BAD BLOOD — L’INDIVIDU DU COMIC",
+            "context": "Œuvre et adaptation du jeu · Predator: Bad Blood · Dark Horse / notice NECA",
+            "sources": [
+              {
+                "label": "NECA · Bad Blood et Enforcer",
+                "url": "https://store.necaonline.com/blogs/news/shipping-this-week-nightmare-on-elm-street-accessory-set-ultimate-bad-blood-enforcer-predator-2-pack-1",
+                "rel": "noopener noreferrer"
+              },
+              {
+                "label": "NECA · Enforcer",
+                "url": "https://store.necaonline.com/blogs/behind-the-scenes/closer-look-enforcer-predator-action-figure-from-series-12",
+                "rel": "noopener noreferrer"
+              }
+            ]
+          },
+          {
+            "title": "ALPHA — HUNTING GROUNDS ET RÉCIT NECA",
+            "context": "Repère d’œuvre · Hunting Grounds / récit licencié de l’emballage Alpha NECA",
+            "sources": [
+              {
+                "label": "IllFonic · Alpha",
+                "url": "https://blog.playstation.com/?p=333379",
+                "rel": "noopener noreferrer"
+              },
+              {
+                "label": "IllFonic · partenariat NECA",
+                "url": "https://blog.playstation.com/2020/08/19/predator-hunting-grounds-august-update/",
+                "rel": "noopener noreferrer"
+              },
+              {
+                "label": "Emballage Alpha NECA, reproduit",
+                "url": "https://toy-wizards.com/2020/05/13/neca-alpha-predator-box-images-and-pre-order-info/",
+                "rel": "noopener noreferrer"
+              }
+            ]
+          }
+        ],
+        "engineers": [
+          {
+            "title": "INGÉNIEUR — PROMETHEUS",
+            "context": "Œuvre et adaptation du jeu · Prometheus / rencontre adaptée",
+            "sources": [
+              {
+                "label": "NECA · Ingénieurs",
+                "url": "https://store.necaonline.com/blogs/news/prometheus-has-landed",
+                "rel": "noopener noreferrer"
+              }
+            ]
+          },
+          {
+            "title": "SYNTHÉTIQUES — PERSONNAGES ET AFFILIATIONS",
+            "context": "Œuvre et adaptation du jeu · Alien, Aliens et Romulus / affiliations de mission",
+            "sources": [
+              {
+                "label": "NECA · Bishop",
+                "url": "https://store.necaonline.com/products/aliens-android-bishop-7-inch-scale-action-figure-series-3",
+                "rel": "noopener noreferrer"
+              },
+              {
+                "label": "Créateurs · synthétiques Alien",
+                "url": "https://www.moviemaker.com/alien-romulus-cover-story/",
+                "rel": "noopener noreferrer"
+              }
+            ]
+          },
+          {
+            "title": "FERAL — MASQUE, BOLT GUN ET BOUCLIER",
+            "context": "Repère d’œuvre · Prey (2022) · film et notice licenciée",
+            "sources": [
+              {
+                "label": "Studio · Prey",
+                "url": "https://www.20thcenturystudios.com/movies/prey",
+                "rel": "noopener noreferrer"
+              },
+              {
+                "label": "NECA · Feral",
+                "url": "https://store.necaonline.com/collections/pre-orders/products/prey-ultramate-feral-predator-7-inch-scale-action-figure",
+                "rel": "noopener noreferrer"
+              }
+            ]
+          }
+        ]
+      },
+      "tabStates": {
+        "ranks": [
+          {
+            "id": "ranks",
+            "active": true,
+            "pressed": "true"
+          },
+          {
+            "id": "code",
+            "active": false,
+            "pressed": "false"
+          },
+          {
+            "id": "xenomorphs",
+            "active": false,
+            "pressed": "false"
+          },
+          {
+            "id": "engineers",
+            "active": false,
+            "pressed": "false"
+          }
+        ],
+        "engineers": [
+          {
+            "id": "ranks",
+            "active": false,
+            "pressed": "false"
+          },
+          {
+            "id": "code",
+            "active": false,
+            "pressed": "false"
+          },
+          {
+            "id": "xenomorphs",
+            "active": false,
+            "pressed": "false"
+          },
+          {
+            "id": "engineers",
+            "active": true,
+            "pressed": "true"
+          }
+        ]
+      }
+    },
+    {
+      "id": "briefing-and-command-map",
+      "status": "passed",
+      "briefing": "BRIEFING — OPÉRATION ORIGINALEBataille alternative à trois campsJUNGLE DE VAL VERDE (1987) · 6 secteurs · 3 fronts · positions en unités de jeu.Forces alliées : 20 combattants alloués. Forces adverses : présence signalée ; réserves à confirmer par reconnaissance.Plafond de proximité : 32 combattants. Les forces distantes restent actives ; leur position est connue par rapports, avec incertitude.Commandement adverse : Équilibré. Les effectifs, PV et dégâts restent identiques ; les décisions et prises de risque changent.Disposition alternative : les mêmes fronts disposent de distances et de passages différents.Front essentiel perdu : 153 s au minimum pour revenir et le reprendre, selon les voies ouvertes.Chasseur déployé : JUNGLE HUNTER (1987) · Chasseur déployé pour cette opération.Opération indépendante ; aucune chronologie générale imposée au personnage.Aucun service confirmé · 0 mission(s) confirmée(s) pour ce chasseur · statut narratif inchangé.Objectifs : Sécuriser les fronts hostiles ou épuiser leur population finie.Échecs : joueurs vaincus ; front allié perdu durablement.Choisissez votre équipement et une première route. Les passages alternatifs autorisent une approche de flanc ; les noms de lieux désignent une adaptation.",
+      "insertion": {
+        "simulated": 4.34999999999999,
+        "phase": "complete",
+        "visible": true
+      },
+      "before": {
+        "ids": [
+          "val_verde_jungle:hive:0:0",
+          "val_verde_jungle:hive:0:1",
+          "val_verde_jungle:hive:0:2",
+          "val_verde_jungle:hive:0:3",
+          "val_verde_jungle:hive:10:0",
+          "val_verde_jungle:hive:10:1",
+          "val_verde_jungle:hive:10:2",
+          "val_verde_jungle:hive:10:3",
+          "val_verde_jungle:hive:11:0",
+          "val_verde_jungle:hive:11:1",
+          "val_verde_jungle:hive:11:2",
+          "val_verde_jungle:hive:11:3",
+          "val_verde_jungle:hive:12:0",
+          "val_verde_jungle:hive:12:1",
+          "val_verde_jungle:hive:12:2",
+          "val_verde_jungle:hive:12:3",
+          "val_verde_jungle:hive:13:0",
+          "val_verde_jungle:hive:13:1",
+          "val_verde_jungle:hive:13:2",
+          "val_verde_jungle:hive:13:3",
+          "val_verde_jungle:hive:14:0",
+          "val_verde_jungle:hive:14:1",
+          "val_verde_jungle:hive:14:2",
+          "val_verde_jungle:hive:14:3",
+          "val_verde_jungle:hive:15:0",
+          "val_verde_jungle:hive:15:1",
+          "val_verde_jungle:hive:15:2",
+          "val_verde_jungle:hive:15:3",
+          "val_verde_jungle:hive:1:0",
+          "val_verde_jungle:hive:1:1",
+          "val_verde_jungle:hive:1:2",
+          "val_verde_jungle:hive:1:3",
+          "val_verde_jungle:hive:2:0",
+          "val_verde_jungle:hive:2:1",
+          "val_verde_jungle:hive:2:2",
+          "val_verde_jungle:hive:2:3",
+          "val_verde_jungle:hive:3:0",
+          "val_verde_jungle:hive:3:1",
+          "val_verde_jungle:hive:3:2",
+          "val_verde_jungle:hive:3:3",
+          "val_verde_jungle:hive:4:0",
+          "val_verde_jungle:hive:4:1",
+          "val_verde_jungle:hive:4:2",
+          "val_verde_jungle:hive:4:3",
+          "val_verde_jungle:hive:5:0",
+          "val_verde_jungle:hive:5:1",
+          "val_verde_jungle:hive:5:2",
+          "val_verde_jungle:hive:5:3",
+          "val_verde_jungle:hive:6:0",
+          "val_verde_jungle:hive:6:1",
+          "val_verde_jungle:hive:6:2",
+          "val_verde_jungle:hive:6:3",
+          "val_verde_jungle:hive:7:0",
+          "val_verde_jungle:hive:7:1",
+          "val_verde_jungle:hive:7:2",
+          "val_verde_jungle:hive:7:3",
+          "val_verde_jungle:hive:8:0",
+          "val_verde_jungle:hive:8:1",
+          "val_verde_jungle:hive:8:2",
+          "val_verde_jungle:hive:8:3",
+          "val_verde_jungle:hive:9:0",
+          "val_verde_jungle:hive:9:1",
+          "val_verde_jungle:hive:9:2",
+          "val_verde_jungle:hive:9:3",
+          "val_verde_jungle:human_force:0:0",
+          "val_verde_jungle:human_force:0:1",
+          "val_verde_jungle:human_force:0:2",
+          "val_verde_jungle:human_force:0:3",
+          "val_verde_jungle:human_force:10:0",
+          "val_verde_jungle:human_force:10:1",
+          "val_verde_jungle:human_force:10:2",
+          "val_verde_jungle:human_force:10:3",
+          "val_verde_jungle:human_force:11:0",
+          "val_verde_jungle:human_force:11:1",
+          "val_verde_jungle:human_force:11:2",
+          "val_verde_jungle:human_force:11:3",
+          "val_verde_jungle:human_force:1:0",
+          "val_verde_jungle:human_force:1:1",
+          "val_verde_jungle:human_force:1:2",
+          "val_verde_jungle:human_force:1:3",
+          "val_verde_jungle:human_force:2:0",
+          "val_verde_jungle:human_force:2:1",
+          "val_verde_jungle:human_force:2:2",
+          "val_verde_jungle:human_force:2:3",
+          "val_verde_jungle:human_force:3:0",
+          "val_verde_jungle:human_force:3:1",
+          "val_verde_jungle:human_force:3:2",
+          "val_verde_jungle:human_force:3:3",
+          "val_verde_jungle:human_force:4:0",
+          "val_verde_jungle:human_force:4:1",
+          "val_verde_jungle:human_force:4:2",
+          "val_verde_jungle:human_force:4:3",
+          "val_verde_jungle:human_force:5:0",
+          "val_verde_jungle:human_force:5:1",
+          "val_verde_jungle:human_force:5:2",
+          "val_verde_jungle:human_force:5:3",
+          "val_verde_jungle:human_force:6:0",
+          "val_verde_jungle:human_force:6:1",
+          "val_verde_jungle:human_force:6:2",
+          "val_verde_jungle:human_force:6:3",
+          "val_verde_jungle:human_force:7:0",
+          "val_verde_jungle:human_force:7:1",
+          "val_verde_jungle:human_force:7:2",
+          "val_verde_jungle:human_force:7:3",
+          "val_verde_jungle:human_force:8:0",
+          "val_verde_jungle:human_force:8:1",
+          "val_verde_jungle:human_force:8:2",
+          "val_verde_jungle:human_force:8:3",
+          "val_verde_jungle:human_force:9:0",
+          "val_verde_jungle:human_force:9:1",
+          "val_verde_jungle:human_force:9:2",
+          "val_verde_jungle:human_force:9:3",
+          "val_verde_jungle:player_clan:0:0",
+          "val_verde_jungle:player_clan:0:1",
+          "val_verde_jungle:player_clan:0:2",
+          "val_verde_jungle:player_clan:0:3",
+          "val_verde_jungle:player_clan:1:0",
+          "val_verde_jungle:player_clan:1:1",
+          "val_verde_jungle:player_clan:1:2",
+          "val_verde_jungle:player_clan:1:3",
+          "val_verde_jungle:player_clan:2:0",
+          "val_verde_jungle:player_clan:2:1",
+          "val_verde_jungle:player_clan:2:2",
+          "val_verde_jungle:player_clan:2:3",
+          "val_verde_jungle:player_clan:3:0",
+          "val_verde_jungle:player_clan:3:1",
+          "val_verde_jungle:player_clan:3:2",
+          "val_verde_jungle:player_clan:3:3",
+          "val_verde_jungle:player_clan:4:0",
+          "val_verde_jungle:player_clan:4:1",
+          "val_verde_jungle:player_clan:4:2",
+          "val_verde_jungle:player_clan:4:3"
+        ],
+        "allocated": 132,
+        "run": "mission-34b613ff-54dd-408a-a9ae-522c41508f4a",
+        "hp": 1000,
+        "score": 0,
+        "conserved": true
+      },
+      "selection": {
+        "groupId": "val_verde_jungle:player_clan:0",
+        "groupLabel": "player_clan 1",
+        "frontId": "relay",
+        "frontLabel": "Relais radio"
+      },
+      "preview": "Relais radio — player_clan 1 : 57 s de trajet de front à front · capitaine disponible. Estimation de trajet ; le combat, les obstacles et les nouveaux ordres peuvent la modifier.",
+      "comparison": 3,
+      "frontCount": 3,
+      "orderFeedback": "ORDRE ACCEPTÉ · player_clan 1 vers Relais radio · défense · Joueur 1. Cet ordre remplace le précédent ; l’arrivée sera annoncée séparément.",
+      "order": {
+        "type": "defend",
+        "frontId": "relay",
+        "issuer": "player1",
+        "issuedAt": 0,
+        "sequence": 1
+      },
+      "delegated": true,
+      "delegateFeedback": "CAPITAINE DÉLÉGUÉ vers Relais radio · player_clan 1. Il défend puis décide selon le combat réel ; surveillez ses pertes et ses rapports.",
+      "tactic": {
+        "type": "hold_line",
+        "expires": 20,
+        "flank": 0
+      },
+      "tacticFeedback": "TACTIQUE COORDONNÉE vers Relais radio · player_clan 1. Effet 20 s ; nouvelle coordination après 30 s. Les groupes doivent encore rejoindre leur position.",
+      "after": {
+        "ids": [
+          "val_verde_jungle:hive:0:0",
+          "val_verde_jungle:hive:0:1",
+          "val_verde_jungle:hive:0:2",
+          "val_verde_jungle:hive:0:3",
+          "val_verde_jungle:hive:10:0",
+          "val_verde_jungle:hive:10:1",
+          "val_verde_jungle:hive:10:2",
+          "val_verde_jungle:hive:10:3",
+          "val_verde_jungle:hive:11:0",
+          "val_verde_jungle:hive:11:1",
+          "val_verde_jungle:hive:11:2",
+          "val_verde_jungle:hive:11:3",
+          "val_verde_jungle:hive:12:0",
+          "val_verde_jungle:hive:12:1",
+          "val_verde_jungle:hive:12:2",
+          "val_verde_jungle:hive:12:3",
+          "val_verde_jungle:hive:13:0",
+          "val_verde_jungle:hive:13:1",
+          "val_verde_jungle:hive:13:2",
+          "val_verde_jungle:hive:13:3",
+          "val_verde_jungle:hive:14:0",
+          "val_verde_jungle:hive:14:1",
+          "val_verde_jungle:hive:14:2",
+          "val_verde_jungle:hive:14:3",
+          "val_verde_jungle:hive:15:0",
+          "val_verde_jungle:hive:15:1",
+          "val_verde_jungle:hive:15:2",
+          "val_verde_jungle:hive:15:3",
+          "val_verde_jungle:hive:1:0",
+          "val_verde_jungle:hive:1:1",
+          "val_verde_jungle:hive:1:2",
+          "val_verde_jungle:hive:1:3",
+          "val_verde_jungle:hive:2:0",
+          "val_verde_jungle:hive:2:1",
+          "val_verde_jungle:hive:2:2",
+          "val_verde_jungle:hive:2:3",
+          "val_verde_jungle:hive:3:0",
+          "val_verde_jungle:hive:3:1",
+          "val_verde_jungle:hive:3:2",
+          "val_verde_jungle:hive:3:3",
+          "val_verde_jungle:hive:4:0",
+          "val_verde_jungle:hive:4:1",
+          "val_verde_jungle:hive:4:2",
+          "val_verde_jungle:hive:4:3",
+          "val_verde_jungle:hive:5:0",
+          "val_verde_jungle:hive:5:1",
+          "val_verde_jungle:hive:5:2",
+          "val_verde_jungle:hive:5:3",
+          "val_verde_jungle:hive:6:0",
+          "val_verde_jungle:hive:6:1",
+          "val_verde_jungle:hive:6:2",
+          "val_verde_jungle:hive:6:3",
+          "val_verde_jungle:hive:7:0",
+          "val_verde_jungle:hive:7:1",
+          "val_verde_jungle:hive:7:2",
+          "val_verde_jungle:hive:7:3",
+          "val_verde_jungle:hive:8:0",
+          "val_verde_jungle:hive:8:1",
+          "val_verde_jungle:hive:8:2",
+          "val_verde_jungle:hive:8:3",
+          "val_verde_jungle:hive:9:0",
+          "val_verde_jungle:hive:9:1",
+          "val_verde_jungle:hive:9:2",
+          "val_verde_jungle:hive:9:3",
+          "val_verde_jungle:human_force:0:0",
+          "val_verde_jungle:human_force:0:1",
+          "val_verde_jungle:human_force:0:2",
+          "val_verde_jungle:human_force:0:3",
+          "val_verde_jungle:human_force:10:0",
+          "val_verde_jungle:human_force:10:1",
+          "val_verde_jungle:human_force:10:2",
+          "val_verde_jungle:human_force:10:3",
+          "val_verde_jungle:human_force:11:0",
+          "val_verde_jungle:human_force:11:1",
+          "val_verde_jungle:human_force:11:2",
+          "val_verde_jungle:human_force:11:3",
+          "val_verde_jungle:human_force:1:0",
+          "val_verde_jungle:human_force:1:1",
+          "val_verde_jungle:human_force:1:2",
+          "val_verde_jungle:human_force:1:3",
+          "val_verde_jungle:human_force:2:0",
+          "val_verde_jungle:human_force:2:1",
+          "val_verde_jungle:human_force:2:2",
+          "val_verde_jungle:human_force:2:3",
+          "val_verde_jungle:human_force:3:0",
+          "val_verde_jungle:human_force:3:1",
+          "val_verde_jungle:human_force:3:2",
+          "val_verde_jungle:human_force:3:3",
+          "val_verde_jungle:human_force:4:0",
+          "val_verde_jungle:human_force:4:1",
+          "val_verde_jungle:human_force:4:2",
+          "val_verde_jungle:human_force:4:3",
+          "val_verde_jungle:human_force:5:0",
+          "val_verde_jungle:human_force:5:1",
+          "val_verde_jungle:human_force:5:2",
+          "val_verde_jungle:human_force:5:3",
+          "val_verde_jungle:human_force:6:0",
+          "val_verde_jungle:human_force:6:1",
+          "val_verde_jungle:human_force:6:2",
+          "val_verde_jungle:human_force:6:3",
+          "val_verde_jungle:human_force:7:0",
+          "val_verde_jungle:human_force:7:1",
+          "val_verde_jungle:human_force:7:2",
+          "val_verde_jungle:human_force:7:3",
+          "val_verde_jungle:human_force:8:0",
+          "val_verde_jungle:human_force:8:1",
+          "val_verde_jungle:human_force:8:2",
+          "val_verde_jungle:human_force:8:3",
+          "val_verde_jungle:human_force:9:0",
+          "val_verde_jungle:human_force:9:1",
+          "val_verde_jungle:human_force:9:2",
+          "val_verde_jungle:human_force:9:3",
+          "val_verde_jungle:player_clan:0:0",
+          "val_verde_jungle:player_clan:0:1",
+          "val_verde_jungle:player_clan:0:2",
+          "val_verde_jungle:player_clan:0:3",
+          "val_verde_jungle:player_clan:1:0",
+          "val_verde_jungle:player_clan:1:1",
+          "val_verde_jungle:player_clan:1:2",
+          "val_verde_jungle:player_clan:1:3",
+          "val_verde_jungle:player_clan:2:0",
+          "val_verde_jungle:player_clan:2:1",
+          "val_verde_jungle:player_clan:2:2",
+          "val_verde_jungle:player_clan:2:3",
+          "val_verde_jungle:player_clan:3:0",
+          "val_verde_jungle:player_clan:3:1",
+          "val_verde_jungle:player_clan:3:2",
+          "val_verde_jungle:player_clan:3:3",
+          "val_verde_jungle:player_clan:4:0",
+          "val_verde_jungle:player_clan:4:1",
+          "val_verde_jungle:player_clan:4:2",
+          "val_verde_jungle:player_clan:4:3"
+        ],
+        "allocated": 132,
+        "conserved": true,
+        "preferences": {
+          "version": 1,
+          "palette": "monochrome",
+          "symbols": true,
+          "reducedFlashes": true
+        }
+      }
+    },
+    {
+      "id": "combat-readability-real-cloak",
+      "status": "passed",
+      "state": {
+        "combat": {
+          "style": "balanced",
+          "weakness": "Recovery exposes the hunter after a crowd finisher.",
+          "stamina": 100,
+          "maxStamina": 100,
+          "crowdCooldown": 0,
+          "attackId": 0,
+          "window": null,
+          "lightChainLength": 5,
+          "lightCost": 3,
+          "nextHeavyCost": 16,
+          "lastRefusal": null,
+          "stealth": {
+            "concealed": true,
+            "revealedFor": 0,
+            "ambushMultiplier": 2.5,
+            "definition": "original_gameplay_adaptation"
+          },
+          "impairments": [],
+          "executionProtection": 0,
+          "definition": "original_gameplay_adaptation",
+          "fidelity1to1Verified": false
+        },
+        "costs": "Léger 3 · Lourd 16 END",
+        "status": "◇ CAMOUFLÉ · embuscade possible"
+      },
+      "minimap": {
+        "width": 224,
+        "height": 224,
+        "legacyMarkerPixels": {},
+        "legend": "\n            ○ P Joueur◇ Allié△ Hostile□ Autre groupe★ Objectif? InconnuCreux : dernier rapportPointillés : passage fermé\n          "
+      }
+    },
+    {
+      "id": "pause-save-reload-command-identity",
+      "status": "passed",
+      "paused": {
+        "paused": true,
+        "time": 0,
+        "hp": 1000
+      },
+      "afterPause": {
+        "time": 0,
+        "hp": 1000
+      },
+      "saved": {
+        "run": "mission-34b613ff-54dd-408a-a9ae-522c41508f4a",
+        "ids": [
+          "val_verde_jungle:hive:0:0",
+          "val_verde_jungle:hive:0:1",
+          "val_verde_jungle:hive:0:2",
+          "val_verde_jungle:hive:0:3",
+          "val_verde_jungle:hive:10:0",
+          "val_verde_jungle:hive:10:1",
+          "val_verde_jungle:hive:10:2",
+          "val_verde_jungle:hive:10:3",
+          "val_verde_jungle:hive:11:0",
+          "val_verde_jungle:hive:11:1",
+          "val_verde_jungle:hive:11:2",
+          "val_verde_jungle:hive:11:3",
+          "val_verde_jungle:hive:12:0",
+          "val_verde_jungle:hive:12:1",
+          "val_verde_jungle:hive:12:2",
+          "val_verde_jungle:hive:12:3",
+          "val_verde_jungle:hive:13:0",
+          "val_verde_jungle:hive:13:1",
+          "val_verde_jungle:hive:13:2",
+          "val_verde_jungle:hive:13:3",
+          "val_verde_jungle:hive:14:0",
+          "val_verde_jungle:hive:14:1",
+          "val_verde_jungle:hive:14:2",
+          "val_verde_jungle:hive:14:3",
+          "val_verde_jungle:hive:15:0",
+          "val_verde_jungle:hive:15:1",
+          "val_verde_jungle:hive:15:2",
+          "val_verde_jungle:hive:15:3",
+          "val_verde_jungle:hive:1:0",
+          "val_verde_jungle:hive:1:1",
+          "val_verde_jungle:hive:1:2",
+          "val_verde_jungle:hive:1:3",
+          "val_verde_jungle:hive:2:0",
+          "val_verde_jungle:hive:2:1",
+          "val_verde_jungle:hive:2:2",
+          "val_verde_jungle:hive:2:3",
+          "val_verde_jungle:hive:3:0",
+          "val_verde_jungle:hive:3:1",
+          "val_verde_jungle:hive:3:2",
+          "val_verde_jungle:hive:3:3",
+          "val_verde_jungle:hive:4:0",
+          "val_verde_jungle:hive:4:1",
+          "val_verde_jungle:hive:4:2",
+          "val_verde_jungle:hive:4:3",
+          "val_verde_jungle:hive:5:0",
+          "val_verde_jungle:hive:5:1",
+          "val_verde_jungle:hive:5:2",
+          "val_verde_jungle:hive:5:3",
+          "val_verde_jungle:hive:6:0",
+          "val_verde_jungle:hive:6:1",
+          "val_verde_jungle:hive:6:2",
+          "val_verde_jungle:hive:6:3",
+          "val_verde_jungle:hive:7:0",
+          "val_verde_jungle:hive:7:1",
+          "val_verde_jungle:hive:7:2",
+          "val_verde_jungle:hive:7:3",
+          "val_verde_jungle:hive:8:0",
+          "val_verde_jungle:hive:8:1",
+          "val_verde_jungle:hive:8:2",
+          "val_verde_jungle:hive:8:3",
+          "val_verde_jungle:hive:9:0",
+          "val_verde_jungle:hive:9:1",
+          "val_verde_jungle:hive:9:2",
+          "val_verde_jungle:hive:9:3",
+          "val_verde_jungle:human_force:0:0",
+          "val_verde_jungle:human_force:0:1",
+          "val_verde_jungle:human_force:0:2",
+          "val_verde_jungle:human_force:0:3",
+          "val_verde_jungle:human_force:10:0",
+          "val_verde_jungle:human_force:10:1",
+          "val_verde_jungle:human_force:10:2",
+          "val_verde_jungle:human_force:10:3",
+          "val_verde_jungle:human_force:11:0",
+          "val_verde_jungle:human_force:11:1",
+          "val_verde_jungle:human_force:11:2",
+          "val_verde_jungle:human_force:11:3",
+          "val_verde_jungle:human_force:1:0",
+          "val_verde_jungle:human_force:1:1",
+          "val_verde_jungle:human_force:1:2",
+          "val_verde_jungle:human_force:1:3",
+          "val_verde_jungle:human_force:2:0",
+          "val_verde_jungle:human_force:2:1",
+          "val_verde_jungle:human_force:2:2",
+          "val_verde_jungle:human_force:2:3",
+          "val_verde_jungle:human_force:3:0",
+          "val_verde_jungle:human_force:3:1",
+          "val_verde_jungle:human_force:3:2",
+          "val_verde_jungle:human_force:3:3",
+          "val_verde_jungle:human_force:4:0",
+          "val_verde_jungle:human_force:4:1",
+          "val_verde_jungle:human_force:4:2",
+          "val_verde_jungle:human_force:4:3",
+          "val_verde_jungle:human_force:5:0",
+          "val_verde_jungle:human_force:5:1",
+          "val_verde_jungle:human_force:5:2",
+          "val_verde_jungle:human_force:5:3",
+          "val_verde_jungle:human_force:6:0",
+          "val_verde_jungle:human_force:6:1",
+          "val_verde_jungle:human_force:6:2",
+          "val_verde_jungle:human_force:6:3",
+          "val_verde_jungle:human_force:7:0",
+          "val_verde_jungle:human_force:7:1",
+          "val_verde_jungle:human_force:7:2",
+          "val_verde_jungle:human_force:7:3",
+          "val_verde_jungle:human_force:8:0",
+          "val_verde_jungle:human_force:8:1",
+          "val_verde_jungle:human_force:8:2",
+          "val_verde_jungle:human_force:8:3",
+          "val_verde_jungle:human_force:9:0",
+          "val_verde_jungle:human_force:9:1",
+          "val_verde_jungle:human_force:9:2",
+          "val_verde_jungle:human_force:9:3",
+          "val_verde_jungle:player_clan:0:0",
+          "val_verde_jungle:player_clan:0:1",
+          "val_verde_jungle:player_clan:0:2",
+          "val_verde_jungle:player_clan:0:3",
+          "val_verde_jungle:player_clan:1:0",
+          "val_verde_jungle:player_clan:1:1",
+          "val_verde_jungle:player_clan:1:2",
+          "val_verde_jungle:player_clan:1:3",
+          "val_verde_jungle:player_clan:2:0",
+          "val_verde_jungle:player_clan:2:1",
+          "val_verde_jungle:player_clan:2:2",
+          "val_verde_jungle:player_clan:2:3",
+          "val_verde_jungle:player_clan:3:0",
+          "val_verde_jungle:player_clan:3:1",
+          "val_verde_jungle:player_clan:3:2",
+          "val_verde_jungle:player_clan:3:3",
+          "val_verde_jungle:player_clan:4:0",
+          "val_verde_jungle:player_clan:4:1",
+          "val_verde_jungle:player_clan:4:2",
+          "val_verde_jungle:player_clan:4:3"
+        ],
+        "scene": {
+          "mapSeed": 1,
+          "difficultyId": "standard"
+        },
+        "hp": 1000,
+        "group": {
+          "id": "val_verde_jungle:player_clan:0",
+          "label": "player_clan 1",
+          "factionId": "player_clan",
+          "frontId": "insertion",
+          "reserveOriginId": "insertion",
+          "position": [
+            34,
+            0
+          ],
+          "units": [
+            "val_verde_jungle:player_clan:0:0",
+            "val_verde_jungle:player_clan:0:1",
+            "val_verde_jungle:player_clan:0:2",
+            "val_verde_jungle:player_clan:0:3"
+          ],
+          "morale": 70,
+          "state": "distant",
+          "path": [
+            {
+              "routeId": "route-insertion-relay-main",
+              "from": "insertion",
+              "to": "relay"
+            }
+          ],
+          "travelProgress": 0,
+          "waypointIndex": 0,
+          "materialized": false,
+          "reportAge": 0,
+          "lastSeenAt": 0,
+          "reportPosition": [
+            34,
+            0
+          ],
+          "order": {
+            "type": "defend",
+            "frontId": "relay",
+            "issuer": "player1",
+            "issuedAt": 0,
+            "sequence": 4
+          },
+          "formation": "line",
+          "officerId": "val_verde_jungle:player_clan:0:0",
+          "delegated": true,
+          "tactic": {
+            "type": "hold_line",
+            "expires": 20,
+            "flank": 0
+          },
+          "detailRetryAt": 0,
+          "coordinationStrength": 1,
+          "reconstitution": null,
+          "supportsReconstitutionOf": null,
+          "lastReinforcementArrival": null,
+          "reinforcementDestination": null,
+          "cohesion": 100,
+          "rootUntil": 0,
+          "suppressedUntil": 0,
+          "officerThreatUntil": 0,
+          "revealedUntil": 0
+        },
+        "preferences": {
+          "version": 1,
+          "palette": "monochrome",
+          "symbols": true,
+          "reducedFlashes": true
+        }
+      },
+      "insertion": {
+        "simulated": 4.34999999999999,
+        "phase": "complete",
+        "visible": true
+      },
+      "resumed": {
+        "run": "mission-34b613ff-54dd-408a-a9ae-522c41508f4a",
+        "ids": [
+          "val_verde_jungle:hive:0:0",
+          "val_verde_jungle:hive:0:1",
+          "val_verde_jungle:hive:0:2",
+          "val_verde_jungle:hive:0:3",
+          "val_verde_jungle:hive:10:0",
+          "val_verde_jungle:hive:10:1",
+          "val_verde_jungle:hive:10:2",
+          "val_verde_jungle:hive:10:3",
+          "val_verde_jungle:hive:11:0",
+          "val_verde_jungle:hive:11:1",
+          "val_verde_jungle:hive:11:2",
+          "val_verde_jungle:hive:11:3",
+          "val_verde_jungle:hive:12:0",
+          "val_verde_jungle:hive:12:1",
+          "val_verde_jungle:hive:12:2",
+          "val_verde_jungle:hive:12:3",
+          "val_verde_jungle:hive:13:0",
+          "val_verde_jungle:hive:13:1",
+          "val_verde_jungle:hive:13:2",
+          "val_verde_jungle:hive:13:3",
+          "val_verde_jungle:hive:14:0",
+          "val_verde_jungle:hive:14:1",
+          "val_verde_jungle:hive:14:2",
+          "val_verde_jungle:hive:14:3",
+          "val_verde_jungle:hive:15:0",
+          "val_verde_jungle:hive:15:1",
+          "val_verde_jungle:hive:15:2",
+          "val_verde_jungle:hive:15:3",
+          "val_verde_jungle:hive:1:0",
+          "val_verde_jungle:hive:1:1",
+          "val_verde_jungle:hive:1:2",
+          "val_verde_jungle:hive:1:3",
+          "val_verde_jungle:hive:2:0",
+          "val_verde_jungle:hive:2:1",
+          "val_verde_jungle:hive:2:2",
+          "val_verde_jungle:hive:2:3",
+          "val_verde_jungle:hive:3:0",
+          "val_verde_jungle:hive:3:1",
+          "val_verde_jungle:hive:3:2",
+          "val_verde_jungle:hive:3:3",
+          "val_verde_jungle:hive:4:0",
+          "val_verde_jungle:hive:4:1",
+          "val_verde_jungle:hive:4:2",
+          "val_verde_jungle:hive:4:3",
+          "val_verde_jungle:hive:5:0",
+          "val_verde_jungle:hive:5:1",
+          "val_verde_jungle:hive:5:2",
+          "val_verde_jungle:hive:5:3",
+          "val_verde_jungle:hive:6:0",
+          "val_verde_jungle:hive:6:1",
+          "val_verde_jungle:hive:6:2",
+          "val_verde_jungle:hive:6:3",
+          "val_verde_jungle:hive:7:0",
+          "val_verde_jungle:hive:7:1",
+          "val_verde_jungle:hive:7:2",
+          "val_verde_jungle:hive:7:3",
+          "val_verde_jungle:hive:8:0",
+          "val_verde_jungle:hive:8:1",
+          "val_verde_jungle:hive:8:2",
+          "val_verde_jungle:hive:8:3",
+          "val_verde_jungle:hive:9:0",
+          "val_verde_jungle:hive:9:1",
+          "val_verde_jungle:hive:9:2",
+          "val_verde_jungle:hive:9:3",
+          "val_verde_jungle:human_force:0:0",
+          "val_verde_jungle:human_force:0:1",
+          "val_verde_jungle:human_force:0:2",
+          "val_verde_jungle:human_force:0:3",
+          "val_verde_jungle:human_force:10:0",
+          "val_verde_jungle:human_force:10:1",
+          "val_verde_jungle:human_force:10:2",
+          "val_verde_jungle:human_force:10:3",
+          "val_verde_jungle:human_force:11:0",
+          "val_verde_jungle:human_force:11:1",
+          "val_verde_jungle:human_force:11:2",
+          "val_verde_jungle:human_force:11:3",
+          "val_verde_jungle:human_force:1:0",
+          "val_verde_jungle:human_force:1:1",
+          "val_verde_jungle:human_force:1:2",
+          "val_verde_jungle:human_force:1:3",
+          "val_verde_jungle:human_force:2:0",
+          "val_verde_jungle:human_force:2:1",
+          "val_verde_jungle:human_force:2:2",
+          "val_verde_jungle:human_force:2:3",
+          "val_verde_jungle:human_force:3:0",
+          "val_verde_jungle:human_force:3:1",
+          "val_verde_jungle:human_force:3:2",
+          "val_verde_jungle:human_force:3:3",
+          "val_verde_jungle:human_force:4:0",
+          "val_verde_jungle:human_force:4:1",
+          "val_verde_jungle:human_force:4:2",
+          "val_verde_jungle:human_force:4:3",
+          "val_verde_jungle:human_force:5:0",
+          "val_verde_jungle:human_force:5:1",
+          "val_verde_jungle:human_force:5:2",
+          "val_verde_jungle:human_force:5:3",
+          "val_verde_jungle:human_force:6:0",
+          "val_verde_jungle:human_force:6:1",
+          "val_verde_jungle:human_force:6:2",
+          "val_verde_jungle:human_force:6:3",
+          "val_verde_jungle:human_force:7:0",
+          "val_verde_jungle:human_force:7:1",
+          "val_verde_jungle:human_force:7:2",
+          "val_verde_jungle:human_force:7:3",
+          "val_verde_jungle:human_force:8:0",
+          "val_verde_jungle:human_force:8:1",
+          "val_verde_jungle:human_force:8:2",
+          "val_verde_jungle:human_force:8:3",
+          "val_verde_jungle:human_force:9:0",
+          "val_verde_jungle:human_force:9:1",
+          "val_verde_jungle:human_force:9:2",
+          "val_verde_jungle:human_force:9:3",
+          "val_verde_jungle:player_clan:0:0",
+          "val_verde_jungle:player_clan:0:1",
+          "val_verde_jungle:player_clan:0:2",
+          "val_verde_jungle:player_clan:0:3",
+          "val_verde_jungle:player_clan:1:0",
+          "val_verde_jungle:player_clan:1:1",
+          "val_verde_jungle:player_clan:1:2",
+          "val_verde_jungle:player_clan:1:3",
+          "val_verde_jungle:player_clan:2:0",
+          "val_verde_jungle:player_clan:2:1",
+          "val_verde_jungle:player_clan:2:2",
+          "val_verde_jungle:player_clan:2:3",
+          "val_verde_jungle:player_clan:3:0",
+          "val_verde_jungle:player_clan:3:1",
+          "val_verde_jungle:player_clan:3:2",
+          "val_verde_jungle:player_clan:3:3",
+          "val_verde_jungle:player_clan:4:0",
+          "val_verde_jungle:player_clan:4:1",
+          "val_verde_jungle:player_clan:4:2",
+          "val_verde_jungle:player_clan:4:3"
+        ],
+        "group": {
+          "id": "val_verde_jungle:player_clan:0",
+          "label": "player_clan 1",
+          "factionId": "player_clan",
+          "species": "yautja",
+          "frontId": "insertion",
+          "position": [
+            34,
+            0
+          ],
+          "morale": 70,
+          "moraleModel": "clan",
+          "moraleLabel": "Cohésion",
+          "coordinated": true,
+          "formation": "line",
+          "delegated": true,
+          "tactic": {
+            "type": "hold_line",
+            "expires": 20,
+            "flank": 0
+          },
+          "coordinationStrength": 1,
+          "reconstitution": null,
+          "state": "distant",
+          "officerId": "val_verde_jungle:player_clan:0:0",
+          "officerHP": 400,
+          "officerMaxHP": 400,
+          "cohesion": 100,
+          "rootUntil": 0,
+          "suppressedUntil": 0,
+          "officerThreatUntil": 0,
+          "revealedUntil": 0,
+          "order": {
+            "type": "defend",
+            "frontId": "relay",
+            "issuer": "player1",
+            "issuedAt": 0,
+            "sequence": 4
+          },
+          "targetPosition": [
+            0,
+            0
+          ],
+          "path": [
+            {
+              "routeId": "route-insertion-relay-main",
+              "from": "insertion",
+              "to": "relay"
+            }
+          ],
+          "incapacitated": 0,
+          "combatReady": 4,
+          "alive": 4,
+          "units": [
+            "val_verde_jungle:player_clan:0:0",
+            "val_verde_jungle:player_clan:0:1",
+            "val_verde_jungle:player_clan:0:2",
+            "val_verde_jungle:player_clan:0:3"
+          ],
+          "materialized": false,
+          "reportAge": 0,
+          "precisePositionKnown": true
+        },
+        "preferences": {
+          "version": 1,
+          "palette": "monochrome",
+          "symbols": true,
+          "reducedFlashes": true
+        },
+        "scene": {
+          "mapSeed": 1,
+          "difficultyId": "standard"
+        },
+        "conserved": true,
+        "characterId": "jungle_hunter"
+      }
+    },
+    {
+      "id": "controlled-defeat-character-debrief",
+      "status": "passed",
+      "before": {
+        "time": 0,
+        "character": "JUNGLE HUNTER (1987)",
+        "groups": [
+          {
+            "id": "val_verde_jungle:player_clan:0",
+            "label": "player_clan 1"
+          },
+          {
+            "id": "val_verde_jungle:player_clan:1",
+            "label": "player_clan 2"
+          },
+          {
+            "id": "val_verde_jungle:player_clan:2",
+            "label": "player_clan 3"
+          },
+          {
+            "id": "val_verde_jungle:player_clan:3",
+            "label": "player_clan 4"
+          },
+          {
+            "id": "val_verde_jungle:player_clan:4",
+            "label": "player_clan 5"
+          },
+          {
+            "id": "val_verde_jungle:hive:0",
+            "label": "hive 1"
+          },
+          {
+            "id": "val_verde_jungle:hive:1",
+            "label": "hive 2"
+          },
+          {
+            "id": "val_verde_jungle:hive:2",
+            "label": "hive 3"
+          },
+          {
+            "id": "val_verde_jungle:hive:3",
+            "label": "hive 4"
+          },
+          {
+            "id": "val_verde_jungle:hive:4",
+            "label": "hive 5"
+          },
+          {
+            "id": "val_verde_jungle:hive:5",
+            "label": "hive 6"
+          },
+          {
+            "id": "val_verde_jungle:hive:6",
+            "label": "hive 7"
+          },
+          {
+            "id": "val_verde_jungle:hive:7",
+            "label": "hive 8"
+          },
+          {
+            "id": "val_verde_jungle:hive:8",
+            "label": "hive 9"
+          },
+          {
+            "id": "val_verde_jungle:hive:9",
+            "label": "hive 10"
+          },
+          {
+            "id": "val_verde_jungle:hive:10",
+            "label": "hive 11"
+          },
+          {
+            "id": "val_verde_jungle:hive:11",
+            "label": "hive 12"
+          },
+          {
+            "id": "val_verde_jungle:hive:12",
+            "label": "hive 13"
+          },
+          {
+            "id": "val_verde_jungle:hive:13",
+            "label": "hive 14"
+          },
+          {
+            "id": "val_verde_jungle:hive:14",
+            "label": "hive 15"
+          },
+          {
+            "id": "val_verde_jungle:hive:15",
+            "label": "hive 16"
+          },
+          {
+            "id": "val_verde_jungle:human_force:0",
+            "label": "human_force 1"
+          },
+          {
+            "id": "val_verde_jungle:human_force:1",
+            "label": "human_force 2"
+          },
+          {
+            "id": "val_verde_jungle:human_force:2",
+            "label": "human_force 3"
+          },
+          {
+            "id": "val_verde_jungle:human_force:3",
+            "label": "human_force 4"
+          },
+          {
+            "id": "val_verde_jungle:human_force:4",
+            "label": "human_force 5"
+          },
+          {
+            "id": "val_verde_jungle:human_force:5",
+            "label": "human_force 6"
+          },
+          {
+            "id": "val_verde_jungle:human_force:6",
+            "label": "human_force 7"
+          },
+          {
+            "id": "val_verde_jungle:human_force:7",
+            "label": "human_force 8"
+          },
+          {
+            "id": "val_verde_jungle:human_force:8",
+            "label": "human_force 9"
+          },
+          {
+            "id": "val_verde_jungle:human_force:9",
+            "label": "human_force 10"
+          },
+          {
+            "id": "val_verde_jungle:human_force:10",
+            "label": "human_force 11"
+          },
+          {
+            "id": "val_verde_jungle:human_force:11",
+            "label": "human_force 12"
+          }
+        ]
+      },
+      "text": "Bataille alternative à trois campsLes chasseurs ont été vaincus.Chasseur déployé : JUNGLE HUNTER (1987).Temps de bataille : 0 min 0 s.Groupes du clan : player_clan 1 — 4 survivants, front confié au capitaine ; player_clan 2 — 4 survivants ; player_clan 3 — 4 survivants ; player_clan 4 — 4 survivants ; player_clan 5 — 4 survivants.CampAllouésDétaillésDistantsRéservesPertesÉvacuésCapturésClan joueur200164000Ruche6404816000Forces humaines4803216000Chaque combattant appartient à un seul état. Les changements de niveau de détail ne comptent pas comme des pertes.Journal des causes connues0:00 · Ordre transmis0:00 · Ordre transmis0:00 · Rapport de mission0:00 · Ordre transmis0:00 · Rapport de mission0:00 · Résultat confirmé",
+      "after": {
+        "playerCleared": true,
+        "playing": false
+      }
+    }
+  ],
+  "errors": [],
+  "failedRequests": [],
+  "externalRequests": [],
+  "buildInfo": {
+    "schemaVersion": 1,
+    "contentVersion": "v67-continuation-20261101",
+    "sourceCommit": "e524c2b96ef35e80768295fb1a3dd06bea3b5d63",
+    "sourceBranch": "codex/depth-pr3-20261028",
+    "sourceFingerprint": "5b78bf5edd21f837e6832a53cc345c4c268093e4b04264a10ce25c7505b69d6b",
+    "sourceFiles": 164,
+    "sourceTreeDirty": false,
+    "buildEpoch": 1793494979,
+    "reproducibleBuildDate": "2026-11-01T01:02:59.000Z",
+    "deploymentProof": "https://github.com/darknigthmare/Yautja-hive-warriors/blob/codex/depth-pr3-20261028/docs/qa/continuation-final-validation.json"
+  },
+  "harnessSha256": "8b17143c718417263ef3d380930224f677bf2bbefb5bb1fa5ca9a596910e96d7",
+  "insertionHelperSha256": "e62b36a664dd2fadaee8804fc70b75d7afa10ebd2345abdb645e806a7b899a43",
+  "commandSelection": {
+    "groupId": "val_verde_jungle:player_clan:0",
+    "groupLabel": "player_clan 1",
+    "frontId": "relay",
+    "frontLabel": "Relais radio"
+  },
+  "initial": {
+    "ids": [
+      "val_verde_jungle:hive:0:0",
+      "val_verde_jungle:hive:0:1",
+      "val_verde_jungle:hive:0:2",
+      "val_verde_jungle:hive:0:3",
+      "val_verde_jungle:hive:10:0",
+      "val_verde_jungle:hive:10:1",
+      "val_verde_jungle:hive:10:2",
+      "val_verde_jungle:hive:10:3",
+      "val_verde_jungle:hive:11:0",
+      "val_verde_jungle:hive:11:1",
+      "val_verde_jungle:hive:11:2",
+      "val_verde_jungle:hive:11:3",
+      "val_verde_jungle:hive:12:0",
+      "val_verde_jungle:hive:12:1",
+      "val_verde_jungle:hive:12:2",
+      "val_verde_jungle:hive:12:3",
+      "val_verde_jungle:hive:13:0",
+      "val_verde_jungle:hive:13:1",
+      "val_verde_jungle:hive:13:2",
+      "val_verde_jungle:hive:13:3",
+      "val_verde_jungle:hive:14:0",
+      "val_verde_jungle:hive:14:1",
+      "val_verde_jungle:hive:14:2",
+      "val_verde_jungle:hive:14:3",
+      "val_verde_jungle:hive:15:0",
+      "val_verde_jungle:hive:15:1",
+      "val_verde_jungle:hive:15:2",
+      "val_verde_jungle:hive:15:3",
+      "val_verde_jungle:hive:1:0",
+      "val_verde_jungle:hive:1:1",
+      "val_verde_jungle:hive:1:2",
+      "val_verde_jungle:hive:1:3",
+      "val_verde_jungle:hive:2:0",
+      "val_verde_jungle:hive:2:1",
+      "val_verde_jungle:hive:2:2",
+      "val_verde_jungle:hive:2:3",
+      "val_verde_jungle:hive:3:0",
+      "val_verde_jungle:hive:3:1",
+      "val_verde_jungle:hive:3:2",
+      "val_verde_jungle:hive:3:3",
+      "val_verde_jungle:hive:4:0",
+      "val_verde_jungle:hive:4:1",
+      "val_verde_jungle:hive:4:2",
+      "val_verde_jungle:hive:4:3",
+      "val_verde_jungle:hive:5:0",
+      "val_verde_jungle:hive:5:1",
+      "val_verde_jungle:hive:5:2",
+      "val_verde_jungle:hive:5:3",
+      "val_verde_jungle:hive:6:0",
+      "val_verde_jungle:hive:6:1",
+      "val_verde_jungle:hive:6:2",
+      "val_verde_jungle:hive:6:3",
+      "val_verde_jungle:hive:7:0",
+      "val_verde_jungle:hive:7:1",
+      "val_verde_jungle:hive:7:2",
+      "val_verde_jungle:hive:7:3",
+      "val_verde_jungle:hive:8:0",
+      "val_verde_jungle:hive:8:1",
+      "val_verde_jungle:hive:8:2",
+      "val_verde_jungle:hive:8:3",
+      "val_verde_jungle:hive:9:0",
+      "val_verde_jungle:hive:9:1",
+      "val_verde_jungle:hive:9:2",
+      "val_verde_jungle:hive:9:3",
+      "val_verde_jungle:human_force:0:0",
+      "val_verde_jungle:human_force:0:1",
+      "val_verde_jungle:human_force:0:2",
+      "val_verde_jungle:human_force:0:3",
+      "val_verde_jungle:human_force:10:0",
+      "val_verde_jungle:human_force:10:1",
+      "val_verde_jungle:human_force:10:2",
+      "val_verde_jungle:human_force:10:3",
+      "val_verde_jungle:human_force:11:0",
+      "val_verde_jungle:human_force:11:1",
+      "val_verde_jungle:human_force:11:2",
+      "val_verde_jungle:human_force:11:3",
+      "val_verde_jungle:human_force:1:0",
+      "val_verde_jungle:human_force:1:1",
+      "val_verde_jungle:human_force:1:2",
+      "val_verde_jungle:human_force:1:3",
+      "val_verde_jungle:human_force:2:0",
+      "val_verde_jungle:human_force:2:1",
+      "val_verde_jungle:human_force:2:2",
+      "val_verde_jungle:human_force:2:3",
+      "val_verde_jungle:human_force:3:0",
+      "val_verde_jungle:human_force:3:1",
+      "val_verde_jungle:human_force:3:2",
+      "val_verde_jungle:human_force:3:3",
+      "val_verde_jungle:human_force:4:0",
+      "val_verde_jungle:human_force:4:1",
+      "val_verde_jungle:human_force:4:2",
+      "val_verde_jungle:human_force:4:3",
+      "val_verde_jungle:human_force:5:0",
+      "val_verde_jungle:human_force:5:1",
+      "val_verde_jungle:human_force:5:2",
+      "val_verde_jungle:human_force:5:3",
+      "val_verde_jungle:human_force:6:0",
+      "val_verde_jungle:human_force:6:1",
+      "val_verde_jungle:human_force:6:2",
+      "val_verde_jungle:human_force:6:3",
+      "val_verde_jungle:human_force:7:0",
+      "val_verde_jungle:human_force:7:1",
+      "val_verde_jungle:human_force:7:2",
+      "val_verde_jungle:human_force:7:3",
+      "val_verde_jungle:human_force:8:0",
+      "val_verde_jungle:human_force:8:1",
+      "val_verde_jungle:human_force:8:2",
+      "val_verde_jungle:human_force:8:3",
+      "val_verde_jungle:human_force:9:0",
+      "val_verde_jungle:human_force:9:1",
+      "val_verde_jungle:human_force:9:2",
+      "val_verde_jungle:human_force:9:3",
+      "val_verde_jungle:player_clan:0:0",
+      "val_verde_jungle:player_clan:0:1",
+      "val_verde_jungle:player_clan:0:2",
+      "val_verde_jungle:player_clan:0:3",
+      "val_verde_jungle:player_clan:1:0",
+      "val_verde_jungle:player_clan:1:1",
+      "val_verde_jungle:player_clan:1:2",
+      "val_verde_jungle:player_clan:1:3",
+      "val_verde_jungle:player_clan:2:0",
+      "val_verde_jungle:player_clan:2:1",
+      "val_verde_jungle:player_clan:2:2",
+      "val_verde_jungle:player_clan:2:3",
+      "val_verde_jungle:player_clan:3:0",
+      "val_verde_jungle:player_clan:3:1",
+      "val_verde_jungle:player_clan:3:2",
+      "val_verde_jungle:player_clan:3:3",
+      "val_verde_jungle:player_clan:4:0",
+      "val_verde_jungle:player_clan:4:1",
+      "val_verde_jungle:player_clan:4:2",
+      "val_verde_jungle:player_clan:4:3"
+    ],
+    "allocated": 132,
+    "run": "mission-34b613ff-54dd-408a-a9ae-522c41508f4a",
+    "hp": 1000,
+    "score": 0,
+    "conserved": true
+  },
+  "distUnchanged": true,
+  "finishedAt": "2026-11-01T01:31:25.493Z",
+  "durationSeconds": 77.942
+}

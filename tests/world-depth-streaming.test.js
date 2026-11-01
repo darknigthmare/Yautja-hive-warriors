@@ -65,3 +65,17 @@ test('main and flank trails are actual upward-facing world geometry linked to ph
   }
   e.clearEnvironment(); assert.equal(e.routeCues.length, 0);
 });
+
+test('route markings at the Val Verde insertion do not stretch from an access deck onto its roof',()=>{
+  const e=new EnvironmentManager(new THREE.Scene());
+  try{
+    e.buildLevelEnvironment({...LEVELS_DATA.find(level=>level.id==='val_verde_jungle'),battlefield:true,strategicMode:true,mapSeed:1});
+    const mesh=e.root.getObjectByName('battlefield-wayfinding-floor');
+    assert.ok(mesh?.isMesh);
+    const positions=mesh.geometry.attributes.position;
+    for(let index=0;index<positions.count;index+=6){
+      const heights=Array.from({length:6},(_,offset)=>positions.getY(index+offset));
+      assert.ok(Math.max(...heights)-Math.min(...heights)<=.65001,'ground paint must not create a vertical obstacle in front of the inserted hunter');
+    }
+  }finally{e.clearEnvironment();}
+});

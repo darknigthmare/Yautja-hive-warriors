@@ -9,6 +9,7 @@
 import * as THREE from 'three';
 import { prepareSarii, orderSarii, damageSarii, updateSarii } from './SariiCompanion.js';
 import { walkRampGeometry } from './ReferenceWalkSurfaces.js';
+import { TemporaryCombatEffects } from '../engine/TemporaryCombatEffects.js';
 
 // These are explicit game-unit contracts, not measurements of film weapons.
 export const PREY_INTERACTION_RULES = Object.freeze({
@@ -88,6 +89,7 @@ function preyCreatePowderFire(environment, position, timer, ownerFaction) {
 export class ReferenceEnvironmentMechanisms {
   constructor(scene) {
     this.scene = scene;
+    this.environmentCombatEffects = new TemporaryCombatEffects();
     this.envObjects = [];
     this.modularSlabs = [];
     this.slabShiftTimer = 0;
@@ -330,6 +332,8 @@ export class ReferenceEnvironmentMechanisms {
   }
 
   clearReferenceState() {
+    this.environmentCombatEffects.dispose();
+    this.environmentCombatEffects = new TemporaryCombatEffects();
     this.envObjects.forEach(obj => this.removeReferenceObject(obj));
     this.envObjects = [];
     this.modularSlabs = [];
@@ -2003,7 +2007,7 @@ export class ReferenceEnvironmentMechanisms {
           horde.aliens.forEach(a => {
             if (a && a.hp > 0 && a.mesh && a.mesh.position.distanceTo(c.pos) <= 6.0) {
               a.hp -= 35 * delta;
-              a.speed = Math.max(3, a.speed * 0.7);
+              this.environmentCombatEffects.slow(a, 'steam-contact', .7, .25);
             }
           });
         }
@@ -2090,17 +2094,9 @@ export class ReferenceEnvironmentMechanisms {
         horde.aliens.forEach(a => {
           if (!a || !a.mesh || a.hp <= 0) return;
           if (a.mesh.position.distanceTo(zone.pos) <= zone.radius) {
-            a.isFrozen = true;
-            a.freezeTimer = 4.5;
-            a.speed = 0;
-            if (a.mesh.traverse) {
-              a.mesh.traverse(child => {
-                if (child.isMesh && child.material && !child.origColor) {
-                  child.origColor = child.material.color.getHex();
-                  child.material.color.setHex(0x93c5fd); // Crystalline ice blue
-                }
-              });
-            }
+            // The blue volume already supplies the visual cue. Creature
+            // materials are shared and must never be recolored by one victim.
+            this.environmentCombatEffects.slow(a, 'liquid-nitrogen', 0, 4.5);
           }
         });
       }
@@ -2842,10 +2838,7 @@ export class ReferenceEnvironmentMechanisms {
           horde.aliens.forEach(a => {
             if (a.hp > 0 && a.mesh.position.distanceTo(t.pos) <= shockRadius) {
               a.hp -= 220;
-              a.speed = Math.max(1.5, a.speed * 0.2); // Severe motor paralysis
-              this.referenceDelay(() => {
-                if (a && a.hp > 0) a.speed = a.type === 'facehugger' ? 17 : (a.type === 'crusher' ? 12 : 11);
-              }, 4000);
+              this.environmentCombatEffects.slow(a, 'transformer-shock', .2, 4);
             }
           });
         }
@@ -5971,18 +5964,7 @@ export class ReferenceEnvironmentMechanisms {
         horde.aliens.forEach(a => {
           if (!a || a.hp <= 0 || !a.mesh) return;
           if (a.mesh.position.distanceTo(vent.pos) <= vent.radius) {
-            a.isFrozen = true;
-            a.freezeTimer = 6.0;
-            a.isFlashFrozen = true;
-            a.frozenTimer = 6.0;
-            if (a.mesh.traverse) {
-              a.mesh.traverse(child => {
-                if (child.isMesh && child.material && child.material.color) {
-                  if (child.origColor === undefined) child.origColor = child.material.color.getHex();
-                  child.material.color.setHex(0x93c5fd);
-                }
-              });
-            }
+            this.environmentCombatEffects.slow(a, 'cooling-tower-cryo', 0, 6);
           }
         });
       }
@@ -7841,7 +7823,7 @@ export class ReferenceEnvironmentMechanisms {
         if (horde && horde.aliens) {
           horde.aliens.forEach(a => {
             if (a && a.mesh && a.mesh.position.distanceTo(cloud.pos) <= cloud.radius) {
-              a.isFrozen = true;
+              this.environmentCombatEffects.slow(a, 'stasis-coolant-contact', .3, .25);
               a.hp -= 85 * delta;
               if (particles && particles.emitSparks && this.random() < 0.05) {
                 particles.emitSparks(a.mesh.position, 2);
@@ -8878,7 +8860,7 @@ export class ReferenceEnvironmentMechanisms {
       if (horde && horde.aliens) {
         horde.aliens.forEach(alien => {
           if (alien && alien.mesh && alien.mesh.position.distanceTo(cloud.pos) <= cloud.radius) {
-            alien.isFrozen = true;
+            this.environmentCombatEffects.slow(alien, 'ammonia-contact', 0, .25);
             alien.hp -= 70 * delta;
             if (particles && particles.emitSparks && this.random() < 0.08) {
               particles.emitSparks(alien.mesh.position, 2);
@@ -11164,8 +11146,7 @@ export class ReferenceEnvironmentMechanisms {
         if (horde && horde.aliens) {
           horde.aliens.forEach(alien => {
             if (alien && alien.mesh && alien.hp > 0 && alien.mesh.position.distanceTo(hvac.pos) <= 10.0) {
-              alien.isFrozen = true;
-              alien.speedMult = 0.3;
+              this.environmentCombatEffects.slow(alien, 'freon-contact', .3, .25);
               frozen++;
             }
           });
@@ -11318,8 +11299,7 @@ export class ReferenceEnvironmentMechanisms {
         horde.aliens.forEach(alien => {
           if (alien && alien.mesh && alien.hp > 0 && alien.mesh.position.distanceTo(f.pos) <= 18.0) {
             alien.hp -= 280;
-            alien.isFrozen = true;
-            alien.speedMult = 0.2;
+            this.environmentCombatEffects.slow(alien, 'meat-locker-impact', .2, 6);
             alien.isStunned = true;
             alien.stunTimer = 6.0;
             frozenCount++;
@@ -11632,7 +11612,7 @@ export class ReferenceEnvironmentMechanisms {
         horde.aliens.forEach(alien => {
           if (alien && alien.mesh && alien.hp > 0 && alien.mesh.position.distanceTo(this.boilingTarKettle.pos) <= 10.0) {
             alien.hp -= 320;
-            alien.speedMult = 0.15;
+            this.environmentCombatEffects.slow(alien, 'boiling-tar-impact', .15, 5);
             alien.isStunned = true;
             alien.stunTimer = 5.0;
             glued++;
@@ -12322,16 +12302,14 @@ export class ReferenceEnvironmentMechanisms {
         if (horde && horde.aliens) {
           horde.aliens.forEach(alien => {
             if (alien && alien.hp > 0) {
-              alien.isInhibited = true;
-              alien.inhibitedTimer = 16.0;
-              alien.speedMult = 0.4;
+              this.environmentCombatEffects.slow(alien, 'neural-inhibitor', .4, 16);
               inhibitedCount++;
             }
           });
         }
 
         if (ui && ui.showAnnouncement) {
-          ui.showAnnouncement(`🧠 INHIBITEURS NEURONAUX CHARON ACTIVÉS (ALIENS: ROGUE) : ONDES ULTRASONIQUES (-60% VITESSE, CRACHAT ACIDE BLOQUÉ 16S SUR ${inhibitedCount} XÉNOS) !`, 'warning');
+          ui.showAnnouncement(`🧠 INHIBITEURS NEURONAUX CHARON ACTIVÉS — ADAPTATION : -60% VITESSE PENDANT 16S SUR ${inhibitedCount} XÉNOS !`, 'warning');
         }
         return true;
       }
@@ -13947,6 +13925,9 @@ export class ReferenceEnvironmentMechanisms {
         const cloud = this.activeFreonClouds[f];
         cloud.timer -= delta;
         cloud.mesh.scale.multiplyScalar(1.0 + delta * 0.04);
+        if (cloud.timer > 0) for (const alien of horde?.aliens ?? []) {
+          if (alien?.mesh && alien.mesh.position.distanceTo(cloud.pos) <= 10) this.environmentCombatEffects.slow(alien, 'freon-contact', .3, .25);
+        }
         if (cloud.timer <= 0) {
           if (cloud.mesh) this.removeReferenceObject(cloud.mesh);
           this.activeFreonClouds.splice(f, 1);
@@ -14023,6 +14004,9 @@ export class ReferenceEnvironmentMechanisms {
     if (this.activeMeatLockerCryo) {
       const cryo = this.activeMeatLockerCryo;
       cryo.timer -= delta;
+      if (cryo.timer > 0) for (const alien of horde?.aliens ?? []) {
+        if (alien?.mesh && alien.mesh.position.distanceTo(cryo.pos) <= 18) this.environmentCombatEffects.slow(alien, 'meat-locker-contact', .2, .25);
+      }
       if (cryo.mesh) {
         cryo.mesh.scale.multiplyScalar(1.0 + delta * 0.08);
       }
@@ -14057,7 +14041,7 @@ export class ReferenceEnvironmentMechanisms {
           horde.aliens.forEach(alien => {
             if (alien && alien.mesh && alien.hp > 0 && alien.mesh.position.distanceTo(p.pos) <= 10.0) {
               alien.hp -= delta * 110;
-              alien.speedMult = 0.2;
+              this.environmentCombatEffects.slow(alien, 'boiling-tar-contact', .2, .25);
             }
           });
         }

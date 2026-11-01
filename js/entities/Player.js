@@ -21,6 +21,8 @@ import { hunterCombatStyle } from '../data/hunterCombatStyles.js';
 import { battleCoordinationDamage } from '../engine/BattleActorSupport.js';
 import { canAccessLegacyAir, canHitLegacyAirTarget } from '../engine/LegacyAirstrikePolicy.js';
 import { PREY_LEVEL_ID, PREY_WEAPON_PROFILES, createPreyWeaponVisual } from '../graphics/PreyEquipment.js';
+import { TemporaryCombatEffects } from '../engine/TemporaryCombatEffects.js';
+import { canExecuteCombatTarget } from '../engine/HunterStealth.js';
 
 const REQUIRED_RIG_BONES = ['hips', 'head', 'leftArm', 'rightArm', 'leftForeArm', 'rightForeArm', 'leftHand', 'rightHand', 'leftLeg', 'rightLeg', 'leftFoot', 'rightFoot'];
 const REQUIRED_ACCESSORIES = ['blade1', 'blade2', 'shieldMesh', 'secWeaponMesh', 'plasmaGlaiveMesh', 'clanMarkMesh'];
@@ -66,6 +68,11 @@ export class Player {
     this._effects = new Set();
     this._ownedFxDisposers = new Map();
     this._legacyDefeated = new WeakSet();
+    this._temporaryCombatEffects = new TemporaryCombatEffects();
+    this.stealthRevealTimer = 0;
+    this.executionProtectionTimer = 0;
+    this.facehuggerHoldTimer = 0;
+    this.facehuggerEscapeImmunity = 0;
     this._simulationTime = 0;
     this._disposed = false;
     this._generatedVisualGeneration = 0;
@@ -664,6 +671,7 @@ export class Player {
     if (!this.canUseArsenalEquipment('combistick')) return false;
     if (this.combiStickCooldown > 0 || this.isFacehuggerLatched) return null;
     this.combiStickCooldown = 3.5;
+    this.stealthRevealTimer = Math.max(this.stealthRevealTimer, 3);
     this.audioEngine.playCombiStickThrow();
 
     const isElevated = this.isPerched || this.position.y >= 2.0;
@@ -688,6 +696,7 @@ export class Player {
     if (!this.canUseArsenalEquipment('shuriken')) return false;
     if (this.shurikenCooldown > 0 || this.isFacehuggerLatched) return null;
     this.shurikenCooldown = HUNTER_WEAPON_PROFILES.shuriken.cooldown;
+    this.stealthRevealTimer = Math.max(this.stealthRevealTimer, 3);
     this.audioEngine.playShurikenOpen();
 
     const isElevated = this.isPerched || this.position.y >= 2.0;
@@ -888,6 +897,7 @@ export class Player {
     if (!this.canUseArsenalEquipment('smart_disc')) return false;
     if (this._disposed || this.hp <= 0 || this.smartDiscCooldown > 0 || this.isFacehuggerLatched) return null;
     this.smartDiscCooldown = HUNTER_WEAPON_PROFILES.smart_disc.cooldown;
+    this.stealthRevealTimer = Math.max(this.stealthRevealTimer, 3);
     this.audioEngine.playSmartDiscHum();
     const origin = this.position.clone().add(new THREE.Vector3(0.8, 1.8, 0.4));
     const forward = new THREE.Vector3(Math.sin(this.rotationY), 0, Math.cos(this.rotationY)).normalize();
@@ -1105,10 +1115,7 @@ export class Player {
         if (!this._canDamageLegacyAlien(horde, a)) return;
         if (a.mesh.position.distanceTo(this.position) <= empRadius) {
           a.hp -= 75;
-          a.speed = Math.max(2, a.speed * 0.3); // Severe nerve disruption
-          this.schedule(() => {
-            a.speed = a.type === 'facehugger' ? 17 : (a.type === 'crusher' ? 12 : 11);
-          }, 4000);
+          this._temporaryCombatEffects.slow(a, 'emp', .3, 4);
         }
       });
     }
@@ -1158,10 +1165,7 @@ export class Player {
       if (a.mesh.position.distanceTo(lurePoint) < 30) {
         a.mesh.position.addScaledVector(lurePoint.clone().sub(a.mesh.position).normalize(), 4.0);
         // Momentary disorientation
-        a.speed = Math.max(3, a.speed * 0.5);
-        this.schedule(() => {
-          a.speed = a.type === 'facehugger' ? 17 : (a.type === 'crusher' ? 12 : 11);
-        }, 2500);
+        this._temporaryCombatEffects.slow(a, 'voice_mimicry', .5, 2.5);
       }
     });
 
@@ -1182,7 +1186,16 @@ export class Player {
     return true;
   }
 
+  canExecuteTarget(victim, options = {}) {
+    return canExecuteCombatTarget(this, victim, { environment: this.gameContext?.env,
+      simulation: this.gameContext?.battleSimulation, ...options });
+  }
+
   executeSpineRip(victimKind = 'human') {
+    if (this._disposed || !(this.hp > 0) || this.isFacehuggerLatched || this.isRoyalFacehuggerLatched || this.executionProtectionTimer > 0) return false;
+    // Protect only the hunter's brief authored pose; other fronts keep fighting.
+    this.executionProtectionTimer = 2.2;
+    this.stealthRevealTimer = Math.max(this.stealthRevealTimer, 3);
     this.audioEngine.playSpineRip();
     this.audioEngine.playYautjaRoar();
     this.brandClanMark();
@@ -1191,11 +1204,13 @@ export class Player {
   }
 
   triggerFacehuggerLatch() {
+    if (this._disposed || this.hp <= 0 || this.isFacehuggerLatched || this.facehuggerEscapeImmunity > 0 || this.executionProtectionTimer > 0) return false;
     if (this.isBlocking || this.isPerched) {
       this.audioEngine.playShieldBlock();
-      return;
+      return false;
     }
     this.isFacehuggerLatched = true;
+    this.facehuggerHoldTimer = 12;
     this.qteStrugglePresses = 0;
     if (this.audioEngine.playFacehuggerLatch) {
       this.audioEngine.playFacehuggerLatch();
@@ -1229,6 +1244,7 @@ export class Player {
       this.headMesh.add(huggerGroup);
       this.latchedHuggerMesh = huggerGroup;
     }
+    return true;
   }
 
   struggleQTE() {
@@ -1238,12 +1254,14 @@ export class Player {
 
     if (this.qteStrugglePresses >= this.qteRequiredPresses) {
       this.isFacehuggerLatched = false;
+      this.facehuggerHoldTimer = 0;
+      this.facehuggerEscapeImmunity = 2.5;
       this.qteStrugglePresses = 0;
       this.audioEngine.playYautjaRoar();
       if (this.audioEngine.playAcidSizzle) this.audioEngine.playAcidSizzle();
 
       if (this.latchedHuggerMesh && this.headMesh) {
-        this.headMesh.remove(this.latchedHuggerMesh);
+        disposeObject(this.latchedHuggerMesh);
         this.latchedHuggerMesh = null;
       }
       return true;
@@ -1363,6 +1381,7 @@ export class Player {
     if (this.activeWeapon === 'taabe_bow') {
       if (this._disposed || this.hp <= 0 || this.isFacehuggerLatched || !this.canUseArsenalEquipment('taabe_bow') || this.compoundBowCooldown > 0 || !Number.isInteger(this.taabeArrowAmmo) || this.taabeArrowAmmo < 1 || this.taabeArrowAmmo > 12) return null;
       this.taabeArrowAmmo--; this.compoundBowCooldown = PREY_WEAPON_PROFILES.taabe_bow.cooldown;
+      this.stealthRevealTimer = Math.max(this.stealthRevealTimer, 3);
       this.audioEngine.playCompoundBowFire?.();
       return { projectileKind: 'taabe_arrow', origin: this.position.clone().add(new THREE.Vector3(0, Math.min(2.2, this.cameraEyeHeight * .8), 0)),
         direction: new THREE.Vector3(Math.sin(this.rotationY),0,Math.cos(this.rotationY)), speed:48,
@@ -1372,6 +1391,7 @@ export class Player {
     if (!this.canUseArsenalEquipment('compound_bow')) return false;
     if (this.compoundBowCooldown > 0 || this.isFacehuggerLatched) return null;
     this.compoundBowCooldown = HUNTER_WEAPON_PROFILES.compound_bow.cooldown;
+    this.stealthRevealTimer = Math.max(this.stealthRevealTimer, 3);
 
     this.audioEngine.playCompoundBowFire();
 
@@ -1549,7 +1569,7 @@ export class Player {
         if (a.hp > 0 && a.mesh.position.distanceTo(this.position) <= radius) {
           a.isAirborne = true;
           a.airborneVelY = 4.2; // Float up!
-          a.speed *= 0.2; // Severely slowed
+          this._temporaryCombatEffects.slow(a, 'anti_grav', .2, 4.5);
         }
       });
     }
@@ -1673,6 +1693,7 @@ export class Player {
     this._disposed = true;
     this._generatedVisualGeneration++;
     this._timers = [];
+    this._temporaryCombatEffects.dispose();
     this._gadgetEffects?.dispose();
     this._gadgetEffects = null;
     [...this._effects].forEach(effect => this._removeOwnedEffect(effect));
@@ -1844,6 +1865,7 @@ export class Player {
     // held equipment and projectile admission agree.
     if (this.activeWeapon !== 'crossbow' && !this.selectWeapon('crossbow', false)) return null;
     this.feralBoltAmmo--; this.feralBoltCooldown = HUNTER_WEAPON_PROFILES.crossbow.cooldown;
+    this.stealthRevealTimer = Math.max(this.stealthRevealTimer, 3);
     this.lastArsenalRefusal = null;
     this.audioEngine.playFlechetteVolleyLaunch?.();
     this.mesh.updateWorldMatrix(true, true);
@@ -1945,6 +1967,11 @@ export class Player {
   }
 
   _beginCombatWindow(kind, staminaCost, oldDuration) {
+    const stealthPrepared = kind === 'light' && this.isCloaked && this.stealthRevealTimer <= 0 && this.cloakFlickerTimer <= 0;
+    const candidates = this.gameContext?.horde?.aliens;
+    const stealthUnawareTargets = stealthPrepared && Array.isArray(candidates) ?
+      new WeakSet(candidates.filter(target => target && target._npcTarget !== this)) : undefined;
+    this.stealthRevealTimer = Math.max(this.stealthRevealTimer, 3);
     const style = this.combatStyle, heavy = kind === 'heavy';
     const windup = (heavy ? style.heavyWindup : style.lightWindup) * this.weaponProfile.timing;
     const active = heavy ? style.heavyActive : style.lightActive;
@@ -1958,7 +1985,7 @@ export class Player {
     const follow = target.clone().multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), -side * (heavy ? .78 : .44)));
     const rest = this.locomotion.arms.find(arm => arm.node === this.rightArm)?.rest.clone() ?? new THREE.Quaternion();
     this._attackArmPose = { id: this.currentAttackId, target, lead, follow, rest, applied: target.clone() };
-    return { attackId: this.currentAttackId, style: style.id, windup, hitDelay: windup + active * .5, activeDuration: active, recovery, duration, staminaCost };
+    return { attackId: this.currentAttackId, style: style.id, windup, hitDelay: windup + active * .5, activeDuration: active, recovery, duration, staminaCost, stealthPrepared, stealthUnawareTargets };
   }
 
   _updateAttackArmPose() {
@@ -1995,6 +2022,12 @@ export class Player {
       crowdCooldown: this.crowdAttackCooldown, attackId: this.currentAttackId, window: this.attackWindow ? { ...this.attackWindow } : null,
       lightChainLength: this.combatStyle.lightChainLength, lightCost: this.combatStyle.lightCost,
       nextHeavyCost: this.combatStyle.heavyCost * (1 + Math.min(5, this.attackComboStep) * .12), lastRefusal: this.lastCombatRefusal,
+      stealth: { concealed: this.isCloaked && this.stealthRevealTimer <= 0 && this.cloakFlickerTimer <= 0 && !this.isAttacking,
+        revealedFor: this.stealthRevealTimer, ambushMultiplier: 2.5, definition: 'original_gameplay_adaptation' },
+      impairments: this.isRoyalFacehuggerLatched ? [{ kind: 'royal_facehugger', remaining: Math.max(0, this.royalFacehuggerHoldTimer ?? 5), exit: 'E × 8 : arracher' }] :
+        this.isFacehuggerLatched ? [{ kind: 'facehugger', remaining: this.facehuggerHoldTimer, exit: 'E × 5 : arracher' }] :
+        this.isSyntheticAnkleGrabbed ? [{ kind: 'ankle_grab', remaining: Math.max(0, this.ankleGrabTimer), exit: 'Déplacement ralenti temporairement' }] : [],
+      executionProtection: this.executionProtectionTimer,
       definition: 'original_gameplay_adaptation', fidelity1to1Verified: false };
   }
 
@@ -2211,6 +2244,7 @@ export class Player {
     }
     if (this.plasmaEnergy < energyCost || this.isFacehuggerLatched) return null;
     this.plasmaEnergy -= energyCost;
+    this.stealthRevealTimer = Math.max(this.stealthRevealTimer, 3);
 
     this.audioEngine.playPlasmaShot();
     if (isCharged && this.audioEngine.playC6CataclysmBoom) {
@@ -2279,6 +2313,8 @@ export class Player {
 
   takeDamage(amount, isAcid = false, attacker = null, attackContext = {}) {
     if (!Number.isFinite(amount) || amount <= 0 || this._disposed) return this.hp;
+    if (this.executionProtectionTimer > 0) return this.hp;
+    this.stealthRevealTimer = Math.max(this.stealthRevealTimer, 3);
     if(attacker?.battleUnitId)amount=battleCoordinationDamage(attacker,amount);
     if (!attackContext || typeof attackContext !== 'object') attackContext = {};
     // Chantier 4 & Lucas QA (v51.0): Dedicated Active Wristblade Parry Deflection [F]
@@ -2508,6 +2544,10 @@ export class Player {
     // changes. It must not advance timers, attacks, cooldowns or resources.
     if (delta === 0) { this._syncVisualState(0); return; }
     this._simulationTime += delta;
+    this.stealthRevealTimer = Math.max(0, this.stealthRevealTimer - delta);
+    this.executionProtectionTimer = Math.max(0, this.executionProtectionTimer - delta);
+    this.facehuggerEscapeImmunity = Math.max(0, this.facehuggerEscapeImmunity - delta);
+    this._temporaryCombatEffects.update(delta);
     this.feralBoltCooldown = Math.max(0, this.feralBoltCooldown - delta);
     this.crowdAttackCooldown = Math.max(0, this.crowdAttackCooldown - delta);
     const idleTime = this.isAttacking ? Math.max(0, delta - Math.max(0, this.attackTimer)) : delta;
@@ -2657,7 +2697,15 @@ export class Player {
     }
 
     if (this.isFacehuggerLatched) {
+      // Repeated latch calls cannot restart this deadline. Struggling ends it
+      // sooner; the finite hold still releases a surviving hunter automatically.
+      this.facehuggerHoldTimer -= delta;
       this.takeDamage(40 * delta);
+      if (this.facehuggerHoldTimer <= 0) {
+        this.isFacehuggerLatched = false; this.facehuggerHoldTimer = 0; this.qteStrugglePresses = 0;
+        this.facehuggerEscapeImmunity = 2.5;
+        if (this.latchedHuggerMesh) { disposeObject(this.latchedHuggerMesh); this.latchedHuggerMesh = null; }
+      }
     }
 
     if (this.parryTimer > 0) {
@@ -3393,11 +3441,11 @@ export class Player {
       // Slow down and damage Xenomorphs in cloud
       if (horde && horde.aliens) {
         horde.aliens.forEach(a => {
-        if (!this._canDamageLegacyAlien(horde, a)) return;
+        if (!this._canHitLegacyAlien(horde, a, center, environment)) return;
           if (!a || a.hp <= 0 || !a.mesh) return;
           if (a.mesh.position.distanceTo(center) <= 7.5) {
             a.hp -= 15; // 30 dmg per second
-            a.speed = Math.max(2.5, a.speed * 0.7); // 70% slow down
+            this._temporaryCombatEffects.slow(a, 'neurotoxin', .7, 1);
             if (Math.random() < 0.2 && particles && particles.emitSmoke) {
               particles.emitSmoke(a.mesh.position, 2);
             }
@@ -3408,9 +3456,12 @@ export class Player {
       // Slow synthetics in cloud
       if (synthetics && synthetics.androids) {
         synthetics.androids.forEach(syn => {
-          if (syn.mesh.position.distanceTo(center) <= 7.5) {
+          const simulation = synthetics.battleSimulation;
+          const hostile = !simulation || !syn.factionId || simulation.areHostile(simulation.config.playerFaction, syn.factionId);
+          const visible = !(environment ?? this.gameContext?.env)?.hasLineOfSight || (environment ?? this.gameContext?.env).hasLineOfSight(center, syn.mesh.position.clone().add(new THREE.Vector3(0, 1.2, 0)));
+          if (syn.hp > 0 && hostile && visible && syn.mesh.position.distanceTo(center) <= 7.5) {
             syn.hp -= 10;
-            syn.speed = Math.max(1.8, syn.speed * 0.7);
+            this._temporaryCombatEffects.slow(syn, 'neurotoxin', .7, 1);
           }
         });
       }

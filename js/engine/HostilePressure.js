@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { canDetectConcealedTarget } from './HunterStealth.js';
 
 const warningWorldPosition = new THREE.Vector3();
 const warningWorldScale = new THREE.Vector3();
@@ -7,11 +8,39 @@ const warningWorldScale = new THREE.Vector3();
 // manager keeps its own attack/recovery cadence. A standalone manager still
 // prepares attacks using simulation time instead of render-frame probability.
 export function selectHostileTarget(manager, origin, fallback) {
-  return manager.combatDirector?.selectTarget(origin, fallback) ?? fallback;
+  const position = origin?.mesh?.position ?? origin?.position ?? origin;
+  // Current callers pass the actual actor. Keep the former position signature
+  // compatible without replacing a synthetic's or boss's senses by a human's.
+  const observer = origin?.mesh ? origin : [manager.activeBoss, manager.badBlood,
+    ...(manager.androids ?? []), ...(manager.marines ?? []), ...(manager.allies ?? [])]
+    .find(actor => actor?.mesh?.position === position) ?? { position };
+  releaseConcealedPreparation(manager, observer);
+  const candidates = manager.combatDirector?.livingPlayers?.length ? manager.combatDirector.livingPlayers :
+    (Array.isArray(fallback) ? fallback : [fallback]);
+  let nearest = null, distance = Infinity;
+  for (const candidate of candidates) {
+    if (!candidate || candidate.hp === 0 || !candidate.position?.isVector3 || !canDetectConcealedTarget(observer, candidate, manager.environment)) continue;
+    const squared = position?.distanceToSquared ? position.distanceToSquared(candidate.position) : 0;
+    if (squared < distance) { nearest = candidate; distance = squared; }
+  }
+  return nearest;
+}
+
+export function releaseConcealedPreparation(manager, attacker) {
+  const targets = [manager.combatDirector?.getAttackState(attacker)?.target,
+    attacker?._localAttackPreparation?.target, attacker?._npcTarget];
+  if (!targets.some(target => target?.isCloaked && !canDetectConcealedTarget(attacker, target, manager.environment))) return;
+  releaseHostileAttack(manager, attacker); manager._clearAttackCue?.(attacker);
+  attacker._npcPreparation = 0; attacker._npcTarget = null;
+  attacker.pressureAction = null; attacker.pressureAim = null;
 }
 
 export function requestHostileAttack(manager, attacker, target, delta, options) {
   if (!target || target.hp <= 0) return false;
+  if (!canDetectConcealedTarget(attacker, target, manager.environment)) {
+    releaseHostileAttack(manager, attacker); manager._clearAttackCue?.(attacker);
+    attacker._npcPreparation = 0; attacker._npcTarget = null; return false;
+  }
   if (manager.combatDirector) return manager.combatDirector.requestAttack(attacker, target, options);
   const current = attacker._localAttackPreparation;
   if (!current || current.target !== target || current.kind !== options.kind) {
