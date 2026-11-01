@@ -303,3 +303,44 @@ test('an incapacitated real M577 driver stops travel, preserves seats and can re
     assert.equal(f.sim.assertConservation(),true);
   }finally{f.dispose();}
 });
+
+test('M577 convoy accelerates from rest without jumping to cruise speed, and pause freezes speed and distance',()=>{
+  const f=fixture();
+  try{
+    assert.equal(f.service.requestTravel(f.target).accepted,true);
+    const j=f.service.drive.journey,source=f.apc.mesh.position.clone();
+    assert.equal(j.speed,0);
+    f.service.update(.25);
+    assert.ok(j.speed>0&&j.speed<M577_DRIVE_POLICY.speed);
+    assert.ok(j.meters>0&&j.meters<M577_DRIVE_POLICY.speed*.25);
+    assert.ok(f.apc.mesh.position.distanceTo(source)<M577_DRIVE_POLICY.speed*.25);
+    const frozen=f.apc.mesh.position.clone(),progress=j.meters,speed=j.speed;
+    f.sim.paused=true;
+    assert.equal(f.service.update(.25),false);
+    assert.ok(f.apc.mesh.position.equals(frozen));
+    assert.equal(j.meters,progress);assert.equal(j.speed,speed);
+    f.sim.paused=false;
+    f.service.update(.25);
+    assert.ok(j.speed>speed&&j.speed<=M577_DRIVE_POLICY.speed);
+    assert.ok(j.meters>progress);
+    assert.equal(f.sim.assertConservation(),true);
+  }finally{f.dispose();}
+});
+
+test('M577 acceleration follows simulation time comparably at 30, 60 and 120 FPS',()=>{
+  const snapshots=[];
+  for(const fps of [30,60,120]){
+    const f=fixture();
+    try{
+      assert.equal(f.service.requestTravel(f.target).accepted,true);
+      const start=f.apc.mesh.position.clone();
+      for(let frame=0;frame<fps*1.5;frame++)f.service.update(1/fps);
+      const length=f.apc.mesh.position.distanceTo(start);
+      assert.ok(length>0);
+      snapshots.push(length);
+      assert.equal(f.sim.assertConservation(),true);
+    }finally{f.dispose();}
+  }
+  assert.ok(Math.max(...snapshots)-Math.min(...snapshots)<.2,
+    'world displacement must remain similar across real-time frame rates');
+});

@@ -8,7 +8,7 @@ import { physicalOperationRouteAvailable } from './PhysicalRouteAvailability.js'
 import { APC_NAVIGATION } from '../graphics/APCModel.js';
 
 export const M577_DRIVE_POLICY=Object.freeze({
-  speed:4.8,stepLength:.6,maxDelta:.25,maxStepsPerUpdate:8,
+  speed:4.8,acceleration:2.4,stepLength:.6,maxDelta:.25,maxStepsPerUpdate:8,
   sweepSpacing:.15,maxSweepSamples:8,
   maxCenterHeightStep:.75,maxBodyHeightDelta:1.25,
   hullSide:2.35,hullFore:4.5,collisionRadius:.4,
@@ -86,7 +86,9 @@ export class APCConvoyDrive {
         return this._result(false,'carrier_outside_signed_road');
       index=indexOfSegment+(segmentT>.999&&indexOfSegment<waypoints.length-1?1:0);
     }
-    this.journey={routeId:route.id,targetFrontId,waypoints,index,meters:0};
+    // Transient speed is rebuilt at rest on a checkpoint resume. The
+    // persistent signed route and every seated Marine ID remain unchanged.
+    this.journey={routeId:route.id,targetFrontId,waypoints,index,meters:0,speed:0};
     s.feedback('M577 : convoi engagé sur route physique vers '+sim.fronts.get(targetFrontId).label+'.');
     return this._result(true,'convoy_started',{routeId:route.id,targetFrontId});
   }
@@ -186,7 +188,15 @@ export class APCConvoyDrive {
     if(!this._frontFriendly(j.targetFrontId,m.ownerFaction)){
       this.stop('destination_contested');return false;
     }
-    let remaining=M577_DRIVE_POLICY.speed*Math.min(delta,M577_DRIVE_POLICY.maxDelta);
+    // Bounded kinematic acceleration: the M577 cannot instantly jump
+    // to convoy cruise speed, and never moves from an unaccepted route.
+    // These world-unit values are ORIGINAL Musou tuning, not a conversion
+    // of the fictional vehicle's km/h specifications.
+    const dt=Math.min(delta,M577_DRIVE_POLICY.maxDelta);
+    const previousSpeed=j.speed;
+    j.speed=Math.min(M577_DRIVE_POLICY.speed,
+      previousSpeed+M577_DRIVE_POLICY.acceleration*dt);
+    let remaining=(previousSpeed+j.speed)*.5*dt;
     for(let tries=0;tries<M577_DRIVE_POLICY.maxStepsPerUpdate&&remaining>1e-6&&this.journey;tries++){
       const current=s.apc.mesh.position,target=j.waypoints[j.index];
       if(!target){
@@ -222,6 +232,7 @@ export class APCConvoyDrive {
   state(){
     return {travelling:this.active,targetFrontId:this.journey?.targetFrontId??null,
       transit:this.service.manifest?.transit!==undefined,
+      travelSpeedUnitsPerSecond:this.journey?.speed??0,
       lastReason:this.lastResult?.reason??null};
   }
   dispose(){this.journey=null;this.service=null;}
