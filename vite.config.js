@@ -23,7 +23,7 @@ function buildIdentity() {
     sourceTreeDirty: Boolean(git(['status', '--porcelain', '--untracked-files=all', '--', 'js', 'css', 'index.html', 'package.json', 'package-lock.json', 'vite.config.js'])),
     buildEpoch: Number.isFinite(epoch) && epoch > 0 ? epoch : null,
     reproducibleBuildDate: Number.isFinite(epoch) && epoch > 0 ? new Date(epoch * 1000).toISOString() : null,
-    deploymentProof: 'https://github.com/darknigthmare/Yautja-hive-warriors/blob/codex/depth-pr3-20261028/docs/qa/continuation-validation.json' };
+    deploymentProof: 'https://github.com/darknigthmare/Yautja-hive-warriors/blob/codex/depth-pr3-20261028/docs/qa/continuation-final-validation.json' };
 }
 
 export default defineConfig({

@@ -2,7 +2,8 @@
 
 import * as THREE from 'three';
 import { applyBattleUnit, despawnBattleActor, selectBattleTarget, listBattleTargets, battleHostile, moveBattleOrder, requestNPCStrike, applyBattleFormationHit, maintainBattleFormation } from '../engine/BattleActorSupport.js';
-import { requestHostileAttack } from '../engine/HostilePressure.js';
+import { requestHostileAttack, releaseConcealedPreparation } from '../engine/HostilePressure.js';
+import { canDetectConcealedTarget } from '../engine/HunterStealth.js';
 import { recordCombatDeath } from '../engine/CombatEvents.js';
 import { disposeObject } from '../engine/SceneResources.js';
 import { createCreatureModel, createEggModel, animateCreatureModel } from '../graphics/CreatureModels.js';
@@ -194,10 +195,12 @@ export class XenomorphHorde {
   }
 
   _pursuitTarget(actor, livingPlayers, supports = []) {
+    releaseConcealedPreparation(this, actor);
     const royal = this.royalFacehuggers.includes(actor), parasite = actor.type === 'facehugger' || royal;
     const eligible = target => (!parasite || this._canParasitize(target, royal)) &&
       (!target.isSupport || !target.isAirborne || this.mantaSwarmers.includes(actor));
-    const fallbacks = [...livingPlayers, ...supports].filter(target => eligible(target) && battleHostile(this, actor, target));
+    const fallbacks = [...livingPlayers, ...supports].filter(target => eligible(target) && battleHostile(this, actor, target) &&
+      canDetectConcealedTarget(actor, target, this.environment));
     if (!actor.battleUnitId || !this.battleSimulation) return this._nearestPlayer(actor.mesh.position, fallbacks);
     const target = selectBattleTarget(this, actor, fallbacks);
     if (!target || eligible(target)) return target;
@@ -326,6 +329,10 @@ export class XenomorphHorde {
 
 
   _requestAttack(enemy, player, options) {
+    if (!canDetectConcealedTarget(enemy, player, this.environment)) {
+      this.combatDirector?.release(enemy); this._clearAttackCue(enemy);
+      enemy._npcPreparation = 0; enemy._npcTarget = null; return false;
+    }
     const group=this.battleSimulation?.groups?.get(enemy.battleGroupId);
     if((group?.rootUntil ?? 0)>(this.battleSimulation?.time ?? 0))return false;
     if((group?.suppressedUntil ?? 0)>(this.battleSimulation?.time ?? 0))options={...options,windup:(options.windup ?? .8)*1.6};
@@ -746,7 +753,8 @@ export class XenomorphHorde {
     // 2. Chestbursters
     for (let i = this.chestbursters.length - 1; i >= 0; i--) {
       const cb = this.chestbursters[i];
-      const targetPlayer = this._nearestPlayer(cb.mesh.position, livingPlayers);
+      const targetPlayer = this._pursuitTarget(cb, livingPlayers);
+      if (!targetPlayer) { moveBattleOrder(this, cb, delta, cb.speed); continue; }
       const dir = targetPlayer.position.clone().sub(cb.mesh.position);
       dir.y = 0;
       if (dir.length() > 1.0) {

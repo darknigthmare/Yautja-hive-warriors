@@ -95,7 +95,8 @@ export class EnvironmentManager extends ReferenceEnvironmentMechanisms {
   cancelReferenceTimer(timer) { if (timer) timer.cancelled = true; }
 
   update(delta, horde, audioEngine, player) {
-    if (!this.root || !Number.isFinite(delta) || delta <= 0) return;
+    if (!this.root || !Number.isFinite(delta) || delta <= 0 || this.game?.isPaused || this.game?.photoMode?.isActive) return;
+    this.environmentCombatEffects.update(delta);
     this.referenceTime += delta;
     for (const bridge of this.tacticalBridges.values()) bridge.update(delta);
     for (const timer of [...this.referenceTimers]) {

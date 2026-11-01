@@ -11,7 +11,7 @@ import { validatePreparedBossEncounter, validateBossCombatState, BOSS_COOLDOWN_K
 import { getBossCombatPattern } from '../data/BossCombatPatterns.js';
 import { applyBattleUnit, selectBattleTarget, listBattleTargets, moveBattleOrder, requestNPCStrike } from '../engine/BattleActorSupport.js';
 import { recordCombatDeath } from '../engine/CombatEvents.js';
-import { canExecuteCombatTarget } from '../engine/HunterStealth.js';
+import { canExecuteCombatTarget, canDetectConcealedTarget } from '../engine/HunterStealth.js';
 
 export class BossManager {
   constructor(scene, audioEngine) {
@@ -272,9 +272,9 @@ export class BossManager {
       if (target && !projectile.volley?.hitPlayers.has(target)) { target.takeDamage(projectile.damage, true, boss, { attackKind: 'acid', blockable: false, parryable: false }); projectile.volley?.hitPlayers.add(target); }
       if (target || cover || projectile.mesh.position.y <= .1 || projectile.life <= 0) { disposeObject(projectile.mesh); this[key].splice(i, 1); }
     }
-    player = boss.battleUnitId && this.battleSimulation ? selectBattleTarget(this, boss, living) : selectHostileTarget(this, boss.mesh.position, Array.isArray(player) ? players[0] : player);
+    player = boss.battleUnitId && this.battleSimulation ? selectBattleTarget(this, boss, living) : selectHostileTarget(this, boss, Array.isArray(player) ? players[0] : player);
     if (boss.type === 'feral_predator_boss') {
-      const detectable = players.filter(target => this._canFeralAcquire(target)).sort((a, b) => boss.mesh.position.distanceToSquared(a.position) - boss.mesh.position.distanceToSquared(b.position));
+      const detectable = players.filter(target => this._canFeralAcquire(target) && canDetectConcealedTarget(boss,target,this.environment)).sort((a, b) => boss.mesh.position.distanceToSquared(a.position) - boss.mesh.position.distanceToSquared(b.position));
       if (!player || !this._canFeralAcquire(player)) player = detectable[0] ?? null;
       const signature = (player ?? players[0])?.getThermalSignatureMultiplier?.() ?? 1;
       boss.thermalAcquireRange = 35 * (Number.isFinite(signature) ? Math.max(.1, Math.min(1, signature)) : 1);

@@ -20,8 +20,8 @@ const inspect = `const lib = await import(${JSON.stringify(library)}); const pub
   console.log(JSON.stringify({ profile: lib.RELEASE.name, qa: lib.QA, stage: lib.STAGE, pins: lib.DEFAULT_PINS,
     qaReport: lib.RELEASE.qaReport, defaultOption: pub.parseOptions([]).pinsPath, frozen: pins?.status }));`;
 
-test('release profiles keep the two archived stages separate from the new continuation', () => {
-  assert.deepEqual(Object.keys(RELEASE_PROFILES), ['pr3-20261026', 'pr3-next-20261028', 'continuation-20261101']);
+test('release profiles isolate archived, intermediate and final stages', () => {
+  assert.deepEqual(Object.keys(RELEASE_PROFILES), ['pr3-20261026', 'pr3-next-20261028', 'continuation-20261101', 'continuation-final-20261101']);
   for (const name of Object.keys(RELEASE_PROFILES)) assert.equal(resolveReleaseProfile(name).name, name);
   for (const name of ['', 'pr3-next', '../pr3-20261026', 'other', 'toString']) assert.throws(() => resolveReleaseProfile(name), /Unknown YAUTJA_RELEASE_PROFILE/);
 });

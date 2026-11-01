@@ -202,7 +202,7 @@ export class ColonialMarinesManager {
         if (!target) { releaseHostileAttack(this, m); moveBattleOrder(this, m, delta, m.speed); continue; }
         targetPos = target.position; targetsPlayer = !target.isBattleNPC; targetPlayer = target;
       } else {
-        targetPlayer = selectHostileTarget(this, m.mesh.position, player);
+        targetPlayer = selectHostileTarget(this, m, player);
         let nearestDist = Infinity;
         for (const alien of horde?.aliens ?? []) { if (alien.hp <= 0) continue; const distance = m.mesh.position.distanceTo(alien.mesh.position); if (distance < nearestDist) { nearestDist = distance; target = alien; targetPos = alien.mesh.position; } }
         targetsPlayer = !targetPos;

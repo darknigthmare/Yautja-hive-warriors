@@ -5,7 +5,7 @@ export class TemporaryCombatEffects {
 
   slow(target, key, multiplier, duration) {
     if (!target || !(target.hp > 0) || !Number.isFinite(target.speed) || target.speed < 0 ||
-        typeof key !== 'string' || !Number.isFinite(multiplier) || multiplier <= 0 || multiplier > 1 ||
+        typeof key !== 'string' || !Number.isFinite(multiplier) || multiplier < 0 || multiplier > 1 ||
         !Number.isFinite(duration) || duration <= 0 || duration > 30) return false;
     let state = sharedTargets.get(target);
     if (!state) { state = { baseSpeed: target.speed, applied: target.speed, owners: new Map() }; sharedTargets.set(target, state); }

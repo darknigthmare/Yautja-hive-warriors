@@ -210,7 +210,7 @@ export class SyntheticsManager {
         continue; // Fully disabled while rebooting circuits
       }
 
-      let targetPlayer = selectHostileTarget(this, syn.mesh.position, player), targetPos = null, isXeno = false, npcTarget = null;
+      let targetPlayer = selectHostileTarget(this, syn, player), targetPos = null, isXeno = false, npcTarget = null;
       const serviceBound = syn.battleUnitId && this.battleSimulation && syn.syntheticDuty !== 'security';
       if (serviceBound && syn.mesh.position.clone().setY(0).distanceToSquared(syn.serviceAnchor) > 48 ** 2) {
         syn.mesh.userData.syntheticState = 'return-to-service';
