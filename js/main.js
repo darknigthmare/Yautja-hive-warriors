@@ -305,6 +305,7 @@ class GameApp {
     this.companionLoadouts?.update(delta);
     this.operationObjectives?.update(delta,players);
     const state=this.battleSimulation.getHUDState(), objectives=this.operationObjectives?.getHUDState();
+    state.relationships=Object.fromEntries(this.battleSimulation.config.factions.map(faction=>[faction.id,this.battleSimulation.relationship(state.playerFaction,faction.id)]));
     state.phaseThreats=this.bossPhasePressure?.getHUDState().threats??[];
     state.rescue=this.allyRescue?.getState();
     const rescuePrompts=[this.player,this.player2].map((player,index)=>{const prompt=player&&this.allyRescue?.getPrompt(player);return prompt?`${this.isCoOp?`J${index+1} : `:''}${prompt.label.replace('[E]',this.gamepadBridge.inputMode==='gamepad'?'[X]':index?'[ENTRÉE]':'[E]')}`:null;}).filter(Boolean),rescueNode=document.getElementById('ally-rescue-prompt');

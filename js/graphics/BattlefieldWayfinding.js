@@ -10,6 +10,10 @@ export function buildBattlefieldWayfinding(environment) {
       const x = centerX + dz * side + dx * along, z = centerZ - dx * side + dz * along;
       return [x, environment.getElevationAt(x, z) + .045, z];
     });
+    // A marking cannot bridge two floors: interpolating a chevron between a
+    // deck and its roof creates a tall sheet directly in front of the camera.
+    const heights=points.map(point=>point[1]);
+    if(Math.max(...heights)-Math.min(...heights)>.65)return;
     for (const index of [0, 2, 1, 0, 3, 2]) { positions.push(...points[index]); uvs.push(points[index][0] / 4, points[index][2] / 4); }
   };
   const chevron = (x, z, dx, dz) => {
