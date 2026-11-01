@@ -48,3 +48,27 @@ Si le Carrier est détruit, les mêmes parasites sont dispersés
 mode 12 places amélioré, pas de projection de cargaison
 pendant une matérialisation existante. Ces capacités seront
 soumises à tests physiques et d'identités avant activation.
+
+## Destruction par le feu et Supercarrier à cargaison FINIE
+
+Le Carrier normal conserve une capacité de six individus. Une
+**configuration AFF-27 explicitement signée** peut désormais désigner
+`extinctionUpgrade: "supercarrier-genome"` sur le profil XEN-009
+pour accueillir jusqu'à douze Facehuggers **existants**. Aucune
+allocation ni fichier de mission actuel n'active cet attribut :
+l'achat par menu/upgrade d'une reine n'est pas implémenté et
+aucun ancien checkpoint n'est réécrit. Les douze identifiants
+d'un test sont déplacés depuis un groupe réel de la même faction,
+et non créés ex nihilo.
+
+La mort par flammes/incendie distingue les dégâts `fire/flame/
+napalm/incendiary/burn` d'une attaque conventionnelle :
+la première détruit et comptabilise une fois les occupants,
+la seconde libère les mêmes identités vivantes. Les sources
+**n'autorisent pas un lâcher de parasites vivants hors d'un
+Carrier entièrement brûlé**. Attention : l'ancien `cause` de
+combat distant n'indique pas toujours le type de munition, donc
+le classement feu/non-feu est limité aux impacts explicitement
+qualifiés. Les explosions acides, animations de libération,
+compétences d'upgrade de la reine et UI de déploiement restent
+à développer.

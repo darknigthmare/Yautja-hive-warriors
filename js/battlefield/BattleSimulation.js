@@ -13,7 +13,7 @@ import { HIVE_NODE_RULES, createHiveEcology, awardHiveInfestation, buildHiveNode
   damageHiveNode as damageEcologyNode, snapshotHiveEcology, restoreHiveEcology } from './HiveNodeEcology.js';
 import { sourceUnitVisualKind } from '../data/SourceActorPresentation.js';
 import { planFiniteCarrierLoad, validateFiniteCarrierCargo,
-  releaseFiniteCarrierCargo } from './ExtinctionCarrierCargo.js';
+  releaseFiniteCarrierCargo, carrierFatalFire } from './ExtinctionCarrierCargo.js';
 import { initialSpecialistStocks, restoreSpecialistStocks, sourceSpecialistRole, SPECIALIST_ATTACKS } from '../data/SourceSpecialistCombat.js';
 import { measureDefeatReturn } from './BattleStrategy.js';
 import { validateBossCombatState } from '../data/BossEncounterValidation.js';
@@ -666,13 +666,14 @@ export class BattleSimulation {
         unit.carriedByCarrierId !== undefined) return false;
     // An M577 passenger is protected by its actual vehicle until that vehicle
     // is destroyed; destroyAPCManifest clears each seat before recording loss.
-    // A killed Carrier releases its existing payload at the same XZ point;
-    // we do NOT grant the upgraded acid burst/12 slots without provenance.
-    // The detailed projection will materialize them on its normal budget.
-    if(unit.carrierCargoIds?.length){
-      const released=releaseFiniteCarrierCargo(unit,this.units);
-      this._emit('carrier_cargo_scattered',{carrierId:unit.id,count:released.length},1);
-    }
+    // Fire has a distinct source consequence: it cannot eject live cargo
+    // from an incinerated Carrier. Every lost Facehugger was ALREADY one
+    // finite ID, and receives its own death-ledger entry exactly once.
+    const carrierBurned=unit.carrierCargoIds?.length&&carrierFatalFire(event.cause);
+    const previouslyHeld=unit.carrierCargoIds?.length
+      ? releaseFiniteCarrierCargo(unit,this.units) : [];
+    if(previouslyHeld.length&&!carrierBurned)
+      this._emit('carrier_cargo_scattered',{carrierId:unit.id,count:previouslyHeld.length},1);
     unit.hp = 0; unit.state = 'dead'; unit.incapacitated = false;
     delete unit.encounterState; delete unit.infection;
     const killerFaction = this.factions.has(event.killerFaction) ? event.killerFaction : null;
@@ -690,6 +691,14 @@ export class BattleSimulation {
     // Musou action consequence: a genuinely defeated enemy officer lifts
     // local allied morale. Zero new soldiers, reserve or extra kill credit.
     applyMusouOfficerBreak(this, death);
+    if(carrierBurned){
+      let lost=0;
+      for(const passengerId of previouslyHeld){
+        if(this.recordDeath({entityId:passengerId,
+          killerFaction:event.killerFaction??null,cause:'carrier_fire_cargo'}))lost++;
+      }
+      this._emit('carrier_cargo_burned',{carrierId:unit.id,lost},1);
+    }
     return true;
   }
 

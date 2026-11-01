@@ -6,7 +6,7 @@ import { planFiniteCarrierLoad, validateFiniteCarrierCargo,
   CARRIER_CARGO_RULES } from '../js/battlefield/ExtinctionCarrierCargo.js';
 import { applyFacehuggerExposure } from '../js/battlefield/FacehuggerExposure.js';
 
-function fixture(){
+function fixture({upgraded=false}={}){
   const config=structuredClone(getBattleOperationConfig('AFF-27'));
   const hive=new Set(config.factions.filter(f=>f.species==='xeno').map(f=>f.id));
   const group=config.groups.find(g=>hive.has(g.factionId)&&g.state==='distant'&&
@@ -28,8 +28,20 @@ function fixture(){
   group.units[1].profileId='XEN-009';
   for(const unit of group.units.slice(2,8))
     unit.profileId='TEST-FINITE-FACEHUGGER';
+  if(upgraded){
+    // Only in the TEST's explicit authored variant. Move six source IDs from
+    // another group; never increment the 27-operation faction allocation.
+    const donor=config.groups.find(g=>g!==group&&g.factionId===group.factionId&&
+      g.state==='distant'&&g.units.length>=7&&
+      g.units.slice(1,7).every(u=>!u.officer&&!u.uniqueId));
+    assert.ok(donor,'need six allocated donors for the twelve-slot variant');
+    const realIds=donor.units.splice(1,6);
+    for(const unit of realIds)unit.profileId='TEST-FINITE-FACEHUGGER';
+    group.units.push(...realIds);
+    config.profiles.find(p=>p.id==='XEN-009').extinctionUpgrade='supercarrier-genome';
+  }
   const sim=new BattleSimulation(config),carrierId=group.units[1].id,
-    passengerIds=group.units.slice(2,8).map(u=>u.id);
+    passengerIds=group.units.slice(2,upgraded?14:8).map(u=>u.id);
   return {config,sim,carrierId,passengerIds,groupId:group.id,
     dispose(){sim.dispose();}};
 }
@@ -41,7 +53,8 @@ test('source Carrier loads exactly six existing IDs, not six free facehuggers',(
     const {sim,carrierId,passengerIds}=f,before=snapshot(sim);
     assert.equal(CARRIER_CARGO_RULES.ordinaryCapacity,6);
     assert.equal(CARRIER_CARGO_RULES.upgradedCapacity,12);
-    assert.equal(CARRIER_CARGO_RULES.upgradeImplemented,false);
+    assert.equal(CARRIER_CARGO_RULES.upgradeImplemented,true);
+    assert.equal(CARRIER_CARGO_RULES.purchaseUIImplemented,false);
     const result=sim.loadCarrierCargo(carrierId,passengerIds);
     assert.equal(result.accepted,true);
     assert.deepEqual(result.facehuggerIds,passengerIds);
@@ -172,6 +185,75 @@ test('invalid Carrier cargo cannot cross factions, media, or the six-slot source
     assert.equal(planFiniteCarrierLoad({...sim,config:{id:'AFF-14'}},carrierId,passengerIds).accepted,false);
     assert.equal(snapshot(sim),old);
     assert.equal(validateFiniteCarrierCargo(sim,sim.units),true);
+    assert.equal(sim.assertConservation(),true);
+  }finally{f.dispose();}
+});
+
+test('an explicitly authored Supercarrier consumes twelve existing IDs, never invents a parasite or changes budget',()=>{
+  const f=fixture({upgraded:true});
+  try{
+    const {sim,carrierId,passengerIds,config}=f,before=snapshot(sim);
+    assert.equal(passengerIds.length,12);
+    assert.equal(config.profiles.find(p=>p.id==='XEN-009').extinctionUpgrade,
+      'supercarrier-genome');
+    assert.equal(sim.loadCarrierCargo(carrierId,passengerIds).accepted,true);
+    assert.equal(sim.units.get(carrierId).carrierCargoIds.length,12);
+    assert.equal(snapshot(sim),before);
+    assert.equal(sim.units.size,sim.initialAllocated);
+    const saved=sim.saveState(),restored=BattleSimulation.fromState(config,saved);
+    try{
+      assert.deepEqual(restored.units.get(carrierId).carrierCargoIds,passengerIds);
+      assert.equal(restored.assertConservation(),true);
+    }finally{restored.dispose();}
+    const ordinary=fixture();
+    try{
+      assert.equal(ordinary.sim.loadCarrierCargo(ordinary.carrierId,ordinary.passengerIds).accepted,true);
+      const forged=structuredClone(ordinary.sim.saveState());
+      const dupe=forged.units.find(u=>u.id===ordinary.carrierId);
+      dupe.carrierCargoIds.push(...passengerIds.slice(0,7));
+      assert.throws(()=>BattleSimulation.fromState(ordinary.config,forged),
+        /invalid saved Carrier cargo/,'a save cannot grant the absent upgrade');
+    }finally{ordinary.dispose();}
+  }finally{f.dispose();}
+});
+
+test('incendiary Carrier destruction kills its exact six cargo identities, not a second swarm',()=>{
+  const f=fixture();
+  try{
+    const {sim,carrierId,passengerIds,config}=f,before=snapshot(sim),allocated=sim.units.size;
+    assert.equal(sim.loadCarrierCargo(carrierId,passengerIds).accepted,true);
+    const count=sim.deaths.size;
+    assert.equal(sim.recordDeath({entityId:carrierId,cause:'napalm-fire'}),true);
+    assert.equal(sim.deaths.size,count+1+passengerIds.length);
+    for(const id of passengerIds){
+      assert.equal(sim.units.get(id).hp,0);
+      assert.equal(sim.units.get(id).state,'dead');
+      assert.equal(sim.units.get(id).carriedByCarrierId,undefined);
+      assert.equal(sim.recordDeath({entityId:id,cause:'duplicate-flames'}),false);
+    }
+    assert.equal(sim.units.get(carrierId).carrierCargoIds,undefined);
+    assert.equal(sim.units.size,allocated);
+    assert.notEqual(snapshot(sim),before,'real finite losses must be accounted');
+    assert.equal(sim.assertConservation(),true);
+    const restored=BattleSimulation.fromState(config,sim.saveState());
+    try{assert.equal(restored.deaths.size,sim.deaths.size);
+      assert.equal(restored.assertConservation(),true);}
+    finally{restored.dispose();}
+  }finally{f.dispose();}
+});
+
+test('a non-fire Carrier death scatters its six living passengers with no collateral kill credit',()=>{
+  const f=fixture();
+  try{
+    const {sim,carrierId,passengerIds}=f;
+    assert.equal(sim.loadCarrierCargo(carrierId,passengerIds).accepted,true);
+    const count=sim.deaths.size;
+    assert.equal(sim.recordDeath({entityId:carrierId,cause:'kinetic'}),true);
+    assert.equal(sim.deaths.size,count+1);
+    for(const id of passengerIds){
+      assert.equal(sim.units.get(id).carriedByCarrierId,undefined);
+      assert.ok(sim.units.get(id).hp>0);
+    }
     assert.equal(sim.assertConservation(),true);
   }finally{f.dispose();}
 });

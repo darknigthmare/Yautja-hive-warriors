@@ -7,19 +7,33 @@ import { validExtinctionCasteUnit } from './ExtinctionCastePolicy.js';
 
 export const CARRIER_CARGO_RULES=Object.freeze({
   ordinaryCapacity:6,upgradedCapacity:12,maxBoardDistance:14,
-  upgradeImplemented:false,source:'Aliens versus Predator: Extinction',
+  upgradeImplemented:true,purchaseUIImplemented:false,
+  source:'Aliens versus Predator: Extinction',
   visualFidelity1to1Verified:false
 });
 const p2=p=>Array.isArray(p)&&p.length===2&&p.every(Number.isFinite);
 const dist=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1]);
 const living=u=>u?.hp>0&&['distant','active'].includes(u.state);
+/** Only an upgrade authored in the immutable, signed mission config can
+ * authorize extra seats. Live JS flags and edited save data cannot. */
+export function carrierCargoCapacity(sim,carrier){
+  const source=sim?.config?.profiles?.find(p=>p.id===carrier?.profileId);
+  return validExtinctionCasteUnit(carrier,sim?.config?.id)&&
+    source?.extinctionUpgrade==='supercarrier-genome'
+    ? CARRIER_CARGO_RULES.upgradedCapacity
+    : CARRIER_CARGO_RULES.ordinaryCapacity;
+}
+/** Explicitly classified incendiary impact: the film/RTS source never
+ * guarantees Facehugger release through the body of a burning Carrier. */
+export const carrierFatalFire = cause =>
+  typeof cause==='string' && /(?:fire|flame|napalm|incendiary|burn)/i.test(cause);
 export function planFiniteCarrierLoad(sim,carrierId,facehuggerIds) {
   const carrier=sim?.units?.get(carrierId),group=sim?.groups?.get(carrier?.groupId);
   if(!validExtinctionCasteUnit(carrier,sim?.config?.id)||
     !living(carrier)||carrier.state!=='distant'||carrier.carrierCargoIds!==undefined||
     !group||group.materialized||group.path.length||
     !Array.isArray(facehuggerIds)||!facehuggerIds.length||
-    facehuggerIds.length>CARRIER_CARGO_RULES.ordinaryCapacity||
+    facehuggerIds.length>carrierCargoCapacity(sim,carrier)||
     new Set(facehuggerIds).size!==facehuggerIds.length)
     return {accepted:false,reason:'carrier_not_available_or_oversubscribed'};
   const checked=[];
@@ -43,7 +57,7 @@ export function validateFiniteCarrierCargo(sim,units){
     const ids=carrier.carrierCargoIds;
     if(!validExtinctionCasteUnit(carrier,sim?.config?.id)||
        !living(carrier)||!Array.isArray(ids)||!ids.length||
-       ids.length>CARRIER_CARGO_RULES.ordinaryCapacity||
+       ids.length>carrierCargoCapacity(sim,carrier)||
        new Set(ids).size!==ids.length||!p2(carrier.position))
       throw new Error('invalid saved Carrier cargo');
     for(const id of ids){
