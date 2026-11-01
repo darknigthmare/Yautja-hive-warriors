@@ -1,3 +1,4 @@
+import { resolveAlienBaseIdentityV1, YAUTJA_ALIEN_BASE_V1 } from './alien-base-v1.js';
 /* ULTIMATE EXHAUSTIVE ALIENS VS PREDATOR ARMORY REGISTRY (36 WEAPONS & GADGETS) */
 
 export const ULTIMATE_YAUTJA_ARMORY = [
@@ -160,3 +161,14 @@ export const CHARACTERS_DATA = [
     colors: { skin: 0x9e8869, armor: 0x4a3b2c, mask: 0x826c59, plasma: 0x00ffff, dreads: 0x1a1a1a }
   }
 ];
+
+// Runtime documentary references; non-enumerable to preserve existing gameplay serialization.
+for(const weapon of ULTIMATE_YAUTJA_ARMORY){
+ const identity=resolveAlienBaseIdentityV1('armory',weapon.id);
+ if(identity)Object.defineProperty(weapon,'sharedEntityId',{value:identity.id,enumerable:false,configurable:true});
+}
+for(const character of CHARACTERS_DATA){
+ const identity=resolveAlienBaseIdentityV1('characters',character.id);
+ if(identity)Object.defineProperty(character,'sharedEntityId',{value:identity.id,enumerable:false,configurable:true});
+}
+export { resolveAlienBaseIdentityV1, YAUTJA_ALIEN_BASE_V1 };
