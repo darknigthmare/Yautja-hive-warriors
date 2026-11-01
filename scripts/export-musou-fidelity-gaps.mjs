@@ -13,7 +13,9 @@ function row(o){
     yes(c.explicitFrontGroupCompositionConfirmed),
     original?"non applicable pour une carte canonique ; cohérence interne non certifiée":yes(c.physicalMap1to1Confirmed),
     yes(c.sourceEraSpeciesCrosschecked),
-    yes(c.combatAnimation1to1Confirmed),yes(c.combatAnimation1to1Confirmed),
+    // The audit has no generic actor-model certification field; an animation
+    // flag never certifies a model. Keep the asset column explicitly unverified.
+    'non validé',yes(c.combatAnimation1to1Confirmed),
     yes(c.bossVisual1to1Confirmed),yes(c.fullMissionPlaythroughConfirmed),yes(c.multiplayerFullQaConfirmed),
     original?"QA terrain, boss original, animations et cohérence des fronts":"Vérifier les lieux, castes/époques, équipements, modèles multi-angles, gameplay et coopération",
     urls[0]??"source à compléter"];
