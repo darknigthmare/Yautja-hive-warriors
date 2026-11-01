@@ -29,6 +29,13 @@ export class APCMarineService {
     if(!this.available||!valid(position)||!point(manifest.position)||
       dist([position.x,position.z],manifest.position)>.05)
       return{accepted:false,reason:'carrier_manifest_position_mismatch'};
+    if(typeof this.environment?.getElevationAt==='function'){
+      let floor;try{floor=this.environment.getElevationAt(
+        position.x,position.z,position.y);}catch{return{
+          accepted:false,reason:'carrier_floor_unknown'};}
+      if(!Number.isFinite(floor)||Math.abs(floor-position.y)>.35)
+        return{accepted:false,reason:'carrier_floor_mismatch'};
+    }
     return{accepted:true};
   }
   getHUDState(){

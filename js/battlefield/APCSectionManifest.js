@@ -19,12 +19,24 @@ const dist=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1]);
  * soldier identities. A saved manifest must never resurrect a missing M577
  * or materialize its occupants at a different location from the real hull.
  * This intentionally does not auto-reposition the vehicle or troops. */
-export function validateM577CarrierCheckpoint(manifest,supports){
+export function validateM577CarrierCheckpoint(manifest,supports,environment=null){
   if(!manifest)return true; // Legacy and unoccupied support saves.
   const carrier=supports?.apc,position=carrier?.position;
-  return supports?.version===1&&carrier?.version===1&&carrier.deployed===true&&
+  if(!(supports?.version===1&&carrier?.version===1&&carrier.deployed===true&&
     Array.isArray(position)&&position.length===3&&position.every(Number.isFinite)&&
-    point(manifest.position)&&dist([position[0],position[2]],manifest.position)<=.05;
+    point(manifest.position)&&dist([position[0],position[2]],manifest.position)<=.05))
+    return false;
+  // Correct XZ does NOT imply the same walkable deck. The restored support
+  // may otherwise float above a bridge or fall through a floor while keeping
+  // all signed Marine IDs at that XZ. Refuse a measured height mismatch.
+  // Older headless fixtures with no floor API remain compatible.
+  if(typeof environment?.getElevationAt==='function'){
+    try{
+      const floor=environment.getElevationAt(position[0],position[2],position[1]);
+      if(!Number.isFinite(floor)||Math.abs(floor-position[1])>.35)return false;
+    }catch{return false;}
+  }
+  return true;
 }
 const fail=()=>{throw new Error('invalid saved APC marine manifest');};
 

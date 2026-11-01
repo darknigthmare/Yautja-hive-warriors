@@ -431,3 +431,45 @@ test('legitimate M577 post-boarding incapacitation survives a signed checkpoint 
     }finally{restored.dispose();}
   }finally{simulation.dispose();}
 });
+
+test('M577 checkpoint must restore at the actual measured deck, not float above the same XZ point',()=>{
+  const simulation=create();
+  try{
+    const {manifest}=board(simulation),p=manifest.position;
+    const supports={version:1,apc:{version:1,deployed:true,
+      position:[p[0],3,p[1]]}};
+    const deck={getElevationAt:()=>3};
+    assert.equal(validateM577CarrierCheckpoint(manifest,supports,deck),true);
+    assert.equal(validateM577CarrierCheckpoint(manifest,supports,{
+      getElevationAt:()=>0}),false);
+    assert.equal(validateM577CarrierCheckpoint(manifest,supports,{
+      getElevationAt:()=>Infinity}),false);
+    assert.equal(validateM577CarrierCheckpoint(manifest,supports,{
+      getElevationAt:()=>{throw new Error('missing deck');}}),false);
+    assert.equal(validateM577CarrierCheckpoint(manifest,supports),true,
+      'legacy headless support fixtures without geometry are backward-compatible');
+    const fake=structuredClone(supports);
+    fake.apc.position[1]=300;
+    assert.equal(validateM577CarrierCheckpoint(manifest,fake,deck),false);
+    assert.equal(simulation.assertConservation(),true);
+  }finally{simulation.dispose();}
+});
+
+test('loaded M577 live support rejects same-XZ wrong-floor poses before saving or unloading',()=>{
+  const sim=create();
+  try{
+    const {selection,manifest}=board(sim),{apc,env,service}=mockedService(sim,selection,{
+      floor:()=>4});
+    try{
+      apc.mesh.position.y=4;
+      assert.equal(service.validateCarrierPosition().accepted,true);
+      apc.mesh.position.y=22;
+      assert.equal(service.validateCarrierPosition().reason,'carrier_floor_mismatch');
+      assert.equal(service.getHUDState().available,false);
+      assert.equal(service.disembark().accepted,false);
+      assert.deepEqual(sim.getAPCManifest(),manifest);
+      apc.mesh.position.y=4;
+      assert.equal(service.validateCarrierPosition().accepted,true);
+    }finally{service.dispose();}
+  }finally{sim.dispose();}
+});

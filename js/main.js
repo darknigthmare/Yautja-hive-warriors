@@ -2088,8 +2088,8 @@ class GameApp {
   }
 
   restoreMissionSupports(saved) {
-    if(!validateM577CarrierCheckpoint(this.battleSimulation?.getAPCManifest?.(),saved))
-      throw new Error('Incompatible APC passenger checkpoint: absent or displaced carrier');
+    if(!validateM577CarrierCheckpoint(this.battleSimulation?.getAPCManifest?.(),saved,this.env))
+      throw new Error('Incompatible APC passenger checkpoint: absent, displaced or unsupported carrier');
     if(!saved)return;
     if(saved.version!==1||!this.apc.restore(saved.apc)||!this.dropship.restore(saved.cheyenne))throw new Error('Incompatible support checkpoint');
     if(this._apcNavigationCollider)this.env.colliders=this.env.colliders.filter(collider=>collider!==this._apcNavigationCollider);
