@@ -99,6 +99,16 @@ export class BattleSimulation {
     // the signed strategic roster. Older saves have no ecology and recover empty.
     this.hiveEcology = createHiveEcology(this.config.id, [...this.factions.values()]);
     this.intel = new BattleIntel(this, this.config.intelligence);
+    if(this.config.context?.extinctionCasteVariant==='carrier-ravager'){
+      const carrier=[...this.units.values()].find(u=>u.actorType==='carrier'&&u.profileId==='XEN-009');
+      const payload=carrier&&this.groups.get(carrier.groupId)?.units
+        .map(id=>this.units.get(id))
+        .filter(u=>u.actorType==='facehugger'&&u.hp>0)
+        .map(u=>u.id);
+      if(!carrier||payload?.length!==6||
+         this.loadCarrierCargo(carrier.id,payload).accepted!==true)
+        fail('optional source Carrier could not load six allocated Facehuggers');
+    }
   }
 
   _initialize() {

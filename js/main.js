@@ -207,6 +207,7 @@ class GameApp {
     mountSourceCatalogue(this.ui.levelSelectMenu);
     const mode = document.getElementById('mission-mode-select');
     const select = document.getElementById('operation-select');
+    const casteOption = document.getElementById('extinction-variant-enabled');
     const hiveOption=document.createElement('option');hiveOption.value=HIVE_CONFLICT_ID;hiveOption.textContent='Deux ruches rivales — scénario original';select.append(hiveOption);
     for (const operation of BATTLE_OPERATIONS) {
       const option = document.createElement('option'); option.value = operation.id;
@@ -217,6 +218,10 @@ class GameApp {
       document.getElementById('operation-select-label').classList.toggle('hidden', mode.value !== 'fronts');
       document.getElementById('operation-difficulty-label').classList.toggle('hidden',mode.value!=='fronts');
       document.getElementById('operation-layout-label').classList.toggle('hidden',mode.value!=='fronts');
+      const casteEligible=mode.value==='fronts'&&select.value==='AFF-27';
+      document.getElementById('extinction-variant-label').classList.toggle('hidden',!casteEligible);
+      casteOption.disabled=!casteEligible;
+      if(!casteEligible)casteOption.checked=false;
       const arcEligible=mode.value==='fronts'&&/^AFF-0[1-5]$/.test(select.value);
       document.getElementById('campaign-arc-label').classList.toggle('hidden',!arcEligible);
       document.getElementById('campaign-arc-enabled').disabled=!arcEligible;
@@ -245,7 +250,8 @@ class GameApp {
     this.operationDeploymentPlan=saved?.scene?.deploymentPlan ??
       (saved ? 'historical-fallback' : (this.operationDeploymentPlan ?? 'authored'));
     const sceneOptions={operationId:this.operationId,level:this.ui.selectedLevel,players:this.isCoOp?2:1,layout:this.env.battlefieldLayout,mapSeed:this.operationMapSeed,difficultyId:this.operationDifficulty,
-      deploymentPlan:this.operationDeploymentPlan};
+      deploymentPlan:this.operationDeploymentPlan,
+      extinctionVariant:saved?.scene?.extinctionVariant??this.extinctionVariant??'none'};
     let {config}=createOperationScene(sceneOptions);
     this.campaignArcId=saved?.campaignArcId??(document.getElementById('campaign-arc-enabled').checked&&/^AFF-0[1-5]$/.test(this.operationId)?CLAN_CAMPAIGN_ARC_ID:null);
     this.campaignRunId=saved?.campaignRunId??this.missionRun;
@@ -465,7 +471,7 @@ class GameApp {
     }
     this.battleBridge.sync();
     const snapshot={version:1,score:this.score,sessionSkulls:this.sessionSkulls,sessionDefeats:this._sessionDefeats,campaignArcId:this.campaignArcId,campaignRunId:this.campaignRunId,levelId:this.ui.selectedLevel.id,operationId:this.operationId,players:this.isCoOp?2:1,characterId:this.ui.selectedChar.id,loadout:this.activeLoadout,scene:{mapSeed:this.operationMapSeed,difficultyId:this.operationDifficulty,
-      deploymentPlan:this.operationDeploymentPlan??'authored'},simulation:this.battleSimulation.saveState(),objectives:this.operationObjectives?.serialize(),tacticalWorld:this.env.serializeTacticalWorld?.(),preyInteractions:this.env.serializePreyInteractions?.(),supports:{version:1,apc:this.apc.serialize(),cheyenne:this.dropship.serialize()},companions:this.companionLoadouts?.serialize(),rescue:this.allyRescue?.serialize(),bossPressure:this.bossPhasePressure?.serialize(),playerStates:[this.player,this.player2].filter(Boolean).map(snapshotOperationPlayer)};
+      deploymentPlan:this.operationDeploymentPlan??'authored',extinctionVariant:this.extinctionVariant??'none'},simulation:this.battleSimulation.saveState(),objectives:this.operationObjectives?.serialize(),tacticalWorld:this.env.serializeTacticalWorld?.(),preyInteractions:this.env.serializePreyInteractions?.(),supports:{version:1,apc:this.apc.serialize(),cheyenne:this.dropship.serialize()},companions:this.companionLoadouts?.serialize(),rescue:this.allyRescue?.serialize(),bossPressure:this.bossPhasePressure?.serialize(),playerStates:[this.player,this.player2].filter(Boolean).map(snapshotOperationPlayer)};
     try{localStorage.setItem('yautja-operation-checkpoint-v1',JSON.stringify(snapshot));this.operationPanel.feedback('Opération sauvegardée : identités, blessures, pertes et objectifs conservés.');document.getElementById('btn-resume-operation').classList.remove('hidden');}catch{this.operationPanel.feedback('Stockage indisponible : la partie reste active en mémoire.');}
   }
 
@@ -527,7 +533,11 @@ class GameApp {
       this.operationId = document.getElementById('operation-select').value;
       this.operationDifficulty=document.getElementById('operation-difficulty-select').value;
       this.operationMapSeed=Number(document.getElementById('operation-layout-select').value);
-      if(this.missionMode==='fronts'){const scene=createOperationScene({operationId:this.operationId,level:this.ui.selectedLevel,players:this.isCoOp?2:1,mapSeed:this.operationMapSeed,difficultyId:this.operationDifficulty});scene.characterBriefing=this.battleCampaign.getCharacterBriefing(scene.config,{arcId:document.getElementById('campaign-arc-enabled').checked&&/^AFF-0[1-5]$/.test(this.operationId)?CLAN_CAMPAIGN_ARC_ID:null,characterId:this.ui.selectedChar.id});this.operationBriefing.render(scene);}else this.operationBriefing.render(null);
+      this.extinctionVariant=this.missionMode==='fronts'&&this.operationId==='AFF-27'&&
+        document.getElementById('extinction-variant-enabled').checked?
+        'carrier-ravager':'none';
+      if(this.missionMode==='fronts'){const scene=createOperationScene({operationId:this.operationId,level:this.ui.selectedLevel,players:this.isCoOp?2:1,mapSeed:this.operationMapSeed,difficultyId:this.operationDifficulty,
+        extinctionVariant:this.extinctionVariant});scene.characterBriefing=this.battleCampaign.getCharacterBriefing(scene.config,{arcId:document.getElementById('campaign-arc-enabled').checked&&/^AFF-0[1-5]$/.test(this.operationId)?CLAN_CAMPAIGN_ARC_ID:null,characterId:this.ui.selectedChar.id});this.operationBriefing.render(scene);}else this.operationBriefing.render(null);
       if (this.missionMode === 'fronts' && BATTLE_OPERATIONS.some(operation=>operation.id===this.operationId)) this.ui.selectedLevel = LEVELS_DATA.find(level => level.id === getBattleOperationScene(this.operationId).levelId);
       this.ui.showScreen(document.getElementById('loadout-prep-screen'));
     });
@@ -1885,6 +1895,8 @@ class GameApp {
     const sceneOptions=operationSceneOptions(options.resumeOperation,{mapSeed:this.operationMapSeed,difficultyId:this.operationDifficulty});
     this.operationMapSeed=this.missionMode==='fronts'?sceneOptions.mapSeed:0;
     this.operationDifficulty=this.missionMode==='fronts'?sceneOptions.difficultyId:'standard';
+    this.extinctionVariant=this.missionMode==='fronts'&&this.operationId==='AFF-27'?
+      options.resumeOperation?.scene?.extinctionVariant??this.extinctionVariant??'none':'none';
     // Old checkpoints lack a deployment marker and must preserve their signed
     // historical budget projection. New missions use the audited front plan.
     this.operationDeploymentPlan = this.missionMode==='fronts'
@@ -1894,7 +1906,8 @@ class GameApp {
     let preparedOperation=null;
     try{
       preparedOperation=this.missionMode==='fronts'?createOperationScene({operationId:this.operationId,level:selectedLevel,players:this.isCoOp?2:1,mapSeed:this.operationMapSeed,difficultyId:this.operationDifficulty,
-          deploymentPlan:this.operationDeploymentPlan}):null;
+          deploymentPlan:this.operationDeploymentPlan,
+          extinctionVariant:this.extinctionVariant}):null;
       this.preparedBossEncounter=preparedOperation?null:prepareBossEncounter({level:selectedLevel,bossType:options.bossType??selectedLevel.bossType,mode:this.missionMode==='sandbox'?'sandbox':'level'});
     }catch{
       this.ui.showAnnouncement('Cet affrontement ne peut pas être préparé : vérifiez le terrain et le boss sélectionnés.');
