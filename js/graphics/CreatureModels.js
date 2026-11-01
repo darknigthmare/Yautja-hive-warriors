@@ -15,7 +15,8 @@ function createProfile(kind) {
   const pale = PALE.has(kind), egg = kind === 'egg';
   const color = ({ drone: 0x242a2c, runner: 0x55443a, red_warrior: 0x5c3030, officer: 0x3c2e31, neomorph: 0xbeb4a6,
     facehugger: 0xac987d, chestburster: 0xb1967a, offspring: 0xc8c1b1, egg: 0x6b5d49,
-    predalien: 0x494638, empress: 0x35313f })[kind] ?? 0x30363b;
+    predalien: 0x494638, empress: 0x35313f,
+    carrier: 0x353c2d, ravager: 0x222b28 })[kind] ?? 0x30363b;
   const materialType = egg ? 'leather' : pale ? 'skin' : 'chitin';
   const materials = {
     body: createSurfaceMaterial(materialType, { color, roughness: pale ? 0.65 : 0.52, metalness: pale ? 0.01 : 0.035, envMapIntensity: 0.62 }),

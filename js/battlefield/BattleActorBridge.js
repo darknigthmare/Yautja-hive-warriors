@@ -1,10 +1,11 @@
 import { applyBattleFormationHit } from '../engine/BattleActorSupport.js';
 import { recordCombatDeath } from '../engine/CombatEvents.js';
 import { sourceUnitVisualKind } from '../data/SourceActorPresentation.js';
+import { allowsDetailedXenomorphProfile } from './ExtinctionCastePolicy.js';
 import { originalMusouSquadRole } from '../data/OriginalMusouSquadRoles.js';
 import { attachOriginalMusouFieldGear } from '../graphics/OriginalMusouFieldGear.js';
 const ACTOR_TYPES = {
-  xenomorph: new Set(['warrior', 'runner', 'spitter', 'boiler', 'neomorph', 'praetomorph', 'red_warrior', 'facehugger', 'officer', 'crusher', 'praetorian', 'grid_alien', 'cyber_xeno', 'cryo_xeno', 'xenomorph', 'queen']),
+  xenomorph: new Set(['warrior', 'runner', 'spitter', 'boiler', 'neomorph', 'praetomorph', 'red_warrior', 'facehugger', 'officer', 'crusher', 'praetorian', 'grid_alien', 'cyber_xeno', 'cryo_xeno', 'xenomorph', 'queen', 'carrier', 'ravager']),
   human: new Set(['marine', 'human', 'smartgunner', 'flametrooper']),
   yautja: new Set(['yautja', 'honor_guard', 'clan_hunter', 'bad_blood']),
   synthetic: new Set(['synthetic', 'working_joe', 'weyland_combat'])
@@ -15,7 +16,9 @@ const ACTOR_TYPES = {
 export class BattleActorBridge {
   static unsupportedProfiles(config) {
     const used = new Set((config.groups ?? []).flatMap(group => group.units ?? []).map(unit => unit.profileId));
-    return (config.profiles ?? []).filter(profile => used.has(profile.id) && !ACTOR_TYPES[profile.species === 'xeno' ? 'xenomorph' : profile.species]?.has(profile.actorType)).map(profile => profile.id);
+    return (config.profiles ?? []).filter(profile => used.has(profile.id) &&
+      (!ACTOR_TYPES[profile.species === 'xeno' ? 'xenomorph' : profile.species]?.has(profile.actorType)||
+       !allowsDetailedXenomorphProfile(profile,config.id))).map(profile => profile.id);
   }
 
   constructor(game) {

@@ -8,6 +8,7 @@ import { recordCombatDeath } from '../engine/CombatEvents.js';
 import { disposeObject } from '../engine/SceneResources.js';
 import { createCreatureModel, createEggModel, animateCreatureModel } from '../graphics/CreatureModels.js';
 import { sourceUnitVisualKind } from '../data/SourceActorPresentation.js';
+import { EXTINCTION_CASTE_PROFILES, validExtinctionCasteUnit } from '../battlefield/ExtinctionCastePolicy.js';
 
 export class XenomorphHorde {
   constructor(scene, audioEngine, goreEngine = null) {
@@ -1132,7 +1133,11 @@ export class XenomorphHorde {
         this.combatDirector?.release(a); this._clearAttackCue(a); a._npcPreparation = 0;
         a.mesh.rotation.y = Math.atan2(movement.x, movement.z);
       } else {
-        const granted = this._requestAttack(a, targetPlayer, { windup: a.type === 'facehugger' ? 1 : 0.7, recovery: 1.6 });
+        const sourceElite = a.type === 'ravager';
+        const granted = this._requestAttack(a, targetPlayer, {
+          windup: sourceElite ? 1.15 : a.type === 'facehugger' ? 1 : .7,
+          recovery: sourceElite ? 2.1 : a.type === 'carrier' ? 2 : 1.6
+        });
         if (!granted) return;
         if (a.type === 'facehugger' && this._canParasitize(targetPlayer) && !targetPlayer.isFacehuggerLatched) {
           // The battle simulation may refuse the implantation (armor, faction,
@@ -1146,7 +1151,12 @@ export class XenomorphHorde {
           }
         } else {
           if (targetPlayer.isSupport) targetPlayer.takeDamage(a.damage, a);
-          else targetPlayer.takeDamage(a.damage, false, a, { attackKind: 'melee', blockable: !['crusher','rogue_king','gestating_matriarch','deacon_titan'].includes(a.type), parryable: ['warrior','runner','spitter','red_warrior','grid_alien','officer'].includes(a.type) }); a.revealTimer = 2;
+          else targetPlayer.takeDamage(a.damage, false, a, {
+            attackKind: a.type==='ravager'?'ravager-blade':
+              a.type==='carrier'?'carrier-defense':'melee',
+            blockable: !['crusher','ravager','rogue_king','gestating_matriarch','deacon_titan'].includes(a.type),
+            parryable: ['warrior','runner','spitter','red_warrior','grid_alien','officer'].includes(a.type)
+          }); a.revealTimer = 2;
         }
       }
     });
@@ -2337,18 +2347,27 @@ export class XenomorphHorde {
     const existing = this.aliens.find(actor => actor.battleUnitId === unit.id);
     if (existing) return existing;
     const type = unit.actorType === 'xenomorph' ? 'warrior' : unit.actorType;
-    const allowed = new Set(['warrior','runner','spitter','boiler','neomorph','praetomorph','red_warrior','facehugger','officer','crusher','praetorian','grid_alien','cyber_xeno','cryo_xeno']);
+    const allowed = new Set(['warrior','runner','spitter','boiler','neomorph','praetomorph','red_warrior','facehugger','officer','crusher','praetorian','grid_alien','cyber_xeno','cryo_xeno','carrier','ravager']);
+    if(EXTINCTION_CASTE_PROFILES[type] &&
+      !validExtinctionCasteUnit(unit,this.battleSimulation?.config?.id))
+      throw new RangeError('Extinction caste requires source-profile and LV-742 scenario');
     if (!allowed.has(type)) throw new RangeError(`Unsupported detailed xenomorph profile: ${type}`);
     const sourceVisual = sourceUnitVisualKind(unit);
     const modelKind = sourceVisual === 'drone' ? 'drone' : type;
     // A source-role visual is not a new strategic caste. In particular, saved
     // GRP-58/59 Drone IDs still retain actorType "warrior" in BattleSimulation.
-    const mesh = sourceVisual === 'drone' || ['officer','crusher','praetorian','grid_alien'].includes(type)
+    const mesh = sourceVisual === 'drone' || ['officer','crusher','praetorian','grid_alien','carrier','ravager'].includes(type)
       ? createCreatureModel(modelKind, this.sharedResources)
       : this.createAlienMesh(type === 'facehugger', type === 'boiler', type === 'neomorph', type === 'praetomorph', type === 'red_warrior', type === 'spitter', type === 'runner', type === 'cryo_xeno', type === 'cyber_xeno');
     const actor = { mesh, type: modelKind, sourceVisualKind: sourceVisual, visualFidelity1to1Verified: false,
-      pressureId: this.spawnSequence++, speed: type === 'runner' ? 16 : sourceVisual === 'drone' ? 11.5 : 10,
-      damage: unit.officer ? 38 : 25, radius: type === 'facehugger' ? .6 : 1.1, isLatched: false, isWallStalker: false,
+      pressureId: this.spawnSequence++,
+      speed: type === 'runner' ? 16 : type === 'ravager' ? 9 :
+        type === 'carrier' ? 7.5 : sourceVisual === 'drone' ? 11.5 : 10,
+      damage: type === 'ravager' ? 52 : type === 'carrier' ? 12 : unit.officer ? 38 : 25,
+      radius: type === 'facehugger' ? .6 : type === 'ravager' ? 1.7 :
+        type === 'carrier' ? 1.6 : 1.1,
+      isLatched: false, isWallStalker: false,
+      extinctionCasteSource: EXTINCTION_CASTE_PROFILES[type]?.origin ?? null,
       leapCooldown: 3, spitCooldown: 3.5, frostBreathCooldown: 4, cyberDartCooldown: 4, isLeaping: false, leapVelY: 0,
       isAirborne: false, airborneVelY: 0, airborneVelHoriz: new THREE.Vector3() };
     this.aliens.push(applyBattleUnit(this, actor, unit, group));

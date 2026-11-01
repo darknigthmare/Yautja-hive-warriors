@@ -114,9 +114,12 @@ function buildCreatureSculpt(kind) {
   const queen = ['queen', 'empress', 'imperial', 'predalien'].includes(kind);
   const offspring = kind === 'offspring';
   const drone = kind === 'drone'; // Extinction role, not a generic Warrior mesh.
+  // Exclusively Extinction-sourced silhouettes. The sizes and shape are
+  // procedural Musou interpretations, NOT scanned 2003 game meshes.
+  const carrier = kind === 'carrier', ravager = kind === 'ravager';
   const boss = queen || offspring;
   const pale = ['offspring', 'neomorph', 'facehugger', 'chestburster'].includes(kind);
-  const quadruped = ['runner', 'crusher'].includes(kind);
+  const quadruped = ['runner', 'crusher', 'carrier'].includes(kind);
   const crusher = kind === 'crusher';
   const parts = [], core = [], ridges = [], jaw = [], head = [], tail = [], dark = [];
   const rows = boss ? 100 : 72, radial = boss ? 44 : 32;
@@ -127,8 +130,13 @@ function buildCreatureSculpt(kind) {
     parts.push({ name, geometry, material, pivot });
   };
   const features = { continuousCore: true, sweptSkull: true, digitigrade: !offspring && !quadruped,
-    crown: queen || ['praetorian', 'officer', 'crusher'].includes(kind), crownTopology: 'single-fan', adultProportions: true,
-    caste: drone ? 'drone' : kind, cranialProfile: drone ? 'smooth-elongated-dome' : 'standard' };
+    crown: queen || ['praetorian', 'officer', 'crusher', 'ravager'].includes(kind),
+    crownTopology: 'single-fan', adultProportions: true,
+    caste: drone ? 'drone' : kind,
+    cranialProfile: drone ? 'smooth-elongated-dome' : 'standard',
+    extinctionTransportSockets: carrier ? 6 : 0,
+    extinctionBladedForelimbs: ravager,
+    visualFidelity1to1Verified: false };
 
   if (kind === 'egg') {
     core.push(sweep([[0, 0, 0, 0.18, 0.18], [0, 0.2, 0, 0.62, 0.62], [0, 0.75, 0, 0.75, 0.75], [0, 1.3, 0, 0.66, 0.66], [0, 1.7, 0, 0.47, 0.47], [0, 1.92, 0, 0.12, 0.12]], 80, 48,
@@ -163,8 +171,9 @@ function buildCreatureSculpt(kind) {
     const hipY = quadruped ? (crusher ? 1.32 : 1.06) : offspring ? 2.03 : queen ? 1.93 : 1.84;
     const chestY = quadruped ? (crusher ? 1.88 : 1.48) : offspring ? 3.0 : queen ? 3.25 : 2.86;
     const headY = quadruped ? (crusher ? 2.15 : 1.88) : offspring ? 4.15 : queen ? 4.01 : 3.66;
-    const chestW = crusher ? 0.86 : queen ? 0.59 : offspring ? 0.4 : drone ? 0.33 : 0.38;
-    const chestD = crusher ? 0.55 : queen ? 0.43 : 0.31;
+    const chestW = crusher ? 0.86 : carrier ? 0.68 : ravager ? 0.6 :
+      queen ? 0.59 : offspring ? 0.4 : drone ? 0.33 : 0.38;
+    const chestD = crusher ? 0.55 : carrier ? 0.52 : queen ? 0.43 : 0.31;
     const sections = quadruped ? [[0, hipY - 0.16, -0.95, 0.12, 0.12], [0, hipY, -0.72, 0.42, 0.34], [0, chestY - 0.12, -0.2, chestW, chestD], [0, chestY, 0.38, chestW * 0.95, chestD], [0, headY - 0.18, 0.72, 0.2, 0.2]]
       : [[0, hipY - 0.27, -0.1, 0.05, 0.07], [0, hipY, -0.06, offspring ? 0.27 : 0.31, 0.24], [0, hipY + 0.22, -0.06, 0.24, 0.2], [0, hipY + 0.48, -0.11, offspring ? 0.19 : 0.21, 0.18],
         [0, chestY - 0.3, -0.04, chestW * 0.83, chestD * 0.88], [0, chestY, -0.01, chestW, chestD], [0, chestY + 0.19, -0.035, chestW * 1.01, chestD * 0.91],
@@ -262,6 +271,15 @@ function buildCreatureSculpt(kind) {
           [x + side * 0.012, quadruped ? 0.045 : hand[1] - length, hand[2] + 0.17, 0.013, 0.012], [x, quadruped ? 0.035 : hand[1] - length - 0.045, hand[2] + 0.24, 0.001, 0.001]], boss ? 26 : 18, 8,
           (p, c, t) => { const f = 1 + Math.sin(t * Math.PI * 8) * 0.05; p.sub(c).multiplyScalar(f).add(c); }));
       }
+      if(ravager){
+        // Extended armored scythe forearms: actual separate swept volumes,
+        // never a Warrior recolor. Proportions remain interpretive.
+        arm.push(sweep([[wrist[0],wrist[1],wrist[2],0.08,0.07],
+          [wrist[0]+side*0.11,wrist[1]-0.13,wrist[2]+0.36,0.16,0.09],
+          [wrist[0]+side*0.18,wrist[1]-0.23,wrist[2]+0.91,0.11,0.05],
+          [wrist[0]+side*0.06,wrist[1]-0.1,wrist[2]+1.48,0.001,0.001]],
+          52,18));
+      }
       add(side < 0 ? 'arm-left' : 'arm-right', arm, 'body', shoulder);
     }
     tail.push(sweep([[0, hipY - 0.08, -0.23, 0.105, 0.12], [0.08, hipY - 0.3, -0.76, 0.1, 0.105], [0.24, hipY - 0.65, -1.4, 0.075, 0.075], [0.7, 0.75, -2.1, 0.06, 0.06], [1.2, 1.06, -2.75, 0.04, 0.04], [1.1, 1.6, -3.15, 0.018, 0.018]], boss ? 144 : 104, boss ? 20 : 14,
@@ -277,6 +295,20 @@ function buildCreatureSculpt(kind) {
       smallArms.push(sweep([[side * 0.2, chestY - 0.15, 0.34, 0.055, 0.055], [side * 0.38, chestY - 0.47, 0.52, 0.04, 0.04], [side * 0.31, chestY - 0.66, 0.75, 0.025, 0.025]], 32, 12));
       for (let finger = 0; finger < 3; finger++) smallArms.push(tendon([[side * 0.31 + (finger - 1) * 0.04, chestY - 0.66, 0.75], [side * 0.35 + (finger - 1) * 0.04, chestY - 0.81, 0.82]], 0.014, 12, 6));
       ridges.push(merged(smallArms));
+    }
+    if(carrier){
+      // Six *empty* dorsal transport grooves. These are actual sculpted
+      // surfaces, not six generated facehugger entities. Finite cargo must
+      // come from already allocated battle IDs in a separate mechanic.
+      const rack=[];
+      for(const side of [-1,1])for(let slot=0;slot<3;slot++){
+        const z=-0.48-slot*0.43, y=chestY+0.2+(slot===1?0.08:0);
+        rack.push(sweep([[side*0.32,y-0.23,z+0.18,.035,.028],
+          [side*0.47,y+0.05,z,.07,.045],
+          [side*0.39,y+0.32,z-0.16,.064,.036],
+          [side*0.26,y+0.50,z-0.31,.002,.002]],34,14));
+      }
+      add('carrier-dorsal-transport',rack,'ridges');
     }
     if (kind === 'predalien') {
       for (const side of [-1, 1]) for (const row of [-1, 1]) jaw.push(sweep([[side * 0.17, headY - 0.18, 0.67, 0.045, 0.045], [side * 0.35, headY - 0.2 + row * 0.12, 0.85, 0.055, 0.045], [side * 0.3, headY - 0.2 + row * 0.22, 1.04, 0.03, 0.025], [side * 0.18, headY - 0.17 + row * 0.15, 1.1, 0.001, 0.001]], 24, 10));
@@ -308,6 +340,7 @@ function buildCreatureSculpt(kind) {
   add('carapace', core, 'body'); add('cranium', head, 'skull'); add('ribs-and-tubes', ridges, 'ridges');
   add('teeth-and-claws', jaw, 'tooth'); add('mouth-cavities', dark, 'dark'); add('tail', tail, 'body', [0, 1.5, -0.3]);
   const scale = ({ queen: 1.85, imperial: 2.15, empress: 1.95, predalien: 1.85, offspring: 2.05,
-    praetorian: 1.17, officer: 1.08, crusher: 1.38, runner: 1.2 })[kind] || 1;
+    praetorian: 1.17, officer: 1.08, crusher: 1.38, runner: 1.2,
+    carrier: 1.38, ravager: 1.52 })[kind] || 1;
   return { parts, scale, features };
 }
