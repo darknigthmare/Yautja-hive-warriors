@@ -33,6 +33,8 @@ jobs:
         run: npm ci
       - name: Check generated source catalogue
         run: node scripts/sync-battle-catalog.mjs --check
+      - name: Check synchronized 27-operation 1to1 gap register
+        run: node scripts/export-musou-fidelity-gaps.mjs --check
       - name: Check preserved audit and Excel evidence
         run: python3 scripts/update-audit-progress.py --check
       - name: Build the production bundle
