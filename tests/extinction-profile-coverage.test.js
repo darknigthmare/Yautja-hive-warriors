@@ -20,16 +20,20 @@ test('all Extinction source profiles are covered without claiming source visual 
   assert.equal(source,file,'Excel export and source catalogue must stay synchronized');
 });
 
-test('Carrier/Ravager are documented source units, not falsely declared playable 1:1',()=>{
+test('Carrier/Ravager materialize only as source-scoped partial runtimes, never 1:1 visual assets',()=>{
   const profiles=BATTLE_CATALOG_DATA.profiles.filter(p=>['XEN-009','XEN-010'].includes(p.id));
   assert.deepEqual(profiles.map(p=>p.name),['Carrier','Ravager']);
   for(const [index,profile] of profiles.entries()){
     const type=index?'ravager':'carrier';
-    const config={groups:[{units:[{profileId:profile.id}]}],
+    const config={id:'AFF-27',groups:[{units:[{profileId:profile.id}]}],
       profiles:[{id:profile.id,species:'xeno',actorType:type}]};
-    assert.deepEqual(BattleActorBridge.unsupportedProfiles(config),[profile.id],
-      'a catalogue profile is not a materialized combat unit');
-    assert.match(extinctionCSV(),new RegExp('"'+profile.id+'";[^\r\n]*ABSENTS'));
+    assert.deepEqual(BattleActorBridge.unsupportedProfiles(config),[],
+      'the exact Extinction source profile is supported on LV-742 only');
+    assert.deepEqual(BattleActorBridge.unsupportedProfiles({...config,id:'AFF-14'}),
+      [profile.id], 'a Dark Descent mission cannot inherit Extinction castes');
+    assert.ok(extinctionCSV().split('\\r\\n').some(row=>
+      row.includes('"'+profile.id+'";')&&row.includes('NON implémenté')));
+
   }
 });
 

@@ -12,8 +12,10 @@ const sourceIndex=new Map(BATTLE_CATALOG_DATA.sources.map(p=>[p.id,p]));
 export const EXTINCTION_SOURCE_COLS=["Identifiant","Faction source","Unité source","Jeu / médias","Continuité","Preuve dans le catalogue","URL(s) de référence","Statut audit source (historique)","État du runtime actuel (contrôle de code)","Travaux manquants 1:1","Restrictions de média","Séries contrôlées","Fidélité visuelle 1:1 certifiée"];
 export const ORIGINAL_EXTINCTION_CATALOG_COUNT=29;
 function runtime(p){
-  if(['XEN-009','XEN-010'].includes(p.id))
-    return 'Caste sourcée, modèle/actorType/IA dédiés ABSENTS du runtime Musou';
+  if(p.id==='XEN-009')
+    return 'Morphologie 3D et défense du Carrier projetées sur LV-742 ; chargement réel de Facehuggers NON implémenté';
+  if(p.id==='XEN-010')
+    return 'Morphologie en lames et attaque Ravager dédiées sur LV-742 ; catalepsie améliorée NON implémentée';
   if(p.id==='XEN-004')
     return 'Drone sous représentation Warrior proxy ; constructeur de nodules distinct à compléter';
   if(/^YAU-0(29|3[0-7])$/.test(p.id))
