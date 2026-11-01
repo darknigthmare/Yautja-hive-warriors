@@ -33,7 +33,7 @@ function withMap(run) {
     throw new Error('Unexpected DOM lookup: ' + selector);
   } };
   const map = Object.create(CommandMap.prototype);
-  Object.assign(map, { root, draw() {}, report() {}, updateJournal() {}, zoom: 2, pan: [12, -8] });
+  Object.assign(map, { root, draw() {}, report() {}, updateJournal() {}, updateComparison() {}, zoom: 2, pan: [12, -8] });
   const state = {
     label: 'Opération coop', playerFaction: 'clan',
     groups: [{ id: 'ally-a', label: 'Capitaine', factionId: 'clan', alive: 4 }, { id: 'ally-b', label: 'Appui', factionId: 'clan', alive: 3 }],

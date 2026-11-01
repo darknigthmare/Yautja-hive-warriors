@@ -11,6 +11,7 @@ import { validatePreparedBossEncounter, validateBossCombatState, BOSS_COOLDOWN_K
 import { getBossCombatPattern } from '../data/BossCombatPatterns.js';
 import { applyBattleUnit, selectBattleTarget, listBattleTargets, moveBattleOrder, requestNPCStrike } from '../engine/BattleActorSupport.js';
 import { recordCombatDeath } from '../engine/CombatEvents.js';
+import { canExecuteCombatTarget } from '../engine/HunterStealth.js';
 
 export class BossManager {
   constructor(scene, audioEngine) {
@@ -170,9 +171,8 @@ export class BossManager {
   }
 
   executeBoss(victim, { player, range = 6, killerFaction = 'player_clan' } = {}) {
-    if (!victim || victim !== this.activeBoss || victim.hp <= 0 || victim.executionConsumed || victim.hp > victim.maxHp * .3 ||
-        !player?.position?.isVector3 || !(player.hp > 0) || player.isFacehuggerLatched || player.isRoyalFacehuggerLatched ||
-        !Number.isFinite(range) || range <= 0 || range > 8 || player.position.distanceTo(victim.mesh.position) > range) return null;
+    if (victim !== this.activeBoss || !canExecuteCombatTarget(player, victim, { range, environment: this.environment,
+      simulation: this.battleSimulation, requireStun: true, maxHealthFraction: .3 })) return null;
     victim.executionConsumed = true;
     victim.hp = 0; victim.hasPhaseShield = false; victim.phaseShieldHp = 0;
     const event = recordCombatDeath(this, victim, { kind: victim.type, isBoss: true, cause: 'execution', killerFaction });
@@ -329,7 +329,8 @@ export class BossManager {
       else if (distance <= 14 && boss.specialCooldown <= 0 && choose('vortex')) boss.pressureAction = 'vortex';
       else if (distance <= 6 && boss.specialCooldown <= 0 && choose('constrict')) boss.pressureAction = 'constrict';
       else if (distance <= 16 && boss.shriekCooldown <= 0 && choose('shriek')) boss.pressureAction = 'shriek';
-      else if (distance > 6 && distance < 24 && boss.specialCooldown <= 0 && (choose('charge') || choose('leap'))) boss.pressureAction = choose('charge') ? 'charge' : 'leap';
+      else if (distance > 6 && distance < 24 && boss.specialCooldown <= 0 && (choose('charge') || choose('leap'))) boss.pressureAction =
+        boss.pattern?.mechanic === 'landing-aftershock' && choose('leap') ? 'leap' : choose('charge') ? 'charge' : 'leap';
       else if (distance > 5 && distance < 28 && boss.regurgitateCooldown <= 0 && choose('embryos')) boss.pressureAction = 'embryos';
       else if (distance > 7 && distance < 35 && boss.spitCooldown <= 0) {
         const sequence = boss.pattern.weapons ?? ['bolt', 'plasma', 'disc', 'spit'];

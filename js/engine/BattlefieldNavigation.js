@@ -94,7 +94,57 @@ function shortest(nodes, edges, start, end) {
 }
 
 export class BattlefieldNavigation {
-  constructor(environment) { this.environment = environment; this.actorPaths = new WeakMap(); this.gridCache = new Map(); }
+  constructor(environment) {
+    this.environment = environment; this.actorPaths = new WeakMap(); this.gridCache = new Map();
+    this.strategicPaths = new WeakMap(); this.strategicEpoch = this.actorPaths;
+  }
+
+  plannedStrategicPath(from, target) {
+    // Route invalidation already replaces actorPaths for gates, bridges and
+    // moving terrain. Share that epoch instead of inventing another lifetime.
+    if (this.strategicEpoch !== this.actorPaths) { this.strategicEpoch = this.actorPaths; this.strategicPaths = new WeakMap(); }
+    const corridor = this.environment.battlefieldLayout?.corridors.find(item => from.x >= item.bounds.minX && from.x <= item.bounds.maxX && from.z >= item.bounds.minZ && from.z <= item.bounds.maxZ);
+    const room = this.environment.getSectorAt(from)?.id ?? corridor?.id ?? `outside:${Math.round(from.x / 8)},${Math.round(from.z / 8)}`;
+    const signature = `${room}/${Math.round(target.x / 2)}/${Math.round(target.z / 2)}/${Math.round(from.y)}/${this.environment.openGates.size}`;
+    let cached = this.strategicPaths.get(from);
+    if (!cached || cached.signature !== signature) {
+      cached = { signature, points: this.strategicPath(from, target) }; this.strategicPaths.set(from, cached);
+    }
+    // The consumer may skip a room center. Do not mutate the stored route.
+    return cached.points.slice();
+  }
+
+  nearTrafficCorridor(position) {
+    return this.environment.battlefieldLayout?.corridors.some(corridor => {
+      const b = corridor.bounds;
+      return position.x >= b.minX - 6 && position.x <= b.maxX + 6 && position.z >= b.minZ - 6 && position.z <= b.maxZ + 6;
+    }) ?? false;
+  }
+
+  trafficWaypoint(from, goal, radius) {
+    if (this.usingVerticalAccess || distance(from, goal) < 6) return null;
+    for (const corridor of this.environment.battlefieldLayout?.corridors ?? []) {
+      const b = corridor.bounds, along = corridor.axis, across = along === 'x' ? 'z' : 'x';
+      const min = along === 'x' ? b.minX : b.minZ, max = along === 'x' ? b.maxX : b.maxZ;
+      const middle = corridor.center[across === 'x' ? 0 : 1], halfWidth = ((across === 'x' ? b.maxX - b.minX : b.maxZ - b.minZ)) / 2;
+      if (from[along] < min - 6 || from[along] > max + 6 || Math.abs(from[across] - middle) > halfWidth + 3) continue;
+      const sign = Math.sign(goal[along] - from[along]);
+      if (!sign || Math.abs(goal[along] - from[along]) < Math.abs(goal[across] - from[across])) continue;
+      if (halfWidth < radius * 3 + 1) continue; // A very large actor keeps the physical path, without an invented narrow lane.
+      const gate = this.environment.battlefieldLayout.gates.find(item => item.corridorId === corridor.id);
+      if (gate && !this.environment.isGateOpen(gate.id)) continue;
+      const side = sign * (along === 'z' ? 1 : -1);
+      // Preserve parallel same-direction columns if already on their correct
+      // side. Opposite traffic never receives the same centerline target.
+      const offset = THREE.MathUtils.clamp((from[across] - middle) * side, Math.max(radius * 1.8, 2.2), Math.min(halfWidth - radius - .5, 4.5));
+      const point = from.clone();
+      point[along] = sign > 0 ? Math.min(goal[along], max + 4, from[along] + 10) : Math.max(goal[along], min - 4, from[along] - 10);
+      point[across] = middle + side * offset;
+      if (sign * (point[along] - from[along]) < .1) continue;
+      if (floorSegment(this.environment, from, point, radius) && clearSegment(this.environment, from, point, radius)) return point;
+    }
+    return null;
+  }
 
   strategicPath(from, target) {
     const environment = this.environment, layout = environment.battlefieldLayout;
@@ -188,7 +238,7 @@ export class BattlefieldNavigation {
     const environment = this.environment;
     let goal = target;
     if (environment.getSectorAt(from)?.id !== environment.getSectorAt(target)?.id || !environment.getSectorAt(from)) {
-      const path = this.strategicPath(from, target);
+      const path = this.plannedStrategicPath(from, target);
       if (!path.length) return from.clone();
       // A raised insertion can make the room center inaccessible from the
       // ramp foot. Advance only when the next actual route segment is safe.
@@ -205,6 +255,8 @@ export class BattlefieldNavigation {
         goal = point;
       }
     }
+    const flow = this.trafficWaypoint(from, goal, radius);
+    if (flow) { this.actorPaths.delete(from); return flow; }
     if (clearSegment(environment, from, goal, radius)) { this.actorPaths.delete(from); return goal.clone(); }
     const signature = `${Math.round(goal.x)},${Math.round(goal.z)},${Math.round(from.y)},${environment.openGates.size},${this.usingVerticalAccess ? 1 : 0}`;
     let cached = this.actorPaths.get(from);

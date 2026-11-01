@@ -123,6 +123,7 @@ export class XenomorphHorde {
 
   defeatAlien(enemy, details = {}) {
     if (!enemy) return null;
+    this._releaseRoyalHold(enemy);
     if (enemy.type === 'boiler' && !enemy._boilerDetonated && !enemy._boilerQueued) {
       if(!details.deferEffects)return this.detonateBoiler(enemy, null, details);
       enemy._boilerQueued=true;this.pendingBoilerDetonations ??= [];this.pendingBoilerDetonations.push(enemy);
@@ -135,6 +136,13 @@ export class XenomorphHorde {
     }
     if (!enemy._combatDisposed) { disposeObject(enemy.mesh ?? enemy.group, this.sharedResources); enemy._combatDisposed = true; }
     return event;
+  }
+
+  _releaseRoyalHold(actor) {
+    if (!actor?.latchedTo) return;
+    actor.latchedTo.isRoyalFacehuggerLatched = false;
+    actor.latchedTo.royalFacehuggerHoldTimer = 0;
+    actor.latchedTo = null; actor.isLatched = false; actor.latchTimer = 0;
   }
 
   applyDamage(enemy, amount, details = {}) {
@@ -474,7 +482,9 @@ export class XenomorphHorde {
       const dist = a.mesh.position.distanceTo(attack.origin);
 
       if (dist <= attack.radius + (a.radius || 1.0)) {
-        let dealt = applyBattleFormationHit(this,a,attack);
+        const requested = typeof attack.damageForTarget === 'function' ? attack.damageForTarget(a, attack.damage) : attack.damage;
+        if (!Number.isFinite(requested) || requested <= 0) continue;
+        let dealt = applyBattleFormationHit(this,a,attack,requested);
         const thermal = /plasma|flame|fire|incendiary/.test(attack.type ?? '');
         if (a.regenActive && thermal) a.regenActive = false;
         if (a.isFrontalShielded && /ballistic|bullet|rifle|rail/.test(attack.type ?? '')) {
@@ -512,7 +522,7 @@ export class XenomorphHorde {
 
         hits.push({
           pos: a.mesh.position.clone(),
-          damage: attack.damage,
+          damage: dealt,
           killed: killed,
           isOfficer: a.isOfficer || false,
           officerTitle: a.officerTitle || null
@@ -1117,9 +1127,11 @@ export class XenomorphHorde {
         const granted = this._requestAttack(a, targetPlayer, { windup: a.type === 'facehugger' ? 1 : 0.7, recovery: 1.6 });
         if (!granted) return;
         if (a.type === 'facehugger' && this._canParasitize(targetPlayer) && !targetPlayer.isFacehuggerLatched) {
-          targetPlayer.triggerFacehuggerLatch();
-          a.isLatched = true;
-          disposeObject(a.mesh, this.sharedResources);
+          const accepted = targetPlayer.triggerFacehuggerLatch();
+          if (accepted !== false) {
+            a.isLatched = true;
+            disposeObject(a.mesh, this.sharedResources); a._combatDisposed = true;
+          }
         } else {
           if (targetPlayer.isSupport) targetPlayer.takeDamage(a.damage, a);
           else targetPlayer.takeDamage(a.damage, false, a, { attackKind: 'melee', blockable: !['crusher','rogue_king','gestating_matriarch','deacon_titan'].includes(a.type), parryable: ['warrior','runner','spitter','red_warrior','grid_alien','officer'].includes(a.type) }); a.revealTimer = 2;
@@ -1166,7 +1178,7 @@ export class XenomorphHorde {
     this._livingPlayers = [];
     this.pendingBoilerDetonations=[];
     for (const key of ['microSwarms','mantaSwarmers','royalFacehuggers','biomechanicalEggs','cyberSpineDarts','spitterMortars']) {
-      for (const actor of this[key] ?? []) { this.combatDirector?.release(actor); this._clearAttackCue(actor); disposeObject(actor.mesh ?? actor.group, this.sharedResources); if (actor.indicatorMesh) disposeObject(actor.indicatorMesh); }
+      for (const actor of this[key] ?? []) { this._releaseRoyalHold(actor); this.combatDirector?.release(actor); this._clearAttackCue(actor); disposeObject(actor.mesh ?? actor.group, this.sharedResources); if (actor.indicatorMesh) disposeObject(actor.indicatorMesh); }
       this[key] = [];
     }
     this.pendingSpawns = [];
@@ -1970,7 +1982,7 @@ export class XenomorphHorde {
   struggleRoyalFacehugger(player) {
     for (let i = this.royalFacehuggers.length - 1; i >= 0; i--) {
       const rf = this.royalFacehuggers[i];
-      if (rf.isLatched) {
+      if (rf.isLatched && rf.latchedTo === player) {
         rf.struggleCount++;
         if (globalThis.gameInstance && globalThis.gameInstance.ui) {
           globalThis.gameInstance.ui.showAnnouncement(`⚠️ LUTTE CONTRE LE PARASITE ROYAL : [ESPACE] (${rf.struggleCount}/${rf.struggleMax}) !`);
@@ -1984,15 +1996,13 @@ export class XenomorphHorde {
             this.goreEngine.spawnDismemberment(rf.mesh.position, 'heavy');
           }
           this.spawnAcidPool(player.position);
-          this.scene.remove(rf.mesh);
-          this.royalFacehuggers.splice(i, 1);
-          player.isRoyalFacehuggerLatched = false;
+          this.defeatAlien(rf, { cause: 'parasite-struggle', scoreValue: 350,
+            killerFaction: this.battleSimulation?.config.playerFaction ?? 'player_clan' });
 
           if (this.audioEngine && this.audioEngine.playHeavySlamImpact) {
             this.audioEngine.playHeavySlamImpact();
           }
           if (globalThis.gameInstance) {
-            globalThis.gameInstance.score += 350;
             if (globalThis.gameInstance.ui) {
               globalThis.gameInstance.ui.showAnnouncement('⚔️ PARASITE ROYAL ARRACHÉ DU BIO-MASQUE ET BROYÉ (+350 PTS) !');
             }
@@ -2346,6 +2356,14 @@ export class XenomorphHorde {
     for (const actor of [...this.mantaSwarmers, ...this.microSwarms, ...this.royalFacehuggers]) {
       actor.mesh ??= actor.group; actor.combatManager = this;
       if (actor.hp <= 0) { this.defeatAlien(actor); continue; }
+      // A latched parasite owns its existing victim. Its deadline must advance
+      // even when no new target is available or the victim changes faction.
+      if (this.royalFacehuggers.includes(actor) && actor.isLatched) {
+        actor.latchTimer = Math.max(0, (actor.latchTimer ?? 5) - delta);
+        if (actor.latchedTo) actor.latchedTo.royalFacehuggerHoldTimer = actor.latchTimer;
+        if (actor.latchTimer <= 0 || !(actor.latchedTo?.hp > 0)) this.defeatAlien(actor, { cause: 'released-parasite', objectiveCredit: false });
+        continue;
+      }
       const target = this._pursuitTarget(actor, livingPlayers, supportTargets);
       if (!target) { moveBattleOrder(this, actor, delta, actor.speed ?? 10); continue; }
       const position = actor.mesh.position, direction = target.position.clone().sub(position), distance = direction.length();
@@ -2371,9 +2389,11 @@ export class XenomorphHorde {
         }
       } else if (this.royalFacehuggers.includes(actor)) {
         actor.type ??= 'royal_facehugger';
-        if (actor.isLatched) { actor.latchTimer -= delta; if (actor.latchTimer <= 0) { if (actor.latchedTo) actor.latchedTo.isRoyalFacehuggerLatched = false; this.defeatAlien(actor, { cause: 'released-parasite', objectiveCredit: false }); } continue; }
         if (distance > 1.2) position.addScaledVector(direction.normalize(), Math.min((actor.glideSpeed ?? 15) * delta, distance - 1.2));
-        else if (this._requestAttack(actor, target, { windup: 1.1, recovery: 2 })) { actor.isLatched = true; actor.latchedTo = target; actor.latchTimer = 5; target.isRoyalFacehuggerLatched = true; }
+        else if (!target.isRoyalFacehuggerLatched && !(target.executionProtectionTimer > 0) && this._requestAttack(actor, target, { windup: 1.1, recovery: 2 })) {
+          actor.isLatched = true; actor.latchedTo = target; actor.latchTimer = 5;
+          target.isRoyalFacehuggerLatched = true; target.royalFacehuggerHoldTimer = 5;
+        }
       } else {
         actor.type ??= 'micro_swarm';
         actor.orbitAngle += (actor.orbitSpeed ?? 3.5) * delta;

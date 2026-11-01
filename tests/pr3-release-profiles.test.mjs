@@ -20,14 +20,14 @@ const inspect = `const lib = await import(${JSON.stringify(library)}); const pub
   console.log(JSON.stringify({ profile: lib.RELEASE.name, qa: lib.QA, stage: lib.STAGE, pins: lib.DEFAULT_PINS,
     qaReport: lib.RELEASE.qaReport, defaultOption: pub.parseOptions([]).pinsPath, frozen: pins?.status }));`;
 
-test('release profile allowlist has exactly the original and NEXT entries', () => {
-  assert.deepEqual(Object.keys(RELEASE_PROFILES), ['pr3-20261026', 'pr3-next-20261028']);
+test('release profiles keep the two archived stages separate from the new continuation', () => {
+  assert.deepEqual(Object.keys(RELEASE_PROFILES), ['pr3-20261026', 'pr3-next-20261028', 'continuation-20261101']);
   for (const name of Object.keys(RELEASE_PROFILES)) assert.equal(resolveReleaseProfile(name).name, name);
   for (const name of ['', 'pr3-next', '../pr3-20261026', 'other', 'toString']) assert.throws(() => resolveReleaseProfile(name), /Unknown YAUTJA_RELEASE_PROFILE/);
 });
 
 test('unset environment retains every original default and NEXT selects its own paths', () => {
-  for (const profile of [undefined, 'pr3-20261026', 'pr3-next-20261028']) {
+  for (const profile of [undefined, ...Object.keys(RELEASE_PROFILES)]) {
     const result = child(profile, inspect); assert.equal(result.status, 0, result.stderr);
     const value = JSON.parse(result.stdout), name = profile ?? 'pr3-20261026', expected = RELEASE_PROFILES[name];
     assert.deepEqual(value, { profile: name, qa: expected.qaDirectory, stage: expected.qaDirectory + '/vercel-static-prebuilt',
@@ -35,7 +35,7 @@ test('unset environment retains every original default and NEXT selects its own 
   }
 });
 
-test('both profiles require their own frozen pins and reject pins from the other release', async () => {
+test('all profiles require their own frozen pins and reject every other release', async () => {
   const directory = await mkdtemp(join(tmpdir(), 'pr3-release-profile-'));
   try {
     const paths = {};
@@ -50,8 +50,10 @@ test('both profiles require their own frozen pins and reject pins from the other
     for (const name of Object.keys(RELEASE_PROFILES)) {
       const own = child(name, inspect, [paths[name]]); assert.equal(own.status, 0, own.stderr);
       assert.equal(JSON.parse(own.stdout).frozen, 'frozen');
-      const other = Object.keys(paths).find(value => value !== name), mismatched = child(name, inspect, [paths[other]]);
-      assert.notEqual(mismatched.status, 0); assert.match(mismatched.stderr, /AssertionError/);
+      for(const other of Object.keys(paths).filter(value=>value!==name)){
+        const mismatched = child(name, inspect, [paths[other]]);
+        assert.notEqual(mismatched.status, 0); assert.match(mismatched.stderr, /AssertionError/);
+      }
     }
   } finally { await rm(directory, { recursive: true }); }
 });

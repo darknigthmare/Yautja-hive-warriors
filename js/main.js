@@ -11,6 +11,7 @@ import { OrbitalStrikeManager } from './engine/OrbitalStrike.js';
 import { StoryCampaignManager } from './engine/StoryCampaign.js';
 import { CombatEvents } from './engine/CombatEvents.js';
 import { CombatDirector } from './engine/CombatDirector.js';
+import { createHunterStealthAttack } from './engine/HunterStealth.js';
 import { BattlefieldMission } from './engine/BattlefieldMission.js';
 import { BattleCampaignRecord, CLAN_CAMPAIGN_ARC_ID } from './battlefield/BattleCampaignRecord.js';
 import { BattleSimulation } from './battlefield/BattleSimulation.js';
@@ -19,6 +20,7 @@ import { snapshotOperationPlayer, restoreOperationPlayer } from './battlefield/O
 import { disposeBattleOperation } from './battlefield/BattleOperationLifecycle.js';
 import { BattleActorBridge } from './battlefield/BattleActorBridge.js';
 import { prepareBossEncounter } from './data/BossEncounterValidation.js';
+import { sectorSupportPlan, hunterEncounterProvenance } from './data/LevelEncounterPolicy.js';
 import { AllyRescueSystem } from './battlefield/AllyRescueSystem.js';
 import { BossPhasePressure } from './battlefield/BossPhasePressure.js';
 import { CompanionLoadouts, COMPANION_KITS } from './battlefield/CompanionLoadouts.js';
@@ -149,7 +151,7 @@ class GameApp {
     this.operationWorld = null;
     this.hiveNodeWorld = null;
     this.commandMap = new CommandMap({preferences:()=>this.ui.presentationPreferences.get(),onClose:()=>this.closeTacticalModal('command-map-modal'),onCommand:command=>this.dispatchBattleCommand(command)});
-    this.operationBriefing = new OperationBriefing(document.getElementById('loadout-prep-screen'));
+    this.operationBriefing = new OperationBriefing(document.getElementById('loadout-prep-screen'),{preferences:()=>this.ui.presentationPreferences?.get?.()??{}});
     this.operationPanel = new OperationPanel({ onOrder: (id, order) => this.issueBattleOrder(id, order), onAction: (type, frontId) => this.battleAction(type, frontId), onCheckpoint: () => this.saveOperation(), onMap: () => this.openCommandMap() });
     this.pendingChapter = null;
     this.bossSpawned = false;
@@ -1327,11 +1329,13 @@ class GameApp {
     if (!attack) return;
     this.scheduleAttackImpact(player, attack, () => {
       attack.origin = player.position;
-      this.registerHits(this.horde.checkMeleeHits(attack));
+      const resolvedAttack=createHunterStealthAttack(player,attack,this.horde);
+      this.registerHits(this.horde.checkMeleeHits(resolvedAttack));
       this.synthetics.checkHits(attack);
       if (this.bosses.activeBoss && this.bosses.activeBoss.mesh.position.distanceTo(player.position) <= attack.radius + 2) {
         this.hitBossFromPlayer(attack.damage,player.position,code==='Enter'?'light':'heavy');
       }
+      this.hitBadBloodFromPlayer(attack,player);
     });
   }
 
@@ -1910,7 +1914,8 @@ class GameApp {
       for (const player of [this.player, this.player2].filter(Boolean)) player.locomotion?.reset();
       this.combatDirector.reset({ graceSeconds: 7 });
       this.updateInsertionStatus();
-      this.ui.showAnnouncement('INSERTION TERMINÉE — PRÉPAREZ VOTRE PREMIÈRE ATTAQUE. [CLIC] FRAPPER · [C] PARER');
+      const provenance=hunterEncounterProvenance(this.ui.selectedChar.id,this.preparedBossEncounter?.bossType);
+      this.ui.showAnnouncement(provenance??'INSERTION TERMINÉE — PRÉPAREZ VOTRE PREMIÈRE ATTAQUE. [CLIC] FRAPPER · [C] PARER');
     }, { players: [this.player, this.player2].filter(Boolean) });
 
     this.skimmer.spawnAt(this.player.position.clone().add(new THREE.Vector3(-9, 0, 8)));
@@ -1944,7 +1949,7 @@ class GameApp {
     this.audio.startBackgroundMusic();
     this.ui.showScreen(this.ui.inGameHud);
     this.ui.showCombo(0);
-    this.ui.updateHUD(this.player, this.horde, this.bosses, this.waveIndex, this.totalWaves, this.score,{supports:{apc:this.apc.getSupportState(),cheyenne:this.dropship.getSupportState()}});
+    this.ui.updateHUD(this.player, this.horde, this.bosses, this.waveIndex, this.totalWaves, this.score,{secondaryPlayer:this.player2,supports:{apc:this.apc.getSupportState(),cheyenne:this.dropship.getSupportState()}});
     this.ui.updateBattlefieldHUD(this.battlefieldProgression, this.env.battlefieldLayout, this.player, this.combatDirector, [this.player, this.player2].filter(Boolean));
     document.getElementById('hud-weapon-label').innerText = 'ARME: PRINCIPALE';
     const visionTag = document.getElementById('hud-vision-tag');
@@ -2011,14 +2016,15 @@ class GameApp {
     this.combatDirector.reset({ graceSeconds: sector.index === 0 ? 8 : 2.5 });
     // The opening fight belongs to the player. Supporting factions join later
     // sectors instead of killing the first six enemies during insertion.
-    this.allies.spawnSquad(supportPosition, sector.index === 0 ? 0 : 1);
-    if (sector.index === 0) this.marines.clearSquad();
-    else this.marines.spawnSquad(supportPosition, 2);
-    this.synthetics.spawnSquad(center, sector.index === 0 ? 0 : 2);
+    const supports = sectorSupportPlan(this.ui.selectedLevel.id, sector.index);
+    this.allies.spawnSquad(supportPosition, supports.allies);
+    if (supports.marines === 0) this.marines.clearSquad();
+    else this.marines.spawnSquad(supportPosition, supports.marines);
+    this.synthetics.spawnSquad(center, supports.synthetics);
     this.badBlood.clear();
-    this.weather.spawnGasPipes(4, center);
+    this.weather.spawnGasPipes(supports.gasPipes, center);
     this.clearAPCSupport();
-    if (sector.index === 3) {
+    if (supports.apc) {
       const vehiclePosition = supportPosition.clone().add(new THREE.Vector3(-8, 0, 6));
       this.spawnAPCSupport(vehiclePosition);
       this.scheduleMissionTask(() => {
@@ -2079,6 +2085,7 @@ class GameApp {
     }
 
     attack.origin = this.player.position;
+    attack=createHunterStealthAttack(this.player,attack,this.horde);
     const hits = this.horde.checkMeleeHits(attack);
     if (hits.length > 0) this.registerHits(hits);
     this.weather.checkExplosions(this.player.position, 4.0, this.horde, this.particles);
@@ -2087,26 +2094,9 @@ class GameApp {
       this.hitBossFromPlayer(attack.damage,this.player.position,'light');
     }
 
-    // Chantier 2: Predator Cloak Thermal Distortion & Backstab Stealth Execution (Predator 1987 / Prey 2022)
-    if (this.player.isCloaked && hits.length > 0) {
-      const playerForward = new THREE.Vector3(Math.sin(this.player.rotationY), 0, Math.cos(this.player.rotationY)).normalize();
-      hits.forEach(hitEnemy => {
-        if (hitEnemy && hitEnemy.mesh) {
-          const toEnemy = hitEnemy.mesh.position.clone().sub(this.player.position).normalize();
-          if (playerForward.dot(toEnemy) > 0.3) {
-            hitEnemy.hp -= attack.damage * 2.5; // Additional 2.5x stealth execution damage (total 3.5x)
-            if (this.audio && this.audio.playStealthAssassination) {
-              this.audio.playStealthAssassination();
-            }
-            this.player.recordTrophy('Exécution Silencieuse de Proie par Poignardage Dorsal', 150);
-            this.score += 150;
-            this.ui.showAnnouncement("⚡ ASSASSINAT SILENCIEUX - EXÉCUTION D'HONNEUR (+150 HONNEUR) !");
-            if (this.particles && this.particles.emitAlienBloodSpurt) {
-              this.particles.emitAlienBloodSpurt(hitEnemy.mesh.position, 16);
-            }
-          }
-        }
-      });
+    if(attack.ambushApplied===true&&hits.length>0){
+      this.audio.playStealthAssassination?.();
+      this.ui.showAnnouncement('EMBUSCADE — bonus dorsal appliqué à une seule cible. Position révélée pendant 3 s.');
     }
 
     // Environmental Hazard Interactions
@@ -2171,19 +2161,7 @@ class GameApp {
       tagElem.style.color = '#00d2ff';
     }
 
-    if (this.badBlood.isActive && this.badBlood.badBlood) {
-      if (this.badBlood.badBlood.mesh.position.distanceTo(this.player.position) <= attack.radius) {
-        if (this.badBlood.takeDamage(attack.damage)) {
-          this.gore.spawnYautjaSeveredHead(this.badBlood.badBlood.mesh.position);
-          const tName = 'Masque Souillé & Crâne Décapité de Bad Blood Renégat (Dark Horse Comics 1993)';
-          const tHonor = 2200;
-          this.player.recordTrophy(tName, tHonor);
-          this.score += tHonor;
-          this.shiftBattlefieldMorale(20.0);
-          this.ui.showAnnouncement(`💀 BAD BLOOD EXÉCUTÉ DANS LE SANG ! ${tName} (+${tHonor} HONNEUR, MORAL +20%) !`);
-        }
-      }
-    }
+    this.hitBadBloodFromPlayer(attack,this.player);
   }
 
   performHeavyAttack() {
@@ -2280,19 +2258,27 @@ class GameApp {
       this.triggerCameraFovSurge(isC6 ? 68 : 64, isC6 ? 0.5 : 0.3);
     }
 
-    const badBloodVictim = this.badBlood.badBlood;
-    if (this.badBlood.isActive && this.badBlood.badBlood) {
-      if (badBloodVictim.mesh.position.distanceTo(this.player.position) <= attack.radius) {
-        if (this.badBlood.takeDamage(attack.damage)) {
-          this.gore.spawnYautjaSeveredHead(badBloodVictim.mesh.position);
-          const tName = 'Masque Souillé & Crâne Décapité de Bad Blood Renégat (Dark Horse Comics 1993)';
-          const tHonor = 2200;
-          this.awardTrophy(badBloodVictim,tName,tHonor);
-          this.shiftBattlefieldMorale(20.0);
-          this.ui.showAnnouncement(`💀 BAD BLOOD EXÉCUTÉ DANS LE SANG ! ${tName} (+${tHonor} HONNEUR, MORAL +20%) !`);
-        }
+    this.hitBadBloodFromPlayer(attack,this.player);
+  }
+
+  hitBadBloodFromPlayer(attack,owner=this.player) {
+    const victim=this.badBlood?.badBlood;
+    if(!this.badBlood?.isActive||!(victim?.hp>0)||!(owner?.hp>0)||!Number.isFinite(attack?.damage)||attack.damage<=0||!Number.isFinite(attack.radius))return false;
+    const origin=attack.origin??owner.position;
+    if(!origin?.isVector3||victim.mesh.position.distanceTo(origin)>attack.radius)return false;
+    const from=origin.clone().add(new THREE.Vector3(0,1.2,0)),to=victim.mesh.position.clone().add(new THREE.Vector3(0,1.2,0));
+    if(this.env?.hasLineOfSight&&!this.env.hasLineOfSight(from,to))return false;
+    const position=victim.mesh.position.clone();
+    const killed=this.badBlood.takeDamage(attack.damage,{cause:'player-melee',killerFaction:this.battleSimulation?.config.playerFaction??'player_clan'});
+    if(killed){
+      this.particles.emitYautjaPhosphorBlood?.(position,12);
+      const name='Trophée du Bad Blood renégat — rencontre adaptée';
+      if(this.awardTrophy(victim,name,2200,owner)){
+        this.shiftBattlefieldMorale(20);
+        this.ui.showAnnouncement('BAD BLOOD VAINCU — trophée confirmé, +2200 honneur.');
       }
     }
+    return true;
   }
 
   createRangedMesh(shot, color = 0x00d2ff) {
@@ -2847,6 +2833,8 @@ class GameApp {
   }
 
   checkTrophyExecution(player = this.player) {
+    if(!player||player.hp<=0)return;
+    if(player.executionProtectionTimer>0)return true;
     // 1. Boss Execution (Queen, The Offspring, Predalien)
     if (this.bosses.activeBoss && this.bosses.activeBoss.isStunned && this.bosses.activeBoss.hp <= this.bosses.activeBoss.maxHp * .3 &&
         this.bosses.activeBoss.mesh.position.distanceTo(player.position) <= 8) {
@@ -2951,7 +2939,7 @@ class GameApp {
     for (let i = this.horde.aliens.length - 1; i >= 0; i--) {
       const a = this.horde.aliens[i];
       if ((a.type === 'crusher' || a.type === 'praetorian' || a.type === 'grid_alien' || a.isMarvelAlpha || a.isDeacon || a.isRogueKing || a.isRaven || a.isAncientPredalien || a.isGestatingMatriarch) && a.isStunned) {
-        if (a.mesh.position.distanceTo(player.position) <= 5.8) {
+        if (a.mesh.position.distanceTo(player.position) <= 5.8 && (player.canExecuteTarget?.(a,{range:5.8,requireStun:true})??true)) {
           player.executeSpineRip();
 
           // Chantier 9 (v48): Bullet-Time 360° Trophy Execution Camera
@@ -3057,7 +3045,7 @@ class GameApp {
       for (let i = this.synthetics.androids.length - 1; i >= 0; i--) {
         const syn = this.synthetics.androids[i];
         if (!syn || !syn.mesh) continue;
-        if ((syn.isBisected || syn.isEMPStunned || syn.hp <= 120) && syn.mesh.position.distanceTo(player.position) <= 4.2) {
+        if ((syn.isBisected || syn.isEMPStunned || syn.hp <= 120) && syn.mesh.position.distanceTo(player.position) <= 4.2 && (player.canExecuteTarget?.(syn,{range:4.2})??true)) {
           player.executeSpineRip();
           const isJoe = syn.type === 'working_joe';
           const tName = isJoe
@@ -3283,7 +3271,7 @@ class GameApp {
       this.updateInsertionPresentation(delta);
       this.env.updateBattlefieldVisibility?.([this.player, this.player2].filter(Boolean));
       this.particles.update(delta, this.renderer.camera);
-      this.ui.updateHUD(this.player, this.horde, this.bosses, this.waveIndex, this.totalWaves, this.score,{supports:{apc:this.apc.getSupportState(),cheyenne:this.dropship.getSupportState()}});
+      this.ui.updateHUD(this.player, this.horde, this.bosses, this.waveIndex, this.totalWaves, this.score,{secondaryPlayer:this.player2,supports:{apc:this.apc.getSupportState(),cheyenne:this.dropship.getSupportState()}});
       this.ui.updateBattlefieldHUD(this.battlefieldProgression, this.env.battlefieldLayout, this.player, this.combatDirector, [this.player, this.player2].filter(Boolean));
       return;
     }
@@ -4910,6 +4898,7 @@ class GameApp {
     }
 
     this.ui.updateHUD(this.player, this.horde, this.bosses, this.waveIndex, this.totalWaves, this.score, {
+      secondaryPlayer: this.player2,
       badBlood: this.badBlood,
       marines: this.marines,
       allies: this.allies,
@@ -5127,6 +5116,11 @@ class GameApp {
     const operationResult = this.battleSimulation?.getHUDState().result;
     const debrief=captureBattleDebrief(this.battleSimulation,this.operationObjectives);
     if(operationResult){this.recordBattleOutcome(operationResult);this.clearOperationCheckpoint();}
+    if(debrief){
+      debrief.characterId=this.ui.selectedChar?.id??null;
+      debrief.characterLabel=this.ui.selectedChar?.name??'Chasseur';
+      if(this.campaignArcId)debrief.characterRecognition=this.battleCampaign.getDebrief(this.campaignArcId)?.characterRecognition?.find(row=>row.characterId===debrief.characterId)??null;
+    }
     this.isPlaying = false;
     this.isPaused = false;
     this.ui.recordEndSession(this._sessionDefeats ?? this.horde.deadCount, this.sessionSkulls, this.score, this.rewardSessionId??this.missionRun);

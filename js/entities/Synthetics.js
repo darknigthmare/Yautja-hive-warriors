@@ -6,6 +6,8 @@ import { recordCombatDeath } from '../engine/CombatEvents.js';
 import { createSyntheticModel } from '../graphics/SupportModels.js';
 import { disposeObject } from '../engine/SceneResources.js';
 import { selectHostileTarget, requestHostileAttack, syncHostileWarning, releaseHostileAttack } from '../engine/HostilePressure.js';
+import { moveSquadActor, syntheticDuty, syntheticServiceAnchor, hasFriendlyFireLane } from '../engine/FactionSquadRoles.js';
+import { emitNPCShot, updateNPCShots, clearNPCShots } from '../graphics/NPCCombatFeedback.js';
 
 export class SyntheticsManager {
   constructor(scene, audioEngine, particles) {
@@ -164,6 +166,7 @@ export class SyntheticsManager {
   update(delta, player, horde) {
     if (!Number.isFinite(delta) || delta <= 0) return;
     this.time = (this.time ?? 0) + delta;
+    updateNPCShots(this, delta);
     for (let i = this.bloodDrops.length - 1; i >= 0; i--) {
       const drop = this.bloodDrops[i];
       drop.life -= delta;
@@ -208,10 +211,27 @@ export class SyntheticsManager {
       }
 
       let targetPlayer = selectHostileTarget(this, syn.mesh.position, player), targetPos = null, isXeno = false, npcTarget = null;
-      if(maintainBattleFormation(this,syn,delta,syn.speed))continue;
+      const serviceBound = syn.battleUnitId && this.battleSimulation && syn.syntheticDuty !== 'security';
+      if (serviceBound && syn.mesh.position.clone().setY(0).distanceToSquared(syn.serviceAnchor) > 48 ** 2) {
+        syn.mesh.userData.syntheticState = 'return-to-service';
+        releaseHostileAttack(this, syn); syn._npcPreparation = 0;
+        if (syn.intrusionWarning) syn.intrusionWarning.visible = false;
+        moveSquadActor(this, syn, syn.serviceAnchor.clone().setY(syn.mesh.position.y), delta, syn.speed, 2); continue;
+      }
+      const slot = syn.battleFormationTarget;
+      const serviceFormationValid = !serviceBound || syn.syntheticDuty === 'industrial' &&
+        Array.isArray(slot) && Math.hypot(slot[0] - syn.serviceAnchor.x, slot[1] - syn.serviceAnchor.z) <= 48;
+      if(serviceFormationValid && maintainBattleFormation(this,syn,delta,syn.speed))continue;
       if (syn.battleUnitId && this.battleSimulation) {
         const target = selectBattleTarget(this, syn, player, horde?.getActiveCombatants?.() ?? horde?.aliens ?? []);
-        if (!target) { releaseHostileAttack(this, syn); moveBattleOrder(this, syn, delta, syn.speed); continue; }
+        if (!target) {
+          releaseHostileAttack(this, syn); syn.intrusionTime = 0; syn.intrusionTarget = null;
+          if (syn.intrusionWarning) syn.intrusionWarning.visible = false;
+          syn.mesh.userData.syntheticState = serviceBound ? 'service' : 'security-patrol';
+          if (serviceBound) moveSquadActor(this, syn, syn.serviceAnchor.clone().setY(syn.mesh.position.y), delta, syn.speed, 3);
+          else moveBattleOrder(this, syn, delta, syn.speed);
+          continue;
+        }
         targetPlayer = target; targetPos = target.position; isXeno = target.isBattleNPC; npcTarget = target.isBattleNPC ? target : null;
       } else {
         let nearestDist = Infinity;
@@ -225,6 +245,31 @@ export class SyntheticsManager {
       const dist = syn.mesh.position.distanceTo(targetPos);
 
       const covered = this.environment?.hasLineOfSight && !this.environment.hasLineOfSight(syn.mesh.position.clone().add(new THREE.Vector3(0, syn.isBisected ? .6 : 2, 0)), targetPos.clone().add(new THREE.Vector3(0,1.6,0)), { ignoreOwner: npcTarget?.isSupport ? npcTarget.collisionOwner : undefined });
+      if (serviceBound) {
+        const outsideService = Math.hypot(targetPos.x - syn.serviceAnchor.x, targetPos.z - syn.serviceAnchor.z) > 48;
+        if (outsideService || covered || syn.syntheticDuty === 'civilian') {
+          releaseHostileAttack(this, syn); syn._npcPreparation = 0; syn.intrusionTime = 0; syn.intrusionTarget = null;
+          if (syn.intrusionWarning) syn.intrusionWarning.visible = false;
+          syn.mesh.userData.syntheticState = syn.syntheticDuty === 'civilian' ? 'avoid-intrusion' : 'service';
+          moveSquadActor(this, syn, syn.serviceAnchor.clone().setY(syn.mesh.position.y), delta, syn.speed, 3); continue;
+        }
+        if (syn.intrusionTarget !== (npcTarget?.actor ?? targetPlayer)) {
+          syn.intrusionTarget = npcTarget?.actor ?? targetPlayer; syn.intrusionTime = 0;
+        }
+        syn.intrusionTime = Math.min(1.5, (syn.intrusionTime ?? 0) + delta);
+        if (syn.intrusionTime < 1.5) {
+          releaseHostileAttack(this, syn); syn._npcPreparation = 0; syn.mesh.userData.syntheticState = 'intrusion-warning';
+          if (!syn.intrusionWarning) {
+            syn.intrusionWarning = new THREE.Mesh(new THREE.ConeGeometry(.22, .38, 3),
+              new THREE.MeshBasicMaterial({ color: 0xffc96c, toneMapped: false }));
+            syn.intrusionWarning.name = 'synthetic-intrusion-warning'; syn.intrusionWarning.position.y = 3.8;
+            syn.mesh.add(syn.intrusionWarning); this.audioEngine?.playSyntheticShortCircuit?.();
+          }
+          syn.intrusionWarning.visible = true; syn.intrusionWarning.rotation.y = this.time; continue;
+        }
+        if (syn.intrusionWarning) syn.intrusionWarning.visible = false;
+      }
+      syn.mesh.userData.syntheticState = serviceBound ? 'contain-intrusion' : 'security-engage';
       const joe = syn.type === 'working_joe';
       const stopDist = (joe ? 2.1 : syn.isBisected ? 6.0 : (isXeno ? 10.0 : 12.0)) + (npcTarget?.isSupport ? npcTarget.radius ?? 0 : 0);
       syn.shootCooldown = Math.max(0, (syn.shootCooldown ?? 2) - delta);
@@ -241,6 +286,7 @@ export class SyntheticsManager {
         syn.mesh.rotation.y = Math.atan2(dir.x, dir.z);
       } else {
         syn.mesh.rotation.y = Math.atan2(dir.x, dir.z);
+        if (!joe && !hasFriendlyFireLane(syn, targetPos, this.androids)) { releaseHostileAttack(this, syn); syn._npcPreparation = 0; continue; }
         // Shoot pulse weapon
         if (syn.shootCooldown <= 0 && (npcTarget ? requestNPCStrike(syn, npcTarget, delta, {windup: .9, recovery: 1.9}) : isXeno || requestHostileAttack(this, syn, targetPlayer, delta, { kind: joe ? 'melee' : 'ranged', windup: joe ? 1.1 : 0.9, recovery: 1.9, duration: 0.3 }))) {
           syn.shootCooldown = syn.isBisected ? 2.6 : 1.9;
@@ -250,6 +296,7 @@ export class SyntheticsManager {
           } else {
             targetPlayer.takeDamage(syn.damage * .4, false, syn, { attackKind: joe ? 'grab' : 'ballistic', blockable: false, parryable: false });
           }
+          if (!joe) emitNPCShot(this, syn.mesh.position.clone().add(new THREE.Vector3(0, syn.isBisected ? .6 : 2, 0)), targetPos.clone().add(new THREE.Vector3(0, 1.6, 0)));
         }
         syncHostileWarning(this, syn);
       }
@@ -291,6 +338,7 @@ export class SyntheticsManager {
 
 
   clearSquad() {
+    clearNPCShots(this);
     this.bloodDrops.forEach(drop => disposeObject(drop.mesh, this.sharedResources));
     this.bloodDrops = [];
     this.androids.forEach(s => { releaseHostileAttack(this, s); disposeObject(s.mesh, this.sharedResources); });
@@ -304,7 +352,10 @@ export class SyntheticsManager {
     const existing = this.androids.find(actor => actor.battleUnitId === unit.id); if (existing) return existing;
     if (!['synthetic','working_joe','weyland_combat'].includes(unit.actorType)) throw new RangeError(`Unsupported detailed synthetic profile: ${unit.actorType}`);
     const joe = unit.actorType === 'working_joe';
-    const actor = { mesh: this.createSyntheticMesh(joe), type: joe ? 'working_joe' : 'weyland_combat', speed: joe ? 7.5 : 9, damage: joe ? 34 : 22,
+    const duty = syntheticDuty(unit), mesh = this.createSyntheticMesh(joe || duty === 'civilian');
+    if (duty === 'civilian') mesh.userData.syntheticProfile = 'civilian-service-adaptation';
+    const actor = { mesh, type: joe ? 'working_joe' : 'weyland_combat', speed: joe ? 7.5 : 9, damage: joe ? 34 : 22,
+      syntheticDuty: duty, serviceAnchor: syntheticServiceAnchor(this, unit, group),
       radius: .9, shootCooldown: 2, isBisected: false, crawlLife: 0, voiceCooldown: 0 };
     this.androids.push(applyBattleUnit(this, actor, unit, group)); return actor;
   }

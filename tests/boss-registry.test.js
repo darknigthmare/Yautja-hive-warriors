@@ -79,6 +79,8 @@ test('a real low-health execution bypasses residual armor, and duplicate or dist
   victim.hp = victim.maxHp * .25; target.position.x=12;
   assert.equal(manager.executeBoss(victim,{player:target}),null,'a distant execution cannot bypass the approach');
   target.position.x=2;
+  assert.equal(manager.executeBoss(victim,{player:target}),null,'low health alone does not open a stun execution');
+  victim.isStunned = true; victim.stunTimer = 2;
   const event = manager.executeBoss(victim,{player:target});
   assert.equal(event.cause,'execution'); assert.equal(victim.hp,0); assert.equal(victim.phaseShieldHp,0); assert.equal(manager.activeBoss,null);
   assert.equal(manager.executeBoss(victim,{player:target}),null); assert.equal(ledger.getSnapshot().deaths.length,1);
