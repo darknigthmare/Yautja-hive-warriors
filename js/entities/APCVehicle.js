@@ -2,7 +2,7 @@
 
 import * as THREE from 'three';
 import { createAPCModel } from '../graphics/SupportModels.js';
-import { APC_DEPLOYMENT_SECONDS, APC_NAVIGATION } from '../graphics/APCModel.js';
+import { APC_DEPLOYMENT_SECONDS, APC_NAVIGATION, APC_WEAPON_PROVENANCE } from '../graphics/APCModel.js';
 import { disposeObject } from '../engine/SceneResources.js';
 import { traceCombatSegment } from '../engine/CombatGeometry.js';
 import { FiniteSupportPolicy, createSupportCombatant, supportDestroyedEvent } from '../engine/FiniteSupportPolicy.js';
@@ -63,7 +63,10 @@ export class APCVehicle {
   }
   isSupportActive() { return this.isActive && !!this.mesh && this.policy.available; }
   getCombatant() { return this.isSupportActive() ? this.combatant : null; }
-  getSupportState() { return { ...this.policy.getState(), deployed: this.isSupportActive(), cooldown: this.fireCooldown }; }
+  getSupportState() { return { ...this.policy.getState(), deployed: this.isSupportActive(),
+    cooldown: this.fireCooldown, roofWeapon: APC_WEAPON_PROVENANCE.roof,
+    frontWeaponImplemented: APC_WEAPON_PROVENANCE.frontWeaponImplemented,
+    sourceVisualFidelity1to1Verified:false }; }
   takeDamage(amount, source) {
     if (!this.isSupportActive()) return 0;
     const dealt = this.policy.damage(amount);
@@ -214,7 +217,9 @@ export class APCVehicle {
 
     if (nearestTarget && this.turretMesh) {
 
-      // Fire twin 20mm autocannon bursts
+      // M577A rear sliding plasma pair. The separate RE700 20mm nose guns
+      // are not yet a playable weapon. Legacy finite "rounds" remain so
+      // existing checkpoints never refill or lose their stored ammunition.
       if (this.fireCooldown <= 0 && this.deployment >= 1) {
         if (!this.policy.spend({ rounds: 2 }).accepted) return;
         this.fireCooldown = 1.1;
@@ -240,7 +245,7 @@ export class APCVehicle {
             origin: nearestTarget.mesh.position,
             radius: 3.5,
             damage: 240,
-            type: 'heavy',
+            type: APC_WEAPON_PROVENANCE.gameplayDamageType,
             killerFaction: this.policy.context?.factionId ?? 'player_clan'
           });
 
@@ -306,7 +311,7 @@ export class APCVehicle {
   spawnTracer(startPos, targetPos) {
     const tracerGeo = new THREE.CylinderGeometry(0.04, 0.04, 0.8, 4);
     tracerGeo.rotateX(Math.PI / 2);
-    const tracerMat = new THREE.MeshBasicMaterial({ color: 0xfff066 });
+    const tracerMat = new THREE.MeshBasicMaterial({ color: 0x8edaff });
     const tracerMesh = new THREE.Mesh(tracerGeo, tracerMat);
 
     tracerMesh.position.copy(startPos);

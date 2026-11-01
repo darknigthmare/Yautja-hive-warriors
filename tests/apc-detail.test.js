@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import * as THREE from 'three';
 import { createAPCModel } from '../js/graphics/SupportModels.js';
 import { APCVehicle } from '../js/entities/APCVehicle.js';
-import { APC_DEPLOYMENT_SECONDS, APC_ELEVATION, APC_RUNNING_GEAR } from '../js/graphics/APCModel.js';
+import { APC_DEPLOYMENT_SECONDS, APC_ELEVATION, APC_RUNNING_GEAR, APC_WEAPON_PROVENANCE } from '../js/graphics/APCModel.js';
 import { EnvironmentManager } from '../js/entities/Environment.js';
 import { disposeObject } from '../js/engine/SceneResources.js';
 
@@ -99,7 +99,7 @@ test('APC deploys before shooting, aims both axes from real muzzles, recoils and
   assert.equal(shots.length, 1);
   assert.equal(apc.hp, 2500); assert.equal(apc.maxHp, 2500);
   assert.equal(shots[0].damage, 240); assert.equal(shots[0].radius, 3.5);
-  assert.equal(shots[0].type, 'heavy'); assert.equal(apc.fireCooldown, 1.1);
+  assert.equal(shots[0].type, 'plasma'); assert.equal(apc.fireCooldown, 1.1);
   assert.equal(apc.model.barrels.position.z, -0.15);
   assert.equal(apc.model.muzzleFlash.visible, true);
   const muzzleEffects = sparks.filter(spark => spark.count === 2);
@@ -120,7 +120,7 @@ test('APC deploys before shooting, aims both axes from real muzzles, recoils and
   const old = apc.mesh;
   apc.spawn(new THREE.Vector3());
   assert.equal(old.parent, null); assert.equal(apc.fireCooldown, 1.1, 'recalling the hull does not reset the gun cooldown'); assert.equal(apc.deployment, 0);
-  assert.equal(apc.policy.remaining.rounds, 44, 'recalling the hull does not reload its four spent shells');
+  assert.equal(apc.policy.remaining.rounds, 44, 'legacy finite ammunition cannot refill when redeploying');
   assert.equal(apc.recoil, 0); assert.equal(apc.weaponFlash, 0);
   apc.clear(); assert.equal(scene.children.length, 0); assert.equal(apc.model, null);
 });
@@ -371,4 +371,26 @@ test('visual M577 tire motion does not change damage, ammunition, support policy
     assert.deepEqual(apc.serialize(),before);
   }finally{apc.clear();}
   assert.equal(apc.updateRunningGear(1),false);
+});
+
+test('M577A roof plasma stays distinct from the unimplemented forward RE700 guns',()=>{
+  const apc=configureSupportFixture(new APCVehicle(new THREE.Scene(),audio));
+  assert.match(APC_WEAPON_PROVENANCE.roof,/plasma/i);
+  assert.match(APC_WEAPON_PROVENANCE.nose,/RE700/);
+  assert.equal(APC_WEAPON_PROVENANCE.frontWeaponImplemented,false);
+  assert.equal(APC_WEAPON_PROVENANCE.sourceVisualFidelity1to1Verified,false);
+  apc.spawn(new THREE.Vector3());
+  try{
+    const saved=apc.serialize(),state=apc.getSupportState();
+    assert.equal(state.roofWeapon,APC_WEAPON_PROVENANCE.roof);
+    assert.equal(state.frontWeaponImplemented,false);
+    assert.equal(saved.policy.remaining.rounds,48);
+    assert.equal(Object.hasOwn(saved.policy.remaining,'plasmaCharges'),false);
+    const enemy={hp:300,mesh:new THREE.Group()};enemy.mesh.position.set(8,0,15);
+    const events=[];
+    apc.update(APC_DEPLOYMENT_SECONDS,{aliens:[enemy],checkMeleeHits:e=>{events.push(e);return[];}});
+    assert.equal(events.length,1);
+    assert.equal(events[0].type,'plasma');
+    assert.equal(apc.policy.remaining.rounds,46);
+  }finally{apc.clear();}
 });

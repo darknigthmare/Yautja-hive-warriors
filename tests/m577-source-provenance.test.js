@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { APC_SECTION_RULES } from '../js/battlefield/APCSectionManifest.js';
-import { APC_RUNNING_GEAR } from '../js/graphics/APCModel.js';
+import { APC_RUNNING_GEAR, APC_WEAPON_PROVENANCE } from '../js/graphics/APCModel.js';
 import { M577_DRIVE_POLICY } from '../js/battlefield/APCConvoyDrive.js';
 
 // This is a SOURCE COVERAGE gate, not a runtime screenshot/1:1 proof.
@@ -62,4 +62,11 @@ test('source registry keeps original acceleration and missing Cheyenne cargo sep
   assert.match(byId.get('M577-003')['Manquants'],/km\/h/);
   assert.match(byId.get('M577-011')['Manquants'],/arrimage/);
   assert.equal(byId.get('M577-011')['Visuel 1:1 certifié'],'non');
+});
+
+test('sourced M577A rear plasma and forward RE700 remain distinct mechanical systems',()=>{
+  assert.match(APC_WEAPON_PROVENANCE.roof,/plasma/);
+  assert.match(APC_WEAPON_PROVENANCE.nose,/RE700/);
+  assert.equal(APC_WEAPON_PROVENANCE.frontWeaponImplemented,false);
+  assert.equal(APC_WEAPON_PROVENANCE.sourceVisualFidelity1to1Verified,false);
 });

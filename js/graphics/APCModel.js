@@ -22,6 +22,18 @@ export const APC_RUNNING_GEAR = Object.freeze({
   visualFidelity1to1Verified: false
 });
 export const APC_ELEVATION = Object.freeze({ min: -Math.PI / 12, max: Math.PI / 4 });
+/** M577A variant: the rear sliding emplacement is plasma, whereas the
+ * forward RE700 20mm Gatling system remains cosmetic in this game.
+ * Source terminology is separate from original Musou damage/ammo balance. */
+export const APC_WEAPON_PROVENANCE = Object.freeze({
+  variant: 'M577A (interpreted)',
+  roof: 'Boyars PARS 150 twin 20 mW plasma',
+  nose: 'RE700 20mm Gatling (visual-only, no separate gameplay fire)',
+  gameplayDamageType: 'plasma',
+  frontWeaponImplemented: false,
+  ammunitionSaveKey: 'rounds',
+  sourceVisualFidelity1to1Verified: false
+});
 // Conservative horizontal envelope for every rail pose and firing direction,
 // measured from the actual meshes. Physical contacts use the thinner pieces.
 export const APC_NAVIGATION = Object.freeze({ centerZ: -0.70, halfWidth: 2.52, halfDepth: 5.80, height: 2.48, radius: 7.0 });
@@ -323,7 +335,11 @@ export function buildAPCModel(Assembly) {
   for (const side of [-1, 1]) hull.tube(dark, [[side * 1.62, 1.10, -4.77], [side * 1.62, 1.90, -4.91], [side * 1.62, 2.22, -4.91], [side * 1.62, 2.30, -4.72]], 0.073, 16, 10);
   const group = hull.finish(); group.name = 'm577-apc';
   group.add(wheelInstances);
-  group.userData.apc = { source: 'NECA licensed miniature photograph, interpreted', forwardAxis: '+z', wheelCount: 4, rail: APC_RAIL };
+  group.userData.apc = { source: 'NECA licensed miniature photograph, interpreted',
+    forwardAxis: '+z', wheelCount: 4, rail: APC_RAIL,
+    rearWeapon: APC_WEAPON_PROVENANCE.roof,
+    frontWeapon: APC_WEAPON_PROVENANCE.nose,
+    visualFidelity1to1Verified:false };
   const wheelPose = new THREE.Object3D();
   let spin = 0;
   const setWheelMotion = ({distance=0, heights=[0,0,0,0], steering=0} = {}) => {
@@ -386,7 +402,10 @@ export function buildAPCModel(Assembly) {
   frontParts.add(new THREE.TorusGeometry(0.07, 0.018, 8, 24), dark, [0, 0.20, 0.81]);
   const frontTurret = frontParts.finish(); frontTurret.position.set(-0.82, 1.33, 3.94); group.add(frontTurret);
 
-  const flareMaterial = new THREE.MeshBasicMaterial({ color: 0xffd29d, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending });
+  const flareMaterial = new THREE.MeshBasicMaterial({
+    // Original VFX palette; not a measured spectrum of the film plasma.
+    color: 0x8edaff, transparent: true, opacity: 0, depthWrite: false,
+    blending: THREE.AdditiveBlending });
   flareMaterial.name = 'apc-muzzle-flash';
   const flareParts = new Assembly('m577-muzzle-flare');
   for (const side of [-1, 1]) {
