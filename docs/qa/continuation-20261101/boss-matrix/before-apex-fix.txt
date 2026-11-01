@@ -1,0 +1,53 @@
+✔ the counterplay matrix covers every registered encounter exactly once (2.151142ms)
+✔ xenomorph_queen: circular-tail has a real measured response (2.349999ms)
+✔ praetorian: frontal-carapace has a real measured response (0.865425ms)
+✔ predalien: frontal-tail-pounce has a real measured response (9.32188ms)
+✔ predalien_queen: interruptible-brood has a real measured response (5.427829ms)
+✔ imperial_queen: annular-aftershock has a real measured response (2.315518ms)
+✔ empress_matriarch: directional-gale has a real measured response (3.672606ms)
+✔ the_offspring: focused-shriek has a real measured response (2.727132ms)
+✔ predalien_abomination: brood-pounce has a real measured response (3.241972ms)
+✔ predalien_matriarch_titan: three-seismic-pulses has a real measured response (1.803707ms)
+✔ rogue_king_prime: wall-stagger has a real measured response (2.091809ms)
+✔ awakened_engineer: heavy-shield-overload has a real measured response (0.745452ms)
+✔ trilobite_prime: low-constriction has a real measured response (0.363737ms)
+✔ berserker_super_predator: shared-plasma-burst has a real measured response (5.631127ms)
+✔ ultimate_upgrade_predator: heavy-charge-interrupt has a real measured response (1.521066ms)
+✔ feral_predator_boss: mask-guided-bolt has a real measured response (3.074795ms)
+✖ apex_gladiator_predator: landing-aftershock has a real measured response (1.583537ms)
+✔ jungle_hunter_boss: laser-committed-plasma has a real measured response (6.978466ms)
+✔ city_hunter_boss: returning-disc has a real measured response (3.331116ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 18
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 247.598436
+
+✖ failing tests:
+
+test at tests/boss-counterplay-matrix-20261101.test.js:233:42
+✖ apex_gladiator_predator: landing-aftershock has a real measured response (1.583537ms)
+  AssertionError [ERR_ASSERTION]: the real selector must prepare leap
+  
+  'charge' !== 'leap'
+  
+      at prepare (file:///workspace/Yautja-next-20261028/tests/boss-counterplay-matrix-20261101.test.js:38:10)
+      at file:///workspace/Yautja-next-20261028/tests/boss-counterplay-matrix-20261101.test.js:197:7
+      at fixture (file:///workspace/Yautja-next-20261028/tests/boss-counterplay-matrix-20261101.test.js:22:16)
+      at TestContext.<anonymous> (file:///workspace/Yautja-next-20261028/tests/boss-counterplay-matrix-20261101.test.js:195:62)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'charge',
+    expected: 'leap',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

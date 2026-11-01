@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "e524c2b96ef35e80768295fb1a3dd06bea3b5d63",
+  "status": "passed",
+  "scope": "Actual rendering and collision correctness only. Paused battle with accelerated movement, fixed observation camera, effective low quality on SwiftShader. No target-hardware FPS, GPU time, VRAM bytes or smooth gameplay claim.",
+  "durationSeconds": 661.706,
+  "frames": 453,
+  "physicalSteps": 1807,
+  "newEvictions": 180,
+  "newRestorations": 162,
+  "sameCpuTemplates": true,
+  "geometryCountUnchanged": true,
+  "insertionFloorResidentAtReturn": true,
+  "objectivesAndDestructionUnchanged": true,
+  "errors": 0,
+  "failedRequests": 0,
+  "externalRequests": 0,
+  "distUnchanged": true,
+  "helpersUnchanged": true,
+  "quality": {
+    "requested": "balanced",
+    "effective": "low",
+    "softwareRenderer": true,
+    "postprocessing": false,
+    "ambientOcclusion": false,
+    "shadowSize": 512,
+    "maxPixelRatio": 1.25,
+    "splitScreen": false
+  },
+  "observedTiming": {
+    "scope": "Paused-battle, accelerated collision traversal on this software-rendered browser; CPU submission and browser scheduling only.",
+    "samples": 447,
+    "medianIntervalMs": 1319.5,
+    "p95IntervalMs": 2030.7999999821186,
+    "maximumIntervalMs": 3909.7000000178814,
+    "gpuTimeAvailable": false
+  },
+  "allFrames": {
+    "samples": 453,
+    "medianIntervalMs": 1319.5,
+    "maxIntervalMs": 3909.7000000178814,
+    "medianSubmissionMs": 1.9000000059604645,
+    "maximumSubmissionMs": 47.599999994039536,
+    "maximumPreparationMs": 2.0999999940395355
+  },
+  "framesWithBufferPreparation": {
+    "samples": 18,
+    "medianIntervalMs": 1260.2999999970198,
+    "maxIntervalMs": 2171.2000000178814,
+    "medianSubmissionMs": 1.9000000059604645,
+    "maximumSubmissionMs": 47.599999994039536,
+    "maximumPreparationMs": 1
+  },
+  "framesWithoutBufferPreparation": {
+    "samples": 435,
+    "medianIntervalMs": 1321.199999988079,
+    "maxIntervalMs": 3909.7000000178814,
+    "medianSubmissionMs": 1.9000000059604645,
+    "maximumSubmissionMs": 20.5,
+    "maximumPreparationMs": 2.0999999940395355
+  },
+  "reportSha256": "408e63aa830eaf6589235b0fe286a9c180f2868bf77395d13827a408c11a86c6",
+  "manifestSha256": "ac652fbf219668678c3d0c9eea403eb03c7e2f6aab6d586228c8a54e1769636e",
+  "measurementIntrusions": [
+    "A synchronous gl.getError query runs after every rendered frame. Frame intervals include that diagnostic/driver wait and the harness checks; they are not an unmodified game frame benchmark.",
+    "The battle simulation remains paused and movement advances four collision-resolved .7-unit substeps per animation frame.",
+    "Observation camera, low software-rendering profile and scene are fixed; no target-machine performance promise follows."
+  ]
+}

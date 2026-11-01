@@ -1,0 +1,2 @@
+{"status":"configuration_valid_only","expected":{"source":"445108b1f191dfd3c6411e6df407c1c05c5b4388","index":"8af6bd243df62fa4b9113d711bee3e011264d8e450ef399c49ed326024f17e83","buildInfo":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},"deployment":"dpl_CONFIGURATIONONLY","origin":"https://yautja-hive-warriors.vercel.app","proof":"/workspace/Yautja-next-20261028/docs/qa/continuation-20261101/public-live","browserLaunched":false,"networkAccessed":false,"filesWritten":false}
+{"guard":true,"networkCalls":0,"launches":0}

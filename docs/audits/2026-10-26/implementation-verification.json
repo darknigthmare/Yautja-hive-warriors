@@ -4,10 +4,10 @@
   "followupColumn": "N",
   "counts": {
     "Bloqué": 0,
-    "En cours": 15,
-    "Terminé": 67,
+    "En cours": 12,
+    "Terminé": 77,
     "À faire": 0,
-    "À valider": 44
+    "À valider": 37
   },
   "changedMembers": [
     "xl/worksheets/sheet3.xml"
@@ -215,6 +215,16 @@
       "sha256": "3c18aa7c338f3054eb88188531e5696173032411dc94c2a3035e8551aaa121cf"
     },
     {
+      "action": "AUD-021",
+      "path": "docs/qa/continuation-final-20261101/strict-closure-review-a80070c.json",
+      "sha256": "a68a08476948ce3d630c466adcaeec8d35c07882a7279803eb8a4e39c1fd8213"
+    },
+    {
+      "action": "AUD-021",
+      "path": "docs/qa/continuation-final-20261101/cpu-navigation-final.txt",
+      "sha256": "3e32f5914cde08acac445beeeca94c9a955544762f81e094d341e98f0a6e0ca4"
+    },
+    {
       "action": "AUD-022",
       "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
       "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c"
@@ -233,6 +243,21 @@
       "action": "AUD-023",
       "path": "docs/audits/2026-10-26/qa/combat-phase2-71-tests.txt",
       "sha256": "6e20e10df3b68727b9630ffdc3270aef6f3cdd5839d634847fc8f27c4663d3c5"
+    },
+    {
+      "action": "AUD-027",
+      "path": "docs/qa/continuation-final-20261101/strict-closure-review-a80070c.json",
+      "sha256": "a68a08476948ce3d630c466adcaeec8d35c07882a7279803eb8a4e39c1fd8213"
+    },
+    {
+      "action": "AUD-027",
+      "path": "docs/qa/continuation-final-20261101/cpu-navigation-final.txt",
+      "sha256": "3e32f5914cde08acac445beeeca94c9a955544762f81e094d341e98f0a6e0ca4"
+    },
+    {
+      "action": "AUD-027",
+      "path": "docs/qa/continuation-20261101/factions/final-a80070c/report.json",
+      "sha256": "a63236aeb5f7bfa0c63c4a529b483ff2fb6dbc9426647269f900a3f56bed4bd4"
     },
     {
       "action": "AUD-029",
@@ -418,6 +443,21 @@
       "action": "AUD-052",
       "path": "docs/audits/2026-10-26/qa/runtime-48b5-incremental-charon-4-ops-photo.json",
       "sha256": "2b737ee19d428e27f97d7746e72e8cd23cbc9d04409a2ebf21e9ff410b4b101a"
+    },
+    {
+      "action": "AUD-053",
+      "path": "docs/qa/continuation-final-20261101/strict-closure-review-a80070c.json",
+      "sha256": "a68a08476948ce3d630c466adcaeec8d35c07882a7279803eb8a4e39c1fd8213"
+    },
+    {
+      "action": "AUD-053",
+      "path": "docs/qa/continuation-final-20261101/cpu-navigation-final.txt",
+      "sha256": "3e32f5914cde08acac445beeeca94c9a955544762f81e094d341e98f0a6e0ca4"
+    },
+    {
+      "action": "AUD-053",
+      "path": "docs/qa/continuation-final-20261101/ui-final-a80070c/report.json",
+      "sha256": "094c18ecbdd58eabe1e247402ee19fe687b63ec701e2d795d7b73886842f23f6"
     },
     {
       "action": "AUD-054",
@@ -600,6 +640,16 @@
       "sha256": "bbb55b99620edcdc18b1d7aecfb5627e899d695a4c8d7253102c1041d7c8b169"
     },
     {
+      "action": "AUD-076",
+      "path": "docs/qa/continuation-final-20261101/strict-closure-review-a80070c.json",
+      "sha256": "a68a08476948ce3d630c466adcaeec8d35c07882a7279803eb8a4e39c1fd8213"
+    },
+    {
+      "action": "AUD-076",
+      "path": "docs/qa/continuation-final-20261101/cpu-navigation-final.txt",
+      "sha256": "3e32f5914cde08acac445beeeca94c9a955544762f81e094d341e98f0a6e0ca4"
+    },
+    {
       "action": "AUD-077",
       "path": "docs/audits/2026-10-26/qa/boss-honor-acceptance-tests.txt",
       "sha256": "b65dc2b3050cca077bbf0e3bc27ea4e516352689cd1104793f0e5c1a4fa7e2cb"
@@ -623,6 +673,21 @@
       "action": "AUD-078",
       "path": "docs/audits/2026-10-28/qa/boss-encounters-tests.txt",
       "sha256": "6ee19a6b07fde3b38d562c4849a62daa7c915d2cd9b8b3032ce4f69cbda8971e"
+    },
+    {
+      "action": "AUD-080",
+      "path": "docs/qa/continuation-final-20261101/strict-closure-review-a80070c.json",
+      "sha256": "a68a08476948ce3d630c466adcaeec8d35c07882a7279803eb8a4e39c1fd8213"
+    },
+    {
+      "action": "AUD-080",
+      "path": "docs/qa/continuation-final-20261101/cpu-navigation-final.txt",
+      "sha256": "3e32f5914cde08acac445beeeca94c9a955544762f81e094d341e98f0a6e0ca4"
+    },
+    {
+      "action": "AUD-080",
+      "path": "docs/qa/continuation-final-20261101/gameplay-navigation-final.txt",
+      "sha256": "8c3828424b48cacd51998ff42fe2f40ac8b770bcad09a34432217c96aec99c01"
     },
     {
       "action": "AUD-081",
@@ -665,6 +730,26 @@
       "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
     },
     {
+      "action": "AUD-088",
+      "path": "docs/qa/continuation-final-20261101/strict-closure-review-a80070c.json",
+      "sha256": "a68a08476948ce3d630c466adcaeec8d35c07882a7279803eb8a4e39c1fd8213"
+    },
+    {
+      "action": "AUD-088",
+      "path": "docs/qa/continuation-final-20261101/cpu-navigation-final.txt",
+      "sha256": "3e32f5914cde08acac445beeeca94c9a955544762f81e094d341e98f0a6e0ca4"
+    },
+    {
+      "action": "AUD-088",
+      "path": "docs/qa/continuation-final-20261101/ui-final-a80070c/report.json",
+      "sha256": "094c18ecbdd58eabe1e247402ee19fe687b63ec701e2d795d7b73886842f23f6"
+    },
+    {
+      "action": "AUD-088",
+      "path": "docs/qa/continuation-final-20261101/gameplay-navigation-final.txt",
+      "sha256": "8c3828424b48cacd51998ff42fe2f40ac8b770bcad09a34432217c96aec99c01"
+    },
+    {
       "action": "AUD-092",
       "path": "docs/audits/2026-10-26/qa/cpu-final-reviewed-653-tests.txt",
       "sha256": "66ad6c5f2f6300291db59022a80ac5fb0cf420698f5de42074edac167e635790"
@@ -698,6 +783,21 @@
       "action": "AUD-093",
       "path": "docs/audits/2026-10-26/qa/runtime-48b5-incremental-charon-4-ops-photo.json",
       "sha256": "2b737ee19d428e27f97d7746e72e8cd23cbc9d04409a2ebf21e9ff410b4b101a"
+    },
+    {
+      "action": "AUD-094",
+      "path": "docs/qa/continuation-final-20261101/strict-closure-review-a80070c.json",
+      "sha256": "a68a08476948ce3d630c466adcaeec8d35c07882a7279803eb8a4e39c1fd8213"
+    },
+    {
+      "action": "AUD-094",
+      "path": "docs/qa/continuation-final-20261101/cpu-navigation-final.txt",
+      "sha256": "3e32f5914cde08acac445beeeca94c9a955544762f81e094d341e98f0a6e0ca4"
+    },
+    {
+      "action": "AUD-094",
+      "path": "docs/qa/continuation-final-20261101/ui-final-a80070c/report.json",
+      "sha256": "094c18ecbdd58eabe1e247402ee19fe687b63ec701e2d795d7b73886842f23f6"
     },
     {
       "action": "AUD-095",
@@ -738,6 +838,31 @@
       "action": "AUD-098",
       "path": "docs/audits/2026-10-26/qa/combat-phase2-71-tests.txt",
       "sha256": "6e20e10df3b68727b9630ffdc3270aef6f3cdd5839d634847fc8f27c4663d3c5"
+    },
+    {
+      "action": "AUD-099",
+      "path": "docs/qa/gamedev-coop-continuity-20261029/targeted-tests.txt",
+      "sha256": "6f41f12a08a615679b9845b647428a69f367eae7b308a5829d8174112db4598c"
+    },
+    {
+      "action": "AUD-099",
+      "path": "docs/qa/gamedev-coop-continuity-20261029/validation.json",
+      "sha256": "54bbb564517b2d944df4f0755f742ff28898fc918c7eb0dd61765273cd46376d"
+    },
+    {
+      "action": "AUD-099",
+      "path": "docs/qa/continuation-final-20261101/strict-closure-review-a80070c.json",
+      "sha256": "a68a08476948ce3d630c466adcaeec8d35c07882a7279803eb8a4e39c1fd8213"
+    },
+    {
+      "action": "AUD-099",
+      "path": "docs/qa/continuation-final-20261101/cpu-navigation-final.txt",
+      "sha256": "3e32f5914cde08acac445beeeca94c9a955544762f81e094d341e98f0a6e0ca4"
+    },
+    {
+      "action": "AUD-099",
+      "path": "docs/qa/continuation-final-20261101/ui-final-a80070c/report.json",
+      "sha256": "094c18ecbdd58eabe1e247402ee19fe687b63ec701e2d795d7b73886842f23f6"
     },
     {
       "action": "AUD-100",
@@ -870,6 +995,16 @@
       "sha256": "2b737ee19d428e27f97d7746e72e8cd23cbc9d04409a2ebf21e9ff410b4b101a"
     },
     {
+      "action": "AUD-115",
+      "path": "docs/qa/continuation-final-20261101/strict-closure-review-a80070c.json",
+      "sha256": "a68a08476948ce3d630c466adcaeec8d35c07882a7279803eb8a4e39c1fd8213"
+    },
+    {
+      "action": "AUD-115",
+      "path": "docs/qa/continuation-final-20261101/complete-contexts-a80070c/report.json",
+      "sha256": "1168cd620043c2f413dd6b437cec769161796366fded7ee544427a77bf3d4bb2"
+    },
+    {
       "action": "AUD-116",
       "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
       "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c"
@@ -903,6 +1038,51 @@
       "action": "AUD-117",
       "path": "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt",
       "sha256": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c"
+    },
+    {
+      "action": "AUD-118",
+      "path": "docs/qa/gamedev-save-reliability-20261029/targeted-tests.txt",
+      "sha256": "a8838ef920e88bea8e026fd28330992d3dd7cda37c0dcdc2837c778e12ffe3da"
+    },
+    {
+      "action": "AUD-118",
+      "path": "docs/qa/gamedev-save-reliability-20261029/validation.json",
+      "sha256": "6d0f72bebabb74f02eb7011ef29668ccae5ec916c516ec677f92e9673ece24cb"
+    },
+    {
+      "action": "AUD-118",
+      "path": "docs/qa/gamedev-coop-continuity-20261029/targeted-tests.txt",
+      "sha256": "6f41f12a08a615679b9845b647428a69f367eae7b308a5829d8174112db4598c"
+    },
+    {
+      "action": "AUD-118",
+      "path": "docs/qa/gamedev-coop-continuity-20261029/validation.json",
+      "sha256": "54bbb564517b2d944df4f0755f742ff28898fc918c7eb0dd61765273cd46376d"
+    },
+    {
+      "action": "AUD-118",
+      "path": "docs/qa/continuation-final-20261101/strict-closure-review-a80070c.json",
+      "sha256": "a68a08476948ce3d630c466adcaeec8d35c07882a7279803eb8a4e39c1fd8213"
+    },
+    {
+      "action": "AUD-118",
+      "path": "docs/qa/continuation-final-20261101/cpu-navigation-final.txt",
+      "sha256": "3e32f5914cde08acac445beeeca94c9a955544762f81e094d341e98f0a6e0ca4"
+    },
+    {
+      "action": "AUD-118",
+      "path": "docs/qa/continuation-final-20261101/save-startup-e524c2b/report.json",
+      "sha256": "a48dd23c6f2b2511da5df435f1688cfb4ea78e3a836fdf7ed99488acbe180e61"
+    },
+    {
+      "action": "AUD-118",
+      "path": "docs/qa/continuation-final-20261101/navigation-only-source-review.json",
+      "sha256": "772dc3478542b4cae0cf8d7a84b10da85d7efab817f18715cc3518b462f7ae0d"
+    },
+    {
+      "action": "AUD-118",
+      "path": "docs/qa/continuation-final-20261101/ui-final-a80070c/report.json",
+      "sha256": "094c18ecbdd58eabe1e247402ee19fe687b63ec701e2d795d7b73886842f23f6"
     },
     {
       "action": "AUD-120",
@@ -1006,7 +1186,7 @@
     }
   ],
   "sourceWorkbookSha256": "d3f88eee0e88deb4dbc2247f8b295c6c5a6de91ff9626ea94b0d274f08e652b5",
-  "workingWorkbookSha256": "9d7798f65c2c38f86937eaebde7513aac2f832925170e1835c1f4f4572abf1ce",
+  "workingWorkbookSha256": "37da9388864b9066a6a1992f2c5de9afc721e9050b480e427fb4e32098b11be2",
   "remainingP0": [],
   "humanTesters": 0,
   "fidelity1to1Verified": false

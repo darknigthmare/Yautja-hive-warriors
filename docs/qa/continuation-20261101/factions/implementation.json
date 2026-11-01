@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "baseCommit": "03f37b406c2c7f9d1900c94975d912b9f3db009d",
+  "scope": "Faction actor tactical behavior and bounded visible damage feedback. Component CPU verification only; no fresh build, browser inspection, hardware or 1:1 fidelity certification by this agent.",
+  "humanTesters": 0,
+  "files": [
+    {
+      "path": "js/entities/ColonialMarines.js",
+      "sha256": "36464c7d826f0743e85cf8f0af9c0f15870e8cc6dcb00b1b644c7457720ea1d3"
+    },
+    {
+      "path": "js/entities/Synthetics.js",
+      "sha256": "f32609ad208962d00174bd96175564194a6f327e73ebfbbe9f18afa1490f47e0"
+    },
+    {
+      "path": "js/engine/FactionSquadRoles.js",
+      "sha256": "fd04806f7f4433ee7d13418548dae6be259c764287f7ab217effd924bbc40931"
+    },
+    {
+      "path": "js/graphics/NPCCombatFeedback.js",
+      "sha256": "a38e2617899411b30a916c8bd0bd015a62ba432fc5cf05e2595acc01a1e0b540"
+    },
+    {
+      "path": "tests/faction-squad-behavior.test.js",
+      "sha256": "a4ce7fe0660a667260617abcf691c764b88820f97bde9e232617c4edf3fcefdb"
+    },
+    {
+      "path": "docs/qa/continuation-20261101/factions/targeted-tests.txt",
+      "sha256": "318acc5c3a60f9fbbf15cfd99560e26827ecc0a2c87f4f6ac8c12f8892dd943b"
+    }
+  ],
+  "tests": {
+    "passed": 31,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "path": "docs/qa/continuation-20261101/factions/targeted-tests.txt"
+  },
+  "browser": {
+    "status": "prepared_not_run",
+    "script": "docs/qa/continuation-20261101/factions/verify-feedback.mjs"
+  },
+  "guides": {
+    "id": "game-ai",
+    "commit": "19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9",
+    "blobSha": "6b90b505ef635cb7f0917de3416670ad1d404790"
+  },
+  "openLimitations": [
+    "No source-specific civilian synthetic roster was added; civilian passive policy is exercised as an explicit fixture role only.",
+    "The service radius of48 game units, warning1.5seconds and tactical fire/move windows are declared gameplay adaptations, not screen measurements.",
+    "Existing source-specialist test CommTech amount40 mismatched actual deficit50 on unchanged BattleSimulation; coordinator notified.",
+    "Initial helipad movement regression was outside service restriction (standalone Joe); world agent subsequently fixed and reran its four tests."
+  ]
+}

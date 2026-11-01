@@ -1,0 +1,46 @@
+{
+  "reviewedAt": "2026-11-01T01:38:57.692693+00:00",
+  "sourceCommit": "a80070c4b5ed96fa839e840f17453bf5348a6cbb",
+  "status": "targeted_cpu_passed",
+  "tests": {
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 106776.584239
+  },
+  "problem": {
+    "historicalStaticProbe": "The bridge sample used movement steering while expecting an unchanged placement; the same physical sample remains exact through resolveMovement.",
+    "persistentTraversal": "The added persistent two-direction walker exposed a real final-approach failure: nearby final nodes were skipped and a distant corridor endpoint resumed priority. Before the fix one reproduced walker remained 1.7177399897103287 game units from its destination.",
+    "preservedFailureEvidence": "docs/qa/continuation-20261101/world/tactical-contact-regression.txt",
+    "preservedFailureCounts": {
+      "passed": 23,
+      "failed": 1
+    }
+  },
+  "fix": {
+    "owner": "BattlefieldNavigation.waypoint",
+    "localDistanceLimit": 4,
+    "layerHeightDifferenceLimit": 0.65,
+    "requiresContinuousFloor": true,
+    "requiresCapsuleClearSegment": true,
+    "behavior": "Use the exact nearby destination instead of selecting a stale or distant strategic graph node."
+  },
+  "verification": [
+    "Stationary bridge samples retain exact coordinates and 0-to-3-to-0 support heights",
+    "Persistent traversal in both directions reaches the actual far-bank target within .05 game units",
+    "Horizontal step never exceeds .25 and vertical change obeys the physical 3/12 ramp slope",
+    "The local approach cannot bypass a closed gate, wall, another layer or destroyed bridge gap",
+    "Real USCM/BattleActorBridge, Working Joe helipad exit, civilian corners and 32 opposing capsules across 11 contexts remain passing"
+  ],
+  "files": {
+    "js/engine/BattlefieldNavigation.js": "7d11e18df0ca48f0244fcad3a221a8d1f3305195155c9e633d4b399b07aad4f7",
+    "tests/tactical-bridge.test.js": "87c887cc61f85d054cb2c284f99e3be12688de5c2e53ecdc5410278ca58c2367",
+    "docs/qa/continuation-20261101/world/tactical-contact-regression.txt": "14b258e41fd944d53140c2e2b8b3aaa196112b67c92fed157298bd799e957410",
+    "docs/qa/continuation-20261101/world/tactical-arrival-focused.txt": "e893b2805d64edcab41a2991170c30a8142f78c5d0c94ec31e4c56b38b684795",
+    "docs/qa/continuation-20261101/world/tactical-arrival-final.txt": "cc531148dedc99fa3758859ed46e93212daf716f42db85b5fde70ceb67bb1910"
+  },
+  "limits": [
+    "CPU physical and navigation checks; integrated browser validation belongs to the release coordinator",
+    "No general material-performance, human-playtest or visual-fidelity certification"
+  ]
+}

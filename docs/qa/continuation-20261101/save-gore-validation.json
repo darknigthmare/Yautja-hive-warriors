@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "checkedAtUtc": "2026-11-01T00:42:11.398304+00:00",
+  "baseCommit": "03f37b406c2c7f9d1900c94975d912b9f3db009d",
+  "scope": "CPU validation of existing migration behavior and repaired gore ownership/budgets. Browser harness prepared, not executed.",
+  "guidesSourceCommit": "19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9",
+  "guides": [
+    "save-systems",
+    "performance-optimization"
+  ],
+  "criteria": [
+    "AUD-109 partial",
+    "AUD-118 partial"
+  ],
+  "targetedTests": {
+    "passed": 78,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 7555.059542,
+    "path": "docs/qa/continuation-20261101/save-gore-targeted-tests.txt"
+  },
+  "beforeAfter": {
+    "scenario": "100 consecutive slag decals then 40 heavy dismemberments at origin without a time update; clear all",
+    "before": {
+      "slag": 100,
+      "severedParts": 93,
+      "acidGibs": 40,
+      "sceneChildren": 233,
+      "sharedMaterialDisposalsAfterClear": 178
+    },
+    "after": {
+      "slag": 24,
+      "severedParts": 90,
+      "acidGibs": 40,
+      "sceneChildren": 154,
+      "sharedMaterialDisposalsAfterClear": 0
+    }
+  },
+  "browserChecksRun": false,
+  "humanTesters": 0,
+  "hardwarePerformanceVerified": false,
+  "fidelity1to1Verified": false,
+  "files": [
+    {
+      "path": "js/engine/GoreEngine.js",
+      "sha256": "7de32942f94735c3c264cf3f57e3ff96324b42a9ff10b488fc05d292788631d3"
+    },
+    {
+      "path": "tests/gore-resource-budgets.test.js",
+      "sha256": "f0f578b3f9c9d4f20c72ae5dbf6edcde9e3d894a12446d1f3ace6b2e8fb09317"
+    },
+    {
+      "path": "js/engine/HonorLedger.js",
+      "sha256": "7e904e47e138b3464c7fe5fbc82808630c9e8c36736128008e69739155b63f59"
+    },
+    {
+      "path": "tests/honor-ledger.test.js",
+      "sha256": "128a5edc352f0fecbf5c1bb9db60f8cdcbf3d36ce4fa7c15e78123537f289051"
+    },
+    {
+      "path": "tests/honor-save-recovery-ui.test.js",
+      "sha256": "0af3cdf0eca56948cf8f48d0d43627cf8d37fc737b2b48ac497211f3ee5e19f8"
+    },
+    {
+      "path": "tests/clan-forge-recovery.test.js",
+      "sha256": "3db58f04d7466eebfc472d424aa7af4244e5b0b53ae58f6918c716b842844c2e"
+    },
+    {
+      "path": "tests/forge-ledger-integration.test.js",
+      "sha256": "61e11276f2bf4014a296f92ad58ab6e112652d8818c00ec96c676f187f2abf77"
+    },
+    {
+      "path": "tests/battle-simulation.test.js",
+      "sha256": "3b2546cdd66ab4a37e698bb3c87a1a18d14a8a8264194f731dd92c7195e876fa"
+    },
+    {
+      "path": "tests/boss-engine-checkpoint.test.js",
+      "sha256": "2fd0e5a95abf9deed0e8ac9e358ae82674303598a355251ca3e12e80b258f390"
+    },
+    {
+      "path": "tests/operation-player-state.test.js",
+      "sha256": "e23f422b8475e9a3c60047f542a3608bf99a2dfd13f33024528d9a4ae8454dfe"
+    },
+    {
+      "path": "tests/prey-interaction-checkpoint.test.js",
+      "sha256": "35830e360e3ba40de9f510991b6a67614ce7022a53f0b894e8203e84780d34ea"
+    },
+    {
+      "path": "docs/qa/continuation-20261101/save-gore-targeted-tests.txt",
+      "sha256": "43fc7dc06a84bc6345ad3b27c8791880d62527f1af0f0ea4e0159f663b84c87b"
+    }
+  ],
+  "preparedBrowserHarnesses": {
+    "executed": false,
+    "paths": [
+      "docs/qa/continuation-20261101/verify-save-startup.mjs",
+      "docs/qa/continuation-20261101/verify-world-streaming.mjs"
+    ],
+    "note": "Later browser runs must pin and archive their own helper snapshots; these scripts are not covered by the 78 CPU tests."
+  }
+}

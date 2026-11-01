@@ -1,0 +1,21 @@
+✔ versioned preferences persist real booleans and palette changes, and apply independent body hooks (2.738938ms)
+✔ private, absent, corrupt and future storage never prevents settings from operating (0.809223ms)
+✔ subscribers receive copies, can detach and cannot break other preference listeners (0.475751ms)
+✔ relationship shapes and meaningful glyphs distinguish markers even after every tint is converted to monochrome (0.916401ms)
+✔ camp families retain letters and different accessible tints independently of relationship shapes (0.514547ms)
+✔ canvas markers draw distinct paths, outlines and text without assuming color alone (1.215408ms)
+✔ reduced flashes suppresses lightning and pulsing while leaving warning symbols available (0.293906ms)
+✔ persistent HUD follows real objective progress, open passage and the next destination without mutating progression (3.998327ms)
+✔ relay prompt requires actual proximity and clears after interaction; reset removes the battlefield HUD (0.699977ms)
+✔ whole battlefield map projects distant rooms, enemies and co-op players inside its canvas (2.576056ms)
+✔ relay HUD advertises the real co-op interaction key when only player two is in range (0.525642ms)
+✔ relay counterattack stays in the HUD until the actual post-activation quota opens its passage (0.503466ms)
+✔ the actual fronts minimap draws monochrome role shapes, stale hollow reports and dashed closed routes (2.601561ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 162.339068

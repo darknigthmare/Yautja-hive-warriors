@@ -1,0 +1,42 @@
+✔ nitrogen stops actual horde locomotion, expires after leaving, and cannot recolor shared creature materials (5131.591744ms)
+✔ environment freeze respects pause and clear restores the current base while another hunter slow remains owned (2.526224ms)
+✔ steam contacts do not compound per-frame speed and transformer recovery never guesses a species default (1.985187ms)
+✔ cooling tower motor freeze has a finite exit and leaves actor materials untouched (1.212747ms)
+✔ stasis: leaving a damaging coolant volume releases its actual slow without stale frozen flags (1.531982ms)
+✔ ammonia: leaving a damaging coolant volume releases its actual slow without stale frozen flags (1.670035ms)
+✔ freon: leaving a damaging coolant volume releases its actual slow without stale frozen flags (3.247207ms)
+✔ tar: leaving a damaging coolant volume releases its actual slow without stale frozen flags (1.132109ms)
+✔ the actual inhibitor uses a finite current-base effect and announces only its implemented consequence (1.253488ms)
+✔ hvac: the actual prop interaction expires without overwriting species or phase speed (1.974315ms)
+✔ locker: the actual prop interaction expires without overwriting species or phase speed (1.428573ms)
+✔ tar: the actual prop interaction expires without overwriting species or phase speed (1.226878ms)
+✔ consumed pickups and cauldron survive a reconstructed scene without refunds, inventory gains or replayed damage (9.593392ms)
+✔ powder fire restores only its remaining lifetime and damage, never the blast or an exhausted fire (14.463348ms)
+✔ Sarii keeps the second owner, order, wounds and cooldown without healing, recruiting again or transferring ownership (3.345553ms)
+✔ expired camouflage is not refreshed while either restored player remains inside the same mud entry (1.135581ms)
+✔ profile, props, ownership and numeric checkpoint defects are rejected atomically before consuming or creating anything (2.041262ms)
+✔ checkpoint cancels transient laser guidance like discarded boss projectiles without arming a shot or awarding stock (0.763306ms)
+✔ Adolini uses facing, finite range and the real cover ray; a consumed miss cannot hit a distant boss later (20.641942ms)
+✔ Adolini selects the first visible hostile body and routes NPC/boss deaths once through actual managers (9.786946ms)
+✔ bow and axe pickups equip their own resource, clamp stocks and preserve refused pickups (6.748317ms)
+✔ flower, grizzly, medicine and Feral rack announce observed bounded resources without score/plasma substitutes (1.317616ms)
+✔ powder blast and fire use distinct radii, actual NPC/boss damage, cover, diplomacy and one ignition (30.522511ms)
+✔ powder fire damage clips the last timestep at expiration at30/60/120Hz and frees its owned mesh (72.625991ms)
+✔ the cauldron hits actual Horde actor shape and manager death ledger, within7.5U and behind no cover (1.086904ms)
+✔ mud is once per actual-volume entry per cooperative player, and pause/zero delta cannot consume or age interactions (1.501163ms)
+✔ static instancing preserves authored dimensions, per-instance colors and moving parent transforms (37.022655ms)
+✔ render distance never disables physical cover, while authored removal does (10.512769ms)
+✔ reference timers follow simulation time and cannot fire after a rebuild (1.594447ms)
+✔ operation doors really block movement and rays, reopen, and avoid fake sector completion (10935.106686ms)
+✔ civilian navigation crosses two corridor turns and reroutes around a closed flank (534.915008ms)
+✔ a zero-speed environmental hold expires to the other hunter slow, then to the exact base speed (1.559543ms)
+✔ disposing either overlapping owner preserves the remaining zero-speed hold or slow (0.341609ms)
+✔ a phase speed authored during a zero-speed hold becomes the restored base, without divide-by-zero (0.275863ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 18614.698509

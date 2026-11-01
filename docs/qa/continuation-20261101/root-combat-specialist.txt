@@ -1,0 +1,37 @@
+✔ J2 Enter reaches the existing bridge interaction without also attacking or affecting J1 (4.096155ms)
+✔ J2 Enter reaches the existing transport interaction without also attacking or affecting J1 (0.764863ms)
+✔ J2 Enter reaches the existing objective interaction without also attacking or affecting J1 (0.75151ms)
+✔ J2 Enter reaches the existing prey interaction without also attacking or affecting J1 (1.874218ms)
+✔ a J2 rescue consumes one input before nearby objects and preserves the existing priority (0.793717ms)
+✔ a living J2 can still interact and attack when J1 is dead (1.15961ms)
+✔ J2 falls back to one light attack after rejected interactions and no executable target (0.8674ms)
+✔ a real accepted boss execution consumes J2 Enter without a second attack (0.953369ms)
+✔ a rejected boss execution returns false and permits the ordinary J2 attack (1.095492ms)
+✔ a real praetorian execution also consumes J2 Enter without a second attack (1.225095ms)
+✔ a real synthetic execution also consumes J2 Enter without a second attack (1.108053ms)
+✔ J2 Enter advances the ordinary facehugger QTE without an interaction or attack (1.008176ms)
+✔ J2 Enter advances the royal facehugger QTE without an interaction or attack (0.87632ms)
+✔ pause, insertion, photo mode, weapon wheel, dead J2, held keys and focused UI reject combat interactions (4.833644ms)
+✔ J2 heavy and plasma controls retain their ordinary attacks without activating nearby interactions (0.695028ms)
+✔ the production P1 light route applies one rear bonus with the correct owner (4416.713686ms)
+✔ the production P2 scheduled light route applies one rear bonus with the correct owner (849.184885ms)
+✔ a wall appearing before impact leaves the actual ambush metadata false (805.889277ms)
+✔ the production execution route respects cover before awarding or consuming its short pose (853.357066ms)
+✔ the actual Bad Blood manager, P2 melee router and trophy ledger survive a lethal clear exactly once (815.861692ms)
+✔ role supplies belong only to allocated Extinction specialists, not arbitrary Marine IDs (33.972876ms)
+✔ SADAR and Sniper ammunition can be spent once per shot and never restock by reprising detail (41.118772ms)
+✔ CommTech repairs existing synthetics and the single Exosuit, never human riflemen or foes (9.935666ms)
+✔ Exosuit armor absorbs finite damage and survives save/reload with one pilot identity (47.587754ms)
+✔ old checkpoints without special supplies resume at zero, not a fresh kit (37.084142ms)
+✔ SADAR launched from a materialized Marine takes time, stays finite and damages hostiles only (3.850742ms)
+✔ splash respects individual wall cover, ownership, dead targets and duplicate candidates (0.395642ms)
+✔ offscreen fronts consume the same finite rounds and plate buffer as close combat (9.195699ms)
+✔ no additional soldiers, bosses or backups arise from source specialist activation (25.314892ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 29
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8402.450229
