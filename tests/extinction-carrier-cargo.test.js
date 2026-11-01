@@ -91,7 +91,16 @@ test('held Facehuggers retain health outside Hive-space and follow their one fin
     const carrier=sim.units.get(carrierId);
     const originalHp=sim.units.get(passengerIds[0]).hp;
     const ecology={banks:[{id:'hive'}],nodes:[]};
-    assert.deepEqual(applyFacehuggerExposure(ecology,sim.units.values(),.5,11),[]);
+    const exposure=applyFacehuggerExposure(ecology,sim.units.values(),.5,11);
+    assert.equal(exposure.some(hit=>passengerIds.includes(hit.unitId)),false,
+      'all six carried Facehuggers remain sheltered by this finite Carrier');
+    const free=[...sim.units.values()].find(unit=>
+      unit.species==='xenomorph'&&unit.actorType==='facehugger'&&
+      unit.carriedByCarrierId===undefined&&unit.hp>0&&
+      ['active','distant'].includes(unit.state));
+    assert.ok(free,'the source allocation also has free Facehuggers');
+    assert.ok(exposure.some(hit=>hit.unitId===free.id),
+      'free Facehuggers still incur real environmental exposure outside Hive-space');
     assert.equal(sim.units.get(passengerIds[0]).hp,originalHp);
     assert.equal(sim.syncUnit(carrierId,{position:[carrier.position[0]+2,carrier.position[1]+1]}),true);
     for(const id of passengerIds)
