@@ -18,3 +18,6 @@ complexes par le maillage n'est pas revendiquée. C'est une
 approximation de sécurité du gabarit, non une collision triangle-triangle
 du prop cinématographique. Aucun nouveau soldat ni changement de
 sauvegarde/roster.
+
+
+La détection d'empreinte conservatrice **ne remplace jamais** les colliders à prédicat dynamique (`isNavigationActive` / `navigationTest`) : les ponts, portes et étages laissent la décision à leur système de navigation autoritaire. Un test vérifie qu'une porte ouverte n'est pas retransformée en obstacle solide par la nouvelle empreinte.

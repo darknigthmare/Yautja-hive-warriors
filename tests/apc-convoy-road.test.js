@@ -433,3 +433,19 @@ test('M577 hull footprint follows the real yaw and ignores distant decks and non
   assert.equal(m577HullIntersectsCollider(p,0,{...wall,navigationTest:()=>false}),null,
     'custom collision functions still use the existing real nav sampling');
 });
+
+test('M577 full-hull broadphase never blocks a gate whose dynamic navigation policy is inactive',()=>{
+  const p=new THREE.Vector3(0,0,0);
+  const openGate={owner:'bridge-gate',x:0,z:0,
+    halfWidth:3,halfDepth:3,rotation:0,height:2,
+    isNavigationActive:()=>false};
+  assert.equal(m577HullIntersectsCollider(p,0,openGate),null,
+    'custom gate policy remains authoritative over conservative rectangle');
+  const f=fixture();
+  try{
+    f.env.colliders.push(openGate);
+    assert.equal(f.service.drive._canOccupy(f.apc.mesh.position,0),true,
+      'an open gate is not reinterpreted as permanent collision cover');
+    assert.equal(f.sim.assertConservation(),true);
+  }finally{f.dispose();}
+});

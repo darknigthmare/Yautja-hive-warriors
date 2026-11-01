@@ -19,7 +19,11 @@ export function m577HullIntersectsCollider(position,yaw,collider) {
     collider.enabled===false||collider.solid===false)return false;
   if(typeof collider.isCollisionActive==='function'&&
     collider.isCollisionActive()===false)return false;
-  if(typeof collider.navigationTest==='function')return null;
+  // Dynamic gates and bridges can expose an occupancy predicate dependent
+  // on the actor's position, vertical layer or phase. Never overrule that
+  // authoritative predicate with an unconditional static rectangle check.
+  if(typeof collider.navigationTest==='function'||
+     typeof collider.isNavigationActive==='function')return null;
   if(!finite(collider.x,collider.z))return null;
   const base=collider.baseY??0,height=collider.height??0;
   if(!finite(base,height)||height<0)return null;
