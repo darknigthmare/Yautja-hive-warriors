@@ -10,11 +10,11 @@ export const EXTINCTION_CASTE_PROFILES = Object.freeze({
 export function validExtinctionCasteUnit(unit, operationId) {
   const spec=EXTINCTION_CASTE_PROFILES[unit?.actorType];
   return !!spec && operationId==='AFF-27' &&
-    unit.profileId===spec.profileId && unit.species==='xeno' &&
+    unit.profileId===spec.profileId && ['xeno','xenomorph'].includes(unit.species) &&
     typeof unit.id==='string' && unit.id.length>0;
 }
 export function allowsDetailedXenomorphProfile(profile,operationId) {
   const spec=EXTINCTION_CASTE_PROFILES[profile?.actorType];
   return !spec||operationId==='AFF-27'&&profile.id===spec.profileId&&
-    profile.species==='xeno';
+    ['xeno','xenomorph'].includes(profile.species);
 }

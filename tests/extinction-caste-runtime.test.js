@@ -38,6 +38,8 @@ test('exact Extinction profile IDs and LV-742 are required for detailed caste ad
   for(const type of ['carrier','ravager']){
     const unit=sourceUnit(type);
     assert.equal(validExtinctionCasteUnit(unit,'AFF-27'),true);
+    assert.equal(validExtinctionCasteUnit({...unit,species:'xenomorph'},'AFF-27'),true,
+      'BattleSimulation canonicalizes xeno to xenomorph when constructing real units');
     assert.equal(validExtinctionCasteUnit(unit,'AFF-14'),false);
     assert.equal(validExtinctionCasteUnit({...unit,profileId:'XEN-005'},'AFF-27'),false);
     assert.equal(validExtinctionCasteUnit({...unit,species:'human'},'AFF-27'),false);
