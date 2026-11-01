@@ -480,6 +480,36 @@ export class BattleSimulation {
     return {accepted:true,carrierId,facehuggerIds:ids};
   }
 
+  /** One already-allocated Facehugger launches from a DETAILED Carrier.
+   * Physical flight is owned by BattleActorBridge after safe landing checks.
+   * This transition cannot exceed detailed actor limits or change any ID. */
+  launchCarrierFacehugger(carrierId,facehuggerId,origin){
+    const carrier=this.units.get(carrierId),group=this.groups.get(carrier?.groupId),
+      parasite=this.units.get(facehuggerId);
+    const cargo=carrier?.carrierCargoIds??[];
+    const active=this.getCounts();
+    const total=Object.values(active).reduce((n,counts)=>n+counts.active,0);
+    const cap=this.budgets.byFaction?.[carrier?.factionId]?.active??this.budgets.active;
+    if(this.disposed||this.result||this.paused||
+      this.config.id!=='AFF-27'||
+      this.config.context?.extinctionCasteVariant!=='carrier-ravager'||
+      !carrier||carrier.actorType!=='carrier'||carrier.profileId!=='XEN-009'||
+      carrier.state!=='active'||!(carrier.hp>0)||
+      !group?.materialized||group.path.length||!parasite||
+      cargo[0]!==facehuggerId||parasite.carriedByCarrierId!==carrierId||
+      parasite.state!=='distant'||!point(origin)||
+      dist(origin,carrier.position)>3||
+      total>=this.budgets.active||active[carrier.factionId].active>=cap)
+      return {accepted:false,reason:'carrier_detailed_launch_unavailable'};
+    const released=releaseFiniteCarrierCargo(carrier,this.units,1);
+    if(released.length!==1||released[0]!==facehuggerId)
+      return {accepted:false,reason:'carrier_payload_corrupted'};
+    parasite.position=[...origin];parasite.state='active';
+    this._emit('carrier_facehugger_launched',{carrierId,facehuggerId,
+      frontId:group.frontId},1);
+    return {accepted:true,carrierId,facehuggerId};
+  }
+
   _detailStep() {
     const activeFronts = new Set();
     for (const player of this.players) if (player.hp > 0) for (const front of this.fronts.values()) if (dist(player.position, front.position) <= front.radius * 1.5) activeFronts.add(front.id);

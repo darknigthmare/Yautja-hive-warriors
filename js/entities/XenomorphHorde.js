@@ -853,8 +853,28 @@ export class XenomorphHorde {
     // 4. Horde AI (Crusher, Praetorian, Warriors, Facehuggers, Officers)
     this.aliens.forEach(a => {
       this._showAttackCue(a);
+      // The allocated Facehugger is a REAL airborne actor, not a spawned
+      // particle. It can neither attack nor latch until landing on safe floor.
+      if(a.carrierFlight){
+        const flight=a.carrierFlight;
+        flight.elapsed=Math.min(flight.duration,flight.elapsed+delta);
+        const t=flight.elapsed/flight.duration;
+        a.mesh.position.copy(flight.start).lerp(flight.end,t);
+        a.mesh.position.y+=Math.sin(Math.PI*t)*2.2;
+        if(t>=1)a.carrierFlight=null;
+        return;
+      }
+      const sourceTarget=a.type==='carrier'?
+        this._pursuitTarget(a,livingPlayers,supportTargets):null;
+      if(a.type==='carrier'){
+        a.carrierLaunchCooldown=Math.max(0,(a.carrierLaunchCooldown??0)-delta);
+        if(sourceTarget&&a.carrierLaunchCooldown<=0&&!a.isStunned&&!a.isNetEntangled){
+          const attempt=this.carrierCargoLaunch?.(a,sourceTarget);
+          if(attempt?.accepted)a.carrierLaunchCooldown=3.25;
+        }
+      }
       if(!a.isAirborne && !a.isLeaping && !a.isLatched && maintainBattleFormation(this,a,delta,a.speed))return;
-      const targetPlayer = this._pursuitTarget(a, livingPlayers, supportTargets);
+      const targetPlayer = sourceTarget??this._pursuitTarget(a, livingPlayers, supportTargets);
       if (!targetPlayer) { this.combatDirector?.release(a); this._clearAttackCue(a); moveBattleOrder(this, a, delta, a.speed); return; }
       if (a.isFeared) { a.fearTimer -= delta; if (a.fearTimer <= 0) a.isFeared = false; else { a.mesh.position.addScaledVector(a.fearDir, a.speed * delta * .7); this.environment?.resolveMovement?.(a.mesh.position, a.radius); return; } }
       if (a.regenActive && a.hp > 0) a.hp = Math.min(a.maxHp, a.hp + 35 * delta);
