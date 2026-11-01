@@ -399,3 +399,35 @@ test('transit route identity, geometry and gate state are validated rather than 
     assert.equal(m577RouteWaypoints(sim,{routeId:route.id,fromFrontId:manifest.frontId,toFrontId:'FAKE'},manifest.frontId),null);
   }finally{sim.dispose();}
 });
+
+test('legitimate M577 post-boarding incapacitation survives a signed checkpoint with every finite seat intact',()=>{
+  const simulation=create();
+  try{
+    const {manifest}=board(simulation);
+    const passengerId=manifest.passengers[0],driverId=manifest.crew[0],
+      counts=simulation.getCounts(),allocated=simulation.units.size;
+    assert.ok(passengerId&&driverId);
+    simulation.units.get(passengerId).incapacitated=true;
+    simulation.units.get(driverId).incapacitated=true;
+    const saved=simulation.saveState(),restored=BattleSimulation.fromState(
+      getBattleOperationConfig('AFF-27'),saved);
+    try{
+      assert.equal(restored.units.get(passengerId).incapacitated,true);
+      assert.equal(restored.units.get(driverId).incapacitated,true);
+      assert.deepEqual(restored.getAPCManifest(),manifest);
+      assert.deepEqual(restored.getCounts(),counts);
+      assert.equal(restored.units.size,allocated);
+      assert.equal(restored.assertConservation(),true);
+      const origin={ownerFaction:manifest.ownerFaction,frontId:manifest.frontId,
+        position:[...manifest.position]};
+      const {service}=mockedService(restored,origin);
+      try{
+        assert.equal(service.drive._driverReady(restored.getAPCManifest()),false);
+        assert.equal(service.requestTravel(manifest.frontId).reason,'real_driver_required');
+        restored.units.get(driverId).incapacitated=false;
+        assert.equal(service.drive._driverReady(restored.getAPCManifest()),true,
+          'the same allocated driver recovers without a replacement');
+      }finally{service.dispose();}
+    }finally{restored.dispose();}
+  }finally{simulation.dispose();}
+});

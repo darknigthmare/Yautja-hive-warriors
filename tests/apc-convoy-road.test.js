@@ -373,3 +373,27 @@ test('a rotating armored carrier invalidates cached navigation without eager per
   assert.equal(nav.gridCache.size,0,'a driven 0.6u step is visible at next navigation query');
   assert.notEqual(nav.actorPaths,generation);
 });
+
+test('M577 UI only enables driving with its actual conscious allocated crew',()=>{
+  const f=fixture();
+  try{
+    const manifest=f.sim.getAPCManifest(),driver=f.sim.units.get(manifest.crew[0]);
+    assert.equal(f.service.getHUDState().canDrive,true);
+    driver.incapacitated=true;
+    assert.equal(f.service.getHUDState().canDrive,false);
+    assert.equal(f.service.requestTravel(f.target).reason,'real_driver_required');
+    const saved=f.sim.saveState(),restored=BattleSimulation.fromState(
+      getBattleOperationConfig('AFF-27'),saved);
+    try{
+      assert.equal(restored.units.get(driver.id).incapacitated,true);
+      assert.deepEqual(restored.getAPCManifest(),manifest);
+      assert.equal(restored.assertConservation(),true);
+    }finally{restored.dispose();}
+    driver.incapacitated=false;
+    assert.equal(f.service.getHUDState().canDrive,true);
+    f.sim.paused=true;
+    assert.equal(f.service.getHUDState().canDrive,false);
+    f.sim.paused=false;
+    assert.equal(f.sim.assertConservation(),true);
+  }finally{f.dispose();}
+});

@@ -41,7 +41,9 @@ export class APCMarineService {
     return {available,passengers:m?.passengers.length??0,
       crew:m?.crew.length??0,
       capacity:APC_SECTION_RULES.passengerSeats,crewPositions:APC_SECTION_RULES.crewPositions,
-      frontId:m?.frontId??null,canDrive:!!m&&!!m.crew.length&&!this.drive.active&&available,
+      frontId:m?.frontId??null,
+      canDrive:!!m&&!this.drive.active&&available&&!this.simulation.paused&&
+        this.drive._driverReady(m),
       canStop:this.drive.active&&available,canDisembark:available&&!!m&&!m.transit&&!this.drive.active,
       ...this.drive.state(),visualFidelity1to1Verified:false};
   }

@@ -145,7 +145,9 @@ export function validateM577Manifest(manifest,sim,units,groups,savedTime){
     const unit=units.get(occupants[seat]),isCrew=seat<manifest.crew.length;
     const crewRole=seat===0?'driver':'commander';
     if(!unit||unit.groupId!==group.id||!group.units.includes(unit.id)||
-      !active(unit)||unit.state!=='distant'||unit.incapacitated||unit.infection||
+      // A soldier who becomes incapacitated AFTER boarding remains a real
+      // saved occupant. The driver service separately refuses driving.
+      !active(unit)||unit.state!=='distant'||unit.infection||
       !eq(unit.position,manifest.position)||
       (isCrew?(unit.apcCrewRole!==crewRole||unit.apcSeat!==undefined||
         !(marine(unit)||synthetic(unit))||sourceUnitVisualKind(unit)==='exosuit')
