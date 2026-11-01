@@ -68,6 +68,7 @@ jobs:
             tests/m577-source-provenance.test.js \
             tests/extinction-profile-coverage.test.js \
             tests/extinction-caste-runtime.test.js \
+            tests/extinction-carrier-cargo.test.js \
             tests/support-visual.test.js \
             tests/browser-cleanup.test.mjs \
             tests/apc-detail.test.js \

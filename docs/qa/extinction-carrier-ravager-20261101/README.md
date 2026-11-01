@@ -27,3 +27,24 @@ de génération gratuite, et refusent le croisement de médias.
 La colonne d'audit historique est conservée pour les écarts
 datés du 26 octobre ; la colonne runtime est actualisée
 séparément.
+
+
+## 1er novembre 2026 — cargaison biologique persistante, hors caméra
+
+Une cargaison Carrier peut maintenant contenir jusqu'à six
+**identifiants de Facehuggers déjà présents dans le même groupe
+et la même faction LV-742**, sans création d'unités ni réserve.
+Le chargement et le largage ne s'effectuent que pour un groupe
+stratégique distant et hors écran. Les parasites sont soustraits
+au combat éloigné, à la capture des fronts et à l'exposition hors
+ruche tant qu'ils sont transportés. Ils suivent les coordonnées
+réelles du Carrier et leur lien de cargaison est validé à la
+reprise des sauvegardes contre toute duplication/contamination.
+Si le Carrier est détruit, les mêmes parasites sont dispersés
+à sa dernière position, sans gain de nouveaux individus.
+
+**Non encore 1:1 ni complet :** aucun saut lancé dans la scène
+3D, aucun arrimage animé des corps des Facehuggers, pas de
+mode 12 places amélioré, pas de projection de cargaison
+pendant une matérialisation existante. Ces capacités seront
+soumises à tests physiques et d'identités avant activation.

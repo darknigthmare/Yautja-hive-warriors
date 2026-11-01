@@ -13,7 +13,7 @@ export const EXTINCTION_SOURCE_COLS=["Identifiant","Faction source","Unité sour
 export const ORIGINAL_EXTINCTION_CATALOG_COUNT=29;
 function runtime(p){
   if(p.id==='XEN-009')
-    return 'Morphologie 3D et défense du Carrier projetées sur LV-742 ; chargement réel de Facehuggers NON implémenté';
+    return 'Morphologie Carrier partielle ; transport stratégique sauvegardé de six Facehuggers préalloués ; lancer animé 3D et upgrade 12 NON implémentés';
   if(p.id==='XEN-010')
     return 'Morphologie en lames et attaque Ravager dédiées sur LV-742 ; catalepsie améliorée NON implémentée';
   if(p.id==='XEN-004')
