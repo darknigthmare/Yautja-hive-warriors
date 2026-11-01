@@ -344,3 +344,32 @@ test('M577 acceleration follows simulation time comparably at 30, 60 and 120 FPS
   assert.ok(Math.max(...snapshots)-Math.min(...snapshots)<.2,
     'world displacement must remain similar across real-time frame rates');
 });
+
+test('a rotating armored carrier invalidates cached navigation without eager per-wheel resets',()=>{
+  const carrier={owner:'apc',x:0,z:0,rotation:0,
+    halfWidth:2.52,halfDepth:5.8,height:3,isCollisionActive:()=>true};
+  const nav=new BattlefieldNavigation({colliders:[carrier]});
+  nav._refreshObstacleCache();
+  let generation=nav.actorPaths;
+  nav.gridCache.set('test-path',true);
+  nav._refreshObstacleCache();
+  assert.equal(nav.gridCache.get('test-path'),true,
+    'unchanged hull must not constantly discard A* caches');
+  assert.equal(nav.actorPaths,generation);
+  carrier.rotation=Math.PI/3;
+  nav._refreshObstacleCache();
+  assert.equal(nav.gridCache.size,0,'stationary rotation changes the collision footprint');
+  assert.notEqual(nav.actorPaths,generation);
+  generation=nav.actorPaths;
+  nav.gridCache.set('test-path',true);
+  carrier.halfWidth+=0.7;
+  nav._refreshObstacleCache();
+  assert.equal(nav.gridCache.size,0,'changing the armored width invalidates cached paths');
+  assert.notEqual(nav.actorPaths,generation);
+  generation=nav.actorPaths;
+  nav.gridCache.set('test-path',true);
+  carrier.x+=0.6;
+  nav._refreshObstacleCache();
+  assert.equal(nav.gridCache.size,0,'a driven 0.6u step is visible at next navigation query');
+  assert.notEqual(nav.actorPaths,generation);
+});

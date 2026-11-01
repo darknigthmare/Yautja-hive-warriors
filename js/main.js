@@ -270,8 +270,11 @@ class GameApp {
       feedback:message=>this.operationPanel.feedback(message),
       onMove:()=>{
         if(this._apcNavigationCollider){
+          // The collider is updated immediately. Real path queries detect
+          // the changed position/yaw and invalidate their own cached graph;
+          // clearing all caches after every 0.6u wheel step thrashes 1000-
+          // fighter fronts while providing no additional collision safety.
           this.apc.syncNavigationCollider(this._apcNavigationCollider);
-          this.invalidateSupportNavigation();
         }
       }
     });

@@ -165,7 +165,10 @@ export class BattlefieldNavigation {
     for (const c of colliders) {
       if (active(c)) live++;
       if (c.isCollisionActive || c.isNavigationActive) {
-        moving += `/${Math.round((c.x ?? 0) * 10)},${Math.round((c.z ?? 0) * 10)},${active(c) ? 1 : 0}`;
+        // Moving armored hulls can rotate without changing X/Z. Track their
+        // orientation and half-extents as well as position so a cached path
+        // never treats the *old* M577 footprint as the current obstacle.
+        moving += `/${Math.round((c.x ?? 0) * 10)},${Math.round((c.z ?? 0) * 10)},${Math.round((c.rotation ?? 0) * 20)},${Math.round((c.halfWidth ?? c.radius ?? 0) * 10)},${Math.round((c.halfDepth ?? c.radius ?? 0) * 10)},${active(c) ? 1 : 0}`;
       }
     }
     const stamp = `${colliders.length}:${live}${moving}`;
