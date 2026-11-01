@@ -15,7 +15,7 @@ function runtime(p){
   if(p.id==='XEN-009')
     return 'Morphologie Carrier partielle ; transport stratégique sauvegardé de six Facehuggers préalloués ; lancer animé 3D et upgrade 12 NON implémentés';
   if(p.id==='XEN-010')
-    return 'Morphologie en lames et attaque Ravager dédiées sur LV-742 ; catalepsie améliorée NON implémentée';
+    return 'Morphologie et lames Ravager partielles ; Colossal Resilience cataleptique et sauvegarde codées sur fronts DISTANTS si upgrade signé ; 3D/achat 1:1 non implémentés';
   if(p.id==='XEN-004')
     return 'Drone sous représentation Warrior proxy ; constructeur de nodules distinct à compléter';
   if(/^YAU-0(29|3[0-7])$/.test(p.id))
