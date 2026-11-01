@@ -35,6 +35,8 @@ jobs:
         run: node scripts/sync-battle-catalog.mjs --check
       - name: Check synchronized 27-operation 1to1 gap register
         run: node scripts/export-musou-fidelity-gaps.mjs --check
+      - name: Check Extinction 29-source-profile matrix
+        run: node scripts/export-extinction-fidelity-gaps.mjs --check
       - name: Check preserved audit and Excel evidence
         run: python3 scripts/update-audit-progress.py --check
       - name: Build the production bundle
@@ -64,6 +66,7 @@ jobs:
             tests/apc-marine-section.test.js \
             tests/apc-convoy-road.test.js \
             tests/m577-source-provenance.test.js \
+            tests/extinction-profile-coverage.test.js \
             tests/support-visual.test.js \
             tests/browser-cleanup.test.mjs \
             tests/apc-detail.test.js \
