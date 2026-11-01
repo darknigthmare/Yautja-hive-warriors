@@ -15,6 +15,7 @@ import { sourceUnitVisualKind } from '../data/SourceActorPresentation.js';
 import { planFiniteCarrierLoad, validateFiniteCarrierCargo,
   releaseFiniteCarrierCargo, carrierFatalFire } from './ExtinctionCarrierCargo.js';
 import { initialSpecialistStocks, restoreSpecialistStocks, sourceSpecialistRole, SPECIALIST_ATTACKS } from '../data/SourceSpecialistCombat.js';
+import { applyRavagerRemoteHit, advanceRavagerRegenesis, validateSavedRavagerRegenesis } from './ExtinctionRavagerRegenesis.js';
 import { measureDefeatReturn } from './BattleStrategy.js';
 import { validateBossCombatState } from '../data/BossEncounterValidation.js';
 import { initializeFormation, updateFormation, formationTargetForUnit, formationAttackMultiplier, normalizeFormation, FORMATION_PROFILES } from './FormationTactics.js';
@@ -675,6 +676,7 @@ export class BattleSimulation {
     if(previouslyHeld.length&&!carrierBurned)
       this._emit('carrier_cargo_scattered',{carrierId:unit.id,count:previouslyHeld.length},1);
     unit.hp = 0; unit.state = 'dead'; unit.incapacitated = false;
+    delete unit.ravagerCatalepsy;
     delete unit.encounterState; delete unit.infection;
     const killerFaction = this.factions.has(event.killerFaction) ? event.killerFaction : null;
     const death = { entityId: unit.id, groupId: unit.groupId, factionId: unit.factionId, killerFaction,
@@ -761,6 +763,21 @@ export class BattleSimulation {
     if (Math.abs(group.morale - before) > EPSILON) this._emit('morale_changed', { groupId: group.id, frontId: group.frontId, before, after: group.morale, reason });
   }
 
+  /** Optional source-upgraded distant Ravager. No on-screen resurrection or
+   * source-unknown cooldowns: future 3D catalepsy remains a separate task. */
+  damageDistantRavager(unitId,damage,{damageType='kinetic',killerFaction=null}={}){
+    const unit=this.units.get(unitId);
+    if(this.disposed||this.result||this.paused||!unit)return null;
+    const result=applyRavagerRemoteHit(this,unit,damage,{damageType});
+    if(!result)return null;
+    if(result.cataleptic&&result.reason==='catalepsy_started')
+      this._emit('ravager_cataleptic',{unitId,recoverAt:unit.ravagerCatalepsy.recoverAt},2);
+    if(result.killed)this.recordDeath({entityId:unitId,killerFaction,
+      cause:result.reason==='fire_finisher'?'ravager_incendiary_fire':'distant_combat'});
+    return result;
+  }
+  _ravagerRegenesisStep(){return advanceRavagerRegenesis(this);}
+
   _remoteCombat() {
     const pending = new Map(), pendingNodes = new Map(), frontGroups = this._groupsByFront();
     const coordination = new Map([...this.factions.values()].map(faction => [faction.id, faction.moraleModel === 'hive' && !this._sourcesFor(faction.id).length ? .65 : 1]));
@@ -820,6 +837,8 @@ export class BattleSimulation {
           if (!queue.has(target.id)) queue.set(target.id, { damage: 0, killerFaction: factionId,
             attackers: 0 });
           queue.get(target.id).damage += (rule?.damage ?? profile.damage) * orderMultiplier * moraleMultiplier * formationAttackMultiplier(group, this.time);
+          if(attacker.actorType==='flametrooper')
+            queue.get(target.id).damageType='fire';
           if (nodeTarget) queue.get(target.id).attackers++;
           this.targetingCounters.attacksResolved++;
         }
@@ -828,8 +847,12 @@ export class BattleSimulation {
     for (const [unitId, hit] of pending) {
       const unit = this.units.get(unitId);
       const actual = this.absorbExosuitDamage(unitId, hit.damage);
+      const special=this.damageDistantRavager(unitId,actual,{
+        damageType:hit.damageType??'kinetic',killerFaction:hit.killerFaction});
+      if(special)continue;
       unit.hp = Math.max(0, unit.hp - actual); unit.damageTaken += actual;
-      if (!unit.hp) this.recordDeath({ entityId: unitId, killerFaction: hit.killerFaction, cause: 'distant_combat' });
+      if (!unit.hp) this.recordDeath({ entityId: unitId, killerFaction: hit.killerFaction,
+        cause:hit.damageType==='fire'?'distant_fire':'distant_combat' });
     }
     // The node owner (not the 3D proxy) authoritatively applies the remote hit.
     // No new soldier, no additional shot, no death event/infestation credit.
@@ -1107,7 +1130,7 @@ export class BattleSimulation {
     while (this.accumulator + EPSILON >= this.step && !this.result) {
       this.accumulator = Math.max(0, this.accumulator - this.step); this.time += this.step; this.tick++;
       for (const group of this.groups.values()) updateFormation(group, this.step, this.time, { officerAlive: !!group.officerId && combatReady(this.units.get(group.officerId)) });
-      this._moveGroups(this.step); this._detailStep(); this._remoteCombat(); this._hostInfestationStep(); this._hiveNodeStep(this.step); this._captureStep(this.step); this._reinforcements(); this._reconstitutionStep(this.step); this._moraleStep(this.step); this._strategicOrders(); this._objectives(); this.intel.update();
+      this._moveGroups(this.step); this._detailStep(); this._remoteCombat(); this._ravagerRegenesisStep(); this._hostInfestationStep(); this._hiveNodeStep(this.step); this._captureStep(this.step); this._reinforcements(); this._reconstitutionStep(this.step); this._moraleStep(this.step); this._strategicOrders(); this._objectives(); this.intel.update();
     }
     return true;
   }
@@ -1369,6 +1392,8 @@ export class BattleSimulation {
       try { restoreSpecialistStocks(unit, original); }
       catch { fail('invalid saved specialist stock'); }
       unit.incapacitated ??= false;
+      try { validateSavedRavagerRegenesis(simulation,original,unit,saved.time); }
+      catch { fail('invalid saved Ravager regenesis'); }
       try { validateHostInfestation(unit, simulation.units, units, saved.time, saved.deaths); }
       catch { fail('invalid saved host infestation'); }
       if (typeof unit.incapacitated !== 'boolean' || unit.incapacitated && (!alive(unit) || !['active', 'distant'].includes(unit.state))) fail('invalid saved incapacitation');

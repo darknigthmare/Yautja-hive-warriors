@@ -5,7 +5,7 @@ export const EXTINCTION_CASTE_PROFILES = Object.freeze({
   carrier: Object.freeze({ profileId:'XEN-009', origin:'Aliens versus Predator: Extinction',
     cargoCapacity:6, upgradeCapacity:12, visualFidelity1to1Verified:false }),
   ravager: Object.freeze({ profileId:'XEN-010', origin:'Aliens versus Predator: Extinction',
-    upgradedCatalepsisImplemented:false, visualFidelity1to1Verified:false })
+    upgradedCatalepsisImplemented:true, detailedCatalepsisImplemented:false, visualFidelity1to1Verified:false })
 });
 export function validExtinctionCasteUnit(unit, operationId) {
   const spec=EXTINCTION_CASTE_PROFILES[unit?.actorType];
