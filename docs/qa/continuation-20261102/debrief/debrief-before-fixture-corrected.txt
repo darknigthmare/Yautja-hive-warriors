@@ -1,0 +1,84 @@
+✔ final debrief snapshots all finite states and named losses before mission teardown (31.696662ms)
+✖ the critical alert identifies the earliest live deadline rather than the most recent loss event (7.813432ms)
+✖ a restored loss names only the expired front after the other front is recovered, and survives teardown (9.436334ms)
+✖ simultaneous critical losses retain both authored names and keep ordinary timeout and objective results specific (3.177196ms)
+✔ a critical defeat warning stays above ordinary reports and exposes its actual location and deadline (2.020349ms)
+✔ caused counterattacks keep their real countdown in the persistent HUD (0.339498ms)
+✔ a living officer at critical health is called out ahead of routine reinforcements (0.235057ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 4
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 283.548805
+
+✖ failing tests:
+
+test at tests/battle-debrief.test.js:28:1
+✖ the critical alert identifies the earliest live deadline rather than the most recent loss event (7.813432ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'landing'
+  
+      at TestContext.<anonymous> (file:///workspace/Yautja-continue-20261102/tests/battle-debrief.test.js:37:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'landing',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/battle-debrief.test.js:42:1
+✖ a restored loss names only the expired front after the other front is recovered, and survives teardown (9.436334ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'command'
+  
+      at TestContext.<anonymous> (file:///workspace/Yautja-continue-20261102/tests/battle-debrief.test.js:52:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'command',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/battle-debrief.test.js:64:1
+✖ simultaneous critical losses retain both authored names and keep ordinary timeout and objective results specific (3.177196ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /fronts critiques.*Zone d’insertion.*Poste de commandement.*n’ont pas/. Input:
+  
+  'Les conditions de poursuite de l’opération ne sont plus réunies.'
+  
+      at TestContext.<anonymous> (file:///workspace/Yautja-continue-20261102/tests/battle-debrief.test.js:71:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'Les conditions de poursuite de l’opération ne sont plus réunies.',
+    expected: /fronts critiques.*Zone d’insertion.*Poste de commandement.*n’ont pas/,
+    operator: 'match',
+    diff: 'simple'
+  }

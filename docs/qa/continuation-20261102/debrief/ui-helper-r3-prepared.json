@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "status": "helper_r3_prepared_not_executed",
+  "preparedAt": "2026-11-02T04:51:10.161809+00:00",
+  "path": "docs/qa/continuation-20261102/verify-ui-command.mjs",
+  "sha256": "c857058d8871f7132f85165825e194076879ba0fa40b93225d8ab0893be1866e",
+  "changesSinceR2": "Only the three genuine Resume operation click action deadlines change from default30s to180s, matching existing Deploy/ready load deadlines. Input, snapshot identity, insertion and causal assertions remain unchanged.",
+  "previousAttempt": "docs/qa/continuation-20261102/ui-final-83d36e7-r2-fixture-timeout/report.json",
+  "configurationCheck": {
+    "status": "configuration_valid_only",
+    "root": "/workspace/Yautja-continue-20261102",
+    "baseURL": "http://127.0.0.1:4332",
+    "expectedIndex": "af055276cabe4892baa8d6a53472c3e6c6927adb9fa8396c3620b2455460267b",
+    "expectedSource": "83d36e739c911eb40091689ff8a59c3810afb205",
+    "output": "/workspace/qa/continuation-20261102/ui-final-83d36e7-r3",
+    "go": false,
+    "checkConfig": true,
+    "browserLaunched": false,
+    "networkAccessed": false,
+    "filesWritten": false
+  },
+  "browserLaunched": false,
+  "runtimeEdited": false
+}

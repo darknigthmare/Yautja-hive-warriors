@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "files": [
+    {
+      "path": "debrief-before-fixture-corrected.txt",
+      "sha256": "6cd491f79459658a86835dadbb7ffb2c85074c8bd9573faf8d9e4bed3456d9f7"
+    },
+    {
+      "path": "debrief-before.txt",
+      "sha256": "56e33c0fb730a56b510cdab8a831095f105fbb5c7a44b0936915fabbdd290c06"
+    },
+    {
+      "path": "debrief-evolved-targeted.txt",
+      "sha256": "6848c654372182b17ab81f5f4520a21d11deb3dbf019fcfc218998cf72e19cd4"
+    },
+    {
+      "path": "debrief-final-targeted.txt",
+      "sha256": "b47baa162002c68483798d3703d31003e86804db7dc7ce1c3e1257e1e69fada5"
+    },
+    {
+      "path": "debrief-targeted.txt",
+      "sha256": "d0a93488053e4464efaef30275bdee35dd177dcf43b6f4c5f8a0f12cb70a47d9"
+    },
+    {
+      "path": "extinction-briefing-review.json",
+      "sha256": "4f9ad679c93ba4160b591ff6d6774ab5b06226a4ee6817b410ce36db3d411909"
+    },
+    {
+      "path": "review.json",
+      "sha256": "9baff92c57a074f7828316b518426b486a4c9fe8257bdef7bdaf7f05d47612a6"
+    },
+    {
+      "path": "ui-helper-config-check.json",
+      "sha256": "94c502ab0bedb8f9a95de745571e75470da54a381293a3885dbb87160e1ff13e"
+    },
+    {
+      "path": "ui-helper-prepared.json",
+      "sha256": "d50d9ccbc959a419f37d20be0f89c3ac74a184a36341043319055ac8d55367e7"
+    }
+  ]
+}

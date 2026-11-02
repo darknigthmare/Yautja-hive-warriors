@@ -1,0 +1,31 @@
+{
+  "status": "passed_local_visual_regression",
+  "finalSource": "571b1d20feb04b4c6175d2d2e8ada073e5047ddb",
+  "baselineSource": "51856cbb570ab1b9f92174a85f184bc41db03303",
+  "harnessUnchanged": true,
+  "steamVents": {
+    "baseline": 5,
+    "final": 0
+  },
+  "insertionMarkings": {
+    "baseline": 6.84499979019165,
+    "final": 0.04500000178813934,
+    "finalFloatingVertices": 0,
+    "finalVertices": 84
+  },
+  "imagesViewed": [
+    "world-baseline-51856cb/actual-gameplay-camera.png",
+    "world-final-571b1d2/fixed-inspection-camera.png"
+  ],
+  "scope": "Same menu choices, seeded world, deterministic insertion and paused camera. Cached actual camera at insertion completion; HUD has not had a normal frame refresh. Floor markings and inappropriate steam are confirmed, not all-camera readability or modern/1to1 fidelity.",
+  "limits": [
+    "Foreground barrack roof still occupies part of this paused view; no universal visual/camera criterion closed.",
+    "Fixed inspection camera is supplementary and is not human playtesting.",
+    "All12 shippingGLBfiles are unchanged."
+  ],
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "hardwarePerformanceMeasured": false,
+  "finalReport": "docs/qa/continuation-20261102/world-final-571b1d2/report.json",
+  "priorFinal83Archived": "docs/qa/continuation-20261102/baseline-83d36e7/world-visual-comparison.json"
+}

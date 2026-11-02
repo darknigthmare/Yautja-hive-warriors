@@ -5,9 +5,9 @@
   "counts": {
     "Bloqué": 0,
     "En cours": 12,
-    "Terminé": 77,
+    "Terminé": 78,
     "À faire": 0,
-    "À valider": 37
+    "À valider": 36
   },
   "changedMembers": [
     "xl/worksheets/sheet3.xml"
@@ -398,6 +398,31 @@
       "action": "AUD-046",
       "path": "docs/qa/pr3-next-20261028/accepted-cpu-behaviors-20261028.json",
       "sha256": "e4157a8cb6a07118adf97d93cb771724005beb901d93a1d555c9daee5621736e"
+    },
+    {
+      "action": "AUD-047",
+      "path": "docs/qa/continuation-20261102/cpu-final-571b1d2.txt",
+      "sha256": "41096f6eae821eb2167eb27832ebaf1438cad386623c9017d4124b05cb233ab3"
+    },
+    {
+      "action": "AUD-047",
+      "path": "docs/qa/continuation-20261102/ui-final-571b1d2-r1-paused-hud/report.json",
+      "sha256": "7cede8ad18ca520bc4c6db35259d96c1e843a792df4af25696754874cc61921d"
+    },
+    {
+      "action": "AUD-047",
+      "path": "docs/qa/continuation-20261102/ui-composite-571b1d2.json",
+      "sha256": "dcfeff03a08341867e53315e7f11fad6de98bd60b955b06e6e0b31824dd9ce68"
+    },
+    {
+      "action": "AUD-047",
+      "path": "docs/qa/continuation-20261102/ui-composite-571b1d2-reviewed.json",
+      "sha256": "7a6bc1556ef09cac1b551ea50bcb5a524a98c4bfb27e6baca4fdd94e5c4af5f3"
+    },
+    {
+      "action": "AUD-047",
+      "path": "docs/qa/continuation-20261102/audit-final-acceptance-571b1d2.json",
+      "sha256": "426e40754a26da86939fdaabed8ea9f5d2fc433732b7cc5d9f7176fc11362f6f"
     },
     {
       "action": "AUD-048",
@@ -1186,7 +1211,7 @@
     }
   ],
   "sourceWorkbookSha256": "d3f88eee0e88deb4dbc2247f8b295c6c5a6de91ff9626ea94b0d274f08e652b5",
-  "workingWorkbookSha256": "37da9388864b9066a6a1992f2c5de9afc721e9050b480e427fb4e32098b11be2",
+  "workingWorkbookSha256": "5dfca4a6eb8c8e79d8033e9730f672f82124e4ab6ee298c7eee7acebea4d1fe5",
   "remainingP0": [],
   "humanTesters": 0,
   "fidelity1to1Verified": false

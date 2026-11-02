@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "status": "partial_pass_with_paused_hud_fixture_failure",
+  "reviewedAt": "2026-11-02T05:03:09.023772+00:00",
+  "sourceCommit": "571b1d20feb04b4c6175d2d2e8ada073e5047ddb",
+  "report": "docs/qa/continuation-20261102/ui-final-571b1d2-r1-paused-hud/report.json",
+  "reportSha256": "7cede8ad18ca520bc4c6db35259d96c1e843a792df4af25696754874cc61921d",
+  "casesPassed": 7,
+  "caseFailed": "evolved-caste-menu-briefing-checkpoint-identity",
+  "durationSeconds": 269.95,
+  "javascriptErrors": 0,
+  "failedRequests": 0,
+  "distUnchanged": true,
+  "helpersUnchanged": true,
+  "criticalCase": {
+    "status": "passed",
+    "deadline": 153.25,
+    "resultTime": 153.25,
+    "realUpdateCalls": 612,
+    "playerHPAtAutomaticEnd": 1000,
+    "frontName": "Zone d’insertion",
+    "maximumHorizontalMovementStep": 0.7000000000000028,
+    "maximumFloorCorrection": 0,
+    "sameIDs": 132,
+    "checkpointRestored": true,
+    "causeRetainedAfterCleanup": true
+  },
+  "evolvedCaseReached": {
+    "operationId": "AFF-27",
+    "signedVariant": "carrier-ravager-enhanced",
+    "allocated": 952,
+    "cargoCount": 6,
+    "digest": "9986fbf6",
+    "playerHP": 1000,
+    "checkpointPartExecuted": false
+  },
+  "diagnosis": "The fixture freezes immediately at insertion completion before the first normal battle HUD refresh. OperationPanel is still hidden, so its genuine summary cannot be clicked. A real updateBattleOperation(0) should populate the HUD without changing mission time; no forced visibility or fake click is proposed.",
+  "screenshotsViewed": [
+    "critical-front-expiry-restored-live-player-debrief.png",
+    "evolved-caste-menu-briefing-checkpoint-identity-failure.png"
+  ],
+  "humanReviewers": 0,
+  "runtimeEdited": false
+}

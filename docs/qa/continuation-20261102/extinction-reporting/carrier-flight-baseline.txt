@@ -1,0 +1,13 @@
+✔ visible Carrier ejects a single originally allocated Facehugger into the full battle bridge (4733.563091ms)
+✔ a blocked physical landing refuses the launch and retains all six original cargo IDs (48.498422ms)
+✔ source carrier projection is atomic and rejects a spent or wrongly owned Cargo unit (23.636988ms)
+✔ detailed launch refuses a full near-player actor budget without unloading strategic cargo (51.416004ms)
+✔ released Facehugger saves with original identity, without resurrecting six cargo actors (87.106491ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5206.561201

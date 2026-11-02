@@ -115,7 +115,9 @@ async function launchHunt(page, { coop = false, level = 0, character = 0 } = {})
   await page.locator('.level-card').nth(level).click();
   await page.locator('#btn-launch-mission').click();
   await screen(page, 'loadout-prep-screen');
-  await page.locator('#btn-confirm-loadout').click();
+  // Cold co-op shaders can occupy SwiftShader after the real click. Keep
+  // actionability and the game/insertion assertions, with a bounded load wait.
+  await page.locator('#btn-confirm-loadout').click({ timeout: 120000 });
   await page.waitForFunction(() => window.game.isPlaying && Boolean(window.game.player));
   await screen(page, 'in-game-hud');
   await finishMissionInsertion(page);
@@ -253,7 +255,7 @@ test('campaign: a boss victory advances the chapter and loads its actual arena',
   });
 });
 
-test('coop: two players render at correct aspect and share pause/cleanup', { timeout: 90000 }, async t => {
+test('coop: two players render at correct aspect and share pause/cleanup', { timeout: 180000 }, async t => {
   await withGame(t.signal, async page => {
     if (await page.evaluate(() => window.game.renderer.softwareRenderer)) await page.setViewportSize({ width: 800, height: 600 });
     await launchHunt(page, { coop: true });

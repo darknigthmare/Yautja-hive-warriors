@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "status": "failed_fixture_preserved",
+  "sourceCommit": "83d36e739c911eb40091689ff8a59c3810afb205",
+  "reviewedAt": "2026-11-02T04:41:04.035281+00:00",
+  "report": "docs/qa/continuation-20261102/ui-final-83d36e7-r1-fixture-failure/report.json",
+  "reportSha256": "510850cd8757012d394b441b028d481a867dc04d84cf34a895e80cce780db562",
+  "casesPassed": 6,
+  "caseFailed": "critical-front-expiry-restored-live-player-debrief",
+  "case8": "not_executed",
+  "javascriptErrors": 0,
+  "failedRequests": 0,
+  "distUnchanged": true,
+  "helpersUnchanged": true,
+  "observed": {
+    "playerHP": 1000,
+    "criticalFront": "insertion",
+    "criticalDeadline": 153.25,
+    "playerDistanceBeforeSave": 4,
+    "playerDistanceAfterRestore": 8,
+    "frontRadius": 58,
+    "captureRadius": 40.6,
+    "captureThresholdSeconds": 25
+  },
+  "diagnosis": "The fixture removed all opposing NPCs but left the living hunter within the front capture radius. The real capture step therefore recovers the front normally before the strategic deadline. Expecting defeat in this state is a fixture error.",
+  "captureViewed": "docs/qa/continuation-20261102/ui-final-83d36e7-r1-fixture-failure/critical-front-expiry-restored-live-player-debrief-failure.png",
+  "fixScope": "Helper only: bounded physical walking through actual navigation, floor and capsule/pod collision before capture; assert outside the authored front radius before save and after restore. No result/config/UID/runtime changes.",
+  "humanTesters": 0
+}

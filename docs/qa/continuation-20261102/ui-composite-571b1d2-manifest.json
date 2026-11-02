@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "files": [
+    {
+      "path": "docs/qa/continuation-20261102/ui-composite-571b1d2.json",
+      "sha256": "dcfeff03a08341867e53315e7f11fad6de98bd60b955b06e6e0b31824dd9ce68"
+    },
+    {
+      "path": "docs/qa/continuation-20261102/ui-composite-571b1d2-reviewed.json",
+      "sha256": "7a6bc1556ef09cac1b551ea50bcb5a524a98c4bfb27e6baca4fdd94e5c4af5f3"
+    },
+    {
+      "path": "docs/qa/continuation-20261102/ui-final-571b1d2-r1-paused-hud/report.json",
+      "sha256": "7cede8ad18ca520bc4c6db35259d96c1e843a792df4af25696754874cc61921d"
+    },
+    {
+      "path": "docs/qa/continuation-20261102/ui-final-571b1d2-r1-paused-hud/manifest.json",
+      "sha256": "4213686777a3bfe627bb397ed2ad5ab09afa76cb16661d920fadd36bed30ec41"
+    },
+    {
+      "path": "docs/qa/continuation-20261102/ui-evolved-only-571b1d2/report.json",
+      "sha256": "835aaa1b321b9ba6edc2c21b59d01e5af9aee1a33718afbcb4e0369e24f001fa"
+    },
+    {
+      "path": "docs/qa/continuation-20261102/ui-evolved-only-571b1d2/manifest.json",
+      "sha256": "02316fe46bd33203aaa016bfc0d48f87e69f5b953b04599488cfc9622f986a89"
+    },
+    {
+      "path": "docs/qa/continuation-20261102/ui-evolved-only-571b1d2/archive-manifest.json",
+      "sha256": "0c78bab6eb9aa79dd1a4c9d8a7c1cef0846f0180b060e8e1ced91c9ac2ca9a8f"
+    }
+  ]
+}

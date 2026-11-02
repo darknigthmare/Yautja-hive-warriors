@@ -1,0 +1,134 @@
+{
+  "schemaVersion": 1,
+  "status": "passed_composite_distinct_case_coverage",
+  "reviewedAt": "2026-11-02T05:12:15.083940+00:00",
+  "runtimeSourceCommit": "571b1d20feb04b4c6175d2d2e8ada073e5047ddb",
+  "indexSha256": "c485a1daa72e59592332fa7f591d6478ec45254636d556e00223f85dacdd5e14",
+  "buildInfoSha256": "0e70fd73c5d5cefa8e3499834d70975b024834b2be83345edf4eecbdd351a5bc",
+  "sourceFingerprint": "707705bfdc7beef5f9fecc4ede6774e3b5cb3db2708367806f9bd4a2c8c25d44",
+  "scope": "Eight distinct scoped desktop UI cases across two actual executions on identical production bytes. Seven pass in the first execution, whose eighth case fails because the fixture pauses before its first HUD refresh. The independently rerun eighth case passes after a real zero-time battle HUD refresh with invariant time/UID/cargo. No single eight-case run is declared successful.",
+  "fullEightCoverageInOneRun": false,
+  "fullEightDistinctCaseCoverage": true,
+  "distinctCasesPassed": 8,
+  "actualCaseExecutions": 9,
+  "passedCaseExecutions": 8,
+  "failedCaseExecutionsPreserved": 1,
+  "inputExecutions": [
+    {
+      "report": "docs/qa/continuation-20261102/ui-final-571b1d2-r1-paused-hud/report.json",
+      "sha256": "7cede8ad18ca520bc4c6db35259d96c1e843a792df4af25696754874cc61921d",
+      "status": "failed",
+      "passed": 7,
+      "failed": 1,
+      "durationSeconds": 269.95
+    },
+    {
+      "report": "docs/qa/continuation-20261102/ui-evolved-only-571b1d2/report.json",
+      "sha256": "835aaa1b321b9ba6edc2c21b59d01e5af9aee1a33718afbcb4e0369e24f001fa",
+      "status": "passed",
+      "requested": 1,
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "fullEightCoverage": false,
+      "durationSeconds": 85.517
+    }
+  ],
+  "cases": [
+    {
+      "id": "preferences-monochrome-reduced",
+      "status": "passed",
+      "report": "docs/qa/continuation-20261102/ui-final-571b1d2-r1-paused-hud/report.json",
+      "reportSha256": "7cede8ad18ca520bc4c6db35259d96c1e843a792df4af25696754874cc61921d",
+      "caseIndex": 0,
+      "harnessSha256": "c857058d8871f7132f85165825e194076879ba0fa40b93225d8ab0893be1866e"
+    },
+    {
+      "id": "codex-ranks-engineers",
+      "status": "passed",
+      "report": "docs/qa/continuation-20261102/ui-final-571b1d2-r1-paused-hud/report.json",
+      "reportSha256": "7cede8ad18ca520bc4c6db35259d96c1e843a792df4af25696754874cc61921d",
+      "caseIndex": 1,
+      "harnessSha256": "c857058d8871f7132f85165825e194076879ba0fa40b93225d8ab0893be1866e"
+    },
+    {
+      "id": "briefing-and-command-map",
+      "status": "passed",
+      "report": "docs/qa/continuation-20261102/ui-final-571b1d2-r1-paused-hud/report.json",
+      "reportSha256": "7cede8ad18ca520bc4c6db35259d96c1e843a792df4af25696754874cc61921d",
+      "caseIndex": 2,
+      "harnessSha256": "c857058d8871f7132f85165825e194076879ba0fa40b93225d8ab0893be1866e"
+    },
+    {
+      "id": "combat-readability-real-cloak",
+      "status": "passed",
+      "report": "docs/qa/continuation-20261102/ui-final-571b1d2-r1-paused-hud/report.json",
+      "reportSha256": "7cede8ad18ca520bc4c6db35259d96c1e843a792df4af25696754874cc61921d",
+      "caseIndex": 3,
+      "harnessSha256": "c857058d8871f7132f85165825e194076879ba0fa40b93225d8ab0893be1866e"
+    },
+    {
+      "id": "pause-save-reload-command-identity",
+      "status": "passed",
+      "report": "docs/qa/continuation-20261102/ui-final-571b1d2-r1-paused-hud/report.json",
+      "reportSha256": "7cede8ad18ca520bc4c6db35259d96c1e843a792df4af25696754874cc61921d",
+      "caseIndex": 4,
+      "harnessSha256": "c857058d8871f7132f85165825e194076879ba0fa40b93225d8ab0893be1866e"
+    },
+    {
+      "id": "controlled-defeat-character-debrief",
+      "status": "passed",
+      "report": "docs/qa/continuation-20261102/ui-final-571b1d2-r1-paused-hud/report.json",
+      "reportSha256": "7cede8ad18ca520bc4c6db35259d96c1e843a792df4af25696754874cc61921d",
+      "caseIndex": 5,
+      "harnessSha256": "c857058d8871f7132f85165825e194076879ba0fa40b93225d8ab0893be1866e"
+    },
+    {
+      "id": "critical-front-expiry-restored-live-player-debrief",
+      "status": "passed",
+      "report": "docs/qa/continuation-20261102/ui-final-571b1d2-r1-paused-hud/report.json",
+      "reportSha256": "7cede8ad18ca520bc4c6db35259d96c1e843a792df4af25696754874cc61921d",
+      "caseIndex": 6,
+      "harnessSha256": "c857058d8871f7132f85165825e194076879ba0fa40b93225d8ab0893be1866e"
+    },
+    {
+      "id": "evolved-caste-menu-briefing-checkpoint-identity",
+      "status": "passed",
+      "report": "docs/qa/continuation-20261102/ui-evolved-only-571b1d2/report.json",
+      "reportSha256": "835aaa1b321b9ba6edc2c21b59d01e5af9aee1a33718afbcb4e0369e24f001fa",
+      "caseIndex": 0,
+      "harnessSha256": "60551276a7990317fad3cd2439d7c9db374d4841f83c5edfabe18d19380bc4d4"
+    }
+  ],
+  "applicationBytesChangedBetweenExecutions": false,
+  "javascriptErrors": 0,
+  "failedRequests": 0,
+  "externalRequests": 0,
+  "distUnchanged": true,
+  "helpersUnchangedWithinEachExecution": true,
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "hardwarePerformanceVerified": false,
+  "earlierFailuresPreserved": [
+    {
+      "review": "docs/qa/continuation-20261102/ui-attempt1-reviewed.json",
+      "source": "83d36e7",
+      "scope": "Fixture left the player inside the capture radius and the front recovered normally."
+    },
+    {
+      "review": "docs/qa/continuation-20261102/ui-attempt2-reviewed.json",
+      "source": "83d36e7",
+      "scope": "Default 30 s Resume action deadline reached after the actual click; later real-click deadline 180 s used."
+    },
+    {
+      "review": "docs/qa/continuation-20261102/ui-attempt571-1-reviewed.json",
+      "source": "571b1d2",
+      "scope": "Only the eighth case failed, because the fixture paused before the first normal battle HUD update."
+    }
+  ],
+  "remainingLimits": [
+    "No natural victory or human readability certification.",
+    "Two-front priority and surviving-P2 behavior are exercised by actual CPU simulations; authored browser operations each expose only one critical front.",
+    "The evolved UI case verifies selection, signed configuration and persistent existing identities. Carrier launch and Ravager phase mechanics are covered separately, not invoked directly by this helper."
+  ]
+}

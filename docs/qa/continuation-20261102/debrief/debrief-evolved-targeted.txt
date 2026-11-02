@@ -1,0 +1,18 @@
+✔ final debrief snapshots all finite states and named losses before mission teardown (63.254299ms)
+✔ the critical alert identifies the earliest live deadline rather than the most recent loss event (12.335467ms)
+✔ a restored loss names only the expired front after the other front is recovered, and survives teardown (15.132627ms)
+✔ simultaneous critical losses retain both authored names and keep ordinary timeout and objective results specific (7.445167ms)
+✔ the evolved LV-742 scenario signs upgrades without adding soldiers, cargo or starting HP (193.553243ms)
+✔ normal, basic and evolved checkpoints cannot be exchanged or upgraded by a live actor flag (283.253073ms)
+✔ the evolved scenario rejects another continuity and unknown variant before mutating its configuration (13.763496ms)
+✔ a critical defeat warning stays above ordinary reports and exposes its actual location and deadline (1.790855ms)
+✔ caused counterattacks keep their real countdown in the persistent HUD (0.365899ms)
+✔ a living officer at critical health is called out ahead of routine reinforcements (2.885333ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2222.444872

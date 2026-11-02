@@ -41,6 +41,16 @@ node --max-old-space-size=2048 --test --test-concurrency=1 tests/battle-catalog.
 
 Le script Python utilise uniquement sa bibliothèque standard. Il refuse d'écraser une autre modification du classeur, un critère réécrit ou une preuve dont les octets ont changé. Aucun test humain, mesure de performance sur le matériel des joueurs ou certification graphique 1:1 n'est déduit de ces vérifications structurelles.
 
+## Reprise du 2 novembre — état courant vérifié localement
+
+Le suivi JSON compte **78 critères terminés, 36 à valider et 12 en cours**. Cette passe clôt uniquement **AUD-047** après la [revue indépendante finale](../../qa/continuation-20261102/audit-final-acceptance-571b1d2.json). Les 126 identifiants et textes d’acceptation et toutes les preuves des clôtures précédentes sont conservés. Le writer reste réservé au coordinateur et aux seules cellules Suivi N7:N132.
+
+Le candidat propre est `571b1d20feb04b4c6175d2d2e8ada073e5047ddb` : **1390 tests CPU**, **22 parcours assistés sur 11 cartes**, **15 scénarios de régression distincts**, **8 cas UI distincts**, **2 mécanismes rendus assistés** et **30 fichiers reproduits**. Les composites de régression et UI réunissent respectivement trois et deux exécutions ; leurs essais négatifs restent archivés et ne deviennent pas des runs complets sans échec.
+
+Le vrai front critique expiré est nommé dans l’alerte et dans le résultat après nettoyage. Le checkpoint conserve son échéance de 153,25 s ; 612 mises à jour normales déclenchent la défaite automatique alors que le joueur garde 1000 PV. La calibration actuelle des 34 plans relie distance de retour, recapture et marge de réaction. L’isolement des 132 PNJ déjà alloués est déclaré ; il ne s’agit pas d’une mesure de difficulté humaine.
+
+Les corrections locales de vapeur et marquages, la phase proche du Ravager et la variante améliorée AFF-27 ne clôturent pas les autres critères par extension. AUD-091 reste partiel ; caméras et lisibilité universelles, tous les modèles 1:1, densité utile, matériel et playtests humains restent ouverts. Les 773 références communes ne sont pas 773 modèles intégrés ; la capacité Supercarrier de 12 conserve six occupants préparés, sans achat Reine ni nouveaux parasites. Cette acceptation est locale et ne constitue pas une preuve de publication Vercel.
+
 ## Reprise du 1er novembre — état vérifié
 
 Le suivi JSON courant contient **77 critères terminés, 37 à valider et 12 en cours**. Les 126 identifiants et textes d’acceptation restent inchangés. Le coordinateur exécute ensuite le writer du classeur, limité aux cellules Suivi N7:N132 ; aucune autre donnée historique n’est modifiée.

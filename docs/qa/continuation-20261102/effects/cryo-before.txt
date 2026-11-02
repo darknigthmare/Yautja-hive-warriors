@@ -1,0 +1,101 @@
+✖ the real cryo console removes only nearby Horde-owned acid pools and disposes each private resource once (9.667454ms)
+✖ cryo does not recolor shared real creature materials for a mesh-root representation or dispose a distant peer (3929.712922ms)
+✖ cryo damage uses the real death ledger once and preserves allied identities (2.013536ms)
+✖ a six-second cryo stun holds a marching actor and expires even after camouflage removes its target (4.401809ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 0
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4160.767305
+
+✖ failing tests:
+
+test at tests/environment-cryo-cleanup.test.js:24:1
+✖ the real cryo console removes only nearby Horde-owned acid pools and disposes each private resource once (9.667454ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    {
+  +   geometry: 0,
+  +   material: 0
+  -   geometry: 1,
+  -   material: 1
+    }
+  
+      at TestContext.<anonymous> (file:///workspace/Yautja-continue-20261102/tests/environment-cryo-cleanup.test.js:31:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { geometry: 0, material: 0 },
+    expected: { geometry: 1, material: 1 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/environment-cryo-cleanup.test.js:40:1
+✖ cryo does not recolor shared real creature materials for a mesh-root representation or dispose a distant peer (3929.712922ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 6809849
+  - 3159611
+  
+      at TestContext.<anonymous> (file:///workspace/Yautja-continue-20261102/tests/environment-cryo-cleanup.test.js:54:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 6809849,
+    expected: 3159611,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/environment-cryo-cleanup.test.js:60:1
+✖ cryo damage uses the real death ledger once and preserves allied identities (2.013536ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///workspace/Yautja-continue-20261102/tests/environment-cryo-cleanup.test.js:69:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/environment-cryo-cleanup.test.js:79:1
+✖ a six-second cryo stun holds a marching actor and expires even after camouflage removes its target (4.401809ms)
+  AssertionError [ERR_ASSERTION]: march orders cannot bypass the active cryo stun
+      at TestContext.<anonymous> (file:///workspace/Yautja-continue-20261102/tests/environment-cryo-cleanup.test.js:85:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

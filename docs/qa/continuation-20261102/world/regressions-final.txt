@@ -1,0 +1,12 @@
+✔ mission steam belongs to authored industrial conduits and moves to the actual supporting floor (607.474712ms)
+✔ steam has bounded soft alpha rather than opaque cone sheets, and releasing it preserves Three shared sprite geometry (4.294425ms)
+✔ Val Verde paint stays on the insertion floor while rounded canopy paths keep separate real upper contacts (6739.398453ms)
+✔ route paint follows an actual industrial access ramp onto its upper deck instead of staying on a fabricated flat layer (5.792651ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7677.730422

@@ -960,14 +960,45 @@
       "notes": "La retraite conserve le trajet réel et les pertes. Le regroupement ne peut pas être quitté sur simple remontée du moral : un groupe de soutien déjà alloué doit réellement arriver, avec une source encore utilisable, avant le retour. Les réserves restent finies, sans création d’unités ni guérison ; la reprise conserve cet état. CommandMap affiche le refus reconstitution_required."
     },
     "AUD-047": {
-      "status": "À valider",
+      "status": "Terminé",
       "priority": "P1",
       "domain": "Fronts et objectifs",
       "item": "Créer des conditions de défaite stratégiques",
       "acceptance": "La défaite affiche sa cause vérifiable et laisse un temps de réaction cohérent avec la distance.",
-      "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Défaites causales, fronts critiques et grâce sont testés ; la grâce fixe30s n’est pas encore calibrée aux retours depuis toutes les grandes cartes. Reprise du 1/11/2026 (gel a80070c) : Grâce de retour/recapture désormais calibrée selon les routes physiques et alerte préalable précise. Le résultat critical_front_lost conserve un fallback final générique sans nom du front perdu ; maintienÀvalider. Diagnostic réel e524, propriétaires UI identiques dansa800."
+      "acceptanceVerified": true,
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "docs/qa/continuation-20261102/cpu-final-571b1d2.txt",
+          "sha256": "41096f6eae821eb2167eb27832ebaf1438cad386623c9017d4124b05cb233ab3",
+          "scope": "Suite complète1390/1390 sur571 ; calibration des34terrains, délais indépendants, pause/checkpoint et LD-05 passent, sans saut ni annulation."
+        },
+        {
+          "kind": "runtime",
+          "path": "docs/qa/continuation-20261102/ui-final-571b1d2-r1-paused-hud/report.json",
+          "sha256": "7cede8ad18ca520bc4c6db35259d96c1e843a792df4af25696754874cc61921d",
+          "scope": "Cas7 réussi uniquement : vrai front hostile, délai153,25s conservé après checkpoint,612updates réels, joueur1000PV, résultat automatique et nom du front après teardown. Le rapport global reste en échec à son cas8 de fixture."
+        },
+        {
+          "kind": "review",
+          "path": "docs/qa/continuation-20261102/ui-composite-571b1d2.json",
+          "sha256": "dcfeff03a08341867e53315e7f11fad6de98bd60b955b06e6e0b31824dd9ce68",
+          "scope": "Huit cas distincts positifs en deux exécutions sur les mêmes octets ;7+1, avec échec initial conservé. Ne constitue pas un run8/8."
+        },
+        {
+          "kind": "review",
+          "path": "docs/qa/continuation-20261102/ui-composite-571b1d2-reviewed.json",
+          "sha256": "7a6bc1556ef09cac1b551ea50bcb5a524a98c4bfb27e6baca4fdd94e5c4af5f3",
+          "scope": "Capture réelle de la cause/front du résultat ouverte et revue ; défauts de libellés/carte/minimap et absence de validation humaine restent déclarés."
+        },
+        {
+          "kind": "review",
+          "path": "docs/qa/continuation-20261102/audit-final-acceptance-571b1d2.json",
+          "sha256": "426e40754a26da86939fdaabed8ea9f5d2fc433732b7cc5d9f7176fc11362f6f",
+          "scope": "Revue indépendante finale des gates sur571 :1390CPU,15scénarios de régression distincts,8casUI distincts,2mécanismes assistés,22parcours/11cartes et30fichiers reproduits. Seul AUD047 est clôturé ; essais négatifs et limites restent conservés."
+        }
+      ],
+      "notes": "L’alerte et le résultat nomment le front critique réellement expiré. Sur 571b1d2, le checkpoint et la reprise conservent l’échéance 153,25 s ; 612 mises à jour normales de l’opération déclenchent automatiquement la défaite à cette échéance, avec le joueur toujours à 1000 PV. Le nom Zone d’insertion reste visible après nettoyage. La suite complète 1390/1390 vérifie la calibration des 34 plans physiques, la recapture et la marge de réaction ; les 22 parcours sur 11 cartes et les composites UI/régression passent sur le même build. L’isolement déclare 132 décès d’identités déjà allouées et un changement d’occupation par le propriétaire de simulation ; aucune difficulté humaine ni performance matérielle n’est certifiée."
     },
     "AUD-048": {
       "status": "Terminé",
@@ -2819,15 +2850,16 @@
       "notes": "Les dix prompts et le chaudron correspondent aux contrats revus ; vraie toucheE, roue et clics accordent6flèches/4frappes puis consomment5/3 après usage, plasma100 inchangé. La flèche physique n’endommage que le premier vrai ennemi existant, avec un seul décès/score. Les autres effets sont vérifiés sur vrais Player/Environment/gestionnaires : Taabe×1,3 borné, acide×0,6 et signature temporaire, pistolet visé/portée/obstacle, boue une fois par entrée et checkpoint, souffle16 distinct du feu8,5/18s. Les pickups de scène ne rejouent ni gains ni souffle ; Sarii garde owner/blessures et ses ordres sont explicitement adaptés. Sariska/0°C non certifiés ne sont plus promis. Matériaux/équipements restent des interprétations de jeu."
     }
   },
-  "reviewStage": "Gel a80070c revu : dix critères 021/027/053/076/080/088/094/099/115/118 clôturés. 1185 tests CPU, 22 issues assistées sur 11 cartes, six scénarios UI, deux scènes PNJ rendues et huit régressions navigateur passent. Les cinq démarrages et le streaming e524 restent attribués à leur source ; seul le delta de navigation les sépare du gel final. Les critères 047/091/103/112/063/070 et les validations humaines, matérielles et 1:1 restent ouverts.",
-  "validatedRuntimeSource": "a80070c4b5ed96fa839e840f17453bf5348a6cbb",
+  "reviewStage": "Gel 571b1d2 revu : seule clôture nouvelle AUD047. Suite 1390 tests CPU, 22 parcours sur 11 cartes, 15 scénarios de régression distincts en 3 exécutions, 8 cas UI distincts en 2 exécutions, 2 mécanismes rendus assistés et 30 fichiers reproduits. Les échecs de développement et les limites sont conservés. Publication non revendiquée ; états hérités non exhaustifs, modèles 1:1, caméras globales, matériel et playtests humains restent ouverts.",
+  "validatedRuntimeSource": "571b1d20feb04b4c6175d2d2e8ada073e5047ddb",
   "runtimeEvidence": {
     "fullStartups": "docs/audits/2026-10-26/qa/runtime-c518-11-biomes-4-ops.json",
     "incrementalFinal": "docs/audits/2026-10-26/qa/runtime-48b5-incremental-charon-4-ops-photo.json",
-    "scope": "Les clés fullStartups et incrementalFinal conservent les preuves historiques c518/48b5. La validation courante est le bloc continuation20261101 ; les anciennes valeurs intégrales sont aussi conservées dans historicalValidationSnapshots.",
+    "scope": "Les clés fullStartups, incrementalFinal et continuation20261101 conservent leurs preuves historiques. La validation courante est continuation20261102 ; aucune ancienne exécution n’est réattribuée au nouveau SHA.",
     "historicalEntries": [
       "fullStartups",
-      "incrementalFinal"
+      "incrementalFinal",
+      "continuation20261101"
     ],
     "continuation20261101": {
       "runtimeSourceCommit": "a80070c4b5ed96fa839e840f17453bf5348a6cbb",
@@ -2843,50 +2875,47 @@
       },
       "navigationOnlyScopeReview": "docs/qa/continuation-final-20261101/navigation-only-source-review.json",
       "scope": "Comportements et parcours assistés vérifiés ; les mesures humaines, matérielles et de fidélité 1:1 restent distinctes."
+    },
+    "continuation20261102": {
+      "runtimeSourceCommit": "571b1d20feb04b4c6175d2d2e8ada073e5047ddb",
+      "review": "docs/qa/continuation-20261102/audit-final-acceptance-571b1d2.json",
+      "cpu": "docs/qa/continuation-20261102/cpu-final-571b1d2.txt",
+      "completePaths": "docs/qa/continuation-20261102/complete-contexts-571b1d2/report.json",
+      "uiComposite": "docs/qa/continuation-20261102/ui-composite-571b1d2.json",
+      "browserRegressionComposite": "docs/qa/continuation-20261102/browser-regression-composite.json",
+      "evolvedCombatReview": "docs/qa/continuation-20261102/evolved-combat/final-review-571b1d2.json",
+      "worldComparison": "docs/qa/continuation-20261102/world-visual-comparison.json",
+      "reproducibility": "docs/qa/continuation-20261102/reproducibility.json",
+      "scope": "Gates locaux terminés ; combats et déplacements assistés déclarés. Pas de validation humaine, matérielle ou de fidélité1:1."
     }
   },
   "continuationReview": {
-    "status": "passed_final_acceptance_review",
-    "sourceCommit": "a80070c4b5ed96fa839e840f17453bf5348a6cbb",
-    "review": "docs/qa/continuation-final-20261101/strict-closure-review-a80070c.json",
+    "status": "passed_local_final_acceptance_review",
+    "sourceCommit": "571b1d20feb04b4c6175d2d2e8ada073e5047ddb",
+    "review": "docs/qa/continuation-20261102/audit-final-acceptance-571b1d2.json",
     "candidateIds": [
-      "AUD-021",
-      "AUD-027",
-      "AUD-053",
-      "AUD-076",
-      "AUD-080",
-      "AUD-088",
-      "AUD-094",
-      "AUD-099",
-      "AUD-115",
-      "AUD-118"
+      "AUD-047"
+    ],
+    "acceptedIds": [
+      "AUD-047"
     ],
     "actualCounts": {
-      "Terminé": 77,
-      "À valider": 37,
+      "Terminé": 78,
+      "À valider": 36,
       "En cours": 12
     },
-    "cpuPassed": 1185,
+    "cpuPassed": 1390,
     "pathsPassed": 22,
+    "contexts": 11,
+    "uiDistinctCasesPassed": 8,
+    "browserDistinctCasesPassed": 15,
+    "evolvedMechanismsPassed": 2,
+    "reproducibleFiles": 30,
     "pending": [],
+    "productionStatusAsOfLocalReview": "not_submitted",
     "humanTesters": 0,
     "fidelity1to1Verified": false,
-    "hardwarePerformanceVerified": false,
-    "uiPassed": 6,
-    "factionComponentsPassed": 2,
-    "gameplayPassed": 8,
-    "acceptedIds": [
-      "AUD-021",
-      "AUD-027",
-      "AUD-053",
-      "AUD-076",
-      "AUD-080",
-      "AUD-088",
-      "AUD-094",
-      "AUD-099",
-      "AUD-115",
-      "AUD-118"
-    ]
+    "hardwarePerformanceVerified": false
   },
   "historicalValidationSnapshots": [
     {
@@ -2897,6 +2926,78 @@
         "fullStartups": "docs/audits/2026-10-26/qa/runtime-c518-11-biomes-4-ops.json",
         "incrementalFinal": "docs/audits/2026-10-26/qa/runtime-48b5-incremental-charon-4-ops-photo.json",
         "scope": "11biomes initialement, puisCharon+4smokes après correctifsUI. Aucun parcours complet gagné ni test humain ni performance matérielle certifiée."
+      }
+    },
+    {
+      "label": "Valeurs conservées avant la revue du2novembre2026",
+      "validatedRuntimeSource": "a80070c4b5ed96fa839e840f17453bf5348a6cbb",
+      "reviewStage": "Gel a80070c revu : dix critères 021/027/053/076/080/088/094/099/115/118 clôturés. 1185 tests CPU, 22 issues assistées sur 11 cartes, six scénarios UI, deux scènes PNJ rendues et huit régressions navigateur passent. Les cinq démarrages et le streaming e524 restent attribués à leur source ; seul le delta de navigation les sépare du gel final. Les critères 047/091/103/112/063/070 et les validations humaines, matérielles et 1:1 restent ouverts.",
+      "runtimeEvidence": {
+        "fullStartups": "docs/audits/2026-10-26/qa/runtime-c518-11-biomes-4-ops.json",
+        "incrementalFinal": "docs/audits/2026-10-26/qa/runtime-48b5-incremental-charon-4-ops-photo.json",
+        "scope": "Les clés fullStartups et incrementalFinal conservent les preuves historiques c518/48b5. La validation courante est le bloc continuation20261101 ; les anciennes valeurs intégrales sont aussi conservées dans historicalValidationSnapshots.",
+        "historicalEntries": [
+          "fullStartups",
+          "incrementalFinal"
+        ],
+        "continuation20261101": {
+          "runtimeSourceCommit": "a80070c4b5ed96fa839e840f17453bf5348a6cbb",
+          "review": "docs/qa/continuation-final-20261101/strict-closure-review-a80070c.json",
+          "cpu": "docs/qa/continuation-final-20261101/cpu-navigation-final.txt",
+          "completePaths": "docs/qa/continuation-final-20261101/complete-contexts-a80070c/report.json",
+          "ui": "docs/qa/continuation-final-20261101/ui-final-a80070c/report.json",
+          "npcComponents": "docs/qa/continuation-20261101/factions/final-a80070c/report.json",
+          "gameplay": "docs/qa/continuation-final-20261101/gameplay-navigation-final.txt",
+          "historicalSaveStartup": {
+            "runtimeSourceCommit": "e524c2b96ef35e80768295fb1a3dd06bea3b5d63",
+            "report": "docs/qa/continuation-final-20261101/save-startup-e524c2b/report.json"
+          },
+          "navigationOnlyScopeReview": "docs/qa/continuation-final-20261101/navigation-only-source-review.json",
+          "scope": "Comportements et parcours assistés vérifiés ; les mesures humaines, matérielles et de fidélité 1:1 restent distinctes."
+        }
+      },
+      "continuationReview": {
+        "status": "passed_final_acceptance_review",
+        "sourceCommit": "a80070c4b5ed96fa839e840f17453bf5348a6cbb",
+        "review": "docs/qa/continuation-final-20261101/strict-closure-review-a80070c.json",
+        "candidateIds": [
+          "AUD-021",
+          "AUD-027",
+          "AUD-053",
+          "AUD-076",
+          "AUD-080",
+          "AUD-088",
+          "AUD-094",
+          "AUD-099",
+          "AUD-115",
+          "AUD-118"
+        ],
+        "actualCounts": {
+          "Terminé": 77,
+          "À valider": 37,
+          "En cours": 12
+        },
+        "cpuPassed": 1185,
+        "pathsPassed": 22,
+        "pending": [],
+        "humanTesters": 0,
+        "fidelity1to1Verified": false,
+        "hardwarePerformanceVerified": false,
+        "uiPassed": 6,
+        "factionComponentsPassed": 2,
+        "gameplayPassed": 8,
+        "acceptedIds": [
+          "AUD-021",
+          "AUD-027",
+          "AUD-053",
+          "AUD-076",
+          "AUD-080",
+          "AUD-088",
+          "AUD-094",
+          "AUD-099",
+          "AUD-115",
+          "AUD-118"
+        ]
       }
     }
   ]

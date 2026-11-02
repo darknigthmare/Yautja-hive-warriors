@@ -1,0 +1,17 @@
+{
+  "id": "dpl_9SeDzvFvnrj9KuwGY3KYBqV6Li7N",
+  "name": "yautja-hive-warriors",
+  "contextName": "darknigthmares-projects",
+  "url": "yautja-hive-warriors-5f5m1cwo7-darknigthmares-projects.vercel.app",
+  "readyState": "READY",
+  "target": "production",
+  "createdAt": 1793173066956,
+  "created": null,
+  "alias": null,
+  "checkedAt": "2026-11-02T03:57:49.474313+00:00",
+  "rawEvidenceSha256": "59a251d2d21419f3e7a940d77d0c9d3bec7474c8debdb0170a86260549c6c075",
+  "git": {
+    "githubCommitSha": null,
+    "githubCommitRef": null
+  }
+}
