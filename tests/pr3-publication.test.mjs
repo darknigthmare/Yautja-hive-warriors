@@ -7,13 +7,15 @@ import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { parseOptions, waitForCanonicalIndex } from '../scripts/publish-verified-pr3.mjs';
-import { DEFAULT_PINS, assertHttpHeaders, assertQaReport, expectedHeaders, readPins, validateBuildIdentity } from '../scripts/publication-pr3-lib.mjs';
+import { RELEASE, assertHttpHeaders, assertQaReport, expectedHeaders, readPins, validateBuildIdentity } from '../scripts/publication-pr3-lib.mjs';
 
 const sha = value => createHash('sha256').update(value).digest('hex');
 const clone = value => structuredClone(value);
 async function fixtures() {
-  const pins = JSON.parse(await readFile(DEFAULT_PINS, 'utf8'));
-  return { ...pins, status: 'frozen', sourceCommit: 'a'.repeat(40), sourceFingerprint: 'b'.repeat(64), indexSha256: 'c'.repeat(64), buildInfoSha256: 'd'.repeat(64), previousPublicIndexSha256: '3'.repeat(64), artifactManifestSha256: 'e'.repeat(64), outputConfigSha256: 'f'.repeat(64), projectLinkSha256: '1'.repeat(64), qaReportSha256: '2'.repeat(64), cpuPassed: 731, browserRegressionPassed: 19, expectedRuntimeChecks: ['real_queen', 'fronts_coop'] };
+  const pins = JSON.parse(await readFile(new URL('../docs/qa/pr3-publication-pins.json', import.meta.url), 'utf8'));
+  return { ...pins, qaDirectory: RELEASE.qaDirectory, stageDirectory: RELEASE.qaDirectory + '/vercel-static-prebuilt',
+    cliWrapper: RELEASE.qaDirectory + '/vercel-cli.sh', qaReport: RELEASE.qaReport,
+    status: 'frozen', sourceCommit: 'a'.repeat(40), sourceFingerprint: 'b'.repeat(64), indexSha256: 'c'.repeat(64), buildInfoSha256: 'd'.repeat(64), previousPublicIndexSha256: '3'.repeat(64), artifactManifestSha256: 'e'.repeat(64), outputConfigSha256: 'f'.repeat(64), projectLinkSha256: '1'.repeat(64), qaReportSha256: '2'.repeat(64), cpuPassed: 731, browserRegressionPassed: 19, expectedRuntimeChecks: ['real_queen', 'fronts_coop'] };
 }
 function qa(pins) {
   const suite = passed => ({ status: 'passed', passed, failed: 0, skipped: 0, cancelled: 0, index_sha256: pins.indexSha256 });

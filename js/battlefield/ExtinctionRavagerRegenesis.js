@@ -14,8 +14,8 @@ export function isUpgradedRavager(sim,unit){
     sim.config.profiles?.find(p=>p.id===unit.profileId)?.extinctionUpgrade===
       RAVAGER_REGENESIS.upgrade;
 }
-export function applyRavagerRemoteHit(sim,unit,damage,{damageType='kinetic'}={}){
-  if(!isUpgradedRavager(sim,unit)||unit.state!=='distant'||!valid(damage)||
+export function applyRavagerHit(sim,unit,damage,{damageType='kinetic'}={}){
+  if(!isUpgradedRavager(sim,unit)||!['active','distant'].includes(unit.state)||!valid(damage)||
     !(unit.hp>0))return null;
   const isFire=fire(damageType);
   const actual=isFire?damage:damageType==='kinetic'?
@@ -42,14 +42,21 @@ export function applyRavagerRemoteHit(sim,unit,damage,{damageType='kinetic'}={})
   return {killed:unit.hp===0,cataleptic:false,damage:actual,
     reason:isFire?'fire_blocks_regenesis':'ordinary_damage'};
 }
+// Keep the remote entry point strict: an offscreen attack must never damage
+// a physically materialized actor, even though both share the same phase.
+export function applyRavagerRemoteHit(sim,unit,damage,details){
+  return unit?.state==='distant'?applyRavagerHit(sim,unit,damage,details):null;
+}
 export function advanceRavagerRegenesis(sim){
+  if(sim.disposed||sim.paused||sim.result)return 0;
   let recovered=0;
   for(const unit of sim.units.values()){
     const state=unit.ravagerCatalepsy;
     if(!state||sim.time<state.recoverAt)continue;
-    if(!isUpgradedRavager(sim,unit)||unit.state!=='distant'||!(unit.hp>0))continue;
+    if(!isUpgradedRavager(sim,unit)||!['active','distant'].includes(unit.state)||!(unit.hp>0))continue;
     unit.hp=Math.max(unit.hp,Math.ceil(unit.maxHp*RAVAGER_REGENESIS.recoveryFraction));
     unit.incapacitated=false;delete unit.ravagerCatalepsy;
+    sim.callbacks.healBattleUnit?.(unit.id,unit.hp);
     sim._emit('ravager_regenesis_complete',{unitId:unit.id,hp:unit.hp},2);
     recovered++;
   }
@@ -71,8 +78,8 @@ export function validateSavedRavagerRegenesis(sim,original,unit,time){
      !valid(cat.startedAt)||cat.startedAt>time||
      !valid(cat.recoverAt)||Math.abs(cat.recoverAt-cat.startedAt-
         RAVAGER_REGENESIS.duration)>1e-6||
-     !unit.ravagerRegenesisSpent||unit.state!=='distant'||
-     !unit.incapacitated||!(unit.hp>0))
+     !unit.ravagerRegenesisSpent||!['active','distant'].includes(unit.state)||
+     !unit.incapacitated||!(unit.hp>0)||unit.hp>unit.maxHp*RAVAGER_REGENESIS.nearDeathFraction)
     throw new Error('invalid saved Ravager regenesis');
   return true;
 }

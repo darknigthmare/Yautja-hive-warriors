@@ -1,18 +1,26 @@
-/* Timed slows share their strongest multiplier, including two hunters' gadgets. */
+/* Timed effects share the strongest slow and haste, including both hunters. */
 const sharedTargets = new WeakMap();
 export class TemporaryCombatEffects {
   constructor() { this.targets = new Map(); this.time = 0; }
 
   slow(target, key, multiplier, duration) {
+    return this._set(target, key, multiplier, duration, false);
+  }
+
+  haste(target, key, multiplier, duration) {
+    return this._set(target, key, multiplier, duration, true);
+  }
+
+  _set(target, key, multiplier, duration, haste) {
     if (!target || !(target.hp > 0) || !Number.isFinite(target.speed) || target.speed < 0 ||
-        typeof key !== 'string' || !Number.isFinite(multiplier) || multiplier < 0 || multiplier > 1 ||
+        typeof key !== 'string' || !Number.isFinite(multiplier) || multiplier < (haste ? 1 : 0) || multiplier > (haste ? 2 : 1) ||
         !Number.isFinite(duration) || duration <= 0 || duration > 30) return false;
     let state = sharedTargets.get(target);
     if (!state) { state = { baseSpeed: target.speed, applied: target.speed, owners: new Map() }; sharedTargets.set(target, state); }
     this.targets.set(target, state);
     this._adoptExternalSpeed(target, state);
     if (!state.owners.has(this)) state.owners.set(this, new Map());
-    state.owners.get(this).set(key, { multiplier, until: this.time + duration });
+    state.owners.get(this).set(key, { multiplier, until: this.time + duration, haste });
     this._apply(target, state); return true;
   }
 
@@ -23,9 +31,13 @@ export class TemporaryCombatEffects {
   }
 
   _apply(target, state) {
-    let multiplier = 1;
-    for (const effects of state.owners.values()) for (const effect of effects.values()) multiplier = Math.min(multiplier, effect.multiplier);
-    state.applied = state.baseSpeed * multiplier; target.speed = state.applied;
+    let slow = 1, haste = 1;
+    for (const effects of state.owners.values()) for (const effect of effects.values()) {
+      if (effect.haste) haste = Math.max(haste, effect.multiplier);
+      else slow = Math.min(slow, effect.multiplier);
+    }
+    // A freeze remains authoritative even when an environmental frenzy starts.
+    state.applied = state.baseSpeed * slow * haste; target.speed = state.applied;
   }
 
   update(delta) {

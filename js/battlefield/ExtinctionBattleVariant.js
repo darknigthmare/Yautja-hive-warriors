@@ -2,11 +2,13 @@
  * It changes role/profiles in an expressly signed alternative configuration,
  * never population or the default AFF-27 mission and never an RTS economy. */
 export const EXTINCTION_VARIANTS=Object.freeze({
-  none:'none',casteAssault:'carrier-ravager'
+  none:'none',casteAssault:'carrier-ravager',evolvedAssault:'carrier-ravager-enhanced'
 });
+export const isExtinctionCasteVariant = variant =>
+  variant === EXTINCTION_VARIANTS.casteAssault || variant === EXTINCTION_VARIANTS.evolvedAssault;
 export function applyExtinctionBattleVariant(config,variant='none'){
   if(variant==='none')return config;
-  if(variant!==EXTINCTION_VARIANTS.casteAssault||config?.id!=='AFF-27')
+  if(!isExtinctionCasteVariant(variant)||config?.id!=='AFF-27')
     throw new RangeError('Extinction caste roster is exclusive to AFF-27 / LV-742');
   const hivies=new Set(config.factions.filter(f=>f.species==='xeno'||
     f.species==='xenomorph').map(f=>f.id));
@@ -29,6 +31,10 @@ export function applyExtinctionBattleVariant(config,variant='none'){
   });
   config.profiles.push(created('XEN-009','Carrier','carrier',400,12),
     created('XEN-010','Ravager','ravager',1000,52));
+  if (variant === EXTINCTION_VARIANTS.evolvedAssault) {
+    config.profiles.find(profile => profile.id === 'XEN-009').extinctionUpgrade = 'supercarrier-genome';
+    config.profiles.find(profile => profile.id === 'XEN-010').extinctionUpgrade = 'colossal-resilience';
+  }
   normal.profileId='XEN-009';
   for(const payload of carrierGroup.units.slice(2,8))payload.profileId=face.id;
   ravagerGroup.units[1].profileId='XEN-010';
@@ -37,5 +43,7 @@ export function applyExtinctionBattleVariant(config,variant='none'){
   config.context.visualFidelity1to1Verified=false;
   config.adaptation=(config.adaptation??'')+
     ' Optional sourced Carrier/Ravager LV-742 roles REPLACE seven existing allocations; not the RTS gameplay.';
+  if (variant === EXTINCTION_VARIANTS.evolvedAssault) config.adaptation +=
+    ' Explicit evolved scenario: Supercarrier capacity12 with the SAME six allocated cargo identities, plus Ravager Colossal Resilience. Queen purchase/economy is not implemented.';
   return config;
 }

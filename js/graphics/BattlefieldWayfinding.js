@@ -5,10 +5,32 @@ import * as THREE from 'three';
 export function buildBattlefieldWayfinding(environment) {
   const layout = environment.battlefieldLayout; if (!layout) return [];
   const positions = [], uvs = [], cues = [];
-  const quad = (centerX, centerZ, dx, dz, corners) => {
+  const startingHeight = (x, z) => {
+    // A route starts on the ground, or on an actually solid support such as
+    // the LA helipad. An overhead branch/catwalk is a different walking layer.
+    let height = environment.getElevationAt(x, z, 0);
+    for (const surface of environment.referenceWalkSurfaces ?? []) {
+      if (surface.kind !== 'solid-deck' || !surface.collider.isCollisionActive()) continue;
+      const b = surface.bounds;
+      if (x < b.minX || x > b.maxX || z < b.minZ || z > b.maxZ) continue;
+      const top = surface.heightAt(x, z);
+      if (Number.isFinite(top)) height = Math.max(height, top);
+    }
+    return height;
+  };
+  const followFloor = (start, end, initialY = startingHeight(...start)) => {
+    const distance = Math.hypot(end[0] - start[0], end[1] - start[1]);
+    const steps = Math.max(1, Math.ceil(distance / .5)); let height = initialY;
+    for (let step = 1; step <= steps; step++) {
+      const t = step / steps;
+      height = environment.getElevationAt(start[0] + (end[0] - start[0]) * t, start[1] + (end[1] - start[1]) * t, height);
+    }
+    return height;
+  };
+  const quad = (centerX, centerZ, dx, dz, corners, layerY) => {
     const points = corners.map(([side, along]) => {
       const x = centerX + dz * side + dx * along, z = centerZ - dx * side + dz * along;
-      return [x, environment.getElevationAt(x, z) + .045, z];
+      return [x, environment.getElevationAt(x, z, layerY) + .045, z];
     });
     // A marking cannot bridge two floors: interpolating a chevron between a
     // deck and its roof creates a tall sheet directly in front of the camera.
@@ -16,18 +38,21 @@ export function buildBattlefieldWayfinding(environment) {
     if(Math.max(...heights)-Math.min(...heights)>.65)return;
     for (const index of [0, 2, 1, 0, 3, 2]) { positions.push(...points[index]); uvs.push(points[index][0] / 4, points[index][2] / 4); }
   };
-  const chevron = (x, z, dx, dz) => {
-    quad(x, z, dx, dz, [[-1.15, -1], [-.55, -1], [0, .35], [0, 1.05]]);
-    quad(x, z, dx, dz, [[1.15, -1], [0, 1.05], [0, .35], [.55, -1]]);
+  const chevron = (x, z, dx, dz, layerY) => {
+    quad(x, z, dx, dz, [[-1.15, -1], [-.55, -1], [0, .35], [0, 1.05]], layerY);
+    quad(x, z, dx, dz, [[1.15, -1], [0, 1.05], [0, .35], [.55, -1]], layerY);
   };
   const ribbon = (start, end, halfWidth = .24) => {
     const dx = end[0] - start[0], dz = end[1] - start[1], length = Math.hypot(dx, dz);
     if (length < .1) return;
     const segments = Math.ceil(length / 2);
+    let previous = start, height = startingHeight(...start);
     for (let segment = 0; segment < segments; segment++) {
       const along = length * (segment + .5) / segments, halfLength = length / segments / 2;
-      quad(start[0] + dx / length * along, start[1] + dz / length * along, dx / length, dz / length,
-        [[-halfWidth, -halfLength], [halfWidth, -halfLength], [halfWidth, halfLength], [-halfWidth, halfLength]]);
+      const center = [start[0] + dx / length * along, start[1] + dz / length * along];
+      height = followFloor(previous, center, height); previous = center;
+      quad(...center, dx / length, dz / length,
+        [[-halfWidth, -halfLength], [halfWidth, -halfLength], [halfWidth, halfLength], [-halfWidth, halfLength]], height);
     }
   };
   for (const sector of layout.sectors) {
@@ -36,11 +61,13 @@ export function buildBattlefieldWayfinding(environment) {
       const dx = gate.center[0] - sector.center[0], dz = gate.center[1] - sector.center[1], distance = Math.hypot(dx, dz);
       if (!distance || dx && dz) continue;
       const forwardX = dx / distance, forwardZ = dz / distance, samples = [];
+      let previous = sector.center, height = startingHeight(...previous);
       for (let along = 6; along <= Math.min(distance - 3, 100); along += 10) {
         const x = sector.center[0] + forwardX * along, z = sector.center[1] + forwardZ * along;
-        chevron(x, z, forwardX, forwardZ);
-        if (gate.tactical) chevron(x - forwardX * 2.5, z - forwardZ * 2.5, forwardX, forwardZ);
-        samples.push([x, environment.getElevationAt(x, z) + .045, z]);
+        height = followFloor(previous, [x, z], height); previous = [x, z];
+        chevron(x, z, forwardX, forwardZ, height);
+        if (gate.tactical) chevron(x - forwardX * 2.5, z - forwardZ * 2.5, forwardX, forwardZ, height);
+        samples.push([x, height + .045, z]);
       }
       cues.push({ sectorId: sector.id, gateId: gate.id, targetSectorId: gate.to,
         kind: gate.tactical ? 'flank' : 'main', symbol: gate.tactical ? 'paired-chevrons' : 'single-chevron', samples });

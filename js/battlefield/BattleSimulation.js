@@ -15,7 +15,8 @@ import { sourceUnitVisualKind } from '../data/SourceActorPresentation.js';
 import { planFiniteCarrierLoad, validateFiniteCarrierCargo,
   releaseFiniteCarrierCargo, carrierFatalFire } from './ExtinctionCarrierCargo.js';
 import { initialSpecialistStocks, restoreSpecialistStocks, sourceSpecialistRole, SPECIALIST_ATTACKS } from '../data/SourceSpecialistCombat.js';
-import { applyRavagerRemoteHit, advanceRavagerRegenesis, validateSavedRavagerRegenesis } from './ExtinctionRavagerRegenesis.js';
+import { applyRavagerHit, applyRavagerRemoteHit, advanceRavagerRegenesis, validateSavedRavagerRegenesis } from './ExtinctionRavagerRegenesis.js';
+import { isExtinctionCasteVariant } from './ExtinctionBattleVariant.js';
 import { measureDefeatReturn } from './BattleStrategy.js';
 import { validateBossCombatState } from '../data/BossEncounterValidation.js';
 import { initializeFormation, updateFormation, formationTargetForUnit, formationAttackMultiplier, normalizeFormation, FORMATION_PROFILES } from './FormationTactics.js';
@@ -99,7 +100,7 @@ export class BattleSimulation {
     // the signed strategic roster. Older saves have no ecology and recover empty.
     this.hiveEcology = createHiveEcology(this.config.id, [...this.factions.values()]);
     this.intel = new BattleIntel(this, this.config.intelligence);
-    if(this.config.context?.extinctionCasteVariant==='carrier-ravager'){
+    if(isExtinctionCasteVariant(this.config.context?.extinctionCasteVariant)){
       const carrier=[...this.units.values()].find(u=>u.actorType==='carrier'&&u.profileId==='XEN-009');
       const payload=carrier&&this.groups.get(carrier.groupId)?.units
         .map(id=>this.units.get(id))
@@ -492,7 +493,7 @@ export class BattleSimulation {
     const cap=this.budgets.byFaction?.[carrier?.factionId]?.active??this.budgets.active;
     if(this.disposed||this.result||this.paused||
       this.config.id!=='AFF-27'||
-      this.config.context?.extinctionCasteVariant!=='carrier-ravager'||
+      !isExtinctionCasteVariant(this.config.context?.extinctionCasteVariant)||
       !carrier||carrier.actorType!=='carrier'||carrier.profileId!=='XEN-009'||
       carrier.state!=='active'||!(carrier.hp>0)||
       !group?.materialized||group.path.length||!parasite||
@@ -803,8 +804,8 @@ export class BattleSimulation {
     if (Math.abs(group.morale - before) > EPSILON) this._emit('morale_changed', { groupId: group.id, frontId: group.frontId, before, after: group.morale, reason });
   }
 
-  /** Optional source-upgraded distant Ravager. No on-screen resurrection or
-   * source-unknown cooldowns: future 3D catalepsy remains a separate task. */
+  /** Both representations own one signed upgrade, timer and finite life.
+   * A distant attack cannot use the detailed entry point or vice versa. */
   damageDistantRavager(unitId,damage,{damageType='kinetic',killerFaction=null}={}){
     const unit=this.units.get(unitId);
     if(this.disposed||this.result||this.paused||!unit)return null;
@@ -814,6 +815,17 @@ export class BattleSimulation {
       this._emit('ravager_cataleptic',{unitId,recoverAt:unit.ravagerCatalepsy.recoverAt},2);
     if(result.killed)this.recordDeath({entityId:unitId,killerFaction,
       cause:result.reason==='fire_finisher'?'ravager_incendiary_fire':'distant_combat'});
+    return result;
+  }
+  damageDetailedRavager(unitId,damage,{damageType='raw',killerFaction=null,cause='detailed_combat'}={}){
+    const unit=this.units.get(unitId);
+    if(this.disposed||this.result||this.paused||unit?.state!=='active')return null;
+    const result=applyRavagerHit(this,unit,damage,{damageType});
+    if(!result)return null;
+    if(result.reason==='catalepsy_started')
+      this._emit('ravager_cataleptic',{unitId,recoverAt:unit.ravagerCatalepsy.recoverAt},2);
+    if(result.killed)this.recordDeath({entityId:unitId,killerFaction,
+      cause:result.reason==='fire_finisher'?'ravager_incendiary_fire':cause});
     return result;
   }
   _ravagerRegenesisStep(){return advanceRavagerRegenesis(this);}

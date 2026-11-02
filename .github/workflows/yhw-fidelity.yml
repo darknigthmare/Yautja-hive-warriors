@@ -72,6 +72,12 @@ jobs:
             tests/extinction-ravager-regenesis.test.js \
             tests/extinction-lv742-variant.test.js \
             tests/extinction-carrier-live-launch.test.js \
+            tests/extinction-ravager-detailed.test.js \
+            tests/extinction-evolved-variant.test.js \
+            tests/world-route-weather-regression.test.js \
+            tests/environment-acceleration-effects.test.js \
+            tests/environment-cryo-cleanup.test.js \
+            tests/battle-debrief.test.js \
             tests/support-visual.test.js \
             tests/browser-cleanup.test.mjs \
             tests/apc-detail.test.js \

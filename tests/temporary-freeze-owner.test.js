@@ -33,3 +33,18 @@ test('a phase speed authored during a zero-speed hold becomes the restored base,
   assert.equal(effects.slow(actor, 'invalid', -.01, 1), false);
   assert.equal(effects.slow(actor, 'invalid', 0, Infinity), false);
 });
+
+test('separate acceleration owners refresh the strongest bounded effect and cannot bypass another owner freeze', () => {
+  const first = new TemporaryCombatEffects(), second = new TemporaryCombatEffects(), cryogenic = new TemporaryCombatEffects();
+  const actor = { hp: 100, speed: 10 };
+  first.haste(actor, 'frenzy', 1.2, 6); second.haste(actor, 'mutagen', 1.35, 3);
+  assert.equal(actor.speed, 13.5);
+  for (let refresh = 0; refresh < 20; refresh++) second.haste(actor, 'mutagen', 1.35, 3);
+  assert.equal(actor.speed, 13.5, 'refreshing and overlapping boosts must not multiply one another');
+  for (const multiplier of [-1, .9, 2.01, Infinity, NaN]) assert.equal(second.haste(actor, 'invalid', multiplier, 1), false);
+  assert.equal(second.haste(actor, 'invalid', 1.2, 31), false);
+  assert.equal(actor.speed, 13.5);
+  cryogenic.slow(actor, 'hold', 0, 2); first.dispose(); second.dispose(); assert.equal(actor.speed, 0);
+  cryogenic.dispose(); assert.equal(actor.speed, 10);
+  assert.equal(first.targets.size + second.targets.size + cryogenic.targets.size, 0);
+});

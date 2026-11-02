@@ -10,6 +10,8 @@ import { createCreatureModel, createEggModel, animateCreatureModel } from '../gr
 import { sourceUnitVisualKind } from '../data/SourceActorPresentation.js';
 import { EXTINCTION_CASTE_PROFILES, validExtinctionCasteUnit } from '../battlefield/ExtinctionCastePolicy.js';
 import { advanceCarrierFacehuggerFlight } from '../battlefield/ExtinctionCarrierFlight.js';
+import { isUpgradedRavager } from '../battlefield/ExtinctionRavagerRegenesis.js';
+import { updateRavagerCatalepsyPose } from '../graphics/RavagerCatalepsyPose.js';
 
 export class XenomorphHorde {
   constructor(scene, audioEngine, goreEngine = null) {
@@ -126,6 +128,8 @@ export class XenomorphHorde {
 
   defeatAlien(enemy, details = {}) {
     if (!enemy) return null;
+    this.syncBattleRavager(enemy, details);
+    if (enemy.ravagerCatalepsy && enemy.hp > 0) return null;
     this._releaseRoyalHold(enemy);
     if (enemy.type === 'boiler' && !enemy._boilerDetonated && !enemy._boilerQueued) {
       if(!details.deferEffects)return this.detonateBoiler(enemy, null, details);
@@ -149,12 +153,103 @@ export class XenomorphHorde {
   }
 
   applyDamage(enemy, amount, details = {}) {
+    this.syncBattleRavager(enemy, details);
     if (!enemy || !(enemy.hp > 0) || !Number.isFinite(amount) || amount <= 0) return null;
     if (this.battleSimulation && details.killerFaction && enemy.factionId && !this.battleSimulation.areHostile(details.killerFaction, enemy.factionId)) return null;
-    const dealt = Math.min(enemy.hp, amount); enemy.hp = Math.max(0, enemy.hp - amount);
+    const special = this._damageBattleRavager(enemy, amount, details);
+    const dealt = special?.damage ?? Math.min(enemy.hp, amount);
+    if (!special) enemy.hp = Math.max(0, enemy.hp - amount);
     enemy.lastDamageFaction = details.killerFaction ?? null;
     const event = enemy.hp === 0 ? this.defeatAlien(enemy, details) : null;
     return { damage: dealt, killed: enemy.hp === 0, event };
+  }
+
+  _damageBattleRavager(actor, amount, details = {}) {
+    const sim = this.battleSimulation, unit = sim?.units?.get(actor?.battleUnitId);
+    if (!unit || unit.state !== 'active' || !isUpgradedRavager(sim, unit)) return null;
+    if (sim.disposed || sim.paused || sim.result)
+      return { damage: 0, killed: false, cataleptic: !!unit.ravagerCatalepsy };
+    const cause = details.damageType ?? details.cause ?? 'raw';
+    const damageType = /ballistic|bullet|rifle|rail/i.test(cause) ? 'kinetic' : cause;
+    const before = unit.hp;
+    const result = sim.damageDetailedRavager(unit.id, amount, { ...details, damageType });
+    if (!result) return null;
+    actor.hp = unit.hp; actor._ravagerSyncedHp = unit.hp;
+    actor.lastDamageType = damageType;
+    this._projectBattleRavager(actor, unit);
+    return { ...result, damage: Math.min(before, result.damage) };
+  }
+
+  _projectBattleRavager(actor, unit) {
+    if (!actor.ravagerCatalepsy && unit.ravagerCatalepsy) {
+      actor.mesh.rotation.x = 0; actor.mesh.rotation.z = 0;
+      if (actor.ravagerVisual) { actor.ravagerVisual.rotation.x = 0; actor.ravagerVisual.rotation.z = 0; }
+    }
+    actor.isDowned = unit.incapacitated === true;
+    actor.ravagerCatalepsy = unit.ravagerCatalepsy ?? null;
+    if (actor.ravagerCatalepsy) {
+      this.combatDirector?.release(actor); this._clearAttackCue(actor);
+      actor._npcPreparation = 0; actor._npcTarget = null;
+      actor.isAirborne = false; actor.isLeaping = false;
+    }
+    updateRavagerCatalepsyPose(actor, actor.ravagerCatalepsy, this.battleSimulation.time);
+  }
+
+  // Legacy environmental callers may still write HP directly. Settle their
+  // observed loss BEFORE recording death, using the same finite phase owner.
+  syncBattleRavager(actor, details = {}) {
+    const sim = this.battleSimulation, unit = sim?.units?.get(actor?.battleUnitId);
+    if (!unit || unit.state !== 'active' || !isUpgradedRavager(sim, unit)) return false;
+    const previous = actor._ravagerSyncedHp ?? unit.hp;
+    if (Number.isFinite(actor.hp) && actor.hp < previous)
+      this._damageBattleRavager(actor, previous - actor.hp, details);
+    actor.hp = unit.hp; actor._ravagerSyncedHp = unit.hp;
+    this._projectBattleRavager(actor, unit);
+    return true;
+  }
+
+  _advanceControlLocks(actor, delta) {
+    let locked = false;
+    if (actor.isNetEntangled) {
+      if (actor.isNetgunImmune) { actor.isNetEntangled = false; actor.netTimer = 0; }
+      else {
+        locked = true;
+        const remaining = Math.max(0, actor.netTimer ?? 0), held = Math.min(delta, remaining);
+        actor.netTimer = Math.max(0, remaining - delta);
+        const amount = 25 * held;
+        const special = amount > 0 && this._damageBattleRavager(actor, amount, {
+          cause: 'razor-net', killerFaction: actor.lastDamageFaction
+        });
+        if (!special) actor.hp -= amount;
+        if (!actor.ravagerCatalepsy) actor.mesh.rotation.y += Math.sin(this.time * 50) * held * 3;
+        if (actor.netTimer === 0) actor.isNetEntangled = false;
+      }
+    }
+    if (actor.isStunned) {
+      locked = true;
+      actor.stunTimer = Math.max(0, (actor.stunTimer ?? 0) - delta);
+      const visual = actor.ravagerVisual ?? actor.mesh;
+      if (!actor.ravagerCatalepsy) visual.rotation.z = actor.stunTimer > 0 ? Math.sin(this.time * 20) * .1 : 0;
+      if (actor.stunTimer === 0) actor.isStunned = false;
+    }
+    if (locked) { this.combatDirector?.release(actor); this._clearAttackCue(actor); }
+    return locked;
+  }
+
+  _advanceAirborneActor(actor, delta) {
+    if (!actor.isAirborne) return false;
+    this.combatDirector?.release(actor); this._clearAttackCue(actor);
+    actor.airborneVelY -= 36 * delta;
+    actor.mesh.position.y += actor.airborneVelY * delta;
+    if (actor.airborneVelHoriz) actor.mesh.position.addScaledVector(actor.airborneVelHoriz, delta);
+    actor.mesh.rotation.x += 8 * delta; actor.mesh.rotation.z += 5 * delta;
+    const floor = this.environment?.getElevationAt?.(actor.mesh.position.x,
+      actor.mesh.position.z, actor.mesh.position.y) ?? 0;
+    if (actor.mesh.position.y <= floor) {
+      actor.mesh.position.y = floor; actor.isAirborne = false; actor.airborneVelY = 0;
+      actor.mesh.rotation.x = 0; actor.mesh.rotation.z = 0;
+    }
+    return true;
   }
 
 
@@ -483,6 +578,7 @@ export class XenomorphHorde {
 
     for (let i = this.aliens.length - 1; i >= 0; i--) {
       const a = this.aliens[i];
+      this.syncBattleRavager(a, { cause: a.lastDamageType ?? 'combat', killerFaction: a.lastDamageFaction });
       if (attack.targetOnly && a !== attack.targetOnly) continue;
       if (a.isLatched) continue;
       if (this.battleSimulation && a.factionId && !this.battleSimulation.areHostile(attackingFaction, a.factionId)) continue;
@@ -502,7 +598,11 @@ export class XenomorphHorde {
         }
         if (a.isFrontalShielded && (attack.damage >= 250 || attack.isLauncher || thermal)) a.isFrontalShielded = false;
         a.lastDamageFaction = attackingFaction;
-        a.hp -= dealt;
+        const special = this._damageBattleRavager(a, dealt, {
+          cause: attack.type ?? 'melee', killerFaction: attackingFaction
+        });
+        if (special) dealt = special.damage;
+        else a.hp -= dealt;
         const killed = a.hp <= 0;
 
         // Reactive Acid Splashback Physics (slashing xenos sprays pressurized molecular acid back at attacker)
@@ -516,7 +616,7 @@ export class XenomorphHorde {
         }
 
         // Dynasty Warriors Musou Launcher & Knockback Physics
-        if (!killed && attack.origin) {
+        if (!killed && !a.isDowned && attack.origin) {
           const knockDir = a.mesh.position.clone().sub(attack.origin).setY(0).normalize();
           if (knockDir.lengthSq() < 0.001) knockDir.set(0, 0, 1);
 
@@ -653,6 +753,14 @@ export class XenomorphHorde {
     this.acidPools.push({ mesh: pool, life: 10 });
   }
 
+  removeAcidPool(pool) {
+    const index = this.acidPools.indexOf(pool);
+    if (index < 0) return false;
+    disposeObject(pool.mesh, this.sharedResources);
+    this.acidPools.splice(index, 1);
+    return true;
+  }
+
 
   spawnZeroGAcidGlobule(pos) {
     this.limitHazards(this.zeroGAcidGlobules, 80);
@@ -687,7 +795,10 @@ export class XenomorphHorde {
     if (!Number.isFinite(delta) || delta < 0) return;
     this._livingPlayers = [player, secondaryPlayer].filter(p => p && p.hp !== 0);
     // Environmental, ally, support and legacy weapon damage all converge here.
-    for (const actor of [...this.getActiveCombatants()]) if (actor.hp <= 0) this.defeatAlien(actor, { cause: 'combat', killerFaction: actor.lastDamageFaction, deferEffects:delta===0 });
+    for (const actor of [...this.getActiveCombatants()]) {
+      this.syncBattleRavager(actor, { cause: actor.lastDamageType ?? 'combat', killerFaction: actor.lastDamageFaction });
+      if (actor.hp <= 0) this.defeatAlien(actor, { cause: 'combat', killerFaction: actor.lastDamageFaction, deferEffects:delta===0 });
+    }
     for(const actor of [...this.aliens])if(actor.isLatched) {
       if(actor.battleUnitId && this.battleSimulation)recordCombatDeath(this,actor,{kind:actor.type,cause:'parasite-consumed',objectiveCredit:false});
       this.combatDirector?.release(actor);this._clearAttackCue(actor);
@@ -699,6 +810,8 @@ export class XenomorphHorde {
     for(const actor of this.pendingBoilerDetonations ?? []){actor._boilerQueued=false;this.detonateBoiler(actor,null,{cause:'deferred-boiler-explosion',killerFaction:actor.lastDamageFaction});}
     this.pendingBoilerDetonations=[];
     const livingPlayers = this._livingPlayers;
+    for (const actor of this.aliens)
+      actor._controlLockedThisUpdate = this._advanceControlLocks(actor, delta);
     if (!livingPlayers.length) return;
     player = livingPlayers[0];
     if (!this.battleSimulation && this.pendingSpawns.length && !this.combatDirector?.isInGrace) {
@@ -777,8 +890,7 @@ export class XenomorphHorde {
         this._hazardDamage(pool, targetPlayer, 15 * delta);
       }
       if (pool.life <= 0) {
-        disposeObject(pool.mesh, this.sharedResources);
-        this.acidPools.splice(i, 1);
+        this.removeAcidPool(pool);
       }
     }
 
@@ -853,10 +965,14 @@ export class XenomorphHorde {
 
     // 4. Horde AI (Crusher, Praetorian, Warriors, Facehuggers, Officers)
     this.aliens.forEach(a => {
+      this.syncBattleRavager(a, { cause: a.lastDamageType ?? 'combat', killerFaction: a.lastDamageFaction });
+      const controlLocked = a._controlLockedThisUpdate;
+      if (a.ravagerCatalepsy) return;
       this._showAttackCue(a);
       // The allocated Facehugger is a REAL airborne actor, not a spawned
       // particle. It can neither attack nor latch until landing on safe floor.
       if(advanceCarrierFacehuggerFlight(a,delta))return;
+      if (this._advanceAirborneActor(a, delta) || controlLocked || a.hp <= 0) return;
       const sourceTarget=a.type==='carrier'?
         this._pursuitTarget(a,livingPlayers,supportTargets):null;
       if(a.type==='carrier'){
@@ -875,59 +991,7 @@ export class XenomorphHorde {
 
       if (a.isLatched) return;
       a.visualPhase = (a.visualPhase || 0) + delta * Math.max(3, (a.speed || 10) * 0.8);
-      animateCreatureModel(a.mesh, a.visualPhase, !a.isStunned && !a.isNetEntangled);
-
-      // Airborne Juggling Physics (Dynasty Warriors Musou C2/C5 Launchers)
-      if (a.isAirborne) {
-        this.combatDirector?.release(a); this._clearAttackCue(a);
-        a.airborneVelY -= 36.0 * delta; // Gravity
-        a.mesh.position.y += a.airborneVelY * delta;
-        if (a.airborneVelHoriz) {
-          a.mesh.position.addScaledVector(a.airborneVelHoriz, delta);
-        }
-        // Ragdoll spin in mid-air
-        a.mesh.rotation.x += 8.0 * delta;
-        a.mesh.rotation.z += 5.0 * delta;
-
-        // Ground impact
-        if (a.mesh.position.y <= 0) {
-          a.mesh.position.y = 0;
-          a.isAirborne = false;
-          a.airborneVelY = 0;
-          a.mesh.rotation.x = 0;
-          a.mesh.rotation.z = 0;
-        }
-        return; // Helpless while airborne in juggle arc
-      }
-
-      // Netgun Entangled State
-      if (a.isNetEntangled) {
-        this.combatDirector?.release(a); this._clearAttackCue(a);
-        if (a.isNetgunImmune) {
-          // Grid Alien (Nethead) has already melted and broken Celtic's net in AVP 2004!
-          a.isNetEntangled = false;
-        } else {
-          a.netTimer -= delta;
-          a.hp -= 25 * delta; // Razor wire cuts deep!
-          a.mesh.rotation.y += Math.sin(this.time * 50) * delta * 3;
-          if (a.netTimer <= 0) {
-            a.isNetEntangled = false;
-          }
-          return; // Completely immobilized
-        }
-      }
-
-      // Stunned State (Crusher or Praetorian)
-      if (a.isStunned) {
-        this.combatDirector?.release(a); this._clearAttackCue(a);
-        a.stunTimer -= delta;
-        a.mesh.rotation.z = Math.sin(this.time * 20) * 0.1;
-        if (a.stunTimer <= 0) {
-          a.isStunned = false;
-          a.mesh.rotation.z = 0;
-        }
-        return;
-      }
+      animateCreatureModel(a.ravagerVisual ?? a.mesh, a.visualPhase, !a.isStunned && !a.isNetEntangled);
 
       const dir = targetPlayer.position.clone().sub(a.mesh.position);
       dir.y = 0;
@@ -1225,8 +1289,7 @@ export class XenomorphHorde {
     this.eggs = [];
     this.chestbursters.forEach(c => disposeObject(c.mesh, this.sharedResources));
     this.chestbursters = [];
-    this.acidPools.forEach(p => disposeObject(p.mesh, this.sharedResources));
-    this.acidPools = [];
+    for (const pool of [...this.acidPools]) this.removeAcidPool(pool);
     this.acidSplashes.forEach(s => disposeObject(s.mesh, this.sharedResources));
     this.acidSplashes = [];
     this.zeroGAcidGlobules.forEach(g => disposeObject(g.mesh, this.sharedResources));
@@ -2369,10 +2432,15 @@ export class XenomorphHorde {
     const modelKind = sourceVisual === 'drone' ? 'drone' : type;
     // A source-role visual is not a new strategic caste. In particular, saved
     // GRP-58/59 Drone IDs still retain actorType "warrior" in BattleSimulation.
-    const mesh = sourceVisual === 'drone' || ['officer','crusher','praetorian','grid_alien','carrier','ravager'].includes(type)
+    const model = sourceVisual === 'drone' || ['officer','crusher','praetorian','grid_alien','carrier','ravager'].includes(type)
       ? createCreatureModel(modelKind, this.sharedResources)
       : this.createAlienMesh(type === 'facehugger', type === 'boiler', type === 'neomorph', type === 'praetomorph', type === 'red_warrior', type === 'spitter', type === 'runner', type === 'cryo_xeno', type === 'cyber_xeno');
+    // A separate visual pivot lets this one actor fall without rotating its
+    // navigation/collision root or any other cached creature instance.
+    const mesh = type === 'ravager' ? new THREE.Group() : model;
+    if (mesh !== model) { mesh.name = 'ravager-collision-root'; mesh.userData = { ...model.userData }; mesh.add(model); }
     const actor = { mesh, type: modelKind, sourceVisualKind: sourceVisual, visualFidelity1to1Verified: false,
+      ...(type === 'ravager' ? { ravagerVisual: model, _ravagerSyncedHp: unit.hp } : {}),
       pressureId: this.spawnSequence++,
       speed: type === 'runner' ? 16 : type === 'ravager' ? 9 :
         type === 'carrier' ? 7.5 : sourceVisual === 'drone' ? 11.5 : 10,
@@ -2384,6 +2452,7 @@ export class XenomorphHorde {
       leapCooldown: 3, spitCooldown: 3.5, frostBreathCooldown: 4, cyberDartCooldown: 4, isLeaping: false, leapVelY: 0,
       isAirborne: false, airborneVelY: 0, airborneVelHoriz: new THREE.Vector3() };
     this.aliens.push(applyBattleUnit(this, actor, unit, group));
+    this.syncBattleRavager(actor);
     return actor;
   }
 

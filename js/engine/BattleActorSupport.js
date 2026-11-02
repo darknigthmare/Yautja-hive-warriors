@@ -157,6 +157,13 @@ function targetView(actor, attacker) {
         ? actor.combatManager?.battleSimulation?.absorbExosuitDamage?.(actor.battleUnitId, amount) ?? amount
         : amount;
       if (actor.combatManager?.activeBoss === actor) { actor.combatManager.takeDamage(amount, null, { cause: 'faction-combat', killerFaction: attacker.factionId }); return; }
+      if (actor.combatManager?.applyDamage) {
+        return actor.combatManager.applyDamage(actor, amount, {
+          cause: attacker.type === 'flametrooper' ? 'faction-fire' : 'faction-combat',
+          damageType: attacker.type === 'flametrooper' ? 'fire' : 'kinetic',
+          killerFaction: attacker.factionId
+        });
+      }
       actor.hp = Math.max(0, actor.hp - amount);
       actor.lastDamageFaction = attacker.factionId ?? null;
       if (actor.hp <= 0) {

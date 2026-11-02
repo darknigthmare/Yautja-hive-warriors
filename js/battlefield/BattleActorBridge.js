@@ -186,6 +186,9 @@ export class BattleActorBridge {
     }
     const unavailableGroups = new Set();
     for (const [unitId, { actor, manager, groupId }] of this.actors) {
+      manager.syncBattleRavager?.(actor, {
+        cause: actor.lastDamageType ?? 'detailed-combat', killerFaction: actor.lastDamageFaction
+      });
       // A persistent death may be owned by a non-rendered system (incubation,
       // campaign consequence, environmental effect). Never resurrect that ID
       // from a stale still-alive mesh or mark its whole group unavailable.

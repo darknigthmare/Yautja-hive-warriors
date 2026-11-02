@@ -1,5 +1,19 @@
 import { drawAccessibleMarker } from './AccessibilityPreferences.js';
 import { CHARACTERS_DATA } from '../data/charactersData.js';
+import { CARRIER_CARGO_RULES } from '../battlefield/ExtinctionCarrierCargo.js';
+
+export function extinctionVariantBriefing(config){
+ const variant=config.context?.extinctionCasteVariant;
+ if(config.id!=='AFF-27'||!['carrier-ravager','carrier-ravager-enhanced'].includes(variant))return null;
+ const carrierProfile=config.profiles.find(profile=>profile.id==='XEN-009');
+ const carrierGroup=config.groups.find(group=>group.units.some(unit=>unit.profileId===carrierProfile?.id));
+ const cargo=carrierGroup?.units.filter(unit=>config.profiles.find(profile=>profile.id===unit.profileId)?.actorType==='facehugger').length??0;
+ const upgraded=carrierProfile?.extinctionUpgrade==='supercarrier-genome';
+ const capacity=upgraded?CARRIER_CARGO_RULES.upgradedCapacity:CARRIER_CARGO_RULES.ordinaryCapacity;
+ return upgraded
+  ? `Variante évoluée — Supercarrier : ${cargo} parasites déjà alloués, capacité ${capacity}. Ravager : Résilience colossale ; le feu ou des dégâts excessifs empêchent son retour après catalepsie.`
+  : `Variante optionnelle — Carrier et Ravager : ${cargo} parasites déjà alloués au Carrier, capacité ${capacity}.`;
+}
 
 /** The briefing reads the exact bound operation configuration used at launch. */
 export class OperationBriefing {
@@ -15,6 +29,7 @@ export class OperationBriefing {
   if(scene.characterBriefing){const character=CHARACTERS_DATA.find(item=>item.id===scene.characterBriefing.characterId);line('Chasseur déployé : '+(character?.name??scene.characterBriefing.characterId??'non sélectionné')+' · '+scene.characterBriefing.role+'.');line(scene.characterBriefing.scopeNote);line(scene.characterBriefing.recognition.label+' · '+scene.characterBriefing.recognition.completedMissions+' mission(s) confirmée(s) pour ce chasseur · statut narratif inchangé.');if(scene.characterBriefing.recognition.commendations?.length)line('Services confirmés : '+scene.characterBriefing.recognition.commendations.map(item=>item.label).join(' ; '));if(scene.characterBriefing.relevantNamedConsequences.length)line('Pertes nommées déjà confirmées : '+scene.characterBriefing.relevantNamedConsequences.map(item=>item.uniqueId).join(', '));}
   if(config.hiveConflict?.briefing)line(config.hiveConflict.briefing);
   if(scene.encounterProvenance?.note)line(scene.encounterProvenance.note);
+  const variantBriefing=extinctionVariantBriefing(config);if(variantBriefing)line(variantBriefing);
   const spec=config.operationObjectives;line('Objectifs : '+(spec?spec.tasks.map(task=>task.label).join(' → '):'Sécuriser les fronts hostiles ou épuiser leur population finie.'));
   line('Échecs : joueurs vaincus'+(spec?.failOnLoss?.length?' ; matériel ou groupe essentiel perdu ('+spec.failOnLoss.join(', ')+')':'')+(spec?.failOnEscape?.length?' ; convoi adverse parvenu à sa destination':'')+(config.objectives.loseFronts?.length?' ; front allié perdu durablement':'')+'.');
   line('Choisissez votre équipement et une première route. Les passages alternatifs autorisent une approche de flanc ; les noms de lieux désignent une adaptation.');

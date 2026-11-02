@@ -5,9 +5,9 @@ import * as THREE from 'three';
 const inside = (bounds, x, z) => x >= bounds.minX && x <= bounds.maxX && z >= bounds.minZ && z <= bounds.maxZ;
 const vector = value => value?.isVector3 ? value.clone() : new THREE.Vector3(...value);
 
-export function registerReferenceWalkSurface(environment, mesh, { id, bounds, heightAt, accesses = [], kind = 'deck', resolveMovement = null }) {
+export function registerReferenceWalkSurface(environment, mesh, { id, bounds, heightAt, accesses = [], kind = 'deck', resolveMovement = null, requiresCurrentLayer = false }) {
   if (!mesh?.isMesh || !id || !bounds || typeof heightAt !== 'function') throw new TypeError('A physical walk surface requires a mesh, ID and height function');
-  const record = { id, mesh, kind, bounds: { ...bounds }, heightAt, accesses: accesses.map(access => {
+  const record = { id, mesh, kind, requiresCurrentLayer, bounds: { ...bounds }, heightAt, accesses: accesses.map(access => {
     const bottom = vector(access.bottom), top = vector(access.top), outward = bottom.clone().sub(top).setY(0).normalize();
     const side = new THREE.Vector3(outward.z, 0, -outward.x), width = Math.min(bounds.maxX - bounds.minX, bounds.maxZ - bounds.minZ);
     const approach = access.approach ? vector(access.approach) : bottom.clone().addScaledVector(outward, 1.5).addScaledVector(side, width / 2 + 1.75);
@@ -67,8 +67,8 @@ export function referenceGroundElevation(environment, x, z) {
 
 export function referenceWalkElevation(environment, x, z, currentY, legacyHeight = 0) {
   const ground = referenceGroundElevation(environment, x, z), surfaces = environment.referenceWalkSurfaces ?? [];
-  const candidates = surfaces.filter(surface => surface.collider.isCollisionActive() && inside(surface.bounds, x, z)).map(surface => surface.heightAt(x, z));
-  const valid = candidates.filter(Number.isFinite).filter(height => !Number.isFinite(currentY) || height <= currentY + .65);
+  const candidates = surfaces.filter(surface => (!surface.requiresCurrentLayer || Number.isFinite(currentY)) && surface.collider.isCollisionActive() && inside(surface.bounds, x, z)).map(surface => surface.heightAt(x, z)).filter(Number.isFinite);
+  const valid = candidates.filter(height => !Number.isFinite(currentY) || height <= currentY + .65);
   // An explicitly registered surface takes precedence over historical nominal
   // elevations, which could differ from the visible deck's actual upper face.
   if (candidates.length) return valid.length ? Math.max(ground, ...valid) : ground;

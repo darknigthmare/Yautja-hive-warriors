@@ -9,6 +9,7 @@
 import * as THREE from 'three';
 import { prepareSarii, orderSarii, damageSarii, updateSarii } from './SariiCompanion.js';
 import { walkRampGeometry } from './ReferenceWalkSurfaces.js';
+import { buildMeasuredCanopyBough } from './ReferenceCanopyWalkways.js';
 import { TemporaryCombatEffects } from '../engine/TemporaryCombatEffects.js';
 
 // These are explicit game-unit contracts, not measurements of film weapons.
@@ -18,6 +19,10 @@ export const PREY_INTERACTION_RULES = Object.freeze({
   powderBlastRadius: 16, powderBlastDamage: 750, powderFireRadius: 8.5,
   powderFireSeconds: 18, powderFireDamagePerSecond: 110,
   cauldronRadius: 7.5, cauldronDamage: 500, mudSeconds: 30
+});
+
+export const ENVIRONMENT_FRENZY_RULES = Object.freeze({
+  multiplier: 1.35, roarSeconds: 12, mutagenContactSeconds: .25
 });
 
 function preyCanInteract(environment, player, prop, usedFlag, range) {
@@ -2499,9 +2504,8 @@ export class ReferenceEnvironmentMechanisms {
     // 21. Canopy Bough Highway & Vine Tightrope Bridges (+6.8m) (Predator 1987)
     if (this.canopyBoughHighways && this.canopyBoughHighways.length > 0) {
       for (const bridge of this.canopyBoughHighways) {
-        if (x >= bridge.minX && x <= bridge.maxX && z >= bridge.minZ && z <= bridge.maxZ) {
-          return 6.8;
-        }
+        const height = bridge.heightAt(x, z);
+        if (Number.isFinite(height)) return height;
       }
     }
 
@@ -6074,14 +6078,21 @@ export class ReferenceEnvironmentMechanisms {
       mesh: pMesh,
       pos: pos.clone(),
       life: 22.0,
-      radius: 2.4
+      radius: 2.4,
+      hissedActors: new WeakSet()
     });
   }
 
   updateMutagenPuddles(delta, player, horde, audioEngine) {
+    if (!Number.isFinite(delta) || delta <= 0 || this.game?.isPaused || this.game?.photoMode?.isActive) return;
     for (let p = this.mutagenPuddles.length - 1; p >= 0; p--) {
       const pud = this.mutagenPuddles[p];
       pud.life -= delta;
+      if (pud.life <= 0) {
+        this.removeReferenceObject(pud.mesh);
+        this.mutagenPuddles.splice(p, 1);
+        continue;
+      }
 
       // Damage player if stepping inside (unless exosuit is active)
       if (player && player.position.distanceTo(pud.pos) <= pud.radius) {
@@ -6095,20 +6106,16 @@ export class ReferenceEnvironmentMechanisms {
         horde.aliens.forEach(a => {
           if (!a || a.hp <= 0 || !a.mesh) return;
           if (a.mesh.position.distanceTo(pud.pos) <= pud.radius) {
-            if (!a.isMutagenBerserk) {
-              a.isMutagenBerserk = true;
-              a.speed *= 1.35;
+            this.environmentCombatEffects.haste(a, 'mutagen-contact', ENVIRONMENT_FRENZY_RULES.multiplier, ENVIRONMENT_FRENZY_RULES.mutagenContactSeconds);
+            pud.hissedActors ??= new WeakSet();
+            if (!pud.hissedActors.has(a)) {
+              pud.hissedActors.add(a);
               if (audioEngine && audioEngine.playXenoHiss && this.random() < 0.1) {
                 audioEngine.playXenoHiss();
               }
             }
           }
         });
-      }
-
-      if (pud.life <= 0) {
-        this.removeReferenceObject(pud.mesh);
-        this.mutagenPuddles.splice(p, 1);
       }
     }
   }
@@ -7219,7 +7226,8 @@ export class ReferenceEnvironmentMechanisms {
   }
 
   checkCryoPodInteraction(player, audioEngine, ui, horde, bosses, particles) {
-    if (!this.cryoStasisSector || !player) return false;
+    if (!this.cryoStasisSector || !player?.position?.isVector3 || !(player.hp > 0) ||
+        this.game?.isPaused || this.game?.photoMode?.isActive || this.game?.dropPod?.isActive) return false;
     const sec = this.cryoStasisSector;
 
     if (player.position.distanceTo(sec.consolePos) <= 4.2) {
@@ -7243,19 +7251,21 @@ export class ReferenceEnvironmentMechanisms {
 
       // Freeze all Xenomorphs in 15m radius for 6.0 seconds
       const freezeRadius = 15.0;
-      let frozenCount = 0;
+      const faction = preyFaction(this, player, horde);
+      let frozenCount = 0, defeatedCount = 0;
 
       if (horde && horde.aliens) {
         for (let i = horde.aliens.length - 1; i >= 0; i--) {
           const a = horde.aliens[i];
-          if (!a || a.hp <= 0 || !a.mesh) continue;
+          if (!a || a.hp <= 0 || !a.mesh || !preyCanHit(this, a, faction, horde)) continue;
           if (a.mesh.position.distanceTo(sec.pos) <= freezeRadius) {
-            a.isStunned = true;
-            a.stunTimer = Math.max(a.stunTimer || 0, 6.0);
-            a.hp -= 240;
-            frozenCount++;
-            if (a.mesh.material && a.mesh.material.color) {
-              a.mesh.material.color.setHex(0x67e8f9); // Ice blue frozen tint
+            preyDamage(this, a, 240, horde, bosses, faction, 'cryo-stasis');
+            if (a.hp > 0 && !a._combatDisposed) {
+              a.isStunned = true;
+              a.stunTimer = Math.max(a.stunTimer || 0, 6.0);
+              frozenCount++;
+            } else if (a._defeatReported) {
+              defeatedCount++;
             }
           }
         }
@@ -7265,17 +7275,17 @@ export class ReferenceEnvironmentMechanisms {
       if (horde && horde.acidPools) {
         for (let i = horde.acidPools.length - 1; i >= 0; i--) {
           if (horde.acidPools[i].mesh.position.distanceTo(sec.pos) <= freezeRadius) {
-            this.removeReferenceObject(horde.acidPools[i].mesh);
-            horde.acidPools.splice(i, 1);
+            horde.removeAcidPool(horde.acidPools[i]);
           }
         }
       }
 
       // Antiseptic nitrogen heal for Yautja (+200 HP)
+      const previousHp = player.hp;
       player.hp = Math.min(player.maxHp, player.hp + 200);
 
       if (ui && ui.showAnnouncement) {
-        ui.showAnnouncement(`❄️ BRIS CRYO-STASE WEYLAND-YUTANI : DÉLESTAGE AZOTE LIQUIDE 15M (${frozenCount} XÉNOS CONGELÉS 6S, SOIN 200 PV) !`);
+        ui.showAnnouncement(`❄️ BRIS CRYO-STASE WEYLAND-YUTANI : DÉLESTAGE AZOTE LIQUIDE 15M (${frozenCount} XÉNOS CONGELÉS 6S, ${defeatedCount} NEUTRALISÉS, SOIN ${player.hp - previousHp} PV) !`);
       }
       return true;
     }
@@ -7283,7 +7293,7 @@ export class ReferenceEnvironmentMechanisms {
   }
 
   updateCryoStasisSector(delta, player, horde, particles) {
-    if (!this.cryoStasisSector) return;
+    if (!this.cryoStasisSector || !Number.isFinite(delta) || delta <= 0 || this.game?.isPaused || this.game?.photoMode?.isActive) return;
     const sec = this.cryoStasisSector;
     if (sec.cooldown > 0) sec.cooldown = Math.max(0, sec.cooldown - delta);
 
@@ -9483,46 +9493,14 @@ export class ReferenceEnvironmentMechanisms {
       poolPos: new THREE.Vector3(26.5, 0, -8)
     };
 
-    // 12. Canopy Bough Highway & Vine Tightrope Bridges (+6.8m elevation)
+    // 12. Original canopy paths, with rounded bark and actual upper triangles.
     const canopyMat = new THREE.MeshStandardMaterial({ color: 0x3d2012, roughness: 0.9 });
     this.canopyBoughHighways = [
-      { minX: -22, maxX: 2, minZ: -38, maxZ: 2 },
-      { minX: -2, maxX: 22, minZ: -38, maxZ: 2 },
-      { minX: -2, maxX: 22, minZ: -2, maxZ: 38 },
-      { minX: -22, maxX: 2, minZ: -2, maxZ: 38 }
-    ];
-
-    // Bridge 1 (West to North): [-20, 6.8, 0] to [0, 6.8, -36]
-    const b1 = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.25, 41.0), canopyMat);
-    b1.position.set(-10, 6.8, -18);
-    b1.rotation.y = Math.atan2(20, -36);
-    b1.castShadow = true;
-    b1.receiveShadow = true;
-    group.add(b1);
-
-    // Bridge 2 (North to East): [0, 6.8, -36] to [20, 6.8, 0]
-    const b2 = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.25, 41.0), canopyMat);
-    b2.position.set(10, 6.8, -18);
-    b2.rotation.y = Math.atan2(-20, -36);
-    b2.castShadow = true;
-    b2.receiveShadow = true;
-    group.add(b2);
-
-    // Bridge 3 (East to South): [20, 6.8, 0] to [0, 6.8, 36]
-    const b3 = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.25, 41.0), canopyMat);
-    b3.position.set(10, 6.8, 18);
-    b3.rotation.y = Math.atan2(20, 36);
-    b3.castShadow = true;
-    b3.receiveShadow = true;
-    group.add(b3);
-
-    // Bridge 4 (South to West): [0, 6.8, 36] to [-20, 6.8, 0]
-    const b4 = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.25, 41.0), canopyMat);
-    b4.position.set(-10, 6.8, 18);
-    b4.rotation.y = Math.atan2(-20, 36);
-    b4.castShadow = true;
-    b4.receiveShadow = true;
-    group.add(b4);
+      { id: 'val-verde-canopy-west-north', from: [-20, 0], to: [0, -36] },
+      { id: 'val-verde-canopy-north-east', from: [0, -36], to: [20, 0] },
+      { id: 'val-verde-canopy-east-south', from: [20, 0], to: [0, 36] },
+      { id: 'val-verde-canopy-south-west', from: [0, 36], to: [-20, 0] }
+    ].map(specification => buildMeasuredCanopyBough(this, group, specification, canopyMat));
 
     // 13. Dutch's Shouting Challenge Rock ("KILL ME! I'M HERE!") [-10, 0, 18] (+1.8m)
     const challengeGroup = new THREE.Group();
@@ -9990,7 +9968,8 @@ export class ReferenceEnvironmentMechanisms {
   /* === VAL VERDE (PREDATOR 1987) APEX INTERACTION & SURVIVAL SYSTEMS (v59.0) === */
 
   checkDutchChallengeRoar(player, ui, audio, horde) {
-    if (!this.dutchChallengeRock || !player || !player.position) return false;
+    if (!this.dutchChallengeRock || !player?.position?.isVector3 || !(player.hp > 0) ||
+        this.game?.isPaused || this.game?.photoMode?.isActive || this.game?.dropPod?.isActive) return false;
     const rock = this.dutchChallengeRock;
     if (player.position.distanceTo(rock.pos) <= 4.2) {
       if (rock.cooldown > 0) {
@@ -10005,20 +9984,17 @@ export class ReferenceEnvironmentMechanisms {
       // Grant +40% Musou Overload Energy
       player.musouEnergy = Math.min(100, (player.musouEnergy || 0) + 40);
 
-      // Enrage & lure all xenos across the entire map towards Dutch's rock
-      let luredCount = 0;
+      // Brief frenzy; real combat AI keeps ownership of targets and navigation.
       if (horde && horde.aliens) {
         horde.aliens.forEach(alien => {
           if (alien && alien.mesh && alien.hp > 0) {
-            alien.speed = (alien.speed || 4.0) * 1.35;
-            alien.targetPos = rock.pos.clone();
-            luredCount++;
+            this.environmentCombatEffects.haste(alien, 'dutch-challenge', ENVIRONMENT_FRENZY_RULES.multiplier, ENVIRONMENT_FRENZY_RULES.roarSeconds);
           }
         });
       }
 
       if (ui && ui.showAnnouncement) {
-        ui.showAnnouncement("📢 DÉFI DE DUTCH : 'KILL ME! I'M HERE!' (PREDATOR 1987) — RUGISSEMENT DANS LA CANOPÉE (+40% MUSOU, HORDE ENRAGÉE ATTIRÉE) !", "success");
+        ui.showAnnouncement(`📢 DÉFI DE DUTCH : 'KILL ME! I'M HERE!' (PREDATOR 1987) — RUGISSEMENT DANS LA CANOPÉE (+40% MUSOU, FRÉNÉSIE ${ENVIRONMENT_FRENZY_RULES.roarSeconds}S) !`, "success");
       }
       return true;
     }

@@ -208,6 +208,7 @@ class GameApp {
     const mode = document.getElementById('mission-mode-select');
     const select = document.getElementById('operation-select');
     const casteOption = document.getElementById('extinction-variant-enabled');
+    const casteUpgraded = document.getElementById('extinction-variant-upgraded');
     const hiveOption=document.createElement('option');hiveOption.value=HIVE_CONFLICT_ID;hiveOption.textContent='Deux ruches rivales — scénario original';select.append(hiveOption);
     for (const operation of BATTLE_OPERATIONS) {
       const option = document.createElement('option'); option.value = operation.id;
@@ -222,6 +223,10 @@ class GameApp {
       document.getElementById('extinction-variant-label').classList.toggle('hidden',!casteEligible);
       casteOption.disabled=!casteEligible;
       if(!casteEligible)casteOption.checked=false;
+      const upgradeEligible = casteEligible && casteOption.checked;
+      document.getElementById('extinction-upgrade-label').classList.toggle('hidden', !upgradeEligible);
+      casteUpgraded.disabled = !upgradeEligible;
+      if (!upgradeEligible) casteUpgraded.checked = false;
       const arcEligible=mode.value==='fronts'&&/^AFF-0[1-5]$/.test(select.value);
       document.getElementById('campaign-arc-label').classList.toggle('hidden',!arcEligible);
       document.getElementById('campaign-arc-enabled').disabled=!arcEligible;
@@ -229,7 +234,7 @@ class GameApp {
       const scene = mode.value === 'fronts' && BATTLE_OPERATIONS.some(operation=>operation.id===select.value) ? getBattleOperationScene(select.value) : null;
       document.getElementById('operation-provenance').textContent = scene ? `${scene.mapName} : scène adaptée au terrain ${scene.levelId}. Objectifs originaux ; géographie 1:1 non vérifiée.` : mode.value === 'fronts' ? 'Trois fronts reliés par des corridors et des contournements. Population finie ; positions lointaines signalées par rapports.' : mode.value === 'survival' ? 'Survie sans victoire finale. Les vagues continuent jusqu’à la défaite ou au retour au menu.' : 'Chasse finie : six secteurs, objectifs locaux, portes et boss final.';
     };
-    mode.addEventListener('change', update); select.addEventListener('change', update); update();
+    mode.addEventListener('change', update); select.addEventListener('change', update); casteOption.addEventListener('change', update); update();
     document.getElementById('btn-reset-campaign-arc').addEventListener('click',()=>{this.battleCampaign.resetArc(CLAN_CAMPAIGN_ARC_ID);this.updateCampaignDebrief();});
     this.updateCampaignDebrief();
     try { document.getElementById('btn-resume-operation').classList.toggle('hidden', !localStorage.getItem('yautja-operation-checkpoint-v1')); } catch {}
@@ -535,7 +540,7 @@ class GameApp {
       this.operationMapSeed=Number(document.getElementById('operation-layout-select').value);
       this.extinctionVariant=this.missionMode==='fronts'&&this.operationId==='AFF-27'&&
         document.getElementById('extinction-variant-enabled').checked?
-        'carrier-ravager':'none';
+        (document.getElementById('extinction-variant-upgraded').checked?'carrier-ravager-enhanced':'carrier-ravager'):'none';
       if(this.missionMode==='fronts'){const scene=createOperationScene({operationId:this.operationId,level:this.ui.selectedLevel,players:this.isCoOp?2:1,mapSeed:this.operationMapSeed,difficultyId:this.operationDifficulty,
         extinctionVariant:this.extinctionVariant});scene.characterBriefing=this.battleCampaign.getCharacterBriefing(scene.config,{arcId:document.getElementById('campaign-arc-enabled').checked&&/^AFF-0[1-5]$/.test(this.operationId)?CLAN_CAMPAIGN_ARC_ID:null,characterId:this.ui.selectedChar.id});this.operationBriefing.render(scene);}else this.operationBriefing.render(null);
       if (this.missionMode === 'fronts' && BATTLE_OPERATIONS.some(operation=>operation.id===this.operationId)) this.ui.selectedLevel = LEVELS_DATA.find(level => level.id === getBattleOperationScene(this.operationId).levelId);
@@ -1947,7 +1952,7 @@ class GameApp {
     this.initializeMissionSupports(options.resumeOperation);
     this.renderer.updateLevelEnvironment(this.ui.selectedLevel);
     this.weather.setWeather(this.ui.selectedLevel.weather ?? this.ui.selectedLevel.theme);
-    this.weather.spawnSteamVents?.(5);
+    this.weather.configureMissionSteamVents?.(this.ui.selectedLevel, this.env);
     this.gore.clear();
     this.bosses.clear();
     this.badBlood.clear();

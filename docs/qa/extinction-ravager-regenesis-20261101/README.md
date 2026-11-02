@@ -1,5 +1,7 @@
 # Ravager : Colossal Resilience — distant Musou, 1er novembre 2026
 
+> **Suivi du 2 novembre :** cette note conserve le périmètre distant initial. Le [suivi courant](../continuation-20261102/extinction-reporting/README.md) décrit maintenant la projection proche, sa pose procédurale, le même délai persisté et l’option de scénario amélioré. Les mentions « toujours absent » ci-dessous appartiennent au constat initial ; l’achat via Reine et la validation visuelle 1:1 restent effectivement absents.
+
 La variante **explicitement signée** par le profil `XEN-010` dans
 l'opération AFF-27 via `extinctionUpgrade: 'colossal-resilience'`
 dispose maintenant d'une mécanique STRATÉGIQUE distante de récupération

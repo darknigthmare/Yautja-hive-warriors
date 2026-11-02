@@ -1,5 +1,7 @@
 # Carrier et Ravager — première intégration LV-742 (1er novembre 2026)
 
+> **Suivi du 2 novembre :** les paragraphes ci-dessous conservent les étapes initiales de cette intégration. La cargaison finie 6/12, la variante standard et le lâcher 3D étaient déjà codés avant la passe actuelle. La pose cataleptique proche et la variante améliorée optionnelle sont décrites dans le [suivi courant](../continuation-20261102/extinction-reporting/README.md). Les anciens « non encore implémenté » sont des constats de ces étapes, pas le verdict courant. Aucune fidélité visuelle 1:1 n’est certifiée.
+
 Les sources du jeu *AVP: Extinction* identifient le Carrier
 (6 Facehuggers, 12 avec amélioration) et le Ravager (lames et
 récupération améliorée). Guide de référence :

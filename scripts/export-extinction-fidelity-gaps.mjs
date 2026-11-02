@@ -13,9 +13,9 @@ export const EXTINCTION_SOURCE_COLS=["Identifiant","Faction source","Unité sour
 export const ORIGINAL_EXTINCTION_CATALOG_COUNT=29;
 function runtime(p){
   if(p.id==='XEN-009')
-    return 'Morphologie Carrier partielle ; transport stratégique sauvegardé de six Facehuggers préalloués ; lancer animé 3D et upgrade 12 NON implémentés';
+    return 'Morphologie Carrier partielle ; cargaison sauvegardée de six Facehuggers préalloués, capacité douze sur profil Supercarrier signé ; le scénario amélioré optionnel conserve ces six individus ; lâcher 3D fini avec sol et budget validés ; achat via Reine absent et visuel 1:1 non certifié';
   if(p.id==='XEN-010')
-    return 'Morphologie et lames Ravager partielles ; Colossal Resilience cataleptique et sauvegarde codées sur fronts DISTANTS si upgrade signé ; 3D/achat 1:1 non implémentés';
+    return 'Morphologie et lames Ravager partielles ; Colossal Resilience proche et distante sur profil amélioré signé, accessible dans le scénario amélioré optionnel ; catalepsie vulnérable de douze secondes puis reprise sur le même ID à au moins 50 % de PV, pose procédurale et sauvegarde partagées ; réglages Musou, achat via Reine et certification visuelle 1:1 absents';
   if(p.id==='XEN-004')
     return 'Drone sous représentation Warrior proxy ; constructeur de nodules distinct à compléter';
   if(/^YAU-0(29|3[0-7])$/.test(p.id))
@@ -32,14 +32,21 @@ function runtime(p){
     return 'Missile SADAR fini et projectile physique ; version AMAG et rendu source non certifiés';
   if(p.id==='HUM-039')
     return 'Synthétique source dans troupe ; visuel indépendant et capacités de rôle à vérifier';
-  return p.codeStatus??'Non testé automatiquement sur cette caste';
+  return 'Non réévalué dans ce contrôle courant ; le statut historique voisin ne décrit pas automatiquement le runtime actuel';
+}
+function remainingWork(p){
+  if(p.id==='XEN-009')
+    return 'Comparer modèle, textures et mouvements multi-angles aux références ; animer le chargement et l’arrimage réel dans les arches ; développer le choix/coût d’amélioration via la Reine sans créer de parasites gratuits';
+  if(p.id==='XEN-010')
+    return 'Comparer modèle, textures, chute et relève aux références multi-angles ; vérifier les paramètres source indépendamment des réglages Musou ; développer le choix/coût de Colossal Resilience via la Reine';
+  return p.missingWork??'';
 }
 function rows(){
   if(profiles.length!==ORIGINAL_EXTINCTION_CATALOG_COUNT||new Set(profiles.map(p=>p.id)).size!==profiles.length)
     throw new Error('Changes in 29 source profiles require an explicit audited review');
   return profiles.map(p=>[p.id,p.faction,p.name,p.work,p.continuity??'',p.evidenceFact??'',
     (p.sourceIds??[]).map(id=>sourceIndex.get(id)?.url??'').filter(Boolean).join(' | '),
-    p.codeStatus??'',runtime(p),p.missingWork??'',p.restrictions??'',p.compatiblePlaces??'','non']);
+    p.codeStatus??'',runtime(p),remainingWork(p),p.restrictions??'',p.compatiblePlaces??'','non']);
 }
 export function extinctionCSV() {
   const q=value=>'"'+String(value??'').replaceAll('"','""')+'"';

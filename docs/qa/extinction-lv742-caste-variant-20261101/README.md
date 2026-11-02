@@ -1,5 +1,7 @@
 # AFF-27 / LV-742 — variante Carrier et Ravager (1er novembre 2026)
 
+> **Suivi du 2 novembre :** cette note décrit la variante standard initiale. Le [suivi courant](../continuation-20261102/extinction-reporting/README.md) couvre aussi la variante améliorée opt-in : traits signés, capacité Carrier 12 mais toujours les six parasites déjà alloués, et Résilience colossale du Ravager. Le lâcher 3D existait dans les commits consolidés ; la phase cataleptique proche est ajoutée pendant cette passe. Aucun achat via Reine ni modèle 1:1 ne sont certifiés.
+
 Une option explicite au menu de mission transforme **des identités
 préexistantes de groupes xénomorphes GRP-58/59** en un Carrier,
 six Facehuggers et un Ravager du jeu *AVP: Extinction*. Le total
