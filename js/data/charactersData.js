@@ -1,4 +1,5 @@
 import { resolveAlienBaseIdentityV1, YAUTJA_ALIEN_BASE_V1 } from './alien-base-v1.js';
+import { ALIEN_BASE_V2_CROSSREF_PREVIEW, getAlienBaseCrossReferencesV2 } from './alien-base-v2-crossrefs.js';
 /* ULTIMATE EXHAUSTIVE ALIENS VS PREDATOR ARMORY REGISTRY (36 WEAPONS & GADGETS) */
 
 export const ULTIMATE_YAUTJA_ARMORY = [
@@ -171,4 +172,9 @@ for(const character of CHARACTERS_DATA){
  const identity=resolveAlienBaseIdentityV1('characters',character.id);
  if(identity)Object.defineProperty(character,'sharedEntityId',{value:identity.id,enumerable:false,configurable:true});
 }
-export { resolveAlienBaseIdentityV1, YAUTJA_ALIEN_BASE_V1 };
+// Preserve character/weapon serialization: newly sourced relations are read-only metadata.
+for(const record of [...ULTIMATE_YAUTJA_ARMORY, ...CHARACTERS_DATA]){
+ const refs=getAlienBaseCrossReferencesV2(record.sharedEntityId);
+ if(refs.length)Object.defineProperty(record,'sharedSourceRefsV2',{value:refs,enumerable:false,configurable:true});
+}
+export { resolveAlienBaseIdentityV1, YAUTJA_ALIEN_BASE_V1, ALIEN_BASE_V2_CROSSREF_PREVIEW, getAlienBaseCrossReferencesV2 };
