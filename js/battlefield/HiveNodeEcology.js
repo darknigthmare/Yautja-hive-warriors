@@ -25,7 +25,7 @@ export function createHiveEcology(operationId, factions = []) {
   const banks = operationId === 'AFF-27' ? factions
     .filter(f => ['xeno','xenomorph'].includes(f.species))
     .map(f => ({ factionId: f.id, points: 0, earned: 0, spent: 0 })) : [];
-  return { version: 1, sequence: 0, banks, nodes: [], buildersUsed: [] };
+  return { version: 1, sequence: 0, banks, nodes: [], buildersUsed: [], spores: [] };
 }
 
 export function awardHiveInfestation(ecology, killerFaction, victimFaction, isHostile) {

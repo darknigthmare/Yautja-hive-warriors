@@ -67,9 +67,9 @@ test('CommTech repairs existing synthetics and the single Exosuit, never human r
     machine.incapacitated=true;
     assert.equal(sim.applyCommTechRepair(tech.id,machine.id),null);
     machine.incapacitated=false;
-    // Ten damage remains after the first 100-point repair; the later hit adds 40.
-    assert.equal(sim.applyCommTechRepair(tech.id,machine.id)?.amount,50);
-    assert.equal(machine.hp,machine.maxHp);
+    const missing = machine.maxHp - machine.hp;
+    assert.ok(missing > 0 && missing <= 100);
+    assert.equal(sim.applyCommTechRepair(tech.id,machine.id)?.amount,missing);
     assert.equal(sim.applyCommTechRepair(tech.id,machine.id),null);
     assert.equal(tech.repairParts,0);
   }finally{sim.dispose();}

@@ -29,8 +29,12 @@ function stats(group) {
     const position = mesh.geometry.attributes.position;
     assert.ok(position && mesh.geometry.attributes.normal && mesh.geometry.attributes.uv);
     assert.equal(position.array.every(Number.isFinite), true, 'all model coordinates must stay finite');
-    triangles += (mesh.geometry.index?.count ?? position.count) / 3;
-    materials.add(mesh.material);
+    // One InstancedMesh is one draw, but *count* physical instances are
+    // submitted. The old helper undercounted M577's four movable wheels.
+    const instanceCount = mesh.isInstancedMesh ? mesh.count : 1;
+    triangles += (mesh.geometry.index?.count ?? position.count) / 3 * instanceCount;
+    for (const material of (Array.isArray(mesh.material) ? mesh.material : [mesh.material]))
+      if (material) materials.add(material);
   });
   return { triangles, meshes, materials };
 }

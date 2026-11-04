@@ -5,6 +5,7 @@
 import * as THREE from 'three';
 import { createSurfaceMaterial } from './SurfaceLibrary.js';
 import { tireGeometry } from './SupportSculpt.js';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
 // The photographed miniature has a rail returning down the rear bulkhead.
 // Travel dimensions below are a local mechanical reconstruction, not prop
@@ -14,7 +15,25 @@ export const APC_RAIL = Object.freeze({
   cornerZ: -4.45, cornerRadius: 0.50,
 });
 export const APC_DEPLOYMENT_SECONDS = 2.2;
+/* Original M577 wheel-animation parameters, NOT film prop measurements.
+ * The wheels never change battle collision, stats, identities or ammo. */
+export const APC_RUNNING_GEAR = Object.freeze({
+  radius: 1, maxTravel: 0.16, maxSteer: 0.24, wheelCount: 4,
+  visualFidelity1to1Verified: false
+});
 export const APC_ELEVATION = Object.freeze({ min: -Math.PI / 12, max: Math.PI / 4 });
+/** M577A variant: the rear sliding emplacement is plasma, whereas the
+ * forward RE700 20mm Gatling system remains cosmetic in this game.
+ * Source terminology is separate from original Musou damage/ammo balance. */
+export const APC_WEAPON_PROVENANCE = Object.freeze({
+  variant: 'M577A (interpreted)',
+  roof: 'Boyars PARS 150 twin 20 mW plasma',
+  nose: 'RE700 20mm Gatling (visual-only, no separate gameplay fire)',
+  gameplayDamageType: 'plasma',
+  frontWeaponImplemented: false,
+  ammunitionSaveKey: 'rounds',
+  sourceVisualFidelity1to1Verified: false
+});
 // Conservative horizontal envelope for every rail pose and firing direction,
 // measured from the actual meshes. Physical contacts use the thinner pieces.
 export const APC_NAVIGATION = Object.freeze({ centerZ: -0.70, halfWidth: 2.52, halfDepth: 5.80, height: 2.48, radius: 7.0 });
@@ -229,28 +248,42 @@ export function buildAPCModel(Assembly) {
   hull.box(steel, [0.88, 2.01, 3.48], [1.06, 0.047, 0.13]);
   stencil(hull, paint, '2D', [1.06, 1.22, 4.976], 0.052);
 
-  // Four covered wheels have shallow armor dishes over pneumatic tires. The
-  // old exposed silver car rims were unlike the miniature's military covers.
+  // Retain the same four pneumatic tires, armored dishes, tread and studs.
+  // The fenders stay fused to the carrier; only the wheels become movable.
   const wheels = [];
   for (const side of [-1, 1]) for (const z of [-3.23, 2.68]) {
     const wheelY = 1.05;
-    const center = new THREE.Vector3(side * 2.04, wheelY, z); wheels.push(center);
-    hull.add(tireGeometry(1.0, 0.69), rubber, center.toArray());
-    hull.cylinder(armor, [side * 2.407, wheelY, z], [0.82, 0.82], 0.09, [0, 0, Math.PI / 2], 64);
-    hull.cylinder(armor, [side * 2.466, wheelY, z], [0.48, 0.55], 0.045, [0, 0, Math.PI / 2], 48);
-    hull.add(new THREE.TorusGeometry(0.71, 0.017, 8, 56), dark, [side * 2.462, wheelY, z], [1, 1, 1], [0, Math.PI / 2, 0]);
-    hull.cylinder(dark, [side * 2.50, wheelY, z], [0.16, 0.16], 0.025, [0, 0, Math.PI / 2], 28);
-    for (let tread = 0; tread < 40; tread++) {
-      const angle = tread / 40 * Math.PI * 2;
-      hull.box(rubber, [side * 2.04, wheelY + Math.sin(angle) * 1.0, z + Math.cos(angle) * 1.0], [0.66, 0.045, 0.095], false, [angle, 0, 0]);
-    }
-    for (let bolt = 0; bolt < 8; bolt++) {
-      const a = bolt / 8 * Math.PI * 2;
-      hull.cylinder(steel, [side * 2.49, wheelY + Math.sin(a) * 0.39, z + Math.cos(a) * 0.39], [0.027, 0.027], 0.016, [0, 0, Math.PI / 2], 8);
-    }
+    wheels.push(new THREE.Vector3(side * 2.04, wheelY, z));
     hull.box(armor, [side * 2.04, 2.17, z], [0.88, 0.09, 2.24]);
     for (const lip of [-1, 1]) hull.box(armor, [side * 2.43, 1.94, z + lip * 1.0], [0.08, 0.38, 0.19], false, [lip * -0.35, 0, 0]);
   }
+  // Build just ONE right-facing wheel, then rotate it by PI on the left.
+  // Positive-determinant transforms preserve face winding and raycast shape.
+  // Four instances share the exact same multi-material geometry.
+  const wheelParts = new Assembly('m577-wheel-rolling');
+  wheelParts.add(tireGeometry(1, 0.69), rubber);
+  wheelParts.cylinder(armor, [0.367, 0, 0], [0.82, 0.82], 0.09, [0, 0, Math.PI / 2], 64);
+  wheelParts.cylinder(armor, [0.426, 0, 0], [0.48, 0.55], 0.045, [0, 0, Math.PI / 2], 48);
+  wheelParts.add(new THREE.TorusGeometry(0.71, 0.017, 8, 56), dark, [0.422, 0, 0], [1, 1, 1], [0, Math.PI / 2, 0]);
+  wheelParts.cylinder(dark, [0.46, 0, 0], [0.16, 0.16], 0.025, [0, 0, Math.PI / 2], 28);
+  for (let tread = 0; tread < 40; tread++) {
+    const a = tread / 40 * Math.PI * 2;
+    wheelParts.box(rubber, [0, Math.sin(a), Math.cos(a)], [0.66, 0.045, 0.095], false, [a, 0, 0]);
+  }
+  for (let bolt = 0; bolt < 8; bolt++) {
+    const a = bolt / 8 * Math.PI * 2;
+    wheelParts.cylinder(steel, [0.45, Math.sin(a) * 0.39, Math.cos(a) * 0.39],
+      [0.027, 0.027], 0.016, [0, 0, Math.PI / 2], 8);
+  }
+  const wheelAssembly = wheelParts.finish(), wheelSurfaces = wheelAssembly.children;
+  const wheelGeometry = mergeGeometries(wheelSurfaces.map(mesh => mesh.geometry), true);
+  if (!wheelGeometry) throw new Error('Unable to merge M577 wheel surfaces');
+  const wheelMaterials = wheelSurfaces.map(mesh => mesh.material);
+  wheelSurfaces.forEach(mesh => mesh.geometry.dispose());
+  const wheelInstances = new THREE.InstancedMesh(wheelGeometry, wheelMaterials, wheels.length);
+  wheelInstances.name = 'm577-animated-wheel-instances';
+  wheelInstances.castShadow = true; wheelInstances.receiveShadow = true;
+  wheelInstances.userData = {visualOnly:true, wheelCount:4, visualFidelity1to1Verified:false};
   // NECA's two side photographs show different flanks: an access door on
   // one side, a recessed service panel with two grilles on the other.
   for (const side of [-1, 1]) {
@@ -301,7 +334,37 @@ export function buildAPCModel(Assembly) {
   }
   for (const side of [-1, 1]) hull.tube(dark, [[side * 1.62, 1.10, -4.77], [side * 1.62, 1.90, -4.91], [side * 1.62, 2.22, -4.91], [side * 1.62, 2.30, -4.72]], 0.073, 16, 10);
   const group = hull.finish(); group.name = 'm577-apc';
-  group.userData.apc = { source: 'NECA licensed miniature photograph, interpreted', forwardAxis: '+z', wheelCount: 4, rail: APC_RAIL };
+  group.add(wheelInstances);
+  group.userData.apc = { source: 'NECA licensed miniature photograph, interpreted',
+    forwardAxis: '+z', wheelCount: 4, rail: APC_RAIL,
+    rearWeapon: APC_WEAPON_PROVENANCE.roof,
+    frontWeapon: APC_WEAPON_PROVENANCE.nose,
+    visualFidelity1to1Verified:false };
+  const wheelPose = new THREE.Object3D();
+  let spin = 0;
+  const setWheelMotion = ({distance=0, heights=[0,0,0,0], steering=0} = {}) => {
+    if(!Number.isFinite(distance)||distance<0||distance>8||
+      !Array.isArray(heights)||heights.length!==wheels.length||
+      !heights.every(Number.isFinite)||!Number.isFinite(steering))return false;
+    spin = (spin + distance/APC_RUNNING_GEAR.radius)%(Math.PI*2);
+    const steer = THREE.MathUtils.clamp(steering,
+      -APC_RUNNING_GEAR.maxSteer,APC_RUNNING_GEAR.maxSteer);
+    for(let i=0;i<wheels.length;i++){
+      const wheel=wheels[i],left=wheel.x<0,front=wheel.z>0;
+      wheelPose.position.copy(wheel);
+      wheelPose.position.y+=THREE.MathUtils.clamp(heights[i],
+        -APC_RUNNING_GEAR.maxTravel,APC_RUNNING_GEAR.maxTravel);
+      wheelPose.rotation.order='YXZ';
+      wheelPose.rotation.set(left?-spin:spin,(left?Math.PI:0)+(front?steer:0),0);
+      wheelPose.scale.set(1,1,1);wheelPose.updateMatrix();
+      wheelInstances.setMatrixAt(i,wheelPose.matrix);
+    }
+    wheelInstances.instanceMatrix.needsUpdate=true;
+    // Instanced bounding volumes must reflect the updated suspension pose.
+    wheelInstances.boundingSphere=null;wheelInstances.boundingBox=null;
+    return true;
+  };
+  setWheelMotion();
 
   const carrierParts = new Assembly('m577-turret-carriage');
   carrierParts.box(dark, [0, 0.26, 0], [1.30, 0.16, 0.84]);
@@ -339,7 +402,10 @@ export function buildAPCModel(Assembly) {
   frontParts.add(new THREE.TorusGeometry(0.07, 0.018, 8, 24), dark, [0, 0.20, 0.81]);
   const frontTurret = frontParts.finish(); frontTurret.position.set(-0.82, 1.33, 3.94); group.add(frontTurret);
 
-  const flareMaterial = new THREE.MeshBasicMaterial({ color: 0xffd29d, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending });
+  const flareMaterial = new THREE.MeshBasicMaterial({
+    // Original VFX palette; not a measured spectrum of the film plasma.
+    color: 0x8edaff, transparent: true, opacity: 0, depthWrite: false,
+    blending: THREE.AdditiveBlending });
   flareMaterial.name = 'apc-muzzle-flash';
   const flareParts = new Assembly('m577-muzzle-flare');
   for (const side of [-1, 1]) {
@@ -381,5 +447,5 @@ export function buildAPCModel(Assembly) {
     return collisionPieces.map(({ node, box }) => sliceBox(box, inverse.clone().multiply(node.matrixWorld), bottom, top)).filter(Boolean);
   };
   setTurretDeployment(1);
-  return { group, turret, carriage, gun, barrels, frontTurret, muzzleSockets, muzzleFlash, flareMaterial, rail: APC_RAIL, wheels, setTurretDeployment, setTurretAim, getTurretCollisionPolygons };
+  return { group, turret, carriage, gun, barrels, frontTurret, muzzleSockets, muzzleFlash, flareMaterial, rail: APC_RAIL, wheels, wheelInstances, setWheelMotion, setTurretDeployment, setTurretAim, getTurretCollisionPolygons };
 }

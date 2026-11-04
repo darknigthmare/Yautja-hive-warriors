@@ -8,6 +8,7 @@ import { traceSingleProjectileImpact } from '../js/engine/SingleProjectileImpact
 import { traceCombatSegment, hasCombatLineOfSight } from '../js/engine/CombatGeometry.js';
 import { createPreyArrowMesh } from '../js/graphics/PreyEquipment.js';
 import { APCVehicle } from '../js/entities/APCVehicle.js';
+import { validateM577CarrierCheckpoint } from '../js/battlefield/APCSectionManifest.js';
 import { CheyenneDropship } from '../js/entities/CheyenneDropship.js';
 import { XenomorphHorde } from '../js/entities/XenomorphHorde.js';
 import { BossManager } from '../js/entities/Bosses.js';
@@ -23,7 +24,7 @@ import { canAccessLegacyAir, canHitLegacyAirTarget } from '../js/engine/LegacyAi
 // Exercise the real router methods without constructing WebGL/audio/browser
 // services. No router method is rewritten or duplicated by this fixture.
 const source=readFileSync(new URL('../js/main.js',import.meta.url),'utf8');
-const GameApp=vm.runInNewContext(`${source.slice(source.indexOf('class GameApp'),source.indexOf("window.addEventListener('DOMContentLoaded'"))};GameApp`,{THREE,createMissionSupportContext,operationSceneOptions,traceSingleProjectileImpact,createPreyArrowMesh,canAccessLegacyAir,canHitLegacyAirTarget});
+const GameApp=vm.runInNewContext(`${source.slice(source.indexOf('class GameApp'),source.indexOf("window.addEventListener('DOMContentLoaded'"))};GameApp`,{THREE,createMissionSupportContext,operationSceneOptions,traceSingleProjectileImpact,createPreyArrowMesh,canAccessLegacyAir,canHitLegacyAirTarget,validateM577CarrierCheckpoint});
 const audio=new Proxy({}, {get:()=>()=>{}});
 const environment=(colliders=[])=>({colliders,navigation:{gridCache:new Map(),actorPaths:new WeakMap()},resolveMovement(){},getPlacementElevationAt:()=>0,
   traceSegment(from,to,options){return traceCombatSegment(from,to,this.colliders,options);},
@@ -156,6 +157,18 @@ test('a real successful sentry reload still consumes E once and leaves a nearby 
   }finally{fixture.dispose();}
 });
 
+test('planetary barrage blocks a protected or unavailable honor ledger before any cost or effect',()=>{
+  const game=supportGame();
+  let checked=0;
+  game.forge={
+    ensureHonorReady(){checked++;return false;},
+    getBalance(){throw new Error('must never read funds while ledger is protected');},
+    honorLedger:{spend(){throw new Error('must never spend protected honor');}}
+  };
+  assert.equal(game.callPlanetaryOrbitalBarrage(),false);
+  assert.equal(checked,1);
+});
+
 test('planetary barrage refuses a real roof or unknown context before spending any honor',()=>{
   const game=supportGame();game.initializeMissionSupports();let spent=0,hit=0;
   Object.assign(game,{player:{position:new THREE.Vector3()},forge:{ensureHonorReady:()=>true,getBalance:()=>8000,honorLedger:{spend(){spent++;return true;}}},horde:{aliens:[],checkMeleeHits(){hit++;return[];}},bosses:{activeBoss:null}});
@@ -168,4 +181,41 @@ test('planetary barrage spends once for open footprints and excludes a covered b
   Object.assign(game,{player:{position:new THREE.Vector3()},forge:{ensureHonorReady:()=>true,getBalance:()=>8000,honorLedger:{spend(){spent++;return true;}}},horde:{aliens:[],eggs:[],chestbursters:[],checkMeleeHits(){return[];}},bosses:{activeBoss:boss,takeDamage(){bossHits++;}},synthetics:{androids:[]},particles:{emitExplosion(){explosions++;}},_supportTransaction:0,refreshMothershipBridgeUI(){},closeTacticalModal(){},triggerCameraShake(){}});
   game.env.colliders.push({x:11,z:0,halfWidth:1,halfDepth:1,baseY:5,height:.5});assert.equal(game.callPlanetaryOrbitalBarrage(),true);assert.equal(spent,1);assert.equal(bossHits,0);assert.equal(explosions,8);
   game.env.colliders=[];boss.mesh.position.set(0,0,90);assert.equal(game.callPlanetaryOrbitalBarrage(),true);assert.equal(spent,2);assert.equal(bossHits,0);
+});
+
+test('co-op tactical APC orders use a nearby living P2 rather than an absent P1, and reject defeated proximity',()=>{
+  const game=Object.create(GameApp.prototype),calls=[],feedback=[];
+  const service={available:true,ownerFaction:'uscm',
+    boardNearest(){calls.push('board');return{accepted:true};},
+    disembark(){calls.push('exit');return{accepted:true};},
+    requestTravel(frontId){calls.push(['travel',frontId]);return{accepted:true};},
+    stopTravel(){calls.push('stop');return{accepted:true};}};
+  const sim={config:{playerFaction:'yautja'},fronts:new Map([['east',{position:[12,0]}]]),
+    relationship:(a,b)=>a==='uscm'&&b==='yautja'?'allied':'hostile',
+    interact:(actor,action)=>{calls.push({actor,action});return{accepted:true};}};
+  Object.assign(game,{battleSimulation:sim,
+    player:{hp:100,position:new THREE.Vector3(140,0,0)},
+    player2:{hp:100,position:new THREE.Vector3(10,0,0)},
+    dropPod:{isActive:false},
+    apc:{mesh:{position:new THREE.Vector3(12,0,0)}},
+    apcMarineService:service,operationPanel:{feedback:x=>feedback.push(x)}});
+  game.battleAction('apc-board','east');
+  game.battleAction('apc-travel','east');
+  game.battleAction('rally','east');
+  assert.equal(calls[0],'board');
+  assert.deepEqual(calls[1],['travel','east']);
+  assert.equal(calls[2].actor.id,'player2');
+  assert.equal(calls[2].actor.position[0],10);
+  game.player2.hp=0;
+  game.battleAction('apc-disembark','east');
+  assert.equal(calls.length,3);
+  assert.match(feedback.at(-1),/trop éloignée/);
+  game.battleAction('rally','east');
+  assert.equal(calls[3].actor.id,'player1');
+  game.player.hp=0;
+  game.battleAction('apc-stop','east');
+  assert.equal(calls.length,4,'dead co-op party cannot radio a convoy');
+  game.player.hp=100;
+  game.battleAction('apc-stop','east');
+  assert.equal(calls.at(-1),'stop','a living allied hunter may use radio stop remotely');
 });

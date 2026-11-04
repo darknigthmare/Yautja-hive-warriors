@@ -97,7 +97,7 @@ for (const level of LEVELS_DATA) {
           assert.ok(position.toArray().every(Number.isFinite));
           assert.ok(Math.abs(position.x) <= level.arenaHalfSize && Math.abs(position.z) <= level.arenaHalfSize);
         }
-        assert.ok(position.distanceTo(target) < 2, `AI became stuck from direction ${direction} toward ${x},${z}`);
+        assert.ok(position.distanceTo(target) < 2, `AI became stuck from direction ${direction} toward ${x},${z}; position ${position.x.toFixed(2)},${position.y.toFixed(2)},${position.z.toFixed(2)}, distance ${position.distanceTo(target).toFixed(2)}`);
       }
     }
     environment.clearEnvironment();

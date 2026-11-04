@@ -26,12 +26,16 @@ import { BossPhasePressure } from './battlefield/BossPhasePressure.js';
 import { CompanionLoadouts, COMPANION_KITS } from './battlefield/CompanionLoadouts.js';
 import { HIVE_CONFLICT_ID } from './battlefield/HiveConflictScenario.js';
 import { OperationTransport } from './entities/OperationTransport.js';
+import { APCMarineService } from './battlefield/APCMarineService.js';
+import { validateM577CarrierCheckpoint } from './battlefield/APCSectionManifest.js';
+import { physicalOperationRouteAvailable } from './battlefield/PhysicalRouteAvailability.js';
 import { operationAlertState, captureBattleDebrief, hiveCoordinationFeedback } from './ui/OperationPanel.js';
 import { OperationObjectives } from './battlefield/OperationObjectives.js';
 import { createOperationScene } from './battlefield/OperationScene.js';
 import { OperationBriefing } from './ui/OperationBriefing.js';
 import { OperationWorld } from './battlefield/OperationWorld.js';
 import { HiveNodeWorld } from './battlefield/HiveNodeWorld.js';
+import { BattleCrowdProjection } from './graphics/BattleCrowdProjection.js';
 import { mountSourceCatalogue } from './ui/SourceCatalogue.js';
 import { CommandMap, battleCommandFeedback } from './ui/CommandMap.js';
 import { OperationPanel } from './ui/OperationPanel.js';
@@ -147,6 +151,7 @@ class GameApp {
     this.campaignArcId = null; this.campaignRunId = null;
     this.battleSimulation = null;
     this.battleBridge = null;
+    this.apcMarineService = null;
     this.operationObjectives = null;
     this.operationWorld = null;
     this.hiveNodeWorld = null;
@@ -202,6 +207,7 @@ class GameApp {
     mountSourceCatalogue(this.ui.levelSelectMenu);
     const mode = document.getElementById('mission-mode-select');
     const select = document.getElementById('operation-select');
+    const casteOption = document.getElementById('extinction-variant-enabled');
     const hiveOption=document.createElement('option');hiveOption.value=HIVE_CONFLICT_ID;hiveOption.textContent='Deux ruches rivales — scénario original';select.append(hiveOption);
     for (const operation of BATTLE_OPERATIONS) {
       const option = document.createElement('option'); option.value = operation.id;
@@ -212,6 +218,10 @@ class GameApp {
       document.getElementById('operation-select-label').classList.toggle('hidden', mode.value !== 'fronts');
       document.getElementById('operation-difficulty-label').classList.toggle('hidden',mode.value!=='fronts');
       document.getElementById('operation-layout-label').classList.toggle('hidden',mode.value!=='fronts');
+      const casteEligible=mode.value==='fronts'&&select.value==='AFF-27';
+      document.getElementById('extinction-variant-label').classList.toggle('hidden',!casteEligible);
+      casteOption.disabled=!casteEligible;
+      if(!casteEligible)casteOption.checked=false;
       const arcEligible=mode.value==='fronts'&&/^AFF-0[1-5]$/.test(select.value);
       document.getElementById('campaign-arc-label').classList.toggle('hidden',!arcEligible);
       document.getElementById('campaign-arc-enabled').disabled=!arcEligible;
@@ -237,7 +247,11 @@ class GameApp {
 
   startBattleOperation(saved = null) {
     for (const gate of this.env.battlefieldLayout.gates) this.env.openGate(gate.id);
-    const sceneOptions={operationId:this.operationId,level:this.ui.selectedLevel,players:this.isCoOp?2:1,layout:this.env.battlefieldLayout,mapSeed:this.operationMapSeed,difficultyId:this.operationDifficulty};
+    this.operationDeploymentPlan=saved?.scene?.deploymentPlan ??
+      (saved ? 'historical-fallback' : (this.operationDeploymentPlan ?? 'authored'));
+    const sceneOptions={operationId:this.operationId,level:this.ui.selectedLevel,players:this.isCoOp?2:1,layout:this.env.battlefieldLayout,mapSeed:this.operationMapSeed,difficultyId:this.operationDifficulty,
+      deploymentPlan:this.operationDeploymentPlan,
+      extinctionVariant:saved?saved.scene?.extinctionVariant??'none':this.extinctionVariant??'none'};
     let {config}=createOperationScene(sceneOptions);
     this.campaignArcId=saved?.campaignArcId??(document.getElementById('campaign-arc-enabled').checked&&/^AFF-0[1-5]$/.test(this.operationId)?CLAN_CAMPAIGN_ARC_ID:null);
     this.campaignRunId=saved?.campaignRunId??this.missionRun;
@@ -257,6 +271,22 @@ class GameApp {
       config=compatible;
     }
     this.battleBridge.bind(this.battleSimulation);
+    this.apcMarineService=new APCMarineService(this.apc,this.battleSimulation,this.env,{
+      actors:()=>[...this.battleBridge.actors.values(),this.player,this.player2].filter(Boolean),
+      feedback:message=>this.operationPanel.feedback(message),
+      onMove:()=>{
+        if(this._apcNavigationCollider){
+          // The collider is updated immediately. Real path queries detect
+          // the changed position/yaw and invalidate their own cached graph;
+          // clearing all caches after every 0.6u wheel step thrashes 1000-
+          // fighter fronts while providing no additional collision safety.
+          this.apc.syncNavigationCollider(this._apcNavigationCollider);
+        }
+      }
+    });
+    // Four tiny instanced visual pools reuse EXISTING distant soldier IDs.
+    // They never participate in combat, awards, spawning or save contracts.
+    this.battleCrowd = new BattleCrowdProjection(this.renderer.scene,this.env,this.battleSimulation);
     if (config.id === 'AFF-27') {
       this.hiveNodeWorld = new HiveNodeWorld(this.renderer.scene, this.env, this.battleSimulation);
       this.hiveNodeWorld.update();
@@ -266,7 +296,7 @@ class GameApp {
     if(saved?.rescue)this.allyRescue.restore(saved.rescue);
     this.bossPhasePressure=new BossPhasePressure({simulation:this.battleSimulation,getBoss:()=>this.bosses.activeBoss,announce:event=>this.operationPanel.feedback(event.label)});
     if(saved?.bossPressure)this.bossPhasePressure.restore(saved.bossPressure);
-    this.battleSimulation.routeAvailabilityProvider=route=>this.env.isTacticalRouteAvailable?.(route.physicalRouteId??route.id.replace(/^bound-/,''))!==false;
+    this.battleSimulation.routeAvailabilityProvider=(route, options)=>physicalOperationRouteAvailable(this.env,route,options);
     if(saved?.tacticalWorld)this.env.restoreTacticalWorld?.(saved.tacticalWorld);
     this.companionLoadouts=new CompanionLoadouts({simulation:this.battleSimulation,actors:bridge.actors,players:()=>[this.player,this.player2].filter(Boolean),environment:this.env});
     if(saved?.companions)this.companionLoadouts.restore(saved.companions);
@@ -299,6 +329,8 @@ class GameApp {
     if(!this.battleSimulation)return;
     const players=[this.player,this.player2].filter(Boolean).map((player,index)=>({id:index?'player2':'player1',position:[player.position.x,player.position.z],hp:player.hp}));
     this.battleBridge.sync();this.battleSimulation.update(delta,{players,paused:false});
+    this.apcMarineService?.update(delta);
+    this.battleCrowd?.update(delta,[this.player,this.player2].filter(Boolean));
     this.hiveNodeWorld?.update();
     this.allyRescue?.update(delta);
     this.bossPhasePressure?.update(delta);
@@ -306,6 +338,7 @@ class GameApp {
     this.operationObjectives?.update(delta,players);
     const state=this.battleSimulation.getHUDState(), objectives=this.operationObjectives?.getHUDState();
     state.relationships=Object.fromEntries(this.battleSimulation.config.factions.map(faction=>[faction.id,this.battleSimulation.relationship(state.playerFaction,faction.id)]));
+    state.apcTransport=this.apcMarineService?.getHUDState()??null;
     state.phaseThreats=this.bossPhasePressure?.getHUDState().threats??[];
     state.rescue=this.allyRescue?.getState();
     const rescuePrompts=[this.player,this.player2].map((player,index)=>{const prompt=player&&this.allyRescue?.getPrompt(player);return prompt?`${this.isCoOp?`J${index+1} : `:''}${prompt.label.replace('[E]',this.gamepadBridge.inputMode==='gamepad'?'[X]':index?'[ENTRÉE]':'[E]')}`:null;}).filter(Boolean),rescueNode=document.getElementById('ally-rescue-prompt');
@@ -382,8 +415,41 @@ class GameApp {
   }
 
   battleAction(type, frontId) {
-    if(!this.battleSimulation||!this.player||this.dropPod.isActive)return;
-    const result=this.battleSimulation.interact({id:'player1',position:[this.player.position.x,this.player.position.z],hp:this.player.hp},{type,frontId});
+    if(!this.battleSimulation||this.dropPod.isActive)return;
+    // A co-op Marine escort must be usable by either *living* hunter. Never
+    // issue a field order using a defeated player or P1's remote position
+    // when P2 is the only hunter physically near the tactical objective.
+    const hunters=[this.player,this.player2].map((player,index)=>({
+      player,id:index?'player2':'player1',index
+    })).filter(({player})=>player?.hp>0&&player.position?.isVector3);
+    if(!hunters.length)return;
+    if(['apc-board','apc-disembark','apc-travel','apc-stop'].includes(type)){
+      const service=this.apcMarineService,owner=service?.ownerFaction;
+      const radioStop=type==='apc-stop',apcPosition=this.apc?.mesh?.position;
+      const nearby=!!apcPosition&&hunters.some(({player})=>
+        player.position.distanceTo(apcPosition)<=22);
+      const authorized=service?.available&&(radioStop||nearby)&&
+        (owner===this.battleSimulation.config.playerFaction||
+          this.battleSimulation.relationship(owner,this.battleSimulation.config.playerFaction)==='allied');
+      if(!authorized){this.operationPanel.feedback('APC USCM : assistance inaccessible ou trop éloignée.');return;}
+      const answer=type==='apc-board'?service.boardNearest():
+        type==='apc-disembark'?service.disembark():
+        type==='apc-travel'?service.requestTravel(frontId):service.stopTravel();
+      if(!answer.accepted)this.operationPanel.feedback('APC USCM : '+answer.reason);
+      return;
+    }
+    const position=this.battleSimulation.fronts?.get(frontId)?.position;
+    const candidates=hunters.slice();
+    if(Array.isArray(position)&&position.length===2&&position.every(Number.isFinite))
+      candidates.sort((a,b)=>{
+        const distance=entry=>(entry.player.position.x-position[0])**2+
+          (entry.player.position.z-position[1])**2;
+        return distance(a)-distance(b)||a.index-b.index;
+      });
+    const hunter=candidates[0];
+    const result=this.battleSimulation.interact({id:hunter.id,
+      position:[hunter.player.position.x,hunter.player.position.z],
+      hp:hunter.player.hp},{type,frontId});
     this.operationPanel.feedback(result.accepted?'Action effectuée sur le front.':result.reason??'Approchez-vous du front.');
   }
 
@@ -399,8 +465,13 @@ class GameApp {
 
   saveOperation() {
     if(!this.battleSimulation||!this.isPlaying||this.dropPod.isActive)return;
+    if(this.apcMarineService?.manifest&&!this.apcMarineService.validateCarrierPosition().accepted){
+      this.operationPanel.feedback('M577 : véhicule et section désynchronisés ; sauvegarde refusée.');
+      return;
+    }
     this.battleBridge.sync();
-    const snapshot={version:1,score:this.score,sessionSkulls:this.sessionSkulls,sessionDefeats:this._sessionDefeats,campaignArcId:this.campaignArcId,campaignRunId:this.campaignRunId,levelId:this.ui.selectedLevel.id,operationId:this.operationId,players:this.isCoOp?2:1,characterId:this.ui.selectedChar.id,loadout:this.activeLoadout,scene:{mapSeed:this.operationMapSeed,difficultyId:this.operationDifficulty},simulation:this.battleSimulation.saveState(),objectives:this.operationObjectives?.serialize(),tacticalWorld:this.env.serializeTacticalWorld?.(),preyInteractions:this.env.serializePreyInteractions?.(),supports:{version:1,apc:this.apc.serialize(),cheyenne:this.dropship.serialize()},companions:this.companionLoadouts?.serialize(),rescue:this.allyRescue?.serialize(),bossPressure:this.bossPhasePressure?.serialize(),playerStates:[this.player,this.player2].filter(Boolean).map(snapshotOperationPlayer)};
+    const snapshot={version:1,score:this.score,sessionSkulls:this.sessionSkulls,sessionDefeats:this._sessionDefeats,campaignArcId:this.campaignArcId,campaignRunId:this.campaignRunId,levelId:this.ui.selectedLevel.id,operationId:this.operationId,players:this.isCoOp?2:1,characterId:this.ui.selectedChar.id,loadout:this.activeLoadout,scene:{mapSeed:this.operationMapSeed,difficultyId:this.operationDifficulty,
+      deploymentPlan:this.operationDeploymentPlan??'authored',extinctionVariant:this.extinctionVariant??'none'},simulation:this.battleSimulation.saveState(),objectives:this.operationObjectives?.serialize(),tacticalWorld:this.env.serializeTacticalWorld?.(),preyInteractions:this.env.serializePreyInteractions?.(),supports:{version:1,apc:this.apc.serialize(),cheyenne:this.dropship.serialize()},companions:this.companionLoadouts?.serialize(),rescue:this.allyRescue?.serialize(),bossPressure:this.bossPhasePressure?.serialize(),playerStates:[this.player,this.player2].filter(Boolean).map(snapshotOperationPlayer)};
     try{localStorage.setItem('yautja-operation-checkpoint-v1',JSON.stringify(snapshot));this.operationPanel.feedback('Opération sauvegardée : identités, blessures, pertes et objectifs conservés.');document.getElementById('btn-resume-operation').classList.remove('hidden');}catch{this.operationPanel.feedback('Stockage indisponible : la partie reste active en mémoire.');}
   }
 
@@ -462,7 +533,11 @@ class GameApp {
       this.operationId = document.getElementById('operation-select').value;
       this.operationDifficulty=document.getElementById('operation-difficulty-select').value;
       this.operationMapSeed=Number(document.getElementById('operation-layout-select').value);
-      if(this.missionMode==='fronts'){const scene=createOperationScene({operationId:this.operationId,level:this.ui.selectedLevel,players:this.isCoOp?2:1,mapSeed:this.operationMapSeed,difficultyId:this.operationDifficulty});scene.characterBriefing=this.battleCampaign.getCharacterBriefing(scene.config,{arcId:document.getElementById('campaign-arc-enabled').checked&&/^AFF-0[1-5]$/.test(this.operationId)?CLAN_CAMPAIGN_ARC_ID:null,characterId:this.ui.selectedChar.id});this.operationBriefing.render(scene);}else this.operationBriefing.render(null);
+      this.extinctionVariant=this.missionMode==='fronts'&&this.operationId==='AFF-27'&&
+        document.getElementById('extinction-variant-enabled').checked?
+        'carrier-ravager':'none';
+      if(this.missionMode==='fronts'){const scene=createOperationScene({operationId:this.operationId,level:this.ui.selectedLevel,players:this.isCoOp?2:1,mapSeed:this.operationMapSeed,difficultyId:this.operationDifficulty,
+        extinctionVariant:this.extinctionVariant});scene.characterBriefing=this.battleCampaign.getCharacterBriefing(scene.config,{arcId:document.getElementById('campaign-arc-enabled').checked&&/^AFF-0[1-5]$/.test(this.operationId)?CLAN_CAMPAIGN_ARC_ID:null,characterId:this.ui.selectedChar.id});this.operationBriefing.render(scene);}else this.operationBriefing.render(null);
       if (this.missionMode === 'fronts' && BATTLE_OPERATIONS.some(operation=>operation.id===this.operationId)) this.ui.selectedLevel = LEVELS_DATA.find(level => level.id === getBattleOperationScene(this.operationId).levelId);
       this.ui.showScreen(document.getElementById('loadout-prep-screen'));
     });
@@ -1820,9 +1895,20 @@ class GameApp {
     const sceneOptions=operationSceneOptions(options.resumeOperation,{mapSeed:this.operationMapSeed,difficultyId:this.operationDifficulty});
     this.operationMapSeed=this.missionMode==='fronts'?sceneOptions.mapSeed:0;
     this.operationDifficulty=this.missionMode==='fronts'?sceneOptions.difficultyId:'standard';
+    this.extinctionVariant=this.missionMode==='fronts'&&this.operationId==='AFF-27'?
+      (options.resumeOperation?options.resumeOperation.scene?.extinctionVariant??'none':
+        this.extinctionVariant??'none'):'none';
+    // Old checkpoints lack a deployment marker and must preserve their signed
+    // historical budget projection. New missions use the audited front plan.
+    this.operationDeploymentPlan = this.missionMode==='fronts'
+      ? (options.resumeOperation?.scene?.deploymentPlan ??
+          (options.resumeOperation ? 'historical-fallback' : 'authored'))
+      : 'authored';
     let preparedOperation=null;
     try{
-      preparedOperation=this.missionMode==='fronts'?createOperationScene({operationId:this.operationId,level:selectedLevel,players:this.isCoOp?2:1,mapSeed:this.operationMapSeed,difficultyId:this.operationDifficulty}):null;
+      preparedOperation=this.missionMode==='fronts'?createOperationScene({operationId:this.operationId,level:selectedLevel,players:this.isCoOp?2:1,mapSeed:this.operationMapSeed,difficultyId:this.operationDifficulty,
+          deploymentPlan:this.operationDeploymentPlan,
+          extinctionVariant:this.extinctionVariant}):null;
       this.preparedBossEncounter=preparedOperation?null:prepareBossEncounter({level:selectedLevel,bossType:options.bossType??selectedLevel.bossType,mode:this.missionMode==='sandbox'?'sandbox':'level'});
     }catch{
       this.ui.showAnnouncement('Cet affrontement ne peut pas être préparé : vérifiez le terrain et le boss sélectionnés.');
@@ -1962,16 +2048,24 @@ class GameApp {
   }
 
   clearAPCSupport() {
+    // Redeployment must not vaporize an already seated finite USCM section.
+    // An unsafe dock refuses the reset; a destroyed hull uses the separate
+    // onDestroyed casualty path and has already emptied the manifest.
+    if(this.apcMarineService?.manifest){
+      const exit=this.apcMarineService.beforeRedeploy();
+      if(!exit.accepted)return false;
+    }
     if (this._apcNavigationCollider) {
       this.env.colliders = this.env.colliders.filter(collider => collider !== this._apcNavigationCollider);
       this._apcNavigationCollider = null;
       this.invalidateSupportNavigation();
     }
     this.apc.clear();
+    return true;
   }
 
   spawnAPCSupport(position) {
-    this.clearAPCSupport();
+    if(this.clearAPCSupport()===false)return false;
     this.env.resolveMovement(position, this.apc.navigationRadius);
     position.y=this.env.getPlacementElevationAt?.(position.x,position.z)??position.y;
     if(!this.apc.spawn(position))return false;
@@ -1994,19 +2088,33 @@ class GameApp {
 
   initializeMissionSupports(saved) {
     const context=createMissionSupportContext({missionId:saved?.campaignRunId??this.missionRun,levelId:this.ui.selectedLevel.id,fidelityMode:this.activeLoadout.fidelityMode,environment:this.env,
-      onDestroyed:event=>{if(event.kind==='apc')this.clearAPCSupport();this.ui.showAnnouncement(event.kind==='apc'?'APC M577 DÉTRUIT — APPUI PERDU POUR CETTE MISSION.':'CHEYENNE DÉTRUIT — APPUI PERDU POUR CETTE MISSION.');}});
+      onDestroyed:event=>{
+        if(event.kind==='apc'){
+          const killer=this.battleSimulation?.factions.has(event.killerFaction)?event.killerFaction:null;
+          this.apcMarineService?.carrierDestroyed(killer);
+          this.clearAPCSupport();
+        }
+        this.ui.showAnnouncement(event.kind==='apc'?'APC M577 DÉTRUIT — APPUI PERDU POUR CETTE MISSION.':'CHEYENNE DÉTRUIT — APPUI PERDU POUR CETTE MISSION.');
+      }});
     this.missionSupportContext=context;
     this.orbital.supportContext=context;
     this.apc.beginMission(context);this.dropship.beginMission(context);
   }
 
   restoreMissionSupports(saved) {
+    if(!validateM577CarrierCheckpoint(this.battleSimulation?.getAPCManifest?.(),saved,this.env))
+      throw new Error('Incompatible APC passenger checkpoint: absent, displaced or unsupported carrier');
     if(!saved)return;
     if(saved.version!==1||!this.apc.restore(saved.apc)||!this.dropship.restore(saved.cheyenne))throw new Error('Incompatible support checkpoint');
     if(this._apcNavigationCollider)this.env.colliders=this.env.colliders.filter(collider=>collider!==this._apcNavigationCollider);
     this._apcNavigationCollider=this.apc.getNavigationCollider();
     if(this._apcNavigationCollider)this.env.colliders.push(this._apcNavigationCollider);
     this.invalidateSupportNavigation();
+    if(this.battleSimulation?.apcManifest&&!this.apc.isSupportActive())
+      throw new Error('Incompatible APC passenger checkpoint: carrier is not deployed');
+    if(this.battleSimulation?.apcManifest&&
+       this.apcMarineService?.validateCarrierPosition().accepted!==true)
+      throw new Error('Incompatible APC passenger checkpoint: live carrier position differs from manifest');
   }
 
   enterBattlefieldSector(sector) {

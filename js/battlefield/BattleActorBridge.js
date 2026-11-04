@@ -1,8 +1,12 @@
+import * as THREE from 'three';
 import { applyBattleFormationHit } from '../engine/BattleActorSupport.js';
 import { recordCombatDeath } from '../engine/CombatEvents.js';
 import { sourceUnitVisualKind } from '../data/SourceActorPresentation.js';
+import { allowsDetailedXenomorphProfile } from './ExtinctionCastePolicy.js';
+import { originalMusouSquadRole } from '../data/OriginalMusouSquadRoles.js';
+import { attachOriginalMusouFieldGear } from '../graphics/OriginalMusouFieldGear.js';
 const ACTOR_TYPES = {
-  xenomorph: new Set(['warrior', 'runner', 'spitter', 'boiler', 'neomorph', 'praetomorph', 'red_warrior', 'facehugger', 'officer', 'crusher', 'praetorian', 'grid_alien', 'cyber_xeno', 'cryo_xeno', 'xenomorph', 'queen']),
+  xenomorph: new Set(['warrior', 'runner', 'spitter', 'boiler', 'neomorph', 'praetomorph', 'red_warrior', 'facehugger', 'officer', 'crusher', 'praetorian', 'grid_alien', 'cyber_xeno', 'cryo_xeno', 'xenomorph', 'queen', 'carrier', 'ravager']),
   human: new Set(['marine', 'human', 'smartgunner', 'flametrooper']),
   yautja: new Set(['yautja', 'honor_guard', 'clan_hunter', 'bad_blood']),
   synthetic: new Set(['synthetic', 'working_joe', 'weyland_combat'])
@@ -13,7 +17,9 @@ const ACTOR_TYPES = {
 export class BattleActorBridge {
   static unsupportedProfiles(config) {
     const used = new Set((config.groups ?? []).flatMap(group => group.units ?? []).map(unit => unit.profileId));
-    return (config.profiles ?? []).filter(profile => used.has(profile.id) && !ACTOR_TYPES[profile.species === 'xeno' ? 'xenomorph' : profile.species]?.has(profile.actorType)).map(profile => profile.id);
+    return (config.profiles ?? []).filter(profile => used.has(profile.id) &&
+      (!ACTOR_TYPES[profile.species === 'xeno' ? 'xenomorph' : profile.species]?.has(profile.actorType)||
+       !allowsDetailedXenomorphProfile(profile,config.id))).map(profile => profile.id);
   }
 
   constructor(game) {
@@ -40,6 +46,69 @@ export class BattleActorBridge {
     this.meleeWrapper = attack => [...this.originalMelee.call(this.game.horde, attack), ...this.hitOtherHostiles(attack)];
     this.game.horde.checkMeleeHits = this.meleeWrapper;
     this.game.horde.cancelPendingSpawns?.();
+    this.previousCarrierLaunch=this.game.horde.carrierCargoLaunch;
+    this.carrierLaunchHandler=(carrier,target)=>
+      this.launchCarrierFacehugger(carrier,target);
+    this.game.horde.carrierCargoLaunch=this.carrierLaunchHandler;
+  }
+
+  /** Spawn a REAL allocated Facehugger only after physical destination and
+   * source Carrier authorization. The Bridge owns its live projection and
+   * rolls it back if the finite strategic transition is refused. */
+  launchCarrierFacehugger(carrierActor,target){
+    const sim=this.simulation,env=this.game.env,nav=env?.navigation;
+    const id=carrierActor?.battleUnitId,entry=this.actors.get(id),
+      source=sim?.units?.get(id),cargo=source?.carrierCargoIds??[],
+      targetPos=target?.position??target?.mesh?.position,
+      targetFaction=target?.factionId??(target?.takeDamage?
+        sim?.config?.playerFaction:null);
+    if(this.disposed||!sim||sim.paused||sim.result||
+      entry?.actor!==carrierActor||!cargo.length||
+      source?.actorType!=='carrier'||!targetPos?.isVector3||
+      !(target?.hp>0)||!targetFaction||
+      !sim.areHostile(source.factionId,targetFaction)||!nav?.canStand||
+      !nav.safeSpawnNear||!env.getElevationAt)return{accepted:false,reason:'no_source_launch'};
+    const start=carrierActor.mesh.position.clone(),gap=start.distanceTo(targetPos);
+    if(gap>13||gap<.5||Math.abs(targetPos.y-start.y)>3)
+      return{accepted:false,reason:'target_outside_carrier_arc'};
+    const occupied=[...this.actors.values()].map(({actor})=>({
+      position:actor.mesh.position,radius:actor.radius??.8
+    }));
+    occupied.push({position:targetPos,radius:target?.radius??.8});
+    const destination=nav.safeSpawnNear(targetPos.clone(),.6,occupied,5);
+    if(!destination?.isVector3||!nav.canStand(destination,.6)||
+      destination.distanceTo(start)>19||
+      Math.abs(destination.y-start.y)>2||
+      env.hasLineOfSight?.(
+        start.clone().add(new THREE.Vector3(0,2,0)),
+        destination.clone().add(new THREE.Vector3(0,.5,0)))===false)
+      return{accepted:false,reason:'no_clear_physical_carrier_arc'};
+    const faceId=cargo[0],face=sim.units.get(faceId),group=sim.groups.get(source.groupId);
+    if(!face||this.actors.has(faceId)||!group)
+      return{accepted:false,reason:'carrier_payload_unavailable'};
+    let actor;
+    try{
+      actor=this.game.horde.spawnBattleUnit({...face,position:[start.x,start.z]},
+        sim.getGroup(group.id));
+      if(!actor?.mesh||actor.battleUnitId!==faceId)
+        throw new Error('unowned projected parasite');
+      const accepted=sim.launchCarrierFacehugger(id,faceId,[start.x,start.z]);
+      if(!accepted.accepted){
+        this.game.horde.despawnBattleUnit(faceId);
+        return accepted;
+      }
+      const roof=start.clone().add(new THREE.Vector3(0,2.05,0));
+      actor.mesh.position.copy(roof);
+      actor.carrierFlight={start:roof,end:destination.clone(),elapsed:0,duration:1.0};
+      actor.lastDamageFaction=null;
+      this.actors.set(faceId,{
+        actor,manager:this.game.horde,groupId:group.id,unitId:faceId
+      });
+      return{accepted:true,facehuggerId:faceId,landing:[destination.x,destination.z]};
+    }catch(error){
+      if(actor)this.game.horde.despawnBattleUnit(faceId);
+      return{accepted:false,reason:'carrier_launch_projection_failed'};
+    }
   }
 
   spawnGroup(group, units) {
@@ -54,11 +123,29 @@ export class BattleActorBridge {
         if (!manager?.spawnBattleUnit) throw new Error(`No detailed combat manager for ${unit.species ?? group.species}`);
         const actor = manager.spawnBattleUnit(unit, group);
         if (!actor?.mesh || actor.battleUnitId !== unit.id) throw new Error('The combat manager did not preserve its allocated identity');
+        const sourceSlot=originalMusouSquadRole(this.simulation.config,group,unit);
         actor.profileName = sourceUnitVisualKind(unit) === 'drone'
           ? 'Drone — constructeur de nodules (modèle procédural)'
-          : unit.profileName ?? actor.profileName;
+          : sourceSlot?.label ?? unit.profileName ?? actor.profileName;
+        if (sourceSlot) {
+          actor.originalMusouRole = sourceSlot; // No change to actorType or combat stats.
+          if(actor.mesh.userData)actor.mesh.userData.originalMusouRole = sourceSlot.role;
+          if(sourceSlot.species==='human')attachOriginalMusouFieldGear(actor.mesh,sourceSlot);
+        }
         const entry = { actor, manager, groupId: group.id, unitId: unit.id };
         this.actors.set(unit.id, entry); added.push(entry);
+        if (this.simulation.config.context?.frontAllocationProvenance === 'original-audit-front-v1; not canon' &&
+            this.game.env.navigation?.safeSpawnNear) {
+          // Real props/gates are only known after Environment.buildLevelEnvironment.
+          // Reposition the rendered actor locally without editing the signed
+          // battle group, its IDs, supply, budget or historical checkpoint.
+          const occupied = [...this.actors.values()].filter(item => item.actor !== actor)
+            .map(item => ({ position: item.actor.mesh.position, radius: item.actor.radius ?? 1 }));
+          const safe = this.game.env.navigation.safeSpawnNear(
+            actor.mesh.position, actor.radius ?? 1, occupied);
+          if (!safe) throw new Error('No physically safe Musou squad spawn in this constructed sector');
+          actor.mesh.position.copy(safe);
+        }
         this.game.env.resolveMovement(actor.mesh.position, actor.radius ?? 1);
         if(!actor.isFlying&&!actor._terrainFall)actor.mesh.position.y=this.game.env.getElevationAt?.(actor.mesh.position.x,actor.mesh.position.z)??actor.mesh.position.y;
         this.game.allyRescue?.onMaterialize(actor);
@@ -99,6 +186,14 @@ export class BattleActorBridge {
     }
     const unavailableGroups = new Set();
     for (const [unitId, { actor, manager, groupId }] of this.actors) {
+      // A persistent death may be owned by a non-rendered system (incubation,
+      // campaign consequence, environmental effect). Never resurrect that ID
+      // from a stale still-alive mesh or mark its whole group unavailable.
+      if (this.simulation.units.get(unitId)?.state === 'dead') {
+        manager.despawnBattleUnit?.(unitId);
+        this.actors.delete(unitId);
+        continue;
+      }
       if(!actor.isFlying&&!actor.isLeaping&&!actor._terrainFall)actor.mesh.position.y=this.game.env.getElevationAt?.(actor.mesh.position.x,actor.mesh.position.z,actor.mesh.position.y)??actor.mesh.position.y;
       const present = manager === this.game.bosses ? manager.activeBoss === actor : manager[this.arrayKeys.get(manager)]?.includes(actor);
       if (!present && actor.hp > 0) {
@@ -152,6 +247,8 @@ export class BattleActorBridge {
     for (const [unitId, { manager }] of this.actors) manager.despawnBattleUnit(unitId);
     this.actors.clear();
     if (this.game.horde.checkMeleeHits === this.meleeWrapper) this.game.horde.checkMeleeHits = this.originalMelee;
+    if(this.game.horde.carrierCargoLaunch===this.carrierLaunchHandler)
+      this.game.horde.carrierCargoLaunch=this.previousCarrierLaunch;
     for (const [manager, previous] of this.previous) {
       manager.battleSimulation = previous.battleSimulation;
       manager.combatActorsProvider = previous.provider;

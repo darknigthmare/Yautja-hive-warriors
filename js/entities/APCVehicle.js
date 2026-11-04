@@ -2,7 +2,7 @@
 
 import * as THREE from 'three';
 import { createAPCModel } from '../graphics/SupportModels.js';
-import { APC_DEPLOYMENT_SECONDS, APC_NAVIGATION } from '../graphics/APCModel.js';
+import { APC_DEPLOYMENT_SECONDS, APC_NAVIGATION, APC_WEAPON_PROVENANCE } from '../graphics/APCModel.js';
 import { disposeObject } from '../engine/SceneResources.js';
 import { traceCombatSegment } from '../engine/CombatGeometry.js';
 import { FiniteSupportPolicy, createSupportCombatant, supportDestroyedEvent } from '../engine/FiniteSupportPolicy.js';
@@ -63,7 +63,10 @@ export class APCVehicle {
   }
   isSupportActive() { return this.isActive && !!this.mesh && this.policy.available; }
   getCombatant() { return this.isSupportActive() ? this.combatant : null; }
-  getSupportState() { return { ...this.policy.getState(), deployed: this.isSupportActive(), cooldown: this.fireCooldown }; }
+  getSupportState() { return { ...this.policy.getState(), deployed: this.isSupportActive(),
+    cooldown: this.fireCooldown, roofWeapon: APC_WEAPON_PROVENANCE.roof,
+    frontWeaponImplemented: APC_WEAPON_PROVENANCE.frontWeaponImplemented,
+    sourceVisualFidelity1to1Verified:false }; }
   takeDamage(amount, source) {
     if (!this.isSupportActive()) return 0;
     const dealt = this.policy.damage(amount);
@@ -86,6 +89,22 @@ export class APCVehicle {
     return true;
   }
 
+  /** Keep the original registered collider object live as the carrier moves.
+   * Replacing it would leave stale references in physics and pathfinding. */
+  syncNavigationCollider(collider){
+    if(!collider||collider.owner!=='apc')return false;
+    const current=this.getNavigationCollider();
+    if(!current)return false;
+    for(const key of ['x','z','rotation'])collider[key]=current[key];
+    return true;
+  }
+
+  /** Pure visual running gear fed only by movement accepted by the road sim. */
+  updateRunningGear(distance,heights=[0,0,0,0],steering=0){
+    if(!this.isSupportActive()||!this.model?.setWheelMotion)return false;
+    return this.model.setWheelMotion({distance,heights,steering});
+  }
+
   getNavigationCollider() {
     if (!this.isSupportActive()) return null;
     const center = new THREE.Vector3(0, 0, APC_NAVIGATION.centerZ).applyAxisAngle(new THREE.Vector3(0, 1, 0), this.mesh.rotation.y).add(this.mesh.position);
@@ -101,6 +120,9 @@ export class APCVehicle {
     if (!pos?.isVector3 || ![pos.x, pos.y, pos.z].every(Number.isFinite)) { this.policy.refuse('invalid'); return false; }
     if (!permission.accepted) { this.policy.refuse(permission.reason); return false; }
     if (this.mesh) {
+      // Instanced wheels own per-instance GPU buffers separate from geometry.
+      // Dispatch their disposal before releasing the ordinary model resources.
+      this.model?.wheelInstances?.dispose?.();
       disposeObject(this.mesh);
     }
 
@@ -195,7 +217,9 @@ export class APCVehicle {
 
     if (nearestTarget && this.turretMesh) {
 
-      // Fire twin 20mm autocannon bursts
+      // M577A rear sliding plasma pair. The separate RE700 20mm nose guns
+      // are not yet a playable weapon. Legacy finite "rounds" remain so
+      // existing checkpoints never refill or lose their stored ammunition.
       if (this.fireCooldown <= 0 && this.deployment >= 1) {
         if (!this.policy.spend({ rounds: 2 }).accepted) return;
         this.fireCooldown = 1.1;
@@ -221,7 +245,7 @@ export class APCVehicle {
             origin: nearestTarget.mesh.position,
             radius: 3.5,
             damage: 240,
-            type: 'heavy',
+            type: APC_WEAPON_PROVENANCE.gameplayDamageType,
             killerFaction: this.policy.context?.factionId ?? 'player_clan'
           });
 
@@ -272,6 +296,7 @@ export class APCVehicle {
     this.tracers = [];
     if (this.mesh) {
       this.lastPosition.copy(this.mesh.position);
+      this.model?.wheelInstances?.dispose?.();
       disposeObject(this.mesh);
       this.mesh = null;
       this.turretMesh = null;
@@ -286,7 +311,7 @@ export class APCVehicle {
   spawnTracer(startPos, targetPos) {
     const tracerGeo = new THREE.CylinderGeometry(0.04, 0.04, 0.8, 4);
     tracerGeo.rotateX(Math.PI / 2);
-    const tracerMat = new THREE.MeshBasicMaterial({ color: 0xfff066 });
+    const tracerMat = new THREE.MeshBasicMaterial({ color: 0x8edaff });
     const tracerMesh = new THREE.Mesh(tracerGeo, tracerMat);
 
     tracerMesh.position.copy(startPos);

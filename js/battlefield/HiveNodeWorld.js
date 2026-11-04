@@ -57,7 +57,9 @@ export class HiveNodeWorld {
 
   update() {
     if (!this.simulation || !this.root.parent) return;
-    const state = this.simulation.getHiveNodeState();
+    // The world only needs finite building models, not a copy of every
+    // short-lived spore track on every rendered frame.
+    const state = this.simulation.getHiveNodeState({ nodesOnly: true });
     const active = new Set();
     this.combatants = [];
     for (const node of state.nodes) {

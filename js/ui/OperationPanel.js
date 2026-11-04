@@ -1,5 +1,6 @@
 import { intelligencePresentation } from './TacticalPresentation.js';
-/* Battlefield telemetry and real orders, separate from the cinematic hunt HUD. */
+/* Live Musou battle triage. Orders are optional support, not a main RTS loop. */
+import { buildMusouBattlePulse } from '../battlefield/MusouBattleFlow.js';
 const compass=['N','NE','E','SE','S','SO','O','NO'];
 export function hiveCoordinationFeedback(event, groups = [], fronts = []) {
   if (event?.type !== 'hive_coordination_disrupted') return null;
@@ -15,7 +16,7 @@ export function operationAlertState(state,objectives,players=[]) {
   const reaction=[...(objectives?.reactions??[]),...(state.phaseThreats??[])].filter(item=>item.status==='announced').sort((a,b)=>a.remaining-b.remaining)[0];if(reaction)return locate(reaction.targetFrontId,reaction.label??'CONTRE-OFFENSIVE EN APPROCHE',reaction.remaining);
   const first=state.alerts[0],alert=first?.type==='unit_died'?(state.alerts.find(item=>item.type==='hive_coordination_disrupted'&&item.groupId===first.groupId&&item.time===first.time)??first):first;if(!alert)return{text:'Les réserves et les pertes persistent entre les fronts.',frontId:null};
   if(alert.type==='hive_coordination_disrupted')return{frontId:alert.frontId,text:hiveCoordinationFeedback(alert,state.groups,state.fronts)};
-  const names={base_captured:'Le contrôle d’un front a changé',source_disabled:'Une source de renfort est neutralisée',unit_died:'Un capitaine est tombé',reinforcements_inbound:'Renforts en approche',reinforcements_arrived:'Renforts arrivés',critical_front_recovered:'Le front critique a été repris',front_delegated:'Un capitaine prend le commandement',tactic_ordered:'Une tactique collective est en cours',relations_changed:'Les relations entre factions ont changé',order_blocked:'Un ordre est bloqué par une route fermée'};
+  const names={base_captured:'Le contrôle d’un front a changé',source_disabled:'Une source de renfort est neutralisée',unit_died:'Un capitaine est tombé',reinforcements_inbound:'Renforts en approche',reinforcements_arrived:'Renforts arrivés',critical_front_recovered:'Le front critique a été repris',front_delegated:'Un capitaine prend le commandement',tactic_ordered:'Une tactique collective est en cours',relations_changed:'Les relations entre factions ont changé',order_blocked:'Un ordre est bloqué par une route fermée',musou_officer_broken:'OFFICIER ENNEMI VAINCU — l’avant-garde alliée reprend courage'};
   const group=state.groups.find(item=>item.id===alert.groupId);return locate(alert.frontId??alert.targetFrontId??group?.frontId,names[alert.type]??'Nouveau rapport stratégique',alert.arrivalAt!==undefined?alert.arrivalAt-state.time:null);
 }
 
@@ -23,12 +24,16 @@ export class OperationPanel {
   constructor({ onOrder, onAction, onCheckpoint, onMap } = {}) {
     this.root = document.createElement('section'); this.root.id = 'operation-panel';
     this.root.className = 'operation-panel hidden'; this.root.setAttribute('aria-label', 'Commandement des fronts');
-    this.root.innerHTML = `<strong data-title>OPÉRATION ORIGINALE</strong><p data-counts></p><p data-fronts></p><p data-alert role="status"></p><p data-rescue role="status"></p><p data-tasks></p><p data-report-age></p><details><summary>ORDRES ET LOGISTIQUE</summary><label>Groupe <select data-group aria-label="Groupe allié"></select></label><label>Front <select data-front aria-label="Front cible"></select></label><label>Ordre <select data-order aria-label="Ordre"><option value="attack">Attaquer</option><option value="defend">Défendre</option><option value="regroup">Regrouper</option><option value="escort">Escorter</option><option value="retreat">Replier</option></select></label><div><button data-map>CARTE / ORDRES</button><button data-send>TRANSMETTRE</button><button data-rally>RALLIER</button><button data-sabotage>SABOTER</button><button data-save>SAUVEGARDER</button></div><small data-feedback></small></details>`;
+    this.root.innerHTML = `<strong data-title>BATAILLE MUSOU</strong><p data-musou aria-live="off"></p><p data-counts></p><p data-fronts></p><p data-alert role="status"></p><p data-rescue role="status"></p><p data-tasks></p><p data-report-age></p><details><summary>TACTIQUES D'APPUI (OPTIONNELLES)</summary><label>Groupe <select data-group aria-label="Groupe allié"></select></label><label>Front <select data-front aria-label="Front cible"></select></label><label>Ordre <select data-order aria-label="Ordre"><option value="attack">Attaquer</option><option value="defend">Défendre</option><option value="regroup">Regrouper</option><option value="escort">Escorter</option><option value="retreat">Replier</option></select></label><div><button data-map>CARTE / ORDRES</button><button data-send>TRANSMETTRE</button><button data-rally>RALLIER</button><button data-sabotage>SABOTER</button><button data-apc-board>USCM M577 : EMBARQUER</button><button data-apc-exit>USCM M577 : DÉBARQUER</button><button data-apc-drive>USCM M577 : VERS FRONT</button><button data-apc-stop>USCM M577 : STOP</button><button data-save>SAUVEGARDER</button></div><small data-feedback></small></details>`;
     document.getElementById('in-game-hud').append(this.root);
     this.root.querySelector('[data-map]').onclick = () => onMap?.();
     this.root.querySelector('[data-send]').onclick = () => onOrder?.(this.root.querySelector('[data-group]').value, { type: this.root.querySelector('[data-order]').value, frontId: this.root.querySelector('[data-front]').value });
     this.root.querySelector('[data-rally]').onclick = () => onAction?.('rally', this.root.querySelector('[data-front]').value);
     this.root.querySelector('[data-sabotage]').onclick = () => onAction?.('sabotage', this.root.querySelector('[data-front]').value);
+    this.root.querySelector('[data-apc-board]').onclick = () => onAction?.('apc-board', this.root.querySelector('[data-front]').value);
+    this.root.querySelector('[data-apc-exit]').onclick = () => onAction?.('apc-disembark', this.root.querySelector('[data-front]').value);
+    this.root.querySelector('[data-apc-drive]').onclick = () => onAction?.('apc-travel', this.root.querySelector('[data-front]').value);
+    this.root.querySelector('[data-apc-stop]').onclick = () => onAction?.('apc-stop', this.root.querySelector('[data-front]').value);
     this.root.querySelector('[data-save]').onclick = () => onCheckpoint?.();
   }
   feedback(message) { this.root.querySelector('[data-feedback]').textContent = message; }
@@ -39,8 +44,19 @@ export class OperationPanel {
   }
   update(state, objectives, players = []) {
     this.root.classList.toggle('hidden', !state); if (!state) return;
-    this.root.querySelector('[data-title]').textContent = state.label + ' · AFFRONTEMENT ORIGINAL';
+    this.root.querySelector('[data-title]').textContent = state.label + ' · ACTION MUSOU / OBJECTIFS ORIGINAUX';
+    const pulse=buildMusouBattlePulse(state,players);
+    const header=pulse.fronts.map(f=>`${f.critical?'⚠ ':''}${f.label} : ${f.action}${f.distanceToHero!==null?' · '+f.distanceToHero+' u':''}`).join('  ·  ');
+    const reserve=pulse.playerCombatants;
+    this.root.querySelector('[data-musou]').textContent =
+      `${pulse.largeArmyLabel}  ·  ${header}${reserve?`  ·  Alliés déployés : ${reserve.deployed} / réserve ${reserve.reserves}`:''}`;
     this.root.querySelector('[data-counts]').textContent = Object.entries(state.intelCounts??{}).map(([id,c])=>c.exact?`${c.label??id} : ${state.counts[id].active} détaillés / ${state.counts[id].distant} distants / ${state.counts[id].reserve} réserve / ${state.counts[id].dead} pertes`:`${c.label??id} : ${c.knownAlive??0} signalés · réserves inconnues`).join(' · ');
+    const apc=state.apcTransport;
+    const occupied=(apc?.passengers??0)+(apc?.crew??0);
+    this.root.querySelector('[data-apc-board]').disabled=!apc?.available||occupied>0;
+    this.root.querySelector('[data-apc-exit]').disabled=!apc?.canDisembark;
+    this.root.querySelector('[data-apc-drive]').disabled=!apc?.canDrive;
+    this.root.querySelector('[data-apc-stop]').disabled=!apc?.canStop;
     this.root.querySelector('[data-fronts]').textContent = state.fronts.map(front => `${front.label} : ${front.intelState==='unknown'?'inconnu':front.owner??'neutre'}${front.contested ? ' ⚔' : ''}`).join(' · ');
     this.root.querySelector('[data-alert]').textContent = operationAlertState(state,objectives,players).text;
     const patients=state.rescue?.records?.filter(record=>record.status==='downed')??[];

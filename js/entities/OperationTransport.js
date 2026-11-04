@@ -2,6 +2,7 @@
  * It drives the real vehicle along real corridors while the battle continues.
  * Ownership, contested fronts, closed terrain and nearby enemies can stop it. */
 import * as THREE from 'three';
+import { physicalOperationRouteAvailable } from '../battlefield/PhysicalRouteAvailability.js';
 
 const planarDistance = (a, b) => Math.hypot(a.x - b.x, a.z - b.z);
 const point = (p, y = .5) => new THREE.Vector3(p[0], y, p[1]);
@@ -27,9 +28,7 @@ export class OperationTransport {
     return false;
   }
   _safeRoute(route) {
-    const physicalId = route.physicalRouteId ?? route.id.replace(/^bound-/, '');
-    return route.open && this.environment.isTacticalRouteAvailable(physicalId) &&
-      (route.physicalGateIds ?? []).every(id => this.environment.isGateOpen(id)) &&
+    return route.open && physicalOperationRouteAvailable(this.environment, route) &&
       this._safeFront(this.simulation.fronts.get(route.from)) && this._safeFront(this.simulation.fronts.get(route.to)) &&
       Array.isArray(route.waypoints) && route.waypoints.length >= 2;
   }
@@ -53,16 +52,49 @@ export class OperationTransport {
     if (!this._safeFront(from)) return [];
     return [...this.simulation.fronts.values()].filter(front => front.id !== from.id && this._safeFront(front) && this._path(from.id, front.id)).map(front => ({ id: front.id, label: front.label }));
   }
+  _safeDismount() {
+    const origin=this.skimmer.position,heading=this.skimmer.rotationY??0;
+    // Dismount at the current deck, never at another deck with the same XZ.
+    // Probe the four sides of the real mount before considering a small local
+    // clearance. These checks do not mutate the signed strategic battle.
+    for (const [dx,dz] of [[3.5,0],[-3.5,0],[0,3.5],[0,-3.5]]) {
+      const candidate=origin.clone().add(new THREE.Vector3(
+        dx*Math.cos(heading)+dz*Math.sin(heading),0,
+        -dx*Math.sin(heading)+dz*Math.cos(heading)));
+      const floor=this.environment.getElevationAt?.(candidate.x,candidate.z,origin.y);
+      if (!Number.isFinite(floor) || Math.abs(origin.y-.5-floor)>1.5) continue;
+      candidate.y=floor;
+      const nav=this.environment.navigation;
+      if (nav?.canStand && !nav.canStand(candidate,.75)) continue;
+      const exit=nav?.safeSpawnNear
+        ? nav.safeSpawnNear(candidate,.75,[{position:origin,radius:1.4}],3)
+        : candidate;
+      if (!exit?.isVector3 || ![exit.x,exit.y,exit.z].every(Number.isFinite) ||
+          Math.abs(exit.y-floor)>1 || Math.abs(exit.y-origin.y)>2 ||
+          Math.hypot(exit.x-origin.x,exit.z-origin.z)<2.25 ||
+          (nav?.canStand && !nav.canStand(exit,.75))) continue;
+      return exit;
+    }
+    return null;
+  }
   interact(player) {
     if (!player?.position || player.hp <= 0 || this.skimmer.mountCooldown > 0) return false;
     if (this.isPassenger(player)) {
       if (this.journey) { this.cancel('manual_stop'); return true; }
+      const exit=this._safeDismount();
+      if (!exit) {
+        this.lastResult={accepted:false,reason:'no_safe_dismount'};
+        this.feedback('Débarquement impossible : aucun sol sûr au niveau du Skimmer.');
+        return false;
+      }
       this.skimmer.isMounted = false; this.skimmer.mountCooldown = .5; player.mesh.visible = true;
-      const exit = this.skimmer.position.clone().add(new THREE.Vector3(3, 0, 0)); this.environment.resolveMovement(exit, .75);
-      player.position.copy(exit); player.position.y = this.environment.getElevationAt(exit.x, exit.z); player.mesh.position.copy(player.position); this.driver = null;
+      player.position.copy(exit); player.mesh.position.copy(exit); this.driver = null;
       return true;
     }
-    if (this.skimmer.isMounted || !this.skimmer.mesh.visible || planarDistance(player.position, this.skimmer.position) > 4.5) return false;
+    if (this.skimmer.isMounted || !this.skimmer.mesh.visible ||
+        planarDistance(player.position, this.skimmer.position) > 4.5 ||
+        !Number.isFinite(player.position.y) || !Number.isFinite(this.skimmer.position.y) ||
+        Math.abs(player.position.y-this.skimmer.position.y)>1.8) return false;
     this.driver = player; this.skimmer.isMounted = true; this.skimmer.mountCooldown = .5;
     player.mesh.visible = false; player.position.copy(this.skimmer.position); return true;
   }
@@ -111,7 +143,23 @@ export class OperationTransport {
       const stride = Math.min(remaining, distance, 1), next = this.skimmer.position.clone(), direction = target.clone().sub(next).setY(0).normalize();
       next.addScaledVector(direction, stride);
       if (this._threatAt(next)) { this.cancel('enemy_nearby'); this._syncPose(dt, true); return true; }
-      next.y = this.environment.getElevationAt(next.x, next.z) + .5;
+      const elevation = this.environment.getElevationAt(next.x, next.z);
+      if (!Number.isFinite(elevation)) {
+        this.cancel('route_terrain_unavailable'); this._syncPose(dt, false); return true;
+      }
+      const desiredAltitude = elevation + .5;
+      // Controlled assistance is NOT an instantaneous flight/teleport command.
+      // An unsupported multi-deck height jump cancels auto-pilot while manual
+      // anti-gravity flight remains available to the mounted player.
+      const maxAltitudeStep = Math.min(12, j.speed * .75) * dt + .075;
+      if (Math.abs(desiredAltitude - this.skimmer.position.y) > maxAltitudeStep) {
+        this.cancel('vertical_transfer_unavailable'); this._syncPose(dt, false); return true;
+      }
+      next.y = desiredAltitude;
+      if (this.environment.navigation?.canStand &&
+          !this.environment.navigation.canStand(next, 1.2)) {
+        this.cancel('route_terrain_unavailable'); this._syncPose(dt, false); return true;
+      }
       const desired = next.clone(); this.environment.resolveMovement(next, 1.2);
       if (planarDistance(next, desired) > .1) { j.stuck += dt; if (j.stuck > .4) this.cancel('physical_obstacle'); this._syncPose(dt, false); return true; }
       j.stuck = 0; this.skimmer.position.copy(next); remaining -= stride;

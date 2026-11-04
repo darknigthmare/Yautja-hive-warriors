@@ -3,10 +3,19 @@
  * This is a game simulation, not a claim about canonical army organization. */
 
 import { BattleIntel } from './BattleIntel.js';
-import { createHiveEcology, awardHiveInfestation, buildHiveNode, healHiveSpace,
+import { applyMusouOfficerBreak } from './MusouBattleFlow.js';
+import { APC_SECTION_RULES, M577_ROUTE_RULES, m577RouteWaypoints, m577PositionOnRoute, planM577Embark, validateM577Manifest } from './APCSectionManifest.js';
+import { applyFacehuggerExposure } from './FacehuggerExposure.js';
+import { HIVE_SPORE_RULES, updateHiveSporeSight, getHiveSporeContacts,
+  restoreHiveSporeSight } from './HiveSporeSight.js';
+import { infectHost, completeHostInfections, validateHostInfestation } from './HostInfestation.js';
+import { HIVE_NODE_RULES, createHiveEcology, awardHiveInfestation, buildHiveNode, healHiveSpace,
   damageHiveNode as damageEcologyNode, snapshotHiveEcology, restoreHiveEcology } from './HiveNodeEcology.js';
 import { sourceUnitVisualKind } from '../data/SourceActorPresentation.js';
+import { planFiniteCarrierLoad, validateFiniteCarrierCargo,
+  releaseFiniteCarrierCargo, carrierFatalFire } from './ExtinctionCarrierCargo.js';
 import { initialSpecialistStocks, restoreSpecialistStocks, sourceSpecialistRole, SPECIALIST_ATTACKS } from '../data/SourceSpecialistCombat.js';
+import { applyRavagerRemoteHit, advanceRavagerRegenesis, validateSavedRavagerRegenesis } from './ExtinctionRavagerRegenesis.js';
 import { measureDefeatReturn } from './BattleStrategy.js';
 import { validateBossCombatState } from '../data/BossEncounterValidation.js';
 import { initializeFormation, updateFormation, formationTargetForUnit, formationAttackMultiplier, normalizeFormation, FORMATION_PROFILES } from './FormationTactics.js';
@@ -23,7 +32,9 @@ const number = (value, min, max) => Number.isFinite(value) && value >= min && va
 const point = value => Array.isArray(value) && value.length === 2 && value.every(Number.isFinite);
 const dist = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]);
 const alive = unit => unit.hp > 0 && !['dead', 'evacuated', 'captured'].includes(unit.state);
-const combatReady = unit => alive(unit) && unit.incapacitated !== true;
+const combatReady = unit => alive(unit) && unit.incapacitated !== true &&
+  unit.apcSeat === undefined && unit.apcCrewRole === undefined &&
+  unit.carriedByCarrierId === undefined;
 const pair = (a, b) => a < b ? `${a}|${b}` : `${b}|${a}`;
 function ordered(value) {
   if (Array.isArray(value)) return value.map(ordered);
@@ -61,6 +72,7 @@ export class BattleSimulation {
     this.profiles = new Map(); this.groups = new Map(); this.units = new Map();
     this.relations = new Map(); this.orders = new Map(); this.nextReinforcement = new Map();
     this.defeatSince = null; this.pendingArrivals = []; this.objectiveKeys = new Set();
+    this.apcManifest = null; // Bound, authenticated passengers on the existing M577 support vehicle.
     this.nextStrategicOrder = this.config.ai?.interval ?? 20;
     this.tacticCooldowns = new Map();
     this.budgets = { active: 32, byFaction: {}, spawnInterval: 8, arrivalsPerTick: 4, spawnDistance: 24,
@@ -87,6 +99,16 @@ export class BattleSimulation {
     // the signed strategic roster. Older saves have no ecology and recover empty.
     this.hiveEcology = createHiveEcology(this.config.id, [...this.factions.values()]);
     this.intel = new BattleIntel(this, this.config.intelligence);
+    if(this.config.context?.extinctionCasteVariant==='carrier-ravager'){
+      const carrier=[...this.units.values()].find(u=>u.actorType==='carrier'&&u.profileId==='XEN-009');
+      const payload=carrier&&this.groups.get(carrier.groupId)?.units
+        .map(id=>this.units.get(id))
+        .filter(u=>u.actorType==='facehugger'&&u.hp>0)
+        .map(u=>u.id);
+      if(!carrier||payload?.length!==6||
+         this.loadCarrierCargo(carrier.id,payload).accepted!==true)
+        fail('optional source Carrier could not load six allocated Facehuggers');
+    }
   }
 
   _initialize() {
@@ -239,6 +261,12 @@ export class BattleSimulation {
     return event;
   }
 
+  /** A strategic route may be logically open but physically sealed by a gate
+   * or destroyed bridge. Do not advance its finite actors in that case. */
+  _routeTraversable(route) {
+    return !!route?.open && this.routeAvailabilityProvider?.(clone(route)) !== false;
+  }
+
   _path(from, to, ignoreClosed = false) {
     if (from === to) return [];
     const queue = [{ node: from, path: [], cost: 0 }], visited = new Set();
@@ -249,7 +277,7 @@ export class BattleSimulation {
       if (node === to) return path;
       visited.add(node);
       for (const route of this.routes.values()) {
-        if (!ignoreClosed && !route.open) continue;
+        if (!ignoreClosed && !this._routeTraversable(route)) continue;
         const next = route.from === node ? route.to : route.to === node ? route.from : null;
         if (!next || visited.has(next)) continue;
         const result = [...path, { routeId: route.id, from: node, to: next }];
@@ -262,7 +290,7 @@ export class BattleSimulation {
   setRouteOpen(routeId, open, reason = 'terrain_changed') {
     const route = this.routes.get(routeId);
     if (!route || this.disposed || this.result || route.open === Boolean(open)) return false;
-    if (open && this.routeAvailabilityProvider?.(clone(route)) === false) return false;
+    if (open && this.routeAvailabilityProvider?.(clone(route), { opening: true }) === false) return false;
     route.open = Boolean(open); this.routeRevision++; this._emit('route_changed', { routeId, open: route.open, reason }, 2);
     for (const group of this.groups.values()) if (group.path.some(segment => segment.routeId === routeId) && !route.open) {
       // A group already between junctions holds its actual position when a
@@ -277,9 +305,10 @@ export class BattleSimulation {
 
   issueOrder(groupId, specification = {}) {
     const group = this.groups.get(groupId), type = specification.type, target = specification.frontId ?? group?.frontId;
+    if (group?.apcCarrierId) return { accepted: false, reason: 'group_aboard_apc' };
     if (!group || this.disposed || this.result || !ORDERS.has(type) || !this.fronts.has(target) || !group.units.some(unitId => alive(this.units.get(unitId)))) return { accepted: false, reason: 'invalid_group_or_order' };
     if (group.units.every(unitId => this.units.get(unitId).state === 'reserve' || !alive(this.units.get(unitId)))) return { accepted: false, reason: 'group_in_reserve' };
-    if (group.path.length && !this.routes.get(group.path[0].routeId).open && dist(group.position, this.fronts.get(group.frontId).position) > this.fronts.get(group.frontId).radius) return { accepted: false, reason: 'route_closed_in_transit' };
+    if (group.path.length && !this._routeTraversable(this.routes.get(group.path[0].routeId)) && dist(group.position, this.fronts.get(group.frontId).position) > this.fronts.get(group.frontId).radius) return { accepted: false, reason: 'route_closed_in_transit' };
     if (group.reconstitution?.required && !['retreat', 'regroup'].includes(type)) return { accepted: false, reason: 'reconstitution_required' };
     const path = this._path(group.frontId, target);
     if (!path) return { accepted: false, reason: 'no_open_route' };
@@ -314,7 +343,7 @@ export class BattleSimulation {
     if (type !== 'fallback' && groups.some(group => group.reconstitution?.required)) return { accepted: false, reason: 'reconstitution_required' };
     if (type === 'pincer' && groups.length < 2) return { accepted: false, reason: 'two_groups_required' };
     if ((this.tacticCooldowns.get(type) ?? 0) > this.time) return { accepted: false, reason: 'tactic_cooling_down' };
-    if (groups.some(group => this._path(group.frontId, frontId) === null || group.path.length && !this.routes.get(group.path[0].routeId).open)) return { accepted: false, reason: 'no_open_route' };
+    if (groups.some(group => this._path(group.frontId, frontId) === null || group.path.length && !this._routeTraversable(this.routes.get(group.path[0].routeId)))) return { accepted: false, reason: 'no_open_route' };
     this.tacticCooldowns.set(type, this.time + 30);
     groups.forEach((group, index) => {
       const orderType = { pincer: 'attack', hold_line: 'defend', ambush: 'defend', fallback: 'retreat' }[type];
@@ -345,6 +374,9 @@ export class BattleSimulation {
       strength.set(key, (strength.get(key) ?? 0) + ready); garrisons.set(key, (garrisons.get(key) ?? 0) + 1);
     }
     for (const faction of this.factions.values()) {
+      const sporeFronts = faction.moraleModel === 'hive'
+        ? new Set(this.getHiveSporeContacts(faction.id).map(contact => contact.frontId))
+        : new Set();
       for (const group of byFaction.get(faction.id) ?? []) {
         if (group.materialized || group.reconstitution?.required || !group.officerId || !combatReady(this.units.get(group.officerId))) continue;
         const alliedToPlayer = this.relationship(faction.id, this.config.playerFaction) === 'allied';
@@ -353,8 +385,10 @@ export class BattleSimulation {
         if (this.fronts.get(group.frontId).owner === faction.id && garrison < (this.config.ai?.minimumGarrisonGroups ?? 1)) continue;
         const attackers = group.units.filter(unitId => combatReady(this.units.get(unitId))).length;
         const defenders = front => [...this.factions.keys()].filter(id => this.areHostile(faction.id, id)).reduce((sum, id) => sum + (strength.get(`${id}:${front.id}`) ?? 0), 0);
-        const neighbours = [...this.routes.values()].filter(route => route.open && [route.from, route.to].includes(group.frontId)).map(route => this.fronts.get(route.from === group.frontId ? route.to : route.from));
+        const neighbours = [...this.routes.values()].filter(route => this._routeTraversable(route) && [route.from, route.to].includes(group.frontId)).map(route => this.fronts.get(route.from === group.frontId ? route.to : route.from));
         const target = neighbours.filter(front => (front.owner === null || this.areHostile(faction.id, front.owner)) && attackers >= defenders(front) * (this.config.ai?.assaultMinRatio ?? 0)).sort((a, b) => {
+          const sporePriority = Number(sporeFronts.has(b.id)) - Number(sporeFronts.has(a.id));
+          if (sporePriority) return sporePriority;
           if (this.config.ai?.targetPreference === 'supply') {
             const supply = Number(b.reinforcementSource && b.sourceHP > 0) - Number(a.reinforcementSource && a.sourceHP > 0);
             if (supply) return supply;
@@ -364,7 +398,10 @@ export class BattleSimulation {
         if (target) {
           const answer = this.issueOrder(group.id, { type: 'attack', frontId: target.id, issuer: 'officer' });
           if (answer.accepted) this._emit('officer_decision', { groupId: group.id, from: group.frontId, target: target.id,
-            reason: this.config.ai?.targetPreference === 'supply' && target.reinforcementSource ? 'open_supply_front' : 'open_hostile_front', difficultyId: this.config.difficulty?.id ?? 'scenario' }, 1);
+            reason: sporeFronts.has(target.id) ? 'spore_tracked_hostile_front'
+              : this.config.ai?.targetPreference === 'supply' && target.reinforcementSource
+              ? 'open_supply_front' : 'open_hostile_front',
+            difficultyId: this.config.difficulty?.id ?? 'scenario' }, 1);
           break;
         }
       }
@@ -377,7 +414,9 @@ export class BattleSimulation {
       if (!group.path.length || !group.units.some(unitId => combatReady(this.units.get(unitId)) && this.units.get(unitId).state !== 'reserve')) continue;
       const segment = group.path[0], route = this.routes.get(segment.routeId), target = this.fronts.get(segment.to);
       const waypoints = segment.from === route.from ? route.waypoints : [...route.waypoints].reverse();
-      if (!route.open) continue;
+      // A physical gate can close without a separate logical route order.
+      // Keep current coordinates and pending route until the obstruction is reopened.
+      if (!this._routeTraversable(route)) continue;
       if (group.materialized && this.callbacks.spawnGroup) {
         const live = group.units.map(unitId => this.units.get(unitId)).filter(unit => combatReady(unit) && unit.state === 'active');
         if (live.length) group.position = [live.reduce((sum, unit) => sum + unit.position[0], 0) / live.length, live.reduce((sum, unit) => sum + unit.position[1], 0) / live.length];
@@ -409,6 +448,68 @@ export class BattleSimulation {
     }
   }
 
+  /** The payload is SIX distinct, already allocated source Facehugger IDs.
+   * Loading is possible only offscreen; no instantaneous on-screen actors
+   * disappear and the upgraded 12-slot carrier is not silently unlocked. */
+  loadCarrierCargo(carrierId,facehuggerIds){
+    if(this.disposed||this.result||this.paused)
+      return {accepted:false,reason:'operation_unavailable'};
+    const plan=planFiniteCarrierLoad(this,carrierId,facehuggerIds);
+    if(!plan.accepted)return plan;
+    const carrier=this.units.get(carrierId);
+    carrier.carrierCargoIds=[...plan.facehuggerIds];
+    for(const id of carrier.carrierCargoIds){
+      const parasite=this.units.get(id);
+      parasite.carriedByCarrierId=carrierId;
+      parasite.position=[...carrier.position];
+    }
+    this._emit('carrier_cargo_boarded',{carrierId,count:carrier.carrierCargoIds.length},1);
+    return {accepted:true,carrierId,facehuggerIds:[...carrier.carrierCargoIds]};
+  }
+
+  /** This release is a strategic/offscreen operation. A detailed carrier
+   * never teleports a non-rendered Facehugger across the player's camera. */
+  releaseCarrierCargo(carrierId,count=Infinity){
+    const carrier=this.units.get(carrierId),group=this.groups.get(carrier?.groupId);
+    if(this.disposed||this.result||this.paused||!carrier||!group||
+       group.materialized||carrier.state!=='distant')
+      return {accepted:false,reason:'carrier_release_requires_distant_group'};
+    const ids=releaseFiniteCarrierCargo(carrier,this.units,count);
+    if(!ids.length)return{accepted:false,reason:'empty_carrier_cargo'};
+    this._emit('carrier_cargo_released',{carrierId,count:ids.length},1);
+    return {accepted:true,carrierId,facehuggerIds:ids};
+  }
+
+  /** One already-allocated Facehugger launches from a DETAILED Carrier.
+   * Physical flight is owned by BattleActorBridge after safe landing checks.
+   * This transition cannot exceed detailed actor limits or change any ID. */
+  launchCarrierFacehugger(carrierId,facehuggerId,origin){
+    const carrier=this.units.get(carrierId),group=this.groups.get(carrier?.groupId),
+      parasite=this.units.get(facehuggerId);
+    const cargo=carrier?.carrierCargoIds??[];
+    const active=this.getCounts();
+    const total=Object.values(active).reduce((n,counts)=>n+counts.active,0);
+    const cap=this.budgets.byFaction?.[carrier?.factionId]?.active??this.budgets.active;
+    if(this.disposed||this.result||this.paused||
+      this.config.id!=='AFF-27'||
+      this.config.context?.extinctionCasteVariant!=='carrier-ravager'||
+      !carrier||carrier.actorType!=='carrier'||carrier.profileId!=='XEN-009'||
+      carrier.state!=='active'||!(carrier.hp>0)||
+      !group?.materialized||group.path.length||!parasite||
+      cargo[0]!==facehuggerId||parasite.carriedByCarrierId!==carrierId||
+      parasite.state!=='distant'||!point(origin)||
+      dist(origin,carrier.position)>3||
+      total>=this.budgets.active||active[carrier.factionId].active>=cap)
+      return {accepted:false,reason:'carrier_detailed_launch_unavailable'};
+    const released=releaseFiniteCarrierCargo(carrier,this.units,1);
+    if(released.length!==1||released[0]!==facehuggerId)
+      return {accepted:false,reason:'carrier_payload_corrupted'};
+    parasite.position=[...origin];parasite.state='active';
+    this._emit('carrier_facehugger_launched',{carrierId,facehuggerId,
+      frontId:group.frontId},1);
+    return {accepted:true,carrierId,facehuggerId};
+  }
+
   _detailStep() {
     const activeFronts = new Set();
     for (const player of this.players) if (player.hp > 0) for (const front of this.fronts.values()) if (dist(player.position, front.position) <= front.radius * 1.5) activeFronts.add(front.id);
@@ -416,7 +517,7 @@ export class BattleSimulation {
     const knownWounded = unit => unit.incapacitated && this.relationship(unit.factionId, this.config.playerFaction) === 'allied';
     const woundedDistance = group => Math.min(...livingPlayers.flatMap(player => group.units.map(unitId => this.units.get(unitId)).filter(unit => alive(unit) && knownWounded(unit)).map(unit => dist(unit.position, player.position))));
     const distanceToPlayers = group => Math.min(woundedDistance(group), ...livingPlayers.map(player => dist(group.position, player.position)));
-    const nearby = [...this.groups.values()].filter(group => (activeFronts.has(group.frontId) || woundedDistance(group) <= 65) && group.units.some(unitId => alive(this.units.get(unitId)) && this.units.get(unitId).state !== 'reserve'));
+    const nearby = [...this.groups.values()].filter(group => !group.apcCarrierId && (activeFronts.has(group.frontId) || woundedDistance(group) <= 65) && group.units.some(unitId => alive(this.units.get(unitId)) && this.units.get(unitId).state !== 'reserve'));
     nearby.sort((a, b) => Number(Boolean(b.officerId)) - Number(Boolean(a.officerId)) || distanceToPlayers(a) - distanceToPlayers(b) || a.id.localeCompare(b.id));
     const buckets = new Map();
     for (const group of nearby) { const key = `${group.frontId}:${group.factionId}`; if (!buckets.has(key)) buckets.set(key, []); buckets.get(key).push(group); }
@@ -424,7 +525,8 @@ export class BattleSimulation {
     while ([...buckets.values()].some(bucket => bucket.length)) for (const bucket of buckets.values()) if (bucket.length) candidates.push(bucket.shift());
     const selected = new Set(), perFaction = new Map(); let count = 0;
     for (const group of candidates) {
-      const units = group.units.map(unitId => this.units.get(unitId)).filter(unit => alive(unit) && unit.state !== 'reserve');
+      const units = group.units.map(unitId => this.units.get(unitId)).filter(unit =>
+        alive(unit) && unit.state !== 'reserve' && unit.carriedByCarrierId===undefined);
       const limit = this.budgets.byFaction?.[group.factionId]?.active ?? this.budgets.active;
       if (count + units.length > this.budgets.active || (perFaction.get(group.factionId) ?? 0) + units.length > limit) continue;
       // New materializations never appear already inside either living player.
@@ -435,7 +537,8 @@ export class BattleSimulation {
     }
     for (const group of this.groups.values()) if (group.materialized && !selected.has(group.id)) this._dematerialize(group);
     for (const group of candidates) if (selected.has(group.id) && !group.materialized) {
-      const units = group.units.map(unitId => this.units.get(unitId)).filter(unit => alive(unit) && unit.state === 'distant');
+      const units = group.units.map(unitId => this.units.get(unitId)).filter(unit =>
+        alive(unit) && unit.state === 'distant' && unit.carriedByCarrierId===undefined);
       let accepted;
       try { accepted = this.callbacks.spawnGroup?.(this._groupSnapshot(group), units.map(clone)); }
       catch (error) {
@@ -491,7 +594,17 @@ export class BattleSimulation {
       try { encounterState = validateBossCombatState(state.encounterState, { bossType: unit.sourceBossType, battleUnitId: unit.id, maxHp: unit.maxHp }); }
       catch { return false; }
     }
-    if (state.position !== undefined) { if (!point(state.position)) return false; unit.position = [...state.position]; }
+    if (state.position !== undefined) {
+      if (!point(state.position)) return false;
+      unit.position = [...state.position];
+      // One physically tracked Carrier owns the positions of its EXISTING
+      // attached parasites. No new object, ID, soldier or reserve is created.
+      for(const cargoId of unit.carrierCargoIds??[]){
+        const parasite=this.units.get(cargoId);
+        if(parasite?.carriedByCarrierId===unit.id)
+          parasite.position=[...state.position];
+      }
+    }
     if (state.hp !== undefined) {
       if (!number(state.hp, 0, unit.maxHp)) return false;
       unit.hp = state.hp;
@@ -499,6 +612,16 @@ export class BattleSimulation {
     }
     if (encounterState !== undefined) unit.encounterState = encounterState;
     return true;
+  }
+
+  /** One allocated Facehugger can immobilize one susceptible allocated host.
+   * The parasite is consumed in the existing death ledger, not respawned. */
+  beginHostInfestation(facehuggerId, hostId) {
+    return infectHost(this, facehuggerId, hostId);
+  }
+
+  _hostInfestationStep() {
+    return completeHostInfections(this);
   }
 
   /** Medical charges live on the finite strategic identity, not its renderer.
@@ -578,8 +701,23 @@ export class BattleSimulation {
 
   recordDeath(event = {}) {
     const unit = this.units.get(event.entityId ?? event.unitId);
-    if (!unit || this.disposed || this.result || this.deaths.has(unit.id) || ['evacuated', 'captured'].includes(unit.state)) return false;
-    unit.hp = 0; unit.state = 'dead'; unit.incapacitated = false; delete unit.encounterState;
+    if (!unit || this.disposed || this.result || this.deaths.has(unit.id) ||
+        ['evacuated', 'captured'].includes(unit.state) ||
+        unit.apcSeat !== undefined || unit.apcCrewRole !== undefined ||
+        unit.carriedByCarrierId !== undefined) return false;
+    // An M577 passenger is protected by its actual vehicle until that vehicle
+    // is destroyed; destroyAPCManifest clears each seat before recording loss.
+    // Fire has a distinct source consequence: it cannot eject live cargo
+    // from an incinerated Carrier. Every lost Facehugger was ALREADY one
+    // finite ID, and receives its own death-ledger entry exactly once.
+    const carrierBurned=unit.carrierCargoIds?.length&&carrierFatalFire(event.cause);
+    const previouslyHeld=unit.carrierCargoIds?.length
+      ? releaseFiniteCarrierCargo(unit,this.units) : [];
+    if(previouslyHeld.length&&!carrierBurned)
+      this._emit('carrier_cargo_scattered',{carrierId:unit.id,count:previouslyHeld.length},1);
+    unit.hp = 0; unit.state = 'dead'; unit.incapacitated = false;
+    delete unit.ravagerCatalepsy;
+    delete unit.encounterState; delete unit.infection;
     const killerFaction = this.factions.has(event.killerFaction) ? event.killerFaction : null;
     const death = { entityId: unit.id, groupId: unit.groupId, factionId: unit.factionId, killerFaction,
       cause: typeof event.cause === 'string' ? event.cause.slice(0, 80) : 'combat', time: this.time, officer: unit.officer, uniqueId: unit.uniqueId };
@@ -592,6 +730,17 @@ export class BattleSimulation {
     if (faction.moraleModel !== 'hive') this._changeMorale(group, unit.officer ? -25 : -2, unit.officer ? 'officer_lost' : 'casualty');
     else if (unit.officer) { group.coordinationStrength = .65; this._emit('hive_coordination_disrupted', { factionId: unit.factionId, frontId: group.frontId, groupId: group.id, coordinationStrength: .65, reason: 'allocated_controller_lost' }, 2); }
     if (unit.officer) for (const neighbour of this.groups.values()) if (neighbour.id !== group.id && neighbour.factionId === unit.factionId && neighbour.frontId === group.frontId && faction.moraleModel !== 'hive') this._changeMorale(neighbour, -8, 'nearby_officer_lost');
+    // Musou action consequence: a genuinely defeated enemy officer lifts
+    // local allied morale. Zero new soldiers, reserve or extra kill credit.
+    applyMusouOfficerBreak(this, death);
+    if(carrierBurned){
+      let lost=0;
+      for(const passengerId of previouslyHeld){
+        if(this.recordDeath({entityId:passengerId,
+          killerFaction:event.killerFaction??null,cause:'carrier_fire_cargo'}))lost++;
+      }
+      this._emit('carrier_cargo_burned',{carrierId:unit.id,lost},1);
+    }
     return true;
   }
 
@@ -609,7 +758,17 @@ export class BattleSimulation {
     return result;
   }
 
-  getHiveNodeState() { return snapshotHiveEcology(this.hiveEcology); }
+  getHiveNodeState({ nodesOnly = false } = {}) {
+    if (nodesOnly) return { nodes: this.hiveEcology.nodes.map(node =>
+      ({...node, position: [...node.position]})) };
+    return snapshotHiveEcology(this.hiveEcology);
+  }
+
+  /** Tactical knowledge belongs only to the sensing Hive. The Yautja player
+   * does not receive these contacts as its own reconnaissance reports. */
+  getHiveSporeContacts(factionId) {
+    return getHiveSporeContacts(this.hiveEcology, factionId, this.time);
+  }
 
   _hiveNodeStep(dt) {
     if (!this.hiveEcology.banks.length) return;
@@ -621,6 +780,22 @@ export class BattleSimulation {
       // Detailed actors and distant state must see the same current HP.
       this.callbacks.healBattleUnit?.(info.unitId, info.hp);
     });
+    // Outside their own Hive-space, allocated Facehuggers gradually weaken.
+    // Damage is owned by this exact identity, not by LOD or renderer state.
+    // A fatal exposure consumes a real life; it never triggers free spawning.
+    const exposed = applyFacehuggerExposure(this.hiveEcology, this.units.values(),
+      dt, HIVE_NODE_RULES.radius);
+    for (const loss of exposed) {
+      this.callbacks.healBattleUnit?.(loss.unitId, loss.hp);
+      if (loss.expired) this.recordDeath({ entityId: loss.unitId,
+        cause: 'facehugger_outside_hive_space', killerFaction: null });
+    }
+    // Sample at most once per simulated second, not once per rendered frame.
+    // Last-seen coordinates expire even if the enemy is no longer visible.
+    if (this.tick % HIVE_SPORE_RULES.sampleEveryTicks === 0) {
+      updateHiveSporeSight(this.hiveEcology, this.units.values(), this.groups,
+        this.fronts, (a,b) => this.areHostile(a,b), this.time);
+    }
   }
 
   _changeMorale(group, amount, reason) {
@@ -628,8 +803,23 @@ export class BattleSimulation {
     if (Math.abs(group.morale - before) > EPSILON) this._emit('morale_changed', { groupId: group.id, frontId: group.frontId, before, after: group.morale, reason });
   }
 
+  /** Optional source-upgraded distant Ravager. No on-screen resurrection or
+   * source-unknown cooldowns: future 3D catalepsy remains a separate task. */
+  damageDistantRavager(unitId,damage,{damageType='kinetic',killerFaction=null}={}){
+    const unit=this.units.get(unitId);
+    if(this.disposed||this.result||this.paused||!unit)return null;
+    const result=applyRavagerRemoteHit(this,unit,damage,{damageType});
+    if(!result)return null;
+    if(result.cataleptic&&result.reason==='catalepsy_started')
+      this._emit('ravager_cataleptic',{unitId,recoverAt:unit.ravagerCatalepsy.recoverAt},2);
+    if(result.killed)this.recordDeath({entityId:unitId,killerFaction,
+      cause:result.reason==='fire_finisher'?'ravager_incendiary_fire':'distant_combat'});
+    return result;
+  }
+  _ravagerRegenesisStep(){return advanceRavagerRegenesis(this);}
+
   _remoteCombat() {
-    const pending = new Map(), frontGroups = this._groupsByFront();
+    const pending = new Map(), pendingNodes = new Map(), frontGroups = this._groupsByFront();
     const coordination = new Map([...this.factions.values()].map(faction => [faction.id, faction.moraleModel === 'hive' && !this._sourcesFor(faction.id).length ? .65 : 1]));
     this.targetingCounters = { groupVisits: this.groups.size, attackerVisits: 0, targetCandidateEntries: 0, attacksResolved: 0 };
     for (const front of this.fronts.values()) {
@@ -638,7 +828,10 @@ export class BattleSimulation {
         if (group.path.length || dist(group.position, front.position) > front.radius || group.order.type === 'retreat') continue;
         for (const unitId of group.units) {
           const unit = this.units.get(unitId);
-          if (alive(unit) && unit.state === 'distant' && (!unit.incapacitated || dist(unit.position, front.position) <= front.radius)) {
+          if (alive(unit) && unit.state === 'distant' &&
+              unit.apcSeat === undefined && unit.apcCrewRole === undefined &&
+              unit.carriedByCarrierId === undefined &&
+              (!unit.incapacitated || dist(unit.position, front.position) <= front.radius)) {
             if (!byFaction.has(unit.factionId)) byFaction.set(unit.factionId, []);
             byFaction.get(unit.factionId).push(unit);
           }
@@ -646,13 +839,27 @@ export class BattleSimulation {
       }
       for (const [factionId, attackers] of byFaction) {
         const targets = [...byFaction].filter(([targetFaction]) => this.areHostile(factionId, targetFaction)).flatMap(([, units]) => units);
-        this.targetingCounters.targetCandidateEntries += targets.length;
-        if (!targets.length) continue;
+        // Nodes are valid strategic targets only after the local hostile
+        // soldiers have been cleared. This keeps each existing shooter on
+        // ONE attack budget per tick (soldier OR structure, never both).
+        // An offscreen node may still be defended by active physical actors.
+        const nodes = !targets.length ? this.hiveEcology.nodes.filter(node =>
+          this.areHostile(factionId, node.factionId) &&
+          dist(node.position, front.position) <= front.radius) : [];
+        this.targetingCounters.targetCandidateEntries += targets.length + nodes.length;
+        if (!targets.length && !nodes.length) continue;
         for (const attacker of attackers) {
           this.targetingCounters.attackerVisits++;
           if (!combatReady(attacker)) continue;
           const profile = this.profiles.get(attacker.profileId), group = this.groups.get(attacker.groupId), faction = this.factions.get(factionId);
           if (group.reconstitution?.required || ['retreat', 'regroup'].includes(group.order.type) || attacker.nextAttack > this.time + EPSILON || profile.damage <= 0) continue;
+          const nodeTarget = targets.length ? null : nodes
+            .filter(node => (pendingNodes.get(node.id)?.attackers ?? 0) < 4 &&
+              dist(attacker.position, node.position) <= Math.min(24,
+              SPECIALIST_ATTACKS[sourceSpecialistRole(attacker)]?.range ?? 20))
+            .sort((a, b) => dist(attacker.position, a.position) - dist(attacker.position, b.position) ||
+              a.id.localeCompare(b.id))[0];
+          if (!targets.length && !nodeTarget) continue;
           const role = sourceSpecialistRole(attacker), rule = SPECIALIST_ATTACKS[role];
           const ammunition = role === 'sniper' ? 'sniperRounds' : role === 'sadar' ? 'sadarMissiles' : null;
           // The distant front cannot fire unlimited specialist weapons just
@@ -662,12 +869,17 @@ export class BattleSimulation {
             attacker[ammunition]--;
           }
           attacker.nextAttack = this.time + Math.max(profile.attackInterval, rule?.cooldown ?? 0);
-          const target = targets[(this.attackSeeds.get(attacker.id) + this.tick) % targets.length];
+          const target = nodeTarget ?? targets[(this.attackSeeds.get(attacker.id) + this.tick) % targets.length];
           const tacticMultiplier = group.tactic && group.tactic.expires > this.time ? { pincer: 1.2, hold_line: 1.05, ambush: 1.15, fallback: .5 }[group.tactic.type] ?? 1 : 1;
           const orderMultiplier = ({ attack: 1, defend: .85, escort: .6 }[group.order.type] ?? .85) * tacticMultiplier;
           const moraleMultiplier = faction.moraleModel === 'hive' ? coordination.get(factionId) * group.coordinationStrength : .5 + group.morale / 200;
-          if (!pending.has(target.id)) pending.set(target.id, { damage: 0, killerFaction: factionId });
-          pending.get(target.id).damage += (rule?.damage ?? profile.damage) * orderMultiplier * moraleMultiplier * formationAttackMultiplier(group, this.time);
+          const queue = nodeTarget ? pendingNodes : pending;
+          if (!queue.has(target.id)) queue.set(target.id, { damage: 0, killerFaction: factionId,
+            attackers: 0 });
+          queue.get(target.id).damage += (rule?.damage ?? profile.damage) * orderMultiplier * moraleMultiplier * formationAttackMultiplier(group, this.time);
+          if(attacker.actorType==='flametrooper')
+            queue.get(target.id).damageType='fire';
+          if (nodeTarget) queue.get(target.id).attackers++;
           this.targetingCounters.attacksResolved++;
         }
       }
@@ -675,8 +887,20 @@ export class BattleSimulation {
     for (const [unitId, hit] of pending) {
       const unit = this.units.get(unitId);
       const actual = this.absorbExosuitDamage(unitId, hit.damage);
+      const special=this.damageDistantRavager(unitId,actual,{
+        damageType:hit.damageType??'kinetic',killerFaction:hit.killerFaction});
+      if(special)continue;
       unit.hp = Math.max(0, unit.hp - actual); unit.damageTaken += actual;
-      if (!unit.hp) this.recordDeath({ entityId: unitId, killerFaction: hit.killerFaction, cause: 'distant_combat' });
+      if (!unit.hp) this.recordDeath({ entityId: unitId, killerFaction: hit.killerFaction,
+        cause:hit.damageType==='fire'?'distant_fire':'distant_combat' });
+    }
+    // The node owner (not the 3D proxy) authoritatively applies the remote hit.
+    // No new soldier, no additional shot, no death event/infestation credit.
+    for (const [nodeId, hit] of pendingNodes) {
+      // A garrison may only engage one node with four remote attackers per
+      // strategic tick, and this hard damage cap prevents 100 distant soldiers
+      // from deleting a newly rendered structure in the same 250 ms step.
+      this.damageHiveNode(nodeId, Math.min(32, hit.damage), hit.killerFaction);
     }
   }
 
@@ -946,7 +1170,7 @@ export class BattleSimulation {
     while (this.accumulator + EPSILON >= this.step && !this.result) {
       this.accumulator = Math.max(0, this.accumulator - this.step); this.time += this.step; this.tick++;
       for (const group of this.groups.values()) updateFormation(group, this.step, this.time, { officerAlive: !!group.officerId && combatReady(this.units.get(group.officerId)) });
-      this._moveGroups(this.step); this._detailStep(); this._remoteCombat(); this._hiveNodeStep(this.step); this._captureStep(this.step); this._reinforcements(); this._reconstitutionStep(this.step); this._moraleStep(this.step); this._strategicOrders(); this._objectives(); this.intel.update();
+      this._moveGroups(this.step); this._detailStep(); this._remoteCombat(); this._ravagerRegenesisStep(); this._hostInfestationStep(); this._hiveNodeStep(this.step); this._captureStep(this.step); this._reinforcements(); this._reconstitutionStep(this.step); this._moraleStep(this.step); this._strategicOrders(); this._objectives(); this.intel.update();
     }
     return true;
   }
@@ -975,6 +1199,141 @@ export class BattleSimulation {
     return front ? { id: front.id, owner: front.owner, sourceHP: front.sourceHP, contested: front.contested, reinforcementSource: front.reinforcementSource } : null;
   }
   getResult() { return this.result ? clone(this.result) : null; }
+  /** The M577 carries existing finite USCM identities, never a new platoon.
+   * The transport vehicle and its physical hull are owned by the game. */
+  boardAPC(groupId, carrier) {
+    const plan=planM577Embark(this,groupId,carrier);
+    if(!plan.accepted)return plan;
+    const group=this.groups.get(groupId);
+    if(group.materialized)this._dematerialize(group);
+    // Re-check after the live bridge's final HP snapshot, before moving IDs.
+    const checked=planM577Embark(this,groupId,carrier);
+    if(!checked.accepted)return checked;
+    group.apcCarrierId=APC_SECTION_RULES.vehicleId;
+    group.path=[];group.travelProgress=0;group.waypointIndex=1;
+    group.position=[...checked.position];group.state='distant';
+    const passengers=checked.passengers,crew=checked.crew;
+    for(let seat=0;seat<crew.length;seat++){
+      const unit=this.units.get(crew[seat]);
+      unit.apcCrewRole=seat===0?'driver':'commander';
+      unit.state='distant';unit.position=[...checked.position];
+    }
+    for(let seat=0;seat<passengers.length;seat++){
+      const unit=this.units.get(passengers[seat]);
+      unit.apcSeat=seat;unit.state='distant';unit.position=[...checked.position];
+    }
+    this.apcManifest={version:1,vehicleId:APC_SECTION_RULES.vehicleId,
+      groupId,ownerFaction:checked.ownerFaction,factionId:group.factionId,
+      frontId:group.frontId,position:[...checked.position],crew:[...crew],
+      passengers:[...passengers],boardedAt:this.time};
+    this._emit('apc_marines_boarded',{groupId,frontId:group.frontId,
+      passengerCount:passengers.length,crewCount:crew.length},2);
+    return {accepted:true,passengers:[...passengers],crew:[...crew],seatCapacity:APC_SECTION_RULES.passengerSeats};
+  }
+
+  /** A single, source-authored road leg. The real driving service checks
+   * every hull pose against built terrain before any strategic mutation. */
+  beginAPCTransit(routeId,toFrontId){
+    const manifest=this.apcManifest,route=this.routes.get(routeId);
+    if(!manifest||manifest.transit!==undefined||this.disposed||this.result||
+      !route?.open||this.routeAvailabilityProvider?.(clone(route))===false)return false;
+    const transit={routeId,fromFrontId:manifest.frontId,toFrontId};
+    const path=m577RouteWaypoints(this,transit,manifest.frontId);
+    if(!path||dist(manifest.position,path[0])>M577_ROUTE_RULES.routeStartDistance)return false;
+    manifest.transit=transit;
+    return true;
+  }
+
+  /** Only the point actually reached on the physical road is committed.
+   * No generic change of frontId is allowed via repeated small steps. */
+  moveAPCManifest(position,frontId=this.apcManifest?.frontId) {
+    const manifest=this.apcManifest,front=this.fronts.get(frontId);
+    if(!manifest||this.disposed||this.result||!point(position)||!front||
+      frontId!==manifest.frontId||
+      dist(position,manifest.position)>M577_ROUTE_RULES.maxMoveStep)return false;
+    if(manifest.transit!==undefined){
+      const route=this.routes.get(manifest.transit.routeId);
+      const path=m577RouteWaypoints(this,manifest.transit,manifest.frontId);
+      if(!route?.open||this.routeAvailabilityProvider?.(clone(route))===false||
+        !path||!m577PositionOnRoute(position,path))return false;
+    }else if(dist(position,front.position)>front.radius+15)return false;
+    const group=this.groups.get(manifest.groupId);
+    manifest.position=[...position];manifest.frontId=frontId;
+    group.position=[...position];group.frontId=frontId;
+    for(const unitId of [...manifest.crew,...manifest.passengers])this.units.get(unitId).position=[...position];
+    return true;
+  }
+
+  completeAPCTransit(){
+    const manifest=this.apcManifest,transit=manifest?.transit;
+    const route=this.routes.get(transit?.routeId),path=transit&&
+      m577RouteWaypoints(this,transit,manifest.frontId);
+    if(!manifest||!path||!route?.open||
+      this.routeAvailabilityProvider?.(clone(route))===false||
+      dist(manifest.position,path.at(-1))>M577_ROUTE_RULES.arrivalDistance)return false;
+    const destination=transit.toFrontId,group=this.groups.get(manifest.groupId);
+    if(!this.fronts.has(destination)||!group)return false;
+    manifest.frontId=destination;group.frontId=destination;
+    group.order={type:'defend',frontId:destination,issuer:'apc',issuedAt:this.time};
+    delete manifest.transit;
+    this._emit('apc_convoy_arrived',{groupId:group.id,frontId:destination},2);
+    return true;
+  }
+
+  /** Coordinates are supplied only after the real navigation tested all exits.
+   * This is all-or-nothing: no partial passenger duplication or teleport. */
+  disembarkAPC(placements,frontId=this.apcManifest?.frontId) {
+    const manifest=this.apcManifest;
+    if(!manifest||manifest.transit!==undefined||this.disposed||this.result||!Array.isArray(placements)||
+      placements.length!==manifest.crew.length+manifest.passengers.length||
+      !this.fronts.has(frontId)||frontId!==manifest.frontId||
+      new Set(placements.map(x=>x?.unitId)).size!==placements.length)return{accepted:false,reason:'invalid_manifest_or_exit'};
+    const occupants=[...manifest.crew,...manifest.passengers];
+    for(let seat=0;seat<placements.length;seat++){
+      const passenger=placements[seat];
+      if(passenger?.unitId!==occupants[seat]||
+        !point(passenger.position)||
+        dist(passenger.position,manifest.position)>APC_SECTION_RULES.maxExitDistance||
+        placements.slice(0,seat).some(other=>dist(passenger.position,other.position)<1.5))
+        return{accepted:false,reason:'unsafe_passenger_exit'};
+    }
+    const group=this.groups.get(manifest.groupId);
+    for(const placement of placements){
+      const unit=this.units.get(placement.unitId);
+      delete unit.apcSeat;delete unit.apcCrewRole;unit.position=[...placement.position];
+    }
+    delete group.apcCarrierId;group.materialized=false;group.state='distant';
+    group.position=[placements.reduce((x,p)=>x+p.position[0],0)/placements.length,
+      placements.reduce((z,p)=>z+p.position[1],0)/placements.length];
+    group.detailRetryAt=this.time+1;
+    group.order={type:'defend',frontId,issuer:'apc',issuedAt:this.time};
+    this.apcManifest=null;
+    this._emit('apc_marines_disembarked',{groupId:group.id,frontId,
+      occupantCount:placements.length,passengerCount:manifest.passengers.length},2);
+    return{accepted:true,occupantCount:placements.length,passengerCount:manifest.passengers.length};
+  }
+
+  /** An actual support carrier destruction is a finite hostile loss.
+   * Passengers cannot respawn as distant combatants after the hull explodes. */
+  destroyAPCManifest(killerFaction=null) {
+    const manifest=this.apcManifest;
+    if(!manifest)return{accepted:false,reason:'no_passengers'};
+    if(killerFaction!==null&&!this.factions.has(killerFaction))return{accepted:false,reason:'invalid_attacker'};
+    const group=this.groups.get(manifest.groupId);
+    this.apcManifest=null;delete group.apcCarrierId;
+    for(const unitId of [...manifest.crew,...manifest.passengers]){
+      const unit=this.units.get(unitId);
+      delete unit.apcSeat;delete unit.apcCrewRole;
+      this.recordDeath({entityId:unitId,killerFaction,
+        cause:'m577_apc_destroyed_with_passengers'});
+    }
+    this._emit('apc_passengers_lost',{groupId:group.id,
+      occupantCount:manifest.crew.length+manifest.passengers.length},3);
+    return{accepted:true,occupantCount:manifest.crew.length+manifest.passengers.length,passengerCount:manifest.passengers.length};
+  }
+
+  getAPCManifest(){return this.apcManifest?clone(this.apcManifest):null;}
+
   getUnit(unitId) { const unit = this.units.get(unitId); return unit ? clone(unit) : null; }
   getActiveUnits() { return [...this.units.values()].filter(unit => unit.state === 'active').map(clone); }
   getActorDirectives() {
@@ -1017,6 +1376,9 @@ export class BattleSimulation {
         contested: front.contested, sourceHP: front.sourceHP, reinforcementSource: front.reinforcementSource, capture: clone(front.capture),
         reportAge: Math.max(0, this.time - front.lastReportAt) })),
       groups, routes: [...this.routes.values()].map(clone),
+      ...(this.apcManifest && this.relationship(this.config.playerFaction,this.apcManifest.factionId)==='allied'
+        ? {apcPassengers:{count:this.apcManifest.passengers.length,capacity:APC_SECTION_RULES.passengerSeats,frontId:this.apcManifest.frontId}}
+        : {}),
       alerts: this.events.filter(event => this.intel.allowsEvent(event) && event.priority >= 2 && this.time - event.time <= 30).sort((a, b) => b.priority - a.priority || b.id - a.id).slice(0, 8).map(clone),
       criticalDeadline: this.criticalLosses.size ? Math.min(...[...this.criticalLosses.values()].map(loss => loss.deadline)) : null,
       criticalFronts: [...this.criticalLosses.values()].map(clone), difficulty: this.config.difficulty ? clone(this.config.difficulty) : null,
@@ -1040,7 +1402,7 @@ export class BattleSimulation {
       fronts: [...this.fronts.values()].map(clone), routes: [...this.routes.values()].map(clone), relations: [...this.relations],
       deaths: [...this.deaths.values()].map(clone), events: this.events.map(clone), eventsDropped: this.eventsDropped, eventSequence: this.eventSequence,
       pendingArrivals: this.pendingArrivals.map(clone), nextReinforcement: [...this.nextReinforcement], objectiveKeys: [...this.objectiveKeys],
-      intelligence: this.intel.serialize(), hiveEcology: this.getHiveNodeState(), defeatSince: this.defeatSince, criticalLosses: [...this.criticalLosses.values()].map(clone), routeRevision: this.routeRevision, nextStrategicOrder: this.nextStrategicOrder, tacticCooldowns: [...this.tacticCooldowns], result: this.result ? clone(this.result) : null };
+      intelligence: this.intel.serialize(), hiveEcology: this.getHiveNodeState(), apcManifest:this.getAPCManifest(), defeatSince: this.defeatSince, criticalLosses: [...this.criticalLosses.values()].map(clone), routeRevision: this.routeRevision, nextStrategicOrder: this.nextStrategicOrder, tacticCooldowns: [...this.tacticCooldowns], result: this.result ? clone(this.result) : null };
   }
 
   static fromState(configuration, saved, callbacks = {}) {
@@ -1052,6 +1414,9 @@ export class BattleSimulation {
       if (!Array.isArray(source) || source.length !== expected.size || new Set(source.map(item => item.id)).size !== expected.size || source.some(item => !expected.has(item.id))) fail(`save ${name} identities do not match`);
     }
     const units = new Map(saved.units.map(unit => [unit.id, clone(unit)]));
+    const pendingInfestations = [...units.values()].filter(unit => unit.infection).map(unit => unit.infection.sourceUnitId);
+    if (new Set(pendingInfestations).size !== pendingInfestations.length)
+      fail('duplicated saved host infestation source');
     for (const [unitId, unit] of units) {
       const original = simulation.units.get(unitId);
       if (unit.encounterState !== undefined) {
@@ -1067,6 +1432,10 @@ export class BattleSimulation {
       try { restoreSpecialistStocks(unit, original); }
       catch { fail('invalid saved specialist stock'); }
       unit.incapacitated ??= false;
+      try { validateSavedRavagerRegenesis(simulation,original,unit,saved.time); }
+      catch { fail('invalid saved Ravager regenesis'); }
+      try { validateHostInfestation(unit, simulation.units, units, saved.time, saved.deaths); }
+      catch { fail('invalid saved host infestation'); }
       if (typeof unit.incapacitated !== 'boolean' || unit.incapacitated && (!alive(unit) || !['active', 'distant'].includes(unit.state))) fail('invalid saved incapacitation');
       for (const key of ['profileId', 'factionId', 'groupId', 'maxHp', 'uniqueId', 'officer', 'species', 'role', 'actorType', 'profileName', 'sourceBossId', 'sourceBossType', 'visualFidelity1to1Verified']) if (unit[key] !== original[key]) fail('save rewrites an allocated identity');
       // Remote specialist attacks may have a longer, source-scoped recovery
@@ -1122,7 +1491,12 @@ export class BattleSimulation {
     if (!Array.isArray(saved.pendingArrivals) || new Set(saved.pendingArrivals.map(arrival => arrival.groupId)).size !== saved.pendingArrivals.length || saved.pendingArrivals.some(arrival => !simulation.groups.has(arrival.groupId) || !simulation.fronts.has(arrival.frontId) || !simulation.fronts.has(arrival.sourceId) || simulation.groups.get(arrival.groupId).factionId !== arrival.factionId || !number(arrival.due, saved.time, saved.time + simulation.budgets.announcementSeconds) || !simulation.groups.get(arrival.groupId).units.some(unitId => units.get(unitId).state === 'reserve') || arrival.supportForGroupId !== undefined && (!simulation.groups.has(arrival.supportForGroupId) || simulation.groups.get(arrival.supportForGroupId).factionId !== arrival.factionId))) fail('invalid saved arrival');
     if (!Array.isArray(saved.events) || saved.events.length > 512 || !Number.isInteger(saved.eventSequence) || saved.eventSequence < saved.events.length || !Number.isInteger(saved.eventsDropped) || saved.eventsDropped < 0 || saved.events.some(event => !Number.isInteger(event.id) || event.id < 1 || event.id > saved.eventSequence || !number(event.time, 0, saved.time) || !number(event.priority, 0, 4) || typeof event.type !== 'string' || event.type.length > 80) || new Set(saved.events.map(event => event.id)).size !== saved.events.length) fail('invalid bounded event journal');
     if (!Array.isArray(saved.nextReinforcement) || saved.nextReinforcement.length !== simulation.factions.size || saved.nextReinforcement.some(([factionId, time]) => !simulation.factions.has(factionId) || !number(time, 0, 1e9))) fail('invalid saved reinforcement timers');
-    simulation.units = units; simulation.groups = new Map(groups.map(group => [group.id, { ...group, materialized: false, state: group.state === 'active' ? 'distant' : group.state }]));
+    try{validateFiniteCarrierCargo(simulation,units);}
+    catch{fail('invalid saved Carrier cargo');}
+    const manifest=validateM577Manifest(saved.apcManifest,simulation,units,
+      new Map(groups.map(group=>[group.id,group])),saved.time);
+    simulation.units = units;simulation.apcManifest=manifest;
+    simulation.groups = new Map(groups.map(group => [group.id, { ...group, materialized: false, state: group.state === 'active' ? 'distant' : group.state }]));
     simulation.fronts = new Map(saved.fronts.map(front => [front.id, clone(front)])); simulation.routes = new Map(saved.routes.map(route => [route.id, clone(route)]));
     simulation.relations = new Map(saved.relations); simulation.deaths = new Map(saved.deaths.map(death => [death.entityId, clone(death)]));
     simulation.events = saved.events.map(clone); simulation.eventsDropped = saved.eventsDropped; simulation.eventSequence = saved.eventSequence;
@@ -1147,6 +1521,11 @@ export class BattleSimulation {
     if (saved.intelligence) simulation.intel.restore(saved.intelligence);
     simulation.hiveEcology = restoreHiveEcology(simulation.hiveEcology,
       saved.hiveEcology, simulation.units, saved.time, simulation.deaths);
+    try {
+      simulation.hiveEcology.spores = restoreHiveSporeSight(
+        saved.hiveEcology?.spores, simulation.hiveEcology,
+        simulation.units, simulation.fronts, saved.time);
+    } catch { fail('invalid saved hive spore sight'); }
     simulation.assertConservation(); return simulation;
   }
 
