@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import { applyBattleUnit, despawnBattleActor, selectBattleTarget, battleHostile, moveBattleOrder, requestNPCStrike, maintainBattleFormation } from '../engine/BattleActorSupport.js';
 import { recordCombatDeath } from '../engine/CombatEvents.js';
 import { createHonorGuardModel } from '../graphics/SupportModels.js';
+import { updateClanHunterVisual } from '../graphics/ClanHunterModel.js';
 import { releaseHostileAttack, requestHostileAttack } from '../engine/HostilePressure.js';
 import { disposeObject } from '../engine/SceneResources.js';
 
@@ -77,6 +78,14 @@ export class YautjaAlliesManager {
       else { ally.attackTimer = .95; this.audioEngine?.playSlash?.(); }
       target.takeDamage(ranged ? 60 : ally.damage, false, ally, { attackKind: ranged ? 'plasma' : 'melee', blockable: !ranged, parryable: !ranged });
     }
+  }
+
+  // Called once by the main frame after bridge/environment/vehicle corrections.
+  // update() can attempt movement that collision subsequently cancels: sampling
+  // there would generate footsteps against a wall or a convoy.
+  updateVisuals(delta) {
+    if (!Number.isFinite(delta) || delta <= 0) return;
+    for (const ally of this.allies) updateClanHunterVisual(ally, delta);
   }
 
   spawnBattleUnit(unit, group) {

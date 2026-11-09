@@ -1,3 +1,4 @@
+import { moveMeasuredStairTraversal } from '../graphics/ValVerdeFieldStructures.js';
 import { WorldGeometryStreaming } from '../graphics/WorldGeometryStreaming.js';
 import { TacticalBridge } from './TacticalBridge.js';
 import { registerReferenceWalkSurface, referenceWalkElevation, referenceGroundElevation, referenceAccessWaypoint } from './ReferenceWalkSurfaces.js';
@@ -1098,6 +1099,12 @@ export class EnvironmentManager extends ReferenceEnvironmentMechanisms {
 
   traceSegment(from, to, options) { return traceCombatSegment(from, to, this.colliders, options); }
   hasLineOfSight(from, to, options) { return hasCombatLineOfSight(from, to, this.colliders, options); }
+
+  // A steep measured stair is traversed in small physical steps; other terrain
+  // retains the ordinary player movement path. No hidden ramp is introduced.
+  moveMeasuredStairTraversal(position, displacement, delta, radius = .75, bodyHeight = 1.4) {
+    return moveMeasuredStairTraversal(this, position, displacement, delta, radius, bodyHeight);
+  }
 
   // Resolve against the visible perimeter and only solid, waist-high props.
   // Called after movement by the game loop; y remains untouched for jump physics.

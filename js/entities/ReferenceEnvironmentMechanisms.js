@@ -11,6 +11,7 @@ import { prepareSarii, orderSarii, damageSarii, updateSarii } from './SariiCompa
 import { walkRampGeometry } from './ReferenceWalkSurfaces.js';
 import { buildMeasuredCanopyBough } from './ReferenceCanopyWalkways.js';
 import { TemporaryCombatEffects } from '../engine/TemporaryCombatEffects.js';
+import { buildValVerdeCommunicationsShack, buildValVerdeWatchtower, registerValVerdeFieldWalkSurfaces, VAL_VERDE_FIELD_PLACEMENT } from '../graphics/ValVerdeFieldStructures.js';
 
 // These are explicit game-unit contracts, not measurements of film weapons.
 export const PREY_INTERACTION_RULES = Object.freeze({
@@ -2470,17 +2471,8 @@ export class ReferenceEnvironmentMechanisms {
       }
     }
 
-    // 18. Guerrilla Sniper Watchtower Platform (+5.5m) (Predator 1987)
-    if (this.guerrillaWatchtower && this.guerrillaWatchtower.pos) {
-      if (Math.abs(x - 8) <= 2.2 && Math.abs(z - 6) <= 2.2) {
-        return 5.5;
-      }
-      // Access ladder incline
-      if (Math.abs(x - 8) <= 1.2 && z >= 1.0 && z <= 4.2) {
-        const factor = (z - 1.0) / 3.2;
-        return factor * 5.5;
-      }
-    }
+    // 18. The relocated watchtower uses registered timber tread/deck triangles.
+    // Its former hard-coded [8,6] platform and invisible ramp are not floors.
 
     // 19. Cascading River Waterfall Rocky Cliff Ledge (+6.2m) (Predator 1987)
     if (this.valVerdeWaterfall && this.valVerdeWaterfall.pos) {
@@ -2494,12 +2486,8 @@ export class ReferenceEnvironmentMechanisms {
       }
     }
 
-    // 20. Rebel Communications Shack Roof (+2.6m) (Predator 1987)
-    if (this.rebelFuelDepot && this.rebelFuelDepot.shackPos) {
-      if (x >= 0 && x <= 4.5 && z >= 8 && z <= 12.5) {
-        return 2.6;
-      }
-    }
+    // 20. The shack's pitched, corrugated roof is a measured registered surface.
+    // No nominal 2.6m roof remains at its former insertion-area position.
 
     // 21. Canopy Bough Highway & Vine Tightrope Bridges (+6.8m) (Predator 1987)
     if (this.canopyBoughHighways && this.canopyBoughHighways.length > 0) {
@@ -9262,44 +9250,14 @@ export class ReferenceEnvironmentMechanisms {
       isClaimed: false
     };
 
-    // 7. Guerrilla Sniper Watchtower at [8, 0, 6] (+5.5m elevation)
-    const towerGroup = new THREE.Group();
-    towerGroup.position.set(8, 0, 6);
-
-    // 4 Heavy timber pilings (height 6.2m)
-    [-1.8, 1.8].forEach(tx => {
-      [-1.8, 1.8].forEach(tz => {
-        const post = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.28, 6.2, 6), woodMat);
-        post.position.set(tx, 3.1, tz);
-        towerGroup.add(post);
-      });
-    });
-
-    // Elevated Sniper Platform at +5.5m (4.2m x 4.2m)
-    const platform = new THREE.Mesh(new THREE.BoxGeometry(4.2, 0.35, 4.2), woodMat);
-    platform.position.y = 5.5;
-    platform.receiveShadow = true;
-    towerGroup.add(platform);
-
-    // Sandbag parapet around platform
-    const parapetN = new THREE.Mesh(new THREE.BoxGeometry(4.2, 0.8, 0.4), new THREE.MeshStandardMaterial({ color: 0x78716c }));
-    parapetN.position.set(0, 6.0, 2.0);
-    towerGroup.add(parapetN);
-    const parapetS = new THREE.Mesh(new THREE.BoxGeometry(4.2, 0.8, 0.4), new THREE.MeshStandardMaterial({ color: 0x78716c }));
-    parapetS.position.set(0, 6.0, -2.0);
-    towerGroup.add(parapetS);
-
-    // Wooden climbing ladder incline from ground (z=-2.6) to platform
-    const ladder = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.2, 4.0), woodMat);
-    ladder.position.set(0, 2.75, -2.6);
-    ladder.rotation.x = Math.atan2(5.5, 3.2);
-    towerGroup.add(ladder);
-
+    // 7. Interpreted guerrilla watchtower. Keep its real posts away from both
+    // capsule exits and the cinematic/TPS sightlines, with the same climb state.
+    const towerGroup = buildValVerdeWatchtower();
     group.add(towerGroup);
     this.guerrillaWatchtower = {
       group: towerGroup,
-      pos: new THREE.Vector3(8, 0, 6),
-      platformPos: new THREE.Vector3(8, 5.5, 6)
+      pos: new THREE.Vector3(...VAL_VERDE_FIELD_PLACEMENT.watchtower),
+      platformPos: new THREE.Vector3(...VAL_VERDE_FIELD_PLACEMENT.watchtower).add(new THREE.Vector3(0, 5.59, 0))
     };
 
     // 8. Rebel Fuel Depot & Communications Shack at [14, 0, 4]
@@ -9328,33 +9286,18 @@ export class ReferenceEnvironmentMechanisms {
       });
     });
 
-    // Rebel Communications Shack at [2, 0, 10]
-    const shackGroup = new THREE.Group();
-    shackGroup.position.set(2, 0, 10);
-
-    const shackWalls = new THREE.Mesh(new THREE.BoxGeometry(4.5, 2.6, 4.5), woodMat);
-    shackWalls.position.y = 1.3;
-    shackWalls.receiveShadow = true;
-    shackGroup.add(shackWalls);
-
-    // Corrugated tin roof (+2.6m elevation)
-    const shackRoof = new THREE.Mesh(new THREE.BoxGeometry(5.0, 0.15, 5.0), metalMat);
-    shackRoof.position.y = 2.6;
-    shackGroup.add(shackRoof);
-
-    // Ham radio antenna
-    const antenna = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 4.2, 6), metalMat);
-    antenna.position.set(1.8, 4.6, 1.8);
-    shackGroup.add(antenna);
-
+    // The raised, pitched roof remains visible; the whole building and its real
+    // wall contacts now occupy a diagonal camp pocket outside reserved lanes.
+    const shackGroup = buildValVerdeCommunicationsShack();
     group.add(depotGroup);
     group.add(shackGroup);
+    registerValVerdeFieldWalkSurfaces(this, shackGroup, towerGroup);
 
     this.rebelFuelDepot = {
       depotGroup,
       shackGroup,
       pos: new THREE.Vector3(14, 0, 4),
-      shackPos: new THREE.Vector3(2, 0, 10),
+      shackPos: new THREE.Vector3(...VAL_VERDE_FIELD_PLACEMENT.shack),
       isBlown: false
     };
 

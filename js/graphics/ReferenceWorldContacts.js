@@ -18,7 +18,9 @@ export function buildReferenceContacts(environment) {
   const contacts = [];
   environment.referenceRoot.updateMatrixWorld(true);
   environment.referenceRoot.traverse(mesh => {
-    if (!mesh.isMesh || mesh.isInstancedMesh || Array.isArray(mesh.material) || mesh.material.transparent || !mesh.visible) return;
+    // Measured walk surfaces own their physical triangles; a merged stair AABB
+    // would turn the clear space below the treads into an invisible wall.
+    if (!mesh.isMesh || mesh.isInstancedMesh || mesh.userData.referenceWalkContactOnly || Array.isArray(mesh.material) || mesh.material.transparent || !mesh.visible) return;
     mesh.geometry.computeBoundingBox();
     const localBounds = mesh.geometry.boundingBox.clone();
     box.copy(localBounds).applyMatrix4(mesh.matrixWorld); box.getCenter(center); box.getSize(size);

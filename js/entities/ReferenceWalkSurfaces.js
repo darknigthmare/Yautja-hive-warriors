@@ -76,7 +76,8 @@ export function referenceWalkElevation(environment, x, z, currentY, legacyHeight
 }
 
 export function referenceAccessWaypoint(environment, from, target) {
-  const surfaces = environment.referenceWalkSurfaces ?? [];
+  // Detached or destroyed decks cannot keep routing actors toward old access points.
+  const surfaces = (environment.referenceWalkSurfaces ?? []).filter(surface => surface.collider.isCollisionActive());
   const source = surfaces.filter(surface => surface.accesses.length && inside(surface.bounds, from.x, from.z) && Number.isFinite(surface.heightAt(from.x, from.z)) && Math.abs(surface.heightAt(from.x, from.z) - from.y) <= .2);
   const destination = surfaces.filter(surface => surface.accesses.length && inside(surface.bounds, target.x, target.z) && Number.isFinite(surface.heightAt(target.x, target.z)) && (surface.kind === 'solid-deck' || Math.abs(surface.heightAt(target.x, target.z) - target.y) <= .8));
   const targetHeight = destination.length ? Math.max(...destination.map(surface => surface.heightAt(target.x, target.z))) : target.y;

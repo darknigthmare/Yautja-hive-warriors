@@ -1,64 +1,18 @@
 /* Detailed support actors. Static pieces merge per surface; gameplay pivots stay separate. */
 import * as THREE from 'three';
-import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
-import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { Assembly } from './SupportAssembly.js';
+import { buildClanHunterModel } from './ClanHunterModel.js';
+import { addMarineAnatomy } from './MarineAnatomy.js';
 import { createSurfaceMaterial } from './SurfaceLibrary.js';
 import { loftGeometry, sweptLimb, sculptedFaceGeometry, tireGeometry } from './SupportSculpt.js';
 import { buildInsertionPodModel } from './InsertionPodModel.js';
 import { buildAPCModel } from './APCModel.js';
 
-class Assembly {
-  constructor(name) { this.name = name; this.parts = new Map(); }
-  add(geometry, material, position = [0, 0, 0], scale = [1, 1, 1], rotation = [0, 0, 0]) {
-    const transform = new THREE.Matrix4().compose(new THREE.Vector3(...position), new THREE.Quaternion().setFromEuler(new THREE.Euler(...rotation)), new THREE.Vector3(...scale));
-    const prepared = geometry.index ? geometry.toNonIndexed() : geometry.clone();
-    geometry.dispose();
-    prepared.applyMatrix4(transform);
-    if (!this.parts.has(material)) this.parts.set(material, []);
-    this.parts.get(material).push(prepared);
-    return this;
-  }
-  box(material, position, size, rounded = false, rotation = [0, 0, 0]) {
-    const geometry = rounded ? new RoundedBoxGeometry(1, 1, 1, 3, 0.14) : new THREE.BoxGeometry(1, 1, 1);
-    return this.add(geometry, material, position, size, rotation);
-  }
-  sphere(material, position, scale, segments = 28) {
-    const radius = Math.max(...scale);
-    const widthSegments = radius < 0.08 ? 12 : radius < 0.2 ? 20 : Math.max(24, segments);
-    const heightSegments = radius < 0.08 ? 8 : radius < 0.2 ? 12 : 20;
-    return this.add(new THREE.SphereGeometry(1, widthSegments, heightSegments), material, position, scale);
-  }
-  cylinder(material, position, radii, height, rotation = [0, 0, 0], segments = 24) {
-    return this.add(new THREE.CylinderGeometry(radii[0], radii[1], height, Math.max(16, segments)), material, position, [1, 1, 1], rotation);
-  }
-  bone(material, from, to, radius, endRadius = radius * 0.9, segments = 10) {
-    const a = new THREE.Vector3(...from), b = new THREE.Vector3(...to), direction = b.clone().sub(a);
-    const quaternion = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction.clone().normalize());
-    return this.add(new THREE.CylinderGeometry(endRadius, radius, direction.length(), segments), material, a.clone().add(b).multiplyScalar(0.5).toArray(), [1, 1, 1], new THREE.Euler().setFromQuaternion(quaternion).toArray().slice(0, 3));
-  }
-  tube(material, points, radius, segments = 20, radialSegments = 10) {
-    return this.add(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points.map(p => new THREE.Vector3(...p))), segments, radius, radialSegments, false), material);
-  }
-  finish() {
-    const group = new THREE.Group(); group.name = this.name;
-    for (const [material, parts] of this.parts) {
-      const geometry = mergeGeometries(parts, false);
-      parts.forEach(part => part.dispose());
-      geometry.computeBoundingSphere();
-      const mesh = new THREE.Mesh(geometry, material);
-      mesh.castShadow = true; mesh.receiveShadow = true;
-      mesh.name = `${this.name}-${material.name || 'surface'}`;
-      group.add(mesh);
-    }
-    this.parts.clear();
-    return group;
-  }
-}
 
-function surfaces(color = 0x52604b) {
-  const armor = createSurfaceMaterial('armor', { color, roughness: 0.49, metalness: 0.65 });
+function surfaces(color = 0x52604b, { armorFinish = null, clothRepeat = [1, 1] } = {}) {
+  const armor = createSurfaceMaterial('armor', { color, ...(armorFinish ? { finish: armorFinish } : { roughness: 0.49, metalness: 0.65 }) });
   const dark = createSurfaceMaterial('metal', { color: 0x293139, roughness: 0.48, metalness: 0.75 });
-  const cloth = createSurfaceMaterial('fabric', { color: 0x353c37, roughness: 0.9, metalness: 0 });
+  const cloth = createSurfaceMaterial('fabric', { color: 0x353c37, roughness: 0.9, metalness: 0, repeat: clothRepeat });
   const skin = createSurfaceMaterial('humanSkin', { color: 0xc4a08a, roughness: 0.66, metalness: 0, normalScale: new THREE.Vector2(0.2, 0.2) });
   const rubber = createSurfaceMaterial('leather', { color: 0x181b1c, roughness: 0.82, metalness: 0.05 });
   const steel = createSurfaceMaterial('metal', { color: 0x929d9b, roughness: 0.29, metalness: 0.86 });
@@ -269,19 +223,9 @@ function addExosuitFrame(parts, mats) {
 export function createMarineModel(smartgunner = true) {
   const weaponKind = typeof smartgunner === 'string' ? smartgunner : smartgunner ? 'smartgunner' : 'flametrooper';
   if (!['marine', 'smartgunner', 'flametrooper', 'medic', 'commtech', 'sniper', 'sadar', 'exosuit'].includes(weaponKind)) throw new RangeError('Unknown Marine weapon silhouette');
-  const mats = surfaces(weaponKind === 'smartgunner' ? 0x65715f : 0x766d54), parts = new Assembly('colonial-marine');
-  addHumanTorso(parts, mats); addHumanLegs(parts, mats); addArms(parts, mats); addFace(parts, mats);
-  // Fitted ballistic vest follows the chest profile; thin plates stay over the body.
-  parts.add(loftGeometry([[1.74, 0.305, 0.235], [1.97, 0.31, 0.25], [2.2, 0.375, 0.275], [2.43, 0.43, 0.285], [2.62, 0.445, 0.26], [2.72, 0.4, 0.23]], { radial: 36, rows: 26, superellipse: 2.5 }), mats.armor);
-  for (const side of [-1, 1]) {
-    parts.tube(mats.rubber, [[side * 0.25, 2.76, -0.16], [side * 0.29, 2.7, 0.2], [side * 0.24, 2.23, 0.29], [side * 0.2, 1.98, 0.23]], 0.025, 20, 6);
-    parts.box(mats.cloth, [side * 0.21, 1.9, 0.22], [0.16, 0.22, 0.09], true);
-  }
-  // Open helmet leaves a sculpted adult face and jaw visible.
-  parts.add(loftGeometry([[3.25, 0.161, 0.168, 0, -0.014], [3.3, 0.174, 0.18, 0, -0.014], [3.37, 0.145, 0.15, 0, -0.02], [3.43, 0.075, 0.075, 0, -0.025], [3.445, 0.014, 0.014, 0, -0.025]], { radial: 40, rows: 24 }), mats.armor);
-  parts.box(mats.armor, [0, 3.256, 0.148], [0.345, 0.022, 0.078], true, [-0.08, 0, 0]);
-  parts.cylinder(mats.dark, [0.187, 3.18, -0.01], [0.045, 0.045], 0.04, [0, 0, Math.PI / 2], 24);
-  parts.box(glow(0x9a594b), [0.13, 3.22, 0.19], [0.038, 0.018, 0.025], true);
+  const mats = surfaces(weaponKind === 'smartgunner' ? 0x65715f : 0x766d54, { armorFinish: 'painted', clothRepeat: [3, 3] }), parts = new Assembly('colonial-marine');
+  // Painted ballistic plates and original role equipment share a fitted adult body.
+  const marineAnatomy = addMarineAnatomy(parts, mats, weaponKind);
   if (weaponKind === 'flametrooper') addFlamethrower(parts, mats);
   else if (weaponKind === 'medic') { addMedicSidearm(parts, mats); addMedicalPack(parts, mats); }
   else if (weaponKind === 'commtech') { addCommtechMP9(parts, mats); addCommtechPack(parts, mats); }
@@ -289,7 +233,8 @@ export function createMarineModel(smartgunner = true) {
   else if (weaponKind === 'sadar') addSadarLauncher(parts, mats);
   else if (weaponKind === 'exosuit') addExosuitFrame(parts, mats);
   else addRifle(parts, mats, weaponKind === 'smartgunner');
-  const group = parts.finish(); group.userData.anatomy = { headHeight: 0.46, standingHeight: 3.44, headsTall: 7.48 };
+  const group = parts.finish(); group.userData.anatomy = { headHeight: marineAnatomy.headHeight, standingHeight: marineAnatomy.standingHeight, headsTall: marineAnatomy.headsTall };
+  group.userData.marineAnatomy = marineAnatomy;
   group.userData.weaponKind = weaponKind;
   group.userData.visualSource = 'procedural-role-study';
   group.userData.behaviorFidelity1to1Verified = false;
@@ -323,39 +268,7 @@ export function createSyntheticModel() {
 }
 
 export function createHonorGuardModel(index = 0) {
-  const mats = surfaces(index % 2 ? 0x746b59 : 0x687575), parts = new Assembly('yautja-honor-guard');
-  mats.skin = createSurfaceMaterial('skin', { color: 0xa28d69, roughness: 0.6, normalScale: new THREE.Vector2(0.35, 0.35) });
-  const hide = mats.skin, bone = createSurfaceMaterial('bone', { color: 0xb8af91, roughness: 0.55 });
-  addHumanTorso(parts, { ...mats, cloth: hide }, true);
-  addHumanLegs(parts, { ...mats, cloth: hide });
-  for (const side of [-1, 1]) {
-    parts.add(sweptLimb([[side * 0.46, 2.72, 0, 0.19, 0.2], [side * 0.58, 2.43, 0, 0.19, 0.18], [side * 0.57, 2.12, 0.03, 0.12, 0.12], [side * 0.54, 1.89, 0.08, 0.15, 0.12], [side * 0.49, 1.64, 0.13, 0.085, 0.08]], 32, 30), hide);
-    parts.add(loftGeometry([[2.37, 0.09, 0.05], [2.46, 0.19, 0.08], [2.66, 0.21, 0.11], [2.8, 0.11, 0.07]], { radial: 32, rows: 18 }), mats.armor, [side * 0.44, 0, 0.23]);
-    parts.add(sweptLimb([[side * 0.54, 1.7, 0.1, 0.12, 0.12], [side * 0.56, 1.9, 0.07, 0.17, 0.15], [side * 0.57, 2.04, 0.03, 0.13, 0.11]], 24, 16), mats.armor);
-    addHand(parts, mats, side * 0.49, 1.61, 0.13, side);
-    parts.sphere(mats.armor, [side * 0.48, 2.71, -0.015], [0.24, 0.17, 0.25], 32);
-  }
-  parts.add(sculptedFaceGeometry({ width: 0.17, height: 0.23, depth: 0.18, mask: true }), mats.armor, [0, 3.18, 0.015]);
-  const optics = glow(0xad6f4e);
-  for (const side of [-1, 1]) {
-    parts.tube(mats.dark, [[side * 0.029, 3.225, 0.17], [side * 0.075, 3.24, 0.18], [side * 0.126, 3.21, 0.135]], 0.018, 12, 6);
-    parts.tube(optics, [[side * 0.04, 3.226, 0.185], [side * 0.075, 3.228, 0.19], [side * 0.112, 3.216, 0.159]], 0.006, 12, 5);
-    parts.tube(mats.dark, [[side * 0.05, 3.11, 0.195], [side * 0.092, 3.04, 0.16], [side * 0.12, 3.01, 0.11]], 0.012, 12, 6);
-  }
-  for (let vent = 0; vent < 4; vent++) parts.box(mats.dark, [(vent - 1.5) * 0.028, 3.055, 0.185], [0.012, 0.055, 0.01], true);
-  for (let dread = 0; dread < 14; dread++) {
-    const angle = dread / 13 * Math.PI + Math.PI;
-    const x = Math.cos(angle) * 0.17, z = Math.sin(angle) * 0.16 - 0.055;
-    parts.add(sweptLimb([[x, 3.32, z, 0.024], [x * 1.5, 3.17, z - 0.05, 0.026], [x * 1.75, 2.89, z - 0.05, 0.022], [x * 1.7, 2.65, z - 0.02, 0.006]], 8, 20), mats.rubber);
-    parts.cylinder(bone, [x * 1.74, 2.83, z - 0.043], [0.028, 0.028], 0.06, [0, 0, -x * 0.1], 12);
-  }
-  for (let blade = 0; blade < 2; blade++) parts.add(loftGeometry([[0.16, 0.022, 0.012], [0.35, 0.026, 0.012], [0.82, 0.018, 0.006], [1.0, 0.001, 0.001]], { axis: 'z', radial: 12, rows: 16, superellipse: 3 }), mats.steel, [0.46 + blade * 0.09, 1.61, 0]);
-  parts.add(loftGeometry([[-0.34, 0.08, 0.09], [-0.15, 0.13, 0.12], [0.21, 0.105, 0.1], [0.31, 0.07, 0.07]], { axis: 'z', radial: 28, rows: 22, superellipse: 3 }), mats.armor, [-0.47, 2.9, 0]);
-  parts.cylinder(optics, [-0.47, 2.9, 0.315], [0.039, 0.039], 0.018, [Math.PI / 2, 0, 0], 24);
-  for (const side of [-1, 1]) parts.tube(mats.rubber, [[side * 0.19, 2.85, -0.1], [side * 0.25, 2.64, 0.25], [-side * 0.12, 2.02, 0.24], [-side * 0.21, 1.62, 0.2]], 0.024, 24, 8);
-  const group = parts.finish(); group.scale.setScalar(1.2);
-  group.userData.anatomy = { headHeight: 0.552, standingHeight: 4.1, headsTall: 7.43 };
-  return group;
+  return buildClanHunterModel(index);
 }
 
 export function createHoundModel(skin, spike) {

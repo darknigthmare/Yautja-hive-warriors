@@ -1929,6 +1929,7 @@ export class Player {
   move(dir, delta) {
     if (this._disposed || !Number.isFinite(delta) || delta <= 0 || this.isFacehuggerLatched || this.isPerched || this.isMountedSmartgun) return;
 
+    let measuredStairTraversal = false;
     if (dir.lengthSq() > 0) {
       dir.normalize();
       let speedMult = (this.warhornBuffTimer > 0 ? 1.4 : 1.0) * (this.isBerserkerActive ? 1.45 : 1.0);
@@ -1938,7 +1939,13 @@ export class Player {
       if (this.isKenjiReflexesActive) speedMult *= 1.25; // +25% Ninja Agility (Killer of Killers 2025)
       if (this.isSyntheticAnkleGrabbed) speedMult *= 0.2;
       const moveDistance = this.moveSpeed * speedMult * delta;
-      this.position.addScaledVector(dir, moveDistance);
+      if (!this.isLeaping && this.gameContext?.env?.moveMeasuredStairTraversal) {
+        const displacement = this._measuredStairDisplacement ??= new THREE.Vector3();
+        displacement.copy(dir).multiplyScalar(moveDistance);
+        measuredStairTraversal = this.gameContext.env.moveMeasuredStairTraversal(
+          this.position, displacement, delta, .75, this.getCollisionHeight()) === true;
+      }
+      if (!measuredStairTraversal) this.position.addScaledVector(dir, moveDistance);
 
       const targetAngle = Math.atan2(dir.x, dir.z);
       let diff = targetAngle - this.rotationY;
@@ -1947,8 +1954,9 @@ export class Player {
       this.rotationY += diff * (1 - Math.exp(-12 * delta));
     }
 
-    // Verticality: Adjust elevation smoothly when traversing catwalks and ramps
-    if (!this.isLeaping && !this.isPerched) {
+    // Measured stairs already resolve their actual treads and final contacts.
+    // Other catwalks and ramps retain the ordinary smooth height adjustment.
+    if (!this.isLeaping && !this.isPerched && !measuredStairTraversal) {
       let groundY = 0;
       if (this.gameContext && this.gameContext.env && this.gameContext.env.getElevationAt) {
         groundY = this.gameContext.env.getElevationAt(this.position.x, this.position.z, this.position.y);

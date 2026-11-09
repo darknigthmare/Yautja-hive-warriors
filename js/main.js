@@ -4079,6 +4079,8 @@ class GameApp {
         this.apc.resolveMovement?.(actor.mesh.position, actor.radius ?? 1);
       }
     }
+    // Pose after bridge reconciliation and all world, capsule and APC contacts.
+    this.allies.updateVisuals(delta);
     this.battlefield?.update([this.player, this.player2].filter(Boolean));
     this.env.updateBattlefieldObjectives?.(this.battlefieldProgression, delta);
     this.gore.update(delta);

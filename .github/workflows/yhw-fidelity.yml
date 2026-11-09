@@ -87,6 +87,14 @@ jobs:
             tests/environment-cryo-cleanup.test.js \
             tests/battle-debrief.test.js \
             tests/support-visual.test.js \
+            tests/clan-hunter-visual.test.js \
+            tests/clan-hunter-apc-integration.test.js \
+            tests/marine-anatomy-fidelity.test.js \
+            tests/insertion-pod-model.test.js \
+            tests/insertion-pod-detail.test.js \
+            tests/instanced-resource-lifecycle.test.js \
+            tests/surfaces.test.js \
+            tests/val-verde-world-fidelity.test.js \
             tests/browser-cleanup.test.mjs \
             tests/apc-detail.test.js \
             tests/runtime-final-wiring.test.js \

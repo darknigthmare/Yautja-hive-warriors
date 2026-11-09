@@ -47,7 +47,7 @@ for (const [name, build, min, max, maxMeshes] of [
   ['hound', () => createHoundModel(new THREE.MeshStandardMaterial(), new THREE.MeshStandardMaterial()), 22000, 38000, 5],
   ['APC', () => createAPCModel().group, 26000, 44000, 14],
   ['dropship', createDropshipModel, 20000, 38000, 10],
-  ['pod', () => createDropPodModel().group, 28000, 44000, 11],
+  ['pod', () => createDropPodModel().group, 28000, 65000, 14],
   ['skimmer', createSkimmerModel, 22000, 38000, 10]
 ]) {
   test(`${name}: detailed finite model stays inside its rendering budget`, () => {

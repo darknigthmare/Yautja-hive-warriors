@@ -120,9 +120,7 @@ export class APCVehicle {
     if (!pos?.isVector3 || ![pos.x, pos.y, pos.z].every(Number.isFinite)) { this.policy.refuse('invalid'); return false; }
     if (!permission.accepted) { this.policy.refuse(permission.reason); return false; }
     if (this.mesh) {
-      // Instanced wheels own per-instance GPU buffers separate from geometry.
-      // Dispatch their disposal before releasing the ordinary model resources.
-      this.model?.wheelInstances?.dispose?.();
+      // disposeObject owns the model and its instance GPU buffers.
       disposeObject(this.mesh);
     }
 
@@ -296,7 +294,6 @@ export class APCVehicle {
     this.tracers = [];
     if (this.mesh) {
       this.lastPosition.copy(this.mesh.position);
-      this.model?.wheelInstances?.dispose?.();
       disposeObject(this.mesh);
       this.mesh = null;
       this.turretMesh = null;
