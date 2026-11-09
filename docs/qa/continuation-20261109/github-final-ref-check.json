@@ -1,0 +1,57 @@
+{
+  "status": "passed",
+  "checkedAt": "2026-11-09T04:39:02.796Z",
+  "remoteHeads": 12,
+  "allUnchangedSinceInitialFetch": true,
+  "initialSnapshot": "docs/qa/continuation-20261109/github-bases.json",
+  "refs": [
+    {
+      "ref": "origin/codex/alien-base-integration-20261101",
+      "commit": "040c28941d246d5f41555401cde367651e252cf7"
+    },
+    {
+      "ref": "origin/codex/audit-musou-excel-20261026",
+      "commit": "0435827e41eae19472179e8116d9eb4105647664"
+    },
+    {
+      "ref": "origin/codex/catalogue-completeness-20261027",
+      "commit": "b3048dc3425e5017e275361950fff372ebb6626c"
+    },
+    {
+      "ref": "origin/codex/complete-pr3-20261026",
+      "commit": "2fa875e0cbf80d42a0d197874dbb9b24131882fd"
+    },
+    {
+      "ref": "origin/codex/continuation-20261102",
+      "commit": "d08efe97f47bf2f4fcd8cf89f50f56aa1c9d9581"
+    },
+    {
+      "ref": "origin/codex/depth-pr3-20261028",
+      "commit": "3fed0a1521035f10f5d0ac72e88c9473fba78b32"
+    },
+    {
+      "ref": "origin/codex/gamedev-guides-20261029",
+      "commit": "f549f051ba520f171e0d460058af85167aa7a5e0"
+    },
+    {
+      "ref": "origin/codex/hive-nodes-ci-20261030",
+      "commit": "c553b853e25af168beed05449a40e0a94ee29336"
+    },
+    {
+      "ref": "origin/codex/validated-gameplay-20261025",
+      "commit": "1d52d9ff91dbe85c08256f44f8b72086ab65200a"
+    },
+    {
+      "ref": "origin/feat/alien-base-v1-integration",
+      "commit": "9ea0f7313403127516e1874346ba61f5bad283b9"
+    },
+    {
+      "ref": "origin/main",
+      "commit": "af90000169256bd8781536ba7eca45d843d4173c"
+    },
+    {
+      "ref": "origin/master",
+      "commit": "aa0048d52eb05624eccab45fa98de16e31a15c4d"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "sourceCommit": "4ecac297e82a84c18e8b968ffbcea0c3693d29ba",
+  "tests": 300,
+  "passed": 300,
+  "failed": 0,
+  "skipped": 0,
+  "cancelled": 0,
+  "durationMs": 94733.449622,
+  "testFiles": 39,
+  "log": "docs/qa/continuation-20261109/integration-rescue-fix/cpu-regression.txt",
+  "sha256": "b1410ccd99e4501feea6389fb766e6f29736635ffc2c6119d90a24cb19d057be",
+  "scope": "Complete selected regression of39files, including the former37plus genuine allied rescue and signed Ravager checkpoint composition. Not the entire repository suite."
+}

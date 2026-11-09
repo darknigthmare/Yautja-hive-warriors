@@ -1,0 +1,83 @@
+✖ real signed Ravager phase and empty medical state compose across checkpoint restoration (69.687195ms)
+✖ medical materialization never changes a real cataleptic Ravager HP, pose or owner timer (2726.123541ms)
+✖ a medical record cannot steal a legal one-HP Ravager phase or its spent upgrade (17.711599ms)
+✔ genuine allied Yautja orphan incapacity is still refused without its medical timer (13.982883ms)
+✔ unphased, unsigned, wrong-continuity and malformed Ravager incapacity remain orphan errors (118.055087ms)
+✖ malformed phase plus forged medical record cannot bypass either owner validation (33.727249ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 2
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3142.760965
+
+✖ failing tests:
+
+test at tests/ally-rescue-ravager-checkpoint.test.js:37:1
+✖ real signed Ravager phase and empty medical state compose across checkpoint restoration (69.687195ms)
+  TypeError: Incapacitated unit has no saved rescue timer
+      at AllyRescueSystem.restore (file:///workspace/Yautja-continue-20261109/js/battlefield/AllyRescueSystem.js:261:111)
+      at TestContext.<anonymous> (file:///workspace/Yautja-continue-20261109/tests/ally-rescue-ravager-checkpoint.test.js:45:26)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+
+test at tests/ally-rescue-ravager-checkpoint.test.js:56:1
+✖ medical materialization never changes a real cataleptic Ravager HP, pose or owner timer (2726.123541ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///workspace/Yautja-continue-20261109/tests/ally-rescue-ravager-checkpoint.test.js:66:14)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/ally-rescue-ravager-checkpoint.test.js:80:1
+✖ a medical record cannot steal a legal one-HP Ravager phase or its spent upgrade (17.711599ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/Yautja-continue-20261109/tests/ally-rescue-ravager-checkpoint.test.js:86:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /Invalid persistent rescue casualty/,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at tests/ally-rescue-ravager-checkpoint.test.js:125:1
+✖ malformed phase plus forged medical record cannot bypass either owner validation (33.727249ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/Yautja-continue-20261109/tests/ally-rescue-ravager-checkpoint.test.js:132:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /Invalid persistent rescue casualty/,
+    operator: 'throws',
+    diff: 'simple'
+  }

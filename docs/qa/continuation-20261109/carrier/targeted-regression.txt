@@ -1,0 +1,44 @@
+✔ materialization projects real finite identities and culling preserves wounds instead of counting a death (27.002695ms)
+✔ the historical hive query also damages genuinely hostile humans while allied clan actors stay immune (10.664615ms)
+✔ failed materialization rolls back earlier actors and teardown restores every borrowed manager hook (3.053871ms)
+✔ physical cover rejects an otherwise in-range strike against a materialized human (4.986682ms)
+✔ a Queen uses the actual boss model, keeps its allocated identity, and leaves detail without dying (2931.236519ms)
+✔ an externally removed living actor releases group detail and preserves its injury without inventing a casualty (3.087251ms)
+✔ real mission cleanup lets simulation cull through its bridge before clearing live callbacks and remains idempotent (2.8923ms)
+✔ Carrier autonomously reaches its defended front and launches one of its six existing IDs (3048.994591ms)
+✔ the full Horde→Bridge synchronization preserves the real airborne arc until safe-floor contact (34.670729ms)
+✔ a nearby hunter outside the defend/formation radius is not acquired just to force a Carrier launch (19.398564ms)
+✔ the defend radius remains 24 even when the hunter is inside the wider formation radius 28 (36.58341ms)
+✔ real physical cover rejects autonomous launch without spending any of the allocated cargo (61.545113ms)
+✔ autonomous enhanced Carrier still consumes six original payload IDs rather than filling capacity twelve (55.327187ms)
+✔ successive autonomous launches exhaust only the six original IDs, then no seventh parasite appears (184.705597ms)
+✔ Bridge cleanup restores the borrowed Carrier callback and removes the launched projection without a death (24.047692ms)
+✔ source Carrier loads exactly six existing IDs, not six free facehuggers (28.213188ms)
+✔ Carrier cargo is protected from offscreen attack and front capture, yet can be unloaded as the SAME individuals (11.875895ms)
+✔ held Facehuggers retain health outside Hive-space and follow their one finite Carrier (10.343552ms)
+✔ Carrier cargo survives version-1 checkpoint with zero changes to allocated identities (138.806192ms)
+✔ Carrier death scatters its PREEXISTING cargo, without new entities, reserve, or additional kill credit (25.259387ms)
+✔ invalid Carrier cargo cannot cross factions, media, or the six-slot source limit (6.885389ms)
+✔ an explicitly authored Supercarrier consumes twelve existing IDs, never invents a parasite or changes budget (56.072037ms)
+✔ incendiary Carrier destruction kills its exact six cargo identities, not a second swarm (24.084346ms)
+✔ a non-fire Carrier death scatters its six living passengers with no collateral kill credit (7.082833ms)
+✔ visible Carrier ejects a single originally allocated Facehugger into the full battle bridge (2859.036854ms)
+✔ a blocked physical landing refuses the launch and retains all six original cargo IDs (28.411793ms)
+✔ source carrier projection is atomic and rejects a spent or wrongly owned Cargo unit (17.013289ms)
+✔ detailed launch refuses a full near-player actor budget without unloading strategic cargo (26.944488ms)
+✔ released Facehugger saves with original identity, without resurrecting six cargo actors (39.689608ms)
+✔ Carrier and Ravager have source-specific sculpted silhouettes and consistent LOD profiles (2748.176801ms)
+✔ exact Extinction profile IDs and LV-742 are required for detailed caste admission (0.913771ms)
+✔ two allocated source elite identities materialize, with no ghost parasites or duplicate units (2.106729ms)
+✔ a wrong-media operation and a forged profile cannot materialize Carrier/Ravager (0.776787ms)
+✔ the evolved LV-742 scenario signs upgrades without adding soldiers, cargo or starting HP (91.391283ms)
+✔ normal, basic and evolved checkpoints cannot be exchanged or upgraded by a live actor flag (128.726112ms)
+✔ the evolved scenario rejects another continuity and unknown variant before mutating its configuration (6.785ms)
+ℹ tests 36
+ℹ suites 0
+ℹ pass 36
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13520.226362

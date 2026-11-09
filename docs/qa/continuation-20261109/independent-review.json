@@ -1,0 +1,220 @@
+{
+  "schemaVersion": 1,
+  "status": "passed_scoped_code_review_waiting_final_runtime_qa",
+  "reviewedAt": "2026-11-09T04:26:24.759171+00:00",
+  "reviewer": "bible_excel_alignment_nov09",
+  "scope": "Independent read-only code review of the four bounded provenance, insertion-camera, Carrier-flight and Musou-UI changes. Working-tree hashes below are the reviewed state, not a claim about a later clean release commit or browser run.",
+  "primaryDesignContract": "docs/development/MUSOU-GAMEPLAY-CONTRACT.md",
+  "sourceAlignmentInventory": "docs/qa/continuation-20261109/alignment-sources.json",
+  "sourceAlignmentInventorySha256": "19775687c2f5b082ac0482143affaa1f0a0c2a9399a24402c4621b2a56db7053",
+  "sourceInputs": [
+    {
+      "path": "js/data/charactersData.js",
+      "bytes": 9426,
+      "sha256": "6520d050d40fc3f8901efe80a3df4bb9f01e71d08a885f0e932c46389ab0a981"
+    },
+    {
+      "path": "js/data/alien-base-v1.js",
+      "bytes": 10746,
+      "sha256": "2cba6f9ccc5eac6a7e2d041b1681221a7c30d893dd276e3ec280b0b2c2d5b5c8"
+    },
+    {
+      "path": "js/data/alien-base-v2-crossrefs.js",
+      "bytes": 5120,
+      "sha256": "833cdd134fd3e2261c43fa3264af87a7d4af7f6bb3dd59fab4ded740e3e0fc39"
+    },
+    {
+      "path": "js/main.js",
+      "bytes": 305399,
+      "sha256": "536f6eafd8d8bc6e6ddc97e877fd50bde72a05eeb49bd234312ff6e8eb7651f7"
+    },
+    {
+      "path": "js/engine/CameraCollision.js",
+      "bytes": 3781,
+      "sha256": "fa7f5954acac0b20ff051a99d0953243e14be5d01c6bc5e55ee963f2d38144da"
+    },
+    {
+      "path": "js/battlefield/BattleActorBridge.js",
+      "bytes": 16067,
+      "sha256": "4cdc58d4468c54c6bac40feec8fdce7f508266172ac1c6d2d13e5e2ccf7a1e94"
+    },
+    {
+      "path": "js/battlefield/ExtinctionCarrierFlight.js",
+      "bytes": 822,
+      "sha256": "9b7e96249358859b55b2bd41f656b8800905caf9a40b8cec80003657900201e7"
+    },
+    {
+      "path": "js/entities/XenomorphHorde.js",
+      "bytes": 111192,
+      "sha256": "29540a3b4d7622b08e51ba03bfe15464c352d958bd7f296058c65de56923414a"
+    },
+    {
+      "path": "js/engine/BattleActorSupport.js",
+      "bytes": 19200,
+      "sha256": "a56c12ff61875532110dfa78d252e41449d512a3cf5d83f58fcf266a8f1887b3"
+    },
+    {
+      "path": "js/ui/UIManager.js",
+      "bytes": 64284,
+      "sha256": "490c71dddcb142aa30583ed98cf475dfd1c4c3bc20d00af5f5199e4cc770cdb5"
+    },
+    {
+      "path": "js/ui/OperationBriefing.js",
+      "bytes": 6852,
+      "sha256": "118317c98e0af628535aee7550bc3c53e0b429763012bf17cae5f93a99b04399"
+    },
+    {
+      "path": "js/ui/OperationPanel.js",
+      "bytes": 14291,
+      "sha256": "8dd68e6ed07d9ea287e949fd4012723fa86de9499940c8e637c026448de2f24d"
+    },
+    {
+      "path": "js/ui/OperationMapLabels.js",
+      "bytes": 2191,
+      "sha256": "b0fc9187539dcbd1e1a0892bac90d9a4d4cc9957759e17e608e438a1f8f2d4e6"
+    },
+    {
+      "path": "css/styles.css",
+      "bytes": 114837,
+      "sha256": "30d9c08f5d278902bf4b62a6e9d9eadea76c68366f25c1c86a225bb377e8b707"
+    },
+    {
+      "path": "tests/alien-base.test.mjs",
+      "bytes": 6008,
+      "sha256": "65837cb420e0389240f240906051796df391f67463b3cb524de12fa965e27b16"
+    },
+    {
+      "path": "tests/insertion-camera-collision.test.js",
+      "bytes": 5513,
+      "sha256": "4e4f8b176b2c0f776bb1bcd6cfed46c783d6b29aa09a1eda2badbe73a489234f"
+    },
+    {
+      "path": "tests/extinction-carrier-autonomy.test.js",
+      "bytes": 11605,
+      "sha256": "ae59afab3a8d8eda03fa2503f4fd9662c6edf7c3a454b3a9010e2bb04e9023d1"
+    },
+    {
+      "path": "tests/operation-map-readability.test.js",
+      "bytes": 11388,
+      "sha256": "004fdf542179b3ad4a61e3d923386bff8035e60c93c7848b95f2e0ca6cda9ca2"
+    }
+  ],
+  "reviewedSubsystems": [
+    {
+      "id": "provenance",
+      "verdict": "no_blocker_found_in_scoped_static_review",
+      "observations": [
+        "43 documentary identities are attached after the existing reference-card mapping, with non-enumerable, non-writable and non-configurable descriptors; local IDs, current kits and enumerable save data remain authoritative.",
+        "v1 entities/bindings and v2 nested reference arrays/records are frozen; own-key and string checks prevent inherited/prototype keys from resolving as identities.",
+        "character.yautja/item.yautja documentary IDs are separate from the773-row yhw: public registry namespace; no admission by name or runtime asset/faction mutation is introduced.",
+        "Integration documentation explicitly scopes the v2 unmerged status to its pinned historical snapshot rather than asserting a current remote PR state."
+      ],
+      "ownerReportedTests": 48,
+      "ownerEvidence": {
+        "path": "docs/qa/continuation-20261109/provenance/validation.json",
+        "sha256": "04eaff64397f996a986589028223369753da3583a439fcd2dee2eb6a48193d21",
+        "executedByIndependentReviewer": false
+      }
+    },
+    {
+      "id": "insertion_camera",
+      "verdict": "no_blocker_found_in_scoped_static_review",
+      "observations": [
+        "updateInsertionPresentation applies the existing physical camera solver after smoothing, independently for P1 and P2 with each actual near-plane radius, before lookAt.",
+        "The main update exits before this branch when paused, photo mode or weapon wheel is active; inactive insertion returns without writing ordinary or photo cameras.",
+        "The change writes camera positions only. It does not hide geometry, change player/nav contacts, capsule visibility phases, factions, resources or allocations.",
+        "The tests exercise the real GameApp methods, actual Val Verde geometry and capsule sequencing without the DOM/WebGL constructor, preserving both exit positions and geometry visibility."
+      ],
+      "ownerReportedTests": 32,
+      "ownerEvidence": {
+        "path": "docs/qa/continuation-20261109/camera/validation.json",
+        "sha256": "dffdc3aa24a31fe9cce855fc7b66efcc9dc03384de069aa394fcc39d0ebc088a",
+        "executedByIndependentReviewer": false
+      }
+    },
+    {
+      "id": "carrier_flight",
+      "verdict": "no_blocker_found_in_scoped_static_review",
+      "observations": [
+        "The only production behavior change exempts an actor with an existing carrierFlight from Bridge walking-floor projection. Horde advances that authoritative finite arc; normal floor projection resumes when it clears at landing.",
+        "The final main update order is Horde.update→Bridge.sync→physical movement resolution. The new guard fixes the before-render snap at both the normal end-of-update sync and other sync calls.",
+        "No target selection or launch gate is widened: hostile faction, real owner entry, paused/result checks, defend radius 24, formation radius 28, launch radius 13, safe destination and line-of-sight remain in their owners.",
+        "Tests invoke the original borrowed Bridge callback through production Horde acquisition rather than an explicit launch request, and cover all six original cargo IDs plus absence of a seventh,952 IDs and cap 32.",
+        "Pause without Horde ticks keeps arc time/pose. The saved released UID and remaining cargo survive restoration as distant state; the rendered airborne interpolation itself is intentionally not claimed as persisted."
+      ],
+      "ownerReportedTests": 36,
+      "ownerTestCountIncludesNewEight": true,
+      "ownerEvidence": {
+        "path": "docs/qa/continuation-20261109/carrier/validation.json",
+        "sha256": "5b7058c2f31899d7aab8d9d2030b89a7c6b3fa192c37d87cb3d57b3288cf0652",
+        "executedByIndependentReviewer": false
+      }
+    },
+    {
+      "id": "musou_ui",
+      "verdict": "no_blocker_found_in_scoped_static_review",
+      "observations": [
+        "Compact map keys derive from stable configuration front order, which getHUDState preserves, rather than the changing danger-priority order. OperationPanel looks up keys by actual front ID.",
+        "Full source names remain in configuration, detailed report, briefing legend and accessible title/aria labels. Unknown control stays marked; no new enemy reserve/effectif disclosure is added.",
+        "Legend rendering uses DOM textContent and a signature to avoid rebuilding unchanged lists; text strokes are clamped to canvas bounds and responsive DOM containers hold the source paragraphs.",
+        "selectedLevel accessor updates selected and aria-pressed consistently. setOperationLevel disables only manual terrain-card selection while an authored operation owns its map, publishes an explanation and restores free card selection for free-terrain modes.",
+        "The actual setupOperationSelection now calls setOperationLevel(scene?level:null). Native disabled and the click-handler guard block contradictory clicks; direct checkpoint assignments and rebuilding card grids retain their path.",
+        "No signed scenario/front data, faction, allocations, HUD priority policy, combat damage or save schema is changed by the presentation helpers."
+      ],
+      "ownerReportedTests": 24,
+      "ownerEvidence": {
+        "path": "docs/qa/continuation-20261109/ui/targeted-tests.txt",
+        "sha256": "4cfdd4fd87c1dd9187c55e6aec9e6255704fddafec5831fb5c38b50c82e95fe6",
+        "executedByIndependentReviewer": false
+      }
+    }
+  ],
+  "reviewFindings": [
+    {
+      "id": "UI-BOUND-TERRAIN-CLICK",
+      "severity": "medium",
+      "status": "fixed_before_final_code_review",
+      "finding": "After selecting authored AFF-27, a subsequent manual terrain-card click could override the displayed selectedLevel while the operation/provenance still described its bound terrain, recreating the misleading selection.",
+      "reportedToOwner": true,
+      "resolution": "Owner introduced setOperationLevel, native button disabling plus handler guard, a user-facing bound-terrain notice and immediate re-enable on free-terrain mode; root wired the real operation-selection call.",
+      "verificationScope": "Read final runtime method/handler and the new actual-UI-method regression test. Owner 24-test log is recorded separately; independent reviewer did not execute it."
+    }
+  ],
+  "remainingBlockersInReviewedCode": [],
+  "remainingValidationAndLimits": [
+    "Root must bind the final clean runtime commit/source fingerprint to the final tests/build and actual browser evidence; this report cannot certify later source edits.",
+    "Final rendered QA remains separate: LV-742 menus/briefing/minimap in both desktop viewports, real autonomous Carrier flight in the authored operation, co-op insertion, and real checkpoint reload of the Ravager phase.",
+    "Physical camera boom clearance does not prove universal player/danger visibility; the P1 foreground-roof issue remains outside the four-line collision fix.",
+    "Carrier CPU tests use a flat physical test arena and existing LOS/landing gates; they do not certify every curved flight path against every dynamic or overhead obstacle on all maps.",
+    "Compact plan keys address long source labels in the scoped plans; no universal non-overlap, human readability or gamepad accessibility certification is inferred.",
+    "No claim that a separate user-mentioned Bible outside the available repository contract has been read.",
+    "No global AUD criterion is closed by this review; no human testers,1:1 fidelity or hardware performance certification."
+  ],
+  "guidesRead": {
+    "repository": "gamedev-skills/awesome-gamedev-agent-skills",
+    "commit": "19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9",
+    "paths": [
+      "skills/disciplines/game-ui-ux/SKILL.md",
+      "skills/disciplines/save-systems/SKILL.md"
+    ],
+    "application": "Review principles only; project Musou contracts and Three r160 APIs remain authoritative."
+  },
+  "reviewerActions": {
+    "readOnlySourceInspection": true,
+    "runtimeCodeChanged": false,
+    "sourceWorkbookChanged": false,
+    "workingWorkbookChanged": false,
+    "followupStatusChanged": false,
+    "gitCommandsExecuted": false,
+    "buildExecuted": false,
+    "browserLaunched": false,
+    "testsExecuted": 0,
+    "remoteActionsExecuted": false,
+    "outputFilesWritten": [
+      "docs/qa/continuation-20261109/independent-review.json"
+    ]
+  },
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "hardwarePerformanceMeasured": false
+}
