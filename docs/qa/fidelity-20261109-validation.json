@@ -185,8 +185,8 @@
     "auditAndGlbsUnchangedFromBase": true
   },
   "preservedAttempts": {
-    "baselineR1": "Failed only on fixture favicon404; original report/screenshots/helper preserved in baseline-r1. Fixed fixture favicon and reran baseline-r2 without filtering errors.",
-    "explorations": "exploratory-r1/r2 retain actual prefinal pictures and labels; final validation only uses final-r1.",
+    "baselineR1": "Failed only on fixture favicon404; original report/screenshots/helper preserved in history/baseline-r1. Fixed fixture favicon and reran baseline-r2 without filtering errors.",
+    "explorations": "history/exploratory-r1/r2 retain actual prefinal pictures and labels; final validation only uses final-r1.",
     "intermediateWorldAndGuard": "Owner reports preserve failed/intermediate tests separately; final 482-case regression rechecks the corrected source."
   },
   "newMeshyCreditsSpent": 0,

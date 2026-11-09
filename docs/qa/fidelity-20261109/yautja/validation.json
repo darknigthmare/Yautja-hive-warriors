@@ -12,7 +12,7 @@
   "ravagerMedicalOwnershipTestsPassed": 8,
   "supportVisualTestsPassed": 18,
   "battleActorBridgeTestsPassed": 7,
-  "log": "node-tests.log",
+  "log": "node-tests.txt",
   "sourceHashes": "source-sha256.txt",
   "intermediateRun": "validation-before-integration.json",
   "browser": "Central QA owns same-camera before/after captures and the gameplay scenario.",
