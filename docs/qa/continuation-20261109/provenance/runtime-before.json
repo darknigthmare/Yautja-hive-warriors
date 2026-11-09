@@ -1,0 +1,227 @@
+{
+  "schemaVersion": 1,
+  "status": "baseline_before_metadata_merge",
+  "sha256": "32479ba925deb26a708ac0f5a1deb880e485c510b3ffb0ee2bd2b27d89a6763e",
+  "characters": 7,
+  "armory": 36,
+  "characterIds": [
+    "jungle_hunter",
+    "wolf_predator",
+    "alpha_predator",
+    "feral_predator",
+    "samurai_predator",
+    "viking_predator",
+    "city_hunter"
+  ],
+  "stats": [
+    {
+      "id": "jungle_hunter",
+      "stats": {
+        "hp": 1000,
+        "maxHp": 1000,
+        "moveSpeed": 16,
+        "meleeDamage": 120,
+        "plasmaDamage": 250,
+        "plasmaEnergyCost": 20
+      }
+    },
+    {
+      "id": "wolf_predator",
+      "stats": {
+        "hp": 1150,
+        "maxHp": 1150,
+        "moveSpeed": 17,
+        "meleeDamage": 145,
+        "plasmaDamage": 280,
+        "plasmaEnergyCost": 16
+      }
+    },
+    {
+      "id": "alpha_predator",
+      "stats": {
+        "hp": 1200,
+        "maxHp": 1200,
+        "moveSpeed": 18,
+        "meleeDamage": 160,
+        "plasmaDamage": 220,
+        "plasmaEnergyCost": 15
+      }
+    },
+    {
+      "id": "feral_predator",
+      "stats": {
+        "hp": 1000,
+        "maxHp": 1000,
+        "moveSpeed": 19,
+        "meleeDamage": 135,
+        "plasmaDamage": 210,
+        "plasmaEnergyCost": 15
+      }
+    },
+    {
+      "id": "samurai_predator",
+      "stats": {
+        "hp": 1050,
+        "maxHp": 1050,
+        "moveSpeed": 19,
+        "meleeDamage": 150,
+        "plasmaDamage": 200,
+        "plasmaEnergyCost": 18
+      }
+    },
+    {
+      "id": "viking_predator",
+      "stats": {
+        "hp": 1350,
+        "maxHp": 1350,
+        "moveSpeed": 14,
+        "meleeDamage": 175,
+        "plasmaDamage": 260,
+        "plasmaEnergyCost": 30
+      }
+    },
+    {
+      "id": "city_hunter",
+      "stats": {
+        "hp": 850,
+        "maxHp": 850,
+        "moveSpeed": 19,
+        "meleeDamage": 100,
+        "plasmaDamage": 180,
+        "plasmaEnergyCost": 15
+      }
+    }
+  ],
+  "weapons": [
+    {
+      "id": "jungle_hunter",
+      "weapons": {
+        "primary": "Lames de poignet",
+        "secondary": "Même arme : Lames de poignet",
+        "special": "Canon plasma d’épaule",
+        "gadgets": "Médicomp · Dispositif d’autodestruction",
+        "uniqueAbility": "⚡ Musou: Surcharge Plasma Dévastatrice — adaptation de gameplay"
+      },
+      "reference": {
+        "continuity": "Predator (1987)",
+        "sourceUrls": [
+          "https://store.necaonline.com/products/predator-ultimate-jungle-hunter-7-scale-action-figure"
+        ],
+        "referenceScope": "equipment-restricted-default; not an exhaustive scene inventory",
+        "fidelity1to1Verified": false
+      }
+    },
+    {
+      "id": "wolf_predator",
+      "weapons": {
+        "primary": "Lames de poignet",
+        "secondary": "Fouet segmenté de Wolf",
+        "special": "Deux canons plasma d’épaule",
+        "gadgets": "Médicomp · Liquide dissolvant de Wolf",
+        "uniqueAbility": "🔥 Musou: Solvant d'Acide Liquéfacteur — adaptation de gameplay"
+      },
+      "reference": {
+        "continuity": "AVP: Requiem (2007)",
+        "sourceUrls": [
+          "https://www.prime1studio.com/avpr-wolf-predator/REMAVP-01DXS.html"
+        ],
+        "referenceScope": "equipment-restricted-default; not an exhaustive scene inventory",
+        "fidelity1to1Verified": false
+      }
+    },
+    {
+      "id": "alpha_predator",
+      "weapons": {
+        "primary": "Faucille Alpha (Hunting Grounds)",
+        "secondary": "Arc composite Yautja",
+        "special": "Canon plasma d’épaule",
+        "gadgets": "Médicomp · Piège de chasse (Hunting Grounds)",
+        "uniqueAbility": "⚡ Musou: Massacre Ancestral à la Faux — adaptation de gameplay"
+      },
+      "reference": {
+        "continuity": "Predator: Hunting Grounds — game adaptation",
+        "sourceUrls": [
+          "https://predator.illfonic.com/the-predator/",
+          "https://blog.playstation.com/2020/07/17/july-free-update-comes-to-predator-hunting-grounds/"
+        ],
+        "referenceScope": "equipment-restricted-default; not an exhaustive scene inventory",
+        "fidelity1to1Verified": false
+      }
+    },
+    {
+      "id": "feral_predator",
+      "weapons": {
+        "primary": "Lames de poignet",
+        "secondary": "Lance-projectiles guidés du Feral",
+        "special": "Lance-projectiles guidés du Feral",
+        "gadgets": "Médicomp · Bouclier rétractable du Feral",
+        "uniqueAbility": "🌀 Musou: Charge de Bouclier Mutilante — adaptation de gameplay"
+      },
+      "reference": {
+        "continuity": "Prey — Northern Great Plains 1719",
+        "sourceUrls": [
+          "https://www.prime1studio.com/fp-feral-predator/MMPR-07DXS.html",
+          "https://store.necaonline.com/collections/pre-orders/products/prey-ultramate-feral-predator-7-inch-scale-action-figure"
+        ],
+        "referenceScope": "equipment-restricted-default; not an exhaustive scene inventory",
+        "fidelity1to1Verified": false
+      }
+    },
+    {
+      "id": "samurai_predator",
+      "weapons": {
+        "primary": "Katana du Samurai (Hunting Grounds)",
+        "secondary": "Disque de chasse Smart-Disc",
+        "special": "Canon plasma d’épaule",
+        "gadgets": "Médicomp · Piège de chasse (Hunting Grounds)",
+        "uniqueAbility": "🌪️ Musou: Entaille du Dragon Ronin — adaptation de gameplay"
+      },
+      "reference": {
+        "continuity": "Predator: Hunting Grounds — game adaptation",
+        "sourceUrls": [
+          "https://predator.illfonic.com/the-predator/",
+          "https://predator.illfonic.com/"
+        ],
+        "referenceScope": "equipment-restricted-default; not an exhaustive scene inventory",
+        "fidelity1to1Verified": false
+      }
+    },
+    {
+      "id": "viking_predator",
+      "weapons": {
+        "primary": "Hache de combat Viking (Hunting Grounds)",
+        "secondary": "Disque de chasse Smart-Disc",
+        "special": "Canon plasma d’épaule",
+        "gadgets": "Médicomp · Piège de chasse (Hunting Grounds)",
+        "uniqueAbility": "🔥 Musou: Frénésie du Valhalla 360° — adaptation de gameplay"
+      },
+      "reference": {
+        "continuity": "Predator: Hunting Grounds — game adaptation",
+        "sourceUrls": [
+          "https://predator.illfonic.com/the-predator/",
+          "https://predator.illfonic.com/"
+        ],
+        "referenceScope": "equipment-restricted-default; not an exhaustive scene inventory",
+        "fidelity1to1Verified": false
+      }
+    },
+    {
+      "id": "city_hunter",
+      "weapons": {
+        "primary": "Lance télescopique Combistick",
+        "secondary": "Disque de chasse Smart-Disc",
+        "special": "Canon plasma d’épaule",
+        "gadgets": "Médicomp · Dispositif d’autodestruction",
+        "uniqueAbility": "🌪️ Musou: Tempête de Disques Boomerang — adaptation de gameplay"
+      },
+      "reference": {
+        "continuity": "Predator 2 — Los Angeles 1997",
+        "sourceUrls": [
+          "https://store.necaonline.com/blogs/news/shipping-this-week-predator-2-ultimate-city-hunter-action-figure"
+        ],
+        "referenceScope": "equipment-restricted-default; not an exhaustive scene inventory",
+        "fidelity1to1Verified": false
+      }
+    }
+  ]
+}

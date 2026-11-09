@@ -2,6 +2,8 @@
  * implementation or permission for every hunter. Reference cards use the same
  * equipment defaults as the loadout resolver; stats and musou are adaptations. */
 import { getHunterReferenceCard } from './hunterArsenal.js';
+import { resolveAlienBaseIdentityV1 } from './alien-base-v1.js';
+import { getAlienBaseCrossReferencesV2 } from './alien-base-v2-crossrefs.js';
 
 export const ULTIMATE_YAUTJA_ARMORY = [
   // 1-12: MELEE WEAPONS
@@ -145,3 +147,18 @@ export const CHARACTERS_DATA = CHARACTER_PRESENTATIONS.map(character => {
   return { ...character, weapons: { ...weapons,
     uniqueAbility: `${character.weapons.uniqueAbility} — adaptation de gameplay` }, reference };
 });
+
+// Documentary identities accompany the current reference kits. They never
+// replace display labels, local save IDs, equipment permissions or statistics.
+for (const [group, records] of [['armory', ULTIMATE_YAUTJA_ARMORY], ['characters', CHARACTERS_DATA]]) {
+  for (const record of records) {
+    const identity = resolveAlienBaseIdentityV1(group, record.id);
+    if (!identity) continue;
+    Object.defineProperty(record, 'sharedEntityId', { value: identity.id });
+    const references = getAlienBaseCrossReferencesV2(identity.id);
+    if (references.length) Object.defineProperty(record, 'sharedSourceRefsV2', { value: references });
+  }
+}
+
+export { resolveAlienBaseIdentityV1, YAUTJA_ALIEN_BASE_V1 } from './alien-base-v1.js';
+export { ALIEN_BASE_V2_CROSSREF_PREVIEW, getAlienBaseCrossReferencesV2 } from './alien-base-v2-crossrefs.js';
