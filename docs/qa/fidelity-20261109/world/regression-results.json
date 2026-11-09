@@ -1,0 +1,30 @@
+{
+  "scope": "CPU scene, geometry, navigation and collision checks; no human or device QA claim",
+  "checks": [
+    {
+      "command": "node --test tests/val-verde-world-fidelity.test.js",
+      "tests": 6,
+      "passed": 6,
+      "failed": 0,
+      "durationMs": 13088.387524,
+      "log": "world-fidelity-tests.txt",
+      "note": "Final rerun after the 85mm/14mm roof, real landing notch, physical removal guard and measured player step traversal. Includes 2340 actual-camera body rays, wall/post contacts, 60 real Player.move speed/frame/height/buff combinations ascending and descending, jump, side exit, pause, teleport rejection, removal and seeded serialized-world rebuild."
+    },
+    {
+      "command": "node --test tests/val-verde-world-fidelity.test.js tests/insertion-camera-collision.test.js tests/world-route-weather-regression.test.js tests/reference-walk-surfaces.test.js",
+      "tests": 16,
+      "passed": 16,
+      "failed": 0,
+      "durationMs": 12201.136793,
+      "note": "Intermediate version before the final finer roof and real-player stair/removal corrections. Output was inspected from the tool response; this file records its summary, not a complete console transcript. The root agent owns the final global rerun."
+    },
+    {
+      "command": "node --test tests/battlefield-map-variants.test.js tests/world-depth-seeds.test.js tests/world-geometry-streaming.test.js tests/environment-visual.test.js",
+      "tests": 91,
+      "passed": 91,
+      "failed": 0,
+      "durationMs": 131657.599511,
+      "note": "Intermediate version before the final finer roof and real-player stair/removal corrections. Includes physical complete strategic routes for all 34 layouts, two seeds 17 and 90210 per layout, resource cleanup, streaming, all-biome geometry budgets and botanical/UV checks. Output was inspected from the tool response; this file records its summary, not a complete console transcript. The root agent owns the final global rerun."
+    }
+  ]
+}

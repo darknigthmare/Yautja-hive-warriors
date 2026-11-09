@@ -1,0 +1,43 @@
+{
+  "date": "2026-11-09",
+  "scope": "original-clan-honor-guard",
+  "filmPropReplicaCertified": false,
+  "generationCreditsSpent": 0,
+  "authoring": "Procedural geometry, vertex pigmentation, existing shared PBR texture families; no source photograph embedded in the app.",
+  "referencePack": "/workspace/hive-warriors-reference-pack/sources.json",
+  "sourcePage": "https://www.prime1studio.com/pr-jungle-hunter-predator/MMPR-01DXS.html",
+  "references": [
+    {
+      "path": "/workspace/hive-warriors-reference-pack/images/hunter-mmpr-01dx_a0026.jpg",
+      "sha256": "47a047f3f78a7f11a12793ee59df3a77334b292e731015e88b02f808ab761182",
+      "role": "Full front three-quarter: species silhouette, narrow waist, muscular thighs, exposed mottled skin, net, layered armor, open clawed feet."
+    },
+    {
+      "path": "/workspace/hive-warriors-reference-pack/images/hunter-mmpr-01dx_b0024.jpg",
+      "sha256": "424259406b46f24ea80c22d6c1cea2c66739dee74af407a776ce7125529f333d",
+      "role": "Right three-quarter/profile: forearm volume, shoulder weapon, layered gauntlet and shin proportions, dread lengths."
+    },
+    {
+      "path": "/workspace/hive-warriors-reference-pack/images/hunter-mmpr-01dx_b0010.jpg",
+      "sha256": "037c9350c1473cdd5270a0e40aab4315ef0d62215079b06a35d7d263282339b3",
+      "role": "Head detail: broad cranial proportions and thick banded locks. Unmasked portrait is not a source for a fabricated exact mask."
+    },
+    {
+      "path": "/workspace/hive-warriors-reference-pack/images/hunter-mmpr-01dx_b0022.jpg",
+      "sha256": "17b9a02347fe510cc45dacf970a54a7f918cb7705acb887a2c6d85cb1b2102f8",
+      "role": "Partially occluded rear: coarse confirmation of dread roots and silhouette; insufficient for exact back reconstruction."
+    }
+  ],
+  "limitations": [
+    "Licensed modern collectible marketing photographs, not production orthographic scans or measurements.",
+    "The gallery includes different portraits, masks and sculpt updates; those variants are not silently combined as a single film identity.",
+    "The model remains an original honor-guard archetype. Mask contours and equipment are authored gameplay approximations, not certified Jungle Hunter props.",
+    "No open image license or upload permission was established. Original photos stay outside public game assets and were not sent to Meshy."
+  ],
+  "guides": {
+    "checkout": "/tmp/yautja-guides-20261109",
+    "revision": "19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9",
+    "consulted": ["create-game-assets", "threejs-gltf-loading", "game-feel"],
+    "adaptation": "Three.js r160 existing renderer, GPU morph targets and standard InstancedMesh; no engine migration or skeleton allocation."
+  }
+}

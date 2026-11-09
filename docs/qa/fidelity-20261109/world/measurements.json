@@ -1,0 +1,204 @@
+{
+  "date": "2026-11-09T06:00:24.101Z",
+  "baseCommit": "a8f9c759a30bc97c5400ce48709f6ad10856003d",
+  "scope": "world-owned source metrics; source-inspired original camp, not certified 1:1",
+  "sourceHashes": {
+    "js/entities/ReferenceEnvironmentMechanisms.js": "4b473b17231b74de266dd4719ab942ed7b79ca7558fc6297442c3a78f859509d",
+    "js/graphics/ValVerdeFieldStructures.js": "db9bd3879777f4ff79173ac80a29dd38bfd34522ff832f8a791fc178f504ca2d",
+    "js/graphics/EnvironmentSculpt.js": "7a8614e9a0457515e69d1f0216e3bd07a63b5d0f413924a01d8542de8d4ff248",
+    "tests/val-verde-world-fidelity.test.js": "ab6a00d6b54a1e8f1ce6ffb428114f881f0eeef18e08fe2742127a2948975db7"
+  },
+  "structures": {
+    "shack": {
+      "position": [
+        14,
+        0,
+        14
+      ],
+      "sourceMeshesBeforeBatching": 34,
+      "sourceTrianglesBeforeBatching": 7188,
+      "uniqueGeometries": 34,
+      "roofProfile": {
+        "width": 5.1,
+        "halfDepth": 2.55,
+        "ridgeHeight": 3.22,
+        "eaveHeight": 2.7,
+        "columns": 500,
+        "waves": 60,
+        "amplitude": 0.014
+      }
+    },
+    "watchtower": {
+      "position": [
+        -14,
+        0,
+        -14
+      ],
+      "sourceMeshesBeforeBatching": 30,
+      "sourceTrianglesBeforeBatching": 3404,
+      "uniqueGeometries": 15
+    }
+  },
+  "botany": {
+    "tropicalCrown": {
+      "triangles": 4608,
+      "baselineTriangles": 3072,
+      "leaves": 384,
+      "geometryIdenticalToPreviousSource": false
+    },
+    "distantTropicalCrown": {
+      "triangles": 576,
+      "baselineTriangles": 576,
+      "leaves": 144,
+      "geometryIdenticalToPreviousSource": true
+    },
+    "tropicalFern": {
+      "triangles": 476,
+      "baselineTriangles": 260,
+      "leaves": 98,
+      "geometryIdenticalToPreviousSource": false
+    },
+    "temperateCrown": {
+      "triangles": 4704,
+      "baselineTriangles": 4704,
+      "leaves": 588,
+      "geometryIdenticalToPreviousSource": true
+    },
+    "temperateFern": {
+      "triangles": 260,
+      "baselineTriangles": 260,
+      "leaves": 50,
+      "geometryIdenticalToPreviousSource": true
+    },
+    "distantTemperateCrown": {
+      "triangles": 1008,
+      "baselineTriangles": 1008,
+      "leaves": 252,
+      "geometryIdenticalToPreviousSource": true
+    },
+    "tropicalInstanceCounts": {
+      "trees": 40,
+      "ferns": 240
+    }
+  },
+  "collision": {
+    "shackGroundWalls": [
+      {
+        "name": "shack-west-timber-wall",
+        "x": 11.959999978542328,
+        "z": 14,
+        "halfWidth": 0.1600000262260437,
+        "halfDepth": 2.200000047683716,
+        "height": 2.597999930381775
+      },
+      {
+        "name": "shack-east-timber-wall",
+        "x": 16.040000021457672,
+        "z": 14,
+        "halfWidth": 0.1600000262260437,
+        "halfDepth": 2.200000047683716,
+        "height": 2.597999930381775
+      },
+      {
+        "name": "shack-rear-wall-with-window",
+        "x": 14,
+        "z": 11.959999978542328,
+        "halfWidth": 2.200000047683716,
+        "halfDepth": 0.1600000262260437,
+        "height": 2.597999930381775
+      },
+      {
+        "name": "shack-door-left-wall",
+        "x": 12.499999970197678,
+        "z": 16.040000021457672,
+        "halfWidth": 0.7000000178813934,
+        "halfDepth": 0.1600000262260437,
+        "height": 2.597999930381775
+      },
+      {
+        "name": "shack-door-right-wall",
+        "x": 15.500000029802322,
+        "z": 16.040000021457672,
+        "halfWidth": 0.7000000178813934,
+        "halfDepth": 0.1600000262260437,
+        "height": 2.597999930381775
+      }
+    ],
+    "towerGroundPosts": [
+      "watchtower-grounded-post",
+      "watchtower-grounded-post",
+      "watchtower-grounded-post",
+      "watchtower-grounded-post"
+    ],
+    "measuredFieldSurfaces": [
+      {
+        "id": "val-verde-watchtower-treads",
+        "bounds": {
+          "minX": -14.65,
+          "maxX": -13.35,
+          "minZ": -18.118055555555557,
+          "maxZ": -15.781944444444445
+        }
+      },
+      {
+        "id": "val-verde-watchtower-deck",
+        "bounds": {
+          "minX": -16.1,
+          "maxX": -11.9,
+          "minZ": -16.097,
+          "maxZ": -11.903
+        }
+      },
+      {
+        "id": "val-verde-shack-roof",
+        "bounds": {
+          "minX": 11.45,
+          "maxX": 16.55,
+          "minZ": 11.45,
+          "maxZ": 16.55
+        }
+      }
+    ],
+    "oldTowerElevation": 0,
+    "oldShackElevation": 0
+  },
+  "cleanup": {
+    "sceneChildren": 0,
+    "colliders": 0
+  },
+  "finalCorrections": [
+    "85mm roof pitch / 14mm amplitude / 6000 actual roof triangles",
+    "1.6m real deck-entry notch and 30cm final tread landing",
+    "activity requires mesh-to-referenceRoot attachment",
+    "input movement substeps <=5cm only at active measured timber steps"
+  ],
+  "finalWorldTests": {
+    "tests": 6,
+    "passed": 6,
+    "failed": 0,
+    "durationMs": 13088.387524,
+    "actualPlayerCombinations": 60,
+    "framesPerSecond": [
+      10,
+      20,
+      30,
+      60,
+      120
+    ],
+    "gameDeltaCap": 0.1,
+    "bodyHeights": [
+      2.4,
+      3.95
+    ],
+    "movementSpeeds": [
+      14,
+      16,
+      19
+    ],
+    "buffVariants": [
+      "normal",
+      "warhorn + berserker"
+    ],
+    "cameraBodyRays": 2340
+  }
+}

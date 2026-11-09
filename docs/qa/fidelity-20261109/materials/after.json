@@ -1,0 +1,867 @@
+{
+  "timestamp": "2026-11-09T05:39:13.509Z",
+  "node": "v24.19.0",
+  "threeRevision": "160",
+  "surfaceLibrarySha256": "c7e192e3da8d06d9ab5497b97040cf7918f65c74bec3df2606f3b0db33f5ffe4",
+  "scope": "Node RGBA sources and repeat views only; no browser, renderer, draw calls, GPU time or hardware memory measured.",
+  "generationTotalMs": 5951.02712,
+  "cache": {
+    "types": [
+      "soil",
+      "stone",
+      "metal",
+      "armor",
+      "bark",
+      "chitin",
+      "skin",
+      "humanSkin",
+      "fabric",
+      "leather",
+      "bone",
+      "leaf",
+      "net",
+      "wood"
+    ],
+    "textureViews": 126,
+    "sharedImageSources": 42,
+    "sourceBytes": 230424576,
+    "resolutions": {
+      "soil": 1024,
+      "stone": 1024,
+      "metal": 1024,
+      "armor": 2048,
+      "bark": 1024,
+      "chitin": 2048,
+      "skin": 2048,
+      "humanSkin": 1024,
+      "fabric": 512,
+      "leather": 512,
+      "bone": 512,
+      "leaf": 512,
+      "net": 256,
+      "wood": 512
+    },
+    "anisotropy": 1
+  },
+  "repeatProbe": {
+    "repeatPairs": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        3
+      ],
+      [
+        7,
+        2
+      ]
+    ],
+    "materialCount": 42,
+    "textureViews": 126,
+    "uniqueThreeSources": 42,
+    "fullRgbaMipChainBytesPerUniqueSource": 307232712,
+    "note": "Mip chain number is an uncompressed RGBA allocation estimate, not a measured GPU allocation. Three r160 caches native textures by Source identity and sampler properties."
+  },
+  "pixels": {
+    "soil": {
+      "width": 1024,
+      "height": 1024,
+      "generationMs": 233.14203,
+      "albedoRed": {
+        "min": 123,
+        "max": 247,
+        "distinctValues": 125,
+        "mean": 172.86539,
+        "standardDeviation": 18.33143,
+        "adjacentMeanDifference": [
+          1.28304,
+          1.31851
+        ],
+        "seamMeanDifference": [
+          0.29688,
+          0.25098
+        ]
+      },
+      "roughnessGreen": {
+        "min": 194,
+        "max": 247,
+        "distinctValues": 54,
+        "mean": 219.98862,
+        "standardDeviation": 9.27521,
+        "adjacentMeanDifference": [
+          0.29446,
+          0.29833
+        ],
+        "seamMeanDifference": [
+          0.09375,
+          0.06934
+        ]
+      },
+      "normals": {
+        "samples": 61681,
+        "lengthRange": [
+          0.99496,
+          1.00523
+        ],
+        "tiltDegreesMean": 5.81458,
+        "tiltDegreesP95": 15.19108
+      },
+      "normalScale": [
+        0.7,
+        0.7
+      ],
+      "materialRoughness": 0.98,
+      "materialMetalness": 0,
+      "colorSpace": {
+        "albedo": "srgb",
+        "normal": "",
+        "roughness": ""
+      },
+      "wrapping": 1000,
+      "mipmaps": true
+    },
+    "stone": {
+      "width": 1024,
+      "height": 1024,
+      "generationMs": 265.11307,
+      "albedoRed": {
+        "min": 142,
+        "max": 229,
+        "distinctValues": 88,
+        "mean": 191.48341,
+        "standardDeviation": 11.58272,
+        "adjacentMeanDifference": [
+          0.84316,
+          0.93929
+        ],
+        "seamMeanDifference": [
+          0.29395,
+          0.25879
+        ]
+      },
+      "roughnessGreen": {
+        "min": 211,
+        "max": 246,
+        "distinctValues": 36,
+        "mean": 228.39048,
+        "standardDeviation": 5.35209,
+        "adjacentMeanDifference": [
+          0.44329,
+          0.44333
+        ],
+        "seamMeanDifference": [
+          0.1416,
+          0.14648
+        ]
+      },
+      "normals": {
+        "samples": 61681,
+        "lengthRange": [
+          0.99558,
+          1.0045
+        ],
+        "tiltDegreesMean": 3.87359,
+        "tiltDegreesP95": 7.43478
+      },
+      "normalScale": [
+        0.7,
+        0.7
+      ],
+      "materialRoughness": 0.88,
+      "materialMetalness": 0.02,
+      "colorSpace": {
+        "albedo": "srgb",
+        "normal": "",
+        "roughness": ""
+      },
+      "wrapping": 1000,
+      "mipmaps": true
+    },
+    "metal": {
+      "width": 1024,
+      "height": 1024,
+      "generationMs": 346.36923,
+      "albedoRed": {
+        "min": 206,
+        "max": 237,
+        "distinctValues": 32,
+        "mean": 228.82841,
+        "standardDeviation": 4.11046,
+        "adjacentMeanDifference": [
+          0.66859,
+          0.29029
+        ],
+        "seamMeanDifference": [
+          0.43945,
+          0.20996
+        ]
+      },
+      "roughnessGreen": {
+        "min": 170,
+        "max": 255,
+        "distinctValues": 86,
+        "mean": 200.61203,
+        "standardDeviation": 10.07428,
+        "adjacentMeanDifference": [
+          1.73631,
+          0.37592
+        ],
+        "seamMeanDifference": [
+          0.9668,
+          0.08105
+        ]
+      },
+      "normals": {
+        "samples": 61681,
+        "lengthRange": [
+          0.99558,
+          1.00443
+        ],
+        "tiltDegreesMean": 1.46418,
+        "tiltDegreesP95": 4.31382
+      },
+      "normalScale": [
+        0.28,
+        0.28
+      ],
+      "materialRoughness": 0.62,
+      "materialMetalness": 0.8,
+      "colorSpace": {
+        "albedo": "srgb",
+        "normal": "",
+        "roughness": ""
+      },
+      "wrapping": 1000,
+      "mipmaps": true
+    },
+    "armor": {
+      "width": 2048,
+      "height": 2048,
+      "generationMs": 1378.02005,
+      "albedoRed": {
+        "min": 205,
+        "max": 241,
+        "distinctValues": 37,
+        "mean": 228.79519,
+        "standardDeviation": 4.33987,
+        "adjacentMeanDifference": [
+          0.35427,
+          0.20726
+        ],
+        "seamMeanDifference": [
+          0.12109,
+          0.06982
+        ]
+      },
+      "roughnessGreen": {
+        "min": 172,
+        "max": 255,
+        "distinctValues": 84,
+        "mean": 200.98834,
+        "standardDeviation": 11.00448,
+        "adjacentMeanDifference": [
+          0.86189,
+          0.30141
+        ],
+        "seamMeanDifference": [
+          0.22852,
+          0.03809
+        ]
+      },
+      "normals": {
+        "samples": 246724,
+        "lengthRange": [
+          0.99514,
+          1.00492
+        ],
+        "tiltDegreesMean": 2.52333,
+        "tiltDegreesP95": 6.63459
+      },
+      "normalScale": [
+        0.3,
+        0.3
+      ],
+      "materialRoughness": 0.6,
+      "materialMetalness": 0.68,
+      "colorSpace": {
+        "albedo": "srgb",
+        "normal": "",
+        "roughness": ""
+      },
+      "wrapping": 1000,
+      "mipmaps": true
+    },
+    "bark": {
+      "width": 1024,
+      "height": 1024,
+      "generationMs": 293.48903,
+      "albedoRed": {
+        "min": 161,
+        "max": 236,
+        "distinctValues": 76,
+        "mean": 206.66806,
+        "standardDeviation": 14.48224,
+        "adjacentMeanDifference": [
+          0.90099,
+          0.23287
+        ],
+        "seamMeanDifference": [
+          1.13281,
+          0.02832
+        ]
+      },
+      "roughnessGreen": {
+        "min": 224,
+        "max": 250,
+        "distinctValues": 27,
+        "mean": 237.13708,
+        "standardDeviation": 5.4589,
+        "adjacentMeanDifference": [
+          1.12047,
+          1.12145
+        ],
+        "seamMeanDifference": [
+          0.44824,
+          0.45996
+        ]
+      },
+      "normals": {
+        "samples": 61681,
+        "lengthRange": [
+          0.99558,
+          1.00462
+        ],
+        "tiltDegreesMean": 2.81684,
+        "tiltDegreesP95": 5.75434
+      },
+      "normalScale": [
+        0.7,
+        0.7
+      ],
+      "materialRoughness": 1,
+      "materialMetalness": 0,
+      "colorSpace": {
+        "albedo": "srgb",
+        "normal": "",
+        "roughness": ""
+      },
+      "wrapping": 1000,
+      "mipmaps": true
+    },
+    "chitin": {
+      "width": 2048,
+      "height": 2048,
+      "generationMs": 1308.66369,
+      "albedoRed": {
+        "min": 187,
+        "max": 224,
+        "distinctValues": 38,
+        "mean": 210.96568,
+        "standardDeviation": 4.9065,
+        "adjacentMeanDifference": [
+          0.41213,
+          0.14811
+        ],
+        "seamMeanDifference": [
+          0.24268,
+          0.03418
+        ]
+      },
+      "roughnessGreen": {
+        "min": 156,
+        "max": 248,
+        "distinctValues": 93,
+        "mean": 215.61093,
+        "standardDeviation": 24.89324,
+        "adjacentMeanDifference": [
+          0.4152,
+          0.21049
+        ],
+        "seamMeanDifference": [
+          0.10059,
+          0.01367
+        ]
+      },
+      "normals": {
+        "samples": 246724,
+        "lengthRange": [
+          0.99496,
+          1.00486
+        ],
+        "tiltDegreesMean": 2.81626,
+        "tiltDegreesP95": 10.14695
+      },
+      "normalScale": [
+        0.32,
+        0.32
+      ],
+      "materialRoughness": 0.58,
+      "materialMetalness": 0.03,
+      "colorSpace": {
+        "albedo": "srgb",
+        "normal": "",
+        "roughness": ""
+      },
+      "wrapping": 1000,
+      "mipmaps": true
+    },
+    "skin": {
+      "width": 2048,
+      "height": 2048,
+      "generationMs": 1384.23869,
+      "albedoRed": {
+        "min": 184,
+        "max": 244,
+        "distinctValues": 61,
+        "mean": 222.90062,
+        "standardDeviation": 12.2285,
+        "adjacentMeanDifference": [
+          0.66318,
+          0.64752
+        ],
+        "seamMeanDifference": [
+          0.97607,
+          0.05225
+        ]
+      },
+      "roughnessGreen": {
+        "min": 212,
+        "max": 247,
+        "distinctValues": 36,
+        "mean": 231.64774,
+        "standardDeviation": 4.56621,
+        "adjacentMeanDifference": [
+          0.12494,
+          0.12216
+        ],
+        "seamMeanDifference": [
+          0.0293,
+          0.02734
+        ]
+      },
+      "normals": {
+        "samples": 246724,
+        "lengthRange": [
+          0.99533,
+          1.0048
+        ],
+        "tiltDegreesMean": 2.57544,
+        "tiltDegreesP95": 6.41834
+      },
+      "normalScale": [
+        0.28,
+        0.28
+      ],
+      "materialRoughness": 0.8,
+      "materialMetalness": 0.02,
+      "colorSpace": {
+        "albedo": "srgb",
+        "normal": "",
+        "roughness": ""
+      },
+      "wrapping": 1000,
+      "mipmaps": true
+    },
+    "humanSkin": {
+      "width": 1024,
+      "height": 1024,
+      "generationMs": 302.00906,
+      "albedoRed": {
+        "min": 230,
+        "max": 253,
+        "distinctValues": 24,
+        "mean": 242.88056,
+        "standardDeviation": 3.31865,
+        "adjacentMeanDifference": [
+          0.17714,
+          0.17956
+        ],
+        "seamMeanDifference": [
+          0.10352,
+          0.13184
+        ]
+      },
+      "roughnessGreen": {
+        "min": 211,
+        "max": 238,
+        "distinctValues": 28,
+        "mean": 226.78881,
+        "standardDeviation": 3.07493,
+        "adjacentMeanDifference": [
+          0.37099,
+          0.37437
+        ],
+        "seamMeanDifference": [
+          0.26953,
+          0.2959
+        ]
+      },
+      "normals": {
+        "samples": 61681,
+        "lengthRange": [
+          0.99558,
+          1.0045
+        ],
+        "tiltDegreesMean": 2.32791,
+        "tiltDegreesP95": 5.68354
+      },
+      "normalScale": [
+        0.18,
+        0.18
+      ],
+      "materialRoughness": 0.78,
+      "materialMetalness": 0,
+      "colorSpace": {
+        "albedo": "srgb",
+        "normal": "",
+        "roughness": ""
+      },
+      "wrapping": 1000,
+      "mipmaps": true
+    },
+    "fabric": {
+      "width": 512,
+      "height": 512,
+      "generationMs": 76.46536,
+      "albedoRed": {
+        "min": 217,
+        "max": 247,
+        "distinctValues": 31,
+        "mean": 228.79763,
+        "standardDeviation": 4.21336,
+        "adjacentMeanDifference": [
+          3.19326,
+          3.1911
+        ],
+        "seamMeanDifference": [
+          4.75781,
+          4.70508
+        ]
+      },
+      "roughnessGreen": {
+        "min": 219,
+        "max": 244,
+        "distinctValues": 26,
+        "mean": 231.96905,
+        "standardDeviation": 3.24544,
+        "adjacentMeanDifference": [
+          1.98579,
+          1.98811
+        ],
+        "seamMeanDifference": [
+          2.92773,
+          2.98438
+        ]
+      },
+      "normals": {
+        "samples": 15421,
+        "lengthRange": [
+          1.00002,
+          1.00081
+        ],
+        "tiltDegreesMean": 1.19744,
+        "tiltDegreesP95": 1.93212
+      },
+      "normalScale": [
+        0.52,
+        0.52
+      ],
+      "materialRoughness": 1,
+      "materialMetalness": 0,
+      "colorSpace": {
+        "albedo": "srgb",
+        "normal": "",
+        "roughness": ""
+      },
+      "wrapping": 1000,
+      "mipmaps": true
+    },
+    "leather": {
+      "width": 512,
+      "height": 512,
+      "generationMs": 79.47396,
+      "albedoRed": {
+        "min": 207,
+        "max": 238,
+        "distinctValues": 32,
+        "mean": 222.00076,
+        "standardDeviation": 4.39542,
+        "adjacentMeanDifference": [
+          0.75193,
+          0.73921
+        ],
+        "seamMeanDifference": [
+          0.29102,
+          0.27734
+        ]
+      },
+      "roughnessGreen": {
+        "min": 205,
+        "max": 243,
+        "distinctValues": 39,
+        "mean": 223.70123,
+        "standardDeviation": 4.41694,
+        "adjacentMeanDifference": [
+          1.25023,
+          1.2215
+        ],
+        "seamMeanDifference": [
+          0.71094,
+          0.75977
+        ]
+      },
+      "normals": {
+        "samples": 15421,
+        "lengthRange": [
+          1.00002,
+          1.00167
+        ],
+        "tiltDegreesMean": 0.6447,
+        "tiltDegreesP95": 1.58839
+      },
+      "normalScale": [
+        0.4,
+        0.4
+      ],
+      "materialRoughness": 0.86,
+      "materialMetalness": 0.02,
+      "colorSpace": {
+        "albedo": "srgb",
+        "normal": "",
+        "roughness": ""
+      },
+      "wrapping": 1000,
+      "mipmaps": true
+    },
+    "bone": {
+      "width": 512,
+      "height": 512,
+      "generationMs": 83.85601,
+      "albedoRed": {
+        "min": 154,
+        "max": 234,
+        "distinctValues": 79,
+        "mean": 213.6365,
+        "standardDeviation": 10.19426,
+        "adjacentMeanDifference": [
+          2.13817,
+          2.15565
+        ],
+        "seamMeanDifference": [
+          1.34766,
+          1.51172
+        ]
+      },
+      "roughnessGreen": {
+        "min": 180,
+        "max": 230,
+        "distinctValues": 51,
+        "mean": 209.63844,
+        "standardDeviation": 7.5802,
+        "adjacentMeanDifference": [
+          0.55133,
+          0.57113
+        ],
+        "seamMeanDifference": [
+          0.24414,
+          0.2793
+        ]
+      },
+      "normals": {
+        "samples": 15421,
+        "lengthRange": [
+          1.00002,
+          1.00407
+        ],
+        "tiltDegreesMean": 0.83985,
+        "tiltDegreesP95": 2.48022
+      },
+      "normalScale": [
+        0.35,
+        0.35
+      ],
+      "materialRoughness": 0.76,
+      "materialMetalness": 0,
+      "colorSpace": {
+        "albedo": "srgb",
+        "normal": "",
+        "roughness": ""
+      },
+      "wrapping": 1000,
+      "mipmaps": true
+    },
+    "leaf": {
+      "width": 512,
+      "height": 512,
+      "generationMs": 77.97516,
+      "albedoRed": {
+        "min": 136,
+        "max": 252,
+        "distinctValues": 112,
+        "mean": 163.95073,
+        "standardDeviation": 12.27306,
+        "adjacentMeanDifference": [
+          1.60151,
+          2.13742
+        ],
+        "seamMeanDifference": [
+          1.18164,
+          1.86523
+        ]
+      },
+      "roughnessGreen": {
+        "min": 188,
+        "max": 232,
+        "distinctValues": 45,
+        "mean": 210.2148,
+        "standardDeviation": 7.10045,
+        "adjacentMeanDifference": [
+          0.52222,
+          0.52956
+        ],
+        "seamMeanDifference": [
+          0.19531,
+          0.25391
+        ]
+      },
+      "normals": {
+        "samples": 15421,
+        "lengthRange": [
+          0.99626,
+          1.00376
+        ],
+        "tiltDegreesMean": 0.73977,
+        "tiltDegreesP95": 2.92704
+      },
+      "normalScale": [
+        0.7,
+        0.7
+      ],
+      "materialRoughness": 0.86,
+      "materialMetalness": 0,
+      "colorSpace": {
+        "albedo": "srgb",
+        "normal": "",
+        "roughness": ""
+      },
+      "wrapping": 1000,
+      "mipmaps": true
+    },
+    "net": {
+      "width": 256,
+      "height": 256,
+      "generationMs": 37.81917,
+      "albedoRed": {
+        "min": 216,
+        "max": 246,
+        "distinctValues": 31,
+        "mean": 228.06914,
+        "standardDeviation": 4.46692,
+        "adjacentMeanDifference": [
+          3.19712,
+          3.18732
+        ],
+        "seamMeanDifference": [
+          4.96094,
+          4.63281
+        ]
+      },
+      "roughnessGreen": {
+        "min": 218,
+        "max": 244,
+        "distinctValues": 27,
+        "mean": 231.28847,
+        "standardDeviation": 3.53926,
+        "adjacentMeanDifference": [
+          2.07256,
+          2.08192
+        ],
+        "seamMeanDifference": [
+          2.82422,
+          3.15625
+        ]
+      },
+      "normals": {
+        "samples": 3856,
+        "lengthRange": [
+          1.00002,
+          1.00014
+        ],
+        "tiltDegreesMean": 0.58692,
+        "tiltDegreesP95": 0.71049
+      },
+      "normalScale": [
+        0.7,
+        0.7
+      ],
+      "materialRoughness": 0.9,
+      "materialMetalness": 0.05,
+      "colorSpace": {
+        "albedo": "srgb",
+        "normal": "",
+        "roughness": ""
+      },
+      "wrapping": 1000,
+      "mipmaps": true
+    },
+    "wood": {
+      "width": 512,
+      "height": 512,
+      "generationMs": 84.23084,
+      "albedoRed": {
+        "min": 206,
+        "max": 244,
+        "distinctValues": 39,
+        "mean": 226.21625,
+        "standardDeviation": 5.34816,
+        "adjacentMeanDifference": [
+          1.51892,
+          0.23392
+        ],
+        "seamMeanDifference": [
+          1.17188,
+          0.10352
+        ]
+      },
+      "roughnessGreen": {
+        "min": 218,
+        "max": 249,
+        "distinctValues": 32,
+        "mean": 233.93325,
+        "standardDeviation": 5.67177,
+        "adjacentMeanDifference": [
+          2.25863,
+          1.17334
+        ],
+        "seamMeanDifference": [
+          1.65625,
+          0.57422
+        ]
+      },
+      "normals": {
+        "samples": 15421,
+        "lengthRange": [
+          1.00002,
+          1.0002
+        ],
+        "tiltDegreesMean": 0.34985,
+        "tiltDegreesP95": 0.71049
+      },
+      "normalScale": [
+        0.28,
+        0.28
+      ],
+      "materialRoughness": 0.92,
+      "materialMetalness": 0,
+      "colorSpace": {
+        "albedo": "srgb",
+        "normal": "",
+        "roughness": ""
+      },
+      "wrapping": 1000,
+      "mipmaps": true
+    }
+  }
+}
