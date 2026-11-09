@@ -197,7 +197,10 @@ export class BattleActorBridge {
         this.actors.delete(unitId);
         continue;
       }
-      if(!actor.isFlying&&!actor.isLeaping&&!actor._terrainFall)actor.mesh.position.y=this.game.env.getElevationAt?.(actor.mesh.position.x,actor.mesh.position.z,actor.mesh.position.y)??actor.mesh.position.y;
+      // The Horde owns this allocated parasite's one-second physical arc.
+      // Game.update synchronizes AFTER Horde.update and before rendering, so
+      // walking-floor projection here would erase every visible airborne pose.
+      if(!actor.isFlying&&!actor.isLeaping&&!actor.carrierFlight&&!actor._terrainFall)actor.mesh.position.y=this.game.env.getElevationAt?.(actor.mesh.position.x,actor.mesh.position.z,actor.mesh.position.y)??actor.mesh.position.y;
       const present = manager === this.game.bosses ? manager.activeBoss === actor : manager[this.arrayKeys.get(manager)]?.includes(actor);
       if (!present && actor.hp > 0) {
         this.simulation.syncUnit(unitId, { hp: actor.hp, position: [actor.mesh.position.x, actor.mesh.position.z] });

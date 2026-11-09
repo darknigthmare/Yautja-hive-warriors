@@ -1,6 +1,7 @@
 import { intelligencePresentation } from './TacticalPresentation.js';
 /* Live Musou battle triage. Orders are optional support, not a main RTS loop. */
 import { buildMusouBattlePulse } from '../battlefield/MusouBattleFlow.js';
+import { operationMapFrontEntries } from './OperationMapLabels.js';
 const compass=['N','NE','E','SE','S','SO','O','NO'];
 export function hiveCoordinationFeedback(event, groups = [], fronts = []) {
   if (event?.type !== 'hive_coordination_disrupted') return null;
@@ -53,7 +54,8 @@ export class OperationPanel {
     this.root.classList.toggle('hidden', !state); if (!state) return;
     this.root.querySelector('[data-title]').textContent = state.label + ' · ACTION MUSOU / OBJECTIFS ORIGINAUX';
     const pulse=buildMusouBattlePulse(state,players);
-    const header=pulse.fronts.map(f=>`${f.critical?'⚠ ':''}${f.label} : ${f.action}${f.distanceToHero!==null?' · '+f.distanceToHero+' u':''}`).join('  ·  ');
+    const frontEntries=operationMapFrontEntries(state.fronts);
+    const header=pulse.fronts.map(f=>{const entry=frontEntries.find(row=>row.id===f.id);const label=entry?.compact?`${entry.key} · ${entry.title}`:f.label;return`${f.critical?'⚠ ':''}${label} : ${f.action}${f.distanceToHero!==null?' · '+f.distanceToHero+' u':''}`;}).join('  ·  ');
     const reserve=pulse.playerCombatants;
     this.root.querySelector('[data-musou]').textContent =
       `${pulse.largeArmyLabel}  ·  ${header}${reserve?`  ·  Alliés déployés : ${reserve.deployed} / réserve ${reserve.reserves}`:''}`;

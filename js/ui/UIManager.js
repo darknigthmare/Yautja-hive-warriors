@@ -8,6 +8,7 @@ import { CHARACTERS_DATA } from '../data/charactersData.js';
 import { LEVELS_DATA } from '../data/levelsData.js';
 import { hiveCoordinationFeedback } from './OperationPanel.js';
 import { debriefConsequences, combatReadabilityState } from './TacticalPresentation.js';
+import { operationMapFrontEntries, renderOperationFrontLegend, drawOperationFrontLabel } from './OperationMapLabels.js';
 
 const bossDisplayNames = {
   xenomorph_queen:'REINE XÉNOMORPHE',queen:'REINE XÉNOMORPHE',praetorian:'PRÉTORIEN',predalien:'PRÉDALIEN',predalien_queen:'PRÉDALIEN — RENCONTRE ADAPTÉE',imperial_queen:'REINE IMPÉRIALE',empress_matriarch:'IMPÉRATRICE DE LA RUCHE',the_offspring:'THE OFFSPRING',predalien_abomination:'ABOMINATION PRÉDALIENNE',predalien_matriarch_titan:'MATRIARCHE TITAN — CRÉATION ORIGINALE',rogue_king_prime:'ROGUE KING',awakened_engineer:'INGÉNIEUR ÉVEILLÉ',trilobite_prime:'TRILOBITE PRIME',berserker_super_predator:'BERSERKER / MR. BLACK',ultimate_upgrade_predator:'UPGRADE PREDATOR',feral_predator_boss:'FERAL PREDATOR',jungle_hunter_boss:'JUNGLE HUNTER',city_hunter_boss:'CITY HUNTER'
@@ -51,6 +52,36 @@ export function battlefieldHUDState(progression, layout, player, combatDirector,
 }
 
 export class UIManager {
+  get selectedLevel() { return this._selectedLevel; }
+  set selectedLevel(level) {
+    this._selectedLevel = level;
+    for (const card of this.levelSelectMenu?.querySelectorAll('.level-card') ?? []) {
+      const selected = card.dataset.levelId === level?.id;
+      card.classList.toggle('selected', selected);
+      card.setAttribute('aria-pressed', String(selected));
+      card.disabled = Boolean(this._operationLevelBound);
+    }
+  }
+
+  setOperationLevel(level) {
+    // An authored operation owns its terrain. Only manual card clicks are
+    // constrained; checkpoint and mission restoration may still set the level.
+    this._operationLevelBound = Boolean(level);
+    this.selectedLevel = level ?? this.selectedLevel;
+    const grid = this.levelSelectMenu?.querySelector?.('#levels-grid-container');
+    if (!grid) return;
+    if (!this.operationLevelNotice) {
+      this.operationLevelNotice = document.createElement('p');
+      this.operationLevelNotice.className = 'operation-level-notice';
+      this.operationLevelNotice.setAttribute('data-operation-level-notice', '');
+      this.operationLevelNotice.setAttribute('role', 'status');
+      grid.before(this.operationLevelNotice);
+    }
+    this.operationLevelNotice.classList.toggle('hidden', !level);
+    this.operationLevelNotice.textContent = level
+      ? `Terrain de cette opération : ${level.name}. Pour choisir un autre terrain, sélectionnez « Trois fronts — terrain sélectionné » ou le mode Chasse.` : '';
+  }
+
   constructor() {
     // Screens
     this.mainMenu = document.getElementById('main-menu');
@@ -263,11 +294,14 @@ export class UIManager {
     if (!gridContainer) return;
 
     gridContainer.innerHTML = '';
-    LEVELS_DATA.forEach((lvl, index) => {
+    LEVELS_DATA.forEach(lvl => {
       const card = document.createElement('button');
       card.type = 'button';
-      card.setAttribute('aria-pressed', String(index === 0));
-      card.className = `level-card ${index === 0 ? 'selected' : ''}`;
+      card.dataset.levelId = lvl.id;
+      card.disabled = Boolean(this._operationLevelBound);
+      const selected = lvl.id === this.selectedLevel?.id;
+      card.setAttribute('aria-pressed', String(selected));
+      card.className = `level-card ${selected ? 'selected' : ''}`;
       if (lvl.accentColor) card.style.borderTopColor = lvl.accentColor;
       card.innerHTML = `
         <div class="level-card-icon">${lvl.icon || '🌲'}</div>
@@ -278,9 +312,7 @@ export class UIManager {
       `;
 
       card.addEventListener('click', () => {
-        document.querySelectorAll('.level-card').forEach(c => { c.classList.remove('selected'); c.setAttribute('aria-pressed', 'false'); });
-        card.classList.add('selected');
-        card.setAttribute('aria-pressed', 'true');
+        if (card.disabled) return;
         this.selectedLevel = lvl;
       });
 
@@ -476,6 +508,18 @@ export class UIManager {
 
   updateOperationHUD(state, layout, players = [], objectives = null) {
     this._operationHUD = state ? {state,layout,players,objectives} : null;
+    const entries=operationMapFrontEntries(state?.fronts);
+    const compact=entries.some(entry=>entry.compact);
+    if(compact&&this.minimapCanvas&&!this.operationFrontLegend){
+      this.operationFrontLegend=document.createElement('ol');
+      this.operationFrontLegend.id='operation-minimap-fronts';
+      this.operationFrontLegend.className='operation-front-index minimap-front-index';
+      this.operationFrontLegend.setAttribute('aria-label','Repères des fronts');
+      this.minimapCanvas.after(this.operationFrontLegend);
+    }
+    this.operationFrontLegend?.classList.toggle('hidden',!compact);
+    if(compact){renderOperationFrontLegend(this.operationFrontLegend,entries);this.minimapCanvas?.setAttribute('aria-describedby','operation-minimap-fronts');}
+    else this.minimapCanvas?.removeAttribute('aria-describedby');
     if (!state) return;
     this.hudWaveCounter.textContent = `${state.fronts.length} FRONTS · RÉSERVES FINIES`;
     const weapon = this._minimapActors?.player?.getCombatState?.();
@@ -494,7 +538,8 @@ export class UIManager {
     for(const sector of layout.sectors){const[x,y]=project([sector.bounds.minX,sector.bounds.minZ]);ctx.fillStyle='#243e39';ctx.fillRect(x,y,(sector.bounds.maxX-sector.bounds.minX)*scale,(sector.bounds.maxZ-sector.bounds.minZ)*scale);}
     for(const route of state.routes){ctx.save();ctx.setLineDash(route.open?[]:[4,3]);ctx.strokeStyle=route.open?'#a6c5b9':'#f8fafc';ctx.lineWidth=2;ctx.beginPath();for(const[index,point]of(route.waypoints??[]).entries()){const[x,y]=project(point);if(index)ctx.lineTo(x,y);else ctx.moveTo(x,y);}ctx.stroke();ctx.restore();}
     const dot=(point,size,role,factionId='',label='',filled=true)=>{const[x,y]=project(point);drawAccessibleMarker(ctx,{x,y,size,role,factionId,label,filled},preferences);};
-    for(const front of state.fronts){dot(front.position,6,front.owner===state.playerFaction?'ally':'objective',front.owner,front.label);const[x,y]=project(front.position);ctx.fillStyle='#edf8f3';ctx.font='9px sans-serif';ctx.textAlign='center';ctx.fillText(front.label+(front.intelState==='unknown'?' ?':''),x,y-10);}
+    const frontEntries=operationMapFrontEntries(state.fronts);
+    for(const[index,front]of state.fronts.entries()){dot(front.position,6,front.owner===state.playerFaction?'ally':'objective',front.owner,front.label);const[x,y]=project(front.position);drawOperationFrontLabel(ctx,frontEntries[index],x,y,width,height,9);}
     for(const group of state.groups)if(group.alive>0){const relation=state.relationships?.[group.factionId],role=group.factionId===state.playerFaction||relation==='allied'?'ally':relation==='hostile'?'hostile':'neutral';dot(group.position,3,role,group.factionId,group.label,group.precisePositionKnown);}
     for(const task of objectives?.tasks??[])if(task.available&&task.status!=='done')dot(task.position,5,'objective','',task.label);
     for(const player of players)if(player.hp>0)dot(player.position,5,'player',state.playerFaction,player.id??'Joueur');

@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - codex/gamedev-guides-20261029
+      - codex/continuation-20261109
   pull_request:
   workflow_dispatch:
 
@@ -63,6 +64,8 @@ jobs:
             tests/musou-distant-crowd.test.js \
             tests/musou-distant-role-appearance.test.js \
             tests/musou-front-visibility.test.js \
+            tests/operation-map-readability.test.js \
+            tests/operation-minimap-accessibility.test.js \
             tests/apc-marine-section.test.js \
             tests/apc-convoy-road.test.js \
             tests/m577-source-provenance.test.js \
@@ -72,9 +75,12 @@ jobs:
             tests/extinction-ravager-regenesis.test.js \
             tests/extinction-lv742-variant.test.js \
             tests/extinction-carrier-live-launch.test.js \
+            tests/extinction-carrier-autonomy.test.js \
             tests/extinction-ravager-detailed.test.js \
             tests/extinction-evolved-variant.test.js \
             tests/world-route-weather-regression.test.js \
+            tests/camera-collision.test.js \
+            tests/insertion-camera-collision.test.js \
             tests/environment-acceleration-effects.test.js \
             tests/environment-cryo-cleanup.test.js \
             tests/battle-debrief.test.js \

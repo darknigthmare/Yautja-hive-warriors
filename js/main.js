@@ -232,6 +232,7 @@ class GameApp {
       document.getElementById('campaign-arc-enabled').disabled=!arcEligible;
       if(!arcEligible)document.getElementById('campaign-arc-enabled').checked=false;
       const scene = mode.value === 'fronts' && BATTLE_OPERATIONS.some(operation=>operation.id===select.value) ? getBattleOperationScene(select.value) : null;
+      this.ui.setOperationLevel(scene ? LEVELS_DATA.find(level => level.id === scene.levelId) : null);
       document.getElementById('operation-provenance').textContent = scene ? `${scene.mapName} : scène adaptée au terrain ${scene.levelId}. Objectifs originaux ; géographie 1:1 non vérifiée.` : mode.value === 'fronts' ? 'Trois fronts reliés par des corridors et des contournements. Population finie ; positions lointaines signalées par rapports.' : mode.value === 'survival' ? 'Survie sans victoire finale. Les vagues continuent jusqu’à la défaite ou au retour au menu.' : 'Chasse finie : six secteurs, objectifs locaux, portes et boss final.';
     };
     mode.addEventListener('change', update); select.addEventListener('change', update); casteOption.addEventListener('change', update); update();
@@ -3369,6 +3370,10 @@ class GameApp {
       focus.lerp(target, alpha);
       const position = focus.clone().add(new THREE.Vector3(8, 5, 14));
       cameras[index].position.lerp(position, alpha);
+      // The cinematic uses the same physical boom as normal follow. Resolve
+      // after smoothing, independently for each capsule, without hiding props.
+      cameras[index].position.copy(resolveThirdPersonCamera(focus, cameras[index].position, this.env,
+        { radius: cameraNearPlaneRadius(cameras[index]) }).position);
       cameras[index].lookAt(focus);
     }
     this.updateInsertionStatus();

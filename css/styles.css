@@ -4096,7 +4096,26 @@ input[type=range] { width: 100%; accent-color: #b7df83; min-height: 30px; }
 .source-catalogue { max-width:1000px;width:100%;padding:16px;margin:18px auto; }.source-catalogue summary { cursor:pointer;color:#bedaca;font-weight:700; }.source-catalogue label { display:flex;flex-direction:column;margin:12px 0; }.source-catalogue input,.source-catalogue select { padding:10px;background:#122620;color:#ecfff6;border:1px solid #426d5a;max-width:100%; }.source-catalogue article { font-size:14px;line-height:1.4;text-align:left;max-height:280px;overflow:auto; }.source-catalogue article a { color:#a6dfc1; }
 .operation-panel { max-width:min(520px,45vw); }.operation-panel summary { cursor:pointer;color:#a7e6ce;font-weight:700;margin:7px 0; }.operation-panel [data-alert] { color:#f5ce86; }.operation-panel [data-tasks] { color:#def6e8; }
 @media(max-width:800px) { .operation-panel { max-width:calc(100vw - 16px); } }
-.operation-briefing { display:grid;grid-template-columns:minmax(220px,360px) 1fr;gap:14px;max-width:1100px;width:100%;padding:18px;margin:0 auto 18px;text-align:left; }.operation-briefing h3 { grid-column:1/-1;color:#b9e5c9; }.operation-briefing canvas { max-width:100%;align-self:center; }.operation-briefing p { font-size:14px;line-height:1.35;margin:6px 0; }@media(max-width:800px){.operation-briefing{grid-template-columns:1fr;}.operation-briefing canvas{margin:auto;}}
+.operation-briefing { display:grid;grid-template-columns:minmax(220px,360px) minmax(0,1fr);gap:14px;max-width:1100px;width:100%;padding:18px;margin:0 auto 18px;text-align:left; }
+.operation-briefing h3 { grid-column:1/-1;color:#b9e5c9; }
+.operation-briefing-plan { min-width:0;margin:0;align-self:start; }
+.operation-briefing canvas { display:block;max-width:100%;height:auto;margin:auto; }
+.operation-briefing figcaption { margin-top:10px;font-size:13px;color:#c8e6d8; }
+.operation-briefing p { font-size:14px;line-height:1.35;margin:6px 0;overflow-wrap:anywhere; }
+.operation-front-index { list-style:none;margin:8px 0 0;padding:0;display:grid;gap:6px;min-width:0; }
+.operation-front-index li { display:grid;grid-template-columns:1.5em minmax(0,1fr);gap:6px;min-width:0;line-height:1.4; }
+.operation-front-index li b { color:#f4e2aa;text-align:center; }
+.operation-front-index li span { min-width:0;overflow-wrap:anywhere; }
+.operation-briefing .operation-front-index { max-height:240px;overflow:auto;scrollbar-gutter:stable;font-size:14px;padding:6px;border:1px solid #447562;background:#0a211b; }
+.operation-front-index:focus-visible { outline:3px solid #f5d477;outline-offset:3px; }
+.minimap-front-index { font-size:11px;gap:3px;margin-top:5px; }
+.minimap-front-index li { line-height:1.25; }
+.minimap-front-index li span { white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+.operation-panel [data-musou],.operation-panel [data-title] { overflow-wrap:anywhere; }
+.operation-level-notice { max-width:1100px;margin:0 auto 16px;color:#e1e9cb;text-align:center;font-size:15px;line-height:1.45; }
+.level-card:disabled { cursor:default; }
+.level-card:disabled:not(.selected) { opacity:.5; }
+@media(max-width:800px){.operation-briefing{grid-template-columns:1fr;}.operation-briefing-plan{max-width:360px;width:100%;justify-self:center;}}
 .command-map-card { max-width:1200px;width:95%;margin:20px auto;padding:18px;overflow:auto; }.command-map-layout { display:grid;grid-template-columns:minmax(280px,720px) minmax(230px,1fr);gap:20px; }.command-map-layout canvas { width:100%;height:auto;touch-action:none;background:#071a14;border:1px solid #518069; }.command-map-layout label { display:flex;flex-direction:column;margin-bottom:7px; }.command-map-layout select { background:#143326;color:#e3f5e9;padding:8px;border:1px solid #51745c; }.command-map-layout button { margin:3px;padding:8px;background:#234e36;color:#efffe9;border:1px solid #6b9973;cursor:pointer; }.command-map-layout [data-feedback] { color:#f3d690; }@media(max-width:850px){.command-map-layout{grid-template-columns:1fr;}.command-map-card{width:98%;}}
 .command-map-viewport { min-width:0; }
 .command-map-legend,.command-route-preview { font-size:14px;line-height:1.55;color:#f1f5e8;text-align:left; }
