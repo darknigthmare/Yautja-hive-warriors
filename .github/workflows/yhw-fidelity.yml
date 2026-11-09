@@ -77,6 +77,8 @@ jobs:
             tests/extinction-carrier-live-launch.test.js \
             tests/extinction-carrier-autonomy.test.js \
             tests/extinction-ravager-detailed.test.js \
+            tests/ally-rescue.test.js \
+            tests/ally-rescue-ravager-checkpoint.test.js \
             tests/extinction-evolved-variant.test.js \
             tests/world-route-weather-regression.test.js \
             tests/camera-collision.test.js \

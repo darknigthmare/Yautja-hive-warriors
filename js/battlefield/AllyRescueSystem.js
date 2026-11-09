@@ -3,6 +3,7 @@
  * Timers use update(delta), including while the body is simulated off screen.
  * This is an original gameplay rule, not a claim about screen choreography. */
 import * as THREE from 'three';
+import { ownsRavagerCatalepsy } from './ExtinctionRavagerRegenesis.js';
 
 const copy = value => JSON.parse(JSON.stringify(value));
 const refused = reason => ({ accepted: false, reason });
@@ -75,6 +76,9 @@ export class AllyRescueSystem {
   onMaterialize(actor) {
     if (this.disposed || !actor?.battleUnitId) return false;
     const record = this.records.get(actor.battleUnitId), unit = this.simulation.getUnit(actor.battleUnitId);
+    // This incapacitation has its own validated owner, HP and recovery clock.
+    // Leave its actor posture untouched as well as its simulation phase.
+    if (ownsRavagerCatalepsy(this.simulation, unit)) return false;
     if (record?.status === 'downed' && !terminal(unit)) {
       actor.hp = 1; actor.isDowned = true; actor.isRescueRecovering = false;
       // The bridge has already resolved the physical X/Z placement. Restore
@@ -255,10 +259,13 @@ export class AllyRescueSystem {
     const records = new Map(), channels = new Map();
     for (const record of saved.records) {
       const unit = this.simulation.getUnit(record.unitId);
+      // Even a legal one-HP phase must not acquire a second medical owner.
+      // A malformed phase is rejected too, rather than hidden by a record.
+      if (unit?.ravagerCatalepsy !== undefined) throw new TypeError('Invalid persistent rescue casualty');
       if (!unit || records.has(record.unitId) || !statuses.has(record.status) || record.downedOnce !== true || !finitePoint(record.position) || record.maxHp !== unit.maxHp || !Number.isFinite(record.remaining) || record.remaining < 0 || record.remaining > this.bleedoutSeconds || !Number.isFinite(record.recoveryRemaining) || record.recoveryRemaining < 0 || record.recoveryRemaining > .45 || record.status !== 'downed' && record.remaining !== 0 || record.status === 'downed' && (terminal(unit) || unit.hp !== 1 || unit.incapacitated !== true) || record.status === 'dead' && unit.state !== 'dead' || ['captured', 'evacuated'].includes(record.status) && unit.state !== record.status || record.status === 'rescued' && unit.incapacitated) throw new TypeError('Invalid persistent rescue casualty');
       records.set(record.unitId, Object.fromEntries(['unitId', 'status', 'remaining', 'position', 'maxHp', 'downedOnce', 'recoveryRemaining', 'cause', 'killerFaction'].map(key => [key, copy(record[key] ?? null)])));
     }
-    for (const unit of this.simulation.units.values()) if (unit.incapacitated && !records.has(unit.id)) throw new TypeError('Incapacitated unit has no saved rescue timer');
+    for (const unit of this.simulation.units.values()) if (unit.incapacitated && !records.has(unit.id) && !ownsRavagerCatalepsy(this.simulation, unit)) throw new TypeError('Incapacitated unit has no saved rescue timer');
     for (const channel of saved.channels) {
       if (!['player1', 'player2'].includes(channel.playerId) || channels.has(channel.playerId) || [...channels.values()].some(item => item.unitId === channel.unitId) || records.get(channel.unitId)?.status !== 'downed' || !finitePoint(channel.start) || !Number.isFinite(channel.progress) || channel.progress < 0 || channel.progress > this.channelSeconds || !Number.isFinite(channel.previousHp) || channel.previousHp <= 0) throw new TypeError('Invalid saved rescue channel');
       channels.set(channel.playerId, { ...Object.fromEntries(['playerId', 'unitId', 'progress', 'start', 'previousHp'].map(key => [key, copy(channel[key])])), resumePending: true });

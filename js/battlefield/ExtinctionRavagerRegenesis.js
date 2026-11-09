@@ -83,3 +83,21 @@ export function validateSavedRavagerRegenesis(sim,original,unit,time){
     throw new Error('invalid saved Ravager regenesis');
   return true;
 }
+
+/** A validated allocated phase is owned here, never by allied medical rescue.
+ * getUnit() returns a clone, so compare its source identity through the Map,
+ * then reuse the same signed-profile/phase validator as checkpoint admission.
+ * An elapsed deadline remains ours until the next regenesis step resolves it. */
+export function ownsRavagerCatalepsy(sim,unit){
+  const allocated=sim?.units?.get(unit?.id);
+  if(!allocated?.ravagerCatalepsy||!unit?.ravagerCatalepsy||
+     !isUpgradedRavager(sim,allocated)||!isUpgradedRavager(sim,unit)||
+     allocated.profileId!==unit.profileId||allocated.actorType!==unit.actorType||
+     allocated.species!==unit.species||!Number.isFinite(sim.time))return false;
+  try{
+    validateSavedRavagerRegenesis(sim,allocated,allocated,sim.time);
+    validateSavedRavagerRegenesis(sim,allocated,unit,sim.time);
+    return true;
+  }
+  catch{return false;}
+}
