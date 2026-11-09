@@ -185,7 +185,7 @@
     "auditAndGlbsUnchangedFromBase": true
   },
   "preservedAttempts": {
-    "baselineR1": "Failed only on fixture favicon404; original report/screenshots/helper preserved in history/baseline-r1. Fixed fixture favicon and reran baseline-r2 without filtering errors.",
+    "baselineR1": "Failed only on fixture favicon404. The original failure report, failure screenshot and helper snapshots are committed under history/baseline-r1; its manifest describes the full raw archive retained at /workspace/qa/fidelity-20261109/baseline-r1. Baseline-r2 is the complete clean rerun, with errors unfiltered.",
     "explorations": "history/exploratory-r1/r2 retain actual prefinal pictures and labels; final validation only uses final-r1.",
     "intermediateWorldAndGuard": "Owner reports preserve failed/intermediate tests separately; final 482-case regression rechecks the corrected source."
   },
