@@ -3068,10 +3068,10 @@ class GameApp {
       }
 
       // v57.0 Sector Overhaul Proximity Prompts
-      const isNearCrypt = this.env.cryptReliquaryVault && !this.env.cryptReliquaryVault.isOpened && this.player && this.player.position.distanceTo(this.env.cryptReliquaryVault.pos) <= 3.8;
+      const isNearCryptReliquary = this.env.cryptReliquaryVault && !this.env.cryptReliquaryVault.isOpened && this.player && this.player.position.distanceTo(this.env.cryptReliquaryVault.pos) <= 3.8;
       const cryptReliquaryPrompt = document.getElementById('crypt-reliquary-prompt');
       if (cryptReliquaryPrompt) {
-        if (isNearCrypt) cryptReliquaryPrompt.classList.remove('hidden');
+        if (isNearCryptReliquary) cryptReliquaryPrompt.classList.remove('hidden');
         else cryptReliquaryPrompt.classList.add('hidden');
       }
 

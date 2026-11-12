@@ -353,6 +353,7 @@ export class GoreEngine {
         this.severedParts.splice(i, 1);
       }
     }
+  }
 
   /* Chantier 6: Molecular Acid Metallic Floor Corrosion & Slag Decals */
   spawnAcidSlagDecal(pos, radius = 2.4, audioEngine = null) {

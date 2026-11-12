@@ -2199,7 +2199,7 @@ export class Player {
     if (this.tripwireMineCooldown > 0) {
       this.tripwireMineCooldown = Math.max(0, this.tripwireMineCooldown - delta);
     }
-    this.updateTripwireMines(delta, horde, synthetics, window.gameInstance ? window.gameInstance.particles : null);
+    this.updateTripwireMines(delta, horde, window.game ? window.game.synthetics : null, window.gameInstance ? window.gameInstance.particles : null);
   }
 
   /* =========================================================================

@@ -1081,6 +1081,7 @@ export class EnvironmentManager {
   }
 
   update(delta, horde, audioEngine, player) {
+    const particles = window.game ? window.game.particles : null;
     // 1. Pyramid Shifting Labyrinth Walls (AvP 2004)
     if (this.modularSlabs && this.modularSlabs.length > 0) {
       this.slabShiftTimer += delta;
