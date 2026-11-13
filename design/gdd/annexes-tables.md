@@ -49,6 +49,10 @@ Les mêmes tables sont dans `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 | HW-DEC-22 | Rôle du compte | Facultatif, avec sauvegarde en ligne | On joue sans compte ; connecté, la progression de Hive Warriors est aussi conservée en ligne et retrouvée sur un autre appareil |
 | HW-DEC-23 | Identification | Identique au système de comptes existant | Aucune nouvelle méthode ; reprendre celle de La Longue Chasse telle quelle |
 | HW-DEC-24 | Personnages de La Longue Chasse jouables | Tous, Mara Venn incluse | 19 personnages des six voies ; Mara Venn, humaine, est un personnage jouable à part |
+| HW-DEC-25 | Accès au dépôt de La Longue Chasse | Oui, en lecture | Méthode de connexion et format de sauvegarde relevés le 13 nov. 2026 ; rien n'y est modifié |
+| HW-DEC-26 | Table de la sauvegarde en ligne de Hive Warriors | Table générique app_cloud_saves | Rien à créer dans la base ; une ligne par compte et par application |
+| HW-DEC-27 | Mara Venn | Deux variantes jouables | Hors clan : kit humain propre. Dans le clan : équipée par les Yautja, sans plasma d'épaule |
+| HW-DEC-28 | Fiches des 19 personnages | Rédigées par Claude, validées par l'auteur | Une fiche par personnage, à partir de la Bible V6 |
 | HW-DEC-12 | Alliés Yautja, armes humaines, véhicules et soutiens, coopération locale | Tous conservés | Le champ de bataille est une guerre ; ces systèmes sont à réparer, pas à couper |
 
 ## 02_Chasseurs — Chasseurs jouables (js/data/charactersData.js)
@@ -281,14 +285,13 @@ Les mêmes tables sont dans `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 | HW-CAN-13 | Le Predalien est classé xénomorphe hybride, pas Yautja | Catalogue tous médias · Exclusions | Conforme dans le codex | Aucun |
 | HW-CAN-14 | Les 15 clans de la Bible V6 sont des créations du projet | Bible V6 · Identités des clans | Aucun clan nommé ; « Forge de clan », « Coffre d'honneur du clan » | Le clan du joueur reste anonyme (HW-DEC-10) |
 
-## 13_Questions — Questions ouvertes pour l'auteur (Q1 à Q18 ont été tranchées, sauf Q14 : voir HW-DEC-09 à 24)
+## 13_Questions — Questions ouvertes pour l'auteur (Q1 à Q21 ont été tranchées, sauf Q14 et Q22 : voir HW-DEC-09 à 28)
 
 | ID | Question | Pourquoi elle compte | Défaut retenu en attendant |
 |---|---|---|---|
 | Q14 | Valeurs de PV des 8 boss | La courbe doit croître de la 1re à la 8e chasse | À régler après essais avec un vrai joueur |
-| Q19 | Quelle méthode d'identification le système existant utilise-t-il ? | La structure de la base ne le dit pas ; elle se lit dans le code de La Longue Chasse, qui n'est pas dans ce dépôt | À relever dans le dépôt yautja-la-longue-chasse avant tout développement |
-| Q20 | Où la sauvegarde de Hive Warriors est-elle rangée ? | Deux tables conviennent : la table générique par application, ou une table dédiée comme celle de La Longue Chasse | Table générique app_cloud_saves, clé d'application yautja_hive_warriors |
-| Q21 | Comment Mara Venn se joue-t-elle ? | Humaine : pas de plasma, de camouflage ni de Musou Yautja ; le pilier 2 parle de l'arsenal du chasseur | Kit propre fait d'armes humaines et de pièges, à concevoir |
+| Q23 | Que faire si le joueur joue à Hive Warriors sur deux appareils ? | La table générique n'a pas de numéro de révision : la dernière écriture écrase l'autre | Garder la sauvegarde la plus récente et prévenir le joueur |
+| Q24 | Les règles d'accès de la table app_cloud_saves | Elles n'ont pas été lues ; il faut vérifier que chaque joueur n'accède qu'à sa ligne | À vérifier avant tout développement |
 | Q22 | Rôle, statistiques et kit de chacun des 19 personnages | La bible ne connaît que leur nom et leur voie | À écrire à partir de l'onglet « Les six voies » de la Bible V6 |
 
 ## 15_Soutiens — Soutiens par arène (proposition découlant de HW-DEC-14 ; aujourd'hui tout apparaît partout)
@@ -340,7 +343,9 @@ Les mêmes tables sont dans `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 | yautja_cloud_saves | Une ligne par compte : révision, instantané complet (20 Mo au plus), date ; décrite comme l'espace Yautja complet, synchronisé entre mobile et bureau ; 1 ligne présente | Lue seulement, pour connaître les étapes franchies (HW-DEC-15) |
 | app_cloud_saves | Une ligne par compte et par application : clé d'application, contenu, date ; décrite comme un instantané du stockage local par application ; vide | Candidate pour la sauvegarde de Hive Warriors (Q20) |
 | Protection | Sécurité par ligne activée sur toutes les tables | Chaque joueur ne lit que sa propre sauvegarde ; les règles exactes restent à vérifier |
-| Méthode d'identification | Non visible dans la structure de la base | À relever dans le code de La Longue Chasse (Q19) |
+| Méthode d'identification | Adresse e-mail et mot de passe, par le service d'identification de Supabase (inscription, connexion, renouvellement de session, déconnexion) ; relevé dans app/game/systems/cloudAccountRestV71.ts de La Longue Chasse | Reprise à l'identique (HW-DEC-23) |
+| Écriture de la sauvegarde de La Longue Chasse | Révision optimiste : chaque écriture doit porter la révision précédente + 1, vérifiée par un déclencheur ; un conflit entre deux appareils est signalé au joueur | Hive Warriors ne l'écrit jamais ; il lit l'instantané |
+| Sauvegarde de Hive Warriors | Table app_cloud_saves retenue (HW-DEC-26) ; elle n'a pas de numéro de révision | Le dernier appareil qui écrit l'emporte : risque à traiter (Q23) |
 | Dans Hive Warriors | Aucun code de compte ni de sauvegarde en ligne ; 6 clés de stockage local | Tout est à écrire |
 
 ## 14_Sources — Sources lues pour cette bible

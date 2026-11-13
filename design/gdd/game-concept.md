@@ -1,6 +1,6 @@
 # Predator: Hive Warriors — Vision et conception
 
-> Bible du jeu, document 1 sur 3. Statut : **cible validée par l'auteur le 12 novembre 2026** (décisions HW-DEC-01 à 24).
+> Bible du jeu, document 1 sur 3. Statut : **cible validée par l'auteur le 12 novembre 2026** (décisions HW-DEC-01 à 28).
 > Ce document dit ce que le jeu doit être. Ce qu'il est réellement aujourd'hui est dans [etat-reel-v58.md](etat-reel-v58.md).
 > Les chiffres et listes sont dans [annexes-tables.md](annexes-tables.md) et dans le classeur `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 
@@ -113,7 +113,8 @@ Le code fait aujourd'hui apparaître 16 unités fixes à chaque vague, dont six 
 - **Armes humaines** : ramassées sur le champ de bataille, munitions limitées (HW-DEC-13).
 - **Soutiens** : présents selon l'arène, plus jamais partout (HW-DEC-14, onglet `15_Soutiens`).
 - **Lien avec La Longue Chasse** : Hive Warriors lit la progression de La Longue Chasse sans rien y écrire, et débloque du contenu propre à ce jeu, comme ses personnages originaux (HW-DEC-15, onglet `16_Deblocages`). La lecture passe par un **compte en ligne** commun aux deux jeux (HW-DEC-17). Sont débloqués, étape par étape : les personnages des six voies, les habillages des 15 clans et les arènes de Xeno Prime (HW-DEC-18 et 19). Le compte est celui du projet Supabase déjà en place pour La Longue Chasse, avec la même méthode d'identification (HW-DEC-21 et 23, onglet `17_Comptes`). Il est facultatif : on joue sans compte, et une fois connecté la progression de Hive Warriors est aussi conservée en ligne (HW-DEC-22).
-- **Personnages débloqués** : les 19 personnages des six voies, Mara Venn incluse (HW-DEC-24). Mara Venn est humaine : son kit, sans plasma ni camouflage, est à concevoir (Q21).
+- **Personnages débloqués** : les 19 personnages des six voies, Mara Venn incluse (HW-DEC-24). Mara Venn, humaine, existe en deux variantes (HW-DEC-27) : **hors clan**, avec un kit humain propre (armes humaines en main, pièges, pistage) ; **dans le clan**, équipée par les Yautja, sans plasma d'épaule. Les fiches sont dans [personnages-longue-chasse.md](personnages-longue-chasse.md).
+- **Identification** : adresse e-mail et mot de passe, comme dans La Longue Chasse ; la sauvegarde de Hive Warriors va dans la table générique existante (HW-DEC-26).
 - **Gunnison** : les humains y sont des soldats de la Garde nationale, pas des marines coloniaux (HW-DEC-20).
 
 ## 10. Direction visuelle et sonore
