@@ -1,7 +1,7 @@
 # La campagne de l'Unblooded
 
-> Bible du jeu, document 6. Décisions HW-DEC-48 à 51 et 53 à 65.
-> Statut : **cadre décidé par l'auteur ; contenu inventé par Claude, à corriger** (HW-DEC-61). Rien de ceci n'est dans le code.
+> Bible du jeu, document 6. Décisions HW-DEC-48 à 51 et 53 à 66.
+> Statut : **validée par l'auteur le 13 novembre 2026** (HW-DEC-66). Le contenu inventé par Claude fait référence, et reste à rapprocher de la Bible V6. Rien de ceci n'est dans le code.
 
 ## 1. Ce qui est décidé, ce qui est inventé
 

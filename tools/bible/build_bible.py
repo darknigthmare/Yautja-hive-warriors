@@ -115,6 +115,8 @@ TABLES["01_Decisions"] = (
         ["HW-DEC-63", "Récompense par région", "Un outil par région", "Le kit de l'Unblooded grandit de chasse en chasse"],
         ["HW-DEC-64", "Suite du travail", "Phase 1 dans le code", "Donner une fin aux 8 chasses existantes"],
         ["HW-DEC-65", "Saar comme guide de la meute", "Oui", "Saar tient la fonction d'Adjutant pendant les chasses de faune ; Adjutant est une fonction, pas un rang"],
+        ["HW-DEC-66", "La campagne inventée", "Validée", "Vara-Kesh, la faune, les terrains, la répartition des outils et les traces de Xénomorphes font référence ; à rapprocher de la Bible V6 quand le classeur sera lisible"],
+        ["HW-DEC-67", "Sauvegarde sur deux appareils et règles d'accès", "Oui aux choix proposés", "La sauvegarde la plus récente l'emporte et le joueur est prévenu ; les règles d'accès de la table sont à vérifier avant tout développement"],
         ["HW-DEC-12", "Alliés Yautja, armes humaines, véhicules et soutiens, coopération locale", "Tous conservés", "Le champ de bataille est une guerre ; ces systèmes sont à réparer, pas à couper"],
     ],
 )
@@ -378,9 +380,7 @@ TABLES["13_Questions"] = (
     "Questions ouvertes pour l'auteur (les autres ont été tranchées : voir HW-DEC-09 à 43)",
     ["ID", "Question", "Pourquoi elle compte", "Défaut retenu en attendant"],
     [
-        ["Q44", "Corriger la campagne inventée", "Vara-Kesh, la faune, les terrains, la répartition des outils et les traces sont de Claude", "Contenu de campagne-unblooded.md"],
-        ["Q23", "Que faire si le joueur joue à Hive Warriors sur deux appareils ?", "La table générique n'a pas de numéro de révision : la dernière écriture écrase l'autre", "Garder la sauvegarde la plus récente et prévenir le joueur"],
-        ["Q24", "Les règles d'accès de la table app_cloud_saves", "Elles n'ont pas été lues ; il faut vérifier que chaque joueur n'accède qu'à sa ligne", "À vérifier avant tout développement"],
+        ["Q24", "Vérifier les règles d'accès de la table app_cloud_saves", "Décidé (HW-DEC-67), pas encore fait : le connecteur Supabase ne répond plus", "À faire dès que le connecteur est rétabli"],
     ],
 )
 
