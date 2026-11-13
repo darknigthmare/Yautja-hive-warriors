@@ -592,21 +592,24 @@ export class EnvironmentManager {
       this.buildColonyProps();
     }
 
+    // Decor belongs to its arena (bible, decision HW-DEC-71).
+    const inArena = (...ids) => ids.includes(levelId);
+
     // Chantier 1: Elevated Industrial Catwalks & Access Ramps
-    if (theme === 'romulus_station' || theme === 'colony' || theme === 'la_rooftops' || theme === 'pyramid') {
+    if (theme === 'romulus_station' || theme === 'space_station' || theme === 'colony' || theme === 'la_rooftops' || theme === 'pyramid') {
       this.buildIndustrialCatwalks(theme === 'pyramid');
     }
 
     // Chantier 3: High-Voltage Electrical Transformers
-    if (theme === 'romulus_station' || theme === 'colony' || theme === 'la_rooftops') {
+    if (theme === 'romulus_station' || theme === 'space_station' || theme === 'colony' || theme === 'la_rooftops') {
       this.buildElectricalTransformers(4);
     }
 
     // Chantier 4: USCM M290 Supply Caches
-    this.buildUSCMSupplyCaches(2);
+    if (inArena('charon_rogue_base', 'romulus_station', 'gunnison_forest')) this.buildUSCMSupplyCaches(2);
 
     // Chantier 6: Destructible Blast Doors
-    if (theme === 'romulus_station' || theme === 'colony' || theme === 'pyramid') {
+    if (theme === 'romulus_station' || theme === 'space_station' || theme === 'colony' || theme === 'pyramid') {
       this.buildHydraulicBlastDoors();
     }
 
@@ -617,13 +620,14 @@ export class EnvironmentManager {
 
     // === v41.0 10-CHANTIER EXPANSION (Level Design Systems) ===
     // Chantier 1: Subterranean Acid Trenches & Caustic Canals (Hadley's Hope / Romulus 1:1)
-    this.buildAcidTrenches();
+    if (inArena('xenomorph_prime', 'charon_rogue_base')) this.buildAcidTrenches();
 
     // Chantier 3: Derelict Juggernaut Space Jockey Chamber & Telescope Dais (Alien 1979 / Prometheus)
-    this.buildSpaceJockeyDais();
+    // Kept for a future arena (bible, tab 18_LieuxFuturs): not built in the current eight.
+    // this.buildSpaceJockeyDais();
 
     // Chantier 4: Cryo-Surgical Med-Bay Pods & Embryo Purge (Prometheus / Romulus)
-    this.buildCryoMedBays(2);
+    if (inArena('romulus_station', 'charon_rogue_base')) this.buildCryoMedBays(2);
 
     // Chantier 5: Overhead Industrial Cargo Crane & 5-Ton Container Drop (Aliens 1986)
     if (theme === 'colony' || theme === 'romulus_station' || theme === 'la_rooftops' || theme === 'pyramid') {
@@ -653,119 +657,125 @@ export class EnvironmentManager {
 
     // === v43.0 10-CHANTIER EXPANSION (Level Design & Interactive Hazards) ===
     // Chantier 1: Queen Ovipositor Egg Sack & Live Egg Laying Chamber (Aliens 1986)
-    this.buildQueenOvipositor();
+    if (inArena('xenomorph_prime')) this.buildQueenOvipositor();
 
     // Chantier 2: Atmospheric Condenser Lightning Rods & Ion Storm Arcs (Alien 3 / Fiorina 161)
-    this.buildLightningRods();
+    if (inArena('la_rooftops')) this.buildLightningRods();
 
     // Chantier 4: Fallen USCM Colonial Marine Casualties & Salvage (Aliens 1986)
-    this.buildFallenMarines();
+    if (inArena('charon_rogue_base', 'romulus_station')) this.buildFallenMarines();
 
     // Chantier 7: Liquid Nitrogen Fire Suppression Overhead Deluge System (Alien: Resurrection 1997)
-    this.buildLiquidNitrogenTanks();
+    if (inArena('romulus_station', 'charon_rogue_base')) this.buildLiquidNitrogenTanks();
 
     // Chantier 10: Queen Bio-Resin Webbing Barricades & Acid Adhesion (Aliens 1986)
-    this.buildResinWebbings();
+    if (inArena('xenomorph_prime', 'charon_rogue_base', 'romulus_station', 'antarctic_pyramid')) this.buildResinWebbings();
 
     // === v44.0 10-CHANTIER EXPANSION (Level Design & Interactive Hazards) ===
     // Chantier 5: Weyland-Yutani Containment Cryo-Tubes
-    this.buildCryoSpecimenTubes();
+    if (inArena('charon_rogue_base', 'romulus_station')) this.buildCryoSpecimenTubes();
 
     // Chantier 6: P-5000 Caterpillar Power Loader Workstation & Crushing Clamp
-    this.buildPowerLoader();
+    if (inArena('charon_rogue_base', 'romulus_station')) this.buildPowerLoader();
 
     // Chantier 9: Corrosive Atmospheric Acid Rain Storms
-    this.initAcidRain();
+    if (inArena('xenomorph_prime')) this.initAcidRain();
 
     // === v45.0 10-CHANTIER EXPANSION (Vehicles, Level Traps & Reactor Core) ===
     // Chantier 2: Drivable USCM M577 Armored Personnel Carrier (Aliens 1986)
-    this.buildDrivableAPC();
+    if (inArena('charon_rogue_base')) this.buildDrivableAPC();
 
     // Chantier 3: Colony Reactor Meltdown & Cooling Console (Hadley's Hope)
-    this.buildReactorMeltdownConsole();
+    if (inArena('charon_rogue_base')) this.buildReactorMeltdownConsole();
 
     // Chantier 6: High-Voltage Discharging Electric Floor Grids
-    this.buildElectricFloorGrids();
+    if (inArena('charon_rogue_base', 'romulus_station')) this.buildElectricFloorGrids();
 
     // Chantier 9: Weyland-Yutani Med-Lab Decontamination Airlock
-    this.buildDecontaminationAirlock();
+    if (inArena('romulus_station', 'charon_rogue_base')) this.buildDecontaminationAirlock();
 
     // === v46.0 10-CHANTIER EXPANSION (Smartgun Turret, Derelict LV-426, JP-4 Fuel Lines & Cargo Crane Console) ===
     // Chantier 1: Heavy Mounted USCM M56 Smartgun Turret (Aliens 1986 Vasquez & Drake)
-    this.buildMountedSmartgun();
+    if (inArena('charon_rogue_base')) this.buildMountedSmartgun();
 
     // Chantier 2: Derelict LV-426 Interior Chamber with 0.45g Low Gravity & Blue Laser Mist Plane (Alien 1979)
-    this.buildDerelictChamber();
+    // Kept for a future arena (bible, tab 18_LieuxFuturs): not built in the current eight.
+    // this.buildDerelictChamber();
 
     // Chantier 6: Colonial JP-4 Industrial Fuel Lines & Ignition Flame Wall (Aliens 1986)
-    this.buildFuelLines();
+    if (inArena('charon_rogue_base')) this.buildFuelLines();
 
     // Chantier 9: USCM Cargo Crane Operator Console for 10-Ton Container Drop
-    this.buildCargoCraneConsole();
+    if (inArena('charon_rogue_base', 'romulus_station')) this.buildCargoCraneConsole();
 
     // === v47.0 10-CHANTIER EXPANSION (Engineer City Ruins, Cryo-Vent Cooling Tower, Mutagen Urns) ===
     // Chantier 3: Planet 4 Engineer City Ruins (Prometheus / Covenant)
-    this.buildEngineerCityRuins();
+    // Kept for a future arena (bible, tab 18_LieuxFuturs): not built in the current eight.
+    // this.buildEngineerCityRuins();
 
     // Chantier 6: Weyland-Yutani Atmospheric Cooling Tower Cryo-Vent Purge (Alien 3 / Fiorina 161)
-    this.buildCoolingTowerCryoVent();
+    if (inArena('charon_rogue_base')) this.buildCoolingTowerCryoVent();
 
     // Chantier 9: Engineer Ceramic Urns & Black Mutagen Z-01 Puddles (Prometheus 2012)
-    this.buildEngineerUrnClusters();
+    // Kept for a future arena (bible, tab 18_LieuxFuturs): not built in the current eight.
+    // this.buildEngineerUrnClusters();
 
     // === v48.0 10-CHANTIER EXPANSION (Fiorina 161 Molten Lead Foundry Vat & Containment Channel) ===
     // Chantier 4: Fiorina "Fury" 161 Molten Lead Foundry & Pouring Vat (Alien 3 1992 Canon 1:1)
-    this.buildFiorinaMoltenLeadFoundry();
+    // Kept for a future arena (bible, tab 18_LieuxFuturs): not built in the current eight.
+    // this.buildFiorinaMoltenLeadFoundry();
 
     // === v49.0 10-CHANTIER EXPANSION (USCM M579 SAM Battery, USM Auriga Flooded Basin, Shrine of the Ancients) ===
     // Chantier 3: USCM M579 "Aguilar" Guided Missile Battery & Anti-Air Radar (Aliens / Fireteam Elite)
-    this.buildUSCMMissileBattery();
+    if (inArena('charon_rogue_base')) this.buildUSCMMissileBattery();
 
     // Chantier 4: USM Auriga Flooded Hydro-Cryo Basin & 50,000V Breaker (Alien: Resurrection 1997)
-    this.buildAurigaFloodedBasin();
+    // Kept for a future arena (bible, tab 18_LieuxFuturs): not built in the current eight.
+    // this.buildAurigaFloodedBasin();
 
     // Chantier 9: Ancient Yautja Shrine of the Ancients & Sacrificial Braziers (AVP: Extinction)
-    this.buildShrineOfTheAncients();
+    if (inArena('antarctic_pyramid', 'game_preserve_planet')) this.buildShrineOfTheAncients();
 
     // === v50.0 10-CHANTIER EXPANSION (WY 155mm Coastal Rail-Cannon, Cryo-Stasis Laboratory Sector) ===
     // Chantier 2: Weyland-Yutani Coastal Defense 155mm Rail-Cannon Artillery Turret
-    this.buildCoastalRailCannon();
+    if (inArena('charon_rogue_base')) this.buildCoastalRailCannon();
 
     // Chantier 4: Weyland-Yutani Cryo-Stasis Research Laboratory Sector & Breakable Specimen Pods
-    this.buildCryoStasisSector();
+    if (inArena('romulus_station')) this.buildCryoStasisSector();
 
     // === v51.0 10-CHANTIER EXPANSION (Pressurized Acid Geysers, Engineer Sarcophagus Stasis Crypt) ===
     // Chantier 7: Pressurized Acid Geysers & Eruptive Fumaroles (Alien 3 / AVP Extinction)
-    this.buildPressurizedAcidGeysers();
+    if (inArena('xenomorph_prime')) this.buildPressurizedAcidGeysers();
 
     // Chantier 10: Space Jockey Dais Sacred Engineer Stasis Crypt Sarcophagus (Prometheus 2012)
-    this.buildEngineerSarcophagus();
+    // Kept for a future arena (bible, tab 18_LieuxFuturs): not built in the current eight.
+    // this.buildEngineerSarcophagus();
 
     // === v52.0 10-CHANTIER EXPANSION (Hydraulic Cargo Lift, Subterranean Infiltration Vents) ===
     // Chantier 5: USCM Industrial Hydraulic Cargo Lift Elevator (Hadley's Hope)
-    this.buildHydraulicCargoLift();
+    if (inArena('charon_rogue_base', 'romulus_station')) this.buildHydraulicCargoLift();
 
     // Chantier 6: Subterranean Xeno Infiltration Vents & Floor Hatches
-    this.buildSubterraneanVents();
+    if (inArena('charon_rogue_base', 'romulus_station', 'antarctic_pyramid')) this.buildSubterraneanVents();
 
     // === v53.0 10-CHANTIER EXPANSION (Weyland-Yutani Breakable Specimen Stasis Vats & Cryo Cloud Freezing) ===
     // Chantier 5: Weyland-Yutani Specimen Stasis Tanks & Cryogenic Rupture Zones
-    this.buildSpecimenStasisTanks();
+    if (inArena('charon_rogue_base')) this.buildSpecimenStasisTanks();
 
     // === v54.0 10-CHANTIER EXPANSION (JP-4 Explosive Barrels & Plasma Recharge Stations) ===
     // Chantier 3 & Sofia QA: JP-4 Fuel Barrels Destructible Hazards
-    this.buildExplosiveBarrels();
+    if (inArena('charon_rogue_base', 'romulus_station', 'gunnison_forest', 'la_rooftops')) this.buildExplosiveBarrels();
     // Chantier 4: Weyland-Yutani Plasma Capacitor Recharge Terminals
     this.buildPlasmaRechargeTerminals();
 
     // === v55.0 10-CHANTIER EXPANSION (Flooded Water Drainage Puddles & Cloaking Disruption) ===
     // Chantier 4 & Sofia QA: Flooded Drainage Puddles (Predator 1987 / Prey 2022)
-    this.buildFloodedPuddles();
+    if (inArena('gunnison_forest', 'la_rooftops', 'val_verde_jungle')) this.buildFloodedPuddles();
 
     // === v56.0 MASTER LEVEL DESIGN SYSTEMS (UA 571-C Sentry, Ammonia Coolant, Collapsible Grates, Tactical Covers) ===
-    this.buildFixedSentryEmplacements();
-    this.buildAmmoniaCoolantPipes();
-    this.buildCollapsibleFloorGrates();
+    if (inArena('charon_rogue_base', 'romulus_station')) this.buildFixedSentryEmplacements();
+    if (inArena('charon_rogue_base', 'romulus_station')) this.buildAmmoniaCoolantPipes();
+    if (inArena('charon_rogue_base', 'romulus_station', 'antarctic_pyramid')) this.buildCollapsibleFloorGrates();
     this.buildTacticalCoverObstacles();
   }
 

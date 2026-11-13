@@ -3181,7 +3181,7 @@ class GameApp {
         // Spawn Predalien Matriarch Titan (10,000 HP) on Wave 5 and every 3 waves in Endless Mode
         if (this.isEndlessMode && (this.waveIndex === 5 || (this.waveIndex > 5 && this.waveIndex % 3 === 0))) {
           const bType = this.waveIndex === 5 ? 'predalien_matriarch_titan' : (this.ui.selectedLevel.bossType || 'predalien_matriarch_titan');
-          if (this.env && !this.env.reactorMeltdownActive && this.waveIndex === 5) {
+          if (this.env && !this.env.reactorMeltdownActive && this.waveIndex === 5 && this.ui.selectedLevel.id === 'charon_rogue_base') {
             this.env.triggerReactorMeltdown(this.ui, this.audio);
           }
           this.bosses.spawnBoss(bType, this.player.position.clone().add(new THREE.Vector3(0, 0, -25)));
