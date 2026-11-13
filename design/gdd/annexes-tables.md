@@ -51,8 +51,19 @@ Les mêmes tables sont dans `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 | HW-DEC-24 | Personnages de La Longue Chasse jouables | Tous, Mara Venn incluse | 19 personnages des six voies ; Mara Venn, humaine, est un personnage jouable à part |
 | HW-DEC-25 | Accès au dépôt de La Longue Chasse | Oui, en lecture | Méthode de connexion et format de sauvegarde relevés le 13 nov. 2026 ; rien n'y est modifié |
 | HW-DEC-26 | Table de la sauvegarde en ligne de Hive Warriors | Table générique app_cloud_saves | Rien à créer dans la base ; une ligne par compte et par application |
-| HW-DEC-27 | Mara Venn | Deux variantes jouables | Hors clan : kit humain propre. Dans le clan : équipée par les Yautja, sans plasma d'épaule |
+| HW-DEC-27 | Mara Venn | Deux variantes jouables | Hors clan : kit humain propre. Équipée par les Yautja : matériel prêté, sans plasma d'épaule (précisé par HW-DEC-29) |
 | HW-DEC-28 | Fiches des 19 personnages | Rédigées par Claude, validées par l'auteur | Une fiche par personnage, à partir de la Bible V6 |
+| HW-DEC-29 | Mara Venn équipée | Alliée équipée, pas membre | La seconde variante s'appelle « équipée par les Yautja » : matériel prêté le temps d'une chasse, elle reste extérieure au clan ; conforme à la Bible V6 |
+| HW-DEC-30 | Saer | Non jouable | Il peut servir de voix du codex ou de la salle des trophées |
+| HW-DEC-31 | Espèce d'Esha | Humaine (choix confié à Claude) | Habitante du port de Namarra, monde de Mara Venn ; la Bible V6 ne la range jamais parmi les cohortes ou les rangs Yautja |
+| HW-DEC-32 | Arme de Mara Venn | Fusil de traqueuse | Fusil à verrou précis, lent, puissant sur les élites |
+| HW-DEC-33 | But d'une chasse | Carte à zones | Carte plus grande découpée en zones tenues par des officiers de ruche, à conquérir ; remplace l'arène fermée et ses seules vagues |
+| HW-DEC-34 | Progression | Niveaux de chasseur, armes à attributs, rangs Yautja, trophées à effets | Les quatre systèmes sont retenus |
+| HW-DEC-35 | Combat | Verrouillage de cible, changement d'arme en combo, mises à mort contextuelles, furtivité d'ouverture | Les quatre sont retenus |
+| HW-DEC-36 | Modes | Niveaux de difficulté, mode libre, défis de chasse, classement en ligne | Les quatre sont retenus |
+| HW-DEC-37 | Lieux futurs | Tous les lieux iconiques manquants de la saga | Liste dans l'onglet 18_LieuxFuturs |
+| HW-DEC-38 | Chasseurs futurs | Tous les chasseurs iconiques manquants | Liste dans l'onglet 19_ChasseursFuturs |
+| HW-DEC-39 | Vie de l'univers | Récit par chasse, codex complet, citadelle vivante, musique par arène | Les quatre sont retenus |
 | HW-DEC-12 | Alliés Yautja, armes humaines, véhicules et soutiens, coopération locale | Tous conservés | Le champ de bataille est une guerre ; ces systèmes sont à réparer, pas à couper |
 
 ## 02_Chasseurs — Chasseurs jouables (js/data/charactersData.js)
@@ -292,10 +303,11 @@ Les mêmes tables sont dans `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 | Q14 | Valeurs de PV des 8 boss | La courbe doit croître de la 1re à la 8e chasse | À régler après essais avec un vrai joueur |
 | Q23 | Que faire si le joueur joue à Hive Warriors sur deux appareils ? | La table générique n'a pas de numéro de révision : la dernière écriture écrase l'autre | Garder la sauvegarde la plus récente et prévenir le joueur |
 | Q24 | Les règles d'accès de la table app_cloud_saves | Elles n'ont pas été lues ; il faut vérifier que chaque joueur n'accède qu'à sa ligne | À vérifier avant tout développement |
-| Q22 | Valider les 20 fiches de personnages | Statistiques, kits et Musou sont des propositions ; la Bible V6 ne donne ni apparence ni arme attitrée | Fiches de personnages-longue-chasse.md |
-| Q25 | Saer, archiviste de la voie O4, doit-il être jouable ? | Trouvé à la relecture, absent de la liste initiale ; rien n'en fait un combattant | Non inclus |
-| Q26 | Mara Venn « dans le clan » contredit la Bible V6, qui la veut toujours extérieure | La variante n'existe dans aucune fin de la voie O5 | Variante « et si… » rattachée à la fin O5-E1 |
-| Q27 | Espèce d'Esha et arme de Mara Venn | Non précisées dans la Bible V6 | À fixer par l'auteur |
+| Q22 | Valider les fiches de personnages | Statistiques, kits et Musou sont des propositions | Fiches de personnages-longue-chasse.md |
+| Q28 | Dans quel ordre réaliser tout ce qui vient d'être retenu ? | Le périmètre décidé dépasse de très loin l'état du code | Ordre de feuille-de-route.md |
+| Q29 | La carte à zones remplace-t-elle les 8 arènes ou s'y ajoute-t-elle ? | Refaire 8 cartes est le plus gros chantier du projet | Un pilote sur une seule chasse avant de décider |
+| Q30 | Les rangs Yautja de Hive Warriors sont-ils les mêmes que ceux du compte La Longue Chasse ? | La Bible V6 lie chaque rang à un rite précis ; ici ils viendraient des trophées | Rangs propres à Hive Warriors, mêmes sept noms |
+| Q31 | Classement en ligne : comment limiter la triche ? | Un jeu de navigateur envoie lui-même son score | Classement amical, sans garantie ; bornes de vraisemblance côté base |
 
 ## 15_Soutiens — Soutiens par arène (proposition découlant de HW-DEC-14 ; aujourd'hui tout apparaît partout)
 
@@ -326,14 +338,14 @@ Les mêmes tables sont dans `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 | Drek | Personnage jouable, création du projet | O4 Nom entaché | Parent du joueur | Mission O4-M23 (proposé) | Fiche proposée, à valider |
 | Isha | Personnage jouable, création du projet | O4 Nom entaché | Descendante lésée | Mission O4-M33 (proposé) | Fiche proposée, à valider |
 | Evar | Personnage jouable, création du projet | O4 Nom entaché | Enforcer local | Une fin de la voie O4 (proposé) | Fiche proposée, à valider |
-| Mara Venn | Personnage jouable, création du projet | O5 Dette envers l'Étranger | Traqueuse humaine ; deux variantes (HW-DEC-27) | Hors clan : mission O5-M24 ; dans le clan : fin O5-E1 (proposé) | Fiche proposée, à valider |
+| Mara Venn | Personnage jouable, création du projet | O5 Dette envers l'Étranger | Traqueuse humaine ; deux variantes (HW-DEC-27 et 29) | Hors clan : mission O5-M24 ; équipée par les Yautja : fin O5-E1 (proposé) | Fiche proposée, à valider |
 | Esha | Personnage jouable, création du projet | O5 Dette envers l'Étranger | Réparatrice du port de Namarra | Mission O5-M22 (proposé) | Fiche proposée, à valider |
 | Keth | Personnage jouable, création du projet | O5 Dette envers l'Étranger | Chasseur qui sous-estime l'humaine | Mission O5-M25 (proposé) | Fiche proposée, à valider |
 | Saar | Personnage jouable, création du projet | O6 La Longue Chasse | Instructeur de cohorte | Une fin de la voie O6 (proposé) | Fiche proposée, à valider |
 | Harek | Personnage jouable, création du projet | O6 La Longue Chasse | Rival de cohorte | Mission O6-M33 (proposé) | Fiche proposée, à valider |
 | Yena | Personnage jouable, création du projet | O6 La Longue Chasse | Camarade de cohorte | Mission O6-M27 (proposé) | Fiche proposée, à valider |
 | Tov | Personnage jouable, création du projet | O6 La Longue Chasse | Camarade de cohorte | Mission O6-M27 (proposé) | Fiche proposée, à valider |
-| Saer | Trouvé à la relecture, à confirmer | O4 Nom entaché | Archiviste local | À confirmer | Hors décision HW-DEC-24 |
+| Saer | Non jouable (HW-DEC-30) | O4 Nom entaché | Archiviste local | Sans objet | Voix possible du codex |
 | Habillages des 15 clans | Couleurs d'armure et de masque | Identités des clans CL1 à CL15 |  | Appartenir au clan dans La Longue Chasse | Décidé (HW-DEC-18), condition proposée |
 | Arène « Arène de la reine active » | Variante de la 8e chasse | Xeno Prime, secteur XP-Z12 |  | Avoir vaincu la première reine (mission R2-M026) | Décidé (HW-DEC-18), condition proposée |
 | Arène « Tête de reine géante au sol » | Arène supplémentaire | Xeno Prime, secteur XP-Z09 |  | Avoir préparé Xeno Prime (mission R2-M025) | Décidé (HW-DEC-18), condition proposée |
@@ -351,6 +363,78 @@ Les mêmes tables sont dans `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 | Écriture de la sauvegarde de La Longue Chasse | Révision optimiste : chaque écriture doit porter la révision précédente + 1, vérifiée par un déclencheur ; un conflit entre deux appareils est signalé au joueur | Hive Warriors ne l'écrit jamais ; il lit l'instantané |
 | Sauvegarde de Hive Warriors | Table app_cloud_saves retenue (HW-DEC-26) ; elle n'a pas de numéro de révision | Le dernier appareil qui écrit l'emporte : risque à traiter (Q23) |
 | Dans Hive Warriors | Aucun code de compte ni de sauvegarde en ligne ; 6 clés de stockage local | Tout est à écrire |
+
+## 18_LieuxFuturs — Lieux futurs (HW-DEC-37) : aucun n'est dans le code ; dates et détails à vérifier avant écriture
+
+| Lieu | Œuvre | Idée de chasse | Boss pressenti | Déjà dans le code | Priorité proposée |
+|---|---|---|---|---|---|
+| Hadley's Hope, LV-426 | Aliens (1986) | Colonie, centre d'opérations, puis le nid sous le processeur atmosphérique | Reine | Marines, sentinelles, blindé M577, Cheyenne, chargeur | 1 |
+| Épave des Ingénieurs, LV-426 | Alien (1979) | Salle du pilote et cale aux œufs | À définir | Estrade du Space Jockey, chambre de l'épave | 2 |
+| Fiorina 161 | Alien 3 (1992) | Prison-fonderie, couloirs, moule à plomb | Coureur quadrupède | Fonderie de plomb (décor générique) | 1 |
+| Grandes Plaines, 1719 | Prey (2022) | Forêt, clairière brûlée, camp des trappeurs | À définir (« et si… ») | Feral Predator jouable, sans arène à lui | 1 |
+| Yautja Prime | Univers étendu ; Homeworld de la Bible V6 | Arène rituelle de la cité | Reine d'épreuve | Citadelle du menu | 2 |
+| Genna | Predator: Badlands (2025) | Planète hostile, faune géante | À définir | Non | 2 |
+| Scandinavie viking | Killer of Killers (2025) | Premier récit du film | À définir | Viking Predator jouable (celui de Hunting Grounds, distinct) | 3 |
+| Japon féodal | Killer of Killers (2025) | Deuxième récit du film | À définir | Samurai Predator jouable (celui de Hunting Grounds, distinct) | 3 |
+| Pacifique, Seconde Guerre mondiale | Killer of Killers (2025) | Troisième récit du film | À définir | Non | 3 |
+| Arène du roi Grendel | Killer of Killers (2025) | Combat d'arène final | Roi Grendel | Non | 3 |
+| Nostromo | Alien (1979) | Huis clos : un seul xénomorphe, puis l'essaim « et si… » | À définir | Non | 3 |
+| Station Sevastopol | Alien: Isolation (2014) | Station en ruine, synthétiques Working Joe | À définir | Working Joe déjà codé | 2 |
+| LV-223 | Prometheus (2012) | Dôme des Ingénieurs, urnes | Ingénieur éveillé | Ingénieur éveillé, urnes, Trilobite, Deacon déjà codés | 1 |
+| Planète 4 | Alien: Covenant (2017) | Cité morte des Ingénieurs | À définir | Ruines de la Planète 4, néomorphe, praetomorphe déjà codés | 2 |
+| USM Auriga | Alien, la résurrection (1997) | Vaisseau-laboratoire, bassin inondé | À définir | Bassin de l'Auriga (décor générique) | 2 |
+| Île Bouvet, station baleinière | AVP (2004) | La surface au-dessus de la pyramide | À définir | Non | 3 |
+| BG-386 | Aliens vs. Predator (jeu, 2010) | Colonie, jungle, ruines Yautja | À définir | Non | 3 |
+| Ryushi | Aliens vs. Predator (comics, 1989) | Colonie d'élevage en plein désert, la toute première rencontre des deux espèces | Reine | Non | 2 |
+| Abattoir et métro de Los Angeles | Predator 2 (1990) | Suite de la chasse des toits | À définir | Toits de Los Angeles | 3 |
+
+## 19_ChasseursFuturs — Chasseurs futurs (HW-DEC-38) : aucun n'est dans le code ; noms repris du catalogue des 54 gantelets de La Longue Chasse
+
+| Chasseur | Œuvre | Trait de jeu pressenti | Lié à | Priorité proposée |
+|---|---|---|---|---|
+| Scar | AVP (2004) | Équilibré ; shuriken et combistick | Pyramide antarctique | 1 |
+| Celtic | AVP (2004) | Puissant ; filet | Pyramide antarctique | 1 |
+| Chopper | AVP (2004) | Lames de bras longues | Pyramide antarctique | 1 |
+| Berserker (Mr. Black) | Predators (2010) | Lourd ; aujourd'hui seulement boss | Réserve de chasse | 1 |
+| Tracker | Predators (2010) | Molosses | Réserve de chasse | 1 |
+| Falconer | Predators (2010) | Drone faucon | Réserve de chasse | 1 |
+| Classic (le Predator crucifié) | Predators (2010) | Chasseur classique libéré | Réserve de chasse | 2 |
+| Fugitive | The Predator (2018) | Rapide, léger | Aucune arène | 2 |
+| Upgrade | The Predator (2018) | Géant sans armure | Aucune arène | 2 |
+| Dek | Predator: Badlands (2025) | Jeune chasseur | Genna | 2 |
+| Kwei et Njohrr | Predator: Badlands (2025) | À définir | Genna | 3 |
+| Chasseur du récit viking | Killer of Killers (2025) | À définir ; distinct du Viking de Hunting Grounds | Scandinavie viking | 3 |
+| Chasseur du récit ninja | Killer of Killers (2025) | À définir | Japon féodal | 3 |
+| Chasseur du récit du pilote | Killer of Killers (2025) | À définir | Pacifique | 3 |
+| Greyback, l'Ancien | Predator 2 (1990) | Ancien ; épée | Toits de Los Angeles | 2 |
+| L'Ancien d'AVP | AVP (2004) | Distinct de Greyback | Pyramide antarctique | 3 |
+| La Tribu perdue (Boar, Shaman, Guardian, Stalker, Snake, Warrior, Scout) | Predator 2 (1990) | Sept habillages et variantes | Toits de Los Angeles | 3 |
+| Dark | Aliens vs. Predator (jeu, 2010) | À définir | BG-386 | 3 |
+| Scarface | Predator: Concrete Jungle (2005) | À définir | Aucune arène | 3 |
+| Ahab | Comics et figurines | Ancien chasseur d'Ingénieurs | LV-223 | 3 |
+| Classes de Hunting Grounds (Scout, Berserker, Valkyrie, Exiled, Pirate…) | Predator: Hunting Grounds (2020) | Variantes de classe | Aucune arène | 3 |
+
+## 20_GameplayCible — Systèmes de jeu retenus (HW-DEC-33 à 36 et 39) : état dans le code et phase proposée
+
+| Système | Décision | Ce qui existe dans le code | Ce qui manque | Phase |
+|---|---|---|---|---|
+| Carte à zones | HW-DEC-33 | Arène fermée de 150 m ; officiers de ruche (2 par vague) ; jauge de moral | Carte plus grande, zones, capture, renforts par zone, mini-carte de conquête | 3 |
+| Verrouillage de cible | HW-DEC-35 | Caméra fixe derrière le chasseur, sans souris ; réticule à trois lasers | Contrôle de caméra, verrouillage, bascule entre cibles | 2 |
+| Changement d'arme en combo | HW-DEC-35 | Fonction toggleWeaponSwap présente, sans touche depuis v51 | Seconde arme réelle, enchaînement prolongé | 2 |
+| Mises à mort contextuelles | HW-DEC-35 | Exécution des boss et sous-boss étourdis, des synthétiques ; plongeon depuis une passerelle | Mises à mort sur les élites et la masse, selon l'arme | 2 |
+| Furtivité d'ouverture | HW-DEC-35 | Camouflage codé sans touche ; perchoir ; arbres perchoirs à Gunnison ; élimination furtive (×2,5) | Début de chasse camouflé, horde non alertée | 2 |
+| Niveaux de chasseur | HW-DEC-34 | Aucun | Expérience, niveaux, finitions débloquées | 4 |
+| Armes à attributs | HW-DEC-34 | Saignement, acide, givre existent comme effets isolés | Armes équipables, attributs, forge unique | 4 |
+| Rangs Yautja | HW-DEC-34 | Insigne « blooded » dans l'interface ; codex des rangs | Sept rangs, conditions, contenu par rang | 4 |
+| Trophées à effets | HW-DEC-34 | Compteur de crânes ; citadelle du menu ; 4 succès | Un trophée par boss, bonus au choix | 4 |
+| Niveaux de difficulté | HW-DEC-36 | Aucun | Trois ou quatre difficultés, récompenses | 5 |
+| Mode libre | HW-DEC-36 | Toutes les arènes et tous les chasseurs sont déjà ouverts | À réserver aux chasses terminées | 5 |
+| Défis de chasse | HW-DEC-36 | Aucun | Épreuves à contrainte | 5 |
+| Classement en ligne | HW-DEC-36 | Aucun ; meilleur combo et vague maximale en local | Table de scores, envoi, affichage | 7 |
+| Récit par chasse | HW-DEC-39 | Annonces à l'écran ; titres des 5 chapitres | Introduction et conclusion écrites par chasse | 6 |
+| Codex complet | HW-DEC-39 | Codex en 4 onglets, 22 entrées, tout ouvert | Une fiche par ennemi, boss, arme et lieu, débloquée en jouant | 6 |
+| Citadelle vivante | HW-DEC-39 | Citadelle 3D derrière le menu | Lieu à parcourir, forge, mur de crânes, table de chasse | 6 |
+| Musique par arène | HW-DEC-39 | Un bourdon à 55 Hz | Un thème par lieu, un thème de boss, synthétisés | 6 |
 
 ## 14_Sources — Sources lues pour cette bible
 

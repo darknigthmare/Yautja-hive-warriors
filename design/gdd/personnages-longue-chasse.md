@@ -1,6 +1,6 @@
 # Personnages de La Longue Chasse jouables dans Hive Warriors
 
-> Bible du jeu, document 4. Décisions HW-DEC-15, 18, 19, 24, 27 et 28.
+> Bible du jeu, document 4. Décisions HW-DEC-15, 18, 19, 24 et 27 à 32.
 > Statut : **fiches proposées, à valider par l'auteur.** Rien de ceci n'est dans le code.
 
 ## 1. Comment lire ces fiches
@@ -29,7 +29,7 @@ Les statistiques restent dans les bornes des sept chasseurs actuels : points de 
 
 ## 3. Vue d'ensemble
 
-Vingt personnages : les 19 décidés (HW-DEC-24) et Saer, trouvé à la relecture, à confirmer.
+Dix-neuf personnages jouables (HW-DEC-24). Saer, trouvé à la relecture, n'est pas jouable (HW-DEC-30).
 
 | Personnage | Voie | Rôle dans la Bible V6 | Archétype proposé | PV | Vit. | Mêlée | Plasma | Débloqué par |
 |---|---|---|---|---|---|---|---|---|
@@ -45,10 +45,9 @@ Vingt personnages : les 19 décidés (HW-DEC-24) et Saer, trouvé à la relectur
 | Drek | O4 | Parent du joueur | Défenseur | 1200 | 14 | 140 | 210 | Mission O4-M23 |
 | Isha | O4 | Descendante lésée | Grimpeuse, duelliste | 950 | 19 | 140 | 200 | Mission O4-M33 |
 | Evar | O4 | Enforcer local | Maîtrise de foule | 1200 | 16 | 155 | 240 | Une fin de la voie O4 |
-| Saer | O4 | Archiviste local | À confirmer | — | — | — | — | À confirmer |
 | Mara Venn, hors clan | O5 | Traqueuse humaine | Tireuse et piégeuse | 600 | 18 | 60 | — | Mission O5-M24 |
-| Mara Venn, dans le clan | O5 | Variante « et si… » | Mêlée Yautja allégée | 750 | 18 | 105 | — | Fin O5-E1 |
-| Esha | O5 | Réparatrice du port | Soutien technique | 950 | 16 | 115 | 230 | Mission O5-M22 |
+| Mara Venn, équipée par les Yautja | O5 | Alliée, pas membre | Mêlée Yautja allégée | 750 | 18 | 105 | — | Fin O5-E1 |
+| Esha | O5 | Réparatrice du port, humaine | Soutien technique | 650 | 16 | 70 | — | Mission O5-M22 |
 | Keth | O5 | Chasseur qui sous-estime | Chasseur classique | 1100 | 17 | 145 | 240 | Mission O5-M25 |
 | Saar | O6 | Instructeur de cohorte | Maître du tronc commun | 1150 | 16 | 150 | 250 | Une fin de la voie O6 |
 | Harek | O6 | Rival de cohorte | Agressif, risqué | 950 | 19 | 165 | 240 | Mission O6-M33 |
@@ -113,35 +112,36 @@ Vingt personnages : les 19 décidés (HW-DEC-24) et Saer, trouvé à la relectur
 - **Bible V6** : « Enforcer local » chargé du dossier ; mandat situé, pas une police universelle. Voix : faits observables, ordres brefs ; il sépare physiquement les protagonistes (D6-V-O-12).
 - **Proposition** : maîtrise de foule. Emplacements : lance-filet, mine EMP, rugissement, combistick. Musou « Laisser passer » : étourdit toute la zone.
 
-### Saer (à confirmer)
-- **Bible V6** : archiviste local (O4-M05), 38 répliques. Voix : prudent sur les traces, « attache, lecture, trace, copie » (D6-V-O-13).
-- **Proposition** : aucune. Rien dans la bible n'en fait un combattant. À inclure seulement si l'auteur le souhaite.
+### Saer — non jouable
+Archiviste local de la voie O4 (O4-M05, D6-V-O-13). Rien n'en fait un combattant : il n'est pas jouable (HW-DEC-30). Sa voix prudente, « attache, lecture, trace, copie », convient pour commenter le codex ou la salle des trophées.
 
 ## 8. Voie O5 — Dette envers l'Étranger
 
 ### Mara Venn
 **Bible V6** : humaine adulte, « pisteuse/traqueuse humaine autonome ». Elle sauve le joueur d'une chute (O5-M19) ; coopération temporaire, dont elle choisit la fin. Son équipement écrit : un câble, « son arme » (type non précisé, qu'elle garde), un outil, une carte de Namarra, un repère de piste, son propre transport. Elle lit les indices au sol pendant que le joueur lit les traces hautes (O5-M20). Voix : phrases simples, limites explicites, « sortie, eau, ma route, rendez-vous » (D6-V-O-16).
 
-**Écart à connaître.** La Bible V6 la veut toujours extérieure au clan : « aucun recrutement permanent forcé », départ obligatoire en O5-M24, visites du navire sur rendez-vous seulement, et aucune fin où elle rejoint le clan. La variante « dans le clan » décidée ici (HW-DEC-27) contredit donc la Bible V6. Elle est présentée comme une variante « et si… », permise par le statut hors canon des chroniques, et rattachée à la fin O5-E1 (alliance volontaire, si elle y consent).
+**Fidélité à la Bible V6.** Celle-ci la veut toujours extérieure au clan : « aucun recrutement permanent forcé », départ obligatoire en O5-M24, visites du navire sur rendez-vous seulement. Les deux variantes respectent cette règle (HW-DEC-29) : dans la seconde, elle porte du matériel prêté le temps d'une chasse et reste une alliée, pas un membre.
 
-#### Variante hors clan — conforme à la Bible V6
+**Arme** : un fusil de traqueuse, à verrou, précis, lent, très puissant sur les élites (HW-DEC-32). La Bible V6 dit seulement « son arme ».
+
+#### Variante hors clan
 - Tireuse et piégeuse, fragile : 600 points de vie, mêlée 60, aucun plasma, aucun camouflage.
-- Armes humaines en main dès le départ, sans avoir à les ramasser.
+- Fusil de traqueuse en main dès le départ ; les autres armes humaines se ramassent.
 - Emplacements : câble (se hisse ou tire un ennemi), piège, repère de piste (marque les cibles), fumigène.
 - Pas de Musou Yautja. Une jauge de **sang-froid** la remplace : pleine, elle ralentit le temps pour quelques tirs précis.
 - Débloquée par la mission O5-M24, celle de son départ.
 
-#### Variante dans le clan — « et si… »
-- Équipée par les Yautja : lame de poignet, combistick, masque de vision. Pas de canon d'épaule, pas de camouflage.
+#### Variante équipée par les Yautja
+- Matériel prêté : lame de poignet, combistick, masque de vision. Pas de canon d'épaule, pas de camouflage. Elle garde son fusil.
 - 750 points de vie, mêlée 105.
 - Emplacements : combistick lancé, lance-filet, câble, leurre.
 - Jauge de sang-froid conservée.
-- Débloquée par la fin O5-E1.
+- Débloquée par la fin O5-E1 (alliance volontaire, si elle y consent).
 
 ### Esha
-- **Bible V6** : « réparatrice du port de Namarra » ; une seule réplique nommée. Espèce non précisée. Voix : pratique, légèrement ironique, « joint, courant, quai, tenir » (D6-V-O-14).
-- **Proposition** : soutien technique. Emplacements : tourelle, mine EMP, medicomp renforcé, drone faucon. Musou « Ça tient » : répare et protège pendant quelques secondes.
-- **Attention** : personnage très peu décrit ; son espèce doit être fixée par l'auteur avant toute fiche définitive.
+- **Bible V6** : « réparatrice du port de Namarra » ; une seule réplique nommée. Voix : pratique, légèrement ironique, « joint, courant, quai, tenir » ; elle ne parle pas à la place de Mara (D6-V-O-14).
+- **Espèce : humaine** (HW-DEC-31, choix confié à Claude). Raisons : elle vit sur Namarra, le monde de Mara Venn ; la Bible V6 ne la rattache jamais à une cohorte, un rang ou une maison Yautja ; et la consigne « ne parle pas à la place de Mara » n'a de sens que si on pouvait la prendre pour sa porte-parole.
+- **Proposition** : soutien technique, fragile, sans plasma. Emplacements : tourelle, mine EMP, trousse de soin, drone. La jauge de sang-froid remplace le Musou : pleine, « Ça tient » répare et protège pendant quelques secondes.
 
 ### Keth
 - **Bible V6** : « chasseur qui sous-estime l'humaine » ; il n'apparaît que dans une scène (D6-O5-M25). Voix : assuré, puis concret après preuve, « portée, trace, faible, vu » (D6-V-O-15).
@@ -170,8 +170,5 @@ Vingt personnages : les 19 décidés (HW-DEC-24) et Saer, trouvé à la relectur
 ## 10. Ce qui reste à décider
 
 1. **Apparence de chacun** : la Bible V6 n'en dit rien.
-2. **Saer** : l'inclure ou non.
-3. **Esha** : son espèce.
-4. **Arme de Mara Venn** : la bible dit seulement « son arme ».
-5. **Étapes de déblocage** : celles du tableau sont proposées à partir des missions où l'histoire de chaque personnage se conclut.
-6. **Vingt et un kits à réaliser** en plus des sept chasseurs : à ne commencer qu'une fois les 8 chasses jouables de bout en bout.
+2. **Étapes de déblocage** : celles du tableau sont proposées à partir des missions où l'histoire de chaque personnage se conclut.
+3. **Vingt kits à réaliser** (19 personnages, dont deux variantes de Mara Venn) en plus des sept chasseurs : à ne commencer qu'une fois les 8 chasses jouables de bout en bout.

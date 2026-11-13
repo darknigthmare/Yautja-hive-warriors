@@ -1,6 +1,6 @@
 # Predator: Hive Warriors — Vision et conception
 
-> Bible du jeu, document 1 sur 3. Statut : **cible validée par l'auteur le 12 novembre 2026** (décisions HW-DEC-01 à 28).
+> Bible du jeu, document 1 sur 3. Statut : **cible validée par l'auteur le 12 novembre 2026** (décisions HW-DEC-01 à 39).
 > Ce document dit ce que le jeu doit être. Ce qu'il est réellement aujourd'hui est dans [etat-reel-v58.md](etat-reel-v58.md).
 > Les chiffres et listes sont dans [annexes-tables.md](annexes-tables.md) et dans le classeur `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 
@@ -123,6 +123,17 @@ Le code fait aujourd'hui apparaître 16 unités fixes à chaque vague, dont six 
 - Tout est modelé en géométrie simple dans le code : pas de modèles ni de textures importés.
 - Son : 100 % synthétisé (environ 257 sons). Aucun son de film, conformément à la règle héritée de La Longue Chasse. La musique se réduit aujourd'hui à un bourdon à 55 Hz ; une vraie direction musicale reste à écrire.
 - Cinq modes de vision (normal, thermique, électromagnétique, technique, sonar), rendus par des filtres d'écran.
+
+## 10 bis. Ce qui a été ajouté à la cible le 13 novembre 2026
+
+- **But d'une chasse** : une carte à zones tenues par des officiers de ruche, à conquérir, remplace l'arène fermée (HW-DEC-33). La structure en vagues de la section 6 décrit l'état de départ ; elle sera remplacée après un pilote.
+- **Progression** : niveaux de chasseur, armes à attributs, sept rangs Yautja, trophées à effets (HW-DEC-34).
+- **Combat** : verrouillage de cible, changement d'arme en combo, mises à mort contextuelles, furtivité d'ouverture (HW-DEC-35). La furtivité reste une ouverture, conformément au pilier 1.
+- **Modes** : niveaux de difficulté, mode libre, défis de chasse, classement en ligne (HW-DEC-36).
+- **Univers** : récit par chasse, codex complet, citadelle à parcourir, musique par arène (HW-DEC-39).
+- **Extensions** : tous les lieux et chasseurs iconiques manquants (HW-DEC-37 et 38).
+
+L'état de chaque système dans le code est dans l'onglet `20_GameplayCible` ; l'ordre proposé est dans [feuille-de-route.md](feuille-de-route.md).
 
 ## 11. Risques
 
