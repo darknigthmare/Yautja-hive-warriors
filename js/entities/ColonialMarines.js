@@ -15,13 +15,14 @@ export class ColonialMarinesManager {
     this.strafeCenter = null;
   }
 
-  spawnSquad(playerPos, count = 4) {
+  spawnSquad(playerPos, count = 4, variant = 'colonial') {
     this.clearSquad();
-    this.spawnSentryGun(playerPos.clone().add(new THREE.Vector3(8, 0, 8)));
+    this.variant = variant;
+    if (variant === 'colonial') this.spawnSentryGun(playerPos.clone().add(new THREE.Vector3(8, 0, 8)));
 
     for (let i = 0; i < count; i++) {
       const isSmartgunner = i % 2 === 0;
-      const marineMesh = this.createMarineMesh(isSmartgunner);
+      const marineMesh = this.createMarineMesh(isSmartgunner, variant);
 
       const angle = (i / count) * Math.PI * 2;
       marineMesh.position.set(
@@ -42,9 +43,10 @@ export class ColonialMarinesManager {
     }
   }
 
-  createMarineMesh(isSmartgunner) {
+  createMarineMesh(isSmartgunner, variant = 'colonial') {
     const group = new THREE.Group();
-    const armorMat = new THREE.MeshStandardMaterial({ color: 0x3d4a36, roughness: 0.6, metalness: 0.3 }); // USCM Camo Olive
+    // USCM camo olive; contemporary National Guard in grey-green (Gunnison, AVP Requiem)
+    const armorMat = new THREE.MeshStandardMaterial({ color: variant === 'national_guard' ? 0x6f7563 : 0x3d4a36, roughness: 0.6, metalness: 0.3 });
     const skinMat = new THREE.MeshStandardMaterial({ color: 0xd4a373, roughness: 0.8 });
 
     const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.5, 1.8, 8), armorMat);

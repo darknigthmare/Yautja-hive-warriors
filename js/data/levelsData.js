@@ -3,6 +3,8 @@
 export const LEVELS_DATA = [
   {
     id: 'gunnison_forest',
+    bossHp: 5500, // campaign curve (bible, tab 21_CourbeBoss)
+    supports: { marines: 'national_guard', weaponCrates: true }, // bible, tab 15_Soutiens
     name: 'FÔRET DE GUNNISON (AVP REQUIEM)',
     desc: 'Forêt sombre sous la pluie d\'orage et torrents d\'eau.',
     theme: 'rain_forest',
@@ -17,6 +19,8 @@ export const LEVELS_DATA = [
   },
   {
     id: 'xenomorph_prime',
+    bossHp: 10000, // campaign curve (bible, tab 21_CourbeBoss)
+    supports: { allies: true }, // bible, tab 15_Soutiens
     name: 'MONDE-RUCHE XENOMORPH PRIME',
     desc: 'Corridors biomécaniques recouverts de résine vivante.',
     theme: 'hive_world',
@@ -31,6 +35,8 @@ export const LEVELS_DATA = [
   },
   {
     id: 'antarctic_pyramid',
+    bossHp: 6500, // campaign curve (bible, tab 21_CourbeBoss)
+    supports: { allies: true }, // bible, tab 15_Soutiens
     name: 'PYRAMIDE ANTARCTIQUE MODULAIRE',
     desc: 'Structure rituelle millénaire aux murs coulissants.',
     theme: 'pyramid',
@@ -45,6 +51,8 @@ export const LEVELS_DATA = [
   },
   {
     id: 'la_rooftops',
+    bossHp: 4500, // campaign curve (bible, tab 21_CourbeBoss)
+    supports: { allies: true }, // bible, tab 15_Soutiens
     name: 'TOITS DE LOS ANGELES (1990)',
     desc: 'Gratte-ciels sous la tempête et panneaux néons.',
     theme: 'la_rooftops',
@@ -59,6 +67,8 @@ export const LEVELS_DATA = [
   },
   {
     id: 'val_verde_jungle',
+    bossHp: 3500, // campaign curve (bible, tab 21_CourbeBoss)
+    supports: {}, // bible, tab 15_Soutiens
     name: 'JUNGLE DE VAL VERDE (1987)',
     desc: 'Jungle tropicale dense du premier affrontement.',
     theme: 'jungle',
@@ -73,6 +83,8 @@ export const LEVELS_DATA = [
   },
   {
     id: 'romulus_station',
+    bossHp: 9000, // campaign curve (bible, tab 21_CourbeBoss)
+    supports: { marines: 'colonial', synthetics: true, sentry: true, weaponCrates: true }, // bible, tab 15_Soutiens
     name: 'STATION RENAISSANCE (ALIEN: ROMULUS)',
     desc: 'Station spatiale en dérive orbitale, laboratoires Z-01 et baie cryogénique.',
     theme: 'romulus_station',
@@ -87,6 +99,8 @@ export const LEVELS_DATA = [
   },
   {
     id: 'charon_rogue_base',
+    bossHp: 8500, // campaign curve (bible, tab 21_CourbeBoss)
+    supports: { marines: 'colonial', synthetics: true, apc: true, dropship: true, sentry: true, weaponCrates: true }, // bible, tab 15_Soutiens
     name: 'BASE SCIENTIFIQUE CHARON (ALIENS: ROGUE 1993)',
     desc: 'Complexe fortifié du Dr Ernst Kleist où le titanesque Rogue King Xenomorph Prime a été génétiquement façonné.',
     theme: 'space_station',
@@ -101,6 +115,8 @@ export const LEVELS_DATA = [
   },
   {
     id: 'game_preserve_planet',
+    bossHp: 7500, // campaign curve (bible, tab 21_CourbeBoss)
+    supports: { badBlood: true, weaponCrates: true }, // bible, tab 15_Soutiens
     name: 'RÉSERVE DE CHASSE DE MR. BLACK (PREDATORS 2010)',
     desc: 'Jungle extraterrestre sauvage contrôlée par le clan Super Predator Berserker, parsemée de totems d\'écorcheurs et de pièges mortels.',
     theme: 'temple',

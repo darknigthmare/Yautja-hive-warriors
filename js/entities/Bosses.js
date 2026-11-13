@@ -11,7 +11,7 @@ export class BossManager {
     this.embryoProjectiles = [];
   }
 
-  spawnBoss(type, spawnPos) {
+  spawnBoss(type, spawnPos, hpOverride = null) {
     if (this.activeBoss) {
       this.scene.remove(this.activeBoss.mesh);
     }
@@ -33,11 +33,14 @@ export class BossManager {
 
     const hp = isMatriarchTitan ? 10000 : (isRogueKing ? 9500 : (isBerserker ? 8800 : (isEngineer ? 8500 : (isImperial ? 8000 : (isTrilobite ? 7000 : (isPredalienAbomination ? 6500 : (isEmpress ? 6000 : (isPredalienQueen ? 5000 : (isOffspring ? 4500 : 3000)))))))));
 
+    const isPraetorianGuard = type === 'praetorian';
+    const finalHp = hpOverride || (isPraetorianGuard ? 3500 : hp);
+
     this.activeBoss = {
       type: type,
       mesh: mesh,
-      hp: hp,
-      maxHp: hp,
+      hp: finalHp,
+      maxHp: finalHp,
       isStunned: false,
       stunTimer: 0,
       phase: 1,
@@ -737,6 +740,15 @@ export class BossManager {
       }
     }
 
+    if (type === 'praetorian') {
+      // Praetorian guard: wide armoured crest that shields its front.
+      const crestMat = new THREE.MeshStandardMaterial({ color: 0x1b2433, metalness: 0.7, roughness: 0.35 });
+      const crest = new THREE.Mesh(new THREE.CylinderGeometry(2.6, 2.6, 0.25, 12, 1, false, -Math.PI / 2, Math.PI), crestMat);
+      crest.rotation.x = Math.PI / 2;
+      crest.position.set(0, 4.2, 0.6);
+      group.add(crest);
+    }
+
     if (isEmpress) {
       // Massive Flying Wings
       const wingMat = new THREE.MeshBasicMaterial({ color: 0x581c87, side: THREE.DoubleSide, transparent: true, opacity: 0.7 });
@@ -896,6 +908,23 @@ export class BossManager {
         }
       }
       amount *= 0.4; // 60% absorbed by phase shield
+    }
+
+    // Praetorian guard: the crest absorbs blows from the front; its back is exposed.
+    if (this.activeBoss.type === 'praetorian' && this.activeBoss.mesh && window.gameInstance && window.gameInstance.player) {
+      const toPlayer = window.gameInstance.player.position.clone().sub(this.activeBoss.mesh.position);
+      toPlayer.y = 0;
+      if (toPlayer.lengthSq() > 0.0001) {
+        toPlayer.normalize();
+        const facing = new THREE.Vector3(Math.sin(this.activeBoss.mesh.rotation.y), 0, Math.cos(this.activeBoss.mesh.rotation.y));
+        if (facing.dot(toPlayer) > 0.35) {
+          amount *= 0.4;
+          if (!this.activeBoss.crestHintShown && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
+            this.activeBoss.crestHintShown = true;
+            window.gameInstance.ui.showAnnouncement('🛡️ LA COLLERETTE DU PRÉTORIEN ENCAISSE DE FACE : FRAPPEZ-LE DE DOS !');
+          }
+        }
+      }
     }
 
     this.activeBoss.hp -= amount;
@@ -1525,6 +1554,31 @@ export class BossManager {
         player.takeDamage(420, false, this.activeBoss);
         if (window.gameInstance && window.gameInstance.particles && window.gameInstance.particles.emitSparks) {
           window.gameInstance.particles.emitSparks(player.position.clone().add(new THREE.Vector3(0, 1.4, 0)), 24);
+        }
+      }
+    } else if (this.activeBoss.type === 'praetorian') {
+      // Praetorian guard: short charges, then tail strikes up close. Recovering from a charge exposes its back.
+      if (this.activeBoss.chargeCooldown === undefined) this.activeBoss.chargeCooldown = 4.0;
+      this.activeBoss.chargeCooldown -= delta;
+      if (this.activeBoss.isCharging) {
+        this.activeBoss.chargeTimer -= delta;
+        this.activeBoss.mesh.position.addScaledVector(this.activeBoss.chargeDir, 20.0 * delta);
+        if (dist <= 3.8) {
+          player.takeDamage(260);
+          player.position.addScaledVector(this.activeBoss.chargeDir, 9.0);
+          if (player.mesh) player.mesh.position.copy(player.position);
+          this.activeBoss.isCharging = false;
+        }
+        if (this.activeBoss.chargeTimer <= 0) this.activeBoss.isCharging = false;
+        return;
+      } else if (dist > 6.0 && dist < 32.0 && this.activeBoss.chargeCooldown <= 0) {
+        this.activeBoss.chargeCooldown = 6.5;
+        this.activeBoss.isCharging = true;
+        this.activeBoss.chargeTimer = 1.3;
+        this.activeBoss.chargeDir = dir.clone().setY(0).normalize();
+        this.activeBoss.mesh.rotation.y = Math.atan2(this.activeBoss.chargeDir.x, this.activeBoss.chargeDir.z);
+        if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
+          window.gameInstance.ui.showAnnouncement('💥 CHARGE DU PRÉTORIEN ! ESQUIVEZ ET PRENEZ-LE À REVERS !');
         }
       }
     } else if (this.activeBoss.type === 'rogue_king_prime') {

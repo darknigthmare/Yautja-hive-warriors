@@ -1131,10 +1131,24 @@ class GameApp {
     });
 
     this.skimmer.spawnAt(this.player.position.clone().add(new THREE.Vector3(5, 0, 5)));
-    this.allies.spawnSquad(this.player.position, 3);
-    this.marines.spawnSquad(this.player.position, 4);
-    this.synthetics.spawnSquad(this.player.position, 3);
+    // Supports depend on the arena (bible, tab 15_Soutiens). Endless mode keeps the same set.
+    const supports = this.ui.selectedLevel.supports || {};
+    this.allies.clearSquad();
+    this.marines.clearSquad();
+    this.synthetics.clearSquad();
+    if (supports.allies) this.allies.spawnSquad(this.player.position, 3);
+    if (supports.marines) this.marines.spawnSquad(this.player.position, 4, supports.marines);
+    if (supports.synthetics) this.synthetics.spawnSquad(this.player.position, 3);
     this.horde.spawnWave(55, this.player.position);
+
+    // Human weapons are picked up, not carried (HW-DEC-13).
+    this.player.m41aGrenadeCharges = 0;
+    this.player.m77GaussAmmo = 0;
+    this.player.seegsonBoltAmmo = 0;
+    this.clearWeaponCrates();
+    if (supports.weaponCrates) {
+      for (let i = 0; i < 4; i++) this.spawnWeaponCrate();
+    }
 
     // Initialize Battlefield Morale to 50%
     this.battlefieldMorale = 50.0;
@@ -3123,15 +3137,15 @@ class GameApp {
       }
     }
 
+    this.updateWeaponCrates();
+
     if (this.horde.aliens.length < 10 && !this.bosses.activeBoss) {
       if (this.waveIndex < this.totalWaves || this.isEndlessMode) {
         this.waveIndex++;
 
         // QA Audit #5 (Sofia): Tactical Wave Munition Dropship Resupply
         if (this.player) {
-          this.player.m41aGrenadeCharges = Math.min(6, (this.player.m41aGrenadeCharges || 0) + 2);
-          this.player.m77GaussAmmo = Math.min(12, (this.player.m77GaussAmmo || 0) + 4);
-          this.player.seegsonBoltAmmo = Math.min(10, (this.player.seegsonBoltAmmo || 0) + 3);
+          if ((this.ui.selectedLevel.supports || {}).weaponCrates) this.spawnWeaponCrate();
           this.player.medicompCharges = Math.min(5, (this.player.medicompCharges || 0) + 1);
         }
 
@@ -3141,10 +3155,11 @@ class GameApp {
           : `VAGUE ${this.waveIndex} APPROCHE ! FORCES DE LA RUCHE DÉPLOYÉES !`);
 
         // Cheyenne Dropship Airstrike Support on Wave 2 & 4!
-        if (this.waveIndex === 2 || this.waveIndex === 4) {
+        const waveSupports = this.ui.selectedLevel.supports || {};
+        if (waveSupports.dropship && (this.waveIndex === 2 || this.waveIndex === 4)) {
           this.dropship.triggerAirstrike(this.player.position, this.horde);
           this.ui.showAnnouncement('✈️ DROPSHIP CHEYENNE UD-4L DÉPLOYÉ : SALVE DE ROQUETTES 70MM !');
-          if (this.waveIndex === 2) {
+          if (this.waveIndex === 2 && waveSupports.sentry) {
             setTimeout(() => {
               this.sentryGun.deploySentry(this.player.position.clone().add(new THREE.Vector3(3.5, 0, 2)));
               this.ui.showAnnouncement('📦 LARGAGE TACTIQUE : TOURELLE SENTINELLE UA 571-C DÉPLOYÉE EN APPUI !');
@@ -3152,9 +3167,11 @@ class GameApp {
           }
         }
 
-        if (this.waveIndex === 3) {
+        if (this.waveIndex === 3 && waveSupports.badBlood) {
           this.badBlood.spawnAmbush(this.player.position);
           this.ui.showAnnouncement('⚠️ ALERTE : EMBUSCADE D\'UN YAUTJA RENÉGAT "BAD BLOOD" !');
+        }
+        if (this.waveIndex === 3 && waveSupports.apc) {
           this.apc.spawn(this.player.position.clone().add(new THREE.Vector3(-18, 0, -10)));
           setTimeout(() => {
             this.ui.showAnnouncement('🛡️ RENFORT BLINDÉ : BLINDÉ USCM M577 APC EN POSITION DE TIR !');
@@ -3179,7 +3196,7 @@ class GameApp {
         // Last wave cleared: the arena's own boss appears, once.
         const bType = this.ui.selectedLevel.bossType || 'predalien_matriarch_titan';
         this.levelBossSpawned = true;
-        this.bosses.spawnBoss(bType, this.player.position.clone().add(new THREE.Vector3(0, 0, -25)));
+        this.bosses.spawnBoss(bType, this.player.position.clone().add(new THREE.Vector3(0, 0, -25)), this.ui.selectedLevel.bossHp || null);
         
         let bossTitle = 'MATRIARCHE TITAN PRÉDALIENNE IMPÉRIALE (AVP EXTINCTION / AVP-R)';
         if (bType === 'the_offspring') bossTitle = 'HYBRIDE GÉNOTYPIQUE THE OFFSPRING (ROMULUS 2024)';
@@ -3444,6 +3461,44 @@ class GameApp {
     }
   }
 
+  /* Human weapon crates (HW-DEC-13): walk over one to pick up grenades, Gauss slugs and bolts. */
+  spawnWeaponCrate() {
+    if (!this.weaponCrates) this.weaponCrates = [];
+    const group = new THREE.Group();
+    const box = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.9, 0.9), new THREE.MeshStandardMaterial({ color: 0x4b5320, roughness: 0.7 }));
+    box.position.y = 0.45;
+    group.add(box);
+    const band = new THREE.Mesh(new THREE.BoxGeometry(1.45, 0.18, 0.95), new THREE.MeshBasicMaterial({ color: 0xffb703 }));
+    band.position.y = 0.6;
+    group.add(band);
+    const angle = Math.random() * Math.PI * 2;
+    const radius = 18 + Math.random() * 40;
+    group.position.set(Math.cos(angle) * radius, 0, Math.sin(angle) * radius);
+    this.renderer.scene.add(group);
+    this.weaponCrates.push({ mesh: group });
+  }
+
+  clearWeaponCrates() {
+    (this.weaponCrates || []).forEach(c => this.renderer.scene.remove(c.mesh));
+    this.weaponCrates = [];
+  }
+
+  updateWeaponCrates() {
+    if (!this.weaponCrates || !this.player) return;
+    for (let i = this.weaponCrates.length - 1; i >= 0; i--) {
+      const crate = this.weaponCrates[i];
+      crate.mesh.rotation.y += 0.01;
+      if (crate.mesh.position.distanceTo(this.player.position) <= 2.6) {
+        this.player.m41aGrenadeCharges = Math.min(6, (this.player.m41aGrenadeCharges || 0) + 2);
+        this.player.m77GaussAmmo = Math.min(12, (this.player.m77GaussAmmo || 0) + 4);
+        this.player.seegsonBoltAmmo = Math.min(10, (this.player.seegsonBoltAmmo || 0) + 3);
+        this.renderer.scene.remove(crate.mesh);
+        this.weaponCrates.splice(i, 1);
+        this.ui.showAnnouncement('📦 CAISSE HUMAINE RAMASSÉE : +2 GRENADES M41A, +4 OBUS GAUSS, +3 CARREAUX SEEGSON');
+      }
+    }
+  }
+
   /* Pause: Escape toggles it; the overlay offers to resume or abandon the hunt. */
   setPaused(paused) {
     this.isPaused = !!paused && this.isPlaying;
@@ -3473,6 +3528,7 @@ class GameApp {
 
   endGame(isVictory) {
     this.setPaused(false);
+    this.clearWeaponCrates();
     this.isPlaying = false;
     this.audio.stopBackgroundMusic();
     this.audio.stopThermalHum();
