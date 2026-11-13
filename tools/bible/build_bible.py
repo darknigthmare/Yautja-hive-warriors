@@ -102,6 +102,10 @@ TABLES["01_Decisions"] = (
         ["HW-DEC-50", "Personnage joué en meute", "Un Unblooded, armé d'un brûleur", "Lames de poignet, combistick et brûleur ; pas de canon d'épaule avant le rang Blooded"],
         ["HW-DEC-51", "Terrains des chasses de faune", "Plusieurs régions", "Une chasse par région de la planète dédiée, débloquées l'une après l'autre"],
         ["HW-DEC-52", "Suite du travail", "Phase 0 : corriger le code", "Défauts bloquants d'abord"],
+        ["HW-DEC-53", "Nature de la planète dédiée", "Monde sauvage", "Planète naturelle, hostile, jamais domptée par le clan ; les Unblooded y sont largués"],
+        ["HW-DEC-54", "Régions des chasses de faune", "Huit milieux, ceux de La Longue Chasse", "Jungle, désert, océan, fongique, volcan, glace, marais, ruines : onglet 22_RegionsFaune"],
+        ["HW-DEC-55", "Rite de passage", "Triade dans la pyramide", "Trois Unblooded, armes à énergie exclues ; tuer son premier Xénomorphe donne le rang Blooded"],
+        ["HW-DEC-56", "Les 8 chasses de films", "Chroniques ouvertes au rang Blooded", "Jouées avec les chasseurs de films, dans l'ordre décidé (HW-DEC-16)"],
         ["HW-DEC-12", "Alliés Yautja, armes humaines, véhicules et soutiens, coopération locale", "Tous conservés", "Le champ de bataille est une guerre ; ces systèmes sont à réparer, pas à couper"],
     ],
 )
@@ -365,9 +369,9 @@ TABLES["13_Questions"] = (
     "Questions ouvertes pour l'auteur (les autres ont été tranchées : voir HW-DEC-09 à 43)",
     ["ID", "Question", "Pourquoi elle compte", "Défaut retenu en attendant"],
     [
-        ["Q36", "Nom, nature et régions de la planète dédiée", "Rien n'est écrit ; la Bible V6 décrit des réserves de chasse (Game Preserve GP01 à GP10) qui pourraient convenir", "Une réserve de chasse du clan, quatre régions, à nommer"],
-        ["Q37", "Où se placent les 8 chasses de films dans la nouvelle campagne ?", "Elles étaient la campagne ; la campagne est maintenant l'ascension d'un Unblooded", "Chroniques légendaires, ouvertes une fois le rang Blooded atteint"],
-        ["Q38", "Quel est le rite de passage contre les Xénomorphes ?", "C'est le moment où la ruche entre dans le jeu", "Une chasse en triade dans un lieu rituel, armes à énergie exclues, comme le rite de la Bible V6"],
+        ["Q40", "Nom du monde sauvage", "Il n'en a pas", "« Le monde d'épreuve », en attendant"],
+        ["Q41", "La région du volcan a pour proie un Bad Blood dans La Longue Chasse, pas une bête", "Un Bad Blood est un Yautja renégat : ce n'est pas de la faune, et un Unblooded n'est pas censé l'affronter", "Le Bad Blood devient la menace de la région ; c'est l'Elite qui l'affronte, la meute survit et chasse une bête du volcan"],
+        ["Q42", "Dans quel ordre les huit régions ?", "L'ordre fixe la courbe de difficulté", "Ordre de l'onglet 22_RegionsFaune"],
         ["Q39", "Faune de chaque région", "La Bible V6 liste 28 espèces originales ; le classeur n'est plus accessible depuis le dernier redémarrage", "À relever dans l'onglet « Faune et adversaires »"],
         ["Q23", "Que faire si le joueur joue à Hive Warriors sur deux appareils ?", "La table générique n'a pas de numéro de révision : la dernière écriture écrase l'autre", "Garder la sauvegarde la plus récente et prévenir le joueur"],
         ["Q24", "Les règles d'accès de la table app_cloud_saves", "Elles n'ont pas été lues ; il faut vérifier que chaque joueur n'accède qu'à sa ligne", "À vérifier avant tout développement"],
@@ -527,6 +531,21 @@ TABLES["21_CourbeBoss"] = (
         [7, "Station Renaissance", "L'Offspring", 4500, 9000, "Doublé"],
         [8, "Xenomorph Prime", "Impératrice matriarche", 6000, 10000, "Boss final"],
         ["—", "Mode sans fin", "Matriarche Predalien titan", 10000, 10000, "Retirée de la vague 5 de la campagne ; réservée au mode sans fin"],
+    ],
+)
+
+TABLES["22_RegionsFaune"] = (
+    "Les huit régions du monde sauvage (HW-DEC-54) ; noms de proies tirés des identifiants de missions de La Longue Chasse (classeur Gauntlets V144, onglet 02_Etudes44) ; tout le reste est à écrire",
+    ["Ordre proposé", "Région", "Mission d'origine", "Grande proie", "Idée de terrain", "Statut"],
+    [
+        [1, "Jungle", "jungle-vey", "Vey", "Canopée, perchoirs : apprentissage de l'ouverture furtive", "Proposition"],
+        [2, "Marais", "swamp-hydra", "Hydre", "Eau qui coupe le camouflage, proie à plusieurs têtes", "Proposition"],
+        [3, "Désert", "desert-sandmaw", "Gueule des sables", "Terrain nu, proie qui surgit du sol", "Proposition"],
+        [4, "Fongique", "fungal-hivemind", "Esprit de ruche fongique", "Spores, nuée commandée par un centre : première vraie horde", "Proposition"],
+        [5, "Glace", "ice-cryostalker", "Traqueur des glaces", "Froid, visibilité réduite, proie qui chasse le chasseur", "Proposition"],
+        [6, "Océan", "ocean-leviathan", "Léviathan", "Côte et récifs, proie géante", "Proposition"],
+        [7, "Volcan", "volcano-bad-blood", "À définir (voir Q41)", "Lave, cendres ; un Bad Blood rôde", "Proposition"],
+        [8, "Ruines", "ruins-ancient-guardian", "Gardien ancien", "Ruines d'une civilisation disparue ; dernière épreuve avant le rite", "Proposition"],
     ],
 )
 

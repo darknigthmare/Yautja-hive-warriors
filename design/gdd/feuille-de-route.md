@@ -1,6 +1,6 @@
 # Feuille de route
 
-> Bible du jeu, document 5. Décisions HW-DEC-33 à 52.
+> Bible du jeu, document 5. Décisions HW-DEC-33 à 56.
 > Statut : **ordre validé par l'auteur le 13 novembre 2026** (HW-DEC-40).
 
 ## 1. L'écart à regarder en face
@@ -100,26 +100,32 @@ Les entrées tirées de *Predator: Badlands* et de *Killer of Killers* (2025) re
 
 ## 5. La campagne de l'Unblooded
 
-> Décisions HW-DEC-48 à 51, qui remplacent HW-DEC-44. Ce qui suit développe vos réponses ; les points marqués « proposition » sont de moi.
+> Décisions HW-DEC-48 à 51 et 53 à 56, qui remplacent HW-DEC-44. Ce qui suit développe vos réponses ; les points marqués « proposition » sont de moi.
 
 ### Ce qui change
 La campagne n'est plus la suite des 8 chasses de films. C'est **l'ascension d'un Unblooded** :
 
 1. **Les chasses de faune en meute**, sur une planète dédiée, région après région.
 2. **Le rite de passage** : la première chasse contre les Xénomorphes. La ruche entre dans le jeu à ce moment-là.
-3. **Le rang Blooded**, qui ouvre les 8 chasses de films comme chroniques légendaires (proposition, question Q37).
+3. **Le rang Blooded**, qui ouvre les 8 chasses de films comme chroniques légendaires, jouées avec les chasseurs de films (HW-DEC-56).
 
 ### Les chasses de faune
-- **Lieu** : une planète dédiée, pas le Homeworld (HW-DEC-49). Proposition : une réserve de chasse du clan ; la Bible V6 en décrit dix (GP01 à GP10). Nom et régions à fixer (question Q36).
+- **Lieu** : un **monde sauvage** (HW-DEC-49 et 53) : une planète naturelle, hostile, que le clan n'a jamais domptée. Les Unblooded y sont largués. Il n'a pas encore de nom (question Q40).
 - **Le joueur** : un Unblooded parmi une meute de trois ou quatre. Kit : lames de poignet, combistick et **brûleur** (HW-DEC-50). Pas de canon d'épaule, qui vient avec le rang Blooded.
 - **L'Adjutant guide** : il annonce les zones, désigne la proie suivante, commente les fautes. C'est la voix du tutoriel.
 - **L'Elite surveille** depuis les hauteurs. Proposition : il ne relève un Unblooded tombé qu'une fois, au prix de la meilleure récompense.
-- **Plusieurs régions** (HW-DEC-51), une chasse par région, débloquées l'une après l'autre.
+- **Huit régions** (HW-DEC-51 et 54), les huit milieux des missions de chasse de La Longue Chasse : jungle, marais, désert, fongique, glace, océan, volcan, ruines. Une chasse par région, débloquées l'une après l'autre ; l'ordre est proposé dans l'onglet `22_RegionsFaune`.
 - **Les zones** : chaque région compte trois ou quatre territoires de harde, tenus par un meneur ; l'abattre ouvre la zone suivante. La dernière abrite une grande proie, à faire chanceler puis à exécuter.
 - **La règle d'honneur** (proposition) : frapper une bête qui fuit ne rapporte rien. La Bible V6 demande de lire la « capacité de riposte » de la proie.
 
 ### Le rite de passage
-Proposition (question Q38) : une chasse en triade dans un lieu rituel, armes à énergie exclues, sur le modèle du rite de la Bible V6. La pyramide antarctique déjà présente s'y prête. Tuer son premier Xénomorphe donne le rang Blooded, le canon d'épaule et l'accès aux chroniques.
+Une **triade dans la pyramide** (HW-DEC-55) : trois Unblooded, armes à énergie exclues, donc sans le brûleur. Tuer son premier Xénomorphe donne le rang Blooded, le canon d'épaule et l'accès aux chroniques. La pyramide antarctique déjà codée sert de base.
+
+### Longueur de la campagne
+Huit chasses de faune, puis le rite : la ruche n'apparaît qu'à la neuvième chasse. Pour un jeu qui s'appelle « Hive Warriors », c'est tard. Deux parades possibles, à décider : des chasses de faune courtes (cinq à huit minutes), ou des traces de Xénomorphes semées dès les dernières régions pour annoncer le rite.
+
+### La région du volcan
+Dans La Longue Chasse, la mission du volcan a pour adversaire un Bad Blood, un Yautja renégat. Ce n'est pas de la faune, et un Unblooded n'est pas censé l'affronter. Proposition (question Q41) : le Bad Blood est la menace de la région, c'est l'Elite qui l'affronte, et la meute doit survivre tout en chassant une bête du volcan.
 
 ### Écarts à connaître
 - **Avec la Bible V6** : elle place tout sur le Homeworld avant le rang Blooded, et exige un vaisseau possédé pour voyager. Une planète dédiée dès Unblooded s'en écarte ; l'écart est assumé par le statut hors canon de Hive Warriors.
