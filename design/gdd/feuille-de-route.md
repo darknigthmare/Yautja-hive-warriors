@@ -1,6 +1,6 @@
 # Feuille de route
 
-> Bible du jeu, document 5. Décisions HW-DEC-33 à 60.
+> Bible du jeu, document 5. Décisions HW-DEC-33 à 64.
 > Statut : **ordre validé par l'auteur le 13 novembre 2026** (HW-DEC-40).
 
 ## 1. L'écart à regarder en face
@@ -99,6 +99,8 @@ Lots proposés, dans l'ordre :
 Les entrées tirées de *Predator: Badlands* et de *Killer of Killers* (2025) reprennent les noms présents dans le catalogue des 54 gantelets de La Longue Chasse. Leurs détails (lieux, époques, noms de chasseurs) sont à vérifier sur les œuvres avant toute écriture ; les onglets 18 et 19 les marquent « à définir ».
 
 ## 5. La campagne de l'Unblooded
+
+> Le détail de la campagne (monde, meute, kit, huit chasses, rite) est dans [campagne-unblooded.md](campagne-unblooded.md). Cette section en garde le résumé et l'historique des décisions.
 
 > Décisions HW-DEC-48 à 51 et 53 à 56, qui remplacent HW-DEC-44. Ce qui suit développe vos réponses ; les points marqués « proposition » sont de moi.
 

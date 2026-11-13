@@ -85,6 +85,10 @@ Les mêmes tables sont dans `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 | HW-DEC-58 | Le Bad Blood du volcan | L'Elite s'en charge | Le Bad Blood rôde ; l'Elite l'affronte pendant que la meute survit et chasse une bête du volcan. Les Unblooded ne tuent pas un Yautja |
 | HW-DEC-59 | La ruche tardive | Chasses courtes et traces annonciatrices | Chasses de faune de cinq à huit minutes ; mues, résine et carcasses dès les dernières régions |
 | HW-DEC-60 | Ordre des huit régions | Jungle, marais, désert, fongique, glace, océan, volcan, ruines | Du plus lisible au plus étrange ; première vraie horde au quatrième rang |
+| HW-DEC-61 | Monde et faune sans accès à la Bible V6 | Claude invente, l'auteur corrige | Vara-Kesh retenu ; faune originale marquée « création Hive Warriors », à rapprocher de la Bible V6 |
+| HW-DEC-62 | La meute du joueur | La cohorte de la voie O6 | Harek le rival, Yena et Tov ; Saar comme instructeur et guide |
+| HW-DEC-63 | Récompense par région | Un outil par région | Le kit de l'Unblooded grandit de chasse en chasse |
+| HW-DEC-64 | Suite du travail | Phase 1 dans le code | Donner une fin aux 8 chasses existantes |
 | HW-DEC-12 | Alliés Yautja, armes humaines, véhicules et soutiens, coopération locale | Tous conservés | Le champ de bataille est une guerre ; ces systèmes sont à réparer, pas à couper |
 
 ## 02_Chasseurs — Chasseurs jouables (js/data/charactersData.js)
@@ -323,8 +327,8 @@ Les mêmes tables sont dans `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 
 | ID | Question | Pourquoi elle compte | Défaut retenu en attendant |
 |---|---|---|---|
-| Q43 | Lequel des 24 mondes de l'atlas devient le monde sauvage ? | Je connais leurs noms, pas leurs descriptions ; le connecteur Drive ne répond plus | En attente ; Vara-Kesh est le seul dont je connaisse une espèce (le Faucheur de Vara-Kesh) |
-| Q39 | Faune de chaque région | La Bible V6 liste 28 espèces originales ; le classeur n'est plus accessible depuis le dernier redémarrage | À relever dans l'onglet « Faune et adversaires » |
+| Q44 | Corriger la campagne inventée | Vara-Kesh, la faune, les terrains, la répartition des outils et les traces sont de Claude | Contenu de campagne-unblooded.md |
+| Q45 | Saar peut-il tenir la fonction d'Adjutant ? | La Bible V6 le dit instructeur de cohorte | Oui : Adjutant est une fonction, pas un rang |
 | Q23 | Que faire si le joueur joue à Hive Warriors sur deux appareils ? | La table générique n'a pas de numéro de révision : la dernière écriture écrase l'autre | Garder la sauvegarde la plus récente et prévenir le joueur |
 | Q24 | Les règles d'accès de la table app_cloud_saves | Elles n'ont pas été lues ; il faut vérifier que chaque joueur n'accède qu'à sa ligne | À vérifier avant tout développement |
 
@@ -470,18 +474,19 @@ Les mêmes tables sont dans `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 | 8 | Xenomorph Prime | Impératrice matriarche | 6000 | 10000 | Boss final |
 | — | Mode sans fin | Matriarche Predalien titan | 10000 | 10000 | Retirée de la vague 5 de la campagne ; réservée au mode sans fin |
 
-## 22_RegionsFaune — Les huit régions du monde sauvage, dans l'ordre décidé (HW-DEC-54 et 60) ; noms de proies tirés des identifiants de missions de La Longue Chasse (classeur Gauntlets V144, onglet 02_Etudes44) ; tout le reste est à écrire
+## 22_RegionsFaune — Les huit chasses de faune sur Vara-Kesh (HW-DEC-54, 60, 61, 63) ; noms de grandes proies tirés de La Longue Chasse, le reste inventé par Claude, à corriger
 
-| Ordre | Région | Mission d'origine | Grande proie | Idée de terrain | Statut |
-|---|---|---|---|---|---|
-| 1 | Jungle | jungle-vey | Vey | Canopée, perchoirs : apprentissage de l'ouverture furtive | Proposition |
-| 2 | Marais | swamp-hydra | Hydre | Eau qui coupe le camouflage, proie à plusieurs têtes | Proposition |
-| 3 | Désert | desert-sandmaw | Gueule des sables | Terrain nu, proie qui surgit du sol | Proposition |
-| 4 | Fongique | fungal-hivemind | Esprit de ruche fongique | Spores, nuée commandée par un centre : première vraie horde | Proposition |
-| 5 | Glace | ice-cryostalker | Traqueur des glaces | Froid, visibilité réduite, proie qui chasse le chasseur | Proposition |
-| 6 | Océan | ocean-leviathan | Léviathan | Côte et récifs, proie géante | Proposition |
-| 7 | Volcan | volcano-bad-blood | Bête du volcan, à définir | Lave, cendres ; un Bad Blood rôde, l'Elite l'affronte (HW-DEC-58) | Décidé, bête à écrire |
-| 8 | Ruines | ruins-ancient-guardian | Gardien ancien | Ruines d'une civilisation disparue ; dernière épreuve avant le rite | Proposition |
+| Ordre | Région | Harde | Meneur de zone | Grande proie | Outil gagné | Trace de Xénomorphe |
+|---|---|---|---|---|---|---|
+| 1 | Jungle | Coureurs de lianes (création) | Mâle dominant | Vey | Lance-filet |  |
+| 2 | Marais | Rampeurs de vase (création) | Matrone de vase | Hydre | Piège à mâchoires |  |
+| 3 | Désert | Fouisseurs de verre (nom Bible V6) | Fouisseur géant | Gueule des sables | Leurre sonore |  |
+| 4 | Fongique | Porte-spores (création) | Nœuds de mycélium | Esprit de ruche fongique | Mines |  |
+| 5 | Glace | Dents de neige (nom Bible V6) | Femelle alpha | Traqueur des glaces | Disque | Mue prise dans la glace |
+| 6 | Océan | Pinces de récif (création) | Vieux mâle cuirassé | Léviathan | Fléchettes | Résine dans la grotte côtière |
+| 7 | Volcan | Lézards de cendre (création) | Lézard cuirassé de roche | Briseur de basalte (nom Bible V6) | Camouflage | Carcasse à la cage thoracique ouverte |
+| 8 | Ruines | Traqueurs des lisières (nom Bible V6) | Sentinelles de pierre | Gardien ancien | Shuriken | Œuf éclos |
+| 9 | Pyramide (rite) | Xénomorphes | — | Premier Xénomorphe | Canon d'épaule, rang Blooded | — |
 
 ## 14_Sources — Sources lues pour cette bible
 
