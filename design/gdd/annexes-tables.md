@@ -15,7 +15,7 @@ Les mêmes tables sont dans `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 | État au 13 nov. 2026 | Phases 0 et 1 codées : les 8 chasses se gagnent par exécution du boss d'arène et se perdent, avec pause et retour au menu ; aucune erreur en console ; pas encore jouées par un humain |
 | Chasseurs jouables | 7 |
 | Arènes | 8 (même plan 150×150 m, décor propre par arène) |
-| Boss codés | 10 identifiants + 1 gabarit par défaut ; 1 boss d'arène manquant (le Prétorien de Val Verde) |
+| Boss codés | 11 identifiants + 1 gabarit par défaut ; chaque arène a son boss et sa valeur de PV de campagne |
 | Types d'ennemis | 10 types aléatoires + 16 unités fixes par vague |
 | Registre d'armes | 36 entrées, aucune équipable ; 17 ont un comportement réel |
 | Capacités au clavier | environ 54, avec conflits de touches |
@@ -92,6 +92,10 @@ Les mêmes tables sont dans `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 | HW-DEC-65 | Saar comme guide de la meute | Oui | Saar tient la fonction d'Adjutant pendant les chasses de faune ; Adjutant est une fonction, pas un rang |
 | HW-DEC-66 | La campagne inventée | Validée | Vara-Kesh, la faune, les terrains, la répartition des outils et les traces de Xénomorphes font référence ; à rapprocher de la Bible V6 quand le classeur sera lisible |
 | HW-DEC-67 | Sauvegarde sur deux appareils et règles d'accès | Oui aux choix proposés | La sauvegarde la plus récente l'emporte et le joueur est prévenu ; les règles d'accès de la table sont à vérifier avant tout développement |
+| HW-DEC-68 | Suite du travail | Les trois en parallèle | Rapprochement avec la Bible V6, vérification Supabase, reste de la phase 1 |
+| HW-DEC-69 | Conflit entre la Bible V6 et la campagne validée | La Bible V6 l'emporte | Ses mondes et espèces sont repris là où ils existent ; l'invention ne comble que les trous |
+| HW-DEC-70 | Boss de Val Verde | Prétorien de garde | Collerette blindée qui encaisse de face, charges, dos exposé ; codé le 13 nov. |
+| HW-DEC-71 | Décor générique | Rendu à son arène | Chaque élément n'apparaît que dans l'arène qui lui correspond ; ceux sans arène attendent les lieux futurs ; codé le 13 nov. |
 | HW-DEC-12 | Alliés Yautja, armes humaines, véhicules et soutiens, coopération locale | Tous conservés | Le champ de bataille est une guerre ; ces systèmes sont à réparer, pas à couper |
 
 ## 02_Chasseurs — Chasseurs jouables (js/data/charactersData.js)
@@ -240,7 +244,7 @@ Les mêmes tables sont dans `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 
 | Ordre cible | ID | Nom | Source | Météo | Vagues | Boss déclaré | Boss réellement codé | Décor propre | Action requise |
 |---|---|---|---|---|---|---|---|---|---|
-| 1 | val_verde_jungle | Jungle de Val Verde | Predator 1987 | Brume humide | 5 | praetorian | Non (défaut 3000 PV) | 11 éléments : épave du Huey, piège à rondins, pont de Billy, mirador, « Old Painless », cascade | Créer le boss Prétorien |
+| 1 | val_verde_jungle | Jungle de Val Verde | Predator 1987 | Brume humide | 5 | praetorian | Oui : Prétorien de garde, codé le 13 nov. | 11 éléments : épave du Huey, piège à rondins, pont de Billy, mirador, « Old Painless », cascade | Aucune |
 | 2 | la_rooftops | Toits de Los Angeles | Predator 2 | Tempête | 5 | predalien | Oui : predalien_abomination (6500 PV), branché le 13 nov. | Héliport, château d'eau, nacelle, nuage de fréon | Aucune |
 | 3 | gunnison_forest | Forêt de Gunnison | AVP Requiem | Pluie | 5 | predalien_queen | Oui (5000 PV) | Vaisseau éclaireur écrasé, crypte, pylône, 16 arbres perchoirs | Aucune |
 | 4 | antarctic_pyramid | Pyramide antarctique | AVP 2004 | Aucune | 5 | xenomorph_queen | Oui : imperial_queen (8000 PV), branché le 13 nov. | Dalles coulissantes, autel, pièges à faux | Aucune |
@@ -254,7 +258,7 @@ Les mêmes tables sont dans `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 | Faction | Apparition | Chiffres | Comportement | Défaut constaté | Tri |
 |---|---|---|---|---|---|
 | Marines coloniaux | 4 au départ | 150 PV, 20 à 35 dégâts | Visent les xénomorphes, puis le joueur | Rien ne les blesse | Garder, les rendre mortels |
-| Garde nationale | Absente du code | À définir | Comme les marines, à Gunnison seulement (HW-DEC-20) | À créer | Créer par habillage des marines |
+| Garde nationale | Gunnison | Comme les marines | Comme les marines, à Gunnison seulement (HW-DEC-20) | Rien ne les blesse | Codée le 13 nov. par habillage des marines |
 | Synthétiques | 3 au départ | 280 à 340 PV | Idem ; coupés en deux à 0 PV |  | Garder en arènes Weyland-Yutani seulement |
 | Alliés Yautja | 3 au départ | 950 PV | Combattent aux côtés du joueur | Invulnérables | Garder (HW-DEC-12), les rendre mortels |
 | Bad Blood | Vague 3 | 2200 PV | Duel en 3 épreuves sous 850 PV | Insensible à la plupart des armes | Garder comme mini-boss d'une chasse |
@@ -296,7 +300,7 @@ Les mêmes tables sont dans `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 | HW-BUG-12 | P1 | Cartes d'arène affichant « undefined » (champs icon, difficulty, description absents) | js/ui/UIManager.js:124 | Corrigé le 13 nov. : nombre de vagues et description affichés |
 | HW-BUG-13 | P1 | Pas de pause, pas de retour au menu depuis l'écran de défaite | js/main.js:204 | Corrigé le 13 nov. : pause par Échap, abandon, retour au menu |
 | HW-BUG-14 | P1 | Boss de vague 5 identique dans toutes les arènes | js/main.js:3122 | Corrigé le 13 nov. : chaque arène a son boss ; la Matriarche titan est réservée au mode sans fin |
-| HW-BUG-15 | P1 | Environ 45 éléments de décor construits dans toutes les arènes (réacteur et Space Jockey à Val Verde) | js/entities/Environment.js:606 | Ouvert |
+| HW-BUG-15 | P1 | Environ 45 éléments de décor construits dans toutes les arènes (réacteur et Space Jockey à Val Verde) | js/entities/Environment.js:606 | Corrigé le 13 nov. : décor rendu à son arène (HW-DEC-71) |
 | HW-BUG-16 | P2 | Méthodes appelées mais absentes : setLaserColor, emitExplosion, emitAlienBloodSpurt, spawnAcidSpit, 10 sons | Plusieurs | Ouvert |
 | HW-BUG-17 | P1 | Coopération (conservée, HW-DEC-12) : le joueur 2 ne peut pas attaquer | js/main.js:2369 | Ouvert |
 | HW-BUG-18 | P2 | Numéros de version discordants (v6, v12, v27, v29, v58, 1.0.0) | index.html, main.js, package.json | Corrigé en partie le 13 nov. : v58.1 dans le titre, le sous-titre et package.json ; les commentaires de fichiers restent |
@@ -326,11 +330,12 @@ Les mêmes tables sont dans `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 | HW-CAN-13 | Le Predalien est classé xénomorphe hybride, pas Yautja | Catalogue tous médias · Exclusions | Conforme dans le codex | Aucun |
 | HW-CAN-14 | Les 15 clans de la Bible V6 sont des créations du projet | Bible V6 · Identités des clans | Aucun clan nommé ; « Forge de clan », « Coffre d'honneur du clan » | Le clan du joueur reste anonyme (HW-DEC-10) |
 
-## 13_Questions — Questions ouvertes pour l'auteur (les autres ont été tranchées : voir HW-DEC-09 à 43)
+## 13_Questions — Questions ouvertes pour l'auteur (les autres ont été tranchées : voir HW-DEC-09 à 71)
 
 | ID | Question | Pourquoi elle compte | Défaut retenu en attendant |
 |---|---|---|---|
-| Q24 | Vérifier les règles d'accès de la table app_cloud_saves | Décidé (HW-DEC-67), pas encore fait : le connecteur Supabase ne répond plus | À faire dès que le connecteur est rétabli |
+| Q46 | Les Unblooded peuvent-ils quitter le Homeworld ? | La Bible V6 l'interdit (CORE-R05, RANK-01, HOME-R04) alors que HW-DEC-49 a choisi une planète dédiée ; HW-DEC-69 donne la priorité à la Bible V6 | En attente de l'auteur |
+| Q47 | Faut-il retirer le droit TRUNCATE du rôle authenticated sur app_cloud_saves ? | Durcissement d'une base partagée par plusieurs applications | Non fait |
 
 ## 15_Soutiens — Soutiens par arène (proposition découlant de HW-DEC-14 ; aujourd'hui tout apparaît partout)
 
@@ -381,7 +386,8 @@ Les mêmes tables sont dans `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 | Comptes | Table d'utilisateurs du service d'identification de Supabase ; toutes les tables de sauvegarde y sont rattachées | Même compte pour La Longue Chasse et Hive Warriors |
 | yautja_cloud_saves | Une ligne par compte : révision, instantané complet (20 Mo au plus), date ; décrite comme l'espace Yautja complet, synchronisé entre mobile et bureau ; 1 ligne présente | Lue seulement, pour connaître les étapes franchies (HW-DEC-15) |
 | app_cloud_saves | Une ligne par compte et par application : clé d'application, contenu, date ; décrite comme un instantané du stockage local par application ; vide | Candidate pour la sauvegarde de Hive Warriors (Q20) |
-| Protection | Sécurité par ligne activée sur toutes les tables | Chaque joueur ne lit que sa propre sauvegarde ; les règles exactes restent à vérifier |
+| Protection | Vérifiée le 13 nov. en lecture seule : sur app_cloud_saves et yautja_cloud_saves, lecture, écriture et modification sont limitées à la ligne du joueur connecté ; app_cloud_saves autorise aussi la suppression de sa propre ligne | Conforme à HW-DEC-67 |
+| Point d'attention | Le rôle « authenticated » détient aussi le droit TRUNCATE sur app_cloud_saves, qui échappe à la sécurité par ligne. L'API REST de Supabase n'expose pas TRUNCATE, donc le risque est faible ; une fonction SQL exposée pourrait toutefois vider la table de toutes les applications | Proposé : retirer ce droit ; non fait, la base est partagée par plusieurs applications |
 | Méthode d'identification | Adresse e-mail et mot de passe, par le service d'identification de Supabase (inscription, connexion, renouvellement de session, déconnexion) ; relevé dans app/game/systems/cloudAccountRestV71.ts de La Longue Chasse | Reprise à l'identique (HW-DEC-23) |
 | Écriture de la sauvegarde de La Longue Chasse | Révision optimiste : chaque écriture doit porter la révision précédente + 1, vérifiée par un déclencheur ; un conflit entre deux appareils est signalé au joueur | Hive Warriors ne l'écrit jamais ; il lit l'instantané |
 | Sauvegarde de Hive Warriors | Table app_cloud_saves retenue (HW-DEC-26) ; elle n'a pas de numéro de révision | Le dernier appareil qui écrit l'emporte : risque à traiter (Q23) |
@@ -464,7 +470,7 @@ Les mêmes tables sont dans `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 | Ordre | Chasse | Boss | PV dans le code | PV provisoires | Remarque |
 |---|---|---|---|---|---|
 | 0 | Chasse pilote (Homeworld) | Grande proie de la faune | Absent | 2500 | Boss d'apprentissage |
-| 1 | Jungle de Val Verde | Prétorien | 3000 (gabarit par défaut) | 3500 | Boss à créer |
+| 1 | Jungle de Val Verde | Prétorien | Codé le 13 nov. | 3500 |  |
 | 2 | Toits de Los Angeles | Predalien | 3000 (gabarit par défaut) ; predalien_abomination 6500 | 4500 | Brancher predalien_abomination |
 | 3 | Forêt de Gunnison | Reine Predalien | 5000 | 5500 |  |
 | 4 | Pyramide antarctique | Reine | 3000 (gabarit par défaut) ; imperial_queen 8000 | 6500 | Brancher imperial_queen |

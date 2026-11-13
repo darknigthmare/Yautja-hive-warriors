@@ -27,9 +27,9 @@ Fait : le jeu se construit, se lance, affiche la 3D, enchaîne les vagues et la 
 Reste : une chasse jouée de bout en bout par un humain. Les essais sont automatiques, et les boss ont été appelés par une commande de test.
 **Sortie** : vous jouez une chasse complète, boss compris, et vous me dites ce qui ne va pas.
 
-### Phase 1 — Une boucle qui se termine (en cours)
-Fait : victoire par exécution du boss d'arène, pause, retour au menu, boss propres à Los Angeles et à la pyramide, cartes d'arène lisibles, version v58.1.
-Reste : le Prétorien de Val Verde, le décor générique rendu à son arène, les soutiens selon l'arène, la Garde nationale à Gunnison, les armes humaines ramassées, la courbe de points de vie des boss.
+### Phase 1 — Une boucle qui se termine (codée)
+Fait : victoire par exécution du boss d'arène, pause, retour au menu, un boss propre à chaque arène dont le Prétorien de Val Verde, courbe de points de vie, soutiens selon l'arène, Garde nationale à Gunnison, armes humaines à ramasser, décor rendu à son arène, version v58.1.
+Reste : l'équilibrage, qui demande un vrai joueur.
 **Sortie** : les 8 chasses se gagnent et se perdent, jouées par un humain.
 
 ### Phase 2 — Le combat

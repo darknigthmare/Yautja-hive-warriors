@@ -3,6 +3,35 @@
 > Bible du jeu, document 6. Décisions HW-DEC-48 à 51 et 53 à 66.
 > Statut : **validée par l'auteur le 13 novembre 2026** (HW-DEC-66). Le contenu inventé par Claude fait référence, et reste à rapprocher de la Bible V6. Rien de ceci n'est dans le code.
 
+## 0. Rapprochement avec la Bible V6 (13 novembre 2026) — conflit à trancher
+
+La Bible V6 a pu être relue (onglets « Atlas des mondes », « Faune et adversaires », « Game Preserve », « Socle du jeu », « Rangs et fonctions »). Selon HW-DEC-69, elle l'emporte. Elle contredit la campagne sur un point bloquant :
+
+**Les Unblooded ne quittent jamais le Homeworld.** CORE-R05 : « Les missions pré-Blooded se déroulent sur le Homeworld, y compris déplacements entre régions, ateliers et réserves locales. » Même règle dans RANK-01, RANK-04, HOME-R04, JOURNEY-05, TR-R18. Les 23 autres mondes de l'atlas exigent tous le rang Blooded et un vaisseau.
+
+Autres écarts :
+- **Vara-Kesh** (PLAN03) n'est pas un monde sauvage à plusieurs milieux : c'est une jungle seule, réserve de chasse GP01, avec dix combattants humains permanents et un guide local.
+- **Aucun monde de l'atlas n'a huit milieux.** Chacun a un milieu dominant.
+- **Six des sept grandes proies** (Vey, Hydre, Gueule des sables, Esprit de ruche fongique, Traqueur des glaces, Gardien ancien) n'existent pas dans la Bible V6 ; « Léviathan » n'y est qu'un nom de lieu, la Côte des Léviathans du Homeworld.
+- **Il n'y a pas de milieu fongique** dans la Bible V6.
+- **Cinq espèces de la Bible V6 étaient mal employées** : le Fouisseur de verre est un prédateur embusqué, pas une harde ; les Dents de neige sont une meute de prédateurs ; le Traqueur des lisières vit dans la Réserve interdite, pas dans les ruines ; le Faucheur de Vara-Kesh est une proie de réserve solitaire, pas un danger errant ; le Briseur de basalte est un herbivore des Marches de Cendre.
+
+**Ce que la Bible V6 offre à la place.** Le Homeworld compte dix régions, chacune avec sa faune, qui couvrent presque exactement les huit milieux décidés :
+
+| Région décidée | Région du Homeworld | Harde | Meneur | Grande proie |
+|---|---|---|---|---|
+| Jungle | Jungle des Piliers | Grimpeur à plaques (FAU-05) | Chasseur de canopée (FAU-06) | à créer |
+| Marais | Marais Luminescents | Porte-lanterne (FAU-08) | Rôdeur des roseaux (FAU-07) | à créer |
+| Désert | Désert de Verre | Coureur des dunes (FAU-03) | Fouisseur de verre (FAU-04) | à créer |
+| Fongique | aucune ; Grottes Thermiques ou Chaîne des Orages | Fouisseur de chaleur (FAU-13) ou Marcheur des vents (FAU-10) | Crochet des sources (FAU-14) ou Rapace de crête (FAU-09) | à créer |
+| Glace | Couronne Froide | Marcheur du givre (FAU-15) | Dents de neige (FAU-16) | à créer |
+| Océan | Côte des Léviathans | Carapace de ressac (FAU-11) | à créer | Long-dos des passes (FAU-12) |
+| Volcan | Marches de Cendre | Scarabée des scories (FAU-01) | à créer | Briseur de basalte (FAU-02) |
+| Ruines | Ruines de la Première Cité | Veilleur de pierre (FAU-17) | Griffe des arches (FAU-18) | à créer |
+| (en plus) | Réserve Interdite | — | Traqueur des lisières (FAU-19) | Porte-corne du Homeworld (FAU-20) |
+
+Cette campagne reste écrite selon les décisions précédentes tant que le conflit n'est pas tranché (question Q46).
+
 ## 1. Ce qui est décidé, ce qui est inventé
 
 **Décidé par l'auteur** : la campagne est l'ascension d'un Unblooded ; meute guidée par un Adjutant et surveillée par un Elite ; faune extraterrestre ; monde sauvage ; huit régions dans l'ordre jungle, marais, désert, fongique, glace, océan, volcan, ruines ; brûleur ; un outil gagné par région ; meute formée de la cohorte de la voie O6 ; rite en triade dans la pyramide ; chroniques de films ouvertes au rang Blooded.

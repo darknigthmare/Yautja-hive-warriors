@@ -65,7 +65,22 @@ Essais automatisés dans Chromium le 13 novembre 2026.
 
 Pour ces essais, la dernière vague a été atteinte par une commande de test, puis le boss mis à terre et exécuté par commande.
 
-**Reste de la phase 1** : le Prétorien de Val Verde (il utilise encore le gabarit de reine à 3000 points de vie), le décor générique à rendre à chaque arène, les soutiens selon l'arène, la Garde nationale à Gunnison, les armes humaines à ramasser, la courbe de points de vie des boss.
+### Suite de la phase 1, codée le 13 novembre 2026
+
+| Ajout | Vérifié dans les 8 arènes |
+|---|---|
+| Prétorien de garde, boss de Val Verde : la collerette encaisse 60 % des coups de face, charges, dos exposé | Oui |
+| Points de vie des boss selon la courbe provisoire (3 500 à 10 000) | Oui : chaque boss a la valeur de sa chasse |
+| Soutiens selon l'arène (onglet `15_Soutiens`) | Oui : alliés, marines, synthétiques présents seulement là où prévu |
+| Garde nationale à Gunnison | Oui : 4 soldats en gris-vert, sans tourelle |
+| Armes humaines à ramasser : 4 caisses au départ, 1 par vague, munitions à zéro sinon | Oui, dans les arènes à caisses |
+| Décor générique rendu à son arène | Oui : aucune erreur |
+
+Choix de ma part : le Bad Blood de la vague 3 n'apparaît plus que dans la réserve de chasse ; le Prétorien a 3 500 points de vie et ses charges infligent 260. Les décors de LV-426, LV-223, Planète 4, Fiorina 161 et de l'Auriga restent dans le code mais ne sont plus construits : ils attendent les lieux futurs.
+
+**Effet observé** : sans les soutiens et sans les décors utiles (bornes de recharge, baies médicales) dans la plupart des arènes, le chasseur seul meurt dès la vague 1 ou 2 sous saisies automatiques dans les 8 arènes. L'équilibrage est à faire avec un vrai joueur.
+
+**Reste de la phase 1** : l'équilibrage, et une chasse jouée par un humain.
 
 **Limites de ces essais.** Les boss ont été appelés par une commande de test, pas atteints en jouant. Le chasseur était rendu invulnérable pendant les combats de boss. Les saisies sont automatiques : rien ne dit que le jeu est agréable ni équilibré.
 
