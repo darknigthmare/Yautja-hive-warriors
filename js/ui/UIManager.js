@@ -121,10 +121,10 @@ export class UIManager {
       const card = document.createElement('div');
       card.className = `level-card ${index === 0 ? 'selected' : ''}`;
       card.innerHTML = `
-        <div class="level-card-icon">${lvl.icon}</div>
-        <span class="level-badge ${lvl.difficultyBadge}">${lvl.difficulty}</span>
+        <div class="level-card-icon">${lvl.icon || '🎯'}</div>
+        <span class="level-badge">${lvl.waves} VAGUES</span>
         <h3>${lvl.name}</h3>
-        <p>${lvl.description}</p>
+        <p>${lvl.desc || ''}</p>
       `;
 
       card.addEventListener('click', () => {
@@ -579,7 +579,7 @@ export class UIManager {
     });
   }
 
-  recordEndSession(kos, skulls, honor) {
+  recordEndSession(kos, skulls, honor, isVictory = false) {
     this.trophyStats.totalKos += kos;
     this.trophyStats.skullsCollected += skulls;
     localStorage.setItem('yautja_total_kos', this.trophyStats.totalKos);
@@ -589,7 +589,7 @@ export class UIManager {
     document.getElementById('end-honor-pts').innerText = honor;
     document.getElementById('end-trophies').innerText = skulls;
 
-    if (window.confetti && kos > 20) {
+    if (window.confetti && isVictory) {
       window.confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
     }
   }

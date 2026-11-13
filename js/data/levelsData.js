@@ -41,7 +41,7 @@ export const LEVELS_DATA = [
     weatherType: 'none',
     skyColor: 0x020617,
     waves: 5,
-    bossType: 'xenomorph_queen'
+    bossType: 'imperial_queen'
   },
   {
     id: 'la_rooftops',
@@ -55,7 +55,7 @@ export const LEVELS_DATA = [
     weatherType: 'storm',
     skyColor: 0x0a0a0a,
     waves: 5,
-    bossType: 'predalien'
+    bossType: 'predalien_abomination'
   },
   {
     id: 'val_verde_jungle',

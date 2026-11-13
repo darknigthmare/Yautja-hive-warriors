@@ -32,6 +32,7 @@ import { SentryGun } from './entities/SentryGun.js';
 import { FalconDrone } from './entities/FalconDrone.js';
 import { EnvironmentManager } from './entities/Environment.js';
 import { CHARACTERS_DATA } from './data/charactersData.js';
+import { LEVELS_DATA } from './data/levelsData.js';
 
 class GameApp {
   constructor() {
@@ -110,7 +111,8 @@ class GameApp {
     this.bulletTimeTimer = 0;
     // v51.0 Tactical Weapon Wheel Time Dilation
     this.isTimeDilated = false;
-    this.isEndlessMode = true; // Endless Musou Mode "Survival of the Worthy" enabled by default with toggle [Shift+M]
+    this.isEndlessMode = false; // Campaign hunt by default; endless "Survival of the Worthy" on toggle [Shift+M]
+    this.levelBossSpawned = false;
 
     this.keys = {};
     this.setupEventListeners();
@@ -202,7 +204,7 @@ class GameApp {
     });
 
     document.getElementById('btn-menu-return').addEventListener('click', () => {
-      this.endGame(false);
+      this.ui.showScreen(this.ui.mainMenu);
     });
 
     document.getElementById('btn-snap-photo').addEventListener('click', () => {
@@ -1066,6 +1068,8 @@ class GameApp {
   startMission() {
     this.isPlaying = true;
     this.isPaused = false;
+    this.levelBossSpawned = false;
+    this.setPaused(false);
     this.waveIndex = 1;
     this.score = 0;
     this.sessionSkulls = 0;
@@ -3158,7 +3162,7 @@ class GameApp {
         }
 
         // Spawn Predalien Matriarch Titan (10,000 HP) on Wave 5 and every 3 waves in Endless Mode
-        if (this.waveIndex === 5 || (this.waveIndex > 5 && this.waveIndex % 3 === 0)) {
+        if (this.isEndlessMode && (this.waveIndex === 5 || (this.waveIndex > 5 && this.waveIndex % 3 === 0))) {
           const bType = this.waveIndex === 5 ? 'predalien_matriarch_titan' : (this.ui.selectedLevel.bossType || 'predalien_matriarch_titan');
           if (this.env && !this.env.reactorMeltdownActive && this.waveIndex === 5) {
             this.env.triggerReactorMeltdown(this.ui, this.audio);
@@ -3167,14 +3171,14 @@ class GameApp {
           this.ui.showAnnouncement('👑 SURGISSEMENT DU BOSS SUPRÊME : MATRIARCHE TITAN PRÉDALIENNE IMPÉRIALE (10 000 PV) !');
           this.shiftBattlefieldMorale(-25.0);
         }
+      } else if (this.levelBossSpawned) {
+        // The arena boss was executed: the hunt is won.
+        this.endGame(true);
+        return;
       } else if (!this.bosses.activeBoss) {
-        let bType = this.ui.selectedLevel.bossType || 'predalien_matriarch_titan';
-        if (this.waveIndex === 5 || bType === 'predalien_abomination') {
-          bType = 'predalien_matriarch_titan';
-          if (this.env && !this.env.reactorMeltdownActive) {
-            this.env.triggerReactorMeltdown(this.ui, this.audio);
-          }
-        }
+        // Last wave cleared: the arena's own boss appears, once.
+        const bType = this.ui.selectedLevel.bossType || 'predalien_matriarch_titan';
+        this.levelBossSpawned = true;
         this.bosses.spawnBoss(bType, this.player.position.clone().add(new THREE.Vector3(0, 0, -25)));
         
         let bossTitle = 'MATRIARCHE TITAN PRÉDALIENNE IMPÉRIALE (AVP EXTINCTION / AVP-R)';
@@ -3185,6 +3189,9 @@ class GameApp {
         else if (bType === 'empress_matriarch') bossTitle = 'IMPÉRATRICE VOLANTE DE LA RUCHE PRIMORDIALE (DARK HORSE)';
         else if (bType === 'rogue_king_prime') bossTitle = 'ROGUE KING XENOMORPH PRIME (ALIENS: ROGUE 1993)';
         else if (bType === 'awakened_engineer') bossTitle = 'INGÉNIEUR MALA\'KAK ÉVEILLÉ (PROMETHEUS 2012)';
+        else if (bType === 'imperial_queen') bossTitle = 'REINE XÉNOMORPHE';
+        else if (bType === 'berserker_super_predator') bossTitle = 'SUPER PREDATOR BERSERKER';
+        else if (bType === 'praetorian') bossTitle = 'PRÉTORIEN';
 
         this.ui.showAnnouncement(`👑 SURGISSEMENT DU BOSS APEX : ${bossTitle} !`);
         // Shift Morale towards Hive (-25%) upon Apex Boss appearance
@@ -3437,7 +3444,35 @@ class GameApp {
     }
   }
 
+  /* Pause: Escape toggles it; the overlay offers to resume or abandon the hunt. */
+  setPaused(paused) {
+    this.isPaused = !!paused && this.isPlaying;
+    let overlay = document.getElementById('pause-overlay');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.id = 'pause-overlay';
+      overlay.className = 'ui-screen hidden';
+      overlay.innerHTML = `
+        <div class="glass-panel modal-card end-game-card">
+          <h1>PAUSE</h1>
+          <p>La chasse est suspendue.</p>
+          <div class="end-actions" style="display:flex; gap:12px; justify-content:center; margin-top:20px;">
+            <button id="btn-pause-resume" class="btn-primary">REPRENDRE [ÉCHAP]</button>
+            <button id="btn-pause-abandon" class="btn-secondary">ABANDONNER LA CHASSE</button>
+          </div>
+        </div>`;
+      document.body.appendChild(overlay);
+      overlay.querySelector('#btn-pause-resume').addEventListener('click', () => this.setPaused(false));
+      overlay.querySelector('#btn-pause-abandon').addEventListener('click', () => {
+        this.setPaused(false);
+        this.endGame(false);
+      });
+    }
+    overlay.classList.toggle('hidden', !this.isPaused);
+  }
+
   endGame(isVictory) {
+    this.setPaused(false);
     this.isPlaying = false;
     this.audio.stopBackgroundMusic();
     this.audio.stopThermalHum();
@@ -3470,7 +3505,7 @@ class GameApp {
       this.player.clearNukeHoloMesh();
     }
 
-    this.ui.recordEndSession(this.horde.deadCount, this.sessionSkulls, this.score);
+    this.ui.recordEndSession(this.horde.deadCount, this.sessionSkulls, this.score, isVictory);
 
     document.getElementById('end-title').innerText = isVictory ? 'VICTOIRE GLORIEUSE !' : 'CHASSE TERMINÉE';
     document.getElementById('end-subtitle').innerText = isVictory ? 'La ruche Xenomorphe a été complètement anéantie dans l\'honneur Yautja.' : 'Votre Yautja est tombé au combat face à la ruche.';
@@ -3813,4 +3848,9 @@ class GameApp {
 window.addEventListener('DOMContentLoaded', () => {
   window.game = new GameApp();
   window.gameInstance = window.game; // entity code reads the game under this name
+  window.addEventListener('keydown', (e) => {
+    if (e.code === 'Escape' && window.game.isPlaying && !(window.game.photoMode && window.game.photoMode.isActive)) {
+      window.game.setPaused(!window.game.isPaused);
+    }
+  });
 });

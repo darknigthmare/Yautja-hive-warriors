@@ -49,6 +49,24 @@ Essais automatisés dans Chromium le 13 novembre 2026.
 | 11 types de boss, 25 secondes de combat chacun | Aucune erreur ; les phases 2 se déclenchent |
 | 11 types de boss, mise à terre puis exécution | Tous restent étourdis à 1 point de vie, l'exécution les retire et donne de 2 500 à 8 000 d'honneur |
 
+### Phase 1, codée le 13 novembre 2026
+
+| Ajout | Vérifié dans les 8 arènes |
+|---|---|
+| Mode campagne par défaut ; mode sans fin sur Maj+M | Oui |
+| Après la dernière vague, le boss propre à l'arène apparaît, une seule fois | Oui : le boss apparu est celui déclaré |
+| Exécuter ce boss termine la chasse en victoire | Oui : écran « Victoire glorieuse » |
+| Pause par Échap, avec reprise ou abandon | Oui |
+| Bouton « Menu principal » de l'écran de fin | Oui : il ramène au menu |
+| Los Angeles et la pyramide ont un vrai boss (Abomination Predalien, Reine impériale) | Oui |
+| Cartes d'arène lisibles (nombre de vagues, description) | Oui |
+| Confettis réservés à la victoire | Codé |
+| Version v58.1 dans le titre, le sous-titre et `package.json` | Codé |
+
+Pour ces essais, la dernière vague a été atteinte par une commande de test, puis le boss mis à terre et exécuté par commande.
+
+**Reste de la phase 1** : le Prétorien de Val Verde (il utilise encore le gabarit de reine à 3000 points de vie), le décor générique à rendre à chaque arène, les soutiens selon l'arène, la Garde nationale à Gunnison, les armes humaines à ramasser, la courbe de points de vie des boss.
+
 **Limites de ces essais.** Les boss ont été appelés par une commande de test, pas atteints en jouant. Le chasseur était rendu invulnérable pendant les combats de boss. Les saisies sont automatiques : rien ne dit que le jeu est agréable ni équilibré.
 
 **Non vérifié** : une chasse jouée de bout en bout par un humain, les soutiens, la forge, la coopération, le son, les performances sur une vraie carte graphique.
@@ -65,8 +83,8 @@ Essais automatisés dans Chromium le 13 novembre 2026.
 - Au départ : 55 ennemis, 16 unités fixes, 3 alliés Yautja, 4 marines, 3 synthétiques, un planeur.
 - Vague suivante quand il reste moins de 10 ennemis : 45 + 15 par numéro de vague.
 - Vagues 2 et 4 : frappe aérienne. Vague 3 : Bad Blood et blindé. Vague 5 : toujours le même boss (Matriarche Predalien, 10 000 points de vie), quelle que soit l'arène.
-- **Le mode sans fin est actif par défaut, et il n'existe aucune victoire.**
-- Défaite à zéro point de vie. Pas de pause.
+- La campagne est le mode par défaut : après la dernière vague vient le boss de l'arène, et son exécution donne la victoire. Le mode sans fin s'active par Maj+M.
+- Défaite à zéro point de vie. Pause par Échap.
 
 ### Combat (socle)
 - Attaque légère en 5 temps de 0,28 s ; dégâts = mêlée × (1 + temps × 0,18).
@@ -96,7 +114,7 @@ La liste priorisée est dans l'onglet `11_P0_Defauts`.
 ## 6. Ordre de travail proposé
 
 1. **Stabiliser** : fait pour les erreurs ; reste une chasse jouée de bout en bout par un humain, et l'équilibrage (HW-BUG-21, 23).
-2. **Donner une fin** : victoire par exécution du boss d'arène, pause, retour au menu (HW-BUG-07, 13, 14).
+2. **Donner une fin** : fait le 13 novembre (victoire par exécution du boss d'arène, pause, retour au menu).
 3. **Rendre chaque arène à elle-même** : trois boss manquants, décor générique réparti (HW-BUG-15).
 4. **Resserrer le kit** : tronc commun, quatre emplacements, Musou par chasseur (HW-BUG-10, 11).
 5. **Unifier** : une forge, une roue, un numéro de version.
