@@ -7,6 +7,7 @@
 | [gdd/game-concept.md](gdd/game-concept.md) | La cible : promesse, piliers, structure, kit du chasseur |
 | [gdd/canon-et-regles-editoriales.md](gdd/canon-et-regles-editoriales.md) | Place dans l'univers, règles héritées des classeurs, vocabulaire de statut |
 | [gdd/etat-reel-v58.md](gdd/etat-reel-v58.md) | Ce que le code fait vraiment, défauts, ordre de travail |
+| [gdd/personnages-longue-chasse.md](gdd/personnages-longue-chasse.md) | Fiches des personnages de La Longue Chasse jouables, dont Mara Venn |
 | [gdd/annexes-tables.md](gdd/annexes-tables.md) | Toutes les tables (généré) |
 | `Yautja_HiveWarriors_V58_Bible.xlsx` | Les mêmes tables, un onglet par table (généré) |
 

@@ -292,7 +292,10 @@ Les mêmes tables sont dans `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 | Q14 | Valeurs de PV des 8 boss | La courbe doit croître de la 1re à la 8e chasse | À régler après essais avec un vrai joueur |
 | Q23 | Que faire si le joueur joue à Hive Warriors sur deux appareils ? | La table générique n'a pas de numéro de révision : la dernière écriture écrase l'autre | Garder la sauvegarde la plus récente et prévenir le joueur |
 | Q24 | Les règles d'accès de la table app_cloud_saves | Elles n'ont pas été lues ; il faut vérifier que chaque joueur n'accède qu'à sa ligne | À vérifier avant tout développement |
-| Q22 | Rôle, statistiques et kit de chacun des 19 personnages | La bible ne connaît que leur nom et leur voie | À écrire à partir de l'onglet « Les six voies » de la Bible V6 |
+| Q22 | Valider les 20 fiches de personnages | Statistiques, kits et Musou sont des propositions ; la Bible V6 ne donne ni apparence ni arme attitrée | Fiches de personnages-longue-chasse.md |
+| Q25 | Saer, archiviste de la voie O4, doit-il être jouable ? | Trouvé à la relecture, absent de la liste initiale ; rien n'en fait un combattant | Non inclus |
+| Q26 | Mara Venn « dans le clan » contredit la Bible V6, qui la veut toujours extérieure | La variante n'existe dans aucune fin de la voie O5 | Variante « et si… » rattachée à la fin O5-E1 |
+| Q27 | Espèce d'Esha et arme de Mara Venn | Non précisées dans la Bible V6 | À fixer par l'auteur |
 
 ## 15_Soutiens — Soutiens par arène (proposition découlant de HW-DEC-14 ; aujourd'hui tout apparaît partout)
 
@@ -311,25 +314,26 @@ Les mêmes tables sont dans `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 
 | Contenu débloqué dans Hive Warriors | Nature | Origine dans La Longue Chasse | Rôle connu | Condition | Statut |
 |---|---|---|---|---|---|
-| Varek | Personnage jouable, création du projet | O1 Rejeté du clan | Père hostile | Étape de la voie O1, à préciser (Q22) | Décidé (HW-DEC-24), fiche à écrire |
-| Dhera | Personnage jouable, création du projet | O1 Rejeté du clan | À relever dans la Bible V6 | Étape de la voie O1, à préciser (Q22) | Décidé (HW-DEC-24), fiche à écrire |
-| Ruun | Personnage jouable, création du projet | O1 Rejeté du clan | À relever dans la Bible V6 | Étape de la voie O1, à préciser (Q22) | Décidé (HW-DEC-24), fiche à écrire |
-| Sael | Personnage jouable, création du projet | O2 Héritier du masque | À relever dans la Bible V6 | Étape de la voie O2, à préciser (Q22) | Décidé (HW-DEC-24), fiche à écrire |
-| Khor | Personnage jouable, création du projet | O2 Héritier du masque | À relever dans la Bible V6 | Étape de la voie O2, à préciser (Q22) | Décidé (HW-DEC-24), fiche à écrire |
-| Orha | Personnage jouable, création du projet | O2 Héritier du masque | À relever dans la Bible V6 | Étape de la voie O2, à préciser (Q22) | Décidé (HW-DEC-24), fiche à écrire |
-| Tava | Personnage jouable, création du projet | O3 Porteur des derniers noms | À relever dans la Bible V6 | Étape de la voie O3, à préciser (Q22) | Décidé (HW-DEC-24), fiche à écrire |
-| Orem | Personnage jouable, création du projet | O3 Porteur des derniers noms | À relever dans la Bible V6 | Étape de la voie O3, à préciser (Q22) | Décidé (HW-DEC-24), fiche à écrire |
-| Vesha | Personnage jouable, création du projet | O3 Porteur des derniers noms | À relever dans la Bible V6 | Étape de la voie O3, à préciser (Q22) | Décidé (HW-DEC-24), fiche à écrire |
-| Drek | Personnage jouable, création du projet | O4 Nom entaché | À relever dans la Bible V6 | Étape de la voie O4, à préciser (Q22) | Décidé (HW-DEC-24), fiche à écrire |
-| Isha | Personnage jouable, création du projet | O4 Nom entaché | À relever dans la Bible V6 | Étape de la voie O4, à préciser (Q22) | Décidé (HW-DEC-24), fiche à écrire |
-| Evar | Personnage jouable, création du projet | O4 Nom entaché | Enforcer | Étape de la voie O4, à préciser (Q22) | Décidé (HW-DEC-24), fiche à écrire |
-| Mara Venn | Personnage jouable, création du projet | O5 Dette envers l'Étranger | Traqueuse humaine, rencontrée à la mission O5-M19 | Étape de la voie O5, à préciser (Q22) | Décidé (HW-DEC-24), fiche à écrire |
-| Esha | Personnage jouable, création du projet | O5 Dette envers l'Étranger | À relever dans la Bible V6 | Étape de la voie O5, à préciser (Q22) | Décidé (HW-DEC-24), fiche à écrire |
-| Keth | Personnage jouable, création du projet | O5 Dette envers l'Étranger | À relever dans la Bible V6 | Étape de la voie O5, à préciser (Q22) | Décidé (HW-DEC-24), fiche à écrire |
-| Saar | Personnage jouable, création du projet | O6 La Longue Chasse | Instructeur | Étape de la voie O6, à préciser (Q22) | Décidé (HW-DEC-24), fiche à écrire |
-| Harek | Personnage jouable, création du projet | O6 La Longue Chasse | Rival | Étape de la voie O6, à préciser (Q22) | Décidé (HW-DEC-24), fiche à écrire |
-| Yena | Personnage jouable, création du projet | O6 La Longue Chasse | À relever dans la Bible V6 | Étape de la voie O6, à préciser (Q22) | Décidé (HW-DEC-24), fiche à écrire |
-| Tov | Personnage jouable, création du projet | O6 La Longue Chasse | À relever dans la Bible V6 | Étape de la voie O6, à préciser (Q22) | Décidé (HW-DEC-24), fiche à écrire |
+| Varek | Personnage jouable, création du projet | O1 Rejeté du clan | Père hostile | Une fin de la voie O1 (proposé) | Fiche proposée, à valider |
+| Dhera | Personnage jouable, création du projet | O1 Rejeté du clan | Instructrice | Mission O1-M25 (proposé) | Fiche proposée, à valider |
+| Ruun | Personnage jouable, création du projet | O1 Rejeté du clan | Frère du joueur | Mission O1-M21 (proposé) | Fiche proposée, à valider |
+| Sael | Personnage jouable, création du projet | O2 Héritier du masque | Gardienne du masque | Une fin de la voie O2 (proposé) | Fiche proposée, à valider |
+| Khor | Personnage jouable, création du projet | O2 Héritier du masque | Descendant d'un pisteur | Mission O2-M32 (proposé) | Fiche proposée, à valider |
+| Orha | Personnage jouable, création du projet | O2 Héritier du masque | Artisane des supports | Mission O2-M28 (proposé) | Fiche proposée, à valider |
+| Tava | Personnage jouable, création du projet | O3 Porteur des derniers noms | Passeuse survivante | Une fin de la voie O3 (proposé) | Fiche proposée, à valider |
+| Orem | Personnage jouable, création du projet | O3 Porteur des derniers noms | Jeune compagnon de cohorte | Mission O3-M32 (proposé) | Fiche proposée, à valider |
+| Vesha | Personnage jouable, création du projet | O3 Porteur des derniers noms | Artisane survivante | Mission O3-M26 (proposé) | Fiche proposée, à valider |
+| Drek | Personnage jouable, création du projet | O4 Nom entaché | Parent du joueur | Mission O4-M23 (proposé) | Fiche proposée, à valider |
+| Isha | Personnage jouable, création du projet | O4 Nom entaché | Descendante lésée | Mission O4-M33 (proposé) | Fiche proposée, à valider |
+| Evar | Personnage jouable, création du projet | O4 Nom entaché | Enforcer local | Une fin de la voie O4 (proposé) | Fiche proposée, à valider |
+| Mara Venn | Personnage jouable, création du projet | O5 Dette envers l'Étranger | Traqueuse humaine ; deux variantes (HW-DEC-27) | Hors clan : mission O5-M24 ; dans le clan : fin O5-E1 (proposé) | Fiche proposée, à valider |
+| Esha | Personnage jouable, création du projet | O5 Dette envers l'Étranger | Réparatrice du port de Namarra | Mission O5-M22 (proposé) | Fiche proposée, à valider |
+| Keth | Personnage jouable, création du projet | O5 Dette envers l'Étranger | Chasseur qui sous-estime l'humaine | Mission O5-M25 (proposé) | Fiche proposée, à valider |
+| Saar | Personnage jouable, création du projet | O6 La Longue Chasse | Instructeur de cohorte | Une fin de la voie O6 (proposé) | Fiche proposée, à valider |
+| Harek | Personnage jouable, création du projet | O6 La Longue Chasse | Rival de cohorte | Mission O6-M33 (proposé) | Fiche proposée, à valider |
+| Yena | Personnage jouable, création du projet | O6 La Longue Chasse | Camarade de cohorte | Mission O6-M27 (proposé) | Fiche proposée, à valider |
+| Tov | Personnage jouable, création du projet | O6 La Longue Chasse | Camarade de cohorte | Mission O6-M27 (proposé) | Fiche proposée, à valider |
+| Saer | Trouvé à la relecture, à confirmer | O4 Nom entaché | Archiviste local | À confirmer | Hors décision HW-DEC-24 |
 | Habillages des 15 clans | Couleurs d'armure et de masque | Identités des clans CL1 à CL15 |  | Appartenir au clan dans La Longue Chasse | Décidé (HW-DEC-18), condition proposée |
 | Arène « Arène de la reine active » | Variante de la 8e chasse | Xeno Prime, secteur XP-Z12 |  | Avoir vaincu la première reine (mission R2-M026) | Décidé (HW-DEC-18), condition proposée |
 | Arène « Tête de reine géante au sol » | Arène supplémentaire | Xeno Prime, secteur XP-Z09 |  | Avoir préparé Xeno Prime (mission R2-M025) | Décidé (HW-DEC-18), condition proposée |
