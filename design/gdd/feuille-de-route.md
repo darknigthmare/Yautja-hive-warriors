@@ -1,7 +1,7 @@
 # Feuille de route
 
-> Bible du jeu, document 5. Décisions HW-DEC-33 à 39.
-> Statut : **ordre proposé, à valider** (question Q28). Les contenus sont décidés ; leur ordre ne l'est pas.
+> Bible du jeu, document 5. Décisions HW-DEC-33 à 43.
+> Statut : **ordre validé par l'auteur le 13 novembre 2026** (HW-DEC-40).
 
 ## 1. L'écart à regarder en face
 
@@ -41,17 +41,17 @@ Tronc commun et quatre emplacements, Musou par chasseur, conflits de touches lev
 **Sortie** : les sept chasseurs se jouent différemment, sans touche en conflit.
 
 ### Phase 3 — La carte à zones
-C'est le plus gros chantier (HW-DEC-33). Proposition : **un pilote sur une seule chasse** avant de refaire les huit (question Q29).
+C'est le plus gros chantier (HW-DEC-33). Les cartes à zones portent la campagne ; les arènes fermées actuelles restent pour le mode sans fin et les défis (HW-DEC-41). On commence par **une chasse pilote** : je propose Xenomorph Prime, dont la Bible V6 décrit déjà 12 secteurs (question Q33).
 - Carte plus grande, découpée en zones.
 - Chaque zone est tenue par un officier de ruche ; l'abattre la fait basculer.
 - Les zones prises tarissent les renforts ; la dernière fait sortir le boss.
 - La jauge de moral existante devient la mesure de la conquête.
 - Préalable technique : plafond d'ennemis et mise en commun des maillages, sans quoi une grande carte ne tiendra pas.
 
-**Sortie** : une chasse pilote jouée et jugée ; décision sur les sept autres.
+**Sortie** : une chasse pilote jouée et jugée, puis les sept autres sur le même modèle.
 
 ### Phase 4 — La progression
-Niveaux de chasseur, armes à attributs avec une forge unique, sept rangs Yautja, trophées à effets (HW-DEC-34).
+Niveaux de chasseur, armes à attributs avec une forge unique, sept rangs Yautja, trophées à effets (HW-DEC-34). Les rangs sont propres à Hive Warriors : mêmes sept noms que La Longue Chasse, gagnés ici par les trophées de boss (HW-DEC-42).
 À surveiller : quatre systèmes de progression qui s'additionnent peuvent rendre le chasseur invincible. Leur cumul doit être plafonné et réglé ensemble, pas un par un.
 **Sortie** : rejouer une chasse rapporte quelque chose, sans casser la difficulté.
 
@@ -65,7 +65,15 @@ Récit d'introduction et de conclusion par chasse, codex complet débloqué en j
 
 ### Phase 7 — En ligne
 Compte Supabase existant, sauvegarde en ligne, lecture de la progression de La Longue Chasse, déblocage de ses 19 personnages, classement.
-Préalables : vérifier les règles d'accès de la table de sauvegarde ; décider du comportement sur deux appareils ; accepter qu'un classement de jeu de navigateur soit amical, sans garantie contre la triche.
+Préalables : vérifier les règles d'accès de la table de sauvegarde ; décider du comportement sur deux appareils.
+
+**Classement vérifié (HW-DEC-43).** Chaque partie doit être contrôlée côté serveur avant d'entrer au classement. Le jeu actuel ne le permet pas : il calcule tout dans le navigateur et tire son hasard sans graine, donc une partie ne peut pas être rejouée à l'identique. Il faut, dans l'ordre :
+1. un hasard à graine fixe pour tout ce qui touche au score ;
+2. un journal des saisies du joueur, envoyé avec le score ;
+3. un contrôle côté serveur, qui rejoue la partie ou en vérifie la vraisemblance ;
+4. la table de scores et son affichage.
+
+C'est un chantier à part entière. Aucun classement n'est publié avant qu'il soit fait (question Q32).
 **Sortie** : un joueur de La Longue Chasse retrouve ses personnages dans Hive Warriors.
 
 ### Phase 8 — Extensions
@@ -81,6 +89,7 @@ Lots proposés, dans l'ordre :
 
 - Ajouter un lieu ou un chasseur avant la fin de la phase 1.
 - Refaire les huit cartes avant d'avoir jugé le pilote.
+- Publier un classement non vérifié.
 - Annoncer « 1:1 » quoi que ce soit.
 - Compter une fonction écrite comme une fonction livrée : seul compte ce qui a été joué.
 

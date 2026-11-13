@@ -89,6 +89,10 @@ TABLES["01_Decisions"] = (
         ["HW-DEC-37", "Lieux futurs", "Tous les lieux iconiques manquants de la saga", "Liste dans l'onglet 18_LieuxFuturs"],
         ["HW-DEC-38", "Chasseurs futurs", "Tous les chasseurs iconiques manquants", "Liste dans l'onglet 19_ChasseursFuturs"],
         ["HW-DEC-39", "Vie de l'univers", "Récit par chasse, codex complet, citadelle vivante, musique par arène", "Les quatre sont retenus"],
+        ["HW-DEC-40", "Ordre des chantiers", "Ordre de la feuille de route", "Neuf phases ; une phase ne commence que lorsque la précédente a été jouée dans un navigateur"],
+        ["HW-DEC-41", "Cartes à zones et arènes fermées", "Les deux coexistent", "La campagne se joue en cartes à zones ; les arènes fermées restent pour le mode sans fin et les défis"],
+        ["HW-DEC-42", "Rangs Yautja", "Propres à Hive Warriors", "Mêmes sept noms, gagnés par les trophées de boss ; indépendants du rang atteint dans La Longue Chasse"],
+        ["HW-DEC-43", "Classement en ligne", "Vérifié", "Chaque partie est contrôlée côté serveur avant d'entrer au classement ; chantier à part entière"],
         ["HW-DEC-12", "Alliés Yautja, armes humaines, véhicules et soutiens, coopération locale", "Tous conservés", "Le champ de bataille est une guerre ; ces systèmes sont à réparer, pas à couper"],
     ],
 )
@@ -347,17 +351,15 @@ TABLES["12_Canon"] = (
 )
 
 TABLES["13_Questions"] = (
-    "Questions ouvertes pour l'auteur (Q1 à Q21 ont été tranchées, sauf Q14 et Q22 : voir HW-DEC-09 à 28)",
+    "Questions ouvertes pour l'auteur (les autres ont été tranchées : voir HW-DEC-09 à 43)",
     ["ID", "Question", "Pourquoi elle compte", "Défaut retenu en attendant"],
     [
         ["Q14", "Valeurs de PV des 8 boss", "La courbe doit croître de la 1re à la 8e chasse", "À régler après essais avec un vrai joueur"],
         ["Q23", "Que faire si le joueur joue à Hive Warriors sur deux appareils ?", "La table générique n'a pas de numéro de révision : la dernière écriture écrase l'autre", "Garder la sauvegarde la plus récente et prévenir le joueur"],
         ["Q24", "Les règles d'accès de la table app_cloud_saves", "Elles n'ont pas été lues ; il faut vérifier que chaque joueur n'accède qu'à sa ligne", "À vérifier avant tout développement"],
+        ["Q32", "Comment vérifier une partie côté serveur ?", "Le jeu calcule tout dans le navigateur, avec du hasard non reproductible ; rejouer une partie suppose un tirage à graine fixe et un journal des saisies", "Étude à mener avant la phase 7 ; aucun classement publié avant"],
+        ["Q33", "Quelle chasse sert de pilote à la carte à zones ?", "Elle fixera le modèle des sept autres", "Xenomorph Prime, dont la Bible V6 décrit déjà 12 secteurs"],
         ["Q22", "Valider les fiches de personnages", "Statistiques, kits et Musou sont des propositions", "Fiches de personnages-longue-chasse.md"],
-        ["Q28", "Dans quel ordre réaliser tout ce qui vient d'être retenu ?", "Le périmètre décidé dépasse de très loin l'état du code", "Ordre de feuille-de-route.md"],
-        ["Q29", "La carte à zones remplace-t-elle les 8 arènes ou s'y ajoute-t-elle ?", "Refaire 8 cartes est le plus gros chantier du projet", "Un pilote sur une seule chasse avant de décider"],
-        ["Q30", "Les rangs Yautja de Hive Warriors sont-ils les mêmes que ceux du compte La Longue Chasse ?", "La Bible V6 lie chaque rang à un rite précis ; ici ils viendraient des trophées", "Rangs propres à Hive Warriors, mêmes sept noms"],
-        ["Q31", "Classement en ligne : comment limiter la triche ?", "Un jeu de navigateur envoie lui-même son score", "Classement amical, sans garantie ; bornes de vraisemblance côté base"],
     ],
 )
 
@@ -480,7 +482,7 @@ TABLES["20_GameplayCible"] = (
     "Systèmes de jeu retenus (HW-DEC-33 à 36 et 39) : état dans le code et phase proposée",
     ["Système", "Décision", "Ce qui existe dans le code", "Ce qui manque", "Phase"],
     [
-        ["Carte à zones", "HW-DEC-33", "Arène fermée de 150 m ; officiers de ruche (2 par vague) ; jauge de moral", "Carte plus grande, zones, capture, renforts par zone, mini-carte de conquête", "3"],
+        ["Carte à zones (campagne)", "HW-DEC-33 et 41", "Arène fermée de 150 m ; officiers de ruche (2 par vague) ; jauge de moral", "Carte plus grande, zones, capture, renforts par zone, mini-carte de conquête", "3"],
         ["Verrouillage de cible", "HW-DEC-35", "Caméra fixe derrière le chasseur, sans souris ; réticule à trois lasers", "Contrôle de caméra, verrouillage, bascule entre cibles", "2"],
         ["Changement d'arme en combo", "HW-DEC-35", "Fonction toggleWeaponSwap présente, sans touche depuis v51", "Seconde arme réelle, enchaînement prolongé", "2"],
         ["Mises à mort contextuelles", "HW-DEC-35", "Exécution des boss et sous-boss étourdis, des synthétiques ; plongeon depuis une passerelle", "Mises à mort sur les élites et la masse, selon l'arme", "2"],
@@ -492,7 +494,7 @@ TABLES["20_GameplayCible"] = (
         ["Niveaux de difficulté", "HW-DEC-36", "Aucun", "Trois ou quatre difficultés, récompenses", "5"],
         ["Mode libre", "HW-DEC-36", "Toutes les arènes et tous les chasseurs sont déjà ouverts", "À réserver aux chasses terminées", "5"],
         ["Défis de chasse", "HW-DEC-36", "Aucun", "Épreuves à contrainte", "5"],
-        ["Classement en ligne", "HW-DEC-36", "Aucun ; meilleur combo et vague maximale en local", "Table de scores, envoi, affichage", "7"],
+        ["Classement en ligne vérifié", "HW-DEC-36 et 43", "Aucun ; meilleur combo et vague maximale en local ; hasard non reproductible", "Tirage à graine fixe, journal des saisies, contrôle côté serveur, table de scores", "7"],
         ["Récit par chasse", "HW-DEC-39", "Annonces à l'écran ; titres des 5 chapitres", "Introduction et conclusion écrites par chasse", "6"],
         ["Codex complet", "HW-DEC-39", "Codex en 4 onglets, 22 entrées, tout ouvert", "Une fiche par ennemi, boss, arme et lieu, débloquée en jouant", "6"],
         ["Citadelle vivante", "HW-DEC-39", "Citadelle 3D derrière le menu", "Lieu à parcourir, forge, mur de crânes, table de chasse", "6"],
