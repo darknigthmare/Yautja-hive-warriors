@@ -1,6 +1,6 @@
 # Predator: Hive Warriors — Vision et conception
 
-> Bible du jeu, document 1 sur 3. Statut : **cible validée par l'auteur le 12 novembre 2026** (décisions HW-DEC-01 à 20).
+> Bible du jeu, document 1 sur 3. Statut : **cible validée par l'auteur le 12 novembre 2026** (décisions HW-DEC-01 à 24).
 > Ce document dit ce que le jeu doit être. Ce qu'il est réellement aujourd'hui est dans [etat-reel-v58.md](etat-reel-v58.md).
 > Les chiffres et listes sont dans [annexes-tables.md](annexes-tables.md) et dans le classeur `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 
@@ -112,7 +112,8 @@ Le code fait aujourd'hui apparaître 16 unités fixes à chaque vague, dont six 
 - **Coopération locale** : conservée (HW-DEC-12) ; le second joueur doit recevoir le même kit que le premier.
 - **Armes humaines** : ramassées sur le champ de bataille, munitions limitées (HW-DEC-13).
 - **Soutiens** : présents selon l'arène, plus jamais partout (HW-DEC-14, onglet `15_Soutiens`).
-- **Lien avec La Longue Chasse** : Hive Warriors lit la progression de La Longue Chasse sans rien y écrire, et débloque du contenu propre à ce jeu, comme ses personnages originaux (HW-DEC-15, onglet `16_Deblocages`). La lecture passe par un **compte en ligne** commun aux deux jeux (HW-DEC-17). Sont débloqués, étape par étape : les personnages des six voies, les habillages des 15 clans et les arènes de Xeno Prime (HW-DEC-18 et 19). Le service de comptes reste à choisir (Q15).
+- **Lien avec La Longue Chasse** : Hive Warriors lit la progression de La Longue Chasse sans rien y écrire, et débloque du contenu propre à ce jeu, comme ses personnages originaux (HW-DEC-15, onglet `16_Deblocages`). La lecture passe par un **compte en ligne** commun aux deux jeux (HW-DEC-17). Sont débloqués, étape par étape : les personnages des six voies, les habillages des 15 clans et les arènes de Xeno Prime (HW-DEC-18 et 19). Le compte est celui du projet Supabase déjà en place pour La Longue Chasse, avec la même méthode d'identification (HW-DEC-21 et 23, onglet `17_Comptes`). Il est facultatif : on joue sans compte, et une fois connecté la progression de Hive Warriors est aussi conservée en ligne (HW-DEC-22).
+- **Personnages débloqués** : les 19 personnages des six voies, Mara Venn incluse (HW-DEC-24). Mara Venn est humaine : son kit, sans plasma ni camouflage, est à concevoir (Q21).
 - **Gunnison** : les humains y sont des soldats de la Garde nationale, pas des marines coloniaux (HW-DEC-20).
 
 ## 10. Direction visuelle et sonore
@@ -130,7 +131,8 @@ Le code fait aujourd'hui apparaître 16 unités fixes à chaque vague, dont six 
 | Aucune limite d'ennemis ni mise en commun des maillages | Performance | Plafond d'ennemis et instanciation avant d'augmenter les vagues |
 | Périmètre : 54 capacités, 26 types d'ennemis, 10 boss | Périmètre | Tri de l'onglet `04_HorsRegistre` ; rien de neuf tant que les 8 chasses ne se terminent pas |
 | Noms, personnages et lieux sous licence | Droits | Non commercial ; vocabulaire « inspiré de » |
-| Le compte en ligne ajoute un serveur, une identification et des données personnelles à un jeu qui n'en avait pas | Technique et données | Compte facultatif, données réduites à un identifiant et à la progression ; à faire après la première version jouable |
+| Le compte en ligne ajoute un serveur, une identification et des données personnelles à un jeu qui n'en avait pas | Technique et données | Compte facultatif, système Supabase existant réutilisé sans nouvelle donnée ; à faire après la première version jouable |
+| 19 personnages supplémentaires, dont une humaine, s'ajoutent aux 7 chasseurs | Périmètre | Fiches à écrire avant tout code ; aucun ajout avant que les 8 chasses se terminent |
 
 ## 12. Première version visée
 

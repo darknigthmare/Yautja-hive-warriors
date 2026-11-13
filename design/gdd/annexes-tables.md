@@ -45,6 +45,10 @@ Les mêmes tables sont dans `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 | HW-DEC-18 | Contenus de La Longue Chasse débloqués | Personnages des six voies, habillages des 15 clans, arènes de Xeno Prime | Les outils originaux ne sont pas repris |
 | HW-DEC-19 | Condition de déblocage | Par étape franchie | Chaque contenu est lié à une étape précise de La Longue Chasse |
 | HW-DEC-20 | Humains de la forêt de Gunnison | Garde nationale | Soldats contemporains à la place des marines coloniaux : même comportement, autre habillage et autres armes à ramasser |
+| HW-DEC-21 | Service de comptes | Supabase, projet déjà en place | Même projet que La Longue Chasse ; aucune nouvelle base à créer |
+| HW-DEC-22 | Rôle du compte | Facultatif, avec sauvegarde en ligne | On joue sans compte ; connecté, la progression de Hive Warriors est aussi conservée en ligne et retrouvée sur un autre appareil |
+| HW-DEC-23 | Identification | Identique au système de comptes existant | Aucune nouvelle méthode ; reprendre celle de La Longue Chasse telle quelle |
+| HW-DEC-24 | Personnages de La Longue Chasse jouables | Tous, Mara Venn incluse | 19 personnages des six voies ; Mara Venn, humaine, est un personnage jouable à part |
 | HW-DEC-12 | Alliés Yautja, armes humaines, véhicules et soutiens, coopération locale | Tous conservés | Le champ de bataille est une guerre ; ces systèmes sont à réparer, pas à couper |
 
 ## 02_Chasseurs — Chasseurs jouables (js/data/charactersData.js)
@@ -277,15 +281,15 @@ Les mêmes tables sont dans `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 | HW-CAN-13 | Le Predalien est classé xénomorphe hybride, pas Yautja | Catalogue tous médias · Exclusions | Conforme dans le codex | Aucun |
 | HW-CAN-14 | Les 15 clans de la Bible V6 sont des créations du projet | Bible V6 · Identités des clans | Aucun clan nommé ; « Forge de clan », « Coffre d'honneur du clan » | Le clan du joueur reste anonyme (HW-DEC-10) |
 
-## 13_Questions — Questions ouvertes pour l'auteur (Q1 à Q13 ont été tranchées : voir HW-DEC-09 à 20)
+## 13_Questions — Questions ouvertes pour l'auteur (Q1 à Q18 ont été tranchées, sauf Q14 : voir HW-DEC-09 à 24)
 
 | ID | Question | Pourquoi elle compte | Défaut retenu en attendant |
 |---|---|---|---|
 | Q14 | Valeurs de PV des 8 boss | La courbe doit croître de la 1re à la 8e chasse | À régler après essais avec un vrai joueur |
-| Q15 | Quel service pour les comptes en ligne ? | La Longue Chasse et Hive Warriors doivent utiliser le même ; un connecteur Supabase est disponible dans cet environnement | Aucun service choisi ; rien n'est installé |
-| Q16 | Le compte est-il obligatoire pour jouer à Hive Warriors ? | Un compte obligatoire ferme le jeu aux visiteurs | Compte facultatif : il ne sert qu'aux déblocages |
-| Q17 | Quelles données personnelles le compte conserve-t-il ? | Un compte en ligne crée des obligations de protection des données | Un identifiant et la progression, rien d'autre |
-| Q18 | Liste complète des personnages des six voies à rendre jouables | L'onglet 16 n'en cite que quatre ; la Bible V6 en nomme une vingtaine, dont une humaine (Mara Venn) | Les quatre de l'onglet 16 |
+| Q19 | Quelle méthode d'identification le système existant utilise-t-il ? | La structure de la base ne le dit pas ; elle se lit dans le code de La Longue Chasse, qui n'est pas dans ce dépôt | À relever dans le dépôt yautja-la-longue-chasse avant tout développement |
+| Q20 | Où la sauvegarde de Hive Warriors est-elle rangée ? | Deux tables conviennent : la table générique par application, ou une table dédiée comme celle de La Longue Chasse | Table générique app_cloud_saves, clé d'application yautja_hive_warriors |
+| Q21 | Comment Mara Venn se joue-t-elle ? | Humaine : pas de plasma, de camouflage ni de Musou Yautja ; le pilier 2 parle de l'arsenal du chasseur | Kit propre fait d'armes humaines et de pièges, à concevoir |
+| Q22 | Rôle, statistiques et kit de chacun des 19 personnages | La bible ne connaît que leur nom et leur voie | À écrire à partir de l'onglet « Les six voies » de la Bible V6 |
 
 ## 15_Soutiens — Soutiens par arène (proposition découlant de HW-DEC-14 ; aujourd'hui tout apparaît partout)
 
@@ -300,17 +304,44 @@ Les mêmes tables sont dans `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 | 7 | Station Renaissance | Non | Oui | Oui | Non | Non | Oui | Station Weyland-Yutani |
 | 8 | Xenomorph Prime | Oui | Non | Non | Non | Non | Non | Assaut du clan sur le monde-ruche |
 
-## 16_Deblocages — Déblocages lus dans La Longue Chasse par compte en ligne, étape par étape (HW-DEC-15, 17, 18, 19 ; noms tirés de la Bible V6, onglet « Les six voies »)
+## 16_Deblocages — Déblocages lus dans La Longue Chasse par compte en ligne, étape par étape (HW-DEC-15, 17 à 19, 24 ; noms tirés de la Bible V6, onglet « Les six voies »)
 
-| Contenu débloqué dans Hive Warriors | Nature | Origine dans La Longue Chasse | Condition proposée | Statut |
-|---|---|---|---|---|
-| Saar | Chasseur jouable, création du projet | Instructeur de la voie O6 | Terminer la voie O6 | Proposition |
-| Harek | Chasseur jouable, création du projet | Rival de la voie O6 | Atteindre Blooded dans la voie O6 | Proposition |
-| Varek | Chasseur jouable, création du projet | Père hostile de la voie O1 | Terminer la voie O1 | Proposition |
-| Evar | Chasseur jouable, création du projet | Enforcer de la voie O4 | Terminer la voie O4 | Proposition |
-| Habillages des 15 clans | Couleurs d'armure et de masque | Identités des clans CL1 à CL15 | Appartenir au clan dans La Longue Chasse | Proposition |
-| Arène « Arène de la reine active » | Variante de la 8e chasse | Xeno Prime, secteur XP-Z12 | Avoir vaincu la première reine (mission R2-M026) | Proposition |
-| Arène « Tête de reine géante au sol » | Arène supplémentaire | Xeno Prime, secteur XP-Z09 | Avoir préparé Xeno Prime (mission R2-M025) | Proposition |
+| Contenu débloqué dans Hive Warriors | Nature | Origine dans La Longue Chasse | Rôle connu | Condition | Statut |
+|---|---|---|---|---|---|
+| Varek | Personnage jouable, création du projet | O1 Rejeté du clan | Père hostile | Étape de la voie O1, à préciser (Q22) | Décidé (HW-DEC-24), fiche à écrire |
+| Dhera | Personnage jouable, création du projet | O1 Rejeté du clan | À relever dans la Bible V6 | Étape de la voie O1, à préciser (Q22) | Décidé (HW-DEC-24), fiche à écrire |
+| Ruun | Personnage jouable, création du projet | O1 Rejeté du clan | À relever dans la Bible V6 | Étape de la voie O1, à préciser (Q22) | Décidé (HW-DEC-24), fiche à écrire |
+| Sael | Personnage jouable, création du projet | O2 Héritier du masque | À relever dans la Bible V6 | Étape de la voie O2, à préciser (Q22) | Décidé (HW-DEC-24), fiche à écrire |
+| Khor | Personnage jouable, création du projet | O2 Héritier du masque | À relever dans la Bible V6 | Étape de la voie O2, à préciser (Q22) | Décidé (HW-DEC-24), fiche à écrire |
+| Orha | Personnage jouable, création du projet | O2 Héritier du masque | À relever dans la Bible V6 | Étape de la voie O2, à préciser (Q22) | Décidé (HW-DEC-24), fiche à écrire |
+| Tava | Personnage jouable, création du projet | O3 Porteur des derniers noms | À relever dans la Bible V6 | Étape de la voie O3, à préciser (Q22) | Décidé (HW-DEC-24), fiche à écrire |
+| Orem | Personnage jouable, création du projet | O3 Porteur des derniers noms | À relever dans la Bible V6 | Étape de la voie O3, à préciser (Q22) | Décidé (HW-DEC-24), fiche à écrire |
+| Vesha | Personnage jouable, création du projet | O3 Porteur des derniers noms | À relever dans la Bible V6 | Étape de la voie O3, à préciser (Q22) | Décidé (HW-DEC-24), fiche à écrire |
+| Drek | Personnage jouable, création du projet | O4 Nom entaché | À relever dans la Bible V6 | Étape de la voie O4, à préciser (Q22) | Décidé (HW-DEC-24), fiche à écrire |
+| Isha | Personnage jouable, création du projet | O4 Nom entaché | À relever dans la Bible V6 | Étape de la voie O4, à préciser (Q22) | Décidé (HW-DEC-24), fiche à écrire |
+| Evar | Personnage jouable, création du projet | O4 Nom entaché | Enforcer | Étape de la voie O4, à préciser (Q22) | Décidé (HW-DEC-24), fiche à écrire |
+| Mara Venn | Personnage jouable, création du projet | O5 Dette envers l'Étranger | Traqueuse humaine, rencontrée à la mission O5-M19 | Étape de la voie O5, à préciser (Q22) | Décidé (HW-DEC-24), fiche à écrire |
+| Esha | Personnage jouable, création du projet | O5 Dette envers l'Étranger | À relever dans la Bible V6 | Étape de la voie O5, à préciser (Q22) | Décidé (HW-DEC-24), fiche à écrire |
+| Keth | Personnage jouable, création du projet | O5 Dette envers l'Étranger | À relever dans la Bible V6 | Étape de la voie O5, à préciser (Q22) | Décidé (HW-DEC-24), fiche à écrire |
+| Saar | Personnage jouable, création du projet | O6 La Longue Chasse | Instructeur | Étape de la voie O6, à préciser (Q22) | Décidé (HW-DEC-24), fiche à écrire |
+| Harek | Personnage jouable, création du projet | O6 La Longue Chasse | Rival | Étape de la voie O6, à préciser (Q22) | Décidé (HW-DEC-24), fiche à écrire |
+| Yena | Personnage jouable, création du projet | O6 La Longue Chasse | À relever dans la Bible V6 | Étape de la voie O6, à préciser (Q22) | Décidé (HW-DEC-24), fiche à écrire |
+| Tov | Personnage jouable, création du projet | O6 La Longue Chasse | À relever dans la Bible V6 | Étape de la voie O6, à préciser (Q22) | Décidé (HW-DEC-24), fiche à écrire |
+| Habillages des 15 clans | Couleurs d'armure et de masque | Identités des clans CL1 à CL15 |  | Appartenir au clan dans La Longue Chasse | Décidé (HW-DEC-18), condition proposée |
+| Arène « Arène de la reine active » | Variante de la 8e chasse | Xeno Prime, secteur XP-Z12 |  | Avoir vaincu la première reine (mission R2-M026) | Décidé (HW-DEC-18), condition proposée |
+| Arène « Tête de reine géante au sol » | Arène supplémentaire | Xeno Prime, secteur XP-Z09 |  | Avoir préparé Xeno Prime (mission R2-M025) | Décidé (HW-DEC-18), condition proposée |
+
+## 17_Comptes — Système de comptes existant (projet Supabase commun, lu le 13 novembre 2026 en lecture seule)
+
+| Élément | Constat | Usage pour Hive Warriors |
+|---|---|---|
+| Projet | Un projet Supabase commun à plusieurs applications de l'auteur, région eu-west-1 | Réutilisé tel quel (HW-DEC-21) |
+| Comptes | Table d'utilisateurs du service d'identification de Supabase ; toutes les tables de sauvegarde y sont rattachées | Même compte pour La Longue Chasse et Hive Warriors |
+| yautja_cloud_saves | Une ligne par compte : révision, instantané complet (20 Mo au plus), date ; décrite comme l'espace Yautja complet, synchronisé entre mobile et bureau ; 1 ligne présente | Lue seulement, pour connaître les étapes franchies (HW-DEC-15) |
+| app_cloud_saves | Une ligne par compte et par application : clé d'application, contenu, date ; décrite comme un instantané du stockage local par application ; vide | Candidate pour la sauvegarde de Hive Warriors (Q20) |
+| Protection | Sécurité par ligne activée sur toutes les tables | Chaque joueur ne lit que sa propre sauvegarde ; les règles exactes restent à vérifier |
+| Méthode d'identification | Non visible dans la structure de la base | À relever dans le code de La Longue Chasse (Q19) |
+| Dans Hive Warriors | Aucun code de compte ni de sauvegarde en ligne ; 6 clés de stockage local | Tout est à écrire |
 
 ## 14_Sources — Sources lues pour cette bible
 
@@ -326,4 +357,5 @@ Les mêmes tables sont dans `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 | Yautja_ClanWar_V151 et V152 | Recette des 4 modes de guerre | La Longue Chasse | Lus |
 | YAUTJA_HOMEWORLD_AUDIT_354_CIBLES_20261103.xlsx | Audit de décors | La Longue Chasse | Lu ; matrice par échantillon |
 | Yautja_PHG_*_V137 et QA V141 | Personnalisation, 323 éléments | La Longue Chasse | Lus ; grandes matrices par échantillon |
+| Projet Supabase commun | Structure des tables | Plusieurs applications | Lue le 13 nov. 2026, en lecture seule ; aucun contenu de sauvegarde lu |
 | Bible V5, classeurs Aliens Tantalus et SG2D | Autres | Autres projets | Non lus |

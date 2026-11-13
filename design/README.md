@@ -1,6 +1,6 @@
 # Bible de Predator: Hive Warriors
 
-Établie les 12 et 13 novembre 2026 à partir du code (v58.0), d'un essai en navigateur et des classeurs Excel de « Yautja : La Longue Chasse ».
+Établie les 12 et 13 novembre 2026 à partir du code (v58.0), d'un essai en navigateur, des classeurs Excel de « Yautja : La Longue Chasse » et de la structure du projet Supabase existant.
 
 | Document | Contenu |
 |---|---|
