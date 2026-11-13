@@ -1,7 +1,7 @@
 # Personnages de La Longue Chasse jouables dans Hive Warriors
 
 > Bible du jeu, document 4. Décisions HW-DEC-15, 18, 19, 24 et 27 à 32.
-> Statut : **fiches proposées, à valider par l'auteur.** Rien de ceci n'est dans le code.
+> Statut : **fiches validées en bloc par l'auteur le 13 novembre 2026** (HW-DEC-46). Les chiffres seront ajustés après essais. Rien de ceci n'est dans le code.
 
 ## 1. Comment lire ces fiches
 

@@ -1,6 +1,6 @@
 # Feuille de route
 
-> Bible du jeu, document 5. Décisions HW-DEC-33 à 43.
+> Bible du jeu, document 5. Décisions HW-DEC-33 à 47.
 > Statut : **ordre validé par l'auteur le 13 novembre 2026** (HW-DEC-40).
 
 ## 1. L'écart à regarder en face
@@ -41,7 +41,7 @@ Tronc commun et quatre emplacements, Musou par chasseur, conflits de touches lev
 **Sortie** : les sept chasseurs se jouent différemment, sans touche en conflit.
 
 ### Phase 3 — La carte à zones
-C'est le plus gros chantier (HW-DEC-33). Les cartes à zones portent la campagne ; les arènes fermées actuelles restent pour le mode sans fin et les défis (HW-DEC-41). On commence par **une chasse pilote** : je propose Xenomorph Prime, dont la Bible V6 décrit déjà 12 secteurs (question Q33).
+C'est le plus gros chantier (HW-DEC-33). Les cartes à zones portent la campagne ; les arènes fermées actuelles restent pour le mode sans fin et les défis (HW-DEC-41). On commence par **une chasse pilote**, décrite en section 5 (HW-DEC-44).
 - Carte plus grande, découpée en zones.
 - Chaque zone est tenue par un officier de ruche ; l'abattre la fait basculer.
 - Les zones prises tarissent les renforts ; la dernière fait sortir le boss.
@@ -67,13 +67,14 @@ Récit d'introduction et de conclusion par chasse, codex complet débloqué en j
 Compte Supabase existant, sauvegarde en ligne, lecture de la progression de La Longue Chasse, déblocage de ses 19 personnages, classement.
 Préalables : vérifier les règles d'accès de la table de sauvegarde ; décider du comportement sur deux appareils.
 
-**Classement vérifié (HW-DEC-43).** Chaque partie doit être contrôlée côté serveur avant d'entrer au classement. Le jeu actuel ne le permet pas : il calcule tout dans le navigateur et tire son hasard sans graine, donc une partie ne peut pas être rejouée à l'identique. Il faut, dans l'ordre :
-1. un hasard à graine fixe pour tout ce qui touche au score ;
-2. un journal des saisies du joueur, envoyé avec le score ;
-3. un contrôle côté serveur, qui rejoue la partie ou en vérifie la vraisemblance ;
+**Classement vérifié par vraisemblance (HW-DEC-43 et 45).** Le jeu envoie avec son score un résumé minute par minute : éliminations, dégâts infligés et reçus, vague ou zone atteinte, durée. Le serveur rejette ce qui est impossible et n'inscrit que le reste. Cela arrête la triche grossière, pas un tricheur patient ; un rejeu complet a été écarté. Il faut, dans l'ordre :
+1. le résumé de partie, produit pendant le jeu ;
+2. les bornes de vraisemblance, tirées des chiffres réels du jeu une fois l'équilibrage fait ;
+3. le contrôle côté serveur ;
 4. la table de scores et son affichage.
 
-C'est un chantier à part entière. Aucun classement n'est publié avant qu'il soit fait (question Q32).
+Aucun classement n'est publié avant.
+
 **Sortie** : un joueur de La Longue Chasse retrouve ses personnages dans Hive Warriors.
 
 ### Phase 8 — Extensions
@@ -96,3 +97,31 @@ Lots proposés, dans l'ordre :
 ## 4. Prudence sur les œuvres récentes
 
 Les entrées tirées de *Predator: Badlands* et de *Killer of Killers* (2025) reprennent les noms présents dans le catalogue des 54 gantelets de La Longue Chasse. Leurs détails (lieux, époques, noms de chasseurs) sont à vérifier sur les œuvres avant toute écriture ; les onglets 18 et 19 les marquent « à définir ».
+
+## 5. La chasse pilote : l'épreuve de la meute
+
+> Décision HW-DEC-44. Votre réponse était : une chasse inscrite dans l'univers, par meute d'Unblooded, avec un Adjutant et un Elite qui surveillent et guident, contre la faune extraterrestre. Ce qui suit est mon interprétation, à confirmer (question Q34).
+
+### Pourquoi elle convient
+- **Elle est conforme à la Bible V6.** Avant le rang Blooded, tout se passe sur le Homeworld ; Adjutant est une fonction, pas un rang ; la faune y compte 28 espèces originales. Aucun personnage ni lieu de film n'est nécessaire.
+- **Elle sert de prologue.** C'est la chasse numéro zéro : le joueur apprend le jeu avant les Xénomorphes.
+- **Elle justifie les alliés.** La meute d'Unblooded reprend les alliés Yautja déjà codés, ici à leur place.
+
+### Déroulement
+- **Lieu** : une région du Homeworld. Je propose la Jungle des Piliers ; à confirmer (question Q35).
+- **Le joueur** : un Unblooded parmi une meute de trois ou quatre.
+- **L'Elite** surveille depuis les hauteurs. Il n'intervient que si un Unblooded tombe : il le relève une fois, et la chasse perd alors son meilleur rang de récompense.
+- **L'Adjutant** guide : il annonce les zones, désigne la proie suivante, commente les fautes. C'est la voix du tutoriel.
+- **Les zones** : trois ou quatre territoires de troupeau. Chaque zone est tenue par un meneur de harde ; l'abattre fait fuir le troupeau et ouvre la suivante.
+- **La grande proie** : la dernière zone abrite un spécimen dominant. Le faire chanceler, puis l'exécuter, termine l'épreuve.
+- **La règle d'honneur** : les petits et les bêtes qui fuient ne comptent pas. La Bible V6 demande de lire la « capacité de riposte » de la proie ; ici, frapper une bête qui fuit ne rapporte rien.
+
+### Ce qu'elle teste
+1. Le découpage en zones et leur bascule.
+2. Le meneur de zone, modèle des futurs officiers de ruche.
+3. Les alliés qui combattent sans voler la chasse au joueur.
+4. Une carte plus grande que 150 m, donc le plafond d'ennemis et la mise en commun des maillages.
+
+### Ce qui manque pour l'écrire
+- Les noms et comportements de la faune : l'onglet « Faune et adversaires » de la Bible V6 en liste 28, dont je ne connais que sept noms (Briseur de basalte, Fouisseur de verre, Chasseur de canopée, Dents de neige, Traqueur des lisières, Faucheur de Vara-Kesh, Pisteur de chenil). Le classeur n'est plus accessible depuis le dernier redémarrage de la session.
+- Le titre « Hive Warriors » : cette chasse n'a ni ruche ni Xénomorphe. Elle est un prologue, pas une chasse de campagne.
