@@ -1,6 +1,6 @@
 # Predator: Hive Warriors — Vision et conception
 
-> Bible du jeu, document 1 sur 3. Statut : **cible validée par l'auteur le 12 novembre 2026** (décisions HW-DEC-01 à 56).
+> Bible du jeu, document 1 sur 3. Statut : **cible validée par l'auteur le 12 novembre 2026** (décisions HW-DEC-01 à 60).
 > Ce document dit ce que le jeu doit être. Ce qu'il est réellement aujourd'hui est dans [etat-reel-v58.md](etat-reel-v58.md).
 > Les chiffres et listes sont dans [annexes-tables.md](annexes-tables.md) et dans le classeur `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 

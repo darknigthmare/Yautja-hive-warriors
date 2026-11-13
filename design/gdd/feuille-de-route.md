@@ -1,6 +1,6 @@
 # Feuille de route
 
-> Bible du jeu, document 5. Décisions HW-DEC-33 à 56.
+> Bible du jeu, document 5. Décisions HW-DEC-33 à 60.
 > Statut : **ordre validé par l'auteur le 13 novembre 2026** (HW-DEC-40).
 
 ## 1. L'écart à regarder en face
@@ -110,22 +110,33 @@ La campagne n'est plus la suite des 8 chasses de films. C'est **l'ascension d'un
 3. **Le rang Blooded**, qui ouvre les 8 chasses de films comme chroniques légendaires, jouées avec les chasseurs de films (HW-DEC-56).
 
 ### Les chasses de faune
-- **Lieu** : un **monde sauvage** (HW-DEC-49 et 53) : une planète naturelle, hostile, que le clan n'a jamais domptée. Les Unblooded y sont largués. Il n'a pas encore de nom (question Q40).
+- **Lieu** : un **monde sauvage** (HW-DEC-49 et 53) : une planète naturelle, hostile, que le clan n'a jamais domptée. Les Unblooded y sont largués. Ce sera l'un des 24 mondes de l'atlas de la Bible V6 (HW-DEC-57) ; voir « Le choix du monde » plus bas.
 - **Le joueur** : un Unblooded parmi une meute de trois ou quatre. Kit : lames de poignet, combistick et **brûleur** (HW-DEC-50). Pas de canon d'épaule, qui vient avec le rang Blooded.
 - **L'Adjutant guide** : il annonce les zones, désigne la proie suivante, commente les fautes. C'est la voix du tutoriel.
 - **L'Elite surveille** depuis les hauteurs. Proposition : il ne relève un Unblooded tombé qu'une fois, au prix de la meilleure récompense.
-- **Huit régions** (HW-DEC-51 et 54), les huit milieux des missions de chasse de La Longue Chasse : jungle, marais, désert, fongique, glace, océan, volcan, ruines. Une chasse par région, débloquées l'une après l'autre ; l'ordre est proposé dans l'onglet `22_RegionsFaune`.
+- **Huit régions** (HW-DEC-51 et 54), les huit milieux des missions de chasse de La Longue Chasse : jungle, marais, désert, fongique, glace, océan, volcan, ruines. Une chasse par région, débloquées dans cet ordre (HW-DEC-60). Chaque chasse dure cinq à huit minutes (HW-DEC-59).
 - **Les zones** : chaque région compte trois ou quatre territoires de harde, tenus par un meneur ; l'abattre ouvre la zone suivante. La dernière abrite une grande proie, à faire chanceler puis à exécuter.
 - **La règle d'honneur** (proposition) : frapper une bête qui fuit ne rapporte rien. La Bible V6 demande de lire la « capacité de riposte » de la proie.
 
 ### Le rite de passage
 Une **triade dans la pyramide** (HW-DEC-55) : trois Unblooded, armes à énergie exclues, donc sans le brûleur. Tuer son premier Xénomorphe donne le rang Blooded, le canon d'épaule et l'accès aux chroniques. La pyramide antarctique déjà codée sert de base.
 
-### Longueur de la campagne
-Huit chasses de faune, puis le rite : la ruche n'apparaît qu'à la neuvième chasse. Pour un jeu qui s'appelle « Hive Warriors », c'est tard. Deux parades possibles, à décider : des chasses de faune courtes (cinq à huit minutes), ou des traces de Xénomorphes semées dès les dernières régions pour annoncer le rite.
+### La ruche annoncée
+Huit chasses de faune, puis le rite : la ruche n'apparaît qu'à la neuvième chasse. Deux parades décidées (HW-DEC-59) :
+- des chasses de faune **courtes**, de cinq à huit minutes ;
+- des **traces de Xénomorphes** dès les dernières régions : mues, résine, carcasses vidées. Proposition de répartition : une mue dans la glace, de la résine sur la côte, une carcasse à cage thoracique ouverte au volcan, un œuf éclos dans les ruines.
 
 ### La région du volcan
-Dans La Longue Chasse, la mission du volcan a pour adversaire un Bad Blood, un Yautja renégat. Ce n'est pas de la faune, et un Unblooded n'est pas censé l'affronter. Proposition (question Q41) : le Bad Blood est la menace de la région, c'est l'Elite qui l'affronte, et la meute doit survivre tout en chassant une bête du volcan.
+Dans La Longue Chasse, la mission du volcan a pour adversaire un Bad Blood, un Yautja renégat. Ici, **l'Elite s'en charge** (HW-DEC-58) : le Bad Blood rôde, l'Elite l'affronte en arrière-plan, et la meute doit survivre tout en chassant une bête du volcan. Les Unblooded ne tuent pas un Yautja. C'est aussi la seule chasse où l'Elite quitte son poste d'observation : la meute y est sans filet.
+
+### Le choix du monde
+Le monde sauvage sera l'un des 24 mondes de l'atlas de la Bible V6 (HW-DEC-57). Je connais leurs noms, pas leurs descriptions : le connecteur Drive ne répond plus depuis le dernier redémarrage de la session, et le choix reste donc ouvert (question Q43).
+
+- **Exclus** : le Homeworld (PLAN01, écarté par HW-DEC-49), Xeno Prime (PLAN08, le monde-ruche), Namarra (PLAN13, monde habité par des humains, celui de Mara Venn), Korthas (PLAN19, théâtre de la guerre des clans).
+- **Candidat connu** : Vara-Kesh (PLAN03), le seul dont je connaisse une espèce, le Faucheur de Vara-Kesh.
+- **Les 19 autres** : Kharuun, Nereth, Oshara, Rukh Tal, Sileth, Dharos, Morrak, Eshra, Terek-Va, Qorr, Asha-Ruun, Vor-Kel, Tala-Mor, Enshar, Vesh-Kar, Oruun, Sahr-Keth, Ilyss, Ura-Denn.
+
+Le bon choix est un monde que l'atlas décrit comme sauvage et à plusieurs milieux ; il faut relire l'onglet « Atlas des mondes » pour trancher.
 
 ### Écarts à connaître
 - **Avec la Bible V6** : elle place tout sur le Homeworld avant le rang Blooded, et exige un vaisseau possédé pour voyager. Une planète dédiée dès Unblooded s'en écarte ; l'écart est assumé par le statut hors canon de Hive Warriors.
