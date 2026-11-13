@@ -1,6 +1,6 @@
 # État réel du jeu à la v58
 
-> Bible du jeu, document 3 sur 3. Constat daté du 12 novembre 2026, commit `1242f66`.
+> Bible du jeu, document 3 sur 3. Constat daté du 13 novembre 2026.
 > Il dit ce que le code fait vraiment, par opposition à la cible de [game-concept.md](game-concept.md).
 
 ## 1. Le fait principal
@@ -18,29 +18,33 @@
 
 ## 2. Correctifs livrés
 
-Quatre corrections minimales (commit `1242f66`) :
+Cinq corrections minimales (commits `1242f66` et suivant) :
 1. `GoreEngine.js` : accolade fermante rétablie.
 2. `main.js` : seconde variable `isNearCrypt` renommée.
 3. `Player.js` : le gestionnaire de synthétiques est transmis au lieu d'un nom non défini.
 4. `Environment.js` : le système de particules est résolu au lieu d'un nom non défini.
+5. `main.js:2973` : le monte-charge était lu par un champ inexistant (`switchPos` au lieu de `pos`).
 
-Les correctifs 3 et 4 n'étaient pas dans la demande initiale : ils se sont révélés une fois le jeu chargé, chacun cassait toutes les images.
+Seuls les deux premiers étaient demandés. Les trois autres se sont révélés une fois le jeu chargé : chacun levait une erreur à chaque image. Le cinquième arrêtait chaque image **avant le rendu 3D, la progression des vagues et le test de défaite** : l'écran restait noir derrière l'interface.
 
 ## 3. Ce qui a été vérifié en jeu
 
-Essai automatisé dans Chromium, 25 secondes par arène, saisies clavier et clics en boucle.
+Essai automatisé dans Chromium le 13 novembre 2026, 40 secondes par arène, saisies clavier et clics en boucle.
 
 | Vérifié | Résultat |
 |---|---|
 | Construction (`vite build`) | Réussie |
 | Menu, choix du chasseur, de l'arène, préparation | Fonctionnent |
 | Lancement d'une mission dans les 8 arènes | Fonctionne |
-| Attaques, combos, score | Fonctionnent (score de 575 à 7275, combos de 8 à 56 selon l'arène) |
-| Dégâts reçus | Fonctionnent (1000 → 550 points de vie) |
+| Rendu 3D | Fonctionne (capture en jeu à Val Verde) |
+| Attaques, combos, score | Fonctionnent (score de 7 775 à 20 150, combos de 58 à 156) |
+| Progression des vagues | Fonctionne (vague 2 atteinte dans 5 arènes, vague 3 dans une) |
+| Défaite et écran de fin | Fonctionnent dans les 8 arènes |
+| Erreurs en console | Aucune sur les 8 essais |
 
-**Non vérifié** : tout ce qui se passe après la vague 1, les boss, les exécutions, les soutiens, la forge, la coopération, le son.
+**Non vérifié** : les boss, les exécutions, la vague 4 et au-delà, les soutiens, la forge, la coopération, le son, les performances sur une vraie carte graphique.
 
-**Encore en erreur** : une exception à chaque image (`distanceTo` sur une position indéfinie), non localisée. Le jeu avance malgré elle, mais une partie de la mise à jour de chaque image est interrompue.
+**Observé sans en connaître la cause** : le chasseur meurt en moins de 40 secondes dans les 8 arènes sous des saisies automatiques ; des confettis sont tirés sur l'écran de défaite ; le filtre de vision reste affiché derrière cet écran.
 
 ## 4. Ce que le jeu fait aujourd'hui
 
@@ -79,7 +83,7 @@ La liste priorisée est dans l'onglet `11_P0_Defauts`.
 
 ## 6. Ordre de travail proposé
 
-1. **Stabiliser** : zéro erreur en console sur une chasse complète (HW-BUG-05, 06, 08, 09).
+1. **Stabiliser** : zéro erreur en console sur une chasse complète, boss compris (HW-BUG-06, 08, 09).
 2. **Donner une fin** : victoire par exécution du boss d'arène, pause, retour au menu (HW-BUG-07, 13, 14).
 3. **Rendre chaque arène à elle-même** : trois boss manquants, décor générique réparti (HW-BUG-15).
 4. **Resserrer le kit** : tronc commun, quatre emplacements, Musou par chasseur (HW-BUG-10, 11).

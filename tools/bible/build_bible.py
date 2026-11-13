@@ -18,7 +18,7 @@ XLSX = ROOT / "design" / "Yautja_HiveWarriors_V58_Bible.xlsx"
 MD = ROOT / "design" / "gdd" / "annexes-tables.md"
 
 # Vocabulaire de statut (voir canon-et-regles-editoriales.md §5)
-V = "Vérifié en jeu (12 nov. 2026)"
+V = "Vérifié en jeu (13 nov. 2026)"
 S = "Écrit, socle ≤v38, non revérifié"
 N = "Écrit v39+, jamais exécuté avant correctif"
 D = "Décoratif (texte ou affichage seul)"
@@ -35,7 +35,7 @@ TABLES["00_Synthese"] = (
         ["Place dans l'univers", "Jeu frère de « Yautja : La Longue Chasse » ; classé « chroniques légendaires », hors canon de la campagne commune"],
         ["Version du code", "v58.0 (git) ; titre de page v27.0 ; sous-titre v29.0 ; package.json 1.0.0"],
         ["Dernière version qui se chargeait", "v33.0 (erreurs de syntaxe de v34 à v58)"],
-        ["État au 12 nov. 2026", "Se construit et se lance après 4 correctifs ; mission jouable dans les 8 arènes ; une erreur par image subsiste"],
+        ["État au 13 nov. 2026", "Se construit et se lance après 5 correctifs ; rendu 3D, vagues et défaite fonctionnent dans les 8 arènes ; aucune erreur en console sur 40 s"],
         ["Chasseurs jouables", "7"],
         ["Arènes", "8 (même plan 150×150 m, décor propre par arène)"],
         ["Boss codés", "10 identifiants + 1 gabarit par défaut ; 3 boss d'arène manquants"],
@@ -53,7 +53,7 @@ TABLES["01_Decisions"] = (
     [
         ["HW-DEC-01", "Lien avec les classeurs Excel de La Longue Chasse", "Même univers", "Hérite du canon et des règles de preuve ; chaque écart est signalé"],
         ["HW-DEC-02", "Périmètre décrit", "Vision + état réel", "Chaque système porte un statut et une décision de tri"],
-        ["HW-DEC-03", "Erreurs bloquantes", "Corriger", "4 correctifs minimaux livrés ; le reste est listé en P0"],
+        ["HW-DEC-03", "Erreurs bloquantes", "Corriger", "5 correctifs minimaux livrés ; le reste est listé en P0"],
         ["HW-DEC-04", "Format", "Markdown + Excel", "Documents dans design/gdd et ce classeur"],
         ["HW-DEC-05", "Promesse centrale", "Musou d'abord", "Furtivité et factions sont des épices ; arbitre des conflits de conception"],
         ["HW-DEC-06", "Structure", "Campagne + sans fin", "8 chasses avec victoire par exécution du boss ; sans fin débloqué par arène"],
@@ -272,7 +272,7 @@ TABLES["11_P0_Defauts"] = (
         ["HW-BUG-02", "P0", "Variable isNearCrypt déclarée deux fois (depuis v57)", "js/main.js:3071", "Corrigé le 12 nov."],
         ["HW-BUG-03", "P0", "Nom « synthetics » non défini à chaque image", "js/entities/Player.js:2202", "Corrigé le 12 nov."],
         ["HW-BUG-04", "P0", "Nom « particles » non défini à chaque image", "js/entities/Environment.js:1083", "Corrigé le 12 nov."],
-        ["HW-BUG-05", "P0", "Erreur à chaque image : distanceTo sur une position indéfinie", "À localiser", "Ouvert"],
+        ["HW-BUG-05", "P0", "Champ inexistant (switchPos) : chaque image s'arrêtait avant le rendu 3D, les vagues et la défaite", "js/main.js:2973", "Corrigé le 13 nov."],
         ["HW-BUG-06", "P0", "window.gameInstance est lu 182 fois et n'est jamais défini (l'objet s'appelle window.game)", "6 fichiers d'entités", "Ouvert"],
         ["HW-BUG-07", "P0", "Aucune condition de victoire : endGame(true) n'est jamais appelé", "js/main.js", "Ouvert"],
         ["HW-BUG-08", "P0", "Un boss ne meurt pas par les dégâts ; seule l'exécution le retire et il bloque les vagues", "js/entities/Bosses.js", "Ouvert"],
@@ -288,6 +288,8 @@ TABLES["11_P0_Defauts"] = (
         ["HW-BUG-18", "P2", "Numéros de version discordants (v6, v12, v27, v29, v58, 1.0.0)", "index.html, main.js, package.json", "Ouvert"],
         ["HW-BUG-19", "P2", "Aucune limite d'ennemis ni mise en commun des maillages : la vague N crée 45 + 15N objets", "js/entities/XenomorphHorde.js", "Ouvert"],
         ["HW-BUG-20", "P2", "Liste des commandes des options figée vers v29", "index.html", "Ouvert"],
+        ["HW-BUG-21", "P1", "Le chasseur meurt en moins de 40 s sous des saisies automatiques dans les 8 arènes ; équilibrage à mesurer avec un vrai joueur", "Essai du 13 nov.", "Ouvert"],
+        ["HW-BUG-22", "P2", "Des confettis sont tirés sur l'écran de défaite et le filtre de vision reste affiché", "Essai du 13 nov.", "Ouvert"],
     ],
 )
 
@@ -332,7 +334,7 @@ TABLES["14_Sources"] = (
     ["Source", "Nature", "Projet", "Lecture"],
     [
         ["Dépôt yautja-hive-warriors, 60 commits jusqu'à v58.0", "Code", "Hive Warriors", "Audit complet par fichier ; vérification de syntaxe sur chaque commit"],
-        ["Essai en navigateur du 12 nov. 2026", "Preuve d'exécution", "Hive Warriors", "8 arènes, 25 s chacune, saisies automatiques ; vague 1 seulement"],
+        ["Essai en navigateur du 13 nov. 2026", "Preuve d'exécution", "Hive Warriors", "8 arènes, 40 s chacune, saisies automatiques ; jusqu'à la vague 3 ; aucun boss atteint"],
         ["Yautja_V6_Bible_Cumulative_et_Dialogues.xlsx", "Bible, 139 onglets", "La Longue Chasse", "Onglets de structure et de canon lus ; dialogues non lus"],
         ["catalogue_yautja_tous_medias.xlsx", "Catalogue, 255 désignations", "Référence franchise", "Lu"],
         ["YAUTJA_V100_SUIVI.xlsx", "Suivi, 27 onglets", "La Longue Chasse", "Parcouru par mots-clés"],
