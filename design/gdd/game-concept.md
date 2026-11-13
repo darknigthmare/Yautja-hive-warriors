@@ -1,6 +1,6 @@
 # Predator: Hive Warriors — Vision et conception
 
-> Bible du jeu, document 1 sur 3. Statut : **cible validée par l'auteur le 12 novembre 2026** (décisions HW-DEC-01 à 64).
+> Bible du jeu, document 1 sur 3. Statut : **cible validée par l'auteur le 12 novembre 2026** (décisions HW-DEC-01 à 76).
 > Ce document dit ce que le jeu doit être. Ce qu'il est réellement aujourd'hui est dans [etat-reel-v58.md](etat-reel-v58.md).
 > Les chiffres et listes sont dans [annexes-tables.md](annexes-tables.md) et dans le classeur `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 
@@ -131,7 +131,7 @@ Le code fait aujourd'hui apparaître 16 unités fixes à chaque vague, dont six 
 - **Combat** : verrouillage de cible, changement d'arme en combo, mises à mort contextuelles, furtivité d'ouverture (HW-DEC-35). La furtivité reste une ouverture, conformément au pilier 1.
 - **Modes** : niveaux de difficulté, mode libre, défis de chasse, classement en ligne vérifié côté serveur (HW-DEC-36 et 43).
 - **Rangs** : propres à Hive Warriors, gagnés par les trophées de boss (HW-DEC-42).
-- **Campagne** : elle devient l'ascension d'un Unblooded (HW-DEC-48 à 51). Des chasses de faune en meute, sur un monde sauvage en huit régions (HW-DEC-53 et 54), guidées par un Adjutant et surveillées par un Elite ; le joueur y a lames, combistick et brûleur. Les Xénomorphes n'arrivent qu'au rite de passage, une triade dans la pyramide, armes à énergie exclues (HW-DEC-55). Les 8 chasses de films de la section 6 deviennent des chroniques ouvertes au rang Blooded (HW-DEC-56). Le monde retenu est Vara-Kesh ; la meute est la cohorte de la voie O6 (Harek, Yena, Tov, guidés par Saar) ; chaque région donne un outil (HW-DEC-61 à 63). Détail dans [campagne-unblooded.md](campagne-unblooded.md).
+- **Campagne** : l'ascension d'un Unblooded (HW-DEC-48). La meute (Harek, Yena, Tov, guidés par Saar) est emmenée par le vaisseau de son Elite sur huit mondes de l'atlas de la Bible V6, un par milieu, de Vara-Kesh à Dharos (HW-DEC-72 à 75) ; le joueur y a lames, combistick et brûleur, et gagne un outil par monde. Les Xénomorphes n'arrivent qu'au rite de passage, une triade dans la pyramide (HW-DEC-55). Les 8 chasses de films s'ouvrent ensuite comme chroniques (HW-DEC-56). Détail dans [campagne-unblooded.md](campagne-unblooded.md).
 - **Boss** : courbe provisoire de points de vie, croissante de la 1re à la 8e chasse (HW-DEC-47, onglet `21_CourbeBoss`).
 - **Univers** : récit par chasse, codex complet, citadelle à parcourir, musique par arène (HW-DEC-39).
 - **Extensions** : tous les lieux et chasseurs iconiques manquants (HW-DEC-37 et 38).

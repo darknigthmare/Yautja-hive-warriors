@@ -121,6 +121,11 @@ TABLES["01_Decisions"] = (
         ["HW-DEC-69", "Conflit entre la Bible V6 et la campagne validée", "La Bible V6 l'emporte", "Ses mondes et espèces sont repris là où ils existent ; l'invention ne comble que les trous"],
         ["HW-DEC-70", "Boss de Val Verde", "Prétorien de garde", "Collerette blindée qui encaisse de face, charges, dos exposé ; codé le 13 nov."],
         ["HW-DEC-71", "Décor générique", "Rendu à son arène", "Chaque élément n'apparaît que dans l'arène qui lui correspond ; ceux sans arène attendent les lieux futurs ; codé le 13 nov."],
+        ["HW-DEC-72", "Unblooded hors du Homeworld", "Emmenés par le vaisseau de leur Elite et de leur Adjutant", "Les Unblooded ne voyagent pas par eux-mêmes et ne prennent pas la place de leur chef ; écart assumé avec la lettre de CORE-R05"],
+        ["HW-DEC-73", "Monde de chaque région", "Un monde de l'atlas par région (lecture de Claude)", "Vara-Kesh, Eshra, Kharuun, Terek-Va, Nereth, Oshara, Rukh Tal, Dharos ; remplace le monde unique de HW-DEC-53 et 61"],
+        ["HW-DEC-74", "Quatrième région", "Grottes Thermiques", "Hors du Homeworld : Terek-Va, monde de cavernes de l'atlas"],
+        ["HW-DEC-75", "Grandes proies", "Espèces de la Bible V6", "Proie de réserve du monde quand elle existe ; création sinon (Eshra, Kharuun, Terek-Va)"],
+        ["HW-DEC-76", "Droit TRUNCATE sur app_cloud_saves", "Retiré", "Fait le 13 nov. sur la base partagée ; lecture et écriture inchangées"],
         ["HW-DEC-12", "Alliés Yautja, armes humaines, véhicules et soutiens, coopération locale", "Tous conservés", "Le champ de bataille est une guerre ; ces systèmes sont à réparer, pas à couper"],
     ],
 )
@@ -381,11 +386,11 @@ TABLES["12_Canon"] = (
 )
 
 TABLES["13_Questions"] = (
-    "Questions ouvertes pour l'auteur (les autres ont été tranchées : voir HW-DEC-09 à 71)",
+    "Questions ouvertes pour l'auteur (les autres ont été tranchées : voir HW-DEC-09 à 76)",
     ["ID", "Question", "Pourquoi elle compte", "Défaut retenu en attendant"],
     [
-        ["Q46", "Les Unblooded peuvent-ils quitter le Homeworld ?", "La Bible V6 l'interdit (CORE-R05, RANK-01, HOME-R04) alors que HW-DEC-49 a choisi une planète dédiée ; HW-DEC-69 donne la priorité à la Bible V6", "En attente de l'auteur"],
-        ["Q47", "Faut-il retirer le droit TRUNCATE du rôle authenticated sur app_cloud_saves ?", "Durcissement d'une base partagée par plusieurs applications", "Non fait"],
+        ["Q48", "Ma lecture « un monde de l'atlas par région » est-elle la bonne ?", "Votre réponse parlait de « planètes » au pluriel ; aucun monde de l'atlas n'a huit milieux", "Huit mondes, onglet 22_RegionsFaune"],
+        ["Q49", "Quel vaisseau emmène la meute ?", "Il peut servir de base entre deux chasses, à la place du menu", "Le vaisseau de l'Elite, sans nom"],
     ],
 )
 
@@ -443,7 +448,7 @@ TABLES["17_Comptes"] = (
         ["yautja_cloud_saves", "Une ligne par compte : révision, instantané complet (20 Mo au plus), date ; décrite comme l'espace Yautja complet, synchronisé entre mobile et bureau ; 1 ligne présente", "Lue seulement, pour connaître les étapes franchies (HW-DEC-15)"],
         ["app_cloud_saves", "Une ligne par compte et par application : clé d'application, contenu, date ; décrite comme un instantané du stockage local par application ; vide", "Candidate pour la sauvegarde de Hive Warriors (Q20)"],
         ["Protection", "Vérifiée le 13 nov. en lecture seule : sur app_cloud_saves et yautja_cloud_saves, lecture, écriture et modification sont limitées à la ligne du joueur connecté ; app_cloud_saves autorise aussi la suppression de sa propre ligne", "Conforme à HW-DEC-67"],
-        ["Point d'attention", "Le rôle « authenticated » détient aussi le droit TRUNCATE sur app_cloud_saves, qui échappe à la sécurité par ligne. L'API REST de Supabase n'expose pas TRUNCATE, donc le risque est faible ; une fonction SQL exposée pourrait toutefois vider la table de toutes les applications", "Proposé : retirer ce droit ; non fait, la base est partagée par plusieurs applications"],
+        ["Point d'attention", "Le rôle « authenticated » détient aussi le droit TRUNCATE sur app_cloud_saves, qui échappe à la sécurité par ligne. L'API REST de Supabase n'expose pas TRUNCATE, donc le risque est faible ; une fonction SQL exposée pourrait toutefois vider la table de toutes les applications", "Retiré le 13 nov. (HW-DEC-76) ; vérifié : le rôle garde lecture, écriture, modification et suppression de sa propre ligne"],
         ["Méthode d'identification", "Adresse e-mail et mot de passe, par le service d'identification de Supabase (inscription, connexion, renouvellement de session, déconnexion) ; relevé dans app/game/systems/cloudAccountRestV71.ts de La Longue Chasse", "Reprise à l'identique (HW-DEC-23)"],
         ["Écriture de la sauvegarde de La Longue Chasse", "Révision optimiste : chaque écriture doit porter la révision précédente + 1, vérifiée par un déclencheur ; un conflit entre deux appareils est signalé au joueur", "Hive Warriors ne l'écrit jamais ; il lit l'instantané"],
         ["Sauvegarde de Hive Warriors", "Table app_cloud_saves retenue (HW-DEC-26) ; elle n'a pas de numéro de révision", "Le dernier appareil qui écrit l'emporte : risque à traiter (Q23)"],
@@ -547,18 +552,18 @@ TABLES["21_CourbeBoss"] = (
 )
 
 TABLES["22_RegionsFaune"] = (
-    "Les huit chasses de faune sur Vara-Kesh (HW-DEC-54, 60, 61, 63) ; noms de grandes proies tirés de La Longue Chasse, le reste inventé par Claude, à corriger",
-    ["Ordre", "Région", "Harde", "Meneur de zone", "Grande proie", "Outil gagné", "Trace de Xénomorphe"],
+    "Les huit chasses de l'Unblooded (HW-DEC-60, 72 à 75), rapprochées de la Bible V6 le 13 nov. ; « création » = inventé par Claude",
+    ["Ordre", "Milieu", "Monde (atlas Bible V6)", "Harde", "Meneur", "Grande proie", "Outil gagné", "Trace de Xénomorphe"],
     [
-        [1, "Jungle", "Coureurs de lianes (création)", "Mâle dominant", "Vey", "Lance-filet", ""],
-        [2, "Marais", "Rampeurs de vase (création)", "Matrone de vase", "Hydre", "Piège à mâchoires", ""],
-        [3, "Désert", "Fouisseurs de verre (nom Bible V6)", "Fouisseur géant", "Gueule des sables", "Leurre sonore", ""],
-        [4, "Fongique", "Porte-spores (création)", "Nœuds de mycélium", "Esprit de ruche fongique", "Mines", ""],
-        [5, "Glace", "Dents de neige (nom Bible V6)", "Femelle alpha", "Traqueur des glaces", "Disque", "Mue prise dans la glace"],
-        [6, "Océan", "Pinces de récif (création)", "Vieux mâle cuirassé", "Léviathan", "Fléchettes", "Résine dans la grotte côtière"],
-        [7, "Volcan", "Lézards de cendre (création)", "Lézard cuirassé de roche", "Briseur de basalte (nom Bible V6)", "Camouflage", "Carcasse à la cage thoracique ouverte"],
-        [8, "Ruines", "Traqueurs des lisières (nom Bible V6)", "Sentinelles de pierre", "Gardien ancien", "Shuriken", "Œuf éclos"],
-        [9, "Pyramide (rite)", "Xénomorphes", "—", "Premier Xénomorphe", "Canon d'épaule, rang Blooded", "—"],
+        [1, "Jungle", "Vara-Kesh (PLAN03)", "Coureurs de lianes (création)", "Mâle dominant (création)", "Faucheur de Vara-Kesh (FAU-21)", "Lance-filet", ""],
+        [2, "Marais", "Eshra (PLAN11)", "Rampeurs de vase (création)", "Matrone de vase (création)", "Hydre (création)", "Piège à mâchoires", ""],
+        [3, "Désert", "Kharuun (PLAN02)", "Coureurs des canyons (création)", "Fouisseur géant (création)", "Gueule des sables (création)", "Leurre sonore", ""],
+        [4, "Cavernes chaudes", "Terek-Va (PLAN12)", "Nuées des puits (création)", "Nœuds de nuée (création)", "Esprit de ruche des profondeurs (création)", "Mines", ""],
+        [5, "Glace", "Nereth (PLAN04)", "Rôdeurs blancs (création)", "Femelle alpha (création)", "Mâchoire de Nereth (FAU-22)", "Disque", "Mue prise dans la glace"],
+        [6, "Océan", "Oshara (PLAN05)", "Pinces de récif (création)", "Vieux mâle cuirassé (création)", "Nageur d'Oshara (FAU-23)", "Fléchettes", "Résine dans une grotte côtière"],
+        [7, "Volcan", "Rukh Tal (PLAN06)", "Lézards de cendre (création)", "Lézard cuirassé (création)", "Éperon de Rukh Tal (FAU-24)", "Camouflage", "Carcasse ouverte de l'intérieur"],
+        [8, "Ruines", "Dharos (PLAN09)", "Charognards des rues (création)", "Sentinelles (création)", "Guetteur de Dharos (FAU-26)", "Shuriken", "Œuf éclos"],
+        [9, "Rite", "Pyramide", "Xénomorphes", "—", "Premier Xénomorphe", "Canon d'épaule, rang Blooded", "—"],
     ],
 )
 

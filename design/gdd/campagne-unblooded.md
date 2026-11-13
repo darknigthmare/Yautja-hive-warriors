@@ -1,54 +1,38 @@
 # La campagne de l'Unblooded
 
-> Bible du jeu, document 6. Décisions HW-DEC-48 à 51 et 53 à 66.
-> Statut : **validée par l'auteur le 13 novembre 2026** (HW-DEC-66). Le contenu inventé par Claude fait référence, et reste à rapprocher de la Bible V6. Rien de ceci n'est dans le code.
+> Bible du jeu, document 6. Décisions HW-DEC-48 à 51, 53 à 56, 58 à 63, 65, 66, 69 et 72 à 75.
+> Statut : **rapprochée de la Bible V6 le 13 novembre 2026.** Les mondes et les espèces viennent de la Bible V6 quand ils existent ; le reste est inventé par Claude et marqué « création ». Rien de ceci n'est dans le code.
 
-## 0. Rapprochement avec la Bible V6 (13 novembre 2026) — conflit à trancher
+## 1. Le principe : la meute voyage à bord du vaisseau de ses aînés
 
-La Bible V6 a pu être relue (onglets « Atlas des mondes », « Faune et adversaires », « Game Preserve », « Socle du jeu », « Rangs et fonctions »). Selon HW-DEC-69, elle l'emporte. Elle contredit la campagne sur un point bloquant :
+La Bible V6 interdit à un Unblooded de voyager entre les étoiles par lui-même : il faut le rang Blooded et un vaisseau acquis (CORE-R05, RANK-01, RANK-04, HOME-R04, JOURNEY-05).
 
-**Les Unblooded ne quittent jamais le Homeworld.** CORE-R05 : « Les missions pré-Blooded se déroulent sur le Homeworld, y compris déplacements entre régions, ateliers et réserves locales. » Même règle dans RANK-01, RANK-04, HOME-R04, JOURNEY-05, TR-R18. Les 23 autres mondes de l'atlas exigent tous le rang Blooded et un vaisseau.
+La réponse de l'auteur (HW-DEC-72) : dans le lore, les meutes d'Unblooded **sont emmenées** sur d'autres mondes par leur Elite et leur Adjutant, **à bord du vaisseau de ceux-ci**. Les Unblooded ne partent pas d'eux-mêmes, ne pilotent pas et ne prennent pas la place de leur chef. Le voyage appartient aux aînés ; l'Unblooded ne fait que chasser là où on l'a déposé.
 
-Autres écarts :
-- **Vara-Kesh** (PLAN03) n'est pas un monde sauvage à plusieurs milieux : c'est une jungle seule, réserve de chasse GP01, avec dix combattants humains permanents et un guide local.
-- **Aucun monde de l'atlas n'a huit milieux.** Chacun a un milieu dominant.
-- **Six des sept grandes proies** (Vey, Hydre, Gueule des sables, Esprit de ruche fongique, Traqueur des glaces, Gardien ancien) n'existent pas dans la Bible V6 ; « Léviathan » n'y est qu'un nom de lieu, la Côte des Léviathans du Homeworld.
-- **Il n'y a pas de milieu fongique** dans la Bible V6.
-- **Cinq espèces de la Bible V6 étaient mal employées** : le Fouisseur de verre est un prédateur embusqué, pas une harde ; les Dents de neige sont une meute de prédateurs ; le Traqueur des lisières vit dans la Réserve interdite, pas dans les ruines ; le Faucheur de Vara-Kesh est une proie de réserve solitaire, pas un danger errant ; le Briseur de basalte est un herbivore des Marches de Cendre.
+**Lecture de cette bible** : c'est un écart assumé avec la lettre de CORE-R05, justifié par son esprit. Aucun Unblooded ne possède de vaisseau ni ne choisit sa route, ce que les règles de la Bible V6 cherchent à garantir.
 
-**Ce que la Bible V6 offre à la place.** Le Homeworld compte dix régions, chacune avec sa faune, qui couvrent presque exactement les huit milieux décidés :
+Proposition : le vaisseau de l'Elite sert de base entre deux chasses, à la place du menu. Il pourrait reprendre « La Veille Partagée », le navire de clan de la Bible V6, ou un vaisseau propre à l'Elite (à décider).
 
-| Région décidée | Région du Homeworld | Harde | Meneur | Grande proie |
+## 2. Les huit mondes
+
+L'interprétation retenue (HW-DEC-73) : chaque région décidée devient **un monde de l'atlas de la Bible V6**, puisque chacun y a un milieu dominant. La meute change de monde à chaque chasse.
+
+| Ordre | Milieu | Monde (atlas Bible V6) | Ce qu'en dit la Bible V6 | Grande proie |
 |---|---|---|---|---|
-| Jungle | Jungle des Piliers | Grimpeur à plaques (FAU-05) | Chasseur de canopée (FAU-06) | à créer |
-| Marais | Marais Luminescents | Porte-lanterne (FAU-08) | Rôdeur des roseaux (FAU-07) | à créer |
-| Désert | Désert de Verre | Coureur des dunes (FAU-03) | Fouisseur de verre (FAU-04) | à créer |
-| Fongique | aucune ; Grottes Thermiques ou Chaîne des Orages | Fouisseur de chaleur (FAU-13) ou Marcheur des vents (FAU-10) | Crochet des sources (FAU-14) ou Rapace de crête (FAU-09) | à créer |
-| Glace | Couronne Froide | Marcheur du givre (FAU-15) | Dents de neige (FAU-16) | à créer |
-| Océan | Côte des Léviathans | Carapace de ressac (FAU-11) | à créer | Long-dos des passes (FAU-12) |
-| Volcan | Marches de Cendre | Scarabée des scories (FAU-01) | à créer | Briseur de basalte (FAU-02) |
-| Ruines | Ruines de la Première Cité | Veilleur de pierre (FAU-17) | Griffe des arches (FAU-18) | à créer |
-| (en plus) | Réserve Interdite | — | Traqueur des lisières (FAU-19) | Porte-corne du Homeworld (FAU-20) |
+| 1 | Jungle | **Vara-Kesh** (PLAN03) | Jungle dense, canopée, racines et ravins ; « chasse verticale et retour par les branches » ; réserve GP01 | Faucheur de Vara-Kesh (FAU-21) |
+| 2 | Marais | **Eshra** (PLAN11) | Monde de brumes, marais, bois pétrifiés, chenaux ; réserve GP08 | Hydre (création) |
+| 3 | Désert | **Kharuun** (PLAN02) | Désert rocheux, canyons, arches, dunes froides ; « bête qui efface sa piste dans le vent » | Gueule des sables (création) |
+| 4 | Cavernes chaudes | **Terek-Va** (PLAN12) | Monde de cavernes, failles, puits, « anciennes machines » ; réserve GP09 | Esprit de ruche des profondeurs (création) |
+| 5 | Glace | **Nereth** (PLAN04) | Monde glaciaire, crêtes, cavernes bleues ; écho thermique sous la glace ; réserve GP02 | Mâchoire de Nereth (FAU-22) |
+| 6 | Océan | **Oshara** (PLAN05) | Monde océanique, îlots, falaises, stations de marée ; traque amphibie ; réserve GP03 | Nageur d'Oshara (FAU-23) |
+| 7 | Volcan | **Rukh Tal** (PLAN06) | Monde volcanique, basalte, fumées, anciens tunnels ; cycles de chaleur ; réserve GP04 | Éperon de Rukh Tal (FAU-24) |
+| 8 | Ruines | **Dharos** (PLAN09) | Monde urbain abandonné, tours, rues brisées, sous-sols ; réserve GP06 | Guetteur de Dharos (FAU-26) |
 
-Cette campagne reste écrite selon les décisions précédentes tant que le conflit n'est pas tranché (question Q46).
+**La quatrième région.** L'auteur a choisi les Grottes Thermiques à la place du milieu fongique, absent de la Bible V6 (HW-DEC-74). Les Grottes Thermiques sont une région du Homeworld ; hors du Homeworld, le monde de cavernes de l'atlas est Terek-Va. C'est mon rapprochement, à confirmer.
 
-## 1. Ce qui est décidé, ce qui est inventé
+**Grandes proies** (HW-DEC-75) : cinq mondes ont dans la Bible V6 une « proie de réserve » ; elle devient la grande proie. Eshra, Kharuun et Terek-Va n'ont aucune espèce propre dans la Bible V6 : leurs grandes proies restent des créations.
 
-**Décidé par l'auteur** : la campagne est l'ascension d'un Unblooded ; meute guidée par un Adjutant et surveillée par un Elite ; faune extraterrestre ; monde sauvage ; huit régions dans l'ordre jungle, marais, désert, fongique, glace, océan, volcan, ruines ; brûleur ; un outil gagné par région ; meute formée de la cohorte de la voie O6 ; rite en triade dans la pyramide ; chroniques de films ouvertes au rang Blooded.
-
-**Inventé ici, faute d'accès à la Bible V6** : le choix de Vara-Kesh, toute la faune hormis les noms cités ci-dessous, les terrains, la répartition des outils, les traces de Xénomorphes. Le connecteur Drive ne répondait plus lors de l'écriture ; ce contenu est marqué « création Hive Warriors » et devra être rapproché de l'onglet « Faune et adversaires » de la Bible V6.
-
-**Noms repris de La Longue Chasse** :
-- les grandes proies, tirées des identifiants de mission : Vey, Hydre, Gueule des sables, Esprit de ruche fongique, Traqueur des glaces, Léviathan, Gardien ancien ;
-- cinq espèces de la Bible V6, dont je ne connais que le nom : Faucheur de Vara-Kesh, Fouisseur de verre, Dents de neige, Briseur de basalte, Traqueur des lisières. Leur comportement est inventé ici.
-
-## 2. Le monde : Vara-Kesh
-
-Troisième monde de l'atlas de la Bible V6 (PLAN03), retenu ici faute de pouvoir relire l'atlas (HW-DEC-57 et 61). C'est le seul dont une espèce me soit connue : le Faucheur de Vara-Kesh.
-
-Un monde sauvage (HW-DEC-53) : aucune cité, aucun poste permanent. Le clan y largue ses Unblooded par meutes et les reprend, ou non, à la fin de la chasse.
-
-**Le Faucheur de Vara-Kesh** rôde dans plusieurs régions. Ce n'est jamais la proie d'une chasse : c'est le danger qui punit une meute dispersée. Les Unblooded apprennent à l'éviter ; l'abattre est un exploit facultatif.
+**Les réserves de chasse.** Six de ces mondes abritent une réserve de la Bible V6 (GP), avec dix combattants humains permanents chacune. Proposition : la meute chasse loin de ces équipes, que seul un Blooded a le droit d'affronter ; leur présence peut se lire dans le décor (campements, pièges humains, traces de véhicules).
 
 ## 3. La meute
 
@@ -58,123 +42,122 @@ Un monde sauvage (HW-DEC-53) : aucune cité, aucun poste permanent. Le clan y la
 | Rival | Harek | Voie O6 | Fonce sur la proie la plus visible ; dispute les éliminations au joueur |
 | Camarade | Yena | Voie O6 | Combistick lancé, angles inattendus ; refuse les risques inutiles |
 | Camarade | Tov | Voie O6 | Repère les proies par vibrations, pose des cordes et des obstacles |
-| Guide | Saar | Voie O6, instructeur de cohorte | Tient ici la fonction d'Adjutant : annonce les zones, désigne la proie, corrige |
-| Veilleur | Un Elite sans nom | Création Hive Warriors | Observe depuis les hauteurs ; relève un Unblooded tombé une seule fois |
+| Guide | Saar | Voie O6, instructeur de cohorte | Tient la fonction d'Adjutant (HW-DEC-65) : annonce les zones, désigne la proie, corrige |
+| Veilleur | Un Elite sans nom | Création | Possède le vaisseau ; observe depuis les hauteurs ; relève un Unblooded tombé une seule fois |
 
-Les voix de Saar, Harek, Yena et Tov sont déjà décrites dans [personnages-longue-chasse.md](personnages-longue-chasse.md). Répliques de Saar relevées dans la Bible V6 : « Approche. », « Vers le filet ! », « Regarde ses pattes. »
+Répliques de Saar relevées dans la Bible V6 : « Approche. », « Vers le filet ! », « Regarde ses pattes. »
 
-**Rivalité avec Harek** : à la fin de chaque chasse, le décompte compare les éliminations du joueur et celles de Harek. C'est le premier « classement » du jeu.
-
-**Règle héritée de la Bible V6** : un personnage n'apparaît que si son histoire le permet. Harek, Yena et Tov sont des Unblooded de la même cohorte que le joueur : leur présence ici est cohérente.
+**Rivalité avec Harek** : à la fin de chaque chasse, le décompte compare les éliminations du joueur et celles de Harek.
 
 ## 4. Le kit de l'Unblooded
 
 **Au départ** : lames de poignet, combistick, brûleur, medicomp, vision normale et thermique, jauge Musou.
 **Absent jusqu'au rang Blooded** : canon d'épaule.
 
-**Un outil par région** (HW-DEC-63 ; répartition proposée) :
+Le RANK-02 de la Bible V6 forme l'Unblooded au masque, au camouflage, aux lames, au combistick, au speargun, aux mines et au medicomp. Les outils gagnés ci-dessous restent dans cet esprit.
 
-| Région terminée | Outil gagné | Pourquoi là |
+| Monde terminé | Outil gagné | Pourquoi là |
 |---|---|---|
-| 1. Jungle | Lance-filet | « Vers le filet ! » : c'est la première leçon de Saar |
-| 2. Marais | Piège à mâchoires | Proies lentes, terrain qui canalise |
-| 3. Désert | Leurre sonore | Faire sortir ce qui fouit |
-| 4. Fongique | Mines | Première vraie horde : il faut tenir un passage |
-| 5. Glace | Disque | Visibilité réduite : une arme qui revient |
-| 6. Océan | Fléchettes | Proies à distance, sur les récifs |
-| 7. Volcan | Camouflage | L'Unblooded vient de voir un Bad Blood s'en servir |
-| 8. Ruines | Shuriken | Dernier outil avant le rite |
-
-Au rite, le brûleur et les mines sont interdits : armes à énergie exclues (HW-DEC-55).
+| 1. Vara-Kesh | Lance-filet | « Vers le filet ! » : la première leçon de Saar |
+| 2. Eshra | Piège à mâchoires | Proies lentes, terrain qui canalise |
+| 3. Kharuun | Leurre sonore | Faire sortir ce qui se cache |
+| 4. Terek-Va | Mines | Première vraie horde : il faut tenir une galerie |
+| 5. Nereth | Disque | Visibilité réduite : une arme qui revient |
+| 6. Oshara | Fléchettes (speargun) | Proies à distance, sur les récifs |
+| 7. Rukh Tal | Camouflage | L'Unblooded vient de voir un Bad Blood s'en servir |
+| 8. Dharos | Shuriken | Dernier outil avant le rite |
 
 ## 5. Les huit chasses
 
-Chaque chasse dure cinq à huit minutes (HW-DEC-59) et suit le même squelette : trois ou quatre zones de harde, chacune tenue par un meneur ; la dernière abrite la grande proie, à faire chanceler puis à exécuter. Frapper une bête qui fuit ne rapporte rien.
+Chaque chasse dure cinq à huit minutes (HW-DEC-59) : trois ou quatre zones de harde, chacune tenue par un meneur ; la dernière abrite la grande proie, à faire chanceler puis à exécuter. Frapper une bête qui fuit ne rapporte rien.
 
-### 1. Jungle — Vey
-- **Terrain** : canopée à plusieurs étages, perchoirs, sol encombré.
-- **Harde** : coureurs de lianes, petits, rapides, en bandes. Création Hive Warriors.
-- **Meneur** : un mâle dominant, plus gros, qui rallie la bande par un cri.
-- **Grande proie** : Vey, prédateur de canopée qui frappe d'en haut.
-- **Leçon** : l'ouverture furtive depuis les perchoirs, la finition lourde.
+**Faune des hardes et des meneurs.** La Bible V6 ne décrit, pour ces mondes, que leur proie de réserve. Hardes et meneurs sont donc des créations. Les espèces du Homeworld (FAU-01 à 20) ne sont pas déplacées sur ces mondes : la Bible V6 leur donne un habitat précis.
 
-### 2. Marais — Hydre
-- **Terrain** : eau stagnante, îlots, brume. L'eau gêne le déplacement.
-- **Harde** : rampeurs de vase, lents, nombreux, qui surgissent de l'eau. Création Hive Warriors.
-- **Meneur** : une matrone de vase, qui en pond de nouveaux tant qu'elle vit.
-- **Grande proie** : l'Hydre, à plusieurs têtes ; chaque tête abattue l'affaiblit.
-- **Leçon** : tuer le meneur d'abord, sinon la zone ne se vide jamais.
+### 1. Vara-Kesh — le Faucheur
+- **Terrain** : canopée à plusieurs étages, racines, ravins.
+- **Harde** : coureurs de lianes, petits et rapides (création).
+- **Meneur** : un mâle dominant qui rallie la bande par un cri (création).
+- **Grande proie** : le Faucheur de Vara-Kesh. Bible V6 : il poursuit sur les branches fortes ; on l'attire sur un passage observé. Il chasse seul.
+- **Leçon** : l'ouverture furtive depuis les branches, la finition lourde.
 
-### 3. Désert — Gueule des sables
-- **Terrain** : étendue nue, affleurements rocheux pour seuls abris.
-- **Harde** : Fouisseurs de verre (nom de la Bible V6, comportement inventé) : ils nagent sous le sable et jaillissent sous les pieds.
-- **Meneur** : un fouisseur géant, repérable aux sillons qu'il laisse.
-- **Grande proie** : la Gueule des sables, qui avale depuis le sol ; on ne la touche que lorsqu'elle émerge.
-- **Leçon** : lire le sol, rester sur la roche, esquiver.
+### 2. Eshra — l'Hydre
+- **Terrain** : brumes, marais, bois pétrifiés, chenaux.
+- **Harde** : rampeurs de vase, qui surgissent de l'eau (création).
+- **Meneur** : une matrone de vase, qui en pond tant qu'elle vit (création).
+- **Grande proie** : l'Hydre, à plusieurs têtes (création).
+- **Leçon** : tuer le meneur d'abord.
 
-### 4. Fongique — Esprit de ruche fongique
-- **Terrain** : forêt de champignons géants, air chargé de spores qui brouillent la vision.
-- **Harde** : porte-spores, par dizaines, sans peur. Création Hive Warriors.
-- **Meneur** : des nœuds de mycélium, immobiles, qui commandent la nuée de leur zone.
-- **Grande proie** : l'Esprit de ruche, un centre qui ne se déplace pas et qu'on atteint en traversant sa nuée.
-- **Leçon** : le premier vrai « un contre cent ». C'est aussi la première fois qu'un Unblooded affronte une ruche, avant de connaître ce mot.
+### 3. Kharuun — la Gueule des sables
+- **Terrain** : canyons, arches, dunes froides balayées par le vent.
+- **Harde** : coureurs des canyons (création).
+- **Meneur** : un fouisseur géant, repérable aux sillons qu'il laisse (création).
+- **Grande proie** : la Gueule des sables (création). La Bible V6 promet sur ce monde « une bête qui efface sa piste dans le vent » : c'est elle.
+- **Leçon** : lire le sol, rester sur la roche.
 
-### 5. Glace — Traqueur des glaces
-- **Terrain** : plateau gelé, blizzard, crevasses.
-- **Harde** : Dents de neige (nom de la Bible V6, comportement inventé) : meutes blanches, presque invisibles hors vision thermique.
-- **Meneur** : une femelle alpha, qui fait encercler.
-- **Grande proie** : le Traqueur des glaces, qui chasse la meute au lieu de l'attendre.
-- **Leçon** : la vision thermique, tenir en formation.
-- **Trace** : une mue de Xénomorphe prise dans la glace. Saar ne la commente pas.
+### 4. Terek-Va — l'Esprit de ruche des profondeurs
+- **Terrain** : cavernes, failles, puits, anciennes machines.
+- **Harde** : nuées des puits, par dizaines (création).
+- **Meneur** : des nœuds de nuée, immobiles, qui commandent leur galerie (création).
+- **Grande proie** : l'Esprit de ruche des profondeurs, un centre qu'on atteint en traversant sa nuée (création).
+- **Leçon** : le premier « un contre cent », et la première ruche, avant de connaître ce mot.
 
-### 6. Océan — Léviathan
-- **Terrain** : côte, récifs découverts à marée basse, marée qui monte pendant la chasse.
-- **Harde** : pinces de récif, cuirassées, lentes, dangereuses en groupe. Création Hive Warriors.
-- **Meneur** : un vieux mâle à carapace épaisse, vulnérable par-dessous.
-- **Grande proie** : le Léviathan, géant marin qu'on combat depuis les récifs quand il s'échoue.
+### 5. Nereth — la Mâchoire
+- **Terrain** : crêtes, cavernes bleues, plateaux, blizzard.
+- **Harde** : rôdeurs blancs, presque invisibles hors vision thermique (création).
+- **Meneur** : une femelle alpha, qui fait encercler (création).
+- **Grande proie** : la Mâchoire de Nereth. Bible V6 : elle attaque depuis un couloir gelé.
+- **Leçon** : la vision thermique ; la Bible V6 parle d'« écho thermique sous la glace ».
+- **Trace** : une mue de Xénomorphe prise dans la glace.
+
+### 6. Oshara — le Nageur
+- **Terrain** : îlots, falaises, stations de marée ; marée qui monte pendant la chasse.
+- **Harde** : pinces de récif, cuirassées (création).
+- **Meneur** : un vieux mâle à carapace épaisse (création).
+- **Grande proie** : le Nageur d'Oshara. Bible V6 : il change de rive après une immersion.
 - **Leçon** : le temps compté, les cibles à distance.
-- **Trace** : de la résine sur une paroi de la grotte côtière.
+- **Trace** : de la résine sur la paroi d'une grotte côtière.
 
-### 7. Volcan — Briseur de basalte
-- **Terrain** : coulées, cendres, sol qui se fissure.
-- **Harde** : lézards de cendre, qui supportent la lave et s'y replient. Création Hive Warriors.
-- **Meneur** : un lézard cuirassé de roche refroidie.
-- **Grande proie** : le Briseur de basalte (nom de la Bible V6, comportement inventé), colosse qui fend le sol.
-- **Le Bad Blood** (HW-DEC-58) : un Yautja renégat rôde. L'Elite quitte son poste pour l'affronter, en arrière-plan. Pour la première fois, personne ne relèvera un Unblooded tombé.
+### 7. Rukh Tal — l'Éperon
+- **Terrain** : basalte, fumées, anciens tunnels, cycles de chaleur.
+- **Harde** : lézards de cendre (création).
+- **Meneur** : un lézard cuirassé de roche refroidie (création).
+- **Grande proie** : l'Éperon de Rukh Tal. Bible V6 : il charge à la fin d'un cycle de vapeur.
+- **Le Bad Blood** (HW-DEC-58) : un Yautja renégat rôde ; l'Elite quitte son poste pour l'affronter. Personne ne relèvera un Unblooded tombé. La Bible V6 classe le « Bad Blood recherché » (FAU-34) en mission dédiée : ici il reste en arrière-plan.
 - **Trace** : une carcasse à la cage thoracique ouverte de l'intérieur.
 
-### 8. Ruines — Gardien ancien
-- **Terrain** : ruines d'une civilisation disparue, salles, colonnades, pièges encore armés.
-- **Harde** : Traqueurs des lisières (nom de la Bible V6, comportement inventé), qui nichent dans les ruines.
-- **Meneur** : des sentinelles de pierre, lentes, qui réveillent les salles.
-- **Grande proie** : le Gardien ancien, que la meute ne peut vaincre qu'ensemble.
+### 8. Dharos — le Guetteur
+- **Terrain** : tours, rues brisées, sous-sols d'une cité abandonnée.
+- **Harde** : charognards des rues (création).
+- **Meneur** : des sentinelles qui réveillent un quartier (création).
+- **Grande proie** : le Guetteur de Dharos. Bible V6 : il observe depuis une fenêtre avant de descendre.
 - **Leçon** : tout le kit, avant le rite.
-- **Trace** : un œuf éclos, vide, au fond d'une salle. Saar dit seulement que la prochaine chasse sera différente.
+- **Trace** : un œuf éclos, vide, au fond d'un sous-sol. Saar dit seulement que la prochaine chasse sera différente.
 
 ## 6. Le rite de passage
 
 Une triade dans la pyramide (HW-DEC-55) : le joueur, et deux camarades parmi Harek, Yena et Tov. Armes à énergie exclues : ni brûleur, ni mines. Saar et l'Elite n'entrent pas.
 
-C'est la première chasse contre les Xénomorphes, et le premier lieu fermé du jeu. Tuer son premier Xénomorphe donne la marque, le rang Blooded, le canon d'épaule, et ouvre les chroniques.
+Première chasse contre les Xénomorphes. Tuer son premier Xénomorphe donne la marque, le rang Blooded, le canon d'épaule, et ouvre les chroniques.
 
 **Lien avec la Bible V6** : le rite en triade, armes à énergie exclues, vient de son onglet « Rangs et fonctions » (Temple des Trois Ombres). Ici il se tient dans la pyramide, déjà codée.
 
 ## 7. Après le rite
 
 - Les 8 chasses de films s'ouvrent comme **chroniques légendaires**, jouées avec les chasseurs de films (HW-DEC-56).
-- Le chasseur du joueur, désormais Blooded, garde son kit complet et son canon d'épaule pour les modes libre, sans fin et défis.
+- Le chasseur du joueur, désormais Blooded, garde son kit et son canon d'épaule pour les modes libre, sans fin et défis.
 - Les rangs suivants se gagnent par les trophées de boss (HW-DEC-42).
 
 ## 8. Écarts à connaître
 
 | Écart | Avec quoi | Traitement |
 |---|---|---|
-| Une planète autre que le Homeworld avant Blooded | Bible V6, règle du socle | Assumé par le statut hors canon |
-| Saar tient la fonction d'Adjutant | Bible V6 : il est instructeur de cohorte | Confirmé par l'auteur (HW-DEC-65) ; Adjutant est une fonction, pas un rang |
-| Faune inventée | Bible V6, 28 espèces non relues | À rapprocher dès que le classeur est lisible |
-| Une meute de quatre | Pilier 1, « un contre cent » | Les hardes restent assez nombreuses pour que le joueur en abatte la plus grande part |
+| Des Unblooded hors du Homeworld | Bible V6, CORE-R05 et RANK-01 | Emmenés par le vaisseau de leur Elite, sans voyager par eux-mêmes (HW-DEC-72) |
+| Chasses sur des mondes à réserve humaine | Bible V6, Game Preserve GP01 à GP09 | La meute chasse loin des équipes humaines, réservées aux Blooded |
+| Hardes, meneurs et trois grandes proies inventés | Bible V6, qui ne décrit qu'une proie par monde | Marqués « création » |
+| Saar tient la fonction d'Adjutant | Bible V6 : il est instructeur de cohorte | Confirmé (HW-DEC-65) |
+| Une meute de quatre | Pilier 1, « un contre cent » | Les hardes restent assez nombreuses |
 | Huit chasses sans Xénomorphes | Titre du jeu | Chasses courtes et traces annonciatrices (HW-DEC-59) |
 
 ## 9. Ce qu'il faut créer
 
-Rien de cette campagne n'existe dans le code, sauf le brûleur, le combistick, les alliés Yautja, la pyramide et les outils gagnés. Il faut créer : huit terrains en cartes à zones, huit hardes, huit meneurs, huit grandes proies, le Faucheur, Saar comme voix, l'Elite, le décompte face à Harek. C'est la phase 3 de la feuille de route pour la première région, et bien davantage pour les sept autres.
+Rien de cette campagne n'existe dans le code, sauf le brûleur, le combistick, les alliés Yautja, la pyramide et les outils gagnés. Il faut créer : huit mondes en cartes à zones, huit hardes, huit meneurs, huit grandes proies, Saar comme voix, l'Elite et son vaisseau, le décompte face à Harek.
