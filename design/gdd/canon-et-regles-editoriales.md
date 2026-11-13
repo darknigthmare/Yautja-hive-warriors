@@ -18,6 +18,7 @@ Hive Warriors est un **jeu frère** de La Longue Chasse (décision HW-DEC-01). I
 
 - La Bible V6 range les neuf films dans des « chroniques cinéma », sauvegardes séparées accessibles par le mausolée, et interdit de mêler leurs personnages à la campagne commune. Hive Warriors s'inscrit dans cette logique : c'est un recueil de chroniques jouées en 3D.
 - Rien de ce qui se passe dans Hive Warriors n'est canon pour la campagne commune de La Longue Chasse.
+- Le lien entre les deux jeux est à sens unique (HW-DEC-15) : Hive Warriors lit la progression de La Longue Chasse et débloque ses personnages originaux ; il n'y écrit jamais rien.
 - Les rencontres impossibles (une reine xénomorphe à Val Verde, un Predalien sur les toits de Los Angeles) sont des récits « et si… », assumés comme tels.
 
 ## 3. Ce que Hive Warriors hérite

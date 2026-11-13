@@ -1,6 +1,6 @@
 # Predator: Hive Warriors — Vision et conception
 
-> Bible du jeu, document 1 sur 3. Statut : **cible validée par l'auteur le 12 novembre 2026** (décisions HW-DEC-01 à 12).
+> Bible du jeu, document 1 sur 3. Statut : **cible validée par l'auteur le 12 novembre 2026** (décisions HW-DEC-01 à 16).
 > Ce document dit ce que le jeu doit être. Ce qu'il est réellement aujourd'hui est dans [etat-reel-v58.md](etat-reel-v58.md).
 > Les chiffres et listes sont dans [annexes-tables.md](annexes-tables.md) et dans le classeur `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 
@@ -64,7 +64,7 @@ Chaque arène évoque un lieu précis de la saga, avec son boss, ses repères et
 ## 6. Structure cible
 
 ### Campagne : huit chasses
-Une chasse par arène, dans l'ordre de l'onglet `08_Arenes`. Règles :
+Une chasse par arène, dans l'ordre de l'onglet `08_Arenes` (HW-DEC-16) : Val Verde, Los Angeles, Gunnison, pyramide antarctique, réserve de chasse, base Charon, station Renaissance, Xenomorph Prime. Les points de vie des boss seront recalés en courbe croissante. Règles :
 1. La chasse compte le nombre de vagues déclaré pour l'arène (5 ou 6).
 2. Une vague suivante arrive quand il reste moins de 10 ennemis.
 3. Après la dernière vague apparaît **le boss propre à l'arène**, et lui seul.
@@ -110,6 +110,9 @@ Le code fait aujourd'hui apparaître 16 unités fixes à chaque vague, dont six 
 - **Bio-masques** : débloqués par la campagne ; ils gardent leurs bonus de combat, comme la forge (HW-DEC-11).
 - **Clan** : le clan du joueur reste anonyme (HW-DEC-10).
 - **Coopération locale** : conservée (HW-DEC-12) ; le second joueur doit recevoir le même kit que le premier.
+- **Armes humaines** : ramassées sur le champ de bataille, munitions limitées (HW-DEC-13).
+- **Soutiens** : présents selon l'arène, plus jamais partout (HW-DEC-14, onglet `15_Soutiens`).
+- **Lien avec La Longue Chasse** : Hive Warriors lit la progression de La Longue Chasse sans rien y écrire, et débloque du contenu propre à ce jeu, comme ses personnages originaux (HW-DEC-15, onglet `16_Deblocages`). Le moyen technique de cette lecture reste à choisir (Q11).
 
 ## 10. Direction visuelle et sonore
 

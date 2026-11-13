@@ -37,6 +37,10 @@ Les mêmes tables sont dans `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 | HW-DEC-09 | Diffusion | Projet de fan non commercial | Noms et lieux de films conservés, vocabulaire « inspiré de » ; aucune monétisation |
 | HW-DEC-10 | Clan du joueur | Clan anonyme | Forge et coffre restent « du clan », sans nom ; aucun des 15 clans de la Bible V6 n'est imposé |
 | HW-DEC-11 | Bonus de combat des forges et bio-masques | Conservés | Écart assumé avec la règle « cosmétique sans bonus » de La Longue Chasse |
+| HW-DEC-13 | Obtention des armes humaines | Ramassées | Prises sur les marines tombés ou dans des caisses, munitions limitées ; plus de ravitaillement automatique par vague |
+| HW-DEC-14 | Présence des alliés, marines, blindé et frappes | Selon l'arène | Chaque arène reçoit les soutiens de son lieu : voir l'onglet 15_Soutiens |
+| HW-DEC-15 | Lien avec la sauvegarde de La Longue Chasse | Lecture seule, avec déblocages | Hive Warriors lit la progression de La Longue Chasse sans rien y écrire, et débloque du contenu propre à ce jeu, comme ses personnages originaux |
+| HW-DEC-16 | Ordre des 8 chasses | Ordre proposé | Val Verde, Los Angeles, Gunnison, pyramide, réserve, Charon, station, Xenomorph Prime ; PV des boss recalés en courbe croissante après essais |
 | HW-DEC-12 | Alliés Yautja, armes humaines, véhicules et soutiens, coopération locale | Tous conservés | Le champ de bataille est une guerre ; ces systèmes sont à réparer, pas à couper |
 
 ## 02_Chasseurs — Chasseurs jouables (js/data/charactersData.js)
@@ -98,9 +102,9 @@ Les mêmes tables sont dans `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 |---|---|---|---|---|
 | Maul sismique | Maj+1 | 620, rayon 6,5, recharge 14 s | Écrit v39+, jamais exécuté avant correctif | Emplacement Viking |
 | Faux plasma | Maj+6 | 380, rayon 5,5, 25 énergie | Écrit v39+, jamais exécuté avant correctif | Couper (doublon de la faux d'os) |
-| Grenade M41A | Maj+9 | 420, rayon 7,5 | Écrit v39+, jamais exécuté avant correctif | Garder (HW-DEC-12) : arme prise à l'ennemi |
-| Fusil Gauss M77 | Maj+7 | 550, perforant | Écrit v39+, jamais exécuté avant correctif | Garder (HW-DEC-12) : arme prise à l'ennemi |
-| Pistolet à boulons Seegson | Maj+3 | 680 | Écrit v39+, jamais exécuté avant correctif | Garder (HW-DEC-12) : arme prise à l'ennemi |
+| Grenade M41A | Maj+9 | 420, rayon 7,5 | Écrit v39+, jamais exécuté avant correctif | Garder, ramassée sur le champ de bataille (HW-DEC-13) |
+| Fusil Gauss M77 | Maj+7 | 550, perforant | Écrit v39+, jamais exécuté avant correctif | Garder, ramassée sur le champ de bataille (HW-DEC-13) |
+| Pistolet à boulons Seegson | Maj+3 | 680 | Écrit v39+, jamais exécuté avant correctif | Garder, ramassée sur le champ de bataille (HW-DEC-13) |
 | Lance de tireur | Maj+Z puis clic droit | 1200, portée 42 | Écrit v39+, jamais exécuté avant correctif | À décider |
 | Exosquelette | O | 12 s, −85 % dégâts, recharge 45 s | Écrit v39+, jamais exécuté avant correctif | Couper ou récompense de fin |
 | Grappin du gantelet | G (conflit) | 260 + 180 | Écrit v39+, jamais exécuté avant correctif | Emplacement, après résolution du conflit |
@@ -268,14 +272,38 @@ Les mêmes tables sont dans `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 | HW-CAN-13 | Le Predalien est classé xénomorphe hybride, pas Yautja | Catalogue tous médias · Exclusions | Conforme dans le codex | Aucun |
 | HW-CAN-14 | Les 15 clans de la Bible V6 sont des créations du projet | Bible V6 · Identités des clans | Aucun clan nommé ; « Forge de clan », « Coffre d'honneur du clan » | Le clan du joueur reste anonyme (HW-DEC-10) |
 
-## 13_Questions — Questions ouvertes pour l'auteur (Q1, Q2, Q3, Q5, Q6 et Q7 ont été tranchées : voir HW-DEC-09 à 12)
+## 13_Questions — Questions ouvertes pour l'auteur (Q1 à Q10 ont été tranchées : voir HW-DEC-09 à 16)
 
 | ID | Question | Pourquoi elle compte | Défaut retenu en attendant |
 |---|---|---|---|
-| Q4 | La sauvegarde est-elle partagée un jour avec La Longue Chasse ? | Impose les mêmes identifiants de rang | Non, sauvegardes séparées |
-| Q8 | Ordre des 8 chasses et courbe de PV des boss | L'Offspring (4500 PV) est plus faible que le boss de la 3e chasse | Ordre de l'onglet 08, PV à régler après essais |
-| Q9 | Les armes humaines sont-elles toujours en main ou ramassées sur le champ de bataille ? | Aujourd'hui elles sont disponibles en permanence avec un ravitaillement par vague | Comportement actuel conservé |
-| Q10 | Les alliés, blindés et frappes sont-ils présents dans toutes les chasses ? | Aujourd'hui ils apparaissent partout, y compris à Val Verde | Comportement actuel conservé |
+| Q11 | Comment Hive Warriors lit-il la sauvegarde de La Longue Chasse ? | Les deux jeux sont publiés sur des adresses différentes : un navigateur ne partage pas leur stockage local | Code d'export généré par La Longue Chasse et saisi dans Hive Warriors |
+| Q12 | Quels personnages originaux de La Longue Chasse deviennent jouables, et à quelle condition ? | L'onglet 16_Deblocages n'est qu'une proposition | Proposition de l'onglet 16 |
+| Q13 | Gunnison se passe à l'époque contemporaine : des marines coloniaux y sont-ils acceptables ? | Anachronisme, même dans une chronique | Marines conservés, assumés comme « et si… » |
+| Q14 | Valeurs de PV des 8 boss | La courbe doit croître de la 1re à la 8e chasse | À régler après essais avec un vrai joueur |
+
+## 15_Soutiens — Soutiens par arène (proposition découlant de HW-DEC-14 ; aujourd'hui tout apparaît partout)
+
+| Ordre | Arène | Alliés Yautja | Marines | Synthétiques | Blindé M577 | Frappe Cheyenne | Armes humaines à ramasser | Raison |
+|---|---|---|---|---|---|---|---|---|
+| 1 | Jungle de Val Verde | Non | Non | Non | Non | Non | Non | 1987 : le chasseur est seul ; aucun matériel du futur |
+| 2 | Toits de Los Angeles | Oui | Non | Non | Non | Non | Non | 1990 : le clan est présent à la fin de Predator 2 |
+| 3 | Forêt de Gunnison | Non | Oui | Non | Non | Non | Oui | Site humain ; anachronisme à trancher (Q13) |
+| 4 | Pyramide antarctique | Oui | Non | Non | Non | Non | Non | Rite de passage mené à plusieurs |
+| 5 | Réserve de chasse | Non | Non | Non | Non | Non | Oui | Terrain d'un clan hostile ; armes des proies humaines |
+| 6 | Base Charon | Non | Oui | Oui | Oui | Oui | Oui | Complexe militaire et scientifique |
+| 7 | Station Renaissance | Non | Oui | Oui | Non | Non | Oui | Station Weyland-Yutani |
+| 8 | Xenomorph Prime | Oui | Non | Non | Non | Non | Non | Assaut du clan sur le monde-ruche |
+
+## 16_Deblocages — Déblocages lus dans La Longue Chasse (proposition découlant de HW-DEC-15 ; noms tirés de la Bible V6, onglet « Les six voies »)
+
+| Contenu débloqué dans Hive Warriors | Nature | Origine dans La Longue Chasse | Condition proposée | Statut |
+|---|---|---|---|---|
+| Saar | Chasseur jouable, création du projet | Instructeur de la voie O6 | Terminer la voie O6 | Proposition |
+| Harek | Chasseur jouable, création du projet | Rival de la voie O6 | Atteindre Blooded dans la voie O6 | Proposition |
+| Varek | Chasseur jouable, création du projet | Père hostile de la voie O1 | Terminer la voie O1 | Proposition |
+| Evar | Chasseur jouable, création du projet | Enforcer de la voie O4 | Terminer la voie O4 | Proposition |
+| Habillages des 15 clans | Couleurs d'armure et de masque | Identités des clans CL1 à CL15 | Appartenir au clan dans La Longue Chasse | Proposition |
+| Arène « Arène de la reine active » | Variante de la 8e chasse | Xeno Prime, secteur XP-Z12 | Avoir vaincu la première reine (mission R2-M026) | Proposition |
 
 ## 14_Sources — Sources lues pour cette bible
 
