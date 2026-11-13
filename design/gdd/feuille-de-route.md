@@ -1,6 +1,6 @@
 # Feuille de route
 
-> Bible du jeu, document 5. Décisions HW-DEC-33 à 47.
+> Bible du jeu, document 5. Décisions HW-DEC-33 à 52.
 > Statut : **ordre validé par l'auteur le 13 novembre 2026** (HW-DEC-40).
 
 ## 1. L'écart à regarder en face
@@ -98,30 +98,37 @@ Lots proposés, dans l'ordre :
 
 Les entrées tirées de *Predator: Badlands* et de *Killer of Killers* (2025) reprennent les noms présents dans le catalogue des 54 gantelets de La Longue Chasse. Leurs détails (lieux, époques, noms de chasseurs) sont à vérifier sur les œuvres avant toute écriture ; les onglets 18 et 19 les marquent « à définir ».
 
-## 5. La chasse pilote : l'épreuve de la meute
+## 5. La campagne de l'Unblooded
 
-> Décision HW-DEC-44. Votre réponse était : une chasse inscrite dans l'univers, par meute d'Unblooded, avec un Adjutant et un Elite qui surveillent et guident, contre la faune extraterrestre. Ce qui suit est mon interprétation, à confirmer (question Q34).
+> Décisions HW-DEC-48 à 51, qui remplacent HW-DEC-44. Ce qui suit développe vos réponses ; les points marqués « proposition » sont de moi.
 
-### Pourquoi elle convient
-- **Elle est conforme à la Bible V6.** Avant le rang Blooded, tout se passe sur le Homeworld ; Adjutant est une fonction, pas un rang ; la faune y compte 28 espèces originales. Aucun personnage ni lieu de film n'est nécessaire.
-- **Elle sert de prologue.** C'est la chasse numéro zéro : le joueur apprend le jeu avant les Xénomorphes.
-- **Elle justifie les alliés.** La meute d'Unblooded reprend les alliés Yautja déjà codés, ici à leur place.
+### Ce qui change
+La campagne n'est plus la suite des 8 chasses de films. C'est **l'ascension d'un Unblooded** :
 
-### Déroulement
-- **Lieu** : une région du Homeworld. Je propose la Jungle des Piliers ; à confirmer (question Q35).
-- **Le joueur** : un Unblooded parmi une meute de trois ou quatre.
-- **L'Elite** surveille depuis les hauteurs. Il n'intervient que si un Unblooded tombe : il le relève une fois, et la chasse perd alors son meilleur rang de récompense.
-- **L'Adjutant** guide : il annonce les zones, désigne la proie suivante, commente les fautes. C'est la voix du tutoriel.
-- **Les zones** : trois ou quatre territoires de troupeau. Chaque zone est tenue par un meneur de harde ; l'abattre fait fuir le troupeau et ouvre la suivante.
-- **La grande proie** : la dernière zone abrite un spécimen dominant. Le faire chanceler, puis l'exécuter, termine l'épreuve.
-- **La règle d'honneur** : les petits et les bêtes qui fuient ne comptent pas. La Bible V6 demande de lire la « capacité de riposte » de la proie ; ici, frapper une bête qui fuit ne rapporte rien.
+1. **Les chasses de faune en meute**, sur une planète dédiée, région après région.
+2. **Le rite de passage** : la première chasse contre les Xénomorphes. La ruche entre dans le jeu à ce moment-là.
+3. **Le rang Blooded**, qui ouvre les 8 chasses de films comme chroniques légendaires (proposition, question Q37).
 
-### Ce qu'elle teste
-1. Le découpage en zones et leur bascule.
-2. Le meneur de zone, modèle des futurs officiers de ruche.
-3. Les alliés qui combattent sans voler la chasse au joueur.
-4. Une carte plus grande que 150 m, donc le plafond d'ennemis et la mise en commun des maillages.
+### Les chasses de faune
+- **Lieu** : une planète dédiée, pas le Homeworld (HW-DEC-49). Proposition : une réserve de chasse du clan ; la Bible V6 en décrit dix (GP01 à GP10). Nom et régions à fixer (question Q36).
+- **Le joueur** : un Unblooded parmi une meute de trois ou quatre. Kit : lames de poignet, combistick et **brûleur** (HW-DEC-50). Pas de canon d'épaule, qui vient avec le rang Blooded.
+- **L'Adjutant guide** : il annonce les zones, désigne la proie suivante, commente les fautes. C'est la voix du tutoriel.
+- **L'Elite surveille** depuis les hauteurs. Proposition : il ne relève un Unblooded tombé qu'une fois, au prix de la meilleure récompense.
+- **Plusieurs régions** (HW-DEC-51), une chasse par région, débloquées l'une après l'autre.
+- **Les zones** : chaque région compte trois ou quatre territoires de harde, tenus par un meneur ; l'abattre ouvre la zone suivante. La dernière abrite une grande proie, à faire chanceler puis à exécuter.
+- **La règle d'honneur** (proposition) : frapper une bête qui fuit ne rapporte rien. La Bible V6 demande de lire la « capacité de riposte » de la proie.
+
+### Le rite de passage
+Proposition (question Q38) : une chasse en triade dans un lieu rituel, armes à énergie exclues, sur le modèle du rite de la Bible V6. La pyramide antarctique déjà présente s'y prête. Tuer son premier Xénomorphe donne le rang Blooded, le canon d'épaule et l'accès aux chroniques.
+
+### Écarts à connaître
+- **Avec la Bible V6** : elle place tout sur le Homeworld avant le rang Blooded, et exige un vaisseau possédé pour voyager. Une planète dédiée dès Unblooded s'en écarte ; l'écart est assumé par le statut hors canon de Hive Warriors.
+- **Avec le titre** : les premières heures de « Hive Warriors » se jouent sans ruche. Le rite de passage doit donc arriver assez tôt.
+- **Avec le pilier 1** : une meute de quatre n'est pas « un contre cent ». Les hardes doivent rester assez nombreuses pour que le joueur en abatte la plus grande part.
+- **Avec le code** : le brûleur, les alliés Yautja et le combistick existent déjà. La faune, la planète, l'Adjutant et l'Elite n'existent pas.
+
+### Ce que la première région teste
+Elle reste le pilote de la carte à zones (phase 3) : découpage et bascule des zones, meneur de zone comme modèle des futurs officiers de ruche, alliés qui ne volent pas la chasse, carte plus grande que 150 m.
 
 ### Ce qui manque pour l'écrire
-- Les noms et comportements de la faune : l'onglet « Faune et adversaires » de la Bible V6 en liste 28, dont je ne connais que sept noms (Briseur de basalte, Fouisseur de verre, Chasseur de canopée, Dents de neige, Traqueur des lisières, Faucheur de Vara-Kesh, Pisteur de chenil). Le classeur n'est plus accessible depuis le dernier redémarrage de la session.
-- Le titre « Hive Warriors » : cette chasse n'a ni ruche ni Xénomorphe. Elle est un prologue, pas une chasse de campagne.
+Les noms et comportements de la faune : la Bible V6 en liste 28 espèces, dont je ne connais que sept noms (Briseur de basalte, Fouisseur de verre, Chasseur de canopée, Dents de neige, Traqueur des lisières, Faucheur de Vara-Kesh, Pisteur de chenil). Le classeur n'est plus accessible depuis le dernier redémarrage de la session (question Q39).
