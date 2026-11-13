@@ -1,6 +1,6 @@
 # La campagne de l'Unblooded
 
-> Bible du jeu, document 6. Décisions HW-DEC-48 à 51, 53 à 56, 58 à 63, 65, 66, 69 et 72 à 75.
+> Bible du jeu, document 6. Décisions HW-DEC-48 à 51, 53 à 56, 58 à 63, 65, 66, 69, 72 à 75 et 77 à 79.
 > Statut : **rapprochée de la Bible V6 le 13 novembre 2026.** Les mondes et les espèces viennent de la Bible V6 quand ils existent ; le reste est inventé par Claude et marqué « création ». Rien de ceci n'est dans le code.
 
 ## 1. Le principe : la meute voyage à bord du vaisseau de ses aînés
@@ -11,7 +11,16 @@ La réponse de l'auteur (HW-DEC-72) : dans le lore, les meutes d'Unblooded **son
 
 **Lecture de cette bible** : c'est un écart assumé avec la lettre de CORE-R05, justifié par son esprit. Aucun Unblooded ne possède de vaisseau ni ne choisit sa route, ce que les règles de la Bible V6 cherchent à garantir.
 
-Proposition : le vaisseau de l'Elite sert de base entre deux chasses, à la place du menu. Il pourrait reprendre « La Veille Partagée », le navire de clan de la Bible V6, ou un vaisseau propre à l'Elite (à décider).
+Le vaisseau est **celui de l'Elite** (HW-DEC-78) et sert de base entre deux chasses, à la place du menu : on y parle à Saar, on y prépare son kit, on y voit ses trophées.
+
+### Le vaisseau : *La Lame Patiente* (création)
+Un vaisseau de chasse étroit, prévu pour un Elite et une meute de cinq. Proposition de lieux à bord :
+- **la soute de largage**, d'où part chaque chasse ;
+- **le râtelier**, où l'Unblooded range les outils gagnés monde après monde ;
+- **le mur des crânes**, vide au départ, où s'accrochent les têtes des grandes proies ;
+- **la passerelle**, interdite aux Unblooded : on y voit l'Elite de dos, et la carte des mondes déjà parcourus.
+
+Le nom suit l'usage de la Bible V6, qui nomme ses navires en français (« La Veille Partagée »).
 
 ## 2. Les huit mondes
 
@@ -43,11 +52,20 @@ L'interprétation retenue (HW-DEC-73) : chaque région décidée devient **un mo
 | Camarade | Yena | Voie O6 | Combistick lancé, angles inattendus ; refuse les risques inutiles |
 | Camarade | Tov | Voie O6 | Repère les proies par vibrations, pose des cordes et des obstacles |
 | Guide | Saar | Voie O6, instructeur de cohorte | Tient la fonction d'Adjutant (HW-DEC-65) : annonce les zones, désigne la proie, corrige |
-| Veilleur | Un Elite sans nom | Création | Possède le vaisseau ; observe depuis les hauteurs ; relève un Unblooded tombé une seule fois |
+| Veilleur | Kaedh, l'Elite | Création (HW-DEC-79) | Possède le vaisseau ; observe depuis les hauteurs ; relève un Unblooded tombé une seule fois |
 
 Répliques de Saar relevées dans la Bible V6 : « Approche. », « Vers le filet ! », « Regarde ses pattes. »
 
 **Rivalité avec Harek** : à la fin de chaque chasse, le décompte compare les éliminations du joueur et celles de Harek.
+
+### Kaedh, l'Elite (création, à valider)
+- **Qui** : un Elite d'âge mûr, qui a passé le rite bien avant que la cohorte de Saar ne naisse. Il a choisi de convoyer les meutes plutôt que de briguer le rang d'Elder.
+- **Pourquoi lui** : il a perdu son propre frère de meute lors d'une chasse d'Unblooded mal surveillée. Depuis, il ne laisse jamais une meute seule, et il ne relève jamais deux fois le même jeune : il veut qu'ils apprennent à ne pas compter sur lui.
+- **Voix** : il parle peu, toujours après Saar, jamais à sa place. Des phrases au présent, sans conseil : « Je vois. » « Pas encore. » « Il est à toi. » Il désigne d'un geste plutôt qu'avec des mots, conformément à la règle de la Bible V6 « le geste avant la parole ».
+- **Rapport à la meute** : il traite Harek et le joueur à égalité, refuse de trancher leur rivalité, et ne félicite qu'une fois, au retour du rite.
+- **Kit** : canon d'épaule, lance longue, filet lourd. On ne le voit combattre qu'à Rukh Tal, contre le Bad Blood (HW-DEC-58).
+- **Après le rite** : il dépose les nouveaux Blooded et repart avec la cohorte suivante. Proposition : il réapparaît comme personnage jouable une fois tous les mondes terminés.
+- **Règle de la Bible V6 respectée** : Kaedh est une création de Hive Warriors ; il n'est rattaché à aucun des 15 clans, le clan du joueur restant anonyme (HW-DEC-10).
 
 ## 4. Le kit de l'Unblooded
 
@@ -160,4 +178,4 @@ Première chasse contre les Xénomorphes. Tuer son premier Xénomorphe donne la 
 
 ## 9. Ce qu'il faut créer
 
-Rien de cette campagne n'existe dans le code, sauf le brûleur, le combistick, les alliés Yautja, la pyramide et les outils gagnés. Il faut créer : huit mondes en cartes à zones, huit hardes, huit meneurs, huit grandes proies, Saar comme voix, l'Elite et son vaisseau, le décompte face à Harek.
+Rien de cette campagne n'existe dans le code, sauf le brûleur, le combistick, les alliés Yautja, la pyramide et les outils gagnés. Il faut créer : huit mondes en cartes à zones, huit hardes, huit meneurs, huit grandes proies, Saar comme voix, Kaedh et *La Lame Patiente* comme base entre les chasses, le décompte face à Harek.

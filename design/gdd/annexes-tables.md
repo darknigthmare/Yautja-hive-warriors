@@ -101,6 +101,10 @@ Les mêmes tables sont dans `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 | HW-DEC-74 | Quatrième région | Grottes Thermiques | Hors du Homeworld : Terek-Va, monde de cavernes de l'atlas |
 | HW-DEC-75 | Grandes proies | Espèces de la Bible V6 | Proie de réserve du monde quand elle existe ; création sinon (Eshra, Kharuun, Terek-Va) |
 | HW-DEC-76 | Droit TRUNCATE sur app_cloud_saves | Retiré | Fait le 13 nov. sur la base partagée ; lecture et écriture inchangées |
+| HW-DEC-77 | Un monde par chasse | Confirmé | Vara-Kesh, Eshra, Kharuun, Terek-Va, Nereth, Oshara, Rukh Tal, Dharos |
+| HW-DEC-78 | Vaisseau de la meute | Le vaisseau de l'Elite | Sert de base entre deux chasses ; nom proposé : La Lame Patiente |
+| HW-DEC-79 | L'Elite | Personnage nouveau | Kaedh, rédigé par Claude, à valider |
+| HW-DEC-80 | Équilibrage | Version en ligne | Vercel a refusé la création du projet à ce connecteur ; aperçu jouable servi depuis la session en attendant |
 | HW-DEC-12 | Alliés Yautja, armes humaines, véhicules et soutiens, coopération locale | Tous conservés | Le champ de bataille est une guerre ; ces systèmes sont à réparer, pas à couper |
 
 ## 02_Chasseurs — Chasseurs jouables (js/data/charactersData.js)
@@ -335,12 +339,12 @@ Les mêmes tables sont dans `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 | HW-CAN-13 | Le Predalien est classé xénomorphe hybride, pas Yautja | Catalogue tous médias · Exclusions | Conforme dans le codex | Aucun |
 | HW-CAN-14 | Les 15 clans de la Bible V6 sont des créations du projet | Bible V6 · Identités des clans | Aucun clan nommé ; « Forge de clan », « Coffre d'honneur du clan » | Le clan du joueur reste anonyme (HW-DEC-10) |
 
-## 13_Questions — Questions ouvertes pour l'auteur (les autres ont été tranchées : voir HW-DEC-09 à 76)
+## 13_Questions — Questions ouvertes pour l'auteur (les autres ont été tranchées : voir HW-DEC-09 à 80)
 
 | ID | Question | Pourquoi elle compte | Défaut retenu en attendant |
 |---|---|---|---|
-| Q48 | Ma lecture « un monde de l'atlas par région » est-elle la bonne ? | Votre réponse parlait de « planètes » au pluriel ; aucun monde de l'atlas n'a huit milieux | Huit mondes, onglet 22_RegionsFaune |
-| Q49 | Quel vaisseau emmène la meute ? | Il peut servir de base entre deux chasses, à la place du menu | Le vaisseau de l'Elite, sans nom |
+| Q50 | Kaedh et La Lame Patiente vous conviennent-ils ? | Personnage et vaisseau inventés par Claude | Fiche de campagne-unblooded.md |
+| Q51 | Version en ligne durable | Le connecteur Vercel n'a pas le droit de créer un projet ; l'aperçu servi depuis la session s'arrête avec elle | Importer le dépôt dans Vercel depuis votre compte : chaque push donnera une adresse de prévisualisation privée |
 
 ## 15_Soutiens — Soutiens par arène (proposition découlant de HW-DEC-14 ; aujourd'hui tout apparaît partout)
 
