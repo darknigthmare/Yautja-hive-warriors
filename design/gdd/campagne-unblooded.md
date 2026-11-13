@@ -1,6 +1,6 @@
 # La campagne de l'Unblooded
 
-> Bible du jeu, document 6. Décisions HW-DEC-48 à 51 et 53 à 64.
+> Bible du jeu, document 6. Décisions HW-DEC-48 à 51 et 53 à 65.
 > Statut : **cadre décidé par l'auteur ; contenu inventé par Claude, à corriger** (HW-DEC-61). Rien de ceci n'est dans le code.
 
 ## 1. Ce qui est décidé, ce qui est inventé
@@ -141,7 +141,7 @@ C'est la première chasse contre les Xénomorphes, et le premier lieu fermé du 
 | Écart | Avec quoi | Traitement |
 |---|---|---|
 | Une planète autre que le Homeworld avant Blooded | Bible V6, règle du socle | Assumé par le statut hors canon |
-| Saar tient la fonction d'Adjutant | Bible V6 : il est instructeur de cohorte | À confirmer ; Adjutant est une fonction, pas un rang |
+| Saar tient la fonction d'Adjutant | Bible V6 : il est instructeur de cohorte | Confirmé par l'auteur (HW-DEC-65) ; Adjutant est une fonction, pas un rang |
 | Faune inventée | Bible V6, 28 espèces non relues | À rapprocher dès que le classeur est lisible |
 | Une meute de quatre | Pilier 1, « un contre cent » | Les hardes restent assez nombreuses pour que le joueur en abatte la plus grande part |
 | Huit chasses sans Xénomorphes | Titre du jeu | Chasses courtes et traces annonciatrices (HW-DEC-59) |

@@ -89,6 +89,7 @@ Les mêmes tables sont dans `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 | HW-DEC-62 | La meute du joueur | La cohorte de la voie O6 | Harek le rival, Yena et Tov ; Saar comme instructeur et guide |
 | HW-DEC-63 | Récompense par région | Un outil par région | Le kit de l'Unblooded grandit de chasse en chasse |
 | HW-DEC-64 | Suite du travail | Phase 1 dans le code | Donner une fin aux 8 chasses existantes |
+| HW-DEC-65 | Saar comme guide de la meute | Oui | Saar tient la fonction d'Adjutant pendant les chasses de faune ; Adjutant est une fonction, pas un rang |
 | HW-DEC-12 | Alliés Yautja, armes humaines, véhicules et soutiens, coopération locale | Tous conservés | Le champ de bataille est une guerre ; ces systèmes sont à réparer, pas à couper |
 
 ## 02_Chasseurs — Chasseurs jouables (js/data/charactersData.js)
@@ -328,7 +329,6 @@ Les mêmes tables sont dans `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 | ID | Question | Pourquoi elle compte | Défaut retenu en attendant |
 |---|---|---|---|
 | Q44 | Corriger la campagne inventée | Vara-Kesh, la faune, les terrains, la répartition des outils et les traces sont de Claude | Contenu de campagne-unblooded.md |
-| Q45 | Saar peut-il tenir la fonction d'Adjutant ? | La Bible V6 le dit instructeur de cohorte | Oui : Adjutant est une fonction, pas un rang |
 | Q23 | Que faire si le joueur joue à Hive Warriors sur deux appareils ? | La table générique n'a pas de numéro de révision : la dernière écriture écrase l'autre | Garder la sauvegarde la plus récente et prévenir le joueur |
 | Q24 | Les règles d'accès de la table app_cloud_saves | Elles n'ont pas été lues ; il faut vérifier que chaque joueur n'accède qu'à sa ligne | À vérifier avant tout développement |
 
