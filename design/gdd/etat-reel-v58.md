@@ -18,33 +18,45 @@
 
 ## 2. Correctifs livrés
 
-Cinq corrections minimales (commits `1242f66` et suivant) :
-1. `GoreEngine.js` : accolade fermante rétablie.
-2. `main.js` : seconde variable `isNearCrypt` renommée.
-3. `Player.js` : le gestionnaire de synthétiques est transmis au lieu d'un nom non défini.
-4. `Environment.js` : le système de particules est résolu au lieu d'un nom non défini.
-5. `main.js:2973` : le monte-charge était lu par un champ inexistant (`switchPos` au lieu de `pos`).
+Neuf corrections minimales, les 12 et 13 novembre 2026 :
 
-Seuls les deux premiers étaient demandés. Les trois autres se sont révélés une fois le jeu chargé : chacun levait une erreur à chaque image. Le cinquième arrêtait chaque image **avant le rendu 3D, la progression des vagues et le test de défaite** : l'écran restait noir derrière l'interface.
+| N° | Fichier | Correction | Effet |
+|---|---|---|---|
+| 1 | `GoreEngine.js` | Accolade fermante rétablie | Le module se charge |
+| 2 | `main.js` | Seconde variable `isNearCrypt` renommée | Le module se charge |
+| 3 | `Player.js` | Gestionnaire de synthétiques transmis | Plus d'erreur à chaque image |
+| 4 | `Environment.js` | Système de particules résolu | Plus d'erreur à chaque image |
+| 5 | `main.js` | Monte-charge lu par son vrai champ (`pos`) | Le rendu 3D, les vagues et la défaite fonctionnent |
+| 6 | `main.js` | Alias `window.gameInstance` défini | Les 182 lectures de ce nom trouvent le jeu |
+| 7 | `Bosses.js` | À zéro, le boss reste à terre à 1 point de vie jusqu'à l'exécution | Un boss ne bloque plus les vagues ; conforme au pilier 3 |
+| 8 | `XenomorphHorde.js` | Balayage des ennemis à zéro point de vie | Plus d'ennemis morts encore actifs |
+| 9 | `Bosses.js` | Fonction de tir du Berserker écrite | Sa rafale ne lève plus d'erreur |
+
+Seuls les deux premiers étaient demandés au départ ; les autres relèvent de la phase 0, validée ensuite (HW-DEC-52). Le tir du Berserker inflige 60 de dégâts : c'est une valeur provisoire de ma part.
 
 ## 3. Ce qui a été vérifié en jeu
 
-Essai automatisé dans Chromium le 13 novembre 2026, 40 secondes par arène, saisies clavier et clics en boucle.
+Essais automatisés dans Chromium le 13 novembre 2026.
 
 | Vérifié | Résultat |
 |---|---|
 | Construction (`vite build`) | Réussie |
 | Menu, choix du chasseur, de l'arène, préparation | Fonctionnent |
-| Lancement d'une mission dans les 8 arènes | Fonctionne |
+| 8 arènes, 45 secondes chacune, 7 chasseurs | Aucune erreur en console |
 | Rendu 3D | Fonctionne (capture en jeu à Val Verde) |
-| Attaques, combos, score | Fonctionnent (score de 7 775 à 20 150, combos de 58 à 156) |
-| Progression des vagues | Fonctionne (vague 2 atteinte dans 5 arènes, vague 3 dans une) |
-| Défaite et écran de fin | Fonctionnent dans les 8 arènes |
-| Erreurs en console | Aucune sur les 8 essais |
+| Vagues | Jusqu'à la vague 5 |
+| Défaite et écran de fin | Fonctionnent |
+| 11 types de boss, 25 secondes de combat chacun | Aucune erreur ; les phases 2 se déclenchent |
+| 11 types de boss, mise à terre puis exécution | Tous restent étourdis à 1 point de vie, l'exécution les retire et donne de 2 500 à 8 000 d'honneur |
 
-**Non vérifié** : les boss, les exécutions, la vague 4 et au-delà, les soutiens, la forge, la coopération, le son, les performances sur une vraie carte graphique.
+**Limites de ces essais.** Les boss ont été appelés par une commande de test, pas atteints en jouant. Le chasseur était rendu invulnérable pendant les combats de boss. Les saisies sont automatiques : rien ne dit que le jeu est agréable ni équilibré.
 
-**Observé sans en connaître la cause** : le chasseur meurt en moins de 40 secondes dans les 8 arènes sous des saisies automatiques ; des confettis sont tirés sur l'écran de défaite ; le filtre de vision reste affiché derrière cet écran.
+**Non vérifié** : une chasse jouée de bout en bout par un humain, les soutiens, la forge, la coopération, le son, les performances sur une vraie carte graphique.
+
+**Observé** :
+- Depuis le correctif 6, des systèmes qui n'avaient jamais tourné s'exécutent. Sous saisies automatiques, une partie atteint la vague 5 et 490 éliminations en 45 secondes ; avant, elle plafonnait à la vague 2. L'équilibrage est à reprendre entièrement.
+- Dans 3 arènes sur 8, le chasseur meurt dès la vague 1.
+- Des confettis sont tirés sur l'écran de défaite, et le filtre de vision reste affiché derrière.
 
 ## 4. Ce que le jeu fait aujourd'hui
 
@@ -73,8 +85,8 @@ Chasseurs, armes, ennemis, boss, arènes, factions et progression sont détaill�
 3. **Le registre des 36 armes n'est lu par aucun code.** Les deux roues d'armes n'affichent qu'une annonce. 17 armes ont un comportement réel, par touche directe.
 4. **Environ 54 capacités toujours disponibles**, avec conflits : G déclenche deux actions, Maj+4 tire et pose une tourelle, Espace lance trois effets.
 5. **Le camouflage n'a plus de touche** depuis la v51 ; le code d'élimination furtive est inaccessible.
-6. **`window.gameInstance` est lu 182 fois et n'existe pas** (l'objet s'appelle `window.game`). Tout ce qui en dépend est inerte.
-7. **Un boss ne meurt pas par les dégâts** : seule l'exécution le retire. Des ennemis à zéro point de vie restent actifs.
+6. **`window.gameInstance` était lu 182 fois et n'existait pas** (l'objet s'appelle `window.game`). Corrigé : tout ce qui en dépendait tourne désormais, pour la première fois.
+7. **Un boss ne mourait pas par les dégâts et pouvait se relever** ; des ennemis à zéro point de vie restaient actifs. Corrigé.
 8. **Deux forges, deux roues d'armes, deux parades, deux tourelles** : chaque ajout a doublé un système au lieu de l'étendre.
 9. **La campagne en cinq chapitres est un titre affiché** : quatre niveaux sur cinq n'existent pas.
 10. **Six numéros de version différents** selon le fichier.
@@ -83,7 +95,7 @@ La liste priorisée est dans l'onglet `11_P0_Defauts`.
 
 ## 6. Ordre de travail proposé
 
-1. **Stabiliser** : zéro erreur en console sur une chasse complète, boss compris (HW-BUG-06, 08, 09).
+1. **Stabiliser** : fait pour les erreurs ; reste une chasse jouée de bout en bout par un humain, et l'équilibrage (HW-BUG-21, 23).
 2. **Donner une fin** : victoire par exécution du boss d'arène, pause, retour au menu (HW-BUG-07, 13, 14).
 3. **Rendre chaque arène à elle-même** : trois boss manquants, décor générique réparti (HW-BUG-15).
 4. **Resserrer le kit** : tronc commun, quatre emplacements, Musou par chasseur (HW-BUG-10, 11).

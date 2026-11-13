@@ -993,6 +993,14 @@ export class BossManager {
         this.activeBoss.stunTimer = 6.0;
       }
     }
+
+    // A boss never dies from damage: at zero it stays down until the hunter executes it.
+    if (this.activeBoss.hp <= 0) {
+      this.activeBoss.hp = 1;
+      this.activeBoss.isStunned = true;
+      this.activeBoss.stunTimer = Infinity;
+      this.activeBoss.spineRipAvailable = true;
+    }
   }
 
   /* === CHANTIER 3 (v51.0): Engineer Gravitational Vortex & Seismic Stomp === */
@@ -1236,6 +1244,24 @@ export class BossManager {
     if (this.audioEngine.playAcidMortarWhistle) {
       this.audioEngine.playAcidMortarWhistle();
     }
+  }
+
+  // Straight bolt used by the Berserker's gatling burst. Shares the spit projectile list and its update loop.
+  spawnAcidSpit(origin, direction) {
+    const boltMesh = new THREE.Mesh(
+      new THREE.SphereGeometry(0.3, 8, 8),
+      new THREE.MeshBasicMaterial({ color: 0xff3b1f })
+    );
+    boltMesh.position.copy(origin);
+    this.scene.add(boltMesh);
+
+    this.acidSpitProjectiles.push({
+      mesh: boltMesh,
+      velocity: direction.clone().multiplyScalar(30),
+      gravity: 0,
+      damage: 60,
+      life: 2.0
+    });
   }
 
   triggerTailSkewer(player) {

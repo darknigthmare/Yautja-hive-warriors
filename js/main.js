@@ -3812,4 +3812,5 @@ class GameApp {
 
 window.addEventListener('DOMContentLoaded', () => {
   window.game = new GameApp();
+  window.gameInstance = window.game; // entity code reads the game under this name
 });

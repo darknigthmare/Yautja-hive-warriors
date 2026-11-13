@@ -1783,6 +1783,16 @@ export class XenomorphHorde {
   }
 
   update(delta, player) {
+    // Remove aliens killed by anything other than a melee hit (traps, bleed, allies, EMP...).
+    for (let i = this.aliens.length - 1; i >= 0; i--) {
+      const dead = this.aliens[i];
+      if (dead && dead.hp <= 0) {
+        if (dead.mesh) this.scene.remove(dead.mesh);
+        this.aliens.splice(i, 1);
+        this.deadCount++;
+      }
+    }
+
     // 1. Ovimorph Egg proximity & Breathing Animation (Alien 1979 / Romulus 2024 Canon)
     this.eggs.forEach(egg => {
       // Eerie organic breathing pulsation

@@ -22,10 +22,10 @@ Entre la v34 et la v58, 25 versions ont ajouté du contenu sans qu'aucune ne tou
 
 ## 2. Les phases
 
-### Phase 0 — Remettre debout (en cours)
-Fait : le jeu se construit, se lance, affiche la 3D, enchaîne les vagues et la défaite dans les 8 arènes.
-Reste : les défauts P0 de l'onglet `11_P0_Defauts` (boss qui ne meurent pas par les dégâts, ennemis à zéro point de vie encore actifs, `window.gameInstance` jamais défini).
-**Sortie** : une chasse complète, boss compris, sans erreur en console.
+### Phase 0 — Remettre debout (presque terminée)
+Fait : le jeu se construit, se lance, affiche la 3D, enchaîne les vagues et la défaite dans les 8 arènes ; les 11 types de boss combattent, tombent et se font exécuter ; aucune erreur en console.
+Reste : une chasse jouée de bout en bout par un humain. Les essais sont automatiques, et les boss ont été appelés par une commande de test.
+**Sortie** : vous jouez une chasse complète, boss compris, et vous me dites ce qui ne va pas.
 
 ### Phase 1 — Une boucle qui se termine
 Victoire par exécution du boss d'arène, pause, retour au menu, trois boss manquants, décor générique rendu à son arène, soutiens selon l'arène, Garde nationale à Gunnison, armes humaines ramassées, numéro de version unique.
