@@ -66,6 +66,10 @@ TABLES["01_Decisions"] = (
         ["HW-DEC-14", "Présence des alliés, marines, blindé et frappes", "Selon l'arène", "Chaque arène reçoit les soutiens de son lieu : voir l'onglet 15_Soutiens"],
         ["HW-DEC-15", "Lien avec la sauvegarde de La Longue Chasse", "Lecture seule, avec déblocages", "Hive Warriors lit la progression de La Longue Chasse sans rien y écrire, et débloque du contenu propre à ce jeu, comme ses personnages originaux"],
         ["HW-DEC-16", "Ordre des 8 chasses", "Ordre proposé", "Val Verde, Los Angeles, Gunnison, pyramide, réserve, Charon, station, Xenomorph Prime ; PV des boss recalés en courbe croissante après essais"],
+        ["HW-DEC-17", "Moyen de lecture de la progression de La Longue Chasse", "Compte en ligne", "Sauvegarde sur un serveur avec identification ; exige une base de données et une gestion de comptes dans les deux jeux"],
+        ["HW-DEC-18", "Contenus de La Longue Chasse débloqués", "Personnages des six voies, habillages des 15 clans, arènes de Xeno Prime", "Les outils originaux ne sont pas repris"],
+        ["HW-DEC-19", "Condition de déblocage", "Par étape franchie", "Chaque contenu est lié à une étape précise de La Longue Chasse"],
+        ["HW-DEC-20", "Humains de la forêt de Gunnison", "Garde nationale", "Soldats contemporains à la place des marines coloniaux : même comportement, autre habillage et autres armes à ramasser"],
         ["HW-DEC-12", "Alliés Yautja, armes humaines, véhicules et soutiens, coopération locale", "Tous conservés", "Le champ de bataille est une guerre ; ces systèmes sont à réparer, pas à couper"],
     ],
 )
@@ -245,6 +249,7 @@ TABLES["09_Factions"] = (
     ["Faction", "Apparition", "Chiffres", "Comportement", "Défaut constaté", "Tri"],
     [
         ["Marines coloniaux", "4 au départ", "150 PV, 20 à 35 dégâts", "Visent les xénomorphes, puis le joueur", "Rien ne les blesse", "Garder, les rendre mortels"],
+        ["Garde nationale", "Absente du code", "À définir", "Comme les marines, à Gunnison seulement (HW-DEC-20)", "À créer", "Créer par habillage des marines"],
         ["Synthétiques", "3 au départ", "280 à 340 PV", "Idem ; coupés en deux à 0 PV", "", "Garder en arènes Weyland-Yutani seulement"],
         ["Alliés Yautja", "3 au départ", "950 PV", "Combattent aux côtés du joueur", "Invulnérables", "Garder (HW-DEC-12), les rendre mortels"],
         ["Bad Blood", "Vague 3", "2200 PV", "Duel en 3 épreuves sous 850 PV", "Insensible à la plupart des armes", "Garder comme mini-boss d'une chasse"],
@@ -323,13 +328,14 @@ TABLES["12_Canon"] = (
 )
 
 TABLES["13_Questions"] = (
-    "Questions ouvertes pour l'auteur (Q1 à Q10 ont été tranchées : voir HW-DEC-09 à 16)",
+    "Questions ouvertes pour l'auteur (Q1 à Q13 ont été tranchées : voir HW-DEC-09 à 20)",
     ["ID", "Question", "Pourquoi elle compte", "Défaut retenu en attendant"],
     [
-        ["Q11", "Comment Hive Warriors lit-il la sauvegarde de La Longue Chasse ?", "Les deux jeux sont publiés sur des adresses différentes : un navigateur ne partage pas leur stockage local", "Code d'export généré par La Longue Chasse et saisi dans Hive Warriors"],
-        ["Q12", "Quels personnages originaux de La Longue Chasse deviennent jouables, et à quelle condition ?", "L'onglet 16_Deblocages n'est qu'une proposition", "Proposition de l'onglet 16"],
-        ["Q13", "Gunnison se passe à l'époque contemporaine : des marines coloniaux y sont-ils acceptables ?", "Anachronisme, même dans une chronique", "Marines conservés, assumés comme « et si… »"],
         ["Q14", "Valeurs de PV des 8 boss", "La courbe doit croître de la 1re à la 8e chasse", "À régler après essais avec un vrai joueur"],
+        ["Q15", "Quel service pour les comptes en ligne ?", "La Longue Chasse et Hive Warriors doivent utiliser le même ; un connecteur Supabase est disponible dans cet environnement", "Aucun service choisi ; rien n'est installé"],
+        ["Q16", "Le compte est-il obligatoire pour jouer à Hive Warriors ?", "Un compte obligatoire ferme le jeu aux visiteurs", "Compte facultatif : il ne sert qu'aux déblocages"],
+        ["Q17", "Quelles données personnelles le compte conserve-t-il ?", "Un compte en ligne crée des obligations de protection des données", "Un identifiant et la progression, rien d'autre"],
+        ["Q18", "Liste complète des personnages des six voies à rendre jouables", "L'onglet 16 n'en cite que quatre ; la Bible V6 en nomme une vingtaine, dont une humaine (Mara Venn)", "Les quatre de l'onglet 16"],
     ],
 )
 
@@ -339,7 +345,7 @@ TABLES["15_Soutiens"] = (
     [
         [1, "Jungle de Val Verde", "Non", "Non", "Non", "Non", "Non", "Non", "1987 : le chasseur est seul ; aucun matériel du futur"],
         [2, "Toits de Los Angeles", "Oui", "Non", "Non", "Non", "Non", "Non", "1990 : le clan est présent à la fin de Predator 2"],
-        [3, "Forêt de Gunnison", "Non", "Oui", "Non", "Non", "Non", "Oui", "Site humain ; anachronisme à trancher (Q13)"],
+        [3, "Forêt de Gunnison", "Non", "Garde nationale (HW-DEC-20)", "Non", "Non", "Non", "Oui, armes contemporaines", "Époque contemporaine : soldats de la Garde nationale, à créer"],
         [4, "Pyramide antarctique", "Oui", "Non", "Non", "Non", "Non", "Non", "Rite de passage mené à plusieurs"],
         [5, "Réserve de chasse", "Non", "Non", "Non", "Non", "Non", "Oui", "Terrain d'un clan hostile ; armes des proies humaines"],
         [6, "Base Charon", "Non", "Oui", "Oui", "Oui", "Oui", "Oui", "Complexe militaire et scientifique"],
@@ -349,7 +355,7 @@ TABLES["15_Soutiens"] = (
 )
 
 TABLES["16_Deblocages"] = (
-    "Déblocages lus dans La Longue Chasse (proposition découlant de HW-DEC-15 ; noms tirés de la Bible V6, onglet « Les six voies »)",
+    "Déblocages lus dans La Longue Chasse par compte en ligne, étape par étape (HW-DEC-15, 17, 18, 19 ; noms tirés de la Bible V6, onglet « Les six voies »)",
     ["Contenu débloqué dans Hive Warriors", "Nature", "Origine dans La Longue Chasse", "Condition proposée", "Statut"],
     [
         ["Saar", "Chasseur jouable, création du projet", "Instructeur de la voie O6", "Terminer la voie O6", "Proposition"],
@@ -358,6 +364,7 @@ TABLES["16_Deblocages"] = (
         ["Evar", "Chasseur jouable, création du projet", "Enforcer de la voie O4", "Terminer la voie O4", "Proposition"],
         ["Habillages des 15 clans", "Couleurs d'armure et de masque", "Identités des clans CL1 à CL15", "Appartenir au clan dans La Longue Chasse", "Proposition"],
         ["Arène « Arène de la reine active »", "Variante de la 8e chasse", "Xeno Prime, secteur XP-Z12", "Avoir vaincu la première reine (mission R2-M026)", "Proposition"],
+        ["Arène « Tête de reine géante au sol »", "Arène supplémentaire", "Xeno Prime, secteur XP-Z09", "Avoir préparé Xeno Prime (mission R2-M025)", "Proposition"],
     ],
 )
 
