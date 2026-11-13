@@ -34,6 +34,10 @@ Les mêmes tables sont dans `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 | HW-DEC-06 | Structure | Campagne + sans fin | 8 chasses avec victoire par exécution du boss ; sans fin débloqué par arène |
 | HW-DEC-07 | Canon des films | Chroniques légendaires | Chasseurs et lieux de films conservés, « non certifié 1:1 », « et si… » assumé |
 | HW-DEC-08 | Kit du joueur | Kit par chasseur | Tronc commun + 4 emplacements + Musou propre à chaque chasseur |
+| HW-DEC-09 | Diffusion | Projet de fan non commercial | Noms et lieux de films conservés, vocabulaire « inspiré de » ; aucune monétisation |
+| HW-DEC-10 | Clan du joueur | Clan anonyme | Forge et coffre restent « du clan », sans nom ; aucun des 15 clans de la Bible V6 n'est imposé |
+| HW-DEC-11 | Bonus de combat des forges et bio-masques | Conservés | Écart assumé avec la règle « cosmétique sans bonus » de La Longue Chasse |
+| HW-DEC-12 | Alliés Yautja, armes humaines, véhicules et soutiens, coopération locale | Tous conservés | Le champ de bataille est une guerre ; ces systèmes sont à réparer, pas à couper |
 
 ## 02_Chasseurs — Chasseurs jouables (js/data/charactersData.js)
 
@@ -94,9 +98,9 @@ Les mêmes tables sont dans `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 |---|---|---|---|---|
 | Maul sismique | Maj+1 | 620, rayon 6,5, recharge 14 s | Écrit v39+, jamais exécuté avant correctif | Emplacement Viking |
 | Faux plasma | Maj+6 | 380, rayon 5,5, 25 énergie | Écrit v39+, jamais exécuté avant correctif | Couper (doublon de la faux d'os) |
-| Grenade M41A | Maj+9 | 420, rayon 7,5 | Écrit v39+, jamais exécuté avant correctif | Couper : arme humaine, hors fantasme Yautja |
-| Fusil Gauss M77 | Maj+7 | 550, perforant | Écrit v39+, jamais exécuté avant correctif | Couper : arme humaine |
-| Pistolet à boulons Seegson | Maj+3 | 680 | Écrit v39+, jamais exécuté avant correctif | Couper : arme humaine |
+| Grenade M41A | Maj+9 | 420, rayon 7,5 | Écrit v39+, jamais exécuté avant correctif | Garder (HW-DEC-12) : arme prise à l'ennemi |
+| Fusil Gauss M77 | Maj+7 | 550, perforant | Écrit v39+, jamais exécuté avant correctif | Garder (HW-DEC-12) : arme prise à l'ennemi |
+| Pistolet à boulons Seegson | Maj+3 | 680 | Écrit v39+, jamais exécuté avant correctif | Garder (HW-DEC-12) : arme prise à l'ennemi |
 | Lance de tireur | Maj+Z puis clic droit | 1200, portée 42 | Écrit v39+, jamais exécuté avant correctif | À décider |
 | Exosquelette | O | 12 s, −85 % dégâts, recharge 45 s | Écrit v39+, jamais exécuté avant correctif | Couper ou récompense de fin |
 | Grappin du gantelet | G (conflit) | 260 + 180 | Écrit v39+, jamais exécuté avant correctif | Emplacement, après résolution du conflit |
@@ -192,18 +196,18 @@ Les mêmes tables sont dans `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 
 ## 09_Factions — Factions et soutiens
 
-| Faction | Apparition | Chiffres | Comportement | Défaut constaté | Tri proposé (Musou d'abord) |
+| Faction | Apparition | Chiffres | Comportement | Défaut constaté | Tri |
 |---|---|---|---|---|---|
-| Marines coloniaux | 4 au départ | 150 PV, 20 à 35 dégâts | Visent les xénomorphes, puis le joueur | Rien ne les blesse | Garder comme décor de bataille, les rendre mortels |
+| Marines coloniaux | 4 au départ | 150 PV, 20 à 35 dégâts | Visent les xénomorphes, puis le joueur | Rien ne les blesse | Garder, les rendre mortels |
 | Synthétiques | 3 au départ | 280 à 340 PV | Idem ; coupés en deux à 0 PV |  | Garder en arènes Weyland-Yutani seulement |
-| Alliés Yautja | 3 au départ | 950 PV | Combattent aux côtés du joueur | Invulnérables | Couper ou réserver à certaines chasses : diluent le « un contre cent » |
+| Alliés Yautja | 3 au départ | 950 PV | Combattent aux côtés du joueur | Invulnérables | Garder (HW-DEC-12), les rendre mortels |
 | Bad Blood | Vague 3 | 2200 PV | Duel en 3 épreuves sous 850 PV | Insensible à la plupart des armes | Garder comme mini-boss d'une chasse |
 | Molosses | Maj+H | 600 PV | Alliés invoqués | Invulnérables | À décider |
-| Tourelle sentinelle | Touche 4 ou vague 2 | 500 munitions | Tir automatique | Doublon dans ColonialMarines.js | Couper pour le joueur |
+| Tourelle sentinelle | Touche 4 ou vague 2 | 500 munitions | Tir automatique | Doublon dans ColonialMarines.js | Garder (HW-DEC-12), supprimer le doublon |
 | Drone faucon | Touche 5 | 26 s | Marque les cibles |  | Emplacement possible |
-| Blindé M577 | Vague 3 | 260 dégâts | Vise le boss | PV jamais réduits | Couper : véhicule humain |
-| Cheyenne | Vagues 2 et 4 | Roquettes 340 à 550 | Frappe aérienne |  | Événement de chasse, pas systématique |
-| Planeur Yautja | G | Vitesse 32 | Monture | Conflit de touche G | À décider |
+| Blindé M577 | Vague 3 | 260 dégâts | Vise le boss | PV jamais réduits | Garder (HW-DEC-12), rendre destructible |
+| Cheyenne | Vagues 2 et 4 | Roquettes 340 à 550 | Frappe aérienne |  | Garder (HW-DEC-12) |
+| Planeur Yautja | G | Vitesse 32 | Monture | Conflit de touche G | Garder (HW-DEC-12), résoudre le conflit de touche |
 
 ## 10_Progression — Progression et économie
 
@@ -238,7 +242,7 @@ Les mêmes tables sont dans `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 | HW-BUG-14 | P1 | Boss de vague 5 identique dans toutes les arènes | js/main.js:3122 | Ouvert |
 | HW-BUG-15 | P1 | Environ 45 éléments de décor construits dans toutes les arènes (réacteur et Space Jockey à Val Verde) | js/entities/Environment.js:606 | Ouvert |
 | HW-BUG-16 | P2 | Méthodes appelées mais absentes : setLaserColor, emitExplosion, emitAlienBloodSpurt, spawnAcidSpit, 10 sons | Plusieurs | Ouvert |
-| HW-BUG-17 | P2 | Coopération : le joueur 2 ne peut pas attaquer | js/main.js:2369 | Ouvert |
+| HW-BUG-17 | P1 | Coopération (conservée, HW-DEC-12) : le joueur 2 ne peut pas attaquer | js/main.js:2369 | Ouvert |
 | HW-BUG-18 | P2 | Numéros de version discordants (v6, v12, v27, v29, v58, 1.0.0) | index.html, main.js, package.json | Ouvert |
 | HW-BUG-19 | P2 | Aucune limite d'ennemis ni mise en commun des maillages : la vague N crée 45 + 15N objets | js/entities/XenomorphHorde.js | Ouvert |
 | HW-BUG-20 | P2 | Liste des commandes des options figée vers v29 | index.html | Ouvert |
@@ -255,27 +259,23 @@ Les mêmes tables sont dans `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 | HW-CAN-04 | Bestiaire xénomorphe : Facehugger, Drone, Guerrier, Reine active | Bible V6 · Faune et adversaires | Environ 26 types et 10 boss | Autorisé en chronique ; chaque type porte sa source et « non certifié 1:1 » |
 | HW-CAN-05 | Xeno Prime (PLAN08) : 12 secteurs XP-Z01 à Z12, arène de la reine active | Bible V6 · Xeno Prime | Une arène « xenomorph_prime » sans lien | La 8e chasse reprend les noms de secteurs |
 | HW-CAN-06 | Échelle contenue : pas de nouvelle population à chaque visite | Bible V6 · Méthode de guerre | Des centaines d'ennemis par chasse | Écart assumé : la démesure est le propre des chroniques |
-| HW-CAN-07 | Aucun bonus de combat par les cosmétiques | Gauntlets V142 · 09_Lore_Equilibre | Les bio-masques donnent des multiplicateurs | Écart à trancher (question ouverte Q3) |
+| HW-CAN-07 | Aucun bonus de combat par les cosmétiques | Gauntlets V142 · 09_Lore_Equilibre | Les bio-masques donnent des multiplicateurs | Écart assumé (HW-DEC-11) |
 | HW-CAN-08 | Son original seulement, aucun son de film | Gauntlets V142 · B-18 | Audio 100 % procédural | Conforme |
-| HW-CAN-09 | Droits et licences requis avant toute diffusion commerciale | Gauntlets V142 · B-17 | Noms, personnages et lieux de films | Projet de fan non commercial tant que Q1 est ouverte |
+| HW-CAN-09 | Droits et licences requis avant toute diffusion commerciale | Gauntlets V142 · B-17 | Noms, personnages et lieux de films | Projet de fan non commercial (HW-DEC-09) |
 | HW-CAN-10 | Un dessin ou un élément jouable ne certifie pas une fidélité 1:1 | THE PIT V62 ; PHG Fidélité V137 | Les messages de version annoncent « 1:1 » | Remplacer par « inspiré de » ; 0 élément certifié |
 | HW-CAN-11 | Ne jamais changer arbitrairement une caste xénomorphe | YAUTJA_V100_SUIVI | 3 boss déclarés retombent sur une reine générique | Créer les boss manquants avant de les annoncer |
 | HW-CAN-12 | Lex Woods n'est pas épargnée pour grossesse dans AVP 2004 : elle est honorée comme combattante | Film AVP 2004 | Le codex affirme l'inverse | Corriger l'entrée du codex |
 | HW-CAN-13 | Le Predalien est classé xénomorphe hybride, pas Yautja | Catalogue tous médias · Exclusions | Conforme dans le codex | Aucun |
-| HW-CAN-14 | Les 15 clans de la Bible V6 sont des créations du projet | Bible V6 · Identités des clans | Aucun clan nommé ; « Forge de clan », « Coffre d'honneur du clan » | Le clan du joueur reste anonyme tant que Q2 est ouverte |
+| HW-CAN-14 | Les 15 clans de la Bible V6 sont des créations du projet | Bible V6 · Identités des clans | Aucun clan nommé ; « Forge de clan », « Coffre d'honneur du clan » | Le clan du joueur reste anonyme (HW-DEC-10) |
 
-## 13_Questions — Questions ouvertes pour l'auteur
+## 13_Questions — Questions ouvertes pour l'auteur (Q1, Q2, Q3, Q5, Q6 et Q7 ont été tranchées : voir HW-DEC-09 à 12)
 
 | ID | Question | Pourquoi elle compte | Défaut retenu en attendant |
 |---|---|---|---|
-| Q1 | Diffusion : privé, public gratuit ou ambition commerciale ? | Décide du maintien des noms et lieux de films | Projet de fan non commercial |
-| Q2 | Le joueur appartient-il à l'un des 15 clans de la Bible V6 ? | Donne un sens à la Forge et au Coffre de clan | Clan anonyme |
-| Q3 | Les bio-masques et forges gardent-ils des bonus de combat ? | Contredit la règle « cosmétique sans bonus » de La Longue Chasse | Bonus conservés, limités à la campagne solo |
 | Q4 | La sauvegarde est-elle partagée un jour avec La Longue Chasse ? | Impose les mêmes identifiants de rang | Non, sauvegardes séparées |
-| Q5 | Coopération en écran partagé : garder ? | Le joueur 2 ne peut pas attaquer | Hors périmètre de la première version |
-| Q6 | Armes humaines utilisables par le joueur (M41A, Gauss, Seegson) : garder ? | Diluent le fantasme du chasseur | Coupées |
-| Q7 | Alliés Yautja permanents : garder ? | Diluent le « un contre cent » | Réservés à certaines chasses |
 | Q8 | Ordre des 8 chasses et courbe de PV des boss | L'Offspring (4500 PV) est plus faible que le boss de la 3e chasse | Ordre de l'onglet 08, PV à régler après essais |
+| Q9 | Les armes humaines sont-elles toujours en main ou ramassées sur le champ de bataille ? | Aujourd'hui elles sont disponibles en permanence avec un ravitaillement par vague | Comportement actuel conservé |
+| Q10 | Les alliés, blindés et frappes sont-ils présents dans toutes les chasses ? | Aujourd'hui ils apparaissent partout, y compris à Val Verde | Comportement actuel conservé |
 
 ## 14_Sources — Sources lues pour cette bible
 

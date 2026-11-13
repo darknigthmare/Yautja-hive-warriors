@@ -44,7 +44,7 @@ Le détail est dans l'onglet `12_Canon`. Les principaux :
 3. **Une erreur factuelle** : le codex affirme que Lex Woods est épargnée parce qu'elle porte la vie (AVP 2004). Dans le film, elle est honorée comme combattante. Seule Leona Cantrell (Predator 2) relève de cette entrée.
 4. **Le bestiaire** : la Bible V6 ne connaît que quatre formes xénomorphes ; Hive Warriors en compte environ 26, plus 10 boss, tirés des films, des comics et des jeux. C'est permis dans des chroniques, à condition que chaque type porte sa source.
 5. **L'échelle** : La Longue Chasse impose une « échelle contenue ». Hive Warriors fait l'inverse, par nature. Écart assumé.
-6. **Les bonus de combat** des bio-masques et des forges contredisent la règle « cosmétique sans bonus » de La Longue Chasse (question ouverte Q3).
+6. **Les bonus de combat** des bio-masques et des forges contredisent la règle « cosmétique sans bonus » de La Longue Chasse. Écart assumé (HW-DEC-11).
 7. **Le mot « 1:1 »** figure dans les messages de version v52 à v58. Selon la définition des classeurs (capture nommée, trois angles, colorimétrie, revue humaine signée), **aucun élément de Hive Warriors n'est certifié 1:1**. Le vocabulaire correct est « inspiré de ».
 
 ## 5. Vocabulaire de statut

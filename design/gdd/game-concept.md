@@ -1,6 +1,6 @@
 # Predator: Hive Warriors — Vision et conception
 
-> Bible du jeu, document 1 sur 3. Statut : **cible validée par l'auteur le 12 novembre 2026** (décisions HW-DEC-01 à 08).
+> Bible du jeu, document 1 sur 3. Statut : **cible validée par l'auteur le 12 novembre 2026** (décisions HW-DEC-01 à 12).
 > Ce document dit ce que le jeu doit être. Ce qu'il est réellement aujourd'hui est dans [etat-reel-v58.md](etat-reel-v58.md).
 > Les chiffres et listes sont dans [annexes-tables.md](annexes-tables.md) et dans le classeur `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 
@@ -18,7 +18,7 @@ Un chasseur Yautja de légende, seul contre des centaines de Xénomorphes, dans 
 | Langue | Français |
 | Durée d'une chasse | 10 à 15 minutes |
 | Place dans l'univers | Jeu frère de « Yautja : La Longue Chasse » (2D), classé **chroniques légendaires** : hors canon de la campagne commune, voir [canon-et-regles-editoriales.md](canon-et-regles-editoriales.md) |
-| Diffusion | Projet de fan non commercial (question ouverte Q1) |
+| Diffusion | Projet de fan non commercial (HW-DEC-09) |
 
 ## 3. Le fantasme du joueur
 
@@ -31,12 +31,12 @@ L'ordre compte : quand deux idées s'opposent, le pilier le plus haut l'emporte.
 ### Pilier 1 — Un contre cent
 Le joueur affronte des dizaines d'ennemis à la fois et les balaie par des enchaînements larges.
 - Test : une attaque légère touche-t-elle plusieurs ennemis ? Une vague compte-t-elle au moins 50 ennemis ?
-- Conséquence : tout ce qui dilue la solitude du chasseur (alliés permanents, blindés, tourelles) est retiré ou rendu exceptionnel.
+- Conséquence : les alliés, véhicules et soutiens sont conservés (HW-DEC-12), mais ils ne doivent jamais faire le travail à la place du joueur : la horde reste assez nombreuse pour que le chasseur en élimine la plus grande part.
 
-### Pilier 2 — L'arsenal du chasseur, pas celui des proies
-Le joueur n'utilise que des armes et outils Yautja. Chaque chasseur a un kit court et reconnaissable.
-- Test : cette capacité existe-t-elle au poignet, à l'épaule ou à la ceinture d'un Yautja ?
-- Conséquence : les armes humaines maniées par le joueur (M41A, Gauss, Seegson) et la métamorphose hybride sortent du jeu.
+### Pilier 2 — L'arsenal du chasseur d'abord
+Chaque chasseur a un kit Yautja court et reconnaissable. Les armes humaines (M41A, Gauss M77, Seegson) sont conservées comme armes prises à l'ennemi (HW-DEC-12).
+- Test : le cœur du kit existe-t-il au poignet, à l'épaule ou à la ceinture d'un Yautja ?
+- Conséquence : une arme humaine complète le kit, elle ne le remplace pas. La métamorphose hybride sort du jeu : elle contredit le canon.
 
 ### Pilier 3 — Le trophée se mérite
 Un boss ne tombe pas à zéro point de vie : il chancelle, et le joueur l'exécute. C'est l'exécution qui gagne la chasse.
@@ -50,7 +50,7 @@ Chaque arène évoque un lieu précis de la saga, avec son boss, ses repères et
 
 ### Ce que le jeu n'est pas
 - **Pas un jeu d'infiltration.** Camouflage et visions servent d'ouverture et de respiration, jamais de condition de réussite.
-- **Pas une guerre à trois camps.** Marines et synthétiques sont un décor de bataille, pas des armées à gérer.
+- **Pas un jeu de gestion d'armées.** Alliés, marines, blindés et frappes peuplent le champ de bataille ; le joueur ne les commande pas en détail.
 - **Pas une reproduction certifiée des films.** Les lieux et chasseurs sont des hommages, « inspirés de », jamais « 1:1 ».
 - **Pas un jeu de collection de 54 touches.** Ce qui ne tient pas dans le kit n'est pas dans le jeu.
 
@@ -107,7 +107,9 @@ Le code fait aujourd'hui apparaître 16 unités fixes à chaque vague, dont six 
 - **Honneur** : le score de la chasse (25 par coup, 150 par élimination, 900 à 8000 par exécution) devient une monnaie réellement dépensée.
 - **Forge** : une seule forge au lieu de deux (celle du menu et celle de la touche F3 font doublon).
 - **Trophées** : un trophée par boss exécuté, exposé dans la citadelle du menu.
-- **Bio-masques** : débloqués par la campagne (question ouverte Q3 sur leurs bonus).
+- **Bio-masques** : débloqués par la campagne ; ils gardent leurs bonus de combat, comme la forge (HW-DEC-11).
+- **Clan** : le clan du joueur reste anonyme (HW-DEC-10).
+- **Coopération locale** : conservée (HW-DEC-12) ; le second joueur doit recevoir le même kit que le premier.
 
 ## 10. Direction visuelle et sonore
 
@@ -130,7 +132,7 @@ Le code fait aujourd'hui apparaître 16 unités fixes à chaque vague, dont six 
 Une version est « jouable » quand :
 1. les 8 chasses se lancent, se gagnent par exécution du boss et se perdent à zéro point de vie ;
 2. aucune erreur n'apparaît dans la console pendant une chasse complète ;
-3. le tronc commun et quatre emplacements fonctionnent pour les sept chasseurs, sans conflit de touches ;
+3. le tronc commun et quatre emplacements fonctionnent pour les sept chasseurs, sans conflit de touches, y compris pour le second joueur ;
 4. la pause et le retour au menu existent ;
 5. le numéro de version est le même partout.
 
