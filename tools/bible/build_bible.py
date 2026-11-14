@@ -155,6 +155,10 @@ TABLES["01_Decisions"] = (
         ["HW-DEC-103", "Classes de Dark Descent (CTRL-084)", "Sergent, mitrailleur, médecin, puis technicien ou éclaireur en alternance", "Escouades GRP-53 d'AFF-25 ; seul le sergent a un profil de catalogue (HUM-004) ; médecin et technicien reprennent les comportements Medic et CommTech ; éclaireur au fusil, sans arme spéciale inventée"],
         ["HW-DEC-104", "Affiliations humaines (CTRL-086)", "Portées à part de l'espèce, du rôle et du camp", "USCM, Weyland-Yutani, Seegson, colonie de Tobler-9 ; le synthétique d'Extinction est un synthétique USCM ; pas d'opposition USCM–WY sans scène qui la choisit"],
         ["HW-DEC-105", "Chantier suivant", "Le mode Ascension", "Après les P0 et les P1 que le code peut faire avancer ; les P1 restants demandent des assets ou des testeurs"],
+        ["HW-DEC-106", "Structure d'une chasse d'Ascension", "Les six secteurs reliés du mode chasse v70", "Une harde et son meneur par secteur, la grande proie dans le dernier ; portes, routes et sauvegarde existantes"],
+        ["HW-DEC-107", "Décors des huit mondes", "Variantes procédurales de terrain", "Bâties sur le système de variantes existant ; ébauches, pas des modèles finis"],
+        ["HW-DEC-108", "La Lame Patiente", "Petite scène 3D", "Soute de largage, râtelier, mur des crânes, passerelle interdite ; Saar et Kaedh présents"],
+        ["HW-DEC-109", "Progression de l'Ascension", "Navigateur, puis compte Supabase", "Système de sauvegarde v70 d'abord ; envoi au compte avec les autres sauvegardes"],
         ["HW-DEC-12", "Alliés Yautja, armes humaines, véhicules et soutiens, coopération locale", "Tous conservés", "Le champ de bataille est une guerre ; ces systèmes sont à réparer, pas à couper"],
     ],
 )

@@ -127,10 +127,13 @@ test('medical stock is finite, faction-bound, locally gated and persists after a
 
 test('visual expansion never changes operational headcounts or the 27 source templates', () => {
   for (const operation of BATTLE_OPERATIONS) {
-    const current = getBattleOperationConfig(operation.id, { allowHumanController: true });
+    // The LV-742 brood (HW-DEC-90) regroups existing IDs: squads are compared without it, identities with it.
+    const current = getBattleOperationConfig(operation.id, { allowHumanController: true, legacyBrood: true });
     const original = getBattleOperationConfig(operation.id, { allowHumanController: true, rosterDetail: 'legacy' });
+    const brood = getBattleOperationConfig(operation.id, { allowHumanController: true });
     assert.deepEqual(current.budgets, original.budgets, operation.id);
     assert.deepEqual(current.groups.map(group => group.units.map(unit => unit.id)),
       original.groups.map(group => group.units.map(unit => unit.id)), operation.id);
+    assert.deepEqual(brood.groups.flatMap(group => group.units.map(unit => unit.id)).sort(), current.groups.flatMap(group => group.units.map(unit => unit.id)).sort(), operation.id);
   }
 });
