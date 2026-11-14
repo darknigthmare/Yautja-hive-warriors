@@ -1,5 +1,6 @@
 /* Mythic Boss Raid Manager (Predalien Queen & Flying Empress Matriarch) */
 
+import { createFaunaModel } from '../graphics/FaunaModels.js';
 import * as THREE from 'three';
 import { disposeObject } from '../engine/SceneResources.js';
 import { selectHostileTarget, requestHostileAttack, syncHostileWarning, releaseHostileAttack } from '../engine/HostilePressure.js';
@@ -71,6 +72,7 @@ export class BossManager {
 
   createBossMesh(type) {
     const definition = getBossDefinition(type);
+    if (definition.species === 'fauna') return createFaunaModel(definition.faunaLook ?? {}, { prey: true });
     if (definition.hunterProfile) {
       const data = CHARACTERS_DATA.find(profile => profile.id === definition.hunterProfile);
       const owner = { data }; const mesh = buildHunterModel(owner); mesh._bossHunterOwner = owner; return mesh;

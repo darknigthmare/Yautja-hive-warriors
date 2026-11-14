@@ -19,7 +19,16 @@ export const BOSS_COMBAT_PATTERNS = Object.freeze({
   feral_predator_boss: pattern('mask-guided-bolt', 'Le masque signale la visée du véritable bolt.', 'Évitez sa trajectoire ou orientez le masque pour renvoyer un bolt.'),
   apex_gladiator_predator: pattern('landing-aftershock', 'Le bond est suivi d’un impact de réception.', 'Évitez le point annoncé, puis sautez l’onde qui suit.'),
   jungle_hunter_boss: pattern('laser-committed-plasma', 'Le triple laser conserve la visée pendant la préparation.', 'Rompez la ligne laser, puis attaquez pendant la récupération.', { weapons: Object.freeze(['plasma']) }),
-  city_hunter_boss: pattern('returning-disc', 'Le disque alterne avec le plasma et revient vers son propriétaire.', 'Évitez le trajet aller et le retour ; ne traversez pas trop tôt.', { weapons: Object.freeze(['disc', 'plasma']) })
+  city_hunter_boss: pattern('returning-disc', 'Le disque alterne avec le plasma et revient vers son propriétaire.', 'Évitez le trajet aller et le retour ; ne traversez pas trop tôt.', { weapons: Object.freeze(['disc', 'plasma']) }),
+  // Great prey of the Ascension mode: reads taken from the campaign bible (Bible V6 lines where they exist).
+  vara_kesh_reaper: pattern('branch-pounce', 'Le Faucheur se ramasse sur une branche forte avant de bondir.', 'Attirez-le sur un passage dégagé, esquivez le bond et frappez à la réception.'),
+  eshra_hydra: pattern('many-heads', 'Les têtes frappent tour à tour depuis la brume.', 'Restez hors de portée de la tête qui se dresse ; chaque tête abattue l’affaiblit.'),
+  kharuun_sand_maw: pattern('emerging-charge', 'Le sable se soulève sur la trajectoire de la charge.', 'Restez sur la roche, sortez de l’axe, frappez quand elle émerge.'),
+  terek_va_hive_mind: pattern('swarm-core', 'La nuée se resserre autour du centre avant chaque frappe.', 'Traversez la nuée entre deux resserrements, puis frappez le centre.'),
+  nereth_jaw: pattern('frozen-corridor-charge', 'La Mâchoire charge depuis un couloir gelé, annoncée par l’écho thermique.', 'Changez de vision pour la voir venir, puis sortez du couloir.'),
+  oshara_swimmer: pattern('shore-switch', 'Le Nageur plonge et change de rive après chaque immersion.', 'Surveillez la rive opposée ; frappez pendant la sortie de l’eau.'),
+  rukh_tal_spur: pattern('steam-cycle-charge', 'La charge part à la fin d’un cycle de vapeur.', 'Comptez les cycles, quittez l’axe de la charge, frappez pendant sa récupération.'),
+  dharos_watcher: pattern('window-drop', 'Le Guetteur observe depuis une hauteur avant de descendre.', 'Esquivez le point de chute, puis exploitez la réception.')
 });
 
 export function getBossCombatPattern(id) {

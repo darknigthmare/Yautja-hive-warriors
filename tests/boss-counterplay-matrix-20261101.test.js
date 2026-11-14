@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import * as THREE from 'three';
 import { BossManager } from '../js/entities/Bosses.js';
 import { BOSS_REGISTRY } from '../js/data/BossRegistry.js';
+import { getBossCombatPattern } from '../js/data/BossCombatPatterns.js';
 
 // These tests exercise the production combat manager, not its visual builders.
 // A stripped mesh keeps the suite about damage/trajectory/resource rules;
@@ -226,8 +227,36 @@ const cases = [
   })]
 ];
 
+// Ascension great prey (HW-DEC-106): the same real selector, measured dodge for each warned attack.
+function chargeTrial(type, dodge) {
+  return fixture(type, (manager, boss) => {
+    const target = player(0, 0, 10); prepare(manager, target, 'charge');
+    if (dodge) target.position.x = 14;
+    releasePrepared(manager, target); tick(manager, target, .75);
+    return target.hits.reduce((sum, hit) => sum + hit.amount, 0);
+  });
+}
+function meleeTrial(type, stepAway) {
+  return fixture(type, (manager, boss) => {
+    // Melee is chosen only at contact range once its own cooldown is ready.
+    const target = player(0, 0, 3);
+    for (const key of ['tailWhipCooldown', 'specialCooldown', 'regurgitateCooldown', 'shriekCooldown', 'spitCooldown']) boss[key] = 999;
+    boss.contactCooldown = 0; manager.update(1 / 60, target);
+    assert.equal(boss.pressureAction, 'melee', 'the real selector must prepare melee');
+    assert.ok(boss.attackWarning?.visible, 'a combat preparation must expose its warning');
+    if (stepAway) target.position.z = 20;
+    releasePrepared(manager, target); stopAI(boss);
+    return target.hits.reduce((sum, hit) => sum + hit.amount, 0);
+  });
+}
+const leapPrey = id => [id, getBossCombatPattern(id).mechanic, () => { assert.ok(leapTrial(id, false) > 0); assert.equal(leapTrial(id, true), 0); }];
+const chargePrey = id => [id, getBossCombatPattern(id).mechanic, () => { assert.ok(chargeTrial(id, false) > 0); assert.equal(chargeTrial(id, true), 0); }];
+const meleePrey = id => [id, getBossCombatPattern(id).mechanic, () => { assert.ok(meleeTrial(id, false) > 0); assert.equal(meleeTrial(id, true), 0); }];
+cases.push(leapPrey('vara_kesh_reaper'), meleePrey('eshra_hydra'), chargePrey('kharuun_sand_maw'), meleePrey('terek_va_hive_mind'),
+  chargePrey('nereth_jaw'), leapPrey('oshara_swimmer'), chargePrey('rukh_tal_spur'), leapPrey('dharos_watcher'));
+
 test('the counterplay matrix covers every registered encounter exactly once', () => {
   assert.deepEqual(cases.map(([id]) => id).sort(), Object.keys(BOSS_REGISTRY).sort());
-  assert.equal(new Set(cases.map(([, mechanic]) => mechanic)).size, 18);
+  assert.equal(new Set(cases.map(([, mechanic]) => mechanic)).size, Object.keys(BOSS_REGISTRY).length);
 });
 for (const [id, mechanic, run] of cases) test(`${id}: ${mechanic} has a real measured response`, run);
