@@ -3704,3 +3704,20 @@ html, body {
 
 
 
+
+/* Controls list in the options screen (kit commands, 14 Nov 2026) */
+.options-body { max-height: 70vh; overflow-y: auto; }
+.options-body .control-row {
+  display: grid;
+  grid-template-columns: minmax(110px, 150px) 1fr;
+  gap: 12px;
+  align-items: baseline;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(0, 210, 255, 0.12);
+}
+.options-body .control-row .key {
+  font-family: 'Orbitron', 'Rajdhani', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: #ffb703;
+}
