@@ -2388,6 +2388,14 @@ export class XenomorphHorde {
         return;
       }
 
+      // Stealth opening (HW-DEC-35): until the hive is alerted, aliens drift without hunting.
+      if (this.isAlerted === false) {
+        const t = Date.now() * 0.0006 + a.mesh.id;
+        a.mesh.position.x += Math.sin(t) * 0.9 * delta;
+        a.mesh.position.z += Math.cos(t * 0.8) * 0.9 * delta;
+        return;
+      }
+
       const dir = player.position.clone().sub(a.mesh.position);
       dir.y = 0;
       const dist = dir.length();

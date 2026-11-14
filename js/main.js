@@ -1148,6 +1148,16 @@ class GameApp {
     if (supports.synthetics) this.synthetics.spawnSquad(this.player.position, 3);
     this.horde.spawnWave(55, this.player.position);
 
+    // Stealth opening (HW-DEC-35): the hunt starts cloaked and the hive unaware.
+    this.horde.isAlerted = false;
+    this.stealthTimer = 25.0;
+    if (!this.player.isCloaked) this.player.toggleCloak();
+    setTimeout(() => {
+      if (this.isPlaying && this.horde.isAlerted === false) {
+        this.ui.showAnnouncement('🫥 OUVERTURE FURTIVE : LA RUCHE NE VOUS A PAS VU. [E] AU CONTACT POUR UNE MISE À MORT SILENCIEUSE');
+      }
+    }, 3500);
+
     // Human weapons are picked up, not carried (HW-DEC-13).
     this.player.m41aGrenadeCharges = 0;
     this.player.m77GaussAmmo = 0;
@@ -2209,6 +2219,7 @@ class GameApp {
   }
 
   registerHits(hits) {
+    if (hits.length && !this.silentKill) this.alertHorde('attack');
     hits.forEach(h => {
       this.comboHits++;
       this.comboTimer = 2.5;
@@ -3210,6 +3221,13 @@ class GameApp {
 
     this.updateWeaponCrates();
 
+    // Stealth opening ends after 25 s, or when an alien brushes against the hunter.
+    if (this.horde.isAlerted === false) {
+      this.stealthTimer -= delta;
+      const touched = this.horde.aliens.some(a => a && a.mesh && a.hp > 0 && a.mesh.position.distanceTo(this.player.position) < 3.0);
+      if (this.stealthTimer <= 0 || touched) this.alertHorde(touched ? 'contact' : 'time');
+    }
+
     if (this.horde.aliens.length < 10 && !this.bosses.activeBoss) {
       if (this.waveIndex < this.totalWaves || this.isEndlessMode) {
         this.waveIndex++;
@@ -3532,6 +3550,42 @@ class GameApp {
     }
   }
 
+  alertHorde(reason) {
+    if (!this.horde || this.horde.isAlerted !== false) return;
+    this.horde.isAlerted = true;
+    const why = { attack: 'VOTRE ATTAQUE', uncloak: 'VOTRE SILHOUETTE', contact: 'VOTRE ODEUR', time: 'LE TEMPS' }[reason] || 'UN BRUIT';
+    this.ui.showAnnouncement(`⚠️ LA RUCHE VOUS A REPÉRÉ (${why}) : LA CHASSE COMMENCE !`);
+  }
+
+  /* Contextual kill on E (HW-DEC-35): silent kill on any alien when cloaked,
+     execution of a wounded elite (25 % HP or less) otherwise. Bosses keep their own execution. */
+  tryContextualKill() {
+    const p = this.player;
+    if (!p || p.isFacehuggerLatched || (this.bosses.activeBoss && this.bosses.activeBoss.isStunned)) return false;
+    let best = null, bestDist = Infinity;
+    for (const a of this.horde.aliens) {
+      if (!a || a.hp <= 0 || !a.mesh) continue;
+      const d = a.mesh.position.distanceTo(p.position);
+      const maxHp = a.maxHp || a.hp;
+      const eligible = (p.isCloaked && d <= 3.0) || (maxHp >= 300 && a.hp <= maxHp * 0.25 && d <= 3.5);
+      if (eligible && d < bestDist) { best = a; bestDist = d; }
+    }
+    if (!best) return false;
+    const silent = p.isCloaked;
+    const big = (best.maxHp || 0) >= 300;
+    const how = p.isSecondaryWeapon ? 'EMPALEMENT' : 'DÉCAPITATION AUX LAMES';
+    best.hp = 0; // swept by the horde on its next update
+    this.silentKill = silent;
+    this.registerHits([{ killed: true, isOfficer: !!best.isOfficer, officerTitle: best.officerTitle }]);
+    this.silentKill = false;
+    this.score += silent ? 150 : 300;
+    if (big) { p.hp = Math.min(p.maxHp, p.hp + 100); this.shiftBattlefieldMorale(5); }
+    if (this.particles && this.particles.emitSparks) this.particles.emitSparks(best.mesh.position, 14);
+    this.triggerCameraShake(silent ? 0.25 : 0.6, 0.25);
+    this.ui.showAnnouncement(silent ? `🫥 MISE À MORT SILENCIEUSE : ${how}` : `💀 MISE À MORT : ${how} (+300 HONNEUR, +100 PV)`);
+    return true;
+  }
+
   /* Hunter kit key handling. Returns true when the key is consumed, so legacy bindings do not also fire. */
   handleKitKey(e) {
     const shift = this.keys['ShiftLeft'] || this.keys['ShiftRight'];
@@ -3547,6 +3601,7 @@ class GameApp {
       case 'KeyC': {
         if (e.repeat) return true;
         const on = this.player.toggleCloak();
+        if (!on) this.alertHorde('uncloak');
         this.ui.showAnnouncement(on ? '🫥 CAMOUFLAGE ACTIF : FRAPPEZ DE FACE POUR UNE EXÉCUTION SILENCIEUSE' : '🫥 CAMOUFLAGE COUPÉ');
         return true;
       }
@@ -3568,6 +3623,7 @@ class GameApp {
         this.kit.fireHumanWeapon();
         return true;
       case 'KeyE':
+        if (this.tryContextualKill()) return true;
         if (nearSkimmer && !this.player.isFacehuggerLatched && !(this.bosses.activeBoss && this.bosses.activeBoss.isStunned)) {
           this.skimmer.mountCooldown = 0;
           return true;
