@@ -45,7 +45,27 @@ Les preuves sont dans `docs/qa/recettes-20261114/` (un JSON par recette) et les 
 
 ## P1 et P2
 
-36 points « À valider » et 12 « En cours » de la feuille `Manquants`, 9 recettes P1, les lots 2 à 5 et des contrôles documentaires. Ceux que le code peut faire avancer : AUD-025, 026, 028, 060, 063, 090, 091, 103, 123 et CTRL-009, 010, 083, 084, 086. Les autres demandent des testeurs, du matériel réel ou des modèles.
+36 points « À valider » et 12 « En cours » dans la feuille `Manquants`, auxquels s'ajoutent 9 recettes P1, les lots 2 à 5 et des contrôles documentaires.
+
+### Avancés par le code le 14 novembre
+
+Les statuts du classeur ne changent pas ; les preuves sont épinglées par leur empreinte dans `implementation-progress.json`.
+
+| ID | Fait | Reste |
+|---|---|---|
+| AUD-091 | Défaut corrigé : la parade était décomptée deux fois par image (0,23 s au lieu de 0,42 s) et pouvait rester ouverte. Une matrice d'états par paires est en place. | Pouvoirs hérités hors matrice ; indication au HUD de chaque état |
+| AUD-090 | Défaut corrigé : le Musou touchait le boss et le Bad Blood à travers une paroi. Les chemins de dégâts au boss ont été revus. | Revue visuelle ; armes hors périmètre des tests |
+| AUD-028 | Réactions des synthétiques prouvées : le Working Joe industriel avertit puis contient, le synthétique de sécurité engage. | Limite de lieu du profil de sécurité |
+| AUD-060 | Cohérence de lieu prouvée pour 6 lieux du présent ou du passé : décors, soutiens, caisses et boss. | Revue de chaque groupe et objet |
+| CTRL-083 | Le constat est périmé : un fusilier a son propre acteur et son propre modèle. Un test le fige. | — |
+| CTRL-084 | Les escouades d'AFF-25 ont les classes de *Dark Descent*. | AFF-25 reste injouable, faute de contrôleur humain |
+
+### Encore ouverts
+
+- **AUD-063** : stress test d'un assaut et d'une évacuation en sens contraire aux goulets.
+- **AUD-103** : profils visuels simulés.
+- **AUD-025, AUD-026, AUD-123, CTRL-009 et CTRL-010** : modèles, castes et fidélité ; ils demandent des assets.
+- **CTRL-086** : séparer l'USCM et Weyland-Yutani en deux affiliations ; il faut une décision de l'auteur.
 
 ## Règle de suivi
 
