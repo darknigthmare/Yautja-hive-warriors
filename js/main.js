@@ -33,6 +33,7 @@ import { FalconDrone } from './entities/FalconDrone.js';
 import { EnvironmentManager } from './entities/Environment.js';
 import { CHARACTERS_DATA } from './data/charactersData.js';
 import { LEVELS_DATA } from './data/levelsData.js';
+import { HunterKit } from './systems/HunterKit.js';
 
 class GameApp {
   constructor() {
@@ -85,6 +86,8 @@ class GameApp {
     this.isFirstPerson = false;
 
     this.projectiles = [];
+    this.kit = new HunterKit(this);
+    this.legacyControls = false; // true restores the ~54 legacy key bindings
     this.isPlaying = false;
     this.isPaused = false;
 
@@ -252,6 +255,9 @@ class GameApp {
           return;
         }
       }
+
+      // Hunter kit: common core and four slots (bible, HW-DEC-08 and HW-DEC-35).
+      if (!this.legacyControls && this.handleKitKey(e)) return;
 
       // First-Person Bio-Mask View Toggle [I Key]
       if (e.code === 'KeyI' && this.player) {
@@ -819,7 +825,7 @@ class GameApp {
 
     window.addEventListener('mousedown', (e) => {
       if (!this.isPlaying || this.photoMode.isActive) return;
-      if (e.button === 1) {
+      if (e.button === 1 && this.legacyControls) {
         e.preventDefault();
         this.weaponWheel.toggle();
       }
@@ -828,7 +834,7 @@ class GameApp {
           this.env.fireSmartgun(this.player, this.horde, this.bosses, this.synthetics, this.audio, this.particles, this.ui);
           return;
         }
-        if (this.keys['ShiftLeft'] || this.keys['ShiftRight']) {
+        if (this.legacyControls && (this.keys['ShiftLeft'] || this.keys['ShiftRight'])) {
           if (this.player) this.player.usedShiftModifier = true;
           if (this.activeLoadout && this.activeLoadout.primary === 'katana') {
             const hits = this.player.performIaijutsuSlash(this.horde, this.synthetics, this.bosses, this.particles);
@@ -861,7 +867,7 @@ class GameApp {
           this.player.fireSniperPlasmaLance(this.horde, this.bosses, this.synthetics, this.particles, this.audio, this.ui);
           return;
         }
-        if (this.keys['ShiftLeft'] || this.keys['ShiftRight']) {
+        if (this.legacyControls && (this.keys['ShiftLeft'] || this.keys['ShiftRight'])) {
           if (this.player) {
             this.player.usedShiftModifier = true;
             if (this.keys['Space']) {
@@ -1105,6 +1111,7 @@ class GameApp {
 
     this.player = new Player(this.renderer.scene, this.ui.selectedChar, this.audio, false, this.particles);
     this.forge.applyStatsToPlayer(this.player);
+    this.kit.equip(this.ui.selectedChar && this.ui.selectedChar.id);
 
     // Chantier 9: Apply Tactical Armory Loadout Synergy
     if (!this.activeLoadout) {
@@ -1780,7 +1787,6 @@ class GameApp {
   }
 
   executeMusouOverload() {
-    this.ui.showAnnouncement('⚡ VRAIE ATTAQUE MUSOU : DÉVASTATION DU CLAN APEX !');
     this.audio.playOmniPlasmaStorm();
 
     // Intense Musou Camera Shockwave & Elastic FOV Surge
@@ -1825,22 +1831,86 @@ class GameApp {
       }
     }, 30);
 
-    const attack = {
-      origin: this.player.position,
-      damage: 1200,
-      radius: 40,
-      isLauncher: true,
-      launchVelY: 28.0,
-      knockback: 18.0
-    };
-    const hits = this.horde.checkMeleeHits(attack);
-    this.registerHits(hits);
+    // Each hunter has a Musou of its own (bible, game-concept.md §7).
+    const charId = (this.player.data && this.player.data.id) || 'jungle_hunter';
+    const musou = this.executeHunterMusou(charId);
+    this.ui.showAnnouncement(`⚡ MUSOU : ${musou.name}`);
 
     // Spawn massive plasma scorched ground decal at center
     this.particles.spawnPlasmaScorch(this.player.position);
 
-    if (this.bosses.activeBoss) this.bosses.takeDamage(1500);
-    if (this.badBlood.isActive) this.badBlood.takeDamage(1500);
+    if (this.bosses.activeBoss) this.bosses.takeDamage(musou.bossDamage);
+    if (this.badBlood.isActive) this.badBlood.takeDamage(musou.bossDamage);
+  }
+
+  /* Hit along a straight line from the hunter, as a chain of small circles. */
+  musouLineHits(length, width, damage, extra = {}) {
+    const p = this.player;
+    const fwd = new THREE.Vector3(Math.sin(p.rotationY), 0, Math.cos(p.rotationY));
+    let hits = [];
+    const step = width;
+    for (let d = step; d <= length; d += step) {
+      const origin = p.position.clone().addScaledVector(fwd, d);
+      hits = hits.concat(this.horde.checkMeleeHits({ origin, radius: width, damage: damage / Math.max(1, Math.round(width * 2 / step)), ...extra }));
+    }
+    return { hits, fwd };
+  }
+
+  executeHunterMusou(charId) {
+    const p = this.player;
+    const hit = (attack) => { const h = this.horde.checkMeleeHits(attack); this.registerHits(h); return h; };
+    switch (charId) {
+      case 'wolf_predator': {
+        // Solvant d'Acide Liquéfacteur: dissolves acid on the ground, burns the pack, mends the cleaner.
+        hit({ origin: p.position, damage: 950, radius: 30, knockback: 10.0 });
+        if (this.horde.acidPools) {
+          this.horde.acidPools.forEach(pool => { if (pool.mesh) this.renderer.scene.remove(pool.mesh); });
+          this.horde.acidPools.length = 0;
+        }
+        p.hp = Math.min(p.maxHp, p.hp + 250);
+        return { name: 'SOLVANT D\'ACIDE LIQUÉFACTEUR — SOL PURIFIÉ, +250 PV', bossDamage: 1300 };
+      }
+      case 'alpha_predator':
+        // Massacre Ancestral à la Faux: a tight, very heavy reap.
+        hit({ origin: p.position, damage: 2100, radius: 22, isLauncher: true, launchVelY: 22.0, knockback: 12.0 });
+        return { name: 'MASSACRE ANCESTRAL À LA FAUX', bossDamage: 1900 };
+      case 'feral_predator': {
+        // Charge de Bouclier Mutilante: rush 25 m forward, shield up, crushing everything on the way.
+        const { hits, fwd } = this.musouLineHits(25, 4.5, 1500, { knockback: 16.0 });
+        this.registerHits(hits);
+        p.position.addScaledVector(fwd, 22);
+        if (p.mesh) p.mesh.position.copy(p.position);
+        p.isBlocking = true;
+        setTimeout(() => { if (this.player === p) p.isBlocking = false; }, 3000);
+        return { name: 'CHARGE DE BOUCLIER MUTILANTE — INVULNÉRABLE 3 S', bossDamage: 1500 };
+      }
+      case 'samurai_predator': {
+        // Entaille du Dragon Ronin: one 40 m cut ahead.
+        const { hits } = this.musouLineHits(40, 5, 2200);
+        this.registerHits(hits);
+        return { name: 'ENTAILLE DU DRAGON RONIN', bossDamage: 2000 };
+      }
+      case 'viking_predator':
+        // Frénésie du Valhalla 360°: a burst, then ten seconds of horn fury.
+        hit({ origin: p.position, damage: 800, radius: 20, knockback: 14.0 });
+        p.soundWarhorn();
+        p.warhornBuffTimer = 10.0;
+        return { name: 'FRÉNÉSIE DU VALHALLA — FUREUR 10 S', bossDamage: 1200 };
+      case 'city_hunter': {
+        // Tempête de Disques Boomerang: one disc for each of the 25 nearest enemies within 40 m.
+        const targets = this.horde.aliens
+          .filter(a => a && a.hp > 0 && a.mesh && a.mesh.position.distanceTo(p.position) <= 40)
+          .sort((a, b) => a.mesh.position.distanceTo(p.position) - b.mesh.position.distanceTo(p.position))
+          .slice(0, 25);
+        targets.forEach(a => this.registerHits(this.horde.checkMeleeHits({ origin: a.mesh.position.clone(), damage: 900, radius: 0.1 })));
+        return { name: `TEMPÊTE DE DISQUES — ${targets.length} CIBLES`, bossDamage: 1400 };
+      }
+      case 'jungle_hunter':
+      default:
+        // Surcharge Plasma Dévastatrice: the widest plasma blast.
+        hit({ origin: p.position, damage: 1300, radius: 45, isLauncher: true, launchVelY: 28.0, knockback: 18.0 });
+        return { name: 'SURCHARGE PLASMA DÉVASTATRICE', bossDamage: 1500 };
+    }
   }
 
   triggerCameraShake(intensity = 0.8, duration = 0.35) {
@@ -2240,6 +2310,7 @@ class GameApp {
     if (this.keys['KeyD']) moveDirP1.x += 1;
     this.player.move(moveDirP1, delta);
     this.player.update(delta, this.horde);
+    this.kit.update(delta);
 
     // Karim QA Audit #3: Dynamic Surface Footstep Synthesizer (Metal Catwalk, Water Basin, Ash)
     if (moveDirP1.lengthSq() > 0.01 && this.audio && this.audio.playFootstepSurface) {
@@ -3458,6 +3529,70 @@ class GameApp {
       this.player.updateLaserLock(null);
       this.lockedTargetPos = null;
       reticleEl.classList.add('hidden');
+    }
+  }
+
+  /* Hunter kit key handling. Returns true when the key is consumed, so legacy bindings do not also fire. */
+  handleKitKey(e) {
+    const shift = this.keys['ShiftLeft'] || this.keys['ShiftRight'];
+    if (!this.player) return false;
+    const slot = { Digit1: 0, Digit2: 1, Digit3: 2, Digit4: 3, Numpad1: 0, Numpad2: 1, Numpad3: 2, Numpad4: 3 }[e.code];
+    if (slot !== undefined) {
+      if (shift) this.player.usedShiftModifier = true;
+      if (!e.repeat) this.kit.useSlot(slot);
+      return true;
+    }
+    const nearSkimmer = this.skimmer && (this.skimmer.isMounted || this.player.position.distanceTo(this.skimmer.position) < 4.5);
+    switch (e.code) {
+      case 'KeyC': {
+        if (e.repeat) return true;
+        const on = this.player.toggleCloak();
+        this.ui.showAnnouncement(on ? '🫥 CAMOUFLAGE ACTIF : FRAPPEZ DE FACE POUR UNE EXÉCUTION SILENCIEUSE' : '🫥 CAMOUFLAGE COUPÉ');
+        return true;
+      }
+      case 'KeyQ': {
+        if (e.repeat) return true;
+        const secondary = this.player.toggleWeaponSwap();
+        // Swapping mid-combo keeps the chain alive (HW-DEC-35).
+        if (this.player.attackComboStep > 0) this.player.comboResetTimer = Math.max(this.player.comboResetTimer, 1.4);
+        this.ui.showAnnouncement(secondary ? '🔁 ARME SECONDAIRE (+30 % DE DÉGÂTS, PLUS D\'ALLONGE)' : '🔁 LAMES DE POIGNET');
+        return true;
+      }
+      case 'Tab':
+        e.preventDefault();
+        if (!e.repeat) this.kit.toggleLock();
+        return true;
+      case 'KeyG':
+        if (e.repeat) return true;
+        if (nearSkimmer) { this.skimmer.mountCooldown = 0; return true; }
+        this.kit.fireHumanWeapon();
+        return true;
+      case 'KeyE':
+        if (nearSkimmer && !this.player.isFacehuggerLatched && !(this.bosses.activeBoss && this.bosses.activeBoss.isStunned)) {
+          this.skimmer.mountCooldown = 0;
+          return true;
+        }
+        return false;
+      case 'KeyZ':
+        if (e.repeat) return true;
+        if (this.player.useMedicomp()) {
+          this.particles.emitMedicompSteam(this.player.position, 24);
+          this.ui.showAnnouncement('💉 MEDICOMP : +450 PV');
+        } else {
+          this.ui.showAnnouncement('💉 MEDICOMP VIDE');
+        }
+        return true;
+      case 'Space':
+        return shift; // Shift+Space legacy leaps are not in the kit; plain Space falls through to Musou
+      case 'KeyM':
+        return !shift; // Shift+M toggles endless mode
+      case 'KeyO':
+        return !shift; // Shift+O opens photo mode
+      case 'KeyI': case 'AltLeft': case 'AltRight': case 'KeyV': case 'KeyF':
+      case 'F1': case 'F2': case 'F3': case 'F4': case 'ShiftLeft': case 'ShiftRight': case 'Escape':
+        return false;
+      default:
+        return true;
     }
   }
 
