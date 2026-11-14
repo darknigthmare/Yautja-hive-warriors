@@ -1,3 +1,5 @@
+> **Archive.** Ce constat porte sur `master` v58. La référence est la v70 depuis le 14 novembre 2026 : voir [etat-reel-v70.md](etat-reel-v70.md).
+
 # État réel du jeu à la v58
 
 > Bible du jeu, document 3 sur 3. Constat daté du 13 novembre 2026.
