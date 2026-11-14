@@ -178,7 +178,23 @@ Première chasse contre les Xénomorphes. Tuer son premier Xénomorphe donne la 
 
 ## 9. Ce qui est codé (14 novembre 2026)
 
-La chasse de **Vara-Kesh** est jouable depuis le bouton « Campagne » du menu : l'Unblooded, la meute (Harek, Yena, Tov, sans canon d'épaule), trois zones de harde avec leur mâle dominant, puis le Faucheur de Vara-Kesh à exécuter. Saar s'exprime par les annonces à l'écran. Kaedh et *La Lame Patiente* ne sont pas encore représentés.
+**Toute la campagne se joue**, depuis le bouton « Campagne » du menu (`js/systems/FaunaHunt.js`, `js/data/levelsData.js`, `CAMPAIGN_HUNTS`) :
+
+- **Les huit mondes**, dans l'ordre, chacun avec trois zones de harde, son meneur et sa grande proie. Vérifié de Vara-Kesh à Dharos par commandes de test.
+- **Comportements propres** : la matrone d'Eshra et les sentinelles de Dharos font naître de nouveaux animaux tant qu'elles vivent ; le fouisseur de Kharuun plonge sous le sable puis surgit ; les nœuds de Terek-Va ne bougent pas et nourrissent une nuée de 24 à 32 bêtes ; les rôdeurs de Nereth sont presque invisibles sans changer de vision ; plusieurs meneurs chargent.
+- **Les traces** de Xénomorphes et les répliques de Saar et de Kaedh passent par les annonces à l'écran.
+- **Un outil par monde gagné**, choisi à l'écran de préparation parmi les outils déjà gagnés.
+- **Le camouflage reste verrouillé jusqu'à Rukh Tal** ; le canon d'épaule reste verrouillé tant que l'Unblooded n'est pas Blooded.
+- **Le rite** : une triade avec Harek et Yena dans la pyramide, contre des drones seuls, sans brûleur ni mines ; 25 Xénomorphes tués donnent le rang Blooded.
+- **La progression** est gardée dans ce navigateur (`hw_unblooded_campaign`), pas encore dans le compte en ligne.
+
+**Choix de ma part, à régler en jouant** : taille des hardes, points de vie et dégâts des bêtes, 2 500 à 6 000 points de vie pour les grandes proies, 25 Xénomorphes pour le rite. Les grandes proies hors Vara-Kesh partagent une même silhouette, déclinée par monde.
+
+**Pas encore fait** :
+- les chroniques ne sont pas verrouillées avant le rang Blooded (les 8 arènes restent ouvertes, pour vos essais) ;
+- Kaedh et *La Lame Patiente* ne sont pas représentés : ni personnage visible ni base entre deux chasses ;
+- les mondes réutilisent les décors existants (jungle, temple, toits) et l'arène de 150 m ;
+- le Bad Blood de Rukh Tal n'apparaît pas : il n'existe que dans les annonces.
 
 ## 10. Ce qu'il faut créer
 
