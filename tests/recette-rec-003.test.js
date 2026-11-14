@@ -155,7 +155,7 @@ const sealedAnnounced = () => {
       reproduction: 'node --test tests/recette-rec-003.test.js (variante passage_scelle_apres_capture) : pilote gunnison_forest, mapSeed 20261114, attaque de A à t=40 s, fermeture de route-insertion-relay-main et route-insertion-relay-flank à la capture de A, lecture de operationAlertState(getHUDState()).' } });
 }
 
-test('REC-003 — passage scellé : l’alerte urgente annonce l’impossibilité du trajet', { todo: 'défaut: js/ui/OperationPanel.js:15-21 et js/battlefield/BattleIntel.js:114-121 — l’alerte « REPRENEZ LE FRONT » ignore unreachableFrontIds et l’événement critical_return_route_blocked est filtré du HUD' }, () => {
+test('REC-003 — passage scellé : l’alerte urgente annonce l’impossibilité du trajet', () => {
   const status = sealedAnnounced();
   assert.ok(status.panelSaysBlocked || status.feedHasBlocked, 'la coupure doit être annoncée au joueur');
 });

@@ -18,7 +18,9 @@ export function operationAlertState(state,objectives,players=[]) {
     const urgent=(state.criticalFronts??[]).filter(loss=>typeof loss.frontId==='string'&&Number.isFinite(loss.deadline))
       .reduce((first,loss)=>!first||loss.deadline<first.deadline?loss:first,null);
     const alert=state.alerts.find(item=>item.type==='critical_front_lost');
-    return locate(urgent?.frontId??alert?.fronts?.[0],'DÉFAITE IMMINENTE — REPRENEZ LE FRONT',(urgent?.deadline??state.criticalDeadline)-state.time);
+    // A sealed return route must be announced, not presented as a walkable rescue.
+    const sealed=(urgent?.unreachableFrontIds?.length??0)>0;
+    return locate(urgent?.frontId??alert?.fronts?.[0],sealed?'DÉFAITE IMMINENTE — PASSAGE COUPÉ : ROUVREZ UNE ROUTE VERS LE FRONT':'DÉFAITE IMMINENTE — REPRENEZ LE FRONT',(urgent?.deadline??state.criticalDeadline)-state.time);
   }
   const captain=state.groups.find(group=>group.factionId===state.playerFaction&&group.officerHP>0&&group.officerHP/group.officerMaxHP<=.25);if(captain)return locate(captain.frontId,'CAPITAINE EN DANGER',null);
   const reaction=[...(objectives?.reactions??[]),...(state.phaseThreats??[])].filter(item=>item.status==='announced').sort((a,b)=>a.remaining-b.remaining)[0];if(reaction)return locate(reaction.targetFrontId,reaction.label??'CONTRE-OFFENSIVE EN APPROCHE',reaction.remaining);

@@ -113,6 +113,8 @@ export class BattleIntel {
 
   allowsEvent(event) {
     if (this.simulation.result || event.type === 'operation_ended' || event.type === 'group_revealed') return true;
+    // The defeat timer is mission knowledge, not field intel: its start, route changes and recovery always reach the player.
+    if (/^critical_(front_lost|front_recovered|return_route_blocked|return_route_changed)$/.test(event.type)) return true;
     const group = event.groupId && this.simulation.groups.get(event.groupId);
     if (group && this.simulation.relationship(group.factionId, this.simulation.config.playerFaction) === 'allied') {
       const report = this.groups.get(group.id); return !!report && report.observedAt >= event.time;

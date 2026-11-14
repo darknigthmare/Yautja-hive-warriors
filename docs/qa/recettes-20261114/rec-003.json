@@ -5,7 +5,7 @@
   "resultatAttenduClasseur": "Le joueur reçoit une information exploitable avant la conséquence irréversible, ou la mission signale clairement qu'un ordre distant est nécessaire. Aucune alerte urgente ne demande un trajet impossible sans l'annoncer.",
   "preuveAConserverClasseur": "Chronométrages; vitesses et routes déclarées; captures des alertes; seuils de délai fixés avant recette.",
   "date": "2026-11-14",
-  "commit": "4092a2c7da8f6df77a76daf2e0888e0297657e62",
+  "commit": "a5799e189e5dbdaf18509d3c084e95f1cf4d80d9",
   "branche": "claude/fervent-volta-hmhdfw",
   "preuveVideo": "non produite — preuve par journal de simulation",
   "graine": {
@@ -103,6 +103,7 @@
             }
           ],
           "hudAlertTypes": [
+            "critical_front_lost",
             "unit_died",
             "unit_died",
             "unit_died",
@@ -125,6 +126,7 @@
             }
           ],
           "hudAlertTypes": [
+            "critical_front_lost",
             "unit_died",
             "unit_died",
             "unit_died",
@@ -294,6 +296,7 @@
             }
           ],
           "hudAlertTypes": [
+            "critical_front_lost",
             "unit_died",
             "unit_died"
           ]
@@ -314,6 +317,7 @@
             }
           ],
           "hudAlertTypes": [
+            "critical_front_lost",
             "unit_died",
             "unit_died"
           ],
@@ -493,6 +497,7 @@
             }
           ],
           "hudAlertTypes": [
+            "critical_front_lost",
             "unit_died",
             "unit_died",
             "unit_died",
@@ -518,13 +523,15 @@
             }
           ],
           "hudAlertTypes": [
+            "critical_return_route_blocked",
+            "critical_front_lost",
             "unit_died",
             "unit_died",
             "unit_died",
             "unit_died"
           ],
-          "alerteC": "DÉFAITE IMMINENTE — REPRENEZ LE FRONT · Clairière d’insertion · 153 s · S 510 u",
-          "alerteB": "DÉFAITE IMMINENTE — REPRENEZ LE FRONT · Clairière d’insertion · 153 s · SO 240 u"
+          "alerteC": "DÉFAITE IMMINENTE — PASSAGE COUPÉ : ROUVREZ UNE ROUTE VERS LE FRONT · Clairière d’insertion · 153 s · S 510 u",
+          "alerteB": "DÉFAITE IMMINENTE — PASSAGE COUPÉ : ROUVREZ UNE ROUTE VERS LE FRONT · Clairière d’insertion · 153 s · SO 240 u"
         },
         "travel": {
           "B": {
@@ -686,6 +693,16 @@
           "action": "route_closed",
           "routeId": "route-insertion-relay-flank",
           "accepted": true
+        },
+        {
+          "t": 577.5,
+          "position": "B",
+          "alerte": "DÉFAITE IMMINENTE — PASSAGE COUPÉ : ROUVREZ UNE ROUTE VERS LE FRONT · Clairière d’insertion · 153 s · SO 240 u"
+        },
+        {
+          "t": 577.5,
+          "position": "C",
+          "alerte": "DÉFAITE IMMINENTE — PASSAGE COUPÉ : ROUVREZ UNE ROUTE VERS LE FRONT · Clairière d’insertion · 153 s · S 510 u"
         }
       ]
     }
@@ -722,6 +739,7 @@
             }
           ],
           "hudAlertTypes": [
+            "critical_front_lost",
             "unit_died",
             "unit_died",
             "unit_died",
@@ -812,6 +830,7 @@
             }
           ],
           "hudAlertTypes": [
+            "critical_front_lost",
             "unit_died",
             "unit_died"
           ]
@@ -880,11 +899,13 @@
     {
       "id": "REC-003-3b",
       "texte": "Aucune alerte urgente ne demande un trajet impossible sans l'annoncer (ou la mission signale qu'un ordre distant est nécessaire).",
-      "verdict": "non conforme",
+      "verdict": "conforme",
       "preuve": {
-        "alerteAffichee_B": "DÉFAITE IMMINENTE — REPRENEZ LE FRONT · Clairière d’insertion · 153 s · SO 240 u",
-        "alerteAffichee_C": "DÉFAITE IMMINENTE — REPRENEZ LE FRONT · Clairière d’insertion · 153 s · S 510 u",
+        "alerteAffichee_B": "DÉFAITE IMMINENTE — PASSAGE COUPÉ : ROUVREZ UNE ROUTE VERS LE FRONT · Clairière d’insertion · 153 s · SO 240 u",
+        "alerteAffichee_C": "DÉFAITE IMMINENTE — PASSAGE COUPÉ : ROUVREZ UNE ROUTE VERS LE FRONT · Clairière d’insertion · 153 s · S 510 u",
         "typesAlertesHUD": [
+          "critical_return_route_blocked",
+          "critical_front_lost",
           "unit_died",
           "unit_died",
           "unit_died",
@@ -899,15 +920,7 @@
           "time": 730.25
         }
       },
-      "defaut": {
-        "resume": "Après la coupure totale, le panneau affiche toujours « DÉFAITE IMMINENTE — REPRENEZ LE FRONT » avec le compte à rebours, sans signaler que le front est inaccessible ni proposer d’ordre distant ; l’échéance expire et la mission est perdue.",
-        "emplacements": [
-          "js/ui/OperationPanel.js:15-21 — operationAlertState() construit l’alerte urgente depuis criticalFronts sans lire unreachableFrontIds.",
-          "js/battlefield/BattleIntel.js:114-121 — allowsEvent() exige un rapport de front observé après l’événement ; A étant tombé sans observateur allié, critical_return_route_blocked (priorité 4) est filtré de hud.alerts.",
-          "js/battlefield/BattleSimulation.js:1112-1122 — la perte critique garde son échéance alors que unreachableFrontIds couvre tous les autres fronts ; la défaite survient à l’échéance."
-        ],
-        "reproduction": "node --test tests/recette-rec-003.test.js (variante passage_scelle_apres_capture) : pilote gunnison_forest, mapSeed 20261114, attaque de A à t=40 s, fermeture de route-insertion-relay-main et route-insertion-relay-flank à la capture de A, lecture de operationAlertState(getHUDState())."
-      }
+      "defaut": null
     },
     {
       "id": "REC-003-4",
