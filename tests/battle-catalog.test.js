@@ -75,15 +75,17 @@ test('every initial supplied reserve group fits its announced arrival allowance 
     config.ai = { enabled: false }; config.profiles.forEach(profile => { profile.damage = 0; });
     const simulation = new BattleSimulation(config), before = [...simulation.units.keys()];
     try {
-      const reserves = config.groups.filter(group => group.state === 'reserve');
+      // A brood (HW-DEC-90) is a reserve that hatches in place, never a reinforcement wave.
+      const reserves = config.groups.filter(group => group.state === 'reserve' && !group.brood);
+      const eggs = new Set(config.groups.filter(group => group.brood).flatMap(group => group.units.map(unit => unit.id)));
       for (const group of reserves) {
         assert.ok(group.units.length <= config.budgets.arrivalsPerTick, `${operation.id}/${group.id}: whole finite squad must fit the arrival allowance`);
         const result = simulation.requestReinforcements(group.factionId, group.frontId, group.id);
         assert.equal(result.accepted, true, `${operation.id}/${group.id}: initial source and route exist: ${result.reason}`);
       }
-      simulation.update(2); assert.equal([...simulation.units.values()].filter(unit => unit.state === 'reserve').length, reserves.reduce((sum, group) => sum + group.units.length, 0), 'warning precedes the actual arrival');
+      simulation.update(2); assert.equal([...simulation.units.values()].filter(unit => unit.state === 'reserve' && !eggs.has(unit.id)).length, reserves.reduce((sum, group) => sum + group.units.length, 0), 'warning precedes the actual arrival');
       simulation.update(1.25);
-      assert.equal([...simulation.units.values()].filter(unit => unit.state === 'reserve').length, 0);
+      assert.equal([...simulation.units.values()].filter(unit => unit.state === 'reserve' && !eggs.has(unit.id)).length, 0);
       assert.deepEqual([...simulation.units.keys()], before); assert.equal(simulation.deaths.size, 0); assert.equal(simulation.assertConservation(), true);
     } finally { simulation.dispose(); }
   }

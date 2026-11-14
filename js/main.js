@@ -283,9 +283,9 @@ class GameApp {
       // Old checkpoints were signed against the generic roster. Never rewrite
       // their identities, wounds or group types to force a new source preset.
       if (!saved || !/^AFF-/.test(config.id) || !/save does not match this operation or has an invalid clock/.test(error.message)) throw error;
-      // Checkpoints may predate the source roster, the corridor door binding (REC-012) or the Extinction catalogue links (CTRL-082).
+      // Checkpoints may predate the source roster, the corridor door binding (REC-012) the Extinction catalogue links (CTRL-082) or the LV-742 brood (HW-DEC-90).
       let resumed=null,lastError=error;
-      const flags=['legacyRoster','legacyRouteGates','legacySourceLinks'];
+      const flags=['legacyRoster','legacyRouteGates','legacySourceLinks','legacyBrood'];
       for(let mask=1;mask<1<<flags.length;mask++){const legacy=Object.fromEntries(flags.filter((_,bit)=>mask&1<<bit).map(flag=>[flag,true]));
         const compatible=createOperationScene({...sceneOptions,...legacy}).config;
         try{resumed=BattleSimulation.fromState(compatible,saved.simulation,callbacks);config=compatible;break;}catch(retry){lastError=retry;}

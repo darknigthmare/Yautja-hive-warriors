@@ -3,11 +3,14 @@
  "titre": "Sauvegarde d'une guerre répartie",
  "source": "docs/audits/2026-10-26/Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.xlsx#Validation!REC-016",
  "dateExecution": "2026-11-14",
- "commit": "27cf8fcd63d6efa5aa2a2966291f5fe854a08034",
+ "commit": "7934cd7dfe1455ba192aac082d0052a66411ee82",
  "sourcesJsNonCommitees": [
+  " M js/battlefield/BattleSimulation.js",
+  " M js/battlefield/OperationObjectiveSpecs.js",
   " M js/battlefield/OperationObjectives.js",
-  "?? js/battlefield/CivilianPopulation.js",
-  "?? js/data/OperationThirdParties.js"
+  " M js/battlefield/OperationScene.js",
+  " M js/data/BattleCatalog.js",
+  " M js/main.js"
  ],
  "graine": {
   "operation": "AFF-27",
@@ -18,11 +21,11 @@
  "preuveVideo": "non produite — preuve par journal de simulation",
  "scenario": {
   "operation": "AFF-27",
-  "configDigest": "98666fc1",
+  "configDigest": "27d11c90",
   "sauvegarde": {
    "cle": "yautja-operation-checkpoint-v1",
    "ecrite": true,
-   "octets": 741981,
+   "octets": 742883,
    "t": 27.5
   },
   "script": [
@@ -288,7 +291,8 @@
     "AFF-27:human_force:118": "defend>front_b@front_b",
     "AFF-27:human_force:119": "defend>front_b@front_b",
     "AFF-27:player_clan:120": "attack>front_d@front_d",
-    "AFF-27:player_clan:121": "attack>front_d@front_d"
+    "AFF-27:player_clan:121": "attack>front_d@front_d",
+    "AFF-27:hive:brood": "defend>front_c@front_c"
    },
    "groupStates": {
     "AFF-27:hive:0": "distant",
@@ -412,7 +416,8 @@
     "AFF-27:human_force:118": "reserve",
     "AFF-27:human_force:119": "reserve",
     "AFF-27:player_clan:120": "distant",
-    "AFF-27:player_clan:121": "distant"
+    "AFF-27:player_clan:121": "distant",
+    "AFF-27:hive:brood": "reserve"
    },
    "reconstitutions": {
     "AFF-27:human_force:4": {
@@ -523,6 +528,11 @@
     ],
     [
      "lv742_exit",
+     "pending",
+     0
+    ],
+    [
+     "brood",
      "pending",
      0
     ]
@@ -699,7 +709,8 @@
     "AFF-27:human_force:118": "defend>front_b@front_b",
     "AFF-27:human_force:119": "defend>front_b@front_b",
     "AFF-27:player_clan:120": "attack>front_d@front_d",
-    "AFF-27:player_clan:121": "attack>front_d@front_d"
+    "AFF-27:player_clan:121": "attack>front_d@front_d",
+    "AFF-27:hive:brood": "defend>front_c@front_c"
    },
    "groupStates": {
     "AFF-27:hive:0": "distant",
@@ -823,7 +834,8 @@
     "AFF-27:human_force:118": "reserve",
     "AFF-27:human_force:119": "reserve",
     "AFF-27:player_clan:120": "distant",
-    "AFF-27:player_clan:121": "distant"
+    "AFF-27:player_clan:121": "distant",
+    "AFF-27:hive:brood": "reserve"
    },
    "reconstitutions": {
     "AFF-27:human_force:4": {
@@ -934,6 +946,11 @@
     ],
     [
      "lv742_exit",
+     "pending",
+     0
+    ],
+    [
+     "brood",
      "pending",
      0
     ]
@@ -1106,7 +1123,8 @@
      "AFF-27:human_force:118": "defend>front_b@front_b",
      "AFF-27:human_force:119": "defend>front_b@front_b",
      "AFF-27:player_clan:120": "attack>front_d@front_d",
-     "AFF-27:player_clan:121": "attack>front_d@front_d"
+     "AFF-27:player_clan:121": "attack>front_d@front_d",
+     "AFF-27:hive:brood": "defend>front_c@front_c"
     },
     "groupStates": {
      "AFF-27:hive:0": "distant",
@@ -1230,7 +1248,8 @@
      "AFF-27:human_force:118": "reserve",
      "AFF-27:human_force:119": "reserve",
      "AFF-27:player_clan:120": "distant",
-     "AFF-27:player_clan:121": "distant"
+     "AFF-27:player_clan:121": "distant",
+     "AFF-27:hive:brood": "reserve"
     },
     "reconstitutions": {
      "AFF-27:human_force:4": {
@@ -1342,6 +1361,12 @@
      ],
      [
       "lv742_exit",
+      "pending",
+      0,
+      null
+     ],
+     [
+      "brood",
       "pending",
       0,
       null
@@ -1826,7 +1851,8 @@
      "AFF-27:human_force:118": "defend>front_b@front_b",
      "AFF-27:human_force:119": "defend>front_b@front_b",
      "AFF-27:player_clan:120": "attack>front_d@front_d",
-     "AFF-27:player_clan:121": "attack>front_d@front_d"
+     "AFF-27:player_clan:121": "attack>front_d@front_d",
+     "AFF-27:hive:brood": "defend>front_c@front_c"
     },
     "groupStates": {
      "AFF-27:hive:0": "distant",
@@ -1950,7 +1976,8 @@
      "AFF-27:human_force:118": "reserve",
      "AFF-27:human_force:119": "reserve",
      "AFF-27:player_clan:120": "distant",
-     "AFF-27:player_clan:121": "distant"
+     "AFF-27:player_clan:121": "distant",
+     "AFF-27:hive:brood": "reserve"
     },
     "reconstitutions": {
      "AFF-27:human_force:4": {
@@ -2062,6 +2089,12 @@
      ],
      [
       "lv742_exit",
+      "pending",
+      0,
+      null
+     ],
+     [
+      "brood",
       "pending",
       0,
       null

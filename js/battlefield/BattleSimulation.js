@@ -57,6 +57,7 @@ const speciesOf = value => value === 'xeno' ? 'xenomorph' : value;
  * despawnGroup(group, units) may return [{id,hp,position}] to preserve live poses.
  */
 const RESERVE_WAVE_SECONDS = 45;
+const BROOD_CHAMBER_RADIUS = 15;
 
 function focusedRemoteTarget(targets, pending) {
   let best = null, bestRemaining = Infinity;
@@ -176,6 +177,12 @@ export class BattleSimulation {
         order: { type: 'defend', frontId: specification.frontId, issuer: 'scenario' },
         formation: specification.formation ?? 'line', officerId: null, delegated: false, tactic: null, detailRetryAt: 0,
         coordinationStrength: 1, reconstitution: null, supportsReconstitutionOf: null, lastReinforcementArrival: null, reinforcementDestination: null };
+      if (specification.brood === true) {
+        group.brood = true; group.hatchedAt = null;
+        // The brood chamber lies with the named matriarch's group of its front, when there is one.
+        const matriarch = [...this.groups.values()].find(other => other.factionId === group.factionId && other.frontId === group.frontId && other.units.some(unitId => this.units.get(unitId)?.uniqueId));
+        if (matriarch) { group.position = [...matriarch.position]; group.reportPosition = [...matriarch.position]; }
+      }
       if (!point(group.position) || !number(group.morale, 0, 100) || !this.fronts.has(group.reserveOriginId)) fail('invalid group position, reserve origin or morale');
       for (let index = 0; index < specification.units.length; index++) {
         const spec = specification.units[index], profile = this.profiles.get(spec.profileId), faction = this.factions.get(group.factionId);
@@ -532,6 +539,36 @@ export class BattleSimulation {
     this._emit('carrier_facehugger_launched',{carrierId,facehuggerId,
       frontId:group.frontId},1);
     return {accepted:true,carrierId,facehuggerId};
+  }
+
+  /** Eggs hatch together when a hostile camp or a player enters the brood's front (GRP-05: react to intrusion). */
+  _broodStep() {
+    for (const group of this.groups.values()) {
+      if (!group.brood || group.hatchedAt !== null) continue;
+      const eggs = group.units.map(unitId => this.units.get(unitId)).filter(unit => alive(unit) && unit.state === 'reserve');
+      if (!eggs.length) continue;
+      // The chamber is the brood's own position: groups staged on the wider front do not wake it.
+      const front = this.fronts.get(group.frontId), chamber = group.position;
+      const intruder = front.owner !== group.factionId && front.owner !== null && this.areHostile(group.factionId, front.owner)
+        || [...this.groups.values()].some(other => other.frontId === front.id && this.areHostile(group.factionId, other.factionId) && dist(other.position, chamber) <= BROOD_CHAMBER_RADIUS
+          && other.units.some(unitId => alive(this.units.get(unitId)) && this.units.get(unitId).state !== 'reserve'))
+        || this.players.some(player => player.hp > 0 && dist(player.position, chamber) <= BROOD_CHAMBER_RADIUS);
+      if (!intruder) continue;
+      group.hatchedAt = this.time; group.state = 'distant';
+      for (const unit of eggs) unit.state = 'distant';
+      this.issueOrder(group.id, { type: 'attack', frontId: front.id, issuer: 'scenario' });
+      this._emit('brood_hatched', { groupId: group.id, frontId: front.id, count: eggs.length }, 3);
+    }
+  }
+
+  /** Burning the brood kills its unhatched eggs, one recorded death each. */
+  burnBrood(groupId, killerFaction = this.config.playerFaction) {
+    const group = this.groups.get(groupId);
+    if (!group?.brood || group.hatchedAt !== null) return 0;
+    let burned = 0;
+    for (const unitId of group.units) { const unit = this.units.get(unitId); if (alive(unit) && unit.state === 'reserve' && this.recordDeath({ entityId: unitId, killerFaction, cause: 'brood_burned' })) burned++; }
+    if (burned) this._emit('brood_burned', { groupId, frontId: group.frontId, count: burned }, 3);
+    return burned;
   }
 
   _detailStep() {
@@ -955,7 +992,8 @@ export class BattleSimulation {
 
   requestReinforcements(factionId, targetFrontId, groupId = null) {
     if (this.disposed || this.result || !this.factions.has(factionId) || !this.fronts.has(targetFrontId)) return { accepted: false, reason: 'invalid_faction_or_front' };
-    const available = (groupId ? [this.groups.get(groupId)] : [...this.groups.values()]).filter(candidate => candidate?.factionId === factionId && !this.pendingArrivals.some(arrival => arrival.groupId === candidate.id) && candidate.units.some(unitId => this.units.get(unitId).state === 'reserve'));
+    // A brood (HW-DEC-90) never leaves as a reinforcement wave: it hatches in place.
+    const available = (groupId ? [this.groups.get(groupId)] : [...this.groups.values()]).filter(candidate => candidate?.factionId === factionId && !candidate.brood && !this.pendingArrivals.some(arrival => arrival.groupId === candidate.id) && candidate.units.some(unitId => this.units.get(unitId).state === 'reserve'));
     if (!available.length) return { accepted: false, reason: 'reserve_exhausted_or_already_inbound' };
     const sources = this._sourcesFor(factionId);
     const group = available.find(candidate => sources.some(source => source.id === candidate.reserveOriginId && this._path(source.id, targetFrontId) !== null));
@@ -1224,6 +1262,7 @@ export class BattleSimulation {
       for (const group of this.groups.values()) updateFormation(group, this.step, this.time, { officerAlive: !!group.officerId && combatReady(this.units.get(group.officerId)) });
       // A reload restores no rendered actor: rematerialize the player's surroundings before moving,
       // so groups detailed at save time do not take one extra distant step (REC-016).
+      this._broodStep();
       if (this._detailBeforeFirstMove) { this._detailBeforeFirstMove = false; this._detailStep(); }
       this._moveGroups(this.step); this._detailStep(); this._remoteCombat(); this._ravagerRegenesisStep(); this._hostInfestationStep(); this._hiveNodeStep(this.step); this._captureStep(this.step); this._reinforcements(); this._reconstitutionStep(this.step); this._moraleStep(this.step); this._strategicOrders(); this._objectives(); this.intel.update();
     }

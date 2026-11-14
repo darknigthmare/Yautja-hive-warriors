@@ -253,7 +253,7 @@ function capDetailedAgents(byFaction, groups, ceiling) {
  * not silently treated as a constructed or certified map. */
 export function getBattleOperationConfig(operationId, { playerCount = 1, budgetId, frontPositions, allowHumanController = false,
   maxDetailedAgents = 32, experimentalDetailBudget = false, rosterDetail = 'source',
-  deploymentPlan = 'authored', legacySourceLinks = false } = {}) {
+  deploymentPlan = 'authored', legacySourceLinks = false, legacyBrood = false } = {}) {
   if (!['source', 'legacy'].includes(rosterDetail)) fail('unknown roster detail policy');
   if (!['authored', 'historical-fallback'].includes(deploymentPlan)) fail('unknown front deployment plan');
   const operation = getBattleOperation(operationId), map = getBattleMap(operation.mapId), frontSpec = getBattleFront(operation.frontId), budget = getBattleBudget(budgetId ?? operation.budgetId);
@@ -313,6 +313,18 @@ export function getBattleOperationConfig(operationId, { playerCount = 1, budgetI
         group.units[0] = { ...group.units[0], profileId: profile.id, uniqueId: 'HUM-032', officer: true };
       }
       groups.push(group);
+    }
+  }
+  // LV-742 brood (HW-DEC-90/97, GRP-05): eight Facehuggers already allocated to the hive reserve
+  // wait as eggs in the Queen's chamber. They are moved, not created: totals and reserves are unchanged.
+  if (operationId === 'AFF-27' && rosterDetail === 'source' && !legacyBrood) {
+    const queenGroup = groups.find(group => group.units.some(unit => unit.uniqueId === 'BOS-39'));
+    const donors = groups.filter(group => group.state === 'reserve' && group.sourceTemplateIds.includes('GRP-58') && group.units.length === 8).slice(-8);
+    if (queenGroup && donors.length === 8) {
+      const eggs = donors.map(group => group.units.pop());
+      groups.push({ id: `${operationId}:hive:brood`, label: 'Couvoir de la Reine', factionId: queenGroup.factionId, frontId: queenGroup.frontId,
+        reserveOriginId: queenGroup.frontId, state: 'reserve', sourceState: 'reserve', sourceTemplateIds: ['GRP-05'], brood: true,
+        allowHeavyFormation: true, units: eggs.map(unit => ({ ...unit, officer: false })) });
     }
   }
   if (rosterDetail === 'source') {

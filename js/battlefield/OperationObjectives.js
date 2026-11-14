@@ -125,6 +125,9 @@ export class OperationObjectives {
       const entity = this.entities.get(task.entityId); entity.state = 'rescued'; entity.followerId = player.id; entity.followPath = [[...entity.position], [...player.position]];
       for (const member of entity.members) if (member.hp > 0) member.state = 'rescued';
       this._emit('noncombatants_freed', { taskId: task.id, entityId: entity.id, count: entity.members.filter(member => member.hp > 0).length });
+    } else if (task.type === 'sabotage' && task.burnsBroodGroupId) {
+      const burned = this.simulation.burnBrood?.(task.burnsBroodGroupId, this.playerFaction) ?? 0;
+      this._emit('brood_burned', { taskId: task.id, groupId: task.burnsBroodGroupId, count: burned });
     } else if (task.type === 'sabotage' && task.disableSource) {
       const front = this._front(task.frontId); if (front?.sourceHP > 0) this.simulation.damageSource(task.frontId, front.sourceHP, 'operation_sabotage');
       this._emit('source_disabled', { taskId: task.id, frontId: task.frontId });

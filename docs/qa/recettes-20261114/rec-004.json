@@ -3,11 +3,14 @@
  "titre": "Conservation des effectifs et catégories d'entités",
  "source": "docs/audits/2026-10-26/Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.xlsx#Validation!REC-004",
  "dateExecution": "2026-11-14",
- "commit": "27cf8fcd63d6efa5aa2a2966291f5fe854a08034",
+ "commit": "7934cd7dfe1455ba192aac082d0052a66411ee82",
  "sourcesJsNonCommitees": [
+  " M js/battlefield/BattleSimulation.js",
+  " M js/battlefield/OperationObjectiveSpecs.js",
   " M js/battlefield/OperationObjectives.js",
-  "?? js/battlefield/CivilianPopulation.js",
-  "?? js/data/OperationThirdParties.js"
+  " M js/battlefield/OperationScene.js",
+  " M js/data/BattleCatalog.js",
+  " M js/main.js"
  ],
  "graine": {
   "mapSeed": 0,
@@ -9582,7 +9585,6 @@
    "texte": "Couvoir GRP-05 (œufs comptés à part), extraction GRP-16 et civils GRP-28 inclus dans EFF-03/EFF-06",
    "verdict": "échec",
    "gabaritsAbsents": [
-    "GRP-05",
     "GRP-16",
     "GRP-28"
    ],
