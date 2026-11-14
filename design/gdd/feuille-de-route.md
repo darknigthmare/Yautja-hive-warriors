@@ -32,14 +32,17 @@ Fait : victoire par exécution du boss d'arène, pause, retour au menu, un boss 
 Reste : l'équilibrage, qui demande un vrai joueur.
 **Sortie** : les 8 chasses se gagnent et se perdent, jouées par un humain.
 
-### Phase 2 — Le combat
-Tronc commun et quatre emplacements, Musou par chasseur, conflits de touches levés, puis les quatre ajouts décidés (HW-DEC-35) :
-- **verrouillage de cible**, ce qui suppose d'abord une caméra pilotée à la souris ;
-- **changement d'arme en combo** : la fonction existe déjà, sans touche depuis la v51 ;
-- **mises à mort contextuelles** sur les élites, puis sur la masse ;
-- **furtivité d'ouverture** : camouflage, perchoirs et élimination furtive existent déjà dans le code, sans accès.
+### Phase 2 — Le combat (codée en grande partie le 14 novembre)
+Fait :
+- **le kit du chasseur** : tronc commun identique pour tous, quatre emplacements par chasseur, barre d'emplacements avec recharges ;
+- **un Musou propre à chacun des sept chasseurs** ;
+- **les conflits de touches levés** : les anciennes touches restent dans le code, désactivées ;
+- **verrouillage de cible** (Tab), **changement d'arme en combo** (Q), **camouflage** (C) ;
+- **mises à mort contextuelles** : silencieuse camouflé, exécution d'une élite blessée ;
+- **ouverture furtive** : la chasse commence camouflée, la ruche n'est pas encore alertée.
 
-**Sortie** : les sept chasseurs se jouent différemment, sans touche en conflit.
+Reste : une caméra pilotée à la souris, la bascule entre cibles verrouillées, des animations de mise à mort propres à chaque arme, et le choix des emplacements à l'écran de préparation (aujourd'hui le kit par défaut s'applique).
+**Sortie** : les sept chasseurs se jouent différemment, sans touche en conflit. Vérifié par essais automatiques ; reste à jouer.
 
 ### Phase 3 — La carte à zones
 C'est le plus gros chantier (HW-DEC-33). Les cartes à zones portent la campagne ; les arènes fermées actuelles restent pour le mode sans fin et les défis (HW-DEC-41). On commence par **une chasse pilote**, décrite en section 5 (HW-DEC-44).

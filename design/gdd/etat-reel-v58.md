@@ -82,6 +82,14 @@ Choix de ma part : le Bad Blood de la vague 3 n'apparaît plus que dans la rése
 
 **Reste de la phase 1** : l'équilibrage, et une chasse jouée par un humain.
 
+### Phase 2, codée le 14 novembre 2026
+
+Le combat a été refait autour du kit du chasseur (`js/systems/HunterKit.js`) : tronc commun, quatre emplacements par chasseur, un Musou propre à chacun, verrouillage, changement d'arme, camouflage, mises à mort contextuelles et ouverture furtive. Commandes dans l'onglet `05_Controles`.
+
+Vérifié par essais automatisés pour les sept chasseurs : chaque emplacement, le camouflage, le changement d'arme, le verrouillage, l'arme humaine, le medicomp et chaque Musou se déclenchent sans erreur ; la ruche reste inerte pendant l'ouverture furtive, une mise à mort silencieuse ne l'alerte pas, retirer le camouflage l'alerte, une élite blessée s'exécute.
+
+Choix de ma part, à corriger après essais : les dégâts et rayons des sept Musou, les recharges, les 25 secondes d'ouverture furtive, le seuil de 25 % pour exécuter une élite.
+
 **Limites de ces essais.** Les boss ont été appelés par une commande de test, pas atteints en jouant. Le chasseur était rendu invulnérable pendant les combats de boss. Les saisies sont automatiques : rien ne dit que le jeu est agréable ni équilibré.
 
 **Non vérifié** : une chasse jouée de bout en bout par un humain, les soutiens, la forge, la coopération, le son, les performances sur une vraie carte graphique.
