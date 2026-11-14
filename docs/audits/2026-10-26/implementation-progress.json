@@ -597,8 +597,15 @@
       "item": "Séparer synthétiques militaires, industriels et civils",
       "acceptance": "Un profil de sécurité et un profil industriel réagissent différemment à une intrusion et restent limités à leur lieu.",
       "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Synthétiques militaires/industriels/civils sont contextualisés ; réactions distinctes et limites de lieu doivent encore être revues intégralement."
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "tests/synthetic-duties.test.js",
+          "sha256": "4abfee5a223f019d82a43f006872bc08c301ed3cd345ca6479a01355d89ea8b6",
+          "scope": "Gestionnaires réels, unités de bataille AFF-13 et AFF-16 : un Working Joe industriel avertit puis contient, et revient à son poste quand l’intrus s’éloigne ; un synthétique de sécurité Weyland-Yutani engage sans avertissement de service. La limite de lieu du synthétique de sécurité n’est pas couverte."
+        }
+      ],
+      "notes": "Synthétiques militaires/industriels/civils sont contextualisés ; réactions distinctes et limites de lieu doivent encore être revues intégralement. Reprise du 14/11/2026 : réactions industrielle et de sécurité prouvées par test sur les vrais gestionnaires ; limite de lieu du profil de sécurité et revue visuelle restantes."
     },
     "AUD-029": {
       "status": "Terminé",
