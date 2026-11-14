@@ -2997,8 +2997,10 @@ class GameApp {
 
     // Bosses and Bad Blood take Musou damage only inside the shape, like every other target.
     const boss = this.bosses.activeBoss;
-    if (boss && covers(boss.mesh?.position, boss.radius || 3)) this.bosses.takeDamage(musou.bossDamage);
-    if (this.badBlood.isActive && covers(this.badBlood.badBlood?.mesh?.position, 2)) this.badBlood.takeDamage(musou.bossDamage);
+    // Like every other hit, the Musou does not cross a wall (AUD-090): the boss path checks line of sight.
+    if (boss && covers(boss.mesh?.position, boss.radius || 3)) this.hitBossFromPlayer(musou.bossDamage, origin, 'musou');
+    const badBloodPosition = this.badBlood.badBlood?.mesh?.position;
+    if (this.badBlood.isActive && covers(badBloodPosition, 2) && this.env.hasLineOfSight?.(origin.clone().setY(origin.y + 1.2), badBloodPosition.clone().setY(badBloodPosition.y + 1.5)) !== false) this.badBlood.takeDamage(musou.bossDamage);
     return musou;
   }
 
