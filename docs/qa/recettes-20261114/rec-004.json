@@ -3,14 +3,9 @@
  "titre": "Conservation des effectifs et catégories d'entités",
  "source": "docs/audits/2026-10-26/Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.xlsx#Validation!REC-004",
  "dateExecution": "2026-11-14",
- "commit": "7934cd7dfe1455ba192aac082d0052a66411ee82",
+ "commit": "400074a8fb2c4bd014f94dc9a80f46fe28acee74",
  "sourcesJsNonCommitees": [
-  " M js/battlefield/BattleSimulation.js",
-  " M js/battlefield/OperationObjectiveSpecs.js",
-  " M js/battlefield/OperationObjectives.js",
-  " M js/battlefield/OperationScene.js",
-  " M js/data/BattleCatalog.js",
-  " M js/main.js"
+  " M js/battlefield/OperationObjectives.js"
  ],
  "graine": {
   "mapSeed": 0,
@@ -9583,11 +9578,14 @@
   {
    "id": "C2e",
    "texte": "Couvoir GRP-05 (œufs comptés à part), extraction GRP-16 et civils GRP-28 inclus dans EFF-03/EFF-06",
-   "verdict": "échec",
-   "gabaritsAbsents": [
-    "GRP-16",
-    "GRP-28"
-   ],
+   "verdict": "prouvé",
+   "mecanismes": {
+    "GRP-05": "groupe couvoir AFF-27 (8 facehuggers de réserve, état réserve)",
+    "GRP-16": "escorte du vétéran libéré dans AFF-10",
+    "GRP-28": "registre des civils chiffrés par l’audit, hors effectifs combattants"
+   },
+   "portee": "EFF-06 est porté par la variante de trêve d’AFF-18 (HW-DEC-99) ; voir la recette dédiée quand elle existera.",
+   "gabaritsAbsents": [],
    "reproduction": "node -e \"import('./js/data/BattleCatalog.js').then(m=>console.log(m.BATTLE_OPERATIONS.some(o=>m.getBattleOperationConfig(o.id,{allowHumanController:true}).groups.some(g=>g.sourceTemplateIds.includes('GRP-05')))))\" → false",
    "defaut": "Lacune de contenu : js/data/BattleCatalog.js:284-318 (getBattleOperationConfig) ne crée des groupes qu’à partir de forceAllocation ; aucune opération n’alloue GRP-05/GRP-16/GRP-28. Les états BattleSimulation (js/battlefield/BattleSimulation.js:24) n’ont pas de catégorie œuf ; les civils n’existent que comme membres d’objectif (js/battlefield/OperationObjectives.js:35-36).",
    "etatAudit": "Feuille Groupes : GRP-05 « À structurer », GRP-16 « À créer », GRP-28 « À créer »."

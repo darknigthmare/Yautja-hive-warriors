@@ -14,6 +14,10 @@ const fail = message => { throw new Error(`OperationObjectives: ${message}`); };
 const INTERACTIVE = new Set(['secure', 'sabotage', 'activate', 'extract', 'rescue', 'negotiate']);
 const TYPES = new Set([...INTERACTIVE, 'defend', 'capture', 'eliminate']);
 const EPSILON = 1e-7;
+// Veteran extraction (GRP-16, HW-DEC-90/98): the captive of the player's clan is a wounded
+// veteran; once freed, the nearest allied squad escorts it to the evacuation front. Keyed here,
+// outside the task spec, so the spec digest of older checkpoints is unchanged.
+export const VETERAN_EXTRACTIONS = Object.freeze({ 'AFF-10': Object.freeze({ taskId: 'captive', sourceTemplateId: 'GRP-16' }) });
 const signature = value => { let result = 2166136261; for (const char of JSON.stringify(value)) result = Math.imul(result ^ char.charCodeAt(0), 16777619) >>> 0; return result.toString(16); };
 
 export class OperationObjectives {
@@ -125,6 +129,8 @@ export class OperationObjectives {
       const entity = this.entities.get(task.entityId); entity.state = 'rescued'; entity.followerId = player.id; entity.followPath = [[...entity.position], [...player.position]];
       for (const member of entity.members) if (member.hp > 0) member.state = 'rescued';
       this._emit('noncombatants_freed', { taskId: task.id, entityId: entity.id, count: entity.members.filter(member => member.hp > 0).length });
+      const veteran = VETERAN_EXTRACTIONS[this.spec.operationId];
+      if (veteran?.taskId === task.id) this._assignVeteranEscort(task, entity, veteran);
     } else if (task.type === 'sabotage' && task.burnsBroodGroupId) {
       const burned = this.simulation.burnBrood?.(task.burnsBroodGroupId, this.playerFaction) ?? 0;
       this._emit('brood_burned', { taskId: task.id, groupId: task.burnsBroodGroupId, count: burned });
@@ -158,6 +164,17 @@ export class OperationObjectives {
       }
     }
     return true;
+  }
+
+  _assignVeteranEscort(task, entity, veteran) {
+    const exit = [...this.tasks.values()].find(item => item.type === 'extract' && (item.evacuates ?? []).includes(entity.id));
+    const ready = group => (group.units ?? []).filter(id => { const unit = this.simulation.getUnit?.(id) ?? this.simulation.units?.get(id); return unit?.hp > 0 && ['active', 'distant'].includes(unit.state) && !unit.incapacitated; }).length;
+    const groups = [...(this.simulation.groups?.values?.() ?? [])].filter(group => group.factionId === this.playerFaction && !group.path?.length && ready(group) >= 2);
+    const near = position => groups.map(group => ({ group, d: distance(group.position, position) })).sort((a, b) => a.d - b.d || a.group.id.localeCompare(b.group.id))[0]?.group;
+    const escort = exit && near(task.position);
+    const answer = escort ? this.simulation.issueOrder(escort.id, { type: 'escort', frontId: exit.frontId, issuer: 'scenario' }) : { accepted: false, reason: 'no_allied_escort' };
+    entity.veteranEscortGroupId = answer.accepted ? escort.id : null; entity.sourceTemplateId = veteran.sourceTemplateId;
+    this._emit(answer.accepted ? 'veteran_escort_assigned' : 'veteran_escort_unavailable', { entityId: entity.id, groupId: entity.veteranEscortGroupId, frontId: exit?.frontId ?? null, reason: answer.accepted ? null : answer.reason });
   }
 
   _advanceReactions() {

@@ -4,6 +4,8 @@
 // l'instancier : configuration explicite aux chiffres EFF-06, voir preuve).
 // Temps simulé, graine de carte fixe, API existantes uniquement.
 import test, { after } from 'node:test';
+import { VETERAN_EXTRACTIONS } from '../js/battlefield/OperationObjectives.js';
+import { OPERATION_THIRD_PARTIES } from '../js/data/OperationThirdParties.js';
 import assert from 'node:assert/strict';
 import { execSync } from 'node:child_process';
 import { mkdirSync, writeFileSync } from 'node:fs';
@@ -232,12 +234,17 @@ test('EFF-03 : combattants, joueurs, blessés, civils et matériel sont distingu
   assert.ok(playersOutside); assert.ok(woundedDistinct); assert.ok(civiliansDistinct); assert.ok(materialDistinct);
 });
 
-const unusedTemplates = () => ['GRP-05', 'GRP-16', 'GRP-28'].filter(templateId => !BATTLE_OPERATIONS.some(operation => {
-  const config = getBattleOperationConfig(operation.id, { allowHumanController: true });
-  return config.groups.some(group => (group.sourceTemplateIds ?? []).includes(templateId));
-}));
+// HW-DEC-90: GRP-05 is an allocated brood group (AFF-27), GRP-16 the veteran extraction bound to
+// AFF-10's rescue, GRP-28 the counted civilians read from the audit, outside the combat allocation.
+const templateMechanisms = {
+  'GRP-05': () => BATTLE_OPERATIONS.some(operation => getBattleOperationConfig(operation.id, { allowHumanController: true }).groups.some(group => (group.sourceTemplateIds ?? []).includes('GRP-05'))),
+  'GRP-16': () => Object.values(VETERAN_EXTRACTIONS).some(entry => entry.sourceTemplateId === 'GRP-16'),
+  'GRP-28': () => ['AFF-06', 'AFF-07', 'AFF-08', 'AFF-09', 'AFF-10'].every(id => OPERATION_THIRD_PARTIES[id]?.count > 0)
+};
+const unusedTemplates = () => Object.entries(templateMechanisms).filter(([, present]) => !present()).map(([templateId]) => templateId);
 const missingTemplates = unusedTemplates();
 clause('C2e', 'Couvoir GRP-05 (œufs comptés à part), extraction GRP-16 et civils GRP-28 inclus dans EFF-03/EFF-06', missingTemplates.length ? 'échec' : 'prouvé', {
+  mecanismes: { 'GRP-05': 'groupe couvoir AFF-27 (8 facehuggers de réserve, état réserve)', 'GRP-16': 'escorte du vétéran libéré dans AFF-10', 'GRP-28': 'registre des civils chiffrés par l’audit, hors effectifs combattants' }, portee: 'EFF-06 est porté par la variante de trêve d’AFF-18 (HW-DEC-99) ; voir la recette dédiée quand elle existera.',
   gabaritsAbsents: missingTemplates, reproduction: "node -e \"import('./js/data/BattleCatalog.js').then(m=>console.log(m.BATTLE_OPERATIONS.some(o=>m.getBattleOperationConfig(o.id,{allowHumanController:true}).groups.some(g=>g.sourceTemplateIds.includes('GRP-05')))))\" → false",
   defaut: 'Lacune de contenu : js/data/BattleCatalog.js:284-318 (getBattleOperationConfig) ne crée des groupes qu’à partir de forceAllocation ; aucune opération n’alloue GRP-05/GRP-16/GRP-28. Les états BattleSimulation (js/battlefield/BattleSimulation.js:24) n’ont pas de catégorie œuf ; les civils n’existent que comme membres d’objectif (js/battlefield/OperationObjectives.js:35-36).',
   etatAudit: 'Feuille Groupes : GRP-05 « À structurer », GRP-16 « À créer », GRP-28 « À créer ».' });
