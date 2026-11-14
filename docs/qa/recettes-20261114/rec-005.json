@@ -3,15 +3,8 @@
  "titre": "Passage entre combat proche et simulation distante",
  "source": "docs/audits/2026-10-26/Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.xlsx#Validation!REC-005",
  "dateExecution": "2026-11-14",
- "commit": "2ecc8537ccbaf21f07b78dc4dbf083a98bcf9f32",
- "sourcesJsNonCommitees": [
-  " M js/battlefield/BattleSimulation.js",
-  " M js/battlefield/BattlefieldOperation.js",
-  " M js/battlefield/OperationScene.js",
-  " M js/data/BattleCatalog.js",
-  " M js/data/SourceBattleRoster.js",
-  " M js/main.js"
- ],
+ "commit": "c02a324590199d4c9720e0a8e6eeb376009d855f",
+ "sourcesJsNonCommitees": [],
  "graine": {
   "configuration": "rec-005-fixture (aucun aléa)",
   "operationB": "AFF-18",

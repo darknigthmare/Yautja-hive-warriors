@@ -3,7 +3,7 @@
   "source": "docs/audits/2026-10-26/Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.xlsx#Validation",
   "perimetre": "Compatibilité des factions et compositions",
   "seed": 1114,
-  "commit": "2ecc8537ccbaf21f07b78dc4dbf083a98bcf9f32",
+  "commit": "c02a324590199d4c9720e0a8e6eeb376009d855f",
   "date": "2026-11-14",
   "commande": "node --test tests/recette-rec-007.test.js",
   "preuveVideo": "non produite — preuve par journal",
@@ -988,42 +988,48 @@
             "marines": 0,
             "synthetics": 0,
             "gasPipes": 0,
-            "apc": false
+            "apc": false,
+            "nationalGuard": 0
           },
           {
             "allies": 1,
             "marines": 0,
             "synthetics": 0,
             "gasPipes": 0,
-            "apc": false
+            "apc": false,
+            "nationalGuard": 0
           },
           {
             "allies": 1,
             "marines": 0,
             "synthetics": 0,
             "gasPipes": 0,
-            "apc": false
+            "apc": false,
+            "nationalGuard": 0
           },
           {
             "allies": 1,
             "marines": 0,
             "synthetics": 0,
             "gasPipes": 0,
-            "apc": false
+            "apc": false,
+            "nationalGuard": 0
           },
           {
             "allies": 1,
             "marines": 0,
             "synthetics": 0,
             "gasPipes": 0,
-            "apc": false
+            "apc": false,
+            "nationalGuard": 0
           },
           {
             "allies": 1,
             "marines": 0,
             "synthetics": 0,
             "gasPipes": 0,
-            "apc": false
+            "apc": false,
+            "nationalGuard": 0
           }
         ],
         "charon_rogue_base_secteur3": {
@@ -1031,7 +1037,8 @@
           "marines": 2,
           "synthetics": 2,
           "gasPipes": 4,
-          "apc": true
+          "apc": true,
+          "nationalGuard": 0
         }
       }
     },
