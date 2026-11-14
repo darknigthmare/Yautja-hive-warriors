@@ -1,0 +1,11 @@
+✔ LD-01 raised crossing has continuous 0→3→0 ground for walkers and finite real surfaces for bolts (4625.134883ms)
+✔ destruction closes the real route for both camps, drops supported actors and preserves an alternative (356.0201ms)
+✔ repair and saved destruction restore support and route state without duplicating collisions (324.578119ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5465.79372

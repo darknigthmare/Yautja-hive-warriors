@@ -1,0 +1,22 @@
+✔ old checkpoints recover the original seed/difficulty despite different menu settings, while new saves retain both (1.427738ms)
+✔ command map reports the active terrain/difficulty and real pending phase threats, omitting cancelled threats (0.281845ms)
+✔ actual support context denies unknown maps and historical faithful tech, and checks a real roof and APC ownership (0.725469ms)
+✔ router binds support checkpoints to the persistent campaign run, retains wounds/ammo and reattaches only a real collider (1927.157242ms)
+✔ wooden arrow sweep chooses the first physical hostile body and the nearest physical cover (0.712052ms)
+✔ router dispatches Taabe to its owned mesh and actual Horde hit query only damages the first body once (3.714047ms)
+✔ router boss hit passes actual heavy counterplay and origin, while physical cover prevents damage/interruption (1.071303ms)
+✔ full player snapshot restores PREY possession before selecting the spent bow, without inventing possession from old flat ammo (3315.128649ms)
+✔ wheel adds only the current input owner’s actually acquired PREY tools (0.830085ms)
+✔ real E router falls through the real no-sentry refusal object and acquires Taabe from reachable ground (407.229577ms)
+✔ real E router falls through a full nearby real sentry and acquires Naru without reloading it (1148.974538ms)
+✔ a real successful sentry reload still consumes E once and leaves a nearby PREY pickup untouched (422.02824ms)
+✔ planetary barrage refuses a real roof or unknown context before spending any honor (0.855671ms)
+✔ planetary barrage spends once for open footprints and excludes a covered boss and a distant boss from direct damage (1.1845ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7452.057004

@@ -1,0 +1,45 @@
+{
+  "status": "passed",
+  "command": [
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "tests/boss-counterplay-matrix-20261101.test.js",
+    "tests/boss-counterplay-depth.test.js",
+    "tests/boss-registry.test.js",
+    "tests/boss-engine-checkpoint.test.js"
+  ],
+  "startedAt": "2026-11-01T00:47:33.652230+00:00",
+  "endedAt": "2026-11-01T00:47:43.818972+00:00",
+  "exitCode": 0,
+  "before": {
+    "js/entities/Bosses.js": "c450e2c20faa687b02f0f4474933026cc69d9456c7267c68b7df30336e7427ce",
+    "js/data/BossRegistry.js": "badbf49859767dee98637ae2b3a2999c086b2204683e79a88ba9328e59b04dd5",
+    "js/data/BossCombatPatterns.js": "3e84e455170500d3c9afe54cedaf971d7d78c0730b1dc3784983fd69d2b0a684",
+    "js/data/BossEncounterValidation.js": "f497af282f81faf4af29b19b53010159f8db293af8372ffca660223adb8d932b",
+    "js/engine/HostilePressure.js": "d6a34b123839883dd471e851036a600ec8ac699a4b5b54ad7c9714b4b050ea85",
+    "js/engine/BattleActorSupport.js": "466bcf1489f4765024fb946803834e0baeb8d4f5a1e0768feb7477f31ad215da",
+    "js/engine/HunterStealth.js": "090fea2cb45dc2759d7f7e6cf481532158bf619d76177499892aad593c0dfc67",
+    "tests/boss-counterplay-matrix-20261101.test.js": "45735033d714d5008ada7e2bc4e52cf67a93445195e94bef1a2213b2f2a5d6fb",
+    "tests/boss-counterplay-depth.test.js": "0fd0bb72684a39894b9f00de3bf620c2791799161f0a83c231b16c1faab5247f",
+    "tests/boss-registry.test.js": "d2db3652badc8ae4fe64c11497b9d76c35431e83f373f8ce2a76405e0d9212bf",
+    "tests/boss-engine-checkpoint.test.js": "2fd0e5a95abf9deed0e8ac9e358ae82674303598a355251ca3e12e80b258f390"
+  },
+  "after": {
+    "js/entities/Bosses.js": "c450e2c20faa687b02f0f4474933026cc69d9456c7267c68b7df30336e7427ce",
+    "js/data/BossRegistry.js": "badbf49859767dee98637ae2b3a2999c086b2204683e79a88ba9328e59b04dd5",
+    "js/data/BossCombatPatterns.js": "3e84e455170500d3c9afe54cedaf971d7d78c0730b1dc3784983fd69d2b0a684",
+    "js/data/BossEncounterValidation.js": "f497af282f81faf4af29b19b53010159f8db293af8372ffca660223adb8d932b",
+    "js/engine/HostilePressure.js": "d6a34b123839883dd471e851036a600ec8ac699a4b5b54ad7c9714b4b050ea85",
+    "js/engine/BattleActorSupport.js": "466bcf1489f4765024fb946803834e0baeb8d4f5a1e0768feb7477f31ad215da",
+    "js/engine/HunterStealth.js": "090fea2cb45dc2759d7f7e6cf481532158bf619d76177499892aad593c0dfc67",
+    "tests/boss-counterplay-matrix-20261101.test.js": "45735033d714d5008ada7e2bc4e52cf67a93445195e94bef1a2213b2f2a5d6fb",
+    "tests/boss-counterplay-depth.test.js": "0fd0bb72684a39894b9f00de3bf620c2791799161f0a83c231b16c1faab5247f",
+    "tests/boss-registry.test.js": "d2db3652badc8ae4fe64c11497b9d76c35431e83f373f8ce2a76405e0d9212bf",
+    "tests/boss-engine-checkpoint.test.js": "2fd0e5a95abf9deed0e8ac9e358ae82674303598a355251ca3e12e80b258f390"
+  },
+  "sourceAndTestsUnchangedDuringRun": true,
+  "baseCommit": "445108b1f191dfd3c6411e6df407c1c05c5b4388",
+  "workingTreeDirty": true,
+  "scope": "Component combat tests with stripped meshes plus actual builder normalization tests; no WebGL, hardware, human or visual fidelity certification."
+}

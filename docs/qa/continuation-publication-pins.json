@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "status": "awaiting_source_build_and_final_qa",
+  "origin": "https://yautja-hive-warriors.vercel.app",
+  "qaDirectory": "/workspace/qa/continuation-20261101",
+  "stageDirectory": "/workspace/qa/continuation-20261101/vercel-static-prebuilt",
+  "cliWrapper": "/workspace/qa/continuation-20261101/vercel-cli.sh",
+  "qaReport": "docs/qa/continuation-validation.json",
+  "sourceCommit": "445108b1f191dfd3c6411e6df407c1c05c5b4388",
+  "sourceFingerprint": "b442dd89bc3130ae8dbd6a2c099b43865b8fa15dc5bf18710bcbc58a3124ec44",
+  "indexSha256": "8af6bd243df62fa4b9113d711bee3e011264d8e450ef399c49ed326024f17e83",
+  "buildInfoSha256": "6d2d67782779ac81ae9656dded3be1134490a4baf6d08fdd23cbb97dd398e7fb",
+  "previousPublicIndexSha256": "124d7735003c245bc60814e6004c35ace77bd4011b31d448a6aa6c4c41dad185",
+  "expectedRuntimeChecks": []
+}

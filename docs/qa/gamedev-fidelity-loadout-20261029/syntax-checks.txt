@@ -1,0 +1,6 @@
+js/data/hunterArsenal.js exit=0
+js/data/charactersData.js exit=0
+js/ui/LoadoutScreen.js exit=0
+tests/hunter-reference-preparation.test.js exit=0
+scripts/qa-hunter-loadout.mjs exit=0
+scripts/audit-hunter-reference-kits.mjs exit=0

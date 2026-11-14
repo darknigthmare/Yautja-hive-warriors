@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "status": "bug_reproduced",
+  "scope": "CPU composition of actual signed source variant, real distant damage owner, actual simulation save/restore and actual AllyRescueSystem.restore; no browser or visual claim",
+  "unit": {
+    "id": "AFF-27:hive:13:1",
+    "hp": 50,
+    "spent": true,
+    "phase": {
+      "startedAt": 0,
+      "recoverAt": 12
+    },
+    "incapacitated": true
+  },
+  "savedRescueRecords": 0,
+  "rejection": "Incapacitated unit has no saved rescue timer",
+  "sourceSha256": "4815f2ceb486a49b7b44fcf7b0a8ffbff6b5a0f53698f99b86a6d08c9ab84547",
+  "checkedAt": "2026-11-09T04:51:25.276Z",
+  "runtimeSourceCommit": "94630d8302c320eb7c39c78ad62f1464e6f4d538"
+}

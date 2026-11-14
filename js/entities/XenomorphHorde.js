@@ -1,20 +1,39 @@
 /* Xenomorph Swarm Engine 3.0 - Crusher, Praetorian, Ovimorph Eggs & Gore */
 
 import * as THREE from 'three';
+import { applyBattleUnit, despawnBattleActor, selectBattleTarget, listBattleTargets, battleHostile, moveBattleOrder, requestNPCStrike, applyBattleFormationHit, maintainBattleFormation } from '../engine/BattleActorSupport.js';
+import { requestHostileAttack, releaseConcealedPreparation } from '../engine/HostilePressure.js';
+import { canDetectConcealedTarget } from '../engine/HunterStealth.js';
+import { recordCombatDeath } from '../engine/CombatEvents.js';
+import { disposeObject } from '../engine/SceneResources.js';
+import { createCreatureModel, createEggModel, animateCreatureModel } from '../graphics/CreatureModels.js';
+import { sourceUnitVisualKind } from '../data/SourceActorPresentation.js';
+import { EXTINCTION_CASTE_PROFILES, validExtinctionCasteUnit } from '../battlefield/ExtinctionCastePolicy.js';
+import { advanceCarrierFacehuggerFlight } from '../battlefield/ExtinctionCarrierFlight.js';
+import { isUpgradedRavager } from '../battlefield/ExtinctionRavagerRegenesis.js';
+import { updateRavagerCatalepsyPose } from '../graphics/RavagerCatalepsyPose.js';
 
 export class XenomorphHorde {
   constructor(scene, audioEngine, goreEngine = null) {
     this.scene = scene;
     this.audioEngine = audioEngine;
     this.goreEngine = goreEngine;
+    this.environment = null;
     this.aliens = [];
     this.eggs = [];
     this.chestbursters = [];
     this.acidPools = [];
     this.acidSplashes = [];
     this.zeroGAcidGlobules = [];
-    this.spitterMortars = [];
     this.deadCount = 0;
+    this.combatDirector = null;
+    this.spawnPositionProvider = null;
+    this.supportTargetsProvider = null;
+    this.pendingSpawns = [];
+    this.spawnTimer = 0;
+    this.spawnSequence = 0;
+    this.spawnPlacementSequence = 0;
+    this.attackCues = new Map();
 
     this.acidSplashMat = new THREE.MeshBasicMaterial({ color: 0x39ff14 });
     this.zeroGAcidMat = new THREE.MeshStandardMaterial({
@@ -31,6 +50,15 @@ export class XenomorphHorde {
     this.crusherMat = new THREE.MeshStandardMaterial({ color: 0x151b24, roughness: 0.2, metalness: 0.9 });
     this.praetorianMat = new THREE.MeshStandardMaterial({ color: 0x0f141c, roughness: 0.3, metalness: 0.85 });
     this.officerMat = new THREE.MeshStandardMaterial({ color: 0x220505, roughness: 0.15, metalness: 0.95 });
+    this.attackCueGeometry = new THREE.RingGeometry(0.82, 1, 36);
+    this.attackCueGeometry.rotateX(-Math.PI / 2);
+    this.attackCueMaterial = new THREE.MeshBasicMaterial({ color: 0xff8c32, transparent: true, opacity: 0.8, depthWrite: false, side: THREE.DoubleSide });
+    this.sharedResources = new Set([this.attackCueGeometry, this.attackCueMaterial,
+      this.acidSplashMat, this.zeroGAcidMat, this.zeroGAcidCoreMat, this.eggMat,
+      this.eggPetalMat, this.crusherMat, this.praetorianMat, this.officerMat
+    ]);
+
+    this.spitterMortars = [];
     // Marvel Comics Canon Materials (v44.0)
     this.alphaMat = new THREE.MeshStandardMaterial({ color: 0xd9e2ec, roughness: 0.12, metalness: 0.95 }); // Epsilon Apex Silver Carapace
     this.cryoMat = new THREE.MeshStandardMaterial({ color: 0x93c5fd, roughness: 0.1, metalness: 0.65, transparent: true, opacity: 0.88 }); // Sub-Zero LV-695 Translucent Ice Chitin
@@ -72,129 +100,1201 @@ export class XenomorphHorde {
     this.royalFacehuggers = [];
     this.mantaSwarmers = [];
     this.biomechanicalEggs = [];
+    for (const key of ['alphaMat','cryoMat','cyberMat','microSwarmMat','chameleonMat','chameleonRevealedMat','deaconMat','mantaMat','mantaWingMat','rogueKingMat','ravenMat','ancientPredalienMat','gestatingMatriarchMat','ovipositorMat']) this.sharedResources.add(this[key]);
   }
+
 
   setGoreEngine(goreEngine) {
     this.goreEngine = goreEngine;
   }
 
-  spawnWave(count, playerPos, options = {}) {
-    this.clearWave();
-    // basicOnly: plain drones and no fixed elites (the Unblooded rite of passage).
-    const fixedUnits = !options.basicOnly;
-    const rnd = options.basicOnly ? () => 1 : Math.random;
 
-    if (fixedUnits) {
-    this.spawnOvimorphEggs(playerPos, 6);
+  get pendingSpawnCount() { return this.pendingSpawns.length; }
 
-    // Spawn 1 Crusher Titan
-    this.spawnCrusher(playerPos);
+  get remainingCount() { return this.getActiveCombatants().length + this.pendingSpawnCount; }
 
-    // Spawn 2 Praetorian Royal Guards
-    this.spawnPraetorian(playerPos, -15);
-    this.spawnPraetorian(playerPos, 15);
 
-    // Spawn 1 Grid Alien Alpha (AVP 2004 Nethead)
-    this.spawnGridAlien(playerPos);
+  recordDefeat(enemy, details = {}) {
+    if (!enemy || enemy._defeatReported) return null;
+    const event = recordCombatDeath(this, enemy, { kind: enemy.objectiveCommander ? 'commander' : (enemy.type ?? 'chestburster'), isOfficer: enemy.isOfficer === true, ...details }) ?? enemy.combatDeathEvent;
+    if (!event) return null;
+    enemy._defeatReported = true;
+    this.deadCount++;
+    this.combatDirector?.release(enemy);
+    this._clearAttackCue(enemy);
+    this.onDefeated?.({ ...event, position: enemy.mesh?.position.clone(), event });
+    return event;
+  }
 
-    // Marvel Comics Canon: Spawn 1 Marvel Alpha Apex Predator (Epsilon Apex 1:1)
-    this.spawnMarvelAlpha(playerPos);
-
-    // Marvel Comics Canon: Spawn 1 Airborne Micro-Xenomorph Swarm (Midge / Mosquito Cloud)
-    this.spawnMicroSwarm(playerPos);
-
-    // Chantier 4 (v45): Spawn 2 Royal Gliding Facehuggers in High Ambush Perches (Alien 3 / Isolation Lore)
-    this.spawnRoyalFacehugger(playerPos.clone().add(new THREE.Vector3(-18, 12, -16)), playerPos);
-    this.spawnRoyalFacehugger(playerPos.clone().add(new THREE.Vector3(18, 12, 16)), playerPos);
-
-    // Chantier 7 (v46): Spawn 2 Chameleon Stalker Xenomorphs with Active Camouflage (Aliens: Rogue)
-    this.spawnChameleonStalker(playerPos);
-    this.spawnChameleonStalker(playerPos);
-
-    // Chantier 4 (v47): Spawn 1 Deacon Titan (Prometheus 2012 Canon)
-    this.spawnDeaconTitan(playerPos);
-
-    // Chantier 7 (v47): Spawn 2 Flying Xenomorph Manta Swarmers (Aliens Arcade / Kenner / Marvel)
-    this.spawnMantaSwarmer(playerPos.clone().add(new THREE.Vector3(-20, 10, -20)), playerPos);
-    this.spawnMantaSwarmer(playerPos.clone().add(new THREE.Vector3(20, 10, 20)), playerPos);
-
-    // Chantier 2 & Sofia QA (v53.0): Spawn 1 Flying Praetorian Harpy (Aliens: Earth War / Capcom AvP Arcade)
-    this.spawnWingedPraetorianHarpy(playerPos.clone().add(new THREE.Vector3(22, 12, -22)));
-
-    // Chantier 6 (v48): Spawn 1 King Alien / Rogue Titan (Aliens: Rogue / Kenner 1:1 Canon)
-    this.spawnRogueKingTitan(playerPos);
-
-    // Chantier 2 (v49): Spawn 1 Xenomorph Raven / Praetorian Raven (Aliens: Colonial Marines / Fireteam Elite Canon 1:1)
-    this.spawnRavenXenomorph(playerPos);
-
-    // Chantier 6 (v49): Spawn 1 Ancient Predalien Elder (Aliens vs. Predator 2: Primal Hunt 2002 Canon 1:1)
-    this.spawnAncientPredalienElder(playerPos);
-
-    // Chantier 5 (v50): Spawn 1 Gestating Alpha Hive Matriarch with Live Ovipositor Egg Laying (Aliens 1986 / Infestation)
-    this.spawnGestatingMatriarch(playerPos);
-
-    // Dynasty Warriors Musou: Spawn 2 Hive Spire Captains / Node Guards (Gardes de Nœud & Sentinelles du Couvoir)
-    this.spawnHiveOfficer(playerPos, -22, 'SENTINELLE DU NŒUD PRIMAIRE (SPIRE GUARD)');
-    this.spawnHiveOfficer(playerPos, 22, 'GARDE SANGUINAIRE DU COUVOIR ROYAL (HIVE CASTE OFFICER)');
+  defeatAlien(enemy, details = {}) {
+    if (!enemy) return null;
+    this.syncBattleRavager(enemy, details);
+    if (enemy.ravagerCatalepsy && enemy.hp > 0) return null;
+    this._releaseRoyalHold(enemy);
+    if (enemy.type === 'boiler' && !enemy._boilerDetonated && !enemy._boilerQueued) {
+      if(!details.deferEffects)return this.detonateBoiler(enemy, null, details);
+      enemy._boilerQueued=true;this.pendingBoilerDetonations ??= [];this.pendingBoilerDetonations.push(enemy);
     }
+    const event = this.recordDefeat(enemy, details);
+    enemy.hp = 0;
+    for (const key of ['aliens', 'chestbursters', 'mantaSwarmers', 'microSwarms', 'royalFacehuggers']) {
+      const index = this[key]?.indexOf(enemy) ?? -1;
+      if (index >= 0) this[key].splice(index, 1);
+    }
+    if (!enemy._combatDisposed) { disposeObject(enemy.mesh ?? enemy.group, this.sharedResources); enemy._combatDisposed = true; }
+    return event;
+  }
 
-    // Massive Musou Swarm Density: at least 45 to 80 aliens
-    const totalCount = options.basicOnly ? count : Math.max(count, 45);
-    for (let i = 0; i < totalCount; i++) {
-      const isFacehugger = rnd() < 0.13;
-      const isBoiler = !isFacehugger && rnd() < 0.13;
-      const isNeomorph = !isFacehugger && !isBoiler && rnd() < 0.13;
-      const isPraetomorph = !isFacehugger && !isBoiler && !isNeomorph && rnd() < 0.14;
-      const isRedSwarm = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && rnd() < 0.16;
-      const isSpitter = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && !isRedSwarm && rnd() < 0.17;
-      const isCryoXeno = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && !isRedSwarm && !isSpitter && rnd() < 0.19;
-      const isCyberXeno = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && !isRedSwarm && !isSpitter && !isCryoXeno && rnd() < 0.21;
-      const isRunner = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && !isRedSwarm && !isSpitter && !isCryoXeno && !isCyberXeno && rnd() < 0.25;
-      const alien = this.createAlienMesh(isFacehugger, isBoiler, isNeomorph, isPraetomorph, isRedSwarm, isSpitter, isRunner, isCryoXeno, isCyberXeno);
+  _releaseRoyalHold(actor) {
+    if (!actor?.latchedTo) return;
+    actor.latchedTo.isRoyalFacehuggerLatched = false;
+    actor.latchedTo.royalFacehuggerHoldTimer = 0;
+    actor.latchedTo = null; actor.isLatched = false; actor.latchTimer = 0;
+  }
 
-      const angle = Math.random() * Math.PI * 2;
-      const radius = 22 + Math.random() * 25;
-      alien.position.set(
-        playerPos.x + Math.cos(angle) * radius,
-        0,
-        playerPos.z + Math.sin(angle) * radius
-      );
+  applyDamage(enemy, amount, details = {}) {
+    this.syncBattleRavager(enemy, details);
+    if (!enemy || !(enemy.hp > 0) || !Number.isFinite(amount) || amount <= 0) return null;
+    if (this.battleSimulation && details.killerFaction && enemy.factionId && !this.battleSimulation.areHostile(details.killerFaction, enemy.factionId)) return null;
+    const special = this._damageBattleRavager(enemy, amount, details);
+    const dealt = special?.damage ?? Math.min(enemy.hp, amount);
+    if (!special) enemy.hp = Math.max(0, enemy.hp - amount);
+    enemy.lastDamageFaction = details.killerFaction ?? null;
+    const event = enemy.hp === 0 ? this.defeatAlien(enemy, details) : null;
+    return { damage: dealt, killed: enemy.hp === 0, event };
+  }
 
-      const isWallStalker = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && !isRedSwarm && !isSpitter && !isRunner && !isCryoXeno && !isCyberXeno && Math.random() < 0.22;
-      this.scene.add(alien);
-      const aType = isFacehugger ? 'facehugger' : (isBoiler ? 'boiler' : (isNeomorph ? 'neomorph' : (isPraetomorph ? 'praetomorph' : (isRedSwarm ? 'red_warrior' : (isSpitter ? 'spitter' : (isCryoXeno ? 'cryo_xeno' : (isCyberXeno ? 'cyber_xeno' : (isRunner ? 'runner' : 'warrior'))))))));
-      const aHp = isFacehugger ? 40 : (isBoiler ? 80 : (isNeomorph ? 95 : (isPraetomorph ? 160 : (isRedSwarm ? 140 : (isSpitter ? 110 : (isCryoXeno ? 175 : (isCyberXeno ? 220 : (isRunner ? 85 : 120))))))));
-      const aSpeed = isFacehugger ? 17 : (isBoiler ? 14 : (isNeomorph ? 19 : (isPraetomorph ? 16 : (isRedSwarm ? 15.5 : (isSpitter ? 12 : (isCryoXeno ? 14.5 : (isCyberXeno ? 13.0 : (isRunner ? 21.0 : 11))))))));
-      const aDmg = isFacehugger ? 15 : (isBoiler ? 50 : (isNeomorph ? 35 : (isPraetomorph ? 42 : (isRedSwarm ? 34 : (isSpitter ? 30 : (isCryoXeno ? 38 : (isCyberXeno ? 44 : (isRunner ? 28 : 25))))))));
+  _damageBattleRavager(actor, amount, details = {}) {
+    const sim = this.battleSimulation, unit = sim?.units?.get(actor?.battleUnitId);
+    if (!unit || unit.state !== 'active' || !isUpgradedRavager(sim, unit)) return null;
+    if (sim.disposed || sim.paused || sim.result)
+      return { damage: 0, killed: false, cataleptic: !!unit.ravagerCatalepsy };
+    const cause = details.damageType ?? details.cause ?? 'raw';
+    const damageType = /ballistic|bullet|rifle|rail/i.test(cause) ? 'kinetic' : cause;
+    const before = unit.hp;
+    const result = sim.damageDetailedRavager(unit.id, amount, { ...details, damageType });
+    if (!result) return null;
+    actor.hp = unit.hp; actor._ravagerSyncedHp = unit.hp;
+    actor.lastDamageType = damageType;
+    this._projectBattleRavager(actor, unit);
+    return { ...result, damage: Math.min(before, result.damage) };
+  }
 
-      this.aliens.push({
-        mesh: alien,
-        type: aType,
-        hp: aHp,
-        maxHp: aHp,
-        speed: aSpeed,
-        damage: aDmg,
-        radius: isFacehugger ? 0.6 : (isNeomorph ? 0.9 : (isPraetomorph ? 1.3 : (isRunner ? 0.85 : 1.15))),
-        isLatched: false,
-        isWallStalker: isWallStalker,
-        wallClimbPhase: isWallStalker ? 'climbing' : 'grounded',
-        perchHeight: 8.0 + Math.random() * 4.0,
-        leapCooldown: (isNeomorph || isPraetomorph) ? 2.0 + Math.random() * 2.0 : 0,
-        spitCooldown: isSpitter ? 2.5 + Math.random() * 2.0 : 0,
-        frostBreathCooldown: isCryoXeno ? 3.5 + Math.random() * 2.0 : 0,
-        cyberDartCooldown: isCyberXeno ? 4.0 + Math.random() * 2.0 : 0,
-        isCryoImmune: isCryoXeno,
-        hasCyberPlating: isCyberXeno,
-        isLeaping: false,
-        leapVelY: 0,
-        isAirborne: false,
-        airborneVelY: 0,
-        airborneVelHoriz: new THREE.Vector3()
+  _projectBattleRavager(actor, unit) {
+    if (!actor.ravagerCatalepsy && unit.ravagerCatalepsy) {
+      actor.mesh.rotation.x = 0; actor.mesh.rotation.z = 0;
+      if (actor.ravagerVisual) { actor.ravagerVisual.rotation.x = 0; actor.ravagerVisual.rotation.z = 0; }
+    }
+    actor.isDowned = unit.incapacitated === true;
+    actor.ravagerCatalepsy = unit.ravagerCatalepsy ?? null;
+    if (actor.ravagerCatalepsy) {
+      this.combatDirector?.release(actor); this._clearAttackCue(actor);
+      actor._npcPreparation = 0; actor._npcTarget = null;
+      actor.isAirborne = false; actor.isLeaping = false;
+    }
+    updateRavagerCatalepsyPose(actor, actor.ravagerCatalepsy, this.battleSimulation.time);
+  }
+
+  // Legacy environmental callers may still write HP directly. Settle their
+  // observed loss BEFORE recording death, using the same finite phase owner.
+  syncBattleRavager(actor, details = {}) {
+    const sim = this.battleSimulation, unit = sim?.units?.get(actor?.battleUnitId);
+    if (!unit || unit.state !== 'active' || !isUpgradedRavager(sim, unit)) return false;
+    const previous = actor._ravagerSyncedHp ?? unit.hp;
+    if (Number.isFinite(actor.hp) && actor.hp < previous)
+      this._damageBattleRavager(actor, previous - actor.hp, details);
+    actor.hp = unit.hp; actor._ravagerSyncedHp = unit.hp;
+    this._projectBattleRavager(actor, unit);
+    return true;
+  }
+
+  _advanceControlLocks(actor, delta) {
+    let locked = false;
+    if (actor.isNetEntangled) {
+      if (actor.isNetgunImmune) { actor.isNetEntangled = false; actor.netTimer = 0; }
+      else {
+        locked = true;
+        const remaining = Math.max(0, actor.netTimer ?? 0), held = Math.min(delta, remaining);
+        actor.netTimer = Math.max(0, remaining - delta);
+        const amount = 25 * held;
+        const special = amount > 0 && this._damageBattleRavager(actor, amount, {
+          cause: 'razor-net', killerFaction: actor.lastDamageFaction
+        });
+        if (!special) actor.hp -= amount;
+        if (!actor.ravagerCatalepsy) actor.mesh.rotation.y += Math.sin(this.time * 50) * held * 3;
+        if (actor.netTimer === 0) actor.isNetEntangled = false;
+      }
+    }
+    if (actor.isStunned) {
+      locked = true;
+      actor.stunTimer = Math.max(0, (actor.stunTimer ?? 0) - delta);
+      const visual = actor.ravagerVisual ?? actor.mesh;
+      if (!actor.ravagerCatalepsy) visual.rotation.z = actor.stunTimer > 0 ? Math.sin(this.time * 20) * .1 : 0;
+      if (actor.stunTimer === 0) actor.isStunned = false;
+    }
+    if (locked) { this.combatDirector?.release(actor); this._clearAttackCue(actor); }
+    return locked;
+  }
+
+  _advanceAirborneActor(actor, delta) {
+    if (!actor.isAirborne) return false;
+    this.combatDirector?.release(actor); this._clearAttackCue(actor);
+    actor.airborneVelY -= 36 * delta;
+    actor.mesh.position.y += actor.airborneVelY * delta;
+    if (actor.airborneVelHoriz) actor.mesh.position.addScaledVector(actor.airborneVelHoriz, delta);
+    actor.mesh.rotation.x += 8 * delta; actor.mesh.rotation.z += 5 * delta;
+    const floor = this.environment?.getElevationAt?.(actor.mesh.position.x,
+      actor.mesh.position.z, actor.mesh.position.y) ?? 0;
+    if (actor.mesh.position.y <= floor) {
+      actor.mesh.position.y = floor; actor.isAirborne = false; actor.airborneVelY = 0;
+      actor.mesh.rotation.x = 0; actor.mesh.rotation.z = 0;
+    }
+    return true;
+  }
+
+
+  cancelPendingSpawns() {
+    const cancelled = this.pendingSpawns.length;
+    this.pendingSpawns = []; this.spawnTimer = 0;
+    return cancelled;
+  }
+
+  // Add a telegraphed counter-attack to the existing encounter. Unlike a new
+  // wave, this keeps living enemies, earned kills, hazards and attack turns.
+
+  enqueueReinforcements(count) {
+    const requested = Number(count);
+    if (!Number.isFinite(requested) || requested <= 0) return 0;
+    const accepted = Math.min(Math.floor(requested), Math.max(0, 200 - this.remainingCount));
+    if (!accepted) return 0;
+    // Finite objective quotas need enemies that remain creditable. A consumed
+    // facehugger leaves the encounter without a defeat notification.
+    this.pendingSpawns.push(...Array.from({ length: accepted }, () => 'counterattack'));
+    // E must leave time to read the warning, even if the prior squad was due.
+    this.spawnTimer = Math.max(Number.isFinite(this.spawnTimer) ? this.spawnTimer : 0, 3);
+    return accepted;
+  }
+
+
+  _nearestPlayer(position, livingPlayers) {
+    return livingPlayers.reduce((nearest, candidate) => !nearest || candidate.position.distanceToSquared(position) < nearest.position.distanceToSquared(position) ? candidate : nearest, null);
+  }
+
+  _supportTargets() {
+    return (this.supportTargetsProvider?.() ?? []).filter(target => target?.isSupport && target.isBattleNPC && target.hp > 0 &&
+      typeof target.takeDamage === 'function' && target.position?.isVector3 && target.position.toArray().every(Number.isFinite));
+  }
+
+  _canParasitize(target, royal = false) {
+    const actor = target?.actor ?? target;
+    return !!target && !target.isSupport && target.canBeFacehugged !== false && actor.canBeFacehugged !== false &&
+      !['synthetic', 'weyland_combat', 'working_joe'].includes(actor.type) && (royal || typeof target.triggerFacehuggerLatch === 'function');
+  }
+
+  _pursuitTarget(actor, livingPlayers, supports = []) {
+    releaseConcealedPreparation(this, actor);
+    const royal = this.royalFacehuggers.includes(actor), parasite = actor.type === 'facehugger' || royal;
+    const eligible = target => (!parasite || this._canParasitize(target, royal)) &&
+      (!target.isSupport || !target.isAirborne || this.mantaSwarmers.includes(actor));
+    const fallbacks = [...livingPlayers, ...supports].filter(target => eligible(target) && battleHostile(this, actor, target) &&
+      canDetectConcealedTarget(actor, target, this.environment));
+    if (!actor.battleUnitId || !this.battleSimulation) return this._nearestPlayer(actor.mesh.position, fallbacks);
+    const target = selectBattleTarget(this, actor, fallbacks);
+    if (!target || eligible(target)) return target;
+    // A shared battle provider may contain vehicles too. Parasites retarget an
+    // eligible organic combatant without changing formation/defend constraints.
+    const formation = actor.battleFormationTarget, defend = actor.battleOrder?.type === 'defend' ? actor.battleOrderTarget : null;
+    return this._nearestPlayer(actor.mesh.position, listBattleTargets(this, actor, fallbacks).filter(candidate => eligible(candidate) &&
+      (!Array.isArray(formation) || Math.hypot(candidate.position.x - formation[0], candidate.position.z - formation[1]) <= 28) &&
+      (!Array.isArray(defend) || Math.hypot(candidate.position.x - defend[0], candidate.position.z - defend[1]) <= 24)));
+  }
+
+
+  _spawnPosition(playerPos, distance = 34) {
+    if (this.spawnPositionProvider) {
+      const result = this.spawnPositionProvider(playerPos, distance, this.spawnPlacementSequence++);
+      return result?.isVector3 && result.toArray().every(Number.isFinite) ? result.clone().setY(0) : null;
+    }
+    const angle = Math.random() * Math.PI * 2;
+    const radius = distance + Math.random() * 14;
+    const position = new THREE.Vector3(playerPos.x + Math.cos(angle) * radius, 0, playerPos.z + Math.sin(angle) * radius);
+    this.environment?.resolveMovement?.(position, 1.2);
+    return position.distanceToSquared(playerPos) >= 20 * 20 ? position : null;
+  }
+
+
+  spawnWave(count, playerPos) {
+    this.clearWave();
+    const totalCount = Math.max(0, Math.min(200, Math.floor(Number(count) || 0)));
+    this.spawnSequence = 0;
+    this.spawnPlacementSequence = 0;
+    if (!totalCount) return;
+    this.spawnOvimorphEggs(playerPos, Math.min(this.combatDirector ? 2 : 6, Math.ceil(totalCount / 8)));
+    const specialKinds = ['crusher', 'praetorian', 'praetorian', 'grid_alien', 'officer', 'officer'].slice(0, Math.floor(totalCount / 8));
+    this.pendingSpawns = [
+      ...Array.from({ length: totalCount - specialKinds.length }, () => 'regular'),
+      ...specialKinds
+    ];
+    const initialCount = this.combatDirector ? Math.min(6, totalCount) : totalCount;
+    for (let i = 0; i < initialCount && this.pendingSpawns.length; i++) {
+      if (!this._spawnQueued(playerPos)) break;
+    }
+    this.spawnTimer = 3;
+  }
+
+
+  _spawnQueued(playerPos) {
+    if (!this.pendingSpawns.length) return false;
+    const position = this._spawnPosition(playerPos, this.combatDirector ? 34 : 22);
+    if (!position) return false;
+    const kind = this.pendingSpawns.shift();
+    if (kind === 'regular' || kind === 'counterattack') this._spawnRegular(position, { allowFacehuggers: kind !== 'counterattack' });
+    else {
+      const before = this.aliens.length;
+      if (kind === 'crusher') this.spawnCrusher(position);
+      else if (kind === 'praetorian') this.spawnPraetorian(position);
+      else if (kind === 'grid_alien') this.spawnGridAlien(position);
+      else this.spawnHiveOfficer(position);
+      const enemy = this.aliens[before];
+      enemy.mesh.position.copy(position);
+    }
+    return true;
+  }
+
+
+  _spawnRegular(position, { allowFacehuggers = true } = {}) {
+    const introductory = this.combatDirector && this.spawnSequence < 6;
+    const isFacehugger = allowFacehuggers && !introductory && Math.random() < 0.16;
+    const isBoiler = !introductory && !isFacehugger && Math.random() < 0.16;
+    const isNeomorph = !introductory && !isFacehugger && !isBoiler && Math.random() < 0.16;
+    const isPraetomorph = !introductory && !isFacehugger && !isBoiler && !isNeomorph && Math.random() < 0.18;
+    const isRedSwarm = !introductory && !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && Math.random() < 0.22;
+    const isSpitter = !introductory && !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && !isRedSwarm && Math.random() < 0.25;
+    const isRunner = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && !isRedSwarm && !isSpitter && Math.random() < 0.30;
+    const alien = this.createAlienMesh(isFacehugger, isBoiler, isNeomorph, isPraetomorph, isRedSwarm, isSpitter, isRunner);
+
+    alien.position.copy(position);
+
+    const isWallStalker = !introductory && !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && !isRedSwarm && !isSpitter && !isRunner && Math.random() < 0.22;
+    this.scene.add(alien);
+    const aType = isFacehugger ? 'facehugger' : (isBoiler ? 'boiler' : (isNeomorph ? 'neomorph' : (isPraetomorph ? 'praetomorph' : (isRedSwarm ? 'red_warrior' : (isSpitter ? 'spitter' : (isRunner ? 'runner' : 'warrior'))))));
+    const aHp = isFacehugger ? 40 : (isBoiler ? 80 : (isNeomorph ? 95 : (isPraetomorph ? 160 : (isRedSwarm ? 140 : (isSpitter ? 110 : (isRunner ? 85 : 120))))));
+    const aSpeed = isFacehugger ? 17 : (isBoiler ? 14 : (isNeomorph ? 19 : (isPraetomorph ? 16 : (isRedSwarm ? 15.5 : (isSpitter ? 12 : (isRunner ? 21.0 : 11))))));
+    const aDmg = isFacehugger ? 15 : (isBoiler ? 50 : (isNeomorph ? 35 : (isPraetomorph ? 42 : (isRedSwarm ? 34 : (isSpitter ? 30 : (isRunner ? 28 : 25))))));
+
+    this.aliens.push({ combatManager: this,
+      pressureId: this.spawnSequence++,
+      mesh: alien,
+      type: aType,
+      hp: aHp,
+      maxHp: aHp,
+      speed: aSpeed,
+      damage: aDmg,
+      radius: isFacehugger ? 0.6 : (isNeomorph ? 0.9 : (isPraetomorph ? 1.3 : (isRunner ? 0.85 : 1.1))),
+      isLatched: false,
+      isWallStalker: isWallStalker,
+      wallClimbPhase: isWallStalker ? 'climbing' : 'grounded',
+      perchHeight: 8.0 + Math.random() * 4.0,
+      leapCooldown: (isNeomorph || isPraetomorph) ? 2.0 + Math.random() * 2.0 : 0,
+      spitCooldown: isSpitter ? 2.5 + Math.random() * 2.0 : 0,
+      isLeaping: false,
+      leapVelY: 0,
+      isAirborne: false,
+      airborneVelY: 0,
+      airborneVelHoriz: new THREE.Vector3()
+    });
+  }
+
+
+  _clearAttackCue(enemy) {
+    const cue = this.attackCues.get(enemy);
+    if (cue) { this.scene.remove(cue); this.attackCues.delete(enemy); }
+  }
+
+
+  _showAttackCue(enemy) {
+    const state = this.combatDirector?.getAttackState(enemy) ?? (enemy._npcPreparation > 0 ? { phase: 'windup', progress: enemy._npcPreparation / (enemy._npcWindup || 1) } : null);
+    if (state?.phase !== 'windup') { this._clearAttackCue(enemy); return; }
+    let cue = this.attackCues.get(enemy);
+    if (!cue) {
+      cue = new THREE.Mesh(this.attackCueGeometry, this.attackCueMaterial);
+      cue.name = 'enemy-attack-warning'; this.scene.add(cue); this.attackCues.set(enemy, cue);
+    }
+    cue.position.copy(enemy.mesh.position); cue.position.y = 0.065;
+    cue.scale.setScalar((enemy.radius || 1.1) + 0.7 + state.progress * 0.35);
+  }
+
+
+  _requestAttack(enemy, player, options) {
+    if (!canDetectConcealedTarget(enemy, player, this.environment)) {
+      this.combatDirector?.release(enemy); this._clearAttackCue(enemy);
+      enemy._npcPreparation = 0; enemy._npcTarget = null; return false;
+    }
+    const group=this.battleSimulation?.groups?.get(enemy.battleGroupId);
+    if((group?.rootUntil ?? 0)>(this.battleSimulation?.time ?? 0))return false;
+    if((group?.suppressedUntil ?? 0)>(this.battleSimulation?.time ?? 0))options={...options,windup:(options.windup ?? .8)*1.6};
+    if (this.environment?.hasLineOfSight && !this.environment.hasLineOfSight(enemy.mesh.position.clone().add(new THREE.Vector3(0,1.4,0)), player.position.clone().add(new THREE.Vector3(0,1.6,0)), { ignoreOwner: player.isSupport ? player.collisionOwner : undefined })) { this.combatDirector?.release(enemy); this._clearAttackCue(enemy); return false; }
+    if (player.isBattleNPC) return requestNPCStrike(enemy, player, this._simulationDelta ?? 1/60, options);
+    if (!this.combatDirector) return requestNPCStrike(enemy, player, this._simulationDelta ?? 1/60, options);
+    const allowed = this.combatDirector.requestAttack(enemy, player, options);
+    this._showAttackCue(enemy);
+    return allowed;
+  }
+
+
+  _hazardDamage(source, player, amount) {
+    if (player.isSupport) return player.takeDamage(amount, source);
+    if (player.isBattleNPC) { player.takeDamage(amount, true, source); return amount; }
+    if (this.combatDirector) return this.combatDirector.applyHazardDamage(source, player, amount);
+    player.takeDamage(amount, true);
+    return amount;
+  }
+
+
+  spawnHiveOfficer(playerPos, offsetX = 0, title = 'GARDE DE NŒUD KAINDE AMEDHA') {
+    const group = createCreatureModel('officer', this.sharedResources);
+    group.position.set(playerPos.x + offsetX, 0, playerPos.z - 30);
+    this.scene.add(group);
+
+    this.aliens.push({ combatManager: this,
+      mesh: group,
+      type: 'officer',
+      pressureId: this.spawnSequence++,
+      officerTitle: title,
+      isOfficer: true,
+      hp: 350,
+      maxHp: 350,
+      speed: 13.5,
+      damage: 38,
+      radius: 1.6,
+      isAirborne: false,
+      airborneVelY: 0,
+      airborneVelHoriz: new THREE.Vector3()
+    });
+    return this.aliens[this.aliens.length - 1];
+  }
+
+
+  spawnCrusher(playerPos) {
+    const group = createCreatureModel('crusher', this.sharedResources);
+    group.position.set(playerPos.x, 0, playerPos.z - 35);
+    this.scene.add(group);
+
+    this.aliens.push({ combatManager: this,
+      mesh: group,
+      type: 'crusher',
+      pressureId: this.spawnSequence++,
+      hp: 750,
+      maxHp: 750,
+      speed: 16,
+      damage: 60,
+      radius: 2.8,
+      isCharging: false,
+      chargeTimer: 3.0
+    });
+  }
+
+
+  spawnPraetorian(playerPos, offsetX = 0) {
+    const group = createCreatureModel('praetorian', this.sharedResources);
+    group.position.set(playerPos.x + offsetX, 0, playerPos.z - 28);
+    this.scene.add(group);
+
+    this.aliens.push({ combatManager: this,
+      mesh: group,
+      type: 'praetorian',
+      pressureId: this.spawnSequence++,
+      hp: 480,
+      maxHp: 480,
+      speed: 13,
+      damage: 40,
+      radius: 1.8,
+      spitCooldown: 2.0
+    });
+  }
+
+
+  spawnGridAlien(playerPos) {
+    const group = createCreatureModel('grid', this.sharedResources);
+    group.position.set(playerPos.x + 12, 0, playerPos.z - 30);
+    this.scene.add(group);
+
+    this.aliens.push({ combatManager: this,
+      mesh: group,
+      type: 'grid_alien',
+      pressureId: this.spawnSequence++,
+      hp: 420,
+      maxHp: 420,
+      speed: 15,
+      damage: 45,
+      radius: 1.6,
+      isNetgunImmune: true,
+      spurtCooldown: 0
+    });
+  }
+
+
+  spawnOvimorphEggs(playerPos, count = 5) {
+    for (let i = 0; i < count; i++) {
+      const angle = (i / count) * Math.PI * 2 + Math.random() * 0.5;
+      const radius = (this.combatDirector ? 30 : 15) + Math.random() * 18;
+      const x = playerPos.x + Math.cos(angle) * radius;
+      const z = playerPos.z + Math.sin(angle) * radius;
+
+      const eggPosition = this.spawnPositionProvider ? this._spawnPosition(playerPos, 30) : new THREE.Vector3(x, 0, z);
+      if (!eggPosition) continue;
+      const eggGroup = createEggModel(this.sharedResources);
+      eggGroup.position.copy(eggPosition);
+      const petals = eggGroup.children.filter(part => part.name.startsWith('petal-'));
+
+      this.scene.add(eggGroup);
+      this.eggs.push({
+        mesh: eggGroup,
+        petals,
+        isOpen: false,
+        hatched: false
       });
     }
   }
 
-  /* Chantier 1: Marvel Alpha Xenomorph Apex Predator (Marvel Comics Alien 2021-2022 Canon 1:1) */
+
+  createAlienMesh(isFacehugger, isBoiler = false, isNeomorph = false, isPraetomorph = false, isRedSwarm = false, isSpitter = false, isRunner = false, isCryoXeno = false, isCyberXeno = false, isRoyalFacehugger = false) {
+    if (isCryoXeno || isCyberXeno || isRoyalFacehugger) return this.createLegacyAlienMesh(isFacehugger, isBoiler, isNeomorph, isPraetomorph, isRedSwarm, isSpitter, isRunner, isCryoXeno, isCyberXeno, isRoyalFacehugger);
+    const kind = isFacehugger ? 'facehugger' : isBoiler ? 'boiler' : isNeomorph ? 'neomorph'
+      : isPraetomorph ? 'praetomorph' : isRedSwarm ? 'red_warrior' : isSpitter ? 'spitter' : isRunner ? 'runner' : 'warrior';
+    return createCreatureModel(kind, this.sharedResources);
+  }
+
+
+  createChestbursterMesh() {
+    return createCreatureModel('chestburster', this.sharedResources);
+  }
+
+
+  checkMeleeHits(attack) {
+    const hits = [];
+    if (!attack?.origin || !Number.isFinite(attack.damage) || attack.damage <= 0 || !Number.isFinite(attack.radius) || attack.radius < 0) return hits;
+    const attackingFaction = attack.killerFaction ?? this.battleSimulation?.config.playerFaction ?? 'player_clan';
+
+    for (let i = this.aliens.length - 1; i >= 0; i--) {
+      const a = this.aliens[i];
+      this.syncBattleRavager(a, { cause: a.lastDamageType ?? 'combat', killerFaction: a.lastDamageFaction });
+      if (attack.targetOnly && a !== attack.targetOnly) continue;
+      if (a.isLatched) continue;
+      if (this.battleSimulation && a.factionId && !this.battleSimulation.areHostile(attackingFaction, a.factionId)) continue;
+      if (this.environment?.hasLineOfSight && !this.environment.hasLineOfSight(attack.origin.clone().add(new THREE.Vector3(0,1.2,0)), a.mesh.position.clone().add(new THREE.Vector3(0,1.2,0)))) continue;
+      if (a.hp <= 0) { this.defeatAlien(a, { cause: 'prior-combat', killerFaction: a.lastDamageFaction }); continue; }
+      const dist = a.mesh.position.distanceTo(attack.origin);
+
+      if (dist <= attack.radius + (a.radius || 1.0)) {
+        const requested = typeof attack.damageForTarget === 'function' ? attack.damageForTarget(a, attack.damage) : attack.damage;
+        if (!Number.isFinite(requested) || requested <= 0) continue;
+        let dealt = applyBattleFormationHit(this,a,attack,requested);
+        const thermal = /plasma|flame|fire|incendiary/.test(attack.type ?? '');
+        if (a.regenActive && thermal) a.regenActive = false;
+        if (a.isFrontalShielded && /ballistic|bullet|rifle|rail/.test(attack.type ?? '')) {
+          const toward = attack.origin.clone().sub(a.mesh.position).setY(0).normalize(), forward = new THREE.Vector3(0,0,1).applyQuaternion(a.mesh.quaternion);
+          if (toward.dot(forward) > .4) dealt *= .25;
+        }
+        if (a.isFrontalShielded && (attack.damage >= 250 || attack.isLauncher || thermal)) a.isFrontalShielded = false;
+        a.lastDamageFaction = attackingFaction;
+        const special = this._damageBattleRavager(a, dealt, {
+          cause: attack.type ?? 'melee', killerFaction: attackingFaction
+        });
+        if (special) dealt = special.damage;
+        else a.hp -= dealt;
+        const killed = a.hp <= 0;
+
+        // Reactive Acid Splashback Physics (slashing xenos sprays pressurized molecular acid back at attacker)
+        if (attack.origin) {
+          this.spawnAcidSplash(a.mesh.position, attack.origin, { source: a });
+        }
+
+        // Grid Alien's grid-lattice scars squirt pressurized acid pools when struck!
+        if (a.type === 'grid_alien') {
+          this.spawnAcidPool(a.mesh.position);
+        }
+
+        // Dynasty Warriors Musou Launcher & Knockback Physics
+        if (!killed && !a.isDowned && attack.origin) {
+          const knockDir = a.mesh.position.clone().sub(attack.origin).setY(0).normalize();
+          if (knockDir.lengthSq() < 0.001) knockDir.set(0, 0, 1);
+
+          if (attack.isLauncher) {
+            a.isAirborne = true;
+            a.airborneVelY = attack.launchVelY || 18.0;
+            a.airborneVelHoriz = knockDir.clone().multiplyScalar(Math.min(attack.knockback || 6.0, 12.0));
+          } else if (attack.knockback) {
+            a.mesh.position.addScaledVector(knockDir, attack.knockback);
+          }
+        }
+
+        hits.push({
+          pos: a.mesh.position.clone(),
+          damage: dealt,
+          killed: killed,
+          isOfficer: a.isOfficer || false,
+          officerTitle: a.officerTitle || null
+        });
+
+        if (killed) {
+          if (a.type === 'boiler') {
+            this.detonateBoiler(a, attack.origin, { cause: attack.type ?? 'melee', killerFaction: attackingFaction });
+          } else {
+            if (this.goreEngine) {
+              this.goreEngine.spawnDismemberment(a.mesh.position, attack.type || 'wristblades');
+            }
+
+            if (Math.random() < 0.15 && a.type !== 'crusher' && !a.isOfficer) {
+              this.spawnChestburster(a.mesh.position);
+            }
+
+            this.spawnAcidPool(a.mesh.position);
+            // Spawn 1-2 Zero-G Floating Acid Globules (Alien: Romulus 2024 Lore)
+            const globCount = Math.floor(1 + Math.random() * 2);
+            for (let g = 0; g < globCount; g++) {
+              this.spawnZeroGAcidGlobule(a.mesh.position);
+            }
+            this.defeatAlien(a, { cause: attack.type ?? 'melee', killerFaction: attackingFaction });
+          }
+          hits[hits.length - 1].event = a.combatDeathEvent;
+        }
+      }
+    }
+
+    for (let i = this.eggs.length - 1; i >= 0; i--) {
+      const egg = this.eggs[i];
+      if (attack.targetOnly && egg !== attack.targetOnly) continue;
+      if (egg.mesh.position.distanceTo(attack.origin) <= attack.radius + 1.0) {
+        this.spawnAcidPool(egg.mesh.position);
+        const event = recordCombatDeath(this, egg, { kind: 'ovimorph', cause: attack.type ?? 'melee', objectiveCredit: false });
+        disposeObject(egg.mesh, this.sharedResources);
+        this.eggs.splice(i, 1);
+        hits.push({
+          pos: egg.mesh.position.clone(),
+          damage: attack.damage,
+          killed: true, event
+        });
+      }
+    }
+
+    for (let i = this.chestbursters.length - 1; i >= 0; i--) {
+      const cb = this.chestbursters[i];
+      if (attack.targetOnly && cb !== attack.targetOnly) continue;
+      if (cb.mesh.position.distanceTo(attack.origin) > attack.radius + 0.5) continue;
+      cb.hp -= attack.damage;
+      const killed = cb.hp <= 0;
+      hits.push({ pos: cb.mesh.position.clone(), damage: attack.damage, killed });
+      if (killed) {
+        hits[hits.length - 1].event = this.defeatAlien(cb, { cause: attack.type ?? 'melee', killerFaction: attackingFaction });
+      }
+    }
+
+    return hits;
+  }
+
+
+  limitHazards(list, max) {
+    while (list.length >= max) disposeObject(list.shift().mesh, this.sharedResources);
+  }
+
+
+  spawnAcidSplash(originPos, targetPos, { source = null } = {}) {
+    const splashDir = targetPos.clone().sub(originPos).normalize();
+    // Add realistic arc and spread
+    for (let s = 0; s < 3; s++) {
+      const spread = splashDir.clone().add(new THREE.Vector3(
+        (Math.random() - 0.5) * 0.4,
+        0.3 + Math.random() * 0.3,
+        (Math.random() - 0.5) * 0.4
+      )).normalize();
+
+      this.limitHazards(this.acidSplashes, 160);
+      const dropGeo = new THREE.SphereGeometry(0.12, 6, 6);
+      const dropMesh = new THREE.Mesh(dropGeo, this.acidSplashMat);
+      dropMesh.position.copy(originPos).add(new THREE.Vector3(0, 1.2, 0));
+      this.scene.add(dropMesh);
+
+      this.acidSplashes.push({
+        mesh: dropMesh,
+        vel: spread.multiplyScalar(16 + Math.random() * 6),
+        gravity: -28,
+        life: 0.9,
+        damage: 18, sourceFaction: source?.factionId ?? null
+      });
+    }
+  }
+
+
+  spawnChestburster(pos) {
+    if (this.battleSimulation) return null; // Births require a previously allocated strategic identity.
+    this.limitHazards(this.chestbursters, 40);
+    const mesh = this.createChestbursterMesh();
+    mesh.position.copy(pos);
+    this.scene.add(mesh);
+    this.chestbursters.push({ combatManager: this,
+      mesh,
+      hp: 30,
+      speed: 18,
+      damage: 12
+    });
+    this.audioEngine.playXenoHiss();
+  }
+
+
+  spawnAcidPool(pos) {
+    this.limitHazards(this.acidPools, 80);
+    const geo = new THREE.CylinderGeometry(1.8, 1.8, 0.05, 12);
+    const mat = new THREE.MeshBasicMaterial({ color: 0x39ff14, transparent: true, opacity: 0.7 });
+    const pool = new THREE.Mesh(geo, mat);
+    pool.position.set(pos.x, 0.02, pos.z);
+    this.scene.add(pool);
+
+    this.acidPools.push({ mesh: pool, life: 10 });
+  }
+
+  removeAcidPool(pool) {
+    const index = this.acidPools.indexOf(pool);
+    if (index < 0) return false;
+    disposeObject(pool.mesh, this.sharedResources);
+    this.acidPools.splice(index, 1);
+    return true;
+  }
+
+
+  spawnZeroGAcidGlobule(pos) {
+    this.limitHazards(this.zeroGAcidGlobules, 80);
+    const group = new THREE.Group();
+    const radius = 0.22 + Math.random() * 0.18;
+    const sphere = new THREE.Mesh(new THREE.SphereGeometry(radius, 12, 12), this.zeroGAcidMat);
+    group.add(sphere);
+
+    const core = new THREE.Mesh(new THREE.SphereGeometry(radius * 0.45, 8, 8), this.zeroGAcidCoreMat);
+    group.add(core);
+
+    const spawnY = Math.max(0.8, Math.min(3.2, (pos.y || 0) + 1.2 + (Math.random() - 0.5) * 1.0));
+    group.position.set(
+      pos.x + (Math.random() - 0.5) * 1.5,
+      spawnY,
+      pos.z + (Math.random() - 0.5) * 1.5
+    );
+
+    this.scene.add(group);
+    this.zeroGAcidGlobules.push({
+      mesh: group,
+      baseY: group.position.y,
+      floatTime: Math.random() * Math.PI * 2,
+      driftVel: new THREE.Vector3((Math.random() - 0.5) * 1.2, (Math.random() - 0.5) * 0.3, (Math.random() - 0.5) * 1.2),
+      life: 14.0,
+      radius: radius
+    });
+  }
+
+
+  update(delta, player, secondaryPlayer = null) {
+    if (!Number.isFinite(delta) || delta < 0) return;
+    this._livingPlayers = [player, secondaryPlayer].filter(p => p && p.hp !== 0);
+    // Environmental, ally, support and legacy weapon damage all converge here.
+    for (const actor of [...this.getActiveCombatants()]) {
+      this.syncBattleRavager(actor, { cause: actor.lastDamageType ?? 'combat', killerFaction: actor.lastDamageFaction });
+      if (actor.hp <= 0) this.defeatAlien(actor, { cause: 'combat', killerFaction: actor.lastDamageFaction, deferEffects:delta===0 });
+    }
+    for(const actor of [...this.aliens])if(actor.isLatched) {
+      if(actor.battleUnitId && this.battleSimulation)recordCombatDeath(this,actor,{kind:actor.type,cause:'parasite-consumed',objectiveCredit:false});
+      this.combatDirector?.release(actor);this._clearAttackCue(actor);
+      if(!actor._combatDisposed){disposeObject(actor.mesh,this.sharedResources);actor._combatDisposed=true;}
+      this.aliens.splice(this.aliens.indexOf(actor),1);
+    }
+    if(delta===0)return; // Settle completed deaths without advancing an attack or timer.
+    this._simulationDelta = delta; this.time = (this.time ?? 0) + delta;
+    for(const actor of this.pendingBoilerDetonations ?? []){actor._boilerQueued=false;this.detonateBoiler(actor,null,{cause:'deferred-boiler-explosion',killerFaction:actor.lastDamageFaction});}
+    this.pendingBoilerDetonations=[];
+    const livingPlayers = this._livingPlayers;
+    for (const actor of this.aliens)
+      actor._controlLockedThisUpdate = this._advanceControlLocks(actor, delta);
+    if (!livingPlayers.length) return;
+    player = livingPlayers[0];
+    if (!this.battleSimulation && this.pendingSpawns.length && !this.combatDirector?.isInGrace) {
+      this.spawnTimer -= delta;
+      if (this.spawnTimer <= 0) {
+        for (let i = 0; i < 4 && this.pendingSpawns.length; i++) if (!this._spawnQueued(player.position)) break;
+        this.spawnTimer = 3;
+      }
+    }
+    // Resolve damage from allied AI/net traps, and remove consumed facehuggers.
+    for (let i = this.aliens.length - 1; i >= 0; i--) {
+      const alien = this.aliens[i];
+      if (alien.isLatched) {
+        if (alien.battleUnitId && this.battleSimulation) recordCombatDeath(this, alien, {kind:alien.type,cause:'parasite-consumed',objectiveCredit:false});
+        this.combatDirector?.release(alien); this._clearAttackCue(alien);
+        disposeObject(alien.mesh, this.sharedResources);
+        this.aliens.splice(i, 1);
+      } else if (alien.hp <= 0) {
+        if (alien.type === 'boiler') this.detonateBoiler(alien, player);
+        else {
+          this.goreEngine?.spawnDismemberment(alien.mesh.position);
+          this.spawnAcidPool(alien.mesh.position);
+          disposeObject(alien.mesh, this.sharedResources);
+          this.aliens.splice(i, 1);
+          this.recordDefeat(alien);
+        }
+      }
+    }
+
+    // Egg hatching uses simulation time: pause and clearWave cannot leak new enemies.
+    this.eggs.forEach(egg => {
+      if (this.battleSimulation) return; // No unallocated local births in a finite operation.
+      const eggTarget = this._nearestPlayer(egg.mesh.position, livingPlayers);
+      if (!egg.hatched && !egg.isOpen && !this.combatDirector?.isInGrace && egg.mesh.position.distanceTo(eggTarget.position) < 7) {
+        egg.isOpen = true;
+        egg.hatchTimer = 0.8;
+        egg.petals.forEach(p => {
+          p.rotation.x *= 2.2;
+          p.rotation.z *= 2.2;
+        });
+        this.audioEngine.playXenoHiss();
+      }
+      if (egg.hatched || !egg.isOpen) return;
+      egg.hatchTimer -= delta;
+      if (egg.hatchTimer > 0) return;
+      const facehugger = this.createAlienMesh(true);
+      facehugger.position.copy(egg.mesh.position).setY(0.5);
+      this.scene.add(facehugger);
+      this.aliens.push({ combatManager: this, mesh: facehugger, type: 'facehugger', pressureId: this.spawnSequence++, hp: 40, maxHp: 40,
+        speed: 17, damage: 15, radius: 0.6, isLatched: false });
+      egg.hatched = true;
+    });
+
+    // 2. Chestbursters
+    for (let i = this.chestbursters.length - 1; i >= 0; i--) {
+      const cb = this.chestbursters[i];
+      const targetPlayer = this._pursuitTarget(cb, livingPlayers);
+      if (!targetPlayer) { moveBattleOrder(this, cb, delta, cb.speed); continue; }
+      const dir = targetPlayer.position.clone().sub(cb.mesh.position);
+      dir.y = 0;
+      if (dir.length() > 1.0) {
+        dir.normalize();
+        cb.mesh.position.addScaledVector(dir, cb.speed * delta);
+        if (cb.mesh.position.y <= 0.2) this.environment?.resolveAgentMovement(cb.mesh.position, targetPlayer.position, cb.speed * delta, 0.5);
+        cb.mesh.rotation.y = Math.atan2(dir.x, dir.z);
+      } else {
+        if (this._requestAttack(cb, targetPlayer, { windup: 0.7, recovery: 1.4 })) targetPlayer.takeDamage(cb.damage, false, cb, { attackKind: 'bite', blockable: false, parryable: false });
+      }
+    }
+
+    // 3. Acid pools
+    for (let i = this.acidPools.length - 1; i >= 0; i--) {
+      const pool = this.acidPools[i];
+      pool.life -= delta;
+      for (const targetPlayer of livingPlayers) if (pool.mesh.position.distanceTo(targetPlayer.position) < 1.8) {
+        this._hazardDamage(pool, targetPlayer, 15 * delta);
+      }
+      if (pool.life <= 0) {
+        this.removeAcidPool(pool);
+      }
+    }
+
+    // 3b. Reactive Acid Splashback Droplets Flying
+    for (let i = this.acidSplashes.length - 1; i >= 0; i--) {
+      const splash = this.acidSplashes[i];
+      splash.life -= delta;
+      splash.vel.y += splash.gravity * delta;
+      const previous = splash.mesh.position.clone(); splash.mesh.position.addScaledVector(splash.vel, delta);
+      const cover = this.environment?.traceSegment?.(previous, splash.mesh.position, {radius:.12});
+      if (cover) { disposeObject(splash.mesh, this.sharedResources); this.acidSplashes.splice(i,1); continue; }
+
+      // A projectile hits the nearest intersected living hunter, including player2.
+      const targetPlayer = this.battleSimulation && splash.sourceFaction ? selectBattleTarget(this, {mesh:splash.mesh,factionId:splash.sourceFaction}, livingPlayers) : this._nearestPlayer(splash.mesh.position, livingPlayers);
+      if (targetPlayer && splash.mesh.position.distanceTo(targetPlayer.position) < 1.6) {
+        this._hazardDamage(splash, targetPlayer, splash.damage);
+        disposeObject(splash.mesh, this.sharedResources);
+        this.acidSplashes.splice(i, 1);
+        continue;
+      }
+
+      // Check floor collision or life expiry
+      if (splash.mesh.position.y <= 0.05 || splash.life <= 0) {
+        disposeObject(splash.mesh, this.sharedResources);
+        this.acidSplashes.splice(i, 1);
+      }
+    }
+
+    // 3c. Zero-G Floating Acid Globules (Alien: Romulus 2024 Lore)
+    for (let i = this.zeroGAcidGlobules.length - 1; i >= 0; i--) {
+      const glob = this.zeroGAcidGlobules[i];
+      glob.life -= delta;
+      glob.floatTime += delta * 2.2;
+      glob.mesh.position.y = glob.baseY + Math.sin(glob.floatTime) * 0.35;
+      glob.mesh.position.addScaledVector(glob.driftVel, delta);
+      if (glob.mesh.children[0]) {
+        glob.mesh.children[0].scale.setScalar(1.0 + Math.sin(glob.floatTime * 3) * 0.12);
+      }
+
+      const targetPlayer = this._nearestPlayer(glob.mesh.position, livingPlayers);
+      const pDist = glob.mesh.position.distanceTo(targetPlayer.position);
+      if (pDist <= 1.4) {
+        this._hazardDamage(glob, targetPlayer, 24);
+        this.audioEngine?.playAcidGlobuleHiss?.();
+        disposeObject(glob.mesh, this.sharedResources);
+        this.zeroGAcidGlobules.splice(i, 1);
+        continue;
+      }
+
+      // Check collision with nearby aliens
+      for (let j = 0; j < this.aliens.length; j++) {
+        const al = this.aliens[j];
+        if (al.mesh.position.distanceTo(glob.mesh.position) < 1.3) {
+          al.hp -= 140; // Molecular acid dissolving xenomorph carapace
+          if (this.audioEngine && this.audioEngine.playAcidGlobuleHiss) {
+            this.audioEngine.playAcidGlobuleHiss();
+          }
+          disposeObject(glob.mesh, this.sharedResources);
+          this.zeroGAcidGlobules.splice(i, 1);
+          break;
+        }
+      }
+
+      if (glob.life <= 0) {
+        disposeObject(glob.mesh, this.sharedResources);
+        this.zeroGAcidGlobules.splice(i, 1);
+      }
+    }
+
+    const supportTargets = this._supportTargets();
+    this._updateExtraActors(delta, livingPlayers, supportTargets);
+
+    // 4. Horde AI (Crusher, Praetorian, Warriors, Facehuggers, Officers)
+    this.aliens.forEach(a => {
+      this.syncBattleRavager(a, { cause: a.lastDamageType ?? 'combat', killerFaction: a.lastDamageFaction });
+      const controlLocked = a._controlLockedThisUpdate;
+      if (a.ravagerCatalepsy) return;
+      this._showAttackCue(a);
+      // The allocated Facehugger is a REAL airborne actor, not a spawned
+      // particle. It can neither attack nor latch until landing on safe floor.
+      if(advanceCarrierFacehuggerFlight(a,delta))return;
+      if (this._advanceAirborneActor(a, delta) || controlLocked || a.hp <= 0) return;
+      const sourceTarget=a.type==='carrier'?
+        this._pursuitTarget(a,livingPlayers,supportTargets):null;
+      if(a.type==='carrier'){
+        a.carrierLaunchCooldown=Math.max(0,(a.carrierLaunchCooldown??0)-delta);
+        if(sourceTarget&&a.carrierLaunchCooldown<=0&&!a.isStunned&&!a.isNetEntangled){
+          const attempt=this.carrierCargoLaunch?.(a,sourceTarget);
+          if(attempt?.accepted)a.carrierLaunchCooldown=3.25;
+        }
+      }
+      if(!a.isAirborne && !a.isLeaping && !a.isLatched && maintainBattleFormation(this,a,delta,a.speed))return;
+      const targetPlayer = sourceTarget??this._pursuitTarget(a, livingPlayers, supportTargets);
+      if (!targetPlayer) { this.combatDirector?.release(a); this._clearAttackCue(a); moveBattleOrder(this, a, delta, a.speed); return; }
+      if (a.isFeared) { a.fearTimer -= delta; if (a.fearTimer <= 0) a.isFeared = false; else { a.mesh.position.addScaledVector(a.fearDir, a.speed * delta * .7); this.environment?.resolveMovement?.(a.mesh.position, a.radius); return; } }
+      if (a.regenActive && a.hp > 0) a.hp = Math.min(a.maxHp, a.hp + 35 * delta);
+      if (a.isChameleon) { a.revealTimer = Math.max(0, (a.revealTimer ?? 0) - delta); const visible = a.revealTimer > 0 || a._localAttackPreparation || this.combatDirector?.getAttackState(a)?.phase === 'windup'; a.mesh.traverse(mesh => { if (mesh.isMesh && mesh.material && mesh.material !== this.attackCueMaterial) mesh.material.opacity = visible ? .95 : .28; }); }
+
+      if (a.isLatched) return;
+      a.visualPhase = (a.visualPhase || 0) + delta * Math.max(3, (a.speed || 10) * 0.8);
+      animateCreatureModel(a.ravagerVisual ?? a.mesh, a.visualPhase, !a.isStunned && !a.isNetEntangled);
+
+      const dir = targetPlayer.position.clone().sub(a.mesh.position);
+      dir.y = 0;
+      const dist = dir.length();
+      const engaged = targetPlayer.isBattleNPC || !this.combatDirector || (dist < 22 && this.combatDirector.canEngage(a, targetPlayer));
+      if (this.combatDirector && !targetPlayer.isBattleNPC && !engaged) {
+        this.combatDirector.release(a); this._clearAttackCue(a);
+        const id = a.pressureId ?? 0;
+        const angle = id * 2.399963229728653 + this.combatDirector.time * 0.12;
+        const holdingRadius = 6.5 + id % 4 * 1.3;
+        const holding = targetPlayer.position.clone().add(new THREE.Vector3(Math.cos(angle) * holdingRadius, 0, Math.sin(angle) * holdingRadius));
+        const offset = holding.sub(a.mesh.position).setY(0);
+        const distance = offset.length();
+        if (distance > 0.5) {
+          offset.normalize();
+          const step = Math.min(distance, a.speed * delta * (this.combatDirector.isInGrace ? 0.35 : 0.65));
+          a.mesh.position.addScaledVector(offset, step);
+          this.environment?.resolveAgentMovement(a.mesh.position, targetPlayer.position.clone().addScaledVector(offset, holdingRadius), step, Math.min(a.radius || 1, 1.2));
+        }
+        a.mesh.rotation.y = Math.atan2(dir.x, dir.z);
+        return;
+      }
+
+      // Wall-Climbing & Ceiling Drop Ambush AI (Alien 1979 / Aliens 1986 Lore)
+      if (a.isWallStalker) {
+        if (a.wallClimbPhase === 'climbing') {
+          a.mesh.position.y += 6.5 * delta;
+          a.mesh.rotation.x = -Math.PI * 0.4;
+          if (a.mesh.position.y >= a.perchHeight) {
+            a.mesh.position.y = a.perchHeight;
+            a.wallClimbPhase = 'perched';
+            a.mesh.rotation.x = Math.PI; // Upside down clinging to ceiling
+          }
+          return;
+        } else if (a.wallClimbPhase === 'perched') {
+          // Stalk ceiling towards targetPlayer
+          if (dist > 8.0) {
+            const stalkDir = dir.clone().normalize();
+            a.mesh.position.addScaledVector(stalkDir, 5.0 * delta);
+          }
+          // Surprise drop attack when close enough
+          if (dist <= 10.0 && this._requestAttack(a, targetPlayer, { windup: 0.9, recovery: 2 })) {
+            a.wallClimbPhase = 'dropping';
+            this.audioEngine.playXenoHiss();
+          }
+          return;
+        } else if (a.wallClimbPhase === 'dropping') {
+          a.mesh.position.y -= 26.0 * delta; // Plunge straight down
+          a.mesh.rotation.x = 0;
+          const dropDir = dir.clone().normalize();
+          a.mesh.position.addScaledVector(dropDir, 8.0 * delta);
+
+          if (a.mesh.position.y <= 0) {
+            a.mesh.position.y = 0;
+            a.wallClimbPhase = 'grounded';
+            a.isWallStalker = false;
+            if (dist <= 3.5) {
+              targetPlayer.takeDamage(35, false, a, { attackKind: 'drop', blockable: false, parryable: false });
+            }
+          }
+          return;
+        }
+      }
+
+      // Praetorian Royal Acid Spit Attack (medium range: 8m to 20m)
+      if (a.type === 'praetorian') {
+        a.spitCooldown -= delta;
+        if (a.spitCooldown <= 0 && dist >= 8.0 && dist <= 20.0 && this._requestAttack(a, targetPlayer, { kind: 'ranged', windup: 0.9, recovery: 1.6 })) {
+          a.spitCooldown = 3.5;
+          this.audioEngine.playXenoHiss();
+          this.spawnAcidSplash(a.mesh.position, targetPlayer.position, { source: a });
+        }
+      }
+
+      // Spitter Long-Range Acid Artillery AI (Aliens: Colonial Marines Lore)
+      if (a.type === 'spitter') {
+        a.spitCooldown -= delta;
+        if (a.spitCooldown <= 0 && dist >= 7.0 && dist <= 26.0 && this._requestAttack(a, targetPlayer, { kind: 'ranged', windup: 0.9, recovery: 1.6 })) {
+          a.spitCooldown = 3.2;
+          this.audioEngine.playXenoHiss();
+          this.spawnAcidSplash(a.mesh.position, targetPlayer.position, { source: a });
+          this.spawnAcidPool(a.mesh.position);
+        }
+      }
+
+      if (a.type === 'crusher') {
+        // Crusher Battering Ram Charge
+        if (a.isCharging) {
+          a.chargeDuration -= delta;
+          if (a.chargeDuration <= 0) {
+            a.isCharging = false;
+            a.speed = 12;
+            a.chargeTimer = 4;
+          }
+        } else {
+          a.chargeTimer -= delta;
+          if (a.chargeTimer <= 0 && this._requestAttack(a, targetPlayer, { kind: 'boss', windup: 1.15, duration: 2, recovery: 2 })) {
+            a.isCharging = true;
+            a.chargeDuration = 2;
+            a.speed = 22;
+            this.audioEngine.playXenoHiss();
+          }
+        }
+
+        if (a.isCharging && !a.chargeDirection) a.chargeDirection = dir.clone().normalize();
+        if (a.isCharging) {
+          a.mesh.position.addScaledVector(a.chargeDirection, a.speed * delta);
+          this.environment?.resolveMovement?.(a.mesh.position, Math.min(a.radius, 1.8));
+          if (a.mesh.position.distanceTo(targetPlayer.position) <= a.radius + 1.2) {
+            targetPlayer.takeDamage(65, false, a, { attackKind: 'charge', blockable: false, parryable: false });
+            a.isCharging = false; a.chargeDirection = null; a.speed = 12; a.chargeTimer = 4;
+          }
+          return;
+        }
+        a.chargeDirection = null;
+      }
+
+      // Check if low HP sub-boss enters execution stun (Crusher, Praetorian, Grid Alien)
+      if ((a.type === 'crusher' || a.type === 'praetorian' || a.type === 'grid_alien') && a.hp <= a.maxHp * 0.25 && !a.isStunned) {
+        a.isStunned = true;
+        a.stunTimer = 6.0;
+      }
+
+      // Boiler suicide kamikaze charge
+      if (a.type === 'boiler') {
+        a.mesh.children.forEach(c => {
+          if (c.name === 'boil') c.scale.setScalar(1.0 + Math.sin(this.time * 18) * 0.25);
+        });
+        if (dist <= 3.2 && this._requestAttack(a, targetPlayer, { windup: 1.2, recovery: 2 })) {
+          this.detonateBoiler(a, targetPlayer);
+          return;
+        }
+      }
+
+      // Neomorph Bloodburster Acrobatic Pounce & Evasive Flanking (Alien: Covenant 2017)
+      if (a.type === 'neomorph') {
+        if (a.leapCooldown > 0) a.leapCooldown -= delta;
+
+        // Evasive lateral strafe
+        const strafe = new THREE.Vector3(-dir.z, 0, dir.x).normalize();
+        a.mesh.position.addScaledVector(strafe, Math.sin(this.time * 7) * 4.0 * delta);
+
+        if (!a.isLeaping && dist <= 12.0 && a.leapCooldown <= 0 && this._requestAttack(a, targetPlayer, { windup: 0.9, duration: 1.1, recovery: 1.6 })) {
+          a.isLeaping = true;
+          a.leapVelY = 13.0;
+          a.leapCooldown = 4.5;
+          if (this.audioEngine && this.audioEngine.playNeomorphScreech) {
+            this.audioEngine.playNeomorphScreech();
+          }
+        }
+
+        if (a.isLeaping) {
+          a.leapVelY -= 32.0 * delta;
+          a.mesh.position.y += a.leapVelY * delta;
+          a.mesh.rotation.x = -0.5;
+
+          if (a.mesh.position.y <= 0) {
+            a.mesh.position.y = 0;
+            a.isLeaping = false;
+            a.mesh.rotation.x = 0;
+            if (dist <= 3.0) {
+              targetPlayer.takeDamage(35, false, a, { attackKind: 'pounce', blockable: false, parryable: false });
+            }
+          }
+          return;
+        }
+      }
+
+      // Praetomorph Hyper-Aggressive Hunter (Alien: Covenant 2017)
+      if (a.type === 'praetomorph') {
+        if (a.leapCooldown > 0) a.leapCooldown -= delta;
+        if (!a.isLeaping && dist <= 14.0 && a.leapCooldown <= 0 && this._requestAttack(a, targetPlayer, { windup: 1, duration: 1.2, recovery: 1.6 })) {
+          a.isLeaping = true;
+          a.leapVelY = 15.0;
+          a.leapCooldown = 5.0;
+          if (this.audioEngine && this.audioEngine.playPraetomorphHiss) {
+            this.audioEngine.playPraetomorphHiss();
+          }
+        }
+        if (a.isLeaping) {
+          a.leapVelY -= 36.0 * delta;
+          a.mesh.position.y += a.leapVelY * delta;
+          a.mesh.rotation.x = -0.4;
+          const leapDir = dir.clone().normalize();
+          a.mesh.position.addScaledVector(leapDir, 16.0 * delta);
+
+          if (a.mesh.position.y <= 0) {
+            a.mesh.position.y = 0;
+            a.isLeaping = false;
+            a.mesh.rotation.x = 0;
+            if (dist <= 3.5) {
+              targetPlayer.takeDamage(45, false, a, { attackKind: 'pounce', blockable: false, parryable: false });
+            }
+          }
+          return;
+        }
+      }
+
+      // Hive rivalry uses the same prepared faction-targeted strike as every
+      // other NPC engagement. Color never adds a second per-frame damage loop.
+
+      const covered = this.environment?.hasLineOfSight && !this.environment.hasLineOfSight(a.mesh.position.clone().add(new THREE.Vector3(0,1.4,0)), targetPlayer.position.clone().add(new THREE.Vector3(0,1.6,0)), { ignoreOwner: targetPlayer.isSupport ? targetPlayer.collisionOwner : undefined });
+      const access = !a.isCharging && this.environment?.getVerticalNavigationTarget?.(a.mesh.position, targetPlayer.position);
+      const attackRange = (a.radius || 1.2) + (this.combatDirector ? 1.2 : 0) + (targetPlayer.isSupport ? targetPlayer.radius ?? 0 : 0);
+      if (access || a.mesh.position.distanceTo(targetPlayer.position) > attackRange || covered) {
+        const previous = a.mesh.position.clone();
+        const movement = (access ?? targetPlayer.position).clone().sub(previous).setY(0), step = Math.min(a.speed * delta, movement.length());
+        movement.normalize();
+        a.mesh.position.addScaledVector(movement, step);
+        // Only normal ground pursuit skirts solid scenery. Juggles, ceiling
+        // ambushes, pounces and active Crusher dashes keep their own movement.
+        if (!a.isCharging) {
+          const navigationRadius = Math.max(0.5, Math.min(a.radius || 0.65, 1.2));
+          this.environment?.resolveAgentMovement(a.mesh.position, targetPlayer.position, step, navigationRadius, previous);
+        }
+        this.combatDirector?.release(a); this._clearAttackCue(a); a._npcPreparation = 0;
+        a.mesh.rotation.y = Math.atan2(movement.x, movement.z);
+      } else {
+        const sourceElite = a.type === 'ravager';
+        const granted = this._requestAttack(a, targetPlayer, {
+          windup: sourceElite ? 1.15 : a.type === 'facehugger' ? 1 : .7,
+          recovery: sourceElite ? 2.1 : a.type === 'carrier' ? 2 : 1.6
+        });
+        if (!granted) return;
+        if (a.type === 'facehugger' && this._canParasitize(targetPlayer) && !targetPlayer.isFacehuggerLatched) {
+          // The battle simulation may refuse the implantation (armor, faction,
+          // already infected or distance). Never consume a finite Facehugger
+          // or detach its mesh when the target rejects the attempt.
+          const accepted = targetPlayer.triggerFacehuggerLatch();
+          if (accepted !== false) {
+            a.isLatched = true;
+            disposeObject(a.mesh, this.sharedResources);
+            a._combatDisposed = true; // Avoid orphaned parasite mesh after latch.
+          }
+        } else {
+          if (targetPlayer.isSupport) targetPlayer.takeDamage(a.damage, a);
+          else targetPlayer.takeDamage(a.damage, false, a, {
+            attackKind: a.type==='ravager'?'ravager-blade':
+              a.type==='carrier'?'carrier-defense':'melee',
+            blockable: !['crusher','ravager','rogue_king','gestating_matriarch','deacon_titan'].includes(a.type),
+            parryable: ['warrior','runner','spitter','red_warrior','grid_alien','officer'].includes(a.type)
+          }); a.revealTimer = 2;
+        }
+      }
+    });
+  }
+
+
+  detonateBoiler(boiler, targetOrPos, details = {}) {
+    if (!boiler || boiler._boilerDetonated) return null;
+    boiler._boilerDetonated = true; boiler.hp = 0;
+    if (this.audioEngine && this.audioEngine.playBoilerDetonation) {
+      this.audioEngine.playBoilerDetonation();
+    }
+    const pos = boiler.mesh.position.clone();
+    if (!boiler._combatDisposed) { disposeObject(boiler.mesh, this.sharedResources); boiler._combatDisposed = true; }
+    const idx = this.aliens.indexOf(boiler);
+    if (idx !== -1) this.aliens.splice(idx, 1);
+    const event = this.recordDefeat(boiler, details);
+
+    const targetPos = (targetOrPos && targetOrPos.position) ? targetOrPos.position : (targetOrPos || pos);
+
+    // Blast damage in 8.0m radius
+    const targets = targetOrPos?.takeDamage ? [targetOrPos] : this.battleSimulation && boiler.factionId ? listBattleTargets(this, boiler, this._livingPlayers ?? []) : this._livingPlayers ?? [];
+    for (const target of targets) {
+      if (target.hp > 0 && target.position.distanceTo(pos) <= 8.0 &&
+          (!this.environment?.hasLineOfSight || this.environment.hasLineOfSight(pos.clone().add(new THREE.Vector3(0,1,0)), target.position.clone().add(new THREE.Vector3(0,1,0))))) {
+        if (this.combatDirector || target.isBattleNPC) this._hazardDamage(boiler, target, 75);
+        else target.takeDamage(75, true, boiler, { attackKind: 'acid-explosion', blockable: false, parryable: false });
+      }
+    }
+
+    // 5 flying acid droplets and large acid pool
+    this.spawnAcidSplash(pos, targetPos, { source: boiler });
+    this.spawnAcidPool(pos);
+    return event;
+  }
+
+
+  clearWave() {
+    // A menu cleanup also removes players. Do not keep their disposed visual
+    // graphs alive through the target list from the last simulation frame.
+    this._livingPlayers = [];
+    this.pendingBoilerDetonations=[];
+    for (const key of ['microSwarms','mantaSwarmers','royalFacehuggers','biomechanicalEggs','cyberSpineDarts','spitterMortars']) {
+      for (const actor of this[key] ?? []) { this._releaseRoyalHold(actor); this.combatDirector?.release(actor); this._clearAttackCue(actor); disposeObject(actor.mesh ?? actor.group, this.sharedResources); if (actor.indicatorMesh) disposeObject(actor.indicatorMesh); }
+      this[key] = [];
+    }
+    this.pendingSpawns = [];
+    this.spawnTimer = 0;
+    for (const enemy of [...this.aliens, ...this.chestbursters]) { this.combatDirector?.release(enemy); this._clearAttackCue(enemy); }
+    this.aliens.forEach(a => disposeObject(a.mesh, this.sharedResources));
+    this.aliens = [];
+    this.eggs.forEach(e => disposeObject(e.mesh, this.sharedResources));
+    this.eggs = [];
+    this.chestbursters.forEach(c => disposeObject(c.mesh, this.sharedResources));
+    this.chestbursters = [];
+    for (const pool of [...this.acidPools]) this.removeAcidPool(pool);
+    this.acidSplashes.forEach(s => disposeObject(s.mesh, this.sharedResources));
+    this.acidSplashes = [];
+    this.zeroGAcidGlobules.forEach(g => disposeObject(g.mesh, this.sharedResources));
+    this.zeroGAcidGlobules = [];
+  }
   spawnMarvelAlpha(playerPos) {
     const group = new THREE.Group();
     const mat = this.alphaMat;
@@ -253,7 +1353,7 @@ export class XenomorphHorde {
     group.position.set(playerPos.x - 18, 0, playerPos.z - 30);
     this.scene.add(group);
 
-    this.aliens.push({
+    this.aliens.push({ combatManager: this,
       mesh: group,
       type: 'marvel_alpha',
       isMarvelAlpha: true,
@@ -275,6 +1375,7 @@ export class XenomorphHorde {
   }
 
   /* Chantier 6 (v48): The King Alien / Rogue Titan (Aliens: Rogue / Kenner 1994 Canon 1:1) */
+
   spawnRogueKingTitan(playerPos) {
     const group = new THREE.Group();
     const scale = 2.3;
@@ -331,7 +1432,7 @@ export class XenomorphHorde {
     group.position.set(playerPos.x + 24, 0, playerPos.z - 28);
     this.scene.add(group);
 
-    this.aliens.push({
+    this.aliens.push({ combatManager: this,
       mesh: group,
       type: 'rogue_king',
       isRogueKing: true,
@@ -353,6 +1454,7 @@ export class XenomorphHorde {
   }
 
   /* Chantier 2 (v49): Xenomorph Raven / Praetorian Raven (Aliens: Colonial Marines / Fireteam Elite Canon 1:1) */
+
   spawnRavenXenomorph(playerPos) {
     const group = new THREE.Group();
     const scale = 2.1;
@@ -400,7 +1502,7 @@ export class XenomorphHorde {
     group.position.set(playerPos.x - 24, 0, playerPos.z + 26);
     this.scene.add(group);
 
-    this.aliens.push({
+    this.aliens.push({ combatManager: this,
       mesh: group,
       type: 'xeno_raven',
       isRaven: true,
@@ -423,6 +1525,7 @@ export class XenomorphHorde {
   }
 
   /* Chantier 6 (v49): Ancient Predalien Elder (Aliens vs. Predator 2: Primal Hunt 2002 Canon 1:1) */
+
   spawnAncientPredalienElder(playerPos) {
     const group = new THREE.Group();
     const scale = 2.25;
@@ -465,7 +1568,7 @@ export class XenomorphHorde {
     group.position.set(playerPos.x + 26, 0, playerPos.z + 24);
     this.scene.add(group);
 
-    this.aliens.push({
+    this.aliens.push({ combatManager: this,
       mesh: group,
       type: 'ancient_predalien',
       isAncientPredalien: true,
@@ -488,6 +1591,7 @@ export class XenomorphHorde {
   }
 
   /* === CHANTIER 5 (v50.0): Gestating Alpha Female Hive Matriarch Sub-Boss with Live Egg Laying (Aliens 1986 / Infestation) === */
+
   spawnGestatingMatriarch(playerPos) {
     const group = new THREE.Group();
     const mat = this.gestatingMatriarchMat;
@@ -531,7 +1635,7 @@ export class XenomorphHorde {
     group.scale.set(2.4, 2.4, 2.4);
 
     this.scene.add(group);
-    this.aliens.push({
+    this.aliens.push({ combatManager: this,
       mesh: group,
       ovipositorMesh: ovi,
       type: 'gestating_matriarch',
@@ -553,7 +1657,9 @@ export class XenomorphHorde {
     });
   }
 
+
   spawnBiomechanicalEgg(pos) {
+    if (this.battleSimulation) return null;
     const eggGroup = new THREE.Group();
     const eggMat = new THREE.MeshStandardMaterial({ color: 0x451a03, roughness: 0.6, metalness: 0.2 });
     const petalMat = new THREE.MeshStandardMaterial({ color: 0x78350f, roughness: 0.4 });
@@ -585,6 +1691,7 @@ export class XenomorphHorde {
   }
 
   /* Chantier 7 (v46): Chameleon Stalker Xenomorph with Active Camouflage (Aliens: Rogue Canon 1:1) */
+
   spawnChameleonStalker(playerPos) {
     const group = new THREE.Group();
     const mat = this.chameleonMat;
@@ -634,7 +1741,7 @@ export class XenomorphHorde {
     );
     this.scene.add(group);
 
-    this.aliens.push({
+    this.aliens.push({ combatManager: this,
       mesh: group,
       type: 'chameleon_stalker',
       isChameleon: true,
@@ -655,6 +1762,7 @@ export class XenomorphHorde {
   }
 
   /* Chantier 4 (v47): The Deacon Titan (Prometheus 2012 Primordial Engineer Alien Canon) */
+
   spawnDeaconTitan(playerPos) {
     const group = new THREE.Group();
     const deaconMat = this.deaconMat;
@@ -730,7 +1838,7 @@ export class XenomorphHorde {
       this.audioEngine.playDeaconJawHiss();
     }
 
-    this.aliens.push({
+    this.aliens.push({ combatManager: this,
       mesh: group,
       type: 'deacon_titan',
       isDeacon: true,
@@ -750,6 +1858,7 @@ export class XenomorphHorde {
   }
 
   /* Chantier 7 (v47): Flying Xenomorph Manta Swarmer (Aliens Arcade / Kenner / Marvel Comics) */
+
   spawnMantaSwarmer(spawnPos, targetPlayer = null) {
     const group = new THREE.Group();
     const bodyMat = this.mantaMat;
@@ -817,6 +1926,7 @@ export class XenomorphHorde {
   }
 
   /* === CHANTIER 2 & SOFIA QA (v53.0): Flying Praetorian Harpy (Aliens: Earth War / Capcom AvP Arcade) === */
+
   spawnWingedPraetorianHarpy(spawnPos) {
     const group = new THREE.Group();
     const bodyMat = new THREE.MeshStandardMaterial({ color: 0x1f1635, roughness: 0.22, metalness: 0.92 });
@@ -879,6 +1989,7 @@ export class XenomorphHorde {
   }
 
   /* Chantier 2: Mosquito / Midge Micro-Xenomorph Swarm (Marvel Comics Alien: Thaw Canon 1:1) */
+
   spawnMicroSwarm(playerPos) {
     const swarmGroup = new THREE.Group();
     const wingMat = new THREE.MeshBasicMaterial({ color: 0x94a3b8, transparent: true, opacity: 0.6, side: THREE.DoubleSide });
@@ -941,116 +2052,7 @@ export class XenomorphHorde {
     });
   }
 
-  spawnHiveOfficer(playerPos, offsetX = 0, title = 'GARDE DE NŒUD KAINDE AMEDHA') {
-    const group = new THREE.Group();
-    // 1.35x Musou Officer Stature with Blood-Red Carapace and Heavy Dorsal Pipes
-    const mat = this.officerMat;
-    const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.4, 2.2, 8), mat);
-    torso.position.y = 1.6;
-    group.add(torso);
 
-    const head = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.45, 2.0, 8), mat);
-    head.rotation.x = Math.PI / 2;
-    head.position.set(0, 2.6, 0.7);
-    group.add(head);
-
-    // Glowing Officer Crest Crown
-    const crestMat = new THREE.MeshBasicMaterial({ color: 0xff1a1a });
-    const crest = new THREE.Mesh(new THREE.ConeGeometry(0.7, 1.2, 5), crestMat);
-    crest.rotation.x = Math.PI / 2.3;
-    crest.position.set(0, 2.9, -0.3);
-    group.add(crest);
-
-    // 4 Dorsal Exhaust Spikes
-    for (let p = 0; p < 4; p++) {
-      const pipe = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.04, 1.1, 6), mat);
-      pipe.position.set((p % 2 === 0 ? -0.35 : 0.35), 2.1 + (p > 1 ? 0.4 : 0), -0.4 - (p > 1 ? 0.2 : 0));
-      pipe.rotation.x = -Math.PI / 4;
-      group.add(pipe);
-    }
-
-    group.position.set(playerPos.x + offsetX, 0, playerPos.z - 30);
-    this.scene.add(group);
-
-    this.aliens.push({
-      mesh: group,
-      type: 'officer',
-      officerTitle: title,
-      isOfficer: true,
-      hp: 350,
-      maxHp: 350,
-      speed: 13.5,
-      damage: 38,
-      radius: 1.6,
-      isAirborne: false,
-      airborneVelY: 0,
-      airborneVelHoriz: new THREE.Vector3()
-    });
-  }
-
-  spawnCrusher(playerPos) {
-    const group = new THREE.Group();
-    // Massive Quadruped Battering Ram Body
-    const body = new THREE.Mesh(new THREE.BoxGeometry(2.5, 2.2, 4.0), this.crusherMat);
-    body.position.y = 2.0;
-    group.add(body);
-
-    // Bulletproof Massive Armored Head Crest
-    const crest = new THREE.Mesh(new THREE.ConeGeometry(2.2, 3.5, 6), this.crusherMat);
-    crest.rotation.x = Math.PI / 2.3;
-    crest.position.set(0, 2.8, 2.5);
-    group.add(crest);
-
-    group.position.set(playerPos.x, 0, playerPos.z - 35);
-    this.scene.add(group);
-
-    this.aliens.push({
-      mesh: group,
-      type: 'crusher',
-      hp: 750,
-      maxHp: 750,
-      speed: 16,
-      damage: 60,
-      radius: 2.8,
-      isCharging: false,
-      chargeTimer: 3.0
-    });
-  }
-
-  spawnPraetorian(playerPos, offsetX = 0) {
-    const group = new THREE.Group();
-    // 4-meter tall Royal Guard
-    const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.5, 2.8, 8), this.praetorianMat);
-    torso.position.y = 2.4;
-    group.add(torso);
-
-    const head = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.5, 2.2, 8), this.praetorianMat);
-    head.rotation.x = Math.PI / 2;
-    head.position.set(0, 3.8, 0.6);
-    group.add(head);
-
-    // Crown crest
-    const crown = new THREE.Mesh(new THREE.ConeGeometry(1.2, 1.8, 5), this.praetorianMat);
-    crown.rotation.x = Math.PI / 2.5;
-    crown.position.set(0, 4.2, -0.4);
-    group.add(crown);
-
-    group.position.set(playerPos.x + offsetX, 0, playerPos.z - 28);
-    this.scene.add(group);
-
-    this.aliens.push({
-      mesh: group,
-      type: 'praetorian',
-      hp: 480,
-      maxHp: 480,
-      speed: 13,
-      damage: 40,
-      radius: 1.8,
-      spitCooldown: 2.0
-    });
-  }
-
-  /* Chantier 4 (v45): Armored Winged Royal Facehugger Gliding Ambush (Alien 3 / Isolation Lore) */
   spawnRoyalFacehugger(spawnPos, targetPlayer = null) {
     const mesh = this.createAlienMesh(false, false, false, false, false, false, false, false, false, true);
     mesh.position.copy(spawnPos);
@@ -1074,13 +2076,14 @@ export class XenomorphHorde {
     });
   }
 
+
   struggleRoyalFacehugger(player) {
     for (let i = this.royalFacehuggers.length - 1; i >= 0; i--) {
       const rf = this.royalFacehuggers[i];
-      if (rf.isLatched) {
+      if (rf.isLatched && rf.latchedTo === player) {
         rf.struggleCount++;
-        if (window.gameInstance && window.gameInstance.ui) {
-          window.gameInstance.ui.showAnnouncement(`⚠️ LUTTE CONTRE LE PARASITE ROYAL : [ESPACE] (${rf.struggleCount}/${rf.struggleMax}) !`);
+        if (globalThis.gameInstance && globalThis.gameInstance.ui) {
+          globalThis.gameInstance.ui.showAnnouncement(`⚠️ LUTTE CONTRE LE PARASITE ROYAL : [ESPACE] (${rf.struggleCount}/${rf.struggleMax}) !`);
         }
         if (this.audioEngine && this.audioEngine.playGauntletGrapple) {
           this.audioEngine.playGauntletGrapple();
@@ -1091,17 +2094,15 @@ export class XenomorphHorde {
             this.goreEngine.spawnDismemberment(rf.mesh.position, 'heavy');
           }
           this.spawnAcidPool(player.position);
-          this.scene.remove(rf.mesh);
-          this.royalFacehuggers.splice(i, 1);
-          player.isRoyalFacehuggerLatched = false;
+          this.defeatAlien(rf, { cause: 'parasite-struggle', scoreValue: 350,
+            killerFaction: this.battleSimulation?.config.playerFaction ?? 'player_clan' });
 
           if (this.audioEngine && this.audioEngine.playHeavySlamImpact) {
             this.audioEngine.playHeavySlamImpact();
           }
-          if (window.gameInstance) {
-            window.gameInstance.score += 350;
-            if (window.gameInstance.ui) {
-              window.gameInstance.ui.showAnnouncement('⚔️ PARASITE ROYAL ARRACHÉ DU BIO-MASQUE ET BROYÉ (+350 PTS) !');
+          if (globalThis.gameInstance) {
+            if (globalThis.gameInstance.ui) {
+              globalThis.gameInstance.ui.showAnnouncement('⚔️ PARASITE ROYAL ARRACHÉ DU BIO-MASQUE ET BROYÉ (+350 PTS) !');
             }
           }
           return true;
@@ -1112,109 +2113,87 @@ export class XenomorphHorde {
     return false;
   }
 
-  spawnGridAlien(playerPos) {
+
+  launchSpitterMortar(originPos, targetPos, player) {
     const group = new THREE.Group();
-    const xenoMat = new THREE.MeshStandardMaterial({ color: 0x0a0e14, roughness: 0.25, metalness: 0.85 });
-    const gridScarMat = new THREE.MeshBasicMaterial({ color: 0x39ff14 }); // Glowing neon acid burn scars
+    const spawnPos = originPos.clone().add(new THREE.Vector3(0, 1.8, 0));
+    group.position.copy(spawnPos);
 
-    // Head dome
-    const head = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.38, 1.8, 8), xenoMat);
-    head.rotation.x = Math.PI / 2;
-    head.position.set(0, 2.2, 0.5);
-    group.add(head);
+    // Glowing acidic mortar payload
+    const outerGeo = new THREE.SphereGeometry(0.38, 10, 10);
+    const outerMat = new THREE.MeshBasicMaterial({ color: 0x39ff14, transparent: true, opacity: 0.85 });
+    const outerSphere = new THREE.Mesh(outerGeo, outerMat);
+    group.add(outerSphere);
 
-    // Grid lattice scars on the head (Celtic Predator Netgun scars - AVP 2004)
-    for (let g = 0; g < 7; g++) {
-      const ring = new THREE.Mesh(new THREE.TorusGeometry(0.32, 0.02, 4, 16), gridScarMat);
-      ring.position.set(0, 2.2, 0.1 + g * 0.2);
-      group.add(ring);
+    const innerGeo = new THREE.SphereGeometry(0.2, 8, 8);
+    const innerMat = new THREE.MeshBasicMaterial({ color: 0xccff00 });
+    const innerSphere = new THREE.Mesh(innerGeo, innerMat);
+    group.add(innerSphere);
+
+    // Trailing satellite acid droplets
+    for (let d = 0; d < 4; d++) {
+      const drop = new THREE.Mesh(new THREE.SphereGeometry(0.08, 6, 6), outerMat);
+      drop.position.set((Math.random() - 0.5) * 0.35, -0.2 - d * 0.12, (Math.random() - 0.5) * 0.35);
+      group.add(drop);
     }
-    // Longitudinal scar lines
-    for (let l = 0; l < 4; l++) {
-      const line = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.02, 1.4), gridScarMat);
-      const angle = (l / 4) * Math.PI * 2;
-      line.position.set(Math.cos(angle) * 0.3, 2.2 + Math.sin(angle) * 0.3, 0.7);
-      group.add(line);
-    }
-
-    // Torso
-    const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.35, 1.8, 8), xenoMat);
-    torso.position.y = 1.3;
-    group.add(torso);
-
-    group.position.set(playerPos.x + 12, 0, playerPos.z - 30);
     this.scene.add(group);
 
-    this.aliens.push({
+    // Telegraph hazard indicator on ground at target zone
+    const target = targetPos.clone().add(new THREE.Vector3((Math.random() - 0.5) * 2.2, 0.04, (Math.random() - 0.5) * 2.2));
+    target.y = 0.04;
+    const ringGeo = new THREE.RingGeometry(0.8, 2.4, 24);
+    ringGeo.rotateX(-Math.PI / 2);
+    const ringMat = new THREE.MeshBasicMaterial({ color: 0xff2200, transparent: true, opacity: 0.55, side: THREE.DoubleSide });
+    const indicatorMesh = new THREE.Mesh(ringGeo, ringMat);
+    indicatorMesh.position.copy(target);
+    this.scene.add(indicatorMesh);
+
+    // Ballistic trajectory: t = 1.8s
+    const t = 1.8;
+    const gravity = 22.0;
+    const dx = target.x - spawnPos.x;
+    const dz = target.z - spawnPos.z;
+    const vx = dx / t;
+    const vz = dz / t;
+    const vy = (target.y - spawnPos.y + 0.5 * gravity * t * t) / t;
+    const vel = new THREE.Vector3(vx, vy, vz);
+
+    if (this.audioEngine) {
+      if (this.audioEngine.playSpitterAcidMortarWhistle) {
+        this.audioEngine.playSpitterAcidMortarWhistle();
+      } else if (this.audioEngine.playSpitterAcidMortar) {
+        this.audioEngine.playSpitterAcidMortar();
+      }
+    }
+
+    this.spitterMortars.push({
       mesh: group,
-      type: 'grid_alien',
-      hp: 420,
-      maxHp: 420,
-      speed: 15,
-      damage: 45,
-      radius: 1.6,
-      isNetgunImmune: true,
-      spurtCooldown: 0
+      indicatorMesh: indicatorMesh,
+      vel: vel,
+      gravity: gravity,
+      life: 4.0,
+      targetPos: target,
+      playerRef: player
     });
   }
 
-  spawnOvimorphEggs(playerPos, count = 5) {
-    for (let i = 0; i < count; i++) {
-      const angle = (i / count) * Math.PI * 2 + Math.random() * 0.5;
-      const radius = 15 + Math.random() * 18;
-      const x = playerPos.x + Math.cos(angle) * radius;
-      const z = playerPos.z + Math.sin(angle) * radius;
 
-      const eggGroup = new THREE.Group();
-      eggGroup.position.set(x, 0, z);
-
-      // Leathery veined egg sac base
-      const baseMat = new THREE.MeshStandardMaterial({
-        color: 0x332a1e,
-        roughness: 0.85,
-        metalness: 0.15
-      });
-      const base = new THREE.Mesh(new THREE.SphereGeometry(0.85, 12, 12), baseMat);
-      base.scale.set(0.95, 1.35, 0.95);
-      base.position.y = 1.0;
-      eggGroup.add(base);
-
-      // Inner pulsating bioluminescent yolk core (Alien 1979 Kane's scan)
-      const yolkMat = new THREE.MeshBasicMaterial({
-        color: 0x84cc16,
-        transparent: true,
-        opacity: 0.85
-      });
-      const yolkCore = new THREE.Mesh(new THREE.SphereGeometry(0.42, 8, 8), yolkMat);
-      yolkCore.position.y = 1.25;
-      eggGroup.add(yolkCore);
-
-      const petals = [];
-      const lipMat = new THREE.MeshStandardMaterial({ color: 0x5b232c, roughness: 0.45 });
-      for (let p = 0; p < 4; p++) {
-        const petal = new THREE.Mesh(new THREE.ConeGeometry(0.32, 0.75, 6), lipMat);
-        const petalAngle = (p / 4) * Math.PI * 2;
-        petal.position.set(Math.cos(petalAngle) * 0.38, 1.95, Math.sin(petalAngle) * 0.38);
-        petal.rotation.z = Math.cos(petalAngle) * 0.22;
-        petal.rotation.x = Math.sin(petalAngle) * 0.22;
-        eggGroup.add(petal);
-        petals.push(petal);
+  triggerFearPulse(origin, radius = 14.0, duration = 3.5) {
+    if (!this.aliens) return;
+    this.aliens.forEach(a => {
+      if (!a || a.hp <= 0 || !a.mesh || a.isOfficer || a.isGestatingMatriarch || a.isRaven || a.isAncientPredalien || a.isRogueKing) return;
+      const dist = a.mesh.position.distanceTo(origin);
+      if (dist <= radius) {
+        a.isFeared = true;
+        a.fearTimer = duration;
+        a.fearDir = a.mesh.position.clone().sub(origin).normalize();
+        a.fearDir.y = 0;
       }
-
-      this.scene.add(eggGroup);
-      this.eggs.push({
-        mesh: eggGroup,
-        baseMesh: base,
-        yolkMesh: yolkCore,
-        petals,
-        phase: Math.random() * Math.PI * 2,
-        isOpen: false,
-        hatched: false
-      });
-    }
+    });
   }
 
-  createAlienMesh(isFacehugger, isBoiler = false, isNeomorph = false, isPraetomorph = false, isRedSwarm = false, isSpitter = false, isRunner = false, isCryoXeno = false, isCyberXeno = false, isRoyalFacehugger = false) {
+
+  createLegacyAlienMesh(isFacehugger, isBoiler = false, isNeomorph = false, isPraetomorph = false, isRedSwarm = false, isSpitter = false, isRunner = false, isCryoXeno = false, isCyberXeno = false, isRoyalFacehugger = false) {
     const group = new THREE.Group();
 
     if (isRoyalFacehugger) {
@@ -1439,1535 +2418,107 @@ export class XenomorphHorde {
     return group;
   }
 
-  createChestbursterMesh() {
-    const group = new THREE.Group();
-    const mat = new THREE.MeshStandardMaterial({ color: 0xd4a373, roughness: 0.4, metalness: 0.1 });
 
-    const body = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.05, 1.0, 6), mat);
-    body.rotation.x = Math.PI / 2;
-    body.position.y = 0.25;
-    group.add(body);
-
-    const head = new THREE.Mesh(new THREE.SphereGeometry(0.18, 8, 8), mat);
-    head.position.set(0, 0.25, 0.55);
-    group.add(head);
-
-    return group;
+  spawnBattleUnit(unit, group) {
+    const existing = this.aliens.find(actor => actor.battleUnitId === unit.id);
+    if (existing) return existing;
+    const type = unit.actorType === 'xenomorph' ? 'warrior' : unit.actorType;
+    const allowed = new Set(['warrior','runner','spitter','boiler','neomorph','praetomorph','red_warrior','facehugger','officer','crusher','praetorian','grid_alien','cyber_xeno','cryo_xeno','carrier','ravager']);
+    if(EXTINCTION_CASTE_PROFILES[type] &&
+      !validExtinctionCasteUnit(unit,this.battleSimulation?.config?.id))
+      throw new RangeError('Extinction caste requires source-profile and LV-742 scenario');
+    if (!allowed.has(type)) throw new RangeError(`Unsupported detailed xenomorph profile: ${type}`);
+    const sourceVisual = sourceUnitVisualKind(unit);
+    const modelKind = sourceVisual === 'drone' ? 'drone' : type;
+    // A source-role visual is not a new strategic caste. In particular, saved
+    // GRP-58/59 Drone IDs still retain actorType "warrior" in BattleSimulation.
+    const model = sourceVisual === 'drone' || ['officer','crusher','praetorian','grid_alien','carrier','ravager'].includes(type)
+      ? createCreatureModel(modelKind, this.sharedResources)
+      : this.createAlienMesh(type === 'facehugger', type === 'boiler', type === 'neomorph', type === 'praetomorph', type === 'red_warrior', type === 'spitter', type === 'runner', type === 'cryo_xeno', type === 'cyber_xeno');
+    // A separate visual pivot lets this one actor fall without rotating its
+    // navigation/collision root or any other cached creature instance.
+    const mesh = type === 'ravager' ? new THREE.Group() : model;
+    if (mesh !== model) { mesh.name = 'ravager-collision-root'; mesh.userData = { ...model.userData }; mesh.add(model); }
+    const actor = { mesh, type: modelKind, sourceVisualKind: sourceVisual, visualFidelity1to1Verified: false,
+      ...(type === 'ravager' ? { ravagerVisual: model, _ravagerSyncedHp: unit.hp } : {}),
+      pressureId: this.spawnSequence++,
+      speed: type === 'runner' ? 16 : type === 'ravager' ? 9 :
+        type === 'carrier' ? 7.5 : sourceVisual === 'drone' ? 11.5 : 10,
+      damage: type === 'ravager' ? 52 : type === 'carrier' ? 12 : unit.officer ? 38 : 25,
+      radius: type === 'facehugger' ? .6 : type === 'ravager' ? 1.7 :
+        type === 'carrier' ? 1.6 : 1.1,
+      isLatched: false, isWallStalker: false,
+      extinctionCasteSource: EXTINCTION_CASTE_PROFILES[type]?.origin ?? null,
+      leapCooldown: 3, spitCooldown: 3.5, frostBreathCooldown: 4, cyberDartCooldown: 4, isLeaping: false, leapVelY: 0,
+      isAirborne: false, airborneVelY: 0, airborneVelHoriz: new THREE.Vector3() };
+    this.aliens.push(applyBattleUnit(this, actor, unit, group));
+    this.syncBattleRavager(actor);
+    return actor;
   }
 
-  checkMeleeHits(attack) {
-    const hits = [];
+  despawnBattleUnit(unitOrId) { return despawnBattleActor(this, this.aliens, unitOrId); }
 
-    for (let i = this.aliens.length - 1; i >= 0; i--) {
-      const a = this.aliens[i];
-      const dist = a.mesh.position.distanceTo(attack.origin);
 
-      if (dist <= attack.radius + (a.radius || 1.0)) {
-        // Chantier 7 (v43): Liquid Nitrogen Frozen 3x Critical Shatter
-        let damageDealt = (a.isTargetPainted || a.isTraxTagged) ? attack.damage * 1.25 : attack.damage;
-        if (a.isFrozen) {
-          damageDealt *= 3.0; // 3x shattering critical damage!
-          if (this.particles && this.particles.emitSparks) {
-            this.particles.emitSparks(a.mesh.position, 25);
-          }
-        }
-
-        // Crusher Titan Frontal Crest Ricochet & Heavy Armor (Aliens: Colonial Marines)
-        if (a.type === 'crusher' && attack.origin) {
-          const forward = new THREE.Vector3(Math.sin(a.mesh.rotation.y), 0, Math.cos(a.mesh.rotation.y));
-          const toAttack = attack.origin.clone().sub(a.mesh.position).setY(0).normalize();
-          const dot = forward.dot(toAttack);
-          if (dot > 0.25) {
-            // Massive cranial plate ricochet!
-            damageDealt *= 0.20;
-            if (this.audioEngine && this.audioEngine.playCrusherArmorRicochet) {
-              this.audioEngine.playCrusherArmorRicochet();
-            }
-            if (this.particles && this.particles.emitSparks) {
-              this.particles.emitSparks(a.mesh.position, 22);
-            }
-          }
-        }
-
-        // Chantier 5 (v43): Praetorian Royal Shield Phalanx Frontal Deflection
-        if (a.type === 'praetorian' && a.isPhalanxGuarding && attack.origin) {
-          const forward = new THREE.Vector3(Math.sin(a.mesh.rotation.y), 0, Math.cos(a.mesh.rotation.y));
-          const toAttack = attack.origin.clone().sub(a.mesh.position).setY(0).normalize();
-          const dot = forward.dot(toAttack);
-          if (dot > 0.3) {
-            // Hit directly on armored cranial crest: 85% deflection!
-            damageDealt *= 0.15;
-            if (this.particles && this.particles.emitSparks) {
-              this.particles.emitSparks(a.mesh.position, 18);
-            }
-          }
-        }
-
-        // Chantier 1 (v44): Marvel Alpha Epsilon Apex Ballistic Armor (-50% damage from light attacks)
-        if (a.isBallisticArmored && attack.type !== 'heavy' && attack.type !== 'plasma' && attack.type !== 'spine_rip') {
-          damageDealt *= 0.5;
-          if (this.particles && this.particles.emitSparks) {
-            this.particles.emitSparks(a.mesh.position, 12);
-          }
-        }
-        // Chantier 4 (v44): Steel Team Cybernetic Plating (-35% projectile damage)
-        if (a.hasCyberPlating && attack.type !== 'heavy' && attack.type !== 'plasma') {
-          damageDealt *= 0.65;
-        }
-
-        a.hp -= damageDealt;
-        const killed = a.hp <= 0;
-
-        // Marvel Alpha Stun Threshold for Legendary Spine Rip Execution
-        if (a.isMarvelAlpha && a.hp <= a.maxHp * 0.20 && !a.isStunned) {
-          a.isStunned = true;
-          a.stunTimer = 8.0;
-        }
-
-        // Reactive Acid Splashback Physics (slashing xenos sprays pressurized molecular acid back at attacker)
-        if (attack.origin) {
-          this.spawnAcidSplash(a.mesh.position, attack.origin);
-        }
-
-        // Grid Alien's grid-lattice scars squirt pressurized acid pools when struck!
-        if (a.type === 'grid_alien') {
-          this.spawnAcidPool(a.mesh.position);
-        }
-
-        // Dynasty Warriors Musou Launcher & Knockback Physics
-        if (!killed && attack.origin) {
-          const knockDir = a.mesh.position.clone().sub(attack.origin).setY(0).normalize();
-          if (knockDir.lengthSq() < 0.001) knockDir.set(0, 0, 1);
-
-          if (attack.isLauncher) {
-            a.isAirborne = true;
-            a.airborneVelY = attack.launchVelY || 18.0;
-            a.airborneVelHoriz = knockDir.clone().multiplyScalar(Math.min(attack.knockback || 6.0, 12.0));
-          } else if (attack.knockback) {
-            a.mesh.position.addScaledVector(knockDir, attack.knockback);
-          }
-        }
-
-        hits.push({
-          pos: a.mesh.position.clone(),
-          damage: attack.damage,
-          killed: killed,
-          isOfficer: a.isOfficer || false,
-          officerTitle: a.officerTitle || null,
-          noHonor: !!a.isFleeing // striking a fleeing animal brings no honour
-        });
-
-        if (killed) {
-          if (a.isFauna) {
-            this.scene.remove(a.mesh);
-            this.aliens.splice(i, 1);
-            this.deadCount++;
-          } else if (a.type === 'boiler') {
-            this.detonateBoiler(a, attack.origin);
-          } else {
-            if (this.goreEngine) {
-              this.goreEngine.spawnDismemberment(a.mesh.position, attack.type || 'wristblades');
-            }
-
-            if (Math.random() < 0.15 && a.type !== 'crusher' && !a.isOfficer) {
-              this.spawnChestburster(a.mesh.position);
-            }
-
-            this.spawnAcidPool(a.mesh.position);
-            // Spawn 1-2 Zero-G Floating Acid Globules (Alien: Romulus 2024 Lore)
-            const globCount = Math.floor(1 + Math.random() * 2);
-            for (let g = 0; g < globCount; g++) {
-              this.spawnZeroGAcidGlobule(a.mesh.position);
-            }
-            this.scene.remove(a.mesh);
-            this.aliens.splice(i, 1);
-            this.deadCount++;
-          }
-        }
-      }
-    }
-
-    for (let i = this.eggs.length - 1; i >= 0; i--) {
-      const egg = this.eggs[i];
-      if (egg.mesh.position.distanceTo(attack.origin) <= attack.radius + 1.0) {
-        this.spawnAcidPool(egg.mesh.position);
-        this.scene.remove(egg.mesh);
-        this.eggs.splice(i, 1);
-        hits.push({
-          pos: egg.mesh.position.clone(),
-          damage: attack.damage,
-          killed: true
-        });
-      }
-    }
-
-    // Chantier 2 (v44): Micro-Xenomorph Swarm Dispersal / Incineration
-    for (let s = this.microSwarms.length - 1; s >= 0; s--) {
-      const swarm = this.microSwarms[s];
-      if (swarm.isDead) continue;
-      if (swarm.group.position.distanceTo(attack.origin) <= attack.radius + 3.2) {
-        swarm.hp -= attack.damage;
-        if (this.particles && this.particles.emitSparks) {
-          this.particles.emitSparks(swarm.group.position, 14);
-        }
-        if (swarm.hp <= 0) {
-          swarm.isDead = true;
-          this.scene.remove(swarm.group);
-          this.microSwarms.splice(s, 1);
-          hits.push({
-            pos: swarm.group.position.clone(),
-            damage: attack.damage,
-            killed: true,
-            isOfficer: false
-          });
-        }
-      }
-    }
-
-    // Chantier 2 & Sofia QA (v53.0): Flying Xenomorph Manta & Harpy Melee Interception
-    if (this.mantaSwarmers) {
-      for (let m = this.mantaSwarmers.length - 1; m >= 0; m--) {
-        const manta = this.mantaSwarmers[m];
-        if (manta && manta.mesh && manta.mesh.position.distanceTo(attack.origin) <= attack.radius + 2.5) {
-          manta.hp -= attack.damage;
-          hits.push({
-            pos: manta.mesh.position.clone(),
-            damage: attack.damage,
-            killed: manta.hp <= 0,
-            isFlying: true
-          });
-          if (this.particles && this.particles.emitSparks) {
-            this.particles.emitSparks(manta.mesh.position, 14);
-          }
-          if (manta.hp <= 0) {
-            if (this.goreEngine) this.goreEngine.spawnDismemberment(manta.mesh.position, attack.type || 'heavy');
-            this.spawnAcidPool(manta.mesh.position);
-            this.scene.remove(manta.mesh);
-            this.mantaSwarmers.splice(m, 1);
-            this.deadCount++;
-          }
-        }
-      }
-    }
-
-    return hits;
+  getActiveCombatants() {
+    const actors = [...this.aliens, ...this.chestbursters, ...this.mantaSwarmers, ...this.microSwarms, ...this.royalFacehuggers];
+    for (const actor of actors) { actor.mesh ??= actor.group; actor.combatManager ??= this; }
+    return actors;
   }
 
-  spawnAcidSplash(originPos, targetPos) {
-    const splashDir = targetPos.clone().sub(originPos).normalize();
-    // Add realistic arc and spread
-    for (let s = 0; s < 3; s++) {
-      const spread = splashDir.clone().add(new THREE.Vector3(
-        (Math.random() - 0.5) * 0.4,
-        0.3 + Math.random() * 0.3,
-        (Math.random() - 0.5) * 0.4
-      )).normalize();
-
-      const dropGeo = new THREE.SphereGeometry(0.12, 6, 6);
-      const dropMesh = new THREE.Mesh(dropGeo, this.acidSplashMat);
-      dropMesh.position.copy(originPos).add(new THREE.Vector3(0, 1.2, 0));
-      this.scene.add(dropMesh);
-
-      this.acidSplashes.push({
-        mesh: dropMesh,
-        vel: spread.multiplyScalar(16 + Math.random() * 6),
-        gravity: -28,
-        life: 0.9,
-        damage: 18
-      });
-    }
-  }
-
-  spawnChestburster(pos) {
-    const mesh = this.createChestbursterMesh();
-    mesh.position.copy(pos);
-    this.scene.add(mesh);
-    this.chestbursters.push({
-      mesh,
-      hp: 30,
-      speed: 18,
-      damage: 12
-    });
-    this.audioEngine.playXenoHiss();
-  }
-
-  spawnAcidPool(pos) {
-    const geo = new THREE.CylinderGeometry(1.8, 1.8, 0.05, 12);
-    const mat = new THREE.MeshBasicMaterial({ color: 0x39ff14, transparent: true, opacity: 0.7 });
-    const pool = new THREE.Mesh(geo, mat);
-    pool.position.set(pos.x, 0.02, pos.z);
-    this.scene.add(pool);
-
-    this.acidPools.push({ mesh: pool, life: 10 });
-  }
-
-  spawnZeroGAcidGlobule(pos) {
-    const group = new THREE.Group();
-    const radius = 0.22 + Math.random() * 0.18;
-    const sphere = new THREE.Mesh(new THREE.SphereGeometry(radius, 12, 12), this.zeroGAcidMat);
-    group.add(sphere);
-
-    const core = new THREE.Mesh(new THREE.SphereGeometry(radius * 0.45, 8, 8), this.zeroGAcidCoreMat);
-    group.add(core);
-
-    const spawnY = Math.max(0.8, Math.min(3.2, (pos.y || 0) + 1.2 + (Math.random() - 0.5) * 1.0));
-    group.position.set(
-      pos.x + (Math.random() - 0.5) * 1.5,
-      spawnY,
-      pos.z + (Math.random() - 0.5) * 1.5
-    );
-
-    this.scene.add(group);
-    this.zeroGAcidGlobules.push({
-      mesh: group,
-      baseY: group.position.y,
-      floatTime: Math.random() * Math.PI * 2,
-      driftVel: new THREE.Vector3((Math.random() - 0.5) * 1.2, (Math.random() - 0.5) * 0.3, (Math.random() - 0.5) * 1.2),
-      life: 14.0,
-      radius: radius
-    });
-  }
-
-  /* Chantier 10: Xenomorph Spitter & Acid Mortar Battery (Aliens: Colonial Marines / Fireteam Elite Lore) */
-  launchSpitterMortar(originPos, targetPos, player) {
-    const group = new THREE.Group();
-    const spawnPos = originPos.clone().add(new THREE.Vector3(0, 1.8, 0));
-    group.position.copy(spawnPos);
-
-    // Glowing acidic mortar payload
-    const outerGeo = new THREE.SphereGeometry(0.38, 10, 10);
-    const outerMat = new THREE.MeshBasicMaterial({ color: 0x39ff14, transparent: true, opacity: 0.85 });
-    const outerSphere = new THREE.Mesh(outerGeo, outerMat);
-    group.add(outerSphere);
-
-    const innerGeo = new THREE.SphereGeometry(0.2, 8, 8);
-    const innerMat = new THREE.MeshBasicMaterial({ color: 0xccff00 });
-    const innerSphere = new THREE.Mesh(innerGeo, innerMat);
-    group.add(innerSphere);
-
-    // Trailing satellite acid droplets
-    for (let d = 0; d < 4; d++) {
-      const drop = new THREE.Mesh(new THREE.SphereGeometry(0.08, 6, 6), outerMat);
-      drop.position.set((Math.random() - 0.5) * 0.35, -0.2 - d * 0.12, (Math.random() - 0.5) * 0.35);
-      group.add(drop);
-    }
-    this.scene.add(group);
-
-    // Telegraph hazard indicator on ground at target zone
-    const target = targetPos.clone().add(new THREE.Vector3((Math.random() - 0.5) * 2.2, 0.04, (Math.random() - 0.5) * 2.2));
-    target.y = 0.04;
-    const ringGeo = new THREE.RingGeometry(0.8, 2.4, 24);
-    ringGeo.rotateX(-Math.PI / 2);
-    const ringMat = new THREE.MeshBasicMaterial({ color: 0xff2200, transparent: true, opacity: 0.55, side: THREE.DoubleSide });
-    const indicatorMesh = new THREE.Mesh(ringGeo, ringMat);
-    indicatorMesh.position.copy(target);
-    this.scene.add(indicatorMesh);
-
-    // Ballistic trajectory: t = 1.8s
-    const t = 1.8;
-    const gravity = 22.0;
-    const dx = target.x - spawnPos.x;
-    const dz = target.z - spawnPos.z;
-    const vx = dx / t;
-    const vz = dz / t;
-    const vy = (target.y - spawnPos.y + 0.5 * gravity * t * t) / t;
-    const vel = new THREE.Vector3(vx, vy, vz);
-
-    if (this.audioEngine) {
-      if (this.audioEngine.playSpitterAcidMortarWhistle) {
-        this.audioEngine.playSpitterAcidMortarWhistle();
-      } else if (this.audioEngine.playSpitterAcidMortar) {
-        this.audioEngine.playSpitterAcidMortar();
+  _updateExtraActors(delta, livingPlayers, supportTargets = []) {
+    for (const actor of [...this.mantaSwarmers, ...this.microSwarms, ...this.royalFacehuggers]) {
+      actor.mesh ??= actor.group; actor.combatManager = this;
+      if (actor.hp <= 0) { this.defeatAlien(actor); continue; }
+      // A latched parasite owns its existing victim. Its deadline must advance
+      // even when no new target is available or the victim changes faction.
+      if (this.royalFacehuggers.includes(actor) && actor.isLatched) {
+        actor.latchTimer = Math.max(0, (actor.latchTimer ?? 5) - delta);
+        if (actor.latchedTo) actor.latchedTo.royalFacehuggerHoldTimer = actor.latchTimer;
+        if (actor.latchTimer <= 0 || !(actor.latchedTo?.hp > 0)) this.defeatAlien(actor, { cause: 'released-parasite', objectiveCredit: false });
+        continue;
       }
-    }
-
-    this.spitterMortars.push({
-      mesh: group,
-      indicatorMesh: indicatorMesh,
-      vel: vel,
-      gravity: gravity,
-      life: 4.0,
-      targetPos: target,
-      playerRef: player
-    });
-  }
-
-  update(delta, player) {
-    // Remove aliens killed by anything other than a melee hit (traps, bleed, allies, EMP...).
-    for (let i = this.aliens.length - 1; i >= 0; i--) {
-      const dead = this.aliens[i];
-      if (dead && dead.hp <= 0) {
-        if (dead.mesh) this.scene.remove(dead.mesh);
-        this.aliens.splice(i, 1);
-        this.deadCount++;
-      }
-    }
-
-    // 1. Ovimorph Egg proximity & Breathing Animation (Alien 1979 / Romulus 2024 Canon)
-    this.eggs.forEach(egg => {
-      // Eerie organic breathing pulsation
-      if (!egg.hatched && egg.baseMesh) {
-        const breathe = 1.0 + Math.sin(Date.now() * 0.0035 + egg.phase) * 0.06;
-        egg.baseMesh.scale.set(0.95 * breathe, 1.35 / breathe, 0.95 * breathe);
-        if (egg.yolkMesh) {
-          egg.yolkMesh.material.opacity = 0.6 + Math.sin(Date.now() * 0.005 + egg.phase) * 0.35;
-        }
-      }
-
-      if (!egg.hatched && egg.mesh.position.distanceTo(player.position) < 8.0) {
-        if (!egg.isOpen) {
-          egg.isOpen = true;
-          // Splay the 4 leathery petals open
-          egg.petals.forEach(p => {
-            p.rotation.x *= 3.2;
-            p.rotation.z *= 3.2;
-          });
-
-          if (this.audioEngine) {
-            if (this.audioEngine.playFacehuggerEggHatchChirp) {
-              this.audioEngine.playFacehuggerEggHatchChirp();
-            } else if (this.audioEngine.playEggPetalPeel) {
-              this.audioEngine.playEggPetalPeel();
-            } else {
-              this.audioEngine.playXenoHiss();
+      const target = this._pursuitTarget(actor, livingPlayers, supportTargets);
+      if (!target) { moveBattleOrder(this, actor, delta, actor.speed ?? 10); continue; }
+      const position = actor.mesh.position, direction = target.position.clone().sub(position), distance = direction.length();
+      if (this.mantaSwarmers.includes(actor)) {
+        actor.type ??= actor.isPraetorianHarpy ? 'praetorian_harpy' : 'manta_swarmer';
+        actor.diveCooldown = Math.max(0, actor.diveCooldown - delta);
+        actor.flutterPhase = (actor.flutterPhase ?? 0) + delta * 9;
+        if (actor.divePhase === 'diving') {
+          const descent = actor.diveTarget.clone().sub(position), gap = descent.length(), step = actor.diveSpeed * delta;
+          position.addScaledVector(descent.normalize(), Math.min(step, gap));
+          if (gap <= step + .1) {
+            if (target.position.distanceTo(actor.diveTarget) <= 2) {
+              if (target.isSupport) target.takeDamage(actor.damage, actor);
+              else target.takeDamage(actor.damage, false, actor, { attackKind: 'dive', blockable: false, parryable: false });
             }
+            actor.divePhase = 'ascending'; actor.diveCooldown = 5;
           }
-
-          // Release organic spore gas haze
-          if (this.particles && this.particles.emitSparks) {
-            this.particles.emitSparks(egg.mesh.position, 14);
-          }
-
-          setTimeout(() => {
-            if (this.scene) {
-              const facehugger = this.createAlienMesh(true);
-              facehugger.position.copy(egg.mesh.position);
-              facehugger.position.y = 1.2;
-              this.scene.add(facehugger);
-
-              // Direction towards player for explosive spring leap
-              const jumpDir = player.position.clone().sub(egg.mesh.position);
-              jumpDir.y = 0;
-              jumpDir.normalize().multiplyScalar(15.0);
-
-              this.aliens.push({
-                mesh: facehugger,
-                type: 'facehugger',
-                hp: 45,
-                maxHp: 45,
-                speed: 18,
-                damage: 15,
-                radius: 0.6,
-                isLatched: false,
-                isAirborne: true,
-                airborneVelY: 13.0, // Springs upwards out of the egg!
-                airborneVelHoriz: jumpDir
-              });
-              egg.hatched = true;
-            }
-          }, 650);
+        } else if (actor.divePhase === 'ascending') { position.y = Math.min(actor.cruiseAltitude, position.y + 12 * delta); if (position.y >= actor.cruiseAltitude) actor.divePhase = 'cruising'; }
+        else {
+          position.y = actor.cruiseAltitude + Math.sin(actor.flutterPhase * .4) * .3;
+          if (distance < 30 && actor.diveCooldown <= 0 && this._requestAttack(actor, target, { windup: 1.2, duration: 1.2, recovery: 2.2 })) { actor.diveTarget.copy(target.position).add(new THREE.Vector3(0, .6, 0)); actor.divePhase = 'diving'; }
+          else if (distance > 12) position.addScaledVector(direction.setY(0).normalize(), (actor.speed ?? 12) * delta * .6);
         }
-      }
-    });
-
-    // 2. Chestbursters
-    for (let i = this.chestbursters.length - 1; i >= 0; i--) {
-      const cb = this.chestbursters[i];
-      const dir = player.position.clone().sub(cb.mesh.position);
-      dir.y = 0;
-      if (dir.length() > 1.0) {
-        dir.normalize();
-        cb.mesh.position.addScaledVector(dir, cb.speed * delta);
-        cb.mesh.rotation.y = Math.atan2(dir.x, dir.z);
+      } else if (this.royalFacehuggers.includes(actor)) {
+        actor.type ??= 'royal_facehugger';
+        if (distance > 1.2) position.addScaledVector(direction.normalize(), Math.min((actor.glideSpeed ?? 15) * delta, distance - 1.2));
+        else if (!target.isRoyalFacehuggerLatched && !(target.executionProtectionTimer > 0) && this._requestAttack(actor, target, { windup: 1.1, recovery: 2 })) {
+          actor.isLatched = true; actor.latchedTo = target; actor.latchTimer = 5;
+          target.isRoyalFacehuggerLatched = true; target.royalFacehuggerHoldTimer = 5;
+        }
       } else {
-        player.takeDamage(cb.damage * delta);
+        actor.type ??= 'micro_swarm';
+        actor.orbitAngle += (actor.orbitSpeed ?? 3.5) * delta;
+        if (distance > 3) position.addScaledVector(direction.normalize(), Math.min(9 * delta, distance - 3));
+        else if (this._requestAttack(actor, target, { windup: 1, recovery: 1.3 })) target.takeDamage(actor.damage, false, actor, { attackKind: 'swarm', blockable: false, parryable: false });
       }
+      this._showAttackCue(actor);
     }
-
-    // 2b. Chantier 4 (v45): Royal Gliding Facehuggers Physics & Mask Latching
-    for (let i = this.royalFacehuggers.length - 1; i >= 0; i--) {
-      const rf = this.royalFacehuggers[i];
-      rf.flutterPhase = (rf.flutterPhase || 0) + delta * 22.0;
-      rf.mesh.rotation.z = Math.sin(rf.flutterPhase) * 0.18;
-
-      if (rf.isGliding) {
-        const targetHead = player.position.clone().add(new THREE.Vector3(0, 1.8, 0));
-        const glideDir = targetHead.clone().sub(rf.mesh.position);
-        const distToPlayer = glideDir.length();
-
-        if (distToPlayer > 1.3) {
-          glideDir.normalize();
-          rf.mesh.position.addScaledVector(glideDir, rf.glideSpeed * delta);
-          rf.mesh.rotation.y = Math.atan2(glideDir.x, glideDir.z);
-          rf.mesh.rotation.x = -0.35;
-        } else {
-          // Latch onto player mask!
-          rf.isGliding = false;
-          rf.isLatched = true;
-          player.isRoyalFacehuggerLatched = true;
-          if (this.audioEngine && this.audioEngine.playRoyalFacehuggerShriek) {
-            this.audioEngine.playRoyalFacehuggerShriek();
-          }
-          if (window.gameInstance && window.gameInstance.ui) {
-            window.gameInstance.ui.showAnnouncement('⚠️ EMBUSCADE AÉRIENNE : PARASITE ROYAL AGGRIPÉ AU BIO-MASQUE ! MITRAILLEZ [ESPACE] (0/8) !');
-          }
-        }
-      } else if (rf.isLatched) {
-        rf.mesh.position.copy(player.position).add(new THREE.Vector3(0, 1.8, 0.35));
-        rf.mesh.rotation.y = player.rotationY || 0;
-        rf.latchTimer -= delta;
-
-        if (rf.latchTimer <= 0) {
-          player.takeDamage(150);
-          player.visorAcidBurn = 1.0;
-          this.scene.remove(rf.mesh);
-          this.royalFacehuggers.splice(i, 1);
-          player.isRoyalFacehuggerLatched = false;
-          if (window.gameInstance && window.gameInstance.ui) {
-            window.gameInstance.ui.showAnnouncement('☠️ PERFORATION CAUSTIQUE DU PARASITE ROYAL : DÉGÂTS CRITIQUES (-150 HP) !');
-          }
-        }
-      }
-    }
-
-    // 3. Acid pools
-    for (let i = this.acidPools.length - 1; i >= 0; i--) {
-      const pool = this.acidPools[i];
-      pool.life -= delta;
-      if (pool.mesh.position.distanceTo(player.position) < 1.8) {
-        player.takeDamage(15 * delta, true);
-      }
-      if (pool.life <= 0) {
-        this.scene.remove(pool.mesh);
-        this.acidPools.splice(i, 1);
-      }
-    }
-
-    // 3b. Reactive Acid Splashback Droplets Flying
-    for (let i = this.acidSplashes.length - 1; i >= 0; i--) {
-      const splash = this.acidSplashes[i];
-      splash.life -= delta;
-      splash.vel.y += splash.gravity * delta;
-      splash.mesh.position.addScaledVector(splash.vel, delta);
-
-      // Check collision with player
-      if (splash.mesh.position.distanceTo(player.position) < 1.6) {
-        player.takeDamage(splash.damage, true);
-        this.scene.remove(splash.mesh);
-        this.acidSplashes.splice(i, 1);
-        continue;
-      }
-
-      // Check floor collision or life expiry
-      if (splash.mesh.position.y <= 0.05 || splash.life <= 0) {
-        this.scene.remove(splash.mesh);
-        this.acidSplashes.splice(i, 1);
-      }
-    }
-
-    // 3c. Zero-G Floating Acid Globules (Alien: Romulus 2024 Lore)
-    for (let i = this.zeroGAcidGlobules.length - 1; i >= 0; i--) {
-      const glob = this.zeroGAcidGlobules[i];
-      glob.life -= delta;
-      glob.floatTime += delta * 2.2;
-      glob.mesh.position.y = glob.baseY + Math.sin(glob.floatTime) * 0.35;
-      glob.mesh.position.addScaledVector(glob.driftVel, delta);
-      if (glob.mesh.children[0]) {
-        glob.mesh.children[0].scale.setScalar(1.0 + Math.sin(glob.floatTime * 3) * 0.12);
-      }
-
-      const pDist = glob.mesh.position.distanceTo(player.position);
-      if (pDist <= 1.4) {
-        if (player.isBlocking) {
-          player.audioEngine.playShieldBlock();
-        } else {
-          player.takeDamage(24, true);
-          if (this.audioEngine && this.audioEngine.playAcidGlobuleHiss) {
-            this.audioEngine.playAcidGlobuleHiss();
-          }
-        }
-        this.scene.remove(glob.mesh);
-        this.zeroGAcidGlobules.splice(i, 1);
-        continue;
-      }
-
-      // Check collision with nearby aliens
-      for (let j = 0; j < this.aliens.length; j++) {
-        const al = this.aliens[j];
-        if (al.mesh.position.distanceTo(glob.mesh.position) < 1.3) {
-          al.hp -= 140; // Molecular acid dissolving xenomorph carapace
-          if (this.audioEngine && this.audioEngine.playAcidGlobuleHiss) {
-            this.audioEngine.playAcidGlobuleHiss();
-          }
-          this.scene.remove(glob.mesh);
-          this.zeroGAcidGlobules.splice(i, 1);
-          break;
-        }
-      }
-
-      if (glob.life <= 0) {
-        this.scene.remove(glob.mesh);
-        this.zeroGAcidGlobules.splice(i, 1);
-      }
-    }
-
-    // 3d. Spitter Parabolic Acid Mortar Batteries (Aliens: Colonial Marines Lore)
     for (let i = this.spitterMortars.length - 1; i >= 0; i--) {
-      const m = this.spitterMortars[i];
-      m.life -= delta;
-      m.vel.y -= m.gravity * delta;
-      m.mesh.position.addScaledVector(m.vel, delta);
-      m.mesh.rotation.x += 10 * delta;
-      m.mesh.rotation.y += 7 * delta;
-
-      // Pulse hazard indicator ring
-      if (m.indicatorMesh) {
-        const pulse = 1.0 + Math.sin(Date.now() * 0.015) * 0.18;
-        m.indicatorMesh.scale.set(pulse, pulse, 1);
-      }
-
-      // Detonation on impact
-      if (m.mesh.position.y <= 0.25 || m.life <= 0) {
-        if (this.audioEngine) {
-          if (this.audioEngine.playAcidBrandingSizzle) this.audioEngine.playAcidBrandingSizzle();
-          else if (this.audioEngine.playAcidBurn) this.audioEngine.playAcidBurn();
-          if (this.audioEngine.playXenoHiss) this.audioEngine.playXenoHiss();
-        }
-        // Explosive acid spray
-        this.spawnAcidSplash(m.mesh.position, m.mesh.position.clone().add(new THREE.Vector3(0, 3, 0)));
-
-        // Large 5.5m Corrodent Acid Pool
-        this.spawnAcidPool(m.mesh.position);
-        this.spawnAcidPool(m.mesh.position.clone().add(new THREE.Vector3(1.4, 0, 0)));
-        this.spawnAcidPool(m.mesh.position.clone().add(new THREE.Vector3(-1.4, 0, 0)));
-        this.spawnAcidPool(m.mesh.position.clone().add(new THREE.Vector3(0, 0, 1.4)));
-        this.spawnAcidPool(m.mesh.position.clone().add(new THREE.Vector3(0, 0, -1.4)));
-
-        // Splash damage to player
-        if (player && m.mesh.position.distanceTo(player.position) < 3.8) {
-          if (player.isBlocking) {
-            player.audioEngine.playShieldBlock();
-          } else {
-            player.takeDamage(36, true);
-          }
-        }
-
-        this.scene.remove(m.mesh);
-        if (m.indicatorMesh) this.scene.remove(m.indicatorMesh);
-        this.spitterMortars.splice(i, 1);
-      }
-    }
-
-    // 3e. Chantier 2 (v44): Micro-Xenomorph Swarm Orbit & Parasitic Acid Bite (Marvel Comics Canon)
-    for (let s = this.microSwarms.length - 1; s >= 0; s--) {
-      const swarm = this.microSwarms[s];
-      if (swarm.isDead) continue;
-      swarm.orbitAngle += swarm.orbitSpeed * delta;
-      const heightOsc = Math.sin(Date.now() * 0.005) * 0.45;
-      const targetX = player.position.x + Math.cos(swarm.orbitAngle) * swarm.orbitRadius;
-      const targetZ = player.position.z + Math.sin(swarm.orbitAngle) * swarm.orbitRadius;
-      const targetY = player.position.y + 1.8 + heightOsc;
-      swarm.group.position.lerp(new THREE.Vector3(targetX, targetY, targetZ), 6.0 * delta);
-
-      // Rapid insectoid flutter wing animation
-      swarm.units.forEach(u => {
-        const flap = Math.sin(Date.now() * 0.045 + u.flutterOffset) * 0.65;
-        u.wingL.rotation.z = flap;
-        u.wingR.rotation.z = -flap;
-      });
-
-      // High-frequency buzzing audio
-      swarm.buzzTimer = (swarm.buzzTimer || 0) + delta;
-      if (swarm.buzzTimer >= 1.5) {
-        swarm.buzzTimer = 0;
-        if (this.audioEngine && this.audioEngine.playMicroSwarmBuzz) {
-          this.audioEngine.playMicroSwarmBuzz();
-        }
-      }
-
-      // Caustic micro-bite chip damage
-      if (swarm.group.position.distanceTo(player.position) <= 3.2) {
-        if (!player.isBlocking) {
-          player.takeDamage(swarm.damage * delta, true);
-        }
-      }
-    }
-
-    // 3f. Chantier 4 (v44): Cybernetic Spine Darts Flight Physics
-    for (let d = this.cyberSpineDarts.length - 1; d >= 0; d--) {
-      const dart = this.cyberSpineDarts[d];
-      dart.life -= delta;
-      dart.mesh.position.addScaledVector(dart.vel, delta);
-      if (dart.mesh.position.distanceTo(player.position) <= 1.8) {
-        if (player.isBlocking) {
-          player.audioEngine.playShieldBlock();
-        } else {
-          player.takeDamage(dart.damage, false);
-        }
-        this.scene.remove(dart.mesh);
-        this.cyberSpineDarts.splice(d, 1);
-        continue;
-      }
-      if (dart.life <= 0 || dart.mesh.position.y <= 0.1) {
-        this.scene.remove(dart.mesh);
-        this.cyberSpineDarts.splice(d, 1);
-      }
-    }
-
-    // 3g. Chantier 7 (v47): Flying Xenomorph Manta Swarmers 3D Airspace Flight AI (Aliens Arcade / Kenner / Marvel)
-    for (let m = this.mantaSwarmers.length - 1; m >= 0; m--) {
-      const manta = this.mantaSwarmers[m];
-      if (manta.hp <= 0) {
-        if (this.goreEngine && this.goreEngine.spawnDismemberment) {
-          this.goreEngine.spawnDismemberment(manta.mesh.position, 'heavy');
-        }
-        this.spawnAcidSplash(manta.mesh.position, manta.mesh.position);
-        this.scene.remove(manta.mesh);
-        this.mantaSwarmers.splice(m, 1);
-        this.deadCount++;
-        if (window.gameInstance) window.gameInstance.score += 450;
-        continue;
-      }
-
-      // Wing flutter animation
-      manta.flutterPhase += delta * 18.0;
-      const flap = Math.sin(manta.flutterPhase) * 0.65;
-      if (manta.mesh.userData.wingL) manta.mesh.userData.wingL.rotation.z = flap;
-      if (manta.mesh.userData.wingR) manta.mesh.userData.wingR.rotation.z = -flap;
-
-      if (manta.divePhase === 'cruising') {
-        manta.diveCooldown -= delta;
-        // Fly around player at high altitude
-        const toPlayer = player.position.clone().sub(manta.mesh.position);
-        toPlayer.y = 0;
-        const distHoriz = toPlayer.length();
-
-        if (distHoriz > 12.0) {
-          toPlayer.normalize();
-          manta.mesh.position.addScaledVector(toPlayer, manta.speed * delta);
-        }
-        // Maintain cruise altitude
-        manta.mesh.position.y += (manta.cruiseAltitude - manta.mesh.position.y) * 3.0 * delta;
-
-        // Orient toward flight direction
-        manta.mesh.rotation.y = Math.atan2(toPlayer.x, toPlayer.z);
-
-        if (manta.diveCooldown <= 0 && distHoriz <= 24.0) {
-          manta.divePhase = 'diving';
-          manta.diveTarget.copy(player.position);
-          if (this.audioEngine && this.audioEngine.playMantaDiveScreech) {
-            this.audioEngine.playMantaDiveScreech();
-          }
-        }
-      } else if (manta.divePhase === 'diving') {
-        // High-speed supersonic dive attack
-        const diveDir = manta.diveTarget.clone().sub(manta.mesh.position).normalize();
-        manta.mesh.position.addScaledVector(diveDir, manta.diveSpeed * delta);
-        manta.mesh.rotation.x = 0.55; // Pitch down
-
-        // Chantier 2 & Sofia QA (v53.0): Aerial Acid Spray Bombardment during dive
-        if (Math.random() < 0.12 && this.spawnAcidSplash) {
-          this.spawnAcidSplash(manta.mesh.position, manta.mesh.position.clone().add(new THREE.Vector3((Math.random() - 0.5) * 3, -1, (Math.random() - 0.5) * 3)));
-        }
-
-        // Hit player check
-        if (manta.mesh.position.distanceTo(player.position) <= 2.8) {
-          if (player.isBlocking) {
-            if (player.audioEngine && player.audioEngine.playShieldBlock) player.audioEngine.playShieldBlock();
-          } else {
-            player.takeDamage(manta.damage);
-          }
-          manta.divePhase = 'zooming_up';
-          manta.diveCooldown = 4.5 + Math.random() * 2.0;
-        } else if (manta.mesh.position.y <= 0.8) {
-          // Reached floor, pull up
-          manta.divePhase = 'zooming_up';
-          manta.diveCooldown = 4.5 + Math.random() * 2.0;
-        }
-      } else if (manta.divePhase === 'zooming_up') {
-        // Sweep back up to cruising altitude
-        manta.mesh.position.y += 14.0 * delta;
-        manta.mesh.rotation.x = -0.4; // Pitch up
-        if (manta.mesh.position.y >= manta.cruiseAltitude) {
-          manta.mesh.position.y = manta.cruiseAltitude;
-          manta.mesh.rotation.x = 0;
-          manta.divePhase = 'cruising';
-        }
-      }
-    }
-
-    // 4. Horde AI (Crusher, Praetorian, Warriors, Facehuggers, Officers)
-    this.aliens.forEach(a => {
-      if (a.isLatched) return;
-      // Fauna of the Unblooded hunts runs its own behaviour (systems/FaunaHunt.js).
-      if (a.isFauna) { if (a.faunaUpdate) a.faunaUpdate(delta, player); return; }
-
-      // Airborne Juggling Physics (Dynasty Warriors Musou C2/C5 Launchers)
-      if (a.isAirborne) {
-        a.airborneVelY -= 36.0 * delta; // Gravity
-        a.mesh.position.y += a.airborneVelY * delta;
-        if (a.airborneVelHoriz) {
-          a.mesh.position.addScaledVector(a.airborneVelHoriz, delta);
-        }
-        // Ragdoll spin in mid-air
-        a.mesh.rotation.x += 8.0 * delta;
-        a.mesh.rotation.z += 5.0 * delta;
-
-        // Ground impact
-        if (a.mesh.position.y <= 0) {
-          a.mesh.position.y = 0;
-          a.isAirborne = false;
-          a.airborneVelY = 0;
-          a.mesh.rotation.x = 0;
-          a.mesh.rotation.z = 0;
-          if (a.isChameleon && player && a.mesh.position.distanceTo(player.position) <= 2.8) {
-            player.takeDamage(90, false, a);
-            if (this.audioEngine && this.audioEngine.playSlash) this.audioEngine.playSlash();
-          }
-        }
-        return; // Helpless while airborne in juggle arc
-      }
-
-      // Flash-Frozen Solid State (Cryo Nitrogen Pipe Rupture - Alien: Romulus 2024)
-      if (a.isFlashFrozen) {
-        a.frozenTimer -= delta;
-        if (a.frozenTimer <= 0) {
-          a.isFlashFrozen = false;
-        }
-        return; // Completely frozen solid
-      }
-
-      // Netgun Entangled State
-      if (a.isNetEntangled) {
-        if (a.isNetgunImmune) {
-          // Grid Alien (Nethead) has already melted and broken Celtic's net in AVP 2004!
-          a.isNetEntangled = false;
-        } else {
-          a.netTimer -= delta;
-          a.hp -= 38 * delta; // Razor wire cuts deep into chitin!
-          a.mesh.rotation.y += Math.sin(Date.now() * 0.05) * 0.05;
-
-          // Electrical sparks arcing across diamond net wires
-          a.netSparkTimer = (a.netSparkTimer || 0) + delta;
-          if (a.netSparkTimer >= 0.22) {
-            a.netSparkTimer = 0;
-            if (this.particles && this.particles.emitSparks) {
-              this.particles.emitSparks(a.mesh.position, 4);
-            }
-          }
-
-          if (a.netTimer <= 0 || a.hp <= 0) {
-            a.isNetEntangled = false;
-          }
-          return; // Completely immobilized
-        }
-      }
-
-      // Chantier 7 (v43): Liquid Nitrogen Flash-Frozen Solid State
-      if (a.isFrozen) {
-        a.freezeTimer = (a.freezeTimer || 4.5) - delta;
-        if (a.freezeTimer <= 0) {
-          a.isFrozen = false;
-          if (a.mesh && a.mesh.traverse) {
-            a.mesh.traverse(child => {
-              if (child.isMesh && child.material && child.origColor !== undefined) {
-                child.material.color.setHex(child.origColor);
-              }
-            });
-          }
-        }
-        return; // Completely frozen in place!
-      }
-
-      // Chantier 6: Yautja Netgun Wall-Pinning & Diamond-Wire Guillotine Tension (Predator 2 Canon)
-      if (a.isPinned) {
-        a.pinTimer = (a.pinTimer || 6.0) - delta;
-        a.hp -= 48 * delta; // Diamond-wire tension slices deep into chitin!
-        if (this.particles && this.particles.emitAlienBloodSpurt && Math.random() < 0.12) {
-          this.particles.emitAlienBloodSpurt(a.mesh.position, 6);
-        }
-        if (a.pinTimer <= 0 || a.hp <= 0) {
-          a.isPinned = false;
-        }
-        return; // Fixed against wall
-      }
-
-      // Chantier 7: Alpha Predator Primordial Hemotoxic Bleed (Prey 2022 / Alpha Canon)
-      if (a.bleedTimer > 0) {
-        a.bleedTimer -= delta;
-        a.hp -= (a.bleedDps || 50.0) * delta;
-        if (this.particles && this.particles.emitAlienBloodSpurt && Math.random() < 0.08) {
-          this.particles.emitAlienBloodSpurt(a.mesh.position, 4);
-        }
-      }
-
-      // Chantier 3 (v42): Trax-Net Micro-Beacon Pulse
-      if (a.isTraxTagged) {
-        a.traxTimer -= delta;
-        a.traxBeepTimer = (a.traxBeepTimer || 0) + delta;
-        if (a.traxBeepTimer >= 1.2) {
-          a.traxBeepTimer = 0;
-          if (this.particles && this.particles.emitSparks) {
-            this.particles.emitSparks(a.mesh.position.clone().add(new THREE.Vector3(0, 1.2, 0)), 3);
-          }
-        }
-        if (a.traxTimer <= 0) {
-          a.isTraxTagged = false;
-        }
-      }
-
-      // Chantier 2 (v42): Subterranean Trench & Vent Flanking AI (Aliens 1986 / Isolation)
-      if (player && player.position && player.position.y >= 3.0 && (a.type === 'drone' || a.type === 'warrior') && !a.isFlanking && Math.random() < 0.006) {
-        a.isFlanking = true;
-        a.flankPhase = 'diving';
-        a.flankTimer = 3.2;
-      }
-
-      if (a.isFlanking) {
-        if (a.flankPhase === 'diving') {
-          a.mesh.position.y -= 8.0 * delta;
-          if (a.mesh.position.y <= -2.0) {
-            a.mesh.visible = false;
-            a.flankPhase = 'submerged';
-          }
-          return;
-        } else if (a.flankPhase === 'submerged') {
-          a.flankTimer -= delta;
-          if (a.flankTimer <= 0) {
-            a.flankPhase = 'emerging';
-            const behindPlayer = player.position.clone().add(new THREE.Vector3(
-              (Math.random() - 0.5) * 4.0,
-              0,
-              4.0
-            ));
-            a.mesh.position.copy(behindPlayer);
-            a.mesh.position.y = -2.0;
-            a.mesh.visible = true;
-            this.audioEngine.playXenoHiss();
-          }
-          return;
-        } else if (a.flankPhase === 'emerging') {
-          a.mesh.position.y += 10.0 * delta;
-          if (a.mesh.position.y >= player.position.y) {
-            a.mesh.position.y = player.position.y;
-            a.isFlanking = false;
-            const distToP = a.mesh.position.distanceTo(player.position);
-            if (distToP <= 3.5) {
-              player.takeDamage(42, false, a);
-            }
-          }
-          return;
-        }
-      }
-
-      // Chantier 4 (v47): Deacon Titan Primordial Boss AI (Prometheus 2012)
-      if (a.isDeacon) {
-        if (a.hp <= a.maxHp * 0.22 && !a.isStunned && !a.canBeTrophyHarvested) {
-          a.isStunned = true;
-          a.stunTimer = 12.0;
-          a.canBeTrophyHarvested = true;
-          if (window.gameInstance && window.gameInstance.ui) {
-            window.gameInstance.ui.showAnnouncement('💀 TITAN PRIMORDIAL DÉSTABILISÉ : APPUYEZ SUR [E] POUR ARRACHER LE CRÂNE DU DEACON !');
-          }
-        }
-
-        if (!a.isStunned) {
-          a.chompCooldown = (a.chompCooldown || 0) - delta;
-          const pDist = a.mesh.position.distanceTo(player.position);
-          if (pDist <= 3.8 && a.chompCooldown <= 0) {
-            a.chompCooldown = 3.2;
-            if (this.audioEngine && this.audioEngine.playDeaconJawHiss) {
-              this.audioEngine.playDeaconJawHiss();
-            }
-            if (player.isBlocking) {
-              player.audioEngine.playShieldBlock();
-            } else {
-              player.takeDamage(85);
-            }
-          }
-        }
-      }
-
-      // Stunned State (Crusher or Praetorian or Deacon)
-      if (a.isStunned) {
-        a.stunTimer -= delta;
-        a.mesh.rotation.z = Math.sin(Date.now() * 0.02) * 0.1;
-        if (a.stunTimer <= 0) {
-          a.isStunned = false;
-          a.canBeTrophyHarvested = false;
-          a.mesh.rotation.z = 0;
-        }
-        return;
-      }
-
-      // Stealth opening (HW-DEC-35): until the hive is alerted, aliens drift without hunting.
-      if (this.isAlerted === false) {
-        const t = Date.now() * 0.0006 + a.mesh.id;
-        a.mesh.position.x += Math.sin(t) * 0.9 * delta;
-        a.mesh.position.z += Math.cos(t * 0.8) * 0.9 * delta;
-        return;
-      }
-
-      const dir = player.position.clone().sub(a.mesh.position);
-      dir.y = 0;
-      const dist = dir.length();
-
-      // Sofia QA Audit #5: Apex Pheromone Repulsion (Drones flee from defeated officer/boss)
-      if (a.isFeared && a.fearTimer > 0) {
-        a.fearTimer -= delta;
-        if (a.fearDir) {
-          a.mesh.position.addScaledVector(a.fearDir, delta * 9.5);
-          a.mesh.lookAt(a.mesh.position.clone().add(a.fearDir));
-        }
-        if (a.fearTimer <= 0) a.isFeared = false;
-        return;
-      }
-
-      // Elena QA Audit #2 & Chantier 5: Vocal Mimicry Decoy Diversion (Predator 1987)
-      if (a.decoyTimer > 0 && a.decoyTarget) {
-        a.decoyTimer -= delta;
-        const decoyDir = a.decoyTarget.clone().sub(a.mesh.position);
-        decoyDir.y = 0;
-        const dLen = decoyDir.length();
-        if (dLen > 1.2) {
-          decoyDir.normalize();
-          a.mesh.position.addScaledVector(decoyDir, delta * 7.5);
-          a.mesh.lookAt(a.mesh.position.clone().add(decoyDir));
-        }
-        return;
-      }
-
-      // Wall-Climbing & Ceiling Drop Ambush AI (Alien 1979 / Aliens 1986 Lore)
-      if (a.isWallStalker) {
-        if (a.wallClimbPhase === 'climbing') {
-          a.mesh.position.y += 6.5 * delta;
-          a.mesh.rotation.x = -Math.PI * 0.4;
-          if (a.mesh.position.y >= a.perchHeight) {
-            a.mesh.position.y = a.perchHeight;
-            a.wallClimbPhase = 'perched';
-            a.mesh.rotation.x = Math.PI; // Upside down clinging to ceiling
-          }
-          return;
-        } else if (a.wallClimbPhase === 'perched') {
-          // Stalk ceiling towards player
-          if (dist > 8.0) {
-            const stalkDir = dir.clone().normalize();
-            a.mesh.position.addScaledVector(stalkDir, 5.0 * delta);
-          }
-          // Surprise drop attack when close enough
-          if (dist <= 10.0) {
-            a.wallClimbPhase = 'dropping';
-            this.audioEngine.playXenoHiss();
-          }
-          return;
-        } else if (a.wallClimbPhase === 'dropping') {
-          a.mesh.position.y -= 26.0 * delta; // Plunge straight down
-          a.mesh.rotation.x = 0;
-          const dropDir = dir.clone().normalize();
-          a.mesh.position.addScaledVector(dropDir, 8.0 * delta);
-
-          if (a.mesh.position.y <= 0) {
-            a.mesh.position.y = 0;
-            a.wallClimbPhase = 'grounded';
-            a.isWallStalker = false;
-            if (dist <= 3.5) {
-              player.takeDamage(35, false, a);
-            }
-          }
-          return;
-        }
-      }
-
-      // Praetorian Royal Acid Spit Attack (medium range: 8m to 20m)
-      if (a.type === 'praetorian') {
-        a.spitCooldown -= delta;
-        if (a.spitCooldown <= 0 && dist >= 8.0 && dist <= 20.0) {
-          a.spitCooldown = 3.5;
-          this.audioEngine.playXenoHiss();
-          this.spawnAcidSplash(a.mesh.position, player.position);
-        }
-      }
-
-      // Spitter Long-Range Acid Artillery AI (Aliens: Colonial Marines Lore)
-      if (a.type === 'spitter') {
-        a.spitCooldown -= delta;
-        if (a.spitCooldown <= 0 && dist >= 8.0 && dist <= 36.0) {
-          a.spitCooldown = 3.6 + Math.random() * 1.5;
-          this.launchSpitterMortar(a.mesh.position, player.position, player);
-        }
-      }
-
-      // Chantier 1 (v44): Marvel Alpha Apex Predator Command Roar & Enrage Pack (Marvel Alien 2021)
-      if (a.isMarvelAlpha) {
-        a.commandRoarCooldown -= delta;
-        if (a.commandRoarCooldown <= 0) {
-          a.commandRoarCooldown = 8.5;
-          if (this.audioEngine && this.audioEngine.playAlphaCommandRoar) {
-            this.audioEngine.playAlphaCommandRoar();
-          }
-          if (window.gameInstance && window.gameInstance.ui) {
-            window.gameInstance.ui.showAnnouncement('👑 RUGISSEMENT D\'ORDRE DE L\'ALPHA MARVEL : MEUTE ENRAGÉE (+50% VIT) !');
-          }
-          this.aliens.forEach(other => {
-            if (other !== a && other.mesh && other.mesh.position.distanceTo(a.mesh.position) <= 22.0) {
-              other.isEnraged = true;
-              other.enragedTimer = 6.0;
-            }
-          });
-        }
-      }
-
-      // Chantier 3 (v44): Cryo-Xenomorph Sub-Zero Frost Breath Cone (Marvel Alien: Thaw LV-695)
-      if (a.type === 'cryo_xeno') {
-        a.frostBreathCooldown -= delta;
-        if (a.frostBreathCooldown <= 0 && dist >= 4.0 && dist <= 14.0) {
-          a.frostBreathCooldown = 4.5;
-          if (this.audioEngine && this.audioEngine.playCryoFrostBreath) {
-            this.audioEngine.playCryoFrostBreath();
-          }
-          if (player.takeDamage) {
-            player.takeDamage(24, false, a);
-            player.cryoSlowTimer = 3.5;
-            if (window.gameInstance && window.gameInstance.ui) {
-              window.gameInstance.ui.showAnnouncement('❄️ SOUFFLE GLACIAL DU CRYO-XÉNO LV-695 : VITESSE RÉDUITE DE 50% !');
-            }
-          }
-        }
-      }
-
-      // Chantier 7 (v46): Chameleon Stalker Optical Cloak & Flank Ambush (Aliens: Rogue)
-      if (a.isChameleon) {
-        if (a.cloakFlickerTimer > 0) a.cloakFlickerTimer -= delta;
-        if (a.pounceCooldown > 0) a.pounceCooldown -= delta;
-
-        // EM Vision reveals cloaked xeno with high-contrast electric cyan highlights!
-        const isEMVision = player && player.visionMode === 2;
-        const revealed = isEMVision || a.cloakFlickerTimer > 0;
-        a.mesh.traverse(child => {
-          if (child.isMesh) {
-            child.material = revealed ? this.chameleonRevealedMat : this.chameleonMat;
-          }
-        });
-
-        // Pounce attack from blind spot
-        if (dist <= 13.0 && a.pounceCooldown <= 0 && !a.isStunned) {
-          a.pounceCooldown = 4.5;
-          if (this.audioEngine && this.audioEngine.playStalkerChameleonHiss) {
-            this.audioEngine.playStalkerChameleonHiss();
-          }
-
-          a.isAirborne = true;
-          a.airborneVelY = 8.0;
-          const pounceDir = player.position.clone().sub(a.mesh.position).normalize();
-          a.airborneVelHoriz = pounceDir.multiplyScalar(22.0);
-          a.cloakFlickerTimer = 3.2; // Camouflage flickers on attack
-
-          if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
-            window.gameInstance.ui.showAnnouncement('🦎 BOND D\'EMBUSCADE DU CHAMELEON STALKER (90 DÉGÂTS) ! VISION EM [V] CONSEILLÉE !');
-          }
-        }
-      }
-
-      // Chantier 4 (v44): Steel Team Cybernetic Xenomorph Spine Dart Volley (Marvel Alien: Icarus)
-      if (a.type === 'cyber_xeno') {
-        a.cyberDartCooldown -= delta;
-        if (a.cyberDartCooldown <= 0 && dist >= 6.0 && dist <= 24.0) {
-          a.cyberDartCooldown = 4.2;
-          if (this.audioEngine && this.audioEngine.playCyberXenoStatic) {
-            this.audioEngine.playCyberXenoStatic();
-          }
-          const dartGeo = new THREE.CylinderGeometry(0.04, 0.04, 0.8, 5);
-          dartGeo.rotateX(Math.PI / 2);
-          const dartMat = new THREE.MeshBasicMaterial({ color: 0xff1133 });
-          const dartMesh = new THREE.Mesh(dartGeo, dartMat);
-          const spawnPos = a.mesh.position.clone().add(new THREE.Vector3(0, 1.8, 0));
-          dartMesh.position.copy(spawnPos);
-          const dartDir = player.position.clone().add(new THREE.Vector3(0, 1.2, 0)).sub(spawnPos).normalize();
-          dartMesh.lookAt(spawnPos.clone().add(dartDir));
-          this.scene.add(dartMesh);
-
-          this.cyberSpineDarts.push({
-            mesh: dartMesh,
-            vel: dartDir.multiplyScalar(28.0),
-            damage: 28,
-            life: 2.5
-          });
-        }
-      }
-
-      if (a.type === 'crusher') {
-        // Crusher Battering Ram Charge
-        a.chargeTimer -= delta;
-        if (a.chargeTimer <= 0) {
-          a.isCharging = true;
-          a.speed = 22; // Charge speed!
-          this.audioEngine.playXenoHiss();
-          setTimeout(() => {
-            a.isCharging = false;
-            a.speed = 12;
-            a.chargeTimer = 4.0;
-          }, 2000);
-        }
-
-        // If charging against player with Feral Shield raised -> STUN CRUSHER!
-        if (a.isCharging && dist <= a.radius + 1.2 && player.isBlocking) {
-          a.isCharging = false;
-          a.isStunned = true;
-          a.stunTimer = 5.0; // 5-second stun window for execution!
-          if (player.audioEngine && player.audioEngine.playCrusherArmorRicochet) {
-            player.audioEngine.playCrusherArmorRicochet();
-          } else if (player.audioEngine) {
-            player.audioEngine.playShieldBlock();
-          }
-          if (player.audioEngine && player.audioEngine.playShieldBlock) {
-            player.audioEngine.playShieldBlock();
-          }
-          return;
-        }
-      }
-
-      // Chantier 6 (v48): The King Alien / Rogue Titan Dominance Roar & Crusher Slam (Aliens: Rogue)
-      if (a.isRogueKing) {
-        a.kingRoarCooldown -= delta;
-        if (a.kingRoarCooldown <= 0 && dist <= 26.0) {
-          a.kingRoarCooldown = 8.0;
-          if (this.audioEngine && this.audioEngine.playRogueKingRoar) {
-            this.audioEngine.playRogueKingRoar();
-          }
-          if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
-            window.gameInstance.ui.showAnnouncement('👑 RUGISSEMENT DE SUPRÉMATIE DU KING ALIEN ROGUE : HORDE EN FRÉNÉSIE (+35% VITESSE) !');
-          }
-          this.aliens.forEach(other => {
-            if (other !== a && other.mesh && other.mesh.position.distanceTo(a.mesh.position) <= 24.0) {
-              other.isEnraged = true;
-              other.enragedTimer = 7.0;
-            }
-          });
-        }
-      }
-
-      // Chantier 2 (v49): Xenomorph Raven Obsidian Carapace Shriek & Wing Buffet (Aliens: Colonial Marines)
-      if (a.isRaven) {
-        a.ravenShriekCooldown -= delta;
-        if (a.ravenShriekCooldown <= 0 && dist <= 20.0) {
-          a.ravenShriekCooldown = 6.5;
-          if (this.audioEngine && this.audioEngine.playRavenXenoShriek) {
-            this.audioEngine.playRavenXenoShriek();
-          }
-          if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
-            window.gameInstance.ui.showAnnouncement('🦅 HURLEMENT DU XENOMORPH RAVEN (CARAPACE D\'OBSIDIENNE FRONTALE) : CONTOURNEZ OU UTILISEZ LA MASSE MAUL [SHIFT+1] !');
-          }
-        }
-      }
-
-      // Chantier 6 (v49): Ancient Predalien Elder Fossilized Chitin Regeneration & Sarcophagus Roar (AVP2: Primal Hunt)
-      if (a.isAncientPredalien) {
-        if (a.regenActive && a.hp > 0 && a.hp < a.maxHp && !a.isStunned) {
-          a.hp = Math.min(a.maxHp, a.hp + 35.0 * delta);
-        }
-        a.elderRoarCooldown -= delta;
-        if (a.elderRoarCooldown <= 0 && dist <= 24.0) {
-          a.elderRoarCooldown = 8.5;
-          if (this.audioEngine && this.audioEngine.playAncientPredalienAwaken) {
-            this.audioEngine.playAncientPredalienAwaken();
-          }
-          if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
-            window.gameInstance.ui.showAnnouncement('🦴 ÉVEIL DE L\'ANCIENT PREDALIEN ELDER (PRIMAL HUNT) : RÉGÉNÉRATION DE CHITINE ANCESTRALE ACTIVE !');
-          }
-        }
-      }
-
-      // Chantier 5 (v50.0): Gestating Alpha Female Hive Matriarch Ovipositor Live Egg Laying (Aliens 1986)
-      if (a.isGestatingMatriarch && !a.isStunned) {
-        a.eggLayCooldown -= delta;
-        if (a.ovipositorMesh) {
-          const pulse = 1.0 + Math.sin(Date.now() * 0.008) * 0.15;
-          a.ovipositorMesh.scale.set(pulse, 1.0, pulse);
-        }
-        if (a.eggLayCooldown <= 0) {
-          a.eggLayCooldown = 7.5;
-          if (this.audioEngine && this.audioEngine.playMatriarchEggLayingSquish) {
-            this.audioEngine.playMatriarchEggLayingSquish();
-          }
-          // Lay 2 active biomechanical eggs behind her
-          const backward = new THREE.Vector3(0, 0, -1).applyEuler(a.mesh.rotation);
-          const eggPos1 = a.mesh.position.clone().add(backward.clone().multiplyScalar(3.2)).add(new THREE.Vector3(-1.2, 0, 0));
-          const eggPos2 = a.mesh.position.clone().add(backward.clone().multiplyScalar(3.2)).add(new THREE.Vector3(1.2, 0, 0));
-          this.spawnBiomechanicalEgg(eggPos1);
-          this.spawnBiomechanicalEgg(eggPos2);
-
-          if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
-            window.gameInstance.ui.showAnnouncement('🥚 PONTE D\'ŒUFS BIOMÉCANIQUES PAR LA MATRIARCHE ! DÉTRUISEZ-LES AVANT ÉCLOSION (4S) !');
-          }
-        }
-      }
-
-      // Check if low HP sub-boss enters execution stun (Crusher, Praetorian, Grid Alien, Marvel Alpha, Deacon, Rogue King, Raven, Ancient Predalien, Gestating Matriarch)
-      if ((a.type === 'crusher' || a.type === 'praetorian' || a.type === 'grid_alien' || a.isMarvelAlpha || a.isDeacon || a.isRogueKing || a.isRaven || a.isAncientPredalien || a.isGestatingMatriarch) && a.hp <= a.maxHp * 0.22 && !a.isStunned) {
-        a.isStunned = true;
-        a.stunTimer = 8.0;
-      }
-
-      // QA Audit #4 Fix: 3D Diegetic Stun Execution Halo above stunned sub-bosses for instant Spine Rip [E] visibility
-      if (a.isStunned && a.mesh) {
-        if (!a.stunHaloMesh) {
-          const haloGeo = new THREE.RingGeometry(0.9, 1.35, 24);
-          haloGeo.rotateX(-Math.PI / 2);
-          const haloMat = new THREE.MeshBasicMaterial({ color: 0xffb703, side: THREE.DoubleSide, transparent: true, opacity: 0.9 });
-          a.stunHaloMesh = new THREE.Mesh(haloGeo, haloMat);
-          a.stunHaloMesh.position.set(0, 4.6, 0);
-          a.mesh.add(a.stunHaloMesh);
-        }
-        a.stunHaloMesh.rotation.z += 3.5 * delta;
-        const pulse = 1.0 + Math.sin(Date.now() * 0.012) * 0.18;
-        a.stunHaloMesh.scale.set(pulse, 1, pulse);
-      } else if (!a.isStunned && a.stunHaloMesh && a.mesh) {
-        a.mesh.remove(a.stunHaloMesh);
-        a.stunHaloMesh = null;
-      }
-
-      // Boiler suicide kamikaze charge
-      if (a.type === 'boiler') {
-        a.mesh.children.forEach(c => {
-          if (c.name === 'boil') c.scale.setScalar(1.0 + Math.sin(Date.now() * 0.018) * 0.25);
-        });
-        if (dist <= 3.2) {
-          this.detonateBoiler(a, player);
-          return;
-        }
-      }
-
-      // Neomorph Bloodburster Acrobatic Pounce & Evasive Flanking (Alien: Covenant 2017)
-      if (a.type === 'neomorph') {
-        if (a.leapCooldown > 0) a.leapCooldown -= delta;
-
-        // Evasive lateral strafe
-        const strafe = new THREE.Vector3(-dir.z, 0, dir.x).normalize();
-        a.mesh.position.addScaledVector(strafe, Math.sin(Date.now() * 0.007) * 4.0 * delta);
-
-        if (!a.isLeaping && dist <= 12.0 && a.leapCooldown <= 0) {
-          a.isLeaping = true;
-          a.leapVelY = 13.0;
-          a.leapCooldown = 4.5;
-          if (this.audioEngine && this.audioEngine.playNeomorphScreech) {
-            this.audioEngine.playNeomorphScreech();
-          }
-        }
-
-        if (a.isLeaping) {
-          a.leapVelY -= 32.0 * delta;
-          a.mesh.position.y += a.leapVelY * delta;
-          a.mesh.rotation.x = -0.5;
-
-          if (a.mesh.position.y <= 0) {
-            a.mesh.position.y = 0;
-            a.isLeaping = false;
-            a.mesh.rotation.x = 0;
-            if (dist <= 3.0) {
-              player.takeDamage(35, false, a);
-            }
-          }
-          return;
-        }
-      }
-
-      // Praetomorph Hyper-Aggressive Hunter (Alien: Covenant 2017)
-      if (a.type === 'praetomorph') {
-        if (a.leapCooldown > 0) a.leapCooldown -= delta;
-        if (!a.isLeaping && dist <= 14.0 && a.leapCooldown <= 0) {
-          a.isLeaping = true;
-          a.leapVelY = 15.0;
-          a.leapCooldown = 5.0;
-          if (this.audioEngine && this.audioEngine.playPraetomorphHiss) {
-            this.audioEngine.playPraetomorphHiss();
-          }
-        }
-        if (a.isLeaping) {
-          a.leapVelY -= 36.0 * delta;
-          a.mesh.position.y += a.leapVelY * delta;
-          a.mesh.rotation.x = -0.4;
-          const leapDir = dir.clone().normalize();
-          a.mesh.position.addScaledVector(leapDir, 16.0 * delta);
-
-          if (a.mesh.position.y <= 0) {
-            a.mesh.position.y = 0;
-            a.isLeaping = false;
-            a.mesh.rotation.x = 0;
-            if (dist <= 3.5) {
-              player.takeDamage(45, false, a);
-            }
-          }
-          return;
-        }
-      }
-
-      // Red Xenomorph Hive Civil War Infighting (Aliens: Genocide 1991)
-      if (a.type === 'red_warrior') {
-        for (let j = 0; j < this.aliens.length; j++) {
-          const other = this.aliens[j];
-          if (other !== a && other.type !== 'red_warrior' && other.type !== 'facehugger') {
-            const xDist = a.mesh.position.distanceTo(other.mesh.position);
-            if (xDist <= 3.2) {
-              other.hp -= 40 * delta;
-              a.hp -= 25 * delta;
-              if (Math.random() < 0.04 && this.audioEngine && this.audioEngine.playRedSwarmHiss) {
-                this.audioEngine.playRedSwarmHiss();
-              }
-              break;
-            }
-          }
-        }
-      }
-
-      if (a.isPheromoneEnraged && a.enrageTimer > 0) {
-        a.enrageTimer -= delta;
-        if (a.enrageTimer <= 0) a.isPheromoneEnraged = false;
-      }
-
-      if (dist > (a.radius || 1.2)) {
-        dir.normalize();
-        const pSpeedMult = (a.isPheromoneEnraged && a.enrageTimer > 0) ? 1.4 : 1.0;
-        a.mesh.position.addScaledVector(dir, a.speed * delta * pSpeedMult);
-        a.mesh.rotation.y = Math.atan2(dir.x, dir.z);
-      } else {
-        if (a.type === 'facehugger' && !player.isFacehuggerLatched) {
-          player.triggerFacehuggerLatch();
-          a.isLatched = true;
-          this.scene.remove(a.mesh);
-        } else {
-          player.takeDamage(a.damage * delta, false, a);
-        }
-      }
-    });
-
-    // Chantier 5 (v50.0): Update Active Biomechanical Eggs Laid by Gestating Matriarch
-    for (let i = this.biomechanicalEggs.length - 1; i >= 0; i--) {
-      const egg = this.biomechanicalEggs[i];
-      egg.hatchTimer -= delta;
-      const pulse = 1.0 + Math.sin(Date.now() * 0.012) * 0.14;
-      egg.mesh.scale.set(pulse, 1.0, pulse);
-
-      if (egg.hp <= 0) {
-        if (this.audioEngine && this.audioEngine.playXenoDeath) this.audioEngine.playXenoDeath();
-        this.spawnAcidPool(egg.mesh.position);
-        this.scene.remove(egg.mesh);
-        this.biomechanicalEggs.splice(i, 1);
-        if (window.gameInstance) window.gameInstance.score += 90;
-        continue;
-      }
-
-      if (egg.hatchTimer <= 0) {
-        const hatchPos = egg.mesh.position.clone();
-        this.scene.remove(egg.mesh);
-        this.biomechanicalEggs.splice(i, 1);
-        this.spawnRoyalFacehugger(hatchPos);
-        if (this.audioEngine && this.audioEngine.playXenoHiss) this.audioEngine.playXenoHiss();
-      }
+      const shot = this.spitterMortars[i]; shot.life -= delta; shot.vel.y -= shot.gravity * delta; shot.mesh.position.addScaledVector(shot.vel, delta);
+      if (shot.mesh.position.y <= .2 || shot.life <= 0) { for (const target of livingPlayers) if (target.position.distanceTo(shot.targetPos) < 3) this._hazardDamage(shot, target, 45); this.spawnAcidPool(shot.targetPos); disposeObject(shot.mesh); disposeObject(shot.indicatorMesh); this.spitterMortars.splice(i,1); }
     }
   }
 
-  // Sofia QA Audit #5: Apex Pheromone Repulsion Fear Wave (Pacing & Tactical Respiration)
-  triggerFearPulse(origin, radius = 14.0, duration = 3.5) {
-    if (!this.aliens) return;
-    this.aliens.forEach(a => {
-      if (!a || a.hp <= 0 || !a.mesh || a.isOfficer || a.isGestatingMatriarch || a.isRaven || a.isAncientPredalien || a.isRogueKing) return;
-      const dist = a.mesh.position.distanceTo(origin);
-      if (dist <= radius) {
-        a.isFeared = true;
-        a.fearTimer = duration;
-        a.fearDir = a.mesh.position.clone().sub(origin).normalize();
-        a.fearDir.y = 0;
-      }
-    });
-  }
-
-  detonateBoiler(boiler, targetOrPos) {
-    if (this.audioEngine && this.audioEngine.playBoilerDetonation) {
-      this.audioEngine.playBoilerDetonation();
-    }
-    const pos = boiler.mesh.position.clone();
-    this.scene.remove(boiler.mesh);
-    const idx = this.aliens.indexOf(boiler);
-    if (idx !== -1) this.aliens.splice(idx, 1);
-    this.deadCount++;
-
-    const targetPos = (targetOrPos && targetOrPos.position) ? targetOrPos.position : (targetOrPos || pos);
-
-    // Expanding fluorescent green rupture shockwave
-    const shockGeo = new THREE.SphereGeometry(1.8, 12, 12);
-    const shockMat = new THREE.MeshBasicMaterial({ color: 0x39ff14, transparent: true, opacity: 0.85, wireframe: true });
-    const shockMesh = new THREE.Mesh(shockGeo, shockMat);
-    shockMesh.position.copy(pos).add(new THREE.Vector3(0, 1.0, 0));
-    this.scene.add(shockMesh);
-
-    let shockScale = 1.0;
-    const sAnim = setInterval(() => {
-      shockScale += 0.55;
-      shockMesh.scale.set(shockScale, shockScale, shockScale);
-      shockMesh.material.opacity -= 0.12;
-      if (shockMesh.material.opacity <= 0) {
-        clearInterval(sAnim);
-        this.scene.remove(shockMesh);
-      }
-    }, 30);
-
-    // Blast damage in 8.5m radius to player
-    if (targetOrPos && targetOrPos.takeDamage) {
-      if (targetPos.distanceTo(pos) <= 8.5) {
-        if (targetOrPos.isBlocking) {
-          targetOrPos.audioEngine.playShieldBlock();
-        } else {
-          targetOrPos.takeDamage(75, true);
-        }
-      }
-    }
-
-    // Friendly-fire molecular dissolution of adjacent Xenomorphs
-    this.aliens.forEach(otherAlien => {
-      if (otherAlien.hp > 0 && otherAlien.mesh.position.distanceTo(pos) <= 8.0) {
-        otherAlien.hp -= 320;
-      }
-    });
-
-    // Deep caustic floor slag decal (Chantier 6)
-    if (this.goreEngine && this.goreEngine.spawnAcidSlagDecal) {
-      this.goreEngine.spawnAcidSlagDecal(pos, 3.2, this.audioEngine);
-    }
-
-    // 8 flying acid droplets and large acid pool
-    this.spawnAcidSplash(pos, targetPos);
-    this.spawnAcidSplash(pos, pos.clone().add(new THREE.Vector3(3, 0, 0)));
-    this.spawnAcidSplash(pos, pos.clone().add(new THREE.Vector3(-3, 0, 0)));
-    this.spawnAcidPool(pos);
-  }
-
-  clearWave() {
-    this.aliens.forEach(a => this.scene.remove(a.mesh));
-    this.aliens = [];
-    this.eggs.forEach(e => this.scene.remove(e.mesh));
-    this.eggs = [];
-    this.chestbursters.forEach(c => this.scene.remove(c.mesh));
-    this.chestbursters = [];
-    this.acidPools.forEach(p => this.scene.remove(p.mesh));
-    this.acidPools = [];
-    this.acidSplashes.forEach(s => this.scene.remove(s.mesh));
-    this.acidSplashes = [];
-    this.zeroGAcidGlobules.forEach(g => this.scene.remove(g.mesh));
-    this.zeroGAcidGlobules = [];
-    this.spitterMortars.forEach(m => {
-      this.scene.remove(m.mesh);
-      if (m.indicatorMesh) this.scene.remove(m.indicatorMesh);
-    });
-    this.spitterMortars = [];
-    this.microSwarms.forEach(s => this.scene.remove(s.group));
-    this.microSwarms = [];
-    this.cyberSpineDarts.forEach(d => this.scene.remove(d.mesh));
-    this.cyberSpineDarts = [];
-    this.royalFacehuggers.forEach(r => this.scene.remove(r.mesh));
-    this.royalFacehuggers = [];
-    this.mantaSwarmers.forEach(m => this.scene.remove(m.mesh));
-    this.mantaSwarmers = [];
-    this.biomechanicalEggs.forEach(e => this.scene.remove(e.mesh));
-    this.biomechanicalEggs = [];
-  }
 }

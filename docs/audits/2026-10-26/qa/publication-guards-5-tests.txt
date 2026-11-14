@@ -1,0 +1,13 @@
+✔ remote operations require explicit compatible flags and a bounded real deployment ID (2.425661ms)
+✔ frozen pins bind the existing project, code identity, final measured counts and actual runtime IDs (19.022782ms)
+✔ final QA cannot pass with an old build, partial suite, error or missing measured runtime scenario (2.460491ms)
+✔ index, build-info bytes and clean source identity are checked independently (10.262965ms)
+✔ headers cover every file, preserve model download metadata and verify build-info MIME (1.803124ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 134.911786

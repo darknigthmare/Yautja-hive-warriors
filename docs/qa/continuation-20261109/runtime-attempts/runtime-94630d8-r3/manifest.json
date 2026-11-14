@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "files": [
+    {
+      "path": "carrier-autonomous-main-update-flight-failure.png",
+      "sha256": "f5b329f9165b32269f2cbcde3324ce789e2a1acb160db377fce7bd4a24c48616"
+    },
+    {
+      "path": "carrier-autonomous-main-update-flight-lv742-hud-1280x720.png",
+      "sha256": "54cfb25e4ed08eab1e37a9fd4bde34a6e8ec1627e760db1014d63235fdf3e00b"
+    },
+    {
+      "path": "carrier-autonomous-main-update-flight-lv742-hud-800x600.png",
+      "sha256": "5ebbf7dd26db0f4868ffb90626378ed6086cf9939ce77ee2b5f6352d0d7a0329"
+    },
+    {
+      "path": "helper-source-0.mjs",
+      "sha256": "8925583bc02e9a8dad15c8d3bce0c571ad23a25886f5955f0ec365b734f22a24"
+    },
+    {
+      "path": "helper-source-1.mjs",
+      "sha256": "e5f48d56a61007a897c045d0f52bd243ace25a90744ed41173def25ac806315a"
+    },
+    {
+      "path": "helper-source-2.mjs",
+      "sha256": "e62b36a664dd2fadaee8804fc70b75d7afa10ebd2345abdb645e806a7b899a43"
+    },
+    {
+      "path": "report.json",
+      "sha256": "faa6dbf60c5f8a587497f4438ddbda8bb1605b8aba208c23011538ecb0a72282"
+    },
+    {
+      "path": "source-menu-coop-insertion-command-checkpoint-aff27-enhanced-legend-1280x720.png",
+      "sha256": "6b4e542b788dcdf4ad04ad5355545b8d1a518c68a520f62760898a7e72c53175"
+    },
+    {
+      "path": "source-menu-coop-insertion-command-checkpoint-aff27-enhanced-legend-800x600.png",
+      "sha256": "99d04efc073cebfadf5588e820add26cc20b2497d167e965a5366d7af11cfcab"
+    },
+    {
+      "path": "source-menu-coop-insertion-command-checkpoint-aff27-linked-terrain-1280x720.png",
+      "sha256": "b4c04c2915d0e8b4e66baa32deb370e415371a85a3d1f3953da8369ee76446dc"
+    },
+    {
+      "path": "source-menu-coop-insertion-command-checkpoint-aff27-linked-terrain-800x600.png",
+      "sha256": "9154a05c1d499d888cee785cdbb32a7a739138a5e55a76dc30d62e84762f7556"
+    },
+    {
+      "path": "source-menu-coop-insertion-command-checkpoint-aff27-standard-legend-1280x720.png",
+      "sha256": "6c0d609cb04817050e7b17be63eac6a991589aef0f916eaf08e922e0fe7e9384"
+    },
+    {
+      "path": "source-menu-coop-insertion-command-checkpoint-aff27-standard-legend-800x600.png",
+      "sha256": "99d04efc073cebfadf5588e820add26cc20b2497d167e965a5366d7af11cfcab"
+    },
+    {
+      "path": "source-menu-coop-insertion-command-checkpoint-pilot-coop-real-checkpoint-resumed.png",
+      "sha256": "450853bff352e653e175efdb845726eb3e6292eafdd8a4d2bbf15f6f0e9ec1bb"
+    },
+    {
+      "path": "source-menu-coop-insertion-command-checkpoint-pilot-coop-real-defend-order.png",
+      "sha256": "0fd5b669ce2a57cf25ef7a31aef2f85026654d1a385de8b00637885c53498810"
+    },
+    {
+      "path": "source-menu-coop-insertion-command-checkpoint-pilot-coop-real-pause.png",
+      "sha256": "0b6a6fb37cf7edb3cad1ed85f3a754da4f9e3fbbe55f863040bbe41ade0f16d3"
+    },
+    {
+      "path": "source-menu-coop-insertion-command-checkpoint-val-verde-coop-after-insertion.png",
+      "sha256": "0f1a64ab957376d9198a67e54bea788a04868fdb5fa4e44b8ef29ea8395d9d5b"
+    },
+    {
+      "path": "source-menu-coop-insertion-command-checkpoint-val-verde-real-coop-exiting.png",
+      "sha256": "976fa7a1d7308826163e655509337b4a75a59cd7f3937294c8e0d8d660fd8720"
+    },
+    {
+      "path": "source-menu-coop-insertion-command-checkpoint-val-verde-real-coop-opening.png",
+      "sha256": "dfd572f58033c5a766a30a1173087c38999742cc7d091079eb538a65bcfb4e30"
+    }
+  ]
+}

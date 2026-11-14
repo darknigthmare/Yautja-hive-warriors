@@ -1,0 +1,25 @@
+{
+  "status": "frozen_cpu_airstrike_evidence",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 1676,
+      "sha256": "7709f0dd5941c25674cdb316b2f456699ffc975514aa4641b3b5ef832d641fde"
+    },
+    {
+      "path": "legacy-airstrike-roof-tests.txt",
+      "bytes": 800,
+      "sha256": "7dfaec5d59504022d97a786fd6c7f0d323a70c900edd2e3a492db3bd7f85fbc1"
+    },
+    {
+      "path": "legacy-airstrike-systems-regression.txt",
+      "bytes": 2863,
+      "sha256": "d74d55f97d4497bbbcb896058de861bcccf27c98dd996527c14bbfaee94f40ef"
+    },
+    {
+      "path": "validation.json",
+      "bytes": 772,
+      "sha256": "59ebf63381854bbc03f22ca7e05dd619895a083c1771087fd73bc999ccf036d8"
+    }
+  ]
+}

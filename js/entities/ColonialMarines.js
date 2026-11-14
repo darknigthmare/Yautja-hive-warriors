@@ -1,34 +1,42 @@
-/* Colonial Marines USCM Faction Engine (3-Way Battle Warfare) */
+/* Colonial Marines USCM support against the hive. */
 
 import * as THREE from 'three';
+import { applyBattleUnit, despawnBattleActor, selectBattleTarget, battleHostile, moveBattleOrder, requestNPCStrike, maintainBattleFormation, applyBattleSplashDamage } from '../engine/BattleActorSupport.js';
+import { recordCombatDeath } from '../engine/CombatEvents.js';
+import { createMarineModel, addSentryMechanicalDetails } from '../graphics/SupportModels.js';
+import { sourceUnitVisualKind } from '../data/SourceActorPresentation.js';
+import { attachHostParasiteVisual } from '../graphics/HostParasiteAttachment.js';
+import { SPECIALIST_ATTACKS } from '../data/SourceSpecialistCombat.js';
+import { disposeObject } from '../engine/SceneResources.js';
+import { selectHostileTarget, requestHostileAttack, syncHostileWarning, releaseHostileAttack } from '../engine/HostilePressure.js';
+import { humanSquadRole, humanFireTeamState, hasFriendlyFireLane, moveSquadActor } from '../engine/FactionSquadRoles.js';
+import { emitNPCShot, updateNPCShots, clearNPCShots } from '../graphics/NPCCombatFeedback.js';
 
 export class ColonialMarinesManager {
   constructor(scene, audioEngine) {
     this.scene = scene;
     this.audioEngine = audioEngine;
     this.marines = [];
+    this.specialistMissiles = [];
     this.sentryGun = null;
-    this.distressBeacon = null;
-    this.beaconTriggered = false;
-    this.airSupportPending = false;
-    this.airSupportTimer = 0;
-    this.strafeCenter = null;
+    this.distressBeacon = null; this.beaconTriggered = false; this.airSupportPending = false; this.airSupportTimer = 0; this.strafeCenter = null;
+    this.hostileToPlayers = false; // USCM support fights the hive, then holds cover.
   }
 
-  spawnSquad(playerPos, count = 4, variant = 'colonial') {
+
+  spawnSquad(playerPos, count = 4) {
     this.clearSquad();
-    this.variant = variant;
-    if (variant === 'colonial') this.spawnSentryGun(playerPos.clone().add(new THREE.Vector3(8, 0, 8)));
+    this.spawnSentryGun(playerPos.clone().add(new THREE.Vector3(8, 0, 8)));
 
     for (let i = 0; i < count; i++) {
       const isSmartgunner = i % 2 === 0;
-      const marineMesh = this.createMarineMesh(isSmartgunner, variant);
+      const marineMesh = this.createMarineMesh(isSmartgunner);
 
       const angle = (i / count) * Math.PI * 2;
       marineMesh.position.set(
-        playerPos.x + Math.cos(angle) * 15,
+        playerPos.x + Math.cos(angle) * 24,
         0,
-        playerPos.z + Math.sin(angle) * 15
+        playerPos.z + Math.sin(angle) * 24
       );
 
       this.scene.add(marineMesh);
@@ -38,296 +46,247 @@ export class ColonialMarinesManager {
         hp: 150,
         maxHp: 150,
         damage: isSmartgunner ? 20 : 35,
-        speed: 8
+        speed: 8,
+        shootCooldown: 1.4 + i * 0.3,
+        grenadeCooldown: 7 + i * 0.6
       });
     }
   }
 
-  createMarineMesh(isSmartgunner, variant = 'colonial') {
-    const group = new THREE.Group();
-    // USCM camo olive; contemporary National Guard in grey-green (Gunnison, AVP Requiem)
-    const armorMat = new THREE.MeshStandardMaterial({ color: variant === 'national_guard' ? 0x6f7563 : 0x3d4a36, roughness: 0.6, metalness: 0.3 });
-    const skinMat = new THREE.MeshStandardMaterial({ color: 0xd4a373, roughness: 0.8 });
 
-    const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.5, 1.8, 8), armorMat);
-    torso.position.y = 1.8;
-    group.add(torso);
+  createMarineMesh(isSmartgunner) {
+    return createMarineModel(isSmartgunner);
+  }
 
-    const head = new THREE.Mesh(new THREE.SphereGeometry(0.45, 10, 10), skinMat);
-    head.position.set(0, 3.0, 0);
-    group.add(head);
 
-    // USCM Helmet
-    const helmet = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.55, 0.4, 8), armorMat);
-    helmet.position.set(0, 3.2, 0);
-    group.add(helmet);
+  /** One missile belongs to the physical shooter but not to a new soldier.
+   * Terrain blocks each guided step; cleanup never grants the ammunition back. */
+  queueSadarMissile(shooter, target, targetsPlayer, horde) {
+    const rule = SPECIALIST_ATTACKS.sadar;
+    const origin = shooter.mesh.position.clone().add(new THREE.Vector3(0, 2.45, .4));
+    const geometry = new THREE.CylinderGeometry(.055, .085, .56, 8);
+    const material = new THREE.MeshStandardMaterial({ color: 0x727e7e, metalness: .73, roughness: .33,
+      emissive: 0x28352b, emissiveIntensity: .25 });
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.name = 'sadar-guided-projectile'; mesh.position.copy(origin);
+    const exhaust = new THREE.Mesh(new THREE.ConeGeometry(.095, .28, 8),
+      new THREE.MeshBasicMaterial({ color: 0xff8e32, transparent: true, opacity: .83, depthWrite: false }));
+    exhaust.name = 'sadar-exhaust'; exhaust.position.y = -.39;
+    exhaust.rotation.z = Math.PI;
+    mesh.add(exhaust);
+    this.scene.add(mesh);
+    this.specialistMissiles.push({ mesh, shooter, target, targetsPlayer, horde,
+      travelled: 0, life: 0, lastDestination: target.position?.clone?.() ?? target.mesh.position.clone() });
+  }
 
-    // Weapon (M56 Smartgun or M240 Incinerator Flamethrower - Aliens 1986 Canon 1:1)
-    const gunMat = new THREE.MeshStandardMaterial({ color: 0x111111, metalness: 0.9, roughness: 0.1 });
-    const gun = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.3, 1.4), gunMat);
-    gun.position.set(0.6, 2.0, 0.6);
-    group.add(gun);
-    group.userData.gun = gun;
-
-    if (!isSmartgunner) {
-      // M240 Flamethrower Pressurized Fuel Canister (Under-barrel)
-      const canisterMat = new THREE.MeshStandardMaterial({ color: 0xb91c1c, roughness: 0.4 });
-      const canister = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.6, 8), canisterMat);
-      canister.rotation.x = Math.PI / 2;
-      canister.position.set(0.6, 1.8, 0.5);
-      group.add(canister);
-
-      // Pilot Flame Igniter Tip
-      const flameMat = new THREE.MeshBasicMaterial({ color: 0xff5500 });
-      const nozzle = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.25, 6), flameMat);
-      nozzle.rotation.x = Math.PI / 2;
-      nozzle.position.set(0.6, 2.0, 1.4);
-      group.add(nozzle);
-
-      // 3D Animated M240 Napalm Flame Jet Stream (Cone projecting forward)
-      const jetGeo = new THREE.ConeGeometry(0.9, 4.8, 8);
-      jetGeo.rotateX(-Math.PI / 2);
-      const jetMat = new THREE.MeshBasicMaterial({
-        color: 0xff3700,
-        transparent: true,
-        opacity: 0.85,
-        blending: THREE.AdditiveBlending
+  updateSpecialistMissiles(delta) {
+    const rule = SPECIALIST_ATTACKS.sadar;
+    for (let i = this.specialistMissiles.length - 1; i >= 0; i--) {
+      const missile = this.specialistMissiles[i];
+      const target = missile.target, live = target?.hp > 0;
+      if (live) missile.lastDestination.copy(target.position ?? target.mesh.position);
+      const destination = missile.lastDestination.clone().add(new THREE.Vector3(0, 1.1, 0));
+      const vector = destination.sub(missile.mesh.position);
+      const remaining = vector.length(), step = Math.min(remaining, rule.missileSpeed * delta);
+      missile.life += delta;
+      const next = missile.mesh.position.clone().addScaledVector(vector.normalize(), step);
+      const blocked = this.environment?.hasLineOfSight &&
+        !this.environment.hasLineOfSight(missile.mesh.position, next);
+      const exhausted = missile.travelled + step > rule.range || missile.life > 4;
+      if (blocked || exhausted) {
+        disposeObject(missile.mesh); this.specialistMissiles.splice(i, 1); continue;
+      }
+      missile.mesh.position.copy(next);
+      missile.mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), vector);
+      missile.travelled += step;
+      if (remaining > step + .75) continue;
+      // The projectile has reached its real, terrain-tested impact point.
+      // Do not damage dead/disposed/friendly targets or through a final wall.
+      const primary = target?.actor ?? target;
+      if (live && battleHostile(this, missile.shooter, primary) &&
+          (!this.environment?.hasLineOfSight ||
+            this.environment.hasLineOfSight(missile.mesh.position,
+              (target.position ?? target.mesh.position).clone().add(new THREE.Vector3(0, 1, 0))))) {
+        if (missile.targetsPlayer) {
+          target.takeDamage(rule.playerDamage, false, missile.shooter,
+            { attackKind: 'explosive', blockable: false, parryable: false });
+        } else if (target.isBattleNPC) target.takeDamage(rule.damage);
+        else {
+          target.hp -= rule.damage; target.lastDamageFaction = missile.shooter.factionId ?? 'uscm';
+          if (target.hp <= 0) missile.horde?.defeatAlien?.(target,
+            { cause: 'sadar', killerFaction: target.lastDamageFaction });
+        }
+      }
+      applyBattleSplashDamage(this, missile.shooter, missile.mesh.position, {
+        radius: rule.splashRadius, damage: rule.splashDamage, exclude: target
       });
-      const flameJet = new THREE.Mesh(jetGeo, jetMat);
-      flameJet.position.set(0.6, 2.0, 3.8);
-      flameJet.visible = false;
-      group.add(flameJet);
-      group.userData.flameJet = flameJet;
-    } else {
-      // M56 Smartgun Steadicam Articulated Arm & Headset Sight
-      const steadyArmMat = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.8 });
-      const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.9, 6), steadyArmMat);
-      arm.position.set(0.35, 1.6, 0.2);
-      arm.rotation.z = Math.PI / 4;
-      group.add(arm);
-
-      // Eye-mounted Targeting Headset
-      const eyeMat = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-      const sight = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.08, 0.15), eyeMat);
-      sight.position.set(0.2, 3.1, 0.35);
-      group.add(sight);
-
-      // Real-Time M56 Smartgun Tactical Red Laser Sight Beam
-      const laserGeo = new THREE.CylinderGeometry(0.018, 0.018, 8.0, 4);
-      laserGeo.rotateX(Math.PI / 2);
-      const laserMat = new THREE.MeshBasicMaterial({
-        color: 0xff0033,
-        transparent: true,
-        opacity: 0.85,
-        blending: THREE.AdditiveBlending
-      });
-      const laserBeam = new THREE.Mesh(laserGeo, laserMat);
-      laserBeam.position.set(0.6, 2.0, 5.0);
-      laserBeam.visible = false;
-      group.add(laserBeam);
-      group.userData.laserBeam = laserBeam;
+      this.audioEngine?.playExplosion?.();
+      disposeObject(missile.mesh); this.specialistMissiles.splice(i, 1);
     }
-
-    return group;
   }
 
   update(delta, player, horde) {
-    this.marines.forEach((m, idx) => {
-      // 3-Way Target Priority: Target nearest Xenomorph first, then Player!
-      let targetPos = null;
-      let nearestDist = Infinity;
-
-      // Check nearest alien
-      horde.aliens.forEach(a => {
-        const d = m.mesh.position.distanceTo(a.mesh.position);
-        if (d < nearestDist) {
-          nearestDist = d;
-          targetPos = a.mesh.position;
-        }
-      });
-
-      // If no aliens nearby, target player
-      if (!targetPos) {
-        targetPos = player.position;
-        nearestDist = m.mesh.position.distanceTo(player.position);
+    if (!Number.isFinite(delta) || delta <= 0) return;
+    this.time = (this.time ?? 0) + delta;
+    updateNPCShots(this, delta);
+    this.updateSpecialistMissiles(delta);
+    if (this.distressBeacon) { this.distressBeacon.life -= delta; if (this.distressBeacon.life <= 0) { disposeObject(this.distressBeacon.mesh); this.distressBeacon = null; } }
+    if (this.airSupportPending) { this.airSupportTimer -= delta; if (this.airSupportTimer <= 0) { this.airSupportPending = false; if (horde) horde.checkMeleeHits({ origin: this.strafeCenter, radius: 7, damage: 180, type: 'gunship', killerFaction: this.factionId ?? 'uscm' }); } }
+    for (const m of [...this.marines]) {
+      if (m.hp <= 0) { this.defeatCombatant(m, { cause: 'combat', killerFaction: m.lastDamageFaction }); continue; }
+      // A paralyzed host must never walk to formation or start an attack
+      // while its Facehugger is attached, even if its battle slot moved.
+      if (m.isFacehuggerLatched) {
+        m.facehuggerHold -= delta;
+        if (m.facehuggerHold > 0) { releaseHostileAttack(this,m); continue; }
+        m.isFacehuggerLatched = false;
       }
-
-      const flameJet = m.mesh.userData.flameJet;
-      const laserBeam = m.mesh.userData.laserBeam;
-
-      if (targetPos) {
-        const dir = targetPos.clone().sub(m.mesh.position);
-        dir.y = 0;
-        const currentDist = dir.length();
-
-        if (currentDist > 6) {
-          dir.normalize();
-          m.mesh.position.addScaledVector(dir, m.speed * delta);
-          m.mesh.rotation.y = Math.atan2(dir.x, dir.z);
-
-          if (flameJet) flameJet.visible = false;
-          if (laserBeam) laserBeam.visible = false;
-        } else {
-          m.mesh.rotation.y = Math.atan2(dir.x, dir.z);
-
-          // Fire M56 Smartgun or M240 Incinerator Flamethrower!
-          if (m.type === 'flametrooper') {
-            if (flameJet) {
-              flameJet.visible = true;
-              flameJet.scale.set(
-                0.85 + Math.random() * 0.35,
-                0.85 + Math.random() * 0.35,
-                0.9 + Math.random() * 0.25
-              );
-              flameJet.material.opacity = 0.6 + Math.random() * 0.35;
-            }
-
-            if (Math.random() < 0.16) {
-              if (this.audioEngine.playFlamethrowerBurn) {
-                this.audioEngine.playFlamethrowerBurn();
-              } else {
-                this.audioEngine.playAcidSizzle();
-              }
-              if (targetPos === player.position) {
-                player.takeDamage(m.damage * 0.15);
-              } else {
-                // Persistent burn AOE covering xenos
-                horde.aliens.forEach(a => {
-                  if (a.mesh.position.distanceTo(targetPos) <= 4.0) {
-                    a.hp -= m.damage * 1.2;
-                  }
-                });
-              }
-            }
-          } else {
-            // M56 Smartgun tracking fire with red laser targeting (Vasquez / Drake - Aliens 1986 Canon)
-            if (laserBeam) {
-              laserBeam.visible = true;
-              laserBeam.material.opacity = 0.75 + Math.random() * 0.25;
-            }
-
-            // Steadicam weapon recoil kickback animation
-            if (m.mesh.userData.gun) {
-              m.mesh.userData.gun.position.z = 0.6 - (Math.random() * 0.08);
-            }
-
-            if (Math.random() < 0.22) {
-              if (this.audioEngine.playSmartgunBurst) {
-                this.audioEngine.playSmartgunBurst();
-              } else if (this.audioEngine.playPulseRifleBurst) {
-                this.audioEngine.playPulseRifleBurst();
-              }
-
-              // Occasional tactical callout (Vasquez / Drake 1:1 Lore)
-              if (!m.voiceTimer) m.voiceTimer = 0;
-              m.voiceTimer += delta;
-              if (m.voiceTimer > 8.0) {
-                m.voiceTimer = 0;
-                const shouts = ["LET'S ROCK !!", "EAT THIS !", "FIRE IN THE HOLE !", "HOLD THE PERIMETER !"];
-                const shout = shouts[Math.floor(Math.random() * shouts.length)];
-                if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
-                  window.gameInstance.ui.showAnnouncement(`🔊 USCM SMARTGUNNER : "${shout}"`);
-                }
-              }
-
-              if (targetPos === player.position) {
-                player.takeDamage(m.damage * 0.12);
-              } else {
-                // Deal kinetic damage to the targeted Xenomorph
-                horde.aliens.forEach(a => {
-                  if (a.mesh.position.distanceTo(targetPos) <= 2.8) {
-                    a.hp -= m.damage * 1.15;
-                  }
-                });
-              }
-            }
+      if(maintainBattleFormation(this,m,delta,m.speed))continue;
+      if (m.sourceVisualKind === 'medic' && m.battleUnitId && this.battleSimulation) {
+        m.medicCooldown = Math.max(0, (m.medicCooldown ?? 0) - delta);
+        if (m.medicCooldown <= 0) {
+          // Only actual allocated human allies can receive a field treatment.
+          // The simulation owns the two finite charges and persists their use.
+          const patients = this.marines.filter(other => other !== m && other.battleUnitId &&
+            other.factionId === m.factionId && other.hp > 0 && other.hp < other.maxHp &&
+            !other.isDowned && !other.isRescueRecovering &&
+            m.mesh.position.distanceToSquared(other.mesh.position) <= 100 &&
+            (!this.environment?.hasLineOfSight || this.environment.hasLineOfSight(
+              m.mesh.position.clone().add(new THREE.Vector3(0, 1.8, 0)),
+              other.mesh.position.clone().add(new THREE.Vector3(0, 1.6, 0)))));
+          patients.sort((a, b) => a.hp / a.maxHp - b.hp / b.maxHp ||
+            a.mesh.position.distanceToSquared(m.mesh.position) - b.mesh.position.distanceToSquared(m.mesh.position));
+          for (const patient of patients) {
+            // The render-side HP and positions are authoritative for the
+            // ongoing frame. Sync them before spending a finite treatment.
+            if (!this.battleSimulation.syncUnit(m.battleUnitId, {
+              hp: m.hp, position: [m.mesh.position.x, m.mesh.position.z] })) continue;
+            if (!this.battleSimulation.syncUnit(patient.battleUnitId, {
+              hp: patient.hp, position: [patient.mesh.position.x, patient.mesh.position.z] })) continue;
+            const healed = this.battleSimulation.applyMedicHeal(m.battleUnitId, patient.battleUnitId);
+            if (!healed) continue;
+            patient.hp = healed.hp;
+            m.medicCooldown = 6;
+            this.audioEngine?.playMedicTreatment?.();
+            break;
           }
-
-          // USCM M40 25mm Grenade Launcher Secondary Fire
-          if (!m.grenadeCooldown) m.grenadeCooldown = 5.0;
-          m.grenadeCooldown -= delta;
-          if (m.grenadeCooldown <= 0) {
-            m.grenadeCooldown = 6.0 + Math.random() * 3.0;
-            this.audioEngine.playM40GrenadeBlast();
-
-            // Explosive AOE at target position
-            const grenadeAOE = { origin: targetPos, radius: 6.5, damage: 160 };
-            horde.checkMeleeHits(grenadeAOE);
-            if (targetPos === player.position) {
-              player.takeDamage(45);
-            }
-          }
+          if (m.medicCooldown > 0) continue;
         }
+      }
+      if (m.sourceVisualKind === 'commtech' && m.battleUnitId && this.battleSimulation) {
+        m.repairCooldown = Math.max(0, (m.repairCooldown ?? 0) - delta);
+        if (m.repairCooldown <= 0) {
+          const candidates = (this.combatActorsProvider?.() ?? []).filter(other =>
+            other !== m && other?.battleUnitId && other.hp > 0 &&
+            other.hp < other.maxHp && other.factionId === m.factionId &&
+            !other.isBisected && !other.isDowned && !other.isRescueRecovering &&
+            m.mesh.position.distanceToSquared(other.mesh.position) <= 64 &&
+            (!this.environment?.hasLineOfSight || this.environment.hasLineOfSight(
+              m.mesh.position.clone().add(new THREE.Vector3(0, 1.8, 0)),
+              other.mesh.position.clone().add(new THREE.Vector3(0, 1.5, 0)))));
+          candidates.sort((a, b) => a.hp / a.maxHp - b.hp / b.maxHp);
+          for (const patient of candidates) {
+            const unit = this.battleSimulation.getUnit(patient.battleUnitId);
+            if (unit?.species !== 'synthetic' && sourceUnitVisualKind(unit) !== 'exosuit') continue;
+            if (!this.battleSimulation.syncUnit(m.battleUnitId,
+              { hp: m.hp, position: [m.mesh.position.x, m.mesh.position.z] }) ||
+                !this.battleSimulation.syncUnit(patient.battleUnitId,
+              { hp: patient.hp, position: [patient.mesh.position.x, patient.mesh.position.z] })) continue;
+            const repaired = this.battleSimulation.applyCommTechRepair(m.battleUnitId, patient.battleUnitId);
+            if (!repaired) continue;
+            patient.hp = repaired.hp;
+            m.repairCooldown = 7;
+            this.audioEngine?.playMedicTreatment?.();
+            break;
+          }
+          if (m.repairCooldown <= 0) m.repairCooldown = .5;
+          if (m.repairCooldown > 1) continue;
+        }
+      }
+      let targetPlayer = null, targetPos = null, target = null, targetsPlayer = false;
+      if (m.battleUnitId && this.battleSimulation) {
+        target = selectBattleTarget(this, m, player, horde?.getActiveCombatants?.() ?? horde?.aliens ?? []);
+        if (!target) { releaseHostileAttack(this, m); moveBattleOrder(this, m, delta, m.speed); continue; }
+        targetPos = target.position; targetsPlayer = !target.isBattleNPC; targetPlayer = target;
       } else {
-        if (flameJet) flameJet.visible = false;
-        if (laserBeam) laserBeam.visible = false;
+        targetPlayer = selectHostileTarget(this, m, player);
+        let nearestDist = Infinity;
+        for (const alien of horde?.aliens ?? []) { if (alien.hp <= 0) continue; const distance = m.mesh.position.distanceTo(alien.mesh.position); if (distance < nearestDist) { nearestDist = distance; target = alien; targetPos = alien.mesh.position; } }
+        targetsPlayer = !targetPos;
+        if (targetsPlayer) { if (!this.hostileToPlayers || !targetPlayer || targetPlayer.hp <= 0) { releaseHostileAttack(this, m); continue; } targetPos = targetPlayer.position; target = targetPlayer; }
       }
-    });
-
-    // Chantier 4: USCM Distress Beacon & Aerial Gunship Support
-    const aliveCount = this.marines.filter(m => m.hp > 0).length;
-    if (aliveCount > 0 && aliveCount <= 2 && !this.beaconTriggered) {
-      this.beaconTriggered = true;
-      const leadMarine = this.marines.find(m => m.hp > 0);
-      if (leadMarine) {
-        this.deployDistressBeacon(leadMarine.mesh.position.clone());
+      m.shootCooldown = Math.max(0, (m.shootCooldown ?? 1.4) - delta); m.grenadeCooldown = Math.max(0, (m.grenadeCooldown ?? 7) - delta);
+      const distance = targetPos.distanceTo(m.mesh.position);
+      const access = this.environment?.getVerticalNavigationTarget?.(m.mesh.position, targetPos);
+      const direction = (access ?? targetPos).clone().sub(m.mesh.position).setY(0), moveDistance = direction.length(); m.mesh.rotation.y = Math.atan2(direction.x, direction.z);
+      const specialist = SPECIALIST_ATTACKS[m.sourceVisualKind];
+      const range = specialist?.range ?? (m.type === 'flametrooper' ? 5 : 20);
+      const stopping = specialist?.stopping ?? (m.type === 'flametrooper' ? 3.5 : 12);
+      const covered = this.environment?.hasLineOfSight && !this.environment.hasLineOfSight(m.mesh.position.clone().add(new THREE.Vector3(0, 2, 0)), targetPos.clone().add(new THREE.Vector3(0, 1.6, 0)));
+      m.tacticalState = humanFireTeamState(m, this.marines, this.time, distance, covered, { range, stopping });
+      m.mesh.userData.tacticalState = m.tacticalState;
+      if (m.tacticalState === 'withdraw') {
+        // A wounded soldier creates a finite nine-unit gap, without healing,
+        // discarding its identity or ignoring collision/navigation constraints.
+        const away = m.mesh.position.clone().sub(targetPos).setY(0);
+        if (away.lengthSq() < .01) away.set(1, 0, 0);
+        const destination = m.mesh.position.clone().addScaledVector(away.normalize(), 10 - distance);
+        moveSquadActor(this, m, destination, delta, m.speed * .75);
+        releaseHostileAttack(this, m); m._npcPreparation = 0; continue;
       }
+      if (m.tacticalState !== 'covering' && (distance > stopping || covered || access && distance > range)) { const step = access || covered ? Math.min(m.speed * delta, moveDistance || m.speed * delta) : Math.min(m.speed * delta, distance - stopping); const previous = m.mesh.position.clone(); m.mesh.position.addScaledVector(direction.normalize(), step); this.environment?.resolveAgentMovement?.(m.mesh.position, targetPos, step, .8, previous); }
+      if (covered || distance > range) { releaseHostileAttack(this, m); m.pressureAction = null; continue; }
+      if (!hasFriendlyFireLane(m, targetPos, this.marines)) {
+        // Step out of a friendly silhouette instead of shooting through it.
+        const side = m.squadRole === 'pointman' ? 1 : -1;
+        const lane = m.mesh.position.clone().add(new THREE.Vector3(direction.z * side, 0, -direction.x * side).normalize().multiplyScalar(2));
+        moveSquadActor(this, m, lane, delta, m.speed * .5);
+        releaseHostileAttack(this, m); m._npcPreparation = 0; continue;
+      }
+      if (m.shootCooldown > 0) continue;
+      const granted = targetsPlayer ? requestHostileAttack(this, m, targetPlayer, delta, { kind: 'ranged', windup: specialist?.windup ?? .8, recovery: specialist?.recovery ?? 1.5, duration: .3 })
+        : !target.isBattleNPC || requestNPCStrike(m, target, delta, { windup: specialist?.windup ?? .6, recovery: specialist?.recovery ?? 1.45 });
+      if (!granted) { if (targetsPlayer) syncHostileWarning(this, m); continue; }
+      if (['sniper', 'sadar'].includes(m.sourceVisualKind) &&
+          !this.battleSimulation?.consumeSpecialistAmmo(m.battleUnitId, m.sourceVisualKind)) {
+        m.shootCooldown = .65; releaseHostileAttack(this, m); continue;
+      }
+      m.shootCooldown = specialist?.cooldown ?? (m.type === 'flametrooper' ? 1.65 : 1.45);
+      if (m.sourceVisualKind === 'sadar') {
+        this.queueSadarMissile(m, target, targetsPlayer, horde);
+        (this.audioEngine?.playMissileLaunch ?? this.audioEngine?.playPulseRifleBurst)?.call(this.audioEngine);
+        releaseHostileAttack(this, m);
+        continue;
+      }
+      const shotSound = m.sourceVisualKind === 'sniper' ? this.audioEngine?.playSniperRifleShot
+        : m.sourceVisualKind === 'medic' ? this.audioEngine?.playPistolShot
+        : m.sourceVisualKind === 'commtech' ? this.audioEngine?.playSMGBurst
+        : null;
+      if (m.type === 'flametrooper') (this.audioEngine?.playFlamethrowerBurn ?? this.audioEngine?.playAcidSizzle)?.call(this.audioEngine);
+      else (shotSound ?? this.audioEngine?.playPulseRifleBurst ?? this.audioEngine?.playPlasmaShot)?.call(this.audioEngine);
+      if (targetsPlayer) targetPlayer.takeDamage(specialist?.playerDamage ?? (m.type === 'flametrooper' ? 12 : 9),
+        m.type === 'flametrooper', m, { attackKind: m.type === 'flametrooper' ? 'fire' : 'ballistic', blockable: false, parryable: false });
+      else if (target.isBattleNPC) target.takeDamage(specialist?.damage ?? m.damage);
+      else {
+        target.hp -= specialist?.damage ?? m.damage;
+        target.lastDamageFaction = m.factionId ?? 'uscm';
+        if (target.hp <= 0) horde.defeatAlien?.(target, { cause: m.type, killerFaction: target.lastDamageFaction });
+      }
+      emitNPCShot(this, m.mesh.position.clone().add(new THREE.Vector3(0, 2, 0)),
+        targetPos.clone().add(new THREE.Vector3(0, 1.6, 0)), m.type === 'flametrooper' ? 'fire' : 'ballistic');
+      syncHostileWarning(this, m);
     }
-
-    if (this.distressBeacon) {
-      this.distressBeacon.life -= delta;
-      if (this.distressBeacon.smokeMesh) {
-        this.distressBeacon.smokeMesh.rotation.y += delta * 4;
-        this.distressBeacon.smokeMesh.material.opacity = 0.4 + Math.sin(Date.now() * 0.01) * 0.25;
-      }
-      if (this.distressBeacon.life <= 0) {
-        this.scene.remove(this.distressBeacon.mesh);
-        this.distressBeacon = null;
-      }
-    }
-
-    if (this.airSupportPending) {
-      this.airSupportTimer -= delta;
-      if (this.airSupportTimer <= 0) {
-        this.airSupportPending = false;
-        this.triggerGunshipStrafe(horde);
-      }
-    }
-
-    // Update USCM UA 571-C Sentry Gun Autonomous Target Scanning & Firing
-    if (this.sentryGun && this.sentryGun.ammo > 0) {
-      let nearestTarget = null;
-      let nearestDist = Infinity;
-
-      horde.aliens.forEach(a => {
-        const d = this.sentryGun.mesh.position.distanceTo(a.mesh.position);
-        if (d < nearestDist && d <= this.sentryGun.range) {
-          nearestDist = d;
-          nearestTarget = a;
-        }
-      });
-
-      if (nearestTarget) {
-        const dir = nearestTarget.mesh.position.clone().sub(this.sentryGun.mesh.position);
-        dir.y = 0;
-        this.sentryGun.mesh.rotation.y = Math.atan2(dir.x, dir.z);
-
-        this.sentryGun.fireCooldown -= delta;
-        if (this.sentryGun.fireCooldown <= 0) {
-          this.sentryGun.fireCooldown = 0.35; // 4-shot burst every 0.35s
-          this.sentryGun.ammo -= 4;
-          this.audioEngine.playSentryGunBurst();
-
-          // Sentry bullets deal rapid kinetic damage to target
-          nearestTarget.hp -= this.sentryGun.damage * 4;
-        }
-      }
+    if (this.sentryGun?.ammo > 0) {
+      const target = (horde?.aliens ?? []).filter(a => a.hp > 0 && this.sentryGun.mesh.position.distanceTo(a.mesh.position) <= this.sentryGun.range).sort((a,b) => this.sentryGun.mesh.position.distanceToSquared(a.mesh.position) - this.sentryGun.mesh.position.distanceToSquared(b.mesh.position))[0];
+      this.sentryGun.fireCooldown = Math.max(0, this.sentryGun.fireCooldown - delta);
+      const clear = target && (!this.environment?.hasLineOfSight || this.environment.hasLineOfSight(this.sentryGun.mesh.position.clone().add(new THREE.Vector3(0,1.2,0)), target.mesh.position.clone().add(new THREE.Vector3(0,1.6,0))));
+      if (clear && this.sentryGun.fireCooldown <= 0) { this.sentryGun.fireCooldown = .35; const rounds = Math.min(4, this.sentryGun.ammo); this.sentryGun.ammo -= rounds; target.hp -= this.sentryGun.damage * rounds; this.audioEngine?.playSentryGunBurst?.(); if (target.hp <= 0) horde.defeatAlien?.(target, { cause: 'sentry', killerFaction: this.factionId ?? 'uscm' }); }
     }
   }
 
   spawnSentryGun(pos) {
     if (this.sentryGun) {
-      this.scene.remove(this.sentryGun.mesh);
+      disposeObject(this.sentryGun.mesh);
     }
     const mesh = this.createSentryGunMesh();
     mesh.position.copy(pos);
@@ -341,6 +300,7 @@ export class ColonialMarinesManager {
       damage: 18
     };
   }
+
 
   createSentryGunMesh() {
     const group = new THREE.Group();
@@ -380,109 +340,68 @@ export class ColonialMarinesManager {
     drum.position.set(0, 1.2, -0.4);
     group.add(drum);
 
+    const details = new THREE.Group();
+    details.position.y = 1.5;
+    addSentryMechanicalDetails(details);
+    group.add(details);
     return group;
   }
 
-  deployDistressBeacon(pos) {
-    const group = new THREE.Group();
-    group.position.copy(pos);
-
-    // Red flare canister
-    const canGeo = new THREE.CylinderGeometry(0.08, 0.08, 0.35, 6);
-    const canMat = new THREE.MeshStandardMaterial({ color: 0xef4444, metalness: 0.9, roughness: 0.2 });
-    const canister = new THREE.Mesh(canGeo, canMat);
-    canister.position.y = 0.17;
-    group.add(canister);
-
-    // Glowing flare tip
-    const tip = new THREE.Mesh(new THREE.SphereGeometry(0.12, 6, 6), new THREE.MeshBasicMaterial({ color: 0xff2200 }));
-    tip.position.y = 0.36;
-    group.add(tip);
-
-    // Crimson volumetric smoke column
-    const smokeGeo = new THREE.CylinderGeometry(1.2, 0.4, 6.0, 8, 1, true);
-    const smokeMat = new THREE.MeshBasicMaterial({ color: 0xdc2626, transparent: true, opacity: 0.5, side: THREE.DoubleSide });
-    const smokeMesh = new THREE.Mesh(smokeGeo, smokeMat);
-    smokeMesh.position.y = 3.2;
-    group.add(smokeMesh);
-
-    this.scene.add(group);
-    this.distressBeacon = {
-      mesh: group,
-      smokeMesh: smokeMesh,
-      pos: pos,
-      life: 8.0
-    };
-
-    if (this.audioEngine && this.audioEngine.playRadioDistressBeacon) {
-      this.audioEngine.playRadioDistressBeacon();
-    }
-
-    if (window.game && window.game.ui) {
-      window.game.ui.showAnnouncement('📻 USCM : "IN THE PIPE, FIVE BY FIVE ! BALISE DE DÉTRESSE VERROUILLÉE ! APPUI AÉRIEN IMMINENT !"');
-    }
-
-    this.airSupportPending = true;
-    this.airSupportTimer = 2.4;
-    this.strafeCenter = pos.clone();
-  }
-
-  triggerGunshipStrafe(horde) {
-    if (!this.strafeCenter) return;
-    const center = this.strafeCenter;
-
-    for (let s = 0; s < 8; s++) {
-      setTimeout(() => {
-        const offset = new THREE.Vector3((Math.random() - 0.5) * 16, 0, (Math.random() - 0.5) * 16);
-        const impactPos = center.clone().add(offset);
-        impactPos.y = 0.1;
-
-        if (this.audioEngine) {
-          if (this.audioEngine.playM40GrenadeBlast) this.audioEngine.playM40GrenadeBlast();
-        }
-
-        // 30mm explosive kinetic blast
-        const blastGeo = new THREE.SphereGeometry(2.4, 8, 8);
-        const blastMat = new THREE.MeshBasicMaterial({ color: 0xffaa00, transparent: true, opacity: 0.85 });
-        const blastMesh = new THREE.Mesh(blastGeo, blastMat);
-        blastMesh.position.copy(impactPos).add(new THREE.Vector3(0, 0.8, 0));
-        this.scene.add(blastMesh);
-
-        let scale = 1.0;
-        const bAnim = setInterval(() => {
-          scale += 0.4;
-          blastMesh.scale.set(scale, scale, scale);
-          blastMesh.material.opacity -= 0.18;
-          if (blastMesh.material.opacity <= 0) {
-            clearInterval(bAnim);
-            this.scene.remove(blastMesh);
-          }
-        }, 30);
-
-        if (horde && horde.checkMeleeHits) {
-          horde.checkMeleeHits({
-            origin: impactPos,
-            radius: 5.5,
-            damage: 340,
-            type: 'heavy'
-          });
-        }
-      }, s * 140);
-    }
-  }
 
   clearSquad() {
-    this.marines.forEach(m => this.scene.remove(m.mesh));
+    clearNPCShots(this);
+    for (const missile of this.specialistMissiles) disposeObject(missile.mesh);
+    this.specialistMissiles = [];
+    if (this.distressBeacon) disposeObject(this.distressBeacon.mesh); this.distressBeacon = null; this.airSupportPending = false; this.beaconTriggered = false;
+    this.marines.forEach(m => { releaseHostileAttack(this, m); disposeObject(m.mesh); });
     this.marines = [];
     if (this.sentryGun) {
-      this.scene.remove(this.sentryGun.mesh);
+      disposeObject(this.sentryGun.mesh);
       this.sentryGun = null;
     }
-    if (this.distressBeacon) {
-      this.scene.remove(this.distressBeacon.mesh);
-      this.distressBeacon = null;
-    }
-    this.beaconTriggered = false;
-    this.airSupportPending = false;
   }
+  deployDistressBeacon(position) {
+    if (!position?.isVector3 || this.beaconTriggered) return false;
+    this.beaconTriggered = true;
+    const mesh = new THREE.Mesh(new THREE.CylinderGeometry(.18, .24, .6, 12), new THREE.MeshStandardMaterial({ color: 0x2b4434, roughness: .6 }));
+    mesh.position.copy(position).setY(.3); this.scene.add(mesh); this.distressBeacon = { mesh, life: 12 };
+    this.audioEngine?.playDistressBeaconPing?.();
+    return true;
+  }
+
+  triggerGunshipStrafe(position) {
+    if (!position?.isVector3 || this.airSupportPending) return false;
+    this.strafeCenter = position.clone(); this.airSupportTimer = 2.5; this.airSupportPending = true;
+    this.audioEngine?.playCheyenneFlyby?.(); return true;
+  }
+
+  spawnBattleUnit(unit, group) {
+    const existing = this.marines.find(actor => actor.battleUnitId === unit.id); if (existing) return existing;
+    if (!['marine','human','smartgunner','flametrooper'].includes(unit.actorType)) throw new RangeError(`Unsupported detailed human profile: ${unit.actorType}`);
+    const weaponKind = ['flametrooper', 'smartgunner'].includes(unit.actorType) ? unit.actorType : 'marine';
+    const sourceVisualKind = sourceUnitVisualKind(unit);
+    // Visual role can change without mutating the persistent strategic
+    // actorType or claiming that its specialist ability is implemented.
+    const heavyFrame = sourceVisualKind === 'exosuit';
+    const actor = { mesh: this.createMarineMesh(sourceVisualKind ?? weaponKind), type: weaponKind,
+      sourceVisualKind, squadRole: humanSquadRole(unit, group), visualFidelity1to1Verified: false,
+      damage: heavyFrame ? SPECIALIST_ATTACKS.exosuit.damage : weaponKind === 'flametrooper' ? 35 : 20,
+      speed: heavyFrame ? 5.0 : 8, radius: heavyFrame ? 1.12 : .8,
+      shootCooldown: 1.5, grenadeCooldown: 7 };
+    if (unit.infection) attachHostParasiteVisual(actor.mesh);
+    this.marines.push(applyBattleUnit(this, actor, unit, group)); return actor;
+  }
+
+  despawnBattleUnit(unitOrId) { return despawnBattleActor(this, this.marines, unitOrId); }
+
+
+
+  defeatCombatant(actor, details = {}) {
+    if (!actor) return null;
+    const event = recordCombatDeath(this, actor, { kind: actor.type ?? 'marine', ...details });
+    actor.hp = 0; releaseHostileAttack(this, actor); const index = this.marines.indexOf(actor); if (index >= 0) this.marines.splice(index, 1);
+    if (!actor._combatDisposed) { disposeObject(actor.mesh, this.sharedResources); actor._combatDisposed = true; } if (event) this.onDefeated?.(event); return event;
+  }
+
+
 }

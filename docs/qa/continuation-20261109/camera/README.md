@@ -1,0 +1,9 @@
+# Caméra physique de l'insertion
+
+La séquence `GameApp.updateInsertionPresentation` lissait les caméras vers la capsule puis le joueur, sans appliquer la collision physique du suivi normal. Le contrôle de la méthode réelle, avec le vrai environnement Val Verde, graine 1, et deux capsules, détecte la première traversée de la branche `val-verde-canopy-east-south` par la caméra P2 à **1,7167 s**. Le diagnostic de la séquence compte **183 images joueur obstruées** pendant l'ouverture et la sortie. La caméra P1 ne traverse pas de contact physique dans ce cas.
+
+Le correctif utilise le solveur existant, après le lissage, séparément pour chaque caméra. Le rayon du plan proche conserve sa valeur propre à chaque vue. Aucun toit, branche, matériau ou acteur n'est supprimé, caché ou déplacé ; les effectifs et les collisions du joueur sont inchangés.
+
+Le nouveau test charge les vraies méthodes de `GameApp`, sans construire son DOM ou son contexte WebGL. Il déroule la vraie insertion et vérifie chaque trajet de caméra contre le registre physique de Val Verde. Deux autres cas vérifient le gel des deux caméras en pause/mode photo et l'absence d'écriture après une insertion inactive. Avant correction : **1 réussi, 2 échoués**. Après correction, ces trois cas et les tests existants de caméra, capsule, séquence et surfaces passent : **32/32**, sans saut ni annulation. Les deux journaux sont conservés et [le relevé](validation.json) identifie leurs empreintes et le code de travail.
+
+La vieille capture de P1 conserve un toit de baraque au premier plan qui masque une partie des jambes ; cela ne prouve pas la même obstruction du boom et ce correctif ne prétend pas la supprimer. La vérification dans le navigateur est confiée à l'agent QA. Aucune fidélité visuelle 1:1, performance matérielle ou clôture générale d'AUD-104/AUD-067 n'est établie par les tests Node.

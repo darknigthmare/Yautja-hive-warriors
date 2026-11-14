@@ -1,0 +1,3884 @@
+{
+  "schemaVersion": 1,
+  "mode": "after",
+  "status": "passed",
+  "startedAt": "2026-11-09T06:00:23.673Z",
+  "sourceRoot": "/workspace/Yautja-fidelity-20261109",
+  "sourceFingerprint": "3d32ced7f9ed824653c77a03ec10505c3ae44e44a8beec6603f70889510b2cb2",
+  "sourceBuildCommit": "1a6eeb84445d5b01b13db7f4165f4d17499377e3",
+  "buildInfo": {
+    "schemaVersion": 1,
+    "contentVersion": "v70-fidelity-20261109",
+    "sourceCommit": "1a6eeb84445d5b01b13db7f4165f4d17499377e3",
+    "sourceBranch": "codex/fidelity-20261109",
+    "sourceFingerprint": "3d32ced7f9ed824653c77a03ec10505c3ae44e44a8beec6603f70889510b2cb2",
+    "sourceFiles": 197,
+    "sourceTreeDirty": false,
+    "buildEpoch": 1794203954,
+    "reproducibleBuildDate": "2026-11-09T05:59:14.000Z",
+    "deploymentProof": "https://github.com/darknigthmare/Yautja-hive-warriors/blob/codex/fidelity-20261109/docs/qa/fidelity-20261109-validation.json"
+  },
+  "studioBefore": {
+    "sourceRoot": "/workspace/Yautja-fidelity-20261109",
+    "sourceCommit": "1a6eeb84445d5b01b13db7f4165f4d17499377e3",
+    "source": {
+      "sha256": "3d32ced7f9ed824653c77a03ec10505c3ae44e44a8beec6603f70889510b2cb2",
+      "files": 197
+    },
+    "sourceTreeDirty": false,
+    "fixtureSha256": "e272d30a756f6bebe9798e9bcabb01e0c565469f9a5c8768d7c781a8b2e021ae"
+  },
+  "indexSha256": "a8526c19acfa8c5199fdb780e1da44eae352491cd45f4c7ea6b4def7104abf9d",
+  "buildInfoSha256": "60bba725f2efd7a63626c2319050b6b903e5f72c6008c7d9d1396b476887dcfe",
+  "nodeVersion": "v24.19.0",
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "hardwarePerformanceMeasured": false,
+  "scope": "Controlled asset studio plus real Val Verde cooperative pilot insertion and three seconds of actual gameplay. Screenshots record the tested source/build; no human review, source-film accuracy certification, natural victory, exhaustive combat or hardware FPS claim.",
+  "assistances": [
+    "Global gameplay is paused between ordinary DOM menu actions; the actual Game.update advances at 1/60 for repeatable insertion stages and three seconds after insertion.",
+    "Both genuine game cameras and world geometry remain unchanged. No actor, HP, strategic time, capsule phase, save data, resource, collision or world visibility assignment is used.",
+    "A separate Three r160 Raycaster imported from the local source studio observes visible actual meshes along camera-to-head/chest/feet lines; actor meshes are excluded as self intersections. Collider traces and visible-mesh raycasts are reported separately.",
+    "The separate asset studio loads actual source factories into fixed neutral light, camera, exposure and framing. It is an inspection scene, not a gameplay or hardware-performance benchmark."
+  ],
+  "errors": [],
+  "failedRequests": [],
+  "httpErrors": [],
+  "externalRequests": [],
+  "screenshots": [
+    {
+      "stage": "studio",
+      "path": "studio-honor-guard-front.png",
+      "sha256": "3e4ff8d6a2cd886a6e4b668521036b40c22f0b721160e80f1b839c6301f570ce"
+    },
+    {
+      "stage": "studio",
+      "path": "studio-honor-guard-quarter.png",
+      "sha256": "f11d794dd33cda5c77e73ac384c929548782c72a0ad1d99bf1327689cbb241f7"
+    },
+    {
+      "stage": "studio",
+      "path": "studio-honor-guard-alt-quarter.png",
+      "sha256": "93fe79451165406cd29144f4540648e6e3c19416a6f95ebde4482e1ea9657094"
+    },
+    {
+      "stage": "studio",
+      "path": "studio-marine-marine-front.png",
+      "sha256": "5e2c7c5fa0fcf0d4545ebe403c86b2b1db5a0b483453e7bf5209100e8fb08213"
+    },
+    {
+      "stage": "studio",
+      "path": "studio-marine-marine-quarter.png",
+      "sha256": "2aba0a197c2d3efbd2cc8cb47dfb719df744bcb7fda6bd5b084ff40138610b70"
+    },
+    {
+      "stage": "studio",
+      "path": "studio-synthetic-quarter.png",
+      "sha256": "fef6a72fd96c5f33be2abe9a24bb2dbcfe6e9d4e1c42aebe002e573ea39bf435"
+    },
+    {
+      "stage": "studio",
+      "path": "studio-capsule-front-opening0.png",
+      "sha256": "6712cbdcd91969350fa5a6b255a0bb646c5e7f755a3ea6a1b40b518ae3956562"
+    },
+    {
+      "stage": "studio",
+      "path": "studio-capsule-quarter-opening0.png",
+      "sha256": "ce59e912f1d0eda10ef6c8f976a1525095f6118e09fc34f57db7b28611cb6f8a"
+    },
+    {
+      "stage": "studio",
+      "path": "studio-capsule-front-opening1.png",
+      "sha256": "98faec08f623277a6651513819583695a107de45a94bf0eec54ad2fcd2ed547a"
+    },
+    {
+      "stage": "studio",
+      "path": "studio-capsule-quarter-opening1.png",
+      "sha256": "eec6b8445ce19dcabc4b727654ea2b8bb78b217d4ad898fdeed278c16006d1ec"
+    },
+    {
+      "stage": "studio",
+      "path": "studio-roleSheet.png",
+      "sha256": "8f99d7436f877b4c71a848d83f9ac8bbf501026c427e977954aad068de4a856b"
+    },
+    {
+      "stage": "studio",
+      "path": "studio-surfaceSheet.png",
+      "sha256": "216b86f9d979aba9c7cdb19b3dbae1765823a050a45368c1e3a981747f97cebb"
+    },
+    {
+      "stage": "studio",
+      "path": "studio-wood-new-surface.png",
+      "sha256": "c8cbe85ab04b54aaa1892aee26404fbb54428888e2f8652286411931b7dfbd23"
+    },
+    {
+      "stage": "gameplay",
+      "path": "val-verde-real-coop-opening.png",
+      "sha256": "ff742d74c2c31e9d6be0c8e659c31f7a73ff9d558840d8d410470f08f1a69171"
+    },
+    {
+      "stage": "gameplay",
+      "path": "val-verde-real-coop-exiting.png",
+      "sha256": "0c63a8c8e2cf566d3a976d681d0a0ba2e1bb8e49d3f385f1d7715ecab90b1627"
+    },
+    {
+      "stage": "gameplay",
+      "path": "val-verde-real-coop-after3s.png",
+      "sha256": "3d6f338e15ca1ae57f0cdf4dae7637d1014c4c7f87ebd4865830140098bcb696"
+    }
+  ],
+  "studio": [
+    {
+      "kind": "honor-guard",
+      "view": "front",
+      "opening": 0,
+      "model": {
+        "triangles": 46616,
+        "vertices": 28549,
+        "meshes": 9,
+        "meshInstances": 39,
+        "uniqueGeometryBytes": 1198700,
+        "geometries": 9,
+        "materials": 7,
+        "malformed": 0,
+        "bounds": {
+          "min": [
+            -1.023563003540039,
+            0.005975856073200702,
+            -0.78
+          ],
+          "max": [
+            1.023563003540039,
+            4.100039863586425,
+            1.2405086070299147
+          ],
+          "size": [
+            2.047126007080078,
+            4.094064007513224,
+            2.0205086070299147
+          ]
+        },
+        "anatomy": {
+          "headHeight": 0.64,
+          "standingHeight": 4.1,
+          "headsTall": 6.41,
+          "species": "yautja",
+          "silhouette": "original-clan-honor-guard"
+        },
+        "weaponKind": null,
+        "visualSource": null
+      },
+      "framing": {
+        "position": [
+          0,
+          1.95,
+          10
+        ],
+        "quaternion": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "left": -3.1999999999999997,
+        "right": 3.1999999999999997,
+        "top": 2.4,
+        "bottom": -2.4,
+        "near": 0.05,
+        "far": 80,
+        "exposure": 1.12,
+        "toneMapping": 4,
+        "outputColorSpace": "srgb"
+      },
+      "render": {
+        "frame": 36,
+        "calls": 10,
+        "triangles": 46618,
+        "points": 0,
+        "lines": 0
+      },
+      "surfaces": {
+        "types": [
+          "skin",
+          "armor",
+          "metal",
+          "leather",
+          "bone"
+        ],
+        "textureViews": 15,
+        "sharedImageSources": 15,
+        "sourceBytes": 119537664,
+        "resolutions": {
+          "skin": 2048,
+          "armor": 2048,
+          "metal": 1024,
+          "leather": 512,
+          "bone": 512
+        },
+        "anisotropy": 1
+      },
+      "capture": {
+        "stage": "studio",
+        "path": "studio-honor-guard-front.png",
+        "sha256": "3e4ff8d6a2cd886a6e4b668521036b40c22f0b721160e80f1b839c6301f570ce"
+      }
+    },
+    {
+      "kind": "honor-guard",
+      "view": "quarter",
+      "opening": 0,
+      "model": {
+        "triangles": 46616,
+        "vertices": 28549,
+        "meshes": 9,
+        "meshInstances": 39,
+        "uniqueGeometryBytes": 1198700,
+        "geometries": 9,
+        "materials": 7,
+        "malformed": 0,
+        "bounds": {
+          "min": [
+            -1.023563003540039,
+            0.005975856073200702,
+            -0.78
+          ],
+          "max": [
+            1.023563003540039,
+            4.100039863586425,
+            1.2405086070299147
+          ],
+          "size": [
+            2.047126007080078,
+            4.094064007513224,
+            2.0205086070299147
+          ]
+        },
+        "anatomy": {
+          "headHeight": 0.64,
+          "standingHeight": 4.1,
+          "headsTall": 6.41,
+          "species": "yautja",
+          "silhouette": "original-clan-honor-guard"
+        },
+        "weaponKind": null,
+        "visualSource": null
+      },
+      "framing": {
+        "position": [
+          7,
+          3.15,
+          10
+        ],
+        "quaternion": [
+          -0.046711103622080766,
+          0.30027859135229445,
+          0.014724378287774462,
+          0.9525933198684146
+        ],
+        "left": -3.1999999999999997,
+        "right": 3.1999999999999997,
+        "top": 2.4,
+        "bottom": -2.4,
+        "near": 0.05,
+        "far": 80,
+        "exposure": 1.12,
+        "toneMapping": 4,
+        "outputColorSpace": "srgb"
+      },
+      "render": {
+        "frame": 37,
+        "calls": 10,
+        "triangles": 46618,
+        "points": 0,
+        "lines": 0
+      },
+      "surfaces": {
+        "types": [
+          "skin",
+          "armor",
+          "metal",
+          "leather",
+          "bone"
+        ],
+        "textureViews": 15,
+        "sharedImageSources": 15,
+        "sourceBytes": 119537664,
+        "resolutions": {
+          "skin": 2048,
+          "armor": 2048,
+          "metal": 1024,
+          "leather": 512,
+          "bone": 512
+        },
+        "anisotropy": 1
+      },
+      "capture": {
+        "stage": "studio",
+        "path": "studio-honor-guard-quarter.png",
+        "sha256": "f11d794dd33cda5c77e73ac384c929548782c72a0ad1d99bf1327689cbb241f7"
+      }
+    },
+    {
+      "kind": "honor-guard-alt",
+      "view": "quarter",
+      "opening": 0,
+      "model": {
+        "triangles": 46616,
+        "vertices": 28549,
+        "meshes": 9,
+        "meshInstances": 39,
+        "uniqueGeometryBytes": 1198700,
+        "geometries": 9,
+        "materials": 7,
+        "malformed": 0,
+        "bounds": {
+          "min": [
+            -1.023563003540039,
+            0.005975856073200702,
+            -0.78
+          ],
+          "max": [
+            1.023563003540039,
+            4.100039863586425,
+            1.2405086070299147
+          ],
+          "size": [
+            2.047126007080078,
+            4.094064007513224,
+            2.0205086070299147
+          ]
+        },
+        "anatomy": {
+          "headHeight": 0.64,
+          "standingHeight": 4.1,
+          "headsTall": 6.41,
+          "species": "yautja",
+          "silhouette": "original-clan-honor-guard"
+        },
+        "weaponKind": null,
+        "visualSource": null
+      },
+      "framing": {
+        "position": [
+          7,
+          3.15,
+          10
+        ],
+        "quaternion": [
+          -0.046711103622080766,
+          0.30027859135229445,
+          0.014724378287774462,
+          0.9525933198684146
+        ],
+        "left": -3.1999999999999997,
+        "right": 3.1999999999999997,
+        "top": 2.4,
+        "bottom": -2.4,
+        "near": 0.05,
+        "far": 80,
+        "exposure": 1.12,
+        "toneMapping": 4,
+        "outputColorSpace": "srgb"
+      },
+      "render": {
+        "frame": 38,
+        "calls": 10,
+        "triangles": 46618,
+        "points": 0,
+        "lines": 0
+      },
+      "surfaces": {
+        "types": [
+          "skin",
+          "armor",
+          "metal",
+          "leather",
+          "bone"
+        ],
+        "textureViews": 15,
+        "sharedImageSources": 15,
+        "sourceBytes": 119537664,
+        "resolutions": {
+          "skin": 2048,
+          "armor": 2048,
+          "metal": 1024,
+          "leather": 512,
+          "bone": 512
+        },
+        "anisotropy": 1
+      },
+      "capture": {
+        "stage": "studio",
+        "path": "studio-honor-guard-alt-quarter.png",
+        "sha256": "93fe79451165406cd29144f4540648e6e3c19416a6f95ebde4482e1ea9657094"
+      }
+    },
+    {
+      "kind": "marine:marine",
+      "view": "front",
+      "opening": 0,
+      "model": {
+        "triangles": 40928,
+        "vertices": 122784,
+        "meshes": 7,
+        "meshInstances": 7,
+        "uniqueGeometryBytes": 4033920,
+        "geometries": 7,
+        "materials": 7,
+        "malformed": 0,
+        "bounds": {
+          "min": [
+            -0.6885606646537781,
+            0,
+            -0.2872615158557892
+          ],
+          "max": [
+            0.6878793835639954,
+            3.444999933242798,
+            1.7450000047683716
+          ],
+          "size": [
+            1.3764400482177734,
+            3.444999933242798,
+            2.0322615206241608
+          ]
+        },
+        "anatomy": {
+          "headHeight": 0.46,
+          "standingHeight": 3.445,
+          "headsTall": 7.489130434782608
+        },
+        "weaponKind": "marine",
+        "visualSource": "procedural-role-study"
+      },
+      "framing": {
+        "position": [
+          0,
+          1.95,
+          10
+        ],
+        "quaternion": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "left": -3.1999999999999997,
+        "right": 3.1999999999999997,
+        "top": 2.4,
+        "bottom": -2.4,
+        "near": 0.05,
+        "far": 80,
+        "exposure": 1.12,
+        "toneMapping": 4,
+        "outputColorSpace": "srgb"
+      },
+      "render": {
+        "frame": 39,
+        "calls": 8,
+        "triangles": 40930,
+        "points": 0,
+        "lines": 0
+      },
+      "surfaces": {
+        "types": [
+          "skin",
+          "armor",
+          "metal",
+          "leather",
+          "bone",
+          "fabric",
+          "humanSkin"
+        ],
+        "textureViews": 21,
+        "sharedImageSources": 21,
+        "sourceBytes": 135266304,
+        "resolutions": {
+          "skin": 2048,
+          "armor": 2048,
+          "metal": 1024,
+          "leather": 512,
+          "bone": 512,
+          "fabric": 512,
+          "humanSkin": 1024
+        },
+        "anisotropy": 1
+      },
+      "capture": {
+        "stage": "studio",
+        "path": "studio-marine-marine-front.png",
+        "sha256": "5e2c7c5fa0fcf0d4545ebe403c86b2b1db5a0b483453e7bf5209100e8fb08213"
+      }
+    },
+    {
+      "kind": "marine:marine",
+      "view": "quarter",
+      "opening": 0,
+      "model": {
+        "triangles": 40928,
+        "vertices": 122784,
+        "meshes": 7,
+        "meshInstances": 7,
+        "uniqueGeometryBytes": 4033920,
+        "geometries": 7,
+        "materials": 7,
+        "malformed": 0,
+        "bounds": {
+          "min": [
+            -0.6885606646537781,
+            0,
+            -0.2872615158557892
+          ],
+          "max": [
+            0.6878793835639954,
+            3.444999933242798,
+            1.7450000047683716
+          ],
+          "size": [
+            1.3764400482177734,
+            3.444999933242798,
+            2.0322615206241608
+          ]
+        },
+        "anatomy": {
+          "headHeight": 0.46,
+          "standingHeight": 3.445,
+          "headsTall": 7.489130434782608
+        },
+        "weaponKind": "marine",
+        "visualSource": "procedural-role-study"
+      },
+      "framing": {
+        "position": [
+          7,
+          3.15,
+          10
+        ],
+        "quaternion": [
+          -0.046711103622080766,
+          0.30027859135229445,
+          0.014724378287774462,
+          0.9525933198684146
+        ],
+        "left": -3.1999999999999997,
+        "right": 3.1999999999999997,
+        "top": 2.4,
+        "bottom": -2.4,
+        "near": 0.05,
+        "far": 80,
+        "exposure": 1.12,
+        "toneMapping": 4,
+        "outputColorSpace": "srgb"
+      },
+      "render": {
+        "frame": 40,
+        "calls": 8,
+        "triangles": 40930,
+        "points": 0,
+        "lines": 0
+      },
+      "surfaces": {
+        "types": [
+          "skin",
+          "armor",
+          "metal",
+          "leather",
+          "bone",
+          "fabric",
+          "humanSkin"
+        ],
+        "textureViews": 21,
+        "sharedImageSources": 21,
+        "sourceBytes": 135266304,
+        "resolutions": {
+          "skin": 2048,
+          "armor": 2048,
+          "metal": 1024,
+          "leather": 512,
+          "bone": 512,
+          "fabric": 512,
+          "humanSkin": 1024
+        },
+        "anisotropy": 1
+      },
+      "capture": {
+        "stage": "studio",
+        "path": "studio-marine-marine-quarter.png",
+        "sha256": "2aba0a197c2d3efbd2cc8cb47dfb719df744bcb7fda6bd5b084ff40138610b70"
+      }
+    },
+    {
+      "kind": "synthetic",
+      "view": "quarter",
+      "opening": 0,
+      "model": {
+        "triangles": 36084,
+        "vertices": 107262,
+        "meshes": 16,
+        "meshInstances": 16,
+        "uniqueGeometryBytes": 3434832,
+        "geometries": 16,
+        "materials": 14,
+        "malformed": 0,
+        "bounds": {
+          "min": [
+            -0.6960731744766235,
+            0.009754999540746212,
+            -0.2849999964237213
+          ],
+          "max": [
+            0.6923925876617432,
+            3.4100000041723253,
+            1.199966311454773
+          ],
+          "size": [
+            1.3884657621383667,
+            3.400245004631579,
+            1.4849663078784943
+          ]
+        },
+        "anatomy": {
+          "headHeight": 0.46,
+          "standingHeight": 3.41,
+          "headsTall": 7.41
+        },
+        "weaponKind": null,
+        "visualSource": null
+      },
+      "framing": {
+        "position": [
+          7,
+          3.15,
+          10
+        ],
+        "quaternion": [
+          -0.046711103622080766,
+          0.30027859135229445,
+          0.014724378287774462,
+          0.9525933198684146
+        ],
+        "left": -3.1999999999999997,
+        "right": 3.1999999999999997,
+        "top": 2.4,
+        "bottom": -2.4,
+        "near": 0.05,
+        "far": 80,
+        "exposure": 1.12,
+        "toneMapping": 4,
+        "outputColorSpace": "srgb"
+      },
+      "render": {
+        "frame": 41,
+        "calls": 17,
+        "triangles": 36086,
+        "points": 0,
+        "lines": 0
+      },
+      "surfaces": {
+        "types": [
+          "skin",
+          "armor",
+          "metal",
+          "leather",
+          "bone",
+          "fabric",
+          "humanSkin"
+        ],
+        "textureViews": 24,
+        "sharedImageSources": 21,
+        "sourceBytes": 135266304,
+        "resolutions": {
+          "skin": 2048,
+          "armor": 2048,
+          "metal": 1024,
+          "leather": 512,
+          "bone": 512,
+          "fabric": 512,
+          "humanSkin": 1024
+        },
+        "anisotropy": 1
+      },
+      "capture": {
+        "stage": "studio",
+        "path": "studio-synthetic-quarter.png",
+        "sha256": "fef6a72fd96c5f33be2abe9a24bb2dbcfe6e9d4e1c42aebe002e573ea39bf435"
+      }
+    },
+    {
+      "kind": "capsule",
+      "view": "front",
+      "opening": 0,
+      "model": {
+        "triangles": 63808,
+        "vertices": 191424,
+        "meshes": 14,
+        "meshInstances": 14,
+        "uniqueGeometryBytes": 6139392,
+        "geometries": 14,
+        "materials": 6,
+        "malformed": 0,
+        "bounds": {
+          "min": [
+            -2.141730308532715,
+            -0.14000000059604645,
+            -1.9241671562194824
+          ],
+          "max": [
+            2.141730308532715,
+            6.840000152587891,
+            1.785067400932312
+          ],
+          "size": [
+            4.28346061706543,
+            6.980000153183937,
+            3.7092345571517944
+          ]
+        },
+        "anatomy": null,
+        "weaponKind": null,
+        "visualSource": null
+      },
+      "framing": {
+        "position": [
+          0,
+          3.4,
+          10
+        ],
+        "quaternion": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "left": -5.333333333333333,
+        "right": 5.333333333333333,
+        "top": 4,
+        "bottom": -4,
+        "near": 0.05,
+        "far": 80,
+        "exposure": 1.12,
+        "toneMapping": 4,
+        "outputColorSpace": "srgb"
+      },
+      "render": {
+        "frame": 42,
+        "calls": 15,
+        "triangles": 63810,
+        "points": 0,
+        "lines": 0
+      },
+      "surfaces": {
+        "types": [
+          "skin",
+          "armor",
+          "metal",
+          "leather",
+          "bone",
+          "fabric",
+          "humanSkin"
+        ],
+        "textureViews": 36,
+        "sharedImageSources": 21,
+        "sourceBytes": 135266304,
+        "resolutions": {
+          "skin": 2048,
+          "armor": 2048,
+          "metal": 1024,
+          "leather": 512,
+          "bone": 512,
+          "fabric": 512,
+          "humanSkin": 1024
+        },
+        "anisotropy": 1
+      },
+      "capture": {
+        "stage": "studio",
+        "path": "studio-capsule-front-opening0.png",
+        "sha256": "6712cbdcd91969350fa5a6b255a0bb646c5e7f755a3ea6a1b40b518ae3956562"
+      }
+    },
+    {
+      "kind": "capsule",
+      "view": "quarter",
+      "opening": 0,
+      "model": {
+        "triangles": 63808,
+        "vertices": 191424,
+        "meshes": 14,
+        "meshInstances": 14,
+        "uniqueGeometryBytes": 6139392,
+        "geometries": 14,
+        "materials": 6,
+        "malformed": 0,
+        "bounds": {
+          "min": [
+            -2.141730308532715,
+            -0.14000000059604645,
+            -1.9241671562194824
+          ],
+          "max": [
+            2.141730308532715,
+            6.840000152587891,
+            1.785067400932312
+          ],
+          "size": [
+            4.28346061706543,
+            6.980000153183937,
+            3.7092345571517944
+          ]
+        },
+        "anatomy": null,
+        "weaponKind": null,
+        "visualSource": null
+      },
+      "framing": {
+        "position": [
+          7,
+          4.6,
+          10
+        ],
+        "quaternion": [
+          -0.04671110362208075,
+          0.30027859135229445,
+          0.014724378287774459,
+          0.9525933198684146
+        ],
+        "left": -5.333333333333333,
+        "right": 5.333333333333333,
+        "top": 4,
+        "bottom": -4,
+        "near": 0.05,
+        "far": 80,
+        "exposure": 1.12,
+        "toneMapping": 4,
+        "outputColorSpace": "srgb"
+      },
+      "render": {
+        "frame": 43,
+        "calls": 15,
+        "triangles": 63810,
+        "points": 0,
+        "lines": 0
+      },
+      "surfaces": {
+        "types": [
+          "skin",
+          "armor",
+          "metal",
+          "leather",
+          "bone",
+          "fabric",
+          "humanSkin"
+        ],
+        "textureViews": 36,
+        "sharedImageSources": 21,
+        "sourceBytes": 135266304,
+        "resolutions": {
+          "skin": 2048,
+          "armor": 2048,
+          "metal": 1024,
+          "leather": 512,
+          "bone": 512,
+          "fabric": 512,
+          "humanSkin": 1024
+        },
+        "anisotropy": 1
+      },
+      "capture": {
+        "stage": "studio",
+        "path": "studio-capsule-quarter-opening0.png",
+        "sha256": "ce59e912f1d0eda10ef6c8f976a1525095f6118e09fc34f57db7b28611cb6f8a"
+      }
+    },
+    {
+      "kind": "capsule",
+      "view": "front",
+      "opening": 1,
+      "model": {
+        "triangles": 63808,
+        "vertices": 191424,
+        "meshes": 14,
+        "meshInstances": 14,
+        "uniqueGeometryBytes": 6139392,
+        "geometries": 14,
+        "materials": 6,
+        "malformed": 0,
+        "bounds": {
+          "min": [
+            -2.374655904262261,
+            -0.14000000059604645,
+            -1.9241671562194824
+          ],
+          "max": [
+            2.374655904262261,
+            6.840000152587891,
+            2.937743014463399
+          ],
+          "size": [
+            4.749311808524522,
+            6.980000153183937,
+            4.861910170682881
+          ]
+        },
+        "anatomy": null,
+        "weaponKind": null,
+        "visualSource": null
+      },
+      "framing": {
+        "position": [
+          0,
+          3.4,
+          10
+        ],
+        "quaternion": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "left": -5.333333333333333,
+        "right": 5.333333333333333,
+        "top": 4,
+        "bottom": -4,
+        "near": 0.05,
+        "far": 80,
+        "exposure": 1.12,
+        "toneMapping": 4,
+        "outputColorSpace": "srgb"
+      },
+      "render": {
+        "frame": 44,
+        "calls": 15,
+        "triangles": 63810,
+        "points": 0,
+        "lines": 0
+      },
+      "surfaces": {
+        "types": [
+          "skin",
+          "armor",
+          "metal",
+          "leather",
+          "bone",
+          "fabric",
+          "humanSkin"
+        ],
+        "textureViews": 36,
+        "sharedImageSources": 21,
+        "sourceBytes": 135266304,
+        "resolutions": {
+          "skin": 2048,
+          "armor": 2048,
+          "metal": 1024,
+          "leather": 512,
+          "bone": 512,
+          "fabric": 512,
+          "humanSkin": 1024
+        },
+        "anisotropy": 1
+      },
+      "capture": {
+        "stage": "studio",
+        "path": "studio-capsule-front-opening1.png",
+        "sha256": "98faec08f623277a6651513819583695a107de45a94bf0eec54ad2fcd2ed547a"
+      }
+    },
+    {
+      "kind": "capsule",
+      "view": "quarter",
+      "opening": 1,
+      "model": {
+        "triangles": 63808,
+        "vertices": 191424,
+        "meshes": 14,
+        "meshInstances": 14,
+        "uniqueGeometryBytes": 6139392,
+        "geometries": 14,
+        "materials": 6,
+        "malformed": 0,
+        "bounds": {
+          "min": [
+            -2.374655904262261,
+            -0.14000000059604645,
+            -1.9241671562194824
+          ],
+          "max": [
+            2.374655904262261,
+            6.840000152587891,
+            2.937743014463399
+          ],
+          "size": [
+            4.749311808524522,
+            6.980000153183937,
+            4.861910170682881
+          ]
+        },
+        "anatomy": null,
+        "weaponKind": null,
+        "visualSource": null
+      },
+      "framing": {
+        "position": [
+          7,
+          4.6,
+          10
+        ],
+        "quaternion": [
+          -0.04671110362208075,
+          0.30027859135229445,
+          0.014724378287774459,
+          0.9525933198684146
+        ],
+        "left": -5.333333333333333,
+        "right": 5.333333333333333,
+        "top": 4,
+        "bottom": -4,
+        "near": 0.05,
+        "far": 80,
+        "exposure": 1.12,
+        "toneMapping": 4,
+        "outputColorSpace": "srgb"
+      },
+      "render": {
+        "frame": 45,
+        "calls": 15,
+        "triangles": 63810,
+        "points": 0,
+        "lines": 0
+      },
+      "surfaces": {
+        "types": [
+          "skin",
+          "armor",
+          "metal",
+          "leather",
+          "bone",
+          "fabric",
+          "humanSkin"
+        ],
+        "textureViews": 36,
+        "sharedImageSources": 21,
+        "sourceBytes": 135266304,
+        "resolutions": {
+          "skin": 2048,
+          "armor": 2048,
+          "metal": 1024,
+          "leather": 512,
+          "bone": 512,
+          "fabric": 512,
+          "humanSkin": 1024
+        },
+        "anisotropy": 1
+      },
+      "capture": {
+        "stage": "studio",
+        "path": "studio-capsule-quarter-opening1.png",
+        "sha256": "eec6b8445ce19dcabc4b727654ea2b8bb78b217d4ad898fdeed278c16006d1ec"
+      }
+    },
+    {
+      "title": "Eight preserved human equipment roles",
+      "columns": 4,
+      "rows": 2,
+      "assets": [
+        {
+          "kind": "marine:marine",
+          "model": {
+            "triangles": 40928,
+            "vertices": 122784,
+            "meshes": 7,
+            "meshInstances": 7,
+            "uniqueGeometryBytes": 4033920,
+            "geometries": 7,
+            "materials": 7,
+            "malformed": 0,
+            "bounds": {
+              "min": [
+                -0.6885606646537781,
+                0,
+                -0.2872615158557892
+              ],
+              "max": [
+                0.6878793835639954,
+                3.444999933242798,
+                1.7450000047683716
+              ],
+              "size": [
+                1.3764400482177734,
+                3.444999933242798,
+                2.0322615206241608
+              ]
+            },
+            "anatomy": {
+              "headHeight": 0.46,
+              "standingHeight": 3.445,
+              "headsTall": 7.489130434782608
+            },
+            "weaponKind": "marine",
+            "visualSource": "procedural-role-study"
+          },
+          "framing": {
+            "position": [
+              7,
+              3.15,
+              10
+            ],
+            "quaternion": [
+              -0.046711103622080766,
+              0.30027859135229445,
+              0.014724378287774462,
+              0.9525933198684146
+            ],
+            "left": -1.5999999999999999,
+            "right": 1.5999999999999999,
+            "top": 2.4,
+            "bottom": -2.4,
+            "near": 0.05,
+            "far": 80,
+            "exposure": 1.12,
+            "toneMapping": 4,
+            "outputColorSpace": "srgb"
+          },
+          "render": {
+            "frame": 46,
+            "calls": 8,
+            "triangles": 40930,
+            "points": 0,
+            "lines": 0
+          }
+        },
+        {
+          "kind": "marine:smartgunner",
+          "model": {
+            "triangles": 41120,
+            "vertices": 123360,
+            "meshes": 7,
+            "meshInstances": 7,
+            "uniqueGeometryBytes": 4052352,
+            "geometries": 7,
+            "materials": 7,
+            "malformed": 0,
+            "bounds": {
+              "min": [
+                -0.6885873675346375,
+                0,
+                -0.2872615158557892
+              ],
+              "max": [
+                0.6878793835639954,
+                3.444999933242798,
+                1.7450000047683716
+              ],
+              "size": [
+                1.3764667510986328,
+                3.444999933242798,
+                2.0322615206241608
+              ]
+            },
+            "anatomy": {
+              "headHeight": 0.46,
+              "standingHeight": 3.445,
+              "headsTall": 7.489130434782608
+            },
+            "weaponKind": "smartgunner",
+            "visualSource": "procedural-role-study"
+          },
+          "framing": {
+            "position": [
+              7,
+              3.15,
+              10
+            ],
+            "quaternion": [
+              -0.046711103622080766,
+              0.30027859135229445,
+              0.014724378287774462,
+              0.9525933198684146
+            ],
+            "left": -1.5999999999999999,
+            "right": 1.5999999999999999,
+            "top": 2.4,
+            "bottom": -2.4,
+            "near": 0.05,
+            "far": 80,
+            "exposure": 1.12,
+            "toneMapping": 4,
+            "outputColorSpace": "srgb"
+          },
+          "render": {
+            "frame": 47,
+            "calls": 8,
+            "triangles": 41122,
+            "points": 0,
+            "lines": 0
+          }
+        },
+        {
+          "kind": "marine:flametrooper",
+          "model": {
+            "triangles": 40400,
+            "vertices": 121200,
+            "meshes": 7,
+            "meshInstances": 7,
+            "uniqueGeometryBytes": 3983232,
+            "geometries": 7,
+            "materials": 7,
+            "malformed": 0,
+            "bounds": {
+              "min": [
+                -0.6884346604347229,
+                0,
+                -0.7699999809265137
+              ],
+              "max": [
+                0.6879903078079224,
+                3.444999933242798,
+                1.752500057220459
+              ],
+              "size": [
+                1.3764249682426453,
+                3.444999933242798,
+                2.5225000381469727
+              ]
+            },
+            "anatomy": {
+              "headHeight": 0.46,
+              "standingHeight": 3.445,
+              "headsTall": 7.489130434782608
+            },
+            "weaponKind": "flametrooper",
+            "visualSource": "procedural-role-study"
+          },
+          "framing": {
+            "position": [
+              7,
+              3.15,
+              10
+            ],
+            "quaternion": [
+              -0.046711103622080766,
+              0.30027859135229445,
+              0.014724378287774462,
+              0.9525933198684146
+            ],
+            "left": -1.5999999999999999,
+            "right": 1.5999999999999999,
+            "top": 2.4,
+            "bottom": -2.4,
+            "near": 0.05,
+            "far": 80,
+            "exposure": 1.12,
+            "toneMapping": 4,
+            "outputColorSpace": "srgb"
+          },
+          "render": {
+            "frame": 48,
+            "calls": 8,
+            "triangles": 40402,
+            "points": 0,
+            "lines": 0
+          }
+        },
+        {
+          "kind": "marine:medic",
+          "model": {
+            "triangles": 42452,
+            "vertices": 127356,
+            "meshes": 8,
+            "meshInstances": 8,
+            "uniqueGeometryBytes": 4180224,
+            "geometries": 8,
+            "materials": 8,
+            "malformed": 0,
+            "bounds": {
+              "min": [
+                -0.6977666616439819,
+                0,
+                -0.675000011920929
+              ],
+              "max": [
+                0.6883119940757751,
+                3.444999933242798,
+                1.0299999713897705
+              ],
+              "size": [
+                1.386078655719757,
+                3.444999933242798,
+                1.7049999833106995
+              ]
+            },
+            "anatomy": {
+              "headHeight": 0.46,
+              "standingHeight": 3.445,
+              "headsTall": 7.489130434782608
+            },
+            "weaponKind": "medic",
+            "visualSource": "procedural-role-study"
+          },
+          "framing": {
+            "position": [
+              7,
+              3.15,
+              10
+            ],
+            "quaternion": [
+              -0.046711103622080766,
+              0.30027859135229445,
+              0.014724378287774462,
+              0.9525933198684146
+            ],
+            "left": -1.5999999999999999,
+            "right": 1.5999999999999999,
+            "top": 2.4,
+            "bottom": -2.4,
+            "near": 0.05,
+            "far": 80,
+            "exposure": 1.12,
+            "toneMapping": 4,
+            "outputColorSpace": "srgb"
+          },
+          "render": {
+            "frame": 49,
+            "calls": 9,
+            "triangles": 42454,
+            "points": 0,
+            "lines": 0
+          }
+        },
+        {
+          "kind": "marine:commtech",
+          "model": {
+            "triangles": 42348,
+            "vertices": 127044,
+            "meshes": 8,
+            "meshInstances": 8,
+            "uniqueGeometryBytes": 4170240,
+            "geometries": 8,
+            "materials": 8,
+            "malformed": 0,
+            "bounds": {
+              "min": [
+                -0.6970292925834656,
+                0,
+                -0.6050000190734863
+              ],
+              "max": [
+                0.6900370121002197,
+                3.6503841876983643,
+                1.2649999856948853
+              ],
+              "size": [
+                1.3870663046836853,
+                3.6503841876983643,
+                1.8700000047683716
+              ]
+            },
+            "anatomy": {
+              "headHeight": 0.46,
+              "standingHeight": 3.445,
+              "headsTall": 7.489130434782608
+            },
+            "weaponKind": "commtech",
+            "visualSource": "procedural-role-study"
+          },
+          "framing": {
+            "position": [
+              7,
+              3.15,
+              10
+            ],
+            "quaternion": [
+              -0.046711103622080766,
+              0.30027859135229445,
+              0.014724378287774462,
+              0.9525933198684146
+            ],
+            "left": -1.5999999999999999,
+            "right": 1.5999999999999999,
+            "top": 2.4,
+            "bottom": -2.4,
+            "near": 0.05,
+            "far": 80,
+            "exposure": 1.12,
+            "toneMapping": 4,
+            "outputColorSpace": "srgb"
+          },
+          "render": {
+            "frame": 50,
+            "calls": 9,
+            "triangles": 42350,
+            "points": 0,
+            "lines": 0
+          }
+        },
+        {
+          "kind": "marine:sniper",
+          "model": {
+            "triangles": 41408,
+            "vertices": 124224,
+            "meshes": 7,
+            "meshInstances": 7,
+            "uniqueGeometryBytes": 4080000,
+            "geometries": 7,
+            "materials": 7,
+            "malformed": 0,
+            "bounds": {
+              "min": [
+                -0.6885606646537781,
+                0,
+                -0.2872615158557892
+              ],
+              "max": [
+                0.6878793835639954,
+                3.444999933242798,
+                2.3450000286102295
+              ],
+              "size": [
+                1.3764400482177734,
+                3.444999933242798,
+                2.6322615444660187
+              ]
+            },
+            "anatomy": {
+              "headHeight": 0.46,
+              "standingHeight": 3.445,
+              "headsTall": 7.489130434782608
+            },
+            "weaponKind": "sniper",
+            "visualSource": "procedural-role-study"
+          },
+          "framing": {
+            "position": [
+              7,
+              3.15,
+              10
+            ],
+            "quaternion": [
+              -0.046711103622080766,
+              0.30027859135229445,
+              0.014724378287774462,
+              0.9525933198684146
+            ],
+            "left": -1.5999999999999999,
+            "right": 1.5999999999999999,
+            "top": 2.4,
+            "bottom": -2.4,
+            "near": 0.05,
+            "far": 80,
+            "exposure": 1.12,
+            "toneMapping": 4,
+            "outputColorSpace": "srgb"
+          },
+          "render": {
+            "frame": 51,
+            "calls": 8,
+            "triangles": 41410,
+            "points": 0,
+            "lines": 0
+          }
+        },
+        {
+          "kind": "marine:sadar",
+          "model": {
+            "triangles": 38416,
+            "vertices": 115248,
+            "meshes": 7,
+            "meshInstances": 7,
+            "uniqueGeometryBytes": 3792768,
+            "geometries": 7,
+            "materials": 7,
+            "malformed": 0,
+            "bounds": {
+              "min": [
+                -0.7852014899253845,
+                0,
+                -0.4000000059604645
+              ],
+              "max": [
+                0.6832188963890076,
+                3.444999933242798,
+                1.7350000143051147
+              ],
+              "size": [
+                1.468420386314392,
+                3.444999933242798,
+                2.1350000202655792
+              ]
+            },
+            "anatomy": {
+              "headHeight": 0.46,
+              "standingHeight": 3.445,
+              "headsTall": 7.489130434782608
+            },
+            "weaponKind": "sadar",
+            "visualSource": "procedural-role-study"
+          },
+          "framing": {
+            "position": [
+              7,
+              3.15,
+              10
+            ],
+            "quaternion": [
+              -0.046711103622080766,
+              0.30027859135229445,
+              0.014724378287774462,
+              0.9525933198684146
+            ],
+            "left": -1.5999999999999999,
+            "right": 1.5999999999999999,
+            "top": 2.4,
+            "bottom": -2.4,
+            "near": 0.05,
+            "far": 80,
+            "exposure": 1.12,
+            "toneMapping": 4,
+            "outputColorSpace": "srgb"
+          },
+          "render": {
+            "frame": 52,
+            "calls": 8,
+            "triangles": 38418,
+            "points": 0,
+            "lines": 0
+          }
+        },
+        {
+          "kind": "marine:exosuit",
+          "model": {
+            "triangles": 43676,
+            "vertices": 131028,
+            "meshes": 7,
+            "meshInstances": 7,
+            "uniqueGeometryBytes": 4297728,
+            "geometries": 7,
+            "materials": 7,
+            "malformed": 0,
+            "bounds": {
+              "min": [
+                -0.9350000023841858,
+                0,
+                -0.6650000214576721
+              ],
+              "max": [
+                0.9350000023841858,
+                3.444999933242798,
+                1.8450000286102295
+              ],
+              "size": [
+                1.8700000047683716,
+                3.444999933242798,
+                2.5100000500679016
+              ]
+            },
+            "anatomy": {
+              "headHeight": 0.46,
+              "standingHeight": 3.445,
+              "headsTall": 7.489130434782608
+            },
+            "weaponKind": "exosuit",
+            "visualSource": "procedural-role-study"
+          },
+          "framing": {
+            "position": [
+              7,
+              3.15,
+              10
+            ],
+            "quaternion": [
+              -0.046711103622080766,
+              0.30027859135229445,
+              0.014724378287774462,
+              0.9525933198684146
+            ],
+            "left": -1.5999999999999999,
+            "right": 1.5999999999999999,
+            "top": 2.4,
+            "bottom": -2.4,
+            "near": 0.05,
+            "far": 80,
+            "exposure": 1.12,
+            "toneMapping": 4,
+            "outputColorSpace": "srgb"
+          },
+          "render": {
+            "frame": 53,
+            "calls": 8,
+            "triangles": 43678,
+            "points": 0,
+            "lines": 0
+          }
+        }
+      ],
+      "surfaces": {
+        "types": [
+          "skin",
+          "armor",
+          "metal",
+          "leather",
+          "bone",
+          "fabric",
+          "humanSkin"
+        ],
+        "textureViews": 36,
+        "sharedImageSources": 21,
+        "sourceBytes": 135266304,
+        "resolutions": {
+          "skin": 2048,
+          "armor": 2048,
+          "metal": 1024,
+          "leather": 512,
+          "bone": 512,
+          "fabric": 512,
+          "humanSkin": 1024
+        },
+        "anisotropy": 1
+      },
+      "capture": {
+        "stage": "studio",
+        "path": "studio-roleSheet.png",
+        "sha256": "8f99d7436f877b4c71a848d83f9ac8bbf501026c427e977954aad068de4a856b"
+      }
+    },
+    {
+      "title": "Shared surface library under identical neutral light",
+      "columns": 4,
+      "rows": 3,
+      "assets": [
+        {
+          "kind": "material:armor",
+          "model": {
+            "triangles": 2976,
+            "vertices": 1617,
+            "meshes": 1,
+            "meshInstances": 1,
+            "uniqueGeometryBytes": 69600,
+            "geometries": 1,
+            "materials": 1,
+            "malformed": 0,
+            "bounds": {
+              "min": [
+                -0.8999999761581421,
+                0.10000002384185791,
+                -0.8999999761581421
+              ],
+              "max": [
+                0.8999999761581421,
+                1.899999976158142,
+                0.8999999761581421
+              ],
+              "size": [
+                1.7999999523162842,
+                1.7999999523162842,
+                1.7999999523162842
+              ]
+            },
+            "anatomy": null,
+            "weaponKind": null,
+            "visualSource": null
+          },
+          "framing": {
+            "position": [
+              7,
+              2.2,
+              10
+            ],
+            "quaternion": [
+              -0.04671110362208078,
+              0.30027859135229445,
+              0.014724378287774464,
+              0.9525933198684146
+            ],
+            "left": -1.4,
+            "right": 1.4,
+            "top": 1.4,
+            "bottom": -1.4,
+            "near": 0.05,
+            "far": 80,
+            "exposure": 1.12,
+            "toneMapping": 4,
+            "outputColorSpace": "srgb"
+          },
+          "render": {
+            "frame": 54,
+            "calls": 2,
+            "triangles": 2978,
+            "points": 0,
+            "lines": 0
+          }
+        },
+        {
+          "kind": "material:metal",
+          "model": {
+            "triangles": 2976,
+            "vertices": 1617,
+            "meshes": 1,
+            "meshInstances": 1,
+            "uniqueGeometryBytes": 69600,
+            "geometries": 1,
+            "materials": 1,
+            "malformed": 0,
+            "bounds": {
+              "min": [
+                -0.8999999761581421,
+                0.10000002384185791,
+                -0.8999999761581421
+              ],
+              "max": [
+                0.8999999761581421,
+                1.899999976158142,
+                0.8999999761581421
+              ],
+              "size": [
+                1.7999999523162842,
+                1.7999999523162842,
+                1.7999999523162842
+              ]
+            },
+            "anatomy": null,
+            "weaponKind": null,
+            "visualSource": null
+          },
+          "framing": {
+            "position": [
+              7,
+              2.2,
+              10
+            ],
+            "quaternion": [
+              -0.04671110362208078,
+              0.30027859135229445,
+              0.014724378287774464,
+              0.9525933198684146
+            ],
+            "left": -1.4,
+            "right": 1.4,
+            "top": 1.4,
+            "bottom": -1.4,
+            "near": 0.05,
+            "far": 80,
+            "exposure": 1.12,
+            "toneMapping": 4,
+            "outputColorSpace": "srgb"
+          },
+          "render": {
+            "frame": 55,
+            "calls": 2,
+            "triangles": 2978,
+            "points": 0,
+            "lines": 0
+          }
+        },
+        {
+          "kind": "material:skin",
+          "model": {
+            "triangles": 2976,
+            "vertices": 1617,
+            "meshes": 1,
+            "meshInstances": 1,
+            "uniqueGeometryBytes": 69600,
+            "geometries": 1,
+            "materials": 1,
+            "malformed": 0,
+            "bounds": {
+              "min": [
+                -0.8999999761581421,
+                0.10000002384185791,
+                -0.8999999761581421
+              ],
+              "max": [
+                0.8999999761581421,
+                1.899999976158142,
+                0.8999999761581421
+              ],
+              "size": [
+                1.7999999523162842,
+                1.7999999523162842,
+                1.7999999523162842
+              ]
+            },
+            "anatomy": null,
+            "weaponKind": null,
+            "visualSource": null
+          },
+          "framing": {
+            "position": [
+              7,
+              2.2,
+              10
+            ],
+            "quaternion": [
+              -0.04671110362208078,
+              0.30027859135229445,
+              0.014724378287774464,
+              0.9525933198684146
+            ],
+            "left": -1.4,
+            "right": 1.4,
+            "top": 1.4,
+            "bottom": -1.4,
+            "near": 0.05,
+            "far": 80,
+            "exposure": 1.12,
+            "toneMapping": 4,
+            "outputColorSpace": "srgb"
+          },
+          "render": {
+            "frame": 56,
+            "calls": 2,
+            "triangles": 2978,
+            "points": 0,
+            "lines": 0
+          }
+        },
+        {
+          "kind": "material:humanSkin",
+          "model": {
+            "triangles": 2976,
+            "vertices": 1617,
+            "meshes": 1,
+            "meshInstances": 1,
+            "uniqueGeometryBytes": 69600,
+            "geometries": 1,
+            "materials": 1,
+            "malformed": 0,
+            "bounds": {
+              "min": [
+                -0.8999999761581421,
+                0.10000002384185791,
+                -0.8999999761581421
+              ],
+              "max": [
+                0.8999999761581421,
+                1.899999976158142,
+                0.8999999761581421
+              ],
+              "size": [
+                1.7999999523162842,
+                1.7999999523162842,
+                1.7999999523162842
+              ]
+            },
+            "anatomy": null,
+            "weaponKind": null,
+            "visualSource": null
+          },
+          "framing": {
+            "position": [
+              7,
+              2.2,
+              10
+            ],
+            "quaternion": [
+              -0.04671110362208078,
+              0.30027859135229445,
+              0.014724378287774464,
+              0.9525933198684146
+            ],
+            "left": -1.4,
+            "right": 1.4,
+            "top": 1.4,
+            "bottom": -1.4,
+            "near": 0.05,
+            "far": 80,
+            "exposure": 1.12,
+            "toneMapping": 4,
+            "outputColorSpace": "srgb"
+          },
+          "render": {
+            "frame": 57,
+            "calls": 2,
+            "triangles": 2978,
+            "points": 0,
+            "lines": 0
+          }
+        },
+        {
+          "kind": "material:fabric",
+          "model": {
+            "triangles": 2976,
+            "vertices": 1617,
+            "meshes": 1,
+            "meshInstances": 1,
+            "uniqueGeometryBytes": 69600,
+            "geometries": 1,
+            "materials": 1,
+            "malformed": 0,
+            "bounds": {
+              "min": [
+                -0.8999999761581421,
+                0.10000002384185791,
+                -0.8999999761581421
+              ],
+              "max": [
+                0.8999999761581421,
+                1.899999976158142,
+                0.8999999761581421
+              ],
+              "size": [
+                1.7999999523162842,
+                1.7999999523162842,
+                1.7999999523162842
+              ]
+            },
+            "anatomy": null,
+            "weaponKind": null,
+            "visualSource": null
+          },
+          "framing": {
+            "position": [
+              7,
+              2.2,
+              10
+            ],
+            "quaternion": [
+              -0.04671110362208078,
+              0.30027859135229445,
+              0.014724378287774464,
+              0.9525933198684146
+            ],
+            "left": -1.4,
+            "right": 1.4,
+            "top": 1.4,
+            "bottom": -1.4,
+            "near": 0.05,
+            "far": 80,
+            "exposure": 1.12,
+            "toneMapping": 4,
+            "outputColorSpace": "srgb"
+          },
+          "render": {
+            "frame": 58,
+            "calls": 2,
+            "triangles": 2978,
+            "points": 0,
+            "lines": 0
+          }
+        },
+        {
+          "kind": "material:leather",
+          "model": {
+            "triangles": 2976,
+            "vertices": 1617,
+            "meshes": 1,
+            "meshInstances": 1,
+            "uniqueGeometryBytes": 69600,
+            "geometries": 1,
+            "materials": 1,
+            "malformed": 0,
+            "bounds": {
+              "min": [
+                -0.8999999761581421,
+                0.10000002384185791,
+                -0.8999999761581421
+              ],
+              "max": [
+                0.8999999761581421,
+                1.899999976158142,
+                0.8999999761581421
+              ],
+              "size": [
+                1.7999999523162842,
+                1.7999999523162842,
+                1.7999999523162842
+              ]
+            },
+            "anatomy": null,
+            "weaponKind": null,
+            "visualSource": null
+          },
+          "framing": {
+            "position": [
+              7,
+              2.2,
+              10
+            ],
+            "quaternion": [
+              -0.04671110362208078,
+              0.30027859135229445,
+              0.014724378287774464,
+              0.9525933198684146
+            ],
+            "left": -1.4,
+            "right": 1.4,
+            "top": 1.4,
+            "bottom": -1.4,
+            "near": 0.05,
+            "far": 80,
+            "exposure": 1.12,
+            "toneMapping": 4,
+            "outputColorSpace": "srgb"
+          },
+          "render": {
+            "frame": 59,
+            "calls": 2,
+            "triangles": 2978,
+            "points": 0,
+            "lines": 0
+          }
+        },
+        {
+          "kind": "material:bark",
+          "model": {
+            "triangles": 2976,
+            "vertices": 1617,
+            "meshes": 1,
+            "meshInstances": 1,
+            "uniqueGeometryBytes": 69600,
+            "geometries": 1,
+            "materials": 1,
+            "malformed": 0,
+            "bounds": {
+              "min": [
+                -0.8999999761581421,
+                0.10000002384185791,
+                -0.8999999761581421
+              ],
+              "max": [
+                0.8999999761581421,
+                1.899999976158142,
+                0.8999999761581421
+              ],
+              "size": [
+                1.7999999523162842,
+                1.7999999523162842,
+                1.7999999523162842
+              ]
+            },
+            "anatomy": null,
+            "weaponKind": null,
+            "visualSource": null
+          },
+          "framing": {
+            "position": [
+              7,
+              2.2,
+              10
+            ],
+            "quaternion": [
+              -0.04671110362208078,
+              0.30027859135229445,
+              0.014724378287774464,
+              0.9525933198684146
+            ],
+            "left": -1.4,
+            "right": 1.4,
+            "top": 1.4,
+            "bottom": -1.4,
+            "near": 0.05,
+            "far": 80,
+            "exposure": 1.12,
+            "toneMapping": 4,
+            "outputColorSpace": "srgb"
+          },
+          "render": {
+            "frame": 60,
+            "calls": 2,
+            "triangles": 2978,
+            "points": 0,
+            "lines": 0
+          }
+        },
+        {
+          "kind": "material:chitin",
+          "model": {
+            "triangles": 2976,
+            "vertices": 1617,
+            "meshes": 1,
+            "meshInstances": 1,
+            "uniqueGeometryBytes": 69600,
+            "geometries": 1,
+            "materials": 1,
+            "malformed": 0,
+            "bounds": {
+              "min": [
+                -0.8999999761581421,
+                0.10000002384185791,
+                -0.8999999761581421
+              ],
+              "max": [
+                0.8999999761581421,
+                1.899999976158142,
+                0.8999999761581421
+              ],
+              "size": [
+                1.7999999523162842,
+                1.7999999523162842,
+                1.7999999523162842
+              ]
+            },
+            "anatomy": null,
+            "weaponKind": null,
+            "visualSource": null
+          },
+          "framing": {
+            "position": [
+              7,
+              2.2,
+              10
+            ],
+            "quaternion": [
+              -0.04671110362208078,
+              0.30027859135229445,
+              0.014724378287774464,
+              0.9525933198684146
+            ],
+            "left": -1.4,
+            "right": 1.4,
+            "top": 1.4,
+            "bottom": -1.4,
+            "near": 0.05,
+            "far": 80,
+            "exposure": 1.12,
+            "toneMapping": 4,
+            "outputColorSpace": "srgb"
+          },
+          "render": {
+            "frame": 61,
+            "calls": 2,
+            "triangles": 2978,
+            "points": 0,
+            "lines": 0
+          }
+        },
+        {
+          "kind": "material:stone",
+          "model": {
+            "triangles": 2976,
+            "vertices": 1617,
+            "meshes": 1,
+            "meshInstances": 1,
+            "uniqueGeometryBytes": 69600,
+            "geometries": 1,
+            "materials": 1,
+            "malformed": 0,
+            "bounds": {
+              "min": [
+                -0.8999999761581421,
+                0.10000002384185791,
+                -0.8999999761581421
+              ],
+              "max": [
+                0.8999999761581421,
+                1.899999976158142,
+                0.8999999761581421
+              ],
+              "size": [
+                1.7999999523162842,
+                1.7999999523162842,
+                1.7999999523162842
+              ]
+            },
+            "anatomy": null,
+            "weaponKind": null,
+            "visualSource": null
+          },
+          "framing": {
+            "position": [
+              7,
+              2.2,
+              10
+            ],
+            "quaternion": [
+              -0.04671110362208078,
+              0.30027859135229445,
+              0.014724378287774464,
+              0.9525933198684146
+            ],
+            "left": -1.4,
+            "right": 1.4,
+            "top": 1.4,
+            "bottom": -1.4,
+            "near": 0.05,
+            "far": 80,
+            "exposure": 1.12,
+            "toneMapping": 4,
+            "outputColorSpace": "srgb"
+          },
+          "render": {
+            "frame": 62,
+            "calls": 2,
+            "triangles": 2978,
+            "points": 0,
+            "lines": 0
+          }
+        },
+        {
+          "kind": "material:soil",
+          "model": {
+            "triangles": 2976,
+            "vertices": 1617,
+            "meshes": 1,
+            "meshInstances": 1,
+            "uniqueGeometryBytes": 69600,
+            "geometries": 1,
+            "materials": 1,
+            "malformed": 0,
+            "bounds": {
+              "min": [
+                -0.8999999761581421,
+                0.10000002384185791,
+                -0.8999999761581421
+              ],
+              "max": [
+                0.8999999761581421,
+                1.899999976158142,
+                0.8999999761581421
+              ],
+              "size": [
+                1.7999999523162842,
+                1.7999999523162842,
+                1.7999999523162842
+              ]
+            },
+            "anatomy": null,
+            "weaponKind": null,
+            "visualSource": null
+          },
+          "framing": {
+            "position": [
+              7,
+              2.2,
+              10
+            ],
+            "quaternion": [
+              -0.04671110362208078,
+              0.30027859135229445,
+              0.014724378287774464,
+              0.9525933198684146
+            ],
+            "left": -1.4,
+            "right": 1.4,
+            "top": 1.4,
+            "bottom": -1.4,
+            "near": 0.05,
+            "far": 80,
+            "exposure": 1.12,
+            "toneMapping": 4,
+            "outputColorSpace": "srgb"
+          },
+          "render": {
+            "frame": 63,
+            "calls": 2,
+            "triangles": 2978,
+            "points": 0,
+            "lines": 0
+          }
+        },
+        {
+          "kind": "material:bone",
+          "model": {
+            "triangles": 2976,
+            "vertices": 1617,
+            "meshes": 1,
+            "meshInstances": 1,
+            "uniqueGeometryBytes": 69600,
+            "geometries": 1,
+            "materials": 1,
+            "malformed": 0,
+            "bounds": {
+              "min": [
+                -0.8999999761581421,
+                0.10000002384185791,
+                -0.8999999761581421
+              ],
+              "max": [
+                0.8999999761581421,
+                1.899999976158142,
+                0.8999999761581421
+              ],
+              "size": [
+                1.7999999523162842,
+                1.7999999523162842,
+                1.7999999523162842
+              ]
+            },
+            "anatomy": null,
+            "weaponKind": null,
+            "visualSource": null
+          },
+          "framing": {
+            "position": [
+              7,
+              2.2,
+              10
+            ],
+            "quaternion": [
+              -0.04671110362208078,
+              0.30027859135229445,
+              0.014724378287774464,
+              0.9525933198684146
+            ],
+            "left": -1.4,
+            "right": 1.4,
+            "top": 1.4,
+            "bottom": -1.4,
+            "near": 0.05,
+            "far": 80,
+            "exposure": 1.12,
+            "toneMapping": 4,
+            "outputColorSpace": "srgb"
+          },
+          "render": {
+            "frame": 64,
+            "calls": 2,
+            "triangles": 2978,
+            "points": 0,
+            "lines": 0
+          }
+        },
+        {
+          "kind": "material:net",
+          "model": {
+            "triangles": 2,
+            "vertices": 4,
+            "meshes": 1,
+            "meshInstances": 1,
+            "uniqueGeometryBytes": 140,
+            "geometries": 1,
+            "materials": 1,
+            "malformed": 0,
+            "bounds": {
+              "min": [
+                -0.8999999761581421,
+                0.10000002384185791,
+                0
+              ],
+              "max": [
+                0.8999999761581421,
+                1.899999976158142,
+                0
+              ],
+              "size": [
+                1.7999999523162842,
+                1.7999999523162842,
+                0
+              ]
+            },
+            "anatomy": null,
+            "weaponKind": null,
+            "visualSource": null
+          },
+          "framing": {
+            "position": [
+              7,
+              2.2,
+              10
+            ],
+            "quaternion": [
+              -0.04671110362208078,
+              0.30027859135229445,
+              0.014724378287774464,
+              0.9525933198684146
+            ],
+            "left": -1.4,
+            "right": 1.4,
+            "top": 1.4,
+            "bottom": -1.4,
+            "near": 0.05,
+            "far": 80,
+            "exposure": 1.12,
+            "toneMapping": 4,
+            "outputColorSpace": "srgb"
+          },
+          "render": {
+            "frame": 65,
+            "calls": 2,
+            "triangles": 4,
+            "points": 0,
+            "lines": 0
+          }
+        }
+      ],
+      "surfaces": {
+        "types": [
+          "skin",
+          "armor",
+          "metal",
+          "leather",
+          "bone",
+          "fabric",
+          "humanSkin",
+          "bark",
+          "chitin",
+          "stone",
+          "soil",
+          "net"
+        ],
+        "textureViews": 54,
+        "sharedImageSources": 36,
+        "sourceBytes": 224133120,
+        "resolutions": {
+          "skin": 2048,
+          "armor": 2048,
+          "metal": 1024,
+          "leather": 512,
+          "bone": 512,
+          "fabric": 512,
+          "humanSkin": 1024,
+          "bark": 1024,
+          "chitin": 2048,
+          "stone": 1024,
+          "soil": 1024,
+          "net": 256
+        },
+        "anisotropy": 1
+      },
+      "capture": {
+        "stage": "studio",
+        "path": "studio-surfaceSheet.png",
+        "sha256": "216b86f9d979aba9c7cdb19b3dbae1765823a050a45368c1e3a981747f97cebb"
+      }
+    }
+  ],
+  "gameplay": {
+    "raycasterEngine": "160",
+    "initial": {
+      "before": [
+        {
+          "visible": false,
+          "hp": 1000,
+          "position": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "visible": false,
+          "hp": 1150,
+          "position": [
+            6,
+            0,
+            0
+          ]
+        }
+      ],
+      "after": [
+        {
+          "visible": false,
+          "hp": 1000,
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "visual": "imported"
+        },
+        {
+          "visible": false,
+          "hp": 1150,
+          "position": [
+            6,
+            0,
+            0
+          ],
+          "visual": "procedural"
+        }
+      ],
+      "phase": "descending",
+      "elapsed": 0.4030999999642372,
+      "active": true,
+      "level": "val_verde_jungle",
+      "seed": 1,
+      "coop": true,
+      "splitScreen": true
+    },
+    "stages": [
+      {
+        "target": 1.8,
+        "ticks": 84,
+        "phase": "opening",
+        "elapsed": 1.8030999999642359,
+        "openingProgress": 0.11281854798258391,
+        "players": [
+          {
+            "hp": 1000,
+            "visible": true,
+            "position": [
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "hp": 1150,
+            "visible": true,
+            "position": [
+              6,
+              0,
+              0
+            ]
+          }
+        ],
+        "cameras": [
+          {
+            "player": 1,
+            "focus": [
+              0,
+              2.5151144435161052,
+              0
+            ],
+            "position": [
+              8,
+              7.613139320119517,
+              14
+            ],
+            "quaternion": [
+              -0.14740387776650693,
+              0.2536652914305761,
+              0.03914522782168107,
+              0.9551930003311511
+            ],
+            "near": 0.15,
+            "fov": 56,
+            "aspect": 0.8888888888888888,
+            "radius": 0.25,
+            "canopyOwners": [
+              "val-verde-canopy-west-north",
+              "val-verde-canopy-north-east",
+              "val-verde-canopy-east-south",
+              "val-verde-canopy-south-west"
+            ],
+            "canopyHits": [],
+            "allPhysicalHit": null,
+            "bodySightlines": [
+              {
+                "height": 0.2,
+                "screen": [
+                  -3.934920504820024e-17,
+                  -0.23448729862523812,
+                  0.9834606817713123
+                ],
+                "physicalHit": null,
+                "visibleMeshHits": [
+                  {
+                    "distance": 15.424051344443914,
+                    "point": [
+                      1.0471245850361708,
+                      1.1703100542994327,
+                      1.8324680238132982
+                    ],
+                    "object": "capsule-right-leaf-capsule-dark",
+                    "ancestry": [
+                      "capsule-right-leaf-capsule-dark",
+                      "capsule-right-hinge",
+                      "split-ejection-hatch",
+                      "orbital-capsule",
+                      "Scene"
+                    ],
+                    "material": "capsule-dark"
+                  },
+                  {
+                    "distance": 15.44352615491404,
+                    "point": [
+                      1.0383457027629597,
+                      1.1621751696286533,
+                      1.8171049798351802
+                    ],
+                    "object": "capsule-right-leaf-capsule-trim",
+                    "ancestry": [
+                      "capsule-right-leaf-capsule-trim",
+                      "capsule-right-hinge",
+                      "split-ejection-hatch",
+                      "orbital-capsule",
+                      "Scene"
+                    ],
+                    "material": "capsule-trim"
+                  },
+                  {
+                    "distance": 15.467659198313932,
+                    "point": [
+                      1.0274669757413588,
+                      1.1520944797490684,
+                      1.7980672075473778
+                    ],
+                    "object": "capsule-right-leaf-capsule-armor",
+                    "ancestry": [
+                      "capsule-right-leaf-capsule-armor",
+                      "capsule-right-hinge",
+                      "split-ejection-hatch",
+                      "orbital-capsule",
+                      "Scene"
+                    ],
+                    "material": "capsule-armor"
+                  }
+                ]
+              },
+              {
+                "height": 1.8,
+                "screen": [
+                  -3.4973622731425695e-17,
+                  -0.0736192092948026,
+                  0.9829798106751465
+                ],
+                "physicalHit": null,
+                "visibleMeshHits": [
+                  {
+                    "distance": 14.938982239024222,
+                    "point": [
+                      1.0274669757413575,
+                      2.546601084600797,
+                      1.7980672075473763
+                    ],
+                    "object": "capsule-right-leaf-capsule-armor",
+                    "ancestry": [
+                      "capsule-right-leaf-capsule-armor",
+                      "capsule-right-hinge",
+                      "split-ejection-hatch",
+                      "orbital-capsule",
+                      "Scene"
+                    ],
+                    "material": "capsule-armor"
+                  }
+                ]
+              },
+              {
+                "height": 3.6,
+                "screen": [
+                  -2.974621012672937e-17,
+                  0.11856638269726369,
+                  0.9824053244816872
+                ],
+                "physicalHit": null,
+                "visibleMeshHits": [
+                  {
+                    "distance": 14.482313834034379,
+                    "point": [
+                      1.0274669757413575,
+                      4.11542101505899,
+                      1.7980672075473763
+                    ],
+                    "object": "capsule-right-leaf-capsule-armor",
+                    "ancestry": [
+                      "capsule-right-leaf-capsule-armor",
+                      "capsule-right-hinge",
+                      "split-ejection-hatch",
+                      "orbital-capsule",
+                      "Scene"
+                    ],
+                    "material": "capsule-armor"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "player": 2,
+            "focus": [
+              6,
+              2.5151144435161052,
+              0
+            ],
+            "position": [
+              12.700322686478053,
+              6.777841465771746,
+              11.725564701336594
+            ],
+            "quaternion": [
+              -0.14717639046852368,
+              0.25367460683299103,
+              0.03908481528545052,
+              0.9552280780792023
+            ],
+            "near": 0.15,
+            "fov": 56,
+            "aspect": 0.8888888888888888,
+            "radius": 0.25,
+            "canopyOwners": [
+              "val-verde-canopy-west-north",
+              "val-verde-canopy-north-east",
+              "val-verde-canopy-east-south",
+              "val-verde-canopy-south-west"
+            ],
+            "canopyHits": [],
+            "allPhysicalHit": null,
+            "bodySightlines": [
+              {
+                "height": 0.2,
+                "screen": [
+                  -1.2646066878314682e-16,
+                  -0.2780741984272627,
+                  0.9803068416036395
+                ],
+                "physicalHit": null,
+                "visibleMeshHits": [
+                  {
+                    "distance": 12.694273744156073,
+                    "point": [
+                      7.038128441373541,
+                      1.2191515585129626,
+                      1.8167247724036955
+                    ],
+                    "object": "capsule-right-leaf-capsule-trim",
+                    "ancestry": [
+                      "capsule-right-leaf-capsule-trim",
+                      "capsule-right-hinge",
+                      "split-ejection-hatch",
+                      "orbital-capsule",
+                      "Scene"
+                    ],
+                    "material": "capsule-trim"
+                  },
+                  {
+                    "distance": 12.718176061418651,
+                    "point": [
+                      7.027466975741359,
+                      1.208684983393709,
+                      1.7980672075473778
+                    ],
+                    "object": "capsule-right-leaf-capsule-armor",
+                    "ancestry": [
+                      "capsule-right-leaf-capsule-armor",
+                      "capsule-right-hinge",
+                      "split-ejection-hatch",
+                      "orbital-capsule",
+                      "Scene"
+                    ],
+                    "material": "capsule-armor"
+                  }
+                ]
+              },
+              {
+                "height": 1.8,
+                "screen": [
+                  -1.3070633967844888e-16,
+                  -0.08786417415924933,
+                  0.9796288914033583
+                ],
+                "physicalHit": null,
+                "visibleMeshHits": [
+                  {
+                    "distance": 12.185999844722032,
+                    "point": [
+                      7.027466975741359,
+                      2.5633315522069053,
+                      1.7980672075473794
+                    ],
+                    "object": "capsule-right-leaf-capsule-armor",
+                    "ancestry": [
+                      "capsule-right-leaf-capsule-armor",
+                      "capsule-right-hinge",
+                      "split-ejection-hatch",
+                      "orbital-capsule",
+                      "Scene"
+                    ],
+                    "material": "capsule-armor"
+                  }
+                ]
+              },
+              {
+                "height": 3.6,
+                "screen": [
+                  -1.358368550471728e-16,
+                  0.14198770952589979,
+                  0.9788096489308384
+                ],
+                "physicalHit": null,
+                "visibleMeshHits": [
+                  {
+                    "distance": 11.746295742269028,
+                    "point": [
+                      7.027466975741359,
+                      4.0873089421217506,
+                      1.7980672075473778
+                    ],
+                    "object": "capsule-right-leaf-capsule-armor",
+                    "ancestry": [
+                      "capsule-right-leaf-capsule-armor",
+                      "capsule-right-hinge",
+                      "split-ejection-hatch",
+                      "orbital-capsule",
+                      "Scene"
+                    ],
+                    "material": "capsule-armor"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "beforeRender": [
+          [
+            8,
+            7.613139320119517,
+            14
+          ],
+          [
+            12.700322686478053,
+            6.777841465771746,
+            11.725564701336594
+          ]
+        ],
+        "afterRender": [
+          [
+            8,
+            7.613139320119517,
+            14
+          ],
+          [
+            12.700322686478053,
+            6.777841465771746,
+            11.725564701336594
+          ]
+        ],
+        "finite": {
+          "operation": "pilot",
+          "ids": [
+            "val_verde_jungle:hive:0:0",
+            "val_verde_jungle:hive:0:1",
+            "val_verde_jungle:hive:0:2",
+            "val_verde_jungle:hive:0:3",
+            "val_verde_jungle:hive:10:0",
+            "val_verde_jungle:hive:10:1",
+            "val_verde_jungle:hive:10:2",
+            "val_verde_jungle:hive:10:3",
+            "val_verde_jungle:hive:11:0",
+            "val_verde_jungle:hive:11:1",
+            "val_verde_jungle:hive:11:2",
+            "val_verde_jungle:hive:11:3",
+            "val_verde_jungle:hive:12:0",
+            "val_verde_jungle:hive:12:1",
+            "val_verde_jungle:hive:12:2",
+            "val_verde_jungle:hive:12:3",
+            "val_verde_jungle:hive:13:0",
+            "val_verde_jungle:hive:13:1",
+            "val_verde_jungle:hive:13:2",
+            "val_verde_jungle:hive:13:3",
+            "val_verde_jungle:hive:14:0",
+            "val_verde_jungle:hive:14:1",
+            "val_verde_jungle:hive:14:2",
+            "val_verde_jungle:hive:14:3",
+            "val_verde_jungle:hive:15:0",
+            "val_verde_jungle:hive:15:1",
+            "val_verde_jungle:hive:15:2",
+            "val_verde_jungle:hive:15:3",
+            "val_verde_jungle:hive:1:0",
+            "val_verde_jungle:hive:1:1",
+            "val_verde_jungle:hive:1:2",
+            "val_verde_jungle:hive:1:3",
+            "val_verde_jungle:hive:2:0",
+            "val_verde_jungle:hive:2:1",
+            "val_verde_jungle:hive:2:2",
+            "val_verde_jungle:hive:2:3",
+            "val_verde_jungle:hive:3:0",
+            "val_verde_jungle:hive:3:1",
+            "val_verde_jungle:hive:3:2",
+            "val_verde_jungle:hive:3:3",
+            "val_verde_jungle:hive:4:0",
+            "val_verde_jungle:hive:4:1",
+            "val_verde_jungle:hive:4:2",
+            "val_verde_jungle:hive:4:3",
+            "val_verde_jungle:hive:5:0",
+            "val_verde_jungle:hive:5:1",
+            "val_verde_jungle:hive:5:2",
+            "val_verde_jungle:hive:5:3",
+            "val_verde_jungle:hive:6:0",
+            "val_verde_jungle:hive:6:1",
+            "val_verde_jungle:hive:6:2",
+            "val_verde_jungle:hive:6:3",
+            "val_verde_jungle:hive:7:0",
+            "val_verde_jungle:hive:7:1",
+            "val_verde_jungle:hive:7:2",
+            "val_verde_jungle:hive:7:3",
+            "val_verde_jungle:hive:8:0",
+            "val_verde_jungle:hive:8:1",
+            "val_verde_jungle:hive:8:2",
+            "val_verde_jungle:hive:8:3",
+            "val_verde_jungle:hive:9:0",
+            "val_verde_jungle:hive:9:1",
+            "val_verde_jungle:hive:9:2",
+            "val_verde_jungle:hive:9:3",
+            "val_verde_jungle:human_force:0:0",
+            "val_verde_jungle:human_force:0:1",
+            "val_verde_jungle:human_force:0:2",
+            "val_verde_jungle:human_force:0:3",
+            "val_verde_jungle:human_force:10:0",
+            "val_verde_jungle:human_force:10:1",
+            "val_verde_jungle:human_force:10:2",
+            "val_verde_jungle:human_force:10:3",
+            "val_verde_jungle:human_force:11:0",
+            "val_verde_jungle:human_force:11:1",
+            "val_verde_jungle:human_force:11:2",
+            "val_verde_jungle:human_force:11:3",
+            "val_verde_jungle:human_force:1:0",
+            "val_verde_jungle:human_force:1:1",
+            "val_verde_jungle:human_force:1:2",
+            "val_verde_jungle:human_force:1:3",
+            "val_verde_jungle:human_force:2:0",
+            "val_verde_jungle:human_force:2:1",
+            "val_verde_jungle:human_force:2:2",
+            "val_verde_jungle:human_force:2:3",
+            "val_verde_jungle:human_force:3:0",
+            "val_verde_jungle:human_force:3:1",
+            "val_verde_jungle:human_force:3:2",
+            "val_verde_jungle:human_force:3:3",
+            "val_verde_jungle:human_force:4:0",
+            "val_verde_jungle:human_force:4:1",
+            "val_verde_jungle:human_force:4:2",
+            "val_verde_jungle:human_force:4:3",
+            "val_verde_jungle:human_force:5:0",
+            "val_verde_jungle:human_force:5:1",
+            "val_verde_jungle:human_force:5:2",
+            "val_verde_jungle:human_force:5:3",
+            "val_verde_jungle:human_force:6:0",
+            "val_verde_jungle:human_force:6:1",
+            "val_verde_jungle:human_force:6:2",
+            "val_verde_jungle:human_force:6:3",
+            "val_verde_jungle:human_force:7:0",
+            "val_verde_jungle:human_force:7:1",
+            "val_verde_jungle:human_force:7:2",
+            "val_verde_jungle:human_force:7:3",
+            "val_verde_jungle:human_force:8:0",
+            "val_verde_jungle:human_force:8:1",
+            "val_verde_jungle:human_force:8:2",
+            "val_verde_jungle:human_force:8:3",
+            "val_verde_jungle:human_force:9:0",
+            "val_verde_jungle:human_force:9:1",
+            "val_verde_jungle:human_force:9:2",
+            "val_verde_jungle:human_force:9:3",
+            "val_verde_jungle:player_clan:0:0",
+            "val_verde_jungle:player_clan:0:1",
+            "val_verde_jungle:player_clan:0:2",
+            "val_verde_jungle:player_clan:0:3",
+            "val_verde_jungle:player_clan:1:0",
+            "val_verde_jungle:player_clan:1:1",
+            "val_verde_jungle:player_clan:1:2",
+            "val_verde_jungle:player_clan:1:3",
+            "val_verde_jungle:player_clan:2:0",
+            "val_verde_jungle:player_clan:2:1",
+            "val_verde_jungle:player_clan:2:2",
+            "val_verde_jungle:player_clan:2:3",
+            "val_verde_jungle:player_clan:3:0",
+            "val_verde_jungle:player_clan:3:1",
+            "val_verde_jungle:player_clan:3:2",
+            "val_verde_jungle:player_clan:3:3",
+            "val_verde_jungle:player_clan:4:0",
+            "val_verde_jungle:player_clan:4:1",
+            "val_verde_jungle:player_clan:4:2",
+            "val_verde_jungle:player_clan:4:3"
+          ],
+          "allocated": 132,
+          "actors": 0,
+          "active": 0,
+          "cap": 32,
+          "conserved": true,
+          "time": 0,
+          "digest": "9e35d1cb"
+        },
+        "renderer": {
+          "memory": {
+            "geometries": 168,
+            "textures": 44
+          },
+          "render": {
+            "frame": 51,
+            "calls": 594,
+            "triangles": 3628512,
+            "points": 150,
+            "lines": 12
+          },
+          "worldMeshes": 455,
+          "worldTriangles": 1566779
+        },
+        "quality": {
+          "requested": "balanced",
+          "effective": "low",
+          "softwareRenderer": true,
+          "postprocessing": false,
+          "ambientOcclusion": false,
+          "shadowSize": 512,
+          "maxPixelRatio": 1.25,
+          "splitScreen": true
+        },
+        "capture": {
+          "stage": "gameplay",
+          "path": "val-verde-real-coop-opening.png",
+          "sha256": "ff742d74c2c31e9d6be0c8e659c31f7a73ff9d558840d8d410470f08f1a69171"
+        }
+      },
+      {
+        "target": 3.25,
+        "ticks": 87,
+        "phase": "exiting",
+        "elapsed": 3.2530999999642307,
+        "openingProgress": 1,
+        "players": [
+          {
+            "hp": 1000,
+            "visible": true,
+            "position": [
+              0,
+              0,
+              0.31716376072473074
+            ]
+          },
+          {
+            "hp": 1150,
+            "visible": true,
+            "position": [
+              6,
+              0,
+              0.31716376072473074
+            ]
+          }
+        ],
+        "cameras": [
+          {
+            "player": 1,
+            "focus": [
+              0,
+              2.315878924995731,
+              0.16787090798311263
+            ],
+            "position": [
+              8,
+              7.353541156043515,
+              14.080512395527544
+            ],
+            "quaternion": [
+              -0.14636571504569398,
+              0.2549953360502911,
+              0.039081184687464965,
+              0.9550011084052134
+            ],
+            "near": 0.15,
+            "fov": 56,
+            "aspect": 0.8888888888888888,
+            "radius": 0.25,
+            "canopyOwners": [
+              "val-verde-canopy-west-north",
+              "val-verde-canopy-north-east",
+              "val-verde-canopy-east-south",
+              "val-verde-canopy-south-west"
+            ],
+            "canopyHits": [],
+            "allPhysicalHit": null,
+            "bodySightlines": [
+              {
+                "height": 0.2,
+                "screen": [
+                  -0.00961833360604844,
+                  -0.2232027979660201,
+                  0.9831858482359749
+                ],
+                "physicalHit": null,
+                "visibleMeshHits": []
+              },
+              {
+                "height": 1.8,
+                "screen": [
+                  -0.009891866804385543,
+                  -0.05918289032542254,
+                  0.9826934521824912
+                ],
+                "physicalHit": null,
+                "visibleMeshHits": []
+              },
+              {
+                "height": 3.6,
+                "screen": [
+                  -0.010218802807093768,
+                  0.13685917438403797,
+                  0.9821049239948565
+                ],
+                "physicalHit": null,
+                "visibleMeshHits": []
+              }
+            ]
+          },
+          {
+            "player": 2,
+            "focus": [
+              6,
+              2.315878924995731,
+              0.16787090798311263
+            ],
+            "position": [
+              12.50492617424684,
+              6.410162039924931,
+              11.473671479318211
+            ],
+            "quaternion": [
+              -0.14635822591202974,
+              0.2551192971037983,
+              0.03909952182166478,
+              0.9549683980878447
+            ],
+            "near": 0.15,
+            "fov": 56,
+            "aspect": 0.8888888888888888,
+            "radius": 0.25,
+            "canopyOwners": [
+              "val-verde-canopy-west-north",
+              "val-verde-canopy-north-east",
+              "val-verde-canopy-east-south",
+              "val-verde-canopy-south-west"
+            ],
+            "canopyHits": [],
+            "allPhysicalHit": null,
+            "bodySightlines": [
+              {
+                "height": 0.2,
+                "screen": [
+                  -0.011670375342547414,
+                  -0.272777296856688,
+                  0.9793403137944029
+                ],
+                "physicalHit": null,
+                "visibleMeshHits": []
+              },
+              {
+                "height": 1.8,
+                "screen": [
+                  -0.012078562071218503,
+                  -0.0727882576763849,
+                  0.9786002215630433
+                ],
+                "physicalHit": null,
+                "visibleMeshHits": []
+              },
+              {
+                "height": 3.6,
+                "screen": [
+                  -0.012573300771104108,
+                  0.16960648542943998,
+                  0.9777032000711141
+                ],
+                "physicalHit": null,
+                "visibleMeshHits": []
+              }
+            ]
+          }
+        ],
+        "beforeRender": [
+          [
+            8,
+            7.353541156043515,
+            14.080512395527544
+          ],
+          [
+            12.50492617424684,
+            6.410162039924931,
+            11.473671479318211
+          ]
+        ],
+        "afterRender": [
+          [
+            8,
+            7.353541156043515,
+            14.080512395527544
+          ],
+          [
+            12.50492617424684,
+            6.410162039924931,
+            11.473671479318211
+          ]
+        ],
+        "finite": {
+          "operation": "pilot",
+          "ids": [
+            "val_verde_jungle:hive:0:0",
+            "val_verde_jungle:hive:0:1",
+            "val_verde_jungle:hive:0:2",
+            "val_verde_jungle:hive:0:3",
+            "val_verde_jungle:hive:10:0",
+            "val_verde_jungle:hive:10:1",
+            "val_verde_jungle:hive:10:2",
+            "val_verde_jungle:hive:10:3",
+            "val_verde_jungle:hive:11:0",
+            "val_verde_jungle:hive:11:1",
+            "val_verde_jungle:hive:11:2",
+            "val_verde_jungle:hive:11:3",
+            "val_verde_jungle:hive:12:0",
+            "val_verde_jungle:hive:12:1",
+            "val_verde_jungle:hive:12:2",
+            "val_verde_jungle:hive:12:3",
+            "val_verde_jungle:hive:13:0",
+            "val_verde_jungle:hive:13:1",
+            "val_verde_jungle:hive:13:2",
+            "val_verde_jungle:hive:13:3",
+            "val_verde_jungle:hive:14:0",
+            "val_verde_jungle:hive:14:1",
+            "val_verde_jungle:hive:14:2",
+            "val_verde_jungle:hive:14:3",
+            "val_verde_jungle:hive:15:0",
+            "val_verde_jungle:hive:15:1",
+            "val_verde_jungle:hive:15:2",
+            "val_verde_jungle:hive:15:3",
+            "val_verde_jungle:hive:1:0",
+            "val_verde_jungle:hive:1:1",
+            "val_verde_jungle:hive:1:2",
+            "val_verde_jungle:hive:1:3",
+            "val_verde_jungle:hive:2:0",
+            "val_verde_jungle:hive:2:1",
+            "val_verde_jungle:hive:2:2",
+            "val_verde_jungle:hive:2:3",
+            "val_verde_jungle:hive:3:0",
+            "val_verde_jungle:hive:3:1",
+            "val_verde_jungle:hive:3:2",
+            "val_verde_jungle:hive:3:3",
+            "val_verde_jungle:hive:4:0",
+            "val_verde_jungle:hive:4:1",
+            "val_verde_jungle:hive:4:2",
+            "val_verde_jungle:hive:4:3",
+            "val_verde_jungle:hive:5:0",
+            "val_verde_jungle:hive:5:1",
+            "val_verde_jungle:hive:5:2",
+            "val_verde_jungle:hive:5:3",
+            "val_verde_jungle:hive:6:0",
+            "val_verde_jungle:hive:6:1",
+            "val_verde_jungle:hive:6:2",
+            "val_verde_jungle:hive:6:3",
+            "val_verde_jungle:hive:7:0",
+            "val_verde_jungle:hive:7:1",
+            "val_verde_jungle:hive:7:2",
+            "val_verde_jungle:hive:7:3",
+            "val_verde_jungle:hive:8:0",
+            "val_verde_jungle:hive:8:1",
+            "val_verde_jungle:hive:8:2",
+            "val_verde_jungle:hive:8:3",
+            "val_verde_jungle:hive:9:0",
+            "val_verde_jungle:hive:9:1",
+            "val_verde_jungle:hive:9:2",
+            "val_verde_jungle:hive:9:3",
+            "val_verde_jungle:human_force:0:0",
+            "val_verde_jungle:human_force:0:1",
+            "val_verde_jungle:human_force:0:2",
+            "val_verde_jungle:human_force:0:3",
+            "val_verde_jungle:human_force:10:0",
+            "val_verde_jungle:human_force:10:1",
+            "val_verde_jungle:human_force:10:2",
+            "val_verde_jungle:human_force:10:3",
+            "val_verde_jungle:human_force:11:0",
+            "val_verde_jungle:human_force:11:1",
+            "val_verde_jungle:human_force:11:2",
+            "val_verde_jungle:human_force:11:3",
+            "val_verde_jungle:human_force:1:0",
+            "val_verde_jungle:human_force:1:1",
+            "val_verde_jungle:human_force:1:2",
+            "val_verde_jungle:human_force:1:3",
+            "val_verde_jungle:human_force:2:0",
+            "val_verde_jungle:human_force:2:1",
+            "val_verde_jungle:human_force:2:2",
+            "val_verde_jungle:human_force:2:3",
+            "val_verde_jungle:human_force:3:0",
+            "val_verde_jungle:human_force:3:1",
+            "val_verde_jungle:human_force:3:2",
+            "val_verde_jungle:human_force:3:3",
+            "val_verde_jungle:human_force:4:0",
+            "val_verde_jungle:human_force:4:1",
+            "val_verde_jungle:human_force:4:2",
+            "val_verde_jungle:human_force:4:3",
+            "val_verde_jungle:human_force:5:0",
+            "val_verde_jungle:human_force:5:1",
+            "val_verde_jungle:human_force:5:2",
+            "val_verde_jungle:human_force:5:3",
+            "val_verde_jungle:human_force:6:0",
+            "val_verde_jungle:human_force:6:1",
+            "val_verde_jungle:human_force:6:2",
+            "val_verde_jungle:human_force:6:3",
+            "val_verde_jungle:human_force:7:0",
+            "val_verde_jungle:human_force:7:1",
+            "val_verde_jungle:human_force:7:2",
+            "val_verde_jungle:human_force:7:3",
+            "val_verde_jungle:human_force:8:0",
+            "val_verde_jungle:human_force:8:1",
+            "val_verde_jungle:human_force:8:2",
+            "val_verde_jungle:human_force:8:3",
+            "val_verde_jungle:human_force:9:0",
+            "val_verde_jungle:human_force:9:1",
+            "val_verde_jungle:human_force:9:2",
+            "val_verde_jungle:human_force:9:3",
+            "val_verde_jungle:player_clan:0:0",
+            "val_verde_jungle:player_clan:0:1",
+            "val_verde_jungle:player_clan:0:2",
+            "val_verde_jungle:player_clan:0:3",
+            "val_verde_jungle:player_clan:1:0",
+            "val_verde_jungle:player_clan:1:1",
+            "val_verde_jungle:player_clan:1:2",
+            "val_verde_jungle:player_clan:1:3",
+            "val_verde_jungle:player_clan:2:0",
+            "val_verde_jungle:player_clan:2:1",
+            "val_verde_jungle:player_clan:2:2",
+            "val_verde_jungle:player_clan:2:3",
+            "val_verde_jungle:player_clan:3:0",
+            "val_verde_jungle:player_clan:3:1",
+            "val_verde_jungle:player_clan:3:2",
+            "val_verde_jungle:player_clan:3:3",
+            "val_verde_jungle:player_clan:4:0",
+            "val_verde_jungle:player_clan:4:1",
+            "val_verde_jungle:player_clan:4:2",
+            "val_verde_jungle:player_clan:4:3"
+          ],
+          "allocated": 132,
+          "actors": 0,
+          "active": 0,
+          "cap": 32,
+          "conserved": true,
+          "time": 0,
+          "digest": "9e35d1cb"
+        },
+        "renderer": {
+          "memory": {
+            "geometries": 168,
+            "textures": 44
+          },
+          "render": {
+            "frame": 53,
+            "calls": 596,
+            "triangles": 3628728,
+            "points": 150,
+            "lines": 12
+          },
+          "worldMeshes": 455,
+          "worldTriangles": 1566779
+        },
+        "quality": {
+          "requested": "balanced",
+          "effective": "low",
+          "softwareRenderer": true,
+          "postprocessing": false,
+          "ambientOcclusion": false,
+          "shadowSize": 512,
+          "maxPixelRatio": 1.25,
+          "splitScreen": true
+        },
+        "capture": {
+          "stage": "gameplay",
+          "path": "val-verde-real-coop-exiting.png",
+          "sha256": "0c63a8c8e2cf566d3a976d681d0a0ba2e1bb8e49d3f385f1d7715ecab90b1627"
+        }
+      }
+    ],
+    "insertionComplete": {
+      "simulated": 1.4999999999999996,
+      "phase": "complete",
+      "visible": true
+    },
+    "threeSecondTicks": 180,
+    "after3s": {
+      "target": null,
+      "ticks": 0,
+      "phase": "complete",
+      "elapsed": 4.75,
+      "openingProgress": 1,
+      "players": [
+        {
+          "hp": 1000,
+          "visible": true,
+          "position": [
+            0,
+            0,
+            4.2
+          ]
+        },
+        {
+          "hp": 1150,
+          "visible": true,
+          "position": [
+            6,
+            0,
+            4.2
+          ]
+        }
+      ],
+      "cameras": [
+        {
+          "player": 1,
+          "focus": [
+            0,
+            2.3000001114790463,
+            4.09079351894788
+          ],
+          "position": [
+            0.0000012622606013715843,
+            9.999999573987301,
+            20.199999638242787
+          ],
+          "quaternion": [
+            -0.22975291458294753,
+            3.839043388384767e-8,
+            9.062751833918025e-9,
+            0.9732489908757365
+          ],
+          "near": 0.15,
+          "fov": 60,
+          "aspect": 0.8888888888888888,
+          "radius": 0.25,
+          "canopyOwners": [
+            "val-verde-canopy-west-north",
+            "val-verde-canopy-north-east",
+            "val-verde-canopy-east-south",
+            "val-verde-canopy-south-west"
+          ],
+          "canopyHits": [],
+          "allPhysicalHit": null,
+          "bodySightlines": [
+            {
+              "height": 0.2,
+              "screen": [
+                1.655478169600278e-23,
+                -0.1491718450602806,
+                0.9844477767191545
+              ],
+              "physicalHit": null,
+              "visibleMeshHits": []
+            },
+            {
+              "height": 1.8,
+              "screen": [
+                1.721367848269312e-23,
+                -0.017234336994259337,
+                0.9838088772811612
+              ],
+              "physicalHit": null,
+              "visibleMeshHits": []
+            },
+            {
+              "height": 3.6,
+              "screen": [
+                1.8020569665120326e-23,
+                0.14433757235536462,
+                0.9830264750394323
+              ],
+              "physicalHit": null,
+              "visibleMeshHits": []
+            }
+          ]
+        },
+        {
+          "player": 2,
+          "focus": [
+            6,
+            2.3000001114790463,
+            4.09079351894788
+          ],
+          "position": [
+            6.000000852566905,
+            9.999999317928541,
+            20.199998932920067
+          ],
+          "quaternion": [
+            -0.2297529169334074,
+            2.5929997965096463e-8,
+            6.121242074542628e-9,
+            0.9732489903208688
+          ],
+          "near": 0.15,
+          "fov": 56,
+          "aspect": 0.8888888888888888,
+          "radius": 0.25,
+          "canopyOwners": [
+            "val-verde-canopy-west-north",
+            "val-verde-canopy-north-east",
+            "val-verde-canopy-east-south",
+            "val-verde-canopy-south-west"
+          ],
+          "canopyHits": [],
+          "allPhysicalHit": null,
+          "bodySightlines": [
+            {
+              "height": 0.2,
+              "screen": [
+                -1.0052801915364356e-16,
+                -0.16197645360961108,
+                0.9844477760857719
+              ],
+              "physicalHit": null,
+              "visibleMeshHits": []
+            },
+            {
+              "height": 1.8,
+              "screen": [
+                -1.04529134565005e-16,
+                -0.01871369755447003,
+                0.983808876589939
+              ],
+              "physicalHit": null,
+              "visibleMeshHits": []
+            },
+            {
+              "height": 3.6,
+              "screen": [
+                -1.0942893803127811e-16,
+                0.15672721742477858,
+                0.9830264742739767
+              ],
+              "physicalHit": null,
+              "visibleMeshHits": []
+            }
+          ]
+        }
+      ],
+      "beforeRender": [
+        [
+          0.0000012622606013715843,
+          9.999999573987301,
+          20.199999638242787
+        ],
+        [
+          6.000000852566905,
+          9.999999317928541,
+          20.199998932920067
+        ]
+      ],
+      "afterRender": [
+        [
+          0.0000012622606013715843,
+          9.999999573987301,
+          20.199999638242787
+        ],
+        [
+          6.000000852566905,
+          9.999999317928541,
+          20.199998932920067
+        ]
+      ],
+      "finite": {
+        "operation": "pilot",
+        "ids": [
+          "val_verde_jungle:hive:0:0",
+          "val_verde_jungle:hive:0:1",
+          "val_verde_jungle:hive:0:2",
+          "val_verde_jungle:hive:0:3",
+          "val_verde_jungle:hive:10:0",
+          "val_verde_jungle:hive:10:1",
+          "val_verde_jungle:hive:10:2",
+          "val_verde_jungle:hive:10:3",
+          "val_verde_jungle:hive:11:0",
+          "val_verde_jungle:hive:11:1",
+          "val_verde_jungle:hive:11:2",
+          "val_verde_jungle:hive:11:3",
+          "val_verde_jungle:hive:12:0",
+          "val_verde_jungle:hive:12:1",
+          "val_verde_jungle:hive:12:2",
+          "val_verde_jungle:hive:12:3",
+          "val_verde_jungle:hive:13:0",
+          "val_verde_jungle:hive:13:1",
+          "val_verde_jungle:hive:13:2",
+          "val_verde_jungle:hive:13:3",
+          "val_verde_jungle:hive:14:0",
+          "val_verde_jungle:hive:14:1",
+          "val_verde_jungle:hive:14:2",
+          "val_verde_jungle:hive:14:3",
+          "val_verde_jungle:hive:15:0",
+          "val_verde_jungle:hive:15:1",
+          "val_verde_jungle:hive:15:2",
+          "val_verde_jungle:hive:15:3",
+          "val_verde_jungle:hive:1:0",
+          "val_verde_jungle:hive:1:1",
+          "val_verde_jungle:hive:1:2",
+          "val_verde_jungle:hive:1:3",
+          "val_verde_jungle:hive:2:0",
+          "val_verde_jungle:hive:2:1",
+          "val_verde_jungle:hive:2:2",
+          "val_verde_jungle:hive:2:3",
+          "val_verde_jungle:hive:3:0",
+          "val_verde_jungle:hive:3:1",
+          "val_verde_jungle:hive:3:2",
+          "val_verde_jungle:hive:3:3",
+          "val_verde_jungle:hive:4:0",
+          "val_verde_jungle:hive:4:1",
+          "val_verde_jungle:hive:4:2",
+          "val_verde_jungle:hive:4:3",
+          "val_verde_jungle:hive:5:0",
+          "val_verde_jungle:hive:5:1",
+          "val_verde_jungle:hive:5:2",
+          "val_verde_jungle:hive:5:3",
+          "val_verde_jungle:hive:6:0",
+          "val_verde_jungle:hive:6:1",
+          "val_verde_jungle:hive:6:2",
+          "val_verde_jungle:hive:6:3",
+          "val_verde_jungle:hive:7:0",
+          "val_verde_jungle:hive:7:1",
+          "val_verde_jungle:hive:7:2",
+          "val_verde_jungle:hive:7:3",
+          "val_verde_jungle:hive:8:0",
+          "val_verde_jungle:hive:8:1",
+          "val_verde_jungle:hive:8:2",
+          "val_verde_jungle:hive:8:3",
+          "val_verde_jungle:hive:9:0",
+          "val_verde_jungle:hive:9:1",
+          "val_verde_jungle:hive:9:2",
+          "val_verde_jungle:hive:9:3",
+          "val_verde_jungle:human_force:0:0",
+          "val_verde_jungle:human_force:0:1",
+          "val_verde_jungle:human_force:0:2",
+          "val_verde_jungle:human_force:0:3",
+          "val_verde_jungle:human_force:10:0",
+          "val_verde_jungle:human_force:10:1",
+          "val_verde_jungle:human_force:10:2",
+          "val_verde_jungle:human_force:10:3",
+          "val_verde_jungle:human_force:11:0",
+          "val_verde_jungle:human_force:11:1",
+          "val_verde_jungle:human_force:11:2",
+          "val_verde_jungle:human_force:11:3",
+          "val_verde_jungle:human_force:1:0",
+          "val_verde_jungle:human_force:1:1",
+          "val_verde_jungle:human_force:1:2",
+          "val_verde_jungle:human_force:1:3",
+          "val_verde_jungle:human_force:2:0",
+          "val_verde_jungle:human_force:2:1",
+          "val_verde_jungle:human_force:2:2",
+          "val_verde_jungle:human_force:2:3",
+          "val_verde_jungle:human_force:3:0",
+          "val_verde_jungle:human_force:3:1",
+          "val_verde_jungle:human_force:3:2",
+          "val_verde_jungle:human_force:3:3",
+          "val_verde_jungle:human_force:4:0",
+          "val_verde_jungle:human_force:4:1",
+          "val_verde_jungle:human_force:4:2",
+          "val_verde_jungle:human_force:4:3",
+          "val_verde_jungle:human_force:5:0",
+          "val_verde_jungle:human_force:5:1",
+          "val_verde_jungle:human_force:5:2",
+          "val_verde_jungle:human_force:5:3",
+          "val_verde_jungle:human_force:6:0",
+          "val_verde_jungle:human_force:6:1",
+          "val_verde_jungle:human_force:6:2",
+          "val_verde_jungle:human_force:6:3",
+          "val_verde_jungle:human_force:7:0",
+          "val_verde_jungle:human_force:7:1",
+          "val_verde_jungle:human_force:7:2",
+          "val_verde_jungle:human_force:7:3",
+          "val_verde_jungle:human_force:8:0",
+          "val_verde_jungle:human_force:8:1",
+          "val_verde_jungle:human_force:8:2",
+          "val_verde_jungle:human_force:8:3",
+          "val_verde_jungle:human_force:9:0",
+          "val_verde_jungle:human_force:9:1",
+          "val_verde_jungle:human_force:9:2",
+          "val_verde_jungle:human_force:9:3",
+          "val_verde_jungle:player_clan:0:0",
+          "val_verde_jungle:player_clan:0:1",
+          "val_verde_jungle:player_clan:0:2",
+          "val_verde_jungle:player_clan:0:3",
+          "val_verde_jungle:player_clan:1:0",
+          "val_verde_jungle:player_clan:1:1",
+          "val_verde_jungle:player_clan:1:2",
+          "val_verde_jungle:player_clan:1:3",
+          "val_verde_jungle:player_clan:2:0",
+          "val_verde_jungle:player_clan:2:1",
+          "val_verde_jungle:player_clan:2:2",
+          "val_verde_jungle:player_clan:2:3",
+          "val_verde_jungle:player_clan:3:0",
+          "val_verde_jungle:player_clan:3:1",
+          "val_verde_jungle:player_clan:3:2",
+          "val_verde_jungle:player_clan:3:3",
+          "val_verde_jungle:player_clan:4:0",
+          "val_verde_jungle:player_clan:4:1",
+          "val_verde_jungle:player_clan:4:2",
+          "val_verde_jungle:player_clan:4:3"
+        ],
+        "allocated": 132,
+        "actors": 8,
+        "active": 8,
+        "cap": 32,
+        "conserved": true,
+        "time": 3,
+        "digest": "9e35d1cb"
+      },
+      "renderer": {
+        "memory": {
+          "geometries": 249,
+          "textures": 100
+        },
+        "render": {
+          "frame": 55,
+          "calls": 898,
+          "triangles": 5150486,
+          "points": 150,
+          "lines": 12
+        },
+        "worldMeshes": 527,
+        "worldTriangles": 1940157
+      },
+      "quality": {
+        "requested": "balanced",
+        "effective": "low",
+        "softwareRenderer": true,
+        "postprocessing": false,
+        "ambientOcclusion": false,
+        "shadowSize": 512,
+        "maxPixelRatio": 1.25,
+        "splitScreen": true
+      },
+      "capture": {
+        "stage": "gameplay",
+        "path": "val-verde-real-coop-after3s.png",
+        "sha256": "3d6f338e15ca1ae57f0cdf4dae7637d1014c4c7f87ebd4865830140098bcb696"
+      }
+    },
+    "cleanup": {
+      "playing": false,
+      "playerCleared": true,
+      "simulationCleared": true,
+      "bridgeCleared": true,
+      "aliens": 0,
+      "memory": {
+        "geometries": 96,
+        "textures": 43
+      }
+    }
+  },
+  "helperSources": [
+    {
+      "path": "/workspace/Yautja-fidelity-20261109/docs/qa/fidelity-20261109/capture-fidelity.mjs",
+      "sha256": "32f8fa98fc062e961bd7c134b3dcd1b47d645b02cee73914e2af37a9732fec0e",
+      "snapshot": "helper-source-0.mjs"
+    },
+    {
+      "path": "/workspace/Yautja-fidelity-20261109/docs/qa/fidelity-20261109/studio-scene.mjs",
+      "sha256": "e272d30a756f6bebe9798e9bcabb01e0c565469f9a5c8768d7c781a8b2e021ae",
+      "snapshot": "helper-source-1.mjs"
+    },
+    {
+      "path": "/workspace/Yautja-fidelity-20261109/docs/qa/fidelity-20261109/serve-fidelity-studio.mjs",
+      "sha256": "e58ad3dd98b02907c7a1f8b1eed0869cb9ec7f2353efb75550ad7259156c5b6c",
+      "snapshot": "helper-source-2.mjs"
+    },
+    {
+      "path": "/workspace/Yautja-fidelity-20261109/tests/helpers/finish-insertion.mjs",
+      "sha256": "e62b36a664dd2fadaee8804fc70b75d7afa10ebd2345abdb645e806a7b899a43",
+      "snapshot": "helper-source-3.mjs"
+    }
+  ],
+  "browserVersion": "154.0.8037.57",
+  "studioTechnicalFrame": {
+    "engine": "160",
+    "pixelRatio": 1,
+    "lights": {
+      "hemisphere": 0.7,
+      "key": 3,
+      "fill": 0.65
+    },
+    "colorManagement": "sRGB output / ACESFilmic / exposure1.12",
+    "shaders": "actual model materials",
+    "cache": "Each studio fixture retained once until page closes; this is not a gameplay memory benchmark.",
+    "viewport": {
+      "width": 1280,
+      "height": 960
+    },
+    "renderer": "WebGL 2.0 (OpenGL ES 3.0 Chromium)"
+  },
+  "woodSurface": {
+    "available": true,
+    "comparison": "New surface only; baseline has no wood material.",
+    "kind": "material:wood",
+    "view": "quarter",
+    "opening": 0,
+    "model": {
+      "triangles": 2976,
+      "vertices": 1617,
+      "meshes": 1,
+      "meshInstances": 1,
+      "uniqueGeometryBytes": 69600,
+      "geometries": 1,
+      "materials": 1,
+      "malformed": 0,
+      "bounds": {
+        "min": [
+          -0.8999999761581421,
+          0.10000002384185791,
+          -0.8999999761581421
+        ],
+        "max": [
+          0.8999999761581421,
+          1.899999976158142,
+          0.8999999761581421
+        ],
+        "size": [
+          1.7999999523162842,
+          1.7999999523162842,
+          1.7999999523162842
+        ]
+      },
+      "anatomy": null,
+      "weaponKind": null,
+      "visualSource": null
+    },
+    "framing": {
+      "position": [
+        7,
+        2.2,
+        10
+      ],
+      "quaternion": [
+        -0.04671110362208078,
+        0.30027859135229445,
+        0.014724378287774464,
+        0.9525933198684146
+      ],
+      "left": -1.8666666666666665,
+      "right": 1.8666666666666665,
+      "top": 1.4,
+      "bottom": -1.4,
+      "near": 0.05,
+      "far": 80,
+      "exposure": 1.12,
+      "toneMapping": 4,
+      "outputColorSpace": "srgb"
+    },
+    "render": {
+      "frame": 66,
+      "calls": 2,
+      "triangles": 2978,
+      "points": 0,
+      "lines": 0
+    },
+    "surfaces": {
+      "types": [
+        "skin",
+        "armor",
+        "metal",
+        "leather",
+        "bone",
+        "fabric",
+        "humanSkin",
+        "bark",
+        "chitin",
+        "stone",
+        "soil",
+        "net",
+        "wood"
+      ],
+      "textureViews": 57,
+      "sharedImageSources": 39,
+      "sourceBytes": 227278848,
+      "resolutions": {
+        "skin": 2048,
+        "armor": 2048,
+        "metal": 1024,
+        "leather": 512,
+        "bone": 512,
+        "fabric": 512,
+        "humanSkin": 1024,
+        "bark": 1024,
+        "chitin": 2048,
+        "stone": 1024,
+        "soil": 1024,
+        "net": 256,
+        "wood": 512
+      },
+      "anisotropy": 1
+    },
+    "capture": {
+      "stage": "studio",
+      "path": "studio-wood-new-surface.png",
+      "sha256": "c8cbe85ab04b54aaa1892aee26404fbb54428888e2f8652286411931b7dfbd23"
+    }
+  },
+  "studioAfter": {
+    "sourceRoot": "/workspace/Yautja-fidelity-20261109",
+    "sourceCommit": "1a6eeb84445d5b01b13db7f4165f4d17499377e3",
+    "source": {
+      "sha256": "3d32ced7f9ed824653c77a03ec10505c3ae44e44a8beec6603f70889510b2cb2",
+      "files": 197
+    },
+    "sourceTreeDirty": false,
+    "fixtureSha256": "e272d30a756f6bebe9798e9bcabb01e0c565469f9a5c8768d7c781a8b2e021ae"
+  },
+  "frozenBuildUnchanged": true,
+  "finishedAt": "2026-11-09T06:01:43.530Z"
+}

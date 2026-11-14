@@ -1,0 +1,15 @@
+{
+  "stats": [
+    {
+      "name": "skimmer",
+      "triangles": 33464,
+      "calls": 7
+    },
+    {
+      "name": "cheyenne",
+      "triangles": 28956,
+      "calls": 8
+    }
+  ],
+  "errors": []
+}

@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "status": "passed_component_tests_browser_pending",
+  "reviewedAt": "2026-11-02T04:07:07.627651+00:00",
+  "baselineCommit": "51856cb",
+  "criteria": [
+    "AUD-047"
+  ],
+  "filesEdited": [
+    "js/ui/OperationPanel.js",
+    "tests/battle-debrief.test.js"
+  ],
+  "inputHashes": [
+    {
+      "path": "js/ui/OperationPanel.js",
+      "sha256": "28eb5c47fe2ef3ea0602fcbb613bd644c8e11babf906be3e1c2abce32736e366"
+    },
+    {
+      "path": "tests/battle-debrief.test.js",
+      "sha256": "a1c6a99016e007b30f61089d7ba6b2929f072a328e1de65bc592cc708cb57184"
+    },
+    {
+      "path": "tests/operation-alerts.test.js",
+      "sha256": "dcb62e354843f73aa8d1836ea62634697fc640e2954d4e4a4cabe12d753198e1"
+    },
+    {
+      "path": "tests/tactical-presentation.test.js",
+      "sha256": "2455fa7c160499bf5d93da034c90d0570fd19962b01f672389b6e15a56d640f0"
+    }
+  ],
+  "tests": {
+    "broaderTargeted": {
+      "passed": 15,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "log": "debrief-targeted.txt"
+    },
+    "finalCriticalAndAlerts": {
+      "passed": 7,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "log": "debrief-final-targeted.txt"
+    },
+    "beforeFix": {
+      "passed": 4,
+      "failed": 3,
+      "log": "debrief-before-fixture-corrected.txt",
+      "initialFixtureAttempt": "debrief-before.txt",
+      "initialFixtureCorrection": "The initial assertion read a critical event through the intentionally filtered HUD feed. It now reads the actual simulation event list; the UI must use authoritative live criticalFronts rather than require a visible historical event."
+    }
+  },
+  "scope": [
+    "Real simulation loss expiry names only expired fronts, separately tracked after recovery, checkpoint and pause.",
+    "Captured plain-data cause and front names survive mutation and disposal of the simulation.",
+    "Earliest live critical deadline controls the warning location, independently of the newest event or intel filtering.",
+    "Direction chooses the surviving co-op hunter when player1 is defeated.",
+    "Actual simulation operation_timeout and objectives_completed reasons map to their appropriate French result text."
+  ],
+  "limitations": [
+    "No browser, natural mission victory, human playtest, hardware performance or 1:1 appearance validation in this component pass.",
+    "Narrative objective_lost:<id> and convoy_escaped:<id> still use the generic defeat fallback; they are outside the critical-front criterion.",
+    "AUD047 awaits integrated browser end-screen evidence and global release checks before closure."
+  ],
+  "humanTesters": 0,
+  "runtimeSimulationOrBudgetEdited": false,
+  "mainEdited": false,
+  "guidesRead": {
+    "repositoryCommit": "19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9",
+    "guides": [
+      "game-ui-ux",
+      "save-systems"
+    ]
+  }
+}

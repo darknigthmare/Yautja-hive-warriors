@@ -1,0 +1,18 @@
+{
+  "status": "baseline_preserved",
+  "scope": "State at resumption, not next implementation acceptance evidence.",
+  "reviewDate": "2026-10-28",
+  "sourceWorkbookSha256": "d3f88eee0e88deb4dbc2247f8b295c6c5a6de91ff9626ea94b0d274f08e652b5",
+  "counts": {
+    "Terminé": 54,
+    "À valider": 47,
+    "En cours": 25
+  },
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "writerTests": {
+    "passed": 3,
+    "failed": 0,
+    "scope": "Existing writer fixture tests only, not gameplay criteria."
+  }
+}

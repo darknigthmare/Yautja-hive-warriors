@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-28",
+  "scope": "CPU actual-manager/model behavior review; final production browser paths and visual/fidelity assessment separate.",
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "proof": {
+    "path": "docs/audits/2026-10-28/qa/boss-encounters-verification.json",
+    "sha256": "37443f828af9c383357aced747cc97d5b4c1a2cf13e1ee8bf67a8ffb901242e8"
+  },
+  "allThirteenSourcesArtifactsAndDependenciesMatch": true,
+  "accepted": {
+    "AUD-073": "Deux vrais Prétoriens mini-boss à positions/fronts distincts gardent HP et cibles de groupe différents lors de la construction, des dégâts et de la destruction du majeur Queen. Les meshes et identités restent séparés ; détruire un mini ne détruit pas l’autre. Test sur les vrais modèles Horde/BossManager et registre unique, sans qualification visuelle humaine.",
+    "AUD-078": "La phase annonce une attaque12s avant un ordre réel, par un groupe déjà déployé vers un front secondaire allié non critique. Capture, trêve, route fermée, disparition LOD, pause et reprise sont exercées ; objectifs déjà accomplis et front critique restent conservés, aucune unité créée. Le main et la carte reçoivent les menaces réelles ; le panneau visible peut présenter leur échéance."
+  },
+  "remaining": {
+    "AUD-071": "Onze contextes et18 modèles CPU + validation négative avant scène sont prouvés ; parcours complets de production attendent la recette22chemins au bon gel.",
+    "AUD-074": "Les effets de coordination/moral sont réels ; traduction spécifique de la conséquence ruche dans HUD/journal encore en correction autorisée par root.",
+    "AUD-076": "Contre-jeux distincts implémentés et cas représentatifs réels exécutés ; toutes les18lectures/réponses individuelles ne sont pas qualifiées par ces tests ni par des victoires humaines."
+  }
+}

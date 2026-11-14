@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "status": "passed_but_source_changed_during_run",
+  "label": "prey-player-integration",
+  "startedAt": "2026-10-28T08:39:15.156Z",
+  "scope": "Explicit automated CPU suite. No browser, human playtest, hardware performance or visual fidelity certification.",
+  "command": [
+    "node",
+    "--max-old-space-size=2048",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=tap",
+    "tests/prey-player-equipment.test.js",
+    "tests/prey-interaction-contracts.test.js",
+    "tests/prey-reference-interactions.test.js",
+    "tests/hunter-reference-combat.test.js",
+    "tests/operation-player-state.test.js",
+    "tests/player-laser-grounding.test.js"
+  ],
+  "cwd": "/workspace/Yautja-next-20261028",
+  "node": "v24.19.0",
+  "platform": "linux",
+  "arch": "x64",
+  "sourceHeadBefore": "a8aa85762365f1824c2772883a4ddb3fb708cc1e",
+  "sourceBefore": {
+    "sha256": "d04954d4765effdda17e66f4fdce59c4bd23fba2ddd26d8139067f526733558f",
+    "files": 148
+  },
+  "testsBefore": [
+    {
+      "path": "tests/prey-player-equipment.test.js",
+      "sha256": "5749fe993cc4b1cead38f72446253fd710ee60619725b1afec49e160656f2159"
+    },
+    {
+      "path": "tests/prey-interaction-contracts.test.js",
+      "sha256": "5c93a674309c02d827bb484678020f3850ae52035eb77aa9ca30bf1df191a25c"
+    },
+    {
+      "path": "tests/prey-reference-interactions.test.js",
+      "sha256": "ffd0d27e44828ee3347a3cbcea646e0d5eb7e5c466ae4f56fead2dfdc151e095"
+    },
+    {
+      "path": "tests/hunter-reference-combat.test.js",
+      "sha256": "884319a160be6e4075319ef977cea24b9f967fb750298fb641966174659647be"
+    },
+    {
+      "path": "tests/operation-player-state.test.js",
+      "sha256": "e23f422b8475e9a3c60047f542a3608bf99a2dfd13f33024528d9a4ae8454dfe"
+    },
+    {
+      "path": "tests/player-laser-grounding.test.js",
+      "sha256": "62c121cc3d73a91c81a87866ba0673d46e0866441f414a2be4fdbd7c9aa4e83b"
+    }
+  ],
+  "rawOutput": "output.txt",
+  "humanTesters": 0,
+  "browserSessions": 0,
+  "fidelity1to1Verified": false,
+  "exitCode": 0,
+  "signal": null,
+  "rawBytes": 10895,
+  "summaryParserReadsTailBytes": 10895,
+  "result": {
+    "tests": 40,
+    "pass": 40,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "sourceHeadAfter": "a8aa85762365f1824c2772883a4ddb3fb708cc1e",
+  "sourceAfter": {
+    "sha256": "e748503ee07cbf435a7a611b384f580fa47039b5699d2f3d6fe528fe53359fff",
+    "files": 148
+  },
+  "testsAfter": [
+    {
+      "path": "tests/prey-player-equipment.test.js",
+      "sha256": "5749fe993cc4b1cead38f72446253fd710ee60619725b1afec49e160656f2159"
+    },
+    {
+      "path": "tests/prey-interaction-contracts.test.js",
+      "sha256": "5c93a674309c02d827bb484678020f3850ae52035eb77aa9ca30bf1df191a25c"
+    },
+    {
+      "path": "tests/prey-reference-interactions.test.js",
+      "sha256": "ffd0d27e44828ee3347a3cbcea646e0d5eb7e5c466ae4f56fead2dfdc151e095"
+    },
+    {
+      "path": "tests/hunter-reference-combat.test.js",
+      "sha256": "884319a160be6e4075319ef977cea24b9f967fb750298fb641966174659647be"
+    },
+    {
+      "path": "tests/operation-player-state.test.js",
+      "sha256": "e23f422b8475e9a3c60047f542a3608bf99a2dfd13f33024528d9a4ae8454dfe"
+    },
+    {
+      "path": "tests/player-laser-grounding.test.js",
+      "sha256": "62c121cc3d73a91c81a87866ba0673d46e0866441f414a2be4fdbd7c9aa4e83b"
+    }
+  ],
+  "runtimeSourceUnchanged": false,
+  "testsUnchanged": true,
+  "rawSha256": "c938220aa1f7fdb193485c8738283fbd038464a33e8c75e4e44dfd4b53aa1c2c",
+  "endedAt": "2026-10-28T08:39:43.260Z",
+  "durationSeconds": 28.104
+}

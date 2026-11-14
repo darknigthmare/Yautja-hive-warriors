@@ -1,0 +1,521 @@
+{
+  "schemaVersion": 1,
+  "criterion": "AUD-114",
+  "status": "passed",
+  "startedAt": "2026-10-26T14:00:57.927894+00:00",
+  "sourceCommit": "48b5bd5aa9d35fd3919ade38cf2aef55389bec5b",
+  "sourceBranch": "codex/complete-pr3-20261026",
+  "stage": "/workspace/qa/pr3-20261026/vercel-static-prebuilt/.vercel/output/static",
+  "node": "v24.19.0",
+  "npm": "11.9.0",
+  "installCache": "/tmp/pr3-npm-repro-cache",
+  "remoteGitActions": false,
+  "deployments": 0,
+  "browserSessions": 0,
+  "reference": {
+    "assets/confetti-CAXNRs-2.js": {
+      "bytes": 10562,
+      "sha256": "39d247a0fb28fff8a2dc39749d26c3d3d1ddb7e70d4e81e6aace4bf55ff0832d"
+    },
+    "assets/engine-Cbw9a6ne.js": {
+      "bytes": 558200,
+      "sha256": "7fde30f51d88d57cffc50a7cf8500bfa58204ce21b414505d5b978c95ea736cc"
+    },
+    "assets/index-Bh38oWis.js": {
+      "bytes": 2489650,
+      "sha256": "f08da38203924b04ab64ed9ab410a81460cf532dfaf2bec78d517fe2f2c7fa8f"
+    },
+    "assets/index-_U2mu7g3.css": {
+      "bytes": 86493,
+      "sha256": "8f33cf5c585e7ede25f2cf21d5c9d251e5b91bc19d20fd0c6d95050437ade3ff"
+    },
+    "assets/orbitron-latin-600-normal-75H6acHo.woff": {
+      "bytes": 9036,
+      "sha256": "437d5dc397f5b1a5c3a482fa1727792c2ede4129ea3270b9e254320725d6e937"
+    },
+    "assets/orbitron-latin-600-normal-mazHmDYu.woff2": {
+      "bytes": 6588,
+      "sha256": "585062e775d70397653192777533f65f3afb707320fcc2a4bc510470e03762e6"
+    },
+    "assets/orbitron-latin-800-normal-CQafOXEd.woff2": {
+      "bytes": 6740,
+      "sha256": "e2591ec1ac280053b8dc647b0a7d074578a2769a96ff454fb28e4c63257436cc"
+    },
+    "assets/orbitron-latin-800-normal-P4cBi4I7.woff": {
+      "bytes": 9000,
+      "sha256": "84672b2a73181467809b73f29c81d73d82f3d59b2c68bc2bb3a69e9567af5a61"
+    },
+    "assets/rajdhani-latin-500-normal-ByNUCHrt.woff2": {
+      "bytes": 15084,
+      "sha256": "23afdb9b5b89b878fab04d80cc30bf41bb4f3f7e8be88e5f16a7cc7671cdb2dc"
+    },
+    "assets/rajdhani-latin-500-normal-DfvNI-Td.woff": {
+      "bytes": 11760,
+      "sha256": "74c304eefe9b39d76d634d479f20a7332efddd120fb76ab92bbefe9eb4728625"
+    },
+    "assets/rajdhani-latin-600-normal-CXCVEoA9.woff2": {
+      "bytes": 15732,
+      "sha256": "433a7007e4747a02a790167a6efa2625855f013970ba49b9b739a5d3db8b2601"
+    },
+    "assets/rajdhani-latin-600-normal-Dx02qI2_.woff": {
+      "bytes": 12092,
+      "sha256": "9d9d900358819a2a710085a5630d9024a139ea57e9316499d6d9eb3281674f3a"
+    },
+    "assets/rajdhani-latin-700-normal-BPDUZo87.woff2": {
+      "bytes": 15688,
+      "sha256": "5b7e4a6f97163c2636724d4de90304fc895653dcfe64c67a7a22f26331ca5c5f"
+    },
+    "assets/rajdhani-latin-700-normal-e0Uj8ZlN.woff": {
+      "bytes": 12060,
+      "sha256": "e4e5272051a3882943fa3bdf5cda8eca8c1853ac66c1572eb90fda8608d9bd31"
+    },
+    "assets/visual-effects-D0G8xcFB.js": {
+      "bytes": 107703,
+      "sha256": "621a977dee179cd0fc836542163091f68087b8653fdc0087968b636672ef563a"
+    },
+    "build-info.json": {
+      "bytes": 542,
+      "sha256": "ca39fd23d605d11f8ae9810e233248ae7426a91514c8f8cc9dade4d426869b9b"
+    },
+    "favicon.svg": {
+      "bytes": 283,
+      "sha256": "615d9e781f5e03864a8436f2c40a411949df25e9301a04be52e3a3bfd1e9c1d6"
+    },
+    "index.html": {
+      "bytes": 101970,
+      "sha256": "124d7735003c245bc60814e6004c35ace77bd4011b31d448a6aa6c4c41dad185"
+    },
+    "models/big-chap-rigged.glb": {
+      "bytes": 56951716,
+      "sha256": "202b5d7d635cdb14fcf8af430faba3207d5668f43f85d9d9dca1f81cc0d8a97e"
+    },
+    "models/big-chap-run.glb": {
+      "bytes": 79336,
+      "sha256": "7944bc681cef08d822905b099a79963710517dd14898e0c526dcced2cf7b827d"
+    },
+    "models/big-chap-walk.glb": {
+      "bytes": 89968,
+      "sha256": "ae87707f9fa53e246d629c44c454ec6b58b98e0396330e9561476f43bc0e43da"
+    },
+    "models/city-hunter-biomask.glb": {
+      "bytes": 32727588,
+      "sha256": "a2450f45ee9601ba4c4b621ff8acb5f36fb7a4dd41ce89841de6ea23b6c1f3a0"
+    },
+    "models/city-hunter-body-corrected.glb": {
+      "bytes": 42815452,
+      "sha256": "0e297a50400f885f06595f2fb59c85aed5118517a03c140f0f3aefa5288b564b"
+    },
+    "models/city-hunter-rigged.glb": {
+      "bytes": 43124896,
+      "sha256": "bd962ad79d5034d6ac5c0d7fc03e185433d0784808ffc868e597c7656e6725e7"
+    },
+    "models/city-hunter-run.glb": {
+      "bytes": 78940,
+      "sha256": "4356221be2e4c6b19a31cec21a1831dd70922385027cae45d04020cafcac18dd"
+    },
+    "models/city-hunter-walk.glb": {
+      "bytes": 89568,
+      "sha256": "c54514bba78ddc9f87e18f9be62554be4894d83b192c73fcea4182547aad94a5"
+    },
+    "models/jungle-hunter-biomask.glb": {
+      "bytes": 34211520,
+      "sha256": "a8f2cae605da72d463ace4b5fe4b9363a33c0932298158f65ca85bbe98fd1a77"
+    },
+    "models/jungle-hunter-rigged.glb": {
+      "bytes": 53768472,
+      "sha256": "179fe7081ad39f8cb198086d984380dd119e625c8853fa2f11bd69e08ab0be5d"
+    },
+    "models/jungle-hunter-run.glb": {
+      "bytes": 79764,
+      "sha256": "cc1053be4ea26801cf9d2e5ad148ef663373714634a1068aa2b91c14d59c49be"
+    },
+    "models/jungle-hunter-walk.glb": {
+      "bytes": 90416,
+      "sha256": "ffd0a1b2684f3bef06d29cfc8da8fcb003190aaec121e69e673d744fe7310424"
+    }
+  },
+  "referenceFiles": 30,
+  "referenceModels": 12,
+  "originalDistMatchedReferenceBefore": true,
+  "runs": [
+    {
+      "clone": "/tmp/pr3-repro-a",
+      "sourceCommit": "48b5bd5aa9d35fd3919ade38cf2aef55389bec5b",
+      "sourceBranch": "codex/complete-pr3-20261026",
+      "cleanBefore": true,
+      "commitEpoch": 1793022277,
+      "sourceDateEpochOverride": null,
+      "startedAt": "2026-10-26T14:00:58.067689+00:00",
+      "commands": [
+        {
+          "name": "install",
+          "argv": [
+            "npm",
+            "ci",
+            "--cache",
+            "/tmp/pr3-npm-repro-cache",
+            "--no-audit",
+            "--no-fund"
+          ],
+          "cwd": "/tmp/pr3-repro-a",
+          "exitCode": 0,
+          "durationSeconds": 4.06,
+          "log": "docs/qa/pr3/reproducibility/install-a.txt",
+          "logSha256": "159209e8e0e0986ebabe5285de41d910659e01368ed4b696ebb814da68f131f4"
+        },
+        {
+          "name": "build",
+          "argv": [
+            "npm",
+            "run",
+            "build"
+          ],
+          "cwd": "/tmp/pr3-repro-a",
+          "exitCode": 0,
+          "durationSeconds": 2.01,
+          "log": "docs/qa/pr3/reproducibility/build-a.txt",
+          "logSha256": "49468d3e1d71de320a729852674146634f7e036be1515d8c576111544a941739"
+        }
+      ],
+      "cleanAfter": true,
+      "files": {
+        "assets/confetti-CAXNRs-2.js": {
+          "bytes": 10562,
+          "sha256": "39d247a0fb28fff8a2dc39749d26c3d3d1ddb7e70d4e81e6aace4bf55ff0832d"
+        },
+        "assets/engine-Cbw9a6ne.js": {
+          "bytes": 558200,
+          "sha256": "7fde30f51d88d57cffc50a7cf8500bfa58204ce21b414505d5b978c95ea736cc"
+        },
+        "assets/index-Bh38oWis.js": {
+          "bytes": 2489650,
+          "sha256": "f08da38203924b04ab64ed9ab410a81460cf532dfaf2bec78d517fe2f2c7fa8f"
+        },
+        "assets/index-_U2mu7g3.css": {
+          "bytes": 86493,
+          "sha256": "8f33cf5c585e7ede25f2cf21d5c9d251e5b91bc19d20fd0c6d95050437ade3ff"
+        },
+        "assets/orbitron-latin-600-normal-75H6acHo.woff": {
+          "bytes": 9036,
+          "sha256": "437d5dc397f5b1a5c3a482fa1727792c2ede4129ea3270b9e254320725d6e937"
+        },
+        "assets/orbitron-latin-600-normal-mazHmDYu.woff2": {
+          "bytes": 6588,
+          "sha256": "585062e775d70397653192777533f65f3afb707320fcc2a4bc510470e03762e6"
+        },
+        "assets/orbitron-latin-800-normal-CQafOXEd.woff2": {
+          "bytes": 6740,
+          "sha256": "e2591ec1ac280053b8dc647b0a7d074578a2769a96ff454fb28e4c63257436cc"
+        },
+        "assets/orbitron-latin-800-normal-P4cBi4I7.woff": {
+          "bytes": 9000,
+          "sha256": "84672b2a73181467809b73f29c81d73d82f3d59b2c68bc2bb3a69e9567af5a61"
+        },
+        "assets/rajdhani-latin-500-normal-ByNUCHrt.woff2": {
+          "bytes": 15084,
+          "sha256": "23afdb9b5b89b878fab04d80cc30bf41bb4f3f7e8be88e5f16a7cc7671cdb2dc"
+        },
+        "assets/rajdhani-latin-500-normal-DfvNI-Td.woff": {
+          "bytes": 11760,
+          "sha256": "74c304eefe9b39d76d634d479f20a7332efddd120fb76ab92bbefe9eb4728625"
+        },
+        "assets/rajdhani-latin-600-normal-CXCVEoA9.woff2": {
+          "bytes": 15732,
+          "sha256": "433a7007e4747a02a790167a6efa2625855f013970ba49b9b739a5d3db8b2601"
+        },
+        "assets/rajdhani-latin-600-normal-Dx02qI2_.woff": {
+          "bytes": 12092,
+          "sha256": "9d9d900358819a2a710085a5630d9024a139ea57e9316499d6d9eb3281674f3a"
+        },
+        "assets/rajdhani-latin-700-normal-BPDUZo87.woff2": {
+          "bytes": 15688,
+          "sha256": "5b7e4a6f97163c2636724d4de90304fc895653dcfe64c67a7a22f26331ca5c5f"
+        },
+        "assets/rajdhani-latin-700-normal-e0Uj8ZlN.woff": {
+          "bytes": 12060,
+          "sha256": "e4e5272051a3882943fa3bdf5cda8eca8c1853ac66c1572eb90fda8608d9bd31"
+        },
+        "assets/visual-effects-D0G8xcFB.js": {
+          "bytes": 107703,
+          "sha256": "621a977dee179cd0fc836542163091f68087b8653fdc0087968b636672ef563a"
+        },
+        "build-info.json": {
+          "bytes": 542,
+          "sha256": "ca39fd23d605d11f8ae9810e233248ae7426a91514c8f8cc9dade4d426869b9b"
+        },
+        "favicon.svg": {
+          "bytes": 283,
+          "sha256": "615d9e781f5e03864a8436f2c40a411949df25e9301a04be52e3a3bfd1e9c1d6"
+        },
+        "index.html": {
+          "bytes": 101970,
+          "sha256": "124d7735003c245bc60814e6004c35ace77bd4011b31d448a6aa6c4c41dad185"
+        },
+        "models/big-chap-rigged.glb": {
+          "bytes": 56951716,
+          "sha256": "202b5d7d635cdb14fcf8af430faba3207d5668f43f85d9d9dca1f81cc0d8a97e"
+        },
+        "models/big-chap-run.glb": {
+          "bytes": 79336,
+          "sha256": "7944bc681cef08d822905b099a79963710517dd14898e0c526dcced2cf7b827d"
+        },
+        "models/big-chap-walk.glb": {
+          "bytes": 89968,
+          "sha256": "ae87707f9fa53e246d629c44c454ec6b58b98e0396330e9561476f43bc0e43da"
+        },
+        "models/city-hunter-biomask.glb": {
+          "bytes": 32727588,
+          "sha256": "a2450f45ee9601ba4c4b621ff8acb5f36fb7a4dd41ce89841de6ea23b6c1f3a0"
+        },
+        "models/city-hunter-body-corrected.glb": {
+          "bytes": 42815452,
+          "sha256": "0e297a50400f885f06595f2fb59c85aed5118517a03c140f0f3aefa5288b564b"
+        },
+        "models/city-hunter-rigged.glb": {
+          "bytes": 43124896,
+          "sha256": "bd962ad79d5034d6ac5c0d7fc03e185433d0784808ffc868e597c7656e6725e7"
+        },
+        "models/city-hunter-run.glb": {
+          "bytes": 78940,
+          "sha256": "4356221be2e4c6b19a31cec21a1831dd70922385027cae45d04020cafcac18dd"
+        },
+        "models/city-hunter-walk.glb": {
+          "bytes": 89568,
+          "sha256": "c54514bba78ddc9f87e18f9be62554be4894d83b192c73fcea4182547aad94a5"
+        },
+        "models/jungle-hunter-biomask.glb": {
+          "bytes": 34211520,
+          "sha256": "a8f2cae605da72d463ace4b5fe4b9363a33c0932298158f65ca85bbe98fd1a77"
+        },
+        "models/jungle-hunter-rigged.glb": {
+          "bytes": 53768472,
+          "sha256": "179fe7081ad39f8cb198086d984380dd119e625c8853fa2f11bd69e08ab0be5d"
+        },
+        "models/jungle-hunter-run.glb": {
+          "bytes": 79764,
+          "sha256": "cc1053be4ea26801cf9d2e5ad148ef663373714634a1068aa2b91c14d59c49be"
+        },
+        "models/jungle-hunter-walk.glb": {
+          "bytes": 90416,
+          "sha256": "ffd0a1b2684f3bef06d29cfc8da8fcb003190aaec121e69e673d744fe7310424"
+        }
+      },
+      "buildInfo": {
+        "schemaVersion": 1,
+        "contentVersion": "v67-pr3-integration",
+        "sourceCommit": "48b5bd5aa9d35fd3919ade38cf2aef55389bec5b",
+        "sourceBranch": "codex/complete-pr3-20261026",
+        "sourceFingerprint": "8e45634c13e3d51b1d706bdc387b1b5c43fc82e65f34b959a999530b8c75a423",
+        "sourceFiles": 139,
+        "sourceTreeDirty": false,
+        "buildEpoch": 1793022277,
+        "reproducibleBuildDate": "2026-10-26T13:44:37.000Z",
+        "deploymentProof": "https://github.com/darknigthmare/Yautja-hive-warriors/blob/codex/complete-pr3-20261026/docs/qa/pr3-validation.json"
+      },
+      "packageLockSha256": "71bbab4314405dccccb191681669d14f7bc70e0d0787bca8ad4119737e0bf9bc",
+      "status": "passed",
+      "completedAt": "2026-10-26T14:01:04.481546+00:00",
+      "differencesFromStage": [],
+      "exactFiles": 30,
+      "exactModels": 12,
+      "buildInfoExact": true
+    },
+    {
+      "clone": "/tmp/pr3-repro-b",
+      "sourceCommit": "48b5bd5aa9d35fd3919ade38cf2aef55389bec5b",
+      "sourceBranch": "codex/complete-pr3-20261026",
+      "cleanBefore": true,
+      "commitEpoch": 1793022277,
+      "sourceDateEpochOverride": null,
+      "startedAt": "2026-10-26T14:00:58.065389+00:00",
+      "commands": [
+        {
+          "name": "install",
+          "argv": [
+            "npm",
+            "ci",
+            "--cache",
+            "/tmp/pr3-npm-repro-cache",
+            "--no-audit",
+            "--no-fund"
+          ],
+          "cwd": "/tmp/pr3-repro-b",
+          "exitCode": 0,
+          "durationSeconds": 5.586,
+          "log": "docs/qa/pr3/reproducibility/install-b.txt",
+          "logSha256": "8367da773f8c8902b78aeab383418b130d199dd455e68dec12036d673addf517"
+        },
+        {
+          "name": "build",
+          "argv": [
+            "npm",
+            "run",
+            "build"
+          ],
+          "cwd": "/tmp/pr3-repro-b",
+          "exitCode": 0,
+          "durationSeconds": 2.186,
+          "log": "docs/qa/pr3/reproducibility/build-b.txt",
+          "logSha256": "bae4a2c743cdeaa2fcbc84a3b78cc06cbe55b8b62cb3a1848961da3c98f3433c"
+        }
+      ],
+      "cleanAfter": true,
+      "files": {
+        "assets/confetti-CAXNRs-2.js": {
+          "bytes": 10562,
+          "sha256": "39d247a0fb28fff8a2dc39749d26c3d3d1ddb7e70d4e81e6aace4bf55ff0832d"
+        },
+        "assets/engine-Cbw9a6ne.js": {
+          "bytes": 558200,
+          "sha256": "7fde30f51d88d57cffc50a7cf8500bfa58204ce21b414505d5b978c95ea736cc"
+        },
+        "assets/index-Bh38oWis.js": {
+          "bytes": 2489650,
+          "sha256": "f08da38203924b04ab64ed9ab410a81460cf532dfaf2bec78d517fe2f2c7fa8f"
+        },
+        "assets/index-_U2mu7g3.css": {
+          "bytes": 86493,
+          "sha256": "8f33cf5c585e7ede25f2cf21d5c9d251e5b91bc19d20fd0c6d95050437ade3ff"
+        },
+        "assets/orbitron-latin-600-normal-75H6acHo.woff": {
+          "bytes": 9036,
+          "sha256": "437d5dc397f5b1a5c3a482fa1727792c2ede4129ea3270b9e254320725d6e937"
+        },
+        "assets/orbitron-latin-600-normal-mazHmDYu.woff2": {
+          "bytes": 6588,
+          "sha256": "585062e775d70397653192777533f65f3afb707320fcc2a4bc510470e03762e6"
+        },
+        "assets/orbitron-latin-800-normal-CQafOXEd.woff2": {
+          "bytes": 6740,
+          "sha256": "e2591ec1ac280053b8dc647b0a7d074578a2769a96ff454fb28e4c63257436cc"
+        },
+        "assets/orbitron-latin-800-normal-P4cBi4I7.woff": {
+          "bytes": 9000,
+          "sha256": "84672b2a73181467809b73f29c81d73d82f3d59b2c68bc2bb3a69e9567af5a61"
+        },
+        "assets/rajdhani-latin-500-normal-ByNUCHrt.woff2": {
+          "bytes": 15084,
+          "sha256": "23afdb9b5b89b878fab04d80cc30bf41bb4f3f7e8be88e5f16a7cc7671cdb2dc"
+        },
+        "assets/rajdhani-latin-500-normal-DfvNI-Td.woff": {
+          "bytes": 11760,
+          "sha256": "74c304eefe9b39d76d634d479f20a7332efddd120fb76ab92bbefe9eb4728625"
+        },
+        "assets/rajdhani-latin-600-normal-CXCVEoA9.woff2": {
+          "bytes": 15732,
+          "sha256": "433a7007e4747a02a790167a6efa2625855f013970ba49b9b739a5d3db8b2601"
+        },
+        "assets/rajdhani-latin-600-normal-Dx02qI2_.woff": {
+          "bytes": 12092,
+          "sha256": "9d9d900358819a2a710085a5630d9024a139ea57e9316499d6d9eb3281674f3a"
+        },
+        "assets/rajdhani-latin-700-normal-BPDUZo87.woff2": {
+          "bytes": 15688,
+          "sha256": "5b7e4a6f97163c2636724d4de90304fc895653dcfe64c67a7a22f26331ca5c5f"
+        },
+        "assets/rajdhani-latin-700-normal-e0Uj8ZlN.woff": {
+          "bytes": 12060,
+          "sha256": "e4e5272051a3882943fa3bdf5cda8eca8c1853ac66c1572eb90fda8608d9bd31"
+        },
+        "assets/visual-effects-D0G8xcFB.js": {
+          "bytes": 107703,
+          "sha256": "621a977dee179cd0fc836542163091f68087b8653fdc0087968b636672ef563a"
+        },
+        "build-info.json": {
+          "bytes": 542,
+          "sha256": "ca39fd23d605d11f8ae9810e233248ae7426a91514c8f8cc9dade4d426869b9b"
+        },
+        "favicon.svg": {
+          "bytes": 283,
+          "sha256": "615d9e781f5e03864a8436f2c40a411949df25e9301a04be52e3a3bfd1e9c1d6"
+        },
+        "index.html": {
+          "bytes": 101970,
+          "sha256": "124d7735003c245bc60814e6004c35ace77bd4011b31d448a6aa6c4c41dad185"
+        },
+        "models/big-chap-rigged.glb": {
+          "bytes": 56951716,
+          "sha256": "202b5d7d635cdb14fcf8af430faba3207d5668f43f85d9d9dca1f81cc0d8a97e"
+        },
+        "models/big-chap-run.glb": {
+          "bytes": 79336,
+          "sha256": "7944bc681cef08d822905b099a79963710517dd14898e0c526dcced2cf7b827d"
+        },
+        "models/big-chap-walk.glb": {
+          "bytes": 89968,
+          "sha256": "ae87707f9fa53e246d629c44c454ec6b58b98e0396330e9561476f43bc0e43da"
+        },
+        "models/city-hunter-biomask.glb": {
+          "bytes": 32727588,
+          "sha256": "a2450f45ee9601ba4c4b621ff8acb5f36fb7a4dd41ce89841de6ea23b6c1f3a0"
+        },
+        "models/city-hunter-body-corrected.glb": {
+          "bytes": 42815452,
+          "sha256": "0e297a50400f885f06595f2fb59c85aed5118517a03c140f0f3aefa5288b564b"
+        },
+        "models/city-hunter-rigged.glb": {
+          "bytes": 43124896,
+          "sha256": "bd962ad79d5034d6ac5c0d7fc03e185433d0784808ffc868e597c7656e6725e7"
+        },
+        "models/city-hunter-run.glb": {
+          "bytes": 78940,
+          "sha256": "4356221be2e4c6b19a31cec21a1831dd70922385027cae45d04020cafcac18dd"
+        },
+        "models/city-hunter-walk.glb": {
+          "bytes": 89568,
+          "sha256": "c54514bba78ddc9f87e18f9be62554be4894d83b192c73fcea4182547aad94a5"
+        },
+        "models/jungle-hunter-biomask.glb": {
+          "bytes": 34211520,
+          "sha256": "a8f2cae605da72d463ace4b5fe4b9363a33c0932298158f65ca85bbe98fd1a77"
+        },
+        "models/jungle-hunter-rigged.glb": {
+          "bytes": 53768472,
+          "sha256": "179fe7081ad39f8cb198086d984380dd119e625c8853fa2f11bd69e08ab0be5d"
+        },
+        "models/jungle-hunter-run.glb": {
+          "bytes": 79764,
+          "sha256": "cc1053be4ea26801cf9d2e5ad148ef663373714634a1068aa2b91c14d59c49be"
+        },
+        "models/jungle-hunter-walk.glb": {
+          "bytes": 90416,
+          "sha256": "ffd0a1b2684f3bef06d29cfc8da8fcb003190aaec121e69e673d744fe7310424"
+        }
+      },
+      "buildInfo": {
+        "schemaVersion": 1,
+        "contentVersion": "v67-pr3-integration",
+        "sourceCommit": "48b5bd5aa9d35fd3919ade38cf2aef55389bec5b",
+        "sourceBranch": "codex/complete-pr3-20261026",
+        "sourceFingerprint": "8e45634c13e3d51b1d706bdc387b1b5c43fc82e65f34b959a999530b8c75a423",
+        "sourceFiles": 139,
+        "sourceTreeDirty": false,
+        "buildEpoch": 1793022277,
+        "reproducibleBuildDate": "2026-10-26T13:44:37.000Z",
+        "deploymentProof": "https://github.com/darknigthmare/Yautja-hive-warriors/blob/codex/complete-pr3-20261026/docs/qa/pr3-validation.json"
+      },
+      "packageLockSha256": "71bbab4314405dccccb191681669d14f7bc70e0d0787bca8ad4119737e0bf9bc",
+      "status": "passed",
+      "completedAt": "2026-10-26T14:01:06.174848+00:00",
+      "differencesFromStage": [],
+      "exactFiles": 30,
+      "exactModels": 12,
+      "buildInfoExact": true
+    }
+  ],
+  "originalDistUnchanged": true,
+  "stageUnchanged": true,
+  "cloneBuildsMutuallyIdentical": true,
+  "completedAt": "2026-10-26T14:01:06.784262+00:00",
+  "scope": "Two clean installs and independent production builds on the same Linux host, source commit and branch. Every output byte, including all GLBs and build-info, is compared; no cross-OS claim.",
+  "cloneLogs": [
+    {
+      "path": "docs/qa/pr3/reproducibility/clone-a.txt",
+      "sha256": "9e97bb33705cf9eb161891f4f8b4c76a6c8641048c2882242ae60e9f683dfd2f"
+    },
+    {
+      "path": "docs/qa/pr3/reproducibility/clone-b.txt",
+      "sha256": "5667192ba56d6cae6fc095862c367bd3ac5aedfa3c9fdcfdab2fcaeee0060d6a"
+    }
+  ]
+}

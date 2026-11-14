@@ -1,0 +1,80 @@
+{
+  "status": "failed",
+  "startedAt": "2026-10-28T09:27:24.739Z",
+  "origin": "https://yautja-hive-warriors.vercel.app",
+  "deployment": "dpl_9SeDzvFvnrj9KuwGY3KYBqV6Li7N",
+  "expected": {
+    "index": "124d7735003c245bc60814e6004c35ace77bd4011b31d448a6aa6c4c41dad185",
+    "buildInfo": "ca39fd23d605d11f8ae9810e233248ae7426a91514c8f8cc9dade4d426869b9b",
+    "source": "48b5bd5aa9d35fd3919ade38cf2aef55389bec5b"
+  },
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "hardwarePerformanceMeasured": false,
+  "viewport": {
+    "width": 800,
+    "height": 600
+  },
+  "renderer": "Chromium SwiftShader software WebGL",
+  "scope": "Public release menu-to-pilot smoke, capsule visibility/opening/exit, finite population, real map mouse order, O photo, checkpoint and pause-menu cleanup. No full mission victory claimed.",
+  "assistance": [
+    "Pause via game API to bound software-renderer timing",
+    "Await imported generated visual without serializing its graph",
+    "Advance real game update deterministically for staged insertion; finishMissionInsertion helper completes exit",
+    "Explicit game render call for frozen capture",
+    "Unpause and blur previous UI control via API before real keyboard O/Escape"
+  ],
+  "checks": {
+    "publicIndexMatches": true,
+    "publicBuildInfoMatches": true,
+    "frozenDistUnchanged": true
+  },
+  "errors": [],
+  "failedRequests": [
+    {
+      "stage": "browser-boot",
+      "url": "https://yautja-hive-warriors.vercel.app/",
+      "failure": "net::ERR_CERT_AUTHORITY_INVALID"
+    }
+  ],
+  "httpErrors": [],
+  "externalRequests": [],
+  "eventCounts": {
+    "errors": 0,
+    "failedRequests": 1,
+    "httpErrors": 0,
+    "externalRequests": 0
+  },
+  "screenshots": [
+    "pilot-public-game.png",
+    "pilot-public-command-map.png"
+  ],
+  "frozenDistBeforeSha256": "189ab2d25fdadcd802005ce8ddd77ea8da9cb27f53d3aa4a1060aefff9027642",
+  "http": {
+    "indexStatus": 200,
+    "indexSha256": "124d7735003c245bc60814e6004c35ace77bd4011b31d448a6aa6c4c41dad185",
+    "buildInfoStatus": 200,
+    "buildInfoSha256": "ca39fd23d605d11f8ae9810e233248ae7426a91514c8f8cc9dade4d426869b9b",
+    "buildInfo": {
+      "schemaVersion": 1,
+      "contentVersion": "v67-pr3-integration",
+      "sourceCommit": "48b5bd5aa9d35fd3919ade38cf2aef55389bec5b",
+      "sourceBranch": "codex/complete-pr3-20261026",
+      "sourceFingerprint": "8e45634c13e3d51b1d706bdc387b1b5c43fc82e65f34b959a999530b8c75a423",
+      "sourceFiles": 139,
+      "sourceTreeDirty": false,
+      "buildEpoch": 1793022277,
+      "reproducibleBuildDate": "2026-10-26T13:44:37.000Z",
+      "deploymentProof": "https://github.com/darknigthmare/Yautja-hive-warriors/blob/codex/complete-pr3-20261026/docs/qa/pr3-validation.json"
+    }
+  },
+  "failure": {
+    "stage": "browser-boot",
+    "message": "page.goto: net::ERR_CERT_AUTHORITY_INVALID at https://yautja-hive-warriors.vercel.app/\nCall log:\n\u001b[2m  - navigating to \"https://yautja-hive-warriors.vercel.app/\", waiting until \"networkidle\"\u001b[22m\n",
+    "stack": "page.goto: net::ERR_CERT_AUTHORITY_INVALID at https://yautja-hive-warriors.vercel.app/\nCall log:\n\u001b[2m  - navigating to \"https://yautja-hive-warriors.vercel.app/\", waiting until \"networkidle\"\u001b[22m\n\n    at /workspace/qa/pr3-20261026/publication-public-20261028/live-smoke.mjs:66:39"
+  },
+  "browserClosed": true,
+  "frozenDistAfterSha256": "189ab2d25fdadcd802005ce8ddd77ea8da9cb27f53d3aa4a1060aefff9027642",
+  "endedAt": "2026-10-28T09:27:27.524Z",
+  "durationSeconds": 2.785
+}

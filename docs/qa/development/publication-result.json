@@ -1,0 +1,46 @@
+{
+  "status": "published_and_public_http_verified",
+  "checked_at": "2026-10-25T07:16:48.601Z",
+  "index_sha256": "8683a627c08e1c2647913aa29dc375df8cdde08c69da18895981de2b5c5fae6f",
+  "stage": "/workspace/qa/development-20261025/vercel-static-prebuilt-v2",
+  "files": 29,
+  "models": 12,
+  "bundles": 5,
+  "static_bytes": 265653297,
+  "canonical_before": {
+    "http": 200,
+    "sha256": "9fdd19169a75d324dbde0e77bddbac90167e81ca19bfb06880084246a4bad6d6"
+  },
+  "global_qa": {
+    "before_promotion_report": "/workspace/qa/development-20261025/global-validation-before-promotion.json",
+    "status": "passed_locally_waiting_publication",
+    "cpu_broad_passed": 360,
+    "cpu_environment_delta_passed": 26,
+    "final_browser_passed": 15,
+    "final_runtime_captures": 10
+  },
+  "promotion_executed": true,
+  "deployment_id": "dpl_85Br8dxkvi4Ji87BjgQUQ9CnTCcb",
+  "ready_state": "READY",
+  "candidate_url": "yautja-hive-warriors-lpv2ajry5-darknigthmares-projects.vercel.app",
+  "updated_at": "2026-10-25T07:40:43.712267+00:00",
+  "artifact_manifest_sha256": "da553b8ca45340e81b7c522ec1d6616f89c2f19aead7b26153ea458495271649",
+  "previous_stage_held": "/workspace/qa/development-20261025/vercel-static-prebuilt-v1",
+  "candidate_http_verified": true,
+  "canonical_after": {
+    "http": 200,
+    "sha256": "8683a627c08e1c2647913aa29dc375df8cdde08c69da18895981de2b5c5fae6f"
+  },
+  "promoted_at": "2026-10-25T07:39:20.631Z",
+  "public_url": "https://yautja-hive-warriors.vercel.app",
+  "public_files_verified": 29,
+  "public_models_verified": 12,
+  "public_bundles_verified": 5,
+  "public_bytes_verified": 265653297,
+  "public_http_verification_report": "/workspace/qa/development-20261025/vercel-public-verification.json",
+  "canonical_browser_verification": "Pending root HTTPS check; not claimed by file verifier",
+  "repo_docs_scripts_untouched_by_delivery_agent": true,
+  "other_projects_changed": false,
+  "billing_changed": false,
+  "new_meshy_credits": 0
+}

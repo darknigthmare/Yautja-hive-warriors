@@ -1,0 +1,97 @@
+{
+  "status": "passed_and_published",
+  "automated": true,
+  "humanTesters": 0,
+  "updatedAt": "2026-10-23T21:59:47.322Z",
+  "generalBuild": {
+    "indexSha256": "94a9a1194f14816a8ce078fbac2692d2f3a915ad61c8ae368655a10be2c806cf",
+    "resolvedBrowserCases": 14,
+    "gameplay": {
+      "distinctCases": 7,
+      "initial": {
+        "passed": 5,
+        "failed": 2,
+        "log": "gameplay-suite-initial.log"
+      },
+      "fixtureFailures": [
+        "Campaign route crossed the now-solid capsule shell.",
+        "Boss route crossed the now-solid capsule shell."
+      ],
+      "correction": "Walk around the occupied footprint according to the first passage orientation; actual pod.resolveMovement remains enabled on every step.",
+      "rerun": {
+        "passed": 2,
+        "failed": 0,
+        "log": "gameplay-route-rerun.log"
+      }
+    },
+    "productionBrowser": {
+      "passed": 6,
+      "failed": 0,
+      "log": "browser-suite.log"
+    },
+    "rendering": {
+      "passed": 1,
+      "failed": 0,
+      "log": "render-suite.log"
+    }
+  },
+  "finalPoseBuild": {
+    "indexSha256": "d9839d93a06fd01e82c7efb49cefc46a4105a4406f65f451afdf7106f5e010db",
+    "productionChangeFromGeneralBuild": "Lower only visibly deployed external blade arms during occupied-cabin phases, then relax the pose while exiting. Fused City Hunter geometry remains unchanged."
+  },
+  "finalPoseChecks": {
+    "status": "passed",
+    "insertionBrowser": {
+      "passed": 1,
+      "failed": 0,
+      "log": "final-insertion-browser.log"
+    },
+    "rendering": {
+      "passed": 1,
+      "failed": 0,
+      "log": "final-render.log"
+    },
+    "sceneCaptures": {
+      "passed": 12,
+      "failed": 0,
+      "reports": [
+        "final-cinematic-report.json",
+        "final-jungle-cinematic-report.json"
+      ]
+    },
+    "clearance": {
+      "doorInnerPlaneZ": 1.46,
+      "proceduralWolfBladeMaxZ": 0.9792598715668803,
+      "importedJungleBladeMaxZ": -0.286953401883585,
+      "cityBakedBladeMeasurement": null,
+      "cityBakedReason": "Native fused geometry is unchanged and has no isolated external wristblade nodes."
+    },
+    "runtimeErrors": [],
+    "failedRequests": [],
+    "externalRequests": []
+  },
+  "liveChecks": {
+    "status": "passed",
+    "url": "https://yautja-hive-warriors.vercel.app",
+    "indexSha256": "d9839d93a06fd01e82c7efb49cefc46a4105a4406f65f451afdf7106f5e010db",
+    "sampledFrames": 10,
+    "report": "live-cinematic-report.json",
+    "allSampledHuntersAtFullHealth": true,
+    "combatClockFrozenThroughHandoff": true,
+    "cleanup": {
+      "player": null,
+      "player2": null,
+      "pods": 0,
+      "active": false
+    },
+    "errors": [],
+    "failedRequests": [],
+    "externalRequests": [],
+    "completedAt": "2026-10-23T21:59:15.634Z"
+  },
+  "limitations": [
+    "No film-prop scan or certified 1:1 comparison.",
+    "City Hunter body and fused native blades retain the previously reviewed source pose.",
+    "Co-op player 2 is Wolf, using the existing procedural model."
+  ]
+}

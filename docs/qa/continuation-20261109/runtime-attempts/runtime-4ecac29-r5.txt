@@ -1,0 +1,12 @@
+{"stage":"case_start","id":"source-menu-coop-insertion-command-checkpoint","at":"2026-11-09T05:03:38.760Z"}
+{"stage":"ui-coop-smoke","message":"Actual co-op menus selected AFF-27 with one source terrain at both viewport sizes.","at":"2026-11-09T05:03:44.285Z"}
+{"stage":"ui-coop-smoke","message":"Both caste briefings and complete keyboard-scrolled front legends verified at both sizes.","at":"2026-11-09T05:03:46.600Z"}
+{"stage":"ui-coop-smoke","message":"Genuine split-screen insertion opening/exit cameras and populated finite pilot verified.","at":"2026-11-09T05:04:20.459Z"}
+{"stage":"ui-coop-smoke","message":"Actual co-op command, pause clock/HP freeze and real checkpoint save verified; reloading now.","at":"2026-11-09T05:04:37.419Z"}
+{"stage":"ui-coop-smoke","message":"Co-op checkpoint resumed through actual menus with finite identities, order, resources and clock preserved.","at":"2026-11-09T05:05:03.572Z"}
+{"stage":"case_complete","id":"source-menu-coop-insertion-command-checkpoint","status":"passed","at":"2026-11-09T05:05:08.468Z"}
+{"stage":"case_start","id":"carrier-autonomous-main-update-flight","at":"2026-11-09T05:05:08.469Z"}
+{"stage":"case_complete","id":"carrier-autonomous-main-update-flight","status":"passed","at":"2026-11-09T05:05:46.477Z"}
+{"stage":"case_start","id":"ravager-checkpoint-phase-recovery-fire","at":"2026-11-09T05:05:46.480Z"}
+{"stage":"case_complete","id":"ravager-checkpoint-phase-recovery-fire","status":"passed","at":"2026-11-09T05:06:37.469Z"}
+{"status":"passed","cases":[{"id":"source-menu-coop-insertion-command-checkpoint","status":"passed"},{"id":"carrier-autonomous-main-update-flight","status":"passed"},{"id":"ravager-checkpoint-phase-recovery-fire","status":"passed"}],"errors":0,"failedRequests":0,"distUnchanged":true,"helperSourcesUnchanged":true,"browserClosed":true,"report":"/workspace/qa/continuation-20261109/runtime-4ecac29-r5/report.json"}

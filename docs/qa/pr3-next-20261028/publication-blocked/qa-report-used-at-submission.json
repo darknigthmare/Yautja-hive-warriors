@@ -1,0 +1,185 @@
+{
+  "status": "passed_locally_waiting_publication",
+  "branch": "codex/depth-pr3-20261028",
+  "build": {
+    "success": true,
+    "source_commit": "5089228a12ac2985ef03e72782fd29e8687f6b33",
+    "source_fingerprint": "6958b3dfe9552d85fc8ce08c86acfe5e4cf5188808656b707a548376997cddfe",
+    "source_tree_dirty": false,
+    "index_sha256": "643b94f665f1eb3057d35e74b8313968683372f709fdeed671b0c1045b66db0d",
+    "build_info_sha256": "e0553896eeeb4c21b3b8eb392dc08b270926974ff3efed57c9733617416af50a",
+    "static_files": 30,
+    "models": 12,
+    "bundles": 5,
+    "proof": "docs/qa/pr3-next-20261028/build-final-4.txt",
+    "manifest": "docs/qa/pr3-next-20261028/build-files-5089228.json"
+  },
+  "cpu": {
+    "status": "passed",
+    "passed": 833,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "index_sha256": "643b94f665f1eb3057d35e74b8313968683372f709fdeed671b0c1045b66db0d",
+    "source_commit": "5089228a12ac2985ef03e72782fd29e8687f6b33",
+    "source_fingerprint": "6958b3dfe9552d85fc8ce08c86acfe5e4cf5188808656b707a548376997cddfe",
+    "duration_ms": 730445.066939,
+    "proof": "docs/qa/pr3-next-20261028/cpu-final-3.txt",
+    "proof_sha256": "abb934263e5927e7b22a6abc12912f7c9b5defd087af48bd105d5b9682d47a13",
+    "command": "YAUTJA_RELEASE_PROFILE=pr3-next-20261028 node --max-old-space-size=2048 --test --test-concurrency=1 tests/*.test.js tests/browser-cleanup.test.mjs tests/pr3-publication.test.mjs tests/pr3-release-profiles.test.mjs"
+  },
+  "browser": {
+    "final_regression": {
+      "status": "passed",
+      "passed": 8,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "index_sha256": "643b94f665f1eb3057d35e74b8313968683372f709fdeed671b0c1045b66db0d",
+      "source_commit": "5089228a12ac2985ef03e72782fd29e8687f6b33",
+      "duration_ms": 388748.712868,
+      "proof": "docs/qa/pr3-next-20261028/browser-gameplay-final-3.txt",
+      "proof_sha256": "0a92aa4bbdf16675c47be3c98a0925777e29468f517792bbd2ef178a0e90c861",
+      "scope": "All eight gameplay scenarios repeated after navigation/interaction/airstrike corrections. Earlier fifteen-test browser suite remains explicitly linked to the previous build in baseline evidence."
+    },
+    "final_runtime": {
+      "status": "passed",
+      "index_sha256": "643b94f665f1eb3057d35e74b8313968683372f709fdeed671b0c1045b66db0d",
+      "source_commit": "5089228a12ac2985ef03e72782fd29e8687f6b33",
+      "errors": 0,
+      "failed_requests": 0,
+      "external_requests": 0,
+      "checks": [
+        {
+          "id": "eleven_map_victory_routes",
+          "status": "passed",
+          "proof": "docs/qa/pr3-next-20261028/complete-contexts-final-victories/report.json"
+        },
+        {
+          "id": "la_helipad_physical_exit",
+          "status": "passed",
+          "proof": "docs/qa/pr3-next-20261028/complete-contexts-final-victories/report.json"
+        },
+        {
+          "id": "scene-seed-difficulty-checkpoint",
+          "status": "passed",
+          "proof": "docs/qa/pr3-next-20261028/integrated-features/final-5089228/report.json"
+        },
+        {
+          "id": "allocated-ally-three-second-rescue",
+          "status": "passed",
+          "proof": "docs/qa/pr3-next-20261028/integrated-features/final-5089228/report.json"
+        },
+        {
+          "id": "finite-support-roof-refusal-destruction",
+          "status": "passed",
+          "proof": "docs/qa/pr3-next-20261028/integrated-features/final-5089228/report.json"
+        },
+        {
+          "id": "prey-tools-real-pickups-first-arrow",
+          "status": "passed",
+          "proof": "docs/qa/pr3-next-20261028/integrated-features/final-5089228/report.json"
+        },
+        {
+          "id": "ten_restarts_after_twenty_warmups",
+          "status": "passed",
+          "proof": "docs/qa/pr3-next-20261028/resource-restarts/historical20-5089228/report.json"
+        },
+        {
+          "id": "shared_imported_textures_resident",
+          "status": "passed",
+          "proof": "docs/qa/pr3-next-20261028/resource-restarts/historical20-5089228/report.json"
+        },
+        {
+          "id": "frozen_dist_and_source",
+          "status": "passed",
+          "proof": "docs/qa/pr3-next-20261028/build-files-5089228.json"
+        }
+      ],
+      "proofs": [
+        "docs/qa/pr3-next-20261028/complete-contexts-final-victories/report.json",
+        "docs/qa/pr3-next-20261028/integrated-features/final-5089228/report.json",
+        "docs/qa/pr3-next-20261028/resource-restarts/historical20-5089228/report.json"
+      ]
+    },
+    "eleven_context_victories": {
+      "status": "passed",
+      "passed": 11,
+      "failed": 0,
+      "index_sha256": "643b94f665f1eb3057d35e74b8313968683372f709fdeed671b0c1045b66db0d",
+      "source_commit": "5089228a12ac2985ef03e72782fd29e8687f6b33",
+      "duration_seconds": 476.889,
+      "scope": "Eleven assisted complete victory routes, six sectors and five real objective gates per map. Earlier eleven defeats remain on baseline a2252775, not this build.",
+      "proof": "docs/qa/pr3-next-20261028/complete-contexts-final-victories/report.json"
+    },
+    "integrated_features": {
+      "status": "passed",
+      "passed": 4,
+      "failed": 0,
+      "index_sha256": "643b94f665f1eb3057d35e74b8313968683372f709fdeed671b0c1045b66db0d",
+      "source_commit": "5089228a12ac2985ef03e72782fd29e8687f6b33",
+      "proof": "docs/qa/pr3-next-20261028/integrated-features/final-5089228/report.json",
+      "manifest": "docs/qa/pr3-next-20261028/integrated-features/manifest.json",
+      "duration_seconds": 147.713,
+      "human_testers": 0
+    }
+  },
+  "scope": {
+    "human_testers": 0,
+    "fidelity_1_to_1_verified": false,
+    "additional_meshy_credits_spent": 0,
+    "hardware_fps_or_vram_certified": false
+  },
+  "limitations": [
+    "Automated QA with explicitly documented placements, simulation stepping and real manager-applied damage; no human playtest or natural victory is certified.",
+    "Eleven complete victories were repeated on5089228. The earlier eleven controlled defeat paths remain baselinea225 evidence; all eight gameplay regression scenarios were repeated on5089228.",
+    "Several characters and props remain procedural. Existing twelveGLB files are unchanged; film fidelity1:1 is not certified.",
+    "The five-warmup resource experiment failed its geometry-stability assertion95→102. It remains intact. The pre-existing twenty-warmup reference protocol then passed all ten fixed measured cycles; this does not establish stability after only five warmups.",
+    "Reference-protocol heap grew400124bytes after GC. Player-like objects0→0 and selected Three structural counts were identical. This is not a proof of absence of every leak, nor a hardware FPS or VRAM measurement."
+  ],
+  "history": [
+    {
+      "attempt": "cpu-preflight-1",
+      "passed": 784,
+      "failed": 1,
+      "final_evidence": false,
+      "reason": "Boss now uses a grounded root wrapper. The cleanup fixture was adapted to observe every descendant geometry; its eight tests then passed."
+    },
+    {
+      "attempt": "cpu-final-1 and browser-final-1",
+      "status": "interrupted_by_coordinator",
+      "final_evidence": false,
+      "reason": "Stopped before completion to correct the front counter and two independently reproduced integration defects; raw outputs retained."
+    }
+  ],
+  "reproducibility": {
+    "status": "passed",
+    "identical_files": 30,
+    "proof": "docs/qa/pr3-next-20261028/reproducibility-5089228/report.json"
+  },
+  "baseline_reference": "docs/qa/pr3-next-20261028/baseline-validation-a2252775.json",
+  "resource_restarts": {
+    "status": "passed_for_reference_protocol_with_limitations",
+    "proof": "docs/qa/pr3-next-20261028/resource-restarts/historical20-5089228/report.json",
+    "manifest": "docs/qa/pr3-next-20261028/resource-restarts/historical20-5089228/manifest.json",
+    "comparison": "docs/qa/pr3-next-20261028/resource-restarts/historical20-5089228/comparison.json",
+    "heap": "docs/qa/pr3-next-20261028/resource-restarts/historical20-5089228/heap-summary.json",
+    "warmups": 20,
+    "measured": 10,
+    "gpu_geometries": 115,
+    "gpu_textures": 50,
+    "gpu_programs": 17,
+    "cpu_heap_growth_bytes": 400124,
+    "previous_short_warmup": "failed: GPU geometries95→102; preserved, exact cause not retrospectively proved"
+  },
+  "onboarding": {
+    "status": "draft_saved_and_current_workflow_verified",
+    "fields": [
+      "install_script",
+      "start_skill"
+    ],
+    "requires_environment_settings_publication": true,
+    "proof": "docs/qa/pr3-next-20261028/cloud-setup/draft-save.json",
+    "fresh_task_restore_verified": false
+  }
+}

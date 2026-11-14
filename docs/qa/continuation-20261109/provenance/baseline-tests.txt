@@ -1,0 +1,25 @@
+file:///workspace/Yautja-continue-20261109/tests/alien-base.test.mjs:3
+import { ULTIMATE_YAUTJA_ARMORY, CHARACTERS_DATA, resolveAlienBaseIdentityV1 } from '../js/data/charactersData.js';
+                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
+SyntaxError: The requested module '../js/data/charactersData.js' does not provide an export named 'resolveAlienBaseIdentityV1'
+    at #asyncInstantiate (node:internal/modules/esm/module_job:327:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:431:5)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.19.0
+✖ tests/alien-base.test.mjs (56.952249ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 64.083374
+
+✖ failing tests:
+
+test at tests/alien-base.test.mjs:1:1
+✖ tests/alien-base.test.mjs (56.952249ms)
+  'test failed'

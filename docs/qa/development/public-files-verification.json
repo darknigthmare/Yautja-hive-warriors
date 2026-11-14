@@ -1,0 +1,392 @@
+{
+  "status": "passed",
+  "origin": "https://yautja-hive-warriors.vercel.app",
+  "deploymentId": "dpl_85Br8dxkvi4Ji87BjgQUQ9CnTCcb",
+  "deploymentLabel": "dpl_85Br8dxkvi4Ji87BjgQUQ9CnTCcb",
+  "checkedAt": "2026-10-25T07:39:32.775Z",
+  "unauthenticated": true,
+  "redirectsAllowed": false,
+  "frozen_index_sha256": "8683a627c08e1c2647913aa29dc375df8cdde08c69da18895981de2b5c5fae6f",
+  "files": [
+    {
+      "path": "/assets/confetti-CAXNRs-2.js",
+      "bytes": 10562,
+      "sha256": "39d247a0fb28fff8a2dc39749d26c3d3d1ddb7e70d4e81e6aace4bf55ff0832d",
+      "headers": {
+        "content-type": "application/javascript; charset=utf-8",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+        "content-disposition": "inline; filename=\"confetti-CAXNRs-2.js\"",
+        "cache-control": "public, max-age=31536000, immutable",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY"
+      }
+    },
+    {
+      "path": "/assets/engine-CT3M-KMT.js",
+      "bytes": 553780,
+      "sha256": "99d51763bc11a977b7f63354f5fa4c5eea26e10c5bfef5ba07ce4ecf634a4270",
+      "headers": {
+        "content-type": "application/javascript; charset=utf-8",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+        "content-disposition": "inline; filename=\"engine-CT3M-KMT.js\"",
+        "cache-control": "public, max-age=31536000, immutable",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY"
+      }
+    },
+    {
+      "path": "/assets/index-4Ao1XOIG.js",
+      "bytes": 683552,
+      "sha256": "8779a41c437e2a36ceabab8167a3b735fd79e3743398c24f142c76a7c4302288",
+      "headers": {
+        "content-type": "application/javascript; charset=utf-8",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+        "content-disposition": "inline; filename=\"index-4Ao1XOIG.js\"",
+        "cache-control": "public, max-age=31536000, immutable",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY"
+      }
+    },
+    {
+      "path": "/assets/index-BGVQQVOq.css",
+      "bytes": 40686,
+      "sha256": "66f4687ae64ebb415a97908afd8186250ba15a508912f8a54853eccfb972f37e",
+      "headers": {
+        "content-type": "text/css; charset=utf-8",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+        "content-disposition": "inline; filename=\"index-BGVQQVOq.css\"",
+        "cache-control": "public, max-age=31536000, immutable",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY"
+      }
+    },
+    {
+      "path": "/assets/orbitron-latin-600-normal-75H6acHo.woff",
+      "bytes": 9036,
+      "sha256": "437d5dc397f5b1a5c3a482fa1727792c2ede4129ea3270b9e254320725d6e937",
+      "headers": {
+        "content-type": "font/woff",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+        "content-disposition": "inline; filename=\"orbitron-latin-600-normal-75H6acHo.woff\"",
+        "cache-control": "public, max-age=31536000, immutable",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY"
+      }
+    },
+    {
+      "path": "/assets/orbitron-latin-600-normal-mazHmDYu.woff2",
+      "bytes": 6588,
+      "sha256": "585062e775d70397653192777533f65f3afb707320fcc2a4bc510470e03762e6",
+      "headers": {
+        "content-type": "font/woff2",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+        "content-disposition": "inline; filename=\"orbitron-latin-600-normal-mazHmDYu.woff2\"",
+        "cache-control": "public, max-age=31536000, immutable",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY"
+      }
+    },
+    {
+      "path": "/assets/orbitron-latin-800-normal-CQafOXEd.woff2",
+      "bytes": 6740,
+      "sha256": "e2591ec1ac280053b8dc647b0a7d074578a2769a96ff454fb28e4c63257436cc",
+      "headers": {
+        "content-type": "font/woff2",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+        "content-disposition": "inline; filename=\"orbitron-latin-800-normal-CQafOXEd.woff2\"",
+        "cache-control": "public, max-age=31536000, immutable",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY"
+      }
+    },
+    {
+      "path": "/assets/orbitron-latin-800-normal-P4cBi4I7.woff",
+      "bytes": 9000,
+      "sha256": "84672b2a73181467809b73f29c81d73d82f3d59b2c68bc2bb3a69e9567af5a61",
+      "headers": {
+        "content-type": "font/woff",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+        "content-disposition": "inline; filename=\"orbitron-latin-800-normal-P4cBi4I7.woff\"",
+        "cache-control": "public, max-age=31536000, immutable",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY"
+      }
+    },
+    {
+      "path": "/assets/rajdhani-latin-500-normal-ByNUCHrt.woff2",
+      "bytes": 15084,
+      "sha256": "23afdb9b5b89b878fab04d80cc30bf41bb4f3f7e8be88e5f16a7cc7671cdb2dc",
+      "headers": {
+        "content-type": "font/woff2",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+        "content-disposition": "inline; filename=\"rajdhani-latin-500-normal-ByNUCHrt.woff2\"",
+        "cache-control": "public, max-age=31536000, immutable",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY"
+      }
+    },
+    {
+      "path": "/assets/rajdhani-latin-500-normal-DfvNI-Td.woff",
+      "bytes": 11760,
+      "sha256": "74c304eefe9b39d76d634d479f20a7332efddd120fb76ab92bbefe9eb4728625",
+      "headers": {
+        "content-type": "font/woff",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+        "content-disposition": "inline; filename=\"rajdhani-latin-500-normal-DfvNI-Td.woff\"",
+        "cache-control": "public, max-age=31536000, immutable",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY"
+      }
+    },
+    {
+      "path": "/assets/rajdhani-latin-600-normal-CXCVEoA9.woff2",
+      "bytes": 15732,
+      "sha256": "433a7007e4747a02a790167a6efa2625855f013970ba49b9b739a5d3db8b2601",
+      "headers": {
+        "content-type": "font/woff2",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+        "content-disposition": "inline; filename=\"rajdhani-latin-600-normal-CXCVEoA9.woff2\"",
+        "cache-control": "public, max-age=31536000, immutable",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY"
+      }
+    },
+    {
+      "path": "/assets/rajdhani-latin-600-normal-Dx02qI2_.woff",
+      "bytes": 12092,
+      "sha256": "9d9d900358819a2a710085a5630d9024a139ea57e9316499d6d9eb3281674f3a",
+      "headers": {
+        "content-type": "font/woff",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+        "content-disposition": "inline; filename=\"rajdhani-latin-600-normal-Dx02qI2_.woff\"",
+        "cache-control": "public, max-age=31536000, immutable",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY"
+      }
+    },
+    {
+      "path": "/assets/rajdhani-latin-700-normal-BPDUZo87.woff2",
+      "bytes": 15688,
+      "sha256": "5b7e4a6f97163c2636724d4de90304fc895653dcfe64c67a7a22f26331ca5c5f",
+      "headers": {
+        "content-type": "font/woff2",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+        "content-disposition": "inline; filename=\"rajdhani-latin-700-normal-BPDUZo87.woff2\"",
+        "cache-control": "public, max-age=31536000, immutable",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY"
+      }
+    },
+    {
+      "path": "/assets/rajdhani-latin-700-normal-e0Uj8ZlN.woff",
+      "bytes": 12060,
+      "sha256": "e4e5272051a3882943fa3bdf5cda8eca8c1853ac66c1572eb90fda8608d9bd31",
+      "headers": {
+        "content-type": "font/woff",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+        "content-disposition": "inline; filename=\"rajdhani-latin-700-normal-e0Uj8ZlN.woff\"",
+        "cache-control": "public, max-age=31536000, immutable",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY"
+      }
+    },
+    {
+      "path": "/assets/visual-effects-DVMrvtkx.js",
+      "bytes": 107709,
+      "sha256": "db659990735d12d74e78fc5a19adf471f8e79fdbf722ef2185d29f6b9e2da4ea",
+      "headers": {
+        "content-type": "application/javascript; charset=utf-8",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+        "content-disposition": "inline; filename=\"visual-effects-DVMrvtkx.js\"",
+        "cache-control": "public, max-age=31536000, immutable",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY"
+      }
+    },
+    {
+      "path": "/favicon.svg",
+      "bytes": 283,
+      "sha256": "615d9e781f5e03864a8436f2c40a411949df25e9301a04be52e3a3bfd1e9c1d6",
+      "headers": {
+        "content-type": "image/svg+xml",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+        "content-disposition": "inline; filename=\"favicon.svg\"",
+        "cache-control": "public, max-age=0, must-revalidate",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY"
+      }
+    },
+    {
+      "path": "/",
+      "bytes": 35309,
+      "sha256": "8683a627c08e1c2647913aa29dc375df8cdde08c69da18895981de2b5c5fae6f",
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+        "content-disposition": "inline",
+        "cache-control": "public, max-age=0, must-revalidate",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY"
+      }
+    },
+    {
+      "path": "/models/big-chap-rigged.glb",
+      "bytes": 56951716,
+      "sha256": "202b5d7d635cdb14fcf8af430faba3207d5668f43f85d9d9dca1f81cc0d8a97e",
+      "headers": {
+        "content-type": "model/gltf-binary",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+        "content-disposition": "inline; filename=\"big-chap-rigged.glb\"",
+        "cache-control": "public, max-age=0, must-revalidate",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY"
+      }
+    },
+    {
+      "path": "/models/big-chap-run.glb",
+      "bytes": 79336,
+      "sha256": "7944bc681cef08d822905b099a79963710517dd14898e0c526dcced2cf7b827d",
+      "headers": {
+        "content-type": "model/gltf-binary",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+        "content-disposition": "inline; filename=\"big-chap-run.glb\"",
+        "cache-control": "public, max-age=0, must-revalidate",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY"
+      }
+    },
+    {
+      "path": "/models/big-chap-walk.glb",
+      "bytes": 89968,
+      "sha256": "ae87707f9fa53e246d629c44c454ec6b58b98e0396330e9561476f43bc0e43da",
+      "headers": {
+        "content-type": "model/gltf-binary",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+        "content-disposition": "inline; filename=\"big-chap-walk.glb\"",
+        "cache-control": "public, max-age=0, must-revalidate",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY"
+      }
+    },
+    {
+      "path": "/models/city-hunter-biomask.glb",
+      "bytes": 32727588,
+      "sha256": "a2450f45ee9601ba4c4b621ff8acb5f36fb7a4dd41ce89841de6ea23b6c1f3a0",
+      "headers": {
+        "content-type": "model/gltf-binary",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+        "content-disposition": "inline; filename=\"city-hunter-biomask.glb\"",
+        "cache-control": "public, max-age=0, must-revalidate",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY"
+      }
+    },
+    {
+      "path": "/models/city-hunter-body-corrected.glb",
+      "bytes": 42815452,
+      "sha256": "0e297a50400f885f06595f2fb59c85aed5118517a03c140f0f3aefa5288b564b",
+      "headers": {
+        "content-type": "model/gltf-binary",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+        "content-disposition": "attachment; filename=\"city-hunter-body-corrected.glb\"",
+        "cache-control": "public, max-age=0, must-revalidate",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY"
+      }
+    },
+    {
+      "path": "/models/city-hunter-rigged.glb",
+      "bytes": 43124896,
+      "sha256": "bd962ad79d5034d6ac5c0d7fc03e185433d0784808ffc868e597c7656e6725e7",
+      "headers": {
+        "content-type": "model/gltf-binary",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+        "content-disposition": "inline; filename=\"city-hunter-rigged.glb\"",
+        "cache-control": "public, max-age=0, must-revalidate",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY"
+      }
+    },
+    {
+      "path": "/models/city-hunter-run.glb",
+      "bytes": 78940,
+      "sha256": "4356221be2e4c6b19a31cec21a1831dd70922385027cae45d04020cafcac18dd",
+      "headers": {
+        "content-type": "model/gltf-binary",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+        "content-disposition": "inline; filename=\"city-hunter-run.glb\"",
+        "cache-control": "public, max-age=0, must-revalidate",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY"
+      }
+    },
+    {
+      "path": "/models/city-hunter-walk.glb",
+      "bytes": 89568,
+      "sha256": "c54514bba78ddc9f87e18f9be62554be4894d83b192c73fcea4182547aad94a5",
+      "headers": {
+        "content-type": "model/gltf-binary",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+        "content-disposition": "inline; filename=\"city-hunter-walk.glb\"",
+        "cache-control": "public, max-age=0, must-revalidate",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY"
+      }
+    },
+    {
+      "path": "/models/jungle-hunter-biomask.glb",
+      "bytes": 34211520,
+      "sha256": "a8f2cae605da72d463ace4b5fe4b9363a33c0932298158f65ca85bbe98fd1a77",
+      "headers": {
+        "content-type": "model/gltf-binary",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+        "content-disposition": "inline; filename=\"jungle-hunter-biomask.glb\"",
+        "cache-control": "public, max-age=0, must-revalidate",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY"
+      }
+    },
+    {
+      "path": "/models/jungle-hunter-rigged.glb",
+      "bytes": 53768472,
+      "sha256": "179fe7081ad39f8cb198086d984380dd119e625c8853fa2f11bd69e08ab0be5d",
+      "headers": {
+        "content-type": "model/gltf-binary",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+        "content-disposition": "inline; filename=\"jungle-hunter-rigged.glb\"",
+        "cache-control": "public, max-age=0, must-revalidate",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY"
+      }
+    },
+    {
+      "path": "/models/jungle-hunter-run.glb",
+      "bytes": 79764,
+      "sha256": "cc1053be4ea26801cf9d2e5ad148ef663373714634a1068aa2b91c14d59c49be",
+      "headers": {
+        "content-type": "model/gltf-binary",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+        "content-disposition": "inline; filename=\"jungle-hunter-run.glb\"",
+        "cache-control": "public, max-age=0, must-revalidate",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY"
+      }
+    },
+    {
+      "path": "/models/jungle-hunter-walk.glb",
+      "bytes": 90416,
+      "sha256": "ffd0a1b2684f3bef06d29cfc8da8fcb003190aaec121e69e673d744fe7310424",
+      "headers": {
+        "content-type": "model/gltf-binary",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+        "content-disposition": "inline; filename=\"jungle-hunter-walk.glb\"",
+        "cache-control": "public, max-age=0, must-revalidate",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY"
+      }
+    }
+  ],
+  "modelsVerified": 12,
+  "bundlesVerified": 5,
+  "completedAt": "2026-10-25T07:39:46.613Z"
+}

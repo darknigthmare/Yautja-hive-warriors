@@ -1,0 +1,14 @@
+$ node --check js/entities/Player.js
+Exit code: 0
+
+$ node --check tests/m77-gauss-cover.test.js
+Exit code: 0
+
+$ node --check tests/sniper-plasma-cover.test.js
+Exit code: 0
+
+$ node --check tests/m77-cover.test.js
+Exit code: 0
+
+$ node --check tests/sniper-cover.test.js
+Exit code: 0

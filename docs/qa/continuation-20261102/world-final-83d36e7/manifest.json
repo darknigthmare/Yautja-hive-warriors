@@ -1,0 +1,20 @@
+{
+  "files": [
+    {
+      "path": "actual-gameplay-camera.png",
+      "sha256": "8c834f19f6b706cca60b1324a2f2f428a0c63621bc5ab1925867ecfd748601f0"
+    },
+    {
+      "path": "fixed-inspection-camera.png",
+      "sha256": "7909d5a019859ef3311808eb9164db1bded9a97562038635c87468f552f7939f"
+    },
+    {
+      "path": "harness-source.mjs",
+      "sha256": "262bdc0329a3fa6f5cf93073f817c2b86059a321c1fc66a34eaa00b4bacdaf90"
+    },
+    {
+      "path": "report.json",
+      "sha256": "1c5369bcad72d7a09d5a12dcaf15853ced07928c7ce014f48bf6608f397ac16f"
+    }
+  ]
+}

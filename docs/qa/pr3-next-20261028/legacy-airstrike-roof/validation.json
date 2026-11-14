@@ -1,0 +1,42 @@
+{
+  "status": "passed_cpu_airguards_waiting_final_browser_build_checks",
+  "final_build_pins_readonly_verified": {
+    "source_commit": "5089228a12ac2985ef03e72782fd29e8687f6b33",
+    "index_sha256": "643b94f665f1eb3057d35e74b8313968683372f709fdeed671b0c1045b66db0d",
+    "build_info_sha256": "e0553896eeeb4c21b3b8eb392dc08b270926974ff3efed57c9733617416af50a",
+    "source_fingerprint": "6958b3dfe9552d85fc8ce08c86acfe5e4cf5188808656b707a548376997cddfe"
+  },
+  "focused": {
+    "passed": 6,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "proof": "legacy-airstrike-roof-tests.txt"
+  },
+  "systems_and_focused": {
+    "passed": 29,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "proof": "legacy-airstrike-systems-regression.txt"
+  },
+  "main_runtime_integration": {
+    "passed": 14,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "proof": "main-runtime-14-tests.txt"
+  },
+  "main_contract": "main-contract.json",
+  "runtime_edited_during_archive": false,
+  "browser_started": false,
+  "preview_started": false,
+  "build_executed": false,
+  "git_executed": false,
+  "remote_requests_executed": false,
+  "limits": [
+    "CPU proof and readonly final dist identity only; final integrated browser checks are scheduled by root.",
+    "The three suites overlap in purpose and are listed separately, not summed as independent gameplay cases.",
+    "No human, hardware, victory or visual fidelity1:1 certification."
+  ]
+}

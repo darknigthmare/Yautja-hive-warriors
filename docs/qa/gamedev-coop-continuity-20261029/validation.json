@@ -1,0 +1,185 @@
+{
+  "schemaVersion": 1,
+  "checkedAtUtc": "2026-10-29T13:18:55.533012+00:00",
+  "repository": "darknigthmare/Yautja-hive-warriors",
+  "pullRequest": 5,
+  "baseCommit": "6b81359c44322c7b71e276bcf1f9e266180d16ab",
+  "baseTree": "887644fbaf67eee71f18609fd4f477545da3123d",
+  "guidesSourceCommit": "19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9",
+  "guides": [
+    {
+      "id": "save-systems",
+      "use": "on_demand",
+      "sourcePath": "skills/disciplines/save-systems/SKILL.md",
+      "gitBlobSha": "dbfa017473dd69f28217a620bb1fb73621913d36",
+      "url": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills/blob/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/disciplines/save-systems/SKILL.md",
+      "purpose": "Versionnement, rechargement et continuité des identités."
+    },
+    {
+      "id": "input-systems",
+      "use": "on_demand",
+      "sourcePath": "skills/disciplines/input-systems/SKILL.md",
+      "gitBlobSha": "d20f5a0bdfb5f6c41822dcd138cba305e2ab0d64",
+      "url": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills/blob/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/disciplines/input-systems/SKILL.md",
+      "purpose": "Commandes, buffers, focus et coopération locale."
+    },
+    {
+      "id": "game-ui-ux",
+      "use": "on_demand",
+      "sourcePath": "skills/disciplines/game-ui-ux/SKILL.md",
+      "gitBlobSha": "c7088f7d340dd3d68848f7d0d9a954577fde86b3",
+      "url": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills/blob/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/disciplines/game-ui-ux/SKILL.md",
+      "purpose": "HUD des fronts, commandes et informations de bataille."
+    }
+  ],
+  "nodeVersion": "v24.22.1",
+  "three": {
+    "lockedVersion": "0.160.1",
+    "testBuildRevision": "160",
+    "sha256": "76dea8151bc9352aef3528b4262e249b2604f62543828328db978d060d61a495",
+    "installation": "Official core bytes with test-only local descriptor; no npm ci."
+  },
+  "targetedTests": {
+    "command": [
+      "node",
+      "--test",
+      "--test-isolation=none",
+      "--test-reporter=spec",
+      "tests/co-op-keyboard-interactions.test.js",
+      "tests/command-map-coop-selection.test.js",
+      "tests/battle-campaign-record.test.js",
+      "tests/gamepad-controls.test.js",
+      "tests/gamepad-menu-roots.test.js"
+    ],
+    "exitCode": 0,
+    "summary": {
+      "tests": 44,
+      "pass": 44,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  },
+  "testFiles": [
+    "tests/co-op-keyboard-interactions.test.js",
+    "tests/command-map-coop-selection.test.js",
+    "tests/battle-campaign-record.test.js",
+    "tests/gamepad-controls.test.js",
+    "tests/gamepad-menu-roots.test.js"
+  ],
+  "baselineReproductions": [
+    {
+      "system": "J2 keyboard",
+      "passed": 2,
+      "failed": 13
+    },
+    {
+      "system": "Command map",
+      "passed": 2,
+      "failed": 2
+    },
+    {
+      "system": "Campaign record",
+      "passed": 6,
+      "failed": 2
+    }
+  ],
+  "syntaxChecks": 8,
+  "validationScope": {
+    "productionKeyboardListenerAndMethods": true,
+    "commandMapUpdateWithSimulatedDOM": true,
+    "realCampaignAndBattleSimulation": true,
+    "existingGamepadTests": true,
+    "browserGameplay": false,
+    "physicalGamepad": false,
+    "humanTesters": 0,
+    "hardwarePerformanceMeasurement": false,
+    "fidelity1to1Verified": false
+  },
+  "localBuild": {
+    "passed": false,
+    "command": "npm run build",
+    "exitCode": 127,
+    "reason": "vite: not found. Locked Vite 8.3.4 absent from installed runtime and cache; standard registry access fails at inherited browser-proxy:8889. No proxy, lock or dependency version changed."
+  },
+  "browserValidation": {
+    "passed": false,
+    "reason": "No local browser executable; protected previous Vercel preview does not contain this patch. Exact new-commit deployment status is recorded separately in the PR."
+  },
+  "auditActions": {
+    "AUD-099": "À valider",
+    "AUD-108": "À valider",
+    "AUD-118": "À valider"
+  },
+  "limitations": [
+    "DOM and keyboard fixtures exercise production logic without constructing the full WebGL game.",
+    "Gamepad tests use input fixtures, not a physical controller.",
+    "Campaign retry is attempted on a subsequent observation; closing before any successful write can still lose uncommitted in-memory state.",
+    "No full mission, two-visible-front rendering or hardware FPS guarantee follows from these tests."
+  ],
+  "files": [
+    {
+      "path": "js/main.js",
+      "baseGitBlobSha": "d1d90e00ddd84dc0a28ea89de5d4d85ab4d3e930",
+      "testedGitBlobSha": "f307a7e48f5f4c5fb2c614a49219a0058d48a1c9",
+      "sha256": "7338e0e1085c88929af2d1c90f09bb0fbcfd849d4bdd28fbeaa114a3b257bcb0"
+    },
+    {
+      "path": "js/ui/CommandMap.js",
+      "baseGitBlobSha": "c538882e436dff4ffb5f1f20e45fa293e2d323b5",
+      "testedGitBlobSha": "0723a6979fc29389f426f4694c1fd09bf5d3400c",
+      "sha256": "d252acce36af383dfeee6e7b74c75e8c5f185f0185c66ab12bb3758337b19e00"
+    },
+    {
+      "path": "js/battlefield/BattleCampaignRecord.js",
+      "baseGitBlobSha": "1cb30de72dd058ddb09bc14022fd31674f602158",
+      "testedGitBlobSha": "cc5effc24bb8125d79f71087db642b3b75d3a6f8",
+      "sha256": "3b90f1dcd338f41e226c44b8c7537a5165de631dfa22e644f87809dd185c2bc2"
+    },
+    {
+      "path": "tests/co-op-keyboard-interactions.test.js",
+      "baseGitBlobSha": null,
+      "testedGitBlobSha": "5a950d23c3ca4a7624d846289cfe018755683e7d",
+      "sha256": "2485374b53a9472fac494b2b20159b229e7eddc50392bdb994560e457f78a050"
+    },
+    {
+      "path": "tests/command-map-coop-selection.test.js",
+      "baseGitBlobSha": null,
+      "testedGitBlobSha": "850d635ca749a991f3af980e1c95f796bfc8f010",
+      "sha256": "6a24fe1adc9ded75a2956538558d4138674630344fe42c65fde92474ec953b60"
+    },
+    {
+      "path": "tests/battle-campaign-record.test.js",
+      "baseGitBlobSha": "df557449cd68d38ab14a57ba04db7f44511d7c28",
+      "testedGitBlobSha": "a7f7075a87fd0f06b6a35f24f8550db8e7a41029",
+      "sha256": "bed6e2c884fdbfc6c24595de29cb1a3e7b725a2ea24ef8a9d319bdad58dbe0a7"
+    },
+    {
+      "path": "tests/gamepad-controls.test.js",
+      "baseGitBlobSha": "174ccaeb54ca7c43c1df117300ba0ff585732c01",
+      "testedGitBlobSha": "174ccaeb54ca7c43c1df117300ba0ff585732c01",
+      "sha256": "e69db3761e06f1aaa85ac7edb258caf9b77328a198d2bfc68277de40138f42c1"
+    },
+    {
+      "path": "tests/gamepad-menu-roots.test.js",
+      "baseGitBlobSha": "af852842df447884fc3ac992fb9d1e340423f3c6",
+      "testedGitBlobSha": "af852842df447884fc3ac992fb9d1e340423f3c6",
+      "sha256": "0a5dac600ece16fef1bbcd4a501c590d96226fcf6b775a6ce2a6244ef655b20d"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "docs/qa/gamedev-coop-continuity-20261029/targeted-tests.txt",
+      "sha256": "6f41f12a08a615679b9845b647428a69f367eae7b308a5829d8174112db4598c"
+    },
+    {
+      "path": "docs/qa/gamedev-coop-continuity-20261029/syntax-checks.txt",
+      "sha256": "eb8ced763fc4a5ca60a52800266f3abd7cb142abb70908e3495f917d720de6d3"
+    },
+    {
+      "path": "docs/qa/gamedev-coop-continuity-20261029/baseline-regressions.txt",
+      "sha256": "8ad30379db7e3bf6c86b63b233654a05f5dcdb16e3dec6c865524fc548842bd4"
+    }
+  ]
+}

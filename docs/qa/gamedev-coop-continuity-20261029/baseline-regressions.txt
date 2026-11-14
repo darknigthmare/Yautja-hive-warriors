@@ -1,0 +1,539 @@
+BASELINE REGRESSIONS — sources at 6b81359c44322c7b71e276bcf1f9e266180d16ab
+These expected failures were captured before each corresponding correction.
+
+## J2 keyboard
+✖ J2 Enter reaches the existing bridge interaction without also attacking or affecting J1 (7.953302ms)
+✖ J2 Enter reaches the existing transport interaction without also attacking or affecting J1 (1.037626ms)
+✖ J2 Enter reaches the existing objective interaction without also attacking or affecting J1 (0.730622ms)
+✖ J2 Enter reaches the existing prey interaction without also attacking or affecting J1 (0.696231ms)
+✔ a J2 rescue consumes one input before nearby objects and preserves the existing priority (1.379132ms)
+✖ a living J2 can still interact and attack when J1 is dead (1.200432ms)
+✖ J2 falls back to one light attack after rejected interactions and no executable target (1.339552ms)
+✖ a real accepted boss execution consumes J2 Enter without a second attack (2.329736ms)
+✖ a rejected boss execution returns false and permits the ordinary J2 attack (4.681855ms)
+✖ a real praetorian execution also consumes J2 Enter without a second attack (0.968392ms)
+✖ a real synthetic execution also consumes J2 Enter without a second attack (0.692625ms)
+✖ J2 Enter advances the ordinary facehugger QTE without an interaction or attack (0.986619ms)
+✖ J2 Enter advances the royal facehugger QTE without an interaction or attack (6.538933ms)
+✖ pause, insertion, photo mode, weapon wheel, dead J2, held keys and focused UI reject combat interactions (4.546291ms)
+✔ J2 heavy and plasma controls retain their ordinary attacks without activating nearby interactions (4.329394ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 2
+ℹ fail 13
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 50.241543
+
+✖ failing tests:
+
+test at tests/co-op-keyboard-interactions.test.js:59:3
+✖ J2 Enter reaches the existing bridge interaction without also attacking or affecting J1 (7.953302ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'bridge'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/co-op-keyboard-interactions.test.js:67:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'bridge',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/co-op-keyboard-interactions.test.js:59:3
+✖ J2 Enter reaches the existing transport interaction without also attacking or affecting J1 (1.037626ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'transport'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/co-op-keyboard-interactions.test.js:67:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'transport',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/co-op-keyboard-interactions.test.js:59:3
+✖ J2 Enter reaches the existing objective interaction without also attacking or affecting J1 (0.730622ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'objective'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/co-op-keyboard-interactions.test.js:67:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'objective',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/co-op-keyboard-interactions.test.js:59:3
+✖ J2 Enter reaches the existing prey interaction without also attacking or affecting J1 (0.696231ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'prey'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/co-op-keyboard-interactions.test.js:67:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'prey',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/co-op-keyboard-interactions.test.js:82:1
+✖ a living J2 can still interact and attack when J1 is dead (1.200432ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   [
+  +     'light',
+  +     'player2'
+  +   ],
+  +   [
+  +     'impact-scheduled',
+  +     'player2'
+  +   ]
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/co-op-keyboard-interactions.test.js:86:19)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [Array],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/co-op-keyboard-interactions.test.js:92:1
+✖ J2 falls back to one light attack after rejected interactions and no executable target (1.339552ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/co-op-keyboard-interactions.test.js:97:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/co-op-keyboard-interactions.test.js:101:1
+✖ a real accepted boss execution consumes J2 Enter without a second attack (2.329736ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + []
+  - [
+  -   [
+  -     'boss-death',
+  -     'player2'
+  -   ],
+  -   [
+  -     'execution',
+  -     'player2'
+  -   ],
+  -   [
+  -     'trophy',
+  -     'player2',
+  -     2500
+  -   ]
+  - ]
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/co-op-keyboard-interactions.test.js:110:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [],
+    expected: [Array],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/co-op-keyboard-interactions.test.js:116:1
+✖ a rejected boss execution returns false and permits the ordinary J2 attack (4.681855ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - false
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/co-op-keyboard-interactions.test.js:120:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/co-op-keyboard-interactions.test.js:128:3
+✖ a real praetorian execution also consumes J2 Enter without a second attack (0.968392ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/co-op-keyboard-interactions.test.js:140:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/co-op-keyboard-interactions.test.js:128:3
+✖ a real synthetic execution also consumes J2 Enter without a second attack (0.692625ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/co-op-keyboard-interactions.test.js:140:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/co-op-keyboard-interactions.test.js:147:3
+✖ J2 Enter advances the ordinary facehugger QTE without an interaction or attack (0.986619ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      [
+  +     'rescue',
+  -     'struggle',
+        'player2'
+      ],
+  +   [
+  +     'sector',
+  +     'player2'
+  +   ],
+  +   [
+  +     'light',
+  +     'player2'
+  +   ],
+  +   [
+  +     'impact-scheduled',
+  +     'player2'
+  +   ],
+  +   [
+  +     'heavy',
+  +     'player2'
+  +   ],
+  +   [
+  +     'impact-scheduled',
+  +     'player2'
+  +   ],
+  +   [
+  +     'plasma',
+  +     'player2'
+  +   ]
+    ]
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/co-op-keyboard-interactions.test.js:151:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [Array],
+    expected: [Array],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/co-op-keyboard-interactions.test.js:147:3
+✖ J2 Enter advances the royal facehugger QTE without an interaction or attack (6.538933ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      [
+  +     'rescue',
+  -     'royal-struggle',
+        'player2'
+      ],
+  +   [
+  +     'sector',
+  +     'player2'
+  +   ],
+  +   [
+  +     'light',
+  +     'player2'
+  +   ],
+  +   [
+  +     'impact-scheduled',
+  +     'player2'
+  +   ],
+  +   [
+  +     'heavy',
+  +     'player2'
+  +   ],
+  +   [
+  +     'impact-scheduled',
+  +     'player2'
+  +   ],
+  +   [
+  +     'plasma',
+  +     'player2'
+  +   ]
+    ]
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/co-op-keyboard-interactions.test.js:151:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [Array],
+    expected: [Array],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests/co-op-keyboard-interactions.test.js:155:1
+✖ pause, insertion, photo mode, weapon wheel, dead J2, held keys and focused UI reject combat interactions (4.546291ms)
+  AssertionError [ERR_ASSERTION]: dead
+  + actual - expected
+  
+  + [
+  +   [
+  +     'rescue',
+  +     'player2'
+  +   ],
+  +   [
+  +     'sector',
+  +     'player2'
+  +   ]
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/co-op-keyboard-interactions.test.js:171:12)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [Array],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+## Command map
+✖ returning from co-op to solo resets the command issuer to the player who exists (2.001568ms)
+✖ returning from co-op to solo resets the healing recipient to the living mission slot (0.667396ms)
+✔ co-op refresh preserves player-two choices and the selected groups, destination and view (0.99536ms)
+✔ solo-to-co-op enables the second slot without silently retargeting player-one actions (0.209486ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 2
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 21.278381
+
+✖ failing tests:
+
+test at tests/command-map-coop-selection.test.js:52:1
+✖ returning from co-op to solo resets the command issuer to the player who exists (2.001568ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'player2'
+  - 'player1'
+           ^
+  
+      at file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/command-map-coop-selection.test.js:56:10
+      at withMap (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/command-map-coop-selection.test.js:46:12)
+      at TestContext.<anonymous> (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/command-map-coop-selection.test.js:52:95)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'player2',
+    expected: 'player1',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/command-map-coop-selection.test.js:61:1
+✖ returning from co-op to solo resets the healing recipient to the living mission slot (0.667396ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'player2'
+  - 'player1'
+           ^
+  
+      at file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/command-map-coop-selection.test.js:65:10
+      at withMap (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/command-map-coop-selection.test.js:46:12)
+      at TestContext.<anonymous> (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/command-map-coop-selection.test.js:61:100)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'player2',
+    expected: 'player1',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+## Campaign record
+✔ original clan continuity is opt-in and carries an actual named loss into a later operation only (38.419637ms)
+✔ suspension preserves a run; only an actual confirmed result or explicit withdrawal finalizes it once (14.139418ms)
+✔ finalized run IDs survive the 64-receipt debrief ring and a temporary quota failure retries safely (55.887525ms)
+✖ observing the same named loss retries a recovered store and prevents resurrection after reload (3.235908ms)
+✖ an unchanged named loss never reports persisted while the store remains unavailable (1.752212ms)
+✔ observing a named loss already loaded from a valid store performs no redundant write (2.634012ms)
+✔ incompatible records remain untouched until explicit reset, isolated from existing stores (2.35437ms)
+✔ an older checkpoint cannot revive a unique individual already confirmed dead by the campaign (6.631317ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 6
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 170.898848
+
+✖ failing tests:
+
+test at tests/battle-campaign-record.test.js:70:1
+✖ observing the same named loss retries a recovered store and prevents resurrection after reload (3.235908ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/battle-campaign-record.test.js:79:84)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/battle-campaign-record.test.js:91:1
+✖ an unchanged named loss never reports persisted while the store remains unavailable (1.752212ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/8f6eda208fe6/yautja-hive-warriors/tests/battle-campaign-record.test.js:100:52)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+

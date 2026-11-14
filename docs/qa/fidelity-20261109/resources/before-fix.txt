@@ -1,0 +1,52 @@
+✖ removing an instanced actor releases its instance buffer lifecycle while retaining shared surfaces (2.445313ms)
+✖ distinct instanced meshes dispose independently while shared owned geometry and material dispose once (0.938979ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 102.800351
+
+✖ failing tests:
+
+test at tests/instanced-resource-lifecycle.test.js:6:1
+✖ removing an instanced actor releases its instance buffer lifecycle while retaining shared surfaces (2.445313ms)
+  AssertionError [ERR_ASSERTION]: Three r160 frees instanceMatrix/instanceColor through the mesh dispose event
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///workspace/Yautja-fidelity-20261109/tests/instanced-resource-lifecycle.test.js:16:43)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/instanced-resource-lifecycle.test.js:23:1
+✖ distinct instanced meshes dispose independently while shared owned geometry and material dispose once (0.938979ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 2
+  
+      at TestContext.<anonymous> (file:///workspace/Yautja-fidelity-20261109/tests/instanced-resource-lifecycle.test.js:33:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 2,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

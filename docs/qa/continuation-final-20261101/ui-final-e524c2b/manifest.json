@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "files": [
+    {
+      "path": "briefing-and-command-map-failure.png",
+      "sha256": "2c072a218c016644e8bed6c2b1a53f857e0e04974f92fce0b4d242379e289020"
+    },
+    {
+      "path": "character-briefing.png",
+      "sha256": "77a473189b80fa52ae85bf176b5101aa25544f4b8a3c5503f179eda3d0c6941e"
+    },
+    {
+      "path": "codex-engineers-source-detail.png",
+      "sha256": "8dc408e308c1726318955d08d7ceb895c6abb0996530de7cadbd42b31137f44e"
+    },
+    {
+      "path": "codex-engineers.png",
+      "sha256": "8dc408e308c1726318955d08d7ceb895c6abb0996530de7cadbd42b31137f44e"
+    },
+    {
+      "path": "codex-ranks-source-detail.png",
+      "sha256": "e4ac54fb0f93a55b31e281abd80c94a0ee3c12793ac8c17da16d21f6b5522c5b"
+    },
+    {
+      "path": "codex-ranks.png",
+      "sha256": "8408fc08c7db31169c7443fcab8032f1cb92718da3784ef00dce5a5ff4621871"
+    },
+    {
+      "path": "preferences-monochrome-reduced.png",
+      "sha256": "237d65bf78473d0809e8125d6a52ac6639e18c7f915945b7ec18e5c25dc43b01"
+    },
+    {
+      "path": "report.json",
+      "sha256": "d4a5c83a0ebaeea5b7bc77e97ca60a1e074fc2ad2b3a73928cdb5da1ae031f8a"
+    }
+  ]
+}

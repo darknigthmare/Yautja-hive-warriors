@@ -1,0 +1,17 @@
+node:buffer:912
+    return utf8Slice(this, 0, this.length);
+           ^
+
+Error: Cannot create a string longer than 0x1fffffe8 characters
+    at Buffer.toString (node:buffer:912:12)
+    at PipeTransport2._dispatch (/workspace/Yautja-hive-warriors/node_modules/playwright-core/lib/coreBundle.js:40858:61)
+    at Socket.<anonymous> (/workspace/Yautja-hive-warriors/node_modules/playwright-core/lib/coreBundle.js:40824:46)
+    at Socket.emit (node:events:509:28)
+    at addChunk (node:internal/streams/readable:563:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:514:3)
+    at Readable.push (node:internal/streams/readable:394:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23) {
+  code: 'ERR_STRING_TOO_LONG'
+}
+
+Node.js v24.19.0

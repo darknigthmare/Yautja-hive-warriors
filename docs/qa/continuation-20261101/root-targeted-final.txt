@@ -1,0 +1,30 @@
+✔ actual sector router never imports future USCM, synths or industrial pipes into historical forest hunts (2.299477ms)
+✔ actual future sector router preserves finite future support and its delayed opening (0.357602ms)
+✔ all eleven location plans and unknown contexts are conservative; named self duels are explicitly alternative (0.321528ms)
+✔ release profiles keep the two archived stages separate from the new continuation (2.201068ms)
+✔ unset environment retains every original default and NEXT selects its own paths (300.082672ms)
+✔ all profiles require their own frozen pins and reject every other release (673.075879ms)
+✔ unknown profile aborts every entrypoint at import before local or remote actions (222.900167ms)
+✔ unfilled NEXT pins and pending QA cannot pass the final guards (65.432115ms)
+✔ old checkpoints recover the original seed/difficulty despite different menu settings, while new saves retain both (1.728652ms)
+✔ command map reports the active terrain/difficulty and real pending phase threats, omitting cancelled threats (0.404618ms)
+✔ actual support context denies unknown maps and historical faithful tech, and checks a real roof and APC ownership (0.856422ms)
+✔ router binds support checkpoints to the persistent campaign run, retains wounds/ammo and reattaches only a real collider (2085.495275ms)
+✔ wooden arrow sweep chooses the first physical hostile body and the nearest physical cover (1.060784ms)
+✔ router dispatches Taabe to its owned mesh and actual Horde hit query only damages the first body once (3.873614ms)
+✔ router boss hit passes actual heavy counterplay and origin, while physical cover prevents damage/interruption (1.260781ms)
+✔ full player snapshot restores PREY possession before selecting the spent bow, without inventing possession from old flat ammo (3358.399489ms)
+✔ wheel adds only the current input owner’s actually acquired PREY tools (0.675127ms)
+✔ real E router falls through the real no-sentry refusal object and acquires Taabe from reachable ground (475.322431ms)
+✔ real E router falls through a full nearby real sentry and acquires Naru without reloading it (1175.632486ms)
+✔ a real successful sentry reload still consumes E once and leaves a nearby PREY pickup untouched (432.209119ms)
+✔ planetary barrage refuses a real roof or unknown context before spending any honor (0.917486ms)
+✔ planetary barrage spends once for open footprints and excludes a covered boss and a distant boss from direct damage (1.100668ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9250.441608

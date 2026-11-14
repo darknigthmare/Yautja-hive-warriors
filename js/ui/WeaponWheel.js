@@ -1,13 +1,14 @@
 /* 360° Radial Holo-Weapon Wheel Manager */
 
 export class WeaponWheel {
-  constructor(onSelectWeapon) {
+  constructor(onSelectWeapon, getPlayer = () => null) {
     this.onSelectWeapon = onSelectWeapon;
+    this.getPlayer = getPlayer;
     this.isOpen = false;
     this.overlay = document.getElementById('weapon-wheel-overlay');
     this.wheelContainer = document.getElementById('wheel-items-container');
 
-    this.weapons = [
+    this.baseWeapons = [
       { id: 'wristblades', label: '🔪 Wristblades' },
       { id: 'combistick', label: '🗡️ Combistick Spear' },
       { id: 'smart_disc', label: '🛸 Smart-Disc' },
@@ -18,6 +19,7 @@ export class WeaponWheel {
       { id: 'compound_bow', label: '🏹 Compound Bow' }
     ];
 
+    this.weapons = [...this.baseWeapons];
     this.buildWheel();
   }
 
@@ -32,7 +34,8 @@ export class WeaponWheel {
       const x = Math.cos(angle) * radius;
       const y = Math.sin(angle) * radius;
 
-      const item = document.createElement('div');
+      const item = document.createElement('button');
+      item.type = 'button';
       item.className = 'wheel-item';
       item.style.left = `calc(50% + ${x}px)`;
       item.style.top = `calc(50% + ${y}px)`;
@@ -48,13 +51,23 @@ export class WeaponWheel {
   }
 
   open() {
+    const equipment = (this.inputOwner ?? this.getPlayer())?.serializePreyEquipment?.();
+    this.weapons = [...this.baseWeapons];
+    if (equipment?.hasTaabeBow) this.weapons.push({ id:'taabe_bow', label:`🏹 Arc de Taabe · ${equipment.taabeArrowAmmo} flèches` });
+    if (equipment?.hasNaruAxe) this.weapons.push({ id:'naru_axe', label:`🪓 Hache de Naru · ${equipment.naruAxeCharges} coups` });
+    this.buildWheel();
     this.isOpen = true;
-    if (this.overlay) this.overlay.classList.remove('hidden');
+    if (this.overlay) {
+      this.overlay.classList.remove('hidden');
+      this.overlay.setAttribute('aria-hidden', 'false');
+      this.overlay.querySelector('button')?.focus();
+    }
   }
 
   close() {
-    this.isOpen = false;
-    if (this.overlay) this.overlay.classList.add('hidden');
+    this.isOpen = false;this.inputOwner=null;
+    if (this.overlay) { this.overlay.classList.add('hidden'); this.overlay.setAttribute('aria-hidden', 'true'); }
+    if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
   }
 
   toggle() {

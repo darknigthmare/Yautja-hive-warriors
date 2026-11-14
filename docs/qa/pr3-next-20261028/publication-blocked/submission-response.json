@@ -1,0 +1,11 @@
+{
+  "status": "error",
+  "reason": "deploy_failed",
+  "message": "Resource is limited - try again in 24 hours (more than 100, code: \"api-deployments-free-per-day\").",
+  "next": [
+    {
+      "command": "vercel deploy --global-config /workspace/.vercel-session/config",
+      "when": "retry deploy"
+    }
+  ]
+}

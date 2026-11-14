@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "status": "passed_with_scoped_visual_observations",
+  "sourceCommit": "e524c2b96ef35e80768295fb1a3dd06bea3b5d63",
+  "indexSha256": "59955fb9eb9fea457916a52ccf19cb7ab2e19cea5b5c913c86467fa92005f5a8",
+  "browserFixture": {
+    "path": "docs/qa/continuation-final-20261101/ui-final-e524c2b-r2/report.json",
+    "sha256": "bc61596a6c7dfdcf2fcd8d0cd7ac523dfcdcb401c03fb1bae6baa0009bbf08d8",
+    "passed": 6,
+    "failed": 0,
+    "durationSeconds": 77.942,
+    "javascriptErrors": 0,
+    "failedRequests": 0,
+    "externalRequests": 0,
+    "distUnchanged": true
+  },
+  "archiveManifest": {
+    "path": "docs/qa/continuation-final-20261101/ui-final-e524c2b-r2/archive-manifest.json",
+    "sha256": "85ea1e97044acfb9ec5528bf099b5ccdac6658ab23968d987f973fd1ca4d9b2b"
+  },
+  "visualReview": [
+    {
+      "path": "docs/qa/continuation-final-20261101/ui-final-e524c2b-r2/map-front-comparison-detail.png",
+      "observation": "Three fronts are compared with report age, unknown control/supply and only reported force counts. Text and selection controls fit the1600x1000 desktop viewport after natural modal scrolling."
+    },
+    {
+      "path": "docs/qa/continuation-final-20261101/ui-final-e524c2b-r2/fronts-minimap-monochrome-detail.png",
+      "observation": "Actual fronts minimap now uses white outlines, relationship shapes and faction/player glyphs in monochrome. No legacy faction/player/neutral marker RGB is found by the canvas assertion."
+    },
+    {
+      "path": "docs/qa/continuation-final-20261101/ui-final-e524c2b-r2/map-tactic-feedback.png",
+      "observation": "Accepted hold_line tactic feedback names its finite20s effect and30s repeat interval; the actual selected group owns that tactic."
+    },
+    {
+      "path": "docs/qa/continuation-final-20261101/ui-final-e524c2b-r2/codex-engineers.png",
+      "observation": "The active Organisms and Technologies tab is visibly selected and has aria-pressed true exclusively. Engineer, synthetic and Feral cards show scoped provenance and underlined public sources."
+    },
+    {
+      "path": "docs/qa/continuation-final-20261101/ui-final-e524c2b-r2/combat-readability-real-cloak.png",
+      "observation": "Actual F input conceals the hunter; current light/heavy costs and concealment text remain visible. Nearby chevron markings appear flat rather than stretched across a4.2unit deck-to-ground height. Two tall bright triangular forms remain visible in the background; their origin is not established by this UI fixture, so absence of all graphical spikes is not certified."
+    },
+    {
+      "path": "docs/qa/continuation-final-20261101/ui-final-e524c2b-r2/controlled-defeat-character-debrief.png",
+      "observation": "After the controlled real defeat and scene teardown, the debrief still names Jungle Hunter, elapsed operation time, group survivors and delegated captain state."
+    }
+  ],
+  "preservedFailure": {
+    "path": "docs/qa/continuation-final-20261101/ui-final-e524c2b/report.json",
+    "status": "failed",
+    "reason": "Initial Playwright map-button action timed out after30s in SwiftShader when the fixture released simulation RAF before hit-testing;0JS/network errors, unchanged dist. Not classified as a verified product defect."
+  },
+  "assistances": [
+    "Insertion advanced by the existing actual game.update helper at1/60",
+    "strategic and rendering updates paused between input steps to preserve comparable state",
+    "controlled public update at1/60 after cloak key input",
+    "controlled player HP=0 followed by actual game.update to capture a real defeat debrief",
+    "finite CSS transitions completed only for static screenshot capture"
+  ],
+  "scopeLimitations": [
+    "Assisted desktop browser checks, not natural victory or human perception/playtest.",
+    "No hardware performance or1to1 fidelity certification.",
+    "Only fronts minimap received the targeted monochrome correction; legacy survival/hunt marker paths are not universally certified.",
+    "All six assertions pass; separate background triangular forms remain a visual observation to triage."
+  ],
+  "runtimeEditsDuringFinalBrowserRun": false
+}

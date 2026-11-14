@@ -1,0 +1,40 @@
+✔ the real Dutch challenge preserves cryogenic hold, the other hunter slow and a newly authored phase speed (6693.94406ms)
+✔ a second available Dutch challenge does not compound permanently, and inactive hunters cannot trigger it (7.553056ms)
+✔ actual mutagen contacts expire after leaving, stay bounded while overlapping and freeze with the game (3.024765ms)
+✔ nitrogen stops actual horde locomotion, expires after leaving, and cannot recolor shared creature materials (5197.127551ms)
+✔ environment freeze respects pause and clear restores the current base while another hunter slow remains owned (2.357551ms)
+✔ steam contacts do not compound per-frame speed and transformer recovery never guesses a species default (2.179393ms)
+✔ cooling tower motor freeze has a finite exit and leaves actor materials untouched (1.632256ms)
+✔ stasis: leaving a damaging coolant volume releases its actual slow without stale frozen flags (2.406659ms)
+✔ ammonia: leaving a damaging coolant volume releases its actual slow without stale frozen flags (1.636047ms)
+✔ freon: leaving a damaging coolant volume releases its actual slow without stale frozen flags (3.772789ms)
+✔ tar: leaving a damaging coolant volume releases its actual slow without stale frozen flags (1.503686ms)
+✔ the actual inhibitor uses a finite current-base effect and announces only its implemented consequence (1.729661ms)
+✔ hvac: the actual prop interaction expires without overwriting species or phase speed (4.227112ms)
+✔ locker: the actual prop interaction expires without overwriting species or phase speed (1.563744ms)
+✔ tar: the actual prop interaction expires without overwriting species or phase speed (3.21654ms)
+✔ a concealed hunter can pass a remote defender, but proximity, firing and damage reveal it (8012.03759ms)
+✔ acquisition uses distinct close senses and never sees a concealed hunter through cover (0.466969ms)
+✔ one rear ambush changes real manager damage and records one death without extra trophy currency (580.764088ms)
+✔ frontal, already alerted, friendly, elevated and covered targets do not grant a rear bonus (534.565326ms)
+✔ awareness is captured before the committed windup reveals the hunter (491.601641ms)
+✔ overlapping slows, refreshes and both hunters restore the exact authored speed (0.772388ms)
+✔ disposing a slow owner releases its contribution and respects a newly authored speed (0.172686ms)
+✔ actual anti-gravity and repeated neurotoxin ticks expire without a permanently crippled enemy (526.109326ms)
+✔ the short execution pose protects only its owner, ends, and cannot be refreshed during the same pose (1069.800885ms)
+✔ boss execution refuses a wall, an expired window and truce; a different encounter stays alive (504.151449ms)
+✔ executions cannot use corpses, another floor or an active facehugger to bypass approach (519.977782ms)
+✔ facehugger hold has a fixed deadline and a short escape immunity, with a visible exit (572.203906ms)
+✔ royal struggle belongs to its real P2 victim and removes one parasite through the death ledger (1164.453448ms)
+✔ royal hold expires without a new target and cleanup releases its victim flag (561.507462ms)
+✔ a zero-speed environmental hold expires to the other hunter slow, then to the exact base speed (1.230782ms)
+✔ disposing either overlapping owner preserves the remaining zero-speed hold or slow (0.339366ms)
+✔ a phase speed authored during a zero-speed hold becomes the restored base, without divide-by-zero (0.307425ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 32
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 27585.374133

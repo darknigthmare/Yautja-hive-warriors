@@ -1,0 +1,30 @@
+✔ gunnison_forest: textured environment stays inside its rendering budget (4697.598882ms)
+✔ xenomorph_prime: textured environment stays inside its rendering budget (1639.035931ms)
+✔ antarctic_pyramid: textured environment stays inside its rendering budget (102.098475ms)
+✔ la_rooftops: textured environment stays inside its rendering budget (142.372207ms)
+✔ val_verde_jungle: textured environment stays inside its rendering budget (172.3594ms)
+✔ romulus_station: textured environment stays inside its rendering budget (132.831066ms)
+✔ charon_rogue_base: textured environment stays inside its rendering budget (148.6539ms)
+✔ game_preserve_planet: textured environment stays inside its rendering budget (140.018903ms)
+✔ stargazer_facility: textured environment stays inside its rendering budget (126.646916ms)
+✔ prey_comanche_territory: textured environment stays inside its rendering budget (179.400578ms)
+✔ killer_of_killers_arena: textured environment stays inside its rendering budget (170.835639ms)
+✔ forest canopies and undergrowth share geometry instead of creating a mesh per leaf (256.699311ms)
+✔ skyline window instances stay attached to their actual building facades (135.972531ms)
+✔ roads, annuli, landing cap and terrain share isotropic five-metre texture density (125.254762ms)
+✔ botanical models have attached small blades, curved stems, and smooth sculpted stones (121.288005ms)
+✔ forest trails blend their irregular edges and the fabricated pad has a single visible cap (139.02516ms)
+✔ beveled temple obelisks expose their outside surfaces with front-face culling (0.37961ms)
+✔ static instancing preserves authored dimensions, per-instance colors and moving parent transforms (6.411801ms)
+✔ render distance never disables physical cover, while authored removal does (2.908856ms)
+✔ reference timers follow simulation time and cannot fire after a rebuild (0.624549ms)
+✔ operation doors really block movement and rays, reopen, and avoid fake sector completion (4985.098752ms)
+✔ civilian navigation crosses two corridor turns and reroutes around a closed flank (256.375386ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 14009.820917

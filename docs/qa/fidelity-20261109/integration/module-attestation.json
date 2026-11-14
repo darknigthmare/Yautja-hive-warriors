@@ -1,0 +1,88 @@
+{
+  "sourceCommit": "1a6eeb84445d5b01b13db7f4165f4d17499377e3",
+  "checkedAt": "2026-11-09T06:06:19.527049+00:00",
+  "moduleHashesMatchFrozenSource": true,
+  "attestations": [
+    {
+      "report": "humans/integrated-metrics.json",
+      "file": "js/graphics/MarineAnatomy.js",
+      "sha256": "09d5da7e7aefe4ecdca1c5c381d0148163046147f4880fb27168088b62258429"
+    },
+    {
+      "report": "humans/integrated-metrics.json",
+      "file": "js/graphics/SupportModels.js",
+      "sha256": "93dc054440c5f7c0f79022265c873136cc5d8b7b17788074384e72a0bda337df"
+    },
+    {
+      "report": "world/measurements.json",
+      "file": "js/entities/ReferenceEnvironmentMechanisms.js",
+      "sha256": "4b473b17231b74de266dd4719ab942ed7b79ca7558fc6297442c3a78f859509d"
+    },
+    {
+      "report": "world/measurements.json",
+      "file": "js/graphics/ValVerdeFieldStructures.js",
+      "sha256": "db9bd3879777f4ff79173ac80a29dd38bfd34522ff832f8a791fc178f504ca2d"
+    },
+    {
+      "report": "world/measurements.json",
+      "file": "js/graphics/EnvironmentSculpt.js",
+      "sha256": "7a8614e9a0457515e69d1f0216e3bd07a63b5d0f413924a01d8542de8d4ff248"
+    },
+    {
+      "report": "world/measurements.json",
+      "file": "tests/val-verde-world-fidelity.test.js",
+      "sha256": "ab6a00d6b54a1e8f1ce6ffb428114f881f0eeef18e08fe2742127a2948975db7"
+    },
+    {
+      "report": "yautja/source-sha256.txt",
+      "file": "js/graphics/ClanHunterModel.js",
+      "sha256": "70055027b8eeabe77aafd507754155ef18eb81e1d16215ddc7d116679ec79f59"
+    },
+    {
+      "report": "yautja/source-sha256.txt",
+      "file": "js/entities/YautjaAllies.js",
+      "sha256": "08a0bf5895bfb2c91c8f3b38b91b513f97b571fd80a9f3ecc23d3adc617c5cae"
+    },
+    {
+      "report": "yautja/source-sha256.txt",
+      "file": "tests/clan-hunter-visual.test.js",
+      "sha256": "b5b0c9bfa85adb58af222de2d5f3794bc3b79f833d6bfc7ff860a1f576ca26db"
+    },
+    {
+      "report": "yautja/source-sha256.txt",
+      "file": "tests/clan-hunter-apc-integration.test.js",
+      "sha256": "94b2df128d1afff241bdb634dbe4ad41788ac1b0204da525655afc7a5129e41e"
+    },
+    {
+      "report": "yautja/source-sha256.txt",
+      "file": "js/graphics/SupportAssembly.js",
+      "sha256": "89043efb97ec6cc72bb515e212cc0fd12db13d77c260ba9b9765afa17db8b40a"
+    },
+    {
+      "report": "yautja/source-sha256.txt",
+      "file": "js/graphics/SupportModels.js",
+      "sha256": "93dc054440c5f7c0f79022265c873136cc5d8b7b17788074384e72a0bda337df"
+    },
+    {
+      "report": "yautja/source-sha256.txt",
+      "file": "js/main.js",
+      "sha256": "b805462ce5bb64ede032ab028df0ef956b113785cbd7b32bf06321653fc14f5b"
+    },
+    {
+      "report": "yautja/source-sha256.txt",
+      "file": "js/engine/SceneResources.js",
+      "sha256": "3a84ad85d0024b62da38eefbcb70d1d4cace9d732b8a3267f364dc816ff41faa"
+    },
+    {
+      "report": "capsule/final-model-metrics.json",
+      "file": "js/graphics/InsertionPodModel.js",
+      "sha256": "fd9327955b91c2b4895814ee4ffb7689b826d285a42463e1335520a201582e10"
+    },
+    {
+      "report": "materials/after.json",
+      "file": "js/graphics/SurfaceLibrary.js",
+      "sha256": "c7e192e3da8d06d9ab5497b97040cf7918f65c74bec3df2606f3b0db33f5ffe4"
+    }
+  ],
+  "twelveGlbsAndAuditFilesUnchangedFrom": "a8f9c759a30bc97c5400ce48709f6ad10856003d"
+}

@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "startedAt": "2026-11-01T01:54:31.351Z",
+  "scope": "Two rendered component fixtures using real bundled manager classes and damage paths; fixture identities only, not a full mission or source-allocated operation.",
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "hardwarePerformanceVerified": false,
+  "assistances": [
+    "Isolated scenes built with actual bundled constructors; fixture military IDs and relation/LOS callbacks, no physical environment or complete operation.",
+    "Manager simulation advances in explicit 0.05/0.1-second steps and renders once at a feedback event."
+  ],
+  "cases": [
+    {
+      "id": "reciprocal-fire",
+      "status": "passed",
+      "humanHP": 128,
+      "securityHP": 130,
+      "humanFeedbackSamples": 3,
+      "syntheticFeedbackSamples": 1,
+      "simulationSeconds": 2.85,
+      "playerHP": 10000,
+      "visibleFeedback": 1,
+      "remainingActorOrFeedbackNodes": 0,
+      "image": "reciprocal-fire.png",
+      "imageSha256": "914235431e44d3b9b35301b0216a2afc6d3385e2e43570b059a3ffc2e849254a"
+    },
+    {
+      "id": "industrial-warning",
+      "status": "passed",
+      "state": "intrusion-warning",
+      "visibleWarning": true,
+      "simulationSeconds": 1,
+      "playerHP": 10000,
+      "remainingActorOrFeedbackNodes": 0,
+      "image": "industrial-warning.png",
+      "imageSha256": "26f0b0a8a6b508fdf7aeed981c9370df9ddc6b59591457c1ef43ca2fcd1e94c4"
+    }
+  ],
+  "errors": [],
+  "failedRequests": [],
+  "externalRequests": [],
+  "buildInfo": {
+    "schemaVersion": 1,
+    "contentVersion": "v67-continuation-20261101",
+    "sourceCommit": "a80070c4b5ed96fa839e840f17453bf5348a6cbb",
+    "sourceBranch": "codex/depth-pr3-20261028",
+    "sourceFingerprint": "dbec2257cc5938b889d9cff31f31d7e8afa94753a5abb5e45fa58769cf3d4425",
+    "sourceFiles": 164,
+    "sourceTreeDirty": false,
+    "buildEpoch": 1793497017,
+    "reproducibleBuildDate": "2026-11-01T01:36:57.000Z",
+    "deploymentProof": "https://github.com/darknigthmare/Yautja-hive-warriors/blob/codex/depth-pr3-20261028/docs/qa/continuation-final-validation.json"
+  },
+  "finishedAt": "2026-11-01T01:54:39.147Z",
+  "distUnchanged": true
+}

@@ -1,10 +1,87 @@
 /* User Interface Manager & Minimap Renderer */
 
+import confetti from 'canvas-confetti';
+import { AccessibilityPreferences, drawAccessibleMarker } from './AccessibilityPreferences.js';
+import { readStored, readStoredNumber, writeStored } from './storage.js';
 import * as THREE from 'three';
 import { CHARACTERS_DATA } from '../data/charactersData.js';
 import { LEVELS_DATA } from '../data/levelsData.js';
+import { hiveCoordinationFeedback } from './OperationPanel.js';
+import { debriefConsequences, combatReadabilityState } from './TacticalPresentation.js';
+import { operationMapFrontEntries, renderOperationFrontLegend, drawOperationFrontLabel } from './OperationMapLabels.js';
+
+const bossDisplayNames = {
+  xenomorph_queen:'REINE XÉNOMORPHE',queen:'REINE XÉNOMORPHE',praetorian:'PRÉTORIEN',predalien:'PRÉDALIEN',predalien_queen:'PRÉDALIEN — RENCONTRE ADAPTÉE',imperial_queen:'REINE IMPÉRIALE',empress_matriarch:'IMPÉRATRICE DE LA RUCHE',the_offspring:'THE OFFSPRING',predalien_abomination:'ABOMINATION PRÉDALIENNE',predalien_matriarch_titan:'MATRIARCHE TITAN — CRÉATION ORIGINALE',rogue_king_prime:'ROGUE KING',awakened_engineer:'INGÉNIEUR ÉVEILLÉ',trilobite_prime:'TRILOBITE PRIME',berserker_super_predator:'BERSERKER / MR. BLACK',ultimate_upgrade_predator:'UPGRADE PREDATOR',feral_predator_boss:'FERAL PREDATOR',jungle_hunter_boss:'JUNGLE HUNTER',city_hunter_boss:'CITY HUNTER'
+};
+export const bossHUDLabel = boss => boss?.profileName ?? bossDisplayNames[boss?.type] ?? 'ADVERSAIRE';
+
+const cardinalDirections = ['N', 'NE', 'E', 'SE', 'S', 'SO', 'O', 'NO'];
+
+// Keep the objective copy and map projection deterministic for UI checks and
+// for callers that do not own a DOM (the progression state is read-only here).
+export function battlefieldHUDState(progression, layout, player, combatDirector, players = []) {
+  if (!progression || !layout?.sectors?.length || !player?.position) return null;
+  const sector = progression.currentSector;
+  if (!sector) return null;
+  const progress = progression.progress;
+  const completed = new Set(progression.completedSectorIds);
+  const unlocked = new Set(progression.unlockedSectorIds);
+  const target = progression.objectivePosition;
+  const dx = (target?.x ?? player.position.x) - player.position.x;
+  const dz = (target?.z ?? player.position.z) - player.position.z;
+  const distance = Math.hypot(dx, dz);
+  const direction = cardinalDirections[(Math.round(Math.atan2(dx, -dz) / (Math.PI / 4)) + 8) % 8];
+  const primaryCanInteract = Boolean(progression.canInteract?.(player));
+  const secondaryCanInteract = players.some(other => other && other !== player && progression.canInteract?.(other));
+  const interactionText = primaryCanInteract && secondaryCanInteract ? '[ E / Entrée ] Activer le relais'
+    : secondaryCanInteract ? '[ Entrée ] Joueur 2 · Activer le relais' : '[ E ] Activer le relais';
+  return {
+    sectorId: sector.id,
+    sectorName: sector.name,
+    sectorCount: `${progress.index + 1} / ${progress.total}`,
+    objectiveText: progression.objectiveText,
+    navigationText: progression.complete ? 'Toutes les zones sont sécurisées.'
+      : `${direction} · ${Math.round(distance)} m${progress.completed ? ' · Passage ouvert' : ' · Objectif'}`,
+    canInteract: primaryCanInteract || secondaryCanInteract,
+    interactionText,
+    relayPhase: sector.objective.type === 'interact' ? (progression.currentState?.relayPhase ?? 'awaiting-activation') : null,
+    inGrace: Boolean(combatDirector?.isInGrace),
+    steps: layout.sectors.map((item, index) => ({ id: item.id, name: item.name, number: index + 1,
+      state: completed.has(item.id) ? 'complete' : item.id === sector.id ? 'active' : unlocked.has(item.id) ? 'unlocked' : 'locked' }))
+  };
+}
 
 export class UIManager {
+  get selectedLevel() { return this._selectedLevel; }
+  set selectedLevel(level) {
+    this._selectedLevel = level;
+    for (const card of this.levelSelectMenu?.querySelectorAll('.level-card') ?? []) {
+      const selected = card.dataset.levelId === level?.id;
+      card.classList.toggle('selected', selected);
+      card.setAttribute('aria-pressed', String(selected));
+      card.disabled = Boolean(this._operationLevelBound);
+    }
+  }
+
+  setOperationLevel(level) {
+    // An authored operation owns its terrain. Only manual card clicks are
+    // constrained; checkpoint and mission restoration may still set the level.
+    this._operationLevelBound = Boolean(level);
+    this.selectedLevel = level ?? this.selectedLevel;
+    const grid = this.levelSelectMenu?.querySelector?.('#levels-grid-container');
+    if (!grid) return;
+    if (!this.operationLevelNotice) {
+      this.operationLevelNotice = document.createElement('p');
+      this.operationLevelNotice.className = 'operation-level-notice';
+      this.operationLevelNotice.setAttribute('data-operation-level-notice', '');
+      this.operationLevelNotice.setAttribute('role', 'status');
+      grid.before(this.operationLevelNotice);
+    }
+    this.operationLevelNotice.classList.toggle('hidden', !level);
+    this.operationLevelNotice.textContent = level
+      ? `Terrain de cette opération : ${level.name}. Pour choisir un autre terrain, sélectionnez « Trois fronts — terrain sélectionné » ou le mode Chasse.` : '';
+  }
+
   constructor() {
     // Screens
     this.mainMenu = document.getElementById('main-menu');
@@ -32,6 +109,15 @@ export class UIManager {
     this.hudHonorScore = document.getElementById('hud-honor-score');
     this.hudLevelName = document.getElementById('hud-level-name');
     this.hudWaveCounter = document.getElementById('hud-wave-counter');
+    this.battlefieldObjective = document.getElementById('battlefield-objective');
+    this.battlefieldSectorName = document.getElementById('battlefield-sector-name');
+    this.battlefieldSectorCount = document.getElementById('battlefield-sector-count');
+    this.battlefieldSectorProgress = document.getElementById('battlefield-sector-progress');
+    this.battlefieldObjectiveText = document.getElementById('battlefield-objective-text');
+    this.battlefieldNavigation = document.getElementById('battlefield-navigation');
+    this.battlefieldInteraction = document.getElementById('battlefield-interaction');
+    this.battlefieldGrace = document.getElementById('battlefield-grace');
+    this._battlefieldHUD = null;
 
     // Prompts
     this.comboDisplay = document.getElementById('combo-display');
@@ -52,20 +138,108 @@ export class UIManager {
 
     // Trophy Data Persistent Storage
     this.trophyStats = {
-      totalKos: parseInt(localStorage.getItem('yautja_total_kos') || '0'),
-      skullsCollected: parseInt(localStorage.getItem('yautja_skulls') || '0'),
-      highestCombo: parseInt(localStorage.getItem('yautja_max_combo') || '0')
+      totalKos: Math.floor(readStoredNumber('yautja_total_kos')),
+      skullsCollected: Math.floor(readStoredNumber('yautja_skulls')),
+      highestCombo: Math.floor(readStoredNumber('yautja_max_combo'))
     };
 
     this.initCharacterSelect();
     this.initLevelSelect();
+    this.setupAccessibility();
+    this.setupSettings();
   }
 
   showScreen(screenElement) {
-    document.querySelectorAll('.ui-screen').forEach(s => {
-      s.classList.add('hidden');
+    document.querySelectorAll('.ui-screen').forEach(screen => {
+      const hidden = screen !== screenElement;
+      screen.classList.toggle('hidden', hidden);
+      screen.setAttribute('aria-hidden', String(hidden));
     });
-    if (screenElement) screenElement.classList.remove('hidden');
+    if (!screenElement) return;
+    screenElement.scrollTop = 0;
+    document.dispatchEvent(new CustomEvent('ui-screen-change', { detail: { screen: screenElement.id } }));
+    // Never steal keyboard focus from the game canvas during combat.
+    if (!['in-game-hud', 'photo-mode-hud'].includes(screenElement.id)) {
+      requestAnimationFrame(() => screenElement.querySelector('button:not(:disabled), input')?.focus({ preventScroll: true }));
+    } else if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+  }
+
+  setupAccessibility() {
+    document.querySelectorAll('.ui-screen').forEach(screen => {
+      screen.setAttribute('aria-hidden', String(screen.classList.contains('hidden')));
+      const heading = screen.querySelector('h1, h2');
+      if (heading && !heading.id) heading.id = `${screen.id}-title`;
+      if (heading) screen.setAttribute('aria-labelledby', heading.id);
+    });
+    document.querySelectorAll('.modal-card').forEach(card => {
+      if (card.parentElement.getAttribute('role') !== 'dialog') card.setAttribute('role', 'dialog');
+      const heading = card.querySelector('h1, h2');
+      if (heading) card.setAttribute('aria-labelledby', heading.id || `${card.parentElement.id}-title`);
+    });
+    window.addEventListener('keydown', event => {
+      const visible = document.querySelector('.ui-screen:not(.hidden)');
+      if (event.key === 'Escape' && !window.game?.isPlaying && visible && visible !== this.mainMenu) {
+        event.preventDefault();
+        this.showScreen(visible.id === 'loadout-prep-screen' ? this.levelSelectMenu : this.mainMenu);
+      }
+      if (event.key === 'Tab' && visible?.querySelector('.modal-card')) {
+        const controls = [...visible.querySelectorAll('button:not(:disabled), input, select, [tabindex="0"]')].filter(e => e.getClientRects().length);
+        if (!controls.length) return;
+        const target = event.shiftKey && document.activeElement === controls[0] ? controls.at(-1)
+          : !event.shiftKey && document.activeElement === controls.at(-1) ? controls[0] : null;
+        if (target) { event.preventDefault(); target.focus(); }
+      }
+    });
+  }
+
+  setupSettings() {
+    this.presentationPreferences=new AccessibilityPreferences({document});
+    const prefControls={palette:document.getElementById('setting-map-palette'),symbols:document.getElementById('setting-marker-symbols'),reducedFlashes:document.getElementById('setting-reduced-flashes')};
+    for(const[key,control]of Object.entries(prefControls))if(control){if(key==='palette')control.value=this.presentationPreferences.get()[key];else control.checked=this.presentationPreferences.get()[key];control.addEventListener('change',()=>this.presentationPreferences.set({[key]:key==='palette'?control.value:control.checked}));}
+
+    const graphics = document.getElementById('setting-graphics-quality');
+    const graphicsStatus = document.getElementById('graphics-quality-status');
+    if (graphics) {
+      const saved = readStored('yautja_graphics_quality', 'balanced');
+      graphics.value = ['low', 'balanced', 'high'].includes(saved) ? saved : 'balanced';
+      const updateStatus = () => {
+        const info = window.game?.renderer.getQualityInfo?.();
+        if (graphicsStatus) graphicsStatus.textContent = info && info.effective !== info.requested
+          ? 'Les effets ont été adaptés pour garder une image fluide.' : '';
+      };
+      graphics.addEventListener('change', () => {
+        writeStored('yautja_graphics_quality', graphics.value);
+        window.game?.renderer.setQuality?.(graphics.value);
+        updateStatus();
+      });
+      document.addEventListener('graphics-quality-change', updateStatus);
+      document.addEventListener('ui-screen-change', updateStatus);
+    }
+    const detailedHUD=document.getElementById('setting-detailed-hud');
+    if(detailedHUD){detailedHUD.checked=readStored('yautja_detailed_hud','false')==='true';document.body.classList.toggle('hud-detailed',detailedHUD.checked);detailedHUD.addEventListener('change',()=>{document.body.classList.toggle('hud-detailed',detailedHUD.checked);writeStored('yautja_detailed_hud',String(detailedHUD.checked));});}
+    const volume = document.getElementById('setting-volume');
+    const output = document.getElementById('setting-volume-value');
+    if (volume) {
+      volume.value = String(Math.round(Math.min(1, readStoredNumber('yautja_audio_volume', 0.5)) * 100));
+      output.textContent = `${volume.value} %`;
+      volume.addEventListener('input', () => {
+        const value = Number(volume.value) / 100;
+        output.textContent = `${volume.value} %`;
+        writeStored('yautja_audio_volume', value);
+        window.game?.audio.setVolume(value);
+      });
+    }
+    const reducedMotion = document.getElementById('setting-reduced-motion');
+    if (reducedMotion) {
+      reducedMotion.checked = readStored('yautja_reduced_motion', String(matchMedia('(prefers-reduced-motion: reduce)').matches)) === 'true';
+      document.body.classList.toggle('reduced-motion', reducedMotion.checked);
+      reducedMotion.addEventListener('change', () => {
+        document.body.classList.toggle('reduced-motion', reducedMotion.checked);
+        writeStored('yautja_reduced_motion', reducedMotion.checked);
+      });
+    }
   }
 
   initCharacterSelect() {
@@ -74,7 +248,9 @@ export class UIManager {
 
     listContainer.innerHTML = '';
     CHARACTERS_DATA.forEach((char, index) => {
-      const btn = document.createElement('div');
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.setAttribute('aria-pressed', String(index === 0));
       btn.className = `char-btn-card ${index === 0 ? 'active' : ''}`;
       btn.innerHTML = `
         <div class="char-avatar">${char.icon}</div>
@@ -85,8 +261,9 @@ export class UIManager {
       `;
 
       btn.addEventListener('click', () => {
-        document.querySelectorAll('.char-btn-card').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.char-btn-card').forEach(c => { c.classList.remove('active'); c.setAttribute('aria-pressed', 'false'); });
         btn.classList.add('active');
+        btn.setAttribute('aria-pressed', 'true');
         this.selectCharacter(char);
       });
 
@@ -117,19 +294,25 @@ export class UIManager {
     if (!gridContainer) return;
 
     gridContainer.innerHTML = '';
-    LEVELS_DATA.forEach((lvl, index) => {
-      const card = document.createElement('div');
-      card.className = `level-card ${index === 0 ? 'selected' : ''}`;
+    LEVELS_DATA.forEach(lvl => {
+      const card = document.createElement('button');
+      card.type = 'button';
+      card.dataset.levelId = lvl.id;
+      card.disabled = Boolean(this._operationLevelBound);
+      const selected = lvl.id === this.selectedLevel?.id;
+      card.setAttribute('aria-pressed', String(selected));
+      card.className = `level-card ${selected ? 'selected' : ''}`;
+      if (lvl.accentColor) card.style.borderTopColor = lvl.accentColor;
       card.innerHTML = `
-        <div class="level-card-icon">${lvl.icon || '🎯'}</div>
-        <span class="level-badge">${lvl.waves} VAGUES</span>
+        <div class="level-card-icon">${lvl.icon || '🌲'}</div>
+        <span class="level-badge ${lvl.difficultyBadge || 'badge-hard'}">${lvl.difficulty || 'ÉLITE'}</span>
         <h3>${lvl.name}</h3>
-        <p>${lvl.desc || ''}</p>
+        <p>${lvl.desc ?? lvl.description}</p>
+        ${lvl.battlefield ? '<span class="level-layout-summary">6 zones reliées · Passages à débloquer</span>' : ''}
       `;
 
       card.addEventListener('click', () => {
-        document.querySelectorAll('.level-card').forEach(c => c.classList.remove('selected'));
-        card.classList.add('selected');
+        if (card.disabled) return;
         this.selectedLevel = lvl;
       });
 
@@ -138,6 +321,8 @@ export class UIManager {
   }
 
   updateHUD(player, horde, bossManager, waveIndex, totalWaves, score, factions = {}) {
+    const playerName = player.data?.name ?? this.selectedChar?.name ?? 'YAUTJA';
+    if (this.hudPlayerName && this.hudPlayerName.textContent !== playerName) this.hudPlayerName.textContent = playerName;
     // Player HP
     const hpPct = Math.max(0, (player.hp / player.maxHp) * 100);
     this.hudHpFill.style.width = `${hpPct}%`;
@@ -146,18 +331,34 @@ export class UIManager {
     // Plasma Energy
     const plasmaPct = (player.plasmaEnergy / player.maxPlasmaEnergy) * 100;
     this.hudPlasmaFill.style.width = `${plasmaPct}%`;
-    this.hudPlasmaText.innerText = `ÉNERGIE PLASMA: ${Math.ceil(plasmaPct)}%`;
+    const combat = player.getCombatState?.(), weapon = player.getWeaponState?.();
+    this.hudPlasmaText.innerText = weapon?.actionResource === 'arrows' ? `FLÈCHES DE TAABE : ${weapon.actionAmmo}/12` : weapon?.actionResource === 'axe_charges' ? `HACHE DE NARU : ${weapon.actionAmmo}/4 COUPS` : weapon?.rangedResource === 'bolts' ? `BOULONS : ${weapon?.boltAmmo ?? player.boltAmmo ?? 0}` : `ÉNERGIE PLASMA : ${Math.ceil(plasmaPct)}%`;
+    if(combat){const staminaFill=document.getElementById('hud-stamina-fill'),staminaText=document.getElementById('hud-stamina-text');if(staminaFill)staminaFill.style.width=`${Math.max(0,combat.stamina/combat.maxStamina*100)}%`;if(staminaText)staminaText.textContent=`ENDURANCE ${Math.ceil(combat.stamina)}/${combat.maxStamina}`;}
+    const readability=combatReadabilityState(combat,weapon),costs=document.getElementById('hud-combat-costs'),status=document.getElementById('hud-combat-state');
+    if(costs&&costs.textContent!==readability.costs)costs.textContent=readability.costs;
+    if(status){if(status.textContent!==readability.status)status.textContent=readability.status;status.classList.toggle('is-impaired',readability.impaired);}
+    const secondary=document.getElementById('hud-secondary-combat-state'),second=factions.secondaryPlayer;
+    if(secondary){secondary.classList.toggle('hidden',!second);if(second){const state=combatReadabilityState(second.getCombatState?.(),second.getWeaponState?.()),text=`P2 · ${state.costs} · ${state.status}`;if(secondary.textContent!==text)secondary.textContent=text;secondary.classList.toggle('is-impaired',state.impaired);}else secondary.textContent='';}
+    document.getElementById('wrist-ecg-holoscan')?.classList.toggle('is-critical',Boolean(player.isChestbursterImplanted||player.isFacehuggerLatched));
+    const activeWeapon=document.getElementById('hud-active-weapon');if(activeWeapon)activeWeapon.textContent=({wristblades:'LAMES DE POIGNET',combistick:'COMBISTICK',smart_disc:'SMART-DISC',crossbow:'LANCE-BOULONS',shuriken:'SHURIKEN',compound_bow:'ARC COMPOSÉ',taabe_bow:'ARC DE TAABE',naru_axe:'HACHE DE NARU',katana:'KATANA',viking_axe:'HACHE',alpha_sickle:'FAUCILLE'})[weapon?.id]??'ARME PRINCIPALE';
+    const supportStatus=document.getElementById('hud-support-status');
+    if(supportStatus&&factions.supports){const {apc,cheyenne}=factions.supports;
+      const label=(state,name,ammunition)=>state.hp<=0?`${name} DÉTRUIT`:!state.allowed?`${name} INDISPONIBLE`:`${name} ${Math.ceil(state.hp)} PV · ${ammunition}${state.lastRefusal?' · Dernier refus : '+state.refusalMessage:''}`;
+      supportStatus.textContent=`${label(apc,'APC',`${apc.remaining.rounds}/48 OBUS`)} | ${label(cheyenne,'CHEYENNE',`${cheyenne.remaining.sorties}/2 SORTIES · ${cheyenne.remaining.rockets}/12 ROQUETTES · ${cheyenne.remaining.napalm}/6 INCENDIAIRES`)}`;
+    }
 
     // Musou Gauge
     const musouPct = (player.musouEnergy / player.maxMusouEnergy) * 100;
     this.hudMusouFill.style.width = `${musouPct}%`;
-    this.hudMusouText.innerText = musouPct >= 100 ? '⚡ SURCHARGE MUSOU PRÊTE ! [Q / ESPACE]' : `SURCHARGE MUSOU: ${Math.ceil(musouPct)}%`;
+    this.hudMusouText.innerText = musouPct >= 100 ? '⚡ SURCHARGE PRÊTE ! [ESPACE]' : `SURCHARGE MUSOU: ${Math.ceil(musouPct)}%`;
 
     // Counters & Score
-    this.hudKoCount.innerText = horde.deadCount;
+    this.hudKoCount.innerText = factions.sessionDefeats ?? horde.deadCount;
     this.hudHonorScore.innerText = `${score} PTS`;
     this.hudLevelName.innerText = this.selectedLevel.name;
-    this.hudWaveCounter.innerText = `VAGUE ${waveIndex}/${totalWaves}`;
+    this.hudWaveCounter.innerText = this._operationHUD
+      ? `${this._operationHUD.state.fronts.length} FRONTS · RÉSERVES FINIES`
+      : `VAGUE ${waveIndex}/${totalWaves}`;
 
     // Chantier 1: Grand Musou Boss Health Gauge
     const bossContainer = document.getElementById('hud-boss-container');
@@ -176,39 +377,13 @@ export class UIManager {
         if (bossFill) bossFill.style.width = `${bPct}%`;
         if (bossText) bossText.innerText = `${Math.ceil(b.hp)} / ${b.maxHp} HP (${Math.ceil(bPct)}%)`;
 
-        let title = 'REINE XÉNOMORPHE DE LA RUCHE';
-        let icon = '👑';
-        if (b.type === 'empress_matriarch') {
-          title = 'MATRIARCHE VOLANTE EMPRESS (ALIENS: ROGUE)';
-          icon = '🦇';
-        } else if (b.type === 'imperial_queen') {
-          title = 'REINE IMPÉRIALE DE LA RUCHE (GENOCIDE)';
-          icon = '👑';
-        } else if (b.type === 'the_offspring') {
-          title = 'HYBRIDE MAUDIT Z-01 : THE OFFSPRING (ROMULUS)';
-          icon = '🧬';
-        } else if (b.type === 'predalien_abomination') {
-          title = 'ABOMINATION PRÉDALIENNE GESTANTE (AVP: REQUIEM CHET)';
-          icon = '☣️';
-        } else if (b.type === 'predalien_queen') {
-          title = 'ABOMINATION PREDALIEN MATRIARCHE (AVP: REQUIEM)';
-          icon = '💀';
-        } else if (b.type === 'rogue_king_prime') {
-          title = 'ROGUE KING XENOMORPH PRIME (ALIENS: ROGUE 1993)';
-          icon = '👑';
-        } else if (b.type === 'awakened_engineer') {
-          title = 'INGÉNIEUR MALA\'KAK ÉVEILLÉ (PROMETHEUS 2012)';
-          icon = '🏛️';
-        } else if (b.type === 'predalien_matriarch_titan') {
-          title = 'MATRIARCHE TITAN PRÉDALIENNE IMPÉRIALE (AVP EXTINCTION)';
-          icon = '👑';
-        }
-
+        const title = bossHUDLabel(b);
+        const icon = /predator|hunter/.test(b.type) ? '⚔️' : '👑';
         if (bossName) bossName.innerText = title;
         if (bossIcon) bossIcon.innerText = icon;
 
         if (bossBadge) {
-          if (b.isStunned) {
+          if (b.isStunned && bPct <= 30) {
             bossBadge.innerText = (b.type === 'predalien_abomination') ? '💀 EXÉCUTION DÉCAPITANTE [E] : ARRACHEZ LE CRÂNE HYBRIDE !' : (b.type === 'rogue_king_prime' ? '👑 ÉTOURDI — ARRACHEZ LA COURONNE CORNUE [E] !' : '💥 ÉTOURDI — EXÉCUTION SPIDERIP [E] !');
             bossBadge.style.color = '#ff3300';
             bossBadge.style.borderColor = '#ff3300';
@@ -225,7 +400,7 @@ export class UIManager {
             bossBadge.style.color = '#84cc16';
             bossBadge.style.borderColor = '#84cc16';
           } else {
-            bossBadge.innerText = b.type === 'rogue_king_prime' ? 'PHASE 1 : BÉLIER CARAPACE LOURDE' : 'PHASE 1 : GESTANTE ACTIVE';
+            bossBadge.innerText = b.isStunned ? 'DÉSÉQUILIBRÉ — OUVERTURE POUR ATTAQUER' : 'PHASE 1 : COMBAT OUVERT';
             bossBadge.style.color = '#fef08a';
             bossBadge.style.borderColor = '#facc15';
           }
@@ -251,19 +426,11 @@ export class UIManager {
         if (fillEl) fillEl.style.width = `${bPct}%`;
         if (hpTextEl) hpTextEl.innerText = `${Math.ceil(b.hp)} / ${b.maxHp} PV (${Math.ceil(bPct)}%)`;
 
-        let bTitle = 'REINE XÉNOMORPHE';
-        if (b.type === 'rogue_king_prime') bTitle = 'ROGUE KING XENOMORPH PRIME (ALIENS: ROGUE)';
-        else if (b.type === 'awakened_engineer') bTitle = 'INGÉNIEUR MALA\'KAK ÉVEILLÉ (PROMETHEUS)';
-        else if (b.type === 'predalien_matriarch_titan') bTitle = 'MATRIARCHE TITAN PRÉDALIENNE IMPÉRIALE';
-        else if (b.type === 'the_offspring') bTitle = 'HYBRIDE THE OFFSPRING (ROMULUS)';
-        else if (b.type === 'trilobite_prime') bTitle = 'TRILOBITE CÉPHALOPODE PRIME (PROMETHEUS)';
-        else if (b.type === 'predalien_queen') bTitle = 'REINE PRÉDALIENNE (AVP: REQUIEM)';
-
-        if (titleEl) titleEl.innerText = bTitle;
+        if (titleEl) titleEl.innerText = bossHUDLabel(b);
 
         if (phaseEl) {
           if (b.isStunned) {
-            phaseEl.innerText = 'ÉTOURDI - EXÉCUTION [E]';
+            phaseEl.innerText = bPct <= 30 ? 'ÉTOURDI — EXÉCUTION [E] À MOINS DE 8 UNITÉS' : 'DÉSÉQUILIBRÉ — OUVERTURE POUR ATTAQUER';
             phaseEl.style.borderColor = '#ff3300';
             phaseEl.style.color = '#ff3300';
           } else if (bPct < 25) {
@@ -275,7 +442,7 @@ export class UIManager {
             phaseEl.style.borderColor = '#f97316';
             phaseEl.style.color = '#f97316';
           } else {
-            phaseEl.innerText = 'PHASE 1 : CARAPACE INTACTE';
+            phaseEl.innerText = 'PHASE 1 : COMBAT OUVERT';
             phaseEl.style.borderColor = '#00ffff';
             phaseEl.style.color = '#00ffff';
           }
@@ -335,11 +502,90 @@ export class UIManager {
     }
 
     // Chantier 8: Render Multi-Faction Minimap
-    this.renderMinimap(player, horde, bossManager, factions);
+    this._minimapActors = { horde, bossManager, factions };
+    if (!this._battlefieldHUD) this.renderMinimap(player, horde, bossManager, factions);
+  }
+
+  updateOperationHUD(state, layout, players = [], objectives = null) {
+    this._operationHUD = state ? {state,layout,players,objectives} : null;
+    const entries=operationMapFrontEntries(state?.fronts);
+    const compact=entries.some(entry=>entry.compact);
+    if(compact&&this.minimapCanvas&&!this.operationFrontLegend){
+      this.operationFrontLegend=document.createElement('ol');
+      this.operationFrontLegend.id='operation-minimap-fronts';
+      this.operationFrontLegend.className='operation-front-index minimap-front-index';
+      this.operationFrontLegend.setAttribute('aria-label','Repères des fronts');
+      this.minimapCanvas.after(this.operationFrontLegend);
+    }
+    this.operationFrontLegend?.classList.toggle('hidden',!compact);
+    if(compact){renderOperationFrontLegend(this.operationFrontLegend,entries);this.minimapCanvas?.setAttribute('aria-describedby','operation-minimap-fronts');}
+    else this.minimapCanvas?.removeAttribute('aria-describedby');
+    if (!state) return;
+    this.hudWaveCounter.textContent = `${state.fronts.length} FRONTS · RÉSERVES FINIES`;
+    const weapon = this._minimapActors?.player?.getCombatState?.();
+    if (weapon) this.hudPlasmaText.textContent += ` · ENDURANCE ${Math.ceil(weapon.stamina ?? 0)}`;
+    this.minimapCanvas?.setAttribute('aria-label','Carte des fronts et rapports de positions connus');
+    this.renderOperationMap();
+  }
+
+  renderOperationMap() {
+    if(!this.minimapCtx||!this._operationHUD)return;
+    const {state,layout,players,objectives}=this._operationHUD,ctx=this.minimapCtx,{width,height}=this.minimapCanvas;
+    const b=layout.bounds,pad=12,scale=Math.min((width-2*pad)/(b.maxX-b.minX),(height-2*pad)/(b.maxZ-b.minZ));
+    const project=point=>[width/2+(point[0]-(b.minX+b.maxX)/2)*scale,height/2+(point[1]-(b.minZ+b.maxZ)/2)*scale];
+    const preferences=this.presentationPreferences?.get();
+    ctx.clearRect(0,0,width,height);
+    for(const sector of layout.sectors){const[x,y]=project([sector.bounds.minX,sector.bounds.minZ]);ctx.fillStyle='#243e39';ctx.fillRect(x,y,(sector.bounds.maxX-sector.bounds.minX)*scale,(sector.bounds.maxZ-sector.bounds.minZ)*scale);}
+    for(const route of state.routes){ctx.save();ctx.setLineDash(route.open?[]:[4,3]);ctx.strokeStyle=route.open?'#a6c5b9':'#f8fafc';ctx.lineWidth=2;ctx.beginPath();for(const[index,point]of(route.waypoints??[]).entries()){const[x,y]=project(point);if(index)ctx.lineTo(x,y);else ctx.moveTo(x,y);}ctx.stroke();ctx.restore();}
+    const dot=(point,size,role,factionId='',label='',filled=true)=>{const[x,y]=project(point);drawAccessibleMarker(ctx,{x,y,size,role,factionId,label,filled},preferences);};
+    const frontEntries=operationMapFrontEntries(state.fronts);
+    for(const[index,front]of state.fronts.entries()){dot(front.position,6,front.owner===state.playerFaction?'ally':'objective',front.owner,front.label);const[x,y]=project(front.position);drawOperationFrontLabel(ctx,frontEntries[index],x,y,width,height,9);}
+    for(const group of state.groups)if(group.alive>0){const relation=state.relationships?.[group.factionId],role=group.factionId===state.playerFaction||relation==='allied'?'ally':relation==='hostile'?'hostile':'neutral';dot(group.position,3,role,group.factionId,group.label,group.precisePositionKnown);}
+    for(const task of objectives?.tasks??[])if(task.available&&task.status!=='done')dot(task.position,5,'objective','',task.label);
+    for(const player of players)if(player.hp>0)dot(player.position,5,'player',state.playerFaction,player.id??'Joueur');
+  }
+
+  updateBattlefieldHUD(progression, layout, player, combatDirector, players = []) {
+    if (this._operationHUD) { this.renderOperationMap(); return; }
+    const state = battlefieldHUDState(progression, layout, player, combatDirector, players);
+    this._battlefieldHUD = state ? { progression, layout, player, players, state } : null;
+    this.battlefieldObjective?.classList.toggle('hidden', !state);
+    this.battlefieldObjective?.setAttribute('data-phase', state?.relayPhase ?? 'encounter');
+    if (!state) {
+      this._battlefieldStepsKey = null;
+      this.minimapCanvas?.setAttribute('aria-label', 'Carte des ennemis à proximité');
+      this.minimapCtx?.clearRect(0, 0, this.minimapCanvas.width, this.minimapCanvas.height);
+      return;
+    }
+    const setText = (element, value) => { if (element && element.textContent !== value) element.textContent = value; };
+    setText(this.battlefieldSectorName, state.sectorName);
+    setText(this.battlefieldSectorCount, state.sectorCount);
+    setText(this.battlefieldObjectiveText, state.objectiveText);
+    setText(this.battlefieldNavigation, state.navigationText);
+    setText(this.battlefieldInteraction, state.interactionText);
+    this.battlefieldInteraction?.classList.toggle('hidden', !state.canInteract);
+    this.battlefieldGrace?.classList.toggle('hidden', !state.inGrace);
+    setText(this.hudWaveCounter, `ZONE ${state.sectorCount}`);
+    const stepsKey = state.steps.map(step => `${step.id}:${step.state}`).join('|');
+    if (this.battlefieldSectorProgress && this._battlefieldStepsKey !== stepsKey) {
+      this._battlefieldStepsKey = stepsKey;
+      this.battlefieldSectorProgress.replaceChildren(...state.steps.map(step => {
+        const element = document.createElement('span');
+        element.className = `battlefield-step ${step.state}`;
+        element.textContent = step.state === 'complete' ? '✓' : String(step.number);
+        element.title = `${step.number}. ${step.name}`;
+        element.setAttribute('aria-label', `${step.name} : ${step.state === 'complete' ? 'sécurisée' : step.state === 'active' ? 'objectif actuel' : step.state === 'unlocked' ? 'accessible' : 'verrouillée'}`);
+        return element;
+      }));
+    }
+    this.minimapCanvas?.setAttribute('aria-label', `Champ de bataille : ${state.sectorName}, zone ${state.sectorCount}. ${state.objectiveText}`);
+    this.renderMinimap(player, this._minimapActors?.horde ?? { aliens: [] }, this._minimapActors?.bossManager ?? {}, this._minimapActors?.factions ?? {});
   }
 
   renderMinimap(player, horde, bossManager, factions = {}) {
     if (!this.minimapCtx) return;
+    if (this._operationHUD) return this.renderOperationMap();
+    if (this._battlefieldHUD) return this.renderBattlefieldMap(player, horde, bossManager);
     const ctx = this.minimapCtx;
     const w = this.minimapCanvas.width;
     const h = this.minimapCanvas.height;
@@ -363,9 +609,9 @@ export class UIManager {
     });
 
     // 2. USCM Colonial Marines (Cobalt Blue)
-    if (factions.marines && factions.marines.squad) {
+    if (factions.marines && factions.marines.marines) {
       ctx.fillStyle = '#3b82f6';
-      factions.marines.squad.forEach(m => {
+      factions.marines.marines.forEach(m => {
         if (m.hp > 0 && m.mesh) {
           const relX = (m.mesh.position.x - player.position.x) * scale;
           const relZ = (m.mesh.position.z - player.position.z) * scale;
@@ -379,9 +625,9 @@ export class UIManager {
     }
 
     // 3. Yautja Clan Allies (Cyan)
-    if (factions.allies && factions.allies.squad) {
+    if (factions.allies && factions.allies.allies) {
       ctx.fillStyle = '#06b6d4';
-      factions.allies.squad.forEach(a => {
+      factions.allies.allies.forEach(a => {
         if (a.hp > 0 && a.mesh) {
           const relX = (a.mesh.position.x - player.position.x) * scale;
           const relZ = (a.mesh.position.z - player.position.z) * scale;
@@ -395,9 +641,9 @@ export class UIManager {
     }
 
     // 4. Weyland-Yutani Synthetics (Clinical White)
-    if (factions.synthetics && factions.synthetics.synthetics) {
+    if (factions.synthetics && factions.synthetics.androids) {
       ctx.fillStyle = '#f8fafc';
-      factions.synthetics.synthetics.forEach(s => {
+      factions.synthetics.androids.forEach(s => {
         if (s.hp > 0 && s.mesh) {
           const relX = (s.mesh.position.x - player.position.x) * scale;
           const relZ = (s.mesh.position.z - player.position.z) * scale;
@@ -465,6 +711,63 @@ export class UIManager {
     ctx.stroke();
   }
 
+  renderBattlefieldMap(player, horde, bossManager) {
+    const ctx = this.minimapCtx, { width, height } = this.minimapCanvas;
+    const { progression, layout, players } = this._battlefieldHUD;
+    const bounds = layout.bounds;
+    if (!bounds) return;
+    const padding = 12, scale = Math.min((width - padding * 2) / (bounds.maxX - bounds.minX), (height - padding * 2) / (bounds.maxZ - bounds.minZ));
+    const centerX = (bounds.minX + bounds.maxX) / 2, centerZ = (bounds.minZ + bounds.maxZ) / 2;
+    const project = (x, z) => [width / 2 + (x - centerX) * scale, height / 2 + (z - centerZ) * scale];
+    const rectangle = (box, fill, stroke) => {
+      const [x, y] = project(box.minX, box.minZ), w = (box.maxX - box.minX) * scale, h = (box.maxZ - box.minZ) * scale;
+      ctx.fillStyle = fill; ctx.fillRect(x, y, w, h);
+      if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 1; ctx.strokeRect(x, y, w, h); }
+    };
+    const dot = (position, color, radius) => {
+      if (!position || !Number.isFinite(position.x) || !Number.isFinite(position.z)) return;
+      const [x, y] = project(position.x, position.z);
+      ctx.fillStyle = color; ctx.beginPath(); ctx.arc(x, y, radius, 0, Math.PI * 2); ctx.fill();
+    };
+    ctx.clearRect(0, 0, width, height);
+    const open = new Set(progression.openGateIds), unlocked = new Set(progression.unlockedSectorIds), completed = new Set(progression.completedSectorIds);
+    for (const corridor of layout.corridors ?? []) {
+      const gate = layout.gates.find(item => item.from === corridor.from && item.to === corridor.to);
+      rectangle(corridor.bounds, gate && open.has(gate.id) ? '#527d69' : '#283a3d');
+    }
+    for (const sector of layout.sectors) {
+      const current = sector.id === progression.currentSector.id;
+      rectangle(sector.bounds, completed.has(sector.id) ? '#254c40' : current ? '#344c4d' : unlocked.has(sector.id) ? '#243c3e' : '#15262b', current ? '#d8e5c6' : unlocked.has(sector.id) ? '#688f80' : '#37494d');
+      const [x, y] = project(...sector.center);
+      ctx.fillStyle = current ? '#f2f8e9' : unlocked.has(sector.id) ? '#a3bbaa' : '#77868b';
+      ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(String(layout.sectors.indexOf(sector) + 1), x, y);
+    }
+    for (const gate of layout.gates) {
+      if (open.has(gate.id)) continue;
+      const [x, y] = project(...gate.center);
+      ctx.strokeStyle = '#e7a46f'; ctx.lineWidth = 3; ctx.beginPath();
+      if (gate.axis === 'z') { ctx.moveTo(x - 4, y); ctx.lineTo(x + 4, y); }
+      else { ctx.moveTo(x, y - 4); ctx.lineTo(x, y + 4); }
+      ctx.stroke();
+    }
+    // A diamond marks the next objective; it remains visible under enemy dots.
+    const target = progression.objectivePosition;
+    if (target && !progression.complete) {
+      const [x, y] = project(target.x, target.z);
+      ctx.fillStyle = progression.currentState?.relayPhase === 'counterattack' ? '#ff9b68' : '#ffd879'; ctx.beginPath(); ctx.moveTo(x, y - 5); ctx.lineTo(x + 5, y); ctx.lineTo(x, y + 5); ctx.lineTo(x - 5, y); ctx.closePath(); ctx.fill();
+    }
+    for (const alien of horde.aliens ?? []) dot(alien.mesh?.position, '#ff7974', 1.5);
+    const factionActors=this._minimapActors?.factions??{};
+    for(const[actors,role,factionId]of[[factionActors.marines?.marines,'hostile','human_force'],[factionActors.allies?.allies,'ally','player_clan'],[factionActors.synthetics?.androids,'hostile','synthetic']])for(const actor of actors??[])if(actor.hp>0&&actor.mesh){const[x,y]=project(actor.mesh.position.x,actor.mesh.position.z);if(ctx.save)drawAccessibleMarker(ctx,{x,y,size:3,role,factionId,label:role==='ally'?'Allié':'Hostile'},this.presentationPreferences?.get());else dot(actor.mesh.position,role==='ally'?'#75d8b1':'#e08e84',2);}
+
+    if (bossManager.activeBoss) dot(bossManager.activeBoss.mesh?.position, '#ffb703', 4);
+    for (const other of players) if (other !== player && other?.hp > 0) dot(other.position, '#80d9ee', 3.5);
+    dot(player.position, '#c8ff99', 4);
+    const [px, py] = project(player.position.x, player.position.z);
+    ctx.strokeStyle = '#071714'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(px, py, 4.5, 0, Math.PI * 2); ctx.stroke();
+  }
+
   showCombo(count) {
     if (count < 2) {
       this.comboDisplay.classList.add('hidden');
@@ -475,7 +778,7 @@ export class UIManager {
 
     if (count > this.trophyStats.highestCombo) {
       this.trophyStats.highestCombo = count;
-      localStorage.setItem('yautja_max_combo', count);
+      writeStored('yautja_max_combo', count);
     }
   }
 
@@ -488,6 +791,12 @@ export class UIManager {
   }
 
   showAnnouncement(msg) {
+    if (!msg) return;
+    const globalStatus = document.getElementById('global-status');
+    if (this.inGameHud.classList.contains('hidden') && globalStatus) {
+      clearTimeout(this.announcementTimer); globalStatus.textContent = msg; globalStatus.classList.remove('hidden');
+      this.announcementTimer = setTimeout(() => globalStatus.classList.add('hidden'), 3500); return;
+    }
     if (!msg) return;
     this.announcementQueue.push(msg);
     if (!this.isShowingAnnouncement) {
@@ -507,13 +816,13 @@ export class UIManager {
       this.announcementBanner.classList.remove('hidden');
       this.announcementBanner.style.opacity = '1';
       this.announcementBanner.style.transform = 'translateX(-50%) scale(1.04)';
-      
+
       if (this.announcementTimeout) clearTimeout(this.announcementTimeout);
       this.announcementTimeout = setTimeout(() => {
         if (this.announcementBanner) {
           this.announcementBanner.style.opacity = '0';
           this.announcementBanner.style.transform = 'translateX(-50%) scale(0.96)';
-          setTimeout(() => {
+          this.announcementTransitionTimer = setTimeout(() => {
             if (this.announcementBanner) this.announcementBanner.classList.add('hidden');
             this.processAnnouncementQueue();
           }, 240);
@@ -541,9 +850,23 @@ export class UIManager {
     }
   }
 
+  clearTransientState() {
+    for (const key of ['announcementTimer', 'announcementTimeout', 'announcementTransitionTimer', 'officerTimeout', 'flashTimeout']) {
+      clearTimeout(this[key]); this[key] = null;
+    }
+    this.announcementQueue.length = 0;
+    this.isShowingAnnouncement = false;
+    this.announcementBanner?.classList.add('hidden');
+    this.officerBanner?.classList.add('hidden');
+    document.getElementById('global-status')?.classList.add('hidden');
+    if (this.screenFlash) this.screenFlash.className = '';
+  }
+
   flashScreen(type) {
+    this.screenFlash.style.opacity=document.body.classList.contains('reduced-flashes')?'.08':'';
     this.screenFlash.className = `${type}-flash`;
-    setTimeout(() => {
+    clearTimeout(this.flashTimeout);
+    this.flashTimeout = setTimeout(() => {
       this.screenFlash.className = '';
     }, 200);
   }
@@ -579,18 +902,36 @@ export class UIManager {
     });
   }
 
-  recordEndSession(kos, skulls, honor, isVictory = false) {
+  renderBattleDebrief(debrief) {
+    const root=document.getElementById('battle-debrief');root.replaceChildren();root.classList.toggle('hidden',!debrief);if(!debrief)return;
+    const title=document.createElement('h3');title.textContent=debrief.label;const reason=document.createElement('p');reason.textContent=debrief.reason;root.append(title,reason);
+    for(const text of debriefConsequences(debrief)){const p=document.createElement('p');p.textContent=text;root.append(p);}
+    const scroll=document.createElement('div');scroll.className='debrief-table-scroll';const table=document.createElement('table');
+    const headings=['Camp','Alloués','Détaillés','Distants','Réserves','Pertes','Évacués','Capturés'];const header=document.createElement('tr');for(const text of headings){const cell=document.createElement('th');cell.textContent=text;header.append(cell);}table.append(header);
+    for(const row of debrief.rows){const tr=document.createElement('tr');for(const value of[row.label,row.allocated,row.active,row.distant,row.reserve,row.dead,row.evacuated,row.captured]){const cell=document.createElement('td');cell.textContent=value;tr.append(cell);}table.append(tr);}scroll.append(table);root.append(scroll);
+    const note=document.createElement('p');note.textContent='Chaque combattant appartient à un seul état. Les changements de niveau de détail ne comptent pas comme des pertes.';root.append(note);
+    if(debrief.noncombatants){const n=debrief.noncombatants,p=document.createElement('p');p.textContent=`Non-combattants : ${n.allocated} personnes · ${n.captive} captives · ${n.rescued} secourues · ${n.evacuated} évacuées · ${n.dead} perdues.`;root.append(p);}
+    if(debrief.named.length){const p=document.createElement('p');p.textContent='Destins confirmés : '+debrief.named.map(item=>`${item.label} — ${({dead:'vaincu',evacuated:'évacué',captured:'capturé'})[item.state]}`).join(' · ');root.append(p);}
+    const details=document.createElement('details'),summary=document.createElement('summary');summary.textContent='Journal des causes connues';details.append(summary);const list=document.createElement('ol');const names={unit_died:'Combattant perdu',base_captured:'Contrôle du front changé',morale_changed:'Cohésion modifiée',source_disabled:'Source de renfort neutralisée',reinforcements_inbound:'Renforts en route',reinforcements_arrived:'Renforts arrivés',route_changed:'Passage modifié',operation_finished:'Résultat confirmé',group_order:'Ordre transmis',tactic_ordered:'Tactique collective',companion_ability:'Action du compagnon'};for(const event of debrief.journal.filter(item=>item.priority>=1).slice(-24)){const li=document.createElement('li');li.textContent=`${Math.floor(event.time/60)}:${String(Math.floor(event.time%60)).padStart(2,'0')} · ${hiveCoordinationFeedback(event)??`${names[event.type]??'Rapport de mission'}${event.before!==undefined?' · '+Math.round(event.before)+' → '+Math.round(event.after):''}`}`;list.append(li);}details.append(list);root.append(details);
+  }
+
+  recordEndSession(kos, skulls, honor, sessionId) {
+    this._recordedSessions ??= new Set();
+    if (sessionId !== undefined && this._recordedSessions.has(sessionId)) return false;
+    if (sessionId !== undefined) this._recordedSessions.add(sessionId);
+    kos = Math.max(0, Math.floor(Number(kos) || 0));
+    skulls = Math.max(0, Math.floor(Number(skulls) || 0));
     this.trophyStats.totalKos += kos;
     this.trophyStats.skullsCollected += skulls;
-    localStorage.setItem('yautja_total_kos', this.trophyStats.totalKos);
-    localStorage.setItem('yautja_skulls', this.trophyStats.skullsCollected);
+    writeStored('yautja_total_kos', this.trophyStats.totalKos);
+    writeStored('yautja_skulls', this.trophyStats.skullsCollected);
 
     document.getElementById('end-ko-count').innerText = kos;
     document.getElementById('end-honor-pts').innerText = honor;
     document.getElementById('end-trophies').innerText = skulls;
 
-    if (window.confetti && isVictory) {
-      window.confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+    if (kos > 20 && !document.body.classList.contains('reduced-motion')) {
+      confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
     }
   }
 
@@ -854,7 +1195,7 @@ export class UIManager {
         blessingElem.innerText = `${bName} (${Math.ceil(env.ancientShrine.blessingTimer)}S)`;
         blessingElem.style.color = '#38bdf8';
       } else {
-        blessingElem.innerText = 'AUCUNE BÃ‰NÃ‰DICTION';
+        blessingElem.innerText = 'AUCUNE BÉNÉDICTION';
         blessingElem.style.color = '#64748b';
       }
     }
@@ -862,7 +1203,7 @@ export class UIManager {
     const glyphsElem = document.getElementById('wrist-matrix-glyphs');
     if (glyphsElem) {
       // Yautja red countdown matrix glyph sequence (Predator 1987 Wrist Computer Lore)
-      const glyphChars = ['â‹ˆ', 'â‹‰', 'â‹Š', 'â‹', 'â‹‘', 'â‹’', 'â‹“', 'â‹”', 'â‹•', 'â‹–', 'â‹—', 'âŸ¢', 'âŸ£', 'âŸ¤', 'âŸ¥'];
+      const glyphChars = ['⋈','⋉','⋊','⋐','⋑','⋒','⋓','⋔','⋕','⋖','⋗','⟢','⟣','⟤','⟥'];
       const tick = Math.floor(Date.now() / 140);
       const g1 = glyphChars[tick % glyphChars.length];
       const g2 = glyphChars[(tick + 3) % glyphChars.length];

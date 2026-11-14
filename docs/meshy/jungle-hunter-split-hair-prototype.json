@@ -1,0 +1,159 @@
+{
+  "version": 1,
+  "sourceFile": "meshy_output/yautja-expansion-20261023/jungle-hunter-split-pilot/delivered/model.glb",
+  "sourceSha256": "7b1cb2975b2143d6082ef0236b69ab64d668ad67343e00f826641b6d4397d3b9",
+  "scope": "Measured prototype of retained isolated hair parts2 and3 only; not complete-head strand separation or film-faithful roots. Other hair parts remain static.",
+  "measurement": "Curve points are centroids of narrow native y-cross-section vertex bands, rootVertices the upper4% band of each inspected isolated mesh. No vertices or triangles relocated.",
+  "parts": [
+    {
+      "mesh": "model_part2",
+      "vertexCount": 218,
+      "triangleCount": 432,
+      "descriptor": {
+        "version": 1,
+        "namespace": "JungleSplitHair2",
+        "rootVertices": [
+          172,
+          173,
+          196,
+          202
+        ],
+        "chains": [
+          {
+            "id": "piece2",
+            "joints": [
+              [
+                -0.07817177921533586,
+                0.7663368225097656,
+                0.01629352830350399
+              ],
+              [
+                -0.08505361899733543,
+                0.7321107387542725,
+                0.006097185757244006
+              ],
+              [
+                -0.10056160315871239,
+                0.6908290386199951,
+                -0.008749552629888057
+              ],
+              [
+                -0.10121201181953604,
+                0.6516873619773171,
+                -0.015353982760147615
+              ],
+              [
+                -0.09825456142425537,
+                0.6173875033855438,
+                -0.013421020936220884
+              ]
+            ],
+            "allVertices": true,
+            "radius": 0.022879458893552928,
+            "rootBlendLength": 0.01865561485290527,
+            "stiffness": 45,
+            "damping": 6,
+            "gravityScale": 0.35,
+            "maxAngle": 0.45
+          }
+        ]
+      },
+      "diagnostics": {
+        "vertices": 218,
+        "selectedNonCapVertices": 214,
+        "fullyAnchoredVertices": 4,
+        "renderedVertices": 218,
+        "chainCount": 1,
+        "sourceGeometryModified": false,
+        "normalsAdded": false,
+        "materialsShared": true,
+        "unselectedVerticesAnchored": true
+      },
+      "limitation": "Short cut fragment below scalp, cap is held at its retained authored attachment; not a complete strand."
+    },
+    {
+      "mesh": "model_part3",
+      "vertexCount": 371,
+      "triangleCount": 738,
+      "descriptor": {
+        "version": 1,
+        "namespace": "JungleSplitHair3",
+        "rootVertices": [
+          314,
+          315,
+          316,
+          317,
+          319,
+          320,
+          321,
+          322,
+          324,
+          325,
+          326,
+          327,
+          331,
+          334,
+          337,
+          339,
+          342,
+          343,
+          350,
+          356,
+          357,
+          370
+        ],
+        "chains": [
+          {
+            "id": "piece3",
+            "joints": [
+              [
+                -0.10947174082199732,
+                0.8663342644770939,
+                0.06259849046667416
+              ],
+              [
+                -0.1382741704583168,
+                0.7808730068306128,
+                0.07542515142510334
+              ],
+              [
+                -0.15544567053968256,
+                0.6847914385073113,
+                0.08460713155341872
+              ],
+              [
+                -0.15505174272938776,
+                0.5947912068743454,
+                0.09313466929291424
+              ],
+              [
+                -0.15807896614074707,
+                0.5121727776527405,
+                0.11253284603357315
+              ]
+            ],
+            "allVertices": true,
+            "radius": 0.024006540473179686,
+            "rootBlendLength": 0.04394371747970581,
+            "stiffness": 30,
+            "damping": 6,
+            "gravityScale": 0.35,
+            "maxAngle": 0.45
+          }
+        ]
+      },
+      "diagnostics": {
+        "vertices": 371,
+        "selectedNonCapVertices": 349,
+        "fullyAnchoredVertices": 22,
+        "renderedVertices": 371,
+        "chainCount": 1,
+        "sourceGeometryModified": false,
+        "normalsAdded": false,
+        "materialsShared": true,
+        "unselectedVerticesAnchored": true
+      },
+      "limitation": "Long isolated retained strand, scalp attachment is a Meshy cut cap and not an anatomical root certification."
+    }
+  ]
+}

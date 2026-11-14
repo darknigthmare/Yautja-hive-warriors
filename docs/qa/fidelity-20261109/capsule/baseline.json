@@ -1,0 +1,121 @@
+{
+  "status": "measured_baseline",
+  "sourceCommit": "a8f9c759a30bc97c5400ce48709f6ad10856003d",
+  "sourceSha256": "5ba145ea7c97c876c63b44e6cef464ba775fc5e57416a6c96610c65b1e6306e9",
+  "triangles": 43504,
+  "meshCount": 11,
+  "meshes": [
+    {
+      "name": "orbital-capsule-hull-capsule-armor",
+      "triangles": 16688,
+      "vertices": 50064,
+      "material": "capsule-armor"
+    },
+    {
+      "name": "orbital-capsule-hull-capsule-dark",
+      "triangles": 12896,
+      "vertices": 38688,
+      "material": "capsule-dark"
+    },
+    {
+      "name": "orbital-capsule-hull-capsule-trim",
+      "triangles": 4360,
+      "vertices": 13080,
+      "material": "capsule-trim"
+    },
+    {
+      "name": "orbital-capsule-hull-capsule-cradle",
+      "triangles": 2712,
+      "vertices": 8136,
+      "material": "capsule-cradle"
+    },
+    {
+      "name": "orbital-capsule-hull-capsule-indicator",
+      "triangles": 72,
+      "vertices": 216,
+      "material": "capsule-indicator"
+    },
+    {
+      "name": "capsule-left-leaf-capsule-armor",
+      "triangles": 252,
+      "vertices": 756,
+      "material": "capsule-armor"
+    },
+    {
+      "name": "capsule-left-leaf-capsule-dark",
+      "triangles": 868,
+      "vertices": 2604,
+      "material": "capsule-dark"
+    },
+    {
+      "name": "capsule-left-leaf-capsule-trim",
+      "triangles": 2268,
+      "vertices": 6804,
+      "material": "capsule-trim"
+    },
+    {
+      "name": "capsule-right-leaf-capsule-armor",
+      "triangles": 252,
+      "vertices": 756,
+      "material": "capsule-armor"
+    },
+    {
+      "name": "capsule-right-leaf-capsule-dark",
+      "triangles": 868,
+      "vertices": 2604,
+      "material": "capsule-dark"
+    },
+    {
+      "name": "capsule-right-leaf-capsule-trim",
+      "triangles": 2268,
+      "vertices": 6804,
+      "material": "capsule-trim"
+    }
+  ],
+  "closed": {
+    "min": [
+      -2.141730308532715,
+      -0.14000000059604645,
+      -1.9241671562194824
+    ],
+    "max": [
+      2.141730308532715,
+      6.840000152587891,
+      1.785067400932312
+    ]
+  },
+  "opened": {
+    "min": [
+      -2.374655904262261,
+      -0.14000000059604645,
+      -1.9241671562194824
+    ],
+    "max": [
+      2.374655904262261,
+      6.840000152587891,
+      2.937743014463399
+    ]
+  },
+  "collisionProfile": {
+    "shellRadiusX": 2.06,
+    "shellRadiusZ": 1.85,
+    "shellOpeningAngle": 0.895353906273091,
+    "hingeX": 1.55,
+    "hingeZ": 1.46,
+    "doorLength": 1.53,
+    "maxOpeningAngle": 1.9634954084936207
+  },
+  "seat": [
+    0,
+    0,
+    0
+  ],
+  "exit": [
+    0,
+    0,
+    4.2
+  ],
+  "version": 2,
+  "newMeshyCreditsSpent": 0,
+  "fidelity1to1Verified": false
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "contentVersion": "v68-continuation-20261102",
+  "sourceCommit": "83d36e739c911eb40091689ff8a59c3810afb205",
+  "sourceBranch": "codex/continuation-20261102",
+  "sourceFingerprint": "8c803291f3bb3d20b14457eaa9776b14071a4239524326ead7fb67bf26f9452a",
+  "sourceFiles": 190,
+  "sourceTreeDirty": false,
+  "buildEpoch": 1793593784,
+  "reproducibleBuildDate": "2026-11-02T04:29:44.000Z",
+  "deploymentProof": "https://github.com/darknigthmare/Yautja-hive-warriors/blob/codex/continuation-20261102/docs/qa/continuation-20261102-validation.json",
+  "indexSha256": "af055276cabe4892baa8d6a53472c3e6c6927adb9fa8396c3620b2455460267b",
+  "buildInfoSha256": "56191fea9d53d314a2709e4f3da3fb7a403fde4177c0d2502bfbf7d167539e3f",
+  "status": "built_clean"
+}

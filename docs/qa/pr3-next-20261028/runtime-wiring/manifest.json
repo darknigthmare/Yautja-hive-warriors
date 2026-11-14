@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-28",
+  "worktree": "Yautja-next-20261028",
+  "status": "source frozen for global integration validation",
+  "testCommand": "node --test tests/runtime-final-wiring.test.js",
+  "result": {
+    "tests": 9,
+    "pass": 9,
+    "fail": 0
+  },
+  "proof": "runtime-9-tests.txt",
+  "coverage": [
+    "old saves restore terrain 0/standard regardless of current menu",
+    "command map receives actual phase threats and active scene metadata",
+    "support context denies unknown maps and faithful historical future technology",
+    "air access tests actual roof geometry; APC ray ignores only its own collider",
+    "persistent campaign mission identifier preserves support HP/ammunition on resume",
+    "APC destruction removes actual navigation collider and combatant",
+    "Taabe wooden arrow selects first physical hostile or cover; first actor only gets damage",
+    "actual Player equipment checkpoint restores possession before selecting spent tool",
+    "BossManager heavy interruption and physical-cover rejection through real router method",
+    "weapon wheel reads inventory of current input owner"
+  ],
+  "limitations": [
+    "headless automated QA, not human QA",
+    "full browser/build validation belongs to root global freeze",
+    "authored interpreted assets; measured 1:1 fidelity not asserted"
+  ],
+  "sha256": {
+    "js/main.js": "a78ec512992aa1b7051fce5a6452c5920bfa7f175b3530307a8879ce77f4f340",
+    "js/ui/UIManager.js": "b5d1b44f13a92fe276a121379f6658710a85933150ee7558ae4881117566c69f",
+    "js/ui/CommandMap.js": "5010a320be59cff7a2054f6713c56312d7164dd76d314e6cfb6b544767cfd697",
+    "js/ui/WeaponWheel.js": "9c01cd88e78cd57df04f93fd05f01a44ee25e13576a2ecd90538e17e804ce95d",
+    "js/battlefield/OperationPlayerState.js": "412838cdf851d509e076fb7b594974faf83028b4260a1f266decaee306b29f11",
+    "js/engine/MissionRuntimeContext.js": "329a3b1d62ff03a7f3874bc2c120903346f35b5e170d914d53a6b41207431ecc",
+    "js/engine/SingleProjectileImpact.js": "cdcc94c66c867528084cc8b3abba4156333dee2f6c1cc05704c1d9217267c148",
+    "tests/runtime-final-wiring.test.js": "212376fcc7652adcf9230a2e1dc7d0cb7019bd8ebc1bfc2e95fe7418a458bbdd",
+    "index.html": "be1eedf79146542e4b9a0fb0b48551d3efba01cf882c3573d9595a6b65485177",
+    "css/styles.css": "b3396340914af0851f6871610881fc6c5036ee091e9baf8cb675418952c71c27"
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "status": "criterion_evidence_satisfied_pending_final_release_gate",
+  "reviewedAt": "2026-11-02T05:10:23.657294+00:00",
+  "reviewer": "AI agent integration_audit_nov02",
+  "criterion": "AUD-047",
+  "acceptanceUnchanged": "La défaite affiche sa cause vérifiable et laisse un temps de réaction cohérent avec la distance.",
+  "sourceCommit": "571b1d20feb04b4c6175d2d2e8ada073e5047ddb",
+  "indexSha256": "c485a1daa72e59592332fa7f591d6478ec45254636d556e00223f85dacdd5e14",
+  "centralProgressEdited": false,
+  "excelWriterRun": false,
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "hardwarePerformanceVerified": false,
+  "independentChecks": {
+    "correct_final_source": true,
+    "clean_build": true,
+    "case7_passed": true,
+    "raw_failed_aggregate_preserved": true,
+    "zero_js_failed_external_requests": true,
+    "dist_helpers_unchanged": true,
+    "walk_outside_actual_front": true,
+    "bounded_movement": true,
+    "deadline_calibrated_and_preserved": true,
+    "same_run_after_restore": true,
+    "same_allocated_ids": true,
+    "same_recorded_losses": true,
+    "conservation": true,
+    "live_player_not_player_death_case": true,
+    "genuine_expired_front_result": true,
+    "real_loop_to_automatic_end": true,
+    "cause_and_front_survive_teardown": true,
+    "warning_before_and_after_restore": true,
+    "pinned_helper_harness-source.mjs": true,
+    "pinned_helper_insertion-helper-source.mjs": true
+  },
+  "checksPassed": 20,
+  "sourceRuntimeReport": {
+    "path": "docs/qa/continuation-20261102/ui-final-571b1d2-r1-paused-hud/report.json",
+    "sha256": "7cede8ad18ca520bc4c6db35259d96c1e843a792df4af25696754874cc61921d",
+    "aggregateStatus": "failed",
+    "acceptedCaseOnly": "critical-front-expiry-restored-live-player-debrief",
+    "scope": "Case7 passed; whole report remains failed because case8 timed out on a paused HUD before its first normal refresh. No8/8 claim or alteration of the original attempt."
+  },
+  "visibleEndScreen": {
+    "path": "docs/qa/continuation-20261102/ui-final-571b1d2-r1-paused-hud/critical-front-expiry-restored-live-player-debrief.png",
+    "sha256": "a967d734d56c1ddd76511e7fb58e772de6cb1504124e5480b6cd619297215b99",
+    "actuallyViewed": true,
+    "observation": "The actual end screen and first debrief paragraph visibly name Zone d’insertion and expiry of its deadline after automatic teardown."
+  },
+  "calibration": {
+    "status": "passed_case_in_running_final_cpu_suite",
+    "log": "/workspace/qa/continuation-20261102/cpu-final-r2.txt",
+    "observedPassedLine": "✔ all 34 built layouts calibrate physical return/capture time without rewriting the original proposed window (136.374186ms)",
+    "ld05RegressionPassedLine": "✔ LD-05: every strategic route physically walks on the constructed map and all private resources leave once (1344.7641ms)",
+    "finalSuiteStatus": "pending",
+    "note": "The whole moving log is intentionally not hash-pinned before completion."
+  },
+  "worldLocalReview": {
+    "path": "docs/qa/continuation-20261102/world-final-571b1d2/report.json",
+    "sha256": "c75de99862035c3fa3c5dd8683fa58f21196c2a380f4b6a8e0e2c240ffe44c49",
+    "sourceCommit": "571b1d20feb04b4c6175d2d2e8ada073e5047ddb",
+    "steamVents": 0,
+    "insertionMarkingVertices": 84,
+    "insertionFloatingVertices": 0,
+    "markingHeight": 0.04500000178813934,
+    "imagesActuallyViewed": [
+      "docs/qa/continuation-20261102/world-final-571b1d2/actual-gameplay-camera.png",
+      "docs/qa/continuation-20261102/world-final-571b1d2/fixed-inspection-camera.png"
+    ],
+    "scope": "Inappropriate steam and raised markings are removed in this local insertion. Foreground barrack roof still obscures part of the actual paused camera; AUD060/067/103/104 are not universally closed."
+  },
+  "proposedClosureNote": "L’alerte et le résultat nomment le front critique réellement expiré. Sur 571b1d2, une marche assistée sort le chasseur de la zone, puis le checkpoint et la reprise conservent la même échéance 153,25 s. Les 612 mises à jour normales de l’opération déclenchent automatiquement la défaite à cette échéance, avec le joueur toujours à 1000 PV ; le nom Zone d’insertion et la cause restent visibles après nettoyage. La calibration des 34 plans physiques utilise distance de retour, recapture et marge de réaction. L’isolement déclare 132 décès d’identités déjà allouées et un changement d’occupation par le propriétaire de simulation ; ce n’est pas une mesure de difficulté humaine ni une défaite naturelle au combat.",
+  "pendingBeforeClosure": [
+    "final full CPU pass on571",
+    "remaining browser goal checks and regression pass",
+    "final report pinning and independent all-gates review before central status/Excel writer"
+  ],
+  "conditionalCountsAfterOneClosure": {
+    "Terminé": 78,
+    "À valider": 36,
+    "En cours": 12
+  }
+}

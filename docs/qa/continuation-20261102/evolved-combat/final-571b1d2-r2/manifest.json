@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "files": [
+    {
+      "path": "carrier-landed.png",
+      "sha256": "5eaa87f0ed1bac453fe928689781b13575116ff51d6d8971697de1f3e667bef6"
+    },
+    {
+      "path": "carrier-launched.png",
+      "sha256": "b0fa2bd7ed8fa48efc02f5f46bb82216be1f272042aeb92c1c5bcc0666cac848"
+    },
+    {
+      "path": "carrier-midair.png",
+      "sha256": "fb08c37b8f9bc0ec17843ec612e78e462847b920568c091970e479f46b0f7778"
+    },
+    {
+      "path": "helper-source-0.mjs",
+      "sha256": "b0cfa117115fa1be704f7dc2c744f89752f47f134856349a74dde1eb74c45a4f"
+    },
+    {
+      "path": "helper-source-1.mjs",
+      "sha256": "e62b36a664dd2fadaee8804fc70b75d7afa10ebd2345abdb645e806a7b899a43"
+    },
+    {
+      "path": "ravager-cataleptic.png",
+      "sha256": "f0e4e156b3ea8d76e9192b09866c48b17fa68079d4863886c120b9ca138c44a8"
+    },
+    {
+      "path": "ravager-fire-cleanup.png",
+      "sha256": "e4db8d892e66e42de2786bd66bc2c503c62c0dbe1460bd96b98669e02bf9432e"
+    },
+    {
+      "path": "ravager-recovered.png",
+      "sha256": "e1800e9f16ff3016945196842e9a3fd26e1276d9701de1289d779317edcc6d2f"
+    },
+    {
+      "path": "report.json",
+      "sha256": "e14b69f9654071e5d4cd8b8489d8570420bbeabab7ac4235ada4c67a2baad6ab"
+    }
+  ]
+}

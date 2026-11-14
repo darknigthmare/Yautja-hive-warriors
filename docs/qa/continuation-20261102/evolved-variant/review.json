@@ -1,0 +1,13 @@
+{
+  "status": "development_preflight_passed_not_final_qa",
+  "passed": 8,
+  "failed": 0,
+  "skipped": 0,
+  "cancelled": 0,
+  "scope": "New evolved variant + existing basic variant: signed capacity, six unchanged cargo identities, IDs/budgets/HP unchanged, three config digests and checkpoint isolation, wrong-continuity rejection. Runtime still being edited; final full suite will re-exercise these tests after source freeze.",
+  "log": "docs/qa/continuation-20261102/evolved-variant/development-preflight.txt",
+  "sourceTests": [
+    "tests/extinction-evolved-variant.test.js",
+    "tests/extinction-lv742-variant.test.js"
+  ]
+}

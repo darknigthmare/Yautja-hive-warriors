@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-28",
+  "scope": "CPU actual officer death and DOM rendering contracts; final production screenshot/human interpretation separate.",
+  "sourceCommit": "a225277531e7e10b64ab2b880ff7c8554fa815b2",
+  "sourceFingerprint": "430aab5021e1124b194d1adae7422a39c5ac964949e2cb3e0e49c201384bfa3d",
+  "proof": {
+    "path": "docs/qa/pr3-next-20261028/coordination-rescue-final/report.json",
+    "sha256": "e0a666cdd60e4910e749204674ca0a06b771c5abe94df1f033d961619e5cf4c2"
+  },
+  "acceptedCriterion": "AUD-074",
+  "review": "Le vrai décès du contrôleur alloué réduit la coordination de son groupe à65%, sans peur/moral humain inventé pour une ruche. La même conséquence nomme le groupe, le front et65% dans le HUD, la carte/journal et le débrief après destruction de la scène. Le routeur main affiche explicitement ce message dès l’événement. Les tests de dégâts détaillés existants appliquent65% au vrai attaquant ; les groupes humains/clans gardent leur baisse de moral et conséquences testées. Aucun second décès n’est produit par le rendu du rapport.",
+  "followupRescue": "Les victimes précédemment secourues deviennent réellement mortes/capturées/évacuées après simulation distante et conservent cette situation au checkpoint, sans doublon de ledger ; deux régressions supplémentaires passent.",
+  "frontCounterReview": "UIManager.updateHUD et updateOperationHUD affichent le nombre réel de fronts et RÉSERVES FINIES lorsque _operationHUD est actif, et conservent VAGUE n/total pour les autres modes. Cette inspection ne se substitue pas à la capture du build intégré.",
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "filesReviewed": {
+    "js/main.js": "ef6398ac6fb45464c1146627e83927399fa4a1e43a49a3cd08749404465ce22b",
+    "js/ui/OperationPanel.js": "4dcccb2ee0a37d76fccaaba7838c178dbcd1308e4ead098211d4efebc2dbbc7a",
+    "js/ui/CommandMap.js": "94e3d60aa7c8c6f964afd1b5329dcaadca2431f91010ae8b5d7a341d7de7e15d",
+    "js/ui/UIManager.js": "b638044d50a0c18b51b896bf359e53f6569f968b71987feddfc021203daa739f",
+    "js/battlefield/AllyRescueSystem.js": "4815f2ceb486a49b7b44fcf7b0a8ffbff6b5a0f53698f99b86a6d08c9ab84547",
+    "tests/hive-coordination-feedback.test.js": "a3c2265af103965372074e8050bf3368d7354918d070fff0f67402c3046b705e"
+  }
+}

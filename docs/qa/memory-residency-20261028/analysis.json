@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-28T07:55:25.461885+00:00",
+  "status": "completed_scoped_resource_validation",
+  "baseSourceCommit": "48b5bd5aa9d35fd3919ade38cf2aef55389bec5b",
+  "runtimeFix": "XenomorphHorde.clearWave drops both cached player references; next simulation update supplies only current players.",
+  "harnessFix": "The asset readiness Promise.race clears its deadline in finally; no leftover timeout retains the settled race/context.",
+  "originalTimerAblation": {
+    "before": {
+      "kind": "CPU JS heap after explicit CDP GC; not VRAM/process RSS/normal-play memory",
+      "forcedGC": true,
+      "usedSize": 17567156,
+      "totalSize": 18669568,
+      "embedderHeapUsedSize": 2382528,
+      "backingStorageSize": 548713718
+    },
+    "timersCleared": 12,
+    "after": {
+      "kind": "CPU JS heap after explicit CDP GC; not VRAM/process RSS/normal-play memory",
+      "forcedGC": true,
+      "usedSize": 16429036,
+      "totalSize": 17620992,
+      "embedderHeapUsedSize": 2367528,
+      "backingStorageSize": 548606244
+    }
+  },
+  "isolatedDiagnosticBuild": true,
+  "diagnosticBuildIndex": "e90644ce7f244481f2e409d73a1cd7db69e221cdb80a5459ad6322638b62e099",
+  "warmups": 20,
+  "measuredRestarts": 10,
+  "nativeRNGUnchanged": true,
+  "fixedCameraFixture": {
+    "position": [
+      0,
+      12,
+      18
+    ],
+    "target": [
+      0,
+      1.5,
+      0
+    ]
+  },
+  "postCleanupCounters": {
+    "geometries": [
+      110,
+      110,
+      110,
+      110,
+      110,
+      110,
+      110,
+      110,
+      110,
+      110
+    ],
+    "textures": [
+      50,
+      50,
+      50,
+      50,
+      50,
+      50,
+      50,
+      50,
+      50,
+      50
+    ],
+    "programs": [
+      17,
+      17,
+      17,
+      17,
+      17,
+      17,
+      17,
+      17,
+      17,
+      17
+    ]
+  },
+  "hordeCachedPlayersAfterCleanup": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "sharedTextures": {
+    "count": 6,
+    "sameIDsOnAllTenCycles": true,
+    "everyMapUndisposedUploadedAndPositiveDimensions": true
+  },
+  "reachableThreeObjectDeltasAcrossTenAdditionalRestarts": {
+    "isObject3D": 0,
+    "isMesh": 0,
+    "isBone": 0,
+    "isMaterial": 0,
+    "isTexture": 0,
+    "isBufferGeometry": 0,
+    "isBufferAttribute": 0,
+    "skeletonLike": 0,
+    "playerLike": 0
+  },
+  "heapBytes": {
+    "firstMeasured": 16367128,
+    "lastMeasured": 16851760,
+    "change": 484632
+  },
+  "browserErrors": 0,
+  "failedRequests": 0,
+  "externalRequests": 0,
+  "limits": [
+    "The live Three counters, texture identities and snapshot structural object counts are scoped to this identical CityHunter/LA/one-enemy fixture.",
+    "CPU heap still changes; no claim of zero general CPU growth, VRAM usage, hardware performance or all-gameplay leak freedom.",
+    "The isolated diagnostic bundle has sourceCommit:null and must never be published; integrated release QA remains the parent\u2019s responsibility."
+  ],
+  "evidence": {
+    "docs/qa/memory-residency-20261028/timer-ablation/report.json": {
+      "sha256": "4f82b6fccfa86ceca6f281183b962acbf02725866ca26774f7e81924ff0d3079",
+      "bytes": 596780
+    },
+    "docs/qa/memory-residency-20261028/cache-release-corrected/report.json": {
+      "sha256": "8a0086640c20c814cc5ea6fd96e70159bd186a8d92fb9bd82d45daa4989e1b3f",
+      "bytes": 855545
+    },
+    "docs/qa/memory-residency-20261028/heap-summary.json": {
+      "sha256": "4974c70310783bbfbff732d76a3c03ac8925f8606fdbf8c3a462fa874bb91111",
+      "bytes": 6466
+    },
+    "docs/qa/memory-residency-20261028/structural-heap-counts.json": {
+      "sha256": "3c528de0f2a2c9793cf762dd368c75454086a82cfe4721f7ebef7bd27c0e8143",
+      "bytes": 851
+    },
+    "docs/qa/memory-residency-20261028/isolated-patch.json": {
+      "sha256": "97fd921453b6dc9a4ee97b11534140307e594717fc24c7ad311f3a6e10e80c95",
+      "bytes": 504
+    },
+    "docs/qa/memory-residency-20261028/cache-release-tests.txt": {
+      "sha256": "0c5a95e22d35f4397fb6de098eaefd0a2091fca733b635ae0e0c4556cfa4fecc",
+      "bytes": 911
+    }
+  }
+}

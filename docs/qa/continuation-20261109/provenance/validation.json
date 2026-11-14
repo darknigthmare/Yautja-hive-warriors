@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "checkedAt": "2026-11-09T04:18:13.610Z",
+  "scope": "Documentary provenance integration only; no build, browser, rendered asset, gameplay performance or 1:1 certification.",
+  "sourceBranch": "feat/alien-base-v1-integration",
+  "sourceCommit": "9ea0f7313403127516e1874346ba61f5bad283b9",
+  "base": "5a6ea11",
+  "runtimeSerializedSha256Before": "32479ba925deb26a708ac0f5a1deb880e485c510b3ffb0ee2bd2b27d89a6763e",
+  "runtimeSerializedSha256After": "32479ba925deb26a708ac0f5a1deb880e485c510b3ffb0ee2bd2b27d89a6763e",
+  "runtimeSerializationUnchanged": true,
+  "characters": 7,
+  "armory": 36,
+  "sharedIdentities": 43,
+  "v2ReferencedRecords": 12,
+  "v2SourceLinks": 14,
+  "v1SourceCommit": "3f124325102a199a6691a41c8b288ea95f61da8c",
+  "v2SourceCommit": "57689c2dd2dcadb3572e81ed6f3179dbad27f450",
+  "v2Status": "unmerged-documentary-cross-references",
+  "publicRegistryChanged": false,
+  "tests": {
+    "command": "node --test --test-concurrency=1 tests/alien-base.test.mjs tests/alien-base-bridge.test.js tests/hunter-reference-preparation.test.js",
+    "passed": 48,
+    "failed": 0,
+    "log": "docs/qa/continuation-20261109/provenance/final-tests.txt",
+    "sha256": "c5a0768aaebab9dbfc6a55cae31653b6c450183eaa243f9f78955aead04399b7"
+  },
+  "baselineFailure": "docs/qa/continuation-20261109/provenance/baseline-tests.txt",
+  "fixes": [
+    "Retain current reference cards and loadout permissions while attaching read-only non-enumerable metadata",
+    "Deep-freeze v1 entities and bindings",
+    "Reject inherited and non-string lookup keys in both bridges"
+  ],
+  "guide": {
+    "path": "skills/disciplines/create-game-assets/SKILL.md + references/provenance.md",
+    "repository": "gamedev-skills/awesome-gamedev-agent-skills",
+    "commit": "19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9"
+  },
+  "humanTesters": 0,
+  "fidelity1to1Certified": false,
+  "hardwarePerformanceMeasured": false,
+  "files": [
+    {
+      "path": "js/data/charactersData.js",
+      "sha256": "6520d050d40fc3f8901efe80a3df4bb9f01e71d08a885f0e932c46389ab0a981"
+    },
+    {
+      "path": "js/data/alien-base-v1.js",
+      "sha256": "2cba6f9ccc5eac6a7e2d041b1681221a7c30d893dd276e3ec280b0b2c2d5b5c8"
+    },
+    {
+      "path": "js/data/alien-base-v2-crossrefs.js",
+      "sha256": "833cdd134fd3e2261c43fa3264af87a7d4af7f6bb3dd59fab4ded740e3e0fc39"
+    },
+    {
+      "path": "tests/alien-base.test.mjs",
+      "sha256": "65837cb420e0389240f240906051796df391f67463b3cb524de12fa965e27b16"
+    },
+    {
+      "path": "ALIEN_BASE_INTEGRATION.md",
+      "sha256": "795b591fb96a9af0e49191db5f1ad42da8ba29b0fc656b889a932ad61af7c9ae"
+    },
+    {
+      "path": ".github/workflows/alien-base-integration.yml",
+      "sha256": "864c0815c9f270b28ffadbfb4ff3e82125d4e4378c9f5730b2947bb0c2ea70fb"
+    }
+  ]
+}

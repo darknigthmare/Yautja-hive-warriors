@@ -1,0 +1,27 @@
+✔ 34 actual map plans give each extension separate quiet, decision and combat spaces with reproducible travel metrics (22.192432ms)
+✔ real arrival placement reserves the rear observation pocket while keeping both players, objectives and scenery clear (4568.297027ms)
+✔ gunnison_forest: physical sector landmarks have two different shapes, and reciprocal 32-capsule traffic clears a real corridor (4805.339455ms)
+✔ xenomorph_prime: physical sector landmarks have two different shapes, and reciprocal 32-capsule traffic clears a real corridor (5972.459016ms)
+✔ antarctic_pyramid: physical sector landmarks have two different shapes, and reciprocal 32-capsule traffic clears a real corridor (3890.990695ms)
+✔ la_rooftops: physical sector landmarks have two different shapes, and reciprocal 32-capsule traffic clears a real corridor (3286.622504ms)
+✔ val_verde_jungle: physical sector landmarks have two different shapes, and reciprocal 32-capsule traffic clears a real corridor (4977.366668ms)
+✔ romulus_station: physical sector landmarks have two different shapes, and reciprocal 32-capsule traffic clears a real corridor (3754.890356ms)
+✔ charon_rogue_base: physical sector landmarks have two different shapes, and reciprocal 32-capsule traffic clears a real corridor (3974.156716ms)
+✔ game_preserve_planet: physical sector landmarks have two different shapes, and reciprocal 32-capsule traffic clears a real corridor (5222.58717ms)
+✔ stargazer_facility: physical sector landmarks have two different shapes, and reciprocal 32-capsule traffic clears a real corridor (5220.020086ms)
+✔ prey_comanche_territory: physical sector landmarks have two different shapes, and reciprocal 32-capsule traffic clears a real corridor (5047.603639ms)
+✔ killer_of_killers_arena: physical sector landmarks have two different shapes, and reciprocal 32-capsule traffic clears a real corridor (3795.772337ms)
+✔ lane steering cannot route around a closed gate or through an obstacle occupying its preferred side (179.152401ms)
+✔ corridor route plans reuse their graph search and invalidate when a real gate changes (141.135248ms)
+✔ a real Working Joe leaves the helipad ramp for a ground-level front without returning to the raised insertion center (5316.4131ms)
+✔ helipad exit guidance cannot skip a closed territory gate (248.369006ms)
+✔ helipad exit guidance keeps a separate solid obstacle in front of the corridor (400.847736ms)
+✔ helipad exit guidance preserves the real elbow instead of cutting across absent diagonal floor (252.142297ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 61431.161081

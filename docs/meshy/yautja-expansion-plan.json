@@ -1,0 +1,141 @@
+{
+  "schemaVersion": 1,
+  "record_kind": "historical_preflight_snapshot",
+  "current_status_source": "city-hunter-generation.json",
+  "current_runtime_note": "This preflight predates the delivered City Hunter. The active CityHunterRig now supplies two independently weighted hair chains; wristblades and gauntlets remain static. See ../MODEL-FIDELITY-AUDIT.md and ../qa/insertion-reference-review.md for the current limits.",
+  "updated_at": "2026-10-23T01:35:43.106245+00:00",
+  "status": "city_hunter_paid_generation_authorized_preflight_passed",
+  "new_paid_submissions": 1,
+  "generation_authorization": {
+    "scope_requested": "Continue the other playable Yautja using verified photo cutouts, with independently animated dreadlocks, wristblades and gauntlets.",
+    "budget_approval": "City Hunter75additionalcredits_explicit_user_yes",
+    "suspended_previous_proposal_credits": 750,
+    "new_character_generation_approved": true,
+    "approved_character": "city_hunter",
+    "approved_ceiling_credits": 75,
+    "automatic_paid_reruns": false
+  },
+  "characters": [
+    {
+      "id": "wolf_predator",
+      "status": "reference_research",
+      "reference_gate_required": true
+    },
+    {
+      "id": "city_hunter",
+      "status": "classical_body_and_mask_reference_reviews_passed; synthetic_candidate_not_approved_as1to1",
+      "reference_gate_required": true
+    },
+    {
+      "id": "feral_predator",
+      "status": "reference_research",
+      "reference_gate_required": true
+    },
+    {
+      "id": "alpha_predator",
+      "status": "reference_research",
+      "reference_gate_required": true
+    },
+    {
+      "id": "samurai_predator",
+      "status": "reference_research",
+      "reference_gate_required": true
+    },
+    {
+      "id": "viking_predator",
+      "status": "reference_research",
+      "reference_gate_required": true
+    }
+  ],
+  "required_components": [
+    "unmasked_body",
+    "separate_biomask_if_worn_by_variant",
+    "right_wristblade_gauntlet_or_variant_weapon",
+    "left_gauntlet_or_variant_equipment",
+    "weighted_dreadlock_chains"
+  ],
+  "local_articulation": {
+    "dreadlocks": "Actual weighted bone chains or separately segmented strand meshes; per-actor secondary simulation.",
+    "wristblades": "Separate blade geometry with a measured retraction axis and travel.",
+    "gauntlets": "Variant-specific forearm equipment: sliding blades, pivoted lid or Feral folding shield only where supported by references.",
+    "limitation": "Meshy humanoid rig alone does not supply hair chains or moving mechanisms. Auto Split is being piloted on the fused existing Hunter; it rebuilds cuts and removes original textures. It is not lossless loose-parts splitting.",
+    "runtime_hook": "ImportedCharacter consumes optional characterRig.articulation only when supplied; no current manifest model supplies this descriptor."
+  },
+  "reference_gate": {
+    "script": "scripts/audit-reference-cutout.py",
+    "native_canvas_required": true,
+    "foreground_rgb_unchanged": true,
+    "protected_anatomy_landmarks": true,
+    "independent_visual_reviews_required": 3,
+    "reviews_bound_to_source_and_cutout_sha256": true,
+    "reject_before_paid_submission_if_any_gate_fails": true,
+    "mask_eye_semantics": "Preserve observed photo surfaces. City Hunter has opaque grids. The inspected Feral reference has a continuous bone cover and lower mandibular notches, not artificial eye holes. Declare true apertures only when documented."
+  },
+  "pricing": {
+    "source": "https://docs.meshy.ai/en/api/pricing",
+    "read_on": "2026-10-23",
+    "pilot_auto_split_credits": 10,
+    "new_standard_geometry_only_credits": 20,
+    "auto_split_credits": 10,
+    "retexture_4k_credits": 10,
+    "separate_4k_biomask_credits": 30,
+    "humanoid_rig_credits": 5,
+    "conditional_estimate_per_new_character_credits": 75,
+    "conditional_six_character_estimate_credits": 450,
+    "automatic_paid_reruns_included": false,
+    "dreadlock_rigging_and_mechanical_assembly": "Local work after actual part geometry is inspected; no additional Meshy API operation budgeted.",
+    "note": "City Hunter only has explicit75-credit approval. Other five characters and paid reruns are not approved. Earlier750proposal remains suspended."
+  },
+  "balance_check": {
+    "credits_before_pilot": 2110,
+    "credits_after_pilot": 2100,
+    "pilot_final_consumption": 10
+  },
+  "network_requirements": {
+    "draft_saved": true,
+    "additional_hosts": [
+      "necaonline.com",
+      "www.necaonline.com",
+      "store.necaonline.com",
+      "blog.playstation.com",
+      "live.staticflickr.com"
+    ],
+    "runtime_application_confirmed": false,
+    "observed_revision": 6,
+    "actual_access": "PlayStation Blog and NECA HTTP200 verified for reference research; environment network readiness state remains unknown."
+  },
+  "one_to_one_fidelity_validated": false,
+  "pilot": {
+    "source_task_id": "01a159b4-8004-75bd-b39d-cf5184ccf13f",
+    "source_resource": "multi-image-to-3d",
+    "task_id": "01a16656-9527-77f2-84b4-fa64e773a43c",
+    "resource": "auto-split",
+    "status": "SUCCEEDED",
+    "estimated_credits": 10,
+    "consumed_credits": 10,
+    "target": "Separate existing Jungle Hunter into eight named parts; preserve assembled transforms; no connectors; GLB.",
+    "new_reference_uploads": 0,
+    "paid_reruns_authorized": false,
+    "activation": "Do not activate any split result before scene/topology/silhouette and texture-loss review.",
+    "part_count": 23,
+    "triangles": 217798,
+    "activated": false,
+    "qa_conclusion": "Useful separated parts but require anatomical reassembly, actual hair weighting, measured mechanical axes/pivots and restoration of UV/normals/PBR. No ready-to-animate1:1 result.",
+    "model_sha256": "7b1cb2975b2143d6082ef0236b69ab64d668ad67343e00f826641b6d4397d3b9"
+  },
+  "reference_image_trial": {
+    "character": "city_hunter",
+    "input_count": 4,
+    "output_resolution": [
+      1024,
+      1536
+    ],
+    "synthetic": true,
+    "exact_likeness_validated": false,
+    "status": "three_scoped_ai_comparisons_completed",
+    "sent_to_meshy": false,
+    "ready_as_exact_reference": false,
+    "synthetic_detail_changes_detected": true,
+    "mesh_generation_submitted": false
+  }
+}

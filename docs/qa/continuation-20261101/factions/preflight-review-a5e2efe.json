@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "status": "passed_component_preflight",
+  "sourceCommit": "a5e2efe6d1e2211d61b4c89d0c43384b551ddd8c",
+  "indexSha256": "d41a1d012bba3fdd73592f3aa323e1049eadfe6498c9d52a4b7ba6f26213737c",
+  "report": "docs/qa/continuation-20261101/factions/preflight-a5e2efe/report.json",
+  "reportSha256": "66abff3fbe116188887213700b63a1c611b76dbe9ab7e903d5d10eae6e825af8",
+  "visualReview": {
+    "reviewer": "AI agent factions_roles_nov01",
+    "humanReviewer": false,
+    "imagesViewed": [
+      "reciprocal-fire.png",
+      "industrial-warning.png"
+    ],
+    "observed": [
+      "Both humanoids and a thin ballistic tracer are visibly rendered in the reciprocal-fire component scene.",
+      "The industrial Working Joe has a visible triangular warning above its head."
+    ],
+    "limits": [
+      "Plain isolated background, no real terrain, tactical HUD or source-allocated mission.",
+      "No silhouette recognition test, model reference comparison, human perception or 1:1 quality claim.",
+      "This preflight belongs to a5e2efe; it is not a complete-mission test or evidence of the next release source."
+    ]
+  },
+  "browserClosed": true,
+  "slotReleasedToRoot": true,
+  "runtimeEdited": false,
+  "harnessRepaired": false
+}

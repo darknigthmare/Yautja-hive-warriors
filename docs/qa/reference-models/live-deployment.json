@@ -1,0 +1,85 @@
+{
+  "status": "ready",
+  "attempted": true,
+  "published": true,
+  "ready": true,
+  "url": "https://yautja-hive-warriors.vercel.app",
+  "checked_at": "2026-10-22T21:01:42.110Z",
+  "http": {
+    "status": 200
+  },
+  "browser": {
+    "ok": true,
+    "errors": [],
+    "failed_requests": [],
+    "model": {
+      "hunter": "imported",
+      "biomask": "attached",
+      "alien": "ready",
+      "tailCorrection": "big-chap-v2-tail-lower-legs-rigid-20261022"
+    },
+    "environment_proxy_ca_pinned": true
+  },
+  "matching_built_assets": [
+    {
+      "path": "/assets/index-c6DI5JFs.js",
+      "sha256": "3cce1aa09ae6852e08a2ffddd31648541f776efd8ecef13965b8aa941bf5b680"
+    },
+    {
+      "path": "/assets/engine-BvUM56m6.js",
+      "sha256": "59b30fb66d2487a876728493db91647ced7c980e6af3c484e59578743f2ff8fa"
+    },
+    {
+      "path": "/assets/visual-effects-r9wXagHX.js",
+      "sha256": "3f45470a61782ffd08482dc11de825a7b0f3aa434e64714b922918f41660c82b"
+    },
+    {
+      "path": "/assets/confetti-CAXNRs-2.js",
+      "sha256": "39d247a0fb28fff8a2dc39749d26c3d3d1ddb7e70d4e81e6aace4bf55ff0832d"
+    },
+    {
+      "path": "/assets/index-BNBPJRED.css",
+      "sha256": "8d0501a3fb74b9662c35f603822d1f8361d304dd25587006f258997a3948bb74"
+    }
+  ],
+  "verified_model_files": [
+    {
+      "path": "/models/jungle-hunter-rigged.glb",
+      "sha256": "179fe7081ad39f8cb198086d984380dd119e625c8853fa2f11bd69e08ab0be5d",
+      "bytes": 53768472
+    },
+    {
+      "path": "/models/jungle-hunter-walk.glb",
+      "sha256": "ffd0a1b2684f3bef06d29cfc8da8fcb003190aaec121e69e673d744fe7310424",
+      "bytes": 90416
+    },
+    {
+      "path": "/models/jungle-hunter-run.glb",
+      "sha256": "cc1053be4ea26801cf9d2e5ad148ef663373714634a1068aa2b91c14d59c49be",
+      "bytes": 79764
+    },
+    {
+      "path": "/models/jungle-hunter-biomask.glb",
+      "sha256": "a8f2cae605da72d463ace4b5fe4b9363a33c0932298158f65ca85bbe98fd1a77",
+      "bytes": 34211520
+    },
+    {
+      "path": "/models/big-chap-rigged.glb",
+      "sha256": "202b5d7d635cdb14fcf8af430faba3207d5668f43f85d9d9dca1f81cc0d8a97e",
+      "bytes": 56951716
+    },
+    {
+      "path": "/models/big-chap-walk.glb",
+      "sha256": "ae87707f9fa53e246d629c44c454ec6b58b98e0396330e9561476f43bc0e43da",
+      "bytes": 89968
+    },
+    {
+      "path": "/models/big-chap-run.glb",
+      "sha256": "7944bc681cef08d822905b099a79963710517dd14898e0c526dcced2cf7b827d",
+      "bytes": 79336
+    }
+  ],
+  "deployment_id": "dpl_HWhJms94Eyimg6J9ujtac9MvPSwZ",
+  "provider_state": "READY",
+  "build_mode": "Vercel hosted production build"
+}

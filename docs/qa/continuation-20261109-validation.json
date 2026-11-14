@@ -1,0 +1,203 @@
+{
+  "schemaVersion": 1,
+  "status": "passed_scoped_validation",
+  "runtimeSourceCommit": "4ecac297e82a84c18e8b968ffbcea0c3693d29ba",
+  "branch": "codex/continuation-20261109",
+  "checkedAt": "2026-11-09T05:11:50.891Z",
+  "build": {
+    "success": true,
+    "sourceCommit": "4ecac297e82a84c18e8b968ffbcea0c3693d29ba",
+    "sourceFingerprint": "a214c05a3ad459495d24cd3028e058106b57632aad6a24811b3b8456053f92f5",
+    "sourceFiles": 193,
+    "indexSha256": "70067415028edf40bac7085f72b56a43037f55deae2de7b332524e8f7012795a",
+    "buildInfoSha256": "14d4e808f5252c27667699aa220ed60afd1c2422c38579d44cc4ad819b5d02ba",
+    "sourceTreeDirty": false,
+    "staticFiles": 30,
+    "glbFiles": 12,
+    "bytes": 268105222,
+    "report": "docs/qa/continuation-20261109/integration-rescue-fix/frozen-build.json"
+  },
+  "cpu": {
+    "schemaVersion": 1,
+    "status": "passed",
+    "sourceCommit": "4ecac297e82a84c18e8b968ffbcea0c3693d29ba",
+    "tests": 300,
+    "passed": 300,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "durationMs": 94733.449622,
+    "testFiles": 39,
+    "log": "docs/qa/continuation-20261109/integration-rescue-fix/cpu-regression.txt",
+    "sha256": "b1410ccd99e4501feea6389fb766e6f29736635ffc2c6119d90a24cb19d057be",
+    "scope": "Complete selected regression of39files, including the former37plus genuine allied rescue and signed Ravager checkpoint composition. Not the entire repository suite."
+  },
+  "repositoryTooling": {
+    "status": "passed",
+    "tests": 13,
+    "log": "docs/qa/continuation-20261109/integration/ai-tools-tests.txt"
+  },
+  "browser": {
+    "status": "passed",
+    "sourceCommit": "4ecac297e82a84c18e8b968ffbcea0c3693d29ba",
+    "indexSha256": "70067415028edf40bac7085f72b56a43037f55deae2de7b332524e8f7012795a",
+    "buildInfoSha256": "14d4e808f5252c27667699aa220ed60afd1c2422c38579d44cc4ad819b5d02ba",
+    "passed": 3,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "fullThreeCasesInOneCleanRun": true,
+    "durationSeconds": 179.928,
+    "errors": 0,
+    "failedRequests": 0,
+    "externalRequests": 0,
+    "browserClosed": true,
+    "distUnchanged": true,
+    "helperSourcesUnchanged": true,
+    "report": "docs/qa/continuation-20261109/runtime-attempts/runtime-4ecac29-r5/report.json",
+    "sha256": "9341074dd35f9b2cd5c2a5d8a56dfa8142ec0364e090a6911a233f05c1b1715c",
+    "manifest": "docs/qa/continuation-20261109/runtime-attempts/runtime-4ecac29-r5/manifest.json",
+    "manifestSha256": "27f1c9d10b47b013f690bdf6c8a214e840d3abaf870d6253885860d40d0ddf60",
+    "pngCount": 21,
+    "cases": [
+      {
+        "id": "source-menu-coop-insertion-command-checkpoint",
+        "status": "passed"
+      },
+      {
+        "id": "carrier-autonomous-main-update-flight",
+        "status": "passed"
+      },
+      {
+        "id": "ravager-checkpoint-phase-recovery-fire",
+        "status": "passed"
+      }
+    ],
+    "scope": "Only the explicitly requested independent cases are executed; unrequested cases receive no pass or skip records. Available scopes: AFF-27 source menus/accessible legends and Val Verde co-op insertion/command/checkpoint; natural Carrier acquisition/flight through full Game.update; Ravager phase checkpoint reload/rematerialization/recovery/fire. No natural mission victory, exhaustive AI policy, hardware FPS, human comprehension or source-film visual fidelity claim.",
+    "assistances": [
+      "Global RAF gameplay is frozen between actual UI inputs; explicit game.update steps advance insertion, the pilot allocator and the entire Carrier gameplay chain deterministically at1/60.",
+      "Carrier and Ravager inspection relocates only the player to navigation-safe positions; no allocated actor/group coordinate, profile, signature, HP, phase, result or clock is assigned.",
+      "Carrier acquisition is observed for at most480 full Game.update ticks (8 simulated seconds). A transparent callback observer calls the original and returns its unchanged result; no explicit Bridge launch or target override is used.",
+      "Carrier flight captures follow full Game.update, including the production post-update Bridge.sync; all combat managers advance normally during these bounded ticks.",
+      "Ravager phase isolation advances the real Simulation/Bridge owners in .25s steps while other gameplay stays paused. Damage uses the actual Horde.applyDamage API with signed player faction.",
+      "Ravager saveOperation writes the genuine phase checkpoint; page reload and normal menu resume preserve its finite UID, HP, spent upgrade, signature, strategic time and absolute deadline before owner-driven rematerialization.",
+      "Actor closeups use a recorded inspection camera and normal environment visibility refresh. Co-op insertion evidence keeps both genuine game cameras unchanged.",
+      "Pilot command/checkpoint controls use real DOM clicks. Pause is observed without strategic time advancement; insertion replay does not spend resources. No save data is patched.",
+      "The initial paused AFF-27 HUD receives a normal zero-delta update after insertion; unchanged strategic time, finite UID set and Carrier cargo are asserted before checking its accessible legend."
+    ]
+  },
+  "sourceAlignment": {
+    "report": "docs/qa/continuation-20261109/alignment-sources.json",
+    "githubBases": "docs/qa/continuation-20261109/github-bases.json",
+    "contract": "docs/development/MUSOU-GAMEPLAY-CONTRACT.md",
+    "separateBibleFound": false,
+    "separateBiblePathRequested": true,
+    "linkedCanonReference": {
+      "commit": "4523008b777055177c10747148d111d92226d148",
+      "repository": "darknigthmare/alien_base",
+      "document": "docs/development/CANON-REFERENCE-20261108.md",
+      "report": "docs/qa/continuation-20261109/bible-discovery.json",
+      "sha256": "19cb16402dd7fb5bde531a1bae409f34d0c41978176a6d3808539ac2b7348ecf",
+      "notices": 912,
+      "excelCsvCatalogs": 6,
+      "compatibilityReview": "no_conflict_identified_in_scoped_changes",
+      "importedAsPlayableUnits": false
+    }
+  },
+  "audit": {
+    "status": "passed",
+    "criteria": 126,
+    "counts": {
+      "Bloqué": 0,
+      "En cours": 12,
+      "Terminé": 78,
+      "À faire": 0,
+      "À valider": 36
+    },
+    "newlyClosed": [],
+    "allNonFollowupContentPreserved": true,
+    "preserved": [
+      {
+        "path": "docs/audits/2026-10-26/Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.source.xlsx",
+        "sha256": "d3f88eee0e88deb4dbc2247f8b295c6c5a6de91ff9626ea94b0d274f08e652b5",
+        "gitBlob": "7c8a341e843d9b149bd6c7cce74316d9c71189fd",
+        "identicalToPreviousContinuation": true
+      },
+      {
+        "path": "docs/audits/2026-10-26/Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.xlsx",
+        "sha256": "5dfca4a6eb8c8e79d8033e9730f672f82124e4ab6ee298c7eee7acebea4d1fe5",
+        "gitBlob": "c4b14b0f4a0ba7217cdd39517737cdc56f3f215e",
+        "identicalToPreviousContinuation": true
+      },
+      {
+        "path": "docs/audits/2026-10-26/audit-data.json",
+        "sha256": "abda56e986df3d6a8e305d1d6ec190d9f48e336ce1bfd97935bab220b5b4211a",
+        "gitBlob": "f8fe2e98c6cf822158d5bdf6ac1b59b67a6d9637",
+        "identicalToPreviousContinuation": true
+      },
+      {
+        "path": "docs/audits/2026-10-26/implementation-progress.json",
+        "sha256": "9dbe306732ebd96385bb67cbb091dbd750dc49da94d908f16a38bc544d553e19",
+        "gitBlob": "49ac6ee55ca1a122df4ff9fd479cc5347a054ff0",
+        "identicalToPreviousContinuation": true
+      },
+      {
+        "path": "docs/audits/2026-10-27/Yautja_Hive_Warriors_Controle_Completude_2026-10-27.xlsx",
+        "sha256": "d751c28585c8f9c467c19f74fd91c199525f7b72a3ecd5b0967fd67312fcba6d",
+        "gitBlob": "42168c7f4feb2e2843d16960648996bc4dc098af",
+        "identicalToPreviousContinuation": true
+      },
+      {
+        "path": "docs/audits/2026-10-27/completeness-audit.json",
+        "sha256": "7426809f1379af94785cf1741471df40b2029999a4eac37e481264bc4ae0ad48",
+        "gitBlob": "b45b1aa3b64fae8991508fdb6044ed6d019aa9b2",
+        "identicalToPreviousContinuation": true
+      }
+    ],
+    "report": "docs/qa/continuation-20261109/integration/excel-check.json"
+  },
+  "independentCodeReview": {
+    "status": "passed_scoped_code_review_waiting_final_runtime_qa",
+    "report": "docs/qa/continuation-20261109/independent-review.json",
+    "sha256": "a4eb2508d8212a0306644c43484440bd939a8cfe83cbd8efa7fecfff40529ee1"
+  },
+  "newMeshyCreditsSpent": 0,
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "hardwarePerformanceVerified": false,
+  "publication": {
+    "status": "no_manual_deployment_submitted_in_this_pass",
+    "deploymentSubmitted": false,
+    "automaticGitPreviewNotProductionCertification": true
+  },
+  "scope": "Current GitHub consolidation, documentary Yautja provenance, operation-specific terrain selection and map legends, physical co-op insertion cameras, Carrier flight after synchronization, and bounded real runtime/checkpoint verification. No full-game or source-film 1:1 closure.",
+  "frozenBuildArchive": "/workspace/qa/continuation-20261109/frozen-build-94630d8",
+  "rejectedPreviousBuild": {
+    "sourceCommit": "94630d8302c320eb7c39c78ad62f1464e6f4d538",
+    "status": "failed_runtime_checkpoint",
+    "report": "docs/qa/continuation-20261109/integration/validation-before-rescue-fix.json",
+    "archive": "docs/qa/continuation-20261109/runtime-attempts/README.md"
+  },
+  "rescuePhaseFix": {
+    "status": "passed_targeted_and_rendered_checkpoint_restore",
+    "tests": 48,
+    "report": "docs/qa/continuation-20261109/rescue-phase/validation.json"
+  },
+  "independentFinalAcceptance": {
+    "status": "passed_scoped_final_source_acceptance_review",
+    "report": "docs/qa/continuation-20261109/runtime-final-independent-review.json",
+    "sha256": "33a820b330e6b7ae834b03b81ab51d8d18f543e7248a788df59e00294b5ce879"
+  },
+  "visualReview": {
+    "performedBy": "AI agents and coordinator",
+    "report": "docs/qa/continuation-20261109/runtime-final-review.json",
+    "sha256": "39ebd11585539a77b095ad38fc62d885a505465ceaa4cf7c17c41da3c48aabeb",
+    "limitations": [
+      "Foreground roof partly obscures insertion view",
+      "Context prompts can overlap the action",
+      "Restored prone Ravager capture partly obscured by player/capsule/neighbors; phase and geometry are measured",
+      "Procedural silhouettes and environments remain below source-film 1:1 fidelity"
+    ],
+    "globalVisualCertification": false
+  }
+}

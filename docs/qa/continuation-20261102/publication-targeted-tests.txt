@@ -1,0 +1,21 @@
+✔ remote operations require explicit compatible flags and a bounded real deployment ID (2.333758ms)
+✔ promotion waits through only the known previous index until new canonical bytes appear (1.224215ms)
+✔ promotion immediately rejects unknown canonical bytes and never retries them (0.48871ms)
+✔ canonical propagation deadline preserves the existing deployment ID for resume (0.872429ms)
+✔ frozen pins bind the existing project, code identity, final measured counts and actual runtime IDs (21.890859ms)
+✔ final QA cannot pass with an old build, partial suite, error or missing measured runtime scenario (3.105441ms)
+✔ index, build-info bytes and clean source identity are checked independently (11.922495ms)
+✔ headers cover every file, preserve model download metadata and verify build-info MIME (2.677084ms)
+✔ release profiles isolate all four archives and the new continuation stage (2.637102ms)
+✔ unset environment retains every original default and NEXT selects its own paths (1134.737889ms)
+✔ all profiles require their own frozen pins and reject every other release (2853.721916ms)
+✔ unknown profile aborts every entrypoint at import before local or remote actions (396.447483ms)
+✔ unfilled NEXT and new continuation pins cannot pass the final guards (232.119494ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4902.384101

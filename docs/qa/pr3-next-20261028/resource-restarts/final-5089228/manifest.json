@@ -1,0 +1,84 @@
+{
+  "status": "frozen_final_resource_evidence_failed_strict_counter_stability",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 2684,
+      "sha256": "63b5012b48e1a7485f49037f025d2773c019bc66e710af15db9b2fdede2cfb4f"
+    },
+    {
+      "path": "active-last-cycle.png",
+      "bytes": 136324,
+      "sha256": "31bf7fcce2737b6957486eac0480ba67a0ab701d7371991222ea0f18a2d20bd6"
+    },
+    {
+      "path": "analysis.json",
+      "bytes": 6560,
+      "sha256": "2654aaa37edc1e1d400353effc72089700133e3df27f3b8a1096130169507ffa"
+    },
+    {
+      "path": "harness-README.md",
+      "bytes": 1912,
+      "sha256": "aea37cbc0e215d20cd9da69a70229086e1223cdc58a60135b222b5d2b832220d"
+    },
+    {
+      "path": "harness-stdout.txt",
+      "bytes": 2394,
+      "sha256": "74bdc5d3f7711a0f90dfa518e30c74fef9ff2b275a15666793840086049b3f75"
+    },
+    {
+      "path": "menu-after-ten-restarts.png",
+      "bytes": 128292,
+      "sha256": "6359b302a61a970ae4a40404431eece8ccf169ce53b0cc66e09b3d5e623167be"
+    },
+    {
+      "path": "report.json",
+      "bytes": 186265,
+      "sha256": "34b88ba9a3242deb04e16667466c3dbc09e8bf645ddfc0928ff14b1da0e009fe"
+    }
+  ],
+  "original_copies": [
+    {
+      "source": "/workspace/qa/pr3-next-20261028/resource-restarts-final-5089228/report.json",
+      "path": "report.json",
+      "bytes": 186265,
+      "sha256": "34b88ba9a3242deb04e16667466c3dbc09e8bf645ddfc0928ff14b1da0e009fe"
+    },
+    {
+      "source": "/workspace/qa/pr3-next-20261028/resource-restarts-final-5089228/active-last-cycle.png",
+      "path": "active-last-cycle.png",
+      "bytes": 136324,
+      "sha256": "31bf7fcce2737b6957486eac0480ba67a0ab701d7371991222ea0f18a2d20bd6"
+    },
+    {
+      "source": "/workspace/qa/pr3-next-20261028/resource-restarts-final-5089228/menu-after-ten-restarts.png",
+      "path": "menu-after-ten-restarts.png",
+      "bytes": 128292,
+      "sha256": "6359b302a61a970ae4a40404431eece8ccf169ce53b0cc66e09b3d5e623167be"
+    },
+    {
+      "source": "/workspace/qa/pr3-next-20261028/resource-restarts-final-5089228/README.md",
+      "path": "harness-README.md",
+      "bytes": 1912,
+      "sha256": "aea37cbc0e215d20cd9da69a70229086e1223cdc58a60135b222b5d2b832220d"
+    },
+    {
+      "source": "/workspace/qa/pr3-next-20261028/resource-restarts-final-5089228.stdout.txt",
+      "path": "harness-stdout.txt",
+      "bytes": 2394,
+      "sha256": "74bdc5d3f7711a0f90dfa518e30c74fef9ff2b275a15666793840086049b3f75"
+    }
+  ],
+  "harness_sources": [
+    {
+      "path": "docs/qa/pr3-next-20261028/resource-restarts/harness.mjs",
+      "bytes": 16325,
+      "sha256": "d2bb6ef7364c9b7eb2e5674b38898792a1b19be5a0ec5e664de76cfc0ec4959b"
+    },
+    {
+      "path": "docs/qa/pr3-next-20261028/resource-restarts/harness-lib.mjs",
+      "bytes": 10086,
+      "sha256": "348ac5d779b4a5455856e0e8b1063ced7d9d96a807884fe7bed99d6056ab44b8"
+    }
+  ]
+}

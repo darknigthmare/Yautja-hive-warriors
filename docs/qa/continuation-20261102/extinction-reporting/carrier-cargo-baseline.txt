@@ -1,0 +1,17 @@
+✔ source Carrier loads exactly six existing IDs, not six free facehuggers (57.916563ms)
+✔ Carrier cargo is protected from offscreen attack and front capture, yet can be unloaded as the SAME individuals (23.150518ms)
+✔ held Facehuggers retain health outside Hive-space and follow their one finite Carrier (18.609279ms)
+✔ Carrier cargo survives version-1 checkpoint with zero changes to allocated identities (232.618309ms)
+✔ Carrier death scatters its PREEXISTING cargo, without new entities, reserve, or additional kill credit (40.694309ms)
+✔ invalid Carrier cargo cannot cross factions, media, or the six-slot source limit (12.927197ms)
+✔ an explicitly authored Supercarrier consumes twelve existing IDs, never invents a parasite or changes budget (85.717772ms)
+✔ incendiary Carrier destruction kills its exact six cargo identities, not a second swarm (37.790894ms)
+✔ a non-fire Carrier death scatters its six living passengers with no collateral kill credit (11.797796ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 720.69272

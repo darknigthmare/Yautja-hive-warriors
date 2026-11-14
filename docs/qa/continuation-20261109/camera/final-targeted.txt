@@ -1,0 +1,40 @@
+✔ TPS camera stops its swept near-plane volume in front of a real wall without mutating any input (1.801694ms)
+✔ two walls at a corner constrain diagonal camera motion and remain safe after smoothing or shake (3.009314ms)
+✔ cooperative cameras solve independently for two anchors and never share a collision distance (0.63768ms)
+✔ rotated walls, cylinder props, low cover and hidden render meshes use physical geometry (0.253588ms)
+✔ close cover takes priority over minimum framing distance and an embedded anchor is reported honestly (0.241109ms)
+✔ camera opt-out, projectile permeability and custom moving physics stay explicit (0.292125ms)
+✔ near-plane sizing is finite and malformed camera or trace inputs fail before corrupting a camera (0.46369ms)
+✔ the occupant stays invisible in flight and appears behind the landed opening doors (4.395879ms)
+✔ the exit walks the occupant out progressively without advancing combat state (0.693964ms)
+✔ late model attachment cannot reveal a hunter during descent or stabilization (0.5365ms)
+✔ co-op receives two separated cabins and two independent exits (0.861714ms)
+✔ sequence pose, opening and completion agree at different frame rates (8.838629ms)
+✔ cancelling insertion restores actor transforms, pose and prior visibility without completion (0.676898ms)
+✔ cleanup after handoff cannot restore an actor hidden by a later vehicle or photo mode (0.412775ms)
+✔ completion can synchronously replace the insertion without old time consuming the new one (0.517821ms)
+✔ the opened capsule lingers, fades, and disposes all its owned buffers once (0.476199ms)
+✔ invalid or stopped simulation time cannot advance the insertion (0.342991ms)
+✔ the hollow capsule blocks its rear and sides while leaving the forward exit clear (0.577831ms)
+✔ camera tracks the descending cabin independently from the hidden ground actor (0.37542ms)
+✔ real hunter wristblades stay behind the closed hatch in every procedural variant (7232.988933ms)
+✔ the cabin arm pose reaches imported sockets but preserves hidden or fused blades (0.613124ms)
+✔ actual co-op insertion camera resolves the Val Verde canopy during opening and exit (4458.815612ms)
+✔ pause and photo mode freeze both insertion cameras and the same capsule clock (0.810507ms)
+✔ an idle insertion cannot overwrite either ordinary or photo camera (0.368489ms)
+✔ closed capsule occludes the occupant and open leaves clear the standing exit corridor (1831.121467ms)
+✔ capsule hinges turn continuously around fixed sockets without replacing owned buffers (58.432111ms)
+✔ interior floor and threshold do not bury ground-height feet during the exit (64.77401ms)
+✔ six-unit co-op spacing keeps both capsule silhouettes and moving leaves apart (70.483376ms)
+✔ mission steam belongs to authored industrial conduits and moves to the actual supporting floor (350.599754ms)
+✔ steam has bounded soft alpha rather than opaque cone sheets, and releasing it preserves Three shared sprite geometry (3.066189ms)
+✔ Val Verde paint stays on the insertion floor while rounded canopy paths keep separate real upper contacts (3911.043543ms)
+✔ route paint follows an actual industrial access ramp onto its upper deck instead of staying on a fabricated flat layer (2.084185ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 32
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7414.686517

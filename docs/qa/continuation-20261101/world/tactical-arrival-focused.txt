@@ -1,0 +1,14 @@
+✔ LD-01 raised crossing has continuous 0→3→0 ground for walkers and finite real surfaces for bolts (6677.276126ms)
+✔ a persistent walker crosses both bridge directions with one bounded seek step and exact ramp support (1046.812996ms)
+✔ local arrival cannot skip a closed gate, a wall, another height layer or a destroyed bank (630.568186ms)
+✔ destruction closes the real route for both camps, drops supported actors and preserves an alternative (516.159095ms)
+✔ repair and saved destruction restore support and route state without duplicating collisions (488.572638ms)
+✔ a real USCM actor and BattleActorBridge walk the access ramp, deck and exit at their actual elevations (1694.545373ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11448.456585

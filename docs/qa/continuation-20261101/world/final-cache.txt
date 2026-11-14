@@ -1,0 +1,14 @@
+✔ lane steering cannot route around a closed gate or through an obstacle occupying its preferred side (4327.719466ms)
+✔ corridor route plans reuse their graph search and invalidate when a real gate changes (162.08844ms)
+✔ a real Working Joe leaves the helipad ramp for a ground-level front without returning to the raised insertion center (4411.955361ms)
+✔ helipad exit guidance cannot skip a closed territory gate (163.589199ms)
+✔ helipad exit guidance keeps a separate solid obstacle in front of the corridor (239.591143ms)
+✔ helipad exit guidance preserves the real elbow instead of cutting across absent diagonal floor (141.064491ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9726.592331

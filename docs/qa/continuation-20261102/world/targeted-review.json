@@ -1,0 +1,66 @@
+{
+  "status": "targeted_checks_passed_pending_final_build_browser",
+  "reviewedAt": "2026-11-02T04:16:29.795016+00:00",
+  "sourceBaseCommit": "51856cb",
+  "worktreeModified": true,
+  "agentCommitted": false,
+  "runtimeFiles": [
+    {
+      "path": "js/engine/WeatherSystem.js",
+      "sha256": "a2c47af12024a52e362c0b0e6c0cb701a2798692c3047abde89a954b8e98d52e"
+    },
+    {
+      "path": "js/graphics/BattlefieldWayfinding.js",
+      "sha256": "530ac41e240b5cfa9a80d1ee0cb21aced2dc71cfce18f6222c7da18709a8ab02"
+    },
+    {
+      "path": "js/entities/ReferenceCanopyWalkways.js",
+      "sha256": "8aeae1bc081f4876a741364c873f4c28f6d06f0b22419d9eac5e054b2fc19f6f"
+    },
+    {
+      "path": "js/entities/ReferenceWalkSurfaces.js",
+      "sha256": "0143b16c78585d96af7ceff85c702e2175c1c2c5cac4048b9e80791130fb9cf6"
+    },
+    {
+      "path": "tests/world-route-weather-regression.test.js",
+      "sha256": "eb5471c0f37186a33fce14a62296e6f79b730eb16a25b3912a35ba3856da2e1f"
+    }
+  ],
+  "verification": [
+    {
+      "path": "docs/qa/continuation-20261102/world/regressions-final.txt",
+      "passed": 4,
+      "failed": 0,
+      "scope": "Final helper includes narrow bough capsule depenetration and current route/weather code."
+    },
+    {
+      "path": "docs/qa/continuation-20261102/world/existing-targeted-intermediate.txt",
+      "passed": 17,
+      "failed": 0,
+      "scope": "Existing weather, surfaces and streaming checks before the final narrow bough capsule callback."
+    },
+    {
+      "path": "docs/qa/continuation-20261102/world/budgets-navigation-intermediate.txt",
+      "passed": 46,
+      "failed": 0,
+      "scope": "All11world visual budgets and levels navigation plus tacticalbridge checks; runner imported source before final narrow bough capsule callback."
+    }
+  ],
+  "observedCpuGeometry": {
+    "valVerdeInsertionVertices": 108,
+    "verticesAboveOneUnit": 0,
+    "groundY": 0,
+    "markingY": 0.045,
+    "spawnBelowBranchY": 0,
+    "canopyPhysicalSurfaces": 4
+  },
+  "browserStatus": "Root owns identical baseline/final rendered capture; no agent browser launched.",
+  "limits": [
+    "No hardware performance or source-film fidelity claim.",
+    "Other large roof props and every camera angle are not certified.",
+    "No audit closure or central workbook modification."
+  ],
+  "humanReviewers": 0,
+  "fidelity1to1Verified": false,
+  "hardwarePerformanceVerified": false
+}

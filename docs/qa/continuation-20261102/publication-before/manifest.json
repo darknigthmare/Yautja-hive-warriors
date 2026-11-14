@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "dbbd33d29a0c7259c3ec92cbeec8c201fb1d1036d3677f14f3cca3204ddc7989"
+    },
+    {
+      "path": "canonical-inspect-summary.json",
+      "sha256": "46491a2135fe8710068a1a49ceb103afe6c6abf2de582b03f9cf8cfa4fd5a577"
+    },
+    {
+      "path": "latest-preview-inspect-summary.json",
+      "sha256": "d8559515a2f3e8e2fd506292c628bdcd4d717e278fdd1fcbef7b29165b21ee40"
+    },
+    {
+      "path": "public-initial.json",
+      "sha256": "ee4eed5b50ec0612d29067479906a54d5e8b0364f4abd7e2f616551f9768de82"
+    },
+    {
+      "path": "release-state-review.json",
+      "sha256": "a812e70be0fdbe3bb5ecec301b9db658287e903e39d815bcce6e094e1efd0f22"
+    },
+    {
+      "path": "vercel-list-initial-summary.json",
+      "sha256": "72a9ef26182dfdfbe9b47ff7c926259e9b4b497d7443bbe06490e33c212a5078"
+    }
+  ]
+}
