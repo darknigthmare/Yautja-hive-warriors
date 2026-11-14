@@ -1938,8 +1938,15 @@
       "item": "Éviter les effets superposés incontrôlables",
       "acceptance": "Aucune combinaison ne laisse le personnage bloqué indéfiniment; chaque état possède une indication et une issue.",
       "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "États et effets temporaires sont bornés dans les tests ; aucune matrice exhaustive des combinaisons de tous pouvoirs hérités n’est fournie. Reprise du 1/11/2026 (gel a80070c) : Ralentissements sélectionnés, freezes environnementaux, prises et protections ont des sorties finies et propriétaires vérifiés. L’ancienne absence de dégelfreeze est corrigée ; la matrice complète de tous états/pouvoirs hérités demeure nonexhaustive, maintienÀvalider."
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "tests/player-state-matrix.test.js",
+          "sha256": "13f6a46ae588350f5555ed7a78fa7d064e17abbd7b395a12863c415b32f768ee",
+          "scope": "Matrice par paires de six états temporisés (attaques, esquive, parade, Musou, exosquelette), trois bascules (affût, bouclier, camouflage) et prise de facehugger, lancés par leurs vraies méthodes ; durée des fenêtres de parade à 30, 60 et 144 images/s. Ne couvre ni tous les pouvoirs hérités ni l’indication HUD de chaque état."
+        }
+      ],
+      "notes": "États et effets temporaires sont bornés dans les tests ; aucune matrice exhaustive des combinaisons de tous pouvoirs hérités n’est fournie. Reprise du 1/11/2026 (gel a80070c) : Ralentissements sélectionnés, freezes environnementaux, prises et protections ont des sorties finies et propriétaires vérifiés. L’ancienne absence de dégelfreeze est corrigée ; la matrice complète de tous états/pouvoirs hérités demeure nonexhaustive, maintienÀvalider. Reprise du 14/11/2026 : défaut corrigé — la fenêtre de parade était décomptée deux fois par image (durée réelle 0,23 s au lieu de 0,42 s) et pouvait rester ouverte selon la cadence ; matrice d’états automatisée. Reste À valider : pouvoirs hérités hors matrice et indication HUD."
     },
     "AUD-092": {
       "status": "Terminé",

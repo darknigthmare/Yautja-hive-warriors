@@ -2738,9 +2738,8 @@ export class Player {
       }
     }
 
-    if (this.parryTimer > 0) {
-      this.parryTimer = Math.max(0, this.parryTimer - delta);
-    }
+    // The parry window is counted once, in _updateLegacyStates, which also closes the parry (AUD-091).
+    // A second count here halved every window and could stop at zero with the parry still open.
 
     if (this.riposteTimer > 0) {
       this.riposteTimer = Math.max(0, this.riposteTimer - delta);
