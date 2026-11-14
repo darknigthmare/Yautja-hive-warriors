@@ -395,7 +395,7 @@ export class BattleSimulation {
       const key = `${group.factionId}:${group.frontId}`;
       strength.set(key, (strength.get(key) ?? 0) + ready);
       // A group awaiting reconstitution or falling back cannot hold a front, so it does not count as garrison.
-      if (!group.reconstitution?.required && !['retreat', 'regroup'].includes(group.order.type)) garrisons.set(key, (garrisons.get(key) ?? 0) + 1);
+      if (!group.reconstitution?.required && !['retreat', 'regroup'].includes(group.order?.type)) garrisons.set(key, (garrisons.get(key) ?? 0) + 1);
     }
     for (const faction of this.factions.values()) {
       const sporeFronts = faction.moraleModel === 'hive'

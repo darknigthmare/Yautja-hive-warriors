@@ -121,6 +121,9 @@ Les mêmes tables sont dans `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 | HW-DEC-94 | Caméra à la souris | Option des réglages, désactivée par défaut | Solo seulement ; la coop sur un clavier garde la caméra fixe v70 ; le déplacement suit la caméra |
 | HW-DEC-95 | Caisses d'armes humaines | Seulement là où l'univers Alien déploie déjà des Marines | Monde-ruche Prime, Romulus, Charon ; deux caisses par secteur ; les chasses partent sans munitions M41A, Gauss ni Seegson ; les opérations gardent leur dotation |
 | HW-DEC-96 | Garde nationale | Quatre fusiliers à Gunnison, en mode chasse, hors catalogue | AVP: Requiem ; distincte de l'USCM ; le catalogue d'opérations, issu de l'audit conservé, n'est pas modifié |
+| HW-DEC-97 | Couvoir GRP-05 | AFF-27, LV-742 | Ruche établie avec Reine et infestation d'hôte ; œufs hors effectifs combattants |
+| HW-DEC-98 | Extraction GRP-16 | AFF-10, cité-port | Le captif Yautja non combattant de l'audit devient le vétéran à extraire |
+| HW-DEC-99 | Budget EFF-06 | AFF-05, l'accord pendant que les fronts reculent | Par une couche d'adaptation ; l'audit conservé indique toujours EFF-09 |
 | HW-DEC-12 | Alliés Yautja, armes humaines, véhicules et soutiens, coopération locale | Tous conservés | Le champ de bataille est une guerre ; ces systèmes sont à réparer, pas à couper |
 
 ## 02_Chasseurs — Chasseurs jouables (js/data/charactersData.js) ; Musou et kits codés le 14 nov. (js/systems/HunterKit.js, executeHunterMusou)

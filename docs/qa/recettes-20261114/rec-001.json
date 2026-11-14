@@ -5,7 +5,7 @@
   "resultatAttenduClasseur": "B et C évoluent selon leurs forces et ordres; ils peuvent tenir, progresser ou reculer sans apparition du joueur. Les changements existent avant leur observation et ne sont pas des déclencheurs de caméra.",
   "preuveAConserverClasseur": "Vidéo continue avec horloge; chronologie des trois fronts; relevés avant/après; commit et graine.",
   "date": "2026-11-14",
-  "commit": "2ecc8537ccbaf21f07b78dc4dbf083a98bcf9f32",
+  "commit": "3ba1b7918a7a604d45f9ef2bcb4cedad11deb493",
   "branche": "claude/fervent-volta-hmhdfw",
   "preuveVideo": "non produite — preuve par journal de simulation",
   "clauses": [

@@ -8,7 +8,7 @@
     0,
     1114
   ],
-  "commit": "2ecc8537ccbaf21f07b78dc4dbf083a98bcf9f32",
+  "commit": "3ba1b7918a7a604d45f9ef2bcb4cedad11deb493",
   "date": "2026-11-14",
   "commande": "node --test tests/recette-ctrl-082.test.js",
   "niveau": "runtime mission (createOperationScene → BattleSimulation → BattleActorBridge → ColonialMarinesManager/SyntheticsManager réels, sans rendu WebGL)",
