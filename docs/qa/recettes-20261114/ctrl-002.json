@@ -9,7 +9,7 @@
     1114,
     48879
   ],
-  "commit": "4092a2c7da8f6df77a76daf2e0888e0297657e62",
+  "commit": "bd866f88e1499d4e091e4e0c8611afdfb95d2336",
   "date": "2026-11-14",
   "commande": "node --test tests/recette-ctrl-002.test.js",
   "niveau": "runtime mission (createOperationScene → BattleSimulation → BattleActorBridge → SyntheticsManager/ColonialMarinesManager réels, sans rendu WebGL)",
@@ -336,7 +336,7 @@
       "attendu": "Information (pas un critère du contrôle) : reprise des sauvegardes signées avant le roster source.",
       "verdict": "observation",
       "details": {
-        "fichier": "js/main.js:261-277 (repli legacyRoster) ; js/data/BattleCatalog.js:316 (rosterDetail legacy)",
+        "fichier": "js/main.js:262-277 (repli legacyRoster) ; js/data/BattleCatalog.js:294 (applySourceSquadProfiles seulement si rosterDetail source)",
         "grp50EnHumainsDansLeRepli": 32,
         "relationLegacy": "hostile",
         "note": "Une ancienne sauvegarde AFF-13 reste simulée avec original_human_* et une relation ruche/Joes hostile ; repli volontaire mais hors du contrat CTRL-002."

@@ -1,0 +1,961 @@
+{
+ "recette": "REC-006",
+ "titre": "Renforts physiques et ressources de ruche",
+ "source": "docs/audits/2026-10-26/Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.xlsx#Validation!REC-006",
+ "dateExecution": "2026-11-14",
+ "commit": "bd866f88e1499d4e091e4e0c8611afdfb95d2336",
+ "sourcesJsNonCommitees": [],
+ "graine": {
+  "operation": "AFF-18",
+  "budget": "EFF-03",
+  "mapSeed": 0,
+  "pasSimulation": 0.25
+ },
+ "commande": "node --test tests/recette-rec-006.test.js",
+ "preuveVideo": "non produite — preuve par journal de simulation",
+ "scenario": {
+  "operation": "AFF-18",
+  "configDigest": "83944645",
+  "dureeSimulee": 400,
+  "identification": {
+   "source": {
+    "id": "front_b",
+    "owner": "hive",
+    "reinforcementSource": true,
+    "sourceHP": 1000,
+    "position": [
+     0,
+     1668
+    ],
+    "radius": 58
+   },
+   "reserve": {
+    "groupes": 45,
+    "unites": 360,
+    "origine": [
+     "front_b"
+    ],
+    "positionsDansLaSource": true
+   },
+   "routeVersA": [
+    {
+     "routeId": "route_0",
+     "from": "front_b",
+     "to": "front_a",
+     "physicalGateIds": [
+      "gate-insertion-approach",
+      "gate-approach-relay"
+     ],
+     "physicalRouteId": "route-insertion-relay-main"
+    }
+   ],
+   "detourDeclare": [
+    {
+     "id": "route_0",
+     "travelSeconds": 278,
+     "gates": [
+      "gate-insertion-approach",
+      "gate-approach-relay"
+     ]
+    },
+    {
+     "id": "bound-route-insertion-relay-flank",
+     "travelSeconds": 316.6666666666667,
+     "gates": [
+      "gate-route-insertion-relay-flank"
+     ]
+    }
+   ]
+  },
+  "script": [
+   {
+    "t": 0,
+    "label": "vague : demande de renfort de ruche vers le front A",
+    "result": {
+     "accepted": true,
+     "groupId": "AFF-18:hive:100",
+     "factionId": "hive",
+     "sourceId": "front_b",
+     "frontId": "front_a",
+     "due": 3,
+     "count": 8
+    }
+   },
+   {
+    "t": 40,
+    "label": "coupure de la route principale B–A (pont détruit)",
+    "result": {
+     "changed": true
+    }
+   },
+   {
+    "t": 41,
+    "label": "nouvelle vague après coupure",
+    "result": {
+     "accepted": true,
+     "groupId": "AFF-18:hive:106",
+     "factionId": "hive",
+     "sourceId": "front_b",
+     "frontId": "front_a",
+     "due": 44,
+     "count": 8
+    }
+   },
+   {
+    "t": 60,
+    "label": "le joueur rejoint la tâche de sabotage de la source (front B)",
+    "result": {
+     "accepted": true,
+     "taskId": "lower_access",
+     "feedback": "Couper la poussée du sous-sol — restez à portée."
+    }
+   },
+   {
+    "t": 64,
+    "label": "demande de renfort après sabotage",
+    "result": {
+     "accepted": false,
+     "reason": "no_connected_supply_source"
+    }
+   },
+   {
+    "t": 65,
+    "label": "demande de renfort vers la source elle-même",
+    "result": {
+     "accepted": false,
+     "reason": "no_connected_supply_source"
+    }
+   }
+  ],
+  "demandes": [
+   {
+    "t": 0,
+    "accepted": true,
+    "groupId": "AFF-18:hive:100",
+    "factionId": "hive",
+    "sourceId": "front_b",
+    "frontId": "front_a",
+    "due": 3,
+    "count": 8
+   },
+   {
+    "t": 41,
+    "accepted": true,
+    "groupId": "AFF-18:hive:106",
+    "factionId": "hive",
+    "sourceId": "front_b",
+    "frontId": "front_a",
+    "due": 44,
+    "count": 8
+   },
+   {
+    "t": 64,
+    "accepted": false,
+    "reason": "no_connected_supply_source"
+   },
+   {
+    "t": 65,
+    "accepted": false,
+    "reason": "no_connected_supply_source"
+   }
+  ],
+  "releveReserve": {
+   "colonnes": [
+    "t",
+    "reserveRuche",
+    "rucheDeployee",
+    "rucheMorts",
+    "reserveClan"
+   ],
+   "lignes": [
+    [
+     0.25,
+     360,
+     640,
+     0,
+     8
+    ],
+    [
+     10.25,
+     352,
+     648,
+     0,
+     8
+    ],
+    [
+     20.25,
+     336,
+     664,
+     0,
+     4
+    ],
+    [
+     30.25,
+     328,
+     672,
+     0,
+     2
+    ],
+    [
+     40.25,
+     320,
+     680,
+     0,
+     0
+    ],
+    [
+     50.25,
+     304,
+     696,
+     0,
+     0
+    ],
+    [
+     60.25,
+     288,
+     712,
+     0,
+     0
+    ],
+    [
+     70.25,
+     288,
+     712,
+     0,
+     0
+    ],
+    [
+     80.25,
+     288,
+     712,
+     0,
+     0
+    ],
+    [
+     90.25,
+     288,
+     712,
+     0,
+     0
+    ],
+    [
+     100.25,
+     288,
+     712,
+     0,
+     0
+    ],
+    [
+     110.25,
+     288,
+     712,
+     0,
+     0
+    ],
+    [
+     120.25,
+     288,
+     712,
+     0,
+     0
+    ],
+    [
+     130.25,
+     288,
+     712,
+     0,
+     0
+    ],
+    [
+     140.25,
+     288,
+     712,
+     0,
+     0
+    ],
+    [
+     150.25,
+     288,
+     712,
+     0,
+     0
+    ],
+    [
+     160.25,
+     288,
+     712,
+     0,
+     0
+    ],
+    [
+     170.25,
+     288,
+     712,
+     0,
+     0
+    ],
+    [
+     180.25,
+     288,
+     712,
+     0,
+     0
+    ],
+    [
+     190.25,
+     288,
+     712,
+     0,
+     0
+    ],
+    [
+     200.25,
+     288,
+     712,
+     0,
+     0
+    ],
+    [
+     210.25,
+     288,
+     712,
+     0,
+     0
+    ],
+    [
+     220.25,
+     288,
+     712,
+     0,
+     0
+    ],
+    [
+     230.25,
+     288,
+     712,
+     0,
+     0
+    ],
+    [
+     240.25,
+     288,
+     712,
+     0,
+     0
+    ],
+    [
+     250.25,
+     288,
+     712,
+     0,
+     0
+    ],
+    [
+     260.25,
+     288,
+     712,
+     0,
+     0
+    ],
+    [
+     270.25,
+     288,
+     712,
+     0,
+     0
+    ],
+    [
+     280.25,
+     288,
+     712,
+     0,
+     0
+    ],
+    [
+     290.25,
+     288,
+     712,
+     0,
+     0
+    ],
+    [
+     300.25,
+     288,
+     712,
+     0,
+     0
+    ],
+    [
+     310.25,
+     288,
+     712,
+     0,
+     0
+    ],
+    [
+     320.25,
+     288,
+     712,
+     0,
+     0
+    ],
+    [
+     330.25,
+     288,
+     712,
+     0,
+     0
+    ],
+    [
+     340.25,
+     288,
+     712,
+     0,
+     0
+    ],
+    [
+     350.25,
+     288,
+     712,
+     0,
+     0
+    ],
+    [
+     360.25,
+     288,
+     712,
+     0,
+     0
+    ],
+    [
+     370.25,
+     288,
+     712,
+     0,
+     0
+    ],
+    [
+     380.25,
+     288,
+     712,
+     0,
+     0
+    ],
+    [
+     390.25,
+     288,
+     712,
+     0,
+     0
+    ]
+   ]
+  },
+  "annonces": [
+   [
+    0,
+    "AFF-18:hive:100",
+    "front_b",
+    "front_a",
+    8,
+    3
+   ],
+   [
+    8,
+    "AFF-18:player_clan:145",
+    "front_a",
+    "front_a",
+    2,
+    11
+   ],
+   [
+    8,
+    "AFF-18:hive:101",
+    "front_b",
+    "front_c",
+    8,
+    11
+   ],
+   [
+    16,
+    "AFF-18:player_clan:146",
+    "front_a",
+    "front_a",
+    2,
+    19
+   ],
+   [
+    16,
+    "AFF-18:hive:102",
+    "front_b",
+    "front_c",
+    8,
+    19
+   ],
+   [
+    24,
+    "AFF-18:player_clan:147",
+    "front_a",
+    "front_a",
+    2,
+    27
+   ],
+   [
+    24,
+    "AFF-18:hive:103",
+    "front_b",
+    "front_c",
+    8,
+    27
+   ],
+   [
+    32,
+    "AFF-18:player_clan:148",
+    "front_a",
+    "front_a",
+    2,
+    35
+   ],
+   [
+    32,
+    "AFF-18:hive:104",
+    "front_b",
+    "front_c",
+    8,
+    35
+   ],
+   [
+    40,
+    "AFF-18:hive:105",
+    "front_b",
+    "front_c",
+    8,
+    43
+   ],
+   [
+    41,
+    "AFF-18:hive:106",
+    "front_b",
+    "front_a",
+    8,
+    44
+   ],
+   [
+    48,
+    "AFF-18:hive:107",
+    "front_b",
+    "front_c",
+    8,
+    51
+   ],
+   [
+    56,
+    "AFF-18:hive:108",
+    "front_b",
+    "front_c",
+    8,
+    59
+   ]
+  ],
+  "arrivees": [
+   [
+    3,
+    "AFF-18:hive:100",
+    "front_b",
+    "front_a"
+   ],
+   [
+    11,
+    "AFF-18:player_clan:145",
+    "front_a",
+    "front_a"
+   ],
+   [
+    11,
+    "AFF-18:hive:101",
+    "front_b",
+    "front_c"
+   ],
+   [
+    19,
+    "AFF-18:player_clan:146",
+    "front_a",
+    "front_a"
+   ],
+   [
+    19,
+    "AFF-18:hive:102",
+    "front_b",
+    "front_c"
+   ],
+   [
+    27,
+    "AFF-18:player_clan:147",
+    "front_a",
+    "front_a"
+   ],
+   [
+    27,
+    "AFF-18:hive:103",
+    "front_b",
+    "front_c"
+   ],
+   [
+    35,
+    "AFF-18:player_clan:148",
+    "front_a",
+    "front_a"
+   ],
+   [
+    35,
+    "AFF-18:hive:104",
+    "front_b",
+    "front_c"
+   ],
+   [
+    43,
+    "AFF-18:hive:105",
+    "front_b",
+    "front_c"
+   ],
+   [
+    44,
+    "AFF-18:hive:106",
+    "front_b",
+    "front_a"
+   ],
+   [
+    51,
+    "AFF-18:hive:107",
+    "front_b",
+    "front_c"
+   ],
+   [
+    59,
+    "AFF-18:hive:108",
+    "front_b",
+    "front_c"
+   ]
+  ],
+  "annulations": [],
+  "routes": [
+   [
+    40,
+    "route_changed",
+    "route_0",
+    false,
+    null
+   ],
+   [
+    40,
+    "order_blocked",
+    "AFF-18:hive:10",
+    "route_closed_in_transit",
+    "front_a"
+   ],
+   [
+    40,
+    "order_blocked",
+    "AFF-18:hive:100",
+    "route_closed_in_transit",
+    "front_a"
+   ]
+  ],
+  "neutralisation": {
+   "tache": {
+    "id": "lower_access",
+    "status": "done",
+    "progress": 3,
+    "completions": 1,
+    "completedAt": 63,
+    "position": [
+     6,
+     1663
+    ]
+   },
+   "evenementSimulation": {
+    "id": 640,
+    "time": 63,
+    "type": "source_disabled",
+    "priority": 3,
+    "frontId": "front_b",
+    "remainingHP": 0,
+    "cause": "operation_sabotage"
+   },
+   "evenementObjectif": {
+    "id": "AFF-18:objective:1",
+    "type": "source_disabled",
+    "time": 63,
+    "taskId": "lower_access",
+    "frontId": "front_b"
+   },
+   "t": 63
+  },
+  "horsRoute": []
+ },
+ "clauses": [
+  {
+   "id": "C5a",
+   "texte": "Aucune multiplication instantanée non annoncée ; durées explicites",
+   "verdict": "prouvé",
+   "annonceSecondes": 3,
+   "intervalleRenforts": 8,
+   "incubationHoteSecondes": 8,
+   "identites": 1048
+  },
+  {
+   "id": "C5b",
+   "texte": "Profil biologique : hôtes et stades requis par la continuité contrôlés pour les réserves de ruche",
+   "verdict": "échec",
+   "defaut": "Lacune : les réserves de ruche sont des adultes pré-alloués (js/data/BattleCatalog.js:284-318, state \"reserve\") ; BattleSimulation.requestReinforcements (js/battlefield/BattleSimulation.js:923-936) ne consulte ni hôte ni stade. Seule l’infestation d’hôte AFF-27 (js/battlefield/HostInfestation.js:6-9) a une durée explicite et ne produit aucun adulte.",
+   "reproduction": "createOperationScene({operationId:\"AFF-18\",mapSeed:0}) ; sim.requestReinforcements(\"hive\",\"front_a\") accepté sans aucun hôte disponible."
+  },
+  {
+   "id": "C1",
+   "texte": "Les arrivées consomment une réserve (relevés de réserve)",
+   "verdict": "prouvé",
+   "reserveInitiale": 360,
+   "reserveFinale": 288,
+   "consommee": 72,
+   "arriveesRuche": 9,
+   "unitesArrivees": 72,
+   "annonceeAvantArrivee": true,
+   "depuisLeurSource": true
+  },
+  {
+   "id": "C2",
+   "texte": "Les arrivées utilisent des accès crédibles (routes physiques, pas de téléportation)",
+   "verdict": "prouvé",
+   "pointsHorsRoute": 0,
+   "apparitionsDetailleesProchesDuJoueur": 0,
+   "limite": "Le respect de la polyligne est prouvé pour le mouvement distant ; le passage physique des acteurs détaillés dépend de BattleActorBridge et de la navigation 3D (non exécutés ici)."
+  },
+  {
+   "id": "C3",
+   "texte": "Route bloquée : détour ou arrêt expliqué",
+   "verdict": "prouvé",
+   "vagueEnTransit": {
+    "groupId": "AFF-18:hive:100",
+    "evenement": {
+     "id": 601,
+     "time": 40,
+     "type": "order_blocked",
+     "priority": 2,
+     "groupId": "AFF-18:hive:100",
+     "frontId": "front_a",
+     "reason": "route_closed_in_transit"
+    },
+    "position": [
+     0,
+     1479.9999999999986
+    ],
+    "chemin": [
+     {
+      "routeId": "route_0",
+      "from": "front_b",
+      "to": "front_a"
+     }
+    ]
+   },
+   "vagueSuivante": {
+    "groupId": "AFF-18:hive:106",
+    "demande": {
+     "t": 41,
+     "accepted": true,
+     "groupId": "AFF-18:hive:106",
+     "factionId": "hive",
+     "sourceId": "front_b",
+     "frontId": "front_a",
+     "due": 44,
+     "count": 8
+    },
+    "arrivee": {
+     "id": 606,
+     "time": 44,
+     "type": "reinforcements_arrived",
+     "priority": 2,
+     "groupId": "AFF-18:hive:106",
+     "sourceId": "front_b",
+     "targetFrontId": "front_a"
+    },
+    "ordre": {
+     "id": 605,
+     "time": 44,
+     "type": "group_order",
+     "priority": 1,
+     "groupId": "AFF-18:hive:106",
+     "order": {
+      "type": "attack",
+      "frontId": "front_a",
+      "issuer": "scenario",
+      "issuedAt": 44,
+      "sequence": 605
+     },
+     "replaces": true
+    },
+    "chemin": [],
+    "frontActuel": "front_a"
+   },
+   "limite": "La fermeture d’une porte physique sans setRouteOpen (routeAvailabilityProvider=false) arrête un groupe en transit sans événement (js/battlefield/BattleSimulation.js:420) ; aucune porte ne se referme en jeu actuellement (BattlefieldProgression n’expose que openGate), donc non retenu comme défaut."
+  },
+  {
+   "id": "C4",
+   "texte": "Source détruite : plus de renforts gratuits (événement de neutralisation)",
+   "verdict": "prouvé",
+   "neutraliseeA": 63,
+   "demandesRefusees": [
+    {
+     "t": 64,
+     "accepted": false,
+     "reason": "no_connected_supply_source"
+    },
+    {
+     "t": 65,
+     "accepted": false,
+     "reason": "no_connected_supply_source"
+    }
+   ],
+   "arriveesApres": [],
+   "reserveApres": [
+    [
+     70.25,
+     288
+    ],
+    [
+     80.25,
+     288
+    ],
+    [
+     90.25,
+     288
+    ],
+    [
+     100.25,
+     288
+    ],
+    [
+     110.25,
+     288
+    ],
+    [
+     120.25,
+     288
+    ],
+    [
+     130.25,
+     288
+    ],
+    [
+     140.25,
+     288
+    ],
+    [
+     150.25,
+     288
+    ],
+    [
+     160.25,
+     288
+    ],
+    [
+     170.25,
+     288
+    ],
+    [
+     180.25,
+     288
+    ],
+    [
+     190.25,
+     288
+    ],
+    [
+     200.25,
+     288
+    ],
+    [
+     210.25,
+     288
+    ],
+    [
+     220.25,
+     288
+    ],
+    [
+     230.25,
+     288
+    ],
+    [
+     240.25,
+     288
+    ],
+    [
+     250.25,
+     288
+    ],
+    [
+     260.25,
+     288
+    ],
+    [
+     270.25,
+     288
+    ],
+    [
+     280.25,
+     288
+    ],
+    [
+     290.25,
+     288
+    ],
+    [
+     300.25,
+     288
+    ],
+    [
+     310.25,
+     288
+    ],
+    [
+     320.25,
+     288
+    ],
+    [
+     330.25,
+     288
+    ],
+    [
+     340.25,
+     288
+    ],
+    [
+     350.25,
+     288
+    ],
+    [
+     360.25,
+     288
+    ],
+    [
+     370.25,
+     288
+    ],
+    [
+     380.25,
+     288
+    ],
+    [
+     390.25,
+     288
+    ]
+   ],
+   "annulationsApres": []
+  },
+  {
+   "id": "NA1",
+   "texte": "Trajet filmé des renforts à travers les accès physiques",
+   "verdict": "non automatisable",
+   "raison": "Exige le rendu 3D, la navigation réelle et une capture vidéo ; la preuve fournie est le journal de positions stratégiques."
+  }
+ ]
+}

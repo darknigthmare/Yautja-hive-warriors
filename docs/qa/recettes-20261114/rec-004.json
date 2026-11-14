@@ -3,7 +3,8 @@
  "titre": "Conservation des effectifs et catégories d'entités",
  "source": "docs/audits/2026-10-26/Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.xlsx#Validation!REC-004",
  "dateExecution": "2026-11-14",
- "commit": "4092a2c7da8f6df77a76daf2e0888e0297657e62",
+ "commit": "bd866f88e1499d4e091e4e0c8611afdfb95d2336",
+ "sourcesJsNonCommitees": [],
  "graine": {
   "mapSeed": 0,
   "pasSimulation": 0.25,
@@ -11007,7 +11008,7 @@
    "tentatives": 27,
    "acceptees": [],
    "motif": "BattleCatalog: selected budget changes the proposed finite force; explicit reallocation is required",
-   "constat": "getBattleOperationConfig refuse EFF-06 (alliés 120 ≠ 48) : js/data/BattleCatalog.js:312 « selected budget changes the proposed finite force ». Le scénario EFF-06 est donc exécuté sur une configuration explicite aux chiffres EFF-06 (test suivant), pas sur une opération jouable."
+   "constat": "getBattleOperationConfig refuse EFF-06 (alliés 120 ≠ 48) : js/data/BattleCatalog.js:333 « selected budget changes the proposed finite force ». Le scénario EFF-06 est donc exécuté sur une configuration explicite aux chiffres EFF-06 (test suivant), pas sur une opération jouable."
   },
   "EFF-06": {
    "configuration": "rec-004-eff-06 (explicite, aux chiffres EFF-06 ; plafond détaillé projet 32)",
@@ -17533,7 +17534,7 @@
     "GRP-28"
    ],
    "reproduction": "node -e \"import('./js/data/BattleCatalog.js').then(m=>console.log(m.BATTLE_OPERATIONS.some(o=>m.getBattleOperationConfig(o.id,{allowHumanController:true}).groups.some(g=>g.sourceTemplateIds.includes('GRP-05')))))\" → false",
-   "defaut": "Lacune de contenu : js/data/BattleCatalog.js:279-301 (getBattleOperationConfig) ne crée des groupes qu’à partir de forceAllocation ; aucune opération n’alloue GRP-05/GRP-16/GRP-28. Les états BattleSimulation (js/battlefield/BattleSimulation.js:24) n’ont pas de catégorie œuf ; les civils n’existent que comme membres d’objectif (js/battlefield/OperationObjectives.js:35-36).",
+   "defaut": "Lacune de contenu : js/data/BattleCatalog.js:284-318 (getBattleOperationConfig) ne crée des groupes qu’à partir de forceAllocation ; aucune opération n’alloue GRP-05/GRP-16/GRP-28. Les états BattleSimulation (js/battlefield/BattleSimulation.js:24) n’ont pas de catégorie œuf ; les civils n’existent que comme membres d’objectif (js/battlefield/OperationObjectives.js:35-36).",
    "etatAudit": "Feuille Groupes : GRP-05 « À structurer », GRP-16 « À créer », GRP-28 « À créer »."
   },
   {
@@ -17885,6 +17886,114 @@
    "texte": "Lisibilité visuelle des catégories (civil, blessé, œuf, matériel) à l’écran",
    "verdict": "non automatisable",
    "raison": "Rendu Three.js et lecture humaine des silhouettes/HUD requis ; aucun rendu WebGL dans node:test."
+  }
+ ],
+ "observations": [
+  {
+   "id": "OBS-1",
+   "texte": "EFF-03/AFF-18 : 28 des 48 alliés Yautja meurent en simulation distante dans les 4 premières secondes (30 à 12 s) ; la conservation reste exacte mais l’équilibre du front A hors bulle relève de REC-022/équilibrage, pas de REC-004."
+  },
+  {
+   "id": "OBS-2",
+   "texte": "Renouvellement du détail sous les yeux du joueur : à t=1,25 s, quatre groupes détaillés du front A sont dématérialisés et remplacés alors que le joueur reste sur ce front ; le blessé AFF-18:player_clan:48:1 devient distant et meurt à t=1,5 s (distant_combat). Analysé comme défaut dans REC-005 (js/battlefield/BattleSimulation.js:522 et :539).",
+   "journal": [
+    [
+     0.25,
+     "spawn",
+     "AFF-18:hive:34",
+     8
+    ],
+    [
+     0.25,
+     "spawn",
+     "AFF-18:player_clan:51",
+     2
+    ],
+    [
+     0.25,
+     "spawn",
+     "AFF-18:hive:36",
+     8
+    ],
+    [
+     0.25,
+     "spawn",
+     "AFF-18:player_clan:48",
+     2
+    ],
+    [
+     0.25,
+     "spawn",
+     "AFF-18:hive:4",
+     8
+    ],
+    [
+     0.25,
+     "spawn",
+     "AFF-18:player_clan:49",
+     2
+    ],
+    [
+     0.25,
+     "spawn",
+     "AFF-18:player_clan:50",
+     2
+    ],
+    [
+     1.25,
+     "despawn",
+     "AFF-18:hive:4",
+     7
+    ],
+    [
+     1.25,
+     "despawn",
+     "AFF-18:hive:36",
+     8
+    ],
+    [
+     1.25,
+     "despawn",
+     "AFF-18:player_clan:48",
+     2
+    ],
+    [
+     1.25,
+     "despawn",
+     "AFF-18:player_clan:51",
+     2
+    ],
+    [
+     1.25,
+     "spawn",
+     "AFF-18:player_clan:8",
+     2
+    ],
+    [
+     1.25,
+     "spawn",
+     "AFF-18:hive:47",
+     8
+    ],
+    [
+     1.25,
+     "spawn",
+     "AFF-18:hive:0",
+     8
+    ],
+    [
+     1.25,
+     "spawn",
+     "AFF-18:player_clan:7",
+     2
+    ],
+    [
+     1.5,
+     "despawn",
+     "AFF-18:player_clan:7",
+     2
+    ]
+   ]
   }
  ]
 }

@@ -5,7 +5,7 @@
   "resultatAttenduClasseur": "Le joueur reçoit une information exploitable avant la conséquence irréversible, ou la mission signale clairement qu'un ordre distant est nécessaire. Aucune alerte urgente ne demande un trajet impossible sans l'annoncer.",
   "preuveAConserverClasseur": "Chronométrages; vitesses et routes déclarées; captures des alertes; seuils de délai fixés avant recette.",
   "date": "2026-11-14",
-  "commit": "a5799e189e5dbdaf18509d3c084e95f1cf4d80d9",
+  "commit": "bd866f88e1499d4e091e4e0c8611afdfb95d2336",
   "branche": "claude/fervent-volta-hmhdfw",
   "preuveVideo": "non produite — preuve par journal de simulation",
   "graine": {

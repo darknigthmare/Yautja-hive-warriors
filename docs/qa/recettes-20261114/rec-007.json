@@ -1,0 +1,1283 @@
+{
+  "id": "REC-007",
+  "source": "docs/audits/2026-10-26/Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.xlsx#Validation",
+  "perimetre": "Compatibilité des factions et compositions",
+  "seed": 1114,
+  "commit": "bd866f88e1499d4e091e4e0c8611afdfb95d2336",
+  "date": "2026-11-14",
+  "commande": "node --test tests/recette-rec-007.test.js",
+  "preuveVideo": "non produite — preuve par journal",
+  "matriceAutorisations": [
+    {
+      "preset": "reconstitution:predator-1987",
+      "mode": "reconstruction",
+      "oeuvres": [
+        "Predator (1987)"
+      ],
+      "profil": "HUM-004",
+      "libelle": "USCM (Sergent des Colonial Marines)",
+      "oeuvreProfil": "Aliens: Dark Descent",
+      "autorise": false,
+      "refus": [
+        "HUM-004: work is outside the selected reconstruction"
+      ],
+      "divergenceSignalee": false
+    },
+    {
+      "preset": "reconstitution:predator-1987",
+      "mode": "reconstruction",
+      "oeuvres": [
+        "Predator (1987)"
+      ],
+      "profil": "XEN-030",
+      "libelle": "Rogue",
+      "oeuvreProfil": "Aliens: Rogue ; roman Rogue",
+      "autorise": false,
+      "refus": [
+        "XEN-030: work is outside the selected reconstruction"
+      ],
+      "divergenceSignalee": false
+    },
+    {
+      "preset": "reconstitution:predator-1987",
+      "mode": "reconstruction",
+      "oeuvres": [
+        "Predator (1987)"
+      ],
+      "profil": "XEN-027",
+      "libelle": "Offspring",
+      "oeuvreProfil": "Alien: Romulus",
+      "autorise": false,
+      "refus": [
+        "XEN-027: work is outside the selected reconstruction"
+      ],
+      "divergenceSignalee": false
+    },
+    {
+      "preset": "reconstitution:predator-1987",
+      "mode": "reconstruction",
+      "oeuvres": [
+        "Predator (1987)"
+      ],
+      "profil": "YAU-001",
+      "libelle": "Jungle Hunter (contrôle positif 1987)",
+      "oeuvreProfil": "Predator (1987)",
+      "autorise": true,
+      "refus": [],
+      "divergenceSignalee": false
+    },
+    {
+      "preset": "reconstitution:charon-rogue",
+      "mode": "reconstruction",
+      "oeuvres": [
+        "Aliens: Rogue ; roman Rogue"
+      ],
+      "profil": "HUM-004",
+      "libelle": "USCM (Sergent des Colonial Marines)",
+      "oeuvreProfil": "Aliens: Dark Descent",
+      "autorise": false,
+      "refus": [
+        "HUM-004: work is outside the selected reconstruction"
+      ],
+      "divergenceSignalee": false
+    },
+    {
+      "preset": "reconstitution:charon-rogue",
+      "mode": "reconstruction",
+      "oeuvres": [
+        "Aliens: Rogue ; roman Rogue"
+      ],
+      "profil": "XEN-030",
+      "libelle": "Rogue",
+      "oeuvreProfil": "Aliens: Rogue ; roman Rogue",
+      "autorise": true,
+      "refus": [],
+      "divergenceSignalee": false
+    },
+    {
+      "preset": "reconstitution:charon-rogue",
+      "mode": "reconstruction",
+      "oeuvres": [
+        "Aliens: Rogue ; roman Rogue"
+      ],
+      "profil": "XEN-027",
+      "libelle": "Offspring",
+      "oeuvreProfil": "Alien: Romulus",
+      "autorise": false,
+      "refus": [
+        "XEN-027: work is outside the selected reconstruction"
+      ],
+      "divergenceSignalee": false
+    },
+    {
+      "preset": "reconstitution:charon-rogue",
+      "mode": "reconstruction",
+      "oeuvres": [
+        "Aliens: Rogue ; roman Rogue"
+      ],
+      "profil": "YAU-001",
+      "libelle": "Jungle Hunter (contrôle positif 1987)",
+      "oeuvreProfil": "Predator (1987)",
+      "autorise": false,
+      "refus": [
+        "YAU-001: work is outside the selected reconstruction"
+      ],
+      "divergenceSignalee": false
+    },
+    {
+      "preset": "reconstitution:romulus",
+      "mode": "reconstruction",
+      "oeuvres": [
+        "Alien: Romulus"
+      ],
+      "profil": "HUM-004",
+      "libelle": "USCM (Sergent des Colonial Marines)",
+      "oeuvreProfil": "Aliens: Dark Descent",
+      "autorise": false,
+      "refus": [
+        "HUM-004: work is outside the selected reconstruction"
+      ],
+      "divergenceSignalee": false
+    },
+    {
+      "preset": "reconstitution:romulus",
+      "mode": "reconstruction",
+      "oeuvres": [
+        "Alien: Romulus"
+      ],
+      "profil": "XEN-030",
+      "libelle": "Rogue",
+      "oeuvreProfil": "Aliens: Rogue ; roman Rogue",
+      "autorise": false,
+      "refus": [
+        "XEN-030: work is outside the selected reconstruction"
+      ],
+      "divergenceSignalee": false
+    },
+    {
+      "preset": "reconstitution:romulus",
+      "mode": "reconstruction",
+      "oeuvres": [
+        "Alien: Romulus"
+      ],
+      "profil": "XEN-027",
+      "libelle": "Offspring",
+      "oeuvreProfil": "Alien: Romulus",
+      "autorise": true,
+      "refus": [],
+      "divergenceSignalee": false
+    },
+    {
+      "preset": "reconstitution:romulus",
+      "mode": "reconstruction",
+      "oeuvres": [
+        "Alien: Romulus"
+      ],
+      "profil": "YAU-001",
+      "libelle": "Jungle Hunter (contrôle positif 1987)",
+      "oeuvreProfil": "Predator (1987)",
+      "autorise": false,
+      "refus": [
+        "YAU-001: work is outside the selected reconstruction"
+      ],
+      "divergenceSignalee": false
+    },
+    {
+      "preset": "variante-guerre:original",
+      "mode": "original",
+      "oeuvres": [],
+      "profil": "HUM-004",
+      "libelle": "USCM (Sergent des Colonial Marines)",
+      "oeuvreProfil": "Aliens: Dark Descent",
+      "autorise": true,
+      "refus": [],
+      "divergenceSignalee": false
+    },
+    {
+      "preset": "variante-guerre:original",
+      "mode": "original",
+      "oeuvres": [],
+      "profil": "XEN-030",
+      "libelle": "Rogue",
+      "oeuvreProfil": "Aliens: Rogue ; roman Rogue",
+      "autorise": true,
+      "refus": [],
+      "divergenceSignalee": false
+    },
+    {
+      "preset": "variante-guerre:original",
+      "mode": "original",
+      "oeuvres": [],
+      "profil": "XEN-027",
+      "libelle": "Offspring",
+      "oeuvreProfil": "Alien: Romulus",
+      "autorise": true,
+      "refus": [],
+      "divergenceSignalee": false
+    },
+    {
+      "preset": "variante-guerre:original",
+      "mode": "original",
+      "oeuvres": [],
+      "profil": "YAU-001",
+      "libelle": "Jungle Hunter (contrôle positif 1987)",
+      "oeuvreProfil": "Predator (1987)",
+      "autorise": true,
+      "refus": [],
+      "divergenceSignalee": false
+    },
+    {
+      "preset": "variante-guerre:clan_war",
+      "mode": "clan_war",
+      "oeuvres": [],
+      "profil": "HUM-004",
+      "libelle": "USCM (Sergent des Colonial Marines)",
+      "oeuvreProfil": "Aliens: Dark Descent",
+      "autorise": true,
+      "refus": [],
+      "divergenceSignalee": false
+    },
+    {
+      "preset": "variante-guerre:clan_war",
+      "mode": "clan_war",
+      "oeuvres": [],
+      "profil": "XEN-030",
+      "libelle": "Rogue",
+      "oeuvreProfil": "Aliens: Rogue ; roman Rogue",
+      "autorise": true,
+      "refus": [],
+      "divergenceSignalee": false
+    },
+    {
+      "preset": "variante-guerre:clan_war",
+      "mode": "clan_war",
+      "oeuvres": [],
+      "profil": "XEN-027",
+      "libelle": "Offspring",
+      "oeuvreProfil": "Alien: Romulus",
+      "autorise": true,
+      "refus": [],
+      "divergenceSignalee": false
+    },
+    {
+      "preset": "variante-guerre:clan_war",
+      "mode": "clan_war",
+      "oeuvres": [],
+      "profil": "YAU-001",
+      "libelle": "Jungle Hunter (contrôle positif 1987)",
+      "oeuvreProfil": "Predator (1987)",
+      "autorise": true,
+      "refus": [],
+      "divergenceSignalee": false
+    },
+    {
+      "preset": "hypothetique:crossover",
+      "mode": "crossover",
+      "oeuvres": [
+        "Predator (1987)"
+      ],
+      "profil": "HUM-004",
+      "libelle": "USCM (Sergent des Colonial Marines)",
+      "oeuvreProfil": "Aliens: Dark Descent",
+      "autorise": true,
+      "refus": [],
+      "divergenceSignalee": false
+    },
+    {
+      "preset": "hypothetique:crossover",
+      "mode": "crossover",
+      "oeuvres": [
+        "Predator (1987)"
+      ],
+      "profil": "XEN-030",
+      "libelle": "Rogue",
+      "oeuvreProfil": "Aliens: Rogue ; roman Rogue",
+      "autorise": true,
+      "refus": [],
+      "divergenceSignalee": false
+    },
+    {
+      "preset": "hypothetique:crossover",
+      "mode": "crossover",
+      "oeuvres": [
+        "Predator (1987)"
+      ],
+      "profil": "XEN-027",
+      "libelle": "Offspring",
+      "oeuvreProfil": "Alien: Romulus",
+      "autorise": true,
+      "refus": [],
+      "divergenceSignalee": false
+    },
+    {
+      "preset": "hypothetique:crossover",
+      "mode": "crossover",
+      "oeuvres": [
+        "Predator (1987)"
+      ],
+      "profil": "YAU-001",
+      "libelle": "Jungle Hunter (contrôle positif 1987)",
+      "oeuvreProfil": "Predator (1987)",
+      "autorise": true,
+      "refus": [],
+      "divergenceSignalee": false
+    },
+    {
+      "preset": "simulation",
+      "mode": "reconstruction",
+      "works": [
+        "Predator (1987)"
+      ],
+      "profileId": "HUM-004",
+      "accepted": false,
+      "error": "BattleSimulation: profile HUM-004 is outside the operation's work"
+    },
+    {
+      "preset": "simulation",
+      "mode": "reconstruction",
+      "works": [
+        "Alien: Romulus"
+      ],
+      "profileId": "XEN-030",
+      "accepted": false,
+      "error": "BattleSimulation: profile XEN-030 is outside the operation's work"
+    },
+    {
+      "preset": "simulation",
+      "mode": "reconstruction",
+      "works": [
+        "Aliens: Rogue ; roman Rogue"
+      ],
+      "profileId": "XEN-027",
+      "accepted": false,
+      "error": "BattleSimulation: profile XEN-027 is outside the operation's work"
+    },
+    {
+      "preset": "simulation",
+      "mode": "reconstruction",
+      "works": [
+        "Aliens: Dark Descent"
+      ],
+      "profileId": "HUM-004",
+      "accepted": true,
+      "context": {
+        "era": "preset",
+        "works": [
+          "Aliens: Dark Descent"
+        ],
+        "continuities": [],
+        "allowAdaptations": true
+      }
+    }
+  ],
+  "matriceBossNiveaux": [
+    {
+      "bossId": "rogue_king_prime",
+      "levelId": "gunnison_forest",
+      "mode": "reconstruction",
+      "autorise": false
+    },
+    {
+      "bossId": "rogue_king_prime",
+      "levelId": "gunnison_forest",
+      "mode": "crossover",
+      "autorise": true
+    },
+    {
+      "bossId": "rogue_king_prime",
+      "levelId": "xenomorph_prime",
+      "mode": "reconstruction",
+      "autorise": false
+    },
+    {
+      "bossId": "rogue_king_prime",
+      "levelId": "xenomorph_prime",
+      "mode": "crossover",
+      "autorise": true
+    },
+    {
+      "bossId": "rogue_king_prime",
+      "levelId": "antarctic_pyramid",
+      "mode": "reconstruction",
+      "autorise": false
+    },
+    {
+      "bossId": "rogue_king_prime",
+      "levelId": "antarctic_pyramid",
+      "mode": "crossover",
+      "autorise": true
+    },
+    {
+      "bossId": "rogue_king_prime",
+      "levelId": "la_rooftops",
+      "mode": "reconstruction",
+      "autorise": false
+    },
+    {
+      "bossId": "rogue_king_prime",
+      "levelId": "la_rooftops",
+      "mode": "crossover",
+      "autorise": true
+    },
+    {
+      "bossId": "rogue_king_prime",
+      "levelId": "val_verde_jungle",
+      "mode": "reconstruction",
+      "autorise": false
+    },
+    {
+      "bossId": "rogue_king_prime",
+      "levelId": "val_verde_jungle",
+      "mode": "crossover",
+      "autorise": true
+    },
+    {
+      "bossId": "rogue_king_prime",
+      "levelId": "romulus_station",
+      "mode": "reconstruction",
+      "autorise": false
+    },
+    {
+      "bossId": "rogue_king_prime",
+      "levelId": "romulus_station",
+      "mode": "crossover",
+      "autorise": true
+    },
+    {
+      "bossId": "rogue_king_prime",
+      "levelId": "charon_rogue_base",
+      "mode": "reconstruction",
+      "autorise": true
+    },
+    {
+      "bossId": "rogue_king_prime",
+      "levelId": "charon_rogue_base",
+      "mode": "crossover",
+      "autorise": true
+    },
+    {
+      "bossId": "rogue_king_prime",
+      "levelId": "game_preserve_planet",
+      "mode": "reconstruction",
+      "autorise": false
+    },
+    {
+      "bossId": "rogue_king_prime",
+      "levelId": "game_preserve_planet",
+      "mode": "crossover",
+      "autorise": true
+    },
+    {
+      "bossId": "rogue_king_prime",
+      "levelId": "stargazer_facility",
+      "mode": "reconstruction",
+      "autorise": false
+    },
+    {
+      "bossId": "rogue_king_prime",
+      "levelId": "stargazer_facility",
+      "mode": "crossover",
+      "autorise": true
+    },
+    {
+      "bossId": "rogue_king_prime",
+      "levelId": "prey_comanche_territory",
+      "mode": "reconstruction",
+      "autorise": false
+    },
+    {
+      "bossId": "rogue_king_prime",
+      "levelId": "prey_comanche_territory",
+      "mode": "crossover",
+      "autorise": true
+    },
+    {
+      "bossId": "rogue_king_prime",
+      "levelId": "killer_of_killers_arena",
+      "mode": "reconstruction",
+      "autorise": false
+    },
+    {
+      "bossId": "rogue_king_prime",
+      "levelId": "killer_of_killers_arena",
+      "mode": "crossover",
+      "autorise": true
+    },
+    {
+      "bossId": "the_offspring",
+      "levelId": "gunnison_forest",
+      "mode": "reconstruction",
+      "autorise": false
+    },
+    {
+      "bossId": "the_offspring",
+      "levelId": "gunnison_forest",
+      "mode": "crossover",
+      "autorise": true
+    },
+    {
+      "bossId": "the_offspring",
+      "levelId": "xenomorph_prime",
+      "mode": "reconstruction",
+      "autorise": false
+    },
+    {
+      "bossId": "the_offspring",
+      "levelId": "xenomorph_prime",
+      "mode": "crossover",
+      "autorise": true
+    },
+    {
+      "bossId": "the_offspring",
+      "levelId": "antarctic_pyramid",
+      "mode": "reconstruction",
+      "autorise": false
+    },
+    {
+      "bossId": "the_offspring",
+      "levelId": "antarctic_pyramid",
+      "mode": "crossover",
+      "autorise": true
+    },
+    {
+      "bossId": "the_offspring",
+      "levelId": "la_rooftops",
+      "mode": "reconstruction",
+      "autorise": false
+    },
+    {
+      "bossId": "the_offspring",
+      "levelId": "la_rooftops",
+      "mode": "crossover",
+      "autorise": true
+    },
+    {
+      "bossId": "the_offspring",
+      "levelId": "val_verde_jungle",
+      "mode": "reconstruction",
+      "autorise": false
+    },
+    {
+      "bossId": "the_offspring",
+      "levelId": "val_verde_jungle",
+      "mode": "crossover",
+      "autorise": true
+    },
+    {
+      "bossId": "the_offspring",
+      "levelId": "romulus_station",
+      "mode": "reconstruction",
+      "autorise": true
+    },
+    {
+      "bossId": "the_offspring",
+      "levelId": "romulus_station",
+      "mode": "crossover",
+      "autorise": true
+    },
+    {
+      "bossId": "the_offspring",
+      "levelId": "charon_rogue_base",
+      "mode": "reconstruction",
+      "autorise": false
+    },
+    {
+      "bossId": "the_offspring",
+      "levelId": "charon_rogue_base",
+      "mode": "crossover",
+      "autorise": true
+    },
+    {
+      "bossId": "the_offspring",
+      "levelId": "game_preserve_planet",
+      "mode": "reconstruction",
+      "autorise": false
+    },
+    {
+      "bossId": "the_offspring",
+      "levelId": "game_preserve_planet",
+      "mode": "crossover",
+      "autorise": true
+    },
+    {
+      "bossId": "the_offspring",
+      "levelId": "stargazer_facility",
+      "mode": "reconstruction",
+      "autorise": false
+    },
+    {
+      "bossId": "the_offspring",
+      "levelId": "stargazer_facility",
+      "mode": "crossover",
+      "autorise": true
+    },
+    {
+      "bossId": "the_offspring",
+      "levelId": "prey_comanche_territory",
+      "mode": "reconstruction",
+      "autorise": false
+    },
+    {
+      "bossId": "the_offspring",
+      "levelId": "prey_comanche_territory",
+      "mode": "crossover",
+      "autorise": true
+    },
+    {
+      "bossId": "the_offspring",
+      "levelId": "killer_of_killers_arena",
+      "mode": "reconstruction",
+      "autorise": false
+    },
+    {
+      "bossId": "the_offspring",
+      "levelId": "killer_of_killers_arena",
+      "mode": "crossover",
+      "autorise": true
+    },
+    {
+      "bossId": "jungle_hunter_boss",
+      "levelId": "gunnison_forest",
+      "mode": "reconstruction",
+      "autorise": false
+    },
+    {
+      "bossId": "jungle_hunter_boss",
+      "levelId": "gunnison_forest",
+      "mode": "crossover",
+      "autorise": true
+    },
+    {
+      "bossId": "jungle_hunter_boss",
+      "levelId": "xenomorph_prime",
+      "mode": "reconstruction",
+      "autorise": false
+    },
+    {
+      "bossId": "jungle_hunter_boss",
+      "levelId": "xenomorph_prime",
+      "mode": "crossover",
+      "autorise": true
+    },
+    {
+      "bossId": "jungle_hunter_boss",
+      "levelId": "antarctic_pyramid",
+      "mode": "reconstruction",
+      "autorise": false
+    },
+    {
+      "bossId": "jungle_hunter_boss",
+      "levelId": "antarctic_pyramid",
+      "mode": "crossover",
+      "autorise": true
+    },
+    {
+      "bossId": "jungle_hunter_boss",
+      "levelId": "la_rooftops",
+      "mode": "reconstruction",
+      "autorise": false
+    },
+    {
+      "bossId": "jungle_hunter_boss",
+      "levelId": "la_rooftops",
+      "mode": "crossover",
+      "autorise": true
+    },
+    {
+      "bossId": "jungle_hunter_boss",
+      "levelId": "val_verde_jungle",
+      "mode": "reconstruction",
+      "autorise": true
+    },
+    {
+      "bossId": "jungle_hunter_boss",
+      "levelId": "val_verde_jungle",
+      "mode": "crossover",
+      "autorise": true
+    },
+    {
+      "bossId": "jungle_hunter_boss",
+      "levelId": "romulus_station",
+      "mode": "reconstruction",
+      "autorise": false
+    },
+    {
+      "bossId": "jungle_hunter_boss",
+      "levelId": "romulus_station",
+      "mode": "crossover",
+      "autorise": true
+    },
+    {
+      "bossId": "jungle_hunter_boss",
+      "levelId": "charon_rogue_base",
+      "mode": "reconstruction",
+      "autorise": false
+    },
+    {
+      "bossId": "jungle_hunter_boss",
+      "levelId": "charon_rogue_base",
+      "mode": "crossover",
+      "autorise": true
+    },
+    {
+      "bossId": "jungle_hunter_boss",
+      "levelId": "game_preserve_planet",
+      "mode": "reconstruction",
+      "autorise": false
+    },
+    {
+      "bossId": "jungle_hunter_boss",
+      "levelId": "game_preserve_planet",
+      "mode": "crossover",
+      "autorise": true
+    },
+    {
+      "bossId": "jungle_hunter_boss",
+      "levelId": "stargazer_facility",
+      "mode": "reconstruction",
+      "autorise": false
+    },
+    {
+      "bossId": "jungle_hunter_boss",
+      "levelId": "stargazer_facility",
+      "mode": "crossover",
+      "autorise": true
+    },
+    {
+      "bossId": "jungle_hunter_boss",
+      "levelId": "prey_comanche_territory",
+      "mode": "reconstruction",
+      "autorise": false
+    },
+    {
+      "bossId": "jungle_hunter_boss",
+      "levelId": "prey_comanche_territory",
+      "mode": "crossover",
+      "autorise": true
+    },
+    {
+      "bossId": "jungle_hunter_boss",
+      "levelId": "killer_of_killers_arena",
+      "mode": "reconstruction",
+      "autorise": false
+    },
+    {
+      "bossId": "jungle_hunter_boss",
+      "levelId": "killer_of_killers_arena",
+      "mode": "crossover",
+      "autorise": true
+    }
+  ],
+  "groupesEtRelationsParPreset": [
+    {
+      "operation": "AFF-13",
+      "groupes": 23,
+      "factions": [
+        {
+          "id": "player_clan",
+          "species": "yautja",
+          "label": null
+        },
+        {
+          "id": "hive",
+          "species": "xeno",
+          "label": null
+        },
+        {
+          "id": "human_force",
+          "species": "synthetic",
+          "label": "Working Joes Seegson"
+        }
+      ],
+      "relationsInitiales": {
+        "hive|player_clan": "hostile",
+        "human_force|player_clan": "hostile",
+        "hive|human_force": "neutral"
+      },
+      "relationsApres180s": {
+        "hive|player_clan": "hostile",
+        "human_force|player_clan": "hostile",
+        "hive|human_force": "neutral"
+      },
+      "morts": 4,
+      "mortsEntrePairesNonHostiles": 0
+    },
+    {
+      "operation": "AFF-16",
+      "groupes": 128,
+      "factions": [
+        {
+          "id": "player_clan",
+          "species": "yautja",
+          "label": null
+        },
+        {
+          "id": "hive",
+          "species": "xeno",
+          "label": null
+        },
+        {
+          "id": "human_force",
+          "species": "synthetic",
+          "label": "Synthétiques Weyland-Yutani"
+        }
+      ],
+      "relationsInitiales": {
+        "hive|player_clan": "hostile",
+        "human_force|player_clan": "hostile",
+        "hive|human_force": "hostile"
+      },
+      "relationsApres180s": {
+        "hive|player_clan": "hostile",
+        "human_force|player_clan": "hostile",
+        "hive|human_force": "hostile"
+      },
+      "morts": 48,
+      "mortsEntrePairesNonHostiles": 0
+    },
+    {
+      "operation": "AFF-11",
+      "groupes": 62,
+      "factions": [
+        {
+          "id": "player_clan",
+          "species": "yautja",
+          "label": null
+        },
+        {
+          "id": "rival_clan",
+          "species": "yautja",
+          "label": null
+        },
+        {
+          "id": "human_force",
+          "species": "human",
+          "label": null
+        }
+      ],
+      "relationsInitiales": {
+        "player_clan|rival_clan": "hostile",
+        "human_force|player_clan": "hostile",
+        "human_force|rival_clan": "hostile"
+      },
+      "relationsApres180s": {
+        "player_clan|rival_clan": "hostile",
+        "human_force|player_clan": "hostile",
+        "human_force|rival_clan": "hostile"
+      },
+      "morts": 16,
+      "mortsEntrePairesNonHostiles": 0
+    }
+  ],
+  "clauses": [
+    {
+      "clause": "reconstitution_refuse",
+      "attendu": "Un preset de reconstitution refuse ou retire les combinaisons non autorisées.",
+      "verdict": "prouvé",
+      "details": {
+        "refusVerifies": 7,
+        "controlesPositifs": 3,
+        "exempleLibelle": [
+          "HUM-004: work is outside the selected reconstruction"
+        ]
+      }
+    },
+    {
+      "clause": "simulation_reconstitution_refuse",
+      "attendu": "La simulation d’un preset de reconstitution refuse elle-même le profil hors œuvre (pas seulement le validateur de roster).",
+      "verdict": "prouvé",
+      "details": [
+        {
+          "mode": "reconstruction",
+          "works": [
+            "Predator (1987)"
+          ],
+          "profileId": "HUM-004",
+          "accepted": false,
+          "error": "BattleSimulation: profile HUM-004 is outside the operation's work"
+        },
+        {
+          "mode": "reconstruction",
+          "works": [
+            "Alien: Romulus"
+          ],
+          "profileId": "XEN-030",
+          "accepted": false,
+          "error": "BattleSimulation: profile XEN-030 is outside the operation's work"
+        },
+        {
+          "mode": "reconstruction",
+          "works": [
+            "Aliens: Rogue ; roman Rogue"
+          ],
+          "profileId": "XEN-027",
+          "accepted": false,
+          "error": "BattleSimulation: profile XEN-027 is outside the operation's work"
+        },
+        {
+          "mode": "reconstruction",
+          "works": [
+            "Aliens: Dark Descent"
+          ],
+          "profileId": "HUM-004",
+          "accepted": true,
+          "context": {
+            "era": "preset",
+            "works": [
+              "Aliens: Dark Descent"
+            ],
+            "continuities": [],
+            "allowAdaptations": true
+          }
+        }
+      ]
+    },
+    {
+      "clause": "boss_niveau_reconstitution",
+      "attendu": "Les boss nommés Rogue/Offspring sont refusés hors de leur niveau en mode niveau/reconstitution.",
+      "verdict": "prouvé",
+      "details": {
+        "rogue": [
+          "charon_rogue_base"
+        ],
+        "offspring": [
+          "romulus_station"
+        ]
+      }
+    },
+    {
+      "clause": "soutien_usc_1987",
+      "attendu": "Le preset de campagne Predator 1987 (Val Verde) ne fournit ni Marines ni synthétiques coloniaux en soutien.",
+      "verdict": "prouvé",
+      "details": {
+        "val_verde_jungle": [
+          {
+            "allies": 0,
+            "marines": 0,
+            "synthetics": 0,
+            "gasPipes": 0,
+            "apc": false
+          },
+          {
+            "allies": 1,
+            "marines": 0,
+            "synthetics": 0,
+            "gasPipes": 0,
+            "apc": false
+          },
+          {
+            "allies": 1,
+            "marines": 0,
+            "synthetics": 0,
+            "gasPipes": 0,
+            "apc": false
+          },
+          {
+            "allies": 1,
+            "marines": 0,
+            "synthetics": 0,
+            "gasPipes": 0,
+            "apc": false
+          },
+          {
+            "allies": 1,
+            "marines": 0,
+            "synthetics": 0,
+            "gasPipes": 0,
+            "apc": false
+          },
+          {
+            "allies": 1,
+            "marines": 0,
+            "synthetics": 0,
+            "gasPipes": 0,
+            "apc": false
+          }
+        ],
+        "charon_rogue_base_secteur3": {
+          "allies": 1,
+          "marines": 2,
+          "synthetics": 2,
+          "gasPipes": 4,
+          "apc": true
+        }
+      }
+    },
+    {
+      "clause": "hypothetique_permet",
+      "attendu": "Un mode hypothétique peut permettre les combinaisons.",
+      "verdict": "prouvé",
+      "details": {
+        "roster": [
+          [
+            "HUM-004",
+            true
+          ],
+          [
+            "XEN-030",
+            true
+          ],
+          [
+            "XEN-027",
+            true
+          ],
+          [
+            "YAU-001",
+            true
+          ]
+        ],
+        "simulation": {
+          "accepted": true,
+          "context": {
+            "era": "preset",
+            "works": [
+              "Predator (1987)"
+            ],
+            "continuities": [],
+            "allowAdaptations": true
+          }
+        },
+        "rencontreBoss": {
+          "mode": "crossover",
+          "bossType": "rogue_king_prime",
+          "levelId": "val_verde_jungle"
+        }
+      }
+    },
+    {
+      "clause": "hypothetique_signale_divergence",
+      "attendu": "Un mode hypothétique peut les permettre en signalant la divergence.",
+      "verdict": "échec (défaut)",
+      "details": {
+        "retourValidateur": {
+          "autorise": true,
+          "refus": [],
+          "clefs": [
+            "valid",
+            "errors"
+          ]
+        },
+        "contexteSimulation": {
+          "era": "preset",
+          "works": [
+            "Predator (1987)"
+          ],
+          "continuities": [],
+          "allowAdaptations": true
+        },
+        "reproduction": "validateBattleRoster([{profileId:'HUM-004'}],{mode:'crossover',works:['Predator (1987)']}) → {valid:true, errors:[]} sans champ de divergence",
+        "fichiers": [
+          "js/data/BattleCatalog.js:104-125",
+          "js/battlefield/BattleSimulation.js:216-220"
+        ]
+      }
+    },
+    {
+      "clause": "alliance_sans_evenement",
+      "attendu": "Pas d’alliance humain/Yautja sans événement : un humain ne peut pas entrer dans le clan joueur, et aucune opération ne commence alliée.",
+      "verdict": "prouvé",
+      "details": {
+        "refusIntrus": "BattleSimulation: profile HUM-004 does not belong to faction clan",
+        "relationsInitialesJoueurHumains": [
+          {
+            "operation": "AFF-06",
+            "playerSpecies": "yautja",
+            "paire": "player_clan|human_force",
+            "etatInitial": "hostile"
+          },
+          {
+            "operation": "AFF-07",
+            "playerSpecies": "yautja",
+            "paire": "player_clan|human_force",
+            "etatInitial": "hostile"
+          },
+          {
+            "operation": "AFF-08",
+            "playerSpecies": "yautja",
+            "paire": "player_clan|human_force",
+            "etatInitial": "hostile"
+          },
+          {
+            "operation": "AFF-09",
+            "playerSpecies": "yautja",
+            "paire": "player_clan|human_force",
+            "etatInitial": "hostile"
+          },
+          {
+            "operation": "AFF-10",
+            "playerSpecies": "yautja",
+            "paire": "player_clan|human_force",
+            "etatInitial": "hostile"
+          },
+          {
+            "operation": "AFF-11",
+            "playerSpecies": "yautja",
+            "paire": "player_clan|human_force",
+            "etatInitial": "hostile"
+          },
+          {
+            "operation": "AFF-12",
+            "playerSpecies": "yautja",
+            "paire": "player_clan|human_force",
+            "etatInitial": "hostile"
+          },
+          {
+            "operation": "AFF-13",
+            "playerSpecies": "yautja",
+            "paire": "player_clan|human_force",
+            "etatInitial": "hostile"
+          },
+          {
+            "operation": "AFF-15",
+            "playerSpecies": "yautja",
+            "paire": "player_clan|human_force",
+            "etatInitial": "hostile"
+          },
+          {
+            "operation": "AFF-16",
+            "playerSpecies": "yautja",
+            "paire": "player_clan|human_force",
+            "etatInitial": "hostile"
+          },
+          {
+            "operation": "AFF-17",
+            "playerSpecies": "yautja",
+            "paire": "player_clan|human_force",
+            "etatInitial": "hostile"
+          },
+          {
+            "operation": "AFF-19",
+            "playerSpecies": "yautja",
+            "paire": "player_clan|human_force",
+            "etatInitial": "hostile"
+          },
+          {
+            "operation": "AFF-20",
+            "playerSpecies": "yautja",
+            "paire": "player_clan|human_force",
+            "etatInitial": "hostile"
+          },
+          {
+            "operation": "AFF-23",
+            "playerSpecies": "yautja",
+            "paire": "player_clan|human_force",
+            "etatInitial": "hostile"
+          },
+          {
+            "operation": "AFF-25",
+            "playerSpecies": "human",
+            "paire": "player_clan|hive",
+            "etatInitial": "hostile"
+          },
+          {
+            "operation": "AFF-26",
+            "playerSpecies": "human",
+            "paire": "player_clan|hive",
+            "etatInitial": "hostile"
+          },
+          {
+            "operation": "AFF-27",
+            "playerSpecies": "yautja",
+            "paire": "player_clan|human_force",
+            "etatInitial": "hostile"
+          }
+        ]
+      }
+    },
+    {
+      "clause": "alliance_par_evenement",
+      "attendu": "Un accord local passe par une tâche négociée explicite et un événement daté, sans alliance universelle.",
+      "verdict": "prouvé",
+      "details": [
+        {
+          "operation": "AFF-04",
+          "task": "agreement",
+          "factionId": "rival_clan",
+          "relation": "neutral",
+          "requires": [
+            "evidence",
+            "false_alarm"
+          ]
+        },
+        {
+          "operation": "AFF-05",
+          "task": "ceasefire",
+          "factionId": "rival_clan",
+          "relation": "neutral",
+          "requires": [
+            "terms",
+            "withdrawal"
+          ]
+        },
+        {
+          "operation": "AFF-11",
+          "task": "clan_truce",
+          "factionId": "rival_clan",
+          "relation": "neutral",
+          "requires": [
+            "archives"
+          ]
+        },
+        {
+          "operation": "AFF-23",
+          "task": "theta_agreement",
+          "factionId": "human_force",
+          "relation": "neutral",
+          "requires": [
+            "crash_evidence"
+          ]
+        }
+      ]
+    },
+    {
+      "clause": "relations_propres",
+      "attendu": "Les groupes conservent leurs propres relations et n’adoptent pas tous une même équipe par proximité.",
+      "verdict": "prouvé",
+      "details": [
+        {
+          "operation": "AFF-13",
+          "relations": {
+            "hive|player_clan": "hostile",
+            "human_force|player_clan": "hostile",
+            "hive|human_force": "neutral"
+          },
+          "morts": 4
+        },
+        {
+          "operation": "AFF-16",
+          "relations": {
+            "hive|player_clan": "hostile",
+            "human_force|player_clan": "hostile",
+            "hive|human_force": "hostile"
+          },
+          "morts": 48
+        },
+        {
+          "operation": "AFF-11",
+          "relations": {
+            "player_clan|rival_clan": "hostile",
+            "human_force|player_clan": "hostile",
+            "human_force|rival_clan": "hostile"
+          },
+          "morts": 16
+        }
+      ]
+    },
+    {
+      "clause": "police_gangs_owlf",
+      "attendu": "Mélange police/gangs/OWLF : groupes distincts, relations propres.",
+      "verdict": "non automatisable",
+      "details": {
+        "raison": "Aucun preset ni opération ne déploie GRP-25 (« Forces de Los Angeles », statut « À créer : relations multi-factions ») et aucun profil police/gang/OWLF n’existe dans BATTLE_PROFILES ; rien à exécuter.",
+        "restrictionSource": "Ne pas fusionner police, gangs, OWLF en un groupe ami unique",
+        "observation": "js/data/BattleCatalog.js:147-153 (allocatedCamp) range tout groupe ni xéno ni Yautja dans la seule faction human_force : un futur preset police+gangs+OWLF serait fusionné en un camp unique sans règle dédiée."
+      }
+    }
+  ],
+  "nonAutomatisable": [
+    {
+      "element": "captures des refus et libellés à l’écran",
+      "raison": "aucune interface de sélection de preset n’est rendue en Node ; les libellés de refus sont conservés ici tels que retournés par les validateurs."
+    }
+  ]
+}

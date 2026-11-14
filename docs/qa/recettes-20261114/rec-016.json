@@ -1,0 +1,2685 @@
+{
+ "recette": "REC-016",
+ "titre": "Sauvegarde d'une guerre répartie",
+ "source": "docs/audits/2026-10-26/Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.xlsx#Validation!REC-016",
+ "dateExecution": "2026-11-14",
+ "commit": "bd866f88e1499d4e091e4e0c8611afdfb95d2336",
+ "sourcesJsNonCommitees": [],
+ "graine": {
+  "operation": "AFF-27",
+  "mapSeed": 0,
+  "pasSimulation": 0.25
+ },
+ "commande": "node --test tests/recette-rec-016.test.js",
+ "preuveVideo": "non produite — preuve par journal de simulation",
+ "scenario": {
+  "operation": "AFF-27",
+  "configDigest": "854faa22",
+  "sauvegarde": {
+   "cle": "yautja-operation-checkpoint-v1",
+   "ecrite": true,
+   "octets": 748440,
+   "t": 27.5
+  },
+  "script": [
+   {
+    "t": 0,
+    "label": "sabotage du relais de B (tâche hive_route) — commencé",
+    "result": {
+     "accepted": true,
+     "taskId": "hive_route",
+     "feedback": "Neutraliser la logistique de la ruche — restez à portée."
+    }
+   },
+   {
+    "t": 0,
+    "label": "embarquement M577 : section humaine du front A",
+    "result": {
+     "accepted": true,
+     "passengers": [
+      "AFF-27:human_force:3:1",
+      "AFF-27:human_force:3:2",
+      "AFF-27:human_force:3:3",
+      "AFF-27:human_force:3:4",
+      "AFF-27:human_force:3:5",
+      "AFF-27:human_force:3:6"
+     ],
+     "crew": [
+      "AFF-27:human_force:3:7",
+      "AFF-27:human_force:3:0"
+     ],
+     "seatCapacity": 12
+    }
+   },
+   {
+    "t": 2,
+    "label": "M577 engagé sur route_0 vers le front B",
+    "result": {
+     "routeId": "route_0",
+     "fromFrontId": "front_a",
+     "toFrontId": "front_b"
+    }
+   },
+   {
+    "t": 4,
+    "label": "repli d’un groupe du clan du front B vers D",
+    "result": {
+     "accepted": true,
+     "order": {
+      "type": "retreat",
+      "frontId": "front_d",
+      "issuer": "player1",
+      "issuedAt": 4,
+      "sequence": 219
+     },
+     "path": [
+      {
+       "routeId": "route_1",
+       "from": "front_b",
+       "to": "front_c"
+      },
+      {
+       "routeId": "route_2",
+       "from": "front_c",
+       "to": "front_d"
+      }
+     ]
+    }
+   },
+   {
+    "t": 5,
+    "label": "diplomatie : trêve locale clan / force humaine",
+    "result": {
+     "changed": true
+    }
+   },
+   {
+    "t": 10,
+    "label": "porte du détour A–B sabotée (route fermée)",
+    "result": {
+     "changed": true
+    }
+   },
+   {
+    "t": 26,
+    "label": "le joueur rejoint la porte du front A et commence son sabotage (marine_route)",
+    "result": {
+     "accepted": true,
+     "taskId": "marine_route",
+     "feedback": "Neutraliser l’appui des Marines — restez à portée."
+    }
+   }
+  ],
+  "frontsActifsEntre10sEtSauvegarde": [
+   "front_a",
+   "front_b",
+   "front_c",
+   "front_d"
+  ],
+  "degatsParFront": {
+   "a10s": {
+    "front_a": 7028.561999999997,
+    "front_b": 6828.458999999998,
+    "front_c": 3441.357499999995,
+    "front_d": 7697.750999999999
+   },
+   "aLaSauvegarde": {
+    "front_a": 7211.361999999985,
+    "front_b": 9142.64299999998,
+    "front_c": 3613.757499999985,
+    "front_d": 9680.995999999994
+   }
+  },
+  "aLaSauvegarde": {
+   "time": 27.5,
+   "counts": {
+    "player_clan": {
+     "allocated": 24,
+     "active": 0,
+     "distant": 12,
+     "reserve": 0,
+     "dead": 12,
+     "evacuated": 0,
+     "captured": 0
+    },
+    "hive": {
+     "allocated": 736,
+     "active": 16,
+     "distant": 488,
+     "reserve": 232,
+     "dead": 0,
+     "evacuated": 0,
+     "captured": 0
+    },
+    "human_force": {
+     "allocated": 192,
+     "active": 6,
+     "distant": 24,
+     "reserve": 64,
+     "dead": 98,
+     "evacuated": 0,
+     "captured": 0
+    }
+   },
+   "deaths": 110,
+   "orders": {
+    "AFF-27:hive:0": "attack>front_b@front_a via route_0",
+    "AFF-27:hive:1": "defend>front_a@front_a",
+    "AFF-27:hive:2": "defend>front_a@front_a",
+    "AFF-27:human_force:3": "defend>front_a@front_a",
+    "AFF-27:human_force:4": "retreat>front_b@front_a via route_0",
+    "AFF-27:hive:5": "defend>front_b@front_b",
+    "AFF-27:hive:6": "defend>front_b@front_b",
+    "AFF-27:hive:7": "defend>front_b@front_b",
+    "AFF-27:hive:8": "defend>front_b@front_b",
+    "AFF-27:human_force:9": "defend>front_b@front_b",
+    "AFF-27:player_clan:10": "retreat>front_d@front_b via route_1>route_2",
+    "AFF-27:hive:11": "attack>front_d@front_c via route_2",
+    "AFF-27:hive:12": "defend>front_c@front_c",
+    "AFF-27:hive:13": "defend>front_c@front_c",
+    "AFF-27:hive:14": "defend>front_d@front_d",
+    "AFF-27:hive:15": "defend>front_d@front_d",
+    "AFF-27:human_force:16": "defend>front_d@front_d",
+    "AFF-27:player_clan:17": "defend>front_d@front_d",
+    "AFF-27:hive:18": "defend>front_a@front_a",
+    "AFF-27:hive:19": "defend>front_a@front_a",
+    "AFF-27:hive:20": "defend>front_a@front_a",
+    "AFF-27:hive:21": "defend>front_a@front_a",
+    "AFF-27:hive:22": "defend>front_a@front_a",
+    "AFF-27:hive:23": "defend>front_a@front_a",
+    "AFF-27:hive:24": "defend>front_a@front_a",
+    "AFF-27:hive:25": "defend>front_a@front_a",
+    "AFF-27:hive:26": "defend>front_a@front_a",
+    "AFF-27:hive:27": "defend>front_a@front_a",
+    "AFF-27:hive:28": "defend>front_a@front_a",
+    "AFF-27:hive:29": "defend>front_a@front_a",
+    "AFF-27:human_force:30": "retreat>front_b@front_a via route_0",
+    "AFF-27:human_force:31": "retreat>front_b@front_a via route_0",
+    "AFF-27:human_force:32": "defend>front_a@front_a",
+    "AFF-27:human_force:33": "retreat>front_b@front_a via route_0",
+    "AFF-27:hive:34": "defend>front_b@front_b",
+    "AFF-27:hive:35": "defend>front_b@front_b",
+    "AFF-27:hive:36": "defend>front_b@front_b",
+    "AFF-27:hive:37": "defend>front_b@front_b",
+    "AFF-27:hive:38": "defend>front_b@front_b",
+    "AFF-27:hive:39": "defend>front_b@front_b",
+    "AFF-27:hive:40": "defend>front_b@front_b",
+    "AFF-27:hive:41": "defend>front_b@front_b",
+    "AFF-27:hive:42": "defend>front_b@front_b",
+    "AFF-27:hive:43": "defend>front_b@front_b",
+    "AFF-27:hive:44": "defend>front_b@front_b",
+    "AFF-27:hive:45": "defend>front_b@front_b",
+    "AFF-27:human_force:46": "defend>front_b@front_b",
+    "AFF-27:human_force:47": "defend>front_b@front_b",
+    "AFF-27:human_force:48": "defend>front_b@front_b",
+    "AFF-27:human_force:49": "defend>front_b@front_b",
+    "AFF-27:player_clan:50": "defend>front_b@front_b",
+    "AFF-27:hive:51": "defend>front_c@front_c",
+    "AFF-27:hive:52": "defend>front_c@front_c",
+    "AFF-27:hive:53": "defend>front_c@front_c",
+    "AFF-27:hive:54": "defend>front_c@front_c",
+    "AFF-27:hive:55": "defend>front_c@front_c",
+    "AFF-27:hive:56": "defend>front_c@front_c",
+    "AFF-27:hive:57": "defend>front_c@front_c",
+    "AFF-27:hive:58": "defend>front_c@front_c",
+    "AFF-27:hive:59": "defend>front_c@front_c",
+    "AFF-27:hive:60": "defend>front_c@front_c",
+    "AFF-27:hive:61": "defend>front_c@front_c",
+    "AFF-27:hive:62": "defend>front_c@front_c",
+    "AFF-27:hive:63": "defend>front_c@front_c",
+    "AFF-27:hive:64": "defend>front_c@front_c",
+    "AFF-27:hive:65": "defend>front_c@front_c",
+    "AFF-27:hive:66": "defend>front_c@front_c",
+    "AFF-27:human_force:67": "defend>front_c@front_c",
+    "AFF-27:human_force:68": "defend>front_c@front_c",
+    "AFF-27:hive:69": "defend>front_d@front_d",
+    "AFF-27:hive:70": "defend>front_d@front_d",
+    "AFF-27:hive:71": "defend>front_d@front_d",
+    "AFF-27:hive:72": "defend>front_d@front_d",
+    "AFF-27:hive:73": "defend>front_d@front_d",
+    "AFF-27:hive:74": "defend>front_d@front_d",
+    "AFF-27:hive:75": "defend>front_d@front_d",
+    "AFF-27:hive:76": "defend>front_d@front_d",
+    "AFF-27:human_force:77": "defend>front_d@front_d",
+    "AFF-27:human_force:78": "defend>front_d@front_d",
+    "AFF-27:player_clan:79": "defend>front_d@front_d",
+    "AFF-27:hive:80": "attack>front_d@front_a via route_0>route_1>route_2",
+    "AFF-27:hive:81": "attack>front_d@front_a via route_0>route_1>route_2",
+    "AFF-27:hive:82": "attack>front_d@front_a via route_0>route_1>route_2",
+    "AFF-27:hive:83": "defend>front_a@front_a",
+    "AFF-27:hive:84": "defend>front_a@front_a",
+    "AFF-27:hive:85": "defend>front_a@front_a",
+    "AFF-27:hive:86": "defend>front_a@front_a",
+    "AFF-27:hive:87": "defend>front_a@front_a",
+    "AFF-27:hive:88": "defend>front_a@front_a",
+    "AFF-27:hive:89": "defend>front_a@front_a",
+    "AFF-27:hive:90": "defend>front_a@front_a",
+    "AFF-27:hive:91": "defend>front_a@front_a",
+    "AFF-27:hive:92": "defend>front_a@front_a",
+    "AFF-27:hive:93": "defend>front_a@front_a",
+    "AFF-27:hive:94": "defend>front_a@front_a",
+    "AFF-27:hive:95": "defend>front_a@front_a",
+    "AFF-27:hive:96": "defend>front_a@front_a",
+    "AFF-27:hive:97": "defend>front_a@front_a",
+    "AFF-27:hive:98": "defend>front_a@front_a",
+    "AFF-27:hive:99": "defend>front_a@front_a",
+    "AFF-27:hive:100": "defend>front_a@front_a",
+    "AFF-27:hive:101": "defend>front_a@front_a",
+    "AFF-27:hive:102": "defend>front_a@front_a",
+    "AFF-27:hive:103": "defend>front_a@front_a",
+    "AFF-27:hive:104": "defend>front_a@front_a",
+    "AFF-27:hive:105": "defend>front_a@front_a",
+    "AFF-27:hive:106": "defend>front_a@front_a",
+    "AFF-27:hive:107": "defend>front_a@front_a",
+    "AFF-27:hive:108": "defend>front_a@front_a",
+    "AFF-27:hive:109": "defend>front_a@front_a",
+    "AFF-27:hive:110": "defend>front_a@front_a",
+    "AFF-27:hive:111": "defend>front_a@front_a",
+    "AFF-27:human_force:112": "defend>front_b@front_b",
+    "AFF-27:human_force:113": "defend>front_b@front_b",
+    "AFF-27:human_force:114": "defend>front_b@front_b",
+    "AFF-27:human_force:115": "defend>front_b@front_b",
+    "AFF-27:human_force:116": "defend>front_b@front_b",
+    "AFF-27:human_force:117": "defend>front_b@front_b",
+    "AFF-27:human_force:118": "defend>front_b@front_b",
+    "AFF-27:human_force:119": "defend>front_b@front_b",
+    "AFF-27:player_clan:120": "attack>front_b@front_d via route_2>route_1",
+    "AFF-27:player_clan:121": "attack>front_d@front_d"
+   },
+   "groupStates": {
+    "AFF-27:hive:0": "distant",
+    "AFF-27:hive:1": "distant",
+    "AFF-27:hive:2": "distant",
+    "AFF-27:human_force:3": "distant",
+    "AFF-27:human_force:4": "distant",
+    "AFF-27:hive:5": "distant",
+    "AFF-27:hive:6": "distant",
+    "AFF-27:hive:7": "distant",
+    "AFF-27:hive:8": "distant",
+    "AFF-27:human_force:9": "distant",
+    "AFF-27:player_clan:10": "distant",
+    "AFF-27:hive:11": "distant",
+    "AFF-27:hive:12": "distant",
+    "AFF-27:hive:13": "distant",
+    "AFF-27:hive:14": "distant",
+    "AFF-27:hive:15": "distant",
+    "AFF-27:human_force:16": "distant",
+    "AFF-27:player_clan:17": "distant",
+    "AFF-27:hive:18": "distant",
+    "AFF-27:hive:19": "distant",
+    "AFF-27:hive:20": "distant",
+    "AFF-27:hive:21": "distant",
+    "AFF-27:hive:22": "distant",
+    "AFF-27:hive:23": "active",
+    "AFF-27:hive:24": "distant",
+    "AFF-27:hive:25": "distant",
+    "AFF-27:hive:26": "distant",
+    "AFF-27:hive:27": "distant",
+    "AFF-27:hive:28": "distant",
+    "AFF-27:hive:29": "active",
+    "AFF-27:human_force:30": "active",
+    "AFF-27:human_force:31": "distant",
+    "AFF-27:human_force:32": "distant",
+    "AFF-27:human_force:33": "distant",
+    "AFF-27:hive:34": "distant",
+    "AFF-27:hive:35": "distant",
+    "AFF-27:hive:36": "distant",
+    "AFF-27:hive:37": "distant",
+    "AFF-27:hive:38": "distant",
+    "AFF-27:hive:39": "distant",
+    "AFF-27:hive:40": "distant",
+    "AFF-27:hive:41": "distant",
+    "AFF-27:hive:42": "distant",
+    "AFF-27:hive:43": "distant",
+    "AFF-27:hive:44": "distant",
+    "AFF-27:hive:45": "distant",
+    "AFF-27:human_force:46": "distant",
+    "AFF-27:human_force:47": "distant",
+    "AFF-27:human_force:48": "distant",
+    "AFF-27:human_force:49": "distant",
+    "AFF-27:player_clan:50": "distant",
+    "AFF-27:hive:51": "distant",
+    "AFF-27:hive:52": "distant",
+    "AFF-27:hive:53": "distant",
+    "AFF-27:hive:54": "distant",
+    "AFF-27:hive:55": "distant",
+    "AFF-27:hive:56": "distant",
+    "AFF-27:hive:57": "distant",
+    "AFF-27:hive:58": "distant",
+    "AFF-27:hive:59": "distant",
+    "AFF-27:hive:60": "distant",
+    "AFF-27:hive:61": "distant",
+    "AFF-27:hive:62": "distant",
+    "AFF-27:hive:63": "distant",
+    "AFF-27:hive:64": "distant",
+    "AFF-27:hive:65": "distant",
+    "AFF-27:hive:66": "distant",
+    "AFF-27:human_force:67": "distant",
+    "AFF-27:human_force:68": "distant",
+    "AFF-27:hive:69": "distant",
+    "AFF-27:hive:70": "distant",
+    "AFF-27:hive:71": "distant",
+    "AFF-27:hive:72": "distant",
+    "AFF-27:hive:73": "distant",
+    "AFF-27:hive:74": "distant",
+    "AFF-27:hive:75": "distant",
+    "AFF-27:hive:76": "distant",
+    "AFF-27:human_force:77": "distant",
+    "AFF-27:human_force:78": "distant",
+    "AFF-27:player_clan:79": "distant",
+    "AFF-27:hive:80": "distant",
+    "AFF-27:hive:81": "distant",
+    "AFF-27:hive:82": "distant",
+    "AFF-27:hive:83": "reserve",
+    "AFF-27:hive:84": "reserve",
+    "AFF-27:hive:85": "reserve",
+    "AFF-27:hive:86": "reserve",
+    "AFF-27:hive:87": "reserve",
+    "AFF-27:hive:88": "reserve",
+    "AFF-27:hive:89": "reserve",
+    "AFF-27:hive:90": "reserve",
+    "AFF-27:hive:91": "reserve",
+    "AFF-27:hive:92": "reserve",
+    "AFF-27:hive:93": "reserve",
+    "AFF-27:hive:94": "reserve",
+    "AFF-27:hive:95": "reserve",
+    "AFF-27:hive:96": "reserve",
+    "AFF-27:hive:97": "reserve",
+    "AFF-27:hive:98": "reserve",
+    "AFF-27:hive:99": "reserve",
+    "AFF-27:hive:100": "reserve",
+    "AFF-27:hive:101": "reserve",
+    "AFF-27:hive:102": "reserve",
+    "AFF-27:hive:103": "reserve",
+    "AFF-27:hive:104": "reserve",
+    "AFF-27:hive:105": "reserve",
+    "AFF-27:hive:106": "reserve",
+    "AFF-27:hive:107": "reserve",
+    "AFF-27:hive:108": "reserve",
+    "AFF-27:hive:109": "reserve",
+    "AFF-27:hive:110": "reserve",
+    "AFF-27:hive:111": "reserve",
+    "AFF-27:human_force:112": "reserve",
+    "AFF-27:human_force:113": "reserve",
+    "AFF-27:human_force:114": "reserve",
+    "AFF-27:human_force:115": "reserve",
+    "AFF-27:human_force:116": "reserve",
+    "AFF-27:human_force:117": "reserve",
+    "AFF-27:human_force:118": "reserve",
+    "AFF-27:human_force:119": "reserve",
+    "AFF-27:player_clan:120": "distant",
+    "AFF-27:player_clan:121": "distant"
+   },
+   "reconstitutions": {
+    "AFF-27:human_force:4": {
+     "required": true,
+     "returnFrontId": "front_a"
+    },
+    "AFF-27:player_clan:10": {
+     "required": true,
+     "returnFrontId": "front_b"
+    },
+    "AFF-27:human_force:30": {
+     "required": true,
+     "returnFrontId": "front_a"
+    },
+    "AFF-27:human_force:31": {
+     "required": true,
+     "returnFrontId": "front_a"
+    },
+    "AFF-27:human_force:33": {
+     "required": true,
+     "returnFrontId": "front_a"
+    }
+   },
+   "apc": {
+    "version": 1,
+    "vehicleId": "m577-apc",
+    "groupId": "AFF-27:human_force:3",
+    "ownerFaction": "human_force",
+    "factionId": "human_force",
+    "frontId": "front_a",
+    "position": [
+     0.7741429974194911,
+     405.586958910882
+    ],
+    "crew": [
+     "AFF-27:human_force:3:7",
+     "AFF-27:human_force:3:0"
+    ],
+    "passengers": [
+     "AFF-27:human_force:3:1",
+     "AFF-27:human_force:3:2",
+     "AFF-27:human_force:3:3",
+     "AFF-27:human_force:3:4",
+     "AFF-27:human_force:3:5",
+     "AFF-27:human_force:3:6"
+    ],
+    "boardedAt": 0,
+    "transit": {
+     "routeId": "route_0",
+     "fromFrontId": "front_a",
+     "toFrontId": "front_b"
+    }
+   },
+   "routes": {
+    "route_0": true,
+    "route_1": true,
+    "route_2": true,
+    "bound-route-insertion-relay-flank": false,
+    "bound-route-relay-nest-outer": false
+   },
+   "fronts": {
+    "front_a": {
+     "owner": "hive",
+     "sourceHP": 1000
+    },
+    "front_b": {
+     "owner": "human_force",
+     "sourceHP": 0
+    },
+    "front_c": {
+     "owner": "hive",
+     "sourceHP": 1000
+    },
+    "front_d": {
+     "owner": "player_clan",
+     "sourceHP": 1000
+    }
+   },
+   "relations": [
+    [
+     "hive|player_clan",
+     "hostile"
+    ],
+    [
+     "human_force|player_clan",
+     "neutral"
+    ],
+    [
+     "hive|human_force",
+     "hostile"
+    ]
+   ],
+   "pendingArrivals": [],
+   "eventSequence": 607,
+   "criticalLosses": [],
+   "objectifs": [
+    [
+     "hive_route",
+     "done",
+     3
+    ],
+    [
+     "marine_route",
+     "pending",
+     1.5
+    ],
+    [
+     "extinction_queen",
+     "pending",
+     0
+    ],
+    [
+     "return_route",
+     "pending",
+     0
+    ],
+    [
+     "lv742_exit",
+     "pending",
+     0
+    ]
+   ],
+   "canaux": [
+    [
+     "player1",
+     {
+      "taskId": "marine_route",
+      "elapsed": 1.5,
+      "hp": 100
+     }
+    ]
+   ],
+   "reactions": [
+    [
+     "AFF-27:counterattack",
+     "deployed",
+     "AFF-27:hive:0"
+    ]
+   ]
+  },
+  "immediatementApresChargement": {
+   "time": 27.5,
+   "counts": {
+    "player_clan": {
+     "allocated": 24,
+     "active": 0,
+     "distant": 12,
+     "reserve": 0,
+     "dead": 12,
+     "evacuated": 0,
+     "captured": 0
+    },
+    "hive": {
+     "allocated": 736,
+     "active": 0,
+     "distant": 504,
+     "reserve": 232,
+     "dead": 0,
+     "evacuated": 0,
+     "captured": 0
+    },
+    "human_force": {
+     "allocated": 192,
+     "active": 0,
+     "distant": 30,
+     "reserve": 64,
+     "dead": 98,
+     "evacuated": 0,
+     "captured": 0
+    }
+   },
+   "deaths": 110,
+   "orders": {
+    "AFF-27:hive:0": "attack>front_b@front_a via route_0",
+    "AFF-27:hive:1": "defend>front_a@front_a",
+    "AFF-27:hive:2": "defend>front_a@front_a",
+    "AFF-27:human_force:3": "defend>front_a@front_a",
+    "AFF-27:human_force:4": "retreat>front_b@front_a via route_0",
+    "AFF-27:hive:5": "defend>front_b@front_b",
+    "AFF-27:hive:6": "defend>front_b@front_b",
+    "AFF-27:hive:7": "defend>front_b@front_b",
+    "AFF-27:hive:8": "defend>front_b@front_b",
+    "AFF-27:human_force:9": "defend>front_b@front_b",
+    "AFF-27:player_clan:10": "retreat>front_d@front_b via route_1>route_2",
+    "AFF-27:hive:11": "attack>front_d@front_c via route_2",
+    "AFF-27:hive:12": "defend>front_c@front_c",
+    "AFF-27:hive:13": "defend>front_c@front_c",
+    "AFF-27:hive:14": "defend>front_d@front_d",
+    "AFF-27:hive:15": "defend>front_d@front_d",
+    "AFF-27:human_force:16": "defend>front_d@front_d",
+    "AFF-27:player_clan:17": "defend>front_d@front_d",
+    "AFF-27:hive:18": "defend>front_a@front_a",
+    "AFF-27:hive:19": "defend>front_a@front_a",
+    "AFF-27:hive:20": "defend>front_a@front_a",
+    "AFF-27:hive:21": "defend>front_a@front_a",
+    "AFF-27:hive:22": "defend>front_a@front_a",
+    "AFF-27:hive:23": "defend>front_a@front_a",
+    "AFF-27:hive:24": "defend>front_a@front_a",
+    "AFF-27:hive:25": "defend>front_a@front_a",
+    "AFF-27:hive:26": "defend>front_a@front_a",
+    "AFF-27:hive:27": "defend>front_a@front_a",
+    "AFF-27:hive:28": "defend>front_a@front_a",
+    "AFF-27:hive:29": "defend>front_a@front_a",
+    "AFF-27:human_force:30": "retreat>front_b@front_a via route_0",
+    "AFF-27:human_force:31": "retreat>front_b@front_a via route_0",
+    "AFF-27:human_force:32": "defend>front_a@front_a",
+    "AFF-27:human_force:33": "retreat>front_b@front_a via route_0",
+    "AFF-27:hive:34": "defend>front_b@front_b",
+    "AFF-27:hive:35": "defend>front_b@front_b",
+    "AFF-27:hive:36": "defend>front_b@front_b",
+    "AFF-27:hive:37": "defend>front_b@front_b",
+    "AFF-27:hive:38": "defend>front_b@front_b",
+    "AFF-27:hive:39": "defend>front_b@front_b",
+    "AFF-27:hive:40": "defend>front_b@front_b",
+    "AFF-27:hive:41": "defend>front_b@front_b",
+    "AFF-27:hive:42": "defend>front_b@front_b",
+    "AFF-27:hive:43": "defend>front_b@front_b",
+    "AFF-27:hive:44": "defend>front_b@front_b",
+    "AFF-27:hive:45": "defend>front_b@front_b",
+    "AFF-27:human_force:46": "defend>front_b@front_b",
+    "AFF-27:human_force:47": "defend>front_b@front_b",
+    "AFF-27:human_force:48": "defend>front_b@front_b",
+    "AFF-27:human_force:49": "defend>front_b@front_b",
+    "AFF-27:player_clan:50": "defend>front_b@front_b",
+    "AFF-27:hive:51": "defend>front_c@front_c",
+    "AFF-27:hive:52": "defend>front_c@front_c",
+    "AFF-27:hive:53": "defend>front_c@front_c",
+    "AFF-27:hive:54": "defend>front_c@front_c",
+    "AFF-27:hive:55": "defend>front_c@front_c",
+    "AFF-27:hive:56": "defend>front_c@front_c",
+    "AFF-27:hive:57": "defend>front_c@front_c",
+    "AFF-27:hive:58": "defend>front_c@front_c",
+    "AFF-27:hive:59": "defend>front_c@front_c",
+    "AFF-27:hive:60": "defend>front_c@front_c",
+    "AFF-27:hive:61": "defend>front_c@front_c",
+    "AFF-27:hive:62": "defend>front_c@front_c",
+    "AFF-27:hive:63": "defend>front_c@front_c",
+    "AFF-27:hive:64": "defend>front_c@front_c",
+    "AFF-27:hive:65": "defend>front_c@front_c",
+    "AFF-27:hive:66": "defend>front_c@front_c",
+    "AFF-27:human_force:67": "defend>front_c@front_c",
+    "AFF-27:human_force:68": "defend>front_c@front_c",
+    "AFF-27:hive:69": "defend>front_d@front_d",
+    "AFF-27:hive:70": "defend>front_d@front_d",
+    "AFF-27:hive:71": "defend>front_d@front_d",
+    "AFF-27:hive:72": "defend>front_d@front_d",
+    "AFF-27:hive:73": "defend>front_d@front_d",
+    "AFF-27:hive:74": "defend>front_d@front_d",
+    "AFF-27:hive:75": "defend>front_d@front_d",
+    "AFF-27:hive:76": "defend>front_d@front_d",
+    "AFF-27:human_force:77": "defend>front_d@front_d",
+    "AFF-27:human_force:78": "defend>front_d@front_d",
+    "AFF-27:player_clan:79": "defend>front_d@front_d",
+    "AFF-27:hive:80": "attack>front_d@front_a via route_0>route_1>route_2",
+    "AFF-27:hive:81": "attack>front_d@front_a via route_0>route_1>route_2",
+    "AFF-27:hive:82": "attack>front_d@front_a via route_0>route_1>route_2",
+    "AFF-27:hive:83": "defend>front_a@front_a",
+    "AFF-27:hive:84": "defend>front_a@front_a",
+    "AFF-27:hive:85": "defend>front_a@front_a",
+    "AFF-27:hive:86": "defend>front_a@front_a",
+    "AFF-27:hive:87": "defend>front_a@front_a",
+    "AFF-27:hive:88": "defend>front_a@front_a",
+    "AFF-27:hive:89": "defend>front_a@front_a",
+    "AFF-27:hive:90": "defend>front_a@front_a",
+    "AFF-27:hive:91": "defend>front_a@front_a",
+    "AFF-27:hive:92": "defend>front_a@front_a",
+    "AFF-27:hive:93": "defend>front_a@front_a",
+    "AFF-27:hive:94": "defend>front_a@front_a",
+    "AFF-27:hive:95": "defend>front_a@front_a",
+    "AFF-27:hive:96": "defend>front_a@front_a",
+    "AFF-27:hive:97": "defend>front_a@front_a",
+    "AFF-27:hive:98": "defend>front_a@front_a",
+    "AFF-27:hive:99": "defend>front_a@front_a",
+    "AFF-27:hive:100": "defend>front_a@front_a",
+    "AFF-27:hive:101": "defend>front_a@front_a",
+    "AFF-27:hive:102": "defend>front_a@front_a",
+    "AFF-27:hive:103": "defend>front_a@front_a",
+    "AFF-27:hive:104": "defend>front_a@front_a",
+    "AFF-27:hive:105": "defend>front_a@front_a",
+    "AFF-27:hive:106": "defend>front_a@front_a",
+    "AFF-27:hive:107": "defend>front_a@front_a",
+    "AFF-27:hive:108": "defend>front_a@front_a",
+    "AFF-27:hive:109": "defend>front_a@front_a",
+    "AFF-27:hive:110": "defend>front_a@front_a",
+    "AFF-27:hive:111": "defend>front_a@front_a",
+    "AFF-27:human_force:112": "defend>front_b@front_b",
+    "AFF-27:human_force:113": "defend>front_b@front_b",
+    "AFF-27:human_force:114": "defend>front_b@front_b",
+    "AFF-27:human_force:115": "defend>front_b@front_b",
+    "AFF-27:human_force:116": "defend>front_b@front_b",
+    "AFF-27:human_force:117": "defend>front_b@front_b",
+    "AFF-27:human_force:118": "defend>front_b@front_b",
+    "AFF-27:human_force:119": "defend>front_b@front_b",
+    "AFF-27:player_clan:120": "attack>front_b@front_d via route_2>route_1",
+    "AFF-27:player_clan:121": "attack>front_d@front_d"
+   },
+   "groupStates": {
+    "AFF-27:hive:0": "distant",
+    "AFF-27:hive:1": "distant",
+    "AFF-27:hive:2": "distant",
+    "AFF-27:human_force:3": "distant",
+    "AFF-27:human_force:4": "distant",
+    "AFF-27:hive:5": "distant",
+    "AFF-27:hive:6": "distant",
+    "AFF-27:hive:7": "distant",
+    "AFF-27:hive:8": "distant",
+    "AFF-27:human_force:9": "distant",
+    "AFF-27:player_clan:10": "distant",
+    "AFF-27:hive:11": "distant",
+    "AFF-27:hive:12": "distant",
+    "AFF-27:hive:13": "distant",
+    "AFF-27:hive:14": "distant",
+    "AFF-27:hive:15": "distant",
+    "AFF-27:human_force:16": "distant",
+    "AFF-27:player_clan:17": "distant",
+    "AFF-27:hive:18": "distant",
+    "AFF-27:hive:19": "distant",
+    "AFF-27:hive:20": "distant",
+    "AFF-27:hive:21": "distant",
+    "AFF-27:hive:22": "distant",
+    "AFF-27:hive:23": "distant",
+    "AFF-27:hive:24": "distant",
+    "AFF-27:hive:25": "distant",
+    "AFF-27:hive:26": "distant",
+    "AFF-27:hive:27": "distant",
+    "AFF-27:hive:28": "distant",
+    "AFF-27:hive:29": "distant",
+    "AFF-27:human_force:30": "distant",
+    "AFF-27:human_force:31": "distant",
+    "AFF-27:human_force:32": "distant",
+    "AFF-27:human_force:33": "distant",
+    "AFF-27:hive:34": "distant",
+    "AFF-27:hive:35": "distant",
+    "AFF-27:hive:36": "distant",
+    "AFF-27:hive:37": "distant",
+    "AFF-27:hive:38": "distant",
+    "AFF-27:hive:39": "distant",
+    "AFF-27:hive:40": "distant",
+    "AFF-27:hive:41": "distant",
+    "AFF-27:hive:42": "distant",
+    "AFF-27:hive:43": "distant",
+    "AFF-27:hive:44": "distant",
+    "AFF-27:hive:45": "distant",
+    "AFF-27:human_force:46": "distant",
+    "AFF-27:human_force:47": "distant",
+    "AFF-27:human_force:48": "distant",
+    "AFF-27:human_force:49": "distant",
+    "AFF-27:player_clan:50": "distant",
+    "AFF-27:hive:51": "distant",
+    "AFF-27:hive:52": "distant",
+    "AFF-27:hive:53": "distant",
+    "AFF-27:hive:54": "distant",
+    "AFF-27:hive:55": "distant",
+    "AFF-27:hive:56": "distant",
+    "AFF-27:hive:57": "distant",
+    "AFF-27:hive:58": "distant",
+    "AFF-27:hive:59": "distant",
+    "AFF-27:hive:60": "distant",
+    "AFF-27:hive:61": "distant",
+    "AFF-27:hive:62": "distant",
+    "AFF-27:hive:63": "distant",
+    "AFF-27:hive:64": "distant",
+    "AFF-27:hive:65": "distant",
+    "AFF-27:hive:66": "distant",
+    "AFF-27:human_force:67": "distant",
+    "AFF-27:human_force:68": "distant",
+    "AFF-27:hive:69": "distant",
+    "AFF-27:hive:70": "distant",
+    "AFF-27:hive:71": "distant",
+    "AFF-27:hive:72": "distant",
+    "AFF-27:hive:73": "distant",
+    "AFF-27:hive:74": "distant",
+    "AFF-27:hive:75": "distant",
+    "AFF-27:hive:76": "distant",
+    "AFF-27:human_force:77": "distant",
+    "AFF-27:human_force:78": "distant",
+    "AFF-27:player_clan:79": "distant",
+    "AFF-27:hive:80": "distant",
+    "AFF-27:hive:81": "distant",
+    "AFF-27:hive:82": "distant",
+    "AFF-27:hive:83": "reserve",
+    "AFF-27:hive:84": "reserve",
+    "AFF-27:hive:85": "reserve",
+    "AFF-27:hive:86": "reserve",
+    "AFF-27:hive:87": "reserve",
+    "AFF-27:hive:88": "reserve",
+    "AFF-27:hive:89": "reserve",
+    "AFF-27:hive:90": "reserve",
+    "AFF-27:hive:91": "reserve",
+    "AFF-27:hive:92": "reserve",
+    "AFF-27:hive:93": "reserve",
+    "AFF-27:hive:94": "reserve",
+    "AFF-27:hive:95": "reserve",
+    "AFF-27:hive:96": "reserve",
+    "AFF-27:hive:97": "reserve",
+    "AFF-27:hive:98": "reserve",
+    "AFF-27:hive:99": "reserve",
+    "AFF-27:hive:100": "reserve",
+    "AFF-27:hive:101": "reserve",
+    "AFF-27:hive:102": "reserve",
+    "AFF-27:hive:103": "reserve",
+    "AFF-27:hive:104": "reserve",
+    "AFF-27:hive:105": "reserve",
+    "AFF-27:hive:106": "reserve",
+    "AFF-27:hive:107": "reserve",
+    "AFF-27:hive:108": "reserve",
+    "AFF-27:hive:109": "reserve",
+    "AFF-27:hive:110": "reserve",
+    "AFF-27:hive:111": "reserve",
+    "AFF-27:human_force:112": "reserve",
+    "AFF-27:human_force:113": "reserve",
+    "AFF-27:human_force:114": "reserve",
+    "AFF-27:human_force:115": "reserve",
+    "AFF-27:human_force:116": "reserve",
+    "AFF-27:human_force:117": "reserve",
+    "AFF-27:human_force:118": "reserve",
+    "AFF-27:human_force:119": "reserve",
+    "AFF-27:player_clan:120": "distant",
+    "AFF-27:player_clan:121": "distant"
+   },
+   "reconstitutions": {
+    "AFF-27:human_force:4": {
+     "required": true,
+     "returnFrontId": "front_a"
+    },
+    "AFF-27:player_clan:10": {
+     "required": true,
+     "returnFrontId": "front_b"
+    },
+    "AFF-27:human_force:30": {
+     "required": true,
+     "returnFrontId": "front_a"
+    },
+    "AFF-27:human_force:31": {
+     "required": true,
+     "returnFrontId": "front_a"
+    },
+    "AFF-27:human_force:33": {
+     "required": true,
+     "returnFrontId": "front_a"
+    }
+   },
+   "apc": {
+    "version": 1,
+    "vehicleId": "m577-apc",
+    "groupId": "AFF-27:human_force:3",
+    "ownerFaction": "human_force",
+    "factionId": "human_force",
+    "frontId": "front_a",
+    "position": [
+     0.7741429974194911,
+     405.586958910882
+    ],
+    "crew": [
+     "AFF-27:human_force:3:7",
+     "AFF-27:human_force:3:0"
+    ],
+    "passengers": [
+     "AFF-27:human_force:3:1",
+     "AFF-27:human_force:3:2",
+     "AFF-27:human_force:3:3",
+     "AFF-27:human_force:3:4",
+     "AFF-27:human_force:3:5",
+     "AFF-27:human_force:3:6"
+    ],
+    "boardedAt": 0,
+    "transit": {
+     "routeId": "route_0",
+     "fromFrontId": "front_a",
+     "toFrontId": "front_b"
+    }
+   },
+   "routes": {
+    "route_0": true,
+    "route_1": true,
+    "route_2": true,
+    "bound-route-insertion-relay-flank": false,
+    "bound-route-relay-nest-outer": false
+   },
+   "fronts": {
+    "front_a": {
+     "owner": "hive",
+     "sourceHP": 1000
+    },
+    "front_b": {
+     "owner": "human_force",
+     "sourceHP": 0
+    },
+    "front_c": {
+     "owner": "hive",
+     "sourceHP": 1000
+    },
+    "front_d": {
+     "owner": "player_clan",
+     "sourceHP": 1000
+    }
+   },
+   "relations": [
+    [
+     "hive|player_clan",
+     "hostile"
+    ],
+    [
+     "human_force|player_clan",
+     "neutral"
+    ],
+    [
+     "hive|human_force",
+     "hostile"
+    ]
+   ],
+   "pendingArrivals": [],
+   "eventSequence": 607,
+   "criticalLosses": [],
+   "objectifs": [
+    [
+     "hive_route",
+     "done",
+     3
+    ],
+    [
+     "marine_route",
+     "pending",
+     1.5
+    ],
+    [
+     "extinction_queen",
+     "pending",
+     0
+    ],
+    [
+     "return_route",
+     "pending",
+     0
+    ],
+    [
+     "lv742_exit",
+     "pending",
+     0
+    ]
+   ],
+   "canaux": [
+    [
+     "player1",
+     {
+      "taskId": "marine_route",
+      "elapsed": 1.5,
+      "hp": 100
+     }
+    ]
+   ],
+   "identiqueALaSauvegarde": true
+  },
+  "apresCinqMinutes": [
+   {
+    "branche": "continuité sans rechargement",
+    "time": 327.5,
+    "counts": {
+     "player_clan": {
+      "allocated": 24,
+      "active": 0,
+      "distant": 8,
+      "reserve": 0,
+      "dead": 16,
+      "evacuated": 0,
+      "captured": 0
+     },
+     "hive": {
+      "allocated": 736,
+      "active": 0,
+      "distant": 449,
+      "reserve": 232,
+      "dead": 55,
+      "evacuated": 0,
+      "captured": 0
+     },
+     "human_force": {
+      "allocated": 192,
+      "active": 0,
+      "distant": 8,
+      "reserve": 64,
+      "dead": 120,
+      "evacuated": 0,
+      "captured": 0
+     }
+    },
+    "deaths": 191,
+    "orders": {
+     "AFF-27:hive:0": "attack>front_b@front_b",
+     "AFF-27:hive:1": "attack>front_b@front_b",
+     "AFF-27:hive:2": "attack>front_b@front_b",
+     "AFF-27:human_force:3": "defend>front_b@front_b",
+     "AFF-27:human_force:4": "regroup>front_b@front_b",
+     "AFF-27:hive:5": "defend>front_b@front_b",
+     "AFF-27:hive:6": "defend>front_b@front_b",
+     "AFF-27:hive:7": "defend>front_b@front_b",
+     "AFF-27:hive:8": "defend>front_b@front_b",
+     "AFF-27:human_force:9": "defend>front_b@front_b",
+     "AFF-27:player_clan:10": "retreat>front_d@front_b via route_1>route_2",
+     "AFF-27:hive:11": "attack>front_d@front_c via route_2",
+     "AFF-27:hive:12": "attack>front_b@front_c via route_1",
+     "AFF-27:hive:13": "attack>front_b@front_c via route_1",
+     "AFF-27:hive:14": "defend>front_d@front_d",
+     "AFF-27:hive:15": "defend>front_d@front_d",
+     "AFF-27:human_force:16": "defend>front_d@front_d",
+     "AFF-27:player_clan:17": "defend>front_d@front_d",
+     "AFF-27:hive:18": "attack>front_b@front_b",
+     "AFF-27:hive:19": "defend>front_a@front_a",
+     "AFF-27:hive:20": "defend>front_a@front_a",
+     "AFF-27:hive:21": "defend>front_a@front_a",
+     "AFF-27:hive:22": "defend>front_a@front_a",
+     "AFF-27:hive:23": "defend>front_a@front_a",
+     "AFF-27:hive:24": "defend>front_a@front_a",
+     "AFF-27:hive:25": "defend>front_a@front_a",
+     "AFF-27:hive:26": "defend>front_a@front_a",
+     "AFF-27:hive:27": "defend>front_a@front_a",
+     "AFF-27:hive:28": "defend>front_a@front_a",
+     "AFF-27:hive:29": "defend>front_a@front_a",
+     "AFF-27:human_force:30": "regroup>front_b@front_b",
+     "AFF-27:human_force:31": "regroup>front_b@front_b",
+     "AFF-27:human_force:32": "defend>front_a@front_a",
+     "AFF-27:human_force:33": "regroup>front_b@front_b",
+     "AFF-27:hive:34": "defend>front_b@front_b",
+     "AFF-27:hive:35": "defend>front_b@front_b",
+     "AFF-27:hive:36": "defend>front_b@front_b",
+     "AFF-27:hive:37": "defend>front_b@front_b",
+     "AFF-27:hive:38": "defend>front_b@front_b",
+     "AFF-27:hive:39": "defend>front_b@front_b",
+     "AFF-27:hive:40": "defend>front_b@front_b",
+     "AFF-27:hive:41": "defend>front_b@front_b",
+     "AFF-27:hive:42": "defend>front_b@front_b",
+     "AFF-27:hive:43": "defend>front_b@front_b",
+     "AFF-27:hive:44": "defend>front_b@front_b",
+     "AFF-27:hive:45": "defend>front_b@front_b",
+     "AFF-27:human_force:46": "defend>front_b@front_b",
+     "AFF-27:human_force:47": "defend>front_b@front_b",
+     "AFF-27:human_force:48": "defend>front_b@front_b",
+     "AFF-27:human_force:49": "defend>front_b@front_b",
+     "AFF-27:player_clan:50": "defend>front_b@front_b",
+     "AFF-27:hive:51": "defend>front_c@front_c",
+     "AFF-27:hive:52": "defend>front_c@front_c",
+     "AFF-27:hive:53": "defend>front_c@front_c",
+     "AFF-27:hive:54": "defend>front_c@front_c",
+     "AFF-27:hive:55": "defend>front_c@front_c",
+     "AFF-27:hive:56": "defend>front_c@front_c",
+     "AFF-27:hive:57": "defend>front_c@front_c",
+     "AFF-27:hive:58": "defend>front_c@front_c",
+     "AFF-27:hive:59": "defend>front_c@front_c",
+     "AFF-27:hive:60": "defend>front_c@front_c",
+     "AFF-27:hive:61": "defend>front_c@front_c",
+     "AFF-27:hive:62": "defend>front_c@front_c",
+     "AFF-27:hive:63": "defend>front_c@front_c",
+     "AFF-27:hive:64": "defend>front_c@front_c",
+     "AFF-27:hive:65": "defend>front_c@front_c",
+     "AFF-27:hive:66": "defend>front_c@front_c",
+     "AFF-27:human_force:67": "defend>front_c@front_c",
+     "AFF-27:human_force:68": "defend>front_c@front_c",
+     "AFF-27:hive:69": "defend>front_d@front_d",
+     "AFF-27:hive:70": "defend>front_d@front_d",
+     "AFF-27:hive:71": "defend>front_d@front_d",
+     "AFF-27:hive:72": "defend>front_d@front_d",
+     "AFF-27:hive:73": "defend>front_d@front_d",
+     "AFF-27:hive:74": "defend>front_d@front_d",
+     "AFF-27:hive:75": "defend>front_d@front_d",
+     "AFF-27:hive:76": "defend>front_d@front_d",
+     "AFF-27:human_force:77": "defend>front_d@front_d",
+     "AFF-27:human_force:78": "defend>front_d@front_d",
+     "AFF-27:player_clan:79": "defend>front_d@front_d",
+     "AFF-27:hive:80": "attack>front_d@front_b via route_1>route_2",
+     "AFF-27:hive:81": "attack>front_d@front_b via route_1>route_2",
+     "AFF-27:hive:82": "attack>front_d@front_b via route_1>route_2",
+     "AFF-27:hive:83": "defend>front_a@front_a",
+     "AFF-27:hive:84": "defend>front_a@front_a",
+     "AFF-27:hive:85": "defend>front_a@front_a",
+     "AFF-27:hive:86": "defend>front_a@front_a",
+     "AFF-27:hive:87": "defend>front_a@front_a",
+     "AFF-27:hive:88": "defend>front_a@front_a",
+     "AFF-27:hive:89": "defend>front_a@front_a",
+     "AFF-27:hive:90": "defend>front_a@front_a",
+     "AFF-27:hive:91": "defend>front_a@front_a",
+     "AFF-27:hive:92": "defend>front_a@front_a",
+     "AFF-27:hive:93": "defend>front_a@front_a",
+     "AFF-27:hive:94": "defend>front_a@front_a",
+     "AFF-27:hive:95": "defend>front_a@front_a",
+     "AFF-27:hive:96": "defend>front_a@front_a",
+     "AFF-27:hive:97": "defend>front_a@front_a",
+     "AFF-27:hive:98": "defend>front_a@front_a",
+     "AFF-27:hive:99": "defend>front_a@front_a",
+     "AFF-27:hive:100": "defend>front_a@front_a",
+     "AFF-27:hive:101": "defend>front_a@front_a",
+     "AFF-27:hive:102": "defend>front_a@front_a",
+     "AFF-27:hive:103": "defend>front_a@front_a",
+     "AFF-27:hive:104": "defend>front_a@front_a",
+     "AFF-27:hive:105": "defend>front_a@front_a",
+     "AFF-27:hive:106": "defend>front_a@front_a",
+     "AFF-27:hive:107": "defend>front_a@front_a",
+     "AFF-27:hive:108": "defend>front_a@front_a",
+     "AFF-27:hive:109": "defend>front_a@front_a",
+     "AFF-27:hive:110": "defend>front_a@front_a",
+     "AFF-27:hive:111": "defend>front_a@front_a",
+     "AFF-27:human_force:112": "defend>front_b@front_b",
+     "AFF-27:human_force:113": "defend>front_b@front_b",
+     "AFF-27:human_force:114": "defend>front_b@front_b",
+     "AFF-27:human_force:115": "defend>front_b@front_b",
+     "AFF-27:human_force:116": "defend>front_b@front_b",
+     "AFF-27:human_force:117": "defend>front_b@front_b",
+     "AFF-27:human_force:118": "defend>front_b@front_b",
+     "AFF-27:human_force:119": "defend>front_b@front_b",
+     "AFF-27:player_clan:120": "attack>front_b@front_d via route_2>route_1",
+     "AFF-27:player_clan:121": "attack>front_d@front_d"
+    },
+    "groupStates": {
+     "AFF-27:hive:0": "distant",
+     "AFF-27:hive:1": "distant",
+     "AFF-27:hive:2": "distant",
+     "AFF-27:human_force:3": "distant",
+     "AFF-27:human_force:4": "distant",
+     "AFF-27:hive:5": "distant",
+     "AFF-27:hive:6": "distant",
+     "AFF-27:hive:7": "distant",
+     "AFF-27:hive:8": "distant",
+     "AFF-27:human_force:9": "distant",
+     "AFF-27:player_clan:10": "distant",
+     "AFF-27:hive:11": "distant",
+     "AFF-27:hive:12": "distant",
+     "AFF-27:hive:13": "distant",
+     "AFF-27:hive:14": "distant",
+     "AFF-27:hive:15": "distant",
+     "AFF-27:human_force:16": "distant",
+     "AFF-27:player_clan:17": "distant",
+     "AFF-27:hive:18": "distant",
+     "AFF-27:hive:19": "distant",
+     "AFF-27:hive:20": "distant",
+     "AFF-27:hive:21": "distant",
+     "AFF-27:hive:22": "distant",
+     "AFF-27:hive:23": "distant",
+     "AFF-27:hive:24": "distant",
+     "AFF-27:hive:25": "distant",
+     "AFF-27:hive:26": "distant",
+     "AFF-27:hive:27": "distant",
+     "AFF-27:hive:28": "distant",
+     "AFF-27:hive:29": "distant",
+     "AFF-27:human_force:30": "distant",
+     "AFF-27:human_force:31": "distant",
+     "AFF-27:human_force:32": "distant",
+     "AFF-27:human_force:33": "distant",
+     "AFF-27:hive:34": "distant",
+     "AFF-27:hive:35": "distant",
+     "AFF-27:hive:36": "distant",
+     "AFF-27:hive:37": "distant",
+     "AFF-27:hive:38": "distant",
+     "AFF-27:hive:39": "distant",
+     "AFF-27:hive:40": "distant",
+     "AFF-27:hive:41": "distant",
+     "AFF-27:hive:42": "distant",
+     "AFF-27:hive:43": "distant",
+     "AFF-27:hive:44": "distant",
+     "AFF-27:hive:45": "distant",
+     "AFF-27:human_force:46": "distant",
+     "AFF-27:human_force:47": "distant",
+     "AFF-27:human_force:48": "distant",
+     "AFF-27:human_force:49": "distant",
+     "AFF-27:player_clan:50": "distant",
+     "AFF-27:hive:51": "distant",
+     "AFF-27:hive:52": "distant",
+     "AFF-27:hive:53": "distant",
+     "AFF-27:hive:54": "distant",
+     "AFF-27:hive:55": "distant",
+     "AFF-27:hive:56": "distant",
+     "AFF-27:hive:57": "distant",
+     "AFF-27:hive:58": "distant",
+     "AFF-27:hive:59": "distant",
+     "AFF-27:hive:60": "distant",
+     "AFF-27:hive:61": "distant",
+     "AFF-27:hive:62": "distant",
+     "AFF-27:hive:63": "distant",
+     "AFF-27:hive:64": "distant",
+     "AFF-27:hive:65": "distant",
+     "AFF-27:hive:66": "distant",
+     "AFF-27:human_force:67": "distant",
+     "AFF-27:human_force:68": "distant",
+     "AFF-27:hive:69": "distant",
+     "AFF-27:hive:70": "distant",
+     "AFF-27:hive:71": "distant",
+     "AFF-27:hive:72": "distant",
+     "AFF-27:hive:73": "distant",
+     "AFF-27:hive:74": "distant",
+     "AFF-27:hive:75": "distant",
+     "AFF-27:hive:76": "distant",
+     "AFF-27:human_force:77": "distant",
+     "AFF-27:human_force:78": "distant",
+     "AFF-27:player_clan:79": "distant",
+     "AFF-27:hive:80": "distant",
+     "AFF-27:hive:81": "distant",
+     "AFF-27:hive:82": "distant",
+     "AFF-27:hive:83": "reserve",
+     "AFF-27:hive:84": "reserve",
+     "AFF-27:hive:85": "reserve",
+     "AFF-27:hive:86": "reserve",
+     "AFF-27:hive:87": "reserve",
+     "AFF-27:hive:88": "reserve",
+     "AFF-27:hive:89": "reserve",
+     "AFF-27:hive:90": "reserve",
+     "AFF-27:hive:91": "reserve",
+     "AFF-27:hive:92": "reserve",
+     "AFF-27:hive:93": "reserve",
+     "AFF-27:hive:94": "reserve",
+     "AFF-27:hive:95": "reserve",
+     "AFF-27:hive:96": "reserve",
+     "AFF-27:hive:97": "reserve",
+     "AFF-27:hive:98": "reserve",
+     "AFF-27:hive:99": "reserve",
+     "AFF-27:hive:100": "reserve",
+     "AFF-27:hive:101": "reserve",
+     "AFF-27:hive:102": "reserve",
+     "AFF-27:hive:103": "reserve",
+     "AFF-27:hive:104": "reserve",
+     "AFF-27:hive:105": "reserve",
+     "AFF-27:hive:106": "reserve",
+     "AFF-27:hive:107": "reserve",
+     "AFF-27:hive:108": "reserve",
+     "AFF-27:hive:109": "reserve",
+     "AFF-27:hive:110": "reserve",
+     "AFF-27:hive:111": "reserve",
+     "AFF-27:human_force:112": "reserve",
+     "AFF-27:human_force:113": "reserve",
+     "AFF-27:human_force:114": "reserve",
+     "AFF-27:human_force:115": "reserve",
+     "AFF-27:human_force:116": "reserve",
+     "AFF-27:human_force:117": "reserve",
+     "AFF-27:human_force:118": "reserve",
+     "AFF-27:human_force:119": "reserve",
+     "AFF-27:player_clan:120": "distant",
+     "AFF-27:player_clan:121": "distant"
+    },
+    "reconstitutions": {
+     "AFF-27:human_force:4": {
+      "required": true,
+      "returnFrontId": "front_a"
+     },
+     "AFF-27:player_clan:10": {
+      "required": true,
+      "returnFrontId": "front_b"
+     },
+     "AFF-27:human_force:30": {
+      "required": true,
+      "returnFrontId": "front_a"
+     },
+     "AFF-27:human_force:31": {
+      "required": true,
+      "returnFrontId": "front_a"
+     },
+     "AFF-27:human_force:33": {
+      "required": true,
+      "returnFrontId": "front_a"
+     }
+    },
+    "apc": {
+     "version": 1,
+     "vehicleId": "m577-apc",
+     "groupId": "AFF-27:human_force:3",
+     "ownerFaction": "human_force",
+     "factionId": "human_force",
+     "frontId": "front_b",
+     "position": [
+      0,
+      1112
+     ],
+     "crew": [
+      "AFF-27:human_force:3:7",
+      "AFF-27:human_force:3:0"
+     ],
+     "passengers": [
+      "AFF-27:human_force:3:1",
+      "AFF-27:human_force:3:2",
+      "AFF-27:human_force:3:3",
+      "AFF-27:human_force:3:4",
+      "AFF-27:human_force:3:5",
+      "AFF-27:human_force:3:6"
+     ],
+     "boardedAt": 0
+    },
+    "routes": {
+     "route_0": true,
+     "route_1": true,
+     "route_2": true,
+     "bound-route-insertion-relay-flank": false,
+     "bound-route-relay-nest-outer": false
+    },
+    "fronts": {
+     "front_a": {
+      "owner": "hive",
+      "sourceHP": 0
+     },
+     "front_b": {
+      "owner": "hive",
+      "sourceHP": 0
+     },
+     "front_c": {
+      "owner": "hive",
+      "sourceHP": 1000
+     },
+     "front_d": {
+      "owner": "hive",
+      "sourceHP": 1000
+     }
+    },
+    "relations": [
+     [
+      "hive|player_clan",
+      "hostile"
+     ],
+     [
+      "human_force|player_clan",
+      "neutral"
+     ],
+     [
+      "hive|human_force",
+      "hostile"
+     ]
+    ],
+    "pendingArrivals": [],
+    "eventSequence": 761,
+    "criticalLosses": [
+     "front_d"
+    ],
+    "objectifs": [
+     [
+      "hive_route",
+      "done",
+      1,
+      3
+     ],
+     [
+      "marine_route",
+      "done",
+      1,
+      29
+     ],
+     [
+      "extinction_queen",
+      "pending",
+      0,
+      null
+     ],
+     [
+      "return_route",
+      "pending",
+      0,
+      null
+     ],
+     [
+      "lv742_exit",
+      "pending",
+      0,
+      null
+     ]
+    ],
+    "pertesDix1eresSecondes": 5,
+    "releve": [
+     {
+      "t": 57.5,
+      "counts": {
+       "player_clan": {
+        "allocated": 24,
+        "active": 0,
+        "distant": 8,
+        "reserve": 0,
+        "dead": 16,
+        "evacuated": 0,
+        "captured": 0
+       },
+       "hive": {
+        "allocated": 736,
+        "active": 0,
+        "distant": 504,
+        "reserve": 232,
+        "dead": 0,
+        "evacuated": 0,
+        "captured": 0
+       },
+       "human_force": {
+        "allocated": 192,
+        "active": 0,
+        "distant": 29,
+        "reserve": 64,
+        "dead": 99,
+        "evacuated": 0,
+        "captured": 0
+       }
+      }
+     },
+     {
+      "t": 87.5,
+      "counts": {
+       "player_clan": {
+        "allocated": 24,
+        "active": 0,
+        "distant": 8,
+        "reserve": 0,
+        "dead": 16,
+        "evacuated": 0,
+        "captured": 0
+       },
+       "hive": {
+        "allocated": 736,
+        "active": 0,
+        "distant": 504,
+        "reserve": 232,
+        "dead": 0,
+        "evacuated": 0,
+        "captured": 0
+       },
+       "human_force": {
+        "allocated": 192,
+        "active": 0,
+        "distant": 29,
+        "reserve": 64,
+        "dead": 99,
+        "evacuated": 0,
+        "captured": 0
+       }
+      }
+     },
+     {
+      "t": 117.5,
+      "counts": {
+       "player_clan": {
+        "allocated": 24,
+        "active": 0,
+        "distant": 8,
+        "reserve": 0,
+        "dead": 16,
+        "evacuated": 0,
+        "captured": 0
+       },
+       "hive": {
+        "allocated": 736,
+        "active": 0,
+        "distant": 504,
+        "reserve": 232,
+        "dead": 0,
+        "evacuated": 0,
+        "captured": 0
+       },
+       "human_force": {
+        "allocated": 192,
+        "active": 0,
+        "distant": 29,
+        "reserve": 64,
+        "dead": 99,
+        "evacuated": 0,
+        "captured": 0
+       }
+      }
+     },
+     {
+      "t": 147.5,
+      "counts": {
+       "player_clan": {
+        "allocated": 24,
+        "active": 0,
+        "distant": 8,
+        "reserve": 0,
+        "dead": 16,
+        "evacuated": 0,
+        "captured": 0
+       },
+       "hive": {
+        "allocated": 736,
+        "active": 0,
+        "distant": 504,
+        "reserve": 232,
+        "dead": 0,
+        "evacuated": 0,
+        "captured": 0
+       },
+       "human_force": {
+        "allocated": 192,
+        "active": 0,
+        "distant": 29,
+        "reserve": 64,
+        "dead": 99,
+        "evacuated": 0,
+        "captured": 0
+       }
+      }
+     },
+     {
+      "t": 177.5,
+      "counts": {
+       "player_clan": {
+        "allocated": 24,
+        "active": 0,
+        "distant": 8,
+        "reserve": 0,
+        "dead": 16,
+        "evacuated": 0,
+        "captured": 0
+       },
+       "hive": {
+        "allocated": 736,
+        "active": 0,
+        "distant": 504,
+        "reserve": 232,
+        "dead": 0,
+        "evacuated": 0,
+        "captured": 0
+       },
+       "human_force": {
+        "allocated": 192,
+        "active": 0,
+        "distant": 29,
+        "reserve": 64,
+        "dead": 99,
+        "evacuated": 0,
+        "captured": 0
+       }
+      }
+     },
+     {
+      "t": 207.5,
+      "counts": {
+       "player_clan": {
+        "allocated": 24,
+        "active": 0,
+        "distant": 8,
+        "reserve": 0,
+        "dead": 16,
+        "evacuated": 0,
+        "captured": 0
+       },
+       "hive": {
+        "allocated": 736,
+        "active": 0,
+        "distant": 501,
+        "reserve": 232,
+        "dead": 3,
+        "evacuated": 0,
+        "captured": 0
+       },
+       "human_force": {
+        "allocated": 192,
+        "active": 0,
+        "distant": 8,
+        "reserve": 64,
+        "dead": 120,
+        "evacuated": 0,
+        "captured": 0
+       }
+      }
+     },
+     {
+      "t": 237.5,
+      "counts": {
+       "player_clan": {
+        "allocated": 24,
+        "active": 0,
+        "distant": 8,
+        "reserve": 0,
+        "dead": 16,
+        "evacuated": 0,
+        "captured": 0
+       },
+       "hive": {
+        "allocated": 736,
+        "active": 0,
+        "distant": 487,
+        "reserve": 232,
+        "dead": 17,
+        "evacuated": 0,
+        "captured": 0
+       },
+       "human_force": {
+        "allocated": 192,
+        "active": 0,
+        "distant": 8,
+        "reserve": 64,
+        "dead": 120,
+        "evacuated": 0,
+        "captured": 0
+       }
+      }
+     },
+     {
+      "t": 267.5,
+      "counts": {
+       "player_clan": {
+        "allocated": 24,
+        "active": 0,
+        "distant": 8,
+        "reserve": 0,
+        "dead": 16,
+        "evacuated": 0,
+        "captured": 0
+       },
+       "hive": {
+        "allocated": 736,
+        "active": 0,
+        "distant": 453,
+        "reserve": 232,
+        "dead": 51,
+        "evacuated": 0,
+        "captured": 0
+       },
+       "human_force": {
+        "allocated": 192,
+        "active": 0,
+        "distant": 8,
+        "reserve": 64,
+        "dead": 120,
+        "evacuated": 0,
+        "captured": 0
+       }
+      }
+     },
+     {
+      "t": 297.5,
+      "counts": {
+       "player_clan": {
+        "allocated": 24,
+        "active": 0,
+        "distant": 8,
+        "reserve": 0,
+        "dead": 16,
+        "evacuated": 0,
+        "captured": 0
+       },
+       "hive": {
+        "allocated": 736,
+        "active": 0,
+        "distant": 449,
+        "reserve": 232,
+        "dead": 55,
+        "evacuated": 0,
+        "captured": 0
+       },
+       "human_force": {
+        "allocated": 192,
+        "active": 0,
+        "distant": 8,
+        "reserve": 64,
+        "dead": 120,
+        "evacuated": 0,
+        "captured": 0
+       }
+      }
+     },
+     {
+      "t": 327.5,
+      "counts": {
+       "player_clan": {
+        "allocated": 24,
+        "active": 0,
+        "distant": 8,
+        "reserve": 0,
+        "dead": 16,
+        "evacuated": 0,
+        "captured": 0
+       },
+       "hive": {
+        "allocated": 736,
+        "active": 0,
+        "distant": 449,
+        "reserve": 232,
+        "dead": 55,
+        "evacuated": 0,
+        "captured": 0
+       },
+       "human_force": {
+        "allocated": 192,
+        "active": 0,
+        "distant": 8,
+        "reserve": 64,
+        "dead": 120,
+        "evacuated": 0,
+        "captured": 0
+       }
+      }
+     }
+    ]
+   },
+   {
+    "branche": "après rechargement",
+    "time": 327.5,
+    "counts": {
+     "player_clan": {
+      "allocated": 24,
+      "active": 0,
+      "distant": 8,
+      "reserve": 0,
+      "dead": 16,
+      "evacuated": 0,
+      "captured": 0
+     },
+     "hive": {
+      "allocated": 736,
+      "active": 0,
+      "distant": 449,
+      "reserve": 232,
+      "dead": 55,
+      "evacuated": 0,
+      "captured": 0
+     },
+     "human_force": {
+      "allocated": 192,
+      "active": 0,
+      "distant": 8,
+      "reserve": 64,
+      "dead": 120,
+      "evacuated": 0,
+      "captured": 0
+     }
+    },
+    "deaths": 191,
+    "orders": {
+     "AFF-27:hive:0": "attack>front_b@front_b",
+     "AFF-27:hive:1": "attack>front_b@front_b",
+     "AFF-27:hive:2": "attack>front_b@front_b",
+     "AFF-27:human_force:3": "defend>front_b@front_b",
+     "AFF-27:human_force:4": "regroup>front_b@front_b",
+     "AFF-27:hive:5": "defend>front_b@front_b",
+     "AFF-27:hive:6": "defend>front_b@front_b",
+     "AFF-27:hive:7": "defend>front_b@front_b",
+     "AFF-27:hive:8": "defend>front_b@front_b",
+     "AFF-27:human_force:9": "defend>front_b@front_b",
+     "AFF-27:player_clan:10": "retreat>front_d@front_b via route_1>route_2",
+     "AFF-27:hive:11": "attack>front_d@front_c via route_2",
+     "AFF-27:hive:12": "attack>front_b@front_c via route_1",
+     "AFF-27:hive:13": "attack>front_b@front_c via route_1",
+     "AFF-27:hive:14": "defend>front_d@front_d",
+     "AFF-27:hive:15": "defend>front_d@front_d",
+     "AFF-27:human_force:16": "defend>front_d@front_d",
+     "AFF-27:player_clan:17": "defend>front_d@front_d",
+     "AFF-27:hive:18": "attack>front_b@front_b",
+     "AFF-27:hive:19": "defend>front_a@front_a",
+     "AFF-27:hive:20": "defend>front_a@front_a",
+     "AFF-27:hive:21": "defend>front_a@front_a",
+     "AFF-27:hive:22": "defend>front_a@front_a",
+     "AFF-27:hive:23": "defend>front_a@front_a",
+     "AFF-27:hive:24": "defend>front_a@front_a",
+     "AFF-27:hive:25": "defend>front_a@front_a",
+     "AFF-27:hive:26": "defend>front_a@front_a",
+     "AFF-27:hive:27": "defend>front_a@front_a",
+     "AFF-27:hive:28": "defend>front_a@front_a",
+     "AFF-27:hive:29": "defend>front_a@front_a",
+     "AFF-27:human_force:30": "regroup>front_b@front_b",
+     "AFF-27:human_force:31": "regroup>front_b@front_b",
+     "AFF-27:human_force:32": "defend>front_a@front_a",
+     "AFF-27:human_force:33": "regroup>front_b@front_b",
+     "AFF-27:hive:34": "defend>front_b@front_b",
+     "AFF-27:hive:35": "defend>front_b@front_b",
+     "AFF-27:hive:36": "defend>front_b@front_b",
+     "AFF-27:hive:37": "defend>front_b@front_b",
+     "AFF-27:hive:38": "defend>front_b@front_b",
+     "AFF-27:hive:39": "defend>front_b@front_b",
+     "AFF-27:hive:40": "defend>front_b@front_b",
+     "AFF-27:hive:41": "defend>front_b@front_b",
+     "AFF-27:hive:42": "defend>front_b@front_b",
+     "AFF-27:hive:43": "defend>front_b@front_b",
+     "AFF-27:hive:44": "defend>front_b@front_b",
+     "AFF-27:hive:45": "defend>front_b@front_b",
+     "AFF-27:human_force:46": "defend>front_b@front_b",
+     "AFF-27:human_force:47": "defend>front_b@front_b",
+     "AFF-27:human_force:48": "defend>front_b@front_b",
+     "AFF-27:human_force:49": "defend>front_b@front_b",
+     "AFF-27:player_clan:50": "defend>front_b@front_b",
+     "AFF-27:hive:51": "defend>front_c@front_c",
+     "AFF-27:hive:52": "defend>front_c@front_c",
+     "AFF-27:hive:53": "defend>front_c@front_c",
+     "AFF-27:hive:54": "defend>front_c@front_c",
+     "AFF-27:hive:55": "defend>front_c@front_c",
+     "AFF-27:hive:56": "defend>front_c@front_c",
+     "AFF-27:hive:57": "defend>front_c@front_c",
+     "AFF-27:hive:58": "defend>front_c@front_c",
+     "AFF-27:hive:59": "defend>front_c@front_c",
+     "AFF-27:hive:60": "defend>front_c@front_c",
+     "AFF-27:hive:61": "defend>front_c@front_c",
+     "AFF-27:hive:62": "defend>front_c@front_c",
+     "AFF-27:hive:63": "defend>front_c@front_c",
+     "AFF-27:hive:64": "defend>front_c@front_c",
+     "AFF-27:hive:65": "defend>front_c@front_c",
+     "AFF-27:hive:66": "defend>front_c@front_c",
+     "AFF-27:human_force:67": "defend>front_c@front_c",
+     "AFF-27:human_force:68": "defend>front_c@front_c",
+     "AFF-27:hive:69": "defend>front_d@front_d",
+     "AFF-27:hive:70": "defend>front_d@front_d",
+     "AFF-27:hive:71": "defend>front_d@front_d",
+     "AFF-27:hive:72": "defend>front_d@front_d",
+     "AFF-27:hive:73": "defend>front_d@front_d",
+     "AFF-27:hive:74": "defend>front_d@front_d",
+     "AFF-27:hive:75": "defend>front_d@front_d",
+     "AFF-27:hive:76": "defend>front_d@front_d",
+     "AFF-27:human_force:77": "defend>front_d@front_d",
+     "AFF-27:human_force:78": "defend>front_d@front_d",
+     "AFF-27:player_clan:79": "defend>front_d@front_d",
+     "AFF-27:hive:80": "attack>front_d@front_b via route_1>route_2",
+     "AFF-27:hive:81": "attack>front_d@front_b via route_1>route_2",
+     "AFF-27:hive:82": "attack>front_d@front_b via route_1>route_2",
+     "AFF-27:hive:83": "defend>front_a@front_a",
+     "AFF-27:hive:84": "defend>front_a@front_a",
+     "AFF-27:hive:85": "defend>front_a@front_a",
+     "AFF-27:hive:86": "defend>front_a@front_a",
+     "AFF-27:hive:87": "defend>front_a@front_a",
+     "AFF-27:hive:88": "defend>front_a@front_a",
+     "AFF-27:hive:89": "defend>front_a@front_a",
+     "AFF-27:hive:90": "defend>front_a@front_a",
+     "AFF-27:hive:91": "defend>front_a@front_a",
+     "AFF-27:hive:92": "defend>front_a@front_a",
+     "AFF-27:hive:93": "defend>front_a@front_a",
+     "AFF-27:hive:94": "defend>front_a@front_a",
+     "AFF-27:hive:95": "defend>front_a@front_a",
+     "AFF-27:hive:96": "defend>front_a@front_a",
+     "AFF-27:hive:97": "defend>front_a@front_a",
+     "AFF-27:hive:98": "defend>front_a@front_a",
+     "AFF-27:hive:99": "defend>front_a@front_a",
+     "AFF-27:hive:100": "defend>front_a@front_a",
+     "AFF-27:hive:101": "defend>front_a@front_a",
+     "AFF-27:hive:102": "defend>front_a@front_a",
+     "AFF-27:hive:103": "defend>front_a@front_a",
+     "AFF-27:hive:104": "defend>front_a@front_a",
+     "AFF-27:hive:105": "defend>front_a@front_a",
+     "AFF-27:hive:106": "defend>front_a@front_a",
+     "AFF-27:hive:107": "defend>front_a@front_a",
+     "AFF-27:hive:108": "defend>front_a@front_a",
+     "AFF-27:hive:109": "defend>front_a@front_a",
+     "AFF-27:hive:110": "defend>front_a@front_a",
+     "AFF-27:hive:111": "defend>front_a@front_a",
+     "AFF-27:human_force:112": "defend>front_b@front_b",
+     "AFF-27:human_force:113": "defend>front_b@front_b",
+     "AFF-27:human_force:114": "defend>front_b@front_b",
+     "AFF-27:human_force:115": "defend>front_b@front_b",
+     "AFF-27:human_force:116": "defend>front_b@front_b",
+     "AFF-27:human_force:117": "defend>front_b@front_b",
+     "AFF-27:human_force:118": "defend>front_b@front_b",
+     "AFF-27:human_force:119": "defend>front_b@front_b",
+     "AFF-27:player_clan:120": "attack>front_b@front_d via route_2>route_1",
+     "AFF-27:player_clan:121": "attack>front_d@front_d"
+    },
+    "groupStates": {
+     "AFF-27:hive:0": "distant",
+     "AFF-27:hive:1": "distant",
+     "AFF-27:hive:2": "distant",
+     "AFF-27:human_force:3": "distant",
+     "AFF-27:human_force:4": "distant",
+     "AFF-27:hive:5": "distant",
+     "AFF-27:hive:6": "distant",
+     "AFF-27:hive:7": "distant",
+     "AFF-27:hive:8": "distant",
+     "AFF-27:human_force:9": "distant",
+     "AFF-27:player_clan:10": "distant",
+     "AFF-27:hive:11": "distant",
+     "AFF-27:hive:12": "distant",
+     "AFF-27:hive:13": "distant",
+     "AFF-27:hive:14": "distant",
+     "AFF-27:hive:15": "distant",
+     "AFF-27:human_force:16": "distant",
+     "AFF-27:player_clan:17": "distant",
+     "AFF-27:hive:18": "distant",
+     "AFF-27:hive:19": "distant",
+     "AFF-27:hive:20": "distant",
+     "AFF-27:hive:21": "distant",
+     "AFF-27:hive:22": "distant",
+     "AFF-27:hive:23": "distant",
+     "AFF-27:hive:24": "distant",
+     "AFF-27:hive:25": "distant",
+     "AFF-27:hive:26": "distant",
+     "AFF-27:hive:27": "distant",
+     "AFF-27:hive:28": "distant",
+     "AFF-27:hive:29": "distant",
+     "AFF-27:human_force:30": "distant",
+     "AFF-27:human_force:31": "distant",
+     "AFF-27:human_force:32": "distant",
+     "AFF-27:human_force:33": "distant",
+     "AFF-27:hive:34": "distant",
+     "AFF-27:hive:35": "distant",
+     "AFF-27:hive:36": "distant",
+     "AFF-27:hive:37": "distant",
+     "AFF-27:hive:38": "distant",
+     "AFF-27:hive:39": "distant",
+     "AFF-27:hive:40": "distant",
+     "AFF-27:hive:41": "distant",
+     "AFF-27:hive:42": "distant",
+     "AFF-27:hive:43": "distant",
+     "AFF-27:hive:44": "distant",
+     "AFF-27:hive:45": "distant",
+     "AFF-27:human_force:46": "distant",
+     "AFF-27:human_force:47": "distant",
+     "AFF-27:human_force:48": "distant",
+     "AFF-27:human_force:49": "distant",
+     "AFF-27:player_clan:50": "distant",
+     "AFF-27:hive:51": "distant",
+     "AFF-27:hive:52": "distant",
+     "AFF-27:hive:53": "distant",
+     "AFF-27:hive:54": "distant",
+     "AFF-27:hive:55": "distant",
+     "AFF-27:hive:56": "distant",
+     "AFF-27:hive:57": "distant",
+     "AFF-27:hive:58": "distant",
+     "AFF-27:hive:59": "distant",
+     "AFF-27:hive:60": "distant",
+     "AFF-27:hive:61": "distant",
+     "AFF-27:hive:62": "distant",
+     "AFF-27:hive:63": "distant",
+     "AFF-27:hive:64": "distant",
+     "AFF-27:hive:65": "distant",
+     "AFF-27:hive:66": "distant",
+     "AFF-27:human_force:67": "distant",
+     "AFF-27:human_force:68": "distant",
+     "AFF-27:hive:69": "distant",
+     "AFF-27:hive:70": "distant",
+     "AFF-27:hive:71": "distant",
+     "AFF-27:hive:72": "distant",
+     "AFF-27:hive:73": "distant",
+     "AFF-27:hive:74": "distant",
+     "AFF-27:hive:75": "distant",
+     "AFF-27:hive:76": "distant",
+     "AFF-27:human_force:77": "distant",
+     "AFF-27:human_force:78": "distant",
+     "AFF-27:player_clan:79": "distant",
+     "AFF-27:hive:80": "distant",
+     "AFF-27:hive:81": "distant",
+     "AFF-27:hive:82": "distant",
+     "AFF-27:hive:83": "reserve",
+     "AFF-27:hive:84": "reserve",
+     "AFF-27:hive:85": "reserve",
+     "AFF-27:hive:86": "reserve",
+     "AFF-27:hive:87": "reserve",
+     "AFF-27:hive:88": "reserve",
+     "AFF-27:hive:89": "reserve",
+     "AFF-27:hive:90": "reserve",
+     "AFF-27:hive:91": "reserve",
+     "AFF-27:hive:92": "reserve",
+     "AFF-27:hive:93": "reserve",
+     "AFF-27:hive:94": "reserve",
+     "AFF-27:hive:95": "reserve",
+     "AFF-27:hive:96": "reserve",
+     "AFF-27:hive:97": "reserve",
+     "AFF-27:hive:98": "reserve",
+     "AFF-27:hive:99": "reserve",
+     "AFF-27:hive:100": "reserve",
+     "AFF-27:hive:101": "reserve",
+     "AFF-27:hive:102": "reserve",
+     "AFF-27:hive:103": "reserve",
+     "AFF-27:hive:104": "reserve",
+     "AFF-27:hive:105": "reserve",
+     "AFF-27:hive:106": "reserve",
+     "AFF-27:hive:107": "reserve",
+     "AFF-27:hive:108": "reserve",
+     "AFF-27:hive:109": "reserve",
+     "AFF-27:hive:110": "reserve",
+     "AFF-27:hive:111": "reserve",
+     "AFF-27:human_force:112": "reserve",
+     "AFF-27:human_force:113": "reserve",
+     "AFF-27:human_force:114": "reserve",
+     "AFF-27:human_force:115": "reserve",
+     "AFF-27:human_force:116": "reserve",
+     "AFF-27:human_force:117": "reserve",
+     "AFF-27:human_force:118": "reserve",
+     "AFF-27:human_force:119": "reserve",
+     "AFF-27:player_clan:120": "distant",
+     "AFF-27:player_clan:121": "distant"
+    },
+    "reconstitutions": {
+     "AFF-27:human_force:4": {
+      "required": true,
+      "returnFrontId": "front_a"
+     },
+     "AFF-27:player_clan:10": {
+      "required": true,
+      "returnFrontId": "front_b"
+     },
+     "AFF-27:human_force:30": {
+      "required": true,
+      "returnFrontId": "front_a"
+     },
+     "AFF-27:human_force:31": {
+      "required": true,
+      "returnFrontId": "front_a"
+     },
+     "AFF-27:human_force:33": {
+      "required": true,
+      "returnFrontId": "front_a"
+     }
+    },
+    "apc": {
+     "version": 1,
+     "vehicleId": "m577-apc",
+     "groupId": "AFF-27:human_force:3",
+     "ownerFaction": "human_force",
+     "factionId": "human_force",
+     "frontId": "front_b",
+     "position": [
+      0,
+      1112
+     ],
+     "crew": [
+      "AFF-27:human_force:3:7",
+      "AFF-27:human_force:3:0"
+     ],
+     "passengers": [
+      "AFF-27:human_force:3:1",
+      "AFF-27:human_force:3:2",
+      "AFF-27:human_force:3:3",
+      "AFF-27:human_force:3:4",
+      "AFF-27:human_force:3:5",
+      "AFF-27:human_force:3:6"
+     ],
+     "boardedAt": 0
+    },
+    "routes": {
+     "route_0": true,
+     "route_1": true,
+     "route_2": true,
+     "bound-route-insertion-relay-flank": false,
+     "bound-route-relay-nest-outer": false
+    },
+    "fronts": {
+     "front_a": {
+      "owner": "hive",
+      "sourceHP": 0
+     },
+     "front_b": {
+      "owner": "hive",
+      "sourceHP": 0
+     },
+     "front_c": {
+      "owner": "hive",
+      "sourceHP": 1000
+     },
+     "front_d": {
+      "owner": "hive",
+      "sourceHP": 1000
+     }
+    },
+    "relations": [
+     [
+      "hive|player_clan",
+      "hostile"
+     ],
+     [
+      "human_force|player_clan",
+      "neutral"
+     ],
+     [
+      "hive|human_force",
+      "hostile"
+     ]
+    ],
+    "pendingArrivals": [],
+    "eventSequence": 764,
+    "criticalLosses": [
+     "front_d"
+    ],
+    "objectifs": [
+     [
+      "hive_route",
+      "done",
+      1,
+      3
+     ],
+     [
+      "marine_route",
+      "done",
+      1,
+      29
+     ],
+     [
+      "extinction_queen",
+      "pending",
+      0,
+      null
+     ],
+     [
+      "return_route",
+      "pending",
+      0,
+      null
+     ],
+     [
+      "lv742_exit",
+      "pending",
+      0,
+      null
+     ]
+    ],
+    "pertesDix1eresSecondes": 5,
+    "releve": [
+     {
+      "t": 57.5,
+      "counts": {
+       "player_clan": {
+        "allocated": 24,
+        "active": 0,
+        "distant": 8,
+        "reserve": 0,
+        "dead": 16,
+        "evacuated": 0,
+        "captured": 0
+       },
+       "hive": {
+        "allocated": 736,
+        "active": 0,
+        "distant": 504,
+        "reserve": 232,
+        "dead": 0,
+        "evacuated": 0,
+        "captured": 0
+       },
+       "human_force": {
+        "allocated": 192,
+        "active": 0,
+        "distant": 29,
+        "reserve": 64,
+        "dead": 99,
+        "evacuated": 0,
+        "captured": 0
+       }
+      }
+     },
+     {
+      "t": 87.5,
+      "counts": {
+       "player_clan": {
+        "allocated": 24,
+        "active": 0,
+        "distant": 8,
+        "reserve": 0,
+        "dead": 16,
+        "evacuated": 0,
+        "captured": 0
+       },
+       "hive": {
+        "allocated": 736,
+        "active": 0,
+        "distant": 504,
+        "reserve": 232,
+        "dead": 0,
+        "evacuated": 0,
+        "captured": 0
+       },
+       "human_force": {
+        "allocated": 192,
+        "active": 0,
+        "distant": 29,
+        "reserve": 64,
+        "dead": 99,
+        "evacuated": 0,
+        "captured": 0
+       }
+      }
+     },
+     {
+      "t": 117.5,
+      "counts": {
+       "player_clan": {
+        "allocated": 24,
+        "active": 0,
+        "distant": 8,
+        "reserve": 0,
+        "dead": 16,
+        "evacuated": 0,
+        "captured": 0
+       },
+       "hive": {
+        "allocated": 736,
+        "active": 0,
+        "distant": 504,
+        "reserve": 232,
+        "dead": 0,
+        "evacuated": 0,
+        "captured": 0
+       },
+       "human_force": {
+        "allocated": 192,
+        "active": 0,
+        "distant": 29,
+        "reserve": 64,
+        "dead": 99,
+        "evacuated": 0,
+        "captured": 0
+       }
+      }
+     },
+     {
+      "t": 147.5,
+      "counts": {
+       "player_clan": {
+        "allocated": 24,
+        "active": 0,
+        "distant": 8,
+        "reserve": 0,
+        "dead": 16,
+        "evacuated": 0,
+        "captured": 0
+       },
+       "hive": {
+        "allocated": 736,
+        "active": 0,
+        "distant": 504,
+        "reserve": 232,
+        "dead": 0,
+        "evacuated": 0,
+        "captured": 0
+       },
+       "human_force": {
+        "allocated": 192,
+        "active": 0,
+        "distant": 29,
+        "reserve": 64,
+        "dead": 99,
+        "evacuated": 0,
+        "captured": 0
+       }
+      }
+     },
+     {
+      "t": 177.5,
+      "counts": {
+       "player_clan": {
+        "allocated": 24,
+        "active": 0,
+        "distant": 8,
+        "reserve": 0,
+        "dead": 16,
+        "evacuated": 0,
+        "captured": 0
+       },
+       "hive": {
+        "allocated": 736,
+        "active": 0,
+        "distant": 504,
+        "reserve": 232,
+        "dead": 0,
+        "evacuated": 0,
+        "captured": 0
+       },
+       "human_force": {
+        "allocated": 192,
+        "active": 0,
+        "distant": 29,
+        "reserve": 64,
+        "dead": 99,
+        "evacuated": 0,
+        "captured": 0
+       }
+      }
+     },
+     {
+      "t": 207.5,
+      "counts": {
+       "player_clan": {
+        "allocated": 24,
+        "active": 0,
+        "distant": 8,
+        "reserve": 0,
+        "dead": 16,
+        "evacuated": 0,
+        "captured": 0
+       },
+       "hive": {
+        "allocated": 736,
+        "active": 0,
+        "distant": 501,
+        "reserve": 232,
+        "dead": 3,
+        "evacuated": 0,
+        "captured": 0
+       },
+       "human_force": {
+        "allocated": 192,
+        "active": 0,
+        "distant": 8,
+        "reserve": 64,
+        "dead": 120,
+        "evacuated": 0,
+        "captured": 0
+       }
+      }
+     },
+     {
+      "t": 237.5,
+      "counts": {
+       "player_clan": {
+        "allocated": 24,
+        "active": 0,
+        "distant": 8,
+        "reserve": 0,
+        "dead": 16,
+        "evacuated": 0,
+        "captured": 0
+       },
+       "hive": {
+        "allocated": 736,
+        "active": 0,
+        "distant": 487,
+        "reserve": 232,
+        "dead": 17,
+        "evacuated": 0,
+        "captured": 0
+       },
+       "human_force": {
+        "allocated": 192,
+        "active": 0,
+        "distant": 8,
+        "reserve": 64,
+        "dead": 120,
+        "evacuated": 0,
+        "captured": 0
+       }
+      }
+     },
+     {
+      "t": 267.5,
+      "counts": {
+       "player_clan": {
+        "allocated": 24,
+        "active": 0,
+        "distant": 8,
+        "reserve": 0,
+        "dead": 16,
+        "evacuated": 0,
+        "captured": 0
+       },
+       "hive": {
+        "allocated": 736,
+        "active": 0,
+        "distant": 453,
+        "reserve": 232,
+        "dead": 51,
+        "evacuated": 0,
+        "captured": 0
+       },
+       "human_force": {
+        "allocated": 192,
+        "active": 0,
+        "distant": 8,
+        "reserve": 64,
+        "dead": 120,
+        "evacuated": 0,
+        "captured": 0
+       }
+      }
+     },
+     {
+      "t": 297.5,
+      "counts": {
+       "player_clan": {
+        "allocated": 24,
+        "active": 0,
+        "distant": 8,
+        "reserve": 0,
+        "dead": 16,
+        "evacuated": 0,
+        "captured": 0
+       },
+       "hive": {
+        "allocated": 736,
+        "active": 0,
+        "distant": 449,
+        "reserve": 232,
+        "dead": 55,
+        "evacuated": 0,
+        "captured": 0
+       },
+       "human_force": {
+        "allocated": 192,
+        "active": 0,
+        "distant": 8,
+        "reserve": 64,
+        "dead": 120,
+        "evacuated": 0,
+        "captured": 0
+       }
+      }
+     },
+     {
+      "t": 327.5,
+      "counts": {
+       "player_clan": {
+        "allocated": 24,
+        "active": 0,
+        "distant": 8,
+        "reserve": 0,
+        "dead": 16,
+        "evacuated": 0,
+        "captured": 0
+       },
+       "hive": {
+        "allocated": 736,
+        "active": 0,
+        "distant": 449,
+        "reserve": 232,
+        "dead": 55,
+        "evacuated": 0,
+        "captured": 0
+       },
+       "human_force": {
+        "allocated": 192,
+        "active": 0,
+        "distant": 8,
+        "reserve": 64,
+        "dead": 120,
+        "evacuated": 0,
+        "captured": 0
+       }
+      }
+     }
+    ]
+   }
+  ],
+  "ecartsContinuiteVsRechargement": [
+   {
+    "path": "eventSequence",
+    "continuite": 761,
+    "rechargement": 764
+   }
+  ],
+  "nombreEcarts": 1
+ },
+ "clauses": [
+  {
+   "id": "C4",
+   "texte": "Aucun gain ou perte gratuit au chargement : après cinq minutes, la partie rechargée est identique à la partie continue",
+   "verdict": "prouvé",
+   "ecartsStrategiques": [],
+   "ecartsRegistreDesMorts": [],
+   "ecartsJournalHorsHorodatage": [],
+   "ecartsJournalHorodates": [
+    {
+     "path": "55",
+     "continuite": "{\"time\":200.25,\"type\":\"unit_died\",\"priority\":0,\"entityId\":\"AFF-27:hive:73:7\",\"groupId\":\"AFF-27:hive:73\",\"factionId\":\"hive\",\"killerFaction\":null,\"cause\":\"facehugger_outside_hive_space\",\"officer\":false,\"uniqueId\":null}",
+     "rechargement": "{\"time\":200.25,\"type\":\"group_arrived\",\"priority\":1,\"groupId\":\"AFF-27:human_force:30\",\"frontId\":\"front_b\"}"
+    },
+    {
+     "path": "56",
+     "continuite": "{\"time\":200.5,\"type\":\"group_arrived\",\"priority\":1,\"groupId\":\"AFF-27:human_force:30\",\"frontId\":\"front_b\"}",
+     "rechargement": "{\"time\":200.25,\"type\":\"reconstitution_waiting\",\"priority\":1,\"groupId\":\"AFF-27:human_force:30\",\"frontId\":\"front_b\",\"reason\":\"no_connected_supply_source\"}"
+    },
+    {
+     "path": "57",
+     "continuite": "{\"time\":200.5,\"type\":\"reconstitution_waiting\",\"priority\":1,\"groupId\":\"AFF-27:human_force:30\",\"frontId\":\"front_b\",\"reason\":\"no_connected_supply_source\"}",
+     "rechargement": "{\"time\":200.25,\"type\":\"unit_died\",\"priority\":0,\"entityId\":\"AFF-27:hive:73:7\",\"groupId\":\"AFF-27:hive:73\",\"factionId\":\"hive\",\"killerFaction\":null,\"cause\":\"facehugger_outside_hive_space\",\"officer\":false,\"uniqueId\":null}"
+    }
+   ],
+   "observationHorodatage": "Écart d’horodatage d’un pas (0,25 s) : au premier update après chargement, _moveGroups (js/battlefield/BattleSimulation.js:417) avance en mode distant les groupes qui étaient détaillés avant que _detailStep ne les rematérialise ; dans la partie continue, ces groupes restent pilotés par leurs acteurs. Ici le bridge headless n’anime pas les acteurs, ce qui maximise l’écart ; effectifs, pertes et ordres finaux restent identiques.",
+   "ecartCompteurEvenements": {
+    "path": "eventSequence",
+    "continuite": 761,
+    "rechargement": 764
+   },
+   "explicationEcartCompteur": "Seuls les événements de niveau de détail diffèrent : la partie rechargée rematérialise ses groupes (aucun acteur rendu ne survit à un rechargement).",
+   "evenementsDetail": {
+    "continuite": 5,
+    "rechargement": 8
+   },
+   "evenementsStrategiquesCompares": 149,
+   "ecartPertesParFaction": {
+    "player_clan": 0,
+    "hive": 0,
+    "human_force": 0
+   },
+   "pertesDix1eresSecondes": {
+    "continuite": 5,
+    "rechargement": 5
+   }
+  },
+  {
+   "id": "C1",
+   "texte": "Reprise immédiate cohérente (ordres, états de groupes, passagers, réserves, routes, objectifs, diplomatie, chronologie)",
+   "verdict": "prouvé",
+   "controles": {
+    "ordres": true,
+    "passagers": true,
+    "reserves": true,
+    "routes": true,
+    "fronts": true,
+    "diplomatie": true,
+    "arriveesEnAttente": true,
+    "chronologie": true,
+    "reconstitutions": true,
+    "objectifs": true,
+    "etatComplet": true
+   },
+   "note": "Les unités détaillées (active) sont rechargées en distant puis rematérialisées par le budget de détail : c’est la seule différence normalisée."
+  },
+  {
+   "id": "C2",
+   "texte": "Les événements déjà résolus ne se rejouent pas ; la chronologie continue",
+   "verdict": "prouvé",
+   "rejoues": [],
+   "sequenceSauvegardee": 607,
+   "premierEvenementApres": {
+    "id": 608,
+    "time": 27.75,
+    "type": "group_materialized",
+    "priority": 1,
+    "groupId": "AFF-27:human_force:30",
+    "count": 6
+   },
+   "tacheResolue": {
+    "id": "hive_route",
+    "status": "done",
+    "progress": 3,
+    "completions": 1,
+    "completedAt": 3,
+    "position": [
+     6,
+     1107
+    ]
+   },
+   "sabotageEnCoursTermine": {
+    "id": "marine_route",
+    "status": "done",
+    "progress": 3,
+    "completions": 1,
+    "completedAt": 29,
+    "position": [
+     10,
+     -5
+    ]
+   }
+  },
+  {
+   "id": "C3",
+   "texte": "Passagers, repli et réserves reprennent ; aucun gain gratuit",
+   "verdict": "prouvé",
+   "passagers": {
+    "avant": [
+     "AFF-27:human_force:3:1",
+     "AFF-27:human_force:3:2",
+     "AFF-27:human_force:3:3",
+     "AFF-27:human_force:3:4",
+     "AFF-27:human_force:3:5",
+     "AFF-27:human_force:3:6"
+    ],
+    "apres": [
+     "AFF-27:human_force:3:1",
+     "AFF-27:human_force:3:2",
+     "AFF-27:human_force:3:3",
+     "AFF-27:human_force:3:4",
+     "AFF-27:human_force:3:5",
+     "AFF-27:human_force:3:6"
+    ],
+    "convoi": {
+     "version": 1,
+     "vehicleId": "m577-apc",
+     "groupId": "AFF-27:human_force:3",
+     "ownerFaction": "human_force",
+     "factionId": "human_force",
+     "frontId": "front_b",
+     "position": [
+      0,
+      1112
+     ],
+     "crew": [
+      "AFF-27:human_force:3:7",
+      "AFF-27:human_force:3:0"
+     ],
+     "passengers": [
+      "AFF-27:human_force:3:1",
+      "AFF-27:human_force:3:2",
+      "AFF-27:human_force:3:3",
+      "AFF-27:human_force:3:4",
+      "AFF-27:human_force:3:5",
+      "AFF-27:human_force:3:6"
+     ],
+     "boardedAt": 0
+    }
+   },
+   "repli": {
+    "ordre": "retreat>front_d@front_b via route_1>route_2",
+    "reconstitution": {
+     "required": true,
+     "returnFrontId": "front_b"
+    }
+   },
+   "effectifs": {
+    "aLaSauvegarde": {
+     "player_clan": {
+      "allocated": 24,
+      "active": 0,
+      "distant": 12,
+      "reserve": 0,
+      "dead": 12,
+      "evacuated": 0,
+      "captured": 0
+     },
+     "hive": {
+      "allocated": 736,
+      "active": 16,
+      "distant": 488,
+      "reserve": 232,
+      "dead": 0,
+      "evacuated": 0,
+      "captured": 0
+     },
+     "human_force": {
+      "allocated": 192,
+      "active": 6,
+      "distant": 24,
+      "reserve": 64,
+      "dead": 98,
+      "evacuated": 0,
+      "captured": 0
+     }
+    },
+    "apres5min": {
+     "player_clan": {
+      "allocated": 24,
+      "active": 0,
+      "distant": 8,
+      "reserve": 0,
+      "dead": 16,
+      "evacuated": 0,
+      "captured": 0
+     },
+     "hive": {
+      "allocated": 736,
+      "active": 0,
+      "distant": 449,
+      "reserve": 232,
+      "dead": 55,
+      "evacuated": 0,
+      "captured": 0
+     },
+     "human_force": {
+      "allocated": 192,
+      "active": 0,
+      "distant": 8,
+      "reserve": 64,
+      "dead": 120,
+      "evacuated": 0,
+      "captured": 0
+     }
+    }
+   }
+  },
+  {
+   "id": "NA1",
+   "texte": "Vidéo de reprise et capture visuelle des occupants",
+   "verdict": "non automatisable",
+   "raison": "Exige le jeu rendu ; le support M577 (supports.apc.serialize, validateM577CarrierCheckpoint) et la position physique du véhicule dépendent de main.js/APCVehicle et du terrain 3D, non instanciés en node:test."
+  }
+ ],
+ "preconditions": {
+  "verdict": "réunies",
+  "frontsActifs": [
+   "front_a",
+   "front_b",
+   "front_c",
+   "front_d"
+  ],
+  "passagers": 6,
+  "equipage": 2,
+  "transit": {
+   "routeId": "route_0",
+   "fromFrontId": "front_a",
+   "toFrontId": "front_b"
+  },
+  "repli": "retreat>front_d@front_b via route_1>route_2",
+  "porte": false,
+  "canal": [
+   [
+    "player1",
+    {
+     "taskId": "marine_route",
+     "elapsed": 1.5,
+     "hp": 100
+    }
+   ]
+  ]
+ }
+}

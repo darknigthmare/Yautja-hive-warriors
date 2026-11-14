@@ -26,7 +26,7 @@ function check(key, attendu, fn) {
 }
 after(() => {
   const out = new URL('docs/qa/recettes-20261114/', ROOT); mkdirSync(out, { recursive: true });
-  writeFileSync(new URL(`${ID}.json`, out), JSON.stringify({
+  writeFileSync(new URL(`${ID.toLowerCase()}.json`, out), JSON.stringify({
     id: ID, source: 'docs/audits/2026-10-27/Yautja_Hive_Warriors_Controle_Completude_2026-10-27.xlsx#Controle_roster ; docs/audits/2026-10-27/implementation-followup-20261101.json',
     sujet: 'AFF-27 : neuf rôles Extinction remplacés par Marines génériques', operation: OPERATION, seed: SEED, seedsMatrice: SEEDS, commit,
     date: '2026-11-14', commande: 'node --test tests/recette-ctrl-082.test.js', niveau: 'runtime mission (createOperationScene → BattleSimulation → BattleActorBridge → ColonialMarinesManager/SyntheticsManager réels, sans rendu WebGL)',

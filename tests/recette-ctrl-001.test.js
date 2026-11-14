@@ -25,7 +25,7 @@ function check(key, attendu, fn) {
 }
 after(() => {
   const out = new URL('docs/qa/recettes-20261114/', ROOT); mkdirSync(out, { recursive: true });
-  writeFileSync(new URL(`${ID}.json`, out), JSON.stringify({
+  writeFileSync(new URL(`${ID.toLowerCase()}.json`, out), JSON.stringify({
     id: ID, source: 'docs/audits/2026-10-27/Yautja_Hive_Warriors_Controle_Completude_2026-10-27.xlsx#Controle_roster ; docs/audits/2026-10-27/implementation-followup-20261101.json',
     sujet: 'AFF-16 : synthétiques Weyland-Yutani remplacés par humains', operation: OPERATION, seed: SEED, seedsMatrice: SEEDS, commit,
     date: '2026-11-14', commande: 'node --test tests/recette-ctrl-001.test.js', niveau: 'runtime mission (createOperationScene → BattleSimulation → BattleActorBridge → SyntheticsManager/ColonialMarinesManager réels, sans rendu WebGL)',
@@ -169,6 +169,6 @@ test('CTRL-001 — observation: the legacy-checkpoint fallback still builds AFF-
   const species = legacy.groups.filter(g => g.sourceTemplateIds.includes('GRP-46')).flatMap(g => g.units.map(u => profiles.get(u.profileId).species));
   assert.ok(species.every(item => item === 'human'));
   clauses.push({ clause: 'observation_compatibilite_ancienne_sauvegarde', attendu: 'Information (pas un critère du contrôle) : chemin de reprise des sauvegardes signées avant le roster source.',
-    verdict: 'observation', details: { fichier: 'js/main.js:261-277 (repli legacyRoster) ; js/data/BattleCatalog.js:316 (rosterDetail legacy)', grp46EnHumainsDansLeRepli: species.length,
+    verdict: 'observation', details: { fichier: 'js/main.js:262-277 (repli legacyRoster) ; js/data/BattleCatalog.js:294 (applySourceSquadProfiles seulement si rosterDetail source)', grp46EnHumainsDansLeRepli: species.length,
       note: 'Une ancienne sauvegarde AFF-16 rechargée reste simulée avec original_human_* ; ce repli est volontaire (identités signées), mais il réintroduit l’écart CTRL-001 pour ces sauvegardes.' } });
 });

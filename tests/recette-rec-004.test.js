@@ -16,13 +16,14 @@ import { BATTLE_PROFILES, BATTLE_OPERATIONS, getBattleOperationConfig, getBattle
 
 const ROOT = new URL('..', import.meta.url).pathname;
 const COMMIT = execSync('git rev-parse HEAD', { cwd: ROOT }).toString().trim();
+const DIRTY = execSync('git status --porcelain -- js', { cwd: ROOT }).toString().split('\n').filter(Boolean);
 const OUT = `${ROOT}docs/qa/recettes-20261114/rec-004.json`;
 const MAP_SEED = 0, STEP = 0.25;
 const STATES = ['active', 'distant', 'reserve', 'dead', 'evacuated', 'captured'];
 const evidence = {
   recette: 'REC-004', titre: "Conservation des effectifs et catégories d'entités",
   source: 'docs/audits/2026-10-26/Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.xlsx#Validation!REC-004',
-  dateExecution: '2026-11-14', commit: COMMIT, graine: { mapSeed: MAP_SEED, pasSimulation: STEP, horloge: 'temps simulé, aucun Math.random dans BattleSimulation' },
+  dateExecution: '2026-11-14', commit: COMMIT, sourcesJsNonCommitees: DIRTY, graine: { mapSeed: MAP_SEED, pasSimulation: STEP, horloge: 'temps simulé, aucun Math.random dans BattleSimulation' },
   commande: 'node --test tests/recette-rec-004.test.js',
   preuveVideo: 'non produite — preuve par journal de simulation',
   scenarios: {}, clauses: [],
@@ -238,9 +239,9 @@ const unusedTemplates = () => ['GRP-05', 'GRP-16', 'GRP-28'].filter(templateId =
 const missingTemplates = unusedTemplates();
 clause('C2e', 'Couvoir GRP-05 (œufs comptés à part), extraction GRP-16 et civils GRP-28 inclus dans EFF-03/EFF-06', missingTemplates.length ? 'échec' : 'prouvé', {
   gabaritsAbsents: missingTemplates, reproduction: "node -e \"import('./js/data/BattleCatalog.js').then(m=>console.log(m.BATTLE_OPERATIONS.some(o=>m.getBattleOperationConfig(o.id,{allowHumanController:true}).groups.some(g=>g.sourceTemplateIds.includes('GRP-05')))))\" → false",
-  defaut: 'Lacune de contenu : js/data/BattleCatalog.js:279-301 (getBattleOperationConfig) ne crée des groupes qu’à partir de forceAllocation ; aucune opération n’alloue GRP-05/GRP-16/GRP-28. Les états BattleSimulation (js/battlefield/BattleSimulation.js:24) n’ont pas de catégorie œuf ; les civils n’existent que comme membres d’objectif (js/battlefield/OperationObjectives.js:35-36).',
+  defaut: 'Lacune de contenu : js/data/BattleCatalog.js:284-318 (getBattleOperationConfig) ne crée des groupes qu’à partir de forceAllocation ; aucune opération n’alloue GRP-05/GRP-16/GRP-28. Les états BattleSimulation (js/battlefield/BattleSimulation.js:24) n’ont pas de catégorie œuf ; les civils n’existent que comme membres d’objectif (js/battlefield/OperationObjectives.js:35-36).',
   etatAudit: 'Feuille Groupes : GRP-05 « À structurer », GRP-16 « À créer », GRP-28 « À créer ».' });
-test('EFF-03/EFF-06 incluent couvoir GRP-05, extraction GRP-16 et civils GRP-28', { todo: missingTemplates.length ? `défaut: gabarits ${missingTemplates.join(', ')} jamais instanciés (js/data/BattleCatalog.js:279-301)` : false }, () => {
+test('EFF-03/EFF-06 incluent couvoir GRP-05, extraction GRP-16 et civils GRP-28', { todo: missingTemplates.length ? `défaut: gabarits ${missingTemplates.join(', ')} jamais instanciés (js/data/BattleCatalog.js:284-318)` : false }, () => {
   assert.deepEqual(missingTemplates, []);
 });
 
@@ -278,7 +279,7 @@ test('EFF-06 : aucune opération du catalogue ne peut sélectionner le budget EF
   const attempts = BATTLE_OPERATIONS.map(operation => { try { getBattleOperationConfig(operation.id, { budgetId: 'EFF-06', allowHumanController: true }); return [operation.id, 'accepté']; } catch (error) { return [operation.id, error.message]; } });
   const accepted = attempts.filter(([, result]) => result === 'accepté');
   evidence.scenarios['EFF-06-catalogue'] = { tentatives: attempts.length, acceptees: accepted.map(([id]) => id), motif: attempts[0][1],
-    constat: 'getBattleOperationConfig refuse EFF-06 (alliés 120 ≠ 48) : js/data/BattleCatalog.js:312 « selected budget changes the proposed finite force ». Le scénario EFF-06 est donc exécuté sur une configuration explicite aux chiffres EFF-06 (test suivant), pas sur une opération jouable.' };
+    constat: 'getBattleOperationConfig refuse EFF-06 (alliés 120 ≠ 48) : js/data/BattleCatalog.js:333 « selected budget changes the proposed finite force ». Le scénario EFF-06 est donc exécuté sur une configuration explicite aux chiffres EFF-06 (test suivant), pas sur une opération jouable.' };
   assert.equal(accepted.length, 0);
 });
 

@@ -1,0 +1,1059 @@
+{
+  "id": "REC-012",
+  "source": "docs/audits/2026-10-26/Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.xlsx#Validation",
+  "perimetre": "Coutures, portes et continuité physique",
+  "terrainPilote": "createOperationScene({operationId:'pilot'}) + AFF-06 (LD-18) ; contrôle AFF-14 (LD-23)",
+  "seed": 0,
+  "commit": "bd866f88e1499d4e091e4e0c8611afdfb95d2336",
+  "date": "2026-11-14",
+  "commande": "node --test tests/recette-rec-012.test.js",
+  "preuveVideo": "non produite — preuve par journal",
+  "planDesLiaisons": [
+    {
+      "operation": "pilot",
+      "etat": "ouvert",
+      "porte": "gate-insertion-approach",
+      "de": "insertion",
+      "vers": "approach",
+      "aller": {
+        "arrivee": 0,
+        "sautMaxParPas": 0,
+        "altitudeMin": 0,
+        "altitudeMax": 0
+      },
+      "retour": {
+        "arrivee": 0,
+        "sautMaxParPas": 0,
+        "altitudeMin": 0,
+        "altitudeMax": 0
+      }
+    },
+    {
+      "operation": "pilot",
+      "etat": "ouvert",
+      "porte": "gate-approach-relay",
+      "de": "approach",
+      "vers": "relay",
+      "aller": {
+        "arrivee": 0,
+        "sautMaxParPas": 0,
+        "altitudeMin": 0,
+        "altitudeMax": 0
+      },
+      "retour": {
+        "arrivee": 0,
+        "sautMaxParPas": 0,
+        "altitudeMin": 0,
+        "altitudeMax": 0
+      }
+    },
+    {
+      "operation": "pilot",
+      "etat": "ouvert",
+      "porte": "gate-relay-foundry",
+      "de": "relay",
+      "vers": "foundry",
+      "aller": {
+        "arrivee": 0,
+        "sautMaxParPas": 0,
+        "altitudeMin": 0,
+        "altitudeMax": 0
+      },
+      "retour": {
+        "arrivee": 0,
+        "sautMaxParPas": 0,
+        "altitudeMin": 0,
+        "altitudeMax": 0
+      }
+    },
+    {
+      "operation": "pilot",
+      "etat": "ouvert",
+      "porte": "gate-foundry-command",
+      "de": "foundry",
+      "vers": "command",
+      "aller": {
+        "arrivee": 0,
+        "sautMaxParPas": 0,
+        "altitudeMin": 0,
+        "altitudeMax": 0
+      },
+      "retour": {
+        "arrivee": 0,
+        "sautMaxParPas": 0,
+        "altitudeMin": 0,
+        "altitudeMax": 0
+      }
+    },
+    {
+      "operation": "pilot",
+      "etat": "ouvert",
+      "porte": "gate-command-nest",
+      "de": "command",
+      "vers": "nest",
+      "aller": {
+        "arrivee": 0,
+        "sautMaxParPas": 0,
+        "altitudeMin": 0,
+        "altitudeMax": 0
+      },
+      "retour": {
+        "arrivee": 0,
+        "sautMaxParPas": 0,
+        "altitudeMin": 0,
+        "altitudeMax": 0
+      }
+    },
+    {
+      "operation": "AFF-06",
+      "etat": "ouvert",
+      "porte": "gate-insertion-approach",
+      "de": "insertion",
+      "vers": "approach",
+      "aller": {
+        "arrivee": 0,
+        "sautMaxParPas": 0,
+        "altitudeMin": 0,
+        "altitudeMax": 0
+      },
+      "retour": {
+        "arrivee": 0,
+        "sautMaxParPas": 0,
+        "altitudeMin": 0,
+        "altitudeMax": 0
+      }
+    },
+    {
+      "operation": "AFF-06",
+      "etat": "ouvert",
+      "porte": "gate-approach-relay",
+      "de": "approach",
+      "vers": "relay",
+      "aller": {
+        "arrivee": 0,
+        "sautMaxParPas": 0,
+        "altitudeMin": 0,
+        "altitudeMax": 0
+      },
+      "retour": {
+        "arrivee": 0,
+        "sautMaxParPas": 0,
+        "altitudeMin": 0,
+        "altitudeMax": 0
+      }
+    },
+    {
+      "operation": "AFF-06",
+      "etat": "ouvert",
+      "porte": "gate-relay-foundry",
+      "de": "relay",
+      "vers": "foundry",
+      "aller": {
+        "arrivee": 0,
+        "sautMaxParPas": 0,
+        "altitudeMin": 0,
+        "altitudeMax": 0
+      },
+      "retour": {
+        "arrivee": 0,
+        "sautMaxParPas": 0,
+        "altitudeMin": 0,
+        "altitudeMax": 0
+      }
+    },
+    {
+      "operation": "AFF-06",
+      "etat": "ouvert",
+      "porte": "gate-foundry-command",
+      "de": "foundry",
+      "vers": "command",
+      "aller": {
+        "arrivee": 0,
+        "sautMaxParPas": 0,
+        "altitudeMin": 0,
+        "altitudeMax": 0
+      },
+      "retour": {
+        "arrivee": 0,
+        "sautMaxParPas": 0,
+        "altitudeMin": 0,
+        "altitudeMax": 0
+      }
+    },
+    {
+      "operation": "AFF-06",
+      "etat": "ouvert",
+      "porte": "gate-command-area-5",
+      "de": "command",
+      "vers": "area-5",
+      "aller": {
+        "arrivee": 0,
+        "sautMaxParPas": 0,
+        "altitudeMin": 0,
+        "altitudeMax": 0
+      },
+      "retour": {
+        "arrivee": 0,
+        "sautMaxParPas": 0,
+        "altitudeMin": 0,
+        "altitudeMax": 0
+      }
+    },
+    {
+      "operation": "AFF-06",
+      "etat": "ouvert",
+      "porte": "gate-area-5-area-6",
+      "de": "area-5",
+      "vers": "area-6",
+      "aller": {
+        "arrivee": 0,
+        "sautMaxParPas": 0,
+        "altitudeMin": 0,
+        "altitudeMax": 0
+      },
+      "retour": {
+        "arrivee": 0,
+        "sautMaxParPas": 0,
+        "altitudeMin": 0,
+        "altitudeMax": 0
+      }
+    },
+    {
+      "operation": "AFF-06",
+      "etat": "ouvert",
+      "porte": "gate-area-6-area-7",
+      "de": "area-6",
+      "vers": "area-7",
+      "aller": {
+        "arrivee": 0,
+        "sautMaxParPas": 0,
+        "altitudeMin": 0,
+        "altitudeMax": 0
+      },
+      "retour": {
+        "arrivee": 0,
+        "sautMaxParPas": 0,
+        "altitudeMin": 0,
+        "altitudeMax": 0
+      }
+    },
+    {
+      "operation": "AFF-06",
+      "etat": "ouvert",
+      "porte": "gate-area-7-area-8",
+      "de": "area-7",
+      "vers": "area-8",
+      "aller": {
+        "arrivee": 0,
+        "sautMaxParPas": 0,
+        "altitudeMin": 0,
+        "altitudeMax": 0
+      },
+      "retour": {
+        "arrivee": 0,
+        "sautMaxParPas": 0,
+        "altitudeMin": 0,
+        "altitudeMax": 0
+      }
+    },
+    {
+      "operation": "AFF-06",
+      "etat": "ouvert",
+      "porte": "gate-area-8-area-9",
+      "de": "area-8",
+      "vers": "area-9",
+      "aller": {
+        "arrivee": 0,
+        "sautMaxParPas": 0,
+        "altitudeMin": 0,
+        "altitudeMax": 0
+      },
+      "retour": {
+        "arrivee": 0,
+        "sautMaxParPas": 0,
+        "altitudeMin": 0,
+        "altitudeMax": 0
+      }
+    },
+    {
+      "operation": "AFF-06",
+      "etat": "ouvert",
+      "porte": "gate-area-9-area-10",
+      "de": "area-9",
+      "vers": "area-10",
+      "aller": {
+        "arrivee": 0,
+        "sautMaxParPas": 0,
+        "altitudeMin": 0,
+        "altitudeMax": 0
+      },
+      "retour": {
+        "arrivee": 0,
+        "sautMaxParPas": 0,
+        "altitudeMin": 0,
+        "altitudeMax": 0
+      }
+    },
+    {
+      "operation": "AFF-06",
+      "etat": "ouvert",
+      "porte": "gate-area-10-nest",
+      "de": "area-10",
+      "vers": "nest",
+      "aller": {
+        "arrivee": 0,
+        "sautMaxParPas": 0,
+        "altitudeMin": 0,
+        "altitudeMax": 0
+      },
+      "retour": {
+        "arrivee": 0,
+        "sautMaxParPas": 0,
+        "altitudeMin": 0,
+        "altitudeMax": 0
+      }
+    }
+  ],
+  "etatsPortesEtItineraires": [
+    {
+      "operation": "pilot",
+      "etat": "initial_portes_fermees",
+      "portes": [
+        {
+          "id": "gate-insertion-approach",
+          "ouverte": false,
+          "panneauVisible": true,
+          "collisionPresente": true
+        },
+        {
+          "id": "gate-approach-relay",
+          "ouverte": false,
+          "panneauVisible": true,
+          "collisionPresente": true
+        },
+        {
+          "id": "gate-relay-foundry",
+          "ouverte": false,
+          "panneauVisible": true,
+          "collisionPresente": true
+        },
+        {
+          "id": "gate-foundry-command",
+          "ouverte": false,
+          "panneauVisible": true,
+          "collisionPresente": true
+        },
+        {
+          "id": "gate-command-nest",
+          "ouverte": false,
+          "panneauVisible": true,
+          "collisionPresente": true
+        },
+        {
+          "id": "gate-route-insertion-relay-flank",
+          "ouverte": false,
+          "panneauVisible": true,
+          "collisionPresente": true
+        },
+        {
+          "id": "gate-route-relay-nest-outer",
+          "ouverte": false,
+          "panneauVisible": true,
+          "collisionPresente": true
+        }
+      ],
+      "routes": [
+        {
+          "id": "route-insertion-relay-main",
+          "traversable": false,
+          "portes": [
+            "gate-insertion-approach",
+            "gate-approach-relay"
+          ]
+        },
+        {
+          "id": "route-relay-nest-main",
+          "traversable": false,
+          "portes": [
+            "gate-relay-foundry",
+            "gate-foundry-command",
+            "gate-command-nest"
+          ]
+        },
+        {
+          "id": "route-insertion-relay-flank",
+          "traversable": false,
+          "portes": [
+            "gate-route-insertion-relay-flank"
+          ]
+        },
+        {
+          "id": "route-relay-nest-outer",
+          "traversable": false,
+          "portes": [
+            "gate-route-relay-nest-outer"
+          ]
+        }
+      ]
+    },
+    {
+      "operation": "AFF-06",
+      "etat": "initial_portes_fermees",
+      "portes": [
+        {
+          "id": "gate-insertion-approach",
+          "ouverte": false,
+          "panneauVisible": true,
+          "collisionPresente": true
+        },
+        {
+          "id": "gate-approach-relay",
+          "ouverte": false,
+          "panneauVisible": true,
+          "collisionPresente": true
+        },
+        {
+          "id": "gate-relay-foundry",
+          "ouverte": false,
+          "panneauVisible": true,
+          "collisionPresente": true
+        },
+        {
+          "id": "gate-foundry-command",
+          "ouverte": false,
+          "panneauVisible": true,
+          "collisionPresente": true
+        },
+        {
+          "id": "gate-command-area-5",
+          "ouverte": false,
+          "panneauVisible": true,
+          "collisionPresente": true
+        },
+        {
+          "id": "gate-area-5-area-6",
+          "ouverte": false,
+          "panneauVisible": true,
+          "collisionPresente": true
+        },
+        {
+          "id": "gate-area-6-area-7",
+          "ouverte": false,
+          "panneauVisible": true,
+          "collisionPresente": true
+        },
+        {
+          "id": "gate-area-7-area-8",
+          "ouverte": false,
+          "panneauVisible": true,
+          "collisionPresente": true
+        },
+        {
+          "id": "gate-area-8-area-9",
+          "ouverte": false,
+          "panneauVisible": true,
+          "collisionPresente": true
+        },
+        {
+          "id": "gate-area-9-area-10",
+          "ouverte": false,
+          "panneauVisible": true,
+          "collisionPresente": true
+        },
+        {
+          "id": "gate-area-10-nest",
+          "ouverte": false,
+          "panneauVisible": true,
+          "collisionPresente": true
+        },
+        {
+          "id": "gate-route-insertion-relay-flank",
+          "ouverte": false,
+          "panneauVisible": true,
+          "collisionPresente": true
+        },
+        {
+          "id": "gate-route-relay-nest-outer",
+          "ouverte": false,
+          "panneauVisible": true,
+          "collisionPresente": true
+        }
+      ],
+      "routes": [
+        {
+          "id": "route_0",
+          "traversable": false,
+          "portes": [
+            "gate-insertion-approach",
+            "gate-approach-relay"
+          ]
+        },
+        {
+          "id": "route_1",
+          "traversable": false,
+          "portes": [
+            "gate-relay-foundry",
+            "gate-foundry-command",
+            "gate-command-area-5",
+            "gate-area-5-area-6",
+            "gate-area-6-area-7",
+            "gate-area-7-area-8",
+            "gate-area-8-area-9",
+            "gate-area-9-area-10",
+            "gate-area-10-nest"
+          ]
+        },
+        {
+          "id": "bound-route-insertion-relay-flank",
+          "traversable": false,
+          "portes": [
+            "gate-route-insertion-relay-flank"
+          ]
+        },
+        {
+          "id": "bound-route-relay-nest-outer",
+          "traversable": false,
+          "portes": [
+            "gate-route-relay-nest-outer"
+          ]
+        }
+      ]
+    },
+    {
+      "operation": "AFF-06",
+      "trajet": "front_a→front_c",
+      "avant": [
+        {
+          "factionId": "player_clan",
+          "groupId": "AFF-06:player_clan:4",
+          "chemin": [
+            "route_0",
+            "bound-route-relay-nest-outer"
+          ]
+        },
+        {
+          "factionId": "human_force",
+          "groupId": "AFF-06:human_force:0",
+          "chemin": [
+            "route_0",
+            "bound-route-relay-nest-outer"
+          ]
+        }
+      ],
+      "porteRoutePrincipaleFermee": {
+        "porte": "gate-insertion-approach",
+        "chemins": [
+          {
+            "factionId": "player_clan",
+            "groupId": "AFF-06:player_clan:4",
+            "chemin": null
+          },
+          {
+            "factionId": "human_force",
+            "groupId": "AFF-06:human_force:0",
+            "chemin": null
+          }
+        ]
+      },
+      "toutesPortesFermees": [
+        {
+          "factionId": "player_clan",
+          "groupId": "AFF-06:player_clan:4",
+          "chemin": null
+        },
+        {
+          "factionId": "human_force",
+          "groupId": "AFF-06:human_force:0",
+          "chemin": null
+        }
+      ],
+      "ordresRefuses": [
+        {
+          "factionId": "player_clan",
+          "groupId": "AFF-06:player_clan:4",
+          "reason": "no_open_route"
+        },
+        {
+          "factionId": "human_force",
+          "groupId": "AFF-06:human_force:0",
+          "reason": "no_open_route"
+        }
+      ],
+      "apresReouverture": [
+        {
+          "factionId": "player_clan",
+          "groupId": "AFF-06:player_clan:4",
+          "chemin": [
+            "route_0",
+            "bound-route-relay-nest-outer"
+          ]
+        },
+        {
+          "factionId": "human_force",
+          "groupId": "AFF-06:human_force:0",
+          "chemin": [
+            "route_0",
+            "bound-route-relay-nest-outer"
+          ]
+        }
+      ]
+    }
+  ],
+  "chronologie": [
+    {
+      "operation": "pilot",
+      "t": 0,
+      "event": "ouverture_portes",
+      "portes": 7
+    },
+    {
+      "operation": "pilot",
+      "t": 1,
+      "event": "capture",
+      "liaisonsTraversees": 5,
+      "collidersStatiques": 316
+    },
+    {
+      "operation": "pilot",
+      "t": 2,
+      "event": "sabotage",
+      "liaisonsTraversees": 5,
+      "collidersStatiques": 316
+    },
+    {
+      "operation": "pilot",
+      "t": 3,
+      "event": "changement_phase",
+      "liaisonsTraversees": 5,
+      "collidersStatiques": 316
+    },
+    {
+      "operation": "AFF-06",
+      "t": 0,
+      "event": "ouverture_portes",
+      "portes": 13
+    },
+    {
+      "operation": "AFF-06",
+      "t": 1,
+      "event": "capture",
+      "liaisonsTraversees": 11,
+      "collidersStatiques": 307
+    },
+    {
+      "operation": "AFF-06",
+      "t": 2,
+      "event": "sabotage",
+      "liaisonsTraversees": 11,
+      "collidersStatiques": 307
+    },
+    {
+      "operation": "AFF-06",
+      "t": 3,
+      "event": "changement_phase",
+      "liaisonsTraversees": 11,
+      "collidersStatiques": 307
+    }
+  ],
+  "clauses": [
+    {
+      "clause": "pilot:portes_fermees_deux_cotes",
+      "attendu": "Porte fermée : aucune entrée depuis l’un ou l’autre côté ; panneau visible et collision présente.",
+      "verdict": "prouvé",
+      "details": [
+        {
+          "porte": "gate-insertion-approach",
+          "retenue": [
+            -1.75,
+            -1.75
+          ]
+        },
+        {
+          "porte": "gate-approach-relay",
+          "retenue": [
+            -1.75,
+            -1.75
+          ]
+        },
+        {
+          "porte": "gate-relay-foundry",
+          "retenue": [
+            -1.75,
+            -1.75
+          ]
+        },
+        {
+          "porte": "gate-foundry-command",
+          "retenue": [
+            -1.75,
+            -1.75
+          ]
+        },
+        {
+          "porte": "gate-command-nest",
+          "retenue": [
+            -1.75,
+            -1.75
+          ]
+        }
+      ]
+    },
+    {
+      "clause": "pilot:traversee_deux_sens",
+      "attendu": "Chaque liaison est traversée depuis les deux côtés : entrée, sortie et relief concordent.",
+      "verdict": "prouvé",
+      "details": {
+        "liaisons": 5
+      }
+    },
+    {
+      "clause": "pilot:apres_capture",
+      "attendu": "Après capture : relief, limites, emplacement des bâtiments et accès inchangés ; liaisons toujours traversables.",
+      "verdict": "prouvé",
+      "details": {
+        "liaisons": 5,
+        "collidersStatiques": 316
+      }
+    },
+    {
+      "clause": "pilot:apres_sabotage",
+      "attendu": "Après sabotage : relief, limites, emplacement des bâtiments et accès inchangés ; liaisons toujours traversables.",
+      "verdict": "prouvé",
+      "details": {
+        "liaisons": 5,
+        "collidersStatiques": 316
+      }
+    },
+    {
+      "clause": "pilot:apres_changement_phase",
+      "attendu": "Après changement_phase : relief, limites, emplacement des bâtiments et accès inchangés ; liaisons toujours traversables.",
+      "verdict": "prouvé",
+      "details": {
+        "liaisons": 5,
+        "collidersStatiques": 316
+      }
+    },
+    {
+      "clause": "pilot:vue_depuis_voisins",
+      "attendu": "Un bâtiment visible garde son emplacement et ses accès lorsqu’on l’observe depuis chaque zone voisine.",
+      "verdict": "prouvé",
+      "details": [
+        {
+          "depuis": "insertion",
+          "collidersStatiques": 316,
+          "secteursVisibles": [
+            "insertion"
+          ]
+        },
+        {
+          "depuis": "approach",
+          "collidersStatiques": 316,
+          "secteursVisibles": [
+            "approach"
+          ]
+        },
+        {
+          "depuis": "relay",
+          "collidersStatiques": 316,
+          "secteursVisibles": [
+            "relay"
+          ]
+        },
+        {
+          "depuis": "foundry",
+          "collidersStatiques": 316,
+          "secteursVisibles": [
+            "foundry"
+          ]
+        },
+        {
+          "depuis": "command",
+          "collidersStatiques": 316,
+          "secteursVisibles": [
+            "command"
+          ]
+        },
+        {
+          "depuis": "nest",
+          "collidersStatiques": 316,
+          "secteursVisibles": [
+            "nest"
+          ]
+        }
+      ]
+    },
+    {
+      "clause": "AFF-06:portes_fermees_deux_cotes",
+      "attendu": "Porte fermée : aucune entrée depuis l’un ou l’autre côté ; panneau visible et collision présente.",
+      "verdict": "prouvé",
+      "details": [
+        {
+          "porte": "gate-insertion-approach",
+          "retenue": [
+            -1.75,
+            -1.75
+          ]
+        },
+        {
+          "porte": "gate-approach-relay",
+          "retenue": [
+            -1.75,
+            -1.75
+          ]
+        },
+        {
+          "porte": "gate-relay-foundry",
+          "retenue": [
+            -1.75,
+            -1.75
+          ]
+        },
+        {
+          "porte": "gate-foundry-command",
+          "retenue": [
+            -1.75,
+            -1.75
+          ]
+        },
+        {
+          "porte": "gate-command-area-5",
+          "retenue": [
+            -1.75,
+            -1.75
+          ]
+        },
+        {
+          "porte": "gate-area-5-area-6",
+          "retenue": [
+            -1.75,
+            -1.75
+          ]
+        },
+        {
+          "porte": "gate-area-6-area-7",
+          "retenue": [
+            -1.75,
+            -1.75
+          ]
+        },
+        {
+          "porte": "gate-area-7-area-8",
+          "retenue": [
+            -1.75,
+            -1.75
+          ]
+        },
+        {
+          "porte": "gate-area-8-area-9",
+          "retenue": [
+            -1.75,
+            -1.75
+          ]
+        },
+        {
+          "porte": "gate-area-9-area-10",
+          "retenue": [
+            -1.75,
+            -1.75
+          ]
+        },
+        {
+          "porte": "gate-area-10-nest",
+          "retenue": [
+            -1.75,
+            -1.75
+          ]
+        }
+      ]
+    },
+    {
+      "clause": "AFF-06:traversee_deux_sens",
+      "attendu": "Chaque liaison est traversée depuis les deux côtés : entrée, sortie et relief concordent.",
+      "verdict": "prouvé",
+      "details": {
+        "liaisons": 11
+      }
+    },
+    {
+      "clause": "AFF-06:apres_capture",
+      "attendu": "Après capture : relief, limites, emplacement des bâtiments et accès inchangés ; liaisons toujours traversables.",
+      "verdict": "prouvé",
+      "details": {
+        "liaisons": 11,
+        "collidersStatiques": 307
+      }
+    },
+    {
+      "clause": "AFF-06:apres_sabotage",
+      "attendu": "Après sabotage : relief, limites, emplacement des bâtiments et accès inchangés ; liaisons toujours traversables.",
+      "verdict": "prouvé",
+      "details": {
+        "liaisons": 11,
+        "collidersStatiques": 307
+      }
+    },
+    {
+      "clause": "AFF-06:apres_changement_phase",
+      "attendu": "Après changement_phase : relief, limites, emplacement des bâtiments et accès inchangés ; liaisons toujours traversables.",
+      "verdict": "prouvé",
+      "details": {
+        "liaisons": 11,
+        "collidersStatiques": 307
+      }
+    },
+    {
+      "clause": "AFF-06:vue_depuis_voisins",
+      "attendu": "Un bâtiment visible garde son emplacement et ses accès lorsqu’on l’observe depuis chaque zone voisine.",
+      "verdict": "prouvé",
+      "details": [
+        {
+          "depuis": "insertion",
+          "collidersStatiques": 307,
+          "secteursVisibles": [
+            "insertion"
+          ]
+        },
+        {
+          "depuis": "approach",
+          "collidersStatiques": 307,
+          "secteursVisibles": [
+            "approach"
+          ]
+        },
+        {
+          "depuis": "relay",
+          "collidersStatiques": 307,
+          "secteursVisibles": [
+            "relay"
+          ]
+        },
+        {
+          "depuis": "foundry",
+          "collidersStatiques": 307,
+          "secteursVisibles": [
+            "foundry"
+          ]
+        },
+        {
+          "depuis": "command",
+          "collidersStatiques": 307,
+          "secteursVisibles": [
+            "command"
+          ]
+        },
+        {
+          "depuis": "area-5",
+          "collidersStatiques": 307,
+          "secteursVisibles": [
+            "area-5"
+          ]
+        },
+        {
+          "depuis": "area-6",
+          "collidersStatiques": 307,
+          "secteursVisibles": [
+            "area-6"
+          ]
+        },
+        {
+          "depuis": "area-7",
+          "collidersStatiques": 307,
+          "secteursVisibles": [
+            "area-7"
+          ]
+        },
+        {
+          "depuis": "area-8",
+          "collidersStatiques": 307,
+          "secteursVisibles": [
+            "area-8"
+          ]
+        },
+        {
+          "depuis": "area-9",
+          "collidersStatiques": 307,
+          "secteursVisibles": [
+            "area-9"
+          ]
+        },
+        {
+          "depuis": "area-10",
+          "collidersStatiques": 307,
+          "secteursVisibles": [
+            "area-10"
+          ]
+        },
+        {
+          "depuis": "nest",
+          "collidersStatiques": 307,
+          "secteursVisibles": [
+            "nest"
+          ]
+        }
+      ]
+    },
+    {
+      "clause": "AFF-06:itineraires_toutes_factions",
+      "attendu": "Les changements physiques actualisent les itinéraires de toutes les factions.",
+      "verdict": "prouvé",
+      "details": {
+        "routePrincipale": "route_0",
+        "detour": null,
+        "ordres": [
+          [
+            "player_clan",
+            "no_open_route"
+          ],
+          [
+            "human_force",
+            "no_open_route"
+          ]
+        ]
+      }
+    },
+    {
+      "clause": "AFF-14:routes_liees_aux_portes",
+      "attendu": "Les changements physiques (portes) actualisent les itinéraires de toutes les factions (contrôle sur une seconde carte).",
+      "verdict": "échec (défaut)",
+      "details": {
+        "routesSansPorte": [
+          "route_0",
+          "route_1"
+        ],
+        "traversablesToutesPortesFermees": [
+          "route_0",
+          "route_1"
+        ],
+        "fronts": 3,
+        "ancresCarte": [
+          "insertion",
+          "relay",
+          "area-11",
+          "nest"
+        ],
+        "secteursFronts": [
+          "insertion",
+          "area-9",
+          "nest"
+        ],
+        "reproduction": "createOperationScene({operationId:'AFF-14',mapSeed:0}).config.routes.map(r=>r.physicalGateIds) → [[],[]] (identique avec mapSeed 7)",
+        "fichiers": [
+          "js/battlefield/BattlefieldOperation.js:26",
+          "js/battlefield/BattlefieldOperation.js:37-40",
+          "js/data/BattlefieldMapVariants.js:357-363 (LD-23 fronts: 4)",
+          "js/data/BattleCatalog.js:261 (count = budget.fronts = 3)"
+        ]
+      }
+    }
+  ],
+  "nonAutomatisable": [
+    {
+      "element": "vidéo aller-retour et captures avant/après",
+      "raison": "pas de rendu WebGL en Node ; le journal donne positions, altitudes et états de portes."
+    },
+    {
+      "element": "lecture visuelle d’un même bâtiment depuis les zones voisines",
+      "raison": "seule la persistance des collisions/positions est vérifiable ; l’apparence relève d’une revue visuelle."
+    }
+  ]
+}

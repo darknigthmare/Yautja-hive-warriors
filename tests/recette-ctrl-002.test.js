@@ -24,7 +24,7 @@ function check(key, attendu, fn) {
 }
 after(() => {
   const out = new URL('docs/qa/recettes-20261114/', ROOT); mkdirSync(out, { recursive: true });
-  writeFileSync(new URL(`${ID}.json`, out), JSON.stringify({
+  writeFileSync(new URL(`${ID.toLowerCase()}.json`, out), JSON.stringify({
     id: ID, source: 'docs/audits/2026-10-27/Yautja_Hive_Warriors_Controle_Completude_2026-10-27.xlsx#Controle_roster ; docs/audits/2026-10-27/implementation-followup-20261101.json',
     sujet: 'AFF-13 : Working Joes remplacés par humains', operation: OPERATION, seed: SEED, seedsMatrice: SEEDS, commit,
     date: '2026-11-14', commande: 'node --test tests/recette-ctrl-002.test.js', niveau: 'runtime mission (createOperationScene → BattleSimulation → BattleActorBridge → SyntheticsManager/ColonialMarinesManager réels, sans rendu WebGL)',
@@ -175,7 +175,7 @@ test('CTRL-002 — observation: the legacy-checkpoint fallback builds AFF-13 Joe
   const species = legacy.groups.filter(g => g.sourceTemplateIds.includes('GRP-50')).flatMap(g => g.units.map(u => profiles.get(u.profileId).species));
   assert.ok(species.every(item => item === 'human'));
   clauses.push({ clause: 'observation_compatibilite_ancienne_sauvegarde', attendu: 'Information (pas un critère du contrôle) : reprise des sauvegardes signées avant le roster source.',
-    verdict: 'observation', details: { fichier: 'js/main.js:261-277 (repli legacyRoster) ; js/data/BattleCatalog.js:316 (rosterDetail legacy)', grp50EnHumainsDansLeRepli: species.length,
+    verdict: 'observation', details: { fichier: 'js/main.js:262-277 (repli legacyRoster) ; js/data/BattleCatalog.js:294 (applySourceSquadProfiles seulement si rosterDetail source)', grp50EnHumainsDansLeRepli: species.length,
       relationLegacy: legacy.relations.find(rel => key(rel) === 'hive|human_force').state,
       note: 'Une ancienne sauvegarde AFF-13 reste simulée avec original_human_* et une relation ruche/Joes hostile ; repli volontaire mais hors du contrat CTRL-002.' } });
 });

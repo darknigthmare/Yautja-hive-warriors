@@ -9,7 +9,7 @@
     1114,
     48879
   ],
-  "commit": "4092a2c7da8f6df77a76daf2e0888e0297657e62",
+  "commit": "bd866f88e1499d4e091e4e0c8611afdfb95d2336",
   "date": "2026-11-14",
   "commande": "node --test tests/recette-ctrl-001.test.js",
   "niveau": "runtime mission (createOperationScene → BattleSimulation → BattleActorBridge → SyntheticsManager/ColonialMarinesManager réels, sans rendu WebGL)",
@@ -285,10 +285,10 @@
       "attendu": "Les unités détaillées par l’étape de détail (joueur présent) sont projetées dans SyntheticsManager, pas ColonialMarinesManager.",
       "verdict": "prouvé",
       "details": {
-        "player_clan|yautja|clan_hunter|yautja|undefined": 8,
-        "human_force|synthetic|weyland_combat|synthetics|undefined": 28,
-        "hive|xenomorph|runner|xenomorph|undefined": 56,
-        "hive|xenomorph|spitter|xenomorph|undefined": 8
+        "player_clan|yautja|clan_hunter|yautja|clan_hunter": 8,
+        "human_force|synthetic|weyland_combat|synthetics|weyland_combat": 28,
+        "hive|xenomorph|runner|xenomorph|runner": 56,
+        "hive|xenomorph|spitter|xenomorph|spitter": 8
       }
     },
     {
@@ -328,7 +328,7 @@
       "attendu": "Information (pas un critère du contrôle) : chemin de reprise des sauvegardes signées avant le roster source.",
       "verdict": "observation",
       "details": {
-        "fichier": "js/main.js:261-277 (repli legacyRoster) ; js/data/BattleCatalog.js:316 (rosterDetail legacy)",
+        "fichier": "js/main.js:262-277 (repli legacyRoster) ; js/data/BattleCatalog.js:294 (applySourceSquadProfiles seulement si rosterDetail source)",
         "grp46EnHumainsDansLeRepli": 192,
         "note": "Une ancienne sauvegarde AFF-16 rechargée reste simulée avec original_human_* ; ce repli est volontaire (identités signées), mais il réintroduit l’écart CTRL-001 pour ces sauvegardes."
       }
