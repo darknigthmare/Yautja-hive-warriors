@@ -41,7 +41,9 @@ Fait :
 - **mises à mort contextuelles** : silencieuse camouflé, exécution d'une élite blessée ;
 - **ouverture furtive** : la chasse commence camouflée, la ruche n'est pas encore alertée.
 
-Reste : une caméra pilotée à la souris, la bascule entre cibles verrouillées, des animations de mise à mort propres à chaque arme, et le choix des emplacements à l'écran de préparation (aujourd'hui le kit par défaut s'applique).
+Fait aussi : caméra pilotée à la souris (clic pour capturer, perte du pointeur = pause), bascule entre cibles (Tab) et libération (R), choix des quatre emplacements à l'écran de préparation, listes de commandes à jour.
+
+Reste : des animations de mise à mort propres à chaque arme.
 **Sortie** : les sept chasseurs se jouent différemment, sans touche en conflit. Vérifié par essais automatiques ; reste à jouer.
 
 ### Phase 3 — La carte à zones
