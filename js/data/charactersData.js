@@ -160,3 +160,22 @@ export const CHARACTERS_DATA = [
     colors: { skin: 0x9e8869, armor: 0x4a3b2c, mask: 0x826c59, plasma: 0x00ffff, dreads: 0x1a1a1a }
   }
 ];
+
+/* The Unblooded of the campaign (bible: campagne-unblooded.md). Not in the hunter select list:
+   blades, combistick and burner only; the shoulder caster comes with the Blooded rank. */
+export const UNBLOODED_DATA = {
+  id: 'unblooded',
+  name: 'UNBLOODED DE LA COHORTE',
+  classTag: 'JEUNE CHASSEUR (VOIE O6)',
+  icon: '🗡️',
+  lore: 'Un jeune Yautja de la cohorte de Saar, déposé avec Harek, Yena et Tov pour sa première chasse loin du Homeworld.',
+  stats: { hp: 900, maxHp: 900, moveSpeed: 17, meleeDamage: 110, plasmaDamage: 0, plasmaEnergyCost: 999 },
+  weapons: {
+    primary: '🔪 Lames de poignet',
+    secondary: '🗡️ Combistick',
+    special: '🔥 Brûleur',
+    uniqueAbility: '⚡ Musou : Première Fureur',
+    gadgets: '💉 Medicomp'
+  },
+  colors: { skin: 0x8f7f63, armor: 0x4a4f57, mask: 0x7a818c, plasma: 0x00d2ff, dreads: 0x161616 }
+};

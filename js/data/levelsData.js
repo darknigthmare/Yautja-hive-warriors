@@ -130,3 +130,24 @@ export const LEVELS_DATA = [
     bossType: 'berserker_super_predator'
   }
 ];
+
+/* Unblooded campaign hunts (bible: campagne-unblooded.md, tab 22_RegionsFaune). Not in the arena list. */
+export const CAMPAIGN_HUNTS = [
+  {
+    id: 'vara_kesh',
+    mode: 'fauna',
+    name: 'VARA-KESH — CHASSE DE LA COHORTE',
+    desc: 'Jungle dense, canopée, racines et ravins. Trois hardes, puis le Faucheur.',
+    theme: 'jungle',
+    floorColor: 0x24301a,
+    wallColor: 0x16200f,
+    fogColor: 0x0d140a,
+    fogDensity: 0.02,
+    weatherType: 'humid_mist',
+    skyColor: 0x070c05,
+    waves: 0,
+    bossType: 'faucheur_vara_kesh',
+    bossHp: 2500,
+    supports: {}
+  }
+];

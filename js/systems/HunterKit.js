@@ -107,7 +107,7 @@ export class HunterKit {
   }
 
   equip(charId, chosen = null) {
-    const valid = Array.isArray(chosen) && chosen.length === 4 && chosen.every(id => KIT_ABILITIES[id]);
+    const valid = Array.isArray(chosen) && chosen.length >= 1 && chosen.length <= 4 && chosen.every(id => KIT_ABILITIES[id]);
     this.slots = (valid ? chosen : (DEFAULT_KITS[charId] || DEFAULT_KITS.jungle_hunter)).slice(0, 4);
     this.cooldowns = {};
     this.releaseLock();

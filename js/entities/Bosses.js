@@ -537,6 +537,37 @@ export class BossManager {
     return group;
   }
 
+  /* Faucheur de Vara-Kesh (Bible V6, FAU-21): long-limbed reserve prey that hunts along strong branches. */
+  buildFaucheurMesh() {
+    const group = new THREE.Group();
+    const hide = new THREE.MeshStandardMaterial({ color: 0x2f3d1f, roughness: 0.8 });
+    const bone = new THREE.MeshStandardMaterial({ color: 0xcfc6a8, roughness: 0.5 });
+    const body = new THREE.Mesh(new THREE.BoxGeometry(2.2, 1.6, 5.2), hide);
+    body.position.y = 3.6;
+    group.add(body);
+    const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.6, 2.4, 6), hide);
+    neck.position.set(0, 4.6, 3.0);
+    neck.rotation.x = 0.9;
+    group.add(neck);
+    const head = new THREE.Mesh(new THREE.ConeGeometry(0.7, 2.2, 6), hide);
+    head.position.set(0, 5.2, 4.4);
+    head.rotation.x = Math.PI / 2;
+    group.add(head);
+    [[-1.0, 1.8], [1.0, 1.8], [-1.0, -1.8], [1.0, -1.8]].forEach(([x, z]) => {
+      const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.14, 3.6, 6), hide);
+      leg.position.set(x, 1.8, z);
+      group.add(leg);
+    });
+    [-1, 1].forEach(side => {
+      // The two reaping forelimbs that give it its name.
+      const scythe = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.35, 3.4), bone);
+      scythe.position.set(side * 1.4, 4.4, 3.4);
+      scythe.rotation.x = -0.6;
+      group.add(scythe);
+    });
+    return group;
+  }
+
   createBossMesh(type) {
     if (type === 'rogue_king_prime') {
       return this.buildRogueKingMesh(3.2);
@@ -549,6 +580,9 @@ export class BossManager {
     }
     if (type === 'berserker_super_predator') {
       return this.buildBerserkerPredatorMesh(2.6);
+    }
+    if (type === 'faucheur_vara_kesh') {
+      return this.buildFaucheurMesh();
     }
 
     const group = new THREE.Group();

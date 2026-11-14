@@ -31,8 +31,9 @@ import { APCVehicle } from './entities/APCVehicle.js';
 import { SentryGun } from './entities/SentryGun.js';
 import { FalconDrone } from './entities/FalconDrone.js';
 import { EnvironmentManager } from './entities/Environment.js';
-import { CHARACTERS_DATA } from './data/charactersData.js';
-import { LEVELS_DATA } from './data/levelsData.js';
+import { CHARACTERS_DATA, UNBLOODED_DATA } from './data/charactersData.js';
+import { LEVELS_DATA, CAMPAIGN_HUNTS } from './data/levelsData.js';
+import { FaunaHunt } from './systems/FaunaHunt.js';
 import { HunterKit } from './systems/HunterKit.js';
 
 class GameApp {
@@ -87,6 +88,7 @@ class GameApp {
 
     this.projectiles = [];
     this.kit = new HunterKit(this);
+    this.fauna = new FaunaHunt(this);
     this.legacyControls = false; // true restores the ~54 legacy key bindings
     this.cameraYaw = 0; // third-person camera turns with the mouse (pointer lock)
     this.isPlaying = false;
@@ -145,9 +147,11 @@ class GameApp {
       this.isCoOp = false;
       this.renderer.setSplitScreen(false);
       this.citadel.hide();
-      const firstChapter = this.campaign.startCampaign();
-      this.ui.showAnnouncement(firstChapter.title);
-      this.ui.showScreen(document.getElementById('loadout-prep-screen'));
+      // Unblooded campaign (bible: campagne-unblooded.md): first hunt, Vara-Kesh.
+      this.ui.selectedLevel = CAMPAIGN_HUNTS[0];
+      this.ui.selectedChar = UNBLOODED_DATA;
+      this.activeLoadout = { primary: 'wristblades', secondary: 'combistick', plasma: 'none', gadgets: ['medicomp'], kit: ['combistick_throw', 'burner'] };
+      this.startMission();
     });
 
     document.getElementById('btn-open-coop').addEventListener('click', () => {
@@ -1131,6 +1135,11 @@ class GameApp {
     this.player = new Player(this.renderer.scene, this.ui.selectedChar, this.audio, false, this.particles);
     this.forge.applyStatsToPlayer(this.player);
     this.kit.equip(this.ui.selectedChar && this.ui.selectedChar.id, this.activeLoadout && this.activeLoadout.kit);
+    // HUD shows the hunter actually deployed (the campaign uses the Unblooded).
+    const hudName = document.getElementById('hud-player-name');
+    const hudIcon = document.getElementById('hud-avatar-icon');
+    if (hudName && this.ui.selectedChar) hudName.innerText = this.ui.selectedChar.name;
+    if (hudIcon && this.ui.selectedChar) hudIcon.innerText = this.ui.selectedChar.icon;
 
     // Chantier 9: Apply Tactical Armory Loadout Synergy
     if (!this.activeLoadout) {
@@ -1165,7 +1174,16 @@ class GameApp {
     if (supports.allies) this.allies.spawnSquad(this.player.position, 3);
     if (supports.marines) this.marines.spawnSquad(this.player.position, 4, supports.marines);
     if (supports.synthetics) this.synthetics.spawnSquad(this.player.position, 3);
-    this.horde.spawnWave(55, this.player.position);
+    const isFaunaHunt = this.ui.selectedLevel.mode === 'fauna';
+    this.fauna.stop();
+    if (isFaunaHunt) {
+      // The pack: Harek, Yena and Tov, Unblooded like the hunter — blades only, no shoulder caster.
+      this.allies.spawnSquad(this.player.position, 3);
+      this.allies.allies.forEach(a => { a.damage = 40; a.plasmaCooldown = Infinity; });
+      this.fauna.start(this.ui.selectedLevel.id);
+    } else {
+      this.horde.spawnWave(55, this.player.position);
+    }
 
     // Stealth opening (HW-DEC-35): the hunt starts cloaked and the hive unaware.
     this.horde.isAlerted = false;
@@ -1381,6 +1399,10 @@ class GameApp {
 
   firePlasmaCannon(isCharged = false) {
     if (!this.player) return false;
+    if (this.player.data && this.player.data.id === 'unblooded') {
+      this.ui.showAnnouncement('🔒 LE CANON D\'ÉPAULE VIENT AVEC LE RANG BLOODED');
+      return false;
+    }
     const projData = this.player.firePlasmaShot(isCharged);
     if (!projData) {
       if (this.player.plasmaEnergy < (isCharged ? 35 : 20)) {
@@ -2242,7 +2264,7 @@ class GameApp {
     hits.forEach(h => {
       this.comboHits++;
       this.comboTimer = 2.5;
-      this.score += h.killed ? 150 : 25;
+      if (!h.noHonor) this.score += h.killed ? 150 : 25;
       this.player.musouEnergy = Math.min(this.player.maxMusouEnergy, this.player.musouEnergy + (h.killed ? 6 : 2));
 
       // QA Audit #3 (Karim): Diegetic Yautja targeting computer hitmarker feedback
@@ -3257,7 +3279,9 @@ class GameApp {
       if (this.stealthTimer <= 0 || touched) this.alertHorde(touched ? 'contact' : 'time');
     }
 
-    if (this.horde.aliens.length < 10 && !this.bosses.activeBoss) {
+    if (this.ui.selectedLevel.mode === 'fauna') {
+      this.fauna.update(delta);
+    } else if (this.horde.aliens.length < 10 && !this.bosses.activeBoss) {
       if (this.waveIndex < this.totalWaves || this.isEndlessMode) {
         this.waveIndex++;
 
@@ -3751,6 +3775,7 @@ class GameApp {
 
   endGame(isVictory) {
     this.setPaused(false);
+    this.fauna.stop();
     this.clearWeaponCrates();
     this.isPlaying = false;
     this.audio.stopBackgroundMusic();
@@ -3787,7 +3812,8 @@ class GameApp {
     this.ui.recordEndSession(this.horde.deadCount, this.sessionSkulls, this.score, isVictory);
 
     document.getElementById('end-title').innerText = isVictory ? 'VICTOIRE GLORIEUSE !' : 'CHASSE TERMINÉE';
-    document.getElementById('end-subtitle').innerText = isVictory ? 'La ruche Xenomorphe a été complètement anéantie dans l\'honneur Yautja.' : 'Votre Yautja est tombé au combat face à la ruche.';
+    document.getElementById('end-subtitle').innerText = isVictory ? (this.huntVictoryText || 'La ruche Xenomorphe a été complètement anéantie dans l\'honneur Yautja.') : 'Votre Yautja est tombé au combat face à la ruche.';
+    this.huntVictoryText = null;
 
     this.ui.showScreen(this.ui.gameOverScreen);
   }

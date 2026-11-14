@@ -1548,11 +1548,16 @@ export class XenomorphHorde {
           damage: attack.damage,
           killed: killed,
           isOfficer: a.isOfficer || false,
-          officerTitle: a.officerTitle || null
+          officerTitle: a.officerTitle || null,
+          noHonor: !!a.isFleeing // striking a fleeing animal brings no honour
         });
 
         if (killed) {
-          if (a.type === 'boiler') {
+          if (a.isFauna) {
+            this.scene.remove(a.mesh);
+            this.aliens.splice(i, 1);
+            this.deadCount++;
+          } else if (a.type === 'boiler') {
             this.detonateBoiler(a, attack.origin);
           } else {
             if (this.goreEngine) {
@@ -2189,6 +2194,8 @@ export class XenomorphHorde {
     // 4. Horde AI (Crusher, Praetorian, Warriors, Facehuggers, Officers)
     this.aliens.forEach(a => {
       if (a.isLatched) return;
+      // Fauna of the Unblooded hunts runs its own behaviour (systems/FaunaHunt.js).
+      if (a.isFauna) { if (a.faunaUpdate) a.faunaUpdate(delta, player); return; }
 
       // Airborne Juggling Physics (Dynasty Warriors Musou C2/C5 Launchers)
       if (a.isAirborne) {
