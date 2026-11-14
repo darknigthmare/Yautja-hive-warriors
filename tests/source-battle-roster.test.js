@@ -25,8 +25,13 @@ test('source template resolver never invents or mutates a finite squad',()=>{
 
 test('all 27 source rosters conserve every ID, squad, allocation and reserve from the legacy factory',()=>{
   for(const operation of BATTLE_OPERATIONS){
-    const newer=getBattleOperationConfig(operation.id,{allowHumanController:true});
+    // The LV-742 brood (HW-DEC-90) regroups eight existing IDs; the squad comparison uses the
+    // configuration without it, and the brood version must hold exactly the same identities.
+    const newer=getBattleOperationConfig(operation.id,{allowHumanController:true,legacyBrood:true});
     const legacy=getBattleOperationConfig(operation.id,{allowHumanController:true,rosterDetail:'legacy'});
+    const brood=getBattleOperationConfig(operation.id,{allowHumanController:true});
+    const ids=config=>config.groups.flatMap(group=>group.units.map(unit=>`${unit.id}|${group.state}`)).sort();
+    assert.deepEqual(ids(brood),ids(newer),operation.id);assert.deepEqual(brood.budgets,newer.budgets,operation.id);
     assert.deepEqual(newer.groups.map(group=>({id:group.id,factionId:group.factionId,frontId:group.frontId,
       state:group.state,sourceState:group.sourceState,units:group.units.map(unit=>unit.id)})),
       legacy.groups.map(group=>({id:group.id,factionId:group.factionId,frontId:group.frontId,
@@ -76,10 +81,14 @@ test('Lethe and LV-742 preserve their canonical squad allocations and queen repl
   const lethe=getBattleOperationConfig('AFF-14');
   assert.equal(boss(lethe,'BOS-32').group.sourceTemplateIds[0],'GRP-45');
   const lv=getBattleOperationConfig('AFF-27'), profiles=profilesOf(lv);
-  for(const group of groupsOf(lv,'GRP-58')){
-    assert.deepEqual(group.units.map(unit=>profiles.get(unit.profileId).sourceRole),
-     ['Warrior','Warrior','Warrior','Warrior','Runner','Runner','Drone (Warrior visual proxy)','Facehugger']);
-  }
+  // Eight GRP-58 reserve squads lent their Facehugger to the Queen's brood (HW-DEC-90).
+  const roles=['Warrior','Warrior','Warrior','Warrior','Runner','Runner','Drone (Warrior visual proxy)','Facehugger'];
+  const lenders=groupsOf(lv,'GRP-58').filter(group=>group.units.length===7);
+  assert.equal(lenders.length,8);
+  for(const group of groupsOf(lv,'GRP-58'))
+    assert.deepEqual(group.units.map(unit=>profiles.get(unit.profileId).sourceRole),roles.slice(0,group.units.length));
+  const brood=lv.groups.find(group=>group.brood);
+  assert.deepEqual(brood.units.map(unit=>profiles.get(unit.profileId).sourceRole),Array(8).fill('Facehugger'));
   for(const group of groupsOf(lv,'GRP-59')){
     assert.equal(group.units.length,8);
     const queen=group.units.find(unit=>unit.uniqueId==='BOS-39');

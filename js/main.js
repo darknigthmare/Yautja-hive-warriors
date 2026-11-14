@@ -40,7 +40,7 @@ import { mountSourceCatalogue } from './ui/SourceCatalogue.js';
 import { CommandMap, battleCommandFeedback } from './ui/CommandMap.js';
 import { OperationPanel } from './ui/OperationPanel.js';
 import { getBattlefieldMapVariant } from './data/BattlefieldMapVariants.js';
-import { BATTLE_OPERATIONS, getBattleOperationConfig, getBattleOperationScene } from './data/BattleCatalog.js';
+import { PLAYABLE_OPERATIONS as BATTLE_OPERATIONS, getBattleOperationConfig, getBattleOperationScene } from './data/BattleCatalog.js';
 import { WeatherSystem } from './engine/WeatherSystem.js';
 import { UIManager } from './ui/UIManager.js';
 import { ForgeShop } from './ui/ForgeShop.js';
@@ -223,7 +223,7 @@ class GameApp {
     const hiveOption=document.createElement('option');hiveOption.value=HIVE_CONFLICT_ID;hiveOption.textContent='Deux ruches rivales — scénario original';select.append(hiveOption);
     for (const operation of BATTLE_OPERATIONS) {
       const option = document.createElement('option'); option.value = operation.id;
-      option.textContent = `${operation.id} · ${operation.title}${operation.requiresHumanController ? ' — contrôleur humain indisponible' : ''}`;
+      option.textContent = `${operation.id} · ${operation.title}${operation.adaptedFrom ? ` — adaptation de ${operation.adaptedFrom}` : ''}${operation.requiresHumanController ? ' — contrôleur humain indisponible' : ''}`;
       option.disabled = operation.requiresHumanController; select.append(option);
     }
     const update = () => {

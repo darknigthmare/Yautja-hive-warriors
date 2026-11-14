@@ -2,7 +2,7 @@
 
 **Feature Branch**: `claude/fervent-volta-hmhdfw` (aucune branche dédiée)
 **Created**: 2026-11-14
-**Status**: Prête pour le plan (choix de l'auteur reçus)
+**Status**: Implémentée le 14 nov. 2026 (commits « counted civilians », « Queen's brood », « veteran extraction », « Tobler-9 truce »)
 **Input**: recette REC-004 et décision HW-DEC-90, « Les intégrer » : les gabarits GRP-05 (couvoir), GRP-16 (extraction d'un vétéran) et GRP-28 (civils) existent dans l'audit du 26 octobre, mais aucune opération ne les alloue ; aucune opération jouable ne choisit le budget EFF-06.
 
 ## Sources

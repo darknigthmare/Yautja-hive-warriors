@@ -3,8 +3,13 @@
  "titre": "Deux joueurs sur des fronts séparés",
  "source": "docs/audits/2026-10-26/Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.xlsx#Validation!REC-023",
  "dateExecution": "2026-11-14",
- "commit": "c02a324590199d4c9720e0a8e6eeb376009d855f",
- "sourcesJsNonCommitees": [],
+ "commit": "bdc12dec0706c3d14d87899bdf2e54d14d8fa12d",
+ "sourcesJsNonCommitees": [
+  " M js/battlefield/OperationScene.js",
+  " M js/data/BattleCatalog.js",
+  " M js/data/OperationThirdParties.js",
+  " M js/main.js"
+ ],
  "graine": {
   "operation": "AFF-14",
   "joueurs": 2,
@@ -2843,7 +2848,7 @@
    "groupesUniques": true,
    "reactionAnnoncee": [
     {
-     "id": "AFF-14:objective:3",
+     "id": "AFF-14:objective:5",
      "type": "counteroffensive_announced",
      "time": 23,
      "reactionId": "AFF-14:counterattack",

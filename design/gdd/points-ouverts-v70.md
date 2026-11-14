@@ -12,7 +12,7 @@ Les preuves sont dans `docs/qa/recettes-20261114/` (un JSON par recette) et les 
 | REC-001 | Trois fronts autonomes hors caméra pendant 20 min | Obs | Prouvé sans rendu. Reste la vidéo |
 | REC-002 | Choix d'intervention et conséquences | Obs | Prouvé sans rendu. Renforts étalés par vagues (HW-DEC-91) |
 | REC-003 | Alertes et délai de secours | Obs | Prouvé ; défaut corrigé : le passage coupé est annoncé |
-| REC-004 | Conservation des effectifs | Obs | Prouvé, sauf les gabarits GRP-05, 16 et 28, à intégrer (HW-DEC-90) |
+| REC-004 | Conservation des effectifs | Obs | Prouvé, couvoir, extraction et civils compris (HW-DEC-90) |
 | REC-005 | Bascule combat proche / simulation distante | Obs | Prouvé ; défaut corrigé : la bulle ne renouvelle plus ses groupes sous le joueur |
 | REC-006 | Renforts physiques et réserves de ruche | Obs | Prouvé ; réserve d'adultes assumée comme adaptation (HW-DEC-89) |
 | REC-007 | Compatibilité des factions par preset | Obs | Prouvé ; défaut corrigé : le mode hypothétique signale ses écarts |
@@ -40,7 +40,7 @@ Les preuves sont dans `docs/qa/recettes-20261114/` (un JSON par recette) et les 
 
 - Avec les sauvegardes antérieures au 1er novembre, la reprise reconstruit encore les synthétiques d'AFF-13 et d'AFF-16 sous des profils humains (`legacyRoster`). Ce repli est volontaire.
 - Le synthétique USCM d'Extinction est rendu avec le modèle `weyland_combat`.
-- Aucune opération du catalogue ne choisit le budget EFF-06 ; à traiter avec HW-DEC-90.
+- EFF-06 est porté par ADP-01, variante de trêve d'AFF-18. Elle s'ajoute hors catalogue aux 27 opérations de l'audit (HW-DEC-99). Ses survivants subissent de lourdes pertes à distance (88 sur 108 en 5 minutes avec la graine 0) : c'est à équilibrer en jeu.
 - La cible EFF-07, 64 ennemis par bulle en coopération, n'est pas atteinte, à cause du plafond provisoire de 32 acteurs détaillés (contrat 2).
 
 ## P1 et P2

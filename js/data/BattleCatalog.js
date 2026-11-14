@@ -85,7 +85,15 @@ function lookup(rows, id, label) {
 }
 export const getBattleProfile = id => lookup(BATTLE_PROFILES, id, 'profile');
 export const getBattleMap = id => lookup(BATTLE_MAPS, id, 'map');
-export const getBattleOperation = id => lookup(BATTLE_OPERATIONS, id, 'operation');
+/* Post-audit adaptations (HW-DEC-90/99). The 27 audited operations are unchanged; an adapted
+ * operation reuses one of them and declares what it changes. Not a certified reconstruction. */
+export const ADAPTED_OPERATIONS = freeze(source.operations.filter(row => row.id === 'AFF-18').map(base => ({ ...clone(base),
+  id: 'ADP-01', baseOperationId: base.id, budgetId: 'EFF-06', title: 'Tobler-9 — la trêve du refuge',
+  playerSide: 'Un joueur Yautja, 12 chasseurs alliés PNJ originaux et, sous trêve, 108 survivants armés de Tobler-9 (GRP-52).',
+  forceAllocation: null, adaptedFrom: base.id, adaptationDecision: 'HW-DEC-99',
+  adaptation: 'Variante d’AFF-18 au budget EFF-06 : même ruche et mêmes réserves ; la trêve avec les survivants est expliquée, révocable, et commence neutre.' })));
+export const PLAYABLE_OPERATIONS = freeze([...BATTLE_OPERATIONS, ...ADAPTED_OPERATIONS]);
+export const getBattleOperation = id => lookup(PLAYABLE_OPERATIONS, id, 'operation');
 export const getBattleBudget = id => lookup(BATTLE_BUDGETS, id, 'budget');
 export const getBattleGroup = id => lookup(BATTLE_GROUPS, id, 'group');
 export const getBattleFront = id => lookup(BATTLE_FRONTS, id, 'front');
@@ -251,9 +259,50 @@ function capDetailedAgents(byFaction, groups, ceiling) {
 /** Translate one proposed operation into the persistent simulation contract.
  * Positions are overridable by the actual scene layout; source dimensions are
  * not silently treated as a constructed or certified map. */
+const TRUCE_FACTION = 'tobler_survivors';
+function truceVariantConfig(adapted, options) {
+  const base = getBattleOperationConfig(adapted.baseOperationId, options), budget = getBattleBudget(adapted.budgetId);
+  const config = clone(base), rename = id => id.replace(`${adapted.baseOperationId}:`, `${adapted.id}:`);
+  const clan = config.groups.filter(group => group.factionId === config.playerFaction);
+  const pick = (state, count) => clan.filter(group => group.sourceState === state).slice(0, count);
+  // 12 Yautja (4 near, 4 distant, 4 reserve) from the base allocation; the rest of the clan is not deployed here.
+  const keptClan = [...pick('active', 2), ...[clan.find(group => group.sourceState === 'distant' && group.frontId === 'front_a'), clan.find(group => group.sourceState === 'distant' && group.frontId === 'front_b')].filter(Boolean), ...pick('reserve', 2)];
+  const survivors = [], plan = [['active', 6], ['distant', 16], ['reserve', 5]];
+  for (const [state, count] of plan) for (let index = 0; index < count; index++) {
+    const id = `${adapted.id}:${TRUCE_FACTION}:${survivors.length}`;
+    survivors.push({ id, label: 'Survivants de Tobler-9', factionId: TRUCE_FACTION, frontId: 'front_a', state: state === 'reserve' ? 'reserve' : 'distant', sourceState: state,
+      sourceTemplateIds: ['GRP-52'], units: Array.from({ length: 4 }, (_, unit) => ({ id: `${id}:${unit}`, profileId: `original_human_${unit === 0 ? 'officer' : 'soldier'}`, officer: unit === 0 })) });
+  }
+  config.groups = [...config.groups.filter(group => group.factionId !== config.playerFaction), ...keptClan, ...survivors]
+    .map(group => ({ ...group, id: rename(group.id), units: group.units.map(unit => ({ ...unit, id: rename(unit.id) })) }));
+  if (!config.profiles.some(profile => profile.id === 'original_human_soldier')) config.profiles.push(genericProfile('human'), genericProfile('human', 'officer'));
+  config.factions.push({ id: TRUCE_FACTION, species: 'human', allegiance: 'independent', moraleModel: 'human_morale', label: 'Survivants de Tobler-9' });
+  // A scenario truce, not an alliance: neutral with the clan, hostile to the hive.
+  config.relations.push({ a: config.playerFaction, b: TRUCE_FACTION, state: 'neutral' },
+    ...config.factions.filter(faction => ![config.playerFaction, TRUCE_FACTION].includes(faction.id)).map(faction => ({ a: TRUCE_FACTION, b: faction.id, state: 'hostile' })));
+  const raw = clone(base.sourceDetailedBudget.byFaction);
+  raw[config.playerFaction] = { active: 4, distant: 4, reserve: 4, total: 12 };
+  raw[TRUCE_FACTION] = { active: 24, distant: 64, reserve: 20, total: 108 };
+  const allies = raw[config.playerFaction].total + raw[TRUCE_FACTION].total;
+  if (allies !== budget.ally.total || raw[config.playerFaction].reserve + raw[TRUCE_FACTION].reserve !== budget.ally.reserve) fail(`${adapted.id}: allies must match ${budget.id}`);
+  const enemyTotal = Object.entries(raw).filter(([id]) => ![config.playerFaction, TRUCE_FACTION].includes(id)).reduce((sum, [, row]) => sum + row.total, 0);
+  if (enemyTotal !== budget.enemy.total) fail(`${adapted.id}: enemy force must match ${budget.id}`);
+  const byFaction = clone(raw), detail = capDetailedAgents(byFaction, config.groups, base.detailBudgetPolicy.maxDetailedAgents);
+  Object.assign(config, { id: adapted.id, name: adapted.title, budgetId: budget.id, desiredDetailedBudget: detail.desired,
+    sourceDetailedBudget: { budgetId: budget.id, active: detail.desired, byFaction: detail.original },
+    adaptedFrom: adapted.baseOperationId, adaptationDecision: adapted.adaptationDecision, adaptation: adapted.adaptation });
+  config.budgets = { ...config.budgets, active: detail.active, desiredActive: detail.desired, byFaction };
+  config.context = { ...config.context, designOrigin: 'post_audit_adaptation', adaptedFrom: adapted.baseOperationId };
+  const spec = createOperationObjectiveSpec(getBattleOperation(adapted.baseOperationId), config);
+  config.operationObjectives = { ...spec, id: `${adapted.id}:narrative-v1`, operationId: adapted.id, title: adapted.title };
+  return config;
+}
+
 export function getBattleOperationConfig(operationId, { playerCount = 1, budgetId, frontPositions, allowHumanController = false,
   maxDetailedAgents = 32, experimentalDetailBudget = false, rosterDetail = 'source',
   deploymentPlan = 'authored', legacySourceLinks = false, legacyBrood = false } = {}) {
+  const adapted = ADAPTED_OPERATIONS.find(row => row.id === operationId);
+  if (adapted) return truceVariantConfig(adapted, { playerCount, budgetId: undefined, frontPositions, allowHumanController, maxDetailedAgents, experimentalDetailBudget, rosterDetail, deploymentPlan, legacySourceLinks, legacyBrood });
   if (!['source', 'legacy'].includes(rosterDetail)) fail('unknown roster detail policy');
   if (!['authored', 'historical-fallback'].includes(deploymentPlan)) fail('unknown front deployment plan');
   const operation = getBattleOperation(operationId), map = getBattleMap(operation.mapId), frontSpec = getBattleFront(operation.frontId), budget = getBattleBudget(budgetId ?? operation.budgetId);

@@ -2,7 +2,7 @@
  * Read from the preserved audit text `thirdParties`; nothing is invented: an operation
  * whose text gives no figure has no population. These people are outside every combat
  * budget, kill quota and morale rule. */
-import { BATTLE_OPERATIONS } from './BattleCatalog.js';
+import { PLAYABLE_OPERATIONS } from './BattleCatalog.js';
 
 const WORDS = Object.freeze({ deux: 2, trois: 3, quatre: 4, cinq: 5, six: 6, sept: 7, huit: 8, neuf: 9, dix: 10, douze: 12, seize: 16, vingt: 20 });
 const number = token => /^\d+$/.test(token) ? Number(token) : WORDS[token.toLowerCase()] ?? null;
@@ -22,7 +22,7 @@ export function parseThirdParties(text) {
     species: SPECIES.find(([pattern]) => pattern.test(label))?.[1] ?? 'human', source: text });
 }
 
-export const OPERATION_THIRD_PARTIES = Object.freeze(Object.fromEntries(BATTLE_OPERATIONS
+export const OPERATION_THIRD_PARTIES = Object.freeze(Object.fromEntries(PLAYABLE_OPERATIONS
   .map(operation => [operation.id, parseThirdParties(operation.thirdParties)]).filter(([, value]) => value)));
 
 export const operationThirdParties = operationId => OPERATION_THIRD_PARTIES[operationId] ?? null;

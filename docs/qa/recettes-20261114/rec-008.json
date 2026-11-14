@@ -3,7 +3,7 @@
   "source": "docs/audits/2026-10-26/Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.xlsx#Validation",
   "perimetre": "Personnages nommés, variantes biologiques et unicité",
   "seed": 1114,
-  "commit": "7934cd7dfe1455ba192aac082d0052a66411ee82",
+  "commit": "bdc12dec0706c3d14d87899bdf2e54d14d8fa12d",
   "date": "2026-11-14",
   "commande": "node --test tests/recette-rec-008.test.js",
   "preuveVideo": "non produite — preuve par journal",

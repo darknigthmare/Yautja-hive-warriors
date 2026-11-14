@@ -1,6 +1,6 @@
 import { createHiveConflictScenario, HIVE_CONFLICT_ID } from './HiveConflictScenario.js';
 import { LEVELS_DATA } from '../data/levelsData.js';
-import { BATTLE_OPERATIONS, getBattleOperationConfig } from '../data/BattleCatalog.js';
+import { PLAYABLE_OPERATIONS, getBattleOperationConfig } from '../data/BattleCatalog.js';
 import { getBattlefieldMapVariant } from '../data/BattlefieldMapVariants.js';
 import { createBattlefieldLayout } from '../data/BattlefieldLayouts.js';
 import { createBattlefieldOperation, bindBattleOperationToLayout } from './BattlefieldOperation.js';
@@ -11,7 +11,7 @@ import { applyExtinctionBattleVariant } from './ExtinctionBattleVariant.js';
 
 export function createOperationScene({operationId='pilot',level=LEVELS_DATA[0],players=1,layout=null,mapSeed=0,difficultyId='standard',legacyRoster=false,legacyRouteGates=false,legacySourceLinks=false,legacyBrood=false,deploymentPlan='authored',extinctionVariant='none'}) {
   if(!Number.isInteger(mapSeed)||mapSeed<0||mapSeed>0xffffffff)throw new TypeError('Invalid operation map seed');
-  const operation=operationId==='pilot'?null:BATTLE_OPERATIONS.find(row=>row.id===operationId);
+  const operation=operationId==='pilot'?null:PLAYABLE_OPERATIONS.find(row=>row.id===operationId);
   if(operationId!=='pilot'&&operationId!==HIVE_CONFLICT_ID&&!operation)throw new Error('Unknown battle operation');
   const variant=operation?getBattlefieldMapVariant(operation.mapId):null;
   if(variant)level=LEVELS_DATA.find(row=>row.id===variant.baseLevelId);

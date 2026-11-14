@@ -80,7 +80,17 @@ actuellement dessinés en même temps.
 Les 27 scénarios du catalogue source déclarent
 **12 816 PNJ ennemis et 708 PNJ alliés cumulés
 entre scénarios**, soit **13 524 allocations**,
-pas dans une seule bataille. Ces effectifs
+pas dans une seule bataille. Depuis le 14
+novembre 2026 (HW-DEC-99), une opération
+d'adaptation s'y ajoute hors catalogue :
+**ADP-01**, variante de trêve d'AFF-18 au budget
+EFF-06 (1 000 ennemis, 12 Yautja et 108 survivants
+humains, soit 1 120 allocations). Les 13 524
+allocations des 27 scénarios audités sont
+inchangées. Le couvoir de LV-742 regroupe 8
+facehuggers déjà alloués, sans en créer. Les
+civils chiffrés par l'audit restent hors de ces
+effectifs (HW-DEC-90, HW-DEC-100). Ces effectifs
 incluent cinq opérations (**AFF-06 à AFF-10**)
 dont l'audit avait précisé le déploiement dans
 son texte, sans `forceAllocation` structuré.
