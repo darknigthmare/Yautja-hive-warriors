@@ -1,0 +1,7550 @@
+{
+  "recette": "REC-001",
+  "perimetre": "Trois fronts autonomes hors caméra",
+  "procedureClasseur": "Lancer la bataille pilote FR-01 avec une graine figée. Rester vingt minutes sur le front A sans déplacer la caméra vers B/C; enregistrer leurs objectifs, positions, pertes, réserves et rapports à intervalles réguliers.",
+  "resultatAttenduClasseur": "B et C évoluent selon leurs forces et ordres; ils peuvent tenir, progresser ou reculer sans apparition du joueur. Les changements existent avant leur observation et ne sont pas des déclencheurs de caméra.",
+  "preuveAConserverClasseur": "Vidéo continue avec horloge; chronologie des trois fronts; relevés avant/après; commit et graine.",
+  "date": "2026-11-14",
+  "commit": "4092a2c7da8f6df77a76daf2e0888e0297657e62",
+  "branche": "claude/fervent-volta-hmhdfw",
+  "preuveVideo": "non produite — preuve par journal de simulation",
+  "clauses": [
+    {
+      "id": "REC-001-1",
+      "texte": "B et C évoluent selon leurs forces et ordres ; ils peuvent tenir, progresser ou reculer sans apparition du joueur.",
+      "verdict": "conforme",
+      "preuve": {
+        "changementsB": 6,
+        "changementsC": 8,
+        "proprietairesB": [
+          "human_force",
+          "hive"
+        ],
+        "proprietairesC": [
+          "hive"
+        ],
+        "bilanB": {
+          "avant": {
+            "hive": 16,
+            "human_force": 16
+          },
+          "apres": {
+            "hive": 36
+          }
+        },
+        "bilanC": {
+          "avant": {
+            "hive": 32,
+            "human_force": 16
+          },
+          "apres": {
+            "hive": 28
+          }
+        },
+        "decisionsEtCaptures": [
+          {
+            "t": 242,
+            "type": "musou_officer_broken",
+            "groupId": "gunnison_forest:human_force:2",
+            "frontId": "relay"
+          },
+          {
+            "t": 242.5,
+            "type": "musou_officer_broken",
+            "groupId": "gunnison_forest:human_force:3",
+            "frontId": "relay"
+          },
+          {
+            "t": 246.75,
+            "type": "musou_officer_broken",
+            "groupId": "gunnison_forest:human_force:0",
+            "frontId": "relay"
+          },
+          {
+            "t": 250.5,
+            "type": "musou_officer_broken",
+            "groupId": "gunnison_forest:human_force:1",
+            "frontId": "relay"
+          },
+          {
+            "t": 260,
+            "type": "officer_decision",
+            "groupId": "gunnison_forest:hive:4"
+          },
+          {
+            "t": 277,
+            "type": "base_captured",
+            "frontId": "relay",
+            "owner": "hive"
+          },
+          {
+            "t": 367.25,
+            "type": "musou_officer_broken",
+            "groupId": "gunnison_forest:human_force:7",
+            "frontId": "nest"
+          },
+          {
+            "t": 382.25,
+            "type": "musou_officer_broken",
+            "groupId": "gunnison_forest:human_force:5",
+            "frontId": "nest"
+          },
+          {
+            "t": 382.75,
+            "type": "musou_officer_broken",
+            "groupId": "gunnison_forest:human_force:6",
+            "frontId": "nest"
+          },
+          {
+            "t": 402.75,
+            "type": "musou_officer_broken",
+            "groupId": "gunnison_forest:human_force:4",
+            "frontId": "nest"
+          }
+        ],
+        "stabilisation": "Dernier changement de B ou C relevé à t=480 s ; ensuite la force humaine est éliminée et chaque groupe de ruche seul reste sous le ratio d’assaut (assaultMinRatio=1) face aux 20 Yautja de A.",
+        "noteEquilibrage": "Constat d’équilibrage, pas un défaut de code."
+      }
+    },
+    {
+      "id": "REC-001-2",
+      "texte": "Sans apparition du joueur (aucun détail matérialisé pour B/C).",
+      "verdict": "conforme",
+      "preuve": {
+        "groupesMaterialises": [
+          "gunnison_forest:player_clan:0",
+          "gunnison_forest:player_clan:1"
+        ],
+        "groupesHostilesMaterialises": [],
+        "distanceMinimaleAuSeuilDeDetailBC": 153
+      }
+    },
+    {
+      "id": "REC-001-3",
+      "texte": "Les changements existent avant leur observation et ne sont pas des déclencheurs de caméra.",
+      "verdict": "conforme",
+      "preuve": {
+        "chronologieBCIdentiqueSansJoueur": true,
+        "rejeuIdentique": true,
+        "captureB": {
+          "t": 277,
+          "owner": "hive",
+          "reason": "unopposed_presence"
+        },
+        "connaissanceJoueurAvantObservation": {
+          "owner": null,
+          "contested": null,
+          "intelState": "unknown",
+          "reportAge": null,
+          "reportSource": null
+        },
+        "connaissanceJoueurApresObservation": {
+          "owner": "hive",
+          "contested": true,
+          "intelState": "observed",
+          "reportAge": 0,
+          "reportSource": "player_sight"
+        }
+      }
+    },
+    {
+      "id": "REC-001-4",
+      "texte": "Vidéo continue avec horloge (preuve à conserver).",
+      "verdict": "non automatisable",
+      "raison": "Exécution headless sans rendu : la vidéo et la revue de la caméra restent à produire par un humain dans le navigateur. La chronologie horodatée remplace la vidéo pour la seule partie simulation."
+    }
+  ],
+  "limites": [
+    "La présence du joueur sur A matérialise les groupes alliés de A (état active) ; sans acteurs 3D, aucun combat rapproché n’est simulé sur A. Aucun ennemi n’y étant engagé, cela n’influence pas B/C (vérifié par la course témoin sans joueur).",
+    "Les combats de B et C sont résolus par le combat à distance de BattleSimulation ; le rendu, la caméra et les acteurs détaillés ne sont pas exercés.",
+    "Une revue visuelle (caméra restée sur A, absence d’apparition visible) reste à faire par un humain dans le navigateur."
+  ],
+  "scenario": {
+    "operationId": "pilot",
+    "correspondance": "Le code ne lie aucune opération au gabarit catalogue FR-01 (FR-01 n’apparaît que dans js/data/BattleCatalogData.js). La bataille pilote trois fronts jouable est createOperationScene({operationId:\"pilot\"}) → createBattlefieldOperation (js/battlefield/BattlefieldOperation.js). Front A = insertion (clan du joueur), B = relais (force humaine), C = nid (ruche, source de renfort « tunnel »).",
+    "levelId": "gunnison_forest",
+    "configId": "three-fronts:gunnison_forest",
+    "configDigest": "c5562973",
+    "difficulte": {
+      "id": "standard",
+      "label": "Équilibré",
+      "scope": "officer_decisions_only",
+      "populationChanged": false
+    },
+    "ai": {
+      "interval": 20,
+      "minimumGarrisonGroups": 1,
+      "assaultMinRatio": 1,
+      "targetPreference": "weakest"
+    },
+    "fronts": {
+      "A": {
+        "id": "insertion",
+        "label": "Clairière d’insertion",
+        "owner": "player_clan",
+        "position": [
+          0,
+          0
+        ],
+        "radius": 58
+      },
+      "B": {
+        "id": "relay",
+        "label": "Relais de surveillance",
+        "owner": "human_force",
+        "position": [
+          170,
+          -170
+        ],
+        "radius": 58
+      },
+      "C": {
+        "id": "nest",
+        "label": "Nid de la vallée",
+        "owner": "hive",
+        "position": [
+          0,
+          -510
+        ],
+        "radius": 58
+      }
+    },
+    "routes": [
+      {
+        "id": "route-insertion-relay-main",
+        "from": "insertion",
+        "to": "relay",
+        "travelSeconds": 56.666666666666664,
+        "gates": [
+          "gate-insertion-approach",
+          "gate-approach-relay"
+        ]
+      },
+      {
+        "id": "route-relay-nest-main",
+        "from": "relay",
+        "to": "nest",
+        "travelSeconds": 85,
+        "gates": [
+          "gate-relay-foundry",
+          "gate-foundry-command",
+          "gate-command-nest"
+        ]
+      },
+      {
+        "id": "route-insertion-relay-flank",
+        "from": "insertion",
+        "to": "relay",
+        "travelSeconds": 92.66666666666667,
+        "gates": [
+          "gate-route-insertion-relay-flank"
+        ]
+      },
+      {
+        "id": "route-relay-nest-outer",
+        "from": "relay",
+        "to": "nest",
+        "travelSeconds": 121,
+        "gates": [
+          "gate-route-relay-nest-outer"
+        ]
+      }
+    ]
+  },
+  "graine": {
+    "mapSeed": 20261114,
+    "simulation": "aucun tirage aléatoire : ordre des attaques dérivé d’un hachage FNV des identifiants (BattleSimulation.js, attackSeeds)",
+    "pas": 0.25,
+    "dureeSimulee": 1200,
+    "echantillonnage": 60
+  },
+  "joueur": {
+    "position": "immobile au centre du front A pendant toute la durée",
+    "positionCoordonnees": [
+      0,
+      0
+    ]
+  },
+  "avant": {
+    "t": 0,
+    "A": {
+      "owner": "player_clan",
+      "contested": false,
+      "sourceHP": 1000,
+      "capture": {},
+      "strength": {
+        "player_clan": 16
+      },
+      "orders": {
+        "player_clan:defend->insertion": 4
+      },
+      "groups": [
+        {
+          "id": "gunnison_forest:player_clan:0",
+          "alive": 4,
+          "position": [
+            34,
+            0
+          ],
+          "materialized": false
+        },
+        {
+          "id": "gunnison_forest:player_clan:1",
+          "alive": 4,
+          "position": [
+            -4.4,
+            33.7
+          ],
+          "materialized": false
+        },
+        {
+          "id": "gunnison_forest:player_clan:2",
+          "alive": 4,
+          "position": [
+            -32.9,
+            -8.7
+          ],
+          "materialized": false
+        },
+        {
+          "id": "gunnison_forest:player_clan:3",
+          "alive": 4,
+          "position": [
+            12.9,
+            -31.5
+          ],
+          "materialized": false
+        }
+      ]
+    },
+    "B": {
+      "owner": "human_force",
+      "contested": false,
+      "sourceHP": 1000,
+      "capture": {},
+      "strength": {
+        "hive": 16,
+        "human_force": 16
+      },
+      "orders": {
+        "hive:defend->relay": 4,
+        "human_force:defend->relay": 4
+      },
+      "groups": [
+        {
+          "id": "gunnison_forest:hive:0",
+          "alive": 4,
+          "position": [
+            204,
+            -170
+          ],
+          "materialized": false
+        },
+        {
+          "id": "gunnison_forest:hive:1",
+          "alive": 4,
+          "position": [
+            165.6,
+            -136.3
+          ],
+          "materialized": false
+        },
+        {
+          "id": "gunnison_forest:hive:2",
+          "alive": 4,
+          "position": [
+            137.1,
+            -178.7
+          ],
+          "materialized": false
+        },
+        {
+          "id": "gunnison_forest:hive:3",
+          "alive": 4,
+          "position": [
+            182.9,
+            -201.5
+          ],
+          "materialized": false
+        },
+        {
+          "id": "gunnison_forest:human_force:0",
+          "alive": 4,
+          "position": [
+            204,
+            -170
+          ],
+          "materialized": false
+        },
+        {
+          "id": "gunnison_forest:human_force:1",
+          "alive": 4,
+          "position": [
+            165.6,
+            -136.3
+          ],
+          "materialized": false
+        },
+        {
+          "id": "gunnison_forest:human_force:2",
+          "alive": 4,
+          "position": [
+            137.1,
+            -178.7
+          ],
+          "materialized": false
+        },
+        {
+          "id": "gunnison_forest:human_force:3",
+          "alive": 4,
+          "position": [
+            182.9,
+            -201.5
+          ],
+          "materialized": false
+        }
+      ]
+    },
+    "C": {
+      "owner": "hive",
+      "contested": false,
+      "sourceHP": 1000,
+      "capture": {},
+      "strength": {
+        "hive": 32,
+        "human_force": 16
+      },
+      "orders": {
+        "hive:defend->nest": 8,
+        "human_force:defend->nest": 4
+      },
+      "groups": [
+        {
+          "id": "gunnison_forest:hive:4",
+          "alive": 4,
+          "position": [
+            29.6,
+            -493.2
+          ],
+          "materialized": false
+        },
+        {
+          "id": "gunnison_forest:hive:5",
+          "alive": 4,
+          "position": [
+            -20.5,
+            -482.9
+          ],
+          "materialized": false
+        },
+        {
+          "id": "gunnison_forest:hive:6",
+          "alive": 4,
+          "position": [
+            -24.3,
+            -533.8
+          ],
+          "materialized": false
+        },
+        {
+          "id": "gunnison_forest:hive:7",
+          "alive": 4,
+          "position": [
+            26.7,
+            -531
+          ],
+          "materialized": false
+        },
+        {
+          "id": "gunnison_forest:hive:8",
+          "alive": 4,
+          "position": [
+            17.4,
+            -480.8
+          ],
+          "materialized": false
+        },
+        {
+          "id": "gunnison_forest:hive:9",
+          "alive": 4,
+          "position": [
+            -31.2,
+            -496.5
+          ],
+          "materialized": false
+        },
+        {
+          "id": "gunnison_forest:hive:10",
+          "alive": 4,
+          "position": [
+            -9.4,
+            -542.7
+          ],
+          "materialized": false
+        },
+        {
+          "id": "gunnison_forest:hive:11",
+          "alive": 4,
+          "position": [
+            33.6,
+            -515.1
+          ],
+          "materialized": false
+        },
+        {
+          "id": "gunnison_forest:human_force:4",
+          "alive": 4,
+          "position": [
+            29.6,
+            -493.2
+          ],
+          "materialized": false
+        },
+        {
+          "id": "gunnison_forest:human_force:5",
+          "alive": 4,
+          "position": [
+            -20.5,
+            -482.9
+          ],
+          "materialized": false
+        },
+        {
+          "id": "gunnison_forest:human_force:6",
+          "alive": 4,
+          "position": [
+            -24.3,
+            -533.8
+          ],
+          "materialized": false
+        },
+        {
+          "id": "gunnison_forest:human_force:7",
+          "alive": 4,
+          "position": [
+            26.7,
+            -531
+          ],
+          "materialized": false
+        }
+      ]
+    },
+    "factions": {
+      "player_clan": {
+        "deployed": 16,
+        "active": 0,
+        "reserve": 4,
+        "dead": 0
+      },
+      "hive": {
+        "deployed": 48,
+        "active": 0,
+        "reserve": 16,
+        "dead": 0
+      },
+      "human_force": {
+        "deployed": 32,
+        "active": 0,
+        "reserve": 16,
+        "dead": 0
+      }
+    },
+    "playerKnowledge": {
+      "B": {
+        "owner": null,
+        "contested": null,
+        "intelState": "unknown",
+        "reportAge": null,
+        "reportSource": null
+      },
+      "C": {
+        "owner": null,
+        "contested": null,
+        "intelState": "unknown",
+        "reportAge": null,
+        "reportSource": null
+      }
+    }
+  },
+  "apres": {
+    "t": 1200,
+    "A": {
+      "owner": "player_clan",
+      "contested": false,
+      "sourceHP": 1000,
+      "capture": {},
+      "strength": {
+        "player_clan": 20
+      },
+      "orders": {
+        "player_clan:defend->insertion": 4,
+        "player_clan:attack->insertion": 1
+      },
+      "groups": [
+        {
+          "id": "gunnison_forest:player_clan:0",
+          "alive": 4,
+          "position": [
+            34,
+            0
+          ],
+          "materialized": true
+        },
+        {
+          "id": "gunnison_forest:player_clan:1",
+          "alive": 4,
+          "position": [
+            -4.4,
+            33.7
+          ],
+          "materialized": true
+        },
+        {
+          "id": "gunnison_forest:player_clan:2",
+          "alive": 4,
+          "position": [
+            -32.9,
+            -8.7
+          ],
+          "materialized": false
+        },
+        {
+          "id": "gunnison_forest:player_clan:3",
+          "alive": 4,
+          "position": [
+            12.9,
+            -31.5
+          ],
+          "materialized": false
+        },
+        {
+          "id": "gunnison_forest:player_clan:4",
+          "alive": 4,
+          "position": [
+            29.6,
+            16.8
+          ],
+          "materialized": false
+        }
+      ]
+    },
+    "B": {
+      "owner": "hive",
+      "contested": false,
+      "sourceHP": 1000,
+      "capture": {},
+      "strength": {
+        "hive": 36
+      },
+      "orders": {
+        "hive:defend->relay": 4,
+        "hive:attack->relay": 5
+      },
+      "groups": [
+        {
+          "id": "gunnison_forest:hive:0",
+          "alive": 4,
+          "position": [
+            204,
+            -170
+          ],
+          "materialized": false
+        },
+        {
+          "id": "gunnison_forest:hive:1",
+          "alive": 4,
+          "position": [
+            165.6,
+            -136.3
+          ],
+          "materialized": false
+        },
+        {
+          "id": "gunnison_forest:hive:2",
+          "alive": 4,
+          "position": [
+            137.1,
+            -178.7
+          ],
+          "materialized": false
+        },
+        {
+          "id": "gunnison_forest:hive:3",
+          "alive": 4,
+          "position": [
+            182.9,
+            -201.5
+          ],
+          "materialized": false
+        },
+        {
+          "id": "gunnison_forest:hive:4",
+          "alive": 4,
+          "position": [
+            170,
+            -170
+          ],
+          "materialized": false
+        },
+        {
+          "id": "gunnison_forest:hive:12",
+          "alive": 4,
+          "position": [
+            170,
+            -170
+          ],
+          "materialized": false
+        },
+        {
+          "id": "gunnison_forest:hive:13",
+          "alive": 4,
+          "position": [
+            170,
+            -170
+          ],
+          "materialized": false
+        },
+        {
+          "id": "gunnison_forest:hive:14",
+          "alive": 4,
+          "position": [
+            170,
+            -170
+          ],
+          "materialized": false
+        },
+        {
+          "id": "gunnison_forest:hive:15",
+          "alive": 4,
+          "position": [
+            170,
+            -170
+          ],
+          "materialized": false
+        }
+      ]
+    },
+    "C": {
+      "owner": "hive",
+      "contested": false,
+      "sourceHP": 1000,
+      "capture": {},
+      "strength": {
+        "hive": 28
+      },
+      "orders": {
+        "hive:defend->nest": 7
+      },
+      "groups": [
+        {
+          "id": "gunnison_forest:hive:5",
+          "alive": 4,
+          "position": [
+            -20.5,
+            -482.9
+          ],
+          "materialized": false
+        },
+        {
+          "id": "gunnison_forest:hive:6",
+          "alive": 4,
+          "position": [
+            -24.3,
+            -533.8
+          ],
+          "materialized": false
+        },
+        {
+          "id": "gunnison_forest:hive:7",
+          "alive": 4,
+          "position": [
+            26.7,
+            -531
+          ],
+          "materialized": false
+        },
+        {
+          "id": "gunnison_forest:hive:8",
+          "alive": 4,
+          "position": [
+            17.4,
+            -480.8
+          ],
+          "materialized": false
+        },
+        {
+          "id": "gunnison_forest:hive:9",
+          "alive": 4,
+          "position": [
+            -31.2,
+            -496.5
+          ],
+          "materialized": false
+        },
+        {
+          "id": "gunnison_forest:hive:10",
+          "alive": 4,
+          "position": [
+            -9.4,
+            -542.7
+          ],
+          "materialized": false
+        },
+        {
+          "id": "gunnison_forest:hive:11",
+          "alive": 4,
+          "position": [
+            33.6,
+            -515.1
+          ],
+          "materialized": false
+        }
+      ]
+    },
+    "factions": {
+      "player_clan": {
+        "deployed": 20,
+        "active": 8,
+        "reserve": 0,
+        "dead": 0
+      },
+      "hive": {
+        "deployed": 64,
+        "active": 0,
+        "reserve": 0,
+        "dead": 0
+      },
+      "human_force": {
+        "deployed": 0,
+        "active": 0,
+        "reserve": 0,
+        "dead": 48
+      }
+    },
+    "playerKnowledge": {
+      "B": {
+        "owner": null,
+        "contested": null,
+        "intelState": "unknown",
+        "reportAge": null,
+        "reportSource": null
+      },
+      "C": {
+        "owner": null,
+        "contested": null,
+        "intelState": "unknown",
+        "reportAge": null,
+        "reportSource": null
+      }
+    }
+  },
+  "chronologie": [
+    {
+      "t": 0,
+      "A": {
+        "owner": "player_clan",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "player_clan": 16
+        },
+        "orders": {
+          "player_clan:defend->insertion": 4
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:player_clan:0",
+            "alive": 4,
+            "position": [
+              34,
+              0
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:player_clan:1",
+            "alive": 4,
+            "position": [
+              -4.4,
+              33.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:player_clan:2",
+            "alive": 4,
+            "position": [
+              -32.9,
+              -8.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:player_clan:3",
+            "alive": 4,
+            "position": [
+              12.9,
+              -31.5
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "B": {
+        "owner": "human_force",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "hive": 16,
+          "human_force": 16
+        },
+        "orders": {
+          "hive:defend->relay": 4,
+          "human_force:defend->relay": 4
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:hive:0",
+            "alive": 4,
+            "position": [
+              204,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:1",
+            "alive": 4,
+            "position": [
+              165.6,
+              -136.3
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:2",
+            "alive": 4,
+            "position": [
+              137.1,
+              -178.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:3",
+            "alive": 4,
+            "position": [
+              182.9,
+              -201.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:0",
+            "alive": 4,
+            "position": [
+              204,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:1",
+            "alive": 4,
+            "position": [
+              165.6,
+              -136.3
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:2",
+            "alive": 4,
+            "position": [
+              137.1,
+              -178.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:3",
+            "alive": 4,
+            "position": [
+              182.9,
+              -201.5
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "C": {
+        "owner": "hive",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "hive": 32,
+          "human_force": 16
+        },
+        "orders": {
+          "hive:defend->nest": 8,
+          "human_force:defend->nest": 4
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:hive:4",
+            "alive": 4,
+            "position": [
+              29.6,
+              -493.2
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:5",
+            "alive": 4,
+            "position": [
+              -20.5,
+              -482.9
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:6",
+            "alive": 4,
+            "position": [
+              -24.3,
+              -533.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:7",
+            "alive": 4,
+            "position": [
+              26.7,
+              -531
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:8",
+            "alive": 4,
+            "position": [
+              17.4,
+              -480.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:9",
+            "alive": 4,
+            "position": [
+              -31.2,
+              -496.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:10",
+            "alive": 4,
+            "position": [
+              -9.4,
+              -542.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:11",
+            "alive": 4,
+            "position": [
+              33.6,
+              -515.1
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:4",
+            "alive": 4,
+            "position": [
+              29.6,
+              -493.2
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:5",
+            "alive": 4,
+            "position": [
+              -20.5,
+              -482.9
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:6",
+            "alive": 4,
+            "position": [
+              -24.3,
+              -533.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:7",
+            "alive": 4,
+            "position": [
+              26.7,
+              -531
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "factions": {
+        "player_clan": {
+          "deployed": 16,
+          "active": 0,
+          "reserve": 4,
+          "dead": 0
+        },
+        "hive": {
+          "deployed": 48,
+          "active": 0,
+          "reserve": 16,
+          "dead": 0
+        },
+        "human_force": {
+          "deployed": 32,
+          "active": 0,
+          "reserve": 16,
+          "dead": 0
+        }
+      },
+      "playerKnowledge": {
+        "B": {
+          "owner": null,
+          "contested": null,
+          "intelState": "unknown",
+          "reportAge": null,
+          "reportSource": null
+        },
+        "C": {
+          "owner": null,
+          "contested": null,
+          "intelState": "unknown",
+          "reportAge": null,
+          "reportSource": null
+        }
+      }
+    },
+    {
+      "t": 60,
+      "A": {
+        "owner": "player_clan",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "player_clan": 20
+        },
+        "orders": {
+          "player_clan:defend->insertion": 4,
+          "player_clan:attack->insertion": 1
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:player_clan:0",
+            "alive": 4,
+            "position": [
+              34,
+              0
+            ],
+            "materialized": true
+          },
+          {
+            "id": "gunnison_forest:player_clan:1",
+            "alive": 4,
+            "position": [
+              -4.4,
+              33.7
+            ],
+            "materialized": true
+          },
+          {
+            "id": "gunnison_forest:player_clan:2",
+            "alive": 4,
+            "position": [
+              -32.9,
+              -8.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:player_clan:3",
+            "alive": 4,
+            "position": [
+              12.9,
+              -31.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:player_clan:4",
+            "alive": 4,
+            "position": [
+              29.6,
+              16.8
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "B": {
+        "owner": "human_force",
+        "contested": true,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "hive": 16,
+          "human_force": 32
+        },
+        "orders": {
+          "hive:defend->relay": 4,
+          "human_force:defend->relay": 4,
+          "human_force:attack->nest": 4
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:hive:0",
+            "alive": 4,
+            "position": [
+              204,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:1",
+            "alive": 4,
+            "position": [
+              165.6,
+              -136.3
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:2",
+            "alive": 4,
+            "position": [
+              137.1,
+              -178.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:3",
+            "alive": 4,
+            "position": [
+              182.9,
+              -201.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:0",
+            "alive": 4,
+            "position": [
+              204,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:1",
+            "alive": 4,
+            "position": [
+              165.6,
+              -136.3
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:2",
+            "alive": 4,
+            "position": [
+              137.1,
+              -178.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:3",
+            "alive": 4,
+            "position": [
+              182.9,
+              -201.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:8",
+            "alive": 4,
+            "position": [
+              80,
+              -340
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:9",
+            "alive": 4,
+            "position": [
+              128,
+              -340
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:10",
+            "alive": 4,
+            "position": [
+              170,
+              -334
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:11",
+            "alive": 4,
+            "position": [
+              170,
+              -286
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "C": {
+        "owner": "hive",
+        "contested": true,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "hive": 48,
+          "human_force": 16
+        },
+        "orders": {
+          "hive:defend->nest": 8,
+          "hive:attack->relay": 4,
+          "human_force:defend->nest": 4
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:hive:4",
+            "alive": 4,
+            "position": [
+              29.6,
+              -493.2
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:5",
+            "alive": 4,
+            "position": [
+              -20.5,
+              -482.9
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:6",
+            "alive": 4,
+            "position": [
+              -24.3,
+              -533.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:7",
+            "alive": 4,
+            "position": [
+              26.7,
+              -531
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:8",
+            "alive": 4,
+            "position": [
+              17.4,
+              -480.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:9",
+            "alive": 4,
+            "position": [
+              -31.2,
+              -496.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:10",
+            "alive": 4,
+            "position": [
+              -9.4,
+              -542.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:11",
+            "alive": 4,
+            "position": [
+              33.6,
+              -515.1
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:12",
+            "alive": 4,
+            "position": [
+              90,
+              -340
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:13",
+            "alive": 4,
+            "position": [
+              42,
+              -340
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:14",
+            "alive": 4,
+            "position": [
+              0,
+              -346
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:15",
+            "alive": 4,
+            "position": [
+              0,
+              -394
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:4",
+            "alive": 4,
+            "position": [
+              29.6,
+              -493.2
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:5",
+            "alive": 4,
+            "position": [
+              -20.5,
+              -482.9
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:6",
+            "alive": 4,
+            "position": [
+              -24.3,
+              -533.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:7",
+            "alive": 4,
+            "position": [
+              26.7,
+              -531
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "factions": {
+        "player_clan": {
+          "deployed": 20,
+          "active": 8,
+          "reserve": 0,
+          "dead": 0
+        },
+        "hive": {
+          "deployed": 64,
+          "active": 0,
+          "reserve": 0,
+          "dead": 0
+        },
+        "human_force": {
+          "deployed": 48,
+          "active": 0,
+          "reserve": 0,
+          "dead": 0
+        }
+      },
+      "playerKnowledge": {
+        "B": {
+          "owner": null,
+          "contested": null,
+          "intelState": "unknown",
+          "reportAge": null,
+          "reportSource": null
+        },
+        "C": {
+          "owner": null,
+          "contested": null,
+          "intelState": "unknown",
+          "reportAge": null,
+          "reportSource": null
+        }
+      }
+    },
+    {
+      "t": 120,
+      "A": {
+        "owner": "player_clan",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "player_clan": 20
+        },
+        "orders": {
+          "player_clan:defend->insertion": 4,
+          "player_clan:attack->insertion": 1
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:player_clan:0",
+            "alive": 4,
+            "position": [
+              34,
+              0
+            ],
+            "materialized": true
+          },
+          {
+            "id": "gunnison_forest:player_clan:1",
+            "alive": 4,
+            "position": [
+              -4.4,
+              33.7
+            ],
+            "materialized": true
+          },
+          {
+            "id": "gunnison_forest:player_clan:2",
+            "alive": 4,
+            "position": [
+              -32.9,
+              -8.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:player_clan:3",
+            "alive": 4,
+            "position": [
+              12.9,
+              -31.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:player_clan:4",
+            "alive": 4,
+            "position": [
+              29.6,
+              16.8
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "B": {
+        "owner": "human_force",
+        "contested": true,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "hive": 28,
+          "human_force": 20
+        },
+        "orders": {
+          "hive:defend->relay": 4,
+          "hive:attack->relay": 3,
+          "human_force:defend->relay": 4,
+          "human_force:attack->nest": 1
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:hive:0",
+            "alive": 4,
+            "position": [
+              204,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:1",
+            "alive": 4,
+            "position": [
+              165.6,
+              -136.3
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:2",
+            "alive": 4,
+            "position": [
+              137.1,
+              -178.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:3",
+            "alive": 4,
+            "position": [
+              182.9,
+              -201.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:12",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:13",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:14",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:0",
+            "alive": 4,
+            "position": [
+              204,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:1",
+            "alive": 4,
+            "position": [
+              165.6,
+              -136.3
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:2",
+            "alive": 4,
+            "position": [
+              137.1,
+              -178.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:3",
+            "alive": 4,
+            "position": [
+              182.9,
+              -201.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:11",
+            "alive": 4,
+            "position": [
+              0,
+              -476
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "C": {
+        "owner": "hive",
+        "contested": true,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "hive": 36,
+          "human_force": 28
+        },
+        "orders": {
+          "hive:defend->nest": 8,
+          "hive:attack->relay": 1,
+          "human_force:defend->nest": 4,
+          "human_force:attack->nest": 3
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:hive:4",
+            "alive": 4,
+            "position": [
+              29.6,
+              -493.2
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:5",
+            "alive": 4,
+            "position": [
+              -20.5,
+              -482.9
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:6",
+            "alive": 4,
+            "position": [
+              -24.3,
+              -533.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:7",
+            "alive": 4,
+            "position": [
+              26.7,
+              -531
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:8",
+            "alive": 4,
+            "position": [
+              17.4,
+              -480.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:9",
+            "alive": 4,
+            "position": [
+              -31.2,
+              -496.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:10",
+            "alive": 4,
+            "position": [
+              -9.4,
+              -542.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:11",
+            "alive": 4,
+            "position": [
+              33.6,
+              -515.1
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:15",
+            "alive": 4,
+            "position": [
+              170,
+              -204
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:4",
+            "alive": 4,
+            "position": [
+              29.6,
+              -493.2
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:5",
+            "alive": 4,
+            "position": [
+              -20.5,
+              -482.9
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:6",
+            "alive": 4,
+            "position": [
+              -24.3,
+              -533.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:7",
+            "alive": 4,
+            "position": [
+              26.7,
+              -531
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:8",
+            "alive": 4,
+            "position": [
+              0,
+              -510
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:9",
+            "alive": 4,
+            "position": [
+              0,
+              -510
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:10",
+            "alive": 4,
+            "position": [
+              0,
+              -510
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "factions": {
+        "player_clan": {
+          "deployed": 20,
+          "active": 8,
+          "reserve": 0,
+          "dead": 0
+        },
+        "hive": {
+          "deployed": 64,
+          "active": 0,
+          "reserve": 0,
+          "dead": 0
+        },
+        "human_force": {
+          "deployed": 48,
+          "active": 0,
+          "reserve": 0,
+          "dead": 0
+        }
+      },
+      "playerKnowledge": {
+        "B": {
+          "owner": null,
+          "contested": null,
+          "intelState": "unknown",
+          "reportAge": null,
+          "reportSource": null
+        },
+        "C": {
+          "owner": null,
+          "contested": null,
+          "intelState": "unknown",
+          "reportAge": null,
+          "reportSource": null
+        }
+      }
+    },
+    {
+      "t": 180,
+      "A": {
+        "owner": "player_clan",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "player_clan": 20
+        },
+        "orders": {
+          "player_clan:defend->insertion": 4,
+          "player_clan:attack->insertion": 1
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:player_clan:0",
+            "alive": 4,
+            "position": [
+              34,
+              0
+            ],
+            "materialized": true
+          },
+          {
+            "id": "gunnison_forest:player_clan:1",
+            "alive": 4,
+            "position": [
+              -4.4,
+              33.7
+            ],
+            "materialized": true
+          },
+          {
+            "id": "gunnison_forest:player_clan:2",
+            "alive": 4,
+            "position": [
+              -32.9,
+              -8.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:player_clan:3",
+            "alive": 4,
+            "position": [
+              12.9,
+              -31.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:player_clan:4",
+            "alive": 4,
+            "position": [
+              29.6,
+              16.8
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "B": {
+        "owner": "human_force",
+        "contested": true,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "hive": 32,
+          "human_force": 16
+        },
+        "orders": {
+          "hive:defend->relay": 4,
+          "hive:attack->relay": 4,
+          "human_force:defend->relay": 4
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:hive:0",
+            "alive": 4,
+            "position": [
+              204,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:1",
+            "alive": 4,
+            "position": [
+              165.6,
+              -136.3
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:2",
+            "alive": 4,
+            "position": [
+              137.1,
+              -178.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:3",
+            "alive": 4,
+            "position": [
+              182.9,
+              -201.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:12",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:13",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:14",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:15",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:0",
+            "alive": 4,
+            "position": [
+              204,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:1",
+            "alive": 4,
+            "position": [
+              165.6,
+              -136.3
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:2",
+            "alive": 4,
+            "position": [
+              137.1,
+              -178.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:3",
+            "alive": 4,
+            "position": [
+              182.9,
+              -201.5
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "C": {
+        "owner": "hive",
+        "contested": true,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "hive": 32,
+          "human_force": 28
+        },
+        "orders": {
+          "hive:defend->nest": 8,
+          "human_force:defend->nest": 4,
+          "human_force:attack->nest": 4
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:hive:4",
+            "alive": 4,
+            "position": [
+              29.6,
+              -493.2
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:5",
+            "alive": 4,
+            "position": [
+              -20.5,
+              -482.9
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:6",
+            "alive": 4,
+            "position": [
+              -24.3,
+              -533.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:7",
+            "alive": 4,
+            "position": [
+              26.7,
+              -531
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:8",
+            "alive": 4,
+            "position": [
+              17.4,
+              -480.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:9",
+            "alive": 4,
+            "position": [
+              -31.2,
+              -496.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:10",
+            "alive": 4,
+            "position": [
+              -9.4,
+              -542.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:11",
+            "alive": 4,
+            "position": [
+              33.6,
+              -515.1
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:4",
+            "alive": 3,
+            "position": [
+              29.6,
+              -493.2
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:5",
+            "alive": 3,
+            "position": [
+              -20.5,
+              -482.9
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:6",
+            "alive": 3,
+            "position": [
+              -24.3,
+              -533.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:7",
+            "alive": 3,
+            "position": [
+              26.7,
+              -531
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:8",
+            "alive": 4,
+            "position": [
+              0,
+              -510
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:9",
+            "alive": 4,
+            "position": [
+              0,
+              -510
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:10",
+            "alive": 4,
+            "position": [
+              0,
+              -510
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:11",
+            "alive": 4,
+            "position": [
+              0,
+              -510
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "factions": {
+        "player_clan": {
+          "deployed": 20,
+          "active": 8,
+          "reserve": 0,
+          "dead": 0
+        },
+        "hive": {
+          "deployed": 64,
+          "active": 0,
+          "reserve": 0,
+          "dead": 0
+        },
+        "human_force": {
+          "deployed": 44,
+          "active": 0,
+          "reserve": 0,
+          "dead": 4
+        }
+      },
+      "playerKnowledge": {
+        "B": {
+          "owner": null,
+          "contested": null,
+          "intelState": "unknown",
+          "reportAge": null,
+          "reportSource": null
+        },
+        "C": {
+          "owner": null,
+          "contested": null,
+          "intelState": "unknown",
+          "reportAge": null,
+          "reportSource": null
+        }
+      }
+    },
+    {
+      "t": 240,
+      "A": {
+        "owner": "player_clan",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "player_clan": 20
+        },
+        "orders": {
+          "player_clan:defend->insertion": 4,
+          "player_clan:attack->insertion": 1
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:player_clan:0",
+            "alive": 4,
+            "position": [
+              34,
+              0
+            ],
+            "materialized": true
+          },
+          {
+            "id": "gunnison_forest:player_clan:1",
+            "alive": 4,
+            "position": [
+              -4.4,
+              33.7
+            ],
+            "materialized": true
+          },
+          {
+            "id": "gunnison_forest:player_clan:2",
+            "alive": 4,
+            "position": [
+              -32.9,
+              -8.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:player_clan:3",
+            "alive": 4,
+            "position": [
+              12.9,
+              -31.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:player_clan:4",
+            "alive": 4,
+            "position": [
+              29.6,
+              16.8
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "B": {
+        "owner": "human_force",
+        "contested": true,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "hive": 32,
+          "human_force": 8
+        },
+        "orders": {
+          "hive:defend->relay": 4,
+          "hive:attack->relay": 4,
+          "human_force:defend->relay": 4
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:hive:0",
+            "alive": 4,
+            "position": [
+              204,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:1",
+            "alive": 4,
+            "position": [
+              165.6,
+              -136.3
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:2",
+            "alive": 4,
+            "position": [
+              137.1,
+              -178.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:3",
+            "alive": 4,
+            "position": [
+              182.9,
+              -201.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:12",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:13",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:14",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:15",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:0",
+            "alive": 2,
+            "position": [
+              204,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:1",
+            "alive": 2,
+            "position": [
+              165.6,
+              -136.3
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:2",
+            "alive": 2,
+            "position": [
+              137.1,
+              -178.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:3",
+            "alive": 2,
+            "position": [
+              182.9,
+              -201.5
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "C": {
+        "owner": "hive",
+        "contested": true,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "hive": 32,
+          "human_force": 26
+        },
+        "orders": {
+          "hive:defend->nest": 8,
+          "human_force:defend->nest": 4,
+          "human_force:attack->nest": 4
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:hive:4",
+            "alive": 4,
+            "position": [
+              29.6,
+              -493.2
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:5",
+            "alive": 4,
+            "position": [
+              -20.5,
+              -482.9
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:6",
+            "alive": 4,
+            "position": [
+              -24.3,
+              -533.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:7",
+            "alive": 4,
+            "position": [
+              26.7,
+              -531
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:8",
+            "alive": 4,
+            "position": [
+              17.4,
+              -480.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:9",
+            "alive": 4,
+            "position": [
+              -31.2,
+              -496.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:10",
+            "alive": 4,
+            "position": [
+              -9.4,
+              -542.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:11",
+            "alive": 4,
+            "position": [
+              33.6,
+              -515.1
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:4",
+            "alive": 2,
+            "position": [
+              29.6,
+              -493.2
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:5",
+            "alive": 3,
+            "position": [
+              -20.5,
+              -482.9
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:6",
+            "alive": 3,
+            "position": [
+              -24.3,
+              -533.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:7",
+            "alive": 2,
+            "position": [
+              26.7,
+              -531
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:8",
+            "alive": 4,
+            "position": [
+              0,
+              -510
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:9",
+            "alive": 4,
+            "position": [
+              0,
+              -510
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:10",
+            "alive": 4,
+            "position": [
+              0,
+              -510
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:11",
+            "alive": 4,
+            "position": [
+              0,
+              -510
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "factions": {
+        "player_clan": {
+          "deployed": 20,
+          "active": 8,
+          "reserve": 0,
+          "dead": 0
+        },
+        "hive": {
+          "deployed": 64,
+          "active": 0,
+          "reserve": 0,
+          "dead": 0
+        },
+        "human_force": {
+          "deployed": 34,
+          "active": 0,
+          "reserve": 0,
+          "dead": 14
+        }
+      },
+      "playerKnowledge": {
+        "B": {
+          "owner": null,
+          "contested": null,
+          "intelState": "unknown",
+          "reportAge": null,
+          "reportSource": null
+        },
+        "C": {
+          "owner": null,
+          "contested": null,
+          "intelState": "unknown",
+          "reportAge": null,
+          "reportSource": null
+        }
+      }
+    },
+    {
+      "t": 300,
+      "A": {
+        "owner": "player_clan",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "player_clan": 20
+        },
+        "orders": {
+          "player_clan:defend->insertion": 4,
+          "player_clan:attack->insertion": 1
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:player_clan:0",
+            "alive": 4,
+            "position": [
+              34,
+              0
+            ],
+            "materialized": true
+          },
+          {
+            "id": "gunnison_forest:player_clan:1",
+            "alive": 4,
+            "position": [
+              -4.4,
+              33.7
+            ],
+            "materialized": true
+          },
+          {
+            "id": "gunnison_forest:player_clan:2",
+            "alive": 4,
+            "position": [
+              -32.9,
+              -8.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:player_clan:3",
+            "alive": 4,
+            "position": [
+              12.9,
+              -31.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:player_clan:4",
+            "alive": 4,
+            "position": [
+              29.6,
+              16.8
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "B": {
+        "owner": "hive",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "hive": 32
+        },
+        "orders": {
+          "hive:defend->relay": 4,
+          "hive:attack->relay": 4
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:hive:0",
+            "alive": 4,
+            "position": [
+              204,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:1",
+            "alive": 4,
+            "position": [
+              165.6,
+              -136.3
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:2",
+            "alive": 4,
+            "position": [
+              137.1,
+              -178.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:3",
+            "alive": 4,
+            "position": [
+              182.9,
+              -201.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:12",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:13",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:14",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:15",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "C": {
+        "owner": "hive",
+        "contested": true,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "hive": 32,
+          "human_force": 25
+        },
+        "orders": {
+          "hive:attack->relay": 1,
+          "hive:defend->nest": 7,
+          "human_force:defend->nest": 4,
+          "human_force:attack->nest": 4
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:hive:4",
+            "alive": 4,
+            "position": [
+              36,
+              -340
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:5",
+            "alive": 4,
+            "position": [
+              -20.5,
+              -482.9
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:6",
+            "alive": 4,
+            "position": [
+              -24.3,
+              -533.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:7",
+            "alive": 4,
+            "position": [
+              26.7,
+              -531
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:8",
+            "alive": 4,
+            "position": [
+              17.4,
+              -480.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:9",
+            "alive": 4,
+            "position": [
+              -31.2,
+              -496.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:10",
+            "alive": 4,
+            "position": [
+              -9.4,
+              -542.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:11",
+            "alive": 4,
+            "position": [
+              33.6,
+              -515.1
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:4",
+            "alive": 2,
+            "position": [
+              29.6,
+              -493.2
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:5",
+            "alive": 2,
+            "position": [
+              -20.5,
+              -482.9
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:6",
+            "alive": 3,
+            "position": [
+              -24.3,
+              -533.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:7",
+            "alive": 2,
+            "position": [
+              26.7,
+              -531
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:8",
+            "alive": 4,
+            "position": [
+              0,
+              -510
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:9",
+            "alive": 4,
+            "position": [
+              0,
+              -510
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:10",
+            "alive": 4,
+            "position": [
+              0,
+              -510
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:11",
+            "alive": 4,
+            "position": [
+              0,
+              -510
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "factions": {
+        "player_clan": {
+          "deployed": 20,
+          "active": 8,
+          "reserve": 0,
+          "dead": 0
+        },
+        "hive": {
+          "deployed": 64,
+          "active": 0,
+          "reserve": 0,
+          "dead": 0
+        },
+        "human_force": {
+          "deployed": 25,
+          "active": 0,
+          "reserve": 0,
+          "dead": 23
+        }
+      },
+      "playerKnowledge": {
+        "B": {
+          "owner": null,
+          "contested": null,
+          "intelState": "unknown",
+          "reportAge": null,
+          "reportSource": null
+        },
+        "C": {
+          "owner": null,
+          "contested": null,
+          "intelState": "unknown",
+          "reportAge": null,
+          "reportSource": null
+        }
+      }
+    },
+    {
+      "t": 360,
+      "A": {
+        "owner": "player_clan",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "player_clan": 20
+        },
+        "orders": {
+          "player_clan:defend->insertion": 4,
+          "player_clan:attack->insertion": 1
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:player_clan:0",
+            "alive": 4,
+            "position": [
+              34,
+              0
+            ],
+            "materialized": true
+          },
+          {
+            "id": "gunnison_forest:player_clan:1",
+            "alive": 4,
+            "position": [
+              -4.4,
+              33.7
+            ],
+            "materialized": true
+          },
+          {
+            "id": "gunnison_forest:player_clan:2",
+            "alive": 4,
+            "position": [
+              -32.9,
+              -8.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:player_clan:3",
+            "alive": 4,
+            "position": [
+              12.9,
+              -31.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:player_clan:4",
+            "alive": 4,
+            "position": [
+              29.6,
+              16.8
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "B": {
+        "owner": "hive",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "hive": 36
+        },
+        "orders": {
+          "hive:defend->relay": 4,
+          "hive:attack->relay": 5
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:hive:0",
+            "alive": 4,
+            "position": [
+              204,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:1",
+            "alive": 4,
+            "position": [
+              165.6,
+              -136.3
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:2",
+            "alive": 4,
+            "position": [
+              137.1,
+              -178.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:3",
+            "alive": 4,
+            "position": [
+              182.9,
+              -201.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:4",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:12",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:13",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:14",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:15",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "C": {
+        "owner": "hive",
+        "contested": true,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "hive": 28,
+          "human_force": 19
+        },
+        "orders": {
+          "hive:defend->nest": 7,
+          "human_force:defend->nest": 4,
+          "human_force:attack->nest": 4
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:hive:5",
+            "alive": 4,
+            "position": [
+              -20.5,
+              -482.9
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:6",
+            "alive": 4,
+            "position": [
+              -24.3,
+              -533.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:7",
+            "alive": 4,
+            "position": [
+              26.7,
+              -531
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:8",
+            "alive": 4,
+            "position": [
+              17.4,
+              -480.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:9",
+            "alive": 4,
+            "position": [
+              -31.2,
+              -496.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:10",
+            "alive": 4,
+            "position": [
+              -9.4,
+              -542.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:11",
+            "alive": 4,
+            "position": [
+              33.6,
+              -515.1
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:4",
+            "alive": 1,
+            "position": [
+              29.6,
+              -493.2
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:5",
+            "alive": 1,
+            "position": [
+              -20.5,
+              -482.9
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:6",
+            "alive": 1,
+            "position": [
+              -24.3,
+              -533.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:7",
+            "alive": 1,
+            "position": [
+              26.7,
+              -531
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:8",
+            "alive": 4,
+            "position": [
+              0,
+              -510
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:9",
+            "alive": 4,
+            "position": [
+              0,
+              -510
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:10",
+            "alive": 3,
+            "position": [
+              0,
+              -510
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:11",
+            "alive": 4,
+            "position": [
+              0,
+              -510
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "factions": {
+        "player_clan": {
+          "deployed": 20,
+          "active": 8,
+          "reserve": 0,
+          "dead": 0
+        },
+        "hive": {
+          "deployed": 64,
+          "active": 0,
+          "reserve": 0,
+          "dead": 0
+        },
+        "human_force": {
+          "deployed": 19,
+          "active": 0,
+          "reserve": 0,
+          "dead": 29
+        }
+      },
+      "playerKnowledge": {
+        "B": {
+          "owner": null,
+          "contested": null,
+          "intelState": "unknown",
+          "reportAge": null,
+          "reportSource": null
+        },
+        "C": {
+          "owner": null,
+          "contested": null,
+          "intelState": "unknown",
+          "reportAge": null,
+          "reportSource": null
+        }
+      }
+    },
+    {
+      "t": 420,
+      "A": {
+        "owner": "player_clan",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "player_clan": 20
+        },
+        "orders": {
+          "player_clan:defend->insertion": 4,
+          "player_clan:attack->insertion": 1
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:player_clan:0",
+            "alive": 4,
+            "position": [
+              34,
+              0
+            ],
+            "materialized": true
+          },
+          {
+            "id": "gunnison_forest:player_clan:1",
+            "alive": 4,
+            "position": [
+              -4.4,
+              33.7
+            ],
+            "materialized": true
+          },
+          {
+            "id": "gunnison_forest:player_clan:2",
+            "alive": 4,
+            "position": [
+              -32.9,
+              -8.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:player_clan:3",
+            "alive": 4,
+            "position": [
+              12.9,
+              -31.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:player_clan:4",
+            "alive": 4,
+            "position": [
+              29.6,
+              16.8
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "B": {
+        "owner": "hive",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "hive": 36
+        },
+        "orders": {
+          "hive:defend->relay": 4,
+          "hive:attack->relay": 5
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:hive:0",
+            "alive": 4,
+            "position": [
+              204,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:1",
+            "alive": 4,
+            "position": [
+              165.6,
+              -136.3
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:2",
+            "alive": 4,
+            "position": [
+              137.1,
+              -178.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:3",
+            "alive": 4,
+            "position": [
+              182.9,
+              -201.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:4",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:12",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:13",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:14",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:15",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "C": {
+        "owner": "hive",
+        "contested": true,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "hive": 28,
+          "human_force": 6
+        },
+        "orders": {
+          "hive:defend->nest": 7,
+          "human_force:attack->nest": 4
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:hive:5",
+            "alive": 4,
+            "position": [
+              -20.5,
+              -482.9
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:6",
+            "alive": 4,
+            "position": [
+              -24.3,
+              -533.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:7",
+            "alive": 4,
+            "position": [
+              26.7,
+              -531
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:8",
+            "alive": 4,
+            "position": [
+              17.4,
+              -480.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:9",
+            "alive": 4,
+            "position": [
+              -31.2,
+              -496.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:10",
+            "alive": 4,
+            "position": [
+              -9.4,
+              -542.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:11",
+            "alive": 4,
+            "position": [
+              33.6,
+              -515.1
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:8",
+            "alive": 1,
+            "position": [
+              0,
+              -510
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:9",
+            "alive": 1,
+            "position": [
+              0,
+              -510
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:10",
+            "alive": 2,
+            "position": [
+              0,
+              -510
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:human_force:11",
+            "alive": 2,
+            "position": [
+              0,
+              -510
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "factions": {
+        "player_clan": {
+          "deployed": 20,
+          "active": 8,
+          "reserve": 0,
+          "dead": 0
+        },
+        "hive": {
+          "deployed": 64,
+          "active": 0,
+          "reserve": 0,
+          "dead": 0
+        },
+        "human_force": {
+          "deployed": 6,
+          "active": 0,
+          "reserve": 0,
+          "dead": 42
+        }
+      },
+      "playerKnowledge": {
+        "B": {
+          "owner": null,
+          "contested": null,
+          "intelState": "unknown",
+          "reportAge": null,
+          "reportSource": null
+        },
+        "C": {
+          "owner": null,
+          "contested": null,
+          "intelState": "unknown",
+          "reportAge": null,
+          "reportSource": null
+        }
+      }
+    },
+    {
+      "t": 480,
+      "A": {
+        "owner": "player_clan",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "player_clan": 20
+        },
+        "orders": {
+          "player_clan:defend->insertion": 4,
+          "player_clan:attack->insertion": 1
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:player_clan:0",
+            "alive": 4,
+            "position": [
+              34,
+              0
+            ],
+            "materialized": true
+          },
+          {
+            "id": "gunnison_forest:player_clan:1",
+            "alive": 4,
+            "position": [
+              -4.4,
+              33.7
+            ],
+            "materialized": true
+          },
+          {
+            "id": "gunnison_forest:player_clan:2",
+            "alive": 4,
+            "position": [
+              -32.9,
+              -8.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:player_clan:3",
+            "alive": 4,
+            "position": [
+              12.9,
+              -31.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:player_clan:4",
+            "alive": 4,
+            "position": [
+              29.6,
+              16.8
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "B": {
+        "owner": "hive",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "hive": 36
+        },
+        "orders": {
+          "hive:defend->relay": 4,
+          "hive:attack->relay": 5
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:hive:0",
+            "alive": 4,
+            "position": [
+              204,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:1",
+            "alive": 4,
+            "position": [
+              165.6,
+              -136.3
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:2",
+            "alive": 4,
+            "position": [
+              137.1,
+              -178.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:3",
+            "alive": 4,
+            "position": [
+              182.9,
+              -201.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:4",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:12",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:13",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:14",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:15",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "C": {
+        "owner": "hive",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "hive": 28
+        },
+        "orders": {
+          "hive:defend->nest": 7
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:hive:5",
+            "alive": 4,
+            "position": [
+              -20.5,
+              -482.9
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:6",
+            "alive": 4,
+            "position": [
+              -24.3,
+              -533.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:7",
+            "alive": 4,
+            "position": [
+              26.7,
+              -531
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:8",
+            "alive": 4,
+            "position": [
+              17.4,
+              -480.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:9",
+            "alive": 4,
+            "position": [
+              -31.2,
+              -496.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:10",
+            "alive": 4,
+            "position": [
+              -9.4,
+              -542.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:11",
+            "alive": 4,
+            "position": [
+              33.6,
+              -515.1
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "factions": {
+        "player_clan": {
+          "deployed": 20,
+          "active": 8,
+          "reserve": 0,
+          "dead": 0
+        },
+        "hive": {
+          "deployed": 64,
+          "active": 0,
+          "reserve": 0,
+          "dead": 0
+        },
+        "human_force": {
+          "deployed": 0,
+          "active": 0,
+          "reserve": 0,
+          "dead": 48
+        }
+      },
+      "playerKnowledge": {
+        "B": {
+          "owner": null,
+          "contested": null,
+          "intelState": "unknown",
+          "reportAge": null,
+          "reportSource": null
+        },
+        "C": {
+          "owner": null,
+          "contested": null,
+          "intelState": "unknown",
+          "reportAge": null,
+          "reportSource": null
+        }
+      }
+    },
+    {
+      "t": 540,
+      "A": {
+        "owner": "player_clan",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "player_clan": 20
+        },
+        "orders": {
+          "player_clan:defend->insertion": 4,
+          "player_clan:attack->insertion": 1
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:player_clan:0",
+            "alive": 4,
+            "position": [
+              34,
+              0
+            ],
+            "materialized": true
+          },
+          {
+            "id": "gunnison_forest:player_clan:1",
+            "alive": 4,
+            "position": [
+              -4.4,
+              33.7
+            ],
+            "materialized": true
+          },
+          {
+            "id": "gunnison_forest:player_clan:2",
+            "alive": 4,
+            "position": [
+              -32.9,
+              -8.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:player_clan:3",
+            "alive": 4,
+            "position": [
+              12.9,
+              -31.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:player_clan:4",
+            "alive": 4,
+            "position": [
+              29.6,
+              16.8
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "B": {
+        "owner": "hive",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "hive": 36
+        },
+        "orders": {
+          "hive:defend->relay": 4,
+          "hive:attack->relay": 5
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:hive:0",
+            "alive": 4,
+            "position": [
+              204,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:1",
+            "alive": 4,
+            "position": [
+              165.6,
+              -136.3
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:2",
+            "alive": 4,
+            "position": [
+              137.1,
+              -178.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:3",
+            "alive": 4,
+            "position": [
+              182.9,
+              -201.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:4",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:12",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:13",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:14",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:15",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "C": {
+        "owner": "hive",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "hive": 28
+        },
+        "orders": {
+          "hive:defend->nest": 7
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:hive:5",
+            "alive": 4,
+            "position": [
+              -20.5,
+              -482.9
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:6",
+            "alive": 4,
+            "position": [
+              -24.3,
+              -533.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:7",
+            "alive": 4,
+            "position": [
+              26.7,
+              -531
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:8",
+            "alive": 4,
+            "position": [
+              17.4,
+              -480.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:9",
+            "alive": 4,
+            "position": [
+              -31.2,
+              -496.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:10",
+            "alive": 4,
+            "position": [
+              -9.4,
+              -542.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:11",
+            "alive": 4,
+            "position": [
+              33.6,
+              -515.1
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "factions": {
+        "player_clan": {
+          "deployed": 20,
+          "active": 8,
+          "reserve": 0,
+          "dead": 0
+        },
+        "hive": {
+          "deployed": 64,
+          "active": 0,
+          "reserve": 0,
+          "dead": 0
+        },
+        "human_force": {
+          "deployed": 0,
+          "active": 0,
+          "reserve": 0,
+          "dead": 48
+        }
+      },
+      "playerKnowledge": {
+        "B": {
+          "owner": null,
+          "contested": null,
+          "intelState": "unknown",
+          "reportAge": null,
+          "reportSource": null
+        },
+        "C": {
+          "owner": null,
+          "contested": null,
+          "intelState": "unknown",
+          "reportAge": null,
+          "reportSource": null
+        }
+      }
+    },
+    {
+      "t": 600,
+      "A": {
+        "owner": "player_clan",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "player_clan": 20
+        },
+        "orders": {
+          "player_clan:defend->insertion": 4,
+          "player_clan:attack->insertion": 1
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:player_clan:0",
+            "alive": 4,
+            "position": [
+              34,
+              0
+            ],
+            "materialized": true
+          },
+          {
+            "id": "gunnison_forest:player_clan:1",
+            "alive": 4,
+            "position": [
+              -4.4,
+              33.7
+            ],
+            "materialized": true
+          },
+          {
+            "id": "gunnison_forest:player_clan:2",
+            "alive": 4,
+            "position": [
+              -32.9,
+              -8.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:player_clan:3",
+            "alive": 4,
+            "position": [
+              12.9,
+              -31.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:player_clan:4",
+            "alive": 4,
+            "position": [
+              29.6,
+              16.8
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "B": {
+        "owner": "hive",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "hive": 36
+        },
+        "orders": {
+          "hive:defend->relay": 4,
+          "hive:attack->relay": 5
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:hive:0",
+            "alive": 4,
+            "position": [
+              204,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:1",
+            "alive": 4,
+            "position": [
+              165.6,
+              -136.3
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:2",
+            "alive": 4,
+            "position": [
+              137.1,
+              -178.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:3",
+            "alive": 4,
+            "position": [
+              182.9,
+              -201.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:4",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:12",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:13",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:14",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:15",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "C": {
+        "owner": "hive",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "hive": 28
+        },
+        "orders": {
+          "hive:defend->nest": 7
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:hive:5",
+            "alive": 4,
+            "position": [
+              -20.5,
+              -482.9
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:6",
+            "alive": 4,
+            "position": [
+              -24.3,
+              -533.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:7",
+            "alive": 4,
+            "position": [
+              26.7,
+              -531
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:8",
+            "alive": 4,
+            "position": [
+              17.4,
+              -480.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:9",
+            "alive": 4,
+            "position": [
+              -31.2,
+              -496.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:10",
+            "alive": 4,
+            "position": [
+              -9.4,
+              -542.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:11",
+            "alive": 4,
+            "position": [
+              33.6,
+              -515.1
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "factions": {
+        "player_clan": {
+          "deployed": 20,
+          "active": 8,
+          "reserve": 0,
+          "dead": 0
+        },
+        "hive": {
+          "deployed": 64,
+          "active": 0,
+          "reserve": 0,
+          "dead": 0
+        },
+        "human_force": {
+          "deployed": 0,
+          "active": 0,
+          "reserve": 0,
+          "dead": 48
+        }
+      },
+      "playerKnowledge": {
+        "B": {
+          "owner": null,
+          "contested": null,
+          "intelState": "unknown",
+          "reportAge": null,
+          "reportSource": null
+        },
+        "C": {
+          "owner": null,
+          "contested": null,
+          "intelState": "unknown",
+          "reportAge": null,
+          "reportSource": null
+        }
+      }
+    },
+    {
+      "t": 660,
+      "A": {
+        "owner": "player_clan",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "player_clan": 20
+        },
+        "orders": {
+          "player_clan:defend->insertion": 4,
+          "player_clan:attack->insertion": 1
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:player_clan:0",
+            "alive": 4,
+            "position": [
+              34,
+              0
+            ],
+            "materialized": true
+          },
+          {
+            "id": "gunnison_forest:player_clan:1",
+            "alive": 4,
+            "position": [
+              -4.4,
+              33.7
+            ],
+            "materialized": true
+          },
+          {
+            "id": "gunnison_forest:player_clan:2",
+            "alive": 4,
+            "position": [
+              -32.9,
+              -8.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:player_clan:3",
+            "alive": 4,
+            "position": [
+              12.9,
+              -31.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:player_clan:4",
+            "alive": 4,
+            "position": [
+              29.6,
+              16.8
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "B": {
+        "owner": "hive",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "hive": 36
+        },
+        "orders": {
+          "hive:defend->relay": 4,
+          "hive:attack->relay": 5
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:hive:0",
+            "alive": 4,
+            "position": [
+              204,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:1",
+            "alive": 4,
+            "position": [
+              165.6,
+              -136.3
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:2",
+            "alive": 4,
+            "position": [
+              137.1,
+              -178.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:3",
+            "alive": 4,
+            "position": [
+              182.9,
+              -201.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:4",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:12",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:13",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:14",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:15",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "C": {
+        "owner": "hive",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "hive": 28
+        },
+        "orders": {
+          "hive:defend->nest": 7
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:hive:5",
+            "alive": 4,
+            "position": [
+              -20.5,
+              -482.9
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:6",
+            "alive": 4,
+            "position": [
+              -24.3,
+              -533.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:7",
+            "alive": 4,
+            "position": [
+              26.7,
+              -531
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:8",
+            "alive": 4,
+            "position": [
+              17.4,
+              -480.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:9",
+            "alive": 4,
+            "position": [
+              -31.2,
+              -496.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:10",
+            "alive": 4,
+            "position": [
+              -9.4,
+              -542.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:11",
+            "alive": 4,
+            "position": [
+              33.6,
+              -515.1
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "factions": {
+        "player_clan": {
+          "deployed": 20,
+          "active": 8,
+          "reserve": 0,
+          "dead": 0
+        },
+        "hive": {
+          "deployed": 64,
+          "active": 0,
+          "reserve": 0,
+          "dead": 0
+        },
+        "human_force": {
+          "deployed": 0,
+          "active": 0,
+          "reserve": 0,
+          "dead": 48
+        }
+      },
+      "playerKnowledge": {
+        "B": {
+          "owner": null,
+          "contested": null,
+          "intelState": "unknown",
+          "reportAge": null,
+          "reportSource": null
+        },
+        "C": {
+          "owner": null,
+          "contested": null,
+          "intelState": "unknown",
+          "reportAge": null,
+          "reportSource": null
+        }
+      }
+    },
+    {
+      "t": 720,
+      "A": {
+        "owner": "player_clan",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "player_clan": 20
+        },
+        "orders": {
+          "player_clan:defend->insertion": 4,
+          "player_clan:attack->insertion": 1
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:player_clan:0",
+            "alive": 4,
+            "position": [
+              34,
+              0
+            ],
+            "materialized": true
+          },
+          {
+            "id": "gunnison_forest:player_clan:1",
+            "alive": 4,
+            "position": [
+              -4.4,
+              33.7
+            ],
+            "materialized": true
+          },
+          {
+            "id": "gunnison_forest:player_clan:2",
+            "alive": 4,
+            "position": [
+              -32.9,
+              -8.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:player_clan:3",
+            "alive": 4,
+            "position": [
+              12.9,
+              -31.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:player_clan:4",
+            "alive": 4,
+            "position": [
+              29.6,
+              16.8
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "B": {
+        "owner": "hive",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "hive": 36
+        },
+        "orders": {
+          "hive:defend->relay": 4,
+          "hive:attack->relay": 5
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:hive:0",
+            "alive": 4,
+            "position": [
+              204,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:1",
+            "alive": 4,
+            "position": [
+              165.6,
+              -136.3
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:2",
+            "alive": 4,
+            "position": [
+              137.1,
+              -178.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:3",
+            "alive": 4,
+            "position": [
+              182.9,
+              -201.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:4",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:12",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:13",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:14",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:15",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "C": {
+        "owner": "hive",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "hive": 28
+        },
+        "orders": {
+          "hive:defend->nest": 7
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:hive:5",
+            "alive": 4,
+            "position": [
+              -20.5,
+              -482.9
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:6",
+            "alive": 4,
+            "position": [
+              -24.3,
+              -533.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:7",
+            "alive": 4,
+            "position": [
+              26.7,
+              -531
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:8",
+            "alive": 4,
+            "position": [
+              17.4,
+              -480.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:9",
+            "alive": 4,
+            "position": [
+              -31.2,
+              -496.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:10",
+            "alive": 4,
+            "position": [
+              -9.4,
+              -542.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:11",
+            "alive": 4,
+            "position": [
+              33.6,
+              -515.1
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "factions": {
+        "player_clan": {
+          "deployed": 20,
+          "active": 8,
+          "reserve": 0,
+          "dead": 0
+        },
+        "hive": {
+          "deployed": 64,
+          "active": 0,
+          "reserve": 0,
+          "dead": 0
+        },
+        "human_force": {
+          "deployed": 0,
+          "active": 0,
+          "reserve": 0,
+          "dead": 48
+        }
+      },
+      "playerKnowledge": {
+        "B": {
+          "owner": null,
+          "contested": null,
+          "intelState": "unknown",
+          "reportAge": null,
+          "reportSource": null
+        },
+        "C": {
+          "owner": null,
+          "contested": null,
+          "intelState": "unknown",
+          "reportAge": null,
+          "reportSource": null
+        }
+      }
+    },
+    {
+      "t": 780,
+      "A": {
+        "owner": "player_clan",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "player_clan": 20
+        },
+        "orders": {
+          "player_clan:defend->insertion": 4,
+          "player_clan:attack->insertion": 1
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:player_clan:0",
+            "alive": 4,
+            "position": [
+              34,
+              0
+            ],
+            "materialized": true
+          },
+          {
+            "id": "gunnison_forest:player_clan:1",
+            "alive": 4,
+            "position": [
+              -4.4,
+              33.7
+            ],
+            "materialized": true
+          },
+          {
+            "id": "gunnison_forest:player_clan:2",
+            "alive": 4,
+            "position": [
+              -32.9,
+              -8.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:player_clan:3",
+            "alive": 4,
+            "position": [
+              12.9,
+              -31.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:player_clan:4",
+            "alive": 4,
+            "position": [
+              29.6,
+              16.8
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "B": {
+        "owner": "hive",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "hive": 36
+        },
+        "orders": {
+          "hive:defend->relay": 4,
+          "hive:attack->relay": 5
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:hive:0",
+            "alive": 4,
+            "position": [
+              204,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:1",
+            "alive": 4,
+            "position": [
+              165.6,
+              -136.3
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:2",
+            "alive": 4,
+            "position": [
+              137.1,
+              -178.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:3",
+            "alive": 4,
+            "position": [
+              182.9,
+              -201.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:4",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:12",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:13",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:14",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:15",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "C": {
+        "owner": "hive",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "hive": 28
+        },
+        "orders": {
+          "hive:defend->nest": 7
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:hive:5",
+            "alive": 4,
+            "position": [
+              -20.5,
+              -482.9
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:6",
+            "alive": 4,
+            "position": [
+              -24.3,
+              -533.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:7",
+            "alive": 4,
+            "position": [
+              26.7,
+              -531
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:8",
+            "alive": 4,
+            "position": [
+              17.4,
+              -480.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:9",
+            "alive": 4,
+            "position": [
+              -31.2,
+              -496.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:10",
+            "alive": 4,
+            "position": [
+              -9.4,
+              -542.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:11",
+            "alive": 4,
+            "position": [
+              33.6,
+              -515.1
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "factions": {
+        "player_clan": {
+          "deployed": 20,
+          "active": 8,
+          "reserve": 0,
+          "dead": 0
+        },
+        "hive": {
+          "deployed": 64,
+          "active": 0,
+          "reserve": 0,
+          "dead": 0
+        },
+        "human_force": {
+          "deployed": 0,
+          "active": 0,
+          "reserve": 0,
+          "dead": 48
+        }
+      },
+      "playerKnowledge": {
+        "B": {
+          "owner": null,
+          "contested": null,
+          "intelState": "unknown",
+          "reportAge": null,
+          "reportSource": null
+        },
+        "C": {
+          "owner": null,
+          "contested": null,
+          "intelState": "unknown",
+          "reportAge": null,
+          "reportSource": null
+        }
+      }
+    },
+    {
+      "t": 840,
+      "A": {
+        "owner": "player_clan",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "player_clan": 20
+        },
+        "orders": {
+          "player_clan:defend->insertion": 4,
+          "player_clan:attack->insertion": 1
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:player_clan:0",
+            "alive": 4,
+            "position": [
+              34,
+              0
+            ],
+            "materialized": true
+          },
+          {
+            "id": "gunnison_forest:player_clan:1",
+            "alive": 4,
+            "position": [
+              -4.4,
+              33.7
+            ],
+            "materialized": true
+          },
+          {
+            "id": "gunnison_forest:player_clan:2",
+            "alive": 4,
+            "position": [
+              -32.9,
+              -8.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:player_clan:3",
+            "alive": 4,
+            "position": [
+              12.9,
+              -31.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:player_clan:4",
+            "alive": 4,
+            "position": [
+              29.6,
+              16.8
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "B": {
+        "owner": "hive",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "hive": 36
+        },
+        "orders": {
+          "hive:defend->relay": 4,
+          "hive:attack->relay": 5
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:hive:0",
+            "alive": 4,
+            "position": [
+              204,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:1",
+            "alive": 4,
+            "position": [
+              165.6,
+              -136.3
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:2",
+            "alive": 4,
+            "position": [
+              137.1,
+              -178.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:3",
+            "alive": 4,
+            "position": [
+              182.9,
+              -201.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:4",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:12",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:13",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:14",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:15",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "C": {
+        "owner": "hive",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "hive": 28
+        },
+        "orders": {
+          "hive:defend->nest": 7
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:hive:5",
+            "alive": 4,
+            "position": [
+              -20.5,
+              -482.9
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:6",
+            "alive": 4,
+            "position": [
+              -24.3,
+              -533.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:7",
+            "alive": 4,
+            "position": [
+              26.7,
+              -531
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:8",
+            "alive": 4,
+            "position": [
+              17.4,
+              -480.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:9",
+            "alive": 4,
+            "position": [
+              -31.2,
+              -496.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:10",
+            "alive": 4,
+            "position": [
+              -9.4,
+              -542.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:11",
+            "alive": 4,
+            "position": [
+              33.6,
+              -515.1
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "factions": {
+        "player_clan": {
+          "deployed": 20,
+          "active": 8,
+          "reserve": 0,
+          "dead": 0
+        },
+        "hive": {
+          "deployed": 64,
+          "active": 0,
+          "reserve": 0,
+          "dead": 0
+        },
+        "human_force": {
+          "deployed": 0,
+          "active": 0,
+          "reserve": 0,
+          "dead": 48
+        }
+      },
+      "playerKnowledge": {
+        "B": {
+          "owner": null,
+          "contested": null,
+          "intelState": "unknown",
+          "reportAge": null,
+          "reportSource": null
+        },
+        "C": {
+          "owner": null,
+          "contested": null,
+          "intelState": "unknown",
+          "reportAge": null,
+          "reportSource": null
+        }
+      }
+    },
+    {
+      "t": 900,
+      "A": {
+        "owner": "player_clan",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "player_clan": 20
+        },
+        "orders": {
+          "player_clan:defend->insertion": 4,
+          "player_clan:attack->insertion": 1
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:player_clan:0",
+            "alive": 4,
+            "position": [
+              34,
+              0
+            ],
+            "materialized": true
+          },
+          {
+            "id": "gunnison_forest:player_clan:1",
+            "alive": 4,
+            "position": [
+              -4.4,
+              33.7
+            ],
+            "materialized": true
+          },
+          {
+            "id": "gunnison_forest:player_clan:2",
+            "alive": 4,
+            "position": [
+              -32.9,
+              -8.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:player_clan:3",
+            "alive": 4,
+            "position": [
+              12.9,
+              -31.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:player_clan:4",
+            "alive": 4,
+            "position": [
+              29.6,
+              16.8
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "B": {
+        "owner": "hive",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "hive": 36
+        },
+        "orders": {
+          "hive:defend->relay": 4,
+          "hive:attack->relay": 5
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:hive:0",
+            "alive": 4,
+            "position": [
+              204,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:1",
+            "alive": 4,
+            "position": [
+              165.6,
+              -136.3
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:2",
+            "alive": 4,
+            "position": [
+              137.1,
+              -178.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:3",
+            "alive": 4,
+            "position": [
+              182.9,
+              -201.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:4",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:12",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:13",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:14",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:15",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "C": {
+        "owner": "hive",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "hive": 28
+        },
+        "orders": {
+          "hive:defend->nest": 7
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:hive:5",
+            "alive": 4,
+            "position": [
+              -20.5,
+              -482.9
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:6",
+            "alive": 4,
+            "position": [
+              -24.3,
+              -533.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:7",
+            "alive": 4,
+            "position": [
+              26.7,
+              -531
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:8",
+            "alive": 4,
+            "position": [
+              17.4,
+              -480.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:9",
+            "alive": 4,
+            "position": [
+              -31.2,
+              -496.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:10",
+            "alive": 4,
+            "position": [
+              -9.4,
+              -542.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:11",
+            "alive": 4,
+            "position": [
+              33.6,
+              -515.1
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "factions": {
+        "player_clan": {
+          "deployed": 20,
+          "active": 8,
+          "reserve": 0,
+          "dead": 0
+        },
+        "hive": {
+          "deployed": 64,
+          "active": 0,
+          "reserve": 0,
+          "dead": 0
+        },
+        "human_force": {
+          "deployed": 0,
+          "active": 0,
+          "reserve": 0,
+          "dead": 48
+        }
+      },
+      "playerKnowledge": {
+        "B": {
+          "owner": null,
+          "contested": null,
+          "intelState": "unknown",
+          "reportAge": null,
+          "reportSource": null
+        },
+        "C": {
+          "owner": null,
+          "contested": null,
+          "intelState": "unknown",
+          "reportAge": null,
+          "reportSource": null
+        }
+      }
+    },
+    {
+      "t": 960,
+      "A": {
+        "owner": "player_clan",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "player_clan": 20
+        },
+        "orders": {
+          "player_clan:defend->insertion": 4,
+          "player_clan:attack->insertion": 1
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:player_clan:0",
+            "alive": 4,
+            "position": [
+              34,
+              0
+            ],
+            "materialized": true
+          },
+          {
+            "id": "gunnison_forest:player_clan:1",
+            "alive": 4,
+            "position": [
+              -4.4,
+              33.7
+            ],
+            "materialized": true
+          },
+          {
+            "id": "gunnison_forest:player_clan:2",
+            "alive": 4,
+            "position": [
+              -32.9,
+              -8.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:player_clan:3",
+            "alive": 4,
+            "position": [
+              12.9,
+              -31.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:player_clan:4",
+            "alive": 4,
+            "position": [
+              29.6,
+              16.8
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "B": {
+        "owner": "hive",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "hive": 36
+        },
+        "orders": {
+          "hive:defend->relay": 4,
+          "hive:attack->relay": 5
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:hive:0",
+            "alive": 4,
+            "position": [
+              204,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:1",
+            "alive": 4,
+            "position": [
+              165.6,
+              -136.3
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:2",
+            "alive": 4,
+            "position": [
+              137.1,
+              -178.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:3",
+            "alive": 4,
+            "position": [
+              182.9,
+              -201.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:4",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:12",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:13",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:14",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:15",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "C": {
+        "owner": "hive",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "hive": 28
+        },
+        "orders": {
+          "hive:defend->nest": 7
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:hive:5",
+            "alive": 4,
+            "position": [
+              -20.5,
+              -482.9
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:6",
+            "alive": 4,
+            "position": [
+              -24.3,
+              -533.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:7",
+            "alive": 4,
+            "position": [
+              26.7,
+              -531
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:8",
+            "alive": 4,
+            "position": [
+              17.4,
+              -480.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:9",
+            "alive": 4,
+            "position": [
+              -31.2,
+              -496.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:10",
+            "alive": 4,
+            "position": [
+              -9.4,
+              -542.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:11",
+            "alive": 4,
+            "position": [
+              33.6,
+              -515.1
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "factions": {
+        "player_clan": {
+          "deployed": 20,
+          "active": 8,
+          "reserve": 0,
+          "dead": 0
+        },
+        "hive": {
+          "deployed": 64,
+          "active": 0,
+          "reserve": 0,
+          "dead": 0
+        },
+        "human_force": {
+          "deployed": 0,
+          "active": 0,
+          "reserve": 0,
+          "dead": 48
+        }
+      },
+      "playerKnowledge": {
+        "B": {
+          "owner": null,
+          "contested": null,
+          "intelState": "unknown",
+          "reportAge": null,
+          "reportSource": null
+        },
+        "C": {
+          "owner": null,
+          "contested": null,
+          "intelState": "unknown",
+          "reportAge": null,
+          "reportSource": null
+        }
+      }
+    },
+    {
+      "t": 1020,
+      "A": {
+        "owner": "player_clan",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "player_clan": 20
+        },
+        "orders": {
+          "player_clan:defend->insertion": 4,
+          "player_clan:attack->insertion": 1
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:player_clan:0",
+            "alive": 4,
+            "position": [
+              34,
+              0
+            ],
+            "materialized": true
+          },
+          {
+            "id": "gunnison_forest:player_clan:1",
+            "alive": 4,
+            "position": [
+              -4.4,
+              33.7
+            ],
+            "materialized": true
+          },
+          {
+            "id": "gunnison_forest:player_clan:2",
+            "alive": 4,
+            "position": [
+              -32.9,
+              -8.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:player_clan:3",
+            "alive": 4,
+            "position": [
+              12.9,
+              -31.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:player_clan:4",
+            "alive": 4,
+            "position": [
+              29.6,
+              16.8
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "B": {
+        "owner": "hive",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "hive": 36
+        },
+        "orders": {
+          "hive:defend->relay": 4,
+          "hive:attack->relay": 5
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:hive:0",
+            "alive": 4,
+            "position": [
+              204,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:1",
+            "alive": 4,
+            "position": [
+              165.6,
+              -136.3
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:2",
+            "alive": 4,
+            "position": [
+              137.1,
+              -178.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:3",
+            "alive": 4,
+            "position": [
+              182.9,
+              -201.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:4",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:12",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:13",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:14",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:15",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "C": {
+        "owner": "hive",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "hive": 28
+        },
+        "orders": {
+          "hive:defend->nest": 7
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:hive:5",
+            "alive": 4,
+            "position": [
+              -20.5,
+              -482.9
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:6",
+            "alive": 4,
+            "position": [
+              -24.3,
+              -533.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:7",
+            "alive": 4,
+            "position": [
+              26.7,
+              -531
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:8",
+            "alive": 4,
+            "position": [
+              17.4,
+              -480.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:9",
+            "alive": 4,
+            "position": [
+              -31.2,
+              -496.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:10",
+            "alive": 4,
+            "position": [
+              -9.4,
+              -542.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:11",
+            "alive": 4,
+            "position": [
+              33.6,
+              -515.1
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "factions": {
+        "player_clan": {
+          "deployed": 20,
+          "active": 8,
+          "reserve": 0,
+          "dead": 0
+        },
+        "hive": {
+          "deployed": 64,
+          "active": 0,
+          "reserve": 0,
+          "dead": 0
+        },
+        "human_force": {
+          "deployed": 0,
+          "active": 0,
+          "reserve": 0,
+          "dead": 48
+        }
+      },
+      "playerKnowledge": {
+        "B": {
+          "owner": null,
+          "contested": null,
+          "intelState": "unknown",
+          "reportAge": null,
+          "reportSource": null
+        },
+        "C": {
+          "owner": null,
+          "contested": null,
+          "intelState": "unknown",
+          "reportAge": null,
+          "reportSource": null
+        }
+      }
+    },
+    {
+      "t": 1080,
+      "A": {
+        "owner": "player_clan",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "player_clan": 20
+        },
+        "orders": {
+          "player_clan:defend->insertion": 4,
+          "player_clan:attack->insertion": 1
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:player_clan:0",
+            "alive": 4,
+            "position": [
+              34,
+              0
+            ],
+            "materialized": true
+          },
+          {
+            "id": "gunnison_forest:player_clan:1",
+            "alive": 4,
+            "position": [
+              -4.4,
+              33.7
+            ],
+            "materialized": true
+          },
+          {
+            "id": "gunnison_forest:player_clan:2",
+            "alive": 4,
+            "position": [
+              -32.9,
+              -8.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:player_clan:3",
+            "alive": 4,
+            "position": [
+              12.9,
+              -31.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:player_clan:4",
+            "alive": 4,
+            "position": [
+              29.6,
+              16.8
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "B": {
+        "owner": "hive",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "hive": 36
+        },
+        "orders": {
+          "hive:defend->relay": 4,
+          "hive:attack->relay": 5
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:hive:0",
+            "alive": 4,
+            "position": [
+              204,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:1",
+            "alive": 4,
+            "position": [
+              165.6,
+              -136.3
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:2",
+            "alive": 4,
+            "position": [
+              137.1,
+              -178.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:3",
+            "alive": 4,
+            "position": [
+              182.9,
+              -201.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:4",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:12",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:13",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:14",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:15",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "C": {
+        "owner": "hive",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "hive": 28
+        },
+        "orders": {
+          "hive:defend->nest": 7
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:hive:5",
+            "alive": 4,
+            "position": [
+              -20.5,
+              -482.9
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:6",
+            "alive": 4,
+            "position": [
+              -24.3,
+              -533.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:7",
+            "alive": 4,
+            "position": [
+              26.7,
+              -531
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:8",
+            "alive": 4,
+            "position": [
+              17.4,
+              -480.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:9",
+            "alive": 4,
+            "position": [
+              -31.2,
+              -496.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:10",
+            "alive": 4,
+            "position": [
+              -9.4,
+              -542.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:11",
+            "alive": 4,
+            "position": [
+              33.6,
+              -515.1
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "factions": {
+        "player_clan": {
+          "deployed": 20,
+          "active": 8,
+          "reserve": 0,
+          "dead": 0
+        },
+        "hive": {
+          "deployed": 64,
+          "active": 0,
+          "reserve": 0,
+          "dead": 0
+        },
+        "human_force": {
+          "deployed": 0,
+          "active": 0,
+          "reserve": 0,
+          "dead": 48
+        }
+      },
+      "playerKnowledge": {
+        "B": {
+          "owner": null,
+          "contested": null,
+          "intelState": "unknown",
+          "reportAge": null,
+          "reportSource": null
+        },
+        "C": {
+          "owner": null,
+          "contested": null,
+          "intelState": "unknown",
+          "reportAge": null,
+          "reportSource": null
+        }
+      }
+    },
+    {
+      "t": 1140,
+      "A": {
+        "owner": "player_clan",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "player_clan": 20
+        },
+        "orders": {
+          "player_clan:defend->insertion": 4,
+          "player_clan:attack->insertion": 1
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:player_clan:0",
+            "alive": 4,
+            "position": [
+              34,
+              0
+            ],
+            "materialized": true
+          },
+          {
+            "id": "gunnison_forest:player_clan:1",
+            "alive": 4,
+            "position": [
+              -4.4,
+              33.7
+            ],
+            "materialized": true
+          },
+          {
+            "id": "gunnison_forest:player_clan:2",
+            "alive": 4,
+            "position": [
+              -32.9,
+              -8.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:player_clan:3",
+            "alive": 4,
+            "position": [
+              12.9,
+              -31.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:player_clan:4",
+            "alive": 4,
+            "position": [
+              29.6,
+              16.8
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "B": {
+        "owner": "hive",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "hive": 36
+        },
+        "orders": {
+          "hive:defend->relay": 4,
+          "hive:attack->relay": 5
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:hive:0",
+            "alive": 4,
+            "position": [
+              204,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:1",
+            "alive": 4,
+            "position": [
+              165.6,
+              -136.3
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:2",
+            "alive": 4,
+            "position": [
+              137.1,
+              -178.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:3",
+            "alive": 4,
+            "position": [
+              182.9,
+              -201.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:4",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:12",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:13",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:14",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:15",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "C": {
+        "owner": "hive",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "hive": 28
+        },
+        "orders": {
+          "hive:defend->nest": 7
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:hive:5",
+            "alive": 4,
+            "position": [
+              -20.5,
+              -482.9
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:6",
+            "alive": 4,
+            "position": [
+              -24.3,
+              -533.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:7",
+            "alive": 4,
+            "position": [
+              26.7,
+              -531
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:8",
+            "alive": 4,
+            "position": [
+              17.4,
+              -480.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:9",
+            "alive": 4,
+            "position": [
+              -31.2,
+              -496.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:10",
+            "alive": 4,
+            "position": [
+              -9.4,
+              -542.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:11",
+            "alive": 4,
+            "position": [
+              33.6,
+              -515.1
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "factions": {
+        "player_clan": {
+          "deployed": 20,
+          "active": 8,
+          "reserve": 0,
+          "dead": 0
+        },
+        "hive": {
+          "deployed": 64,
+          "active": 0,
+          "reserve": 0,
+          "dead": 0
+        },
+        "human_force": {
+          "deployed": 0,
+          "active": 0,
+          "reserve": 0,
+          "dead": 48
+        }
+      },
+      "playerKnowledge": {
+        "B": {
+          "owner": null,
+          "contested": null,
+          "intelState": "unknown",
+          "reportAge": null,
+          "reportSource": null
+        },
+        "C": {
+          "owner": null,
+          "contested": null,
+          "intelState": "unknown",
+          "reportAge": null,
+          "reportSource": null
+        }
+      }
+    },
+    {
+      "t": 1200,
+      "A": {
+        "owner": "player_clan",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "player_clan": 20
+        },
+        "orders": {
+          "player_clan:defend->insertion": 4,
+          "player_clan:attack->insertion": 1
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:player_clan:0",
+            "alive": 4,
+            "position": [
+              34,
+              0
+            ],
+            "materialized": true
+          },
+          {
+            "id": "gunnison_forest:player_clan:1",
+            "alive": 4,
+            "position": [
+              -4.4,
+              33.7
+            ],
+            "materialized": true
+          },
+          {
+            "id": "gunnison_forest:player_clan:2",
+            "alive": 4,
+            "position": [
+              -32.9,
+              -8.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:player_clan:3",
+            "alive": 4,
+            "position": [
+              12.9,
+              -31.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:player_clan:4",
+            "alive": 4,
+            "position": [
+              29.6,
+              16.8
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "B": {
+        "owner": "hive",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "hive": 36
+        },
+        "orders": {
+          "hive:defend->relay": 4,
+          "hive:attack->relay": 5
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:hive:0",
+            "alive": 4,
+            "position": [
+              204,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:1",
+            "alive": 4,
+            "position": [
+              165.6,
+              -136.3
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:2",
+            "alive": 4,
+            "position": [
+              137.1,
+              -178.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:3",
+            "alive": 4,
+            "position": [
+              182.9,
+              -201.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:4",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:12",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:13",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:14",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:15",
+            "alive": 4,
+            "position": [
+              170,
+              -170
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "C": {
+        "owner": "hive",
+        "contested": false,
+        "sourceHP": 1000,
+        "capture": {},
+        "strength": {
+          "hive": 28
+        },
+        "orders": {
+          "hive:defend->nest": 7
+        },
+        "groups": [
+          {
+            "id": "gunnison_forest:hive:5",
+            "alive": 4,
+            "position": [
+              -20.5,
+              -482.9
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:6",
+            "alive": 4,
+            "position": [
+              -24.3,
+              -533.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:7",
+            "alive": 4,
+            "position": [
+              26.7,
+              -531
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:8",
+            "alive": 4,
+            "position": [
+              17.4,
+              -480.8
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:9",
+            "alive": 4,
+            "position": [
+              -31.2,
+              -496.5
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:10",
+            "alive": 4,
+            "position": [
+              -9.4,
+              -542.7
+            ],
+            "materialized": false
+          },
+          {
+            "id": "gunnison_forest:hive:11",
+            "alive": 4,
+            "position": [
+              33.6,
+              -515.1
+            ],
+            "materialized": false
+          }
+        ]
+      },
+      "factions": {
+        "player_clan": {
+          "deployed": 20,
+          "active": 8,
+          "reserve": 0,
+          "dead": 0
+        },
+        "hive": {
+          "deployed": 64,
+          "active": 0,
+          "reserve": 0,
+          "dead": 0
+        },
+        "human_force": {
+          "deployed": 0,
+          "active": 0,
+          "reserve": 0,
+          "dead": 48
+        }
+      },
+      "playerKnowledge": {
+        "B": {
+          "owner": null,
+          "contested": null,
+          "intelState": "unknown",
+          "reportAge": null,
+          "reportSource": null
+        },
+        "C": {
+          "owner": null,
+          "contested": null,
+          "intelState": "unknown",
+          "reportAge": null,
+          "reportSource": null
+        }
+      }
+    }
+  ],
+  "evenementsBC": [
+    {
+      "t": 0.25,
+      "type": "group_materialized",
+      "groupId": "gunnison_forest:player_clan:0"
+    },
+    {
+      "t": 0.25,
+      "type": "group_materialized",
+      "groupId": "gunnison_forest:player_clan:1"
+    },
+    {
+      "t": 8,
+      "type": "reinforcements_inbound",
+      "groupId": "gunnison_forest:player_clan:4",
+      "frontId": "insertion"
+    },
+    {
+      "t": 8,
+      "type": "reinforcements_inbound",
+      "groupId": "gunnison_forest:hive:12",
+      "frontId": "relay"
+    },
+    {
+      "t": 8,
+      "type": "reinforcements_inbound",
+      "groupId": "gunnison_forest:human_force:8",
+      "frontId": "nest"
+    },
+    {
+      "t": 11,
+      "type": "group_order",
+      "groupId": "gunnison_forest:player_clan:4",
+      "frontId": "insertion"
+    },
+    {
+      "t": 11,
+      "type": "reinforcements_arrived",
+      "groupId": "gunnison_forest:player_clan:4",
+      "frontId": "insertion"
+    },
+    {
+      "t": 11,
+      "type": "group_order",
+      "groupId": "gunnison_forest:hive:12",
+      "frontId": "relay"
+    },
+    {
+      "t": 11,
+      "type": "reinforcements_arrived",
+      "groupId": "gunnison_forest:hive:12",
+      "frontId": "relay"
+    },
+    {
+      "t": 11,
+      "type": "group_order",
+      "groupId": "gunnison_forest:human_force:8",
+      "frontId": "nest"
+    },
+    {
+      "t": 11,
+      "type": "reinforcements_arrived",
+      "groupId": "gunnison_forest:human_force:8",
+      "frontId": "nest"
+    },
+    {
+      "t": 16,
+      "type": "reinforcements_inbound",
+      "groupId": "gunnison_forest:hive:13",
+      "frontId": "relay"
+    },
+    {
+      "t": 16,
+      "type": "reinforcements_inbound",
+      "groupId": "gunnison_forest:human_force:9",
+      "frontId": "nest"
+    },
+    {
+      "t": 19,
+      "type": "group_order",
+      "groupId": "gunnison_forest:hive:13",
+      "frontId": "relay"
+    },
+    {
+      "t": 19,
+      "type": "reinforcements_arrived",
+      "groupId": "gunnison_forest:hive:13",
+      "frontId": "relay"
+    },
+    {
+      "t": 19,
+      "type": "group_order",
+      "groupId": "gunnison_forest:human_force:9",
+      "frontId": "nest"
+    },
+    {
+      "t": 19,
+      "type": "reinforcements_arrived",
+      "groupId": "gunnison_forest:human_force:9",
+      "frontId": "nest"
+    },
+    {
+      "t": 24,
+      "type": "reinforcements_inbound",
+      "groupId": "gunnison_forest:hive:14",
+      "frontId": "relay"
+    },
+    {
+      "t": 24,
+      "type": "reinforcements_inbound",
+      "groupId": "gunnison_forest:human_force:10",
+      "frontId": "nest"
+    },
+    {
+      "t": 27,
+      "type": "group_order",
+      "groupId": "gunnison_forest:hive:14",
+      "frontId": "relay"
+    },
+    {
+      "t": 27,
+      "type": "reinforcements_arrived",
+      "groupId": "gunnison_forest:hive:14",
+      "frontId": "relay"
+    },
+    {
+      "t": 27,
+      "type": "group_order",
+      "groupId": "gunnison_forest:human_force:10",
+      "frontId": "nest"
+    },
+    {
+      "t": 27,
+      "type": "reinforcements_arrived",
+      "groupId": "gunnison_forest:human_force:10",
+      "frontId": "nest"
+    },
+    {
+      "t": 32,
+      "type": "reinforcements_inbound",
+      "groupId": "gunnison_forest:hive:15",
+      "frontId": "relay"
+    },
+    {
+      "t": 32,
+      "type": "reinforcements_inbound",
+      "groupId": "gunnison_forest:human_force:11",
+      "frontId": "nest"
+    },
+    {
+      "t": 35,
+      "type": "group_order",
+      "groupId": "gunnison_forest:hive:15",
+      "frontId": "relay"
+    },
+    {
+      "t": 35,
+      "type": "reinforcements_arrived",
+      "groupId": "gunnison_forest:hive:15",
+      "frontId": "relay"
+    },
+    {
+      "t": 35,
+      "type": "group_order",
+      "groupId": "gunnison_forest:human_force:11",
+      "frontId": "nest"
+    },
+    {
+      "t": 35,
+      "type": "reinforcements_arrived",
+      "groupId": "gunnison_forest:human_force:11",
+      "frontId": "nest"
+    },
+    {
+      "t": 101.75,
+      "type": "group_arrived",
+      "groupId": "gunnison_forest:hive:12",
+      "frontId": "relay"
+    },
+    {
+      "t": 101.75,
+      "type": "group_arrived",
+      "groupId": "gunnison_forest:human_force:8",
+      "frontId": "nest"
+    },
+    {
+      "t": 109.75,
+      "type": "group_arrived",
+      "groupId": "gunnison_forest:hive:13",
+      "frontId": "relay"
+    },
+    {
+      "t": 109.75,
+      "type": "group_arrived",
+      "groupId": "gunnison_forest:human_force:9",
+      "frontId": "nest"
+    },
+    {
+      "t": 117.75,
+      "type": "group_arrived",
+      "groupId": "gunnison_forest:hive:14",
+      "frontId": "relay"
+    },
+    {
+      "t": 117.75,
+      "type": "group_arrived",
+      "groupId": "gunnison_forest:human_force:10",
+      "frontId": "nest"
+    },
+    {
+      "t": 125.75,
+      "type": "group_arrived",
+      "groupId": "gunnison_forest:hive:15",
+      "frontId": "relay"
+    },
+    {
+      "t": 125.75,
+      "type": "group_arrived",
+      "groupId": "gunnison_forest:human_force:11",
+      "frontId": "nest"
+    },
+    {
+      "t": 242,
+      "type": "musou_officer_broken",
+      "groupId": "gunnison_forest:human_force:2",
+      "frontId": "relay"
+    },
+    {
+      "t": 242.5,
+      "type": "musou_officer_broken",
+      "groupId": "gunnison_forest:human_force:3",
+      "frontId": "relay"
+    },
+    {
+      "t": 246.75,
+      "type": "musou_officer_broken",
+      "groupId": "gunnison_forest:human_force:0",
+      "frontId": "relay"
+    },
+    {
+      "t": 250.5,
+      "type": "musou_officer_broken",
+      "groupId": "gunnison_forest:human_force:1",
+      "frontId": "relay"
+    },
+    {
+      "t": 260,
+      "type": "group_order",
+      "groupId": "gunnison_forest:hive:4",
+      "frontId": "relay"
+    },
+    {
+      "t": 260,
+      "type": "officer_decision",
+      "groupId": "gunnison_forest:hive:4",
+      "reason": "open_hostile_front"
+    },
+    {
+      "t": 277,
+      "type": "base_captured",
+      "frontId": "relay",
+      "owner": "hive",
+      "reason": "unopposed_presence"
+    },
+    {
+      "t": 350.75,
+      "type": "group_arrived",
+      "groupId": "gunnison_forest:hive:4",
+      "frontId": "relay"
+    },
+    {
+      "t": 367.25,
+      "type": "musou_officer_broken",
+      "groupId": "gunnison_forest:human_force:7",
+      "frontId": "nest"
+    },
+    {
+      "t": 382.25,
+      "type": "musou_officer_broken",
+      "groupId": "gunnison_forest:human_force:5",
+      "frontId": "nest"
+    },
+    {
+      "t": 382.75,
+      "type": "musou_officer_broken",
+      "groupId": "gunnison_forest:human_force:6",
+      "frontId": "nest"
+    },
+    {
+      "t": 402.75,
+      "type": "musou_officer_broken",
+      "groupId": "gunnison_forest:human_force:4",
+      "frontId": "nest"
+    }
+  ],
+  "evenementsPerdus": 0,
+  "observations": [
+    "Sur 20 min, la ruche perd 0 unité(s) contre 48 pour la force humaine : le combat à distance répartit les tirs sur toutes les cibles hostiles du front (BattleSimulation._remoteCombat, rotation attackSeeds+tick), ce qui protège les grands effectifs. Constat d’équilibrage à arbitrer, hors critère de cette recette."
+  ],
+  "observationTardive": {
+    "t": 1200.25,
+    "avantObservation": {
+      "owner": null,
+      "contested": null,
+      "intelState": "unknown",
+      "reportAge": null,
+      "reportSource": null
+    },
+    "apresObservation": {
+      "owner": "hive",
+      "contested": true,
+      "intelState": "observed",
+      "reportAge": 0,
+      "reportSource": "player_sight"
+    },
+    "etatAutoritaireAvant": {
+      "id": "relay",
+      "owner": "hive",
+      "sourceHP": 1000,
+      "contested": false,
+      "reinforcementSource": true
+    }
+  }
+}

@@ -1,0 +1,953 @@
+{
+  "id": "CTRL-082",
+  "source": "docs/audits/2026-10-27/Yautja_Hive_Warriors_Controle_Completude_2026-10-27.xlsx#Controle_roster ; docs/audits/2026-10-27/implementation-followup-20261101.json",
+  "sujet": "AFF-27 : neuf rôles Extinction remplacés par Marines génériques",
+  "operation": "AFF-27",
+  "seed": 1114,
+  "seedsMatrice": [
+    0,
+    1114
+  ],
+  "commit": "4092a2c7da8f6df77a76daf2e0888e0297657e62",
+  "date": "2026-11-14",
+  "commande": "node --test tests/recette-ctrl-082.test.js",
+  "niveau": "runtime mission (createOperationScene → BattleSimulation → BattleActorBridge → ColonialMarinesManager/SyntheticsManager réels, sans rendu WebGL)",
+  "preuveVideo": "non produite — preuve par journal",
+  "matrice": [
+    {
+      "seed": 0,
+      "difficultyId": "cautious",
+      "extinctionVariant": "none",
+      "players": 1,
+      "places": 192,
+      "generiques": 0,
+      "parRole": {
+        "Infantry": 68,
+        "Smartgunner": 24,
+        "Flamethrower": 22,
+        "Medic": 24,
+        "CommTech": 24,
+        "Synthetic": 24,
+        "Sniper": 2,
+        "SADAR": 2,
+        "Exosuit": 2
+      }
+    },
+    {
+      "seed": 0,
+      "difficultyId": "cautious",
+      "extinctionVariant": "none",
+      "players": 2,
+      "places": 192,
+      "generiques": 0,
+      "parRole": {
+        "Infantry": 68,
+        "Smartgunner": 24,
+        "Flamethrower": 22,
+        "Medic": 24,
+        "CommTech": 24,
+        "Synthetic": 24,
+        "Sniper": 2,
+        "SADAR": 2,
+        "Exosuit": 2
+      }
+    },
+    {
+      "seed": 0,
+      "difficultyId": "cautious",
+      "extinctionVariant": "carrier-ravager",
+      "players": 1,
+      "places": 192,
+      "generiques": 0,
+      "parRole": {
+        "Infantry": 68,
+        "Smartgunner": 24,
+        "Flamethrower": 22,
+        "Medic": 24,
+        "CommTech": 24,
+        "Synthetic": 24,
+        "Sniper": 2,
+        "SADAR": 2,
+        "Exosuit": 2
+      }
+    },
+    {
+      "seed": 0,
+      "difficultyId": "cautious",
+      "extinctionVariant": "carrier-ravager",
+      "players": 2,
+      "places": 192,
+      "generiques": 0,
+      "parRole": {
+        "Infantry": 68,
+        "Smartgunner": 24,
+        "Flamethrower": 22,
+        "Medic": 24,
+        "CommTech": 24,
+        "Synthetic": 24,
+        "Sniper": 2,
+        "SADAR": 2,
+        "Exosuit": 2
+      }
+    },
+    {
+      "seed": 0,
+      "difficultyId": "cautious",
+      "extinctionVariant": "carrier-ravager-enhanced",
+      "players": 1,
+      "places": 192,
+      "generiques": 0,
+      "parRole": {
+        "Infantry": 68,
+        "Smartgunner": 24,
+        "Flamethrower": 22,
+        "Medic": 24,
+        "CommTech": 24,
+        "Synthetic": 24,
+        "Sniper": 2,
+        "SADAR": 2,
+        "Exosuit": 2
+      }
+    },
+    {
+      "seed": 0,
+      "difficultyId": "cautious",
+      "extinctionVariant": "carrier-ravager-enhanced",
+      "players": 2,
+      "places": 192,
+      "generiques": 0,
+      "parRole": {
+        "Infantry": 68,
+        "Smartgunner": 24,
+        "Flamethrower": 22,
+        "Medic": 24,
+        "CommTech": 24,
+        "Synthetic": 24,
+        "Sniper": 2,
+        "SADAR": 2,
+        "Exosuit": 2
+      }
+    },
+    {
+      "seed": 0,
+      "difficultyId": "standard",
+      "extinctionVariant": "none",
+      "players": 1,
+      "places": 192,
+      "generiques": 0,
+      "parRole": {
+        "Infantry": 68,
+        "Smartgunner": 24,
+        "Flamethrower": 22,
+        "Medic": 24,
+        "CommTech": 24,
+        "Synthetic": 24,
+        "Sniper": 2,
+        "SADAR": 2,
+        "Exosuit": 2
+      }
+    },
+    {
+      "seed": 0,
+      "difficultyId": "standard",
+      "extinctionVariant": "none",
+      "players": 2,
+      "places": 192,
+      "generiques": 0,
+      "parRole": {
+        "Infantry": 68,
+        "Smartgunner": 24,
+        "Flamethrower": 22,
+        "Medic": 24,
+        "CommTech": 24,
+        "Synthetic": 24,
+        "Sniper": 2,
+        "SADAR": 2,
+        "Exosuit": 2
+      }
+    },
+    {
+      "seed": 0,
+      "difficultyId": "standard",
+      "extinctionVariant": "carrier-ravager",
+      "players": 1,
+      "places": 192,
+      "generiques": 0,
+      "parRole": {
+        "Infantry": 68,
+        "Smartgunner": 24,
+        "Flamethrower": 22,
+        "Medic": 24,
+        "CommTech": 24,
+        "Synthetic": 24,
+        "Sniper": 2,
+        "SADAR": 2,
+        "Exosuit": 2
+      }
+    },
+    {
+      "seed": 0,
+      "difficultyId": "standard",
+      "extinctionVariant": "carrier-ravager",
+      "players": 2,
+      "places": 192,
+      "generiques": 0,
+      "parRole": {
+        "Infantry": 68,
+        "Smartgunner": 24,
+        "Flamethrower": 22,
+        "Medic": 24,
+        "CommTech": 24,
+        "Synthetic": 24,
+        "Sniper": 2,
+        "SADAR": 2,
+        "Exosuit": 2
+      }
+    },
+    {
+      "seed": 0,
+      "difficultyId": "standard",
+      "extinctionVariant": "carrier-ravager-enhanced",
+      "players": 1,
+      "places": 192,
+      "generiques": 0,
+      "parRole": {
+        "Infantry": 68,
+        "Smartgunner": 24,
+        "Flamethrower": 22,
+        "Medic": 24,
+        "CommTech": 24,
+        "Synthetic": 24,
+        "Sniper": 2,
+        "SADAR": 2,
+        "Exosuit": 2
+      }
+    },
+    {
+      "seed": 0,
+      "difficultyId": "standard",
+      "extinctionVariant": "carrier-ravager-enhanced",
+      "players": 2,
+      "places": 192,
+      "generiques": 0,
+      "parRole": {
+        "Infantry": 68,
+        "Smartgunner": 24,
+        "Flamethrower": 22,
+        "Medic": 24,
+        "CommTech": 24,
+        "Synthetic": 24,
+        "Sniper": 2,
+        "SADAR": 2,
+        "Exosuit": 2
+      }
+    },
+    {
+      "seed": 0,
+      "difficultyId": "aggressive",
+      "extinctionVariant": "none",
+      "players": 1,
+      "places": 192,
+      "generiques": 0,
+      "parRole": {
+        "Infantry": 68,
+        "Smartgunner": 24,
+        "Flamethrower": 22,
+        "Medic": 24,
+        "CommTech": 24,
+        "Synthetic": 24,
+        "Sniper": 2,
+        "SADAR": 2,
+        "Exosuit": 2
+      }
+    },
+    {
+      "seed": 0,
+      "difficultyId": "aggressive",
+      "extinctionVariant": "none",
+      "players": 2,
+      "places": 192,
+      "generiques": 0,
+      "parRole": {
+        "Infantry": 68,
+        "Smartgunner": 24,
+        "Flamethrower": 22,
+        "Medic": 24,
+        "CommTech": 24,
+        "Synthetic": 24,
+        "Sniper": 2,
+        "SADAR": 2,
+        "Exosuit": 2
+      }
+    },
+    {
+      "seed": 0,
+      "difficultyId": "aggressive",
+      "extinctionVariant": "carrier-ravager",
+      "players": 1,
+      "places": 192,
+      "generiques": 0,
+      "parRole": {
+        "Infantry": 68,
+        "Smartgunner": 24,
+        "Flamethrower": 22,
+        "Medic": 24,
+        "CommTech": 24,
+        "Synthetic": 24,
+        "Sniper": 2,
+        "SADAR": 2,
+        "Exosuit": 2
+      }
+    },
+    {
+      "seed": 0,
+      "difficultyId": "aggressive",
+      "extinctionVariant": "carrier-ravager",
+      "players": 2,
+      "places": 192,
+      "generiques": 0,
+      "parRole": {
+        "Infantry": 68,
+        "Smartgunner": 24,
+        "Flamethrower": 22,
+        "Medic": 24,
+        "CommTech": 24,
+        "Synthetic": 24,
+        "Sniper": 2,
+        "SADAR": 2,
+        "Exosuit": 2
+      }
+    },
+    {
+      "seed": 0,
+      "difficultyId": "aggressive",
+      "extinctionVariant": "carrier-ravager-enhanced",
+      "players": 1,
+      "places": 192,
+      "generiques": 0,
+      "parRole": {
+        "Infantry": 68,
+        "Smartgunner": 24,
+        "Flamethrower": 22,
+        "Medic": 24,
+        "CommTech": 24,
+        "Synthetic": 24,
+        "Sniper": 2,
+        "SADAR": 2,
+        "Exosuit": 2
+      }
+    },
+    {
+      "seed": 0,
+      "difficultyId": "aggressive",
+      "extinctionVariant": "carrier-ravager-enhanced",
+      "players": 2,
+      "places": 192,
+      "generiques": 0,
+      "parRole": {
+        "Infantry": 68,
+        "Smartgunner": 24,
+        "Flamethrower": 22,
+        "Medic": 24,
+        "CommTech": 24,
+        "Synthetic": 24,
+        "Sniper": 2,
+        "SADAR": 2,
+        "Exosuit": 2
+      }
+    },
+    {
+      "seed": 1114,
+      "difficultyId": "cautious",
+      "extinctionVariant": "none",
+      "players": 1,
+      "places": 192,
+      "generiques": 0,
+      "parRole": {
+        "Infantry": 68,
+        "Smartgunner": 24,
+        "Flamethrower": 22,
+        "Medic": 24,
+        "CommTech": 24,
+        "Synthetic": 24,
+        "Sniper": 2,
+        "SADAR": 2,
+        "Exosuit": 2
+      }
+    },
+    {
+      "seed": 1114,
+      "difficultyId": "cautious",
+      "extinctionVariant": "none",
+      "players": 2,
+      "places": 192,
+      "generiques": 0,
+      "parRole": {
+        "Infantry": 68,
+        "Smartgunner": 24,
+        "Flamethrower": 22,
+        "Medic": 24,
+        "CommTech": 24,
+        "Synthetic": 24,
+        "Sniper": 2,
+        "SADAR": 2,
+        "Exosuit": 2
+      }
+    },
+    {
+      "seed": 1114,
+      "difficultyId": "cautious",
+      "extinctionVariant": "carrier-ravager",
+      "players": 1,
+      "places": 192,
+      "generiques": 0,
+      "parRole": {
+        "Infantry": 68,
+        "Smartgunner": 24,
+        "Flamethrower": 22,
+        "Medic": 24,
+        "CommTech": 24,
+        "Synthetic": 24,
+        "Sniper": 2,
+        "SADAR": 2,
+        "Exosuit": 2
+      }
+    },
+    {
+      "seed": 1114,
+      "difficultyId": "cautious",
+      "extinctionVariant": "carrier-ravager",
+      "players": 2,
+      "places": 192,
+      "generiques": 0,
+      "parRole": {
+        "Infantry": 68,
+        "Smartgunner": 24,
+        "Flamethrower": 22,
+        "Medic": 24,
+        "CommTech": 24,
+        "Synthetic": 24,
+        "Sniper": 2,
+        "SADAR": 2,
+        "Exosuit": 2
+      }
+    },
+    {
+      "seed": 1114,
+      "difficultyId": "cautious",
+      "extinctionVariant": "carrier-ravager-enhanced",
+      "players": 1,
+      "places": 192,
+      "generiques": 0,
+      "parRole": {
+        "Infantry": 68,
+        "Smartgunner": 24,
+        "Flamethrower": 22,
+        "Medic": 24,
+        "CommTech": 24,
+        "Synthetic": 24,
+        "Sniper": 2,
+        "SADAR": 2,
+        "Exosuit": 2
+      }
+    },
+    {
+      "seed": 1114,
+      "difficultyId": "cautious",
+      "extinctionVariant": "carrier-ravager-enhanced",
+      "players": 2,
+      "places": 192,
+      "generiques": 0,
+      "parRole": {
+        "Infantry": 68,
+        "Smartgunner": 24,
+        "Flamethrower": 22,
+        "Medic": 24,
+        "CommTech": 24,
+        "Synthetic": 24,
+        "Sniper": 2,
+        "SADAR": 2,
+        "Exosuit": 2
+      }
+    },
+    {
+      "seed": 1114,
+      "difficultyId": "standard",
+      "extinctionVariant": "none",
+      "players": 1,
+      "places": 192,
+      "generiques": 0,
+      "parRole": {
+        "Infantry": 68,
+        "Smartgunner": 24,
+        "Flamethrower": 22,
+        "Medic": 24,
+        "CommTech": 24,
+        "Synthetic": 24,
+        "Sniper": 2,
+        "SADAR": 2,
+        "Exosuit": 2
+      }
+    },
+    {
+      "seed": 1114,
+      "difficultyId": "standard",
+      "extinctionVariant": "none",
+      "players": 2,
+      "places": 192,
+      "generiques": 0,
+      "parRole": {
+        "Infantry": 68,
+        "Smartgunner": 24,
+        "Flamethrower": 22,
+        "Medic": 24,
+        "CommTech": 24,
+        "Synthetic": 24,
+        "Sniper": 2,
+        "SADAR": 2,
+        "Exosuit": 2
+      }
+    },
+    {
+      "seed": 1114,
+      "difficultyId": "standard",
+      "extinctionVariant": "carrier-ravager",
+      "players": 1,
+      "places": 192,
+      "generiques": 0,
+      "parRole": {
+        "Infantry": 68,
+        "Smartgunner": 24,
+        "Flamethrower": 22,
+        "Medic": 24,
+        "CommTech": 24,
+        "Synthetic": 24,
+        "Sniper": 2,
+        "SADAR": 2,
+        "Exosuit": 2
+      }
+    },
+    {
+      "seed": 1114,
+      "difficultyId": "standard",
+      "extinctionVariant": "carrier-ravager",
+      "players": 2,
+      "places": 192,
+      "generiques": 0,
+      "parRole": {
+        "Infantry": 68,
+        "Smartgunner": 24,
+        "Flamethrower": 22,
+        "Medic": 24,
+        "CommTech": 24,
+        "Synthetic": 24,
+        "Sniper": 2,
+        "SADAR": 2,
+        "Exosuit": 2
+      }
+    },
+    {
+      "seed": 1114,
+      "difficultyId": "standard",
+      "extinctionVariant": "carrier-ravager-enhanced",
+      "players": 1,
+      "places": 192,
+      "generiques": 0,
+      "parRole": {
+        "Infantry": 68,
+        "Smartgunner": 24,
+        "Flamethrower": 22,
+        "Medic": 24,
+        "CommTech": 24,
+        "Synthetic": 24,
+        "Sniper": 2,
+        "SADAR": 2,
+        "Exosuit": 2
+      }
+    },
+    {
+      "seed": 1114,
+      "difficultyId": "standard",
+      "extinctionVariant": "carrier-ravager-enhanced",
+      "players": 2,
+      "places": 192,
+      "generiques": 0,
+      "parRole": {
+        "Infantry": 68,
+        "Smartgunner": 24,
+        "Flamethrower": 22,
+        "Medic": 24,
+        "CommTech": 24,
+        "Synthetic": 24,
+        "Sniper": 2,
+        "SADAR": 2,
+        "Exosuit": 2
+      }
+    },
+    {
+      "seed": 1114,
+      "difficultyId": "aggressive",
+      "extinctionVariant": "none",
+      "players": 1,
+      "places": 192,
+      "generiques": 0,
+      "parRole": {
+        "Infantry": 68,
+        "Smartgunner": 24,
+        "Flamethrower": 22,
+        "Medic": 24,
+        "CommTech": 24,
+        "Synthetic": 24,
+        "Sniper": 2,
+        "SADAR": 2,
+        "Exosuit": 2
+      }
+    },
+    {
+      "seed": 1114,
+      "difficultyId": "aggressive",
+      "extinctionVariant": "none",
+      "players": 2,
+      "places": 192,
+      "generiques": 0,
+      "parRole": {
+        "Infantry": 68,
+        "Smartgunner": 24,
+        "Flamethrower": 22,
+        "Medic": 24,
+        "CommTech": 24,
+        "Synthetic": 24,
+        "Sniper": 2,
+        "SADAR": 2,
+        "Exosuit": 2
+      }
+    },
+    {
+      "seed": 1114,
+      "difficultyId": "aggressive",
+      "extinctionVariant": "carrier-ravager",
+      "players": 1,
+      "places": 192,
+      "generiques": 0,
+      "parRole": {
+        "Infantry": 68,
+        "Smartgunner": 24,
+        "Flamethrower": 22,
+        "Medic": 24,
+        "CommTech": 24,
+        "Synthetic": 24,
+        "Sniper": 2,
+        "SADAR": 2,
+        "Exosuit": 2
+      }
+    },
+    {
+      "seed": 1114,
+      "difficultyId": "aggressive",
+      "extinctionVariant": "carrier-ravager",
+      "players": 2,
+      "places": 192,
+      "generiques": 0,
+      "parRole": {
+        "Infantry": 68,
+        "Smartgunner": 24,
+        "Flamethrower": 22,
+        "Medic": 24,
+        "CommTech": 24,
+        "Synthetic": 24,
+        "Sniper": 2,
+        "SADAR": 2,
+        "Exosuit": 2
+      }
+    },
+    {
+      "seed": 1114,
+      "difficultyId": "aggressive",
+      "extinctionVariant": "carrier-ravager-enhanced",
+      "players": 1,
+      "places": 192,
+      "generiques": 0,
+      "parRole": {
+        "Infantry": 68,
+        "Smartgunner": 24,
+        "Flamethrower": 22,
+        "Medic": 24,
+        "CommTech": 24,
+        "Synthetic": 24,
+        "Sniper": 2,
+        "SADAR": 2,
+        "Exosuit": 2
+      }
+    },
+    {
+      "seed": 1114,
+      "difficultyId": "aggressive",
+      "extinctionVariant": "carrier-ravager-enhanced",
+      "players": 2,
+      "places": 192,
+      "generiques": 0,
+      "parRole": {
+        "Infantry": 68,
+        "Smartgunner": 24,
+        "Flamethrower": 22,
+        "Medic": 24,
+        "CommTech": 24,
+        "Synthetic": 24,
+        "Sniper": 2,
+        "SADAR": 2,
+        "Exosuit": 2
+      }
+    }
+  ],
+  "chronologie": [
+    {
+      "t": 6,
+      "event": "joueur_sur_front",
+      "frontId": "front_a",
+      "acteursDetailles": 24
+    },
+    {
+      "t": 12,
+      "event": "joueur_sur_front",
+      "frontId": "front_b",
+      "acteursDetailles": 32
+    },
+    {
+      "t": 18,
+      "event": "joueur_sur_front",
+      "frontId": "front_c",
+      "acteursDetailles": 16
+    },
+    {
+      "t": 24,
+      "event": "joueur_sur_front",
+      "frontId": "front_d",
+      "acteursDetailles": 24
+    },
+    {
+      "t": 24,
+      "event": "projection_totale",
+      "signatures": {
+        "Infantry": [
+          "marines|marine|null"
+        ],
+        "Smartgunner": [
+          "marines|smartgunner|null"
+        ],
+        "Flamethrower": [
+          "marines|flametrooper|null"
+        ],
+        "Medic": [
+          "marines|marine|medic"
+        ],
+        "CommTech": [
+          "marines|marine|commtech"
+        ],
+        "Synthetic": [
+          "synthetics|weyland_combat|null"
+        ],
+        "Sniper": [
+          "marines|marine|sniper"
+        ],
+        "SADAR": [
+          "marines|marine|sadar"
+        ],
+        "Exosuit": [
+          "marines|marine|exosuit"
+        ]
+      }
+    },
+    {
+      "t": 2,
+      "event": "joueur_sur_front",
+      "frontId": "front_a",
+      "acteursDetailles": 24
+    },
+    {
+      "t": 4,
+      "event": "joueur_sur_front",
+      "frontId": "front_b",
+      "acteursDetailles": 32
+    },
+    {
+      "t": 6,
+      "event": "joueur_sur_front",
+      "frontId": "front_c",
+      "acteursDetailles": 16
+    },
+    {
+      "t": 8,
+      "event": "joueur_sur_front",
+      "frontId": "front_d",
+      "acteursDetailles": 31
+    }
+  ],
+  "clauses": [
+    {
+      "clause": "neuf_roles_alloues",
+      "attendu": "Les 22 sections H-LIGNE et 2 H-APPUI de GRP-60 allouent 192 combattants répartis en neuf rôles, dont 24 Synthetic et 2 Exosuits pilotés.",
+      "verdict": "prouvé",
+      "details": {
+        "sections": 24,
+        "places": 192,
+        "parRole": {
+          "Infantry": 68,
+          "Smartgunner": 24,
+          "Flamethrower": 22,
+          "Medic": 24,
+          "CommTech": 24,
+          "Synthetic": 24,
+          "Sniper": 2,
+          "SADAR": 2,
+          "Exosuit": 2
+        }
+      }
+    },
+    {
+      "clause": "aucun_marine_generique",
+      "attendu": "Aucune place de GRP-60 n’utilise original_human_soldier/officer.",
+      "verdict": "prouvé",
+      "details": {
+        "profilsGeneriques": 0,
+        "profilsSource": [
+          "source_human_force_GRP-60_H-LIGNE",
+          "source_human_force_GRP-60_H-APPUI"
+        ]
+      }
+    },
+    {
+      "clause": "espece_vs_affiliation",
+      "attendu": "Séparer l’espèce synthetic de l’affiliation USCM ; un pilote dans son Exosuit compte une fois.",
+      "verdict": "prouvé",
+      "details": {
+        "synthetiquesUSCM": 24,
+        "faction": "human_force",
+        "exosuits": [
+          {
+            "id": "AFF-27:human_force:4:4",
+            "species": "human",
+            "exosuitArmor": 100
+          },
+          {
+            "id": "AFF-27:human_force:9:4",
+            "species": "human",
+            "exosuitArmor": 100
+          }
+        ]
+      }
+    },
+    {
+      "clause": "materialisation_naturelle",
+      "attendu": "Les places GRP-60 détaillées sont rendues avec leur rôle (arme ou visuel spécialiste), pas en Marine fusilier générique.",
+      "verdict": "prouvé",
+      "details": {
+        "human_force|human|marine|marines|marine": 15,
+        "human_force|human|smartgunner|marines|smartgunner": 3,
+        "human_force|human|flametrooper|marines|flametrooper": 3,
+        "human_force|synthetic|synthetic|synthetics|weyland_combat": 3
+      }
+    },
+    {
+      "clause": "projection_totale",
+      "attendu": "Chaque place allouée (192, mission fraîche avant tout combat), projetée une fois, conserve son rôle dans le gestionnaire réel.",
+      "verdict": "prouvé",
+      "details": {
+        "projetees": 192,
+        "signatures": {
+          "Infantry": [
+            "marines|marine|null"
+          ],
+          "Smartgunner": [
+            "marines|smartgunner|null"
+          ],
+          "Flamethrower": [
+            "marines|flametrooper|null"
+          ],
+          "Medic": [
+            "marines|marine|medic"
+          ],
+          "CommTech": [
+            "marines|marine|commtech"
+          ],
+          "Synthetic": [
+            "synthetics|weyland_combat|null"
+          ],
+          "Sniper": [
+            "marines|marine|sniper"
+          ],
+          "SADAR": [
+            "marines|marine|sadar"
+          ],
+          "Exosuit": [
+            "marines|marine|exosuit"
+          ]
+        },
+        "effectifsProjetesParRole": {
+          "Infantry": 68,
+          "Smartgunner": 24,
+          "Flamethrower": 22,
+          "Medic": 24,
+          "CommTech": 24,
+          "Synthetic": 24,
+          "Sniper": 2,
+          "SADAR": 2,
+          "Exosuit": 2
+        }
+      }
+    },
+    {
+      "clause": "matrice",
+      "attendu": "Graine, difficulté, variante Extinction et coopération ne remplacent aucun rôle par un Marine générique.",
+      "verdict": "prouvé",
+      "details": {
+        "combinaisons": 36
+      }
+    },
+    {
+      "clause": "sauvegarde_recharge",
+      "attendu": "Une recharge conserve identités, rôles et stocks finis des spécialistes (pas de nouvelles munitions).",
+      "verdict": "prouvé",
+      "details": {
+        "placesRechargees": 192,
+        "sniperRounds": 3
+      }
+    },
+    {
+      "clause": "identifiants_catalogue_HUM",
+      "attendu": "Conserver entry.profile et les identifiants de profils (HUM-001/002/003/036–041) dans chaque place allouée.",
+      "verdict": "échec (défaut)",
+      "details": {
+        "profilsGRP60": 16,
+        "relies": 0,
+        "entryProfileConserve": true,
+        "reproduction": "createOperationScene({operationId:'AFF-27',mapSeed:1114}).config.profiles.filter(p=>/_GRP-60_/.test(p.id)).map(p=>p.sourceProfileId) → tous undefined",
+        "fichier": "js/data/BattleCatalog.js:195-210 ; js/data/SourceBattleRoster.js:23-24"
+      }
+    },
+    {
+      "clause": "observation_libelles",
+      "attendu": "Information : cohérence libellé / mécanique.",
+      "verdict": "observation",
+      "details": {
+        "fichier": "js/data/SourceBattleRoster.js:23-24",
+        "note": "Les sourceRole « Medic (unimplemented support) » et « CommTech (unimplemented repairs) » sont affichés alors que BattleSimulation alloue medicalSupply=2 / repairParts=3 et expose applyMedicHeal / applyCommTechRepair (js/battlefield/BattleSimulation.js:631-682)."
+      }
+    },
+    {
+      "clause": "observation_type_acteur_synthetique_uscm",
+      "attendu": "Information : l’affiliation USCM est portée par la faction ; le type d’acteur du synthétique est nommé weyland_combat.",
+      "verdict": "observation",
+      "details": {
+        "fichier": "js/entities/Synthetics.js:384",
+        "faction": "human_force",
+        "actorTypeSimulation": "synthetic",
+        "typeActeurRendu": "weyland_combat",
+        "note": "Le synthétique Colonial Marines d’Extinction est rendu par le même type que les synthétiques de combat Weyland-Yutani ; pas de remplacement par un humain, mais libellé d’affiliation ambigu."
+      }
+    }
+  ],
+  "limites": [
+    "Les effectifs sont ceux de la proposition du projet, pas des nombres canoniques du RTS.",
+    "Aucune revue visuelle : sniper, SADAR, Exosuit, Medic et CommTech restent des maillages procéduraux non certifiés 1:1 (SOURCE_PRESENTATION_STATUS)."
+  ]
+}

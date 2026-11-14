@@ -818,7 +818,7 @@ class GameApp {
       }
 
       // UA 571-C Automated Remote Sentry Gun [Digit 4] (Aliens 1986 Special Edition)
-      if ((e.code === 'Digit4' || e.code === 'Numpad4') && this.player) {
+      if ((e.code === 'Digit4' || e.code === 'Numpad4') && this.player && !(this.keys['ShiftLeft'] || this.keys['ShiftRight'])) {
         this.deploySentryGun();
       }
 
@@ -915,7 +915,7 @@ class GameApp {
       }
 
       // Netgun Entanglement & Gauntlet Flechette Needler [G Key]
-      if (e.code === 'KeyG' && this.player) {
+      if (e.code === 'KeyG' && this.player && !(this.keys['ShiftLeft'] || this.keys['ShiftRight'])) {
         const distToSkimmer = this.skimmer ? this.player.position.distanceTo(this.skimmer.position) : 999;
         if (this.skimmer && (this.skimmer.isMounted || distToSkimmer < 4.5)) {
           // Boarding or exiting the Yautja Skimmer vehicle
@@ -1100,8 +1100,9 @@ class GameApp {
         else this.player.toggleCloak();
       }
 
-      // Chantier 7 (v45): Yautja Ki'cte Gauntlet Grapple & Seismic Counter-Throw [KeyG] (Concrete Jungle / Prey)
-      if (e.code === 'KeyG' && this.player) {
+      // Ki'cte gauntlet grapple [Shift + G]; plain G stays on the netgun, needler and skimmer.
+      if (e.code === 'KeyG' && this.player && (this.keys['ShiftLeft'] || this.keys['ShiftRight'])) {
+        this.player.usedShiftModifier = true;
         this.player.performGauntletGrapple(this.horde, this.bosses, this.ui, this.particles, this.env);
       }
 

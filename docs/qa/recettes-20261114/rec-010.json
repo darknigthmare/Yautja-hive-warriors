@@ -1,0 +1,1031 @@
+{
+  "recette": "REC-010",
+  "perimetre": "Ordres alliés et rôles de groupe",
+  "procedureClasseur": "Donner tenir, contourner, renforcer, escorter et replier à plusieurs groupes sur deux fronts. Couper une route pendant l'ordre; demander ensuite une tâche incompatible avec le rôle ou la taille d'une unité.",
+  "resultatAttenduClasseur": "Chaque groupe confirme, exécute ou refuse avec une raison compréhensible. Les alliés peuvent sécuriser un objectif sans présence du joueur; un soutien n'abandonne pas systématiquement sa tâche pour poursuivre une cible isolée.",
+  "preuveAConserverClasseur": "Vidéo avec statut des ordres; destinations et trajets; objectifs accomplis sans joueur; motifs de refus.",
+  "date": "2026-11-14",
+  "commit": "4092a2c7da8f6df77a76daf2e0888e0297657e62",
+  "branche": "claude/fervent-volta-hmhdfw",
+  "preuveVideo": "non produite — preuve par journal de simulation",
+  "graine": {
+    "mapSeed": 20261114,
+    "simulation": "déterministe, sans tirage aléatoire",
+    "pas": 0.25,
+    "duree": 636.25
+  },
+  "scenario": {
+    "operationId": "pilot",
+    "levelId": "gunnison_forest",
+    "configId": "three-fronts:gunnison_forest",
+    "configDigest": "c5562973",
+    "difficulte": {
+      "id": "standard",
+      "label": "Équilibré",
+      "scope": "officer_decisions_only",
+      "populationChanged": false
+    },
+    "fronts": {
+      "A": "insertion",
+      "B": "relay"
+    },
+    "groupes": {
+      "tenir": "gunnison_forest:player_clan:0",
+      "contournement": [
+        "gunnison_forest:player_clan:1",
+        "gunnison_forest:player_clan:2"
+      ],
+      "escorte": "gunnison_forest:player_clan:3",
+      "reserve": "gunnison_forest:player_clan:4",
+      "groupeHostileCible": "gunnison_forest:hive:0"
+    },
+    "joueur": "absent (players: [] à chaque mise à jour)"
+  },
+  "ordres": [
+    {
+      "t": 0,
+      "ordre": "tenir A",
+      "groupes": [
+        "gunnison_forest:player_clan:0"
+      ],
+      "accepte": true,
+      "raison": null,
+      "retourJoueur": "Ordre transmis. Le dernier ordre accepté remplace le précédent.",
+      "accuse": "ORDRE ACCEPTÉ · player_clan 1 vers Clairière d’insertion · défense · Joueur 1. Cet ordre remplace le précédent ; l’arrivée sera annoncée séparément."
+    },
+    {
+      "t": 0,
+      "ordre": "ordre direct à un groupe en réserve",
+      "groupes": [
+        "gunnison_forest:player_clan:4"
+      ],
+      "accepte": false,
+      "raison": "group_in_reserve",
+      "retourJoueur": "Ce groupe est encore en réserve.",
+      "accuse": null
+    },
+    {
+      "t": 0,
+      "ordre": "contourner seul (encerclement à un groupe)",
+      "groupes": [
+        "gunnison_forest:player_clan:1"
+      ],
+      "accepte": false,
+      "raison": "two_groups_required",
+      "retourJoueur": "L’encerclement nécessite deux groupes.",
+      "accuse": null
+    },
+    {
+      "t": 0,
+      "ordre": "contourner B à deux groupes",
+      "groupes": [
+        "gunnison_forest:player_clan:1",
+        "gunnison_forest:player_clan:2"
+      ],
+      "accepte": true,
+      "raison": null,
+      "retourJoueur": "Ordre transmis. Le dernier ordre accepté remplace le précédent.",
+      "accuse": "TACTIQUE COORDONNÉE vers Relais de surveillance · player_clan 2, player_clan 3. Effet 20 s ; nouvelle coordination après 30 s. Les groupes doivent encore rejoindre leur position."
+    },
+    {
+      "t": 0,
+      "ordre": "escorter vers B",
+      "groupes": [
+        "gunnison_forest:player_clan:3"
+      ],
+      "accepte": true,
+      "raison": null,
+      "retourJoueur": "Ordre transmis. Le dernier ordre accepté remplace le précédent.",
+      "accuse": "ORDRE ACCEPTÉ · player_clan 4 vers Relais de surveillance · escorte · Joueur 1. Cet ordre remplace le précédent ; l’arrivée sera annoncée séparément."
+    },
+    {
+      "t": 0,
+      "ordre": "renforcer B (réserve finie)",
+      "groupes": [
+        "gunnison_forest:player_clan:4"
+      ],
+      "accepte": true,
+      "raison": null,
+      "retourJoueur": "Ordre transmis. Le dernier ordre accepté remplace le précédent.",
+      "accuse": "ACTION ACCEPTÉE · Consultez le journal et les stocks après la reprise."
+    },
+    {
+      "t": 0,
+      "ordre": "tactique sur un groupe de la ruche",
+      "groupes": [
+        "gunnison_forest:hive:0"
+      ],
+      "accepte": false,
+      "raison": "allied_available_groups_required",
+      "retourJoueur": "Choisissez des groupes alliés disponibles.",
+      "accuse": null
+    },
+    {
+      "t": 80,
+      "ordre": "nouvel ordre au groupe bloqué en trajet",
+      "groupes": [
+        "gunnison_forest:player_clan:1"
+      ],
+      "accepte": false,
+      "raison": "route_closed_in_transit",
+      "retourJoueur": "Le passage emprunté vient de se fermer.",
+      "accuse": null
+    },
+    {
+      "t": 80,
+      "ordre": "déléguer A au capitaine du groupe qui tient",
+      "groupes": [
+        "gunnison_forest:player_clan:0"
+      ],
+      "accepte": true,
+      "raison": null,
+      "retourJoueur": "Ordre transmis. Le dernier ordre accepté remplace le précédent.",
+      "accuse": "CAPITAINE DÉLÉGUÉ vers Clairière d’insertion · player_clan 1. Il défend puis décide selon le combat réel ; surveillez ses pertes et ses rapports."
+    },
+    {
+      "t": 440,
+      "ordre": "déléguer un front à un groupe sans capitaine",
+      "groupes": [
+        "gunnison_forest:player_clan:2"
+      ],
+      "accepte": false,
+      "raison": "living_officer_required",
+      "retourJoueur": "Un capitaine vivant est nécessaire.",
+      "accuse": null
+    },
+    {
+      "t": 440,
+      "ordre": "replier l’escorte de B vers A",
+      "groupes": [
+        "gunnison_forest:player_clan:3"
+      ],
+      "accepte": true,
+      "raison": null,
+      "retourJoueur": "Ordre transmis. Le dernier ordre accepté remplace le précédent.",
+      "accuse": "ORDRE ACCEPTÉ · player_clan 4 vers Clairière d’insertion · repli · Joueur 1. Cet ordre remplace le précédent ; l’arrivée sera annoncée séparément."
+    },
+    {
+      "t": 440,
+      "ordre": "relancer l’escorte repliée à l’attaque",
+      "groupes": [
+        "gunnison_forest:player_clan:3"
+      ],
+      "accepte": false,
+      "raison": "reconstitution_required",
+      "retourJoueur": "Ce groupe doit recevoir ses renforts et se réorganiser avant de repartir au combat.",
+      "accuse": null
+    }
+  ],
+  "coupureRoute": {
+    "route": "route-insertion-relay-main",
+    "t": 16.25,
+    "position": [
+      0,
+      -63.5
+    ],
+    "accepted": true,
+    "ordresBloques": [
+      {
+        "t": 16.25,
+        "groupId": "gunnison_forest:player_clan:1",
+        "reason": "route_closed_in_transit"
+      },
+      {
+        "t": 16.25,
+        "groupId": "gunnison_forest:player_clan:2",
+        "reason": "route_closed_in_transit"
+      },
+      {
+        "t": 16.25,
+        "groupId": "gunnison_forest:player_clan:3",
+        "reason": "route_closed_in_transit"
+      }
+    ],
+    "positionTenue": true,
+    "reouvertureA": 80
+  },
+  "arrivees": [
+    {
+      "t": 116.5,
+      "groupId": "gunnison_forest:player_clan:4",
+      "frontId": "relay"
+    },
+    {
+      "t": 126.25,
+      "groupId": "gunnison_forest:player_clan:1",
+      "frontId": "relay"
+    },
+    {
+      "t": 126.25,
+      "groupId": "gunnison_forest:player_clan:2",
+      "frontId": "relay"
+    },
+    {
+      "t": 126.25,
+      "groupId": "gunnison_forest:player_clan:3",
+      "frontId": "relay"
+    },
+    {
+      "t": 496.75,
+      "groupId": "gunnison_forest:player_clan:3",
+      "frontId": "insertion"
+    }
+  ],
+  "captures": [
+    {
+      "t": 483.25,
+      "frontId": "insertion",
+      "owner": "hive",
+      "reason": "unopposed_presence"
+    },
+    {
+      "t": 491.25,
+      "frontId": "relay",
+      "owner": "player_clan",
+      "reason": "unopposed_presence"
+    }
+  ],
+  "decisionsCapitainesClan": [],
+  "releves": [
+    {
+      "t": 0,
+      "groupes": {
+        "gunnison_forest:player_clan:0": {
+          "front": "insertion",
+          "ordre": "defend->insertion",
+          "emetteur": "player1",
+          "position": [
+            34,
+            0
+          ],
+          "vivants": 4,
+          "enTrajet": false,
+          "formation": "line"
+        },
+        "gunnison_forest:player_clan:1": {
+          "front": "insertion",
+          "ordre": "attack->relay",
+          "emetteur": "player1",
+          "position": [
+            -4.4,
+            33.7
+          ],
+          "vivants": 4,
+          "enTrajet": true,
+          "formation": "wedge"
+        },
+        "gunnison_forest:player_clan:2": {
+          "front": "insertion",
+          "ordre": "attack->relay",
+          "emetteur": "player1",
+          "position": [
+            -32.9,
+            -8.7
+          ],
+          "vivants": 4,
+          "enTrajet": true,
+          "formation": "wedge"
+        },
+        "gunnison_forest:player_clan:3": {
+          "front": "insertion",
+          "ordre": "escort->relay",
+          "emetteur": "player1",
+          "position": [
+            12.9,
+            -31.5
+          ],
+          "vivants": 4,
+          "enTrajet": true,
+          "formation": "line"
+        },
+        "gunnison_forest:player_clan:4": {
+          "front": "insertion",
+          "ordre": "defend->insertion",
+          "emetteur": "scenario",
+          "position": [
+            29.6,
+            16.8
+          ],
+          "vivants": 4,
+          "enTrajet": false,
+          "formation": "line"
+        }
+      },
+      "B": "human_force"
+    },
+    {
+      "t": 60,
+      "groupes": {
+        "gunnison_forest:player_clan:0": {
+          "front": "insertion",
+          "ordre": "defend->insertion",
+          "emetteur": "player1",
+          "position": [
+            34,
+            0
+          ],
+          "vivants": 4,
+          "enTrajet": false,
+          "formation": "line"
+        },
+        "gunnison_forest:player_clan:1": {
+          "front": "insertion",
+          "ordre": "attack->relay",
+          "emetteur": "player1",
+          "position": [
+            0,
+            -63.5
+          ],
+          "vivants": 4,
+          "enTrajet": true,
+          "formation": "wedge"
+        },
+        "gunnison_forest:player_clan:2": {
+          "front": "insertion",
+          "ordre": "attack->relay",
+          "emetteur": "player1",
+          "position": [
+            0,
+            -63.5
+          ],
+          "vivants": 4,
+          "enTrajet": true,
+          "formation": "wedge"
+        },
+        "gunnison_forest:player_clan:3": {
+          "front": "insertion",
+          "ordre": "escort->relay",
+          "emetteur": "player1",
+          "position": [
+            0,
+            -63.5
+          ],
+          "vivants": 4,
+          "enTrajet": true,
+          "formation": "line"
+        },
+        "gunnison_forest:player_clan:4": {
+          "front": "insertion",
+          "ordre": "attack->relay",
+          "emetteur": "scenario",
+          "position": [
+            109,
+            108
+          ],
+          "vivants": 4,
+          "enTrajet": true,
+          "formation": "line"
+        }
+      },
+      "B": "human_force"
+    },
+    {
+      "t": 140,
+      "groupes": {
+        "gunnison_forest:player_clan:0": {
+          "front": "insertion",
+          "ordre": "defend->insertion",
+          "emetteur": "player1",
+          "position": [
+            34,
+            0
+          ],
+          "vivants": 4,
+          "enTrajet": false,
+          "formation": "line"
+        },
+        "gunnison_forest:player_clan:1": {
+          "front": "relay",
+          "ordre": "attack->relay",
+          "emetteur": "player1",
+          "position": [
+            170,
+            -170
+          ],
+          "vivants": 4,
+          "enTrajet": false,
+          "formation": "wedge"
+        },
+        "gunnison_forest:player_clan:2": {
+          "front": "relay",
+          "ordre": "attack->relay",
+          "emetteur": "player1",
+          "position": [
+            170,
+            -170
+          ],
+          "vivants": 4,
+          "enTrajet": false,
+          "formation": "wedge"
+        },
+        "gunnison_forest:player_clan:3": {
+          "front": "relay",
+          "ordre": "escort->relay",
+          "emetteur": "player1",
+          "position": [
+            170,
+            -170
+          ],
+          "vivants": 4,
+          "enTrajet": false,
+          "formation": "line"
+        },
+        "gunnison_forest:player_clan:4": {
+          "front": "relay",
+          "ordre": "attack->relay",
+          "emetteur": "scenario",
+          "position": [
+            170,
+            -170
+          ],
+          "vivants": 4,
+          "enTrajet": false,
+          "formation": "line"
+        }
+      },
+      "B": "human_force"
+    },
+    {
+      "t": 200,
+      "groupes": {
+        "gunnison_forest:player_clan:0": {
+          "front": "insertion",
+          "ordre": "defend->insertion",
+          "emetteur": "player1",
+          "position": [
+            34,
+            0
+          ],
+          "vivants": 4,
+          "enTrajet": false,
+          "formation": "line"
+        },
+        "gunnison_forest:player_clan:1": {
+          "front": "relay",
+          "ordre": "attack->relay",
+          "emetteur": "player1",
+          "position": [
+            170,
+            -170
+          ],
+          "vivants": 4,
+          "enTrajet": false,
+          "formation": "wedge"
+        },
+        "gunnison_forest:player_clan:2": {
+          "front": "relay",
+          "ordre": "attack->relay",
+          "emetteur": "player1",
+          "position": [
+            170,
+            -170
+          ],
+          "vivants": 4,
+          "enTrajet": false,
+          "formation": "wedge"
+        },
+        "gunnison_forest:player_clan:3": {
+          "front": "relay",
+          "ordre": "escort->relay",
+          "emetteur": "player1",
+          "position": [
+            170,
+            -170
+          ],
+          "vivants": 4,
+          "enTrajet": false,
+          "formation": "line"
+        },
+        "gunnison_forest:player_clan:4": {
+          "front": "relay",
+          "ordre": "attack->relay",
+          "emetteur": "scenario",
+          "position": [
+            170,
+            -170
+          ],
+          "vivants": 4,
+          "enTrajet": false,
+          "formation": "line"
+        }
+      },
+      "B": "human_force"
+    },
+    {
+      "t": 260,
+      "groupes": {
+        "gunnison_forest:player_clan:0": {
+          "front": "insertion",
+          "ordre": "defend->insertion",
+          "emetteur": "player1",
+          "position": [
+            34,
+            0
+          ],
+          "vivants": 4,
+          "enTrajet": false,
+          "formation": "line"
+        },
+        "gunnison_forest:player_clan:1": {
+          "front": "relay",
+          "ordre": "attack->relay",
+          "emetteur": "player1",
+          "position": [
+            170,
+            -170
+          ],
+          "vivants": 4,
+          "enTrajet": false,
+          "formation": "wedge"
+        },
+        "gunnison_forest:player_clan:2": {
+          "front": "relay",
+          "ordre": "attack->relay",
+          "emetteur": "player1",
+          "position": [
+            170,
+            -170
+          ],
+          "vivants": 4,
+          "enTrajet": false,
+          "formation": "wedge"
+        },
+        "gunnison_forest:player_clan:3": {
+          "front": "relay",
+          "ordre": "escort->relay",
+          "emetteur": "player1",
+          "position": [
+            170,
+            -170
+          ],
+          "vivants": 4,
+          "enTrajet": false,
+          "formation": "line"
+        },
+        "gunnison_forest:player_clan:4": {
+          "front": "relay",
+          "ordre": "attack->relay",
+          "emetteur": "scenario",
+          "position": [
+            170,
+            -170
+          ],
+          "vivants": 4,
+          "enTrajet": false,
+          "formation": "line"
+        }
+      },
+      "B": "human_force"
+    },
+    {
+      "t": 320,
+      "groupes": {
+        "gunnison_forest:player_clan:0": {
+          "front": "insertion",
+          "ordre": "defend->insertion",
+          "emetteur": "player1",
+          "position": [
+            34,
+            0
+          ],
+          "vivants": 4,
+          "enTrajet": false,
+          "formation": "line"
+        },
+        "gunnison_forest:player_clan:1": {
+          "front": "relay",
+          "ordre": "attack->relay",
+          "emetteur": "player1",
+          "position": [
+            170,
+            -170
+          ],
+          "vivants": 4,
+          "enTrajet": false,
+          "formation": "wedge"
+        },
+        "gunnison_forest:player_clan:2": {
+          "front": "relay",
+          "ordre": "attack->relay",
+          "emetteur": "player1",
+          "position": [
+            170,
+            -170
+          ],
+          "vivants": 4,
+          "enTrajet": false,
+          "formation": "wedge"
+        },
+        "gunnison_forest:player_clan:3": {
+          "front": "relay",
+          "ordre": "escort->relay",
+          "emetteur": "player1",
+          "position": [
+            170,
+            -170
+          ],
+          "vivants": 4,
+          "enTrajet": false,
+          "formation": "line"
+        },
+        "gunnison_forest:player_clan:4": {
+          "front": "relay",
+          "ordre": "attack->relay",
+          "emetteur": "scenario",
+          "position": [
+            170,
+            -170
+          ],
+          "vivants": 4,
+          "enTrajet": false,
+          "formation": "line"
+        }
+      },
+      "B": "human_force"
+    },
+    {
+      "t": 380,
+      "groupes": {
+        "gunnison_forest:player_clan:0": {
+          "front": "insertion",
+          "ordre": "defend->insertion",
+          "emetteur": "player1",
+          "position": [
+            34,
+            0
+          ],
+          "vivants": 4,
+          "enTrajet": false,
+          "formation": "line"
+        },
+        "gunnison_forest:player_clan:1": {
+          "front": "relay",
+          "ordre": "attack->relay",
+          "emetteur": "player1",
+          "position": [
+            170,
+            -170
+          ],
+          "vivants": 4,
+          "enTrajet": false,
+          "formation": "wedge"
+        },
+        "gunnison_forest:player_clan:2": {
+          "front": "relay",
+          "ordre": "attack->relay",
+          "emetteur": "player1",
+          "position": [
+            170,
+            -170
+          ],
+          "vivants": 4,
+          "enTrajet": false,
+          "formation": "wedge"
+        },
+        "gunnison_forest:player_clan:3": {
+          "front": "relay",
+          "ordre": "escort->relay",
+          "emetteur": "player1",
+          "position": [
+            170,
+            -170
+          ],
+          "vivants": 4,
+          "enTrajet": false,
+          "formation": "line"
+        },
+        "gunnison_forest:player_clan:4": {
+          "front": "relay",
+          "ordre": "attack->relay",
+          "emetteur": "scenario",
+          "position": [
+            170,
+            -170
+          ],
+          "vivants": 4,
+          "enTrajet": false,
+          "formation": "line"
+        }
+      },
+      "B": "human_force"
+    },
+    {
+      "t": 440,
+      "groupes": {
+        "gunnison_forest:player_clan:0": {
+          "front": "insertion",
+          "ordre": "defend->insertion",
+          "emetteur": "player1",
+          "position": [
+            34,
+            0
+          ],
+          "vivants": 2,
+          "enTrajet": false,
+          "formation": "line"
+        },
+        "gunnison_forest:player_clan:1": {
+          "front": "relay",
+          "ordre": "attack->relay",
+          "emetteur": "player1",
+          "position": [
+            170,
+            -170
+          ],
+          "vivants": 4,
+          "enTrajet": false,
+          "formation": "wedge"
+        },
+        "gunnison_forest:player_clan:2": {
+          "front": "relay",
+          "ordre": "attack->relay",
+          "emetteur": "player1",
+          "position": [
+            170,
+            -170
+          ],
+          "vivants": 4,
+          "enTrajet": false,
+          "formation": "wedge"
+        },
+        "gunnison_forest:player_clan:3": {
+          "front": "relay",
+          "ordre": "escort->relay",
+          "emetteur": "player1",
+          "position": [
+            170,
+            -170
+          ],
+          "vivants": 4,
+          "enTrajet": false,
+          "formation": "line"
+        },
+        "gunnison_forest:player_clan:4": {
+          "front": "relay",
+          "ordre": "attack->relay",
+          "emetteur": "scenario",
+          "position": [
+            170,
+            -170
+          ],
+          "vivants": 4,
+          "enTrajet": false,
+          "formation": "line"
+        }
+      },
+      "B": "human_force"
+    },
+    {
+      "t": 636.25,
+      "groupes": {
+        "gunnison_forest:player_clan:0": {
+          "front": "insertion",
+          "ordre": "defend->insertion",
+          "emetteur": "player1",
+          "position": [
+            34,
+            0
+          ],
+          "vivants": 0,
+          "enTrajet": false,
+          "formation": "line"
+        },
+        "gunnison_forest:player_clan:1": {
+          "front": "relay",
+          "ordre": "attack->relay",
+          "emetteur": "player1",
+          "position": [
+            170,
+            -170
+          ],
+          "vivants": 4,
+          "enTrajet": false,
+          "formation": "wedge"
+        },
+        "gunnison_forest:player_clan:2": {
+          "front": "relay",
+          "ordre": "attack->relay",
+          "emetteur": "player1",
+          "position": [
+            170,
+            -170
+          ],
+          "vivants": 3,
+          "enTrajet": false,
+          "formation": "wedge"
+        },
+        "gunnison_forest:player_clan:3": {
+          "front": "insertion",
+          "ordre": "regroup->insertion",
+          "emetteur": "player1",
+          "position": [
+            0,
+            0
+          ],
+          "vivants": 0,
+          "enTrajet": false,
+          "formation": "line"
+        },
+        "gunnison_forest:player_clan:4": {
+          "front": "relay",
+          "ordre": "attack->relay",
+          "emetteur": "scenario",
+          "position": [
+            170,
+            -170
+          ],
+          "vivants": 4,
+          "enTrajet": false,
+          "formation": "line"
+        }
+      },
+      "B": "player_clan"
+    }
+  ],
+  "clauses": [
+    {
+      "id": "REC-010-1",
+      "texte": "Chaque groupe confirme ou refuse avec une raison compréhensible.",
+      "verdict": "conforme",
+      "preuve": {
+        "confirmations": [
+          {
+            "ordre": "tenir A",
+            "accuse": "ORDRE ACCEPTÉ · player_clan 1 vers Clairière d’insertion · défense · Joueur 1. Cet ordre remplace le précédent ; l’arrivée sera annoncée séparément."
+          },
+          {
+            "ordre": "contourner B à deux groupes",
+            "accuse": "TACTIQUE COORDONNÉE vers Relais de surveillance · player_clan 2, player_clan 3. Effet 20 s ; nouvelle coordination après 30 s. Les groupes doivent encore rejoindre leur position."
+          },
+          {
+            "ordre": "escorter vers B",
+            "accuse": "ORDRE ACCEPTÉ · player_clan 4 vers Relais de surveillance · escorte · Joueur 1. Cet ordre remplace le précédent ; l’arrivée sera annoncée séparément."
+          },
+          {
+            "ordre": "renforcer B (réserve finie)",
+            "accuse": "ACTION ACCEPTÉE · Consultez le journal et les stocks après la reprise."
+          },
+          {
+            "ordre": "déléguer A au capitaine du groupe qui tient",
+            "accuse": "CAPITAINE DÉLÉGUÉ vers Clairière d’insertion · player_clan 1. Il défend puis décide selon le combat réel ; surveillez ses pertes et ses rapports."
+          },
+          {
+            "ordre": "replier l’escorte de B vers A",
+            "accuse": "ORDRE ACCEPTÉ · player_clan 4 vers Clairière d’insertion · repli · Joueur 1. Cet ordre remplace le précédent ; l’arrivée sera annoncée séparément."
+          }
+        ],
+        "refus": [
+          {
+            "ordre": "ordre direct à un groupe en réserve",
+            "raison": "group_in_reserve",
+            "retourJoueur": "Ce groupe est encore en réserve."
+          },
+          {
+            "ordre": "contourner seul (encerclement à un groupe)",
+            "raison": "two_groups_required",
+            "retourJoueur": "L’encerclement nécessite deux groupes."
+          },
+          {
+            "ordre": "tactique sur un groupe de la ruche",
+            "raison": "allied_available_groups_required",
+            "retourJoueur": "Choisissez des groupes alliés disponibles."
+          },
+          {
+            "ordre": "nouvel ordre au groupe bloqué en trajet",
+            "raison": "route_closed_in_transit",
+            "retourJoueur": "Le passage emprunté vient de se fermer."
+          },
+          {
+            "ordre": "déléguer un front à un groupe sans capitaine",
+            "raison": "living_officer_required",
+            "retourJoueur": "Un capitaine vivant est nécessaire."
+          },
+          {
+            "ordre": "relancer l’escorte repliée à l’attaque",
+            "raison": "reconstitution_required",
+            "retourJoueur": "Ce groupe doit recevoir ses renforts et se réorganiser avant de repartir au combat."
+          }
+        ],
+        "refusSansTexte": []
+      }
+    },
+    {
+      "id": "REC-010-2",
+      "texte": "Coupure de route pendant l’ordre : refus motivé, position conservée, exécution après réouverture.",
+      "verdict": "conforme",
+      "preuve": {
+        "coupure": {
+          "t": 16.25,
+          "position": [
+            0,
+            -63.5
+          ],
+          "accepted": true
+        },
+        "ordresBloques": [
+          {
+            "t": 16.25,
+            "groupId": "gunnison_forest:player_clan:1",
+            "reason": "route_closed_in_transit"
+          },
+          {
+            "t": 16.25,
+            "groupId": "gunnison_forest:player_clan:2",
+            "reason": "route_closed_in_transit"
+          },
+          {
+            "t": 16.25,
+            "groupId": "gunnison_forest:player_clan:3",
+            "reason": "route_closed_in_transit"
+          }
+        ],
+        "positionTenue": true,
+        "refusApresCoupure": {
+          "t": 80,
+          "ordre": "nouvel ordre au groupe bloqué en trajet",
+          "groupes": [
+            "gunnison_forest:player_clan:1"
+          ],
+          "accepte": false,
+          "raison": "route_closed_in_transit",
+          "retourJoueur": "Le passage emprunté vient de se fermer.",
+          "accuse": null
+        },
+        "arriveeApresReouverture": {
+          "t": 126.25,
+          "groupId": "gunnison_forest:player_clan:1",
+          "frontId": "relay"
+        }
+      }
+    },
+    {
+      "id": "REC-010-3",
+      "texte": "Les ordres sont exécutés ; les alliés peuvent sécuriser un objectif sans présence du joueur.",
+      "verdict": "conforme",
+      "preuve": {
+        "arrivees": [
+          {
+            "t": 116.5,
+            "groupId": "gunnison_forest:player_clan:4",
+            "frontId": "relay"
+          },
+          {
+            "t": 126.25,
+            "groupId": "gunnison_forest:player_clan:1",
+            "frontId": "relay"
+          },
+          {
+            "t": 126.25,
+            "groupId": "gunnison_forest:player_clan:2",
+            "frontId": "relay"
+          },
+          {
+            "t": 126.25,
+            "groupId": "gunnison_forest:player_clan:3",
+            "frontId": "relay"
+          },
+          {
+            "t": 496.75,
+            "groupId": "gunnison_forest:player_clan:3",
+            "frontId": "insertion"
+          }
+        ],
+        "captureB": {
+          "t": 491.25,
+          "frontId": "relay",
+          "owner": "player_clan",
+          "reason": "unopposed_presence"
+        },
+        "escorteArriveeB": true,
+        "renfortArriveB": true,
+        "replieArriveA": true,
+        "groupeQuiTientResteSurA": true
+      }
+    },
+    {
+      "id": "REC-010-4",
+      "texte": "Un soutien n'abandonne pas systématiquement sa tâche pour poursuivre une cible isolée.",
+      "verdict": "conforme (couche stratégique)",
+      "preuve": {
+        "ordresObservesEscorte": [
+          "escort->relay:player1"
+        ],
+        "capitaineDelegueAQuitteA": null,
+        "decisionsCapitainesClan": 0
+      },
+      "nonAutomatisable": "Le comportement de poursuite des acteurs détaillés (ciblage rapproché) reste à vérifier en jeu par un humain."
+    },
+    {
+      "id": "REC-010-5",
+      "texte": "Vidéo avec statut des ordres (preuve à conserver).",
+      "verdict": "non automatisable",
+      "raison": "Aucun rendu headless : statut des ordres, destinations, trajets et motifs de refus sont journalisés ; la vidéo et la lisibilité de la carte de commandement restent à vérifier par un humain."
+    }
+  ],
+  "limites": [
+    "La perte du capitaine du second groupe de contournement est injectée par la recette (recordDeath) pour obtenir une demande incompatible avec le rôle « capitaine ».",
+    "La poursuite d’une cible isolée par les acteurs détaillés (BattleActorBridge, IA de combat) n’est pas exercée headless : seule la couche stratégique est prouvée.",
+    "Les accusés de réception affichent les libellés bruts des groupes (« player_clan 1 ») : lisibilité à juger par un humain.",
+    "L’API ne porte aucun contrôle de rôle métier (médecin, artilleur…) sur les ordres de groupe : la seule incompatibilité de rôle vérifiable ici est l’exigence d’un capitaine vivant pour la délégation et l’appartenance alliée pour les tactiques."
+  ]
+}

@@ -1,0 +1,924 @@
+{
+  "recette": "REC-003",
+  "perimetre": "Alertes et temps réel pour porter secours",
+  "procedureClasseur": "Déclencher une attaque sur un front distant depuis plusieurs positions du joueur. Mesurer le délai d'alerte, la durée de trajet par les routes accessibles et le temps restant avant rupture; répéter avec un passage bloqué.",
+  "resultatAttenduClasseur": "Le joueur reçoit une information exploitable avant la conséquence irréversible, ou la mission signale clairement qu'un ordre distant est nécessaire. Aucune alerte urgente ne demande un trajet impossible sans l'annoncer.",
+  "preuveAConserverClasseur": "Chronométrages; vitesses et routes déclarées; captures des alertes; seuils de délai fixés avant recette.",
+  "date": "2026-11-14",
+  "commit": "4092a2c7da8f6df77a76daf2e0888e0297657e62",
+  "branche": "claude/fervent-volta-hmhdfw",
+  "preuveVideo": "non produite — preuve par journal de simulation",
+  "graine": {
+    "mapSeed": 20261114,
+    "simulation": "déterministe, sans tirage aléatoire",
+    "pas": 0.25
+  },
+  "scenario": {
+    "operationId": "pilot",
+    "levelId": "gunnison_forest",
+    "configId": "three-fronts:gunnison_forest",
+    "configDigest": "c5562973",
+    "difficulte": {
+      "id": "standard",
+      "label": "Équilibré",
+      "scope": "officer_decisions_only",
+      "populationChanged": false
+    },
+    "attaque": "À t=40 s, tous les groupes ruche et humains reçoivent l’ordre d’attaquer A (insertion, front critique du joueur) — déclenchement de recette par issueOrder(issuer \"scenario\").",
+    "positionsJoueur": {
+      "B": [
+        170,
+        -170
+      ],
+      "C": [
+        0,
+        -510
+      ]
+    },
+    "conséquenceIrréversible": "Défaite « critical_front_lost » à l’échéance ; la capture de A et la mort des alliés sont mesurées aussi.",
+    "routesDeclarees": [
+      {
+        "id": "route-insertion-relay-main",
+        "from": "insertion",
+        "to": "relay",
+        "longueur": 340,
+        "travelSecondsGroupes": 56.666666666666664
+      },
+      {
+        "id": "route-relay-nest-main",
+        "from": "relay",
+        "to": "nest",
+        "longueur": 510,
+        "travelSecondsGroupes": 85
+      },
+      {
+        "id": "route-insertion-relay-flank",
+        "from": "insertion",
+        "to": "relay",
+        "longueur": 556,
+        "travelSecondsGroupes": 92.66666666666667
+      },
+      {
+        "id": "route-relay-nest-outer",
+        "from": "relay",
+        "to": "nest",
+        "longueur": 726,
+        "travelSecondsGroupes": 121
+      }
+    ]
+  },
+  "seuils": {
+    "playerSpeed": 10,
+    "maneuverFactor": 1.2,
+    "reactionSeconds": 12,
+    "source": "BattleStrategy.measureDefeatReturn defaults, fixed before execution",
+    "recaptureSeconds": 25,
+    "regle": "alerte + trajet×1,2/10 u/s + réaction 12 s + reprise ≤ échéance"
+  },
+  "variantes": {
+    "ouvert": {
+      "jalons": {
+        "firstInfo": {
+          "t": 108.25,
+          "source": "garrison_report",
+          "reportAge": 4
+        },
+        "firstAllyDeath": 502.5,
+        "firstAlertNamingA": {
+          "t": 508.25,
+          "text": "CAPITAINE EN DANGER · Clairière d’insertion · S 510 u"
+        },
+        "criticalAlert": {
+          "t": 577.25,
+          "deadline": 730.25,
+          "criticalFronts": [
+            {
+              "frontId": "insertion",
+              "since": 577.25,
+              "deadline": 730.25,
+              "graceSeconds": 153,
+              "routeRevision": 0,
+              "returnTravelSeconds": 116,
+              "unreachableFrontIds": []
+            }
+          ],
+          "hudAlertTypes": [
+            "unit_died",
+            "unit_died",
+            "unit_died",
+            "unit_died"
+          ]
+        },
+        "capture": 577.25,
+        "afterCut": {
+          "t": 577.5,
+          "deadline": 730.25,
+          "criticalFronts": [
+            {
+              "frontId": "insertion",
+              "since": 577.25,
+              "deadline": 730.25,
+              "graceSeconds": 153,
+              "routeRevision": 0,
+              "returnTravelSeconds": 116,
+              "unreachableFrontIds": []
+            }
+          ],
+          "hudAlertTypes": [
+            "unit_died",
+            "unit_died",
+            "unit_died",
+            "unit_died"
+          ],
+          "alerteC": "DÉFAITE IMMINENTE — REPRENEZ LE FRONT · Clairière d’insertion · 153 s · S 510 u",
+          "alerteB": "DÉFAITE IMMINENTE — REPRENEZ LE FRONT · Clairière d’insertion · 153 s · SO 240 u"
+        },
+        "travel": {
+          "B": {
+            "reachable": true,
+            "routes": [
+              "route-insertion-relay-main"
+            ],
+            "distance": 340,
+            "seconds": 41
+          },
+          "C": {
+            "reachable": true,
+            "routes": [
+              "route-relay-nest-main",
+              "route-insertion-relay-main"
+            ],
+            "distance": 850,
+            "seconds": 102
+          }
+        },
+        "result": {
+          "fronts": [
+            "insertion"
+          ],
+          "outcome": "defeat",
+          "reason": "critical_front_lost",
+          "time": 730.25
+        },
+        "simEvents": [
+          {
+            "t": 577.25,
+            "type": "critical_front_lost",
+            "deadline": 730.25,
+            "unreachableFrontIds": []
+          }
+        ]
+      },
+      "faisabilite": {
+        "B": {
+          "trajet": {
+            "reachable": true,
+            "routes": [
+              "route-insertion-relay-main"
+            ],
+            "distance": 340,
+            "seconds": 41
+          },
+          "secondesNecessaires": 78,
+          "secondesDisponiblesApresAlerte": 153,
+          "faisable": true
+        },
+        "C": {
+          "trajet": {
+            "reachable": true,
+            "routes": [
+              "route-relay-nest-main",
+              "route-insertion-relay-main"
+            ],
+            "distance": 850,
+            "seconds": 102
+          },
+          "secondesNecessaires": 139,
+          "secondesDisponiblesApresAlerte": 153,
+          "faisable": true
+        }
+      },
+      "capturesAlertes": [
+        {
+          "t": 0.25,
+          "position": "B",
+          "alerte": "Les réserves et les pertes persistent entre les fronts."
+        },
+        {
+          "t": 0.25,
+          "position": "C",
+          "alerte": "Les réserves et les pertes persistent entre les fronts."
+        },
+        {
+          "t": 12.25,
+          "position": "B",
+          "alerte": "Renforts en approche · Clairière d’insertion · SO 240 u"
+        },
+        {
+          "t": 12.25,
+          "position": "C",
+          "alerte": "Renforts en approche · Clairière d’insertion · S 510 u"
+        },
+        {
+          "t": 20.25,
+          "position": "B",
+          "alerte": "Renforts arrivés · Clairière d’insertion · SO 240 u"
+        },
+        {
+          "t": 20.25,
+          "position": "C",
+          "alerte": "Renforts arrivés · Clairière d’insertion · S 510 u"
+        },
+        {
+          "t": 40,
+          "action": "attaque_declenchee",
+          "vers": "insertion",
+          "groupes": 28
+        },
+        {
+          "t": 508.25,
+          "position": "B",
+          "alerte": "CAPITAINE EN DANGER · Clairière d’insertion · SO 240 u"
+        },
+        {
+          "t": 508.25,
+          "position": "C",
+          "alerte": "CAPITAINE EN DANGER · Clairière d’insertion · S 510 u"
+        },
+        {
+          "t": 564.25,
+          "position": "B",
+          "alerte": "Un capitaine est tombé · Clairière d’insertion · SO 240 u"
+        },
+        {
+          "t": 564.25,
+          "position": "C",
+          "alerte": "Un capitaine est tombé · Clairière d’insertion · S 510 u"
+        },
+        {
+          "t": 577.25,
+          "position": "B",
+          "alerte": "DÉFAITE IMMINENTE — REPRENEZ LE FRONT · Clairière d’insertion · 153 s · SO 240 u"
+        },
+        {
+          "t": 577.25,
+          "position": "C",
+          "alerte": "DÉFAITE IMMINENTE — REPRENEZ LE FRONT · Clairière d’insertion · 153 s · S 510 u"
+        }
+      ]
+    },
+    "detour_route_principale_fermee": {
+      "jalons": {
+        "firstInfo": {
+          "t": 140.25,
+          "source": "garrison_report",
+          "reportAge": 4
+        },
+        "firstAllyDeath": 433.5,
+        "firstAlertNamingA": {
+          "t": 508.25,
+          "text": "CAPITAINE EN DANGER · Clairière d’insertion · S 510 u"
+        },
+        "criticalAlert": {
+          "t": 648,
+          "deadline": 827,
+          "criticalFronts": [
+            {
+              "frontId": "insertion",
+              "since": 648,
+              "deadline": 827,
+              "graceSeconds": 179,
+              "routeRevision": 1,
+              "returnTravelSeconds": 142,
+              "unreachableFrontIds": []
+            }
+          ],
+          "hudAlertTypes": [
+            "unit_died",
+            "unit_died"
+          ]
+        },
+        "capture": 648,
+        "afterCut": {
+          "t": 648.25,
+          "deadline": 827,
+          "criticalFronts": [
+            {
+              "frontId": "insertion",
+              "since": 648,
+              "deadline": 827,
+              "graceSeconds": 179,
+              "routeRevision": 1,
+              "returnTravelSeconds": 142,
+              "unreachableFrontIds": []
+            }
+          ],
+          "hudAlertTypes": [
+            "unit_died",
+            "unit_died"
+          ],
+          "alerteC": "DÉFAITE IMMINENTE — REPRENEZ LE FRONT · Clairière d’insertion · 179 s · S 510 u",
+          "alerteB": "DÉFAITE IMMINENTE — REPRENEZ LE FRONT · Clairière d’insertion · 179 s · SO 240 u"
+        },
+        "travel": {
+          "B": {
+            "reachable": true,
+            "routes": [
+              "route-insertion-relay-flank"
+            ],
+            "distance": 556,
+            "seconds": 67
+          },
+          "C": {
+            "reachable": true,
+            "routes": [
+              "route-relay-nest-main",
+              "route-insertion-relay-flank"
+            ],
+            "distance": 1066,
+            "seconds": 128
+          }
+        },
+        "result": {
+          "fronts": [
+            "insertion"
+          ],
+          "outcome": "defeat",
+          "reason": "critical_front_lost",
+          "time": 827
+        },
+        "simEvents": [
+          {
+            "t": 0,
+            "type": "route_changed",
+            "routeId": "route-insertion-relay-main",
+            "reason": "recette_passage_bloque"
+          },
+          {
+            "t": 648,
+            "type": "critical_front_lost",
+            "deadline": 827,
+            "unreachableFrontIds": []
+          }
+        ]
+      },
+      "faisabilite": {
+        "B": {
+          "trajet": {
+            "reachable": true,
+            "routes": [
+              "route-insertion-relay-flank"
+            ],
+            "distance": 556,
+            "seconds": 67
+          },
+          "secondesNecessaires": 104,
+          "secondesDisponiblesApresAlerte": 179,
+          "faisable": true
+        },
+        "C": {
+          "trajet": {
+            "reachable": true,
+            "routes": [
+              "route-relay-nest-main",
+              "route-insertion-relay-flank"
+            ],
+            "distance": 1066,
+            "seconds": 128
+          },
+          "secondesNecessaires": 165,
+          "secondesDisponiblesApresAlerte": 179,
+          "faisable": true
+        }
+      },
+      "capturesAlertes": [
+        {
+          "t": 0,
+          "action": "route_closed",
+          "routeId": "route-insertion-relay-main",
+          "accepted": true
+        },
+        {
+          "t": 0.25,
+          "position": "B",
+          "alerte": "Les réserves et les pertes persistent entre les fronts."
+        },
+        {
+          "t": 0.25,
+          "position": "C",
+          "alerte": "Les réserves et les pertes persistent entre les fronts."
+        },
+        {
+          "t": 12.25,
+          "position": "B",
+          "alerte": "Renforts en approche · Clairière d’insertion · SO 240 u"
+        },
+        {
+          "t": 12.25,
+          "position": "C",
+          "alerte": "Renforts en approche · Clairière d’insertion · S 510 u"
+        },
+        {
+          "t": 20.25,
+          "position": "B",
+          "alerte": "Renforts arrivés · Clairière d’insertion · SO 240 u"
+        },
+        {
+          "t": 20.25,
+          "position": "C",
+          "alerte": "Renforts arrivés · Clairière d’insertion · S 510 u"
+        },
+        {
+          "t": 40,
+          "action": "attaque_declenchee",
+          "vers": "insertion",
+          "groupes": 28
+        },
+        {
+          "t": 508.25,
+          "position": "B",
+          "alerte": "CAPITAINE EN DANGER · Clairière d’insertion · SO 240 u"
+        },
+        {
+          "t": 508.25,
+          "position": "C",
+          "alerte": "CAPITAINE EN DANGER · Clairière d’insertion · S 510 u"
+        },
+        {
+          "t": 628.25,
+          "position": "B",
+          "alerte": "Un capitaine est tombé · Clairière d’insertion · SO 240 u"
+        },
+        {
+          "t": 628.25,
+          "position": "C",
+          "alerte": "Un capitaine est tombé · Clairière d’insertion · S 510 u"
+        },
+        {
+          "t": 648,
+          "position": "B",
+          "alerte": "DÉFAITE IMMINENTE — REPRENEZ LE FRONT · Clairière d’insertion · 179 s · SO 240 u"
+        },
+        {
+          "t": 648,
+          "position": "C",
+          "alerte": "DÉFAITE IMMINENTE — REPRENEZ LE FRONT · Clairière d’insertion · 179 s · S 510 u"
+        }
+      ]
+    },
+    "passage_scelle_apres_capture": {
+      "jalons": {
+        "firstInfo": {
+          "t": 108.25,
+          "source": "garrison_report",
+          "reportAge": 4
+        },
+        "firstAllyDeath": 502.5,
+        "firstAlertNamingA": {
+          "t": 508.25,
+          "text": "CAPITAINE EN DANGER · Clairière d’insertion · S 510 u"
+        },
+        "criticalAlert": {
+          "t": 577.25,
+          "deadline": 730.25,
+          "criticalFronts": [
+            {
+              "frontId": "insertion",
+              "since": 577.25,
+              "deadline": 730.25,
+              "graceSeconds": 153,
+              "routeRevision": 0,
+              "returnTravelSeconds": 116,
+              "unreachableFrontIds": []
+            }
+          ],
+          "hudAlertTypes": [
+            "unit_died",
+            "unit_died",
+            "unit_died",
+            "unit_died"
+          ]
+        },
+        "capture": 577.25,
+        "afterCut": {
+          "t": 577.5,
+          "deadline": 730.25,
+          "criticalFronts": [
+            {
+              "frontId": "insertion",
+              "since": 577.25,
+              "deadline": 730.25,
+              "graceSeconds": 153,
+              "routeRevision": 2,
+              "returnTravelSeconds": 116,
+              "unreachableFrontIds": [
+                "relay",
+                "nest"
+              ]
+            }
+          ],
+          "hudAlertTypes": [
+            "unit_died",
+            "unit_died",
+            "unit_died",
+            "unit_died"
+          ],
+          "alerteC": "DÉFAITE IMMINENTE — REPRENEZ LE FRONT · Clairière d’insertion · 153 s · S 510 u",
+          "alerteB": "DÉFAITE IMMINENTE — REPRENEZ LE FRONT · Clairière d’insertion · 153 s · SO 240 u"
+        },
+        "travel": {
+          "B": {
+            "reachable": false,
+            "routes": [],
+            "distance": null,
+            "seconds": null
+          },
+          "C": {
+            "reachable": false,
+            "routes": [],
+            "distance": null,
+            "seconds": null
+          }
+        },
+        "result": {
+          "fronts": [
+            "insertion"
+          ],
+          "outcome": "defeat",
+          "reason": "critical_front_lost",
+          "time": 730.25
+        },
+        "simEvents": [
+          {
+            "t": 577.25,
+            "type": "critical_front_lost",
+            "deadline": 730.25,
+            "unreachableFrontIds": []
+          },
+          {
+            "t": 577.25,
+            "type": "route_changed",
+            "routeId": "route-insertion-relay-main",
+            "reason": "recette_passage_bloque"
+          },
+          {
+            "t": 577.25,
+            "type": "order_blocked",
+            "reason": "route_closed_in_transit"
+          },
+          {
+            "t": 577.25,
+            "type": "route_changed",
+            "routeId": "route-insertion-relay-flank",
+            "reason": "recette_passage_bloque"
+          },
+          {
+            "t": 577.5,
+            "type": "critical_return_route_blocked",
+            "deadline": 730.25,
+            "unreachableFrontIds": [
+              "relay",
+              "nest"
+            ],
+            "reason": "reopen_a_route_to_return"
+          }
+        ]
+      },
+      "faisabilite": {
+        "B": {
+          "trajet": {
+            "reachable": false,
+            "routes": [],
+            "distance": null,
+            "seconds": null
+          },
+          "secondesNecessaires": null,
+          "secondesDisponiblesApresAlerte": 153,
+          "faisable": false
+        },
+        "C": {
+          "trajet": {
+            "reachable": false,
+            "routes": [],
+            "distance": null,
+            "seconds": null
+          },
+          "secondesNecessaires": null,
+          "secondesDisponiblesApresAlerte": 153,
+          "faisable": false
+        }
+      },
+      "capturesAlertes": [
+        {
+          "t": 0.25,
+          "position": "B",
+          "alerte": "Les réserves et les pertes persistent entre les fronts."
+        },
+        {
+          "t": 0.25,
+          "position": "C",
+          "alerte": "Les réserves et les pertes persistent entre les fronts."
+        },
+        {
+          "t": 12.25,
+          "position": "B",
+          "alerte": "Renforts en approche · Clairière d’insertion · SO 240 u"
+        },
+        {
+          "t": 12.25,
+          "position": "C",
+          "alerte": "Renforts en approche · Clairière d’insertion · S 510 u"
+        },
+        {
+          "t": 20.25,
+          "position": "B",
+          "alerte": "Renforts arrivés · Clairière d’insertion · SO 240 u"
+        },
+        {
+          "t": 20.25,
+          "position": "C",
+          "alerte": "Renforts arrivés · Clairière d’insertion · S 510 u"
+        },
+        {
+          "t": 40,
+          "action": "attaque_declenchee",
+          "vers": "insertion",
+          "groupes": 28
+        },
+        {
+          "t": 508.25,
+          "position": "B",
+          "alerte": "CAPITAINE EN DANGER · Clairière d’insertion · SO 240 u"
+        },
+        {
+          "t": 508.25,
+          "position": "C",
+          "alerte": "CAPITAINE EN DANGER · Clairière d’insertion · S 510 u"
+        },
+        {
+          "t": 564.25,
+          "position": "B",
+          "alerte": "Un capitaine est tombé · Clairière d’insertion · SO 240 u"
+        },
+        {
+          "t": 564.25,
+          "position": "C",
+          "alerte": "Un capitaine est tombé · Clairière d’insertion · S 510 u"
+        },
+        {
+          "t": 577.25,
+          "position": "B",
+          "alerte": "DÉFAITE IMMINENTE — REPRENEZ LE FRONT · Clairière d’insertion · 153 s · SO 240 u"
+        },
+        {
+          "t": 577.25,
+          "position": "C",
+          "alerte": "DÉFAITE IMMINENTE — REPRENEZ LE FRONT · Clairière d’insertion · 153 s · S 510 u"
+        },
+        {
+          "t": 577.25,
+          "action": "route_closed",
+          "routeId": "route-insertion-relay-main",
+          "accepted": true
+        },
+        {
+          "t": 577.25,
+          "action": "route_closed",
+          "routeId": "route-insertion-relay-flank",
+          "accepted": true
+        }
+      ]
+    }
+  },
+  "clauses": [
+    {
+      "id": "REC-003-1",
+      "texte": "Le joueur reçoit une information exploitable avant la conséquence irréversible (routes ouvertes).",
+      "verdict": "conforme",
+      "preuve": {
+        "premiereInformation": {
+          "t": 108.25,
+          "source": "garrison_report",
+          "reportAge": 4
+        },
+        "premiereAlerteNommantA": {
+          "t": 508.25,
+          "text": "CAPITAINE EN DANGER · Clairière d’insertion · S 510 u"
+        },
+        "premiereMortAlliee": 502.5,
+        "captureA": 577.25,
+        "alerteCritique": {
+          "t": 577.25,
+          "deadline": 730.25,
+          "criticalFronts": [
+            {
+              "frontId": "insertion",
+              "since": 577.25,
+              "deadline": 730.25,
+              "graceSeconds": 153,
+              "routeRevision": 0,
+              "returnTravelSeconds": 116,
+              "unreachableFrontIds": []
+            }
+          ],
+          "hudAlertTypes": [
+            "unit_died",
+            "unit_died",
+            "unit_died",
+            "unit_died"
+          ]
+        },
+        "echeance": 730.25,
+        "tempsInformationAvantRupture": 469,
+        "faisabilite": {
+          "B": {
+            "trajet": {
+              "reachable": true,
+              "routes": [
+                "route-insertion-relay-main"
+              ],
+              "distance": 340,
+              "seconds": 41
+            },
+            "secondesNecessaires": 78,
+            "secondesDisponiblesApresAlerte": 153,
+            "faisable": true
+          },
+          "C": {
+            "trajet": {
+              "reachable": true,
+              "routes": [
+                "route-relay-nest-main",
+                "route-insertion-relay-main"
+              ],
+              "distance": 850,
+              "seconds": 102
+            },
+            "secondesNecessaires": 139,
+            "secondesDisponiblesApresAlerte": 153,
+            "faisable": true
+          }
+        }
+      },
+      "observation": "La première information (A disputé dans le HUD, rapport de garnison) arrive à t=108.25 s ; la première mort alliée à t=502.5 s. La mort des alliés est irréversible mais n’est annoncée en texte d’alerte qu’au moment « capitaine en danger » : à juger par un humain."
+    },
+    {
+      "id": "REC-003-2",
+      "texte": "Répétition avec un passage bloqué (détour disponible) : trajet accessible et délai suffisant.",
+      "verdict": "conforme",
+      "preuve": {
+        "faisabilite": {
+          "B": {
+            "trajet": {
+              "reachable": true,
+              "routes": [
+                "route-insertion-relay-flank"
+              ],
+              "distance": 556,
+              "seconds": 67
+            },
+            "secondesNecessaires": 104,
+            "secondesDisponiblesApresAlerte": 179,
+            "faisable": true
+          },
+          "C": {
+            "trajet": {
+              "reachable": true,
+              "routes": [
+                "route-relay-nest-main",
+                "route-insertion-relay-flank"
+              ],
+              "distance": 1066,
+              "seconds": 128
+            },
+            "secondesNecessaires": 165,
+            "secondesDisponiblesApresAlerte": 179,
+            "faisable": true
+          }
+        },
+        "echeance": 827,
+        "alerteCritique": {
+          "t": 648,
+          "deadline": 827,
+          "criticalFronts": [
+            {
+              "frontId": "insertion",
+              "since": 648,
+              "deadline": 827,
+              "graceSeconds": 179,
+              "routeRevision": 1,
+              "returnTravelSeconds": 142,
+              "unreachableFrontIds": []
+            }
+          ],
+          "hudAlertTypes": [
+            "unit_died",
+            "unit_died"
+          ]
+        },
+        "evenements": [
+          {
+            "t": 0,
+            "type": "route_changed",
+            "routeId": "route-insertion-relay-main",
+            "reason": "recette_passage_bloque"
+          },
+          {
+            "t": 648,
+            "type": "critical_front_lost",
+            "deadline": 827,
+            "unreachableFrontIds": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "REC-003-3a",
+      "texte": "Coupure totale : la simulation calcule et émet l’impossibilité du retour.",
+      "verdict": "conforme",
+      "preuve": {
+        "evenement": {
+          "t": 577.5,
+          "type": "critical_return_route_blocked",
+          "deadline": 730.25,
+          "unreachableFrontIds": [
+            "relay",
+            "nest"
+          ],
+          "reason": "reopen_a_route_to_return"
+        },
+        "criticalFronts": [
+          {
+            "frontId": "insertion",
+            "since": 577.25,
+            "deadline": 730.25,
+            "graceSeconds": 153,
+            "routeRevision": 2,
+            "returnTravelSeconds": 116,
+            "unreachableFrontIds": [
+              "relay",
+              "nest"
+            ]
+          }
+        ],
+        "trajets": {
+          "B": {
+            "reachable": false,
+            "routes": [],
+            "distance": null,
+            "seconds": null
+          },
+          "C": {
+            "reachable": false,
+            "routes": [],
+            "distance": null,
+            "seconds": null
+          }
+        }
+      }
+    },
+    {
+      "id": "REC-003-3b",
+      "texte": "Aucune alerte urgente ne demande un trajet impossible sans l'annoncer (ou la mission signale qu'un ordre distant est nécessaire).",
+      "verdict": "non conforme",
+      "preuve": {
+        "alerteAffichee_B": "DÉFAITE IMMINENTE — REPRENEZ LE FRONT · Clairière d’insertion · 153 s · SO 240 u",
+        "alerteAffichee_C": "DÉFAITE IMMINENTE — REPRENEZ LE FRONT · Clairière d’insertion · 153 s · S 510 u",
+        "typesAlertesHUD": [
+          "unit_died",
+          "unit_died",
+          "unit_died",
+          "unit_died"
+        ],
+        "resultat": {
+          "fronts": [
+            "insertion"
+          ],
+          "outcome": "defeat",
+          "reason": "critical_front_lost",
+          "time": 730.25
+        }
+      },
+      "defaut": {
+        "resume": "Après la coupure totale, le panneau affiche toujours « DÉFAITE IMMINENTE — REPRENEZ LE FRONT » avec le compte à rebours, sans signaler que le front est inaccessible ni proposer d’ordre distant ; l’échéance expire et la mission est perdue.",
+        "emplacements": [
+          "js/ui/OperationPanel.js:15-21 — operationAlertState() construit l’alerte urgente depuis criticalFronts sans lire unreachableFrontIds.",
+          "js/battlefield/BattleIntel.js:114-121 — allowsEvent() exige un rapport de front observé après l’événement ; A étant tombé sans observateur allié, critical_return_route_blocked (priorité 4) est filtré de hud.alerts.",
+          "js/battlefield/BattleSimulation.js:1112-1122 — la perte critique garde son échéance alors que unreachableFrontIds couvre tous les autres fronts ; la défaite survient à l’échéance."
+        ],
+        "reproduction": "node --test tests/recette-rec-003.test.js (variante passage_scelle_apres_capture) : pilote gunnison_forest, mapSeed 20261114, attaque de A à t=40 s, fermeture de route-insertion-relay-main et route-insertion-relay-flank à la capture de A, lecture de operationAlertState(getHUDState())."
+      }
+    },
+    {
+      "id": "REC-003-4",
+      "texte": "Captures des alertes (preuve à conserver).",
+      "verdict": "non automatisable",
+      "raison": "Pas de rendu headless : seules les chaînes d’alerte du panneau sont journalisées. Les captures d’écran restent à produire dans le navigateur."
+    }
+  ],
+  "limites": [
+    "Captures d’alertes = texte de operationAlertState (js/ui/OperationPanel.js), fonction pure du panneau ; pas de capture d’écran.",
+    "Le joueur n’est pas transmis à update() : sa présence matérialiserait les groupes du front où il se trouve sans combat détaillé headless.",
+    "Le trajet calculé ignore les combats traversés ; le ressenti du délai reste à valider par un humain en jeu."
+  ]
+}

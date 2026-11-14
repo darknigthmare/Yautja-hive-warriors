@@ -1,0 +1,341 @@
+{
+  "id": "CTRL-001",
+  "source": "docs/audits/2026-10-27/Yautja_Hive_Warriors_Controle_Completude_2026-10-27.xlsx#Controle_roster ; docs/audits/2026-10-27/implementation-followup-20261101.json",
+  "sujet": "AFF-16 : synthétiques Weyland-Yutani remplacés par humains",
+  "operation": "AFF-16",
+  "seed": 1114,
+  "seedsMatrice": [
+    0,
+    1114,
+    48879
+  ],
+  "commit": "4092a2c7da8f6df77a76daf2e0888e0297657e62",
+  "date": "2026-11-14",
+  "commande": "node --test tests/recette-ctrl-001.test.js",
+  "niveau": "runtime mission (createOperationScene → BattleSimulation → BattleActorBridge → SyntheticsManager/ColonialMarinesManager réels, sans rendu WebGL)",
+  "preuveVideo": "non produite — preuve par journal",
+  "matrice": [
+    {
+      "seed": 0,
+      "difficultyId": "cautious",
+      "players": 1,
+      "synthetiques": 192,
+      "humains": 0,
+      "profilsHumainsGeneriques": 0
+    },
+    {
+      "seed": 0,
+      "difficultyId": "cautious",
+      "players": 2,
+      "synthetiques": 192,
+      "humains": 0,
+      "profilsHumainsGeneriques": 0
+    },
+    {
+      "seed": 0,
+      "difficultyId": "standard",
+      "players": 1,
+      "synthetiques": 192,
+      "humains": 0,
+      "profilsHumainsGeneriques": 0
+    },
+    {
+      "seed": 0,
+      "difficultyId": "standard",
+      "players": 2,
+      "synthetiques": 192,
+      "humains": 0,
+      "profilsHumainsGeneriques": 0
+    },
+    {
+      "seed": 0,
+      "difficultyId": "aggressive",
+      "players": 1,
+      "synthetiques": 192,
+      "humains": 0,
+      "profilsHumainsGeneriques": 0
+    },
+    {
+      "seed": 0,
+      "difficultyId": "aggressive",
+      "players": 2,
+      "synthetiques": 192,
+      "humains": 0,
+      "profilsHumainsGeneriques": 0
+    },
+    {
+      "seed": 1114,
+      "difficultyId": "cautious",
+      "players": 1,
+      "synthetiques": 192,
+      "humains": 0,
+      "profilsHumainsGeneriques": 0
+    },
+    {
+      "seed": 1114,
+      "difficultyId": "cautious",
+      "players": 2,
+      "synthetiques": 192,
+      "humains": 0,
+      "profilsHumainsGeneriques": 0
+    },
+    {
+      "seed": 1114,
+      "difficultyId": "standard",
+      "players": 1,
+      "synthetiques": 192,
+      "humains": 0,
+      "profilsHumainsGeneriques": 0
+    },
+    {
+      "seed": 1114,
+      "difficultyId": "standard",
+      "players": 2,
+      "synthetiques": 192,
+      "humains": 0,
+      "profilsHumainsGeneriques": 0
+    },
+    {
+      "seed": 1114,
+      "difficultyId": "aggressive",
+      "players": 1,
+      "synthetiques": 192,
+      "humains": 0,
+      "profilsHumainsGeneriques": 0
+    },
+    {
+      "seed": 1114,
+      "difficultyId": "aggressive",
+      "players": 2,
+      "synthetiques": 192,
+      "humains": 0,
+      "profilsHumainsGeneriques": 0
+    },
+    {
+      "seed": 48879,
+      "difficultyId": "cautious",
+      "players": 1,
+      "synthetiques": 192,
+      "humains": 0,
+      "profilsHumainsGeneriques": 0
+    },
+    {
+      "seed": 48879,
+      "difficultyId": "cautious",
+      "players": 2,
+      "synthetiques": 192,
+      "humains": 0,
+      "profilsHumainsGeneriques": 0
+    },
+    {
+      "seed": 48879,
+      "difficultyId": "standard",
+      "players": 1,
+      "synthetiques": 192,
+      "humains": 0,
+      "profilsHumainsGeneriques": 0
+    },
+    {
+      "seed": 48879,
+      "difficultyId": "standard",
+      "players": 2,
+      "synthetiques": 192,
+      "humains": 0,
+      "profilsHumainsGeneriques": 0
+    },
+    {
+      "seed": 48879,
+      "difficultyId": "aggressive",
+      "players": 1,
+      "synthetiques": 192,
+      "humains": 0,
+      "profilsHumainsGeneriques": 0
+    },
+    {
+      "seed": 48879,
+      "difficultyId": "aggressive",
+      "players": 2,
+      "synthetiques": 192,
+      "humains": 0,
+      "profilsHumainsGeneriques": 0
+    }
+  ],
+  "chronologie": [
+    {
+      "t": 6,
+      "event": "joueur_sur_front",
+      "frontId": "front_a",
+      "acteursDetailles": 24
+    },
+    {
+      "t": 12,
+      "event": "joueur_sur_front",
+      "frontId": "front_b",
+      "acteursDetailles": 28
+    },
+    {
+      "t": 18,
+      "event": "joueur_sur_front",
+      "frontId": "front_c",
+      "acteursDetailles": 21
+    },
+    {
+      "t": 24,
+      "event": "joueur_sur_front",
+      "frontId": "front_d",
+      "acteursDetailles": 16
+    },
+    {
+      "t": 24,
+      "event": "projection_totale",
+      "repartition": {
+        "hive|xenomorph|runner|xenomorph|runner": 630,
+        "hive|xenomorph|spitter|xenomorph|spitter": 90,
+        "human_force|synthetic|weyland_combat|synthetics|weyland_combat": 99,
+        "player_clan|yautja|clan_hunter|yautja|clan_hunter": 4
+      }
+    },
+    {
+      "t": 2,
+      "event": "joueur_sur_front",
+      "frontId": "front_a",
+      "acteursDetailles": 28
+    },
+    {
+      "t": 4,
+      "event": "joueur_sur_front",
+      "frontId": "front_b",
+      "acteursDetailles": 28
+    },
+    {
+      "t": 6,
+      "event": "joueur_sur_front",
+      "frontId": "front_c",
+      "acteursDetailles": 28
+    },
+    {
+      "t": 8,
+      "event": "joueur_sur_front",
+      "frontId": "front_d",
+      "acteursDetailles": 27
+    }
+  ],
+  "clauses": [
+    {
+      "clause": "allocation_runtime",
+      "attendu": "Conserver une faction synthetic et une correspondance explicite groupe → profil (GRP-46 → weyland_combat).",
+      "verdict": "prouvé",
+      "details": {
+        "factionId": "human_force",
+        "label": "Synthétiques Weyland-Yutani",
+        "groupesGRP46": 24,
+        "profils": [
+          "source_human_force_GRP-46_default_0",
+          "source_human_force_GRP-46_default_1",
+          "source_human_force_GRP-46_default_2",
+          "source_human_force_GRP-46_default_3",
+          "source_human_force_GRP-46_default_4",
+          "source_human_force_GRP-46_default_5",
+          "source_human_force_GRP-46_default_6",
+          "source_human_force_GRP-46_default_7"
+        ]
+      }
+    },
+    {
+      "clause": "effectif_192",
+      "attendu": "Vérifier les 192 synthétiques alloués sans ajouter d’humains ni modifier les comptes.",
+      "verdict": "prouvé",
+      "details": {
+        "simules": 952,
+        "synthetiques": 192,
+        "humains": 0,
+        "parFaction": {
+          "player_clan": {
+            "allocated": 24,
+            "active": 0,
+            "distant": 16,
+            "reserve": 8,
+            "dead": 0,
+            "evacuated": 0,
+            "captured": 0
+          },
+          "hive": {
+            "allocated": 736,
+            "active": 0,
+            "distant": 480,
+            "reserve": 256,
+            "dead": 0,
+            "evacuated": 0,
+            "captured": 0
+          },
+          "human_force": {
+            "allocated": 192,
+            "active": 0,
+            "distant": 128,
+            "reserve": 64,
+            "dead": 0,
+            "evacuated": 0,
+            "captured": 0
+          }
+        }
+      }
+    },
+    {
+      "clause": "materialisation_naturelle",
+      "attendu": "Les unités détaillées par l’étape de détail (joueur présent) sont projetées dans SyntheticsManager, pas ColonialMarinesManager.",
+      "verdict": "prouvé",
+      "details": {
+        "player_clan|yautja|clan_hunter|yautja|undefined": 8,
+        "human_force|synthetic|weyland_combat|synthetics|undefined": 28,
+        "hive|xenomorph|runner|xenomorph|undefined": 56,
+        "hive|xenomorph|spitter|xenomorph|undefined": 8
+      }
+    },
+    {
+      "clause": "projection_totale",
+      "attendu": "Chaque unité allouée de la mission, projetée une fois, garde son espèce et son gestionnaire.",
+      "verdict": "prouvé",
+      "details": {
+        "projeteesMaintenant": 823,
+        "dejaProjetees": 16,
+        "synthetiquesMortsAvantProjection": 93,
+        "repartition": {
+          "hive|xenomorph|runner|xenomorph|runner": 630,
+          "hive|xenomorph|spitter|xenomorph|spitter": 90,
+          "human_force|synthetic|weyland_combat|synthetics|weyland_combat": 99,
+          "player_clan|yautja|clan_hunter|yautja|clan_hunter": 4
+        }
+      }
+    },
+    {
+      "clause": "matrice_graine_difficulte",
+      "attendu": "Le changement de graine, de difficulté ou de nombre de joueurs ne remplace pas les synthétiques.",
+      "verdict": "prouvé",
+      "details": {
+        "combinaisons": 18
+      }
+    },
+    {
+      "clause": "sauvegarde_recharge",
+      "attendu": "Une recharge de sauvegarde courante conserve espèce, profil et identifiant des synthétiques.",
+      "verdict": "prouvé",
+      "details": {
+        "synthetiquesRecharges": 192
+      }
+    },
+    {
+      "clause": "observation_compatibilite_ancienne_sauvegarde",
+      "attendu": "Information (pas un critère du contrôle) : chemin de reprise des sauvegardes signées avant le roster source.",
+      "verdict": "observation",
+      "details": {
+        "fichier": "js/main.js:261-277 (repli legacyRoster) ; js/data/BattleCatalog.js:316 (rosterDetail legacy)",
+        "grp46EnHumainsDansLeRepli": 192,
+        "note": "Une ancienne sauvegarde AFF-16 rechargée reste simulée avec original_human_* ; ce repli est volontaire (identités signées), mais il réintroduit l’écart CTRL-001 pour ces sauvegardes."
+      }
+    }
+  ],
+  "limites": [
+    "Aucun rendu navigateur ni revue visuelle : la forme des maillages n’est pas certifiée 1:1.",
+    "Le moral de la faction synthétique reste le proxy human_morale déclaré par simulationLimitation."
+  ]
+}
