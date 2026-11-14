@@ -75,6 +75,9 @@ import { canAccessLegacyAir, canHitLegacyAirTarget } from './engine/LegacyAirstr
 import { hunterMusouProfile, musouCovers } from './data/hunterMusouProfiles.js';
 import { humanWeaponCacheCount, emptyHumanWeaponAmmo, openHumanWeaponCache } from './engine/HumanWeaponCaches.js';
 import { MouseCamera } from './engine/MouseCamera.js';
+import { ASCENSION_WORLDS, ASCENSION_BASE_LEVELS, ascensionWorld } from './data/AscensionWorlds.js';
+import { AscensionProgress } from './data/AscensionProgress.js';
+import { FaunaEncounter } from './engine/FaunaEncounter.js';
 
 class GameApp {
   constructor() {
@@ -204,6 +207,7 @@ class GameApp {
     // Optional mouse orbit (HW-DEC-94): off by default, never in shared-keyboard co-op.
     let cameraStorage = null; try { cameraStorage = globalThis.localStorage; } catch {}
     this.mouseCamera = new MouseCamera({ storage: cameraStorage });
+    this.ascensionProgress = new AscensionProgress(cameraStorage);
     const mouseCameraToggle = document.getElementById('setting-mouse-camera');
     if (mouseCameraToggle) { mouseCameraToggle.checked = this.mouseCamera.enabled; mouseCameraToggle.addEventListener('change', () => { this.mouseCamera.setEnabled(mouseCameraToggle.checked); if (!mouseCameraToggle.checked && document.pointerLockElement) document.exitPointerLock?.(); }); }
     const canvas = this.renderer.renderer?.domElement;
@@ -243,10 +247,20 @@ class GameApp {
       document.getElementById('campaign-arc-enabled').disabled=!arcEligible;
       if(!arcEligible)document.getElementById('campaign-arc-enabled').checked=false;
       const scene = mode.value === 'fronts' && BATTLE_OPERATIONS.some(operation=>operation.id===select.value) ? getBattleOperationScene(select.value) : null;
-      this.ui.setOperationLevel(scene ? LEVELS_DATA.find(level => level.id === scene.levelId) : null);
+      // Ascension (spec 002): the world chooses its own location; only finished worlds and the next one are open.
+      const worldSelect = document.getElementById('ascension-world-select'), ascension = mode.value === 'ascension';
+      document.getElementById('ascension-world-label').classList.toggle('hidden', !ascension);
+      if (ascension && worldSelect) {
+        const open = this.ascensionProgress.unlockedWorlds().map(world => world.id), previous = worldSelect.value;
+        worldSelect.replaceChildren(...ASCENSION_WORLDS.map(world => { const option = document.createElement('option'); option.value = world.id;
+          option.textContent = `${world.order}. ${world.title} — ${world.prey.name}${this.ascensionProgress.state.completed.includes(world.id) ? ' (chassé)' : ''}`; option.disabled = !open.includes(world.id); return option; }));
+        worldSelect.value = open.includes(previous) ? previous : open.at(-1);
+      }
+      const ascensionLevel = ascension ? LEVELS_DATA.find(level => level.id === ASCENSION_BASE_LEVELS[worldSelect?.value]) : null;
+      this.ui.setOperationLevel(scene ? LEVELS_DATA.find(level => level.id === scene.levelId) : ascensionLevel ?? null);
       document.getElementById('operation-provenance').textContent = scene ? `${scene.mapName} : scène adaptée au terrain ${scene.levelId}. Objectifs originaux ; géographie 1:1 non vérifiée.` : mode.value === 'fronts' ? 'Trois fronts reliés par des corridors et des contournements. Population finie ; positions lointaines signalées par rapports.' : mode.value === 'survival' ? 'Survie sans victoire finale. Les vagues continuent jusqu’à la défaite ou au retour au menu.' : 'Chasse finie : six secteurs, objectifs locaux, portes et boss final.';
     };
-    mode.addEventListener('change', update); select.addEventListener('change', update); casteOption.addEventListener('change', update); update();
+    mode.addEventListener('change', update); select.addEventListener('change', update); document.getElementById('ascension-world-select')?.addEventListener('change', update); casteOption.addEventListener('change', update); update();
     document.getElementById('btn-reset-campaign-arc').addEventListener('click',()=>{this.battleCampaign.resetArc(CLAN_CAMPAIGN_ARC_ID);this.updateCampaignDebrief();});
     this.updateCampaignDebrief();
     try { document.getElementById('btn-resume-operation').classList.toggle('hidden', !localStorage.getItem('yautja-operation-checkpoint-v1')); } catch {}
@@ -562,6 +576,7 @@ class GameApp {
       if(this.missionMode==='fronts'){const scene=createOperationScene({operationId:this.operationId,level:this.ui.selectedLevel,players:this.isCoOp?2:1,mapSeed:this.operationMapSeed,difficultyId:this.operationDifficulty,
         extinctionVariant:this.extinctionVariant});scene.characterBriefing=this.battleCampaign.getCharacterBriefing(scene.config,{arcId:document.getElementById('campaign-arc-enabled').checked&&/^AFF-0[1-5]$/.test(this.operationId)?CLAN_CAMPAIGN_ARC_ID:null,characterId:this.ui.selectedChar.id});this.operationBriefing.render(scene);}else this.operationBriefing.render(null);
       if (this.missionMode === 'fronts' && BATTLE_OPERATIONS.some(operation=>operation.id===this.operationId)) this.ui.selectedLevel = LEVELS_DATA.find(level => level.id === getBattleOperationScene(this.operationId).levelId);
+      if (this.missionMode === 'ascension') { this.ascensionWorldId = document.getElementById('ascension-world-select').value; this.ui.selectedLevel = LEVELS_DATA.find(level => level.id === ASCENSION_BASE_LEVELS[this.ascensionWorldId]); }
       this.ui.showScreen(document.getElementById('loadout-prep-screen'));
     });
 
@@ -1339,7 +1354,7 @@ class GameApp {
     disposeBattleOperation(this);
     this._nukeSequence++;
     this.battlefield?.dispose();
-    this.battlefield = null;
+    this.battlefield = null; this.faunaEncounter = null;
     this.battlefieldProgression = null;
     this.combatDirector.reset({ graceSeconds: 8 });
     this.ui.updateBattlefieldHUD?.(null);
@@ -1942,7 +1957,9 @@ class GameApp {
       preparedOperation=this.missionMode==='fronts'?createOperationScene({operationId:this.operationId,level:selectedLevel,players:this.isCoOp?2:1,mapSeed:this.operationMapSeed,difficultyId:this.operationDifficulty,
           deploymentPlan:this.operationDeploymentPlan,
           extinctionVariant:this.extinctionVariant}):null;
-      this.preparedBossEncounter=preparedOperation?null:prepareBossEncounter({level:selectedLevel,bossType:options.bossType??selectedLevel.bossType,mode:this.missionMode==='sandbox'?'sandbox':'level'});
+      const ascensionTarget=this.missionMode==='ascension'?ascensionWorld(this.ascensionWorldId):null;
+      if(this.missionMode==='ascension'&&!ascensionTarget)throw new Error('unknown Ascension world');
+      this.preparedBossEncounter=preparedOperation?null:prepareBossEncounter({level:selectedLevel,bossType:ascensionTarget?.prey.bossId??options.bossType??selectedLevel.bossType,mode:this.missionMode==='sandbox'?'sandbox':ascensionTarget?'ascension':'level'});
     }catch{
       this.ui.showAnnouncement('Cet affrontement ne peut pas être préparé : vérifiez le terrain et le boss sélectionnés.');
       return false;
@@ -2025,7 +2042,9 @@ class GameApp {
 
     for(const player of [this.player,this.player2].filter(Boolean))player.missionSupportContext=this.missionSupportContext;
     // Hunts carry no Alien-setting human ammunition until a finite cache is opened (HW-DEC-87).
-    if(this.missionMode==='hunt'&&!options.resumeOperation)for(const player of [this.player,this.player2].filter(Boolean))emptyHumanWeaponAmmo(player);
+    if(['hunt','ascension'].includes(this.missionMode)&&!options.resumeOperation)for(const player of [this.player,this.player2].filter(Boolean))emptyHumanWeaponAmmo(player);
+    // The Unblooded kit (spec 002): no shoulder cannon before the rank Blooded, no cloak before Rukh Tal.
+    for(const player of [this.player,this.player2].filter(Boolean))player.kitLocks=this.missionMode==='ascension'?{shoulderCannon:!this.ascensionProgress.state.blooded,cloak:!this.ascensionProgress.hasTool('cloak')}:null;
     if(options.resumeOperation?.playerStates)for(const[index,player]of[this.player,this.player2].entries())if(player&&options.resumeOperation.playerStates[index])restoreOperationPlayer(player,options.resumeOperation.playerStates[index],this.env);
     if(options.resumeOperation?.preyInteractions&&this.env.restorePreyInteractions?.(options.resumeOperation.preyInteractions)!==true)throw new Error('Incompatible PREY interaction checkpoint');
 
@@ -2045,8 +2064,10 @@ class GameApp {
     if (this.missionMode === 'fronts' && this.env.battlefieldLayout) {
       this.startBattleOperation(options.resumeOperation);
     } else if (!['sandbox', 'survival'].includes(this.missionMode) && this.env.battlefieldLayout) {
+      const world = this.missionMode === 'ascension' ? ascensionWorld(this.ascensionWorldId) : null;
+      this.faunaEncounter = world ? new FaunaEncounter(this.horde, world, { onLine: line => this.ui.showAnnouncement(line) }) : null;
       this.battlefield = new BattlefieldMission({ environment: this.env, horde: this.horde,
-        bosses: this.bosses, level: this.ui.selectedLevel,preparedEncounter:this.preparedBossEncounter,
+        bosses: this.bosses, level: this.ui.selectedLevel,preparedEncounter:this.preparedBossEncounter, encounter: this.faunaEncounter,
         onAnnouncement: message => this.ui.showAnnouncement(message),
         onSectorEntered: sector => this.enterBattlefieldSector(sector) });
       this.battlefieldProgression = this.battlefield.progression;
@@ -2161,7 +2182,8 @@ class GameApp {
     this.combatDirector.reset({ graceSeconds: sector.index === 0 ? 8 : 2.5 });
     // The opening fight belongs to the player. Supporting factions join later
     // sectors instead of killing the first six enemies during insertion.
-    const supports = sectorSupportPlan(this.ui.selectedLevel.id, sector.index);
+    // Ascension: the pack (three allies) hunts with the Unblooded; no human support or cache on these worlds.
+    const supports = this.missionMode === 'ascension' ? { allies: 3, marines: 0, synthetics: 0, gasPipes: 0, apc: false, nationalGuard: 0 } : sectorSupportPlan(this.ui.selectedLevel.id, sector.index);
     this.allies.spawnSquad(supportPosition, supports.allies);
     if (supports.marines === 0) this.marines.clearSquad();
     else this.marines.spawnSquad(supportPosition, supports.marines);
@@ -2473,6 +2495,7 @@ class GameApp {
 
   firePlasmaCannon(isCharged = false, player = this.player) {
     if (!player) return false;
+    if (player.kitLocks?.shoulderCannon) { this.ui.showAnnouncement('CANON D’ÉPAULE RÉSERVÉ AUX BLOODED'); return false; }
     const projData = player.fireRangedShot(isCharged);
     if (!projData) {
       if (player.plasmaEnergy < (isCharged ? 35 : 20)) {
@@ -4156,6 +4179,7 @@ class GameApp {
     // Pose after bridge reconciliation and all world, capsule and APC contacts.
     this.allies.updateVisuals(delta);
     this.battlefield?.update([this.player, this.player2].filter(Boolean));
+    this.faunaEncounter?.update();
     this.env.updateBattlefieldObjectives?.(this.battlefieldProgression, delta);
     this.gore.update(delta);
     this.particles.update(delta, this.renderer.camera);
@@ -5315,6 +5339,10 @@ class GameApp {
 
   endGame(isVictory) {
     if (!this.isPlaying) return;
+    if (this.missionMode === 'ascension' && isVictory) {
+      const world = ascensionWorld(this.ascensionWorldId), reward = this.ascensionProgress.complete(this.ascensionWorldId);
+      if (world) this.ui.showAnnouncement(`${world.victory}${reward ? ` OUTIL GAGNÉ : ${reward.label.toUpperCase()}.` : ''}`);
+    }
     if (this.battleSimulation && !this.battleSimulation.result) this.battleSimulation.finishOperation({outcome:isVictory?'victory':'defeat',reason:isVictory?'objective_complete':'players_defeated'});
     const operationResult = this.battleSimulation?.getHUDState().result;
     const debrief=captureBattleDebrief(this.battleSimulation,this.operationObjectives);

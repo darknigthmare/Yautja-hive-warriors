@@ -1914,6 +1914,8 @@ export class Player {
   }
 
   toggleCloak() {
+    // Ascension: the Unblooded learns the cloak at Rukh Tal (spec 002); switching it off is always allowed.
+    if (!this.isCloaked && this.kitLocks?.cloak) { this.gameContext?.ui?.showAnnouncement?.('CAMOUFLAGE NON APPRIS — IL S’ENSEIGNE À RUKH TAL'); return false; }
     this.isCloaked = !this.isCloaked;
     if (!this._uncloakedSurfaces) {
       this._uncloakedSurfaces = new Map([...this.skinMaterials, ...this.armorMaterials].map(material => [material, surfaceState(material)]));

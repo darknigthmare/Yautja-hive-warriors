@@ -2,7 +2,7 @@
  * and statistics remain game adaptations; this certifies identities/contracts. */
 import { getBossDefinition, bossAllowedInLevel } from './BossRegistry.js';
 
-const MODES = new Set(['level', 'sandbox', 'operation', 'crossover']);
+const MODES = new Set(['level', 'sandbox', 'operation', 'crossover', 'ascension']);
 const key = value => typeof value === 'string' && /^[A-Za-z0-9_.:-]{1,160}$/.test(value);
 const failure = message => { throw new TypeError(`Boss encounter configuration: ${message}`); };
 
@@ -10,6 +10,8 @@ export function prepareBossEncounter({ level, bossType = level?.bossType, mode =
   if (!level || !key(level.id)) failure('a level identity is required');
   if (!MODES.has(mode)) failure('unknown encounter mode');
   const definition = getBossDefinition(bossType);
+  // Ascension great prey are bosses of that mode only, and only they enter it (spec 002).
+  if ((mode === 'ascension') !== (definition.ascension === true)) failure('great prey and the Ascension mode go together');
   if (mode === 'level') {
     const announced = getBossDefinition(level.bossType);
     if (definition.id !== announced.id) failure('requested boss differs from the announced level boss');

@@ -1,5 +1,6 @@
 /* Xenomorph Swarm Engine 3.0 - Crusher, Praetorian, Ovimorph Eggs & Gore */
 
+import { createFaunaModel } from '../graphics/FaunaModels.js';
 import * as THREE from 'three';
 import { applyBattleUnit, despawnBattleActor, selectBattleTarget, listBattleTargets, battleHostile, moveBattleOrder, requestNPCStrike, applyBattleFormationHit, maintainBattleFormation } from '../engine/BattleActorSupport.js';
 import { requestHostileAttack, releaseConcealedPreparation } from '../engine/HostilePressure.js';
@@ -323,6 +324,59 @@ export class XenomorphHorde {
   }
 
 
+  /** Ascension fauna (spec 002): an ordinary horde actor, so every weapon, the combat director and
+   * defeatAlien apply. No acid, parasite or egg; a fleeing animal stays in the world (no despawn). */
+  spawnFauna(spec, role, position, home = position) {
+    const leader = role === 'leader', mesh = createFaunaModel(spec, { crest: leader });
+    mesh.position.copy(position); this.scene.add(mesh);
+    const animal = { isFauna: true, role, type: leader ? 'fauna_leader' : 'fauna_herd', name: spec.name, mesh,
+      hp: spec.hp, maxHp: spec.hp, speed: spec.speed, damage: spec.bite, radius: spec.radius, home: home.clone(),
+      chargeTimer: 4 + (this.aliens.length % 5) * .4, chargeLeft: 0, spawnBudget: leader ? (spec.spawns ?? 0) : 0, spawnTimer: 6,
+      stationary: spec.stationary === true, isFleeing: false, wanderAngle: this.aliens.length * 2.399, visualFidelity1to1Verified: false };
+    this.aliens.push(animal); return animal;
+  }
+
+  _updateFauna(a, delta, livingPlayers) {
+    const target = this._nearestPlayer(a.mesh.position, livingPlayers);
+    const toTarget = target ? target.position.clone().sub(a.mesh.position).setY(0) : null, distance = toTarget?.length() ?? Infinity;
+    const leash = a.mesh.position.distanceTo(a.home);
+    // Breeding leaders give birth only while alive and within their fixed budget.
+    if (a.spawnBudget > 0 && (a.spawnTimer -= delta) <= 0 && this.aliens.length < 200) {
+      a.spawnTimer = 6; a.spawnBudget--;
+      const herd = this.aliens.find(other => other.isFauna && other.role === 'herd' && other.home.distanceTo(a.home) < 1);
+      if (herd) this.spawnFauna({ name: herd.name, hp: herd.maxHp, speed: herd.speed, bite: herd.damage, radius: herd.radius, color: a.herdColor ?? 0x55524a, size: 1 }, 'herd', a.mesh.position.clone().add(new THREE.Vector3(2, 0, 2)), a.home);
+    }
+    if (a.stationary) {
+      if (target && distance <= a.radius + 2.4 && this._requestAttack(a, target, { windup: .7, recovery: 1.2 })) target.takeDamage(a.damage, false, a, { attackKind: 'bite', blockable: true, parryable: true });
+      return;
+    }
+    let move = null, speed = a.speed;
+    if (a.isFleeing && target) move = toTarget.clone().negate();
+    else if (target && (distance < 30 || leash < 45)) move = toTarget.clone();
+    else if (leash > 12) move = a.home.clone().sub(a.mesh.position).setY(0);
+    else { a.wanderAngle += delta * .6; move = new THREE.Vector3(Math.cos(a.wanderAngle), 0, Math.sin(a.wanderAngle)); speed *= .3; }
+    if (a.isFleeing && leash > 50) move = a.home.clone().sub(a.mesh.position).setY(0);
+    if (a.role === 'leader' && target && !a.isFleeing) {
+      a.chargeTimer -= delta;
+      if (a.chargeTimer <= 0 && distance < 18 && distance > 5) { a.chargeTimer = 5; a.chargeLeft = .55; }
+      if (a.chargeLeft > 0) { a.chargeLeft -= delta; speed *= 2.6; }
+    }
+    const reach = a.radius + 1.6;
+    if (target && !a.isFleeing && distance <= reach) {
+      if (this._requestAttack(a, target, { windup: .55, recovery: 1 })) target.takeDamage(a.damage, false, a, { attackKind: 'bite', blockable: true, parryable: true });
+      a.mesh.rotation.y = Math.atan2(toTarget.x, toTarget.z); return;
+    }
+    if (move && move.lengthSq() > 1e-6) {
+      move.normalize(); const previous = a.mesh.position.clone();
+      a.mesh.position.addScaledVector(move, speed * delta);
+      this.environment?.resolveAgentMovement?.(a.mesh.position, target?.position ?? a.home, speed * delta, a.radius, previous);
+      a.mesh.rotation.y = Math.atan2(move.x, move.z);
+    }
+  }
+
+  /** The herd of a fallen leader flees; it is never removed from the world. */
+  scatterFaunaHerd(home) { for (const animal of this.aliens) if (animal.isFauna && animal.role === 'herd' && animal.home.distanceTo(home) < 1) animal.isFleeing = true; }
+
   spawnWave(count, playerPos) {
     this.clearWave();
     const totalCount = Math.max(0, Math.min(200, Math.floor(Number(count) || 0)));
@@ -606,7 +660,7 @@ export class XenomorphHorde {
         const killed = a.hp <= 0;
 
         // Reactive Acid Splashback Physics (slashing xenos sprays pressurized molecular acid back at attacker)
-        if (attack.origin) {
+        if (attack.origin && !a.isFauna) {
           this.spawnAcidSplash(a.mesh.position, attack.origin, { source: a });
         }
 
@@ -833,7 +887,7 @@ export class XenomorphHorde {
         if (alien.type === 'boiler') this.detonateBoiler(alien, player);
         else {
           this.goreEngine?.spawnDismemberment(alien.mesh.position);
-          this.spawnAcidPool(alien.mesh.position);
+          if (!alien.isFauna) this.spawnAcidPool(alien.mesh.position);
           disposeObject(alien.mesh, this.sharedResources);
           this.aliens.splice(i, 1);
           this.recordDefeat(alien);
@@ -973,6 +1027,7 @@ export class XenomorphHorde {
       // particle. It can neither attack nor latch until landing on safe floor.
       if(advanceCarrierFacehuggerFlight(a,delta))return;
       if (this._advanceAirborneActor(a, delta) || controlLocked || a.hp <= 0) return;
+      if (a.isFauna) { this._updateFauna(a, delta, livingPlayers); return; }
       const sourceTarget=a.type==='carrier'?
         this._pursuitTarget(a,livingPlayers,supportTargets):null;
       if(a.type==='carrier'){

@@ -176,25 +176,22 @@ Première chasse contre les Xénomorphes. Tuer son premier Xénomorphe donne la 
 | Une meute de quatre | Pilier 1, « un contre cent » | Les hardes restent assez nombreuses |
 | Huit chasses sans Xénomorphes | Titre du jeu | Chasses courtes et traces annonciatrices (HW-DEC-59) |
 
-## 9. Ce qui est codé (14 novembre 2026)
+## 9. Ce qui est codé (v70, 14 novembre 2026)
 
-**Toute la campagne se joue**, depuis le bouton « Campagne » du menu (`js/systems/FaunaHunt.js`, `js/data/levelsData.js`, `CAMPAIGN_HUNTS`) :
+Le prototype v58 est archivé dans `design/archive-master-v58/`. L'Ascension est reconstruite sur la v70 ; sa spécification est `specs/002-ascension/spec.md`.
 
-- **Les huit mondes**, dans l'ordre, chacun avec trois zones de harde, son meneur et sa grande proie. Vérifié de Vara-Kesh à Dharos par commandes de test.
-- **Comportements propres** : la matrone d'Eshra et les sentinelles de Dharos font naître de nouveaux animaux tant qu'elles vivent ; le fouisseur de Kharuun plonge sous le sable puis surgit ; les nœuds de Terek-Va ne bougent pas et nourrissent une nuée de 24 à 32 bêtes ; les rôdeurs de Nereth sont presque invisibles sans changer de vision ; plusieurs meneurs chargent.
-- **Les traces** de Xénomorphes et les répliques de Saar et de Kaedh passent par les annonces à l'écran.
-- **Un outil par monde gagné**, choisi à l'écran de préparation parmi les outils déjà gagnés.
-- **Le camouflage reste verrouillé jusqu'à Rukh Tal** ; le canon d'épaule reste verrouillé tant que l'Unblooded n'est pas Blooded.
-- **Le rite** : une triade avec Harek et Yena dans la pyramide, contre des drones seuls, sans brûleur ni mines ; 25 Xénomorphes tués donnent le rang Blooded.
-- **La progression** est gardée dans ce navigateur (`hw_unblooded_campaign`), pas encore dans le compte en ligne.
+**Étape 1, livrée.** On choisit « Ascension » dans le menu « Déroulement », puis le monde. Seuls les mondes déjà chassés et le suivant sont ouverts.
 
-**Choix de ma part, à régler en jouant** : taille des hardes, points de vie et dégâts des bêtes, 2 500 à 6 000 points de vie pour les grandes proies, 25 Xénomorphes pour le rite. Les grandes proies hors Vara-Kesh partagent une même silhouette, déclinée par monde.
+- **Structure** : chaque chasse occupe les six secteurs reliés du mode chasse (HW-DEC-106). Une harde finie par secteur, assez nombreuse pour l'objectif ; le meneur tient le rôle du commandant ; la grande proie est le boss final, qu'on fait chanceler puis qu'on exécute.
+- **Faune** : c'est un type d'acteur de la horde. Toutes les armes la touchent, et sa mort est enregistrée comme les autres, sans acide ni parasite. Une bête en fuite reste dans le monde ; aucune bête n'est inventée pour remplir un objectif.
+- **Grandes proies** : les huit sont enregistrées comme boss réservés à l'Ascension, chacune avec une lecture d'attaque. Leur esquive est mesurée dans la matrice des contre-mesures.
+- **Kit** : la meute (trois alliés) chasse avec le joueur. Le canon d'épaule reste verrouillé jusqu'au rang Blooded, le camouflage jusqu'à Rukh Tal.
+- **Progression** : elle est gardée dans ce navigateur (`yautja-ascension-v1`) ; chaque monde chassé donne son outil.
+- **Vérifié** : une chasse de Vara-Kesh a été jouée dans Chromium, du largage à l'exécution du Faucheur, sans erreur de page. Les parcours de secteur se font avec les aides de test, pas par un joueur humain.
 
-**Pas encore fait** :
-- les chroniques ne sont pas verrouillées avant le rang Blooded (les 8 arènes restent ouvertes, pour vos essais) ;
-- Kaedh et *La Lame Patiente* ne sont pas représentés : ni personnage visible ni base entre deux chasses ;
-- les mondes réutilisent les décors existants (jungle, temple, toits) et l'arène de 150 m ;
-- le Bad Blood de Rukh Tal n'apparaît pas : il n'existe que dans les annonces.
+**Provisoire** : chaque monde emprunte un lieu existant (jungle de Val Verde, plaines de Prey, pyramide, etc.) en attendant ses variantes de terrain. Les relais du secteur 3 gardent leur texte d'origine. Les comportements propres (fouisseur, rôdeurs presque invisibles, nœuds de nuée) ne sont pas encore repris.
+
+**Étapes suivantes** : les variantes de terrain et les comportements propres, la scène 3D de *La Lame Patiente*, le rite et le rang Blooded, puis l'envoi au compte Supabase.
 
 ## 10. Ce qu'il faut créer
 

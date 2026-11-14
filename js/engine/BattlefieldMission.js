@@ -4,9 +4,11 @@ import { BattlefieldProgression } from './BattlefieldProgression.js';
 // Connect objective state to real encounters. Opening a gate never teleports
 // the player: the next encounter starts only when a living player walks in.
 export class BattlefieldMission {
-  constructor({ environment, horde, bosses, level, preparedEncounter = null, onAnnouncement = () => {}, onSectorEntered = () => {} }) {
+  constructor({ environment, horde, bosses, level, preparedEncounter = null, encounter = null, onAnnouncement = () => {}, onSectorEntered = () => {} }) {
     if (!environment.battlefieldLayout) throw new Error('BattlefieldMission requires a built connected map');
     Object.assign(this, { environment, horde, bosses, level, preparedEncounter, onAnnouncement, onSectorEntered });
+    // An optional encounter owns who populates the sectors (Ascension fauna); the hive stays the default.
+    this.encounter = encounter;
     this.progression = new BattlefieldProgression(environment.battlefieldLayout);
     this.disposed = false;
     this._bossSectorId = null;
@@ -58,7 +60,7 @@ export class BattlefieldMission {
     const objective = sector.objective;
     const remaining = objective.type === 'kills' ? objective.target - state.kills
       : objective.type === 'interact' && state.interacted ? objective.defenseTarget - state.defenseKills : 0;
-    if (remaining > 0) this.horde.enqueueReinforcements(remaining);
+    if (remaining > 0) { if (this.encounter) this.encounter.reinforce?.(remaining); else this.horde.enqueueReinforcements(remaining); }
   }
 
   interact(player) {
@@ -74,7 +76,7 @@ export class BattlefieldMission {
       else if (event.type === 'relay-activated') {
         // Keep the current defenders and append a bounded, delayed response.
         // Clearing/spawning a wave here would erase the battle the player sees.
-        this.horde.enqueueReinforcements(event.target + 4);
+        if (this.encounter) this.encounter.reinforce?.(event.target + 4); else this.horde.enqueueReinforcements(event.target + 4);
         this.onAnnouncement(`RELAIS ACTIVÉ — CONTRE-ATTAQUE EN APPROCHE. REPOUSSEZ ${event.target} ENNEMIS POUR OUVRIR LE SAS.`);
       }
       else if (event.type === 'sector-completed') {
@@ -98,8 +100,13 @@ export class BattlefieldMission {
     const center = new THREE.Vector3(sector.center[0], 0, sector.center[1]);
     const bounds = sector.bounds;
     const localPlayer = this._players.find(player => player.position.x >= bounds.minX && player.position.x <= bounds.maxX && player.position.z >= bounds.minZ && player.position.z <= bounds.maxZ);
-    this.horde.spawnWave(sector.recommendedEnemies ?? (sector.objective.type === 'kills' ? sector.objective.target + 6 : 18), localPlayer?.position ?? center);
-    if (sector.objective.type === 'commander') {
+    const waveSize = sector.recommendedEnemies ?? (sector.objective.type === 'kills' ? sector.objective.target + 6 : 18);
+    if (this.encounter) this.encounter.spawnSector(sector, localPlayer?.position ?? center, waveSize);
+    else this.horde.spawnWave(waveSize, localPlayer?.position ?? center);
+    if (sector.objective.type === 'commander' && this.encounter) {
+      const commander = this.encounter.spawnLeader(sector, new THREE.Vector3(sector.objective.position[0], 0, sector.objective.position[1]));
+      if (commander) { commander.objectiveCommander = true; commander.battlefieldSectorId = id; }
+    } else if (sector.objective.type === 'commander') {
       const position = new THREE.Vector3(sector.objective.position[0], 0, sector.objective.position[1]);
       this.horde.spawnHiveOfficer(position.clone().add(new THREE.Vector3(0, 0, 30)), 0, 'COMMANDANT DU SECTEUR');
       const commander = this.horde.aliens.at(-1);
@@ -111,7 +118,7 @@ export class BattlefieldMission {
       }
     } else if (sector.objective.type === 'boss') {
       const position = new THREE.Vector3(sector.objective.position[0], 0, sector.objective.position[1]);
-      this.bosses.spawnBoss(this.level.bossType ?? 'xenomorph_queen', position,this.preparedEncounter??undefined);
+      this.bosses.spawnBoss(this.preparedEncounter?.bossType ?? this.level.bossType ?? 'xenomorph_queen', position,this.preparedEncounter??undefined);
       if (!this.bosses.activeBoss) throw new Error('The final battlefield boss could not be created');
       this._bossSectorId = id;
       this._bossEncounter = this.bosses.activeBoss;

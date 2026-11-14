@@ -374,5 +374,8 @@ export const ASCENSION_WORLDS = Object.freeze([
  }
 ].map(world => Object.freeze({ ...world, fidelity: 'adaptation', creation: world.prey.bibleId === null })));
 
+// Provisional base locations until each world has its own terrain variant (spec 002, stage 2).
+export const ASCENSION_BASE_LEVELS = Object.freeze({ vara_kesh: 'val_verde_jungle', eshra: 'val_verde_jungle', kharuun: 'prey_comanche_territory',
+  terek_va: 'antarctic_pyramid', nereth: 'game_preserve_planet', oshara: 'gunnison_forest', rukh_tal: 'xenomorph_prime', dharos: 'la_rooftops' });
 export const ascensionWorld = id => ASCENSION_WORLDS.find(world => world.id === id) ?? null;
 export const ASCENSION_PREY_IDS = Object.freeze(ASCENSION_WORLDS.map(world => world.prey.bossId));
