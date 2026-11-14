@@ -1,6 +1,6 @@
 /* Gameplay adaptation: camouflage lowers acquisition range, never damage immunity. */
 export function canDetectConcealedTarget(observer, target, environment = null) {
-  if (!target?.isCloaked || target.stealthRevealTimer > 0 || target.cloakFlickerTimer > 0 || target.isAttacking ||
+  if (!(target?.isCloaked || target?.isInsertionConcealed) || target.stealthRevealTimer > 0 || target.cloakFlickerTimer > 0 || target.isAttacking ||
       target.isFacehuggerLatched || target.isRoyalFacehuggerLatched) return true;
   const origin = observer?.mesh?.position ?? observer?.position;
   const position = target.position ?? target.mesh?.position;
@@ -28,7 +28,7 @@ export function isHunterAmbushPosition(player, target) {
 // Route the extra damage through the normal manager: one death, one score and
 // the same cover/faction checks. One light swing can ambush only one target.
 export function createHunterStealthAttack(player, attack, horde) {
-  if (!attack?.stealthPrepared || !player?.isCloaked || player.cloakFlickerTimer > 0) return attack;
+  if (!attack?.stealthPrepared || !(player?.isCloaked || player?.isInsertionConcealed) || player.cloakFlickerTimer > 0) return attack;
   const simulation = horde?.battleSimulation, faction = attack.killerFaction ?? simulation?.config.playerFaction;
   let selected = null, nearest = Infinity;
   for (const target of horde?.aliens ?? []) {

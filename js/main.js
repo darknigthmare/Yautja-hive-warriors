@@ -2008,9 +2008,10 @@ class GameApp {
       this.keys = {};
       for (const player of [this.player, this.player2].filter(Boolean)) player.locomotion?.reset();
       this.combatDirector.reset({ graceSeconds: 7 });
+      for (const player of [this.player, this.player2].filter(Boolean)) player.beginInsertionConcealment?.(25);
       this.updateInsertionStatus();
       const provenance=hunterEncounterProvenance(this.ui.selectedChar.id,this.preparedBossEncounter?.bossType);
-      this.ui.showAnnouncement(provenance??'INSERTION TERMINÉE — PRÉPAREZ VOTRE PREMIÈRE ATTAQUE. [CLIC] FRAPPER · [C] PARER');
+      this.ui.showAnnouncement(provenance??'INSERTION TERMINÉE — OUVERTURE FURTIVE : FRAPPEZ DANS LE DOS AVANT D’ÊTRE REPÉRÉ. [CLIC] FRAPPER · [C] PARER');
     }, { players: [this.player, this.player2].filter(Boolean) });
 
     this.skimmer.spawnAt(this.player.position.clone().add(new THREE.Vector3(-9, 0, 8)));
@@ -3443,6 +3444,10 @@ class GameApp {
     this.apc.resolveMovement?.(this.player.position);
     this.player.mesh.position.copy(this.player.position);
     if (this.player.hp > 0) this.player.update(delta, this.horde);
+    if (this.player.insertionConcealmentEndReason) {
+      const reason = this.player.insertionConcealmentEndReason; this.player.insertionConcealmentEndReason = null;
+      this.ui.showAnnouncement(reason === 'revealed' ? 'OUVERTURE FURTIVE TERMINÉE — VOTRE POSITION EST CONNUE' : 'OUVERTURE FURTIVE ÉCOULÉE — LA RUCHE VOUS CHERCHE');
+    }
     else this.player.updateDefeatedEffects(delta);
     this.weather.setFocus?.(this.player.hp > 0 ? this.player.position : (this.player2?.position ?? this.player.position));
 

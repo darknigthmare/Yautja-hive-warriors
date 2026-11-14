@@ -29,7 +29,7 @@ export function selectHostileTarget(manager, origin, fallback) {
 export function releaseConcealedPreparation(manager, attacker) {
   const targets = [manager.combatDirector?.getAttackState(attacker)?.target,
     attacker?._localAttackPreparation?.target, attacker?._npcTarget];
-  if (!targets.some(target => target?.isCloaked && !canDetectConcealedTarget(attacker, target, manager.environment))) return;
+  if (!targets.some(target => (target?.isCloaked || target?.isInsertionConcealed) && !canDetectConcealedTarget(attacker, target, manager.environment))) return;
   releaseHostileAttack(manager, attacker); manager._clearAttackCue?.(attacker);
   attacker._npcPreparation = 0; attacker._npcTarget = null;
   attacker.pressureAction = null; attacker.pressureAim = null;

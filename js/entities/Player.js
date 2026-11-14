@@ -70,6 +70,11 @@ export class Player {
     this._legacyDefeated = new WeakSet();
     this._temporaryCombatEffects = new TemporaryCombatEffects();
     this.stealthRevealTimer = 0;
+    // Stealth opening (HW-DEC-87): after touchdown the hunter is unlocated, under
+    // the same senses as the cloak but without its damage reduction or energy.
+    this.isInsertionConcealed = false;
+    this.insertionConcealmentTimer = 0;
+    this.insertionConcealmentEndReason = null;
     this.executionProtectionTimer = 0;
     this.facehuggerHoldTimer = 0;
     this.facehuggerEscapeImmunity = 0;
@@ -1975,7 +1980,7 @@ export class Player {
   }
 
   _beginCombatWindow(kind, staminaCost, oldDuration) {
-    const stealthPrepared = kind === 'light' && this.isCloaked && this.stealthRevealTimer <= 0 && this.cloakFlickerTimer <= 0;
+    const stealthPrepared = kind === 'light' && (this.isCloaked || this.isInsertionConcealed) && this.stealthRevealTimer <= 0 && this.cloakFlickerTimer <= 0;
     const candidates = this.gameContext?.horde?.aliens;
     const stealthUnawareTargets = stealthPrepared && Array.isArray(candidates) ?
       new WeakSet(candidates.filter(target => target && target._npcTarget !== this)) : undefined;
@@ -2546,12 +2551,29 @@ export class Player {
     this._syncArsenalVisuals();
   }
 
+  beginInsertionConcealment(seconds = 25) {
+    if (!(this.hp > 0) || !Number.isFinite(seconds) || seconds <= 0) return false;
+    this.isInsertionConcealed = true; this.insertionConcealmentTimer = seconds; this.insertionConcealmentEndReason = null;
+    return true;
+  }
+
+  endInsertionConcealment(reason = 'ended') {
+    if (!this.isInsertionConcealed) return false;
+    this.isInsertionConcealed = false; this.insertionConcealmentTimer = 0; this.insertionConcealmentEndReason = reason;
+    return true;
+  }
+
   update(delta, horde = null) {
     if (this._disposed || !Number.isFinite(delta) || delta < 0) return;
     // A paused/photo frame still propagates explicit FPS visibility and pose
     // changes. It must not advance timers, attacks, cooldowns or resources.
     if (delta === 0) { this._syncVisualState(0); return; }
     this._simulationTime += delta;
+    if (this.isInsertionConcealed) {
+      this.insertionConcealmentTimer = Math.max(0, this.insertionConcealmentTimer - delta);
+      const reason = this.stealthRevealTimer > 0 ? 'revealed' : this.insertionConcealmentTimer <= 0 ? 'expired' : null;
+      if (reason) this.endInsertionConcealment(reason);
+    }
     this.stealthRevealTimer = Math.max(0, this.stealthRevealTimer - delta);
     this.executionProtectionTimer = Math.max(0, this.executionProtectionTimer - delta);
     this.facehuggerEscapeImmunity = Math.max(0, this.facehuggerEscapeImmunity - delta);
