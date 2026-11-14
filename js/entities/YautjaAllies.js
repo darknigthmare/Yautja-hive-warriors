@@ -76,7 +76,10 @@ export class YautjaAlliesManager {
       if (!granted) continue;
       if (ranged) { ally.plasmaCooldown = 4; this.audioEngine?.playPlasmaShot?.(); }
       else { ally.attackTimer = .95; this.audioEngine?.playSlash?.(); }
+      const before = target.hp;
       target.takeDamage(ranged ? 60 : ally.damage, false, ally, { attackKind: ranged ? 'plasma' : 'melee', blockable: !ranged, parryable: !ranged });
+      // A named companion's kills are tallied for the end-of-hunt count (Ascension rivalry with Harek).
+      if (before > 0 && !(target.hp > 0)) this.onAllyKill?.(ally);
     }
   }
 

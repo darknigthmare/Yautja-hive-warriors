@@ -238,7 +238,12 @@ Le rite se joue dans les six secteurs de la pyramide, contre des xénomorphes, a
 
 **Vérifié** : le client est testé contre un faux serveur ; le bloc s'affiche dans Chromium ; le service d'authentification du projet répond. Une vraie connexion n'a pas été faite : elle demande vos identifiants.
 
-**Provisoire** : les relais du secteur 3 gardent leur texte d'origine. Les alliés n'ont pas encore les noms ni les modèles de Harek, Yena et Tov. Le vaisseau réutilise l'intérieur de station : on voit encore des tours par les baies. Les chroniques légendaires ne sont pas verrouillées avant le rang Blooded.
+**Suite du 14 novembre** :
+- La meute porte les noms de Harek, Yena et Tov ; dans le rite, ceux de la triade choisie. Comme l'Unblooded, elle n'a pas de canon d'épaule.
+- À la fin de chaque chasse, l'écran affiche le décompte entre le joueur et Harek.
+- Les objectifs des secteurs parlent de harde, de meneur et de grande proie ; le relais devient « la balise de chasse de Saar ».
+
+**Provisoire** : les alliés gardent le modèle de garde d'honneur, sans modèle propre à Harek, Yena et Tov. Le vaisseau réutilise l'intérieur de station : le décor de ville lointaine est masqué, mais on voit encore des tours au-dessus des parois. Les chroniques légendaires ne sont pas verrouillées avant le rang Blooded.
 
 **Étapes suivantes** : les variantes de terrain et les comportements propres, la scène 3D de *La Lame Patiente*, le rite et le rang Blooded, puis l'envoi au compte Supabase.
 

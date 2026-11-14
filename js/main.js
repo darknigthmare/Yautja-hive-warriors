@@ -1962,6 +1962,8 @@ class GameApp {
 
   startMission(options = {}) {
     { const killLabel = document.querySelector('.ko-label'); if (killLabel) killLabel.textContent = this.missionMode?.startsWith('ascension') ? 'PROIES ABATTUES' : 'XENOMORPHES ÉLIMINÉS'; }
+    this.huntTally = { player: 0, pack: {} }; this.ascensionTally = null;
+    this.allies.onAllyKill = ally => { if (ally.name) this.huntTally.pack[ally.name] = (this.huntTally.pack[ally.name] ?? 0) + 1; };
     const selectedLevel=this.ui.selectedLevel??LEVELS_DATA[0];
     const sceneOptions=operationSceneOptions(options.resumeOperation,{mapSeed:this.operationMapSeed,difficultyId:this.operationDifficulty});
     this.operationMapSeed=this.missionMode==='fronts'?sceneOptions.mapSeed:0;
@@ -2018,6 +2020,14 @@ class GameApp {
     if (variant) this.ui.selectedLevel = LEVELS_DATA.find(level=>level.id===variant.baseLevelId);
     if(preparedOperation)this.ui.selectedLevel=preparedOperation.level;
     this.env.buildLevelEnvironment({ ...this.ui.selectedLevel, mapId: variant?.id ?? (this.missionMode === 'ascension' ? this.ui.selectedLevel.mapId : undefined), mapSeed:this.operationMapSeed, battlefield: !['sandbox','survival','ascension_hub'].includes(this.missionMode), strategicMode: this.missionMode === 'fronts' });
+    // Ascension sectors speak of herds, leaders and great prey; the relay is Saar's hunting beacon.
+    if (this.missionMode === 'ascension') for (const sector of this.env.battlefieldLayout?.sectors ?? []) {
+      const objective = sector.objective;
+      if (objective.type === 'kills') objective.label = `Abattez ${objective.target} bêtes de la harde`;
+      else if (objective.type === 'commander') objective.label = 'Abattez le meneur de la harde';
+      else if (objective.type === 'interact') { objective.label = 'Activez la balise de chasse de Saar'; if (objective.defenseLabel) objective.defenseLabel = 'Tenez la balise pendant que la harde charge'; }
+      else if (objective.type === 'boss') objective.label = 'Faites chanceler la grande proie, puis exécutez-la';
+    }
     this.initializeMissionSupports(options.resumeOperation);
     this.renderer.updateLevelEnvironment(this.ui.selectedLevel);
     this.weather.setWeather(this.ui.selectedLevel.weather ?? this.ui.selectedLevel.theme);
@@ -2104,6 +2114,8 @@ class GameApp {
       this.shipHub = new AscensionShipHub(this.renderer.scene, this.ascensionProgress, { onLine: line => this.ui.showAnnouncement(line), onLaunch: worldId => this.launchAscensionHunt(worldId) });
       if (this.ascensionWorldId && this.ascensionProgress.unlockedWorlds().some(world => world.id === this.ascensionWorldId)) this.shipHub.targetWorldId = this.ascensionWorldId;
       this.shipHub.build();
+      // Aboard the ship, the station's distant city and skyline backdrop is hidden, as on battlefields.
+      for (const child of this.env.root?.children ?? []) if (/detail-(?:distant-|city-skyline)/.test(child.name)) child.visible = false;
     } else {
       const supportPosition = this.player.position.clone().add(new THREE.Vector3(0, 0, 12));
       this.allies.spawnSquad(supportPosition, 3);
@@ -2217,6 +2229,12 @@ class GameApp {
     const supports = this.missionMode === 'ascension' ? { allies: 3, marines: 0, synthetics: 0, gasPipes: 0, apc: false, nationalGuard: 0 }
       : this.missionMode === 'ascension_rite' ? { allies: 2, marines: 0, synthetics: 0, gasPipes: 0, apc: false, nationalGuard: 0 } : sectorSupportPlan(this.ui.selectedLevel.id, sector.index);
     this.allies.spawnSquad(supportPosition, supports.allies);
+    // Ascension: the pack is named (Harek, Yena, Tov; the chosen triad in the rite) and, like the
+    // Unblooded, carries no shoulder cannon (campagne-unblooded.md §3, §6).
+    if (this.missionMode === 'ascension' || this.missionMode === 'ascension_rite') {
+      const names = this.missionMode === 'ascension_rite' ? this.ascensionProgress.triad() : ['Harek', 'Yena', 'Tov'];
+      this.allies.allies.forEach((ally, index) => { ally.name = names[index] ?? null; ally.companionAllowsPlasma = false; });
+    }
     if (supports.marines === 0) this.marines.clearSquad();
     else this.marines.spawnSquad(supportPosition, supports.marines);
     if (supports.nationalGuard) this.marines.spawnNationalGuard?.(supportPosition, supports.nationalGuard);
@@ -3402,6 +3420,7 @@ class GameApp {
         const event = h.event ?? h.combatDeathEvent;
         if (event?.id && this._registeredDeathHits.has(event.id)) return;
         if (event?.id) this._registeredDeathHits.add(event.id);
+        if (this.huntTally && this.missionMode?.startsWith('ascension')) this.huntTally.player++;
         if (this.missionMode === 'ascension_rite' && !this.riteFirstBlood) { this.riteFirstBlood = true; this.ui.showAnnouncement('PREMIER SANG — LA MARQUE T’ATTEND AU BOUT DE LA PYRAMIDE.'); }
       } else {
         this.comboHits++;
@@ -5396,7 +5415,10 @@ class GameApp {
     if (this.missionMode === 'ascension' && isVictory) {
       const world = ascensionWorld(this.ascensionWorldId), reward = this.ascensionProgress.complete(this.ascensionWorldId);
       this.syncAscensionToCloud?.();
-      if (world) this.ui.showAnnouncement(`${world.victory}${reward ? ` OUTIL GAGNÉ : ${reward.label.toUpperCase()}.` : ''}`);
+      // Rivalry with Harek: the end-of-hunt count compares his kills and the player's (§3).
+      const harek = this.huntTally?.pack?.Harek ?? 0, mine = this.huntTally?.player ?? 0;
+      this.ascensionTally = `DÉCOMPTE — Vous : ${mine} · Harek : ${harek}. ${mine >= harek ? 'Harek détourne le regard.' : 'Harek ne dit rien, mais il sourit.'}`;
+      if (world) this.ui.showAnnouncement(`${world.victory}${reward ? ` OUTIL GAGNÉ : ${reward.label.toUpperCase()}.` : ''} ${this.ascensionTally}`);
     }
     if (this.battleSimulation && !this.battleSimulation.result) this.battleSimulation.finishOperation({outcome:isVictory?'victory':'defeat',reason:isVictory?'objective_complete':'players_defeated'});
     const operationResult = this.battleSimulation?.getHUDState().result;
@@ -5416,6 +5438,7 @@ class GameApp {
       ? "La ruche a été anéantie. Votre clan honore cette victoire."
       : "Votre Yautja est tombé au combat. Préparez une nouvelle chasse.";
     if (operationResult) subtitle = debrief?.reason ?? (isVictory ? 'Les objectifs ont été accomplis.' : 'Les chasseurs ont été vaincus.');
+    if (this.missionMode === 'ascension' && isVictory && this.ascensionTally) subtitle = `${ascensionWorld(this.ascensionWorldId)?.victory ?? subtitle} ${this.ascensionTally}`;
     let replayLabel = ['ascension', 'ascension_rite'].includes(this.missionMode) ? 'RETOUR À LA LAME PATIENTE' : 'REJOUER LA MISSION';
     if (isVictory && this.missionMode === 'campaign') {
       const progress = this.campaign.completeChapter();
