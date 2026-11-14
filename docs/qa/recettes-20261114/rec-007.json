@@ -3,7 +3,7 @@
   "source": "docs/audits/2026-10-26/Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.xlsx#Validation",
   "perimetre": "Compatibilité des factions et compositions",
   "seed": 1114,
-  "commit": "7aba6444059d25965a7d7dbb5c19468876aa7a6e",
+  "commit": "64c0cba56f325663097468b011a6dee02c6d314b",
   "date": "2026-11-14",
   "commande": "node --test tests/recette-rec-007.test.js",
   "preuveVideo": "non produite — preuve par journal",
