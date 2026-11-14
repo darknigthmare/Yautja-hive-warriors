@@ -53,7 +53,7 @@ export class GamepadGameBridge {
   else if(action==='map')game.openCommandMap();else if(action==='lock')this.lock(player);
   else if(action==='vision'){const mode=player.cycleVisionMode();if(index===0)game.updateVisionOverlays(mode);}
   else if(action==='heal'){if(player.useMedicomp())game.particles.emitMedicompSteam(player.position,24);}
-  else if(action==='cloak')player.toggleCloak();else if(action==='musou'&&player.triggerMusouOverload()){if(index===0)game.executeMusouOverload();else{const attack={origin:player.position,radius:15,damage:player.meleeDamage*5,type:'musou'};game.registerHits(game.horde.checkMeleeHits(attack));game.synthetics.checkHits(attack);if(game.bosses.activeBoss?.mesh.position.distanceTo(player.position)<15)game.bosses.takeDamage(attack.damage);}}
+  else if(action==='cloak')player.toggleCloak();else if(action==='musou'&&player.triggerMusouOverload()){game.executeMusouOverload(player);}
  }
  reset(){this.controls.reset();this.focus.reset();this.moves=[{x:0,y:0},{x:0,y:0}];this.looks=[{x:0,y:0},{x:0,y:0}];this.sprints=[false,false];this.vehicleFire=[false,false];this.dodge.reset();}
  dispose(){this.reset();this.controls.dispose();this.focus.dispose();this.hints.remove();}

@@ -72,6 +72,7 @@ import { createPreyArrowMesh } from './graphics/PreyEquipment.js';
 import { operationSceneOptions, createMissionSupportContext } from './engine/MissionRuntimeContext.js';
 import { traceSingleProjectileImpact } from './engine/SingleProjectileImpact.js';
 import { canAccessLegacyAir, canHitLegacyAirTarget } from './engine/LegacyAirstrikePolicy.js';
+import { hunterMusouProfile, musouCovers } from './data/hunterMusouProfiles.js';
 
 class GameApp {
   constructor() {
@@ -2877,64 +2878,68 @@ class GameApp {
     this.ui.showAnnouncement('⚡ LEURRE HOLOGRAPHIQUE ACTIVÉ : ATTENTION DE LA RUCHE DÉTOURNÉE !');
   }
 
-  executeMusouOverload() {
-    this.ui.showAnnouncement('⚡ VRAIE ATTAQUE MUSOU : DÉVASTATION DU CLAN APEX !');
-    this.audio.playOmniPlasmaStorm();
-
-    // Intense Musou Camera Shockwave & Elastic FOV Surge
-    this.triggerCameraShake(1.6, 0.7);
-    this.triggerCameraFovSurge(74, 1.4);
-
-    // Show True Musou Calligraphy Banner
-    const banner = document.getElementById('true-musou-banner');
-    if (banner) {
-      banner.classList.remove('hidden');
-      this.scheduleMissionTask(() => banner.classList.add('hidden'), 2.2);
+  executeMusouOverload(player = this.player) {
+    // Each hunter has its own Musou shape (HW-DEC-85); damage keeps the shared hit paths.
+    const musou = hunterMusouProfile(player?.data?.id);
+    const facing = { x: Math.sin(player.rotationY ?? 0), z: Math.cos(player.rotationY ?? 0) };
+    const origin = player.position;
+    const covers = (position, radius = 1) => !!position && musouCovers(musou, origin, facing, position, radius);
+    if (player === this.player) {
+      this.ui.showAnnouncement(`⚡ MUSOU · ${musou.name.toUpperCase()}`);
+      this.audio.playOmniPlasmaStorm();
+      this.triggerCameraShake(1.6, 0.7);
+      this.triggerCameraFovSurge(74, 1.4);
+      const banner = document.getElementById('true-musou-banner');
+      if (banner) {
+        banner.classList.remove('hidden');
+        this.scheduleMissionTask(() => banner.classList.add('hidden'), 2.2);
+      }
     }
+    this.shiftBattlefieldMorale(musou.morale);
 
-    // Shift Battlefield Morale toward Clan (+20%)
-    this.shiftBattlefieldMorale(20);
-
-    // 8 Omni-directional rotating high-energy plasma beams
+    // Beams drawn over the shape actually hit: a ring, a cone or a straight charge.
     const stormGroup = new THREE.Group();
-    stormGroup.position.copy(this.player.position).add(new THREE.Vector3(0, 2.0, 0));
-    const beamMat = new THREE.MeshBasicMaterial({ color: 0x00ffff, transparent: true, opacity: 0.95 });
-
-    for (let b = 0; b < 12; b++) {
-      const beamGeo = new THREE.CylinderGeometry(0.14, 0.14, 42, 6);
-      beamGeo.rotateZ(Math.PI / 2);
+    stormGroup.position.copy(origin).add(new THREE.Vector3(0, 2.0, 0));
+    const beamMat = new THREE.MeshBasicMaterial({ color: musou.color, transparent: true, opacity: 0.95 });
+    const heading = player.rotationY ?? 0;
+    const spread = musou.shape === 'nova' ? Math.PI : musou.shape === 'cone' ? musou.halfAngleDegrees * Math.PI / 180 : 0;
+    const beams = musou.shape === 'line' ? 3 : musou.shape === 'cone' ? 7 : 12;
+    for (let b = 0; b < beams; b++) {
+      const beamGeo = new THREE.CylinderGeometry(0.14, 0.14, musou.range, 6);
+      beamGeo.rotateX(Math.PI / 2);
+      beamGeo.translate(musou.shape === 'line' ? (b - 1) * musou.width / 2 : 0, 0, musou.range / 2);
       const beam = new THREE.Mesh(beamGeo, beamMat);
-      beam.rotation.y = (b / 12) * Math.PI * 2;
-      beam.position.set(Math.cos(beam.rotation.y) * 21.0, 0, Math.sin(beam.rotation.y) * 21.0);
+      beam.rotation.y = musou.shape === 'nova' ? (b / beams) * Math.PI * 2 : musou.shape === 'cone' ? heading - spread + (2 * spread * b) / (beams - 1) : heading;
       stormGroup.add(beam);
     }
     this.renderer.scene.add(stormGroup);
-
-    // Animate intense storm rotation and beam pulse
     this.missionEffects.push({ mesh: stormGroup, life: 0.75, maxLife: 0.75,
       update: (delta, remaining) => {
-        stormGroup.rotation.y += 9 * delta;
-        stormGroup.scale.multiplyScalar(Math.exp(0.8 * delta));
+        if (musou.shape === 'nova') stormGroup.rotation.y += 9 * delta;
+        stormGroup.scale.multiplyScalar(Math.exp(0.3 * delta));
         beamMat.opacity = 0.95 * remaining;
       }
     });
 
     const attack = {
-      origin: this.player.position,
-      damage: 1200,
-      radius: 40,
+      origin,
+      damage: musou.damage,
+      radius: musou.range,
+      type: 'musou',
       isLauncher: true,
-      launchVelY: 28.0,
-      knockback: 18.0
+      launchVelY: musou.launchVelY,
+      knockback: musou.knockback,
+      damageForTarget: (target, damage) => covers(target.mesh?.position, target.radius || 1) ? damage : 0
     };
-    const hits = this.horde.checkMeleeHits(attack);
-    this.registerHits(hits);
+    this.registerHits(this.horde.checkMeleeHits(attack));
+    for (const synthetic of [...(this.synthetics?.androids ?? [])]) if (covers(synthetic.mesh?.position)) this.synthetics.checkHits({ ...attack, targetOnly: synthetic });
+    this.particles.spawnPlasmaScorch(origin);
 
-    // Spawn massive plasma scorched ground decal at center
-    this.particles.spawnPlasmaScorch(this.player.position);
-
-    if (this.bosses.activeBoss) this.bosses.takeDamage(1500);
-    if (this.badBlood.isActive) this.badBlood.takeDamage(1500);
+    // Bosses and Bad Blood take Musou damage only inside the shape, like every other target.
+    const boss = this.bosses.activeBoss;
+    if (boss && covers(boss.mesh?.position, boss.radius || 3)) this.bosses.takeDamage(musou.bossDamage);
+    if (this.badBlood.isActive && covers(this.badBlood.badBlood?.mesh?.position, 2)) this.badBlood.takeDamage(musou.bossDamage);
+    return musou;
   }
 
   triggerCameraShake(intensity = 0.8, duration = 0.35) {
