@@ -33,7 +33,7 @@ import { FalconDrone } from './entities/FalconDrone.js';
 import { EnvironmentManager } from './entities/Environment.js';
 import { CHARACTERS_DATA, UNBLOODED_DATA } from './data/charactersData.js';
 import { LEVELS_DATA, CAMPAIGN_HUNTS } from './data/levelsData.js';
-import { FaunaHunt } from './systems/FaunaHunt.js';
+import { FaunaHunt, FAUNA_WORLDS } from './systems/FaunaHunt.js';
 import { HunterKit } from './systems/HunterKit.js';
 
 class GameApp {
@@ -147,11 +147,17 @@ class GameApp {
       this.isCoOp = false;
       this.renderer.setSplitScreen(false);
       this.citadel.hide();
-      // Unblooded campaign (bible: campagne-unblooded.md): first hunt, Vara-Kesh.
-      this.ui.selectedLevel = CAMPAIGN_HUNTS[0];
+      // Unblooded campaign (bible: campagne-unblooded.md): the next hunt not yet won.
+      const progress = this.loadCampaign();
+      const next = CAMPAIGN_HUNTS.find(h => !progress.done.includes(h.id)) || CAMPAIGN_HUNTS[0];
+      this.ui.selectedLevel = next;
       this.ui.selectedChar = UNBLOODED_DATA;
-      this.activeLoadout = { primary: 'wristblades', secondary: 'combistick', plasma: 'none', gadgets: ['medicomp'], kit: ['combistick_throw', 'burner'] };
-      this.startMission();
+      const { pool, defaults } = this.campaignKit(next, progress);
+      this.loadoutScreen.renderKit('unblooded', pool, defaults);
+      this.ui.showScreen(document.getElementById('loadout-prep-screen'));
+      this.ui.showAnnouncement(progress.blooded
+        ? '🩸 VOUS ÊTES BLOODED : LES CHRONIQUES SONT OUVERTES. LA CAMPAGNE REPREND À VARA-KESH.'
+        : `🌿 CAMPAGNE DE L'UNBLOODED — ${next.name}`);
     });
 
     document.getElementById('btn-open-coop').addEventListener('click', () => {
@@ -1181,6 +1187,13 @@ class GameApp {
       this.allies.spawnSquad(this.player.position, 3);
       this.allies.allies.forEach(a => { a.damage = 40; a.plasmaCooldown = Infinity; });
       this.fauna.start(this.ui.selectedLevel.id);
+    } else if (this.ui.selectedLevel.mode === 'rite') {
+      // The rite: a triad in the pyramid, energy weapons excluded, plain drones only.
+      this.allies.spawnSquad(this.player.position, 2);
+      this.allies.allies.forEach(a => { a.damage = 40; a.plasmaCooldown = Infinity; });
+      this.horde.spawnWave((this.ui.selectedLevel.riteKills || 25) + 10, this.player.position, { basicOnly: true });
+      this.riteMarked = false;
+      this.ui.showAnnouncement('🩸 LE RITE : HAREK ET YENA À VOS CÔTÉS. NI BRÛLEUR NI MINES. TUEZ VOTRE PREMIER XÉNOMORPHE.');
     } else {
       this.horde.spawnWave(55, this.player.position);
     }
@@ -1188,7 +1201,7 @@ class GameApp {
     // Stealth opening (HW-DEC-35): the hunt starts cloaked and the hive unaware.
     this.horde.isAlerted = false;
     this.stealthTimer = 25.0;
-    if (!this.player.isCloaked) this.player.toggleCloak();
+    if (!this.player.isCloaked && !this.isCloakLocked()) this.player.toggleCloak();
     setTimeout(() => {
       if (this.isPlaying && this.horde.isAlerted === false) {
         this.ui.showAnnouncement('🫥 OUVERTURE FURTIVE : LA RUCHE NE VOUS A PAS VU. [E] AU CONTACT POUR UNE MISE À MORT SILENCIEUSE');
@@ -3281,6 +3294,21 @@ class GameApp {
 
     if (this.ui.selectedLevel.mode === 'fauna') {
       this.fauna.update(delta);
+    } else if (this.ui.selectedLevel.mode === 'rite') {
+      const goal = this.ui.selectedLevel.riteKills || 25;
+      if (!this.riteMarked && this.horde.deadCount >= 1) {
+        this.riteMarked = true;
+        this.ui.showAnnouncement('🩸 PREMIER XÉNOMORPHE : SON SANG ACIDE TRACE LA MARQUE SUR VOTRE MASQUE.');
+      }
+      if (this.horde.deadCount >= goal) {
+        const progress = this.loadCampaign();
+        if (!progress.done.includes('rite_pyramide')) progress.done.push('rite_pyramide');
+        progress.blooded = true;
+        this.saveCampaign(progress);
+        this.huntVictoryText = 'Le rite est accompli : vous êtes Blooded. Kaedh vous félicite, une seule fois. Les chroniques s\'ouvrent.';
+        this.endGame(true);
+        return;
+      }
     } else if (this.horde.aliens.length < 10 && !this.bosses.activeBoss) {
       if (this.waveIndex < this.totalWaves || this.isEndlessMode) {
         this.waveIndex++;
@@ -3603,6 +3631,45 @@ class GameApp {
     }
   }
 
+  /* Unblooded campaign progress (bible: campagne-unblooded.md). Stored in this browser only. */
+  loadCampaign() {
+    try {
+      const raw = JSON.parse(localStorage.getItem('hw_unblooded_campaign') || '{}');
+      return { done: Array.isArray(raw.done) ? raw.done : [], blooded: !!raw.blooded };
+    } catch (err) {
+      return { done: [], blooded: false };
+    }
+  }
+
+  saveCampaign(progress) {
+    try { localStorage.setItem('hw_unblooded_campaign', JSON.stringify(progress)); } catch (err) { /* storage unavailable */ }
+  }
+
+  /* Tools available to the Unblooded: combistick and burner, plus one tool per world won. */
+  campaignKit(hunt, progress) {
+    const base = ['combistick_throw', 'burner'];
+    const tools = CAMPAIGN_HUNTS
+      .filter(h => h.mode === 'fauna' && progress.done.includes(h.id))
+      .map(h => FAUNA_WORLDS[h.id] && FAUNA_WORLDS[h.id].reward && FAUNA_WORLDS[h.id].reward.ability)
+      .filter(id => id && id !== 'cloak');
+    let pool = base.concat(tools);
+    if (hunt.mode === 'rite') pool = pool.filter(id => id !== 'burner' && id !== 'tripwire_mine');
+    const defaults = (hunt.mode === 'rite' ? pool.slice(0, 1) : base).concat(tools.filter(t => pool.includes(t)).slice(-2)).slice(0, 4);
+    return { pool, defaults: defaults.length ? defaults : pool.slice(0, 1) };
+  }
+
+  isCloakLocked() {
+    return !!(this.player && this.player.data && this.player.data.id === 'unblooded' && !this.loadCampaign().done.includes('rukh_tal'));
+  }
+
+  onFaunaHuntWon(world) {
+    const progress = this.loadCampaign();
+    const id = this.ui.selectedLevel.id;
+    if (!progress.done.includes(id)) progress.done.push(id);
+    this.saveCampaign(progress);
+    if (world.reward) this.ui.showAnnouncement(`🎁 OUTIL GAGNÉ : ${world.reward.label.toUpperCase()}`);
+  }
+
   alertHorde(reason) {
     if (!this.horde || this.horde.isAlerted !== false) return;
     this.horde.isAlerted = true;
@@ -3653,6 +3720,7 @@ class GameApp {
     switch (e.code) {
       case 'KeyC': {
         if (e.repeat) return true;
+        if (this.isCloakLocked()) { this.ui.showAnnouncement('🔒 LE CAMOUFLAGE S\'APPREND À RUKH TAL'); return true; }
         const on = this.player.toggleCloak();
         if (!on) this.alertHorde('uncloak');
         this.ui.showAnnouncement(on ? '🫥 CAMOUFLAGE ACTIF : FRAPPEZ DE FACE POUR UNE EXÉCUTION SILENCIEUSE' : '🫥 CAMOUFLAGE COUPÉ');

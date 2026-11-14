@@ -78,9 +78,13 @@ export class XenomorphHorde {
     this.goreEngine = goreEngine;
   }
 
-  spawnWave(count, playerPos) {
+  spawnWave(count, playerPos, options = {}) {
     this.clearWave();
+    // basicOnly: plain drones and no fixed elites (the Unblooded rite of passage).
+    const fixedUnits = !options.basicOnly;
+    const rnd = options.basicOnly ? () => 1 : Math.random;
 
+    if (fixedUnits) {
     this.spawnOvimorphEggs(playerPos, 6);
 
     // Spawn 1 Crusher Titan
@@ -132,19 +136,20 @@ export class XenomorphHorde {
     // Dynasty Warriors Musou: Spawn 2 Hive Spire Captains / Node Guards (Gardes de Nœud & Sentinelles du Couvoir)
     this.spawnHiveOfficer(playerPos, -22, 'SENTINELLE DU NŒUD PRIMAIRE (SPIRE GUARD)');
     this.spawnHiveOfficer(playerPos, 22, 'GARDE SANGUINAIRE DU COUVOIR ROYAL (HIVE CASTE OFFICER)');
+    }
 
     // Massive Musou Swarm Density: at least 45 to 80 aliens
-    const totalCount = Math.max(count, 45);
+    const totalCount = options.basicOnly ? count : Math.max(count, 45);
     for (let i = 0; i < totalCount; i++) {
-      const isFacehugger = Math.random() < 0.13;
-      const isBoiler = !isFacehugger && Math.random() < 0.13;
-      const isNeomorph = !isFacehugger && !isBoiler && Math.random() < 0.13;
-      const isPraetomorph = !isFacehugger && !isBoiler && !isNeomorph && Math.random() < 0.14;
-      const isRedSwarm = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && Math.random() < 0.16;
-      const isSpitter = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && !isRedSwarm && Math.random() < 0.17;
-      const isCryoXeno = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && !isRedSwarm && !isSpitter && Math.random() < 0.19;
-      const isCyberXeno = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && !isRedSwarm && !isSpitter && !isCryoXeno && Math.random() < 0.21;
-      const isRunner = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && !isRedSwarm && !isSpitter && !isCryoXeno && !isCyberXeno && Math.random() < 0.25;
+      const isFacehugger = rnd() < 0.13;
+      const isBoiler = !isFacehugger && rnd() < 0.13;
+      const isNeomorph = !isFacehugger && !isBoiler && rnd() < 0.13;
+      const isPraetomorph = !isFacehugger && !isBoiler && !isNeomorph && rnd() < 0.14;
+      const isRedSwarm = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && rnd() < 0.16;
+      const isSpitter = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && !isRedSwarm && rnd() < 0.17;
+      const isCryoXeno = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && !isRedSwarm && !isSpitter && rnd() < 0.19;
+      const isCyberXeno = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && !isRedSwarm && !isSpitter && !isCryoXeno && rnd() < 0.21;
+      const isRunner = !isFacehugger && !isBoiler && !isNeomorph && !isPraetomorph && !isRedSwarm && !isSpitter && !isCryoXeno && !isCyberXeno && rnd() < 0.25;
       const alien = this.createAlienMesh(isFacehugger, isBoiler, isNeomorph, isPraetomorph, isRedSwarm, isSpitter, isRunner, isCryoXeno, isCyberXeno);
 
       const angle = Math.random() * Math.PI * 2;

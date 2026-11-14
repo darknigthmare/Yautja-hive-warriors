@@ -2,6 +2,17 @@
 
 import * as THREE from 'three';
 
+// Great prey of the Unblooded campaign (bible tab 22_RegionsFaune).
+const GREAT_PREY_LOOKS = {
+  hydre_eshra: { color: 0x2f3a2a, accent: 0x7a8f5a, scale: 1.2, heads: 3, spines: 0 },
+  gueule_kharuun: { color: 0x7a5c3a, accent: 0xd8c39a, scale: 1.3, heads: 1, spines: 4 },
+  esprit_terek_va: { color: 0x4b1f2a, accent: 0xb04a5a, scale: 1.1, heads: 1, spines: 8 },
+  machoire_nereth: { color: 0xc8d2da, accent: 0x6c8da8, scale: 1.2, heads: 1, spines: 3 },
+  nageur_oshara: { color: 0x2b4a5e, accent: 0x9fd0e0, scale: 1.3, heads: 1, spines: 5 },
+  eperon_rukh_tal: { color: 0x2a2523, accent: 0xff6a2a, scale: 1.3, heads: 1, spines: 6 },
+  guetteur_dharos: { color: 0x4a4740, accent: 0xb8b2a0, scale: 1.2, heads: 1, spines: 2 },
+};
+
 export class BossManager {
   constructor(scene, audioEngine) {
     this.scene = scene;
@@ -537,6 +548,39 @@ export class BossManager {
     return group;
   }
 
+  /* Great prey of the other campaign worlds: one silhouette, shaped by a few parameters. */
+  buildGreatPreyMesh(look) {
+    const group = new THREE.Group();
+    const hide = new THREE.MeshStandardMaterial({ color: look.color, roughness: 0.75 });
+    const accent = new THREE.MeshStandardMaterial({ color: look.accent, roughness: 0.5 });
+    const s = look.scale;
+    const body = new THREE.Mesh(new THREE.BoxGeometry(2.4 * s, 1.8 * s, 4.6 * s), hide);
+    body.position.y = 2.6 * s;
+    group.add(body);
+    for (let h = 0; h < look.heads; h++) {
+      const offset = (h - (look.heads - 1) / 2) * 1.3 * s;
+      const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.35 * s, 0.5 * s, 2.2 * s, 6), hide);
+      neck.position.set(offset, 3.6 * s, 2.6 * s);
+      neck.rotation.x = 0.8;
+      group.add(neck);
+      const head = new THREE.Mesh(new THREE.ConeGeometry(0.6 * s, 1.6 * s, 6), accent);
+      head.position.set(offset, 4.2 * s, 3.6 * s);
+      head.rotation.x = Math.PI / 2;
+      group.add(head);
+    }
+    [[-1.1, 1.6], [1.1, 1.6], [-1.1, -1.6], [1.1, -1.6]].forEach(([x, z]) => {
+      const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.25 * s, 0.18 * s, 2.6 * s, 6), hide);
+      leg.position.set(x * s, 1.3 * s, z * s);
+      group.add(leg);
+    });
+    for (let i = 0; i < look.spines; i++) {
+      const spine = new THREE.Mesh(new THREE.ConeGeometry(0.2 * s, 1.0 * s, 5), accent);
+      spine.position.set(0, 3.7 * s, (i - look.spines / 2) * 0.7 * s);
+      group.add(spine);
+    }
+    return group;
+  }
+
   /* Faucheur de Vara-Kesh (Bible V6, FAU-21): long-limbed reserve prey that hunts along strong branches. */
   buildFaucheurMesh() {
     const group = new THREE.Group();
@@ -583,6 +627,9 @@ export class BossManager {
     }
     if (type === 'faucheur_vara_kesh') {
       return this.buildFaucheurMesh();
+    }
+    if (GREAT_PREY_LOOKS[type]) {
+      return this.buildGreatPreyMesh(GREAT_PREY_LOOKS[type]);
     }
 
     const group = new THREE.Group();

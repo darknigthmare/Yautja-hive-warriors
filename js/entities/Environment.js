@@ -557,7 +557,7 @@ export class EnvironmentManager {
     const theme = levelConfig.theme || levelConfig.environmentType || 'jungle';
     const levelId = levelConfig.id || '';
 
-    if (levelId === 'vara_kesh') {
+    if (levelId === 'vara_kesh' || levelId === 'eshra' || levelId === 'oshara') {
       this.buildJungleProps();
     } else if (levelId === 'val_verde_jungle') {
       this.buildJungleProps();

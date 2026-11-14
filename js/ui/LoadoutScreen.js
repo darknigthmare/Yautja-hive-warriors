@@ -16,8 +16,9 @@ export class LoadoutScreen {
   }
 
   /* Four kit slots, pre-filled with the hunter's default kit (bible, tab 02_Chasseurs). */
-  renderKit(charId) {
-    this.selectedKit = (DEFAULT_KITS[charId] || DEFAULT_KITS.jungle_hunter).slice(0, 4);
+  renderKit(charId, pool = null, defaults = null) {
+    this.selectedKit = (defaults || DEFAULT_KITS[charId] || DEFAULT_KITS.jungle_hunter).slice(0, 4);
+    const allowed = pool || Object.keys(KIT_ABILITIES);
     let section = document.getElementById('loadout-kit-section');
     if (!section) {
       section = document.createElement('div');
@@ -26,9 +27,9 @@ export class LoadoutScreen {
       const grid = this.screen && this.screen.querySelector('.loadout-grid-container');
       if (grid) grid.appendChild(section);
     }
-    const options = Object.entries(KIT_ABILITIES)
-      .map(([id, a]) => `<option value="${id}">${a.icon} ${a.label}</option>`).join('');
-    section.innerHTML = `<h3>4. KIT DU CHASSEUR : EMPLACEMENTS [1] À [4]</h3>
+    const options = allowed.filter(id => KIT_ABILITIES[id])
+      .map(id => `<option value="${id}">${KIT_ABILITIES[id].icon} ${KIT_ABILITIES[id].label}</option>`).join('');
+    section.innerHTML = `<h3>4. KIT DU CHASSEUR : EMPLACEMENTS [1] À [${this.selectedKit.length}]</h3>${pool ? '<p style="margin:4px 0 8px;opacity:.8">Outils gagnés au fil des mondes de la campagne.</p>' : ''}
       <div class="loadout-options" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;">
         ${this.selectedKit.map((id, i) => `<label style="display:flex;flex-direction:column;gap:4px;">
           <span>Touche ${i + 1}</span>
