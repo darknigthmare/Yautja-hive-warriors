@@ -57,3 +57,16 @@ test('great prey belong to the Ascension mode only, and progress opens the world
   memory.set('yautja-ascension-v1', '{"version":9}');
   assert.deepEqual(new AscensionProgress(storage).state.completed, [], 'a foreign record starts fresh');
 });
+
+test('Kharuun’s burrower cannot be struck under the sand and surfaces beside the hunter', () => {
+  const horde = new XenomorphHorde(new THREE.Scene(), audio), encounter = new FaunaEncounter(horde, ascensionWorld('kharuun'));
+  const burrower = encounter.spawnLeader({ index: 1, center: [0, 0], objective: { type: 'commander' } }, new THREE.Vector3(0, 0, 10));
+  const player = { hp: 1000, position: new THREE.Vector3(0, 0, 0), takeDamage() {} };
+  let dived = false;
+  for (let i = 0; i < 300 && !dived; i++) { horde.update(1 / 30, player); dived = burrower.isBurrowed; }
+  assert.equal(dived, true);
+  assert.equal(horde.checkMeleeHits({ origin: burrower.mesh.position.clone(), radius: 50, damage: 100 }).length, 0, 'no hit under the sand');
+  for (let i = 0; i < 90; i++) horde.update(1 / 30, player);
+  assert.equal(burrower.isBurrowed, false);
+  assert.ok(burrower.mesh.position.distanceTo(player.position) < 8, 'it surfaces beside the hunter');
+});

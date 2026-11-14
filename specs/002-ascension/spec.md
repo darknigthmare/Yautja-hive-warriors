@@ -2,7 +2,7 @@
 
 **Feature Branch**: `claude/fervent-volta-hmhdfw` (aucune branche dédiée)
 **Created**: 2026-11-14
-**Status**: Étape 1 livrée le 14 nov. 2026 ; étapes 2 à 5 à faire
+**Status**: Étapes 1 et 2 livrées le 14 nov. 2026 ; étapes 3 à 5 à faire
 **Input**: décisions HW-DEC-86 et 105 à 109. Contenu narratif : `design/gdd/campagne-unblooded.md`. Prototype v58 archivé : `design/archive-master-v58/FaunaHunt.js`. Ce prototype n'est pas porté tel quel, car il retirait les bêtes en mettant leurs PV à zéro.
 
 ## Principe

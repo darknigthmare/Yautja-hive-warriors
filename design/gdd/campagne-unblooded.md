@@ -189,7 +189,33 @@ Le prototype v58 est archivé dans `design/archive-master-v58/`. L'Ascension est
 - **Progression** : elle est gardée dans ce navigateur (`yautja-ascension-v1`) ; chaque monde chassé donne son outil.
 - **Vérifié** : une chasse de Vara-Kesh a été jouée dans Chromium, du largage à l'exécution du Faucheur, sans erreur de page. Les parcours de secteur se font avec les aides de test, pas par un joueur humain.
 
-**Provisoire** : chaque monde emprunte un lieu existant (jungle de Val Verde, plaines de Prey, pyramide, etc.) en attendant ses variantes de terrain. Les relais du secteur 3 gardent leur texte d'origine. Les comportements propres (fouisseur, rôdeurs presque invisibles, nœuds de nuée) ne sont pas encore repris.
+**Étape 2, livrée.** Chaque monde est une variante procédurale d'un lieu v70 (HW-DEC-107). Le lieu de base fixe le type de sol et de végétation ; la variante fixe la palette, le brouillard, les couleurs du sol et des parois, et la météo :
+
+| Monde | Lieu de base | Météo |
+|---|---|---|
+| Vara-Kesh | jungle de Val Verde | pollen |
+| Eshra | jungle de Val Verde | brume humide |
+| Kharuun | plaines de Prey | poussière |
+| Terek-Va | pyramide | spores, avec des évents souterrains |
+| Nereth | pyramide | neige |
+| Oshara | forêt de Gunnison | pluie |
+| Rukh Tal | pyramide | poussière, avec des évents souterrains |
+| Dharos | toits de Los Angeles | vent d'automne |
+
+Aucun décor humain ni xénomorphe n'est construit sur ces mondes.
+
+Les comportements propres sont en place :
+- la matrone d'Eshra, les sentinelles de Dharos et les nœuds de Terek-Va pondent tant qu'ils vivent, dans un budget fixe ;
+- les nœuds de Terek-Va ne bougent pas ;
+- les rôdeurs de Nereth sont presque invisibles ;
+- le fouisseur de Kharuun plonge, ne peut pas être touché pendant 2,5 s, puis ressurgit près du chasseur ;
+- plusieurs meneurs chargent.
+
+En Ascension, le HUD nomme les bêtes et compte les « proies abattues ». Les appuis USCM (APC, Cheyenne) et le planeur sont absents.
+
+**Vérifié** : les huit mondes se chargent dans Chromium avec leur météo, leur faune seule et leur grande proie, sans erreur de page ; captures de Nereth et de Kharuun relues.
+
+**Provisoire** : les relais du secteur 3 gardent leur texte d'origine, et les meutes sont des alliés Yautja génériques, sans les noms de Harek, Yena et Tov.
 
 **Étapes suivantes** : les variantes de terrain et les comportements propres, la scène 3D de *La Lame Patiente*, le rite et le rang Blooded, puis l'envoi au compte Supabase.
 

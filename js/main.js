@@ -75,7 +75,7 @@ import { canAccessLegacyAir, canHitLegacyAirTarget } from './engine/LegacyAirstr
 import { hunterMusouProfile, musouCovers } from './data/hunterMusouProfiles.js';
 import { humanWeaponCacheCount, emptyHumanWeaponAmmo, openHumanWeaponCache } from './engine/HumanWeaponCaches.js';
 import { MouseCamera } from './engine/MouseCamera.js';
-import { ASCENSION_WORLDS, ASCENSION_BASE_LEVELS, ascensionWorld } from './data/AscensionWorlds.js';
+import { ASCENSION_WORLDS, ASCENSION_BASE_LEVELS, ascensionWorld, ascensionLevel } from './data/AscensionWorlds.js';
 import { AscensionProgress } from './data/AscensionProgress.js';
 import { FaunaEncounter } from './engine/FaunaEncounter.js';
 
@@ -256,8 +256,8 @@ class GameApp {
           option.textContent = `${world.order}. ${world.title} — ${world.prey.name}${this.ascensionProgress.state.completed.includes(world.id) ? ' (chassé)' : ''}`; option.disabled = !open.includes(world.id); return option; }));
         worldSelect.value = open.includes(previous) ? previous : open.at(-1);
       }
-      const ascensionLevel = ascension ? LEVELS_DATA.find(level => level.id === ASCENSION_BASE_LEVELS[worldSelect?.value]) : null;
-      this.ui.setOperationLevel(scene ? LEVELS_DATA.find(level => level.id === scene.levelId) : ascensionLevel ?? null);
+      const worldLevel = ascension ? ascensionLevel(worldSelect?.value, LEVELS_DATA) : null;
+      this.ui.setOperationLevel(scene ? LEVELS_DATA.find(level => level.id === scene.levelId) : worldLevel ?? null);
       document.getElementById('operation-provenance').textContent = scene ? `${scene.mapName} : scène adaptée au terrain ${scene.levelId}. Objectifs originaux ; géographie 1:1 non vérifiée.` : mode.value === 'fronts' ? 'Trois fronts reliés par des corridors et des contournements. Population finie ; positions lointaines signalées par rapports.' : mode.value === 'survival' ? 'Survie sans victoire finale. Les vagues continuent jusqu’à la défaite ou au retour au menu.' : 'Chasse finie : six secteurs, objectifs locaux, portes et boss final.';
     };
     mode.addEventListener('change', update); select.addEventListener('change', update); document.getElementById('ascension-world-select')?.addEventListener('change', update); casteOption.addEventListener('change', update); update();
@@ -576,7 +576,7 @@ class GameApp {
       if(this.missionMode==='fronts'){const scene=createOperationScene({operationId:this.operationId,level:this.ui.selectedLevel,players:this.isCoOp?2:1,mapSeed:this.operationMapSeed,difficultyId:this.operationDifficulty,
         extinctionVariant:this.extinctionVariant});scene.characterBriefing=this.battleCampaign.getCharacterBriefing(scene.config,{arcId:document.getElementById('campaign-arc-enabled').checked&&/^AFF-0[1-5]$/.test(this.operationId)?CLAN_CAMPAIGN_ARC_ID:null,characterId:this.ui.selectedChar.id});this.operationBriefing.render(scene);}else this.operationBriefing.render(null);
       if (this.missionMode === 'fronts' && BATTLE_OPERATIONS.some(operation=>operation.id===this.operationId)) this.ui.selectedLevel = LEVELS_DATA.find(level => level.id === getBattleOperationScene(this.operationId).levelId);
-      if (this.missionMode === 'ascension') { this.ascensionWorldId = document.getElementById('ascension-world-select').value; this.ui.selectedLevel = LEVELS_DATA.find(level => level.id === ASCENSION_BASE_LEVELS[this.ascensionWorldId]); }
+      if (this.missionMode === 'ascension') { this.ascensionWorldId = document.getElementById('ascension-world-select').value; this.ui.selectedLevel = ascensionLevel(this.ascensionWorldId, LEVELS_DATA); }
       this.ui.showScreen(document.getElementById('loadout-prep-screen'));
     });
 
@@ -949,7 +949,7 @@ class GameApp {
       // Netgun Entanglement & Gauntlet Flechette Needler [G Key]
       if (e.code === 'KeyG' && this.player && !(this.keys['ShiftLeft'] || this.keys['ShiftRight'])) {
         const distToSkimmer = this.skimmer ? this.player.position.distanceTo(this.skimmer.position) : 999;
-        if (this.skimmer && (this.skimmer.isMounted || distToSkimmer < 4.5)) {
+        if (this.skimmer && (this.skimmer.isMounted || distToSkimmer < 4.5 && this.skimmer.mesh?.visible !== false)) {
           // Boarding or exiting the Yautja Skimmer vehicle
           this.skimmer.mountCooldown = 0;
         } else {
@@ -1993,7 +1993,7 @@ class GameApp {
     const variant = this.missionMode === 'fronts' && BATTLE_OPERATIONS.some(operation=>operation.id===this.operationId) ? getBattlefieldMapVariant(BATTLE_OPERATIONS.find(operation=>operation.id===this.operationId).mapId) : null;
     if (variant) this.ui.selectedLevel = LEVELS_DATA.find(level=>level.id===variant.baseLevelId);
     if(preparedOperation)this.ui.selectedLevel=preparedOperation.level;
-    this.env.buildLevelEnvironment({ ...this.ui.selectedLevel, mapId: variant?.id, mapSeed:this.operationMapSeed, battlefield: !['sandbox','survival'].includes(this.missionMode), strategicMode: this.missionMode === 'fronts' });
+    this.env.buildLevelEnvironment({ ...this.ui.selectedLevel, mapId: variant?.id ?? (this.missionMode === 'ascension' ? this.ui.selectedLevel.mapId : undefined), mapSeed:this.operationMapSeed, battlefield: !['sandbox','survival'].includes(this.missionMode), strategicMode: this.missionMode === 'fronts' });
     this.initializeMissionSupports(options.resumeOperation);
     this.renderer.updateLevelEnvironment(this.ui.selectedLevel);
     this.weather.setWeather(this.ui.selectedLevel.weather ?? this.ui.selectedLevel.theme);
@@ -2060,11 +2060,13 @@ class GameApp {
       this.ui.showAnnouncement(provenance??'INSERTION TERMINÉE — OUVERTURE FURTIVE : FRAPPEZ DANS LE DOS AVANT D’ÊTRE REPÉRÉ. [CLIC] FRAPPER · [C] PARER');
     }, { players: [this.player, this.player2].filter(Boolean) });
 
-    this.skimmer.spawnAt(this.player.position.clone().add(new THREE.Vector3(-9, 0, 8)));
+    // The Unblooded has no skimmer (spec 002); other modes keep it.
+    if (this.missionMode !== 'ascension') this.skimmer.spawnAt(this.player.position.clone().add(new THREE.Vector3(-9, 0, 8)));
     if (this.missionMode === 'fronts' && this.env.battlefieldLayout) {
       this.startBattleOperation(options.resumeOperation);
     } else if (!['sandbox', 'survival'].includes(this.missionMode) && this.env.battlefieldLayout) {
       const world = this.missionMode === 'ascension' ? ascensionWorld(this.ascensionWorldId) : null;
+      const killLabel = document.querySelector('.ko-label'); if (killLabel) killLabel.textContent = world ? 'PROIES ABATTUES' : 'XENOMORPHES ÉLIMINÉS';
       this.faunaEncounter = world ? new FaunaEncounter(this.horde, world, { onLine: line => this.ui.showAnnouncement(line) }) : null;
       this.battlefield = new BattlefieldMission({ environment: this.env, horde: this.horde,
         bosses: this.bosses, level: this.ui.selectedLevel,preparedEncounter:this.preparedBossEncounter, encounter: this.faunaEncounter,
@@ -2093,7 +2095,7 @@ class GameApp {
     this.audio.startBackgroundMusic();
     this.ui.showScreen(this.ui.inGameHud);
     this.ui.showCombo(0);
-    this.ui.updateHUD(this.player, this.horde, this.bosses, this.waveIndex, this.totalWaves, this.score,{secondaryPlayer:this.player2,supports:{apc:this.apc.getSupportState(),cheyenne:this.dropship.getSupportState()}});
+    this.ui.updateHUD(this.player, this.horde, this.bosses, this.waveIndex, this.totalWaves, this.score,{secondaryPlayer:this.player2,supports:this.missionMode==='ascension'?null:{apc:this.apc.getSupportState(),cheyenne:this.dropship.getSupportState()}});
     this.ui.updateBattlefieldHUD(this.battlefieldProgression, this.env.battlefieldLayout, this.player, this.combatDirector, [this.player, this.player2].filter(Boolean));
     document.getElementById('hud-weapon-label').innerText = 'ARME: PRINCIPALE';
     const visionTag = document.getElementById('hud-vision-tag');
@@ -2144,7 +2146,7 @@ class GameApp {
   }
 
   initializeMissionSupports(saved) {
-    const context=createMissionSupportContext({missionId:saved?.campaignRunId??this.missionRun,levelId:this.ui.selectedLevel.id,fidelityMode:this.activeLoadout.fidelityMode,environment:this.env,
+    const context=createMissionSupportContext({missionId:saved?.campaignRunId??this.missionRun,levelId:this.missionMode==='ascension'?'ascension':this.ui.selectedLevel.id,fidelityMode:this.activeLoadout.fidelityMode,environment:this.env,
       onDestroyed:event=>{
         if(event.kind==='apc'){
           const killer=this.battleSimulation?.factions.has(event.killerFaction)?event.killerFaction:null;
@@ -2204,7 +2206,7 @@ class GameApp {
     for (const actor of [...this.allies.allies, ...this.marines.marines, ...this.synthetics.androids]) this.env.resolveMovement(actor.mesh.position, 1);
     // Keep the skimmer available as the battlefield advances without moving a
     // mounted vehicle out from under either player's controls.
-    if (!this.skimmer.isMounted) this.skimmer.spawnAt(center.clone().add(new THREE.Vector3(sector.index === 0 ? -9 : 5, 0, sector.index === 0 ? 8 : 5)));
+    if (!this.skimmer.isMounted && this.missionMode !== 'ascension') this.skimmer.spawnAt(center.clone().add(new THREE.Vector3(sector.index === 0 ? -9 : 5, 0, sector.index === 0 ? 8 : 5)));
     if (this.missionMode === 'hunt' && !this.battleSimulation) this.spawnHumanWeaponCaches?.(sector, center);
     if (sector.objective.type === 'boss') this.bossSpawned = true;
   }
@@ -3481,7 +3483,7 @@ class GameApp {
       this.updateInsertionPresentation(delta);
       this.env.updateBattlefieldVisibility?.([this.player, this.player2].filter(Boolean));
       this.particles.update(delta, this.renderer.camera);
-      this.ui.updateHUD(this.player, this.horde, this.bosses, this.waveIndex, this.totalWaves, this.score,{secondaryPlayer:this.player2,supports:{apc:this.apc.getSupportState(),cheyenne:this.dropship.getSupportState()}});
+      this.ui.updateHUD(this.player, this.horde, this.bosses, this.waveIndex, this.totalWaves, this.score,{secondaryPlayer:this.player2,supports:this.missionMode==='ascension'?null:{apc:this.apc.getSupportState(),cheyenne:this.dropship.getSupportState()}});
       this.ui.updateBattlefieldHUD(this.battlefieldProgression, this.env.battlefieldLayout, this.player, this.combatDirector, [this.player, this.player2].filter(Boolean));
       return;
     }
@@ -5122,7 +5124,7 @@ class GameApp {
       marines: this.marines,
       allies: this.allies,
       synthetics: this.synthetics, sessionDefeats: this._sessionDefeats,
-      supports:{apc:this.apc.getSupportState(),cheyenne:this.dropship.getSupportState()}
+      supports:this.missionMode==='ascension'?null:{apc:this.apc.getSupportState(),cheyenne:this.dropship.getSupportState()}
     });
     this.ui.updateBattlefieldHUD(this.battlefieldProgression, this.env.battlefieldLayout, this.player, this.combatDirector, [this.player, this.player2].filter(Boolean));
 
@@ -5244,7 +5246,10 @@ class GameApp {
           minDistance = d;
           let name = 'XENOMORPH DRONE';
           let weakpoint = 'FAIBLESSE : DÔME CRÂNIEN (-40% ARMURE)';
-          if (a.type === 'crusher') {
+          if (a.isFauna) {
+            name = String(a.name ?? 'FAUNE').toUpperCase();
+            weakpoint = a.role === 'leader' ? 'MENEUR : SA CHUTE DISPERSE LA HARDE' : 'HARDE : ELLE FUIT QUAND SON MENEUR TOMBE';
+          } else if (a.type === 'crusher') {
             name = 'BROYEUR CRUSHER TITAN';
             weakpoint = 'FAIBLESSE : ABDOMEN VENTRAL & ARTICULATIONS';
           } else if (a.type === 'praetorian') {

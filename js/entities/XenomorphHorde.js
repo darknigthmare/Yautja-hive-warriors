@@ -332,7 +332,7 @@ export class XenomorphHorde {
     const animal = { isFauna: true, role, type: leader ? 'fauna_leader' : 'fauna_herd', name: spec.name, mesh,
       hp: spec.hp, maxHp: spec.hp, speed: spec.speed, damage: spec.bite, radius: spec.radius, home: home.clone(),
       chargeTimer: 4 + (this.aliens.length % 5) * .4, chargeLeft: 0, spawnBudget: leader ? (spec.spawns ?? 0) : 0, spawnTimer: 6,
-      stationary: spec.stationary === true, isFleeing: false, wanderAngle: this.aliens.length * 2.399, visualFidelity1to1Verified: false };
+      stationary: spec.stationary === true, burrows: spec.burrows === true, burrowTimer: 5, burrowLeft: 0, isBurrowed: false, isFleeing: false, wanderAngle: this.aliens.length * 2.399, visualFidelity1to1Verified: false };
     this.aliens.push(animal); return animal;
   }
 
@@ -345,6 +345,14 @@ export class XenomorphHorde {
       a.spawnTimer = 6; a.spawnBudget--;
       const herd = this.aliens.find(other => other.isFauna && other.role === 'herd' && other.home.distanceTo(a.home) < 1);
       if (herd) this.spawnFauna({ name: herd.name, hp: herd.maxHp, speed: herd.speed, bite: herd.damage, radius: herd.radius, color: a.herdColor ?? 0x55524a, size: 1 }, 'herd', a.mesh.position.clone().add(new THREE.Vector3(2, 0, 2)), a.home);
+    }
+    // Kharuun's burrower dives under the sand, cannot be struck, and surfaces beside the hunter.
+    if (a.burrows && !a.isFleeing) {
+      if (a.isBurrowed) {
+        if ((a.burrowLeft -= delta) > 0) return;
+        a.isBurrowed = false; a.mesh.visible = true; a.burrowTimer = 6;
+        if (target) a.mesh.position.copy(target.position).add(new THREE.Vector3(Math.cos(a.wanderAngle) * 4, 0, Math.sin(a.wanderAngle) * 4)).setY(0);
+      } else if (target && distance < 25 && (a.burrowTimer -= delta) <= 0) { a.isBurrowed = true; a.burrowLeft = 2.5; a.mesh.visible = false; this.combatDirector?.release(a); this._clearAttackCue(a); return; }
     }
     if (a.stationary) {
       if (target && distance <= a.radius + 2.4 && this._requestAttack(a, target, { windup: .7, recovery: 1.2 })) target.takeDamage(a.damage, false, a, { attackKind: 'bite', blockable: true, parryable: true });
@@ -635,6 +643,7 @@ export class XenomorphHorde {
       this.syncBattleRavager(a, { cause: a.lastDamageType ?? 'combat', killerFaction: a.lastDamageFaction });
       if (attack.targetOnly && a !== attack.targetOnly) continue;
       if (a.isLatched) continue;
+      if (a.isBurrowed) continue;
       if (this.battleSimulation && a.factionId && !this.battleSimulation.areHostile(attackingFaction, a.factionId)) continue;
       if (this.environment?.hasLineOfSight && !this.environment.hasLineOfSight(attack.origin.clone().add(new THREE.Vector3(0,1.2,0)), a.mesh.position.clone().add(new THREE.Vector3(0,1.2,0)))) continue;
       if (a.hp <= 0) { this.defeatAlien(a, { cause: 'prior-combat', killerFaction: a.lastDamageFaction }); continue; }

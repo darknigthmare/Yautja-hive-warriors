@@ -374,8 +374,32 @@ export const ASCENSION_WORLDS = Object.freeze([
  }
 ].map(world => Object.freeze({ ...world, fidelity: 'adaptation', creation: world.prey.bibleId === null })));
 
-// Provisional base locations until each world has its own terrain variant (spec 002, stage 2).
-export const ASCENSION_BASE_LEVELS = Object.freeze({ vara_kesh: 'val_verde_jungle', eshra: 'val_verde_jungle', kharuun: 'prey_comanche_territory',
-  terek_va: 'antarctic_pyramid', nereth: 'game_preserve_planet', oshara: 'gunnison_forest', rukh_tal: 'xenomorph_prime', dharos: 'la_rooftops' });
+// Each world is a procedural variant of a v70 location (HW-DEC-107): the base chooses the kind of
+// ground and vegetation, the variant its palette, weather and ASC- map id. The ASC- profile builds no
+// human or xenomorph installation (AUD-060). Sketches, not finished models.
+const terrain = (baseLevelId, theme, weather, fogColor, floorColor, wallColor, accentColor, fogDensity, builders = []) =>
+  Object.freeze({ baseLevelId, theme, weather, fogColor, floorColor, wallColor, accentColor, fogDensity, builders: Object.freeze(builders) });
+export const ASCENSION_TERRAINS = Object.freeze({
+  vara_kesh: terrain('val_verde_jungle', 'jungle', 'pollen', 0x6f8a55, 0x3b4a26, 0x2c3a1c, 0x9fe2a0, 0.012),
+  eshra: terrain('val_verde_jungle', 'rain_forest', 'humid_mist', 0x56645a, 0x2c3329, 0x3a3f33, 0x8fb7a6, 0.02),
+  kharuun: terrain('prey_comanche_territory', 'comanche_territory', 'dust', 0xb39a72, 0x9c7f55, 0x7d6243, 0xf0c98a, 0.009),
+  terek_va: terrain('antarctic_pyramid', 'hive_world', 'toxic_spores', 0x4a2f2a, 0x2e2220, 0x3d2a26, 0xff8a5c, 0.016, ['buildSubterraneanVents']),
+  nereth: terrain('antarctic_pyramid', 'pyramid', 'snow', 0xc9d6e0, 0xe4ecf2, 0x9fb2c2, 0xbfe6ff, 0.018),
+  oshara: terrain('gunnison_forest', 'rain_forest', 'rain', 0x4f6e7a, 0x3a4c4f, 0x2f4248, 0x8fd3e8, 0.014),
+  rukh_tal: terrain('antarctic_pyramid', 'temple', 'dust', 0x5a3428, 0x231c1a, 0x3a2622, 0xff7040, 0.015, ['buildSubterraneanVents']),
+  dharos: terrain('la_rooftops', 'la_rooftops', 'autumn_gale', 0x6a6a72, 0x4a4a4e, 0x55555c, 0xd6c7a1, 0.012)
+});
+export const ASCENSION_BASE_LEVELS = Object.freeze(Object.fromEntries(Object.entries(ASCENSION_TERRAINS).map(([id, value]) => [id, value.baseLevelId])));
+export const ascensionMapId = worldId => `ASC-${worldId}`;
+/** The playable level of a world: its base location, with its own look and no foreign installation. */
+export function ascensionLevel(worldId, levels) {
+  const world = ASCENSION_WORLDS.find(item => item.id === worldId), look = ASCENSION_TERRAINS[worldId];
+  const base = look && levels.find(level => level.id === look.baseLevelId);
+  if (!world || !base) return null;
+  const { builders, baseLevelId, ...appearance } = look;
+  return { ...base, ...appearance, name: `${world.title} — ${world.prey.name}`, mapId: ascensionMapId(worldId), ascensionWorldId: worldId,
+    era: 'ascension', fidelity: 'adaptation', terrainProvenance: `Variante procédurale de ${base.id} (HW-DEC-107)` };
+}
+
 export const ascensionWorld = id => ASCENSION_WORLDS.find(world => world.id === id) ?? null;
 export const ASCENSION_PREY_IDS = Object.freeze(ASCENSION_WORLDS.map(world => world.prey.bossId));
