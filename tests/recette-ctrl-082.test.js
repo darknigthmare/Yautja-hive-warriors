@@ -129,7 +129,7 @@ test('CTRL-082 — AFF-27 simulates the nine GRP-60 Extinction roles in 192 fini
         const byRole = {};
         for (const row of rows) { const role = roleOf(row.sourceRole); (byRole[role] ??= new Set()).add(`${row.manager}|${row.rendered}|${row.visual}`); }
         const expected = { Infantry: 'marines|marine|null', Smartgunner: 'marines|smartgunner|null', Flamethrower: 'marines|flametrooper|null',
-          Medic: 'marines|marine|medic', CommTech: 'marines|marine|commtech', Synthetic: 'synthetics|weyland_combat|null',
+          Medic: 'marines|marine|medic', CommTech: 'marines|marine|commtech', Synthetic: 'synthetics|synthetic|null',
           Sniper: 'marines|marine|sniper', SADAR: 'marines|marine|sadar', Exosuit: 'marines|marine|exosuit' };
         assert.equal(rows.length, 192);
         assert.deepEqual(Object.keys(byRole).sort(), Object.keys(expected).sort());
@@ -198,10 +198,12 @@ test('CTRL-082 — observations: obsolete "unimplemented" labels and WY actor ty
       details: { fichier: 'js/data/SourceBattleRoster.js:23-24', note: 'Les sourceRole « Medic (unimplemented support) » et « CommTech (unimplemented repairs) » sont affichés alors que BattleSimulation alloue medicalSupply=2 / repairParts=3 et expose applyMedicHeal / applyCommTechRepair (js/battlefield/BattleSimulation.js:631-682).' } });
     const xt = grp60(r.sim).find(u => u.species === 'synthetic');
     const actor = r.synthetics.spawnBattleUnit(structuredClone(xt), r.sim._groupSnapshot(r.sim.groups.get(xt.groupId)));
-    assert.equal(actor.type, 'weyland_combat');
-    clauses.push({ clause: 'observation_type_acteur_synthetique_uscm', attendu: 'Information : l’affiliation USCM est portée par la faction ; le type d’acteur du synthétique est nommé weyland_combat.', verdict: 'observation',
+    // CTRL-086 (HW-DEC-104): the Extinction synthetic is rendered as a USCM synthetic, not Weyland-Yutani.
+    assert.equal(actor.type, 'synthetic'); assert.equal(actor.affiliation, 'uscm');
+    assert.equal(r.sim.profiles.get(xt.profileId).affiliation, 'uscm');
+    clauses.push({ clause: 'observation_type_acteur_synthetique_uscm', attendu: 'Le synthétique d’Extinction porte l’affiliation USCM, dans son profil comme dans son acteur rendu (CTRL-086).', verdict: 'observation',
       details: { fichier: 'js/entities/Synthetics.js:384', faction: xt.factionId, actorTypeSimulation: xt.actorType, typeActeurRendu: actor.type,
-        note: 'Le synthétique Colonial Marines d’Extinction est rendu par le même type que les synthétiques de combat Weyland-Yutani ; pas de remplacement par un humain, mais libellé d’affiliation ambigu.' } });
+        note: 'Depuis HW-DEC-104, le synthétique Colonial Marines d’Extinction a le type synthetic et l’affiliation uscm, distincts des synthétiques de combat Weyland-Yutani.' } });
     r.synthetics.despawnBattleUnit(xt.id);
   } finally { r.dispose(); }
 });

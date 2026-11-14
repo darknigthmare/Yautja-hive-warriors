@@ -202,6 +202,9 @@ function commanderProfile(speciesId, boss) {
 
 // A new battle may use source-role presets. Legacy checkpoints still reconstruct
 // the original generic profiles and exact config digest.
+// Affiliation is carried apart from species, role and camp (CTRL-086, HW-DEC-104): a USCM synthetic is
+// not Weyland-Yutani, and no USCM–WY opposition exists unless a scene chooses it.
+const TEMPLATE_AFFILIATIONS = freeze({ 'GRP-60': 'uscm', 'GRP-53': 'uscm', 'GRP-47': 'uscm', 'GRP-46': 'weyland_yutani', 'GRP-50': 'seegson', 'GRP-52': 'tobler_colony' });
 function applySourceSquadProfiles(group, entry, faction, profiles, { legacySourceLinks = false, squadIndex = 0 } = {}) {
   // Dark Descent squads alternate their fourth class (CTRL-084).
   const chosen = entry.groupId === 'GRP-53' ? (squadIndex % 2 ? 'recon' : 'default') : entry.profile;
@@ -215,6 +218,7 @@ function applySourceSquadProfiles(group, entry, faction, profiles, { legacySourc
       actorType: slot.actorType, role: 'soldier', sourceRole: slot.sourceRole,
       sourceTemplateId: entry.groupId, visualStatus: slot.visual,
       ...(slot.catalogueProfileId ? { catalogueProfileId: slot.catalogueProfileId } : {}),
+      ...(!legacySourceLinks && TEMPLATE_AFFILIATIONS[entry.groupId] ? { affiliation: TEMPLATE_AFFILIATIONS[entry.groupId] } : {}),
       visualFidelity1to1Verified: false, fidelity: 'adaptation',
       allowedFactions: [faction.id],
       provenance: 'Audit composition mapped to existing identities; visual/actions are not certified as 1:1.'

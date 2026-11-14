@@ -381,7 +381,10 @@ export class SyntheticsManager {
     const joe = unit.actorType === 'working_joe';
     const duty = syntheticDuty(unit), mesh = this.createSyntheticMesh(joe || duty === 'civilian');
     if (duty === 'civilian') mesh.userData.syntheticProfile = 'civilian-service-adaptation';
-    const actor = { mesh, type: joe ? 'working_joe' : 'weyland_combat', speed: joe ? 7.5 : 9, damage: joe ? 34 : 22,
+    // The Extinction squad synthetic belongs to the USCM, not to Weyland-Yutani (CTRL-086).
+    const uscm = unit.actorType === 'synthetic' && /_GRP-60_(?:H-LIGNE|H-APPUI)_7$/.test(unit.profileId ?? '');
+    if (uscm) mesh.userData.syntheticProfile = 'uscm_synthetic';
+    const actor = { mesh, type: joe ? 'working_joe' : uscm ? 'synthetic' : 'weyland_combat', affiliation: joe ? 'seegson' : uscm ? 'uscm' : 'weyland_yutani', speed: joe ? 7.5 : 9, damage: joe ? 34 : 22,
       syntheticDuty: duty, serviceAnchor: syntheticServiceAnchor(this, unit, group),
       radius: .9, shootCooldown: 2, isBisected: false, crawlLife: 0, voiceCooldown: 0 };
     this.androids.push(applyBattleUnit(this, actor, unit, group)); return actor;

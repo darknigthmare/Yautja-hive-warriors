@@ -59,13 +59,13 @@ Les statuts du classeur ne changent pas ; les preuves sont épinglées par leur 
 | AUD-060 | Cohérence de lieu prouvée pour 6 lieux du présent ou du passé : décors, soutiens, caisses et boss. | Revue de chaque groupe et objet |
 | CTRL-083 | Le constat est périmé : un fusilier a son propre acteur et son propre modèle. Un test le fige. | — |
 | CTRL-084 | Les escouades d'AFF-25 ont les classes de *Dark Descent*. | AFF-25 reste injouable, faute de contrôleur humain |
+| CTRL-086 | Chaque profil porte son affiliation (HW-DEC-104), et le synthétique d'Extinction est un synthétique USCM. | Aucune scène ne choisit encore d'opposer l'USCM à Weyland-Yutani |
 
 ### Encore ouverts
 
 - **AUD-063** : stress test d'un assaut et d'une évacuation en sens contraire aux goulets.
 - **AUD-103** : profils visuels simulés.
 - **AUD-025, AUD-026, AUD-123, CTRL-009 et CTRL-010** : modèles, castes et fidélité ; ils demandent des assets.
-- **CTRL-086** : séparer l'USCM et Weyland-Yutani en deux affiliations ; il faut une décision de l'auteur.
 
 ## Règle de suivi
 

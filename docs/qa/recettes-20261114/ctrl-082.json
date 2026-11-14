@@ -8,7 +8,7 @@
     0,
     1114
   ],
-  "commit": "92f4cdcc27c5fff886f9eaeef47f09381f2b0364",
+  "commit": "3af4819a999137f5fd930aa9b688c8c9db58f113",
   "date": "2026-11-14",
   "commande": "node --test tests/recette-ctrl-082.test.js",
   "niveau": "runtime mission (createOperationScene → BattleSimulation → BattleActorBridge → ColonialMarinesManager/SyntheticsManager réels, sans rendu WebGL)",
@@ -744,7 +744,7 @@
           "marines|marine|commtech"
         ],
         "Synthetic": [
-          "synthetics|weyland_combat|null"
+          "synthetics|synthetic|null"
         ],
         "Sniper": [
           "marines|marine|sniper"
@@ -844,7 +844,7 @@
         "human_force|human|marine|marines|marine": 9,
         "human_force|human|smartgunner|marines|smartgunner": 1,
         "human_force|human|flametrooper|marines|flametrooper": 1,
-        "human_force|synthetic|synthetic|synthetics|weyland_combat": 2
+        "human_force|synthetic|synthetic|synthetics|synthetic": 2
       }
     },
     {
@@ -870,7 +870,7 @@
             "marines|marine|commtech"
           ],
           "Synthetic": [
-            "synthetics|weyland_combat|null"
+            "synthetics|synthetic|null"
           ],
           "Sniper": [
             "marines|marine|sniper"
@@ -935,14 +935,14 @@
     },
     {
       "clause": "observation_type_acteur_synthetique_uscm",
-      "attendu": "Information : l’affiliation USCM est portée par la faction ; le type d’acteur du synthétique est nommé weyland_combat.",
+      "attendu": "Le synthétique d’Extinction porte l’affiliation USCM, dans son profil comme dans son acteur rendu (CTRL-086).",
       "verdict": "observation",
       "details": {
         "fichier": "js/entities/Synthetics.js:384",
         "faction": "human_force",
         "actorTypeSimulation": "synthetic",
-        "typeActeurRendu": "weyland_combat",
-        "note": "Le synthétique Colonial Marines d’Extinction est rendu par le même type que les synthétiques de combat Weyland-Yutani ; pas de remplacement par un humain, mais libellé d’affiliation ambigu."
+        "typeActeurRendu": "synthetic",
+        "note": "Depuis HW-DEC-104, le synthétique Colonial Marines d’Extinction a le type synthetic et l’affiliation uscm, distincts des synthétiques de combat Weyland-Yutani."
       }
     }
   ],
