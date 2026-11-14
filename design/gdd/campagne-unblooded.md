@@ -176,6 +176,10 @@ Première chasse contre les Xénomorphes. Tuer son premier Xénomorphe donne la 
 | Une meute de quatre | Pilier 1, « un contre cent » | Les hardes restent assez nombreuses |
 | Huit chasses sans Xénomorphes | Titre du jeu | Chasses courtes et traces annonciatrices (HW-DEC-59) |
 
-## 9. Ce qu'il faut créer
+## 9. Ce qui est codé (14 novembre 2026)
+
+La chasse de **Vara-Kesh** est jouable depuis le bouton « Campagne » du menu : l'Unblooded, la meute (Harek, Yena, Tov, sans canon d'épaule), trois zones de harde avec leur mâle dominant, puis le Faucheur de Vara-Kesh à exécuter. Saar s'exprime par les annonces à l'écran. Kaedh et *La Lame Patiente* ne sont pas encore représentés.
+
+## 10. Ce qu'il faut créer
 
 Rien de cette campagne n'existe dans le code, sauf le brûleur, le combistick, les alliés Yautja, la pyramide et les outils gagnés. Il faut créer : huit mondes en cartes à zones, huit hardes, huit meneurs, huit grandes proies, Saar comme voix, Kaedh et *La Lame Patiente* comme base entre les chasses, le décompte face à Harek.

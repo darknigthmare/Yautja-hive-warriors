@@ -56,6 +56,10 @@ C'est le plus gros chantier (HW-DEC-33). Les cartes à zones portent la campagne
 
 **Sortie** : une chasse pilote jouée et jugée, puis les sept autres sur le même modèle.
 
+**Pilote codé le 14 novembre : Vara-Kesh** (`js/systems/FaunaHunt.js`). Le bouton « Campagne » lance l'Unblooded (lames, combistick, brûleur ; canon d'épaule verrouillé) avec Harek, Yena et Tov. Trois zones de harde de coureurs de lianes, chacune menée par un mâle dominant qui charge ; abattre le meneur prend la zone ; puis le Faucheur de Vara-Kesh, à exécuter. Vérifié par essais automatiques, de la première zone à la victoire.
+
+Limites du pilote : il se joue dans l'arène actuelle de 150 m, pas sur une carte plus grande ; la faune est faite de formes simples ; le plafond d'ennemis et la mise en commun des maillages ne sont pas faits ; les chiffres sont de moi (taille des hardes, points de vie, 2 500 pour le Faucheur).
+
 ### Phase 4 — La progression
 Niveaux de chasseur, armes à attributs avec une forge unique, sept rangs Yautja, trophées à effets (HW-DEC-34). Les rangs sont propres à Hive Warriors : mêmes sept noms que La Longue Chasse, gagnés ici par les trophées de boss (HW-DEC-42).
 À surveiller : quatre systèmes de progression qui s'additionnent peuvent rendre le chasseur invincible. Leur cumul doit être plafonné et réglé ensemble, pas un par un.
