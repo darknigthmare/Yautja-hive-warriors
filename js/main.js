@@ -75,7 +75,7 @@ import { canAccessLegacyAir, canHitLegacyAirTarget } from './engine/LegacyAirstr
 import { hunterMusouProfile, musouCovers } from './data/hunterMusouProfiles.js';
 import { humanWeaponCacheCount, emptyHumanWeaponAmmo, openHumanWeaponCache } from './engine/HumanWeaponCaches.js';
 import { MouseCamera } from './engine/MouseCamera.js';
-import { ASCENSION_WORLDS, ascensionWorld, ascensionLevel, ascensionToolGates } from './data/AscensionWorlds.js';
+import { ASCENSION_WORLDS, ascensionWorld, ascensionLevel, ascensionToolGates, ritekitGates } from './data/AscensionWorlds.js';
 import { AscensionProgress } from './data/AscensionProgress.js';
 import { FaunaEncounter } from './engine/FaunaEncounter.js';
 import { AscensionShipHub, SHIP_LEVEL } from './engine/AscensionShipHub.js';
@@ -624,7 +624,7 @@ class GameApp {
       } else if (this.missionMode === 'campaign' && !this.campaign.isActive) {
         this.selectChapterLevel(this.campaign.startCampaign());
       }
-      if (this.missionMode === 'ascension') { this.missionMode = 'ascension_hub'; this.ui.selectedLevel = SHIP_LEVEL; }
+      if (['ascension', 'ascension_rite'].includes(this.missionMode)) { this.missionMode = 'ascension_hub'; this.ui.selectedLevel = SHIP_LEVEL; }
       if (this.missionMode === 'sandbox') {
         this.ui.showScreen(document.getElementById('sandbox-modal'));
         return;
@@ -1966,7 +1966,7 @@ class GameApp {
       const ascensionTarget=this.missionMode==='ascension'?ascensionWorld(this.ascensionWorldId):null;
       if(this.missionMode==='ascension'&&!ascensionTarget)throw new Error('unknown Ascension world');
       if(this.missionMode==='ascension_hub'){this.preparedBossEncounter=null;}else
-      this.preparedBossEncounter=preparedOperation?null:prepareBossEncounter({level:selectedLevel,bossType:ascensionTarget?.prey.bossId??options.bossType??selectedLevel.bossType,mode:this.missionMode==='sandbox'?'sandbox':ascensionTarget?'ascension':'level'});
+      this.preparedBossEncounter=preparedOperation?null:prepareBossEncounter({level:selectedLevel,bossType:ascensionTarget?.prey.bossId??options.bossType??selectedLevel.bossType,mode:this.missionMode==='sandbox'?'sandbox':ascensionTarget?'ascension':this.missionMode==='ascension_rite'?'rite':'level'});
     }catch{
       this.ui.showAnnouncement('Cet affrontement ne peut pas être préparé : vérifiez le terrain et le boss sélectionnés.');
       return false;
@@ -2051,7 +2051,7 @@ class GameApp {
     // Hunts carry no Alien-setting human ammunition until a finite cache is opened (HW-DEC-87).
     if(['hunt','ascension'].includes(this.missionMode)&&!options.resumeOperation)for(const player of [this.player,this.player2].filter(Boolean))emptyHumanWeaponAmmo(player);
     // The Unblooded kit (spec 002): no shoulder cannon before the rank Blooded, no cloak before Rukh Tal.
-    for(const player of [this.player,this.player2].filter(Boolean))player.kitLocks=this.missionMode==='ascension'?{shoulderCannon:!this.ascensionProgress.state.blooded,cloak:!this.ascensionProgress.hasTool('cloak'),tools:ascensionToolGates(this.ascensionProgress.state.tools)}:null;
+    for(const player of [this.player,this.player2].filter(Boolean))player.kitLocks=this.missionMode==='ascension'?{shoulderCannon:!this.ascensionProgress.state.blooded,cloak:!this.ascensionProgress.hasTool('cloak'),tools:ascensionToolGates(this.ascensionProgress.state.tools)}:this.missionMode==='ascension_rite'?{shoulderCannon:true,cloak:!this.ascensionProgress.hasTool('cloak'),tools:ritekitGates(this.ascensionProgress.state.tools)}:null;
     if(options.resumeOperation?.playerStates)for(const[index,player]of[this.player,this.player2].entries())if(player&&options.resumeOperation.playerStates[index])restoreOperationPlayer(player,options.resumeOperation.playerStates[index],this.env);
     if(options.resumeOperation?.preyInteractions&&this.env.restorePreyInteractions?.(options.resumeOperation.preyInteractions)!==true)throw new Error('Incompatible PREY interaction checkpoint');
 
@@ -2197,7 +2197,8 @@ class GameApp {
     // The opening fight belongs to the player. Supporting factions join later
     // sectors instead of killing the first six enemies during insertion.
     // Ascension: the pack (three allies) hunts with the Unblooded; no human support or cache on these worlds.
-    const supports = this.missionMode === 'ascension' ? { allies: 3, marines: 0, synthetics: 0, gasPipes: 0, apc: false, nationalGuard: 0 } : sectorSupportPlan(this.ui.selectedLevel.id, sector.index);
+    const supports = this.missionMode === 'ascension' ? { allies: 3, marines: 0, synthetics: 0, gasPipes: 0, apc: false, nationalGuard: 0 }
+      : this.missionMode === 'ascension_rite' ? { allies: 2, marines: 0, synthetics: 0, gasPipes: 0, apc: false, nationalGuard: 0 } : sectorSupportPlan(this.ui.selectedLevel.id, sector.index);
     this.allies.spawnSquad(supportPosition, supports.allies);
     if (supports.marines === 0) this.marines.clearSquad();
     else this.marines.spawnSquad(supportPosition, supports.marines);
@@ -2225,6 +2226,13 @@ class GameApp {
 
   /** From the drop bay of La Lame Patiente to a hunt on the chosen open world. */
   launchAscensionHunt(worldId) {
+    if (worldId === 'rite') {
+      if (!this.ascensionProgress.riteOpen() || this.ascensionProgress.state.blooded) return false;
+      this.missionMode = 'ascension_rite'; this.ascensionWorldId = 'rite'; this.riteFirstBlood = false;
+      this.ui.selectedLevel = LEVELS_DATA.find(level => level.id === 'antarctic_pyramid');
+      this.isPlaying = false; this.clearMissionState();
+      return this.startMission({ bossType: 'praetorian' });
+    }
     if (!this.ascensionProgress.unlockedWorlds().some(world => world.id === worldId)) return false;
     this.ascensionWorldId = worldId; this.missionMode = 'ascension'; this.ui.selectedLevel = ascensionLevel(worldId, LEVELS_DATA);
     this.isPlaying = false; this.clearMissionState();
@@ -3377,6 +3385,7 @@ class GameApp {
         const event = h.event ?? h.combatDeathEvent;
         if (event?.id && this._registeredDeathHits.has(event.id)) return;
         if (event?.id) this._registeredDeathHits.add(event.id);
+        if (this.missionMode === 'ascension_rite' && !this.riteFirstBlood) { this.riteFirstBlood = true; this.ui.showAnnouncement('PREMIER SANG — LA MARQUE T’ATTEND AU BOUT DE LA PYRAMIDE.'); }
       } else {
         this.comboHits++;
         this.comboTimer = 2.5;
@@ -5365,6 +5374,8 @@ class GameApp {
 
   endGame(isVictory) {
     if (!this.isPlaying) return;
+    if (this.missionMode === 'ascension_rite' && isVictory && this.ascensionProgress.completeRite())
+      this.ui.showAnnouncement(`LA MARQUE EST À TOI. ${this.ascensionProgress.triad().join(' et ')} et toi êtes Blooded : le canon d'épaule est désormais le tien.`);
     if (this.missionMode === 'ascension' && isVictory) {
       const world = ascensionWorld(this.ascensionWorldId), reward = this.ascensionProgress.complete(this.ascensionWorldId);
       if (world) this.ui.showAnnouncement(`${world.victory}${reward ? ` OUTIL GAGNÉ : ${reward.label.toUpperCase()}.` : ''}`);
@@ -5387,7 +5398,7 @@ class GameApp {
       ? "La ruche a été anéantie. Votre clan honore cette victoire."
       : "Votre Yautja est tombé au combat. Préparez une nouvelle chasse.";
     if (operationResult) subtitle = debrief?.reason ?? (isVictory ? 'Les objectifs ont été accomplis.' : 'Les chasseurs ont été vaincus.');
-    let replayLabel = this.missionMode === 'ascension' ? 'RETOUR À LA LAME PATIENTE' : 'REJOUER LA MISSION';
+    let replayLabel = ['ascension', 'ascension_rite'].includes(this.missionMode) ? 'RETOUR À LA LAME PATIENTE' : 'REJOUER LA MISSION';
     if (isVictory && this.missionMode === 'campaign') {
       const progress = this.campaign.completeChapter();
       if (progress.nextChapter) {

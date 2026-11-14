@@ -18,8 +18,7 @@ export class AscensionShipHub {
   constructor(scene, progress, { onLaunch = () => {}, onLine = () => {} } = {}) {
     this.scene = scene; this.progress = progress; this.onLaunch = onLaunch; this.onLine = onLine;
     this.group = new THREE.Group(); this.group.name = 'lame-patiente'; this.places = []; this.lastPrompt = null;
-    const open = progress.unlockedWorlds();
-    this.targetWorldId = open.at(-1)?.id ?? ASCENSION_WORLDS[0].id;
+    this.targetWorldId = this.targets().at(-1);
   }
 
   _place(id, position, prompt, action, mesh) {
@@ -32,10 +31,10 @@ export class AscensionShipHub {
     const metal = new THREE.MeshStandardMaterial({ color: 0x4a4440, metalness: .6, roughness: .45 });
     // Drop bay: the hunt starts here.
     const bay = new THREE.Mesh(new THREE.CylinderGeometry(3, 3, .2, 24), glow);
-    this._place('bay', new THREE.Vector3(0, .1, -12), () => `SOUTE DE LARGAGE — [E] LARGUER LA MEUTE SUR ${this.world().title}`, () => this.onLaunch(this.targetWorldId), bay);
+    this._place('bay', new THREE.Vector3(0, .1, -12), () => this.targetWorldId === 'rite' ? `SOUTE DE LARGAGE — [E] LE RITE DANS LA PYRAMIDE, AVEC ${this.progress.triad().join(' ET ').toUpperCase()}` : `SOUTE DE LARGAGE — [E] LARGUER LA MEUTE SUR ${this.world().title}`, () => this.onLaunch(this.targetWorldId), bay);
     // World map: chooses among the open worlds.
     const map = new THREE.Mesh(new THREE.BoxGeometry(3, 1.6, .3), metal);
-    this._place('map', new THREE.Vector3(6, 1.2, -9), () => `CARTE DES MONDES — CIBLE : ${this.world().title} · [E] MONDE SUIVANT`, () => this.cycleWorld(), map);
+    this._place('map', new THREE.Vector3(6, 1.2, -9), () => `CARTE DES MONDES — CIBLE : ${this.targetWorldId === 'rite' ? 'LE RITE' : this.world().title} · [E] SUIVANT`, () => this.cycleWorld(), map);
     // Rack: one object per earned tool.
     const rack = new THREE.Group(); rack.add(new THREE.Mesh(new THREE.BoxGeometry(5, .2, 1), metal));
     this.progress.state.tools.forEach((tool, index) => { const item = new THREE.Mesh(new THREE.BoxGeometry(.5, .9, .3), bone); item.position.set(-2 + index * .6, .6, 0); item.name = `rack-${tool}`; rack.add(item); });
@@ -48,7 +47,9 @@ export class AscensionShipHub {
     this._place('skulls', new THREE.Vector3(12, .5, 0), () => `MUR DES CRÂNES — ${this.progress.state.completed.length} GRANDE(S) PROIE(S)`, () => this.onLine(this.progress.state.completed.length ? 'KAEDH : « Je vois. »' : 'KAEDH : « Pas encore. »'), wall);
     // Bridge: closed to Unblooded; Kaedh stands there, back turned.
     const door = new THREE.Mesh(new THREE.BoxGeometry(4, 4, .4), metal);
-    this._place('bridge', new THREE.Vector3(0, 2, 14), () => 'PASSERELLE — INTERDITE AUX UNBLOODED', () => this.onLine('KAEDH : « Pas encore. »'), door);
+    // The bridge opens once the eight worlds are hunted: there the hunter chooses the two companions of the rite.
+    this._place('bridge', new THREE.Vector3(0, 2, 14), () => this.progress.riteOpen() && !this.progress.state.blooded ? `PASSERELLE — TRIADE : ${this.progress.triad().join(' ET ').toUpperCase()} · [E] CHANGER` : 'PASSERELLE — INTERDITE AUX UNBLOODED',
+      () => { if (this.progress.riteOpen() && !this.progress.state.blooded) { const pair = this.progress.cycleTriad(); this.onLine(`KAEDH : « Il est à toi. » Triade : ${pair.join(' et ')}.`); } else this.onLine(this.progress.state.blooded ? 'KAEDH : « Je vois. »' : 'KAEDH : « Pas encore. »'); }, door);
     const kaedh = createHonorGuardModel(0); kaedh.position.set(0, 0, 12.2); kaedh.rotation.y = 0; kaedh.name = 'kaedh'; this.group.add(kaedh);
     const saar = createHonorGuardModel(1); saar.position.set(-7, 0, -3); saar.rotation.y = Math.PI / 2; saar.name = 'saar'; this.group.add(saar);
     this.scene.add(this.group);
@@ -56,12 +57,15 @@ export class AscensionShipHub {
     return this;
   }
 
-  world() { return ASCENSION_WORLDS.find(world => world.id === this.targetWorldId); }
+  world() { return ASCENSION_WORLDS.find(world => world.id === this.targetWorldId) ?? ASCENSION_WORLDS[0]; }
+
+  /** Open worlds, then the rite once all eight are hunted and the hunter is not yet Blooded. */
+  targets() { return [...this.progress.unlockedWorlds().map(world => world.id), ...(this.progress.riteOpen() && !this.progress.state.blooded ? ['rite'] : [])]; }
 
   cycleWorld() {
-    const open = this.progress.unlockedWorlds(), index = open.findIndex(world => world.id === this.targetWorldId);
-    this.targetWorldId = open[(index + 1) % open.length].id;
-    this.onLine(`CIBLE : ${this.world().title} — ${this.world().prey.name}`);
+    const targets = this.targets(), index = targets.indexOf(this.targetWorldId);
+    this.targetWorldId = targets[(index + 1) % targets.length];
+    this.onLine(this.targetWorldId === 'rite' ? 'CIBLE : LE RITE — LA PYRAMIDE' : `CIBLE : ${this.world().title} — ${this.world().prey.name}`);
   }
 
   nearest(position, radius = 3.6) {

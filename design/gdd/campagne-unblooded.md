@@ -228,7 +228,13 @@ Le kit de l'Unblooded verrouille l'arsenal outil par outil : au départ les lame
 
 **Vérifié** : le parcours menu, vaisseau, carte, soute, chasse sur Eshra, victoire, retour à bord, avec le crâne d'Eshra accroché, a été joué dans Chromium sans erreur de page.
 
-**Provisoire** : les relais du secteur 3 gardent leur texte d'origine. Les meutes sont des alliés Yautja génériques, sans les noms de Harek, Yena et Tov. Le vaisseau réutilise l'intérieur de station : on voit encore des tours par les baies.
+**Étape 4, livrée : le rite** (HW-DEC-110, HW-DEC-111). Quand les huit mondes sont chassés, la passerelle s'ouvre : on y choisit sa triade (Harek et Yena, Harek et Tov, ou Yena et Tov), et la carte propose « Le rite ».
+
+Le rite se joue dans les six secteurs de la pyramide, contre des xénomorphes, avec deux alliés. Ni brûleur, ni mines, ni canon d'épaule. Le premier xénomorphe tué de sa main est annoncé comme le premier sang. Abattre le Prétorien gardien donne la marque et le rang Blooded, une seule fois ; le canon d'épaule s'ouvre ensuite.
+
+**Vérifié** : le rite a été joué dans Chromium, de la passerelle au retour à bord en Blooded, sans erreur de page.
+
+**Provisoire** : les relais du secteur 3 gardent leur texte d'origine. Les alliés n'ont pas encore les noms ni les modèles de Harek, Yena et Tov. Le vaisseau réutilise l'intérieur de station : on voit encore des tours par les baies. Les chroniques légendaires ne sont pas verrouillées avant le rang Blooded.
 
 **Étapes suivantes** : les variantes de terrain et les comportements propres, la scène 3D de *La Lame Patiente*, le rite et le rang Blooded, puis l'envoi au compte Supabase.
 

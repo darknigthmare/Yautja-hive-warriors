@@ -25,3 +25,25 @@ test('the ship shows earned tools and prey, cycles open worlds and launches from
   } finally { hub.dispose(); }
   assert.equal(scene.children.length, 0, 'the ship leaves no object behind');
 });
+
+test('the rite opens after the eight worlds, its triad is chosen on the bridge, and Blooded is given once', async () => {
+  const { ASCENSION_WORLDS, ritekitGates } = await import('../js/data/AscensionWorlds.js');
+  const { prepareBossEncounter } = await import('../js/data/BossEncounterValidation.js');
+  const { LEVELS_DATA } = await import('../js/data/levelsData.js');
+  const progress = new AscensionProgress(memory());
+  assert.equal(progress.riteOpen(), false); assert.equal(progress.completeRite(), false);
+  for (const world of ASCENSION_WORLDS) progress.complete(world.id);
+  const lines = [], hub = new AscensionShipHub(new THREE.Scene(), progress, { onLine: line => lines.push(line) }).build();
+  try {
+    assert.ok(hub.targets().includes('rite'));
+    hub.interact({ position: new THREE.Vector3(0, 0, 14) });
+    assert.deepEqual(progress.triad(), ['Harek', 'Tov']); assert.match(lines.at(-1), /Il est à toi/);
+  } finally { hub.dispose(); }
+  const gates = ritekitGates(progress.state.tools);
+  assert.equal(gates.has('burner_rifle'), false); assert.equal(gates.has('mines'), false); assert.equal(gates.has('combistick'), true);
+  const pyramid = LEVELS_DATA.find(level => level.id === 'antarctic_pyramid');
+  assert.equal(prepareBossEncounter({ level: pyramid, bossType: 'praetorian', mode: 'rite' }).bossType, 'praetorian');
+  assert.throws(() => prepareBossEncounter({ level: pyramid, bossType: 'xenomorph_queen', mode: 'rite' }));
+  assert.equal(progress.completeRite(), true); assert.equal(progress.completeRite(), false, 'once');
+  assert.equal(progress.state.blooded, true);
+});

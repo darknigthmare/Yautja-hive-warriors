@@ -410,3 +410,6 @@ export const ASCENSION_START_KIT = Object.freeze(['combistick', 'burner_rifle'])
 const REWARD_GATES = Object.freeze({ netgun: ['netgun'], bear_trap: ['bear_trap'], voice_lure: ['voice_lure'], tripwire_mine: ['mines'],
   smart_disc: ['smart_disc'], flechettes: ['speargun'], shuriken: ['shuriken'], cloak: [] });
 export const ascensionToolGates = earned => new Set([...ASCENSION_START_KIT, ...earned.flatMap(tool => REWARD_GATES[tool] ?? [])]);
+
+// The rite allows no energy weapon (campagne-unblooded.md §6): no burner, no mines, no shoulder cannon.
+export const ritekitGates = earned => { const gates = ascensionToolGates(earned); gates.delete('burner_rifle'); gates.delete('mines'); return gates; };

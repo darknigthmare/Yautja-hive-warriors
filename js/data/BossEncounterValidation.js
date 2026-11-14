@@ -2,7 +2,7 @@
  * and statistics remain game adaptations; this certifies identities/contracts. */
 import { getBossDefinition, bossAllowedInLevel } from './BossRegistry.js';
 
-const MODES = new Set(['level', 'sandbox', 'operation', 'crossover', 'ascension']);
+const MODES = new Set(['level', 'sandbox', 'operation', 'crossover', 'ascension', 'rite']);
 const key = value => typeof value === 'string' && /^[A-Za-z0-9_.:-]{1,160}$/.test(value);
 const failure = message => { throw new TypeError(`Boss encounter configuration: ${message}`); };
 
@@ -12,6 +12,8 @@ export function prepareBossEncounter({ level, bossType = level?.bossType, mode =
   const definition = getBossDefinition(bossType);
   // Ascension great prey are bosses of that mode only, and only they enter it (spec 002).
   if ((mode === 'ascension') !== (definition.ascension === true)) failure('great prey and the Ascension mode go together');
+  // The rite of passage (HW-DEC-110): a Praetorian guards the last chamber of the pyramid.
+  if (mode === 'rite' && (definition.id !== 'praetorian' || level.id !== 'antarctic_pyramid')) failure('the rite is a Praetorian in the pyramid');
   if (mode === 'level') {
     const announced = getBossDefinition(level.bossType);
     if (definition.id !== announced.id) failure('requested boss differs from the announced level boss');

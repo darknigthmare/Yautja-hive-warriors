@@ -159,6 +159,8 @@ TABLES["01_Decisions"] = (
         ["HW-DEC-107", "Décors des huit mondes", "Variantes procédurales de terrain", "Bâties sur le système de variantes existant ; ébauches, pas des modèles finis"],
         ["HW-DEC-108", "La Lame Patiente", "Petite scène 3D", "Soute de largage, râtelier, mur des crânes, passerelle interdite ; Saar et Kaedh présents"],
         ["HW-DEC-109", "Progression de l'Ascension", "Navigateur, puis compte Supabase", "Système de sauvegarde v70 d'abord ; envoi au compte avec les autres sauvegardes"],
+        ["HW-DEC-110", "Le rite de passage", "Les six secteurs de la pyramide, contre des xénomorphes", "Sans Reine ; la marque vient en abattant le Prétorien gardien du dernier secteur ; le premier xénomorphe tué par le joueur est annoncé comme son premier sang ; aucune arme à énergie"],
+        ["HW-DEC-111", "La triade du rite", "Au choix du joueur, sur la passerelle", "Deux compagnons parmi Harek, Yena et Tov ; la passerelle s'ouvre quand les huit mondes sont chassés"],
         ["HW-DEC-12", "Alliés Yautja, armes humaines, véhicules et soutiens, coopération locale", "Tous conservés", "Le champ de bataille est une guerre ; ces systèmes sont à réparer, pas à couper"],
     ],
 )
