@@ -78,6 +78,7 @@ import { MouseCamera } from './engine/MouseCamera.js';
 import { ASCENSION_WORLDS, ascensionWorld, ascensionLevel, ascensionToolGates } from './data/AscensionWorlds.js';
 import { AscensionProgress } from './data/AscensionProgress.js';
 import { FaunaEncounter } from './engine/FaunaEncounter.js';
+import { AscensionShipHub, SHIP_LEVEL } from './engine/AscensionShipHub.js';
 
 class GameApp {
   constructor() {
@@ -576,7 +577,8 @@ class GameApp {
       if(this.missionMode==='fronts'){const scene=createOperationScene({operationId:this.operationId,level:this.ui.selectedLevel,players:this.isCoOp?2:1,mapSeed:this.operationMapSeed,difficultyId:this.operationDifficulty,
         extinctionVariant:this.extinctionVariant});scene.characterBriefing=this.battleCampaign.getCharacterBriefing(scene.config,{arcId:document.getElementById('campaign-arc-enabled').checked&&/^AFF-0[1-5]$/.test(this.operationId)?CLAN_CAMPAIGN_ARC_ID:null,characterId:this.ui.selectedChar.id});this.operationBriefing.render(scene);}else this.operationBriefing.render(null);
       if (this.missionMode === 'fronts' && BATTLE_OPERATIONS.some(operation=>operation.id===this.operationId)) this.ui.selectedLevel = LEVELS_DATA.find(level => level.id === getBattleOperationScene(this.operationId).levelId);
-      if (this.missionMode === 'ascension') { this.ascensionWorldId = document.getElementById('ascension-world-select').value; this.ui.selectedLevel = ascensionLevel(this.ascensionWorldId, LEVELS_DATA); }
+      // Ascension starts aboard La Lame Patiente (HW-DEC-108); the chosen world is the first target.
+      if (this.missionMode === 'ascension') { this.ascensionWorldId = document.getElementById('ascension-world-select').value; this.missionMode = 'ascension_hub'; this.ui.selectedLevel = SHIP_LEVEL; }
       this.ui.showScreen(document.getElementById('loadout-prep-screen'));
     });
 
@@ -622,6 +624,7 @@ class GameApp {
       } else if (this.missionMode === 'campaign' && !this.campaign.isActive) {
         this.selectChapterLevel(this.campaign.startCampaign());
       }
+      if (this.missionMode === 'ascension') { this.missionMode = 'ascension_hub'; this.ui.selectedLevel = SHIP_LEVEL; }
       if (this.missionMode === 'sandbox') {
         this.ui.showScreen(document.getElementById('sandbox-modal'));
         return;
@@ -1354,7 +1357,7 @@ class GameApp {
     disposeBattleOperation(this);
     this._nukeSequence++;
     this.battlefield?.dispose();
-    this.battlefield = null; this.faunaEncounter = null;
+    this.battlefield = null; this.faunaEncounter = null; this.shipHub?.dispose(); this.shipHub = null;
     this.battlefieldProgression = null;
     this.combatDirector.reset({ graceSeconds: 8 });
     this.ui.updateBattlefieldHUD?.(null);
@@ -1490,6 +1493,8 @@ class GameApp {
       if (player.struggleQTE()) {
         this.ui.showAnnouncement('💥 FACEHUGGER ARRACHÉ AVEC SUCCÈS !');
       }
+    } else if (this.shipHub?.interact(player)) {
+      // A place aboard La Lame Patiente.
     } else if (this.tryOpenHumanWeaponCache?.(player)) {
       // A finite hunt cache, opened once.
     } else if (this.allyRescue?.interact(player).accepted) {
@@ -1939,6 +1944,7 @@ class GameApp {
   }
 
   startMission(options = {}) {
+    { const killLabel = document.querySelector('.ko-label'); if (killLabel) killLabel.textContent = this.missionMode?.startsWith('ascension') ? 'PROIES ABATTUES' : 'XENOMORPHES ÉLIMINÉS'; }
     const selectedLevel=this.ui.selectedLevel??LEVELS_DATA[0];
     const sceneOptions=operationSceneOptions(options.resumeOperation,{mapSeed:this.operationMapSeed,difficultyId:this.operationDifficulty});
     this.operationMapSeed=this.missionMode==='fronts'?sceneOptions.mapSeed:0;
@@ -1959,6 +1965,7 @@ class GameApp {
           extinctionVariant:this.extinctionVariant}):null;
       const ascensionTarget=this.missionMode==='ascension'?ascensionWorld(this.ascensionWorldId):null;
       if(this.missionMode==='ascension'&&!ascensionTarget)throw new Error('unknown Ascension world');
+      if(this.missionMode==='ascension_hub'){this.preparedBossEncounter=null;}else
       this.preparedBossEncounter=preparedOperation?null:prepareBossEncounter({level:selectedLevel,bossType:ascensionTarget?.prey.bossId??options.bossType??selectedLevel.bossType,mode:this.missionMode==='sandbox'?'sandbox':ascensionTarget?'ascension':'level'});
     }catch{
       this.ui.showAnnouncement('Cet affrontement ne peut pas être préparé : vérifiez le terrain et le boss sélectionnés.');
@@ -1993,7 +2000,7 @@ class GameApp {
     const variant = this.missionMode === 'fronts' && BATTLE_OPERATIONS.some(operation=>operation.id===this.operationId) ? getBattlefieldMapVariant(BATTLE_OPERATIONS.find(operation=>operation.id===this.operationId).mapId) : null;
     if (variant) this.ui.selectedLevel = LEVELS_DATA.find(level=>level.id===variant.baseLevelId);
     if(preparedOperation)this.ui.selectedLevel=preparedOperation.level;
-    this.env.buildLevelEnvironment({ ...this.ui.selectedLevel, mapId: variant?.id ?? (this.missionMode === 'ascension' ? this.ui.selectedLevel.mapId : undefined), mapSeed:this.operationMapSeed, battlefield: !['sandbox','survival'].includes(this.missionMode), strategicMode: this.missionMode === 'fronts' });
+    this.env.buildLevelEnvironment({ ...this.ui.selectedLevel, mapId: variant?.id ?? (this.missionMode === 'ascension' ? this.ui.selectedLevel.mapId : undefined), mapSeed:this.operationMapSeed, battlefield: !['sandbox','survival','ascension_hub'].includes(this.missionMode), strategicMode: this.missionMode === 'fronts' });
     this.initializeMissionSupports(options.resumeOperation);
     this.renderer.updateLevelEnvironment(this.ui.selectedLevel);
     this.weather.setWeather(this.ui.selectedLevel.weather ?? this.ui.selectedLevel.theme);
@@ -2050,7 +2057,8 @@ class GameApp {
 
     // Both players arrive inside their own closed capsule. Combat starts after
     // the complete opening and exit sequence, so insertion never spends grace.
-    this.dropPod.triggerDrop(this.player.position, () => {
+    if (this.missionMode === 'ascension_hub') { this.keys = {}; this.combatDirector.reset({ graceSeconds: 0 }); this.updateInsertionStatus(); }
+    else this.dropPod.triggerDrop(this.player.position, () => {
       this.keys = {};
       for (const player of [this.player, this.player2].filter(Boolean)) player.locomotion?.reset();
       this.combatDirector.reset({ graceSeconds: 7 });
@@ -2061,12 +2069,12 @@ class GameApp {
     }, { players: [this.player, this.player2].filter(Boolean) });
 
     // The Unblooded has no skimmer (spec 002); other modes keep it.
-    if (this.missionMode !== 'ascension') this.skimmer.spawnAt(this.player.position.clone().add(new THREE.Vector3(-9, 0, 8)));
+    if (!this.missionMode?.startsWith('ascension')) this.skimmer.spawnAt(this.player.position.clone().add(new THREE.Vector3(-9, 0, 8)));
     if (this.missionMode === 'fronts' && this.env.battlefieldLayout) {
       this.startBattleOperation(options.resumeOperation);
     } else if (!['sandbox', 'survival'].includes(this.missionMode) && this.env.battlefieldLayout) {
       const world = this.missionMode === 'ascension' ? ascensionWorld(this.ascensionWorldId) : null;
-      const killLabel = document.querySelector('.ko-label'); if (killLabel) killLabel.textContent = world ? 'PROIES ABATTUES' : 'XENOMORPHES ÉLIMINÉS';
+      
       this.faunaEncounter = world ? new FaunaEncounter(this.horde, world, { onLine: line => this.ui.showAnnouncement(line) }) : null;
       this.battlefield = new BattlefieldMission({ environment: this.env, horde: this.horde,
         bosses: this.bosses, level: this.ui.selectedLevel,preparedEncounter:this.preparedBossEncounter, encounter: this.faunaEncounter,
@@ -2075,6 +2083,10 @@ class GameApp {
       this.battlefieldProgression = this.battlefield.progression;
       this.totalWaves = this.env.battlefieldLayout.sectors.length;
       this.battlefield.update([this.player, this.player2].filter(Boolean));
+    } else if (this.missionMode === 'ascension_hub') {
+      this.shipHub = new AscensionShipHub(this.renderer.scene, this.ascensionProgress, { onLine: line => this.ui.showAnnouncement(line), onLaunch: worldId => this.launchAscensionHunt(worldId) });
+      if (this.ascensionWorldId && this.ascensionProgress.unlockedWorlds().some(world => world.id === this.ascensionWorldId)) this.shipHub.targetWorldId = this.ascensionWorldId;
+      this.shipHub.build();
     } else {
       const supportPosition = this.player.position.clone().add(new THREE.Vector3(0, 0, 12));
       this.allies.spawnSquad(supportPosition, 3);
@@ -2095,7 +2107,7 @@ class GameApp {
     this.audio.startBackgroundMusic();
     this.ui.showScreen(this.ui.inGameHud);
     this.ui.showCombo(0);
-    this.ui.updateHUD(this.player, this.horde, this.bosses, this.waveIndex, this.totalWaves, this.score,{secondaryPlayer:this.player2,supports:this.missionMode==='ascension'?null:{apc:this.apc.getSupportState(),cheyenne:this.dropship.getSupportState()}});
+    this.ui.updateHUD(this.player, this.horde, this.bosses, this.waveIndex, this.totalWaves, this.score,{secondaryPlayer:this.player2,waveLabel:this.shipHub?'À BORD — ENTRE DEUX CHASSES':undefined,supports:this.missionMode?.startsWith('ascension')?null:{apc:this.apc.getSupportState(),cheyenne:this.dropship.getSupportState()}});
     this.ui.updateBattlefieldHUD(this.battlefieldProgression, this.env.battlefieldLayout, this.player, this.combatDirector, [this.player, this.player2].filter(Boolean));
     document.getElementById('hud-weapon-label').innerText = 'ARME: PRINCIPALE';
     const visionTag = document.getElementById('hud-vision-tag');
@@ -2206,9 +2218,17 @@ class GameApp {
     for (const actor of [...this.allies.allies, ...this.marines.marines, ...this.synthetics.androids]) this.env.resolveMovement(actor.mesh.position, 1);
     // Keep the skimmer available as the battlefield advances without moving a
     // mounted vehicle out from under either player's controls.
-    if (!this.skimmer.isMounted && this.missionMode !== 'ascension') this.skimmer.spawnAt(center.clone().add(new THREE.Vector3(sector.index === 0 ? -9 : 5, 0, sector.index === 0 ? 8 : 5)));
+    if (!this.skimmer.isMounted && !this.missionMode?.startsWith('ascension')) this.skimmer.spawnAt(center.clone().add(new THREE.Vector3(sector.index === 0 ? -9 : 5, 0, sector.index === 0 ? 8 : 5)));
     if (this.missionMode === 'hunt' && !this.battleSimulation) this.spawnHumanWeaponCaches?.(sector, center);
     if (sector.objective.type === 'boss') this.bossSpawned = true;
+  }
+
+  /** From the drop bay of La Lame Patiente to a hunt on the chosen open world. */
+  launchAscensionHunt(worldId) {
+    if (!this.ascensionProgress.unlockedWorlds().some(world => world.id === worldId)) return false;
+    this.ascensionWorldId = worldId; this.missionMode = 'ascension'; this.ui.selectedLevel = ascensionLevel(worldId, LEVELS_DATA);
+    this.isPlaying = false; this.clearMissionState();
+    return this.startMission();
   }
 
   spawnHumanWeaponCaches(sector, center) {
@@ -3483,7 +3503,7 @@ class GameApp {
       this.updateInsertionPresentation(delta);
       this.env.updateBattlefieldVisibility?.([this.player, this.player2].filter(Boolean));
       this.particles.update(delta, this.renderer.camera);
-      this.ui.updateHUD(this.player, this.horde, this.bosses, this.waveIndex, this.totalWaves, this.score,{secondaryPlayer:this.player2,supports:this.missionMode==='ascension'?null:{apc:this.apc.getSupportState(),cheyenne:this.dropship.getSupportState()}});
+      this.ui.updateHUD(this.player, this.horde, this.bosses, this.waveIndex, this.totalWaves, this.score,{secondaryPlayer:this.player2,waveLabel:this.shipHub?'À BORD — ENTRE DEUX CHASSES':undefined,supports:this.missionMode?.startsWith('ascension')?null:{apc:this.apc.getSupportState(),cheyenne:this.dropship.getSupportState()}});
       this.ui.updateBattlefieldHUD(this.battlefieldProgression, this.env.battlefieldLayout, this.player, this.combatDirector, [this.player, this.player2].filter(Boolean));
       return;
     }
@@ -4182,6 +4202,7 @@ class GameApp {
     this.allies.updateVisuals(delta);
     this.battlefield?.update([this.player, this.player2].filter(Boolean));
     this.faunaEncounter?.update();
+    this.shipHub?.update(this.player);
     this.env.updateBattlefieldObjectives?.(this.battlefieldProgression, delta);
     this.gore.update(delta);
     this.particles.update(delta, this.renderer.camera);
@@ -5021,7 +5042,7 @@ class GameApp {
       this.endGame(true);
       return;
     }
-    if (!this.battlefield && !this.battleSimulation && this.horde.remainingCount === 0 && !this.bosses.activeBoss) {
+    if (!this.battlefield && !this.battleSimulation && !this.shipHub && this.horde.remainingCount === 0 && !this.bosses.activeBoss) {
       if (this.bossSpawned) {
         this.endGame(true);
         return;
@@ -5124,7 +5145,7 @@ class GameApp {
       marines: this.marines,
       allies: this.allies,
       synthetics: this.synthetics, sessionDefeats: this._sessionDefeats,
-      supports:this.missionMode==='ascension'?null:{apc:this.apc.getSupportState(),cheyenne:this.dropship.getSupportState()}
+      waveLabel:this.shipHub?'À BORD — ENTRE DEUX CHASSES':undefined,supports:this.missionMode?.startsWith('ascension')?null:{apc:this.apc.getSupportState(),cheyenne:this.dropship.getSupportState()}
     });
     this.ui.updateBattlefieldHUD(this.battlefieldProgression, this.env.battlefieldLayout, this.player, this.combatDirector, [this.player, this.player2].filter(Boolean));
 
@@ -5366,7 +5387,7 @@ class GameApp {
       ? "La ruche a été anéantie. Votre clan honore cette victoire."
       : "Votre Yautja est tombé au combat. Préparez une nouvelle chasse.";
     if (operationResult) subtitle = debrief?.reason ?? (isVictory ? 'Les objectifs ont été accomplis.' : 'Les chasseurs ont été vaincus.');
-    let replayLabel = 'REJOUER LA MISSION';
+    let replayLabel = this.missionMode === 'ascension' ? 'RETOUR À LA LAME PATIENTE' : 'REJOUER LA MISSION';
     if (isVictory && this.missionMode === 'campaign') {
       const progress = this.campaign.completeChapter();
       if (progress.nextChapter) {

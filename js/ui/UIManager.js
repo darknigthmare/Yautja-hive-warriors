@@ -359,7 +359,7 @@ export class UIManager {
     this.hudLevelName.innerText = this.selectedLevel.name;
     this.hudWaveCounter.innerText = this._operationHUD
       ? `${this._operationHUD.state.fronts.length} FRONTS · RÉSERVES FINIES`
-      : `VAGUE ${waveIndex}/${totalWaves}`;
+      : factions.waveLabel ?? `VAGUE ${waveIndex}/${totalWaves}`;
 
     // Chantier 1: Grand Musou Boss Health Gauge
     const bossContainer = document.getElementById('hud-boss-container');

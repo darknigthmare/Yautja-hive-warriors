@@ -215,7 +215,20 @@ En Ascension, le HUD nomme les bêtes et compte les « proies abattues ». Les a
 
 **Vérifié** : les huit mondes se chargent dans Chromium avec leur météo, leur faune seule et leur grande proie, sans erreur de page ; captures de Nereth et de Kharuun relues.
 
-**Provisoire** : les relais du secteur 3 gardent leur texte d'origine, et les meutes sont des alliés Yautja génériques, sans les noms de Harek, Yena et Tov.
+**Étape 3, livrée : *La Lame Patiente*** (HW-DEC-108). Le mode Ascension commence à bord, dans une petite scène 3D où l'on marche. Cinq lieux répondent à [E] :
+- **la soute de largage** lance la chasse sur le monde ciblé ;
+- **la carte des mondes** fait défiler les mondes ouverts ;
+- **le râtelier** montre un objet par outil gagné ;
+- **le mur des crânes** montre une tête par grande proie abattue ;
+- **la passerelle** reste fermée : « Pas encore. », dit Kaedh, de dos.
+
+Saar et Kaedh sont présents (modèle de garde d'honneur, en attendant les leurs). Après une chasse gagnée, « Retour à La Lame Patiente » ramène à bord.
+
+Le kit de l'Unblooded verrouille l'arsenal outil par outil : au départ les lames, le combistick, le brûleur et le medicomp, puis un outil par monde.
+
+**Vérifié** : le parcours menu, vaisseau, carte, soute, chasse sur Eshra, victoire, retour à bord, avec le crâne d'Eshra accroché, a été joué dans Chromium sans erreur de page.
+
+**Provisoire** : les relais du secteur 3 gardent leur texte d'origine. Les meutes sont des alliés Yautja génériques, sans les noms de Harek, Yena et Tov. Le vaisseau réutilise l'intérieur de station : on voit encore des tours par les baies.
 
 **Étapes suivantes** : les variantes de terrain et les comportements propres, la scène 3D de *La Lame Patiente*, le rite et le rang Blooded, puis l'envoi au compte Supabase.
 
