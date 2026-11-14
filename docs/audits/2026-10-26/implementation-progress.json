@@ -1261,8 +1261,15 @@
       "item": "Filtrer les installations par cohérence de lieu",
       "acceptance": "La jungle 1987 ne reçoit pas automatiquement un laboratoire spatial ou une matriarche; les exceptions sont des missions alternatives identifiées.",
       "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Le filtrage des mécanismes par contexte empêche les installations futuristes automatiques dePrey ; revue de tous décors/groupes/objets par contexte encore nécessaire."
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "tests/location-coherence.test.js",
+          "sha256": "7fe06c7303eb41ff9f55c5b3c602f7880b8bf208b1a097ae3f0d516490ddc7d1",
+          "scope": "Six lieux du présent ou du passé (Val Verde, Prey, Los Angeles, Gunnison, Stargazer, réserve de chasse) : aucun décor de l’univers Alien futur parmi leurs constructeurs, aucun Marine, synthétique, APC ni caisse d’armes humaines dans leurs six secteurs ; aucun boss xénomorphe à Val Verde ni dans les plaines de 1719 hors crossover, qui reste l’exception nommée."
+        }
+      ],
+      "notes": "Le filtrage des mécanismes par contexte empêche les installations futuristes automatiques dePrey ; revue de tous décors/groupes/objets par contexte encore nécessaire. Reprise du 14/11/2026 : constructeurs, soutiens, caisses et boss vérifiés par lieu ; revue de chaque groupe et objet par lieu encore à faire."
     },
     "AUD-061": {
       "status": "Terminé",
