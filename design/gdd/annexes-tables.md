@@ -317,7 +317,7 @@ Les mêmes tables sont dans `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 | HW-BUG-16 | P2 | Méthodes appelées mais absentes : setLaserColor, emitExplosion, emitAlienBloodSpurt, spawnAcidSpit, 10 sons | Plusieurs | Ouvert |
 | HW-BUG-17 | P1 | Coopération (conservée, HW-DEC-12) : le joueur 2 ne peut pas attaquer | js/main.js:2369 | Ouvert |
 | HW-BUG-18 | P2 | Numéros de version discordants (v6, v12, v27, v29, v58, 1.0.0) | index.html, main.js, package.json | Corrigé en partie le 13 nov. : v58.1 dans le titre, le sous-titre et package.json ; les commentaires de fichiers restent |
-| HW-BUG-19 | P2 | Aucune limite d'ennemis ni mise en commun des maillages : la vague N crée 45 + 15N objets | js/entities/XenomorphHorde.js | Ouvert |
+| HW-BUG-19 | P2 | Aucune limite d'ennemis ni mise en commun des maillages : la vague N crée 45 + 15N objets | js/entities/XenomorphHorde.js | Atténué le 14 nov. : 120 ennemis aléatoires au plus par vague ; mise en commun des maillages non faite |
 | HW-BUG-20 | P2 | Liste des commandes des options figée vers v29 | index.html | Corrigé le 14 nov. : options et aide F1 décrivent le kit |
 | HW-BUG-25 | P1 | Codex, bac à sable, forge, trophées, options et mode photo s'ouvraient vides depuis le menu : ils étaient imbriqués dans l'interface de jeu, masquée avec elle | index.html | Corrigé le 14 nov. |
 | HW-BUG-21 | P1 | Le chasseur meurt en moins de 40 s sous des saisies automatiques dans les 8 arènes ; équilibrage à mesurer avec un vrai joueur | Essai du 13 nov. | Ouvert |

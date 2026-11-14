@@ -3319,7 +3319,8 @@ class GameApp {
           this.player.medicompCharges = Math.min(5, (this.player.medicompCharges || 0) + 1);
         }
 
-        this.horde.spawnWave(45 + this.waveIndex * 15, this.player.position);
+        // Cap the swarm so late endless waves stay playable (HW-BUG-19): at most 120 random aliens.
+        this.horde.spawnWave(Math.min(120, 45 + this.waveIndex * 15), this.player.position);
         this.ui.showAnnouncement(this.waveIndex > this.totalWaves
           ? `♾️ VAGUE SURVIE INFINIE ${this.waveIndex} ("SURVIVAL OF THE WORTHY") DÉPLOYÉE !`
           : `VAGUE ${this.waveIndex} APPROCHE ! FORCES DE LA RUCHE DÉPLOYÉES !`);
