@@ -196,10 +196,15 @@ test('offscreen fronts consume the same finite rounds and plate buffer as close 
 
 test('no additional soldiers, bosses or backups arise from source specialist activation',()=>{
   for(const operation of BATTLE_OPERATIONS){
-    const newConfig=getBattleOperationConfig(operation.id,{allowHumanController:true});
+    // The LV-742 brood (HW-DEC-90) regroups existing IDs: compare the squad structure without it,
+    // then the exact identity set with it.
+    const newConfig=getBattleOperationConfig(operation.id,{allowHumanController:true,legacyBrood:true});
     const oldConfig=getBattleOperationConfig(operation.id,{allowHumanController:true,rosterDetail:'legacy'});
+    const brood=getBattleOperationConfig(operation.id,{allowHumanController:true});
     assert.deepEqual(newConfig.budgets,oldConfig.budgets,operation.id);
     assert.deepEqual(newConfig.groups.map(g=>g.units.map(u=>u.id)),
       oldConfig.groups.map(g=>g.units.map(u=>u.id)),operation.id);
+    assert.deepEqual(brood.groups.flatMap(g=>g.units.map(u=>u.id)).sort(),newConfig.groups.flatMap(g=>g.units.map(u=>u.id)).sort(),operation.id);
+    assert.deepEqual(brood.budgets,newConfig.budgets,operation.id);
   }
 });

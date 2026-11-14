@@ -26,6 +26,10 @@ const templates={
  'GRP-59':{default:[W,W,W,W,D,D,P,P],'C-QUEEN':[W,W,W,W,D,D,P,P]},
  'GRP-60':{'H-LIGNE':[EM,EM,EM,ESM,EFL,EMD,ECT,EXT],
    'H-APPUI':[EM,ESM,ESN,ESD,EXO,EMD,ECT,EXT]},
+ // Aliens: Dark Descent (CTRL-084): Sergeant, Gunner and Medic in every squad of four; the fourth
+ // place alternates Tecker and Recon. Only the sergeant has a catalogue profile (HUM-004).
+ 'GRP-53':{default:[h('marine','Sergeant','proxy','HUM-004'),h('smartgunner','Gunner','specialist-model'),h('marine','Medic'),h('marine','Tecker (repair proxy)')],
+   recon:[h('marine','Sergeant','proxy','HUM-004'),h('smartgunner','Gunner','specialist-model'),h('marine','Medic'),h('marine','Recon (rifle proxy)')]},
  'GRP-61':{'Y-CHASSE':[y('Hunter'),y('Brawler'),y('Spear Master'),y('Stalker')],
    'Y-APPUI':[y('Disc Master'),y('Vanguard'),y('Hydra'),y('Blazer')]}
 };
@@ -42,6 +46,7 @@ export const SOURCE_BOSS_SPECIES=Object.freeze({
  'BOS-38':'yautja','BOS-39':'xeno'
 });
 export function sourceSquadSlots(groupId,preset='default',count=0,{legacySourceLinks=false}={}){
+ if(legacySourceLinks&&groupId==='GRP-53')return null; // pre-CTRL-084 checkpoints used generic profiles
  const variants=legacySourceLinks&&groupId==='GRP-60'?LEGACY_GRP_60:SOURCE_BATTLE_SQUADS[groupId];
  if(!variants)return null;
  const actualPreset=groupId==='GRP-59'&&preset==='garde'?'default':preset??'default', slots=Object.hasOwn(variants,actualPreset)?variants[actualPreset]:null;

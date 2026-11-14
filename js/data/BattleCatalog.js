@@ -202,10 +202,12 @@ function commanderProfile(speciesId, boss) {
 
 // A new battle may use source-role presets. Legacy checkpoints still reconstruct
 // the original generic profiles and exact config digest.
-function applySourceSquadProfiles(group, entry, faction, profiles, { legacySourceLinks = false } = {}) {
-  const slots = sourceSquadSlots(entry.groupId, entry.profile, group.units.length, { legacySourceLinks });
+function applySourceSquadProfiles(group, entry, faction, profiles, { legacySourceLinks = false, squadIndex = 0 } = {}) {
+  // Dark Descent squads alternate their fourth class (CTRL-084).
+  const chosen = entry.groupId === 'GRP-53' ? (squadIndex % 2 ? 'recon' : 'default') : entry.profile;
+  const slots = sourceSquadSlots(entry.groupId, chosen, group.units.length, { legacySourceLinks });
   if (!slots) return;
-  const preset = (entry.profile ?? 'default').replace(/[^a-zA-Z0-9_-]/g, '_');
+  const preset = (chosen ?? 'default').replace(/[^a-zA-Z0-9_-]/g, '_');
   slots.forEach((slot, index) => {
     const id = `source_${faction.id}_${entry.groupId}_${preset}_${index}`;
     if (!profiles.some(profile => profile.id === id)) profiles.push({
@@ -343,7 +345,7 @@ export function getBattleOperationConfig(operationId, { playerCount = 1, budgetI
       const group = { id, factionId: faction.id, frontId: fronts[Math.max(0, frontIndex)]?.id ?? fronts[0].id,
         state: category === 'reserve' ? 'reserve' : 'distant', sourceState: category, sourceTemplateIds: [entry.groupId],
         units: Array.from({ length: quantity }, (_, index) => ({ id: `${id}:${index}`, profileId: `original_${faction.species}_${index === 0 ? 'officer' : 'soldier'}`, officer: index === 0 })) };
-      if (rosterDetail === 'source') applySourceSquadProfiles(group, entry, faction, profiles, { legacySourceLinks });
+      if (rosterDetail === 'source') applySourceSquadProfiles(group, entry, faction, profiles, { legacySourceLinks, squadIndex: groups.filter(item => item.sourceTemplateIds.includes(entry.groupId)).length });
       if (entry.bossId && !assignedBosses.has(entry.bossId)) {
         const boss = getBattleBoss(entry.bossId);
         const slot = rosterDetail === 'source' ? sourceCommanderSlot(entry.groupId, entry.profile, boss.id, quantity) : 0;

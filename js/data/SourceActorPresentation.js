@@ -5,6 +5,8 @@ const MARINE_VISUALS = Object.freeze({
   'H-LIGNE': Object.freeze({ 5: 'medic', 6: 'commtech' }),
   'H-APPUI': Object.freeze({ 2: 'sniper', 3: 'sadar', 4: 'exosuit', 5: 'medic', 6: 'commtech' })
 });
+// Dark Descent squads (CTRL-084) reuse the existing Medic and CommTech behaviours for Medic and Tecker.
+const DARK_DESCENT_VISUALS = Object.freeze({ default: Object.freeze({ 2: 'medic', 3: 'commtech' }), recon: Object.freeze({ 2: 'medic' }) });
 export const SOURCE_PRESENTATION_STATUS = Object.freeze({
   drone: 'procedural_distinct_unverified',
   medic: 'procedural_specialist_unverified',
@@ -23,6 +25,8 @@ export function sourceUnitVisualKind(unit) {
   if (unit.species === 'human' && unit.actorType === 'marine') {
     const match = /_GRP-60_(H-LIGNE|H-APPUI)_([0-7])$/.exec(unit.profileId);
     if (match) return MARINE_VISUALS[match[1]][Number(match[2])] ?? null;
+    const descent = /_GRP-53_(default|recon)_([0-3])$/.exec(unit.profileId);
+    if (descent) return DARK_DESCENT_VISUALS[descent[1]][Number(descent[2])] ?? null;
   }
   return null;
 }
