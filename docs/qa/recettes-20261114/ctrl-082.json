@@ -8,7 +8,7 @@
     0,
     1114
   ],
-  "commit": "bd866f88e1499d4e091e4e0c8611afdfb95d2336",
+  "commit": "2ecc8537ccbaf21f07b78dc4dbf083a98bcf9f32",
   "date": "2026-11-14",
   "commande": "node --test tests/recette-ctrl-082.test.js",
   "niveau": "runtime mission (createOperationScene → BattleSimulation → BattleActorBridge → ColonialMarinesManager/SyntheticsManager réels, sans rendu WebGL)",
@@ -710,7 +710,7 @@
       "t": 12,
       "event": "joueur_sur_front",
       "frontId": "front_b",
-      "acteursDetailles": 32
+      "acteursDetailles": 29
     },
     {
       "t": 18,
@@ -722,7 +722,7 @@
       "t": 24,
       "event": "joueur_sur_front",
       "frontId": "front_d",
-      "acteursDetailles": 24
+      "acteursDetailles": 20
     },
     {
       "t": 24,
@@ -779,7 +779,7 @@
       "t": 8,
       "event": "joueur_sur_front",
       "frontId": "front_d",
-      "acteursDetailles": 31
+      "acteursDetailles": 26
     }
   ],
   "clauses": [
@@ -841,10 +841,10 @@
       "attendu": "Les places GRP-60 détaillées sont rendues avec leur rôle (arme ou visuel spécialiste), pas en Marine fusilier générique.",
       "verdict": "prouvé",
       "details": {
-        "human_force|human|marine|marines|marine": 15,
-        "human_force|human|smartgunner|marines|smartgunner": 3,
-        "human_force|human|flametrooper|marines|flametrooper": 3,
-        "human_force|synthetic|synthetic|synthetics|weyland_combat": 3
+        "human_force|human|marine|marines|marine": 9,
+        "human_force|human|smartgunner|marines|smartgunner": 1,
+        "human_force|human|flametrooper|marines|flametrooper": 1,
+        "human_force|synthetic|synthetic|synthetics|weyland_combat": 2
       }
     },
     {
@@ -909,16 +909,16 @@
       "verdict": "prouvé",
       "details": {
         "placesRechargees": 192,
-        "sniperRounds": 3
+        "sniperRounds": 4
       }
     },
     {
       "clause": "identifiants_catalogue_HUM",
       "attendu": "Conserver entry.profile et les identifiants de profils (HUM-001/002/003/036–041) dans chaque place allouée.",
-      "verdict": "échec (défaut)",
+      "verdict": "prouvé",
       "details": {
         "profilsGRP60": 16,
-        "relies": 0,
+        "relies": 16,
         "entryProfileConserve": true,
         "reproduction": "createOperationScene({operationId:'AFF-27',mapSeed:1114}).config.profiles.filter(p=>/_GRP-60_/.test(p.id)).map(p=>p.sourceProfileId) → tous undefined",
         "fichier": "js/data/BattleCatalog.js:195-210 ; js/data/SourceBattleRoster.js:23-24"

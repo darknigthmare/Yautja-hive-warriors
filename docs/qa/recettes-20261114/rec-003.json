@@ -5,7 +5,7 @@
   "resultatAttenduClasseur": "Le joueur reçoit une information exploitable avant la conséquence irréversible, ou la mission signale clairement qu'un ordre distant est nécessaire. Aucune alerte urgente ne demande un trajet impossible sans l'annoncer.",
   "preuveAConserverClasseur": "Chronométrages; vitesses et routes déclarées; captures des alertes; seuils de délai fixés avant recette.",
   "date": "2026-11-14",
-  "commit": "bd866f88e1499d4e091e4e0c8611afdfb95d2336",
+  "commit": "2ecc8537ccbaf21f07b78dc4dbf083a98bcf9f32",
   "branche": "claude/fervent-volta-hmhdfw",
   "preuveVideo": "non produite — preuve par journal de simulation",
   "graine": {
@@ -83,9 +83,9 @@
           "source": "garrison_report",
           "reportAge": 4
         },
-        "firstAllyDeath": 502.5,
+        "firstAllyDeath": 289.75,
         "firstAlertNamingA": {
-          "t": 508.25,
+          "t": 516.25,
           "text": "CAPITAINE EN DANGER · Clairière d’insertion · S 510 u"
         },
         "criticalAlert": {
@@ -104,9 +104,7 @@
           ],
           "hudAlertTypes": [
             "critical_front_lost",
-            "unit_died",
-            "unit_died",
-            "unit_died",
+            "musou_officer_broken",
             "unit_died"
           ]
         },
@@ -127,9 +125,7 @@
           ],
           "hudAlertTypes": [
             "critical_front_lost",
-            "unit_died",
-            "unit_died",
-            "unit_died",
+            "musou_officer_broken",
             "unit_died"
           ],
           "alerteC": "DÉFAITE IMMINENTE — REPRENEZ LE FRONT · Clairière d’insertion · 153 s · S 510 u",
@@ -212,50 +208,73 @@
           "alerte": "Les réserves et les pertes persistent entre les fronts."
         },
         {
-          "t": 12.25,
+          "t": 40,
+          "action": "attaque_declenchee",
+          "vers": "insertion",
+          "groupes": 28,
+          "garnisonRestante": [
+            "gunnison_forest:player_clan:0"
+          ]
+        },
+        {
+          "t": 52.25,
           "position": "B",
           "alerte": "Renforts en approche · Clairière d’insertion · SO 240 u"
         },
         {
-          "t": 12.25,
+          "t": 52.25,
           "position": "C",
           "alerte": "Renforts en approche · Clairière d’insertion · S 510 u"
         },
         {
-          "t": 20.25,
+          "t": 60.25,
           "position": "B",
           "alerte": "Renforts arrivés · Clairière d’insertion · SO 240 u"
         },
         {
-          "t": 20.25,
+          "t": 60.25,
           "position": "C",
           "alerte": "Renforts arrivés · Clairière d’insertion · S 510 u"
         },
         {
-          "t": 40,
-          "action": "attaque_declenchee",
-          "vers": "insertion",
-          "groupes": 28
+          "t": 106.5,
+          "position": "B",
+          "alerte": "Renforts arrivés · Nid de la vallée · NO 380 u"
         },
         {
-          "t": 508.25,
+          "t": 106.5,
+          "position": "C",
+          "alerte": "Renforts arrivés · Nid de la vallée · S 0 u"
+        },
+        {
+          "t": 138.5,
+          "position": "B",
+          "alerte": "Le contrôle d’un front a changé · Relais de surveillance · S 0 u"
+        },
+        {
+          "t": 138.5,
+          "position": "C",
+          "alerte": "Le contrôle d’un front a changé · Relais de surveillance · SE 380 u"
+        },
+        {
+          "t": 516.25,
           "position": "B",
           "alerte": "CAPITAINE EN DANGER · Clairière d’insertion · SO 240 u"
         },
         {
-          "t": 508.25,
+          "t": 516.25,
           "position": "C",
           "alerte": "CAPITAINE EN DANGER · Clairière d’insertion · S 510 u"
         },
         {
-          "t": 564.25,
+          "t": 524.25,
           "position": "B",
-          "alerte": "Un capitaine est tombé · Clairière d’insertion · SO 240 u"
+          "alerte": "OFFICIER ENNEMI VAINCU — l’avant-garde alliée reprend courage · Clairière d’insertion · SO 240 u"
         },
         {
-          "t": 564.25,
+          "t": 524.25,
           "position": "C",
-          "alerte": "Un capitaine est tombé · Clairière d’insertion · S 510 u"
+          "alerte": "OFFICIER ENNEMI VAINCU — l’avant-garde alliée reprend courage · Clairière d’insertion · S 510 u"
         },
         {
           "t": 577.25,
@@ -272,23 +291,23 @@
     "detour_route_principale_fermee": {
       "jalons": {
         "firstInfo": {
-          "t": 140.25,
+          "t": 148.25,
           "source": "garrison_report",
           "reportAge": 4
         },
-        "firstAllyDeath": 433.5,
+        "firstAllyDeath": 324.75,
         "firstAlertNamingA": {
-          "t": 508.25,
+          "t": 548.25,
           "text": "CAPITAINE EN DANGER · Clairière d’insertion · S 510 u"
         },
         "criticalAlert": {
-          "t": 648,
-          "deadline": 827,
+          "t": 608.25,
+          "deadline": 787.25,
           "criticalFronts": [
             {
               "frontId": "insertion",
-              "since": 648,
-              "deadline": 827,
+              "since": 608.25,
+              "deadline": 787.25,
               "graceSeconds": 179,
               "routeRevision": 1,
               "returnTravelSeconds": 142,
@@ -297,19 +316,19 @@
           ],
           "hudAlertTypes": [
             "critical_front_lost",
-            "unit_died",
+            "musou_officer_broken",
             "unit_died"
           ]
         },
-        "capture": 648,
+        "capture": 608.25,
         "afterCut": {
-          "t": 648.25,
-          "deadline": 827,
+          "t": 608.5,
+          "deadline": 787.25,
           "criticalFronts": [
             {
               "frontId": "insertion",
-              "since": 648,
-              "deadline": 827,
+              "since": 608.25,
+              "deadline": 787.25,
               "graceSeconds": 179,
               "routeRevision": 1,
               "returnTravelSeconds": 142,
@@ -318,7 +337,7 @@
           ],
           "hudAlertTypes": [
             "critical_front_lost",
-            "unit_died",
+            "musou_officer_broken",
             "unit_died"
           ],
           "alerteC": "DÉFAITE IMMINENTE — REPRENEZ LE FRONT · Clairière d’insertion · 179 s · S 510 u",
@@ -349,7 +368,7 @@
           ],
           "outcome": "defeat",
           "reason": "critical_front_lost",
-          "time": 827
+          "time": 787.25
         },
         "simEvents": [
           {
@@ -359,9 +378,9 @@
             "reason": "recette_passage_bloque"
           },
           {
-            "t": 648,
+            "t": 608.25,
             "type": "critical_front_lost",
-            "deadline": 827,
+            "deadline": 787.25,
             "unreachableFrontIds": []
           }
         ]
@@ -413,58 +432,91 @@
           "alerte": "Les réserves et les pertes persistent entre les fronts."
         },
         {
-          "t": 12.25,
+          "t": 40,
+          "action": "attaque_declenchee",
+          "vers": "insertion",
+          "groupes": 28,
+          "garnisonRestante": [
+            "gunnison_forest:player_clan:0"
+          ]
+        },
+        {
+          "t": 52.25,
           "position": "B",
           "alerte": "Renforts en approche · Clairière d’insertion · SO 240 u"
         },
         {
-          "t": 12.25,
+          "t": 52.25,
           "position": "C",
           "alerte": "Renforts en approche · Clairière d’insertion · S 510 u"
         },
         {
-          "t": 20.25,
+          "t": 60.25,
           "position": "B",
           "alerte": "Renforts arrivés · Clairière d’insertion · SO 240 u"
         },
         {
-          "t": 20.25,
+          "t": 60.25,
           "position": "C",
           "alerte": "Renforts arrivés · Clairière d’insertion · S 510 u"
         },
         {
-          "t": 40,
-          "action": "attaque_declenchee",
-          "vers": "insertion",
-          "groupes": 28
+          "t": 143,
+          "position": "B",
+          "alerte": "Renforts arrivés · Relais de surveillance · S 0 u"
         },
         {
-          "t": 508.25,
+          "t": 143,
+          "position": "C",
+          "alerte": "Renforts arrivés · Relais de surveillance · SE 380 u"
+        },
+        {
+          "t": 387.5,
+          "position": "B",
+          "alerte": "Nouveau rapport stratégique · Relais de surveillance · S 0 u"
+        },
+        {
+          "t": 387.5,
+          "position": "C",
+          "alerte": "Nouveau rapport stratégique · Relais de surveillance · SE 380 u"
+        },
+        {
+          "t": 430.5,
+          "position": "B",
+          "alerte": "Le contrôle d’un front a changé · Relais de surveillance · S 0 u"
+        },
+        {
+          "t": 430.5,
+          "position": "C",
+          "alerte": "Le contrôle d’un front a changé · Relais de surveillance · SE 380 u"
+        },
+        {
+          "t": 548.25,
           "position": "B",
           "alerte": "CAPITAINE EN DANGER · Clairière d’insertion · SO 240 u"
         },
         {
-          "t": 508.25,
+          "t": 548.25,
           "position": "C",
           "alerte": "CAPITAINE EN DANGER · Clairière d’insertion · S 510 u"
         },
         {
-          "t": 628.25,
+          "t": 556.25,
           "position": "B",
-          "alerte": "Un capitaine est tombé · Clairière d’insertion · SO 240 u"
+          "alerte": "OFFICIER ENNEMI VAINCU — l’avant-garde alliée reprend courage · Clairière d’insertion · SO 240 u"
         },
         {
-          "t": 628.25,
+          "t": 556.25,
           "position": "C",
-          "alerte": "Un capitaine est tombé · Clairière d’insertion · S 510 u"
+          "alerte": "OFFICIER ENNEMI VAINCU — l’avant-garde alliée reprend courage · Clairière d’insertion · S 510 u"
         },
         {
-          "t": 648,
+          "t": 608.25,
           "position": "B",
           "alerte": "DÉFAITE IMMINENTE — REPRENEZ LE FRONT · Clairière d’insertion · 179 s · SO 240 u"
         },
         {
-          "t": 648,
+          "t": 608.25,
           "position": "C",
           "alerte": "DÉFAITE IMMINENTE — REPRENEZ LE FRONT · Clairière d’insertion · 179 s · S 510 u"
         }
@@ -477,9 +529,9 @@
           "source": "garrison_report",
           "reportAge": 4
         },
-        "firstAllyDeath": 502.5,
+        "firstAllyDeath": 289.75,
         "firstAlertNamingA": {
-          "t": 508.25,
+          "t": 516.25,
           "text": "CAPITAINE EN DANGER · Clairière d’insertion · S 510 u"
         },
         "criticalAlert": {
@@ -498,9 +550,7 @@
           ],
           "hudAlertTypes": [
             "critical_front_lost",
-            "unit_died",
-            "unit_died",
-            "unit_died",
+            "musou_officer_broken",
             "unit_died"
           ]
         },
@@ -525,9 +575,7 @@
           "hudAlertTypes": [
             "critical_return_route_blocked",
             "critical_front_lost",
-            "unit_died",
-            "unit_died",
-            "unit_died",
+            "musou_officer_broken",
             "unit_died"
           ],
           "alerteC": "DÉFAITE IMMINENTE — PASSAGE COUPÉ : ROUVREZ UNE ROUTE VERS LE FRONT · Clairière d’insertion · 153 s · S 510 u",
@@ -567,11 +615,6 @@
             "type": "route_changed",
             "routeId": "route-insertion-relay-main",
             "reason": "recette_passage_bloque"
-          },
-          {
-            "t": 577.25,
-            "type": "order_blocked",
-            "reason": "route_closed_in_transit"
           },
           {
             "t": 577.25,
@@ -627,50 +670,73 @@
           "alerte": "Les réserves et les pertes persistent entre les fronts."
         },
         {
-          "t": 12.25,
+          "t": 40,
+          "action": "attaque_declenchee",
+          "vers": "insertion",
+          "groupes": 28,
+          "garnisonRestante": [
+            "gunnison_forest:player_clan:0"
+          ]
+        },
+        {
+          "t": 52.25,
           "position": "B",
           "alerte": "Renforts en approche · Clairière d’insertion · SO 240 u"
         },
         {
-          "t": 12.25,
+          "t": 52.25,
           "position": "C",
           "alerte": "Renforts en approche · Clairière d’insertion · S 510 u"
         },
         {
-          "t": 20.25,
+          "t": 60.25,
           "position": "B",
           "alerte": "Renforts arrivés · Clairière d’insertion · SO 240 u"
         },
         {
-          "t": 20.25,
+          "t": 60.25,
           "position": "C",
           "alerte": "Renforts arrivés · Clairière d’insertion · S 510 u"
         },
         {
-          "t": 40,
-          "action": "attaque_declenchee",
-          "vers": "insertion",
-          "groupes": 28
+          "t": 106.5,
+          "position": "B",
+          "alerte": "Renforts arrivés · Nid de la vallée · NO 380 u"
         },
         {
-          "t": 508.25,
+          "t": 106.5,
+          "position": "C",
+          "alerte": "Renforts arrivés · Nid de la vallée · S 0 u"
+        },
+        {
+          "t": 138.5,
+          "position": "B",
+          "alerte": "Le contrôle d’un front a changé · Relais de surveillance · S 0 u"
+        },
+        {
+          "t": 138.5,
+          "position": "C",
+          "alerte": "Le contrôle d’un front a changé · Relais de surveillance · SE 380 u"
+        },
+        {
+          "t": 516.25,
           "position": "B",
           "alerte": "CAPITAINE EN DANGER · Clairière d’insertion · SO 240 u"
         },
         {
-          "t": 508.25,
+          "t": 516.25,
           "position": "C",
           "alerte": "CAPITAINE EN DANGER · Clairière d’insertion · S 510 u"
         },
         {
-          "t": 564.25,
+          "t": 524.25,
           "position": "B",
-          "alerte": "Un capitaine est tombé · Clairière d’insertion · SO 240 u"
+          "alerte": "OFFICIER ENNEMI VAINCU — l’avant-garde alliée reprend courage · Clairière d’insertion · SO 240 u"
         },
         {
-          "t": 564.25,
+          "t": 524.25,
           "position": "C",
-          "alerte": "Un capitaine est tombé · Clairière d’insertion · S 510 u"
+          "alerte": "OFFICIER ENNEMI VAINCU — l’avant-garde alliée reprend courage · Clairière d’insertion · S 510 u"
         },
         {
           "t": 577.25,
@@ -719,10 +785,10 @@
           "reportAge": 4
         },
         "premiereAlerteNommantA": {
-          "t": 508.25,
+          "t": 516.25,
           "text": "CAPITAINE EN DANGER · Clairière d’insertion · S 510 u"
         },
-        "premiereMortAlliee": 502.5,
+        "premiereMortAlliee": 289.75,
         "captureA": 577.25,
         "alerteCritique": {
           "t": 577.25,
@@ -740,9 +806,7 @@
           ],
           "hudAlertTypes": [
             "critical_front_lost",
-            "unit_died",
-            "unit_died",
-            "unit_died",
+            "musou_officer_broken",
             "unit_died"
           ]
         },
@@ -778,7 +842,7 @@
           }
         }
       },
-      "observation": "La première information (A disputé dans le HUD, rapport de garnison) arrive à t=108.25 s ; la première mort alliée à t=502.5 s. La mort des alliés est irréversible mais n’est annoncée en texte d’alerte qu’au moment « capitaine en danger » : à juger par un humain."
+      "observation": "La première information (A disputé dans le HUD, rapport de garnison) arrive à t=108.25 s ; la première mort alliée à t=289.75 s. La mort des alliés est irréversible mais n’est annoncée en texte d’alerte qu’au moment « capitaine en danger » : à juger par un humain."
     },
     {
       "id": "REC-003-2",
@@ -814,15 +878,15 @@
             "faisable": true
           }
         },
-        "echeance": 827,
+        "echeance": 787.25,
         "alerteCritique": {
-          "t": 648,
-          "deadline": 827,
+          "t": 608.25,
+          "deadline": 787.25,
           "criticalFronts": [
             {
               "frontId": "insertion",
-              "since": 648,
-              "deadline": 827,
+              "since": 608.25,
+              "deadline": 787.25,
               "graceSeconds": 179,
               "routeRevision": 1,
               "returnTravelSeconds": 142,
@@ -831,7 +895,7 @@
           ],
           "hudAlertTypes": [
             "critical_front_lost",
-            "unit_died",
+            "musou_officer_broken",
             "unit_died"
           ]
         },
@@ -843,9 +907,9 @@
             "reason": "recette_passage_bloque"
           },
           {
-            "t": 648,
+            "t": 608.25,
             "type": "critical_front_lost",
-            "deadline": 827,
+            "deadline": 787.25,
             "unreachableFrontIds": []
           }
         ]
@@ -906,9 +970,7 @@
         "typesAlertesHUD": [
           "critical_return_route_blocked",
           "critical_front_lost",
-          "unit_died",
-          "unit_died",
-          "unit_died",
+          "musou_officer_broken",
           "unit_died"
         ],
         "resultat": {

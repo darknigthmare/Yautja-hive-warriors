@@ -9,7 +9,7 @@
     1114,
     48879
   ],
-  "commit": "bd866f88e1499d4e091e4e0c8611afdfb95d2336",
+  "commit": "2ecc8537ccbaf21f07b78dc4dbf083a98bcf9f32",
   "date": "2026-11-14",
   "commande": "node --test tests/recette-ctrl-001.test.js",
   "niveau": "runtime mission (createOperationScene → BattleSimulation → BattleActorBridge → SyntheticsManager/ColonialMarinesManager réels, sans rendu WebGL)",
@@ -165,19 +165,19 @@
       "t": 6,
       "event": "joueur_sur_front",
       "frontId": "front_a",
-      "acteursDetailles": 24
+      "acteursDetailles": 28
     },
     {
       "t": 12,
       "event": "joueur_sur_front",
       "frontId": "front_b",
-      "acteursDetailles": 28
+      "acteursDetailles": 21
     },
     {
       "t": 18,
       "event": "joueur_sur_front",
       "frontId": "front_c",
-      "acteursDetailles": 21
+      "acteursDetailles": 18
     },
     {
       "t": 24,
@@ -189,9 +189,9 @@
       "t": 24,
       "event": "projection_totale",
       "repartition": {
-        "hive|xenomorph|runner|xenomorph|runner": 630,
+        "hive|xenomorph|runner|xenomorph|runner": 619,
         "hive|xenomorph|spitter|xenomorph|spitter": 90,
-        "human_force|synthetic|weyland_combat|synthetics|weyland_combat": 99,
+        "human_force|synthetic|weyland_combat|synthetics|weyland_combat": 72,
         "player_clan|yautja|clan_hunter|yautja|clan_hunter": 4
       }
     },
@@ -217,7 +217,7 @@
       "t": 8,
       "event": "joueur_sur_front",
       "frontId": "front_d",
-      "acteursDetailles": 27
+      "acteursDetailles": 22
     }
   ],
   "clauses": [
@@ -285,8 +285,8 @@
       "attendu": "Les unités détaillées par l’étape de détail (joueur présent) sont projetées dans SyntheticsManager, pas ColonialMarinesManager.",
       "verdict": "prouvé",
       "details": {
-        "player_clan|yautja|clan_hunter|yautja|clan_hunter": 8,
-        "human_force|synthetic|weyland_combat|synthetics|weyland_combat": 28,
+        "player_clan|yautja|clan_hunter|yautja|clan_hunter": 7,
+        "human_force|synthetic|weyland_combat|synthetics|weyland_combat": 12,
         "hive|xenomorph|runner|xenomorph|runner": 56,
         "hive|xenomorph|spitter|xenomorph|spitter": 8
       }
@@ -296,13 +296,13 @@
       "attendu": "Chaque unité allouée de la mission, projetée une fois, garde son espèce et son gestionnaire.",
       "verdict": "prouvé",
       "details": {
-        "projeteesMaintenant": 823,
+        "projeteesMaintenant": 785,
         "dejaProjetees": 16,
-        "synthetiquesMortsAvantProjection": 93,
+        "synthetiquesMortsAvantProjection": 120,
         "repartition": {
-          "hive|xenomorph|runner|xenomorph|runner": 630,
+          "hive|xenomorph|runner|xenomorph|runner": 619,
           "hive|xenomorph|spitter|xenomorph|spitter": 90,
-          "human_force|synthetic|weyland_combat|synthetics|weyland_combat": 99,
+          "human_force|synthetic|weyland_combat|synthetics|weyland_combat": 72,
           "player_clan|yautja|clan_hunter|yautja|clan_hunter": 4
         }
       }

@@ -56,6 +56,18 @@ const speciesOf = value => value === 'xeno' ? 'xenomorph' : value;
  * spawnGroup(group, units) may return false if a real actor pool is unavailable.
  * despawnGroup(group, units) may return [{id,hp,position}] to preserve live poses.
  */
+const RESERVE_WAVE_SECONDS = 45;
+
+function focusedRemoteTarget(targets, pending) {
+  let best = null, bestRemaining = Infinity;
+  for (const target of targets) {
+    const remaining = target.hp - (pending.get(target.id)?.damage ?? 0);
+    if (remaining <= 0) continue;
+    if (remaining < bestRemaining || remaining === bestRemaining && target.id < best.id) { best = target; bestRemaining = remaining; }
+  }
+  return best;
+}
+
 export class BattleSimulation {
   constructor(configuration, callbacks = {}) {
     if (!configuration || !id(configuration.id)) fail('a stable operation id is required');
@@ -203,6 +215,8 @@ export class BattleSimulation {
       if (budget?.reserve !== undefined && budget.reserve !== units.filter(unit => unit.state === 'reserve').length) fail(`faction ${factionId} reserve allocation does not match`);
       if (budget?.active !== undefined && (!Number.isInteger(budget.active) || budget.active < 0 || budget.active > 512)) fail(`invalid detailed cap for ${factionId}`);
       faction.allocated = units.length;
+      // Fielded strength at deployment, from the allocation itself (identical after a reload).
+      faction.committedStrength = units.filter(unit => unit.state !== 'reserve').length;
     }
     this._validateObjectives();
     this.assertConservation();
@@ -213,7 +227,14 @@ export class BattleSimulation {
     if (profile.species !== faction.species && !profile.allowedFactions?.includes(faction.id)) fail(`profile ${profile.id} does not belong to faction ${faction.id}`);
     const context = this.config.context ?? {};
     if (profile.allowedFactions?.length && !profile.allowedFactions.includes(faction.id)) fail(`profile ${profile.id} is forbidden for faction ${faction.id}`);
-    if (this.config.mode !== 'crossover') {
+    if (this.config.mode === 'crossover') {
+      // Hypothetical play keeps a readable list of what departs from the selected works and era (REC-007).
+      const reasons = [];
+      if (profile.allowedEras?.length && !profile.allowedEras.includes(String(context.era))) reasons.push('era');
+      if (profile.allowedWorks?.length && !profile.allowedWorks.some(work => context.works?.includes(work))) reasons.push('work');
+      if (profile.allowedContinuities?.length && !profile.allowedContinuities.some(work => context.continuities?.includes(work))) reasons.push('continuity');
+      if (reasons.length && !(this.divergences ??= []).some(item => item.profileId === profile.id && item.factionId === faction.id)) this.divergences.push({ profileId: profile.id, factionId: faction.id, reasons });
+    } else {
       if (profile.allowedEras?.length && !profile.allowedEras.includes(String(context.era))) fail(`profile ${profile.id} is anachronistic for era ${context.era}`);
       if (profile.allowedWorks?.length && !profile.allowedWorks.some(work => context.works?.includes(work))) fail(`profile ${profile.id} is outside the operation's work`);
       if (profile.allowedContinuities?.length && !profile.allowedContinuities.some(work => context.continuities?.includes(work))) fail(`profile ${profile.id} is outside the operation's continuity`);
@@ -372,7 +393,9 @@ export class BattleSimulation {
       if (!byFaction.has(group.factionId)) byFaction.set(group.factionId, []);
       byFaction.get(group.factionId).push(group);
       const key = `${group.factionId}:${group.frontId}`;
-      strength.set(key, (strength.get(key) ?? 0) + ready); garrisons.set(key, (garrisons.get(key) ?? 0) + 1);
+      strength.set(key, (strength.get(key) ?? 0) + ready);
+      // A group awaiting reconstitution or falling back cannot hold a front, so it does not count as garrison.
+      if (!group.reconstitution?.required && !['retreat', 'regroup'].includes(group.order.type)) garrisons.set(key, (garrisons.get(key) ?? 0) + 1);
     }
     for (const faction of this.factions.values()) {
       const sporeFronts = faction.moraleModel === 'hive'
@@ -382,7 +405,7 @@ export class BattleSimulation {
         if (group.materialized || group.reconstitution?.required || !group.officerId || !combatReady(this.units.get(group.officerId))) continue;
         const alliedToPlayer = this.relationship(faction.id, this.config.playerFaction) === 'allied';
         if (alliedToPlayer && !group.delegated || faction.moraleModel !== 'hive' && group.morale < 35) continue;
-        const garrison = (garrisons.get(`${faction.id}:${group.frontId}`) ?? 1) - 1;
+        const garrison = Math.max(0, (garrisons.get(`${faction.id}:${group.frontId}`) ?? 1) - 1);
         if (this.fronts.get(group.frontId).owner === faction.id && garrison < (this.config.ai?.minimumGarrisonGroups ?? 1)) continue;
         const attackers = group.units.filter(unitId => combatReady(this.units.get(unitId))).length;
         const defenders = front => [...this.factions.keys()].filter(id => this.areHostile(faction.id, id)).reduce((sum, id) => sum + (strength.get(`${id}:${front.id}`) ?? 0), 0);
@@ -524,6 +547,14 @@ export class BattleSimulation {
     for (const group of nearby) { const key = `${group.frontId}:${group.factionId}`; if (!buckets.has(key)) buckets.set(key, []); buckets.get(key).push(group); }
     const candidates = [];
     while ([...buckets.values()].some(bucket => bucket.length)) for (const bucket of buckets.values()) if (bucket.length) candidates.push(bucket.shift());
+    // Hysteresis: groups carrying a named individual keep first claim on the budget; then groups already
+    // detailed keep their slot before any newcomer, so the bubble does not swap actors under a player who
+    // stays on the front (REC-005). The officer and distance order above still ranks each tier.
+    const named = group => group.units.some(unitId => { const unit = this.units.get(unitId); return alive(unit) && unit.uniqueId; });
+    // Wounded allies within reach of a player share the top tier so a rescue can always rematerialize them.
+    const rescuable = group => this.relationship(group.factionId, this.config.playerFaction) === 'allied' && woundedDistance(group) <= 65;
+    const detailTier = group => named(group) || rescuable(group) ? 0 : group.materialized ? 1 : 2;
+    candidates.sort((a, b) => detailTier(a) - detailTier(b));
     const selected = new Set(), perFaction = new Map(); let count = 0;
     for (const group of candidates) {
       const units = group.units.map(unitId => this.units.get(unitId)).filter(unit =>
@@ -881,7 +912,9 @@ export class BattleSimulation {
             attacker[ammunition]--;
           }
           attacker.nextAttack = this.time + Math.max(profile.attackInterval, rule?.cooldown ?? 0);
-          const target = nodeTarget ?? targets[(this.attackSeeds.get(attacker.id) + this.tick) % targets.length];
+          // Focused fire (HW-DEC-92): shoot the hostile closest to falling once this tick's queued damage
+          // is counted, so remote fronts take real losses; the seeded rotation only breaks exhausted cases.
+          const target = nodeTarget ?? focusedRemoteTarget(targets, pending) ?? targets[(this.attackSeeds.get(attacker.id) + this.tick) % targets.length];
           const tacticMultiplier = group.tactic && group.tactic.expires > this.time ? { pincer: 1.2, hold_line: 1.05, ambush: 1.15, fallback: .5 }[group.tactic.type] ?? 1 : 1;
           const orderMultiplier = ({ attack: 1, defend: .85, escort: .6 }[group.order.type] ?? .85) * tacticMultiplier;
           const moraleMultiplier = faction.moraleModel === 'hive' ? coordination.get(factionId) * group.coordinationStrength : .5 + group.morale / 200;
@@ -953,6 +986,13 @@ export class BattleSimulation {
     for (const factionId of this.factions.keys()) {
       if (this.time + EPSILON < this.nextReinforcement.get(factionId)) continue;
       this.nextReinforcement.set(factionId, this.time + this.budgets.spawnInterval);
+      // Waves (HW-DEC-91): a loss is replaced at the usual interval; otherwise one reserve wave leaves
+      // per RESERVE_WAVE_SECONDS, so cutting a source early really withholds part of the reserves.
+      // Derived from the saved clock only. Reactions and reconstitution still ask directly.
+      const fielded = [...this.units.values()].filter(unit => unit.factionId === factionId && alive(unit) && unit.state !== 'reserve').length
+        + this.pendingArrivals.filter(arrival => arrival.factionId === factionId).reduce((sum, arrival) => sum + this.groups.get(arrival.groupId).units.filter(unitId => this.units.get(unitId).state === 'reserve' && alive(this.units.get(unitId))).length, 0);
+      const waveDue = Math.floor(this.time / RESERVE_WAVE_SECONDS) > Math.floor(Math.max(0, this.time - this.budgets.spawnInterval) / RESERVE_WAVE_SECONDS);
+      if (fielded >= (this.factions.get(factionId).committedStrength ?? 0) && !waveDue) continue;
       const target = [...this.fronts.values()].filter(front => front.owner === factionId || [...this.groups.values()].some(group => group.factionId === factionId && group.frontId === front.id && group.units.some(unitId => alive(this.units.get(unitId)) && this.units.get(unitId).state !== 'reserve'))).sort((a, b) => {
         const strength = front => [...this.units.values()].filter(unit => alive(unit) && unit.state !== 'reserve' && unit.factionId === factionId && this.groups.get(unit.groupId).frontId === front.id).length;
         return strength(a) - strength(b) || a.id.localeCompare(b.id);
@@ -1182,6 +1222,9 @@ export class BattleSimulation {
     while (this.accumulator + EPSILON >= this.step && !this.result) {
       this.accumulator = Math.max(0, this.accumulator - this.step); this.time += this.step; this.tick++;
       for (const group of this.groups.values()) updateFormation(group, this.step, this.time, { officerAlive: !!group.officerId && combatReady(this.units.get(group.officerId)) });
+      // A reload restores no rendered actor: rematerialize the player's surroundings before moving,
+      // so groups detailed at save time do not take one extra distant step (REC-016).
+      if (this._detailBeforeFirstMove) { this._detailBeforeFirstMove = false; this._detailStep(); }
       this._moveGroups(this.step); this._detailStep(); this._remoteCombat(); this._ravagerRegenesisStep(); this._hostInfestationStep(); this._hiveNodeStep(this.step); this._captureStep(this.step); this._reinforcements(); this._reconstitutionStep(this.step); this._moraleStep(this.step); this._strategicOrders(); this._objectives(); this.intel.update();
     }
     return true;
@@ -1393,7 +1436,7 @@ export class BattleSimulation {
         : {}),
       alerts: this.events.filter(event => this.intel.allowsEvent(event) && event.priority >= 2 && this.time - event.time <= 30).sort((a, b) => b.priority - a.priority || b.id - a.id).slice(0, 8).map(clone),
       criticalDeadline: this.criticalLosses.size ? Math.min(...[...this.criticalLosses.values()].map(loss => loss.deadline)) : null,
-      criticalFronts: [...this.criticalLosses.values()].map(clone), difficulty: this.config.difficulty ? clone(this.config.difficulty) : null,
+      divergences: (this.divergences ?? []).map(clone), criticalFronts: [...this.criticalLosses.values()].map(clone), difficulty: this.config.difficulty ? clone(this.config.difficulty) : null,
       pendingArrivals: this.pendingArrivals.filter(arrival => this.result || this.relationship(arrival.factionId, this.config.playerFaction) === 'allied' || this.intel.allowsEvent({ groupId: arrival.groupId, time: arrival.due - this.budgets.announcementSeconds })).map(clone), journal: this.getTacticalJournal(), casualties: [...this.deaths.values()].filter(death => !death.inherited).length,
       inheritedLosses: [...this.deaths.values()].filter(death => death.inherited).length, eventsDropped: this.eventsDropped };
   }
@@ -1509,6 +1552,7 @@ export class BattleSimulation {
       new Map(groups.map(group=>[group.id,group])),saved.time);
     simulation.units = units;simulation.apcManifest=manifest;
     simulation.groups = new Map(groups.map(group => [group.id, { ...group, materialized: false, state: group.state === 'active' ? 'distant' : group.state }]));
+    simulation._detailBeforeFirstMove = true;
     simulation.fronts = new Map(saved.fronts.map(front => [front.id, clone(front)])); simulation.routes = new Map(saved.routes.map(route => [route.id, clone(route)]));
     simulation.relations = new Map(saved.relations); simulation.deaths = new Map(saved.deaths.map(death => [death.entityId, clone(death)]));
     simulation.events = saved.events.map(clone); simulation.eventsDropped = saved.eventsDropped; simulation.eventSequence = saved.eventSequence;

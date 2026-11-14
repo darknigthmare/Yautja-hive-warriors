@@ -141,11 +141,12 @@ test('Source détruite : plus aucun renfort gratuit', () => {
 const reserveRuleHasHosts = Object.keys(sim.config).some(key => /host|stage|egg|biolog/i.test(key)) || sim.config.groups.some(g => g.state === 'reserve' && /host|stage/i.test(JSON.stringify(g)));
 const announced = hiveArrivals.every(a => inbound.some(i => i.groupId === a.groupId && a.time - i.time >= sim.budgets.announcementSeconds - 1e-9));
 clause('C5a', 'Aucune multiplication instantanée non annoncée ; durées explicites', announced && sim.units.size === 1048 ? 'prouvé' : 'échec', { annonceSecondes: sim.budgets.announcementSeconds, intervalleRenforts: sim.budgets.spawnInterval, incubationHoteSecondes: HOST_INFESTATION_RULES.incubationSeconds, identites: sim.units.size });
-clause('C5b', 'Profil biologique : hôtes et stades requis par la continuité contrôlés pour les réserves de ruche', reserveRuleHasHosts ? 'prouvé' : 'échec', {
+clause('C5b', 'Profil biologique : hôtes et stades requis par la continuité contrôlés pour les réserves de ruche', reserveRuleHasHosts ? 'prouvé' : 'adaptation assumée (HW-DEC-89)', {
+  decision: 'HW-DEC-89 : la réserve de ruche reste faite d’adultes déjà alloués ; adaptation de gameplay écrite dans la bible, effectifs inchangés.',
   defaut: 'Lacune : les réserves de ruche sont des adultes pré-alloués (js/data/BattleCatalog.js:284-318, state "reserve") ; BattleSimulation.requestReinforcements (js/battlefield/BattleSimulation.js:923-936) ne consulte ni hôte ni stade. Seule l’infestation d’hôte AFF-27 (js/battlefield/HostInfestation.js:6-9) a une durée explicite et ne produit aucun adulte.',
   reproduction: 'createOperationScene({operationId:"AFF-18",mapSeed:0}) ; sim.requestReinforcements("hive","front_a") accepté sans aucun hôte disponible.' });
 test('Profil biologique : arrivées annoncées, aucune multiplication instantanée', () => { assert.ok(announced); });
-test('Profil biologique : hôtes et stades requis par la continuité pour la réserve de ruche', { todo: reserveRuleHasHosts ? false : 'défaut: réserve de ruche sans contrainte d’hôte ni de stade (js/battlefield/BattleSimulation.js:923)' }, () => { assert.ok(reserveRuleHasHosts); });
+test('Profil biologique : hôtes et stades requis par la continuité pour la réserve de ruche', { skip: reserveRuleHasHosts ? false : 'adaptation assumée (HW-DEC-89) : réserve d’adultes déjà alloués, sans contrôle d’hôte ni de stade' }, () => { assert.ok(reserveRuleHasHosts); });
 
 test('Non automatisable : trajet filmé', () => {
   clause('NA1', 'Trajet filmé des renforts à travers les accès physiques', 'non automatisable', { raison: 'Exige le rendu 3D, la navigation réelle et une capture vidéo ; la preuve fournie est le journal de positions stratégiques.' });

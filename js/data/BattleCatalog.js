@@ -102,7 +102,7 @@ export function getBattleOperationScene(operationId) {
 /** Validate explicit deployments. A named or excluded profile can never become
  * an anonymous reserve template, even in free/crossover play. */
 export function validateBattleRoster(deployments, { mode = 'original', works = [], reserve = false } = {}) {
-  const errors = [], unique = new Set();
+  const errors = [], divergences = [], unique = new Set();
   if (!['original', 'clan_war', 'crossover', 'reconstruction'].includes(mode)) errors.push('unknown scenario mode');
   if (!Array.isArray(deployments)) return { valid: false, errors: ['roster must be an array'] };
   for (const deployment of deployments) {
@@ -120,8 +120,10 @@ export function validateBattleRoster(deployments, { mode = 'original', works = [
     if (mode === 'reconstruction' && !works.includes(profile.work)) errors.push(`${profile.id}: work is outside the selected reconstruction`);
     if (e.originalWarOnly && mode === 'reconstruction' && count > 1) errors.push(`${profile.id}: mass warfare is an original variant`);
     if (e.requiresSourcePreset && !works.includes(profile.work)) errors.push(`${profile.id}: source-game preset is required`);
+    // A hypothetical mode may allow what a reconstruction refuses, but it says so (REC-007).
+    if (mode === 'crossover' && works.length && profile.work && !works.includes(profile.work)) divergences.push(`${profile.id}: from ${profile.work}, outside ${works.join(', ')} (hypothetical crossover)`);
   }
-  return { valid: errors.length === 0, errors };
+  return { valid: errors.length === 0, errors, divergences };
 }
 
 // Conservative adaptation rules, linked to the audit rather than a claim that
@@ -192,8 +194,8 @@ function commanderProfile(speciesId, boss) {
 
 // A new battle may use source-role presets. Legacy checkpoints still reconstruct
 // the original generic profiles and exact config digest.
-function applySourceSquadProfiles(group, entry, faction, profiles) {
-  const slots = sourceSquadSlots(entry.groupId, entry.profile, group.units.length);
+function applySourceSquadProfiles(group, entry, faction, profiles, { legacySourceLinks = false } = {}) {
+  const slots = sourceSquadSlots(entry.groupId, entry.profile, group.units.length, { legacySourceLinks });
   if (!slots) return;
   const preset = (entry.profile ?? 'default').replace(/[^a-zA-Z0-9_-]/g, '_');
   slots.forEach((slot, index) => {
@@ -202,6 +204,7 @@ function applySourceSquadProfiles(group, entry, faction, profiles) {
       ...genericProfile(slot.species), id, name: slot.sourceRole, species: slot.species,
       actorType: slot.actorType, role: 'soldier', sourceRole: slot.sourceRole,
       sourceTemplateId: entry.groupId, visualStatus: slot.visual,
+      ...(slot.catalogueProfileId ? { catalogueProfileId: slot.catalogueProfileId } : {}),
       visualFidelity1to1Verified: false, fidelity: 'adaptation',
       allowedFactions: [faction.id],
       provenance: 'Audit composition mapped to existing identities; visual/actions are not certified as 1:1.'
@@ -250,7 +253,7 @@ function capDetailedAgents(byFaction, groups, ceiling) {
  * not silently treated as a constructed or certified map. */
 export function getBattleOperationConfig(operationId, { playerCount = 1, budgetId, frontPositions, allowHumanController = false,
   maxDetailedAgents = 32, experimentalDetailBudget = false, rosterDetail = 'source',
-  deploymentPlan = 'authored' } = {}) {
+  deploymentPlan = 'authored', legacySourceLinks = false } = {}) {
   if (!['source', 'legacy'].includes(rosterDetail)) fail('unknown roster detail policy');
   if (!['authored', 'historical-fallback'].includes(deploymentPlan)) fail('unknown front deployment plan');
   const operation = getBattleOperation(operationId), map = getBattleMap(operation.mapId), frontSpec = getBattleFront(operation.frontId), budget = getBattleBudget(budgetId ?? operation.budgetId);
@@ -291,7 +294,7 @@ export function getBattleOperationConfig(operationId, { playerCount = 1, budgetI
       const group = { id, factionId: faction.id, frontId: fronts[Math.max(0, frontIndex)]?.id ?? fronts[0].id,
         state: category === 'reserve' ? 'reserve' : 'distant', sourceState: category, sourceTemplateIds: [entry.groupId],
         units: Array.from({ length: quantity }, (_, index) => ({ id: `${id}:${index}`, profileId: `original_${faction.species}_${index === 0 ? 'officer' : 'soldier'}`, officer: index === 0 })) };
-      if (rosterDetail === 'source') applySourceSquadProfiles(group, entry, faction, profiles);
+      if (rosterDetail === 'source') applySourceSquadProfiles(group, entry, faction, profiles, { legacySourceLinks });
       if (entry.bossId && !assignedBosses.has(entry.bossId)) {
         const boss = getBattleBoss(entry.bossId);
         const slot = rosterDetail === 'source' ? sourceCommanderSlot(entry.groupId, entry.profile, boss.id, quantity) : 0;

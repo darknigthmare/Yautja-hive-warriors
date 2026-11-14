@@ -4,7 +4,7 @@
   "perimetre": "Coutures, portes et continuité physique",
   "terrainPilote": "createOperationScene({operationId:'pilot'}) + AFF-06 (LD-18) ; contrôle AFF-14 (LD-23)",
   "seed": 0,
-  "commit": "bd866f88e1499d4e091e4e0c8611afdfb95d2336",
+  "commit": "2ecc8537ccbaf21f07b78dc4dbf083a98bcf9f32",
   "date": "2026-11-14",
   "commande": "node --test tests/recette-rec-012.test.js",
   "preuveVideo": "non produite — preuve par journal",
@@ -1014,16 +1014,10 @@
     {
       "clause": "AFF-14:routes_liees_aux_portes",
       "attendu": "Les changements physiques (portes) actualisent les itinéraires de toutes les factions (contrôle sur une seconde carte).",
-      "verdict": "échec (défaut)",
+      "verdict": "prouvé",
       "details": {
-        "routesSansPorte": [
-          "route_0",
-          "route_1"
-        ],
-        "traversablesToutesPortesFermees": [
-          "route_0",
-          "route_1"
-        ],
+        "routesSansPorte": [],
+        "traversablesToutesPortesFermees": [],
         "fronts": 3,
         "ancresCarte": [
           "insertion",

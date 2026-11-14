@@ -9,7 +9,7 @@ import { applyBattleDifficulty } from './BattleStrategy.js';
 import { validateOperationBossConfiguration } from '../data/BossEncounterValidation.js';
 import { applyExtinctionBattleVariant } from './ExtinctionBattleVariant.js';
 
-export function createOperationScene({operationId='pilot',level=LEVELS_DATA[0],players=1,layout=null,mapSeed=0,difficultyId='standard',legacyRoster=false,deploymentPlan='authored',extinctionVariant='none'}) {
+export function createOperationScene({operationId='pilot',level=LEVELS_DATA[0],players=1,layout=null,mapSeed=0,difficultyId='standard',legacyRoster=false,legacyRouteGates=false,legacySourceLinks=false,deploymentPlan='authored',extinctionVariant='none'}) {
   if(!Number.isInteger(mapSeed)||mapSeed<0||mapSeed>0xffffffff)throw new TypeError('Invalid operation map seed');
   const operation=operationId==='pilot'?null:BATTLE_OPERATIONS.find(row=>row.id===operationId);
   if(operationId!=='pilot'&&operationId!==HIVE_CONFLICT_ID&&!operation)throw new Error('Unknown battle operation');
@@ -17,7 +17,7 @@ export function createOperationScene({operationId='pilot',level=LEVELS_DATA[0],p
   if(variant)level=LEVELS_DATA.find(row=>row.id===variant.baseLevelId);
   layout??=createBattlefieldLayout({...level,mapId:variant?.id,strategicMode:true,mapSeed});
   if((layout.mapSeed??0)!==mapSeed)throw new TypeError('Operation layout seed differs from its preparation');
-  const base=operationId===HIVE_CONFLICT_ID?createHiveConflictScenario(layout,{levelId:level.id,players}):operation?bindOperationObjectivesToFronts(bindBattleOperationToLayout(getBattleOperationConfig(operation.id,{playerCount:players,rosterDetail:legacyRoster?'legacy':'source',deploymentPlan}),layout)):createBattlefieldOperation(layout,{levelId:level.id,players});
+  const base=operationId===HIVE_CONFLICT_ID?createHiveConflictScenario(layout,{levelId:level.id,players}):operation?bindOperationObjectivesToFronts(bindBattleOperationToLayout(getBattleOperationConfig(operation.id,{playerCount:players,rosterDetail:legacyRoster?'legacy':'source',deploymentPlan,legacySourceLinks}),layout,{legacyRouteGates})):createBattlefieldOperation(layout,{levelId:level.id,players});
   const config=applyBattleDifficulty(applyExtinctionBattleVariant(base,extinctionVariant),difficultyId);
   config.sceneSeed=mapSeed;
   const encounters=validateOperationBossConfiguration(config,level);

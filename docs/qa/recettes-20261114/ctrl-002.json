@@ -9,7 +9,7 @@
     1114,
     48879
   ],
-  "commit": "bd866f88e1499d4e091e4e0c8611afdfb95d2336",
+  "commit": "2ecc8537ccbaf21f07b78dc4dbf083a98bcf9f32",
   "date": "2026-11-14",
   "commande": "node --test tests/recette-ctrl-002.test.js",
   "niveau": "runtime mission (createOperationScene → BattleSimulation → BattleActorBridge → SyntheticsManager/ColonialMarinesManager réels, sans rendu WebGL)",
@@ -189,7 +189,7 @@
       "t": 12,
       "event": "joueur_sur_front",
       "frontId": "front_b",
-      "acteursDetailles": 14
+      "acteursDetailles": 11
     },
     {
       "t": 18,
@@ -202,8 +202,7 @@
       "event": "projection_totale",
       "repartition": {
         "hive|xenomorph|warrior|xenomorph|warrior": 6,
-        "human_force|synthetic|working_joe|synthetics|working_joe": 24,
-        "player_clan|yautja|clan_hunter|yautja|clan_hunter": 1
+        "human_force|synthetic|working_joe|synthetics|working_joe": 23
       }
     },
     {
@@ -295,8 +294,8 @@
       "attendu": "Les Joes détaillés par l’étape de détail sont rendus par SyntheticsManager en working_joe.",
       "verdict": "prouvé",
       "details": {
-        "player_clan|yautja|clan_hunter|yautja|clan_hunter": 4,
-        "human_force|synthetic|working_joe|synthetics|working_joe": 24,
+        "player_clan|yautja|clan_hunter|yautja|clan_hunter": 3,
+        "human_force|synthetic|working_joe|synthetics|working_joe": 22,
         "hive|xenomorph|warrior|xenomorph|warrior": 4
       }
     },
@@ -305,13 +304,12 @@
       "attendu": "Chaque Joe alloué, projeté une fois, garde son espèce et son gestionnaire ; aucune unité n’est rendue en Marine.",
       "verdict": "prouvé",
       "details": {
-        "projeteesMaintenant": 31,
+        "projeteesMaintenant": 29,
         "dejaProjetees": 10,
-        "joesMortsAvantProjection": 0,
+        "joesMortsAvantProjection": 1,
         "repartition": {
           "hive|xenomorph|warrior|xenomorph|warrior": 6,
-          "human_force|synthetic|working_joe|synthetics|working_joe": 24,
-          "player_clan|yautja|clan_hunter|yautja|clan_hunter": 1
+          "human_force|synthetic|working_joe|synthetics|working_joe": 23
         }
       }
     },

@@ -176,8 +176,7 @@ test('CTRL-082 — a saved AFF-27 mission reloads all nine roles and specialist 
   } finally { r.dispose(); }
 });
 
-test('CTRL-082 — each allocated place keeps the catalogue profile ID of its Extinction role (HUM-001/002/003/036-041)',
-  { todo: 'défaut: js/data/BattleCatalog.js:195-210 (applySourceSquadProfiles) ne recopie aucun identifiant HUM-0xx dans les profils source_* ; js/data/SourceBattleRoster.js:4-23 ne porte que actorType/sourceRole' }, () => {
+test('CTRL-082 — each allocated place keeps the catalogue profile ID of its Extinction role (HUM-001/002/003/036-041)', () => {
   const config = createOperationScene({ operationId: OPERATION, mapSeed: SEED }).config;
   const used = config.profiles.filter(p => /_GRP-60_/.test(p.id));
   const linked = used.filter(p => /^HUM-0(0[123]|3[6-9]|4[01])$/.test(p.sourceProfileId ?? p.catalogueProfileId ?? ''));

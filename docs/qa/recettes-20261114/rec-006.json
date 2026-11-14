@@ -3,8 +3,15 @@
  "titre": "Renforts physiques et ressources de ruche",
  "source": "docs/audits/2026-10-26/Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.xlsx#Validation!REC-006",
  "dateExecution": "2026-11-14",
- "commit": "bd866f88e1499d4e091e4e0c8611afdfb95d2336",
- "sourcesJsNonCommitees": [],
+ "commit": "2ecc8537ccbaf21f07b78dc4dbf083a98bcf9f32",
+ "sourcesJsNonCommitees": [
+  " M js/battlefield/BattleSimulation.js",
+  " M js/battlefield/BattlefieldOperation.js",
+  " M js/battlefield/OperationScene.js",
+  " M js/data/BattleCatalog.js",
+  " M js/data/SourceBattleRoster.js",
+  " M js/main.js"
+ ],
  "graine": {
   "operation": "AFF-18",
   "budget": "EFF-03",
@@ -93,7 +100,7 @@
     "label": "nouvelle vague après coupure",
     "result": {
      "accepted": true,
-     "groupId": "AFF-18:hive:106",
+     "groupId": "AFF-18:hive:101",
      "factionId": "hive",
      "sourceId": "front_b",
      "frontId": "front_a",
@@ -141,7 +148,7 @@
    {
     "t": 41,
     "accepted": true,
-    "groupId": "AFF-18:hive:106",
+    "groupId": "AFF-18:hive:101",
     "factionId": "hive",
     "sourceId": "front_b",
     "frontId": "front_a",
@@ -184,268 +191,268 @@
     ],
     [
      20.25,
-     336,
-     664,
+     352,
+     648,
      0,
      4
     ],
     [
      30.25,
-     328,
-     672,
-     0,
+     352,
+     647,
+     1,
      2
     ],
     [
      40.25,
-     320,
-     680,
-     0,
+     352,
+     647,
+     1,
      0
     ],
     [
      50.25,
-     304,
-     696,
-     0,
+     344,
+     655,
+     1,
      0
     ],
     [
      60.25,
-     288,
-     712,
-     0,
+     336,
+     663,
+     1,
      0
     ],
     [
      70.25,
-     288,
-     712,
-     0,
+     336,
+     663,
+     1,
      0
     ],
     [
      80.25,
-     288,
-     712,
-     0,
+     336,
+     663,
+     1,
      0
     ],
     [
      90.25,
-     288,
-     712,
-     0,
+     336,
+     663,
+     1,
      0
     ],
     [
      100.25,
-     288,
-     712,
-     0,
+     336,
+     663,
+     1,
      0
     ],
     [
      110.25,
-     288,
-     712,
-     0,
+     336,
+     663,
+     1,
      0
     ],
     [
      120.25,
-     288,
-     712,
-     0,
+     336,
+     663,
+     1,
      0
     ],
     [
      130.25,
-     288,
-     712,
-     0,
+     336,
+     663,
+     1,
      0
     ],
     [
      140.25,
-     288,
-     712,
-     0,
+     336,
+     663,
+     1,
      0
     ],
     [
      150.25,
-     288,
-     712,
-     0,
+     336,
+     663,
+     1,
      0
     ],
     [
      160.25,
-     288,
-     712,
-     0,
+     336,
+     663,
+     1,
      0
     ],
     [
      170.25,
-     288,
-     712,
-     0,
+     336,
+     663,
+     1,
      0
     ],
     [
      180.25,
-     288,
-     712,
-     0,
+     336,
+     663,
+     1,
      0
     ],
     [
      190.25,
-     288,
-     712,
-     0,
+     336,
+     663,
+     1,
      0
     ],
     [
      200.25,
-     288,
-     712,
-     0,
+     336,
+     663,
+     1,
      0
     ],
     [
      210.25,
-     288,
-     712,
-     0,
+     336,
+     663,
+     1,
      0
     ],
     [
      220.25,
-     288,
-     712,
-     0,
+     336,
+     663,
+     1,
      0
     ],
     [
      230.25,
-     288,
-     712,
-     0,
+     336,
+     663,
+     1,
      0
     ],
     [
      240.25,
-     288,
-     712,
-     0,
+     336,
+     663,
+     1,
      0
     ],
     [
      250.25,
-     288,
-     712,
-     0,
+     336,
+     663,
+     1,
      0
     ],
     [
      260.25,
-     288,
-     712,
-     0,
+     336,
+     663,
+     1,
      0
     ],
     [
      270.25,
-     288,
-     712,
-     0,
+     336,
+     663,
+     1,
      0
     ],
     [
      280.25,
-     288,
-     712,
-     0,
+     336,
+     663,
+     1,
      0
     ],
     [
      290.25,
-     288,
-     712,
-     0,
+     336,
+     663,
+     1,
      0
     ],
     [
      300.25,
-     288,
-     712,
-     0,
+     336,
+     663,
+     1,
      0
     ],
     [
      310.25,
-     288,
-     712,
-     0,
+     336,
+     663,
+     1,
      0
     ],
     [
      320.25,
-     288,
-     712,
-     0,
+     336,
+     663,
+     1,
      0
     ],
     [
      330.25,
-     288,
-     712,
-     0,
+     336,
+     663,
+     1,
      0
     ],
     [
      340.25,
-     288,
-     712,
-     0,
+     336,
+     663,
+     1,
      0
     ],
     [
      350.25,
-     288,
-     712,
-     0,
+     336,
+     663,
+     1,
      0
     ],
     [
      360.25,
-     288,
-     712,
-     0,
+     336,
+     663,
+     1,
      0
     ],
     [
      370.25,
-     288,
-     712,
-     0,
+     336,
+     663,
+     1,
      0
     ],
     [
      380.25,
-     288,
-     712,
-     0,
+     336,
+     663,
+     1,
      0
     ],
     [
      390.25,
-     288,
-     712,
-     0,
+     336,
+     663,
+     1,
      0
     ]
    ]
@@ -468,27 +475,11 @@
     11
    ],
    [
-    8,
-    "AFF-18:hive:101",
-    "front_b",
-    "front_c",
-    8,
-    11
-   ],
-   [
     16,
     "AFF-18:player_clan:146",
     "front_a",
     "front_a",
     2,
-    19
-   ],
-   [
-    16,
-    "AFF-18:hive:102",
-    "front_b",
-    "front_c",
-    8,
     19
    ],
    [
@@ -500,14 +491,6 @@
     27
    ],
    [
-    24,
-    "AFF-18:hive:103",
-    "front_b",
-    "front_c",
-    8,
-    27
-   ],
-   [
     32,
     "AFF-18:player_clan:148",
     "front_a",
@@ -516,24 +499,8 @@
     35
    ],
    [
-    32,
-    "AFF-18:hive:104",
-    "front_b",
-    "front_c",
-    8,
-    35
-   ],
-   [
-    40,
-    "AFF-18:hive:105",
-    "front_b",
-    "front_c",
-    8,
-    43
-   ],
-   [
     41,
-    "AFF-18:hive:106",
+    "AFF-18:hive:101",
     "front_b",
     "front_a",
     8,
@@ -541,19 +508,11 @@
    ],
    [
     48,
-    "AFF-18:hive:107",
+    "AFF-18:hive:102",
     "front_b",
     "front_c",
     8,
     51
-   ],
-   [
-    56,
-    "AFF-18:hive:108",
-    "front_b",
-    "front_c",
-    8,
-    59
    ]
   ],
   "arrivees": [
@@ -570,22 +529,10 @@
     "front_a"
    ],
    [
-    11,
-    "AFF-18:hive:101",
-    "front_b",
-    "front_c"
-   ],
-   [
     19,
     "AFF-18:player_clan:146",
     "front_a",
     "front_a"
-   ],
-   [
-    19,
-    "AFF-18:hive:102",
-    "front_b",
-    "front_c"
    ],
    [
     27,
@@ -594,44 +541,20 @@
     "front_a"
    ],
    [
-    27,
-    "AFF-18:hive:103",
-    "front_b",
-    "front_c"
-   ],
-   [
     35,
     "AFF-18:player_clan:148",
     "front_a",
     "front_a"
    ],
    [
-    35,
-    "AFF-18:hive:104",
-    "front_b",
-    "front_c"
-   ],
-   [
-    43,
-    "AFF-18:hive:105",
-    "front_b",
-    "front_c"
-   ],
-   [
     44,
-    "AFF-18:hive:106",
+    "AFF-18:hive:101",
     "front_b",
     "front_a"
    ],
    [
     51,
-    "AFF-18:hive:107",
-    "front_b",
-    "front_c"
-   ],
-   [
-    59,
-    "AFF-18:hive:108",
+    "AFF-18:hive:102",
     "front_b",
     "front_c"
    ]
@@ -673,7 +596,7 @@
     ]
    },
    "evenementSimulation": {
-    "id": 640,
+    "id": 618,
     "time": 63,
     "type": "source_disabled",
     "priority": 3,
@@ -705,7 +628,8 @@
   {
    "id": "C5b",
    "texte": "Profil biologique : hôtes et stades requis par la continuité contrôlés pour les réserves de ruche",
-   "verdict": "échec",
+   "verdict": "adaptation assumée (HW-DEC-89)",
+   "decision": "HW-DEC-89 : la réserve de ruche reste faite d’adultes déjà alloués ; adaptation de gameplay écrite dans la bible, effectifs inchangés.",
    "defaut": "Lacune : les réserves de ruche sont des adultes pré-alloués (js/data/BattleCatalog.js:284-318, state \"reserve\") ; BattleSimulation.requestReinforcements (js/battlefield/BattleSimulation.js:923-936) ne consulte ni hôte ni stade. Seule l’infestation d’hôte AFF-27 (js/battlefield/HostInfestation.js:6-9) a une durée explicite et ne produit aucun adulte.",
    "reproduction": "createOperationScene({operationId:\"AFF-18\",mapSeed:0}) ; sim.requestReinforcements(\"hive\",\"front_a\") accepté sans aucun hôte disponible."
   },
@@ -714,10 +638,10 @@
    "texte": "Les arrivées consomment une réserve (relevés de réserve)",
    "verdict": "prouvé",
    "reserveInitiale": 360,
-   "reserveFinale": 288,
-   "consommee": 72,
-   "arriveesRuche": 9,
-   "unitesArrivees": 72,
+   "reserveFinale": 336,
+   "consommee": 24,
+   "arriveesRuche": 3,
+   "unitesArrivees": 24,
    "annonceeAvantArrivee": true,
    "depuisLeurSource": true
   },
@@ -736,7 +660,7 @@
    "vagueEnTransit": {
     "groupId": "AFF-18:hive:100",
     "evenement": {
-     "id": 601,
+     "id": 583,
      "time": 40,
      "type": "order_blocked",
      "priority": 2,
@@ -757,11 +681,11 @@
     ]
    },
    "vagueSuivante": {
-    "groupId": "AFF-18:hive:106",
+    "groupId": "AFF-18:hive:101",
     "demande": {
      "t": 41,
      "accepted": true,
-     "groupId": "AFF-18:hive:106",
+     "groupId": "AFF-18:hive:101",
      "factionId": "hive",
      "sourceId": "front_b",
      "frontId": "front_a",
@@ -769,26 +693,26 @@
      "count": 8
     },
     "arrivee": {
-     "id": 606,
+     "id": 586,
      "time": 44,
      "type": "reinforcements_arrived",
      "priority": 2,
-     "groupId": "AFF-18:hive:106",
+     "groupId": "AFF-18:hive:101",
      "sourceId": "front_b",
      "targetFrontId": "front_a"
     },
     "ordre": {
-     "id": 605,
+     "id": 585,
      "time": 44,
      "type": "group_order",
      "priority": 1,
-     "groupId": "AFF-18:hive:106",
+     "groupId": "AFF-18:hive:101",
      "order": {
       "type": "attack",
       "frontId": "front_a",
       "issuer": "scenario",
       "issuedAt": 44,
-      "sequence": 605
+      "sequence": 585
      },
      "replaces": true
     },
@@ -818,135 +742,135 @@
    "reserveApres": [
     [
      70.25,
-     288
+     336
     ],
     [
      80.25,
-     288
+     336
     ],
     [
      90.25,
-     288
+     336
     ],
     [
      100.25,
-     288
+     336
     ],
     [
      110.25,
-     288
+     336
     ],
     [
      120.25,
-     288
+     336
     ],
     [
      130.25,
-     288
+     336
     ],
     [
      140.25,
-     288
+     336
     ],
     [
      150.25,
-     288
+     336
     ],
     [
      160.25,
-     288
+     336
     ],
     [
      170.25,
-     288
+     336
     ],
     [
      180.25,
-     288
+     336
     ],
     [
      190.25,
-     288
+     336
     ],
     [
      200.25,
-     288
+     336
     ],
     [
      210.25,
-     288
+     336
     ],
     [
      220.25,
-     288
+     336
     ],
     [
      230.25,
-     288
+     336
     ],
     [
      240.25,
-     288
+     336
     ],
     [
      250.25,
-     288
+     336
     ],
     [
      260.25,
-     288
+     336
     ],
     [
      270.25,
-     288
+     336
     ],
     [
      280.25,
-     288
+     336
     ],
     [
      290.25,
-     288
+     336
     ],
     [
      300.25,
-     288
+     336
     ],
     [
      310.25,
-     288
+     336
     ],
     [
      320.25,
-     288
+     336
     ],
     [
      330.25,
-     288
+     336
     ],
     [
      340.25,
-     288
+     336
     ],
     [
      350.25,
-     288
+     336
     ],
     [
      360.25,
-     288
+     336
     ],
     [
      370.25,
-     288
+     336
     ],
     [
      380.25,
-     288
+     336
     ],
     [
      390.25,
-     288
+     336
     ]
    ],
    "annulationsApres": []

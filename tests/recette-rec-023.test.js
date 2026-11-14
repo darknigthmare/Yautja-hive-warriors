@@ -48,8 +48,10 @@ const run = (() => {
   let sharedGroup = null, rewardIds = [];
   at(20, 'J2 lance le sabotage du tunnel B', () => { const task = objectives.spec.tasks.find(t => t.id === 'tunnel_one'); p2.position = [...task.position]; return objectives.interact({ ...p2 }); });
   at(20.5, 'J1 tente le même dispositif (même tâche)', () => { const saved = [...p1.position]; const task = objectives.spec.tasks.find(t => t.id === 'tunnel_one'); const answer = objectives.interact({ id: 'player1', hp: 100, position: task.position }); p1.position = saved; return answer; });
+  let detailedBeforeOverlap = new Set();
+  at(59.75, 'groupes déjà détaillés sur A avant le chevauchement', () => { detailedBeforeOverlap = new Set([...sim.groups.values()].filter(g => g.materialized && g.frontId === 'front_a' && g.factionId === 'hive').map(g => g.id)); return { groupes: [...detailedBeforeOverlap] }; });
   at(60, 'J2 rejoint la zone de J1 (chevauchement des bulles)', () => { p2.position = [front('front_a').position[0] + 10, front('front_a').position[1] + 6]; return { p2: p2.position }; });
-  at(61, 'groupe partagé repéré dans les deux bulles', () => { sharedGroup = [...sim.groups.values()].find(g => g.materialized && g.frontId === 'front_a' && g.factionId === 'hive')?.id ?? null; return { sharedGroup }; });
+  at(61, 'groupe partagé repéré dans les deux bulles', () => { sharedGroup = [...sim.groups.values()].find(g => g.materialized && g.frontId === 'front_a' && g.factionId === 'hive' && detailedBeforeOverlap.has(g.id))?.id ?? null; return { sharedGroup }; });
   const nearBoss = offset => { const b = sim.units.get(bossId).position; return [b[0] - 30, b[1] + offset]; };
   at(100, 'J1 passe par le boss nommé (front C, à 30 m)', () => { p1.position = nearBoss(0); return { p1: p1.position, boss: sim.getUnit(bossId).position, etatBoss: sim.getUnit(bossId).state }; });
   at(110, 'J2 passe par le boss nommé (front C, à 30 m)', () => { p2.position = nearBoss(8); return { p2: p2.position, etatBoss: sim.getUnit(bossId).state }; });

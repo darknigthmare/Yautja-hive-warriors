@@ -3,8 +3,15 @@
  "titre": "Passage entre combat proche et simulation distante",
  "source": "docs/audits/2026-10-26/Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.xlsx#Validation!REC-005",
  "dateExecution": "2026-11-14",
- "commit": "bd866f88e1499d4e091e4e0c8611afdfb95d2336",
- "sourcesJsNonCommitees": [],
+ "commit": "2ecc8537ccbaf21f07b78dc4dbf083a98bcf9f32",
+ "sourcesJsNonCommitees": [
+  " M js/battlefield/BattleSimulation.js",
+  " M js/battlefield/BattlefieldOperation.js",
+  " M js/battlefield/OperationScene.js",
+  " M js/data/BattleCatalog.js",
+  " M js/data/SourceBattleRoster.js",
+  " M js/main.js"
+ ],
  "graine": {
   "configuration": "rec-005-fixture (aucun aléa)",
   "operationB": "AFF-18",
@@ -16,7 +23,7 @@
  "scenarios": {
   "B": {
    "operation": "AFF-18",
-   "dematerialisationsSousLeJoueur": 4
+   "dematerialisationsSousLeJoueur": 0
   },
   "A": {
    "configuration": "rec-005-fixture",
@@ -178,7 +185,7 @@
       {
        "id": "wounded-0",
        "state": "distant",
-       "hp": 298.555,
+       "hp": 300,
        "incapacitated": false,
        "position": [
         235.5,
@@ -188,7 +195,7 @@
       {
        "id": "wounded-1",
        "state": "distant",
-       "hp": 118.555,
+       "hp": 120,
        "incapacitated": false,
        "position": [
         238.5,
@@ -198,7 +205,7 @@
       {
        "id": "wounded-2",
        "state": "distant",
-       "hp": 208.555,
+       "hp": 210,
        "incapacitated": false,
        "position": [
         241.5,
@@ -208,7 +215,7 @@
       {
        "id": "wounded-3",
        "state": "distant",
-       "hp": 88.555,
+       "hp": 84.22,
        "incapacitated": true,
        "position": [
         265.045,
@@ -245,7 +252,7 @@
       {
        "id": "wounded-0",
        "state": "distant",
-       "hp": 289.885,
+       "hp": 300,
        "incapacitated": false,
        "position": [
         235.5,
@@ -255,7 +262,7 @@
       {
        "id": "wounded-1",
        "state": "distant",
-       "hp": 109.885,
+       "hp": 120,
        "incapacitated": false,
        "position": [
         238.5,
@@ -265,7 +272,7 @@
       {
        "id": "wounded-2",
        "state": "distant",
-       "hp": 199.885,
+       "hp": 210,
        "incapacitated": false,
        "position": [
         241.5,
@@ -275,7 +282,7 @@
       {
        "id": "wounded-3",
        "state": "distant",
-       "hp": 79.885,
+       "hp": 49.54,
        "incapacitated": true,
        "position": [
         265.045,
@@ -312,7 +319,7 @@
       {
        "id": "wounded-0",
        "state": "active",
-       "hp": 289.885,
+       "hp": 300,
        "incapacitated": false,
        "position": [
         235.5,
@@ -322,7 +329,7 @@
       {
        "id": "wounded-1",
        "state": "active",
-       "hp": 109.885,
+       "hp": 120,
        "incapacitated": false,
        "position": [
         238.5,
@@ -332,7 +339,7 @@
       {
        "id": "wounded-2",
        "state": "active",
-       "hp": 199.885,
+       "hp": 210,
        "incapacitated": false,
        "position": [
         241.5,
@@ -342,7 +349,7 @@
       {
        "id": "wounded-3",
        "state": "active",
-       "hp": 79.885,
+       "hp": 49.54,
        "incapacitated": true,
        "position": [
         265.045,
@@ -379,7 +386,7 @@
       {
        "id": "wounded-0",
        "state": "distant",
-       "hp": 288.44,
+       "hp": 300,
        "incapacitated": false,
        "position": [
         235.5,
@@ -389,7 +396,7 @@
       {
        "id": "wounded-1",
        "state": "distant",
-       "hp": 108.44,
+       "hp": 120,
        "incapacitated": false,
        "position": [
         238.5,
@@ -399,7 +406,7 @@
       {
        "id": "wounded-2",
        "state": "distant",
-       "hp": 198.44,
+       "hp": 210,
        "incapacitated": false,
        "position": [
         241.5,
@@ -409,7 +416,7 @@
       {
        "id": "wounded-3",
        "state": "distant",
-       "hp": 78.44,
+       "hp": 43.76,
        "incapacitated": true,
        "position": [
         265.045,
@@ -446,7 +453,7 @@
       {
        "id": "wounded-0",
        "state": "distant",
-       "hp": 279.77,
+       "hp": 300,
        "incapacitated": false,
        "position": [
         235.5,
@@ -456,7 +463,7 @@
       {
        "id": "wounded-1",
        "state": "distant",
-       "hp": 99.77,
+       "hp": 120,
        "incapacitated": false,
        "position": [
         238.5,
@@ -466,7 +473,7 @@
       {
        "id": "wounded-2",
        "state": "distant",
-       "hp": 189.77,
+       "hp": 210,
        "incapacitated": false,
        "position": [
         241.5,
@@ -476,7 +483,7 @@
       {
        "id": "wounded-3",
        "state": "distant",
-       "hp": 69.77,
+       "hp": 9.08,
        "incapacitated": true,
        "position": [
         265.045,
@@ -513,7 +520,7 @@
       {
        "id": "wounded-0",
        "state": "active",
-       "hp": 279.77,
+       "hp": 300,
        "incapacitated": false,
        "position": [
         235.5,
@@ -523,7 +530,7 @@
       {
        "id": "wounded-1",
        "state": "active",
-       "hp": 99.77,
+       "hp": 120,
        "incapacitated": false,
        "position": [
         238.5,
@@ -533,7 +540,7 @@
       {
        "id": "wounded-2",
        "state": "active",
-       "hp": 189.77,
+       "hp": 210,
        "incapacitated": false,
        "position": [
         241.5,
@@ -543,7 +550,7 @@
       {
        "id": "wounded-3",
        "state": "active",
-       "hp": 69.77,
+       "hp": 9.08,
        "incapacitated": true,
        "position": [
         265.045,
@@ -580,7 +587,7 @@
       {
        "id": "wounded-0",
        "state": "distant",
-       "hp": 278.325,
+       "hp": 300,
        "incapacitated": false,
        "position": [
         235.5,
@@ -590,7 +597,7 @@
       {
        "id": "wounded-1",
        "state": "distant",
-       "hp": 98.325,
+       "hp": 120,
        "incapacitated": false,
        "position": [
         238.5,
@@ -600,7 +607,7 @@
       {
        "id": "wounded-2",
        "state": "distant",
-       "hp": 188.325,
+       "hp": 210,
        "incapacitated": false,
        "position": [
         241.5,
@@ -610,7 +617,7 @@
       {
        "id": "wounded-3",
        "state": "distant",
-       "hp": 68.325,
+       "hp": 3.3,
        "incapacitated": true,
        "position": [
         265.045,
@@ -642,12 +649,12 @@
      },
      "path": [],
      "reconstitution": null,
-     "morale": 70,
+     "morale": 68,
      "units": [
       {
        "id": "wounded-0",
        "state": "distant",
-       "hp": 269.655,
+       "hp": 300,
        "incapacitated": false,
        "position": [
         235.5,
@@ -667,7 +674,7 @@
       {
        "id": "wounded-2",
        "state": "distant",
-       "hp": 179.655,
+       "hp": 210,
        "incapacitated": false,
        "position": [
         241.5,
@@ -676,9 +683,9 @@
       },
       {
        "id": "wounded-3",
-       "state": "distant",
-       "hp": 59.655,
-       "incapacitated": true,
+       "state": "dead",
+       "hp": 0,
+       "incapacitated": false,
        "position": [
         265.045,
         5.136
@@ -690,7 +697,9 @@
       "human": 4,
       "hive": 0
      },
-     "deaths": []
+     "deaths": [
+      "wounded-3"
+     ]
     },
     {
      "label": "cycle 3 : joueur revenu (front B)",
@@ -709,15 +718,15 @@
      },
      "path": [],
      "reconstitution": null,
-     "morale": 70,
+     "morale": 68,
      "units": [
       {
        "id": "wounded-0",
        "state": "active",
-       "hp": 269.655,
+       "hp": 300,
        "incapacitated": false,
        "position": [
-        235.5,
+        237,
         0
        ]
       },
@@ -727,25 +736,25 @@
        "hp": 89.655,
        "incapacitated": false,
        "position": [
-        238.5,
+        240,
         0
        ]
       },
       {
        "id": "wounded-2",
        "state": "active",
-       "hp": 179.655,
+       "hp": 210,
        "incapacitated": false,
        "position": [
-        241.5,
+        243,
         0
        ]
       },
       {
        "id": "wounded-3",
-       "state": "active",
-       "hp": 59.655,
-       "incapacitated": true,
+       "state": "dead",
+       "hp": 0,
+       "incapacitated": false,
        "position": [
         265.045,
         5.136
@@ -757,7 +766,9 @@
       "human": 4,
       "hive": 0
      },
-     "deaths": []
+     "deaths": [
+      "wounded-3"
+     ]
     },
     {
      "label": "avant retraite",
@@ -776,15 +787,15 @@
      },
      "path": [],
      "reconstitution": null,
-     "morale": 70,
+     "morale": 68,
      "units": [
       {
        "id": "wounded-0",
        "state": "active",
-       "hp": 269.655,
+       "hp": 300,
        "incapacitated": false,
        "position": [
-        235.5,
+        237,
         0
        ]
       },
@@ -794,25 +805,25 @@
        "hp": 89.655,
        "incapacitated": false,
        "position": [
-        238.5,
+        240,
         0
        ]
       },
       {
        "id": "wounded-2",
        "state": "active",
-       "hp": 179.655,
+       "hp": 210,
        "incapacitated": false,
        "position": [
-        241.5,
+        243,
         0
        ]
       },
       {
        "id": "wounded-3",
-       "state": "active",
-       "hp": 59.655,
-       "incapacitated": true,
+       "state": "dead",
+       "hp": 0,
+       "incapacitated": false,
        "position": [
         265.045,
         5.136
@@ -824,15 +835,17 @@
       "human": 4,
       "hive": 0
      },
-     "deaths": []
+     "deaths": [
+      "wounded-3"
+     ]
     },
     {
      "label": "retraite, tronçon 1 (joueur proche)",
      "t": 89.75,
      "frontId": "b",
      "position": [
-      208.811,
-      29.617
+      240,
+      0
      ],
      "materialized": true,
      "state": "active",
@@ -848,16 +861,16 @@
       "required": true,
       "returnFrontId": "b"
      },
-     "morale": 70,
+     "morale": 68,
      "units": [
       {
        "id": "wounded-0",
        "state": "active",
-       "hp": 269.655,
+       "hp": 300,
        "incapacitated": false,
        "position": [
-        208.754,
-        34.086
+        237,
+        0
        ]
       },
       {
@@ -866,25 +879,25 @@
        "hp": 89.655,
        "incapacitated": false,
        "position": [
-        208.793,
-        31.117
+        240,
+        0
        ]
       },
       {
        "id": "wounded-2",
        "state": "active",
-       "hp": 179.655,
+       "hp": 210,
        "incapacitated": false,
        "position": [
-        208.83,
-        28.118
+        243,
+        0
        ]
       },
       {
        "id": "wounded-3",
-       "state": "active",
-       "hp": 59.655,
-       "incapacitated": true,
+       "state": "dead",
+       "hp": 0,
+       "incapacitated": false,
        "position": [
         265.045,
         5.136
@@ -896,14 +909,16 @@
       "human": 4,
       "hive": 0
      },
-     "deaths": []
+     "deaths": [
+      "wounded-3"
+     ]
     },
     {
      "label": "retraite, tronçon 2 (joueur éloigné)",
      "t": 97.75,
      "frontId": "b",
      "position": [
-      232.477,
+      231.25,
       30
      ],
      "materialized": false,
@@ -920,16 +935,16 @@
       "required": true,
       "returnFrontId": "b"
      },
-     "morale": 70,
+     "morale": 68,
      "units": [
       {
        "id": "wounded-0",
        "state": "distant",
-       "hp": 269.655,
+       "hp": 300,
        "incapacitated": false,
        "position": [
-        232.439,
-        32.979
+        228.25,
+        30
        ]
       },
       {
@@ -938,25 +953,25 @@
        "hp": 89.655,
        "incapacitated": false,
        "position": [
-        232.478,
-        30.01
+        231.25,
+        30
        ]
       },
       {
        "id": "wounded-2",
        "state": "distant",
-       "hp": 179.655,
+       "hp": 210,
        "incapacitated": false,
        "position": [
-        232.515,
-        27.01
+        234.25,
+        30
        ]
       },
       {
        "id": "wounded-3",
-       "state": "distant",
-       "hp": 59.655,
-       "incapacitated": true,
+       "state": "dead",
+       "hp": 0,
+       "incapacitated": false,
        "position": [
         265.045,
         5.136
@@ -968,14 +983,16 @@
       "human": 4,
       "hive": 0
      },
-     "deaths": []
+     "deaths": [
+      "wounded-3"
+     ]
     },
     {
      "label": "retraite, tronçon 3 (joueur proche)",
      "t": 105.75,
      "frontId": "b",
      "position": [
-      192.477,
+      191.25,
       30
      ],
      "materialized": false,
@@ -992,16 +1009,16 @@
       "required": true,
       "returnFrontId": "b"
      },
-     "morale": 70,
+     "morale": 68,
      "units": [
       {
        "id": "wounded-0",
        "state": "distant",
-       "hp": 269.655,
+       "hp": 300,
        "incapacitated": false,
        "position": [
-        192.439,
-        32.979
+        188.25,
+        30
        ]
       },
       {
@@ -1010,25 +1027,25 @@
        "hp": 89.655,
        "incapacitated": false,
        "position": [
-        192.478,
-        30.01
+        191.25,
+        30
        ]
       },
       {
        "id": "wounded-2",
        "state": "distant",
-       "hp": 179.655,
+       "hp": 210,
        "incapacitated": false,
        "position": [
-        192.515,
-        27.01
+        194.25,
+        30
        ]
       },
       {
        "id": "wounded-3",
-       "state": "distant",
-       "hp": 59.655,
-       "incapacitated": true,
+       "state": "dead",
+       "hp": 0,
+       "incapacitated": false,
        "position": [
         265.045,
         5.136
@@ -1040,14 +1057,16 @@
       "human": 4,
       "hive": 0
      },
-     "deaths": []
+     "deaths": [
+      "wounded-3"
+     ]
     },
     {
      "label": "retraite, tronçon 4 (joueur éloigné)",
      "t": 113.75,
      "frontId": "b",
      "position": [
-      152.477,
+      151.25,
       30
      ],
      "materialized": false,
@@ -1064,16 +1083,16 @@
       "required": true,
       "returnFrontId": "b"
      },
-     "morale": 70,
+     "morale": 68,
      "units": [
       {
        "id": "wounded-0",
        "state": "distant",
-       "hp": 269.655,
+       "hp": 300,
        "incapacitated": false,
        "position": [
-        152.439,
-        32.979
+        148.25,
+        30
        ]
       },
       {
@@ -1082,25 +1101,25 @@
        "hp": 89.655,
        "incapacitated": false,
        "position": [
-        152.478,
-        30.01
+        151.25,
+        30
        ]
       },
       {
        "id": "wounded-2",
        "state": "distant",
-       "hp": 179.655,
+       "hp": 210,
        "incapacitated": false,
        "position": [
-        152.515,
-        27.01
+        154.25,
+        30
        ]
       },
       {
        "id": "wounded-3",
-       "state": "distant",
-       "hp": 59.655,
-       "incapacitated": true,
+       "state": "dead",
+       "hp": 0,
+       "incapacitated": false,
        "position": [
         265.045,
         5.136
@@ -1112,7 +1131,9 @@
       "human": 4,
       "hive": 0
      },
-     "deaths": []
+     "deaths": [
+      "wounded-3"
+     ]
     },
     {
      "label": "retraite, tronçon 5 (joueur proche)",
@@ -1120,7 +1141,7 @@
      "frontId": "b",
      "position": [
       120,
-      22.477
+      21.25
      ],
      "materialized": false,
      "state": "distant",
@@ -1136,16 +1157,16 @@
       "required": true,
       "returnFrontId": "b"
      },
-     "morale": 70,
+     "morale": 68,
      "units": [
       {
        "id": "wounded-0",
        "state": "distant",
-       "hp": 269.655,
+       "hp": 300,
        "incapacitated": false,
        "position": [
-        119.962,
-        25.457
+        117,
+        21.25
        ]
       },
       {
@@ -1154,25 +1175,25 @@
        "hp": 89.655,
        "incapacitated": false,
        "position": [
-        120.001,
-        22.488
+        120,
+        21.25
        ]
       },
       {
        "id": "wounded-2",
        "state": "distant",
-       "hp": 179.655,
+       "hp": 210,
        "incapacitated": false,
        "position": [
-        120.038,
-        19.488
+        123,
+        21.25
        ]
       },
       {
        "id": "wounded-3",
-       "state": "distant",
-       "hp": 59.655,
-       "incapacitated": true,
+       "state": "dead",
+       "hp": 0,
+       "incapacitated": false,
        "position": [
         265.045,
         5.136
@@ -1184,14 +1205,16 @@
       "human": 4,
       "hive": 0
      },
-     "deaths": []
+     "deaths": [
+      "wounded-3"
+     ]
     },
     {
      "label": "retraite, tronçon 6 (joueur éloigné)",
      "t": 129.75,
      "frontId": "b",
      "position": [
-      102.477,
+      101.25,
       0
      ],
      "materialized": false,
@@ -1208,16 +1231,16 @@
       "required": true,
       "returnFrontId": "b"
      },
-     "morale": 70,
+     "morale": 68,
      "units": [
       {
        "id": "wounded-0",
        "state": "distant",
-       "hp": 269.655,
+       "hp": 300,
        "incapacitated": false,
        "position": [
-        102.439,
-        2.979
+        98.25,
+        0
        ]
       },
       {
@@ -1226,25 +1249,25 @@
        "hp": 89.655,
        "incapacitated": false,
        "position": [
-        102.478,
-        0.01
+        101.25,
+        0
        ]
       },
       {
        "id": "wounded-2",
        "state": "distant",
-       "hp": 179.655,
+       "hp": 210,
        "incapacitated": false,
        "position": [
-        102.515,
-        -2.99
+        104.25,
+        0
        ]
       },
       {
        "id": "wounded-3",
-       "state": "distant",
-       "hp": 59.655,
-       "incapacitated": true,
+       "state": "dead",
+       "hp": 0,
+       "incapacitated": false,
        "position": [
         265.045,
         5.136
@@ -1256,7 +1279,9 @@
       "human": 0,
       "hive": 0
      },
-     "deaths": []
+     "deaths": [
+      "wounded-3"
+     ]
     },
     {
      "label": "retraite terminée, joueur éloigné",
@@ -1283,11 +1308,11 @@
       {
        "id": "wounded-0",
        "state": "distant",
-       "hp": 269.655,
+       "hp": 300,
        "incapacitated": false,
        "position": [
-        -0.038,
-        2.979
+        -3,
+        0
        ]
       },
       {
@@ -1296,25 +1321,25 @@
        "hp": 89.655,
        "incapacitated": false,
        "position": [
-        0.001,
-        0.01
+        0,
+        0
        ]
       },
       {
        "id": "wounded-2",
        "state": "distant",
-       "hp": 179.655,
+       "hp": 210,
        "incapacitated": false,
        "position": [
-        0.038,
-        -2.99
+        3,
+        0
        ]
       },
       {
        "id": "wounded-3",
-       "state": "distant",
-       "hp": 59.655,
-       "incapacitated": true,
+       "state": "dead",
+       "hp": 0,
+       "incapacitated": false,
        "position": [
         265.045,
         5.136
@@ -1326,7 +1351,9 @@
       "human": 0,
       "hive": 0
      },
-     "deaths": []
+     "deaths": [
+      "wounded-3"
+     ]
     }
    ],
    "changementsDeNiveau": [
@@ -1363,19 +1390,19 @@
     [
      76.75,
      "group_materialized",
-     4
+     3
     ],
     [
      90,
      "group_dematerialized",
-     4
+     3
     ]
    ],
    "traverseeDeSecteur": [
     [
      82,
      [
-      238.5,
+      240,
       0
      ],
      true,
@@ -1385,8 +1412,8 @@
     [
      82.25,
      [
-      237.01,
-      0.07
+      240,
+      0
      ],
      true,
      "ab",
@@ -1395,8 +1422,8 @@
     [
      82.5,
      [
-      235.52,
-      0.22
+      240,
+      0
      ],
      true,
      "ab",
@@ -1405,8 +1432,8 @@
     [
      82.75,
      [
-      234.04,
-      0.44
+      240,
+      0
      ],
      true,
      "ab",
@@ -1415,8 +1442,8 @@
     [
      83,
      [
-      232.58,
-      0.74
+      240,
+      0
      ],
      true,
      "ab",
@@ -1425,8 +1452,8 @@
     [
      83.25,
      [
-      231.14,
-      1.1
+      240,
+      0
      ],
      true,
      "ab",
@@ -1435,8 +1462,8 @@
     [
      83.5,
      [
-      229.71,
-      1.54
+      240,
+      0
      ],
      true,
      "ab",
@@ -1445,8 +1472,8 @@
     [
      83.75,
      [
-      228.31,
-      2.04
+      240,
+      0
      ],
      true,
      "ab",
@@ -1455,8 +1482,8 @@
     [
      84,
      [
-      226.94,
-      2.62
+      240,
+      0
      ],
      true,
      "ab",
@@ -1465,8 +1492,8 @@
     [
      84.25,
      [
-      225.59,
-      3.26
+      240,
+      0
      ],
      true,
      "ab",
@@ -1475,8 +1502,8 @@
     [
      84.5,
      [
-      224.28,
-      3.96
+      240,
+      0
      ],
      true,
      "ab",
@@ -1485,8 +1512,8 @@
     [
      84.75,
      [
-      223,
-      4.73
+      240,
+      0
      ],
      true,
      "ab",
@@ -1495,8 +1522,8 @@
     [
      85,
      [
-      221.77,
-      5.56
+      240,
+      0
      ],
      true,
      "ab",
@@ -1505,8 +1532,8 @@
     [
      85.25,
      [
-      220.57,
-      6.45
+      240,
+      0
      ],
      true,
      "ab",
@@ -1515,8 +1542,8 @@
     [
      85.5,
      [
-      219.42,
-      7.4
+      240,
+      0
      ],
      true,
      "ab",
@@ -1525,8 +1552,8 @@
     [
      85.75,
      [
-      218.32,
-      8.4
+      240,
+      0
      ],
      true,
      "ab",
@@ -1535,8 +1562,8 @@
     [
      86,
      [
-      217.27,
-      9.46
+      240,
+      0
      ],
      true,
      "ab",
@@ -1545,8 +1572,8 @@
     [
      86.25,
      [
-      216.27,
-      10.56
+      240,
+      0
      ],
      true,
      "ab",
@@ -1555,8 +1582,8 @@
     [
      86.5,
      [
-      215.33,
-      11.71
+      240,
+      0
      ],
      true,
      "ab",
@@ -1565,8 +1592,8 @@
     [
      86.75,
      [
-      214.44,
-      12.91
+      240,
+      0
      ],
      true,
      "ab",
@@ -1575,8 +1602,8 @@
     [
      87,
      [
-      213.61,
-      14.15
+      240,
+      0
      ],
      true,
      "ab",
@@ -1585,8 +1612,8 @@
     [
      87.25,
      [
-      212.84,
-      15.42
+      240,
+      0
      ],
      true,
      "ab",
@@ -1595,8 +1622,8 @@
     [
      87.5,
      [
-      212.14,
-      16.74
+      240,
+      0
      ],
      true,
      "ab",
@@ -1605,8 +1632,8 @@
     [
      87.75,
      [
-      211.49,
-      18.08
+      240,
+      0
      ],
      true,
      "ab",
@@ -1615,8 +1642,8 @@
     [
      88,
      [
-      210.92,
-      19.45
+      240,
+      0
      ],
      true,
      "ab",
@@ -1625,8 +1652,8 @@
     [
      88.25,
      [
-      210.41,
-      20.85
+      240,
+      0
      ],
      true,
      "ab",
@@ -1635,8 +1662,8 @@
     [
      88.5,
      [
-      209.97,
-      22.28
+      240,
+      0
      ],
      true,
      "ab",
@@ -1645,8 +1672,8 @@
     [
      88.75,
      [
-      209.6,
-      23.72
+      240,
+      0
      ],
      true,
      "ab",
@@ -1655,8 +1682,8 @@
     [
      89,
      [
-      209.3,
-      25.18
+      240,
+      0
      ],
      true,
      "ab",
@@ -1665,8 +1692,8 @@
     [
      89.25,
      [
-      209.06,
-      26.65
+      240,
+      0
      ],
      true,
      "ab",
@@ -1675,8 +1702,8 @@
     [
      89.5,
      [
-      208.9,
-      28.13
+      240,
+      0
      ],
      true,
      "ab",
@@ -1685,8 +1712,8 @@
     [
      89.75,
      [
-      208.81,
-      29.62
+      240,
+      0
      ],
      true,
      "ab",
@@ -1695,8 +1722,8 @@
     [
      90,
      [
-      208.79,
-      31.11
+      240,
+      0
      ],
      false,
      "ab",
@@ -1705,8 +1732,8 @@
     [
      90.25,
      [
-      210.04,
-      31.06
+      240,
+      1.25
      ],
      false,
      "ab",
@@ -1715,8 +1742,8 @@
     [
      90.5,
      [
-      211.29,
-      31.02
+      240,
+      2.5
      ],
      false,
      "ab",
@@ -1725,8 +1752,8 @@
     [
      90.75,
      [
-      212.54,
-      30.97
+      240,
+      3.75
      ],
      false,
      "ab",
@@ -1735,8 +1762,8 @@
     [
      91,
      [
-      213.79,
-      30.93
+      240,
+      5
      ],
      false,
      "ab",
@@ -1745,8 +1772,8 @@
     [
      91.25,
      [
-      215.04,
-      30.89
+      240,
+      6.25
      ],
      false,
      "ab",
@@ -1755,8 +1782,8 @@
     [
      91.5,
      [
-      216.29,
-      30.84
+      240,
+      7.5
      ],
      false,
      "ab",
@@ -1765,8 +1792,8 @@
     [
      91.75,
      [
-      217.54,
-      30.8
+      240,
+      8.75
      ],
      false,
      "ab",
@@ -1775,8 +1802,8 @@
     [
      92,
      [
-      218.79,
-      30.75
+      240,
+      10
      ],
      false,
      "ab",
@@ -1785,8 +1812,8 @@
     [
      92.25,
      [
-      220.04,
-      30.71
+      240,
+      11.25
      ],
      false,
      "ab",
@@ -1795,8 +1822,8 @@
     [
      92.5,
      [
-      221.28,
-      30.66
+      240,
+      12.5
      ],
      false,
      "ab",
@@ -1805,8 +1832,8 @@
     [
      92.75,
      [
-      222.53,
-      30.62
+      240,
+      13.75
      ],
      false,
      "ab",
@@ -1815,8 +1842,8 @@
     [
      93,
      [
-      223.78,
-      30.58
+      240,
+      15
      ],
      false,
      "ab",
@@ -1825,8 +1852,8 @@
     [
      93.25,
      [
-      225.03,
-      30.53
+      240,
+      16.25
      ],
      false,
      "ab",
@@ -1835,8 +1862,8 @@
     [
      93.5,
      [
-      226.28,
-      30.49
+      240,
+      17.5
      ],
      false,
      "ab",
@@ -1845,8 +1872,8 @@
     [
      93.75,
      [
-      227.53,
-      30.44
+      240,
+      18.75
      ],
      false,
      "ab",
@@ -1855,8 +1882,8 @@
     [
      94,
      [
-      228.78,
-      30.4
+      240,
+      20
      ],
      false,
      "ab",
@@ -1865,8 +1892,8 @@
     [
      94.25,
      [
-      230.03,
-      30.35
+      240,
+      21.25
      ],
      false,
      "ab",
@@ -1875,8 +1902,8 @@
     [
      94.5,
      [
-      231.28,
-      30.31
+      240,
+      22.5
      ],
      false,
      "ab",
@@ -1885,8 +1912,8 @@
     [
      94.75,
      [
-      232.53,
-      30.27
+      240,
+      23.75
      ],
      false,
      "ab",
@@ -1895,8 +1922,8 @@
     [
      95,
      [
-      233.78,
-      30.22
+      240,
+      25
      ],
      false,
      "ab",
@@ -1905,8 +1932,8 @@
     [
      95.25,
      [
-      235.03,
-      30.18
+      240,
+      26.25
      ],
      false,
      "ab",
@@ -1915,8 +1942,8 @@
     [
      95.5,
      [
-      236.27,
-      30.13
+      240,
+      27.5
      ],
      false,
      "ab",
@@ -1925,8 +1952,8 @@
     [
      95.75,
      [
-      237.52,
-      30.09
+      240,
+      28.75
      ],
      false,
      "ab",
@@ -1935,8 +1962,8 @@
     [
      96,
      [
-      238.77,
-      30.04
+      240,
+      30
      ],
      false,
      "ab",
@@ -1945,7 +1972,7 @@
     [
      96.25,
      [
-      239.98,
+      238.75,
       30
      ],
      false,
@@ -1955,7 +1982,7 @@
     [
      96.5,
      [
-      238.73,
+      237.5,
       30
      ],
      false,
@@ -1965,7 +1992,7 @@
     [
      96.75,
      [
-      237.48,
+      236.25,
       30
      ],
      false,
@@ -1975,7 +2002,7 @@
     [
      97,
      [
-      236.23,
+      235,
       30
      ],
      false,
@@ -1985,7 +2012,7 @@
     [
      97.25,
      [
-      234.98,
+      233.75,
       30
      ],
      false,
@@ -1995,7 +2022,7 @@
     [
      97.5,
      [
-      233.73,
+      232.5,
       30
      ],
      false,
@@ -2005,7 +2032,7 @@
     [
      97.75,
      [
-      232.48,
+      231.25,
       30
      ],
      false,
@@ -2015,7 +2042,7 @@
     [
      98,
      [
-      231.23,
+      230,
       30
      ],
      false,
@@ -2025,7 +2052,7 @@
     [
      98.25,
      [
-      229.98,
+      228.75,
       30
      ],
      false,
@@ -2035,7 +2062,7 @@
     [
      98.5,
      [
-      228.73,
+      227.5,
       30
      ],
      false,
@@ -2045,7 +2072,7 @@
     [
      98.75,
      [
-      227.48,
+      226.25,
       30
      ],
      false,
@@ -2055,7 +2082,7 @@
     [
      99,
      [
-      226.23,
+      225,
       30
      ],
      false,
@@ -2065,7 +2092,7 @@
     [
      99.25,
      [
-      224.98,
+      223.75,
       30
      ],
      false,
@@ -2075,7 +2102,7 @@
     [
      99.5,
      [
-      223.73,
+      222.5,
       30
      ],
      false,
@@ -2085,7 +2112,7 @@
     [
      99.75,
      [
-      222.48,
+      221.25,
       30
      ],
      false,
@@ -2095,7 +2122,7 @@
     [
      100,
      [
-      221.23,
+      220,
       30
      ],
      false,
@@ -2105,7 +2132,7 @@
     [
      100.25,
      [
-      219.98,
+      218.75,
       30
      ],
      false,
@@ -2115,7 +2142,7 @@
     [
      100.5,
      [
-      218.73,
+      217.5,
       30
      ],
      false,
@@ -2125,7 +2152,7 @@
     [
      100.75,
      [
-      217.48,
+      216.25,
       30
      ],
      false,
@@ -2135,7 +2162,7 @@
     [
      101,
      [
-      216.23,
+      215,
       30
      ],
      false,
@@ -2145,7 +2172,7 @@
     [
      101.25,
      [
-      214.98,
+      213.75,
       30
      ],
      false,
@@ -2155,7 +2182,7 @@
     [
      101.5,
      [
-      213.73,
+      212.5,
       30
      ],
      false,
@@ -2165,7 +2192,7 @@
     [
      101.75,
      [
-      212.48,
+      211.25,
       30
      ],
      false,
@@ -2175,7 +2202,7 @@
     [
      102,
      [
-      211.23,
+      210,
       30
      ],
      false,
@@ -2185,7 +2212,7 @@
     [
      102.25,
      [
-      209.98,
+      208.75,
       30
      ],
      false,
@@ -2195,7 +2222,7 @@
     [
      102.5,
      [
-      208.73,
+      207.5,
       30
      ],
      false,
@@ -2205,7 +2232,7 @@
     [
      102.75,
      [
-      207.48,
+      206.25,
       30
      ],
      false,
@@ -2215,7 +2242,7 @@
     [
      103,
      [
-      206.23,
+      205,
       30
      ],
      false,
@@ -2225,7 +2252,7 @@
     [
      103.25,
      [
-      204.98,
+      203.75,
       30
      ],
      false,
@@ -2235,7 +2262,7 @@
     [
      103.5,
      [
-      203.73,
+      202.5,
       30
      ],
      false,
@@ -2245,7 +2272,7 @@
     [
      103.75,
      [
-      202.48,
+      201.25,
       30
      ],
      false,
@@ -2255,7 +2282,7 @@
     [
      104,
      [
-      201.23,
+      200,
       30
      ],
      false,
@@ -2265,7 +2292,7 @@
     [
      104.25,
      [
-      199.98,
+      198.75,
       30
      ],
      false,
@@ -2275,7 +2302,7 @@
     [
      104.5,
      [
-      198.73,
+      197.5,
       30
      ],
      false,
@@ -2285,7 +2312,7 @@
     [
      104.75,
      [
-      197.48,
+      196.25,
       30
      ],
      false,
@@ -2295,7 +2322,7 @@
     [
      105,
      [
-      196.23,
+      195,
       30
      ],
      false,
@@ -2305,7 +2332,7 @@
     [
      105.25,
      [
-      194.98,
+      193.75,
       30
      ],
      false,
@@ -2315,7 +2342,7 @@
     [
      105.5,
      [
-      193.73,
+      192.5,
       30
      ],
      false,
@@ -2325,7 +2352,7 @@
     [
      105.75,
      [
-      192.48,
+      191.25,
       30
      ],
      false,
@@ -2335,7 +2362,7 @@
     [
      106,
      [
-      191.23,
+      190,
       30
      ],
      false,
@@ -2345,7 +2372,7 @@
     [
      106.25,
      [
-      189.98,
+      188.75,
       30
      ],
      false,
@@ -2355,7 +2382,7 @@
     [
      106.5,
      [
-      188.73,
+      187.5,
       30
      ],
      false,
@@ -2365,7 +2392,7 @@
     [
      106.75,
      [
-      187.48,
+      186.25,
       30
      ],
      false,
@@ -2375,7 +2402,7 @@
     [
      107,
      [
-      186.23,
+      185,
       30
      ],
      false,
@@ -2385,7 +2412,7 @@
     [
      107.25,
      [
-      184.98,
+      183.75,
       30
      ],
      false,
@@ -2395,7 +2422,7 @@
     [
      107.5,
      [
-      183.73,
+      182.5,
       30
      ],
      false,
@@ -2405,7 +2432,7 @@
     [
      107.75,
      [
-      182.48,
+      181.25,
       30
      ],
      false,
@@ -2415,7 +2442,7 @@
     [
      108,
      [
-      181.23,
+      180,
       30
      ],
      false,
@@ -2425,7 +2452,7 @@
     [
      108.25,
      [
-      179.98,
+      178.75,
       30
      ],
      false,
@@ -2435,7 +2462,7 @@
     [
      108.5,
      [
-      178.73,
+      177.5,
       30
      ],
      false,
@@ -2445,7 +2472,7 @@
     [
      108.75,
      [
-      177.48,
+      176.25,
       30
      ],
      false,
@@ -2455,7 +2482,7 @@
     [
      109,
      [
-      176.23,
+      175,
       30
      ],
      false,
@@ -2465,7 +2492,7 @@
     [
      109.25,
      [
-      174.98,
+      173.75,
       30
      ],
      false,
@@ -2475,7 +2502,7 @@
     [
      109.5,
      [
-      173.73,
+      172.5,
       30
      ],
      false,
@@ -2485,7 +2512,7 @@
     [
      109.75,
      [
-      172.48,
+      171.25,
       30
      ],
      false,
@@ -2495,7 +2522,7 @@
     [
      110,
      [
-      171.23,
+      170,
       30
      ],
      false,
@@ -2505,7 +2532,7 @@
     [
      110.25,
      [
-      169.98,
+      168.75,
       30
      ],
      false,
@@ -2515,7 +2542,7 @@
     [
      110.5,
      [
-      168.73,
+      167.5,
       30
      ],
      false,
@@ -2525,7 +2552,7 @@
     [
      110.75,
      [
-      167.48,
+      166.25,
       30
      ],
      false,
@@ -2535,7 +2562,7 @@
     [
      111,
      [
-      166.23,
+      165,
       30
      ],
      false,
@@ -2545,7 +2572,7 @@
     [
      111.25,
      [
-      164.98,
+      163.75,
       30
      ],
      false,
@@ -2555,7 +2582,7 @@
     [
      111.5,
      [
-      163.73,
+      162.5,
       30
      ],
      false,
@@ -2565,7 +2592,7 @@
     [
      111.75,
      [
-      162.48,
+      161.25,
       30
      ],
      false,
@@ -2575,7 +2602,7 @@
     [
      112,
      [
-      161.23,
+      160,
       30
      ],
      false,
@@ -2585,7 +2612,7 @@
     [
      112.25,
      [
-      159.98,
+      158.75,
       30
      ],
      false,
@@ -2595,7 +2622,7 @@
     [
      112.5,
      [
-      158.73,
+      157.5,
       30
      ],
      false,
@@ -2605,7 +2632,7 @@
     [
      112.75,
      [
-      157.48,
+      156.25,
       30
      ],
      false,
@@ -2615,7 +2642,7 @@
     [
      113,
      [
-      156.23,
+      155,
       30
      ],
      false,
@@ -2625,7 +2652,7 @@
     [
      113.25,
      [
-      154.98,
+      153.75,
       30
      ],
      false,
@@ -2635,7 +2662,7 @@
     [
      113.5,
      [
-      153.73,
+      152.5,
       30
      ],
      false,
@@ -2645,7 +2672,7 @@
     [
      113.75,
      [
-      152.48,
+      151.25,
       30
      ],
      false,
@@ -2655,7 +2682,7 @@
     [
      114,
      [
-      151.23,
+      150,
       30
      ],
      false,
@@ -2665,7 +2692,7 @@
     [
      114.25,
      [
-      149.98,
+      148.75,
       30
      ],
      false,
@@ -2675,7 +2702,7 @@
     [
      114.5,
      [
-      148.73,
+      147.5,
       30
      ],
      false,
@@ -2685,7 +2712,7 @@
     [
      114.75,
      [
-      147.48,
+      146.25,
       30
      ],
      false,
@@ -2695,7 +2722,7 @@
     [
      115,
      [
-      146.23,
+      145,
       30
      ],
      false,
@@ -2705,7 +2732,7 @@
     [
      115.25,
      [
-      144.98,
+      143.75,
       30
      ],
      false,
@@ -2715,7 +2742,7 @@
     [
      115.5,
      [
-      143.73,
+      142.5,
       30
      ],
      false,
@@ -2725,7 +2752,7 @@
     [
      115.75,
      [
-      142.48,
+      141.25,
       30
      ],
      false,
@@ -2735,7 +2762,7 @@
     [
      116,
      [
-      141.23,
+      140,
       30
      ],
      false,
@@ -2745,7 +2772,7 @@
     [
      116.25,
      [
-      139.98,
+      138.75,
       30
      ],
      false,
@@ -2755,7 +2782,7 @@
     [
      116.5,
      [
-      138.73,
+      137.5,
       30
      ],
      false,
@@ -2765,7 +2792,7 @@
     [
      116.75,
      [
-      137.48,
+      136.25,
       30
      ],
      false,
@@ -2775,7 +2802,7 @@
     [
      117,
      [
-      136.23,
+      135,
       30
      ],
      false,
@@ -2785,7 +2812,7 @@
     [
      117.25,
      [
-      134.98,
+      133.75,
       30
      ],
      false,
@@ -2795,7 +2822,7 @@
     [
      117.5,
      [
-      133.73,
+      132.5,
       30
      ],
      false,
@@ -2805,7 +2832,7 @@
     [
      117.75,
      [
-      132.48,
+      131.25,
       30
      ],
      false,
@@ -2815,7 +2842,7 @@
     [
      118,
      [
-      131.23,
+      130,
       30
      ],
      false,
@@ -2825,7 +2852,7 @@
     [
      118.25,
      [
-      129.98,
+      128.75,
       30
      ],
      false,
@@ -2835,7 +2862,7 @@
     [
      118.5,
      [
-      128.73,
+      127.5,
       30
      ],
      false,
@@ -2845,7 +2872,7 @@
     [
      118.75,
      [
-      127.48,
+      126.25,
       30
      ],
      false,
@@ -2855,7 +2882,7 @@
     [
      119,
      [
-      126.23,
+      125,
       30
      ],
      false,
@@ -2865,7 +2892,7 @@
     [
      119.25,
      [
-      124.98,
+      123.75,
       30
      ],
      false,
@@ -2875,7 +2902,7 @@
     [
      119.5,
      [
-      123.73,
+      122.5,
       30
      ],
      false,
@@ -2885,7 +2912,7 @@
     [
      119.75,
      [
-      122.48,
+      121.25,
       30
      ],
      false,
@@ -2895,7 +2922,7 @@
     [
      120,
      [
-      121.23,
+      120,
       30
      ],
      false,
@@ -2906,7 +2933,7 @@
      120.25,
      [
       120,
-      29.98
+      28.75
      ],
      false,
      "ab",
@@ -2916,7 +2943,7 @@
      120.5,
      [
       120,
-      28.73
+      27.5
      ],
      false,
      "ab",
@@ -2926,7 +2953,7 @@
      120.75,
      [
       120,
-      27.48
+      26.25
      ],
      false,
      "ab",
@@ -2936,7 +2963,7 @@
      121,
      [
       120,
-      26.23
+      25
      ],
      false,
      "ab",
@@ -2946,7 +2973,7 @@
      121.25,
      [
       120,
-      24.98
+      23.75
      ],
      false,
      "ab",
@@ -2956,7 +2983,7 @@
      121.5,
      [
       120,
-      23.73
+      22.5
      ],
      false,
      "ab",
@@ -2966,7 +2993,7 @@
      121.75,
      [
       120,
-      22.48
+      21.25
      ],
      false,
      "ab",
@@ -2976,7 +3003,7 @@
      122,
      [
       120,
-      21.23
+      20
      ],
      false,
      "ab",
@@ -2986,7 +3013,7 @@
      122.25,
      [
       120,
-      19.98
+      18.75
      ],
      false,
      "ab",
@@ -2996,7 +3023,7 @@
      122.5,
      [
       120,
-      18.73
+      17.5
      ],
      false,
      "ab",
@@ -3006,7 +3033,7 @@
      122.75,
      [
       120,
-      17.48
+      16.25
      ],
      false,
      "ab",
@@ -3016,7 +3043,7 @@
      123,
      [
       120,
-      16.23
+      15
      ],
      false,
      "ab",
@@ -3026,7 +3053,7 @@
      123.25,
      [
       120,
-      14.98
+      13.75
      ],
      false,
      "ab",
@@ -3036,7 +3063,7 @@
      123.5,
      [
       120,
-      13.73
+      12.5
      ],
      false,
      "ab",
@@ -3046,7 +3073,7 @@
      123.75,
      [
       120,
-      12.48
+      11.25
      ],
      false,
      "ab",
@@ -3056,7 +3083,7 @@
      124,
      [
       120,
-      11.23
+      10
      ],
      false,
      "ab",
@@ -3066,7 +3093,7 @@
      124.25,
      [
       120,
-      9.98
+      8.75
      ],
      false,
      "ab",
@@ -3076,7 +3103,7 @@
      124.5,
      [
       120,
-      8.73
+      7.5
      ],
      false,
      "ab",
@@ -3086,7 +3113,7 @@
      124.75,
      [
       120,
-      7.48
+      6.25
      ],
      false,
      "ab",
@@ -3096,7 +3123,7 @@
      125,
      [
       120,
-      6.23
+      5
      ],
      false,
      "ab",
@@ -3106,7 +3133,7 @@
      125.25,
      [
       120,
-      4.98
+      3.75
      ],
      false,
      "ab",
@@ -3116,7 +3143,7 @@
      125.5,
      [
       120,
-      3.73
+      2.5
      ],
      false,
      "ab",
@@ -3126,7 +3153,7 @@
      125.75,
      [
       120,
-      2.48
+      1.25
      ],
      false,
      "ab",
@@ -3136,7 +3163,7 @@
      126,
      [
       120,
-      1.23
+      0
      ],
      false,
      "ab",
@@ -3145,7 +3172,7 @@
     [
      126.25,
      [
-      119.98,
+      118.75,
       0
      ],
      false,
@@ -3155,7 +3182,7 @@
     [
      126.5,
      [
-      118.73,
+      117.5,
       0
      ],
      false,
@@ -3165,7 +3192,7 @@
     [
      126.75,
      [
-      117.48,
+      116.25,
       0
      ],
      false,
@@ -3175,7 +3202,7 @@
     [
      127,
      [
-      116.23,
+      115,
       0
      ],
      false,
@@ -3185,7 +3212,7 @@
     [
      127.25,
      [
-      114.98,
+      113.75,
       0
      ],
      false,
@@ -3195,7 +3222,7 @@
     [
      127.5,
      [
-      113.73,
+      112.5,
       0
      ],
      false,
@@ -3205,7 +3232,7 @@
     [
      127.75,
      [
-      112.48,
+      111.25,
       0
      ],
      false,
@@ -3215,7 +3242,7 @@
     [
      128,
      [
-      111.23,
+      110,
       0
      ],
      false,
@@ -3225,7 +3252,7 @@
     [
      128.25,
      [
-      109.98,
+      108.75,
       0
      ],
      false,
@@ -3235,7 +3262,7 @@
     [
      128.5,
      [
-      108.73,
+      107.5,
       0
      ],
      false,
@@ -3245,7 +3272,7 @@
     [
      128.75,
      [
-      107.48,
+      106.25,
       0
      ],
      false,
@@ -3255,7 +3282,7 @@
     [
      129,
      [
-      106.23,
+      105,
       0
      ],
      false,
@@ -3265,7 +3292,7 @@
     [
      129.25,
      [
-      104.98,
+      103.75,
       0
      ],
      false,
@@ -3275,7 +3302,7 @@
     [
      129.5,
      [
-      103.73,
+      102.5,
       0
      ],
      false,
@@ -3285,7 +3312,7 @@
     [
      129.75,
      [
-      102.48,
+      101.25,
       0
      ],
      false,
@@ -3379,7 +3406,7 @@
      "units": [
       {
        "id": "wounded-0",
-       "hp": 289.88500000000005,
+       "hp": 300,
        "position": [
         235.5,
         0
@@ -3387,7 +3414,7 @@
       },
       {
        "id": "wounded-1",
-       "hp": 109.88500000000005,
+       "hp": 120,
        "position": [
         238.5,
         0
@@ -3395,7 +3422,7 @@
       },
       {
        "id": "wounded-2",
-       "hp": 199.88500000000005,
+       "hp": 210,
        "position": [
         241.5,
         0
@@ -3403,7 +3430,7 @@
       },
       {
        "id": "wounded-3",
-       "hp": 79.88500000000005,
+       "hp": 49.53999999999999,
        "position": [
         265.045,
         5.136
@@ -3418,7 +3445,7 @@
      "units": [
       {
        "id": "wounded-0",
-       "hp": 289.88500000000005,
+       "hp": 300,
        "position": [
         235.5,
         0
@@ -3426,7 +3453,7 @@
       },
       {
        "id": "wounded-1",
-       "hp": 109.88500000000005,
+       "hp": 120,
        "position": [
         238.5,
         0
@@ -3434,7 +3461,7 @@
       },
       {
        "id": "wounded-2",
-       "hp": 199.88500000000005,
+       "hp": 210,
        "position": [
         241.5,
         0
@@ -3442,7 +3469,7 @@
       },
       {
        "id": "wounded-3",
-       "hp": 79.88500000000005,
+       "hp": 49.53999999999999,
        "position": [
         265.045,
         5.136
@@ -3457,7 +3484,7 @@
      "units": [
       {
        "id": "wounded-0",
-       "hp": 279.7700000000001,
+       "hp": 300,
        "position": [
         235.5,
         0
@@ -3465,7 +3492,7 @@
       },
       {
        "id": "wounded-1",
-       "hp": 99.7700000000001,
+       "hp": 120,
        "position": [
         238.5,
         0
@@ -3473,7 +3500,7 @@
       },
       {
        "id": "wounded-2",
-       "hp": 189.7700000000001,
+       "hp": 210,
        "position": [
         241.5,
         0
@@ -3481,7 +3508,7 @@
       },
       {
        "id": "wounded-3",
-       "hp": 69.7700000000001,
+       "hp": 9.079999999999988,
        "position": [
         265.045,
         5.136
@@ -3496,7 +3523,7 @@
      "units": [
       {
        "id": "wounded-0",
-       "hp": 279.7700000000001,
+       "hp": 300,
        "position": [
         235.5,
         0
@@ -3504,7 +3531,7 @@
       },
       {
        "id": "wounded-1",
-       "hp": 99.7700000000001,
+       "hp": 120,
        "position": [
         238.5,
         0
@@ -3512,7 +3539,7 @@
       },
       {
        "id": "wounded-2",
-       "hp": 189.7700000000001,
+       "hp": 210,
        "position": [
         241.5,
         0
@@ -3520,7 +3547,7 @@
       },
       {
        "id": "wounded-3",
-       "hp": 69.7700000000001,
+       "hp": 9.079999999999988,
        "position": [
         265.045,
         5.136
@@ -3535,7 +3562,7 @@
      "units": [
       {
        "id": "wounded-0",
-       "hp": 269.65500000000014,
+       "hp": 300,
        "position": [
         235.5,
         0
@@ -3543,7 +3570,7 @@
       },
       {
        "id": "wounded-1",
-       "hp": 89.65500000000014,
+       "hp": 89.655,
        "position": [
         238.5,
         0
@@ -3551,18 +3578,10 @@
       },
       {
        "id": "wounded-2",
-       "hp": 179.65500000000014,
+       "hp": 210,
        "position": [
         241.5,
         0
-       ]
-      },
-      {
-       "id": "wounded-3",
-       "hp": 59.655000000000115,
-       "position": [
-        265.045,
-        5.136
        ]
       }
      ]
@@ -3574,34 +3593,26 @@
      "units": [
       {
        "id": "wounded-0",
-       "hp": 269.65500000000014,
+       "hp": 300,
        "position": [
-        208.754,
-        34.086
+        237,
+        0
        ]
       },
       {
        "id": "wounded-1",
-       "hp": 89.65500000000014,
+       "hp": 89.655,
        "position": [
-        208.793,
-        31.117
+        240,
+        0
        ]
       },
       {
        "id": "wounded-2",
-       "hp": 179.65500000000014,
+       "hp": 210,
        "position": [
-        208.83,
-        28.118
-       ]
-      },
-      {
-       "id": "wounded-3",
-       "hp": 59.655000000000115,
-       "position": [
-        265.045,
-        5.136
+        243,
+        0
        ]
       }
      ]
@@ -3616,7 +3627,7 @@
      "frontId": "a",
      "issuer": "player1",
      "issuedAt": 81.75,
-     "sequence": 19
+     "sequence": 21
     },
     "path": [
      {
@@ -3633,178 +3644,9 @@
   {
    "id": "C6",
    "texte": "Aucune disparition visible : un groupe détaillé reste détaillé tant que le joueur reste sur son front",
-   "verdict": "échec",
+   "verdict": "prouvé",
    "scenario": "AFF-18 (EFF-03), mapSeed 0, joueur sur front_a puis déplacé de 6 m à t=1 s, 40 s simulées",
-   "dematerialisationsSousLeJoueur": [
-    {
-     "t": 1.25,
-     "groupId": "AFF-18:hive:4",
-     "joueur": [
-      6,
-      -1
-     ],
-     "distanceJoueurFront": 6.08,
-     "pertesApres1s": 0,
-     "unites": [
-      [
-       "AFF-18:hive:4:0",
-       "distant",
-       480,
-       false
-      ],
-      [
-       "AFF-18:hive:4:1",
-       "distant",
-       200,
-       false
-      ],
-      [
-       "AFF-18:hive:4:2",
-       "distant",
-       200,
-       false
-      ],
-      [
-       "AFF-18:hive:4:3",
-       "distant",
-       200,
-       false
-      ],
-      [
-       "AFF-18:hive:4:4",
-       "distant",
-       187,
-       false
-      ],
-      [
-       "AFF-18:hive:4:5",
-       "distant",
-       200,
-       false
-      ],
-      [
-       "AFF-18:hive:4:6",
-       "distant",
-       200,
-       false
-      ],
-      [
-       "AFF-18:hive:4:7",
-       "distant",
-       200,
-       false
-      ]
-     ]
-    },
-    {
-     "t": 1.25,
-     "groupId": "AFF-18:hive:36",
-     "joueur": [
-      6,
-      -1
-     ],
-     "distanceJoueurFront": 6.08,
-     "pertesApres1s": 0,
-     "unites": [
-      [
-       "AFF-18:hive:36:0",
-       "distant",
-       480,
-       false
-      ],
-      [
-       "AFF-18:hive:36:1",
-       "distant",
-       200,
-       false
-      ],
-      [
-       "AFF-18:hive:36:2",
-       "distant",
-       200,
-       false
-      ],
-      [
-       "AFF-18:hive:36:3",
-       "distant",
-       200,
-       false
-      ],
-      [
-       "AFF-18:hive:36:4",
-       "distant",
-       200,
-       false
-      ],
-      [
-       "AFF-18:hive:36:5",
-       "distant",
-       200,
-       false
-      ],
-      [
-       "AFF-18:hive:36:6",
-       "distant",
-       200,
-       false
-      ],
-      [
-       "AFF-18:hive:36:7",
-       "distant",
-       200,
-       false
-      ]
-     ]
-    },
-    {
-     "t": 1.25,
-     "groupId": "AFF-18:player_clan:48",
-     "joueur": [
-      6,
-      -1
-     ],
-     "distanceJoueurFront": 6.08,
-     "pertesApres1s": 2,
-     "unites": [
-      [
-       "AFF-18:player_clan:48:0",
-       "distant",
-       464.7,
-       false
-      ],
-      [
-       "AFF-18:player_clan:48:1",
-       "distant",
-       254.1,
-       false
-      ]
-     ]
-    },
-    {
-     "t": 1.25,
-     "groupId": "AFF-18:player_clan:51",
-     "joueur": [
-      6,
-      -1
-     ],
-     "distanceJoueurFront": 6.08,
-     "pertesApres1s": 2,
-     "unites": [
-      [
-       "AFF-18:player_clan:51:0",
-       "distant",
-       391.6,
-       false
-      ],
-      [
-       "AFF-18:player_clan:51:1",
-       "distant",
-       208.2,
-       false
-      ]
-     ]
-    }
-   ],
+   "dematerialisationsSousLeJoueur": [],
    "journal": [
     [
      0.25,
@@ -3846,78 +3688,6 @@
      0.25,
      "spawn",
      "AFF-18:player_clan:50",
-     2
-    ],
-    [
-     1.25,
-     "despawn",
-     "AFF-18:hive:4",
-     8
-    ],
-    [
-     1.25,
-     "despawn",
-     "AFF-18:hive:36",
-     8
-    ],
-    [
-     1.25,
-     "despawn",
-     "AFF-18:player_clan:48",
-     2
-    ],
-    [
-     1.25,
-     "despawn",
-     "AFF-18:player_clan:51",
-     2
-    ],
-    [
-     1.25,
-     "spawn",
-     "AFF-18:player_clan:8",
-     2
-    ],
-    [
-     1.25,
-     "spawn",
-     "AFF-18:hive:47",
-     8
-    ],
-    [
-     1.25,
-     "spawn",
-     "AFF-18:hive:0",
-     8
-    ],
-    [
-     1.25,
-     "spawn",
-     "AFF-18:player_clan:7",
-     2
-    ],
-    [
-     19.25,
-     "despawn",
-     "AFF-18:player_clan:7",
-     2
-    ],
-    [
-     19.25,
-     "spawn",
-     "AFF-18:player_clan:146",
-     2
-    ],
-    [
-     27.25,
-     "despawn",
-     "AFF-18:player_clan:49",
-     2
-    ],
-    [
-     27.25,
-     "spawn",
-     "AFF-18:player_clan:147",
      2
     ]
    ],
@@ -3971,14 +3741,14 @@
    },
    "reconstitution": [
     {
-     "t": 156,
+     "t": 155.75,
      "supportGroupId": "clan-reserve",
      "survivors": 3,
      "newUnitsCreated": 0
     }
    ],
    "arriveeDuSoutien": {
-    "id": 25,
+    "id": 27,
     "time": 123,
     "type": "reinforcements_arrived",
     "priority": 2,
@@ -4017,51 +3787,51 @@
     [
      [
       "wounded-0",
-      289.885,
+      300,
       false
      ],
      [
       "wounded-1",
-      109.885,
+      120,
       false
      ],
      [
       "wounded-2",
-      199.885,
+      210,
       false
      ],
      [
       "wounded-3",
-      79.885,
+      49.54,
       true
      ]
     ],
     [
      [
       "wounded-0",
-      279.77,
+      300,
       false
      ],
      [
       "wounded-1",
-      99.77,
+      120,
       false
      ],
      [
       "wounded-2",
-      189.77,
+      210,
       false
      ],
      [
       "wounded-3",
-      69.77,
+      9.08,
       true
      ]
     ],
     [
      [
       "wounded-0",
-      269.655,
+      300,
       false
      ],
      [
@@ -4071,13 +3841,13 @@
      ],
      [
       "wounded-2",
-      179.655,
+      210,
       false
      ],
      [
       "wounded-3",
-      59.655,
-      true
+      0,
+      false
      ]
     ]
    ],
@@ -4085,7 +3855,7 @@
     [
      "wounded-0",
      "distant",
-     269.655,
+     300,
      false
     ],
     [
@@ -4097,14 +3867,14 @@
     [
      "wounded-2",
      "distant",
-     179.655,
+     210,
      false
     ],
     [
      "wounded-3",
-     "distant",
-     59.655,
-     true
+     "dead",
+     0,
+     false
     ]
    ],
    "soinsSansSource": []
@@ -4171,12 +3941,12 @@
     [
      76.75,
      "group_materialized",
-     4
+     3
     ],
     [
      90,
      "group_dematerialized",
-     4
+     3
     ]
    ]
   },
@@ -4190,7 +3960,7 @@
  "observations": [
   {
    "id": "OBS-A1",
-   "texte": "L’allié hors de combat wounded-3 n’est pas déplacé par la retraite distante (BattleSimulation._moveGroups ne déplace que les unités combatReady) : il reste à [265.045,5.136] (distant). Aucune téléportation ; la prise en charge relève d’AllyRescueSystem / REC dédié au secours."
+   "texte": "L’allié hors de combat wounded-3 n’est pas déplacé par la retraite distante (BattleSimulation._moveGroups ne déplace que les unités combatReady) : il reste à [265.045,5.136] (dead). Aucune téléportation ; la prise en charge relève d’AllyRescueSystem / REC dédié au secours."
   }
  ]
 }

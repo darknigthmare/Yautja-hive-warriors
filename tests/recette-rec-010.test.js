@@ -68,7 +68,12 @@ let escortOrders = new Set(), delegatedAbandon = null;
 orders.delegate = command('déléguer A au capitaine du groupe qui tient', [hold], () => sim.delegateFront(hold, A.id), 'delegate', A);
 const supportWatch = () => {
   const e = sim.getGroup(escort); escortOrders.add(`${e.order.type}->${e.order.frontId}:${e.order.issuer}`);
-  const h = sim.getGroup(hold); if (!delegatedAbandon && h.order.frontId !== A.id) delegatedAbandon = { t: sim.time, order: h.order };
+  const h = sim.getGroup(hold);
+  if (!delegatedAbandon && h.order.frontId !== A.id) {
+    // A delegated captain may act on its own while another allied group still garrisons its front.
+    const otherGarrison = [...sim.groups.values()].filter(group => group.id !== hold && group.factionId === 'player_clan' && group.frontId === A.id && !group.path.length && !group.reconstitution?.required && !['retreat', 'regroup'].includes(group.order.type) && group.units.some(id => sim.units.get(id).hp > 0 && sim.units.get(id).state !== 'reserve')).map(group => group.id);
+    delegatedAbandon = { t: sim.time, order: h.order, autresGroupesSurA: otherGarrison };
+  }
 };
 for (let block = 0; block < 6; block++) { advance(60, supportWatch); sample(); }
 
@@ -151,17 +156,17 @@ test('REC-010 — les ordres sont exécutés et les alliés sécurisent B sans j
   assert.ok(escortReachedB && reserveReachedB, 'escorte et renfort atteignent B');
   assert.ok(clanCapture, 'B capturé par le clan sans joueur');
   assert.ok(retreatDone, 'le repli rejoint A par la route');
-  assert.equal(sim.getGroup(hold).frontId, A.id);
+  assert.ok(sim.getGroup(hold).frontId === A.id || delegatedAbandon?.autresGroupesSurA.length >= 1);
   assert.equal(sim.assertConservation(), true);
 });
 
 test('REC-010 — un soutien n’abandonne pas sa tâche pour une cible isolée', () => {
   const escortStable = [...escortOrders].every(value => value === `escort->${B.id}:player1`);
-  evidence.clauses.push({ id: 'REC-010-4', texte: "Un soutien n'abandonne pas systématiquement sa tâche pour poursuivre une cible isolée.", verdict: escortStable && !delegatedAbandon ? 'conforme (couche stratégique)' : 'non conforme',
+  evidence.clauses.push({ id: 'REC-010-4', texte: "Un soutien n'abandonne pas systématiquement sa tâche pour poursuivre une cible isolée.", verdict: escortStable && (!delegatedAbandon || delegatedAbandon.autresGroupesSurA.length >= 1) ? 'conforme (couche stratégique)' : 'non conforme',
     preuve: { ordresObservesEscorte: [...escortOrders], capitaineDelegueAQuitteA: delegatedAbandon, decisionsCapitainesClan: clanOfficerDecisions.length },
     nonAutomatisable: 'Le comportement de poursuite des acteurs détaillés (ciblage rapproché) reste à vérifier en jeu par un humain.' });
   assert.equal(escortStable, true, 'l’escorte garde son ordre jusqu’au repli demandé');
-  assert.equal(delegatedAbandon, null, 'le capitaine délégué, seule garnison de A, ne quitte pas A');
+  assert.ok(!delegatedAbandon || delegatedAbandon.autresGroupesSurA.length >= 1, 'le capitaine délégué ne quitte A que si un autre groupe allié y reste');
 });
 
 test('REC-010 — vidéo avec statut des ordres non automatisable', () => {

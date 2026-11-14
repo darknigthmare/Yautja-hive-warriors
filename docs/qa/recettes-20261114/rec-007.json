@@ -3,7 +3,7 @@
   "source": "docs/audits/2026-10-26/Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.xlsx#Validation",
   "perimetre": "Compatibilité des factions et compositions",
   "seed": 1114,
-  "commit": "bd866f88e1499d4e091e4e0c8611afdfb95d2336",
+  "commit": "2ecc8537ccbaf21f07b78dc4dbf083a98bcf9f32",
   "date": "2026-11-14",
   "commande": "node --test tests/recette-rec-007.test.js",
   "preuveVideo": "non produite — preuve par journal",
@@ -21,7 +21,8 @@
       "refus": [
         "HUM-004: work is outside the selected reconstruction"
       ],
-      "divergenceSignalee": false
+      "divergenceSignalee": false,
+      "divergences": []
     },
     {
       "preset": "reconstitution:predator-1987",
@@ -36,7 +37,8 @@
       "refus": [
         "XEN-030: work is outside the selected reconstruction"
       ],
-      "divergenceSignalee": false
+      "divergenceSignalee": false,
+      "divergences": []
     },
     {
       "preset": "reconstitution:predator-1987",
@@ -51,7 +53,8 @@
       "refus": [
         "XEN-027: work is outside the selected reconstruction"
       ],
-      "divergenceSignalee": false
+      "divergenceSignalee": false,
+      "divergences": []
     },
     {
       "preset": "reconstitution:predator-1987",
@@ -64,7 +67,8 @@
       "oeuvreProfil": "Predator (1987)",
       "autorise": true,
       "refus": [],
-      "divergenceSignalee": false
+      "divergenceSignalee": false,
+      "divergences": []
     },
     {
       "preset": "reconstitution:charon-rogue",
@@ -79,7 +83,8 @@
       "refus": [
         "HUM-004: work is outside the selected reconstruction"
       ],
-      "divergenceSignalee": false
+      "divergenceSignalee": false,
+      "divergences": []
     },
     {
       "preset": "reconstitution:charon-rogue",
@@ -92,7 +97,8 @@
       "oeuvreProfil": "Aliens: Rogue ; roman Rogue",
       "autorise": true,
       "refus": [],
-      "divergenceSignalee": false
+      "divergenceSignalee": false,
+      "divergences": []
     },
     {
       "preset": "reconstitution:charon-rogue",
@@ -107,7 +113,8 @@
       "refus": [
         "XEN-027: work is outside the selected reconstruction"
       ],
-      "divergenceSignalee": false
+      "divergenceSignalee": false,
+      "divergences": []
     },
     {
       "preset": "reconstitution:charon-rogue",
@@ -122,7 +129,8 @@
       "refus": [
         "YAU-001: work is outside the selected reconstruction"
       ],
-      "divergenceSignalee": false
+      "divergenceSignalee": false,
+      "divergences": []
     },
     {
       "preset": "reconstitution:romulus",
@@ -137,7 +145,8 @@
       "refus": [
         "HUM-004: work is outside the selected reconstruction"
       ],
-      "divergenceSignalee": false
+      "divergenceSignalee": false,
+      "divergences": []
     },
     {
       "preset": "reconstitution:romulus",
@@ -152,7 +161,8 @@
       "refus": [
         "XEN-030: work is outside the selected reconstruction"
       ],
-      "divergenceSignalee": false
+      "divergenceSignalee": false,
+      "divergences": []
     },
     {
       "preset": "reconstitution:romulus",
@@ -165,7 +175,8 @@
       "oeuvreProfil": "Alien: Romulus",
       "autorise": true,
       "refus": [],
-      "divergenceSignalee": false
+      "divergenceSignalee": false,
+      "divergences": []
     },
     {
       "preset": "reconstitution:romulus",
@@ -180,7 +191,8 @@
       "refus": [
         "YAU-001: work is outside the selected reconstruction"
       ],
-      "divergenceSignalee": false
+      "divergenceSignalee": false,
+      "divergences": []
     },
     {
       "preset": "variante-guerre:original",
@@ -191,7 +203,8 @@
       "oeuvreProfil": "Aliens: Dark Descent",
       "autorise": true,
       "refus": [],
-      "divergenceSignalee": false
+      "divergenceSignalee": false,
+      "divergences": []
     },
     {
       "preset": "variante-guerre:original",
@@ -202,7 +215,8 @@
       "oeuvreProfil": "Aliens: Rogue ; roman Rogue",
       "autorise": true,
       "refus": [],
-      "divergenceSignalee": false
+      "divergenceSignalee": false,
+      "divergences": []
     },
     {
       "preset": "variante-guerre:original",
@@ -213,7 +227,8 @@
       "oeuvreProfil": "Alien: Romulus",
       "autorise": true,
       "refus": [],
-      "divergenceSignalee": false
+      "divergenceSignalee": false,
+      "divergences": []
     },
     {
       "preset": "variante-guerre:original",
@@ -224,7 +239,8 @@
       "oeuvreProfil": "Predator (1987)",
       "autorise": true,
       "refus": [],
-      "divergenceSignalee": false
+      "divergenceSignalee": false,
+      "divergences": []
     },
     {
       "preset": "variante-guerre:clan_war",
@@ -235,7 +251,8 @@
       "oeuvreProfil": "Aliens: Dark Descent",
       "autorise": true,
       "refus": [],
-      "divergenceSignalee": false
+      "divergenceSignalee": false,
+      "divergences": []
     },
     {
       "preset": "variante-guerre:clan_war",
@@ -246,7 +263,8 @@
       "oeuvreProfil": "Aliens: Rogue ; roman Rogue",
       "autorise": true,
       "refus": [],
-      "divergenceSignalee": false
+      "divergenceSignalee": false,
+      "divergences": []
     },
     {
       "preset": "variante-guerre:clan_war",
@@ -257,7 +275,8 @@
       "oeuvreProfil": "Alien: Romulus",
       "autorise": true,
       "refus": [],
-      "divergenceSignalee": false
+      "divergenceSignalee": false,
+      "divergences": []
     },
     {
       "preset": "variante-guerre:clan_war",
@@ -268,7 +287,8 @@
       "oeuvreProfil": "Predator (1987)",
       "autorise": true,
       "refus": [],
-      "divergenceSignalee": false
+      "divergenceSignalee": false,
+      "divergences": []
     },
     {
       "preset": "hypothetique:crossover",
@@ -281,7 +301,10 @@
       "oeuvreProfil": "Aliens: Dark Descent",
       "autorise": true,
       "refus": [],
-      "divergenceSignalee": false
+      "divergenceSignalee": true,
+      "divergences": [
+        "HUM-004: from Aliens: Dark Descent, outside Predator (1987) (hypothetical crossover)"
+      ]
     },
     {
       "preset": "hypothetique:crossover",
@@ -294,7 +317,10 @@
       "oeuvreProfil": "Aliens: Rogue ; roman Rogue",
       "autorise": true,
       "refus": [],
-      "divergenceSignalee": false
+      "divergenceSignalee": true,
+      "divergences": [
+        "XEN-030: from Aliens: Rogue ; roman Rogue, outside Predator (1987) (hypothetical crossover)"
+      ]
     },
     {
       "preset": "hypothetique:crossover",
@@ -307,7 +333,10 @@
       "oeuvreProfil": "Alien: Romulus",
       "autorise": true,
       "refus": [],
-      "divergenceSignalee": false
+      "divergenceSignalee": true,
+      "divergences": [
+        "XEN-027: from Alien: Romulus, outside Predator (1987) (hypothetical crossover)"
+      ]
     },
     {
       "preset": "hypothetique:crossover",
@@ -320,7 +349,8 @@
       "oeuvreProfil": "Predator (1987)",
       "autorise": true,
       "refus": [],
-      "divergenceSignalee": false
+      "divergenceSignalee": false,
+      "divergences": []
     },
     {
       "preset": "simulation",
@@ -367,7 +397,8 @@
         ],
         "continuities": [],
         "allowAdaptations": true
-      }
+      },
+      "divergences": []
     }
   ],
   "matriceBossNiveaux": [
@@ -799,7 +830,7 @@
         "human_force|player_clan": "hostile",
         "hive|human_force": "neutral"
       },
-      "morts": 4,
+      "morts": 5,
       "mortsEntrePairesNonHostiles": 0
     },
     {
@@ -832,7 +863,7 @@
         "human_force|player_clan": "hostile",
         "hive|human_force": "hostile"
       },
-      "morts": 48,
+      "morts": 62,
       "mortsEntrePairesNonHostiles": 0
     },
     {
@@ -865,7 +896,7 @@
         "human_force|player_clan": "hostile",
         "human_force|rival_clan": "hostile"
       },
-      "morts": 16,
+      "morts": 21,
       "mortsEntrePairesNonHostiles": 0
     }
   ],
@@ -928,7 +959,8 @@
             ],
             "continuities": [],
             "allowAdaptations": true
-          }
+          },
+          "divergences": []
         }
       ]
     },
@@ -1035,7 +1067,16 @@
             ],
             "continuities": [],
             "allowAdaptations": true
-          }
+          },
+          "divergences": [
+            {
+              "profileId": "HUM-004",
+              "factionId": "humans",
+              "reasons": [
+                "work"
+              ]
+            }
+          ]
         },
         "rencontreBoss": {
           "mode": "crossover",
@@ -1047,7 +1088,7 @@
     {
       "clause": "hypothetique_signale_divergence",
       "attendu": "Un mode hypothétique peut les permettre en signalant la divergence.",
-      "verdict": "échec (défaut)",
+      "verdict": "prouvé",
       "details": {
         "retourValidateur": {
           "autorise": true,
@@ -1241,7 +1282,7 @@
             "human_force|player_clan": "hostile",
             "hive|human_force": "neutral"
           },
-          "morts": 4
+          "morts": 5
         },
         {
           "operation": "AFF-16",
@@ -1250,7 +1291,7 @@
             "human_force|player_clan": "hostile",
             "hive|human_force": "hostile"
           },
-          "morts": 48
+          "morts": 62
         },
         {
           "operation": "AFF-11",
@@ -1259,7 +1300,7 @@
             "human_force|player_clan": "hostile",
             "human_force|rival_clan": "hostile"
           },
-          "morts": 16
+          "morts": 21
         }
       ]
     },

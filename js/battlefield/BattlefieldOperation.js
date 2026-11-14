@@ -5,13 +5,14 @@ import { stageOriginalMusouGroups } from './OriginalMusouStaging.js';
 
 const copy = value => JSON.parse(JSON.stringify(value));
 const routeLength = waypoints => waypoints.slice(1).reduce((sum, point, index) => sum + Math.hypot(point[0] - waypoints[index][0], point[1] - waypoints[index][1]), 0);
-function physicalWaypoints(layout, from, to) {
+function physicalWaypoints(layout, from, to, gateIds = []) {
   const direction = from <= to ? 1 : -1, points = [[...layout.sectors[from].center]];
   for (let index = from; index !== to; index += direction) {
     const a = layout.sectors[index], b = layout.sectors[index + direction];
     const corridor = layout.corridors.find(item => item.from === a.id && item.to === b.id || item.from === b.id && item.to === a.id);
     if (!corridor) throw new Error('BattlefieldOperation: operation route has no physical corridor');
     points.push([...corridor.center], [...b.center]);
+    for (const gate of layout.gates ?? []) if (gate.corridorId === corridor.id && !gateIds.includes(gate.id)) gateIds.push(gate.id);
   }
   return points;
 }
@@ -20,7 +21,7 @@ function physicalWaypoints(layout, from, to) {
  * The original map proposal is retained as provenance; this adaptation does
  * not pretend that reusing a level constructs its proposed geographic layout.
  */
-export function bindBattleOperationToLayout(configuration, layout) {
+export function bindBattleOperationToLayout(configuration, layout, { legacyRouteGates = false } = {}) {
   if (!configuration?.fronts?.length || configuration.fronts.length > layout?.sectors?.length) throw new Error('BattlefieldOperation: the built scene cannot represent all operation fronts');
   const result = copy(configuration), sectorToFront = new Map(), oldFronts = new Map();
   const indices = layout.frontAnchorIds?.length === result.fronts.length ? layout.frontAnchorIds.map(id => layout.sectors.findIndex(sector => sector.id === id)) : result.fronts.map((_, index) => Math.round(index * (layout.sectors.length - 1) / Math.max(1, result.fronts.length - 1)));
@@ -35,10 +36,13 @@ export function bindBattleOperationToLayout(configuration, layout) {
   for (let index = 0; index < result.fronts.length - 1; index++) {
     const fromSector = layout.sectors[indices[index]], toSector = layout.sectors[indices[index + 1]];
     const physical = (layout.strategicRoutes ?? []).find(route => (route.from === fromSector.id && route.to === toSector.id || route.from === toSector.id && route.to === fromSector.id) && !/flank|outer/.test(route.id));
-    const waypoints = physical?.waypoints ? (physical.from === fromSector.id ? copy(physical.waypoints) : copy(physical.waypoints).reverse()) : physicalWaypoints(layout, indices[index], indices[index + 1]);
+    // A corridor route still crosses the doors of the corridors it follows (REC-012); legacyRouteGates
+    // rebuilds the pre-fix binding so checkpoints signed before it still resume.
+    const corridorGateIds = [];
+    const waypoints = physical?.waypoints ? (physical.from === fromSector.id ? copy(physical.waypoints) : copy(physical.waypoints).reverse()) : physicalWaypoints(layout, indices[index], indices[index + 1], corridorGateIds);
     const source = originalRoutes.find(route => route.from === result.fronts[index].id && route.to === result.fronts[index + 1].id || route.to === result.fronts[index].id && route.from === result.fronts[index + 1].id);
     routes.push({ id: source?.id ?? `bound-route-${index}`, from: result.fronts[index].id, to: result.fronts[index + 1].id, waypoints,
-      travelSeconds: Math.max(1, routeLength(waypoints) / 6), open: true, physicalRouteId: physical?.id ?? null, physicalGateIds: [...(physical?.physicalGateIds ?? [])] });
+      travelSeconds: Math.max(1, routeLength(waypoints) / 6), open: true, physicalRouteId: physical?.id ?? null, physicalGateIds: physical ? [...(physical.physicalGateIds ?? [])] : legacyRouteGates ? [] : corridorGateIds });
   }
   for (const route of layout.strategicRoutes ?? []) if (sectorToFront.has(route.from) && sectorToFront.has(route.to)) {
     if (routes.some(item => item.physicalRouteId === route.id)) continue;

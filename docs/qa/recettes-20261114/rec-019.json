@@ -5,7 +5,7 @@
   "operation": "AFF-14",
   "boss": "BOS-32",
   "seed": 1114,
-  "commit": "bd866f88e1499d4e091e4e0c8611afdfb95d2336",
+  "commit": "2ecc8537ccbaf21f07b78dc4dbf083a98bcf9f32",
   "date": "2026-11-14",
   "commande": "node --test tests/recette-rec-019.test.js",
   "preuveVideo": "non produite — preuve par journal",
@@ -127,7 +127,7 @@
               "pending"
             ],
             "matriarch": "done",
-            "rucheVivante": 999
+            "rucheVivante": 998
           }
         },
         {
@@ -231,7 +231,7 @@
           "pending"
         ],
         "matriarch": "done",
-        "rucheVivante": 999
+        "rucheVivante": 998
       },
       "extractionFinale": {
         "taskId": "lethe_exit",
@@ -260,9 +260,9 @@
           "hive": {
             "allocated": 1000,
             "active": 24,
-            "distant": 647,
-            "reserve": 328,
-            "dead": 1,
+            "distant": 622,
+            "reserve": 352,
+            "dead": 2,
             "evacuated": 0,
             "captured": 0
           }
@@ -524,8 +524,8 @@
           "hive": {
             "allocated": 1000,
             "active": 24,
-            "distant": 647,
-            "reserve": 328,
+            "distant": 623,
+            "reserve": 352,
             "dead": 1,
             "evacuated": 0,
             "captured": 0
@@ -666,7 +666,7 @@
               "done"
             ],
             "matriarch": "done",
-            "rucheVivante": 999
+            "rucheVivante": 998
           }
         },
         {
@@ -773,7 +773,7 @@
           "done"
         ],
         "matriarch": "done",
-        "rucheVivante": 999
+        "rucheVivante": 998
       },
       "extractionFinale": {
         "taskId": "lethe_exit",
@@ -802,9 +802,9 @@
           "hive": {
             "allocated": 1000,
             "active": 24,
-            "distant": 615,
+            "distant": 614,
             "reserve": 360,
-            "dead": 1,
+            "dead": 2,
             "evacuated": 0,
             "captured": 0
           }
@@ -949,7 +949,7 @@
               "done"
             ],
             "matriarch": "done",
-            "rucheVivante": 999
+            "rucheVivante": 998
           }
         },
         {
@@ -1053,7 +1053,7 @@
           "done"
         ],
         "matriarch": "done",
-        "rucheVivante": 999
+        "rucheVivante": 998
       },
       "extractionFinale": {
         "taskId": "lethe_exit",
@@ -1082,9 +1082,9 @@
           "hive": {
             "allocated": 1000,
             "active": 24,
-            "distant": 615,
+            "distant": 614,
             "reserve": 360,
-            "dead": 1,
+            "dead": 2,
             "evacuated": 0,
             "captured": 0
           }
@@ -1276,7 +1276,7 @@
               "pending"
             ],
             "matriarch": "done",
-            "rucheVivante": 999
+            "rucheVivante": 998
           }
         },
         "ouverts/menacee": {
@@ -1380,7 +1380,7 @@
               "done"
             ],
             "matriarch": "done",
-            "rucheVivante": 999
+            "rucheVivante": 998
           }
         },
         "fermes/menacee": {
@@ -1432,7 +1432,7 @@
               "done"
             ],
             "matriarch": "done",
-            "rucheVivante": 999
+            "rucheVivante": 998
           }
         }
       }
@@ -1449,10 +1449,10 @@
           "fermes/menacee": "en_cours"
         },
         "rucheVivanteApresBoss": {
-          "ouverts/intacte": 999,
+          "ouverts/intacte": 998,
           "ouverts/menacee": 999,
-          "fermes/intacte": 999,
-          "fermes/menacee": 999
+          "fermes/intacte": 998,
+          "fermes/menacee": 998
         }
       }
     },

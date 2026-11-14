@@ -184,8 +184,7 @@ test('REC-012 — a physical door change updates the routes of every faction, th
   } finally { f.dispose(); }
 });
 
-test('REC-012 — every catalogue route of AFF-14 (Lethe, LD-23) is bound to physical doors',
-  { todo: 'défaut: js/battlefield/BattlefieldOperation.js:26 — AFF-14 a 3 fronts (budget) mais LD-23 déclare 4 ancres ; le repli par arrondi choisit des secteurs non-ancres et js/battlefield/BattlefieldOperation.js:37-40 ne trouve aucune route stratégique : route_0/route_1 ont physicalGateIds=[] et ignorent les portes' }, () => {
+test('REC-012 — every catalogue route of AFF-14 (Lethe, LD-23) is bound to physical doors', () => {
   const f = build('AFF-14');
   try {
     const unbound = [...f.sim.routes.values()].filter(r => !r.physicalGateIds?.length).map(r => r.id);

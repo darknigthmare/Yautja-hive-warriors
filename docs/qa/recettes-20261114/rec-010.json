@@ -5,14 +5,14 @@
   "resultatAttenduClasseur": "Chaque groupe confirme, exécute ou refuse avec une raison compréhensible. Les alliés peuvent sécuriser un objectif sans présence du joueur; un soutien n'abandonne pas systématiquement sa tâche pour poursuivre une cible isolée.",
   "preuveAConserverClasseur": "Vidéo avec statut des ordres; destinations et trajets; objectifs accomplis sans joueur; motifs de refus.",
   "date": "2026-11-14",
-  "commit": "bd866f88e1499d4e091e4e0c8611afdfb95d2336",
+  "commit": "2ecc8537ccbaf21f07b78dc4dbf083a98bcf9f32",
   "branche": "claude/fervent-volta-hmhdfw",
   "preuveVideo": "non produite — preuve par journal de simulation",
   "graine": {
     "mapSeed": 20261114,
     "simulation": "déterministe, sans tirage aléatoire",
     "pas": 0.25,
-    "duree": 636.25
+    "duree": 900
   },
   "scenario": {
     "operationId": "pilot",
@@ -233,13 +233,7 @@
   ],
   "captures": [
     {
-      "t": 483.25,
-      "frontId": "insertion",
-      "owner": "hive",
-      "reason": "unopposed_presence"
-    },
-    {
-      "t": 491.25,
+      "t": 511,
       "frontId": "relay",
       "owner": "player_clan",
       "reason": "unopposed_presence"
@@ -570,7 +564,7 @@
             170,
             -170
           ],
-          "vivants": 4,
+          "vivants": 3,
           "enTrajet": false,
           "formation": "line"
         }
@@ -600,7 +594,7 @@
             170,
             -170
           ],
-          "vivants": 4,
+          "vivants": 3,
           "enTrajet": false,
           "formation": "wedge"
         },
@@ -636,7 +630,7 @@
             170,
             -170
           ],
-          "vivants": 4,
+          "vivants": 3,
           "enTrajet": false,
           "formation": "line"
         }
@@ -666,7 +660,7 @@
             170,
             -170
           ],
-          "vivants": 4,
+          "vivants": 2,
           "enTrajet": false,
           "formation": "wedge"
         },
@@ -702,7 +696,7 @@
             170,
             -170
           ],
-          "vivants": 4,
+          "vivants": 3,
           "enTrajet": false,
           "formation": "line"
         }
@@ -720,7 +714,7 @@
             34,
             0
           ],
-          "vivants": 2,
+          "vivants": 4,
           "enTrajet": false,
           "formation": "line"
         },
@@ -732,7 +726,7 @@
             170,
             -170
           ],
-          "vivants": 4,
+          "vivants": 2,
           "enTrajet": false,
           "formation": "wedge"
         },
@@ -768,7 +762,7 @@
             170,
             -170
           ],
-          "vivants": 4,
+          "vivants": 3,
           "enTrajet": false,
           "formation": "line"
         }
@@ -776,7 +770,7 @@
       "B": "human_force"
     },
     {
-      "t": 636.25,
+      "t": 900,
       "groupes": {
         "gunnison_forest:player_clan:0": {
           "front": "insertion",
@@ -786,7 +780,7 @@
             34,
             0
           ],
-          "vivants": 0,
+          "vivants": 1,
           "enTrajet": false,
           "formation": "line"
         },
@@ -798,7 +792,7 @@
             170,
             -170
           ],
-          "vivants": 4,
+          "vivants": 2,
           "enTrajet": false,
           "formation": "wedge"
         },
@@ -822,7 +816,7 @@
             0,
             0
           ],
-          "vivants": 0,
+          "vivants": 1,
           "enTrajet": false,
           "formation": "line"
         },
@@ -834,7 +828,7 @@
             170,
             -170
           ],
-          "vivants": 4,
+          "vivants": 3,
           "enTrajet": false,
           "formation": "line"
         }
@@ -991,7 +985,7 @@
           }
         ],
         "captureB": {
-          "t": 491.25,
+          "t": 511,
           "frontId": "relay",
           "owner": "player_clan",
           "reason": "unopposed_presence"

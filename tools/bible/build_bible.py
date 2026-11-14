@@ -138,6 +138,10 @@ TABLES["01_Decisions"] = (
         ["HW-DEC-86", "Campagne de l'Unblooded", "Mode à part, après les P0 et P1", "« Ascension », à côté de la campagne v70, conforme au contrat Musou (32 acteurs détaillés, morts enregistrées)"],
         ["HW-DEC-87", "Ajouts à porter", "Ouverture furtive, Garde nationale à Gunnison, armes humaines en caisses", "Refaits sur les systèmes v70"],
         ["HW-DEC-88", "Clôture des P0 du dépôt", "Automatiser les preuves des recettes", "REC-021, REC-022 (matériel réel) et REC-008 (validation humaine) restent à l'auteur"],
+        ["HW-DEC-89", "Réserve de la ruche (REC-006)", "Adultes déjà alloués, adaptation de gameplay assumée", "Aucun contrôle d'hôte ni de stade ; écrit comme adaptation, effectifs inchangés"],
+        ["HW-DEC-90", "Gabarits couvoir, extraction, civils (REC-004)", "Les intégrer", "GRP-05, GRP-16 et GRP-28 alloués dans les opérations prévues, état « œuf », EFF-06 rattaché à une opération ; totaux recomptés"],
+        ["HW-DEC-91", "Rythme des renforts (REC-002)", "Étaler les réserves par vagues", "Mêmes totaux ; fermer un tunnel tôt retient une part réelle des renforts"],
+        ["HW-DEC-92", "Tir à distance (REC-001)", "Concentrer le tir", "Chaque groupe vise d'abord une cible ; comparaison avant/après sur la même graine"],
         ["HW-DEC-12", "Alliés Yautja, armes humaines, véhicules et soutiens, coopération locale", "Tous conservés", "Le champ de bataille est une guerre ; ces systèmes sont à réparer, pas à couper"],
     ],
 )

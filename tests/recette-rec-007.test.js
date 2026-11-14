@@ -53,7 +53,7 @@ const roster = (preset, candidate) => {
   const verdict = validateBattleRoster([{ profileId: candidate.profileId, count: 1 }], { mode: preset.mode, works: preset.works });
   const row = { preset: preset.id, mode: preset.mode, oeuvres: preset.works, profil: candidate.profileId, libelle: candidate.label,
     oeuvreProfil: getBattleProfile(candidate.profileId).work, autorise: verdict.valid, refus: verdict.errors,
-    divergenceSignalee: Object.hasOwn(verdict, 'divergence') || Object.hasOwn(verdict, 'divergences') || Object.hasOwn(verdict, 'warnings') };
+    divergenceSignalee: (verdict.divergences?.length ?? 0) > 0, divergences: verdict.divergences ?? [] };
   matrix.push(row); return row;
 };
 /** Minimal two-camp simulation contract; the profile keeps its catalogue work. */
@@ -73,7 +73,7 @@ function probe({ mode, works, profileId }) {
     groups: [{ id: 'g-clan', factionId: 'clan', frontId: 'a', units: [{ id: 'c1', profileId: 'clan-hunter' }] },
       { id: 'g-other', factionId: 'humans', frontId: 'b', units: [{ id: 'h1', profileId }] }] };
 }
-const simulate = config => { try { const sim = new BattleSimulation(config); const d = structuredClone(sim.config.context); sim.dispose(); return { accepted: true, context: d }; }
+const simulate = config => { try { const sim = new BattleSimulation(config); const d = structuredClone(sim.config.context), divergences = structuredClone(sim.divergences ?? []); sim.dispose(); return { accepted: true, context: d, divergences }; }
   catch (error) { return { accepted: false, error: error.message }; } };
 
 test('REC-007 — reconstruction presets refuse every combination outside their work (USCM 1987, Rogue outside Charon, Offspring outside Romulus)', () => {
@@ -134,11 +134,10 @@ test('REC-007 — hypothetical (crossover) mode may allow the divergent combinat
   });
 });
 
-test('REC-007 — hypothetical mode flags the divergence from the reconstruction it permits',
-  { todo: 'défaut: js/data/BattleCatalog.js:104-125 (validateBattleRoster) et js/battlefield/BattleSimulation.js:216-220 (_checkProfile) acceptent le mode crossover sans retourner ni enregistrer de divergence ; seul prepareBossEncounter garde mode:"crossover"' }, () => {
+test('REC-007 — hypothetical mode flags the divergence from the reconstruction it permits', () => {
   const row = matrix.find(item => item.preset === 'hypothetique:crossover' && item.profil === 'HUM-004');
   const sim = simulate(probe({ mode: 'crossover', works: ['Predator (1987)'], profileId: 'HUM-004' }));
-  const flagged = row.divergenceSignalee || Object.keys(sim.context ?? {}).some(key => /diverg/i.test(key));
+  const flagged = row.divergenceSignalee && sim.divergences.length > 0;
   clauses.push({ clause: 'hypothetique_signale_divergence', attendu: 'Un mode hypothétique peut les permettre en signalant la divergence.', verdict: flagged ? 'prouvé' : 'échec (défaut)',
     details: { retourValidateur: { autorise: row.autorise, refus: row.refus, clefs: ['valid', 'errors'] }, contexteSimulation: sim.context,
       reproduction: "validateBattleRoster([{profileId:'HUM-004'}],{mode:'crossover',works:['Predator (1987)']}) → {valid:true, errors:[]} sans champ de divergence",

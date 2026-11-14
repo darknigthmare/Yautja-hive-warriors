@@ -5,7 +5,7 @@
   "resultatAttenduClasseur": "Les décisions changent les renforts, les pertes, les accès ou l'extraction de façon explicable. Les fronts non secourus ne retrouvent pas artificiellement le même résultat imposé.",
   "preuveAConserverClasseur": "Deux replays comparables; bilan par front; chronologie des ordres et objectifs; justification des différences.",
   "date": "2026-11-14",
-  "commit": "bd866f88e1499d4e091e4e0c8611afdfb95d2336",
+  "commit": "2ecc8537ccbaf21f07b78dc4dbf083a98bcf9f32",
   "branche": "claude/fervent-volta-hmhdfw",
   "preuveVideo": "non produite — preuve par journal de simulation",
   "graine": {
@@ -35,132 +35,194 @@
       "ordres": [],
       "chronologie": [
         {
-          "t": 11,
+          "t": 19,
+          "type": "group_order",
+          "groupId": "gunnison_forest:human_force:8",
+          "frontId": "nest",
+          "issuer": "scenario"
+        },
+        {
+          "t": 35,
+          "type": "group_order",
+          "groupId": "gunnison_forest:hive:12",
+          "frontId": "relay",
+          "issuer": "scenario"
+        },
+        {
+          "t": 51,
           "type": "group_order",
           "groupId": "gunnison_forest:player_clan:4",
           "frontId": "insertion",
           "issuer": "scenario"
         },
         {
-          "t": 11,
-          "type": "group_order",
-          "groupId": "gunnison_forest:hive:12",
-          "frontId": "relay",
-          "issuer": "scenario"
-        },
-        {
-          "t": 11,
-          "type": "group_order",
-          "groupId": "gunnison_forest:human_force:8",
-          "frontId": "nest",
-          "issuer": "scenario"
-        },
-        {
-          "t": 19,
+          "t": 51,
           "type": "group_order",
           "groupId": "gunnison_forest:hive:13",
           "frontId": "relay",
           "issuer": "scenario"
         },
         {
-          "t": 19,
+          "t": 51,
           "type": "group_order",
           "groupId": "gunnison_forest:human_force:9",
           "frontId": "nest",
           "issuer": "scenario"
         },
         {
-          "t": 27,
-          "type": "group_order",
-          "groupId": "gunnison_forest:hive:14",
-          "frontId": "relay",
-          "issuer": "scenario"
-        },
-        {
-          "t": 27,
+          "t": 75,
           "type": "group_order",
           "groupId": "gunnison_forest:human_force:10",
           "frontId": "nest",
           "issuer": "scenario"
         },
         {
-          "t": 35,
+          "t": 99,
           "type": "group_order",
-          "groupId": "gunnison_forest:hive:15",
+          "groupId": "gunnison_forest:hive:14",
           "frontId": "relay",
           "issuer": "scenario"
         },
         {
-          "t": 35,
+          "t": 99,
           "type": "group_order",
           "groupId": "gunnison_forest:human_force:11",
           "frontId": "nest",
           "issuer": "scenario"
         },
         {
-          "t": 101.75,
-          "type": "group_arrived",
-          "groupId": "gunnison_forest:hive:12",
-          "frontId": "relay"
-        },
-        {
-          "t": 101.75,
+          "t": 109.75,
           "type": "group_arrived",
           "groupId": "gunnison_forest:human_force:8",
           "frontId": "nest"
         },
         {
-          "t": 109.75,
+          "t": 125.75,
+          "type": "group_arrived",
+          "groupId": "gunnison_forest:hive:12",
+          "frontId": "relay"
+        },
+        {
+          "t": 139,
+          "type": "group_order",
+          "groupId": "gunnison_forest:hive:15",
+          "frontId": "relay",
+          "issuer": "scenario"
+        },
+        {
+          "t": 141.75,
           "type": "group_arrived",
           "groupId": "gunnison_forest:hive:13",
           "frontId": "relay"
         },
         {
-          "t": 109.75,
+          "t": 141.75,
           "type": "group_arrived",
           "groupId": "gunnison_forest:human_force:9",
           "frontId": "nest"
         },
         {
-          "t": 117.75,
-          "type": "group_arrived",
-          "groupId": "gunnison_forest:hive:14",
-          "frontId": "relay"
-        },
-        {
-          "t": 117.75,
+          "t": 165.75,
           "type": "group_arrived",
           "groupId": "gunnison_forest:human_force:10",
           "frontId": "nest"
         },
         {
-          "t": 125.75,
+          "t": 189.75,
           "type": "group_arrived",
-          "groupId": "gunnison_forest:hive:15",
+          "groupId": "gunnison_forest:hive:14",
           "frontId": "relay"
         },
         {
-          "t": 125.75,
+          "t": 189.75,
           "type": "group_arrived",
           "groupId": "gunnison_forest:human_force:11",
           "frontId": "nest"
         },
         {
-          "t": 260,
+          "t": 229.75,
+          "type": "group_arrived",
+          "groupId": "gunnison_forest:hive:15",
+          "frontId": "relay"
+        },
+        {
+          "t": 240,
           "type": "group_order",
           "groupId": "gunnison_forest:hive:4",
           "frontId": "relay",
           "issuer": "officer"
         },
         {
-          "t": 260,
+          "t": 240,
           "type": "officer_decision",
           "groupId": "gunnison_forest:hive:4",
           "frontId": "relay",
           "reason": "open_hostile_front"
         },
         {
-          "t": 277,
+          "t": 260,
+          "type": "group_order",
+          "groupId": "gunnison_forest:hive:5",
+          "frontId": "relay",
+          "issuer": "officer"
+        },
+        {
+          "t": 260,
+          "type": "officer_decision",
+          "groupId": "gunnison_forest:hive:5",
+          "frontId": "relay",
+          "reason": "open_hostile_front"
+        },
+        {
+          "t": 280,
+          "type": "group_order",
+          "groupId": "gunnison_forest:hive:6",
+          "frontId": "relay",
+          "issuer": "officer"
+        },
+        {
+          "t": 280,
+          "type": "officer_decision",
+          "groupId": "gunnison_forest:hive:6",
+          "frontId": "relay",
+          "reason": "open_hostile_front"
+        },
+        {
+          "t": 300,
+          "type": "group_order",
+          "groupId": "gunnison_forest:hive:7",
+          "frontId": "relay",
+          "issuer": "officer"
+        },
+        {
+          "t": 300,
+          "type": "officer_decision",
+          "groupId": "gunnison_forest:hive:7",
+          "frontId": "relay",
+          "reason": "open_hostile_front"
+        },
+        {
+          "t": 320,
+          "type": "group_order",
+          "groupId": "gunnison_forest:hive:8",
+          "frontId": "relay",
+          "issuer": "officer"
+        },
+        {
+          "t": 320,
+          "type": "officer_decision",
+          "groupId": "gunnison_forest:hive:8",
+          "frontId": "relay",
+          "reason": "open_hostile_front"
+        },
+        {
+          "t": 330.75,
+          "type": "group_arrived",
+          "groupId": "gunnison_forest:hive:4",
+          "frontId": "relay"
+        },
+        {
+          "t": 336.75,
           "type": "base_captured",
           "frontId": "relay",
           "owner": "hive",
@@ -169,8 +231,33 @@
         {
           "t": 350.75,
           "type": "group_arrived",
-          "groupId": "gunnison_forest:hive:4",
+          "groupId": "gunnison_forest:hive:5",
           "frontId": "relay"
+        },
+        {
+          "t": 370.75,
+          "type": "group_arrived",
+          "groupId": "gunnison_forest:hive:6",
+          "frontId": "relay"
+        },
+        {
+          "t": 390.75,
+          "type": "group_arrived",
+          "groupId": "gunnison_forest:hive:7",
+          "frontId": "relay"
+        },
+        {
+          "t": 410.75,
+          "type": "group_arrived",
+          "groupId": "gunnison_forest:hive:8",
+          "frontId": "relay"
+        },
+        {
+          "t": 732.25,
+          "type": "base_captured",
+          "frontId": "nest",
+          "owner": "human_force",
+          "reason": "unopposed_presence"
         }
       ],
       "bilanInstantCompare": {
@@ -190,11 +277,11 @@
             "sourceHP": 1000,
             "contested": false,
             "strength": {
-              "hive": 36
+              "hive": 46
             },
             "captures": [
               {
-                "t": 277,
+                "t": 336.75,
                 "owner": "hive",
                 "reason": "unopposed_presence"
               }
@@ -203,9 +290,10 @@
           "nest": {
             "owner": "hive",
             "sourceHP": 1000,
-            "contested": false,
+            "contested": true,
             "strength": {
-              "hive": 28
+              "hive": 4,
+              "human_force": 8
             },
             "captures": []
           }
@@ -217,124 +305,124 @@
             "dead": 0
           },
           "hive": {
-            "deployed": 64,
+            "deployed": 50,
             "reserve": 0,
-            "dead": 0
+            "dead": 14
           },
           "human_force": {
-            "deployed": 0,
+            "deployed": 8,
             "reserve": 0,
-            "dead": 48
+            "dead": 40
           }
         },
         "reinforcements": [
           {
-            "t": 8,
-            "type": "reinforcements_inbound",
-            "groupId": "gunnison_forest:player_clan:4",
-            "frontId": "insertion"
-          },
-          {
-            "t": 8,
-            "type": "reinforcements_inbound",
-            "groupId": "gunnison_forest:hive:12",
-            "frontId": "relay"
-          },
-          {
-            "t": 8,
+            "t": 16,
             "type": "reinforcements_inbound",
             "groupId": "gunnison_forest:human_force:8",
             "frontId": "nest"
           },
           {
-            "t": 11,
-            "type": "reinforcements_arrived",
-            "groupId": "gunnison_forest:player_clan:4",
-            "frontId": "insertion"
-          },
-          {
-            "t": 11,
-            "type": "reinforcements_arrived",
-            "groupId": "gunnison_forest:hive:12",
-            "frontId": "relay"
-          },
-          {
-            "t": 11,
+            "t": 19,
             "type": "reinforcements_arrived",
             "groupId": "gunnison_forest:human_force:8",
             "frontId": "nest"
           },
           {
-            "t": 16,
-            "type": "reinforcements_inbound",
-            "groupId": "gunnison_forest:hive:13",
-            "frontId": "relay"
-          },
-          {
-            "t": 16,
-            "type": "reinforcements_inbound",
-            "groupId": "gunnison_forest:human_force:9",
-            "frontId": "nest"
-          },
-          {
-            "t": 19,
-            "type": "reinforcements_arrived",
-            "groupId": "gunnison_forest:hive:13",
-            "frontId": "relay"
-          },
-          {
-            "t": 19,
-            "type": "reinforcements_arrived",
-            "groupId": "gunnison_forest:human_force:9",
-            "frontId": "nest"
-          },
-          {
-            "t": 24,
-            "type": "reinforcements_inbound",
-            "groupId": "gunnison_forest:hive:14",
-            "frontId": "relay"
-          },
-          {
-            "t": 24,
-            "type": "reinforcements_inbound",
-            "groupId": "gunnison_forest:human_force:10",
-            "frontId": "nest"
-          },
-          {
-            "t": 27,
-            "type": "reinforcements_arrived",
-            "groupId": "gunnison_forest:hive:14",
-            "frontId": "relay"
-          },
-          {
-            "t": 27,
-            "type": "reinforcements_arrived",
-            "groupId": "gunnison_forest:human_force:10",
-            "frontId": "nest"
-          },
-          {
             "t": 32,
             "type": "reinforcements_inbound",
-            "groupId": "gunnison_forest:hive:15",
-            "frontId": "relay"
-          },
-          {
-            "t": 32,
-            "type": "reinforcements_inbound",
-            "groupId": "gunnison_forest:human_force:11",
-            "frontId": "nest"
-          },
-          {
-            "t": 35,
-            "type": "reinforcements_arrived",
-            "groupId": "gunnison_forest:hive:15",
+            "groupId": "gunnison_forest:hive:12",
             "frontId": "relay"
           },
           {
             "t": 35,
             "type": "reinforcements_arrived",
+            "groupId": "gunnison_forest:hive:12",
+            "frontId": "relay"
+          },
+          {
+            "t": 48,
+            "type": "reinforcements_inbound",
+            "groupId": "gunnison_forest:player_clan:4",
+            "frontId": "insertion"
+          },
+          {
+            "t": 48,
+            "type": "reinforcements_inbound",
+            "groupId": "gunnison_forest:hive:13",
+            "frontId": "relay"
+          },
+          {
+            "t": 48,
+            "type": "reinforcements_inbound",
+            "groupId": "gunnison_forest:human_force:9",
+            "frontId": "nest"
+          },
+          {
+            "t": 51,
+            "type": "reinforcements_arrived",
+            "groupId": "gunnison_forest:player_clan:4",
+            "frontId": "insertion"
+          },
+          {
+            "t": 51,
+            "type": "reinforcements_arrived",
+            "groupId": "gunnison_forest:hive:13",
+            "frontId": "relay"
+          },
+          {
+            "t": 51,
+            "type": "reinforcements_arrived",
+            "groupId": "gunnison_forest:human_force:9",
+            "frontId": "nest"
+          },
+          {
+            "t": 72,
+            "type": "reinforcements_inbound",
+            "groupId": "gunnison_forest:human_force:10",
+            "frontId": "nest"
+          },
+          {
+            "t": 75,
+            "type": "reinforcements_arrived",
+            "groupId": "gunnison_forest:human_force:10",
+            "frontId": "nest"
+          },
+          {
+            "t": 96,
+            "type": "reinforcements_inbound",
+            "groupId": "gunnison_forest:hive:14",
+            "frontId": "relay"
+          },
+          {
+            "t": 96,
+            "type": "reinforcements_inbound",
             "groupId": "gunnison_forest:human_force:11",
             "frontId": "nest"
+          },
+          {
+            "t": 99,
+            "type": "reinforcements_arrived",
+            "groupId": "gunnison_forest:hive:14",
+            "frontId": "relay"
+          },
+          {
+            "t": 99,
+            "type": "reinforcements_arrived",
+            "groupId": "gunnison_forest:human_force:11",
+            "frontId": "nest"
+          },
+          {
+            "t": 136,
+            "type": "reinforcements_inbound",
+            "groupId": "gunnison_forest:hive:15",
+            "frontId": "relay"
+          },
+          {
+            "t": 139,
+            "type": "reinforcements_arrived",
+            "groupId": "gunnison_forest:hive:15",
+            "frontId": "relay"
           }
         ],
         "access": [
@@ -378,24 +466,30 @@
             "sourceHP": 1000,
             "contested": false,
             "strength": {
-              "hive": 36
+              "hive": 46
             },
             "captures": [
               {
-                "t": 277,
+                "t": 336.75,
                 "owner": "hive",
                 "reason": "unopposed_presence"
               }
             ]
           },
           "nest": {
-            "owner": "hive",
+            "owner": "human_force",
             "sourceHP": 1000,
             "contested": false,
             "strength": {
-              "hive": 28
+              "human_force": 7
             },
-            "captures": []
+            "captures": [
+              {
+                "t": 732.25,
+                "owner": "human_force",
+                "reason": "unopposed_presence"
+              }
+            ]
           }
         },
         "counts": {
@@ -405,124 +499,124 @@
             "dead": 0
           },
           "hive": {
-            "deployed": 64,
+            "deployed": 46,
             "reserve": 0,
-            "dead": 0
+            "dead": 18
           },
           "human_force": {
-            "deployed": 0,
+            "deployed": 7,
             "reserve": 0,
-            "dead": 48
+            "dead": 41
           }
         },
         "reinforcements": [
           {
-            "t": 8,
-            "type": "reinforcements_inbound",
-            "groupId": "gunnison_forest:player_clan:4",
-            "frontId": "insertion"
-          },
-          {
-            "t": 8,
-            "type": "reinforcements_inbound",
-            "groupId": "gunnison_forest:hive:12",
-            "frontId": "relay"
-          },
-          {
-            "t": 8,
+            "t": 16,
             "type": "reinforcements_inbound",
             "groupId": "gunnison_forest:human_force:8",
             "frontId": "nest"
           },
           {
-            "t": 11,
-            "type": "reinforcements_arrived",
-            "groupId": "gunnison_forest:player_clan:4",
-            "frontId": "insertion"
-          },
-          {
-            "t": 11,
-            "type": "reinforcements_arrived",
-            "groupId": "gunnison_forest:hive:12",
-            "frontId": "relay"
-          },
-          {
-            "t": 11,
+            "t": 19,
             "type": "reinforcements_arrived",
             "groupId": "gunnison_forest:human_force:8",
             "frontId": "nest"
           },
           {
-            "t": 16,
-            "type": "reinforcements_inbound",
-            "groupId": "gunnison_forest:hive:13",
-            "frontId": "relay"
-          },
-          {
-            "t": 16,
-            "type": "reinforcements_inbound",
-            "groupId": "gunnison_forest:human_force:9",
-            "frontId": "nest"
-          },
-          {
-            "t": 19,
-            "type": "reinforcements_arrived",
-            "groupId": "gunnison_forest:hive:13",
-            "frontId": "relay"
-          },
-          {
-            "t": 19,
-            "type": "reinforcements_arrived",
-            "groupId": "gunnison_forest:human_force:9",
-            "frontId": "nest"
-          },
-          {
-            "t": 24,
-            "type": "reinforcements_inbound",
-            "groupId": "gunnison_forest:hive:14",
-            "frontId": "relay"
-          },
-          {
-            "t": 24,
-            "type": "reinforcements_inbound",
-            "groupId": "gunnison_forest:human_force:10",
-            "frontId": "nest"
-          },
-          {
-            "t": 27,
-            "type": "reinforcements_arrived",
-            "groupId": "gunnison_forest:hive:14",
-            "frontId": "relay"
-          },
-          {
-            "t": 27,
-            "type": "reinforcements_arrived",
-            "groupId": "gunnison_forest:human_force:10",
-            "frontId": "nest"
-          },
-          {
             "t": 32,
             "type": "reinforcements_inbound",
-            "groupId": "gunnison_forest:hive:15",
-            "frontId": "relay"
-          },
-          {
-            "t": 32,
-            "type": "reinforcements_inbound",
-            "groupId": "gunnison_forest:human_force:11",
-            "frontId": "nest"
-          },
-          {
-            "t": 35,
-            "type": "reinforcements_arrived",
-            "groupId": "gunnison_forest:hive:15",
+            "groupId": "gunnison_forest:hive:12",
             "frontId": "relay"
           },
           {
             "t": 35,
             "type": "reinforcements_arrived",
+            "groupId": "gunnison_forest:hive:12",
+            "frontId": "relay"
+          },
+          {
+            "t": 48,
+            "type": "reinforcements_inbound",
+            "groupId": "gunnison_forest:player_clan:4",
+            "frontId": "insertion"
+          },
+          {
+            "t": 48,
+            "type": "reinforcements_inbound",
+            "groupId": "gunnison_forest:hive:13",
+            "frontId": "relay"
+          },
+          {
+            "t": 48,
+            "type": "reinforcements_inbound",
+            "groupId": "gunnison_forest:human_force:9",
+            "frontId": "nest"
+          },
+          {
+            "t": 51,
+            "type": "reinforcements_arrived",
+            "groupId": "gunnison_forest:player_clan:4",
+            "frontId": "insertion"
+          },
+          {
+            "t": 51,
+            "type": "reinforcements_arrived",
+            "groupId": "gunnison_forest:hive:13",
+            "frontId": "relay"
+          },
+          {
+            "t": 51,
+            "type": "reinforcements_arrived",
+            "groupId": "gunnison_forest:human_force:9",
+            "frontId": "nest"
+          },
+          {
+            "t": 72,
+            "type": "reinforcements_inbound",
+            "groupId": "gunnison_forest:human_force:10",
+            "frontId": "nest"
+          },
+          {
+            "t": 75,
+            "type": "reinforcements_arrived",
+            "groupId": "gunnison_forest:human_force:10",
+            "frontId": "nest"
+          },
+          {
+            "t": 96,
+            "type": "reinforcements_inbound",
+            "groupId": "gunnison_forest:hive:14",
+            "frontId": "relay"
+          },
+          {
+            "t": 96,
+            "type": "reinforcements_inbound",
             "groupId": "gunnison_forest:human_force:11",
             "frontId": "nest"
+          },
+          {
+            "t": 99,
+            "type": "reinforcements_arrived",
+            "groupId": "gunnison_forest:hive:14",
+            "frontId": "relay"
+          },
+          {
+            "t": 99,
+            "type": "reinforcements_arrived",
+            "groupId": "gunnison_forest:human_force:11",
+            "frontId": "nest"
+          },
+          {
+            "t": 136,
+            "type": "reinforcements_inbound",
+            "groupId": "gunnison_forest:hive:15",
+            "frontId": "relay"
+          },
+          {
+            "t": 139,
+            "type": "reinforcements_arrived",
+            "groupId": "gunnison_forest:hive:15",
+            "frontId": "relay"
           }
         ],
         "access": [
@@ -544,8 +638,7 @@
           }
         ],
         "hiveSources": [
-          "relay",
-          "nest"
+          "relay"
         ],
         "result": null
       }
@@ -675,123 +768,95 @@
           "issuer": "player1"
         },
         {
-          "t": 11,
-          "type": "group_order",
-          "groupId": "gunnison_forest:player_clan:4",
-          "frontId": "insertion",
-          "issuer": "scenario"
-        },
-        {
-          "t": 11,
-          "type": "group_order",
-          "groupId": "gunnison_forest:hive:12",
-          "frontId": "relay",
-          "issuer": "scenario"
-        },
-        {
-          "t": 11,
+          "t": 19,
           "type": "group_order",
           "groupId": "gunnison_forest:human_force:8",
           "frontId": "nest",
           "issuer": "scenario"
         },
         {
-          "t": 19,
+          "t": 20,
+          "type": "group_order",
+          "groupId": "gunnison_forest:hive:0",
+          "frontId": "insertion",
+          "issuer": "officer"
+        },
+        {
+          "t": 20,
+          "type": "officer_decision",
+          "groupId": "gunnison_forest:hive:0",
+          "frontId": "insertion",
+          "reason": "open_hostile_front"
+        },
+        {
+          "t": 20,
+          "type": "group_order",
+          "groupId": "gunnison_forest:human_force:0",
+          "frontId": "insertion",
+          "issuer": "officer"
+        },
+        {
+          "t": 20,
+          "type": "officer_decision",
+          "groupId": "gunnison_forest:human_force:0",
+          "frontId": "insertion",
+          "reason": "open_hostile_front"
+        },
+        {
+          "t": 35,
+          "type": "group_order",
+          "groupId": "gunnison_forest:hive:12",
+          "frontId": "relay",
+          "issuer": "scenario"
+        },
+        {
+          "t": 40,
+          "type": "group_order",
+          "groupId": "gunnison_forest:hive:1",
+          "frontId": "insertion",
+          "issuer": "officer"
+        },
+        {
+          "t": 40,
+          "type": "officer_decision",
+          "groupId": "gunnison_forest:hive:1",
+          "frontId": "insertion",
+          "reason": "open_hostile_front"
+        },
+        {
+          "t": 40,
+          "type": "group_order",
+          "groupId": "gunnison_forest:human_force:1",
+          "frontId": "insertion",
+          "issuer": "officer"
+        },
+        {
+          "t": 40,
+          "type": "officer_decision",
+          "groupId": "gunnison_forest:human_force:1",
+          "frontId": "insertion",
+          "reason": "open_hostile_front"
+        },
+        {
+          "t": 51,
+          "type": "group_order",
+          "groupId": "gunnison_forest:player_clan:4",
+          "frontId": "insertion",
+          "issuer": "scenario"
+        },
+        {
+          "t": 51,
           "type": "group_order",
           "groupId": "gunnison_forest:hive:13",
           "frontId": "relay",
           "issuer": "scenario"
         },
         {
-          "t": 19,
+          "t": 51,
           "type": "group_order",
           "groupId": "gunnison_forest:human_force:9",
           "frontId": "nest",
           "issuer": "scenario"
-        },
-        {
-          "t": 20,
-          "type": "group_order",
-          "groupId": "gunnison_forest:hive:0",
-          "frontId": "insertion",
-          "issuer": "officer"
-        },
-        {
-          "t": 20,
-          "type": "officer_decision",
-          "groupId": "gunnison_forest:hive:0",
-          "frontId": "insertion",
-          "reason": "open_hostile_front"
-        },
-        {
-          "t": 20,
-          "type": "group_order",
-          "groupId": "gunnison_forest:human_force:0",
-          "frontId": "insertion",
-          "issuer": "officer"
-        },
-        {
-          "t": 20,
-          "type": "officer_decision",
-          "groupId": "gunnison_forest:human_force:0",
-          "frontId": "insertion",
-          "reason": "open_hostile_front"
-        },
-        {
-          "t": 27,
-          "type": "group_order",
-          "groupId": "gunnison_forest:hive:14",
-          "frontId": "relay",
-          "issuer": "scenario"
-        },
-        {
-          "t": 27,
-          "type": "group_order",
-          "groupId": "gunnison_forest:human_force:10",
-          "frontId": "nest",
-          "issuer": "scenario"
-        },
-        {
-          "t": 35,
-          "type": "group_order",
-          "groupId": "gunnison_forest:hive:15",
-          "frontId": "relay",
-          "issuer": "scenario"
-        },
-        {
-          "t": 35,
-          "type": "group_order",
-          "groupId": "gunnison_forest:human_force:11",
-          "frontId": "nest",
-          "issuer": "scenario"
-        },
-        {
-          "t": 40,
-          "type": "group_order",
-          "groupId": "gunnison_forest:hive:1",
-          "frontId": "insertion",
-          "issuer": "officer"
-        },
-        {
-          "t": 40,
-          "type": "officer_decision",
-          "groupId": "gunnison_forest:hive:1",
-          "frontId": "insertion",
-          "reason": "open_hostile_front"
-        },
-        {
-          "t": 40,
-          "type": "group_order",
-          "groupId": "gunnison_forest:human_force:1",
-          "frontId": "insertion",
-          "issuer": "officer"
-        },
-        {
-          "t": 40,
-          "type": "officer_decision",
-          "groupId": "gunnison_forest:human_force:1",
-          "frontId": "insertion",
-          "reason": "open_hostile_front"
         },
         {
           "t": 60,
@@ -872,16 +937,25 @@
           "frontId": "insertion"
         },
         {
-          "t": 101.75,
-          "type": "group_arrived",
-          "groupId": "gunnison_forest:hive:12",
-          "frontId": "relay"
+          "t": 91,
+          "type": "group_order",
+          "groupId": "gunnison_forest:human_force:10",
+          "frontId": "insertion",
+          "issuer": "scenario"
         },
         {
-          "t": 101.75,
-          "type": "group_arrived",
-          "groupId": "gunnison_forest:human_force:8",
-          "frontId": "nest"
+          "t": 99,
+          "type": "group_order",
+          "groupId": "gunnison_forest:hive:14",
+          "frontId": "insertion",
+          "issuer": "scenario"
+        },
+        {
+          "t": 99,
+          "type": "group_order",
+          "groupId": "gunnison_forest:human_force:11",
+          "frontId": "insertion",
+          "issuer": "scenario"
         },
         {
           "t": 102.5,
@@ -898,25 +972,7 @@
         {
           "t": 109.75,
           "type": "group_arrived",
-          "groupId": "gunnison_forest:hive:13",
-          "frontId": "relay"
-        },
-        {
-          "t": 109.75,
-          "type": "group_arrived",
-          "groupId": "gunnison_forest:human_force:9",
-          "frontId": "nest"
-        },
-        {
-          "t": 117.75,
-          "type": "group_arrived",
-          "groupId": "gunnison_forest:hive:14",
-          "frontId": "relay"
-        },
-        {
-          "t": 117.75,
-          "type": "group_arrived",
-          "groupId": "gunnison_forest:human_force:10",
+          "groupId": "gunnison_forest:human_force:8",
           "frontId": "nest"
         },
         {
@@ -934,13 +990,26 @@
         {
           "t": 125.75,
           "type": "group_arrived",
-          "groupId": "gunnison_forest:hive:15",
+          "groupId": "gunnison_forest:hive:12",
           "frontId": "relay"
         },
         {
-          "t": 125.75,
+          "t": 139,
+          "type": "group_order",
+          "groupId": "gunnison_forest:hive:15",
+          "frontId": "relay",
+          "issuer": "scenario"
+        },
+        {
+          "t": 141.75,
           "type": "group_arrived",
-          "groupId": "gunnison_forest:human_force:11",
+          "groupId": "gunnison_forest:hive:13",
+          "frontId": "relay"
+        },
+        {
+          "t": 141.75,
+          "type": "group_arrived",
+          "groupId": "gunnison_forest:human_force:9",
           "frontId": "nest"
         },
         {
@@ -950,29 +1019,41 @@
           "frontId": "insertion"
         },
         {
-          "t": 392.25,
+          "t": 153.5,
+          "type": "group_arrived",
+          "groupId": "gunnison_forest:human_force:10",
+          "frontId": "insertion"
+        },
+        {
+          "t": 161.5,
+          "type": "group_arrived",
+          "groupId": "gunnison_forest:human_force:11",
+          "frontId": "insertion"
+        },
+        {
+          "t": 189.75,
+          "type": "group_arrived",
+          "groupId": "gunnison_forest:hive:14",
+          "frontId": "relay"
+        },
+        {
+          "t": 229.75,
+          "type": "group_arrived",
+          "groupId": "gunnison_forest:hive:15",
+          "frontId": "relay"
+        },
+        {
+          "t": 246.5,
+          "type": "group_arrived",
+          "groupId": "gunnison_forest:hive:14",
+          "frontId": "insertion"
+        },
+        {
+          "t": 317.25,
           "type": "base_captured",
           "frontId": "relay",
           "owner": "player_clan",
           "reason": "unopposed_presence"
-        },
-        {
-          "t": 482.25,
-          "type": "base_captured",
-          "frontId": "insertion",
-          "owner": "hive",
-          "reason": "unopposed_presence"
-        },
-        {
-          "t": 482.25,
-          "type": "critical_front_lost",
-          "frontId": "insertion"
-        },
-        {
-          "t": 635.25,
-          "type": "operation_finished",
-          "outcome": "defeat",
-          "reason": "critical_front_lost"
         }
       ],
       "bilanInstantCompare": {
@@ -983,8 +1064,9 @@
             "sourceHP": 1000,
             "contested": true,
             "strength": {
-              "player_clan": 1,
-              "hive": 14
+              "player_clan": 4,
+              "hive": 7,
+              "human_force": 4
             },
             "captures": []
           },
@@ -993,11 +1075,11 @@
             "sourceHP": 1000,
             "contested": false,
             "strength": {
-              "player_clan": 16
+              "player_clan": 15
             },
             "captures": [
               {
-                "t": 392.25,
+                "t": 317.25,
                 "owner": "player_clan",
                 "reason": "unopposed_presence"
               }
@@ -1008,136 +1090,136 @@
             "sourceHP": 1000,
             "contested": false,
             "strength": {
-              "hive": 32
+              "hive": 26
             },
             "captures": []
           }
         },
         "counts": {
           "player_clan": {
-            "deployed": 17,
+            "deployed": 19,
             "reserve": 0,
-            "dead": 3
+            "dead": 1
           },
           "hive": {
-            "deployed": 46,
+            "deployed": 33,
             "reserve": 0,
-            "dead": 18
+            "dead": 31
           },
           "human_force": {
-            "deployed": 0,
+            "deployed": 4,
             "reserve": 0,
-            "dead": 48
+            "dead": 44
           }
         },
         "reinforcements": [
           {
-            "t": 8,
-            "type": "reinforcements_inbound",
-            "groupId": "gunnison_forest:player_clan:4",
-            "frontId": "insertion"
-          },
-          {
-            "t": 8,
-            "type": "reinforcements_inbound",
-            "groupId": "gunnison_forest:hive:12",
-            "frontId": "relay"
-          },
-          {
-            "t": 8,
+            "t": 16,
             "type": "reinforcements_inbound",
             "groupId": "gunnison_forest:human_force:8",
             "frontId": "nest"
           },
           {
-            "t": 11,
-            "type": "reinforcements_arrived",
-            "groupId": "gunnison_forest:player_clan:4",
-            "frontId": "insertion"
-          },
-          {
-            "t": 11,
-            "type": "reinforcements_arrived",
-            "groupId": "gunnison_forest:hive:12",
-            "frontId": "relay"
-          },
-          {
-            "t": 11,
+            "t": 19,
             "type": "reinforcements_arrived",
             "groupId": "gunnison_forest:human_force:8",
             "frontId": "nest"
           },
           {
-            "t": 16,
-            "type": "reinforcements_inbound",
-            "groupId": "gunnison_forest:hive:13",
-            "frontId": "relay"
-          },
-          {
-            "t": 16,
-            "type": "reinforcements_inbound",
-            "groupId": "gunnison_forest:human_force:9",
-            "frontId": "nest"
-          },
-          {
-            "t": 19,
-            "type": "reinforcements_arrived",
-            "groupId": "gunnison_forest:hive:13",
-            "frontId": "relay"
-          },
-          {
-            "t": 19,
-            "type": "reinforcements_arrived",
-            "groupId": "gunnison_forest:human_force:9",
-            "frontId": "nest"
-          },
-          {
-            "t": 24,
-            "type": "reinforcements_inbound",
-            "groupId": "gunnison_forest:hive:14",
-            "frontId": "relay"
-          },
-          {
-            "t": 24,
-            "type": "reinforcements_inbound",
-            "groupId": "gunnison_forest:human_force:10",
-            "frontId": "nest"
-          },
-          {
-            "t": 27,
-            "type": "reinforcements_arrived",
-            "groupId": "gunnison_forest:hive:14",
-            "frontId": "relay"
-          },
-          {
-            "t": 27,
-            "type": "reinforcements_arrived",
-            "groupId": "gunnison_forest:human_force:10",
-            "frontId": "nest"
-          },
-          {
             "t": 32,
             "type": "reinforcements_inbound",
-            "groupId": "gunnison_forest:hive:15",
-            "frontId": "relay"
-          },
-          {
-            "t": 32,
-            "type": "reinforcements_inbound",
-            "groupId": "gunnison_forest:human_force:11",
-            "frontId": "nest"
-          },
-          {
-            "t": 35,
-            "type": "reinforcements_arrived",
-            "groupId": "gunnison_forest:hive:15",
+            "groupId": "gunnison_forest:hive:12",
             "frontId": "relay"
           },
           {
             "t": 35,
             "type": "reinforcements_arrived",
-            "groupId": "gunnison_forest:human_force:11",
+            "groupId": "gunnison_forest:hive:12",
+            "frontId": "relay"
+          },
+          {
+            "t": 48,
+            "type": "reinforcements_inbound",
+            "groupId": "gunnison_forest:player_clan:4",
+            "frontId": "insertion"
+          },
+          {
+            "t": 48,
+            "type": "reinforcements_inbound",
+            "groupId": "gunnison_forest:hive:13",
+            "frontId": "relay"
+          },
+          {
+            "t": 48,
+            "type": "reinforcements_inbound",
+            "groupId": "gunnison_forest:human_force:9",
             "frontId": "nest"
+          },
+          {
+            "t": 51,
+            "type": "reinforcements_arrived",
+            "groupId": "gunnison_forest:player_clan:4",
+            "frontId": "insertion"
+          },
+          {
+            "t": 51,
+            "type": "reinforcements_arrived",
+            "groupId": "gunnison_forest:hive:13",
+            "frontId": "relay"
+          },
+          {
+            "t": 51,
+            "type": "reinforcements_arrived",
+            "groupId": "gunnison_forest:human_force:9",
+            "frontId": "nest"
+          },
+          {
+            "t": 88,
+            "type": "reinforcements_inbound",
+            "groupId": "gunnison_forest:human_force:10",
+            "frontId": "insertion"
+          },
+          {
+            "t": 91,
+            "type": "reinforcements_arrived",
+            "groupId": "gunnison_forest:human_force:10",
+            "frontId": "insertion"
+          },
+          {
+            "t": 96,
+            "type": "reinforcements_inbound",
+            "groupId": "gunnison_forest:hive:14",
+            "frontId": "insertion"
+          },
+          {
+            "t": 96,
+            "type": "reinforcements_inbound",
+            "groupId": "gunnison_forest:human_force:11",
+            "frontId": "insertion"
+          },
+          {
+            "t": 99,
+            "type": "reinforcements_arrived",
+            "groupId": "gunnison_forest:hive:14",
+            "frontId": "insertion"
+          },
+          {
+            "t": 99,
+            "type": "reinforcements_arrived",
+            "groupId": "gunnison_forest:human_force:11",
+            "frontId": "insertion"
+          },
+          {
+            "t": 136,
+            "type": "reinforcements_inbound",
+            "groupId": "gunnison_forest:hive:15",
+            "frontId": "relay"
+          },
+          {
+            "t": 139,
+            "type": "reinforcements_arrived",
+            "groupId": "gunnison_forest:hive:15",
+            "frontId": "relay"
           }
         ],
         "access": [
@@ -1164,33 +1246,28 @@
         "result": null
       },
       "bilanFin": {
-        "t": 635.25,
+        "t": 900,
         "fronts": {
           "insertion": {
-            "owner": "hive",
+            "owner": "player_clan",
             "sourceHP": 1000,
-            "contested": false,
+            "contested": true,
             "strength": {
-              "hive": 14
+              "player_clan": 2,
+              "hive": 2
             },
-            "captures": [
-              {
-                "t": 482.25,
-                "owner": "hive",
-                "reason": "unopposed_presence"
-              }
-            ]
+            "captures": []
           },
           "relay": {
             "owner": "player_clan",
             "sourceHP": 1000,
             "contested": false,
             "strength": {
-              "player_clan": 16
+              "player_clan": 15
             },
             "captures": [
               {
-                "t": 392.25,
+                "t": 317.25,
                 "owner": "player_clan",
                 "reason": "unopposed_presence"
               }
@@ -1201,21 +1278,21 @@
             "sourceHP": 1000,
             "contested": false,
             "strength": {
-              "hive": 32
+              "hive": 26
             },
             "captures": []
           }
         },
         "counts": {
           "player_clan": {
-            "deployed": 16,
+            "deployed": 17,
             "reserve": 0,
-            "dead": 4
+            "dead": 3
           },
           "hive": {
-            "deployed": 46,
+            "deployed": 28,
             "reserve": 0,
-            "dead": 18
+            "dead": 36
           },
           "human_force": {
             "deployed": 0,
@@ -1225,112 +1302,112 @@
         },
         "reinforcements": [
           {
-            "t": 8,
-            "type": "reinforcements_inbound",
-            "groupId": "gunnison_forest:player_clan:4",
-            "frontId": "insertion"
-          },
-          {
-            "t": 8,
-            "type": "reinforcements_inbound",
-            "groupId": "gunnison_forest:hive:12",
-            "frontId": "relay"
-          },
-          {
-            "t": 8,
+            "t": 16,
             "type": "reinforcements_inbound",
             "groupId": "gunnison_forest:human_force:8",
             "frontId": "nest"
           },
           {
-            "t": 11,
-            "type": "reinforcements_arrived",
-            "groupId": "gunnison_forest:player_clan:4",
-            "frontId": "insertion"
-          },
-          {
-            "t": 11,
-            "type": "reinforcements_arrived",
-            "groupId": "gunnison_forest:hive:12",
-            "frontId": "relay"
-          },
-          {
-            "t": 11,
+            "t": 19,
             "type": "reinforcements_arrived",
             "groupId": "gunnison_forest:human_force:8",
             "frontId": "nest"
           },
           {
-            "t": 16,
-            "type": "reinforcements_inbound",
-            "groupId": "gunnison_forest:hive:13",
-            "frontId": "relay"
-          },
-          {
-            "t": 16,
-            "type": "reinforcements_inbound",
-            "groupId": "gunnison_forest:human_force:9",
-            "frontId": "nest"
-          },
-          {
-            "t": 19,
-            "type": "reinforcements_arrived",
-            "groupId": "gunnison_forest:hive:13",
-            "frontId": "relay"
-          },
-          {
-            "t": 19,
-            "type": "reinforcements_arrived",
-            "groupId": "gunnison_forest:human_force:9",
-            "frontId": "nest"
-          },
-          {
-            "t": 24,
-            "type": "reinforcements_inbound",
-            "groupId": "gunnison_forest:hive:14",
-            "frontId": "relay"
-          },
-          {
-            "t": 24,
-            "type": "reinforcements_inbound",
-            "groupId": "gunnison_forest:human_force:10",
-            "frontId": "nest"
-          },
-          {
-            "t": 27,
-            "type": "reinforcements_arrived",
-            "groupId": "gunnison_forest:hive:14",
-            "frontId": "relay"
-          },
-          {
-            "t": 27,
-            "type": "reinforcements_arrived",
-            "groupId": "gunnison_forest:human_force:10",
-            "frontId": "nest"
-          },
-          {
             "t": 32,
             "type": "reinforcements_inbound",
-            "groupId": "gunnison_forest:hive:15",
-            "frontId": "relay"
-          },
-          {
-            "t": 32,
-            "type": "reinforcements_inbound",
-            "groupId": "gunnison_forest:human_force:11",
-            "frontId": "nest"
-          },
-          {
-            "t": 35,
-            "type": "reinforcements_arrived",
-            "groupId": "gunnison_forest:hive:15",
+            "groupId": "gunnison_forest:hive:12",
             "frontId": "relay"
           },
           {
             "t": 35,
             "type": "reinforcements_arrived",
-            "groupId": "gunnison_forest:human_force:11",
+            "groupId": "gunnison_forest:hive:12",
+            "frontId": "relay"
+          },
+          {
+            "t": 48,
+            "type": "reinforcements_inbound",
+            "groupId": "gunnison_forest:player_clan:4",
+            "frontId": "insertion"
+          },
+          {
+            "t": 48,
+            "type": "reinforcements_inbound",
+            "groupId": "gunnison_forest:hive:13",
+            "frontId": "relay"
+          },
+          {
+            "t": 48,
+            "type": "reinforcements_inbound",
+            "groupId": "gunnison_forest:human_force:9",
             "frontId": "nest"
+          },
+          {
+            "t": 51,
+            "type": "reinforcements_arrived",
+            "groupId": "gunnison_forest:player_clan:4",
+            "frontId": "insertion"
+          },
+          {
+            "t": 51,
+            "type": "reinforcements_arrived",
+            "groupId": "gunnison_forest:hive:13",
+            "frontId": "relay"
+          },
+          {
+            "t": 51,
+            "type": "reinforcements_arrived",
+            "groupId": "gunnison_forest:human_force:9",
+            "frontId": "nest"
+          },
+          {
+            "t": 88,
+            "type": "reinforcements_inbound",
+            "groupId": "gunnison_forest:human_force:10",
+            "frontId": "insertion"
+          },
+          {
+            "t": 91,
+            "type": "reinforcements_arrived",
+            "groupId": "gunnison_forest:human_force:10",
+            "frontId": "insertion"
+          },
+          {
+            "t": 96,
+            "type": "reinforcements_inbound",
+            "groupId": "gunnison_forest:hive:14",
+            "frontId": "insertion"
+          },
+          {
+            "t": 96,
+            "type": "reinforcements_inbound",
+            "groupId": "gunnison_forest:human_force:11",
+            "frontId": "insertion"
+          },
+          {
+            "t": 99,
+            "type": "reinforcements_arrived",
+            "groupId": "gunnison_forest:hive:14",
+            "frontId": "insertion"
+          },
+          {
+            "t": 99,
+            "type": "reinforcements_arrived",
+            "groupId": "gunnison_forest:human_force:11",
+            "frontId": "insertion"
+          },
+          {
+            "t": 136,
+            "type": "reinforcements_inbound",
+            "groupId": "gunnison_forest:hive:15",
+            "frontId": "relay"
+          },
+          {
+            "t": 139,
+            "type": "reinforcements_arrived",
+            "groupId": "gunnison_forest:hive:15",
+            "frontId": "relay"
           }
         ],
         "access": [
@@ -1352,17 +1429,9 @@
           }
         ],
         "hiveSources": [
-          "insertion",
           "nest"
         ],
-        "result": {
-          "fronts": [
-            "insertion"
-          ],
-          "outcome": "defeat",
-          "reason": "critical_front_lost",
-          "time": 635.25
-        }
+        "result": null
       }
     },
     "fermer_tunnel_C_resultat": {
@@ -1388,79 +1457,60 @@
       ],
       "chronologie": [
         {
-          "t": 11,
+          "t": 19,
+          "type": "group_order",
+          "groupId": "gunnison_forest:human_force:8",
+          "frontId": "nest",
+          "issuer": "scenario"
+        },
+        {
+          "t": 35,
+          "type": "group_order",
+          "groupId": "gunnison_forest:hive:12",
+          "frontId": "relay",
+          "issuer": "scenario"
+        },
+        {
+          "t": 51,
           "type": "group_order",
           "groupId": "gunnison_forest:player_clan:4",
           "frontId": "insertion",
           "issuer": "scenario"
         },
         {
-          "t": 11,
-          "type": "group_order",
-          "groupId": "gunnison_forest:hive:12",
-          "frontId": "relay",
-          "issuer": "scenario"
-        },
-        {
-          "t": 11,
-          "type": "group_order",
-          "groupId": "gunnison_forest:human_force:8",
-          "frontId": "nest",
-          "issuer": "scenario"
-        },
-        {
-          "t": 19,
+          "t": 51,
           "type": "group_order",
           "groupId": "gunnison_forest:hive:13",
           "frontId": "relay",
           "issuer": "scenario"
         },
         {
-          "t": 19,
+          "t": 51,
           "type": "group_order",
           "groupId": "gunnison_forest:human_force:9",
           "frontId": "nest",
           "issuer": "scenario"
         },
         {
-          "t": 27,
-          "type": "group_order",
-          "groupId": "gunnison_forest:hive:14",
-          "frontId": "relay",
-          "issuer": "scenario"
-        },
-        {
-          "t": 27,
+          "t": 75,
           "type": "group_order",
           "groupId": "gunnison_forest:human_force:10",
           "frontId": "nest",
           "issuer": "scenario"
         },
         {
-          "t": 35,
+          "t": 99,
           "type": "group_order",
-          "groupId": "gunnison_forest:hive:15",
+          "groupId": "gunnison_forest:hive:14",
           "frontId": "relay",
           "issuer": "scenario"
         },
         {
-          "t": 35,
+          "t": 99,
           "type": "group_order",
           "groupId": "gunnison_forest:human_force:11",
           "frontId": "nest",
           "issuer": "scenario"
-        },
-        {
-          "t": 101.75,
-          "type": "group_arrived",
-          "groupId": "gunnison_forest:hive:12",
-          "frontId": "relay"
-        },
-        {
-          "t": 101.75,
-          "type": "group_arrived",
-          "groupId": "gunnison_forest:human_force:8",
-          "frontId": "nest"
         },
         {
           "t": 102,
@@ -1470,64 +1520,177 @@
         {
           "t": 109.75,
           "type": "group_arrived",
+          "groupId": "gunnison_forest:human_force:8",
+          "frontId": "nest"
+        },
+        {
+          "t": 125.75,
+          "type": "group_arrived",
+          "groupId": "gunnison_forest:hive:12",
+          "frontId": "relay"
+        },
+        {
+          "t": 141.75,
+          "type": "group_arrived",
           "groupId": "gunnison_forest:hive:13",
           "frontId": "relay"
         },
         {
-          "t": 109.75,
+          "t": 141.75,
           "type": "group_arrived",
           "groupId": "gunnison_forest:human_force:9",
           "frontId": "nest"
         },
         {
-          "t": 117.75,
-          "type": "group_arrived",
-          "groupId": "gunnison_forest:hive:14",
-          "frontId": "relay"
-        },
-        {
-          "t": 117.75,
+          "t": 165.75,
           "type": "group_arrived",
           "groupId": "gunnison_forest:human_force:10",
           "frontId": "nest"
         },
         {
-          "t": 125.75,
+          "t": 189.75,
           "type": "group_arrived",
-          "groupId": "gunnison_forest:hive:15",
+          "groupId": "gunnison_forest:hive:14",
           "frontId": "relay"
         },
         {
-          "t": 125.75,
+          "t": 189.75,
           "type": "group_arrived",
           "groupId": "gunnison_forest:human_force:11",
           "frontId": "nest"
         },
         {
+          "t": 320,
+          "type": "group_order",
+          "groupId": "gunnison_forest:hive:6",
+          "frontId": "relay",
+          "issuer": "officer"
+        },
+        {
+          "t": 320,
+          "type": "officer_decision",
+          "groupId": "gunnison_forest:hive:6",
+          "frontId": "relay",
+          "reason": "open_hostile_front"
+        },
+        {
           "t": 340,
           "type": "group_order",
-          "groupId": "gunnison_forest:hive:4",
+          "groupId": "gunnison_forest:hive:7",
           "frontId": "relay",
           "issuer": "officer"
         },
         {
           "t": 340,
           "type": "officer_decision",
+          "groupId": "gunnison_forest:hive:7",
+          "frontId": "relay",
+          "reason": "open_hostile_front"
+        },
+        {
+          "t": 360,
+          "type": "group_order",
+          "groupId": "gunnison_forest:hive:8",
+          "frontId": "relay",
+          "issuer": "officer"
+        },
+        {
+          "t": 360,
+          "type": "officer_decision",
+          "groupId": "gunnison_forest:hive:8",
+          "frontId": "relay",
+          "reason": "open_hostile_front"
+        },
+        {
+          "t": 380,
+          "type": "group_order",
+          "groupId": "gunnison_forest:hive:9",
+          "frontId": "relay",
+          "issuer": "officer"
+        },
+        {
+          "t": 380,
+          "type": "officer_decision",
+          "groupId": "gunnison_forest:hive:9",
+          "frontId": "relay",
+          "reason": "open_hostile_front"
+        },
+        {
+          "t": 410.75,
+          "type": "group_arrived",
+          "groupId": "gunnison_forest:hive:6",
+          "frontId": "relay"
+        },
+        {
+          "t": 420,
+          "type": "group_order",
+          "groupId": "gunnison_forest:hive:4",
+          "frontId": "relay",
+          "issuer": "officer"
+        },
+        {
+          "t": 420,
+          "type": "officer_decision",
           "groupId": "gunnison_forest:hive:4",
           "frontId": "relay",
           "reason": "open_hostile_front"
         },
         {
-          "t": 354.5,
+          "t": 430.75,
+          "type": "group_arrived",
+          "groupId": "gunnison_forest:hive:7",
+          "frontId": "relay"
+        },
+        {
+          "t": 440,
+          "type": "group_order",
+          "groupId": "gunnison_forest:hive:5",
+          "frontId": "relay",
+          "issuer": "officer"
+        },
+        {
+          "t": 440,
+          "type": "officer_decision",
+          "groupId": "gunnison_forest:hive:5",
+          "frontId": "relay",
+          "reason": "open_hostile_front"
+        },
+        {
+          "t": 450.75,
+          "type": "group_arrived",
+          "groupId": "gunnison_forest:hive:8",
+          "frontId": "relay"
+        },
+        {
+          "t": 466.75,
           "type": "base_captured",
           "frontId": "relay",
           "owner": "hive",
           "reason": "unopposed_presence"
         },
         {
-          "t": 430.75,
+          "t": 470.75,
+          "type": "group_arrived",
+          "groupId": "gunnison_forest:hive:9",
+          "frontId": "relay"
+        },
+        {
+          "t": 506.5,
+          "type": "base_captured",
+          "frontId": "nest",
+          "owner": "human_force",
+          "reason": "unopposed_presence"
+        },
+        {
+          "t": 510.75,
           "type": "group_arrived",
           "groupId": "gunnison_forest:hive:4",
+          "frontId": "relay"
+        },
+        {
+          "t": 530.75,
+          "type": "group_arrived",
+          "groupId": "gunnison_forest:hive:5",
           "frontId": "relay"
         }
       ],
@@ -1544,27 +1707,21 @@
             "captures": []
           },
           "relay": {
-            "owner": "hive",
+            "owner": "human_force",
             "sourceHP": 1000,
             "contested": false,
             "strength": {
-              "hive": 36
+              "hive": 29
             },
-            "captures": [
-              {
-                "t": 354.5,
-                "owner": "hive",
-                "reason": "unopposed_presence"
-              }
-            ]
+            "captures": []
           },
           "nest": {
             "owner": "hive",
             "sourceHP": 0,
             "contested": true,
             "strength": {
-              "hive": 22,
-              "human_force": 20
+              "hive": 11,
+              "human_force": 12
             },
             "captures": []
           }
@@ -1576,121 +1733,109 @@
             "dead": 0
           },
           "hive": {
-            "deployed": 58,
-            "reserve": 0,
-            "dead": 6
+            "deployed": 40,
+            "reserve": 4,
+            "dead": 20
           },
           "human_force": {
-            "deployed": 20,
+            "deployed": 12,
             "reserve": 0,
-            "dead": 28
+            "dead": 36
           }
         },
         "reinforcements": [
           {
-            "t": 8,
-            "type": "reinforcements_inbound",
-            "groupId": "gunnison_forest:player_clan:4",
-            "frontId": "insertion"
-          },
-          {
-            "t": 8,
-            "type": "reinforcements_inbound",
-            "groupId": "gunnison_forest:hive:12",
-            "frontId": "relay"
-          },
-          {
-            "t": 8,
+            "t": 16,
             "type": "reinforcements_inbound",
             "groupId": "gunnison_forest:human_force:8",
             "frontId": "nest"
           },
           {
-            "t": 11,
-            "type": "reinforcements_arrived",
-            "groupId": "gunnison_forest:player_clan:4",
-            "frontId": "insertion"
-          },
-          {
-            "t": 11,
-            "type": "reinforcements_arrived",
-            "groupId": "gunnison_forest:hive:12",
-            "frontId": "relay"
-          },
-          {
-            "t": 11,
+            "t": 19,
             "type": "reinforcements_arrived",
             "groupId": "gunnison_forest:human_force:8",
             "frontId": "nest"
           },
           {
-            "t": 16,
+            "t": 32,
+            "type": "reinforcements_inbound",
+            "groupId": "gunnison_forest:hive:12",
+            "frontId": "relay"
+          },
+          {
+            "t": 35,
+            "type": "reinforcements_arrived",
+            "groupId": "gunnison_forest:hive:12",
+            "frontId": "relay"
+          },
+          {
+            "t": 48,
+            "type": "reinforcements_inbound",
+            "groupId": "gunnison_forest:player_clan:4",
+            "frontId": "insertion"
+          },
+          {
+            "t": 48,
             "type": "reinforcements_inbound",
             "groupId": "gunnison_forest:hive:13",
             "frontId": "relay"
           },
           {
-            "t": 16,
+            "t": 48,
             "type": "reinforcements_inbound",
             "groupId": "gunnison_forest:human_force:9",
             "frontId": "nest"
           },
           {
-            "t": 19,
+            "t": 51,
+            "type": "reinforcements_arrived",
+            "groupId": "gunnison_forest:player_clan:4",
+            "frontId": "insertion"
+          },
+          {
+            "t": 51,
             "type": "reinforcements_arrived",
             "groupId": "gunnison_forest:hive:13",
             "frontId": "relay"
           },
           {
-            "t": 19,
+            "t": 51,
             "type": "reinforcements_arrived",
             "groupId": "gunnison_forest:human_force:9",
             "frontId": "nest"
           },
           {
-            "t": 24,
-            "type": "reinforcements_inbound",
-            "groupId": "gunnison_forest:hive:14",
-            "frontId": "relay"
-          },
-          {
-            "t": 24,
+            "t": 72,
             "type": "reinforcements_inbound",
             "groupId": "gunnison_forest:human_force:10",
             "frontId": "nest"
           },
           {
-            "t": 27,
-            "type": "reinforcements_arrived",
-            "groupId": "gunnison_forest:hive:14",
-            "frontId": "relay"
-          },
-          {
-            "t": 27,
+            "t": 75,
             "type": "reinforcements_arrived",
             "groupId": "gunnison_forest:human_force:10",
             "frontId": "nest"
           },
           {
-            "t": 32,
+            "t": 96,
             "type": "reinforcements_inbound",
-            "groupId": "gunnison_forest:hive:15",
+            "groupId": "gunnison_forest:hive:14",
             "frontId": "relay"
           },
           {
-            "t": 32,
+            "t": 96,
             "type": "reinforcements_inbound",
             "groupId": "gunnison_forest:human_force:11",
             "frontId": "nest"
           },
           {
-            "t": 35,
+            "t": 99,
             "type": "reinforcements_arrived",
-            "groupId": "gunnison_forest:hive:15",
+            "groupId": "gunnison_forest:hive:14",
             "frontId": "relay"
           },
           {
-            "t": 35,
+            "t": 99,
             "type": "reinforcements_arrived",
             "groupId": "gunnison_forest:human_force:11",
             "frontId": "nest"
@@ -1714,9 +1859,7 @@
             "open": true
           }
         ],
-        "hiveSources": [
-          "relay"
-        ],
+        "hiveSources": [],
         "result": null
       },
       "bilanFin": {
@@ -1736,24 +1879,30 @@
             "sourceHP": 1000,
             "contested": false,
             "strength": {
-              "hive": 36
+              "hive": 39
             },
             "captures": [
               {
-                "t": 354.5,
+                "t": 466.75,
                 "owner": "hive",
                 "reason": "unopposed_presence"
               }
             ]
           },
           "nest": {
-            "owner": "hive",
+            "owner": "human_force",
             "sourceHP": 0,
             "contested": false,
             "strength": {
-              "hive": 21
+              "human_force": 12
             },
-            "captures": []
+            "captures": [
+              {
+                "t": 506.5,
+                "owner": "human_force",
+                "reason": "unopposed_presence"
+              }
+            ]
           }
         },
         "counts": {
@@ -1763,121 +1912,109 @@
             "dead": 0
           },
           "hive": {
-            "deployed": 57,
-            "reserve": 0,
-            "dead": 7
+            "deployed": 39,
+            "reserve": 4,
+            "dead": 21
           },
           "human_force": {
-            "deployed": 0,
+            "deployed": 12,
             "reserve": 0,
-            "dead": 48
+            "dead": 36
           }
         },
         "reinforcements": [
           {
-            "t": 8,
-            "type": "reinforcements_inbound",
-            "groupId": "gunnison_forest:player_clan:4",
-            "frontId": "insertion"
-          },
-          {
-            "t": 8,
-            "type": "reinforcements_inbound",
-            "groupId": "gunnison_forest:hive:12",
-            "frontId": "relay"
-          },
-          {
-            "t": 8,
+            "t": 16,
             "type": "reinforcements_inbound",
             "groupId": "gunnison_forest:human_force:8",
             "frontId": "nest"
           },
           {
-            "t": 11,
-            "type": "reinforcements_arrived",
-            "groupId": "gunnison_forest:player_clan:4",
-            "frontId": "insertion"
-          },
-          {
-            "t": 11,
-            "type": "reinforcements_arrived",
-            "groupId": "gunnison_forest:hive:12",
-            "frontId": "relay"
-          },
-          {
-            "t": 11,
+            "t": 19,
             "type": "reinforcements_arrived",
             "groupId": "gunnison_forest:human_force:8",
             "frontId": "nest"
           },
           {
-            "t": 16,
+            "t": 32,
+            "type": "reinforcements_inbound",
+            "groupId": "gunnison_forest:hive:12",
+            "frontId": "relay"
+          },
+          {
+            "t": 35,
+            "type": "reinforcements_arrived",
+            "groupId": "gunnison_forest:hive:12",
+            "frontId": "relay"
+          },
+          {
+            "t": 48,
+            "type": "reinforcements_inbound",
+            "groupId": "gunnison_forest:player_clan:4",
+            "frontId": "insertion"
+          },
+          {
+            "t": 48,
             "type": "reinforcements_inbound",
             "groupId": "gunnison_forest:hive:13",
             "frontId": "relay"
           },
           {
-            "t": 16,
+            "t": 48,
             "type": "reinforcements_inbound",
             "groupId": "gunnison_forest:human_force:9",
             "frontId": "nest"
           },
           {
-            "t": 19,
+            "t": 51,
+            "type": "reinforcements_arrived",
+            "groupId": "gunnison_forest:player_clan:4",
+            "frontId": "insertion"
+          },
+          {
+            "t": 51,
             "type": "reinforcements_arrived",
             "groupId": "gunnison_forest:hive:13",
             "frontId": "relay"
           },
           {
-            "t": 19,
+            "t": 51,
             "type": "reinforcements_arrived",
             "groupId": "gunnison_forest:human_force:9",
             "frontId": "nest"
           },
           {
-            "t": 24,
-            "type": "reinforcements_inbound",
-            "groupId": "gunnison_forest:hive:14",
-            "frontId": "relay"
-          },
-          {
-            "t": 24,
+            "t": 72,
             "type": "reinforcements_inbound",
             "groupId": "gunnison_forest:human_force:10",
             "frontId": "nest"
           },
           {
-            "t": 27,
-            "type": "reinforcements_arrived",
-            "groupId": "gunnison_forest:hive:14",
-            "frontId": "relay"
-          },
-          {
-            "t": 27,
+            "t": 75,
             "type": "reinforcements_arrived",
             "groupId": "gunnison_forest:human_force:10",
             "frontId": "nest"
           },
           {
-            "t": 32,
+            "t": 96,
             "type": "reinforcements_inbound",
-            "groupId": "gunnison_forest:hive:15",
+            "groupId": "gunnison_forest:hive:14",
             "frontId": "relay"
           },
           {
-            "t": 32,
+            "t": 96,
             "type": "reinforcements_inbound",
             "groupId": "gunnison_forest:human_force:11",
             "frontId": "nest"
           },
           {
-            "t": 35,
+            "t": 99,
             "type": "reinforcements_arrived",
-            "groupId": "gunnison_forest:hive:15",
+            "groupId": "gunnison_forest:hive:14",
             "frontId": "relay"
           },
           {
-            "t": 35,
+            "t": 99,
             "type": "reinforcements_arrived",
             "groupId": "gunnison_forest:human_force:11",
             "frontId": "nest"
@@ -1922,7 +2059,7 @@
           "entreBranches": true
         },
         "proprietairesDifferents": true,
-        "renfortsDifferents": false,
+        "renfortsDifferents": true,
         "pertesAInstant": {
           "reference": {
             "player_clan": {
@@ -1931,31 +2068,31 @@
               "dead": 0
             },
             "hive": {
-              "deployed": 64,
+              "deployed": 50,
               "reserve": 0,
-              "dead": 0
+              "dead": 14
             },
             "human_force": {
-              "deployed": 0,
+              "deployed": 8,
               "reserve": 0,
-              "dead": 48
+              "dead": 40
             }
           },
           "secourir_B": {
             "player_clan": {
-              "deployed": 17,
+              "deployed": 19,
               "reserve": 0,
-              "dead": 3
+              "dead": 1
             },
             "hive": {
-              "deployed": 46,
+              "deployed": 33,
               "reserve": 0,
-              "dead": 18
+              "dead": 31
             },
             "human_force": {
-              "deployed": 0,
+              "deployed": 4,
               "reserve": 0,
-              "dead": 48
+              "dead": 44
             }
           },
           "fermer_tunnel_C": {
@@ -1965,14 +2102,14 @@
               "dead": 0
             },
             "hive": {
-              "deployed": 58,
-              "reserve": 0,
-              "dead": 6
+              "deployed": 40,
+              "reserve": 4,
+              "dead": 20
             },
             "human_force": {
-              "deployed": 20,
+              "deployed": 12,
               "reserve": 0,
-              "dead": 28
+              "dead": 36
             }
           }
         },
@@ -1984,27 +2121,18 @@
           "secourir_B": [
             "nest"
           ],
-          "fermer_tunnel_C": [
-            "relay"
-          ]
+          "fermer_tunnel_C": []
         },
         "resultatFinal": {
           "reference": null,
-          "secourir_B": {
-            "fronts": [
-              "insertion"
-            ],
-            "outcome": "defeat",
-            "reason": "critical_front_lost",
-            "time": 635.25
-          },
+          "secourir_B": null,
           "fermer_tunnel_C": null
         }
       },
       "justification": [
         "secourir_B : le clan quitte A et combat sur B (pertes clan et ruche), prend B ; A reste vide, la ruche le capture, le front critique déclenche le délai puis la défaite (A non repris).",
         "fermer_tunnel_C : sans source active jusqu’à la prise de B, la coordination de ruche passe à 0,65 (BattleSimulation._remoteCombat) : la ruche perd davantage contre les humains et capture B plus tard ; A reste tenu.",
-        "Renforts : identiques dans les trois parties. Les réserves finies sont toutes engagées au plus tard à t=35 s, avant l’arrivée physique la plus rapide du joueur en C (102 s) : fermer le « tunnel » ne peut plus retenir de renfort dans ce pilote. Constat de conception à arbitrer, pas un défaut de code."
+        "Renforts : identiques dans les trois parties. Les réserves finies sont toutes engagées au plus tard à t=139 s, avant l’arrivée physique la plus rapide du joueur en C (102 s) : fermer le « tunnel » ne peut plus retenir de renfort dans ce pilote. Constat de conception à arbitrer, pas un défaut de code."
       ]
     },
     {
@@ -2015,30 +2143,24 @@
         "capturesToutesParPresenceSimulee": true,
         "B_nonSecouru_vs_secouru": {
           "nonSecouru": {
-            "owner": "hive",
+            "owner": "human_force",
             "sourceHP": 1000,
             "contested": false,
             "strength": {
-              "hive": 36
+              "hive": 29
             },
-            "captures": [
-              {
-                "t": 354.5,
-                "owner": "hive",
-                "reason": "unopposed_presence"
-              }
-            ]
+            "captures": []
           },
           "secouru": {
             "owner": "player_clan",
             "sourceHP": 1000,
             "contested": false,
             "strength": {
-              "player_clan": 16
+              "player_clan": 15
             },
             "captures": [
               {
-                "t": 392.25,
+                "t": 317.25,
                 "owner": "player_clan",
                 "reason": "unopposed_presence"
               }
@@ -2047,16 +2169,10 @@
           "different": true
         },
         "B_nonSecouru_vs_reference": {
-          "nonSecouru": [
-            {
-              "t": 354.5,
-              "owner": "hive",
-              "reason": "unopposed_presence"
-            }
-          ],
+          "nonSecouru": [],
           "reference": [
             {
-              "t": 277,
+              "t": 336.75,
               "owner": "hive",
               "reason": "unopposed_presence"
             }
@@ -2069,16 +2185,17 @@
             "sourceHP": 1000,
             "contested": false,
             "strength": {
-              "hive": 32
+              "hive": 26
             },
             "captures": []
           },
           "reference": {
             "owner": "hive",
             "sourceHP": 1000,
-            "contested": false,
+            "contested": true,
             "strength": {
-              "hive": 28
+              "hive": 4,
+              "human_force": 8
             },
             "captures": []
           },

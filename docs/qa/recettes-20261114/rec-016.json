@@ -3,8 +3,15 @@
  "titre": "Sauvegarde d'une guerre répartie",
  "source": "docs/audits/2026-10-26/Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.xlsx#Validation!REC-016",
  "dateExecution": "2026-11-14",
- "commit": "bd866f88e1499d4e091e4e0c8611afdfb95d2336",
- "sourcesJsNonCommitees": [],
+ "commit": "2ecc8537ccbaf21f07b78dc4dbf083a98bcf9f32",
+ "sourcesJsNonCommitees": [
+  " M js/battlefield/BattleSimulation.js",
+  " M js/battlefield/BattlefieldOperation.js",
+  " M js/battlefield/OperationScene.js",
+  " M js/data/BattleCatalog.js",
+  " M js/data/SourceBattleRoster.js",
+  " M js/main.js"
+ ],
  "graine": {
   "operation": "AFF-27",
   "mapSeed": 0,
@@ -14,11 +21,11 @@
  "preuveVideo": "non produite — preuve par journal de simulation",
  "scenario": {
   "operation": "AFF-27",
-  "configDigest": "854faa22",
+  "configDigest": "98666fc1",
   "sauvegarde": {
    "cle": "yautja-operation-checkpoint-v1",
    "ecrite": true,
-   "octets": 748440,
+   "octets": 741930,
    "t": 27.5
   },
   "script": [
@@ -70,7 +77,7 @@
       "frontId": "front_d",
       "issuer": "player1",
       "issuedAt": 4,
-      "sequence": 219
+      "sequence": 419
      },
      "path": [
       {
@@ -118,16 +125,16 @@
   ],
   "degatsParFront": {
    "a10s": {
-    "front_a": 7028.561999999997,
-    "front_b": 6828.458999999998,
-    "front_c": 3441.357499999995,
-    "front_d": 7697.750999999999
+    "front_a": 6544.726499999996,
+    "front_b": 6386.663499999996,
+    "front_c": 3028.245999999995,
+    "front_d": 6764.253499999996
    },
    "aLaSauvegarde": {
-    "front_a": 7211.361999999985,
-    "front_b": 9142.64299999998,
-    "front_c": 3613.757499999985,
-    "front_d": 9680.995999999994
+    "front_a": 6685.126499999988,
+    "front_b": 8599.441499999984,
+    "front_c": 3200.645999999985,
+    "front_d": 11227.388499999988
    }
   },
   "aLaSauvegarde": {
@@ -136,32 +143,32 @@
     "player_clan": {
      "allocated": 24,
      "active": 0,
-     "distant": 12,
+     "distant": 7,
      "reserve": 0,
-     "dead": 12,
+     "dead": 17,
      "evacuated": 0,
      "captured": 0
     },
     "hive": {
      "allocated": 736,
      "active": 16,
-     "distant": 488,
-     "reserve": 232,
-     "dead": 0,
+     "distant": 469,
+     "reserve": 240,
+     "dead": 11,
      "evacuated": 0,
      "captured": 0
     },
     "human_force": {
      "allocated": 192,
-     "active": 6,
-     "distant": 24,
+     "active": 7,
+     "distant": 8,
      "reserve": 64,
-     "dead": 98,
+     "dead": 113,
      "evacuated": 0,
      "captured": 0
     }
    },
-   "deaths": 110,
+   "deaths": 141,
    "orders": {
     "AFF-27:hive:0": "attack>front_b@front_a via route_0",
     "AFF-27:hive:1": "defend>front_a@front_a",
@@ -193,8 +200,8 @@
     "AFF-27:hive:27": "defend>front_a@front_a",
     "AFF-27:hive:28": "defend>front_a@front_a",
     "AFF-27:hive:29": "defend>front_a@front_a",
-    "AFF-27:human_force:30": "retreat>front_b@front_a via route_0",
-    "AFF-27:human_force:31": "retreat>front_b@front_a via route_0",
+    "AFF-27:human_force:30": "defend>front_a@front_a",
+    "AFF-27:human_force:31": "defend>front_a@front_a",
     "AFF-27:human_force:32": "defend>front_a@front_a",
     "AFF-27:human_force:33": "retreat>front_b@front_a via route_0",
     "AFF-27:hive:34": "defend>front_b@front_b",
@@ -245,7 +252,7 @@
     "AFF-27:player_clan:79": "defend>front_d@front_d",
     "AFF-27:hive:80": "attack>front_d@front_a via route_0>route_1>route_2",
     "AFF-27:hive:81": "attack>front_d@front_a via route_0>route_1>route_2",
-    "AFF-27:hive:82": "attack>front_d@front_a via route_0>route_1>route_2",
+    "AFF-27:hive:82": "defend>front_a@front_a",
     "AFF-27:hive:83": "defend>front_a@front_a",
     "AFF-27:hive:84": "defend>front_a@front_a",
     "AFF-27:hive:85": "defend>front_a@front_a",
@@ -283,7 +290,7 @@
     "AFF-27:human_force:117": "defend>front_b@front_b",
     "AFF-27:human_force:118": "defend>front_b@front_b",
     "AFF-27:human_force:119": "defend>front_b@front_b",
-    "AFF-27:player_clan:120": "attack>front_b@front_d via route_2>route_1",
+    "AFF-27:player_clan:120": "attack>front_d@front_d",
     "AFF-27:player_clan:121": "attack>front_d@front_d"
    },
    "groupStates": {
@@ -291,7 +298,7 @@
     "AFF-27:hive:1": "distant",
     "AFF-27:hive:2": "distant",
     "AFF-27:human_force:3": "distant",
-    "AFF-27:human_force:4": "distant",
+    "AFF-27:human_force:4": "active",
     "AFF-27:hive:5": "distant",
     "AFF-27:hive:6": "distant",
     "AFF-27:hive:7": "distant",
@@ -317,10 +324,10 @@
     "AFF-27:hive:27": "distant",
     "AFF-27:hive:28": "distant",
     "AFF-27:hive:29": "active",
-    "AFF-27:human_force:30": "active",
+    "AFF-27:human_force:30": "distant",
     "AFF-27:human_force:31": "distant",
     "AFF-27:human_force:32": "distant",
-    "AFF-27:human_force:33": "distant",
+    "AFF-27:human_force:33": "active",
     "AFF-27:hive:34": "distant",
     "AFF-27:hive:35": "distant",
     "AFF-27:hive:36": "distant",
@@ -369,7 +376,7 @@
     "AFF-27:player_clan:79": "distant",
     "AFF-27:hive:80": "distant",
     "AFF-27:hive:81": "distant",
-    "AFF-27:hive:82": "distant",
+    "AFF-27:hive:82": "reserve",
     "AFF-27:hive:83": "reserve",
     "AFF-27:hive:84": "reserve",
     "AFF-27:hive:85": "reserve",
@@ -418,14 +425,6 @@
     "AFF-27:player_clan:10": {
      "required": true,
      "returnFrontId": "front_b"
-    },
-    "AFF-27:human_force:30": {
-     "required": true,
-     "returnFrontId": "front_a"
-    },
-    "AFF-27:human_force:31": {
-     "required": true,
-     "returnFrontId": "front_a"
     },
     "AFF-27:human_force:33": {
      "required": true,
@@ -502,7 +501,7 @@
     ]
    ],
    "pendingArrivals": [],
-   "eventSequence": 607,
+   "eventSequence": 676,
    "criticalLosses": [],
    "objectifs": [
     [
@@ -555,32 +554,32 @@
     "player_clan": {
      "allocated": 24,
      "active": 0,
-     "distant": 12,
+     "distant": 7,
      "reserve": 0,
-     "dead": 12,
+     "dead": 17,
      "evacuated": 0,
      "captured": 0
     },
     "hive": {
      "allocated": 736,
      "active": 0,
-     "distant": 504,
-     "reserve": 232,
-     "dead": 0,
+     "distant": 485,
+     "reserve": 240,
+     "dead": 11,
      "evacuated": 0,
      "captured": 0
     },
     "human_force": {
      "allocated": 192,
      "active": 0,
-     "distant": 30,
+     "distant": 15,
      "reserve": 64,
-     "dead": 98,
+     "dead": 113,
      "evacuated": 0,
      "captured": 0
     }
    },
-   "deaths": 110,
+   "deaths": 141,
    "orders": {
     "AFF-27:hive:0": "attack>front_b@front_a via route_0",
     "AFF-27:hive:1": "defend>front_a@front_a",
@@ -612,8 +611,8 @@
     "AFF-27:hive:27": "defend>front_a@front_a",
     "AFF-27:hive:28": "defend>front_a@front_a",
     "AFF-27:hive:29": "defend>front_a@front_a",
-    "AFF-27:human_force:30": "retreat>front_b@front_a via route_0",
-    "AFF-27:human_force:31": "retreat>front_b@front_a via route_0",
+    "AFF-27:human_force:30": "defend>front_a@front_a",
+    "AFF-27:human_force:31": "defend>front_a@front_a",
     "AFF-27:human_force:32": "defend>front_a@front_a",
     "AFF-27:human_force:33": "retreat>front_b@front_a via route_0",
     "AFF-27:hive:34": "defend>front_b@front_b",
@@ -664,7 +663,7 @@
     "AFF-27:player_clan:79": "defend>front_d@front_d",
     "AFF-27:hive:80": "attack>front_d@front_a via route_0>route_1>route_2",
     "AFF-27:hive:81": "attack>front_d@front_a via route_0>route_1>route_2",
-    "AFF-27:hive:82": "attack>front_d@front_a via route_0>route_1>route_2",
+    "AFF-27:hive:82": "defend>front_a@front_a",
     "AFF-27:hive:83": "defend>front_a@front_a",
     "AFF-27:hive:84": "defend>front_a@front_a",
     "AFF-27:hive:85": "defend>front_a@front_a",
@@ -702,7 +701,7 @@
     "AFF-27:human_force:117": "defend>front_b@front_b",
     "AFF-27:human_force:118": "defend>front_b@front_b",
     "AFF-27:human_force:119": "defend>front_b@front_b",
-    "AFF-27:player_clan:120": "attack>front_b@front_d via route_2>route_1",
+    "AFF-27:player_clan:120": "attack>front_d@front_d",
     "AFF-27:player_clan:121": "attack>front_d@front_d"
    },
    "groupStates": {
@@ -788,7 +787,7 @@
     "AFF-27:player_clan:79": "distant",
     "AFF-27:hive:80": "distant",
     "AFF-27:hive:81": "distant",
-    "AFF-27:hive:82": "distant",
+    "AFF-27:hive:82": "reserve",
     "AFF-27:hive:83": "reserve",
     "AFF-27:hive:84": "reserve",
     "AFF-27:hive:85": "reserve",
@@ -837,14 +836,6 @@
     "AFF-27:player_clan:10": {
      "required": true,
      "returnFrontId": "front_b"
-    },
-    "AFF-27:human_force:30": {
-     "required": true,
-     "returnFrontId": "front_a"
-    },
-    "AFF-27:human_force:31": {
-     "required": true,
-     "returnFrontId": "front_a"
     },
     "AFF-27:human_force:33": {
      "required": true,
@@ -921,7 +912,7 @@
     ]
    ],
    "pendingArrivals": [],
-   "eventSequence": 607,
+   "eventSequence": 676,
    "criticalLosses": [],
    "objectifs": [
     [
@@ -970,18 +961,18 @@
      "player_clan": {
       "allocated": 24,
       "active": 0,
-      "distant": 8,
+      "distant": 4,
       "reserve": 0,
-      "dead": 16,
+      "dead": 20,
       "evacuated": 0,
       "captured": 0
      },
      "hive": {
       "allocated": 736,
       "active": 0,
-      "distant": 449,
-      "reserve": 232,
-      "dead": 55,
+      "distant": 439,
+      "reserve": 240,
+      "dead": 57,
       "evacuated": 0,
       "captured": 0
      },
@@ -995,7 +986,7 @@
       "captured": 0
      }
     },
-    "deaths": 191,
+    "deaths": 197,
     "orders": {
      "AFF-27:hive:0": "attack>front_b@front_b",
      "AFF-27:hive:1": "attack>front_b@front_b",
@@ -1027,8 +1018,8 @@
      "AFF-27:hive:27": "defend>front_a@front_a",
      "AFF-27:hive:28": "defend>front_a@front_a",
      "AFF-27:hive:29": "defend>front_a@front_a",
-     "AFF-27:human_force:30": "regroup>front_b@front_b",
-     "AFF-27:human_force:31": "regroup>front_b@front_b",
+     "AFF-27:human_force:30": "defend>front_a@front_a",
+     "AFF-27:human_force:31": "defend>front_a@front_a",
      "AFF-27:human_force:32": "defend>front_a@front_a",
      "AFF-27:human_force:33": "regroup>front_b@front_b",
      "AFF-27:hive:34": "defend>front_b@front_b",
@@ -1079,7 +1070,7 @@
      "AFF-27:player_clan:79": "defend>front_d@front_d",
      "AFF-27:hive:80": "attack>front_d@front_b via route_1>route_2",
      "AFF-27:hive:81": "attack>front_d@front_b via route_1>route_2",
-     "AFF-27:hive:82": "attack>front_d@front_b via route_1>route_2",
+     "AFF-27:hive:82": "defend>front_a@front_a",
      "AFF-27:hive:83": "defend>front_a@front_a",
      "AFF-27:hive:84": "defend>front_a@front_a",
      "AFF-27:hive:85": "defend>front_a@front_a",
@@ -1117,7 +1108,7 @@
      "AFF-27:human_force:117": "defend>front_b@front_b",
      "AFF-27:human_force:118": "defend>front_b@front_b",
      "AFF-27:human_force:119": "defend>front_b@front_b",
-     "AFF-27:player_clan:120": "attack>front_b@front_d via route_2>route_1",
+     "AFF-27:player_clan:120": "attack>front_d@front_d",
      "AFF-27:player_clan:121": "attack>front_d@front_d"
     },
     "groupStates": {
@@ -1203,7 +1194,7 @@
      "AFF-27:player_clan:79": "distant",
      "AFF-27:hive:80": "distant",
      "AFF-27:hive:81": "distant",
-     "AFF-27:hive:82": "distant",
+     "AFF-27:hive:82": "reserve",
      "AFF-27:hive:83": "reserve",
      "AFF-27:hive:84": "reserve",
      "AFF-27:hive:85": "reserve",
@@ -1252,14 +1243,6 @@
      "AFF-27:player_clan:10": {
       "required": true,
       "returnFrontId": "front_b"
-     },
-     "AFF-27:human_force:30": {
-      "required": true,
-      "returnFrontId": "front_a"
-     },
-     "AFF-27:human_force:31": {
-      "required": true,
-      "returnFrontId": "front_a"
      },
      "AFF-27:human_force:33": {
       "required": true,
@@ -1331,7 +1314,7 @@
      ]
     ],
     "pendingArrivals": [],
-    "eventSequence": 761,
+    "eventSequence": 788,
     "criticalLosses": [
      "front_d"
     ],
@@ -1367,7 +1350,7 @@
       null
      ]
     ],
-    "pertesDix1eresSecondes": 5,
+    "pertesDix1eresSecondes": 4,
     "releve": [
      {
       "t": 57.5,
@@ -1375,27 +1358,27 @@
        "player_clan": {
         "allocated": 24,
         "active": 0,
-        "distant": 8,
+        "distant": 4,
         "reserve": 0,
-        "dead": 16,
+        "dead": 20,
         "evacuated": 0,
         "captured": 0
        },
        "hive": {
         "allocated": 736,
         "active": 0,
-        "distant": 504,
-        "reserve": 232,
-        "dead": 0,
+        "distant": 484,
+        "reserve": 240,
+        "dead": 12,
         "evacuated": 0,
         "captured": 0
        },
        "human_force": {
         "allocated": 192,
         "active": 0,
-        "distant": 29,
+        "distant": 15,
         "reserve": 64,
-        "dead": 99,
+        "dead": 113,
         "evacuated": 0,
         "captured": 0
        }
@@ -1407,27 +1390,27 @@
        "player_clan": {
         "allocated": 24,
         "active": 0,
-        "distant": 8,
+        "distant": 4,
         "reserve": 0,
-        "dead": 16,
+        "dead": 20,
         "evacuated": 0,
         "captured": 0
        },
        "hive": {
         "allocated": 736,
         "active": 0,
-        "distant": 504,
-        "reserve": 232,
-        "dead": 0,
+        "distant": 484,
+        "reserve": 240,
+        "dead": 12,
         "evacuated": 0,
         "captured": 0
        },
        "human_force": {
         "allocated": 192,
         "active": 0,
-        "distant": 29,
+        "distant": 15,
         "reserve": 64,
-        "dead": 99,
+        "dead": 113,
         "evacuated": 0,
         "captured": 0
        }
@@ -1439,27 +1422,27 @@
        "player_clan": {
         "allocated": 24,
         "active": 0,
-        "distant": 8,
+        "distant": 4,
         "reserve": 0,
-        "dead": 16,
+        "dead": 20,
         "evacuated": 0,
         "captured": 0
        },
        "hive": {
         "allocated": 736,
         "active": 0,
-        "distant": 504,
-        "reserve": 232,
-        "dead": 0,
+        "distant": 484,
+        "reserve": 240,
+        "dead": 12,
         "evacuated": 0,
         "captured": 0
        },
        "human_force": {
         "allocated": 192,
         "active": 0,
-        "distant": 29,
+        "distant": 15,
         "reserve": 64,
-        "dead": 99,
+        "dead": 113,
         "evacuated": 0,
         "captured": 0
        }
@@ -1471,27 +1454,27 @@
        "player_clan": {
         "allocated": 24,
         "active": 0,
-        "distant": 8,
+        "distant": 4,
         "reserve": 0,
-        "dead": 16,
+        "dead": 20,
         "evacuated": 0,
         "captured": 0
        },
        "hive": {
         "allocated": 736,
         "active": 0,
-        "distant": 504,
-        "reserve": 232,
-        "dead": 0,
+        "distant": 484,
+        "reserve": 240,
+        "dead": 12,
         "evacuated": 0,
         "captured": 0
        },
        "human_force": {
         "allocated": 192,
         "active": 0,
-        "distant": 29,
+        "distant": 15,
         "reserve": 64,
-        "dead": 99,
+        "dead": 113,
         "evacuated": 0,
         "captured": 0
        }
@@ -1503,27 +1486,27 @@
        "player_clan": {
         "allocated": 24,
         "active": 0,
-        "distant": 8,
+        "distant": 4,
         "reserve": 0,
-        "dead": 16,
+        "dead": 20,
         "evacuated": 0,
         "captured": 0
        },
        "hive": {
         "allocated": 736,
         "active": 0,
-        "distant": 504,
-        "reserve": 232,
-        "dead": 0,
+        "distant": 484,
+        "reserve": 240,
+        "dead": 12,
         "evacuated": 0,
         "captured": 0
        },
        "human_force": {
         "allocated": 192,
         "active": 0,
-        "distant": 29,
+        "distant": 15,
         "reserve": 64,
-        "dead": 99,
+        "dead": 113,
         "evacuated": 0,
         "captured": 0
        }
@@ -1535,18 +1518,18 @@
        "player_clan": {
         "allocated": 24,
         "active": 0,
-        "distant": 8,
+        "distant": 4,
         "reserve": 0,
-        "dead": 16,
+        "dead": 20,
         "evacuated": 0,
         "captured": 0
        },
        "hive": {
         "allocated": 736,
         "active": 0,
-        "distant": 501,
-        "reserve": 232,
-        "dead": 3,
+        "distant": 484,
+        "reserve": 240,
+        "dead": 12,
         "evacuated": 0,
         "captured": 0
        },
@@ -1567,18 +1550,18 @@
        "player_clan": {
         "allocated": 24,
         "active": 0,
-        "distant": 8,
+        "distant": 4,
         "reserve": 0,
-        "dead": 16,
+        "dead": 20,
         "evacuated": 0,
         "captured": 0
        },
        "hive": {
         "allocated": 736,
         "active": 0,
-        "distant": 487,
-        "reserve": 232,
-        "dead": 17,
+        "distant": 482,
+        "reserve": 240,
+        "dead": 14,
         "evacuated": 0,
         "captured": 0
        },
@@ -1599,18 +1582,18 @@
        "player_clan": {
         "allocated": 24,
         "active": 0,
-        "distant": 8,
+        "distant": 4,
         "reserve": 0,
-        "dead": 16,
+        "dead": 20,
         "evacuated": 0,
         "captured": 0
        },
        "hive": {
         "allocated": 736,
         "active": 0,
-        "distant": 453,
-        "reserve": 232,
-        "dead": 51,
+        "distant": 442,
+        "reserve": 240,
+        "dead": 54,
         "evacuated": 0,
         "captured": 0
        },
@@ -1631,18 +1614,18 @@
        "player_clan": {
         "allocated": 24,
         "active": 0,
-        "distant": 8,
+        "distant": 4,
         "reserve": 0,
-        "dead": 16,
+        "dead": 20,
         "evacuated": 0,
         "captured": 0
        },
        "hive": {
         "allocated": 736,
         "active": 0,
-        "distant": 449,
-        "reserve": 232,
-        "dead": 55,
+        "distant": 439,
+        "reserve": 240,
+        "dead": 57,
         "evacuated": 0,
         "captured": 0
        },
@@ -1663,18 +1646,18 @@
        "player_clan": {
         "allocated": 24,
         "active": 0,
-        "distant": 8,
+        "distant": 4,
         "reserve": 0,
-        "dead": 16,
+        "dead": 20,
         "evacuated": 0,
         "captured": 0
        },
        "hive": {
         "allocated": 736,
         "active": 0,
-        "distant": 449,
-        "reserve": 232,
-        "dead": 55,
+        "distant": 439,
+        "reserve": 240,
+        "dead": 57,
         "evacuated": 0,
         "captured": 0
        },
@@ -1698,18 +1681,18 @@
      "player_clan": {
       "allocated": 24,
       "active": 0,
-      "distant": 8,
+      "distant": 4,
       "reserve": 0,
-      "dead": 16,
+      "dead": 20,
       "evacuated": 0,
       "captured": 0
      },
      "hive": {
       "allocated": 736,
       "active": 0,
-      "distant": 449,
-      "reserve": 232,
-      "dead": 55,
+      "distant": 439,
+      "reserve": 240,
+      "dead": 57,
       "evacuated": 0,
       "captured": 0
      },
@@ -1723,7 +1706,7 @@
       "captured": 0
      }
     },
-    "deaths": 191,
+    "deaths": 197,
     "orders": {
      "AFF-27:hive:0": "attack>front_b@front_b",
      "AFF-27:hive:1": "attack>front_b@front_b",
@@ -1755,8 +1738,8 @@
      "AFF-27:hive:27": "defend>front_a@front_a",
      "AFF-27:hive:28": "defend>front_a@front_a",
      "AFF-27:hive:29": "defend>front_a@front_a",
-     "AFF-27:human_force:30": "regroup>front_b@front_b",
-     "AFF-27:human_force:31": "regroup>front_b@front_b",
+     "AFF-27:human_force:30": "defend>front_a@front_a",
+     "AFF-27:human_force:31": "defend>front_a@front_a",
      "AFF-27:human_force:32": "defend>front_a@front_a",
      "AFF-27:human_force:33": "regroup>front_b@front_b",
      "AFF-27:hive:34": "defend>front_b@front_b",
@@ -1807,7 +1790,7 @@
      "AFF-27:player_clan:79": "defend>front_d@front_d",
      "AFF-27:hive:80": "attack>front_d@front_b via route_1>route_2",
      "AFF-27:hive:81": "attack>front_d@front_b via route_1>route_2",
-     "AFF-27:hive:82": "attack>front_d@front_b via route_1>route_2",
+     "AFF-27:hive:82": "defend>front_a@front_a",
      "AFF-27:hive:83": "defend>front_a@front_a",
      "AFF-27:hive:84": "defend>front_a@front_a",
      "AFF-27:hive:85": "defend>front_a@front_a",
@@ -1845,7 +1828,7 @@
      "AFF-27:human_force:117": "defend>front_b@front_b",
      "AFF-27:human_force:118": "defend>front_b@front_b",
      "AFF-27:human_force:119": "defend>front_b@front_b",
-     "AFF-27:player_clan:120": "attack>front_b@front_d via route_2>route_1",
+     "AFF-27:player_clan:120": "attack>front_d@front_d",
      "AFF-27:player_clan:121": "attack>front_d@front_d"
     },
     "groupStates": {
@@ -1931,7 +1914,7 @@
      "AFF-27:player_clan:79": "distant",
      "AFF-27:hive:80": "distant",
      "AFF-27:hive:81": "distant",
-     "AFF-27:hive:82": "distant",
+     "AFF-27:hive:82": "reserve",
      "AFF-27:hive:83": "reserve",
      "AFF-27:hive:84": "reserve",
      "AFF-27:hive:85": "reserve",
@@ -1980,14 +1963,6 @@
      "AFF-27:player_clan:10": {
       "required": true,
       "returnFrontId": "front_b"
-     },
-     "AFF-27:human_force:30": {
-      "required": true,
-      "returnFrontId": "front_a"
-     },
-     "AFF-27:human_force:31": {
-      "required": true,
-      "returnFrontId": "front_a"
      },
      "AFF-27:human_force:33": {
       "required": true,
@@ -2059,7 +2034,7 @@
      ]
     ],
     "pendingArrivals": [],
-    "eventSequence": 764,
+    "eventSequence": 792,
     "criticalLosses": [
      "front_d"
     ],
@@ -2095,7 +2070,7 @@
       null
      ]
     ],
-    "pertesDix1eresSecondes": 5,
+    "pertesDix1eresSecondes": 4,
     "releve": [
      {
       "t": 57.5,
@@ -2103,27 +2078,27 @@
        "player_clan": {
         "allocated": 24,
         "active": 0,
-        "distant": 8,
+        "distant": 4,
         "reserve": 0,
-        "dead": 16,
+        "dead": 20,
         "evacuated": 0,
         "captured": 0
        },
        "hive": {
         "allocated": 736,
         "active": 0,
-        "distant": 504,
-        "reserve": 232,
-        "dead": 0,
+        "distant": 484,
+        "reserve": 240,
+        "dead": 12,
         "evacuated": 0,
         "captured": 0
        },
        "human_force": {
         "allocated": 192,
         "active": 0,
-        "distant": 29,
+        "distant": 15,
         "reserve": 64,
-        "dead": 99,
+        "dead": 113,
         "evacuated": 0,
         "captured": 0
        }
@@ -2135,27 +2110,27 @@
        "player_clan": {
         "allocated": 24,
         "active": 0,
-        "distant": 8,
+        "distant": 4,
         "reserve": 0,
-        "dead": 16,
+        "dead": 20,
         "evacuated": 0,
         "captured": 0
        },
        "hive": {
         "allocated": 736,
         "active": 0,
-        "distant": 504,
-        "reserve": 232,
-        "dead": 0,
+        "distant": 484,
+        "reserve": 240,
+        "dead": 12,
         "evacuated": 0,
         "captured": 0
        },
        "human_force": {
         "allocated": 192,
         "active": 0,
-        "distant": 29,
+        "distant": 15,
         "reserve": 64,
-        "dead": 99,
+        "dead": 113,
         "evacuated": 0,
         "captured": 0
        }
@@ -2167,27 +2142,27 @@
        "player_clan": {
         "allocated": 24,
         "active": 0,
-        "distant": 8,
+        "distant": 4,
         "reserve": 0,
-        "dead": 16,
+        "dead": 20,
         "evacuated": 0,
         "captured": 0
        },
        "hive": {
         "allocated": 736,
         "active": 0,
-        "distant": 504,
-        "reserve": 232,
-        "dead": 0,
+        "distant": 484,
+        "reserve": 240,
+        "dead": 12,
         "evacuated": 0,
         "captured": 0
        },
        "human_force": {
         "allocated": 192,
         "active": 0,
-        "distant": 29,
+        "distant": 15,
         "reserve": 64,
-        "dead": 99,
+        "dead": 113,
         "evacuated": 0,
         "captured": 0
        }
@@ -2199,27 +2174,27 @@
        "player_clan": {
         "allocated": 24,
         "active": 0,
-        "distant": 8,
+        "distant": 4,
         "reserve": 0,
-        "dead": 16,
+        "dead": 20,
         "evacuated": 0,
         "captured": 0
        },
        "hive": {
         "allocated": 736,
         "active": 0,
-        "distant": 504,
-        "reserve": 232,
-        "dead": 0,
+        "distant": 484,
+        "reserve": 240,
+        "dead": 12,
         "evacuated": 0,
         "captured": 0
        },
        "human_force": {
         "allocated": 192,
         "active": 0,
-        "distant": 29,
+        "distant": 15,
         "reserve": 64,
-        "dead": 99,
+        "dead": 113,
         "evacuated": 0,
         "captured": 0
        }
@@ -2231,27 +2206,27 @@
        "player_clan": {
         "allocated": 24,
         "active": 0,
-        "distant": 8,
+        "distant": 4,
         "reserve": 0,
-        "dead": 16,
+        "dead": 20,
         "evacuated": 0,
         "captured": 0
        },
        "hive": {
         "allocated": 736,
         "active": 0,
-        "distant": 504,
-        "reserve": 232,
-        "dead": 0,
+        "distant": 484,
+        "reserve": 240,
+        "dead": 12,
         "evacuated": 0,
         "captured": 0
        },
        "human_force": {
         "allocated": 192,
         "active": 0,
-        "distant": 29,
+        "distant": 15,
         "reserve": 64,
-        "dead": 99,
+        "dead": 113,
         "evacuated": 0,
         "captured": 0
        }
@@ -2263,18 +2238,18 @@
        "player_clan": {
         "allocated": 24,
         "active": 0,
-        "distant": 8,
+        "distant": 4,
         "reserve": 0,
-        "dead": 16,
+        "dead": 20,
         "evacuated": 0,
         "captured": 0
        },
        "hive": {
         "allocated": 736,
         "active": 0,
-        "distant": 501,
-        "reserve": 232,
-        "dead": 3,
+        "distant": 484,
+        "reserve": 240,
+        "dead": 12,
         "evacuated": 0,
         "captured": 0
        },
@@ -2295,18 +2270,18 @@
        "player_clan": {
         "allocated": 24,
         "active": 0,
-        "distant": 8,
+        "distant": 4,
         "reserve": 0,
-        "dead": 16,
+        "dead": 20,
         "evacuated": 0,
         "captured": 0
        },
        "hive": {
         "allocated": 736,
         "active": 0,
-        "distant": 487,
-        "reserve": 232,
-        "dead": 17,
+        "distant": 482,
+        "reserve": 240,
+        "dead": 14,
         "evacuated": 0,
         "captured": 0
        },
@@ -2327,18 +2302,18 @@
        "player_clan": {
         "allocated": 24,
         "active": 0,
-        "distant": 8,
+        "distant": 4,
         "reserve": 0,
-        "dead": 16,
+        "dead": 20,
         "evacuated": 0,
         "captured": 0
        },
        "hive": {
         "allocated": 736,
         "active": 0,
-        "distant": 453,
-        "reserve": 232,
-        "dead": 51,
+        "distant": 442,
+        "reserve": 240,
+        "dead": 54,
         "evacuated": 0,
         "captured": 0
        },
@@ -2359,18 +2334,18 @@
        "player_clan": {
         "allocated": 24,
         "active": 0,
-        "distant": 8,
+        "distant": 4,
         "reserve": 0,
-        "dead": 16,
+        "dead": 20,
         "evacuated": 0,
         "captured": 0
        },
        "hive": {
         "allocated": 736,
         "active": 0,
-        "distant": 449,
-        "reserve": 232,
-        "dead": 55,
+        "distant": 439,
+        "reserve": 240,
+        "dead": 57,
         "evacuated": 0,
         "captured": 0
        },
@@ -2391,18 +2366,18 @@
        "player_clan": {
         "allocated": 24,
         "active": 0,
-        "distant": 8,
+        "distant": 4,
         "reserve": 0,
-        "dead": 16,
+        "dead": 20,
         "evacuated": 0,
         "captured": 0
        },
        "hive": {
         "allocated": 736,
         "active": 0,
-        "distant": 449,
-        "reserve": 232,
-        "dead": 55,
+        "distant": 439,
+        "reserve": 240,
+        "dead": 57,
         "evacuated": 0,
         "captured": 0
        },
@@ -2423,8 +2398,8 @@
   "ecartsContinuiteVsRechargement": [
    {
     "path": "eventSequence",
-    "continuite": 761,
-    "rechargement": 764
+    "continuite": 788,
+    "rechargement": 792
    }
   ],
   "nombreEcarts": 1
@@ -2437,43 +2412,27 @@
    "ecartsStrategiques": [],
    "ecartsRegistreDesMorts": [],
    "ecartsJournalHorsHorodatage": [],
-   "ecartsJournalHorodates": [
-    {
-     "path": "55",
-     "continuite": "{\"time\":200.25,\"type\":\"unit_died\",\"priority\":0,\"entityId\":\"AFF-27:hive:73:7\",\"groupId\":\"AFF-27:hive:73\",\"factionId\":\"hive\",\"killerFaction\":null,\"cause\":\"facehugger_outside_hive_space\",\"officer\":false,\"uniqueId\":null}",
-     "rechargement": "{\"time\":200.25,\"type\":\"group_arrived\",\"priority\":1,\"groupId\":\"AFF-27:human_force:30\",\"frontId\":\"front_b\"}"
-    },
-    {
-     "path": "56",
-     "continuite": "{\"time\":200.5,\"type\":\"group_arrived\",\"priority\":1,\"groupId\":\"AFF-27:human_force:30\",\"frontId\":\"front_b\"}",
-     "rechargement": "{\"time\":200.25,\"type\":\"reconstitution_waiting\",\"priority\":1,\"groupId\":\"AFF-27:human_force:30\",\"frontId\":\"front_b\",\"reason\":\"no_connected_supply_source\"}"
-    },
-    {
-     "path": "57",
-     "continuite": "{\"time\":200.5,\"type\":\"reconstitution_waiting\",\"priority\":1,\"groupId\":\"AFF-27:human_force:30\",\"frontId\":\"front_b\",\"reason\":\"no_connected_supply_source\"}",
-     "rechargement": "{\"time\":200.25,\"type\":\"unit_died\",\"priority\":0,\"entityId\":\"AFF-27:hive:73:7\",\"groupId\":\"AFF-27:hive:73\",\"factionId\":\"hive\",\"killerFaction\":null,\"cause\":\"facehugger_outside_hive_space\",\"officer\":false,\"uniqueId\":null}"
-    }
-   ],
-   "observationHorodatage": "Écart d’horodatage d’un pas (0,25 s) : au premier update après chargement, _moveGroups (js/battlefield/BattleSimulation.js:417) avance en mode distant les groupes qui étaient détaillés avant que _detailStep ne les rematérialise ; dans la partie continue, ces groupes restent pilotés par leurs acteurs. Ici le bridge headless n’anime pas les acteurs, ce qui maximise l’écart ; effectifs, pertes et ordres finaux restent identiques.",
+   "ecartsJournalHorodates": [],
+   "observationHorodatage": null,
    "ecartCompteurEvenements": {
     "path": "eventSequence",
-    "continuite": 761,
-    "rechargement": 764
+    "continuite": 788,
+    "rechargement": 792
    },
    "explicationEcartCompteur": "Seuls les événements de niveau de détail diffèrent : la partie rechargée rematérialise ses groupes (aucun acteur rendu ne survit à un rechargement).",
    "evenementsDetail": {
-    "continuite": 5,
+    "continuite": 4,
     "rechargement": 8
    },
-   "evenementsStrategiquesCompares": 149,
+   "evenementsStrategiquesCompares": 108,
    "ecartPertesParFaction": {
     "player_clan": 0,
     "hive": 0,
     "human_force": 0
    },
    "pertesDix1eresSecondes": {
-    "continuite": 5,
-    "rechargement": 5
+    "continuite": 4,
+    "rechargement": 4
    }
   },
   {
@@ -2500,14 +2459,14 @@
    "texte": "Les événements déjà résolus ne se rejouent pas ; la chronologie continue",
    "verdict": "prouvé",
    "rejoues": [],
-   "sequenceSauvegardee": 607,
+   "sequenceSauvegardee": 676,
    "premierEvenementApres": {
-    "id": 608,
+    "id": 677,
     "time": 27.75,
     "type": "group_materialized",
     "priority": 1,
-    "groupId": "AFF-27:human_force:30",
-    "count": 6
+    "groupId": "AFF-27:human_force:4",
+    "count": 5
    },
    "tacheResolue": {
     "id": "hive_route",
@@ -2591,27 +2550,27 @@
      "player_clan": {
       "allocated": 24,
       "active": 0,
-      "distant": 12,
+      "distant": 7,
       "reserve": 0,
-      "dead": 12,
+      "dead": 17,
       "evacuated": 0,
       "captured": 0
      },
      "hive": {
       "allocated": 736,
       "active": 16,
-      "distant": 488,
-      "reserve": 232,
-      "dead": 0,
+      "distant": 469,
+      "reserve": 240,
+      "dead": 11,
       "evacuated": 0,
       "captured": 0
      },
      "human_force": {
       "allocated": 192,
-      "active": 6,
-      "distant": 24,
+      "active": 7,
+      "distant": 8,
       "reserve": 64,
-      "dead": 98,
+      "dead": 113,
       "evacuated": 0,
       "captured": 0
      }
@@ -2620,18 +2579,18 @@
      "player_clan": {
       "allocated": 24,
       "active": 0,
-      "distant": 8,
+      "distant": 4,
       "reserve": 0,
-      "dead": 16,
+      "dead": 20,
       "evacuated": 0,
       "captured": 0
      },
      "hive": {
       "allocated": 736,
       "active": 0,
-      "distant": 449,
-      "reserve": 232,
-      "dead": 55,
+      "distant": 439,
+      "reserve": 240,
+      "dead": 57,
       "evacuated": 0,
       "captured": 0
      },

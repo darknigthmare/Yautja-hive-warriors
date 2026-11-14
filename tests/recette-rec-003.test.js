@@ -47,7 +47,11 @@ function scenario({ closeBefore = [], closeAfterCapture = [] } = {}) {
   while (sim.time < ATTACK_AT) tick();
   const attackers = [...sim.groups.values()].filter(group => group.factionId !== 'player_clan' && group.units.some(id => sim.units.get(id).hp > 0)).map(group => group.id);
   for (const groupId of attackers) sim.issueOrder(groupId, { type: 'attack', frontId: A.id, issuer: 'scenario' });
-  journal.push({ t: sim.time, action: 'attaque_declenchee', vers: A.id, groupes: attackers.length });
+  // Since focused remote fire (HW-DEC-92) a full garrison holds A: the recipe measures alerts and rescue
+  // time, not balance, so all clan groups but one leave A to make its loss reachable.
+  const garrison = [...sim.groups.values()].filter(group => group.factionId === 'player_clan' && group.frontId === A.id && group.units.some(id => sim.units.get(id).hp > 0)).map(group => group.id).sort();
+  for (const groupId of garrison.slice(1)) sim.issueOrder(groupId, { type: 'defend', frontId: B.id, issuer: 'scenario' });
+  journal.push({ t: sim.time, action: 'attaque_declenchee', vers: A.id, groupes: attackers.length, garnisonRestante: garrison.slice(0, 1) });
   while (!sim.criticalLosses.size && sim.time < LIMIT) tick();
   marks.capture = sim.events.find(event => event.type === 'base_captured' && event.frontId === A.id)?.time ?? null;
   for (const routeId of closeAfterCapture) journal.push({ t: sim.time, action: 'route_closed', routeId, accepted: sim.setRouteOpen(routeId, false, 'recette_passage_bloque') });

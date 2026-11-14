@@ -3,8 +3,15 @@
  "titre": "Deux joueurs sur des fronts séparés",
  "source": "docs/audits/2026-10-26/Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.xlsx#Validation!REC-023",
  "dateExecution": "2026-11-14",
- "commit": "bd866f88e1499d4e091e4e0c8611afdfb95d2336",
- "sourcesJsNonCommitees": [],
+ "commit": "2ecc8537ccbaf21f07b78dc4dbf083a98bcf9f32",
+ "sourcesJsNonCommitees": [
+  " M js/battlefield/BattleSimulation.js",
+  " M js/battlefield/BattlefieldOperation.js",
+  " M js/battlefield/OperationScene.js",
+  " M js/data/BattleCatalog.js",
+  " M js/data/SourceBattleRoster.js",
+  " M js/main.js"
+ ],
  "graine": {
   "operation": "AFF-14",
   "joueurs": 2,
@@ -15,7 +22,7 @@
  "preuveVideo": "non produite — preuve par journal de simulation",
  "scenario": {
   "operation": "AFF-14",
-  "configDigest": "bd7325da",
+  "configDigest": "799d621e",
   "budgetLance": "EFF-03",
   "contexteJoueurs": 2,
   "budgetEFF07": {
@@ -84,6 +91,15 @@
     }
    },
    {
+    "t": 59.75,
+    "label": "groupes déjà détaillés sur A avant le chevauchement",
+    "result": {
+     "groupes": [
+      "AFF-14:hive:34"
+     ]
+    }
+   },
+   {
     "t": 60,
     "label": "J2 rejoint la zone de J1 (chevauchement des bulles)",
     "result": {
@@ -97,7 +113,7 @@
     "t": 61,
     "label": "groupe partagé repéré dans les deux bulles",
     "result": {
-     "sharedGroup": "AFF-14:hive:0"
+     "sharedGroup": "AFF-14:hive:34"
     }
    },
    {
@@ -169,8 +185,8 @@
       "front_b"
      ],
      "frontC": {
-      "damage": 3574.3,
-      "dead": 3,
+      "damage": 3484.7,
+      "dead": 9,
       "owner": "hive"
      },
      "groupePartageSpawns": null
@@ -194,7 +210,7 @@
       "front_b"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -219,7 +235,7 @@
       "front_b"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -244,7 +260,7 @@
       "front_b"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -269,7 +285,7 @@
       "front_b"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -294,7 +310,7 @@
       "front_b"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -319,7 +335,7 @@
       "front_b"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -344,7 +360,7 @@
       "front_b"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -369,7 +385,7 @@
       "front_b"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -394,7 +410,7 @@
       "front_b"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -409,8 +425,8 @@
       "player_clan": 8,
       "hive": 24
      },
-     "bulle1": 28,
-     "bulle2": 4,
+     "bulle1": 12,
+     "bulle2": 20,
      "intersection": 0,
      "frontsJ1": [
       "front_a"
@@ -419,7 +435,7 @@
       "front_b"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -434,8 +450,8 @@
       "player_clan": 8,
       "hive": 24
      },
-     "bulle1": 28,
-     "bulle2": 4,
+     "bulle1": 12,
+     "bulle2": 20,
      "intersection": 0,
      "frontsJ1": [
       "front_a"
@@ -444,7 +460,7 @@
       "front_b"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -459,8 +475,8 @@
       "player_clan": 8,
       "hive": 24
      },
-     "bulle1": 28,
-     "bulle2": 4,
+     "bulle1": 12,
+     "bulle2": 20,
      "intersection": 0,
      "frontsJ1": [
       "front_a"
@@ -469,7 +485,7 @@
       "front_b"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -484,8 +500,8 @@
       "player_clan": 8,
       "hive": 24
      },
-     "bulle1": 28,
-     "bulle2": 4,
+     "bulle1": 12,
+     "bulle2": 20,
      "intersection": 0,
      "frontsJ1": [
       "front_a"
@@ -494,7 +510,7 @@
       "front_b"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -509,8 +525,8 @@
       "player_clan": 8,
       "hive": 24
      },
-     "bulle1": 20,
-     "bulle2": 12,
+     "bulle1": 12,
+     "bulle2": 20,
      "intersection": 0,
      "frontsJ1": [
       "front_a"
@@ -519,7 +535,7 @@
       "front_b"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -534,8 +550,8 @@
       "player_clan": 8,
       "hive": 24
      },
-     "bulle1": 20,
-     "bulle2": 12,
+     "bulle1": 12,
+     "bulle2": 20,
      "intersection": 0,
      "frontsJ1": [
       "front_a"
@@ -544,7 +560,7 @@
       "front_b"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -559,8 +575,8 @@
       "player_clan": 8,
       "hive": 24
      },
-     "bulle1": 20,
-     "bulle2": 12,
+     "bulle1": 12,
+     "bulle2": 20,
      "intersection": 0,
      "frontsJ1": [
       "front_a"
@@ -569,7 +585,7 @@
       "front_b"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -584,8 +600,8 @@
       "player_clan": 8,
       "hive": 24
      },
-     "bulle1": 20,
-     "bulle2": 12,
+     "bulle1": 12,
+     "bulle2": 20,
      "intersection": 0,
      "frontsJ1": [
       "front_a"
@@ -594,7 +610,7 @@
       "front_b"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -609,8 +625,8 @@
       "player_clan": 8,
       "hive": 24
      },
-     "bulle1": 20,
-     "bulle2": 12,
+     "bulle1": 12,
+     "bulle2": 20,
      "intersection": 0,
      "frontsJ1": [
       "front_a"
@@ -619,7 +635,7 @@
       "front_b"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -634,8 +650,8 @@
       "player_clan": 8,
       "hive": 24
      },
-     "bulle1": 20,
-     "bulle2": 12,
+     "bulle1": 12,
+     "bulle2": 20,
      "intersection": 0,
      "frontsJ1": [
       "front_a"
@@ -644,7 +660,7 @@
       "front_b"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -659,8 +675,8 @@
       "player_clan": 8,
       "hive": 24
      },
-     "bulle1": 28,
-     "bulle2": 4,
+     "bulle1": 12,
+     "bulle2": 20,
      "intersection": 0,
      "frontsJ1": [
       "front_a"
@@ -669,7 +685,7 @@
       "front_b"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -684,8 +700,8 @@
       "player_clan": 8,
       "hive": 24
      },
-     "bulle1": 28,
-     "bulle2": 4,
+     "bulle1": 12,
+     "bulle2": 20,
      "intersection": 0,
      "frontsJ1": [
       "front_a"
@@ -694,7 +710,7 @@
       "front_b"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -709,8 +725,8 @@
       "player_clan": 8,
       "hive": 24
      },
-     "bulle1": 28,
-     "bulle2": 4,
+     "bulle1": 12,
+     "bulle2": 20,
      "intersection": 0,
      "frontsJ1": [
       "front_a"
@@ -719,7 +735,7 @@
       "front_b"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -734,8 +750,8 @@
       "player_clan": 8,
       "hive": 24
      },
-     "bulle1": 28,
-     "bulle2": 4,
+     "bulle1": 12,
+     "bulle2": 20,
      "intersection": 0,
      "frontsJ1": [
       "front_a"
@@ -744,7 +760,7 @@
       "front_b"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -759,8 +775,8 @@
       "player_clan": 8,
       "hive": 24
      },
-     "bulle1": 20,
-     "bulle2": 12,
+     "bulle1": 12,
+     "bulle2": 20,
      "intersection": 0,
      "frontsJ1": [
       "front_a"
@@ -769,7 +785,7 @@
       "front_b"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -784,8 +800,8 @@
       "player_clan": 8,
       "hive": 24
      },
-     "bulle1": 20,
-     "bulle2": 12,
+     "bulle1": 12,
+     "bulle2": 20,
      "intersection": 0,
      "frontsJ1": [
       "front_a"
@@ -794,7 +810,7 @@
       "front_b"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -809,8 +825,8 @@
       "player_clan": 8,
       "hive": 24
      },
-     "bulle1": 20,
-     "bulle2": 12,
+     "bulle1": 12,
+     "bulle2": 20,
      "intersection": 0,
      "frontsJ1": [
       "front_a"
@@ -819,7 +835,7 @@
       "front_b"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -834,8 +850,8 @@
       "player_clan": 8,
       "hive": 24
      },
-     "bulle1": 20,
-     "bulle2": 12,
+     "bulle1": 12,
+     "bulle2": 20,
      "intersection": 0,
      "frontsJ1": [
       "front_a"
@@ -844,7 +860,7 @@
       "front_b"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -859,8 +875,8 @@
       "player_clan": 8,
       "hive": 24
      },
-     "bulle1": 20,
-     "bulle2": 12,
+     "bulle1": 12,
+     "bulle2": 20,
      "intersection": 0,
      "frontsJ1": [
       "front_a"
@@ -869,7 +885,7 @@
       "front_b"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -884,8 +900,8 @@
       "player_clan": 8,
       "hive": 24
      },
-     "bulle1": 20,
-     "bulle2": 12,
+     "bulle1": 12,
+     "bulle2": 20,
      "intersection": 0,
      "frontsJ1": [
       "front_a"
@@ -894,7 +910,7 @@
       "front_b"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -919,7 +935,7 @@
       "front_a"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -944,7 +960,7 @@
       "front_a"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -969,7 +985,7 @@
       "front_a"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -994,7 +1010,7 @@
       "front_a"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -1019,7 +1035,7 @@
       "front_a"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -1044,7 +1060,7 @@
       "front_a"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -1069,7 +1085,7 @@
       "front_a"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -1094,7 +1110,7 @@
       "front_a"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -1119,7 +1135,7 @@
       "front_a"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -1144,7 +1160,7 @@
       "front_a"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -1169,7 +1185,7 @@
       "front_a"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -1194,7 +1210,7 @@
       "front_a"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -1219,7 +1235,7 @@
       "front_a"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -1244,7 +1260,7 @@
       "front_a"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -1269,7 +1285,7 @@
       "front_a"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -1294,7 +1310,7 @@
       "front_a"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -1319,7 +1335,7 @@
       "front_a"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -1344,7 +1360,7 @@
       "front_a"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -1369,7 +1385,7 @@
       "front_a"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -1394,7 +1410,7 @@
       "front_a"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -1409,8 +1425,8 @@
       "player_clan": 4,
       "hive": 24
      },
-     "bulle1": 16,
-     "bulle2": 12,
+     "bulle1": 8,
+     "bulle2": 20,
      "intersection": 0,
      "frontsJ1": [
       "front_c"
@@ -1419,7 +1435,7 @@
       "front_a"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -1434,8 +1450,8 @@
       "player_clan": 4,
       "hive": 24
      },
-     "bulle1": 16,
-     "bulle2": 12,
+     "bulle1": 8,
+     "bulle2": 20,
      "intersection": 0,
      "frontsJ1": [
       "front_c"
@@ -1444,7 +1460,7 @@
       "front_a"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -1459,8 +1475,8 @@
       "player_clan": 4,
       "hive": 24
      },
-     "bulle1": 16,
-     "bulle2": 12,
+     "bulle1": 8,
+     "bulle2": 20,
      "intersection": 0,
      "frontsJ1": [
       "front_c"
@@ -1469,7 +1485,7 @@
       "front_a"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -1484,8 +1500,8 @@
       "player_clan": 4,
       "hive": 24
      },
-     "bulle1": 16,
-     "bulle2": 12,
+     "bulle1": 8,
+     "bulle2": 20,
      "intersection": 0,
      "frontsJ1": [
       "front_c"
@@ -1494,7 +1510,7 @@
       "front_a"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -1509,8 +1525,8 @@
       "player_clan": 4,
       "hive": 24
      },
-     "bulle1": 16,
-     "bulle2": 12,
+     "bulle1": 8,
+     "bulle2": 20,
      "intersection": 0,
      "frontsJ1": [
       "front_c"
@@ -1519,7 +1535,7 @@
       "front_a"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -1544,7 +1560,7 @@
       "front_c"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -1569,7 +1585,7 @@
       "front_c"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -1594,7 +1610,7 @@
       "front_c"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -1619,7 +1635,7 @@
       "front_c"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -1644,7 +1660,7 @@
       "front_c"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -1669,7 +1685,7 @@
       "front_c"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -1694,7 +1710,7 @@
       "front_c"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 12,
       "owner": "hive"
      },
@@ -1719,7 +1735,7 @@
       "front_c"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 13,
       "owner": "hive"
      },
@@ -1744,7 +1760,7 @@
       "front_c"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 13,
       "owner": "hive"
      },
@@ -1769,7 +1785,7 @@
       "front_c"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 13,
       "owner": "hive"
      },
@@ -1794,7 +1810,7 @@
       "front_c"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 13,
       "owner": "hive"
      },
@@ -1819,7 +1835,7 @@
       "front_c"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 13,
       "owner": "hive"
      },
@@ -1844,7 +1860,7 @@
       "front_c"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 13,
       "owner": "hive"
      },
@@ -1869,7 +1885,7 @@
       "front_c"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 13,
       "owner": "hive"
      },
@@ -1894,7 +1910,7 @@
       "front_c"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 13,
       "owner": "hive"
      },
@@ -1919,7 +1935,7 @@
       "front_c"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 13,
       "owner": "hive"
      },
@@ -1944,7 +1960,7 @@
       "front_c"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 13,
       "owner": "hive"
      },
@@ -1969,7 +1985,7 @@
       "front_c"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 13,
       "owner": "hive"
      },
@@ -1994,7 +2010,7 @@
       "front_c"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 13,
       "owner": "hive"
      },
@@ -2019,7 +2035,7 @@
       "front_c"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 13,
       "owner": "hive"
      },
@@ -2044,7 +2060,7 @@
       "front_c"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 13,
       "owner": "hive"
      },
@@ -2069,7 +2085,7 @@
       "front_c"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 13,
       "owner": "hive"
      },
@@ -2094,7 +2110,7 @@
       "front_c"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 13,
       "owner": "hive"
      },
@@ -2119,7 +2135,7 @@
       "front_c"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 13,
       "owner": "hive"
      },
@@ -2144,7 +2160,7 @@
       "front_c"
      ],
      "frontC": {
-      "damage": 5896,
+      "damage": 4962.9,
       "dead": 13,
       "owner": "hive"
      },
@@ -2196,117 +2212,15 @@
     2
    ],
    [
-    11.25,
-    "despawn",
-    "AFF-14:player_clan:48",
-    2
-   ],
-   [
-    11.25,
-    "spawn",
-    "AFF-14:player_clan:145",
-    2
-   ],
-   [
-    19.25,
-    "despawn",
-    "AFF-14:hive:53",
-    8
-   ],
-   [
-    19.25,
-    "spawn",
-    "AFF-14:hive:101",
-    8
-   ],
-   [
-    20.25,
+    60.25,
     "despawn",
     "AFF-14:hive:10",
     8
    ],
    [
-    20.25,
-    "despawn",
-    "AFF-14:hive:101",
-    8
-   ],
-   [
-    20.25,
-    "spawn",
-    "AFF-14:hive:36",
-    8
-   ],
-   [
-    20.25,
-    "spawn",
-    "AFF-14:hive:65",
-    8
-   ],
-   [
-    22,
-    "despawn",
-    "AFF-14:hive:65",
-    8
-   ],
-   [
-    22,
-    "spawn",
-    "AFF-14:hive:4",
-    8
-   ],
-   [
-    29.25,
-    "despawn",
-    "AFF-14:hive:4",
-    8
-   ],
-   [
-    29.25,
-    "spawn",
-    "AFF-14:hive:65",
-    8
-   ],
-   [
-    35.25,
-    "despawn",
-    "AFF-14:hive:36",
-    8
-   ],
-   [
-    35.25,
-    "spawn",
-    "AFF-14:hive:0",
-    8
-   ],
-   [
-    40.25,
-    "despawn",
-    "AFF-14:hive:65",
-    8
-   ],
-   [
-    40.25,
-    "spawn",
-    "AFF-14:hive:36",
-    8
-   ],
-   [
-    49.25,
-    "despawn",
-    "AFF-14:hive:36",
-    8
-   ],
-   [
-    49.25,
-    "spawn",
-    "AFF-14:hive:65",
-    8
-   ],
-   [
     60.25,
     "despawn",
-    "AFF-14:hive:65",
+    "AFF-14:hive:53",
     8
    ],
    [
@@ -2328,15 +2242,15 @@
     8
    ],
    [
-    100.25,
-    "despawn",
-    "AFF-14:hive:34",
+    60.25,
+    "spawn",
+    "AFF-14:hive:32",
     8
    ],
    [
     100.25,
     "despawn",
-    "AFF-14:hive:47",
+    "AFF-14:hive:32",
     8
    ],
    [
@@ -2346,16 +2260,22 @@
     8
    ],
    [
-    100.25,
-    "spawn",
-    "AFF-14:hive:79",
+    110.25,
+    "despawn",
+    "AFF-14:hive:34",
     8
    ],
    [
     110.25,
     "despawn",
-    "AFF-14:hive:0",
+    "AFF-14:hive:47",
     8
+   ],
+   [
+    110.25,
+    "despawn",
+    "AFF-14:player_clan:48",
+    2
    ],
    [
     110.25,
@@ -2365,215 +2285,203 @@
    ],
    [
     110.25,
-    "despawn",
-    "AFF-14:player_clan:145",
-    2
+    "spawn",
+    "AFF-14:hive:89",
+    8
    ],
    [
     110.25,
     "spawn",
-    "AFF-14:hive:89",
+    "AFF-14:hive:82",
     8
    ]
   ],
   "chronologieFronts": [
    [
-    2,
+    1.25,
     "unit_died",
     null,
     "AFF-14:player_clan:15"
    ],
    [
-    2,
+    1.25,
     "musou_officer_broken",
     "front_b",
     "AFF-14:player_clan:15"
    ],
    [
-    2.25,
-    "unit_died",
-    null,
-    "AFF-14:player_clan:73"
-   ],
-   [
-    2.25,
-    "musou_officer_broken",
-    "front_b",
-    "AFF-14:player_clan:73"
-   ],
-   [
-    2.25,
-    "unit_died",
-    null,
-    "AFF-14:player_clan:16"
-   ],
-   [
-    2.25,
-    "musou_officer_broken",
-    "front_b",
-    "AFF-14:player_clan:16"
-   ],
-   [
-    2.5,
+    1.5,
     "unit_died",
     null,
     "AFF-14:player_clan:49"
    ],
    [
-    2.5,
+    1.5,
     "musou_officer_broken",
     "front_a",
     "AFF-14:player_clan:49"
    ],
    [
-    2.5,
+    1.5,
     "unit_died",
     null,
-    "AFF-14:player_clan:75"
+    "AFF-14:player_clan:50"
    ],
    [
-    2.5,
+    1.5,
+    "musou_officer_broken",
+    "front_a",
+    "AFF-14:player_clan:50"
+   ],
+   [
+    1.5,
+    "unit_died",
+    null,
+    "AFF-14:player_clan:16"
+   ],
+   [
+    1.5,
     "musou_officer_broken",
     "front_b",
-    "AFF-14:player_clan:75"
+    "AFF-14:player_clan:16"
    ],
    [
-    2.75,
-    "unit_died",
-    null,
-    "AFF-14:player_clan:9"
-   ],
-   [
-    2.75,
-    "musou_officer_broken",
-    "front_a",
-    "AFF-14:player_clan:9"
-   ],
-   [
-    2.75,
-    "unit_died",
-    null,
-    "AFF-14:player_clan:7"
-   ],
-   [
-    2.75,
-    "musou_officer_broken",
-    "front_a",
-    "AFF-14:player_clan:7"
-   ],
-   [
-    2.75,
-    "unit_died",
-    null,
-    "AFF-14:player_clan:50"
-   ],
-   [
-    2.75,
-    "musou_officer_broken",
-    "front_a",
-    "AFF-14:player_clan:50"
-   ],
-   [
-    2.75,
-    "unit_died",
-    null,
-    "AFF-14:player_clan:8"
-   ],
-   [
-    2.75,
-    "unit_died",
-    null,
-    "AFF-14:player_clan:99"
-   ],
-   [
-    2.75,
-    "musou_officer_broken",
-    "front_c",
-    "AFF-14:player_clan:99"
-   ],
-   [
-    2.75,
-    "unit_died",
-    null,
-    "AFF-14:player_clan:98"
-   ],
-   [
-    2.75,
-    "musou_officer_broken",
-    "front_c",
-    "AFF-14:player_clan:98"
-   ],
-   [
-    2.75,
-    "unit_died",
-    null,
-    "AFF-14:player_clan:97"
-   ],
-   [
-    2.75,
-    "musou_officer_broken",
-    "front_c",
-    "AFF-14:player_clan:97"
-   ],
-   [
-    3,
-    "unit_died",
-    null,
-    "AFF-14:player_clan:6"
-   ],
-   [
-    3,
-    "unit_died",
-    null,
-    "AFF-14:player_clan:96"
-   ],
-   [
-    3,
-    "musou_officer_broken",
-    "front_c",
-    "AFF-14:player_clan:96"
-   ],
-   [
-    3,
-    "unit_died",
-    null,
-    "AFF-14:player_clan:23"
-   ],
-   [
-    3.25,
+    1.5,
     "unit_died",
     null,
     "AFF-14:player_clan:22"
    ],
    [
+    1.5,
+    "musou_officer_broken",
+    "front_c",
+    "AFF-14:player_clan:22"
+   ],
+   [
+    1.75,
+    "unit_died",
+    null,
+    "AFF-14:player_clan:6"
+   ],
+   [
+    1.75,
+    "musou_officer_broken",
+    "front_a",
+    "AFF-14:player_clan:6"
+   ],
+   [
+    1.75,
+    "unit_died",
+    null,
+    "AFF-14:player_clan:73"
+   ],
+   [
+    1.75,
+    "musou_officer_broken",
+    "front_b",
+    "AFF-14:player_clan:73"
+   ],
+   [
+    1.75,
+    "unit_died",
+    null,
+    "AFF-14:player_clan:23"
+   ],
+   [
+    1.75,
+    "musou_officer_broken",
+    "front_c",
+    "AFF-14:player_clan:23"
+   ],
+   [
+    2,
+    "unit_died",
+    null,
+    "AFF-14:player_clan:7"
+   ],
+   [
+    2,
+    "musou_officer_broken",
+    "front_a",
+    "AFF-14:player_clan:7"
+   ],
+   [
+    2,
+    "unit_died",
+    null,
+    "AFF-14:player_clan:96"
+   ],
+   [
+    2,
+    "musou_officer_broken",
+    "front_c",
+    "AFF-14:player_clan:96"
+   ],
+   [
+    2.25,
+    "unit_died",
+    null,
+    "AFF-14:player_clan:75"
+   ],
+   [
+    2.25,
+    "musou_officer_broken",
+    "front_b",
+    "AFF-14:player_clan:75"
+   ],
+   [
+    2.5,
+    "unit_died",
+    null,
+    "AFF-14:player_clan:8"
+   ],
+   [
+    2.5,
+    "unit_died",
+    null,
+    "AFF-14:player_clan:97"
+   ],
+   [
+    2.5,
+    "musou_officer_broken",
+    "front_c",
+    "AFF-14:player_clan:97"
+   ],
+   [
+    2.75,
+    "unit_died",
+    null,
+    "AFF-14:player_clan:9"
+   ],
+   [
+    2.75,
+    "unit_died",
+    null,
+    "AFF-14:player_clan:98"
+   ],
+   [
+    2.75,
+    "unit_died",
+    null,
+    "AFF-14:player_clan:99"
+   ],
+   [
     8,
     "reinforcements_inbound",
     "front_a",
     "AFF-14:player_clan:145"
    ],
    [
-    8,
-    "reinforcements_inbound",
-    "front_b",
-    "AFF-14:hive:100"
-   ],
-   [
     11,
     "reinforcements_arrived",
     "front_a",
     "AFF-14:player_clan:145"
-   ],
-   [
-    11,
-    "reinforcements_arrived",
-    "front_b",
-    "AFF-14:hive:100"
    ],
    [
     11.25,
     "unit_died",
     null,
-    "AFF-14:player_clan:48"
+    "AFF-14:player_clan:145"
    ],
    [
     16,
@@ -2584,8 +2492,8 @@
    [
     16,
     "reinforcements_inbound",
-    "front_c",
-    "AFF-14:hive:101"
+    "front_b",
+    "AFF-14:hive:100"
    ],
    [
     19,
@@ -2596,8 +2504,8 @@
    [
     19,
     "reinforcements_arrived",
-    "front_c",
-    "AFF-14:hive:101"
+    "front_b",
+    "AFF-14:hive:100"
    ],
    [
     19.25,
@@ -2651,31 +2559,31 @@
     60.25,
     "unit_died",
     null,
-    "AFF-14:player_clan:74"
+    "AFF-14:player_clan:72"
    ],
    [
     60.25,
     "musou_officer_broken",
     "front_b",
-    "AFF-14:player_clan:74"
+    "AFF-14:player_clan:72"
    ],
    [
     60.25,
     "unit_died",
     null,
-    "AFF-14:player_clan:72"
+    "AFF-14:player_clan:74"
    ],
    [
     60.25,
     "musou_officer_broken",
     "front_b",
-    "AFF-14:player_clan:72"
+    "AFF-14:player_clan:74"
    ],
    [
     110.25,
     "unit_died",
     null,
-    "AFF-14:player_clan:145"
+    "AFF-14:player_clan:48"
    ],
    [
     110.25,
@@ -2731,9 +2639,9 @@
     "hive": {
      "allocated": 1000,
      "active": 23,
-     "distant": 632,
-     "reserve": 344,
-     "dead": 1,
+     "distant": 623,
+     "reserve": 352,
+     "dead": 2,
      "evacuated": 0,
      "captured": 0
     }
@@ -2804,8 +2712,8 @@
     },
     {
      "t": 21.25,
-     "bulle1": 20,
-     "bulle2": 12,
+     "bulle1": 12,
+     "bulle2": 20,
      "total": 32,
      "parFaction": {
       "player_clan": 8,
@@ -2814,8 +2722,8 @@
     },
     {
      "t": 31.25,
-     "bulle1": 20,
-     "bulle2": 12,
+     "bulle1": 12,
+     "bulle2": 20,
      "total": 32,
      "parFaction": {
       "player_clan": 8,
@@ -2824,8 +2732,8 @@
     },
     {
      "t": 41.25,
-     "bulle1": 28,
-     "bulle2": 4,
+     "bulle1": 12,
+     "bulle2": 20,
      "total": 32,
      "parFaction": {
       "player_clan": 8,
@@ -2834,8 +2742,8 @@
     },
     {
      "t": 51.25,
-     "bulle1": 20,
-     "bulle2": 12,
+     "bulle1": 12,
+     "bulle2": 20,
      "total": 32,
      "parFaction": {
       "player_clan": 8,
@@ -2848,7 +2756,7 @@
    "id": "C2",
    "texte": "Le chevauchement ne duplique ni groupe, ni boss, ni récompense",
    "verdict": "prouvé",
-   "groupePartage": "AFF-14:hive:0",
+   "groupePartage": "AFF-14:hive:34",
    "spawnsGroupePartagePendantChevauchement": [],
    "acteursDupliques": [],
    "boss": {
@@ -2934,7 +2842,6 @@
    "verdict": "prouvé",
    "annoncesParFactionEtIntervalle": {
     "player_clan:0": 1,
-    "hive:0": 1,
     "player_clan:1": 1,
     "hive:1": 1,
     "player_clan:2": 1,
@@ -2960,8 +2867,8 @@
     "taskId": "tunnel_one",
     "feedback": "Votre partenaire utilise déjà ce dispositif."
    },
-   "reserveRucheConsommee": 16,
-   "unitesArriveesRuche": 16,
+   "reserveRucheConsommee": 8,
+   "unitesArriveesRuche": 8,
    "note": "Au plus deux annonces par faction et par intervalle : une automatique (par faction, indépendante du nombre de joueurs) et, au besoin, une réaction d’objectif."
   },
   {
@@ -2971,11 +2878,11 @@
    "frontC": {
     "debut": {
      "damage": 427.1,
-     "dead": 0,
+     "dead": 1,
      "owner": "hive"
     },
     "fin": {
-     "damage": 5896,
+     "damage": 4962.9,
      "dead": 12,
      "owner": "hive"
     }

@@ -3,7 +3,7 @@
   "source": "docs/audits/2026-10-26/Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.xlsx#Validation",
   "perimetre": "Personnages nommés, variantes biologiques et unicité",
   "seed": 1114,
-  "commit": "bd866f88e1499d4e091e4e0c8611afdfb95d2336",
+  "commit": "2ecc8537ccbaf21f07b78dc4dbf083a98bcf9f32",
   "date": "2026-11-14",
   "commande": "node --test tests/recette-rec-008.test.js",
   "preuveVideo": "non produite — preuve par journal",
@@ -33,8 +33,8 @@
       "t": 4,
       "event": "eloigne",
       "unitId": "AFF-27:hive:66:7",
-      "hp": 1814,
-      "soinsEspaceRuche": 7
+      "hp": 1816,
+      "soinsEspaceRuche": 8
     },
     {
       "operation": "AFF-27",
@@ -42,7 +42,7 @@
       "t": 6,
       "event": "reentree",
       "unitId": "AFF-27:hive:66:7",
-      "hp": 1830
+      "hp": 1832
     },
     {
       "operation": "AFF-27",
@@ -65,7 +65,7 @@
         "frontId": "front_a",
         "issuer": "officer",
         "issuedAt": 6,
-        "sequence": 315
+        "sequence": 573
       }
     },
     {
@@ -133,7 +133,7 @@
         "frontId": "front_a",
         "issuer": "officer",
         "issuedAt": 6,
-        "sequence": 572
+        "sequence": 573
       }
     },
     {
@@ -386,67 +386,71 @@
       "details": {
         "unitId": "AFF-27:hive:66:7",
         "hpEcran": 1800,
-        "hpApresEloignement": 1814,
+        "hpApresEloignement": 1816,
         "soinsEspaceRucheJournalises": [
           {
-            "t": 2.5,
+            "t": 2.25,
             "hp": 1802
           },
           {
-            "t": 2.75,
+            "t": 2.5,
             "hp": 1804
           },
           {
-            "t": 3,
+            "t": 2.75,
             "hp": 1806
           },
           {
-            "t": 3.25,
+            "t": 3,
             "hp": 1808
           },
           {
-            "t": 3.5,
+            "t": 3.25,
             "hp": 1810
           },
           {
-            "t": 3.75,
+            "t": 3.5,
             "hp": 1812
           },
           {
-            "t": 4,
+            "t": 3.75,
             "hp": 1814
           },
           {
-            "t": 4.25,
+            "t": 4,
             "hp": 1816
           },
           {
-            "t": 4.5,
+            "t": 4.25,
             "hp": 1818
           },
           {
-            "t": 4.75,
+            "t": 4.5,
             "hp": 1820
           },
           {
-            "t": 5,
+            "t": 4.75,
             "hp": 1822
           },
           {
-            "t": 5.25,
+            "t": 5,
             "hp": 1824
           },
           {
-            "t": 5.5,
+            "t": 5.25,
             "hp": 1826
           },
           {
-            "t": 5.75,
+            "t": 5.5,
             "hp": 1828
           },
           {
-            "t": 6,
+            "t": 5.75,
             "hp": 1830
+          },
+          {
+            "t": 6,
+            "hp": 1832
           }
         ],
         "materialisations": 2

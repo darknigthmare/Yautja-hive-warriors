@@ -85,7 +85,7 @@ const replay = run({ playerOnA: true });
     .map(event => ({ t: event.time, type: event.type, groupId: event.groupId, frontId: event.frontId ?? event.targetFrontId ?? event.order?.frontId, owner: event.owner, reason: event.reason }));
   evidence.evenementsPerdus = sim.eventsDropped;
   const end = observed.timeline.at(-1).factions;
-  evidence.observations = [`Sur 20 min, la ruche perd ${end.hive.dead} unité(s) contre ${end.human_force.dead} pour la force humaine : le combat à distance répartit les tirs sur toutes les cibles hostiles du front (BattleSimulation._remoteCombat, rotation attackSeeds+tick), ce qui protège les grands effectifs. Constat d’équilibrage à arbitrer, hors critère de cette recette.`];
+  evidence.observations = [`Sur 20 min, la ruche perd ${end.hive.dead} unité(s) contre ${end.human_force.dead} pour la force humaine. Le tir à distance est concentré sur la cible la plus proche de tomber (HW-DEC-92, BattleSimulation._remoteCombat) ; avant cette décision, sur la même graine, la ruche perdait 0 unité contre 48. L’équilibrage fin reste à faire en jeu.`];
   evidence.limites.push('La présence du joueur sur A matérialise les groupes alliés de A (état active) ; sans acteurs 3D, aucun combat rapproché n’est simulé sur A. Aucun ennemi n’y étant engagé, cela n’influence pas B/C (vérifié par la course témoin sans joueur).',
     'Les combats de B et C sont résolus par le combat à distance de BattleSimulation ; le rendu, la caméra et les acteurs détaillés ne sont pas exercés.',
     'Une revue visuelle (caméra restée sur A, absence d’apparition visible) reste à faire par un humain dans le navigateur.');
