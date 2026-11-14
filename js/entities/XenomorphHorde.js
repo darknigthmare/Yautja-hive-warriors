@@ -328,7 +328,7 @@ export class XenomorphHorde {
    * defeatAlien apply. No acid, parasite or egg; a fleeing animal stays in the world (no despawn). */
   spawnFauna(spec, role, position, home = position) {
     const leader = role === 'leader', mesh = createFaunaModel(spec, { crest: leader });
-    mesh.position.copy(position); this.scene.add(mesh);
+    mesh.position.copy(position); this.environment?.resolveMovement?.(mesh.position, spec.radius ?? 1); this.scene.add(mesh);
     const animal = { isFauna: true, role, type: leader ? 'fauna_leader' : 'fauna_herd', name: spec.name, mesh,
       hp: spec.hp, maxHp: spec.hp, speed: spec.speed, damage: spec.bite, radius: spec.radius, home: home.clone(),
       chargeTimer: 4 + (this.aliens.length % 5) * .4, chargeLeft: 0, spawnBudget: leader ? (spec.spawns ?? 0) : 0, spawnTimer: 6,

@@ -15,8 +15,17 @@ export class FaunaEncounter {
     return Math.min(40, Math.max(base, needed + 2));
   }
 
+  /** The herd grazes in the part of the sector farthest from the arriving hunter, never on the drop point. */
+  herdCenter(sector, position) {
+    const center = new THREE.Vector3(sector.center[0], 0, sector.center[1]), bounds = sector.bounds;
+    if (!bounds || !position) return center;
+    const spanX = (bounds.maxX - bounds.minX) * .3, spanZ = (bounds.maxZ - bounds.minZ) * .3;
+    const candidates = [[1, 1], [1, -1], [-1, 1], [-1, -1]].map(([x, z]) => new THREE.Vector3(center.x + x * spanX, 0, center.z + z * spanZ));
+    return candidates.sort((a, b) => b.distanceToSquared(position) - a.distanceToSquared(position))[0];
+  }
+
   spawnSector(sector, position) {
-    const center = new THREE.Vector3(sector.center[0], 0, sector.center[1]), count = this.herdSize(sector);
+    const center = this.herdCenter(sector, position), count = this.herdSize(sector);
     for (let index = 0; index < count; index++) {
       const angle = index * 2.399963, radius = 8 + (index % 5) * 3;
       this.horde.spawnFauna(this.world.herd, 'herd', center.clone().add(new THREE.Vector3(Math.cos(angle) * radius, 0, Math.sin(angle) * radius)), center);

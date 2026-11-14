@@ -80,6 +80,7 @@ import { AscensionProgress } from './data/AscensionProgress.js';
 import { FaunaEncounter } from './engine/FaunaEncounter.js';
 import { AscensionShipHub, SHIP_LEVEL } from './engine/AscensionShipHub.js';
 import { CloudSaves } from './engine/CloudSaves.js';
+import { decorateCompanion } from './graphics/PackMarks.js';
 
 class GameApp {
   constructor() {
@@ -2235,7 +2236,7 @@ class GameApp {
     // Unblooded, carries no shoulder cannon (campagne-unblooded.md §3, §6).
     if (this.missionMode === 'ascension' || this.missionMode === 'ascension_rite') {
       const names = this.missionMode === 'ascension_rite' ? this.ascensionProgress.triad() : ['Harek', 'Yena', 'Tov'];
-      this.allies.allies.forEach((ally, index) => { ally.name = names[index] ?? null; ally.companionAllowsPlasma = false; });
+      this.allies.allies.forEach((ally, index) => { ally.name = names[index] ?? null; ally.companionAllowsPlasma = false; decorateCompanion(ally.mesh, ally.name); });
     }
     if (supports.marines === 0) this.marines.clearSquad();
     else this.marines.spawnSquad(supportPosition, supports.marines);

@@ -91,3 +91,11 @@ test('the Unblooded kit opens one tool per hunted world and refuses the rest of 
     player.toggleCloak(); assert.equal(player.isCloaked, true);
   } finally { player.dispose(); }
 });
+
+test('a herd grazes away from the arriving hunter, never on the drop point', () => {
+  const horde = new XenomorphHorde(new THREE.Scene(), audio), encounter = new FaunaEncounter(horde, world);
+  const arrival = new THREE.Vector3(0, 0, 0);
+  encounter.spawnSector({ index: 0, center: [0, 0], bounds: { minX: -66, maxX: 66, minZ: -66, maxZ: 66 }, objective: { type: 'kills', target: 12 } }, arrival);
+  const nearest = Math.min(...horde.aliens.map(animal => animal.mesh.position.distanceTo(arrival)));
+  assert.ok(nearest > 12, `the closest animal is ${nearest.toFixed(1)} m away`);
+});
