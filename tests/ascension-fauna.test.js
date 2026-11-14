@@ -32,6 +32,7 @@ test('a fauna death is recorded once, without acid or parasite, and a scattered 
   const hits = horde.checkMeleeHits({ origin: victim.mesh.position.clone(), radius: .5, damage: 10000, targetOnly: victim });
   assert.equal(hits.length, 1); assert.equal(hits[0].killed, true);
   assert.equal(horde.acidSplashes.length, 0, 'no acid from fauna');
+  assert.equal(horde.acidPools.length + horde.zeroGAcidGlobules.length + horde.chestbursters.length, 0, 'no xenomorph biology on a fauna death');
   const before = horde.deadCount; horde.defeatAlien(victim); horde.defeatAlien(victim);
   assert.ok(horde.deadCount - before <= 1, 'one recorded death');
   leader.hp = 0; encounter.update();

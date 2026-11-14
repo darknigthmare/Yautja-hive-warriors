@@ -234,6 +234,10 @@ Le rite se joue dans les six secteurs de la pyramide, contre des xénomorphes, a
 
 **Vérifié** : le rite a été joué dans Chromium, de la passerelle au retour à bord en Blooded, sans erreur de page.
 
+**Étape 5, livrée : le compte en ligne** (HW-DEC-109). Dans les réglages, le bloc « Compte en ligne » permet de se connecter par e-mail et mot de passe, sur les comptes Supabase existants. La progression de l'Ascension est rangée dans `app_cloud_saves`, sous la clé `hive_warriors_ascension`. Les règles d'accès de la table limitent chaque utilisateur à ses propres lignes. Deux appareils fusionnent sans perte : on garde l'union des mondes et des outils, et le rang Blooded ne se perd jamais.
+
+**Vérifié** : le client est testé contre un faux serveur ; le bloc s'affiche dans Chromium ; le service d'authentification du projet répond. Une vraie connexion n'a pas été faite : elle demande vos identifiants.
+
 **Provisoire** : les relais du secteur 3 gardent leur texte d'origine. Les alliés n'ont pas encore les noms ni les modèles de Harek, Yena et Tov. Le vaisseau réutilise l'intérieur de station : on voit encore des tours par les baies. Les chroniques légendaires ne sont pas verrouillées avant le rang Blooded.
 
 **Étapes suivantes** : les variantes de terrain et les comportements propres, la scène 3D de *La Lame Patiente*, le rite et le rang Blooded, puis l'envoi au compte Supabase.

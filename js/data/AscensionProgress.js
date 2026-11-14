@@ -48,5 +48,17 @@ export class AscensionProgress {
   /** Killing the rite's guardian gives the mark and the rank Blooded, once. */
   completeRite() { if (!this.riteOpen() || this.state.blooded) return false; this.state.blooded = true; this._save(); return true; }
 
+  /** Account sync (HW-DEC-109): progress only grows, so two records merge by union, never by loss. */
+  merge(remote) {
+    if (remote?.version !== 1 || !Array.isArray(remote.completed) || !Array.isArray(remote.tools)) return false;
+    const before = JSON.stringify(this.state);
+    this.state.completed = [...new Set([...this.state.completed, ...remote.completed.filter(id => WORLD_IDS.has(id))])];
+    this.state.tools = [...new Set([...this.state.tools, ...remote.tools.map(String)])];
+    this.state.blooded = this.state.blooded || remote.blooded === true;
+    this._save(); return JSON.stringify(this.state) !== before;
+  }
+
+  snapshot() { return structuredClone(this.state); }
+
   reset() { this.state = fresh(); this._save(); }
 }

@@ -79,6 +79,7 @@ import { ASCENSION_WORLDS, ascensionWorld, ascensionLevel, ascensionToolGates, r
 import { AscensionProgress } from './data/AscensionProgress.js';
 import { FaunaEncounter } from './engine/FaunaEncounter.js';
 import { AscensionShipHub, SHIP_LEVEL } from './engine/AscensionShipHub.js';
+import { CloudSaves } from './engine/CloudSaves.js';
 
 class GameApp {
   constructor() {
@@ -209,6 +210,22 @@ class GameApp {
     let cameraStorage = null; try { cameraStorage = globalThis.localStorage; } catch {}
     this.mouseCamera = new MouseCamera({ storage: cameraStorage });
     this.ascensionProgress = new AscensionProgress(cameraStorage);
+    // Account saves (HW-DEC-109): the existing Supabase accounts; progress is merged, never overwritten.
+    this.cloud = new CloudSaves({ storage: cameraStorage });
+    const cloudStatus = text => { const node = document.getElementById('cloud-status'); if (node) node.textContent = text;
+      document.getElementById('btn-cloud-signin')?.classList.toggle('hidden', this.cloud.signedIn); document.getElementById('btn-cloud-signout')?.classList.toggle('hidden', !this.cloud.signedIn); };
+    this.syncAscensionToCloud = async () => {
+      if (!this.cloud.signedIn) return false;
+      try { const remote = await this.cloud.pull('hive_warriors_ascension'); if (remote) this.ascensionProgress.merge(remote);
+        await this.cloud.push('hive_warriors_ascension', this.ascensionProgress.snapshot()); cloudStatus(`Connecté (${this.cloud.email}) : progression synchronisée.`); return true; }
+      catch (error) { cloudStatus(`Connecté (${this.cloud.email}) : ${error.message}`); return false; }
+    };
+    document.getElementById('btn-cloud-signin')?.addEventListener('click', async () => {
+      try { await this.cloud.signIn(document.getElementById('cloud-email').value.trim(), document.getElementById('cloud-password').value); document.getElementById('cloud-password').value = ''; await this.syncAscensionToCloud(); }
+      catch (error) { cloudStatus(error.message); }
+    });
+    document.getElementById('btn-cloud-signout')?.addEventListener('click', () => { this.cloud.signOut(); cloudStatus('Non connecté : la progression reste dans ce navigateur.'); });
+    if (this.cloud.signedIn) { cloudStatus(`Connecté (${this.cloud.email})`); this.syncAscensionToCloud(); } else cloudStatus('Non connecté : la progression reste dans ce navigateur.');
     const mouseCameraToggle = document.getElementById('setting-mouse-camera');
     if (mouseCameraToggle) { mouseCameraToggle.checked = this.mouseCamera.enabled; mouseCameraToggle.addEventListener('change', () => { this.mouseCamera.setEnabled(mouseCameraToggle.checked); if (!mouseCameraToggle.checked && document.pointerLockElement) document.exitPointerLock?.(); }); }
     const canvas = this.renderer.renderer?.domElement;
@@ -5374,10 +5391,11 @@ class GameApp {
 
   endGame(isVictory) {
     if (!this.isPlaying) return;
-    if (this.missionMode === 'ascension_rite' && isVictory && this.ascensionProgress.completeRite())
+    if (this.missionMode === 'ascension_rite' && isVictory && this.ascensionProgress.completeRite() && (this.syncAscensionToCloud?.(), true))
       this.ui.showAnnouncement(`LA MARQUE EST À TOI. ${this.ascensionProgress.triad().join(' et ')} et toi êtes Blooded : le canon d'épaule est désormais le tien.`);
     if (this.missionMode === 'ascension' && isVictory) {
       const world = ascensionWorld(this.ascensionWorldId), reward = this.ascensionProgress.complete(this.ascensionWorldId);
+      this.syncAscensionToCloud?.();
       if (world) this.ui.showAnnouncement(`${world.victory}${reward ? ` OUTIL GAGNÉ : ${reward.label.toUpperCase()}.` : ''}`);
     }
     if (this.battleSimulation && !this.battleSimulation.result) this.battleSimulation.finishOperation({outcome:isVictory?'victory':'defeat',reason:isVictory?'objective_complete':'players_defeated'});

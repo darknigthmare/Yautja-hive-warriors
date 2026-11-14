@@ -1752,6 +1752,13 @@
             <label class="toggle-setting"><input id="setting-reduced-flashes" type="checkbox"> Réduire les flashs et les secousses</label>
             <label class="toggle-setting"><input id="setting-detailed-hud" type="checkbox"> Afficher la télémétrie et tous les raccourcis</label>
             <label class="toggle-setting"><input id="setting-mouse-camera" type="checkbox"> Caméra à la souris (solo) : un clic dans le jeu capture le pointeur, Échap le libère</label>
+            <fieldset id="cloud-account" class="cloud-account"><legend>Compte en ligne (progression de l’Ascension)</legend>
+              <label>E-mail<input id="cloud-email" type="email" autocomplete="username"></label>
+              <label>Mot de passe<input id="cloud-password" type="password" autocomplete="current-password"></label>
+              <button id="btn-cloud-signin" type="button" class="btn-secondary">SE CONNECTER</button>
+              <button id="btn-cloud-signout" type="button" class="btn-secondary hidden">SE DÉCONNECTER</button>
+              <p id="cloud-status" role="status">Non connecté : la progression reste dans ce navigateur.</p>
+            </fieldset>
           </div>
           <h3>LES ESSENTIELS</h3>
           <div class="control-row"><span class="key">ZQSD / WASD</span><span>Se déplacer (positions physiques du clavier)</span></div>

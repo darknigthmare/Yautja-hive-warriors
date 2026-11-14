@@ -708,15 +708,18 @@ export class XenomorphHorde {
               this.goreEngine.spawnDismemberment(a.mesh.position, attack.type || 'wristblades');
             }
 
-            if (Math.random() < 0.15 && a.type !== 'crusher' && !a.isOfficer) {
+            // Fauna has no xenomorph biology: no chestburster, acid pool or globule (spec 002).
+            if (!a.isFauna && Math.random() < 0.15 && a.type !== 'crusher' && !a.isOfficer) {
               this.spawnChestburster(a.mesh.position);
             }
 
-            this.spawnAcidPool(a.mesh.position);
-            // Spawn 1-2 Zero-G Floating Acid Globules (Alien: Romulus 2024 Lore)
-            const globCount = Math.floor(1 + Math.random() * 2);
-            for (let g = 0; g < globCount; g++) {
-              this.spawnZeroGAcidGlobule(a.mesh.position);
+            if (!a.isFauna) {
+              this.spawnAcidPool(a.mesh.position);
+              // Spawn 1-2 Zero-G Floating Acid Globules (Alien: Romulus 2024 Lore)
+              const globCount = Math.floor(1 + Math.random() * 2);
+              for (let g = 0; g < globCount; g++) {
+                this.spawnZeroGAcidGlobule(a.mesh.position);
+              }
             }
             this.defeatAlien(a, { cause: attack.type ?? 'melee', killerFaction: attackingFaction });
           }
