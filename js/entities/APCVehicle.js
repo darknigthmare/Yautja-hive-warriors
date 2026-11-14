@@ -1,6 +1,36 @@
 /* USCM M577 Armored Personnel Carrier (Aliens 1986 Lore) */
 
 import * as THREE from 'three';
+import { createAPCModel } from '../graphics/SupportModels.js';
+import { APC_DEPLOYMENT_SECONDS, APC_NAVIGATION, APC_WEAPON_PROVENANCE } from '../graphics/APCModel.js';
+import { disposeObject } from '../engine/SceneResources.js';
+import { traceCombatSegment } from '../engine/CombatGeometry.js';
+import { FiniteSupportPolicy, createSupportCombatant, supportDestroyedEvent } from '../engine/FiniteSupportPolicy.js';
+
+// Circle against the horizontal projection of an actor-height clipped part.
+function resolveCirclePolygon(point, radius, polygon) {
+  let inside = true, closest = null, distanceSq = Infinity, normal = null;
+  for (let i = 0; i < polygon.length; i++) {
+    const a = polygon[i], b = polygon[(i + 1) % polygon.length];
+    const dx = b.x - a.x, dz = b.z - a.z, lengthSq = dx * dx + dz * dz;
+    if (lengthSq < 1e-14) continue;
+    if (dx * (point.z - a.z) - dz * (point.x - a.x) < -1e-9) inside = false;
+    const t = THREE.MathUtils.clamp(((point.x - a.x) * dx + (point.z - a.z) * dz) / lengthSq, 0, 1);
+    const contact = { x: a.x + t * dx, z: a.z + t * dz };
+    const d = (point.x - contact.x) ** 2 + (point.z - contact.z) ** 2;
+    if (d < distanceSq) {
+      closest = contact; distanceSq = d;
+      const length = Math.sqrt(lengthSq); normal = { x: dz / length, z: -dx / length };
+    }
+  }
+  if (!closest) return;
+  const distance = Math.sqrt(distanceSq);
+  if (!inside && distance >= radius) return;
+  if (distance < 1e-9) { point.x += normal.x * radius; point.z += normal.z * radius; return; }
+  const gain = inside ? (distance + radius) / distance : (radius - distance) / distance;
+  point.x += (inside ? closest.x - point.x : point.x - closest.x) * gain;
+  point.z += (inside ? closest.z - point.z : point.z - closest.z) * gain;
+}
 
 export class APCVehicle {
   constructor(scene, audioEngine, particles) {
@@ -9,260 +39,276 @@ export class APCVehicle {
     this.particles = particles;
     this.mesh = null;
     this.turretMesh = null;
-    this.flashMesh1 = null;
-    this.flashMesh2 = null;
-    this.flashTimer = 0;
-    this.beaconMesh = null;
-    this.tracers = [];
     this.isActive = false;
     this.fireCooldown = 0;
     this.targetPos = new THREE.Vector3();
-    this.hp = 2500;
+    this.tracers = [];
     this.maxHp = 2500;
+    this.policy = new FiniteSupportPolicy('apc', { maxHp: this.maxHp, ammunition: { rounds: 48 } });
+    this.lastPosition = new THREE.Vector3();
+    this.combatant = createSupportCombatant(this, { kind: 'apc', radius: 3.1 });
+    this.model = null;
+    this.deployment = 0;
+    this.recoil = 0;
+    this.weaponFlash = 0;
+    this.navigationRadius = APC_NAVIGATION.radius;
+  }
+
+  get hp() { return this.policy.hp; }
+  beginMission(context) {
+    const answer = this.policy.beginMission(context);
+    if (answer.newMission) { this.clear(); this.fireCooldown = 0; }
+    else if (!answer.accepted) this.clear();
+    return answer;
+  }
+  isSupportActive() { return this.isActive && !!this.mesh && this.policy.available; }
+  getCombatant() { return this.isSupportActive() ? this.combatant : null; }
+  getSupportState() { return { ...this.policy.getState(), deployed: this.isSupportActive(),
+    cooldown: this.fireCooldown, roofWeapon: APC_WEAPON_PROVENANCE.roof,
+    frontWeaponImplemented: APC_WEAPON_PROVENANCE.frontWeaponImplemented,
+    sourceVisualFidelity1to1Verified:false }; }
+  takeDamage(amount, source) {
+    if (!this.isSupportActive()) return 0;
+    const dealt = this.policy.damage(amount);
+    if (dealt && this.hp === 0) { this.clear(); this.policy.context?.onDestroyed?.(supportDestroyedEvent('apc', source)); }
+    return dealt;
+  }
+  serialize() { return { version: 1, policy: this.policy.serialize(), deployed: this.isActive,
+    position: (this.mesh?.position ?? this.lastPosition).toArray(), rotation: this.mesh?.rotation.y ?? 0,
+    deployment: this.deployment, cooldown: this.fireCooldown }; }
+  restore(state) {
+    if (!state || state.version !== 1 || !Array.isArray(state.position) || state.position.length !== 3 || !state.position.every(Number.isFinite) ||
+      !Number.isFinite(state.rotation) || typeof state.deployed !== 'boolean' || !Number.isFinite(state.cooldown) || state.cooldown < 0 || state.cooldown > 1.1 ||
+      !Number.isFinite(state.deployment) || state.deployment < 0 || state.deployment > 1 || !this.policy.restore(state.policy)) return false;
+    const cooldown = Math.max(this.fireCooldown, state.cooldown); this.clear(); this.fireCooldown = cooldown;
+    this.lastPosition.fromArray(state.position);
+    if (state.deployed && this.policy.permission().accepted) {
+      this.spawn(this.lastPosition); this.mesh.rotation.y = state.rotation; this.deployment = state.deployment;
+      this.model.setTurretDeployment(this.deployment * this.deployment * (3 - 2 * this.deployment));
+    }
+    return true;
+  }
+
+  /** Keep the original registered collider object live as the carrier moves.
+   * Replacing it would leave stale references in physics and pathfinding. */
+  syncNavigationCollider(collider){
+    if(!collider||collider.owner!=='apc')return false;
+    const current=this.getNavigationCollider();
+    if(!current)return false;
+    for(const key of ['x','z','rotation'])collider[key]=current[key];
+    return true;
+  }
+
+  /** Pure visual running gear fed only by movement accepted by the road sim. */
+  updateRunningGear(distance,heights=[0,0,0,0],steering=0){
+    if(!this.isSupportActive()||!this.model?.setWheelMotion)return false;
+    return this.model.setWheelMotion({distance,heights,steering});
+  }
+
+  getNavigationCollider() {
+    if (!this.isSupportActive()) return null;
+    const center = new THREE.Vector3(0, 0, APC_NAVIGATION.centerZ).applyAxisAngle(new THREE.Vector3(0, 1, 0), this.mesh.rotation.y).add(this.mesh.position);
+    return { x: center.x, z: center.z, halfWidth: APC_NAVIGATION.halfWidth, halfDepth: APC_NAVIGATION.halfDepth,
+      height: APC_NAVIGATION.height, rotation: this.mesh.rotation.y, owner: 'apc',
+      isCollisionActive: () => this.isSupportActive(),
+      traceSegment: (from, to, options) => this.traceSegment(from, to, options),
+      resolveMovement: (position, radius, height) => this.resolveMovement(position, radius, height) };
   }
 
   spawn(pos) {
+    const permission = this.policy.permission();
+    if (!pos?.isVector3 || ![pos.x, pos.y, pos.z].every(Number.isFinite)) { this.policy.refuse('invalid'); return false; }
+    if (!permission.accepted) { this.policy.refuse(permission.reason); return false; }
     if (this.mesh) {
-      this.clear();
+      // disposeObject owns the model and its instance GPU buffers.
+      disposeObject(this.mesh);
     }
 
-    const group = new THREE.Group();
-
-    // Military USCM armor material
-    const armorMat = new THREE.MeshStandardMaterial({
-      color: 0x3b4738, // Olive-drab USCM armor
-      metalness: 0.85,
-      roughness: 0.35
-    });
-
-    const wheelMat = new THREE.MeshStandardMaterial({
-      color: 0x18181b,
-      metalness: 0.2,
-      roughness: 0.8
-    });
-
-    // 1. Sloped Main Chassis (Length: 9m, Width: 4.2m, Height: 2.2m)
-    const hullGeo = new THREE.BoxGeometry(4.2, 2.0, 9.0);
-    const hull = new THREE.Mesh(hullGeo, armorMat);
-    hull.position.y = 1.8;
-    group.add(hull);
-
-    // Front sloped glacis plate
-    const frontGlacis = new THREE.Mesh(new THREE.ConeGeometry(2.4, 3.0, 4), armorMat);
-    frontGlacis.rotation.x = Math.PI / 2;
-    frontGlacis.position.set(0, 1.6, 5.2);
-    group.add(frontGlacis);
-
-    // 2. Eight Massive All-Terrain Wheels (4 on left, 4 on right)
-    const wheelGeo = new THREE.CylinderGeometry(0.85, 0.85, 0.7, 12);
-    wheelGeo.rotateZ(Math.PI / 2);
-
-    const wheelPositions = [-3.0, -1.0, 1.0, 3.0];
-    wheelPositions.forEach(zOffset => {
-      // Left wheel
-      const wl = new THREE.Mesh(wheelGeo, wheelMat);
-      wl.position.set(-2.3, 0.85, zOffset);
-      group.add(wl);
-
-      // Right wheel
-      const wr = new THREE.Mesh(wheelGeo, wheelMat);
-      wr.position.set(2.3, 0.85, zOffset);
-      group.add(wr);
-    });
-
-    // 3. Pivoting Roof-Mounted Dual 20mm Autocannon Turret (Boyars Twin Cannon)
-    const turretGroup = new THREE.Group();
-    turretGroup.position.set(0, 3.0, -1.5);
-
-    const turretBase = new THREE.Mesh(new THREE.CylinderGeometry(0.9, 1.1, 0.6, 8), armorMat);
-    turretGroup.add(turretBase);
-
-    // Twin barrels
-    const barrelGeo = new THREE.CylinderGeometry(0.08, 0.08, 2.8, 6);
-    barrelGeo.rotateX(Math.PI / 2);
-    const barrelMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.95 });
-
-    const barrel1 = new THREE.Mesh(barrelGeo, barrelMat);
-    barrel1.position.set(-0.35, 0.25, 1.4);
-    turretGroup.add(barrel1);
-
-    const barrel2 = new THREE.Mesh(barrelGeo, barrelMat);
-    barrel2.position.set(0.35, 0.25, 1.4);
-    turretGroup.add(barrel2);
-
-    // Dual Muzzle Flashes
-    const flashGeo = new THREE.ConeGeometry(0.18, 0.6, 6);
-    flashGeo.rotateX(-Math.PI / 2);
-    const flashMat = new THREE.MeshBasicMaterial({ color: 0xffe600, transparent: true, opacity: 0.95 });
-
-    this.flashMesh1 = new THREE.Mesh(flashGeo, flashMat);
-    this.flashMesh1.position.set(-0.35, 0.25, 3.1);
-    this.flashMesh1.visible = false;
-    turretGroup.add(this.flashMesh1);
-
-    this.flashMesh2 = new THREE.Mesh(flashGeo, flashMat);
-    this.flashMesh2.position.set(0.35, 0.25, 3.1);
-    this.flashMesh2.visible = false;
-    turretGroup.add(this.flashMesh2);
-
-    group.add(turretGroup);
-    this.turretMesh = turretGroup;
-
-    // Roof Rotating Amber Warning Beacon (Aliens 1986 Lore)
-    const beaconBase = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.22, 0.2, 8), armorMat);
-    beaconBase.position.set(0, 2.9, 2.2);
-    group.add(beaconBase);
-
-    const beaconLightGeo = new THREE.SphereGeometry(0.2, 8, 8);
-    const beaconMat = new THREE.MeshBasicMaterial({ color: 0xff9100, transparent: true, opacity: 0.85 });
-    this.beaconMesh = new THREE.Mesh(beaconLightGeo, beaconMat);
-    this.beaconMesh.position.set(0, 3.1, 2.2);
-    group.add(this.beaconMesh);
-
-    // Headlights & High-Intensity Forward Spotlights (Aliens 1986 LV-426 atmosphere)
-    const lightMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
-    const hl1 = new THREE.Mesh(new THREE.SphereGeometry(0.2, 6, 6), lightMat);
-    hl1.position.set(-1.4, 2.0, 4.6);
-    group.add(hl1);
-    const hl2 = new THREE.Mesh(new THREE.SphereGeometry(0.2, 6, 6), lightMat);
-    hl2.position.set(1.4, 2.0, 4.6);
-    group.add(hl2);
-
-    // USCM Stenciled Insignia Plate on Flank (Military identification)
-    const decalMat = new THREE.MeshBasicMaterial({ color: 0x94a3b8 });
-    const plateL = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.4, 1.8), decalMat);
-    plateL.position.set(-2.12, 2.2, 0);
-    group.add(plateL);
-    const plateR = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.4, 1.8), decalMat);
-    plateR.position.set(2.12, 2.2, 0);
-    group.add(plateR);
+    const model = createAPCModel();
+    const { group, turret } = model;
+    this.model = model;
+    this.turretMesh = turret;
 
     group.position.copy(pos);
+    this.lastPosition.copy(pos);
     this.scene.add(group);
     this.mesh = group;
     this.isActive = true;
-    this.hp = this.maxHp;
+    this.deployment = 0;
+    this.recoil = 0;
+    this.weaponFlash = 0;
+    model.setTurretDeployment(0);
+    return true;
+  }
+
+  traceSegment(from, to) {
+    if (!this.isSupportActive()) return null;
+    const start = from?.isVector3 ? from : new THREE.Vector3(...from), end = to?.isVector3 ? to : new THREE.Vector3(...to);
+    const nav = this.getNavigationCollider(); delete nav.traceSegment; delete nav.resolveMovement;
+    nav.height = 6;
+    if (!traceCombatSegment(start, end, [nav])) return null;
+    const direction = end.clone().sub(start), length = direction.length(); if (length < 1e-9) return null;
+    this.mesh.updateWorldMatrix(true, true);
+    const ray = new THREE.Raycaster(start, direction.divideScalar(length), 0, length);
+    const hit = ray.intersectObject(this.mesh, true).find(entry => entry.object.visible && entry.object.material?.depthWrite !== false);
+    return hit ? { point: hit.point, normal: hit.face?.normal.clone().applyNormalMatrix(new THREE.Matrix3().getNormalMatrix(hit.object.matrixWorld)).normalize() ?? new THREE.Vector3(), distance: hit.distance, t: hit.distance / length } : null;
   }
 
   update(delta, horde, bosses = null) {
-    if (!this.isActive || !this.mesh) return;
+    if (this.isActive && !this.policy.permission().accepted) this.clear();
+    if (!this.isSupportActive() || !Number.isFinite(delta) || delta <= 0) return;
 
-    this.fireCooldown -= delta;
-
-    // 1. Rotating Warning Beacon Animation
-    if (this.beaconMesh) {
-      this.beaconMesh.rotation.y += 9.0 * delta;
-      this.beaconMesh.material.opacity = 0.55 + Math.sin(Date.now() * 0.012) * 0.4;
+    this.fireCooldown = Math.max(0, this.fireCooldown - delta);
+    this.deployment = Math.min(1, this.deployment + delta / APC_DEPLOYMENT_SECONDS);
+    this.model?.setTurretDeployment(this.deployment * this.deployment * (3 - 2 * this.deployment));
+    this.recoil *= Math.exp(-15 * delta);
+    this.weaponFlash *= Math.exp(-24 * delta);
+    if (this.model) {
+      this.model.barrels.position.z = -this.recoil * 0.15;
+      this.model.flareMaterial.opacity = this.weaponFlash * 0.85;
+      this.model.muzzleFlash.visible = this.weaponFlash > 0.02;
     }
 
-    // 2. Muzzle Flash Decay
-    if (this.flashTimer > 0) {
-      this.flashTimer -= delta;
-      if (this.flashTimer <= 0) {
-        if (this.flashMesh1) this.flashMesh1.visible = false;
-        if (this.flashMesh2) this.flashMesh2.visible = false;
-      }
+    for (let i = this.tracers.length - 1; i >= 0; i--) {
+      const tracer = this.tracers[i]; tracer.life -= delta;
+      const distance = tracer.mesh.position.distanceTo(tracer.target), step = Math.min(distance, tracer.speed * delta);
+      tracer.mesh.position.addScaledVector(tracer.dir, step);
+      if (tracer.life <= 0 || distance <= step + .05) { disposeObject(tracer.mesh); this.tracers.splice(i, 1); }
     }
+    // A close target below the gun's depression stop must not prevent fire
+    // at the next reachable enemy. Select using the same physical aim check
+    // that will drive the housing and the muzzle effects for this shot.
+    let nearestTarget = null;
+    const candidates = [];
 
-    // 3. 20mm High-Velocity Tracer Physics
-    for (let t = this.tracers.length - 1; t >= 0; t--) {
-      const tr = this.tracers[t];
-      tr.life -= delta;
-      tr.mesh.position.addScaledVector(tr.dir, tr.speed * delta);
-      if (tr.life <= 0 || tr.mesh.position.distanceTo(tr.target) <= 1.5) {
-        if (this.particles) {
-          this.particles.emitSparks(tr.mesh.position, 6);
+    if (horde && horde.aliens) {
+      horde.aliens.forEach(a => {
+        if (!a?.mesh?.position || a.hp <= 0) return;
+        if (horde.battleSimulation && a.factionId && !horde.battleSimulation.areHostile(this.policy.context?.factionId ?? 'player_clan', a.factionId)) return;
+        const d = this.mesh.position.distanceTo(a.mesh.position);
+        if (d < 30) candidates.push({ alien: a, distance: d });
+      });
+    }
+    const boss = bosses?.activeBoss;
+    if (boss?.mesh && boss.hp > 0 && (!bosses?.battleSimulation || !boss.factionId || bosses.battleSimulation.areHostile(this.policy.context?.factionId ?? 'player_clan', boss.factionId)) && this.mesh.position.distanceTo(boss.mesh.position) < 38) candidates.push({ alien: boss, distance: this.mesh.position.distanceTo(boss.mesh.position), boss: true });
+    const priority = candidate => candidate.boss ? 2 : candidate.alien.isOfficer || ['praetorian', 'crusher'].includes(candidate.alien.type) ? 1 : 0;
+    candidates.sort((a, b) => priority(b) - priority(a) || a.distance - b.distance);
+    for (const { alien } of candidates) {
+      this.targetPos.copy(alien.mesh.position);
+      this.targetPos.y += alien.type === 'facehugger' ? 0.2 : 1.25;
+      if (this.model?.setTurretAim(this.targetPos)) {
+        if (typeof this.policy.context?.canFireAt === 'function') {
+          this.mesh.updateMatrixWorld(true);
+          const muzzle = this.model.muzzleSockets.reduce((sum, socket) => sum.add(socket.getWorldPosition(new THREE.Vector3())), new THREE.Vector3()).multiplyScalar(1 / this.model.muzzleSockets.length);
+          let clear = false; try { clear = this.policy.context.canFireAt(muzzle, this.targetPos.clone()) === true; } catch { /* Unknown cover blocks the shot. */ }
+          if (!clear) continue;
         }
-        this.scene.remove(tr.mesh);
-        this.tracers.splice(t, 1);
+        nearestTarget = alien; break;
       }
     }
-
-    // 4. Strategic Priority Targeting System:
-    // Priority: Boss > Praetorian/Crusher/Officer > Standard Xenomorph (Max 36m)
-    let bestTarget = null;
-    let isBossTarget = false;
-
-    if (bosses && bosses.activeBoss && bosses.activeBoss.mesh) {
-      const bossDist = this.mesh.position.distanceTo(bosses.activeBoss.mesh.position);
-      if (bossDist <= 38.0) {
-        bestTarget = bosses.activeBoss;
-        isBossTarget = true;
-      }
+    if (!nearestTarget && candidates.length) {
+      const nearest = candidates[0].alien;
+      this.targetPos.copy(nearest.mesh.position);
+      this.targetPos.y += nearest.type === 'facehugger' ? 0.2 : 1.25;
+      this.model?.setTurretAim(this.targetPos);
     }
 
-    if (!bestTarget && horde && horde.aliens) {
-      let nearestDist = 34.0;
-      // First pass: scan for elite officers / praetorians / crushers
-      for (const a of horde.aliens) {
-        if (a.isOfficer || a.type === 'praetorian' || a.type === 'crusher') {
-          const d = this.mesh.position.distanceTo(a.mesh.position);
-          if (d < nearestDist) {
-            nearestDist = d;
-            bestTarget = a;
-          }
+    if (nearestTarget && this.turretMesh) {
+
+      // M577A rear sliding plasma pair. The separate RE700 20mm nose guns
+      // are not yet a playable weapon. Legacy finite "rounds" remain so
+      // existing checkpoints never refill or lose their stored ammunition.
+      if (this.fireCooldown <= 0 && this.deployment >= 1) {
+        if (!this.policy.spend({ rounds: 2 }).accepted) return;
+        this.fireCooldown = 1.1;
+        this.recoil = 1;
+        this.weaponFlash = 1;
+        if (this.model) {
+          this.model.barrels.position.z = -0.15;
+          this.model.flareMaterial.opacity = 0.85;
+          this.model.muzzleFlash.visible = true;
+          this.mesh.updateMatrixWorld(true);
+          for (const muzzle of this.model.muzzleSockets) this.spawnTracer(muzzle.getWorldPosition(new THREE.Vector3()), this.targetPos);
+          for (const muzzle of this.model.muzzleSockets) this.particles?.emitSparks?.(muzzle.getWorldPosition(new THREE.Vector3()), 2);
         }
-      }
-
-      // Second pass: if no officer in range, pick closest regular alien
-      if (!bestTarget) {
-        for (const a of horde.aliens) {
-          const d = this.mesh.position.distanceTo(a.mesh.position);
-          if (d < nearestDist) {
-            nearestDist = d;
-            bestTarget = a;
-          }
-        }
-      }
-    }
-
-    if (bestTarget && this.turretMesh) {
-      const targetPos = bestTarget.mesh.position;
-      const aimDir = targetPos.clone().sub(this.mesh.position);
-      aimDir.y = 0;
-      aimDir.normalize();
-      this.turretMesh.rotation.y = Math.atan2(aimDir.x, aimDir.z) - this.mesh.rotation.y;
-
-      // Fire twin 20mm Boyars autocannon burst
-      if (this.fireCooldown <= 0) {
-        this.fireCooldown = 0.95; // High rate of fire
-        this.flashTimer = 0.12;
-        if (this.flashMesh1) this.flashMesh1.visible = true;
-        if (this.flashMesh2) this.flashMesh2.visible = true;
-
         if (this.audioEngine && this.audioEngine.playAPCTurretBurst) {
           this.audioEngine.playAPCTurretBurst();
         }
 
-        // Spawn visual 20mm tracer projectile
-        const barrelWorldPos = this.turretMesh.position.clone().add(this.mesh.position);
-        barrelWorldPos.y += 0.25;
-        this.spawnTracer(barrelWorldPos, targetPos);
-
-        // Heavy suppressive kinetic damage
-        if (isBossTarget && bosses) {
-          bosses.takeDamage(260);
-          if (this.particles) this.particles.emitSparks(targetPos, 10);
+        // Heavy suppressive fire damage
+        if (nearestTarget === bosses?.activeBoss) {
+          bosses.takeDamage(240, horde, { cause: 'apc-cannon', killerFaction: this.policy.context?.factionId ?? 'player_clan' });
         } else if (horde) {
           horde.checkMeleeHits({
-            origin: targetPos,
-            radius: 3.8,
-            damage: 260,
-            type: 'heavy'
+            origin: nearestTarget.mesh.position,
+            radius: 3.5,
+            damage: 240,
+            type: APC_WEAPON_PROVENANCE.gameplayDamageType,
+            killerFaction: this.policy.context?.factionId ?? 'player_clan'
           });
 
-          if (this.particles) {
-            this.particles.emitSparks(targetPos, 14);
-          }
+          this.particles?.emitSparks?.(nearestTarget.mesh.position, 12);
         }
       }
     }
+  }
+
+  /** Circle against the real carrier footprint, in vehicle space. Wheel
+   * shoulders extend beyond the narrower door section; roof-height jumps do
+   * not collide with an invisible full-height box around the whole vehicle. */
+  resolveMovement(position, radius = 0.75, actorHeight = 3.8) {
+    if (!this.isSupportActive() || !position?.isVector3 || !Number.isFinite(radius) || radius < 0 || !Number.isFinite(actorHeight) || actorHeight < 0) return position;
+    const dxWorld = position.x - this.mesh.position.x, dzWorld = position.z - this.mesh.position.z;
+    if (dxWorld * dxWorld + dzWorld * dzWorld > (this.navigationRadius + radius) ** 2) return position;
+    const local = position.clone().sub(this.mesh.position).applyAxisAngle(new THREE.Vector3(0, 1, 0), -this.mesh.rotation.y);
+    const boxes = [];
+    if (local.y < 2.48) {
+      boxes.push({ x: 0, z: 0.08, width: 2.09, depth: 4.84 });
+      for (const z of [-3.23, 2.68]) boxes.push({ x: 0, z, width: 2.52, depth: 1.06 });
+    }
+    const movingSections = this.model?.getTurretCollisionPolygons(local.y, local.y + actorHeight) ?? [];
+    for (let iteration = 0; iteration < 2; iteration++) {
+      for (const box of boxes) {
+        const x = local.x - box.x, z = local.z - box.z;
+        if (Math.abs(x) >= box.width + radius || Math.abs(z) >= box.depth + radius) continue;
+        const px = THREE.MathUtils.clamp(x, -box.width, box.width), pz = THREE.MathUtils.clamp(z, -box.depth, box.depth);
+        const dx = x - px, dz = z - pz, distance = Math.hypot(dx, dz);
+        if (distance > 1e-9) {
+          if (distance >= radius) continue;
+          const gain = (radius - distance) / distance;
+          local.x += dx * gain; local.z += dz * gain;
+        } else {
+          const moveX = box.width + radius - Math.abs(x), moveZ = box.depth + radius - Math.abs(z);
+          if (moveX < moveZ) local.x = box.x + (x < 0 ? -1 : 1) * (box.width + radius);
+          else local.z = box.z + (z < 0 ? -1 : 1) * (box.depth + radius);
+        }
+      }
+      for (const polygon of movingSections) resolveCirclePolygon(local, radius, polygon);
+    }
+    position.copy(local.applyAxisAngle(new THREE.Vector3(0, 1, 0), this.mesh.rotation.y).add(this.mesh.position));
+    return position;
+  }
+
+  clear() {
+    for (const tracer of this.tracers) disposeObject(tracer.mesh);
+    this.tracers = [];
+    if (this.mesh) {
+      this.lastPosition.copy(this.mesh.position);
+      disposeObject(this.mesh);
+      this.mesh = null;
+      this.turretMesh = null;
+    }
+    this.isActive = false;
+    this.model = null;
+    this.deployment = 0;
+    this.recoil = 0;
+    this.weaponFlash = 0;
   }
 
   spawnTracer(startPos, targetPos) {
     const tracerGeo = new THREE.CylinderGeometry(0.04, 0.04, 0.8, 4);
     tracerGeo.rotateX(Math.PI / 2);
-    const tracerMat = new THREE.MeshBasicMaterial({ color: 0xfff066 });
+    const tracerMat = new THREE.MeshBasicMaterial({ color: 0x8edaff });
     const tracerMesh = new THREE.Mesh(tracerGeo, tracerMat);
 
     tracerMesh.position.copy(startPos);
@@ -277,21 +323,5 @@ export class APCVehicle {
       speed: 75.0,
       life: 0.6
     });
-  }
-
-  clear() {
-    if (this.mesh) {
-      this.scene.remove(this.mesh);
-      this.mesh = null;
-      this.turretMesh = null;
-      this.flashMesh1 = null;
-      this.flashMesh2 = null;
-      this.beaconMesh = null;
-      this.isActive = false;
-    }
-    this.tracers.forEach(t => {
-      this.scene.remove(t.mesh);
-    });
-    this.tracers = [];
   }
 }

@@ -1,0 +1,46 @@
+{
+  "status": "passed_local_publication_script_checks_only",
+  "profiles": [
+    {
+      "profile": "pr3-20261026",
+      "passed": 13,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "proof": "publication-profile-default-tests.txt"
+    },
+    {
+      "profile": "pr3-next-20261028",
+      "passed": 13,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "proof": "publication-profile-next-tests.txt"
+    }
+  ],
+  "syntax": {
+    "status": "passed",
+    "files": [
+      "scripts/publication-pr3-lib.mjs",
+      "scripts/prepare-verified-pr3.mjs",
+      "scripts/publish-verified-pr3.mjs",
+      "scripts/verify-pr3-http.mjs",
+      "vite.config.js",
+      "tests/pr3-release-profiles.test.mjs",
+      "/workspace/qa/pr3-next-20261028/vercel-cli.sh"
+    ]
+  },
+  "review": {
+    "kind": "second_ai_readonly_review",
+    "blocking_findings": 0
+  },
+  "remoteActionsExecuted": false,
+  "buildExecuted": false,
+  "candidateStaged": false,
+  "browserExecuted": false,
+  "credentialsInspected": false,
+  "originalModified": false,
+  "limitations": [
+    "Local mocks and import fixtures only; the root coordinator must supply the final build identity, reviewed pins, actual game QA and deployment proof."
+  ]
+}

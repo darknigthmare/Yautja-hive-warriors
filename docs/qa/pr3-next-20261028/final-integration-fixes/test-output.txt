@@ -1,0 +1,32 @@
+✔ the first lethal ally hit becomes a rendered casualty without death credit or military population loss (4252.754805ms)
+✔ three seconds of real channeling costs one medicomp only at completion and restores contribution once (41.863901ms)
+✔ a rescued ally lost offscreen reconciles medical history once without a second death or charge (72.570463ms)
+✔ evacuation and a campaign-confirmed capture close a previously rescued ally without declaring a death (38.064303ms)
+✔ impact, movement, vertical separation and cover interrupt without consuming the medical resource (38.914078ms)
+✔ pause and zero delta freeze both bleedout and an admitted rescue; another player cannot double-rescue (36.392941ms)
+✔ a finishing hostile strike records exactly one real casualty instead of starting another downed life (42.865242ms)
+✔ culling a freshly lethal actor preserves its one remaining HP, casualty deadline and same identity on return (67.772424ms)
+✔ an offscreen casualty continues bleeding out while pause still freezes it (32.492165ms)
+✔ evacuating an eligible wounded group closes rescue without inventing a death or another medical charge (33.730739ms)
+✔ a genuine engine checkpoint resumes the same casualty and partial channel without resetting time or stock (94.909567ms)
+✔ rescue and bleedout event ordering agrees at 30, 60 and 120 Hz, including simultaneous deadlines (216.637523ms)
+✔ coordination damage follows the actual attacker instead of the first cached member of its faction (0.657884ms)
+✔ a living ally follows the physical access waypoint toward an elevated target while a downed ally stays still (31.169787ms)
+✔ the real Bridge intercepts environmental HP0 before death bookkeeping, and a later finisher still dies once (238.297339ms)
+✔ the real Bridge hit result reports a casualty as alive and reports only the later finishing blow as a kill (244.641326ms)
+✔ returning near a persistent wounded ally rematerializes its original group under the shared cap and allows real rescue (501.53793ms)
+✔ a real hive officer death names its group, front and mechanical coordination loss in the HUD feedback (5.971867ms)
+✔ captured debrief retains group and front labels after the operation has been disposed (1.404296ms)
+✔ the final debrief renders the mechanical consequence after scene teardown (5.431018ms)
+✔ the command map renders that real consequence in its tactical journal instead of a generic report (1.266821ms)
+✔ a critical defeat warning stays above ordinary reports and exposes its actual location and deadline (0.923508ms)
+✔ caused counterattacks keep their real countdown in the persistent HUD (0.157882ms)
+✔ a living officer at critical health is called out ahead of routine reinforcements (0.148822ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6329.597748

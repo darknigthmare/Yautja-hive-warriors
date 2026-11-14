@@ -1,0 +1,77 @@
+{
+  "status": "frozen_final_airguard_cpu_evidence",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 2185,
+      "sha256": "6155e2e5714ba2eb95d724739ed1c5a055048d99f2c2381b38111c607870ee8d"
+    },
+    {
+      "path": "legacy-airstrike-roof-tests.txt",
+      "bytes": 800,
+      "sha256": "7dfaec5d59504022d97a786fd6c7f0d323a70c900edd2e3a492db3bd7f85fbc1"
+    },
+    {
+      "path": "legacy-airstrike-systems-regression.txt",
+      "bytes": 2863,
+      "sha256": "d74d55f97d4497bbbcb896058de861bcccf27c98dd996527c14bbfaee94f40ef"
+    },
+    {
+      "path": "main-contract.json",
+      "bytes": 6888,
+      "sha256": "312abf5e9ba0315d70d706dd6293fb9f25d36ad742001666104d05f8deb4e1e4"
+    },
+    {
+      "path": "main-runtime-14-tests.txt",
+      "bytes": 1816,
+      "sha256": "dfc7cb32438aa4ba1951ea4514a527c01f49bc5007535e7b31cbfd688e426558"
+    },
+    {
+      "path": "validation.json",
+      "bytes": 1451,
+      "sha256": "04a7e3e2c1e82b241b2b990ec6c7839ae2a43a035fa033677c16dde6b4077ee3"
+    }
+  ],
+  "runtime_source_files_readonly": [
+    {
+      "path": "js/engine/LegacyAirstrikePolicy.js",
+      "bytes": 968,
+      "sha256": "9f77a3d691be083b728605150aeb6456f833277c1883d719849acec7d3ee3790"
+    },
+    {
+      "path": "js/engine/MissionRuntimeContext.js",
+      "bytes": 1797,
+      "sha256": "329a3b1d62ff03a7f3874bc2c120903346f35b5e170d914d53a6b41207431ecc"
+    },
+    {
+      "path": "js/engine/OrbitalStrike.js",
+      "bytes": 3921,
+      "sha256": "4b6619d239162b62a0b2d00ab4ccbc651f6b76150722df735b96daf82c3c2241"
+    },
+    {
+      "path": "js/entities/Player.js",
+      "bytes": 223575,
+      "sha256": "b418163f1e29421adaa5a1c8b732dbc00fd500475d5cc5a3d1d41f119c7d5121"
+    },
+    {
+      "path": "js/main.js",
+      "bytes": 295199,
+      "sha256": "162dbb1147256f251baebbfe1dbd8e545747f51a5ec5330c526189ef98659204"
+    },
+    {
+      "path": "tests/legacy-airstrike-roof.test.js",
+      "bytes": 6401,
+      "sha256": "f9959946c13b12f90916c3089059c9ec2d059eb2c450184bbf7dc0a6a1d668a8"
+    },
+    {
+      "path": "tests/systems.test.js",
+      "bytes": 15317,
+      "sha256": "d3129e88fc6cfb4f8762f0d6af6e5cd1878c4f364c5bce567a280f3b2dedf801"
+    },
+    {
+      "path": "tests/runtime-final-wiring.test.js",
+      "bytes": 16577,
+      "sha256": "3dbd53a45f59c51bf94562b7079ea2e1ea6e9ab154a38898633c6ab63330ff24"
+    }
+  ]
+}

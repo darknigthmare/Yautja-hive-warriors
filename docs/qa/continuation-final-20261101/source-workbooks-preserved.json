@@ -1,0 +1,20 @@
+{
+  "status": "passed",
+  "files": [
+    {
+      "path": "docs/audits/2026-10-26/Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.source.xlsx",
+      "sha256": "d3f88eee0e88deb4dbc2247f8b295c6c5a6de91ff9626ea94b0d274f08e652b5",
+      "unchangedFromFetchedBase": true
+    },
+    {
+      "path": "docs/audits/2026-10-27/Yautja_Hive_Warriors_Controle_Completude_2026-10-27.xlsx",
+      "sha256": "d751c28585c8f9c467c19f74fd91c199525f7b72a3ecd5b0967fd67312fcba6d",
+      "unchangedFromFetchedBase": true
+    },
+    {
+      "path": "docs/audits/2026-10-27/completeness-audit.json",
+      "sha256": "7426809f1379af94785cf1741471df40b2029999a4eac37e481264bc4ae0ad48",
+      "unchangedFromFetchedBase": true
+    }
+  ]
+}

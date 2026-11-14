@@ -1,0 +1,394 @@
+{
+  "schemaVersion": 1,
+  "status": "failed",
+  "startedAt": "2026-11-01T01:26:45.435Z",
+  "sourceCommit": "e524c2b96ef35e80768295fb1a3dd06bea3b5d63",
+  "indexSha256": "59955fb9eb9fea457916a52ccf19cb7ab2e19cea5b5c913c86467fa92005f5a8",
+  "humanTesters": 0,
+  "hardwarePerformanceVerified": false,
+  "fidelity1to1Verified": false,
+  "scope": "Actual desktop UI controls, finite command state, preserved checkpoint and controlled defeat debrief. No natural victory, human comprehension, hardware FPS or source-film fidelity claimed.",
+  "assistances": [
+    "Insertion advanced by the existing actual game.update helper at1/60",
+    "strategic and rendering updates paused between input steps to preserve comparable state",
+    "controlled public update at1/60 after cloak key input",
+    "controlled player HP=0 followed by actual game.update to capture a real defeat debrief",
+    "finite CSS transitions completed only for static screenshot capture"
+  ],
+  "cases": [
+    {
+      "id": "preferences-monochrome-reduced",
+      "status": "passed",
+      "preferences": {
+        "version": 1,
+        "palette": "monochrome",
+        "symbols": true,
+        "reducedFlashes": true
+      }
+    },
+    {
+      "id": "codex-ranks-engineers",
+      "status": "passed",
+      "tabs": {
+        "ranks": [
+          {
+            "title": "UNBLOODED — AVANT L’ÉPREUVE",
+            "context": "Œuvre et adaptation du jeu · Cadre AVP (2004) / présentation Hunting Grounds",
+            "sources": [
+              {
+                "label": "IllFonic · trio AVP",
+                "url": "https://forum.predator.illfonic.com/t/hunting-party-dlc-pack-3/29879",
+                "rel": "noopener noreferrer"
+              }
+            ]
+          },
+          {
+            "title": "YOUNG BLOOD — LE TRIO D’AVP",
+            "context": "Repère d’œuvre · AVP (2004) / présentation Hunting Grounds",
+            "sources": [
+              {
+                "label": "IllFonic · trio AVP",
+                "url": "https://forum.predator.illfonic.com/t/hunting-party-dlc-pack-3/29879",
+                "rel": "noopener noreferrer"
+              }
+            ]
+          },
+          {
+            "title": "BLOODED — LE STATUT DE SCAR",
+            "context": "Œuvre et adaptation du jeu · AVP (2004) / présentation Hunting Grounds",
+            "sources": [
+              {
+                "label": "IllFonic · trio AVP",
+                "url": "https://forum.predator.illfonic.com/t/hunting-party-dlc-pack-3/29879",
+                "rel": "noopener noreferrer"
+              }
+            ]
+          },
+          {
+            "title": "VÉTÉRAN — WOLF",
+            "context": "Repère d’œuvre · AVP: Requiem / incarnation Hunting Grounds",
+            "sources": [
+              {
+                "label": "IllFonic · Hunting Grounds",
+                "url": "https://predator.illfonic.com/",
+                "rel": "noopener noreferrer"
+              }
+            ]
+          },
+          {
+            "title": "ELDER ET CHEF — GREYBACK",
+            "context": "Repère d’œuvre · Predator 2 · notice du personnage",
+            "sources": [
+              {
+                "label": "NECA · Greyback",
+                "url": "https://store.necaonline.com/blogs/news/shipping-predators-1-4-scale-nightmare-on-elm-st-series-4-kick-ass-2-prop-replicas",
+                "rel": "noopener noreferrer"
+              }
+            ]
+          },
+          {
+            "title": "BAD BLOOD — L’INDIVIDU DU COMIC",
+            "context": "Œuvre et adaptation du jeu · Predator: Bad Blood · Dark Horse / notice NECA",
+            "sources": [
+              {
+                "label": "NECA · Bad Blood et Enforcer",
+                "url": "https://store.necaonline.com/blogs/news/shipping-this-week-nightmare-on-elm-street-accessory-set-ultimate-bad-blood-enforcer-predator-2-pack-1",
+                "rel": "noopener noreferrer"
+              },
+              {
+                "label": "NECA · Enforcer",
+                "url": "https://store.necaonline.com/blogs/behind-the-scenes/closer-look-enforcer-predator-action-figure-from-series-12",
+                "rel": "noopener noreferrer"
+              }
+            ]
+          },
+          {
+            "title": "ALPHA — HUNTING GROUNDS ET RÉCIT NECA",
+            "context": "Repère d’œuvre · Hunting Grounds / récit licencié de l’emballage Alpha NECA",
+            "sources": [
+              {
+                "label": "IllFonic · Alpha",
+                "url": "https://blog.playstation.com/?p=333379",
+                "rel": "noopener noreferrer"
+              },
+              {
+                "label": "IllFonic · partenariat NECA",
+                "url": "https://blog.playstation.com/2020/08/19/predator-hunting-grounds-august-update/",
+                "rel": "noopener noreferrer"
+              },
+              {
+                "label": "Emballage Alpha NECA, reproduit",
+                "url": "https://toy-wizards.com/2020/05/13/neca-alpha-predator-box-images-and-pre-order-info/",
+                "rel": "noopener noreferrer"
+              }
+            ]
+          }
+        ],
+        "engineers": [
+          {
+            "title": "INGÉNIEUR — PROMETHEUS",
+            "context": "Œuvre et adaptation du jeu · Prometheus / rencontre adaptée",
+            "sources": [
+              {
+                "label": "NECA · Ingénieurs",
+                "url": "https://store.necaonline.com/blogs/news/prometheus-has-landed",
+                "rel": "noopener noreferrer"
+              }
+            ]
+          },
+          {
+            "title": "SYNTHÉTIQUES — PERSONNAGES ET AFFILIATIONS",
+            "context": "Œuvre et adaptation du jeu · Alien, Aliens et Romulus / affiliations de mission",
+            "sources": [
+              {
+                "label": "NECA · Bishop",
+                "url": "https://store.necaonline.com/products/aliens-android-bishop-7-inch-scale-action-figure-series-3",
+                "rel": "noopener noreferrer"
+              },
+              {
+                "label": "Créateurs · synthétiques Alien",
+                "url": "https://www.moviemaker.com/alien-romulus-cover-story/",
+                "rel": "noopener noreferrer"
+              }
+            ]
+          },
+          {
+            "title": "FERAL — MASQUE, BOLT GUN ET BOUCLIER",
+            "context": "Repère d’œuvre · Prey (2022) · film et notice licenciée",
+            "sources": [
+              {
+                "label": "Studio · Prey",
+                "url": "https://www.20thcenturystudios.com/movies/prey",
+                "rel": "noopener noreferrer"
+              },
+              {
+                "label": "NECA · Feral",
+                "url": "https://store.necaonline.com/collections/pre-orders/products/prey-ultramate-feral-predator-7-inch-scale-action-figure",
+                "rel": "noopener noreferrer"
+              }
+            ]
+          }
+        ]
+      },
+      "tabStates": {
+        "ranks": [
+          {
+            "id": "ranks",
+            "active": true,
+            "pressed": "true"
+          },
+          {
+            "id": "code",
+            "active": false,
+            "pressed": "false"
+          },
+          {
+            "id": "xenomorphs",
+            "active": false,
+            "pressed": "false"
+          },
+          {
+            "id": "engineers",
+            "active": false,
+            "pressed": "false"
+          }
+        ],
+        "engineers": [
+          {
+            "id": "ranks",
+            "active": false,
+            "pressed": "false"
+          },
+          {
+            "id": "code",
+            "active": false,
+            "pressed": "false"
+          },
+          {
+            "id": "xenomorphs",
+            "active": false,
+            "pressed": "false"
+          },
+          {
+            "id": "engineers",
+            "active": true,
+            "pressed": "true"
+          }
+        ]
+      }
+    },
+    {
+      "id": "briefing-and-command-map",
+      "status": "failed",
+      "briefing": "BRIEFING — OPÉRATION ORIGINALEBataille alternative à trois campsJUNGLE DE VAL VERDE (1987) · 6 secteurs · 3 fronts · positions en unités de jeu.Forces alliées : 20 combattants alloués. Forces adverses : présence signalée ; réserves à confirmer par reconnaissance.Plafond de proximité : 32 combattants. Les forces distantes restent actives ; leur position est connue par rapports, avec incertitude.Commandement adverse : Équilibré. Les effectifs, PV et dégâts restent identiques ; les décisions et prises de risque changent.Disposition alternative : les mêmes fronts disposent de distances et de passages différents.Front essentiel perdu : 153 s au minimum pour revenir et le reprendre, selon les voies ouvertes.Chasseur déployé : JUNGLE HUNTER (1987) · Chasseur déployé pour cette opération.Opération indépendante ; aucune chronologie générale imposée au personnage.Aucun service confirmé · 0 mission(s) confirmée(s) pour ce chasseur · statut narratif inchangé.Objectifs : Sécuriser les fronts hostiles ou épuiser leur population finie.Échecs : joueurs vaincus ; front allié perdu durablement.Choisissez votre équipement et une première route. Les passages alternatifs autorisent une approche de flanc ; les noms de lieux désignent une adaptation.",
+      "insertion": {
+        "simulated": 4.24999999999999,
+        "phase": "complete",
+        "visible": true
+      },
+      "before": {
+        "ids": [
+          "val_verde_jungle:hive:0:0",
+          "val_verde_jungle:hive:0:1",
+          "val_verde_jungle:hive:0:2",
+          "val_verde_jungle:hive:0:3",
+          "val_verde_jungle:hive:10:0",
+          "val_verde_jungle:hive:10:1",
+          "val_verde_jungle:hive:10:2",
+          "val_verde_jungle:hive:10:3",
+          "val_verde_jungle:hive:11:0",
+          "val_verde_jungle:hive:11:1",
+          "val_verde_jungle:hive:11:2",
+          "val_verde_jungle:hive:11:3",
+          "val_verde_jungle:hive:12:0",
+          "val_verde_jungle:hive:12:1",
+          "val_verde_jungle:hive:12:2",
+          "val_verde_jungle:hive:12:3",
+          "val_verde_jungle:hive:13:0",
+          "val_verde_jungle:hive:13:1",
+          "val_verde_jungle:hive:13:2",
+          "val_verde_jungle:hive:13:3",
+          "val_verde_jungle:hive:14:0",
+          "val_verde_jungle:hive:14:1",
+          "val_verde_jungle:hive:14:2",
+          "val_verde_jungle:hive:14:3",
+          "val_verde_jungle:hive:15:0",
+          "val_verde_jungle:hive:15:1",
+          "val_verde_jungle:hive:15:2",
+          "val_verde_jungle:hive:15:3",
+          "val_verde_jungle:hive:1:0",
+          "val_verde_jungle:hive:1:1",
+          "val_verde_jungle:hive:1:2",
+          "val_verde_jungle:hive:1:3",
+          "val_verde_jungle:hive:2:0",
+          "val_verde_jungle:hive:2:1",
+          "val_verde_jungle:hive:2:2",
+          "val_verde_jungle:hive:2:3",
+          "val_verde_jungle:hive:3:0",
+          "val_verde_jungle:hive:3:1",
+          "val_verde_jungle:hive:3:2",
+          "val_verde_jungle:hive:3:3",
+          "val_verde_jungle:hive:4:0",
+          "val_verde_jungle:hive:4:1",
+          "val_verde_jungle:hive:4:2",
+          "val_verde_jungle:hive:4:3",
+          "val_verde_jungle:hive:5:0",
+          "val_verde_jungle:hive:5:1",
+          "val_verde_jungle:hive:5:2",
+          "val_verde_jungle:hive:5:3",
+          "val_verde_jungle:hive:6:0",
+          "val_verde_jungle:hive:6:1",
+          "val_verde_jungle:hive:6:2",
+          "val_verde_jungle:hive:6:3",
+          "val_verde_jungle:hive:7:0",
+          "val_verde_jungle:hive:7:1",
+          "val_verde_jungle:hive:7:2",
+          "val_verde_jungle:hive:7:3",
+          "val_verde_jungle:hive:8:0",
+          "val_verde_jungle:hive:8:1",
+          "val_verde_jungle:hive:8:2",
+          "val_verde_jungle:hive:8:3",
+          "val_verde_jungle:hive:9:0",
+          "val_verde_jungle:hive:9:1",
+          "val_verde_jungle:hive:9:2",
+          "val_verde_jungle:hive:9:3",
+          "val_verde_jungle:human_force:0:0",
+          "val_verde_jungle:human_force:0:1",
+          "val_verde_jungle:human_force:0:2",
+          "val_verde_jungle:human_force:0:3",
+          "val_verde_jungle:human_force:10:0",
+          "val_verde_jungle:human_force:10:1",
+          "val_verde_jungle:human_force:10:2",
+          "val_verde_jungle:human_force:10:3",
+          "val_verde_jungle:human_force:11:0",
+          "val_verde_jungle:human_force:11:1",
+          "val_verde_jungle:human_force:11:2",
+          "val_verde_jungle:human_force:11:3",
+          "val_verde_jungle:human_force:1:0",
+          "val_verde_jungle:human_force:1:1",
+          "val_verde_jungle:human_force:1:2",
+          "val_verde_jungle:human_force:1:3",
+          "val_verde_jungle:human_force:2:0",
+          "val_verde_jungle:human_force:2:1",
+          "val_verde_jungle:human_force:2:2",
+          "val_verde_jungle:human_force:2:3",
+          "val_verde_jungle:human_force:3:0",
+          "val_verde_jungle:human_force:3:1",
+          "val_verde_jungle:human_force:3:2",
+          "val_verde_jungle:human_force:3:3",
+          "val_verde_jungle:human_force:4:0",
+          "val_verde_jungle:human_force:4:1",
+          "val_verde_jungle:human_force:4:2",
+          "val_verde_jungle:human_force:4:3",
+          "val_verde_jungle:human_force:5:0",
+          "val_verde_jungle:human_force:5:1",
+          "val_verde_jungle:human_force:5:2",
+          "val_verde_jungle:human_force:5:3",
+          "val_verde_jungle:human_force:6:0",
+          "val_verde_jungle:human_force:6:1",
+          "val_verde_jungle:human_force:6:2",
+          "val_verde_jungle:human_force:6:3",
+          "val_verde_jungle:human_force:7:0",
+          "val_verde_jungle:human_force:7:1",
+          "val_verde_jungle:human_force:7:2",
+          "val_verde_jungle:human_force:7:3",
+          "val_verde_jungle:human_force:8:0",
+          "val_verde_jungle:human_force:8:1",
+          "val_verde_jungle:human_force:8:2",
+          "val_verde_jungle:human_force:8:3",
+          "val_verde_jungle:human_force:9:0",
+          "val_verde_jungle:human_force:9:1",
+          "val_verde_jungle:human_force:9:2",
+          "val_verde_jungle:human_force:9:3",
+          "val_verde_jungle:player_clan:0:0",
+          "val_verde_jungle:player_clan:0:1",
+          "val_verde_jungle:player_clan:0:2",
+          "val_verde_jungle:player_clan:0:3",
+          "val_verde_jungle:player_clan:1:0",
+          "val_verde_jungle:player_clan:1:1",
+          "val_verde_jungle:player_clan:1:2",
+          "val_verde_jungle:player_clan:1:3",
+          "val_verde_jungle:player_clan:2:0",
+          "val_verde_jungle:player_clan:2:1",
+          "val_verde_jungle:player_clan:2:2",
+          "val_verde_jungle:player_clan:2:3",
+          "val_verde_jungle:player_clan:3:0",
+          "val_verde_jungle:player_clan:3:1",
+          "val_verde_jungle:player_clan:3:2",
+          "val_verde_jungle:player_clan:3:3",
+          "val_verde_jungle:player_clan:4:0",
+          "val_verde_jungle:player_clan:4:1",
+          "val_verde_jungle:player_clan:4:2",
+          "val_verde_jungle:player_clan:4:3"
+        ],
+        "allocated": 132,
+        "run": "mission-fabeeb2e-e1d8-468e-8f46-d51fd20eb54e",
+        "hp": 1000,
+        "score": 0,
+        "conserved": true
+      },
+      "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#btn-hud-map')\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" id=\"btn-hud-map\">CARTE · ²</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    - element is visible, enabled and stable\u001b[22m\n\u001b[2m    - scrolling into view if needed\u001b[22m\n\u001b[2m    - done scrolling\u001b[22m\n\n    at /workspace/Yautja-next-20261028/docs/qa/continuation-20261101/verify-ui-command.mjs:57:124\n    at async caseRun (/workspace/Yautja-next-20261028/docs/qa/continuation-20261101/verify-ui-command.mjs:36:116)\n    at async file:///workspace/Yautja-next-20261028/docs/qa/continuation-20261101/verify-ui-command.mjs:53:2"
+    }
+  ],
+  "errors": [],
+  "failedRequests": [],
+  "externalRequests": [],
+  "buildInfo": {
+    "schemaVersion": 1,
+    "contentVersion": "v67-continuation-20261101",
+    "sourceCommit": "e524c2b96ef35e80768295fb1a3dd06bea3b5d63",
+    "sourceBranch": "codex/depth-pr3-20261028",
+    "sourceFingerprint": "5b78bf5edd21f837e6832a53cc345c4c268093e4b04264a10ce25c7505b69d6b",
+    "sourceFiles": 164,
+    "sourceTreeDirty": false,
+    "buildEpoch": 1793494979,
+    "reproducibleBuildDate": "2026-11-01T01:02:59.000Z",
+    "deploymentProof": "https://github.com/darknigthmare/Yautja-hive-warriors/blob/codex/depth-pr3-20261028/docs/qa/continuation-final-validation.json"
+  },
+  "harnessSha256": "60df6adf3be074c2f40d7140ea5ac8454ba3bff58ee691be9459f103e9cc2e23",
+  "insertionHelperSha256": "e62b36a664dd2fadaee8804fc70b75d7afa10ebd2345abdb645e806a7b899a43",
+  "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#btn-hud-map')\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" id=\"btn-hud-map\">CARTE · ²</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    - element is visible, enabled and stable\u001b[22m\n\u001b[2m    - scrolling into view if needed\u001b[22m\n\u001b[2m    - done scrolling\u001b[22m\n\n    at /workspace/Yautja-next-20261028/docs/qa/continuation-20261101/verify-ui-command.mjs:57:124\n    at async caseRun (/workspace/Yautja-next-20261028/docs/qa/continuation-20261101/verify-ui-command.mjs:36:116)\n    at async file:///workspace/Yautja-next-20261028/docs/qa/continuation-20261101/verify-ui-command.mjs:53:2",
+  "distUnchanged": true,
+  "finishedAt": "2026-11-01T01:28:14.621Z",
+  "durationSeconds": 89.186
+}

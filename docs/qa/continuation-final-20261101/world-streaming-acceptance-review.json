@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "status": "functional_evidence_verified_acceptance_incomplete",
+  "criterion": "AUD-112",
+  "acceptanceUnchanged": "Le franchissement ne provoque ni terrain absent ni arrêt prolongé; revenir conserve objectifs et destructions.",
+  "sourceCommit": "e524c2b96ef35e80768295fb1a3dd06bea3b5d63",
+  "indexSha256": "59955fb9eb9fea457916a52ccf19cb7ab2e19cea5b5c913c86467fa92005f5a8",
+  "recommendation": "keep_A_valider",
+  "acceptanceVerified": false,
+  "centralProgressEdited": false,
+  "runtimeEdited": false,
+  "functionalVerified": {
+    "renderedLegs": 6,
+    "renderedFrames": 453,
+    "physicalSteps": 1807,
+    "zonesVisited": [
+      "insertion",
+      "approach",
+      "relay"
+    ],
+    "newEvictions": 180,
+    "newRestorations": 162,
+    "sameCpuTemplates": true,
+    "geometryCountUnchanged": true,
+    "insertionFloorResidentOnReturn": true,
+    "earnedObjectivesAndDestroyedPanelsUnchanged": true,
+    "distAndHelpersUnchanged": true,
+    "javascriptErrors": 0,
+    "failedRequests": 0,
+    "externalRequests": 0,
+    "archiveManifestIntegrityVerified": true
+  },
+  "observedTiming": {
+    "frameIntervals": 447,
+    "medianIntervalMs": 1319.5,
+    "p95IntervalMs": 2030.7999999821186,
+    "maxIntervalMs": 3909.7000000178814,
+    "bufferPreparationFrames": 18,
+    "maxPreparationCpuMsOnThoseFrames": 1,
+    "maxPreparationCpuMsAcrossAllFrames": 2.0999999940395355,
+    "largestIntervalHasBufferRestoration": false,
+    "softwareRenderer": true,
+    "gpuTimeAvailable": false
+  },
+  "whyStillOpen": "La persistance et la restauration sont démontrées. La recette ne démontre pas l’absence d’arrêt prolongé au franchissement : médiane1,3195s, p952,0308s, maximum3,9097s entre frames dans ce navigateur logiciel. Le maximum est observé sansrestauration ce frame-là, donc ces données ne permettent pas d’attribuer ce délai au streaming. Le coût de préparation CPU est une mesure distincte et ne prouve pas le coût GPU ni la fluidité sur matériel joueur.",
+  "assistanceLimits": [
+    "Existing helper shortens actual encounters and walks physical gates to earn sectors 0 and 1 before sampling.",
+    "Real blast-door damage method receives its exact remaining HP at its registered contact point; no projectile-input claim.",
+    "Battle time is paused during measured traversal. Player advances up to four collision-resolved .7-unit steps per rendered animation frame.",
+    "Camera is placed at an observation offset for the probe. Camera behavior and combat difficulty are not assessed.",
+    "A far point within relay forces actual insertion-floor GPU-buffer eviction; merely visiting three nearby centers would not."
+  ],
+  "visualReview": {
+    "reviewer": "AI agent audit_remaining_nov01",
+    "humanReviewer": false,
+    "imagesViewed": [
+      "relay-far-evicts-insertion.png",
+      "final-return-insertion.png"
+    ],
+    "observed": "Le sol et les accessoires sont présents dans les deux vues inspectées, et la capsule reste présente au retour. Ces deux vues ne constituent pas une inspection humaine des453frames ni une validation de caméra."
+  },
+  "evidence": [
+    {
+      "path": "docs/qa/continuation-final-20261101/world-streaming-e524c2b/report.json",
+      "sha256": "408e63aa830eaf6589235b0fe286a9c180f2868bf77395d13827a408c11a86c6"
+    },
+    {
+      "path": "docs/qa/continuation-final-20261101/world-streaming-e524c2b/manifest.json",
+      "sha256": "ac652fbf219668678c3d0c9eea403eb03c7e2f6aab6d586228c8a54e1769636e"
+    },
+    {
+      "path": "docs/qa/continuation-final-20261101/world-streaming-e524c2b-analysis.json",
+      "sha256": "9d7f902f520cfc600eaba6e8697023e485bd222d65e85d63d5b65a0597c94bf3"
+    }
+  ]
+}

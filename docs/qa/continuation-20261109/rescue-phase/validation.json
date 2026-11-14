@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "status": "passed_scoped_cpu_validation_waiting_new_build_and_browser",
+  "checkedAt": "2026-11-09T04:59:50.320Z",
+  "baselineRuntimeSource": "94630d8302c320eb7c39c78ad62f1464e6f4d538",
+  "workingTreeImplementation": true,
+  "owner": "AllyRescueSystem delegates only the validated allocated Ravager catalepsy to ExtinctionRavagerRegenesis",
+  "baseline": {
+    "tests": 6,
+    "passed": 2,
+    "failed": 4,
+    "log": "docs/qa/continuation-20261109/rescue-phase/baseline-before-fix.txt",
+    "sha256": "6447fb916ee8110cee35fa10a1c6f72527e7687b1a52714ad05b95f8b494990a",
+    "scope": "Actual composed checkpoint and projected actor APIs; no missing new export blocked the baseline."
+  },
+  "initialFixtureAttempt": {
+    "log": "docs/qa/continuation-20261109/rescue-phase/initial-fixture-wrong-continuity.txt",
+    "reason": "Wrong-continuity fixture initially changed operation ID before genuine Carrier cargo initialization; preserved separately, fixed in test setup before valid baseline."
+  },
+  "tests": {
+    "command": "node --test --test-concurrency=1 tests/ally-rescue-ravager-checkpoint.test.js tests/ally-rescue.test.js tests/extinction-ravager-detailed.test.js tests/extinction-ravager-regenesis.test.js tests/extinction-evolved-variant.test.js tests/battle-actor-bridge.test.js",
+    "files": 6,
+    "tests": 48,
+    "passed": 48,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "newDistinctTests": 8,
+    "durationMs": 15350.296294,
+    "log": "docs/qa/continuation-20261109/rescue-phase/final-targeted-tests.txt",
+    "sha256": "5baac72b02cbb5978254678a5afa795d28c9515bd1747f943687b1182fd9ba88"
+  },
+  "fixes": [
+    "Validated actual allocated phase and source identity, using the existing checkpoint validator on authoritative unit and getUnit clone",
+    "Medical onMaterialize returns before any HP, posture or timer mutation for that owner",
+    "Restore accepts a genuine empty medical state alongside the phase, but rejects legal HP1 and malformed phases hidden in forged medical records",
+    "Allied orphan, unsigned, unphased, wrong-continuity, altered timer, spent flag, excessive HP and forged identity remain rejected",
+    "The phase keeps an elapsed deadline until its owner resolves it; pause, single half-HP recovery, spent upgrade and typed fire keep the same identity"
+  ],
+  "fixtureAssistances": [
+    "A single existing Ravager is explicitly marked physically active and inspected at phase time0.75 for the materialization test; no unit is allocated",
+    "The boundary test places the authoritative CPU clock at the existing deadline; browser verification of a genuine save/reload remains a separate root-owned gate"
+  ],
+  "syntaxChecked": [
+    "js/battlefield/AllyRescueSystem.js",
+    "js/battlefield/ExtinctionRavagerRegenesis.js",
+    "tests/ally-rescue-ravager-checkpoint.test.js"
+  ],
+  "diffCheckPassed": true,
+  "guide": {
+    "path": "skills/disciplines/save-systems/SKILL.md",
+    "sourceCommit": "19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9"
+  },
+  "files": [
+    {
+      "path": "js/battlefield/AllyRescueSystem.js",
+      "sha256": "92b77e6995d8a4651ae2c87916627b2b1852c50353e12e1241c76167dc1a0570"
+    },
+    {
+      "path": "js/battlefield/ExtinctionRavagerRegenesis.js",
+      "sha256": "7e146c2797019601ab231277a5181faf7c786bedf71affe21fdc37ba9f1d21f7"
+    },
+    {
+      "path": "tests/ally-rescue-ravager-checkpoint.test.js",
+      "sha256": "38c78351321d21379cbcb610b54f2e116302e2d516974171ceb9421ee38660e2"
+    }
+  ],
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "hardwarePerformanceMeasured": false,
+  "buildExecuted": false,
+  "browserLaunched": false,
+  "gitMutationsExecuted": false,
+  "newMeshyCreditsSpent": 0
+}

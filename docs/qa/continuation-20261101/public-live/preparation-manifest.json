@@ -1,0 +1,26 @@
+[
+  {
+    "path": "README.md",
+    "sha256": "06ce786736a812c6cfff593ae0084d141ce5b3f693d43c8649d6f630ff17d6f1"
+  },
+  {
+    "path": "check-configuration-only.txt",
+    "sha256": "a0c4d9a2804cc2dbc4948da62b249be0ee445f3053744a34406c21f5af19e1b3"
+  },
+  {
+    "path": "configuration-only-guard.mjs",
+    "sha256": "66dc69d43b390593baf9a83bc9492a166c420a9b3d069a20d368b9d7104d9a00"
+  },
+  {
+    "path": "help-configuration-only.txt",
+    "sha256": "7b1d822ae63d9c2a769d8a9272defb2570ae855fc98df005fa43b3bf44b7e8ed"
+  },
+  {
+    "path": "pending-publication.json",
+    "sha256": "6dd4e52d6fa334cd191a0a1772ca660562a8c00bd05ad4391099005057a27536"
+  },
+  {
+    "path": "verify-public.mjs",
+    "sha256": "cf61809249bbaa30e2a14306a654abf1474e39213c48da359b920e171af69aaa"
+  }
+]

@@ -1,0 +1,26 @@
+✔ marine: detailed finite model stays inside its rendering budget (2203.605409ms)
+✔ flametrooper: detailed finite model stays inside its rendering budget (45.415581ms)
+✔ synthetic: detailed finite model stays inside its rendering budget (34.008424ms)
+✔ honor guard: detailed finite model stays inside its rendering budget (1433.617747ms)
+✔ hound: detailed finite model stays inside its rendering budget (23.16803ms)
+✔ APC: detailed finite model stays inside its rendering budget (40.55681ms)
+✔ dropship: detailed finite model stays inside its rendering budget (31.680155ms)
+✔ pod: detailed finite model stays inside its rendering budget (49.256703ms)
+✔ skimmer: detailed finite model stays inside its rendering budget (32.117947ms)
+✔ support actors have textured surfaces and anatomically complete silhouettes (117.49406ms)
+✔ synthetic bisection retains its named pivots and material ownership (35.944829ms)
+✔ vehicle turret and capsule hatch remain independently movable and cleanup owns every buffer (62.65624ms)
+✔ detailed support squads and persistent equipment still follow gameplay lifecycle APIs (1742.241506ms)
+✔ dropship keeps strike cancellation while replacing the box hull (24.775286ms)
+✔ citadel trophies are recognizable separate skull families with bounded buffers (657.650582ms)
+✔ sculpted faces and bodies keep adult proportions and actual facial volume (94.881443ms)
+✔ fitted marine armor covers the chest continuously without cloth clipping through (53.948803ms)
+✔ lofted anatomy and hull surfaces retain finite normals, UVs and outward winding (1.914462ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6827.94411

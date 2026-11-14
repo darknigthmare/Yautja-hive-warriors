@@ -1,0 +1,19 @@
+{
+  "status": "passed_local_integrity_and_published_qa",
+  "files": 30,
+  "models": 12,
+  "bundles": 5,
+  "globalQa": {
+    "passed": true,
+    "cpuPassed": 653,
+    "regressionPassed": 15,
+    "runtimeChecksPassed": 12,
+    "path": "/workspace/Yautja-hive-warriors/docs/qa/pr3-validation.json",
+    "sha256": "932ea7b564bd0f30f94009340d611aa00f63a0f4cec12b34a6e64dde73f4a014"
+  },
+  "candidateHttpHeadersReplayed": 30,
+  "publicHttpHeadersReplayed": 30,
+  "gitExecuted": false,
+  "buildExecuted": false,
+  "remoteRequestsExecuted": false
+}

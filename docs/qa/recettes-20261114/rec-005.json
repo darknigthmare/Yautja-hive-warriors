@@ -1,0 +1,3962 @@
+{
+ "recette": "REC-005",
+ "titre": "Passage entre combat proche et simulation distante",
+ "source": "docs/audits/2026-10-26/Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.xlsx#Validation!REC-005",
+ "dateExecution": "2026-11-14",
+ "commit": "3af4819a999137f5fd930aa9b688c8c9db58f113",
+ "sourcesJsNonCommitees": [
+  " M js/data/BattleCatalog.js",
+  " M js/entities/Synthetics.js"
+ ],
+ "graine": {
+  "configuration": "rec-005-fixture (aucun aléa)",
+  "operationB": "AFF-18",
+  "mapSeed": 0,
+  "pasSimulation": 0.25
+ },
+ "commande": "node --test tests/recette-rec-005.test.js",
+ "preuveVideo": "non produite — preuve par journal de simulation",
+ "scenarios": {
+  "B": {
+   "operation": "AFF-18",
+   "dematerialisationsSousLeJoueur": 0
+  },
+  "A": {
+   "configuration": "rec-005-fixture",
+   "configDigest": "4e091d0a",
+   "etatsDuGroupe": [
+    {
+     "label": "engagé, détaillé, avant blessure",
+     "t": 0.25,
+     "frontId": "b",
+     "position": [
+      262,
+      4
+     ],
+     "materialized": true,
+     "state": "active",
+     "order": {
+      "type": "defend",
+      "frontId": "b",
+      "issuer": "scenario"
+     },
+     "path": [],
+     "reconstitution": null,
+     "morale": 70,
+     "units": [
+      {
+       "id": "wounded-0",
+       "state": "active",
+       "hp": 300,
+       "incapacitated": false,
+       "position": [
+        260.517,
+        3.776
+       ]
+      },
+      {
+       "id": "wounded-1",
+       "state": "active",
+       "hp": 300,
+       "incapacitated": false,
+       "position": [
+        262.035,
+        5.178
+       ]
+      },
+      {
+       "id": "wounded-2",
+       "state": "active",
+       "hp": 300,
+       "incapacitated": false,
+       "position": [
+        263.521,
+        3.748
+       ]
+      },
+      {
+       "id": "wounded-3",
+       "state": "active",
+       "hp": 300,
+       "incapacitated": false,
+       "position": [
+        265.045,
+        5.136
+       ]
+      }
+     ],
+     "reserves": {
+      "clan": 4,
+      "human": 4,
+      "hive": 0
+     },
+     "deaths": []
+    },
+    {
+     "label": "blessé et engagé (détaillé)",
+     "t": 5.25,
+     "frontId": "b",
+     "position": [
+      262,
+      4
+     ],
+     "materialized": true,
+     "state": "active",
+     "order": {
+      "type": "defend",
+      "frontId": "b",
+      "issuer": "scenario"
+     },
+     "path": [],
+     "reconstitution": null,
+     "morale": 70,
+     "units": [
+      {
+       "id": "wounded-0",
+       "state": "active",
+       "hp": 300,
+       "incapacitated": false,
+       "position": [
+        235.5,
+        0
+       ]
+      },
+      {
+       "id": "wounded-1",
+       "state": "active",
+       "hp": 120,
+       "incapacitated": false,
+       "position": [
+        238.5,
+        0
+       ]
+      },
+      {
+       "id": "wounded-2",
+       "state": "active",
+       "hp": 210,
+       "incapacitated": false,
+       "position": [
+        241.5,
+        0
+       ]
+      },
+      {
+       "id": "wounded-3",
+       "state": "active",
+       "hp": 90,
+       "incapacitated": true,
+       "position": [
+        265.045,
+        5.136
+       ]
+      }
+     ],
+     "reserves": {
+      "clan": 4,
+      "human": 4,
+      "hive": 0
+     },
+     "deaths": []
+    },
+    {
+     "label": "cycle 1 : joueur éloigné (front C)",
+     "t": 5.5,
+     "frontId": "b",
+     "position": [
+      262,
+      4
+     ],
+     "materialized": false,
+     "state": "distant",
+     "order": {
+      "type": "defend",
+      "frontId": "b",
+      "issuer": "scenario"
+     },
+     "path": [],
+     "reconstitution": null,
+     "morale": 70,
+     "units": [
+      {
+       "id": "wounded-0",
+       "state": "distant",
+       "hp": 300,
+       "incapacitated": false,
+       "position": [
+        235.5,
+        0
+       ]
+      },
+      {
+       "id": "wounded-1",
+       "state": "distant",
+       "hp": 120,
+       "incapacitated": false,
+       "position": [
+        238.5,
+        0
+       ]
+      },
+      {
+       "id": "wounded-2",
+       "state": "distant",
+       "hp": 210,
+       "incapacitated": false,
+       "position": [
+        241.5,
+        0
+       ]
+      },
+      {
+       "id": "wounded-3",
+       "state": "distant",
+       "hp": 84.22,
+       "incapacitated": true,
+       "position": [
+        265.045,
+        5.136
+       ]
+      }
+     ],
+     "reserves": {
+      "clan": 4,
+      "human": 4,
+      "hive": 0
+     },
+     "deaths": []
+    },
+    {
+     "label": "cycle 1 : 20 s en simulation distante",
+     "t": 25.5,
+     "frontId": "b",
+     "position": [
+      262,
+      4
+     ],
+     "materialized": false,
+     "state": "distant",
+     "order": {
+      "type": "defend",
+      "frontId": "b",
+      "issuer": "scenario"
+     },
+     "path": [],
+     "reconstitution": null,
+     "morale": 70,
+     "units": [
+      {
+       "id": "wounded-0",
+       "state": "distant",
+       "hp": 300,
+       "incapacitated": false,
+       "position": [
+        235.5,
+        0
+       ]
+      },
+      {
+       "id": "wounded-1",
+       "state": "distant",
+       "hp": 120,
+       "incapacitated": false,
+       "position": [
+        238.5,
+        0
+       ]
+      },
+      {
+       "id": "wounded-2",
+       "state": "distant",
+       "hp": 210,
+       "incapacitated": false,
+       "position": [
+        241.5,
+        0
+       ]
+      },
+      {
+       "id": "wounded-3",
+       "state": "distant",
+       "hp": 49.54,
+       "incapacitated": true,
+       "position": [
+        265.045,
+        5.136
+       ]
+      }
+     ],
+     "reserves": {
+      "clan": 4,
+      "human": 4,
+      "hive": 0
+     },
+     "deaths": []
+    },
+    {
+     "label": "cycle 1 : joueur revenu (front B)",
+     "t": 25.75,
+     "frontId": "b",
+     "position": [
+      262,
+      4
+     ],
+     "materialized": true,
+     "state": "active",
+     "order": {
+      "type": "defend",
+      "frontId": "b",
+      "issuer": "scenario"
+     },
+     "path": [],
+     "reconstitution": null,
+     "morale": 70,
+     "units": [
+      {
+       "id": "wounded-0",
+       "state": "active",
+       "hp": 300,
+       "incapacitated": false,
+       "position": [
+        235.5,
+        0
+       ]
+      },
+      {
+       "id": "wounded-1",
+       "state": "active",
+       "hp": 120,
+       "incapacitated": false,
+       "position": [
+        238.5,
+        0
+       ]
+      },
+      {
+       "id": "wounded-2",
+       "state": "active",
+       "hp": 210,
+       "incapacitated": false,
+       "position": [
+        241.5,
+        0
+       ]
+      },
+      {
+       "id": "wounded-3",
+       "state": "active",
+       "hp": 49.54,
+       "incapacitated": true,
+       "position": [
+        265.045,
+        5.136
+       ]
+      }
+     ],
+     "reserves": {
+      "clan": 4,
+      "human": 4,
+      "hive": 0
+     },
+     "deaths": []
+    },
+    {
+     "label": "cycle 2 : joueur éloigné (front C)",
+     "t": 31,
+     "frontId": "b",
+     "position": [
+      262,
+      4
+     ],
+     "materialized": false,
+     "state": "distant",
+     "order": {
+      "type": "defend",
+      "frontId": "b",
+      "issuer": "scenario"
+     },
+     "path": [],
+     "reconstitution": null,
+     "morale": 70,
+     "units": [
+      {
+       "id": "wounded-0",
+       "state": "distant",
+       "hp": 300,
+       "incapacitated": false,
+       "position": [
+        235.5,
+        0
+       ]
+      },
+      {
+       "id": "wounded-1",
+       "state": "distant",
+       "hp": 120,
+       "incapacitated": false,
+       "position": [
+        238.5,
+        0
+       ]
+      },
+      {
+       "id": "wounded-2",
+       "state": "distant",
+       "hp": 210,
+       "incapacitated": false,
+       "position": [
+        241.5,
+        0
+       ]
+      },
+      {
+       "id": "wounded-3",
+       "state": "distant",
+       "hp": 43.76,
+       "incapacitated": true,
+       "position": [
+        265.045,
+        5.136
+       ]
+      }
+     ],
+     "reserves": {
+      "clan": 4,
+      "human": 4,
+      "hive": 0
+     },
+     "deaths": []
+    },
+    {
+     "label": "cycle 2 : 20 s en simulation distante",
+     "t": 51,
+     "frontId": "b",
+     "position": [
+      262,
+      4
+     ],
+     "materialized": false,
+     "state": "distant",
+     "order": {
+      "type": "defend",
+      "frontId": "b",
+      "issuer": "scenario"
+     },
+     "path": [],
+     "reconstitution": null,
+     "morale": 70,
+     "units": [
+      {
+       "id": "wounded-0",
+       "state": "distant",
+       "hp": 300,
+       "incapacitated": false,
+       "position": [
+        235.5,
+        0
+       ]
+      },
+      {
+       "id": "wounded-1",
+       "state": "distant",
+       "hp": 120,
+       "incapacitated": false,
+       "position": [
+        238.5,
+        0
+       ]
+      },
+      {
+       "id": "wounded-2",
+       "state": "distant",
+       "hp": 210,
+       "incapacitated": false,
+       "position": [
+        241.5,
+        0
+       ]
+      },
+      {
+       "id": "wounded-3",
+       "state": "distant",
+       "hp": 9.08,
+       "incapacitated": true,
+       "position": [
+        265.045,
+        5.136
+       ]
+      }
+     ],
+     "reserves": {
+      "clan": 4,
+      "human": 4,
+      "hive": 0
+     },
+     "deaths": []
+    },
+    {
+     "label": "cycle 2 : joueur revenu (front B)",
+     "t": 51.25,
+     "frontId": "b",
+     "position": [
+      262,
+      4
+     ],
+     "materialized": true,
+     "state": "active",
+     "order": {
+      "type": "defend",
+      "frontId": "b",
+      "issuer": "scenario"
+     },
+     "path": [],
+     "reconstitution": null,
+     "morale": 70,
+     "units": [
+      {
+       "id": "wounded-0",
+       "state": "active",
+       "hp": 300,
+       "incapacitated": false,
+       "position": [
+        235.5,
+        0
+       ]
+      },
+      {
+       "id": "wounded-1",
+       "state": "active",
+       "hp": 120,
+       "incapacitated": false,
+       "position": [
+        238.5,
+        0
+       ]
+      },
+      {
+       "id": "wounded-2",
+       "state": "active",
+       "hp": 210,
+       "incapacitated": false,
+       "position": [
+        241.5,
+        0
+       ]
+      },
+      {
+       "id": "wounded-3",
+       "state": "active",
+       "hp": 9.08,
+       "incapacitated": true,
+       "position": [
+        265.045,
+        5.136
+       ]
+      }
+     ],
+     "reserves": {
+      "clan": 4,
+      "human": 4,
+      "hive": 0
+     },
+     "deaths": []
+    },
+    {
+     "label": "cycle 3 : joueur éloigné (front C)",
+     "t": 56.5,
+     "frontId": "b",
+     "position": [
+      262,
+      4
+     ],
+     "materialized": false,
+     "state": "distant",
+     "order": {
+      "type": "defend",
+      "frontId": "b",
+      "issuer": "scenario"
+     },
+     "path": [],
+     "reconstitution": null,
+     "morale": 70,
+     "units": [
+      {
+       "id": "wounded-0",
+       "state": "distant",
+       "hp": 300,
+       "incapacitated": false,
+       "position": [
+        235.5,
+        0
+       ]
+      },
+      {
+       "id": "wounded-1",
+       "state": "distant",
+       "hp": 120,
+       "incapacitated": false,
+       "position": [
+        238.5,
+        0
+       ]
+      },
+      {
+       "id": "wounded-2",
+       "state": "distant",
+       "hp": 210,
+       "incapacitated": false,
+       "position": [
+        241.5,
+        0
+       ]
+      },
+      {
+       "id": "wounded-3",
+       "state": "distant",
+       "hp": 3.3,
+       "incapacitated": true,
+       "position": [
+        265.045,
+        5.136
+       ]
+      }
+     ],
+     "reserves": {
+      "clan": 4,
+      "human": 4,
+      "hive": 0
+     },
+     "deaths": []
+    },
+    {
+     "label": "cycle 3 : 20 s en simulation distante",
+     "t": 76.5,
+     "frontId": "b",
+     "position": [
+      262,
+      4
+     ],
+     "materialized": false,
+     "state": "distant",
+     "order": {
+      "type": "defend",
+      "frontId": "b",
+      "issuer": "scenario"
+     },
+     "path": [],
+     "reconstitution": null,
+     "morale": 68,
+     "units": [
+      {
+       "id": "wounded-0",
+       "state": "distant",
+       "hp": 300,
+       "incapacitated": false,
+       "position": [
+        235.5,
+        0
+       ]
+      },
+      {
+       "id": "wounded-1",
+       "state": "distant",
+       "hp": 89.655,
+       "incapacitated": false,
+       "position": [
+        238.5,
+        0
+       ]
+      },
+      {
+       "id": "wounded-2",
+       "state": "distant",
+       "hp": 210,
+       "incapacitated": false,
+       "position": [
+        241.5,
+        0
+       ]
+      },
+      {
+       "id": "wounded-3",
+       "state": "dead",
+       "hp": 0,
+       "incapacitated": false,
+       "position": [
+        265.045,
+        5.136
+       ]
+      }
+     ],
+     "reserves": {
+      "clan": 4,
+      "human": 4,
+      "hive": 0
+     },
+     "deaths": [
+      "wounded-3"
+     ]
+    },
+    {
+     "label": "cycle 3 : joueur revenu (front B)",
+     "t": 76.75,
+     "frontId": "b",
+     "position": [
+      262,
+      4
+     ],
+     "materialized": true,
+     "state": "active",
+     "order": {
+      "type": "defend",
+      "frontId": "b",
+      "issuer": "scenario"
+     },
+     "path": [],
+     "reconstitution": null,
+     "morale": 68,
+     "units": [
+      {
+       "id": "wounded-0",
+       "state": "active",
+       "hp": 300,
+       "incapacitated": false,
+       "position": [
+        237,
+        0
+       ]
+      },
+      {
+       "id": "wounded-1",
+       "state": "active",
+       "hp": 89.655,
+       "incapacitated": false,
+       "position": [
+        240,
+        0
+       ]
+      },
+      {
+       "id": "wounded-2",
+       "state": "active",
+       "hp": 210,
+       "incapacitated": false,
+       "position": [
+        243,
+        0
+       ]
+      },
+      {
+       "id": "wounded-3",
+       "state": "dead",
+       "hp": 0,
+       "incapacitated": false,
+       "position": [
+        265.045,
+        5.136
+       ]
+      }
+     ],
+     "reserves": {
+      "clan": 4,
+      "human": 4,
+      "hive": 0
+     },
+     "deaths": [
+      "wounded-3"
+     ]
+    },
+    {
+     "label": "avant retraite",
+     "t": 81.75,
+     "frontId": "b",
+     "position": [
+      262,
+      4
+     ],
+     "materialized": true,
+     "state": "active",
+     "order": {
+      "type": "defend",
+      "frontId": "b",
+      "issuer": "scenario"
+     },
+     "path": [],
+     "reconstitution": null,
+     "morale": 68,
+     "units": [
+      {
+       "id": "wounded-0",
+       "state": "active",
+       "hp": 300,
+       "incapacitated": false,
+       "position": [
+        237,
+        0
+       ]
+      },
+      {
+       "id": "wounded-1",
+       "state": "active",
+       "hp": 89.655,
+       "incapacitated": false,
+       "position": [
+        240,
+        0
+       ]
+      },
+      {
+       "id": "wounded-2",
+       "state": "active",
+       "hp": 210,
+       "incapacitated": false,
+       "position": [
+        243,
+        0
+       ]
+      },
+      {
+       "id": "wounded-3",
+       "state": "dead",
+       "hp": 0,
+       "incapacitated": false,
+       "position": [
+        265.045,
+        5.136
+       ]
+      }
+     ],
+     "reserves": {
+      "clan": 4,
+      "human": 4,
+      "hive": 0
+     },
+     "deaths": [
+      "wounded-3"
+     ]
+    },
+    {
+     "label": "retraite, tronçon 1 (joueur proche)",
+     "t": 89.75,
+     "frontId": "b",
+     "position": [
+      240,
+      0
+     ],
+     "materialized": true,
+     "state": "active",
+     "order": {
+      "type": "retreat",
+      "frontId": "a",
+      "issuer": "player1"
+     },
+     "path": [
+      "ab"
+     ],
+     "reconstitution": {
+      "required": true,
+      "returnFrontId": "b"
+     },
+     "morale": 68,
+     "units": [
+      {
+       "id": "wounded-0",
+       "state": "active",
+       "hp": 300,
+       "incapacitated": false,
+       "position": [
+        237,
+        0
+       ]
+      },
+      {
+       "id": "wounded-1",
+       "state": "active",
+       "hp": 89.655,
+       "incapacitated": false,
+       "position": [
+        240,
+        0
+       ]
+      },
+      {
+       "id": "wounded-2",
+       "state": "active",
+       "hp": 210,
+       "incapacitated": false,
+       "position": [
+        243,
+        0
+       ]
+      },
+      {
+       "id": "wounded-3",
+       "state": "dead",
+       "hp": 0,
+       "incapacitated": false,
+       "position": [
+        265.045,
+        5.136
+       ]
+      }
+     ],
+     "reserves": {
+      "clan": 4,
+      "human": 4,
+      "hive": 0
+     },
+     "deaths": [
+      "wounded-3"
+     ]
+    },
+    {
+     "label": "retraite, tronçon 2 (joueur éloigné)",
+     "t": 97.75,
+     "frontId": "b",
+     "position": [
+      231.25,
+      30
+     ],
+     "materialized": false,
+     "state": "distant",
+     "order": {
+      "type": "retreat",
+      "frontId": "a",
+      "issuer": "player1"
+     },
+     "path": [
+      "ab"
+     ],
+     "reconstitution": {
+      "required": true,
+      "returnFrontId": "b"
+     },
+     "morale": 68,
+     "units": [
+      {
+       "id": "wounded-0",
+       "state": "distant",
+       "hp": 300,
+       "incapacitated": false,
+       "position": [
+        228.25,
+        30
+       ]
+      },
+      {
+       "id": "wounded-1",
+       "state": "distant",
+       "hp": 89.655,
+       "incapacitated": false,
+       "position": [
+        231.25,
+        30
+       ]
+      },
+      {
+       "id": "wounded-2",
+       "state": "distant",
+       "hp": 210,
+       "incapacitated": false,
+       "position": [
+        234.25,
+        30
+       ]
+      },
+      {
+       "id": "wounded-3",
+       "state": "dead",
+       "hp": 0,
+       "incapacitated": false,
+       "position": [
+        265.045,
+        5.136
+       ]
+      }
+     ],
+     "reserves": {
+      "clan": 4,
+      "human": 4,
+      "hive": 0
+     },
+     "deaths": [
+      "wounded-3"
+     ]
+    },
+    {
+     "label": "retraite, tronçon 3 (joueur proche)",
+     "t": 105.75,
+     "frontId": "b",
+     "position": [
+      191.25,
+      30
+     ],
+     "materialized": false,
+     "state": "distant",
+     "order": {
+      "type": "retreat",
+      "frontId": "a",
+      "issuer": "player1"
+     },
+     "path": [
+      "ab"
+     ],
+     "reconstitution": {
+      "required": true,
+      "returnFrontId": "b"
+     },
+     "morale": 68,
+     "units": [
+      {
+       "id": "wounded-0",
+       "state": "distant",
+       "hp": 300,
+       "incapacitated": false,
+       "position": [
+        188.25,
+        30
+       ]
+      },
+      {
+       "id": "wounded-1",
+       "state": "distant",
+       "hp": 89.655,
+       "incapacitated": false,
+       "position": [
+        191.25,
+        30
+       ]
+      },
+      {
+       "id": "wounded-2",
+       "state": "distant",
+       "hp": 210,
+       "incapacitated": false,
+       "position": [
+        194.25,
+        30
+       ]
+      },
+      {
+       "id": "wounded-3",
+       "state": "dead",
+       "hp": 0,
+       "incapacitated": false,
+       "position": [
+        265.045,
+        5.136
+       ]
+      }
+     ],
+     "reserves": {
+      "clan": 4,
+      "human": 4,
+      "hive": 0
+     },
+     "deaths": [
+      "wounded-3"
+     ]
+    },
+    {
+     "label": "retraite, tronçon 4 (joueur éloigné)",
+     "t": 113.75,
+     "frontId": "b",
+     "position": [
+      151.25,
+      30
+     ],
+     "materialized": false,
+     "state": "distant",
+     "order": {
+      "type": "retreat",
+      "frontId": "a",
+      "issuer": "player1"
+     },
+     "path": [
+      "ab"
+     ],
+     "reconstitution": {
+      "required": true,
+      "returnFrontId": "b"
+     },
+     "morale": 68,
+     "units": [
+      {
+       "id": "wounded-0",
+       "state": "distant",
+       "hp": 300,
+       "incapacitated": false,
+       "position": [
+        148.25,
+        30
+       ]
+      },
+      {
+       "id": "wounded-1",
+       "state": "distant",
+       "hp": 89.655,
+       "incapacitated": false,
+       "position": [
+        151.25,
+        30
+       ]
+      },
+      {
+       "id": "wounded-2",
+       "state": "distant",
+       "hp": 210,
+       "incapacitated": false,
+       "position": [
+        154.25,
+        30
+       ]
+      },
+      {
+       "id": "wounded-3",
+       "state": "dead",
+       "hp": 0,
+       "incapacitated": false,
+       "position": [
+        265.045,
+        5.136
+       ]
+      }
+     ],
+     "reserves": {
+      "clan": 4,
+      "human": 4,
+      "hive": 0
+     },
+     "deaths": [
+      "wounded-3"
+     ]
+    },
+    {
+     "label": "retraite, tronçon 5 (joueur proche)",
+     "t": 121.75,
+     "frontId": "b",
+     "position": [
+      120,
+      21.25
+     ],
+     "materialized": false,
+     "state": "distant",
+     "order": {
+      "type": "retreat",
+      "frontId": "a",
+      "issuer": "player1"
+     },
+     "path": [
+      "ab"
+     ],
+     "reconstitution": {
+      "required": true,
+      "returnFrontId": "b"
+     },
+     "morale": 68,
+     "units": [
+      {
+       "id": "wounded-0",
+       "state": "distant",
+       "hp": 300,
+       "incapacitated": false,
+       "position": [
+        117,
+        21.25
+       ]
+      },
+      {
+       "id": "wounded-1",
+       "state": "distant",
+       "hp": 89.655,
+       "incapacitated": false,
+       "position": [
+        120,
+        21.25
+       ]
+      },
+      {
+       "id": "wounded-2",
+       "state": "distant",
+       "hp": 210,
+       "incapacitated": false,
+       "position": [
+        123,
+        21.25
+       ]
+      },
+      {
+       "id": "wounded-3",
+       "state": "dead",
+       "hp": 0,
+       "incapacitated": false,
+       "position": [
+        265.045,
+        5.136
+       ]
+      }
+     ],
+     "reserves": {
+      "clan": 4,
+      "human": 4,
+      "hive": 0
+     },
+     "deaths": [
+      "wounded-3"
+     ]
+    },
+    {
+     "label": "retraite, tronçon 6 (joueur éloigné)",
+     "t": 129.75,
+     "frontId": "b",
+     "position": [
+      101.25,
+      0
+     ],
+     "materialized": false,
+     "state": "distant",
+     "order": {
+      "type": "retreat",
+      "frontId": "a",
+      "issuer": "player1"
+     },
+     "path": [
+      "ab"
+     ],
+     "reconstitution": {
+      "required": true,
+      "returnFrontId": "b"
+     },
+     "morale": 68,
+     "units": [
+      {
+       "id": "wounded-0",
+       "state": "distant",
+       "hp": 300,
+       "incapacitated": false,
+       "position": [
+        98.25,
+        0
+       ]
+      },
+      {
+       "id": "wounded-1",
+       "state": "distant",
+       "hp": 89.655,
+       "incapacitated": false,
+       "position": [
+        101.25,
+        0
+       ]
+      },
+      {
+       "id": "wounded-2",
+       "state": "distant",
+       "hp": 210,
+       "incapacitated": false,
+       "position": [
+        104.25,
+        0
+       ]
+      },
+      {
+       "id": "wounded-3",
+       "state": "dead",
+       "hp": 0,
+       "incapacitated": false,
+       "position": [
+        265.045,
+        5.136
+       ]
+      }
+     ],
+     "reserves": {
+      "clan": 0,
+      "human": 0,
+      "hive": 0
+     },
+     "deaths": [
+      "wounded-3"
+     ]
+    },
+    {
+     "label": "retraite terminée, joueur éloigné",
+     "t": 189.75,
+     "frontId": "a",
+     "position": [
+      0,
+      0
+     ],
+     "materialized": false,
+     "state": "distant",
+     "order": {
+      "type": "regroup",
+      "frontId": "a",
+      "issuer": "player1"
+     },
+     "path": [],
+     "reconstitution": {
+      "required": false,
+      "returnFrontId": "b"
+     },
+     "morale": 80,
+     "units": [
+      {
+       "id": "wounded-0",
+       "state": "distant",
+       "hp": 300,
+       "incapacitated": false,
+       "position": [
+        -3,
+        0
+       ]
+      },
+      {
+       "id": "wounded-1",
+       "state": "distant",
+       "hp": 89.655,
+       "incapacitated": false,
+       "position": [
+        0,
+        0
+       ]
+      },
+      {
+       "id": "wounded-2",
+       "state": "distant",
+       "hp": 210,
+       "incapacitated": false,
+       "position": [
+        3,
+        0
+       ]
+      },
+      {
+       "id": "wounded-3",
+       "state": "dead",
+       "hp": 0,
+       "incapacitated": false,
+       "position": [
+        265.045,
+        5.136
+       ]
+      }
+     ],
+     "reserves": {
+      "clan": 0,
+      "human": 0,
+      "hive": 0
+     },
+     "deaths": [
+      "wounded-3"
+     ]
+    }
+   ],
+   "changementsDeNiveau": [
+    [
+     0.25,
+     "group_materialized",
+     4
+    ],
+    [
+     5.5,
+     "group_dematerialized",
+     4
+    ],
+    [
+     25.75,
+     "group_materialized",
+     4
+    ],
+    [
+     31,
+     "group_dematerialized",
+     4
+    ],
+    [
+     51.25,
+     "group_materialized",
+     4
+    ],
+    [
+     56.5,
+     "group_dematerialized",
+     4
+    ],
+    [
+     76.75,
+     "group_materialized",
+     3
+    ],
+    [
+     90,
+     "group_dematerialized",
+     3
+    ]
+   ],
+   "traverseeDeSecteur": [
+    [
+     82,
+     [
+      240,
+      0
+     ],
+     true,
+     "ab",
+     "b"
+    ],
+    [
+     82.25,
+     [
+      240,
+      0
+     ],
+     true,
+     "ab",
+     "b"
+    ],
+    [
+     82.5,
+     [
+      240,
+      0
+     ],
+     true,
+     "ab",
+     "b"
+    ],
+    [
+     82.75,
+     [
+      240,
+      0
+     ],
+     true,
+     "ab",
+     "b"
+    ],
+    [
+     83,
+     [
+      240,
+      0
+     ],
+     true,
+     "ab",
+     "b"
+    ],
+    [
+     83.25,
+     [
+      240,
+      0
+     ],
+     true,
+     "ab",
+     "b"
+    ],
+    [
+     83.5,
+     [
+      240,
+      0
+     ],
+     true,
+     "ab",
+     "b"
+    ],
+    [
+     83.75,
+     [
+      240,
+      0
+     ],
+     true,
+     "ab",
+     "b"
+    ],
+    [
+     84,
+     [
+      240,
+      0
+     ],
+     true,
+     "ab",
+     "b"
+    ],
+    [
+     84.25,
+     [
+      240,
+      0
+     ],
+     true,
+     "ab",
+     "b"
+    ],
+    [
+     84.5,
+     [
+      240,
+      0
+     ],
+     true,
+     "ab",
+     "b"
+    ],
+    [
+     84.75,
+     [
+      240,
+      0
+     ],
+     true,
+     "ab",
+     "b"
+    ],
+    [
+     85,
+     [
+      240,
+      0
+     ],
+     true,
+     "ab",
+     "b"
+    ],
+    [
+     85.25,
+     [
+      240,
+      0
+     ],
+     true,
+     "ab",
+     "b"
+    ],
+    [
+     85.5,
+     [
+      240,
+      0
+     ],
+     true,
+     "ab",
+     "b"
+    ],
+    [
+     85.75,
+     [
+      240,
+      0
+     ],
+     true,
+     "ab",
+     "b"
+    ],
+    [
+     86,
+     [
+      240,
+      0
+     ],
+     true,
+     "ab",
+     "b"
+    ],
+    [
+     86.25,
+     [
+      240,
+      0
+     ],
+     true,
+     "ab",
+     "b"
+    ],
+    [
+     86.5,
+     [
+      240,
+      0
+     ],
+     true,
+     "ab",
+     "b"
+    ],
+    [
+     86.75,
+     [
+      240,
+      0
+     ],
+     true,
+     "ab",
+     "b"
+    ],
+    [
+     87,
+     [
+      240,
+      0
+     ],
+     true,
+     "ab",
+     "b"
+    ],
+    [
+     87.25,
+     [
+      240,
+      0
+     ],
+     true,
+     "ab",
+     "b"
+    ],
+    [
+     87.5,
+     [
+      240,
+      0
+     ],
+     true,
+     "ab",
+     "b"
+    ],
+    [
+     87.75,
+     [
+      240,
+      0
+     ],
+     true,
+     "ab",
+     "b"
+    ],
+    [
+     88,
+     [
+      240,
+      0
+     ],
+     true,
+     "ab",
+     "b"
+    ],
+    [
+     88.25,
+     [
+      240,
+      0
+     ],
+     true,
+     "ab",
+     "b"
+    ],
+    [
+     88.5,
+     [
+      240,
+      0
+     ],
+     true,
+     "ab",
+     "b"
+    ],
+    [
+     88.75,
+     [
+      240,
+      0
+     ],
+     true,
+     "ab",
+     "b"
+    ],
+    [
+     89,
+     [
+      240,
+      0
+     ],
+     true,
+     "ab",
+     "b"
+    ],
+    [
+     89.25,
+     [
+      240,
+      0
+     ],
+     true,
+     "ab",
+     "b"
+    ],
+    [
+     89.5,
+     [
+      240,
+      0
+     ],
+     true,
+     "ab",
+     "b"
+    ],
+    [
+     89.75,
+     [
+      240,
+      0
+     ],
+     true,
+     "ab",
+     "b"
+    ],
+    [
+     90,
+     [
+      240,
+      0
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     90.25,
+     [
+      240,
+      1.25
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     90.5,
+     [
+      240,
+      2.5
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     90.75,
+     [
+      240,
+      3.75
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     91,
+     [
+      240,
+      5
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     91.25,
+     [
+      240,
+      6.25
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     91.5,
+     [
+      240,
+      7.5
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     91.75,
+     [
+      240,
+      8.75
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     92,
+     [
+      240,
+      10
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     92.25,
+     [
+      240,
+      11.25
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     92.5,
+     [
+      240,
+      12.5
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     92.75,
+     [
+      240,
+      13.75
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     93,
+     [
+      240,
+      15
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     93.25,
+     [
+      240,
+      16.25
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     93.5,
+     [
+      240,
+      17.5
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     93.75,
+     [
+      240,
+      18.75
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     94,
+     [
+      240,
+      20
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     94.25,
+     [
+      240,
+      21.25
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     94.5,
+     [
+      240,
+      22.5
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     94.75,
+     [
+      240,
+      23.75
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     95,
+     [
+      240,
+      25
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     95.25,
+     [
+      240,
+      26.25
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     95.5,
+     [
+      240,
+      27.5
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     95.75,
+     [
+      240,
+      28.75
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     96,
+     [
+      240,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     96.25,
+     [
+      238.75,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     96.5,
+     [
+      237.5,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     96.75,
+     [
+      236.25,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     97,
+     [
+      235,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     97.25,
+     [
+      233.75,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     97.5,
+     [
+      232.5,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     97.75,
+     [
+      231.25,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     98,
+     [
+      230,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     98.25,
+     [
+      228.75,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     98.5,
+     [
+      227.5,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     98.75,
+     [
+      226.25,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     99,
+     [
+      225,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     99.25,
+     [
+      223.75,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     99.5,
+     [
+      222.5,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     99.75,
+     [
+      221.25,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     100,
+     [
+      220,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     100.25,
+     [
+      218.75,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     100.5,
+     [
+      217.5,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     100.75,
+     [
+      216.25,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     101,
+     [
+      215,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     101.25,
+     [
+      213.75,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     101.5,
+     [
+      212.5,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     101.75,
+     [
+      211.25,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     102,
+     [
+      210,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     102.25,
+     [
+      208.75,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     102.5,
+     [
+      207.5,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     102.75,
+     [
+      206.25,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     103,
+     [
+      205,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     103.25,
+     [
+      203.75,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     103.5,
+     [
+      202.5,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     103.75,
+     [
+      201.25,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     104,
+     [
+      200,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     104.25,
+     [
+      198.75,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     104.5,
+     [
+      197.5,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     104.75,
+     [
+      196.25,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     105,
+     [
+      195,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     105.25,
+     [
+      193.75,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     105.5,
+     [
+      192.5,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     105.75,
+     [
+      191.25,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     106,
+     [
+      190,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     106.25,
+     [
+      188.75,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     106.5,
+     [
+      187.5,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     106.75,
+     [
+      186.25,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     107,
+     [
+      185,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     107.25,
+     [
+      183.75,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     107.5,
+     [
+      182.5,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     107.75,
+     [
+      181.25,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     108,
+     [
+      180,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     108.25,
+     [
+      178.75,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     108.5,
+     [
+      177.5,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     108.75,
+     [
+      176.25,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     109,
+     [
+      175,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     109.25,
+     [
+      173.75,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     109.5,
+     [
+      172.5,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     109.75,
+     [
+      171.25,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     110,
+     [
+      170,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     110.25,
+     [
+      168.75,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     110.5,
+     [
+      167.5,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     110.75,
+     [
+      166.25,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     111,
+     [
+      165,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     111.25,
+     [
+      163.75,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     111.5,
+     [
+      162.5,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     111.75,
+     [
+      161.25,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     112,
+     [
+      160,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     112.25,
+     [
+      158.75,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     112.5,
+     [
+      157.5,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     112.75,
+     [
+      156.25,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     113,
+     [
+      155,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     113.25,
+     [
+      153.75,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     113.5,
+     [
+      152.5,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     113.75,
+     [
+      151.25,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     114,
+     [
+      150,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     114.25,
+     [
+      148.75,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     114.5,
+     [
+      147.5,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     114.75,
+     [
+      146.25,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     115,
+     [
+      145,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     115.25,
+     [
+      143.75,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     115.5,
+     [
+      142.5,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     115.75,
+     [
+      141.25,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     116,
+     [
+      140,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     116.25,
+     [
+      138.75,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     116.5,
+     [
+      137.5,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     116.75,
+     [
+      136.25,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     117,
+     [
+      135,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     117.25,
+     [
+      133.75,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     117.5,
+     [
+      132.5,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     117.75,
+     [
+      131.25,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     118,
+     [
+      130,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     118.25,
+     [
+      128.75,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     118.5,
+     [
+      127.5,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     118.75,
+     [
+      126.25,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     119,
+     [
+      125,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     119.25,
+     [
+      123.75,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     119.5,
+     [
+      122.5,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     119.75,
+     [
+      121.25,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     120,
+     [
+      120,
+      30
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     120.25,
+     [
+      120,
+      28.75
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     120.5,
+     [
+      120,
+      27.5
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     120.75,
+     [
+      120,
+      26.25
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     121,
+     [
+      120,
+      25
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     121.25,
+     [
+      120,
+      23.75
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     121.5,
+     [
+      120,
+      22.5
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     121.75,
+     [
+      120,
+      21.25
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     122,
+     [
+      120,
+      20
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     122.25,
+     [
+      120,
+      18.75
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     122.5,
+     [
+      120,
+      17.5
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     122.75,
+     [
+      120,
+      16.25
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     123,
+     [
+      120,
+      15
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     123.25,
+     [
+      120,
+      13.75
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     123.5,
+     [
+      120,
+      12.5
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     123.75,
+     [
+      120,
+      11.25
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     124,
+     [
+      120,
+      10
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     124.25,
+     [
+      120,
+      8.75
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     124.5,
+     [
+      120,
+      7.5
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     124.75,
+     [
+      120,
+      6.25
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     125,
+     [
+      120,
+      5
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     125.25,
+     [
+      120,
+      3.75
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     125.5,
+     [
+      120,
+      2.5
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     125.75,
+     [
+      120,
+      1.25
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     126,
+     [
+      120,
+      0
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     126.25,
+     [
+      118.75,
+      0
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     126.5,
+     [
+      117.5,
+      0
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     126.75,
+     [
+      116.25,
+      0
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     127,
+     [
+      115,
+      0
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     127.25,
+     [
+      113.75,
+      0
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     127.5,
+     [
+      112.5,
+      0
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     127.75,
+     [
+      111.25,
+      0
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     128,
+     [
+      110,
+      0
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     128.25,
+     [
+      108.75,
+      0
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     128.5,
+     [
+      107.5,
+      0
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     128.75,
+     [
+      106.25,
+      0
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     129,
+     [
+      105,
+      0
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     129.25,
+     [
+      103.75,
+      0
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     129.5,
+     [
+      102.5,
+      0
+     ],
+     false,
+     "ab",
+     "b"
+    ],
+    [
+     129.75,
+     [
+      101.25,
+      0
+     ],
+     false,
+     "ab",
+     "b"
+    ]
+   ],
+   "journalBridge": [
+    {
+     "t": 0.25,
+     "type": "spawn",
+     "groupId": "wounded",
+     "units": [
+      {
+       "id": "wounded-0",
+       "hp": 300,
+       "position": [
+        262,
+        4
+       ]
+      },
+      {
+       "id": "wounded-1",
+       "hp": 300,
+       "position": [
+        263.5,
+        5.5
+       ]
+      },
+      {
+       "id": "wounded-2",
+       "hp": 300,
+       "position": [
+        265,
+        4
+       ]
+      },
+      {
+       "id": "wounded-3",
+       "hp": 300,
+       "position": [
+        266.5,
+        5.5
+       ]
+      }
+     ]
+    },
+    {
+     "t": 5.5,
+     "type": "despawn",
+     "groupId": "wounded",
+     "units": [
+      {
+       "id": "wounded-0",
+       "hp": 300,
+       "position": [
+        235.5,
+        0
+       ]
+      },
+      {
+       "id": "wounded-1",
+       "hp": 120,
+       "position": [
+        238.5,
+        0
+       ]
+      },
+      {
+       "id": "wounded-2",
+       "hp": 210,
+       "position": [
+        241.5,
+        0
+       ]
+      },
+      {
+       "id": "wounded-3",
+       "hp": 90,
+       "position": [
+        265.045,
+        5.136
+       ]
+      }
+     ]
+    },
+    {
+     "t": 25.75,
+     "type": "spawn",
+     "groupId": "wounded",
+     "units": [
+      {
+       "id": "wounded-0",
+       "hp": 300,
+       "position": [
+        235.5,
+        0
+       ]
+      },
+      {
+       "id": "wounded-1",
+       "hp": 120,
+       "position": [
+        238.5,
+        0
+       ]
+      },
+      {
+       "id": "wounded-2",
+       "hp": 210,
+       "position": [
+        241.5,
+        0
+       ]
+      },
+      {
+       "id": "wounded-3",
+       "hp": 49.53999999999999,
+       "position": [
+        265.045,
+        5.136
+       ]
+      }
+     ]
+    },
+    {
+     "t": 31,
+     "type": "despawn",
+     "groupId": "wounded",
+     "units": [
+      {
+       "id": "wounded-0",
+       "hp": 300,
+       "position": [
+        235.5,
+        0
+       ]
+      },
+      {
+       "id": "wounded-1",
+       "hp": 120,
+       "position": [
+        238.5,
+        0
+       ]
+      },
+      {
+       "id": "wounded-2",
+       "hp": 210,
+       "position": [
+        241.5,
+        0
+       ]
+      },
+      {
+       "id": "wounded-3",
+       "hp": 49.53999999999999,
+       "position": [
+        265.045,
+        5.136
+       ]
+      }
+     ]
+    },
+    {
+     "t": 51.25,
+     "type": "spawn",
+     "groupId": "wounded",
+     "units": [
+      {
+       "id": "wounded-0",
+       "hp": 300,
+       "position": [
+        235.5,
+        0
+       ]
+      },
+      {
+       "id": "wounded-1",
+       "hp": 120,
+       "position": [
+        238.5,
+        0
+       ]
+      },
+      {
+       "id": "wounded-2",
+       "hp": 210,
+       "position": [
+        241.5,
+        0
+       ]
+      },
+      {
+       "id": "wounded-3",
+       "hp": 9.079999999999988,
+       "position": [
+        265.045,
+        5.136
+       ]
+      }
+     ]
+    },
+    {
+     "t": 56.5,
+     "type": "despawn",
+     "groupId": "wounded",
+     "units": [
+      {
+       "id": "wounded-0",
+       "hp": 300,
+       "position": [
+        235.5,
+        0
+       ]
+      },
+      {
+       "id": "wounded-1",
+       "hp": 120,
+       "position": [
+        238.5,
+        0
+       ]
+      },
+      {
+       "id": "wounded-2",
+       "hp": 210,
+       "position": [
+        241.5,
+        0
+       ]
+      },
+      {
+       "id": "wounded-3",
+       "hp": 9.079999999999988,
+       "position": [
+        265.045,
+        5.136
+       ]
+      }
+     ]
+    },
+    {
+     "t": 76.75,
+     "type": "spawn",
+     "groupId": "wounded",
+     "units": [
+      {
+       "id": "wounded-0",
+       "hp": 300,
+       "position": [
+        235.5,
+        0
+       ]
+      },
+      {
+       "id": "wounded-1",
+       "hp": 89.655,
+       "position": [
+        238.5,
+        0
+       ]
+      },
+      {
+       "id": "wounded-2",
+       "hp": 210,
+       "position": [
+        241.5,
+        0
+       ]
+      }
+     ]
+    },
+    {
+     "t": 90,
+     "type": "despawn",
+     "groupId": "wounded",
+     "units": [
+      {
+       "id": "wounded-0",
+       "hp": 300,
+       "position": [
+        237,
+        0
+       ]
+      },
+      {
+       "id": "wounded-1",
+       "hp": 89.655,
+       "position": [
+        240,
+        0
+       ]
+      },
+      {
+       "id": "wounded-2",
+       "hp": 210,
+       "position": [
+        243,
+        0
+       ]
+      }
+     ]
+    }
+   ],
+   "sautsDePosition": [],
+   "soinsSansSource": [],
+   "ordreRetraite": {
+    "accepted": true,
+    "order": {
+     "type": "retreat",
+     "frontId": "a",
+     "issuer": "player1",
+     "issuedAt": 81.75,
+     "sequence": 21
+    },
+    "path": [
+     {
+      "routeId": "ab",
+      "from": "b",
+      "to": "a"
+     }
+    ]
+   },
+   "duplicationsActeur": []
+  }
+ },
+ "clauses": [
+  {
+   "id": "C6",
+   "texte": "Aucune disparition visible : un groupe détaillé reste détaillé tant que le joueur reste sur son front",
+   "verdict": "prouvé",
+   "scenario": "AFF-18 (EFF-03), mapSeed 0, joueur sur front_a puis déplacé de 6 m à t=1 s, 40 s simulées",
+   "dematerialisationsSousLeJoueur": [],
+   "journal": [
+    [
+     0.25,
+     "spawn",
+     "AFF-18:hive:34",
+     8
+    ],
+    [
+     0.25,
+     "spawn",
+     "AFF-18:player_clan:51",
+     2
+    ],
+    [
+     0.25,
+     "spawn",
+     "AFF-18:hive:36",
+     8
+    ],
+    [
+     0.25,
+     "spawn",
+     "AFF-18:player_clan:48",
+     2
+    ],
+    [
+     0.25,
+     "spawn",
+     "AFF-18:hive:4",
+     8
+    ],
+    [
+     0.25,
+     "spawn",
+     "AFF-18:player_clan:49",
+     2
+    ],
+    [
+     0.25,
+     "spawn",
+     "AFF-18:player_clan:50",
+     2
+    ]
+   ],
+   "defaut": "js/battlefield/BattleSimulation.js:522 trie à chaque pas les groupes candidats par officier puis distance aux joueurs, sans priorité aux groupes déjà matérialisés ; js/battlefield/BattleSimulation.js:539 dématérialise tout groupe non resélectionné. Un léger déplacement du joueur ou l’arrivée d’un renfort proche renouvelle la bulle : acteurs détaillés retirés sous les yeux du joueur, puis exposés au combat distant (le blessé AFF-18:player_clan:48:1 meurt à t=1,5 s dans REC-004).",
+   "reproduction": "createOperationScene({operationId:\"AFF-18\",players:1,mapSeed:0}) ; update(0.25) avec joueur en [0,0] puis en [6,-1] à t=1 s ; à t=1,25 s quatre groupes du front_a reçoivent group_dematerialized."
+  },
+  {
+   "id": "C1",
+   "texte": "Position plausible : retour du détail aux positions distantes, sans saut entre deux pas",
+   "verdict": "prouvé",
+   "sauts": [],
+   "apparitions": 3
+  },
+  {
+   "id": "C2",
+   "texte": "Destination et ordre persistent à chaque changement de niveau ; pas de réinitialisation d’objectif",
+   "verdict": "prouvé",
+   "ordreEngage": {
+    "type": "defend",
+    "frontId": "b",
+    "issuer": "scenario"
+   },
+   "ordresRetour": [
+    {
+     "type": "defend",
+     "frontId": "b",
+     "issuer": "scenario"
+    },
+    {
+     "type": "defend",
+     "frontId": "b",
+     "issuer": "scenario"
+    },
+    {
+     "type": "defend",
+     "frontId": "b",
+     "issuer": "scenario"
+    }
+   ],
+   "apresRetraite": {
+    "order": {
+     "type": "regroup",
+     "frontId": "a",
+     "issuer": "player1"
+    },
+    "frontId": "a",
+    "reconstitution": {
+     "required": false,
+     "returnFrontId": "b"
+    }
+   },
+   "reconstitution": [
+    {
+     "t": 155.75,
+     "supportGroupId": "clan-reserve",
+     "survivors": 3,
+     "newUnitsCreated": 0
+    }
+   ],
+   "arriveeDuSoutien": {
+    "id": 27,
+    "time": 123,
+    "type": "reinforcements_arrived",
+    "priority": 2,
+    "groupId": "clan-reserve",
+    "sourceId": "a",
+    "targetFrontId": "a"
+   }
+  },
+  {
+   "id": "C3",
+   "texte": "Pertes et santé pertinente persistent ; aucune guérison totale gratuite",
+   "verdict": "prouvé",
+   "pvEngage": [
+    [
+     "wounded-0",
+     300,
+     false
+    ],
+    [
+     "wounded-1",
+     120,
+     false
+    ],
+    [
+     "wounded-2",
+     210,
+     false
+    ],
+    [
+     "wounded-3",
+     90,
+     true
+    ]
+   ],
+   "pvRetours": [
+    [
+     [
+      "wounded-0",
+      300,
+      false
+     ],
+     [
+      "wounded-1",
+      120,
+      false
+     ],
+     [
+      "wounded-2",
+      210,
+      false
+     ],
+     [
+      "wounded-3",
+      49.54,
+      true
+     ]
+    ],
+    [
+     [
+      "wounded-0",
+      300,
+      false
+     ],
+     [
+      "wounded-1",
+      120,
+      false
+     ],
+     [
+      "wounded-2",
+      210,
+      false
+     ],
+     [
+      "wounded-3",
+      9.08,
+      true
+     ]
+    ],
+    [
+     [
+      "wounded-0",
+      300,
+      false
+     ],
+     [
+      "wounded-1",
+      89.655,
+      false
+     ],
+     [
+      "wounded-2",
+      210,
+      false
+     ],
+     [
+      "wounded-3",
+      0,
+      false
+     ]
+    ]
+   ],
+   "pvFin": [
+    [
+     "wounded-0",
+     "distant",
+     300,
+     false
+    ],
+    [
+     "wounded-1",
+     "distant",
+     89.655,
+     false
+    ],
+    [
+     "wounded-2",
+     "distant",
+     210,
+     false
+    ],
+    [
+     "wounded-3",
+     "dead",
+     0,
+     false
+    ]
+   ],
+   "soinsSansSource": []
+  },
+  {
+   "id": "C4",
+   "texte": "Réserve inchangée par les transitions ; aucune duplication d’identité ou d’acteur",
+   "verdict": "prouvé",
+   "reserves": [
+    {
+     "clan": 4,
+     "human": 4,
+     "hive": 0
+    },
+    {
+     "clan": 4,
+     "human": 4,
+     "hive": 0
+    },
+    {
+     "clan": 4,
+     "human": 4,
+     "hive": 0
+    }
+   ],
+   "duplications": [],
+   "unites": 20
+  },
+  {
+   "id": "C5",
+   "texte": "Horodatage des changements de niveau de simulation",
+   "verdict": "prouvé",
+   "changements": [
+    [
+     0.25,
+     "group_materialized",
+     4
+    ],
+    [
+     5.5,
+     "group_dematerialized",
+     4
+    ],
+    [
+     25.75,
+     "group_materialized",
+     4
+    ],
+    [
+     31,
+     "group_dematerialized",
+     4
+    ],
+    [
+     51.25,
+     "group_materialized",
+     4
+    ],
+    [
+     56.5,
+     "group_dematerialized",
+     4
+    ],
+    [
+     76.75,
+     "group_materialized",
+     3
+    ],
+    [
+     90,
+     "group_dematerialized",
+     3
+    ]
+   ]
+  },
+  {
+   "id": "NA1",
+   "texte": "Absence de téléportation visible et lisibilité de la transition à l’écran",
+   "verdict": "non automatisable",
+   "raison": "Demande le rendu Three.js, BattleActorBridge réel et une revue visuelle ; le journal prouve seulement les positions stratégiques et les poses rendues au bridge headless."
+  }
+ ],
+ "observations": [
+  {
+   "id": "OBS-A1",
+   "texte": "L’allié hors de combat wounded-3 n’est pas déplacé par la retraite distante (BattleSimulation._moveGroups ne déplace que les unités combatReady) : il reste à [265.045,5.136] (dead). Aucune téléportation ; la prise en charge relève d’AllyRescueSystem / REC dédié au secours."
+  }
+ ]
+}

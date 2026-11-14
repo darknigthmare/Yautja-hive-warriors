@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "files": [
+    {
+      "path": "carrier-autonomous-landed.png",
+      "sha256": "5ed0ff1ae725d9876a638d9663aba59dae190036355684e71352ae119aed4f3d"
+    },
+    {
+      "path": "carrier-autonomous-launched.png",
+      "sha256": "96c0e1b1456d2054f6835aba449105509b3e51fd9cd58b20428fc740d9b23fdf"
+    },
+    {
+      "path": "carrier-autonomous-main-update-flight-lv742-hud-1280x720.png",
+      "sha256": "a4dbbedcb18f718247925b56cbd3a868d00ad11cedd4871956bd16d0ff1b9a13"
+    },
+    {
+      "path": "carrier-autonomous-main-update-flight-lv742-hud-800x600.png",
+      "sha256": "820841c096172b777494da86cb2d10d863868ff2e0510d87118c3055abca1a83"
+    },
+    {
+      "path": "carrier-autonomous-midair-post-sync.png",
+      "sha256": "891cd42e4e9bb3365401abe2210b2ea8e8a6be82a1f1f0d242bda94986c0fb08"
+    },
+    {
+      "path": "helper-source-0.mjs",
+      "sha256": "6096de6443a23357d8261fba099bb3fd6cfe0a6728b96ef85f1bbc7f3f2d116b"
+    },
+    {
+      "path": "helper-source-1.mjs",
+      "sha256": "e5f48d56a61007a897c045d0f52bd243ace25a90744ed41173def25ac806315a"
+    },
+    {
+      "path": "helper-source-2.mjs",
+      "sha256": "e62b36a664dd2fadaee8804fc70b75d7afa10ebd2345abdb645e806a7b899a43"
+    },
+    {
+      "path": "ravager-cataleptic.png",
+      "sha256": "f0e4e156b3ea8d76e9192b09866c48b17fa68079d4863886c120b9ca138c44a8"
+    },
+    {
+      "path": "ravager-checkpoint-phase-recovery-fire-failure.png",
+      "sha256": "0f7d4165b696e1d9b63dd64dc59eb25c437f132f1261f5fc1d512415b5c060da"
+    },
+    {
+      "path": "report.json",
+      "sha256": "826502ad8a9bdf64a0f0957e8ac982babb80106fda17504e597f0da3aab7aef7"
+    }
+  ]
+}

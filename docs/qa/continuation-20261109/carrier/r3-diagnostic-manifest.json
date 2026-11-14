@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "files": [
+    {
+      "path": "diagnose-r3-selection.mjs",
+      "bytes": 4591,
+      "sha256": "35ed342437590c6a3d4f032dc18840ad2883daf855536cb285b0595b2a93b39a"
+    },
+    {
+      "path": "diagnose-r3-candidates.mjs",
+      "bytes": 3470,
+      "sha256": "2593a3cfe24b0f8c4c200a1105e4a83cb337ebecb6bcf9f1377ce83d8157634f"
+    },
+    {
+      "path": "r3-selection-diagnostic.json",
+      "bytes": 12934,
+      "sha256": "fbdd1c6b3e811a54a3b7574b9bdb72a95e34535cef29da4a113b895540c29d51"
+    },
+    {
+      "path": "r3-player-candidate-diagnostic.json",
+      "bytes": 97641,
+      "sha256": "3ea613ce1ca05c7026c6831c136673b72b6e4eb3d37330b6d13605694cdccb1b"
+    },
+    {
+      "path": "R3-SELECTION-DIAGNOSIS.md",
+      "bytes": 3112,
+      "sha256": "ff1429e848841d85d57f2c7d00a5e86c4ff8786d8ad1c365ca782e2d3300a51d"
+    }
+  ]
+}

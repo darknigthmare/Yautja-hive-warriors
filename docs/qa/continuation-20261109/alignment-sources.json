@@ -1,0 +1,989 @@
+{
+  "schemaVersion": 1,
+  "status": "source_alignment_inventory_read_only",
+  "inspectedAt": "2026-11-09T04:16:44.538995+00:00",
+  "worktree": "/workspace/Yautja-continue-20261109",
+  "rootSuppliedBaselineCommit": "5a6ea11",
+  "baselineCommitSource": "Root task instruction; this inventory did not run Git.",
+  "bibleResolution": {
+    "namedBibleFileFound": false,
+    "currentAvailableDesignContract": "docs/development/MUSOU-GAMEPLAY-CONTRACT.md",
+    "userPathQuestionPending": true,
+    "policy": "Continue with present repository contract; do not claim a separate missing Bible has been read."
+  },
+  "sources": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 9243,
+      "sha256": "5fdb8029b2c77aad06119278b3f2dd66d7226366e0c174cfc0efd42a0a492cae"
+    },
+    {
+      "path": "REPRISE.md",
+      "bytes": 4751,
+      "sha256": "7555c3caaeca61f50dfe27cb08c8222ecdd35f9b5152acfa11270ec970e155b6"
+    },
+    {
+      "path": ".ai-tools/README.md",
+      "bytes": 12174,
+      "sha256": "518ee93aab27bb8c9ad58478a14ff5db6b24bfbcf0c1346dbd7e5b4fefd0176e"
+    },
+    {
+      "path": ".ai-tools/sources.json",
+      "bytes": 2526,
+      "sha256": "1ec97f618019ad4d9fdc655ae647817d22466c35ade391ff3f5681331f86ccb5"
+    },
+    {
+      "path": "docs/DEPTH-RELEASE-20261028.md",
+      "bytes": 3422,
+      "sha256": "95fd426daafb16a8189e316963597db6a3973ec735a55895ef51d8f40993e2d9"
+    },
+    {
+      "path": "docs/development/MUSOU-GAMEPLAY-CONTRACT.md",
+      "bytes": 8240,
+      "sha256": "94abccaa55f7dadd73fa2043f4e7156962c3468f632b88cf78b524e2cd098ede"
+    },
+    {
+      "path": "docs/development/GAMEDEV-WORKFLOW.md",
+      "bytes": 17014,
+      "sha256": "e7b6fd06974d881d6f4addfe1408ba5f574ece155cef7c03b02003f2d70ac9dd"
+    },
+    {
+      "path": "docs/development/gamedev-guides.lock.json",
+      "bytes": 10565,
+      "sha256": "ded3e84f2ea2ed95500680001d3f154263447e0f3378a3abf4d01db34453e217"
+    },
+    {
+      "path": "docs/audits/2026-10-26/Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.source.xlsx",
+      "bytes": 279635,
+      "sha256": "d3f88eee0e88deb4dbc2247f8b295c6c5a6de91ff9626ea94b0d274f08e652b5",
+      "sheets": [
+        {
+          "name": "Synthese",
+          "physicalRows": 92
+        },
+        {
+          "name": "Effectifs",
+          "physicalRows": 23
+        },
+        {
+          "name": "Manquants",
+          "physicalRows": 132
+        },
+        {
+          "name": "Comparatif_DW",
+          "physicalRows": 46
+        },
+        {
+          "name": "Groupes",
+          "physicalRows": 68
+        },
+        {
+          "name": "Fronts",
+          "physicalRows": 46
+        },
+        {
+          "name": "Cartes_zones",
+          "physicalRows": 40
+        },
+        {
+          "name": "Boss_et_elites",
+          "physicalRows": 45
+        },
+        {
+          "name": "Fidelite",
+          "physicalRows": 53
+        },
+        {
+          "name": "Validation",
+          "physicalRows": 30
+        },
+        {
+          "name": "Feuille_route",
+          "physicalRows": 12
+        },
+        {
+          "name": "Etat_verifie",
+          "physicalRows": 79
+        },
+        {
+          "name": "Affrontements",
+          "physicalRows": 33
+        },
+        {
+          "name": "Bestiaire_medias",
+          "physicalRows": 121
+        },
+        {
+          "name": "Lieux_medias",
+          "physicalRows": 33
+        }
+      ],
+      "sheetCount": 15,
+      "auditIds": [
+        "AUD-001",
+        "AUD-002",
+        "AUD-003",
+        "AUD-004",
+        "AUD-005",
+        "AUD-006",
+        "AUD-007",
+        "AUD-008",
+        "AUD-009",
+        "AUD-010",
+        "AUD-011",
+        "AUD-012",
+        "AUD-013",
+        "AUD-014",
+        "AUD-015",
+        "AUD-016",
+        "AUD-017",
+        "AUD-018",
+        "AUD-019",
+        "AUD-020",
+        "AUD-021",
+        "AUD-022",
+        "AUD-023",
+        "AUD-024",
+        "AUD-025",
+        "AUD-026",
+        "AUD-027",
+        "AUD-028",
+        "AUD-029",
+        "AUD-030",
+        "AUD-031",
+        "AUD-032",
+        "AUD-033",
+        "AUD-034",
+        "AUD-035",
+        "AUD-036",
+        "AUD-037",
+        "AUD-038",
+        "AUD-039",
+        "AUD-040",
+        "AUD-041",
+        "AUD-042",
+        "AUD-043",
+        "AUD-044",
+        "AUD-045",
+        "AUD-046",
+        "AUD-047",
+        "AUD-048",
+        "AUD-049",
+        "AUD-050",
+        "AUD-051",
+        "AUD-052",
+        "AUD-053",
+        "AUD-054",
+        "AUD-055",
+        "AUD-056",
+        "AUD-057",
+        "AUD-058",
+        "AUD-059",
+        "AUD-060",
+        "AUD-061",
+        "AUD-062",
+        "AUD-063",
+        "AUD-064",
+        "AUD-065",
+        "AUD-066",
+        "AUD-067",
+        "AUD-068",
+        "AUD-069",
+        "AUD-070",
+        "AUD-071",
+        "AUD-072",
+        "AUD-073",
+        "AUD-074",
+        "AUD-075",
+        "AUD-076",
+        "AUD-077",
+        "AUD-078",
+        "AUD-079",
+        "AUD-080",
+        "AUD-081",
+        "AUD-082",
+        "AUD-083",
+        "AUD-084",
+        "AUD-085",
+        "AUD-086",
+        "AUD-087",
+        "AUD-088",
+        "AUD-089",
+        "AUD-090",
+        "AUD-091",
+        "AUD-092",
+        "AUD-093",
+        "AUD-094",
+        "AUD-095",
+        "AUD-096",
+        "AUD-097",
+        "AUD-098",
+        "AUD-099",
+        "AUD-100",
+        "AUD-101",
+        "AUD-102",
+        "AUD-103",
+        "AUD-104",
+        "AUD-105",
+        "AUD-106",
+        "AUD-107",
+        "AUD-108",
+        "AUD-109",
+        "AUD-110",
+        "AUD-111",
+        "AUD-112",
+        "AUD-113",
+        "AUD-114",
+        "AUD-115",
+        "AUD-116",
+        "AUD-117",
+        "AUD-118",
+        "AUD-119",
+        "AUD-120",
+        "AUD-121",
+        "AUD-122",
+        "AUD-123",
+        "AUD-124",
+        "AUD-125",
+        "AUD-126"
+      ],
+      "auditIdCount": 126
+    },
+    {
+      "path": "docs/audits/2026-10-26/Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.xlsx",
+      "bytes": 279049,
+      "sha256": "5dfca4a6eb8c8e79d8033e9730f672f82124e4ab6ee298c7eee7acebea4d1fe5",
+      "sheets": [
+        {
+          "name": "Synthese",
+          "physicalRows": 92
+        },
+        {
+          "name": "Effectifs",
+          "physicalRows": 23
+        },
+        {
+          "name": "Manquants",
+          "physicalRows": 132
+        },
+        {
+          "name": "Comparatif_DW",
+          "physicalRows": 46
+        },
+        {
+          "name": "Groupes",
+          "physicalRows": 68
+        },
+        {
+          "name": "Fronts",
+          "physicalRows": 46
+        },
+        {
+          "name": "Cartes_zones",
+          "physicalRows": 40
+        },
+        {
+          "name": "Boss_et_elites",
+          "physicalRows": 45
+        },
+        {
+          "name": "Fidelite",
+          "physicalRows": 53
+        },
+        {
+          "name": "Validation",
+          "physicalRows": 30
+        },
+        {
+          "name": "Feuille_route",
+          "physicalRows": 12
+        },
+        {
+          "name": "Etat_verifie",
+          "physicalRows": 79
+        },
+        {
+          "name": "Affrontements",
+          "physicalRows": 33
+        },
+        {
+          "name": "Bestiaire_medias",
+          "physicalRows": 121
+        },
+        {
+          "name": "Lieux_medias",
+          "physicalRows": 33
+        }
+      ],
+      "sheetCount": 15,
+      "auditIds": [
+        "AUD-001",
+        "AUD-002",
+        "AUD-003",
+        "AUD-004",
+        "AUD-005",
+        "AUD-006",
+        "AUD-007",
+        "AUD-008",
+        "AUD-009",
+        "AUD-010",
+        "AUD-011",
+        "AUD-012",
+        "AUD-013",
+        "AUD-014",
+        "AUD-015",
+        "AUD-016",
+        "AUD-017",
+        "AUD-018",
+        "AUD-019",
+        "AUD-020",
+        "AUD-021",
+        "AUD-022",
+        "AUD-023",
+        "AUD-024",
+        "AUD-025",
+        "AUD-026",
+        "AUD-027",
+        "AUD-028",
+        "AUD-029",
+        "AUD-030",
+        "AUD-031",
+        "AUD-032",
+        "AUD-033",
+        "AUD-034",
+        "AUD-035",
+        "AUD-036",
+        "AUD-037",
+        "AUD-038",
+        "AUD-039",
+        "AUD-040",
+        "AUD-041",
+        "AUD-042",
+        "AUD-043",
+        "AUD-044",
+        "AUD-045",
+        "AUD-046",
+        "AUD-047",
+        "AUD-048",
+        "AUD-049",
+        "AUD-050",
+        "AUD-051",
+        "AUD-052",
+        "AUD-053",
+        "AUD-054",
+        "AUD-055",
+        "AUD-056",
+        "AUD-057",
+        "AUD-058",
+        "AUD-059",
+        "AUD-060",
+        "AUD-061",
+        "AUD-062",
+        "AUD-063",
+        "AUD-064",
+        "AUD-065",
+        "AUD-066",
+        "AUD-067",
+        "AUD-068",
+        "AUD-069",
+        "AUD-070",
+        "AUD-071",
+        "AUD-072",
+        "AUD-073",
+        "AUD-074",
+        "AUD-075",
+        "AUD-076",
+        "AUD-077",
+        "AUD-078",
+        "AUD-079",
+        "AUD-080",
+        "AUD-081",
+        "AUD-082",
+        "AUD-083",
+        "AUD-084",
+        "AUD-085",
+        "AUD-086",
+        "AUD-087",
+        "AUD-088",
+        "AUD-089",
+        "AUD-090",
+        "AUD-091",
+        "AUD-092",
+        "AUD-093",
+        "AUD-094",
+        "AUD-095",
+        "AUD-096",
+        "AUD-097",
+        "AUD-098",
+        "AUD-099",
+        "AUD-100",
+        "AUD-101",
+        "AUD-102",
+        "AUD-103",
+        "AUD-104",
+        "AUD-105",
+        "AUD-106",
+        "AUD-107",
+        "AUD-108",
+        "AUD-109",
+        "AUD-110",
+        "AUD-111",
+        "AUD-112",
+        "AUD-113",
+        "AUD-114",
+        "AUD-115",
+        "AUD-116",
+        "AUD-117",
+        "AUD-118",
+        "AUD-119",
+        "AUD-120",
+        "AUD-121",
+        "AUD-122",
+        "AUD-123",
+        "AUD-124",
+        "AUD-125",
+        "AUD-126"
+      ],
+      "auditIdCount": 126
+    },
+    {
+      "path": "docs/audits/2026-10-26/audit-data.json",
+      "bytes": 1369984,
+      "sha256": "abda56e986df3d6a8e305d1d6ec190d9f48e336ce1bfd97935bab220b5b4211a"
+    },
+    {
+      "path": "docs/audits/2026-10-26/implementation-progress.json",
+      "bytes": 209312,
+      "sha256": "9dbe306732ebd96385bb67cbb091dbd750dc49da94d908f16a38bc544d553e19"
+    },
+    {
+      "path": "docs/audits/2026-10-27/Yautja_Hive_Warriors_Controle_Completude_2026-10-27.xlsx",
+      "bytes": 383468,
+      "sha256": "d751c28585c8f9c467c19f74fd91c199525f7b72a3ecd5b0967fd67312fcba6d",
+      "sheets": [
+        {
+          "name": "Synthese",
+          "physicalRows": 137
+        },
+        {
+          "name": "Effectifs",
+          "physicalRows": 23
+        },
+        {
+          "name": "Manquants",
+          "physicalRows": 132
+        },
+        {
+          "name": "Comparatif_DW",
+          "physicalRows": 46
+        },
+        {
+          "name": "Groupes",
+          "physicalRows": 75
+        },
+        {
+          "name": "Fronts",
+          "physicalRows": 46
+        },
+        {
+          "name": "Cartes_zones",
+          "physicalRows": 40
+        },
+        {
+          "name": "Boss_et_elites",
+          "physicalRows": 45
+        },
+        {
+          "name": "Fidelite",
+          "physicalRows": 53
+        },
+        {
+          "name": "Validation",
+          "physicalRows": 30
+        },
+        {
+          "name": "Feuille_route",
+          "physicalRows": 12
+        },
+        {
+          "name": "Etat_verifie",
+          "physicalRows": 79
+        },
+        {
+          "name": "Affrontements",
+          "physicalRows": 33
+        },
+        {
+          "name": "Bestiaire_medias",
+          "physicalRows": 276
+        },
+        {
+          "name": "Lieux_medias",
+          "physicalRows": 40
+        },
+        {
+          "name": "Controle_roster",
+          "physicalRows": 138
+        }
+      ],
+      "sheetCount": 16,
+      "auditIds": [
+        "AUD-001",
+        "AUD-002",
+        "AUD-003",
+        "AUD-004",
+        "AUD-005",
+        "AUD-006",
+        "AUD-007",
+        "AUD-008",
+        "AUD-009",
+        "AUD-010",
+        "AUD-011",
+        "AUD-012",
+        "AUD-013",
+        "AUD-014",
+        "AUD-015",
+        "AUD-016",
+        "AUD-017",
+        "AUD-018",
+        "AUD-019",
+        "AUD-020",
+        "AUD-021",
+        "AUD-022",
+        "AUD-023",
+        "AUD-024",
+        "AUD-025",
+        "AUD-026",
+        "AUD-027",
+        "AUD-028",
+        "AUD-029",
+        "AUD-030",
+        "AUD-031",
+        "AUD-032",
+        "AUD-033",
+        "AUD-034",
+        "AUD-035",
+        "AUD-036",
+        "AUD-037",
+        "AUD-038",
+        "AUD-039",
+        "AUD-040",
+        "AUD-041",
+        "AUD-042",
+        "AUD-043",
+        "AUD-044",
+        "AUD-045",
+        "AUD-046",
+        "AUD-047",
+        "AUD-048",
+        "AUD-049",
+        "AUD-050",
+        "AUD-051",
+        "AUD-052",
+        "AUD-053",
+        "AUD-054",
+        "AUD-055",
+        "AUD-056",
+        "AUD-057",
+        "AUD-058",
+        "AUD-059",
+        "AUD-060",
+        "AUD-061",
+        "AUD-062",
+        "AUD-063",
+        "AUD-064",
+        "AUD-065",
+        "AUD-066",
+        "AUD-067",
+        "AUD-068",
+        "AUD-069",
+        "AUD-070",
+        "AUD-071",
+        "AUD-072",
+        "AUD-073",
+        "AUD-074",
+        "AUD-075",
+        "AUD-076",
+        "AUD-077",
+        "AUD-078",
+        "AUD-079",
+        "AUD-080",
+        "AUD-081",
+        "AUD-082",
+        "AUD-083",
+        "AUD-084",
+        "AUD-085",
+        "AUD-086",
+        "AUD-087",
+        "AUD-088",
+        "AUD-089",
+        "AUD-090",
+        "AUD-091",
+        "AUD-092",
+        "AUD-093",
+        "AUD-094",
+        "AUD-095",
+        "AUD-096",
+        "AUD-097",
+        "AUD-098",
+        "AUD-099",
+        "AUD-100",
+        "AUD-101",
+        "AUD-102",
+        "AUD-103",
+        "AUD-104",
+        "AUD-105",
+        "AUD-106",
+        "AUD-107",
+        "AUD-108",
+        "AUD-109",
+        "AUD-110",
+        "AUD-111",
+        "AUD-112",
+        "AUD-113",
+        "AUD-114",
+        "AUD-115",
+        "AUD-116",
+        "AUD-117",
+        "AUD-118",
+        "AUD-119",
+        "AUD-120",
+        "AUD-121",
+        "AUD-122",
+        "AUD-123",
+        "AUD-124",
+        "AUD-125",
+        "AUD-126"
+      ],
+      "auditIdCount": 126
+    },
+    {
+      "path": "docs/audits/2026-10-27/completeness-audit.json",
+      "bytes": 1372337,
+      "sha256": "7426809f1379af94785cf1741471df40b2029999a4eac37e481264bc4ae0ad48"
+    },
+    {
+      "path": "docs/audits/2026-10-27/implementation-followup-20261101.json",
+      "bytes": 100841,
+      "sha256": "47934ccf109fab5fe6109d2bb6b3255ea02a99bc007b03eaeacb5dc320543009"
+    },
+    {
+      "path": "docs/audits/2026-10-30/musou-crossmedia-gaps.json",
+      "bytes": 81835,
+      "sha256": "58ecb2f7dc6566716abe87712c716b879112bbcc8d7128db866be503d3d70589"
+    },
+    {
+      "path": "docs/qa/continuation-20261102/evolved-combat/final-review-571b1d2.json",
+      "bytes": 4842,
+      "sha256": "54c1cf9fc0cf5ec6092131b38b741ecee0661cef4900b72801b1dfee85b76ea5"
+    },
+    {
+      "path": "docs/qa/continuation-20261102/ui-composite-571b1d2-reviewed.json",
+      "bytes": 5851,
+      "sha256": "7a6bc1556ef09cac1b551ea50bcb5a524a98c4bfb27e6baca4fdd94e5c4af5f3"
+    },
+    {
+      "path": "docs/qa/continuation-20261102/world-visual-comparison.json",
+      "bytes": 1370,
+      "sha256": "406b03a4a7d2ff3a3ce6b84339c7ffd819d33557d046a3914ee95651d9094d02"
+    },
+    {
+      "path": "docs/audits/2026-11-01/Alien_Base_Import_Status.csv",
+      "bytes": 216159,
+      "sha256": "b765cd73a3acfc874c7851a52743731caef4b5e277f957d4279ccd3ff2a91138",
+      "rowCount": 773,
+      "columnCount": 9,
+      "columns": [
+        "ID commun",
+        "ID local",
+        "Type",
+        "Nom",
+        "Oeuvre / origine",
+        "État de preuve",
+        "État dans YHW",
+        "Action avant admission",
+        "Visuel 1:1 validé"
+      ],
+      "role": "Source/completion registry; rows are not delivered models or runtime allocations."
+    },
+    {
+      "path": "docs/audits/2026-11-01/Extinction_29_Profils_Manquants_1to1.csv",
+      "bytes": 29335,
+      "sha256": "7e57f89329e5f4f62fcf940679744baeab78c19b0761f3470a3f03f456276061",
+      "rowCount": 29,
+      "columnCount": 13,
+      "columns": [
+        "Identifiant",
+        "Faction source",
+        "Unité source",
+        "Jeu / médias",
+        "Continuité",
+        "Preuve dans le catalogue",
+        "URL(s) de référence",
+        "Statut audit source (historique)",
+        "État du runtime actuel (contrôle de code)",
+        "Travaux manquants 1:1",
+        "Restrictions de média",
+        "Séries contrôlées",
+        "Fidélité visuelle 1:1 certifiée"
+      ],
+      "role": "Source/completion registry; rows are not delivered models or runtime allocations."
+    },
+    {
+      "path": "docs/audits/2026-11-01/M577_Cheyenne_Exigences_Sources.csv",
+      "bytes": 4063,
+      "sha256": "5cf2ae3707691848dcedcf2d1e3c8be35eba2b209babd8a6bb16b00ecacc0647",
+      "rowCount": 14,
+      "columnCount": 8,
+      "columns": [
+        "ID",
+        "Domaine",
+        "Exigence de référence",
+        "Type de source",
+        "Lien de référence",
+        "Implémentation constatée",
+        "Manquants",
+        "Visuel 1:1 certifié"
+      ],
+      "role": "Source/completion registry; rows are not delivered models or runtime allocations."
+    },
+    {
+      "path": "docs/audits/2026-11-01/Musou_Fidelite_1to1_Manquants.csv",
+      "bytes": 11898,
+      "sha256": "f2a57c5842d88990552ac99aa1d2f3ad9c6ba06fc88ac59d3816cc89b7b9eac2",
+      "rowCount": 27,
+      "columnCount": 16,
+      "columns": [
+        "Opération",
+        "Mission",
+        "Statut de l'histoire",
+        "Lieu",
+        "Ennemis alloués",
+        "Alliés alloués",
+        "Plan de fronts déclaré",
+        "Carte 1:1 validée",
+        "Castes et époque vérifiées",
+        "Modèles 1:1 validés",
+        "Animations 1:1 validées",
+        "Boss visuel 1:1 validé",
+        "Partie complète QA",
+        "Coop QA",
+        "Travaux restants",
+        "Lien de preuve fourni"
+      ],
+      "role": "Source/completion registry; rows are not delivered models or runtime allocations."
+    }
+  ],
+  "counts": {
+    "currentAuditActions": 126,
+    "currentStatuses": {
+      "Terminé": 78,
+      "À valider": 36,
+      "En cours": 12
+    },
+    "documentaryProfiles27": 270,
+    "controlRows27": 132,
+    "declaredMusouOperations": 27,
+    "sharedReferenceCsvRows": 773,
+    "extinctionCsvProfiles": 29
+  },
+  "preservationChecks": {
+    "all126IdsMatchSourceWorkbook": true,
+    "all126CriteriaMatchSourceWorkbook": true,
+    "allWorkingWorkbookStatusesMatchCurrentFollowup": true,
+    "criteriaMismatches": [],
+    "workingStatusMismatches": [],
+    "sourceWorkbookSha256MatchesDeclared": true
+  },
+  "recommendedScopedWork": [
+    {
+      "id": "UI-LV742",
+      "title": "Readable bound-operation fronts and truthful terrain selection",
+      "auditIds": [
+        "AUD-103",
+        "AUD-032"
+      ],
+      "observedGap": "Long LV-742 labels overlap briefing/minimap. The old manually selected Gunnison terrain may stay visually selected while the actual bound operation uses Xenomorph Prime. Both are recorded observations on571, not inferred source fidelity defects.",
+      "existingEvidence": [
+        "docs/qa/continuation-20261102/ui-composite-571b1d2-reviewed.json"
+      ],
+      "owners": [
+        "js/ui/OperationBriefing.js",
+        "js/ui/UIManager.js",
+        "js/ui/OperationPanel.js",
+        "js/ui/CommandMap.js",
+        "js/main.js",
+        "css/styles.css"
+      ],
+      "scopedAcceptance": [
+        "Front symbols and labels in LV-742 briefing/minimap remain individually identifiable at800x600 and1280x720, without revealing unknown enemy counts.",
+        "Choosing bound AFF-27 after Gunnison visibly selects exactly its actual Xenomorph Prime terrain card, with aria-pressed agreement; returning to a free terrain still works.",
+        "Standard/enhanced variant, actual configDigest, budget32,952allocatedIDs and6cargoIDs remain unchanged."
+      ],
+      "verification": [
+        "Actual menu sequence Gunnison→AFF-27→optional castes→enhanced, then launch and inspect HUD.",
+        "Capture briefing/minimap and compare symbol/key associations with real frontIDs.",
+        "Use real UI selection/clicks and check state; no force CSS highlight or manually edited canvas."
+      ],
+      "closureLimit": "A local readability fix cannot close all visual profiles or all group identities across every front.",
+      "auditCriteria": [
+        {
+          "id": "AUD-103",
+          "status": "À valider",
+          "acceptance": "Les objectifs et dangers restent distinguables avec couleurs simulées et effets réduits."
+        },
+        {
+          "id": "AUD-032",
+          "status": "À valider",
+          "acceptance": "Le même groupe conserve son identité lors d’un passage proche/lointain et dans le bilan de bataille."
+        }
+      ]
+    },
+    {
+      "id": "CARRIER-AUTONOMOUS",
+      "title": "Observe the existing autonomous Carrier launch through production AI",
+      "auditIds": [
+        "AUD-025",
+        "AUD-024"
+      ],
+      "observedGap": "The571mechanism proof launched via a real but explicitly requested Bridge call after one normal tick with no autonomous request. The source code already has a natural Horde callback, so no AI defect is established.",
+      "existingEvidence": [
+        "docs/qa/continuation-20261102/evolved-combat/final-review-571b1d2.json"
+      ],
+      "owners": [
+        "js/entities/XenomorphHorde.js",
+        "js/engine/BattleActorSupport.js",
+        "js/battlefield/BattleActorBridge.js",
+        "js/battlefield/ExtinctionCarrierFlight.js"
+      ],
+      "scopedAcceptance": [
+        "Natural Horde updates choose an eligible hostile target inside the real tactical envelope and invoke the existing Carrier callback without explicit launch requests.",
+        "The launch consumes exactly one of the original six allocated cargoIDs, has a bounded physical flight and safe landing, and never increases952allocatedIDs or active cap32.",
+        "Pause, callback cleanup and fire/cargo conservation remain valid."
+      ],
+      "verification": [
+        "Record Carrier order, formation target, target eligibility, positions and ranges BEFORE updates; defend radius24/formation28 are actual filters to preserve.",
+        "Observe original callback arguments/return without replacing their behavior or forcing a target.",
+        "If no natural request occurs, distinguish noeligible target/range/order constraints from confirmed code defect."
+      ],
+      "closureLimit": "This is a missing runtime observation. Do not broaden tactical selection just to satisfy the test, and do not certify all caste biology/reciprocal combats.",
+      "auditCriteria": [
+        {
+          "id": "AUD-025",
+          "status": "En cours",
+          "acceptance": "Chaque groupe possède une raison de présence et des comportements cohérents; les parasites ne remplacent pas une ligne d’assaut permanente."
+        },
+        {
+          "id": "AUD-024",
+          "status": "À valider",
+          "acceptance": "Un combat observé sans joueur au contact change les pertes des deux camps, avec actions et impacts visibles."
+        }
+      ]
+    },
+    {
+      "id": "RAVAGER-RESTORE",
+      "title": "Reload the saved Ravager phase inside a real rendered operation",
+      "auditIds": [
+        "AUD-014",
+        "AUD-091"
+      ],
+      "observedGap": "The571browser proof saved a genuine catalepsy checkpoint but explicitly did not restore that phase in the browser. CPU persistence is separately tested.",
+      "existingEvidence": [
+        "docs/qa/continuation-20261102/evolved-combat/final-review-571b1d2.json"
+      ],
+      "owners": [
+        "js/battlefield/ExtinctionRavagerRegenesis.js",
+        "js/entities/XenomorphHorde.js",
+        "js/battlefield/BattleActorBridge.js",
+        "js/battlefield/BattleSimulation.js",
+        "js/main.js"
+      ],
+      "scopedAcceptance": [
+        "Save during real catalepsy, exit and reload via actual pause/resume flow, then observe the same allocatedUID, HP, deadline, spent upgrade and prone state.",
+        "Pause does not consume the remaining12s; normal updates restore at least50percentHP on the same unit and do not grant a second phase.",
+        "Typed fire death remains final and emits exactly one death; checkpoint/cleanup does not resurrect or duplicate the actor."
+      ],
+      "verification": [
+        "Capture before save, after resume, before recovery and after recovery.",
+        "Compare phase fields, UID digest, cargo count and active cap before/after the real reload.",
+        "Use production damage, persistence and phase advancement; declare any deterministic test time assistance."
+      ],
+      "closureLimit": "A rendered phase reload is a scoped persistence proof, not exhaustive status combinations or all passage pursuits.",
+      "auditCriteria": [
+        {
+          "id": "AUD-014",
+          "status": "À valider",
+          "acceptance": "Traverser un passage n’efface ni poursuivant, ni chef blessé, ni pertes déjà enregistrées."
+        },
+        {
+          "id": "AUD-091",
+          "status": "À valider",
+          "acceptance": "Aucune combinaison ne laisse le personnage bloqué indéfiniment; chaque état possède une indication et une issue."
+        }
+      ]
+    },
+    {
+      "id": "CAMERA-INSERTION",
+      "title": "Keep player exit and route visible around the foreground Val Verde roof",
+      "auditIds": [
+        "AUD-104",
+        "AUD-067"
+      ],
+      "observedGap": "The571same-camera world comparison retains a large foreground barrack roof occupying part of the paused insertion view. The comparison explicitly leaves global camera readability open.",
+      "existingEvidence": [
+        "docs/qa/continuation-20261102/world-visual-comparison.json"
+      ],
+      "owners": [
+        "js/engine/CameraCollision.js",
+        "js/main.js",
+        "js/entities/DropPodEntrance.js",
+        "js/entities/Environment.js"
+      ],
+      "scopedAcceptance": [
+        "At the actual Val Verde insertion landing/opening/exit, player visibility follows capsule phase and the first playable route remains legible with the normal game camera.",
+        "Camera does not cross major collision volumes; bounds, near-plane radius and cooperatingP2 remain valid.",
+        "No geometry or enemy state disappears purely to make the fixed screenshot readable."
+      ],
+      "verification": [
+        "Same viewport/settings/seed and actual game camera before/after; supplementary inspection camera labeled separately.",
+        "Record player visibility and capsule phase from hidden arrival through exit; physical first steps follow real navigation.",
+        "Inspect roof obstruction and collision on relevant routes and in co-op, rather than declaring all maps solved."
+      ],
+      "closureLimit": "One insertion improvement does not certify every boss phase, route or no-HUD wayfinding.",
+      "auditCriteria": [
+        {
+          "id": "AUD-104",
+          "status": "À valider",
+          "acceptance": "Le joueur et le danger principal restent visibles dans chaque scénario; la caméra ne traverse pas les parois."
+        },
+        {
+          "id": "AUD-067",
+          "status": "À valider",
+          "acceptance": "Un joueur peut repérer la route principale et un contournement sans suivre uniquement un marqueur HUD."
+        }
+      ]
+    }
+  ],
+  "sourceAndRuntimeDistinction": {
+    "primaryGameplay": "ActionMusou/DynastyWarriors-like",
+    "extinctionRole": "Content/castes/biological properties; noRTSmainloop",
+    "sourceCsvAndCatalogueAreDeliveredModels": false,
+    "maxDetailedActorsAtBaseline": 32,
+    "aff27AllocatedUnitsAtBaseline": 952,
+    "existingCarrierCargoIdsAtBaseline": 6,
+    "enhancedCapacityAtBaseline": 12,
+    "humanTesters": 0,
+    "fidelity1to1Verified": false,
+    "hardwarePerformanceMeasured": false
+  },
+  "mutations": {
+    "sourceWorkbooks": false,
+    "workingWorkbook": false,
+    "followupStatuses": false,
+    "runtimeCode": false,
+    "gitCommands": false,
+    "browserLaunched": false,
+    "buildExecuted": false,
+    "remoteActions": false
+  }
+}

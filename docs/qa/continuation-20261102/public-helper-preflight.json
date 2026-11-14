@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "status": "passed_configuration_only",
+  "checkedAt": "2026-11-02T04:15:29.762391+00:00",
+  "helperSha256": "5842e8fa67406acd53f7cd5d60f7b1dc5f3d424a9e99b729e634879e192992a9",
+  "syntax": "passed",
+  "cases": [
+    {
+      "id": "help",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "id": "check-config",
+      "status": "passed",
+      "exitCode": 0,
+      "reportedEffects": {
+        "browserLaunched": false,
+        "networkAccessed": false,
+        "filesWritten": false,
+        "browserGo": false
+      }
+    },
+    {
+      "id": "check-config-with-go",
+      "status": "passed",
+      "exitCode": 0,
+      "reportedEffects": {
+        "browserLaunched": false,
+        "networkAccessed": false,
+        "filesWritten": false,
+        "browserGo": true
+      }
+    },
+    {
+      "id": "missing-root-go",
+      "status": "passed",
+      "exitCode": 1
+    },
+    {
+      "id": "duplicate-source",
+      "status": "passed",
+      "exitCode": 1
+    },
+    {
+      "id": "duplicate-dry-run",
+      "status": "passed",
+      "exitCode": 1
+    },
+    {
+      "id": "unknown-origin",
+      "status": "passed",
+      "exitCode": 1
+    },
+    {
+      "id": "invalid-source",
+      "status": "passed",
+      "exitCode": 1
+    },
+    {
+      "id": "invalid-deployment",
+      "status": "passed",
+      "exitCode": 1
+    }
+  ],
+  "publicArtifactDirectoriesUnchanged": true,
+  "browserLaunched": false,
+  "networkAccessed": false,
+  "actualDeploymentExecuted": false,
+  "scope": "Strict dry-run/argument checks only; no public smoke, game browser, build or final release QA."
+}

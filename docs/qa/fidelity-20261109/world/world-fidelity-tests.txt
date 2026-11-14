@@ -1,0 +1,14 @@
+✔ two real insertion cameras retain body sightlines past the relocated camp structures throughout opening and exit (10300.7954ms)
+✔ moved walls and timber posts retain real collision, culling-independent cover and clear insertion/cardinal routes (650.12621ms)
+✔ profiled roof and botanical silhouettes have bounded, finite geometry with non-tropical branches preserved (10.386636ms)
+✔ relocated deck, timber ladder treads and corrugated roof use their visible upper triangles with no old phantom floors (211.74122ms)
+✔ removing either field structure immediately removes its floors and vertical route, then a seeded saved-world rebuild restores fresh measured surfaces (778.858331ms)
+✔ real Player.move climbs and lands on measured timber treads at game speeds and frame caps, with normal jump, pause and teleport paths preserved (932.269325ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13088.387524

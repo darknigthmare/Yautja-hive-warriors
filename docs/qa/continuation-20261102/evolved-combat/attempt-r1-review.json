@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "status": "first_attempt_failed_unclassified_launch_condition",
+  "reviewedAt": "2026-11-02T04:51:37.126267+00:00",
+  "sourceCommit": "83d36e739c911eb40091689ff8a59c3810afb205",
+  "indexSha256": "af055276cabe4892baa8d6a53472c3e6c6927adb9fa8396c3620b2455460267b",
+  "report": "docs/qa/continuation-20261102/evolved-combat/attempt-r1-83d36e7/report.json",
+  "reportSha256": "0366d3450ee99f81a54ddc8eefacf415f9edda5af6fbdcbd7f0e2b2ae827ac17",
+  "browserClosed": true,
+  "distUnchanged": true,
+  "helpersUnchanged": true,
+  "javascriptErrors": 0,
+  "failedRequests": 0,
+  "observed": [
+    "Real menus launched AFF-27 with carrier-ravager-enhanced signed configuration.",
+    "Actual source Carrier materialized with 18 owned actors, 952 finite UIDs and six original unrendered cargo identities.",
+    "Player inspection position is 6 units from the Carrier on standable floor. First normal Horde tick keeps six cargo; no launch target/refusal was recorded in this version.",
+    "Failure capture was opened: it retains the initial gameplay camera and insertion HUD, with the relocated actors outside its view. No Carrier flight visual validation follows from that image."
+  ],
+  "classification": "No product-bug or fixture-only conclusion is made before observing the actual launch request and refusal. R2 will record unchanged callback outcomes and stop on an unexpected source gate.",
+  "humanReviewers": 0,
+  "publicSmokeExecuted": false,
+  "fidelity1to1Verified": false
+}

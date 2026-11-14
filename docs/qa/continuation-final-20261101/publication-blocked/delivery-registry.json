@@ -1,0 +1,38 @@
+{
+  "status": "stopped_before_further_remote_actions",
+  "releaseProfile": "continuation-final-20261101",
+  "startedAt": "2026-11-01T02:05:21.364Z",
+  "sourceCommit": "a80070c4b5ed96fa839e840f17453bf5348a6cbb",
+  "index_sha256": "22f8dd3ddb3970acec7771fafac28d78a3d9e37b7e209a7d1b7170ee815061ad",
+  "build_info_sha256": "ef4f97ac9f04bc5a57d14a00286f2741938eb06984e05dc1a1b7fbc3501bfd58",
+  "stage": "/workspace/qa/continuation-final-20261101/vercel-static-prebuilt",
+  "promotion_executed": false,
+  "deployment_id": null,
+  "submission_attempted": true,
+  "remoteActionsExecuted": true,
+  "other_projects_changed": false,
+  "billing_changed": false,
+  "globalQa": {
+    "passed": true,
+    "cpuPassed": 1185,
+    "regressionPassed": 8,
+    "runtimeChecksPassed": 30,
+    "path": "/workspace/Yautja-next-20261028/docs/qa/continuation-final-validation.json",
+    "sha256": "c471e19ce8626d6b8a79d5b7fae343576ecb12a4de1cf04a5e4b568a8c1936b6"
+  },
+  "sourceCommitIsAncestorOfRelease": true,
+  "localFilesVerified": 30,
+  "localModelsVerified": 12,
+  "localBundlesVerified": 5,
+  "canonical_before": {
+    "http": 200,
+    "sha256": "124d7735003c245bc60814e6004c35ace77bd4011b31d448a6aa6c4c41dad185",
+    "checkedAt": "2026-11-01T02:05:22.306Z"
+  },
+  "updatedAt": "2026-11-01T02:05:25.843Z",
+  "submissionEvidence": [
+    "/workspace/qa/continuation-final-20261101/publication-2026-11-01T02-05-21-363Z-submission.stdout",
+    "/workspace/qa/continuation-final-20261101/publication-2026-11-01T02-05-21-363Z-submission.log"
+  ],
+  "error": "Resource is limited - try again in 1 day (more than 100, code: \"api-deployments-free-per-day\")."
+}

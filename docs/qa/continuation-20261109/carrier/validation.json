@@ -1,0 +1,123 @@
+{
+  "schemaVersion": 1,
+  "status": "passed_targeted_working_tree",
+  "checkedAt": "2026-11-09T04:23:05.215698+00:00",
+  "baseCommit": "aa82cb1849fe4e688972dfe59361752f50e968b5",
+  "sourceTreeDirty": true,
+  "scope": "Finite source Carrier autonomous targeting, launch and visible flight after the Horde→Bridge synchronization order. Flat physical test arena using actual EnvironmentManager/navigation/LOS, Horde, Bridge bind and BattleSimulation; no full rendered LV-742 mission.",
+  "runtimeChanged": [
+    "js/battlefield/BattleActorBridge.js"
+  ],
+  "runtimeNotChanged": [
+    "js/entities/XenomorphHorde.js",
+    "js/battlefield/BattleSimulation.js",
+    "js/battlefield/ExtinctionCarrierFlight.js"
+  ],
+  "finding": "Target acquisition already works with existing defend24/formation28/launch13 constraints. Post-Horde Bridge.sync erased the physical airborne Y coordinate before render. Preserve the flight owner until landing.",
+  "baseline": {
+    "command": "node --test tests/extinction-carrier-autonomy.test.js",
+    "tests": 6,
+    "passed": 5,
+    "failed": 1,
+    "failedRisk": "post-Horde Bridge.sync floors an actor with active carrierFlight",
+    "log": "docs/qa/continuation-20261109/carrier/baseline-before-flight-fix.txt",
+    "sourceSnapshot": "docs/qa/continuation-20261109/carrier/baseline-test-source.js",
+    "sourceSnapshotUsage": "Snapshot keeps its original tests/ path-relative imports; restore to that original path for reproduction, not an executable from this archive folder."
+  },
+  "initialFixtureMistake": {
+    "preserved": true,
+    "log": "docs/qa/continuation-20261109/carrier/initial-fixture-variant-mismatch.txt",
+    "tests": 6,
+    "passed": 4,
+    "failed": 2,
+    "correction": "Replace unrecognized test-only carrier-ravager-evolved variant name by actual carrier-ravager-enhanced before the valid 5/6 baseline; no runtime changed between these baseline attempts."
+  },
+  "after": {
+    "newDistinctTests": 8,
+    "passed": 8,
+    "failed": 0,
+    "log": "docs/qa/continuation-20261109/carrier/final-autonomy-eight.txt"
+  },
+  "targetedRegression": {
+    "command": "node --test --test-concurrency=1 tests/extinction-carrier-autonomy.test.js tests/extinction-carrier-live-launch.test.js tests/extinction-carrier-cargo.test.js tests/battle-actor-bridge.test.js tests/extinction-caste-runtime.test.js tests/extinction-evolved-variant.test.js",
+    "tests": 36,
+    "passed": 36,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "durationMs": 13520.226362,
+    "includesNewEight": true,
+    "log": "docs/qa/continuation-20261109/carrier/targeted-regression.txt"
+  },
+  "checks": [
+    "Autonomous target acquisition invokes the borrowed real Bridge callback; no explicit Bridge launch in new tests",
+    "Carrier physically walks from authored allocation to launch distance",
+    "Defend24 rejects a target inside formation28; wider out-of-bound target also rejected",
+    "Actual Environment navigation and box collider refuse blocked launch without spending cargo",
+    "Flight initial pose and .5s apex survive post-Horde Bridge sync; exact safe-floor contact at1s",
+    "Paused simulation plus sync without Horde tick leaves arc time and position intact",
+    "Enhanced capacity12 uses original six cargo identities; all six eventually launch once with no seventh",
+    "Save/reload preserves released ID and five remaining passengers; rendered flight itself is not asserted to resume",
+    "Bridge disposal removes owned actors and restores callback without death credit",
+    "952 allocated IDs, actor budget32, unique live projection IDs and faction/state conservation preserved"
+  ],
+  "guidesRead": {
+    "repository": "gamedev-skills/awesome-gamedev-agent-skills",
+    "commit": "19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9",
+    "paths": [
+      "skills/disciplines/game-ai/SKILL.md",
+      "skills/disciplines/save-systems/SKILL.md"
+    ]
+  },
+  "auditCriteria": [
+    "AUD-024",
+    "AUD-025"
+  ],
+  "closesGlobalAuditCriteria": false,
+  "browserExecuted": false,
+  "humanTesters": 0,
+  "visualFidelity1to1Verified": false,
+  "hardwarePerformanceMeasured": false,
+  "files": [
+    {
+      "path": "js/battlefield/BattleActorBridge.js",
+      "bytes": 16067,
+      "sha256": "4cdc58d4468c54c6bac40feec8fdce7f508266172ac1c6d2d13e5e2ccf7a1e94"
+    },
+    {
+      "path": "tests/extinction-carrier-autonomy.test.js",
+      "bytes": 11605,
+      "sha256": "ae59afab3a8d8eda03fa2503f4fd9662c6edf7c3a454b3a9010e2bb04e9023d1"
+    },
+    {
+      "path": "docs/qa/continuation-20261109/carrier/baseline-test-source.js",
+      "bytes": 9893,
+      "sha256": "080624387d8c36b780c3ca69656c57247a015aea39cdfc9f2551ddea9a178749"
+    },
+    {
+      "path": "docs/qa/continuation-20261109/carrier/initial-fixture-variant-mismatch.txt",
+      "bytes": 2906,
+      "sha256": "70a5d27968641397302884dbe727ecf2f15b86ace82e262e0892a58347b5166f"
+    },
+    {
+      "path": "docs/qa/continuation-20261109/carrier/baseline-before-flight-fix.txt",
+      "bytes": 1780,
+      "sha256": "b62bae22f1fc276c1c87d4e513f4244ee2df726c025905332c170148f9b755d0"
+    },
+    {
+      "path": "docs/qa/continuation-20261109/carrier/after-flight-fix.txt",
+      "bytes": 810,
+      "sha256": "0dc07f19ade4d6d20d0ea04a6eb7f71e7c050ac1005a617d81c2fbba8eb7305f"
+    },
+    {
+      "path": "docs/qa/continuation-20261109/carrier/final-autonomy-eight.txt",
+      "bytes": 1036,
+      "sha256": "ecbe6f1f44cfd98eb7e6b6efcfa191a82b6b271a0025f97bb72c83e59514f036"
+    },
+    {
+      "path": "docs/qa/continuation-20261109/carrier/targeted-regression.txt",
+      "bytes": 4141,
+      "sha256": "d5fa8abb6c2bd85a351d6d0eddfc1c1950d3b503e4690ba59e0e08dda6850231"
+    }
+  ]
+}

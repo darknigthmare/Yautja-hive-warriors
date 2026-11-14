@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "5089228a12ac2985ef03e72782fd29e8687f6b33",
+  "scope": "Read-only review of implemented contracts and existing CPU evidence; integrated four-feature browser pass on this new build still pending.",
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "criteria": {
+    "AUD-039": {
+      "statusRecommendation": "À valider",
+      "review": "APC/Cheyenne disposent de HP/munitions/sorties finis, destruction réellement ciblable, collider retiré, reprise sans recharge et contrôle physique du ciel avant/pendant les frappes. Les trois frappes héritées autrefois non gardées partagent désormais cette autorité de lieu/époque/toit, contrôlent les empreintes et les vraies cibles ; le barrage refuse avant la dépense d’honneur et son boss direct est borné à60unités. Les six cas toiture,29régressions et14routeur main couvrent le défaut identifié. Les pouvoirs hérités gardent leurs coûts/cooldowns existants ; aucun nouvel inventaire de munitions ni fidélité au cinéma n’est revendiqué.",
+      "pending": "Quatre scénarios intégrés du nouveau gel et contrôle des captures/appuis, sans confondre CPU et rendu."
+    },
+    "AUD-126": {
+      "statusRecommendation": "À valider",
+      "review": "Dix contrats corrigés et testés, vraies ressources Player flèches/frappes, mobilité×1,3, effets thermique/acide bornés, pistolet visé/LOS, boue une fois par entrée et feu/souffle distincts. Main projette une vraie flèche non perforante, roue J2 et checkpoint imbriqué/scène sont branchés. Le SentryGun object false qui absorbait E est corrigé et couvert par14tests routeur. Textes Sarii explicitement ordres adaptés pour le jeu et stock Feral nommé fléchettes ; Sariska/0°C non certifiés retirés des promesses visibles.",
+      "pending": "Recette intégrée Prey du nouveau build pour confirmer le vrai routage E, les stocks et les prompts visibles."
+    }
+  },
+  "evidence": [
+    {
+      "path": "docs/qa/finite-supports-20261028/validation.json",
+      "sha256": "dbc65562d6e97971143241237f856a3e131d8cbb09ca195e1b86411ae0c4960c"
+    },
+    {
+      "path": "docs/qa/pr3-next-20261028/actor-targeting/manifest.json",
+      "sha256": "dc5c76a31eb2ddccfb1a2b83ff510f168b87e1b3b2fb81589bfcbb503028801f"
+    },
+    {
+      "path": "docs/qa/pr3-next-20261028/legacy-airstrikes/manifest.json",
+      "sha256": "a7e8dcda05ef2409b120a7a5b8cafdf579b270e08b05a1ee21c9ae182f4bed2f"
+    },
+    {
+      "path": "docs/qa/pr3-next-20261028/legacy-airstrikes/validation.json",
+      "sha256": "59ebf63381854bbc03f22ca7e05dd619895a083c1771087fd73bc999ccf036d8"
+    },
+    {
+      "path": "docs/qa/pr3-next-20261028/runtime-wiring/router-air-fix-manifest.json",
+      "sha256": "d98c2a0d5da7ee3b021b794c5bf00a8f95afcfb2412e714fcb9c4061775c0971"
+    },
+    {
+      "path": "docs/qa/pr3-next-20261028/prey-player-reviewed/report.json",
+      "sha256": "0fd8e275e4ceff8bd03866eda416f0212d478e980b791c915062dc89f854cacf"
+    },
+    {
+      "path": "docs/qa/pr3-next-20261028/prey-checkpoint-contracts/report.json",
+      "sha256": "28d5c55761232c8bb35c9d848bc80b7fd7e27fc13e60225f482cc5cbea5e392c"
+    }
+  ],
+  "sourcesReviewed": {
+    "js/engine/LegacyAirstrikePolicy.js": "9f77a3d691be083b728605150aeb6456f833277c1883d719849acec7d3ee3790",
+    "js/engine/OrbitalStrike.js": "4b6619d239162b62a0b2d00ab4ccbc651f6b76150722df735b96daf82c3c2241",
+    "js/entities/Player.js": "b418163f1e29421adaa5a1c8b732dbc00fd500475d5cc5a3d1d41f119c7d5121",
+    "js/main.js": "162dbb1147256f251baebbfe1dbd8e545747f51a5ec5330c526189ef98659204",
+    "index.html": "c99f31fa9c18b17552df157e521196f7e4d1b3daf7a7f5e8fccb025d948040c7",
+    "js/entities/ReferenceEnvironmentMechanisms.js": "1b1333ecd8370367a43aa98b2e8d2c544140fca37e51f6a20f017ae741ef5087"
+  }
+}

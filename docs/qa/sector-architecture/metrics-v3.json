@@ -1,0 +1,38 @@
+{
+  "version": 3,
+  "automated": true,
+  "humanTesters": 0,
+  "counts": "Potential shared-scene surfaces before per-camera frustum culling; six solo positions and insertion-plus-second-sector cooperative positions, barriers still closed.",
+  "levels": [
+    {
+      "type": "forest",
+      "maximumTriangles": 465786,
+      "maximumPotentialSubmissions": 171
+    },
+    {
+      "type": "hive",
+      "maximumTriangles": 110598,
+      "maximumPotentialSubmissions": 225
+    },
+    {
+      "type": "temple",
+      "maximumTriangles": 67406,
+      "maximumPotentialSubmissions": 221
+    },
+    {
+      "type": "rooftop",
+      "maximumTriangles": 89150,
+      "maximumPotentialSubmissions": 199
+    },
+    {
+      "type": "jungle",
+      "maximumTriangles": 355054,
+      "maximumPotentialSubmissions": 167
+    },
+    {
+      "type": "station",
+      "maximumTriangles": 115454,
+      "maximumPotentialSubmissions": 229
+    }
+  ]
+}

@@ -1,0 +1,108 @@
+{
+  "files": [
+    {
+      "path": "antarctic_pyramid-defeat.png",
+      "sha256": "d0297174941b9559a169640c60b4bd57328d359a8792ce55a38bd7659cde7ab9"
+    },
+    {
+      "path": "antarctic_pyramid-victory.png",
+      "sha256": "9ac453dfd04d9a8d4289cde05f6c42cb6fe9dd36a766b9fb8c4902b1a250be7e"
+    },
+    {
+      "path": "charon_rogue_base-defeat.png",
+      "sha256": "0eba596a9fa71e0bfe66d5036a0ae10ad4732de5fdaf6e2a2b7ed268d673857a"
+    },
+    {
+      "path": "charon_rogue_base-victory.png",
+      "sha256": "ae1082d7ae079e26016952b54fa2bbbc6e75fdc4653498be1010f5fd87f692ac"
+    },
+    {
+      "path": "game_preserve_planet-defeat.png",
+      "sha256": "9520aa3fda93c1a4e85dda3ef97a901f9537a0066b24e2b0035d311c40464168"
+    },
+    {
+      "path": "game_preserve_planet-victory.png",
+      "sha256": "1f6a18231acc2f0cb325d0779bdc163a4559cb7f1e6324f7f691e78f22efae3e"
+    },
+    {
+      "path": "gunnison_forest-defeat.png",
+      "sha256": "005d500127140c354513eb5e9db6f94aa827fc5d5dbdec27abc8469a07363cfc"
+    },
+    {
+      "path": "gunnison_forest-victory.png",
+      "sha256": "deab874a76b97df1724c47b2ca4b42284de20243681c422238f5f4872f36169f"
+    },
+    {
+      "path": "helper-source-0.mjs",
+      "sha256": "c8eb455cecb143acd04150aad396cbef655de84a6e6016b258484b8fbb93c4c0"
+    },
+    {
+      "path": "helper-source-1.mjs",
+      "sha256": "8fcbdcf2876f1127c7afb77931fdcc3fbd85457ef1757029ce42b50f7e3fe98d"
+    },
+    {
+      "path": "helper-source-2.mjs",
+      "sha256": "e62b36a664dd2fadaee8804fc70b75d7afa10ebd2345abdb645e806a7b899a43"
+    },
+    {
+      "path": "killer_of_killers_arena-defeat.png",
+      "sha256": "5aae1a7aced6628415e88b2dd46d0614a8e518cc3d0c937f3e674be2ee7aefe2"
+    },
+    {
+      "path": "killer_of_killers_arena-victory.png",
+      "sha256": "2a6f554da0b3b1f7e3baad8d356c9481b978258069c7870d3e6f87de5228798e"
+    },
+    {
+      "path": "la_rooftops-defeat.png",
+      "sha256": "a2f84c670c6efb0e8962d4c4a34a0cddd73a1f55347f86f3f13d6a796bc82e15"
+    },
+    {
+      "path": "la_rooftops-victory.png",
+      "sha256": "c29793ac7c58633666d461b9e3ad226aa79f9bbd1c6cedead8b6ecac40fde47b"
+    },
+    {
+      "path": "prey_comanche_territory-defeat.png",
+      "sha256": "069372f442916c80f4bb4b94156d038c2fed7e27aebdf55ace5ce398ac664f54"
+    },
+    {
+      "path": "prey_comanche_territory-victory.png",
+      "sha256": "54ec3a592f37c29a9cdb1cba0793a7939d17881abd93dd46cd900342c6c41cad"
+    },
+    {
+      "path": "report.json",
+      "sha256": "d66947819d07af603bfd5fb4e07c47132015ef4fb2a02d790690fc1f5296c71c"
+    },
+    {
+      "path": "romulus_station-defeat.png",
+      "sha256": "466c5dab6cfea87fa2ae37664f9209dc225a53884fe36727cf98cd4d3014f9ea"
+    },
+    {
+      "path": "romulus_station-victory.png",
+      "sha256": "4943c95efe0e1656b06574b6b5b1165c2ea5e7fc626948d39aadad6682ba7544"
+    },
+    {
+      "path": "stargazer_facility-defeat.png",
+      "sha256": "c8320b8309fdd5d302a9d38eb474b0c84efce676b1e7bbaf574527e8b0a099d3"
+    },
+    {
+      "path": "stargazer_facility-victory.png",
+      "sha256": "15825c91f96dbcf292ecb4adcfb95fddbcf1110197ee0b8255979414874ab8ac"
+    },
+    {
+      "path": "val_verde_jungle-defeat.png",
+      "sha256": "668c9728591322e4204fbb7bf7101c2950e346b6a62834278b9a7f5993fcd0cb"
+    },
+    {
+      "path": "val_verde_jungle-victory.png",
+      "sha256": "49728e0b1429d615595ea2dcf0a8ec29226c8be8cdfd2d6bd0fd0fae356d8d61"
+    },
+    {
+      "path": "xenomorph_prime-defeat.png",
+      "sha256": "cc2fae18f5b80b214e6bdb50d01d63820bcefd0606951dde774f0a9a0de96168"
+    },
+    {
+      "path": "xenomorph_prime-victory.png",
+      "sha256": "7d1d861de209e279c64d26f82950f0f11a9ad700389fbfc8d962acb830e201f4"
+    }
+  ]
+}

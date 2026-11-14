@@ -1,0 +1,10053 @@
+{
+ "recette": "REC-004",
+ "titre": "Conservation des effectifs et catégories d'entités",
+ "source": "docs/audits/2026-10-26/Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.xlsx#Validation!REC-004",
+ "dateExecution": "2026-11-14",
+ "commit": "3af4819a999137f5fd930aa9b688c8c9db58f113",
+ "sourcesJsNonCommitees": [
+  " M js/data/BattleCatalog.js",
+  " M js/entities/Synthetics.js"
+ ],
+ "graine": {
+  "mapSeed": 0,
+  "pasSimulation": 0.25,
+  "horloge": "temps simulé, aucun Math.random dans BattleSimulation"
+ },
+ "commande": "node --test tests/recette-rec-004.test.js",
+ "preuveVideo": "non produite — preuve par journal de simulation",
+ "scenarios": {
+  "EFF-03": {
+   "operation": "AFF-18",
+   "budget": {
+    "id": "EFF-03",
+    "ennemi": {
+     "active": 128,
+     "distant": 512,
+     "reserve": 360,
+     "total": 1000
+    },
+    "allie": {
+     "active": 16,
+     "distant": 24,
+     "reserve": 8,
+     "total": 48
+    },
+    "joueurs": 1
+   },
+   "configDigest": "83944645",
+   "dureeSimulee": 600,
+   "script": [
+    {
+     "type": "test_script",
+     "time": 0,
+     "label": "retraite d’un groupe engagé sur le front B vers A (traversée de secteur)",
+     "result": {
+      "groupId": "AFF-18:player_clan:15",
+      "answer": {
+       "accepted": true,
+       "order": {
+        "type": "retreat",
+        "frontId": "front_a",
+        "issuer": "player1",
+        "issuedAt": 0,
+        "sequence": 2
+       },
+       "path": [
+        {
+         "routeId": "route_0",
+         "from": "front_b",
+         "to": "front_a"
+        }
+       ]
+      }
+     }
+    },
+    {
+     "type": "test_script",
+     "time": 0.5,
+     "label": "blessure et mise hors de combat d’un allié détaillé",
+     "result": {
+      "unitId": "AFF-18:player_clan:48:1",
+      "hp": 90
+     }
+    },
+    {
+     "type": "test_script",
+     "time": 0.75,
+     "label": "mort confirmée par le joueur (callback acteur, doublé)",
+     "result": {
+      "unitId": "AFF-18:hive:4:0",
+      "accepted": true,
+      "duplicate": false
+     }
+    },
+    {
+     "type": "test_script",
+     "time": 1,
+     "label": "relevé du blessé (état comptable et force de combat du groupe)",
+     "result": {
+      "t": 1,
+      "unite": {
+       "id": "AFF-18:player_clan:48:1",
+       "etat": "active",
+       "hp": 90,
+       "incapacitated": true
+      },
+      "groupe": {
+       "id": "AFF-18:player_clan:48",
+       "alive": 2,
+       "combatReady": 1,
+       "incapacitated": 1
+      }
+     }
+    },
+    {
+     "type": "test_script",
+     "time": 1,
+     "label": "interaction civils : libérer les réfugiés (GRP-28 au format 8)",
+     "result": {
+      "accepted": true,
+      "taskId": "refugees",
+      "feedback": "Regrouper les survivants du refuge — restez à portée."
+     }
+    },
+    {
+     "type": "test_script",
+     "time": 1.5,
+     "label": "évacuation d’un groupe allié détaillé du front A (sortie)",
+     "result": {
+      "groupId": "AFF-18:player_clan:49",
+      "accepted": true
+     }
+    },
+    {
+     "type": "test_script",
+     "time": 200,
+     "label": "le joueur s’éloigne vers le front B (changement de niveau de détail)",
+     "result": {
+      "position": [
+       0,
+       1668
+      ]
+     }
+    }
+   ],
+   "avant": {
+    "hive": {
+     "allocated": 1000,
+     "active": 0,
+     "distant": 640,
+     "reserve": 360,
+     "dead": 0,
+     "evacuated": 0,
+     "captured": 0,
+     "wounded": 0,
+     "aboardAPC": 0
+    },
+    "player_clan": {
+     "allocated": 48,
+     "active": 0,
+     "distant": 40,
+     "reserve": 8,
+     "dead": 0,
+     "evacuated": 0,
+     "captured": 0,
+     "wounded": 0,
+     "aboardAPC": 0
+    }
+   },
+   "apres": {
+    "hive": {
+     "allocated": 1000,
+     "active": 24,
+     "distant": 726,
+     "reserve": 248,
+     "dead": 2,
+     "evacuated": 0,
+     "captured": 0,
+     "wounded": 0,
+     "aboardAPC": 0
+    },
+    "player_clan": {
+     "allocated": 48,
+     "active": 2,
+     "distant": 0,
+     "reserve": 0,
+     "dead": 44,
+     "evacuated": 2,
+     "captured": 0,
+     "wounded": 0,
+     "aboardAPC": 0
+    }
+   },
+   "rapprochement": {
+    "hive": {
+     "initialAlloue": 1000,
+     "initialDeploye": 640,
+     "initialReserve": 360,
+     "entreesExterieures": 0,
+     "arriveesDepuisReserveEnregistrees": 112,
+     "etatsFinaux": {
+      "present": 750,
+      "reserve": 248,
+      "blesses": 0,
+      "aBordAPC": 0
+     },
+     "pertes": 2,
+     "sorties": {
+      "evacues": 0,
+      "captures": 0
+     },
+     "equation": "1000 + 0 = 998 + 2 + 0",
+     "equilibre": true
+    },
+    "player_clan": {
+     "initialAlloue": 48,
+     "initialDeploye": 40,
+     "initialReserve": 8,
+     "entreesExterieures": 0,
+     "arriveesDepuisReserveEnregistrees": 8,
+     "etatsFinaux": {
+      "present": 2,
+      "reserve": 0,
+      "blesses": 0,
+      "aBordAPC": 0
+     },
+     "pertes": 44,
+     "sorties": {
+      "evacues": 2,
+      "captures": 0
+     },
+     "equation": "48 + 0 = 2 + 44 + 2",
+     "equilibre": true
+    }
+   },
+   "registreHorodate": [
+    {
+     "t": 30,
+     "parFaction": {
+      "hive": {
+       "allocated": 1000,
+       "active": 23,
+       "distant": 624,
+       "reserve": 352,
+       "dead": 1,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "player_clan": {
+       "allocated": 48,
+       "active": 8,
+       "distant": 8,
+       "reserve": 2,
+       "dead": 28,
+       "evacuated": 2,
+       "captured": 0,
+       "wounded": 1,
+       "aboardAPC": 0
+      }
+     }
+    },
+    {
+     "t": 60,
+     "parFaction": {
+      "hive": {
+       "allocated": 1000,
+       "active": 23,
+       "distant": 632,
+       "reserve": 344,
+       "dead": 1,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "player_clan": {
+       "allocated": 48,
+       "active": 8,
+       "distant": 10,
+       "reserve": 0,
+       "dead": 28,
+       "evacuated": 2,
+       "captured": 0,
+       "wounded": 1,
+       "aboardAPC": 0
+      }
+     }
+    },
+    {
+     "t": 90,
+     "parFaction": {
+      "hive": {
+       "allocated": 1000,
+       "active": 23,
+       "distant": 632,
+       "reserve": 344,
+       "dead": 1,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "player_clan": {
+       "allocated": 48,
+       "active": 8,
+       "distant": 10,
+       "reserve": 0,
+       "dead": 28,
+       "evacuated": 2,
+       "captured": 0,
+       "wounded": 1,
+       "aboardAPC": 0
+      }
+     }
+    },
+    {
+     "t": 120,
+     "parFaction": {
+      "hive": {
+       "allocated": 1000,
+       "active": 23,
+       "distant": 640,
+       "reserve": 336,
+       "dead": 1,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "player_clan": {
+       "allocated": 48,
+       "active": 8,
+       "distant": 10,
+       "reserve": 0,
+       "dead": 28,
+       "evacuated": 2,
+       "captured": 0,
+       "wounded": 1,
+       "aboardAPC": 0
+      }
+     }
+    },
+    {
+     "t": 150,
+     "parFaction": {
+      "hive": {
+       "allocated": 1000,
+       "active": 23,
+       "distant": 648,
+       "reserve": 328,
+       "dead": 1,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "player_clan": {
+       "allocated": 48,
+       "active": 8,
+       "distant": 10,
+       "reserve": 0,
+       "dead": 28,
+       "evacuated": 2,
+       "captured": 0,
+       "wounded": 1,
+       "aboardAPC": 0
+      }
+     }
+    },
+    {
+     "t": 180,
+     "parFaction": {
+      "hive": {
+       "allocated": 1000,
+       "active": 23,
+       "distant": 648,
+       "reserve": 328,
+       "dead": 1,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "player_clan": {
+       "allocated": 48,
+       "active": 8,
+       "distant": 10,
+       "reserve": 0,
+       "dead": 28,
+       "evacuated": 2,
+       "captured": 0,
+       "wounded": 1,
+       "aboardAPC": 0
+      }
+     }
+    },
+    {
+     "t": 210,
+     "parFaction": {
+      "hive": {
+       "allocated": 1000,
+       "active": 24,
+       "distant": 654,
+       "reserve": 320,
+       "dead": 2,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "player_clan": {
+       "allocated": 48,
+       "active": 2,
+       "distant": 8,
+       "reserve": 0,
+       "dead": 36,
+       "evacuated": 2,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      }
+     }
+    },
+    {
+     "t": 240,
+     "parFaction": {
+      "hive": {
+       "allocated": 1000,
+       "active": 24,
+       "distant": 662,
+       "reserve": 312,
+       "dead": 2,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "player_clan": {
+       "allocated": 48,
+       "active": 2,
+       "distant": 8,
+       "reserve": 0,
+       "dead": 36,
+       "evacuated": 2,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      }
+     }
+    },
+    {
+     "t": 270,
+     "parFaction": {
+      "hive": {
+       "allocated": 1000,
+       "active": 24,
+       "distant": 662,
+       "reserve": 312,
+       "dead": 2,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "player_clan": {
+       "allocated": 48,
+       "active": 2,
+       "distant": 8,
+       "reserve": 0,
+       "dead": 36,
+       "evacuated": 2,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      }
+     }
+    },
+    {
+     "t": 300,
+     "parFaction": {
+      "hive": {
+       "allocated": 1000,
+       "active": 24,
+       "distant": 670,
+       "reserve": 304,
+       "dead": 2,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "player_clan": {
+       "allocated": 48,
+       "active": 2,
+       "distant": 6,
+       "reserve": 0,
+       "dead": 38,
+       "evacuated": 2,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      }
+     }
+    },
+    {
+     "t": 330,
+     "parFaction": {
+      "hive": {
+       "allocated": 1000,
+       "active": 24,
+       "distant": 678,
+       "reserve": 296,
+       "dead": 2,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "player_clan": {
+       "allocated": 48,
+       "active": 2,
+       "distant": 0,
+       "reserve": 0,
+       "dead": 44,
+       "evacuated": 2,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      }
+     }
+    },
+    {
+     "t": 360,
+     "parFaction": {
+      "hive": {
+       "allocated": 1000,
+       "active": 24,
+       "distant": 678,
+       "reserve": 296,
+       "dead": 2,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "player_clan": {
+       "allocated": 48,
+       "active": 2,
+       "distant": 0,
+       "reserve": 0,
+       "dead": 44,
+       "evacuated": 2,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      }
+     }
+    },
+    {
+     "t": 390,
+     "parFaction": {
+      "hive": {
+       "allocated": 1000,
+       "active": 24,
+       "distant": 686,
+       "reserve": 288,
+       "dead": 2,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "player_clan": {
+       "allocated": 48,
+       "active": 2,
+       "distant": 0,
+       "reserve": 0,
+       "dead": 44,
+       "evacuated": 2,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      }
+     }
+    },
+    {
+     "t": 420,
+     "parFaction": {
+      "hive": {
+       "allocated": 1000,
+       "active": 24,
+       "distant": 694,
+       "reserve": 280,
+       "dead": 2,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "player_clan": {
+       "allocated": 48,
+       "active": 2,
+       "distant": 0,
+       "reserve": 0,
+       "dead": 44,
+       "evacuated": 2,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      }
+     }
+    },
+    {
+     "t": 450,
+     "parFaction": {
+      "hive": {
+       "allocated": 1000,
+       "active": 24,
+       "distant": 694,
+       "reserve": 280,
+       "dead": 2,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "player_clan": {
+       "allocated": 48,
+       "active": 2,
+       "distant": 0,
+       "reserve": 0,
+       "dead": 44,
+       "evacuated": 2,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      }
+     }
+    },
+    {
+     "t": 480,
+     "parFaction": {
+      "hive": {
+       "allocated": 1000,
+       "active": 24,
+       "distant": 702,
+       "reserve": 272,
+       "dead": 2,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "player_clan": {
+       "allocated": 48,
+       "active": 2,
+       "distant": 0,
+       "reserve": 0,
+       "dead": 44,
+       "evacuated": 2,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      }
+     }
+    },
+    {
+     "t": 510,
+     "parFaction": {
+      "hive": {
+       "allocated": 1000,
+       "active": 24,
+       "distant": 710,
+       "reserve": 264,
+       "dead": 2,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "player_clan": {
+       "allocated": 48,
+       "active": 2,
+       "distant": 0,
+       "reserve": 0,
+       "dead": 44,
+       "evacuated": 2,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      }
+     }
+    },
+    {
+     "t": 540,
+     "parFaction": {
+      "hive": {
+       "allocated": 1000,
+       "active": 24,
+       "distant": 710,
+       "reserve": 264,
+       "dead": 2,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "player_clan": {
+       "allocated": 48,
+       "active": 2,
+       "distant": 0,
+       "reserve": 0,
+       "dead": 44,
+       "evacuated": 2,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      }
+     }
+    },
+    {
+     "t": 570,
+     "parFaction": {
+      "hive": {
+       "allocated": 1000,
+       "active": 24,
+       "distant": 718,
+       "reserve": 256,
+       "dead": 2,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "player_clan": {
+       "allocated": 48,
+       "active": 2,
+       "distant": 0,
+       "reserve": 0,
+       "dead": 44,
+       "evacuated": 2,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      }
+     }
+    },
+    {
+     "t": 600,
+     "parFaction": {
+      "hive": {
+       "allocated": 1000,
+       "active": 24,
+       "distant": 726,
+       "reserve": 248,
+       "dead": 2,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "player_clan": {
+       "allocated": 48,
+       "active": 2,
+       "distant": 0,
+       "reserve": 0,
+       "dead": 44,
+       "evacuated": 2,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      }
+     }
+    }
+   ],
+   "registreParGroupeFinal": {
+    "colonnes": [
+     "groupe",
+     "faction",
+     "front",
+     "active",
+     "distant",
+     "reserve",
+     "dead",
+     "evacuated",
+     "captured",
+     "blesses"
+    ],
+    "lignes": [
+     [
+      "AFF-18:hive:0",
+      "hive",
+      "front_a",
+      0,
+      7,
+      0,
+      1,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:1",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:2",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:3",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:4",
+      "hive",
+      "front_a",
+      0,
+      7,
+      0,
+      1,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:5",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:player_clan:6",
+      "player_clan",
+      "front_a",
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:player_clan:7",
+      "player_clan",
+      "front_a",
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:player_clan:8",
+      "player_clan",
+      "front_a",
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:player_clan:9",
+      "player_clan",
+      "front_a",
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:10",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:11",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:12",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:13",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:14",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:player_clan:15",
+      "player_clan",
+      "front_b",
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:player_clan:16",
+      "player_clan",
+      "front_b",
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:17",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:18",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:19",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:20",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:21",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:player_clan:22",
+      "player_clan",
+      "front_c",
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:player_clan:23",
+      "player_clan",
+      "front_c",
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:24",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:25",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:26",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:27",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:28",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:29",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:30",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:31",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:32",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:33",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:34",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:35",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:36",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:37",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:38",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:39",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:40",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:41",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:42",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:43",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:44",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:45",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:46",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:47",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:player_clan:48",
+      "player_clan",
+      "front_a",
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:player_clan:49",
+      "player_clan",
+      "front_a",
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0
+     ],
+     [
+      "AFF-18:player_clan:50",
+      "player_clan",
+      "front_a",
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:player_clan:51",
+      "player_clan",
+      "front_a",
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:52",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:53",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:54",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:55",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:56",
+      "hive",
+      "front_b",
+      8,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:57",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:58",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:59",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:60",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:61",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:62",
+      "hive",
+      "front_b",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:63",
+      "hive",
+      "front_b",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:64",
+      "hive",
+      "front_b",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:65",
+      "hive",
+      "front_b",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:66",
+      "hive",
+      "front_b",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:67",
+      "hive",
+      "front_b",
+      8,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:68",
+      "hive",
+      "front_b",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:69",
+      "hive",
+      "front_b",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:70",
+      "hive",
+      "front_b",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:71",
+      "hive",
+      "front_b",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:player_clan:72",
+      "player_clan",
+      "front_b",
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:player_clan:73",
+      "player_clan",
+      "front_b",
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:player_clan:74",
+      "player_clan",
+      "front_b",
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:player_clan:75",
+      "player_clan",
+      "front_b",
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:76",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:77",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:78",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:79",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:80",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:81",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:82",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:83",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:84",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:85",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:86",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:87",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:88",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:89",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:90",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:91",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:92",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:93",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:94",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:95",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:player_clan:96",
+      "player_clan",
+      "front_c",
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:player_clan:97",
+      "player_clan",
+      "front_c",
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:player_clan:98",
+      "player_clan",
+      "front_c",
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:player_clan:99",
+      "player_clan",
+      "front_c",
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:100",
+      "hive",
+      "front_b",
+      8,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:101",
+      "hive",
+      "front_b",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:102",
+      "hive",
+      "front_b",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:103",
+      "hive",
+      "front_b",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:104",
+      "hive",
+      "front_b",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:105",
+      "hive",
+      "front_b",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:106",
+      "hive",
+      "front_b",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:107",
+      "hive",
+      "front_b",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:108",
+      "hive",
+      "front_b",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:109",
+      "hive",
+      "front_b",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:110",
+      "hive",
+      "front_b",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:111",
+      "hive",
+      "front_b",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:112",
+      "hive",
+      "front_b",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:113",
+      "hive",
+      "front_b",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:114",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:115",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:116",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:117",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:118",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:119",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:120",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:121",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:122",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:123",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:124",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:125",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:126",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:127",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:128",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:129",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:130",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:131",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:132",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:133",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:134",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:135",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:136",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:137",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:138",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:139",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:140",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:141",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:142",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:143",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:hive:144",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:player_clan:145",
+      "player_clan",
+      "front_b",
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:player_clan:146",
+      "player_clan",
+      "front_b",
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:player_clan:147",
+      "player_clan",
+      "front_b",
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0
+     ],
+     [
+      "AFF-18:player_clan:148",
+      "player_clan",
+      "front_b",
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0
+     ]
+    ]
+   },
+   "transitionsIndividuelles": {
+    "colonnes": [
+     "t",
+     "id",
+     "faction",
+     "groupe",
+     "avant",
+     "apres"
+    ],
+    "total": 251,
+    "lignes": [
+     [
+      0.25,
+      "AFF-18:hive:4:0",
+      "hive",
+      "AFF-18:hive:4",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "AFF-18:hive:4:1",
+      "hive",
+      "AFF-18:hive:4",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "AFF-18:hive:4:2",
+      "hive",
+      "AFF-18:hive:4",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "AFF-18:hive:4:3",
+      "hive",
+      "AFF-18:hive:4",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "AFF-18:hive:4:4",
+      "hive",
+      "AFF-18:hive:4",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "AFF-18:hive:4:5",
+      "hive",
+      "AFF-18:hive:4",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "AFF-18:hive:4:6",
+      "hive",
+      "AFF-18:hive:4",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "AFF-18:hive:4:7",
+      "hive",
+      "AFF-18:hive:4",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "AFF-18:player_clan:6:1",
+      "player_clan",
+      "AFF-18:player_clan:6",
+      "distant",
+      "dead"
+     ],
+     [
+      0.25,
+      "AFF-18:player_clan:7:1",
+      "player_clan",
+      "AFF-18:player_clan:7",
+      "distant",
+      "dead"
+     ],
+     [
+      0.25,
+      "AFF-18:player_clan:16:1",
+      "player_clan",
+      "AFF-18:player_clan:16",
+      "distant",
+      "dead"
+     ],
+     [
+      0.25,
+      "AFF-18:player_clan:22:1",
+      "player_clan",
+      "AFF-18:player_clan:22",
+      "distant",
+      "dead"
+     ],
+     [
+      0.25,
+      "AFF-18:player_clan:23:1",
+      "player_clan",
+      "AFF-18:player_clan:23",
+      "distant",
+      "dead"
+     ],
+     [
+      0.25,
+      "AFF-18:hive:34:0",
+      "hive",
+      "AFF-18:hive:34",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "AFF-18:hive:34:1",
+      "hive",
+      "AFF-18:hive:34",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "AFF-18:hive:34:2",
+      "hive",
+      "AFF-18:hive:34",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "AFF-18:hive:34:3",
+      "hive",
+      "AFF-18:hive:34",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "AFF-18:hive:34:4",
+      "hive",
+      "AFF-18:hive:34",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "AFF-18:hive:34:5",
+      "hive",
+      "AFF-18:hive:34",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "AFF-18:hive:34:6",
+      "hive",
+      "AFF-18:hive:34",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "AFF-18:hive:34:7",
+      "hive",
+      "AFF-18:hive:34",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "AFF-18:hive:36:0",
+      "hive",
+      "AFF-18:hive:36",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "AFF-18:hive:36:1",
+      "hive",
+      "AFF-18:hive:36",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "AFF-18:hive:36:2",
+      "hive",
+      "AFF-18:hive:36",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "AFF-18:hive:36:3",
+      "hive",
+      "AFF-18:hive:36",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "AFF-18:hive:36:4",
+      "hive",
+      "AFF-18:hive:36",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "AFF-18:hive:36:5",
+      "hive",
+      "AFF-18:hive:36",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "AFF-18:hive:36:6",
+      "hive",
+      "AFF-18:hive:36",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "AFF-18:hive:36:7",
+      "hive",
+      "AFF-18:hive:36",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "AFF-18:player_clan:48:0",
+      "player_clan",
+      "AFF-18:player_clan:48",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "AFF-18:player_clan:48:1",
+      "player_clan",
+      "AFF-18:player_clan:48",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "AFF-18:player_clan:49:0",
+      "player_clan",
+      "AFF-18:player_clan:49",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "AFF-18:player_clan:49:1",
+      "player_clan",
+      "AFF-18:player_clan:49",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "AFF-18:player_clan:50:0",
+      "player_clan",
+      "AFF-18:player_clan:50",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "AFF-18:player_clan:50:1",
+      "player_clan",
+      "AFF-18:player_clan:50",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "AFF-18:player_clan:51:0",
+      "player_clan",
+      "AFF-18:player_clan:51",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "AFF-18:player_clan:51:1",
+      "player_clan",
+      "AFF-18:player_clan:51",
+      "distant",
+      "active"
+     ],
+     [
+      0.5,
+      "AFF-18:player_clan:8:1",
+      "player_clan",
+      "AFF-18:player_clan:8",
+      "distant",
+      "dead"
+     ],
+     [
+      0.5,
+      "AFF-18:player_clan:72:1",
+      "player_clan",
+      "AFF-18:player_clan:72",
+      "distant",
+      "dead"
+     ],
+     [
+      0.5,
+      "AFF-18:player_clan:73:1",
+      "player_clan",
+      "AFF-18:player_clan:73",
+      "distant",
+      "dead"
+     ],
+     [
+      0.5,
+      "AFF-18:player_clan:96:1",
+      "player_clan",
+      "AFF-18:player_clan:96",
+      "distant",
+      "dead"
+     ],
+     [
+      0.5,
+      "AFF-18:player_clan:97:1",
+      "player_clan",
+      "AFF-18:player_clan:97",
+      "distant",
+      "dead"
+     ],
+     [
+      0.75,
+      "AFF-18:player_clan:9:1",
+      "player_clan",
+      "AFF-18:player_clan:9",
+      "distant",
+      "dead"
+     ],
+     [
+      0.75,
+      "AFF-18:player_clan:74:1",
+      "player_clan",
+      "AFF-18:player_clan:74",
+      "distant",
+      "dead"
+     ],
+     [
+      0.75,
+      "AFF-18:player_clan:98:1",
+      "player_clan",
+      "AFF-18:player_clan:98",
+      "distant",
+      "dead"
+     ],
+     [
+      1,
+      "AFF-18:hive:4:0",
+      "hive",
+      "AFF-18:hive:4",
+      "active",
+      "dead"
+     ],
+     [
+      1,
+      "AFF-18:player_clan:75:1",
+      "player_clan",
+      "AFF-18:player_clan:75",
+      "distant",
+      "dead"
+     ],
+     [
+      1,
+      "AFF-18:player_clan:99:1",
+      "player_clan",
+      "AFF-18:player_clan:99",
+      "distant",
+      "dead"
+     ],
+     [
+      1.25,
+      "AFF-18:player_clan:6:0",
+      "player_clan",
+      "AFF-18:player_clan:6",
+      "distant",
+      "dead"
+     ],
+     [
+      1.25,
+      "AFF-18:player_clan:16:0",
+      "player_clan",
+      "AFF-18:player_clan:16",
+      "distant",
+      "dead"
+     ],
+     [
+      1.5,
+      "AFF-18:player_clan:7:0",
+      "player_clan",
+      "AFF-18:player_clan:7",
+      "distant",
+      "dead"
+     ],
+     [
+      1.5,
+      "AFF-18:player_clan:22:0",
+      "player_clan",
+      "AFF-18:player_clan:22",
+      "distant",
+      "dead"
+     ],
+     [
+      1.5,
+      "AFF-18:player_clan:72:0",
+      "player_clan",
+      "AFF-18:player_clan:72",
+      "distant",
+      "dead"
+     ],
+     [
+      1.75,
+      "AFF-18:player_clan:8:0",
+      "player_clan",
+      "AFF-18:player_clan:8",
+      "distant",
+      "active"
+     ],
+     [
+      1.75,
+      "AFF-18:player_clan:9:0",
+      "player_clan",
+      "AFF-18:player_clan:9",
+      "distant",
+      "active"
+     ],
+     [
+      1.75,
+      "AFF-18:player_clan:23:0",
+      "player_clan",
+      "AFF-18:player_clan:23",
+      "distant",
+      "dead"
+     ],
+     [
+      1.75,
+      "AFF-18:player_clan:49:0",
+      "player_clan",
+      "AFF-18:player_clan:49",
+      "active",
+      "evacuated"
+     ],
+     [
+      1.75,
+      "AFF-18:player_clan:49:1",
+      "player_clan",
+      "AFF-18:player_clan:49",
+      "active",
+      "evacuated"
+     ],
+     [
+      2,
+      "AFF-18:player_clan:73:0",
+      "player_clan",
+      "AFF-18:player_clan:73",
+      "distant",
+      "dead"
+     ],
+     [
+      2,
+      "AFF-18:player_clan:96:0",
+      "player_clan",
+      "AFF-18:player_clan:96",
+      "distant",
+      "dead"
+     ],
+     [
+      2.25,
+      "AFF-18:player_clan:74:0",
+      "player_clan",
+      "AFF-18:player_clan:74",
+      "distant",
+      "dead"
+     ],
+     [
+      2.25,
+      "AFF-18:player_clan:97:0",
+      "player_clan",
+      "AFF-18:player_clan:97",
+      "distant",
+      "dead"
+     ],
+     [
+      2.5,
+      "AFF-18:player_clan:75:0",
+      "player_clan",
+      "AFF-18:player_clan:75",
+      "distant",
+      "dead"
+     ],
+     [
+      2.5,
+      "AFF-18:player_clan:98:0",
+      "player_clan",
+      "AFF-18:player_clan:98",
+      "distant",
+      "dead"
+     ],
+     [
+      2.75,
+      "AFF-18:player_clan:99:0",
+      "player_clan",
+      "AFF-18:player_clan:99",
+      "distant",
+      "dead"
+     ],
+     [
+      11,
+      "AFF-18:hive:100:0",
+      "hive",
+      "AFF-18:hive:100",
+      "reserve",
+      "distant"
+     ],
+     [
+      11,
+      "AFF-18:hive:100:1",
+      "hive",
+      "AFF-18:hive:100",
+      "reserve",
+      "distant"
+     ],
+     [
+      11,
+      "AFF-18:hive:100:2",
+      "hive",
+      "AFF-18:hive:100",
+      "reserve",
+      "distant"
+     ],
+     [
+      11,
+      "AFF-18:hive:100:3",
+      "hive",
+      "AFF-18:hive:100",
+      "reserve",
+      "distant"
+     ],
+     [
+      11,
+      "AFF-18:hive:100:4",
+      "hive",
+      "AFF-18:hive:100",
+      "reserve",
+      "distant"
+     ],
+     [
+      11,
+      "AFF-18:hive:100:5",
+      "hive",
+      "AFF-18:hive:100",
+      "reserve",
+      "distant"
+     ],
+     [
+      11,
+      "AFF-18:hive:100:6",
+      "hive",
+      "AFF-18:hive:100",
+      "reserve",
+      "distant"
+     ],
+     [
+      11,
+      "AFF-18:hive:100:7",
+      "hive",
+      "AFF-18:hive:100",
+      "reserve",
+      "distant"
+     ],
+     [
+      11,
+      "AFF-18:player_clan:145:0",
+      "player_clan",
+      "AFF-18:player_clan:145",
+      "reserve",
+      "distant"
+     ],
+     [
+      11,
+      "AFF-18:player_clan:145:1",
+      "player_clan",
+      "AFF-18:player_clan:145",
+      "reserve",
+      "distant"
+     ],
+     [
+      19,
+      "AFF-18:player_clan:146:0",
+      "player_clan",
+      "AFF-18:player_clan:146",
+      "reserve",
+      "distant"
+     ],
+     [
+      19,
+      "AFF-18:player_clan:146:1",
+      "player_clan",
+      "AFF-18:player_clan:146",
+      "reserve",
+      "distant"
+     ],
+     [
+      27,
+      "AFF-18:player_clan:147:0",
+      "player_clan",
+      "AFF-18:player_clan:147",
+      "reserve",
+      "distant"
+     ],
+     [
+      27,
+      "AFF-18:player_clan:147:1",
+      "player_clan",
+      "AFF-18:player_clan:147",
+      "reserve",
+      "distant"
+     ],
+     [
+      35,
+      "AFF-18:player_clan:148:0",
+      "player_clan",
+      "AFF-18:player_clan:148",
+      "reserve",
+      "distant"
+     ],
+     [
+      35,
+      "AFF-18:player_clan:148:1",
+      "player_clan",
+      "AFF-18:player_clan:148",
+      "reserve",
+      "distant"
+     ],
+     [
+      51,
+      "AFF-18:hive:101:0",
+      "hive",
+      "AFF-18:hive:101",
+      "reserve",
+      "distant"
+     ],
+     [
+      51,
+      "AFF-18:hive:101:1",
+      "hive",
+      "AFF-18:hive:101",
+      "reserve",
+      "distant"
+     ],
+     [
+      51,
+      "AFF-18:hive:101:2",
+      "hive",
+      "AFF-18:hive:101",
+      "reserve",
+      "distant"
+     ],
+     [
+      51,
+      "AFF-18:hive:101:3",
+      "hive",
+      "AFF-18:hive:101",
+      "reserve",
+      "distant"
+     ],
+     [
+      51,
+      "AFF-18:hive:101:4",
+      "hive",
+      "AFF-18:hive:101",
+      "reserve",
+      "distant"
+     ],
+     [
+      51,
+      "AFF-18:hive:101:5",
+      "hive",
+      "AFF-18:hive:101",
+      "reserve",
+      "distant"
+     ],
+     [
+      51,
+      "AFF-18:hive:101:6",
+      "hive",
+      "AFF-18:hive:101",
+      "reserve",
+      "distant"
+     ],
+     [
+      51,
+      "AFF-18:hive:101:7",
+      "hive",
+      "AFF-18:hive:101",
+      "reserve",
+      "distant"
+     ],
+     [
+      99,
+      "AFF-18:hive:102:0",
+      "hive",
+      "AFF-18:hive:102",
+      "reserve",
+      "distant"
+     ],
+     [
+      99,
+      "AFF-18:hive:102:1",
+      "hive",
+      "AFF-18:hive:102",
+      "reserve",
+      "distant"
+     ],
+     [
+      99,
+      "AFF-18:hive:102:2",
+      "hive",
+      "AFF-18:hive:102",
+      "reserve",
+      "distant"
+     ],
+     [
+      99,
+      "AFF-18:hive:102:3",
+      "hive",
+      "AFF-18:hive:102",
+      "reserve",
+      "distant"
+     ],
+     [
+      99,
+      "AFF-18:hive:102:4",
+      "hive",
+      "AFF-18:hive:102",
+      "reserve",
+      "distant"
+     ],
+     [
+      99,
+      "AFF-18:hive:102:5",
+      "hive",
+      "AFF-18:hive:102",
+      "reserve",
+      "distant"
+     ],
+     [
+      99,
+      "AFF-18:hive:102:6",
+      "hive",
+      "AFF-18:hive:102",
+      "reserve",
+      "distant"
+     ],
+     [
+      99,
+      "AFF-18:hive:102:7",
+      "hive",
+      "AFF-18:hive:102",
+      "reserve",
+      "distant"
+     ],
+     [
+      139,
+      "AFF-18:hive:103:0",
+      "hive",
+      "AFF-18:hive:103",
+      "reserve",
+      "distant"
+     ],
+     [
+      139,
+      "AFF-18:hive:103:1",
+      "hive",
+      "AFF-18:hive:103",
+      "reserve",
+      "distant"
+     ],
+     [
+      139,
+      "AFF-18:hive:103:2",
+      "hive",
+      "AFF-18:hive:103",
+      "reserve",
+      "distant"
+     ],
+     [
+      139,
+      "AFF-18:hive:103:3",
+      "hive",
+      "AFF-18:hive:103",
+      "reserve",
+      "distant"
+     ],
+     [
+      139,
+      "AFF-18:hive:103:4",
+      "hive",
+      "AFF-18:hive:103",
+      "reserve",
+      "distant"
+     ],
+     [
+      139,
+      "AFF-18:hive:103:5",
+      "hive",
+      "AFF-18:hive:103",
+      "reserve",
+      "distant"
+     ],
+     [
+      139,
+      "AFF-18:hive:103:6",
+      "hive",
+      "AFF-18:hive:103",
+      "reserve",
+      "distant"
+     ],
+     [
+      139,
+      "AFF-18:hive:103:7",
+      "hive",
+      "AFF-18:hive:103",
+      "reserve",
+      "distant"
+     ],
+     [
+      187,
+      "AFF-18:hive:104:0",
+      "hive",
+      "AFF-18:hive:104",
+      "reserve",
+      "distant"
+     ],
+     [
+      187,
+      "AFF-18:hive:104:1",
+      "hive",
+      "AFF-18:hive:104",
+      "reserve",
+      "distant"
+     ],
+     [
+      187,
+      "AFF-18:hive:104:2",
+      "hive",
+      "AFF-18:hive:104",
+      "reserve",
+      "distant"
+     ],
+     [
+      187,
+      "AFF-18:hive:104:3",
+      "hive",
+      "AFF-18:hive:104",
+      "reserve",
+      "distant"
+     ],
+     [
+      187,
+      "AFF-18:hive:104:4",
+      "hive",
+      "AFF-18:hive:104",
+      "reserve",
+      "distant"
+     ],
+     [
+      187,
+      "AFF-18:hive:104:5",
+      "hive",
+      "AFF-18:hive:104",
+      "reserve",
+      "distant"
+     ],
+     [
+      187,
+      "AFF-18:hive:104:6",
+      "hive",
+      "AFF-18:hive:104",
+      "reserve",
+      "distant"
+     ],
+     [
+      187,
+      "AFF-18:hive:104:7",
+      "hive",
+      "AFF-18:hive:104",
+      "reserve",
+      "distant"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:0:1",
+      "hive",
+      "AFF-18:hive:0",
+      "distant",
+      "dead"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:4:1",
+      "hive",
+      "AFF-18:hive:4",
+      "active",
+      "distant"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:4:2",
+      "hive",
+      "AFF-18:hive:4",
+      "active",
+      "distant"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:4:3",
+      "hive",
+      "AFF-18:hive:4",
+      "active",
+      "distant"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:4:4",
+      "hive",
+      "AFF-18:hive:4",
+      "active",
+      "distant"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:4:5",
+      "hive",
+      "AFF-18:hive:4",
+      "active",
+      "distant"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:4:6",
+      "hive",
+      "AFF-18:hive:4",
+      "active",
+      "distant"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:4:7",
+      "hive",
+      "AFF-18:hive:4",
+      "active",
+      "distant"
+     ],
+     [
+      200.25,
+      "AFF-18:player_clan:8:0",
+      "player_clan",
+      "AFF-18:player_clan:8",
+      "active",
+      "dead"
+     ],
+     [
+      200.25,
+      "AFF-18:player_clan:9:0",
+      "player_clan",
+      "AFF-18:player_clan:9",
+      "active",
+      "dead"
+     ],
+     [
+      200.25,
+      "AFF-18:player_clan:15:0",
+      "player_clan",
+      "AFF-18:player_clan:15",
+      "distant",
+      "active"
+     ],
+     [
+      200.25,
+      "AFF-18:player_clan:15:1",
+      "player_clan",
+      "AFF-18:player_clan:15",
+      "distant",
+      "active"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:34:0",
+      "hive",
+      "AFF-18:hive:34",
+      "active",
+      "distant"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:34:1",
+      "hive",
+      "AFF-18:hive:34",
+      "active",
+      "distant"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:34:2",
+      "hive",
+      "AFF-18:hive:34",
+      "active",
+      "distant"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:34:3",
+      "hive",
+      "AFF-18:hive:34",
+      "active",
+      "distant"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:34:4",
+      "hive",
+      "AFF-18:hive:34",
+      "active",
+      "distant"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:34:5",
+      "hive",
+      "AFF-18:hive:34",
+      "active",
+      "distant"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:34:6",
+      "hive",
+      "AFF-18:hive:34",
+      "active",
+      "distant"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:34:7",
+      "hive",
+      "AFF-18:hive:34",
+      "active",
+      "distant"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:36:0",
+      "hive",
+      "AFF-18:hive:36",
+      "active",
+      "distant"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:36:1",
+      "hive",
+      "AFF-18:hive:36",
+      "active",
+      "distant"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:36:2",
+      "hive",
+      "AFF-18:hive:36",
+      "active",
+      "distant"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:36:3",
+      "hive",
+      "AFF-18:hive:36",
+      "active",
+      "distant"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:36:4",
+      "hive",
+      "AFF-18:hive:36",
+      "active",
+      "distant"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:36:5",
+      "hive",
+      "AFF-18:hive:36",
+      "active",
+      "distant"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:36:6",
+      "hive",
+      "AFF-18:hive:36",
+      "active",
+      "distant"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:36:7",
+      "hive",
+      "AFF-18:hive:36",
+      "active",
+      "distant"
+     ],
+     [
+      200.25,
+      "AFF-18:player_clan:48:0",
+      "player_clan",
+      "AFF-18:player_clan:48",
+      "active",
+      "dead"
+     ],
+     [
+      200.25,
+      "AFF-18:player_clan:48:1",
+      "player_clan",
+      "AFF-18:player_clan:48",
+      "active",
+      "dead"
+     ],
+     [
+      200.25,
+      "AFF-18:player_clan:50:0",
+      "player_clan",
+      "AFF-18:player_clan:50",
+      "active",
+      "dead"
+     ],
+     [
+      200.25,
+      "AFF-18:player_clan:50:1",
+      "player_clan",
+      "AFF-18:player_clan:50",
+      "active",
+      "dead"
+     ],
+     [
+      200.25,
+      "AFF-18:player_clan:51:0",
+      "player_clan",
+      "AFF-18:player_clan:51",
+      "active",
+      "dead"
+     ],
+     [
+      200.25,
+      "AFF-18:player_clan:51:1",
+      "player_clan",
+      "AFF-18:player_clan:51",
+      "active",
+      "dead"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:56:0",
+      "hive",
+      "AFF-18:hive:56",
+      "distant",
+      "active"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:56:1",
+      "hive",
+      "AFF-18:hive:56",
+      "distant",
+      "active"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:56:2",
+      "hive",
+      "AFF-18:hive:56",
+      "distant",
+      "active"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:56:3",
+      "hive",
+      "AFF-18:hive:56",
+      "distant",
+      "active"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:56:4",
+      "hive",
+      "AFF-18:hive:56",
+      "distant",
+      "active"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:56:5",
+      "hive",
+      "AFF-18:hive:56",
+      "distant",
+      "active"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:56:6",
+      "hive",
+      "AFF-18:hive:56",
+      "distant",
+      "active"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:56:7",
+      "hive",
+      "AFF-18:hive:56",
+      "distant",
+      "active"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:67:0",
+      "hive",
+      "AFF-18:hive:67",
+      "distant",
+      "active"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:67:1",
+      "hive",
+      "AFF-18:hive:67",
+      "distant",
+      "active"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:67:2",
+      "hive",
+      "AFF-18:hive:67",
+      "distant",
+      "active"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:67:3",
+      "hive",
+      "AFF-18:hive:67",
+      "distant",
+      "active"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:67:4",
+      "hive",
+      "AFF-18:hive:67",
+      "distant",
+      "active"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:67:5",
+      "hive",
+      "AFF-18:hive:67",
+      "distant",
+      "active"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:67:6",
+      "hive",
+      "AFF-18:hive:67",
+      "distant",
+      "active"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:67:7",
+      "hive",
+      "AFF-18:hive:67",
+      "distant",
+      "active"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:100:0",
+      "hive",
+      "AFF-18:hive:100",
+      "distant",
+      "active"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:100:1",
+      "hive",
+      "AFF-18:hive:100",
+      "distant",
+      "active"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:100:2",
+      "hive",
+      "AFF-18:hive:100",
+      "distant",
+      "active"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:100:3",
+      "hive",
+      "AFF-18:hive:100",
+      "distant",
+      "active"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:100:4",
+      "hive",
+      "AFF-18:hive:100",
+      "distant",
+      "active"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:100:5",
+      "hive",
+      "AFF-18:hive:100",
+      "distant",
+      "active"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:100:6",
+      "hive",
+      "AFF-18:hive:100",
+      "distant",
+      "active"
+     ],
+     [
+      200.25,
+      "AFF-18:hive:100:7",
+      "hive",
+      "AFF-18:hive:100",
+      "distant",
+      "active"
+     ],
+     [
+      235,
+      "AFF-18:hive:105:0",
+      "hive",
+      "AFF-18:hive:105",
+      "reserve",
+      "distant"
+     ],
+     [
+      235,
+      "AFF-18:hive:105:1",
+      "hive",
+      "AFF-18:hive:105",
+      "reserve",
+      "distant"
+     ],
+     [
+      235,
+      "AFF-18:hive:105:2",
+      "hive",
+      "AFF-18:hive:105",
+      "reserve",
+      "distant"
+     ],
+     [
+      235,
+      "AFF-18:hive:105:3",
+      "hive",
+      "AFF-18:hive:105",
+      "reserve",
+      "distant"
+     ],
+     [
+      235,
+      "AFF-18:hive:105:4",
+      "hive",
+      "AFF-18:hive:105",
+      "reserve",
+      "distant"
+     ],
+     [
+      235,
+      "AFF-18:hive:105:5",
+      "hive",
+      "AFF-18:hive:105",
+      "reserve",
+      "distant"
+     ],
+     [
+      235,
+      "AFF-18:hive:105:6",
+      "hive",
+      "AFF-18:hive:105",
+      "reserve",
+      "distant"
+     ],
+     [
+      235,
+      "AFF-18:hive:105:7",
+      "hive",
+      "AFF-18:hive:105",
+      "reserve",
+      "distant"
+     ],
+     [
+      275,
+      "AFF-18:hive:106:0",
+      "hive",
+      "AFF-18:hive:106",
+      "reserve",
+      "distant"
+     ],
+     [
+      275,
+      "AFF-18:hive:106:1",
+      "hive",
+      "AFF-18:hive:106",
+      "reserve",
+      "distant"
+     ],
+     [
+      275,
+      "AFF-18:hive:106:2",
+      "hive",
+      "AFF-18:hive:106",
+      "reserve",
+      "distant"
+     ],
+     [
+      275,
+      "AFF-18:hive:106:3",
+      "hive",
+      "AFF-18:hive:106",
+      "reserve",
+      "distant"
+     ],
+     [
+      275,
+      "AFF-18:hive:106:4",
+      "hive",
+      "AFF-18:hive:106",
+      "reserve",
+      "distant"
+     ],
+     [
+      275,
+      "AFF-18:hive:106:5",
+      "hive",
+      "AFF-18:hive:106",
+      "reserve",
+      "distant"
+     ],
+     [
+      275,
+      "AFF-18:hive:106:6",
+      "hive",
+      "AFF-18:hive:106",
+      "reserve",
+      "distant"
+     ],
+     [
+      275,
+      "AFF-18:hive:106:7",
+      "hive",
+      "AFF-18:hive:106",
+      "reserve",
+      "distant"
+     ],
+     [
+      294.75,
+      "AFF-18:player_clan:145:0",
+      "player_clan",
+      "AFF-18:player_clan:145",
+      "distant",
+      "dead"
+     ],
+     [
+      294.75,
+      "AFF-18:player_clan:145:1",
+      "player_clan",
+      "AFF-18:player_clan:145",
+      "distant",
+      "dead"
+     ],
+     [
+      302.75,
+      "AFF-18:player_clan:146:0",
+      "player_clan",
+      "AFF-18:player_clan:146",
+      "distant",
+      "dead"
+     ],
+     [
+      302.75,
+      "AFF-18:player_clan:146:1",
+      "player_clan",
+      "AFF-18:player_clan:146",
+      "distant",
+      "dead"
+     ],
+     [
+      310.75,
+      "AFF-18:player_clan:147:0",
+      "player_clan",
+      "AFF-18:player_clan:147",
+      "distant",
+      "dead"
+     ],
+     [
+      310.75,
+      "AFF-18:player_clan:147:1",
+      "player_clan",
+      "AFF-18:player_clan:147",
+      "distant",
+      "dead"
+     ],
+     [
+      318.75,
+      "AFF-18:player_clan:148:0",
+      "player_clan",
+      "AFF-18:player_clan:148",
+      "distant",
+      "dead"
+     ],
+     [
+      318.75,
+      "AFF-18:player_clan:148:1",
+      "player_clan",
+      "AFF-18:player_clan:148",
+      "distant",
+      "dead"
+     ],
+     [
+      323,
+      "AFF-18:hive:107:0",
+      "hive",
+      "AFF-18:hive:107",
+      "reserve",
+      "distant"
+     ],
+     [
+      323,
+      "AFF-18:hive:107:1",
+      "hive",
+      "AFF-18:hive:107",
+      "reserve",
+      "distant"
+     ],
+     [
+      323,
+      "AFF-18:hive:107:2",
+      "hive",
+      "AFF-18:hive:107",
+      "reserve",
+      "distant"
+     ],
+     [
+      323,
+      "AFF-18:hive:107:3",
+      "hive",
+      "AFF-18:hive:107",
+      "reserve",
+      "distant"
+     ],
+     [
+      323,
+      "AFF-18:hive:107:4",
+      "hive",
+      "AFF-18:hive:107",
+      "reserve",
+      "distant"
+     ],
+     [
+      323,
+      "AFF-18:hive:107:5",
+      "hive",
+      "AFF-18:hive:107",
+      "reserve",
+      "distant"
+     ],
+     [
+      323,
+      "AFF-18:hive:107:6",
+      "hive",
+      "AFF-18:hive:107",
+      "reserve",
+      "distant"
+     ],
+     [
+      323,
+      "AFF-18:hive:107:7",
+      "hive",
+      "AFF-18:hive:107",
+      "reserve",
+      "distant"
+     ],
+     [
+      363,
+      "AFF-18:hive:108:0",
+      "hive",
+      "AFF-18:hive:108",
+      "reserve",
+      "distant"
+     ],
+     [
+      363,
+      "AFF-18:hive:108:1",
+      "hive",
+      "AFF-18:hive:108",
+      "reserve",
+      "distant"
+     ],
+     [
+      363,
+      "AFF-18:hive:108:2",
+      "hive",
+      "AFF-18:hive:108",
+      "reserve",
+      "distant"
+     ],
+     [
+      363,
+      "AFF-18:hive:108:3",
+      "hive",
+      "AFF-18:hive:108",
+      "reserve",
+      "distant"
+     ],
+     [
+      363,
+      "AFF-18:hive:108:4",
+      "hive",
+      "AFF-18:hive:108",
+      "reserve",
+      "distant"
+     ],
+     [
+      363,
+      "AFF-18:hive:108:5",
+      "hive",
+      "AFF-18:hive:108",
+      "reserve",
+      "distant"
+     ],
+     [
+      363,
+      "AFF-18:hive:108:6",
+      "hive",
+      "AFF-18:hive:108",
+      "reserve",
+      "distant"
+     ],
+     [
+      363,
+      "AFF-18:hive:108:7",
+      "hive",
+      "AFF-18:hive:108",
+      "reserve",
+      "distant"
+     ],
+     [
+      411,
+      "AFF-18:hive:109:0",
+      "hive",
+      "AFF-18:hive:109",
+      "reserve",
+      "distant"
+     ],
+     [
+      411,
+      "AFF-18:hive:109:1",
+      "hive",
+      "AFF-18:hive:109",
+      "reserve",
+      "distant"
+     ],
+     [
+      411,
+      "AFF-18:hive:109:2",
+      "hive",
+      "AFF-18:hive:109",
+      "reserve",
+      "distant"
+     ],
+     [
+      411,
+      "AFF-18:hive:109:3",
+      "hive",
+      "AFF-18:hive:109",
+      "reserve",
+      "distant"
+     ],
+     [
+      411,
+      "AFF-18:hive:109:4",
+      "hive",
+      "AFF-18:hive:109",
+      "reserve",
+      "distant"
+     ],
+     [
+      411,
+      "AFF-18:hive:109:5",
+      "hive",
+      "AFF-18:hive:109",
+      "reserve",
+      "distant"
+     ],
+     [
+      411,
+      "AFF-18:hive:109:6",
+      "hive",
+      "AFF-18:hive:109",
+      "reserve",
+      "distant"
+     ],
+     [
+      411,
+      "AFF-18:hive:109:7",
+      "hive",
+      "AFF-18:hive:109",
+      "reserve",
+      "distant"
+     ],
+     [
+      459,
+      "AFF-18:hive:110:0",
+      "hive",
+      "AFF-18:hive:110",
+      "reserve",
+      "distant"
+     ],
+     [
+      459,
+      "AFF-18:hive:110:1",
+      "hive",
+      "AFF-18:hive:110",
+      "reserve",
+      "distant"
+     ],
+     [
+      459,
+      "AFF-18:hive:110:2",
+      "hive",
+      "AFF-18:hive:110",
+      "reserve",
+      "distant"
+     ],
+     [
+      459,
+      "AFF-18:hive:110:3",
+      "hive",
+      "AFF-18:hive:110",
+      "reserve",
+      "distant"
+     ],
+     [
+      459,
+      "AFF-18:hive:110:4",
+      "hive",
+      "AFF-18:hive:110",
+      "reserve",
+      "distant"
+     ],
+     [
+      459,
+      "AFF-18:hive:110:5",
+      "hive",
+      "AFF-18:hive:110",
+      "reserve",
+      "distant"
+     ],
+     [
+      459,
+      "AFF-18:hive:110:6",
+      "hive",
+      "AFF-18:hive:110",
+      "reserve",
+      "distant"
+     ],
+     [
+      459,
+      "AFF-18:hive:110:7",
+      "hive",
+      "AFF-18:hive:110",
+      "reserve",
+      "distant"
+     ],
+     [
+      499,
+      "AFF-18:hive:111:0",
+      "hive",
+      "AFF-18:hive:111",
+      "reserve",
+      "distant"
+     ],
+     [
+      499,
+      "AFF-18:hive:111:1",
+      "hive",
+      "AFF-18:hive:111",
+      "reserve",
+      "distant"
+     ],
+     [
+      499,
+      "AFF-18:hive:111:2",
+      "hive",
+      "AFF-18:hive:111",
+      "reserve",
+      "distant"
+     ],
+     [
+      499,
+      "AFF-18:hive:111:3",
+      "hive",
+      "AFF-18:hive:111",
+      "reserve",
+      "distant"
+     ],
+     [
+      499,
+      "AFF-18:hive:111:4",
+      "hive",
+      "AFF-18:hive:111",
+      "reserve",
+      "distant"
+     ],
+     [
+      499,
+      "AFF-18:hive:111:5",
+      "hive",
+      "AFF-18:hive:111",
+      "reserve",
+      "distant"
+     ],
+     [
+      499,
+      "AFF-18:hive:111:6",
+      "hive",
+      "AFF-18:hive:111",
+      "reserve",
+      "distant"
+     ],
+     [
+      499,
+      "AFF-18:hive:111:7",
+      "hive",
+      "AFF-18:hive:111",
+      "reserve",
+      "distant"
+     ],
+     [
+      547,
+      "AFF-18:hive:112:0",
+      "hive",
+      "AFF-18:hive:112",
+      "reserve",
+      "distant"
+     ],
+     [
+      547,
+      "AFF-18:hive:112:1",
+      "hive",
+      "AFF-18:hive:112",
+      "reserve",
+      "distant"
+     ],
+     [
+      547,
+      "AFF-18:hive:112:2",
+      "hive",
+      "AFF-18:hive:112",
+      "reserve",
+      "distant"
+     ],
+     [
+      547,
+      "AFF-18:hive:112:3",
+      "hive",
+      "AFF-18:hive:112",
+      "reserve",
+      "distant"
+     ],
+     [
+      547,
+      "AFF-18:hive:112:4",
+      "hive",
+      "AFF-18:hive:112",
+      "reserve",
+      "distant"
+     ],
+     [
+      547,
+      "AFF-18:hive:112:5",
+      "hive",
+      "AFF-18:hive:112",
+      "reserve",
+      "distant"
+     ],
+     [
+      547,
+      "AFF-18:hive:112:6",
+      "hive",
+      "AFF-18:hive:112",
+      "reserve",
+      "distant"
+     ],
+     [
+      547,
+      "AFF-18:hive:112:7",
+      "hive",
+      "AFF-18:hive:112",
+      "reserve",
+      "distant"
+     ],
+     [
+      595,
+      "AFF-18:hive:113:0",
+      "hive",
+      "AFF-18:hive:113",
+      "reserve",
+      "distant"
+     ],
+     [
+      595,
+      "AFF-18:hive:113:1",
+      "hive",
+      "AFF-18:hive:113",
+      "reserve",
+      "distant"
+     ],
+     [
+      595,
+      "AFF-18:hive:113:2",
+      "hive",
+      "AFF-18:hive:113",
+      "reserve",
+      "distant"
+     ],
+     [
+      595,
+      "AFF-18:hive:113:3",
+      "hive",
+      "AFF-18:hive:113",
+      "reserve",
+      "distant"
+     ],
+     [
+      595,
+      "AFF-18:hive:113:4",
+      "hive",
+      "AFF-18:hive:113",
+      "reserve",
+      "distant"
+     ],
+     [
+      595,
+      "AFF-18:hive:113:5",
+      "hive",
+      "AFF-18:hive:113",
+      "reserve",
+      "distant"
+     ],
+     [
+      595,
+      "AFF-18:hive:113:6",
+      "hive",
+      "AFF-18:hive:113",
+      "reserve",
+      "distant"
+     ],
+     [
+      595,
+      "AFF-18:hive:113:7",
+      "hive",
+      "AFF-18:hive:113",
+      "reserve",
+      "distant"
+     ]
+    ]
+   },
+   "arrivees": [
+    [
+     8,
+     "reinforcements_inbound",
+     "AFF-18:player_clan:145",
+     "front_a",
+     "front_b",
+     2
+    ],
+    [
+     8,
+     "reinforcements_inbound",
+     "AFF-18:hive:100",
+     "front_b",
+     "front_b",
+     8
+    ],
+    [
+     11,
+     "reinforcements_arrived",
+     "AFF-18:player_clan:145",
+     "front_a",
+     "front_b",
+     null
+    ],
+    [
+     11,
+     "reinforcements_arrived",
+     "AFF-18:hive:100",
+     "front_b",
+     "front_b",
+     null
+    ],
+    [
+     16,
+     "reinforcements_inbound",
+     "AFF-18:player_clan:146",
+     "front_a",
+     "front_b",
+     2
+    ],
+    [
+     19,
+     "reinforcements_arrived",
+     "AFF-18:player_clan:146",
+     "front_a",
+     "front_b",
+     null
+    ],
+    [
+     24,
+     "reinforcements_inbound",
+     "AFF-18:player_clan:147",
+     "front_a",
+     "front_b",
+     2
+    ],
+    [
+     27,
+     "reinforcements_arrived",
+     "AFF-18:player_clan:147",
+     "front_a",
+     "front_b",
+     null
+    ],
+    [
+     32,
+     "reinforcements_inbound",
+     "AFF-18:player_clan:148",
+     "front_a",
+     "front_b",
+     2
+    ],
+    [
+     35,
+     "reinforcements_arrived",
+     "AFF-18:player_clan:148",
+     "front_a",
+     "front_b",
+     null
+    ],
+    [
+     48,
+     "reinforcements_inbound",
+     "AFF-18:hive:101",
+     "front_b",
+     "front_c",
+     8
+    ],
+    [
+     51,
+     "reinforcements_arrived",
+     "AFF-18:hive:101",
+     "front_b",
+     "front_c",
+     null
+    ],
+    [
+     96,
+     "reinforcements_inbound",
+     "AFF-18:hive:102",
+     "front_b",
+     "front_c",
+     8
+    ],
+    [
+     99,
+     "reinforcements_arrived",
+     "AFF-18:hive:102",
+     "front_b",
+     "front_c",
+     null
+    ],
+    [
+     136,
+     "reinforcements_inbound",
+     "AFF-18:hive:103",
+     "front_b",
+     "front_c",
+     8
+    ],
+    [
+     139,
+     "reinforcements_arrived",
+     "AFF-18:hive:103",
+     "front_b",
+     "front_c",
+     null
+    ],
+    [
+     184,
+     "reinforcements_inbound",
+     "AFF-18:hive:104",
+     "front_b",
+     "front_c",
+     8
+    ],
+    [
+     187,
+     "reinforcements_arrived",
+     "AFF-18:hive:104",
+     "front_b",
+     "front_c",
+     null
+    ],
+    [
+     232,
+     "reinforcements_inbound",
+     "AFF-18:hive:105",
+     "front_b",
+     "front_c",
+     8
+    ],
+    [
+     235,
+     "reinforcements_arrived",
+     "AFF-18:hive:105",
+     "front_b",
+     "front_c",
+     null
+    ],
+    [
+     272,
+     "reinforcements_inbound",
+     "AFF-18:hive:106",
+     "front_b",
+     "front_c",
+     8
+    ],
+    [
+     275,
+     "reinforcements_arrived",
+     "AFF-18:hive:106",
+     "front_b",
+     "front_c",
+     null
+    ],
+    [
+     320,
+     "reinforcements_inbound",
+     "AFF-18:hive:107",
+     "front_b",
+     "front_c",
+     8
+    ],
+    [
+     323,
+     "reinforcements_arrived",
+     "AFF-18:hive:107",
+     "front_b",
+     "front_c",
+     null
+    ],
+    [
+     360,
+     "reinforcements_inbound",
+     "AFF-18:hive:108",
+     "front_b",
+     "front_c",
+     8
+    ],
+    [
+     363,
+     "reinforcements_arrived",
+     "AFF-18:hive:108",
+     "front_b",
+     "front_c",
+     null
+    ],
+    [
+     408,
+     "reinforcements_inbound",
+     "AFF-18:hive:109",
+     "front_b",
+     "front_c",
+     8
+    ],
+    [
+     411,
+     "reinforcements_arrived",
+     "AFF-18:hive:109",
+     "front_b",
+     "front_c",
+     null
+    ],
+    [
+     456,
+     "reinforcements_inbound",
+     "AFF-18:hive:110",
+     "front_b",
+     "front_c",
+     8
+    ],
+    [
+     459,
+     "reinforcements_arrived",
+     "AFF-18:hive:110",
+     "front_b",
+     "front_c",
+     null
+    ],
+    [
+     496,
+     "reinforcements_inbound",
+     "AFF-18:hive:111",
+     "front_b",
+     "front_c",
+     8
+    ],
+    [
+     499,
+     "reinforcements_arrived",
+     "AFF-18:hive:111",
+     "front_b",
+     "front_c",
+     null
+    ],
+    [
+     544,
+     "reinforcements_inbound",
+     "AFF-18:hive:112",
+     "front_b",
+     "front_b",
+     8
+    ],
+    [
+     547,
+     "reinforcements_arrived",
+     "AFF-18:hive:112",
+     "front_b",
+     "front_b",
+     null
+    ],
+    [
+     592,
+     "reinforcements_inbound",
+     "AFF-18:hive:113",
+     "front_b",
+     "front_b",
+     8
+    ],
+    [
+     595,
+     "reinforcements_arrived",
+     "AFF-18:hive:113",
+     "front_b",
+     "front_b",
+     null
+    ]
+   ],
+   "niveauDeDetail": [
+    [
+     0.25,
+     "spawn",
+     "AFF-18:hive:34",
+     8
+    ],
+    [
+     0.25,
+     "spawn",
+     "AFF-18:player_clan:51",
+     2
+    ],
+    [
+     0.25,
+     "spawn",
+     "AFF-18:hive:36",
+     8
+    ],
+    [
+     0.25,
+     "spawn",
+     "AFF-18:player_clan:48",
+     2
+    ],
+    [
+     0.25,
+     "spawn",
+     "AFF-18:hive:4",
+     8
+    ],
+    [
+     0.25,
+     "spawn",
+     "AFF-18:player_clan:49",
+     2
+    ],
+    [
+     0.25,
+     "spawn",
+     "AFF-18:player_clan:50",
+     2
+    ],
+    [
+     1.5,
+     "despawn",
+     "AFF-18:player_clan:49",
+     2
+    ],
+    [
+     1.75,
+     "spawn",
+     "AFF-18:player_clan:8",
+     1
+    ],
+    [
+     1.75,
+     "spawn",
+     "AFF-18:player_clan:9",
+     1
+    ],
+    [
+     200.25,
+     "despawn",
+     "AFF-18:hive:4",
+     7
+    ],
+    [
+     200.25,
+     "despawn",
+     "AFF-18:player_clan:8",
+     1
+    ],
+    [
+     200.25,
+     "despawn",
+     "AFF-18:player_clan:9",
+     1
+    ],
+    [
+     200.25,
+     "despawn",
+     "AFF-18:hive:34",
+     8
+    ],
+    [
+     200.25,
+     "despawn",
+     "AFF-18:hive:36",
+     8
+    ],
+    [
+     200.25,
+     "despawn",
+     "AFF-18:player_clan:48",
+     2
+    ],
+    [
+     200.25,
+     "despawn",
+     "AFF-18:player_clan:50",
+     2
+    ],
+    [
+     200.25,
+     "despawn",
+     "AFF-18:player_clan:51",
+     2
+    ],
+    [
+     200.25,
+     "spawn",
+     "AFF-18:hive:56",
+     8
+    ],
+    [
+     200.25,
+     "spawn",
+     "AFF-18:player_clan:15",
+     2
+    ],
+    [
+     200.25,
+     "spawn",
+     "AFF-18:hive:67",
+     8
+    ],
+    [
+     200.25,
+     "spawn",
+     "AFF-18:hive:100",
+     8
+    ]
+   ],
+   "violations": [],
+   "resultat": null,
+   "civils": {
+    "allocated": 8,
+    "captive": 0,
+    "rescued": 8,
+    "evacuated": 0,
+    "dead": 0
+   }
+  },
+  "EFF-06-catalogue": {
+   "tentatives": 27,
+   "acceptees": [],
+   "motif": "BattleCatalog: selected budget changes the proposed finite force; explicit reallocation is required",
+   "constat": "getBattleOperationConfig refuse EFF-06 (alliés 120 ≠ 48) : js/data/BattleCatalog.js:333 « selected budget changes the proposed finite force ». Le scénario EFF-06 est donc exécuté sur une configuration explicite aux chiffres EFF-06 (test suivant), pas sur une opération jouable."
+  },
+  "EFF-06": {
+   "configuration": "rec-004-eff-06 (explicite, aux chiffres EFF-06 ; plafond détaillé projet 32)",
+   "configDigest": "2d1ee07e",
+   "dureeSimulee": 600,
+   "budgetEFF06": {
+    "ennemi": {
+     "active": 128,
+     "distant": 512,
+     "reserve": 360,
+     "total": 1000
+    },
+    "allie": {
+     "active": 28,
+     "distant": 68,
+     "reserve": 24,
+     "total": 120
+    },
+    "note": "28 alliés proches = 4 Yautja + 24 humains ; hors bulle et réserves = 8 Yautja + 84 humains, soit 92 PNJ répartis entre 68 déployés distants et 24 en réserve. Trêve expliquée et révocable ; aucune alliance automatique entre toutes les factions."
+   },
+   "allouesAllies": 120,
+   "script": [
+    {
+     "type": "test_script",
+     "time": 2,
+     "label": "embarquement M577 d’une section humaine alliée déjà allouée",
+     "result": {
+      "accepted": true,
+      "passengers": [],
+      "crew": [
+       "human_allies:5:0",
+       "human_allies:5:7"
+      ],
+      "seatCapacity": 12
+     }
+    },
+    {
+     "type": "test_script",
+     "time": 4,
+     "label": "retraite d’une section humaine du front B",
+     "result": {
+      "accepted": false,
+      "reason": "invalid_group_or_order"
+     }
+    },
+    {
+     "type": "test_script",
+     "time": 6,
+     "label": "le joueur rejoint le front A",
+     "result": {
+      "position": [
+       0,
+       0
+      ]
+     }
+    },
+    {
+     "type": "test_script",
+     "time": 120,
+     "label": "débarquement du M577",
+     "result": {
+      "accepted": true,
+      "occupantCount": 2,
+      "passengerCount": 0
+     }
+    },
+    {
+     "type": "test_script",
+     "time": 300,
+     "label": "révocation de la trêve (neutralité)",
+     "result": {
+      "changed": true
+     }
+    }
+   ],
+   "avant": {
+    "player_clan": {
+     "allocated": 12,
+     "active": 0,
+     "distant": 12,
+     "reserve": 0,
+     "dead": 0,
+     "evacuated": 0,
+     "captured": 0,
+     "wounded": 0,
+     "aboardAPC": 0
+    },
+    "human_allies": {
+     "allocated": 108,
+     "active": 0,
+     "distant": 84,
+     "reserve": 24,
+     "dead": 0,
+     "evacuated": 0,
+     "captured": 0,
+     "wounded": 0,
+     "aboardAPC": 0
+    },
+    "hive": {
+     "allocated": 1000,
+     "active": 0,
+     "distant": 640,
+     "reserve": 360,
+     "dead": 0,
+     "evacuated": 0,
+     "captured": 0,
+     "wounded": 0,
+     "aboardAPC": 0
+    }
+   },
+   "apres": {
+    "player_clan": {
+     "allocated": 12,
+     "active": 4,
+     "distant": 0,
+     "reserve": 0,
+     "dead": 8,
+     "evacuated": 0,
+     "captured": 0,
+     "wounded": 0,
+     "aboardAPC": 0
+    },
+    "human_allies": {
+     "allocated": 108,
+     "active": 12,
+     "distant": 0,
+     "reserve": 24,
+     "dead": 72,
+     "evacuated": 0,
+     "captured": 0,
+     "wounded": 0,
+     "aboardAPC": 0
+    },
+    "hive": {
+     "allocated": 1000,
+     "active": 16,
+     "distant": 733,
+     "reserve": 248,
+     "dead": 3,
+     "evacuated": 0,
+     "captured": 0,
+     "wounded": 0,
+     "aboardAPC": 0
+    }
+   },
+   "rapprochement": {
+    "player_clan": {
+     "initialAlloue": 12,
+     "initialDeploye": 12,
+     "initialReserve": 0,
+     "entreesExterieures": 0,
+     "arriveesDepuisReserveEnregistrees": 0,
+     "etatsFinaux": {
+      "present": 4,
+      "reserve": 0,
+      "blesses": 0,
+      "aBordAPC": 0
+     },
+     "pertes": 8,
+     "sorties": {
+      "evacues": 0,
+      "captures": 0
+     },
+     "equation": "12 + 0 = 4 + 8 + 0",
+     "equilibre": true
+    },
+    "human_allies": {
+     "initialAlloue": 108,
+     "initialDeploye": 84,
+     "initialReserve": 24,
+     "entreesExterieures": 0,
+     "arriveesDepuisReserveEnregistrees": 0,
+     "etatsFinaux": {
+      "present": 12,
+      "reserve": 24,
+      "blesses": 0,
+      "aBordAPC": 0
+     },
+     "pertes": 72,
+     "sorties": {
+      "evacues": 0,
+      "captures": 0
+     },
+     "equation": "108 + 0 = 36 + 72 + 0",
+     "equilibre": true
+    },
+    "hive": {
+     "initialAlloue": 1000,
+     "initialDeploye": 640,
+     "initialReserve": 360,
+     "entreesExterieures": 0,
+     "arriveesDepuisReserveEnregistrees": 112,
+     "etatsFinaux": {
+      "present": 749,
+      "reserve": 248,
+      "blesses": 0,
+      "aBordAPC": 0
+     },
+     "pertes": 3,
+     "sorties": {
+      "evacues": 0,
+      "captures": 0
+     },
+     "equation": "1000 + 0 = 997 + 3 + 0",
+     "equilibre": true
+    }
+   },
+   "transportA60s": {
+    "allocated": 108,
+    "active": 12,
+    "distant": 2,
+    "reserve": 24,
+    "dead": 70,
+    "evacuated": 0,
+    "captured": 0,
+    "wounded": 0,
+    "aboardAPC": 2
+   },
+   "relations": [
+    [
+     "human_allies|player_clan",
+     "neutral"
+    ],
+    [
+     "hive|player_clan",
+     "hostile"
+    ],
+    [
+     "hive|human_allies",
+     "hostile"
+    ]
+   ],
+   "registreHorodate": [
+    {
+     "t": 30,
+     "parFaction": {
+      "player_clan": {
+       "allocated": 12,
+       "active": 4,
+       "distant": 0,
+       "reserve": 0,
+       "dead": 8,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "human_allies": {
+       "allocated": 108,
+       "active": 12,
+       "distant": 2,
+       "reserve": 24,
+       "dead": 70,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 2
+      },
+      "hive": {
+       "allocated": 1000,
+       "active": 16,
+       "distant": 629,
+       "reserve": 352,
+       "dead": 3,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      }
+     }
+    },
+    {
+     "t": 60,
+     "parFaction": {
+      "player_clan": {
+       "allocated": 12,
+       "active": 4,
+       "distant": 0,
+       "reserve": 0,
+       "dead": 8,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "human_allies": {
+       "allocated": 108,
+       "active": 12,
+       "distant": 2,
+       "reserve": 24,
+       "dead": 70,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 2
+      },
+      "hive": {
+       "allocated": 1000,
+       "active": 16,
+       "distant": 637,
+       "reserve": 344,
+       "dead": 3,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      }
+     }
+    },
+    {
+     "t": 90,
+     "parFaction": {
+      "player_clan": {
+       "allocated": 12,
+       "active": 4,
+       "distant": 0,
+       "reserve": 0,
+       "dead": 8,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "human_allies": {
+       "allocated": 108,
+       "active": 12,
+       "distant": 2,
+       "reserve": 24,
+       "dead": 70,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 2
+      },
+      "hive": {
+       "allocated": 1000,
+       "active": 16,
+       "distant": 637,
+       "reserve": 344,
+       "dead": 3,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      }
+     }
+    },
+    {
+     "t": 120,
+     "parFaction": {
+      "player_clan": {
+       "allocated": 12,
+       "active": 4,
+       "distant": 0,
+       "reserve": 0,
+       "dead": 8,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "human_allies": {
+       "allocated": 108,
+       "active": 12,
+       "distant": 2,
+       "reserve": 24,
+       "dead": 70,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 2
+      },
+      "hive": {
+       "allocated": 1000,
+       "active": 16,
+       "distant": 645,
+       "reserve": 336,
+       "dead": 3,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      }
+     }
+    },
+    {
+     "t": 150,
+     "parFaction": {
+      "player_clan": {
+       "allocated": 12,
+       "active": 4,
+       "distant": 0,
+       "reserve": 0,
+       "dead": 8,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "human_allies": {
+       "allocated": 108,
+       "active": 12,
+       "distant": 0,
+       "reserve": 24,
+       "dead": 72,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "hive": {
+       "allocated": 1000,
+       "active": 16,
+       "distant": 653,
+       "reserve": 328,
+       "dead": 3,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      }
+     }
+    },
+    {
+     "t": 180,
+     "parFaction": {
+      "player_clan": {
+       "allocated": 12,
+       "active": 4,
+       "distant": 0,
+       "reserve": 0,
+       "dead": 8,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "human_allies": {
+       "allocated": 108,
+       "active": 12,
+       "distant": 0,
+       "reserve": 24,
+       "dead": 72,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "hive": {
+       "allocated": 1000,
+       "active": 16,
+       "distant": 653,
+       "reserve": 328,
+       "dead": 3,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      }
+     }
+    },
+    {
+     "t": 210,
+     "parFaction": {
+      "player_clan": {
+       "allocated": 12,
+       "active": 4,
+       "distant": 0,
+       "reserve": 0,
+       "dead": 8,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "human_allies": {
+       "allocated": 108,
+       "active": 12,
+       "distant": 0,
+       "reserve": 24,
+       "dead": 72,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "hive": {
+       "allocated": 1000,
+       "active": 16,
+       "distant": 661,
+       "reserve": 320,
+       "dead": 3,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      }
+     }
+    },
+    {
+     "t": 240,
+     "parFaction": {
+      "player_clan": {
+       "allocated": 12,
+       "active": 4,
+       "distant": 0,
+       "reserve": 0,
+       "dead": 8,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "human_allies": {
+       "allocated": 108,
+       "active": 12,
+       "distant": 0,
+       "reserve": 24,
+       "dead": 72,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "hive": {
+       "allocated": 1000,
+       "active": 16,
+       "distant": 669,
+       "reserve": 312,
+       "dead": 3,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      }
+     }
+    },
+    {
+     "t": 270,
+     "parFaction": {
+      "player_clan": {
+       "allocated": 12,
+       "active": 4,
+       "distant": 0,
+       "reserve": 0,
+       "dead": 8,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "human_allies": {
+       "allocated": 108,
+       "active": 12,
+       "distant": 0,
+       "reserve": 24,
+       "dead": 72,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "hive": {
+       "allocated": 1000,
+       "active": 16,
+       "distant": 669,
+       "reserve": 312,
+       "dead": 3,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      }
+     }
+    },
+    {
+     "t": 300,
+     "parFaction": {
+      "player_clan": {
+       "allocated": 12,
+       "active": 4,
+       "distant": 0,
+       "reserve": 0,
+       "dead": 8,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "human_allies": {
+       "allocated": 108,
+       "active": 12,
+       "distant": 0,
+       "reserve": 24,
+       "dead": 72,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "hive": {
+       "allocated": 1000,
+       "active": 16,
+       "distant": 677,
+       "reserve": 304,
+       "dead": 3,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      }
+     }
+    },
+    {
+     "t": 330,
+     "parFaction": {
+      "player_clan": {
+       "allocated": 12,
+       "active": 4,
+       "distant": 0,
+       "reserve": 0,
+       "dead": 8,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "human_allies": {
+       "allocated": 108,
+       "active": 12,
+       "distant": 0,
+       "reserve": 24,
+       "dead": 72,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "hive": {
+       "allocated": 1000,
+       "active": 16,
+       "distant": 685,
+       "reserve": 296,
+       "dead": 3,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      }
+     }
+    },
+    {
+     "t": 360,
+     "parFaction": {
+      "player_clan": {
+       "allocated": 12,
+       "active": 4,
+       "distant": 0,
+       "reserve": 0,
+       "dead": 8,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "human_allies": {
+       "allocated": 108,
+       "active": 12,
+       "distant": 0,
+       "reserve": 24,
+       "dead": 72,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "hive": {
+       "allocated": 1000,
+       "active": 16,
+       "distant": 685,
+       "reserve": 296,
+       "dead": 3,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      }
+     }
+    },
+    {
+     "t": 390,
+     "parFaction": {
+      "player_clan": {
+       "allocated": 12,
+       "active": 4,
+       "distant": 0,
+       "reserve": 0,
+       "dead": 8,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "human_allies": {
+       "allocated": 108,
+       "active": 12,
+       "distant": 0,
+       "reserve": 24,
+       "dead": 72,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "hive": {
+       "allocated": 1000,
+       "active": 16,
+       "distant": 693,
+       "reserve": 288,
+       "dead": 3,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      }
+     }
+    },
+    {
+     "t": 420,
+     "parFaction": {
+      "player_clan": {
+       "allocated": 12,
+       "active": 4,
+       "distant": 0,
+       "reserve": 0,
+       "dead": 8,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "human_allies": {
+       "allocated": 108,
+       "active": 12,
+       "distant": 0,
+       "reserve": 24,
+       "dead": 72,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "hive": {
+       "allocated": 1000,
+       "active": 16,
+       "distant": 701,
+       "reserve": 280,
+       "dead": 3,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      }
+     }
+    },
+    {
+     "t": 450,
+     "parFaction": {
+      "player_clan": {
+       "allocated": 12,
+       "active": 4,
+       "distant": 0,
+       "reserve": 0,
+       "dead": 8,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "human_allies": {
+       "allocated": 108,
+       "active": 12,
+       "distant": 0,
+       "reserve": 24,
+       "dead": 72,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "hive": {
+       "allocated": 1000,
+       "active": 16,
+       "distant": 701,
+       "reserve": 280,
+       "dead": 3,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      }
+     }
+    },
+    {
+     "t": 480,
+     "parFaction": {
+      "player_clan": {
+       "allocated": 12,
+       "active": 4,
+       "distant": 0,
+       "reserve": 0,
+       "dead": 8,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "human_allies": {
+       "allocated": 108,
+       "active": 12,
+       "distant": 0,
+       "reserve": 24,
+       "dead": 72,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "hive": {
+       "allocated": 1000,
+       "active": 16,
+       "distant": 709,
+       "reserve": 272,
+       "dead": 3,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      }
+     }
+    },
+    {
+     "t": 510,
+     "parFaction": {
+      "player_clan": {
+       "allocated": 12,
+       "active": 4,
+       "distant": 0,
+       "reserve": 0,
+       "dead": 8,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "human_allies": {
+       "allocated": 108,
+       "active": 12,
+       "distant": 0,
+       "reserve": 24,
+       "dead": 72,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "hive": {
+       "allocated": 1000,
+       "active": 16,
+       "distant": 717,
+       "reserve": 264,
+       "dead": 3,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      }
+     }
+    },
+    {
+     "t": 540,
+     "parFaction": {
+      "player_clan": {
+       "allocated": 12,
+       "active": 4,
+       "distant": 0,
+       "reserve": 0,
+       "dead": 8,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "human_allies": {
+       "allocated": 108,
+       "active": 12,
+       "distant": 0,
+       "reserve": 24,
+       "dead": 72,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "hive": {
+       "allocated": 1000,
+       "active": 16,
+       "distant": 717,
+       "reserve": 264,
+       "dead": 3,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      }
+     }
+    },
+    {
+     "t": 570,
+     "parFaction": {
+      "player_clan": {
+       "allocated": 12,
+       "active": 4,
+       "distant": 0,
+       "reserve": 0,
+       "dead": 8,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "human_allies": {
+       "allocated": 108,
+       "active": 12,
+       "distant": 0,
+       "reserve": 24,
+       "dead": 72,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "hive": {
+       "allocated": 1000,
+       "active": 16,
+       "distant": 725,
+       "reserve": 256,
+       "dead": 3,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      }
+     }
+    },
+    {
+     "t": 600,
+     "parFaction": {
+      "player_clan": {
+       "allocated": 12,
+       "active": 4,
+       "distant": 0,
+       "reserve": 0,
+       "dead": 8,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "human_allies": {
+       "allocated": 108,
+       "active": 12,
+       "distant": 0,
+       "reserve": 24,
+       "dead": 72,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      },
+      "hive": {
+       "allocated": 1000,
+       "active": 16,
+       "distant": 733,
+       "reserve": 248,
+       "dead": 3,
+       "evacuated": 0,
+       "captured": 0,
+       "wounded": 0,
+       "aboardAPC": 0
+      }
+     }
+    }
+   ],
+   "registreParGroupeFinal": {
+    "colonnes": [
+     "groupe",
+     "faction",
+     "front",
+     "active",
+     "distant",
+     "reserve",
+     "dead",
+     "evacuated",
+     "captured",
+     "blesses"
+    ],
+    "lignes": [
+     [
+      "player_clan:0",
+      "player_clan",
+      "front_a",
+      4,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "player_clan:1",
+      "player_clan",
+      "front_b",
+      0,
+      0,
+      0,
+      4,
+      0,
+      0,
+      0
+     ],
+     [
+      "player_clan:2",
+      "player_clan",
+      "front_c",
+      0,
+      0,
+      0,
+      4,
+      0,
+      0,
+      0
+     ],
+     [
+      "human_allies:3",
+      "human_allies",
+      "front_a",
+      8,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "human_allies:4",
+      "human_allies",
+      "front_a",
+      4,
+      0,
+      0,
+      4,
+      0,
+      0,
+      0
+     ],
+     [
+      "human_allies:5",
+      "human_allies",
+      "front_a",
+      0,
+      0,
+      0,
+      8,
+      0,
+      0,
+      0
+     ],
+     [
+      "human_allies:6",
+      "human_allies",
+      "front_b",
+      0,
+      0,
+      0,
+      8,
+      0,
+      0,
+      0
+     ],
+     [
+      "human_allies:7",
+      "human_allies",
+      "front_b",
+      0,
+      0,
+      0,
+      8,
+      0,
+      0,
+      0
+     ],
+     [
+      "human_allies:8",
+      "human_allies",
+      "front_b",
+      0,
+      0,
+      0,
+      8,
+      0,
+      0,
+      0
+     ],
+     [
+      "human_allies:9",
+      "human_allies",
+      "front_b",
+      0,
+      0,
+      0,
+      8,
+      0,
+      0,
+      0
+     ],
+     [
+      "human_allies:10",
+      "human_allies",
+      "front_c",
+      0,
+      0,
+      0,
+      8,
+      0,
+      0,
+      0
+     ],
+     [
+      "human_allies:11",
+      "human_allies",
+      "front_c",
+      0,
+      0,
+      0,
+      8,
+      0,
+      0,
+      0
+     ],
+     [
+      "human_allies:12",
+      "human_allies",
+      "front_c",
+      0,
+      0,
+      0,
+      8,
+      0,
+      0,
+      0
+     ],
+     [
+      "human_allies:13",
+      "human_allies",
+      "front_c",
+      0,
+      0,
+      0,
+      4,
+      0,
+      0,
+      0
+     ],
+     [
+      "human_allies:14",
+      "human_allies",
+      "front_a",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "human_allies:15",
+      "human_allies",
+      "front_a",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "human_allies:16",
+      "human_allies",
+      "front_a",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:17",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:18",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:19",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:20",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:21",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:22",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:23",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:24",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:25",
+      "hive",
+      "front_a",
+      8,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:26",
+      "hive",
+      "front_a",
+      8,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:27",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:28",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:29",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:30",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:31",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:32",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:33",
+      "hive",
+      "front_a",
+      0,
+      6,
+      0,
+      2,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:34",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:35",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:36",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:37",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:38",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:39",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:40",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:41",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:42",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:43",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:44",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:45",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:46",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:47",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:48",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:49",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:50",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:51",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:52",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:53",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:54",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:55",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:56",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:57",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:58",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:59",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:60",
+      "hive",
+      "front_b",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:61",
+      "hive",
+      "front_b",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:62",
+      "hive",
+      "front_b",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:63",
+      "hive",
+      "front_b",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:64",
+      "hive",
+      "front_b",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:65",
+      "hive",
+      "front_c",
+      0,
+      7,
+      0,
+      1,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:66",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:67",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:68",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:69",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:70",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:71",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:72",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:73",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:74",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:75",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:76",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:77",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:78",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:79",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:80",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:81",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:82",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:83",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:84",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:85",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:86",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:87",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:88",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:89",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:90",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:91",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:92",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:93",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:94",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:95",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:96",
+      "hive",
+      "front_c",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:97",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:98",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:99",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:100",
+      "hive",
+      "front_a",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:101",
+      "hive",
+      "front_b",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:102",
+      "hive",
+      "front_b",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:103",
+      "hive",
+      "front_b",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:104",
+      "hive",
+      "front_b",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:105",
+      "hive",
+      "front_b",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:106",
+      "hive",
+      "front_b",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:107",
+      "hive",
+      "front_b",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:108",
+      "hive",
+      "front_b",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:109",
+      "hive",
+      "front_b",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:110",
+      "hive",
+      "front_b",
+      0,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:111",
+      "hive",
+      "front_c",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:112",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:113",
+      "hive",
+      "front_c",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:114",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:115",
+      "hive",
+      "front_c",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:116",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:117",
+      "hive",
+      "front_c",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:118",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:119",
+      "hive",
+      "front_c",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:120",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:121",
+      "hive",
+      "front_c",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:122",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:123",
+      "hive",
+      "front_c",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:124",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:125",
+      "hive",
+      "front_c",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:126",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:127",
+      "hive",
+      "front_c",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:128",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:129",
+      "hive",
+      "front_c",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:130",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:131",
+      "hive",
+      "front_c",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:132",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:133",
+      "hive",
+      "front_c",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:134",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:135",
+      "hive",
+      "front_c",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:136",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:137",
+      "hive",
+      "front_c",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:138",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:139",
+      "hive",
+      "front_c",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:140",
+      "hive",
+      "front_b",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      "hive:141",
+      "hive",
+      "front_c",
+      0,
+      0,
+      8,
+      0,
+      0,
+      0,
+      0
+     ]
+    ]
+   },
+   "transitionsIndividuelles": {
+    "colonnes": [
+     "t",
+     "id",
+     "faction",
+     "groupe",
+     "avant",
+     "apres"
+    ],
+    "total": 227,
+    "lignes": [
+     [
+      0.25,
+      "player_clan:0:0",
+      "player_clan",
+      "player_clan:0",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "player_clan:0:1",
+      "player_clan",
+      "player_clan:0",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "player_clan:0:2",
+      "player_clan",
+      "player_clan:0",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "player_clan:0:3",
+      "player_clan",
+      "player_clan:0",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "human_allies:3:0",
+      "human_allies",
+      "human_allies:3",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "human_allies:3:1",
+      "human_allies",
+      "human_allies:3",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "human_allies:3:2",
+      "human_allies",
+      "human_allies:3",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "human_allies:3:3",
+      "human_allies",
+      "human_allies:3",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "human_allies:3:4",
+      "human_allies",
+      "human_allies:3",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "human_allies:3:5",
+      "human_allies",
+      "human_allies:3",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "human_allies:3:6",
+      "human_allies",
+      "human_allies:3",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "human_allies:3:7",
+      "human_allies",
+      "human_allies:3",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "human_allies:4:1",
+      "human_allies",
+      "human_allies:4",
+      "distant",
+      "dead"
+     ],
+     [
+      0.25,
+      "human_allies:6:1",
+      "human_allies",
+      "human_allies:6",
+      "distant",
+      "dead"
+     ],
+     [
+      0.25,
+      "human_allies:6:2",
+      "human_allies",
+      "human_allies:6",
+      "distant",
+      "dead"
+     ],
+     [
+      0.25,
+      "human_allies:10:1",
+      "human_allies",
+      "human_allies:10",
+      "distant",
+      "dead"
+     ],
+     [
+      0.25,
+      "human_allies:10:2",
+      "human_allies",
+      "human_allies:10",
+      "distant",
+      "dead"
+     ],
+     [
+      0.25,
+      "hive:25:0",
+      "hive",
+      "hive:25",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "hive:25:1",
+      "hive",
+      "hive:25",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "hive:25:2",
+      "hive",
+      "hive:25",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "hive:25:3",
+      "hive",
+      "hive:25",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "hive:25:4",
+      "hive",
+      "hive:25",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "hive:25:5",
+      "hive",
+      "hive:25",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "hive:25:6",
+      "hive",
+      "hive:25",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "hive:25:7",
+      "hive",
+      "hive:25",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "hive:26:0",
+      "hive",
+      "hive:26",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "hive:26:1",
+      "hive",
+      "hive:26",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "hive:26:2",
+      "hive",
+      "hive:26",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "hive:26:3",
+      "hive",
+      "hive:26",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "hive:26:4",
+      "hive",
+      "hive:26",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "hive:26:5",
+      "hive",
+      "hive:26",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "hive:26:6",
+      "hive",
+      "hive:26",
+      "distant",
+      "active"
+     ],
+     [
+      0.25,
+      "hive:26:7",
+      "hive",
+      "hive:26",
+      "distant",
+      "active"
+     ],
+     [
+      0.5,
+      "human_allies:4:2",
+      "human_allies",
+      "human_allies:4",
+      "distant",
+      "dead"
+     ],
+     [
+      0.5,
+      "human_allies:6:3",
+      "human_allies",
+      "human_allies:6",
+      "distant",
+      "dead"
+     ],
+     [
+      0.5,
+      "human_allies:6:4",
+      "human_allies",
+      "human_allies:6",
+      "distant",
+      "dead"
+     ],
+     [
+      0.5,
+      "human_allies:10:3",
+      "human_allies",
+      "human_allies:10",
+      "distant",
+      "dead"
+     ],
+     [
+      0.5,
+      "human_allies:10:4",
+      "human_allies",
+      "human_allies:10",
+      "distant",
+      "dead"
+     ],
+     [
+      0.5,
+      "human_allies:10:5",
+      "human_allies",
+      "human_allies:10",
+      "distant",
+      "dead"
+     ],
+     [
+      0.5,
+      "human_allies:10:6",
+      "human_allies",
+      "human_allies:10",
+      "distant",
+      "dead"
+     ],
+     [
+      0.75,
+      "human_allies:4:3",
+      "human_allies",
+      "human_allies:4",
+      "distant",
+      "dead"
+     ],
+     [
+      0.75,
+      "human_allies:4:4",
+      "human_allies",
+      "human_allies:4",
+      "distant",
+      "dead"
+     ],
+     [
+      0.75,
+      "human_allies:6:5",
+      "human_allies",
+      "human_allies:6",
+      "distant",
+      "dead"
+     ],
+     [
+      0.75,
+      "human_allies:6:6",
+      "human_allies",
+      "human_allies:6",
+      "distant",
+      "dead"
+     ],
+     [
+      0.75,
+      "human_allies:6:7",
+      "human_allies",
+      "human_allies:6",
+      "distant",
+      "dead"
+     ],
+     [
+      0.75,
+      "human_allies:7:1",
+      "human_allies",
+      "human_allies:7",
+      "distant",
+      "dead"
+     ],
+     [
+      0.75,
+      "human_allies:10:7",
+      "human_allies",
+      "human_allies:10",
+      "distant",
+      "dead"
+     ],
+     [
+      0.75,
+      "human_allies:11:1",
+      "human_allies",
+      "human_allies:11",
+      "distant",
+      "dead"
+     ],
+     [
+      0.75,
+      "human_allies:11:2",
+      "human_allies",
+      "human_allies:11",
+      "distant",
+      "dead"
+     ],
+     [
+      0.75,
+      "human_allies:11:3",
+      "human_allies",
+      "human_allies:11",
+      "distant",
+      "dead"
+     ],
+     [
+      0.75,
+      "hive:65:1",
+      "hive",
+      "hive:65",
+      "distant",
+      "dead"
+     ],
+     [
+      1,
+      "human_allies:4:0",
+      "human_allies",
+      "human_allies:4",
+      "distant",
+      "active"
+     ],
+     [
+      1,
+      "human_allies:4:5",
+      "human_allies",
+      "human_allies:4",
+      "distant",
+      "active"
+     ],
+     [
+      1,
+      "human_allies:4:6",
+      "human_allies",
+      "human_allies:4",
+      "distant",
+      "active"
+     ],
+     [
+      1,
+      "human_allies:4:7",
+      "human_allies",
+      "human_allies:4",
+      "distant",
+      "active"
+     ],
+     [
+      1,
+      "human_allies:5:1",
+      "human_allies",
+      "human_allies:5",
+      "distant",
+      "dead"
+     ],
+     [
+      1,
+      "human_allies:7:2",
+      "human_allies",
+      "human_allies:7",
+      "distant",
+      "dead"
+     ],
+     [
+      1,
+      "human_allies:7:3",
+      "human_allies",
+      "human_allies:7",
+      "distant",
+      "dead"
+     ],
+     [
+      1,
+      "human_allies:7:4",
+      "human_allies",
+      "human_allies:7",
+      "distant",
+      "dead"
+     ],
+     [
+      1,
+      "human_allies:7:5",
+      "human_allies",
+      "human_allies:7",
+      "distant",
+      "dead"
+     ],
+     [
+      1,
+      "human_allies:11:4",
+      "human_allies",
+      "human_allies:11",
+      "distant",
+      "dead"
+     ],
+     [
+      1,
+      "human_allies:11:5",
+      "human_allies",
+      "human_allies:11",
+      "distant",
+      "dead"
+     ],
+     [
+      1,
+      "human_allies:11:6",
+      "human_allies",
+      "human_allies:11",
+      "distant",
+      "dead"
+     ],
+     [
+      1.25,
+      "human_allies:5:2",
+      "human_allies",
+      "human_allies:5",
+      "distant",
+      "dead"
+     ],
+     [
+      1.25,
+      "human_allies:5:3",
+      "human_allies",
+      "human_allies:5",
+      "distant",
+      "dead"
+     ],
+     [
+      1.25,
+      "human_allies:7:6",
+      "human_allies",
+      "human_allies:7",
+      "distant",
+      "dead"
+     ],
+     [
+      1.25,
+      "human_allies:7:7",
+      "human_allies",
+      "human_allies:7",
+      "distant",
+      "dead"
+     ],
+     [
+      1.25,
+      "human_allies:8:1",
+      "human_allies",
+      "human_allies:8",
+      "distant",
+      "dead"
+     ],
+     [
+      1.25,
+      "human_allies:8:2",
+      "human_allies",
+      "human_allies:8",
+      "distant",
+      "dead"
+     ],
+     [
+      1.25,
+      "human_allies:11:7",
+      "human_allies",
+      "human_allies:11",
+      "distant",
+      "dead"
+     ],
+     [
+      1.25,
+      "human_allies:12:1",
+      "human_allies",
+      "human_allies:12",
+      "distant",
+      "dead"
+     ],
+     [
+      1.25,
+      "human_allies:12:2",
+      "human_allies",
+      "human_allies:12",
+      "distant",
+      "dead"
+     ],
+     [
+      1.25,
+      "human_allies:12:3",
+      "human_allies",
+      "human_allies:12",
+      "distant",
+      "dead"
+     ],
+     [
+      1.25,
+      "hive:33:1",
+      "hive",
+      "hive:33",
+      "distant",
+      "dead"
+     ],
+     [
+      1.5,
+      "human_allies:5:4",
+      "human_allies",
+      "human_allies:5",
+      "distant",
+      "dead"
+     ],
+     [
+      1.5,
+      "human_allies:8:3",
+      "human_allies",
+      "human_allies:8",
+      "distant",
+      "dead"
+     ],
+     [
+      1.5,
+      "human_allies:8:4",
+      "human_allies",
+      "human_allies:8",
+      "distant",
+      "dead"
+     ],
+     [
+      1.5,
+      "human_allies:8:5",
+      "human_allies",
+      "human_allies:8",
+      "distant",
+      "dead"
+     ],
+     [
+      1.5,
+      "human_allies:12:4",
+      "human_allies",
+      "human_allies:12",
+      "distant",
+      "dead"
+     ],
+     [
+      1.5,
+      "human_allies:12:5",
+      "human_allies",
+      "human_allies:12",
+      "distant",
+      "dead"
+     ],
+     [
+      1.75,
+      "human_allies:5:5",
+      "human_allies",
+      "human_allies:5",
+      "distant",
+      "dead"
+     ],
+     [
+      1.75,
+      "human_allies:8:6",
+      "human_allies",
+      "human_allies:8",
+      "distant",
+      "dead"
+     ],
+     [
+      1.75,
+      "human_allies:8:7",
+      "human_allies",
+      "human_allies:8",
+      "distant",
+      "dead"
+     ],
+     [
+      1.75,
+      "human_allies:9:1",
+      "human_allies",
+      "human_allies:9",
+      "distant",
+      "dead"
+     ],
+     [
+      1.75,
+      "human_allies:9:2",
+      "human_allies",
+      "human_allies:9",
+      "distant",
+      "dead"
+     ],
+     [
+      1.75,
+      "human_allies:12:6",
+      "human_allies",
+      "human_allies:12",
+      "distant",
+      "dead"
+     ],
+     [
+      1.75,
+      "human_allies:12:7",
+      "human_allies",
+      "human_allies:12",
+      "distant",
+      "dead"
+     ],
+     [
+      1.75,
+      "human_allies:13:1",
+      "human_allies",
+      "human_allies:13",
+      "distant",
+      "dead"
+     ],
+     [
+      2,
+      "player_clan:2:1",
+      "player_clan",
+      "player_clan:2",
+      "distant",
+      "dead"
+     ],
+     [
+      2,
+      "human_allies:5:6",
+      "human_allies",
+      "human_allies:5",
+      "distant",
+      "dead"
+     ],
+     [
+      2,
+      "human_allies:9:3",
+      "human_allies",
+      "human_allies:9",
+      "distant",
+      "dead"
+     ],
+     [
+      2,
+      "human_allies:9:4",
+      "human_allies",
+      "human_allies:9",
+      "distant",
+      "dead"
+     ],
+     [
+      2,
+      "human_allies:13:2",
+      "human_allies",
+      "human_allies:13",
+      "distant",
+      "dead"
+     ],
+     [
+      2,
+      "human_allies:13:3",
+      "human_allies",
+      "human_allies:13",
+      "distant",
+      "dead"
+     ],
+     [
+      2.25,
+      "player_clan:2:2",
+      "player_clan",
+      "player_clan:2",
+      "distant",
+      "dead"
+     ],
+     [
+      2.25,
+      "human_allies:9:5",
+      "human_allies",
+      "human_allies:9",
+      "distant",
+      "dead"
+     ],
+     [
+      2.25,
+      "human_allies:9:6",
+      "human_allies",
+      "human_allies:9",
+      "distant",
+      "dead"
+     ],
+     [
+      2.5,
+      "player_clan:1:1",
+      "player_clan",
+      "player_clan:1",
+      "distant",
+      "dead"
+     ],
+     [
+      2.5,
+      "player_clan:2:3",
+      "player_clan",
+      "player_clan:2",
+      "distant",
+      "dead"
+     ],
+     [
+      2.5,
+      "human_allies:9:7",
+      "human_allies",
+      "human_allies:9",
+      "distant",
+      "dead"
+     ],
+     [
+      2.5,
+      "human_allies:10:0",
+      "human_allies",
+      "human_allies:10",
+      "distant",
+      "dead"
+     ],
+     [
+      2.75,
+      "player_clan:1:2",
+      "player_clan",
+      "player_clan:1",
+      "distant",
+      "dead"
+     ],
+     [
+      2.75,
+      "player_clan:1:3",
+      "player_clan",
+      "player_clan:1",
+      "distant",
+      "dead"
+     ],
+     [
+      2.75,
+      "human_allies:11:0",
+      "human_allies",
+      "human_allies:11",
+      "distant",
+      "dead"
+     ],
+     [
+      2.75,
+      "hive:33:2",
+      "hive",
+      "hive:33",
+      "distant",
+      "dead"
+     ],
+     [
+      3,
+      "human_allies:6:0",
+      "human_allies",
+      "human_allies:6",
+      "distant",
+      "dead"
+     ],
+     [
+      3,
+      "human_allies:12:0",
+      "human_allies",
+      "human_allies:12",
+      "distant",
+      "dead"
+     ],
+     [
+      3.25,
+      "human_allies:7:0",
+      "human_allies",
+      "human_allies:7",
+      "distant",
+      "dead"
+     ],
+     [
+      3.25,
+      "human_allies:13:0",
+      "human_allies",
+      "human_allies:13",
+      "distant",
+      "dead"
+     ],
+     [
+      3.5,
+      "player_clan:2:0",
+      "player_clan",
+      "player_clan:2",
+      "distant",
+      "dead"
+     ],
+     [
+      3.5,
+      "human_allies:8:0",
+      "human_allies",
+      "human_allies:8",
+      "distant",
+      "dead"
+     ],
+     [
+      3.75,
+      "player_clan:1:0",
+      "player_clan",
+      "player_clan:1",
+      "distant",
+      "dead"
+     ],
+     [
+      3.75,
+      "human_allies:9:0",
+      "human_allies",
+      "human_allies:9",
+      "distant",
+      "dead"
+     ],
+     [
+      11,
+      "hive:97:0",
+      "hive",
+      "hive:97",
+      "reserve",
+      "distant"
+     ],
+     [
+      11,
+      "hive:97:1",
+      "hive",
+      "hive:97",
+      "reserve",
+      "distant"
+     ],
+     [
+      11,
+      "hive:97:2",
+      "hive",
+      "hive:97",
+      "reserve",
+      "distant"
+     ],
+     [
+      11,
+      "hive:97:3",
+      "hive",
+      "hive:97",
+      "reserve",
+      "distant"
+     ],
+     [
+      11,
+      "hive:97:4",
+      "hive",
+      "hive:97",
+      "reserve",
+      "distant"
+     ],
+     [
+      11,
+      "hive:97:5",
+      "hive",
+      "hive:97",
+      "reserve",
+      "distant"
+     ],
+     [
+      11,
+      "hive:97:6",
+      "hive",
+      "hive:97",
+      "reserve",
+      "distant"
+     ],
+     [
+      11,
+      "hive:97:7",
+      "hive",
+      "hive:97",
+      "reserve",
+      "distant"
+     ],
+     [
+      51,
+      "hive:98:0",
+      "hive",
+      "hive:98",
+      "reserve",
+      "distant"
+     ],
+     [
+      51,
+      "hive:98:1",
+      "hive",
+      "hive:98",
+      "reserve",
+      "distant"
+     ],
+     [
+      51,
+      "hive:98:2",
+      "hive",
+      "hive:98",
+      "reserve",
+      "distant"
+     ],
+     [
+      51,
+      "hive:98:3",
+      "hive",
+      "hive:98",
+      "reserve",
+      "distant"
+     ],
+     [
+      51,
+      "hive:98:4",
+      "hive",
+      "hive:98",
+      "reserve",
+      "distant"
+     ],
+     [
+      51,
+      "hive:98:5",
+      "hive",
+      "hive:98",
+      "reserve",
+      "distant"
+     ],
+     [
+      51,
+      "hive:98:6",
+      "hive",
+      "hive:98",
+      "reserve",
+      "distant"
+     ],
+     [
+      51,
+      "hive:98:7",
+      "hive",
+      "hive:98",
+      "reserve",
+      "distant"
+     ],
+     [
+      99,
+      "hive:99:0",
+      "hive",
+      "hive:99",
+      "reserve",
+      "distant"
+     ],
+     [
+      99,
+      "hive:99:1",
+      "hive",
+      "hive:99",
+      "reserve",
+      "distant"
+     ],
+     [
+      99,
+      "hive:99:2",
+      "hive",
+      "hive:99",
+      "reserve",
+      "distant"
+     ],
+     [
+      99,
+      "hive:99:3",
+      "hive",
+      "hive:99",
+      "reserve",
+      "distant"
+     ],
+     [
+      99,
+      "hive:99:4",
+      "hive",
+      "hive:99",
+      "reserve",
+      "distant"
+     ],
+     [
+      99,
+      "hive:99:5",
+      "hive",
+      "hive:99",
+      "reserve",
+      "distant"
+     ],
+     [
+      99,
+      "hive:99:6",
+      "hive",
+      "hive:99",
+      "reserve",
+      "distant"
+     ],
+     [
+      99,
+      "hive:99:7",
+      "hive",
+      "hive:99",
+      "reserve",
+      "distant"
+     ],
+     [
+      120.25,
+      "human_allies:5:0",
+      "human_allies",
+      "human_allies:5",
+      "distant",
+      "dead"
+     ],
+     [
+      120.25,
+      "human_allies:5:7",
+      "human_allies",
+      "human_allies:5",
+      "distant",
+      "dead"
+     ],
+     [
+      139,
+      "hive:100:0",
+      "hive",
+      "hive:100",
+      "reserve",
+      "distant"
+     ],
+     [
+      139,
+      "hive:100:1",
+      "hive",
+      "hive:100",
+      "reserve",
+      "distant"
+     ],
+     [
+      139,
+      "hive:100:2",
+      "hive",
+      "hive:100",
+      "reserve",
+      "distant"
+     ],
+     [
+      139,
+      "hive:100:3",
+      "hive",
+      "hive:100",
+      "reserve",
+      "distant"
+     ],
+     [
+      139,
+      "hive:100:4",
+      "hive",
+      "hive:100",
+      "reserve",
+      "distant"
+     ],
+     [
+      139,
+      "hive:100:5",
+      "hive",
+      "hive:100",
+      "reserve",
+      "distant"
+     ],
+     [
+      139,
+      "hive:100:6",
+      "hive",
+      "hive:100",
+      "reserve",
+      "distant"
+     ],
+     [
+      139,
+      "hive:100:7",
+      "hive",
+      "hive:100",
+      "reserve",
+      "distant"
+     ],
+     [
+      187,
+      "hive:101:0",
+      "hive",
+      "hive:101",
+      "reserve",
+      "distant"
+     ],
+     [
+      187,
+      "hive:101:1",
+      "hive",
+      "hive:101",
+      "reserve",
+      "distant"
+     ],
+     [
+      187,
+      "hive:101:2",
+      "hive",
+      "hive:101",
+      "reserve",
+      "distant"
+     ],
+     [
+      187,
+      "hive:101:3",
+      "hive",
+      "hive:101",
+      "reserve",
+      "distant"
+     ],
+     [
+      187,
+      "hive:101:4",
+      "hive",
+      "hive:101",
+      "reserve",
+      "distant"
+     ],
+     [
+      187,
+      "hive:101:5",
+      "hive",
+      "hive:101",
+      "reserve",
+      "distant"
+     ],
+     [
+      187,
+      "hive:101:6",
+      "hive",
+      "hive:101",
+      "reserve",
+      "distant"
+     ],
+     [
+      187,
+      "hive:101:7",
+      "hive",
+      "hive:101",
+      "reserve",
+      "distant"
+     ],
+     [
+      235,
+      "hive:102:0",
+      "hive",
+      "hive:102",
+      "reserve",
+      "distant"
+     ],
+     [
+      235,
+      "hive:102:1",
+      "hive",
+      "hive:102",
+      "reserve",
+      "distant"
+     ],
+     [
+      235,
+      "hive:102:2",
+      "hive",
+      "hive:102",
+      "reserve",
+      "distant"
+     ],
+     [
+      235,
+      "hive:102:3",
+      "hive",
+      "hive:102",
+      "reserve",
+      "distant"
+     ],
+     [
+      235,
+      "hive:102:4",
+      "hive",
+      "hive:102",
+      "reserve",
+      "distant"
+     ],
+     [
+      235,
+      "hive:102:5",
+      "hive",
+      "hive:102",
+      "reserve",
+      "distant"
+     ],
+     [
+      235,
+      "hive:102:6",
+      "hive",
+      "hive:102",
+      "reserve",
+      "distant"
+     ],
+     [
+      235,
+      "hive:102:7",
+      "hive",
+      "hive:102",
+      "reserve",
+      "distant"
+     ],
+     [
+      275,
+      "hive:103:0",
+      "hive",
+      "hive:103",
+      "reserve",
+      "distant"
+     ],
+     [
+      275,
+      "hive:103:1",
+      "hive",
+      "hive:103",
+      "reserve",
+      "distant"
+     ],
+     [
+      275,
+      "hive:103:2",
+      "hive",
+      "hive:103",
+      "reserve",
+      "distant"
+     ],
+     [
+      275,
+      "hive:103:3",
+      "hive",
+      "hive:103",
+      "reserve",
+      "distant"
+     ],
+     [
+      275,
+      "hive:103:4",
+      "hive",
+      "hive:103",
+      "reserve",
+      "distant"
+     ],
+     [
+      275,
+      "hive:103:5",
+      "hive",
+      "hive:103",
+      "reserve",
+      "distant"
+     ],
+     [
+      275,
+      "hive:103:6",
+      "hive",
+      "hive:103",
+      "reserve",
+      "distant"
+     ],
+     [
+      275,
+      "hive:103:7",
+      "hive",
+      "hive:103",
+      "reserve",
+      "distant"
+     ],
+     [
+      323,
+      "hive:104:0",
+      "hive",
+      "hive:104",
+      "reserve",
+      "distant"
+     ],
+     [
+      323,
+      "hive:104:1",
+      "hive",
+      "hive:104",
+      "reserve",
+      "distant"
+     ],
+     [
+      323,
+      "hive:104:2",
+      "hive",
+      "hive:104",
+      "reserve",
+      "distant"
+     ],
+     [
+      323,
+      "hive:104:3",
+      "hive",
+      "hive:104",
+      "reserve",
+      "distant"
+     ],
+     [
+      323,
+      "hive:104:4",
+      "hive",
+      "hive:104",
+      "reserve",
+      "distant"
+     ],
+     [
+      323,
+      "hive:104:5",
+      "hive",
+      "hive:104",
+      "reserve",
+      "distant"
+     ],
+     [
+      323,
+      "hive:104:6",
+      "hive",
+      "hive:104",
+      "reserve",
+      "distant"
+     ],
+     [
+      323,
+      "hive:104:7",
+      "hive",
+      "hive:104",
+      "reserve",
+      "distant"
+     ],
+     [
+      363,
+      "hive:105:0",
+      "hive",
+      "hive:105",
+      "reserve",
+      "distant"
+     ],
+     [
+      363,
+      "hive:105:1",
+      "hive",
+      "hive:105",
+      "reserve",
+      "distant"
+     ],
+     [
+      363,
+      "hive:105:2",
+      "hive",
+      "hive:105",
+      "reserve",
+      "distant"
+     ],
+     [
+      363,
+      "hive:105:3",
+      "hive",
+      "hive:105",
+      "reserve",
+      "distant"
+     ],
+     [
+      363,
+      "hive:105:4",
+      "hive",
+      "hive:105",
+      "reserve",
+      "distant"
+     ],
+     [
+      363,
+      "hive:105:5",
+      "hive",
+      "hive:105",
+      "reserve",
+      "distant"
+     ],
+     [
+      363,
+      "hive:105:6",
+      "hive",
+      "hive:105",
+      "reserve",
+      "distant"
+     ],
+     [
+      363,
+      "hive:105:7",
+      "hive",
+      "hive:105",
+      "reserve",
+      "distant"
+     ],
+     [
+      411,
+      "hive:106:0",
+      "hive",
+      "hive:106",
+      "reserve",
+      "distant"
+     ],
+     [
+      411,
+      "hive:106:1",
+      "hive",
+      "hive:106",
+      "reserve",
+      "distant"
+     ],
+     [
+      411,
+      "hive:106:2",
+      "hive",
+      "hive:106",
+      "reserve",
+      "distant"
+     ],
+     [
+      411,
+      "hive:106:3",
+      "hive",
+      "hive:106",
+      "reserve",
+      "distant"
+     ],
+     [
+      411,
+      "hive:106:4",
+      "hive",
+      "hive:106",
+      "reserve",
+      "distant"
+     ],
+     [
+      411,
+      "hive:106:5",
+      "hive",
+      "hive:106",
+      "reserve",
+      "distant"
+     ],
+     [
+      411,
+      "hive:106:6",
+      "hive",
+      "hive:106",
+      "reserve",
+      "distant"
+     ],
+     [
+      411,
+      "hive:106:7",
+      "hive",
+      "hive:106",
+      "reserve",
+      "distant"
+     ],
+     [
+      459,
+      "hive:107:0",
+      "hive",
+      "hive:107",
+      "reserve",
+      "distant"
+     ],
+     [
+      459,
+      "hive:107:1",
+      "hive",
+      "hive:107",
+      "reserve",
+      "distant"
+     ],
+     [
+      459,
+      "hive:107:2",
+      "hive",
+      "hive:107",
+      "reserve",
+      "distant"
+     ],
+     [
+      459,
+      "hive:107:3",
+      "hive",
+      "hive:107",
+      "reserve",
+      "distant"
+     ],
+     [
+      459,
+      "hive:107:4",
+      "hive",
+      "hive:107",
+      "reserve",
+      "distant"
+     ],
+     [
+      459,
+      "hive:107:5",
+      "hive",
+      "hive:107",
+      "reserve",
+      "distant"
+     ],
+     [
+      459,
+      "hive:107:6",
+      "hive",
+      "hive:107",
+      "reserve",
+      "distant"
+     ],
+     [
+      459,
+      "hive:107:7",
+      "hive",
+      "hive:107",
+      "reserve",
+      "distant"
+     ],
+     [
+      499,
+      "hive:108:0",
+      "hive",
+      "hive:108",
+      "reserve",
+      "distant"
+     ],
+     [
+      499,
+      "hive:108:1",
+      "hive",
+      "hive:108",
+      "reserve",
+      "distant"
+     ],
+     [
+      499,
+      "hive:108:2",
+      "hive",
+      "hive:108",
+      "reserve",
+      "distant"
+     ],
+     [
+      499,
+      "hive:108:3",
+      "hive",
+      "hive:108",
+      "reserve",
+      "distant"
+     ],
+     [
+      499,
+      "hive:108:4",
+      "hive",
+      "hive:108",
+      "reserve",
+      "distant"
+     ],
+     [
+      499,
+      "hive:108:5",
+      "hive",
+      "hive:108",
+      "reserve",
+      "distant"
+     ],
+     [
+      499,
+      "hive:108:6",
+      "hive",
+      "hive:108",
+      "reserve",
+      "distant"
+     ],
+     [
+      499,
+      "hive:108:7",
+      "hive",
+      "hive:108",
+      "reserve",
+      "distant"
+     ],
+     [
+      547,
+      "hive:109:0",
+      "hive",
+      "hive:109",
+      "reserve",
+      "distant"
+     ],
+     [
+      547,
+      "hive:109:1",
+      "hive",
+      "hive:109",
+      "reserve",
+      "distant"
+     ],
+     [
+      547,
+      "hive:109:2",
+      "hive",
+      "hive:109",
+      "reserve",
+      "distant"
+     ],
+     [
+      547,
+      "hive:109:3",
+      "hive",
+      "hive:109",
+      "reserve",
+      "distant"
+     ],
+     [
+      547,
+      "hive:109:4",
+      "hive",
+      "hive:109",
+      "reserve",
+      "distant"
+     ],
+     [
+      547,
+      "hive:109:5",
+      "hive",
+      "hive:109",
+      "reserve",
+      "distant"
+     ],
+     [
+      547,
+      "hive:109:6",
+      "hive",
+      "hive:109",
+      "reserve",
+      "distant"
+     ],
+     [
+      547,
+      "hive:109:7",
+      "hive",
+      "hive:109",
+      "reserve",
+      "distant"
+     ],
+     [
+      595,
+      "hive:110:0",
+      "hive",
+      "hive:110",
+      "reserve",
+      "distant"
+     ],
+     [
+      595,
+      "hive:110:1",
+      "hive",
+      "hive:110",
+      "reserve",
+      "distant"
+     ],
+     [
+      595,
+      "hive:110:2",
+      "hive",
+      "hive:110",
+      "reserve",
+      "distant"
+     ],
+     [
+      595,
+      "hive:110:3",
+      "hive",
+      "hive:110",
+      "reserve",
+      "distant"
+     ],
+     [
+      595,
+      "hive:110:4",
+      "hive",
+      "hive:110",
+      "reserve",
+      "distant"
+     ],
+     [
+      595,
+      "hive:110:5",
+      "hive",
+      "hive:110",
+      "reserve",
+      "distant"
+     ],
+     [
+      595,
+      "hive:110:6",
+      "hive",
+      "hive:110",
+      "reserve",
+      "distant"
+     ],
+     [
+      595,
+      "hive:110:7",
+      "hive",
+      "hive:110",
+      "reserve",
+      "distant"
+     ]
+    ]
+   },
+   "violations": [],
+   "resultat": null
+  }
+ },
+ "clauses": [
+  {
+   "id": "C2e",
+   "texte": "Couvoir GRP-05 (œufs comptés à part), extraction GRP-16 et civils GRP-28 inclus dans EFF-03/EFF-06",
+   "verdict": "prouvé",
+   "mecanismes": {
+    "GRP-05": "groupe couvoir AFF-27 (8 facehuggers de réserve, état réserve)",
+    "GRP-16": "escorte du vétéran libéré dans AFF-10",
+    "GRP-28": "registre des civils chiffrés par l’audit, hors effectifs combattants"
+   },
+   "portee": "EFF-06 est porté par la variante de trêve d’AFF-18 (HW-DEC-99) ; voir la recette dédiée quand elle existera.",
+   "gabaritsAbsents": [],
+   "reproduction": "node -e \"import('./js/data/BattleCatalog.js').then(m=>console.log(m.BATTLE_OPERATIONS.some(o=>m.getBattleOperationConfig(o.id,{allowHumanController:true}).groups.some(g=>g.sourceTemplateIds.includes('GRP-05')))))\" → false",
+   "defaut": "Lacune de contenu : js/data/BattleCatalog.js:284-318 (getBattleOperationConfig) ne crée des groupes qu’à partir de forceAllocation ; aucune opération n’alloue GRP-05/GRP-16/GRP-28. Les états BattleSimulation (js/battlefield/BattleSimulation.js:24) n’ont pas de catégorie œuf ; les civils n’existent que comme membres d’objectif (js/battlefield/OperationObjectives.js:35-36).",
+   "etatAudit": "Feuille Groupes : GRP-05 « À structurer », GRP-16 « À créer », GRP-28 « À créer »."
+  },
+  {
+   "id": "C1",
+   "texte": "Chaque individu appartient à un seul état comptable (EFF-03)",
+   "verdict": "prouvé",
+   "scenario": "EFF-03",
+   "unitesSuivies": 1048,
+   "controlesParPas": 2400
+  },
+  {
+   "id": "C3a",
+   "texte": "Morts et retraites ne réapparaissent pas gratuitement (EFF-03)",
+   "verdict": "prouvé",
+   "scenario": "EFF-03",
+   "mortsTotal": 46,
+   "morts": {
+    "exemple": "AFF-18:hive:4:0",
+    "etat": "dead",
+    "doubleCallbackRefuse": true
+   },
+   "groupeEnRetraite": {
+    "id": "AFF-18:player_clan:15",
+    "ordre": {
+     "type": "retreat",
+     "frontId": "front_a",
+     "issuer": "player1",
+     "issuedAt": 0,
+     "sequence": 2
+    },
+    "reconstitution": {
+     "required": true,
+     "startedAt": 0,
+     "returnFrontId": "front_b",
+     "returnOrderType": "defend",
+     "autoReturn": false,
+     "recoverySeconds": 0,
+     "supportGroupId": null,
+     "nextSupportRequestAt": 0,
+     "lastBlockedReason": null,
+     "readyAt": null
+    },
+    "survivants": 2,
+    "unitesCreees": 0
+   },
+   "reconstitutions": [],
+   "groupeEvacue": {
+    "id": "AFF-18:player_clan:49",
+    "etats": [
+     "evacuated",
+     "evacuated"
+    ]
+   }
+  },
+  {
+   "id": "C2a",
+   "texte": "Joueurs comptés hors effectifs PNJ (playersCountedSeparately)",
+   "verdict": "prouvé",
+   "scenario": "EFF-03",
+   "allouesPNJ": {
+    "player_clan": 48,
+    "hive": 1000
+   },
+   "budget": {
+    "allie": 48,
+    "ennemi": 1000,
+    "joueurs": 1
+   }
+  },
+  {
+   "id": "C2b",
+   "texte": "Blessés distingués : vivants, hors force de combat disponible",
+   "verdict": "prouvé",
+   "scenario": "EFF-03",
+   "releve": {
+    "t": 1,
+    "unite": {
+     "id": "AFF-18:player_clan:48:1",
+     "etat": "active",
+     "hp": 90,
+     "incapacitated": true
+    },
+    "groupe": {
+     "id": "AFF-18:player_clan:48",
+     "alive": 2,
+     "combatReady": 1,
+     "incapacitated": 1
+    }
+   },
+   "etatFinal": {
+    "etat": "dead",
+    "hp": 0,
+    "mort": {
+     "entityId": "AFF-18:player_clan:48:1",
+     "groupId": "AFF-18:player_clan:48",
+     "factionId": "player_clan",
+     "killerFaction": "hive",
+     "cause": "distant_combat",
+     "time": 200.25,
+     "officer": false,
+     "uniqueId": null
+    }
+   }
+  },
+  {
+   "id": "C2c",
+   "texte": "Civils distingués : registre non combattant séparé (OperationObjectives), hors unités et budgets",
+   "verdict": "prouvé",
+   "scenario": "EFF-03",
+   "civils": {
+    "allocated": 8,
+    "captive": 0,
+    "rescued": 8,
+    "evacuated": 0,
+    "dead": 0
+   },
+   "identifiants": [
+    "refugees:member:0",
+    "refugees:member:1",
+    "refugees:member:2",
+    "refugees:member:3",
+    "refugees:member:4",
+    "refugees:member:5",
+    "refugees:member:6",
+    "refugees:member:7"
+   ],
+   "limite": "Les civils AFF-18 sont des membres d’entité objectif (8 réfugiés), pas une population GRP-28 simulée (fuite, dispersion) ; cf. C2e."
+  },
+  {
+   "id": "C2d",
+   "texte": "Matériel et civils ne peuvent pas entrer dans un effectif ou une réserve de combat",
+   "verdict": "prouvé",
+   "profilMateriel": "YAU-037",
+   "erreurs": [
+    "YAU-037: excluded from combat spawn",
+    "YAU-037: not a generic combatant"
+   ],
+   "profilCivil": "HUM-023",
+   "erreursCivil": [
+    "HUM-023: not a generic combatant",
+    "HUM-023: cannot enter a generic reserve"
+   ]
+  },
+  {
+   "id": "C4",
+   "texte": "Toute croissance biologique ou arrivée extérieure possède une source enregistrée",
+   "verdict": "prouvé",
+   "scenario": "gabarit dédié rec-004-bio + EFF-03 (arrivées)",
+   "infection": {
+    "sourceUnitId": "f0",
+    "sourceFaction": "hive",
+    "startedAt": 0.25,
+    "completesAt": 8.25
+   },
+   "incubationSecondes": 8,
+   "registreMort": [
+    {
+     "entityId": "f0",
+     "groupId": "brood",
+     "factionId": "hive",
+     "killerFaction": null,
+     "cause": "facehugger-implantation",
+     "time": 0.25,
+     "officer": false,
+     "uniqueId": null
+    },
+    {
+     "entityId": "c0",
+     "groupId": "colony",
+     "factionId": "colonists",
+     "killerFaction": "hive",
+     "cause": "facehugger-incubation",
+     "time": 8.25,
+     "officer": false,
+     "uniqueId": null
+    }
+   ],
+   "evenement": {
+    "id": 8,
+    "time": 8.25,
+    "type": "host_infection_completed",
+    "priority": 2,
+    "hostId": "c0",
+    "facehuggerId": "f0",
+    "adultGenerated": false
+   },
+   "unitesAvant": 5,
+   "unitesApres": 5,
+   "arriveesEFF03": "chaque passage reserve→distant est apparié à reinforcements_inbound puis reinforcements_arrived avec une source reinforcementSource (Ledger.tick)",
+   "limite": "Aucun cycle œuf→parasite→adulte n’existe : la croissance se limite à la consommation finie d’identités déjà allouées."
+  },
+  {
+   "id": "C1-EFF06",
+   "texte": "Chaque individu appartient à un seul état comptable (EFF-06, y compris passagers M577)",
+   "verdict": "prouvé",
+   "scenario": "EFF-06",
+   "passagersA60s": 2,
+   "groupeAPC": "human_allies:5"
+  },
+  {
+   "id": "C3b",
+   "texte": "Morts et retraites ne réapparaissent pas gratuitement (EFF-06)",
+   "verdict": "prouvé",
+   "scenario": "EFF-06",
+   "groupeEnRetraite": "human_allies:6",
+   "morts": 83,
+   "reconstitutions": []
+  },
+  {
+   "id": "C5",
+   "texte": "Rapprochement initial + entrées = états finaux + pertes + sorties (EFF-03 puis EFF-06)",
+   "verdict": "prouvé",
+   "EFF03": {
+    "hive": {
+     "initialAlloue": 1000,
+     "initialDeploye": 640,
+     "initialReserve": 360,
+     "entreesExterieures": 0,
+     "arriveesDepuisReserveEnregistrees": 112,
+     "etatsFinaux": {
+      "present": 750,
+      "reserve": 248,
+      "blesses": 0,
+      "aBordAPC": 0
+     },
+     "pertes": 2,
+     "sorties": {
+      "evacues": 0,
+      "captures": 0
+     },
+     "equation": "1000 + 0 = 998 + 2 + 0",
+     "equilibre": true
+    },
+    "player_clan": {
+     "initialAlloue": 48,
+     "initialDeploye": 40,
+     "initialReserve": 8,
+     "entreesExterieures": 0,
+     "arriveesDepuisReserveEnregistrees": 8,
+     "etatsFinaux": {
+      "present": 2,
+      "reserve": 0,
+      "blesses": 0,
+      "aBordAPC": 0
+     },
+     "pertes": 44,
+     "sorties": {
+      "evacues": 2,
+      "captures": 0
+     },
+     "equation": "48 + 0 = 2 + 44 + 2",
+     "equilibre": true
+    }
+   },
+   "EFF06": {
+    "player_clan": {
+     "initialAlloue": 12,
+     "initialDeploye": 12,
+     "initialReserve": 0,
+     "entreesExterieures": 0,
+     "arriveesDepuisReserveEnregistrees": 0,
+     "etatsFinaux": {
+      "present": 4,
+      "reserve": 0,
+      "blesses": 0,
+      "aBordAPC": 0
+     },
+     "pertes": 8,
+     "sorties": {
+      "evacues": 0,
+      "captures": 0
+     },
+     "equation": "12 + 0 = 4 + 8 + 0",
+     "equilibre": true
+    },
+    "human_allies": {
+     "initialAlloue": 108,
+     "initialDeploye": 84,
+     "initialReserve": 24,
+     "entreesExterieures": 0,
+     "arriveesDepuisReserveEnregistrees": 0,
+     "etatsFinaux": {
+      "present": 12,
+      "reserve": 24,
+      "blesses": 0,
+      "aBordAPC": 0
+     },
+     "pertes": 72,
+     "sorties": {
+      "evacues": 0,
+      "captures": 0
+     },
+     "equation": "108 + 0 = 36 + 72 + 0",
+     "equilibre": true
+    },
+    "hive": {
+     "initialAlloue": 1000,
+     "initialDeploye": 640,
+     "initialReserve": 360,
+     "entreesExterieures": 0,
+     "arriveesDepuisReserveEnregistrees": 112,
+     "etatsFinaux": {
+      "present": 749,
+      "reserve": 248,
+      "blesses": 0,
+      "aBordAPC": 0
+     },
+     "pertes": 3,
+     "sorties": {
+      "evacues": 0,
+      "captures": 0
+     },
+     "equation": "1000 + 0 = 997 + 3 + 0",
+     "equilibre": true
+    }
+   }
+  },
+  {
+   "id": "C6",
+   "texte": "Trêve EFF-06 révocable, sans alliance automatique avec la ruche",
+   "verdict": "prouvé",
+   "relations": [
+    [
+     "human_allies|player_clan",
+     "neutral"
+    ],
+    [
+     "hive|player_clan",
+     "hostile"
+    ],
+    [
+     "hive|human_allies",
+     "hostile"
+    ]
+   ],
+   "evenement": {
+    "id": 551,
+    "time": 300,
+    "type": "relations_changed",
+    "priority": 2,
+    "a": "player_clan",
+    "b": "human_allies",
+    "state": "neutral",
+    "reason": "truce_revoked"
+   }
+  },
+  {
+   "id": "NA1",
+   "texte": "Lisibilité visuelle des catégories (civil, blessé, œuf, matériel) à l’écran",
+   "verdict": "non automatisable",
+   "raison": "Rendu Three.js et lecture humaine des silhouettes/HUD requis ; aucun rendu WebGL dans node:test."
+  }
+ ],
+ "observations": [
+  {
+   "id": "OBS-1",
+   "texte": "EFF-03/AFF-18 : 28 des 48 alliés Yautja meurent en simulation distante dans les 4 premières secondes (28 à 12 s) ; la conservation reste exacte mais l’équilibre du front A hors bulle relève de REC-022/équilibrage, pas de REC-004."
+  },
+  {
+   "id": "OBS-2",
+   "texte": "Renouvellement du détail sous les yeux du joueur : à t=1,25 s, quatre groupes détaillés du front A sont dématérialisés et remplacés alors que le joueur reste sur ce front ; le blessé AFF-18:player_clan:48:1 devient distant et meurt à t=1,5 s (distant_combat). Analysé comme défaut dans REC-005 (js/battlefield/BattleSimulation.js:522 et :539).",
+   "journal": [
+    [
+     0.25,
+     "spawn",
+     "AFF-18:hive:34",
+     8
+    ],
+    [
+     0.25,
+     "spawn",
+     "AFF-18:player_clan:51",
+     2
+    ],
+    [
+     0.25,
+     "spawn",
+     "AFF-18:hive:36",
+     8
+    ],
+    [
+     0.25,
+     "spawn",
+     "AFF-18:player_clan:48",
+     2
+    ],
+    [
+     0.25,
+     "spawn",
+     "AFF-18:hive:4",
+     8
+    ],
+    [
+     0.25,
+     "spawn",
+     "AFF-18:player_clan:49",
+     2
+    ],
+    [
+     0.25,
+     "spawn",
+     "AFF-18:player_clan:50",
+     2
+    ],
+    [
+     1.5,
+     "despawn",
+     "AFF-18:player_clan:49",
+     2
+    ],
+    [
+     1.75,
+     "spawn",
+     "AFF-18:player_clan:8",
+     1
+    ],
+    [
+     1.75,
+     "spawn",
+     "AFF-18:player_clan:9",
+     1
+    ],
+    [
+     200.25,
+     "despawn",
+     "AFF-18:hive:4",
+     7
+    ],
+    [
+     200.25,
+     "despawn",
+     "AFF-18:player_clan:8",
+     1
+    ],
+    [
+     200.25,
+     "despawn",
+     "AFF-18:player_clan:9",
+     1
+    ],
+    [
+     200.25,
+     "despawn",
+     "AFF-18:hive:34",
+     8
+    ],
+    [
+     200.25,
+     "despawn",
+     "AFF-18:hive:36",
+     8
+    ],
+    [
+     200.25,
+     "despawn",
+     "AFF-18:player_clan:48",
+     2
+    ]
+   ]
+  }
+ ]
+}

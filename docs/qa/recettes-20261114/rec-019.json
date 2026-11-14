@@ -1,0 +1,1500 @@
+{
+  "id": "REC-019",
+  "source": "docs/audits/2026-10-26/Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.xlsx#Validation",
+  "perimetre": "Boss dépendant de la bataille",
+  "operation": "AFF-14",
+  "boss": "BOS-32",
+  "seed": 1114,
+  "commit": "3af4819a999137f5fd930aa9b688c8c9db58f113",
+  "date": "2026-11-14",
+  "commande": "node --test tests/recette-rec-019.test.js",
+  "preuveVideo": "non produite — preuve par journal",
+  "replaysComparatifs": [
+    {
+      "scenario": "tunnels_ouverts+extraction_intacte",
+      "chronologie": [
+        {
+          "t": 0,
+          "event": "debut",
+          "boss": "AFF-14:hive:21:0",
+          "frontBoss": "front_c",
+          "sourcesRuche": [
+            [
+              "front_b",
+              1000
+            ],
+            [
+              "front_c",
+              1000
+            ]
+          ]
+        },
+        {
+          "t": 20,
+          "event": "arrivee_boss",
+          "front": "front_c",
+          "renfortVersBoss": {
+            "accepted": true,
+            "reason": null,
+            "source": "front_b",
+            "count": 8
+          },
+          "sourcesRuche": {
+            "front_a": {
+              "owner": "player_clan",
+              "sourceHP": 1000
+            },
+            "front_b": {
+              "owner": "hive",
+              "sourceHP": 1000
+            },
+            "front_c": {
+              "owner": "hive",
+              "sourceHP": 1000
+            }
+          },
+          "rucheVivanteAuFrontBoss": {
+            "avant": 200,
+            "apres20s": 200
+          },
+          "bossMaterialise": true,
+          "extraction": {
+            "disponible": false,
+            "raison": "Un objectif préalable reste à accomplir."
+          }
+        },
+        {
+          "t": 30,
+          "event": "route_boss",
+          "accepted": true,
+          "reason": null,
+          "chemin": [
+            "route_1",
+            "route_0"
+          ],
+          "deplacement10s": 44.48,
+          "frontApres10s": "front_c",
+          "longueurRoute": 12083
+        },
+        {
+          "t": 31,
+          "event": "boss_tue",
+          "avant": {
+            "alliesMorts": [
+              [
+                "AFF-14:player_clan:6:0",
+                "dead",
+                0
+              ],
+              [
+                "AFF-14:player_clan:6:1",
+                "dead",
+                0
+              ]
+            ],
+            "ownerA": "player_clan",
+            "sources": {
+              "front_a": 1000,
+              "front_b": 1000,
+              "front_c": 1000
+            },
+            "tunnels": [
+              "pending",
+              "pending"
+            ]
+          },
+          "apres": {
+            "alliesMorts": [
+              [
+                "AFF-14:player_clan:6:0",
+                "dead",
+                0
+              ],
+              [
+                "AFF-14:player_clan:6:1",
+                "dead",
+                0
+              ]
+            ],
+            "ownerA": "player_clan",
+            "sources": {
+              "front_a": 1000,
+              "front_b": 1000,
+              "front_c": 1000
+            },
+            "tunnels": [
+              "pending",
+              "pending"
+            ],
+            "matriarch": "done",
+            "rucheVivante": 998
+          }
+        },
+        {
+          "t": 31,
+          "event": "extraction",
+          "taskId": "lethe_exit",
+          "accepted": false,
+          "feedback": "Un objectif préalable reste à accomplir.",
+          "status": "pending",
+          "resultat": null
+        }
+      ],
+      "contexteBoss": {
+        "front": "front_c",
+        "renfortVersBoss": {
+          "accepted": true,
+          "reason": null,
+          "source": "front_b",
+          "count": 8
+        },
+        "sourcesRuche": {
+          "front_a": {
+            "owner": "player_clan",
+            "sourceHP": 1000
+          },
+          "front_b": {
+            "owner": "hive",
+            "sourceHP": 1000
+          },
+          "front_c": {
+            "owner": "hive",
+            "sourceHP": 1000
+          }
+        },
+        "rucheVivanteAuFrontBoss": {
+          "avant": 200,
+          "apres20s": 200
+        },
+        "bossMaterialise": true,
+        "extraction": {
+          "disponible": false,
+          "raison": "Un objectif préalable reste à accomplir."
+        }
+      },
+      "routeBoss": {
+        "accepted": true,
+        "reason": null,
+        "chemin": [
+          "route_1",
+          "route_0"
+        ],
+        "deplacement10s": 44.48,
+        "frontApres10s": "front_c",
+        "longueurRoute": 12083
+      },
+      "avantMort": {
+        "alliesMorts": [
+          [
+            "AFF-14:player_clan:6:0",
+            "dead",
+            0
+          ],
+          [
+            "AFF-14:player_clan:6:1",
+            "dead",
+            0
+          ]
+        ],
+        "ownerA": "player_clan",
+        "sources": {
+          "front_a": 1000,
+          "front_b": 1000,
+          "front_c": 1000
+        },
+        "tunnels": [
+          "pending",
+          "pending"
+        ]
+      },
+      "apresMort": {
+        "alliesMorts": [
+          [
+            "AFF-14:player_clan:6:0",
+            "dead",
+            0
+          ],
+          [
+            "AFF-14:player_clan:6:1",
+            "dead",
+            0
+          ]
+        ],
+        "ownerA": "player_clan",
+        "sources": {
+          "front_a": 1000,
+          "front_b": 1000,
+          "front_c": 1000
+        },
+        "tunnels": [
+          "pending",
+          "pending"
+        ],
+        "matriarch": "done",
+        "rucheVivante": 998
+      },
+      "extractionFinale": {
+        "taskId": "lethe_exit",
+        "accepted": false,
+        "feedback": "Un objectif préalable reste à accomplir.",
+        "status": "pending"
+      },
+      "issue": {
+        "outcome": "en_cours",
+        "reason": "Un objectif préalable reste à accomplir."
+      },
+      "consequences": {
+        "defeatedUniqueIds": [
+          "BOS-32"
+        ],
+        "comptes": {
+          "player_clan": {
+            "allocated": 48,
+            "active": 0,
+            "distant": 0,
+            "reserve": 2,
+            "dead": 46,
+            "evacuated": 0,
+            "captured": 0
+          },
+          "hive": {
+            "allocated": 1000,
+            "active": 24,
+            "distant": 622,
+            "reserve": 352,
+            "dead": 2,
+            "evacuated": 0,
+            "captured": 0
+          }
+        }
+      }
+    },
+    {
+      "scenario": "tunnels_ouverts+extraction_menacee",
+      "chronologie": [
+        {
+          "t": 0,
+          "event": "debut",
+          "boss": "AFF-14:hive:21:0",
+          "frontBoss": "front_c",
+          "sourcesRuche": [
+            [
+              "front_b",
+              1000
+            ],
+            [
+              "front_c",
+              1000
+            ]
+          ]
+        },
+        {
+          "t": 0,
+          "event": "extraction_menacee",
+          "ownerA": "hive"
+        },
+        {
+          "t": 20,
+          "event": "arrivee_boss",
+          "front": "front_c",
+          "renfortVersBoss": {
+            "accepted": true,
+            "reason": null,
+            "source": "front_b",
+            "count": 8
+          },
+          "sourcesRuche": {
+            "front_a": {
+              "owner": "hive",
+              "sourceHP": 1000
+            },
+            "front_b": {
+              "owner": "hive",
+              "sourceHP": 1000
+            },
+            "front_c": {
+              "owner": "hive",
+              "sourceHP": 1000
+            }
+          },
+          "rucheVivanteAuFrontBoss": {
+            "avant": 200,
+            "apres20s": 200
+          },
+          "bossMaterialise": true,
+          "extraction": {
+            "disponible": false,
+            "raison": "Un objectif préalable reste à accomplir."
+          }
+        },
+        {
+          "t": 30,
+          "event": "route_boss",
+          "accepted": true,
+          "reason": null,
+          "chemin": [
+            "route_1",
+            "route_0"
+          ],
+          "deplacement10s": 44.48,
+          "frontApres10s": "front_c",
+          "longueurRoute": 12083
+        },
+        {
+          "t": 31,
+          "event": "boss_tue",
+          "avant": {
+            "alliesMorts": [
+              [
+                "AFF-14:player_clan:6:0",
+                "dead",
+                0
+              ],
+              [
+                "AFF-14:player_clan:6:1",
+                "dead",
+                0
+              ]
+            ],
+            "ownerA": "hive",
+            "sources": {
+              "front_a": 1000,
+              "front_b": 1000,
+              "front_c": 1000
+            },
+            "tunnels": [
+              "pending",
+              "pending"
+            ]
+          },
+          "apres": {
+            "alliesMorts": [
+              [
+                "AFF-14:player_clan:6:0",
+                "dead",
+                0
+              ],
+              [
+                "AFF-14:player_clan:6:1",
+                "dead",
+                0
+              ]
+            ],
+            "ownerA": "hive",
+            "sources": {
+              "front_a": 1000,
+              "front_b": 1000,
+              "front_c": 1000
+            },
+            "tunnels": [
+              "pending",
+              "pending"
+            ],
+            "matriarch": "done",
+            "rucheVivante": 999
+          }
+        },
+        {
+          "t": 31,
+          "event": "extraction",
+          "taskId": "lethe_exit",
+          "accepted": false,
+          "feedback": "Un objectif préalable reste à accomplir.",
+          "status": "pending",
+          "resultat": null
+        }
+      ],
+      "contexteBoss": {
+        "front": "front_c",
+        "renfortVersBoss": {
+          "accepted": true,
+          "reason": null,
+          "source": "front_b",
+          "count": 8
+        },
+        "sourcesRuche": {
+          "front_a": {
+            "owner": "hive",
+            "sourceHP": 1000
+          },
+          "front_b": {
+            "owner": "hive",
+            "sourceHP": 1000
+          },
+          "front_c": {
+            "owner": "hive",
+            "sourceHP": 1000
+          }
+        },
+        "rucheVivanteAuFrontBoss": {
+          "avant": 200,
+          "apres20s": 200
+        },
+        "bossMaterialise": true,
+        "extraction": {
+          "disponible": false,
+          "raison": "Un objectif préalable reste à accomplir."
+        }
+      },
+      "routeBoss": {
+        "accepted": true,
+        "reason": null,
+        "chemin": [
+          "route_1",
+          "route_0"
+        ],
+        "deplacement10s": 44.48,
+        "frontApres10s": "front_c",
+        "longueurRoute": 12083
+      },
+      "avantMort": {
+        "alliesMorts": [
+          [
+            "AFF-14:player_clan:6:0",
+            "dead",
+            0
+          ],
+          [
+            "AFF-14:player_clan:6:1",
+            "dead",
+            0
+          ]
+        ],
+        "ownerA": "hive",
+        "sources": {
+          "front_a": 1000,
+          "front_b": 1000,
+          "front_c": 1000
+        },
+        "tunnels": [
+          "pending",
+          "pending"
+        ]
+      },
+      "apresMort": {
+        "alliesMorts": [
+          [
+            "AFF-14:player_clan:6:0",
+            "dead",
+            0
+          ],
+          [
+            "AFF-14:player_clan:6:1",
+            "dead",
+            0
+          ]
+        ],
+        "ownerA": "hive",
+        "sources": {
+          "front_a": 1000,
+          "front_b": 1000,
+          "front_c": 1000
+        },
+        "tunnels": [
+          "pending",
+          "pending"
+        ],
+        "matriarch": "done",
+        "rucheVivante": 999
+      },
+      "extractionFinale": {
+        "taskId": "lethe_exit",
+        "accepted": false,
+        "feedback": "Un objectif préalable reste à accomplir.",
+        "status": "pending"
+      },
+      "issue": {
+        "outcome": "en_cours",
+        "reason": "Un objectif préalable reste à accomplir."
+      },
+      "consequences": {
+        "defeatedUniqueIds": [
+          "BOS-32"
+        ],
+        "comptes": {
+          "player_clan": {
+            "allocated": 48,
+            "active": 0,
+            "distant": 0,
+            "reserve": 8,
+            "dead": 40,
+            "evacuated": 0,
+            "captured": 0
+          },
+          "hive": {
+            "allocated": 1000,
+            "active": 24,
+            "distant": 623,
+            "reserve": 352,
+            "dead": 1,
+            "evacuated": 0,
+            "captured": 0
+          }
+        }
+      }
+    },
+    {
+      "scenario": "tunnels_fermes+extraction_intacte",
+      "chronologie": [
+        {
+          "t": 0,
+          "event": "debut",
+          "boss": "AFF-14:hive:21:0",
+          "frontBoss": "front_c",
+          "sourcesRuche": [
+            [
+              "front_b",
+              1000
+            ],
+            [
+              "front_c",
+              1000
+            ]
+          ]
+        },
+        {
+          "t": 3.5,
+          "event": "sabotage",
+          "taskId": "tunnel_one",
+          "accepted": true,
+          "feedback": "Fermer la première voie de ruche — restez à portée.",
+          "status": "done"
+        },
+        {
+          "t": 7,
+          "event": "sabotage",
+          "taskId": "tunnel_two",
+          "accepted": true,
+          "feedback": "Fermer la deuxième voie de ruche — restez à portée.",
+          "status": "done"
+        },
+        {
+          "t": 27,
+          "event": "arrivee_boss",
+          "front": "front_c",
+          "renfortVersBoss": {
+            "accepted": false,
+            "reason": "no_connected_supply_source",
+            "source": null,
+            "count": 0
+          },
+          "sourcesRuche": {
+            "front_a": {
+              "owner": "player_clan",
+              "sourceHP": 1000
+            },
+            "front_b": {
+              "owner": "hive",
+              "sourceHP": 0
+            },
+            "front_c": {
+              "owner": "hive",
+              "sourceHP": 0
+            }
+          },
+          "rucheVivanteAuFrontBoss": {
+            "avant": 200,
+            "apres20s": 200
+          },
+          "bossMaterialise": true,
+          "extraction": {
+            "disponible": true,
+            "raison": null
+          }
+        },
+        {
+          "t": 37,
+          "event": "route_boss",
+          "accepted": true,
+          "reason": null,
+          "chemin": [
+            "route_1",
+            "route_0"
+          ],
+          "deplacement10s": 44.48,
+          "frontApres10s": "front_c",
+          "longueurRoute": 12083
+        },
+        {
+          "t": 38,
+          "event": "boss_tue",
+          "avant": {
+            "alliesMorts": [
+              [
+                "AFF-14:player_clan:6:0",
+                "dead",
+                0
+              ],
+              [
+                "AFF-14:player_clan:6:1",
+                "dead",
+                0
+              ]
+            ],
+            "ownerA": "player_clan",
+            "sources": {
+              "front_a": 1000,
+              "front_b": 0,
+              "front_c": 0
+            },
+            "tunnels": [
+              "done",
+              "done"
+            ]
+          },
+          "apres": {
+            "alliesMorts": [
+              [
+                "AFF-14:player_clan:6:0",
+                "dead",
+                0
+              ],
+              [
+                "AFF-14:player_clan:6:1",
+                "dead",
+                0
+              ]
+            ],
+            "ownerA": "player_clan",
+            "sources": {
+              "front_a": 1000,
+              "front_b": 0,
+              "front_c": 0
+            },
+            "tunnels": [
+              "done",
+              "done"
+            ],
+            "matriarch": "done",
+            "rucheVivante": 998
+          }
+        },
+        {
+          "t": 41,
+          "event": "extraction",
+          "taskId": "lethe_exit",
+          "accepted": true,
+          "feedback": "Extraire le détachement de Lethe — restez à portée.",
+          "status": "done",
+          "resultat": {
+            "outcome": "victory",
+            "reason": "lethe_extraction"
+          }
+        }
+      ],
+      "contexteBoss": {
+        "front": "front_c",
+        "renfortVersBoss": {
+          "accepted": false,
+          "reason": "no_connected_supply_source",
+          "source": null,
+          "count": 0
+        },
+        "sourcesRuche": {
+          "front_a": {
+            "owner": "player_clan",
+            "sourceHP": 1000
+          },
+          "front_b": {
+            "owner": "hive",
+            "sourceHP": 0
+          },
+          "front_c": {
+            "owner": "hive",
+            "sourceHP": 0
+          }
+        },
+        "rucheVivanteAuFrontBoss": {
+          "avant": 200,
+          "apres20s": 200
+        },
+        "bossMaterialise": true,
+        "extraction": {
+          "disponible": true,
+          "raison": null
+        }
+      },
+      "routeBoss": {
+        "accepted": true,
+        "reason": null,
+        "chemin": [
+          "route_1",
+          "route_0"
+        ],
+        "deplacement10s": 44.48,
+        "frontApres10s": "front_c",
+        "longueurRoute": 12083
+      },
+      "avantMort": {
+        "alliesMorts": [
+          [
+            "AFF-14:player_clan:6:0",
+            "dead",
+            0
+          ],
+          [
+            "AFF-14:player_clan:6:1",
+            "dead",
+            0
+          ]
+        ],
+        "ownerA": "player_clan",
+        "sources": {
+          "front_a": 1000,
+          "front_b": 0,
+          "front_c": 0
+        },
+        "tunnels": [
+          "done",
+          "done"
+        ]
+      },
+      "apresMort": {
+        "alliesMorts": [
+          [
+            "AFF-14:player_clan:6:0",
+            "dead",
+            0
+          ],
+          [
+            "AFF-14:player_clan:6:1",
+            "dead",
+            0
+          ]
+        ],
+        "ownerA": "player_clan",
+        "sources": {
+          "front_a": 1000,
+          "front_b": 0,
+          "front_c": 0
+        },
+        "tunnels": [
+          "done",
+          "done"
+        ],
+        "matriarch": "done",
+        "rucheVivante": 998
+      },
+      "extractionFinale": {
+        "taskId": "lethe_exit",
+        "accepted": true,
+        "feedback": "Extraire le détachement de Lethe — restez à portée.",
+        "status": "done"
+      },
+      "issue": {
+        "outcome": "victory",
+        "reason": "lethe_extraction"
+      },
+      "consequences": {
+        "defeatedUniqueIds": [
+          "BOS-32"
+        ],
+        "comptes": {
+          "player_clan": {
+            "allocated": 48,
+            "active": 0,
+            "distant": 0,
+            "reserve": 0,
+            "dead": 48,
+            "evacuated": 0,
+            "captured": 0
+          },
+          "hive": {
+            "allocated": 1000,
+            "active": 24,
+            "distant": 614,
+            "reserve": 360,
+            "dead": 2,
+            "evacuated": 0,
+            "captured": 0
+          }
+        }
+      }
+    },
+    {
+      "scenario": "tunnels_fermes+extraction_menacee",
+      "chronologie": [
+        {
+          "t": 0,
+          "event": "debut",
+          "boss": "AFF-14:hive:21:0",
+          "frontBoss": "front_c",
+          "sourcesRuche": [
+            [
+              "front_b",
+              1000
+            ],
+            [
+              "front_c",
+              1000
+            ]
+          ]
+        },
+        {
+          "t": 3.5,
+          "event": "sabotage",
+          "taskId": "tunnel_one",
+          "accepted": true,
+          "feedback": "Fermer la première voie de ruche — restez à portée.",
+          "status": "done"
+        },
+        {
+          "t": 7,
+          "event": "sabotage",
+          "taskId": "tunnel_two",
+          "accepted": true,
+          "feedback": "Fermer la deuxième voie de ruche — restez à portée.",
+          "status": "done"
+        },
+        {
+          "t": 7,
+          "event": "extraction_menacee",
+          "ownerA": "hive"
+        },
+        {
+          "t": 27,
+          "event": "arrivee_boss",
+          "front": "front_c",
+          "renfortVersBoss": {
+            "accepted": false,
+            "reason": "no_connected_supply_source",
+            "source": null,
+            "count": 0
+          },
+          "sourcesRuche": {
+            "front_a": {
+              "owner": "hive",
+              "sourceHP": 1000
+            },
+            "front_b": {
+              "owner": "hive",
+              "sourceHP": 0
+            },
+            "front_c": {
+              "owner": "hive",
+              "sourceHP": 0
+            }
+          },
+          "rucheVivanteAuFrontBoss": {
+            "avant": 200,
+            "apres20s": 200
+          },
+          "bossMaterialise": true,
+          "extraction": {
+            "disponible": true,
+            "raison": "Sécurisez ce front avant l’extraction."
+          }
+        },
+        {
+          "t": 37,
+          "event": "route_boss",
+          "accepted": true,
+          "reason": null,
+          "chemin": [
+            "route_1",
+            "route_0"
+          ],
+          "deplacement10s": 44.48,
+          "frontApres10s": "front_c",
+          "longueurRoute": 12083
+        },
+        {
+          "t": 38,
+          "event": "boss_tue",
+          "avant": {
+            "alliesMorts": [
+              [
+                "AFF-14:player_clan:6:0",
+                "dead",
+                0
+              ],
+              [
+                "AFF-14:player_clan:6:1",
+                "dead",
+                0
+              ]
+            ],
+            "ownerA": "hive",
+            "sources": {
+              "front_a": 1000,
+              "front_b": 0,
+              "front_c": 0
+            },
+            "tunnels": [
+              "done",
+              "done"
+            ]
+          },
+          "apres": {
+            "alliesMorts": [
+              [
+                "AFF-14:player_clan:6:0",
+                "dead",
+                0
+              ],
+              [
+                "AFF-14:player_clan:6:1",
+                "dead",
+                0
+              ]
+            ],
+            "ownerA": "hive",
+            "sources": {
+              "front_a": 1000,
+              "front_b": 0,
+              "front_c": 0
+            },
+            "tunnels": [
+              "done",
+              "done"
+            ],
+            "matriarch": "done",
+            "rucheVivante": 998
+          }
+        },
+        {
+          "t": 38,
+          "event": "extraction",
+          "taskId": "lethe_exit",
+          "accepted": false,
+          "feedback": "Sécurisez ce front avant l’extraction.",
+          "status": "pending",
+          "resultat": null
+        }
+      ],
+      "contexteBoss": {
+        "front": "front_c",
+        "renfortVersBoss": {
+          "accepted": false,
+          "reason": "no_connected_supply_source",
+          "source": null,
+          "count": 0
+        },
+        "sourcesRuche": {
+          "front_a": {
+            "owner": "hive",
+            "sourceHP": 1000
+          },
+          "front_b": {
+            "owner": "hive",
+            "sourceHP": 0
+          },
+          "front_c": {
+            "owner": "hive",
+            "sourceHP": 0
+          }
+        },
+        "rucheVivanteAuFrontBoss": {
+          "avant": 200,
+          "apres20s": 200
+        },
+        "bossMaterialise": true,
+        "extraction": {
+          "disponible": true,
+          "raison": "Sécurisez ce front avant l’extraction."
+        }
+      },
+      "routeBoss": {
+        "accepted": true,
+        "reason": null,
+        "chemin": [
+          "route_1",
+          "route_0"
+        ],
+        "deplacement10s": 44.48,
+        "frontApres10s": "front_c",
+        "longueurRoute": 12083
+      },
+      "avantMort": {
+        "alliesMorts": [
+          [
+            "AFF-14:player_clan:6:0",
+            "dead",
+            0
+          ],
+          [
+            "AFF-14:player_clan:6:1",
+            "dead",
+            0
+          ]
+        ],
+        "ownerA": "hive",
+        "sources": {
+          "front_a": 1000,
+          "front_b": 0,
+          "front_c": 0
+        },
+        "tunnels": [
+          "done",
+          "done"
+        ]
+      },
+      "apresMort": {
+        "alliesMorts": [
+          [
+            "AFF-14:player_clan:6:0",
+            "dead",
+            0
+          ],
+          [
+            "AFF-14:player_clan:6:1",
+            "dead",
+            0
+          ]
+        ],
+        "ownerA": "hive",
+        "sources": {
+          "front_a": 1000,
+          "front_b": 0,
+          "front_c": 0
+        },
+        "tunnels": [
+          "done",
+          "done"
+        ],
+        "matriarch": "done",
+        "rucheVivante": 998
+      },
+      "extractionFinale": {
+        "taskId": "lethe_exit",
+        "accepted": false,
+        "feedback": "Sécurisez ce front avant l’extraction.",
+        "status": "pending"
+      },
+      "issue": {
+        "outcome": "en_cours",
+        "reason": "Sécurisez ce front avant l’extraction."
+      },
+      "consequences": {
+        "defeatedUniqueIds": [
+          "BOS-32"
+        ],
+        "comptes": {
+          "player_clan": {
+            "allocated": 48,
+            "active": 0,
+            "distant": 0,
+            "reserve": 8,
+            "dead": 40,
+            "evacuated": 0,
+            "captured": 0
+          },
+          "hive": {
+            "allocated": 1000,
+            "active": 24,
+            "distant": 614,
+            "reserve": 360,
+            "dead": 2,
+            "evacuated": 0,
+            "captured": 0
+          }
+        }
+      }
+    }
+  ],
+  "clauses": [
+    {
+      "clause": "contexte_boss_depend_des_tunnels",
+      "attendu": "Les objectifs précédents changent le contexte du boss : tunnels ouverts → renfort de ruche vers l’arène ; fermés → aucune source connectée.",
+      "verdict": "prouvé",
+      "details": {
+        "ouverts/intacte": {
+          "accepted": true,
+          "reason": null,
+          "source": "front_b",
+          "count": 8
+        },
+        "ouverts/menacee": {
+          "accepted": true,
+          "reason": null,
+          "source": "front_b",
+          "count": 8
+        },
+        "fermes/intacte": {
+          "accepted": false,
+          "reason": "no_connected_supply_source",
+          "source": null,
+          "count": 0
+        },
+        "fermes/menacee": {
+          "accepted": false,
+          "reason": "no_connected_supply_source",
+          "source": null,
+          "count": 0
+        }
+      }
+    },
+    {
+      "clause": "fuite_extraction",
+      "attendu": "Possibilités de fuite : l’extraction dépend des tunnels fermés et d’un front A tenu.",
+      "verdict": "prouvé",
+      "details": {
+        "ouverts/intacte": {
+          "extractionAvantBoss": {
+            "disponible": false,
+            "raison": "Un objectif préalable reste à accomplir."
+          },
+          "issue": {
+            "outcome": "en_cours",
+            "reason": "Un objectif préalable reste à accomplir."
+          }
+        },
+        "ouverts/menacee": {
+          "extractionAvantBoss": {
+            "disponible": false,
+            "raison": "Un objectif préalable reste à accomplir."
+          },
+          "issue": {
+            "outcome": "en_cours",
+            "reason": "Un objectif préalable reste à accomplir."
+          }
+        },
+        "fermes/intacte": {
+          "extractionAvantBoss": {
+            "disponible": true,
+            "raison": null
+          },
+          "issue": {
+            "outcome": "victory",
+            "reason": "lethe_extraction"
+          }
+        },
+        "fermes/menacee": {
+          "extractionAvantBoss": {
+            "disponible": true,
+            "raison": "Sécurisez ce front avant l’extraction."
+          },
+          "issue": {
+            "outcome": "en_cours",
+            "reason": "Sécurisez ce front avant l’extraction."
+          }
+        }
+      }
+    },
+    {
+      "clause": "arrivee_cause_route",
+      "attendu": "L’arrivée du boss a une cause et une route : unité allouée du front C, matérialisée par la présence du joueur, déplacée seulement par un ordre sur une route ouverte.",
+      "verdict": "prouvé",
+      "details": {
+        "ouverts/intacte": {
+          "accepted": true,
+          "reason": null,
+          "chemin": [
+            "route_1",
+            "route_0"
+          ],
+          "deplacement10s": 44.48,
+          "frontApres10s": "front_c",
+          "longueurRoute": 12083
+        },
+        "ouverts/menacee": {
+          "accepted": true,
+          "reason": null,
+          "chemin": [
+            "route_1",
+            "route_0"
+          ],
+          "deplacement10s": 44.48,
+          "frontApres10s": "front_c",
+          "longueurRoute": 12083
+        },
+        "fermes/intacte": {
+          "accepted": true,
+          "reason": null,
+          "chemin": [
+            "route_1",
+            "route_0"
+          ],
+          "deplacement10s": 44.48,
+          "frontApres10s": "front_c",
+          "longueurRoute": 12083
+        },
+        "fermes/menacee": {
+          "accepted": true,
+          "reason": null,
+          "chemin": [
+            "route_1",
+            "route_0"
+          ],
+          "deplacement10s": 44.48,
+          "frontApres10s": "front_c",
+          "longueurRoute": 12083
+        }
+      }
+    },
+    {
+      "clause": "mort_boss_ne_restaure_pas",
+      "attendu": "Tuer le boss ne restaure pas automatiquement les objectifs perdus ou les alliés morts.",
+      "verdict": "prouvé",
+      "details": {
+        "ouverts/intacte": {
+          "avant": {
+            "alliesMorts": [
+              [
+                "AFF-14:player_clan:6:0",
+                "dead",
+                0
+              ],
+              [
+                "AFF-14:player_clan:6:1",
+                "dead",
+                0
+              ]
+            ],
+            "ownerA": "player_clan",
+            "sources": {
+              "front_a": 1000,
+              "front_b": 1000,
+              "front_c": 1000
+            },
+            "tunnels": [
+              "pending",
+              "pending"
+            ]
+          },
+          "apres": {
+            "alliesMorts": [
+              [
+                "AFF-14:player_clan:6:0",
+                "dead",
+                0
+              ],
+              [
+                "AFF-14:player_clan:6:1",
+                "dead",
+                0
+              ]
+            ],
+            "ownerA": "player_clan",
+            "sources": {
+              "front_a": 1000,
+              "front_b": 1000,
+              "front_c": 1000
+            },
+            "tunnels": [
+              "pending",
+              "pending"
+            ],
+            "matriarch": "done",
+            "rucheVivante": 998
+          }
+        },
+        "ouverts/menacee": {
+          "avant": {
+            "alliesMorts": [
+              [
+                "AFF-14:player_clan:6:0",
+                "dead",
+                0
+              ],
+              [
+                "AFF-14:player_clan:6:1",
+                "dead",
+                0
+              ]
+            ],
+            "ownerA": "hive",
+            "sources": {
+              "front_a": 1000,
+              "front_b": 1000,
+              "front_c": 1000
+            },
+            "tunnels": [
+              "pending",
+              "pending"
+            ]
+          },
+          "apres": {
+            "alliesMorts": [
+              [
+                "AFF-14:player_clan:6:0",
+                "dead",
+                0
+              ],
+              [
+                "AFF-14:player_clan:6:1",
+                "dead",
+                0
+              ]
+            ],
+            "ownerA": "hive",
+            "sources": {
+              "front_a": 1000,
+              "front_b": 1000,
+              "front_c": 1000
+            },
+            "tunnels": [
+              "pending",
+              "pending"
+            ],
+            "matriarch": "done",
+            "rucheVivante": 999
+          }
+        },
+        "fermes/intacte": {
+          "avant": {
+            "alliesMorts": [
+              [
+                "AFF-14:player_clan:6:0",
+                "dead",
+                0
+              ],
+              [
+                "AFF-14:player_clan:6:1",
+                "dead",
+                0
+              ]
+            ],
+            "ownerA": "player_clan",
+            "sources": {
+              "front_a": 1000,
+              "front_b": 0,
+              "front_c": 0
+            },
+            "tunnels": [
+              "done",
+              "done"
+            ]
+          },
+          "apres": {
+            "alliesMorts": [
+              [
+                "AFF-14:player_clan:6:0",
+                "dead",
+                0
+              ],
+              [
+                "AFF-14:player_clan:6:1",
+                "dead",
+                0
+              ]
+            ],
+            "ownerA": "player_clan",
+            "sources": {
+              "front_a": 1000,
+              "front_b": 0,
+              "front_c": 0
+            },
+            "tunnels": [
+              "done",
+              "done"
+            ],
+            "matriarch": "done",
+            "rucheVivante": 998
+          }
+        },
+        "fermes/menacee": {
+          "avant": {
+            "alliesMorts": [
+              [
+                "AFF-14:player_clan:6:0",
+                "dead",
+                0
+              ],
+              [
+                "AFF-14:player_clan:6:1",
+                "dead",
+                0
+              ]
+            ],
+            "ownerA": "hive",
+            "sources": {
+              "front_a": 1000,
+              "front_b": 0,
+              "front_c": 0
+            },
+            "tunnels": [
+              "done",
+              "done"
+            ]
+          },
+          "apres": {
+            "alliesMorts": [
+              [
+                "AFF-14:player_clan:6:0",
+                "dead",
+                0
+              ],
+              [
+                "AFF-14:player_clan:6:1",
+                "dead",
+                0
+              ]
+            ],
+            "ownerA": "hive",
+            "sources": {
+              "front_a": 1000,
+              "front_b": 0,
+              "front_c": 0
+            },
+            "tunnels": [
+              "done",
+              "done"
+            ],
+            "matriarch": "done",
+            "rucheVivante": 998
+          }
+        }
+      }
+    },
+    {
+      "clause": "apres_combat_differe",
+      "attendu": "L’après-combat diffère selon les objectifs précédents (issue, effectifs, conséquences).",
+      "verdict": "prouvé",
+      "details": {
+        "issues": {
+          "ouverts/intacte": "en_cours",
+          "ouverts/menacee": "en_cours",
+          "fermes/intacte": "victory",
+          "fermes/menacee": "en_cours"
+        },
+        "rucheVivanteApresBoss": {
+          "ouverts/intacte": 998,
+          "ouverts/menacee": 999,
+          "fermes/intacte": 998,
+          "fermes/menacee": 998
+        }
+      }
+    },
+    {
+      "clause": "observation_branche_matriarch",
+      "attendu": "Information : cohérence de la règle d’extraction.",
+      "verdict": "observation",
+      "details": {
+        "fichier": "js/battlefield/OperationObjectiveSpecs.js:54",
+        "requires": [
+          "tunnel_one",
+          "tunnel_two"
+        ],
+        "requiresAny": [
+          [
+            "matriarch"
+          ],
+          [
+            "tunnel_one",
+            "tunnel_two"
+          ]
+        ],
+        "note": "La branche requiresAny [[\"matriarch\"]] ne peut jamais suffire seule car requires impose déjà les deux tunnels ; tuer le Praetorian n’ouvre donc jamais l’extraction (conforme à « tuer le boss ne restaure pas tout », mais la branche est inopérante)."
+      }
+    },
+    {
+      "clause": "consequences_campagne",
+      "attendu": "Bilan de victoire et conséquences de campagne.",
+      "verdict": "partiel",
+      "details": {
+        "note": "AFF-14 n’appartient à aucun arc de campagne (BATTLE_CAMPAIGN_ARCS ne couvre que AFF-01..05) : seules les conséquences locales getCampaignConsequences() sont produites et comparées ; aucune propagation inter-opérations n’est testable pour ce boss.",
+        "fichier": "js/battlefield/BattleCampaignRecord.js:12-14"
+      }
+    }
+  ],
+  "nonAutomatisable": [
+    {
+      "element": "arène et combat du boss à l’écran",
+      "raison": "pas de rendu ni de BossManager en Node ; l’arène est le front C simulé, le combat est réduit à la mort enregistrée de l’unité allouée."
+    }
+  ],
+  "limites": [
+    "AFF-14 : les routes stratégiques ne sont pas liées aux portes physiques (voir REC-012) ; la route du boss est ici la route logique du front C vers A."
+  ]
+}

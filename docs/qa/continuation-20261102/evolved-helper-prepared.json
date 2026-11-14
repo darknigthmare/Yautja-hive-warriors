@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "status": "r2_prepared_not_executed",
+  "checkedAt": "2026-11-02T04:50:09.196273+00:00",
+  "helperSha256": "b0cfa117115fa1be704f7dc2c744f89752f47f134856349a74dde1eb74c45a4f",
+  "syntax": "passed",
+  "preflightCases": [
+    {
+      "id": "help",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "id": "check-config",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "id": "missing-go",
+      "status": "passed",
+      "exitCode": 1
+    },
+    {
+      "id": "duplicate-source",
+      "status": "passed",
+      "exitCode": 1
+    },
+    {
+      "id": "external-origin",
+      "status": "passed",
+      "exitCode": 1
+    }
+  ],
+  "browserLaunched": false,
+  "gameplayCasesExecuted": 0,
+  "networkAccessed": false,
+  "scope": "Helper preparation and strict CLI checks only. No rendered combat result is claimed.",
+  "expectedCases": [
+    "carrier-real-cargo-flight",
+    "ravager-detailed-phase-fire"
+  ],
+  "simulationAssistanceExplicit": true,
+  "forbiddenDirectStateAssignmentsAbsent": true,
+  "firstAttemptPreserved": "/workspace/qa/continuation-20261102/evolved-final-83d36e7/report.json",
+  "r2Scope": "Observe the unchanged actual Carrier callback first; no gate refusal is bypassed. An explicit real Bridge request is allowed only after an expected physical refusal or no natural request. This verifies the actual mechanism, not natural target choice."
+}

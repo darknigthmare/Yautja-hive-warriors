@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "status": "failed",
+  "startedAt": "2026-11-09T04:33:37.937Z",
+  "sourceCommit": "94630d8302c320eb7c39c78ad62f1464e6f4d538",
+  "indexSha256": "8632fe71abb813f1b4242b5c74d446622533d93f91e4e643e80b1eb57d032022",
+  "buildInfoSha256": "e1a40930bd6b2c1aa0aeb36f9f430888ab8da32cc62144b4dab1f0d5d8265ad3",
+  "nodeVersion": "v24.19.0",
+  "browserExecutable": "/usr/bin/chromium",
+  "browserVersion": "154.0.8037.57",
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "hardwarePerformanceMeasured": false,
+  "expectedCases": [
+    "source-menu-coop-insertion-command-checkpoint",
+    "carrier-autonomous-main-update-flight",
+    "ravager-checkpoint-phase-recovery-fire"
+  ],
+  "scope": "Three scoped rendered cases: AFF-27 source menus and accessible map legends, genuine Val Verde seed1 co-op insertion cameras plus a real command/pause/checkpoint round trip; natural Carrier acquisition and finite flight through the full Game.update chain; Ravager catalepsy reloaded through the actual checkpoint menu before rematerialization, recovery and typed lethal fire. No natural mission victory, exhaustive AI policy, hardware FPS, human comprehension or source-film visual fidelity claim.",
+  "assistances": [
+    "Global RAF gameplay is frozen between actual UI inputs; explicit game.update steps advance insertion, the pilot allocator and the entire Carrier gameplay chain deterministically at1/60.",
+    "Carrier and Ravager inspection relocates only the player to navigation-safe positions; no allocated actor/group coordinate, profile, signature, HP, phase, result or clock is assigned.",
+    "Carrier acquisition is observed for at most480 full Game.update ticks (8 simulated seconds). A transparent callback observer calls the original and returns its unchanged result; no explicit Bridge launch or target override is used.",
+    "Carrier flight captures follow full Game.update, including the production post-update Bridge.sync; all combat managers advance normally during these bounded ticks.",
+    "Ravager phase isolation advances the real Simulation/Bridge owners in .25s steps while other gameplay stays paused. Damage uses the actual Horde.applyDamage API with signed player faction.",
+    "Ravager saveOperation writes the genuine phase checkpoint; page reload and normal menu resume preserve its finite UID, HP, spent upgrade, signature, strategic time and absolute deadline before owner-driven rematerialization.",
+    "Actor closeups use a recorded inspection camera and normal environment visibility refresh. Co-op insertion evidence keeps both genuine game cameras unchanged.",
+    "Pilot command/checkpoint controls use real DOM clicks. Pause is observed without strategic time advancement; insertion replay does not spend resources. No save data is patched.",
+    "The initial paused AFF-27 HUD receives a normal zero-delta update after insertion; unchanged strategic time, finite UID set and Carrier cargo are asserted before checking its accessible legend."
+  ],
+  "errors": [],
+  "failedRequests": [],
+  "externalRequests": [],
+  "cases": [
+    {
+      "id": "source-menu-coop-insertion-command-checkpoint",
+      "status": "failed",
+      "launch": {
+        "freshBrowserContext": true,
+        "viewport": {
+          "width": 1000,
+          "height": 700
+        },
+        "renderer": {
+          "requested": "balanced",
+          "effective": "low",
+          "softwareRenderer": true,
+          "postprocessing": false,
+          "ambientOcclusion": false,
+          "shadowSize": 512,
+          "maxPixelRatio": 1.25,
+          "splitScreen": false
+        }
+      },
+      "error": "AssertionError [ERR_ASSERTION]: a real End key scrolls the focused front list\n    at verifyUiCoopSmoke (file:///workspace/Yautja-continue-20261109/docs/qa/continuation-20261109/ui-coop-smoke.mjs:80:65)\n    at async file:///workspace/Yautja-continue-20261109/docs/qa/continuation-20261109/verify-evolved-combat.mjs:339:14\n    at async run (file:///workspace/Yautja-continue-20261109/docs/qa/continuation-20261109/verify-evolved-combat.mjs:328:40)\n    at async file:///workspace/Yautja-continue-20261109/docs/qa/continuation-20261109/verify-evolved-combat.mjs:336:3"
+    }
+  ],
+  "buildInfo": {
+    "schemaVersion": 1,
+    "contentVersion": "v69-continuation-20261109",
+    "sourceCommit": "94630d8302c320eb7c39c78ad62f1464e6f4d538",
+    "sourceBranch": "codex/continuation-20261109",
+    "sourceFingerprint": "41cdcb0f8823e4f17fbb0d6f68b119c3b75e4e01778ba7a7c523ffb569bdf6e9",
+    "sourceFiles": 193,
+    "sourceTreeDirty": false,
+    "buildEpoch": 1794198339,
+    "reproducibleBuildDate": "2026-11-09T04:25:39.000Z",
+    "deploymentProof": "https://github.com/darknigthmare/Yautja-hive-warriors/blob/codex/continuation-20261109/docs/qa/continuation-20261109-validation.json"
+  },
+  "helperSources": [
+    {
+      "path": "docs/qa/continuation-20261109/verify-evolved-combat.mjs",
+      "sha256": "d36daae2802ecea403eda125d1448ebf5fa1bf59aea29b820e2c2dbd07f57fa9",
+      "snapshot": "helper-source-0.mjs"
+    },
+    {
+      "path": "docs/qa/continuation-20261109/ui-coop-smoke.mjs",
+      "sha256": "bca3d40e0776dc2bab4cc8c18e6a0edd15c0acaff99615a9efff0e72d9a9aa20",
+      "snapshot": "helper-source-1.mjs"
+    },
+    {
+      "path": "tests/helpers/finish-insertion.mjs",
+      "sha256": "e62b36a664dd2fadaee8804fc70b75d7afa10ebd2345abdb645e806a7b899a43",
+      "snapshot": "helper-source-2.mjs"
+    }
+  ],
+  "error": "AssertionError [ERR_ASSERTION]: a real End key scrolls the focused front list\n    at verifyUiCoopSmoke (file:///workspace/Yautja-continue-20261109/docs/qa/continuation-20261109/ui-coop-smoke.mjs:80:65)\n    at async file:///workspace/Yautja-continue-20261109/docs/qa/continuation-20261109/verify-evolved-combat.mjs:339:14\n    at async run (file:///workspace/Yautja-continue-20261109/docs/qa/continuation-20261109/verify-evolved-combat.mjs:328:40)\n    at async file:///workspace/Yautja-continue-20261109/docs/qa/continuation-20261109/verify-evolved-combat.mjs:336:3",
+  "browserClosed": true,
+  "distUnchanged": true,
+  "helperSourcesUnchanged": true,
+  "finishedAt": "2026-11-09T04:33:45.925Z",
+  "durationSeconds": 7.988
+}

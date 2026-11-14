@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-11-09",
+  "purpose": "Traceable visual cues for the original procedural models. Commercial miniature photographs are not calibrated prop scans and do not certify film-accurate geometry, likeness or 1:1 scale.",
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "fullReferencePhotographsCommitted": false,
+  "references": [
+    {
+      "id": "neca-helmeted-hicks",
+      "publisher": "NECA",
+      "page": "https://necaonline.com/2013/07/aliens-7-scale-action-figure-helmeted-hicks-vs-battle-damaged-warrior-blue/",
+      "image": "https://necaonline.com/wp-content/uploads/2013/07/51396_Hicks_Blue_Alien_2pack1.jpg",
+      "localExternalPath": "/workspace/qa/fidelity-20261109/references/neca-helmeted-hicks.jpg",
+      "sha256": "b239d6577814a882ff3116c0e4b181e7446016a2e8a8d82e0f25a8cea1e50d36",
+      "dimensions": [590, 536],
+      "visuallyInspected": true,
+      "observations": "Complete helmeted Hicks figure: flared short brim, ear/rear helmet protection, exposed face, articulated shoulder armor, left palm supporting rifle fore-end and right hand around trigger grip.",
+      "limitations": "Small commercial miniature product photograph; enough for silhouette and pose cues, insufficient for calibrated high-resolution helmet geometry or exact facial identity."
+    },
+    {
+      "id": "neca-uscm-full-figures",
+      "publisher": "NECA",
+      "page": "https://necaonline.com/2013/02/ny-toy-fair-aliens-series-1-marines-vs-aliens-2-packs/",
+      "image": "https://necaonline.com/wp-content/uploads/2013/02/aliens-and-marines.jpg",
+      "localExternalPath": "/workspace/qa/fidelity-20261109/references/neca-aliens-and-marines.jpg",
+      "sha256": "6d297adc0ac1cba9af21608fbb87d7e9a82d008a39e9296e203ab009c9973c8f",
+      "dimensions": [1024, 768],
+      "visuallyInspected": true,
+      "observations": "Two complete standing Colonial Marine figures, both unhelmeted: shaped shoulder plates, curved M3 chest plate, flexible trousers, narrow ankles, boots, adult head/body proportions and compact held rifles. The distant figure scale and exhibition lighting limit face and fabric inspection.",
+      "limitations": "Licensed prototype exhibition photography. No M10 helmet evidence; cannot validate a human face, exact body measurements or material response in production light."
+    },
+    {
+      "id": "neca-hicks-packaging",
+      "publisher": "NECA",
+      "page": "https://necaonline.com/2013/05/first-look-aliens-series-1-action-figures-in-packaging/",
+      "image": "https://necaonline.com/wp-content/uploads/2013/05/51388_Series_1_Hicks_V.2.jpg",
+      "localExternalPath": "/workspace/qa/fidelity-20261109/references/neca-hicks-packaging.jpg",
+      "sha256": "cf380348c6d401e444de218b71c740cf32b0ab4ff9edbfe3ca7be055f3c89743",
+      "dimensions": [600, 750],
+      "visuallyInspected": true,
+      "observations": "Near-frontal standing unhelmeted Hicks figure, visibly shaped breastplate, loose camouflage trouser folds, segmented abdominal protection, belt pouches and knee/shin protection.",
+      "limitations": "Plastic packaging obscures lower legs, reflects highlights and tints the body. Not suitable for exact skin appearance, portrait or helmet verification."
+    },
+    {
+      "id": "prime1-jungle-hunter",
+      "publisher": "Prime 1 Studio",
+      "page": "https://www.prime1studio.com/pr-jungle-hunter-predator/MMPR-01DXS.html",
+      "image": "https://www.prime1studio.com/on/demandware.static/-/Sites-p1s-master-catalog/default/dwdfeb3101/images/MMPR-01DXS/catalog/mmpr-01dx_a0026.jpg",
+      "localExternalPath": "/workspace/hive-warriors-reference-pack/images/hunter-mmpr-01dx_a0026.jpg",
+      "sha256": "47a047f3f78a7f11a12793ee59df3a77334b292e731015e88b02f808ab761182",
+      "dimensions": [1060, 1500],
+      "visuallyInspected": true,
+      "observations": "Complete unmasked Jungle Hunter collectible statue: broad cranium/jaw, hanging dreadlocks with collars, mottled skin, net suit, asymmetric shoulder armor, forearm gauntlets and full feet. Separate mask lies on the plinth.",
+      "limitations": "Commercial statue with staged pose, display vegetation and edited lighting. It supplies anatomical and equipment cues; the game's original clan honor guard is not renamed or certified as the film Jungle Hunter."
+    },
+    {
+      "id": "neca-ud4l",
+      "publisher": "NECA",
+      "image": "https://necaonline.com/wp-content/uploads/2015/11/1300x-Drop-Ship.jpg",
+      "localExternalPath": "/workspace/qa/insertion-reference-audit-20261023/1300x-Drop-Ship.jpg",
+      "sha256": "d1370756cf2b9a0928509e5eeb4d4e37b5e3230b898b004931225af0fc7f879d",
+      "priorSourceManifest": "docs/qa/vehicle-detail/reference-sources.json",
+      "visuallyInspectedThisPass": false,
+      "limitations": "Existing licensed vehicle miniature reference. It provides no canon reference for the original Yautja insertion capsule, whose shell, seal, hinge and seat remain an original design."
+    }
+  ],
+  "unresolvedReferenceGaps": [
+    "Official helmeted Hicks product photograph retrieved, but no high-resolution calibrated M10 helmet close-up. Helmet cues remain a procedural study, not a verified prop replica.",
+    "No production prop/film-scan reference exists locally for the original clan insertion capsule.",
+    "No calibrated multi-view photogrammetry or texture scan; no exact anatomical, face-likeness or 1:1 certification."
+  ]
+}

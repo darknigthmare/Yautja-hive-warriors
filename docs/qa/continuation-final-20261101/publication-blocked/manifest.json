@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "ae362d76f6435768064b3ee6791b21ca04fe1b9e74b91cbd6a33af3698636117"
+    },
+    {
+      "path": "delivery-registry.json",
+      "sha256": "ebac7bcdf1ef10383cd80c32bcb261e0eebfd247b445dbbaf229a69e55094e95"
+    },
+    {
+      "path": "local-integrity-after-refusal.json",
+      "sha256": "55aa29f14c8d2af11efaca1b08ffea71450fd8a3f801023f1e224cdfca81cf77"
+    },
+    {
+      "path": "public-unchanged.json",
+      "sha256": "6701d9000ae41a9ece11eb1eb575906d6662d7175e82d87ffba713c2c13a474d"
+    },
+    {
+      "path": "submission-response.json",
+      "sha256": "9e68bd859d2edada4e1606e8b25482e919274ef2c5da9fb10286d1e5d3894bc0"
+    },
+    {
+      "path": "vercel-after-push-summary.json",
+      "sha256": "89fc7e7194fe547237137279eb51ca6c3a37cda541e8ed261cccabefa4e9cbc6"
+    }
+  ]
+}

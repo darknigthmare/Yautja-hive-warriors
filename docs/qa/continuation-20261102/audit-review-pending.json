@@ -1,0 +1,393 @@
+{
+  "schemaVersion": 1,
+  "status": "pending_current_runtime_qa",
+  "reviewedAt": "2026-11-02T04:06:45.660380+00:00",
+  "reviewer": "AI agent integration_audit_nov02",
+  "baselineMergedCommit": "51856cbb570ab1b9f92174a85f184bc41db03303",
+  "previousDeliveredCommit": "466bbc2b2119c3383cc7570bf6ce921cce38b8ab",
+  "previousRuntimeProofCommit": "a80070c4b5ed96fa839e840f17453bf5348a6cbb",
+  "scope": "Independent follow-up of preserved acceptance criteria after consolidating current Git branches. No current runtime closure is asserted before evidence review.",
+  "centralProgressEdited": false,
+  "centralStatusesChanged": false,
+  "excelWriterRunByReviewer": false,
+  "runtimeEditedByReviewer": false,
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "hardwarePerformanceVerified": false,
+  "newMeshyCreditsSpent": 0,
+  "carriedForwardCounts": {
+    "Terminé": 77,
+    "À valider": 37,
+    "En cours": 12
+  },
+  "countsAreCurrentRuntimeRecertification": false,
+  "baselineReadOnlyChecks": {
+    "auditWriterCheck": "passed",
+    "criteria": 126,
+    "evidenceReferencesVerified": 234,
+    "allNonFollowupContentPreserved": true,
+    "catalogCheck": {
+      "status": "passed",
+      "profiles": 115,
+      "maps": 34,
+      "operations": 27,
+      "groups": 62,
+      "budgets": 17,
+      "fronts": 40,
+      "sources": 70
+    },
+    "extinctionCsvParity": "passed29rows",
+    "musouCsvParity": "passed27rows",
+    "caveat": "CSV byte parity alone did not establish factual freshness: the old Carrier descriptor still denied already coded12slots and3D release."
+  },
+  "historicalSourcesPreserved": [
+    {
+      "path": "docs/audits/2026-10-26/Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.source.xlsx",
+      "sha256": "d3f88eee0e88deb4dbc2247f8b295c6c5a6de91ff9626ea94b0d274f08e652b5",
+      "unchangedFromPreviousDeliveredCommit": true
+    },
+    {
+      "path": "docs/audits/2026-10-26/audit-data.json",
+      "sha256": "abda56e986df3d6a8e305d1d6ec190d9f48e336ce1bfd97935bab220b5b4211a",
+      "unchangedFromPreviousDeliveredCommit": true
+    },
+    {
+      "path": "docs/audits/2026-10-27/Yautja_Hive_Warriors_Controle_Completude_2026-10-27.xlsx",
+      "sha256": "d751c28585c8f9c467c19f74fd91c199525f7b72a3ecd5b0967fd67312fcba6d",
+      "unchangedFromPreviousDeliveredCommit": true
+    },
+    {
+      "path": "docs/audits/2026-10-27/completeness-audit.json",
+      "sha256": "7426809f1379af94785cf1741471df40b2029999a4eac37e481264bc4ae0ad48",
+      "unchangedFromPreviousDeliveredCommit": true
+    }
+  ],
+  "alreadyPresentInConsolidatedGit": [
+    {
+      "scope": "Hive ecology and host infection",
+      "alreadyImplementedBeforeThisPass": true,
+      "referenceCommits": [
+        "bccd988",
+        "28289af",
+        "ad3528a",
+        "36f5fb1"
+      ],
+      "files": [
+        "js/battlefield/HiveNodeEcology.js",
+        "js/battlefield/HostInfestation.js",
+        "js/battlefield/FacehuggerExposure.js",
+        "js/battlefield/HiveSporeSight.js"
+      ]
+    },
+    {
+      "scope": "Action Musou fronts, officer effects and authored AFF-06..10 deployment",
+      "alreadyImplementedBeforeThisPass": true,
+      "referenceCommits": [
+        "253a555",
+        "ec31b9e",
+        "757aaca"
+      ],
+      "files": [
+        "js/battlefield/MusouBattleFlow.js",
+        "js/data/OriginalMusouFrontAllocations.js",
+        "js/battlefield/OriginalMusouStaging.js"
+      ]
+    },
+    {
+      "scope": "M577 finite passengers, physical convoy, swept whole-hull collision, wheel motion and signed saves",
+      "alreadyImplementedBeforeThisPass": true,
+      "referenceCommits": [
+        "2106d51",
+        "347d876",
+        "970549e",
+        "ddf0f1b",
+        "8c1125f"
+      ],
+      "files": [
+        "js/battlefield/APCSectionManifest.js",
+        "js/battlefield/APCConvoyDrive.js",
+        "js/battlefield/APCHullFootprint.js",
+        "js/graphics/APCModel.js"
+      ]
+    },
+    {
+      "scope": "Distant army projections in four instanced role pools",
+      "alreadyImplementedBeforeThisPass": true,
+      "referenceCommits": [
+        "d244072",
+        "c631052",
+        "51ea975"
+      ],
+      "files": [
+        "js/graphics/BattleCrowdProjection.js",
+        "js/graphics/DistantCrowdRoleAppearance.js"
+      ]
+    },
+    {
+      "scope": "Source-scoped Carrier/Supercarrier cargo, distant Ravager regenesis and optional AFF-27 variant",
+      "alreadyImplementedBeforeThisPass": true,
+      "referenceCommits": [
+        "a428357",
+        "c898ed0",
+        "2177891",
+        "0f406b8"
+      ],
+      "files": [
+        "js/battlefield/ExtinctionCarrierCargo.js",
+        "js/battlefield/ExtinctionRavagerRegenesis.js",
+        "js/battlefield/ExtinctionBattleVariant.js"
+      ]
+    },
+    {
+      "scope": "Physical release of an existing Carrier Facehugger with finite actor budget",
+      "alreadyImplementedBeforeThisPass": true,
+      "referenceCommits": [
+        "1fd10d5",
+        "00dfc98",
+        "aeb0a64"
+      ],
+      "files": [
+        "js/battlefield/ExtinctionCarrierFlight.js",
+        "tests/extinction-carrier-live-launch.test.js"
+      ],
+      "integrationNote": "Merged into51856cb in this pass; implementation was authored before this pass."
+    },
+    {
+      "scope": "Filtered public Alien_base reference registry and773-row parity ledger",
+      "alreadyImplementedBeforeThisPass": true,
+      "referenceCommits": [
+        "e097c4b",
+        "eec6176",
+        "b3f4429",
+        "040c289"
+      ],
+      "files": [
+        "js/data/AlienBaseRegistry.js",
+        "js/data/alien-base-public-v1.js",
+        "docs/audits/2026-11-01/Alien_Base_Import_Status.csv"
+      ],
+      "limits": "Reference admission metadata is not automatic roster admission, an extra runtime enemy, an imported weapon or a 1:1 visual asset."
+    }
+  ],
+  "criteriaForThisPass": [
+    {
+      "id": "AUD-047",
+      "previousStatus": "À valider",
+      "acceptanceUnchanged": "La défaite affiche sa cause vérifiable et laisse un temps de réaction cohérent avec la distance.",
+      "recommendation": "conditional_candidate",
+      "scope": "Current strategic defeat must show the actual reason and lost front, retain that evidence through teardown, and use a reaction deadline consistent with a measured physical return route. Prior e524/a800 route timing must not be relabelled as this build.",
+      "requiredEvidence": [
+        "current debrief unit tests",
+        "actual critical-front-loss browser debrief",
+        "current navigation/deadline calibration tests"
+      ],
+      "acceptanceVerifiedForCurrentBuild": false,
+      "newEvidence": [],
+      "independentComponentReview": {
+        "status": "passed_scoped_source_and_hash_review_browser_and_calibration_pending",
+        "report": "docs/qa/continuation-20261102/debrief/review.json",
+        "inputHashesMatched": [
+          "js/ui/OperationPanel.js",
+          "tests/battle-debrief.test.js",
+          "tests/operation-alerts.test.js",
+          "tests/tactical-presentation.test.js"
+        ],
+        "observedScope": [
+          "cause captures actual expired-front IDs and labels before teardown",
+          "earliest remaining deadline selects warning after recovery/checkpoint",
+          "cooperative direction uses the surviving hunter",
+          "no ledger/units/budgets are edited by this UI change"
+        ],
+        "limitations": [
+          "Component tests use explicit5second deadlines and do not measure current geometry.",
+          "Integrated real critical-front end-screen and current34layout calibration tests remain required."
+        ]
+      }
+    },
+    {
+      "id": "AUD-060",
+      "previousStatus": "À valider",
+      "acceptanceUnchanged": "La jungle 1987 ne reçoit pas automatiquement un laboratoire spatial ou une matriarche; les exceptions sont des missions alternatives identifiées.",
+      "recommendation": "partial_scope_keep_open",
+      "scope": "Weather and jungle context filtering can remove automatic industrial plumes; this does not by itself verify every installation, boss and explicit alternative across all historical contexts.",
+      "requiredEvidence": [
+        "Val Verde and Prey context assertions",
+        "historical versus explicitly alternative operation captures"
+      ],
+      "acceptanceVerifiedForCurrentBuild": false,
+      "newEvidence": []
+    },
+    {
+      "id": "AUD-067",
+      "previousStatus": "À valider",
+      "acceptanceUnchanged": "Un joueur peut repérer la route principale et un contournement sans suivre uniquement un marqueur HUD.",
+      "recommendation": "partial_scope_keep_open",
+      "scope": "Floor-correct chevrons and unobstructed landmarks improve wayfinding; no human route-finding comprehension test is inferred.",
+      "requiredEvidence": [
+        "rendered Val Verde route/alternate captures",
+        "floor support/layer tests"
+      ],
+      "acceptanceVerifiedForCurrentBuild": false,
+      "newEvidence": []
+    },
+    {
+      "id": "AUD-091",
+      "previousStatus": "À valider",
+      "acceptanceUnchanged": "Aucune combinaison ne laisse le personnage bloqué indéfiniment; chaque état possède une indication et une issue.",
+      "recommendation": "partial_scope_keep_open",
+      "scope": "A finite status fix is not an exhaustive combination proof. Review the agent inventory of all affected player/actor states, overlap priorities, pause, exit cue, cleanup and cooperation before considering closure.",
+      "requiredEvidence": [
+        "effect inventory and overlap matrix",
+        "real player-owned effect expiry tests",
+        "rendered state/exit indication"
+      ],
+      "acceptanceVerifiedForCurrentBuild": false,
+      "newEvidence": [],
+      "reportedCoverage": "Selected14 environmental contacts and2 haste effects, owner overlap, pause and cleanup; no full player/weapon/boss status matrix."
+    },
+    {
+      "id": "AUD-103",
+      "previousStatus": "À valider",
+      "acceptanceUnchanged": "Les objectifs et dangers restent distinguables avec couleurs simulées et effets réduits.",
+      "recommendation": "partial_scope_keep_open",
+      "scope": "Local plume/marking fixes do not certify every danger under all visual profiles and reduced effects.",
+      "requiredEvidence": [
+        "targeted reduced-effect captures"
+      ],
+      "acceptanceVerifiedForCurrentBuild": false,
+      "newEvidence": []
+    },
+    {
+      "id": "AUD-104",
+      "previousStatus": "À valider",
+      "acceptanceUnchanged": "Le joueur et le danger principal restent visibles dans chaque scénario; la caméra ne traverse pas les parois.",
+      "recommendation": "partial_scope_keep_open",
+      "scope": "One insertion view without obstructing geometry does not certify player and main-danger visibility for every scenario and boss phase.",
+      "requiredEvidence": [
+        "same-camera before/after insertion",
+        "physical camera regression tests"
+      ],
+      "acceptanceVerifiedForCurrentBuild": false,
+      "newEvidence": []
+    },
+    {
+      "id": "AUD-069",
+      "previousStatus": "En cours",
+      "acceptanceUnchanged": "Un tableau de mesures prouve les rapports d’échelle; chaque exception artistique est documentée.",
+      "recommendation": "keep_open",
+      "scope": "No source-scale measurement table or actor/costume 1:1 comparison is supplied by this consolidation.",
+      "requiredEvidence": [
+        "source-scale table still required"
+      ],
+      "acceptanceVerifiedForCurrentBuild": false,
+      "newEvidence": []
+    },
+    {
+      "id": "AUD-070",
+      "previousStatus": "En cours",
+      "acceptanceUnchanged": "La mesure distingue zones calmes, fronts denses et points de décision; aucune grande extension ne reste vide sans fonction.",
+      "recommendation": "keep_open",
+      "scope": "Four distant crowd pools and authored zones are pre-existing code. Actual occupancy/time by zone and complete useful-density coverage are separate evidence.",
+      "requiredEvidence": [
+        "live density by zone still required"
+      ],
+      "acceptanceVerifiedForCurrentBuild": false,
+      "newEvidence": []
+    },
+    {
+      "id": "AUD-106",
+      "previousStatus": "En cours",
+      "acceptanceUnchanged": "L’augmentation du nombre d’unités suit les budgets mesurés et conserve la silhouette de chaque rôle.",
+      "recommendation": "keep_open",
+      "scope": "Instancing and actor counts are architecture, not a measured target-hardware rendering budget or source silhouette certification.",
+      "requiredEvidence": [
+        "target hardware and role visibility evidence still required"
+      ],
+      "acceptanceVerifiedForCurrentBuild": false,
+      "newEvidence": []
+    },
+    {
+      "id": "AUD-112",
+      "previousStatus": "À valider",
+      "acceptanceUnchanged": "Le franchissement ne provoque ni terrain absent ni arrêt prolongé; revenir conserve objectifs et destructions.",
+      "recommendation": "keep_open",
+      "scope": "The previous functional e524 streaming proof remains historical. This pass does not certify absence of long stalls on player hardware.",
+      "requiredEvidence": [
+        "current functional preservation where world geometry changed",
+        "hardware frame intervals still required"
+      ],
+      "acceptanceVerifiedForCurrentBuild": false,
+      "newEvidence": []
+    },
+    {
+      "id": "AUD-113",
+      "previousStatus": "En cours",
+      "acceptanceUnchanged": "Les promesses d’effectifs reposent sur une capture mesurée et reproductible, pas sur le seul nombre de triangles.",
+      "recommendation": "keep_open",
+      "scope": "SwiftShader/Node instrumentation cannot certify real GPU/FPS capacity.",
+      "requiredEvidence": [
+        "reproducible target-hardware capture still required"
+      ],
+      "acceptanceVerifiedForCurrentBuild": false,
+      "newEvidence": []
+    },
+    {
+      "id": "AUD-119",
+      "previousStatus": "À valider",
+      "acceptanceUnchanged": "Le rapport cite version, durée et problèmes observés; les conclusions ne prétendent pas mesurer ce qui n’a pas été testé.",
+      "recommendation": "keep_open",
+      "scope": "No human playtesters are provided or counted. Automated reports must retain assistance and observation limits.",
+      "requiredEvidence": [
+        "human readability and difficulty observations still required"
+      ],
+      "acceptanceVerifiedForCurrentBuild": false,
+      "newEvidence": []
+    },
+    {
+      "id": "AUD-121",
+      "previousStatus": "À valider",
+      "acceptanceUnchanged": "Aucune croissance mémoire continue, objectif bloqué ou perte de commandes; les incidents sont liés à une chronologie reproductible.",
+      "recommendation": "keep_open",
+      "scope": "Short deterministic scenarios and unit tests do not constitute a long interactive instrumented battle or proof of no continuous memory growth.",
+      "requiredEvidence": [
+        "long-session timeline and memory/command checks still required"
+      ],
+      "acceptanceVerifiedForCurrentBuild": false,
+      "newEvidence": []
+    }
+  ],
+  "globalGatePending": [
+    "stable source commit and clean build identity",
+    "affected CPU suites and complete regression results",
+    "current rendered world/debrief/effects/Extinction evidence with explicit assistance",
+    "independent review before central progress or permitted Excel follow-up changes"
+  ],
+  "reportingUpdatesCompleted": [
+    {
+      "path": "scripts/export-extinction-fidelity-gaps.mjs",
+      "scope": "Correct current Carrier/Ravager capability wording only after scoped tests; preserve historical source fields and visual1:1 certification=no.",
+      "status": "completed_targeted_coverage_passed_global_release_qa_pending"
+    },
+    {
+      "path": "tests/extinction-profile-coverage.test.js",
+      "scope": "Replace literal-backslash CRLF whole-file matching with per-profile row and explicit visual-certification checks.",
+      "status": "completed_targeted_coverage_passed_global_release_qa_pending"
+    },
+    {
+      "path": "docs/audits/2026-11-01/EXTINCTION-READINESS.md",
+      "scope": "Separate historical missing findings from source-scoped partial runtime now present.",
+      "status": "completed_targeted_coverage_passed_global_release_qa_pending"
+    }
+  ],
+  "currentPassAdditions": [
+    "source-scoped near Ravager catalepsy sharing the existing finite phase",
+    "optional enhanced AFF-27 scenario signing traits without adding cargo identities",
+    "honest current/historical CSV separation and per-profile visual-certification checks"
+  ],
+  "reportingReview": {
+    "path": "docs/qa/continuation-20261102/extinction-reporting/review.json",
+    "sha256": "a86a6a53176ac7d40111355ed5ef9dd84222f9c8783ff3af189dbfdd679d0c44",
+    "status": "passed_reporting_scope_final_release_qa_pending"
+  },
+  "newlyClosedCriteria": []
+}

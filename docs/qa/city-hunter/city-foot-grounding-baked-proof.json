@@ -1,0 +1,1105 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-23T06:55:04.358Z",
+  "rendered": false,
+  "browserUsed": false,
+  "status": "CPU_module_verified_render_gate_pending",
+  "sourceSha256": "0e297a50400f885f06595f2fb59c85aed5118517a03c140f0f3aefa5288b564b",
+  "normalizationScale": 1.790904483733148,
+  "targetHeight": 4.31,
+  "preparedGeometry": true,
+  "preparationAppliedInThisProof": false,
+  "descriptorPath": "/workspace/qa/yautja-expansion-20261023/city-runtime-review/city-foot-grounding-baked-descriptor.json",
+  "counts": [
+    {
+      "regionId": "model_part0",
+      "fullVertexCount": 9194,
+      "hullSamples": 36
+    },
+    {
+      "regionId": "model_part4",
+      "fullVertexCount": 8860,
+      "hullSamples": 36
+    }
+  ],
+  "feetUnchanged": {
+    "model_part0": {
+      "positionsNormalsUVSkinIndicesAndTriangleIndicesExactlyEqual": true,
+      "skinWeightChanges": {
+        "changedValues": 2,
+        "maxAbsoluteDelta": 2.9103830456733704e-11,
+        "boneNamesPreserved": true
+      },
+      "allAttributesAndIndicesExactlyEqual": false,
+      "vertices": 9194,
+      "triangles": 9899
+    },
+    "model_part4": {
+      "positionsNormalsUVSkinIndicesAndTriangleIndicesExactlyEqual": true,
+      "skinWeightChanges": {
+        "changedValues": 8,
+        "maxAbsoluteDelta": 1.4901161193847656e-8,
+        "boneNamesPreserved": true
+      },
+      "allAttributesAndIndicesExactlyEqual": false,
+      "vertices": 8860,
+      "triangles": 9281
+    }
+  },
+  "sourceChecks": {
+    "sourceCacheUnchanged": true,
+    "maskCacheUnchanged": true,
+    "actorPhysicalPositionUnchanged": true,
+    "sourceFileUnchanged": true,
+    "maskFileUnchanged": true
+  },
+  "solverDiagnostics": {
+    "status": "reset",
+    "sourceSha256": "0e297a50400f885f06595f2fb59c85aed5118517a03c140f0f3aefa5288b564b",
+    "motionGain": 0.2,
+    "maxOffset": 0.15,
+    "restMinimumY": -1.3942968531661615e-15,
+    "regions": [
+      {
+        "regionId": "model_part0",
+        "supportVertices": 36,
+        "referencedVertices": 9194,
+        "restError": 0,
+        "coverageError": 0
+      },
+      {
+        "regionId": "model_part4",
+        "supportVertices": 36,
+        "referencedVertices": 8860,
+        "restError": 0,
+        "coverageError": 0
+      }
+    ],
+    "offsetY": 0,
+    "minimumYBeforeOffset": null,
+    "minimumYAfterOffset": null,
+    "maxObservedAbsoluteOffset": 0.08594130649400834,
+    "refusals": 1,
+    "lastError": null,
+    "lastRejectedOffsetY": null
+  },
+  "motionGain": 0.2,
+  "sourcePhaseRange": [
+    -0.5,
+    0.5
+  ],
+  "effectiveVisualRange": [
+    -0.1,
+    0.1
+  ],
+  "phaseCount": 21,
+  "maxHullMinimumError": 0,
+  "maxContactError": 2.5612501841631996e-9,
+  "offsetRange": [
+    -0.06265468022684086,
+    0.08594130649400834
+  ],
+  "maximumAbsoluteOffset": 0.08594130649400834,
+  "boundRefusal": {
+    "rawStride": 0.5,
+    "lastError": "required visual offset exceeds calibrated bound",
+    "rejectedOffsetY": -0.48207060083500414,
+    "visualY": 0
+  },
+  "phases": [
+    {
+      "sourcePlayerStride": -0.5,
+      "effectiveVisualStride": -0.1,
+      "offsetY": 0.08594130649400834,
+      "before": [
+        {
+          "regionId": "model_part0",
+          "allVertices": 9194,
+          "supportVertices": 36,
+          "minAll": -0.08594130649400834,
+          "minSupport": -0.08594130649400834,
+          "error": 0
+        },
+        {
+          "regionId": "model_part4",
+          "allVertices": 8860,
+          "supportVertices": 36,
+          "minAll": -0.045954009131196155,
+          "minSupport": -0.045954009131196155,
+          "error": 0
+        }
+      ],
+      "after": [
+        {
+          "regionId": "model_part0",
+          "allVertices": 9194,
+          "supportVertices": 36,
+          "minAll": 2.5612501841631996e-9,
+          "minSupport": 2.5612501841631996e-9,
+          "error": 0
+        },
+        {
+          "regionId": "model_part4",
+          "allVertices": 8860,
+          "supportVertices": 36,
+          "minAll": 0.03998729872347618,
+          "minSupport": 0.03998729872347618,
+          "error": 0
+        }
+      ],
+      "contactError": 2.5612501841631996e-9,
+      "actorPosition": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sourcePlayerStride": -0.45,
+      "effectiveVisualStride": -0.09000000000000001,
+      "offsetY": 0.0775276448835767,
+      "before": [
+        {
+          "regionId": "model_part0",
+          "allVertices": 9194,
+          "supportVertices": 36,
+          "minAll": 0.008413661610431639,
+          "minSupport": 0.008413661610431639,
+          "error": 0
+        },
+        {
+          "regionId": "model_part4",
+          "allVertices": 8860,
+          "supportVertices": 36,
+          "minAll": 0.04651644325215532,
+          "minSupport": 0.04651644325215532,
+          "error": 0
+        }
+      ],
+      "after": [
+        {
+          "regionId": "model_part0",
+          "allVertices": 9194,
+          "supportVertices": 36,
+          "minAll": -2.507463819911848e-10,
+          "minSupport": -2.507463819911848e-10,
+          "error": 0
+        },
+        {
+          "regionId": "model_part4",
+          "allVertices": 8860,
+          "supportVertices": 36,
+          "minAll": 0.03810278139097732,
+          "minSupport": 0.03810278139097732,
+          "error": 0
+        }
+      ],
+      "contactError": 2.507463819911848e-10,
+      "actorPosition": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sourcePlayerStride": -0.4,
+      "effectiveVisualStride": -0.08000000000000002,
+      "offsetY": 0.06955293013940216,
+      "before": [
+        {
+          "regionId": "model_part0",
+          "allVertices": 9194,
+          "supportVertices": 36,
+          "minAll": 0.00797471474417455,
+          "minSupport": 0.00797471474417455,
+          "error": 0
+        },
+        {
+          "regionId": "model_part4",
+          "allVertices": 8860,
+          "supportVertices": 36,
+          "minAll": 0.04172908278090853,
+          "minSupport": 0.04172908278090853,
+          "error": 0
+        }
+      ],
+      "after": [
+        {
+          "regionId": "model_part0",
+          "allVertices": 9194,
+          "supportVertices": 36,
+          "minAll": 2.3766469348096564e-10,
+          "minSupport": 2.3766469348096564e-10,
+          "error": 0
+        },
+        {
+          "regionId": "model_part4",
+          "allVertices": 8860,
+          "supportVertices": 36,
+          "minAll": 0.033754367799068645,
+          "minSupport": 0.033754367799068645,
+          "error": 0
+        }
+      ],
+      "contactError": 2.3766469348096564e-10,
+      "actorPosition": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sourcePlayerStride": -0.35,
+      "effectiveVisualStride": -0.06999999999999999,
+      "offsetY": 0.06163081851113459,
+      "before": [
+        {
+          "regionId": "model_part0",
+          "allVertices": 9194,
+          "supportVertices": 36,
+          "minAll": 0.007922111628267565,
+          "minSupport": 0.007922111628267565,
+          "error": 0
+        },
+        {
+          "regionId": "model_part4",
+          "allVertices": 8860,
+          "supportVertices": 36,
+          "minAll": 0.03759700458865071,
+          "minSupport": 0.03759700458865071,
+          "error": 0
+        }
+      ],
+      "after": [
+        {
+          "regionId": "model_part0",
+          "allVertices": 9194,
+          "supportVertices": 36,
+          "minAll": 2.3609760674281333e-10,
+          "minSupport": 2.3609760674281333e-10,
+          "error": 0
+        },
+        {
+          "regionId": "model_part4",
+          "allVertices": 8860,
+          "supportVertices": 36,
+          "minAll": 0.029674892724286105,
+          "minSupport": 0.029674892724286105,
+          "error": 0
+        }
+      ],
+      "contactError": 2.3609760674281333e-10,
+      "actorPosition": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sourcePlayerStride": -0.3,
+      "effectiveVisualStride": -0.06,
+      "offsetY": 0.05348645009432797,
+      "before": [
+        {
+          "regionId": "model_part0",
+          "allVertices": 9194,
+          "supportVertices": 36,
+          "minAll": 0.008144368416806623,
+          "minSupport": 0.008144368416806623,
+          "error": 0
+        },
+        {
+          "regionId": "model_part4",
+          "allVertices": 8860,
+          "supportVertices": 36,
+          "minAll": 0.03373348065304814,
+          "minSupport": 0.03373348065304814,
+          "error": 0
+        }
+      ],
+      "after": [
+        {
+          "regionId": "model_part0",
+          "allVertices": 9194,
+          "supportVertices": 36,
+          "minAll": 2.427211695521514e-10,
+          "minSupport": 2.427211695521514e-10,
+          "error": 0
+        },
+        {
+          "regionId": "model_part4",
+          "allVertices": 8860,
+          "supportVertices": 36,
+          "minAll": 0.02558911199352049,
+          "minSupport": 0.02558911199352049,
+          "error": 0
+        }
+      ],
+      "contactError": 2.427211695521514e-10,
+      "actorPosition": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sourcePlayerStride": -0.25,
+      "effectiveVisualStride": -0.05,
+      "offsetY": 0.0451206393108259,
+      "before": [
+        {
+          "regionId": "model_part0",
+          "allVertices": 9194,
+          "supportVertices": 36,
+          "minAll": 0.00836581078350207,
+          "minSupport": 0.00836581078350207,
+          "error": 0
+        },
+        {
+          "regionId": "model_part4",
+          "allVertices": 8860,
+          "supportVertices": 36,
+          "minAll": 0.0298632452060506,
+          "minSupport": 0.0298632452060506,
+          "error": 0
+        }
+      ],
+      "after": [
+        {
+          "regionId": "model_part0",
+          "allVertices": 9194,
+          "supportVertices": 36,
+          "minAll": 2.4932059888849167e-10,
+          "minSupport": 2.4932059888849167e-10,
+          "error": 0
+        },
+        {
+          "regionId": "model_part4",
+          "allVertices": 8860,
+          "supportVertices": 36,
+          "minAll": 0.02149743417322795,
+          "minSupport": 0.02149743417322795,
+          "error": 0
+        }
+      ],
+      "contactError": 2.4932059888849167e-10,
+      "actorPosition": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sourcePlayerStride": -0.2,
+      "effectiveVisualStride": -0.04000000000000001,
+      "offsetY": 0.03653422273473064,
+      "before": [
+        {
+          "regionId": "model_part0",
+          "allVertices": 9194,
+          "supportVertices": 36,
+          "minAll": 0.008586416576095254,
+          "minSupport": 0.008586416576095254,
+          "error": 0
+        },
+        {
+          "regionId": "model_part4",
+          "allVertices": 8860,
+          "supportVertices": 36,
+          "minAll": 0.025986685259766745,
+          "minSupport": 0.025986685259766745,
+          "error": 0
+        }
+      ],
+      "after": [
+        {
+          "regionId": "model_part0",
+          "allVertices": 9194,
+          "supportVertices": 36,
+          "minAll": 2.5589480534549125e-10,
+          "minSupport": 2.5589480534549125e-10,
+          "error": 0
+        },
+        {
+          "regionId": "model_part4",
+          "allVertices": 8860,
+          "supportVertices": 36,
+          "minAll": 0.017400268427775988,
+          "minSupport": 0.017400268427775988,
+          "error": 0
+        }
+      ],
+      "contactError": 2.5589480534549125e-10,
+      "actorPosition": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sourcePlayerStride": -0.15,
+      "effectiveVisualStride": -0.03,
+      "offsetY": 0.0277280590005481,
+      "before": [
+        {
+          "regionId": "model_part0",
+          "allVertices": 9194,
+          "supportVertices": 36,
+          "minAll": 0.008806163734182543,
+          "minSupport": 0.008806163734182543,
+          "error": 0
+        },
+        {
+          "regionId": "model_part4",
+          "allVertices": 8860,
+          "supportVertices": 36,
+          "minAll": 0.02210418846695551,
+          "minSupport": 0.02210418846695551,
+          "error": 0
+        }
+      ],
+      "after": [
+        {
+          "regionId": "model_part0",
+          "allVertices": 9194,
+          "supportVertices": 36,
+          "minAll": 2.624441462761862e-10,
+          "minSupport": 2.624441462761862e-10,
+          "error": 0
+        },
+        {
+          "regionId": "model_part4",
+          "allVertices": 8860,
+          "supportVertices": 36,
+          "minAll": 0.013298024470328846,
+          "minSupport": 0.013298024470328846,
+          "error": 0
+        }
+      ],
+      "contactError": 2.624441462761862e-10,
+      "actorPosition": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sourcePlayerStride": -0.1,
+      "effectiveVisualStride": -0.020000000000000004,
+      "offsetY": 0.018703028717311818,
+      "before": [
+        {
+          "regionId": "model_part0",
+          "allVertices": 9194,
+          "supportVertices": 36,
+          "minAll": 0.009025030283236282,
+          "minSupport": 0.009025030283236282,
+          "error": 0
+        },
+        {
+          "regionId": "model_part4",
+          "allVertices": 8860,
+          "supportVertices": 36,
+          "minAll": 0.01821614307406395,
+          "minSupport": 0.01821614307406395,
+          "error": 0
+        }
+      ],
+      "after": [
+        {
+          "regionId": "model_part0",
+          "allVertices": 9194,
+          "supportVertices": 36,
+          "minAll": 2.6896693899880475e-10,
+          "minSupport": 2.6896693899880475e-10,
+          "error": 0
+        },
+        {
+          "regionId": "model_part4",
+          "allVertices": 8860,
+          "supportVertices": 36,
+          "minAll": 0.00919111252186088,
+          "minSupport": 0.00919111252186088,
+          "error": 0
+        }
+      ],
+      "contactError": 2.6896693899880475e-10,
+      "actorPosition": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sourcePlayerStride": -0.05,
+      "effectiveVisualStride": -0.010000000000000002,
+      "offsetY": 0.009460034380530193,
+      "before": [
+        {
+          "regionId": "model_part0",
+          "allVertices": 9194,
+          "supportVertices": 36,
+          "minAll": 0.009242994336781624,
+          "minSupport": 0.009242994336781624,
+          "error": 0
+        },
+        {
+          "regionId": "model_part4",
+          "allVertices": 8860,
+          "supportVertices": 36,
+          "minAll": 0.014322937882390226,
+          "minSupport": 0.014322937882390226,
+          "error": 0
+        }
+      ],
+      "after": [
+        {
+          "regionId": "model_part0",
+          "allVertices": 9194,
+          "supportVertices": 36,
+          "minAll": 2.7546254860455477e-10,
+          "minSupport": 2.7546254860455477e-10,
+          "error": 0
+        },
+        {
+          "regionId": "model_part4",
+          "allVertices": 8860,
+          "supportVertices": 36,
+          "minAll": 0.0050799432701457556,
+          "minSupport": 0.0050799432701457556,
+          "error": 0
+        }
+      ],
+      "contactError": 2.7546254860455477e-10,
+      "actorPosition": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sourcePlayerStride": 0,
+      "effectiveVisualStride": 0,
+      "offsetY": 2.819327982878095e-10,
+      "before": [
+        {
+          "regionId": "model_part0",
+          "allVertices": 9194,
+          "supportVertices": 36,
+          "minAll": 0.009460034098597395,
+          "minSupport": 0.009460034098597395,
+          "error": 0
+        },
+        {
+          "regionId": "model_part4",
+          "allVertices": 8860,
+          "supportVertices": 36,
+          "minAll": 0.010424962209211673,
+          "minSupport": 0.010424962209211673,
+          "error": 0
+        }
+      ],
+      "after": [
+        {
+          "regionId": "model_part0",
+          "allVertices": 9194,
+          "supportVertices": 36,
+          "minAll": 2.8193129670947064e-10,
+          "minSupport": 2.8193129670947064e-10,
+          "error": 0
+        },
+        {
+          "regionId": "model_part4",
+          "allVertices": 8860,
+          "supportVertices": 36,
+          "minAll": 0.0009649278286836056,
+          "minSupport": 0.0009649278286836056,
+          "error": 0
+        }
+      ],
+      "contactError": 2.8193129670947064e-10,
+      "actorPosition": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sourcePlayerStride": 0.05,
+      "effectiveVisualStride": 0.010000000000000002,
+      "offsetY": -0.006275278628105951,
+      "before": [
+        {
+          "regionId": "model_part0",
+          "allVertices": 9194,
+          "supportVertices": 36,
+          "minAll": 0.009676127864886159,
+          "minSupport": 0.009676127864886159,
+          "error": 0
+        },
+        {
+          "regionId": "model_part4",
+          "allVertices": 8860,
+          "supportVertices": 36,
+          "minAll": 0.00627527891003875,
+          "minSupport": 0.00627527891003875,
+          "error": 0
+        }
+      ],
+      "after": [
+        {
+          "regionId": "model_part0",
+          "allVertices": 9194,
+          "supportVertices": 36,
+          "minAll": 0.0034008491418653936,
+          "minSupport": 0.0034008491418653936,
+          "error": 0
+        },
+        {
+          "regionId": "model_part4",
+          "allVertices": 8860,
+          "supportVertices": 36,
+          "minAll": -1.870177849389032e-10,
+          "minSupport": -1.870177849389032e-10,
+          "error": 0
+        }
+      ],
+      "contactError": 1.870177849389032e-10,
+      "actorPosition": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sourcePlayerStride": 0.1,
+      "effectiveVisualStride": 0.020000000000000004,
+      "offsetY": -0.011698867839858337,
+      "before": [
+        {
+          "regionId": "model_part0",
+          "allVertices": 9194,
+          "supportVertices": 36,
+          "minAll": 0.013292102879946902,
+          "minSupport": 0.013292102879946902,
+          "error": 0
+        },
+        {
+          "regionId": "model_part4",
+          "allVertices": 8860,
+          "supportVertices": 36,
+          "minAll": 0.005423589211752386,
+          "minSupport": 0.005423589211752386,
+          "error": 0
+        }
+      ],
+      "after": [
+        {
+          "regionId": "model_part0",
+          "allVertices": 9194,
+          "supportVertices": 36,
+          "minAll": 0.00786851382982978,
+          "minSupport": 0.00786851382982978,
+          "error": 0
+        },
+        {
+          "regionId": "model_part4",
+          "allVertices": 8860,
+          "supportVertices": 36,
+          "minAll": -1.6163585053741159e-10,
+          "minSupport": -1.6163585053741159e-10,
+          "error": 0
+        }
+      ],
+      "contactError": 1.6163585053741159e-10,
+      "actorPosition": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sourcePlayerStride": 0.15,
+      "effectiveVisualStride": 0.03,
+      "offsetY": -0.017334042773005202,
+      "before": [
+        {
+          "regionId": "model_part0",
+          "allVertices": 9194,
+          "supportVertices": 36,
+          "minAll": 0.01797390460590388,
+          "minSupport": 0.01797390460590388,
+          "error": 0
+        },
+        {
+          "regionId": "model_part4",
+          "allVertices": 8860,
+          "supportVertices": 36,
+          "minAll": 0.005635174933146863,
+          "minSupport": 0.005635174933146863,
+          "error": 0
+        }
+      ],
+      "after": [
+        {
+          "regionId": "model_part0",
+          "allVertices": 9194,
+          "supportVertices": 36,
+          "minAll": 0.012338729840698268,
+          "minSupport": 0.012338729840698268,
+          "error": 0
+        },
+        {
+          "regionId": "model_part4",
+          "allVertices": 8860,
+          "supportVertices": 36,
+          "minAll": -1.6794135526687626e-10,
+          "minSupport": -1.6794135526687626e-10,
+          "error": 0
+        }
+      ],
+      "contactError": 1.6794135526687626e-10,
+      "actorPosition": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sourcePlayerStride": 0.2,
+      "effectiveVisualStride": 0.04000000000000001,
+      "offsetY": -0.023180239883048483,
+      "before": [
+        {
+          "regionId": "model_part0",
+          "allVertices": 9194,
+          "supportVertices": 36,
+          "minAll": 0.022657247124109676,
+          "minSupport": 0.022657247124109676,
+          "error": 0
+        },
+        {
+          "regionId": "model_part4",
+          "allVertices": 8860,
+          "supportVertices": 36,
+          "minAll": 0.005846197110043281,
+          "minSupport": 0.005846197110043281,
+          "error": 0
+        }
+      ],
+      "after": [
+        {
+          "regionId": "model_part0",
+          "allVertices": 9194,
+          "supportVertices": 36,
+          "minAll": 0.016811050188296962,
+          "minSupport": 0.016811050188296962,
+          "error": 0
+        },
+        {
+          "regionId": "model_part4",
+          "allVertices": 8860,
+          "supportVertices": 36,
+          "minAll": -1.7422993950355625e-10,
+          "minSupport": -1.7422993950355625e-10,
+          "error": 0
+        }
+      ],
+      "contactError": 1.7422993950355625e-10,
+      "actorPosition": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sourcePlayerStride": 0.25,
+      "effectiveVisualStride": 0.05,
+      "offsetY": -0.02923687455514851,
+      "before": [
+        {
+          "regionId": "model_part0",
+          "allVertices": 9194,
+          "supportVertices": 36,
+          "minAll": 0.02734166213591596,
+          "minSupport": 0.02734166213591596,
+          "error": 0
+        },
+        {
+          "regionId": "model_part4",
+          "allVertices": 8860,
+          "supportVertices": 36,
+          "minAll": 0.006056634672100027,
+          "minSupport": 0.006056634672100027,
+          "error": 0
+        }
+      ],
+      "after": [
+        {
+          "regionId": "model_part0",
+          "allVertices": 9194,
+          "supportVertices": 36,
+          "minAll": 0.021285027644317472,
+          "minSupport": 0.021285027644317472,
+          "error": 0
+        },
+        {
+          "regionId": "model_part4",
+          "allVertices": 8860,
+          "supportVertices": 36,
+          "minAll": -1.8050202305053276e-10,
+          "minSupport": -1.8050202305053276e-10,
+          "error": 0
+        }
+      ],
+      "contactError": 1.8050202305053276e-10,
+      "actorPosition": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sourcePlayerStride": 0.3,
+      "effectiveVisualStride": 0.06,
+      "offsetY": -0.03550334113088792,
+      "before": [
+        {
+          "regionId": "model_part0",
+          "allVertices": 9194,
+          "supportVertices": 36,
+          "minAll": 0.03202668120372825,
+          "minSupport": 0.03202668120372825,
+          "error": 0
+        },
+        {
+          "regionId": "model_part4",
+          "allVertices": 8860,
+          "supportVertices": 36,
+          "minAll": 0.006266466575739413,
+          "minSupport": 0.006266466575739413,
+          "error": 0
+        }
+      ],
+      "after": [
+        {
+          "regionId": "model_part0",
+          "allVertices": 9194,
+          "supportVertices": 36,
+          "minAll": 0.02576021481474402,
+          "minSupport": 0.02576021481474402,
+          "error": 0
+        },
+        {
+          "regionId": "model_part4",
+          "allVertices": 8860,
+          "supportVertices": 36,
+          "minAll": -1.8675533342005224e-10,
+          "minSupport": -1.8675533342005224e-10,
+          "error": 0
+        }
+      ],
+      "contactError": 1.8675533342005224e-10,
+      "actorPosition": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sourcePlayerStride": 0.35,
+      "effectiveVisualStride": 0.06999999999999999,
+      "offsetY": -0.0419790129688271,
+      "before": [
+        {
+          "regionId": "model_part0",
+          "allVertices": 9194,
+          "supportVertices": 36,
+          "minAll": 0.03671183582953649,
+          "minSupport": 0.03671183582953649,
+          "error": 0
+        },
+        {
+          "regionId": "model_part4",
+          "allVertices": 8860,
+          "supportVertices": 36,
+          "minAll": 0.006475671837939179,
+          "minSupport": 0.006475671837939179,
+          "error": 0
+        }
+      ],
+      "after": [
+        {
+          "regionId": "model_part0",
+          "allVertices": 9194,
+          "supportVertices": 36,
+          "minAll": 0.03023616418458748,
+          "minSupport": 0.03023616418458748,
+          "error": 0
+        },
+        {
+          "regionId": "model_part4",
+          "allVertices": 8860,
+          "supportVertices": 36,
+          "minAll": -1.929899504093946e-10,
+          "minSupport": -1.929899504093946e-10,
+          "error": 0
+        }
+      ],
+      "contactError": 1.929899504093946e-10,
+      "actorPosition": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sourcePlayerStride": 0.4,
+      "effectiveVisualStride": 0.08000000000000002,
+      "offsetY": -0.048663242507181195,
+      "before": [
+        {
+          "regionId": "model_part0",
+          "allVertices": 9194,
+          "supportVertices": 36,
+          "minAll": 0.04139665750178949,
+          "minSupport": 0.04139665750178949,
+          "error": 0
+        },
+        {
+          "regionId": "model_part4",
+          "allVertices": 8860,
+          "supportVertices": 36,
+          "minAll": 0.006684229538354097,
+          "minSupport": 0.006684229538354097,
+          "error": 0
+        }
+      ],
+      "after": [
+        {
+          "regionId": "model_part0",
+          "allVertices": 9194,
+          "supportVertices": 36,
+          "minAll": 0.03471242816264104,
+          "minSupport": 0.03471242816264104,
+          "error": 0
+        },
+        {
+          "regionId": "model_part4",
+          "allVertices": 8860,
+          "supportVertices": 36,
+          "minAll": -1.992054923793951e-10,
+          "minSupport": -1.992054923793951e-10,
+          "error": 0
+        }
+      ],
+      "contactError": 1.992054923793951e-10,
+      "actorPosition": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sourcePlayerStride": 0.45,
+      "effectiveVisualStride": 0.09000000000000001,
+      "offsetY": -0.055555361328565464,
+      "before": [
+        {
+          "regionId": "model_part0",
+          "allVertices": 9194,
+          "supportVertices": 36,
+          "minAll": 0.04605318594107817,
+          "minSupport": 0.04605318594107817,
+          "error": 0
+        },
+        {
+          "regionId": "model_part4",
+          "allVertices": 8860,
+          "supportVertices": 36,
+          "minAll": 0.006892118821384269,
+          "minSupport": 0.006892118821384269,
+          "error": 0
+        }
+      ],
+      "after": [
+        {
+          "regionId": "model_part0",
+          "allVertices": 9194,
+          "supportVertices": 36,
+          "minAll": 0.039161067119693777,
+          "minSupport": 0.039161067119693777,
+          "error": 0
+        },
+        {
+          "regionId": "model_part4",
+          "allVertices": 8860,
+          "supportVertices": 36,
+          "minAll": -2.054012654406634e-10,
+          "minSupport": -2.054012654406634e-10,
+          "error": 0
+        }
+      ],
+      "contactError": 2.054012654406634e-10,
+      "actorPosition": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "sourcePlayerStride": 0.5,
+      "effectiveVisualStride": 0.1,
+      "offsetY": -0.06265468022684086,
+      "before": [
+        {
+          "regionId": "model_part0",
+          "allVertices": 9194,
+          "supportVertices": 36,
+          "minAll": 0.05048542287465281,
+          "minSupport": 0.05048542287465281,
+          "error": 0
+        },
+        {
+          "regionId": "model_part4",
+          "allVertices": 8860,
+          "supportVertices": 36,
+          "minAll": 0.007099318898275392,
+          "minSupport": 0.007099318898275392,
+          "error": 0
+        }
+      ],
+      "after": [
+        {
+          "regionId": "model_part0",
+          "allVertices": 9194,
+          "supportVertices": 36,
+          "minAll": 0.04338610397637728,
+          "minSupport": 0.04338610397637728,
+          "error": 0
+        },
+        {
+          "regionId": "model_part4",
+          "allVertices": 8860,
+          "supportVertices": 36,
+          "minAll": -2.1157633978141632e-10,
+          "minSupport": -2.1157633978141632e-10,
+          "error": 0
+        }
+      ],
+      "contactError": 2.1157633978141632e-10,
+      "actorPosition": [
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "limitations": [
+    "Visual reduced gait and bob require rendered review before activation.",
+    "Closest-foot contact is not per-foot IK or anti-sliding.",
+    "Raw Meshy clips remain disabled."
+  ],
+  "peakToPeakVisualBob": 0.1485959867208492,
+  "peakToPeakSourceMm": 82.97259182192688
+}

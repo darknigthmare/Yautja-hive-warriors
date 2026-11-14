@@ -1,0 +1,1 @@
+{"status":"passed","cases":[{"id":"carrier-real-cargo-flight","status":"passed"},{"id":"ravager-detailed-phase-fire","status":"passed"}],"errors":0,"failedRequests":0,"distUnchanged":true,"helperSourcesUnchanged":true,"browserClosed":true,"report":"/workspace/qa/continuation-20261102/evolved-final-571b1d2/report.json"}

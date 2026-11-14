@@ -1,6 +1,8 @@
 /* Yautja Mothership Orbital Plasma Strike Engine */
 
 import * as THREE from 'three';
+import { disposeObject } from './SceneResources.js';
+import { canAccessLegacyAir, canHitLegacyAirTarget } from './LegacyAirstrikePolicy.js';
 
 export class OrbitalStrikeManager {
   constructor(scene, audioEngine) {
@@ -12,7 +14,7 @@ export class OrbitalStrikeManager {
   }
 
   triggerStrike(targetPos, horde, bossManager, particleSystem) {
-    if (this.cooldown > 0) return false;
+    if (this.cooldown > 0 || !canAccessLegacyAir(this.supportContext, targetPos, 30)) return false;
     this.cooldown = this.maxCooldown;
 
     // Create 3D Colossal Orbital Laser Beam Group (Inner Core + Outer Radiant Plasma Cylinder)
@@ -73,7 +75,10 @@ export class OrbitalStrikeManager {
       damage: 2500
     };
 
-    const hits = horde.checkMeleeHits(strikeAttack);
+    const hits = [];
+    for (const target of [...(horde.aliens ?? [])]) {
+      if (canHitLegacyAirTarget(this.supportContext, target)) hits.push(...horde.checkMeleeHits({ ...strikeAttack, targetOnly: target }));
+    }
     hits.forEach(h => {
       if (h.pos) {
         particleSystem.emitSparks(h.pos, 15);
@@ -81,11 +86,17 @@ export class OrbitalStrikeManager {
       }
     });
 
-    if (bossManager.activeBoss) {
+    if (bossManager.activeBoss && canHitLegacyAirTarget(this.supportContext, bossManager.activeBoss) && bossManager.activeBoss.mesh.position.distanceTo(targetPos) <= strikeAttack.radius) {
       bossManager.takeDamage(2000);
     }
 
     return true;
+  }
+
+  clear() {
+    disposeObject(this.activeBeam?.mesh);
+    this.activeBeam = null;
+    this.cooldown = 0;
   }
 
   update(delta) {
@@ -96,7 +107,7 @@ export class OrbitalStrikeManager {
     if (this.activeBeam) {
       this.activeBeam.life -= delta;
       if (this.activeBeam.life <= 0) {
-        this.scene.remove(this.activeBeam.mesh);
+        disposeObject(this.activeBeam.mesh);
         this.activeBeam = null;
       } else {
         const opacity = Math.max(0, this.activeBeam.life / 2.2);

@@ -1,0 +1,12 @@
+✔ LD-01 raised crossing has continuous 0→3→0 ground for walkers and finite real surfaces for bolts (7694.166054ms)
+✔ destruction closes the real route for both camps, drops supported actors and preserves an alternative (532.349912ms)
+✔ repair and saved destruction restore support and route state without duplicating collisions (545.423825ms)
+✔ a real USCM actor and BattleActorBridge walk the access ramp, deck and exit at their actual elevations (1389.282707ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10487.730736

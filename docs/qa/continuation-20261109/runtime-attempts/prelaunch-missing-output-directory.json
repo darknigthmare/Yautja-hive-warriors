@@ -1,0 +1,10 @@
+{
+  "status": "shell_prelaunch_failed",
+  "at": "2026-11-09T04:33:37.886192+00:00",
+  "cause": "Missing external QA parent directory prevented shell log redirection",
+  "nodeStarted": false,
+  "browserLaunched": false,
+  "helperEdited": false,
+  "runtimeEdited": false,
+  "correction": "Create external QA parent directory, then execute unchanged command"
+}

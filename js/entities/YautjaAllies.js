@@ -1,6 +1,12 @@
 /* Allied Yautja Honor Guard AI Squad Manager */
 
 import * as THREE from 'three';
+import { applyBattleUnit, despawnBattleActor, selectBattleTarget, battleHostile, moveBattleOrder, requestNPCStrike, maintainBattleFormation } from '../engine/BattleActorSupport.js';
+import { recordCombatDeath } from '../engine/CombatEvents.js';
+import { createHonorGuardModel } from '../graphics/SupportModels.js';
+import { updateClanHunterVisual } from '../graphics/ClanHunterModel.js';
+import { releaseHostileAttack, requestHostileAttack } from '../engine/HostilePressure.js';
+import { disposeObject } from '../engine/SceneResources.js';
 
 export class YautjaAlliesManager {
   constructor(scene, audioEngine) {
@@ -9,165 +15,99 @@ export class YautjaAlliesManager {
     this.allies = [];
   }
 
+
   spawnSquad(playerPos, count = 3) {
     this.clearSquad();
-
-    const armorMat = new THREE.MeshStandardMaterial({ color: 0x3d4450, roughness: 0.35, metalness: 0.85 });
-    const skinMat = new THREE.MeshStandardMaterial({ color: 0x8a795d, roughness: 0.65 });
-    const dreadMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.8 });
-    const bladeMat = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.1, metalness: 0.95 });
-    const laserMat = new THREE.MeshBasicMaterial({ color: 0x00d2ff });
-
     for (let i = 0; i < count; i++) {
-      const group = new THREE.Group();
-
-      // Torso & Mesh Armor Cuirass
-      const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.75, 0.5, 2.0, 8), skinMat);
-      torso.position.y = 2.0;
-      group.add(torso);
-
-      const chestPlate = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.1, 0.8), armorMat);
-      chestPlate.position.set(0, 2.3, 0.1);
-      group.add(chestPlate);
-
-      // Bio-Mask Helmet with visor slit
-      const head = new THREE.Mesh(new THREE.SphereGeometry(0.55, 8, 8), armorMat);
-      head.position.set(0, 3.4, 0.1);
-      group.add(head);
-
-      // Crown of 8 Flexible Dreadlocks / Quills
-      for (let d = 0; d < 8; d++) {
-        const dread = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.03, 1.3, 5), dreadMat);
-        const dAngle = (d / 8) * Math.PI + Math.PI / 2;
-        dread.position.set(Math.cos(dAngle) * 0.45, 3.1, Math.sin(dAngle) * 0.45 - 0.2);
-        dread.rotation.x = 0.5;
-        dread.rotation.z = Math.cos(dAngle) * 0.3;
-        group.add(dread);
-      }
-
-      // Left Shoulder Mounted Plasma Caster Cannon with Tri-Laser
-      const casterBase = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.3, 0.3), armorMat);
-      casterBase.position.set(-0.85, 3.0, -0.2);
-      group.add(casterBase);
-      const casterBarrel = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.6, 6), armorMat);
-      casterBarrel.rotation.x = Math.PI / 2;
-      casterBarrel.position.set(-0.85, 3.15, 0.1);
-      group.add(casterBarrel);
-
-      // Tri-Laser pointer dot
-      const triDot = new THREE.Mesh(new THREE.SphereGeometry(0.04, 4, 4), laserMat);
-      triDot.position.set(-0.85, 3.15, 0.45);
-      group.add(triDot);
-
-      // Left Hand Combi-Stick Telescopic Spear (Clan Honor Guard Traditional Polearm)
-      const spearMat = new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.9, roughness: 0.2 });
-      const spear = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 3.2, 6), spearMat);
-      spear.position.set(-1.1, 2.0, 0.2);
-      spear.rotation.x = 0.2;
-      group.add(spear);
-
-      // Spear tips (both ends)
-      [-1.6, 1.6].forEach(tipY => {
-        const tip = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.5, 4), bladeMat);
-        tip.position.set(-1.1, 2.0 + tipY, 0.2);
-        tip.rotation.x = tipY > 0 ? 0 : Math.PI;
-        group.add(tip);
-      });
-
-      // Right Arm with Dual Extensible Wristblades
-      const rArm = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.18, 1.4, 6), skinMat);
-      rArm.position.set(1.1, 2.0, 0);
-      group.add(rArm);
-
-      const gauntlet = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.45, 0.35), armorMat);
-      gauntlet.position.set(1.1, 1.4, 0.1);
-      group.add(gauntlet);
-
-      // 2 Serrated Steel Wristblades
-      const b1 = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.08, 1.2), bladeMat);
-      b1.position.set(1.03, 1.38, 0.65);
-      group.add(b1);
-      const b2 = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.08, 1.2), bladeMat);
-      b2.position.set(1.17, 1.38, 0.65);
-      group.add(b2);
-
+      const group = createHonorGuardModel(i);
       const offset = new THREE.Vector3((i - 1) * 4.5, 0, (Math.random() - 0.5) * 4);
       group.position.copy(playerPos).add(offset);
       this.scene.add(group);
-
-      this.allies.push({
-        mesh: group,
-        hp: 950,
-        maxHp: 950,
-        moveSpeed: 14.5,
-        damage: 110,
-        radius: 1.3,
-        attackTimer: 0,
-        plasmaCooldown: 2.5 + Math.random() * 2.0
-      });
+      this.allies.push({ mesh: group, hp: 950, maxHp: 950, moveSpeed: 14.5,
+        damage: 110, radius: 1.3, attackTimer: 0, plasmaCooldown: 2.5 + Math.random() * 2.0 });
     }
   }
 
+
   clearSquad() {
-    this.allies.forEach(a => this.scene.remove(a.mesh));
+    this.allies.forEach(a => disposeObject(a.mesh));
     this.allies = [];
   }
 
+
   update(delta, playerPos, horde) {
-    for (let i = this.allies.length - 1; i >= 0; i--) {
-      const ally = this.allies[i];
-      const allyPos = ally.mesh.position;
-
-      // Find nearest Xenomorph
-      let nearestXeno = null;
-      let minDistance = 25;
-
-      horde.aliens.forEach(xeno => {
-        const dist = allyPos.distanceTo(xeno.mesh.position);
-        if (dist < minDistance) {
-          minDistance = dist;
-          nearestXeno = xeno;
-        }
-      });
-
-      if (nearestXeno) {
-        const dir = nearestXeno.mesh.position.clone().sub(allyPos);
-        dir.y = 0;
-        const dist = dir.length();
-
-        // Shoulder Plasma Caster Fire (medium range 6m - 20m)
-        ally.plasmaCooldown -= delta;
-        if (ally.plasmaCooldown <= 0 && dist >= 6.0 && dist <= 22.0) {
-          ally.plasmaCooldown = 4.0;
-          this.audioEngine.playPlasmaShot();
-          nearestXeno.hp -= 160;
-          if (Math.random() < 0.3) this.audioEngine.playYautjaClick();
-        }
-
-        if (dist > 2.2) {
-          dir.normalize();
-          allyPos.addScaledVector(dir, ally.moveSpeed * delta);
-          ally.mesh.rotation.y = Math.atan2(dir.x, dir.z);
-        } else {
-          // Melee attack nearest xeno with wristblades
-          ally.attackTimer -= delta;
-          if (ally.attackTimer <= 0) {
-            ally.attackTimer = 0.85;
-            nearestXeno.hp -= ally.damage;
-            this.audioEngine.playSlash();
-            if (Math.random() < 0.25) this.audioEngine.playYautjaRoar();
-          }
-        }
-      } else {
-        // Follow Player Formation
-        const dir = playerPos.clone().sub(allyPos);
-        dir.y = 0;
-        if (dir.length() > 6.0) {
-          dir.normalize();
-          allyPos.addScaledVector(dir, ally.moveSpeed * delta);
-          ally.mesh.rotation.y = Math.atan2(dir.x, dir.z);
-        }
+    if (!Number.isFinite(delta) || delta <= 0) return;
+    this.time = (this.time ?? 0) + delta;
+    for (const ally of [...this.allies]) {
+      if (ally.hp <= 0) { this.defeatCombatant(ally, { cause: 'combat', killerFaction: ally.lastDamageFaction }); continue; }
+      if (ally.isDowned || ally.isRescueRecovering) { releaseHostileAttack(this, ally); ally._npcPreparation = 0; continue; }
+      if(maintainBattleFormation(this,ally,delta,ally.moveSpeed))continue;
+      let target = null;
+      if (ally.battleUnitId && this.battleSimulation) target = selectBattleTarget(this, ally, [], horde?.getActiveCombatants?.() ?? horde?.aliens ?? []);
+      else {
+        const nearest = (horde?.aliens ?? []).filter(actor => actor.hp > 0 && actor.mesh.position.distanceTo(ally.mesh.position) < 25).sort((a,b) => a.mesh.position.distanceToSquared(ally.mesh.position) - b.mesh.position.distanceToSquared(ally.mesh.position))[0];
+        if (nearest) target = selectBattleTarget(this, ally, [], [nearest]);
       }
+      if (!target) {
+        if (ally.battleUnitId) { moveBattleOrder(this, ally, delta, ally.moveSpeed); continue; }
+        const vertical = this.environment?.getVerticalNavigationTarget?.(ally.mesh.position, playerPos);
+        const destination = vertical ?? playerPos;
+        const direction = destination.clone().sub(ally.mesh.position).setY(0), distance = direction.length();
+        if (vertical || distance > 6) { const previous = ally.mesh.position.clone(), step = Math.min(ally.moveSpeed * delta, Math.max(0, distance - (vertical ? 0 : 6))); if (step > 0) ally.mesh.position.addScaledVector(direction.normalize(), step); this.environment?.resolveAgentMovement?.(ally.mesh.position, destination, step, ally.radius, previous); }
+        continue;
+      }
+      const vertical = this.environment?.getVerticalNavigationTarget?.(ally.mesh.position, target.position);
+      const destination = vertical ?? target.position;
+      const direction = destination.clone().sub(ally.mesh.position).setY(0), walkingDistance = direction.length();
+      const distance = ally.mesh.position.distanceTo(target.position);
+      if (this.environment?.hasLineOfSight && !this.environment.hasLineOfSight(ally.mesh.position.clone().add(new THREE.Vector3(0,1.8,0)), target.position.clone().add(new THREE.Vector3(0,1.5,0)))) {
+        releaseHostileAttack(this, ally); ally._npcPreparation = 0;
+        const previous = ally.mesh.position.clone();
+        if (walkingDistance > .1) ally.mesh.position.addScaledVector(direction.normalize(), Math.min(ally.moveSpeed * delta, walkingDistance));
+        this.environment.resolveAgentMovement?.(ally.mesh.position, destination, ally.moveSpeed * delta, ally.radius, previous); continue;
+      }
+      ally.attackTimer = Math.max(0, ally.attackTimer - delta); ally.plasmaCooldown = Math.max(0, ally.plasmaCooldown - delta);
+      ally.mesh.rotation.y = Math.atan2(direction.x, direction.z);
+      const ranged = ally.companionAllowsPlasma!==false && distance >= 6 && distance <= 22 && ally.plasmaCooldown <= 0;
+      if ((vertical || distance > 2.2) && !ranged) { const previous = ally.mesh.position.clone(), step = Math.min(ally.moveSpeed * delta, Math.max(0, walkingDistance - (vertical ? 0 : 2.2))); if (step > 0) ally.mesh.position.addScaledVector(direction.normalize(), step); this.environment?.resolveAgentMovement?.(ally.mesh.position, destination, step, ally.radius, previous); }
+      if (!ranged && (vertical || distance > 3 || Math.abs(target.position.y - ally.mesh.position.y) > 2.2 || ally.attackTimer > 0)) continue;
+      const granted = target.isBattleNPC ? requestNPCStrike(ally, target, delta, { windup: .65, recovery: 1.1 })
+        : requestHostileAttack(this, ally, target, delta, { kind: ranged ? 'ranged' : 'melee', windup: ranged ? 1.1 : .85, recovery: 1.6, duration: .35 });
+      if (!granted) continue;
+      if (ranged) { ally.plasmaCooldown = 4; this.audioEngine?.playPlasmaShot?.(); }
+      else { ally.attackTimer = .95; this.audioEngine?.playSlash?.(); }
+      target.takeDamage(ranged ? 60 : ally.damage, false, ally, { attackKind: ranged ? 'plasma' : 'melee', blockable: !ranged, parryable: !ranged });
     }
   }
+
+  // Called once by the main frame after bridge/environment/vehicle corrections.
+  // update() can attempt movement that collision subsequently cancels: sampling
+  // there would generate footsteps against a wall or a convoy.
+  updateVisuals(delta) {
+    if (!Number.isFinite(delta) || delta <= 0) return;
+    for (const ally of this.allies) updateClanHunterVisual(ally, delta);
+  }
+
+  spawnBattleUnit(unit, group) {
+    const existing = this.allies.find(actor => actor.battleUnitId === unit.id); if (existing) return existing;
+    if (!['yautja','honor_guard','clan_hunter','bad_blood'].includes(unit.actorType)) throw new RangeError(`Unsupported detailed clan profile: ${unit.actorType}`);
+    const actor = { mesh: createHonorGuardModel(this.allies.length), type: unit.actorType === 'bad_blood' ? 'bad_blood' : 'clan_hunter', moveSpeed: 12,
+      damage: 55, radius: 1.3, attackTimer: 1, plasmaCooldown: 3 };
+    this.allies.push(applyBattleUnit(this, actor, unit, group)); return actor;
+  }
+
+  despawnBattleUnit(unitOrId) { return despawnBattleActor(this, this.allies, unitOrId); }
+
+
+
+  defeatCombatant(actor, details = {}) {
+    if (!actor) return null;
+    if (this.rescueSystem?.tryDown(actor, details)) { releaseHostileAttack(this, actor); actor._npcPreparation = 0; return null; }
+    const event = recordCombatDeath(this, actor, { kind: actor.type ?? 'yautja', ...details });
+    this.rescueSystem?.onActorDeath(actor, details);
+    actor.hp = 0; releaseHostileAttack(this, actor); const index = this.allies.indexOf(actor); if (index >= 0) this.allies.splice(index, 1);
+    if (!actor._combatDisposed) { disposeObject(actor.mesh, this.sharedResources); actor._combatDisposed = true; } if (event) this.onDefeated?.(event); return event;
+  }
+
+
 }

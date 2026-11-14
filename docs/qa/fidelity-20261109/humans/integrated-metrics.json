@@ -1,0 +1,211 @@
+{
+  "measuredAt": "2026-11-09T05:45:35.357Z",
+  "threeRevision": "160",
+  "sourceHashes": {
+    "MarineAnatomy": "09d5da7e7aefe4ecdca1c5c381d0148163046147f4880fb27168088b62258429",
+    "SupportModels": "93dc054440c5f7c0f79022265c873136cc5d8b7b17788074384e72a0bda337df"
+  },
+  "method": "actual factory buffer triangles and mesh/material batches; not FPS",
+  "rows": [
+    {
+      "role": "marine",
+      "triangles": 40928,
+      "meshes": 7,
+      "materials": 7,
+      "finite": true,
+      "bounds": {
+        "min": [
+          -0.6885606646537781,
+          0,
+          -0.2872615158557892
+        ],
+        "max": [
+          0.6878793835639954,
+          3.444999933242798,
+          1.7450000047683716
+        ]
+      },
+      "anatomy": {
+        "headHeight": 0.46,
+        "standingHeight": 3.445,
+        "headsTall": 7.489130434782608
+      },
+      "visualFidelity1to1Verified": false
+    },
+    {
+      "role": "smartgunner",
+      "triangles": 41120,
+      "meshes": 7,
+      "materials": 7,
+      "finite": true,
+      "bounds": {
+        "min": [
+          -0.6885873675346375,
+          0,
+          -0.2872615158557892
+        ],
+        "max": [
+          0.6878793835639954,
+          3.444999933242798,
+          1.7450000047683716
+        ]
+      },
+      "anatomy": {
+        "headHeight": 0.46,
+        "standingHeight": 3.445,
+        "headsTall": 7.489130434782608
+      },
+      "visualFidelity1to1Verified": false
+    },
+    {
+      "role": "flametrooper",
+      "triangles": 40400,
+      "meshes": 7,
+      "materials": 7,
+      "finite": true,
+      "bounds": {
+        "min": [
+          -0.6884346604347229,
+          0,
+          -0.7699999809265137
+        ],
+        "max": [
+          0.6879903078079224,
+          3.444999933242798,
+          1.752500057220459
+        ]
+      },
+      "anatomy": {
+        "headHeight": 0.46,
+        "standingHeight": 3.445,
+        "headsTall": 7.489130434782608
+      },
+      "visualFidelity1to1Verified": false
+    },
+    {
+      "role": "medic",
+      "triangles": 42452,
+      "meshes": 8,
+      "materials": 8,
+      "finite": true,
+      "bounds": {
+        "min": [
+          -0.6977666616439819,
+          0,
+          -0.675000011920929
+        ],
+        "max": [
+          0.6883119940757751,
+          3.444999933242798,
+          1.0299999713897705
+        ]
+      },
+      "anatomy": {
+        "headHeight": 0.46,
+        "standingHeight": 3.445,
+        "headsTall": 7.489130434782608
+      },
+      "visualFidelity1to1Verified": false
+    },
+    {
+      "role": "commtech",
+      "triangles": 42348,
+      "meshes": 8,
+      "materials": 8,
+      "finite": true,
+      "bounds": {
+        "min": [
+          -0.6970292925834656,
+          0,
+          -0.6050000190734863
+        ],
+        "max": [
+          0.6900370121002197,
+          3.6503841876983643,
+          1.2649999856948853
+        ]
+      },
+      "anatomy": {
+        "headHeight": 0.46,
+        "standingHeight": 3.445,
+        "headsTall": 7.489130434782608
+      },
+      "visualFidelity1to1Verified": false
+    },
+    {
+      "role": "sniper",
+      "triangles": 41408,
+      "meshes": 7,
+      "materials": 7,
+      "finite": true,
+      "bounds": {
+        "min": [
+          -0.6885606646537781,
+          0,
+          -0.2872615158557892
+        ],
+        "max": [
+          0.6878793835639954,
+          3.444999933242798,
+          2.3450000286102295
+        ]
+      },
+      "anatomy": {
+        "headHeight": 0.46,
+        "standingHeight": 3.445,
+        "headsTall": 7.489130434782608
+      },
+      "visualFidelity1to1Verified": false
+    },
+    {
+      "role": "sadar",
+      "triangles": 38416,
+      "meshes": 7,
+      "materials": 7,
+      "finite": true,
+      "bounds": {
+        "min": [
+          -0.7852014899253845,
+          0,
+          -0.4000000059604645
+        ],
+        "max": [
+          0.6832188963890076,
+          3.444999933242798,
+          1.7350000143051147
+        ]
+      },
+      "anatomy": {
+        "headHeight": 0.46,
+        "standingHeight": 3.445,
+        "headsTall": 7.489130434782608
+      },
+      "visualFidelity1to1Verified": false
+    },
+    {
+      "role": "exosuit",
+      "triangles": 43676,
+      "meshes": 7,
+      "materials": 7,
+      "finite": true,
+      "bounds": {
+        "min": [
+          -0.9350000023841858,
+          0,
+          -0.6650000214576721
+        ],
+        "max": [
+          0.9350000023841858,
+          3.444999933242798,
+          1.8450000286102295
+        ]
+      },
+      "anatomy": {
+        "headHeight": 0.46,
+        "standingHeight": 3.445,
+        "headsTall": 7.489130434782608
+      },
+      "visualFidelity1to1Verified": false
+    }
+  ]
+}

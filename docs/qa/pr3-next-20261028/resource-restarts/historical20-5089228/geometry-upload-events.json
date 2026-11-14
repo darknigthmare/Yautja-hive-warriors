@@ -1,0 +1,624 @@
+{
+  "scope": "Exact GPU geometry increments in protocol B associated with first real unchanged draw calls of retained shared geometry UUIDs; no retrospective attribution of A seven-buffer jump.",
+  "events": [
+    {
+      "cycle": 2,
+      "gpu_before": 69,
+      "gpu_after": 79,
+      "gpu_delta": 10,
+      "new_shared_draws": 10,
+      "new_shared_groups": {
+        "horde:runner:LOD2": 10
+      },
+      "newly_rendered_shared_geometry_details": [
+        {
+          "uuid": "89d74507-355b-4720-ae1f-82d69328ac10",
+          "kind": "runner",
+          "lod": 2,
+          "part": "leg-left",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 2,
+          "vertices": 250
+        },
+        {
+          "uuid": "45343e01-2b9d-48cb-aa03-b6e6f6fb8b65",
+          "kind": "runner",
+          "lod": 2,
+          "part": "arm-left",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 2,
+          "vertices": 286
+        },
+        {
+          "uuid": "63121d2a-aaa9-46a5-9267-b1356d4242a7",
+          "kind": "runner",
+          "lod": 2,
+          "part": "leg-right",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 2,
+          "vertices": 250
+        },
+        {
+          "uuid": "f99a9337-1ec6-44bf-a7c7-b00baba34d3c",
+          "kind": "runner",
+          "lod": 2,
+          "part": "arm-right",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 2,
+          "vertices": 286
+        },
+        {
+          "uuid": "ff4635b7-eaa8-4167-adf9-5230ac287b53",
+          "kind": "runner",
+          "lod": 2,
+          "part": "carapace",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 2,
+          "vertices": 253
+        },
+        {
+          "uuid": "13bd7c0c-c255-474f-91c1-54197dc503aa",
+          "kind": "runner",
+          "lod": 2,
+          "part": "cranium",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 2,
+          "vertices": 389
+        },
+        {
+          "uuid": "3e69f067-6fd1-4bee-8c32-b3c96acd1103",
+          "kind": "runner",
+          "lod": 2,
+          "part": "ribs-and-tubes",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 2,
+          "vertices": 945
+        },
+        {
+          "uuid": "aaf1bd5e-1283-4868-bf4c-8c3310f62a51",
+          "kind": "runner",
+          "lod": 2,
+          "part": "teeth-and-claws",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 2,
+          "vertices": 320
+        },
+        {
+          "uuid": "1710895d-5aa9-4504-87f2-709c483c4c43",
+          "kind": "runner",
+          "lod": 2,
+          "part": "mouth-cavities",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 2,
+          "vertices": 60
+        },
+        {
+          "uuid": "454ec7aa-0461-4b0b-8d7f-5a466e131dbc",
+          "kind": "runner",
+          "lod": 2,
+          "part": "tail",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 2,
+          "vertices": 200
+        }
+      ],
+      "all_delta_accounted_by_first_shared_draws": true,
+      "horde_retained_geometry_count": 68
+    },
+    {
+      "cycle": 3,
+      "gpu_before": 79,
+      "gpu_after": 95,
+      "gpu_delta": 16,
+      "new_shared_draws": 16,
+      "new_shared_groups": {
+        "horde:warrior:LOD2": 10,
+        "horde:egg:LOD1": 6
+      },
+      "newly_rendered_shared_geometry_details": [
+        {
+          "uuid": "6d90bc17-1067-45bc-bcef-b6ef30adcbcb",
+          "kind": "warrior",
+          "lod": 2,
+          "part": "leg-left",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 3,
+          "vertices": 250
+        },
+        {
+          "uuid": "14156e85-43c6-4d48-840b-af9ea62ab0f3",
+          "kind": "warrior",
+          "lod": 2,
+          "part": "arm-left",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 3,
+          "vertices": 286
+        },
+        {
+          "uuid": "97dd4a54-31cd-4f2f-91c3-1827e4cb2391",
+          "kind": "warrior",
+          "lod": 2,
+          "part": "leg-right",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 3,
+          "vertices": 250
+        },
+        {
+          "uuid": "f4c91dbc-ddff-472b-afca-066dc4a6f52e",
+          "kind": "warrior",
+          "lod": 2,
+          "part": "arm-right",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 3,
+          "vertices": 286
+        },
+        {
+          "uuid": "7acde434-9084-4480-9ff0-e2907b87e1c7",
+          "kind": "warrior",
+          "lod": 2,
+          "part": "carapace",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 3,
+          "vertices": 253
+        },
+        {
+          "uuid": "807cff46-8903-4541-abd2-873211c625aa",
+          "kind": "warrior",
+          "lod": 2,
+          "part": "cranium",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 3,
+          "vertices": 389
+        },
+        {
+          "uuid": "30e7f7f0-c50d-4e3d-83e1-85b4a462f619",
+          "kind": "warrior",
+          "lod": 2,
+          "part": "ribs-and-tubes",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 3,
+          "vertices": 945
+        },
+        {
+          "uuid": "04febbd9-9e1c-4964-a15e-ca8d1c21ba79",
+          "kind": "warrior",
+          "lod": 2,
+          "part": "teeth-and-claws",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 3,
+          "vertices": 320
+        },
+        {
+          "uuid": "0183fe5e-d230-4874-9001-d89b4912d795",
+          "kind": "warrior",
+          "lod": 2,
+          "part": "mouth-cavities",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 3,
+          "vertices": 60
+        },
+        {
+          "uuid": "d1774c31-fbbc-40b8-84cc-ee2d26c3a49b",
+          "kind": "warrior",
+          "lod": 2,
+          "part": "tail",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 3,
+          "vertices": 200
+        },
+        {
+          "uuid": "9699db1e-9eb9-409b-ad9e-e1a9356fc7de",
+          "kind": "egg",
+          "lod": 1,
+          "part": "petal-0",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 3,
+          "vertices": 493
+        },
+        {
+          "uuid": "e63f8d56-417a-4e9e-bf38-e414693bb896",
+          "kind": "egg",
+          "lod": 1,
+          "part": "petal-1",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 3,
+          "vertices": 493
+        },
+        {
+          "uuid": "d229076b-9103-459a-b64d-9741305c2cdc",
+          "kind": "egg",
+          "lod": 1,
+          "part": "petal-2",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 3,
+          "vertices": 493
+        },
+        {
+          "uuid": "55eb0f40-3e89-4a46-a6e7-e5cd06fb21ec",
+          "kind": "egg",
+          "lod": 1,
+          "part": "petal-3",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 3,
+          "vertices": 493
+        },
+        {
+          "uuid": "13db9c92-ccf6-4121-88a2-2aca10110c36",
+          "kind": "egg",
+          "lod": 1,
+          "part": "carapace",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 3,
+          "vertices": 3969
+        },
+        {
+          "uuid": "74c926df-35d0-45e1-a9cd-113b47e7d63f",
+          "kind": "egg",
+          "lod": 1,
+          "part": "ribs-and-tubes",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 3,
+          "vertices": 1932
+        }
+      ],
+      "all_delta_accounted_by_first_shared_draws": true,
+      "horde_retained_geometry_count": 68
+    },
+    {
+      "cycle": 6,
+      "gpu_before": 95,
+      "gpu_after": 105,
+      "gpu_delta": 10,
+      "new_shared_draws": 10,
+      "new_shared_groups": {
+        "horde:runner:LOD1": 10
+      },
+      "newly_rendered_shared_geometry_details": [
+        {
+          "uuid": "91b398f1-86ca-488f-bb4b-dd72317f0978",
+          "kind": "runner",
+          "lod": 1,
+          "part": "leg-left",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 6,
+          "vertices": 618
+        },
+        {
+          "uuid": "a91346df-7f9c-4a88-affc-d6c24dd1777a",
+          "kind": "runner",
+          "lod": 1,
+          "part": "arm-left",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 6,
+          "vertices": 730
+        },
+        {
+          "uuid": "3a18735a-597e-4513-a606-dcc32e34c10b",
+          "kind": "runner",
+          "lod": 1,
+          "part": "leg-right",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 6,
+          "vertices": 618
+        },
+        {
+          "uuid": "20b0f852-3435-4bfd-b4a5-cc9a150143c0",
+          "kind": "runner",
+          "lod": 1,
+          "part": "arm-right",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 6,
+          "vertices": 730
+        },
+        {
+          "uuid": "77a63643-9ea3-4d3f-87a7-2a408491e6b0",
+          "kind": "runner",
+          "lod": 1,
+          "part": "carapace",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 6,
+          "vertices": 779
+        },
+        {
+          "uuid": "6ed4c94c-1a7a-465e-bec7-325665327b02",
+          "kind": "runner",
+          "lod": 1,
+          "part": "cranium",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 6,
+          "vertices": 1213
+        },
+        {
+          "uuid": "5bd3dc0f-0770-4ebb-a3fc-7e773f3a4ea8",
+          "kind": "runner",
+          "lod": 1,
+          "part": "ribs-and-tubes",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 6,
+          "vertices": 1764
+        },
+        {
+          "uuid": "15daa5c2-0abf-4979-9c1e-f1c777ec90d9",
+          "kind": "runner",
+          "lod": 1,
+          "part": "teeth-and-claws",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 6,
+          "vertices": 400
+        },
+        {
+          "uuid": "881d1c40-8dbe-48a9-a2e4-5435866ca9c2",
+          "kind": "runner",
+          "lod": 1,
+          "part": "mouth-cavities",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 6,
+          "vertices": 147
+        },
+        {
+          "uuid": "68ae0d7c-36e4-407e-a373-93ce2f50ee32",
+          "kind": "runner",
+          "lod": 1,
+          "part": "tail",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 6,
+          "vertices": 634
+        }
+      ],
+      "all_delta_accounted_by_first_shared_draws": true,
+      "horde_retained_geometry_count": 68
+    },
+    {
+      "cycle": 9,
+      "gpu_before": 105,
+      "gpu_after": 115,
+      "gpu_delta": 10,
+      "new_shared_draws": 10,
+      "new_shared_groups": {
+        "horde:warrior:LOD1": 10
+      },
+      "newly_rendered_shared_geometry_details": [
+        {
+          "uuid": "1a18fa18-fccb-4242-9f1f-8798267ee158",
+          "kind": "warrior",
+          "lod": 1,
+          "part": "leg-left",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 9,
+          "vertices": 618
+        },
+        {
+          "uuid": "de609da7-ee32-46d1-978d-b7998d6b6a9f",
+          "kind": "warrior",
+          "lod": 1,
+          "part": "arm-left",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 9,
+          "vertices": 730
+        },
+        {
+          "uuid": "28073f19-f71d-4c2d-ade9-7eb903fc5988",
+          "kind": "warrior",
+          "lod": 1,
+          "part": "leg-right",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 9,
+          "vertices": 618
+        },
+        {
+          "uuid": "e3c33cbd-8b3b-4e2c-a3b8-e960c514c2f1",
+          "kind": "warrior",
+          "lod": 1,
+          "part": "arm-right",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 9,
+          "vertices": 730
+        },
+        {
+          "uuid": "c776687c-5fa6-4f44-8402-22ec6466e2b7",
+          "kind": "warrior",
+          "lod": 1,
+          "part": "carapace",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 9,
+          "vertices": 779
+        },
+        {
+          "uuid": "1b8da1ca-4a42-4a45-aa55-f704f01f3062",
+          "kind": "warrior",
+          "lod": 1,
+          "part": "cranium",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 9,
+          "vertices": 1213
+        },
+        {
+          "uuid": "889882b3-6bad-4b4a-a3a2-e7d1bb9f1476",
+          "kind": "warrior",
+          "lod": 1,
+          "part": "ribs-and-tubes",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 9,
+          "vertices": 1764
+        },
+        {
+          "uuid": "c0e7c7b5-e64a-419d-adfb-8d4a29cd0e19",
+          "kind": "warrior",
+          "lod": 1,
+          "part": "teeth-and-claws",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 9,
+          "vertices": 400
+        },
+        {
+          "uuid": "2651e469-e539-42ed-8d29-8c13346fc858",
+          "kind": "warrior",
+          "lod": 1,
+          "part": "mouth-cavities",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 9,
+          "vertices": 147
+        },
+        {
+          "uuid": "7e01d410-e407-4f1f-8ce2-25ce9030e39b",
+          "kind": "warrior",
+          "lod": 1,
+          "part": "tail",
+          "owners": [
+            "horde"
+          ],
+          "firstDrawCycle": 9,
+          "vertices": 634
+        }
+      ],
+      "all_delta_accounted_by_first_shared_draws": true,
+      "horde_retained_geometry_count": 68
+    }
+  ],
+  "cache_count_cycles2_to30": [
+    68,
+    68,
+    68,
+    68,
+    68,
+    68,
+    68,
+    68,
+    68,
+    68,
+    68,
+    68,
+    68,
+    68,
+    68,
+    68,
+    68,
+    68,
+    68,
+    68,
+    68,
+    68,
+    68,
+    68,
+    68,
+    68,
+    68,
+    68,
+    68
+  ],
+  "observed_bounded_cache_count_after_cycle2": 68,
+  "gpu_geometries_cycles9_to30": [
+    115,
+    115,
+    115,
+    115,
+    115,
+    115,
+    115,
+    115,
+    115,
+    115,
+    115,
+    115,
+    115,
+    115,
+    115,
+    115,
+    115,
+    115,
+    115,
+    115,
+    115,
+    115
+  ]
+}

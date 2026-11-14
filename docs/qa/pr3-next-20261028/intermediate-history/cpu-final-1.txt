@@ -1,0 +1,655 @@
+✔ versioned preferences persist real booleans and palette changes, and apply independent body hooks (1.664163ms)
+✔ private, absent, corrupt and future storage never prevents settings from operating (0.641825ms)
+✔ subscribers receive copies, can detach and cannot break other preference listeners (0.390812ms)
+✔ relationship shapes and meaningful glyphs distinguish markers even after every tint is converted to monochrome (0.578463ms)
+✔ camp families retain letters and different accessible tints independently of relationship shapes (0.289154ms)
+✔ canvas markers draw distinct paths, outlines and text without assuming color alone (0.856791ms)
+✔ reduced flashes suppresses lightning and pulsing while leaving warning symbols available (0.210194ms)
+✔ a real warrior below a player uses the complete ramp before its first 3D melee strike (4081.477554ms)
+✔ a real Working Joe with zero initial XZ separation climbs the access and grabs only at its real height (2924.545744ms)
+✔ a real warrior destroys the actual finite APC without using it as a hunter, spawn anchor or parasite host (153.926822ms)
+✔ an allocated Working Joe respects real wall cover then destroys a hostile APC through the NPC damage contract (209.034262ms)
+✔ ordinary and royal facehuggers ignore both real supports and retarget an organic hunter (110.39867ms)
+✔ targetOnly applies an impact to one real actor without damaging nearby horde or synthetic actors (81.194496ms)
+✔ the first lethal ally hit becomes a rendered casualty without death credit or military population loss (4882.774291ms)
+✔ three seconds of real channeling costs one medicomp only at completion and restores contribution once (49.332307ms)
+✔ impact, movement, vertical separation and cover interrupt without consuming the medical resource (37.996292ms)
+✔ pause and zero delta freeze both bleedout and an admitted rescue; another player cannot double-rescue (42.303196ms)
+✔ a finishing hostile strike records exactly one real casualty instead of starting another downed life (28.341546ms)
+✔ culling a freshly lethal actor preserves its one remaining HP, casualty deadline and same identity on return (54.33468ms)
+✔ an offscreen casualty continues bleeding out while pause still freezes it (37.448196ms)
+✔ evacuating an eligible wounded group closes rescue without inventing a death or another medical charge (42.107202ms)
+✔ a genuine engine checkpoint resumes the same casualty and partial channel without resetting time or stock (85.984685ms)
+✔ rescue and bleedout event ordering agrees at 30, 60 and 120 Hz, including simultaneous deadlines (228.413702ms)
+✔ coordination damage follows the actual attacker instead of the first cached member of its faction (0.339092ms)
+✔ a living ally follows the physical access waypoint toward an elevated target while a downed ally stays still (33.092554ms)
+✔ the real Bridge intercepts environmental HP0 before death bookkeeping, and a later finisher still dies once (255.219783ms)
+✔ the real Bridge hit result reports a casualty as alive and reports only the later finishing blow as a kill (250.836819ms)
+✔ returning near a persistent wounded ally rematerializes its original group under the shared cap and allows real rescue (563.511219ms)
+✔ M577 has four covered wheels, angular outward armor and a genuinely recessed nose (2793.295976ms)
+✔ roof turret follows a continuous rear return, lowers behind the hull and preserves an independent yaw bearing (828.494698ms)
+✔ APC deploys before shooting, aims both axes from real muzzles, recoils and preserves damage and cooldown (105.210855ms)
+✔ elevation follows high targets, respects physical stops and never fires at a dead or unreachable target (100.694678ms)
+✔ an enemy below the depression stop cannot block a reachable target or redirect its damage (44.960576ms)
+✔ APC surface detail remains finite within the existing mesh and triangle budget (41.592399ms)
+✔ carrier collision follows the hull, wheel shoulders and rotation without trapping distant or airborne actors (38.296889ms)
+✔ rear stowage blocks its real occupied height, clears after deployment and follows vehicle rotation (40.173304ms)
+✔ navigation and spawn clearance enclose every stowage pose and all firing directions (606.18901ms)
+✔ deployment timing is independent of frame rate and rejects paused or invalid time steps (62.947195ms)
+✔ environment delegates APC physics while retaining its conservative navigation outline (34.262262ms)
+✔ Excel follow-up changes only column N, preserves all other ZIP members and never changes the immutable source (1563.545457ms)
+✔ completion without evidence or with a modified criterion/hash is rejected before workbook mutation (129.397464ms)
+✔ unrelated workbook edits and a missing action are preserved and rejected instead of overwritten (835.874089ms)
+✔ the cooperative duel stays bound to its participant and emits only one centrally scored death (2.530847ms)
+✔ losing a duel participant cancels its UI state, and raw lethal encounter damage is harvested once (0.882683ms)
+✔ materialization projects real finite identities and culling preserves wounds instead of counting a death (35.849332ms)
+✔ the historical hive query also damages genuinely hostile humans while allied clan actors stay immune (10.704406ms)
+✔ failed materialization rolls back earlier actors and teardown restores every borrowed manager hook (4.884574ms)
+✔ physical cover rejects an otherwise in-range strike against a materialized human (6.391626ms)
+✔ a Queen uses the actual boss model, keeps its allocated identity, and leaves detail without dying (3937.097168ms)
+✔ an externally removed living actor releases group detail and preserves its injury without inventing a casualty (4.059622ms)
+✔ real mission cleanup lets simulation cull through its bridge before clearing live callbacks and remains idempotent (3.548819ms)
+✔ original clan continuity is opt-in and carries an actual named loss into a later operation only (25.734535ms)
+✔ suspension preserves a run; only an actual confirmed result or explicit withdrawal finalizes it once (9.998491ms)
+✔ finalized run IDs survive the 64-receipt debrief ring and a temporary quota failure retries safely (43.881055ms)
+✔ incompatible records remain untouched until explicit reset, isolated from existing stores (1.633869ms)
+✔ an older checkpoint cannot revive a unique individual already confirmed dead by the campaign (9.421805ms)
+✔ catalogue is reproducible from the preserved PR audit, with source rather than rendered-asset status (120.228385ms)
+✔ all 27 proposed operations allocate exactly their source budget with no extra commander, pilot, civilian or player (32.878203ms)
+✔ all 27 operations cap detail at 32 while preserving every allocated identity, source budget and finite reserve (136.584898ms)
+✔ every initial supplied reserve group fits its announced arrival allowance and keeps exactly its allocated identities (202.864944ms)
+✔ three independent camps preserve the exact per-species allocations in the Excel rather than rounding ratios (2.195215ms)
+✔ LV-742 starts on D and the single queen occupies an existing eight-unit C group; human commanders follow their declared group (1.414269ms)
+✔ named, excluded, uncertain and noncombatant profiles cannot silently become generic army reserves (0.352773ms)
+✔ reconstructions restrict source works and do not merge Pathogen, Neomorph or PHG incarnations into universal castes (0.213758ms)
+✔ character equipment permissions distinguish Jungle, City, Feral and PHG while free play stays explicit (0.643903ms)
+✔ scene positions, cooperative players and low-detail capacity preserve immutable source records and all identities (2.234864ms)
+✔ unsupported controller, unknown references and invented budgets fail before creating an army (1.906715ms)
+✔ final debrief snapshots all finite states and named losses before mission teardown (28.285972ms)
+✔ unknown enemies are absent from tactical knowledge; direct sight respects walls and both living players (28.35717ms)
+✔ remote scouts deliver the actual old snapshot after a causal delay; losses and ownership stay unknown until reported (8.877445ms)
+✔ reconnaissance is temporary and pause-safe, keeps a last known position, and survives checkpoints without new actors (14.097146ms)
+✔ formation disruption, recovery and route availability are bounded causal state, never extra deaths or units (9.803444ms)
+✔ all 27 catalogue operations allocate finite identities, preserve faction budgets and bind to real level corridors (293.901964ms)
+✔ three-front built-level factory uses 132 declared NPCs and rejects fake film reconstruction (472.673253ms)
+✔ all 34 built map variants provide navigable polyline routes and preserve their physical anchors (102.735541ms)
+✔ detail transitions preserve the exact wounded units and never count a despawn as a death (3.406335ms)
+✔ a missing live actor releases detail without inventing a death or replacing its wounded identity (1.945708ms)
+✔ both living co-op fronts share a global budget and new detailed units stay outside both players (1.538189ms)
+✔ distant battles inflict reciprocal losses without requiring a nearby player and a truce is persistent (5.877227ms)
+✔ distant combat never deals a second invisible hit to materialized units (6.344329ms)
+✔ a death from any source produces one loss and one officer consequence, including delayed duplicate callbacks (0.907089ms)
+✔ finite reserves are announced before arrival and sabotage cancels an inbound group without inventing kills (117.058972ms)
+✔ a captured forward base cannot teleport a reserve around a severed supply line (2.279374ms)
+✔ an eight-unit reserve respects the per-arrival limit and a route loss cancels the same identities intact (1.166091ms)
+✔ closing a route before departure uses the real alternate polyline; closing mid-route never teleports a group (2.334723ms)
+✔ capture changes a real source; strategic defeat has a rescue window and a readable cause (2.368809ms)
+✔ alternative strategies finish once and unused reserve survivors are never credited as kills (0.678696ms)
+✔ narrative operations keep strategic defeat but require their external objective controller to grant victory (0.874596ms)
+✔ an unavailable actor pool is retried with a bounded cadence and cannot consume or kill reserve identities (1.581955ms)
+✔ a 952-agent three-species operation advances all three fronts for 20 simulated minutes within fixed identity/event budgets (2261.413933ms)
+✔ officers can receive delegated orders, simultaneous co-op orders replace once, and tactics reposition separate flanks (2.311975ms)
+✔ hive source disruption changes coordination without human fear or an automatic retreat (1.960579ms)
+✔ 20 minutes of the same deterministic battle agree at 30, 60 and 120 FPS; pause and dispose stop all clocks (220.053467ms)
+✔ save/reload keeps wounded identities, causal losses, orders, diplomacy and clocks without respawning named dead officers (24.417408ms)
+✔ context, unique identities, profiles and malformed saved states fail closed before world spawning (9.24693ms)
+✔ all 34 built layouts calibrate physical return/capture time without rewriting the original proposed window (104.640776ms)
+✔ critical fronts retain separate deadlines through recovery, pause and checkpoint and reject timer tampering (16.166994ms)
+✔ a physical detour extends an announced deadline once; complete route loss remains explicitly reported (4.742586ms)
+✔ a retreat follows the actual route, retains losses and returns only after finite support physically arrives (8.815027ms)
+✔ morale recovery alone and severed supply cannot release regrouped survivors (27.084512ms)
+✔ strategic difficulties preserve every soldier and combat/resource budget while officers choose different risks (12.452232ms)
+✔ an incapacitated identity contributes neither movement nor capture and rematerializes with its existing allied group (9.502976ms)
+✔ hive controller loss has persistent mechanical coordination consequences without human fear (3.727534ms)
+✔ one manager frame shares a candidate index while tie order, health and diplomacy remain live (1.735211ms)
+✔ spawn and cull invalidate a shared provider and detached live actors cannot remain targets (0.930849ms)
+✔ providers without a frame stamp remain uncached and extra candidates retain deduplication and precedence (0.337913ms)
+✔ doubling distant armies doubles indexed candidate work without changing the detailed actor ceiling (14.460621ms)
+✔ persistent HUD follows real objective progress, open passage and the next destination without mutating progression (3.192737ms)
+✔ relay prompt requires actual proximity and clears after interaction; reset removes the battlefield HUD (0.766408ms)
+✔ whole battlefield map projects distant rooms, enemies and co-op players inside its canvas (1.143097ms)
+✔ relay HUD advertises the real co-op interaction key when only player two is in range (0.512374ms)
+✔ relay counterattack stays in the HUD until the actual post-activation quota opens its passage (0.442408ms)
+✔ gunnison_forest: a large connected map has locked physical corridors, safe spawns and a complete route (6529.613374ms)
+✔ xenomorph_prime: a large connected map has locked physical corridors, safe spawns and a complete route (2413.262059ms)
+✔ antarctic_pyramid: a large connected map has locked physical corridors, safe spawns and a complete route (657.328803ms)
+✔ la_rooftops: a large connected map has locked physical corridors, safe spawns and a complete route (792.363449ms)
+✔ val_verde_jungle: a large connected map has locked physical corridors, safe spawns and a complete route (758.485475ms)
+✔ romulus_station: a large connected map has locked physical corridors, safe spawns and a complete route (788.761728ms)
+✔ charon_rogue_base: a large connected map has locked physical corridors, safe spawns and a complete route (596.154027ms)
+✔ game_preserve_planet: a large connected map has locked physical corridors, safe spawns and a complete route (733.249302ms)
+✔ stargazer_facility: a large connected map has locked physical corridors, safe spawns and a complete route (663.276983ms)
+✔ prey_comanche_territory: a large connected map has locked physical corridors, safe spawns and a complete route (713.540801ms)
+✔ killer_of_killers_arena: a large connected map has locked physical corridors, safe spawns and a complete route (605.900294ms)
+✔ 34 Excel maps have distinct real layouts, actual sector/front counts and measured orthogonal alternatives (32.247029ms)
+✔ LD-01: every strategic route physically walks on the constructed map and all private resources leave once (8027.166257ms)
+✔ LD-02: every strategic route physically walks on the constructed map and all private resources leave once (3974.80438ms)
+✔ LD-03: every strategic route physically walks on the constructed map and all private resources leave once (453.04363ms)
+✔ LD-04: every strategic route physically walks on the constructed map and all private resources leave once (596.588108ms)
+✔ LD-05: every strategic route physically walks on the constructed map and all private resources leave once (988.476764ms)
+✔ LD-06: every strategic route physically walks on the constructed map and all private resources leave once (552.691375ms)
+✔ LD-07: every strategic route physically walks on the constructed map and all private resources leave once (612.716331ms)
+✔ LD-08: every strategic route physically walks on the constructed map and all private resources leave once (1193.953275ms)
+✔ LD-09: every strategic route physically walks on the constructed map and all private resources leave once (854.719972ms)
+✔ LD-10: every strategic route physically walks on the constructed map and all private resources leave once (811.215578ms)
+✔ LD-11: every strategic route physically walks on the constructed map and all private resources leave once (849.451572ms)
+✔ LD-12: every strategic route physically walks on the constructed map and all private resources leave once (551.554114ms)
+✔ LD-13: every strategic route physically walks on the constructed map and all private resources leave once (1120.938424ms)
+✔ LD-14: every strategic route physically walks on the constructed map and all private resources leave once (366.644507ms)
+✔ LD-15: every strategic route physically walks on the constructed map and all private resources leave once (711.556776ms)
+✔ LD-16: every strategic route physically walks on the constructed map and all private resources leave once (560.281889ms)
+✔ LD-17: every strategic route physically walks on the constructed map and all private resources leave once (506.523358ms)
+✔ LD-18: every strategic route physically walks on the constructed map and all private resources leave once (568.409815ms)
+✔ LD-19: every strategic route physically walks on the constructed map and all private resources leave once (661.100649ms)
+✔ LD-20: every strategic route physically walks on the constructed map and all private resources leave once (562.747335ms)
+✔ LD-21: every strategic route physically walks on the constructed map and all private resources leave once (1116.736605ms)
+✔ LD-22: every strategic route physically walks on the constructed map and all private resources leave once (448.041877ms)
+✔ LD-23: every strategic route physically walks on the constructed map and all private resources leave once (1061.112545ms)
+✔ LD-24: every strategic route physically walks on the constructed map and all private resources leave once (980.328632ms)
+✔ LD-25: every strategic route physically walks on the constructed map and all private resources leave once (1045.302495ms)
+✔ LD-26: every strategic route physically walks on the constructed map and all private resources leave once (715.818379ms)
+✔ LD-27: every strategic route physically walks on the constructed map and all private resources leave once (813.856333ms)
+✔ LD-28: every strategic route physically walks on the constructed map and all private resources leave once (400.661446ms)
+✔ LD-29: every strategic route physically walks on the constructed map and all private resources leave once (1288.004587ms)
+✔ LD-30: every strategic route physically walks on the constructed map and all private resources leave once (1008.645989ms)
+✔ LD-31: every strategic route physically walks on the constructed map and all private resources leave once (952.939988ms)
+✔ LD-32: every strategic route physically walks on the constructed map and all private resources leave once (486.785814ms)
+✔ LD-33: every strategic route physically walks on the constructed map and all private resources leave once (1488.031355ms)
+✔ LD-34: every strategic route physically walks on the constructed map and all private resources leave once (713.257335ms)
+✔ standard hunts retain their six sectors and five locked connections without tactical bypasses (0.536063ms)
+✔ mission opens real gates from death/action callbacks and starts the next encounter only after walking in (5.441643ms)
+✔ relay requires a living player in range and accepts the second co-op player without premature boss victory (1.1065ms)
+✔ relay activation preserves living defenders and schedules a single bounded counter-attack after pre-activation kills (0.889597ms)
+✔ a final boss that never appeared cannot be interpreted as defeated (4.724633ms)
+✔ removing a living boss is not victory and real death of the observed encounter completes the mission once (0.822366ms)
+✔ reinforcement provider respects both co-op players and refuses a position when every sample is too close (0.643808ms)
+✔ disposal restores previous observers/providers, cancels pressure and refuses stale actions (0.420507ms)
+✔ disposal preserves a newer callback owner rather than undoing its integration (0.244767ms)
+✔ connected battlefield requires visit, quota, officer, proximity action and final boss in order (2.77995ms)
+✔ co-op shares progress while locked, dead and out-of-zone actors cannot complete objectives remotely (0.817477ms)
+✔ replay resets every gate and objective without mutating layout or exposing writable state (1.002998ms)
+✔ invalid unreachable zones, duplicate gates and remote terminals fail before starting a mission (0.899986ms)
+✔ gunnison_forest: real rotated battlefield is completable through every objective and gate (1.759037ms)
+✔ xenomorph_prime: real rotated battlefield is completable through every objective and gate (0.496805ms)
+✔ antarctic_pyramid: real rotated battlefield is completable through every objective and gate (2.022858ms)
+✔ la_rooftops: real rotated battlefield is completable through every objective and gate (0.334297ms)
+✔ val_verde_jungle: real rotated battlefield is completable through every objective and gate (0.393558ms)
+✔ romulus_station: real rotated battlefield is completable through every objective and gate (0.496056ms)
+✔ charon_rogue_base: real rotated battlefield is completable through every objective and gate (0.346923ms)
+✔ game_preserve_planet: real rotated battlefield is completable through every objective and gate (0.185047ms)
+✔ stargazer_facility: real rotated battlefield is completable through every objective and gate (0.327795ms)
+✔ prey_comanche_territory: real rotated battlefield is completable through every objective and gate (0.267594ms)
+✔ killer_of_killers_arena: real rotated battlefield is completable through every objective and gate (0.163612ms)
+✔ relay has explicit activation and counter-attack phases with no early kill credit or repeatable interaction (0.889611ms)
+✔ relay furniture has a real approach, finite textured details and bounded batched geometry (4428.070066ms)
+✔ relay signal and segmented progress follow actual objective phases without recoloring world trim (219.29193ms)
+Architecture frame budget: {"type":"forest","maximumTriangles":464110,"maximumPotentialSubmissions":133}
+Architecture frame budget: {"type":"hive","maximumTriangles":108814,"maximumPotentialSubmissions":181}
+Architecture frame budget: {"type":"temple","maximumTriangles":65734,"maximumPotentialSubmissions":182}
+Architecture frame budget: {"type":"rooftop","maximumTriangles":88582,"maximumPotentialSubmissions":164}
+Architecture frame budget: {"type":"jungle","maximumTriangles":355276,"maximumPotentialSubmissions":151}
+Architecture frame budget: {"type":"station","maximumTriangles":113914,"maximumPotentialSubmissions":189}
+Architecture frame budget: {"type":"station","maximumTriangles":117002,"maximumPotentialSubmissions":218}
+Architecture frame budget: {"type":"jungle","maximumTriangles":359075,"maximumPotentialSubmissions":175}
+Architecture frame budget: {"type":"forest","maximumTriangles":465546,"maximumPotentialSubmissions":152}
+Architecture frame budget: {"type":"forest","maximumTriangles":466256,"maximumPotentialSubmissions":163}
+Architecture frame budget: {"type":"temple","maximumTriangles":66054,"maximumPotentialSubmissions":184}
+✔ forest: sector architecture has distinct silhouettes, real footprints and clear battle routes (5870.548046ms)
+✔ hive: sector architecture has distinct silhouettes, real footprints and clear battle routes (1742.287305ms)
+✔ temple: sector architecture has distinct silhouettes, real footprints and clear battle routes (166.509397ms)
+✔ rooftop: sector architecture has distinct silhouettes, real footprints and clear battle routes (254.54441ms)
+✔ jungle: sector architecture has distinct silhouettes, real footprints and clear battle routes (187.450689ms)
+✔ station: sector architecture has distinct silhouettes, real footprints and clear battle routes (221.293622ms)
+✔ station: sector architecture has distinct silhouettes, real footprints and clear battle routes (265.44501ms)
+✔ jungle: sector architecture has distinct silhouettes, real footprints and clear battle routes (208.510403ms)
+✔ forest: sector architecture has distinct silhouettes, real footprints and clear battle routes (193.619351ms)
+✔ forest: sector architecture has distinct silhouettes, real footprints and clear battle routes (193.349508ms)
+✔ temple: sector architecture has distinct silhouettes, real footprints and clear battle routes (159.922243ms)
+✔ resin cores collide as their rotated ellipse rather than a hidden rectangular wall (126.176166ms)
+✔ all static architecture resources are environment-owned and released exactly once on replay (125.055835ms)
+✔ biomask composition requires explicit transforms and clones graph/bones without changing cached surfaces (8.260383ms)
+✔ optional biomask follows FPS/cloak, has private surfaces and is disposed once without touching cache (5100.423125ms)
+✔ unconfigured, failed or malformed optional masks preserve a valid unmasked body (1224.016972ms)
+✔ a mask cannot satisfy the FPS guard when the body head has no identifiable skin faces (413.021489ms)
+✔ a mask request resolved after Player disposal cannot attach or dispose template resources (398.499693ms)
+✔ calibrated eye height and laser origin follow the imported actor and restore the procedural values (398.556012ms)
+✔ opaque filter components are cloned with the mask and participate in FPS, cloak and disposal (437.836535ms)
+✔ zero-time frames propagate FPS, cloak and explicit imported pose while every simulation clock stays frozen (421.832598ms)
+✔ optional eye-filter calibration deep-copies measured arrays and rejects malformed geometry (1.522016ms)
+✔ opaque backing meshes occlude both empty windows without altering the cached shell (8.850154ms)
+✔ filter cleanup releases private geometry/material once and retains the shared grid for adapter clones (0.960942ms)
+✔ measured pivot changes real rotation center while all rest vertices and descendants stay fixed (6.376966ms)
+✔ every skin gets private compensated inverses; cached source nodes, matrices and geometry stay unchanged (1.925523ms)
+✔ centimetre armature and a large measured parent-local translation preserve world surfaces (0.908904ms)
+✔ a manual affine child keeps its complete world matrix without a decomposition (0.789687ms)
+✔ failed world-surface proof rolls back every node, flags, bind and inverse-array identity (1.838285ms)
+✔ hash, parent, private ownership and overlapping joint guards fail without mutation (0.607475ms)
+✔ each boss exposes a response to its actual arsenal, without labelling a gameplay rule as measured film fidelity (4.280488ms)
+✔ City actually alternates disc/plasma, and its physical disc returns without dealing a second hit (23.752982ms)
+✔ the three delayed Berserker rounds share a locked aim and one damage allowance per target (3.264106ms)
+✔ front armor rewards a flank, heavy strikes overload the Engineer shield and interrupt the announced charge/brood (1.484697ms)
+✔ a committed Rogue King charge into real movement cover opens a recovery window (2.34054ms)
+✔ ground attacks use the local floor and jump height, while cover blocks vortex pulls and shriek energy loss (2.384661ms)
+✔ the Imperial aftershock has a real safe inner annulus, while the Titan emits three separated pulses (1.988775ms)
+✔ the Jungle laser keeps the warning aim and all delayed effects disappear on clear (1.510546ms)
+✔ the cold-flower signature limits distant Feral acquisition without granting invisibility to close/directly visible hunters (1.039992ms)
+✔ the area warning covers the actual tail reach and releases its owned geometry once (0.548634ms)
+✔ a cull/checkpoint preserves boss resources and cooldowns, without healing remote wounds or replaying consumed volleys (2.926415ms)
+✔ a phase announces a real allocated attack on an optional front; its capture does not reset previous accomplishments (18.154478ms)
+✔ the warning survives checkpoint without duplicate orders; blocked routes and a truce are real ways to stop it (2.858586ms)
+✔ removing the boss visual does not cancel its allocated live secondary-front reaction (0.871383ms)
+✔ real BossManager → Bridge → simulation cull → checkpoint → new manager keeps resources while actual distant combat advances HP and phase (4595.372481ms)
+✔ preflight refuses identity, profile, renderer and level mismatches before a scene changes (4067.44583ms)
+✔ all 25 playable operation allocations are validated without replacing two explicitly unavailable human controllers (23.368158ms)
+✔ all 18 actual models place their lowest surface at the actor feet without changing their allocated height (4702.358805ms)
+✔ gunnison_forest: its announced actual boss constructs, runs both later phases, dies once and releases the built context (2037.009118ms)
+✔ xenomorph_prime: its announced actual boss constructs, runs both later phases, dies once and releases the built context (383.63133ms)
+✔ antarctic_pyramid: its announced actual boss constructs, runs both later phases, dies once and releases the built context (293.183059ms)
+✔ la_rooftops: its announced actual boss constructs, runs both later phases, dies once and releases the built context (1272.28705ms)
+✔ val_verde_jungle: its announced actual boss constructs, runs both later phases, dies once and releases the built context (1451.956732ms)
+✔ romulus_station: its announced actual boss constructs, runs both later phases, dies once and releases the built context (393.479969ms)
+✔ charon_rogue_base: its announced actual boss constructs, runs both later phases, dies once and releases the built context (431.146362ms)
+✔ game_preserve_planet: its announced actual boss constructs, runs both later phases, dies once and releases the built context (302.485248ms)
+✔ stargazer_facility: its announced actual boss constructs, runs both later phases, dies once and releases the built context (276.808185ms)
+✔ prey_comanche_territory: its announced actual boss constructs, runs both later phases, dies once and releases the built context (273.868059ms)
+✔ killer_of_killers_arena: its announced actual boss constructs, runs both later phases, dies once and releases the built context (194.430698ms)
+✔ two actual miniature encounters retain separate HP, positions and targets when the major encounter appears and clears (6.788559ms)
+
+Interrupted while running:
+
+⚠ tests/boss-registry.test.js (tests/boss-registry.test.js:1:1)
+✖ tests/boss-registry.test.js (2391.635542ms)
+✖ tests/browser-cleanup.test.mjs
+✖ tests/camera-collision.test.js
+✖ tests/city-hunter-mechanisms.test.js
+✖ tests/city-hunter-right-gauntlet.test.js
+✖ tests/clan-recognition.test.js
+✖ tests/combat-director.test.js
+✖ tests/combat-geometry.test.js
+✖ tests/combat-identity.test.js
+✖ tests/creature-skin-corrections.test.js
+✖ tests/creature-visual.test.js
+✖ tests/drop-pod-entrance.test.js
+✖ tests/environment-visual.test.js
+✖ tests/finite-supports.test.js
+✖ tests/forge-ledger-integration.test.js
+✖ tests/formation-companions.test.js
+✖ tests/frame-telemetry.test.js
+✖ tests/gamepad-controls.test.js
+✖ tests/gamepad-menu-roots.test.js
+✖ tests/generated-assets.test.js
+✖ tests/graphics.test.js
+✖ tests/honor-ledger.test.js
+✖ tests/horde-player-cache-release.test.js
+✖ tests/hostile-pressure.test.js
+✖ tests/hunter-gadget-effects.test.js
+✖ tests/hunter-hologram.test.js
+✖ tests/hunter-locomotion.test.js
+✖ tests/hunter-reference-combat.test.js
+✖ tests/hunter-visual.test.js
+✖ tests/imported-ankle-rig.test.js
+✖ tests/imported-character.test.js
+✖ tests/imported-creature-grounding.test.js
+✖ tests/imported-creature.test.js
+✖ tests/imported-foot-grounding.test.js
+✖ tests/imported-mane-rig.test.js
+✖ tests/imported-part-regions.test.js
+✖ tests/imported-parts-preparation.test.js
+✖ tests/imported-static-limb-offsets.test.js
+✖ tests/imported-tail-rig.test.js
+✖ tests/insertion-pod-model.test.js
+✖ tests/inspect-glb.test.js
+✖ tests/integrated-engine-mechanisms.test.js
+✖ tests/levels.test.js
+✖ tests/masked-body-regions.test.js
+✖ tests/operation-alerts.test.js
+✖ tests/operation-objectives.test.js
+✖ tests/operation-player-state.test.js
+✖ tests/operation-rewards.test.js
+✖ tests/operation-scene-integration.test.js
+✖ tests/operation-transport.test.js
+✖ tests/player-dodge.test.js
+✖ tests/player-generated-variants.test.js
+✖ tests/player-laser-grounding.test.js
+✖ tests/pr3-publication.test.mjs
+✖ tests/pr3-release-profiles.test.mjs
+✖ tests/prey-interaction-checkpoint.test.js
+✖ tests/prey-interaction-contracts.test.js
+✖ tests/prey-player-equipment.test.js
+✖ tests/prey-reference-interactions.test.js
+✖ tests/reference-walk-surfaces.test.js
+✖ tests/reference-world-mechanisms.test.js
+✖ tests/relay-reinforcements.test.js
+✖ tests/render-visual.test.js
+✖ tests/runtime-final-wiring.test.js
+✖ tests/skimmer-details.test.js
+✖ tests/split-dreadlock-rig.test.js
+✖ tests/split-yautja-assembly.test.js
+✖ tests/support-objective-kills.test.js
+✖ tests/support-visual.test.js
+✖ tests/surfaces.test.js
+✖ tests/systems.test.js
+✖ tests/tactical-bridge.test.js
+✖ tests/wolf-biomask.test.js
+✖ tests/world-depth-seeds.test.js
+✖ tests/world-depth-streaming.test.js
+✖ tests/world-geometry-streaming.test.js
+✖ tests/yautja-articulation.test.js
+ℹ tests 322
+ℹ suites 0
+ℹ pass 245
+ℹ fail 0
+ℹ cancelled 77
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 132665.491415
+
+✖ failing tests:
+
+test at tests/boss-registry.test.js:1:1
+✖ tests/boss-registry.test.js (2391.635542ms)
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/browser-cleanup.test.mjs:1:1
+✖ tests/browser-cleanup.test.mjs
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/camera-collision.test.js:1:1
+✖ tests/camera-collision.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/city-hunter-mechanisms.test.js:1:1
+✖ tests/city-hunter-mechanisms.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/city-hunter-right-gauntlet.test.js:1:1
+✖ tests/city-hunter-right-gauntlet.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/clan-recognition.test.js:1:1
+✖ tests/clan-recognition.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/combat-director.test.js:1:1
+✖ tests/combat-director.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/combat-geometry.test.js:1:1
+✖ tests/combat-geometry.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/combat-identity.test.js:1:1
+✖ tests/combat-identity.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/creature-skin-corrections.test.js:1:1
+✖ tests/creature-skin-corrections.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/creature-visual.test.js:1:1
+✖ tests/creature-visual.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/drop-pod-entrance.test.js:1:1
+✖ tests/drop-pod-entrance.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/environment-visual.test.js:1:1
+✖ tests/environment-visual.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/finite-supports.test.js:1:1
+✖ tests/finite-supports.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/forge-ledger-integration.test.js:1:1
+✖ tests/forge-ledger-integration.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/formation-companions.test.js:1:1
+✖ tests/formation-companions.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/frame-telemetry.test.js:1:1
+✖ tests/frame-telemetry.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/gamepad-controls.test.js:1:1
+✖ tests/gamepad-controls.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/gamepad-menu-roots.test.js:1:1
+✖ tests/gamepad-menu-roots.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/generated-assets.test.js:1:1
+✖ tests/generated-assets.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/graphics.test.js:1:1
+✖ tests/graphics.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/honor-ledger.test.js:1:1
+✖ tests/honor-ledger.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/horde-player-cache-release.test.js:1:1
+✖ tests/horde-player-cache-release.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/hostile-pressure.test.js:1:1
+✖ tests/hostile-pressure.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/hunter-gadget-effects.test.js:1:1
+✖ tests/hunter-gadget-effects.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/hunter-hologram.test.js:1:1
+✖ tests/hunter-hologram.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/hunter-locomotion.test.js:1:1
+✖ tests/hunter-locomotion.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/hunter-reference-combat.test.js:1:1
+✖ tests/hunter-reference-combat.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/hunter-visual.test.js:1:1
+✖ tests/hunter-visual.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/imported-ankle-rig.test.js:1:1
+✖ tests/imported-ankle-rig.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/imported-character.test.js:1:1
+✖ tests/imported-character.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/imported-creature-grounding.test.js:1:1
+✖ tests/imported-creature-grounding.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/imported-creature.test.js:1:1
+✖ tests/imported-creature.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/imported-foot-grounding.test.js:1:1
+✖ tests/imported-foot-grounding.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/imported-mane-rig.test.js:1:1
+✖ tests/imported-mane-rig.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/imported-part-regions.test.js:1:1
+✖ tests/imported-part-regions.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/imported-parts-preparation.test.js:1:1
+✖ tests/imported-parts-preparation.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/imported-static-limb-offsets.test.js:1:1
+✖ tests/imported-static-limb-offsets.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/imported-tail-rig.test.js:1:1
+✖ tests/imported-tail-rig.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/insertion-pod-model.test.js:1:1
+✖ tests/insertion-pod-model.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/inspect-glb.test.js:1:1
+✖ tests/inspect-glb.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/integrated-engine-mechanisms.test.js:1:1
+✖ tests/integrated-engine-mechanisms.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/levels.test.js:1:1
+✖ tests/levels.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/masked-body-regions.test.js:1:1
+✖ tests/masked-body-regions.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/operation-alerts.test.js:1:1
+✖ tests/operation-alerts.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/operation-objectives.test.js:1:1
+✖ tests/operation-objectives.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/operation-player-state.test.js:1:1
+✖ tests/operation-player-state.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/operation-rewards.test.js:1:1
+✖ tests/operation-rewards.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/operation-scene-integration.test.js:1:1
+✖ tests/operation-scene-integration.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/operation-transport.test.js:1:1
+✖ tests/operation-transport.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/player-dodge.test.js:1:1
+✖ tests/player-dodge.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/player-generated-variants.test.js:1:1
+✖ tests/player-generated-variants.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/player-laser-grounding.test.js:1:1
+✖ tests/player-laser-grounding.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/pr3-publication.test.mjs:1:1
+✖ tests/pr3-publication.test.mjs
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/pr3-release-profiles.test.mjs:1:1
+✖ tests/pr3-release-profiles.test.mjs
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/prey-interaction-checkpoint.test.js:1:1
+✖ tests/prey-interaction-checkpoint.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/prey-interaction-contracts.test.js:1:1
+✖ tests/prey-interaction-contracts.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/prey-player-equipment.test.js:1:1
+✖ tests/prey-player-equipment.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/prey-reference-interactions.test.js:1:1
+✖ tests/prey-reference-interactions.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/reference-walk-surfaces.test.js:1:1
+✖ tests/reference-walk-surfaces.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/reference-world-mechanisms.test.js:1:1
+✖ tests/reference-world-mechanisms.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/relay-reinforcements.test.js:1:1
+✖ tests/relay-reinforcements.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/render-visual.test.js:1:1
+✖ tests/render-visual.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/runtime-final-wiring.test.js:1:1
+✖ tests/runtime-final-wiring.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/skimmer-details.test.js:1:1
+✖ tests/skimmer-details.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/split-dreadlock-rig.test.js:1:1
+✖ tests/split-dreadlock-rig.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/split-yautja-assembly.test.js:1:1
+✖ tests/split-yautja-assembly.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/support-objective-kills.test.js:1:1
+✖ tests/support-objective-kills.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/support-visual.test.js:1:1
+✖ tests/support-visual.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/surfaces.test.js:1:1
+✖ tests/surfaces.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/systems.test.js:1:1
+✖ tests/systems.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/tactical-bridge.test.js:1:1
+✖ tests/tactical-bridge.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/wolf-biomask.test.js:1:1
+✖ tests/wolf-biomask.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/world-depth-seeds.test.js:1:1
+✖ tests/world-depth-seeds.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/world-depth-streaming.test.js:1:1
+✖ tests/world-depth-streaming.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/world-geometry-streaming.test.js:1:1
+✖ tests/world-geometry-streaming.test.js
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at tests/yautja-articulation.test.js:1:1
+✖ tests/yautja-articulation.test.js
+  'Promise resolution is still pending but the event loop has already resolved'

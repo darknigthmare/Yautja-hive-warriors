@@ -1,0 +1,208 @@
+{
+  "status": "downloaded_needs_reference_guided_regeneration",
+  "models": [
+    {
+      "id": "jungle_hunter",
+      "reference": "Predator, film de 1987 : Jungle Hunter",
+      "height_m": 2.2,
+      "pose": "a-pose",
+      "texture_resolution": "4k",
+      "prompt": "Screen-accurate Jungle Hunter Predator (1987), full-body A-pose, realistic adult proportions. Broad silver biomask brow, dark eye slits, angular cheeks, short respirator muzzle, no human face. Olive tan mottled reptilian skin, long black dreadlocks with metal rings, fitted asymmetrical worn gunmetal armor, tight black diamond body net, leather harness and loincloth. Anatomical LEFT shoulder plasma caster, RIGHT wrist twin blades, LEFT wrist computer. Separate clawed fingers and toes, limbs clear for rigging. Photoreal cinematic creature suit, complete back, no base or stylization.",
+      "estimate_exit_code": 0,
+      "ai_model_requested": "latest",
+      "preview": {
+        "resource": "text-to-3d",
+        "task_id": "01a1594f-b1a6-738d-bf0d-b87fffcb5000",
+        "status": "SUCCEEDED",
+        "progress": 100,
+        "consumed_credits": 20,
+        "project_dir": "meshy_output/20261020_123600_jungle-hunter_01a1594f",
+        "download_status": "downloaded",
+        "visually_inspected": true,
+        "downloaded_at": "2026-10-20T15:26:00+02:00",
+        "preview_shown_to_user": true,
+        "files": {
+          "glb": "preview/model.glb",
+          "rendered_preview": "preview/thumbnail.png",
+          "inspection_report": "preview/inspection.json"
+        },
+        "inspection": {
+          "bytes": 52034872,
+          "triangles": 2168344,
+          "vertices": 1083908,
+          "textures": 0,
+          "images": 0,
+          "skins": 0,
+          "joints": 0,
+          "animations": 0,
+          "has_uvs": false
+        },
+        "visual_review": {
+          "target_fidelity_validated": false,
+          "findings": [
+            "Pointed horned mask and open mouth differ from the restrained biomask of Jungle Hunter (1987).",
+            "Large claw-like shoulder ornaments and covering fantasy armor differ from the exposed skin and body-net silhouette.",
+            "Texturing the existing geometry would not correct these silhouette and costume errors."
+          ],
+          "scope": "One rendered front-three-quarter preview; geometry counts and missing UVs/textures/skins come from the local GLB inspection."
+        }
+      },
+      "refine": {
+        "status": "not_submitted",
+        "estimated_credits": 10,
+        "decision": "not_submitted_existing_shapes_not_suitable"
+      },
+      "rigging": {
+        "status": "not_submitted",
+        "estimated_credits": 5,
+        "additional_cost_agreed": false,
+        "decision": "not_submitted_unskinned_and_above_300000_face_limit"
+      },
+      "integration": {
+        "visually_inspected": true,
+        "rig_verified": false,
+        "in_game_verified": false,
+        "enabled": false
+      }
+    },
+    {
+      "id": "xenomorph_warrior",
+      "reference": "Alien, film de 1979 : Big Chap",
+      "height_m": 2.3,
+      "pose": "a-pose",
+      "texture_resolution": "4k",
+      "prompt": "Screen-accurate Big Chap Xenomorph (Alien 1979), full-body A-pose, realistic slender adult biomechanical anatomy. Long smooth black elongated eyeless cranial dome extending behind head, compact neck, curved exposed ribs and narrow sternum, narrow long waist, long digitigrade legs and sinewy arms, separate clawed fingers. Four curved dorsal tubes, segmented tapering tail curled away from legs with blade tip, small teeth and retracted inner jaw. Obsidian organic exoskeleton, sculpted ridges, local wet sheen and matte tendons. Complete back, limbs clear for rigging, no base, no cartoon.",
+      "estimate_exit_code": 0,
+      "ai_model_requested": "latest",
+      "preview": {
+        "resource": "text-to-3d",
+        "task_id": "01a1594f-c035-7643-9e61-70bcc112def2",
+        "status": "SUCCEEDED",
+        "progress": 100,
+        "consumed_credits": 20,
+        "project_dir": "meshy_output/20261020_123605_xenomorph-warrior_01a1594f",
+        "download_status": "downloaded",
+        "visually_inspected": true,
+        "downloaded_at": "2026-10-20T15:26:00+02:00",
+        "preview_shown_to_user": true,
+        "files": {
+          "glb": "preview/model.glb",
+          "rendered_preview": "preview/thumbnail.png",
+          "inspection_report": "preview/inspection.json"
+        },
+        "inspection": {
+          "bytes": 20760852,
+          "triangles": 865002,
+          "vertices": 432495,
+          "textures": 0,
+          "images": 0,
+          "skins": 0,
+          "joints": 0,
+          "animations": 0,
+          "has_uvs": false
+        },
+        "visual_review": {
+          "target_fidelity_validated": false,
+          "findings": [
+            "Cranial dome is excessively tall and massive rather than the characteristic horizontal elongated Big Chap silhouette.",
+            "Face and jaw are poorly defined; slender limbs and oversized feet change the proportions.",
+            "Tail and dorsal tubes cannot be verified from the shown front-three-quarter thumbnail."
+          ],
+          "scope": "One rendered front-three-quarter preview; geometry counts and missing UVs/textures/skins come from the local GLB inspection."
+        }
+      },
+      "refine": {
+        "status": "not_submitted",
+        "estimated_credits": 10,
+        "decision": "not_submitted_existing_shapes_not_suitable"
+      },
+      "rigging": {
+        "status": "not_submitted",
+        "estimated_credits": 5,
+        "additional_cost_agreed": false,
+        "decision": "not_submitted_unskinned_and_above_300000_face_limit"
+      },
+      "integration": {
+        "visually_inspected": true,
+        "rig_verified": false,
+        "in_game_verified": false,
+        "enabled": false
+      }
+    }
+  ],
+  "preferred_pipeline": [
+    "Select coherent canonical front, side and back references for the same film character; none have been supplied.",
+    "Present and obtain agreement for the new image-guided generation cost before any paid submission.",
+    "Generate a replacement using image-to-3D or multi-image-to-3D references, not texture-only refinement of the current rejected shapes.",
+    "Inspect the real rendered previews and local GLBs against those references before further paid stages.",
+    "Inspect UVs, PBR textures and geometry budget; estimate and agree any additional remesh and rigging costs separately.",
+    "Validate skeleton, animations, FPS head masking, cooperative clones and cleanup in the game.",
+    "Enable only verified local GLBs in the runtime manifest."
+  ],
+  "reference_note": "Canonical films remain the target. No coherent canonical front/side/back references have been supplied. The downloaded text-only previews do not establish 1:1 likeness and are not suitable for direct integration.",
+  "estimated_credits": {
+    "geometry_and_textures": 60,
+    "geometry_and_textures_remaining": 20,
+    "rigging_two_characters_additional": 10,
+    "source": "Meshy CLI dry-run and https://docs.meshy.ai/en/api/pricing, read 2026-10-20",
+    "official_latest_model_label_at_read": "7.1",
+    "ultra_geometry_selected": false,
+    "remaining_initial_refine_budget_note": "Original text-only plan has 20 estimated refine credits not spent. Existing geometry was rejected for likeness; this is not authorization for a replacement generation.",
+    "proposed_reference_guided_replacement": {
+      "pipeline": "image-to-3d or multi-image-to-3d with 4k texture",
+      "per_character": 30,
+      "two_characters": 60,
+      "additional_cost_agreed": false,
+      "excludes": [
+        "remesh",
+        "rigging",
+        "additional animation"
+      ],
+      "source": "https://docs.meshy.ai/en/api/pricing, read 2026-10-20",
+      "note": "Estimate for a proposed new generation, not a charge or submitted task."
+    }
+  },
+  "updated_at": "2026-10-20T15:26:00+02:00",
+  "runtime": {
+    "cli_version": "0.4.0",
+    "node_version": "24.19",
+    "authenticated_and_verified": true,
+    "config_dir": "/workspace/.meshy-session",
+    "required_environment": {
+      "NODE_USE_ENV_PROXY": "1"
+    },
+    "network_note": "Keep inherited HTTP(S) proxy and CA trust. Do not disable TLS or bypass the proxy.",
+    "reported_spec_revision": "3",
+    "reported_network_state": "enforced",
+    "download_hosts": [
+      "assets.meshy.ai",
+      "cdn.meshy.ai"
+    ],
+    "downloads_verified_at": "2026-10-20T15:26:00+02:00",
+    "network_history": "Earlier proxy CONNECT HTTP 403 was resolved; both existing preview GLBs and rendered previews were downloaded successfully through the CLI."
+  },
+  "reported_costs": {
+    "balance_before_generation_credits": 2210,
+    "preview_consumed_credits": 40,
+    "refine_submitted": false,
+    "rigging_submitted": false,
+    "balance_after_previews_credits": 2170,
+    "new_reference_guided_generation_submitted": false
+  },
+  "integration": {
+    "shipping_meshy_assets": 0,
+    "manifest_entries": 0,
+    "preparatory_modules": [
+      "ImportedCharacter.js",
+      "ImportedCreature.js",
+      "GeneratedAssetLibrary.js"
+    ],
+    "status": "disabled_downloaded_previews_need_reference_guided_replacement"
+  },
+  "deployment": {
+    "provider": "vercel",
+    "published": false,
+    "reason_code": "api-deployments-free-per-day",
+    "attempted_at": "2026-10-20T13:03:53Z"
+  }
+}

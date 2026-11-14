@@ -1,0 +1,374 @@
+{
+  "schemaVersion": 1,
+  "status": "failed",
+  "startedAt": "2026-10-28T10:05:56.129Z",
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "scope": "Controlled UI and actual runtime integration acceptance; not natural victories, human playtesting or a measured reproduction of a film.",
+  "assistances": [
+    "deterministic advancement through the actual insertion cinematic",
+    "paused fixture setup between steps",
+    "player placement beside actual world pickups and an actual allocated ally",
+    "camera framing of the existing actors",
+    "controlled fatal callback on an actual allocated allied actor and 0.35 s of its real falling posture",
+    "deterministic advancement of the actual three-second rescue channel",
+    "placement of two existing hostile actors on a physically clear shooting lane",
+    "direct damage through an active APC combatant to exercise destruction"
+  ],
+  "cases": [
+    {
+      "id": "scene-seed-difficulty-checkpoint",
+      "status": "passed",
+      "insertion": {
+        "simulated": 4.34999999999999,
+        "phase": "complete",
+        "visible": true
+      },
+      "before": {
+        "seed": 1,
+        "layoutSeed": 1,
+        "difficulty": "aggressive",
+        "difficultyConfig": {
+          "id": "aggressive",
+          "label": "Offensif",
+          "scope": "officer_decisions_only",
+          "populationChanged": false
+        },
+        "id": "mission-3ed70c50-bec9-47db-9867-57d3df2bb118",
+        "hud": "3 FRONTS · RÉSERVES FINIES",
+        "score": 0,
+        "skulls": 0,
+        "conserved": true
+      },
+      "commandMap": "Bataille alternative à trois camps · Commandement Offensif · Terrain 1",
+      "checkpoint": {
+        "scene": {
+          "mapSeed": 1,
+          "difficultyId": "aggressive"
+        },
+        "campaignRunId": "mission-3ed70c50-bec9-47db-9867-57d3df2bb118",
+        "supportMission": "mission-3ed70c50-bec9-47db-9867-57d3df2bb118"
+      },
+      "after": {
+        "seed": 1,
+        "difficulty": "aggressive",
+        "id": "mission-3ed70c50-bec9-47db-9867-57d3df2bb118",
+        "supportId": "mission-3ed70c50-bec9-47db-9867-57d3df2bb118",
+        "hud": "3 FRONTS · RÉSERVES FINIES",
+        "conserved": true,
+        "score": 0,
+        "skulls": 0
+      }
+    },
+    {
+      "id": "allocated-ally-three-second-rescue",
+      "status": "passed",
+      "fixture": {
+        "id": "gunnison_forest:player_clan:0:0",
+        "hp": 400,
+        "maxHp": 400,
+        "medicomps": 3,
+        "dead": 0,
+        "score": 0,
+        "skulls": 0,
+        "downed": true,
+        "posture": "downed",
+        "unit": true,
+        "prompt": {
+          "unitId": "gunnison_forest:player_clan:0:0",
+          "channeling": false,
+          "progress": 0,
+          "label": "[E] SECOURIR L’ALLIÉ — 1 MEDICOMP · 25 s"
+        },
+        "position": [
+          39,
+          0,
+          0
+        ]
+      },
+      "channel": {
+        "partial": {
+          "record": {
+            "unitId": "gunnison_forest:player_clan:0:0",
+            "status": "downed",
+            "remaining": 21.748999999999995,
+            "position": [
+              37,
+              0,
+              0
+            ],
+            "maxHp": 400,
+            "downedOnce": true,
+            "recoveryRemaining": 0,
+            "cause": "controlled-browser-fixture-lethal-callback",
+            "killerFaction": "hive"
+          },
+          "channel": {
+            "playerId": "player1",
+            "unitId": "gunnison_forest:player_clan:0:0",
+            "progress": 2.9,
+            "start": [
+              39,
+              0,
+              0
+            ],
+            "previousHp": 1000
+          },
+          "stock": 3
+        },
+        "after": {
+          "unitId": "gunnison_forest:player_clan:0:0",
+          "status": "rescued",
+          "remaining": 0,
+          "position": [
+            37,
+            0,
+            0
+          ],
+          "maxHp": 400,
+          "downedOnce": true,
+          "recoveryRemaining": 0.449,
+          "cause": "controlled-browser-fixture-lethal-callback",
+          "killerFaction": "hive"
+        },
+        "stock": 2,
+        "actorHp": 100,
+        "unit": {
+          "id": "gunnison_forest:player_clan:0:0",
+          "profileId": "original-clan-officer",
+          "groupId": "gunnison_forest:player_clan:0",
+          "factionId": "player_clan",
+          "species": "yautja",
+          "role": "officer",
+          "actorType": "yautja",
+          "profileName": "original-clan-officer",
+          "sourceBossId": null,
+          "sourceBossType": null,
+          "visualFidelity1to1Verified": false,
+          "officer": true,
+          "uniqueId": null,
+          "state": "active",
+          "hp": 100,
+          "maxHp": 400,
+          "position": [
+            37,
+            0
+          ],
+          "nextAttack": 0.07,
+          "damageTaken": 0,
+          "incapacitated": false
+        },
+        "dead": 0,
+        "score": 0,
+        "skulls": 0
+      },
+      "saved": {
+        "record": {
+          "unitId": "gunnison_forest:player_clan:0:0",
+          "status": "rescued",
+          "remaining": 0,
+          "position": [
+            37,
+            0,
+            0
+          ],
+          "maxHp": 400,
+          "downedOnce": true,
+          "recoveryRemaining": 0.449,
+          "cause": "controlled-browser-fixture-lethal-callback",
+          "killerFaction": "hive"
+        },
+        "stock": 2,
+        "run": "mission-3ed70c50-bec9-47db-9867-57d3df2bb118"
+      },
+      "resumed": {
+        "record": {
+          "unitId": "gunnison_forest:player_clan:0:0",
+          "status": "rescued",
+          "remaining": 0,
+          "position": [
+            37,
+            0,
+            0
+          ],
+          "maxHp": 400,
+          "downedOnce": true,
+          "recoveryRemaining": 0.43233333333333335,
+          "cause": "controlled-browser-fixture-lethal-callback",
+          "killerFaction": "hive"
+        },
+        "stock": 2,
+        "run": "mission-3ed70c50-bec9-47db-9867-57d3df2bb118",
+        "conserved": true
+      }
+    },
+    {
+      "id": "finite-support-roof-refusal-destruction",
+      "status": "passed",
+      "insertion": {
+        "simulated": 4.24999999999999,
+        "phase": "complete",
+        "visible": true
+      },
+      "refusal": {
+        "surface": "la-helipad-deck",
+        "roofOwner": "la-helipad-deck",
+        "target": [
+          0,
+          0,
+          0
+        ],
+        "answer": {
+          "accepted": false,
+          "reason": "air_blocked",
+          "message": "Appui aérien refusé : la zone est couverte ou son accès est fermé."
+        },
+        "before": {
+          "version": 1,
+          "kind": "cheyenne",
+          "missionId": "mission-afbb34dd-dfb1-4f2e-858f-6bb7ddc2e612",
+          "hp": 1800,
+          "remaining": {
+            "sorties": 2,
+            "rockets": 12,
+            "napalm": 6
+          },
+          "maxHp": 1800,
+          "allowed": true,
+          "factionId": "player_clan",
+          "lastRefusal": null,
+          "refusalMessage": null,
+          "flying": false,
+          "cooldown": 0
+        },
+        "after": {
+          "version": 1,
+          "kind": "cheyenne",
+          "missionId": "mission-afbb34dd-dfb1-4f2e-858f-6bb7ddc2e612",
+          "hp": 1800,
+          "remaining": {
+            "sorties": 2,
+            "rockets": 12,
+            "napalm": 6
+          },
+          "maxHp": 1800,
+          "allowed": true,
+          "factionId": "player_clan",
+          "lastRefusal": "air_blocked",
+          "refusalMessage": "Appui aérien refusé : la zone est couverte ou son accès est fermé.",
+          "flying": false,
+          "cooldown": 0
+        }
+      },
+      "apc": {
+        "before": {
+          "hp": 2500,
+          "colliderPresent": true,
+          "stocks": {
+            "rounds": 48
+          }
+        },
+        "applied": 2500,
+        "damageSource": "controlled-direct-damage-without-attacker",
+        "after": {
+          "version": 1,
+          "kind": "apc",
+          "missionId": "mission-afbb34dd-dfb1-4f2e-858f-6bb7ddc2e612",
+          "hp": 0,
+          "remaining": {
+            "rounds": 48
+          },
+          "maxHp": 2500,
+          "allowed": false,
+          "factionId": "player_clan",
+          "lastRefusal": "destroyed",
+          "refusalMessage": "Cet appui a été détruit pour cette mission.",
+          "deployed": false,
+          "cooldown": 0
+        },
+        "meshPresent": false,
+        "colliderPresent": false,
+        "activeCollider": false,
+        "targetHp": 0,
+        "providerIds": [],
+        "hud": "APC DÉTRUIT | CHEYENNE 1800 PV · 2/2 SORTIES · 12/12 ROQUETTES · 6/6 INCENDIAIRES · Dernier refus : Appui aérien refusé : la zone est couverte ou son accès est fermé."
+      }
+    },
+    {
+      "id": "prey-tools-real-pickups-first-arrow",
+      "status": "failed",
+      "insertion": {
+        "simulated": 4.34999999999999,
+        "phase": "complete",
+        "visible": true
+      },
+      "bowPosition": [
+        -22,
+        3.8,
+        14
+      ],
+      "bow": {
+        "equipment": {
+          "version": 1,
+          "sourceLevelId": null,
+          "hasTaabeBow": false,
+          "hasNaruAxe": false,
+          "taabeArrowAmmo": 0,
+          "naruAxeCharges": 0,
+          "selected": null,
+          "bowCooldown": 0,
+          "orangeFlowerRemaining": 0,
+          "taabeWarRemaining": 0,
+          "mudRemaining": 29.781899999976154
+        },
+        "claimed": false,
+        "weapon": {
+          "id": "wristblades",
+          "fidelityMode": "adapted",
+          "action": "melee",
+          "actionMethod": "lightAttack",
+          "damage": 141.75,
+          "radius": 4.028,
+          "timing": 1,
+          "actionDamage": 141.75,
+          "actionRange": 4.028,
+          "actionResource": "stamina",
+          "actionCost": 3.8,
+          "actionCooldown": 0,
+          "actionCooldownRemaining": 0,
+          "boltAmmo": 12,
+          "boltCooldown": 0,
+          "plasmaEnergy": 100,
+          "plasmaCost": 15,
+          "rangedResource": "plasma",
+          "rangedCost": 15,
+          "stamina": 100,
+          "lightCost": 3.8,
+          "heavyCost": 21
+        }
+      },
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\nfalse !== true\n\n    at file:///workspace/Yautja-next-20261028/docs/qa/pr3-next-20261028/integrated-features/run-integrated-features.mjs:165:12\n    at async caseRun (file:///workspace/Yautja-next-20261028/docs/qa/pr3-next-20261028/integrated-features/run-integrated-features.mjs:92:9)\n    at async file:///workspace/Yautja-next-20261028/docs/qa/pr3-next-20261028/integrated-features/run-integrated-features.mjs:158:3"
+    }
+  ],
+  "errors": [],
+  "failedRequests": [],
+  "externalRequests": [],
+  "indexSha256": "52a750c9472d381d9016f29b0e15a6a3020df28a802c49ac2fa94cff515cb538",
+  "distTreeSha256": "ecc1899944c22d7a3de9cdac25fea66b8906afde239ce63b82e4081d23936ade",
+  "buildInfo": {
+    "schemaVersion": 1,
+    "contentVersion": "v67-pr3-depth-20261028",
+    "sourceCommit": "a225277531e7e10b64ab2b880ff7c8554fa815b2",
+    "sourceBranch": "codex/depth-pr3-20261028",
+    "sourceFingerprint": "430aab5021e1124b194d1adae7422a39c5ac964949e2cb3e0e49c201384bfa3d",
+    "sourceFiles": 150,
+    "sourceTreeDirty": false,
+    "buildEpoch": 1793180507,
+    "reproducibleBuildDate": "2026-10-28T09:41:47.000Z",
+    "deploymentProof": "https://github.com/darknigthmare/Yautja-hive-warriors/blob/codex/depth-pr3-20261028/docs/qa/pr3-next-validation.json"
+  },
+  "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\nfalse !== true\n\n    at file:///workspace/Yautja-next-20261028/docs/qa/pr3-next-20261028/integrated-features/run-integrated-features.mjs:165:12\n    at async caseRun (file:///workspace/Yautja-next-20261028/docs/qa/pr3-next-20261028/integrated-features/run-integrated-features.mjs:92:9)\n    at async file:///workspace/Yautja-next-20261028/docs/qa/pr3-next-20261028/integrated-features/run-integrated-features.mjs:158:3",
+  "distUnchanged": true,
+  "endedAt": "2026-10-28T10:08:36.844Z",
+  "durationSeconds": 160.715
+}

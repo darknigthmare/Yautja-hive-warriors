@@ -1,0 +1,37 @@
+✔ legacy access uses physical sky rays for every footprint point and refuses unknown/era contexts (1.533019ms)
+✔ orbital refuses a hangar before cooldown, effects, actor damage or boss damage and permits outdoors (2.2494ms)
+✔ an open orbital origin cannot damage a separate covered boss or alien within its radius (0.970055ms)
+✔ infiltration refuses a covered distant impact before any cooldown, resource or scheduled effect changes (3.775153ms)
+✔ an accepted infiltration rechecks the real roof at delayed impacts and cancels pending damage (4.82579ms)
+✔ outdoor infiltration emits its six existing impacts and closed roofs also stop subsequent burn ticks (6.001885ms)
+✔ campaign uses existing levels and completes once after all five bosses (1.607673ms)
+✔ sandbox and missions respect requested alien counts, including special enemies (3373.760498ms)
+✔ allied kills and consumed facehuggers no longer block the next wave (1.724806ms)
+✔ egg hatching advances only during simulation and clearWave cancels it (1.782229ms)
+✔ each alien targets the nearest living cooperative player (0.990204ms)
+✔ invalid combat damage cannot heal enemies or poison their health (0.880174ms)
+✔ boss death clears projectiles and a running tail whip safely (51.764802ms)
+✔ Offspring drains the actual plasma meter and never refills empty energy (25.205027ms)
+✔ airstrike snapshots target position and cannot leak napalm into the next mission (2232.815875ms)
+✔ drop pod insertion uses simulation time and clear cancels its completion callback (76.569087ms)
+✔ loadout changes real weapon behavior and gadget quantities without stacking stats (426.301013ms)
+✔ medicomp at full health preserves its limited charge (418.387318ms)
+✔ player disposal cancels delayed abilities and frees external effects (408.351773ms)
+✔ particles and decals stay within a bounded resource budget and clear completely (5.130381ms)
+✔ orbital strike respects boss distance and releases its beam (1.136293ms)
+✔ GPU cleanup disposes owned resources while retaining manager shared materials (0.269606ms)
+✔ capsule stays open after insertion then fades and releases the scene (42.595614ms)
+✔ skimmer mount consumes the key and reset restores a fresh vehicle state (32.638847ms)
+✔ synthetic blood uses bounded simulation lifetimes and clear removes all drops (3.407965ms)
+✔ chestbursters can be killed rather than remaining invulnerable hazards (2.971243ms)
+✔ repeated acid splashback and kill effects keep bounded hazard counts (30.914959ms)
+✔ real horde pursuit skirts a pyramid prop and reaches the nearest cooperative player (563.821993ms)
+✔ ground steering does not clamp airborne enemies or replace active Crusher dashes (0.523337ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 29
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8087.244438

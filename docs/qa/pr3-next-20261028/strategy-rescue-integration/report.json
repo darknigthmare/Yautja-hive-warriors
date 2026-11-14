@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "label": "strategy-rescue-integration",
+  "startedAt": "2026-10-28T08:34:17.202Z",
+  "scope": "Explicit automated CPU suite. No browser, human playtest, hardware performance or visual fidelity certification.",
+  "command": [
+    "node",
+    "--max-old-space-size=2048",
+    "--test",
+    "--test-concurrency=1",
+    "--test-reporter=tap",
+    "tests/battle-target-index.test.js",
+    "tests/battle-strategy-depth.test.js",
+    "tests/battle-simulation.test.js",
+    "tests/battle-intel.test.js",
+    "tests/formation-companions.test.js",
+    "tests/combat-identity.test.js",
+    "tests/ally-rescue.test.js",
+    "tests/boss-registry.test.js"
+  ],
+  "cwd": "/workspace/Yautja-next-20261028",
+  "node": "v24.19.0",
+  "platform": "linux",
+  "arch": "x64",
+  "sourceHeadBefore": "a8aa85762365f1824c2772883a4ddb3fb708cc1e",
+  "sourceBefore": {
+    "sha256": "a2477071b4df4410561beb2ce53b0b11f5a6b518af5548f6d2d96bc2a2569cb2",
+    "files": 148
+  },
+  "testsBefore": [
+    {
+      "path": "tests/battle-target-index.test.js",
+      "sha256": "cf1406c22d3e13ab42ddec78e92f5f49751dc22c777282802cd42dcb6b049390"
+    },
+    {
+      "path": "tests/battle-strategy-depth.test.js",
+      "sha256": "85c297bcc737c09ce19b2c29c77e97ef8f8a56ec4dd9617ddb2a813b26ac10f4"
+    },
+    {
+      "path": "tests/battle-simulation.test.js",
+      "sha256": "c9b0ca46dea0b06535369600020524f6c9ae547a8a8da475f4a7062c2ee9debb"
+    },
+    {
+      "path": "tests/battle-intel.test.js",
+      "sha256": "e296f2698eb4187efdd7e6a436a4a1f0cac2f60be0015e82debd84872377c27f"
+    },
+    {
+      "path": "tests/formation-companions.test.js",
+      "sha256": "afae2167125f3607bdcd10618b073c7391090a39cd2437eabf7fe9280cf9bf3e"
+    },
+    {
+      "path": "tests/combat-identity.test.js",
+      "sha256": "46688c848aef740f13a6801e66c3318177d95addde3a56b83e0201527f9fc4e7"
+    },
+    {
+      "path": "tests/ally-rescue.test.js",
+      "sha256": "d3f415af0aa1c7f217ca2574464df51c3c539893b1a9d8398601860f3578fc8b"
+    },
+    {
+      "path": "tests/boss-registry.test.js",
+      "sha256": "db92842553a7b7e19e16a6b984218545b25753d3d3416195c17b0c1fc79233d6"
+    }
+  ],
+  "rawOutput": "output.txt",
+  "humanTesters": 0,
+  "browserSessions": 0,
+  "fidelity1to1Verified": false,
+  "exitCode": 0,
+  "signal": null,
+  "rawBytes": 21929,
+  "summaryParserReadsTailBytes": 21929,
+  "result": {
+    "tests": 83,
+    "pass": 83,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "sourceHeadAfter": "a8aa85762365f1824c2772883a4ddb3fb708cc1e",
+  "sourceAfter": {
+    "sha256": "a2477071b4df4410561beb2ce53b0b11f5a6b518af5548f6d2d96bc2a2569cb2",
+    "files": 148
+  },
+  "testsAfter": [
+    {
+      "path": "tests/battle-target-index.test.js",
+      "sha256": "cf1406c22d3e13ab42ddec78e92f5f49751dc22c777282802cd42dcb6b049390"
+    },
+    {
+      "path": "tests/battle-strategy-depth.test.js",
+      "sha256": "85c297bcc737c09ce19b2c29c77e97ef8f8a56ec4dd9617ddb2a813b26ac10f4"
+    },
+    {
+      "path": "tests/battle-simulation.test.js",
+      "sha256": "c9b0ca46dea0b06535369600020524f6c9ae547a8a8da475f4a7062c2ee9debb"
+    },
+    {
+      "path": "tests/battle-intel.test.js",
+      "sha256": "e296f2698eb4187efdd7e6a436a4a1f0cac2f60be0015e82debd84872377c27f"
+    },
+    {
+      "path": "tests/formation-companions.test.js",
+      "sha256": "afae2167125f3607bdcd10618b073c7391090a39cd2437eabf7fe9280cf9bf3e"
+    },
+    {
+      "path": "tests/combat-identity.test.js",
+      "sha256": "46688c848aef740f13a6801e66c3318177d95addde3a56b83e0201527f9fc4e7"
+    },
+    {
+      "path": "tests/ally-rescue.test.js",
+      "sha256": "d3f415af0aa1c7f217ca2574464df51c3c539893b1a9d8398601860f3578fc8b"
+    },
+    {
+      "path": "tests/boss-registry.test.js",
+      "sha256": "db92842553a7b7e19e16a6b984218545b25753d3d3416195c17b0c1fc79233d6"
+    }
+  ],
+  "runtimeSourceUnchanged": true,
+  "testsUnchanged": true,
+  "rawSha256": "f991b9e903d442ea8e9022659982a9cd78d7b63fbfa7bd4c5417bd462e1d3149",
+  "endedAt": "2026-10-28T08:34:39.767Z",
+  "durationSeconds": 22.565
+}

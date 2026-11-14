@@ -1,0 +1,12 @@
+{
+  "baseSourceCommit": "48b5bd5aa9d35fd3919ade38cf2aef55389bec5b",
+  "scope": "Isolated diagnostic build, base runtime plus only the reviewed Horde player-cache cleanup; not a release build",
+  "changes": [
+    {
+      "path": "js/entities/XenomorphHorde.js",
+      "beforeSha256": "f075e28fc01f238c1446a388b9eb5840cf17fbf87617a331cfca8170c6bfc339",
+      "afterSha256": "847f24a0f77d48331ed05c42f198622617b5188fbbd383852729dc2cddbf60cc",
+      "change": "clearWave releases _livingPlayers"
+    }
+  ]
+}

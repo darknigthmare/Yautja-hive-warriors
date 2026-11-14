@@ -1,0 +1,2909 @@
+{
+ "recette": "REC-023",
+ "titre": "Deux joueurs sur des fronts séparés",
+ "source": "docs/audits/2026-10-26/Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.xlsx#Validation!REC-023",
+ "dateExecution": "2026-11-14",
+ "commit": "3af4819a999137f5fd930aa9b688c8c9db58f113",
+ "sourcesJsNonCommitees": [
+  " M js/data/BattleCatalog.js",
+  " M js/entities/Synthetics.js"
+ ],
+ "graine": {
+  "operation": "AFF-14",
+  "joueurs": 2,
+  "mapSeed": 0,
+  "pasSimulation": 0.25
+ },
+ "commande": "node --test tests/recette-rec-023.test.js",
+ "preuveVideo": "non produite — preuve par journal de simulation",
+ "scenario": {
+  "operation": "AFF-14",
+  "configDigest": "799d621e",
+  "budgetLance": "EFF-03",
+  "contexteJoueurs": 2,
+  "budgetEFF07": {
+   "ennemi": {
+    "active": 128,
+    "distant": 512,
+    "reserve": 360,
+    "total": 1000
+   },
+   "allie": {
+    "active": 16,
+    "distant": 24,
+    "reserve": 8,
+    "total": 48
+   },
+   "joueurs": 2,
+   "note": "Budget global partagé entre les deux bulles. Un groupe visible des deux joueurs n’est compté qu’une fois ; cible 64 ennemis par bulle disjointe, réallocation possible sans changer le total."
+  },
+  "allocationsCoopJeu": {
+   "player_clan": {
+    "active": 8,
+    "distant": 32,
+    "reserve": 8,
+    "total": 48
+   },
+   "hive": {
+    "active": 24,
+    "distant": 616,
+    "reserve": 360,
+    "total": 1000
+   }
+  },
+  "allocationsEFF07Catalogue": {
+   "player_clan": {
+    "active": 8,
+    "distant": 32,
+    "reserve": 8,
+    "total": 48
+   },
+   "hive": {
+    "active": 24,
+    "distant": 616,
+    "reserve": 360,
+    "total": 1000
+   }
+  },
+  "plafondDetaille": 32,
+  "desiredActive": 144,
+  "script": [
+   {
+    "t": 20,
+    "label": "J2 lance le sabotage du tunnel B",
+    "result": {
+     "accepted": true,
+     "taskId": "tunnel_one",
+     "feedback": "Fermer la première voie de ruche — restez à portée."
+    }
+   },
+   {
+    "t": 20.5,
+    "label": "J1 tente le même dispositif (même tâche)",
+    "result": {
+     "accepted": false,
+     "taskId": "tunnel_one",
+     "feedback": "Votre partenaire utilise déjà ce dispositif."
+    }
+   },
+   {
+    "t": 59.75,
+    "label": "groupes déjà détaillés sur A avant le chevauchement",
+    "result": {
+     "groupes": [
+      "AFF-14:hive:34"
+     ]
+    }
+   },
+   {
+    "t": 60,
+    "label": "J2 rejoint la zone de J1 (chevauchement des bulles)",
+    "result": {
+     "p2": [
+      10,
+      6
+     ]
+    }
+   },
+   {
+    "t": 61,
+    "label": "groupe partagé repéré dans les deux bulles",
+    "result": {
+     "sharedGroup": "AFF-14:hive:34"
+    }
+   },
+   {
+    "t": 100,
+    "label": "J1 passe par le boss nommé (front C, à 30 m)",
+    "result": {
+     "p1": [
+      2274.6963600329277,
+      4.533797583850255
+     ],
+     "boss": [
+      2304.6963600329277,
+      4.533797583850255
+     ],
+     "etatBoss": "distant"
+    }
+   },
+   {
+    "t": 110,
+    "label": "J2 passe par le boss nommé (front C, à 30 m)",
+    "result": {
+     "p2": [
+      2274.6963600329277,
+      12.533797583850255
+     ],
+     "etatBoss": "active"
+    }
+   },
+   {
+    "t": 125,
+    "label": "mort du boss signalée par les deux joueurs (callbacks acteurs)",
+    "result": {
+     "premier": true,
+     "second": false,
+     "rewardIds": [
+      "rec-023-run:death:AFF-14:hive:21:0",
+      "rec-023-run:death:AFF-14:hive:21:0"
+     ]
+    }
+   }
+  ],
+  "detailBoss": [
+   [
+    100.25,
+    "spawn",
+    "AFF-14:hive:21",
+    8
+   ]
+  ],
+  "releves": {
+   "pas": "1 relevé sur 8 (2 s)",
+   "lignes": [
+    {
+     "t": 2,
+     "horloge": 2,
+     "actifsTotal": 32,
+     "actifsUniques": 32,
+     "parFaction": {
+      "player_clan": 8,
+      "hive": 24
+     },
+     "bulle1": 12,
+     "bulle2": 20,
+     "intersection": 0,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_b"
+     ],
+     "frontC": {
+      "damage": 3484.7,
+      "dead": 9,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": null
+    },
+    {
+     "t": 4,
+     "horloge": 4,
+     "actifsTotal": 32,
+     "actifsUniques": 32,
+     "parFaction": {
+      "player_clan": 8,
+      "hive": 24
+     },
+     "bulle1": 12,
+     "bulle2": 20,
+     "intersection": 0,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_b"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": null
+    },
+    {
+     "t": 6,
+     "horloge": 6,
+     "actifsTotal": 32,
+     "actifsUniques": 32,
+     "parFaction": {
+      "player_clan": 8,
+      "hive": 24
+     },
+     "bulle1": 12,
+     "bulle2": 20,
+     "intersection": 0,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_b"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": null
+    },
+    {
+     "t": 8,
+     "horloge": 8,
+     "actifsTotal": 32,
+     "actifsUniques": 32,
+     "parFaction": {
+      "player_clan": 8,
+      "hive": 24
+     },
+     "bulle1": 12,
+     "bulle2": 20,
+     "intersection": 0,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_b"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": null
+    },
+    {
+     "t": 10,
+     "horloge": 10,
+     "actifsTotal": 32,
+     "actifsUniques": 32,
+     "parFaction": {
+      "player_clan": 8,
+      "hive": 24
+     },
+     "bulle1": 12,
+     "bulle2": 20,
+     "intersection": 0,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_b"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": null
+    },
+    {
+     "t": 12,
+     "horloge": 12,
+     "actifsTotal": 32,
+     "actifsUniques": 32,
+     "parFaction": {
+      "player_clan": 8,
+      "hive": 24
+     },
+     "bulle1": 12,
+     "bulle2": 20,
+     "intersection": 0,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_b"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": null
+    },
+    {
+     "t": 14,
+     "horloge": 14,
+     "actifsTotal": 32,
+     "actifsUniques": 32,
+     "parFaction": {
+      "player_clan": 8,
+      "hive": 24
+     },
+     "bulle1": 12,
+     "bulle2": 20,
+     "intersection": 0,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_b"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": null
+    },
+    {
+     "t": 16,
+     "horloge": 16,
+     "actifsTotal": 32,
+     "actifsUniques": 32,
+     "parFaction": {
+      "player_clan": 8,
+      "hive": 24
+     },
+     "bulle1": 12,
+     "bulle2": 20,
+     "intersection": 0,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_b"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": null
+    },
+    {
+     "t": 18,
+     "horloge": 18,
+     "actifsTotal": 32,
+     "actifsUniques": 32,
+     "parFaction": {
+      "player_clan": 8,
+      "hive": 24
+     },
+     "bulle1": 12,
+     "bulle2": 20,
+     "intersection": 0,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_b"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": null
+    },
+    {
+     "t": 20,
+     "horloge": 20,
+     "actifsTotal": 32,
+     "actifsUniques": 32,
+     "parFaction": {
+      "player_clan": 8,
+      "hive": 24
+     },
+     "bulle1": 12,
+     "bulle2": 20,
+     "intersection": 0,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_b"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": null
+    },
+    {
+     "t": 22,
+     "horloge": 22,
+     "actifsTotal": 32,
+     "actifsUniques": 32,
+     "parFaction": {
+      "player_clan": 8,
+      "hive": 24
+     },
+     "bulle1": 12,
+     "bulle2": 20,
+     "intersection": 0,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_b"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": null
+    },
+    {
+     "t": 24,
+     "horloge": 24,
+     "actifsTotal": 32,
+     "actifsUniques": 32,
+     "parFaction": {
+      "player_clan": 8,
+      "hive": 24
+     },
+     "bulle1": 12,
+     "bulle2": 20,
+     "intersection": 0,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_b"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": null
+    },
+    {
+     "t": 26,
+     "horloge": 26,
+     "actifsTotal": 32,
+     "actifsUniques": 32,
+     "parFaction": {
+      "player_clan": 8,
+      "hive": 24
+     },
+     "bulle1": 12,
+     "bulle2": 20,
+     "intersection": 0,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_b"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": null
+    },
+    {
+     "t": 28,
+     "horloge": 28,
+     "actifsTotal": 32,
+     "actifsUniques": 32,
+     "parFaction": {
+      "player_clan": 8,
+      "hive": 24
+     },
+     "bulle1": 12,
+     "bulle2": 20,
+     "intersection": 0,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_b"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": null
+    },
+    {
+     "t": 30,
+     "horloge": 30,
+     "actifsTotal": 32,
+     "actifsUniques": 32,
+     "parFaction": {
+      "player_clan": 8,
+      "hive": 24
+     },
+     "bulle1": 12,
+     "bulle2": 20,
+     "intersection": 0,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_b"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": null
+    },
+    {
+     "t": 32,
+     "horloge": 32,
+     "actifsTotal": 32,
+     "actifsUniques": 32,
+     "parFaction": {
+      "player_clan": 8,
+      "hive": 24
+     },
+     "bulle1": 12,
+     "bulle2": 20,
+     "intersection": 0,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_b"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": null
+    },
+    {
+     "t": 34,
+     "horloge": 34,
+     "actifsTotal": 32,
+     "actifsUniques": 32,
+     "parFaction": {
+      "player_clan": 8,
+      "hive": 24
+     },
+     "bulle1": 12,
+     "bulle2": 20,
+     "intersection": 0,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_b"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": null
+    },
+    {
+     "t": 36,
+     "horloge": 36,
+     "actifsTotal": 32,
+     "actifsUniques": 32,
+     "parFaction": {
+      "player_clan": 8,
+      "hive": 24
+     },
+     "bulle1": 12,
+     "bulle2": 20,
+     "intersection": 0,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_b"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": null
+    },
+    {
+     "t": 38,
+     "horloge": 38,
+     "actifsTotal": 32,
+     "actifsUniques": 32,
+     "parFaction": {
+      "player_clan": 8,
+      "hive": 24
+     },
+     "bulle1": 12,
+     "bulle2": 20,
+     "intersection": 0,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_b"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": null
+    },
+    {
+     "t": 40,
+     "horloge": 40,
+     "actifsTotal": 32,
+     "actifsUniques": 32,
+     "parFaction": {
+      "player_clan": 8,
+      "hive": 24
+     },
+     "bulle1": 12,
+     "bulle2": 20,
+     "intersection": 0,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_b"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": null
+    },
+    {
+     "t": 42,
+     "horloge": 42,
+     "actifsTotal": 32,
+     "actifsUniques": 32,
+     "parFaction": {
+      "player_clan": 8,
+      "hive": 24
+     },
+     "bulle1": 12,
+     "bulle2": 20,
+     "intersection": 0,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_b"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": null
+    },
+    {
+     "t": 44,
+     "horloge": 44,
+     "actifsTotal": 32,
+     "actifsUniques": 32,
+     "parFaction": {
+      "player_clan": 8,
+      "hive": 24
+     },
+     "bulle1": 12,
+     "bulle2": 20,
+     "intersection": 0,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_b"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": null
+    },
+    {
+     "t": 46,
+     "horloge": 46,
+     "actifsTotal": 32,
+     "actifsUniques": 32,
+     "parFaction": {
+      "player_clan": 8,
+      "hive": 24
+     },
+     "bulle1": 12,
+     "bulle2": 20,
+     "intersection": 0,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_b"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": null
+    },
+    {
+     "t": 48,
+     "horloge": 48,
+     "actifsTotal": 32,
+     "actifsUniques": 32,
+     "parFaction": {
+      "player_clan": 8,
+      "hive": 24
+     },
+     "bulle1": 12,
+     "bulle2": 20,
+     "intersection": 0,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_b"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": null
+    },
+    {
+     "t": 50,
+     "horloge": 50,
+     "actifsTotal": 32,
+     "actifsUniques": 32,
+     "parFaction": {
+      "player_clan": 8,
+      "hive": 24
+     },
+     "bulle1": 12,
+     "bulle2": 20,
+     "intersection": 0,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_b"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": null
+    },
+    {
+     "t": 52,
+     "horloge": 52,
+     "actifsTotal": 32,
+     "actifsUniques": 32,
+     "parFaction": {
+      "player_clan": 8,
+      "hive": 24
+     },
+     "bulle1": 12,
+     "bulle2": 20,
+     "intersection": 0,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_b"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": null
+    },
+    {
+     "t": 54,
+     "horloge": 54,
+     "actifsTotal": 32,
+     "actifsUniques": 32,
+     "parFaction": {
+      "player_clan": 8,
+      "hive": 24
+     },
+     "bulle1": 12,
+     "bulle2": 20,
+     "intersection": 0,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_b"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": null
+    },
+    {
+     "t": 56,
+     "horloge": 56,
+     "actifsTotal": 32,
+     "actifsUniques": 32,
+     "parFaction": {
+      "player_clan": 8,
+      "hive": 24
+     },
+     "bulle1": 12,
+     "bulle2": 20,
+     "intersection": 0,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_b"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": null
+    },
+    {
+     "t": 58,
+     "horloge": 58,
+     "actifsTotal": 32,
+     "actifsUniques": 32,
+     "parFaction": {
+      "player_clan": 8,
+      "hive": 24
+     },
+     "bulle1": 12,
+     "bulle2": 20,
+     "intersection": 0,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_b"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": null
+    },
+    {
+     "t": 60,
+     "horloge": 60,
+     "actifsTotal": 32,
+     "actifsUniques": 32,
+     "parFaction": {
+      "player_clan": 8,
+      "hive": 24
+     },
+     "bulle1": 12,
+     "bulle2": 20,
+     "intersection": 0,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_b"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": null
+    },
+    {
+     "t": 62,
+     "horloge": 62,
+     "actifsTotal": 28,
+     "actifsUniques": 28,
+     "parFaction": {
+      "player_clan": 4,
+      "hive": 24
+     },
+     "bulle1": 28,
+     "bulle2": 28,
+     "intersection": 28,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_a"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 64,
+     "horloge": 64,
+     "actifsTotal": 28,
+     "actifsUniques": 28,
+     "parFaction": {
+      "player_clan": 4,
+      "hive": 24
+     },
+     "bulle1": 28,
+     "bulle2": 28,
+     "intersection": 28,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_a"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 66,
+     "horloge": 66,
+     "actifsTotal": 28,
+     "actifsUniques": 28,
+     "parFaction": {
+      "player_clan": 4,
+      "hive": 24
+     },
+     "bulle1": 28,
+     "bulle2": 28,
+     "intersection": 28,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_a"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 68,
+     "horloge": 68,
+     "actifsTotal": 28,
+     "actifsUniques": 28,
+     "parFaction": {
+      "player_clan": 4,
+      "hive": 24
+     },
+     "bulle1": 28,
+     "bulle2": 28,
+     "intersection": 28,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_a"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 70,
+     "horloge": 70,
+     "actifsTotal": 28,
+     "actifsUniques": 28,
+     "parFaction": {
+      "player_clan": 4,
+      "hive": 24
+     },
+     "bulle1": 28,
+     "bulle2": 28,
+     "intersection": 28,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_a"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 72,
+     "horloge": 72,
+     "actifsTotal": 28,
+     "actifsUniques": 28,
+     "parFaction": {
+      "player_clan": 4,
+      "hive": 24
+     },
+     "bulle1": 28,
+     "bulle2": 28,
+     "intersection": 28,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_a"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 74,
+     "horloge": 74,
+     "actifsTotal": 28,
+     "actifsUniques": 28,
+     "parFaction": {
+      "player_clan": 4,
+      "hive": 24
+     },
+     "bulle1": 28,
+     "bulle2": 28,
+     "intersection": 28,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_a"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 76,
+     "horloge": 76,
+     "actifsTotal": 28,
+     "actifsUniques": 28,
+     "parFaction": {
+      "player_clan": 4,
+      "hive": 24
+     },
+     "bulle1": 28,
+     "bulle2": 28,
+     "intersection": 28,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_a"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 78,
+     "horloge": 78,
+     "actifsTotal": 28,
+     "actifsUniques": 28,
+     "parFaction": {
+      "player_clan": 4,
+      "hive": 24
+     },
+     "bulle1": 28,
+     "bulle2": 28,
+     "intersection": 28,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_a"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 80,
+     "horloge": 80,
+     "actifsTotal": 28,
+     "actifsUniques": 28,
+     "parFaction": {
+      "player_clan": 4,
+      "hive": 24
+     },
+     "bulle1": 28,
+     "bulle2": 28,
+     "intersection": 28,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_a"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 82,
+     "horloge": 82,
+     "actifsTotal": 28,
+     "actifsUniques": 28,
+     "parFaction": {
+      "player_clan": 4,
+      "hive": 24
+     },
+     "bulle1": 28,
+     "bulle2": 28,
+     "intersection": 28,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_a"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 84,
+     "horloge": 84,
+     "actifsTotal": 28,
+     "actifsUniques": 28,
+     "parFaction": {
+      "player_clan": 4,
+      "hive": 24
+     },
+     "bulle1": 28,
+     "bulle2": 28,
+     "intersection": 28,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_a"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 86,
+     "horloge": 86,
+     "actifsTotal": 28,
+     "actifsUniques": 28,
+     "parFaction": {
+      "player_clan": 4,
+      "hive": 24
+     },
+     "bulle1": 28,
+     "bulle2": 28,
+     "intersection": 28,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_a"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 88,
+     "horloge": 88,
+     "actifsTotal": 28,
+     "actifsUniques": 28,
+     "parFaction": {
+      "player_clan": 4,
+      "hive": 24
+     },
+     "bulle1": 28,
+     "bulle2": 28,
+     "intersection": 28,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_a"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 90,
+     "horloge": 90,
+     "actifsTotal": 28,
+     "actifsUniques": 28,
+     "parFaction": {
+      "player_clan": 4,
+      "hive": 24
+     },
+     "bulle1": 28,
+     "bulle2": 28,
+     "intersection": 28,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_a"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 92,
+     "horloge": 92,
+     "actifsTotal": 28,
+     "actifsUniques": 28,
+     "parFaction": {
+      "player_clan": 4,
+      "hive": 24
+     },
+     "bulle1": 28,
+     "bulle2": 28,
+     "intersection": 28,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_a"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 94,
+     "horloge": 94,
+     "actifsTotal": 28,
+     "actifsUniques": 28,
+     "parFaction": {
+      "player_clan": 4,
+      "hive": 24
+     },
+     "bulle1": 28,
+     "bulle2": 28,
+     "intersection": 28,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_a"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 96,
+     "horloge": 96,
+     "actifsTotal": 28,
+     "actifsUniques": 28,
+     "parFaction": {
+      "player_clan": 4,
+      "hive": 24
+     },
+     "bulle1": 28,
+     "bulle2": 28,
+     "intersection": 28,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_a"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 98,
+     "horloge": 98,
+     "actifsTotal": 28,
+     "actifsUniques": 28,
+     "parFaction": {
+      "player_clan": 4,
+      "hive": 24
+     },
+     "bulle1": 28,
+     "bulle2": 28,
+     "intersection": 28,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_a"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 100,
+     "horloge": 100,
+     "actifsTotal": 28,
+     "actifsUniques": 28,
+     "parFaction": {
+      "player_clan": 4,
+      "hive": 24
+     },
+     "bulle1": 28,
+     "bulle2": 28,
+     "intersection": 28,
+     "frontsJ1": [
+      "front_a"
+     ],
+     "frontsJ2": [
+      "front_a"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 102,
+     "horloge": 102,
+     "actifsTotal": 28,
+     "actifsUniques": 28,
+     "parFaction": {
+      "player_clan": 4,
+      "hive": 24
+     },
+     "bulle1": 8,
+     "bulle2": 20,
+     "intersection": 0,
+     "frontsJ1": [
+      "front_c"
+     ],
+     "frontsJ2": [
+      "front_a"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 104,
+     "horloge": 104,
+     "actifsTotal": 28,
+     "actifsUniques": 28,
+     "parFaction": {
+      "player_clan": 4,
+      "hive": 24
+     },
+     "bulle1": 8,
+     "bulle2": 20,
+     "intersection": 0,
+     "frontsJ1": [
+      "front_c"
+     ],
+     "frontsJ2": [
+      "front_a"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 106,
+     "horloge": 106,
+     "actifsTotal": 28,
+     "actifsUniques": 28,
+     "parFaction": {
+      "player_clan": 4,
+      "hive": 24
+     },
+     "bulle1": 8,
+     "bulle2": 20,
+     "intersection": 0,
+     "frontsJ1": [
+      "front_c"
+     ],
+     "frontsJ2": [
+      "front_a"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 108,
+     "horloge": 108,
+     "actifsTotal": 28,
+     "actifsUniques": 28,
+     "parFaction": {
+      "player_clan": 4,
+      "hive": 24
+     },
+     "bulle1": 8,
+     "bulle2": 20,
+     "intersection": 0,
+     "frontsJ1": [
+      "front_c"
+     ],
+     "frontsJ2": [
+      "front_a"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 110,
+     "horloge": 110,
+     "actifsTotal": 28,
+     "actifsUniques": 28,
+     "parFaction": {
+      "player_clan": 4,
+      "hive": 24
+     },
+     "bulle1": 8,
+     "bulle2": 20,
+     "intersection": 0,
+     "frontsJ1": [
+      "front_c"
+     ],
+     "frontsJ2": [
+      "front_a"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 112,
+     "horloge": 112,
+     "actifsTotal": 24,
+     "actifsUniques": 24,
+     "parFaction": {
+      "player_clan": 0,
+      "hive": 24
+     },
+     "bulle1": 24,
+     "bulle2": 24,
+     "intersection": 24,
+     "frontsJ1": [
+      "front_c"
+     ],
+     "frontsJ2": [
+      "front_c"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 114,
+     "horloge": 114,
+     "actifsTotal": 24,
+     "actifsUniques": 24,
+     "parFaction": {
+      "player_clan": 0,
+      "hive": 24
+     },
+     "bulle1": 24,
+     "bulle2": 24,
+     "intersection": 24,
+     "frontsJ1": [
+      "front_c"
+     ],
+     "frontsJ2": [
+      "front_c"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 116,
+     "horloge": 116,
+     "actifsTotal": 24,
+     "actifsUniques": 24,
+     "parFaction": {
+      "player_clan": 0,
+      "hive": 24
+     },
+     "bulle1": 24,
+     "bulle2": 24,
+     "intersection": 24,
+     "frontsJ1": [
+      "front_c"
+     ],
+     "frontsJ2": [
+      "front_c"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 118,
+     "horloge": 118,
+     "actifsTotal": 24,
+     "actifsUniques": 24,
+     "parFaction": {
+      "player_clan": 0,
+      "hive": 24
+     },
+     "bulle1": 24,
+     "bulle2": 24,
+     "intersection": 24,
+     "frontsJ1": [
+      "front_c"
+     ],
+     "frontsJ2": [
+      "front_c"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 120,
+     "horloge": 120,
+     "actifsTotal": 24,
+     "actifsUniques": 24,
+     "parFaction": {
+      "player_clan": 0,
+      "hive": 24
+     },
+     "bulle1": 24,
+     "bulle2": 24,
+     "intersection": 24,
+     "frontsJ1": [
+      "front_c"
+     ],
+     "frontsJ2": [
+      "front_c"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 122,
+     "horloge": 122,
+     "actifsTotal": 24,
+     "actifsUniques": 24,
+     "parFaction": {
+      "player_clan": 0,
+      "hive": 24
+     },
+     "bulle1": 24,
+     "bulle2": 24,
+     "intersection": 24,
+     "frontsJ1": [
+      "front_c"
+     ],
+     "frontsJ2": [
+      "front_c"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 124,
+     "horloge": 124,
+     "actifsTotal": 24,
+     "actifsUniques": 24,
+     "parFaction": {
+      "player_clan": 0,
+      "hive": 24
+     },
+     "bulle1": 24,
+     "bulle2": 24,
+     "intersection": 24,
+     "frontsJ1": [
+      "front_c"
+     ],
+     "frontsJ2": [
+      "front_c"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 12,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 126,
+     "horloge": 126,
+     "actifsTotal": 23,
+     "actifsUniques": 23,
+     "parFaction": {
+      "player_clan": 0,
+      "hive": 23
+     },
+     "bulle1": 23,
+     "bulle2": 23,
+     "intersection": 23,
+     "frontsJ1": [
+      "front_c"
+     ],
+     "frontsJ2": [
+      "front_c"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 13,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 128,
+     "horloge": 128,
+     "actifsTotal": 23,
+     "actifsUniques": 23,
+     "parFaction": {
+      "player_clan": 0,
+      "hive": 23
+     },
+     "bulle1": 23,
+     "bulle2": 23,
+     "intersection": 23,
+     "frontsJ1": [
+      "front_c"
+     ],
+     "frontsJ2": [
+      "front_c"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 13,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 130,
+     "horloge": 130,
+     "actifsTotal": 23,
+     "actifsUniques": 23,
+     "parFaction": {
+      "player_clan": 0,
+      "hive": 23
+     },
+     "bulle1": 23,
+     "bulle2": 23,
+     "intersection": 23,
+     "frontsJ1": [
+      "front_c"
+     ],
+     "frontsJ2": [
+      "front_c"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 13,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 132,
+     "horloge": 132,
+     "actifsTotal": 23,
+     "actifsUniques": 23,
+     "parFaction": {
+      "player_clan": 0,
+      "hive": 23
+     },
+     "bulle1": 23,
+     "bulle2": 23,
+     "intersection": 23,
+     "frontsJ1": [
+      "front_c"
+     ],
+     "frontsJ2": [
+      "front_c"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 13,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 134,
+     "horloge": 134,
+     "actifsTotal": 23,
+     "actifsUniques": 23,
+     "parFaction": {
+      "player_clan": 0,
+      "hive": 23
+     },
+     "bulle1": 23,
+     "bulle2": 23,
+     "intersection": 23,
+     "frontsJ1": [
+      "front_c"
+     ],
+     "frontsJ2": [
+      "front_c"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 13,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 136,
+     "horloge": 136,
+     "actifsTotal": 23,
+     "actifsUniques": 23,
+     "parFaction": {
+      "player_clan": 0,
+      "hive": 23
+     },
+     "bulle1": 23,
+     "bulle2": 23,
+     "intersection": 23,
+     "frontsJ1": [
+      "front_c"
+     ],
+     "frontsJ2": [
+      "front_c"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 13,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 138,
+     "horloge": 138,
+     "actifsTotal": 23,
+     "actifsUniques": 23,
+     "parFaction": {
+      "player_clan": 0,
+      "hive": 23
+     },
+     "bulle1": 23,
+     "bulle2": 23,
+     "intersection": 23,
+     "frontsJ1": [
+      "front_c"
+     ],
+     "frontsJ2": [
+      "front_c"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 13,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 140,
+     "horloge": 140,
+     "actifsTotal": 23,
+     "actifsUniques": 23,
+     "parFaction": {
+      "player_clan": 0,
+      "hive": 23
+     },
+     "bulle1": 23,
+     "bulle2": 23,
+     "intersection": 23,
+     "frontsJ1": [
+      "front_c"
+     ],
+     "frontsJ2": [
+      "front_c"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 13,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 142,
+     "horloge": 142,
+     "actifsTotal": 23,
+     "actifsUniques": 23,
+     "parFaction": {
+      "player_clan": 0,
+      "hive": 23
+     },
+     "bulle1": 23,
+     "bulle2": 23,
+     "intersection": 23,
+     "frontsJ1": [
+      "front_c"
+     ],
+     "frontsJ2": [
+      "front_c"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 13,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 144,
+     "horloge": 144,
+     "actifsTotal": 23,
+     "actifsUniques": 23,
+     "parFaction": {
+      "player_clan": 0,
+      "hive": 23
+     },
+     "bulle1": 23,
+     "bulle2": 23,
+     "intersection": 23,
+     "frontsJ1": [
+      "front_c"
+     ],
+     "frontsJ2": [
+      "front_c"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 13,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 146,
+     "horloge": 146,
+     "actifsTotal": 23,
+     "actifsUniques": 23,
+     "parFaction": {
+      "player_clan": 0,
+      "hive": 23
+     },
+     "bulle1": 23,
+     "bulle2": 23,
+     "intersection": 23,
+     "frontsJ1": [
+      "front_c"
+     ],
+     "frontsJ2": [
+      "front_c"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 13,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 148,
+     "horloge": 148,
+     "actifsTotal": 23,
+     "actifsUniques": 23,
+     "parFaction": {
+      "player_clan": 0,
+      "hive": 23
+     },
+     "bulle1": 23,
+     "bulle2": 23,
+     "intersection": 23,
+     "frontsJ1": [
+      "front_c"
+     ],
+     "frontsJ2": [
+      "front_c"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 13,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 150,
+     "horloge": 150,
+     "actifsTotal": 23,
+     "actifsUniques": 23,
+     "parFaction": {
+      "player_clan": 0,
+      "hive": 23
+     },
+     "bulle1": 23,
+     "bulle2": 23,
+     "intersection": 23,
+     "frontsJ1": [
+      "front_c"
+     ],
+     "frontsJ2": [
+      "front_c"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 13,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 152,
+     "horloge": 152,
+     "actifsTotal": 23,
+     "actifsUniques": 23,
+     "parFaction": {
+      "player_clan": 0,
+      "hive": 23
+     },
+     "bulle1": 23,
+     "bulle2": 23,
+     "intersection": 23,
+     "frontsJ1": [
+      "front_c"
+     ],
+     "frontsJ2": [
+      "front_c"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 13,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 154,
+     "horloge": 154,
+     "actifsTotal": 23,
+     "actifsUniques": 23,
+     "parFaction": {
+      "player_clan": 0,
+      "hive": 23
+     },
+     "bulle1": 23,
+     "bulle2": 23,
+     "intersection": 23,
+     "frontsJ1": [
+      "front_c"
+     ],
+     "frontsJ2": [
+      "front_c"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 13,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 156,
+     "horloge": 156,
+     "actifsTotal": 23,
+     "actifsUniques": 23,
+     "parFaction": {
+      "player_clan": 0,
+      "hive": 23
+     },
+     "bulle1": 23,
+     "bulle2": 23,
+     "intersection": 23,
+     "frontsJ1": [
+      "front_c"
+     ],
+     "frontsJ2": [
+      "front_c"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 13,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 158,
+     "horloge": 158,
+     "actifsTotal": 23,
+     "actifsUniques": 23,
+     "parFaction": {
+      "player_clan": 0,
+      "hive": 23
+     },
+     "bulle1": 23,
+     "bulle2": 23,
+     "intersection": 23,
+     "frontsJ1": [
+      "front_c"
+     ],
+     "frontsJ2": [
+      "front_c"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 13,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    },
+    {
+     "t": 160,
+     "horloge": 160,
+     "actifsTotal": 23,
+     "actifsUniques": 23,
+     "parFaction": {
+      "player_clan": 0,
+      "hive": 23
+     },
+     "bulle1": 23,
+     "bulle2": 23,
+     "intersection": 23,
+     "frontsJ1": [
+      "front_c"
+     ],
+     "frontsJ2": [
+      "front_c"
+     ],
+     "frontC": {
+      "damage": 4962.9,
+      "dead": 13,
+      "owner": "hive"
+     },
+     "groupePartageSpawns": 0
+    }
+   ]
+  },
+  "journalDetail": [
+   [
+    0.25,
+    "spawn",
+    "AFF-14:player_clan:72",
+    2
+   ],
+   [
+    0.25,
+    "spawn",
+    "AFF-14:hive:10",
+    8
+   ],
+   [
+    0.25,
+    "spawn",
+    "AFF-14:hive:34",
+    8
+   ],
+   [
+    0.25,
+    "spawn",
+    "AFF-14:player_clan:51",
+    2
+   ],
+   [
+    0.25,
+    "spawn",
+    "AFF-14:player_clan:74",
+    2
+   ],
+   [
+    0.25,
+    "spawn",
+    "AFF-14:hive:53",
+    8
+   ],
+   [
+    0.25,
+    "spawn",
+    "AFF-14:player_clan:48",
+    2
+   ],
+   [
+    60.25,
+    "despawn",
+    "AFF-14:hive:10",
+    8
+   ],
+   [
+    60.25,
+    "despawn",
+    "AFF-14:hive:53",
+    8
+   ],
+   [
+    60.25,
+    "despawn",
+    "AFF-14:player_clan:72",
+    2
+   ],
+   [
+    60.25,
+    "despawn",
+    "AFF-14:player_clan:74",
+    2
+   ],
+   [
+    60.25,
+    "spawn",
+    "AFF-14:hive:47",
+    8
+   ],
+   [
+    60.25,
+    "spawn",
+    "AFF-14:hive:32",
+    8
+   ],
+   [
+    100.25,
+    "despawn",
+    "AFF-14:hive:32",
+    8
+   ],
+   [
+    100.25,
+    "spawn",
+    "AFF-14:hive:21",
+    8
+   ],
+   [
+    110.25,
+    "despawn",
+    "AFF-14:hive:34",
+    8
+   ],
+   [
+    110.25,
+    "despawn",
+    "AFF-14:hive:47",
+    8
+   ],
+   [
+    110.25,
+    "despawn",
+    "AFF-14:player_clan:48",
+    2
+   ],
+   [
+    110.25,
+    "despawn",
+    "AFF-14:player_clan:51",
+    2
+   ],
+   [
+    110.25,
+    "spawn",
+    "AFF-14:hive:89",
+    8
+   ],
+   [
+    110.25,
+    "spawn",
+    "AFF-14:hive:82",
+    8
+   ]
+  ],
+  "chronologieFronts": [
+   [
+    1.25,
+    "unit_died",
+    null,
+    "AFF-14:player_clan:15"
+   ],
+   [
+    1.25,
+    "musou_officer_broken",
+    "front_b",
+    "AFF-14:player_clan:15"
+   ],
+   [
+    1.5,
+    "unit_died",
+    null,
+    "AFF-14:player_clan:49"
+   ],
+   [
+    1.5,
+    "musou_officer_broken",
+    "front_a",
+    "AFF-14:player_clan:49"
+   ],
+   [
+    1.5,
+    "unit_died",
+    null,
+    "AFF-14:player_clan:50"
+   ],
+   [
+    1.5,
+    "musou_officer_broken",
+    "front_a",
+    "AFF-14:player_clan:50"
+   ],
+   [
+    1.5,
+    "unit_died",
+    null,
+    "AFF-14:player_clan:16"
+   ],
+   [
+    1.5,
+    "musou_officer_broken",
+    "front_b",
+    "AFF-14:player_clan:16"
+   ],
+   [
+    1.5,
+    "unit_died",
+    null,
+    "AFF-14:player_clan:22"
+   ],
+   [
+    1.5,
+    "musou_officer_broken",
+    "front_c",
+    "AFF-14:player_clan:22"
+   ],
+   [
+    1.75,
+    "unit_died",
+    null,
+    "AFF-14:player_clan:6"
+   ],
+   [
+    1.75,
+    "musou_officer_broken",
+    "front_a",
+    "AFF-14:player_clan:6"
+   ],
+   [
+    1.75,
+    "unit_died",
+    null,
+    "AFF-14:player_clan:73"
+   ],
+   [
+    1.75,
+    "musou_officer_broken",
+    "front_b",
+    "AFF-14:player_clan:73"
+   ],
+   [
+    1.75,
+    "unit_died",
+    null,
+    "AFF-14:player_clan:23"
+   ],
+   [
+    1.75,
+    "musou_officer_broken",
+    "front_c",
+    "AFF-14:player_clan:23"
+   ],
+   [
+    2,
+    "unit_died",
+    null,
+    "AFF-14:player_clan:7"
+   ],
+   [
+    2,
+    "musou_officer_broken",
+    "front_a",
+    "AFF-14:player_clan:7"
+   ],
+   [
+    2,
+    "unit_died",
+    null,
+    "AFF-14:player_clan:96"
+   ],
+   [
+    2,
+    "musou_officer_broken",
+    "front_c",
+    "AFF-14:player_clan:96"
+   ],
+   [
+    2.25,
+    "unit_died",
+    null,
+    "AFF-14:player_clan:75"
+   ],
+   [
+    2.25,
+    "musou_officer_broken",
+    "front_b",
+    "AFF-14:player_clan:75"
+   ],
+   [
+    2.5,
+    "unit_died",
+    null,
+    "AFF-14:player_clan:8"
+   ],
+   [
+    2.5,
+    "unit_died",
+    null,
+    "AFF-14:player_clan:97"
+   ],
+   [
+    2.5,
+    "musou_officer_broken",
+    "front_c",
+    "AFF-14:player_clan:97"
+   ],
+   [
+    2.75,
+    "unit_died",
+    null,
+    "AFF-14:player_clan:9"
+   ],
+   [
+    2.75,
+    "unit_died",
+    null,
+    "AFF-14:player_clan:98"
+   ],
+   [
+    2.75,
+    "unit_died",
+    null,
+    "AFF-14:player_clan:99"
+   ],
+   [
+    8,
+    "reinforcements_inbound",
+    "front_a",
+    "AFF-14:player_clan:145"
+   ],
+   [
+    11,
+    "reinforcements_arrived",
+    "front_a",
+    "AFF-14:player_clan:145"
+   ],
+   [
+    11.25,
+    "unit_died",
+    null,
+    "AFF-14:player_clan:145"
+   ],
+   [
+    16,
+    "reinforcements_inbound",
+    "front_a",
+    "AFF-14:player_clan:146"
+   ],
+   [
+    16,
+    "reinforcements_inbound",
+    "front_b",
+    "AFF-14:hive:100"
+   ],
+   [
+    19,
+    "reinforcements_arrived",
+    "front_a",
+    "AFF-14:player_clan:146"
+   ],
+   [
+    19,
+    "reinforcements_arrived",
+    "front_b",
+    "AFF-14:hive:100"
+   ],
+   [
+    19.25,
+    "unit_died",
+    null,
+    "AFF-14:player_clan:146"
+   ],
+   [
+    23,
+    "source_disabled",
+    "front_b",
+    null
+   ],
+   [
+    24,
+    "reinforcements_inbound",
+    "front_a",
+    "AFF-14:player_clan:147"
+   ],
+   [
+    27,
+    "reinforcements_arrived",
+    "front_a",
+    "AFF-14:player_clan:147"
+   ],
+   [
+    27.25,
+    "unit_died",
+    null,
+    "AFF-14:player_clan:147"
+   ],
+   [
+    32,
+    "reinforcements_inbound",
+    "front_a",
+    "AFF-14:player_clan:148"
+   ],
+   [
+    35,
+    "reinforcements_arrived",
+    "front_a",
+    "AFF-14:player_clan:148"
+   ],
+   [
+    35.25,
+    "unit_died",
+    null,
+    "AFF-14:player_clan:148"
+   ],
+   [
+    60.25,
+    "unit_died",
+    null,
+    "AFF-14:player_clan:72"
+   ],
+   [
+    60.25,
+    "musou_officer_broken",
+    "front_b",
+    "AFF-14:player_clan:72"
+   ],
+   [
+    60.25,
+    "unit_died",
+    null,
+    "AFF-14:player_clan:74"
+   ],
+   [
+    60.25,
+    "musou_officer_broken",
+    "front_b",
+    "AFF-14:player_clan:74"
+   ],
+   [
+    110.25,
+    "unit_died",
+    null,
+    "AFF-14:player_clan:48"
+   ],
+   [
+    110.25,
+    "unit_died",
+    null,
+    "AFF-14:player_clan:51"
+   ],
+   [
+    125,
+    "unit_died",
+    null,
+    "AFF-14:hive:21"
+   ],
+   [
+    125,
+    "hive_coordination_disrupted",
+    "front_c",
+    "AFF-14:hive:21"
+   ]
+  ],
+  "hudFinal": {
+   "fronts": [
+    {
+     "id": "front_a",
+     "owner": "player_clan",
+     "contested": true,
+     "sourceHP": 1000
+    },
+    {
+     "id": "front_b",
+     "owner": "hive",
+     "contested": true,
+     "sourceHP": 0
+    },
+    {
+     "id": "front_c",
+     "owner": "hive",
+     "contested": true,
+     "sourceHP": 1000
+    }
+   ],
+   "alertes": [],
+   "counts": {
+    "player_clan": {
+     "allocated": 48,
+     "active": 0,
+     "distant": 0,
+     "reserve": 0,
+     "dead": 48,
+     "evacuated": 0,
+     "captured": 0
+    },
+    "hive": {
+     "allocated": 1000,
+     "active": 23,
+     "distant": 623,
+     "reserve": 352,
+     "dead": 2,
+     "evacuated": 0,
+     "captured": 0
+    }
+   }
+  }
+ },
+ "clauses": [
+  {
+   "id": "C0",
+   "texte": "Effectifs EFF-07 conservés en coop (1 000 ennemis, 48 alliés, 2 joueurs hors effectifs)",
+   "verdict": "prouvé",
+   "allocationsCoop": {
+    "player_clan": {
+     "active": 8,
+     "distant": 32,
+     "reserve": 8,
+     "total": 48
+    },
+    "hive": {
+     "active": 24,
+     "distant": 616,
+     "reserve": 360,
+     "total": 1000
+    }
+   },
+   "allocationsEFF07": {
+    "player_clan": {
+     "active": 8,
+     "distant": 32,
+     "reserve": 8,
+     "total": 48
+    },
+    "hive": {
+     "active": 24,
+     "distant": 616,
+     "reserve": 360,
+     "total": 1000
+    }
+   },
+   "remarque": "La coop du jeu lance AFF-14 avec le budget de l’opération (EFF-03) et context.players=2 ; EFF-07 a les mêmes totaux. Cible EFF-07 de 128 ennemis actifs (64 par bulle) non atteinte : plafond provisoire de 32 acteurs détaillés (AGENTS.md, contrat 2), à mesurer sur matériel avant tout relèvement."
+  },
+  {
+   "id": "C1",
+   "texte": "Horloge commune ; les deux bulles partagent le budget global (compteurs globaux et par bulle)",
+   "verdict": "prouvé",
+   "plafond": 32,
+   "maxBulle1PlusBulle2Separees": 32,
+   "exemplesSepares": [
+    {
+     "t": 1.25,
+     "bulle1": 12,
+     "bulle2": 20,
+     "total": 32,
+     "parFaction": {
+      "player_clan": 8,
+      "hive": 24
+     }
+    },
+    {
+     "t": 11.25,
+     "bulle1": 12,
+     "bulle2": 20,
+     "total": 32,
+     "parFaction": {
+      "player_clan": 8,
+      "hive": 24
+     }
+    },
+    {
+     "t": 21.25,
+     "bulle1": 12,
+     "bulle2": 20,
+     "total": 32,
+     "parFaction": {
+      "player_clan": 8,
+      "hive": 24
+     }
+    },
+    {
+     "t": 31.25,
+     "bulle1": 12,
+     "bulle2": 20,
+     "total": 32,
+     "parFaction": {
+      "player_clan": 8,
+      "hive": 24
+     }
+    },
+    {
+     "t": 41.25,
+     "bulle1": 12,
+     "bulle2": 20,
+     "total": 32,
+     "parFaction": {
+      "player_clan": 8,
+      "hive": 24
+     }
+    },
+    {
+     "t": 51.25,
+     "bulle1": 12,
+     "bulle2": 20,
+     "total": 32,
+     "parFaction": {
+      "player_clan": 8,
+      "hive": 24
+     }
+    }
+   ]
+  },
+  {
+   "id": "C2",
+   "texte": "Le chevauchement ne duplique ni groupe, ni boss, ni récompense",
+   "verdict": "prouvé",
+   "groupePartage": "AFF-14:hive:34",
+   "spawnsGroupePartagePendantChevauchement": [],
+   "acteursDupliques": [],
+   "boss": {
+    "id": "AFF-14:hive:21:0",
+    "groupe": "AFF-14:hive:21",
+    "spawns": [
+     [
+      100.25,
+      "spawn",
+      "AFF-14:hive:21",
+      8
+     ]
+    ],
+    "morts": 1,
+    "cause": "hunter_melee",
+    "tache": {
+     "id": "matriarch",
+     "status": "done",
+     "progress": 2.5,
+     "completions": 1,
+     "completedAt": 125.25,
+     "position": [
+      2274,
+      -1
+     ]
+    }
+   },
+   "recompense": {
+    "identifiants": [
+     "rec-023-run:death:AFF-14:hive:21:0",
+     "rec-023-run:death:AFF-14:hive:21:0"
+    ],
+    "fonction": "combatRewardIdentity (js/battlefield/OperationRewards.js:3)"
+   },
+   "chevauchement": [
+    {
+     "t": 61.25,
+     "bulle1": 28,
+     "bulle2": 28,
+     "intersection": 28,
+     "total": 28
+    },
+    {
+     "t": 66.25,
+     "bulle1": 28,
+     "bulle2": 28,
+     "intersection": 28,
+     "total": 28
+    },
+    {
+     "t": 71.25,
+     "bulle1": 28,
+     "bulle2": 28,
+     "intersection": 28,
+     "total": 28
+    },
+    {
+     "t": 76.25,
+     "bulle1": 28,
+     "bulle2": 28,
+     "intersection": 28,
+     "total": 28
+    },
+    {
+     "t": 81.25,
+     "bulle1": 28,
+     "bulle2": 28,
+     "intersection": 28,
+     "total": 28
+    },
+    {
+     "t": 86.25,
+     "bulle1": 28,
+     "bulle2": 28,
+     "intersection": 28,
+     "total": 28
+    }
+   ]
+  },
+  {
+   "id": "C3",
+   "texte": "Le chevauchement ne duplique aucun renfort ; une tâche partagée ne déclenche qu’une réaction",
+   "verdict": "prouvé",
+   "annoncesParFactionEtIntervalle": {
+    "player_clan:0": 1,
+    "player_clan:1": 1,
+    "hive:1": 1,
+    "player_clan:2": 1,
+    "player_clan:3": 1
+   },
+   "groupesUniques": true,
+   "reactionAnnoncee": [
+    {
+     "id": "AFF-14:objective:5",
+     "type": "counteroffensive_announced",
+     "time": 23,
+     "reactionId": "AFF-14:counterattack",
+     "frontId": "front_b",
+     "factionId": "hive",
+     "delay": 12,
+     "due": 35,
+     "label": "Contre-offensive annoncée vers B — départ dans 12 s",
+     "source": "objectives"
+    }
+   ],
+   "refusPartenaire": {
+    "accepted": false,
+    "taskId": "tunnel_one",
+    "feedback": "Votre partenaire utilise déjà ce dispositif."
+   },
+   "reserveRucheConsommee": 8,
+   "unitesArriveesRuche": 8,
+   "note": "Au plus deux annonces par faction et par intervalle : une automatique (par faction, indépendante du nombre de joueurs) et, au besoin, une réaction d’objectif."
+  },
+  {
+   "id": "C4",
+   "texte": "Le front C continue hors de vue ; chaque joueur reçoit les informations nécessaires (HUD stratégique partagé)",
+   "verdict": "prouvé",
+   "frontC": {
+    "debut": {
+     "damage": 427.1,
+     "dead": 1,
+     "owner": "hive"
+    },
+    "fin": {
+     "damage": 4962.9,
+     "dead": 12,
+     "owner": "hive"
+    }
+   },
+   "frontCHorsDesBulles": true,
+   "hud": {
+    "fronts": [
+     "front_a",
+     "front_b",
+     "front_c"
+    ],
+    "frontsAlertes": [
+     "front_b",
+     "front_a",
+     "front_c"
+    ],
+    "alertesFinales": 0
+   },
+   "limite": "Le HUD stratégique est unique et partagé ; la répartition à l’écran (écran scindé, carte de commande par joueur) n’est pas rendue en node:test (cf. tests/command-map-coop-selection.test.js pour la sélection du joueur émetteur)."
+  },
+  {
+   "id": "NA1",
+   "texte": "Capture des deux vues (écran scindé) et lisibilité de l’information par joueur",
+   "verdict": "non automatisable",
+   "raison": "Exige Renderer.setSplitScreen, le HUD DOM et une revue visuelle ; aucun rendu en node:test."
+  }
+ ]
+}

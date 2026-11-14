@@ -1,0 +1,39 @@
+{
+  "baseCommit": "03f37b4",
+  "sourceTreeUncommitted": true,
+  "createdAt": "2026-11-01T00:47:40.558254+00:00",
+  "latestSourceTargetedTests": {
+    "passed": 6,
+    "failed": 0,
+    "durationMs": 10800.001822,
+    "path": "docs/qa/continuation-20261101/world/final-cache-corridor.txt"
+  },
+  "priorNavigationTests": {
+    "passed": 19,
+    "failed": 0,
+    "durationMs": 61431.161081,
+    "scope": "Before refinement of current-corridor key in strategic route cache",
+    "path": "docs/qa/continuation-20261101/world/final-navigation.txt"
+  },
+  "broadTests": {
+    "passed": 122,
+    "failed": 0,
+    "durationMs": 246709.637783,
+    "scope": "Source evolved during this broad run; historic construction, geometry and navigation proof, not a final frozen-SHA integration run",
+    "path": "docs/qa/continuation-20261101/world/tests.txt"
+  },
+  "files": {
+    "js/data/BattlefieldSectorPlanning.js": "e4214e89391c988ea6c23d8871f657f376ef5dc4aa9bb08f9dff93ecb60e3328",
+    "js/data/BattlefieldLayouts.js": "8440cb53c6ff627e16e6050c43fcb5156decabcf5630466f2483c35915dd2335",
+    "js/entities/Environment.js": "73dd69e75563cf5b96b9eeeeefd125102cefce6f2840dedaf196591a682f0680",
+    "js/engine/BattlefieldNavigation.js": "7f15ed3728a89904cf33d81a685e5b9df8131de81fe849d889630786253e9cc8",
+    "js/graphics/BattlefieldSectorDetails.js": "8d460bed4b95be8df75c37d3ffca22812e5c143d13575bbd5ab90b0ad7f9a7de",
+    "js/graphics/BattlefieldWayfinding.js": "b26e73c1bfc6e581f5a9a0c44148756fb270e2120b567608eb371de05d73948d",
+    "tests/battlefield-sector-planning.test.js": "6af73ef0fa5c507821a8cf39658e1bc4690a7be5f60b637f2c2d090369a4335c",
+    "docs/qa/continuation-20261101/world/final-navigation.txt": "4871c674f49407517f4fd31fba65d69293cdc65387943da09826b9d532695d7d",
+    "docs/qa/continuation-20261101/world/final-cache.txt": "649b340b72ad1d3586effda4bf634100241452bc9a7e9dd3e4f91c19caeff9fc",
+    "docs/qa/continuation-20261101/world/final-cache-corridor.txt": "33c2db821235efdec27cd4c86e3de1d35f0f06776f48f2e0cb25be2a4b34f2b9",
+    "docs/qa/continuation-20261101/world/tests.txt": "4b0068f968d482e47c86137ca76badb13c92251fc95991b712b2056d5360f45d"
+  },
+  "scope": "CPU functional and geometry checks; integrated browser and final source commit recorded by coordinator"
+}

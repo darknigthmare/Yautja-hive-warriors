@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "status": "independent_case8_helper_prepared_not_executed",
+  "preparedAt": "2026-11-02T05:05:05.880314+00:00",
+  "path": "docs/qa/continuation-20261102/verify-ui-command.mjs",
+  "sha256": "60551276a7990317fad3cd2439d7c9db374d4841f83c5edfabe18d19380bc4d4",
+  "onlyCase": "evolved-caste-menu-briefing-checkpoint-identity",
+  "requestedCaseCount": 1,
+  "fullEightCoverage": false,
+  "checks": {
+    "syntax": "passed",
+    "singleIndependentCaseConfiguration": "passed",
+    "dependentCaseFlagRejected": true,
+    "defaultEightCaseConfiguration": "passed",
+    "outputDirectoryCreated": false
+  },
+  "runtimeEdited": false,
+  "browserLaunched": false,
+  "previousAttempt": "docs/qa/continuation-20261102/ui-final-571b1d2-r1-paused-hud/report.json",
+  "change": "Case 8 alone now refreshes the actual battle HUD at zero delta after insertion and restore, with explicit clock/UID/cargo invariance. No CSS force, fake input or skipped assertion."
+}

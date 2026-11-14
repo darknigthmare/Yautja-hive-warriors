@@ -1,0 +1,8 @@
+{
+  "status": "passed",
+  "referenceFiles": 30,
+  "referenceModels": 12,
+  "originalDistUnchanged": true,
+  "stageUnchanged": true,
+  "cloneBuildsMutuallyIdentical": true
+}

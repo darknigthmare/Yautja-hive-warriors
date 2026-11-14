@@ -1,0 +1,625 @@
+{
+  "id": "REC-008",
+  "source": "docs/audits/2026-10-26/Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.xlsx#Validation",
+  "perimetre": "Personnages nommés, variantes biologiques et unicité",
+  "seed": 1114,
+  "commit": "7aba6444059d25965a7d7dbb5c19468876aa7a6e",
+  "date": "2026-11-14",
+  "commande": "node --test tests/recette-rec-008.test.js",
+  "preuveVideo": "non produite — preuve par journal",
+  "chronologie": [
+    {
+      "operation": "AFF-27",
+      "uniqueId": "BOS-39",
+      "t": 0,
+      "event": "alloue",
+      "unitId": "AFF-27:hive:66:7",
+      "profileId": "original_commander_BOS-39",
+      "groupId": "AFF-27:hive:66",
+      "frontId": "front_c",
+      "hp": 3000,
+      "officiersDeSerie": 121
+    },
+    {
+      "operation": "AFF-27",
+      "uniqueId": "BOS-39",
+      "t": 2,
+      "event": "materialise",
+      "unitId": "AFF-27:hive:66:7"
+    },
+    {
+      "operation": "AFF-27",
+      "uniqueId": "BOS-39",
+      "t": 4,
+      "event": "eloigne",
+      "unitId": "AFF-27:hive:66:7",
+      "hp": 1816,
+      "soinsEspaceRuche": 8
+    },
+    {
+      "operation": "AFF-27",
+      "uniqueId": "BOS-39",
+      "t": 6,
+      "event": "reentree",
+      "unitId": "AFF-27:hive:66:7",
+      "hp": 1832
+    },
+    {
+      "operation": "AFF-27",
+      "uniqueId": "BOS-39",
+      "t": 6,
+      "event": "retraite",
+      "groupId": "AFF-27:hive:66",
+      "accepted": true,
+      "reason": null
+    },
+    {
+      "operation": "AFF-27",
+      "uniqueId": "BOS-39",
+      "t": 96,
+      "event": "apres_retraite",
+      "etat": "distant",
+      "hp": 1818,
+      "groupe": {
+        "type": "retreat",
+        "frontId": "front_a",
+        "issuer": "officer",
+        "issuedAt": 6,
+        "sequence": 573
+      }
+    },
+    {
+      "operation": "AFF-27",
+      "uniqueId": "BOS-39",
+      "t": 96,
+      "event": "recharge",
+      "unitId": "AFF-27:hive:66:7",
+      "hp": 1818
+    },
+    {
+      "operation": "AFF-14",
+      "uniqueId": "BOS-32",
+      "t": 0,
+      "event": "alloue",
+      "unitId": "AFF-14:hive:21:0",
+      "profileId": "original_commander_BOS-32",
+      "groupId": "AFF-14:hive:21",
+      "frontId": "front_c",
+      "hp": 1200,
+      "officiersDeSerie": 148
+    },
+    {
+      "operation": "AFF-14",
+      "uniqueId": "BOS-32",
+      "t": 2,
+      "event": "materialise",
+      "unitId": "AFF-14:hive:21:0"
+    },
+    {
+      "operation": "AFF-14",
+      "uniqueId": "BOS-32",
+      "t": 4,
+      "event": "eloigne",
+      "unitId": "AFF-14:hive:21:0",
+      "hp": 720,
+      "soinsEspaceRuche": 0
+    },
+    {
+      "operation": "AFF-14",
+      "uniqueId": "BOS-32",
+      "t": 6,
+      "event": "reentree",
+      "unitId": "AFF-14:hive:21:0",
+      "hp": 720
+    },
+    {
+      "operation": "AFF-14",
+      "uniqueId": "BOS-32",
+      "t": 6,
+      "event": "retraite",
+      "groupId": "AFF-14:hive:21",
+      "accepted": true,
+      "reason": null
+    },
+    {
+      "operation": "AFF-14",
+      "uniqueId": "BOS-32",
+      "t": 96,
+      "event": "apres_retraite",
+      "etat": "distant",
+      "hp": 720,
+      "groupe": {
+        "type": "retreat",
+        "frontId": "front_a",
+        "issuer": "officer",
+        "issuedAt": 6,
+        "sequence": 573
+      }
+    },
+    {
+      "operation": "AFF-14",
+      "uniqueId": "BOS-32",
+      "t": 96,
+      "event": "recharge",
+      "unitId": "AFF-14:hive:21:0",
+      "hp": 720
+    },
+    {
+      "operation": "AFF-01",
+      "uniqueId": "BOS-26",
+      "event": "mort",
+      "unitId": "AFF-01:rival_clan:3:0"
+    },
+    {
+      "operation": "AFF-03",
+      "uniqueId": "BOS-26",
+      "event": "herite_mort",
+      "unitId": "AFF-03:rival_clan:2:0"
+    }
+  ],
+  "registreProvenance": [
+    {
+      "variante": "Runner de jeu",
+      "profil": "XEN-006",
+      "oeuvre": "Aliens versus Predator: Extinction ; Aliens: Fireteam Elite",
+      "famille": "Xénomorphes",
+      "sources": [
+        "X-S01",
+        "X-S02"
+      ],
+      "urls": [
+        "https://gamingalexandria.com/ps2/Aliens%20Versus%20Predator%20Extinction/Aliens%20Versus%20Predator%20Extinction%20-%20Manual.pdf",
+        "https://www.aliensfireteamelite.com/en/releasenotes/"
+      ],
+      "statutPreuve": "Confirmé dans l’œuvre référencée ; adaptation de gameplay distincte",
+      "restrictions": "La vitesse chiffrée et la taille de cellule proposées sont propres au projet, pas des chiffres officiels.",
+      "unique": false,
+      "fidelite1to1": false,
+      "hote": "non structuré dans le profil"
+    },
+    {
+      "variante": "Praetorian",
+      "profil": "XEN-008",
+      "oeuvre": "Aliens versus Predator: Extinction ; Aliens: Dark Descent",
+      "famille": "Xénomorphes",
+      "sources": [
+        "X-S01",
+        "X-S21"
+      ],
+      "urls": [
+        "https://gamingalexandria.com/ps2/Aliens%20Versus%20Predator%20Extinction/Aliens%20Versus%20Predator%20Extinction%20-%20Manual.pdf",
+        "https://www.playstation.com/en-us/games/aliens-dark-descent/"
+      ],
+      "statutPreuve": "Confirmé dans l’œuvre référencée ; adaptation de gameplay distincte",
+      "restrictions": "Ne pas traiter Praetorian comme une simple reine miniature ; pas de transformation automatique entre continuités.",
+      "unique": false,
+      "fidelite1to1": false,
+      "hote": "non structuré dans le profil"
+    },
+    {
+      "variante": "Predalien",
+      "profil": "XEN-011",
+      "oeuvre": "Aliens vs. Predator: Requiem ; Aliens versus Predator: Extinction",
+      "famille": "Xénomorphes",
+      "sources": [
+        "X-S10",
+        "X-S01"
+      ],
+      "urls": [
+        "https://store.necaonline.com/blogs/news/two-beasts-packaged",
+        "https://gamingalexandria.com/ps2/Aliens%20Versus%20Predator%20Extinction/Aliens%20Versus%20Predator%20Extinction%20-%20Manual.pdf"
+      ],
+      "statutPreuve": "Confirmé dans l’œuvre référencée ; adaptation de gameplay distincte",
+      "restrictions": "Pyramide : crossover de scénario, pas présence historique du Predalien dans AVP 2004. Queen, Ancient Elder et Matriarch Titan ne sont pas établis par ces sources.",
+      "unique": true,
+      "fidelite1to1": false,
+      "hote": "non structuré dans le profil"
+    },
+    {
+      "variante": "Reine xénomorphe",
+      "profil": "XEN-007",
+      "oeuvre": "Aliens versus Predator: Extinction ; Aliens: Dark Descent ; AVP",
+      "famille": "Xénomorphes",
+      "sources": [
+        "X-S01",
+        "X-S21"
+      ],
+      "urls": [
+        "https://gamingalexandria.com/ps2/Aliens%20Versus%20Predator%20Extinction/Aliens%20Versus%20Predator%20Extinction%20-%20Manual.pdf",
+        "https://www.playstation.com/en-us/games/aliens-dark-descent/"
+      ],
+      "statutPreuve": "Confirmé dans l’œuvre référencée ; adaptation de gameplay distincte",
+      "restrictions": "Une reine par opération est une proposition de budget ; ce n’est pas une loi biologique universelle. Ne pas confondre reine et Offspring.",
+      "unique": true,
+      "fidelite1to1": false,
+      "hote": "non structuré dans le profil"
+    },
+    {
+      "variante": "Pathogen Queen",
+      "profil": "XEN-019",
+      "oeuvre": "Aliens: Fireteam Elite — Pathogen",
+      "famille": "Xénomorphes infectés / Pathogène",
+      "sources": [
+        "X-S26",
+        "X-S04"
+      ],
+      "urls": [
+        "https://news.xbox.com/en-us/2022/08/30/the-aliens-fireteam-elite-pathogen-expansion-is-available-now/",
+        "https://www.focus-entmt.com/fr/news/aliens-fireteam-elite-reveals-its-first-ever-boss-fight"
+      ],
+      "statutPreuve": "Confirmé dans l’œuvre référencée ; adaptation de gameplay distincte",
+      "restrictions": "Ne pas lui transférer automatiquement vol, vortex ou pouvoirs des aliases Empress/Imperial présents dans le code.",
+      "unique": true,
+      "fidelite1to1": false,
+      "hote": "non structuré dans le profil"
+    },
+    {
+      "variante": "Red Queen Mother",
+      "profil": "XEN-032",
+      "oeuvre": "Aliens: Genocide",
+      "famille": "Xénomorphes",
+      "sources": [
+        "X-S13"
+      ],
+      "urls": [
+        "https://store.necaonline.com/blogs/behind-the-scenes/172394311-closer-look-aliens-genocide-red-queen-mother-ultra-deluxe-action-figure"
+      ],
+      "statutPreuve": "Confirmé : nom et représentation liés au comic ; pouvoirs précis à vérifier",
+      "restrictions": "Le nom ne prouve pas une forme volante, un vortex, ni une identité avec les aliases Empress ou Imperial du code.",
+      "unique": true,
+      "fidelite1to1": false,
+      "hote": "non structuré dans le profil"
+    },
+    {
+      "variante": "Rogue",
+      "profil": "XEN-030",
+      "oeuvre": "Aliens: Rogue ; roman Rogue",
+      "famille": "Xénomorphes",
+      "sources": [
+        "X-S16",
+        "X-S17"
+      ],
+      "urls": [
+        "https://www.marvel.com/comics/collection/127157/aliens_epic_collection_the_original_years_vol_3_trade_paperback",
+        "https://www.penguinrandomhouse.com/books/539667/the-complete-aliens-omnibus-volume-three-rogue-labyrinth-by-sandy-schofield/"
+      ],
+      "statutPreuve": "Confirmé dans l’œuvre référencée ; adaptation de gameplay distincte",
+      "restrictions": "King Prime/Titan, domination générale et ondes sismiques ne sont pas établis par les notices officielles. Ne pas généraliser une nouvelle caste royale.",
+      "unique": true,
+      "fidelite1to1": false,
+      "hote": "non structuré dans le profil"
+    },
+    {
+      "variante": "Offspring",
+      "profil": "XEN-027",
+      "oeuvre": "Alien: Romulus",
+      "famille": "Hybrides et créatures singulières",
+      "sources": [
+        "X-S14"
+      ],
+      "urls": [
+        "https://www.legacyefx.com/alien-romulus"
+      ],
+      "statutPreuve": "Confirmé dans l’œuvre référencée ; adaptation de gameplay distincte",
+      "restrictions": "La preuve production ne justifie ni absorption d’énergie plasma ni cri surnaturel. Ne pas fusionner avec Newborn.",
+      "unique": true,
+      "fidelite1to1": false,
+      "hote": "non structuré dans le profil"
+    },
+    {
+      "variante": "Dog Alien",
+      "profil": null,
+      "regle": "LORE-011",
+      "statut": "ATTRIBUTIONS CONFIRMEES; EQUIVALENCE NON CERTIFIEE",
+      "sources": [
+        "LORE-S08 — Alien 3 — Ultimate Dog Alien",
+        "LORE-S11 — Aliens Fireteam Elite — notes officielles"
+      ],
+      "regleFidelite": "Séparer identifiant biologique, nom de rôle gameplay, modèle visuel, œuvre et hôte. Ne pas utiliser un unique runner recoloré comme preuve de fidélité pour toutes les continuités; préciser le montage d'Alien 3.",
+      "limites": "La fidélité doit être validée pour l’œuvre/version choisie.",
+      "note": "Aucun profil de combat : la variante ne peut être instanciée ni clonée ; seule la règle de fidélité porte provenance et restrictions."
+    },
+    {
+      "variante": "boss:rogue_king_prime",
+      "source": "Aliens: Rogue (1993), game adaptation of the King",
+      "unique": true,
+      "ordinarySpawn": false,
+      "assetFidelity": "interpreted-game-model",
+      "niveaux": [
+        "charon_rogue_base"
+      ]
+    },
+    {
+      "variante": "boss:the_offspring",
+      "source": "Alien: Romulus (2024)",
+      "unique": true,
+      "ordinarySpawn": false,
+      "assetFidelity": "interpreted-game-model",
+      "niveaux": [
+        "romulus_station"
+      ]
+    },
+    {
+      "variante": "boss:predalien",
+      "source": "Alien vs. Predator game hybrid",
+      "unique": true,
+      "ordinarySpawn": false,
+      "assetFidelity": "interpreted-game-model",
+      "niveaux": []
+    },
+    {
+      "variante": "boss:xenomorph_queen",
+      "source": "Aliens (1986) / Alien vs. Predator (2004)",
+      "unique": true,
+      "ordinarySpawn": false,
+      "assetFidelity": "interpreted-game-model",
+      "niveaux": [
+        "antarctic_pyramid"
+      ]
+    },
+    {
+      "variante": "boss:praetorian",
+      "source": "Praetorian game caste; encounter adaptation",
+      "unique": true,
+      "ordinarySpawn": false,
+      "assetFidelity": "interpreted-game-model",
+      "niveaux": []
+    }
+  ],
+  "clauses": [
+    {
+      "clause": "AFF-27:BOS-39:identite",
+      "attendu": "Le personnage nommé n’est pas cloné comme officier de série : une seule unité, profil de commandant unique, absent des réserves génériques.",
+      "verdict": "prouvé",
+      "details": {
+        "unitId": "AFF-27:hive:66:7",
+        "profileId": "original_commander_BOS-39",
+        "sourceBossType": "xenomorph_queen",
+        "actorType": "queen",
+        "officiersDeSerie": 121
+      }
+    },
+    {
+      "clause": "AFF-27:BOS-39:eloignement_reentree",
+      "attendu": "Éloignement puis réentrée : même identifiant, PV conservés, aucun doublon.",
+      "verdict": "prouvé",
+      "details": {
+        "unitId": "AFF-27:hive:66:7",
+        "hpEcran": 1800,
+        "hpApresEloignement": 1816,
+        "soinsEspaceRucheJournalises": [
+          {
+            "t": 2.25,
+            "hp": 1802
+          },
+          {
+            "t": 2.5,
+            "hp": 1804
+          },
+          {
+            "t": 2.75,
+            "hp": 1806
+          },
+          {
+            "t": 3,
+            "hp": 1808
+          },
+          {
+            "t": 3.25,
+            "hp": 1810
+          },
+          {
+            "t": 3.5,
+            "hp": 1812
+          },
+          {
+            "t": 3.75,
+            "hp": 1814
+          },
+          {
+            "t": 4,
+            "hp": 1816
+          },
+          {
+            "t": 4.25,
+            "hp": 1818
+          },
+          {
+            "t": 4.5,
+            "hp": 1820
+          },
+          {
+            "t": 4.75,
+            "hp": 1822
+          },
+          {
+            "t": 5,
+            "hp": 1824
+          },
+          {
+            "t": 5.25,
+            "hp": 1826
+          },
+          {
+            "t": 5.5,
+            "hp": 1828
+          },
+          {
+            "t": 5.75,
+            "hp": 1830
+          },
+          {
+            "t": 6,
+            "hp": 1832
+          }
+        ],
+        "materialisations": 2
+      }
+    },
+    {
+      "clause": "AFF-27:BOS-39:retraite",
+      "attendu": "Retraite et reconstitution : les renforts mobilisés ne dupliquent pas le personnage nommé.",
+      "verdict": "prouvé",
+      "details": {
+        "ordreAccepte": true,
+        "unites": 952,
+        "exemplairesDuNomme": 1
+      }
+    },
+    {
+      "clause": "AFF-27:BOS-39:recharge",
+      "attendu": "Recharge de partie : identité, PV et unicité restaurés sans clone.",
+      "verdict": "prouvé",
+      "details": {
+        "unitId": "AFF-27:hive:66:7",
+        "hp": 1818
+      }
+    },
+    {
+      "clause": "AFF-14:BOS-32:identite",
+      "attendu": "Le personnage nommé n’est pas cloné comme officier de série : une seule unité, profil de commandant unique, absent des réserves génériques.",
+      "verdict": "prouvé",
+      "details": {
+        "unitId": "AFF-14:hive:21:0",
+        "profileId": "original_commander_BOS-32",
+        "sourceBossType": "praetorian",
+        "actorType": "praetorian",
+        "officiersDeSerie": 148
+      }
+    },
+    {
+      "clause": "AFF-14:BOS-32:eloignement_reentree",
+      "attendu": "Éloignement puis réentrée : même identifiant, PV conservés, aucun doublon.",
+      "verdict": "prouvé",
+      "details": {
+        "unitId": "AFF-14:hive:21:0",
+        "hpEcran": 720,
+        "hpApresEloignement": 720,
+        "soinsEspaceRucheJournalises": [],
+        "materialisations": 2
+      }
+    },
+    {
+      "clause": "AFF-14:BOS-32:retraite",
+      "attendu": "Retraite et reconstitution : les renforts mobilisés ne dupliquent pas le personnage nommé.",
+      "verdict": "prouvé",
+      "details": {
+        "ordreAccepte": true,
+        "unites": 1048,
+        "exemplairesDuNomme": 1
+      }
+    },
+    {
+      "clause": "AFF-14:BOS-32:recharge",
+      "attendu": "Recharge de partie : identité, PV et unicité restaurés sans clone.",
+      "verdict": "prouvé",
+      "details": {
+        "unitId": "AFF-14:hive:21:0",
+        "hp": 720
+      }
+    },
+    {
+      "clause": "AFF-01→AFF-03:BOS-26:campagne",
+      "attendu": "Un personnage nommé mort n’est ni ressuscité ni recréé comme officier de série dans l’opération suivante.",
+      "verdict": "prouvé",
+      "details": {
+        "historique": [
+          "BOS-26"
+        ],
+        "etatAFF03": "dead"
+      }
+    },
+    {
+      "clause": "BOS-30:portee_par_mission",
+      "attendu": "Un même archétype de boss original (BOS-30) dans deux opérations reste deux individus distincts identifiés par mission.",
+      "verdict": "prouvé",
+      "details": {
+        "AFF07": "AFF-07:BOS-30",
+        "AFF09": "AFF-09:BOS-30"
+      }
+    },
+    {
+      "clause": "roster_unicite",
+      "attendu": "Le validateur refuse de multiplier ou de verser en réserve générique un profil nommé.",
+      "verdict": "prouvé",
+      "details": [
+        {
+          "profileId": "XEN-007",
+          "doubleRefuse": [
+            "XEN-007: named identity must occur once"
+          ],
+          "reserveRefusee": [
+            "XEN-007: cannot enter a generic reserve"
+          ]
+        },
+        {
+          "profileId": "XEN-011",
+          "doubleRefuse": [
+            "XEN-011: named identity must occur once"
+          ],
+          "reserveRefusee": [
+            "XEN-011: cannot enter a generic reserve"
+          ]
+        },
+        {
+          "profileId": "XEN-027",
+          "doubleRefuse": [
+            "XEN-027: named identity must occur once"
+          ],
+          "reserveRefusee": [
+            "XEN-027: cannot enter a generic reserve"
+          ]
+        },
+        {
+          "profileId": "XEN-030",
+          "doubleRefuse": [
+            "XEN-030: named identity must occur once"
+          ],
+          "reserveRefusee": [
+            "XEN-030: cannot enter a generic reserve"
+          ]
+        },
+        {
+          "profileId": "YAU-001",
+          "doubleRefuse": [
+            "YAU-001: named identity must occur once"
+          ],
+          "reserveRefusee": [
+            "YAU-001: cannot enter a generic reserve"
+          ]
+        }
+      ]
+    },
+    {
+      "clause": "provenance_restrictions",
+      "attendu": "Chaque variante possède provenance et restrictions ; modèle, comportement ou biologie non vérifiés restent identifiés comme tels.",
+      "verdict": "prouvé",
+      "details": {
+        "variantes": 9,
+        "bossRegistres": 5
+      }
+    },
+    {
+      "clause": "observation_hote",
+      "attendu": "LORE-011 demande « hôte et version renseignés » par modèle.",
+      "verdict": "observation",
+      "details": {
+        "note": "Les profils XEN-* n’ont pas de champ hôte structuré ; l’hôte reste implicite dans les restrictions textuelles. À compléter par l’auteur si la règle LORE-011 doit être satisfaite.",
+        "fichier": "js/data/BattleCatalog.js:44-57 (BATTLE_PROFILES)"
+      }
+    },
+    {
+      "clause": "validation_humaine",
+      "attendu": "Captures côte à côte, références visuelles sélectionnées et validation humaine.",
+      "verdict": "validation humaine (laissée à l’auteur)",
+      "details": {
+        "raison": "Non automatisable : jugement visuel et choix des références par l’auteur."
+      }
+    }
+  ],
+  "validationHumaine": {
+    "statut": "à réaliser par l’auteur",
+    "objet": "captures côte à côte, références visuelles sélectionnées et validation de chaque variante (Dog Alien, Runner, Praetorian, Predalien, Reines, Rogue, Offspring)",
+    "raison": "la ressemblance visuelle et la fidélité biologique ne se prouvent pas par un test Node ; aucune capture n’est produite ici."
+  }
+}

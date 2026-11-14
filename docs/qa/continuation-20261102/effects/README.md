@@ -1,0 +1,9 @@
+# Effets environnementaux — 2 novembre 2026
+
+Le défi de Dutch pouvait remplacer une immobilisation à vitesse zéro par 5,4, puis multiplier durablement la vitesse à chaque utilisation. Les contacts mutagènes écrivaient aussi une accélération définitive. Ces deux effets passent maintenant par le même propriétaire temporaire que les ralentissements : plus forte accélération × plus fort ralentissement, gel prioritaire, restauration de la vitesse réellement définie par les phases. La frénésie du défi dure 12 secondes et son annonce décrit cet effet ; le faux leurre non consommé par l’IA est supprimé. Le mutagène cesse peu après la sortie du contact et respecte pause/photo.
+
+La cryo-stase enlève ses flaques acides par l’API de leur Horde, qui libère chaque ressource privée une fois. Elle conserve les matériaux partagés des créatures, route les dégâts vers le vrai registre de mort, respecte les alliances et annonce morts, immobilisations et soin effectifs. En coordination avec la correction Horde, un xénomorphe gelé ne marche plus sous étourdissement et son délai expire même si le camouflage retire sa cible.
+
+Les journaux avant correctif conservent sept échecs attendus. Les validations passent : 32 cas ciblés, 4 cas de propriétaires dont 3 répétés, puis 14 cas cryo/identités ; soit 47 cas distincts et 50 exécutions réussies. Les sources des tests réellement exécutés sont archivées en texte, hors découverte automatique Node.
+
+AUD-091 reste à valider : cette passe ne constitue pas une matrice exhaustive de tous les pouvoirs, états joueur et attaques héritées. Aucun navigateur, test humain, mesure matérielle, fidélité 1:1 ou dépense Meshy n’est revendiqué. Le rapport décrit les fixtures, dont la représentation Mesh utilisée pour provoquer le problème de matériau partagé, et les limites de la preuve. La QA finale doit encore être liée au commit gelé par le coordinateur.

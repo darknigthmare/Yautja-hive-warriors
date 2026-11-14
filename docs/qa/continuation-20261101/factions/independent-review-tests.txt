@@ -1,0 +1,34 @@
+✔ catalogue is reproducible from the preserved PR audit, with source rather than rendered-asset status (126.145239ms)
+✔ all 27 proposed operations allocate exactly their source budget with no extra commander, pilot, civilian or player (30.92146ms)
+✔ all 27 operations cap detail at 32 while preserving every allocated identity, source budget and finite reserve (163.730744ms)
+✔ every initial supplied reserve group fits its announced arrival allowance and keeps exactly its allocated identities (253.724629ms)
+✔ three independent camps preserve the exact per-species allocations in the Excel rather than rounding ratios (3.972171ms)
+✔ LV-742 starts on D and the single queen occupies an existing eight-unit C group; human commanders follow their declared group (2.107452ms)
+✔ named, excluded, uncertain and noncombatant profiles cannot silently become generic army reserves (0.622511ms)
+✔ reconstructions restrict source works and do not merge Pathogen, Neomorph or PHG incarnations into universal castes (0.146822ms)
+✔ character equipment permissions distinguish Jungle, City, Feral and PHG while free play stays explicit (1.009894ms)
+✔ scene positions, cooperative players and low-detail capacity preserve immutable source records and all identities (2.164791ms)
+✔ unsupported controller, unknown references and invented budgets fail before creating an army (0.812567ms)
+✔ ordinary allocated soldiers retain rifle weapons and stable tactical roles after reverse materialization (3584.00042ms)
+✔ an actual fire team alternates movement and covering fire without changing damage or identity (110.067195ms)
+✔ a wounded human withdraws physically, releases its attack and gains neither HP nor immunity (47.343808ms)
+✔ a friendly body blocks an ordinary shot and the rear soldier finds a lateral lane (81.044848ms)
+✔ an industrial synthetic remains in its service area while security pursues the same distant intrusion (56.853272ms)
+✔ a Working Joe gives a visible timed warning before containment and a civilian never attacks (56.357648ms)
+✔ real hits emit bounded tracers and impacts, cover emits none, and all owned feedback buffers dispose (39.044736ms)
+✔ two real hostile NPC managers exchange damage and visible impacts while the player remains out of contact (58.441871ms)
+✔ source template resolver never invents or mutates a finite squad (1.110109ms)
+✔ all 27 source rosters conserve every ID, squad, allocation and reserve from the legacy factory (192.067215ms)
+✔ Sevastopol has two independent xenos and Seegson synthetic forces, not Marine clones (1.089118ms)
+✔ LV-895 mixes seven real Runner roles with one Spitter and distinct WY synthetics (5.375228ms)
+✔ Lethe and LV-742 preserve their canonical squad allocations and queen replacement (4.145128ms)
+✔ named commanders target their biological camp instead of a roster-array index (4.138038ms)
+✔ a saved source or legacy configuration cannot be mistaken for the other (14.997599ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 26
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5278.636217

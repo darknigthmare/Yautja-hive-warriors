@@ -1,78 +1,379 @@
 /* Mythic Boss Raid Manager (Predalien Queen & Flying Empress Matriarch) */
 
+import { createFaunaModel } from '../graphics/FaunaModels.js';
 import * as THREE from 'three';
+import { disposeObject } from '../engine/SceneResources.js';
+import { selectHostileTarget, requestHostileAttack, syncHostileWarning, releaseHostileAttack } from '../engine/HostilePressure.js';
+import { createCreatureModel, animateCreatureModel } from '../graphics/CreatureModels.js';
+import { buildHunterModel } from '../graphics/HunterModel.js';
+import { CHARACTERS_DATA } from '../data/charactersData.js';
+import { getBossDefinition, bossCanAttack } from '../data/BossRegistry.js';
+import { validatePreparedBossEncounter, validateBossCombatState, BOSS_COOLDOWN_KEYS } from '../data/BossEncounterValidation.js';
+import { getBossCombatPattern } from '../data/BossCombatPatterns.js';
+import { applyBattleUnit, selectBattleTarget, listBattleTargets, moveBattleOrder, requestNPCStrike } from '../engine/BattleActorSupport.js';
+import { recordCombatDeath } from '../engine/CombatEvents.js';
+import { canExecuteCombatTarget, canDetectConcealedTarget } from '../engine/HunterStealth.js';
 
 export class BossManager {
   constructor(scene, audioEngine) {
     this.scene = scene;
     this.audioEngine = audioEngine;
     this.activeBoss = null;
+    this.sharedResources = new Set();
     this.acidSpitProjectiles = [];
     this.embryoProjectiles = [];
+    this.pendingHatches = [];
+    this.weaponProjectiles = [];
+    this.pendingActions = [];
+    this.effects = [];
+    this.time = 0;
+    this.suspendedCombat = null;
   }
 
-  spawnBoss(type, spawnPos) {
-    if (this.activeBoss) {
-      this.scene.remove(this.activeBoss.mesh);
+
+  spawnBoss(type, spawnPos, prepared = null) {
+    const definition = prepared ? validatePreparedBossEncounter(prepared, type) : getBossDefinition(type);
+    if (!spawnPos?.isVector3 || !spawnPos.toArray().every(Number.isFinite)) throw new TypeError('Boss spawn position must be finite');
+    type = definition.id;
+    // Construction must also succeed before replacing an existing encounter.
+    const visualModel = this.createBossMesh(type);
+    if (!visualModel?.isObject3D) throw new TypeError('Boss builder must return a scene object');
+    visualModel.traverse(child => { if (child.isMesh) child.castShadow = true; });
+    visualModel.updateMatrixWorld(true);
+    const bounds = new THREE.Box3().setFromObject(visualModel, true), height = bounds.max.y - bounds.min.y;
+    if (!bounds.isEmpty() && ![...bounds.min.toArray(), ...bounds.max.toArray()].every(Number.isFinite)) {
+      disposeObject(visualModel, this.sharedResources); throw new TypeError('Boss builder produced nonfinite geometry');
+    }
+    if (Number.isFinite(height) && height > 1e-5) {
+      visualModel.scale.multiplyScalar(definition.height / height); visualModel.updateMatrixWorld(true);
+      bounds.setFromObject(visualModel, true); visualModel.position.y -= bounds.min.y;
+    }
+    // The actor's root is its feet. Keep visual normalization separate from
+    // physical movement, so bridges/culls cannot sink a tall model again.
+    const mesh = new THREE.Group(); mesh.name = `boss-${type}`; mesh.add(visualModel); mesh.position.copy(spawnPos);
+    Object.assign(mesh.userData, visualModel.userData); mesh._bossHunterOwner = visualModel._bossHunterOwner;
+    mesh.userData.encounterProfile = definition.id; mesh.userData.assetFidelity = definition.assetFidelity;
+    this.clear(); this.scene.add(mesh);
+    this.activeBoss = { type, definition, mesh, visualModel, hp: definition.hp, maxHp: definition.hp,
+      phase: 1, isStunned: false, stunTimer: 0, hasEnteredStun: false,
+      contactCooldown: 1.4, tailWhipCooldown: 3.5, spitCooldown: 4,
+      regurgitateCooldown: 5, shriekCooldown: 4, specialCooldown: 5,
+      phaseShieldHp: 1800, hasPhaseShield: false, broodAllowance: 6, shieldUntil: 0,
+      preparedEncounter: prepared ? { ...prepared } : null, pattern: getBossCombatPattern(type),
+      weaponSequence: 0, pressureAim: null, exposedUntil: 0 };
+    this.activeBoss.combatManager = this;
+    this.activeBoss.takeDamage = (amount, details = {}) => this.takeDamage(amount, null, { killerFaction: 'player_clan', ...details });
+    const cue = type === 'feral_predator_boss' ? 'playFeralPredatorPrimalRoar'
+      : type === 'the_offspring' ? 'playOffspringShriek' : 'playYautjaRoar';
+    this._updateAttackReadout(this.activeBoss);
+    this.audioEngine?.[cue]?.();
+    return this.activeBoss;
+  }
+
+  createBossMesh(type) {
+    const definition = getBossDefinition(type);
+    if (definition.species === 'fauna') return createFaunaModel(definition.faunaLook ?? {}, { prey: true });
+    if (definition.hunterProfile) {
+      const data = CHARACTERS_DATA.find(profile => profile.id === definition.hunterProfile);
+      const owner = { data }; const mesh = buildHunterModel(owner); mesh._bossHunterOwner = owner; return mesh;
+    }
+    if (type === 'xenomorph_queen') type = 'queen';
+    if (!['the_offspring', 'empress_matriarch', 'predalien_queen', 'imperial_queen', 'praetorian', 'predalien', 'queen'].includes(type)) return this.createRecentBossMesh(type);
+    const kind = type === 'the_offspring' ? 'offspring' : type === 'empress_matriarch' ? 'empress'
+      : type === 'predalien_queen' ? 'predalien' : type === 'imperial_queen' ? 'imperial'
+      : type === 'praetorian' ? 'praetorian' : type === 'predalien' ? 'predalien' : 'queen';
+    return createCreatureModel(kind, this.sharedResources);
+  }
+
+
+  regurgitateChestbursters(player, horde) {
+    if (!this.activeBoss || !bossCanAttack(this.activeBoss.type, 'embryos')) return false;
+    this.audioEngine.playPredalienRegurgitate();
+
+    const origin = this.activeBoss.mesh.position.clone().add(new THREE.Vector3(0, 3.2, 0));
+    const target = player.position.clone();
+    const dir = target.clone().sub(origin).normalize();
+
+    // A volley may hit each player once; overlapping pods never stack three
+    // unavoidable damage events in the same frame.
+    const volley = { hitPlayers: new Set() };
+    // Launch embryonic Chestburster pods
+    for (let i = 0; i < 3; i++) {
+      const spreadDir = dir.clone().add(new THREE.Vector3(
+        (Math.random() - 0.5) * 0.4,
+        0.25 + Math.random() * 0.2,
+        (Math.random() - 0.5) * 0.4
+      )).normalize();
+
+      const embryoGeo = new THREE.SphereGeometry(0.35, 8, 8);
+      const embryoMat = new THREE.MeshStandardMaterial({ color: 0xef4444, roughness: 0.2, metalness: 0.1 });
+      const embryoMesh = new THREE.Mesh(embryoGeo, embryoMat);
+      embryoMesh.position.copy(origin);
+      this.scene.add(embryoMesh);
+
+      this.embryoProjectiles.push({
+        mesh: embryoMesh,
+        velocity: spreadDir.multiplyScalar(24),
+        gravity: -20,
+        damage: 60,
+        life: 2.5,
+        volley
+      });
     }
 
-    const mesh = this.createBossMesh(type);
-    mesh.position.copy(spawnPos);
-    this.scene.add(mesh);
-
-    const isRogueKing = type === 'rogue_king_prime';
-    const isEngineer = type === 'awakened_engineer';
-    const isMatriarchTitan = type === 'predalien_matriarch_titan';
-    const isImperial = type === 'imperial_queen';
-    const isEmpress = type === 'empress_matriarch';
-    const isPredalienQueen = type === 'predalien_queen';
-    const isPredalienAbomination = type === 'predalien_abomination';
-    const isOffspring = type === 'the_offspring';
-    const isTrilobite = type === 'trilobite_prime';
-    const isBerserker = type === 'berserker_super_predator';
-
-    const hp = isMatriarchTitan ? 10000 : (isRogueKing ? 9500 : (isBerserker ? 8800 : (isEngineer ? 8500 : (isImperial ? 8000 : (isTrilobite ? 7000 : (isPredalienAbomination ? 6500 : (isEmpress ? 6000 : (isPredalienQueen ? 5000 : (isOffspring ? 4500 : 3000)))))))));
-
-    this.activeBoss = {
-      type: type,
-      mesh: mesh,
-      hp: hp,
-      maxHp: hp,
-      isStunned: false,
-      stunTimer: 0,
-      phase: 1,
-      spineRipAvailable: false,
-      hasPhaseShield: false,
-      phaseShieldHp: 1800,
-      vortexCooldown: 5.0,
-      stompCooldown: 3.5,
-      chargeCooldown: 4.5,
-      pheromoneCooldown: 6.0,
-      isCharging: false,
-      chargeTimer: 0
-    };
-
-    if (isRogueKing) {
-      if (this.audioEngine.playRogueKingEarthquakeRoar) this.audioEngine.playRogueKingEarthquakeRoar();
-      if (this.audioEngine.playYautjaRoar) this.audioEngine.playYautjaRoar();
-    } else if (isEngineer) {
-      if (this.audioEngine.playEngineerAwakeningRoar) this.audioEngine.playEngineerAwakeningRoar();
-      if (this.audioEngine.playYautjaRoar) this.audioEngine.playYautjaRoar();
-    } else if (isMatriarchTitan) {
-      if (this.audioEngine.playPredalienBellyVomit) this.audioEngine.playPredalienBellyVomit();
-      if (this.audioEngine.playRogueKingRoar) this.audioEngine.playRogueKingRoar();
-      if (this.audioEngine.playYautjaRoar) this.audioEngine.playYautjaRoar();
-    } else if (isTrilobite && this.audioEngine.playTrilobiteTentacleConstrict) {
-      this.audioEngine.playTrilobiteTentacleConstrict();
-      if (this.audioEngine.playYautjaRoar) this.audioEngine.playYautjaRoar();
-    } else if (isOffspring) {
-      this.audioEngine.playOffspringShriek();
-    } else if (isPredalienAbomination && this.audioEngine.playPredalienBellyVomit) {
-      this.audioEngine.playPredalienBellyVomit();
-      if (this.audioEngine.playYautjaRoar) this.audioEngine.playYautjaRoar();
-    } else {
-      this.audioEngine.playYautjaRoar();
+    // Spawn a live Chestburster directly into horde
+    if (horde && horde.spawnChestburster && this.activeBoss.broodAllowance > 0) {
+      this.activeBoss.broodAllowance--;
+      this.pendingHatches.push({ life: 0.35, pos: origin, horde });
     }
+  }
+
+
+  takeDamage(amount, horde = null, details = {}) {
+    const boss = this.activeBoss;
+    if (!boss || boss.hp <= 0 || !Number.isFinite(amount) || amount <= 0) return null;
+    const heavy = ['heavy', 'charged', 'heavy-melee'].includes(details.attackKind ?? details.cause);
+    const origin = details.origin ?? details.attacker?.position;
+    if (boss.pattern?.frontalArmor && origin?.isVector3 && this.time >= boss.exposedUntil) {
+      const direction = origin.clone().sub(boss.mesh.position).setY(0).normalize();
+      const forward = new THREE.Vector3(Math.sin(boss.mesh.rotation.y), 0, Math.cos(boss.mesh.rotation.y));
+      if (forward.dot(direction) > .45) amount *= boss.pattern.frontalArmor;
+    }
+    if (heavy && ((boss.pattern?.mechanic === 'interruptible-brood' && boss.pressureAction === 'embryos') ||
+      (boss.pattern?.mechanic === 'heavy-charge-interrupt' && boss.pressureAction === 'charge'))) {
+      releaseHostileAttack(this, boss); boss.pressureAction = null; boss.pressureAim = null;
+      boss.isStunned = true; boss.stunTimer = 1.8; boss.specialCooldown = 5; boss.regurgitateCooldown = 5;
+      boss.exposedUntil = this.time + 2.5; this.onCounterplay?.({ bossType: boss.type, reason: 'heavy_interrupt', duration: 1.8 });
+    }
+    if (boss.hasPhaseShield) {
+      const absorbed = Math.min(boss.phaseShieldHp, amount * .6);
+      boss.phaseShieldHp -= Math.min(boss.phaseShieldHp, absorbed * (heavy ? 2 : 1)); amount -= absorbed;
+      if (boss.phaseShieldHp <= 0) { boss.hasPhaseShield = false; if (boss.mesh.userData.phaseShield) boss.mesh.userData.phaseShield.visible = false; this.audioEngine?.playEngineerBioArmorShatter?.(); }
+    }
+    if (boss.definition?.shield && this.time < boss.shieldUntil && details.cause !== 'reflected-bolt') amount *= .45;
+    boss.hp = Math.max(0, boss.hp - amount);
+    if (boss.hp === 0) {
+      const event = recordCombatDeath(this, boss, { kind: boss.type, isBoss: true, cause: details.cause ?? 'combat', ...details });
+      this.lastDeathEvent = event; this.onDefeated?.(event); this.clear(); return event;
+    }
+    this._syncPhaseFromHealth(boss, horde);
+    this._updateAttackReadout(boss);
+    return null;
+  }
+
+  _syncPhaseFromHealth(boss, horde = null) {
+    const nextPhase = boss.hp <= boss.maxHp * .3 ? 3 : boss.hp <= boss.maxHp * .65 ? 2 : 1;
+    if (nextPhase > boss.phase) {
+      boss.phase = nextPhase;
+      this.onPhaseChanged?.({ bossType: boss.type, bossId: boss.battleUnitId ?? boss.type, phase: boss.phase, hp: boss.hp, maxHp: boss.maxHp });
+      if (boss.type === 'awakened_engineer' && nextPhase === 2) { boss.hasPhaseShield = true; if (boss.mesh.userData.phaseShield) boss.mesh.userData.phaseShield.visible = true; }
+      if (boss.type.includes('predalien') && horde) this.triggerPregnantBurstFrenzy(horde);
+    }
+    if (nextPhase === 3 && !boss.hasEnteredStun) { boss.isStunned = true; boss.hasEnteredStun = true; boss.stunTimer = 3.5; }
+  }
+
+  executeBoss(victim, { player, range = 6, killerFaction = 'player_clan' } = {}) {
+    if (victim !== this.activeBoss || !canExecuteCombatTarget(player, victim, { range, environment: this.environment,
+      simulation: this.battleSimulation, requireStun: true, maxHealthFraction: .3 })) return null;
+    victim.executionConsumed = true;
+    victim.hp = 0; victim.hasPhaseShield = false; victim.phaseShieldHp = 0;
+    const event = recordCombatDeath(this, victim, { kind: victim.type, isBoss: true, cause: 'execution', killerFaction });
+    this.lastDeathEvent = event;
+    if (event) this.onDefeated?.(event);
+    this.clear();
+    return event;
+  }
+
+  triggerTailWhip(player) {
+    const boss = this.activeBoss;
+    if (!boss || !bossCanAttack(boss.type, 'tail')) return false;
+    this.audioEngine?.playQueenTailWhip?.(); boss.tailSpinLife = .32;
+    const pattern = boss.pattern?.mechanic;
+    const aimed = pattern === 'frontal-tail-pounce' ? this._insideAttackCone(player, Math.PI * .8)
+      : pattern === 'frontal-carapace' ? this._insideAttackCone(player, Math.PI, true) : true;
+    if (Math.hypot(boss.mesh.position.x - player.position.x, boss.mesh.position.z - player.position.z) <= 8.5 &&
+        player.position.y < boss.mesh.position.y + 1.2 && aimed) {
+      this.applyBossDamage(player, 100, 'tail', boss);
+      const direction = player.position.clone().sub(boss.mesh.position).setY(0).normalize();
+      player.position.addScaledVector(direction, 4); player.mesh?.position.copy(player.position);
+    }
+    return true;
+  }
+
+  spitAcidMortar(player) {
+    if (!this.activeBoss || !bossCanAttack(this.activeBoss.type, 'spit')) return false;
+    this.audioEngine.playQueenAcidSpit();
+
+    const origin = this.activeBoss.mesh.position.clone().add(new THREE.Vector3(0, 4.0, 0));
+    const target = (this.activeBoss.pressureAim ?? player.position).clone();
+    const spitDir = target.clone().sub(origin).normalize();
+
+    const acidGeo = new THREE.SphereGeometry(0.4, 8, 8);
+    const acidMat = new THREE.MeshBasicMaterial({ color: 0x39ff14 });
+    const acidMesh = new THREE.Mesh(acidGeo, acidMat);
+    acidMesh.position.copy(origin);
+    this.scene.add(acidMesh);
+
+    this.acidSpitProjectiles.push({
+      mesh: acidMesh,
+      velocity: spitDir.multiplyScalar(22).add(new THREE.Vector3(0, 8, 0)),
+      gravity: -24,
+      damage: 75,
+      life: 2.5
+    });
+  }
+
+
+  clear() {
+    releaseHostileAttack(this, this.activeBoss);
+    disposeObject(this.activeBoss?.mesh, this.sharedResources);
+    this.activeBoss = null;
+    for (const list of [this.acidSpitProjectiles, this.embryoProjectiles, this.weaponProjectiles, this.effects]) for (const item of list ?? []) disposeObject(item.mesh);
+    this.acidSpitProjectiles = []; this.embryoProjectiles = []; this.weaponProjectiles = []; this.effects = [];
+    this.pendingHatches = []; this.pendingActions = []; this.maskTarget = null;
+    this.suspendedCombat = null;
+  }
+
+  update(delta, player, horde = null) {
+    if (!this.activeBoss || !Number.isFinite(delta) || delta <= 0) return;
+    this.time += delta;
+    const boss = this.activeBoss;
+    if (boss.hp <= 0) { const event = recordCombatDeath(this, boss, { kind: boss.type, isBoss: true, killerFaction: boss.lastDamageFaction }); this.lastDeathEvent = event; if (event) this.onDefeated?.(event); this.clear(); return; }
+    this._syncPhaseFromHealth(boss, horde);
+    const living = this.combatDirector?.livingPlayers?.length ? this.combatDirector.livingPlayers : (Array.isArray(player) ? player : [player]);
+    const players = boss.battleUnitId && this.battleSimulation ? listBattleTargets(this, boss, living) : living.filter(target => target?.hp > 0 && target.position);
+    const collisionTarget = (position, radius) => players.filter(target => position.distanceTo(target.position) < radius)
+      .sort((a, b) => position.distanceToSquared(a.position) - position.distanceToSquared(b.position))[0];
+    for (let i = this.pendingActions.length - 1; i >= 0; i--) {
+      const action = this.pendingActions[i]; action.life -= delta;
+      if (action.life > 1e-8) continue;
+      this.pendingActions.splice(i, 1);
+      if (action.owner !== boss) continue;
+      if (action.kind === 'burst') this.fireBossWeapon(action.target, action.weapon, { aim: action.aim, volley: action.volley, burstChild: true });
+      else if (action.kind === 'shockwave') players.forEach((target, index) => this._shockwave(target, action.radius, action.damage, action.color, { innerRadius: action.innerRadius, visual: index === 0 }));
+    }
+    this._updateWeaponProjectiles(delta, players);
+    if (this.activeBoss !== boss) return;
+    for (let i = this.effects.length - 1; i >= 0; i--) {
+      const fx = this.effects[i]; fx.life -= delta;
+      if (fx.mesh.material?.opacity !== undefined) fx.mesh.material.opacity = Math.max(0, fx.life / fx.duration) * .65;
+      if (fx.expands) fx.mesh.scale.setScalar(1 + (fx.duration - fx.life) * 8);
+      if (fx.life <= 0) { disposeObject(fx.mesh); this.effects.splice(i, 1); }
+    }
+    for (let i = this.pendingHatches.length - 1; i >= 0; i--) {
+      const hatch = this.pendingHatches[i]; hatch.life -= delta;
+      if (hatch.life <= 0) { if (this.activeBoss === boss) hatch.horde.spawnChestburster(hatch.pos); this.pendingHatches.splice(i, 1); }
+    }
+    for (const key of ['acidSpitProjectiles', 'embryoProjectiles']) for (let i = this[key].length - 1; i >= 0; i--) {
+      const projectile = this[key][i]; projectile.life -= delta;
+      const previous = projectile.mesh.position.clone();
+      projectile.velocity.y += projectile.gravity * delta; projectile.mesh.position.addScaledVector(projectile.velocity, delta);
+      const cover = this.environment?.traceSegment?.(previous, projectile.mesh.position, { radius: .35 });
+      if (cover) projectile.mesh.position.copy(cover.point);
+      const target = cover ? null : collisionTarget(projectile.mesh.position, key === 'embryoProjectiles' ? 2 : 2.2);
+      if (target && !projectile.volley?.hitPlayers.has(target)) { target.takeDamage(projectile.damage, true, boss, { attackKind: 'acid', blockable: false, parryable: false }); projectile.volley?.hitPlayers.add(target); }
+      if (target || cover || projectile.mesh.position.y <= .1 || projectile.life <= 0) { disposeObject(projectile.mesh); this[key].splice(i, 1); }
+    }
+    player = boss.battleUnitId && this.battleSimulation ? selectBattleTarget(this, boss, living) : selectHostileTarget(this, boss, Array.isArray(player) ? players[0] : player);
+    if (boss.type === 'feral_predator_boss') {
+      const detectable = players.filter(target => this._canFeralAcquire(target) && canDetectConcealedTarget(boss,target,this.environment)).sort((a, b) => boss.mesh.position.distanceToSquared(a.position) - boss.mesh.position.distanceToSquared(b.position));
+      if (!player || !this._canFeralAcquire(player)) player = detectable[0] ?? null;
+      const signature = (player ?? players[0])?.getThermalSignatureMultiplier?.() ?? 1;
+      boss.thermalAcquireRange = 35 * (Number.isFinite(signature) ? Math.max(.1, Math.min(1, signature)) : 1);
+      if (player) boss.lastKnownTarget = { position: player.position.clone(), time: this.time };
+    }
+    if (this.maskTarget) { this.maskTarget.life -= delta; if (this.maskTarget.life <= 0) this.maskTarget = null; }
+    if (boss.charge) {
+      const charge = boss.charge; charge.life -= delta;
+      const before = boss.mesh.position.clone();
+      boss.mesh.position.addScaledVector(charge.direction, charge.speed * delta);
+      if (charge.kind === 'leap') boss.mesh.position.y = charge.startY + Math.sin(Math.PI * Math.min(1, 1 - charge.life / charge.duration)) * 2.4;
+      this.environment?.resolveMovement?.(boss.mesh.position, 2.0);
+      if (charge.kind === 'charge' && boss.pattern?.mechanic === 'wall-stagger' &&
+          Math.hypot(boss.mesh.position.x - before.x, boss.mesh.position.z - before.z) < charge.speed * delta * .25) {
+        boss.charge = null; boss.isLeaping = false; boss.isStunned = true; boss.stunTimer = 2.6; boss.exposedUntil = this.time + 3.2;
+        this.onCounterplay?.({ bossType: boss.type, reason: 'charge_hit_cover', duration: 2.6 }); return;
+      }
+      const path = new THREE.Line3(before, boss.mesh.position), nearest = new THREE.Vector3();
+      for (const target of players) if (!charge.hit.has(target)) {
+        path.closestPointToPoint(target.position, true, nearest);
+        if (nearest.distanceTo(target.position) <= 2.5 && target.position.y < charge.startY + 1.4) { charge.hit.add(target); this.applyBossDamage(target, charge.damage, charge.kind, boss); }
+      }
+      if (charge.life <= 0) {
+        if (charge.kind === 'leap') boss.mesh.position.y = charge.startY;
+        boss.charge = null; boss.isLeaping = false; boss.exposedUntil = this.time + 1.4;
+        if (charge.kind === 'leap' && boss.pattern?.mechanic === 'landing-aftershock') this.pendingActions.push({ kind: 'shockwave', owner: boss, life: .65, radius: 7, innerRadius: 0, damage: 55, color: 0xffb36b });
+      }
+      this._updateAttackReadout(boss); return;
+    }
+    if (!player || player.hp <= 0) {
+      releaseHostileAttack(this, boss); boss.pressureAction = null; boss.pressureAim = null;
+      if (boss.battleUnitId) moveBattleOrder(this, boss, delta, 7.5);
+      else if (boss.lastKnownTarget && this.time - boss.lastKnownTarget.time <= 4) {
+        const toward = boss.lastKnownTarget.position.clone().sub(boss.mesh.position).setY(0), distance = toward.length();
+        if (distance > 3) {
+          const step = Math.min(7.5 * delta, distance - 3); boss.mesh.position.addScaledVector(toward.normalize(), step);
+          this.environment?.resolveAgentMovement?.(boss.mesh.position, boss.lastKnownTarget.position, step, 1.8);
+        }
+      }
+      this._updateAttackReadout(boss); return;
+    }
+    if (boss.isStunned) { releaseHostileAttack(this, boss); boss.pressureAction = null; boss.pressureAim = null; boss.stunTimer -= delta; if (boss.stunTimer <= 0) boss.isStunned = false; this._updateAttackReadout(boss); return; }
+    for (const [key, initial] of [['tailWhipCooldown', 3.5], ['spitCooldown', 4], ['regurgitateCooldown', 5], ['shriekCooldown', 4], ['contactCooldown', 1.4], ['specialCooldown', 5]]) boss[key] = Math.max(0, (boss[key] ?? initial) - delta);
+    const dir = player.position.clone().sub(boss.mesh.position); dir.y = 0;
+    boss.weaponRecovery = Math.max(0, (boss.weaponRecovery ?? 0) - delta);
+    const distance = dir.length(), allowed = boss.definition.attacks;
+    const choose = action => allowed.includes(action);
+    if (!boss.pressureAction) {
+      if (distance <= 8.5 && boss.tailWhipCooldown <= 0 && choose('tail')) boss.pressureAction = 'tail';
+      else if (distance <= 11 && boss.specialCooldown <= 0 && choose('gale')) boss.pressureAction = 'gale';
+      else if (distance <= 10 && boss.specialCooldown <= 0 && choose('slam')) boss.pressureAction = 'slam';
+      else if (distance <= 14 && boss.specialCooldown <= 0 && choose('vortex')) boss.pressureAction = 'vortex';
+      else if (distance <= 6 && boss.specialCooldown <= 0 && choose('constrict')) boss.pressureAction = 'constrict';
+      else if (distance <= 16 && boss.shriekCooldown <= 0 && choose('shriek')) boss.pressureAction = 'shriek';
+      else if (distance > 6 && distance < 24 && boss.specialCooldown <= 0 && (choose('charge') || choose('leap'))) boss.pressureAction =
+        boss.pattern?.mechanic === 'landing-aftershock' && choose('leap') ? 'leap' : choose('charge') ? 'charge' : 'leap';
+      else if (distance > 5 && distance < 28 && boss.regurgitateCooldown <= 0 && choose('embryos')) boss.pressureAction = 'embryos';
+      else if (distance > 7 && distance < 35 && boss.spitCooldown <= 0) {
+        const sequence = boss.pattern.weapons ?? ['bolt', 'plasma', 'disc', 'spit'];
+        boss.pressureAction = sequence[boss.weaponSequence % sequence.length];
+        if (!choose(boss.pressureAction)) boss.pressureAction = sequence.find(choose) ?? null;
+      }
+      else if (distance <= 3.8 && boss.contactCooldown <= 0) boss.pressureAction = 'melee';
+      if (boss.pressureAction) boss.pressureAim = player.position.clone();
+    }
+    const action = boss.pressureAction;
+    const ranges = { tail: 8.5, gale: 11, slam: 10, vortex: 14, constrict: 6, shriek: 16, charge: 24, leap: 24, embryos: 28, bolt: 35, plasma: 35, disc: 35, spit: 35, melee: 4.5 };
+    if (action && distance > ranges[action] + 1) { releaseHostileAttack(this, boss); boss.pressureAction = null; boss.pressureAim = null; }
+    else if (action && (player.isBattleNPC ? requestNPCStrike(boss, player, delta, {windup: action === 'melee' ? .95 : 1.25, recovery:1.8}) : requestHostileAttack(this, boss, player, delta, { kind: 'boss', windup: action === 'melee' ? .95 : 1.25, recovery: 1.8, duration: ['spit', 'embryos', 'bolt', 'plasma', 'disc'].includes(action) ? 2.5 : .65 }))) {
+      if (action === 'tail') { boss.tailWhipCooldown = 4.8; this.triggerTailWhip(player); }
+      else if (action === 'gale') { boss.specialCooldown = 7; this.triggerEmpressGale(player, horde); }
+      else if (action === 'spit') { boss.spitCooldown = 5; this.spitAcidMortar(player); }
+      else if (action === 'embryos') { boss.regurgitateCooldown = 7; this.regurgitateChestbursters(player, horde); }
+      else if (['bolt', 'plasma', 'disc'].includes(action)) { boss.spitCooldown = action === 'bolt' ? 5 : 5.8; this.fireBossWeapon(player, action); boss.weaponSequence++; }
+      else if (action === 'slam') { boss.specialCooldown = 7; this.triggerMatriarchRoyalSlam(player, horde); }
+      else if (action === 'vortex') { boss.specialCooldown = 8; this.triggerEngineerGravitationalVortex(player, horde); }
+      else if (action === 'constrict') { boss.specialCooldown = 6; this.triggerTrilobiteConstrict(player); }
+      else if (action === 'charge' || action === 'leap') { const duration = action === 'leap' ? .85 : .7; boss.specialCooldown = 7; boss.isLeaping = action === 'leap'; boss.charge = { kind: action, direction: (boss.pressureAim ?? player.position).clone().sub(boss.mesh.position).setY(0).normalize(), life: duration, duration, startY: boss.mesh.position.y, speed: action === 'leap' ? Math.min(26, Math.max(12, distance / duration)) : 16, damage: 70, hit: new Set() }; }
+      else if (action === 'shriek') { boss.shriekCooldown = 6; this.audioEngine?.playOffspringShriek?.(); if (distance <= 10 && this._insideAttackCone(player, Math.PI * .7) && this.applyBossDamage(player, 60, 'shriek', boss) && Number.isFinite(player.plasmaEnergy)) player.plasmaEnergy = Math.max(0, player.plasmaEnergy - 25); }
+      else { boss.contactCooldown = 2.1; boss.shieldUntil = this.time + .85; if (distance <= 4.5) this.applyBossDamage(player, boss.definition.species === 'yautja' ? 65 : boss.type === 'the_offspring' ? 50 : 35, 'melee', boss); }
+      boss.pressureAction = null; boss.pressureAim = null; boss.exposedUntil = Math.max(boss.exposedUntil, this.time + .6);
+    }
+    const warningRadius = ({ tail: 8.5, gale: 11, slam: boss.pattern.mechanic === 'three-seismic-pulses' ? 5 : 9,
+      constrict: 5, shriek: 10, vortex: 14, melee: 4.5 })[boss.pressureAction] ?? 3.2;
+    if (boss.attackWarning && Math.abs((boss.attackWarning.geometry.parameters.outerRadius ?? 0) - warningRadius) > .001) {
+      boss.attackWarning.geometry.dispose(); boss.attackWarning.geometry = new THREE.RingGeometry(warningRadius * .82, warningRadius, 28);
+    }
+    boss.warningRadius = warningRadius; syncHostileWarning(this, boss, warningRadius);
+    this._updateAttackReadout(boss);
+    const preparing = this.combatDirector?.getAttackState(boss)?.phase === 'windup' || boss._localAttackPreparation;
+    const moving = distance > 3.1 && !preparing && boss.weaponRecovery <= 0;
+    boss.visualPhase = (boss.visualPhase || 0) + delta * 5;
+    animateCreatureModel(boss.visualModel ?? boss.mesh, boss.visualPhase, moving);
+    const owner = boss.mesh._bossHunterOwner;
+    if (owner) for (const [role, sign] of [['leftArm',-1],['rightArm',1],['leftLeg',1],['rightLeg',-1]]) if (owner[role]) owner[role].rotation.x = moving ? Math.sin(boss.visualPhase) * sign * .22 : 0;
+    if (boss.tailSpinLife > 0) { boss.tailSpinLife = Math.max(0, boss.tailSpinLife - delta); boss.mesh.rotation.y += Math.PI * 2 * delta / .32; }
+    if (moving) { const speed = (boss.definition.species === 'yautja' ? 8.5 : boss.type === 'the_offspring' ? 10.5 : 7.5) * (boss.phase === 3 ? 1.15 : 1); boss.mesh.position.addScaledVector(dir.normalize(), Math.min(speed * delta, distance - 3.1)); this.environment?.resolveAgentMovement?.(boss.mesh.position, player.position, speed * delta, 1.8); if (!(boss.tailSpinLife > 0)) boss.mesh.rotation.y = Math.atan2(dir.x, dir.z); }
   }
 
   buildTrilobiteMesh(scale = 2.6) {
@@ -189,6 +490,7 @@ export class BossManager {
   }
 
   /* === CHANTIER 3 (v51.0): Mala'kak Awakened Engineer Titan Boss Mesh (Prometheus 2012 / Fire & Stone) === */
+
   buildEngineerTitanMesh(scale = 2.7) {
     const group = new THREE.Group();
 
@@ -340,6 +642,7 @@ export class BossManager {
   }
 
   /* === CHANTIER 7 (v55.0): Bad Blood Berserker Super Predator Boss Mesh (Predators 2010 Mr. Black Canon) === */
+
   buildBerserkerPredatorMesh(scale = 2.6) {
     const group = new THREE.Group();
 
@@ -438,7 +741,338 @@ export class BossManager {
     return group;
   }
 
+  /* === PREY (2022): 3.1m Feral Predator Primordial Archaic Hunter Boss Mesh === */
+
+  buildFeralPredatorMesh(scale = 2.9) {
+    const group = new THREE.Group();
+
+    // Pale leathery reptilian flesh
+    const skinMat = new THREE.MeshStandardMaterial({
+      color: 0x4a4738,
+      roughness: 0.72,
+      metalness: 0.2
+    });
+
+    // Primitive carved bone skull mask
+    const boneMat = new THREE.MeshStandardMaterial({
+      color: 0xd6d3d1,
+      roughness: 0.45,
+      metalness: 0.15
+    });
+
+    // Dark obsidian volcanic glass
+    const obsidianMat = new THREE.MeshStandardMaterial({
+      color: 0x09090b,
+      roughness: 0.08,
+      metalness: 0.95
+    });
+
+    const leatherMat = new THREE.MeshStandardMaterial({
+      color: 0x271c14,
+      roughness: 0.85
+    });
+
+    // 1. Muscular Torso & Dorsal Spine Ridges
+    const torso = new THREE.Mesh(new THREE.BoxGeometry(1.4 * scale, 1.8 * scale, 0.95 * scale), skinMat);
+    torso.position.y = 2.2 * scale;
+    torso.castShadow = true;
+    group.add(torso);
+
+    for (let s = 0; s < 5; s++) {
+      const spine = new THREE.Mesh(new THREE.ConeGeometry(0.08 * scale, 0.35 * scale, 4), boneMat);
+      spine.rotation.x = -Math.PI / 3;
+      spine.position.set(0, (1.6 + s * 0.3) * scale, -0.52 * scale);
+      group.add(spine);
+    }
+
+    // 2. Feral Head, Exposed Animalistic Lower Mandibles & Carved Bone Skull Mask
+    const head = new THREE.Mesh(new THREE.BoxGeometry(0.75 * scale, 0.9 * scale, 0.85 * scale), skinMat);
+    head.position.set(0, 3.4 * scale, 0.15 * scale);
+    group.add(head);
+
+    const boneMask = new THREE.Mesh(new THREE.BoxGeometry(0.82 * scale, 0.55 * scale, 0.65 * scale), boneMat);
+    boneMask.position.set(0, 3.6 * scale, 0.32 * scale);
+    group.add(boneMask);
+
+    [-0.28, 0.28].forEach(mx => {
+      const mand = new THREE.Mesh(new THREE.ConeGeometry(0.08 * scale, 0.45 * scale, 4), boneMat);
+      mand.rotation.x = Math.PI / 4;
+      mand.rotation.z = mx > 0 ? -0.4 : 0.4;
+      mand.position.set(mx * scale, 3.1 * scale, 0.48 * scale);
+      group.add(mand);
+    });
+
+    const laserAperture = new THREE.Mesh(new THREE.CylinderGeometry(0.04 * scale, 0.04 * scale, 0.15 * scale, 6), new THREE.MeshBasicMaterial({ color: 0xef4444 }));
+    laserAperture.rotation.x = Math.PI / 2;
+    laserAperture.position.set(-0.35 * scale, 3.65 * scale, 0.62 * scale);
+    group.add(laserAperture);
+
+    // 3. Right Arm: Telescopic Obsidian Spear / Cut Blade
+    const rightArm = new THREE.Mesh(new THREE.BoxGeometry(0.4 * scale, 1.5 * scale, 0.45 * scale), skinMat);
+    rightArm.position.set(0.95 * scale, 2.1 * scale, 0);
+    group.add(rightArm);
+
+    const spearShaft = new THREE.Mesh(new THREE.CylinderGeometry(0.05 * scale, 0.05 * scale, 2.6 * scale, 8), leatherMat);
+    spearShaft.position.set(1.05 * scale, 2.0 * scale, 0.3 * scale);
+    spearShaft.rotation.x = Math.PI / 3;
+    group.add(spearShaft);
+
+    const spearTip = new THREE.Mesh(new THREE.ConeGeometry(0.12 * scale, 0.8 * scale, 4), obsidianMat);
+    spearTip.position.set(1.05 * scale, 2.9 * scale, 0.9 * scale);
+    spearTip.rotation.x = Math.PI / 3;
+    group.add(spearTip);
+
+    // 4. Left Arm: Folding Expanding Bone Fan Shield on Forearm
+    const leftArm = new THREE.Mesh(new THREE.BoxGeometry(0.4 * scale, 1.5 * scale, 0.45 * scale), skinMat);
+    leftArm.position.set(-0.95 * scale, 2.1 * scale, 0);
+    group.add(leftArm);
+
+    const shieldPlate = new THREE.Mesh(new THREE.BoxGeometry(0.18 * scale, 1.2 * scale, 0.85 * scale), boneMat);
+    shieldPlate.position.set(-1.18 * scale, 1.8 * scale, 0.25 * scale);
+    group.add(shieldPlate);
+
+    // 5. Powerful Digigrade Legs & Archaic Loincloth
+    [-0.45, 0.45].forEach(lx => {
+      const leg = new THREE.Mesh(new THREE.BoxGeometry(0.48 * scale, 1.8 * scale, 0.52 * scale), skinMat);
+      leg.position.set(lx * scale, 0.9 * scale, 0);
+      leg.castShadow = true;
+      group.add(leg);
+    });
+
+    const loincloth = new THREE.Mesh(new THREE.BoxGeometry(1.1 * scale, 0.8 * scale, 0.65 * scale), leatherMat);
+    loincloth.position.set(0, 1.4 * scale, 0);
+    group.add(loincloth);
+
+    group.castShadow = true;
+    return group;
+  }
+
+  /* === PREDATOR: KILLER OF KILLERS (2025): 3.2m Apex Gladiator Grandmaster Predator Boss Mesh === */
+
+  buildApexGladiatorMesh(scale = 3.2) {
+    const group = new THREE.Group();
+
+    const skinMat = new THREE.MeshStandardMaterial({
+      color: 0x2e2d29,
+      roughness: 0.65,
+      metalness: 0.25
+    });
+
+    const armorMat = new THREE.MeshStandardMaterial({
+      color: 0xd97706, // Regal Gold Ancient Armor
+      roughness: 0.28,
+      metalness: 0.88
+    });
+
+    const obsidianMat = new THREE.MeshStandardMaterial({
+      color: 0x0f172a,
+      roughness: 0.15,
+      metalness: 0.92
+    });
+
+    const plasmaGlowMat = new THREE.MeshBasicMaterial({
+      color: 0x38bdf8
+    });
+
+    // 1. Massive Colosseum Armor Torso & Royal Pauldrons
+    const torso = new THREE.Mesh(new THREE.BoxGeometry(1.5 * scale, 1.8 * scale, 1.1 * scale), armorMat);
+    torso.position.y = 2.4 * scale;
+    torso.castShadow = true;
+    group.add(torso);
+
+    [-0.95, 0.95].forEach(px => {
+      const pauldron = new THREE.Mesh(new THREE.BoxGeometry(0.75 * scale, 0.45 * scale, 0.85 * scale), armorMat);
+      pauldron.position.set(px * scale, 3.1 * scale, 0);
+      group.add(pauldron);
+    });
+
+    // 2. Ceremonial Battle Skirt / Cape (Imperial Purple)
+    const capeMat = new THREE.MeshStandardMaterial({ color: 0x4c1d95, roughness: 0.85 });
+    const cape = new THREE.Mesh(new THREE.BoxGeometry(1.4 * scale, 1.6 * scale, 0.15 * scale), capeMat);
+    cape.position.set(0, 1.7 * scale, -0.55 * scale);
+    group.add(cape);
+
+    // 3. Ancient Bio-Mask with Horned Crest & 3 Red Optic Lenses
+    const head = new THREE.Mesh(new THREE.BoxGeometry(0.85 * scale, 0.95 * scale, 0.95 * scale), obsidianMat);
+    head.position.set(0, 3.45 * scale, 0.2 * scale);
+    group.add(head);
+
+    [-0.35, 0.35].forEach(hx => {
+      const horn = new THREE.Mesh(new THREE.CylinderGeometry(0.04 * scale, 0.12 * scale, 0.8 * scale, 6), armorMat);
+      horn.position.set(hx * scale, 4.0 * scale, -0.1 * scale);
+      horn.rotation.z = hx < 0 ? -0.5 : 0.5;
+      group.add(horn);
+    });
+
+    // Tri-Laser Optics
+    const triLaserLight = new THREE.PointLight(0xef4444, 2.0, 8.0);
+    triLaserLight.position.set(0, 3.45 * scale, 0.7 * scale);
+    group.add(triLaserLight);
+
+    // Dreadlocks (Heavy Golden Ring Clamps)
+    for (let d = -4; d <= 4; d++) {
+      const dread = new THREE.Mesh(new THREE.CylinderGeometry(0.06 * scale, 0.04 * scale, 1.5 * scale, 6), skinMat);
+      dread.position.set((d * 0.14) * scale, 3.0 * scale, -0.45 * scale);
+      dread.rotation.x = -0.3;
+      group.add(dread);
+    }
+
+    // 4. Dual Forearm Plasma Glaives (Left & Right)
+    [-0.95, 0.95].forEach(ax => {
+      const arm = new THREE.Mesh(new THREE.BoxGeometry(0.42 * scale, 1.4 * scale, 0.45 * scale), skinMat);
+      arm.position.set(ax * scale, 2.3 * scale, 0);
+      group.add(arm);
+
+      // Curved Double-Edged Plasma Glaive
+      const glaive = new THREE.Mesh(new THREE.BoxGeometry(0.08 * scale, 1.9 * scale, 0.22 * scale), obsidianMat);
+      glaive.position.set(ax * scale, 2.2 * scale, 0.55 * scale);
+      group.add(glaive);
+
+      const edgeGlow = new THREE.Mesh(new THREE.BoxGeometry(0.04 * scale, 1.8 * scale, 0.05 * scale), plasmaGlowMat);
+      edgeGlow.position.set(ax * scale, 2.2 * scale, 0.68 * scale);
+      group.add(edgeGlow);
+    });
+
+    // 5. Heavy Armored Legs & Greaves
+    [-0.45, 0.45].forEach(lx => {
+      const leg = new THREE.Mesh(new THREE.BoxGeometry(0.52 * scale, 1.9 * scale, 0.55 * scale), armorMat);
+      leg.position.set(lx * scale, 0.95 * scale, 0);
+      leg.castShadow = true;
+      group.add(leg);
+    });
+
+    group.castShadow = true;
+    return group;
+  }
+
+  /* === THE PREDATOR (2018): 3.3m Ultimate Upgrade Genetically Hybridized Predator Boss Mesh === */
+
+  buildUltimatePredatorMesh(scale = 3.3) {
+    const group = new THREE.Group();
+
+    // Genetically modified armored dermal exoskeleton
+    const dermalMat = new THREE.MeshStandardMaterial({
+      color: 0x1e2024,
+      roughness: 0.42,
+      metalness: 0.65
+    });
+
+    // Dark carbonized chitin carapace plates
+    const carapaceMat = new THREE.MeshStandardMaterial({
+      color: 0x111317,
+      roughness: 0.28,
+      metalness: 0.85
+    });
+
+    // Bone / razor tooth material
+    const fangMat = new THREE.MeshStandardMaterial({
+      color: 0xf3f4f6,
+      roughness: 0.35,
+      metalness: 0.1
+    });
+
+    const bladeMat = new THREE.MeshStandardMaterial({
+      color: 0xa1a1aa,
+      metalness: 0.95,
+      roughness: 0.15
+    });
+
+    const brassMat = new THREE.MeshStandardMaterial({
+      color: 0xd97706,
+      metalness: 0.9,
+      roughness: 0.2
+    });
+
+    // 1. Colossal Muscular Torso & Armored Dermal Carapace
+    const torso = new THREE.Mesh(new THREE.BoxGeometry(1.6 * scale, 2.0 * scale, 1.1 * scale), dermalMat);
+    torso.position.y = 2.4 * scale;
+    torso.castShadow = true;
+    group.add(torso);
+
+    const chestPlates = new THREE.Mesh(new THREE.BoxGeometry(1.4 * scale, 1.2 * scale, 0.3 * scale), carapaceMat);
+    chestPlates.position.set(0, 2.7 * scale, 0.6 * scale);
+    group.add(chestPlates);
+
+    // 2. Unmasked Terrifying Genetic Head & Flared Mandibles
+    const head = new THREE.Mesh(new THREE.BoxGeometry(0.9 * scale, 1.1 * scale, 1.0 * scale), dermalMat);
+    head.position.set(0, 3.7 * scale, 0.2 * scale);
+    group.add(head);
+
+    // 4 Flared Mandibles
+    [
+      { x: -0.38, y: 3.35, z: 0.55, rx: 0.4, ry: 0.5 },
+      { x: 0.38, y: 3.35, z: 0.55, rx: 0.4, ry: -0.5 },
+      { x: -0.42, y: 3.15, z: 0.5, rx: -0.3, ry: 0.4 },
+      { x: 0.42, y: 3.15, z: 0.5, rx: -0.3, ry: -0.4 }
+    ].forEach(m => {
+      const mand = new THREE.Mesh(new THREE.ConeGeometry(0.12 * scale, 0.55 * scale, 5), fangMat);
+      mand.position.set(m.x * scale, m.y * scale, m.z * scale);
+      mand.rotation.set(m.rx, m.ry, 0);
+      group.add(mand);
+    });
+
+    // Glowing Piercing Amber Eyes
+    const eyeMat = new THREE.MeshBasicMaterial({ color: 0xf59e0b });
+    [-0.22, 0.22].forEach(ex => {
+      const eye = new THREE.Mesh(new THREE.SphereGeometry(0.07 * scale, 6, 6), eyeMat);
+      eye.position.set(ex * scale, 3.8 * scale, 0.72 * scale);
+      group.add(eye);
+    });
+
+    // 3. Thick Heavy Dreadlocks with Tribal Brass Clasps
+    const dreadMat = new THREE.MeshStandardMaterial({ color: 0x09090b, roughness: 0.75 });
+    for (let d = 0; d < 18; d++) {
+      const dread = new THREE.Mesh(new THREE.CylinderGeometry(0.065 * scale, 0.04 * scale, 1.8 * scale, 6), dreadMat);
+      const angle = (d / 18) * Math.PI - Math.PI / 2;
+      dread.position.set(Math.cos(angle) * 0.52 * scale, 3.5 * scale, -0.4 * scale);
+      dread.rotation.set(-0.55, 0, Math.sin(angle) * 0.4);
+      group.add(dread);
+
+      if (d % 3 === 0) {
+        const ring = new THREE.Mesh(new THREE.TorusGeometry(0.07 * scale, 0.02 * scale, 4, 8), brassMat);
+        ring.position.set(Math.cos(angle) * 0.52 * scale, 3.1 * scale, -0.55 * scale);
+        group.add(ring);
+      }
+    }
+
+    // 4. Heavy Shoulder Plasma Cannon Mount
+    const gunPod = new THREE.Mesh(new THREE.BoxGeometry(0.4 * scale, 0.35 * scale, 0.8 * scale), carapaceMat);
+    gunPod.position.set(-0.85 * scale, 3.5 * scale, -0.1 * scale);
+    group.add(gunPod);
+
+    const gunBarrel = new THREE.Mesh(new THREE.CylinderGeometry(0.08 * scale, 0.08 * scale, 1.0 * scale, 8), carapaceMat);
+    gunBarrel.rotation.x = Math.PI / 2;
+    gunBarrel.position.set(-0.85 * scale, 3.5 * scale, 0.45 * scale);
+    group.add(gunBarrel);
+
+    // 5. Dual Forearms with Integrated Retractable Heavy Blades
+    [-1, 1].forEach(side => {
+      const arm = new THREE.Mesh(new THREE.BoxGeometry(0.4 * scale, 1.6 * scale, 0.45 * scale), dermalMat);
+      arm.position.set(side * 1.05 * scale, 2.5 * scale, 0.2 * scale);
+      group.add(arm);
+
+      const gauntlet = new THREE.Mesh(new THREE.BoxGeometry(0.46 * scale, 0.8 * scale, 0.5 * scale), carapaceMat);
+      gauntlet.position.set(side * 1.05 * scale, 2.0 * scale, 0.2 * scale);
+      group.add(gauntlet);
+
+      const dualBlade = new THREE.Mesh(new THREE.BoxGeometry(0.1 * scale, 0.04 * scale, 2.4 * scale), bladeMat);
+      dualBlade.position.set(side * 1.15 * scale, 1.8 * scale, 1.4 * scale);
+      group.add(dualBlade);
+    });
+
+    // 6. Colossal Muscular Legs & Armored Greaves
+    [-0.5, 0.5].forEach(lx => {
+      const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.28 * scale, 0.2 * scale, 2.0 * scale, 8), carapaceMat);
+      leg.position.set(lx * scale, 1.0 * scale, 0);
+      leg.castShadow = true;
+      group.add(leg);
+    });
+
+    return group;
+  }
+
   /* === CHANTIER 2 (v52.0): Rogue King Xenomorph Prime Boss Mesh (Aliens: Rogue 1993 Lore) === */
+
   buildRogueKingMesh(scale = 3.2) {
     const group = new THREE.Group();
 
@@ -534,7 +1168,76 @@ export class BossManager {
     return group;
   }
 
-  createBossMesh(type) {
+
+  triggerPregnantBurstFrenzy(horde) {
+    const boss = this.activeBoss;
+    if (!boss || !bossCanAttack(boss.type, 'embryos') || !horde?.spawnChestburster) return;
+    const count = Math.min(2, boss.broodAllowance); boss.broodAllowance -= count;
+    for (let i = 0; i < count; i++) this.pendingHatches.push({ life: .35 + i * .25, pos: boss.mesh.position.clone().add(new THREE.Vector3(i ? 1.5 : -1.5, 0, 1)), horde });
+  }
+
+  regurgitateBellyVomit(player, horde) {
+    if (!this.activeBoss || !bossCanAttack(this.activeBoss.type, 'embryos')) return false;
+    this.regurgitateChestbursters(player, horde); return true;
+  }
+
+  triggerEngineerGravitationalVortex(player, horde) {
+    if (!this.activeBoss || !bossCanAttack(this.activeBoss.type, 'vortex')) return false;
+    this.audioEngine?.playEngineerGravitationalVortex?.();
+    const distance = player.position.distanceTo(this.activeBoss.mesh.position);
+    const from = this.activeBoss.mesh.position.clone().add(new THREE.Vector3(0, 1.8, 0)), to = player.position.clone().add(new THREE.Vector3(0, 1.6, 0));
+    if (this.environment?.hasLineOfSight?.(from, to) === false) return false;
+    if (distance > 3 && distance <= 14) {
+      const direction = this.activeBoss.mesh.position.clone().sub(player.position).setY(0).normalize();
+      const requested = player.position.clone().addScaledVector(direction, Math.min(2.5, distance - 3));
+      this.environment?.resolveMovement?.(requested, player.radius ?? 1);
+      player.position.copy(requested); player.mesh?.position.copy(player.position);
+    }
+    return this._shockwave(player, 6, 75, 0x70afbd);
+  }
+
+  triggerEngineerSeismicStomp(player) { return this._shockwave(player, 8, 85, 0x70afbd); }
+
+  triggerMatriarchRoyalSlam(player, horde) {
+    if (!this.activeBoss || !bossCanAttack(this.activeBoss.type, 'slam')) return false;
+    this.audioEngine?.playRogueKingEarthquakeRoar?.();
+    const boss = this.activeBoss;
+    if (boss.pattern?.mechanic === 'annular-aftershock') this.pendingActions.push({ kind: 'shockwave', owner: boss, life: .85, radius: 15, innerRadius: 9, damage: 65, color: 0xffb57f });
+    else if (boss.pattern?.mechanic === 'three-seismic-pulses') {
+      for (const [life, radius] of [[.65, 10], [1.3, 15]]) this.pendingActions.push({ kind: 'shockwave', owner: boss, life, radius, innerRadius: 0, damage: 55, color: 0xdb947f });
+      return this._shockwave(player, 5, 65, 0xc38e62);
+    }
+    return this._shockwave(player, 9, 85, 0xc38e62);
+  }
+
+  triggerTrilobiteConstrict(player) {
+    if (!this.activeBoss || !bossCanAttack(this.activeBoss.type, 'constrict')) return false;
+    return this._shockwave(player, 5, 65, 0xe8d9bd);
+  }
+
+  spitMutagenSludge(player) {
+    if (!this.activeBoss || !bossCanAttack(this.activeBoss.type, 'spit')) return false;
+    return this.spitAcidMortar(player);
+  }
+
+  triggerTailSkewer(player) {
+    if (!this.activeBoss || !bossCanAttack(this.activeBoss.type, 'tail')) return false;
+    return this.triggerTailWhip(player);
+  }
+
+  triggerEmpressGale(player, horde) {
+    if (!this.activeBoss || !bossCanAttack(this.activeBoss.type, 'gale')) return false;
+    this.audioEngine?.playQueenTailWhip?.();
+    if (!this._insideAttackCone(player, Math.PI * .85)) return false;
+    const boss = this.activeBoss, damaged = this._shockwave(player, 11, 65, 0xb880d4);
+    if (damaged && player.position.y < boss.mesh.position.y + 1.2) {
+      const requested = player.position.clone().addScaledVector(player.position.clone().sub(boss.mesh.position).setY(0).normalize(), 3);
+      this.environment?.resolveMovement?.(requested, player.radius ?? 1); player.position.copy(requested); player.mesh?.position.copy(requested);
+    }
+    return damaged;
+  }
+
+  createRecentBossMesh(type) {
     if (type === 'rogue_king_prime') {
       return this.buildRogueKingMesh(3.2);
     }
@@ -546,6 +1249,15 @@ export class BossManager {
     }
     if (type === 'berserker_super_predator') {
       return this.buildBerserkerPredatorMesh(2.6);
+    }
+    if (type === 'ultimate_upgrade_predator') {
+      return this.buildUltimatePredatorMesh(3.3);
+    }
+    if (type === 'feral_predator_boss') {
+      return this.buildFeralPredatorMesh(2.9);
+    }
+    if (type === 'apex_gladiator_predator') {
+      return this.buildApexGladiatorMesh(3.2);
     }
 
     const group = new THREE.Group();
@@ -752,922 +1464,211 @@ export class BossManager {
     return group;
   }
 
-  regurgitateChestbursters(player, horde) {
-    if (!this.activeBoss) return;
-    this.audioEngine.playPredalienRegurgitate();
 
-    const origin = this.activeBoss.mesh.position.clone().add(new THREE.Vector3(0, 3.2, 0));
-    const target = player.position.clone();
-    const dir = target.clone().sub(origin).normalize();
+  armFeralMaskTrap(position, aimPosition = null) {
+    const boss = this.activeBoss;
+    if (boss?.type !== 'feral_predator_boss' || !position?.isVector3 || !position.toArray().every(Number.isFinite)) return false;
+    const aim = aimPosition?.isVector3 ? aimPosition.clone() : boss.mesh.position.clone().add(new THREE.Vector3(0, 2.1, 0));
+    this.maskTarget = { position: position.clone(), aim, life: 16 };
+    boss.mesh.userData.maskGuidanceArmed = true;
+    this.audioEngine?.playFeralBoltLaserLock?.();
+    return true; // Signal only. Damage requires a later, visible bolt collision.
+  }
 
-    // Launch embryonic Chestburster pods
-    for (let i = 0; i < 3; i++) {
-      const spreadDir = dir.clone().add(new THREE.Vector3(
-        (Math.random() - 0.5) * 0.4,
-        0.25 + Math.random() * 0.2,
-        (Math.random() - 0.5) * 0.4
-      )).normalize();
-
-      const embryoGeo = new THREE.SphereGeometry(0.35, 8, 8);
-      const embryoMat = new THREE.MeshStandardMaterial({ color: 0xef4444, roughness: 0.2, metalness: 0.1 });
-      const embryoMesh = new THREE.Mesh(embryoGeo, embryoMat);
-      embryoMesh.position.copy(origin);
-      this.scene.add(embryoMesh);
-
-      this.embryoProjectiles.push({
-        mesh: embryoMesh,
-        velocity: spreadDir.multiplyScalar(24),
-        gravity: -20,
-        damage: 60,
-        life: 2.5
-      });
+  fireBossWeapon(player, kind = 'bolt', { aim = null, volley = null, burstChild = false } = {}) {
+    const boss = this.activeBoss;
+    if (!boss || !player?.position?.isVector3 || !bossCanAttack(boss.type, kind)) return false;
+    const mesh = kind === 'bolt' ? new THREE.Mesh(new THREE.CylinderGeometry(.055, .055, .9, 8), new THREE.MeshStandardMaterial({ color: 0xa8b0b3, metalness: .8, roughness: .3 }))
+      : kind === 'disc' ? new THREE.Mesh(new THREE.TorusGeometry(.35, .065, 8, 24), new THREE.MeshStandardMaterial({ color: 0xc8c1a0, metalness: .85, roughness: .3 }))
+      : new THREE.Mesh(new THREE.SphereGeometry(.22, 12, 8), new THREE.MeshBasicMaterial({ color: 0x6fd9ff }));
+    const aimedPosition = (aim ?? boss.pressureAim ?? player.position).clone();
+    const target = aimedPosition.clone().add(new THREE.Vector3(0, 1.7, 0));
+    const origin = boss.mesh.position.clone().add(new THREE.Vector3(0, 2.2, 0));
+    const direction = target.sub(origin).normalize(); mesh.position.copy(origin);
+    if (kind === 'bolt') mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0), direction);
+    this.scene.add(mesh);
+    boss.weaponRecovery = .95;
+    const hitPlayers = volley ?? new Set();
+    this.weaponProjectiles.push({ mesh, velocity: direction.multiplyScalar(kind === 'bolt' ? 22 : 19), kind, life: 3, age: 0, damage: kind === 'bolt' ? 55 : 60, radius: .25,
+      owner: boss, hitPlayers, redirected: false, returning: false, travelled: 0, outboundDistance: Math.min(23, origin.distanceTo(target)), guidance: kind === 'bolt' && this.maskTarget ? this.maskTarget.aim.clone() : null });
+    if (!burstChild && kind === 'plasma' && boss.pattern?.mechanic === 'shared-plasma-burst') {
+      for (const life of [.18, .36]) this.pendingActions.push({ kind: 'burst', owner: boss, target: player, weapon: kind, life, aim: aimedPosition.clone(), volley: hitPlayers });
     }
+    this.audioEngine?.[kind === 'bolt' ? 'playFeralPredatorBoltFire' : 'playPlasmaShot']?.();
+    return true;
+  }
 
-    // Spawn a live Chestburster directly into horde with scurry audio
-    if (horde && horde.spawnChestburster) {
-      setTimeout(() => {
-        horde.spawnChestburster(origin);
-        if (this.audioEngine && this.audioEngine.playChestbursterScurry) {
-          this.audioEngine.playChestbursterScurry();
+  _updateWeaponProjectiles(delta, players) {
+    const segment = new THREE.Line3(), nearest = new THREE.Vector3(), body = new THREE.Vector3();
+    for (let i = this.weaponProjectiles.length - 1; i >= 0; i--) {
+      const shot = this.weaponProjectiles[i]; shot.life -= delta; shot.age += delta;
+      if (shot.guidance && !shot.redirected && shot.age >= .35) { shot.velocity.copy(shot.guidance).sub(shot.mesh.position).normalize().multiplyScalar(22); shot.redirected = true; }
+      segment.start.copy(shot.mesh.position); shot.mesh.position.addScaledVector(shot.velocity, delta); segment.end.copy(shot.mesh.position);
+      shot.travelled += segment.start.distanceTo(segment.end);
+      const cover = this.environment?.traceSegment?.(segment.start, segment.end, { radius: shot.radius });
+      if (cover) { segment.end.copy(cover.point); shot.mesh.position.copy(cover.point); }
+      if (shot.kind === 'bolt' && shot.velocity.lengthSq() > 0) shot.mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0), shot.velocity.clone().normalize());
+      let consumed = false;
+      if (shot.kind === 'disc' && shot.owner.pattern?.mechanic === 'returning-disc') {
+        const holder = shot.owner.mesh.position.clone().add(new THREE.Vector3(0, 2.2, 0));
+        if (!shot.returning && shot.travelled >= shot.outboundDistance) shot.returning = true;
+        if (shot.returning) {
+          segment.closestPointToPoint(holder, true, nearest);
+          if (nearest.distanceTo(holder) < 1) consumed = true;
+          else shot.velocity.copy(holder).sub(shot.mesh.position).normalize().multiplyScalar(22);
         }
-      }, 350);
+        shot.mesh.rotation.y += delta * 16;
+      }
+      if (shot.redirected && this.activeBoss === shot.owner) {
+        body.copy(shot.owner.mesh.position).add(new THREE.Vector3(0, 2.1, 0)); segment.closestPointToPoint(body, true, nearest);
+        if (nearest.distanceTo(body) < 1.1) { const boss = shot.owner; this.takeDamage(1200, null, { cause: 'reflected-bolt', killerFaction: 'player_clan' }); if (this.activeBoss !== boss) return; boss.isStunned = true; boss.stunTimer = 2.2; consumed = true; }
+      }
+      if (!consumed) for (const player of players) if (!shot.hitPlayers.has(player)) {
+        body.copy(player.position).add(new THREE.Vector3(0, 1.6, 0)); segment.closestPointToPoint(body, true, nearest);
+        if (nearest.distanceTo(body) <= (player.radius ?? 1) * .65 + shot.radius) { shot.hitPlayers.add(player); this.applyBossDamage(player, shot.damage, shot.kind, shot.owner); consumed = shot.kind !== 'disc'; break; }
+      }
+      if (consumed || cover || shot.life <= 1e-8 || shot.mesh.position.y < -.1) { disposeObject(shot.mesh); const index = this.weaponProjectiles.indexOf(shot); if (index >= 0) this.weaponProjectiles.splice(index, 1); }
     }
   }
 
-  triggerPregnantBurstFrenzy(horde) {
-    if (!this.activeBoss || !this.activeBoss.mesh) return;
-    const origin = this.activeBoss.mesh.position.clone().add(new THREE.Vector3(0, 2.5, 0));
-
-    if (this.audioEngine && this.audioEngine.playPredalienRegurgitate) {
-      this.audioEngine.playPredalienRegurgitate();
+  _shockwave(player, radius, damage, color = 0xb99969, { innerRadius = 0, visual = true } = {}) {
+    const boss = this.activeBoss; if (!boss) return false;
+    if (visual) {
+      const mesh = new THREE.Mesh(new THREE.RingGeometry(innerRadius || radius * .9, radius, 48), new THREE.MeshBasicMaterial({ color, side: THREE.DoubleSide, transparent: true, opacity: .65, depthWrite: false }));
+      mesh.rotation.x = -Math.PI / 2; mesh.position.copy(boss.mesh.position); mesh.position.y += .05; this.scene.add(mesh);
+      this.effects.push({ mesh, life: .5, duration: .5 });
     }
-    if (this.audioEngine && this.audioEngine.playChestbursterScurry) {
-      this.audioEngine.playChestbursterScurry();
-    }
-
-    if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
-      window.gameInstance.ui.showAnnouncement('⚠️ PRÉDALIENNE EN FUREUR GESTANTE : ÉRUPTION DE COUVÉE VIRULENTE (AVP-R) !');
-    }
-
-    // Violent chestburster brood eruption
-    if (horde && horde.spawnChestburster) {
-      for (let c = 0; c < 3; c++) {
-        setTimeout(() => {
-          const spawnPos = origin.clone().add(new THREE.Vector3((Math.random() - 0.5) * 3, 0, (Math.random() - 0.5) * 3));
-          horde.spawnChestburster(spawnPos);
-        }, c * 250);
-      }
-    }
+    const distance = player?.position ? Math.hypot(player.position.x - boss.mesh.position.x, player.position.z - boss.mesh.position.z) : Infinity;
+    if (player?.hp > 0 && player.position.y < boss.mesh.position.y + 1.2 && distance >= innerRadius && distance <= radius) return this.applyBossDamage(player, damage, 'shockwave', boss);
+    return false;
   }
 
-  regurgitateBellyVomit(player, horde) {
-    if (!this.activeBoss) return;
-    if (this.audioEngine && this.audioEngine.playPredalienBellyVomit) {
-      this.audioEngine.playPredalienBellyVomit();
-    } else if (this.audioEngine && this.audioEngine.playPredalienRegurgitate) {
-      this.audioEngine.playPredalienRegurgitate();
-    }
-
-    if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
-      window.gameInstance.ui.showAnnouncement('⚠️ DÉGORGEMENT GESTANT (AVP-R) : GERBE D\'ACIDE CORROSIF ET DOUBLE ÉCLOSION !');
-    }
-
-    const origin = this.activeBoss.mesh.position.clone().add(new THREE.Vector3(0, 3.2, 0));
-    const target = player.position.clone();
-    const dir = target.clone().sub(origin).normalize();
-
-    // Launch 3 streams of pressurized acidic bile
-    for (let i = 0; i < 3; i++) {
-      const spreadDir = dir.clone().add(new THREE.Vector3(
-        (Math.random() - 0.5) * 0.35,
-        0.2 + Math.random() * 0.15,
-        (Math.random() - 0.5) * 0.35
-      )).normalize();
-
-      const vomitGeo = new THREE.SphereGeometry(0.38, 8, 8);
-      const vomitMat = new THREE.MeshStandardMaterial({
-        color: 0x84cc16,
-        emissive: 0x4d7c0f,
-        roughness: 0.15,
-        metalness: 0.1
-      });
-      const vomitMesh = new THREE.Mesh(vomitGeo, vomitMat);
-      vomitMesh.position.copy(origin);
-      this.scene.add(vomitMesh);
-
-      this.embryoProjectiles.push({
-        mesh: vomitMesh,
-        velocity: spreadDir.multiplyScalar(22),
-        gravity: -19,
-        damage: 45,
-        life: 3.5,
-        isBellyVomit: true
-      });
-    }
-
-    // Spawn 2 chestbursters on impact with delay
-    setTimeout(() => {
-      if (horde && horde.spawnChestburster) {
-        horde.spawnChestburster(target.clone().add(new THREE.Vector3(1.2, 0, 1.2)));
-        horde.spawnChestburster(target.clone().add(new THREE.Vector3(-1.2, 0, -1.2)));
-        if (this.audioEngine && this.audioEngine.playChestbursterScurry) {
-          this.audioEngine.playChestbursterScurry();
-        }
-      }
-    }, 450);
+  _insideAttackCone(player, angle, rear = false) {
+    const boss = this.activeBoss; if (!boss || !player?.position) return false;
+    const forward = !rear && boss.pressureAim ? boss.pressureAim.clone().sub(boss.mesh.position).setY(0).normalize()
+      : new THREE.Vector3(Math.sin(boss.mesh.rotation.y), 0, Math.cos(boss.mesh.rotation.y));
+    if (rear) forward.negate();
+    const direction = player.position.clone().sub(boss.mesh.position).setY(0).normalize();
+    return forward.dot(direction) >= Math.cos(angle / 2);
   }
 
-  takeDamage(amount, horde = null) {
-    if (!this.activeBoss) return;
+  _canFeralAcquire(target) {
+    const boss = this.activeBoss; if (!boss || !target?.position || !(target.hp > 0)) return false;
+    const raw = target.getThermalSignatureMultiplier?.() ?? 1, signature = Number.isFinite(raw) ? Math.max(.1, Math.min(1, raw)) : 1;
+    const distance = boss.mesh.position.distanceTo(target.position);
+    if (distance <= 8) return true;
+    const visible = this.environment?.hasLineOfSight?.(boss.mesh.position.clone().add(new THREE.Vector3(0, 3.2, 0)), target.position.clone().add(new THREE.Vector3(0, 1.6, 0))) !== false;
+    return visible && distance <= Math.max(18, 35 * signature);
+  }
 
-    // Chantier 3 (v51.0): Mala'kak Awakened Engineer Biomechanical Phase Shield
-    if (this.activeBoss.type === 'awakened_engineer' && this.activeBoss.phase === 2 && this.activeBoss.hasPhaseShield) {
-      this.activeBoss.phaseShieldHp -= amount;
-      if (this.activeBoss.phaseShieldHp <= 0) {
-        this.activeBoss.hasPhaseShield = false;
-        if (this.activeBoss.mesh.userData && this.activeBoss.mesh.userData.phaseShield) {
-          this.activeBoss.mesh.userData.phaseShield.visible = false;
-        }
-        if (this.audioEngine && this.audioEngine.playEngineerBioArmorShatter) {
-          this.audioEngine.playEngineerBioArmorShatter();
-        }
-        if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
-          window.gameInstance.ui.showAnnouncement('🛡️ BOUCLIER BIOMÉCANIQUE DE L\'INGÉNIEUR BRISÉ !');
-        }
-      }
-      amount *= 0.4; // 60% absorbed by phase shield
+  _updateAttackReadout(boss) {
+    const local = boss._localAttackPreparation;
+    const state = this.combatDirector?.getAttackState(boss) ?? (local ? { phase: 'windup', progress: local.elapsed / local.windup } : null);
+    const preparing = state?.phase === 'windup';
+    const readout = boss.encounterReadout ??= {};
+    Object.assign(readout, { bossType: boss.type, label: boss.definition.label, phase: boss.phase, mechanic: boss.pattern.mechanic,
+      preparing, action: boss.pressureAction ?? null, progress: preparing ? Math.max(0, Math.min(1, state.progress ?? 0)) : 0,
+      read: boss.pattern.read, response: boss.pattern.response, exposedFor: Math.max(0, boss.exposedUntil - this.time), thermalAcquireRange: boss.thermalAcquireRange ?? null,
+      warningRadius: boss.warningRadius ?? null });
+    boss.mesh.userData.encounterReadout = readout;
+    if (boss.attackWarning) boss.attackWarning.position.y = .035;
+    const laser = preparing && boss.pattern.mechanic === 'laser-committed-plasma' && boss.pressureAction === 'plasma' && boss.pressureAim;
+    if (laser && !boss.aimBeam) {
+      const geometry = new THREE.BufferGeometry(); geometry.setAttribute('position', new THREE.Float32BufferAttribute(new Float32Array(18), 3));
+      boss.aimBeam = new THREE.LineSegments(geometry, new THREE.LineBasicMaterial({ color: 0xe74236, transparent: true, opacity: .65 }));
+      boss.aimBeam.name = 'boss-committed-laser'; boss.aimBeam.frustumCulled = false; boss.mesh.add(boss.aimBeam);
     }
-
-    this.activeBoss.hp -= amount;
-
-    // Engineer Phase 2 trigger at 50% HP
-    if (this.activeBoss.type === 'awakened_engineer' && this.activeBoss.hp <= this.activeBoss.maxHp * 0.5 && this.activeBoss.phase === 1) {
-      this.activeBoss.phase = 2;
-      this.activeBoss.hasPhaseShield = true;
-      this.activeBoss.phaseShieldHp = 2000;
-      if (this.activeBoss.mesh.userData && this.activeBoss.mesh.userData.phaseShield) {
-        this.activeBoss.mesh.userData.phaseShield.visible = true;
-      }
-      if (this.audioEngine && this.audioEngine.playEngineerGravityStaffBlast) {
-        this.audioEngine.playEngineerGravityStaffBlast();
-      }
-      if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
-        window.gameInstance.ui.showAnnouncement('⚡ PHASE 2 : L\'INGÉNIEUR DÉPLOIE SON CHAMP GRAVITATIONNEL ET SON BOUCLIER !');
-      }
-    }
-
-    // Predalien Pregnant Belly-Burst Frenzy at < 45% HP (AVP Requiem Lore)
-    if ((this.activeBoss.type === 'predalien_queen' || this.activeBoss.type === 'predalien_abomination' || this.activeBoss.type === 'predalien_matriarch_titan') && this.activeBoss.hp <= this.activeBoss.maxHp * 0.45 && !this.activeBoss.pregnantBurstTriggered) {
-      this.activeBoss.pregnantBurstTriggered = true;
-      this.triggerPregnantBurstFrenzy(horde || (window.gameInstance ? window.gameInstance.horde : null));
-    }
-
-    // Phase 2 for Predalien Abomination / Matriarch Titan at 65% HP
-    if ((this.activeBoss.type === 'predalien_abomination' || this.activeBoss.type === 'predalien_matriarch_titan') && this.activeBoss.hp <= this.activeBoss.maxHp * 0.65 && this.activeBoss.phase === 1) {
-      this.activeBoss.phase = 2;
-      if (window.gameInstance && window.gameInstance.ui) {
-        window.gameInstance.ui.showAnnouncement('⚠️ PHASE 2 : LA MATRIARCHE PRÉDALIENNE ENTRE EN TRANSE ROYALE ET LIBÈRE SES BROOD SACS !');
-      }
-    }
-
-    // Custom Spine Rip Stun Threshold at 18% / 20% HP
-    if (this.activeBoss.type === 'rogue_king_prime') {
-      if (this.activeBoss.hp <= this.activeBoss.maxHp * 0.45 && this.activeBoss.phase === 1) {
-        this.activeBoss.phase = 2;
-        this.activeBoss.isEnraged = true;
-        if (this.audioEngine && this.audioEngine.playRogueKingEarthquakeRoar) {
-          this.audioEngine.playRogueKingEarthquakeRoar();
+    if (boss.aimBeam) {
+      boss.aimBeam.visible = Boolean(laser);
+      if (laser) {
+        boss.mesh.updateMatrixWorld(true); const attribute = boss.aimBeam.geometry.attributes.position;
+        for (let index = 0; index < 3; index++) {
+          const from = boss.mesh.worldToLocal(boss.mesh.position.clone().add(new THREE.Vector3((index - 1) * .09, 2.2, 0)));
+          const to = boss.mesh.worldToLocal(boss.pressureAim.clone().add(new THREE.Vector3((index - 1) * .025, 1.7, 0)));
+          attribute.setXYZ(index * 2, from.x, from.y, from.z); attribute.setXYZ(index * 2 + 1, to.x, to.y, to.z);
         }
-        if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
-          window.gameInstance.ui.showAnnouncement('👑 PHASE 2 : LE ROI XÉNOMORPHE ENTRE EN RAGE SANGUINAIRE !');
-        }
-      }
-
-      if (this.activeBoss.hp <= this.activeBoss.maxHp * 0.20 && !this.activeBoss.isStunned && !this.activeBoss.spineRipAvailable) {
-        this.activeBoss.isStunned = true;
-        this.activeBoss.stunTimer = 15.0;
-        this.activeBoss.spineRipAvailable = true;
-        if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
-          window.gameInstance.ui.showAnnouncement('💀 EXÉCUTION ROYALE : APPUYEZ SUR [E] POUR ARRACHER LA COURONNE CORNUE DU ROI XÉNOMORPHE !');
-        }
-      }
-    } else if (this.activeBoss.type === 'awakened_engineer') {
-      if (this.activeBoss.hp <= this.activeBoss.maxHp * 0.20 && !this.activeBoss.isStunned && !this.activeBoss.spineRipAvailable) {
-        this.activeBoss.isStunned = true;
-        this.activeBoss.stunTimer = 15.0;
-        this.activeBoss.spineRipAvailable = true;
-        if (window.gameInstance && window.gameInstance.ui) {
-          window.gameInstance.ui.showAnnouncement('💀 EXÉCUTION MYTHIQUE : APPUYEZ SUR [E] POUR DÉCAPITER L\'INGÉNIEUR ET ARRACHER SON BIO-MASQUE !');
-        }
-      }
-    } else if (this.activeBoss.type === 'predalien_matriarch_titan') {
-      if (this.activeBoss.hp <= this.activeBoss.maxHp * 0.18 && !this.activeBoss.isStunned && !this.activeBoss.spineRipAvailable) {
-        this.activeBoss.isStunned = true;
-        this.activeBoss.stunTimer = 15.0;
-        this.activeBoss.spineRipAvailable = true;
-        if (window.gameInstance && window.gameInstance.ui) {
-          window.gameInstance.ui.showAnnouncement('💀 EXÉCUTION SUPRÊME : APPUYEZ SUR [E] POUR ARRACHER LA COURONNE IMPÉRIALE DE LA MATRIARCHE TITAN PRÉDALIENNE !');
-        }
-      }
-    } else if (this.activeBoss.type === 'trilobite_prime') {
-      if (this.activeBoss.hp <= this.activeBoss.maxHp * 0.20 && !this.activeBoss.isStunned && !this.activeBoss.spineRipAvailable) {
-        this.activeBoss.isStunned = true;
-        this.activeBoss.stunTimer = 14.0;
-        this.activeBoss.spineRipAvailable = true;
-        if (window.gameInstance && window.gameInstance.ui) {
-          window.gameInstance.ui.showAnnouncement('💀 EXÉCUTION MYTHIQUE : APPUYEZ SUR [E] POUR TRANCHER LE TENTACULE PRIMORDIAL DU TRILOBITE !');
-        }
-      }
-    } else if (this.activeBoss.type === 'predalien_abomination') {
-      if (this.activeBoss.hp <= this.activeBoss.maxHp * 0.20 && !this.activeBoss.isStunned && !this.activeBoss.spineRipAvailable) {
-        this.activeBoss.isStunned = true;
-        this.activeBoss.stunTimer = 12.0;
-        this.activeBoss.spineRipAvailable = true;
-        if (window.gameInstance && window.gameInstance.ui) {
-          window.gameInstance.ui.showAnnouncement('💀 EXÉCUTION SPÉCIALE : APPUYEZ SUR [E] POUR DÉCAPITER L\'ABOMINATION PRÉDALIENNE !');
-        }
-      }
-    } else {
-      if (this.activeBoss.hp <= this.activeBoss.maxHp * 0.3 && !this.activeBoss.isStunned) {
-        this.activeBoss.isStunned = true;
-        this.activeBoss.stunTimer = 6.0;
+        attribute.needsUpdate = true;
       }
     }
   }
 
-  /* === CHANTIER 3 (v51.0): Engineer Gravitational Vortex & Seismic Stomp === */
-  triggerEngineerGravitationalVortex(player, horde) {
-    if (!this.activeBoss || !this.activeBoss.mesh) return;
-    const origin = this.activeBoss.mesh.position.clone();
+  getEncounterReadout() { return this.activeBoss?.encounterReadout ? { ...this.activeBoss.encounterReadout } : null; }
 
-    if (this.audioEngine && this.audioEngine.playEngineerGravityStaffBlast) {
-      this.audioEngine.playEngineerGravityStaffBlast();
-    }
-
-    if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
-      window.gameInstance.ui.showAnnouncement('🌌 VORTEX GRAVITATIONNEL DE L\'INGÉNIEUR : ATTRACTION ET ÉCRASEMENT DES FORMES DE VIE !');
-    }
-
-    // Pull and damage player
-    const dist = origin.distanceTo(player.position);
-    if (dist <= 26.0) {
-      const pullDir = origin.clone().sub(player.position).normalize();
-      pullDir.y = 0;
-      player.position.addScaledVector(pullDir, Math.min(dist * 0.7, 12.0));
-      if (player.mesh) player.mesh.position.copy(player.position);
-      player.takeDamage(140);
-    }
-
-    // Pull and crush nearby aliens
-    if (horde && horde.aliens) {
-      for (let i = horde.aliens.length - 1; i >= 0; i--) {
-        const a = horde.aliens[i];
-        if (!a || a.hp <= 0 || !a.mesh) continue;
-        const d = origin.distanceTo(a.mesh.position);
-        if (d <= 22.0) {
-          const aPull = origin.clone().sub(a.mesh.position).normalize();
-          aPull.y = 0;
-          a.mesh.position.addScaledVector(aPull, 8.5);
-          a.hp -= 220;
-          if (a.hp <= 0) {
-            if (horde.goreEngine) horde.goreEngine.spawnDismemberment(a.mesh.position, 'heavy');
-            this.scene.remove(a.mesh);
-            horde.aliens.splice(i, 1);
-            horde.deadCount++;
-          }
-        }
-      }
-    }
+  serializeCombatState() {
+    const boss = this.activeBoss; if (!boss || boss.hp <= 0) return null;
+    this._syncPhaseFromHealth(boss);
+    const cooldowns = Object.fromEntries(BOSS_COOLDOWN_KEYS
+      .map(key => [key, Math.max(0, boss[key] ?? 0)]));
+    return { version: 1, bossType: boss.type, battleUnitId: boss.battleUnitId ?? null,
+      hp: boss.hp, maxHp: boss.maxHp, position: boss.mesh.position.toArray(), phase: boss.phase,
+      isStunned: boss.isStunned, stunTimer: Math.max(0, boss.stunTimer), hasEnteredStun: boss.hasEnteredStun,
+      phaseShieldHp: boss.phaseShieldHp, hasPhaseShield: boss.hasPhaseShield, broodAllowance: boss.broodAllowance,
+      weaponSequence: boss.weaponSequence, shieldRemaining: Math.max(0, boss.shieldUntil - this.time), exposedRemaining: Math.max(0, boss.exposedUntil - this.time),
+      cooldowns, attackWasInProgress: Boolean(boss.pressureAction || boss.charge || this.pendingActions.length || this.weaponProjectiles.length || this.pendingHatches.length),
+      simulationTime: this.battleSimulation?.time ?? null };
   }
 
-  triggerEngineerSeismicStomp(player) {
-    if (!this.activeBoss || !this.activeBoss.mesh) return;
-    const origin = this.activeBoss.mesh.position.clone();
-
-    if (this.audioEngine && this.audioEngine.playGroundSlamImpact) {
-      this.audioEngine.playGroundSlamImpact();
-    }
-
-    const dist = origin.distanceTo(player.position);
-    if (dist <= 8.5) {
-      player.takeDamage(180);
-      const pushDir = player.position.clone().sub(origin).normalize();
-      pushDir.y = 0;
-      player.position.addScaledVector(pushDir, 11.0);
-      if (player.mesh) player.mesh.position.copy(player.position);
-    }
+  restoreCombatState(state, { preserveHealth = false, elapsed = 0 } = {}) {
+    const boss = this.activeBoss;
+    if (!boss || !Number.isFinite(elapsed) || elapsed < 0 || elapsed > 1e9) throw new TypeError('Invalid boss combat checkpoint');
+    state = validateBossCombatState(state, { bossType: boss.type, battleUnitId: boss.battleUnitId ?? null, maxHp: boss.maxHp });
+    const hp = preserveHealth ? boss.hp : state.hp, derivedPhase = hp <= boss.maxHp * .3 ? 3 : hp <= boss.maxHp * .65 ? 2 : 1;
+    boss.hp = hp; boss.phase = Math.max(state.phase, derivedPhase); boss.mesh.position.fromArray(state.position);
+    const enteredThirdPhase = derivedPhase === 3 && state.phase < 3 && !state.hasEnteredStun;
+    boss.isStunned = enteredThirdPhase || state.isStunned && state.stunTimer > elapsed; boss.stunTimer = enteredThirdPhase ? 3.5 : Math.max(0, state.stunTimer - elapsed);
+    boss.hasEnteredStun = state.hasEnteredStun || boss.phase === 3;
+    boss.phaseShieldHp = state.phaseShieldHp; boss.hasPhaseShield = state.hasPhaseShield && state.phaseShieldHp > 0;
+    if (boss.mesh.userData.phaseShield) boss.mesh.userData.phaseShield.visible = boss.hasPhaseShield;
+    boss.broodAllowance = state.broodAllowance; boss.weaponSequence = state.weaponSequence;
+    boss.shieldUntil = this.time + Math.max(0, state.shieldRemaining - elapsed); boss.exposedUntil = this.time + Math.max(0, state.exposedRemaining - elapsed);
+    for (const key of BOSS_COOLDOWN_KEYS) boss[key] = Math.max(0, state.cooldowns[key] - elapsed);
+    releaseHostileAttack(this, boss); boss.pressureAction = null; boss.pressureAim = null; boss.charge = null; boss.isLeaping = false;
+    // Consumed volleys/charges are not refunded or replayed by a checkpoint.
+    // Restoring an attack's exact trajectory is deliberately not claimed.
+    for (const list of [this.acidSpitProjectiles, this.embryoProjectiles, this.weaponProjectiles, this.effects]) for (const item of list) disposeObject(item.mesh);
+    this.acidSpitProjectiles = []; this.embryoProjectiles = []; this.weaponProjectiles = []; this.effects = []; this.pendingHatches = []; this.pendingActions = [];
+    if (state.attackWasInProgress) boss.contactCooldown = Math.max(.75, boss.contactCooldown);
+    this._updateAttackReadout(boss); return true;
   }
 
-  triggerMatriarchRoyalSlam(player, horde) {
-    if (!this.activeBoss) return;
-    if (this.audioEngine && this.audioEngine.playRogueKingRoar) {
-      this.audioEngine.playRogueKingRoar();
-    } else if (this.audioEngine && this.audioEngine.playThunderClap) {
-      this.audioEngine.playThunderClap();
-    }
-
-    if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
-      window.gameInstance.ui.showAnnouncement('💥 BOND ROYAL TITAN (AVP EXTINCTION) : ONDE DE CHOC DE 14M (135 DÉGÂTS) !');
-    }
-
-    // Golden-amber biomechanical shockwave ring
-    const ringGeo = new THREE.RingGeometry(1.5, 3.2, 32);
-    ringGeo.rotateX(-Math.PI / 2);
-    const ringMat = new THREE.MeshBasicMaterial({
-      color: 0xd97706,
-      transparent: true,
-      opacity: 0.9,
-      side: THREE.DoubleSide
-    });
-    const ring = new THREE.Mesh(ringGeo, ringMat);
-    ring.position.copy(this.activeBoss.mesh.position);
-    ring.position.y = 0.35;
-    this.scene.add(ring);
-
-    let scale = 1.0;
-    const ringAnim = setInterval(() => {
-      scale += 1.05;
-      ring.scale.set(scale, 1, scale);
-      ring.material.opacity -= 0.08;
-      if (ring.material.opacity <= 0) {
-        clearInterval(ringAnim);
-        this.scene.remove(ring);
-      }
-    }, 25);
-
-    const dist = this.activeBoss.mesh.position.distanceTo(player.position);
-    if (dist <= 14.0) {
-      if (player.isBlocking) {
-        if (player.audioEngine && player.audioEngine.playShieldBlock) player.audioEngine.playShieldBlock();
-      } else {
-        player.takeDamage(135);
-        const pushDir = player.position.clone().sub(this.activeBoss.mesh.position).normalize();
-        player.position.addScaledVector(pushDir, 10.0);
-        player.mesh.position.copy(player.position);
-      }
-    }
-
-    if (horde && horde.spawnChestburster) {
-      horde.spawnChestburster(this.activeBoss.mesh.position.clone().add(new THREE.Vector3(2.2, 0, 2.2)));
-    }
+  applyBossDamage(player, amount, attackKind, boss = this.activeBoss) {
+    if (!boss || !player || player.hp <= 0) return false;
+    const from = boss.mesh.position.clone().add(new THREE.Vector3(0, 1.8, 0)), to = player.position.clone().add(new THREE.Vector3(0, 1.6, 0));
+    if (this.environment?.hasLineOfSight && !this.environment.hasLineOfSight(from, to)) return false;
+    const smallMelee = attackKind === 'melee' && boss.definition.species === 'yautja' && boss.definition.height <= 5.2;
+    const shieldBolt = attackKind === 'bolt';
+    player.takeDamage(amount, false, boss, { attackKind,
+      blockable: smallMelee || shieldBolt, parryable: smallMelee,
+      ...(shieldBolt ? { blockRequiresShield: true } : {}) });
+    return true;
   }
 
-  triggerTrilobiteConstrict(player) {
-    if (!this.activeBoss) return;
-    if (this.audioEngine && this.audioEngine.playTrilobiteTentacleConstrict) {
-      this.audioEngine.playTrilobiteTentacleConstrict();
+  spawnBattleUnit(unit, group) {
+    const type = unit.sourceBossType ?? unit.bossType ?? unit.actorType;
+    getBossDefinition(type);
+    if (this.activeBoss) return this.activeBoss.battleUnitId === unit.id ? this.activeBoss : null;
+    const suspended = unit.encounterState ?? (this.suspendedCombat?.battleUnitId === unit.id ? this.suspendedCombat : null);
+    const actor = this.spawnBoss(type, new THREE.Vector3(unit.position[0], 0, unit.position[1]));
+    applyBattleUnit(this, actor, unit, group);
+    actor.phase = actor.hp <= actor.maxHp * .3 ? 3 : actor.hp <= actor.maxHp * .65 ? 2 : 1;
+    if (suspended) {
+      this.restoreCombatState(suspended, { preserveHealth: true, elapsed: Math.max(0, (this.battleSimulation?.time ?? 0) - (suspended.simulationTime ?? 0)) });
+      actor.mesh.position.set(unit.position[0], this.environment?.getElevationAt?.(unit.position[0], unit.position[1], actor.mesh.position.y) ?? 0, unit.position[1]);
     }
-
-    if (window.gameInstance && window.gameInstance.ui) {
-      window.gameInstance.ui.showAnnouncement('⚠️ CONSTRICTION DU TRILOBITE (PROMETHEUS) : ÉTREINTE DES 7 TENTACULES !');
-    }
-
-    const dist = this.activeBoss.mesh.position.distanceTo(player.position);
-    if (dist <= 15.0) {
-      if (player.isBlocking) {
-        if (player.audioEngine && player.audioEngine.playShieldBlock) player.audioEngine.playShieldBlock();
-      } else {
-        player.takeDamage(95);
-        // Drag player violently toward the oral beak sphincter
-        const pullDir = this.activeBoss.mesh.position.clone().sub(player.position).normalize();
-        pullDir.y = 0;
-        player.position.addScaledVector(pullDir, Math.min(dist * 0.65, 8.0));
-        player.mesh.position.copy(player.position);
-      }
-    }
+    return actor;
   }
 
-  spitMutagenSludge(player) {
-    if (!this.activeBoss) return;
-    if (this.audioEngine && this.audioEngine.playEngineerUrnDetonation) {
-      this.audioEngine.playEngineerUrnDetonation();
+  despawnBattleUnit(unitOrId) {
+    const id = typeof unitOrId === 'string' ? unitOrId : unitOrId?.id;
+    if (this.activeBoss?.battleUnitId !== id) return null;
+    const actor = this.activeBoss, snapshot = { id, hp: Math.max(0, actor.hp), position: [actor.mesh.position.x, actor.mesh.position.z] };
+    if (actor.hp <= 0) {
+      const event = recordCombatDeath(this, actor, { kind: actor.type, isBoss: true, cause: 'synchronized-actor-death', killerFaction: actor.lastDamageFaction });
+      if (event) { this.lastDeathEvent = event; this.onDefeated?.(event); }
     }
-
-    const origin = this.activeBoss.mesh.position.clone().add(new THREE.Vector3(0, 2.0, 0));
-    const target = player.position.clone();
-    const dir = target.clone().sub(origin).normalize();
-
-    for (let i = 0; i < 3; i++) {
-      const spread = dir.clone().add(new THREE.Vector3(
-        (Math.random() - 0.5) * 0.35,
-        0.3 + Math.random() * 0.15,
-        (Math.random() - 0.5) * 0.35
-      )).normalize();
-
-      const geo = new THREE.SphereGeometry(0.42, 8, 8);
-      const mat = new THREE.MeshStandardMaterial({
-        color: 0x09090b,
-        emissive: 0x064e3b,
-        roughness: 0.15,
-        metalness: 0.9
-      });
-      const mesh = new THREE.Mesh(geo, mat);
-      mesh.position.copy(origin);
-      this.scene.add(mesh);
-
-      this.acidSpitProjectiles.push({
-        mesh: mesh,
-        velocity: spread.multiplyScalar(21),
-        gravity: -22,
-        damage: 80,
-        life: 3.0,
-        isMutagen: true
-      });
-    }
+    const suspended = actor.hp > 0 ? this.serializeCombatState() : null;
+    if (suspended) snapshot.encounterState = suspended;
+    this.clear(); this.suspendedCombat = suspended; return snapshot;
   }
 
-  triggerTailWhip(player) {
-    if (!this.activeBoss) return;
-    this.audioEngine.playQueenTailWhip();
-
-    // 360 spin animation of the Queen body
-    const initialRot = this.activeBoss.mesh.rotation.y;
-    let spin = 0;
-    const spinAnim = setInterval(() => {
-      spin += 0.4;
-      this.activeBoss.mesh.rotation.y += 0.4;
-      if (spin >= Math.PI * 2) {
-        clearInterval(spinAnim);
-        this.activeBoss.mesh.rotation.y = initialRot;
-      }
-    }, 20);
-
-    const dist = this.activeBoss.mesh.position.distanceTo(player.position);
-    if (dist <= 8.5) {
-      if (player.isBlocking) {
-        player.audioEngine.playShieldBlock();
-      } else {
-        player.takeDamage(120);
-        // Knockback player violently
-        const pushDir = player.position.clone().sub(this.activeBoss.mesh.position).normalize();
-        player.position.addScaledVector(pushDir, 6.0);
-        player.mesh.position.copy(player.position);
-      }
-    }
-
-    // Demolish nearby Catwalk Support Pillars (Chantier 4: Queen's Rampage)
-    if (typeof window !== 'undefined' && window.gameInstance && window.gameInstance.env && window.gameInstance.env.damageCatwalkPillars) {
-      window.gameInstance.env.damageCatwalkPillars(this.activeBoss.mesh.position, 9.5, 160, this.audioEngine, window.gameInstance.particles);
-    }
-  }
-
-  spitAcidMortar(player) {
-    if (!this.activeBoss) return;
-    this.audioEngine.playQueenAcidSpit();
-
-    const origin = this.activeBoss.mesh.position.clone().add(new THREE.Vector3(0, 4.0, 0));
-    const target = player.position.clone();
-    const spitDir = target.clone().sub(origin).normalize();
-
-    const acidGeo = new THREE.SphereGeometry(0.4, 8, 8);
-    const acidMat = new THREE.MeshBasicMaterial({ color: 0x39ff14 });
-    const acidMesh = new THREE.Mesh(acidGeo, acidMat);
-    acidMesh.position.copy(origin);
-    this.scene.add(acidMesh);
-
-    this.acidSpitProjectiles.push({
-      mesh: acidMesh,
-      velocity: spitDir.multiplyScalar(22).add(new THREE.Vector3(0, 8, 0)),
-      gravity: -24,
-      damage: 75,
-      life: 2.5
-    });
-
-    if (this.audioEngine.playAcidMortarWhistle) {
-      this.audioEngine.playAcidMortarWhistle();
-    }
-  }
-
-  triggerTailSkewer(player) {
-    if (!this.activeBoss) return;
-    if (this.audioEngine.playQueenTailSkewer) {
-      this.audioEngine.playQueenTailSkewer();
-    } else {
-      this.audioEngine.playQueenTailWhip();
-    }
-
-    // High-speed lunging jab animation forward
-    const initialZ = this.activeBoss.mesh.position.z;
-    const jabDir = player.position.clone().sub(this.activeBoss.mesh.position).normalize();
-    jabDir.y = 0;
-
-    let jabStep = 0;
-    const jabAnim = setInterval(() => {
-      jabStep++;
-      if (jabStep < 5) {
-        this.activeBoss.mesh.position.addScaledVector(jabDir, 0.8);
-      } else if (jabStep < 10) {
-        this.activeBoss.mesh.position.addScaledVector(jabDir, -0.8);
-      } else {
-        clearInterval(jabAnim);
-      }
-    }, 25);
-
-    const dist = this.activeBoss.mesh.position.distanceTo(player.position);
-    if (dist <= 7.0) {
-      if (player.isBlocking) {
-        if (player.audioEngine && player.audioEngine.playShieldBlock) player.audioEngine.playShieldBlock();
-      } else {
-        player.takeDamage(85);
-        // Brutal impalement pushback
-        const skewerPush = player.position.clone().sub(this.activeBoss.mesh.position).normalize();
-        player.position.addScaledVector(skewerPush, 8.5);
-        player.mesh.position.copy(player.position);
-      }
-    }
-  }
-
-  triggerEmpressGale(player, horde) {
-    if (!this.activeBoss) return;
-    if (this.audioEngine.playThunderClap) {
-      this.audioEngine.playThunderClap();
-    }
-
-    // Expanding biomechanical gale shockwave ring
-    const ringGeo = new THREE.RingGeometry(1.5, 3.0, 32);
-    ringGeo.rotateX(-Math.PI / 2);
-    const ringMat = new THREE.MeshBasicMaterial({
-      color: 0x9333ea,
-      transparent: true,
-      opacity: 0.85,
-      side: THREE.DoubleSide
-    });
-    const ring = new THREE.Mesh(ringGeo, ringMat);
-    ring.position.copy(this.activeBoss.mesh.position);
-    ring.position.y = 0.4;
-    this.scene.add(ring);
-
-    let scale = 1.0;
-    const ringAnim = setInterval(() => {
-      scale += 0.9;
-      ring.scale.set(scale, 1, scale);
-      ring.material.opacity -= 0.08;
-      if (ring.material.opacity <= 0) {
-        clearInterval(ringAnim);
-        this.scene.remove(ring);
-      }
-    }, 25);
-
-    // Blast player
-    const dist = this.activeBoss.mesh.position.distanceTo(player.position);
-    if (dist <= 13.0) {
-      player.takeDamage(70);
-      const pushDir = player.position.clone().sub(this.activeBoss.mesh.position).normalize();
-      player.position.addScaledVector(pushDir, 9.0);
-      player.mesh.position.copy(player.position);
-    }
-
-    // Blast away all nearby Xenomorphs
-    if (horde && horde.aliens) {
-      horde.aliens.forEach(a => {
-        if (!a || !a.mesh) return;
-        const d = a.mesh.position.distanceTo(this.activeBoss.mesh.position);
-        if (d <= 14.0) {
-          const push = a.mesh.position.clone().sub(this.activeBoss.mesh.position).normalize();
-          a.mesh.position.addScaledVector(push, 8.0);
-          a.hp -= 80;
-        }
-      });
-    }
-
-    // Demolish Catwalk Support Pillars across the shockwave zone
-    if (typeof window !== 'undefined' && window.gameInstance && window.gameInstance.env && window.gameInstance.env.damageCatwalkPillars) {
-      window.gameInstance.env.damageCatwalkPillars(this.activeBoss.mesh.position, 14.0, 200, this.audioEngine, window.gameInstance.particles);
-    }
-  }
-
-  update(delta, player, horde = null) {
-    if (!this.activeBoss) return;
-
-    // 1. Update Queen acid spit projectiles
-    for (let i = this.acidSpitProjectiles.length - 1; i >= 0; i--) {
-      const proj = this.acidSpitProjectiles[i];
-      proj.life -= delta;
-      proj.velocity.y += proj.gravity * delta;
-      proj.mesh.position.addScaledVector(proj.velocity, delta);
-
-      if (proj.mesh.position.distanceTo(player.position) < 2.2) {
-        player.takeDamage(proj.damage);
-        this.scene.remove(proj.mesh);
-        this.acidSpitProjectiles.splice(i, 1);
-        continue;
-      }
-
-      if (proj.mesh.position.y <= 0.1 || proj.life <= 0) {
-        this.scene.remove(proj.mesh);
-        this.acidSpitProjectiles.splice(i, 1);
-      }
-    }
-
-    // 2. Update Predalien embryo projectiles
-    for (let i = this.embryoProjectiles.length - 1; i >= 0; i--) {
-      const ep = this.embryoProjectiles[i];
-      ep.life -= delta;
-      ep.velocity.y += ep.gravity * delta;
-      ep.mesh.position.addScaledVector(ep.velocity, delta);
-
-      if (ep.mesh.position.distanceTo(player.position) < 2.0) {
-        player.takeDamage(ep.damage);
-        if (horde && horde.spawnChestburster) {
-          horde.spawnChestburster(ep.mesh.position);
-        }
-        this.scene.remove(ep.mesh);
-        this.embryoProjectiles.splice(i, 1);
-        continue;
-      }
-
-      if (ep.mesh.position.y <= 0.2 || ep.life <= 0) {
-        if (horde && horde.spawnChestburster && Math.random() < 0.5) {
-          horde.spawnChestburster(ep.mesh.position);
-        }
-        this.scene.remove(ep.mesh);
-        this.embryoProjectiles.splice(i, 1);
-      }
-    }
-
-    if (this.activeBoss.isStunned) {
-      this.activeBoss.stunTimer -= delta;
-      if (this.activeBoss.stunTimer <= 0) {
-        this.activeBoss.isStunned = false;
-      }
-      return;
-    }
-
-    // Cooldown management for attacks
-    if (!this.activeBoss.tailWhipCooldown) this.activeBoss.tailWhipCooldown = 3.5;
-    if (!this.activeBoss.tailSkewerCooldown) this.activeBoss.tailSkewerCooldown = 5.0;
-    if (!this.activeBoss.galeFlapCooldown) this.activeBoss.galeFlapCooldown = 6.0;
-    if (!this.activeBoss.spitCooldown) this.activeBoss.spitCooldown = 4.0;
-    if (!this.activeBoss.regurgitateCooldown) this.activeBoss.regurgitateCooldown = 5.0;
-
-    this.activeBoss.tailWhipCooldown -= delta;
-    this.activeBoss.tailSkewerCooldown -= delta;
-    this.activeBoss.galeFlapCooldown -= delta;
-    this.activeBoss.spitCooldown -= delta;
-    this.activeBoss.regurgitateCooldown -= delta;
-
-    // Trilobite Cephalopod Prime Tentacle Undulation Animation (Prometheus 2012)
-    if (this.activeBoss.type === 'trilobite_prime' && this.activeBoss.mesh.userData && this.activeBoss.mesh.userData.tentacles) {
-      const time = Date.now() * 0.003;
-      this.activeBoss.mesh.userData.tentacles.forEach((tent, tIdx) => {
-        tent.segments.forEach((seg, sIdx) => {
-          seg.rotation.z = Math.sin(time + tIdx * 0.9 + sIdx * 0.5) * 0.28;
-          seg.rotation.x = Math.cos(time * 0.75 + tIdx * 0.6 + sIdx * 0.4) * 0.22;
-        });
-      });
-    }
-
-    const dir = player.position.clone().sub(this.activeBoss.mesh.position);
-    dir.y = 0;
-    const dist = dir.length();
-
-    // Trilobite Prime Signature Constriction & Mutagen Spray (Prometheus 2012 Lore)
-    if (this.activeBoss.type === 'trilobite_prime') {
-      if (!this.activeBoss.constrictCooldown) this.activeBoss.constrictCooldown = 4.5;
-      this.activeBoss.constrictCooldown -= delta;
-      if (dist <= 15.0 && this.activeBoss.constrictCooldown <= 0) {
-        this.activeBoss.constrictCooldown = 6.5;
-        this.triggerTrilobiteConstrict(player);
-      }
-
-      if (!this.activeBoss.sludgeCooldown) this.activeBoss.sludgeCooldown = 4.0;
-      this.activeBoss.sludgeCooldown -= delta;
-      if (dist > 7.0 && dist < 32.0 && this.activeBoss.sludgeCooldown <= 0) {
-        this.activeBoss.sludgeCooldown = 5.5;
-        this.spitMutagenSludge(player);
-      }
-    }
-
-    // Predalien Signature Attack: Chestburster Regurgitation / Pressurized Belly Vomit (AVP: Requiem / Extinction Lore)
-    if (this.activeBoss.type === 'awakened_engineer') {
-      if (!this.activeBoss.vortexCooldown) this.activeBoss.vortexCooldown = 5.0;
-      this.activeBoss.vortexCooldown -= delta;
-      if (this.activeBoss.vortexCooldown <= 0) {
-        this.activeBoss.vortexCooldown = 7.5;
-        this.triggerEngineerGravitationalVortex(player, horde);
-      }
-
-      if (!this.activeBoss.stompCooldown) this.activeBoss.stompCooldown = 3.5;
-      this.activeBoss.stompCooldown -= delta;
-      if (dist <= 7.5 && this.activeBoss.stompCooldown <= 0) {
-        this.activeBoss.stompCooldown = 4.8;
-        this.triggerEngineerSeismicStomp(player);
-      }
-
-      if (this.activeBoss.mesh.userData && this.activeBoss.mesh.userData.phaseShield && this.activeBoss.hasPhaseShield) {
-        this.activeBoss.mesh.userData.phaseShield.rotation.y += 1.5 * delta;
-        this.activeBoss.mesh.userData.phaseShield.rotation.x += 0.8 * delta;
-      }
-    } else if (this.activeBoss.type === 'berserker_super_predator') {
-      // Chantier 7 (v55.0): Bad Blood Berserker Super Predator AI (Predators 2010 Mr. Black)
-      if (!this.activeBoss.gatlingCooldown) this.activeBoss.gatlingCooldown = 4.0;
-      this.activeBoss.gatlingCooldown -= delta;
-
-      if (!this.activeBoss.roarCooldown) this.activeBoss.roarCooldown = 6.0;
-      this.activeBoss.roarCooldown -= delta;
-
-      // Rotate towards player
-      if (dist > 0.1) {
-        this.activeBoss.mesh.lookAt(player.position.x, this.activeBoss.mesh.position.y, player.position.z);
-      }
-
-      // 1. Long range: Rotary Plasma Gatling Bursts
-      if (dist > 8.0 && dist <= 38.0 && this.activeBoss.gatlingCooldown <= 0) {
-        this.activeBoss.gatlingCooldown = 4.5;
-        if (this.audioEngine && this.audioEngine.playBurnerHeavyPlasmaBlast) {
-          this.audioEngine.playBurnerHeavyPlasmaBlast();
-        }
-        for (let b = 0; b < 3; b++) {
-          setTimeout(() => {
-            if (this.activeBoss && player) {
-              const pDir = player.position.clone().sub(this.activeBoss.mesh.position).normalize();
-              this.spawnAcidSpit(this.activeBoss.mesh.position.clone().add(new THREE.Vector3(0, 3.2, 0)), pDir);
-            }
-          }, b * 150);
-        }
-        if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
-          window.gameInstance.ui.showAnnouncement('🔴 GATLING PLASMA DU SUPER PREDATOR BERSERKER EN RAFALE !', 'warning');
-        }
-      }
-
-      // 2. Melee range: War Roar & Heavy Serrated Wristblade Cleave
-      if (dist <= 6.5 && this.activeBoss.roarCooldown <= 0) {
-        this.activeBoss.roarCooldown = 5.5;
-        if (this.audioEngine && this.audioEngine.playBadBloodBerserkerRoar) {
-          this.audioEngine.playBadBloodBerserkerRoar();
-        }
-        player.takeDamage(420, false, this.activeBoss);
-        if (window.gameInstance && window.gameInstance.particles && window.gameInstance.particles.emitSparks) {
-          window.gameInstance.particles.emitSparks(player.position.clone().add(new THREE.Vector3(0, 1.4, 0)), 24);
-        }
-      }
-    } else if (this.activeBoss.type === 'rogue_king_prime') {
-      // Chantier 2 (v52.0): Rogue King Xenomorph Prime Charge, Pheromone Frenzy & Scythe Cleave
-      if (!this.activeBoss.chargeCooldown) this.activeBoss.chargeCooldown = 4.5;
-      this.activeBoss.chargeCooldown -= delta;
-
-      if (this.activeBoss.isCharging) {
-        this.activeBoss.chargeTimer -= delta;
-        const cFwd = this.activeBoss.chargeDir || dir.clone().normalize();
-        this.activeBoss.mesh.position.addScaledVector(cFwd, 22.0 * delta);
-
-        if (dist <= 4.2) {
-          player.takeDamage(380);
-          const push = cFwd.clone().normalize();
-          player.position.addScaledVector(push, 14.0);
-          if (player.mesh) player.mesh.position.copy(player.position);
-          this.activeBoss.isCharging = false;
-          if (this.audioEngine && this.audioEngine.playRogueKingBatteringRam) {
-            this.audioEngine.playRogueKingBatteringRam();
-          }
-        }
-
-        if (this.activeBoss.chargeTimer <= 0) {
-          this.activeBoss.isCharging = false;
-        }
-      } else if (dist > 7.0 && dist < 38.0 && this.activeBoss.chargeCooldown <= 0) {
-        this.activeBoss.chargeCooldown = 7.5;
-        this.activeBoss.isCharging = true;
-        this.activeBoss.chargeTimer = 1.6;
-        this.activeBoss.chargeDir = dir.clone().normalize();
-        this.activeBoss.mesh.lookAt(this.activeBoss.mesh.position.clone().add(this.activeBoss.chargeDir));
-        if (this.audioEngine && this.audioEngine.playRogueKingEarthquakeRoar) {
-          this.audioEngine.playRogueKingEarthquakeRoar();
-        }
-        if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
-          window.gameInstance.ui.showAnnouncement('💥 CHARGE BÉLIER DU ROI XÉNOMORPHE DÉCHAÎNÉ ! ÉCARTEZ-VOUS !');
-        }
-      }
-
-      // Pheromone Frenzy Wave (every 8.5s)
-      if (!this.activeBoss.pheromoneCooldown) this.activeBoss.pheromoneCooldown = 6.0;
-      this.activeBoss.pheromoneCooldown -= delta;
-      if (this.activeBoss.pheromoneCooldown <= 0) {
-        this.activeBoss.pheromoneCooldown = 9.0;
-        if (this.audioEngine && this.audioEngine.playAlienQueenPheromoneFrenzy) {
-          this.audioEngine.playAlienQueenPheromoneFrenzy();
-        }
-        if (horde && horde.aliens) {
-          horde.aliens.forEach(a => {
-            if (a && a.hp > 0 && a.mesh && a.mesh.position.distanceTo(this.activeBoss.mesh.position) <= 24.0) {
-              a.isPheromoneEnraged = true;
-              a.enrageTimer = 6.0;
-            }
-          });
-        }
-        if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
-          window.gameInstance.ui.showAnnouncement('🧪 FRÉNÉSIE PHÉROMONALE DU ROI XÉNO : ESSAIMS SURVOLTÉS (+40% VITESSE) !');
-        }
-      }
-
-      // Tail Scythe Cleave in close range
-      if (dist <= 6.5 && this.activeBoss.tailWhipCooldown <= 0) {
-        this.activeBoss.tailWhipCooldown = 3.2;
-        this.triggerTailWhip(player);
-      }
-    } else if ((this.activeBoss.type === 'predalien_queen' || this.activeBoss.type === 'predalien_abomination' || this.activeBoss.type === 'predalien_matriarch_titan') && dist > 4.5 && dist < 32.0 && this.activeBoss.regurgitateCooldown <= 0) {
-      this.activeBoss.regurgitateCooldown = this.activeBoss.type === 'predalien_matriarch_titan' ? 4.5 : (this.activeBoss.type === 'predalien_abomination' ? 5.2 : 6.5);
-      if (this.activeBoss.type === 'predalien_abomination' || this.activeBoss.type === 'predalien_matriarch_titan') {
-        this.regurgitateBellyVomit(player, horde);
-      } else {
-        this.regurgitateChestbursters(player, horde);
-      }
-    }
-
-    // Predalien Matriarch Titan Royal Leap Slam (AvP Extinction 14m Shockwave)
-    if (this.activeBoss.type === 'predalien_matriarch_titan') {
-      if (!this.activeBoss.royalSlamCooldown) this.activeBoss.royalSlamCooldown = 5.5;
-      this.activeBoss.royalSlamCooldown -= delta;
-      if (dist <= 14.0 && this.activeBoss.royalSlamCooldown <= 0) {
-        this.activeBoss.royalSlamCooldown = 7.0;
-        this.triggerMatriarchRoyalSlam(player, horde);
-      }
-    }
-
-    // The Offspring Signature Attack: Sonic Shriek & Rapid Grapple (Romulus 2024 Lore)
-    if (this.activeBoss.type === 'the_offspring') {
-      if (!this.activeBoss.shriekCooldown) this.activeBoss.shriekCooldown = 4.0;
-      this.activeBoss.shriekCooldown -= delta;
-      if (this.activeBoss.shriekCooldown <= 0 && dist <= 16.0) {
-        this.activeBoss.shriekCooldown = 5.5;
-        this.audioEngine.playOffspringShriek();
-        if (dist <= 10.0) {
-          player.takeDamage(60);
-          player.plasmaEnergy = Math.max(0, (player.plasmaEnergy || 100) - 25); // Drains plasma energy
-        }
-      }
-    }
-
-    // Empress Matriarch Signature Gale Shockwave Knockback (Aliens: Rogue Lore)
-    if (this.activeBoss.type === 'empress_matriarch' && dist <= 13.0 && this.activeBoss.galeFlapCooldown <= 0) {
-      this.activeBoss.galeFlapCooldown = 6.5;
-      this.triggerEmpressGale(player, horde);
-    }
-
-    // Queen/Empress Long range: Acid Mortar Spit
-    if (dist > 9.0 && dist < 35.0 && this.activeBoss.spitCooldown <= 0 && this.activeBoss.type !== 'the_offspring') {
-      this.activeBoss.spitCooldown = 4.5;
-      this.spitAcidMortar(player);
-    }
-
-    // Chantier 1 (v43): Queen Enrage Mode upon Ovipositor Severance
-    const speedMult = this.activeBoss.isEnraged ? 1.4 : 1.0;
-
-    // Queen Caudal Tail Skewer Thrust (Aliens 1986 Bishop Impalement Lore)
-    if ((this.activeBoss.type === 'xenomorph_queen' || this.activeBoss.type === 'imperial_queen' || this.activeBoss.type === 'predalien_queen' || this.activeBoss.type === 'predalien_abomination') && dist <= 7.5 && this.activeBoss.tailSkewerCooldown <= 0) {
-      this.activeBoss.tailSkewerCooldown = this.activeBoss.isEnraged ? 2.8 : 5.5;
-      this.triggerTailSkewer(player);
-    }
-
-    // Medium-close range: Tail Whip 360
-    if (dist <= 8.5 && this.activeBoss.tailWhipCooldown <= 0) {
-      this.activeBoss.tailWhipCooldown = this.activeBoss.isEnraged ? 2.2 : 4.0;
-      this.triggerTailWhip(player);
-    }
-
-    // Movement
-    if (dist > 3.0) {
-      dir.normalize();
-      let baseSpeed = this.activeBoss.type === 'the_offspring' ? 10.5 : (this.activeBoss.type === 'trilobite_prime' ? 6.5 : (this.activeBoss.type === 'empress_matriarch' ? 8.5 : 7.5));
-      const moveSpeed = baseSpeed * speedMult;
-      this.activeBoss.mesh.position.addScaledVector(dir, moveSpeed * delta);
-      this.activeBoss.mesh.rotation.y = Math.atan2(dir.x, dir.z);
-      // Trample and crush Catwalk Pillars on contact (Chantier 4)
-      if (typeof window !== 'undefined' && window.gameInstance && window.gameInstance.env && window.gameInstance.env.damageCatwalkPillars) {
-        window.gameInstance.env.damageCatwalkPillars(this.activeBoss.mesh.position, 4.0, 90 * delta, this.audioEngine, window.gameInstance.particles);
-      }
-    } else {
-      player.takeDamage((this.activeBoss.type === 'the_offspring' ? 65 : (this.activeBoss.type === 'trilobite_prime' ? 70 : 45)) * delta * speedMult);
-    }
-
-    // Chantier 5 (v43): Praetorian Royal Shield Phalanx Queen Bodyguard Protocol
-    if (horde && horde.aliens) {
-      horde.aliens.forEach(a => {
-        if (!a || a.hp <= 0 || !a.mesh || a.type !== 'praetorian') return;
-        a.isPhalanxGuarding = true;
-        // Position Praetorian directly between player and Queen to form an armored shield wall
-        const shieldPos = this.activeBoss.mesh.position.clone().lerp(player.position, 0.42);
-        shieldPos.y = 0;
-        const shieldDir = shieldPos.sub(a.mesh.position);
-        if (shieldDir.length() > 1.2) {
-          shieldDir.normalize();
-          a.mesh.position.addScaledVector(shieldDir, 8.5 * delta);
-        }
-        // Face player with armored cranial crest
-        const toPlayer = player.position.clone().sub(a.mesh.position).normalize();
-        a.mesh.rotation.y = Math.atan2(toPlayer.x, toPlayer.z);
-      });
-    }
-  }
-
-  clear() {
-    if (this.activeBoss) {
-      this.scene.remove(this.activeBoss.mesh);
-      this.activeBoss = null;
-    }
-    this.acidSpitProjectiles.forEach(p => this.scene.remove(p.mesh));
-    this.acidSpitProjectiles = [];
-    this.embryoProjectiles.forEach(p => this.scene.remove(p.mesh));
-    this.embryoProjectiles = [];
-  }
 }

@@ -1,0 +1,584 @@
+{
+  "schemaVersion": 1,
+  "sourceRoot": "/workspace/Yautja-continue-20261109",
+  "sourceCommit": "a8f9c759a30bc97c5400ce48709f6ad10856003d",
+  "before": {
+    "files": 193,
+    "sha256": "a214c05a3ad459495d24cd3028e058106b57632aad6a24811b3b8456053f92f5"
+  },
+  "engine": "160",
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "hardwarePerformanceMeasured": false,
+  "models": {
+    "marine:marine": {
+      "triangles": 40812,
+      "vertices": 122436,
+      "meshes": 11,
+      "meshInstances": 11,
+      "geometries": 11,
+      "materials": 11,
+      "malformedAttributes": 0,
+      "morphAttributes": 0,
+      "buffers": {
+        "totalUniqueBytes": 3917952,
+        "staticAttributeBytes": 3917952,
+        "morphAttributeBytes": 0,
+        "instanceAttributeBytes": 0,
+        "uniqueArrayBuffers": 33,
+        "scope": "Unique retained geometry attribute/index/morph and instance matrix/color ArrayBuffers in this factory result. Categories may alias; totalUniqueBytes deduplicates all. Excludes JS objects, textures, driver allocation, GPU mipmaps and renderer resources."
+      },
+      "bounds": {
+        "min": [
+          -0.6960731744766235,
+          0.009754999540746212,
+          -0.2851259708404541
+        ],
+        "max": [
+          0.6923925876617432,
+          3.444999933242798,
+          1.7450000047683716
+        ],
+        "size": [
+          1.3884657621383667,
+          3.4352449337020516,
+          2.0301259756088257
+        ]
+      },
+      "anatomy": {
+        "headHeight": 0.46,
+        "standingHeight": 3.44,
+        "headsTall": 7.48
+      },
+      "weaponKind": "marine",
+      "visualSource": "procedural-role-study"
+    },
+    "marine:smartgunner": {
+      "triangles": 41004,
+      "vertices": 123012,
+      "meshes": 11,
+      "meshInstances": 11,
+      "geometries": 11,
+      "materials": 11,
+      "malformedAttributes": 0,
+      "morphAttributes": 0,
+      "buffers": {
+        "totalUniqueBytes": 3936384,
+        "staticAttributeBytes": 3936384,
+        "morphAttributeBytes": 0,
+        "instanceAttributeBytes": 0,
+        "uniqueArrayBuffers": 33,
+        "scope": "Unique retained geometry attribute/index/morph and instance matrix/color ArrayBuffers in this factory result. Categories may alias; totalUniqueBytes deduplicates all. Excludes JS objects, textures, driver allocation, GPU mipmaps and renderer resources."
+      },
+      "bounds": {
+        "min": [
+          -0.6960731744766235,
+          0.009754999540746212,
+          -0.2851259708404541
+        ],
+        "max": [
+          0.6923925876617432,
+          3.444999933242798,
+          1.7450000047683716
+        ],
+        "size": [
+          1.3884657621383667,
+          3.4352449337020516,
+          2.0301259756088257
+        ]
+      },
+      "anatomy": {
+        "headHeight": 0.46,
+        "standingHeight": 3.44,
+        "headsTall": 7.48
+      },
+      "weaponKind": "smartgunner",
+      "visualSource": "procedural-role-study"
+    },
+    "marine:flametrooper": {
+      "triangles": 40284,
+      "vertices": 120852,
+      "meshes": 11,
+      "meshInstances": 11,
+      "geometries": 11,
+      "materials": 11,
+      "malformedAttributes": 0,
+      "morphAttributes": 0,
+      "buffers": {
+        "totalUniqueBytes": 3867264,
+        "staticAttributeBytes": 3867264,
+        "morphAttributeBytes": 0,
+        "instanceAttributeBytes": 0,
+        "uniqueArrayBuffers": 33,
+        "scope": "Unique retained geometry attribute/index/morph and instance matrix/color ArrayBuffers in this factory result. Categories may alias; totalUniqueBytes deduplicates all. Excludes JS objects, textures, driver allocation, GPU mipmaps and renderer resources."
+      },
+      "bounds": {
+        "min": [
+          -0.6960731744766235,
+          0.009754999540746212,
+          -0.7699999809265137
+        ],
+        "max": [
+          0.6923925876617432,
+          3.444999933242798,
+          1.752500057220459
+        ],
+        "size": [
+          1.3884657621383667,
+          3.4352449337020516,
+          2.5225000381469727
+        ]
+      },
+      "anatomy": {
+        "headHeight": 0.46,
+        "standingHeight": 3.44,
+        "headsTall": 7.48
+      },
+      "weaponKind": "flametrooper",
+      "visualSource": "procedural-role-study"
+    },
+    "marine:medic": {
+      "triangles": 42336,
+      "vertices": 127008,
+      "meshes": 12,
+      "meshInstances": 12,
+      "geometries": 12,
+      "materials": 12,
+      "malformedAttributes": 0,
+      "morphAttributes": 0,
+      "buffers": {
+        "totalUniqueBytes": 4064256,
+        "staticAttributeBytes": 4064256,
+        "morphAttributeBytes": 0,
+        "instanceAttributeBytes": 0,
+        "uniqueArrayBuffers": 36,
+        "scope": "Unique retained geometry attribute/index/morph and instance matrix/color ArrayBuffers in this factory result. Categories may alias; totalUniqueBytes deduplicates all. Excludes JS objects, textures, driver allocation, GPU mipmaps and renderer resources."
+      },
+      "bounds": {
+        "min": [
+          -0.6960731744766235,
+          0.009754999540746212,
+          -0.675000011920929
+        ],
+        "max": [
+          0.6923925876617432,
+          3.444999933242798,
+          1.199966311454773
+        ],
+        "size": [
+          1.3884657621383667,
+          3.4352449337020516,
+          1.874966323375702
+        ]
+      },
+      "anatomy": {
+        "headHeight": 0.46,
+        "standingHeight": 3.44,
+        "headsTall": 7.48
+      },
+      "weaponKind": "medic",
+      "visualSource": "procedural-role-study"
+    },
+    "marine:commtech": {
+      "triangles": 42232,
+      "vertices": 126696,
+      "meshes": 12,
+      "meshInstances": 12,
+      "geometries": 12,
+      "materials": 12,
+      "malformedAttributes": 0,
+      "morphAttributes": 0,
+      "buffers": {
+        "totalUniqueBytes": 4054272,
+        "staticAttributeBytes": 4054272,
+        "morphAttributeBytes": 0,
+        "instanceAttributeBytes": 0,
+        "uniqueArrayBuffers": 36,
+        "scope": "Unique retained geometry attribute/index/morph and instance matrix/color ArrayBuffers in this factory result. Categories may alias; totalUniqueBytes deduplicates all. Excludes JS objects, textures, driver allocation, GPU mipmaps and renderer resources."
+      },
+      "bounds": {
+        "min": [
+          -0.6960731744766235,
+          0.009754999540746212,
+          -0.6050000190734863
+        ],
+        "max": [
+          0.6923925876617432,
+          3.6503841876983643,
+          1.2649999856948853
+        ],
+        "size": [
+          1.3884657621383667,
+          3.640629188157618,
+          1.8700000047683716
+        ]
+      },
+      "anatomy": {
+        "headHeight": 0.46,
+        "standingHeight": 3.44,
+        "headsTall": 7.48
+      },
+      "weaponKind": "commtech",
+      "visualSource": "procedural-role-study"
+    },
+    "marine:sniper": {
+      "triangles": 41292,
+      "vertices": 123876,
+      "meshes": 11,
+      "meshInstances": 11,
+      "geometries": 11,
+      "materials": 11,
+      "malformedAttributes": 0,
+      "morphAttributes": 0,
+      "buffers": {
+        "totalUniqueBytes": 3964032,
+        "staticAttributeBytes": 3964032,
+        "morphAttributeBytes": 0,
+        "instanceAttributeBytes": 0,
+        "uniqueArrayBuffers": 33,
+        "scope": "Unique retained geometry attribute/index/morph and instance matrix/color ArrayBuffers in this factory result. Categories may alias; totalUniqueBytes deduplicates all. Excludes JS objects, textures, driver allocation, GPU mipmaps and renderer resources."
+      },
+      "bounds": {
+        "min": [
+          -0.6960731744766235,
+          0.009754999540746212,
+          -0.2851259708404541
+        ],
+        "max": [
+          0.6923925876617432,
+          3.444999933242798,
+          2.3450000286102295
+        ],
+        "size": [
+          1.3884657621383667,
+          3.4352449337020516,
+          2.6301259994506836
+        ]
+      },
+      "anatomy": {
+        "headHeight": 0.46,
+        "standingHeight": 3.44,
+        "headsTall": 7.48
+      },
+      "weaponKind": "sniper",
+      "visualSource": "procedural-role-study"
+    },
+    "marine:sadar": {
+      "triangles": 38300,
+      "vertices": 114900,
+      "meshes": 11,
+      "meshInstances": 11,
+      "geometries": 11,
+      "materials": 11,
+      "malformedAttributes": 0,
+      "morphAttributes": 0,
+      "buffers": {
+        "totalUniqueBytes": 3676800,
+        "staticAttributeBytes": 3676800,
+        "morphAttributeBytes": 0,
+        "instanceAttributeBytes": 0,
+        "uniqueArrayBuffers": 33,
+        "scope": "Unique retained geometry attribute/index/morph and instance matrix/color ArrayBuffers in this factory result. Categories may alias; totalUniqueBytes deduplicates all. Excludes JS objects, textures, driver allocation, GPU mipmaps and renderer resources."
+      },
+      "bounds": {
+        "min": [
+          -0.7699999809265137,
+          0.009754999540746212,
+          -0.4000000059604645
+        ],
+        "max": [
+          0.6923925876617432,
+          3.444999933242798,
+          1.7350000143051147
+        ],
+        "size": [
+          1.4623925685882568,
+          3.4352449337020516,
+          2.1350000202655792
+        ]
+      },
+      "anatomy": {
+        "headHeight": 0.46,
+        "standingHeight": 3.44,
+        "headsTall": 7.48
+      },
+      "weaponKind": "sadar",
+      "visualSource": "procedural-role-study"
+    },
+    "marine:exosuit": {
+      "triangles": 43560,
+      "vertices": 130680,
+      "meshes": 11,
+      "meshInstances": 11,
+      "geometries": 11,
+      "materials": 11,
+      "malformedAttributes": 0,
+      "morphAttributes": 0,
+      "buffers": {
+        "totalUniqueBytes": 4181760,
+        "staticAttributeBytes": 4181760,
+        "morphAttributeBytes": 0,
+        "instanceAttributeBytes": 0,
+        "uniqueArrayBuffers": 33,
+        "scope": "Unique retained geometry attribute/index/morph and instance matrix/color ArrayBuffers in this factory result. Categories may alias; totalUniqueBytes deduplicates all. Excludes JS objects, textures, driver allocation, GPU mipmaps and renderer resources."
+      },
+      "bounds": {
+        "min": [
+          -0.9350000023841858,
+          0.009754999540746212,
+          -0.6650000214576721
+        ],
+        "max": [
+          0.9350000023841858,
+          3.444999933242798,
+          1.8450000286102295
+        ],
+        "size": [
+          1.8700000047683716,
+          3.4352449337020516,
+          2.5100000500679016
+        ]
+      },
+      "anatomy": {
+        "headHeight": 0.46,
+        "standingHeight": 3.44,
+        "headsTall": 7.48
+      },
+      "weaponKind": "exosuit",
+      "visualSource": "procedural-role-study"
+    },
+    "honor-guard:0": {
+      "triangles": 42680,
+      "vertices": 128040,
+      "meshes": 7,
+      "meshInstances": 7,
+      "geometries": 7,
+      "materials": 7,
+      "malformedAttributes": 0,
+      "morphAttributes": 0,
+      "buffers": {
+        "totalUniqueBytes": 4097280,
+        "staticAttributeBytes": 4097280,
+        "morphAttributeBytes": 0,
+        "instanceAttributeBytes": 0,
+        "uniqueArrayBuffers": 21,
+        "scope": "Unique retained geometry attribute/index/morph and instance matrix/color ArrayBuffers in this factory result. Categories may alias; totalUniqueBytes deduplicates all. Excludes JS objects, textures, driver allocation, GPU mipmaps and renderer resources."
+      },
+      "bounds": {
+        "min": [
+          -0.9051057815551757,
+          0.011705999448895454,
+          -0.40800000429153443
+        ],
+        "max": [
+          0.9051057815551757,
+          4.092000102996826,
+          1.2
+        ],
+        "size": [
+          1.8102115631103515,
+          4.0802941035479305,
+          1.6080000042915343
+        ]
+      },
+      "anatomy": {
+        "headHeight": 0.552,
+        "standingHeight": 4.1,
+        "headsTall": 7.43
+      },
+      "weaponKind": null,
+      "visualSource": null
+    },
+    "honor-guard:1": {
+      "triangles": 42680,
+      "vertices": 128040,
+      "meshes": 7,
+      "meshInstances": 7,
+      "geometries": 7,
+      "materials": 7,
+      "malformedAttributes": 0,
+      "morphAttributes": 0,
+      "buffers": {
+        "totalUniqueBytes": 4097280,
+        "staticAttributeBytes": 4097280,
+        "morphAttributeBytes": 0,
+        "instanceAttributeBytes": 0,
+        "uniqueArrayBuffers": 21,
+        "scope": "Unique retained geometry attribute/index/morph and instance matrix/color ArrayBuffers in this factory result. Categories may alias; totalUniqueBytes deduplicates all. Excludes JS objects, textures, driver allocation, GPU mipmaps and renderer resources."
+      },
+      "bounds": {
+        "min": [
+          -0.9051057815551757,
+          0.011705999448895454,
+          -0.40800000429153443
+        ],
+        "max": [
+          0.9051057815551757,
+          4.092000102996826,
+          1.2
+        ],
+        "size": [
+          1.8102115631103515,
+          4.0802941035479305,
+          1.6080000042915343
+        ]
+      },
+      "anatomy": {
+        "headHeight": 0.552,
+        "standingHeight": 4.1,
+        "headsTall": 7.43
+      },
+      "weaponKind": null,
+      "visualSource": null
+    },
+    "synthetic": {
+      "triangles": 36084,
+      "vertices": 107262,
+      "meshes": 16,
+      "meshInstances": 16,
+      "geometries": 16,
+      "materials": 14,
+      "malformedAttributes": 0,
+      "morphAttributes": 0,
+      "buffers": {
+        "totalUniqueBytes": 3434832,
+        "staticAttributeBytes": 3434832,
+        "morphAttributeBytes": 0,
+        "instanceAttributeBytes": 0,
+        "uniqueArrayBuffers": 49,
+        "scope": "Unique retained geometry attribute/index/morph and instance matrix/color ArrayBuffers in this factory result. Categories may alias; totalUniqueBytes deduplicates all. Excludes JS objects, textures, driver allocation, GPU mipmaps and renderer resources."
+      },
+      "bounds": {
+        "min": [
+          -0.6960731744766235,
+          0.009754999540746212,
+          -0.2849999964237213
+        ],
+        "max": [
+          0.6923925876617432,
+          3.4100000041723253,
+          1.199966311454773
+        ],
+        "size": [
+          1.3884657621383667,
+          3.400245004631579,
+          1.4849663078784943
+        ]
+      },
+      "anatomy": {
+        "headHeight": 0.46,
+        "standingHeight": 3.41,
+        "headsTall": 7.41
+      },
+      "weaponKind": null,
+      "visualSource": null
+    },
+    "capsule:0": {
+      "triangles": 43504,
+      "vertices": 130512,
+      "meshes": 11,
+      "meshInstances": 11,
+      "geometries": 11,
+      "materials": 5,
+      "malformedAttributes": 0,
+      "morphAttributes": 0,
+      "buffers": {
+        "totalUniqueBytes": 4176384,
+        "staticAttributeBytes": 4176384,
+        "morphAttributeBytes": 0,
+        "instanceAttributeBytes": 0,
+        "uniqueArrayBuffers": 33,
+        "scope": "Unique retained geometry attribute/index/morph and instance matrix/color ArrayBuffers in this factory result. Categories may alias; totalUniqueBytes deduplicates all. Excludes JS objects, textures, driver allocation, GPU mipmaps and renderer resources."
+      },
+      "bounds": {
+        "min": [
+          -2.141730308532715,
+          -0.14000000059604645,
+          -1.9241671562194824
+        ],
+        "max": [
+          2.141730308532715,
+          6.840000152587891,
+          1.785067400932312
+        ],
+        "size": [
+          4.28346061706543,
+          6.980000153183937,
+          3.7092345571517944
+        ]
+      },
+      "anatomy": null,
+      "weaponKind": null,
+      "visualSource": null
+    },
+    "capsule:1": {
+      "triangles": 43504,
+      "vertices": 130512,
+      "meshes": 11,
+      "meshInstances": 11,
+      "geometries": 11,
+      "materials": 5,
+      "malformedAttributes": 0,
+      "morphAttributes": 0,
+      "buffers": {
+        "totalUniqueBytes": 4176384,
+        "staticAttributeBytes": 4176384,
+        "morphAttributeBytes": 0,
+        "instanceAttributeBytes": 0,
+        "uniqueArrayBuffers": 33,
+        "scope": "Unique retained geometry attribute/index/morph and instance matrix/color ArrayBuffers in this factory result. Categories may alias; totalUniqueBytes deduplicates all. Excludes JS objects, textures, driver allocation, GPU mipmaps and renderer resources."
+      },
+      "bounds": {
+        "min": [
+          -2.374655904262261,
+          -0.14000000059604645,
+          -1.9241671562194824
+        ],
+        "max": [
+          2.374655904262261,
+          6.840000152587891,
+          2.937743014463399
+        ],
+        "size": [
+          4.749311808524522,
+          6.980000153183937,
+          4.861910170682881
+        ]
+      },
+      "anatomy": null,
+      "weaponKind": null,
+      "visualSource": null
+    }
+  },
+  "limitations": [
+    "Studio uniqueGeometryBytes counts static geometry only. This complementary CPU report includes morph and instance data without changing the frozen studio fixture.",
+    "Triangles count all mesh instances; meshes and materials count unique scene objects/materials. Renderer draw calls and GPU allocation require separate measurement."
+  ],
+  "surfacesInstantiatedByModels": {
+    "types": [
+      "armor",
+      "metal",
+      "fabric",
+      "humanSkin",
+      "leather",
+      "skin",
+      "bone"
+    ],
+    "textureViews": 33,
+    "sourceBytes": 135266304,
+    "resolutions": {
+      "armor": 2048,
+      "metal": 1024,
+      "fabric": 512,
+      "humanSkin": 1024,
+      "leather": 512,
+      "skin": 2048,
+      "bone": 512
+    },
+    "anisotropy": 1
+  },
+  "after": {
+    "files": 193,
+    "sha256": "a214c05a3ad459495d24cd3028e058106b57632aad6a24811b3b8456053f92f5"
+  }
+}

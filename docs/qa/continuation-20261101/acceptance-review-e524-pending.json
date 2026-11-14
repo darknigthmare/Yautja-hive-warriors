@@ -1,0 +1,209 @@
+{
+  "schemaVersion": 1,
+  "status": "pending_final_evidence",
+  "sourceCommit": "e524c2b96ef35e80768295fb1a3dd06bea3b5d63",
+  "scope": "Revue indépendante des acceptations exactes ; aucune mutation du registre central ou des classeurs. Les candidats restent conditionnels aux preuves finales du coordinateur.",
+  "runtimeEdited": false,
+  "criteria": [
+    {
+      "id": "AUD-021",
+      "acceptanceUnchanged": "Une même graine et un même profil produisent une composition autorisée; aucune caste exclue n’apparaît.",
+      "currentStatusUnchanged": "En cours",
+      "recommendation": "candidate_if_final_cpu_passes",
+      "reason": "L’acceptation concerne une composition autorisée déterministe. Les27configurations sources et fronts semés sont répétés avec gardes de profils, exclusions, œuvres et uniques. L’absence de115modèles distincts ne relève pas de ce critère de composition.",
+      "requiredFinalEvidence": "Suite finale e524 avec tests catalogue/roster/simulation sans échec ; inspection des invariants de la revue factions.",
+      "scopeLimits": "Clôture sur les générateurs implémentés et adaptations déclarées, jamais sur les270fiches ou115modèles3D.",
+      "existingEvidence": [
+        {
+          "path": "docs/qa/continuation-20261101/factions/roster-independent-review.json",
+          "sha256": "3304d587c296c1f43eac4e90aa41bd0d17d4a30c556a746f6b613d8a4af70907"
+        },
+        {
+          "path": "docs/qa/continuation-20261101/factions/acceptance-review.json",
+          "sha256": "3002421beb0d582eb94c793b64258aa50db325a4aad85810d7c55a4d4e0b24bb"
+        }
+      ]
+    },
+    {
+      "id": "AUD-027",
+      "acceptanceUnchanged": "La composition autorise couverture, progression et replis; aucun groupe entier n’est composé de la même arme lourde.",
+      "currentStatusUnchanged": "En cours",
+      "recommendation": "candidate_after_final_component_and_visual_review",
+      "reason": "Les650groupes humains recensés ne sont pas des groupes homogènes à arme lourde. Les vrais gestionnaires autorisent avance/couverture alternées, repli blessé et attente d’une ligne de tir libre.",
+      "requiredFinalEvidence": "Tests de comportement/factions passés dans CPUe524 et inspection du rendu actuel des humains ; distinguer la scène de composants de la mission complète.",
+      "scopeLimits": "Ne clôt ni031(silhouettes de chef), ni toutes classes d’autres œuvres, ni la fidélité des modèles.",
+      "existingEvidence": [
+        {
+          "path": "docs/qa/continuation-20261101/factions/acceptance-review.json",
+          "sha256": "3002421beb0d582eb94c793b64258aa50db325a4aad85810d7c55a4d4e0b24bb"
+        }
+      ]
+    },
+    {
+      "id": "AUD-047",
+      "acceptanceUnchanged": "La défaite affiche sa cause vérifiable et laisse un temps de réaction cohérent avec la distance.",
+      "currentStatusUnchanged": "À valider",
+      "recommendation": "keep_open",
+      "reason": "La grâce réelle est calibrée sur routes/recapture et l’alerte préalable nomme le front. Mais le résultat critical_front_lost finit avec un message générique, sans cause précise ni nom du front.",
+      "requiredFinalEvidence": "Aucun résultat de joueurs vaincus ne remplace une vérification de défaite stratégique ; défaut conservé dans ce lot gelé.",
+      "scopeLimits": "Le dernier essai réel expire à153,25s pour Zone d’insertion et affiche Les conditions de poursuite de l’opération ne sont plus réunies.",
+      "existingEvidence": [
+        {
+          "path": "docs/qa/continuation-20261101/critical-defeat-display-review.json",
+          "sha256": "91c0c95587ab00b2e133ae00580dbc0427af457adef6133bd4adc59ba37c9e62"
+        }
+      ]
+    },
+    {
+      "id": "AUD-053",
+      "acceptanceUnchanged": "Une unité hors contact n’est pas suivie avec précision absolue; le joueur connaît l’âge de son dernier rapport.",
+      "currentStatusUnchanged": "À valider",
+      "recommendation": "candidate_after_final_ui_review",
+      "reason": "Le snapshot filtré conserve une ancienne position et son âge ; le déplacement caché ne met pas la dernière position à jour. La carte présente contact, rapport et péremption séparément.",
+      "requiredFinalEvidence": "CPUe524 de BattleIntel/TacticalPresentation, recette UIe524 et capture montrant âge/incertitude, sans fuite de coordonnées actuelles.",
+      "scopeLimits": "Une scène figée n’est pas une mesure de compréhension humaine. Les tests de vrai déplacement caché couvrent la non-divulgation.",
+      "existingEvidence": [
+        {
+          "path": "docs/qa/continuation-20261101/ui/implementation.json",
+          "sha256": "62d3083173e8f582d1a72c44bcccd2fa2ad1ea5590680eddc251d6150f1a554f"
+        }
+      ]
+    },
+    {
+      "id": "AUD-076",
+      "acceptanceUnchanged": "Chaque boss exige au moins une lecture et une réponse distinctes; aucune différence limitée aux PV et à la couleur.",
+      "currentStatusUnchanged": "À valider",
+      "recommendation": "candidate_if_final_cpu_passes",
+      "reason": "Les18boss possèdent chacun une lecture/réponse et une mesure témoin/contre-jeu ; le Gladiateur sélectionne maintenant son vrai bond plutôt qu’une charge perpétuelle.",
+      "requiredFinalEvidence": "CPUfinale524 inclut les19tests de matrice, registre, contre-jeu et checkpoints ; correspondance des propriétaires au gel.",
+      "scopeLimits": "Les43composants scellés de la revue antérieure restent445 ; ils ne sont pas réattribués seuls àe524. Pas de clôture des caméras, sources canon ni ressemblance1:1.",
+      "existingEvidence": [
+        {
+          "path": "docs/qa/continuation-20261101/boss-matrix/review.json",
+          "sha256": "b58cbf627280035793b62757d6f6e4812181bfc49cc215c00169dd3865b099af"
+        }
+      ]
+    },
+    {
+      "id": "AUD-080",
+      "acceptanceUnchanged": "Une exécution ne tue pas le joueur hors champ, n’efface pas le boss d’un autre front et ne répète pas son trophée.",
+      "currentStatusUnchanged": "À valider",
+      "recommendation": "candidate_after_final_router_verification",
+      "reason": "Les vrais contrôles de cible bloquent les exécutions à travers un mur/étage, hors fenêtre ou contre allié ; protection personnelle bornée et nonrafraîchissable, autre boss vivant et trophée idempotent sont exercés. Le routeur réel est extrait pour les testsP1/P2.",
+      "requiredFinalEvidence": "CPUe524 hunter-combat-routing/hunter-stealth-status/boss-registry et revue de la durée protégée par rapport à la courte séquence de caméra.",
+      "scopeLimits": "Le trophée visuel persiste3,5s mais la protection dure2,2s et le bullet-time1,6s ; le mouvement et les autres fronts restent actifs. Ne pas promettre une invulnérabilité couvrant toute décoration de trophée.",
+      "existingEvidence": [
+        {
+          "path": "docs/qa/continuation-20261101/combat/targeted-final.json",
+          "sha256": "3898116b48d104e219b7a7f73e5b7ca9eb5b651a722775b3be770d31af9ad2be"
+        }
+      ]
+    },
+    {
+      "id": "AUD-088",
+      "acceptanceUnchanged": "Une approche furtive ouvre un avantage concret sans rendre obligatoire le combat frontal de toutes les unités.",
+      "currentStatusUnchanged": "En cours",
+      "recommendation": "candidate_if_final_cpu_and_route_pass",
+      "reason": "Le camouflage agit désormais dans les acquisitions de bataille et hors bataille, annule une préparation devenue impossible et ouvre un bonus dorsal à une seule proie, via les dégâts normaux. Des tirs/dégâts révèlent le chasseur.",
+      "requiredFinalEvidence": "CPUe524 incluant hunter-stealth-legacy, hunter-stealth-status et vrais routeursP1/P2, plus absence de régression de démarrage au navigateur.",
+      "scopeLimits": "Les portées sensorielles et multiplicateurs sont des adaptations, pas des mesures de sens canoniques ni une promesse d’exhaustivité des gadgets.",
+      "existingEvidence": [
+        {
+          "path": "docs/qa/continuation-20261101/combat/legacy-verification.json",
+          "sha256": "9825a2ff59cd26564ecdc86f2caee8863c0a2d64dd644e46d73dd54485041f6f"
+        }
+      ]
+    },
+    {
+      "id": "AUD-094",
+      "acceptanceUnchanged": "Le briefing et le débrief réagissent au personnage et aux événements réellement accomplis.",
+      "currentStatusUnchanged": "À valider",
+      "recommendation": "candidate_after_final_character_ui_review",
+      "reason": "Briefing et débrief utilisent le personnage réellement sélectionné, la reconnaissance propre à son identité et les événements/objectifs/pertes effectivement enregistrés avant cleanup.",
+      "requiredFinalEvidence": "CPUe524 de reconnaissance/campagne/présentation et UIe524 montrant nom du chasseur, tâches et conséquences ; distinguer test de données et rendu observé.",
+      "scopeLimits": "La présence d’une intrigue filmique complète ou de nouveaux modèles pour chaque personnage ne se déduit pas de cette clôture fonctionnelle.",
+      "existingEvidence": [
+        {
+          "path": "docs/qa/continuation-20261101/ui/implementation.json",
+          "sha256": "62d3083173e8f582d1a72c44bcccd2fa2ad1ea5590680eddc251d6150f1a554f"
+        }
+      ]
+    },
+    {
+      "id": "AUD-099",
+      "acceptanceUnchanged": "Le joueur peut comparer les fronts et envoyer une unité depuis la carte sans perdre la compréhension de la situation.",
+      "currentStatusUnchanged": "À valider",
+      "recommendation": "candidate_after_final_ui_command_review",
+      "reason": "La carte compare les fronts, prévisualise des routes ouvertes et envoie des ordres réels avec accusé ; sélection/délégation/tactique persistent après reprise.",
+      "requiredFinalEvidence": "UIe524 complète avec clics de carte, fronts comparés, ordre accepté dans simulation, sauvegarde/reprise et revue des captures.",
+      "scopeLimits": "Une commande acceptée ne prouve pas arrivée instantanée ; une compréhension humaine universelle n’est pas revendiquée.",
+      "existingEvidence": [
+        {
+          "path": "docs/qa/continuation-20261101/ui/implementation.json",
+          "sha256": "62d3083173e8f582d1a72c44bcccd2fa2ad1ea5590680eddc251d6150f1a554f"
+        }
+      ]
+    },
+    {
+      "id": "AUD-112",
+      "acceptanceUnchanged": "Le franchissement ne provoque ni terrain absent ni arrêt prolongé; revenir conserve objectifs et destructions.",
+      "currentStatusUnchanged": "À valider",
+      "recommendation": "pending_streaming_measurement",
+      "reason": "La recette préparée fait réellement évincer/restaurer le solGPU sur3zones et retour, conserve les objectifs gagnés/portes détruites et mesure les intervalles des franchissements.",
+      "requiredFinalEvidence": "Rapport e524 terminé, terrain visible requis jamais absent, buffers réellement évincés/restaurés, états identiques et durées observées sans pause de streaming prolongée.",
+      "scopeLimits": "Les temps SwiftShader de ce parcours avec bataille pausée et déplacement assisté ne certifient ni FPS matériel ni toutes les cartes. Une recette préparée ou un rapport running ne vaut pas preuve. ",
+      "existingEvidence": []
+    },
+    {
+      "id": "AUD-115",
+      "acceptanceUnchanged": "Un rapport récent relie chaque carte au SHA et prouve au moins une victoire et une défaite cohérentes.",
+      "currentStatusUnchanged": "À valider",
+      "recommendation": "pending_22_final_outcomes",
+      "reason": "Le critère exige des rapports récents associant chaque carte auSHA avec victoire et défaite cohérentes. Les11anciennes victoires et11défaites d’un autre commit ne suffisent pas.",
+      "requiredFinalEvidence": "22issues e524 terminées et passées sur les11cartes, empreinte/index concordants, assistances explicites et résultats vrais des gestionnaires.",
+      "scopeLimits": "Parcours assistés et combats raccourcis restent annoncés ; aucune difficulté ou intervention humaine ne s’en déduit.",
+      "existingEvidence": []
+    },
+    {
+      "id": "AUD-118",
+      "acceptanceUnchanged": "Une sauvegarde ancienne, partielle ou invalide ne bloque pas le lancement et n’efface pas silencieusement des trophées valides.",
+      "currentStatusUnchanged": "À valider",
+      "recommendation": "pending_five_startups",
+      "reason": "Protection des registres, trophées lisibles, erreurs récupérables et menu de repli sont implémentés ; la recette couvre compteurs anciens, v1partiel, futur, invalide et checkpoint illisible.",
+      "requiredFinalEvidence": "Cinq démarrages réels e524 passés ; octets protégés inchangés et trophées valides conservés ; lancement/insertion jouables.",
+      "scopeLimits": "Clôture fonctionnelle des formats reconnus et repli protecteur, pas conversion arbitraire de tout format historique inconnu.",
+      "existingEvidence": []
+    },
+    {
+      "id": "AUD-091",
+      "acceptanceUnchanged": "Aucune combinaison ne laisse le personnage bloqué indéfiniment; chaque état possède une indication et une issue.",
+      "currentStatusUnchanged": "À valider",
+      "recommendation": "keep_open",
+      "reason": "Les ralentissements/freins/prises sélectionnés ont des propriétaires et sorties finis, et les freezes environnementaux précédemment détectés sont corrigés ; la matrice complète des anciens pouvoirs, états et interactions reste nonexhaustive.",
+      "requiredFinalEvidence": "Aucune preuve partielle de quatre ralentissements ou de freezes ne devient certification de toutes combinaisons.",
+      "scopeLimits": "Conserver notes des corrections sans réutiliser le défaut freeze445 comme s’il persistait sure524.",
+      "existingEvidence": [
+        {
+          "path": "docs/qa/continuation-20261101/world/environment-effects-reviewed.json",
+          "sha256": "d899e379d04d61f29ec6f86ae0887c3c2abf917861522c77b4287aa57160a3ee"
+        }
+      ]
+    },
+    {
+      "id": "AUD-103",
+      "acceptanceUnchanged": "Les objectifs et dangers restent distinguables avec couleurs simulées et effets réduits.",
+      "currentStatusUnchanged": "À valider",
+      "recommendation": "keep_open",
+      "reason": "Palettes, symboles/formes, textes et minimap sont renforcés ; la validation de tous objectifs/dangers dans tous profils visuels avec effets réduits demeure nonexhaustive.",
+      "requiredFinalEvidence": "La recette monochrome actuelle ne vaut pas couverture universelle ni test humain.",
+      "scopeLimits": "Ne pas effacer l’amélioration réelle ni transformer quelques captures en certification de toute perception des couleurs.",
+      "existingEvidence": []
+    }
+  ],
+  "additionalKeepOpen": {
+    "AUD-063": "Stress32capsules sur11contextes, sanscollisioninteracteurs ni pontétroit : progression mais pasacceptanceexhaustive.",
+    "AUD-070": "Planification et densitésouhaitée/aire ; pasmesure de densité réelle parzone/temps.",
+    "humanHardwareAndFidelity": "Aucun nouveau testeur humain, mesure matérielle ou certification1:1."
+  },
+  "supersedesForCurrentSource": "Les limites stealth-hors-bataille et freeze0 de la revue445 sont corrigées par a5e2efe ; le document445 reste une preuve historique distincte."
+}

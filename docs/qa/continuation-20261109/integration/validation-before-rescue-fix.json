@@ -1,0 +1,135 @@
+{
+  "schemaVersion": 1,
+  "status": "runtime_qa_failed_pending_rescue_owner_fix",
+  "runtimeSourceCommit": "94630d8302c320eb7c39c78ad62f1464e6f4d538",
+  "branch": "codex/continuation-20261109",
+  "checkedAt": "2026-11-09T04:53:03.898222+00:00",
+  "build": {
+    "success": true,
+    "sourceCommit": "94630d8302c320eb7c39c78ad62f1464e6f4d538",
+    "sourceFingerprint": "41cdcb0f8823e4f17fbb0d6f68b119c3b75e4e01778ba7a7c523ffb569bdf6e9",
+    "sourceFiles": 193,
+    "indexSha256": "8632fe71abb813f1b4242b5c74d446622533d93f91e4e643e80b1eb57d032022",
+    "buildInfoSha256": "e1a40930bd6b2c1aa0aeb36f9f430888ab8da32cc62144b4dab1f0d5d8265ad3",
+    "sourceTreeDirty": false,
+    "staticFiles": 30,
+    "glbFiles": 12,
+    "bytes": 268104848,
+    "report": "docs/qa/continuation-20261109/integration/frozen-build.json"
+  },
+  "cpu": {
+    "schemaVersion": 1,
+    "status": "passed",
+    "sourceCommit": "94630d8302c320eb7c39c78ad62f1464e6f4d538",
+    "tests": 275,
+    "passed": 275,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "durationMs": 85867.506419,
+    "testFiles": 37,
+    "log": "docs/qa/continuation-20261109/integration/cpu-regression.txt",
+    "sha256": "4e1f162f4c5e21a1775251c8a49c1ad3f56c40d593c94a9c1b6fe92cd0fdf57d",
+    "scope": "Selected complete regression of 37 files for changed provenance, Musou UI, Carrier synchronization, insertion cameras, shared actor ownership and checkpoints; not the entire repository suite."
+  },
+  "repositoryTooling": {
+    "status": "passed",
+    "tests": 13,
+    "log": "docs/qa/continuation-20261109/integration/ai-tools-tests.txt"
+  },
+  "browser": {
+    "status": "failed",
+    "sourceCommit": "94630d8302c320eb7c39c78ad62f1464e6f4d538",
+    "runtimeAttempts": "docs/qa/continuation-20261109/runtime-attempts/",
+    "historicalPositiveCases": [
+      {
+        "case": "source-menu-coop-insertion-command-checkpoint",
+        "attempt": "r3"
+      },
+      {
+        "case": "carrier-autonomous-main-update-flight",
+        "attempt": "r4"
+      }
+    ],
+    "blockingFailure": {
+      "case": "ravager-checkpoint-phase-recovery-fire",
+      "attempt": "r4",
+      "message": "AllyRescueSystem rejects a validated Ravager catalepsy as an allied casualty without rescue timer"
+    },
+    "fullThreeCasesInOneCleanRun": false
+  },
+  "sourceAlignment": {
+    "report": "docs/qa/continuation-20261109/alignment-sources.json",
+    "githubBases": "docs/qa/continuation-20261109/github-bases.json",
+    "contract": "docs/development/MUSOU-GAMEPLAY-CONTRACT.md",
+    "separateBibleFound": false,
+    "separateBiblePathRequested": true
+  },
+  "audit": {
+    "status": "passed",
+    "criteria": 126,
+    "counts": {
+      "Bloqué": 0,
+      "En cours": 12,
+      "Terminé": 78,
+      "À faire": 0,
+      "À valider": 36
+    },
+    "newlyClosed": [],
+    "allNonFollowupContentPreserved": true,
+    "preserved": [
+      {
+        "path": "docs/audits/2026-10-26/Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.source.xlsx",
+        "sha256": "d3f88eee0e88deb4dbc2247f8b295c6c5a6de91ff9626ea94b0d274f08e652b5",
+        "gitBlob": "7c8a341e843d9b149bd6c7cce74316d9c71189fd",
+        "identicalToPreviousContinuation": true
+      },
+      {
+        "path": "docs/audits/2026-10-26/Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.xlsx",
+        "sha256": "5dfca4a6eb8c8e79d8033e9730f672f82124e4ab6ee298c7eee7acebea4d1fe5",
+        "gitBlob": "c4b14b0f4a0ba7217cdd39517737cdc56f3f215e",
+        "identicalToPreviousContinuation": true
+      },
+      {
+        "path": "docs/audits/2026-10-26/audit-data.json",
+        "sha256": "abda56e986df3d6a8e305d1d6ec190d9f48e336ce1bfd97935bab220b5b4211a",
+        "gitBlob": "f8fe2e98c6cf822158d5bdf6ac1b59b67a6d9637",
+        "identicalToPreviousContinuation": true
+      },
+      {
+        "path": "docs/audits/2026-10-26/implementation-progress.json",
+        "sha256": "9dbe306732ebd96385bb67cbb091dbd750dc49da94d908f16a38bc544d553e19",
+        "gitBlob": "49ac6ee55ca1a122df4ff9fd479cc5347a054ff0",
+        "identicalToPreviousContinuation": true
+      },
+      {
+        "path": "docs/audits/2026-10-27/Yautja_Hive_Warriors_Controle_Completude_2026-10-27.xlsx",
+        "sha256": "d751c28585c8f9c467c19f74fd91c199525f7b72a3ecd5b0967fd67312fcba6d",
+        "gitBlob": "42168c7f4feb2e2843d16960648996bc4dc098af",
+        "identicalToPreviousContinuation": true
+      },
+      {
+        "path": "docs/audits/2026-10-27/completeness-audit.json",
+        "sha256": "7426809f1379af94785cf1741471df40b2029999a4eac37e481264bc4ae0ad48",
+        "gitBlob": "b45b1aa3b64fae8991508fdb6044ed6d019aa9b2",
+        "identicalToPreviousContinuation": true
+      }
+    ],
+    "report": "docs/qa/continuation-20261109/integration/excel-check.json"
+  },
+  "independentCodeReview": {
+    "status": "passed_scoped_code_review_waiting_final_runtime_qa",
+    "report": "docs/qa/continuation-20261109/independent-review.json",
+    "sha256": "a4eb2508d8212a0306644c43484440bd939a8cfe83cbd8efa7fecfff40529ee1"
+  },
+  "newMeshyCreditsSpent": 0,
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "hardwarePerformanceVerified": false,
+  "publication": {
+    "status": "no_deployment_submitted_in_this_pass",
+    "deploymentSubmitted": false
+  },
+  "scope": "Current GitHub consolidation, documentary Yautja provenance, operation-specific terrain selection and map legends, physical co-op insertion cameras, Carrier flight after synchronization, and bounded real runtime/checkpoint verification. No full-game or source-film 1:1 closure.",
+  "frozenBuildArchive": "/workspace/qa/continuation-20261109/frozen-build-94630d8"
+}

@@ -1,0 +1,35 @@
+{
+  "status": "intermediate_not_final_acceptance",
+  "files": [
+    {
+      "file": "cpu-preflight-1.txt",
+      "bytes": 91248,
+      "sha256": "944376e72b80411e6c8da6adc854099827f00a1800ef94fb6216944ebd967b4d"
+    },
+    {
+      "file": "creature-visual-fix.txt",
+      "bytes": 888,
+      "sha256": "c1fd3ff44bc4c8476e1997ed58e80659b0d177d80eb8bba92ebb02746796d48b"
+    },
+    {
+      "file": "cpu-final-1.txt",
+      "bytes": 46180,
+      "sha256": "a32f4b9024269d024d0c562611475e0f88069a144ff422dcdbe8a6300b20e747"
+    },
+    {
+      "file": "browser-final-1.txt",
+      "bytes": 1164,
+      "sha256": "56c44f1ae76b8c6629afcc238845f597f46a120519110b493a20cd53eaef02d3"
+    },
+    {
+      "file": "build-final-1.txt",
+      "bytes": 2048,
+      "sha256": "0cf3d973f542e21f4ff859530ac61751a4ffe75c170954b4c2ab8bc7d4bcbdb8"
+    },
+    {
+      "file": "build-final-2.txt",
+      "bytes": 2048,
+      "sha256": "b16f9ba0482e3def46ecb09e01e4a24e7b799651fc9405ca8af75063305c89d1"
+    }
+  ]
+}

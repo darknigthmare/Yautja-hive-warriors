@@ -1,0 +1,106 @@
+{
+  "status": "frozen_blocked_publication_evidence_no_production_candidate",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 3168,
+      "sha256": "e6f01b2c3878b07d3b511cb8d70b34456f3468615158814bd9cbfbacd5ea74c4"
+    },
+    {
+      "path": "canonical-after-rejection.json",
+      "bytes": 1069,
+      "sha256": "6b95f5c4a48fc11571963f0338c9a333ed33dfbd5d41662b8a97324d5e7cb72c"
+    },
+    {
+      "path": "delivery-final.txt",
+      "bytes": 294,
+      "sha256": "40d16fd6e01196f5af5557817ce94094a30a72f1c035819df4db610adfc58834"
+    },
+    {
+      "path": "existing-5089228-inspect.stderr.txt",
+      "bytes": 115,
+      "sha256": "ab7db3a133ed2522d0cc4ff9b8da3b54c18bab45c832c3f29fc4427a80280c22"
+    },
+    {
+      "path": "existing-5089228-inspect.summary.json",
+      "bytes": 313,
+      "sha256": "00e47da2e09d9e62ec3dcfbcdc3a6ea245911a8632f5dab0c8d8f60db17fe972"
+    },
+    {
+      "path": "existing-all-deployments.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "existing-all-deployments.summary.json",
+      "bytes": 3698,
+      "sha256": "d87858cf55fcd9819f58fb51795452eabf2d7175766e853d6bff843aaf72ff34"
+    },
+    {
+      "path": "existing-ready-deployments.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "existing-ready-deployments.summary.json",
+      "bytes": 1811,
+      "sha256": "94a580e5f2c2242fd0a546a6058b625701dea65b76f0be4a5f722f42ec09a15b"
+    },
+    {
+      "path": "frozen-artifacts.json",
+      "bytes": 12605,
+      "sha256": "34677f79fea4e54db46aa48a692f590688cef6288923c403ac66a3d58037676d"
+    },
+    {
+      "path": "local-guard.json",
+      "bytes": 734,
+      "sha256": "d46e9a8f9527bf315df2d197fe921021588500ae6ce875aaff6c91c8e1e5ff9b"
+    },
+    {
+      "path": "pins-used-at-submission.json",
+      "bytes": 1574,
+      "sha256": "b2fe80e620719364084c43664d596e14e2fc9b54a8bd150ccddfede6bc73fa00"
+    },
+    {
+      "path": "publication-run.json",
+      "bytes": 1587,
+      "sha256": "b8e90c5668c360fbc5b6e86980d2fca6745380724237ad764e1dcf083132c381"
+    },
+    {
+      "path": "qa-report-used-at-submission.json",
+      "bytes": 8636,
+      "sha256": "61652b3cacf19edff4064c7a80c2760f2795530d5100cf8ff0ba68210574d3f8"
+    },
+    {
+      "path": "source-proof-map.json",
+      "bytes": 5554,
+      "sha256": "0ad7aa08ff405c5f6e9245baeb9718457b887e9413f1863aef94e6c366a8bd76"
+    },
+    {
+      "path": "submission-response.json",
+      "bytes": 312,
+      "sha256": "439e4c75fdc31a31acbd30e3429c659f18ff91a5f8c60308b52d918bf5e4758f"
+    },
+    {
+      "path": "submission.stderr.txt",
+      "bytes": 489,
+      "sha256": "a645c79e8309e5309790c110f4417e6e76adf31e7f7f989d5a1b4c7f4de711a6"
+    },
+    {
+      "path": "summary.json",
+      "bytes": 4453,
+      "sha256": "24d847a0dd25f80dd4b06d44c32e6098ae5ba2e328160cba75f23bef4a3ebe9b"
+    },
+    {
+      "path": "vercel-delivery-status.snapshot.json",
+      "bytes": 1587,
+      "sha256": "b8e90c5668c360fbc5b6e86980d2fca6745380724237ad764e1dcf083132c381"
+    }
+  ],
+  "qaReportUsedAtSubmissionSha256": "61652b3cacf19edff4064c7a80c2760f2795530d5100cf8ff0ba68210574d3f8",
+  "qaReportAfterArchivalSha256": "9cc83dad4d2024e1bfb1a96f18251977552125f5f29794c1a291c4f78ca0cb16",
+  "externalRegistryUnchanged": true,
+  "sanitizedInventoryAllowlistOnly": true,
+  "localGuard": "passed",
+  "buildOrGitOrBrowserOrRemoteExecuted": false
+}

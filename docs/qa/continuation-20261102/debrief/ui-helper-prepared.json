@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "status": "helper_prepared_not_executed",
+  "preparedAt": "2026-11-02T04:21:42.556093+00:00",
+  "path": "docs/qa/continuation-20261102/verify-ui-command.mjs",
+  "sha256": "fd4a5ca069cb73ab8f3d3c692aeee8cc7bac353fb2f315a93577d2f65bc5b7c3",
+  "cases": 8,
+  "priorCasesPreserved": 6,
+  "browserLaunched": false,
+  "networkAccessed": false,
+  "syntaxCheck": "passed",
+  "helpCheck": "passed",
+  "configurationCheck": "passed_without_root_browser_go",
+  "configurationOutputDirectoryCreated": false,
+  "case7Scope": "Authored pilot critical-front capture, finite NPC deaths via simulation API, unchanged real deadline, actual operation save/reload, then automatic main strategic update to endGame and final cause labels while the hunter remains alive.",
+  "case8Scope": "Actual eligible/ineligible checkbox flow, basic and evolved briefings, signed AFF-27 configuration, six pre-allocated Carrier cargo IDs and exact checkpoint restoration. No direct Carrier launch or Ravager phase API call.",
+  "twoFrontBrowserVariant": "Not added: all 27 authored catalogue operations and pilot declare exactly one critical front. Independent two-deadline and surviving-P2 cases remain real CPU fixtures.",
+  "remainingGate": "ROOT must freeze the build, pin its source/index and grant the sole Chromium slot before an actual run."
+}

@@ -1,0 +1,349 @@
+{
+  "id": "CTRL-002",
+  "source": "docs/audits/2026-10-27/Yautja_Hive_Warriors_Controle_Completude_2026-10-27.xlsx#Controle_roster ; docs/audits/2026-10-27/implementation-followup-20261101.json",
+  "sujet": "AFF-13 : Working Joes remplacés par humains",
+  "operation": "AFF-13",
+  "seed": 1114,
+  "seedsMatrice": [
+    0,
+    1114,
+    48879
+  ],
+  "commit": "3af4819a999137f5fd930aa9b688c8c9db58f113",
+  "date": "2026-11-14",
+  "commande": "node --test tests/recette-ctrl-002.test.js",
+  "niveau": "runtime mission (createOperationScene → BattleSimulation → BattleActorBridge → SyntheticsManager/ColonialMarinesManager réels, sans rendu WebGL)",
+  "preuveVideo": "non produite — preuve par journal",
+  "matrice": [
+    {
+      "seed": 0,
+      "difficultyId": "cautious",
+      "players": 1,
+      "workingJoes": 32,
+      "adultesXeno": 8,
+      "humains": 0,
+      "relationRucheJoes": "neutral"
+    },
+    {
+      "seed": 0,
+      "difficultyId": "cautious",
+      "players": 2,
+      "workingJoes": 32,
+      "adultesXeno": 8,
+      "humains": 0,
+      "relationRucheJoes": "neutral"
+    },
+    {
+      "seed": 0,
+      "difficultyId": "standard",
+      "players": 1,
+      "workingJoes": 32,
+      "adultesXeno": 8,
+      "humains": 0,
+      "relationRucheJoes": "neutral"
+    },
+    {
+      "seed": 0,
+      "difficultyId": "standard",
+      "players": 2,
+      "workingJoes": 32,
+      "adultesXeno": 8,
+      "humains": 0,
+      "relationRucheJoes": "neutral"
+    },
+    {
+      "seed": 0,
+      "difficultyId": "aggressive",
+      "players": 1,
+      "workingJoes": 32,
+      "adultesXeno": 8,
+      "humains": 0,
+      "relationRucheJoes": "neutral"
+    },
+    {
+      "seed": 0,
+      "difficultyId": "aggressive",
+      "players": 2,
+      "workingJoes": 32,
+      "adultesXeno": 8,
+      "humains": 0,
+      "relationRucheJoes": "neutral"
+    },
+    {
+      "seed": 1114,
+      "difficultyId": "cautious",
+      "players": 1,
+      "workingJoes": 32,
+      "adultesXeno": 8,
+      "humains": 0,
+      "relationRucheJoes": "neutral"
+    },
+    {
+      "seed": 1114,
+      "difficultyId": "cautious",
+      "players": 2,
+      "workingJoes": 32,
+      "adultesXeno": 8,
+      "humains": 0,
+      "relationRucheJoes": "neutral"
+    },
+    {
+      "seed": 1114,
+      "difficultyId": "standard",
+      "players": 1,
+      "workingJoes": 32,
+      "adultesXeno": 8,
+      "humains": 0,
+      "relationRucheJoes": "neutral"
+    },
+    {
+      "seed": 1114,
+      "difficultyId": "standard",
+      "players": 2,
+      "workingJoes": 32,
+      "adultesXeno": 8,
+      "humains": 0,
+      "relationRucheJoes": "neutral"
+    },
+    {
+      "seed": 1114,
+      "difficultyId": "aggressive",
+      "players": 1,
+      "workingJoes": 32,
+      "adultesXeno": 8,
+      "humains": 0,
+      "relationRucheJoes": "neutral"
+    },
+    {
+      "seed": 1114,
+      "difficultyId": "aggressive",
+      "players": 2,
+      "workingJoes": 32,
+      "adultesXeno": 8,
+      "humains": 0,
+      "relationRucheJoes": "neutral"
+    },
+    {
+      "seed": 48879,
+      "difficultyId": "cautious",
+      "players": 1,
+      "workingJoes": 32,
+      "adultesXeno": 8,
+      "humains": 0,
+      "relationRucheJoes": "neutral"
+    },
+    {
+      "seed": 48879,
+      "difficultyId": "cautious",
+      "players": 2,
+      "workingJoes": 32,
+      "adultesXeno": 8,
+      "humains": 0,
+      "relationRucheJoes": "neutral"
+    },
+    {
+      "seed": 48879,
+      "difficultyId": "standard",
+      "players": 1,
+      "workingJoes": 32,
+      "adultesXeno": 8,
+      "humains": 0,
+      "relationRucheJoes": "neutral"
+    },
+    {
+      "seed": 48879,
+      "difficultyId": "standard",
+      "players": 2,
+      "workingJoes": 32,
+      "adultesXeno": 8,
+      "humains": 0,
+      "relationRucheJoes": "neutral"
+    },
+    {
+      "seed": 48879,
+      "difficultyId": "aggressive",
+      "players": 1,
+      "workingJoes": 32,
+      "adultesXeno": 8,
+      "humains": 0,
+      "relationRucheJoes": "neutral"
+    },
+    {
+      "seed": 48879,
+      "difficultyId": "aggressive",
+      "players": 2,
+      "workingJoes": 32,
+      "adultesXeno": 8,
+      "humains": 0,
+      "relationRucheJoes": "neutral"
+    }
+  ],
+  "chronologie": [
+    {
+      "t": 6,
+      "event": "joueur_sur_front",
+      "frontId": "front_a",
+      "acteursDetailles": 8
+    },
+    {
+      "t": 12,
+      "event": "joueur_sur_front",
+      "frontId": "front_b",
+      "acteursDetailles": 11
+    },
+    {
+      "t": 18,
+      "event": "joueur_sur_front",
+      "frontId": "front_c",
+      "acteursDetailles": 10
+    },
+    {
+      "t": 18,
+      "event": "projection_totale",
+      "repartition": {
+        "hive|xenomorph|warrior|xenomorph|warrior": 6,
+        "human_force|synthetic|working_joe|synthetics|working_joe": 23
+      }
+    },
+    {
+      "t": 2,
+      "event": "joueur_sur_front",
+      "frontId": "front_a",
+      "acteursDetailles": 8
+    },
+    {
+      "t": 4,
+      "event": "joueur_sur_front",
+      "frontId": "front_b",
+      "acteursDetailles": 12
+    },
+    {
+      "t": 6,
+      "event": "joueur_sur_front",
+      "frontId": "front_c",
+      "acteursDetailles": 10
+    }
+  ],
+  "clauses": [
+    {
+      "clause": "groupe_vers_profil",
+      "attendu": "Associer GRP-50 au véritable manager des synthétiques et au profil Working Joe.",
+      "verdict": "prouvé",
+      "details": {
+        "factionId": "human_force",
+        "label": "Working Joes Seegson",
+        "joes": 32,
+        "profils": [
+          "source_human_force_GRP-50_default_0",
+          "source_human_force_GRP-50_default_1"
+        ]
+      }
+    },
+    {
+      "clause": "effectifs_source",
+      "attendu": "Conserver 32 Joes et 8 adultes xénomorphes dans la force ennemie source, sans humain.",
+      "verdict": "prouvé",
+      "details": {
+        "joes": 32,
+        "adultesXeno": 8,
+        "traqueurBOS34": 1,
+        "humains": 0,
+        "comptes": {
+          "player_clan": {
+            "allocated": 4,
+            "active": 0,
+            "distant": 4,
+            "reserve": 0,
+            "dead": 0,
+            "evacuated": 0,
+            "captured": 0
+          },
+          "hive": {
+            "allocated": 8,
+            "active": 0,
+            "distant": 6,
+            "reserve": 2,
+            "dead": 0,
+            "evacuated": 0,
+            "captured": 0
+          },
+          "human_force": {
+            "allocated": 32,
+            "active": 0,
+            "distant": 26,
+            "reserve": 6,
+            "dead": 0,
+            "evacuated": 0,
+            "captured": 0
+          }
+        }
+      }
+    },
+    {
+      "clause": "relation_locale",
+      "attendu": "Les Joes ne deviennent pas automatiquement une troisième armée anti-xéno : relation locale neutre Joes/ruche, hostiles au clan.",
+      "verdict": "prouvé",
+      "details": {
+        "hive|player_clan": "hostile",
+        "human_force|player_clan": "hostile",
+        "hive|human_force": "neutral"
+      }
+    },
+    {
+      "clause": "materialisation_naturelle",
+      "attendu": "Les Joes détaillés par l’étape de détail sont rendus par SyntheticsManager en working_joe.",
+      "verdict": "prouvé",
+      "details": {
+        "player_clan|yautja|clan_hunter|yautja|clan_hunter": 3,
+        "human_force|synthetic|working_joe|synthetics|working_joe": 22,
+        "hive|xenomorph|warrior|xenomorph|warrior": 4
+      }
+    },
+    {
+      "clause": "projection_totale",
+      "attendu": "Chaque Joe alloué, projeté une fois, garde son espèce et son gestionnaire ; aucune unité n’est rendue en Marine.",
+      "verdict": "prouvé",
+      "details": {
+        "projeteesMaintenant": 29,
+        "dejaProjetees": 10,
+        "joesMortsAvantProjection": 1,
+        "repartition": {
+          "hive|xenomorph|warrior|xenomorph|warrior": 6,
+          "human_force|synthetic|working_joe|synthetics|working_joe": 23
+        }
+      }
+    },
+    {
+      "clause": "matrice_graine_difficulte",
+      "attendu": "Graine, difficulté et coopération ne remplacent pas les Joes.",
+      "verdict": "prouvé",
+      "details": {
+        "combinaisons": 18
+      }
+    },
+    {
+      "clause": "sauvegarde_recharge",
+      "attendu": "Une recharge de sauvegarde courante conserve les 32 Joes, leur profil et leur relation locale.",
+      "verdict": "prouvé",
+      "details": {
+        "joesRecharges": 32
+      }
+    },
+    {
+      "clause": "observation_compatibilite_ancienne_sauvegarde",
+      "attendu": "Information (pas un critère du contrôle) : reprise des sauvegardes signées avant le roster source.",
+      "verdict": "observation",
+      "details": {
+        "fichier": "js/main.js:262-277 (repli legacyRoster) ; js/data/BattleCatalog.js:294 (applySourceSquadProfiles seulement si rosterDetail source)",
+        "grp50EnHumainsDansLeRepli": 32,
+        "relationLegacy": "hostile",
+        "note": "Une ancienne sauvegarde AFF-13 reste simulée avec original_human_* et une relation ruche/Joes hostile ; repli volontaire mais hors du contrat CTRL-002."
+      }
+    }
+  ],
+  "limites": [
+    "Aucun rendu navigateur ni revue visuelle : la forme des Working Joes n’est pas certifiée 1:1.",
+    "Le moral de la faction synthétique reste le proxy human_morale déclaré par simulationLimitation.",
+    "La relation neutre Joes/ruche est locale à AFF-13 ; le comportement fin des Joes face aux xénomorphes en mission visuelle reste à recetter."
+  ]
+}

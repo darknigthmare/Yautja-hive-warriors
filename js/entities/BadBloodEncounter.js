@@ -1,6 +1,9 @@
 /* Bad Blood Rogue Yautja Encounter System - Renegade Predator Ambush */
 
 import * as THREE from 'three';
+import { recordCombatDeath } from '../engine/CombatEvents.js';
+import { disposeObject } from '../engine/SceneResources.js';
+import { selectHostileTarget, requestHostileAttack, syncHostileWarning, releaseHostileAttack } from '../engine/HostilePressure.js';
 
 export class BadBloodManager {
   constructor(scene, audioEngine) {
@@ -10,9 +13,12 @@ export class BadBloodManager {
     this.isActive = false;
   }
 
+
   spawnAmbush(playerPos) {
+    this.duelTriggered = false; this.isDueling = false; this.duelTarget = null;
     if (this.badBlood) {
-      this.scene.remove(this.badBlood.mesh);
+      releaseHostileAttack(this, this.badBlood);
+      disposeObject(this.badBlood.mesh);
     }
 
     const mesh = this.createBadBloodMesh();
@@ -28,12 +34,14 @@ export class BadBloodManager {
       damage: 75,
       isCloaked: true,
       cloakTimer: 4.0,
-      attackCooldown: 0
+      attackCooldown: 1.5,
+      plasmaTimer: 3
     };
     this.isActive = true;
 
     this.audioEngine.playYautjaRoar();
   }
+
 
   createBadBloodMesh() {
     const group = new THREE.Group();
@@ -99,22 +107,17 @@ export class BadBloodManager {
     return group;
   }
 
+
   update(delta, player, ui = null, gore = null, particles = null, game = null) {
     if (!this.isActive || !this.badBlood) return;
 
-    // Handle Active Clashing Blades Honor Duel (Chantier 10)
-    if (this.isDueling) {
-      this.updateDuel(delta, player, ui, gore, particles, game);
-      return;
-    }
-
+    if (!Number.isFinite(delta) || delta <= 0) return;
+    if (this.badBlood.hp <= 0) { this.takeDamage(1, { cause: 'observed-encounter-death', killerFaction: this.badBlood.lastDamageFaction }); return; }
+    if (this.isDueling) { this.updateDuel(delta, this.duelTarget ?? player, ui, gore, particles, game); return; }
     const bb = this.badBlood;
-
-    // Trigger Honor Duel when Bad Blood is bloodied (< 40% HP) and in close quarters
-    if (bb.hp <= 850 && !this.duelTriggered && player.position.distanceTo(bb.mesh.position) <= 4.5) {
-      this.startHonorDuel(player, ui);
-      return;
-    }
+    player = selectHostileTarget(this, bb, player);
+    if (!player || player.hp <= 0) { releaseHostileAttack(this, bb); return; }
+    if (bb.hp <= 850 && !this.duelTriggered && player.position.distanceTo(bb.mesh.position) <= 4.5) { this.startHonorDuel(player, ui); return; }
 
     // Cloaking flicker
     bb.cloakTimer -= delta;
@@ -122,7 +125,7 @@ export class BadBloodManager {
       bb.isCloaked = !bb.isCloaked;
       bb.cloakTimer = bb.isCloaked ? 3.5 : 5.0;
       bb.mesh.traverse(child => {
-        if (child.isMesh) {
+        if (child.isMesh && child.name !== 'hostile-attack-warning') {
           child.material.transparent = bb.isCloaked;
           child.material.opacity = bb.isCloaked ? 0.35 : 1.0;
         }
@@ -130,44 +133,71 @@ export class BadBloodManager {
       this.audioEngine.playYautjaClick();
     }
 
-    // Aggressive dash & strike
-    const dir = player.position.clone().sub(bb.mesh.position);
-    dir.y = 0;
-    const dist = dir.length();
-
-    // Plasma Caster Cannon shot at medium distance (6m - 18m)
-    if (!bb.plasmaTimer) bb.plasmaTimer = 3.0;
-    bb.plasmaTimer -= delta;
-    if (dist >= 6.0 && dist <= 18.0 && bb.plasmaTimer <= 0) {
-      bb.plasmaTimer = 4.2;
-      this.audioEngine.playPlasmaShot();
-      if (!player.isBlocking) {
-        player.takeDamage(55);
+    const dir = player.position.clone().sub(bb.mesh.position); dir.y = 0;
+    const distance = dir.length();
+    if (this.environment?.hasLineOfSight && !this.environment.hasLineOfSight(bb.mesh.position.clone().add(new THREE.Vector3(0,1.8,0)), player.position.clone().add(new THREE.Vector3(0,1.6,0)))) {
+      releaseHostileAttack(this, bb); bb.pressureAction = null;
+      if (distance > .1) bb.mesh.position.addScaledVector(dir.normalize(), Math.min(bb.speed * delta, distance));
+      this.environment.resolveAgentMovement?.(bb.mesh.position, player.position, bb.speed * delta, 1.2); return;
+    }
+    bb.attackCooldown = Math.max(0, (bb.attackCooldown ?? 1.5) - delta);
+    bb.plasmaTimer = Math.max(0, (bb.plasmaTimer ?? 3) - delta);
+    if (!bb.pressureAction) {
+      if (distance <= 3 && bb.attackCooldown <= 0) bb.pressureAction = 'blade';
+      else if (distance >= 6 && distance <= 18 && bb.plasmaTimer <= 0) bb.pressureAction = 'plasma';
+    }
+    const action = bb.pressureAction;
+    if (action && (distance > (action === 'blade' ? 3.5 : 20))) {
+      releaseHostileAttack(this, bb); bb.pressureAction = null;
+    } else if (action && requestHostileAttack(this, bb, player, delta, {
+      kind: action === 'blade' ? 'melee' : 'ranged', windup: action === 'blade' ? 0.9 : 1.1,
+      recovery: 1.7, duration: 0.4
+    })) {
+      if (action === 'plasma') {
+        bb.plasmaTimer = 5.2; this.audioEngine.playPlasmaShot();
+        player.takeDamage(55, false, bb, { attackKind: 'plasma', blockable: false, parryable: false });
       } else {
-        player.audioEngine.playShieldBlock();
+        bb.attackCooldown = 1.8; this.audioEngine.playSlash();
+        if (distance <= 3.5) player.takeDamage(bb.damage, false, bb, { attackKind: 'melee', blockable: true, parryable: true });
       }
+      bb.pressureAction = null;
     }
-
-    if (dist > 2.2) {
-      dir.normalize();
-      bb.mesh.position.addScaledVector(dir, bb.speed * delta);
+    syncHostileWarning(this, bb, 1.65);
+    const preparing = this.combatDirector?.getAttackState(bb)?.phase === 'windup' || bb._localAttackPreparation;
+    if (distance > 2.7 && !preparing) {
+      bb.mesh.position.addScaledVector(dir.normalize(), Math.min(bb.speed * delta, distance - 2.7));
+      this.environment?.resolveAgentMovement?.(bb.mesh.position, player.position, bb.speed * delta, 1.2);
       bb.mesh.rotation.y = Math.atan2(dir.x, dir.z);
-    } else {
-      if (bb.attackCooldown <= 0) {
-        bb.attackCooldown = 0.8;
-        this.audioEngine.playSlash();
-        player.takeDamage(bb.damage);
-      }
-    }
-
-    if (bb.attackCooldown > 0) {
-      bb.attackCooldown -= delta;
     }
   }
 
-  /* Chantier 10: Dynamic Predator Honor Code Duels & Clashing Blades 3-Stage QTE */
+
+  clear() {
+    this.endDuelUI(); this.isDueling = false; this.duelTarget = null;
+    releaseHostileAttack(this, this.badBlood);
+    disposeObject(this.badBlood?.mesh);
+    this.badBlood = null;
+    this.isActive = false;
+  }
+
+
+  takeDamage(amount, details = {}) {
+    if (!Number.isFinite(amount) || amount <= 0) return false;
+    if (!this.badBlood) return false;
+    this.badBlood.hp -= amount;
+    if (this.badBlood.hp <= 0) {
+      this.badBlood.hp = 0; const event = recordCombatDeath(this, this.badBlood, { kind: 'bad_blood', isBoss: true, ...details });
+      this.lastDeathEvent = event; if (event) this.onDefeated?.(event);
+      this.clear();
+      this.audioEngine.playYautjaRoar();
+      return true; // Killed Bad Blood!
+    }
+    return false;
+  }
   startHonorDuel(player, ui) {
     if (!this.badBlood || this.isDueling) return;
+    releaseHostileAttack(this, this.badBlood);
+    this.duelTarget = player;
     this.isDueling = true;
     this.duelTriggered = true;
     this.duelStage = 1;
@@ -188,7 +218,9 @@ export class BadBloodManager {
     this.showDuelUI(ui);
   }
 
+
   showDuelUI(ui) {
+    if (typeof document === 'undefined') return;
     const duelBanner = document.getElementById('clashing-blades-prompt');
     const letterboxTop = document.getElementById('duel-letterbox-top');
     const letterboxBottom = document.getElementById('duel-letterbox-bottom');
@@ -212,11 +244,14 @@ export class BadBloodManager {
     }
   }
 
+
   updateDuel(delta, player, ui, gore, particles, game) {
     if (!this.isDueling || !this.badBlood) return;
+    player = this.duelTarget ?? player;
+    if (!(player?.hp > 0)) { this.endDuelUI(); this.isDueling = false; this.duelTarget = null; this.badBlood.attackCooldown = 2; return; }
 
     this.duelTimer -= delta;
-    const timerBar = document.getElementById('duel-qte-timer-fill');
+    const timerBar = typeof document !== 'undefined' ? document.getElementById('duel-qte-timer-fill') : null;
     if (timerBar) {
       const pct = Math.max(0, (this.duelTimer / 2.4) * 100);
       timerBar.style.width = `${pct}%`;
@@ -235,8 +270,11 @@ export class BadBloodManager {
     }
   }
 
+
   handleDuelInput(eCode, player, ui, gore, particles, game) {
     if (!this.isDueling || !this.badBlood) return false;
+    player = this.duelTarget ?? player;
+    if (!(player?.hp > 0)) { this.endDuelUI(); this.isDueling = false; this.duelTarget = null; return false; }
 
     if (eCode === this.duelKey) {
       // Successful clash stage
@@ -277,9 +315,14 @@ export class BadBloodManager {
     }
   }
 
+
   completeHonorDuelExecution(player, ui, gore, particles, game) {
     this.endDuelUI();
-    const bbPos = this.badBlood.mesh.position.clone();
+    const actor = this.badBlood; if (!actor || actor.hp <= 0 || actor._duelAwarded) return;
+    actor._duelAwarded = true; actor.hp = 0;
+    const bbPos = actor.mesh.position.clone();
+    const event = recordCombatDeath(this, actor, { kind: 'bad_blood', cause: 'honor-duel', killerFaction: 'player_clan', isBoss: true, honorValue: 3000, scoreValue: 3000 });
+    this.lastDeathEvent = event; if (event) this.onDefeated?.(event);
 
     if (this.audioEngine.playSlash) this.audioEngine.playSlash();
     this.audioEngine.playYautjaRoar();
@@ -292,12 +335,11 @@ export class BadBloodManager {
     }
 
     // Award +3000 Honor & Taboo Trophy
-    const tName = 'Masque Cérémoniel & Tête Décapitée du Bad Blood Renégat (Duel d\'Honneur 1:1)';
+    const tName = 'Masque cérémoniel et tête du Bad Blood renégat';
     const tHonor = 3000;
-    if (player && player.recordTrophy) player.recordTrophy(tName, tHonor);
+    if (player && player.recordTrophy && !this.centralDeathScoring) player.recordTrophy(tName, tHonor);
     if (game) {
-      game.sessionSkulls = (game.sessionSkulls || 0) + 1;
-      game.score = (game.score || 0) + tHonor;
+      if (!this.centralDeathScoring) { game.sessionSkulls = (game.sessionSkulls || 0) + 1; game.score = (game.score || 0) + tHonor; }
       if (game.shiftBattlefieldMorale) game.shiftBattlefieldMorale(35.0);
       if (game.triggerCameraShake) game.triggerCameraShake(1.5, 0.6);
       if (game.triggerCameraFovSurge) game.triggerCameraFovSurge(72, 0.6);
@@ -307,18 +349,19 @@ export class BadBloodManager {
       ui.showAnnouncement(`👑 VICTOIRE DUEL D'HONNEUR ! ${tName} (+${tHonor} HONNEUR, MORAL +35%) !`);
     }
 
-    this.scene.remove(this.badBlood.mesh);
+    releaseHostileAttack(this, actor); disposeObject(actor.mesh);
     this.badBlood = null;
     this.isActive = false;
     this.isDueling = false;
   }
+
 
   failHonorDuel(player, ui) {
     this.endDuelUI();
     this.isDueling = false;
     if (this.audioEngine.playSlash) this.audioEngine.playSlash();
     if (player) {
-      player.takeDamage(65);
+      player.takeDamage(65, false, this.badBlood, { attackKind: 'failed-duel', blockable: false, parryable: false });
       const knock = player.position.clone().sub(this.badBlood.mesh.position).normalize();
       player.position.addScaledVector(knock, 6.0);
       if (player.mesh) player.mesh.position.copy(player.position);
@@ -328,7 +371,9 @@ export class BadBloodManager {
     }
   }
 
+
   endDuelUI() {
+    if (typeof document === 'undefined') return;
     const duelBanner = document.getElementById('clashing-blades-prompt');
     const letterboxTop = document.getElementById('duel-letterbox-top');
     const letterboxBottom = document.getElementById('duel-letterbox-bottom');
@@ -337,26 +382,5 @@ export class BadBloodManager {
     if (duelBanner) duelBanner.classList.add('hidden');
   }
 
-  takeDamage(amount) {
-    if (!this.badBlood || this.isDueling) return false;
-    this.badBlood.hp -= amount;
-    if (this.badBlood.hp <= 0) {
-      this.scene.remove(this.badBlood.mesh);
-      this.badBlood = null;
-      this.isActive = false;
-      this.audioEngine.playYautjaRoar();
-      return true; // Killed Bad Blood!
-    }
-    return false;
-  }
 
-  clear() {
-    this.endDuelUI();
-    if (this.badBlood) {
-      this.scene.remove(this.badBlood.mesh);
-      this.badBlood = null;
-    }
-    this.isActive = false;
-    this.isDueling = false;
-  }
 }

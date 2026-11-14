@@ -1,0 +1,108 @@
+{
+  "schema": "yhw-procedural-role-asset-manifest-v1",
+  "date": "2026-10-30",
+  "previousCommit": "49fe27c5a0b111909ae2787264ba6ad8ce2bcb62",
+  "engine": "Three.js r160 / 0.160.1",
+  "outputKind": "procedural runtime geometry; no raster/GLB assets generated",
+  "licenseAndProvenance": "Original procedural interpretations authored for a fan project; audiovisual franchise reference materials are not distributed. Commercial licensing and legal permissions are not established.",
+  "entries": [
+    {
+      "id": "extinction-drone",
+      "operation": "AFF-27",
+      "groups": [
+        "GRP-58",
+        "GRP-59"
+      ],
+      "type": "xenomorph",
+      "renderKey": "drone",
+      "meshOwner": "js/graphics/CreatureSculpt.js",
+      "geometry": "long smooth dome, narrower thorax, own material, 3 LoDs",
+      "interaction": "standard warrior attack; host capture and hive node absent",
+      "visual1to1Verified": false
+    },
+    {
+      "id": "extinction-medic",
+      "operation": "AFF-27",
+      "groups": [
+        "GRP-60"
+      ],
+      "type": "human",
+      "renderKey": "medic",
+      "meshOwner": "js/graphics/SupportModels.js",
+      "geometry": "medical backpack, visible treatment cross, field pouches, inherited rifle",
+      "interaction": "two finite local treatments for wounded organic faction allies; advanced medical role absent",
+      "visual1to1Verified": false
+    },
+    {
+      "id": "extinction-commtech",
+      "operation": "AFF-27",
+      "groups": [
+        "GRP-60"
+      ],
+      "type": "human",
+      "renderKey": "commtech",
+      "meshOwner": "js/graphics/SupportModels.js",
+      "geometry": "radio/antenna, console wrist, backpack, inherited rifle",
+      "interaction": "communications/repair actions not implemented",
+      "visual1to1Verified": false
+    },
+    {
+      "id": "extinction-sniper",
+      "operation": "AFF-27",
+      "groups": [
+        "GRP-60"
+      ],
+      "type": "human",
+      "renderKey": "sniper",
+      "meshOwner": "js/graphics/SupportModels.js",
+      "geometry": "rifle extension, sight and bipod",
+      "interaction": "special targeting/range/ammo not implemented",
+      "visual1to1Verified": false
+    },
+    {
+      "id": "extinction-sadar",
+      "operation": "AFF-27",
+      "groups": [
+        "GRP-60"
+      ],
+      "type": "human",
+      "renderKey": "sadar",
+      "meshOwner": "js/graphics/SupportModels.js",
+      "geometry": "shoulder launch tube, breech and guided optics",
+      "interaction": "ballistic SADAR projectile/splash not implemented; legacy ranged shot remains",
+      "visual1to1Verified": false
+    },
+    {
+      "id": "extinction-exosuit",
+      "operation": "AFF-27",
+      "groups": [
+        "GRP-60"
+      ],
+      "type": "human",
+      "renderKey": "exosuit",
+      "meshOwner": "js/graphics/SupportModels.js",
+      "geometry": "pilot frame, joint braces, powered silhouette study",
+      "interaction": "no separate pilot entity; powered armor, drivetrain and cannon not implemented",
+      "visual1to1Verified": false
+    }
+  ],
+  "validation": {
+    "cpuFunctional": "partial isolated source-method checks",
+    "jsParser": "eight sources compiled after stripping module declarations",
+    "engineRuntime": false,
+    "renderComparison": false,
+    "hardwarePerformance": false
+  },
+  "referenceNotes": [
+    {
+      "scope": "Extinction Drone role",
+      "url": "https://db.hfsplay.fr/files/2019/09/19/Aliens_Versus_Predator_-_Extinction_001_kgcGTen.pdf",
+      "note": "Manual describes host capture, hive-node building, low armor; not implemented as a capability"
+    },
+    {
+      "scope": "Alien Isolation locomotion style",
+      "url": "https://blog.playstation.com/archive/2014/10/07/creative-assembly-brought-iconic-monster-life-alien-isolation",
+      "note": "Reference for slow upright versus fast low posture only; distinct game continuity, not a direct Extinction mesh specification"
+    }
+  ]
+}

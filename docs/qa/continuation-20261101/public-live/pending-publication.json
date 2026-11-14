@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "status": "prepared_not_run",
+  "preparedDate": "2026-11-01",
+  "origin": "https://yautja-hive-warriors.vercel.app",
+  "intendedFunctionalCheckCount": 22,
+  "functionalCheckKeys": [
+    "publicIndexMatches",
+    "publicBuildInfoMatches",
+    "browserDocumentMatches",
+    "briefingCeiling32",
+    "explicitFidelityLimitation",
+    "playerHiddenDuringArrival",
+    "arrivalThenOpeningThenExit",
+    "insertionCompletedVisible",
+    "operationHudAfterFirstNormalUpdate",
+    "frontsCounterSurvivesNormalUpdate",
+    "hp1000AfterInsertion",
+    "ceilingAndActorCount",
+    "nonzeroMaterializedActorLoad",
+    "finitePopulation132",
+    "sixSectorMap",
+    "realMapClickIssuedDefend",
+    "realOOpenedAndClosedPhoto",
+    "savedAllFiniteIds",
+    "finalConservationAndBudget",
+    "realEscapeAndMenuCleanup",
+    "noJsNetworkOrExternalErrors",
+    "frozenDistUnchanged"
+  ],
+  "result": null,
+  "deployment": null,
+  "expected": null,
+  "runtimeSourcePendingFinalFreeze": true,
+  "browserLaunched": false,
+  "publicNetworkAccessed": false,
+  "validation": {
+    "nodeSyntaxCheck": "passed",
+    "helpWithoutExecution": "passed",
+    "configurationValidationOnly": "passed",
+    "guardedNetworkCalls": 0,
+    "guardedChromiumLaunches": 0,
+    "proofAndExternalOutputTreesUnchangedDuringConfigChecks": true,
+    "checkLogicIdenticalToOriginal": true
+  },
+  "configurationOnlyArgumentsAreNotPublicationPins": true,
+  "configurationOnlyExplanation": "The supplied build-info SHA of64 a characters and deployment dpl_CONFIGURATIONONLY test parser formats only. No HTTP/content/deployment validation occurred. Actual final source/index/build-info and promoted production deployment must come from root.",
+  "outputs": {
+    "repository": "docs/qa/continuation-20261101/public-live",
+    "external": "/workspace/qa/continuation-final-20261101/publication-public/<timestamp-source>/",
+    "latestReport": "publication-20261101.json",
+    "preservedAttempts": "attempt-<timestamp-source>.json"
+  },
+  "originalScript": {
+    "path": "docs/qa/pr3-next-20261028/public-live/verify-public.mjs",
+    "sha256": "4c29034048a25aa86798b5c173ff5573e193c75f0ac32b2396efefa5941e13be"
+  },
+  "preparedScript": {
+    "path": "docs/qa/continuation-20261101/public-live/verify-public.mjs",
+    "sha256": "cf61809249bbaa30e2a14306a654abf1474e39213c48da359b920e171af69aaa"
+  },
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "hardwarePerformanceMeasured": false,
+  "instruction": "Do not run the public script until root supplies the real promoted final production deployment plus frozen source/index/build-info pins and explicitly releases the exclusive Chromium slot. Preparation alone does not deploy, promote, check quota or launch any browser. Older evidence directories remain unchanged.",
+  "configurationOnlyGuard": {
+    "path": "docs/qa/continuation-20261101/public-live/configuration-only-guard.mjs",
+    "sha256": "66dc69d43b390593baf9a83bc9492a166c420a9b3d069a20d368b9d7104d9a00"
+  }
+}

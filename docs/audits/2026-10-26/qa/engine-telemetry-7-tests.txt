@@ -1,0 +1,15 @@
+✔ frame telemetry bounds its history and distinguishes CPU duration from display intervals and unavailable GPU timing (1.862711ms)
+✔ renderer counters include both co-op viewports and every composer pass and restore counter policy after errors (2.265956ms)
+✔ each recent weather mode is finite, pauses, follows the scene quality and disposes its owned particles once (586.297691ms)
+✔ steam damage integrates elapsed seconds at 30, 60 and 120 FPS and vent counts are bounded (8.775755ms)
+✔ Cheyenne launches six real micro-rockets on the simulation clock, applies impacts, and cancels them on clear (2320.315711ms)
+✔ APC prioritizes an attainable boss through its real muzzle, preserves reload and removes tracer resources (46.705767ms)
+✔ all eleven biome light palettes restore after vision and lightning instead of returning to the old generic sky (1.825994ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3156.895418

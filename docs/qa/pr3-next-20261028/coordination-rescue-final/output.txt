@@ -1,0 +1,154 @@
+TAP version 13
+# Subtest: the first lethal ally hit becomes a rendered casualty without death credit or military population loss
+ok 1 - the first lethal ally hit becomes a rendered casualty without death credit or military population loss
+  ---
+  duration_ms: 6505.227181
+  type: 'test'
+  ...
+# Subtest: three seconds of real channeling costs one medicomp only at completion and restores contribution once
+ok 2 - three seconds of real channeling costs one medicomp only at completion and restores contribution once
+  ---
+  duration_ms: 67.084579
+  type: 'test'
+  ...
+# Subtest: a rescued ally lost offscreen reconciles medical history once without a second death or charge
+ok 3 - a rescued ally lost offscreen reconciles medical history once without a second death or charge
+  ---
+  duration_ms: 215.350576
+  type: 'test'
+  ...
+# Subtest: evacuation and a campaign-confirmed capture close a previously rescued ally without declaring a death
+ok 4 - evacuation and a campaign-confirmed capture close a previously rescued ally without declaring a death
+  ---
+  duration_ms: 60.115932
+  type: 'test'
+  ...
+# Subtest: impact, movement, vertical separation and cover interrupt without consuming the medical resource
+ok 5 - impact, movement, vertical separation and cover interrupt without consuming the medical resource
+  ---
+  duration_ms: 73.159294
+  type: 'test'
+  ...
+# Subtest: pause and zero delta freeze both bleedout and an admitted rescue; another player cannot double-rescue
+ok 6 - pause and zero delta freeze both bleedout and an admitted rescue; another player cannot double-rescue
+  ---
+  duration_ms: 47.294268
+  type: 'test'
+  ...
+# Subtest: a finishing hostile strike records exactly one real casualty instead of starting another downed life
+ok 7 - a finishing hostile strike records exactly one real casualty instead of starting another downed life
+  ---
+  duration_ms: 60.031763
+  type: 'test'
+  ...
+# Subtest: culling a freshly lethal actor preserves its one remaining HP, casualty deadline and same identity on return
+ok 8 - culling a freshly lethal actor preserves its one remaining HP, casualty deadline and same identity on return
+  ---
+  duration_ms: 137.971248
+  type: 'test'
+  ...
+# Subtest: an offscreen casualty continues bleeding out while pause still freezes it
+ok 9 - an offscreen casualty continues bleeding out while pause still freezes it
+  ---
+  duration_ms: 81.720801
+  type: 'test'
+  ...
+# Subtest: evacuating an eligible wounded group closes rescue without inventing a death or another medical charge
+ok 10 - evacuating an eligible wounded group closes rescue without inventing a death or another medical charge
+  ---
+  duration_ms: 71.670327
+  type: 'test'
+  ...
+# Subtest: a genuine engine checkpoint resumes the same casualty and partial channel without resetting time or stock
+ok 11 - a genuine engine checkpoint resumes the same casualty and partial channel without resetting time or stock
+  ---
+  duration_ms: 113.624748
+  type: 'test'
+  ...
+# Subtest: rescue and bleedout event ordering agrees at 30, 60 and 120 Hz, including simultaneous deadlines
+ok 12 - rescue and bleedout event ordering agrees at 30, 60 and 120 Hz, including simultaneous deadlines
+  ---
+  duration_ms: 356.642331
+  type: 'test'
+  ...
+# Subtest: coordination damage follows the actual attacker instead of the first cached member of its faction
+ok 13 - coordination damage follows the actual attacker instead of the first cached member of its faction
+  ---
+  duration_ms: 0.974373
+  type: 'test'
+  ...
+# Subtest: a living ally follows the physical access waypoint toward an elevated target while a downed ally stays still
+ok 14 - a living ally follows the physical access waypoint toward an elevated target while a downed ally stays still
+  ---
+  duration_ms: 70.037796
+  type: 'test'
+  ...
+# Subtest: the real Bridge intercepts environmental HP0 before death bookkeeping, and a later finisher still dies once
+ok 15 - the real Bridge intercepts environmental HP0 before death bookkeeping, and a later finisher still dies once
+  ---
+  duration_ms: 485.557412
+  type: 'test'
+  ...
+# Subtest: the real Bridge hit result reports a casualty as alive and reports only the later finishing blow as a kill
+ok 16 - the real Bridge hit result reports a casualty as alive and reports only the later finishing blow as a kill
+  ---
+  duration_ms: 446.552145
+  type: 'test'
+  ...
+# Subtest: returning near a persistent wounded ally rematerializes its original group under the shared cap and allows real rescue
+ok 17 - returning near a persistent wounded ally rematerializes its original group under the shared cap and allows real rescue
+  ---
+  duration_ms: 934.49303
+  type: 'test'
+  ...
+# Subtest: a real hive officer death names its group, front and mechanical coordination loss in the HUD feedback
+ok 18 - a real hive officer death names its group, front and mechanical coordination loss in the HUD feedback
+  ---
+  duration_ms: 8.964735
+  type: 'test'
+  ...
+# Subtest: captured debrief retains group and front labels after the operation has been disposed
+ok 19 - captured debrief retains group and front labels after the operation has been disposed
+  ---
+  duration_ms: 1.799949
+  type: 'test'
+  ...
+# Subtest: the final debrief renders the mechanical consequence after scene teardown
+ok 20 - the final debrief renders the mechanical consequence after scene teardown
+  ---
+  duration_ms: 3.591136
+  type: 'test'
+  ...
+# Subtest: the command map renders that real consequence in its tactical journal instead of a generic report
+ok 21 - the command map renders that real consequence in its tactical journal instead of a generic report
+  ---
+  duration_ms: 1.665597
+  type: 'test'
+  ...
+# Subtest: a critical defeat warning stays above ordinary reports and exposes its actual location and deadline
+ok 22 - a critical defeat warning stays above ordinary reports and exposes its actual location and deadline
+  ---
+  duration_ms: 1.004478
+  type: 'test'
+  ...
+# Subtest: caused counterattacks keep their real countdown in the persistent HUD
+ok 23 - caused counterattacks keep their real countdown in the persistent HUD
+  ---
+  duration_ms: 0.188571
+  type: 'test'
+  ...
+# Subtest: a living officer at critical health is called out ahead of routine reinforcements
+ok 24 - a living officer at critical health is called out ahead of routine reinforcements
+  ---
+  duration_ms: 0.158352
+  type: 'test'
+  ...
+1..24
+# tests 24
+# suites 0
+# pass 24
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 10290.367127

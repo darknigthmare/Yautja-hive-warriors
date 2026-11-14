@@ -1,12 +1,46 @@
 /* PREDATOR: HIVE WARRIORS - Main Game Router (v12.0 Apex Transcendent Edition) */
 
 import * as THREE from 'three';
+import { GamepadGameBridge } from './engine/GamepadGameBridge.js';
+import { cameraNearPlaneRadius, resolveThirdPersonCamera } from './engine/CameraCollision.js';
 import { EngineRenderer } from './engine/Renderer.js';
 import { AudioEngine } from './engine/AudioEngine.js';
 import { ParticleSystem } from './engine/ParticleSystem.js';
 import { GoreEngine } from './engine/GoreEngine.js';
 import { OrbitalStrikeManager } from './engine/OrbitalStrike.js';
 import { StoryCampaignManager } from './engine/StoryCampaign.js';
+import { CombatEvents } from './engine/CombatEvents.js';
+import { CombatDirector } from './engine/CombatDirector.js';
+import { createHunterStealthAttack } from './engine/HunterStealth.js';
+import { BattlefieldMission } from './engine/BattlefieldMission.js';
+import { BattleCampaignRecord, CLAN_CAMPAIGN_ARC_ID } from './battlefield/BattleCampaignRecord.js';
+import { BattleSimulation } from './battlefield/BattleSimulation.js';
+import { combatRewardIdentity } from './battlefield/OperationRewards.js';
+import { snapshotOperationPlayer, restoreOperationPlayer } from './battlefield/OperationPlayerState.js';
+import { disposeBattleOperation } from './battlefield/BattleOperationLifecycle.js';
+import { BattleActorBridge } from './battlefield/BattleActorBridge.js';
+import { prepareBossEncounter } from './data/BossEncounterValidation.js';
+import { sectorSupportPlan, hunterEncounterProvenance } from './data/LevelEncounterPolicy.js';
+import { AllyRescueSystem } from './battlefield/AllyRescueSystem.js';
+import { BossPhasePressure } from './battlefield/BossPhasePressure.js';
+import { CompanionLoadouts, COMPANION_KITS } from './battlefield/CompanionLoadouts.js';
+import { HIVE_CONFLICT_ID } from './battlefield/HiveConflictScenario.js';
+import { OperationTransport } from './entities/OperationTransport.js';
+import { APCMarineService } from './battlefield/APCMarineService.js';
+import { validateM577CarrierCheckpoint } from './battlefield/APCSectionManifest.js';
+import { physicalOperationRouteAvailable } from './battlefield/PhysicalRouteAvailability.js';
+import { operationAlertState, captureBattleDebrief, hiveCoordinationFeedback } from './ui/OperationPanel.js';
+import { OperationObjectives } from './battlefield/OperationObjectives.js';
+import { createOperationScene } from './battlefield/OperationScene.js';
+import { OperationBriefing } from './ui/OperationBriefing.js';
+import { OperationWorld } from './battlefield/OperationWorld.js';
+import { HiveNodeWorld } from './battlefield/HiveNodeWorld.js';
+import { BattleCrowdProjection } from './graphics/BattleCrowdProjection.js';
+import { mountSourceCatalogue } from './ui/SourceCatalogue.js';
+import { CommandMap, battleCommandFeedback } from './ui/CommandMap.js';
+import { OperationPanel } from './ui/OperationPanel.js';
+import { getBattlefieldMapVariant } from './data/BattlefieldMapVariants.js';
+import { PLAYABLE_OPERATIONS as BATTLE_OPERATIONS, getBattleOperationConfig, getBattleOperationScene } from './data/BattleCatalog.js';
 import { WeatherSystem } from './engine/WeatherSystem.js';
 import { UIManager } from './ui/UIManager.js';
 import { ForgeShop } from './ui/ForgeShop.js';
@@ -32,6 +66,20 @@ import { SentryGun } from './entities/SentryGun.js';
 import { FalconDrone } from './entities/FalconDrone.js';
 import { EnvironmentManager } from './entities/Environment.js';
 import { CHARACTERS_DATA } from './data/charactersData.js';
+import { LEVELS_DATA } from './data/levelsData.js';
+import { disposeObject } from './engine/SceneResources.js';
+import { createPreyArrowMesh } from './graphics/PreyEquipment.js';
+import { operationSceneOptions, createMissionSupportContext } from './engine/MissionRuntimeContext.js';
+import { traceSingleProjectileImpact } from './engine/SingleProjectileImpact.js';
+import { canAccessLegacyAir, canHitLegacyAirTarget } from './engine/LegacyAirstrikePolicy.js';
+import { hunterMusouProfile, musouCovers } from './data/hunterMusouProfiles.js';
+import { humanWeaponCacheCount, emptyHumanWeaponAmmo, openHumanWeaponCache } from './engine/HumanWeaponCaches.js';
+import { MouseCamera } from './engine/MouseCamera.js';
+import { ASCENSION_WORLDS, ascensionWorld, ascensionLevel, ascensionToolGates, ritekitGates } from './data/AscensionWorlds.js';
+import { AscensionProgress } from './data/AscensionProgress.js';
+import { FaunaEncounter } from './engine/FaunaEncounter.js';
+import { AscensionShipHub, SHIP_LEVEL } from './engine/AscensionShipHub.js';
+import { CloudSaves } from './engine/CloudSaves.js';
 
 class GameApp {
   constructor() {
@@ -41,25 +89,43 @@ class GameApp {
     this.particles = new ParticleSystem(this.renderer.scene);
     this.gore = new GoreEngine(this.renderer.scene);
     this.orbital = new OrbitalStrikeManager(this.renderer.scene, this.audio);
-    this.ui = new UIManager();
-    this.campaign = new StoryCampaignManager(this.ui);
     this.weather = new WeatherSystem(this.renderer.scene);
     this.forge = new ForgeShop(this.audio);
+    this.ui = new UIManager();
+    this.campaign = new StoryCampaignManager(this.ui);
     this.photoMode = new PhotoMode(this.renderer, this.renderer.scene, this.renderer.camera);
     this.citadel = new YautjaCitadel(this.renderer.scene);
     this.codex = new LoreCodexManager();
     this.env = new EnvironmentManager(this.renderer.scene);
+    this.env.game = this;
     this.horde = new XenomorphHorde(this.renderer.scene, this.audio, this.gore);
+    this.horde.environment = this.env;
     this.bosses = new BossManager(this.renderer.scene, this.audio);
     this.allies = new YautjaAlliesManager(this.renderer.scene, this.audio);
     this.skimmer = new YautjaSkimmer(this.renderer.scene, this.audio);
     this.marines = new ColonialMarinesManager(this.renderer.scene, this.audio);
     this.synthetics = new SyntheticsManager(this.renderer.scene, this.audio, this.particles);
     this.badBlood = new BadBloodManager(this.renderer.scene, this.audio);
+    this.combatDirector = new CombatDirector({ graceSeconds: 8 });
+    for (const manager of [this.horde, this.bosses, this.marines, this.synthetics, this.badBlood, this.allies]) {
+      manager.combatDirector = this.combatDirector;
+      manager.environment = this.env;
+    }
+    this.combatEvents = new CombatEvents({ runId: 'idle' });
+    this._processedHitRecords = new WeakSet();
+    this._registeredDeathHits = new Set();
+    this._rewardedDeaths = new Set();
+    this.combatEvents.subscribe(event => this.onCombatDeath(event));
+    for (const manager of [this.horde, this.bosses, this.marines, this.synthetics, this.badBlood, this.allies]) manager.combatEvents = this.combatEvents;
+    for (const manager of [this.horde, this.bosses, this.marines, this.synthetics, this.badBlood, this.allies]) manager.centralDeathScoring = true;
+    this.battlefield = null;
+    this.battlefieldProgression = null;
     this.hellHounds = new HellHoundsManager(this.renderer.scene, this.audio);
     this.dropPod = new DropPodEntrance(this.renderer.scene, this.audio, this.particles);
     this.dropship = new CheyenneDropship(this.renderer.scene, this.audio, this.particles);
     this.apc = new APCVehicle(this.renderer.scene, this.audio, this.particles);
+    this.horde.supportTargetsProvider = () => this.getSupportCombatants();
+    this.synthetics.supportTargetsProvider = () => this.getSupportCombatants();
     this.sentryGun = new SentryGun(this.renderer.scene, this.audio, this.particles);
     this.falconDrone = new FalconDrone(this.renderer.scene, this.audio, this.particles);
     this.pathogenPools = [];
@@ -67,8 +133,10 @@ class GameApp {
     this.holoDecoys = [];
 
     this.weaponWheel = new WeaponWheel((weaponId) => {
-      this.ui.showAnnouncement(`ARME SÉLECTIONNÉE: ${weaponId.toUpperCase()}`);
-    });
+      const owner = this.weaponWheel.inputOwner ?? this.player;
+      if (owner?.selectWeapon?.(weaponId)) this.ui.showAnnouncement(`ARME SÉLECTIONNÉE : ${weaponId.toUpperCase()}`);
+      else this.ui.showAnnouncement(owner?.getArsenalState?.().lastRefusal?.message ?? 'Cette arme ne fait pas partie de cet arsenal.');
+    }, () => this.player);
 
     this.loadoutScreen = new LoadoutScreen((loadoutConfig) => {
       this.activeLoadout = loadoutConfig;
@@ -82,6 +150,30 @@ class GameApp {
     this.isCoOp = false;
     this.activeLoadout = null;
     this.isFirstPerson = false;
+    this.missionMode = 'hunt';
+    this.operationId = 'pilot';
+    this.operationDifficulty='standard';
+    this.operationMapSeed=0;
+    let campaignStorage = null; try { campaignStorage=globalThis.localStorage; } catch {}
+    this.battleCampaign = new BattleCampaignRecord({storage:campaignStorage});
+    this.campaignArcId = null; this.campaignRunId = null;
+    this.battleSimulation = null;
+    this.battleBridge = null;
+    this.apcMarineService = null;
+    this.operationObjectives = null;
+    this.operationWorld = null;
+    this.hiveNodeWorld = null;
+    this.commandMap = new CommandMap({preferences:()=>this.ui.presentationPreferences.get(),onClose:()=>this.closeTacticalModal('command-map-modal'),onCommand:command=>this.dispatchBattleCommand(command)});
+    this.operationBriefing = new OperationBriefing(document.getElementById('loadout-prep-screen'),{preferences:()=>this.ui.presentationPreferences?.get?.()??{}});
+    this.operationPanel = new OperationPanel({ onOrder: (id, order) => this.issueBattleOrder(id, order), onAction: (type, frontId) => this.battleAction(type, frontId), onCheckpoint: () => this.saveOperation(), onMap: () => this.openCommandMap() });
+    this.pendingChapter = null;
+    this.bossSpawned = false;
+    this.missionTasks = [];
+    this.missionEffects = [];
+    this._nukeSequence = 0;
+    this.missionRun = null;
+    this.rewardSessionId = null; this._suspendOperation = false;
+    this._supportTransaction = 0;
 
     this.projectiles = [];
     this.isPlaying = false;
@@ -110,17 +202,342 @@ class GameApp {
     this.bulletTimeTimer = 0;
     // v51.0 Tactical Weapon Wheel Time Dilation
     this.isTimeDilated = false;
-    this.isEndlessMode = true; // Endless Musou Mode "Survival of the Worthy" enabled by default with toggle [Shift+M]
+    this.isEndlessMode = false; // Finite missions are the default; survival must be selected before deployment.
 
     this.keys = {};
+    this.gamepadBridge = new GamepadGameBridge(this);
+    // Optional mouse orbit (HW-DEC-94): off by default, never in shared-keyboard co-op.
+    let cameraStorage = null; try { cameraStorage = globalThis.localStorage; } catch {}
+    this.mouseCamera = new MouseCamera({ storage: cameraStorage });
+    this.ascensionProgress = new AscensionProgress(cameraStorage);
+    // Account saves (HW-DEC-109): the existing Supabase accounts; progress is merged, never overwritten.
+    this.cloud = new CloudSaves({ storage: cameraStorage });
+    const cloudStatus = text => { const node = document.getElementById('cloud-status'); if (node) node.textContent = text;
+      document.getElementById('btn-cloud-signin')?.classList.toggle('hidden', this.cloud.signedIn); document.getElementById('btn-cloud-signout')?.classList.toggle('hidden', !this.cloud.signedIn); };
+    this.syncAscensionToCloud = async () => {
+      if (!this.cloud.signedIn) return false;
+      try { const remote = await this.cloud.pull('hive_warriors_ascension'); if (remote) this.ascensionProgress.merge(remote);
+        await this.cloud.push('hive_warriors_ascension', this.ascensionProgress.snapshot()); cloudStatus(`Connecté (${this.cloud.email}) : progression synchronisée.`); return true; }
+      catch (error) { cloudStatus(`Connecté (${this.cloud.email}) : ${error.message}`); return false; }
+    };
+    document.getElementById('btn-cloud-signin')?.addEventListener('click', async () => {
+      try { await this.cloud.signIn(document.getElementById('cloud-email').value.trim(), document.getElementById('cloud-password').value); document.getElementById('cloud-password').value = ''; await this.syncAscensionToCloud(); }
+      catch (error) { cloudStatus(error.message); }
+    });
+    document.getElementById('btn-cloud-signout')?.addEventListener('click', () => { this.cloud.signOut(); cloudStatus('Non connecté : la progression reste dans ce navigateur.'); });
+    if (this.cloud.signedIn) { cloudStatus(`Connecté (${this.cloud.email})`); this.syncAscensionToCloud(); } else cloudStatus('Non connecté : la progression reste dans ce navigateur.');
+    const mouseCameraToggle = document.getElementById('setting-mouse-camera');
+    if (mouseCameraToggle) { mouseCameraToggle.checked = this.mouseCamera.enabled; mouseCameraToggle.addEventListener('change', () => { this.mouseCamera.setEnabled(mouseCameraToggle.checked); if (!mouseCameraToggle.checked && document.pointerLockElement) document.exitPointerLock?.(); }); }
+    const canvas = this.renderer.renderer?.domElement;
+    canvas?.addEventListener('mousedown', () => { if (this.mouseCamera.active(this.isCoOp) && this.isPlaying && !this.isPaused && document.pointerLockElement !== canvas) canvas.requestPointerLock?.(); });
+    document.addEventListener('mousemove', event => { if (document.pointerLockElement === canvas) this.mouseCamera.onMouseMove(event.movementX); });
     this.setupEventListeners();
     this.lastTime = performance.now();
     this.animate();
   }
 
+  setupOperationSelection() {
+    mountSourceCatalogue(this.ui.levelSelectMenu);
+    const mode = document.getElementById('mission-mode-select');
+    const select = document.getElementById('operation-select');
+    const casteOption = document.getElementById('extinction-variant-enabled');
+    const casteUpgraded = document.getElementById('extinction-variant-upgraded');
+    const hiveOption=document.createElement('option');hiveOption.value=HIVE_CONFLICT_ID;hiveOption.textContent='Deux ruches rivales — scénario original';select.append(hiveOption);
+    for (const operation of BATTLE_OPERATIONS) {
+      const option = document.createElement('option'); option.value = operation.id;
+      option.textContent = `${operation.id} · ${operation.title}${operation.adaptedFrom ? ` — adaptation de ${operation.adaptedFrom}` : ''}${operation.requiresHumanController ? ' — contrôleur humain indisponible' : ''}`;
+      option.disabled = operation.requiresHumanController; select.append(option);
+    }
+    const update = () => {
+      document.getElementById('operation-select-label').classList.toggle('hidden', mode.value !== 'fronts');
+      document.getElementById('operation-difficulty-label').classList.toggle('hidden',mode.value!=='fronts');
+      document.getElementById('operation-layout-label').classList.toggle('hidden',mode.value!=='fronts');
+      const casteEligible=mode.value==='fronts'&&select.value==='AFF-27';
+      document.getElementById('extinction-variant-label').classList.toggle('hidden',!casteEligible);
+      casteOption.disabled=!casteEligible;
+      if(!casteEligible)casteOption.checked=false;
+      const upgradeEligible = casteEligible && casteOption.checked;
+      document.getElementById('extinction-upgrade-label').classList.toggle('hidden', !upgradeEligible);
+      casteUpgraded.disabled = !upgradeEligible;
+      if (!upgradeEligible) casteUpgraded.checked = false;
+      const arcEligible=mode.value==='fronts'&&/^AFF-0[1-5]$/.test(select.value);
+      document.getElementById('campaign-arc-label').classList.toggle('hidden',!arcEligible);
+      document.getElementById('campaign-arc-enabled').disabled=!arcEligible;
+      if(!arcEligible)document.getElementById('campaign-arc-enabled').checked=false;
+      const scene = mode.value === 'fronts' && BATTLE_OPERATIONS.some(operation=>operation.id===select.value) ? getBattleOperationScene(select.value) : null;
+      // Ascension (spec 002): the world chooses its own location; only finished worlds and the next one are open.
+      const worldSelect = document.getElementById('ascension-world-select'), ascension = mode.value === 'ascension';
+      document.getElementById('ascension-world-label').classList.toggle('hidden', !ascension);
+      if (ascension && worldSelect) {
+        const open = this.ascensionProgress.unlockedWorlds().map(world => world.id), previous = worldSelect.value;
+        worldSelect.replaceChildren(...ASCENSION_WORLDS.map(world => { const option = document.createElement('option'); option.value = world.id;
+          option.textContent = `${world.order}. ${world.title} — ${world.prey.name}${this.ascensionProgress.state.completed.includes(world.id) ? ' (chassé)' : ''}`; option.disabled = !open.includes(world.id); return option; }));
+        worldSelect.value = open.includes(previous) ? previous : open.at(-1);
+      }
+      const worldLevel = ascension ? ascensionLevel(worldSelect?.value, LEVELS_DATA) : null;
+      this.ui.setOperationLevel(scene ? LEVELS_DATA.find(level => level.id === scene.levelId) : worldLevel ?? null);
+      document.getElementById('operation-provenance').textContent = scene ? `${scene.mapName} : scène adaptée au terrain ${scene.levelId}. Objectifs originaux ; géographie 1:1 non vérifiée.` : mode.value === 'fronts' ? 'Trois fronts reliés par des corridors et des contournements. Population finie ; positions lointaines signalées par rapports.' : mode.value === 'survival' ? 'Survie sans victoire finale. Les vagues continuent jusqu’à la défaite ou au retour au menu.' : 'Chasse finie : six secteurs, objectifs locaux, portes et boss final.';
+    };
+    mode.addEventListener('change', update); select.addEventListener('change', update); document.getElementById('ascension-world-select')?.addEventListener('change', update); casteOption.addEventListener('change', update); update();
+    document.getElementById('btn-reset-campaign-arc').addEventListener('click',()=>{this.battleCampaign.resetArc(CLAN_CAMPAIGN_ARC_ID);this.updateCampaignDebrief();});
+    this.updateCampaignDebrief();
+    try { document.getElementById('btn-resume-operation').classList.toggle('hidden', !localStorage.getItem('yautja-operation-checkpoint-v1')); } catch {}
+    document.getElementById('btn-resume-operation').addEventListener('click', () => {
+      try {
+        const saved=JSON.parse(localStorage.getItem('yautja-operation-checkpoint-v1'));
+        if(saved?.version!==1 || !LEVELS_DATA.some(level=>level.id===saved.levelId)) throw new Error('invalid');
+        this.missionMode='fronts';this.operationId=saved.operationId;this.isCoOp=saved.players===2;
+        this.renderer.setSplitScreen(this.isCoOp);this.ui.selectedLevel=LEVELS_DATA.find(level=>level.id===saved.levelId);
+        this.ui.selectedChar=CHARACTERS_DATA.find(character=>character.id===saved.characterId)??CHARACTERS_DATA[0];
+        this.activeLoadout=saved.loadout;document.getElementById('fidelity-mode-select').value=saved.loadout?.fidelityMode??'adapted';this.startMission({resumeOperation:saved});
+      } catch { this.isPlaying=false;this.isPaused=false;this.clearMissionState();this.ui.showScreen(this.ui.levelSelectMenu);this.ui.showAnnouncement('Sauvegarde indisponible ou incompatible. Une nouvelle opération peut être lancée.'); }
+    });
+  }
+
+  startBattleOperation(saved = null) {
+    for (const gate of this.env.battlefieldLayout.gates) this.env.openGate(gate.id);
+    this.operationDeploymentPlan=saved?.scene?.deploymentPlan ??
+      (saved ? 'historical-fallback' : (this.operationDeploymentPlan ?? 'authored'));
+    const sceneOptions={operationId:this.operationId,level:this.ui.selectedLevel,players:this.isCoOp?2:1,layout:this.env.battlefieldLayout,mapSeed:this.operationMapSeed,difficultyId:this.operationDifficulty,
+      deploymentPlan:this.operationDeploymentPlan,
+      extinctionVariant:saved?saved.scene?.extinctionVariant??'none':this.extinctionVariant??'none'};
+    let {config}=createOperationScene(sceneOptions);
+    this.campaignArcId=saved?.campaignArcId??(document.getElementById('campaign-arc-enabled').checked&&/^AFF-0[1-5]$/.test(this.operationId)?CLAN_CAMPAIGN_ARC_ID:null);
+    this.campaignRunId=saved?.campaignRunId??this.missionRun;
+    this.rewardSessionId=this.campaignRunId;
+    const unsupported=BattleActorBridge.unsupportedProfiles(config);
+    if(unsupported.length) throw new Error(`Profils sans acteur de combat : ${unsupported.join(', ')}`);
+    const bridge=this.battleBridge=new BattleActorBridge(this);
+    const callbacks={canObserve:(value,observer)=>this.env.hasLineOfSight(new THREE.Vector3(observer.position[0],(this.env.getElevationAt(observer.position[0],observer.position[1])??0)+1.5,observer.position[1]),new THREE.Vector3(value.position[0],(this.env.getElevationAt(value.position[0],value.position[1])??0)+1.5,value.position[1])),history:this.battleCampaign.historyFor(config,{arcId:this.campaignArcId}),spawnGroup:(group,units)=>bridge.spawnGroup(group,units),despawnGroup:(group,units)=>bridge.despawnGroup(group,units),healBattleUnit:(id,hp)=>{const actor=bridge.actors.get(id)?.actor;if(actor?.hp>0)actor.hp=Math.min(actor.maxHp??hp,hp);},announce:event=>this.handleBattleAnnouncement(event)};
+    try {
+      this.battleSimulation=saved?BattleSimulation.fromState(config,saved.simulation,callbacks):new BattleSimulation(config,callbacks);
+    } catch (error) {
+      // Old checkpoints were signed against the generic roster. Never rewrite
+      // their identities, wounds or group types to force a new source preset.
+      if (!saved || !/^AFF-/.test(config.id) || !/save does not match this operation or has an invalid clock/.test(error.message)) throw error;
+      // Checkpoints may predate the source roster, the corridor door binding (REC-012) the Extinction catalogue links (CTRL-082) or the LV-742 brood (HW-DEC-90).
+      let resumed=null,lastError=error;
+      const flags=['legacyRoster','legacyRouteGates','legacySourceLinks','legacyBrood'];
+      for(let mask=1;mask<1<<flags.length;mask++){const legacy=Object.fromEntries(flags.filter((_,bit)=>mask&1<<bit).map(flag=>[flag,true]));
+        const compatible=createOperationScene({...sceneOptions,...legacy}).config;
+        try{resumed=BattleSimulation.fromState(compatible,saved.simulation,callbacks);config=compatible;break;}catch(retry){lastError=retry;}
+      }
+      if(!resumed)throw lastError;
+      this.battleSimulation=resumed;
+    }
+    this.battleBridge.bind(this.battleSimulation);
+    this.apcMarineService=new APCMarineService(this.apc,this.battleSimulation,this.env,{
+      actors:()=>[...this.battleBridge.actors.values(),this.player,this.player2].filter(Boolean),
+      feedback:message=>this.operationPanel.feedback(message),
+      onMove:()=>{
+        if(this._apcNavigationCollider){
+          // The collider is updated immediately. Real path queries detect
+          // the changed position/yaw and invalidate their own cached graph;
+          // clearing all caches after every 0.6u wheel step thrashes 1000-
+          // fighter fronts while providing no additional collision safety.
+          this.apc.syncNavigationCollider(this._apcNavigationCollider);
+        }
+      }
+    });
+    // Four tiny instanced visual pools reuse EXISTING distant soldier IDs.
+    // They never participate in combat, awards, spawning or save contracts.
+    this.battleCrowd = new BattleCrowdProjection(this.renderer.scene,this.env,this.battleSimulation);
+    if (config.id === 'AFF-27') {
+      this.hiveNodeWorld = new HiveNodeWorld(this.renderer.scene, this.env, this.battleSimulation);
+      this.hiveNodeWorld.update();
+    }
+    this.allyRescue=new AllyRescueSystem({simulation:this.battleSimulation,actors:bridge.actors,players:()=>[this.player,this.player2].filter(Boolean),environment:this.env});
+    this.allyRescue.bindManager(this.allies);
+    if(saved?.rescue)this.allyRescue.restore(saved.rescue);
+    this.bossPhasePressure=new BossPhasePressure({simulation:this.battleSimulation,getBoss:()=>this.bosses.activeBoss,announce:event=>this.operationPanel.feedback(event.label)});
+    if(saved?.bossPressure)this.bossPhasePressure.restore(saved.bossPressure);
+    this.battleSimulation.routeAvailabilityProvider=(route, options)=>physicalOperationRouteAvailable(this.env,route,options);
+    if(saved?.tacticalWorld)this.env.restoreTacticalWorld?.(saved.tacticalWorld);
+    this.companionLoadouts=new CompanionLoadouts({simulation:this.battleSimulation,actors:bridge.actors,players:()=>[this.player,this.player2].filter(Boolean),environment:this.env});
+    if(saved?.companions)this.companionLoadouts.restore(saved.companions);
+    this.operationTransport=new OperationTransport(this.env,this.skimmer,this.battleSimulation,{hostilesProvider:()=>[...bridge.actors.values()].map(entry=>entry.actor),feedback:message=>this.operationPanel.feedback(message)});
+    this._seenStrategicAlerts=new Set();
+    for(const route of this.battleSimulation.getHUDState().routes)this.syncOperationRoute(route.id,route.open,route);
+    if(config.operationObjectives) {
+      this.operationObjectives=new OperationObjectives(config,this.battleSimulation,{onFeedback:message=>this.operationPanel.feedback(message),onEvent:event=>{this.operationPanel.feedback(event.label??'Objectif mis à jour.');if(event.type==='route_opened')this.syncOperationRoute(event.routeId,true,event);},resolvePosition:(point,navigation)=>this.resolveOperationMovement(point,navigation)});
+      if(saved?.objectives)this.operationObjectives.restore(saved.objectives);
+      this.operationWorld=new OperationWorld(this.renderer.scene,this.env,this.operationObjectives,config.playerFaction,config.factions.find(faction=>faction.id!==config.playerFaction)?.id);
+    }
+    this.totalWaves=3;
+  }
+
+  resolveOperationMovement(point, navigation = {}) {
+    const position = new THREE.Vector3(point[0], 0, point[1]);
+    if (navigation.origin && navigation.target && Number.isFinite(navigation.step)) {
+      const origin = new THREE.Vector3(navigation.origin[0], 0, navigation.origin[1]);
+      const target = new THREE.Vector3(navigation.target[0], 0, navigation.target[1]);
+      const waypoint = this.env.getNavigationWaypoint?.(origin, target, .6) ?? target;
+      const direction = waypoint.clone().sub(origin).setY(0);
+      const distance = Math.min(direction.length(), navigation.step);
+      position.copy(origin).addScaledVector(direction.normalize(), distance);
+      this.env.resolveMovement(position, .6);
+    } else this.env.resolveMovement(position, .6);
+    return [position.x, position.z];
+  }
+
+  updateBattleOperation(delta) {
+    if(!this.battleSimulation)return;
+    const players=[this.player,this.player2].filter(Boolean).map((player,index)=>({id:index?'player2':'player1',position:[player.position.x,player.position.z],hp:player.hp}));
+    this.battleBridge.sync();this.battleSimulation.update(delta,{players,paused:false});
+    this.apcMarineService?.update(delta);
+    this.battleCrowd?.update(delta,[this.player,this.player2].filter(Boolean));
+    this.hiveNodeWorld?.update();
+    this.allyRescue?.update(delta);
+    this.bossPhasePressure?.update(delta);
+    this.companionLoadouts?.update(delta);
+    this.operationObjectives?.update(delta,players);
+    const state=this.battleSimulation.getHUDState(), objectives=this.operationObjectives?.getHUDState();
+    state.relationships=Object.fromEntries(this.battleSimulation.config.factions.map(faction=>[faction.id,this.battleSimulation.relationship(state.playerFaction,faction.id)]));
+    state.apcTransport=this.apcMarineService?.getHUDState()??null;
+    state.phaseThreats=this.bossPhasePressure?.getHUDState().threats??[];
+    state.rescue=this.allyRescue?.getState();
+    const rescuePrompts=[this.player,this.player2].map((player,index)=>{const prompt=player&&this.allyRescue?.getPrompt(player);return prompt?`${this.isCoOp?`J${index+1} : `:''}${prompt.label.replace('[E]',this.gamepadBridge.inputMode==='gamepad'?'[X]':index?'[ENTRÉE]':'[E]')}`:null;}).filter(Boolean),rescueNode=document.getElementById('ally-rescue-prompt');
+    if(rescueNode){rescueNode.classList.toggle('hidden',!rescuePrompts.length);rescueNode.textContent=rescuePrompts.join(' · ');}
+    for(const alert of state.alerts??[])if(alert.priority>=3&&!this._seenStrategicAlerts.has(alert.id)){this._seenStrategicAlerts.add(alert.id);this.ui.showAnnouncement(operationAlertState(state,objectives,players).text);break;}
+    this.operationWorld?.update(objectives);this.operationPanel.update(state,objectives,players);this.ui.updateOperationHUD(state,this.env.battlefieldLayout,players,objectives);
+    if(state.result){this.endGame(state.result.outcome==='victory');return;}
+  }
+
+  observeBattleCampaign() {
+    if(this.battleSimulation&&this.campaignArcId)this.battleCampaign.observe(this.battleSimulation.config,this.battleSimulation,{arcId:this.campaignArcId,runId:this.campaignRunId});
+  }
+
+  recordBattleOutcome(result) {
+    if(!this.battleSimulation||!this.campaignArcId)return;
+    this.battleCampaign.recordOutcome(this.battleSimulation.config,this.battleSimulation,result,{arcId:this.campaignArcId,runId:this.campaignRunId,characterId:this.ui.selectedChar.id,narrative:this.operationObjectives});
+    this.updateCampaignDebrief();
+  }
+
+  updateCampaignDebrief() {
+    const debrief=this.battleCampaign.getDebrief(CLAN_CAMPAIGN_ARC_ID);
+    const dead=debrief.individuals.filter(individual=>individual.state==='dead').length;
+    document.getElementById('campaign-arc-debrief').textContent=debrief.recordedRuns?`Arc original : ${debrief.recordedRuns} opérations enregistrées · ${dead} chefs vaincus restent absents · ${debrief.fronts.length} états de fronts conservés. ${debrief.social?.label??''} · statut narratif inchangé. Les autres opérations restent indépendantes.`:'Les opérations sont indépendantes. Cet arc optionnel conserve les chefs vaincus et les résultats entre AFF-01 et AFF-05.';
+  }
+
+  syncOperationRoute(routeId, open, details = {}) {
+    const route = this.battleSimulation?.getHUDState().routes.find(item => item.id === routeId);
+    const gateIds = details.physicalGateIds ?? route?.physicalGateIds;
+    if (gateIds?.length) for (const gateId of gateIds) this.env.setGateOpen?.(gateId, open);
+    else this.env.setOperationRouteOpen?.(details.physicalRouteId ?? routeId?.replace(/^bound-/, ''), open);
+  }
+
+  handleBattleAnnouncement(event) {
+    if(event.type==='route_changed')this.syncOperationRoute(event.routeId,event.open);
+    if(event.type==='unit_died')this.observeBattleCampaign();
+    if(event.type==='hive_coordination_disrupted') {
+      const message=hiveCoordinationFeedback(event,[...(this.battleSimulation?.groups.values()??[])],[...(this.battleSimulation?.fronts.values()??[])]);
+      this.operationPanel.feedback(message);this.ui.showAnnouncement(message);
+    }
+
+  }
+
+  openCommandMap() {
+    if(!this.battleSimulation||!this.isPlaying||this.dropPod.isActive)return;
+    const players=[this.player,this.player2].filter(Boolean).map((player,index)=>({id:index?'player2':'player1',position:[player.position.x,player.position.z],hp:player.hp}));
+    this.commandMap.update(this.battleSimulation.getHUDState(),this.env.battlefieldLayout,players,this.isCoOp,this.commandMapExtras());
+    this.toggleTacticalModal('command-map-modal');
+  }
+
+  commandMapExtras() {
+    const state=this.battleSimulation.getHUDState();
+    return{relationships:Object.fromEntries(this.battleSimulation.config.factions.map(faction=>[faction.id,this.battleSimulation.relationship(state.playerFaction,faction.id)])),units:this.battleSimulation.getActiveUnits().filter(unit=>unit.factionId===state.playerFaction&&!unit.uniqueId).map((unit,index)=>({id:unit.id,label:`Combattant ${index+1} · ${this.battleSimulation.getGroup(unit.groupId)?.label??''}`})),hostileGroups:state.groups.filter(group=>this.battleSimulation.areHostile(state.playerFaction,group.factionId)),companions:this.companionLoadouts?.getState(),phaseThreats:this.bossPhasePressure?.getHUDState().threats??[],difficultyLabel:this.battleSimulation.config.difficulty?.label??'Standard',mapSeed:this.operationMapSeed};
+  }
+
+  dispatchBattleCommand(command) {
+    if(!this.battleSimulation)return{accepted:false};
+    const{kind,groupIds,frontId,issuer,type}=command;let answer;
+    if(kind==='formation'){const answers=groupIds.map(id=>this.battleSimulation.setFormation(id,command.formation,issuer));answer=answers.find(item=>!item.accepted)??answers[0]??{accepted:false};}
+    else if(kind==='companionEquip'){const kit=COMPANION_KITS[command.kitId];answer=kit?this.companionLoadouts.register(command.unitId,{role:kit.role,allowedRoles:['medic','scout','engineer','support']}):{accepted:false};if(answer.accepted)answer=this.companionLoadouts.equip(command.unitId,command.kitId);}
+    else if(kind==='companionAbility')answer=this.companionLoadouts.queueOrder(command.unitId,{type:command.ability,targetPlayerId:command.targetPlayerId,targetGroupId:command.targetGroupId,frontId});
+    else if(kind==='transport')answer=this.operationTransport.requestTravel(issuer==='player2'?this.player2:this.player,frontId);
+    else if(kind==='delegate')answer=this.battleSimulation.delegateFront(groupIds[0],frontId,issuer);
+    else if(kind==='reinforce')answer=this.battleSimulation.requestReinforcements(this.battleSimulation.config.playerFaction,frontId);
+    else if(kind==='tactic')answer=this.battleSimulation.issueTactic(groupIds,{type,frontId,issuer});
+    else { const answers=groupIds.map(id=>this.issueBattleOrder(id,{type,frontId,issuer}));answer=answers.find(result=>!result?.accepted)??answers[0]??{accepted:false}; }
+    this.commandMap.update(this.battleSimulation.getHUDState(),this.env.battlefieldLayout,[this.player,this.player2].filter(Boolean).map(player=>({position:[player.position.x,player.position.z],hp:player.hp})),this.isCoOp,this.commandMapExtras());
+    return answer;
+  }
+
+  issueBattleOrder(groupId, order) {
+    if(!this.battleSimulation||!this.isPlaying||this.dropPod.isActive)return;
+    const answer=this.battleSimulation.issueOrder(groupId,{...order,issuer:order.issuer??'player1'});
+    this.operationPanel.feedback(battleCommandFeedback(answer));return answer;
+  }
+
+  battleAction(type, frontId) {
+    if(!this.battleSimulation||this.dropPod.isActive)return;
+    // A co-op Marine escort must be usable by either *living* hunter. Never
+    // issue a field order using a defeated player or P1's remote position
+    // when P2 is the only hunter physically near the tactical objective.
+    const hunters=[this.player,this.player2].map((player,index)=>({
+      player,id:index?'player2':'player1',index
+    })).filter(({player})=>player?.hp>0&&player.position?.isVector3);
+    if(!hunters.length)return;
+    if(['apc-board','apc-disembark','apc-travel','apc-stop'].includes(type)){
+      const service=this.apcMarineService,owner=service?.ownerFaction;
+      const radioStop=type==='apc-stop',apcPosition=this.apc?.mesh?.position;
+      const nearby=!!apcPosition&&hunters.some(({player})=>
+        player.position.distanceTo(apcPosition)<=22);
+      const authorized=service?.available&&(radioStop||nearby)&&
+        (owner===this.battleSimulation.config.playerFaction||
+          this.battleSimulation.relationship(owner,this.battleSimulation.config.playerFaction)==='allied');
+      if(!authorized){this.operationPanel.feedback('APC USCM : assistance inaccessible ou trop éloignée.');return;}
+      const answer=type==='apc-board'?service.boardNearest():
+        type==='apc-disembark'?service.disembark():
+        type==='apc-travel'?service.requestTravel(frontId):service.stopTravel();
+      if(!answer.accepted)this.operationPanel.feedback('APC USCM : '+answer.reason);
+      return;
+    }
+    const position=this.battleSimulation.fronts?.get(frontId)?.position;
+    const candidates=hunters.slice();
+    if(Array.isArray(position)&&position.length===2&&position.every(Number.isFinite))
+      candidates.sort((a,b)=>{
+        const distance=entry=>(entry.player.position.x-position[0])**2+
+          (entry.player.position.z-position[1])**2;
+        return distance(a)-distance(b)||a.index-b.index;
+      });
+    const hunter=candidates[0];
+    const result=this.battleSimulation.interact({id:hunter.id,
+      position:[hunter.player.position.x,hunter.player.position.z],
+      hp:hunter.player.hp},{type,frontId});
+    this.operationPanel.feedback(result.accepted?'Action effectuée sur le front.':result.reason??'Approchez-vous du front.');
+  }
+
+  clearOperationCheckpoint() {
+    try { const saved=JSON.parse(localStorage.getItem('yautja-operation-checkpoint-v1'));if(saved?.campaignRunId===this.campaignRunId){localStorage.removeItem('yautja-operation-checkpoint-v1');document.getElementById('btn-resume-operation').classList.add('hidden');} } catch {}
+  }
+
+  abandonOperation() {
+    if(!this.battleSimulation||!this.isPlaying)return;
+    this.recordBattleOutcome({outcome:'withdrawn',reason:'player_abandoned_operation'});this.clearOperationCheckpoint();
+    this._abandonOperation=true;this.returnToMenu();
+  }
+
+  saveOperation() {
+    if(!this.battleSimulation||!this.isPlaying||this.dropPod.isActive)return;
+    if(this.apcMarineService?.manifest&&!this.apcMarineService.validateCarrierPosition().accepted){
+      this.operationPanel.feedback('M577 : véhicule et section désynchronisés ; sauvegarde refusée.');
+      return;
+    }
+    this.battleBridge.sync();
+    const snapshot={version:1,score:this.score,sessionSkulls:this.sessionSkulls,sessionDefeats:this._sessionDefeats,campaignArcId:this.campaignArcId,campaignRunId:this.campaignRunId,levelId:this.ui.selectedLevel.id,operationId:this.operationId,players:this.isCoOp?2:1,characterId:this.ui.selectedChar.id,loadout:this.activeLoadout,scene:{mapSeed:this.operationMapSeed,difficultyId:this.operationDifficulty,
+      deploymentPlan:this.operationDeploymentPlan??'authored',extinctionVariant:this.extinctionVariant??'none'},simulation:this.battleSimulation.saveState(),objectives:this.operationObjectives?.serialize(),tacticalWorld:this.env.serializeTacticalWorld?.(),preyInteractions:this.env.serializePreyInteractions?.(),supports:{version:1,apc:this.apc.serialize(),cheyenne:this.dropship.serialize()},companions:this.companionLoadouts?.serialize(),rescue:this.allyRescue?.serialize(),bossPressure:this.bossPhasePressure?.serialize(),playerStates:[this.player,this.player2].filter(Boolean).map(snapshotOperationPlayer)};
+    try{localStorage.setItem('yautja-operation-checkpoint-v1',JSON.stringify(snapshot));this.operationPanel.feedback('Opération sauvegardée : identités, blessures, pertes et objectifs conservés.');document.getElementById('btn-resume-operation').classList.remove('hidden');}catch{this.operationPanel.feedback('Stockage indisponible : la partie reste active en mémoire.');}
+  }
+
   setupEventListeners() {
+    this.setupDeclarativeControls();
+    this.setupOperationSelection();
+
     document.getElementById('btn-start-game').addEventListener('click', () => {
       this.audio.init();
+      this.missionMode = 'hunt';
+      this.campaign.reset?.();
       this.isCoOp = false;
       this.renderer.setSplitScreen(false);
       this.citadel.hide();
@@ -129,23 +546,29 @@ class GameApp {
 
     document.getElementById('btn-open-citadel').addEventListener('click', () => {
       this.audio.init();
-      this.citadel.buildCitadelRoom(this.ui.trophyStats.skulls);
+      this.citadel.buildCitadelRoom(this.ui.trophyStats.skullsCollected);
       this.citadel.show();
+      this.renderer.requestRender();
       this.ui.showAnnouncement('🏰 CITADELLE YAUTJA: STATION DE POLISSAGE DES TROPHÉES AU LASER');
     });
 
     document.getElementById('btn-open-story').addEventListener('click', () => {
       this.audio.init();
+      this.missionMode = 'campaign';
+      this.operationBriefing.render(null);
       this.isCoOp = false;
       this.renderer.setSplitScreen(false);
       this.citadel.hide();
       const firstChapter = this.campaign.startCampaign();
+      this.selectChapterLevel(firstChapter);
       this.ui.showAnnouncement(firstChapter.title);
       this.ui.showScreen(document.getElementById('loadout-prep-screen'));
     });
 
     document.getElementById('btn-open-coop').addEventListener('click', () => {
       this.audio.init();
+      this.missionMode = 'hunt';
+      this.campaign.reset?.();
       this.isCoOp = true;
       this.renderer.setSplitScreen(true);
       this.citadel.hide();
@@ -161,10 +584,24 @@ class GameApp {
     });
 
     document.getElementById('btn-launch-mission').addEventListener('click', () => {
+      this.missionMode = document.getElementById('mission-mode-select').value;
+      this.operationId = document.getElementById('operation-select').value;
+      this.operationDifficulty=document.getElementById('operation-difficulty-select').value;
+      this.operationMapSeed=Number(document.getElementById('operation-layout-select').value);
+      this.extinctionVariant=this.missionMode==='fronts'&&this.operationId==='AFF-27'&&
+        document.getElementById('extinction-variant-enabled').checked?
+        (document.getElementById('extinction-variant-upgraded').checked?'carrier-ravager-enhanced':'carrier-ravager'):'none';
+      if(this.missionMode==='fronts'){const scene=createOperationScene({operationId:this.operationId,level:this.ui.selectedLevel,players:this.isCoOp?2:1,mapSeed:this.operationMapSeed,difficultyId:this.operationDifficulty,
+        extinctionVariant:this.extinctionVariant});scene.characterBriefing=this.battleCampaign.getCharacterBriefing(scene.config,{arcId:document.getElementById('campaign-arc-enabled').checked&&/^AFF-0[1-5]$/.test(this.operationId)?CLAN_CAMPAIGN_ARC_ID:null,characterId:this.ui.selectedChar.id});this.operationBriefing.render(scene);}else this.operationBriefing.render(null);
+      if (this.missionMode === 'fronts' && BATTLE_OPERATIONS.some(operation=>operation.id===this.operationId)) this.ui.selectedLevel = LEVELS_DATA.find(level => level.id === getBattleOperationScene(this.operationId).levelId);
+      // Ascension starts aboard La Lame Patiente (HW-DEC-108); the chosen world is the first target.
+      if (this.missionMode === 'ascension') { this.ascensionWorldId = document.getElementById('ascension-world-select').value; this.missionMode = 'ascension_hub'; this.ui.selectedLevel = SHIP_LEVEL; }
       this.ui.showScreen(document.getElementById('loadout-prep-screen'));
     });
 
     document.getElementById('btn-open-sandbox').addEventListener('click', () => {
+      this.missionMode = 'sandbox';
+      this.campaign.reset?.();
       this.ui.showScreen(document.getElementById('sandbox-modal'));
     });
 
@@ -194,15 +631,39 @@ class GameApp {
     });
 
     document.getElementById('btn-close-options').addEventListener('click', () => {
-      this.ui.showScreen(this.ui.mainMenu);
+      this.ui.showScreen(this.isPlaying ? document.getElementById('pause-menu') : this.ui.mainMenu);
     });
 
     document.getElementById('btn-replay').addEventListener('click', () => {
+      if (this.pendingChapter) {
+        this.selectChapterLevel(this.pendingChapter);
+        this.pendingChapter = null;
+      } else if (this.missionMode === 'campaign' && !this.campaign.isActive) {
+        this.selectChapterLevel(this.campaign.startCampaign());
+      }
+      if (['ascension', 'ascension_rite'].includes(this.missionMode)) { this.missionMode = 'ascension_hub'; this.ui.selectedLevel = SHIP_LEVEL; }
+      if (this.missionMode === 'sandbox') {
+        this.ui.showScreen(document.getElementById('sandbox-modal'));
+        return;
+      }
       this.ui.showScreen(document.getElementById('loadout-prep-screen'));
     });
 
     document.getElementById('btn-menu-return').addEventListener('click', () => {
-      this.endGame(false);
+      this.returnToMenu();
+    });
+
+    document.getElementById('btn-hud-weapons').addEventListener('click',()=>{if(this.isPlaying&&!this.dropPod.isActive)this.toggleWeaponWheel();});
+    document.getElementById('btn-hud-map').addEventListener('click',()=>this.openCommandMap());
+    document.getElementById('btn-hud-details').addEventListener('click',()=>document.getElementById('setting-detailed-hud').click());
+    document.getElementById('btn-pause-game')?.addEventListener('click', () => this.togglePause(true));
+    document.getElementById('btn-resume-game')?.addEventListener('click', () => this.togglePause(false));
+    document.getElementById('btn-pause-menu-return')?.addEventListener('click', () => this.returnToMenu());
+    document.getElementById('btn-abandon-operation')?.addEventListener('click', () => this.abandonOperation());
+    document.getElementById('btn-pause-options')?.addEventListener('click', () => this.ui.showScreen(this.ui.optionsModal));
+    document.getElementById('btn-back-to-menu')?.addEventListener('click', () => this.returnToMenu());
+    document.getElementById('btn-back-to-levels')?.addEventListener('click', () => {
+      this.ui.showScreen(this.missionMode === 'campaign' ? this.ui.mainMenu : this.ui.levelSelectMenu);
     });
 
     document.getElementById('btn-snap-photo').addEventListener('click', () => {
@@ -214,12 +675,12 @@ class GameApp {
     });
 
     document.getElementById('btn-buy-hp').addEventListener('click', () => {
-      const cost = this.forge.buyUpgrade('hp', this.ui.trophyStats.totalKos * 100);
+      const cost = this.forge.buyUpgrade('hp');
       if (cost > 0) this.ui.showAnnouncement('🛡️ SANTÉ AMÉLIORÉE AU MAXIMUM !');
     });
 
     document.getElementById('btn-buy-dmg').addEventListener('click', () => {
-      const cost = this.forge.buyUpgrade('damage', this.ui.trophyStats.totalKos * 100);
+      const cost = this.forge.buyUpgrade('damage');
       if (cost > 0) this.ui.showAnnouncement('⚔️ DÉGÂTS DÉVASTATEURS BOOSTÉS !');
     });
 
@@ -240,13 +701,49 @@ class GameApp {
 
     // Hotkeys
     window.addEventListener('keydown', (e) => {
+      if (e.target instanceof HTMLElement && (e.target.matches('input, select, textarea, [contenteditable="true"]') || (e.code !== 'Escape' && e.target.closest('button,summary,a,[role="button"]')))) return;
+      if (e.code === 'Escape' && this.isPlaying) {
+        e.preventDefault();
+        if (this._tacticalModal) { this.closeTacticalModal(); return; }
+        if (this.photoMode.isActive) this.photoMode.toggle(this.player.position);
+        else if (this.weaponWheel.isOpen) this.weaponWheel.close();
+        else this.togglePause(!this.isPaused);
+        return;
+      }
+      if (this.isPlaying && this.dropPod.isActive) {
+        if (['Space', 'Tab', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) e.preventDefault();
+        return;
+      }
       this.keys[e.code] = true;
 
       if (!this.isPlaying || this.isPaused) return;
+      if (['Space', 'Tab', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) e.preventDefault();
+      if (e.repeat) return;
+      if (this.photoMode.isActive) {
+        if (e.code === 'KeyO') this.photoMode.toggle(this.player.position);
+        return;
+      }
+      if (this.weaponWheel.isOpen && e.code !== 'KeyR') return;
+      if (this.isCoOp && this.player2 && ['Enter', 'Numpad0', 'NumpadDecimal'].includes(e.code)) {
+        e.preventDefault();
+        if (this.player2.hp <= 0) return;
+        if (this.player2.isFacehuggerLatched || this.player2.isRoyalFacehuggerLatched) {
+          if (e.code === 'Enter') {
+            if (this.player2.isRoyalFacehuggerLatched) this.horde.struggleRoyalFacehugger(this.player2);
+            else this.handlePlayerInteraction(this.player2);
+          }
+          return;
+        }
+        if (e.code === 'Enter' && this.handlePlayerInteraction(this.player2)) return;
+        this.performCoopAttack(e.code);
+        return;
+      }
+      if (this.player?.hp <= 0) return;
+      if (this.skimmer.isMounted && ['Space', 'ShiftLeft', 'ShiftRight', 'KeyG'].includes(e.code)) return;
 
       // Chantier 10: Bad Blood Honor Duel Clashing Blades QTE Input Interception
       if (this.badBlood && this.badBlood.isDueling) {
-        if (this.badBlood.handleDuelInput(e.code, this.player, this.ui, this.gore, this.particles, this)) {
+        if (this.badBlood.handleDuelInput(e.code, this.badBlood.duelTarget ?? this.player, this.ui, this.gore, this.particles, this)) {
           return;
         }
       }
@@ -301,6 +798,7 @@ class GameApp {
       if (e.code === 'KeyH' && this.player) {
         if (this.keys['ShiftLeft'] || this.keys['ShiftRight']) {
           this.player.usedShiftModifier = true;
+          if(this.battleSimulation){this.ui.showAnnouncement('Cette opération utilise uniquement ses forces préallouées ; la meute ne peut pas être invoquée.');return;}
           this.hellHounds.summonPack(this.player.position, 2);
           this.ui.showAnnouncement('🐕 MEUTE DE CHIENS DE CHASSE HELL-HOUNDS DÉPLOYÉE !');
         } else {
@@ -372,7 +870,7 @@ class GameApp {
       }
 
       // UA 571-C Automated Remote Sentry Gun [Digit 4] (Aliens 1986 Special Edition)
-      if ((e.code === 'Digit4' || e.code === 'Numpad4') && this.player) {
+      if ((e.code === 'Digit4' || e.code === 'Numpad4') && this.player && !(this.keys['ShiftLeft'] || this.keys['ShiftRight'])) {
         this.deploySentryGun();
       }
 
@@ -469,9 +967,9 @@ class GameApp {
       }
 
       // Netgun Entanglement & Gauntlet Flechette Needler [G Key]
-      if (e.code === 'KeyG' && this.player) {
+      if (e.code === 'KeyG' && this.player && !(this.keys['ShiftLeft'] || this.keys['ShiftRight'])) {
         const distToSkimmer = this.skimmer ? this.player.position.distanceTo(this.skimmer.position) : 999;
-        if (this.skimmer && (this.skimmer.isMounted || distToSkimmer < 4.5)) {
+        if (this.skimmer && (this.skimmer.isMounted || distToSkimmer < 4.5 && this.skimmer.mesh?.visible !== false)) {
           // Boarding or exiting the Yautja Skimmer vehicle
           this.skimmer.mountCooldown = 0;
         } else {
@@ -522,96 +1020,7 @@ class GameApp {
         }
       }
 
-      if (e.code === 'KeyE' && this.player) {
-        if (this.player.isFacehuggerLatched) {
-          if (this.player.struggleQTE()) {
-            this.ui.showAnnouncement('💥 FACEHUGGER ARRACHÉ AVEC SUCCÈS !');
-          }
-        } else if (this.env && this.env.checkPlasmaTerminalInteraction && this.env.checkPlasmaTerminalInteraction(this.player.position, this.player, this.audio, this.ui, this.particles)) {
-          // Handled Weyland-Yutani Plasma Capacitor Recharge Terminal (v54.0)!
-        } else if (this.env && this.env.checkHydraulicLiftInteraction && this.env.checkHydraulicLiftInteraction(this.player.position, this.player, this.ui, this.audio)) {
-          // Handled USCM Hydraulic Cargo Lift platform activation (v52.0)!
-        } else if (this.env && this.env.checkFoundryValveInteraction && this.env.checkFoundryValveInteraction(this.player, this.audio, this.ui)) {
-          // Handled Fiorina 161 Molten Lead Foundry 12-Ton Pouring Vat (Alien 3 1992)!
-        } else if (this.env && this.env.checkSmartgunInteraction(this.player.position, this.player, this.ui, this.audio)) {
-          // Handled USCM M56 Smartgun Turret mounting / dismounting!
-        } else if (this.env && this.env.checkCraneConsoleInteraction(this.player.position, this.player, this.ui, this.audio, this.particles, this.horde, this.bosses, this.synthetics)) {
-          // Handled USCM Cargo Crane 10-Ton Container drop!
-        } else if (this.env && this.env.checkAPCInteraction(this.player.position, this.player, this.ui, this.audio)) {
-          // Handled USCM M577 APC mounting / dismounting!
-        } else if (this.env && this.env.checkReactorConsoleInteraction(this.player.position, this.player, this.ui, this.audio)) {
-          // Handled Colony Reactor meltdown / coolant core purge!
-        } else if (this.env && this.env.checkElectricGridInteraction(this.player.position, this.player, this.ui, this.audio, this.particles, this.horde)) {
-          // Handled High-Voltage Electric Floor Grid activation!
-        } else if (this.env && this.env.checkDeconInteraction(this.player.position, this.player, this.ui, this.audio, this.particles)) {
-          // Handled Med-Lab Decontamination Airlock purge & restoration!
-        } else if (this.sentryGun && this.sentryGun.reloadSentry(this.player.position, 250)) {
-          if (this.audio && this.audio.playSentrySpinUp) this.audio.playSentrySpinUp();
-          this.ui.showAnnouncement('🔋 SENTINELLE UA 571-C : CHARGEUR RECHARGÉ (+250 RDS) !');
-        } else if (this.env && this.env.checkAirlockConsoleInteraction(this.player.position, this.ui, this.audio, this.particles)) {
-          // Handled Emergency Atmospheric Decompression Airlock!
-        } else if (this.env && this.env.checkCocoonInteraction(this.player.position, this.player, this.horde, this.ui, this.audio, this.particles)) {
-          // Handled Chrysalis Cocoon harvesting or Lurker ambush!
-        } else if (this.env && this.env.checkMarineScavengeInteraction(this.player.position, this.player, this.sentryGun, this.ui, this.audio)) {
-          // Handled USCM Marine salvage!
-        } else if (this.env && this.env.checkCryoMedBayInteraction(this.player.position, this.player, this.ui, this.audio)) {
-          // Handled Weyland-Yutani Autodoc Med-Bay stasis decontamination & embryo purge!
-        } else if (this.env && this.env.checkSupplyInteraction(this.player.position, this.player, this.ui, this.audio)) {
-          // Handled USCM supply cache opening!
-        } else if (this.env && this.env.checkCryoVentInteraction && this.env.checkCryoVentInteraction(this.player.position, this.player, this.ui, this.audio, this.horde, this.bosses)) {
-          // Handled Weyland-Yutani Atmospheric Cooling Tower Cryo-Vent Purge (Alien 3 / Fiorina 161)!
-        } else if (this.env && this.env.checkAurigaBreakerInteraction && this.env.checkAurigaBreakerInteraction(this.player, this.audio, this.ui)) {
-          // Handled USM Auriga Flooded Hydro-Cryo Basin 50,000V Breaker (Alien Resurrection 1997)!
-        } else if (this.env && this.env.checkAncientShrineInteraction && this.env.checkAncientShrineInteraction(this.player, this.audio, this.ui)) {
-          // Handled Ancient Yautja Shrine of the Ancients Divine Blessing!
-        } else if (this.env && this.env.checkRailCannonInteraction && this.env.checkRailCannonInteraction(this.player, this.audio, this.ui, this.horde, this.bosses, this.particles)) {
-          // Handled Weyland-Yutani Coastal Defense 155mm Rail-Cannon Artillery Turret!
-        } else if (this.env && this.env.checkCryoPodInteraction && this.env.checkCryoPodInteraction(this.player, this.audio, this.ui, this.horde, this.bosses, this.particles)) {
-          // Handled Weyland-Yutani Cryo-Stasis Laboratory Specimen Pod Shatter!
-        } else if (this.env && this.env.checkEngineerSarcophagusInteraction && this.env.checkEngineerSarcophagusInteraction(this.player.position, this.bosses, this.ui, this.audio, this.particles)) {
-          // Handled Space Jockey Dais Sacred Engineer Sarcophagus Awakening!
-        } else if (this.env && this.env.checkPowerLoaderInteraction(this.player.position, this.player, this.horde, this.ui, this.audio, this.particles)) {
-          // Handled Caterpillar Power Loader crushing clamp!
-        } else if (this.env && this.env.checkCrucifiedPredatorInteraction && this.env.checkCrucifiedPredatorInteraction(this.player, this.ui, this.audio, this.particles)) {
-          // Handled Classic Predator Crucifixion Liberation & 1987 Plasma Unlock (Predators 2010)!
-        } else if (this.env && this.env.checkMudPitInteraction && this.env.checkMudPitInteraction(this.player, this.ui, this.audio, this.particles)) {
-          // Handled Mud Camouflage Riverbank Viscous Squelch (Predator 1987)!
-        } else if (this.env && this.env.checkValVerdeRadioInteraction && this.env.checkValVerdeRadioInteraction(this.player.position, this.ui, this.audio, this.horde)) {
-          // Handled Downed Huey Military Radio Static & Ambush Broadcast (Predator 1987)!
-        } else if (this.env && this.env.checkPyramidAltarInteraction && this.env.checkPyramidAltarInteraction(this.player, this.ui, this.audio, this.particles)) {
-          // Handled Antarctic Pyramid Ancient Caster Altar Blessing (AVP 2004)!
-        } else if (this.env && this.env.checkRomulusZeroGInteraction && this.env.checkRomulusZeroGInteraction(this.player, this.ui, this.audio, this.particles, this.horde)) {
-          // Handled Romulus Renaissance Station Zero-G Chamber Decompression (Alien: Romulus 2024)!
-        } else if (this.env && this.env.checkRookConsoleInteraction && this.env.checkRookConsoleInteraction(this.player, this.ui, this.audio)) {
-          // Handled Science Officer Rook Synthetic Android Console (Alien: Romulus 2024)!
-        } else if (this.env && this.env.checkRoyalJellyHarvestInteraction && this.env.checkRoyalJellyHarvestInteraction(this.player, this.ui, this.audio, this.particles)) {
-          // Handled Xenomorph Prime Royal Jelly Resin Node Harvesting (Aliens: Earth War)!
-        } else if (this.env && this.env.checkCryptReliquaryInteraction && this.env.checkCryptReliquaryInteraction(this.player, this.ui, this.audio)) {
-          // Handled Gunnison Cemetery Crypt Reliquary Vault (AVP: Requiem 2007)!
-        } else if (this.env && this.env.checkNeuralInhibitorInteraction && this.env.checkNeuralInhibitorInteraction(this.player, this.horde, this.ui, this.audio)) {
-          // Handled Charon Base Ultrasonic Neural Inhibitor Pylon (Aliens: Rogue 1993)!
-        } else if (this.env && this.env.checkBoulderDeadfallInteraction && this.env.checkBoulderDeadfallInteraction(this.player, this.audio, this.horde, this.bosses, this.particles, this.ui)) {
-          // Handled Game Preserve Suspended Boulder Deadfall Trap (Predators 2010)!
-        } else if (this.env && this.env.checkDutchLogTrapTrigger && this.env.checkDutchLogTrapTrigger(this.player.position, false, this.audio, this.horde, this.bosses, this.particles, this.ui)) {
-          // Handled Val Verde Major Dutch Schaefer Counterweight Log Trap (Predator 1987)!
-        } else if (this.env && this.env.checkBillyMacheteInteraction && this.env.checkBillyMacheteInteraction(this.player, this.ui, this.audio)) {
-          // Handled Billy Sole's Courage Machete Draw on Fallen Log (Predator 1987)!
-        } else if (this.env && this.env.checkHopperSatchelInteraction && this.env.checkHopperSatchelInteraction(this.player, this.ui, this.audio)) {
-          // Handled Captain Jim Hopper's Skinned Berets Satchel (Predator 1987)!
-        } else if (this.env && this.env.checkOldPainlessInteraction && this.env.checkOldPainlessInteraction(this.player, this.ui, this.audio, this.horde, this.particles)) {
-          // Handled Blain Cooper's M134 Minigun "Old Painless" Deforestation Roar (Predator 1987)!
-        } else if (this.env && this.env.checkScoutShipConsoleInteraction && this.env.checkScoutShipConsoleInteraction(this.player.position, this.ui, this.audio, this.horde, this.player)) {
-          // Handled Crashed Scout Ship Telemetry Scan (AVP: Requiem 2007)!
-        } else if (this.env && this.env.checkCharonLabConsoleInteraction && this.env.checkCharonLabConsoleInteraction(this.player.position, this.horde, this.ui, this.audio)) {
-          // Handled Base Charon Mutagen Pheromone Dispersion (Aliens: Rogue 1993)!
-        } else if (this.env && this.env.checkFixedSentryInteraction && this.env.checkFixedSentryInteraction(this.player.position, this.audio, this.ui)) {
-          // Handled Fixed UA 571-C Sentry 250-Round Drum Reload (Aliens 1986)!
-        } else if (this.checkCatwalkPlungingExecution()) {
-          // Handled Catwalk Plunging Execution Drop (v53.0)!
-        } else {
-          this.checkTrophyExecution();
-        }
-      }
+      if (e.code === 'KeyE') this.handlePlayerInteraction(this.player);
 
       // QA Audit #4 Fix: Deduplicated KeyX — [X] Trax-Net Dart / [Shift + X] Orbital Plasma Strike
       if (e.code === 'KeyX' && this.player) {
@@ -640,19 +1049,12 @@ class GameApp {
         }
       }
 
-      // Chantier 5 (v46): Yautja Neurotoxin Canister [N Key] / 1987 Wrist Computer Nuke Countdown [Shift + N Key]
-      if (e.code === 'KeyN' && this.player) {
+      // [N] equipped self-destruct; [Shift+N] optional neurotoxin.
+      if (e.code === 'KeyN' && this.player && !this.nukeCountingDown) {
         if (this.keys['ShiftLeft'] || this.keys['ShiftRight']) {
-          if (!this.nukeCountingDown) {
-            this.triggerNukeCountdownSequence();
-          }
-        } else {
-          if (this.player.throwNeurotoxinCanister(this.horde, this.bosses, this.synthetics, this.ui, this.particles, this.env)) {
-            // Canister thrown!
-          } else {
-            this.ui.showAnnouncement('⏳ CARTOUCHE DE NEUROTOXINE EN RECHARGE (30S)...');
-          }
-        }
+          this.player.throwNeurotoxinCanister?.(this.horde, this.bosses, this.synthetics, this.ui, this.particles, this.env);
+        } else if (this.player.hasGadget?.('nuke')) this.triggerNukeCountdownSequence();
+        else this.ui.showAnnouncement("Équipez l’autodestruction avant la chasse.");
       }
 
       // Smart-Disc Throw & Chantier 7 (v54.0): Multi-Lock Ricochet [Shift + B] / Remote Guidance [Ctrl + B]
@@ -703,10 +1105,7 @@ class GameApp {
       if (e.code === 'KeyM' && this.player) {
         if (this.keys['ShiftLeft'] || this.keys['ShiftRight']) {
           this.player.usedShiftModifier = true;
-          this.isEndlessMode = !this.isEndlessMode;
-          this.ui.showAnnouncement(this.isEndlessMode
-            ? '♾️ MODE SURVIE INFINIE "SURVIVAL OF THE WORTHY" ACTIVÉ : VAGUES MUTAGÈNES ILLIMITÉES !'
-            : '🏁 MODE CAMPAGNE STANDARD RESTAURÉ (5 VAGUES)');
+          this.ui.showAnnouncement('Le mode survie se choisit avant le déploiement, dans la sélection du terrain.');
         } else if (this.keys['AltLeft'] || this.keys['AltRight']) {
           this.player.triggerHybridMetamorphosis();
         } else {
@@ -729,18 +1128,18 @@ class GameApp {
         }
       }
 
-      // Chantier 4 (v46): Yautja Cyber-Hunt Bionic Exosuit [O Key] / Photo Mode [Shift + O Key]
+      // Photo mode keeps its documented shortcut; the exosuit uses Shift+O.
       if (e.code === 'KeyO' && this.player) {
         if (this.keys['ShiftLeft'] || this.keys['ShiftRight']) {
-          this.photoMode.toggle(this.player.position);
-        } else {
           if (this.player.activateCyberExosuit(this.ui, this.particles)) {
             // Exosuit active!
           } else {
             this.ui.showAnnouncement('⏳ EXOSQUELETTE BIONIQUE EN RECHARGE (45S)...');
           }
-        }
+        } else this.photoMode.toggle(this.player.position);
       }
+
+      if (e.code === 'Backquote' && this.battleSimulation) { e.preventDefault(); this.openCommandMap(); return; }
 
       if (e.code === 'Tab' && this.player) {
         e.preventDefault();
@@ -749,11 +1148,13 @@ class GameApp {
 
       // Chantier 4 & Lucas QA (v51.0): Dedicated Wristblade Parry Deflection [KeyF] (AVP 2010 / Hunting Grounds)
       if (e.code === 'KeyF' && this.player) {
-        this.player.performWristbladeParry(this.audio, this.particles, this.ui);
+        if(e.shiftKey){this.player.usedShiftModifier=true;this.player.performWristbladeParry(this.audio,this.particles,this.ui);}
+        else this.player.toggleCloak();
       }
 
-      // Chantier 7 (v45): Yautja Ki'cte Gauntlet Grapple & Seismic Counter-Throw [KeyG] (Concrete Jungle / Prey)
-      if (e.code === 'KeyG' && this.player) {
+      // Ki'cte gauntlet grapple [Shift + G]; plain G stays on the netgun, needler and skimmer.
+      if (e.code === 'KeyG' && this.player && (this.keys['ShiftLeft'] || this.keys['ShiftRight'])) {
+        this.player.usedShiftModifier = true;
         this.player.performGauntletGrapple(this.horde, this.bosses, this.ui, this.particles, this.env);
       }
 
@@ -780,13 +1181,20 @@ class GameApp {
         this.player.performGroundSlam(this.horde, this.bosses, this.synthetics, this.ui, this.particles, this.env);
       }
 
-      if ((e.code === 'Space' && !this.keys['ShiftLeft'] && !this.keys['ShiftRight']) || e.code === 'KeyQ') {
+      // Q locks a target and cycles to the next one (HW-DEC-93); the Musou stays on Space.
+      if (e.code === 'KeyQ' && this.player) {
+        const locked = this.gamepadBridge.cycleLock?.(this.player);
+        this.ui.showAnnouncement(locked ? 'CIBLE VERROUILLÉE' : 'VERROUILLAGE RELÂCHÉ');
+      }
+
+      if (e.code === 'Space' && !this.keys['ShiftLeft'] && !this.keys['ShiftRight']) {
         if (this.player && this.player.triggerMusouOverload()) {
           this.executeMusouOverload();
         }
       }
 
       if (e.code === 'ShiftLeft' && !this.keys['Space'] && this.player) {
+        if (this.player.getWeaponState?.().rangedResource === 'bolts') { this._boltTriggerHeld = true; this.player.usedShiftModifier = false; return; }
         if (!this.player.isChargingPlasma) {
           this.player.isChargingPlasma = true;
           this.player.plasmaChargeTime = 0;
@@ -800,6 +1208,8 @@ class GameApp {
 
     window.addEventListener('keyup', (e) => {
       this.keys[e.code] = false;
+      if (!this.isPlaying || this.isPaused || this.dropPod.isActive || this.photoMode.isActive || this.weaponWheel.isOpen) { if(this.player)this.player.isChargingPlasma=false;this._boltTriggerHeld=false;return; }
+      if (e.code === 'ShiftLeft' && this._boltTriggerHeld) { this._boltTriggerHeld=false; if(!this.player.usedShiftModifier)this.firePlasmaCannon(false);this.player.usedShiftModifier=false;return; }
 
       if (e.code === 'ShiftLeft' && this.player && this.player.isChargingPlasma) {
         const usedMod = this.player.usedShiftModifier;
@@ -816,7 +1226,9 @@ class GameApp {
     });
 
     window.addEventListener('mousedown', (e) => {
-      if (!this.isPlaying || this.photoMode.isActive) return;
+      if (e.target.closest?.('button, input, select, textarea, summary, a, [role="button"], .modal-card, .operation-panel')) return;
+      if (!this.isPlaying || this.isPaused || this.dropPod.isActive || this.player?.hp <= 0 || this.photoMode.isActive || this.weaponWheel.isOpen) return;
+      if (e.target instanceof HTMLElement && e.target.closest('button, input, select, a, .modal-card, .wheel-item')) return;
       if (e.button === 1) {
         e.preventDefault();
         this.weaponWheel.toggle();
@@ -883,7 +1295,496 @@ class GameApp {
       }
     });
 
-    window.addEventListener('contextmenu', e => e.preventDefault());
+    window.addEventListener('contextmenu', e => {
+      if (this.isPlaying && !this.isPaused) e.preventDefault();
+    });
+    window.addEventListener('blur', () => {
+      this.keys = {};
+      if (this.isPlaying && !this.photoMode.isActive) this.togglePause(true);
+    });
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        this.keys = {};
+        if (this.isPlaying && !this.photoMode.isActive) this.togglePause(true);
+      }
+    });
+  }
+
+  selectChapterLevel(chapter) {
+    const level = LEVELS_DATA.find(entry => entry.id === chapter?.levelId);
+    if (level) this.ui.selectedLevel = level;
+  }
+
+  togglePause(paused = !this.isPaused) {
+    if (!this.isPlaying) return;
+    this.isPaused = paused;
+    this.keys = {};
+    this.weaponWheel.close();
+    if (paused && this.photoMode.isActive) this.photoMode.toggle(this.player.position);
+    this.ui.showScreen(paused ? document.getElementById('pause-menu') : this.ui.inGameHud);
+    this.renderer.requestRender();
+    this.lastTime = performance.now();
+  }
+
+  scheduleMissionTask(callback, delay) {
+    this.missionTasks.push({ callback, remaining: delay });
+  }
+
+  updateMissionTasks(delta) {
+    for (let i = this.missionTasks.length - 1; i >= 0; i--) {
+      const task = this.missionTasks[i];
+      task.remaining -= delta;
+      if (task.remaining <= 0) {
+        this.missionTasks.splice(i, 1);
+        task.callback();
+      }
+    }
+    for (let i = this.missionEffects.length - 1; i >= 0; i--) {
+      const effect = this.missionEffects[i];
+      effect.life -= delta;
+      if (effect.life <= 0) {
+        this.removeEffectMesh(effect.mesh);
+        this.missionEffects.splice(i, 1);
+      } else effect.update?.(delta, effect.life / effect.maxLife);
+    }
+  }
+
+  removeEffectMesh(mesh) {
+    if (!mesh) return;
+    this.renderer.scene.remove(mesh);
+    const geometries = new Set();
+    const materials = new Set();
+    mesh.traverse(child => {
+      if (child.geometry) geometries.add(child.geometry);
+      const entries = Array.isArray(child.material) ? child.material : [child.material];
+      entries.filter(Boolean).forEach(material => materials.add(material));
+    });
+    geometries.forEach(geometry => geometry.dispose());
+    materials.forEach(material => material.dispose());
+  }
+
+  removeHoloDecoy(decoy) {
+    if (typeof decoy?.dispose === 'function') decoy.dispose();
+    else if (decoy?.mesh) this.removeEffectMesh(decoy.mesh);
+  }
+
+  clearMissionState() {
+    this.ui.clearTransientState?.();
+    this.gamepadBridge?.reset();
+    disposeBattleOperation(this);
+    this._nukeSequence++;
+    this.battlefield?.dispose();
+    this.battlefield = null; this.faunaEncounter = null; this.shipHub?.dispose(); this.shipHub = null;
+    this.battlefieldProgression = null;
+    this.combatDirector.reset({ graceSeconds: 8 });
+    this.ui.updateBattlefieldHUD?.(null);
+    this.missionTasks = [];
+    this.keys = {};
+    this.weaponWheel.close();
+    if (this.photoMode.isActive && this.player) this.photoMode.toggle(this.player.position);
+    for (const projectile of this.projectiles) this.removeEffectMesh(projectile.mesh);
+    this.projectiles = [];
+    for (const pool of this.pathogenPools) {
+      this.removeEffectMesh(pool.urnMesh);
+      this.removeEffectMesh(pool.poolMesh);
+    }
+    this.pathogenPools = [];
+    this.pathogenCooldown = 0;
+    for (const decoy of this.holoDecoys) this.removeHoloDecoy(decoy);
+    this.holoDecoys = [];
+    for (const effect of this.missionEffects) this.removeEffectMesh(effect.mesh);
+    this.missionEffects = [];
+    this.nukeCountingDown = false;
+    this._tacticalModal = null; this.isTimeDilated = false;this._boltTriggerHeld=false;
+    document.getElementById('yautja-radial-weapon-wheel')?.classList.add('hidden');
+    this.isFirstPerson = false;
+    this.lockedTargetPos = null;
+    this.motionTrackerTimer = 0;
+    this.closestEnemyDist = Infinity;
+    this.audio.stopBackgroundMusic();
+    this.audio.stopThermalHum();
+    this.clearHumanWeaponCaches();
+    this.allies.clearSquad();
+    this.marines.clearSquad();
+    this.synthetics.clearSquad();
+    this.hellHounds.dismissPack();
+    this.dropPod.clear();
+    this.updateInsertionStatus();
+    this._insertionCameraFocus = null;
+    this.dropship.clear();
+    this.clearAPCSupport();
+    this.sentryGun.clear();
+    this.falconDrone.clear();
+    this.horde.clearWave();
+    this.bosses.clear?.();
+    this.badBlood.clear?.();
+    this.weather.clear?.();
+    this.particles.clear?.();
+    this.orbital.clear?.();
+    this.gore.clear();
+    this.skimmer.isMounted = false;
+    this.skimmer.mountCooldown = 0;
+    this.skimmer.cannonCooldown = 0;
+    this.skimmer.mesh.visible = false;
+    this.skimmer.clear?.();
+    for (const player of [this.player, this.player2]) {
+      if (!player) continue;
+      player.clearNukeHoloMesh?.();
+      if (player.dispose) player.dispose();
+      else this.renderer.scene.remove(player.mesh);
+    }
+    this.player = null;
+    this.player2 = null;
+    if (this.rewardSessionId && !this._suspendOperation) this.forge.honorLedger?.closeSession(this.rewardSessionId);
+    this.rewardSessionId=null;this._suspendOperation=false;
+    ['thermal-overlay', 'em-overlay', 'tech-overlay', 'uv-overlay', 'cloak-overlay',
+      'first-person-mask-overlay', 'nuke-countdown-overlay', 'true-musou-banner',
+      'acid-corrosion-overlay', 'berserker-rage-overlay', 'facehugger-qte-prompt',
+      'hud-tri-target-lock', 'execution-prompt', 'hallucination-overlay', 'clan-honor-vault-modal', 'clan-armory-forge-modal', 'mothership-bridge-modal', 'sacred-blood-ritual-overlay', 'honor-duel-qte-overlay', 'command-map-modal'].forEach(id => document.getElementById(id)?.classList.add('hidden'));
+    this.renderer.requestRender?.();
+  }
+
+  returnToMenu() {
+    if (this.isPlaying) {
+      if(this.battleSimulation&&!this._abandonOperation){this.battleBridge.sync();this.saveOperation();this.observeBattleCampaign();this._suspendOperation=!this.dropPod.isActive;}
+      if(!this._suspendOperation)this.ui.recordEndSession(this._sessionDefeats ?? this.horde.deadCount, this.sessionSkulls, this.score, this.rewardSessionId??this.missionRun);
+      this._abandonOperation=false;
+    }
+    this.isPlaying = false;
+    this.isPaused = false;
+    this.clearMissionState();
+    this.pendingChapter = null;
+    this.campaign.reset?.();
+    this.missionMode = 'hunt';
+    this.isCoOp = false;
+    this.renderer.setSplitScreen(false);
+    this.citadel.hide();
+    this.ui.showScreen(this.ui.mainMenu);
+  }
+
+  performCoopAttack(code) {
+    const player = this.player2;
+    if (!player || player.hp <= 0) return;
+    if (code === 'NumpadDecimal') return this.firePlasmaCannon(false,player);
+    const weapon=player.getWeaponState?.();if(weapon?.action==='projectile')return this.dispatchSelectedProjectile(weapon,code!=='Enter',player);
+    const attack = code === 'Enter' ? player.lightAttack() : player.heavyAttack();
+    if (!attack) return;
+    this.scheduleAttackImpact(player, attack, () => {
+      attack.origin = player.position;
+      const resolvedAttack=createHunterStealthAttack(player,attack,this.horde);
+      this.registerHits(this.horde.checkMeleeHits(resolvedAttack));
+      this.synthetics.checkHits(attack);
+      if (this.bosses.activeBoss && this.bosses.activeBoss.mesh.position.distanceTo(player.position) <= attack.radius + 2) {
+        this.hitBossFromPlayer(attack.damage,player.position,code==='Enter'?'light':'heavy');
+      }
+      this.hitBadBloodFromPlayer(attack,player);
+    });
+  }
+
+  toggleTacticalModal(id) {
+    const modal = document.getElementById(id);
+    if (!modal) return true;
+    if (this._tacticalModal?.id === id) { this.closeTacticalModal(id); return true; }
+    if (this._tacticalModal) this.closeTacticalModal();
+    this._tacticalModal = { id, wasPaused: this.isPaused };
+    this.isPaused = true; this.keys = {}; this.weaponWheel.close();
+    if (modal.classList.contains('ui-screen')) this.ui.showScreen(modal);
+    else modal.classList.remove('hidden');
+    modal.querySelector('button')?.focus();
+    return false;
+  }
+
+  closeTacticalModal(id = this._tacticalModal?.id) {
+    if (!this._tacticalModal || this._tacticalModal.id !== id) return false;
+    const state = this._tacticalModal; this._tacticalModal = null;
+    document.getElementById(id)?.classList.add('hidden');
+    this.isPaused = state.wasPaused;
+    this.ui.showScreen(this.isPaused ? document.getElementById('pause-menu') : this.ui.inGameHud);
+    this.lastTime = performance.now(); this.renderer.requestRender();
+    return true;
+  }
+
+  handlePlayerInteraction(player = this.player) {
+    if(!this.isPlaying||this.isPaused||this.dropPod.isActive||this.photoMode.isActive||!player||player.hp<=0)return false;
+    if (player.isFacehuggerLatched) {
+      if (player.struggleQTE()) {
+        this.ui.showAnnouncement('💥 FACEHUGGER ARRACHÉ AVEC SUCCÈS !');
+      }
+    } else if (this.shipHub?.interact(player)) {
+      // A place aboard La Lame Patiente.
+    } else if (this.tryOpenHumanWeaponCache?.(player)) {
+      // A finite hunt cache, opened once.
+    } else if (this.allyRescue?.interact(player).accepted) {
+      // A patient keeps its allocated identity throughout the rescue channel.
+    } else if (this.env.checkTacticalBridgeInteraction?.(player)) {
+      // Physical bridge console, including timed sabotage and repair.
+    } else if (this.operationTransport?.interact(player)) {
+      // Board or leave the physical operation transport.
+    } else if (this.operationObjectives?.interact(player).accepted) {
+      // An objective channel is authoritative and uses simulation time.
+    } else if (this.battlefield?.interact(player)) {
+      // Sector objective has priority over optional nearby props.
+    } else if (this.env && this.env.checkPlasmaTerminalInteraction && this.env.checkPlasmaTerminalInteraction(player.position, player, this.audio, this.ui, this.particles)) {
+      // Handled Weyland-Yutani Plasma Capacitor Recharge Terminal (v54.0)!
+    } else if (this.env && this.env.checkHydraulicLiftInteraction && this.env.checkHydraulicLiftInteraction(player.position, player, this.ui, this.audio)) {
+      // Handled USCM Hydraulic Cargo Lift platform activation (v52.0)!
+    } else if (this.env && this.env.checkFoundryValveInteraction && this.env.checkFoundryValveInteraction(player, this.audio, this.ui)) {
+      // Handled Fiorina 161 Molten Lead Foundry 12-Ton Pouring Vat (Alien 3 1992)!
+    } else if (this.env && this.env.checkSmartgunInteraction(player.position, player, this.ui, this.audio)) {
+      // Handled USCM M56 Smartgun Turret mounting / dismounting!
+    } else if (this.env && this.env.checkCraneConsoleInteraction(player.position, player, this.ui, this.audio, this.particles, this.horde, this.bosses, this.synthetics)) {
+      // Handled USCM Cargo Crane 10-Ton Container drop!
+    } else if (this.env && this.env.checkAPCInteraction(player.position, player, this.ui, this.audio)) {
+      // Handled USCM M577 APC mounting / dismounting!
+    } else if (this.env && this.env.checkReactorConsoleInteraction(player.position, player, this.ui, this.audio)) {
+      // Handled Colony Reactor meltdown / coolant core purge!
+    } else if (this.env && this.env.checkElectricGridInteraction(player.position, player, this.ui, this.audio, this.particles, this.horde)) {
+      // Handled High-Voltage Electric Floor Grid activation!
+    } else if (this.env && this.env.checkDeconInteraction(player.position, player, this.ui, this.audio, this.particles)) {
+      // Handled Med-Lab Decontamination Airlock purge & restoration!
+    } else if (this.sentryGun?.reloadSentry(player.position, 250)?.success === true) {
+      if (this.audio && this.audio.playSentrySpinUp) this.audio.playSentrySpinUp();
+      this.ui.showAnnouncement('🔋 SENTINELLE UA 571-C : CHARGEUR RECHARGÉ (+250 RDS) !');
+    } else if (this.env && this.env.checkAirlockConsoleInteraction(player.position, this.ui, this.audio, this.particles)) {
+      // Handled Emergency Atmospheric Decompression Airlock!
+    } else if (this.env && this.env.checkCocoonInteraction(player.position, player, this.horde, this.ui, this.audio, this.particles)) {
+      // Handled Chrysalis Cocoon harvesting or Lurker ambush!
+    } else if (this.env && this.env.checkMarineScavengeInteraction(player.position, player, this.sentryGun, this.ui, this.audio)) {
+      // Handled USCM Marine salvage!
+    } else if (this.env && this.env.checkCryoMedBayInteraction(player.position, player, this.ui, this.audio)) {
+      // Handled Weyland-Yutani Autodoc Med-Bay stasis decontamination & embryo purge!
+    } else if (this.env && this.env.checkSupplyInteraction(player.position, player, this.ui, this.audio)) {
+      // Handled USCM supply cache opening!
+    } else if (this.env && this.env.checkCryoVentInteraction && this.env.checkCryoVentInteraction(player.position, player, this.ui, this.audio, this.horde, this.bosses)) {
+      // Handled Weyland-Yutani Atmospheric Cooling Tower Cryo-Vent Purge (Alien 3 / Fiorina 161)!
+    } else if (this.env && this.env.checkAurigaBreakerInteraction && this.env.checkAurigaBreakerInteraction(player, this.audio, this.ui)) {
+      // Handled USM Auriga Flooded Hydro-Cryo Basin 50,000V Breaker (Alien Resurrection 1997)!
+    } else if (this.env && this.env.checkAncientShrineInteraction && this.env.checkAncientShrineInteraction(player, this.audio, this.ui)) {
+      // Handled Ancient Yautja Shrine of the Ancients Divine Blessing!
+    } else if (this.env && this.env.checkRailCannonInteraction && this.env.checkRailCannonInteraction(player, this.audio, this.ui, this.horde, this.bosses, this.particles)) {
+      // Handled Weyland-Yutani Coastal Defense 155mm Rail-Cannon Artillery Turret!
+    } else if (this.env && this.env.checkCryoPodInteraction && this.env.checkCryoPodInteraction(player, this.audio, this.ui, this.horde, this.bosses, this.particles)) {
+      // Handled Weyland-Yutani Cryo-Stasis Laboratory Specimen Pod Shatter!
+    } else if (this.env && this.env.checkEngineerSarcophagusInteraction && this.env.checkEngineerSarcophagusInteraction(player.position, this.bosses, this.ui, this.audio, this.particles)) {
+      // Handled Space Jockey Dais Sacred Engineer Sarcophagus Awakening!
+    } else if (this.env && this.env.checkPowerLoaderInteraction(player.position, player, this.horde, this.ui, this.audio, this.particles)) {
+      // Handled Caterpillar Power Loader crushing clamp!
+    } else if (this.env && this.env.checkCrucifiedPredatorInteraction && this.env.checkCrucifiedPredatorInteraction(player, this.ui, this.audio, this.particles)) {
+      // Handled Classic Predator Crucifixion Liberation & 1987 Plasma Unlock (Predators 2010)!
+    } else if (this.env && this.env.checkMudPitInteraction && this.env.checkMudPitInteraction(player, this.ui, this.audio, this.particles)) {
+      // Handled Mud Camouflage Riverbank Viscous Squelch (Predator 1987)!
+    } else if (this.env && this.env.checkValVerdeRadioInteraction && this.env.checkValVerdeRadioInteraction(player.position, this.ui, this.audio, this.horde)) {
+      // Handled Downed Huey Military Radio Static & Ambush Broadcast (Predator 1987)!
+    } else if (this.env && this.env.checkPyramidAltarInteraction && this.env.checkPyramidAltarInteraction(player, this.ui, this.audio, this.particles)) {
+      // Handled Antarctic Pyramid Ancient Caster Altar Blessing (AVP 2004)!
+    } else if (this.env && this.env.checkRomulusZeroGInteraction && this.env.checkRomulusZeroGInteraction(player, this.ui, this.audio, this.particles, this.horde)) {
+      // Handled Romulus Renaissance Station Zero-G Chamber Decompression (Alien: Romulus 2024)!
+    } else if (this.env && this.env.checkRookConsoleInteraction && this.env.checkRookConsoleInteraction(player, this.ui, this.audio)) {
+      // Handled Science Officer Rook Synthetic Android Console (Alien: Romulus 2024)!
+    } else if (this.env && this.env.checkRoyalJellyHarvestInteraction && this.env.checkRoyalJellyHarvestInteraction(player, this.ui, this.audio, this.particles)) {
+      // Handled Xenomorph Prime Royal Jelly Resin Node Harvesting (Aliens: Earth War)!
+    } else if (this.env && this.env.checkCryptReliquaryInteraction && this.env.checkCryptReliquaryInteraction(player, this.ui, this.audio)) {
+      // Handled Gunnison Cemetery Crypt Reliquary Vault (AVP: Requiem 2007)!
+    } else if (this.env && this.env.checkNeuralInhibitorInteraction && this.env.checkNeuralInhibitorInteraction(player, this.horde, this.ui, this.audio)) {
+      // Handled Charon Base Ultrasonic Neural Inhibitor Pylon (Aliens: Rogue 1993)!
+    } else if (this.env && this.env.checkBoulderDeadfallInteraction && this.env.checkBoulderDeadfallInteraction(player, this.audio, this.horde, this.bosses, this.particles, this.ui)) {
+      // Handled Game Preserve Suspended Boulder Deadfall Trap (Predators 2010)!
+    } else if (this.env && this.env.checkDutchLogTrapTrigger && this.env.checkDutchLogTrapTrigger(player.position, false, this.audio, this.horde, this.bosses, this.particles, this.ui)) {
+      // Handled Val Verde Major Dutch Schaefer Counterweight Log Trap (Predator 1987)!
+    } else if (this.env && this.env.checkBillyMacheteInteraction && this.env.checkBillyMacheteInteraction(player, this.ui, this.audio)) {
+      // Handled Billy Sole's Courage Machete Draw on Fallen Log (Predator 1987)!
+    } else if (this.env && this.env.checkHopperSatchelInteraction && this.env.checkHopperSatchelInteraction(player, this.ui, this.audio)) {
+      // Handled Captain Jim Hopper's Skinned Berets Satchel (Predator 1987)!
+    } else if (this.env && this.env.checkOldPainlessInteraction && this.env.checkOldPainlessInteraction(player, this.ui, this.audio, this.horde, this.particles)) {
+      // Handled Blain Cooper's M134 Minigun "Old Painless" Deforestation Roar (Predator 1987)!
+    } else if (this.env && this.env.checkDutchChallengeRoar && this.env.checkDutchChallengeRoar(player, this.ui, this.audio, this.horde)) {
+      // Handled Dutch's Challenge Roar ("KILL ME! I'M HERE!") (Predator 1987)!
+    } else if (this.env && this.env.checkExplosiveArrowsInteraction && this.env.checkExplosiveArrowsInteraction(player, this.ui, this.audio)) {
+      // Handled Dutch's Primitive Workbench Explosive Arrows Crafting (Predator 1987)!
+    } else if (this.env && this.env.checkRebelMapsInteraction && this.env.checkRebelMapsInteraction(player, this.ui, this.audio)) {
+      // Handled Anna's Guerrilla Tactical Reconnaissance Maps (Predator 1987)!
+    } else if (this.env && this.env.checkRoastingSpitInteraction && this.env.checkRoastingSpitInteraction(player, this.ui, this.audio)) {
+      // Handled Wild Javelina Roasting Spit Survival Ration (Predator 1987)!
+    } else if (this.env && this.env.checkGlowingBloodInteraction && this.env.checkGlowingBloodInteraction(player, this.ui, this.audio)) {
+      // Handled Jungle Hunter Nuclear Blast Crater Glowing Blood Locus (Predator 1987)!
+    } else if (this.env && this.env.checkEasternColumbiaLightning && this.env.checkEasternColumbiaLightning(player, this.ui, this.audio, this.horde, this.bosses, this.particles)) {
+      // Handled Eastern Columbia Spire Lightning Rod Supercharge (Predator 2 1990)!
+    } else if (this.env && this.env.checkMeatLockerCryoValve && this.env.checkMeatLockerCryoValve(player, this.ui, this.audio, this.horde, this.bosses, this.particles)) {
+      // Handled OWLF Slaughterhouse Cryogenic Deluge (Predator 2 1990)!
+    } else if (this.env && this.env.checkKingWillieAltarInteraction && this.env.checkKingWillieAltarInteraction(player, this.ui, this.audio)) {
+      // Handled King Willie's Voodoo Rooftop Altar & Polished Skull (Predator 2 1990)!
+    } else if (this.env && this.env.checkDannyBoyNetgunInteraction && this.env.checkDannyBoyNetgunInteraction(player, this.ui, this.audio)) {
+      // Handled Danny Boy's Netgun Wire Concrete Wall Embedment (Predator 2 1990)!
+    } else if (this.env && this.env.checkLostTribeTrophyInteraction && this.env.checkLostTribeTrophyInteraction(player, this.ui, this.audio)) {
+      // Handled Lost Tribe Mother Ship Trophy Dais & Raphael Adolini 1715 Flintlock (Predator 2 1990)!
+    } else if (this.env && this.env.checkCityHunterSurgeryInteraction && this.env.checkCityHunterSurgeryInteraction(player, this.ui, this.audio)) {
+      // Handled City Hunter's Penthouse Emergency Medi-Kit Cauterization (Predator 2 1990)!
+    } else if (this.env && this.env.checkHarriganCruiserLoot && this.env.checkHarriganCruiserLoot(player, this.ui, this.audio)) {
+      // Handled Lieutenant Mike Harrigan's LAPD SWAT Cruiser Barricade (Predator 2 1990)!
+    } else if (this.env && this.env.checkSmartDiscGirderInteraction && this.env.checkSmartDiscGirderInteraction(player, this.ui, this.audio)) {
+      // Handled City Hunter's Dislodged Smart-Disc Girder Retrieval (Predator 2 1990)!
+    } else if (this.env && this.env.checkSubwayTrainMassacreInteraction && this.env.checkSubwayTrainMassacreInteraction(player, this.ui, this.audio)) {
+      // Handled Subway Metro Car #666 Strobe Light Massacre (Predator 2 1990)!
+    } else if (this.env && this.env.checkOWLFVanConsoleInteraction && this.env.checkOWLFVanConsoleInteraction(player, this.ui, this.audio)) {
+      // Handled Peter Keyes's OWLF Mobile Surveillance Trailer (Predator 2 1990)!
+    } else if (this.env && this.env.checkCartelPenthouseLoot && this.env.checkCartelPenthouseLoot(player, this.ui, this.audio)) {
+      // Handled El Scorpio's Colombian Cartel Penthouse Drug Lab (Predator 2 1990)!
+    } else if (this.env && this.env.checkPoleVaultLaunchPad && this.env.checkPoleVaultLaunchPad(player, this.ui, this.audio, this.horde, this.bosses, this.particles)) {
+      // Handled Combi-Stick Pole-Vault Catapult Launch to Eastern Columbia (Predator 2 1990)!
+    } else if (this.env && this.env.checkNolandHideoutInteraction && this.env.checkNolandHideoutInteraction(player, this.ui, this.audio)) {
+      // Handled Ronald Noland's Drilling Rig Subterranean Hideout (Predators 2010)!
+    } else if (this.env && this.env.checkTrackerWhistleInteraction && this.env.checkTrackerWhistleInteraction(player, this.ui, this.audio, this.horde, this.hellHounds)) {
+      // Handled Tracker Predator's Whistle Totem & Hell-Hound Summon (Predators 2010)!
+    } else if (this.env && this.env.checkNikolaiClaymoreInteraction && this.env.checkNikolaiClaymoreInteraction(player, this.ui, this.audio, this.horde, this.bosses, this.particles)) {
+      // Handled Nikolai's Dual Claymore Suicide Blast Memorial (Predators 2010)!
+    } else if (this.env && this.env.checkHanzoArenaInteraction && this.env.checkHanzoArenaInteraction(player, this.ui, this.audio)) {
+      // Handled Hanzo's Yakuza Katana Tall-Grass Duel Arena (Predators 2010)!
+    } else if (this.env && this.env.checkAlienFloraHarvest && this.env.checkAlienFloraHarvest(player, this.ui, this.audio)) {
+      // Handled Dr. Edwin's Neurotoxin Alien Flora Extraction (Predators 2010)!
+    } else if (this.env && this.env.checkRoyceCliffLeapInteraction && this.env.checkRoyceCliffLeapInteraction(player, this.ui, this.audio, this.particles)) {
+      // Handled Royce's Free-fall Cliff Leap into Plunge Basin (Predators 2010)!
+    } else if (this.env && this.env.checkSuperPredatorShipInteraction && this.env.checkSuperPredatorShipInteraction(player, this.ui, this.audio, this.horde, this.bosses, this.particles)) {
+      // Handled Mr. Black Super Predator Scout Ship Propulsion Overload (Predators 2010)!
+    } else if (this.env && this.env.checkFalconerRoostInteraction && this.env.checkFalconerRoostInteraction(player, this.ui, this.audio, this.falconDrone)) {
+      // Handled Falconer Predator Recon Drone Launch & Hunt Telemetry (Predators 2010)!
+    } else if (this.env && this.env.checkCuchilloDecoyInteraction && this.env.checkCuchilloDecoyInteraction(player, this.ui, this.audio, this.horde, this.bosses, this.particles)) {
+      // Handled Cuchillo's Booby-Trapped Acoustic Decoy Disarm (Predators 2010)!
+    } else if (this.env && this.env.checkBoneGongInteraction && this.env.checkBoneGongInteraction(player, this.ui, this.audio, this.horde, this.bosses, this.particles)) {
+      // Handled Royce's Bone Gong Strike & Thermal Flare Braziers (Predators 2010)!
+    } else if (this.env && this.env.checkIsabelleSniperStash && this.env.checkIsabelleSniperStash(player, this.ui, this.audio)) {
+      // Handled Isabelle's Blaser R93 Precision Sniper Ammo Stash (Predators 2010)!
+    } else if (this.env && this.env.checkDillonStandInteraction && this.env.checkDillonStandInteraction(player, this.ui, this.audio)) {
+      // Handled Al Dillon's Dual MP5 Last Stand (Predator 1987)!
+    } else if (this.env && this.env.checkPonchoStashInteraction && this.env.checkPonchoStashInteraction(player, this.ui, this.audio)) {
+      // Handled Poncho Ramirez's 40mm Grenade Cache (Predator 1987)!
+    } else if (this.env && this.env.checkHawkinsRelayInteraction && this.env.checkHawkinsRelayInteraction(player, this.ui, this.audio)) {
+      // Handled Rick Hawkins' Spec-Ops Radio Relay Beacon (Predator 1987)!
+    } else if (this.env && this.env.checkValVerdeMudPlunge && this.env.checkValVerdeMudPlunge(player, this.ui, this.audio)) {
+      // Handled Val Verde Waterfall Mud Plunge (Predator 1987)!
+    } else if (this.env && this.env.checkStargazerVivisectionInteraction && this.env.checkStargazerVivisectionInteraction(player, this.ui, this.audio)) {
+      // Handled Fugitive Predator Vivisection Table (The Predator 2018)!
+    } else if (this.env && this.env.checkPredatorKillerPodInteraction && this.env.checkPredatorKillerPodInteraction(player, this.ui, this.audio)) {
+      // Handled Predator Killer Nanotech Pod Deployment (The Predator 2018)!
+    } else if (this.env && this.env.checkQuinnSniperPerchInteraction && this.env.checkQuinnSniperPerchInteraction(player, this.ui, this.audio)) {
+      // Handled Quinn McKenna's TAC-50 Rooftop Perch (The Predator 2018)!
+    } else if (this.env && this.env.checkTraegerWeaponsLockerInteraction && this.env.checkTraegerWeaponsLockerInteraction(player, this.ui, this.audio)) {
+      // Handled Sean Traeger's Reversed Plasma Cannon Weapons Locker (The Predator 2018)!
+    } else if (this.env && this.env.checkLooniesBusInteraction && this.env.checkLooniesBusInteraction(player, this.ui, this.audio)) {
+      // Handled Loonies Military Transport Bus & Casey Bracket Medkit (The Predator 2018)!
+    } else if (this.env && this.env.checkStargazerShieldGenerator && this.env.checkStargazerShieldGenerator(player, this.ui, this.audio, this.horde)) {
+      // Handled Crashed Fugitive Ark Starship Forcefield Shield Overload (The Predator 2018)!
+    } else if (this.env && this.env.checkFugitiveLockerInteraction && this.env.checkFugitiveLockerInteraction(player, this.ui, this.audio)) {
+      // Handled Fugitive Predator's Gauntlet & Mask Storage Drop (The Predator 2018)!
+    } else if (this.env && this.env.checkFriendlyLoboInteraction && this.env.checkFriendlyLoboInteraction(player, this.ui, this.audio)) {
+      // Handled "Lobo" Friendly Head-Scarred Predator Hound (The Predator 2018)!
+    } else if (this.env && this.env.checkBaxleyCoyleBunkerInteraction && this.env.checkBaxleyCoyleBunkerInteraction(player, this.ui, this.audio)) {
+      // Handled Baxley & Coyle's Tourette's / Sniper Defilade Bunker (The Predator 2018)!
+    } else if (this.env && this.env.checkNebraskaHarpoonRig && this.env.checkNebraskaHarpoonRig(player, this.ui, this.audio, this.horde, this.bosses, this.particles)) {
+      // Handled Nebraska Williams' Steel Harpoon Tow Cable Rig (The Predator 2018)!
+    } else if (this.env && this.env.checkRoryTranslatorInteraction && this.env.checkRoryTranslatorInteraction(player, this.ui, this.audio, this.bosses)) {
+      // Handled Rory McKenna's Decoded Star Map & Predator Mask (The Predator 2018)!
+    } else if (this.env && this.env.checkTurbineCoreOverload && this.env.checkTurbineCoreOverload(player, this.ui, this.audio, this.horde, this.bosses, this.particles)) {
+      // Handled Crashed Ark Ship Main Plasma Turbine Core Overload (The Predator 2018)!
+    } else if (this.env && this.env.checkStargazerDecontamination && this.env.checkStargazerDecontamination(player, this.ui, this.audio)) {
+      // Handled Dr. Casey Bracket's Biogenetic Decontamination Airlock (The Predator 2018)!
+    } else if (this.env && this.env.checkBoneMaskDecoyInteraction && this.env.checkBoneMaskDecoyInteraction(player, this.ui, this.audio, this.bosses, this.particles)) {
+      // Handled Feral Bone Mask & 3-Laser Homing Decoy Rig (Prey 2022)!
+    } else if (this.env && this.env.checkOrangeFlowerInteraction && this.env.checkOrangeFlowerInteraction(player, this.ui, this.audio)) {
+      // Handled Naru's Orange Flower (Sariska) Meadow (Prey 2022)!
+    } else if (this.env && this.env.checkAdoliniPistolInteraction && this.env.checkAdoliniPistolInteraction(player, this.ui, this.audio, this.horde, this.bosses, this.particles)) {
+      // Handled Raphael Adolini 1715 Flintlock Pistol (Prey 2022)!
+    } else if (this.env && this.env.checkTaabeWarBowInteraction && this.env.checkTaabeWarBowInteraction(player, this.ui, this.audio)) {
+      // Handled Taabe's Comanche War Horse & Rock Overlook (Prey 2022)!
+    } else if (this.env && this.env.checkGrizzlyBearTrophyInteraction && this.env.checkGrizzlyBearTrophyInteraction(player, this.ui, this.audio)) {
+      // Handled Giant Slain Grizzly Bear Carcass Trophy (Prey 2022)!
+    } else if (this.env && this.env.checkNaruTomahawkInteraction && this.env.checkNaruTomahawkInteraction(player, this.ui, this.audio)) {
+      // Handled Naru's Tethered Tomahawk in Pine Trunk (Prey 2022)!
+    } else if (this.env && this.env.checkTrapperMedicalTentInteraction && this.env.checkTrapperMedicalTentInteraction(player, this.ui, this.audio)) {
+      // Handled Trapper Field Medical Tent (Prey 2022)!
+    } else if (this.env && this.env.checkFeralArsenalInteraction && this.env.checkFeralArsenalInteraction(player, this.ui, this.audio)) {
+      // Handled Archaic Feral Weapon Rack (Prey 2022)!
+    } else if (this.env && this.env.checkSariiCompanionInteraction && this.env.checkSariiCompanionInteraction(player, this.ui, this.audio)) {
+      // Handled Sarii the Carolina Dog Companion (Prey 2022)!
+    } else if (this.env && this.env.checkTrapperBaitTreeInteraction && this.env.checkTrapperBaitTreeInteraction(player, this.ui, this.audio, this.horde, this.bosses, this.particles)) {
+      // Handled French Trappers' Bait Tree & Powder Kegs (Prey 2022)!
+    } else if (this.env && this.env.checkVoyageurRaftInteraction && this.env.checkVoyageurRaftInteraction(player, this.ui, this.audio)) {
+      // Handled French Voyageurs' River Raft (Prey 2022)!
+    } else if (this.env && this.env.checkComancheTotemInteraction && this.env.checkComancheTotemInteraction(player, this.ui, this.audio)) {
+      // Handled Comanche Sun Dance War Paint Totem Post (Prey 2022)!
+    } else if (this.env && this.env.checkLightningPineInteraction && this.env.checkLightningPineInteraction(player, this.ui, this.audio)) {
+      // Handled Lightning-Struck Split Hollow Pine Pouch (Prey 2022)!
+    } else if (this.env && this.env.checkTrapperCampfireInteraction && this.env.checkTrapperCampfireInteraction(player, this.ui, this.audio, this.horde, this.particles)) {
+      // Handled French Trappers' Campfire Cauldron (Prey 2022)!
+    } else if (this.env && this.env.checkBuffaloCairnInteraction && this.env.checkBuffaloCairnInteraction(player, this.ui, this.audio)) {
+      // Handled Comanche Buffalo Skull Cairn (Prey 2022)!
+    } else if (this.env && this.env.checkFeralSeveredGauntletInteraction && this.env.checkFeralSeveredGauntletInteraction(player, this.ui, this.audio)) {
+      // Handled Feral Predator's Severed Arm-Gauntlet (Prey 2022)!
+    } else if (this.env && this.env.checkStasisTrioAwakeningInteraction && this.env.checkStasisTrioAwakeningInteraction(player, this.ui, this.audio, this.bosses, this.horde, this.particles)) {
+      // Handled Trio Cryo-Stasis Pods (Killer of Killers 2025)!
+    } else if (this.env && this.env.checkUrsaShieldInteraction && this.env.checkUrsaShieldInteraction(player, this.ui, this.audio)) {
+      // Handled Ursa's Viking Shield (The Shield 850)!
+    } else if (this.env && this.env.checkUrsaDaneAxeInteraction && this.env.checkUrsaDaneAxeInteraction(player, this.ui, this.audio)) {
+      // Handled Ursa's Dane Axe & Runestone (The Shield 850)!
+    } else if (this.env && this.env.checkKenjiKatanaInteraction && this.env.checkKenjiKatanaInteraction(player, this.ui, this.audio)) {
+      // Handled Kenji's Masamune Katana (The Sabre 1620)!
+    } else if (this.env && this.env.checkKenjiBambooDecoyInteraction && this.env.checkKenjiBambooDecoyInteraction(player, this.ui, this.audio, this.horde)) {
+      // Handled Kenji's Bamboo Decoy (The Sabre 1620)!
+    } else if (this.env && this.env.checkTorresWarhawkInteraction && this.env.checkTorresWarhawkInteraction(player, this.ui, this.audio)) {
+      // Handled Torres' Crashed P-40 Warhawk (The Bullet 1943)!
+    } else if (this.env && this.env.checkTorresBrowningInteraction && this.env.checkTorresBrowningInteraction(player, this.ui, this.audio, this.horde, this.particles)) {
+      // Handled Torres' Browning .50 Cal M2 Machine Gun (The Bullet 1943)!
+    } else if (this.env && this.env.checkScoutShipConsoleInteraction && this.env.checkScoutShipConsoleInteraction(player.position, this.ui, this.audio, this.horde, player)) {
+      // Handled Crashed Scout Ship Telemetry Scan (AVP: Requiem 2007)!
+    } else if (this.env && this.env.checkCharonLabConsoleInteraction && this.env.checkCharonLabConsoleInteraction(player.position, this.horde, this.ui, this.audio)) {
+      // Handled Base Charon Mutagen Pheromone Dispersion (Aliens: Rogue 1993)!
+    } else if (this.env && this.env.checkFixedSentryInteraction && this.env.checkFixedSentryInteraction(player.position, this.audio, this.ui)) {
+      // Handled Fixed UA 571-C Sentry 250-Round Drum Reload (Aliens 1986)!
+    } else if (this.checkCatwalkPlungingExecution(player)) {
+      // Handled Catwalk Plunging Execution Drop (v53.0)!
+    } else {
+      return this.checkTrophyExecution(player);
+    }
+    return true;
+  }
+
+  setupDeclarativeControls() {
+    const playerActions = {
+      performCombistickPoleVault: () => this.player.performCombistickPoleVault(this.horde, this.bosses, this.audio, this.particles, this.ui),
+      performWristbladeParry: () => this.player.performWristbladeParry(this.audio, this.particles, this.ui),
+      triggerVoiceMimicryDecoy: () => this.player.triggerVoiceMimicryDecoy(this.horde, this.audio, this.ui, this.particles),
+      performPredatorChestThumpRoar: () => this.player.performPredatorChestThumpRoar(this.horde, this.bosses, this.synthetics, this.audio, this.particles, this.ui),
+      performCombistickCycloneWhirl: () => this.player.performCombistickCycloneWhirl(this.horde, this.bosses, this.synthetics, this.audio, this.particles, this.ui),
+      performSmartDiscMultiLock: () => this.player.performSmartDiscMultiLock(this.horde, this.bosses, this.synthetics, this.audio, this.particles, this.ui),
+      fireBurnerHeavyPlasma: () => this.player.fireBurnerHeavyPlasma(this.horde, this.bosses, this.synthetics, this.particles, this.audio, this.ui),
+      toggleSniperPlasmaMode: () => this.player.toggleSniperPlasmaMode(this.renderer.camera, this.audio, this.ui)
+    };
+    const gameActions = new Set(['inputNukeKeypad', 'abortNukeCountdown', 'toggleClanHonorVaultModal', 'toggleClanForgeModal',
+      'toggleMothershipBridgeModal', 'toggleWeaponWheel', 'selectWeaponSlice', 'callPlanetaryOrbitalBarrage', 'callOrbitalDropPodResupply', 'callEldersEmergencyBlessing']);
+    const selector = '[data-game-action], [data-player-action], [data-modal-id]';
+    document.addEventListener('click', event => {
+      const control = event.target.closest?.(selector);
+      if (!control) return;
+      if (control.dataset.modalId) {
+        const modal = document.getElementById(control.dataset.modalId);
+        if (control.dataset.modalAction === 'toggle') this.toggleTacticalModal(control.dataset.modalId);
+        else if (!this.closeTacticalModal(control.dataset.modalId)) modal?.classList.add('hidden');
+        return;
+      }
+      if (!this.isPlaying || !this.player || this.player.hp <= 0 || this.dropPod.isActive || this.photoMode.isActive) return;
+      if (control.dataset.playerAction) {
+        if (!this.isPaused) playerActions[control.dataset.playerAction]?.();
+      } else if (gameActions.has(control.dataset.gameAction)) {
+        let args = [];
+        try { args = JSON.parse(control.dataset.gameArgs ?? '[]'); } catch { return; }
+        if (Array.isArray(args)) this[control.dataset.gameAction](...args);
+      }
+    });
+    document.addEventListener('keydown', event => {
+      const control = event.target.closest?.('div[role="button"]');
+      if (control?.matches(selector) && ['Enter', ' '].includes(event.key)) {
+        event.preventDefault(); event.stopPropagation(); control.click();
+      }
+    });
   }
 
   updateVisionOverlays(mode) {
@@ -935,9 +1836,10 @@ class GameApp {
     this.nukeTimeLeft = 6;
     if (timerText) timerText.innerText = this.nukeTimeLeft;
 
-    if (this.nukeInterval) clearInterval(this.nukeInterval);
-    this.nukeInterval = setInterval(() => {
-      this.nukeTimeLeft--;
+    const countdown = ++this._nukeSequence;
+    for (let second = 1; second <= 6; second++) this.scheduleMissionTask(() => {
+      if (!this.nukeCountingDown || countdown !== this._nukeSequence || !this.player) return;
+      this.nukeTimeLeft = 6 - second;
       if (timerText) timerText.innerText = this.nukeTimeLeft;
 
       // Authentic 1987 Billy's mimicry sardonic laugh right before detonation
@@ -950,9 +1852,7 @@ class GameApp {
       }
 
       if (this.nukeTimeLeft <= 0) {
-        clearInterval(this.nukeInterval);
-        this.nukeInterval = null;
-        if (nukeModal) nukeModal.classList.add('hidden');
+        nukeModal?.classList.add('hidden');
         this.nukeCountingDown = false;
         if (this.player && this.player.clearNukeHoloMesh) {
           this.player.clearNukeHoloMesh();
@@ -965,7 +1865,7 @@ class GameApp {
         this.triggerCameraShake(3.0, 2.5);
         this.ui.showAnnouncement('☢️ ANNIHILATION THERMONUCLÉAIRE PURIFICATRICE 1987 ACCOMPLIE !');
       }
-    }, 1000);
+    }, second);
   }
 
   inputNukeKeypad(glyph) {
@@ -976,11 +1876,7 @@ class GameApp {
     if (glyphTrack) {
       glyphTrack.innerText = `${glyphTrack.innerText.slice(2)} ${glyph}`;
     }
-    if (this.nukeCountingDown && this.nukeTimeLeft > 1) {
-      this.nukeTimeLeft--;
-      const timerText = document.getElementById('nuke-timer-seconds');
-      if (timerText) timerText.innerText = this.nukeTimeLeft;
-    }
+
   }
 
   abortNukeCountdown() {
@@ -990,6 +1886,7 @@ class GameApp {
       this.nukeInterval = null;
     }
     this.nukeCountingDown = false;
+    this._nukeSequence++;
     document.getElementById('nuke-countdown-overlay')?.classList.add('hidden');
     if (this.player && this.player.clearNukeHoloMesh) {
       this.player.clearNukeHoloMesh();
@@ -1003,14 +1900,14 @@ class GameApp {
   }
 
   /* === CHANTIER 8 (v53.0): High Catwalk Plunging Execution Drop === */
-  checkCatwalkPlungingExecution() {
-    if (!this.player || this.player.position.y < 3.5) return false;
+  checkCatwalkPlungingExecution(player = this.player) {
+    if (!player || player.position.y < 3.5) return false;
     let target = null;
     let minDist = 7.0;
 
     if (this.bosses && this.bosses.activeBoss) {
       const bPos = this.bosses.activeBoss.mesh.position;
-      const dHoriz = new THREE.Vector2(this.player.position.x - bPos.x, this.player.position.z - bPos.z).length();
+      const dHoriz = new THREE.Vector2(player.position.x - bPos.x, player.position.z - bPos.z).length();
       if (dHoriz <= 6.5 && bPos.y <= 1.5) {
         target = this.bosses.activeBoss;
         minDist = dHoriz;
@@ -1021,7 +1918,7 @@ class GameApp {
       this.horde.aliens.forEach(a => {
         if (!a || a.hp <= 0) return;
         const aPos = a.mesh.position;
-        const dHoriz = new THREE.Vector2(this.player.position.x - aPos.x, this.player.position.z - aPos.z).length();
+        const dHoriz = new THREE.Vector2(player.position.x - aPos.x, player.position.z - aPos.z).length();
         if (dHoriz < minDist && aPos.y <= 1.5) {
           minDist = dHoriz;
           target = a;
@@ -1032,9 +1929,9 @@ class GameApp {
     if (!target) return false;
 
     const targetPos = target.mesh ? target.mesh.position.clone() : target.position.clone();
-    this.player.position.copy(targetPos);
-    this.player.position.y = 0;
-    if (this.player.mesh) this.player.mesh.position.copy(this.player.position);
+    player.position.copy(targetPos);
+    player.position.y = 0;
+    if (player.mesh) player.mesh.position.copy(player.position);
 
     if (this.audio && this.audio.playCombiStickImpale) {
       this.audio.playCombiStickImpale();
@@ -1063,31 +1960,68 @@ class GameApp {
     return true;
   }
 
-  startMission() {
+  startMission(options = {}) {
+    { const killLabel = document.querySelector('.ko-label'); if (killLabel) killLabel.textContent = this.missionMode?.startsWith('ascension') ? 'PROIES ABATTUES' : 'XENOMORPHES ÉLIMINÉS'; }
+    const selectedLevel=this.ui.selectedLevel??LEVELS_DATA[0];
+    const sceneOptions=operationSceneOptions(options.resumeOperation,{mapSeed:this.operationMapSeed,difficultyId:this.operationDifficulty});
+    this.operationMapSeed=this.missionMode==='fronts'?sceneOptions.mapSeed:0;
+    this.operationDifficulty=this.missionMode==='fronts'?sceneOptions.difficultyId:'standard';
+    this.extinctionVariant=this.missionMode==='fronts'&&this.operationId==='AFF-27'?
+      (options.resumeOperation?options.resumeOperation.scene?.extinctionVariant??'none':
+        this.extinctionVariant??'none'):'none';
+    // Old checkpoints lack a deployment marker and must preserve their signed
+    // historical budget projection. New missions use the audited front plan.
+    this.operationDeploymentPlan = this.missionMode==='fronts'
+      ? (options.resumeOperation?.scene?.deploymentPlan ??
+          (options.resumeOperation ? 'historical-fallback' : 'authored'))
+      : 'authored';
+    let preparedOperation=null;
+    try{
+      preparedOperation=this.missionMode==='fronts'?createOperationScene({operationId:this.operationId,level:selectedLevel,players:this.isCoOp?2:1,mapSeed:this.operationMapSeed,difficultyId:this.operationDifficulty,
+          deploymentPlan:this.operationDeploymentPlan,
+          extinctionVariant:this.extinctionVariant}):null;
+      const ascensionTarget=this.missionMode==='ascension'?ascensionWorld(this.ascensionWorldId):null;
+      if(this.missionMode==='ascension'&&!ascensionTarget)throw new Error('unknown Ascension world');
+      if(this.missionMode==='ascension_hub'){this.preparedBossEncounter=null;}else
+      this.preparedBossEncounter=preparedOperation?null:prepareBossEncounter({level:selectedLevel,bossType:ascensionTarget?.prey.bossId??options.bossType??selectedLevel.bossType,mode:this.missionMode==='sandbox'?'sandbox':ascensionTarget?'ascension':this.missionMode==='ascension_rite'?'rite':'level'});
+    }catch{
+      this.ui.showAnnouncement('Cet affrontement ne peut pas être préparé : vérifiez le terrain et le boss sélectionnés.');
+      return false;
+    }
+    this.isPlaying = false;
+    this.clearMissionState();
+    this.missionRun = `mission-${globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.floor(Math.random() * 1e9)}`}`;
+    this.rewardSessionId=this.missionRun;
+    this.combatEvents.reset(this.missionRun);
+    this._processedHitRecords = new WeakSet(); this._registeredDeathHits.clear(); this._rewardedDeaths.clear();
+    this.sacredBloodRitualTriggered = false;
     this.isPlaying = true;
     this.isPaused = false;
     this.waveIndex = 1;
     this.score = 0;
-    this.sessionSkulls = 0;
+    this.sessionSkulls = options.resumeOperation?.sessionSkulls ?? 0;
+    this.score = options.resumeOperation?.score ?? 0;
+    this._sessionDefeats = options.resumeOperation?.sessionDefeats ?? 0;
     this.comboHits = 0;
+    this.comboTimer = 0;
+    this.bossSpawned = false;
     this.horde.deadCount = 0;
     this.announcedMilestones = {};
+    this.ui.selectedLevel ??= LEVELS_DATA[0];
+    this.isEndlessMode = this.missionMode === 'survival';
+    this.totalWaves = this.missionMode === 'sandbox' ? 1 : this.ui.selectedLevel.waves;
+    const fidelityMode = document.getElementById('fidelity-mode-select')?.value ?? 'adapted';
+    this.activeLoadout = { ...(this.activeLoadout ?? {primary:'wristblades',secondary:'smart_disc',gadgets:['medicomp','bear_trap']}), fidelityMode };
 
     this.citadel.hide();
-    this.ui.showScreen(this.ui.inGameHud);
-    const loadoutModal = document.getElementById('loadout-prep-screen');
-    if (loadoutModal) loadoutModal.classList.add('hidden');
-
-    if (!this.ui.selectedLevel) {
-      this.ui.selectedLevel = LEVELS_DATA[0];
-    }
-    this.totalWaves = this.ui.selectedLevel.waves;
-
-    this.env.buildLevelEnvironment(this.ui.selectedLevel);
+    const variant = this.missionMode === 'fronts' && BATTLE_OPERATIONS.some(operation=>operation.id===this.operationId) ? getBattlefieldMapVariant(BATTLE_OPERATIONS.find(operation=>operation.id===this.operationId).mapId) : null;
+    if (variant) this.ui.selectedLevel = LEVELS_DATA.find(level=>level.id===variant.baseLevelId);
+    if(preparedOperation)this.ui.selectedLevel=preparedOperation.level;
+    this.env.buildLevelEnvironment({ ...this.ui.selectedLevel, mapId: variant?.id ?? (this.missionMode === 'ascension' ? this.ui.selectedLevel.mapId : undefined), mapSeed:this.operationMapSeed, battlefield: !['sandbox','survival','ascension_hub'].includes(this.missionMode), strategicMode: this.missionMode === 'fronts' });
+    this.initializeMissionSupports(options.resumeOperation);
     this.renderer.updateLevelEnvironment(this.ui.selectedLevel);
-    this.weather.setWeather(this.ui.selectedLevel.weatherType || 'none');
-    this.weather.spawnGasPipes(6);
-    this.weather.spawnSteamVents(5);
+    this.weather.setWeather(this.ui.selectedLevel.weather ?? this.ui.selectedLevel.theme);
+    this.weather.configureMissionSteamVents?.(this.ui.selectedLevel, this.env);
     this.gore.clear();
     this.bosses.clear();
     this.badBlood.clear();
@@ -1100,7 +2034,7 @@ class GameApp {
     if (this.player2) this.renderer.scene.remove(this.player2.mesh);
 
     this.player = new Player(this.renderer.scene, this.ui.selectedChar, this.audio, false, this.particles);
-    this.forge.applyStatsToPlayer(this.player);
+    this.player.setLaserColor?.(Number.parseInt(this.forge.upgrades.laserColor.slice(1), 16));
 
     // Chantier 9: Apply Tactical Armory Loadout Synergy
     if (!this.activeLoadout) {
@@ -1110,27 +2044,78 @@ class GameApp {
         gadgets: ['medicomp', 'bear_trap']
       };
     }
-    this.player.applyTacticalLoadout(this.activeLoadout);
+    this.player.applyLoadout?.(this.activeLoadout);
+    this.forge.applyStatsToPlayer(this.player);
+    this.player.position.y=this.env.getPlacementElevationAt?.(this.player.position.x,this.player.position.z)??this.env.getElevationAt?.(this.player.position.x,this.player.position.z)??0;
+    this.env.resolveMovement(this.player.position,this.player.radius??.6,this.player.getCollisionHeight?.()??2.4);
+    this.player.mesh.position.copy(this.player.position);
     const primName = (this.activeLoadout.primary || 'WRISTBLADES').toUpperCase();
     const secName = (this.activeLoadout.secondary || 'SMART_DISC').toUpperCase();
     this.ui.showAnnouncement(`🎒 LOADOUT ARMURERIE ACTIVÉ : [${primName}] + [${secName}]`);
 
     if (this.isCoOp) {
-      this.player2 = new Player(this.renderer.scene, CHARACTERS_DATA[1], this.audio, true, this.particles);
+      this.player2 = new Player(this.renderer.scene, CHARACTERS_DATA.find(character => character.id !== this.ui.selectedChar.id), this.audio, true, this.particles);
+      this.player2.applyLoadout?.(this.activeLoadout ?? {});
+      this.forge.applyStatsToPlayer(this.player2);
+      this.player2.position.y=this.env.getPlacementElevationAt?.(this.player2.position.x,this.player2.position.z)??this.player.position.y;
+      this.env.resolveMovement(this.player2.position,this.player2.radius??.6,this.player2.getCollisionHeight?.()??2.4);
+      this.player2.mesh.position.copy(this.player2.position);
     } else {
       this.player2 = null;
     }
 
-    // Trigger Cinematic Yautja Orbital Drop Pod Entrance!
-    this.dropPod.triggerDrop(this.player.position, () => {
-      this.ui.showAnnouncement('🚀 CAPSULE D\'INSERTION YAUTJA : SAS ÉJECTÉ ! LA CHASSE COMMENCE !');
-    });
+    for(const player of [this.player,this.player2].filter(Boolean))player.missionSupportContext=this.missionSupportContext;
+    // Hunts carry no Alien-setting human ammunition until a finite cache is opened (HW-DEC-87).
+    if(['hunt','ascension'].includes(this.missionMode)&&!options.resumeOperation)for(const player of [this.player,this.player2].filter(Boolean))emptyHumanWeaponAmmo(player);
+    // The Unblooded kit (spec 002): no shoulder cannon before the rank Blooded, no cloak before Rukh Tal.
+    for(const player of [this.player,this.player2].filter(Boolean))player.kitLocks=this.missionMode==='ascension'?{shoulderCannon:!this.ascensionProgress.state.blooded,cloak:!this.ascensionProgress.hasTool('cloak'),tools:ascensionToolGates(this.ascensionProgress.state.tools)}:this.missionMode==='ascension_rite'?{shoulderCannon:true,cloak:!this.ascensionProgress.hasTool('cloak'),tools:ritekitGates(this.ascensionProgress.state.tools)}:null;
+    if(options.resumeOperation?.playerStates)for(const[index,player]of[this.player,this.player2].entries())if(player&&options.resumeOperation.playerStates[index])restoreOperationPlayer(player,options.resumeOperation.playerStates[index],this.env);
+    if(options.resumeOperation?.preyInteractions&&this.env.restorePreyInteractions?.(options.resumeOperation.preyInteractions)!==true)throw new Error('Incompatible PREY interaction checkpoint');
 
-    this.skimmer.spawnAt(this.player.position.clone().add(new THREE.Vector3(5, 0, 5)));
-    this.allies.spawnSquad(this.player.position, 3);
-    this.marines.spawnSquad(this.player.position, 4);
-    this.synthetics.spawnSquad(this.player.position, 3);
-    this.horde.spawnWave(55, this.player.position);
+    // Both players arrive inside their own closed capsule. Combat starts after
+    // the complete opening and exit sequence, so insertion never spends grace.
+    if (this.missionMode === 'ascension_hub') { this.keys = {}; this.combatDirector.reset({ graceSeconds: 0 }); this.updateInsertionStatus(); }
+    else this.dropPod.triggerDrop(this.player.position, () => {
+      this.keys = {};
+      for (const player of [this.player, this.player2].filter(Boolean)) player.locomotion?.reset();
+      this.combatDirector.reset({ graceSeconds: 7 });
+      for (const player of [this.player, this.player2].filter(Boolean)) player.beginInsertionConcealment?.(25);
+      this.updateInsertionStatus();
+      const provenance=hunterEncounterProvenance(this.ui.selectedChar.id,this.preparedBossEncounter?.bossType);
+      this.ui.showAnnouncement(provenance??'INSERTION TERMINÉE — OUVERTURE FURTIVE : FRAPPEZ DANS LE DOS AVANT D’ÊTRE REPÉRÉ. [CLIC] FRAPPER · [C] PARER');
+    }, { players: [this.player, this.player2].filter(Boolean) });
+
+    // The Unblooded has no skimmer (spec 002); other modes keep it.
+    if (!this.missionMode?.startsWith('ascension')) this.skimmer.spawnAt(this.player.position.clone().add(new THREE.Vector3(-9, 0, 8)));
+    if (this.missionMode === 'fronts' && this.env.battlefieldLayout) {
+      this.startBattleOperation(options.resumeOperation);
+    } else if (!['sandbox', 'survival'].includes(this.missionMode) && this.env.battlefieldLayout) {
+      const world = this.missionMode === 'ascension' ? ascensionWorld(this.ascensionWorldId) : null;
+      
+      this.faunaEncounter = world ? new FaunaEncounter(this.horde, world, { onLine: line => this.ui.showAnnouncement(line) }) : null;
+      this.battlefield = new BattlefieldMission({ environment: this.env, horde: this.horde,
+        bosses: this.bosses, level: this.ui.selectedLevel,preparedEncounter:this.preparedBossEncounter, encounter: this.faunaEncounter,
+        onAnnouncement: message => this.ui.showAnnouncement(message),
+        onSectorEntered: sector => this.enterBattlefieldSector(sector) });
+      this.battlefieldProgression = this.battlefield.progression;
+      this.totalWaves = this.env.battlefieldLayout.sectors.length;
+      this.battlefield.update([this.player, this.player2].filter(Boolean));
+    } else if (this.missionMode === 'ascension_hub') {
+      this.shipHub = new AscensionShipHub(this.renderer.scene, this.ascensionProgress, { onLine: line => this.ui.showAnnouncement(line), onLaunch: worldId => this.launchAscensionHunt(worldId) });
+      if (this.ascensionWorldId && this.ascensionProgress.unlockedWorlds().some(world => world.id === this.ascensionWorldId)) this.shipHub.targetWorldId = this.ascensionWorldId;
+      this.shipHub.build();
+    } else {
+      const supportPosition = this.player.position.clone().add(new THREE.Vector3(0, 0, 12));
+      this.allies.spawnSquad(supportPosition, 3);
+      this.marines.spawnSquad(supportPosition, 4);
+      this.synthetics.spawnSquad(supportPosition, 3);
+      this.weather.spawnGasPipes(6);
+      this.horde.spawnWave(options.enemyCount ?? 35, this.player.position);
+    }
+    this.restoreMissionSupports(options.resumeOperation?.supports);
+    this.renderer.camera.position.copy(this.player.position).add(new THREE.Vector3(0, 10, 16));
+    this.renderer.cameraP2.position.copy(this.renderer.camera.position);
+    this.updateInsertionPresentation(0, true);
 
     // Initialize Battlefield Morale to 50%
     this.battlefieldMorale = 50.0;
@@ -1138,51 +2123,226 @@ class GameApp {
 
     this.audio.startBackgroundMusic();
     this.ui.showScreen(this.ui.inGameHud);
-    this.ui.showAnnouncement(`MISSION DÉPLOYÉE: ${this.ui.selectedLevel.name}`);
+    this.ui.showCombo(0);
+    this.ui.updateHUD(this.player, this.horde, this.bosses, this.waveIndex, this.totalWaves, this.score,{secondaryPlayer:this.player2,waveLabel:this.shipHub?'À BORD — ENTRE DEUX CHASSES':undefined,supports:this.missionMode?.startsWith('ascension')?null:{apc:this.apc.getSupportState(),cheyenne:this.dropship.getSupportState()}});
+    this.ui.updateBattlefieldHUD(this.battlefieldProgression, this.env.battlefieldLayout, this.player, this.combatDirector, [this.player, this.player2].filter(Boolean));
+    document.getElementById('hud-weapon-label').innerText = 'ARME: PRINCIPALE';
+    const visionTag = document.getElementById('hud-vision-tag');
+    if (visionTag) visionTag.innerText = 'VISION : NATURELLE';
+    document.getElementById('btn-abandon-operation').classList.toggle('hidden',!this.battleSimulation);
+    document.getElementById('btn-hud-map').classList.toggle('hidden',!this.battleSimulation);
+    this.lastTime = performance.now();
+    this.updateInsertionStatus();
+  }
+
+  clearAPCSupport() {
+    // Redeployment must not vaporize an already seated finite USCM section.
+    // An unsafe dock refuses the reset; a destroyed hull uses the separate
+    // onDestroyed casualty path and has already emptied the manifest.
+    if(this.apcMarineService?.manifest){
+      const exit=this.apcMarineService.beforeRedeploy();
+      if(!exit.accepted)return false;
+    }
+    if (this._apcNavigationCollider) {
+      this.env.colliders = this.env.colliders.filter(collider => collider !== this._apcNavigationCollider);
+      this._apcNavigationCollider = null;
+      this.invalidateSupportNavigation();
+    }
+    this.apc.clear();
+    return true;
+  }
+
+  spawnAPCSupport(position) {
+    if(this.clearAPCSupport()===false)return false;
+    this.env.resolveMovement(position, this.apc.navigationRadius);
+    position.y=this.env.getPlacementElevationAt?.(position.x,position.z)??position.y;
+    if(!this.apc.spawn(position))return false;
+    // The navigation system must see the same carrier that stops characters;
+    // otherwise ground enemies repeatedly walk into its visible hull.
+    this._apcNavigationCollider = this.apc.getNavigationCollider();
+    if(this._apcNavigationCollider)this.env.colliders.push(this._apcNavigationCollider);
+    this.invalidateSupportNavigation();
+    return true;
+  }
+
+  invalidateSupportNavigation() {
+    this.env.navigation?.gridCache?.clear();
+    if(this.env.navigation)this.env.navigation.actorPaths=new WeakMap();
+  }
+
+  getSupportCombatants() {
+    return [this.apc?.getCombatant(),this.dropship?.getCombatant()].filter(Boolean);
+  }
+
+  initializeMissionSupports(saved) {
+    const context=createMissionSupportContext({missionId:saved?.campaignRunId??this.missionRun,levelId:this.missionMode==='ascension'?'ascension':this.ui.selectedLevel.id,fidelityMode:this.activeLoadout.fidelityMode,environment:this.env,
+      onDestroyed:event=>{
+        if(event.kind==='apc'){
+          const killer=this.battleSimulation?.factions.has(event.killerFaction)?event.killerFaction:null;
+          this.apcMarineService?.carrierDestroyed(killer);
+          this.clearAPCSupport();
+        }
+        this.ui.showAnnouncement(event.kind==='apc'?'APC M577 DÉTRUIT — APPUI PERDU POUR CETTE MISSION.':'CHEYENNE DÉTRUIT — APPUI PERDU POUR CETTE MISSION.');
+      }});
+    this.missionSupportContext=context;
+    this.orbital.supportContext=context;
+    this.apc.beginMission(context);this.dropship.beginMission(context);
+  }
+
+  restoreMissionSupports(saved) {
+    if(!validateM577CarrierCheckpoint(this.battleSimulation?.getAPCManifest?.(),saved,this.env))
+      throw new Error('Incompatible APC passenger checkpoint: absent, displaced or unsupported carrier');
+    if(!saved)return;
+    if(saved.version!==1||!this.apc.restore(saved.apc)||!this.dropship.restore(saved.cheyenne))throw new Error('Incompatible support checkpoint');
+    if(this._apcNavigationCollider)this.env.colliders=this.env.colliders.filter(collider=>collider!==this._apcNavigationCollider);
+    this._apcNavigationCollider=this.apc.getNavigationCollider();
+    if(this._apcNavigationCollider)this.env.colliders.push(this._apcNavigationCollider);
+    this.invalidateSupportNavigation();
+    if(this.battleSimulation?.apcManifest&&!this.apc.isSupportActive())
+      throw new Error('Incompatible APC passenger checkpoint: carrier is not deployed');
+    if(this.battleSimulation?.apcManifest&&
+       this.apcMarineService?.validateCarrierPosition().accepted!==true)
+      throw new Error('Incompatible APC passenger checkpoint: live carrier position differs from manifest');
+  }
+
+  enterBattlefieldSector(sector) {
+    this.waveIndex = sector.index + 1;
+    const center = new THREE.Vector3(sector.center[0], 0, sector.center[1]);
+    const arrivingPlayer = [this.player, this.player2].find(player => player?.hp > 0 && this.env.getSectorAt(player.position)?.id === sector.id);
+    const supportPosition = arrivingPlayer ? arrivingPlayer.position.clone().lerp(center, 0.2) : center;
+    this.combatDirector.reset({ graceSeconds: sector.index === 0 ? 8 : 2.5 });
+    // The opening fight belongs to the player. Supporting factions join later
+    // sectors instead of killing the first six enemies during insertion.
+    // Ascension: the pack (three allies) hunts with the Unblooded; no human support or cache on these worlds.
+    const supports = this.missionMode === 'ascension' ? { allies: 3, marines: 0, synthetics: 0, gasPipes: 0, apc: false, nationalGuard: 0 }
+      : this.missionMode === 'ascension_rite' ? { allies: 2, marines: 0, synthetics: 0, gasPipes: 0, apc: false, nationalGuard: 0 } : sectorSupportPlan(this.ui.selectedLevel.id, sector.index);
+    this.allies.spawnSquad(supportPosition, supports.allies);
+    if (supports.marines === 0) this.marines.clearSquad();
+    else this.marines.spawnSquad(supportPosition, supports.marines);
+    if (supports.nationalGuard) this.marines.spawnNationalGuard?.(supportPosition, supports.nationalGuard);
+    this.synthetics.spawnSquad(center, supports.synthetics);
+    this.badBlood.clear();
+    this.weather.spawnGasPipes(supports.gasPipes, center);
+    this.clearAPCSupport();
+    if (supports.apc) {
+      const vehiclePosition = supportPosition.clone().add(new THREE.Vector3(-8, 0, 6));
+      this.spawnAPCSupport(vehiclePosition);
+      this.scheduleMissionTask(() => {
+        if (this.apc.mesh && this.env.activeSectorId === sector.id) this.ui.showAnnouncement('RENFORT USCM — APC M577 EN POSITION DE SOUTIEN');
+      }, 1.5);
+    }
+    // Resolve the freshly spawned squad against the carrier as well, before
+    // the first frame rather than leaving an ally inside its hull.
+    for (const actor of [...this.allies.allies, ...this.marines.marines, ...this.synthetics.androids]) this.env.resolveMovement(actor.mesh.position, 1);
+    // Keep the skimmer available as the battlefield advances without moving a
+    // mounted vehicle out from under either player's controls.
+    if (!this.skimmer.isMounted && !this.missionMode?.startsWith('ascension')) this.skimmer.spawnAt(center.clone().add(new THREE.Vector3(sector.index === 0 ? -9 : 5, 0, sector.index === 0 ? 8 : 5)));
+    if (this.missionMode === 'hunt' && !this.battleSimulation) this.spawnHumanWeaponCaches?.(sector, center);
+    if (sector.objective.type === 'boss') this.bossSpawned = true;
+  }
+
+  /** From the drop bay of La Lame Patiente to a hunt on the chosen open world. */
+  launchAscensionHunt(worldId) {
+    if (worldId === 'rite') {
+      if (!this.ascensionProgress.riteOpen() || this.ascensionProgress.state.blooded) return false;
+      this.missionMode = 'ascension_rite'; this.ascensionWorldId = 'rite'; this.riteFirstBlood = false;
+      this.ui.selectedLevel = LEVELS_DATA.find(level => level.id === 'antarctic_pyramid');
+      this.isPlaying = false; this.clearMissionState();
+      return this.startMission({ bossType: 'praetorian' });
+    }
+    if (!this.ascensionProgress.unlockedWorlds().some(world => world.id === worldId)) return false;
+    this.ascensionWorldId = worldId; this.missionMode = 'ascension'; this.ui.selectedLevel = ascensionLevel(worldId, LEVELS_DATA);
+    this.isPlaying = false; this.clearMissionState();
+    return this.startMission();
+  }
+
+  spawnHumanWeaponCaches(sector, center) {
+    const count = typeof humanWeaponCacheCount !== 'function' ? 0 : humanWeaponCacheCount(this.ui.selectedLevel.id, sector.index);
+    this.humanWeaponCaches ??= [];
+    for (let index = 0; index < count; index++) {
+      const angle = sector.index * 1.7 + index * Math.PI;
+      const position = center.clone().add(new THREE.Vector3(Math.cos(angle) * 14, 0, Math.sin(angle) * 14));
+      this.env.resolveMovement(position, 0.8);
+      position.y = this.env.getPlacementElevationAt?.(position.x, position.z) ?? this.env.getElevationAt?.(position.x, position.z) ?? 0;
+      const mesh = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.7, 0.8), new THREE.MeshStandardMaterial({ color: 0x3f4f2a, metalness: 0.6, roughness: 0.45, emissive: 0x112200 }));
+      mesh.name = 'human-weapon-cache'; mesh.position.copy(position).add(new THREE.Vector3(0, 0.35, 0));
+      this.renderer.scene.add(mesh);
+      this.humanWeaponCaches.push({ id: `${sector.id}:cache:${index}`, sectorId: sector.id, mesh, opened: false });
+    }
+  }
+
+  tryOpenHumanWeaponCache(player) {
+    const cache = (this.humanWeaponCaches ?? []).find(item => !item.opened && item.mesh.position.distanceTo(player.position) <= 2.6);
+    if (!cache) return false;
+    const taken = openHumanWeaponCache(player, cache);
+    if (!taken) return false;
+    cache.mesh.material.color.setHex(0x2a2a2a); cache.mesh.material.emissive.setHex(0x000000);
+    this.ui.showAnnouncement(`CAISSE D’ARMES HUMAINES — M41A +${taken.m41aGrenadeCharges} · GAUSS +${taken.m77GaussAmmo} · SEEGSON +${taken.seegsonBoltAmmo}`);
+    return true;
+  }
+
+  clearHumanWeaponCaches() {
+    for (const cache of this.humanWeaponCaches ?? []) { this.renderer.scene.remove(cache.mesh); cache.mesh.geometry.dispose(); cache.mesh.material.dispose(); }
+    this.humanWeaponCaches = [];
   }
 
   startSandboxMission(config) {
-    this.startMission();
-    this.horde.spawnWave(config.enemyCount, this.player.position);
-    this.bosses.spawnBoss('empress_matriarch', this.player.position.clone().add(new THREE.Vector3(0, 0, -30)));
-    this.ui.showAnnouncement('⚠️ ARÈNE SANDBOX: REINE MATRIARCHE VOLANTE 20M APPARAÎT !');
+    this.audio.init();
+    this.missionMode = 'sandbox';
+    this.isCoOp = false;
+    this.renderer.setSplitScreen(false);
+    const enemyCount = Math.max(1, Math.min(150, Math.round(Number(config.enemyCount) || 60)));
+    if(this.startMission({ enemyCount,bossType:config.bossType??'xenomorph_queen' })===false)return false;
+    this.bossSpawned = true;
+    this.bosses.spawnBoss(config.bossType || 'xenomorph_queen', this.player.position.clone().add(new THREE.Vector3(0, 0, -30)),this.preparedBossEncounter);
+    this.ui.showAnnouncement(`ARÈNE SANDBOX : ${enemyCount} ENNEMIS ET UN BOSS. ÉLIMINEZ TOUTES LES CIBLES.`);
+  }
+
+  scheduleAttackImpact(owner, attack, resolve) {
+    const run = this.missionRun;
+    this.scheduleMissionTask(() => {
+      if (!this.isPlaying || this.missionRun !== run || owner.hp <= 0 || ![this.player, this.player2].includes(owner)) return;
+      if (typeof owner.claimAttackImpact === 'function' && !owner.claimAttackImpact(attack.attackId)) return;
+      resolve();
+    }, Math.max(0, attack.hitDelay ?? 0));
+  }
+
+  dispatchSelectedProjectile(weapon, charged = false, owner = this.player) {
+    if (weapon.id === 'smart_disc') return this.throwSmartDisc(owner);
+    if (weapon.id === 'shuriken') return this.throwShuriken(owner);
+    if (weapon.actionMethod === 'fireCompoundBow' || weapon.id === 'compound_bow' || weapon.id === 'taabe_bow') return this.fireCompoundBow(owner);
+    return this.firePlasmaCannon(charged,owner);
   }
 
   performLightAttack() {
-    if (!this.player) return;
-    const attack = this.player.lightAttack();
-    if (!attack) return;
+    const owner = this.player;
+    if (!owner || owner.hp <= 0) return false;
+    const weapon = owner.getWeaponState?.();
+    if (weapon?.action === 'projectile') return this.dispatchSelectedProjectile(weapon, false);
+    const attack = owner.lightAttack();
+    if (!attack) return false;
+    this.scheduleAttackImpact(owner, attack, () => this.resolveLightAttack(attack));
+    return true;
+  }
 
+  resolveLightAttack(attack) {
     if (this.vanguardFrenzyActive) {
       attack.damage *= 1.35;
     }
 
     attack.origin = this.player.position;
+    attack=createHunterStealthAttack(this.player,attack,this.horde);
     const hits = this.horde.checkMeleeHits(attack);
     if (hits.length > 0) this.registerHits(hits);
     this.weather.checkExplosions(this.player.position, 4.0, this.horde, this.particles);
     this.synthetics.checkHits(attack);
+    if (this.bosses.activeBoss && this.bosses.activeBoss.mesh.position.distanceTo(this.player.position) <= attack.radius + 2) {
+      this.hitBossFromPlayer(attack.damage,this.player.position,'light');
+    }
 
-    // Chantier 2: Predator Cloak Thermal Distortion & Backstab Stealth Execution (Predator 1987 / Prey 2022)
-    if (this.player.isCloaked && hits.length > 0) {
-      const playerForward = new THREE.Vector3(Math.sin(this.player.rotationY), 0, Math.cos(this.player.rotationY)).normalize();
-      hits.forEach(hitEnemy => {
-        if (hitEnemy && hitEnemy.mesh) {
-          const toEnemy = hitEnemy.mesh.position.clone().sub(this.player.position).normalize();
-          if (playerForward.dot(toEnemy) > 0.3) {
-            hitEnemy.hp -= attack.damage * 2.5; // Additional 2.5x stealth execution damage (total 3.5x)
-            if (this.audio && this.audio.playStealthAssassination) {
-              this.audio.playStealthAssassination();
-            }
-            this.player.recordTrophy('Exécution Silencieuse de Proie par Poignardage Dorsal', 150);
-            this.score += 150;
-            this.ui.showAnnouncement("⚡ ASSASSINAT SILENCIEUX - EXÉCUTION D'HONNEUR (+150 HONNEUR) !");
-            if (this.particles && this.particles.emitAlienBloodSpurt) {
-              this.particles.emitAlienBloodSpurt(hitEnemy.mesh.position, 16);
-            }
-          }
-        }
-      });
+    if(attack.ambushApplied===true&&hits.length>0){
+      this.audio.playStealthAssassination?.();
+      this.ui.showAnnouncement('EMBUSCADE — bonus dorsal appliqué à une seule cible. Position révélée pendant 3 s.');
     }
 
     // Environmental Hazard Interactions
@@ -1220,6 +2380,24 @@ class GameApp {
       if (this.env.checkRebelFuelBarrelsDamage) {
         this.env.checkRebelFuelBarrelsDamage(attack.origin, attack.damage, this.audio, this.horde, this.bosses, this.particles, this.ui);
       }
+      if (this.env.checkFlareTripwireTrigger) {
+        this.env.checkFlareTripwireTrigger(attack.origin, this.audio, this.horde, this.bosses, this.particles, this.ui);
+      }
+      if (this.env.checkNeonTransformerOverload) {
+        this.env.checkNeonTransformerOverload(attack.origin, attack.damage, this.audio, this.horde, this.bosses, this.particles, this.ui);
+      }
+      if (this.env.checkBoilingTarSpillDamage) {
+        this.env.checkBoilingTarSpillDamage(attack.origin, attack.damage, this.audio, this.horde, this.bosses, this.particles, this.ui);
+      }
+      if (this.env.checkRoyceTripwireTrigger) {
+        this.env.checkRoyceTripwireTrigger(attack.origin, this.audio, this.horde, this.bosses, this.particles, this.ui);
+      }
+      if (this.env.checkMombassaPunjiTrapTrigger) {
+        this.env.checkMombassaPunjiTrapTrigger(attack.origin, this.audio, this.horde, this.bosses, this.particles, this.ui);
+      }
+      if (this.env.checkCryoNitrogenTankTrigger) {
+        this.env.checkCryoNitrogenTankTrigger(attack.origin, this.audio, this.horde, this.bosses, this.particles, this.ui);
+      }
     }
 
     // Update Combo Chain Tag
@@ -1229,25 +2407,21 @@ class GameApp {
       tagElem.style.color = '#00d2ff';
     }
 
-    if (this.badBlood.isActive && this.badBlood.badBlood) {
-      if (this.badBlood.badBlood.mesh.position.distanceTo(this.player.position) <= attack.radius) {
-        if (this.badBlood.takeDamage(attack.damage)) {
-          this.gore.spawnYautjaSeveredHead(this.badBlood.badBlood.mesh.position);
-          const tName = 'Masque Souillé & Crâne Décapité de Bad Blood Renégat (Dark Horse Comics 1993)';
-          const tHonor = 2200;
-          this.player.recordTrophy(tName, tHonor);
-          this.sessionSkulls++;
-          this.score += tHonor;
-          this.shiftBattlefieldMorale(20.0);
-          this.ui.showAnnouncement(`💀 BAD BLOOD EXÉCUTÉ DANS LE SANG ! ${tName} (+${tHonor} HONNEUR, MORAL +20%) !`);
-        }
-      }
-    }
+    this.hitBadBloodFromPlayer(attack,this.player);
   }
 
   performHeavyAttack() {
-    if (!this.player) return;
-    const attack = this.player.heavyAttack();
+    const owner = this.player;
+    if (!owner || owner.hp <= 0) return false;
+    const weapon = owner.getWeaponState?.();
+    if (weapon?.action === 'projectile') return this.dispatchSelectedProjectile(weapon, true);
+    const attack = owner.heavyAttack();
+    if (!attack) return false;
+    this.scheduleAttackImpact(owner, attack, () => this.resolveHeavyAttack(attack));
+    return true;
+  }
+
+  resolveHeavyAttack(attack) {
     if (this.vanguardFrenzyActive) {
       attack.damage *= 1.35;
     }
@@ -1257,6 +2431,9 @@ class GameApp {
     if (hits.length > 0) this.registerHits(hits);
     this.weather.checkExplosions(this.player.position, 6.0, this.horde, this.particles);
     this.synthetics.checkHits(attack);
+    if (this.bosses.activeBoss && this.bosses.activeBoss.mesh.position.distanceTo(this.player.position) <= attack.radius + 2) {
+      this.hitBossFromPlayer(attack.damage,this.player.position,'heavy');
+    }
 
     // Environmental Hazard Interactions
     if (this.env) {
@@ -1293,6 +2470,24 @@ class GameApp {
       if (this.env.checkRebelFuelBarrelsDamage) {
         this.env.checkRebelFuelBarrelsDamage(attack.origin, attack.damage, this.audio, this.horde, this.bosses, this.particles, this.ui);
       }
+      if (this.env.checkFlareTripwireTrigger) {
+        this.env.checkFlareTripwireTrigger(attack.origin, this.audio, this.horde, this.bosses, this.particles, this.ui);
+      }
+      if (this.env.checkNeonTransformerOverload) {
+        this.env.checkNeonTransformerOverload(attack.origin, attack.damage, this.audio, this.horde, this.bosses, this.particles, this.ui);
+      }
+      if (this.env.checkBoilingTarSpillDamage) {
+        this.env.checkBoilingTarSpillDamage(attack.origin, attack.damage, this.audio, this.horde, this.bosses, this.particles, this.ui);
+      }
+      if (this.env.checkRoyceTripwireTrigger) {
+        this.env.checkRoyceTripwireTrigger(attack.origin, this.audio, this.horde, this.bosses, this.particles, this.ui);
+      }
+      if (this.env.checkMombassaPunjiTrapTrigger) {
+        this.env.checkMombassaPunjiTrapTrigger(attack.origin, this.audio, this.horde, this.bosses, this.particles, this.ui);
+      }
+      if (this.env.checkCryoNitrogenTankTrigger) {
+        this.env.checkCryoNitrogenTankTrigger(attack.origin, this.audio, this.horde, this.bosses, this.particles, this.ui);
+      }
     }
 
     // Dynasty Warriors Musou C1-C6 Charge Finisher Announcement & Camera Punch
@@ -1309,52 +2504,64 @@ class GameApp {
       this.triggerCameraFovSurge(isC6 ? 68 : 64, isC6 ? 0.5 : 0.3);
     }
 
-    if (this.badBlood.isActive && this.badBlood.badBlood) {
-      if (this.badBlood.badBlood.mesh.position.distanceTo(this.player.position) <= attack.radius) {
-        if (this.badBlood.takeDamage(attack.damage)) {
-          this.gore.spawnYautjaSeveredHead(this.badBlood.badBlood.mesh.position);
-          const tName = 'Masque Souillé & Crâne Décapité de Bad Blood Renégat (Dark Horse Comics 1993)';
-          const tHonor = 2200;
-          this.player.recordTrophy(tName, tHonor);
-          this.sessionSkulls++;
-          this.score += tHonor;
-          this.shiftBattlefieldMorale(20.0);
-          this.ui.showAnnouncement(`💀 BAD BLOOD EXÉCUTÉ DANS LE SANG ! ${tName} (+${tHonor} HONNEUR, MORAL +20%) !`);
-        }
-      }
-    }
+    this.hitBadBloodFromPlayer(attack,this.player);
   }
 
-  firePlasmaCannon(isCharged = false) {
-    if (!this.player) return false;
-    const projData = this.player.firePlasmaShot(isCharged);
+  hitBadBloodFromPlayer(attack,owner=this.player) {
+    const victim=this.badBlood?.badBlood;
+    if(!this.badBlood?.isActive||!(victim?.hp>0)||!(owner?.hp>0)||!Number.isFinite(attack?.damage)||attack.damage<=0||!Number.isFinite(attack.radius))return false;
+    const origin=attack.origin??owner.position;
+    if(!origin?.isVector3||victim.mesh.position.distanceTo(origin)>attack.radius)return false;
+    const from=origin.clone().add(new THREE.Vector3(0,1.2,0)),to=victim.mesh.position.clone().add(new THREE.Vector3(0,1.2,0));
+    if(this.env?.hasLineOfSight&&!this.env.hasLineOfSight(from,to))return false;
+    const position=victim.mesh.position.clone();
+    const killed=this.badBlood.takeDamage(attack.damage,{cause:'player-melee',killerFaction:this.battleSimulation?.config.playerFaction??'player_clan'});
+    if(killed){
+      this.particles.emitYautjaPhosphorBlood?.(position,12);
+      const name='Trophée du Bad Blood renégat — rencontre adaptée';
+      if(this.awardTrophy(victim,name,2200,owner)){
+        this.shiftBattlefieldMorale(20);
+        this.ui.showAnnouncement('BAD BLOOD VAINCU — trophée confirmé, +2200 honneur.');
+      }
+    }
+    return true;
+  }
+
+  createRangedMesh(shot, color = 0x00d2ff) {
+    if (shot.projectileKind === 'feral_bolt') {
+      const group=new THREE.Group(), metal=new THREE.MeshStandardMaterial({color:0x999b93,metalness:.85,roughness:.32});
+      const shaft=new THREE.Mesh(new THREE.CylinderGeometry(.045,.045,1.3,8),metal);shaft.rotation.x=Math.PI/2;group.add(shaft);
+      const tip=new THREE.Mesh(new THREE.ConeGeometry(.13,.4,8),metal);tip.rotation.x=Math.PI/2;tip.position.z=.8;group.add(tip);
+      for(let i=0;i<3;i++){const fin=new THREE.Mesh(new THREE.BoxGeometry(.32,.025,.3),metal);fin.position.z=-.48;fin.rotation.z=i*Math.PI/3;group.add(fin);}
+      group.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),shot.direction.clone().normalize());return group;
+    }
+    const mesh=new THREE.Mesh(new THREE.SphereGeometry(shot.isCharged?1.2:.5,14,14),new THREE.MeshBasicMaterial({color:shot.isCharged?0xffffff:color}));
+    if(shot.isCharged)mesh.add(new THREE.Mesh(new THREE.SphereGeometry(1.65,10,10),new THREE.MeshBasicMaterial({color:0x00e5ff,transparent:true,opacity:.65})));
+    return mesh;
+  }
+
+  firePlasmaCannon(isCharged = false, player = this.player) {
+    if (!player) return false;
+    if (player.kitLocks?.shoulderCannon) { this.ui.showAnnouncement('CANON D’ÉPAULE RÉSERVÉ AUX BLOODED'); return false; }
+    const projData = player.fireRangedShot(isCharged);
     if (!projData) {
-      if (this.player.plasmaEnergy < (isCharged ? 35 : 20)) {
+      if (player.plasmaEnergy < (isCharged ? 35 : 20)) {
         this.ui.showAnnouncement('⚠️ ÉNERGIE PLASMA INSUFFISANTE POUR LE TIR !');
       }
       return false;
     }
 
-    const radius = isCharged ? 1.2 : 0.5;
-    const geo = new THREE.SphereGeometry(radius, 14, 14);
-    const mat = new THREE.MeshBasicMaterial({ color: isCharged ? 0xffffff : (this.player.laserColorHex || 0x00d2ff) });
-    const mesh = new THREE.Mesh(geo, mat);
-
-    if (isCharged) {
-      const coronaGeo = new THREE.SphereGeometry(1.65, 10, 10);
-      const coronaMat = new THREE.MeshBasicMaterial({ color: 0x00e5ff, transparent: true, opacity: 0.65 });
-      mesh.add(new THREE.Mesh(coronaGeo, coronaMat));
-    }
-
+    const mesh = this.createRangedMesh(projData, player.laserColorHex || 0x00d2ff);
     mesh.position.copy(projData.position);
     this.renderer.scene.add(mesh);
 
-    this.projectiles.push({
+    this.projectiles.push({owner:player,attackOrigin:player.position.clone(),
       mesh: mesh,
-      isSuperCharged: isCharged,
+      isSuperCharged: projData.isCharged === true,
+      projectileKind: projData.projectileKind,
       direction: projData.direction,
       damage: projData.damage,
-      speed: isCharged ? 52 : 45,
+      speed: projData.speed ?? (isCharged ? 52 : 45),
       life: 2.6
     });
     return true;
@@ -1382,9 +2589,9 @@ class GameApp {
     this.ui.showAnnouncement('🎯 DARD FLECHETTE NEEDLER PROPULSÉ !');
   }
 
-  throwSmartDisc() {
-    if (!this.player) return;
-    const discData = this.player.throwSmartDisc(this.horde);
+  throwSmartDisc(player = this.player) {
+    if (!player) return;
+    const discData = player.throwSmartDisc(this.horde);
     if (!discData) return;
 
     // Build Circular Razor-Sharp Smart-Disc Mesh
@@ -1408,7 +2615,7 @@ class GameApp {
     discGroup.position.copy(discData.startPos);
     this.renderer.scene.add(discGroup);
 
-    this.projectiles.push({
+    this.projectiles.push({owner:player,
       mesh: discGroup,
       isSmartDisc: true,
       startPos: discData.startPos,
@@ -1416,13 +2623,13 @@ class GameApp {
       waypoints: discData.waypoints || [],
       damage: discData.damage,
       progress: 0,
-      speed: 1.35 * (this.player.smartDiscSpeedMult || 1.0), // 1.35x base -> faster with loadout perk
+      speed: 1.35 * (player.smartDiscSpeedMult || 1.0), // 1.35x base -> faster with loadout perk
       life: 1.8
     });
 
     const isHoming = discData.waypoints && discData.waypoints.length > 0;
-    this.ui.showAnnouncement(isHoming 
-      ? `🥏 SMART-DISC YAUTJA : VERROUILLAGE HOMING MULTI-CIBLES (${discData.waypoints.length} CIBLES) !` 
+    this.ui.showAnnouncement(isHoming
+      ? `🥏 SMART-DISC YAUTJA : VERROUILLAGE HOMING MULTI-CIBLES (${discData.waypoints.length} CIBLES) !`
       : '🥏 SMART-DISC YAUTJA LANCÉ EN ARC BOOMERANG !');
   }
 
@@ -1517,9 +2724,9 @@ class GameApp {
     this.ui.showAnnouncement('🔱 JAVELOT COMBI-STICK PROPULSÉ : PERFORATION MULTI-CIBLES !');
   }
 
-  throwShuriken() {
-    if (!this.player) return;
-    const data = this.player.throwShuriken();
+  throwShuriken(player = this.player) {
+    if (!player) return;
+    const data = player.throwShuriken();
     if (!data) return;
 
     // 1:1 Canon Collapsible 6-Bladed Shuriken (AVP 2004 Celtic / Scar Lore)
@@ -1551,13 +2758,13 @@ class GameApp {
     shurikenGroup.position.copy(data.startPos);
     this.renderer.scene.add(shurikenGroup);
 
-    this.projectiles.push({
+    this.projectiles.push({owner:player,
       mesh: shurikenGroup,
       isShuriken: true,
       direction: data.direction,
       speed: data.speed,
       damage: data.damage,
-      pierceRemaining: 6 + (this.player.shurikenPierceBonus || 0),
+      pierceRemaining: 6 + (player.shurikenPierceBonus || 0),
       radius: data.radius,
       life: 1.8
     });
@@ -1594,7 +2801,7 @@ class GameApp {
 
     // Drop 3 Black Urn canisters from orbit
     for (let u = 0; u < 3; u++) {
-      setTimeout(() => {
+      this.scheduleMissionTask(() => {
         const urnPos = centerPos.clone()
           .addScaledVector(forward, 10 + u * 6)
           .add(new THREE.Vector3((u - 1) * 6, 0, 0));
@@ -1632,7 +2839,7 @@ class GameApp {
           life: 8.5,
           damage: 95
         });
-      }, u * 400);
+      }, u * 0.4);
     }
   }
 
@@ -1716,13 +2923,14 @@ class GameApp {
     }
   }
 
-  fireCompoundBow() {
-    if (!this.player) return;
-    const arrowData = this.player.fireCompoundBow();
-    if (!arrowData) return;
+  fireCompoundBow(player = this.player) {
+    if (!player) return false;
+    const arrowData = player.fireCompoundBow();
+    if (!arrowData) return false;
 
-    // 3D Charged Hunting Arrow with luminous cyan plasma head
-    const arrowGroup = new THREE.Group();
+    const isPrey=arrowData.projectileKind==='taabe_arrow';
+    const arrowGroup = isPrey?createPreyArrowMesh():new THREE.Group();
+    if(!isPrey){
     const shaftMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.8, roughness: 0.2 });
     const tipMat = new THREE.MeshBasicMaterial({ color: 0x00ffff });
 
@@ -1734,14 +2942,16 @@ class GameApp {
     tip.rotation.x = Math.PI / 2;
     tip.position.z = 1.0;
     arrowGroup.add(tip);
+    }
 
     arrowGroup.position.copy(arrowData.origin);
     arrowGroup.lookAt(arrowGroup.position.clone().add(arrowData.direction));
     this.renderer.scene.add(arrowGroup);
 
-    this.projectiles.push({
+    this.projectiles.push({owner:player,attackOrigin:player.position.clone(),
       mesh: arrowGroup,
       isChargedArrow: true,
+      projectileKind: arrowData.projectileKind,
       direction: arrowData.direction,
       speed: arrowData.speed,
       damage: arrowData.damage,
@@ -1749,11 +2959,48 @@ class GameApp {
       life: arrowData.life
     });
 
-    this.ui.showAnnouncement('🏹 ARC COMPOSÉ YAUTJA : FLÈCHE PLASMA HYPER-VÉLOCITÉ PERÇANTE DÉCOCHÉE !');
+    this.ui.showAnnouncement(isPrey?`ARC DE TAABE — FLÈCHE DE BOIS, ${player.taabeArrowAmmo} RESTANTES.`:'ARC COMPOSÉ YAUTJA : FLÈCHE PLASMA PERÇANTE DÉCOCHÉE.');
+    return true;
+  }
+
+  canProjectileHitBoss(projectile, range = 4) {
+    const boss = this.bosses?.activeBoss, origin = projectile?.mesh?.position;
+    if (!boss || !(boss.hp > 0) || !origin?.isVector3 || !(origin.distanceTo(boss.mesh.position) <= range)) return false;
+    // A nearby boss may still be behind cover that this projectile has not
+    // reached. Trace from its actual height, without the melee origin offset.
+    const target = boss.mesh.position.clone().add(new THREE.Vector3(0, 1.5, 0));
+    return this.env.hasLineOfSight?.(origin, target) !== false;
+  }
+
+  hitBossFromPlayer(damage, origin, attackKind='light', impactOrigin=origin) {
+    const boss=this.bosses.activeBoss;
+    if(!boss||!origin?.isVector3)return null;
+    const from=impactOrigin.clone().add(new THREE.Vector3(0,impactOrigin===origin?1.2:0,0));
+    const to=boss.mesh.position.clone().add(new THREE.Vector3(0,1.5,0));
+    if(this.env.hasLineOfSight?.(from,to)===false)return null;
+    return this.bosses.takeDamage(damage,this.horde,{origin:origin.clone(),attackKind,killerFaction:this.battleSimulation?.config.playerFaction??'player_clan'});
+  }
+
+  advancePreyArrow(projectile,delta) {
+    const from=projectile.mesh.position.clone(),to=from.clone().addScaledVector(projectile.direction,projectile.speed*delta);
+    const targets=[...this.horde.aliens.map(actor=>({actor,kind:'horde'})),...this.synthetics.androids.map(actor=>({actor,kind:'synthetic'})),
+      ...[...(this.battleBridge?.actors?.values()??[])].map(({actor})=>({actor,kind:'horde'}))];
+    if(this.bosses.activeBoss)targets.unshift({actor:this.bosses.activeBoss,kind:'boss'});
+    const faction=this.battleSimulation?.config.playerFaction??'player_clan';
+    const impact=traceSingleProjectileImpact(from,to,targets,this.env,actor=>!this.battleSimulation||!actor.factionId||this.battleSimulation.areHostile(faction,actor.factionId));
+    projectile.mesh.position.copy(impact?.point??to);
+    if(!impact)return projectile.life<=0;
+    if(impact.kind==='wall'){this.particles.emitSparks(impact.point,4);return true;}
+    const attack={origin:impact.point,radius:2.2,damage:projectile.damage,type:'arrow',targetOnly:impact.actor,killerFaction:faction};
+    if(impact.kind==='boss')this.hitBossFromPlayer(projectile.damage,projectile.attackOrigin??projectile.owner.position,'projectile',from);
+    else if(impact.kind==='synthetic')this.registerHits(this.synthetics.checkHits(attack));
+    else this.registerHits(this.horde.checkMeleeHits(attack));
+    this.audio.playArrowPinImpact?.();
+    return true;
   }
 
   deployHoloDecoy() {
-    if (!this.player) return;
+    if (!this.player || this.player.hp <= 0) return;
     const decoy = this.player.deployHoloDecoy(this.renderer.scene);
     if (!decoy) return;
 
@@ -1761,68 +3008,70 @@ class GameApp {
     this.ui.showAnnouncement('⚡ LEURRE HOLOGRAPHIQUE ACTIVÉ : ATTENTION DE LA RUCHE DÉTOURNÉE !');
   }
 
-  executeMusouOverload() {
-    this.ui.showAnnouncement('⚡ VRAIE ATTAQUE MUSOU : DÉVASTATION DU CLAN APEX !');
-    this.audio.playOmniPlasmaStorm();
-
-    // Intense Musou Camera Shockwave & Elastic FOV Surge
-    this.triggerCameraShake(1.6, 0.7);
-    this.triggerCameraFovSurge(74, 1.4);
-
-    // Show True Musou Calligraphy Banner
-    const banner = document.getElementById('true-musou-banner');
-    if (banner) {
-      banner.classList.remove('hidden');
-      setTimeout(() => banner.classList.add('hidden'), 2200);
+  executeMusouOverload(player = this.player) {
+    // Each hunter has its own Musou shape (HW-DEC-85); damage keeps the shared hit paths.
+    const musou = hunterMusouProfile(player?.data?.id);
+    const facing = { x: Math.sin(player.rotationY ?? 0), z: Math.cos(player.rotationY ?? 0) };
+    const origin = player.position;
+    const covers = (position, radius = 1) => !!position && musouCovers(musou, origin, facing, position, radius);
+    if (player === this.player) {
+      this.ui.showAnnouncement(`⚡ MUSOU · ${musou.name.toUpperCase()}`);
+      this.audio.playOmniPlasmaStorm();
+      this.triggerCameraShake(1.6, 0.7);
+      this.triggerCameraFovSurge(74, 1.4);
+      const banner = document.getElementById('true-musou-banner');
+      if (banner) {
+        banner.classList.remove('hidden');
+        this.scheduleMissionTask(() => banner.classList.add('hidden'), 2.2);
+      }
     }
+    this.shiftBattlefieldMorale(musou.morale);
 
-    // Shift Battlefield Morale toward Clan (+20%)
-    this.shiftBattlefieldMorale(20);
-
-    // 8 Omni-directional rotating high-energy plasma beams
+    // Beams drawn over the shape actually hit: a ring, a cone or a straight charge.
     const stormGroup = new THREE.Group();
-    stormGroup.position.copy(this.player.position).add(new THREE.Vector3(0, 2.0, 0));
-    const beamMat = new THREE.MeshBasicMaterial({ color: 0x00ffff, transparent: true, opacity: 0.95 });
-
-    for (let b = 0; b < 12; b++) {
-      const beamGeo = new THREE.CylinderGeometry(0.14, 0.14, 42, 6);
-      beamGeo.rotateZ(Math.PI / 2);
+    stormGroup.position.copy(origin).add(new THREE.Vector3(0, 2.0, 0));
+    const beamMat = new THREE.MeshBasicMaterial({ color: musou.color, transparent: true, opacity: 0.95 });
+    const heading = player.rotationY ?? 0;
+    const spread = musou.shape === 'nova' ? Math.PI : musou.shape === 'cone' ? musou.halfAngleDegrees * Math.PI / 180 : 0;
+    const beams = musou.shape === 'line' ? 3 : musou.shape === 'cone' ? 7 : 12;
+    for (let b = 0; b < beams; b++) {
+      const beamGeo = new THREE.CylinderGeometry(0.14, 0.14, musou.range, 6);
+      beamGeo.rotateX(Math.PI / 2);
+      beamGeo.translate(musou.shape === 'line' ? (b - 1) * musou.width / 2 : 0, 0, musou.range / 2);
       const beam = new THREE.Mesh(beamGeo, beamMat);
-      beam.rotation.y = (b / 12) * Math.PI * 2;
-      beam.position.set(Math.cos(beam.rotation.y) * 21.0, 0, Math.sin(beam.rotation.y) * 21.0);
+      beam.rotation.y = musou.shape === 'nova' ? (b / beams) * Math.PI * 2 : musou.shape === 'cone' ? heading - spread + (2 * spread * b) / (beams - 1) : heading;
       stormGroup.add(beam);
     }
     this.renderer.scene.add(stormGroup);
-
-    // Animate intense storm rotation and beam pulse
-    let spinAngle = 0;
-    const stormAnim = setInterval(() => {
-      spinAngle += 0.28;
-      stormGroup.rotation.y = spinAngle;
-      stormGroup.scale.multiplyScalar(1.025);
-      beamMat.opacity -= 0.04;
-      if (beamMat.opacity <= 0) {
-        clearInterval(stormAnim);
-        this.renderer.scene.remove(stormGroup);
+    this.missionEffects.push({ mesh: stormGroup, life: 0.75, maxLife: 0.75,
+      update: (delta, remaining) => {
+        if (musou.shape === 'nova') stormGroup.rotation.y += 9 * delta;
+        stormGroup.scale.multiplyScalar(Math.exp(0.3 * delta));
+        beamMat.opacity = 0.95 * remaining;
       }
-    }, 30);
+    });
 
     const attack = {
-      origin: this.player.position,
-      damage: 1200,
-      radius: 40,
+      origin,
+      damage: musou.damage,
+      radius: musou.range,
+      type: 'musou',
       isLauncher: true,
-      launchVelY: 28.0,
-      knockback: 18.0
+      launchVelY: musou.launchVelY,
+      knockback: musou.knockback,
+      damageForTarget: (target, damage) => covers(target.mesh?.position, target.radius || 1) ? damage : 0
     };
-    const hits = this.horde.checkMeleeHits(attack);
-    this.registerHits(hits);
+    this.registerHits(this.horde.checkMeleeHits(attack));
+    for (const synthetic of [...(this.synthetics?.androids ?? [])]) if (covers(synthetic.mesh?.position)) this.synthetics.checkHits({ ...attack, targetOnly: synthetic });
+    this.particles.spawnPlasmaScorch(origin);
 
-    // Spawn massive plasma scorched ground decal at center
-    this.particles.spawnPlasmaScorch(this.player.position);
-
-    if (this.bosses.activeBoss) this.bosses.takeDamage(1500);
-    if (this.badBlood.isActive) this.badBlood.takeDamage(1500);
+    // Bosses and Bad Blood take Musou damage only inside the shape, like every other target.
+    const boss = this.bosses.activeBoss;
+    // Like every other hit, the Musou does not cross a wall (AUD-090): the boss path checks line of sight.
+    if (boss && covers(boss.mesh?.position, boss.radius || 3)) this.hitBossFromPlayer(musou.bossDamage, origin, 'musou');
+    const badBloodPosition = this.badBlood.badBlood?.mesh?.position;
+    if (this.badBlood.isActive && covers(badBloodPosition, 2) && this.env.hasLineOfSight?.(origin.clone().setY(origin.y + 1.2), badBloodPosition.clone().setY(badBloodPosition.y + 1.5)) !== false) this.badBlood.takeDamage(musou.bossDamage);
+    return musou;
   }
 
   triggerCameraShake(intensity = 0.8, duration = 0.35) {
@@ -1836,10 +3085,16 @@ class GameApp {
     this.cameraFovDuration = duration;
   }
 
-  checkTrophyExecution() {
-    // 1. Boss Execution (Queen, The Offspring, Predalien, Matriarch Titan)
-    if (this.bosses.activeBoss && this.bosses.activeBoss.isStunned) {
-      this.player.executeSpineRip();
+  checkTrophyExecution(player = this.player) {
+    if(!player||player.hp<=0)return;
+    if(player.executionProtectionTimer>0)return true;
+    // 1. Boss Execution (Queen, The Offspring, Predalien)
+    if (this.bosses.activeBoss && this.bosses.activeBoss.isStunned && this.bosses.activeBoss.hp <= this.bosses.activeBoss.maxHp * .3 &&
+        this.bosses.activeBoss.mesh.position.distanceTo(player.position) <= 8) {
+      const victim = this.bosses.activeBoss;
+      const death = this.bosses.executeBoss(victim, {player:player,range:8,killerFaction:this.battleSimulation?.config.playerFaction??'player_clan'});
+      if (!death) return false;
+      player.executeSpineRip(victim.type || 'queen');
 
       // Chantier 9 (v48): Bullet-Time 360° Trophy Execution Camera
       this.bulletTimeTimer = 1.6;
@@ -1848,20 +3103,21 @@ class GameApp {
       }
       this.triggerCameraFovSurge(48, 1.5);
 
-      const bType = this.bosses.activeBoss.type || 'queen';
+      const jellyBeforeTrophy = player.royalJellyFlasks;
+      const bType = victim.type || 'queen';
       let tName = 'Couronne Chitinense & Colonne Vertébrale de Reine Matriarche (Aliens 1986 / AvP 2004)';
       let tHonor = 2500;
       if (bType === 'predalien_matriarch_titan') {
         tName = 'Couronne Impériale & Quadruples Mandibules de Matriarche Titan Prédalienne (Mythique)';
         tHonor = 5000;
-        this.player.royalJellyFlasks += 4;
+        player.royalJellyFlasks += 4;
       } else if (bType === 'the_offspring') {
         tName = 'Mandibule Hybride & Vertèbres Z-01 de The Offspring (Romulus 2024)';
         tHonor = 3500;
       } else if (bType === 'predalien_abomination') {
         tName = 'Crâne d\'Hybride Yautja-Xénomorphe & Mandibules Monstrueuses (AVP-R Chet Canon)';
         tHonor = 4000;
-        this.player.royalJellyFlasks += 3;
+        player.royalJellyFlasks += 3;
       } else if (bType === 'predalien_queen') {
         tName = 'Mandibules Quadruples & Crâne Hybride de Reine Prédalienne (AVP-R 2007)';
         tHonor = 3000;
@@ -1875,30 +3131,32 @@ class GameApp {
       } else if (bType === 'awakened_engineer') {
         tName = 'Bio-Masque d\'Éléphant & Vertèbres d\'Ingénieur Mala\'kak (Prometheus / Fire & Stone)';
         tHonor = 6000;
-        this.player.royalJellyFlasks += 5;
+        player.royalJellyFlasks += 5;
         if (this.audio && this.audio.playEngineerBioArmorShatter) this.audio.playEngineerBioArmorShatter();
       } else if (bType === 'rogue_king_prime') {
         tName = 'Couronne Cornue & Mandibules du Rogue King Xenomorph Prime (Aliens: Rogue 1993)';
         tHonor = 7500;
-        this.player.royalJellyFlasks += 5;
+        player.royalJellyFlasks += 5;
         if (this.audio && this.audio.playRogueKingEarthquakeRoar) this.audio.playRogueKingEarthquakeRoar();
       } else if (bType === 'berserker_super_predator') {
         tName = "Masque d'Écorcheur & Mandibule Xéno de Super Predator Berserker (Predators 2010)";
         tHonor = 8000;
-        this.player.royalJellyFlasks += 4;
+        player.royalJellyFlasks += 4;
         if (this.audio && this.audio.playBadBloodBerserkerRoar) this.audio.playBadBloodBerserkerRoar();
+      } else if (bType === 'ultimate_upgrade_predator') {
+        tName = "Exosquelette Chitinique Dermal & ADN Hybride de l'Ultimate Upgrade Predator (The Predator 2018)";
+        tHonor = 9000;
+        player.royalJellyFlasks += 5;
+        if (this.audio && this.audio.playUltimatePredatorRoar) this.audio.playUltimatePredatorRoar();
       }
 
-      this.player.recordTrophy(tName, tHonor);
-      this.saveClanHonorVault(tName, tHonor);
-      this.player.royalJellyFlasks += 2; // Queen grants 2 Royal Jelly flasks!
-      this.sessionSkulls++;
-      this.score += tHonor;
-      this.player.hp = Math.min(this.player.maxHp, this.player.hp + 500);
+      const trophyAwarded = this.awardTrophy(victim,tName,tHonor,player);
+      if(trophyAwarded){player.royalJellyFlasks+=2;player.hp=Math.min(player.maxHp,player.hp+500);}
+      else player.royalJellyFlasks=jellyBeforeTrophy;
 
       // Chantier 1 & Elena Immersion QA (v54.0): Cautérisation Rituelle du Sang Acide (Sacred Blood Mark Ritual)
-      if (this.player.triggerSacredBloodMarkRitual) {
-        this.player.triggerSacredBloodMarkRitual(this.audio, this.particles, this.ui);
+      if (player.triggerSacredBloodMarkRitual) {
+        player.triggerSacredBloodMarkRitual(this.audio, this.particles, this.ui);
       }
 
       // Decisive Battlefield Morale Victory (+35%)
@@ -1906,11 +3164,12 @@ class GameApp {
 
       // Sofia QA Audit #5: Apex Pheromone Repulsion Fear Wave (Drones flee in panic)
       if (this.horde && this.horde.triggerFearPulse) {
-        this.horde.triggerFearPulse(this.player.position, 24.0, 4.5);
+        this.horde.triggerFearPulse(player.position, 24.0, 4.5);
       }
 
-      this.renderer.scene.remove(this.bosses.activeBoss.mesh);
-      this.bosses.activeBoss = null;
+      // Record an actual death before removing the encounter. Clearing a
+      // living boss alone cannot satisfy the battlefield's final objective.
+
 
       if (this.ui.showOfficerDefeatedBanner) {
         this.ui.showOfficerDefeatedBanner(tName);
@@ -1926,16 +3185,15 @@ class GameApp {
       if (this.waveIndex >= 5) {
         this.triggerSacredBloodRitualEpilogue();
       }
-      return;
+      return true;
     }
 
     // 2. Sub-Boss Execution (Crusher Titan, Praetorian, Grid Alien, Marvel Alpha, Deacon, Rogue King, Raven, Ancient Predalien, Gestating Matriarch)
     for (let i = this.horde.aliens.length - 1; i >= 0; i--) {
       const a = this.horde.aliens[i];
       if ((a.type === 'crusher' || a.type === 'praetorian' || a.type === 'grid_alien' || a.isMarvelAlpha || a.isDeacon || a.isRogueKing || a.isRaven || a.isAncientPredalien || a.isGestatingMatriarch) && a.isStunned) {
-        if (a.mesh.position.distanceTo(this.player.position) <= 5.8) {
-          this.player.executeSpineRip();
-          this.sessionSkulls++;
+        if (a.mesh.position.distanceTo(player.position) <= 5.8 && (player.canExecuteTarget?.(a,{range:5.8,requireStun:true})??true)) {
+          player.executeSpineRip();
 
           // Chantier 9 (v48): Bullet-Time 360° Trophy Execution Camera
           this.bulletTimeTimer = 1.4;
@@ -1976,34 +3234,35 @@ class GameApp {
           } else if (a.isDeacon && this.audio && this.audio.playDeaconSpineRip) {
             this.audio.playDeaconSpineRip();
           }
-          this.player.recordTrophy(tName, tHonor);
-          this.saveClanHonorVault(tName, tHonor);
+          const trophyAwarded = this.awardTrophy(a,tName,tHonor,player);
 
+          if(trophyAwarded){
           if (a.isGestatingMatriarch) {
-            this.player.royalJellyFlasks += 3;
+            player.royalJellyFlasks += 3;
           } else if (a.isAncientPredalien) {
-            this.player.royalJellyFlasks += 3;
+            player.royalJellyFlasks += 3;
           } else if (a.isRaven) {
-            this.player.royalJellyFlasks += 2;
+            player.royalJellyFlasks += 2;
           } else if (a.isRogueKing) {
-            this.player.royalJellyFlasks += 3;
+            player.royalJellyFlasks += 3;
           } else if (a.isDeacon) {
-            this.player.royalJellyFlasks += 2;
+            player.royalJellyFlasks += 2;
           } else if (a.isMarvelAlpha) {
-            this.player.royalJellyFlasks += 2; // Marvel Alpha awards 2 Royal Jelly flasks!
+            player.royalJellyFlasks += 2; // Marvel Alpha awards 2 Royal Jelly flasks!
             this.triggerMarvelAlphaHallucination();
           } else if (a.type === 'praetorian') {
-            this.player.royalJellyFlasks += 1; // Praetorian drops 1 Royal Jelly flask!
+            player.royalJellyFlasks += 1; // Praetorian drops 1 Royal Jelly flask!
           } else if (a.type === 'grid_alien') {
-            this.player.royalJellyFlasks += 1;
+            player.royalJellyFlasks += 1;
           }
 
-          this.score += tHonor;
-          this.player.hp = Math.min(this.player.maxHp, this.player.hp + 400);
+          player.hp = Math.min(player.maxHp, player.hp + 400);
+
+          }
 
           // Chantier 1 & Elena Immersion QA (v54.0): Cautérisation Rituelle du Sang Acide (Sacred Blood Mark Ritual)
-          if (this.player.triggerSacredBloodMarkRitual) {
-            this.player.triggerSacredBloodMarkRitual(this.audio, this.particles, this.ui);
+          if (player.triggerSacredBloodMarkRitual) {
+            player.triggerSacredBloodMarkRitual(this.audio, this.particles, this.ui);
           }
 
           // Sub-Boss Execution Morale Swing (+18% to +25%)
@@ -2011,16 +3270,14 @@ class GameApp {
 
           // Sofia QA Audit #5: Apex Pheromone Repulsion (Minor Drones flee in panic)
           if (this.horde && this.horde.triggerFearPulse) {
-            this.horde.triggerFearPulse(this.player.position, 16.0, 3.8);
+            this.horde.triggerFearPulse(player.position, 16.0, 3.8);
           }
 
           if (this.gore) {
             this.gore.spawnDismemberment(a.mesh.position, 'spine_rip');
           }
           this.horde.spawnAcidPool(a.mesh.position);
-          this.renderer.scene.remove(a.mesh);
-          this.horde.aliens.splice(i, 1);
-          this.horde.deadCount++;
+          this.horde.defeatAlien(a, { cause: 'execution', killerFaction: this.battleSimulation?.config.playerFaction ?? 'player_clan' });
 
           if (this.ui.showOfficerDefeatedBanner) {
             this.ui.showOfficerDefeatedBanner(tName);
@@ -2031,7 +3288,7 @@ class GameApp {
           this.triggerCameraShake(0.9, 0.5);
           this.ui.showAnnouncement(`🏆 TROPHÉE DE CHASSE : ${tName} (+${tHonor} HONNEUR, MORAL +18%) !`);
           this.ui.showExecutionPrompt(false);
-          return;
+          return true;
         }
       }
     }
@@ -2041,22 +3298,20 @@ class GameApp {
       for (let i = this.synthetics.androids.length - 1; i >= 0; i--) {
         const syn = this.synthetics.androids[i];
         if (!syn || !syn.mesh) continue;
-        if ((syn.isBisected || syn.isEMPStunned || syn.hp <= 120) && syn.mesh.position.distanceTo(this.player.position) <= 4.2) {
-          this.player.executeSpineRip();
-          this.sessionSkulls++;
+        if ((syn.isBisected || syn.isEMPStunned || syn.hp <= 120) && syn.mesh.position.distanceTo(player.position) <= 4.2 && (player.canExecuteTarget?.(syn,{range:4.2})??true)) {
+          player.executeSpineRip();
           const isJoe = syn.type === 'working_joe';
           const tName = isJoe
             ? "Unité Logique & Yeux Ambrés Seegson Working Joe (Alien: Isolation)"
             : "Cœur Cybernétique & Unité Logique Hyperdyne Systems Weyland-Yutani (Aliens 1986 / Isolation)";
           const tHonor = 1800;
-          this.player.recordTrophy(tName, tHonor);
-          this.score += tHonor;
-          this.player.plasmaEnergy = Math.min(this.player.maxPlasmaEnergy, (this.player.plasmaEnergy || 100) + 40);
-          this.player.hp = Math.min(this.player.maxHp, this.player.hp + 200);
+          if(this.awardTrophy(syn,tName,tHonor,player)){
+            player.plasmaEnergy=Math.min(player.maxPlasmaEnergy,player.plasmaEnergy+40);
+            player.hp=Math.min(player.maxHp,player.hp+200);
+          }
 
           this.synthetics.emitWhiteSyntheticBlood(syn.mesh.position);
-          this.renderer.scene.remove(syn.mesh);
-          this.synthetics.androids.splice(i, 1);
+          this.synthetics.defeatSynthetic(syn,{cause:'execution',killerFaction:this.battleSimulation?.config.playerFaction??'player_clan'});
           this.shiftBattlefieldMorale(15.0);
 
           if (this.ui.showOfficerDefeatedBanner) {
@@ -2068,10 +3323,11 @@ class GameApp {
           this.triggerCameraShake(0.85, 0.4);
           this.ui.showAnnouncement(`🏆 TROPHÉE CYBERNÉTIQUE ARRACHÉ : ${tName} (+${tHonor} HONNEUR, +40 ÉNERGIE) !`);
           this.ui.showExecutionPrompt(false);
-          return;
+          return true;
         }
       }
     }
+    return false;
   }
 
   /* Chantier 10: Marvel Alpha Spine Trophy Execution & Eldritch Hallucination Pulse (Marvel Alien 2021) */
@@ -2079,9 +3335,7 @@ class GameApp {
     const overlay = document.getElementById('hallucination-overlay');
     if (overlay) {
       overlay.classList.remove('hidden');
-      setTimeout(() => {
-        overlay.classList.add('hidden');
-      }, 4500);
+      this.scheduleMissionTask(() => overlay.classList.add('hidden'), 4.5);
     }
     if (this.audio && this.audio.playAlphaCommandRoar) {
       this.audio.playAlphaCommandRoar();
@@ -2120,12 +3374,41 @@ class GameApp {
     }
   }
 
+  onCombatDeath(event) {
+    if (!this.isPlaying || event.runId !== this.missionRun || this._rewardedDeaths.has(event.id)) return;
+    this._rewardedDeaths.add(event.id);
+    this.battleSimulation?.recordDeath(event);
+    const unit = this.battleSimulation?.getUnit(event.entityId);
+    this.operationObjectives?.recordEvent({ ...event, type: 'unit_died', uniqueId: unit?.uniqueId });
+    this.observeBattleCampaign();
+    if (event.objectiveCredit === false || ['player_clan', 'clan', 'allied_yautja'].includes(event.factionId) || event.creditPlayer === false) return;
+    if (this.battleSimulation && event.killerFaction && !['yautja', 'player_clan', 'clan'].includes(event.killerFaction) && this.battleSimulation.relationship(event.killerFaction, this.battleSimulation.config.playerFaction) !== 'allied') return;
+    const reward=combatRewardIdentity(this,event);
+    if((this.forge.honorLedger?.hasTransaction(reward.id)||this.forge.honorLedger?.hasPendingReward?.(reward.id)))return;
+    this._sessionDefeats = (this._sessionDefeats ?? 0) + 1;
+    this.score += event.scoreValue ?? 150;
+    this.comboHits++; this.comboTimer = 2.5;
+    this.forge.honorLedger?.earn({ ...reward, amount: event.honorValue ?? 100, kind: 'combat', trophy: event.trophyName });
+    if (this.player) this.player.musouEnergy = Math.min(this.player.maxMusouEnergy, this.player.musouEnergy + 6);
+    this.ui.showCombo(this.comboHits);
+    this.checkAnnouncerMilestones();
+  }
+
   registerHits(hits) {
-    hits.forEach(h => {
-      this.comboHits++;
-      this.comboTimer = 2.5;
-      this.score += h.killed ? 150 : 25;
-      this.player.musouEnergy = Math.min(this.player.maxMusouEnergy, this.player.musouEnergy + (h.killed ? 6 : 2));
+    (hits ?? []).forEach(h => {
+      if (!h || typeof h !== 'object' || this._processedHitRecords.has(h)) return;
+      this._processedHitRecords.add(h);
+      if (h.killed) {
+        const event = h.event ?? h.combatDeathEvent;
+        if (event?.id && this._registeredDeathHits.has(event.id)) return;
+        if (event?.id) this._registeredDeathHits.add(event.id);
+        if (this.missionMode === 'ascension_rite' && !this.riteFirstBlood) { this.riteFirstBlood = true; this.ui.showAnnouncement('PREMIER SANG — LA MARQUE T’ATTEND AU BOUT DE LA PYRAMIDE.'); }
+      } else {
+        this.comboHits++;
+        this.comboTimer = 2.5;
+        this.score += 25;
+        this.player.musouEnergy = Math.min(this.player.maxMusouEnergy, this.player.musouEnergy + 2);
+      }
 
       // QA Audit #3 (Karim): Diegetic Yautja targeting computer hitmarker feedback
       if (this.audio && this.audio.playDiegeticHitmarker) {
@@ -2168,19 +3451,19 @@ class GameApp {
   }
 
   checkAnnouncerMilestones() {
-    const kos = this.horde.deadCount;
+    const kos = this._sessionDefeats ?? this.horde.deadCount;
     const milestones = [
-      { count: 50, msg: "50 KOS - JEUNE GUERRIER EN INITIATION (YOUNG BLOOD) !" },
-      { count: 100, msg: "100 KOS - CHASSEUR BALAFRÉ DANS LE SANG (BLOODED WARRIOR) !" },
-      { count: 250, msg: "250 KOS - MAÎTRE CHASSEUR D'ÉLITE DU CLAN (ELITE HUNTER) !" },
-      { count: 500, msg: "500 KOS - CHEF DE GUERRE DU GRAND CLAN (CLAN LEADER) !" },
-      { count: 1000, msg: "1000 KOS - LÉGENDE VIVANTE DES ANCIENS APEX (ANCIENT YAUTJA) !" }
+      { count: 50, msg: "50 ÉLIMINATIONS CONFIRMÉES — SÉRIE DE COMBAT !" },
+      { count: 100, msg: "100 ÉLIMINATIONS CONFIRMÉES — ASSAUT SOUTENU !" },
+      { count: 250, msg: "250 ÉLIMINATIONS CONFIRMÉES — PERFORMANCE REMARQUÉE !" },
+      { count: 500, msg: "500 ÉLIMINATIONS CONFIRMÉES — RECORD DE MISSION !" },
+      { count: 1000, msg: "1000 ÉLIMINATIONS CONFIRMÉES — EXPLOIT DE COMBAT !" }
     ];
 
     milestones.forEach(m => {
       if (kos >= m.count && !this.announcedMilestones[m.count]) {
         this.announcedMilestones[m.count] = true;
-        this.ui.showAnnouncement(`🏆 ${m.count} TROPHÉES ! ${m.msg}`);
+        this.ui.showAnnouncement(m.msg);
         if (this.audio && this.audio.playMusouKOCallout) {
           this.audio.playMusouKOCallout();
         } else {
@@ -2190,10 +3473,66 @@ class GameApp {
     });
   }
 
+  updateInsertionStatus() {
+    const panel = document.getElementById('insertion-status');
+    if (!panel) return;
+    const active = Boolean(this.dropPod.isActive);
+    panel.classList.toggle('hidden', !active);
+    document.getElementById('in-game-hud')?.classList.toggle('insertion-active', active);
+    if (!active) {
+      this._insertionPhase = null;
+      return;
+    }
+    const phases = {
+      descending: ['INSERTION ORBITALE', 'Capsule en approche'],
+      settling: ['CONTACT AU SOL', 'Stabilisation de la capsule'],
+      opening: ['OUVERTURE DE LA CAPSULE', 'Déverrouillage des portes'],
+      exiting: ['DÉPLOIEMENT DU CHASSEUR', 'Sortie de la capsule'],
+    };
+    if (this._insertionPhase !== this.dropPod.phase) {
+      this._insertionPhase = this.dropPod.phase;
+      const [title, detail] = phases[this.dropPod.phase] ?? phases.descending;
+      document.getElementById('insertion-title').textContent = title;
+      document.getElementById('insertion-detail').textContent = `${detail} · Commandes après la sortie`;
+    }
+    document.getElementById('insertion-progress').style.transform = `scaleX(${Math.max(0, Math.min(1, this.dropPod.progress ?? 0))})`;
+  }
+
+  updateInsertionPresentation(delta, snap = false) {
+    if (!this.dropPod.isActive) return;
+    const cameras = [this.renderer.camera, this.renderer.cameraP2];
+    this._insertionCameraFocus ??= [];
+    const alpha = snap ? 1 : 1 - Math.exp(-8 * delta);
+    for (let index = 0; index < (this.player2 ? 2 : 1); index++) {
+      const target = this.dropPod.getCameraTarget?.(index) ?? (index ? this.player2 : this.player).position;
+      const focus = this._insertionCameraFocus[index] ??= target.clone();
+      focus.lerp(target, alpha);
+      const position = focus.clone().add(new THREE.Vector3(8, 5, 14));
+      cameras[index].position.lerp(position, alpha);
+      // The cinematic uses the same physical boom as normal follow. Resolve
+      // after smoothing, independently for each capsule, without hiding props.
+      cameras[index].position.copy(resolveThirdPersonCamera(focus, cameras[index].position, this.env,
+        { radius: cameraNearPlaneRadius(cameras[index]) }).position);
+      cameras[index].lookAt(focus);
+    }
+    this.updateInsertionStatus();
+  }
+
   update(delta) {
     if (!this.isPlaying || !this.player || this.isPaused) return;
 
-    if (this.photoMode.isActive) return;
+    if (this.photoMode.isActive || this.weaponWheel.isOpen) return;
+
+    if (this.dropPod.isActive) {
+      this.weather.update?.(delta);
+      this.dropPod.update(delta);
+      this.updateInsertionPresentation(delta);
+      this.env.updateBattlefieldVisibility?.([this.player, this.player2].filter(Boolean));
+      this.particles.update(delta, this.renderer.camera);
+      this.ui.updateHUD(this.player, this.horde, this.bosses, this.waveIndex, this.totalWaves, this.score,{secondaryPlayer:this.player2,waveLabel:this.shipHub?'À BORD — ENTRE DEUX CHASSES':undefined,supports:this.missionMode?.startsWith('ascension')?null:{apc:this.apc.getSupportState(),cheyenne:this.dropship.getSupportState()}});
+      this.ui.updateBattlefieldHUD(this.battlefieldProgression, this.env.battlefieldLayout, this.player, this.combatDirector, [this.player, this.player2].filter(Boolean));
+      return;
+    }
 
     // Chantier 9 (v48): Bullet-Time 360° Trophy Execution Time-Dilation (0.28x Slow-Motion)
     if (this.bulletTimeTimer > 0) {
@@ -2206,6 +3545,13 @@ class GameApp {
       delta *= 0.15;
     }
 
+    this.updateMissionTasks(delta);
+    this.dropPod.update?.(delta);
+    this.combatDirector.update(delta, [this.player, this.player2].filter(player => player?.hp > 0));
+    this.updateBattleOperation(delta);
+    if (!this.isPlaying) return;
+
+
     const qtePrompt = document.getElementById('facehugger-qte-prompt');
     if (qtePrompt) {
       if (this.player.isFacehuggerLatched) {
@@ -2215,16 +3561,33 @@ class GameApp {
       }
     }
 
+    this.gamepadBridge.updateGameplay(delta);
     const moveDirP1 = new THREE.Vector3();
     if (this.keys['KeyW']) moveDirP1.z -= 1;
     if (this.keys['KeyS']) moveDirP1.z += 1;
     if (this.keys['KeyA']) moveDirP1.x -= 1;
     if (this.keys['KeyD']) moveDirP1.x += 1;
-    this.player.move(moveDirP1, delta);
-    this.player.update(delta, this.horde);
+    const keyboardP1=moveDirP1.lengthSq()>0, analogP1=this.gamepadBridge.movement(0);
+    moveDirP1.x+=analogP1.x;moveDirP1.z-=analogP1.y;
+    this.mouseCamera?.rotateMove(moveDirP1, this.isCoOp);
+    if ((!this.skimmer.isMounted||this.operationTransport?.driver===this.player2) && !this.player.isDodging && this.player.hp > 0) this.player.move(moveDirP1, delta*this.gamepadBridge.movementScale(0,keyboardP1)*this.gamepadBridge.speedScale(0));
+    this.gamepadBridge.applyAim(0);
+    this.env.resolveMovement?.(this.player.position);
+    this.dropPod.resolveMovement?.(this.player.position);
+    this.apc.resolveMovement?.(this.player.position);
+    this.player.mesh.position.copy(this.player.position);
+    if (this.player.hp > 0) this.player.update(delta, this.horde);
+    if (this.player.insertionConcealmentEndReason) {
+      const reason = this.player.insertionConcealmentEndReason; this.player.insertionConcealmentEndReason = null;
+      this.ui.showAnnouncement(reason === 'revealed' ? 'OUVERTURE FURTIVE TERMINÉE — VOTRE POSITION EST CONNUE' : 'OUVERTURE FURTIVE ÉCOULÉE — LA RUCHE VOUS CHERCHE');
+    }
+    else this.player.updateDefeatedEffects(delta);
+    this.weather.setFocus?.(this.player.hp > 0 ? this.player.position : (this.player2?.position ?? this.player.position));
 
     // Karim QA Audit #3: Dynamic Surface Footstep Synthesizer (Metal Catwalk, Water Basin, Ash)
-    if (moveDirP1.lengthSq() > 0.01 && this.audio && this.audio.playFootstepSurface) {
+    this._footstepClock = Math.max(0, (this._footstepClock ?? 0) - delta);
+    if (moveDirP1.lengthSq() > 0.01 && this._footstepClock === 0 && this.audio && this.audio.playFootstepSurface) {
+      this._footstepClock = this.player.isSprinting ? .24 : .38;
       let surf = 'metal';
       if (this.env && this.env.aurigaBasin) {
         const dx = Math.abs(this.player.position.x - this.env.aurigaBasin.pos.x);
@@ -2361,7 +3724,9 @@ class GameApp {
       }
 
       // Trophy chain rattle sound when dashing or sprinting (Karim Audio QA)
-      if (this.player.isSprinting && Math.random() < 0.08) {
+      this._chainClock = Math.max(0,(this._chainClock ?? 0)-delta);
+      if (this.player.isSprinting && this._chainClock === 0) {
+        this._chainClock = .65;
         this.player.triggerTrophyChainRattle(this.audio);
       }
     }
@@ -2372,24 +3737,50 @@ class GameApp {
       if (this.keys['ArrowDown']) moveDirP2.z += 1;
       if (this.keys['ArrowLeft']) moveDirP2.x -= 1;
       if (this.keys['ArrowRight']) moveDirP2.x += 1;
-      this.player2.move(moveDirP2, delta);
-      this.player2.update(delta, this.horde);
+      const keyboardP2=moveDirP2.lengthSq()>0,analogP2=this.gamepadBridge.movement(1);
+      moveDirP2.x+=analogP2.x;moveDirP2.z-=analogP2.y;
+      if (!this.operationTransport?.isPassenger(this.player2) && !this.player2.isDodging && this.player2.hp > 0) this.player2.move(moveDirP2, delta*this.gamepadBridge.movementScale(1,keyboardP2)*this.gamepadBridge.speedScale(1));
+      this.gamepadBridge.applyAim(1);
+      this.env.resolveMovement?.(this.player2.position);
+      this.dropPod.resolveMovement?.(this.player2.position);
+      this.apc.resolveMovement?.(this.player2.position);
+      this.player2.mesh.position.copy(this.player2.position);
+      if (this.player2.hp > 0) this.player2.update(delta, this.horde);
+      else this.player2.updateDefeatedEffects(delta);
 
       const cam2Target = this.player2.position.clone().add(new THREE.Vector3(0, 10, 16));
       this.renderer.cameraP2.position.lerp(cam2Target, 5 * delta);
       this.renderer.cameraP2.lookAt(this.player2.position.clone().add(new THREE.Vector3(0, 2, 0)));
     }
+    this.env.updateBattlefieldVisibility?.([this.player, this.player2].filter(player => player?.hp > 0));
 
-    this.hellHounds.update(delta, this.player, this.horde);
-    this.synthetics.update(delta, this.player, this.horde);
+    const livingTarget = this.player.hp > 0 ? this.player : (this.player2 ?? this.player);
+    this.hellHounds.update(delta, livingTarget, this.horde);
+    this.synthetics.update(delta, livingTarget, this.horde);
     this.dropship.update(delta, this.horde);
     this.apc.update(delta, this.horde, this.bosses);
     this.sentryGun.update(delta, this.horde);
     this.falconDrone.update(delta, this.player.position, this.horde);
-    this.skimmer.update(delta, this.player, this.horde, this.keys);
+    const driver=this.operationTransport?.driver??this.player,driverIndex=driver===this.player2?1:0;
+    const analogDrive=this.gamepadBridge.moves[driverIndex];
+    const drivingKeys={...this.keys,KeyW:this.keys.KeyW||analogDrive.y>.2,KeyS:this.keys.KeyS||analogDrive.y<-.2,KeyA:this.keys.KeyA||analogDrive.x<-.2,KeyD:this.keys.KeyD||analogDrive.x>.2,ShiftLeft:this.keys.ShiftLeft||this.gamepadBridge.vehicleFire?.[driverIndex]};
+    if(!this.operationTransport?.update(delta,driver,drivingKeys))this.skimmer.update(delta,driver,this.horde,drivingKeys);
+    if (this.skimmer.isMounted) {
+      this.env.resolveMovement?.(this.skimmer.position, 1.2);
+      this.dropPod.resolveMovement?.(this.skimmer.position, 2);
+      this.apc.resolveMovement?.(this.skimmer.position, 2);
+      this.skimmer.mesh.position.copy(this.skimmer.position);
+      this.player.position.copy(this.skimmer.position);
+    }
+    this.env.resolveMovement?.(this.player.position);
+    this.dropPod.resolveMovement?.(this.player.position);
+    this.apc.resolveMovement?.(this.player.position);
+    this.player.mesh.position.copy(this.player.position);
     this.orbital.update(delta);
     if (this.weather) this.weather.update(delta, this.player ? this.player.position : null, this.renderer, this.audio, this.horde);
     if (this.env) this.env.update(delta, this.horde, this.audio, this.player);
+    const tacticalPrompt=document.getElementById('tactical-world-prompt'),tacticalText=this.env.getTacticalWorldPrompt?.(this.player);
+    tacticalPrompt?.classList.toggle('hidden',!tacticalText);if(tacticalPrompt&&tacticalText)tacticalPrompt.textContent=tacticalText;
     if (this.renderer) this.renderer.update(delta);
     if (this.citadel) this.citadel.update(delta);
 
@@ -2398,6 +3789,7 @@ class GameApp {
     for (let i = this.pathogenPools.length - 1; i >= 0; i--) {
       const p = this.pathogenPools[i];
       p.life -= delta;
+
       if (this.horde) {
         this.horde.checkMeleeHits({ origin: p.pos, radius: 4.2, damage: p.damage * delta, type: 'pathogen' });
       }
@@ -2405,8 +3797,8 @@ class GameApp {
         this.synthetics.checkHits({ origin: p.pos, radius: 4.2, damage: p.damage * delta });
       }
       if (p.life <= 0) {
-        this.renderer.scene.remove(p.urnMesh);
-        this.renderer.scene.remove(p.poolMesh);
+        this.removeEffectMesh(p.urnMesh);
+        this.removeEffectMesh(p.poolMesh);
         this.pathogenPools.splice(i, 1);
       }
     }
@@ -2416,9 +3808,7 @@ class GameApp {
       const d = this.holoDecoys[i];
       d.life -= delta;
       d.mesh.position.addScaledVector(d.direction, d.speed * delta);
-      d.mesh.children.forEach(c => {
-        if (c.material) c.material.opacity = 0.4 + Math.sin(Date.now() * 0.03) * 0.25;
-      });
+      d.update?.(delta);
 
       // Lure horde aggro towards decoy
       if (this.horde && this.horde.aliens) {
@@ -2436,15 +3826,16 @@ class GameApp {
         if (this.horde) {
           this.horde.checkMeleeHits({ origin: d.mesh.position, radius: 8.0, damage: 280, type: 'heavy' });
         }
-        this.renderer.scene.remove(d.mesh);
+        this.removeHoloDecoy(d);
         this.holoDecoys.splice(i, 1);
       }
     }
 
     // Camera positioning: First-Person Bio-Mask vs 3rd Person
     if (this.isFirstPerson) {
-      const eyePos = this.player.position.clone().add(new THREE.Vector3(0, 3.6, 0.2));
-      this.renderer.camera.position.lerp(eyePos, 15 * delta);
+      const eyeHeight = this.player.cameraEyeHeight ?? this.player.headMesh?.position.y ?? 3.6;
+      const eyePos = this.player.position.clone().add(new THREE.Vector3(0, eyeHeight, 0.2));
+      this.renderer.camera.position.lerp(eyePos, 1 - Math.exp(-15 * delta));
       const lookTarget = eyePos.clone().add(new THREE.Vector3(
         Math.sin(this.player.rotationY) * 10,
         this.player.isPerched ? -4 : 0,
@@ -2452,7 +3843,8 @@ class GameApp {
       ));
       this.renderer.camera.lookAt(lookTarget);
     } else {
-      const camTarget = this.player.position.clone().add(new THREE.Vector3(0, 10, 16));
+      const orbit = this.mouseCamera?.offset(this.isCoOp) ?? { x: 0, y: 10, z: 16 };
+      const camTarget = this.player.position.clone().add(new THREE.Vector3(orbit.x, orbit.y, orbit.z));
       this.renderer.camera.position.lerp(camTarget, 5 * delta);
       this.renderer.camera.lookAt(this.player.position.clone().add(new THREE.Vector3(0, 2, 0)));
     }
@@ -2460,13 +3852,16 @@ class GameApp {
     // Apply Musou Camera Shake
     if (this.cameraShakeTimer > 0) {
       this.cameraShakeTimer -= delta;
-      const shakeAmt = this.cameraShakeIntensity * Math.min(1.0, this.cameraShakeTimer / 0.35);
+      const shakeAmt = this.cameraShakeIntensity * Math.min(1.0, this.cameraShakeTimer / 0.35) * (document.body.classList.contains('reduced-flashes')?.25:1);
       this.renderer.camera.position.x += (Math.random() - 0.5) * shakeAmt;
       this.renderer.camera.position.y += (Math.random() - 0.5) * shakeAmt;
       this.renderer.camera.position.z += (Math.random() - 0.5) * shakeAmt;
     }
 
     // Apply Musou FOV Surge & Elastic Snapback
+    if(!this.isFirstPerson){const anchor=this.player.position.clone().add(new THREE.Vector3(0,2,0));this.renderer.camera.position.copy(resolveThirdPersonCamera(anchor,this.renderer.camera.position,this.env,{radius:cameraNearPlaneRadius(this.renderer.camera)}).position);this.renderer.camera.lookAt(anchor);}
+    if(this.player2){const anchor=this.player2.position.clone().add(new THREE.Vector3(0,2,0));this.renderer.cameraP2.position.copy(resolveThirdPersonCamera(anchor,this.renderer.cameraP2.position,this.env,{radius:cameraNearPlaneRadius(this.renderer.cameraP2)}).position);this.renderer.cameraP2.lookAt(anchor);}
+
     if (this.cameraFovTimer > 0) {
       this.cameraFovTimer -= delta;
       const t = Math.max(0, this.cameraFovTimer / (this.cameraFovDuration || 0.6));
@@ -2480,6 +3875,11 @@ class GameApp {
     for (let i = this.projectiles.length - 1; i >= 0; i--) {
       const p = this.projectiles[i];
       p.life -= delta;
+      if (p.projectileKind!=='taabe_arrow' && p.direction?.isVector3 && Number.isFinite(p.speed)) {
+        const end=p.mesh.position.clone().addScaledVector(p.direction,p.speed*delta);
+        const wall=this.env.traceSegment?.(p.mesh.position,end,{radius:p.projectileKind === 'feral_bolt' ? .06 : .18});
+        if(wall){for(const[id]of this.env.tacticalBridges??[])if(wall.collider.owner===id||wall.collider.owner===`${id}-support`)this.env.damageTacticalBridge(id,p.damage,'projectile');this.particles.emitSparks(wall.point,6);this.removeEffectMesh(p.mesh);this.projectiles.splice(i,1);continue;}
+      }
 
       // Alien: Romulus Zero-G Acid Globule Vaporization
       if (this.horde && this.horde.zeroGAcidGlobules) {
@@ -2508,7 +3908,7 @@ class GameApp {
 
         // Multi-Target Waypoint Chain or Quadratic Bezier Curve (Predator 2 Canon)
         let currentPos;
-        const playerCurrentHand = this.player.position.clone().add(new THREE.Vector3(0.8, 1.8, 0.4));
+        const playerCurrentHand = (p.owner??this.player).position.clone().add(new THREE.Vector3(0.8, 1.8, 0.4));
 
         if (p.waypoints && p.waypoints.length > 0) {
           const pts = [p.startPos, ...p.waypoints, playerCurrentHand];
@@ -2530,6 +3930,8 @@ class GameApp {
             (1 - t) * (1 - t) * p0.z + 2 * (1 - t) * t * p1.z + t * t * p2.z
           );
         }
+        const discWall=this.env.traceSegment?.(p.mesh.position,currentPos,{radius:.15});
+        if(discWall){this.particles.emitSparks(discWall.point,6);this.removeEffectMesh(p.mesh);this.projectiles.splice(i,1);continue;}
         p.mesh.position.copy(currentPos);
 
         if (this.env) {
@@ -2563,6 +3965,24 @@ class GameApp {
           if (this.env.checkRebelFuelBarrelsDamage) {
             this.env.checkRebelFuelBarrelsDamage(p.mesh.position, p.damage, this.audio, this.horde, this.bosses, this.particles, this.ui);
           }
+          if (this.env.checkFlareTripwireTrigger) {
+            this.env.checkFlareTripwireTrigger(p.mesh.position, this.audio, this.horde, this.bosses, this.particles, this.ui);
+          }
+          if (this.env.checkNeonTransformerOverload) {
+            this.env.checkNeonTransformerOverload(p.mesh.position, p.damage, this.audio, this.horde, this.bosses, this.particles, this.ui);
+          }
+          if (this.env.checkBoilingTarSpillDamage) {
+            this.env.checkBoilingTarSpillDamage(p.mesh.position, p.damage, this.audio, this.horde, this.bosses, this.particles, this.ui);
+          }
+          if (this.env.checkRoyceTripwireTrigger) {
+            this.env.checkRoyceTripwireTrigger(p.mesh.position, this.audio, this.horde, this.bosses, this.particles, this.ui);
+          }
+          if (this.env.checkMombassaPunjiTrapTrigger) {
+            this.env.checkMombassaPunjiTrapTrigger(p.mesh.position, this.audio, this.horde, this.bosses, this.particles, this.ui);
+          }
+          if (this.env.checkCryoNitrogenTankTrigger) {
+            this.env.checkCryoNitrogenTankTrigger(p.mesh.position, this.audio, this.horde, this.bosses, this.particles, this.ui);
+          }
         }
 
         const hits = this.horde.checkMeleeHits({ origin: p.mesh.position, radius: 2.8, damage: p.damage });
@@ -2574,7 +3994,7 @@ class GameApp {
           this.registerHits(hits);
         }
 
-        if (this.bosses && this.bosses.activeBoss && p.mesh.position.distanceTo(this.bosses.activeBoss.mesh.position) <= 4.0) {
+        if (this.canProjectileHitBoss(p)) {
           this.bosses.takeDamage(p.damage);
           this.particles.emitSparks(p.mesh.position, 8);
           if (this.gore && this.gore.spawnDismemberment) {
@@ -2594,7 +4014,7 @@ class GameApp {
 
         if (p.progress >= 1.0 || p.life <= 0) {
           // Returned to player hand
-          this.renderer.scene.remove(p.mesh);
+          this.removeEffectMesh(p.mesh);
           this.projectiles.splice(i, 1);
           this.audio.playShieldBlock();
         }
@@ -2614,7 +4034,7 @@ class GameApp {
           p.pierceRemaining -= hits.length;
         }
 
-        if (this.bosses.activeBoss && p.mesh.position.distanceTo(this.bosses.activeBoss.mesh.position) <= 4.0) {
+        if (this.canProjectileHitBoss(p)) {
           this.bosses.takeDamage(p.damage);
           this.audio.playCombiStickImpale();
           p.pierceRemaining--;
@@ -2627,7 +4047,7 @@ class GameApp {
         }
 
         if (p.pierceRemaining <= 0 || p.life <= 0) {
-          this.renderer.scene.remove(p.mesh);
+          this.removeEffectMesh(p.mesh);
           this.projectiles.splice(i, 1);
         }
       } else if (p.isShuriken) {
@@ -2642,7 +4062,7 @@ class GameApp {
           p.pierceRemaining -= hits.length;
         }
 
-        if (this.bosses.activeBoss && p.mesh.position.distanceTo(this.bosses.activeBoss.mesh.position) <= 4.0) {
+        if (this.canProjectileHitBoss(p)) {
           this.bosses.takeDamage(p.damage);
           this.audio.playShurikenSlice();
           p.pierceRemaining--;
@@ -2655,7 +4075,7 @@ class GameApp {
         }
 
         if (p.pierceRemaining <= 0 || p.life <= 0) {
-          this.renderer.scene.remove(p.mesh);
+          this.removeEffectMesh(p.mesh);
           this.projectiles.splice(i, 1);
         }
       } else if (p.isGuidedFlechette) {
@@ -2680,9 +4100,11 @@ class GameApp {
             });
             this.registerHits(hits);
           }
-          this.renderer.scene.remove(p.mesh);
+          this.removeEffectMesh(p.mesh);
           this.projectiles.splice(i, 1);
         }
+      } else if (p.projectileKind==='taabe_arrow') {
+        if(this.advancePreyArrow(p,delta)){this.removeEffectMesh(p.mesh);this.projectiles.splice(i,1);}
       } else if (p.isChargedArrow) {
         p.mesh.position.addScaledVector(p.direction, p.speed * delta);
 
@@ -2700,7 +4122,7 @@ class GameApp {
         }
 
         if (this.bosses.activeBoss && p.mesh.position.distanceTo(this.bosses.activeBoss.mesh.position) <= 4.0) {
-          this.bosses.takeDamage(p.damage);
+          this.hitBossFromPlayer(p.damage,p.attackOrigin??p.owner?.position??p.mesh.position,'charged',p.mesh.position);
           this.audio.playArrowPinImpact();
           p.pierceRemaining--;
         }
@@ -2712,7 +4134,7 @@ class GameApp {
         }
 
         if (p.pierceRemaining <= 0 || p.life <= 0) {
-          this.renderer.scene.remove(p.mesh);
+          this.removeEffectMesh(p.mesh);
           this.projectiles.splice(i, 1);
         }
       } else {
@@ -2737,6 +4159,24 @@ class GameApp {
           if (this.env.checkRebelFuelBarrelsDamage) {
             this.env.checkRebelFuelBarrelsDamage(p.mesh.position, p.damage, this.audio, this.horde, this.bosses, this.particles, this.ui);
           }
+          if (this.env.checkFlareTripwireTrigger) {
+            this.env.checkFlareTripwireTrigger(p.mesh.position, this.audio, this.horde, this.bosses, this.particles, this.ui);
+          }
+          if (this.env.checkNeonTransformerOverload) {
+            this.env.checkNeonTransformerOverload(p.mesh.position, p.damage, this.audio, this.horde, this.bosses, this.particles, this.ui);
+          }
+          if (this.env.checkBoilingTarSpillDamage) {
+            this.env.checkBoilingTarSpillDamage(p.mesh.position, p.damage, this.audio, this.horde, this.bosses, this.particles, this.ui);
+          }
+          if (this.env.checkRoyceTripwireTrigger) {
+            this.env.checkRoyceTripwireTrigger(p.mesh.position, this.audio, this.horde, this.bosses, this.particles, this.ui);
+          }
+          if (this.env.checkMombassaPunjiTrapTrigger) {
+            this.env.checkMombassaPunjiTrapTrigger(p.mesh.position, this.audio, this.horde, this.bosses, this.particles, this.ui);
+          }
+          if (this.env.checkCryoNitrogenTankTrigger) {
+            this.env.checkCryoNitrogenTankTrigger(p.mesh.position, this.audio, this.horde, this.bosses, this.particles, this.ui);
+          }
         }
 
         if (p.isSuperCharged) {
@@ -2745,21 +4185,25 @@ class GameApp {
           if (this.particles) this.particles.emitSparks(p.mesh.position, 2);
 
           const hits = this.horde.checkMeleeHits({ origin: p.mesh.position, radius: 8.5, damage: p.damage, type: 'heavy' });
+          if(this.bosses.activeBoss&&this.bosses.activeBoss.mesh.position.distanceTo(p.mesh.position)<=5){const event=this.hitBossFromPlayer(p.damage,p.attackOrigin??p.owner?.position??p.mesh.position,'charged',p.mesh.position);hits.push({damage:p.damage,pos:p.mesh.position.clone(),killed:Boolean(event),event});}
           if (hits.length > 0 || p.life <= 0) {
             this.particles.emitSparks(p.mesh.position, 35);
-            this.particles.spawnPlasmaScorch(p.mesh.position);
+            if(p.projectileKind!=='feral_bolt')this.particles.spawnPlasmaScorch(p.mesh.position);
             this.triggerCameraShake(1.0, 0.45);
             if (this.audio && this.audio.playC6CataclysmBoom) this.audio.playC6CataclysmBoom();
-            this.renderer.scene.remove(p.mesh);
+            this.removeEffectMesh(p.mesh);
             this.projectiles.splice(i, 1);
             if (hits.length > 0) this.registerHits(hits);
           }
         } else {
           const hits = this.horde.checkMeleeHits({ origin: p.mesh.position, radius: 2.2, damage: p.damage });
+          hits.push(...this.synthetics.checkHits({origin:p.mesh.position,radius:2.2,damage:p.damage}));
+          if(this.bosses.activeBoss && this.bosses.activeBoss.mesh.position.distanceTo(p.mesh.position)<=3){const event=this.hitBossFromPlayer(p.damage,p.attackOrigin??p.owner?.position??p.mesh.position,'projectile',p.mesh.position);hits.push({damage:p.damage,pos:p.mesh.position.clone(),killed:Boolean(event),event});}
+          this.operationWorld?.damageNear(this.operationObjectives,p.mesh.position,2.2,p.damage);
           if (hits.length > 0 || p.life <= 0) {
             this.particles.emitSparks(p.mesh.position, 10);
-            this.particles.spawnPlasmaScorch(p.mesh.position);
-            this.renderer.scene.remove(p.mesh);
+            if(p.projectileKind!=='feral_bolt')this.particles.spawnPlasmaScorch(p.mesh.position);
+            this.removeEffectMesh(p.mesh);
             this.projectiles.splice(i, 1);
             if (hits.length > 0) this.registerHits(hits);
           }
@@ -2767,11 +4211,25 @@ class GameApp {
       }
     }
 
-    this.badBlood.update(delta, this.player, this.ui, this.gore, this.particles, this);
-    this.marines.update(delta, this.player, this.horde);
-    this.allies.update(delta, this.player.position, this.horde);
-    this.horde.update(delta, this.player);
-    this.bosses.update(delta, this.player, this.horde);
+    this.badBlood.update(delta, livingTarget, this.ui, this.gore, this.particles, this);
+    this.marines.update(delta, livingTarget, this.horde);
+    this.allies.update(delta, livingTarget.position, this.horde);
+    this.horde.update(delta, this.player, this.player2);
+    this.bosses.update(delta, livingTarget, this.horde);
+    this.battleBridge?.sync();
+    for (const actor of [...this.horde.aliens, ...this.synthetics.androids, ...this.marines.marines, ...this.allies.allies, ...this.hellHounds.hounds, this.badBlood.badBlood, this.bosses.activeBoss].filter(Boolean)) {
+      if (actor.mesh) {
+        this.env.resolveMovement(actor.mesh.position, actor.radius ?? 1);
+        this.dropPod.resolveMovement?.(actor.mesh.position, actor.radius ?? 1);
+        this.apc.resolveMovement?.(actor.mesh.position, actor.radius ?? 1);
+      }
+    }
+    // Pose after bridge reconciliation and all world, capsule and APC contacts.
+    this.allies.updateVisuals(delta);
+    this.battlefield?.update([this.player, this.player2].filter(Boolean));
+    this.faunaEncounter?.update();
+    this.shipHub?.update(this.player);
+    this.env.updateBattlefieldObjectives?.(this.battlefieldProgression, delta);
     this.gore.update(delta);
     this.particles.update(delta, this.renderer.camera);
     this.updateTargetLockReticle();
@@ -2885,7 +4343,7 @@ class GameApp {
         }
       });
     }
-    this.ui.showExecutionPrompt((boss && boss.isStunned) || subBossStunnedNearby || syntheticHarvestNearby);
+    this.ui.showExecutionPrompt((boss && boss.isStunned && boss.hp <= boss.maxHp * .3 && boss.mesh.position.distanceTo(this.player.position) <= 8) || subBossStunnedNearby || syntheticHarvestNearby);
 
     // v46.0, v47.0, v48.0 & v49.0 Proximity Prompts & Diegetic Telemetry
     if (this.env && this.player) {
@@ -2970,7 +4428,7 @@ class GameApp {
       }
 
       // Chantier 5 & Sofia QA (v52.0): Hydraulic Cargo Lift Proximity Prompt
-      const isNearLift = this.env.hydraulicCargoLift && this.player && this.player.position.distanceTo(this.env.hydraulicCargoLift.switchPos) <= 4.2;
+      const isNearLift = this.env.hydraulicCargoLift && this.player && this.player.position.distanceTo(this.env.hydraulicCargoLift.pos) <= 4.2;
       const liftPrompt = document.getElementById('hydraulic-lift-prompt');
       if (liftPrompt) {
         if (isNearLift) liftPrompt.classList.remove('hidden');
@@ -3068,10 +4526,10 @@ class GameApp {
       }
 
       // v57.0 Sector Overhaul Proximity Prompts
-      const isNearCrypt = this.env.cryptReliquaryVault && !this.env.cryptReliquaryVault.isOpened && this.player && this.player.position.distanceTo(this.env.cryptReliquaryVault.pos) <= 3.8;
+      const isNearReliquary = this.env.cryptReliquaryVault && !this.env.cryptReliquaryVault.isOpened && this.player && this.player.position.distanceTo(this.env.cryptReliquaryVault.pos) <= 3.8;
       const cryptReliquaryPrompt = document.getElementById('crypt-reliquary-prompt');
       if (cryptReliquaryPrompt) {
-        if (isNearCrypt) cryptReliquaryPrompt.classList.remove('hidden');
+        if (isNearReliquary) cryptReliquaryPrompt.classList.remove('hidden');
         else cryptReliquaryPrompt.classList.add('hidden');
       }
 
@@ -3117,44 +4575,528 @@ class GameApp {
         if (isNearOldPainless) painlessPrompt.classList.remove('hidden');
         else painlessPrompt.classList.add('hidden');
       }
+
+      // v59.0 Predator 1 (1987) Val Verde Apex Proximity Prompts
+      const isNearDutchChallenge = this.env.dutchChallengeRock && this.player && this.player.position.distanceTo(this.env.dutchChallengeRock.pos) <= 4.2;
+      const dutchChallengePrompt = document.getElementById('dutch-challenge-prompt');
+      if (dutchChallengePrompt) {
+        if (isNearDutchChallenge) dutchChallengePrompt.classList.remove('hidden');
+        else dutchChallengePrompt.classList.add('hidden');
+      }
+
+      const isNearWorkbench = this.env.dutchWorkbench && !this.env.dutchWorkbench.isCrafted && this.player && this.player.position.distanceTo(this.env.dutchWorkbench.pos) <= 4.2;
+      const workbenchPrompt = document.getElementById('dutch-workbench-prompt');
+      if (workbenchPrompt) {
+        if (isNearWorkbench) workbenchPrompt.classList.remove('hidden');
+        else workbenchPrompt.classList.add('hidden');
+      }
+
+      const isNearAnnaMaps = this.env.annaHostageCage && !this.env.annaHostageCage.isScanned && this.player && this.player.position.distanceTo(this.env.annaHostageCage.mapPos) <= 4.2;
+      const annaMapsPrompt = document.getElementById('anna-maps-prompt');
+      if (annaMapsPrompt) {
+        if (isNearAnnaMaps) annaMapsPrompt.classList.remove('hidden');
+        else annaMapsPrompt.classList.add('hidden');
+      }
+
+      const isNearWildBoar = this.env.wildBoarRoastSpit && !this.env.wildBoarRoastSpit.isConsumed && this.player && this.player.position.distanceTo(this.env.wildBoarRoastSpit.pos) <= 4.2;
+      const wildBoarPrompt = document.getElementById('wild-boar-prompt');
+      if (wildBoarPrompt) {
+        if (isNearWildBoar) wildBoarPrompt.classList.remove('hidden');
+        else wildBoarPrompt.classList.add('hidden');
+      }
+
+      const isNearGlowingBlood = this.env.yautjaCraterLocus && !this.env.yautjaCraterLocus.isAnalyzed && this.player && this.player.position.distanceTo(this.env.yautjaCraterLocus.pos) <= 5.0;
+      const glowingBloodPrompt = document.getElementById('glowing-blood-prompt');
+      if (glowingBloodPrompt) {
+        if (isNearGlowingBlood) glowingBloodPrompt.classList.remove('hidden');
+        else glowingBloodPrompt.classList.add('hidden');
+      }
+
+      // v60.0 Predator 2 (1990) TOITS DE LOS ANGELES Proximity Prompts
+      const isNearColumbia = this.env.easternColumbiaSpire && this.player && this.player.position.distanceTo(this.env.easternColumbiaSpire.pos) <= 5.0;
+      const columbiaPrompt = document.getElementById('eastern-columbia-prompt');
+      if (columbiaPrompt) {
+        if (isNearColumbia) columbiaPrompt.classList.remove('hidden');
+        else columbiaPrompt.classList.add('hidden');
+      }
+
+      const isNearMeatLocker = this.env.meatLockerFacility && this.player && this.player.position.distanceTo(this.env.meatLockerFacility.valvePos) <= 4.2;
+      const meatLockerPrompt = document.getElementById('meat-locker-prompt');
+      if (meatLockerPrompt) {
+        if (isNearMeatLocker) meatLockerPrompt.classList.remove('hidden');
+        else meatLockerPrompt.classList.add('hidden');
+      }
+
+      const isNearKingWillie = this.env.kingWillieAltar && !this.env.kingWillieAltar.isClaimed && this.player && this.player.position.distanceTo(this.env.kingWillieAltar.pos) <= 4.2;
+      const kingWilliePrompt = document.getElementById('king-willie-prompt');
+      if (kingWilliePrompt) {
+        if (isNearKingWillie) kingWilliePrompt.classList.remove('hidden');
+        else kingWilliePrompt.classList.add('hidden');
+      }
+
+      const isNearDannyNetgun = this.env.dannyBoyNetgun && !this.env.dannyBoyNetgun.isClaimed && this.player && this.player.position.distanceTo(this.env.dannyBoyNetgun.pos) <= 4.2;
+      const dannyNetgunPrompt = document.getElementById('danny-netgun-prompt');
+      if (dannyNetgunPrompt) {
+        if (isNearDannyNetgun) dannyNetgunPrompt.classList.remove('hidden');
+        else dannyNetgunPrompt.classList.add('hidden');
+      }
+
+      const isNearLostTribe = this.env.lostTribeShipDais && !this.env.lostTribeShipDais.isClaimed && this.player && this.player.position.distanceTo(this.env.lostTribeShipDais.pos) <= 4.5;
+      const lostTribePrompt = document.getElementById('lost-tribe-prompt');
+      if (lostTribePrompt) {
+        if (isNearLostTribe) lostTribePrompt.classList.remove('hidden');
+        else lostTribePrompt.classList.add('hidden');
+      }
+
+      const isNearSurgery = this.env.cityHunterSurgery && !this.env.cityHunterSurgery.isUsed && this.player && this.player.position.distanceTo(this.env.cityHunterSurgery.pos) <= 4.2;
+      const surgeryPrompt = document.getElementById('city-hunter-surgery-prompt');
+      if (surgeryPrompt) {
+        if (isNearSurgery) surgeryPrompt.classList.remove('hidden');
+        else surgeryPrompt.classList.add('hidden');
+      }
+
+      const isNearCruiser = this.env.harriganCruiser && !this.env.harriganCruiser.isLooted && this.player && this.player.position.distanceTo(this.env.harriganCruiser.pos) <= 4.2;
+      const cruiserPrompt = document.getElementById('harrigan-cruiser-prompt');
+      if (cruiserPrompt) {
+        if (isNearCruiser) cruiserPrompt.classList.remove('hidden');
+        else cruiserPrompt.classList.add('hidden');
+      }
+
+      const isNearSmartDisc = this.env.smartDiscGirder && !this.env.smartDiscGirder.isRetrieved && this.player && this.player.position.distanceTo(this.env.smartDiscGirder.pos) <= 4.2;
+      const smartDiscPrompt = document.getElementById('smart-disc-girder-prompt');
+      if (smartDiscPrompt) {
+        if (isNearSmartDisc) smartDiscPrompt.classList.remove('hidden');
+        else smartDiscPrompt.classList.add('hidden');
+      }
+
+      const isNearSubway = this.env.subwayCar666 && !this.env.subwayCar666.isClaimed && this.player && this.player.position.distanceTo(this.env.subwayCar666.pos) <= 4.2;
+      const subwayPrompt = document.getElementById('subway-massacre-prompt');
+      if (subwayPrompt) {
+        if (isNearSubway) subwayPrompt.classList.remove('hidden');
+        else subwayPrompt.classList.add('hidden');
+      }
+
+      const isNearOWLF = this.env.owlfCommandVan && !this.env.owlfCommandVan.isScanned && this.player && this.player.position.distanceTo(this.env.owlfCommandVan.pos) <= 4.2;
+      const owlfPrompt = document.getElementById('owlf-van-prompt');
+      if (owlfPrompt) {
+        if (isNearOWLF) owlfPrompt.classList.remove('hidden');
+        else owlfPrompt.classList.add('hidden');
+      }
+
+      const isNearCartel = this.env.cartelPenthouse && !this.env.cartelPenthouse.isLooted && this.player && this.player.position.distanceTo(this.env.cartelPenthouse.pos) <= 4.2;
+      const cartelPrompt = document.getElementById('cartel-penthouse-prompt');
+      if (cartelPrompt) {
+        if (isNearCartel) cartelPrompt.classList.remove('hidden');
+        else cartelPrompt.classList.add('hidden');
+      }
+
+      const isNearVaultPad = this.env.poleVaultPad && this.player && this.player.position.distanceTo(this.env.poleVaultPad.pos) <= 3.8;
+      const vaultPadPrompt = document.getElementById('pole-vault-pad-prompt');
+      if (vaultPadPrompt) {
+        if (isNearVaultPad) vaultPadPrompt.classList.remove('hidden');
+        else vaultPadPrompt.classList.add('hidden');
+      }
+
+      // v61.0 PREDATORS (2010) GAME PRESERVE PROMPTS
+      const isNearNoland = this.env.nolandHideout && !this.env.nolandHideout.isLooted && this.player && this.player.position.distanceTo(this.env.nolandHideout.doorPos) <= 4.8;
+      const nolandPrompt = document.getElementById('noland-hideout-prompt');
+      if (nolandPrompt) {
+        if (isNearNoland) nolandPrompt.classList.remove('hidden');
+        else nolandPrompt.classList.add('hidden');
+      }
+
+      const isNearWhistle = this.env.hellhoundKennel && !this.env.hellhoundKennel.isUsed && this.player && this.player.position.distanceTo(this.env.hellhoundKennel.whistlePos) <= 4.5;
+      const whistlePrompt = document.getElementById('tracker-whistle-prompt');
+      if (whistlePrompt) {
+        if (isNearWhistle) whistlePrompt.classList.remove('hidden');
+        else whistlePrompt.classList.add('hidden');
+      }
+
+      const isNearNikolai = this.env.nikolaiBlastMemorial && !this.env.nikolaiBlastMemorial.isDetonated && this.player && this.player.position.distanceTo(this.env.nikolaiBlastMemorial.craterPos) <= 4.2;
+      const nikolaiPrompt = document.getElementById('nikolai-claymore-prompt');
+      if (nikolaiPrompt) {
+        if (isNearNikolai) nikolaiPrompt.classList.remove('hidden');
+        else nikolaiPrompt.classList.add('hidden');
+      }
+
+      const isNearHanzo = this.env.hanzoDuelArena && !this.env.hanzoDuelArena.isDrawn && this.player && this.player.position.distanceTo(this.env.hanzoDuelArena.katanaPos) <= 4.2;
+      const hanzoPrompt = document.getElementById('hanzo-katana-prompt');
+      if (hanzoPrompt) {
+        if (isNearHanzo) hanzoPrompt.classList.remove('hidden');
+        else hanzoPrompt.classList.add('hidden');
+      }
+
+      const isNearFlora = this.env.alienFloraPatch && this.player && this.player.position.distanceTo(this.env.alienFloraPatch.harvestPos) <= 4.2;
+      const floraPrompt = document.getElementById('alien-flora-prompt');
+      if (floraPrompt) {
+        if (isNearFlora) floraPrompt.classList.remove('hidden');
+        else floraPrompt.classList.add('hidden');
+      }
+
+      const isNearCliffLeap = this.env.royceCliffWaterfall && this.player && this.player.position.y >= 7.5 && this.player.position.distanceTo(this.env.royceCliffWaterfall.pos) <= 4.8;
+      const cliffLeapPrompt = document.getElementById('royce-cliff-leap-prompt');
+      if (cliffLeapPrompt) {
+        if (isNearCliffLeap) cliffLeapPrompt.classList.remove('hidden');
+        else cliffLeapPrompt.classList.add('hidden');
+      }
+
+      const isNearShip = this.env.superPredatorShipDais && !this.env.superPredatorShipDais.isOverloaded && this.player && this.player.position.distanceTo(this.env.superPredatorShipDais.consolePos) <= 4.5;
+      const shipPrompt = document.getElementById('super-predator-ship-prompt');
+      if (shipPrompt) {
+        if (isNearShip) shipPrompt.classList.remove('hidden');
+        else shipPrompt.classList.add('hidden');
+      }
+
+      const isNearFalconer = this.env.falconerDronePerch && !this.env.falconerDronePerch.isClaimed && this.player && this.player.position.y >= 3.8 && this.player.position.distanceTo(this.env.falconerDronePerch.cradlePos) <= 4.5;
+      const falconerPrompt = document.getElementById('falconer-drone-prompt');
+      if (falconerPrompt) {
+        if (isNearFalconer) falconerPrompt.classList.remove('hidden');
+        else falconerPrompt.classList.add('hidden');
+      }
+
+      const isNearCuchillo = this.env.cuchilloAcousticDecoy && !this.env.cuchilloAcousticDecoy.isDisarmed && !this.env.cuchilloAcousticDecoy.isDetonated && this.player && this.player.position.distanceTo(this.env.cuchilloAcousticDecoy.decoyPos) <= 4.2;
+      const cuchilloPrompt = document.getElementById('cuchillo-decoy-prompt');
+      if (cuchilloPrompt) {
+        if (isNearCuchillo) cuchilloPrompt.classList.remove('hidden');
+        else cuchilloPrompt.classList.add('hidden');
+      }
+
+      const isNearBoneGong = this.env.royceBoneGong && this.player && this.player.position.distanceTo(this.env.royceBoneGong.gongPos) <= 4.5;
+      const boneGongPrompt = document.getElementById('bone-gong-prompt');
+      if (boneGongPrompt) {
+        if (isNearBoneGong) boneGongPrompt.classList.remove('hidden');
+        else boneGongPrompt.classList.add('hidden');
+      }
+
+      const isNearIsabelle = this.env.isabelleSniperStash && !this.env.isabelleSniperStash.isClaimed && this.player && this.player.position.y >= 7.5 && this.player.position.distanceTo(this.env.isabelleSniperStash.stashPos) <= 4.2;
+      const isabellePrompt = document.getElementById('isabelle-sniper-prompt');
+      if (isabellePrompt) {
+        if (isNearIsabelle) isabellePrompt.classList.remove('hidden');
+        else isabellePrompt.classList.add('hidden');
+      }
+
+      // v63.0 Val Verde Master Prompts (Predator 1987)
+      const isNearDillon = this.env.dillonLastStand && !this.env.dillonLastStand.isLooted && this.player && this.player.position.distanceTo(this.env.dillonLastStand.pos) <= 4.2;
+      const dillonPrompt = document.getElementById('dillon-mp5-prompt');
+      if (dillonPrompt) {
+        if (isNearDillon) dillonPrompt.classList.remove('hidden');
+        else dillonPrompt.classList.add('hidden');
+      }
+
+      const isNearPoncho = this.env.ponchoGrenadeStash && !this.env.ponchoGrenadeStash.isClaimed && this.player && this.player.position.distanceTo(this.env.ponchoGrenadeStash.pos) <= 4.2;
+      const ponchoPrompt = document.getElementById('poncho-grenade-prompt');
+      if (ponchoPrompt) {
+        if (isNearPoncho) ponchoPrompt.classList.remove('hidden');
+        else ponchoPrompt.classList.add('hidden');
+      }
+
+      const isNearHawkins = this.env.hawkinsRadioBeacon && !this.env.hawkinsRadioBeacon.isActivated && this.player && this.player.position.distanceTo(this.env.hawkinsRadioBeacon.pos) <= 4.2;
+      const hawkinsPrompt = document.getElementById('hawkins-relay-prompt');
+      if (hawkinsPrompt) {
+        if (isNearHawkins) hawkinsPrompt.classList.remove('hidden');
+        else hawkinsPrompt.classList.add('hidden');
+      }
+
+      const isNearMudWaterfall = this.env.mudWaterfallBasin && this.player && this.player.position.distanceTo(this.env.mudWaterfallBasin.pos) <= 4.5;
+      const mudWaterfallPrompt = document.getElementById('mud-waterfall-prompt');
+      if (mudWaterfallPrompt) {
+        if (isNearMudWaterfall) mudWaterfallPrompt.classList.remove('hidden');
+        else mudWaterfallPrompt.classList.add('hidden');
+      }
+
+      // v63.0 The Predator (2018) Stargazer Prompts
+      const isNearVivisection = this.env.stargazerVivisection && !this.env.stargazerVivisection.isHarvested && this.player && this.player.position.distanceTo(this.env.stargazerVivisection.pos) <= 4.2;
+      const vivisectionPrompt = document.getElementById('stargazer-vivisection-prompt');
+      if (vivisectionPrompt) {
+        if (isNearVivisection) vivisectionPrompt.classList.remove('hidden');
+        else vivisectionPrompt.classList.add('hidden');
+      }
+
+      const isNearPredatorKiller = this.env.predatorKillerPod && !this.env.predatorKillerPod.isClaimed && this.player && this.player.position.distanceTo(this.env.predatorKillerPod.pos) <= 4.5;
+      const killerPrompt = document.getElementById('predator-killer-prompt');
+      if (killerPrompt) {
+        if (isNearPredatorKiller) killerPrompt.classList.remove('hidden');
+        else killerPrompt.classList.add('hidden');
+      }
+
+      const isNearQuinn = this.env.quinnSniperPerch && !this.env.quinnSniperPerch.isLooted && this.player && this.player.position.y >= 5.5 && this.player.position.distanceTo(this.env.quinnSniperPerch.pos) <= 4.5;
+      const quinnPrompt = document.getElementById('quinn-sniper-prompt');
+      if (quinnPrompt) {
+        if (isNearQuinn) quinnPrompt.classList.remove('hidden');
+        else quinnPrompt.classList.add('hidden');
+      }
+
+      const isNearTraeger = this.env.traegerWeaponLocker && !this.env.traegerWeaponLocker.isLooted && this.player && this.player.position.distanceTo(this.env.traegerWeaponLocker.pos) <= 4.2;
+      const traegerPrompt = document.getElementById('traeger-weapon-prompt');
+      if (traegerPrompt) {
+        if (isNearTraeger) traegerPrompt.classList.remove('hidden');
+        else traegerPrompt.classList.add('hidden');
+      }
+
+      const isNearLoonies = this.env.looniesTransportBus && !this.env.looniesTransportBus.isClaimed && this.player && this.player.position.distanceTo(this.env.looniesTransportBus.pos) <= 4.8;
+      const looniesPrompt = document.getElementById('loonies-bus-prompt');
+      if (looniesPrompt) {
+        if (isNearLoonies) looniesPrompt.classList.remove('hidden');
+        else looniesPrompt.classList.add('hidden');
+      }
+
+      const isNearArk = this.env.crashedArkStarship && !this.env.crashedArkStarship.isShieldOverloaded && this.player && this.player.position.y >= 4.5 && this.player.position.distanceTo(this.env.crashedArkStarship.pos) <= 4.8;
+      const arkPrompt = document.getElementById('crashed-ark-prompt');
+      if (arkPrompt) {
+        if (isNearArk) arkPrompt.classList.remove('hidden');
+        else arkPrompt.classList.add('hidden');
+      }
+
+      const isNearFugitiveLocker = this.env.fugitiveGauntletLocker && !this.env.fugitiveGauntletLocker.isClaimed && this.player && this.player.position.distanceTo(this.env.fugitiveGauntletLocker.pos) <= 4.2;
+      const fugitivePrompt = document.getElementById('fugitive-gauntlet-prompt');
+      if (fugitivePrompt) {
+        if (isNearFugitiveLocker) fugitivePrompt.classList.remove('hidden');
+        else fugitivePrompt.classList.add('hidden');
+      }
+
+      const isNearLobo = this.env.friendlyLoboHound && !this.env.friendlyLoboHound.isTamed && this.player && this.player.position.distanceTo(this.env.friendlyLoboHound.pos) <= 4.5;
+      const loboPrompt = document.getElementById('friendly-lobo-prompt');
+      if (loboPrompt) {
+        if (isNearLobo) loboPrompt.classList.remove('hidden');
+        else loboPrompt.classList.add('hidden');
+      }
+
+      const isNearBaxleyCoyle = this.env.baxleyCoyleBunker && !this.env.baxleyCoyleBunker.isLooted && this.player && this.player.position.distanceTo(this.env.baxleyCoyleBunker.pos) <= 4.5;
+      const baxleyPrompt = document.getElementById('baxley-coyle-prompt');
+      if (baxleyPrompt) {
+        if (isNearBaxleyCoyle) baxleyPrompt.classList.remove('hidden');
+        else baxleyPrompt.classList.add('hidden');
+      }
+
+      const isNearNebraska = this.env.nebraskaHarpoonRig && !this.env.nebraskaHarpoonRig.isFired && this.player && this.player.position.distanceTo(this.env.nebraskaHarpoonRig.pos) <= 4.2;
+      const nebraskaPrompt = document.getElementById('nebraska-harpoon-prompt');
+      if (nebraskaPrompt) {
+        if (isNearNebraska) nebraskaPrompt.classList.remove('hidden');
+        else nebraskaPrompt.classList.add('hidden');
+      }
+
+      const isNearRory = this.env.roryTranslatorDesk && !this.env.roryTranslatorDesk.isDecoded && this.player && this.player.position.distanceTo(this.env.roryTranslatorDesk.pos) <= 4.2;
+      const roryPrompt = document.getElementById('rory-translator-prompt');
+      if (roryPrompt) {
+        if (isNearRory) roryPrompt.classList.remove('hidden');
+        else roryPrompt.classList.add('hidden');
+      }
+
+      const isNearTurbine = this.env.crashedArkTurbine && !this.env.crashedArkTurbine.isDetonated && this.player && this.player.position.y >= 4.5 && this.player.position.distanceTo(this.env.crashedArkTurbine.pos) <= 4.8;
+      const turbinePrompt = document.getElementById('crashed-ark-turbine-prompt');
+      if (turbinePrompt) {
+        if (isNearTurbine) turbinePrompt.classList.remove('hidden');
+        else turbinePrompt.classList.add('hidden');
+      }
+
+      const isNearDecon = this.env.caseyDeconStation && !this.env.caseyDeconStation.isUsed && this.player && this.player.position.distanceTo(this.env.caseyDeconStation.pos) <= 4.2;
+      const deconPrompt = document.getElementById('casey-decon-prompt');
+      if (deconPrompt) {
+        if (isNearDecon) deconPrompt.classList.remove('hidden');
+        else deconPrompt.classList.add('hidden');
+      }
+
+      const isNearBoneMask = this.env.boneMaskDecoy && this.env.boneMaskDecoy.isArmed && this.player && this.player.position.distanceTo(this.env.boneMaskDecoy.pos) <= 4.2;
+      const maskPrompt = document.getElementById('bone-mask-prompt');
+      if (maskPrompt) {
+        if (isNearBoneMask) maskPrompt.classList.remove('hidden');
+        else maskPrompt.classList.add('hidden');
+      }
+
+      const isNearFlower = this.env.orangeFlowerPatch && !this.env.orangeFlowerPatch.isHarvested && this.player && this.player.position.distanceTo(this.env.orangeFlowerPatch.pos) <= 4.2;
+      const flowerPrompt = document.getElementById('orange-flower-prompt');
+      if (flowerPrompt) {
+        if (isNearFlower) flowerPrompt.classList.remove('hidden');
+        else flowerPrompt.classList.add('hidden');
+      }
+
+      const isNearAdolini = this.env.adoliniPistolPedestal && !this.env.adoliniPistolPedestal.isClaimed && this.player && this.player.position.distanceTo(this.env.adoliniPistolPedestal.pos) <= 4.2;
+      const adoliniPrompt = document.getElementById('adolini-pistol-prompt');
+      if (adoliniPrompt) {
+        if (isNearAdolini) adoliniPrompt.classList.remove('hidden');
+        else adoliniPrompt.classList.add('hidden');
+      }
+
+      const isNearTaabe = this.env.taabeRockPerch && !this.env.taabeRockPerch.isClaimed && this.player && this.player.position.distanceTo(this.env.taabeRockPerch.pos) <= 4.5;
+      const taabePrompt = document.getElementById('taabe-bow-prompt');
+      if (taabePrompt) {
+        if (isNearTaabe) taabePrompt.classList.remove('hidden');
+        else taabePrompt.classList.add('hidden');
+      }
+
+      const isNearGrizzly = this.env.grizzlyBearCarcass && !this.env.grizzlyBearCarcass.isSkinned && this.player && this.player.position.distanceTo(this.env.grizzlyBearCarcass.pos) <= 4.5;
+      const grizzlyPrompt = document.getElementById('grizzly-trophy-prompt');
+      if (grizzlyPrompt) {
+        if (isNearGrizzly) grizzlyPrompt.classList.remove('hidden');
+        else grizzlyPrompt.classList.add('hidden');
+      }
+
+      const isNearTomahawk = this.env.naruTomahawkTree && !this.env.naruTomahawkTree.isClaimed && this.player && this.player.position.distanceTo(this.env.naruTomahawkTree.pos) <= 4.2;
+      const tomahawkPrompt = document.getElementById('naru-tomahawk-prompt');
+      if (tomahawkPrompt) {
+        if (isNearTomahawk) tomahawkPrompt.classList.remove('hidden');
+        else tomahawkPrompt.classList.add('hidden');
+      }
+
+      const isNearMedTent = this.env.trapperMedicalTent && !this.env.trapperMedicalTent.isLooted && this.player && this.player.position.distanceTo(this.env.trapperMedicalTent.pos) <= 4.2;
+      const medTentPrompt = document.getElementById('trapper-med-prompt');
+      if (medTentPrompt) {
+        if (isNearMedTent) medTentPrompt.classList.remove('hidden');
+        else medTentPrompt.classList.add('hidden');
+      }
+
+      const isNearFeralArsenal = this.env.feralArsenalStation && !this.env.feralArsenalStation.isClaimed && this.player && this.player.position.distanceTo(this.env.feralArsenalStation.pos) <= 4.2;
+      const feralArsenalPrompt = document.getElementById('feral-arsenal-prompt');
+      if (feralArsenalPrompt) {
+        if (isNearFeralArsenal) feralArsenalPrompt.classList.remove('hidden');
+        else feralArsenalPrompt.classList.add('hidden');
+      }
+
+      const isNearSarii = this.env.sariiCompanion && !this.env.sariiCompanion.wounded && (!this.env.sariiCompanion.isTamed || this.env.sariiCompanion.owner===this.player) && this.player && this.player.position.distanceTo(this.env.sariiCompanion.pos) <= 4.5;
+      const sariiPrompt = document.getElementById('sarii-companion-prompt');
+      if (sariiPrompt) {
+        if (isNearSarii) sariiPrompt.classList.remove('hidden');
+        else sariiPrompt.classList.add('hidden');
+      }
+
+      const isNearBait = this.env.trapperBaitTree && !this.env.trapperBaitTree.isDetonated && this.player && this.player.position.distanceTo(this.env.trapperBaitTree.pos) <= 4.5;
+      const baitPrompt = document.getElementById('trapper-bait-prompt');
+      if (baitPrompt) {
+        if (isNearBait) baitPrompt.classList.remove('hidden');
+        else baitPrompt.classList.add('hidden');
+      }
+
+      const isNearRaft = this.env.voyageurRiverRaft && !this.env.voyageurRiverRaft.isLooted && this.player && this.player.position.distanceTo(this.env.voyageurRiverRaft.pos) <= 4.5;
+      const raftPrompt = document.getElementById('voyageur-raft-prompt');
+      if (raftPrompt) {
+        if (isNearRaft) raftPrompt.classList.remove('hidden');
+        else raftPrompt.classList.add('hidden');
+      }
+
+      const isNearTotem = this.env.comancheTotemPost && !this.env.comancheTotemPost.isClaimed && this.player && this.player.position.distanceTo(this.env.comancheTotemPost.pos) <= 4.5;
+      const totemPrompt = document.getElementById('comanche-totem-prompt');
+      if (totemPrompt) {
+        if (isNearTotem) totemPrompt.classList.remove('hidden');
+        else totemPrompt.classList.add('hidden');
+      }
+
+      const isNearPine = this.env.lightningSplitPine && !this.env.lightningSplitPine.isClaimed && this.player && this.player.position.distanceTo(this.env.lightningSplitPine.pos) <= 4.5;
+      const pinePrompt = document.getElementById('lightning-pine-prompt');
+      if (pinePrompt) {
+        if (isNearPine) pinePrompt.classList.remove('hidden');
+        else pinePrompt.classList.add('hidden');
+      }
+
+      const isNearSpit = this.env.trapperCampfireSpit && !this.env.trapperCampfireSpit.isToppled && this.player && this.player.position.distanceTo(this.env.trapperCampfireSpit.pos) <= 4.5;
+      const spitPrompt = document.getElementById('trapper-spit-prompt');
+      if (spitPrompt) {
+        if (isNearSpit) spitPrompt.classList.remove('hidden');
+        else spitPrompt.classList.add('hidden');
+      }
+
+      const isNearCairn = this.env.buffaloSkullCairn && !this.env.buffaloSkullCairn.isCommuned && this.player && this.player.position.distanceTo(this.env.buffaloSkullCairn.pos) <= 4.5;
+      const cairnPrompt = document.getElementById('buffalo-cairn-prompt');
+      if (cairnPrompt) {
+        if (isNearCairn) cairnPrompt.classList.remove('hidden');
+        else cairnPrompt.classList.add('hidden');
+      }
+
+      const isNearGauntlet = this.env.feralSeveredGauntlet && !this.env.feralSeveredGauntlet.isClaimed && this.player && this.player.position.distanceTo(this.env.feralSeveredGauntlet.pos) <= 4.2;
+      const gauntletPrompt = document.getElementById('severed-gauntlet-prompt');
+      if (gauntletPrompt) {
+        if (isNearGauntlet) gauntletPrompt.classList.remove('hidden');
+        else gauntletPrompt.classList.add('hidden');
+      }
+
+      // Predator: Killer of Killers (2025) Prompts
+      const isNearStasis = this.env.trioCryoStasisPods && !this.env.trioCryoStasisPods.isAwakened && this.player && this.player.position.distanceTo(this.env.trioCryoStasisPods.pos) <= 4.8;
+      const stasisPrompt = document.getElementById('stasis-trio-prompt');
+      if (stasisPrompt) {
+        if (isNearStasis) stasisPrompt.classList.remove('hidden');
+        else stasisPrompt.classList.add('hidden');
+      }
+
+      const isNearUrsaShield = this.env.ursaShieldProw && !this.env.ursaShieldProw.isClaimed && this.player && this.player.position.distanceTo(this.env.ursaShieldProw.pos) <= 4.2;
+      const ursaShieldPrompt = document.getElementById('ursa-shield-prompt');
+      if (ursaShieldPrompt) {
+        if (isNearUrsaShield) ursaShieldPrompt.classList.remove('hidden');
+        else ursaShieldPrompt.classList.add('hidden');
+      }
+
+      const isNearUrsaAxe = this.env.ursaDaneAxeAltar && !this.env.ursaDaneAxeAltar.isClaimed && this.player && this.player.position.distanceTo(this.env.ursaDaneAxeAltar.pos) <= 4.2;
+      const ursaAxePrompt = document.getElementById('ursa-axe-prompt');
+      if (ursaAxePrompt) {
+        if (isNearUrsaAxe) ursaAxePrompt.classList.remove('hidden');
+        else ursaAxePrompt.classList.add('hidden');
+      }
+
+      const isNearKenjiKatana = this.env.kenjiKatanaStand && !this.env.kenjiKatanaStand.isClaimed && this.player && this.player.position.distanceTo(this.env.kenjiKatanaStand.pos) <= 4.2;
+      const kenjiKatanaPrompt = document.getElementById('kenji-katana-prompt');
+      if (kenjiKatanaPrompt) {
+        if (isNearKenjiKatana) kenjiKatanaPrompt.classList.remove('hidden');
+        else kenjiKatanaPrompt.classList.add('hidden');
+      }
+
+      const isNearKenjiDecoy = this.env.kenjiBambooDecoy && !this.env.kenjiBambooDecoy.isTriggered && this.player && this.player.position.distanceTo(this.env.kenjiBambooDecoy.pos) <= 4.2;
+      const kenjiDecoyPrompt = document.getElementById('kenji-decoy-prompt');
+      if (kenjiDecoyPrompt) {
+        if (isNearKenjiDecoy) kenjiDecoyPrompt.classList.remove('hidden');
+        else kenjiDecoyPrompt.classList.add('hidden');
+      }
+
+      const isNearTorresPlane = this.env.torresWarhawkWreck && !this.env.torresWarhawkWreck.isClaimed && this.player && this.player.position.distanceTo(this.env.torresWarhawkWreck.pos) <= 4.2;
+      const torresPlanePrompt = document.getElementById('torres-plane-prompt');
+      if (torresPlanePrompt) {
+        if (isNearTorresPlane) torresPlanePrompt.classList.remove('hidden');
+        else torresPlanePrompt.classList.add('hidden');
+      }
+
+      const isNearTorresGun = this.env.torresBrowningNest && !this.env.torresBrowningNest.isFired && this.player && this.player.position.distanceTo(this.env.torresBrowningNest.pos) <= 4.2;
+      const torresGunPrompt = document.getElementById('torres-browning-prompt');
+      if (torresGunPrompt) {
+        if (isNearTorresGun) torresGunPrompt.classList.remove('hidden');
+        else torresGunPrompt.classList.add('hidden');
+      }
     }
 
-    if (this.horde.aliens.length < 10 && !this.bosses.activeBoss) {
-      if (this.waveIndex < this.totalWaves || this.isEndlessMode) {
+    if (this.player.hp <= 0 && (!this.isCoOp || !this.player2 || this.player2.hp <= 0)) {
+      this.endGame(false);
+      return;
+    }
+
+    if (this.battlefield?.complete) {
+      this.endGame(true);
+      return;
+    }
+    if (!this.battlefield && !this.battleSimulation && !this.shipHub && this.horde.remainingCount === 0 && !this.bosses.activeBoss) {
+      if (this.bossSpawned) {
+        this.endGame(true);
+        return;
+      }
+      if (this.isEndlessMode || this.waveIndex < this.totalWaves) {
         this.waveIndex++;
-
-        // QA Audit #5 (Sofia): Tactical Wave Munition Dropship Resupply
-        if (this.player) {
-          this.player.m41aGrenadeCharges = Math.min(6, (this.player.m41aGrenadeCharges || 0) + 2);
-          this.player.m77GaussAmmo = Math.min(12, (this.player.m77GaussAmmo || 0) + 4);
-          this.player.seegsonBoltAmmo = Math.min(10, (this.player.seegsonBoltAmmo || 0) + 3);
-          this.player.medicompCharges = Math.min(5, (this.player.medicompCharges || 0) + 1);
-        }
-
-        this.horde.spawnWave(45 + this.waveIndex * 15, this.player.position);
-        this.ui.showAnnouncement(this.waveIndex > this.totalWaves
-          ? `♾️ VAGUE SURVIE INFINIE ${this.waveIndex} ("SURVIVAL OF THE WORTHY") DÉPLOYÉE !`
-          : `VAGUE ${this.waveIndex} APPROCHE ! FORCES DE LA RUCHE DÉPLOYÉES !`);
+        this.horde.spawnWave(30 + this.waveIndex * 10, this.player.position);
+        this.ui.showAnnouncement(`VAGUE ${this.waveIndex} APPROCHE ! FORCES DE LA RUCHE DÉPLOYÉES !`);
 
         // Cheyenne Dropship Airstrike Support on Wave 2 & 4!
         if (this.waveIndex === 2 || this.waveIndex === 4) {
-          this.dropship.triggerAirstrike(this.player.position, this.horde);
-          this.ui.showAnnouncement('✈️ DROPSHIP CHEYENNE UD-4L DÉPLOYÉ : SALVE DE ROQUETTES 70MM !');
-          if (this.waveIndex === 2) {
-            setTimeout(() => {
+          const request=this.dropship.triggerAirstrike(this.player.position, this.horde);
+          this.ui.showAnnouncement(request.accepted?'CHEYENNE UD-4L EN APPROCHE — SIX ROQUETTES ENGAGÉES.':request.message);
+          if (request.accepted && this.waveIndex === 2) {
+            this.scheduleMissionTask(() => {
               this.sentryGun.deploySentry(this.player.position.clone().add(new THREE.Vector3(3.5, 0, 2)));
               this.ui.showAnnouncement('📦 LARGAGE TACTIQUE : TOURELLE SENTINELLE UA 571-C DÉPLOYÉE EN APPUI !');
-            }, 2500);
+            }, 2.5);
           }
         }
 
         if (this.waveIndex === 3) {
           this.badBlood.spawnAmbush(this.player.position);
           this.ui.showAnnouncement('⚠️ ALERTE : EMBUSCADE D\'UN YAUTJA RENÉGAT "BAD BLOOD" !');
-          this.apc.spawn(this.player.position.clone().add(new THREE.Vector3(-18, 0, -10)));
-          setTimeout(() => {
-            this.ui.showAnnouncement('🛡️ RENFORT BLINDÉ : BLINDÉ USCM M577 APC EN POSITION DE TIR !');
-          }, 1800);
+          if(this.spawnAPCSupport(this.player.position.clone().add(new THREE.Vector3(-18, 0, -10))))this.scheduleMissionTask(() => {
+            if(this.apc.isSupportActive())this.ui.showAnnouncement('RENFORT BLINDÉ : APC USCM M577 EN POSITION DE TIR.');
+          }, 1.8);
+          else this.ui.showAnnouncement(this.apc.getSupportState().refusalMessage??'APC indisponible dans ce scénario.');
         }
 
         // Spawn Predalien Matriarch Titan (10,000 HP) on Wave 5 and every 3 waves in Endless Mode
@@ -3168,15 +5110,10 @@ class GameApp {
           this.shiftBattlefieldMorale(-25.0);
         }
       } else if (!this.bosses.activeBoss) {
-        let bType = this.ui.selectedLevel.bossType || 'predalien_matriarch_titan';
-        if (this.waveIndex === 5 || bType === 'predalien_abomination') {
-          bType = 'predalien_matriarch_titan';
-          if (this.env && !this.env.reactorMeltdownActive) {
-            this.env.triggerReactorMeltdown(this.ui, this.audio);
-          }
-        }
+        const bType = this.ui.selectedLevel.bossType;
+        this.bossSpawned = true;
         this.bosses.spawnBoss(bType, this.player.position.clone().add(new THREE.Vector3(0, 0, -25)));
-        
+
         let bossTitle = 'MATRIARCHE TITAN PRÉDALIENNE IMPÉRIALE (AVP EXTINCTION / AVP-R)';
         if (bType === 'the_offspring') bossTitle = 'HYBRIDE GÉNOTYPIQUE THE OFFSPRING (ROMULUS 2024)';
         else if (bType === 'trilobite_prime') bossTitle = 'TRILOBITE CÉPHALOPODE PRIME (PROMETHEUS 2012)';
@@ -3229,11 +5166,14 @@ class GameApp {
     }
 
     this.ui.updateHUD(this.player, this.horde, this.bosses, this.waveIndex, this.totalWaves, this.score, {
+      secondaryPlayer: this.player2,
       badBlood: this.badBlood,
       marines: this.marines,
       allies: this.allies,
-      synthetics: this.synthetics
+      synthetics: this.synthetics, sessionDefeats: this._sessionDefeats,
+      waveLabel:this.shipHub?'À BORD — ENTRE DEUX CHASSES':undefined,supports:this.missionMode?.startsWith('ascension')?null:{apc:this.apc.getSupportState(),cheyenne:this.dropship.getSupportState()}
     });
+    this.ui.updateBattlefieldHUD(this.battlefieldProgression, this.env.battlefieldLayout, this.player, this.combatDirector, [this.player, this.player2].filter(Boolean));
 
     // Visor Acid Corrosion HUD Overlay Update (Alien: Romulus 2024)
     const acidOverlay = document.getElementById('acid-corrosion-overlay');
@@ -3291,9 +5231,6 @@ class GameApp {
       cycloneSlot.classList.toggle('active', this.player.isCycloneWhirling);
     }
 
-    if (this.player.hp <= 0) {
-      this.endGame(false);
-    }
   }
 
   updateTargetLockReticle() {
@@ -3305,6 +5242,14 @@ class GameApp {
 
     let bestTarget = null;
     let minDistance = 35.0; // Max lock range 35m
+
+    // A hard lock (Q or the gamepad) names its own target instead of the nearest one in front.
+    const hardLock = this.player.targetLockEnemy;
+    if (hardLock?.hp > 0 && hardLock.mesh) {
+      bestTarget = { pos: hardLock.mesh.position.clone().add(new THREE.Vector3(0, 1.6, 0)), dist: hardLock.mesh.position.distanceTo(this.player.position),
+        name: String(hardLock.name ?? hardLock.type ?? 'CIBLE').toUpperCase(), weakpoint: 'VERROUILLAGE ACTIF — [Q] CIBLE SUIVANTE' };
+      minDistance = -1;
+    }
 
     const playerForward = new THREE.Vector3(
       Math.sin(this.player.rotationY),
@@ -3324,12 +5269,15 @@ class GameApp {
         const name = this.bosses.activeBoss.type === 'predalien_queen' ? 'PREDALIEN QUEEN MATRIARCH' :
                      this.bosses.activeBoss.type === 'empress_matriarch' ? 'EMPRESS MATRIARCH IMPERIAL' :
                      this.bosses.activeBoss.type === 'rogue_king_prime' ? 'ROGUE KING XENOMORPH PRIME' :
+                     this.bosses.activeBoss.type === 'berserker_super_predator' ? 'SUPER PREDATOR BERSERKER (MR. BLACK)' :
+                     this.bosses.activeBoss.type === 'ultimate_upgrade_predator' ? 'ULTIMATE UPGRADE PREDATOR 3.3M' :
                      this.bosses.activeBoss.type === 'awakened_engineer' ? 'MALA\'KAK ENGINEER' : 'REINE XÉNOMORPHE';
         bestTarget = {
           pos: bossPos.clone().add(new THREE.Vector3(0, 3, 0)),
           dist: d,
           name,
-          weakpoint: this.bosses.activeBoss.type === 'rogue_king_prime' ? "FAIBLESSE : PLAQUES DORSALES & BASE DES CORNES CRÂNIENNES (3.0X)" : "FAIBLESSE : SAC D'INOCULATION & ÉCUSSON CERVICAL (3.5X)"
+          weakpoint: this.bosses.activeBoss.type === 'ultimate_upgrade_predator' ? "FAIBLESSE : ARTICULATIONS CERVICALES & CARAPACE VENTRALE (3.2X)" :
+                     this.bosses.activeBoss.type === 'rogue_king_prime' ? "FAIBLESSE : PLAQUES DORSALES & BASE DES CORNES CRÂNIENNES (3.0X)" : "FAIBLESSE : SAC D'INOCULATION & ÉCUSSON CERVICAL (3.5X)"
         };
       }
     }
@@ -3345,7 +5293,10 @@ class GameApp {
           minDistance = d;
           let name = 'XENOMORPH DRONE';
           let weakpoint = 'FAIBLESSE : DÔME CRÂNIEN (-40% ARMURE)';
-          if (a.type === 'crusher') {
+          if (a.isFauna) {
+            name = String(a.name ?? 'FAUNE').toUpperCase();
+            weakpoint = a.role === 'leader' ? 'MENEUR : SA CHUTE DISPERSE LA HARDE' : 'HARDE : ELLE FUIT QUAND SON MENEUR TOMBE';
+          } else if (a.type === 'crusher') {
             name = 'BROYEUR CRUSHER TITAN';
             weakpoint = 'FAIBLESSE : ABDOMEN VENTRAL & ARTICULATIONS';
           } else if (a.type === 'praetorian') {
@@ -3407,9 +5358,10 @@ class GameApp {
       // Project 3D target coordinates to 2D screen coordinates
       const screenCoord = bestTarget.pos.clone().project(this.renderer.camera);
       // Check if target is in front of camera
-      if (screenCoord.z < 1.0) {
-        const screenX = (screenCoord.x * 0.5 + 0.5) * window.innerWidth;
-        const screenY = (-(screenCoord.y * 0.5) + 0.5) * window.innerHeight;
+      if (screenCoord.z > -1 && screenCoord.z < 1 && Math.abs(screenCoord.x) <= 1 && Math.abs(screenCoord.y) <= 1) {
+        const viewWidth = this.renderer.isSplitScreen ? Math.floor(this.renderer.width / 2) : this.renderer.width;
+        const screenX = (screenCoord.x * 0.5 + 0.5) * viewWidth;
+        const screenY = (-(screenCoord.y * 0.5) + 0.5) * this.renderer.height;
 
         reticleEl.style.left = `${screenX}px`;
         reticleEl.style.top = `${screenY}px`;
@@ -3438,110 +5390,102 @@ class GameApp {
   }
 
   endGame(isVictory) {
+    if (!this.isPlaying) return;
+    if (this.missionMode === 'ascension_rite' && isVictory && this.ascensionProgress.completeRite() && (this.syncAscensionToCloud?.(), true))
+      this.ui.showAnnouncement(`LA MARQUE EST À TOI. ${this.ascensionProgress.triad().join(' et ')} et toi êtes Blooded : le canon d'épaule est désormais le tien.`);
+    if (this.missionMode === 'ascension' && isVictory) {
+      const world = ascensionWorld(this.ascensionWorldId), reward = this.ascensionProgress.complete(this.ascensionWorldId);
+      this.syncAscensionToCloud?.();
+      if (world) this.ui.showAnnouncement(`${world.victory}${reward ? ` OUTIL GAGNÉ : ${reward.label.toUpperCase()}.` : ''}`);
+    }
+    if (this.battleSimulation && !this.battleSimulation.result) this.battleSimulation.finishOperation({outcome:isVictory?'victory':'defeat',reason:isVictory?'objective_complete':'players_defeated'});
+    const operationResult = this.battleSimulation?.getHUDState().result;
+    const debrief=captureBattleDebrief(this.battleSimulation,this.operationObjectives);
+    if(operationResult){this.recordBattleOutcome(operationResult);this.clearOperationCheckpoint();}
+    if(debrief){
+      debrief.characterId=this.ui.selectedChar?.id??null;
+      debrief.characterLabel=this.ui.selectedChar?.name??'Chasseur';
+      if(this.campaignArcId)debrief.characterRecognition=this.battleCampaign.getDebrief(this.campaignArcId)?.characterRecognition?.find(row=>row.characterId===debrief.characterId)??null;
+    }
     this.isPlaying = false;
-    this.audio.stopBackgroundMusic();
-    this.audio.stopThermalHum();
-    this.allies.clearSquad();
-    this.marines.clearSquad();
-    this.synthetics.clearSquad();
-    this.hellHounds.dismissPack();
-    this.dropPod.clear();
-    this.dropship.clear();
-    this.apc.clear();
-    this.sentryGun.clear();
-    this.falconDrone.clear();
-    if (this.bosses) this.bosses.clear();
-    if (this.badBlood) this.badBlood.clear();
-    if (this.weather) this.weather.clear();
-    if (this.skimmer) {
-      this.skimmer.isMounted = false;
-      this.skimmer.mountCooldown = 0.5;
-    }
-    if (this.player && this.player.mesh) this.player.mesh.visible = true;
-    for (const pool of this.pathogenPools) {
-      if (pool.mesh) this.renderer.scene.remove(pool.mesh);
-    }
-    this.pathogenPools = [];
-    for (const d of this.holoDecoys) {
-      if (d.mesh) this.renderer.scene.remove(d.mesh);
-    }
-    this.holoDecoys = [];
-    if (this.player && this.player.clearNukeHoloMesh) {
-      this.player.clearNukeHoloMesh();
-    }
+    this.isPaused = false;
+    this.ui.recordEndSession(this._sessionDefeats ?? this.horde.deadCount, this.sessionSkulls, this.score, this.rewardSessionId??this.missionRun);
 
-    this.ui.recordEndSession(this.horde.deadCount, this.sessionSkulls, this.score);
-
-    document.getElementById('end-title').innerText = isVictory ? 'VICTOIRE GLORIEUSE !' : 'CHASSE TERMINÉE';
-    document.getElementById('end-subtitle').innerText = isVictory ? 'La ruche Xenomorphe a été complètement anéantie dans l\'honneur Yautja.' : 'Votre Yautja est tombé au combat face à la ruche.';
-
+    let title = isVictory ? 'VICTOIRE GLORIEUSE !' : 'CHASSE TERMINÉE';
+    let subtitle = isVictory
+      ? "La ruche a été anéantie. Votre clan honore cette victoire."
+      : "Votre Yautja est tombé au combat. Préparez une nouvelle chasse.";
+    if (operationResult) subtitle = debrief?.reason ?? (isVictory ? 'Les objectifs ont été accomplis.' : 'Les chasseurs ont été vaincus.');
+    let replayLabel = ['ascension', 'ascension_rite'].includes(this.missionMode) ? 'RETOUR À LA LAME PATIENTE' : 'REJOUER LA MISSION';
+    if (isVictory && this.missionMode === 'campaign') {
+      const progress = this.campaign.completeChapter();
+      if (progress.nextChapter) {
+        this.pendingChapter = progress.nextChapter;
+        title = 'CHAPITRE ACCOMPLI';
+        subtitle = `Prochaine destination : ${progress.nextChapter.title}`;
+        replayLabel = 'CHAPITRE SUIVANT';
+      } else {
+        title = 'CAMPAGNE ACCOMPLIE !';
+        subtitle = 'Les cinq chasses du clan sont terminées. Votre légende est gravée dans la pierre.';
+        replayLabel = 'RECOMMENCER LA CAMPAGNE';
+      }
+    }
+    this.clearMissionState();
+    this.ui.renderBattleDebrief(debrief);
+    document.getElementById('end-title').innerText = title;
+    document.getElementById('end-subtitle').innerText = subtitle;
+    document.getElementById('btn-replay').innerText = replayLabel;
     this.ui.showScreen(this.ui.gameOverScreen);
   }
 
   /* === CHANTIER 9 (v50.0): Persistent Clan Honor Vault & Trophy Armory LocalStorage === */
-  saveClanHonorVault(trophyName = null, honorAdded = 0) {
-    try {
-      const key = 'YAUTJA_CLAN_HONOR_VAULT';
-      let data = JSON.parse(localStorage.getItem(key)) || {
-        lifetimeHonor: 0,
-        lifetimeSkulls: 0,
-        highestCombo: 0,
-        maxWave: 1,
-        trophies: []
-      };
-      data.lifetimeHonor += honorAdded;
-      data.lifetimeSkulls = (data.lifetimeSkulls || 0) + 1;
-      data.highestCombo = Math.max(data.highestCombo || 0, this.comboHits || 0);
-      data.maxWave = Math.max(data.maxWave || 1, this.waveIndex || 1);
-      if (trophyName && !data.trophies.includes(trophyName)) {
-        data.trophies.push(trophyName);
-      }
-      localStorage.setItem(key, JSON.stringify(data));
-    } catch (e) {}
+  awardTrophy(victim, name, honor, owner = this.player) {
+    if(!this.saveClanHonorVault(name,honor,victim))return false;
+    owner.recordTrophy(name,honor);this.sessionSkulls++;this.score+=honor;return true;
+  }
+
+  saveClanHonorVault(trophyName = null, honorAdded = 0, victim = null) {
+    if (!this.missionRun || !this.isPlaying) return false;
+    const identity = victim ? this.combatEvents.entityId(victim) : 'mission-ritual';
+    const amount = Math.max(0, Math.floor(Number(honorAdded) || 0));
+    return this.forge.honorLedger?.earn({ id: `${this.rewardSessionId??this.missionRun}:trophy:${identity}`, amount,
+      kind: 'trophy', trophy: trophyName, sessionId: this.rewardSessionId??this.missionRun }) ?? false;
   }
 
   toggleClanHonorVaultModal() {
     const modal = document.getElementById('clan-honor-vault-modal');
     if (!modal) return;
-    const isHidden = modal.classList.toggle('hidden');
-    if (!isHidden) {
-      const key = 'YAUTJA_CLAN_HONOR_VAULT';
-      let data = null;
-      try {
-        data = JSON.parse(localStorage.getItem(key));
-      } catch (e) {}
-      data = data || {
-        lifetimeHonor: this.score || 0,
-        lifetimeSkulls: this.sessionSkulls || 0,
-        highestCombo: this.comboHits || 0,
-        maxWave: this.waveIndex || 1,
-        trophies: this.player ? (this.player.trophies || []) : []
-      };
+    const isHidden = this.toggleTacticalModal(modal.id);
+    if (!isHidden) this.refreshClanHonorVaultUI();
+  }
 
-      const honorElem = document.getElementById('vault-lifetime-honor');
-      if (honorElem) honorElem.innerText = `${(data.lifetimeHonor || this.score || 0).toLocaleString()} PTS`;
-      const skullsElem = document.getElementById('vault-lifetime-skulls');
-      if (skullsElem) skullsElem.innerText = `${data.lifetimeSkulls || this.sessionSkulls || 0} CRÂNES`;
-      const comboElem = document.getElementById('vault-highest-combo');
-      if (comboElem) comboElem.innerText = `${Math.max(data.highestCombo || 0, this.comboHits || 0)} HITS`;
-      const waveElem = document.getElementById('vault-max-wave');
-      if (waveElem) waveElem.innerText = `VAGUE ${Math.max(data.maxWave || 1, this.waveIndex || 1)}`;
+  refreshClanHonorVaultUI() {
+    this.forge.honorLedger?.retryPending?.();
+    this.forge.renderSaveStatus();
+    const ledger = this.forge.honorLedger?.getSnapshot() ?? { earned: 0, balance: 0, trophies: [] };
+    const data = { lifetimeHonor: ledger.earned, lifetimeSkulls: this.ui.trophyStats.skullsCollected, highestCombo: this.ui.trophyStats.highestCombo, maxWave: this.waveIndex, trophies: ledger.trophies };
 
-      const listElem = document.getElementById('vault-trophies-list');
-      if (listElem) {
-        listElem.innerHTML = '';
-        const allTrophies = (data.trophies && data.trophies.length > 0) ? data.trophies : [
-          'Couronne Chitinense de Reine Matriarche',
-          'Crâne d\'Obsidienne du Raven (Colonial Marines)',
-          'Relique de l\'Ancient Predalien Elder (Primal Hunt)'
-        ];
-        allTrophies.forEach(t => {
-          const item = document.createElement('div');
-          item.className = 'vault-trophy-item';
-          item.innerText = `🏆 ${t}`;
-          listElem.appendChild(item);
-        });
-      }
+    const honorElem = document.getElementById('vault-lifetime-honor');
+    if (honorElem) honorElem.innerText = ledger.recoveryRequired ? 'À RÉCUPÉRER'
+      : `${(data.lifetimeHonor || 0).toLocaleString()} PTS${ledger.pendingHonor>0?' · '+ledger.pendingHonor+' en attente de crédit':''}`;
+    const skullsElem = document.getElementById('vault-lifetime-skulls');
+    if (skullsElem) skullsElem.innerText = `${data.lifetimeSkulls || this.sessionSkulls || 0} CRÂNES`;
+    const comboElem = document.getElementById('vault-highest-combo');
+    if (comboElem) comboElem.innerText = `${Math.max(data.highestCombo || 0, this.comboHits || 0)} HITS`;
+    const waveElem = document.getElementById('vault-max-wave');
+    if (waveElem) waveElem.innerText = `VAGUE ${Math.max(data.maxWave || 1, this.waveIndex || 1)}`;
+
+    const listElem = document.getElementById('vault-trophies-list');
+    if (listElem) {
+      listElem.innerHTML = '';
+      const allTrophies = data.trophies;
+      if (!allTrophies.length) listElem.textContent = 'Aucun trophée récolté.';
+      allTrophies.forEach(t => {
+        const item = document.createElement('div');
+        item.className = 'vault-trophy-item';
+        item.innerText = `🏆 ${t}`;
+        listElem.appendChild(item);
+      });
     }
   }
 
@@ -3557,7 +5501,7 @@ class GameApp {
     const overlay = document.getElementById('sacred-blood-ritual-overlay');
     if (overlay) {
       overlay.classList.remove('hidden');
-      setTimeout(() => overlay.classList.add('hidden'), 7000);
+      this.scheduleMissionTask(() => overlay.classList.add('hidden'), 7);
     }
 
     if (this.player && this.player.clanMarkMesh) {
@@ -3576,7 +5520,7 @@ class GameApp {
   toggleClanForgeModal() {
     const modal = document.getElementById('clan-armory-forge-modal');
     if (!modal) return;
-    const isHidden = modal.classList.toggle('hidden');
+    const isHidden = this.toggleTacticalModal(modal.id);
     if (!isHidden) {
       this.refreshClanForgeUI();
     }
@@ -3584,9 +5528,10 @@ class GameApp {
 
   refreshClanForgeUI() {
     if (!this.player) return;
+    const saveNotice = this.forge.renderSaveStatus();
     this.player.loadClanForgeUpgrades();
-    const honorEl = document.getElementById('forge-honor-balance');
-    if (honorEl) honorEl.innerText = `${(this.score || 0).toLocaleString()} PTS`;
+    const honorEl = document.getElementById('clan-forge-honor-balance');
+    if (honorEl) honorEl.innerText = saveNotice.blocked ? 'À RÉCUPÉRER' : `${this.forge.getBalance().toLocaleString()} PTS`;
     const jellyEl = document.getElementById('forge-jelly-balance');
     if (jellyEl) jellyEl.innerText = `${this.player.royalJellyFlasks || 0} FIOLES`;
 
@@ -3612,7 +5557,7 @@ class GameApp {
           btn.classList.add('btn-forged');
         } else {
           btn.innerText = `FORGER (${u.costHonor} PTS + ${u.costJelly} GELÉES)`;
-          btn.disabled = false;
+          btn.disabled = saveNotice.blocked;
           btn.classList.remove('btn-forged');
           btn.onclick = () => this.purchaseClanForgeUpgrade(u.key, u.costHonor, u.costJelly);
         }
@@ -3621,14 +5566,15 @@ class GameApp {
   }
 
   purchaseClanForgeUpgrade(key, costHonor, costJelly) {
-    if ((this.score || 0) < costHonor || (this.player.royalJellyFlasks || 0) < costJelly) {
+    if (!this.forge.ensureHonorReady()) return;
+    if (!this.player || this.player.forgeUpgrades?.[key] || this.forge.getBalance() < costHonor || (this.player.royalJellyFlasks || 0) < costJelly) {
       if (this.ui && this.ui.showAnnouncement) {
         this.ui.showAnnouncement('⚠️ RESSOURCES INSUFFISANTES POUR CETTE FORGE SACRÉE !');
       }
       return;
     }
 
-    this.score -= costHonor;
+    if (!this.forge.honorLedger.spend({ id: `clan-forge:${key}`, amount: costHonor, kind: 'clan-upgrade' })) { this.forge.renderSaveStatus(); return; }
     this.player.royalJellyFlasks -= costJelly;
     this.player.forgeUpgrades[key] = true;
 
@@ -3650,25 +5596,16 @@ class GameApp {
 
   /* === CHANTIER 6 & MARC QA (v51.0): Radial Weapon Wheel [Tab] === */
   toggleWeaponWheel(show = null) {
-    const wheel = document.getElementById('yautja-radial-weapon-wheel');
-    if (!wheel) return;
-    const shouldShow = show !== null ? show : wheel.classList.contains('hidden');
-    if (shouldShow) {
-      wheel.classList.remove('hidden');
-      this.isTimeDilated = true;
-    } else {
-      wheel.classList.add('hidden');
-      this.isTimeDilated = false;
-    }
+    if (show === null) this.weaponWheel.toggle();
+    else if (show) this.weaponWheel.open(); else this.weaponWheel.close();
+    document.getElementById('yautja-radial-weapon-wheel')?.classList.add('hidden');
+    this.isTimeDilated = false;
   }
 
-  selectWeaponSlice(index, name) {
-    if (this.audio && this.audio.playWristbladeClash) {
-      this.audio.playWristbladeClash();
-    }
-    if (this.ui && this.ui.showAnnouncement) {
-      this.ui.showAnnouncement(`🎯 SÉLECTION DE COMBAT : ${name}`);
-    }
+  selectWeaponSlice(index) {
+    const ids = ['wristblades', 'combistick', 'smart_disc', 'crossbow', 'shuriken', 'compound_bow', 'katana', 'viking_axe'];
+    const id = ids[index - 1];
+    if (id && this.player?.selectWeapon?.(id)) this.ui.showAnnouncement(`ARME : ${id.toUpperCase()}`);
     this.toggleWeaponWheel(false);
   }
 
@@ -3676,7 +5613,7 @@ class GameApp {
   toggleMothershipBridgeModal() {
     const modal = document.getElementById('mothership-bridge-modal');
     if (!modal) return;
-    const isHidden = modal.classList.toggle('hidden');
+    const isHidden = this.toggleTacticalModal(modal.id);
     if (!isHidden) {
       if (this.audio && this.audio.playBioMaskVisionCycle) {
         this.audio.playBioMaskVisionCycle();
@@ -3686,79 +5623,87 @@ class GameApp {
   }
 
   refreshMothershipBridgeUI() {
-    const currentHonor = this.score || 0;
+    const currentHonor = this.forge.getBalance();
+    const saveNotice = this.forge.renderSaveStatus();
     const btnBarrage = document.getElementById('btn-orbital-barrage');
     const btnResupply = document.getElementById('btn-drop-pod-resupply');
     const btnBlessing = document.getElementById('btn-elders-blessing');
 
     if (btnBarrage) {
-      btnBarrage.disabled = currentHonor < 4000;
-      btnBarrage.style.opacity = currentHonor < 4000 ? '0.5' : '1.0';
+      btnBarrage.disabled = saveNotice.blocked || currentHonor < 4000;
+      btnBarrage.style.opacity = btnBarrage.disabled ? '0.5' : '1.0';
     }
     if (btnResupply) {
-      btnResupply.disabled = currentHonor < 2500;
-      btnResupply.style.opacity = currentHonor < 2500 ? '0.5' : '1.0';
+      btnResupply.disabled = saveNotice.blocked || currentHonor < 2500;
+      btnResupply.style.opacity = btnResupply.disabled ? '0.5' : '1.0';
     }
     if (btnBlessing) {
-      btnBlessing.disabled = currentHonor < 3000;
-      btnBlessing.style.opacity = currentHonor < 3000 ? '0.5' : '1.0';
+      btnBlessing.disabled = saveNotice.blocked || currentHonor < 3000;
+      btnBlessing.style.opacity = btnBlessing.disabled ? '0.5' : '1.0';
     }
   }
 
   callPlanetaryOrbitalBarrage() {
+    if (!this.forge.ensureHonorReady()) return false;
     const cost = 4000;
-    if ((this.score || 0) < cost) {
+    if (!this.player || this.forge.getBalance() < cost) {
       if (this.ui && this.ui.showAnnouncement) {
         this.ui.showAnnouncement('⚠️ HONNEUR INSUFFISANT POUR LE BARRAGE PLANÉTAIRE (4000 REQUIS) !');
       }
       return;
     }
-    this.score -= cost;
+    const origin=this.player.position.clone();
+    const impacts=Array.from({length:8},(_,index)=>origin.clone().add(new THREE.Vector3(Math.cos(index*Math.PI/4)*25,0,Math.sin(index*Math.PI/4)*25)));
+    if(!canAccessLegacyAir(this.missionSupportContext,origin,60)||impacts.some(point=>!canAccessLegacyAir(this.missionSupportContext,point,2))){
+      this.ui.showAnnouncement('BARRAGE REFUSÉ : LE SCÉNARIO OU L’ACCÈS PHYSIQUE AU CIEL NE PERMET PAS CETTE FRAPPE.');return false;
+    }
+    if (!this.forge.honorLedger.spend({ id: `${this.missionRun}:support:${++this._supportTransaction}`, amount: cost, kind: 'support' })) { this.forge.renderSaveStatus(); return false; }
     this.refreshMothershipBridgeUI();
-    document.getElementById('mothership-bridge-modal')?.classList.add('hidden');
+    this.closeTacticalModal('mothership-bridge-modal');
 
     if (this.audio && this.audio.playPlanetaryOrbitalBarrage) {
       this.audio.playPlanetaryOrbitalBarrage();
     }
     this.triggerCameraShake(2.5, 2.0);
 
-    // Saturation strike dealing 1400 damage across the arena
+    // Each actual target also needs its own physical sky access; the area
+    // footprint cannot authorize damage through a smaller roof between samples.
+    const attack={origin,radius:60,damage:1400,type:'plasma',killerFaction:this.battleSimulation?.config.playerFaction??'player_clan'};
     if (this.horde) {
-      const hits = this.horde.checkMeleeHits({ origin: this.player ? this.player.position : new THREE.Vector3(0, 0, 0), radius: 60, damage: 1400, type: 'plasma' });
-      this.registerHits(hits);
+      const actors=new Set([...(this.horde.aliens??[]),...(this.horde.eggs??[]),...(this.horde.chestbursters??[]),
+        ...[...(this.battleBridge?.actors?.values()??[])].filter(entry=>entry.manager!==this.synthetics&&entry.manager!==this.bosses).map(entry=>entry.actor)]);
+      for(const actor of actors)if(actor.mesh?.position.distanceTo(origin)<=60&&canHitLegacyAirTarget(this.missionSupportContext,actor))this.registerHits(this.horde.checkMeleeHits({...attack,targetOnly:actor}));
     }
-    if (this.bosses && this.bosses.activeBoss) {
-      this.bosses.takeDamage(1400);
+    if (this.bosses?.activeBoss?.mesh.position.distanceTo(origin)<=60&&canHitLegacyAirTarget(this.missionSupportContext,this.bosses.activeBoss)) {
+      this.bosses.takeDamage(1400,this.horde,{cause:'orbital-barrage',killerFaction:attack.killerFaction});
     }
-    if (this.badBlood && this.badBlood.isActive) {
+    if (this.badBlood?.isActive&&this.badBlood.badBlood?.mesh.position.distanceTo(origin)<=60&&canHitLegacyAirTarget(this.missionSupportContext,this.badBlood.badBlood)) {
       this.badBlood.takeDamage(1400);
     }
     if (this.synthetics) {
-      this.synthetics.checkHits({ origin: this.player ? this.player.position : new THREE.Vector3(0, 0, 0), radius: 60, damage: 1400 });
+      for(const actor of this.synthetics.androids??[])if(actor.mesh?.position.distanceTo(origin)<=60&&canHitLegacyAirTarget(this.missionSupportContext,actor))this.synthetics.checkHits({...attack,targetOnly:actor});
     }
     if (this.particles && this.particles.emitExplosion) {
-      for (let i = 0; i < 8; i++) {
-        const rx = (Math.random() - 0.5) * 50;
-        const rz = (Math.random() - 0.5) * 50;
-        this.particles.emitExplosion(new THREE.Vector3(rx, 0, rz), 25);
-      }
+      for(const point of impacts)this.particles.emitExplosion(point,25);
     }
     if (this.ui && this.ui.showAnnouncement) {
       this.ui.showAnnouncement('🚀 BARRAGE PLANÉTAIRE ORBITAL DÉPLOYÉ : 1400 DÉGÂTS DE SATURATION !');
     }
+    return true;
   }
 
   callOrbitalDropPodResupply() {
+    if (!this.forge.ensureHonorReady()) return;
     const cost = 2500;
-    if ((this.score || 0) < cost) {
+    if (!this.player || this.forge.getBalance() < cost) {
       if (this.ui && this.ui.showAnnouncement) {
         this.ui.showAnnouncement('⚠️ HONNEUR INSUFFISANT POUR LA CAPSULE ORBITALE (2500 REQUIS) !');
       }
       return;
     }
-    this.score -= cost;
+    if (!this.forge.honorLedger.spend({ id: `${this.missionRun}:support:${++this._supportTransaction}`, amount: cost, kind: 'support' })) { this.forge.renderSaveStatus(); return; }
     this.refreshMothershipBridgeUI();
-    document.getElementById('mothership-bridge-modal')?.classList.add('hidden');
+    this.closeTacticalModal('mothership-bridge-modal');
 
     if (this.env && this.env.spawnOrbitalDropPodResupply) {
       const dropPos = this.player ? this.player.position.clone().add(new THREE.Vector3((Math.random() - 0.5) * 8, 0, (Math.random() - 0.5) * 8)) : new THREE.Vector3(0, 0, 0);
@@ -3767,16 +5712,17 @@ class GameApp {
   }
 
   callEldersEmergencyBlessing() {
+    if (!this.forge.ensureHonorReady()) return;
     const cost = 3000;
-    if ((this.score || 0) < cost) {
+    if (!this.player || this.forge.getBalance() < cost) {
       if (this.ui && this.ui.showAnnouncement) {
         this.ui.showAnnouncement('⚠️ HONNEUR INSUFFISANT POUR LE RITUEL DES ANCIENS (3000 REQUIS) !');
       }
       return;
     }
-    this.score -= cost;
+    if (!this.forge.honorLedger.spend({ id: `${this.missionRun}:support:${++this._supportTransaction}`, amount: cost, kind: 'support' })) { this.forge.renderSaveStatus(); return; }
     this.refreshMothershipBridgeUI();
-    document.getElementById('mothership-bridge-modal')?.classList.add('hidden');
+    this.closeTacticalModal('mothership-bridge-modal');
 
     if (this.player) {
       this.player.hp = this.player.maxHp;
@@ -3805,11 +5751,37 @@ class GameApp {
     const delta = Math.min((now - this.lastTime) / 1000, 0.1);
     this.lastTime = now;
 
+    this.gamepadBridge.poll(delta);
     this.update(delta);
-    this.renderer.render();
+    // Frozen scenes need no repeated GPU work. Resize, quality and photo-camera
+    // changes invalidate a frame; active combat keeps rendering every frame.
+    const sceneIsMoving = this.isPlaying && !this.isPaused && !this.photoMode.isActive && !this.weaponWheel.isOpen;
+    if (sceneIsMoving || this.renderer.needsRender) this.renderer.render();
   }
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-  window.game = new GameApp();
+  try {
+    window.game = new GameApp();
+  } catch (error) {
+    console.error('Impossible de démarrer le jeu', error);
+    const notice = document.createElement('section');
+    notice.className = 'startup-error glass-panel';
+    notice.setAttribute('role', 'alert');
+    Object.assign(notice.style, {
+      position: 'fixed', inset: '20% 10% auto', padding: '2rem', zIndex: '10000',
+      background: '#0b1421', color: '#f1f5f9', border: '1px solid #ffb703', textAlign: 'center'
+    });
+    const title = document.createElement('h1');
+    title.textContent = 'Le jeu ne peut pas démarrer';
+    const detail = document.createElement('p');
+    detail.textContent = "Vérifiez que WebGL et l’accélération graphique sont activés dans votre navigateur, puis rechargez la page.";
+    const retry = document.createElement('button');
+    retry.className = 'btn-primary';
+    retry.textContent = 'Réessayer';
+    retry.addEventListener('click', () => location.reload());
+    notice.append(title, detail, retry);
+    document.body.append(notice);
+    retry.focus();
+  }
 });

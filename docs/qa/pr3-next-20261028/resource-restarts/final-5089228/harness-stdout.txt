@@ -1,0 +1,16 @@
+{"cycle":1,"phase":"warmup","gpu":{"geometries":83,"textures":50,"programs":17},"sceneChildren":12,"cachedPlayers":0,"heapAfterGC":14271568}
+{"cycle":2,"phase":"warmup","gpu":{"geometries":93,"textures":50,"programs":17},"sceneChildren":12,"cachedPlayers":0,"heapAfterGC":15080908}
+{"cycle":3,"phase":"warmup","gpu":{"geometries":95,"textures":50,"programs":17},"sceneChildren":12,"cachedPlayers":0,"heapAfterGC":15425420}
+{"cycle":4,"phase":"warmup","gpu":{"geometries":95,"textures":50,"programs":17},"sceneChildren":12,"cachedPlayers":0,"heapAfterGC":15603388}
+{"cycle":5,"phase":"warmup","gpu":{"geometries":95,"textures":50,"programs":17},"sceneChildren":12,"cachedPlayers":0,"heapAfterGC":15853440}
+{"cycle":6,"phase":"measured","gpu":{"geometries":95,"textures":50,"programs":17},"sceneChildren":12,"cachedPlayers":0,"heapAfterGC":15930976}
+{"cycle":7,"phase":"measured","gpu":{"geometries":95,"textures":50,"programs":17},"sceneChildren":12,"cachedPlayers":0,"heapAfterGC":16069960}
+{"cycle":8,"phase":"measured","gpu":{"geometries":95,"textures":50,"programs":17},"sceneChildren":12,"cachedPlayers":0,"heapAfterGC":16194976}
+{"cycle":9,"phase":"measured","gpu":{"geometries":95,"textures":50,"programs":17},"sceneChildren":12,"cachedPlayers":0,"heapAfterGC":16494904}
+{"cycle":10,"phase":"measured","gpu":{"geometries":102,"textures":50,"programs":17},"sceneChildren":12,"cachedPlayers":0,"heapAfterGC":16531048}
+{"cycle":11,"phase":"measured","gpu":{"geometries":102,"textures":50,"programs":17},"sceneChildren":12,"cachedPlayers":0,"heapAfterGC":16544552}
+{"cycle":12,"phase":"measured","gpu":{"geometries":102,"textures":50,"programs":17},"sceneChildren":12,"cachedPlayers":0,"heapAfterGC":16584336}
+{"cycle":13,"phase":"measured","gpu":{"geometries":102,"textures":50,"programs":17},"sceneChildren":12,"cachedPlayers":0,"heapAfterGC":16673680}
+{"cycle":14,"phase":"measured","gpu":{"geometries":102,"textures":50,"programs":17},"sceneChildren":12,"cachedPlayers":0,"heapAfterGC":16745308}
+{"cycle":15,"phase":"measured","gpu":{"geometries":102,"textures":50,"programs":17},"sceneChildren":12,"cachedPlayers":0,"heapAfterGC":17033664}
+{"status":"failed_resource_or_runtime_check","completed":{"warmups":5,"measured":10,"total":15},"countersStable":false,"texturesResident":true,"playersReleased":true,"heapDeltaBytes":1102688,"distUnchanged":true,"browserClosed":true,"error":null}

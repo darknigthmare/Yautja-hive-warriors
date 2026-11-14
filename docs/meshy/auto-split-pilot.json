@@ -1,0 +1,162 @@
+{
+  "schemaVersion": 1,
+  "source_task": {
+    "resource": "multi-image-to-3d",
+    "id": "01a159b4-8004-75bd-b39d-cf5184ccf13f"
+  },
+  "task": {
+    "resource": "auto-split",
+    "id": "01a16656-9527-77f2-84b4-fa64e773a43c",
+    "status": "SUCCEEDED",
+    "consumed_credits": 10,
+    "part_count": 23
+  },
+  "project_folder": "/workspace/Yautja-hive-warriors/meshy_output/yautja-expansion-20261023",
+  "file": {
+    "name": "jungle-hunter-auto-split.glb",
+    "bytes": 4369988,
+    "sha256": "7b1cb2975b2143d6082ef0236b69ab64d668ad67343e00f826641b6d4397d3b9"
+  },
+  "activated": false,
+  "geometry_review": {
+    "schemaVersion": 1,
+    "reviewer": "/root/auto_split_geometry_review",
+    "reviewed_at": "2026-10-23T01:27:51.733361+00:00",
+    "scope": "Independent read-only geometry and actual isolated/static render review. No asset modifications, paid calls or activation.",
+    "source_file": "/workspace/Yautja-hive-warriors/meshy_output/reference-guided-20261020/20261020_142616_jungle-hunter-unmasked-referen_01a159b4/delivered/model.glb",
+    "split_file": "/workspace/Yautja-hive-warriors/meshy_output/yautja-expansion-20261023/jungle-hunter-split-pilot/delivered/model.glb",
+    "split_sha256": "7b1cb2975b2143d6082ef0236b69ab64d668ad67343e00f826641b6d4397d3b9",
+    "result": "Useful separated component starting point, requires measured local editing and reassembly before animation or deployment. Not a ready-to-animate faithful asset.",
+    "facts": {
+      "meshes": 23,
+      "triangles": 217798,
+      "source_triangles": 206591,
+      "named_semantic_objects": false,
+      "exported_names": "model_part0 through model_part22",
+      "skins": 0,
+      "joints": 0,
+      "animations": 0,
+      "uv_sets": 0,
+      "normals": 0,
+      "texture_images": 0,
+      "color": "flat vertex colors by groups",
+      "render_console_errors": 0,
+      "blocked_external_requests": 0
+    },
+    "component_findings": [
+      {
+        "component": "dreadlocks",
+        "parts": [
+          2,
+          3,
+          5,
+          12,
+          15,
+          16,
+          20,
+          21
+        ],
+        "finding": "Several single fragments and several connected bouquets, not one separate object per strand. Parts20/21 are large shared-root masses with numerous strands.",
+        "feasible_local_work": "Multiple weighted chains can exist in a single skinned mesh; hold root caps to Head, assign each strand to its own real chain. Inspect/repair fused bridges and root cuts before weighting. Separate object per strand is not required.",
+        "ready_now": false
+      },
+      {
+        "component": "right_wrist_weapon",
+        "parts": [
+          1,
+          13,
+          18
+        ],
+        "finding": "Part13 is a large curved blade-like object distinct from housing18 and right hand10. Part1 is a small wrist-side strip. Original source already has an approximate large curved blade, so two film-faithful parallel blades are not established by either source or split.",
+        "feasible_local_work": "Part13 can be moved as one assembly independently from the gauntlet once axis, travel and clearances are measured. Do not count part1 as a complete second blade or claim lost blade caused by AutoSplit.",
+        "ready_now": false
+      },
+      {
+        "component": "left_gauntlet",
+        "parts": [
+          4,
+          6,
+          8,
+          9
+        ],
+        "finding": "Part9 is an upper plate with raised button-like features, with other walls/panels in6/8 and a long rim in4. No source evidence of the internal opened console or true hinge in this generated body.",
+        "feasible_local_work": "Candidate plate/body geometry can be grouped into a local hinge after inspection; hinge/pivot and complete opening surfaces are not automatically supplied or verified.",
+        "ready_now": false
+      },
+      {
+        "component": "anatomy",
+        "parts": [
+          7,
+          10,
+          14,
+          22
+        ],
+        "finding": "Body22 excludes hands10/14 and some arm segments such as7. These are retained pieces, not missing parts.",
+        "feasible_local_work": "Recompose all anatomical fragments before body rigging; rigging22 alone would omit required hand/forearm geometry.",
+        "ready_now": false
+      },
+      {
+        "component": "shoulder_equipment",
+        "parts": [
+          0,
+          11,
+          17,
+          19
+        ],
+        "finding": "Caster19 and shoulder plate17 are independent;0/11 are nearby small armor fragments.",
+        "feasible_local_work": "Parent/group after actual component classification and transform calibration.",
+        "ready_now": false
+      }
+    ],
+    "shape_review": {
+      "visible_silhouette": "Assembled front/side/back retain head, both legs/feet, hands and hair silhouette at capture scale. Source and split overall appearance differ strongly because all texture detail is removed.",
+      "nearest_vertex_comparison": "Median distance0 both ways;95th percentile split-to-source0.004246/source-to-split0.003003 in source height1.901713. This is vertex-cloud distance, not point-to-surface Hausdorff and not1:1 certification.",
+      "reconstruction": "New cut/cap/triangulation geometry exists. All23parts are one index-connected component each; index-edge analysis shows several boundary/nonmanifold edges, which is diagnostic only and not a welded-topology certification.",
+      "normals": "No NORMAL attributes exported. Current GLTFLoader renders visibly faceted; smooth normals may be derived locally, but that does not restore UV/PBR details."
+    },
+    "evidence_viewed": [
+      "parts-1.jpg",
+      "parts-2.jpg",
+      "parts-3.jpg",
+      "captures/front.png",
+      "captures/side.png",
+      "captures/back.png",
+      "captures/part-13-front.png",
+      "captures/part-13-back.png",
+      "captures/part-1-front.png",
+      "captures/part-6-front.png",
+      "captures/part-18-back.png",
+      "captures/part-20-back.png",
+      "captures/part-21-front.png",
+      "captures/part-22-front.png",
+      "captures/part-4-front.png",
+      "captures/part-4-back.png",
+      "captures/part-8-front.png",
+      "captures/part-9-front.png",
+      "captures/part-9-back.png",
+      "source-capture/captures/front.png",
+      "source-capture/captures/side.png",
+      "source-capture/captures/back.png",
+      "source-capture/captures/right-forearm.png"
+    ],
+    "limitations": [
+      "Static local software-WebGL captures, not hardware performance or animation validation.",
+      "No test performed of paid retexturing preserving parts, humanoid rigging multipart anatomy, texture transfer, or hair weighting.",
+      "No exact likeness1:1 or film-canonical mechanics certification.",
+      "No model modified or activated."
+    ]
+  },
+  "code_validation": {
+    "targeted_node_tests_passed": 43,
+    "cutout_script_self_tests_passed": 7,
+    "build": "passed",
+    "full_suite_rerun_for_this_change": false
+  },
+  "limits": [
+    "No textures, UVs, exported normals, rig or animations in split GLB.",
+    "Separate hands must be reassembled before rigging the body.",
+    "A shared hair mesh can receive multiple chains; independent strand weights are not supplied.",
+    "Source wrist weapon was already approximate; two faithful film wristblades not proven.",
+    "Current production game does not include this pilot model or the new optional articulation descriptor."
+  ]
+}

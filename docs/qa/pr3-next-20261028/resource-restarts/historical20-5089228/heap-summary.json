@@ -1,0 +1,277 @@
+{
+  "scope": "Protocol B, fixed warmups20/measurements21-30 on the unchanged final 5089228 build. Post-menu V8 snapshot nodes counted by own identity properties; not driver memory or general leak certification.",
+  "before": {
+    "path": "/workspace/qa/pr3-next-20261028/resource-restarts-historical20-5089228/cycle-20.heapsnapshot",
+    "bytes": 33116397,
+    "sha256": "de2ef5ca21acd954f52fcec841d00f9d895ac1e75f839318249741f2f1d01b96",
+    "types": {
+      "synthetic": 32,
+      "native": 47515,
+      "string": 78936,
+      "object shape": 14408,
+      "code": 74637,
+      "array": 12172,
+      "number": 52707,
+      "symbol": 63,
+      "object": 62969,
+      "closure": 10681,
+      "concatenated string": 759,
+      "regexp": 12
+    },
+    "bytesByType": {
+      "synthetic": 0,
+      "native": 539258122,
+      "string": 1897620,
+      "object shape": 825136,
+      "code": 9169448,
+      "array": 1565736,
+      "number": 399900,
+      "symbol": 128,
+      "object": 1762352,
+      "closure": 313708,
+      "concatenated string": 15180,
+      "regexp": 288
+    },
+    "identityCounts": {
+      "isObject3D": 812,
+      "isMesh": 458,
+      "isBone": 290,
+      "isMaterial": 161,
+      "isTexture": 61,
+      "isBufferGeometry": 354,
+      "isBufferAttribute": 1605,
+      "skeletonLike": 46,
+      "playerLike": 0
+    },
+    "playerLikeObjects": []
+  },
+  "after": {
+    "path": "/workspace/qa/pr3-next-20261028/resource-restarts-historical20-5089228/cycle-30.heapsnapshot",
+    "bytes": 33964435,
+    "sha256": "79526abe5018e68d5362946c6cb9ac7114f9120af2cef90d5c6db48bc9b9f4da",
+    "types": {
+      "synthetic": 32,
+      "native": 50415,
+      "string": 79671,
+      "object shape": 14722,
+      "code": 75685,
+      "array": 12193,
+      "number": 53209,
+      "symbol": 63,
+      "object": 65089,
+      "closure": 11251,
+      "concatenated string": 759,
+      "regexp": 12
+    },
+    "bytesByType": {
+      "synthetic": 0,
+      "native": 539427049,
+      "string": 1917184,
+      "object shape": 849700,
+      "code": 9294188,
+      "array": 1606772,
+      "number": 405900,
+      "symbol": 128,
+      "object": 1799616,
+      "closure": 329884,
+      "concatenated string": 15180,
+      "regexp": 288
+    },
+    "identityCounts": {
+      "isObject3D": 812,
+      "isMesh": 458,
+      "isBone": 290,
+      "isMaterial": 161,
+      "isTexture": 61,
+      "isBufferGeometry": 354,
+      "isBufferAttribute": 1605,
+      "skeletonLike": 46,
+      "playerLike": 0
+    },
+    "playerLikeObjects": []
+  },
+  "identityDelta": {
+    "isObject3D": 0,
+    "isMesh": 0,
+    "isBone": 0,
+    "isMaterial": 0,
+    "isTexture": 0,
+    "isBufferGeometry": 0,
+    "isBufferAttribute": 0,
+    "skeletonLike": 0,
+    "playerLike": 0
+  },
+  "bytesDeltaByType": {
+    "concatenated string": 0,
+    "number": 6000,
+    "regexp": 0,
+    "native": 168927,
+    "object shape": 24564,
+    "array": 41036,
+    "symbol": 0,
+    "string": 19564,
+    "closure": 16176,
+    "object": 37264,
+    "synthetic": 0,
+    "code": 124740
+  },
+  "largestGrowingClasses": [
+    {
+      "type": "native",
+      "name": "system / FunctionTemplateInfo",
+      "deltaCount": 1349,
+      "deltaBytes": 86336
+    },
+    {
+      "type": "code",
+      "name": "system / InstructionStream",
+      "deltaCount": 34,
+      "deltaBytes": 47488
+    },
+    {
+      "type": "array",
+      "name": "(object elements)",
+      "deltaCount": 0,
+      "deltaBytes": 24672
+    },
+    {
+      "type": "code",
+      "name": "system / TrustedByteArray",
+      "deltaCount": 94,
+      "deltaBytes": 22216
+    },
+    {
+      "type": "native",
+      "name": "system / WeakArrayList",
+      "deltaCount": 101,
+      "deltaBytes": 20196
+    },
+    {
+      "type": "code",
+      "name": "(object elements)",
+      "deltaCount": 724,
+      "deltaBytes": 19872
+    },
+    {
+      "type": "native",
+      "name": "system / ArrayList",
+      "deltaCount": 41,
+      "deltaBytes": 15768
+    },
+    {
+      "type": "object",
+      "name": "HTMLDivElement",
+      "deltaCount": 973,
+      "deltaBytes": 15568
+    },
+    {
+      "type": "object shape",
+      "name": "system / DescriptorArray",
+      "deltaCount": 52,
+      "deltaBytes": 14104
+    },
+    {
+      "type": "string",
+      "name": "\n      (() => {\n        \n        const module = {};\n        \nvar __commonJS = obj => {\n  let require",
+      "deltaCount": 1,
+      "deltaBytes": 13012
+    },
+    {
+      "type": "array",
+      "name": "(object properties)",
+      "deltaCount": 20,
+      "deltaBytes": 12256
+    },
+    {
+      "type": "native",
+      "name": "system / AccessorPair",
+      "deltaCount": 918,
+      "deltaBytes": 11016
+    },
+    {
+      "type": "code",
+      "name": "system / ProtectedFixedArray",
+      "deltaCount": 33,
+      "deltaBytes": 10188
+    },
+    {
+      "type": "object shape",
+      "name": "system / Map",
+      "deltaCount": 189,
+      "deltaBytes": 8200
+    },
+    {
+      "type": "native",
+      "name": "TaskAttributionTiming",
+      "deltaCount": 60,
+      "deltaBytes": 7200
+    }
+  ],
+  "largestShrinkingClasses": [
+    {
+      "type": "code",
+      "name": "(constant elements)",
+      "deltaCount": -724,
+      "deltaBytes": -19872
+    },
+    {
+      "type": "native",
+      "name": "blink::ShareableElementData",
+      "deltaCount": -6,
+      "deltaBytes": -512
+    },
+    {
+      "type": "code",
+      "name": "system / WeakFixedArray",
+      "deltaCount": -6,
+      "deltaBytes": -172
+    },
+    {
+      "type": "native",
+      "name": "blink::HeapHashTableBacking<blink::HashTable<cppgc::internal::BasicMember<const blink::ScriptWrappab",
+      "deltaCount": 0,
+      "deltaBytes": -136
+    },
+    {
+      "type": "string",
+      "name": "reference-deb4adb7-6950-4490-88d6-7b476d5109f3",
+      "deltaCount": -1,
+      "deltaBytes": -60
+    },
+    {
+      "type": "string",
+      "name": "reference-b5ab2c02-b8c2-4157-a83e-7cca3d61c37f",
+      "deltaCount": -1,
+      "deltaBytes": -60
+    },
+    {
+      "type": "string",
+      "name": "reference-e562d1f8-61bc-4ee3-a2b6-012f26719fba",
+      "deltaCount": -1,
+      "deltaBytes": -60
+    },
+    {
+      "type": "string",
+      "name": "reference-16daa276-5e6c-4987-a3fd-96d4f0a6a79c",
+      "deltaCount": -1,
+      "deltaBytes": -60
+    },
+    {
+      "type": "string",
+      "name": "reference-a3cec5bc-be4e-4246-ab9f-64577fbe9f71",
+      "deltaCount": -1,
+      "deltaBytes": -60
+    },
+    {
+      "type": "string",
+      "name": "reference-7add4bc2-289c-4a10-91ea-74912d8ae394",
+      "deltaCount": -1,
+      "deltaBytes": -60
+    }
+  ],
+  "limits": [
+    "Class self-size does not measure retained-size ownership, RSS, VRAM or hardware performance.",
+    "No constructor-name assumption is needed for Three/Player structural identity counts.",
+    "The draw observer keeps scalar geometry metadata, so snapshot overhead belongs to this diagnostic fixture."
+  ]
+}

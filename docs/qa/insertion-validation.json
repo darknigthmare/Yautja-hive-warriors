@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-10-23T22:00:20.020370+00:00",
+  "status": "passed_and_published",
+  "automated": true,
+  "humanTesters": 0,
+  "fidelity_1_to_1_verified": false,
+  "newMeshyCreditsConsumed": 0,
+  "scope": [
+    "Hollow insertion capsule and two articulated leaves",
+    "Simulation-clock descent, stabilization, occupied opening, exit and handoff",
+    "Input and combat suspension during insertion; seven seconds grace after handoff",
+    "Co-op individual cabins, side/rear/door collision, pause, cancellation, replay, fade and owned-resource cleanup",
+    "Cabin wristblade pose measured on seven procedural variants; imported City Hunter fused pose preserved",
+    "Skimmer forward alignment, mechanical detail and propulsion; Cheyenne cockpit/intakes/tail silhouette"
+  ],
+  "build": {
+    "finalIndexSha256": "d9839d93a06fd01e82c7efb49cefc46a4105a4406f65f451afdf7106f5e010db",
+    "productionModelFilesChanged": false,
+    "modelFiles": 12
+  },
+  "cpu": {
+    "command": "node --test --test-concurrency=1 tests/*.test.js tests/browser-cleanup.test.mjs",
+    "passed": 292,
+    "failed": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "log": "insertion/final-cpu-tests.log",
+    "source": "final build"
+  },
+  "browser": {
+    "generalIndexSha256": "94a9a1194f14816a8ce078fbac2692d2f3a915ad61c8ae368655a10be2c806cf",
+    "generalResolvedDistinctCases": 14,
+    "generalGameCases": 7,
+    "generalUiCases": 6,
+    "generalRenderCases": 1,
+    "finalTargetedCases": 2,
+    "finalTargetedFailed": 0,
+    "fullGeneralSuiteRepeatedAfterPoseFix": false,
+    "finalTargetedScope": "Insertion including actual blade clearance, input, pause, co-op and replay; rendering presets, export and split viewports",
+    "insertionLog": "insertion/final-insertion-browser.log",
+    "renderLog": "insertion/final-render.log",
+    "coverageNote": "The general suite passed on the preceding insertion build. The final change only lowers separated wristblades inside the cabin; its unit, actual-geometry, insertion-browser and rendering cases were repeated on the final build.",
+    "initialFixtureFailuresResolved": "Two route fixtures tried to cross the new solid pod wall; paths now walk around its occupied footprint with the real collision resolver enabled, including rotated maps.",
+    "summary": "insertion/browser-validation-summary.json"
+  },
+  "scene": {
+    "status": "passed",
+    "sampledFrames": 10,
+    "characters": "Actual imported City Hunter body and mask; procedural Wolf in co-op",
+    "errors": [],
+    "failedRequests": [],
+    "externalRequests": [],
+    "report": "insertion/cinematic-report.json",
+    "captureConditions": "Controlled paused frames after actual model loading, HUD retained; no human playthrough",
+    "additionalJungleHunter": {
+      "status": "passed",
+      "body": "imported",
+      "mask": "attached",
+      "sampledFrames": 2,
+      "bladeFrontMaxAtUnlocking": -0.286953401883585,
+      "report": "insertion/jungle-cinematic-report.json"
+    },
+    "totalLocalFrames": 12,
+    "live": {
+      "status": "passed",
+      "indexSha256": "d9839d93a06fd01e82c7efb49cefc46a4105a4406f65f451afdf7106f5e010db",
+      "sampledFrames": 10,
+      "allActorsAtFullHealth": true,
+      "combatTimeStayedZeroUntilHandoff": true,
+      "errors": [],
+      "failedRequests": [],
+      "externalRequests": [],
+      "cleanup": {
+        "player": null,
+        "player2": null,
+        "pods": 0,
+        "active": false
+      },
+      "report": "insertion/live-cinematic-report.json"
+    }
+  },
+  "models": {
+    "capsule": {
+      "triangles": 43504,
+      "drawMeshes": 11
+    },
+    "skimmer": {
+      "triangles": 33464,
+      "drawMeshes": 7
+    },
+    "cheyenne": {
+      "triangles": 28956,
+      "drawMeshes": 8
+    }
+  },
+  "deployment": {
+    "status": "READY_promoted",
+    "deploymentId": "dpl_Cbgxhp7656bXRtaj1nKBsx3zqcFh",
+    "publicUrl": "https://yautja-hive-warriors.vercel.app",
+    "indexSha256": "d9839d93a06fd01e82c7efb49cefc46a4105a4406f65f451afdf7106f5e010db",
+    "publicVerification": "passed",
+    "publicExactFiles": 29,
+    "publicModelFiles": 12,
+    "publicBundleFiles": 5,
+    "headersVerified": true,
+    "report": "insertion/vercel-public-verification.json",
+    "metadata": "insertion/vercel-delivery-status.json",
+    "browserConfirmation": "passed",
+    "browserReport": "insertion/live-cinematic-report.json"
+  },
+  "remainingLimits": [
+    "No certified film-prop scan or exact 1:1 likeness",
+    "City Hunter wristblades and gauntlet lids remain fused or static; only two isolated dreadlock parts articulated",
+    "Imported Big Chap tail remains tied to pelvis; no foot IK",
+    "Five other photographic Yautja generation jobs not submitted in this pass"
+  ],
+  "referenceReview": "insertion-reference-review.md",
+  "modelAudit": "../MODEL-FIDELITY-AUDIT.md",
+  "bladeClearance": {
+    "closedHatchPlaneZ": 1.46,
+    "proceduralVariantsTested": 7,
+    "proceduralMaxBladeZ": 0.983309479,
+    "actualCoopWolfMaxBladeZ": 0.97926,
+    "jungleHunterMaxBladeZ": -0.286953401883585,
+    "method": "Actual external blade vertices transformed into the capsule frame at initial opening. City Hunter native fused blades retain inspected imported pose, without an independent extraction claim."
+  }
+}

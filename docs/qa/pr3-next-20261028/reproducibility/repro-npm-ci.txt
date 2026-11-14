@@ -1,0 +1,90 @@
+npm warn tarball tarball data for lightningcss@https://registry.npmjs.org/lightningcss/-/lightningcss-1.33.0.tgz (sha512-WkUDrojuJs0xkgGf2udWxa3yGBRxPtxUkB79i6aCZLRgc7PM8fZe9TosfPDcvEpQZbuFASnHYmRLBLUbmLOIIA==) seems to be corrupted. Trying again.
+npm warn tarball tarball data for fdir@https://registry.npmjs.org/fdir/-/fdir-6.5.0.tgz (sha512-tIbYtZbucOs0BRGqPJkshJUYdL+SDH7dVM8gjy+ERp3WAUjLEFJE+02kanyHtwjWOnwrKYBiwAmM0p4kLJAnXg==) seems to be corrupted. Trying again.
+npm warn tarball tarball data for picomatch@https://registry.npmjs.org/picomatch/-/picomatch-4.0.7.tgz (sha512-qcJu88Q2IWqJsDD529JKMdwGm/dvInW4HvQnRwiH9JtihJvzGOscDtHE3x1pBKeUOTysQ8kVmLnJ2kJu7yhcGA==) seems to be corrupted. Trying again.
+npm warn tarball tarball data for vite@https://registry.npmjs.org/vite/-/vite-8.3.4.tgz (sha512-IftLE8phJhdNRIGNEV4JCCvfNScoZQVfcXaN8TQropWGJtOHcu+iAB9pHcuGvmEb/kddw0LBe/jS8ztdC6xdiQ==) seems to be corrupted. Trying again.
+npm warn tarball tarball data for lightningcss-linux-x64-gnu@https://registry.npmjs.org/lightningcss-linux-x64-gnu/-/lightningcss-linux-x64-gnu-1.33.0.tgz (sha512-ar+Ju7LmcN0Jo4FpL4hpFybwNG9/3A/Br5KW2n2jyODg3MEZXaDYADdemoNS+BDNfMgKvylJLj4S5tyRActuAg==) seems to be corrupted. Trying again.
+npm warn tarball tarball data for playwright@https://registry.npmjs.org/playwright/-/playwright-1.64.1.tgz (sha512-HCrVhHr5QQuwYoswEUGTb7gGp522yflbv/ST8nF4sFWGuLjQCt17Q/EubpGGSNKYn1tsTCPZxqHhHCfVURu7UA==) seems to be corrupted. Trying again.
+npm warn tarball tarball data for detect-libc@https://registry.npmjs.org/detect-libc/-/detect-libc-2.1.2.tgz (sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ==) seems to be corrupted. Trying again.
+npm warn tarball tarball data for @rolldown/binding-linux-x64-gnu@https://registry.npmjs.org/@rolldown/binding-linux-x64-gnu/-/binding-linux-x64-gnu-1.2.14.tgz (sha512-WxalXzgrLVpKC93xfpaJ3gCXUWzeCr+FRCbDVD2mUAy4L6Vo3lNVz0epUEUpxPWJkLNYUwM4OSIikv36OJ9mLg==) seems to be corrupted. Trying again.
+npm warn tarball tarball data for rolldown@https://registry.npmjs.org/rolldown/-/rolldown-1.2.14.tgz (sha512-eTBTTqMR6uHKLgcUqpJP8ntzDI6V4LYA8negAMBEI7gkgVvOdrx6VsvS2Ym+83KhOPdLCHWJu0w7UQFJZhHKNw==) seems to be corrupted. Trying again.
+npm warn tarball tarball data for playwright-core@https://registry.npmjs.org/playwright-core/-/playwright-core-1.64.1.tgz (sha512-BC4s8y6SEVA6Q1rSxZTto8hI1KUI3xXlHGZgvGqP4IqPdI/a6FX9H29IDNz7vKo9l21b6LfYosScPL6M3xxyDQ==) seems to be corrupted. Trying again.
+npm warn tarball tarball data for tinyglobby@https://registry.npmjs.org/tinyglobby/-/tinyglobby-0.2.17.tgz (sha512-wXR/dYpcqKmfWpEdZjiKJOwCNFndD0DMnrW/cYjVGttEkBfVgcLFHoNrlj47mjOVic9yyNu65alsgF4NQyTa2g==) seems to be corrupted. Trying again.
+npm warn tarball tarball data for @rolldown/pluginutils@https://registry.npmjs.org/@rolldown/pluginutils/-/pluginutils-1.0.1.tgz (sha512-2j9bGt5Jh8hj+vPtgzPtl72j0yRxHAyumoo6TNfAjsLB04UtpSvPbPcDcBMxz7n+9CYB0c1GxQFxYRg2jimqGw==) seems to be corrupted. Trying again.
+npm warn tarball tarball data for lightningcss-linux-x64-musl@https://registry.npmjs.org/lightningcss-linux-x64-musl/-/lightningcss-linux-x64-musl-1.33.0.tgz (sha512-RYiYbkokw0trfKqqzfF55lginwEPrD3OJDfTuJzFs1MK6iFnDenaz1fqLLtX4ITG3OktJQXOeTaw1awrBAlZPw==) seems to be corrupted. Trying again.
+npm warn tarball tarball data for @rolldown/binding-linux-x64-musl@https://registry.npmjs.org/@rolldown/binding-linux-x64-musl/-/binding-linux-x64-musl-1.2.14.tgz (sha512-3G3tnAmTpdk9jO3GQtyHXqeFD2SlecfTws/Y3M2mmj9nMBwwuLT4kur8sZKeu7ENUHSpVO3cIsm5A52LEWWwlg==) seems to be corrupted. Trying again.
+npm warn tarball tarball data for @fontsource/rajdhani@https://registry.npmjs.org/@fontsource/rajdhani/-/rajdhani-5.3.0.tgz (sha512-oBJgSIibWJvVBKseme1JczqPLoDHN97LHti4uh0LjfcJqQoVmnQQlRKIpEjTJV559rmVQ6qbVZZwKwk2wkBTtw==) seems to be corrupted. Trying again.
+npm warn tarball tarball data for lightningcss@https://registry.npmjs.org/lightningcss/-/lightningcss-1.33.0.tgz (sha512-WkUDrojuJs0xkgGf2udWxa3yGBRxPtxUkB79i6aCZLRgc7PM8fZe9TosfPDcvEpQZbuFASnHYmRLBLUbmLOIIA==) seems to be corrupted. Trying again.
+npm warn tarball tarball data for @oxc-project/types@https://registry.npmjs.org/@oxc-project/types/-/types-0.154.0.tgz (sha512-KYOUGQFlLWR+s4QMV2Q9ko38TZm7EdO87Qm7rvZLqk/webse/cDjtyxKhg/47l0byCbs/k46LT8qc4PKjAikzA==) seems to be corrupted. Trying again.
+npm warn tarball tarball data for @fontsource/orbitron@https://registry.npmjs.org/@fontsource/orbitron/-/orbitron-5.3.0.tgz (sha512-+BhPsbUAo/AF7sRcf+TEexm+EWWkgTiR9Zwb7AhYIPkc5oplfvw0C45Oc2xlKPhwVEmxG8hHuA6/Ansbl+Bc6w==) seems to be corrupted. Trying again.
+npm warn tarball tarball data for detect-libc@https://registry.npmjs.org/detect-libc/-/detect-libc-2.1.2.tgz (sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ==) seems to be corrupted. Trying again.
+npm warn tarball tarball data for lightningcss-linux-x64-gnu@https://registry.npmjs.org/lightningcss-linux-x64-gnu/-/lightningcss-linux-x64-gnu-1.33.0.tgz (sha512-ar+Ju7LmcN0Jo4FpL4hpFybwNG9/3A/Br5KW2n2jyODg3MEZXaDYADdemoNS+BDNfMgKvylJLj4S5tyRActuAg==) seems to be corrupted. Trying again.
+npm warn tarball tarball data for fdir@https://registry.npmjs.org/fdir/-/fdir-6.5.0.tgz (sha512-tIbYtZbucOs0BRGqPJkshJUYdL+SDH7dVM8gjy+ERp3WAUjLEFJE+02kanyHtwjWOnwrKYBiwAmM0p4kLJAnXg==) seems to be corrupted. Trying again.
+npm warn tarball tarball data for playwright@https://registry.npmjs.org/playwright/-/playwright-1.64.1.tgz (sha512-HCrVhHr5QQuwYoswEUGTb7gGp522yflbv/ST8nF4sFWGuLjQCt17Q/EubpGGSNKYn1tsTCPZxqHhHCfVURu7UA==) seems to be corrupted. Trying again.
+npm warn tarball tarball data for vite@https://registry.npmjs.org/vite/-/vite-8.3.4.tgz (sha512-IftLE8phJhdNRIGNEV4JCCvfNScoZQVfcXaN8TQropWGJtOHcu+iAB9pHcuGvmEb/kddw0LBe/jS8ztdC6xdiQ==) seems to be corrupted. Trying again.
+npm warn tarball tarball data for picomatch@https://registry.npmjs.org/picomatch/-/picomatch-4.0.7.tgz (sha512-qcJu88Q2IWqJsDD529JKMdwGm/dvInW4HvQnRwiH9JtihJvzGOscDtHE3x1pBKeUOTysQ8kVmLnJ2kJu7yhcGA==) seems to be corrupted. Trying again.
+npm warn tarball tarball data for @rolldown/binding-linux-x64-gnu@https://registry.npmjs.org/@rolldown/binding-linux-x64-gnu/-/binding-linux-x64-gnu-1.2.14.tgz (sha512-WxalXzgrLVpKC93xfpaJ3gCXUWzeCr+FRCbDVD2mUAy4L6Vo3lNVz0epUEUpxPWJkLNYUwM4OSIikv36OJ9mLg==) seems to be corrupted. Trying again.
+npm warn tarball tarball data for rolldown@https://registry.npmjs.org/rolldown/-/rolldown-1.2.14.tgz (sha512-eTBTTqMR6uHKLgcUqpJP8ntzDI6V4LYA8negAMBEI7gkgVvOdrx6VsvS2Ym+83KhOPdLCHWJu0w7UQFJZhHKNw==) seems to be corrupted. Trying again.
+npm warn tarball tarball data for lightningcss-linux-x64-musl@https://registry.npmjs.org/lightningcss-linux-x64-musl/-/lightningcss-linux-x64-musl-1.33.0.tgz (sha512-RYiYbkokw0trfKqqzfF55lginwEPrD3OJDfTuJzFs1MK6iFnDenaz1fqLLtX4ITG3OktJQXOeTaw1awrBAlZPw==) seems to be corrupted. Trying again.
+npm warn tarball tarball data for playwright-core@https://registry.npmjs.org/playwright-core/-/playwright-core-1.64.1.tgz (sha512-BC4s8y6SEVA6Q1rSxZTto8hI1KUI3xXlHGZgvGqP4IqPdI/a6FX9H29IDNz7vKo9l21b6LfYosScPL6M3xxyDQ==) seems to be corrupted. Trying again.
+npm warn tarball tarball data for @rolldown/pluginutils@https://registry.npmjs.org/@rolldown/pluginutils/-/pluginutils-1.0.1.tgz (sha512-2j9bGt5Jh8hj+vPtgzPtl72j0yRxHAyumoo6TNfAjsLB04UtpSvPbPcDcBMxz7n+9CYB0c1GxQFxYRg2jimqGw==) seems to be corrupted. Trying again.
+npm warn tarball tarball data for @fontsource/rajdhani@https://registry.npmjs.org/@fontsource/rajdhani/-/rajdhani-5.3.0.tgz (sha512-oBJgSIibWJvVBKseme1JczqPLoDHN97LHti4uh0LjfcJqQoVmnQQlRKIpEjTJV559rmVQ6qbVZZwKwk2wkBTtw==) seems to be corrupted. Trying again.
+npm warn tarball tarball data for tinyglobby@https://registry.npmjs.org/tinyglobby/-/tinyglobby-0.2.17.tgz (sha512-wXR/dYpcqKmfWpEdZjiKJOwCNFndD0DMnrW/cYjVGttEkBfVgcLFHoNrlj47mjOVic9yyNu65alsgF4NQyTa2g==) seems to be corrupted. Trying again.
+npm warn tarball tarball data for @rolldown/binding-linux-x64-musl@https://registry.npmjs.org/@rolldown/binding-linux-x64-musl/-/binding-linux-x64-musl-1.2.14.tgz (sha512-3G3tnAmTpdk9jO3GQtyHXqeFD2SlecfTws/Y3M2mmj9nMBwwuLT4kur8sZKeu7ENUHSpVO3cIsm5A52LEWWwlg==) seems to be corrupted. Trying again.
+npm warn tarball tarball data for @oxc-project/types@https://registry.npmjs.org/@oxc-project/types/-/types-0.154.0.tgz (sha512-KYOUGQFlLWR+s4QMV2Q9ko38TZm7EdO87Qm7rvZLqk/webse/cDjtyxKhg/47l0byCbs/k46LT8qc4PKjAikzA==) seems to be corrupted. Trying again.
+npm warn tarball tarball data for @fontsource/orbitron@https://registry.npmjs.org/@fontsource/orbitron/-/orbitron-5.3.0.tgz (sha512-+BhPsbUAo/AF7sRcf+TEexm+EWWkgTiR9Zwb7AhYIPkc5oplfvw0C45Oc2xlKPhwVEmxG8hHuA6/Ansbl+Bc6w==) seems to be corrupted. Trying again.
+npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, open '/tmp/yautja-repro-20261028/node_modules/playwright-core/lib/vite/htmlReport/report.js'
+npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/tmp/yautja-repro-20261028/node_modules/playwright-core/lib/vite/recorder/assets'
+npm warn cleanup Failed to remove some directories [
+npm warn cleanup   [
+npm warn cleanup     '/tmp/yautja-repro-20261028/node_modules/@fontsource/rajdhani',
+npm warn cleanup     [Error: ENOTEMPTY: directory not empty, rmdir '/tmp/yautja-repro-20261028/node_modules/@fontsource/rajdhani/scss'] {
+npm warn cleanup       errno: -39,
+npm warn cleanup       code: 'ENOTEMPTY',
+npm warn cleanup       syscall: 'rmdir',
+npm warn cleanup       path: '/tmp/yautja-repro-20261028/node_modules/@fontsource/rajdhani/scss'
+npm warn cleanup     }
+npm warn cleanup   ],
+npm warn cleanup   [
+npm warn cleanup     '/tmp/yautja-repro-20261028/node_modules/@fontsource',
+npm warn cleanup     [Error: ENOTEMPTY: directory not empty, rmdir '/tmp/yautja-repro-20261028/node_modules/@fontsource/rajdhani/scss'] {
+npm warn cleanup       errno: -39,
+npm warn cleanup       code: 'ENOTEMPTY',
+npm warn cleanup       syscall: 'rmdir',
+npm warn cleanup       path: '/tmp/yautja-repro-20261028/node_modules/@fontsource/rajdhani/scss'
+npm warn cleanup     }
+npm warn cleanup   ],
+npm warn cleanup   [
+npm warn cleanup     '/tmp/yautja-repro-20261028/node_modules',
+npm warn cleanup     [Error: ENOTEMPTY: directory not empty, rmdir '/tmp/yautja-repro-20261028/node_modules/@fontsource/orbitron'] {
+npm warn cleanup       errno: -39,
+npm warn cleanup       code: 'ENOTEMPTY',
+npm warn cleanup       syscall: 'rmdir',
+npm warn cleanup       path: '/tmp/yautja-repro-20261028/node_modules/@fontsource/orbitron'
+npm warn cleanup     }
+npm warn cleanup   ],
+npm warn cleanup   [
+npm warn cleanup     '/tmp/yautja-repro-20261028/node_modules/playwright',
+npm warn cleanup     [Error: ENOTEMPTY: directory not empty, rmdir '/tmp/yautja-repro-20261028/node_modules/playwright/lib'] {
+npm warn cleanup       errno: -39,
+npm warn cleanup       code: 'ENOTEMPTY',
+npm warn cleanup       syscall: 'rmdir',
+npm warn cleanup       path: '/tmp/yautja-repro-20261028/node_modules/playwright/lib'
+npm warn cleanup     }
+npm warn cleanup   ]
+npm warn cleanup ]
+npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/tmp/yautja-repro-20261028/node_modules/playwright-core/lib/vite'
+npm warn tar TAR_ENTRY_ERROR ENOENT: no such file or directory, lstat '/tmp/yautja-repro-20261028/node_modules/playwright-core/lib'
+npm error code ENOENT
+npm error syscall mkdir
+npm error path /home/agent/.npm/_cacache
+npm error errno -2
+npm error enoent ENOENT: no such file or directory, mkdir '/home/agent/.npm/_cacache'
+npm error enoent This is related to npm not being able to find a file.
+npm error enoent
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.1
+npm notice To update run: npm install -g npm@12.2.1
+npm notice
+npm error Log files were not written due to an error writing to the directory: /home/agent/.npm/_logs
+npm error You can rerun the command with `--loglevel=verbose` to see the logs in your terminal

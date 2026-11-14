@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "status": "passed",
+  "sourceCommit": "1a6eeb84445d5b01b13db7f4165f4d17499377e3",
+  "sourceFingerprint": "3d32ced7f9ed824653c77a03ec10505c3ae44e44a8beec6603f70889510b2cb2",
+  "testFiles": 69,
+  "tests": 482,
+  "pass": 482,
+  "fail": 0,
+  "cancelled": 0,
+  "skipped": 0,
+  "durationMs": 253256.777316,
+  "log": "docs/qa/fidelity-20261109/integration/cpu-regression.txt",
+  "sha256": "156e34106e4fd6bc9547f272cfbc890c05f77db1b53191003ff604f193d4453a",
+  "command": "docs/qa/fidelity-20261109/integration/cpu-command.json",
+  "scope": "Selected complete regression of 69 files for visual geometry/materials, resource ownership, measured world contacts, player movement, finite combat, insertion, rescue and checkpoints; not the entire repository/browser suite."
+}

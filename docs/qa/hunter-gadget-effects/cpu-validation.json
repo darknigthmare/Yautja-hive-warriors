@@ -1,0 +1,110 @@
+{
+  "status": "cpu_geometry_and_lifecycle_passed",
+  "date": "2026-10-25",
+  "automated": true,
+  "humanTesters": 0,
+  "newMeshyCredits": 0,
+  "fidelity1to1Verified": false,
+  "cpu": {
+    "passed": 11,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 7132.412814,
+    "command": "node --test --test-concurrency=1 tests/hunter-gadget-effects.test.js"
+  },
+  "models": {
+    "human": {
+      "family": "human",
+      "triangles": 28762,
+      "meshSurfaces": 4,
+      "privateGeometries": 4,
+      "privateMaterials": 3,
+      "referencedTextures": 3
+    },
+    "crusher": {
+      "family": "warrior",
+      "triangles": 7753,
+      "meshSurfaces": 5,
+      "privateGeometries": 5,
+      "privateMaterials": 4,
+      "referencedTextures": 3
+    },
+    "predalien_queen": {
+      "family": "queen",
+      "triangles": 17055,
+      "meshSurfaces": 4,
+      "privateGeometries": 4,
+      "privateMaterials": 3,
+      "referencedTextures": 3
+    },
+    "the_offspring": {
+      "family": "engineer",
+      "triangles": 28730,
+      "meshSurfaces": 4,
+      "privateGeometries": 4,
+      "privateMaterials": 3,
+      "referencedTextures": 3
+    }
+  },
+  "countdown": {
+    "triangles": 204,
+    "meshSurfaces": 4,
+    "privateGeometries": 4,
+    "privateMaterials": 3,
+    "referencedTextures": 1
+  },
+  "sourcePreservation": {
+    "actualCityAndJungleGeometryFingerprintsUnchanged": true,
+    "sharedPbrTexturesDisposed": 0,
+    "privateResourcesDisposedExactlyOnce": true
+  },
+  "anchors": {
+    "city": "Measured City console plane +0.12 normalized game unit along its outward normal",
+    "jungle": "Mapped forearm-to-hand segment at76%, projected0.16 normalized game unit; not a measured shell surface",
+    "trophy": "Actual imported rightHand socket",
+    "maximumAssertedActualAnchorError": 1e-06,
+    "metamorphosisScales": [
+      1,
+      1.8
+    ],
+    "parentUniformScale": 1.2
+  },
+  "timing": {
+    "nukeSeconds": 6,
+    "trophySeconds": 3.5,
+    "frameRatesCompared": [
+      30,
+      60,
+      120
+    ],
+    "delta0AndPauseAdvance": false,
+    "wallClockRead": false
+  },
+  "sourceFiles": {
+    "js/graphics/HunterGadgetEffects.js": "398569c2dd14c7df0e8b0a220960088939b26644608b1033d9de89bb96c00bcc",
+    "js/entities/Player.js": "490a7c3b189bac5e5a30aaa9c4d0acd84d41f299c2e805d584ff4803ff6ae448",
+    "tests/hunter-gadget-effects.test.js": "3accd0ad091f281b5055c9ad6ab695db0e770c771dc2a1ea8f58f86acd55c6f8"
+  },
+  "runtimeValidation": "Separate integration browser review is required; this report does not claim a render or published build.",
+  "v2_followup": {
+    "passed": 11,
+    "failed": 0,
+    "duration_seconds": 7.13,
+    "coverage": [
+      "Cloak shader invalidates exactly on transparency flips",
+      "Defeated co-op effects advance without gameplay or new decoys"
+    ],
+    "log": "tests-v2.txt"
+  },
+  "initial_cpu": {
+    "passed": 9,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 2340.296994,
+    "command": "node --test --test-concurrency=1 tests/hunter-gadget-effects.test.js"
+  },
+  "initial_source_files": {
+    "js/graphics/HunterGadgetEffects.js": "9d011271fba0ea6256a4dc01732e49cc8fd6338600d97625b5426ab5e6be3e84",
+    "tests/hunter-gadget-effects.test.js": "bc898985505f04b6101bad05cf179a6ab40ed085cdf6de41fd7b4ab482bb530f"
+  }
+}
