@@ -106,8 +106,9 @@ export class HunterKit {
     this.bar = null;
   }
 
-  equip(charId) {
-    this.slots = (DEFAULT_KITS[charId] || DEFAULT_KITS.jungle_hunter).slice(0, 4);
+  equip(charId, chosen = null) {
+    const valid = Array.isArray(chosen) && chosen.length === 4 && chosen.every(id => KIT_ABILITIES[id]);
+    this.slots = (valid ? chosen : (DEFAULT_KITS[charId] || DEFAULT_KITS.jungle_hunter)).slice(0, 4);
     this.cooldowns = {};
     this.releaseLock();
     this.renderBar();
@@ -135,25 +136,33 @@ export class HunterKit {
     return false;
   }
 
-  /* Lock-on (HW-DEC-35): Tab locks the boss, else the strongest elite, else the nearest enemy within 40 m. */
-  toggleLock() {
-    if (this.lockTarget) { this.releaseLock(); return; }
+  /* Lock-on (HW-DEC-35): Tab locks the boss, else the strongest elite, else the nearest enemy
+     within 40 m; pressing Tab again moves to the next candidate. R releases. */
+  lockCandidates() {
     const g = this.game, pos = g.player.position;
-    let best = null;
+    const list = [];
     if (g.bosses.activeBoss && g.bosses.activeBoss.mesh && g.bosses.activeBoss.mesh.position.distanceTo(pos) <= 40) {
-      best = { kind: 'boss', ref: g.bosses.activeBoss };
-    } else {
-      let bestScore = -Infinity;
-      for (const a of g.horde.aliens) {
-        if (!a || a.hp <= 0 || !a.mesh) continue;
-        const d = a.mesh.position.distanceTo(pos);
-        if (d > 40) continue;
-        const score = (a.maxHp || a.hp) - d * 4;
-        if (score > bestScore) { bestScore = score; best = { kind: 'alien', ref: a }; }
-      }
+      list.push({ kind: 'boss', ref: g.bosses.activeBoss, score: Infinity });
     }
-    if (!best) { g.ui.showAnnouncement('🎯 AUCUNE CIBLE À VERROUILLER'); return; }
-    this.lockTarget = best;
+    for (const a of g.horde.aliens) {
+      if (!a || a.hp <= 0 || !a.mesh) continue;
+      const d = a.mesh.position.distanceTo(pos);
+      if (d > 40) continue;
+      list.push({ kind: 'alien', ref: a, score: (a.maxHp || a.hp) - d * 4 });
+    }
+    return list.sort((x, y) => y.score - x.score).slice(0, 8);
+  }
+
+  toggleLock() {
+    const g = this.game;
+    const list = this.lockCandidates();
+    if (!list.length) { this.releaseLock(); g.ui.showAnnouncement('🎯 AUCUNE CIBLE À VERROUILLER'); return; }
+    let next = list[0];
+    if (this.lockTarget) {
+      const i = list.findIndex(c => c.ref === this.lockTarget.ref);
+      next = list[(i + 1) % list.length];
+    }
+    this.lockTarget = next;
     if (!this.lockMarker) {
       this.lockMarker = new THREE.Mesh(
         new THREE.TorusGeometry(1.4, 0.08, 6, 24),
@@ -161,8 +170,8 @@ export class HunterKit {
       );
       this.lockMarker.rotation.x = Math.PI / 2;
     }
-    g.renderer.scene.add(this.lockMarker);
-    g.ui.showAnnouncement('🎯 CIBLE VERROUILLÉE [TAB POUR LIBÉRER]');
+    if (!this.lockMarker.parent) g.renderer.scene.add(this.lockMarker);
+    g.ui.showAnnouncement('🎯 CIBLE VERROUILLÉE [TAB : SUIVANTE · R : LIBÉRER]');
   }
 
   releaseLock() {

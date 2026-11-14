@@ -88,6 +88,7 @@ class GameApp {
     this.projectiles = [];
     this.kit = new HunterKit(this);
     this.legacyControls = false; // true restores the ~54 legacy key bindings
+    this.cameraYaw = 0; // third-person camera turns with the mouse (pointer lock)
     this.isPlaying = false;
     this.isPaused = false;
 
@@ -166,6 +167,7 @@ class GameApp {
     });
 
     document.getElementById('btn-launch-mission').addEventListener('click', () => {
+      this.loadoutScreen.renderKit(this.ui.selectedChar && this.ui.selectedChar.id);
       this.ui.showScreen(document.getElementById('loadout-prep-screen'));
     });
 
@@ -892,6 +894,23 @@ class GameApp {
     });
 
     window.addEventListener('contextmenu', e => e.preventDefault());
+
+    // Mouse camera: a click in the game captures the pointer; moving the mouse turns the camera.
+    const canvas = this.renderer.renderer.domElement;
+    canvas.addEventListener('click', () => {
+      if (this.isPlaying && !this.isPaused && !this.isFirstPerson && !document.pointerLockElement && canvas.requestPointerLock) {
+        try { const r = canvas.requestPointerLock(); if (r && r.catch) r.catch(() => {}); } catch (err) { /* optional */ }
+      }
+    });
+    // Escape releases the pointer before the page sees the key: losing the pointer mid-hunt pauses it.
+    document.addEventListener('pointerlockchange', () => {
+      if (!document.pointerLockElement && this.isPlaying && !this.isPaused) this.setPaused(true);
+    });
+    window.addEventListener('mousemove', (e) => {
+      if (document.pointerLockElement === canvas && this.isPlaying && !this.isPaused) {
+        this.cameraYaw -= e.movementX * 0.0035;
+      }
+    });
   }
 
   updateVisionOverlays(mode) {
@@ -1111,7 +1130,7 @@ class GameApp {
 
     this.player = new Player(this.renderer.scene, this.ui.selectedChar, this.audio, false, this.particles);
     this.forge.applyStatsToPlayer(this.player);
-    this.kit.equip(this.ui.selectedChar && this.ui.selectedChar.id);
+    this.kit.equip(this.ui.selectedChar && this.ui.selectedChar.id, this.activeLoadout && this.activeLoadout.kit);
 
     // Chantier 9: Apply Tactical Armory Loadout Synergy
     if (!this.activeLoadout) {
@@ -2319,6 +2338,8 @@ class GameApp {
     if (this.keys['KeyS']) moveDirP1.z += 1;
     if (this.keys['KeyA']) moveDirP1.x -= 1;
     if (this.keys['KeyD']) moveDirP1.x += 1;
+    // Movement is relative to where the camera looks.
+    if (!this.legacyControls) moveDirP1.applyAxisAngle(new THREE.Vector3(0, 1, 0), this.cameraYaw);
     this.player.move(moveDirP1, delta);
     this.player.update(delta, this.horde);
     this.kit.update(delta);
@@ -2552,7 +2573,15 @@ class GameApp {
       ));
       this.renderer.camera.lookAt(lookTarget);
     } else {
-      const camTarget = this.player.position.clone().add(new THREE.Vector3(0, 10, 16));
+      // While a target is locked, the camera swings behind the hunter, facing it.
+      const locked = this.kit && this.kit.lockedPosition && this.kit.lockedPosition();
+      if (locked) {
+        const want = Math.atan2(this.player.position.x - locked.x, this.player.position.z - locked.z);
+        let diff = want - this.cameraYaw;
+        diff = Math.atan2(Math.sin(diff), Math.cos(diff));
+        this.cameraYaw += diff * Math.min(1, 4 * delta);
+      }
+      const camTarget = this.player.position.clone().add(new THREE.Vector3(Math.sin(this.cameraYaw) * 16, 10, Math.cos(this.cameraYaw) * 16));
       this.renderer.camera.position.lerp(camTarget, 5 * delta);
       this.renderer.camera.lookAt(this.player.position.clone().add(new THREE.Vector3(0, 2, 0)));
     }
@@ -3616,6 +3645,9 @@ class GameApp {
       case 'Tab':
         e.preventDefault();
         if (!e.repeat) this.kit.toggleLock();
+        return true;
+      case 'KeyR':
+        if (this.kit.lockTarget) { this.kit.releaseLock(); this.ui.showAnnouncement('🎯 VERROU LIBÉRÉ'); }
         return true;
       case 'KeyG':
         if (e.repeat) return true;
