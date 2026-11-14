@@ -70,3 +70,23 @@ test('Kharuun’s burrower cannot be struck under the sand and surfaces beside t
   assert.equal(burrower.isBurrowed, false);
   assert.ok(burrower.mesh.position.distanceTo(player.position) < 8, 'it surfaces beside the hunter');
 });
+
+test('the Unblooded kit opens one tool per hunted world and refuses the rest of the arsenal', async () => {
+  const { ascensionToolGates } = await import('../js/data/AscensionWorlds.js');
+  const { Player } = await import('../js/entities/Player.js');
+  const { CHARACTERS_DATA } = await import('../js/data/charactersData.js');
+  class OfflinePlayer extends Player { loadGeneratedVisual() { return Promise.resolve(false); } }
+  const player = new OfflinePlayer(new THREE.Scene(), CHARACTERS_DATA[0], audio);
+  try {
+    player.kitLocks = { tools: ascensionToolGates([]), cloak: true, shoulderCannon: true };
+    assert.equal(player.canUseArsenalEquipment('combistick'), true);
+    assert.equal(player.canUseArsenalEquipment('netgun'), false);
+    assert.equal(player.canUseArsenalEquipment('m41a'), false);
+    assert.equal(player.toggleCloak(), false); assert.equal(player.isCloaked, false);
+    player.kitLocks = { tools: ascensionToolGates(['netgun', 'tripwire_mine']), cloak: false };
+    assert.equal(player.canUseArsenalEquipment('netgun'), true);
+    assert.equal(player.canUseArsenalEquipment('mines'), true);
+    assert.equal(player.canUseArsenalEquipment('smart_disc'), false);
+    player.toggleCloak(); assert.equal(player.isCloaked, true);
+  } finally { player.dispose(); }
+});

@@ -1275,6 +1275,7 @@ export class Player {
   }
 
   deployBearTrap(horde) {
+    if (this.kitLocks?.tools && !this.canUseArsenalEquipment('bear_trap')) return false;
     if (this.bearTrapCharges <= 0) return false;
     this.bearTrapCharges--;
     const trapAttack = { origin: this.position, radius: 10, damage: 350 };
@@ -1727,6 +1728,13 @@ export class Player {
   }
 
   canUseArsenalEquipment(id) {
+    // Ascension (spec 002): the Unblooded kit and the tools earned world after world, nothing else.
+    if (this.kitLocks?.tools) {
+      if (this.kitLocks.tools.has(id)) return true;
+      this.lastArsenalRefusal = { equipment: id, reason: 'unblooded_kit', message: 'Outil pas encore gagné par l’Unblooded.' };
+      this.gameContext?.ui?.showAnnouncement?.('OUTIL PAS ENCORE GAGNÉ — LA MEUTE L’APPRENDRA PLUS LOIN');
+      return false;
+    }
     if (PREY_WEAPON_PROFILES[id]) return this._canUsePreyEquipment(id);
     if (this.fidelityMode !== 'faithful') return true;
     const reference = HUNTER_ARSENAL_PROFILES[this.data.id];
@@ -5219,6 +5227,7 @@ export class Player {
 
   /* === CHANTIER 5 & ELENA QA (v51.0): Yautja Vocal Mimicry Decoy System [Y] (Predator 1987) === */
   triggerVoiceMimicryDecoy(horde, audioEngine, ui, particles) {
+    if (this.kitLocks?.tools && !this.canUseArsenalEquipment('voice_lure')) return false;
     if (this.mimicryCooldown > 0) return false;
     this.mimicryCooldown = 14.0;
 

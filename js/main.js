@@ -75,7 +75,7 @@ import { canAccessLegacyAir, canHitLegacyAirTarget } from './engine/LegacyAirstr
 import { hunterMusouProfile, musouCovers } from './data/hunterMusouProfiles.js';
 import { humanWeaponCacheCount, emptyHumanWeaponAmmo, openHumanWeaponCache } from './engine/HumanWeaponCaches.js';
 import { MouseCamera } from './engine/MouseCamera.js';
-import { ASCENSION_WORLDS, ASCENSION_BASE_LEVELS, ascensionWorld, ascensionLevel } from './data/AscensionWorlds.js';
+import { ASCENSION_WORLDS, ascensionWorld, ascensionLevel, ascensionToolGates } from './data/AscensionWorlds.js';
 import { AscensionProgress } from './data/AscensionProgress.js';
 import { FaunaEncounter } from './engine/FaunaEncounter.js';
 
@@ -2044,7 +2044,7 @@ class GameApp {
     // Hunts carry no Alien-setting human ammunition until a finite cache is opened (HW-DEC-87).
     if(['hunt','ascension'].includes(this.missionMode)&&!options.resumeOperation)for(const player of [this.player,this.player2].filter(Boolean))emptyHumanWeaponAmmo(player);
     // The Unblooded kit (spec 002): no shoulder cannon before the rank Blooded, no cloak before Rukh Tal.
-    for(const player of [this.player,this.player2].filter(Boolean))player.kitLocks=this.missionMode==='ascension'?{shoulderCannon:!this.ascensionProgress.state.blooded,cloak:!this.ascensionProgress.hasTool('cloak')}:null;
+    for(const player of [this.player,this.player2].filter(Boolean))player.kitLocks=this.missionMode==='ascension'?{shoulderCannon:!this.ascensionProgress.state.blooded,cloak:!this.ascensionProgress.hasTool('cloak'),tools:ascensionToolGates(this.ascensionProgress.state.tools)}:null;
     if(options.resumeOperation?.playerStates)for(const[index,player]of[this.player,this.player2].entries())if(player&&options.resumeOperation.playerStates[index])restoreOperationPlayer(player,options.resumeOperation.playerStates[index],this.env);
     if(options.resumeOperation?.preyInteractions&&this.env.restorePreyInteractions?.(options.resumeOperation.preyInteractions)!==true)throw new Error('Incompatible PREY interaction checkpoint');
 

@@ -403,3 +403,10 @@ export function ascensionLevel(worldId, levels) {
 
 export const ascensionWorld = id => ASCENSION_WORLDS.find(world => world.id === id) ?? null;
 export const ASCENSION_PREY_IDS = Object.freeze(ASCENSION_WORLDS.map(world => world.prey.bossId));
+
+// The Unblooded kit (campagne-unblooded.md §4): wristblades, combistick, burner, medicomp, vision and
+// Musou from the start; each world's reward opens its arsenal gate. The cloak is handled separately.
+export const ASCENSION_START_KIT = Object.freeze(['combistick', 'burner_rifle']);
+const REWARD_GATES = Object.freeze({ netgun: ['netgun'], bear_trap: ['bear_trap'], voice_lure: ['voice_lure'], tripwire_mine: ['mines'],
+  smart_disc: ['smart_disc'], flechettes: ['speargun'], shuriken: ['shuriken'], cloak: [] });
+export const ascensionToolGates = earned => new Set([...ASCENSION_START_KIT, ...earned.flatMap(tool => REWARD_GATES[tool] ?? [])]);
