@@ -5,7 +5,7 @@
   "operation": "AFF-14",
   "boss": "BOS-32",
   "seed": 1114,
-  "commit": "64c0cba56f325663097468b011a6dee02c6d314b",
+  "commit": "f709212c120cf8a365b883fa2d47f002b5f4e1bb",
   "date": "2026-11-14",
   "commande": "node --test tests/recette-rec-019.test.js",
   "preuveVideo": "non produite — preuve par journal",
@@ -127,7 +127,7 @@
               "pending"
             ],
             "matriarch": "done",
-            "rucheVivante": 998
+            "rucheVivante": 996
           }
         },
         {
@@ -231,7 +231,7 @@
           "pending"
         ],
         "matriarch": "done",
-        "rucheVivante": 998
+        "rucheVivante": 996
       },
       "extractionFinale": {
         "taskId": "lethe_exit",
@@ -250,19 +250,19 @@
         "comptes": {
           "player_clan": {
             "allocated": 48,
-            "active": 0,
+            "active": 3,
             "distant": 0,
             "reserve": 2,
-            "dead": 46,
+            "dead": 43,
             "evacuated": 0,
             "captured": 0
           },
           "hive": {
             "allocated": 1000,
             "active": 24,
-            "distant": 622,
+            "distant": 620,
             "reserve": 352,
-            "dead": 2,
+            "dead": 4,
             "evacuated": 0,
             "captured": 0
           }
@@ -391,7 +391,7 @@
               "pending"
             ],
             "matriarch": "done",
-            "rucheVivante": 999
+            "rucheVivante": 996
           }
         },
         {
@@ -495,7 +495,7 @@
           "pending"
         ],
         "matriarch": "done",
-        "rucheVivante": 999
+        "rucheVivante": 996
       },
       "extractionFinale": {
         "taskId": "lethe_exit",
@@ -514,19 +514,19 @@
         "comptes": {
           "player_clan": {
             "allocated": 48,
-            "active": 0,
+            "active": 3,
             "distant": 0,
             "reserve": 8,
-            "dead": 40,
+            "dead": 37,
             "evacuated": 0,
             "captured": 0
           },
           "hive": {
             "allocated": 1000,
             "active": 24,
-            "distant": 623,
+            "distant": 620,
             "reserve": 352,
-            "dead": 1,
+            "dead": 4,
             "evacuated": 0,
             "captured": 0
           }
@@ -666,7 +666,7 @@
               "done"
             ],
             "matriarch": "done",
-            "rucheVivante": 998
+            "rucheVivante": 996
           }
         },
         {
@@ -773,7 +773,7 @@
           "done"
         ],
         "matriarch": "done",
-        "rucheVivante": 998
+        "rucheVivante": 996
       },
       "extractionFinale": {
         "taskId": "lethe_exit",
@@ -793,18 +793,18 @@
           "player_clan": {
             "allocated": 48,
             "active": 0,
-            "distant": 0,
+            "distant": 2,
             "reserve": 0,
-            "dead": 48,
+            "dead": 46,
             "evacuated": 0,
             "captured": 0
           },
           "hive": {
             "allocated": 1000,
             "active": 24,
-            "distant": 614,
+            "distant": 612,
             "reserve": 360,
-            "dead": 2,
+            "dead": 4,
             "evacuated": 0,
             "captured": 0
           }
@@ -949,7 +949,7 @@
               "done"
             ],
             "matriarch": "done",
-            "rucheVivante": 998
+            "rucheVivante": 996
           }
         },
         {
@@ -1053,7 +1053,7 @@
           "done"
         ],
         "matriarch": "done",
-        "rucheVivante": 998
+        "rucheVivante": 996
       },
       "extractionFinale": {
         "taskId": "lethe_exit",
@@ -1082,9 +1082,9 @@
           "hive": {
             "allocated": 1000,
             "active": 24,
-            "distant": 614,
+            "distant": 612,
             "reserve": 360,
-            "dead": 2,
+            "dead": 4,
             "evacuated": 0,
             "captured": 0
           }
@@ -1276,7 +1276,7 @@
               "pending"
             ],
             "matriarch": "done",
-            "rucheVivante": 998
+            "rucheVivante": 996
           }
         },
         "ouverts/menacee": {
@@ -1328,7 +1328,7 @@
               "pending"
             ],
             "matriarch": "done",
-            "rucheVivante": 999
+            "rucheVivante": 996
           }
         },
         "fermes/intacte": {
@@ -1380,7 +1380,7 @@
               "done"
             ],
             "matriarch": "done",
-            "rucheVivante": 998
+            "rucheVivante": 996
           }
         },
         "fermes/menacee": {
@@ -1432,7 +1432,7 @@
               "done"
             ],
             "matriarch": "done",
-            "rucheVivante": 998
+            "rucheVivante": 996
           }
         }
       }
@@ -1449,10 +1449,10 @@
           "fermes/menacee": "en_cours"
         },
         "rucheVivanteApresBoss": {
-          "ouverts/intacte": 998,
-          "ouverts/menacee": 999,
-          "fermes/intacte": 998,
-          "fermes/menacee": 998
+          "ouverts/intacte": 996,
+          "ouverts/menacee": 996,
+          "fermes/intacte": 996,
+          "fermes/menacee": 996
         }
       }
     },

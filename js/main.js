@@ -210,6 +210,8 @@ class GameApp {
     let cameraStorage = null; try { cameraStorage = globalThis.localStorage; } catch {}
     this.mouseCamera = new MouseCamera({ storage: cameraStorage });
     this.ascensionProgress = new AscensionProgress(cameraStorage);
+    // HW-DEC-112: nothing is locked; the rank Blooded marks the film hunts as legendary chronicles.
+    this.ui.legendaryChronicles = this.ascensionProgress.state.blooded; this.ui.initLevelSelect?.();
     // Account saves (HW-DEC-109): the existing Supabase accounts; progress is merged, never overwritten.
     this.cloud = new CloudSaves({ storage: cameraStorage });
     const cloudStatus = text => { const node = document.getElementById('cloud-status'); if (node) node.textContent = text;
@@ -5411,7 +5413,7 @@ class GameApp {
   endGame(isVictory) {
     if (!this.isPlaying) return;
     if (this.missionMode === 'ascension_rite' && isVictory && this.ascensionProgress.completeRite() && (this.syncAscensionToCloud?.(), true))
-      this.ui.showAnnouncement(`LA MARQUE EST À TOI. ${this.ascensionProgress.triad().join(' et ')} et toi êtes Blooded : le canon d'épaule est désormais le tien.`);
+    { this.ui.showAnnouncement(`LA MARQUE EST À TOI. ${this.ascensionProgress.triad().join(' et ')} et toi êtes Blooded : le canon d'épaule est désormais le tien.`); this.ui.legendaryChronicles = true; this.ui.initLevelSelect?.(); }
     if (this.missionMode === 'ascension' && isVictory) {
       const world = ascensionWorld(this.ascensionWorldId), reward = this.ascensionProgress.complete(this.ascensionWorldId);
       this.syncAscensionToCloud?.();

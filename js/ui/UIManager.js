@@ -309,6 +309,7 @@ export class UIManager {
         <h3>${lvl.name}</h3>
         <p>${lvl.desc ?? lvl.description}</p>
         ${lvl.battlefield ? '<span class="level-layout-summary">6 zones reliées · Passages à débloquer</span>' : ''}
+        ${this.legendaryChronicles && lvl.sourceWork ? '<span class="level-layout-summary">Chronique légendaire — vous êtes Blooded</span>' : ''}
       `;
 
       card.addEventListener('click', () => {

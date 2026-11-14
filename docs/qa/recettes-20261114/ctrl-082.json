@@ -8,7 +8,7 @@
     0,
     1114
   ],
-  "commit": "64c0cba56f325663097468b011a6dee02c6d314b",
+  "commit": "f709212c120cf8a365b883fa2d47f002b5f4e1bb",
   "date": "2026-11-14",
   "commande": "node --test tests/recette-ctrl-082.test.js",
   "niveau": "runtime mission (createOperationScene → BattleSimulation → BattleActorBridge → ColonialMarinesManager/SyntheticsManager réels, sans rendu WebGL)",
@@ -710,7 +710,7 @@
       "t": 12,
       "event": "joueur_sur_front",
       "frontId": "front_b",
-      "acteursDetailles": 29
+      "acteursDetailles": 32
     },
     {
       "t": 18,
@@ -779,7 +779,7 @@
       "t": 8,
       "event": "joueur_sur_front",
       "frontId": "front_d",
-      "acteursDetailles": 26
+      "acteursDetailles": 27
     }
   ],
   "clauses": [
@@ -841,9 +841,9 @@
       "attendu": "Les places GRP-60 détaillées sont rendues avec leur rôle (arme ou visuel spécialiste), pas en Marine fusilier générique.",
       "verdict": "prouvé",
       "details": {
-        "human_force|human|marine|marines|marine": 9,
-        "human_force|human|smartgunner|marines|smartgunner": 1,
-        "human_force|human|flametrooper|marines|flametrooper": 1,
+        "human_force|human|marine|marines|marine": 10,
+        "human_force|human|smartgunner|marines|smartgunner": 2,
+        "human_force|human|flametrooper|marines|flametrooper": 2,
         "human_force|synthetic|synthetic|synthetics|synthetic": 2
       }
     },
@@ -909,7 +909,7 @@
       "verdict": "prouvé",
       "details": {
         "placesRechargees": 192,
-        "sniperRounds": 4
+        "sniperRounds": 3
       }
     },
     {

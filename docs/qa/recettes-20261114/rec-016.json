@@ -3,8 +3,10 @@
  "titre": "Sauvegarde d'une guerre répartie",
  "source": "docs/audits/2026-10-26/Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.xlsx#Validation!REC-016",
  "dateExecution": "2026-11-14",
- "commit": "64c0cba56f325663097468b011a6dee02c6d314b",
- "sourcesJsNonCommitees": [],
+ "commit": "f709212c120cf8a365b883fa2d47f002b5f4e1bb",
+ "sourcesJsNonCommitees": [
+  " M js/battlefield/BattleSimulation.js"
+ ],
  "graine": {
   "operation": "AFF-27",
   "mapSeed": 0,
@@ -18,7 +20,7 @@
   "sauvegarde": {
    "cle": "yautja-operation-checkpoint-v1",
    "ecrite": true,
-   "octets": 742883,
+   "octets": 742237,
    "t": 27.5
   },
   "script": [
@@ -70,7 +72,7 @@
       "frontId": "front_d",
       "issuer": "player1",
       "issuedAt": 4,
-      "sequence": 419
+      "sequence": 352
      },
      "path": [
       {
@@ -118,16 +120,16 @@
   ],
   "degatsParFront": {
    "a10s": {
-    "front_a": 6544.726499999996,
-    "front_b": 6386.663499999996,
-    "front_c": 3028.245999999995,
-    "front_d": 6764.253499999996
+    "front_a": 7234.632499999996,
+    "front_b": 6720.680749999998,
+    "front_c": 3520.1694999999945,
+    "front_d": 6733.705499999997
    },
    "aLaSauvegarde": {
-    "front_a": 6685.126499999988,
-    "front_b": 8599.441499999984,
-    "front_c": 3200.645999999985,
-    "front_d": 11227.388499999988
+    "front_a": 7361.032499999989,
+    "front_b": 8841.002999999988,
+    "front_c": 3692.5694999999846,
+    "front_d": 12264.21049999999
    }
   },
   "aLaSauvegarde": {
@@ -144,24 +146,24 @@
     },
     "hive": {
      "allocated": 736,
-     "active": 16,
-     "distant": 469,
+     "active": 15,
+     "distant": 468,
      "reserve": 240,
-     "dead": 11,
+     "dead": 13,
      "evacuated": 0,
      "captured": 0
     },
     "human_force": {
      "allocated": 192,
-     "active": 7,
-     "distant": 8,
+     "active": 8,
+     "distant": 15,
      "reserve": 64,
-     "dead": 113,
+     "dead": 105,
      "evacuated": 0,
      "captured": 0
     }
    },
-   "deaths": 141,
+   "deaths": 135,
    "orders": {
     "AFF-27:hive:0": "attack>front_b@front_a via route_0",
     "AFF-27:hive:1": "defend>front_a@front_a",
@@ -496,7 +498,7 @@
     ]
    ],
    "pendingArrivals": [],
-   "eventSequence": 676,
+   "eventSequence": 662,
    "criticalLosses": [],
    "objectifs": [
     [
@@ -563,23 +565,23 @@
     "hive": {
      "allocated": 736,
      "active": 0,
-     "distant": 485,
+     "distant": 483,
      "reserve": 240,
-     "dead": 11,
+     "dead": 13,
      "evacuated": 0,
      "captured": 0
     },
     "human_force": {
      "allocated": 192,
      "active": 0,
-     "distant": 15,
+     "distant": 23,
      "reserve": 64,
-     "dead": 113,
+     "dead": 105,
      "evacuated": 0,
      "captured": 0
     }
    },
-   "deaths": 141,
+   "deaths": 135,
    "orders": {
     "AFF-27:hive:0": "attack>front_b@front_a via route_0",
     "AFF-27:hive:1": "defend>front_a@front_a",
@@ -914,7 +916,7 @@
     ]
    ],
    "pendingArrivals": [],
-   "eventSequence": 676,
+   "eventSequence": 662,
    "criticalLosses": [],
    "objectifs": [
     [
@@ -1014,7 +1016,7 @@
      "AFF-27:human_force:16": "defend>front_d@front_d",
      "AFF-27:player_clan:17": "defend>front_d@front_d",
      "AFF-27:hive:18": "attack>front_b@front_b",
-     "AFF-27:hive:19": "defend>front_a@front_a",
+     "AFF-27:hive:19": "attack>front_b@front_a via route_0",
      "AFF-27:hive:20": "defend>front_a@front_a",
      "AFF-27:hive:21": "defend>front_a@front_a",
      "AFF-27:hive:22": "defend>front_a@front_a",
@@ -1323,7 +1325,7 @@
      ]
     ],
     "pendingArrivals": [],
-    "eventSequence": 788,
+    "eventSequence": 791,
     "criticalLosses": [
      "front_d"
     ],
@@ -1365,7 +1367,7 @@
       null
      ]
     ],
-    "pertesDix1eresSecondes": 4,
+    "pertesDix1eresSecondes": 10,
     "releve": [
      {
       "t": 57.5,
@@ -1382,18 +1384,18 @@
        "hive": {
         "allocated": 736,
         "active": 0,
-        "distant": 484,
+        "distant": 481,
         "reserve": 240,
-        "dead": 12,
+        "dead": 15,
         "evacuated": 0,
         "captured": 0
        },
        "human_force": {
         "allocated": 192,
         "active": 0,
-        "distant": 15,
+        "distant": 16,
         "reserve": 64,
-        "dead": 113,
+        "dead": 112,
         "evacuated": 0,
         "captured": 0
        }
@@ -1414,18 +1416,18 @@
        "hive": {
         "allocated": 736,
         "active": 0,
-        "distant": 484,
+        "distant": 481,
         "reserve": 240,
-        "dead": 12,
+        "dead": 15,
         "evacuated": 0,
         "captured": 0
        },
        "human_force": {
         "allocated": 192,
         "active": 0,
-        "distant": 15,
+        "distant": 16,
         "reserve": 64,
-        "dead": 113,
+        "dead": 112,
         "evacuated": 0,
         "captured": 0
        }
@@ -1446,18 +1448,18 @@
        "hive": {
         "allocated": 736,
         "active": 0,
-        "distant": 484,
+        "distant": 481,
         "reserve": 240,
-        "dead": 12,
+        "dead": 15,
         "evacuated": 0,
         "captured": 0
        },
        "human_force": {
         "allocated": 192,
         "active": 0,
-        "distant": 15,
+        "distant": 16,
         "reserve": 64,
-        "dead": 113,
+        "dead": 112,
         "evacuated": 0,
         "captured": 0
        }
@@ -1478,18 +1480,18 @@
        "hive": {
         "allocated": 736,
         "active": 0,
-        "distant": 484,
+        "distant": 481,
         "reserve": 240,
-        "dead": 12,
+        "dead": 15,
         "evacuated": 0,
         "captured": 0
        },
        "human_force": {
         "allocated": 192,
         "active": 0,
-        "distant": 15,
+        "distant": 16,
         "reserve": 64,
-        "dead": 113,
+        "dead": 112,
         "evacuated": 0,
         "captured": 0
        }
@@ -1510,18 +1512,18 @@
        "hive": {
         "allocated": 736,
         "active": 0,
-        "distant": 484,
+        "distant": 479,
         "reserve": 240,
-        "dead": 12,
+        "dead": 17,
         "evacuated": 0,
         "captured": 0
        },
        "human_force": {
         "allocated": 192,
         "active": 0,
-        "distant": 15,
+        "distant": 16,
         "reserve": 64,
-        "dead": 113,
+        "dead": 112,
         "evacuated": 0,
         "captured": 0
        }
@@ -1542,18 +1544,18 @@
        "hive": {
         "allocated": 736,
         "active": 0,
-        "distant": 484,
+        "distant": 479,
         "reserve": 240,
-        "dead": 12,
+        "dead": 17,
         "evacuated": 0,
         "captured": 0
        },
        "human_force": {
         "allocated": 192,
         "active": 0,
-        "distant": 8,
+        "distant": 12,
         "reserve": 64,
-        "dead": 120,
+        "dead": 116,
         "evacuated": 0,
         "captured": 0
        }
@@ -1574,9 +1576,9 @@
        "hive": {
         "allocated": 736,
         "active": 0,
-        "distant": 482,
+        "distant": 478,
         "reserve": 240,
-        "dead": 14,
+        "dead": 18,
         "evacuated": 0,
         "captured": 0
        },
@@ -1742,7 +1744,7 @@
      "AFF-27:human_force:16": "defend>front_d@front_d",
      "AFF-27:player_clan:17": "defend>front_d@front_d",
      "AFF-27:hive:18": "attack>front_b@front_b",
-     "AFF-27:hive:19": "defend>front_a@front_a",
+     "AFF-27:hive:19": "attack>front_b@front_a via route_0",
      "AFF-27:hive:20": "defend>front_a@front_a",
      "AFF-27:hive:21": "defend>front_a@front_a",
      "AFF-27:hive:22": "defend>front_a@front_a",
@@ -2051,7 +2053,7 @@
      ]
     ],
     "pendingArrivals": [],
-    "eventSequence": 792,
+    "eventSequence": 795,
     "criticalLosses": [
      "front_d"
     ],
@@ -2093,7 +2095,7 @@
       null
      ]
     ],
-    "pertesDix1eresSecondes": 4,
+    "pertesDix1eresSecondes": 10,
     "releve": [
      {
       "t": 57.5,
@@ -2110,18 +2112,18 @@
        "hive": {
         "allocated": 736,
         "active": 0,
-        "distant": 484,
+        "distant": 481,
         "reserve": 240,
-        "dead": 12,
+        "dead": 15,
         "evacuated": 0,
         "captured": 0
        },
        "human_force": {
         "allocated": 192,
         "active": 0,
-        "distant": 15,
+        "distant": 16,
         "reserve": 64,
-        "dead": 113,
+        "dead": 112,
         "evacuated": 0,
         "captured": 0
        }
@@ -2142,18 +2144,18 @@
        "hive": {
         "allocated": 736,
         "active": 0,
-        "distant": 484,
+        "distant": 481,
         "reserve": 240,
-        "dead": 12,
+        "dead": 15,
         "evacuated": 0,
         "captured": 0
        },
        "human_force": {
         "allocated": 192,
         "active": 0,
-        "distant": 15,
+        "distant": 16,
         "reserve": 64,
-        "dead": 113,
+        "dead": 112,
         "evacuated": 0,
         "captured": 0
        }
@@ -2174,18 +2176,18 @@
        "hive": {
         "allocated": 736,
         "active": 0,
-        "distant": 484,
+        "distant": 481,
         "reserve": 240,
-        "dead": 12,
+        "dead": 15,
         "evacuated": 0,
         "captured": 0
        },
        "human_force": {
         "allocated": 192,
         "active": 0,
-        "distant": 15,
+        "distant": 16,
         "reserve": 64,
-        "dead": 113,
+        "dead": 112,
         "evacuated": 0,
         "captured": 0
        }
@@ -2206,18 +2208,18 @@
        "hive": {
         "allocated": 736,
         "active": 0,
-        "distant": 484,
+        "distant": 481,
         "reserve": 240,
-        "dead": 12,
+        "dead": 15,
         "evacuated": 0,
         "captured": 0
        },
        "human_force": {
         "allocated": 192,
         "active": 0,
-        "distant": 15,
+        "distant": 16,
         "reserve": 64,
-        "dead": 113,
+        "dead": 112,
         "evacuated": 0,
         "captured": 0
        }
@@ -2238,18 +2240,18 @@
        "hive": {
         "allocated": 736,
         "active": 0,
-        "distant": 484,
+        "distant": 479,
         "reserve": 240,
-        "dead": 12,
+        "dead": 17,
         "evacuated": 0,
         "captured": 0
        },
        "human_force": {
         "allocated": 192,
         "active": 0,
-        "distant": 15,
+        "distant": 16,
         "reserve": 64,
-        "dead": 113,
+        "dead": 112,
         "evacuated": 0,
         "captured": 0
        }
@@ -2270,18 +2272,18 @@
        "hive": {
         "allocated": 736,
         "active": 0,
-        "distant": 484,
+        "distant": 479,
         "reserve": 240,
-        "dead": 12,
+        "dead": 17,
         "evacuated": 0,
         "captured": 0
        },
        "human_force": {
         "allocated": 192,
         "active": 0,
-        "distant": 8,
+        "distant": 12,
         "reserve": 64,
-        "dead": 120,
+        "dead": 116,
         "evacuated": 0,
         "captured": 0
        }
@@ -2302,9 +2304,9 @@
        "hive": {
         "allocated": 736,
         "active": 0,
-        "distant": 482,
+        "distant": 478,
         "reserve": 240,
-        "dead": 14,
+        "dead": 18,
         "evacuated": 0,
         "captured": 0
        },
@@ -2421,8 +2423,8 @@
   "ecartsContinuiteVsRechargement": [
    {
     "path": "eventSequence",
-    "continuite": 788,
-    "rechargement": 792
+    "continuite": 791,
+    "rechargement": 795
    }
   ],
   "nombreEcarts": 1
@@ -2439,23 +2441,23 @@
    "observationHorodatage": null,
    "ecartCompteurEvenements": {
     "path": "eventSequence",
-    "continuite": 788,
-    "rechargement": 792
+    "continuite": 791,
+    "rechargement": 795
    },
    "explicationEcartCompteur": "Seuls les événements de niveau de détail diffèrent : la partie rechargée rematérialise ses groupes (aucun acteur rendu ne survit à un rechargement).",
    "evenementsDetail": {
     "continuite": 4,
     "rechargement": 8
    },
-   "evenementsStrategiquesCompares": 108,
+   "evenementsStrategiquesCompares": 125,
    "ecartPertesParFaction": {
     "player_clan": 0,
     "hive": 0,
     "human_force": 0
    },
    "pertesDix1eresSecondes": {
-    "continuite": 4,
-    "rechargement": 4
+    "continuite": 10,
+    "rechargement": 10
    }
   },
   {
@@ -2482,14 +2484,14 @@
    "texte": "Les événements déjà résolus ne se rejouent pas ; la chronologie continue",
    "verdict": "prouvé",
    "rejoues": [],
-   "sequenceSauvegardee": 676,
+   "sequenceSauvegardee": 662,
    "premierEvenementApres": {
-    "id": 677,
+    "id": 663,
     "time": 27.75,
     "type": "group_materialized",
     "priority": 1,
     "groupId": "AFF-27:human_force:4",
-    "count": 5
+    "count": 6
    },
    "tacheResolue": {
     "id": "hive_route",
@@ -2581,19 +2583,19 @@
      },
      "hive": {
       "allocated": 736,
-      "active": 16,
-      "distant": 469,
+      "active": 15,
+      "distant": 468,
       "reserve": 240,
-      "dead": 11,
+      "dead": 13,
       "evacuated": 0,
       "captured": 0
      },
      "human_force": {
       "allocated": 192,
-      "active": 7,
-      "distant": 8,
+      "active": 8,
+      "distant": 15,
       "reserve": 64,
-      "dead": 113,
+      "dead": 105,
       "evacuated": 0,
       "captured": 0
      }

@@ -57,6 +57,7 @@ const speciesOf = value => value === 'xeno' ? 'xenomorph' : value;
  * despawnGroup(group, units) may return [{id,hp,position}] to preserve live poses.
  */
 const RESERVE_WAVE_SECONDS = 45;
+const REMOTE_DEATHS_PER_FRONT_TICK = 1;
 const BROOD_CHAMBER_RADIUS = 15;
 
 function focusedRemoteTarget(targets, pending) {
@@ -966,8 +967,14 @@ export class BattleSimulation {
         }
       }
     }
-    for (const [unitId, hit] of pending) {
-      const unit = this.units.get(unitId);
+    // Readable losses (HW-DEC-113): at most REMOTE_DEATHS_PER_FRONT_TICK deaths per front and faction in
+    // one strategic tick; a further lethal hit leaves its target at 1 HP. Nobody is created or healed.
+    const remoteDeaths = new Map();
+    for (const [unitId, hit] of [...pending].sort((a, b) => a[0].localeCompare(b[0]))) {
+      const unit = this.units.get(unitId), deathKey = `${this.groups.get(unit.groupId)?.frontId}:${unit.factionId}`;
+      if (unit.hp - hit.damage <= 0 && (remoteDeaths.get(deathKey) ?? 0) >= REMOTE_DEATHS_PER_FRONT_TICK) hit.damage = Math.max(0, unit.hp - 1);
+      else if (unit.hp - hit.damage <= 0) remoteDeaths.set(deathKey, (remoteDeaths.get(deathKey) ?? 0) + 1);
+      if (hit.damage <= 0) continue;
       const actual = this.absorbExosuitDamage(unitId, hit.damage);
       const special=this.damageDistantRavager(unitId,actual,{
         damageType:hit.damageType??'kinetic',killerFaction:hit.killerFaction});

@@ -136,6 +136,9 @@ Les mêmes tables sont dans `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 | HW-DEC-109 | Progression de l'Ascension | Navigateur, puis compte Supabase | Système de sauvegarde v70 d'abord ; envoi au compte avec les autres sauvegardes |
 | HW-DEC-110 | Le rite de passage | Les six secteurs de la pyramide, contre des xénomorphes | Sans Reine ; la marque vient en abattant le Prétorien gardien du dernier secteur ; le premier xénomorphe tué par le joueur est annoncé comme son premier sang ; aucune arme à énergie |
 | HW-DEC-111 | La triade du rite | Au choix du joueur, sur la passerelle | Deux compagnons parmi Harek, Yena et Tov ; la passerelle s'ouvre quand les huit mondes sont chassés |
+| HW-DEC-112 | Chroniques légendaires | Rien n'est verrouillé | Les modes v70 restent ouverts ; le rang Blooded marque les chasses de films comme chroniques légendaires |
+| HW-DEC-113 | Tir distant | Une mort au plus par front, par camp et par pas de simulation | Au-delà, la cible reste à 1 PV : rien n'est créé ni soigné ; dans AFF-27, 15 morts humaines dans la première seconde au lieu de 22 |
+| HW-DEC-114 | PR n° 9 | Mise à jour de son titre et de sa description | Elle porte tout le travail de la branche vers master |
 | HW-DEC-12 | Alliés Yautja, armes humaines, véhicules et soutiens, coopération locale | Tous conservés | Le champ de bataille est une guerre ; ces systèmes sont à réparer, pas à couper |
 
 ## 02_Chasseurs — Chasseurs jouables (js/data/charactersData.js) ; Musou et kits codés le 14 nov. (js/systems/HunterKit.js, executeHunterMusou)

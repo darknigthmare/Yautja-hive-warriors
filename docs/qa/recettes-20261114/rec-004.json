@@ -3,8 +3,10 @@
  "titre": "Conservation des effectifs et catégories d'entités",
  "source": "docs/audits/2026-10-26/Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.xlsx#Validation!REC-004",
  "dateExecution": "2026-11-14",
- "commit": "64c0cba56f325663097468b011a6dee02c6d314b",
- "sourcesJsNonCommitees": [],
+ "commit": "f709212c120cf8a365b883fa2d47f002b5f4e1bb",
+ "sourcesJsNonCommitees": [
+  " M js/battlefield/BattleSimulation.js"
+ ],
  "graine": {
   "mapSeed": 0,
   "pasSimulation": 0.25,
@@ -157,9 +159,9 @@
     "hive": {
      "allocated": 1000,
      "active": 24,
-     "distant": 726,
+     "distant": 724,
      "reserve": 248,
-     "dead": 2,
+     "dead": 4,
      "evacuated": 0,
      "captured": 0,
      "wounded": 0,
@@ -167,10 +169,10 @@
     },
     "player_clan": {
      "allocated": 48,
-     "active": 2,
+     "active": 5,
      "distant": 0,
      "reserve": 0,
-     "dead": 44,
+     "dead": 41,
      "evacuated": 2,
      "captured": 0,
      "wounded": 0,
@@ -185,17 +187,17 @@
      "entreesExterieures": 0,
      "arriveesDepuisReserveEnregistrees": 112,
      "etatsFinaux": {
-      "present": 750,
+      "present": 748,
       "reserve": 248,
       "blesses": 0,
       "aBordAPC": 0
      },
-     "pertes": 2,
+     "pertes": 4,
      "sorties": {
       "evacues": 0,
       "captures": 0
      },
-     "equation": "1000 + 0 = 998 + 2 + 0",
+     "equation": "1000 + 0 = 996 + 4 + 0",
      "equilibre": true
     },
     "player_clan": {
@@ -205,17 +207,17 @@
      "entreesExterieures": 0,
      "arriveesDepuisReserveEnregistrees": 8,
      "etatsFinaux": {
-      "present": 2,
+      "present": 5,
       "reserve": 0,
       "blesses": 0,
       "aBordAPC": 0
      },
-     "pertes": 44,
+     "pertes": 41,
      "sorties": {
       "evacues": 2,
       "captures": 0
      },
-     "equation": "48 + 0 = 2 + 44 + 2",
+     "equation": "48 + 0 = 5 + 41 + 2",
      "equilibre": true
     }
    },
@@ -388,9 +390,9 @@
       "hive": {
        "allocated": 1000,
        "active": 24,
-       "distant": 654,
+       "distant": 653,
        "reserve": 320,
-       "dead": 2,
+       "dead": 3,
        "evacuated": 0,
        "captured": 0,
        "wounded": 0,
@@ -399,9 +401,9 @@
       "player_clan": {
        "allocated": 48,
        "active": 2,
-       "distant": 8,
+       "distant": 11,
        "reserve": 0,
-       "dead": 36,
+       "dead": 33,
        "evacuated": 2,
        "captured": 0,
        "wounded": 0,
@@ -415,9 +417,9 @@
       "hive": {
        "allocated": 1000,
        "active": 24,
-       "distant": 662,
+       "distant": 660,
        "reserve": 312,
-       "dead": 2,
+       "dead": 4,
        "evacuated": 0,
        "captured": 0,
        "wounded": 0,
@@ -442,9 +444,9 @@
       "hive": {
        "allocated": 1000,
        "active": 24,
-       "distant": 662,
+       "distant": 660,
        "reserve": 312,
-       "dead": 2,
+       "dead": 4,
        "evacuated": 0,
        "captured": 0,
        "wounded": 0,
@@ -469,9 +471,9 @@
       "hive": {
        "allocated": 1000,
        "active": 24,
-       "distant": 670,
+       "distant": 668,
        "reserve": 304,
-       "dead": 2,
+       "dead": 4,
        "evacuated": 0,
        "captured": 0,
        "wounded": 0,
@@ -479,10 +481,10 @@
       },
       "player_clan": {
        "allocated": 48,
-       "active": 2,
+       "active": 3,
        "distant": 6,
        "reserve": 0,
-       "dead": 38,
+       "dead": 37,
        "evacuated": 2,
        "captured": 0,
        "wounded": 0,
@@ -496,9 +498,9 @@
       "hive": {
        "allocated": 1000,
        "active": 24,
-       "distant": 678,
+       "distant": 676,
        "reserve": 296,
-       "dead": 2,
+       "dead": 4,
        "evacuated": 0,
        "captured": 0,
        "wounded": 0,
@@ -506,10 +508,10 @@
       },
       "player_clan": {
        "allocated": 48,
-       "active": 2,
+       "active": 5,
        "distant": 0,
        "reserve": 0,
-       "dead": 44,
+       "dead": 41,
        "evacuated": 2,
        "captured": 0,
        "wounded": 0,
@@ -523,9 +525,9 @@
       "hive": {
        "allocated": 1000,
        "active": 24,
-       "distant": 678,
+       "distant": 676,
        "reserve": 296,
-       "dead": 2,
+       "dead": 4,
        "evacuated": 0,
        "captured": 0,
        "wounded": 0,
@@ -533,10 +535,10 @@
       },
       "player_clan": {
        "allocated": 48,
-       "active": 2,
+       "active": 5,
        "distant": 0,
        "reserve": 0,
-       "dead": 44,
+       "dead": 41,
        "evacuated": 2,
        "captured": 0,
        "wounded": 0,
@@ -550,9 +552,9 @@
       "hive": {
        "allocated": 1000,
        "active": 24,
-       "distant": 686,
+       "distant": 684,
        "reserve": 288,
-       "dead": 2,
+       "dead": 4,
        "evacuated": 0,
        "captured": 0,
        "wounded": 0,
@@ -560,10 +562,10 @@
       },
       "player_clan": {
        "allocated": 48,
-       "active": 2,
+       "active": 5,
        "distant": 0,
        "reserve": 0,
-       "dead": 44,
+       "dead": 41,
        "evacuated": 2,
        "captured": 0,
        "wounded": 0,
@@ -577,9 +579,9 @@
       "hive": {
        "allocated": 1000,
        "active": 24,
-       "distant": 694,
+       "distant": 692,
        "reserve": 280,
-       "dead": 2,
+       "dead": 4,
        "evacuated": 0,
        "captured": 0,
        "wounded": 0,
@@ -587,10 +589,10 @@
       },
       "player_clan": {
        "allocated": 48,
-       "active": 2,
+       "active": 5,
        "distant": 0,
        "reserve": 0,
-       "dead": 44,
+       "dead": 41,
        "evacuated": 2,
        "captured": 0,
        "wounded": 0,
@@ -604,9 +606,9 @@
       "hive": {
        "allocated": 1000,
        "active": 24,
-       "distant": 694,
+       "distant": 692,
        "reserve": 280,
-       "dead": 2,
+       "dead": 4,
        "evacuated": 0,
        "captured": 0,
        "wounded": 0,
@@ -614,10 +616,10 @@
       },
       "player_clan": {
        "allocated": 48,
-       "active": 2,
+       "active": 5,
        "distant": 0,
        "reserve": 0,
-       "dead": 44,
+       "dead": 41,
        "evacuated": 2,
        "captured": 0,
        "wounded": 0,
@@ -631,9 +633,9 @@
       "hive": {
        "allocated": 1000,
        "active": 24,
-       "distant": 702,
+       "distant": 700,
        "reserve": 272,
-       "dead": 2,
+       "dead": 4,
        "evacuated": 0,
        "captured": 0,
        "wounded": 0,
@@ -641,10 +643,10 @@
       },
       "player_clan": {
        "allocated": 48,
-       "active": 2,
+       "active": 5,
        "distant": 0,
        "reserve": 0,
-       "dead": 44,
+       "dead": 41,
        "evacuated": 2,
        "captured": 0,
        "wounded": 0,
@@ -658,9 +660,9 @@
       "hive": {
        "allocated": 1000,
        "active": 24,
-       "distant": 710,
+       "distant": 708,
        "reserve": 264,
-       "dead": 2,
+       "dead": 4,
        "evacuated": 0,
        "captured": 0,
        "wounded": 0,
@@ -668,10 +670,10 @@
       },
       "player_clan": {
        "allocated": 48,
-       "active": 2,
+       "active": 5,
        "distant": 0,
        "reserve": 0,
-       "dead": 44,
+       "dead": 41,
        "evacuated": 2,
        "captured": 0,
        "wounded": 0,
@@ -685,9 +687,9 @@
       "hive": {
        "allocated": 1000,
        "active": 24,
-       "distant": 710,
+       "distant": 708,
        "reserve": 264,
-       "dead": 2,
+       "dead": 4,
        "evacuated": 0,
        "captured": 0,
        "wounded": 0,
@@ -695,10 +697,10 @@
       },
       "player_clan": {
        "allocated": 48,
-       "active": 2,
+       "active": 5,
        "distant": 0,
        "reserve": 0,
-       "dead": 44,
+       "dead": 41,
        "evacuated": 2,
        "captured": 0,
        "wounded": 0,
@@ -712,9 +714,9 @@
       "hive": {
        "allocated": 1000,
        "active": 24,
-       "distant": 718,
+       "distant": 716,
        "reserve": 256,
-       "dead": 2,
+       "dead": 4,
        "evacuated": 0,
        "captured": 0,
        "wounded": 0,
@@ -722,10 +724,10 @@
       },
       "player_clan": {
        "allocated": 48,
-       "active": 2,
+       "active": 5,
        "distant": 0,
        "reserve": 0,
-       "dead": 44,
+       "dead": 41,
        "evacuated": 2,
        "captured": 0,
        "wounded": 0,
@@ -739,9 +741,9 @@
       "hive": {
        "allocated": 1000,
        "active": 24,
-       "distant": 726,
+       "distant": 724,
        "reserve": 248,
-       "dead": 2,
+       "dead": 4,
        "evacuated": 0,
        "captured": 0,
        "wounded": 0,
@@ -749,10 +751,10 @@
       },
       "player_clan": {
        "allocated": 48,
-       "active": 2,
+       "active": 5,
        "distant": 0,
        "reserve": 0,
-       "dead": 44,
+       "dead": 41,
        "evacuated": 2,
        "captured": 0,
        "wounded": 0,
@@ -780,9 +782,9 @@
       "hive",
       "front_a",
       0,
-      7,
+      5,
       0,
-      1,
+      3,
       0,
       0,
       0
@@ -2519,10 +2521,10 @@
       "AFF-18:player_clan:145",
       "player_clan",
       "front_b",
+      1,
       0,
       0,
-      0,
-      2,
+      1,
       0,
       0,
       0
@@ -2531,10 +2533,10 @@
       "AFF-18:player_clan:146",
       "player_clan",
       "front_b",
+      1,
       0,
       0,
-      0,
-      2,
+      1,
       0,
       0,
       0
@@ -2543,10 +2545,10 @@
       "AFF-18:player_clan:147",
       "player_clan",
       "front_b",
+      1,
       0,
       0,
-      0,
-      2,
+      1,
       0,
       0,
       0
@@ -2574,7 +2576,7 @@
      "avant",
      "apres"
     ],
-    "total": 251,
+    "total": 260,
     "lignes": [
      [
       0.25,
@@ -2650,14 +2652,6 @@
      ],
      [
       0.25,
-      "AFF-18:player_clan:7:1",
-      "player_clan",
-      "AFF-18:player_clan:7",
-      "distant",
-      "dead"
-     ],
-     [
-      0.25,
       "AFF-18:player_clan:16:1",
       "player_clan",
       "AFF-18:player_clan:16",
@@ -2669,14 +2663,6 @@
       "AFF-18:player_clan:22:1",
       "player_clan",
       "AFF-18:player_clan:22",
-      "distant",
-      "dead"
-     ],
-     [
-      0.25,
-      "AFF-18:player_clan:23:1",
-      "player_clan",
-      "AFF-18:player_clan:23",
       "distant",
       "dead"
      ],
@@ -2874,9 +2860,17 @@
      ],
      [
       0.5,
-      "AFF-18:player_clan:8:1",
+      "AFF-18:player_clan:7:1",
       "player_clan",
-      "AFF-18:player_clan:8",
+      "AFF-18:player_clan:7",
+      "distant",
+      "dead"
+     ],
+     [
+      0.5,
+      "AFF-18:player_clan:23:1",
+      "player_clan",
+      "AFF-18:player_clan:23",
       "distant",
       "dead"
      ],
@@ -2889,7 +2883,15 @@
       "dead"
      ],
      [
-      0.5,
+      0.75,
+      "AFF-18:player_clan:8:1",
+      "player_clan",
+      "AFF-18:player_clan:8",
+      "distant",
+      "dead"
+     ],
+     [
+      0.75,
       "AFF-18:player_clan:73:1",
       "player_clan",
       "AFF-18:player_clan:73",
@@ -2897,42 +2899,10 @@
       "dead"
      ],
      [
-      0.5,
+      0.75,
       "AFF-18:player_clan:96:1",
       "player_clan",
       "AFF-18:player_clan:96",
-      "distant",
-      "dead"
-     ],
-     [
-      0.5,
-      "AFF-18:player_clan:97:1",
-      "player_clan",
-      "AFF-18:player_clan:97",
-      "distant",
-      "dead"
-     ],
-     [
-      0.75,
-      "AFF-18:player_clan:9:1",
-      "player_clan",
-      "AFF-18:player_clan:9",
-      "distant",
-      "dead"
-     ],
-     [
-      0.75,
-      "AFF-18:player_clan:74:1",
-      "player_clan",
-      "AFF-18:player_clan:74",
-      "distant",
-      "dead"
-     ],
-     [
-      0.75,
-      "AFF-18:player_clan:98:1",
-      "player_clan",
-      "AFF-18:player_clan:98",
       "distant",
       "dead"
      ],
@@ -2946,17 +2916,25 @@
      ],
      [
       1,
-      "AFF-18:player_clan:75:1",
+      "AFF-18:player_clan:9:1",
       "player_clan",
-      "AFF-18:player_clan:75",
+      "AFF-18:player_clan:9",
       "distant",
       "dead"
      ],
      [
       1,
-      "AFF-18:player_clan:99:1",
+      "AFF-18:player_clan:74:1",
       "player_clan",
-      "AFF-18:player_clan:99",
+      "AFF-18:player_clan:74",
+      "distant",
+      "dead"
+     ],
+     [
+      1,
+      "AFF-18:player_clan:97:1",
+      "player_clan",
+      "AFF-18:player_clan:97",
       "distant",
       "dead"
      ],
@@ -2973,6 +2951,14 @@
       "AFF-18:player_clan:16:0",
       "player_clan",
       "AFF-18:player_clan:16",
+      "distant",
+      "dead"
+     ],
+     [
+      1.25,
+      "AFF-18:player_clan:98:1",
+      "player_clan",
+      "AFF-18:player_clan:98",
       "distant",
       "dead"
      ],
@@ -2994,9 +2980,9 @@
      ],
      [
       1.5,
-      "AFF-18:player_clan:72:0",
+      "AFF-18:player_clan:75:1",
       "player_clan",
-      "AFF-18:player_clan:72",
+      "AFF-18:player_clan:75",
       "distant",
       "dead"
      ],
@@ -3041,6 +3027,14 @@
       "evacuated"
      ],
      [
+      1.75,
+      "AFF-18:player_clan:72:0",
+      "player_clan",
+      "AFF-18:player_clan:72",
+      "distant",
+      "dead"
+     ],
+     [
       2,
       "AFF-18:player_clan:73:0",
       "player_clan",
@@ -3050,9 +3044,9 @@
      ],
      [
       2,
-      "AFF-18:player_clan:96:0",
+      "AFF-18:player_clan:99:1",
       "player_clan",
-      "AFF-18:player_clan:96",
+      "AFF-18:player_clan:99",
       "distant",
       "dead"
      ],
@@ -3066,9 +3060,9 @@
      ],
      [
       2.25,
-      "AFF-18:player_clan:97:0",
+      "AFF-18:player_clan:96:0",
       "player_clan",
-      "AFF-18:player_clan:97",
+      "AFF-18:player_clan:96",
       "distant",
       "dead"
      ],
@@ -3082,6 +3076,14 @@
      ],
      [
       2.5,
+      "AFF-18:player_clan:97:0",
+      "player_clan",
+      "AFF-18:player_clan:97",
+      "distant",
+      "dead"
+     ],
+     [
+      2.75,
       "AFF-18:player_clan:98:0",
       "player_clan",
       "AFF-18:player_clan:98",
@@ -3089,7 +3091,7 @@
       "dead"
      ],
      [
-      2.75,
+      3,
       "AFF-18:player_clan:99:0",
       "player_clan",
       "AFF-18:player_clan:99",
@@ -3550,7 +3552,7 @@
       "player_clan",
       "AFF-18:player_clan:8",
       "active",
-      "dead"
+      "distant"
      ],
      [
       200.25,
@@ -3558,7 +3560,7 @@
       "player_clan",
       "AFF-18:player_clan:9",
       "active",
-      "dead"
+      "distant"
      ],
      [
       200.25,
@@ -3718,7 +3720,7 @@
       "player_clan",
       "AFF-18:player_clan:48",
       "active",
-      "dead"
+      "distant"
      ],
      [
       200.25,
@@ -3726,7 +3728,7 @@
       "player_clan",
       "AFF-18:player_clan:50",
       "active",
-      "dead"
+      "distant"
      ],
      [
       200.25,
@@ -3734,7 +3736,7 @@
       "player_clan",
       "AFF-18:player_clan:50",
       "active",
-      "dead"
+      "distant"
      ],
      [
       200.25,
@@ -3742,7 +3744,7 @@
       "player_clan",
       "AFF-18:player_clan:51",
       "active",
-      "dead"
+      "distant"
      ],
      [
       200.25,
@@ -3750,7 +3752,7 @@
       "player_clan",
       "AFF-18:player_clan:51",
       "active",
-      "dead"
+      "distant"
      ],
      [
       200.25,
@@ -3945,6 +3947,78 @@
       "active"
      ],
      [
+      202.25,
+      "AFF-18:player_clan:48:1",
+      "player_clan",
+      "AFF-18:player_clan:48",
+      "distant",
+      "dead"
+     ],
+     [
+      204.25,
+      "AFF-18:hive:0:2",
+      "hive",
+      "AFF-18:hive:0",
+      "distant",
+      "dead"
+     ],
+     [
+      204.25,
+      "AFF-18:player_clan:50:0",
+      "player_clan",
+      "AFF-18:player_clan:50",
+      "distant",
+      "dead"
+     ],
+     [
+      206.25,
+      "AFF-18:player_clan:50:1",
+      "player_clan",
+      "AFF-18:player_clan:50",
+      "distant",
+      "dead"
+     ],
+     [
+      208.25,
+      "AFF-18:player_clan:51:0",
+      "player_clan",
+      "AFF-18:player_clan:51",
+      "distant",
+      "dead"
+     ],
+     [
+      210.25,
+      "AFF-18:hive:0:3",
+      "hive",
+      "AFF-18:hive:0",
+      "distant",
+      "dead"
+     ],
+     [
+      210.25,
+      "AFF-18:player_clan:51:1",
+      "player_clan",
+      "AFF-18:player_clan:51",
+      "distant",
+      "dead"
+     ],
+     [
+      212.25,
+      "AFF-18:player_clan:8:0",
+      "player_clan",
+      "AFF-18:player_clan:8",
+      "distant",
+      "dead"
+     ],
+     [
+      214.25,
+      "AFF-18:player_clan:9:0",
+      "player_clan",
+      "AFF-18:player_clan:9",
+      "distant",
+      "dead"
+     ],
+     [
       235,
       "AFF-18:hive:105:0",
       "hive",
@@ -4081,12 +4155,12 @@
       "dead"
      ],
      [
-      294.75,
+      298.75,
       "AFF-18:player_clan:145:1",
       "player_clan",
       "AFF-18:player_clan:145",
       "distant",
-      "dead"
+      "active"
      ],
      [
       302.75,
@@ -4097,12 +4171,12 @@
       "dead"
      ],
      [
-      302.75,
+      306.75,
       "AFF-18:player_clan:146:1",
       "player_clan",
       "AFF-18:player_clan:146",
       "distant",
-      "dead"
+      "active"
      ],
      [
       310.75,
@@ -4113,12 +4187,12 @@
       "dead"
      ],
      [
-      310.75,
+      314.75,
       "AFF-18:player_clan:147:1",
       "player_clan",
       "AFF-18:player_clan:147",
       "distant",
-      "dead"
+      "active"
      ],
      [
       318.75,
@@ -4129,7 +4203,7 @@
       "dead"
      ],
      [
-      318.75,
+      320.75,
       "AFF-18:player_clan:148:1",
       "player_clan",
       "AFF-18:player_clan:148",
@@ -5008,6 +5082,24 @@
      "spawn",
      "AFF-18:hive:100",
      8
+    ],
+    [
+     298.75,
+     "spawn",
+     "AFF-18:player_clan:145",
+     1
+    ],
+    [
+     306.75,
+     "spawn",
+     "AFF-18:player_clan:146",
+     1
+    ],
+    [
+     314.75,
+     "spawn",
+     "AFF-18:player_clan:147",
+     1
     ]
    ],
    "violations": [],
@@ -5053,10 +5145,13 @@
      "label": "embarquement M577 d’une section humaine alliée déjà allouée",
      "result": {
       "accepted": true,
-      "passengers": [],
+      "passengers": [
+       "human_allies:5:6",
+       "human_allies:5:7"
+      ],
       "crew": [
        "human_allies:5:0",
-       "human_allies:5:7"
+       "human_allies:5:5"
       ],
       "seatCapacity": 12
      }
@@ -5066,8 +5161,21 @@
      "time": 4,
      "label": "retraite d’une section humaine du front B",
      "result": {
-      "accepted": false,
-      "reason": "invalid_group_or_order"
+      "accepted": true,
+      "order": {
+       "type": "retreat",
+       "frontId": "front_a",
+       "issuer": "player1",
+       "issuedAt": 4,
+       "sequence": 177
+      },
+      "path": [
+       {
+        "routeId": "ab",
+        "from": "front_b",
+        "to": "front_a"
+       }
+      ]
      }
     },
     {
@@ -5087,8 +5195,8 @@
      "label": "débarquement du M577",
      "result": {
       "accepted": true,
-      "occupantCount": 2,
-      "passengerCount": 0
+      "occupantCount": 4,
+      "passengerCount": 2
      }
     },
     {
@@ -5161,9 +5269,9 @@
     "hive": {
      "allocated": 1000,
      "active": 16,
-     "distant": 733,
+     "distant": 729,
      "reserve": 248,
-     "dead": 3,
+     "dead": 7,
      "evacuated": 0,
      "captured": 0,
      "wounded": 0,
@@ -5218,30 +5326,30 @@
      "entreesExterieures": 0,
      "arriveesDepuisReserveEnregistrees": 112,
      "etatsFinaux": {
-      "present": 749,
+      "present": 745,
       "reserve": 248,
       "blesses": 0,
       "aBordAPC": 0
      },
-     "pertes": 3,
+     "pertes": 7,
      "sorties": {
       "evacues": 0,
       "captures": 0
      },
-     "equation": "1000 + 0 = 997 + 3 + 0",
+     "equation": "1000 + 0 = 993 + 7 + 0",
      "equilibre": true
     }
    },
    "transportA60s": {
     "allocated": 108,
     "active": 12,
-    "distant": 2,
+    "distant": 8,
     "reserve": 24,
-    "dead": 70,
+    "dead": 64,
     "evacuated": 0,
     "captured": 0,
     "wounded": 0,
-    "aboardAPC": 2
+    "aboardAPC": 4
    },
    "relations": [
     [
@@ -5275,20 +5383,20 @@
       "human_allies": {
        "allocated": 108,
        "active": 12,
-       "distant": 2,
+       "distant": 11,
        "reserve": 24,
-       "dead": 70,
+       "dead": 61,
        "evacuated": 0,
        "captured": 0,
        "wounded": 0,
-       "aboardAPC": 2
+       "aboardAPC": 4
       },
       "hive": {
        "allocated": 1000,
        "active": 16,
-       "distant": 629,
+       "distant": 625,
        "reserve": 352,
-       "dead": 3,
+       "dead": 7,
        "evacuated": 0,
        "captured": 0,
        "wounded": 0,
@@ -5313,20 +5421,20 @@
       "human_allies": {
        "allocated": 108,
        "active": 12,
-       "distant": 2,
+       "distant": 8,
        "reserve": 24,
-       "dead": 70,
+       "dead": 64,
        "evacuated": 0,
        "captured": 0,
        "wounded": 0,
-       "aboardAPC": 2
+       "aboardAPC": 4
       },
       "hive": {
        "allocated": 1000,
        "active": 16,
-       "distant": 637,
+       "distant": 633,
        "reserve": 344,
-       "dead": 3,
+       "dead": 7,
        "evacuated": 0,
        "captured": 0,
        "wounded": 0,
@@ -5351,20 +5459,20 @@
       "human_allies": {
        "allocated": 108,
        "active": 12,
-       "distant": 2,
+       "distant": 4,
        "reserve": 24,
-       "dead": 70,
+       "dead": 68,
        "evacuated": 0,
        "captured": 0,
        "wounded": 0,
-       "aboardAPC": 2
+       "aboardAPC": 4
       },
       "hive": {
        "allocated": 1000,
        "active": 16,
-       "distant": 637,
+       "distant": 633,
        "reserve": 344,
-       "dead": 3,
+       "dead": 7,
        "evacuated": 0,
        "captured": 0,
        "wounded": 0,
@@ -5389,20 +5497,20 @@
       "human_allies": {
        "allocated": 108,
        "active": 12,
-       "distant": 2,
+       "distant": 4,
        "reserve": 24,
-       "dead": 70,
+       "dead": 68,
        "evacuated": 0,
        "captured": 0,
        "wounded": 0,
-       "aboardAPC": 2
+       "aboardAPC": 4
       },
       "hive": {
        "allocated": 1000,
        "active": 16,
-       "distant": 645,
+       "distant": 641,
        "reserve": 336,
-       "dead": 3,
+       "dead": 7,
        "evacuated": 0,
        "captured": 0,
        "wounded": 0,
@@ -5438,9 +5546,9 @@
       "hive": {
        "allocated": 1000,
        "active": 16,
-       "distant": 653,
+       "distant": 649,
        "reserve": 328,
-       "dead": 3,
+       "dead": 7,
        "evacuated": 0,
        "captured": 0,
        "wounded": 0,
@@ -5476,9 +5584,9 @@
       "hive": {
        "allocated": 1000,
        "active": 16,
-       "distant": 653,
+       "distant": 649,
        "reserve": 328,
-       "dead": 3,
+       "dead": 7,
        "evacuated": 0,
        "captured": 0,
        "wounded": 0,
@@ -5514,9 +5622,9 @@
       "hive": {
        "allocated": 1000,
        "active": 16,
-       "distant": 661,
+       "distant": 657,
        "reserve": 320,
-       "dead": 3,
+       "dead": 7,
        "evacuated": 0,
        "captured": 0,
        "wounded": 0,
@@ -5552,9 +5660,9 @@
       "hive": {
        "allocated": 1000,
        "active": 16,
-       "distant": 669,
+       "distant": 665,
        "reserve": 312,
-       "dead": 3,
+       "dead": 7,
        "evacuated": 0,
        "captured": 0,
        "wounded": 0,
@@ -5590,9 +5698,9 @@
       "hive": {
        "allocated": 1000,
        "active": 16,
-       "distant": 669,
+       "distant": 665,
        "reserve": 312,
-       "dead": 3,
+       "dead": 7,
        "evacuated": 0,
        "captured": 0,
        "wounded": 0,
@@ -5628,9 +5736,9 @@
       "hive": {
        "allocated": 1000,
        "active": 16,
-       "distant": 677,
+       "distant": 673,
        "reserve": 304,
-       "dead": 3,
+       "dead": 7,
        "evacuated": 0,
        "captured": 0,
        "wounded": 0,
@@ -5666,9 +5774,9 @@
       "hive": {
        "allocated": 1000,
        "active": 16,
-       "distant": 685,
+       "distant": 681,
        "reserve": 296,
-       "dead": 3,
+       "dead": 7,
        "evacuated": 0,
        "captured": 0,
        "wounded": 0,
@@ -5704,9 +5812,9 @@
       "hive": {
        "allocated": 1000,
        "active": 16,
-       "distant": 685,
+       "distant": 681,
        "reserve": 296,
-       "dead": 3,
+       "dead": 7,
        "evacuated": 0,
        "captured": 0,
        "wounded": 0,
@@ -5742,9 +5850,9 @@
       "hive": {
        "allocated": 1000,
        "active": 16,
-       "distant": 693,
+       "distant": 689,
        "reserve": 288,
-       "dead": 3,
+       "dead": 7,
        "evacuated": 0,
        "captured": 0,
        "wounded": 0,
@@ -5780,9 +5888,9 @@
       "hive": {
        "allocated": 1000,
        "active": 16,
-       "distant": 701,
+       "distant": 697,
        "reserve": 280,
-       "dead": 3,
+       "dead": 7,
        "evacuated": 0,
        "captured": 0,
        "wounded": 0,
@@ -5818,9 +5926,9 @@
       "hive": {
        "allocated": 1000,
        "active": 16,
-       "distant": 701,
+       "distant": 697,
        "reserve": 280,
-       "dead": 3,
+       "dead": 7,
        "evacuated": 0,
        "captured": 0,
        "wounded": 0,
@@ -5856,9 +5964,9 @@
       "hive": {
        "allocated": 1000,
        "active": 16,
-       "distant": 709,
+       "distant": 705,
        "reserve": 272,
-       "dead": 3,
+       "dead": 7,
        "evacuated": 0,
        "captured": 0,
        "wounded": 0,
@@ -5894,9 +6002,9 @@
       "hive": {
        "allocated": 1000,
        "active": 16,
-       "distant": 717,
+       "distant": 713,
        "reserve": 264,
-       "dead": 3,
+       "dead": 7,
        "evacuated": 0,
        "captured": 0,
        "wounded": 0,
@@ -5932,9 +6040,9 @@
       "hive": {
        "allocated": 1000,
        "active": 16,
-       "distant": 717,
+       "distant": 713,
        "reserve": 264,
-       "dead": 3,
+       "dead": 7,
        "evacuated": 0,
        "captured": 0,
        "wounded": 0,
@@ -5970,9 +6078,9 @@
       "hive": {
        "allocated": 1000,
        "active": 16,
-       "distant": 725,
+       "distant": 721,
        "reserve": 256,
-       "dead": 3,
+       "dead": 7,
        "evacuated": 0,
        "captured": 0,
        "wounded": 0,
@@ -6008,9 +6116,9 @@
       "hive": {
        "allocated": 1000,
        "active": 16,
-       "distant": 733,
+       "distant": 729,
        "reserve": 248,
-       "dead": 3,
+       "dead": 7,
        "evacuated": 0,
        "captured": 0,
        "wounded": 0,
@@ -6108,7 +6216,7 @@
      [
       "human_allies:6",
       "human_allies",
-      "front_b",
+      "front_a",
       0,
       0,
       0,
@@ -6144,7 +6252,7 @@
      [
       "human_allies:9",
       "human_allies",
-      "front_b",
+      "front_a",
       0,
       0,
       0,
@@ -6180,7 +6288,7 @@
      [
       "human_allies:12",
       "human_allies",
-      "front_c",
+      "front_a",
       0,
       0,
       0,
@@ -6192,7 +6300,7 @@
      [
       "human_allies:13",
       "human_allies",
-      "front_c",
+      "front_a",
       0,
       0,
       0,
@@ -6434,9 +6542,9 @@
       "hive",
       "front_a",
       0,
-      6,
+      4,
       0,
-      2,
+      4,
       0,
       0,
       0
@@ -6818,9 +6926,9 @@
       "hive",
       "front_c",
       0,
-      7,
+      5,
       0,
-      1,
+      3,
       0,
       0,
       0
@@ -7748,7 +7856,7 @@
      "avant",
      "apres"
     ],
-    "total": 227,
+    "total": 231,
     "lignes": [
      [
       0.25,
@@ -7864,23 +7972,7 @@
      ],
      [
       0.25,
-      "human_allies:6:2",
-      "human_allies",
-      "human_allies:6",
-      "distant",
-      "dead"
-     ],
-     [
-      0.25,
       "human_allies:10:1",
-      "human_allies",
-      "human_allies:10",
-      "distant",
-      "dead"
-     ],
-     [
-      0.25,
-      "human_allies:10:2",
       "human_allies",
       "human_allies:10",
       "distant",
@@ -8024,7 +8116,7 @@
      ],
      [
       0.5,
-      "human_allies:6:3",
+      "human_allies:6:2",
       "human_allies",
       "human_allies:6",
       "distant",
@@ -8032,39 +8124,7 @@
      ],
      [
       0.5,
-      "human_allies:6:4",
-      "human_allies",
-      "human_allies:6",
-      "distant",
-      "dead"
-     ],
-     [
-      0.5,
-      "human_allies:10:3",
-      "human_allies",
-      "human_allies:10",
-      "distant",
-      "dead"
-     ],
-     [
-      0.5,
-      "human_allies:10:4",
-      "human_allies",
-      "human_allies:10",
-      "distant",
-      "dead"
-     ],
-     [
-      0.5,
-      "human_allies:10:5",
-      "human_allies",
-      "human_allies:10",
-      "distant",
-      "dead"
-     ],
-     [
-      0.5,
-      "human_allies:10:6",
+      "human_allies:10:2",
       "human_allies",
       "human_allies:10",
       "distant",
@@ -8080,15 +8140,7 @@
      ],
      [
       0.75,
-      "human_allies:4:4",
-      "human_allies",
-      "human_allies:4",
-      "distant",
-      "dead"
-     ],
-     [
-      0.75,
-      "human_allies:6:5",
+      "human_allies:6:3",
       "human_allies",
       "human_allies:6",
       "distant",
@@ -8096,57 +8148,9 @@
      ],
      [
       0.75,
-      "human_allies:6:6",
-      "human_allies",
-      "human_allies:6",
-      "distant",
-      "dead"
-     ],
-     [
-      0.75,
-      "human_allies:6:7",
-      "human_allies",
-      "human_allies:6",
-      "distant",
-      "dead"
-     ],
-     [
-      0.75,
-      "human_allies:7:1",
-      "human_allies",
-      "human_allies:7",
-      "distant",
-      "dead"
-     ],
-     [
-      0.75,
-      "human_allies:10:7",
+      "human_allies:10:3",
       "human_allies",
       "human_allies:10",
-      "distant",
-      "dead"
-     ],
-     [
-      0.75,
-      "human_allies:11:1",
-      "human_allies",
-      "human_allies:11",
-      "distant",
-      "dead"
-     ],
-     [
-      0.75,
-      "human_allies:11:2",
-      "human_allies",
-      "human_allies:11",
-      "distant",
-      "dead"
-     ],
-     [
-      0.75,
-      "human_allies:11:3",
-      "human_allies",
-      "human_allies:11",
       "distant",
       "dead"
      ],
@@ -8160,6 +8164,30 @@
      ],
      [
       1,
+      "human_allies:4:4",
+      "human_allies",
+      "human_allies:4",
+      "distant",
+      "dead"
+     ],
+     [
+      1,
+      "human_allies:6:4",
+      "human_allies",
+      "human_allies:6",
+      "distant",
+      "dead"
+     ],
+     [
+      1,
+      "human_allies:10:4",
+      "human_allies",
+      "human_allies:10",
+      "distant",
+      "dead"
+     ],
+     [
+      1.25,
       "human_allies:4:0",
       "human_allies",
       "human_allies:4",
@@ -8167,7 +8195,7 @@
       "active"
      ],
      [
-      1,
+      1.25,
       "human_allies:4:5",
       "human_allies",
       "human_allies:4",
@@ -8175,7 +8203,7 @@
       "active"
      ],
      [
-      1,
+      1.25,
       "human_allies:4:6",
       "human_allies",
       "human_allies:4",
@@ -8183,7 +8211,7 @@
       "active"
      ],
      [
-      1,
+      1.25,
       "human_allies:4:7",
       "human_allies",
       "human_allies:4",
@@ -8191,7 +8219,7 @@
       "active"
      ],
      [
-      1,
+      1.25,
       "human_allies:5:1",
       "human_allies",
       "human_allies:5",
@@ -8199,138 +8227,18 @@
       "dead"
      ],
      [
-      1,
-      "human_allies:7:2",
+      1.25,
+      "human_allies:6:5",
       "human_allies",
-      "human_allies:7",
-      "distant",
-      "dead"
-     ],
-     [
-      1,
-      "human_allies:7:3",
-      "human_allies",
-      "human_allies:7",
-      "distant",
-      "dead"
-     ],
-     [
-      1,
-      "human_allies:7:4",
-      "human_allies",
-      "human_allies:7",
-      "distant",
-      "dead"
-     ],
-     [
-      1,
-      "human_allies:7:5",
-      "human_allies",
-      "human_allies:7",
-      "distant",
-      "dead"
-     ],
-     [
-      1,
-      "human_allies:11:4",
-      "human_allies",
-      "human_allies:11",
-      "distant",
-      "dead"
-     ],
-     [
-      1,
-      "human_allies:11:5",
-      "human_allies",
-      "human_allies:11",
-      "distant",
-      "dead"
-     ],
-     [
-      1,
-      "human_allies:11:6",
-      "human_allies",
-      "human_allies:11",
+      "human_allies:6",
       "distant",
       "dead"
      ],
      [
       1.25,
-      "human_allies:5:2",
+      "human_allies:10:5",
       "human_allies",
-      "human_allies:5",
-      "distant",
-      "dead"
-     ],
-     [
-      1.25,
-      "human_allies:5:3",
-      "human_allies",
-      "human_allies:5",
-      "distant",
-      "dead"
-     ],
-     [
-      1.25,
-      "human_allies:7:6",
-      "human_allies",
-      "human_allies:7",
-      "distant",
-      "dead"
-     ],
-     [
-      1.25,
-      "human_allies:7:7",
-      "human_allies",
-      "human_allies:7",
-      "distant",
-      "dead"
-     ],
-     [
-      1.25,
-      "human_allies:8:1",
-      "human_allies",
-      "human_allies:8",
-      "distant",
-      "dead"
-     ],
-     [
-      1.25,
-      "human_allies:8:2",
-      "human_allies",
-      "human_allies:8",
-      "distant",
-      "dead"
-     ],
-     [
-      1.25,
-      "human_allies:11:7",
-      "human_allies",
-      "human_allies:11",
-      "distant",
-      "dead"
-     ],
-     [
-      1.25,
-      "human_allies:12:1",
-      "human_allies",
-      "human_allies:12",
-      "distant",
-      "dead"
-     ],
-     [
-      1.25,
-      "human_allies:12:2",
-      "human_allies",
-      "human_allies:12",
-      "distant",
-      "dead"
-     ],
-     [
-      1.25,
-      "human_allies:12:3",
-      "human_allies",
-      "human_allies:12",
+      "human_allies:10",
       "distant",
       "dead"
      ],
@@ -8344,6 +8252,54 @@
      ],
      [
       1.5,
+      "human_allies:5:2",
+      "human_allies",
+      "human_allies:5",
+      "distant",
+      "dead"
+     ],
+     [
+      1.5,
+      "human_allies:6:6",
+      "human_allies",
+      "human_allies:6",
+      "distant",
+      "dead"
+     ],
+     [
+      1.5,
+      "human_allies:10:6",
+      "human_allies",
+      "human_allies:10",
+      "distant",
+      "dead"
+     ],
+     [
+      1.75,
+      "human_allies:5:3",
+      "human_allies",
+      "human_allies:5",
+      "distant",
+      "dead"
+     ],
+     [
+      1.75,
+      "human_allies:6:7",
+      "human_allies",
+      "human_allies:6",
+      "distant",
+      "dead"
+     ],
+     [
+      1.75,
+      "human_allies:10:7",
+      "human_allies",
+      "human_allies:10",
+      "distant",
+      "dead"
+     ],
+     [
+      2,
       "human_allies:5:4",
       "human_allies",
       "human_allies:5",
@@ -8351,239 +8307,23 @@
       "dead"
      ],
      [
-      1.5,
-      "human_allies:8:3",
+      2,
+      "human_allies:7:1",
       "human_allies",
-      "human_allies:8",
-      "distant",
-      "dead"
-     ],
-     [
-      1.5,
-      "human_allies:8:4",
-      "human_allies",
-      "human_allies:8",
-      "distant",
-      "dead"
-     ],
-     [
-      1.5,
-      "human_allies:8:5",
-      "human_allies",
-      "human_allies:8",
-      "distant",
-      "dead"
-     ],
-     [
-      1.5,
-      "human_allies:12:4",
-      "human_allies",
-      "human_allies:12",
-      "distant",
-      "dead"
-     ],
-     [
-      1.5,
-      "human_allies:12:5",
-      "human_allies",
-      "human_allies:12",
-      "distant",
-      "dead"
-     ],
-     [
-      1.75,
-      "human_allies:5:5",
-      "human_allies",
-      "human_allies:5",
-      "distant",
-      "dead"
-     ],
-     [
-      1.75,
-      "human_allies:8:6",
-      "human_allies",
-      "human_allies:8",
-      "distant",
-      "dead"
-     ],
-     [
-      1.75,
-      "human_allies:8:7",
-      "human_allies",
-      "human_allies:8",
-      "distant",
-      "dead"
-     ],
-     [
-      1.75,
-      "human_allies:9:1",
-      "human_allies",
-      "human_allies:9",
-      "distant",
-      "dead"
-     ],
-     [
-      1.75,
-      "human_allies:9:2",
-      "human_allies",
-      "human_allies:9",
-      "distant",
-      "dead"
-     ],
-     [
-      1.75,
-      "human_allies:12:6",
-      "human_allies",
-      "human_allies:12",
-      "distant",
-      "dead"
-     ],
-     [
-      1.75,
-      "human_allies:12:7",
-      "human_allies",
-      "human_allies:12",
-      "distant",
-      "dead"
-     ],
-     [
-      1.75,
-      "human_allies:13:1",
-      "human_allies",
-      "human_allies:13",
+      "human_allies:7",
       "distant",
       "dead"
      ],
      [
       2,
-      "player_clan:2:1",
-      "player_clan",
-      "player_clan:2",
-      "distant",
-      "dead"
-     ],
-     [
-      2,
-      "human_allies:5:6",
-      "human_allies",
-      "human_allies:5",
-      "distant",
-      "dead"
-     ],
-     [
-      2,
-      "human_allies:9:3",
-      "human_allies",
-      "human_allies:9",
-      "distant",
-      "dead"
-     ],
-     [
-      2,
-      "human_allies:9:4",
-      "human_allies",
-      "human_allies:9",
-      "distant",
-      "dead"
-     ],
-     [
-      2,
-      "human_allies:13:2",
-      "human_allies",
-      "human_allies:13",
-      "distant",
-      "dead"
-     ],
-     [
-      2,
-      "human_allies:13:3",
-      "human_allies",
-      "human_allies:13",
-      "distant",
-      "dead"
-     ],
-     [
-      2.25,
-      "player_clan:2:2",
-      "player_clan",
-      "player_clan:2",
-      "distant",
-      "dead"
-     ],
-     [
-      2.25,
-      "human_allies:9:5",
-      "human_allies",
-      "human_allies:9",
-      "distant",
-      "dead"
-     ],
-     [
-      2.25,
-      "human_allies:9:6",
-      "human_allies",
-      "human_allies:9",
-      "distant",
-      "dead"
-     ],
-     [
-      2.5,
-      "player_clan:1:1",
-      "player_clan",
-      "player_clan:1",
-      "distant",
-      "dead"
-     ],
-     [
-      2.5,
-      "player_clan:2:3",
-      "player_clan",
-      "player_clan:2",
-      "distant",
-      "dead"
-     ],
-     [
-      2.5,
-      "human_allies:9:7",
-      "human_allies",
-      "human_allies:9",
-      "distant",
-      "dead"
-     ],
-     [
-      2.5,
-      "human_allies:10:0",
-      "human_allies",
-      "human_allies:10",
-      "distant",
-      "dead"
-     ],
-     [
-      2.75,
-      "player_clan:1:2",
-      "player_clan",
-      "player_clan:1",
-      "distant",
-      "dead"
-     ],
-     [
-      2.75,
-      "player_clan:1:3",
-      "player_clan",
-      "player_clan:1",
-      "distant",
-      "dead"
-     ],
-     [
-      2.75,
-      "human_allies:11:0",
+      "human_allies:11:1",
       "human_allies",
       "human_allies:11",
       "distant",
       "dead"
      ],
      [
-      2.75,
+      2,
       "hive:33:2",
       "hive",
       "hive:33",
@@ -8591,24 +8331,112 @@
       "dead"
      ],
      [
-      3,
-      "human_allies:6:0",
+      2.25,
+      "human_allies:7:2",
       "human_allies",
-      "human_allies:6",
+      "human_allies:7",
+      "distant",
+      "dead"
+     ],
+     [
+      2.25,
+      "human_allies:11:2",
+      "human_allies",
+      "human_allies:11",
+      "distant",
+      "dead"
+     ],
+     [
+      2.5,
+      "human_allies:7:3",
+      "human_allies",
+      "human_allies:7",
+      "distant",
+      "dead"
+     ],
+     [
+      2.5,
+      "human_allies:11:3",
+      "human_allies",
+      "human_allies:11",
+      "distant",
+      "dead"
+     ],
+     [
+      2.5,
+      "hive:65:2",
+      "hive",
+      "hive:65",
+      "distant",
+      "dead"
+     ],
+     [
+      2.75,
+      "player_clan:2:1",
+      "player_clan",
+      "player_clan:2",
+      "distant",
+      "dead"
+     ],
+     [
+      2.75,
+      "human_allies:7:4",
+      "human_allies",
+      "human_allies:7",
+      "distant",
+      "dead"
+     ],
+     [
+      2.75,
+      "human_allies:11:4",
+      "human_allies",
+      "human_allies:11",
       "distant",
       "dead"
      ],
      [
       3,
-      "human_allies:12:0",
+      "player_clan:2:2",
+      "player_clan",
+      "player_clan:2",
+      "distant",
+      "dead"
+     ],
+     [
+      3,
+      "human_allies:7:5",
       "human_allies",
-      "human_allies:12",
+      "human_allies:7",
+      "distant",
+      "dead"
+     ],
+     [
+      3,
+      "human_allies:11:5",
+      "human_allies",
+      "human_allies:11",
       "distant",
       "dead"
      ],
      [
       3.25,
-      "human_allies:7:0",
+      "player_clan:1:1",
+      "player_clan",
+      "player_clan:1",
+      "distant",
+      "dead"
+     ],
+     [
+      3.25,
+      "player_clan:2:3",
+      "player_clan",
+      "player_clan:2",
+      "distant",
+      "dead"
+     ],
+     [
+      3.25,
+      "human_allies:7:6",
       "human_allies",
       "human_allies:7",
       "distant",
@@ -8616,31 +8444,39 @@
      ],
      [
       3.25,
-      "human_allies:13:0",
+      "human_allies:11:6",
       "human_allies",
-      "human_allies:13",
+      "human_allies:11",
       "distant",
       "dead"
      ],
      [
       3.5,
-      "player_clan:2:0",
+      "player_clan:1:2",
       "player_clan",
-      "player_clan:2",
+      "player_clan:1",
       "distant",
       "dead"
      ],
      [
       3.5,
-      "human_allies:8:0",
+      "human_allies:7:7",
       "human_allies",
-      "human_allies:8",
+      "human_allies:7",
+      "distant",
+      "dead"
+     ],
+     [
+      3.5,
+      "human_allies:10:0",
+      "human_allies",
+      "human_allies:10",
       "distant",
       "dead"
      ],
      [
       3.75,
-      "player_clan:1:0",
+      "player_clan:1:3",
       "player_clan",
       "player_clan:1",
       "distant",
@@ -8648,7 +8484,239 @@
      ],
      [
       3.75,
+      "human_allies:8:1",
+      "human_allies",
+      "human_allies:8",
+      "distant",
+      "dead"
+     ],
+     [
+      3.75,
+      "human_allies:11:7",
+      "human_allies",
+      "human_allies:11",
+      "distant",
+      "dead"
+     ],
+     [
+      3.75,
+      "hive:33:3",
+      "hive",
+      "hive:33",
+      "distant",
+      "dead"
+     ],
+     [
+      4,
+      "human_allies:8:2",
+      "human_allies",
+      "human_allies:8",
+      "distant",
+      "dead"
+     ],
+     [
+      4,
+      "human_allies:11:0",
+      "human_allies",
+      "human_allies:11",
+      "distant",
+      "dead"
+     ],
+     [
+      4.25,
+      "human_allies:8:3",
+      "human_allies",
+      "human_allies:8",
+      "distant",
+      "dead"
+     ],
+     [
+      4.25,
+      "human_allies:12:0",
+      "human_allies",
+      "human_allies:12",
+      "distant",
+      "dead"
+     ],
+     [
+      4.25,
+      "hive:65:3",
+      "hive",
+      "hive:65",
+      "distant",
+      "dead"
+     ],
+     [
+      4.5,
+      "human_allies:8:4",
+      "human_allies",
+      "human_allies:8",
+      "distant",
+      "dead"
+     ],
+     [
+      4.5,
+      "human_allies:12:1",
+      "human_allies",
+      "human_allies:12",
+      "distant",
+      "dead"
+     ],
+     [
+      4.75,
+      "human_allies:7:0",
+      "human_allies",
+      "human_allies:7",
+      "distant",
+      "dead"
+     ],
+     [
+      4.75,
+      "human_allies:12:2",
+      "human_allies",
+      "human_allies:12",
+      "distant",
+      "dead"
+     ],
+     [
+      5,
+      "player_clan:2:0",
+      "player_clan",
+      "player_clan:2",
+      "distant",
+      "dead"
+     ],
+     [
+      5,
+      "human_allies:8:0",
+      "human_allies",
+      "human_allies:8",
+      "distant",
+      "dead"
+     ],
+     [
+      5,
+      "human_allies:12:3",
+      "human_allies",
+      "human_allies:12",
+      "distant",
+      "dead"
+     ],
+     [
+      5.25,
+      "human_allies:8:5",
+      "human_allies",
+      "human_allies:8",
+      "distant",
+      "dead"
+     ],
+     [
+      5.25,
+      "human_allies:12:4",
+      "human_allies",
+      "human_allies:12",
+      "distant",
+      "dead"
+     ],
+     [
+      5.5,
+      "player_clan:1:0",
+      "player_clan",
+      "player_clan:1",
+      "distant",
+      "dead"
+     ],
+     [
+      5.5,
+      "human_allies:8:6",
+      "human_allies",
+      "human_allies:8",
+      "distant",
+      "dead"
+     ],
+     [
+      5.5,
+      "human_allies:12:5",
+      "human_allies",
+      "human_allies:12",
+      "distant",
+      "dead"
+     ],
+     [
+      5.75,
+      "human_allies:8:7",
+      "human_allies",
+      "human_allies:8",
+      "distant",
+      "dead"
+     ],
+     [
+      5.75,
+      "human_allies:13:0",
+      "human_allies",
+      "human_allies:13",
+      "distant",
+      "dead"
+     ],
+     [
+      6,
       "human_allies:9:0",
+      "human_allies",
+      "human_allies:9",
+      "distant",
+      "dead"
+     ],
+     [
+      6,
+      "human_allies:13:1",
+      "human_allies",
+      "human_allies:13",
+      "distant",
+      "dead"
+     ],
+     [
+      6.25,
+      "human_allies:9:1",
+      "human_allies",
+      "human_allies:9",
+      "distant",
+      "dead"
+     ],
+     [
+      6.5,
+      "human_allies:9:2",
+      "human_allies",
+      "human_allies:9",
+      "distant",
+      "dead"
+     ],
+     [
+      6.75,
+      "human_allies:9:3",
+      "human_allies",
+      "human_allies:9",
+      "distant",
+      "dead"
+     ],
+     [
+      6.75,
+      "hive:33:4",
+      "hive",
+      "hive:33",
+      "distant",
+      "dead"
+     ],
+     [
+      7,
+      "human_allies:9:4",
+      "human_allies",
+      "human_allies:9",
+      "distant",
+      "dead"
+     ],
+     [
+      7.25,
+      "human_allies:9:5",
       "human_allies",
       "human_allies:9",
       "distant",
@@ -8719,6 +8787,30 @@
       "distant"
      ],
      [
+      45,
+      "human_allies:6:0",
+      "human_allies",
+      "human_allies:6",
+      "distant",
+      "dead"
+     ],
+     [
+      49,
+      "human_allies:9:6",
+      "human_allies",
+      "human_allies:9",
+      "distant",
+      "dead"
+     ],
+     [
+      51,
+      "human_allies:9:7",
+      "human_allies",
+      "human_allies:9",
+      "distant",
+      "dead"
+     ],
+     [
       51,
       "hive:98:0",
       "hive",
@@ -8781,6 +8873,38 @@
       "hive:98",
       "reserve",
       "distant"
+     ],
+     [
+      66.25,
+      "human_allies:12:6",
+      "human_allies",
+      "human_allies:12",
+      "distant",
+      "dead"
+     ],
+     [
+      68.25,
+      "human_allies:12:7",
+      "human_allies",
+      "human_allies:12",
+      "distant",
+      "dead"
+     ],
+     [
+      70.25,
+      "human_allies:13:2",
+      "human_allies",
+      "human_allies:13",
+      "distant",
+      "dead"
+     ],
+     [
+      72.25,
+      "human_allies:13:3",
+      "human_allies",
+      "human_allies:13",
+      "distant",
+      "dead"
      ],
      [
       99,
@@ -8855,7 +8979,23 @@
       "dead"
      ],
      [
-      120.25,
+      122.25,
+      "human_allies:5:5",
+      "human_allies",
+      "human_allies:5",
+      "distant",
+      "dead"
+     ],
+     [
+      124.25,
+      "human_allies:5:6",
+      "human_allies",
+      "human_allies:5",
+      "distant",
+      "dead"
+     ],
+     [
+      126.25,
       "human_allies:5:7",
       "human_allies",
       "human_allies:5",
@@ -9601,7 +9741,7 @@
    "texte": "Morts et retraites ne réapparaissent pas gratuitement (EFF-03)",
    "verdict": "prouvé",
    "scenario": "EFF-03",
-   "mortsTotal": 46,
+   "mortsTotal": 45,
    "morts": {
     "exemple": "AFF-18:hive:4:0",
     "etat": "dead",
@@ -9684,7 +9824,7 @@
      "factionId": "player_clan",
      "killerFaction": "hive",
      "cause": "distant_combat",
-     "time": 200.25,
+     "time": 202.25,
      "officer": false,
      "uniqueId": null
     }
@@ -9782,7 +9922,7 @@
    "texte": "Chaque individu appartient à un seul état comptable (EFF-06, y compris passagers M577)",
    "verdict": "prouvé",
    "scenario": "EFF-06",
-   "passagersA60s": 2,
+   "passagersA60s": 4,
    "groupeAPC": "human_allies:5"
   },
   {
@@ -9791,7 +9931,7 @@
    "verdict": "prouvé",
    "scenario": "EFF-06",
    "groupeEnRetraite": "human_allies:6",
-   "morts": 83,
+   "morts": 87,
    "reconstitutions": []
   },
   {
@@ -9806,17 +9946,17 @@
      "entreesExterieures": 0,
      "arriveesDepuisReserveEnregistrees": 112,
      "etatsFinaux": {
-      "present": 750,
+      "present": 748,
       "reserve": 248,
       "blesses": 0,
       "aBordAPC": 0
      },
-     "pertes": 2,
+     "pertes": 4,
      "sorties": {
       "evacues": 0,
       "captures": 0
      },
-     "equation": "1000 + 0 = 998 + 2 + 0",
+     "equation": "1000 + 0 = 996 + 4 + 0",
      "equilibre": true
     },
     "player_clan": {
@@ -9826,17 +9966,17 @@
      "entreesExterieures": 0,
      "arriveesDepuisReserveEnregistrees": 8,
      "etatsFinaux": {
-      "present": 2,
+      "present": 5,
       "reserve": 0,
       "blesses": 0,
       "aBordAPC": 0
      },
-     "pertes": 44,
+     "pertes": 41,
      "sorties": {
       "evacues": 2,
       "captures": 0
      },
-     "equation": "48 + 0 = 2 + 44 + 2",
+     "equation": "48 + 0 = 5 + 41 + 2",
      "equilibre": true
     }
    },
@@ -9888,17 +10028,17 @@
      "entreesExterieures": 0,
      "arriveesDepuisReserveEnregistrees": 112,
      "etatsFinaux": {
-      "present": 749,
+      "present": 745,
       "reserve": 248,
       "blesses": 0,
       "aBordAPC": 0
      },
-     "pertes": 3,
+     "pertes": 7,
      "sorties": {
       "evacues": 0,
       "captures": 0
      },
-     "equation": "1000 + 0 = 997 + 3 + 0",
+     "equation": "1000 + 0 = 993 + 7 + 0",
      "equilibre": true
     }
    }
@@ -9922,7 +10062,7 @@
     ]
    ],
    "evenement": {
-    "id": 551,
+    "id": 594,
     "time": 300,
     "type": "relations_changed",
     "priority": 2,
