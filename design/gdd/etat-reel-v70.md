@@ -44,11 +44,13 @@ Le détail des points ouverts, avec leur nature (code, observation, testeur, mat
 | Victoire, pause, retour au menu, modes | Déjà en v70 |
 | Prétorien à Val Verde, courbe de PV | Non porté : la v70 a le Jungle Hunter pour boss de Val Verde et fixe les PV par identité de boss |
 | Appuis par arène, décor par arène | Déjà en v70, sous une autre forme |
-| Garde nationale, caisses d'armes humaines, ouverture furtive | À porter sur les systèmes v70 (HW-DEC-87) |
+| Ouverture furtive | Portée : 25 s après l'atterrissage, sur les sens du camouflage v70, sans sa réduction de dégâts |
+| Garde nationale, caisses d'armes humaines | À porter sur les systèmes v70 (HW-DEC-87) |
 | Kit à quatre emplacements, nouvelles touches | Non porté : commandes v70 conservées (HW-DEC-85) |
-| Musou propre à chaque chasseur, caméra à la souris, verrouillage | À porter sans casser coop ni manette (HW-DEC-85) |
+| Musou propre à chaque chasseur | Porté : anneau, cône ou ligne selon le chasseur, valeurs provisoires (`js/data/hunterMusouProfiles.js`) |
+| Caméra à la souris, verrouillage | À porter sans casser coop ni manette (HW-DEC-85) |
 | Fenêtres vides du menu, nom du chasseur au HUD | Déjà corrigés en v70 |
-| Listes de commandes F1 et Options | À aligner sur les commandes v70 |
+| Listes de commandes F1 et Options | Alignées sur les touches v70 ; G et Maj+G, 4 et Maj+4 ne déclenchent plus deux actions |
 | Campagne de l'Unblooded | Mode à part « Ascension », après les P0 et P1 (HW-DEC-86) |
 | Plafond de 120 ennemis par vague | Inutile : la v70 plafonne à 200 avec apparitions étalées, et à 32 acteurs détaillés |
 
