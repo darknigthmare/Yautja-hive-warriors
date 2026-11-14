@@ -63,7 +63,8 @@ Une chambre de ponte contient 4 à 12 œufs et 2 à 4 adultes gardiens. Les œuf
 
 1. **HW-DEC-97** : le couvoir GRP-05 est porté par AFF-27, LV-742, où la ruche est établie, avec sa Reine et l'infestation d'hôte.
 2. **HW-DEC-98** : l'extraction GRP-16 est portée par AFF-10, la cité-port. Le captif Yautja non combattant prévu par l'audit devient le vétéran à extraire.
-3. **HW-DEC-99** : le budget EFF-06 est attribué à AFF-05, « Un accord pendant que les fronts reculent », par la couche d'adaptation. L'audit continue d'indiquer EFF-09 ; l'écart est documenté.
+3. **HW-DEC-99, révisée** : AFF-05 est une guerre entre deux clans Yautja, et l'audit précise « aucun combattant tiers ». Le budget EFF-06 va donc à une nouvelle variante d'AFF-18, « Tobler-9 — la trêve du refuge » : même ennemi et mêmes réserves, avec 12 Yautja et 108 humains alliés. AFF-18 reste intacte.
+4. **HW-DEC-100** : tous les civils que l'audit chiffre sont intégrés, soit 20 opérations, et non seulement les cinq marquées GRP-28.
 
 ## Assumptions
 

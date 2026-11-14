@@ -123,7 +123,8 @@ Les mêmes tables sont dans `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 | HW-DEC-96 | Garde nationale | Quatre fusiliers à Gunnison, en mode chasse, hors catalogue | AVP: Requiem ; distincte de l'USCM ; le catalogue d'opérations, issu de l'audit conservé, n'est pas modifié |
 | HW-DEC-97 | Couvoir GRP-05 | AFF-27, LV-742 | Ruche établie avec Reine et infestation d'hôte ; œufs hors effectifs combattants |
 | HW-DEC-98 | Extraction GRP-16 | AFF-10, cité-port | Le captif Yautja non combattant de l'audit devient le vétéran à extraire |
-| HW-DEC-99 | Budget EFF-06 | AFF-05, l'accord pendant que les fronts reculent | Par une couche d'adaptation ; l'audit conservé indique toujours EFF-09 |
+| HW-DEC-99 | Budget EFF-06 | Variante d'AFF-18 : « Tobler-9 — la trêve du refuge » | Révisé le 14 nov. : AFF-05 est une guerre entre clans sans tiers ; la variante garde l'ennemi et les réserves d'AFF-18, AFF-18 reste intacte |
+| HW-DEC-100 | Civils | Tous ceux que l'audit chiffre | 20 opérations ; registre hors effectifs combattants, fuite par les routes ouvertes, aucune mort inventée par la simulation distante |
 | HW-DEC-12 | Alliés Yautja, armes humaines, véhicules et soutiens, coopération locale | Tous conservés | Le champ de bataille est une guerre ; ces systèmes sont à réparer, pas à couper |
 
 ## 02_Chasseurs — Chasseurs jouables (js/data/charactersData.js) ; Musou et kits codés le 14 nov. (js/systems/HunterKit.js, executeHunterMusou)
