@@ -15,7 +15,10 @@ export function sectorSupportPlan(levelId, sectorIndex) {
     marines: active && future ? 2 : 0,
     synthetics: active && future ? 2 : 0,
     gasPipes: INDUSTRIAL_SITES.has(levelId) ? 4 : 0,
-    apc: active && future && sectorIndex === 3
+    apc: active && future && sectorIndex === 3,
+    // AVP: Requiem: the Colorado National Guard enters Gunnison. A separate US Army National Guard
+    // section, not USCM; it fights the hive beside the hunter (HW-DEC-87, provisional count).
+    nationalGuard: active && levelId === 'gunnison_forest' ? 4 : 0
   });
 }
 

@@ -45,10 +45,11 @@ Le détail des points ouverts, avec leur nature (code, observation, testeur, mat
 | Prétorien à Val Verde, courbe de PV | Non porté : la v70 a le Jungle Hunter pour boss de Val Verde et fixe les PV par identité de boss |
 | Appuis par arène, décor par arène | Déjà en v70, sous une autre forme |
 | Ouverture furtive | Portée : 25 s après l'atterrissage, sur les sens du camouflage v70, sans sa réduction de dégâts |
-| Garde nationale, caisses d'armes humaines | À porter sur les systèmes v70 (HW-DEC-87) |
+| Garde nationale | Portée : quatre fusiliers aux secteurs de Gunnison en chasse, hors catalogue (HW-DEC-96) |
+| Caisses d'armes humaines | Portées là où l'univers Alien déploie des Marines ; chasses sans munitions humaines au départ (HW-DEC-95) |
 | Kit à quatre emplacements, nouvelles touches | Non porté : commandes v70 conservées (HW-DEC-85) |
 | Musou propre à chaque chasseur | Porté : anneau, cône ou ligne selon le chasseur, valeurs provisoires (`js/data/hunterMusouProfiles.js`) |
-| Caméra à la souris, verrouillage | À porter sans casser coop ni manette (HW-DEC-85) |
+| Caméra à la souris, verrouillage | Portés : caméra en option solo (HW-DEC-94), verrouillage sur Q (HW-DEC-93) |
 | Fenêtres vides du menu, nom du chasseur au HUD | Déjà corrigés en v70 |
 | Listes de commandes F1 et Options | Alignées sur les touches v70 ; G et Maj+G, 4 et Maj+4 ne déclenchent plus deux actions |
 | Campagne de l'Unblooded | Mode à part « Ascension », après les P0 et P1 (HW-DEC-86) |

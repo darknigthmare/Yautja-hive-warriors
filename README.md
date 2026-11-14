@@ -38,7 +38,9 @@ Les commandes utilisent les positions physiques des touches : WASD en QWERTY, ZQ
 | Canon plasma | Majuscule gauche |
 | Pause / reprise | Échap ou bouton Pause |
 | Roue d'armes | R ou clic milieu |
-| Surcharge Musou | Espace ou Q (A en AZERTY) |
+| Surcharge Musou | Espace |
+| Verrouiller une cible, puis la suivante | Q (A en AZERTY) ; manette : bouton de verrouillage |
+| Caméra à la souris (solo, option des réglages) | Clic dans le jeu pour capturer le pointeur, Échap pour le libérer |
 | Super-saut | Majuscule + Espace |
 | Camouflage | F |
 | Modes de vision | V |

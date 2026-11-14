@@ -117,6 +117,10 @@ Les mêmes tables sont dans `design/Yautja_HiveWarriors_V58_Bible.xlsx`.
 | HW-DEC-90 | Gabarits couvoir, extraction, civils (REC-004) | Les intégrer | GRP-05, GRP-16 et GRP-28 alloués dans les opérations prévues, état « œuf », EFF-06 rattaché à une opération ; totaux recomptés |
 | HW-DEC-91 | Rythme des renforts (REC-002) | Étaler les réserves par vagues | Mêmes totaux ; fermer un tunnel tôt retient une part réelle des renforts |
 | HW-DEC-92 | Tir à distance (REC-001) | Concentrer le tir | Chaque groupe vise d'abord une cible ; comparaison avant/après sur la même graine |
+| HW-DEC-93 | Touche de verrouillage | Q (A en AZERTY) | Chaque appui passe à la cible suivante, puis relâche ; le Musou reste sur Espace ; la manette garde son bouton |
+| HW-DEC-94 | Caméra à la souris | Option des réglages, désactivée par défaut | Solo seulement ; la coop sur un clavier garde la caméra fixe v70 ; le déplacement suit la caméra |
+| HW-DEC-95 | Caisses d'armes humaines | Seulement là où l'univers Alien déploie déjà des Marines | Monde-ruche Prime, Romulus, Charon ; deux caisses par secteur ; les chasses partent sans munitions M41A, Gauss ni Seegson ; les opérations gardent leur dotation |
+| HW-DEC-96 | Garde nationale | Quatre fusiliers à Gunnison, en mode chasse, hors catalogue | AVP: Requiem ; distincte de l'USCM ; le catalogue d'opérations, issu de l'audit conservé, n'est pas modifié |
 | HW-DEC-12 | Alliés Yautja, armes humaines, véhicules et soutiens, coopération locale | Tous conservés | Le champ de bataille est une guerre ; ces systèmes sont à réparer, pas à couper |
 
 ## 02_Chasseurs — Chasseurs jouables (js/data/charactersData.js) ; Musou et kits codés le 14 nov. (js/systems/HunterKit.js, executeHunterMusou)

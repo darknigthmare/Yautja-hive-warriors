@@ -87,7 +87,11 @@ test('embarked Marines do not attack offscreen or capture a front, and no second
     assert.equal(u.nextAttack,attackBefore);
     assert.equal(driver.nextAttack,driverAttackBefore);
     assert.deepEqual([...simulation.units.keys()].length,simulation.initialAllocated);
-    assert.equal(simulation.deaths.size,deathCount);
+    // Focused remote fire (HW-DEC-92) may kill other units on the front in one tick; no seated
+    // passenger or crew member dies (their unchanged nextAttack shows they did not fire).
+    const seated=new Set([...manifest.passengers,...manifest.crew]);
+    const newDeaths=[...simulation.deaths.values()].slice(deathCount);
+    assert.equal(newDeaths.some(death=>seated.has(death.entityId)),false);
     const next=simulation.boardAPC(selection.group.id,selection);
     assert.equal(next.accepted,false);
     assert.deepEqual(simulation.apcManifest.passengers,manifest.passengers);

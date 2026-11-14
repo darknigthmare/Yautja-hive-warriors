@@ -73,6 +73,8 @@ import { operationSceneOptions, createMissionSupportContext } from './engine/Mis
 import { traceSingleProjectileImpact } from './engine/SingleProjectileImpact.js';
 import { canAccessLegacyAir, canHitLegacyAirTarget } from './engine/LegacyAirstrikePolicy.js';
 import { hunterMusouProfile, musouCovers } from './data/hunterMusouProfiles.js';
+import { humanWeaponCacheCount, emptyHumanWeaponAmmo, openHumanWeaponCache } from './engine/HumanWeaponCaches.js';
+import { MouseCamera } from './engine/MouseCamera.js';
 
 class GameApp {
   constructor() {
@@ -199,6 +201,14 @@ class GameApp {
 
     this.keys = {};
     this.gamepadBridge = new GamepadGameBridge(this);
+    // Optional mouse orbit (HW-DEC-94): off by default, never in shared-keyboard co-op.
+    let cameraStorage = null; try { cameraStorage = globalThis.localStorage; } catch {}
+    this.mouseCamera = new MouseCamera({ storage: cameraStorage });
+    const mouseCameraToggle = document.getElementById('setting-mouse-camera');
+    if (mouseCameraToggle) { mouseCameraToggle.checked = this.mouseCamera.enabled; mouseCameraToggle.addEventListener('change', () => { this.mouseCamera.setEnabled(mouseCameraToggle.checked); if (!mouseCameraToggle.checked && document.pointerLockElement) document.exitPointerLock?.(); }); }
+    const canvas = this.renderer.renderer?.domElement;
+    canvas?.addEventListener('mousedown', () => { if (this.mouseCamera.active(this.isCoOp) && this.isPlaying && !this.isPaused && document.pointerLockElement !== canvas) canvas.requestPointerLock?.(); });
+    document.addEventListener('mousemove', event => { if (document.pointerLockElement === canvas) this.mouseCamera.onMouseMove(event.movementX); });
     this.setupEventListeners();
     this.lastTime = performance.now();
     this.animate();
@@ -1136,7 +1146,13 @@ class GameApp {
         this.player.performGroundSlam(this.horde, this.bosses, this.synthetics, this.ui, this.particles, this.env);
       }
 
-      if ((e.code === 'Space' && !this.keys['ShiftLeft'] && !this.keys['ShiftRight']) || e.code === 'KeyQ') {
+      // Q locks a target and cycles to the next one (HW-DEC-93); the Musou stays on Space.
+      if (e.code === 'KeyQ' && this.player) {
+        const locked = this.gamepadBridge.cycleLock?.(this.player);
+        this.ui.showAnnouncement(locked ? 'CIBLE VERROUILLÉE' : 'VERROUILLAGE RELÂCHÉ');
+      }
+
+      if (e.code === 'Space' && !this.keys['ShiftLeft'] && !this.keys['ShiftRight']) {
         if (this.player && this.player.triggerMusouOverload()) {
           this.executeMusouOverload();
         }
@@ -1352,6 +1368,7 @@ class GameApp {
     this.closestEnemyDist = Infinity;
     this.audio.stopBackgroundMusic();
     this.audio.stopThermalHum();
+    this.clearHumanWeaponCaches();
     this.allies.clearSquad();
     this.marines.clearSquad();
     this.synthetics.clearSquad();
@@ -1458,6 +1475,8 @@ class GameApp {
       if (player.struggleQTE()) {
         this.ui.showAnnouncement('💥 FACEHUGGER ARRACHÉ AVEC SUCCÈS !');
       }
+    } else if (this.tryOpenHumanWeaponCache?.(player)) {
+      // A finite hunt cache, opened once.
     } else if (this.allyRescue?.interact(player).accepted) {
       // A patient keeps its allocated identity throughout the rescue channel.
     } else if (this.env.checkTacticalBridgeInteraction?.(player)) {
@@ -2005,6 +2024,8 @@ class GameApp {
     }
 
     for(const player of [this.player,this.player2].filter(Boolean))player.missionSupportContext=this.missionSupportContext;
+    // Hunts carry no Alien-setting human ammunition until a finite cache is opened (HW-DEC-87).
+    if(this.missionMode==='hunt'&&!options.resumeOperation)for(const player of [this.player,this.player2].filter(Boolean))emptyHumanWeaponAmmo(player);
     if(options.resumeOperation?.playerStates)for(const[index,player]of[this.player,this.player2].entries())if(player&&options.resumeOperation.playerStates[index])restoreOperationPlayer(player,options.resumeOperation.playerStates[index],this.env);
     if(options.resumeOperation?.preyInteractions&&this.env.restorePreyInteractions?.(options.resumeOperation.preyInteractions)!==true)throw new Error('Incompatible PREY interaction checkpoint');
 
@@ -2144,6 +2165,7 @@ class GameApp {
     this.allies.spawnSquad(supportPosition, supports.allies);
     if (supports.marines === 0) this.marines.clearSquad();
     else this.marines.spawnSquad(supportPosition, supports.marines);
+    if (supports.nationalGuard) this.marines.spawnNationalGuard?.(supportPosition, supports.nationalGuard);
     this.synthetics.spawnSquad(center, supports.synthetics);
     this.badBlood.clear();
     this.weather.spawnGasPipes(supports.gasPipes, center);
@@ -2161,7 +2183,38 @@ class GameApp {
     // Keep the skimmer available as the battlefield advances without moving a
     // mounted vehicle out from under either player's controls.
     if (!this.skimmer.isMounted) this.skimmer.spawnAt(center.clone().add(new THREE.Vector3(sector.index === 0 ? -9 : 5, 0, sector.index === 0 ? 8 : 5)));
+    if (this.missionMode === 'hunt' && !this.battleSimulation) this.spawnHumanWeaponCaches?.(sector, center);
     if (sector.objective.type === 'boss') this.bossSpawned = true;
+  }
+
+  spawnHumanWeaponCaches(sector, center) {
+    const count = typeof humanWeaponCacheCount !== 'function' ? 0 : humanWeaponCacheCount(this.ui.selectedLevel.id, sector.index);
+    this.humanWeaponCaches ??= [];
+    for (let index = 0; index < count; index++) {
+      const angle = sector.index * 1.7 + index * Math.PI;
+      const position = center.clone().add(new THREE.Vector3(Math.cos(angle) * 14, 0, Math.sin(angle) * 14));
+      this.env.resolveMovement(position, 0.8);
+      position.y = this.env.getPlacementElevationAt?.(position.x, position.z) ?? this.env.getElevationAt?.(position.x, position.z) ?? 0;
+      const mesh = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.7, 0.8), new THREE.MeshStandardMaterial({ color: 0x3f4f2a, metalness: 0.6, roughness: 0.45, emissive: 0x112200 }));
+      mesh.name = 'human-weapon-cache'; mesh.position.copy(position).add(new THREE.Vector3(0, 0.35, 0));
+      this.renderer.scene.add(mesh);
+      this.humanWeaponCaches.push({ id: `${sector.id}:cache:${index}`, sectorId: sector.id, mesh, opened: false });
+    }
+  }
+
+  tryOpenHumanWeaponCache(player) {
+    const cache = (this.humanWeaponCaches ?? []).find(item => !item.opened && item.mesh.position.distanceTo(player.position) <= 2.6);
+    if (!cache) return false;
+    const taken = openHumanWeaponCache(player, cache);
+    if (!taken) return false;
+    cache.mesh.material.color.setHex(0x2a2a2a); cache.mesh.material.emissive.setHex(0x000000);
+    this.ui.showAnnouncement(`CAISSE D’ARMES HUMAINES — M41A +${taken.m41aGrenadeCharges} · GAUSS +${taken.m77GaussAmmo} · SEEGSON +${taken.seegsonBoltAmmo}`);
+    return true;
+  }
+
+  clearHumanWeaponCaches() {
+    for (const cache of this.humanWeaponCaches ?? []) { this.renderer.scene.remove(cache.mesh); cache.mesh.geometry.dispose(); cache.mesh.material.dispose(); }
+    this.humanWeaponCaches = [];
   }
 
   startSandboxMission(config) {
@@ -3443,6 +3496,7 @@ class GameApp {
     if (this.keys['KeyD']) moveDirP1.x += 1;
     const keyboardP1=moveDirP1.lengthSq()>0, analogP1=this.gamepadBridge.movement(0);
     moveDirP1.x+=analogP1.x;moveDirP1.z-=analogP1.y;
+    this.mouseCamera?.rotateMove(moveDirP1, this.isCoOp);
     if ((!this.skimmer.isMounted||this.operationTransport?.driver===this.player2) && !this.player.isDodging && this.player.hp > 0) this.player.move(moveDirP1, delta*this.gamepadBridge.movementScale(0,keyboardP1)*this.gamepadBridge.speedScale(0));
     this.gamepadBridge.applyAim(0);
     this.env.resolveMovement?.(this.player.position);
@@ -3716,7 +3770,8 @@ class GameApp {
       ));
       this.renderer.camera.lookAt(lookTarget);
     } else {
-      const camTarget = this.player.position.clone().add(new THREE.Vector3(0, 10, 16));
+      const orbit = this.mouseCamera?.offset(this.isCoOp) ?? { x: 0, y: 10, z: 16 };
+      const camTarget = this.player.position.clone().add(new THREE.Vector3(orbit.x, orbit.y, orbit.z));
       this.renderer.camera.position.lerp(camTarget, 5 * delta);
       this.renderer.camera.lookAt(this.player.position.clone().add(new THREE.Vector3(0, 2, 0)));
     }
@@ -5112,6 +5167,14 @@ class GameApp {
 
     let bestTarget = null;
     let minDistance = 35.0; // Max lock range 35m
+
+    // A hard lock (Q or the gamepad) names its own target instead of the nearest one in front.
+    const hardLock = this.player.targetLockEnemy;
+    if (hardLock?.hp > 0 && hardLock.mesh) {
+      bestTarget = { pos: hardLock.mesh.position.clone().add(new THREE.Vector3(0, 1.6, 0)), dist: hardLock.mesh.position.distanceTo(this.player.position),
+        name: String(hardLock.name ?? hardLock.type ?? 'CIBLE').toUpperCase(), weakpoint: 'VERROUILLAGE ACTIF — [Q] CIBLE SUIVANTE' };
+      minDistance = -1;
+    }
 
     const playerForward = new THREE.Vector3(
       Math.sin(this.player.rotationY),

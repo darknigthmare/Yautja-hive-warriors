@@ -54,6 +54,20 @@ export class ColonialMarinesManager {
   }
 
 
+  /** Colorado National Guard riflemen for the Gunnison hunt: no sentry, no USCM kit. */
+  spawnNationalGuard(playerPos, count = 4) {
+    for (let i = 0; i < count; i++) {
+      const mesh = this.createMarineMesh(false);
+      mesh.traverse(child => { if (child.isMesh && child.material?.color && !child.material.transparent) { child.material = child.material.clone(); child.material.color.setHex(0x55603f); } });
+      mesh.name = 'national-guard-rifleman';
+      const angle = (i / count) * Math.PI * 2 + 0.4;
+      mesh.position.set(playerPos.x + Math.cos(angle) * 20, 0, playerPos.z + Math.sin(angle) * 20);
+      this.scene.add(mesh);
+      this.marines.push({ mesh, type: 'national_guard', affiliation: 'us_national_guard', hp: 120, maxHp: 120, damage: 14, speed: 8,
+        shootCooldown: 1.2 + i * 0.3, grenadeCooldown: Infinity });
+    }
+  }
+
   createMarineMesh(isSmartgunner) {
     return createMarineModel(isSmartgunner);
   }

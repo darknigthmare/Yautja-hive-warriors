@@ -78,7 +78,10 @@ test('real melee starts a visible finite catalepsy, without death, movement or a
     const box = new THREE.Box3().setFromObject(actor.ravagerVisual);
     assert.ok(Math.abs(box.min.y - 2) < .001, 'fallen body remains on the same real floor');
     assert.equal(bridge.actors.get(unit.id).actor, actor);
-    assert.equal(sim.units.size, total); assert.deepEqual(sim.getCounts(), counts);
+    // Remote fronts keep fighting meanwhile (focused fire, HW-DEC-92): identities and allocations stay fixed.
+    const allocated = value => Object.fromEntries(Object.entries(value).map(([faction, row]) => [faction, row.allocated]));
+    assert.equal(sim.units.size, total); assert.deepEqual(allocated(sim.getCounts()), allocated(counts));
+    assert.equal(sim.deaths.has(unit.id), false); assert.equal(sim.assertConservation(), true);
     for (let i = 0; i < 43; i++) f.tick(.25);
     assert.equal(unit.ravagerCatalepsy.recoverAt, 12);
     assert.equal(unit.incapacitated, true);
