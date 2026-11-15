@@ -86,6 +86,9 @@ import { AmbientSoundscape, ambientBiomeFor } from './engine/AmbientSoundscape.j
 import { MenuBackdrop } from './graphics/MenuBackdrop.js';
 import { BootSequence } from './ui/BootSequence.js';
 import { LoadingScreen } from './ui/LoadingScreen.js';
+import { CinematicDirector, CameraPaths } from './engine/CinematicDirector.js';
+import { buildMissionIntel } from './data/MissionIntel.js';
+import { readCinematicsMode } from './ui/BootSequence.js';
 import { assetLoadProgress } from './graphics/GeneratedAssetLibrary.js';
 
 class GameApp {
@@ -250,6 +253,7 @@ class GameApp {
   setupPresentation() {
     this.music = new MusicDirector(this.audio);
     this.loading = new LoadingScreen({ progressSource: assetLoadProgress });
+    this.cinematic = new CinematicDirector({ audio: this.audio });
     this.ambient = new AmbientSoundscape(this.audio);
     this.menuBackdrop = new MenuBackdrop({ renderer: this.renderer, host: this.ui.mainMenu, hunterCount: CHARACTERS_DATA.length,
       createHunter: (scene, index) => new Player(scene, CHARACTERS_DATA[index % CHARACTERS_DATA.length], this.audio, false, null),
@@ -282,10 +286,55 @@ class GameApp {
     if (!this.loading?.begin({ levelId: level?.id, levelName: level?.name ?? '', shipHub: Boolean(this.shipHub) })) { this.music?.play(cue); return; }
     // Automation steps the simulation itself and is never held (spec 003); players are.
     this.loadingHold = !this.loading.automated; const run = this._loadingRun = (this._loadingRun ?? 0) + 1;
-    this.loading.waitUntilReady().then(() => {
+    this.loading.waitUntilReady().then(async () => {
       if (run !== this._loadingRun) return;
-      this.loadingHold = false; this.loading.end(); this.music?.play(cue);
+      this.loading.end();
+      await this.playIntel();
+      if (run !== this._loadingRun) return;
+      this.loadingHold = false; this.music?.play(cue);
     });
+  }
+
+  /** 'full', 'short' or 'off'. Automation sees none unless the page asks with ?intro=1. */
+  cinematicPolicy() {
+    if (navigator.webdriver === true && !/[?&]intro=1\b/.test(location.search)) return 'off';
+    return readCinematicsMode();
+  }
+
+  /** Intel before play: a flyover of the real sectors with the mode's speaker (spec 003, US3). */
+  async playIntel() {
+    const policy = this.cinematicPolicy(); if (policy === 'off' || !this.cinematic) return;
+    const intel = buildMissionIntel({ mode: this.missionMode, level: this.ui.selectedLevel, layout: this.env.battlefieldLayout,
+      bossType: this.preparedBossEncounter?.bossType, ascensionWorld: this.missionMode === 'ascension' ? ascensionWorld(this.ascensionWorldId) : null,
+      factions: [...(this.battleSimulation?.factions?.values?.() ?? [])], playerFaction: this.battleSimulation?.config?.playerFaction });
+    if (!intel?.lines.length) return;
+    const step = policy === 'full' ? 3.8 : 3.1, full = policy === 'full' && intel.focus.length > 1;
+    this.music?.play('briefing', { fade: .8 });
+    document.body.classList.add('cinematic-playing'); this._cinematicStreaming = full;
+    const camera = this.renderer.camera, saved = camera.position.clone();
+    await this.cinematic.play({ duration: intel.lines.length * step + .6, letterbox: full, tone: 'intel',
+      comms: intel.lines.map((line, index) => ({ ...line, at: .3 + index * step })),
+      cameraPath: full ? CameraPaths.flyover(intel.focus) : null }, camera);
+    this._cinematicStreaming = false; document.body.classList.remove('cinematic-playing');
+    camera.position.copy(saved);
+    this.env.updateBattlefieldVisibility?.([this.player, this.player2].filter(Boolean));
+  }
+
+  /** Outro before the results: an orbit for a victory, a rising camera for a defeat; credits after the campaign. */
+  async playOutro(isVictory, title, campaignComplete) {
+    const policy = this.cinematicPolicy(); if (policy === 'off' || !this.cinematic || !this.player) return;
+    const center = this.player.position.clone(), short = policy === 'short';
+    document.body.classList.add('cinematic-playing');
+    await this.cinematic.play({ duration: short ? 2.2 : 4.4, tone: isVictory ? 'victory' : 'defeat', title,
+      subtitle: isVictory ? 'Le clan honore votre chasse.' : 'Le clan se souviendra de votre nom.',
+      cameraPath: isVictory ? CameraPaths.orbit(center, { start: this.player.mesh?.rotation?.y ?? 0 }) : CameraPaths.rise(center) }, this.renderer.camera);
+    if (campaignComplete && policy === 'full') {
+      const credits = this.cinematic.root?.querySelector('.cinematic-credits');
+      if (credits) credits.hidden = false;
+      await this.cinematic.play({ duration: 26, letterbox: false, tone: 'credits' }, null);
+      if (credits) credits.hidden = true;
+    }
+    document.body.classList.remove('cinematic-playing');
   }
 
   onPresentationScreen(screen) {
@@ -5539,12 +5588,18 @@ class GameApp {
         replayLabel = 'RECOMMENCER LA CAMPAGNE';
       }
     }
-    this.clearMissionState();
-    this.ui.renderBattleDebrief(debrief);
-    document.getElementById('end-title').innerText = title;
-    document.getElementById('end-subtitle').innerText = subtitle;
-    document.getElementById('btn-replay').innerText = replayLabel;
-    this.ui.showScreen(this.ui.gameOverScreen);
+    // The outro only moves the camera over the final frame: every result above is already recorded.
+    const finish = () => {
+      this.clearMissionState();
+      this.ui.renderBattleDebrief(debrief);
+      document.getElementById('end-title').innerText = title;
+      document.getElementById('end-subtitle').innerText = subtitle;
+      document.getElementById('btn-replay').innerText = replayLabel;
+      this.ui.showScreen(this.ui.gameOverScreen);
+    };
+    if (this.cinematicPolicy() === 'off') return finish();
+    this._outroRun = (this._outroRun ?? 0) + 1; const outro = this._outroRun;
+    this.playOutro(isVictory, title, title === 'CAMPAGNE ACCOMPLIE !').then(() => { if (outro === this._outroRun && !this.isPlaying) finish(); });
   }
 
   /* === CHANTIER 9 (v50.0): Persistent Clan Honor Vault & Trophy Armory LocalStorage === */
@@ -5865,8 +5920,12 @@ class GameApp {
     // Frozen scenes need no repeated GPU work. Resize, quality and photo-camera
     // changes invalidate a frame; active combat keeps rendering every frame.
     const sceneIsMoving = this.isPlaying && !this.isPaused && !this.photoMode.isActive && !this.weaponWheel.isOpen;
-    // The menu backdrop owns the canvas only while the main menu or title is shown.
-    if (!this.isPlaying && this.menuBackdrop?.active) this.menuBackdrop.render(delta);
+    // A cinematic owns the camera; the menu backdrop owns the canvas only on the menu or title.
+    if (this.cinematic?.isActive) {
+      this.cinematic.update(delta);
+      if (this._cinematicStreaming && (this._streamFrame = ((this._streamFrame ?? 0) + 1) % 8) === 0) this.env.updateBattlefieldVisibility?.([{ x: this.renderer.camera.position.x, z: this.renderer.camera.position.z }]);
+      this.renderer.render();
+    } else if (!this.isPlaying && this.menuBackdrop?.active) this.menuBackdrop.render(delta);
     else if (sceneIsMoving || this.renderer.needsRender) this.renderer.render();
   }
 }

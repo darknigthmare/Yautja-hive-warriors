@@ -47,3 +47,29 @@ test('every world has a loading card and progress counts only the models request
   assert.equal(loadingProgress({ requested: 8, settled: 6 }, baseline, 8), .5 * .85 + .15);
   assert.equal(loadingProgress({ requested: 8, settled: 8 }, baseline, 30), 1);
 });
+
+test('intel speaks per mode from the mission data and never announces what is absent', async () => {
+  const { buildMissionIntel, BOSS_LABELS } = await import('../js/data/MissionIntel.js');
+  const { ascensionWorld } = await import('../js/data/AscensionWorlds.js');
+  const { BOSS_REGISTRY } = await import('../js/data/BossRegistry.js');
+  const level = LEVELS_DATA.find(item => item.id === 'val_verde_jungle');
+  const layout = { sectors: Array.from({ length: 6 }, (_, index) => ({ center: [index * 170, 0], objective: { label: index ? 'Autre' : 'Éliminez 12 ennemis pour ouvrir le passage' } })) };
+  const hunt = buildMissionIntel({ mode: 'hunt', level, layout, bossType: 'jungle_hunter_boss' });
+  assert.ok(hunt.lines.every(line => line.speaker === 'ANCIEN DU CLAN'));
+  assert.match(hunt.lines.map(line => line.text).join(' '), /6 secteurs.*éliminez 12 ennemis.*le Chasseur de la jungle/s);
+  assert.equal(hunt.focus.length, 6);
+  assert.ok(!buildMissionIntel({ mode: 'hunt', level, layout }).lines.some(line => /dernier secteur attend/.test(line.text)), 'no boss line without a prepared boss');
+  const ascension = buildMissionIntel({ mode: 'ascension', level, layout, ascensionWorld: ascensionWorld('vara_kesh') });
+  assert.deepEqual([...new Set(ascension.lines.map(line => line.speaker))], ['KAEDH', 'SAAR']);
+  const fronts = buildMissionIntel({ mode: 'fronts', level, layout, playerFaction: 'clan', factions: [{ id: 'clan', species: 'yautja' }, { id: 'uscm', species: 'human', label: 'USCM' }, { id: 'hive', species: 'xenomorph' }] });
+  assert.equal(fronts.lines[0].speaker, 'RADIO · USCM'); assert.equal(fronts.lines[0].side, 'intercept'); assert.equal(fronts.lines.at(-1).speaker, 'ANCIEN DU CLAN');
+  const hiveOnly = buildMissionIntel({ mode: 'fronts', level, layout, playerFaction: 'clan', factions: [{ id: 'clan', species: 'yautja' }, { id: 'hive', species: 'xenomorph' }] });
+  assert.ok(hiveOnly.lines.every(line => line.side !== 'intercept'), 'no human radio is invented when no human faction is present');
+  assert.equal(buildMissionIntel({ mode: 'ascension_hub', level }), null);
+  for (const id of Object.keys(BOSS_LABELS)) assert.ok(BOSS_REGISTRY[id], `${id} is a registered boss`);
+});
+
+test('typed comms reveal at a readable pace', async () => {
+  const { typedLength } = await import('../js/engine/CinematicDirector.js');
+  assert.equal(typedLength('abcdef', 0), 0); assert.equal(typedLength('abcdef', .1), 3); assert.equal(typedLength('abcdef', 10), 6);
+});

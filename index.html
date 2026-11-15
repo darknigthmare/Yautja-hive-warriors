@@ -102,6 +102,30 @@
     </div>
   </div>
 
+  <!-- CINEMATICS (spec 003, US3): letterbox, comms, title cards, credits -->
+  <div id="cinematic-layer" class="cinematic-layer" hidden>
+    <div class="letterbox letterbox-top"></div><div class="letterbox letterbox-bottom"></div>
+    <div class="cinematic-card" hidden><h2 class="cinematic-title"></h2><p class="cinematic-subtitle"></p></div>
+    <section class="cinematic-comms" hidden aria-live="polite">
+      <p class="comms-speaker"></p><p class="comms-text"></p><p class="comms-glyphs" aria-hidden="true"></p>
+    </section>
+    <div class="cinematic-credits" hidden>
+      <div class="credits-roll">
+        <h2>HIVE WARRIORS</h2>
+        <p class="credits-role">A fan game project by</p><p class="credits-name">DARKNIGTHMARE</p>
+        <p class="credits-role">Conception, direction et production</p><p class="credits-name">Darknigthmare</p>
+        <p class="credits-role">Développement assisté par</p><p class="credits-name">Claude Code · Codex</p>
+        <p class="credits-role">Moteur et outils</p><p class="credits-name">three.js · Vite · Playwright</p>
+        <p class="credits-role">Polices</p><p class="credits-name">Orbitron · Rajdhani (SIL Open Font License)</p>
+        <p class="credits-role">Modèles 3D des chasseurs et du guerrier xénomorphe</p><p class="credits-name">Générés avec Meshy, puis calibrés pour le jeu</p>
+        <p class="credits-role">Musique et ambiances</p><p class="credits-name">Partition procédurale originale</p>
+        <p class="credits-notice">Projet de fan non officiel, gratuit et non commercial. Predator, Alien et leurs univers appartiennent à leurs ayants droit ; ce jeu n’est ni approuvé ni affilié.</p>
+        <p class="credits-end">Le clan se souviendra.</p>
+      </div>
+    </div>
+    <div class="cinematic-skip-zone"><button type="button" class="cinematic-skip">PASSER</button><span class="cinematic-skip-hint">Maintenir [ESPACE] pour passer</span><span class="cinematic-skip-bar"><span class="cinematic-skip-progress"></span></span></div>
+  </div>
+
   <div id="ui-layer">
 
     <!-- MAIN MENU SCREEN -->

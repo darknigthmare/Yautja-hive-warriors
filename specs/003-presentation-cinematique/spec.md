@@ -2,7 +2,7 @@
 
 **Feature Branch**: `claude/fervent-volta-hmhdfw` (aucune branche dédiée)
 **Created**: 2026-11-15
-**Status**: Étapes 1 (démarrage, menu, musique, ambiances) et 2 (écrans de chargement) livrées le 15 nov. 2026 ; étapes 3 et 4 à venir
+**Status**: Étapes 1 à 3 (démarrage, menu, musique, chargement, intel, outros, crédits) livrées le 15 nov. 2026 ; étape 4 (animations et décors en jeu) à venir
 **Input**: demande de l’auteur du 15/11/2026, « rendre le jeu plus fluide et cinématique : les intel, les outros, l’avant-menu, l’écran d’accueil, le menu principal, les écrans de chargement, des animations, des décors ».
 
 ## Décisions de l’auteur (15/11/2026)
@@ -51,7 +51,25 @@ Entre la préparation et la mission, un écran montre :
 - le monde choisi ;
 - une fiche de lore et un conseil.
 
-### US3 — Intel et outros (P3)
+### US3 — Intel et outros (P3) · livrée
+
+**Décisions de l'auteur du 15/11/2026** :
+- L'interlocuteur dépend du mode.
+  - Chasse libre et campagne : l'Ancien du clan.
+  - Ascension : Kaedh, avec Saar pour la logistique.
+  - Fronts : la radio de la faction humaine réellement présente, interceptée et décodée par le bio-masque ; l'Ancien conclut.
+- Chaque réplique s'accompagne de cliquetis et de grésillements.
+- Victoire : orbite de caméra. Défaite : caméra qui s'élève au-dessus du chasseur tombé.
+
+**Livré** :
+- **Intel** :
+  - Survol en bandes noires des secteurs réels, après le chargement.
+  - Répliques construites depuis les données de la mission : lieu, secteurs, premier objectif, boss préparé, factions.
+  - Aucune radio humaine n'est inventée sans faction humaine.
+  - Temps de mission gelé pendant l'intel.
+- **Outros** : déroulés avant le bilan, une fois les résultats enregistrés.
+- **Fin de campagne** : défilement des crédits (projet de fan, outils, polices, modèles générés, musique procédurale, mention de non-affiliation).
+- **Passer** : maintenir Espace, Entrée ou un bouton de manette 0,5 s, ou cliquer « Passer ». Le réglage « Courtes » garde les répliques sans survol et raccourcit l'outro.
 
 - **Avant la mission** : survol 3D des secteurs, portes et objectifs, avec le panneau de communication de l’interlocuteur.
 - **Après la mission** : une séquence de victoire ou de défaite avant le bilan.

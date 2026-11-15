@@ -314,11 +314,34 @@ test('presentation: the intro skips on a key, the menu backdrop rotates and noth
     await page.waitForFunction(() => window.game?.menuBackdrop?.choice);
     assert.equal(await page.evaluate(() => document.getElementById('boot-sequence').hidden), true, 'automation skips the intro without ?intro=1');
     assert.notEqual(await page.evaluate(() => document.body.dataset.menuBackdrop), menu.style, 'each arrival shows another backdrop');
-    await launchHunt(page);
+    // The intel plays after loading and holding Space skips it (spec 003, US3).
+    await page.goto(`${page.url().split('?')[0]}?intro=1`, { waitUntil: 'networkidle' });
+    await page.waitForFunction(() => window.game?.boot);
+    await page.keyboard.press('Space'); await page.waitForFunction(() => document.getElementById('boot-sequence').dataset.stage === 'title');
+    await page.keyboard.press('Space'); await page.waitForFunction(() => document.getElementById('boot-sequence').hidden);
+    await page.locator('#btn-start-game').click();
+    await screen(page, 'char-select-menu');
+    await page.locator('.char-btn-card').nth(0).click();
+    await page.locator('#btn-confirm-char').click();
+    await screen(page, 'level-select-menu');
+    await page.locator('.level-card').nth(0).click();
+    await page.locator('#btn-launch-mission').click();
+    await screen(page, 'loadout-prep-screen');
+    await page.locator('#btn-confirm-loadout').click({ timeout: 120000 });
+    await page.waitForFunction(() => window.game.cinematic.isActive && document.querySelector('.comms-speaker').textContent, null, { timeout: 60000 });
+    const intel = await page.evaluate(() => ({ speaker: document.querySelector('.comms-speaker').textContent, hold: window.game.loadingHold, cue: window.game.music.cue }));
+    assert.deepEqual(intel, { speaker: 'ANCIEN DU CLAN', hold: true, cue: 'briefing' }, 'mission time is held during the intel');
+    await page.keyboard.down('Space'); await page.waitForFunction(() => !window.game.cinematic.isActive, null, { timeout: 20000 }); await page.keyboard.up('Space');
     await page.waitForFunction(() => !window.game.loadingHold && document.getElementById('loading-screen').hidden, null, { timeout: 30000 });
+    await finishMissionInsertion(page);
     const play = await page.evaluate(() => ({ active: window.game.menuBackdrop.active, scene: Boolean(window.game.menuBackdrop.scene), layer: Boolean(document.querySelector('.menu-backdrop')), ambient: window.game.ambient.biome, cue: window.game.music.cue }));
     assert.deepEqual({ active: play.active, scene: play.scene, layer: play.layer }, { active: false, scene: false, layer: false }, 'the menu scene is disposed during play');
     assert.equal(play.cue === 'explore' || play.cue === 'combat' || play.cue === 'boss', true);
     assert.ok(play.ambient, 'the biome ambience runs during play');
+    // The outro moves the camera over the last frame, then the results appear with the outcome already recorded.
+    await page.evaluate(() => window.game.endGame(true));
+    assert.equal(await page.evaluate(() => window.game.cinematic.isActive && !window.game.isPlaying), true);
+    await screen(page, 'game-over-screen');
+    assert.equal(await page.evaluate(() => document.getElementById('end-title').innerText), 'VICTOIRE GLORIEUSE !');
   }, { path: '?intro=1' });
 });
