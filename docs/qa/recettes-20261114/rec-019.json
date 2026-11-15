@@ -5,7 +5,7 @@
   "operation": "AFF-14",
   "boss": "BOS-32",
   "seed": 1114,
-  "commit": "214817ba8d268705e4ce650149fbdc028e8dd934",
+  "commit": "cc8141adcc6a9569563e16ce00b5eb3f134752d1",
   "date": "2026-11-14",
   "commande": "node --test tests/recette-rec-019.test.js",
   "preuveVideo": "non produite — preuve par journal",

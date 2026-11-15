@@ -5,7 +5,7 @@
   "resultatAttenduClasseur": "Les décisions changent les renforts, les pertes, les accès ou l'extraction de façon explicable. Les fronts non secourus ne retrouvent pas artificiellement le même résultat imposé.",
   "preuveAConserverClasseur": "Deux replays comparables; bilan par front; chronologie des ordres et objectifs; justification des différences.",
   "date": "2026-11-14",
-  "commit": "214817ba8d268705e4ce650149fbdc028e8dd934",
+  "commit": "cc8141adcc6a9569563e16ce00b5eb3f134752d1",
   "branche": "claude/fervent-volta-hmhdfw",
   "preuveVideo": "non produite — preuve par journal de simulation",
   "graine": {
