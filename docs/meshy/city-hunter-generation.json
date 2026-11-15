@@ -1,0 +1,181 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-23",
+  "character": "city_hunter",
+  "scope": "Approved City Hunter body, AutoSplit, 4K PBR retexture, rig and separate biomask only",
+  "budget": {
+    "approved": 75,
+    "consumed": 75,
+    "balance_before": 2100,
+    "balance_after": 2025,
+    "paid_reruns": 0,
+    "other_new_characters_authorized": false
+  },
+  "tasks": [
+    {
+      "stage": "body-geometry",
+      "resource": "image-to-3d",
+      "id": "01a166de-e14d-7063-980c-cd9e6fdc9984",
+      "status": "SUCCEEDED",
+      "estimated_credits": 20,
+      "consumed_credits": 20
+    },
+    {
+      "stage": "biomask",
+      "resource": "image-to-3d",
+      "id": "01a166df-5e3f-74a3-aff3-eb69764aac35",
+      "status": "SUCCEEDED",
+      "estimated_credits": 30,
+      "consumed_credits": 30
+    },
+    {
+      "stage": "body-split",
+      "resource": "auto-split",
+      "id": "01a166e3-8e2d-7442-a3f7-7f9b78313337",
+      "status": "SUCCEEDED",
+      "estimated_credits": 10,
+      "consumed_credits": 10,
+      "part_count": 19
+    },
+    {
+      "stage": "body-retexture",
+      "resource": "retexture",
+      "id": "01a166e9-8504-7545-b8bb-15c61264ce24",
+      "status": "SUCCEEDED",
+      "estimated_credits": 10,
+      "consumed_credits": 10,
+      "source_task_id": "01a166e3-8e2d-7442-a3f7-7f9b78313337",
+      "source_resource": "auto-split"
+    },
+    {
+      "stage": "body-rigging",
+      "resource": "rigging",
+      "id": "01a166f0-3758-7117-8191-2be89e610bb5",
+      "status": "SUCCEEDED",
+      "estimated_credits": 5,
+      "consumed_credits": 5,
+      "source_task_id": "01a166e9-8504-7545-b8bb-15c61264ce24",
+      "source_resource": "retexture"
+    }
+  ],
+  "references": [
+    {
+      "component": "body",
+      "source_page": "https://www.prime1studio.com/pr2-city-hunter-predator/MMPR-02UTS.html",
+      "source_original_name": "mmpr-02uts_a08-01.jpg",
+      "product_code": "MMPR-02UTS",
+      "input_sha256": "d77df7fd9025fb73de6dbad794c9e0376078fb3acb38e9b169a47901a43e4093",
+      "method": "Classical cutout of original photograph; no generated synthesis used",
+      "visual_reviews": 3,
+      "review_type": "AI reviews, not human QA",
+      "native_canvas": [
+        1060,
+        1500
+      ]
+    },
+    {
+      "component": "biomask",
+      "source_page": "https://www.prime1studio.com/pr2-city-hunter-predator/MMPR-02UTS.html",
+      "source_original_name": "mmpr-02uts_b110.jpg",
+      "product_code": "MMPR-02UTS",
+      "input_sha256": "72114d64984aeaec0a07ad0a4a41371255fdaf0100bbf0bbb06dbf3e331be084",
+      "method": "Classical cutout of original photograph; no generated synthesis used",
+      "visual_reviews": 3,
+      "review_type": "AI reviews, not human QA",
+      "native_canvas": [
+        1500,
+        1060
+      ]
+    }
+  ],
+  "assets": [
+    {
+      "file": "/models/city-hunter-body-corrected.glb",
+      "bytes": 42815452,
+      "sha256": "0e297a50400f885f06595f2fb59c85aed5118517a03c140f0f3aefa5288b564b",
+      "derived_from_sha256": "bd962ad79d5034d6ac5c0d7fc03e185433d0784808ffc868e597c7656e6725e7",
+      "animations": 0
+    },
+    {
+      "file": "/models/city-hunter-rigged.glb",
+      "bytes": 43124896,
+      "sha256": "bd962ad79d5034d6ac5c0d7fc03e185433d0784808ffc868e597c7656e6725e7"
+    },
+    {
+      "file": "/models/city-hunter-biomask.glb",
+      "bytes": 32727588,
+      "sha256": "a2450f45ee9601ba4c4b621ff8acb5f36fb7a4dd41ce89841de6ea23b6c1f3a0"
+    },
+    {
+      "file": "/models/city-hunter-walk.glb",
+      "bytes": 89568,
+      "sha256": "c54514bba78ddc9f87e18f9be62554be4894d83b192c73fcea4182547aad94a5"
+    },
+    {
+      "file": "/models/city-hunter-run.glb",
+      "bytes": 78940,
+      "sha256": "4356221be2e4c6b19a31cec21a1831dd70922385027cae45d04020cafcac18dd"
+    }
+  ],
+  "geometry": {
+    "rigged_body_triangles": 235918,
+    "rigged_body_vertices": 245128,
+    "body_joints": 24,
+    "biomask_triangles": 75466,
+    "split_parts": 19,
+    "faces_with_unique_recovered_owner": 229104,
+    "faces_without_mechanical_classification": 6814,
+    "prepared_body_vertices": 246007,
+    "prepared_surface_regions": 21,
+    "prepared_body_joints": 36
+  },
+  "textures": {
+    "body": [
+      "4096x4096 base color",
+      "4096x4096 normal",
+      "2048x2048 metallic/roughness"
+    ],
+    "biomask": "4K PBR"
+  },
+  "integration": {
+    "status": "published_and_verified",
+    "active_strands": 2,
+    "remaining_hair": "Main bouquet repaired to follow Head rigidly; only two isolated strands have independent four-segment chains.",
+    "wristblades": "Fused with arm geometry; no complete independent slider validated",
+    "gauntlets": "Static; no measured lid mechanism enabled",
+    "mask_eyes": "Geometry checked closed and opaque; no Jungle Hunter eye-filter helper required",
+    "animation_delivery": "Light armature clips; all66 tracks and values equal full-body provider clips",
+    "clip_runtime_playback": "Rejected after real WebGL playback: walk foot minY -0.264, run -0.283 at target height4.31; visible arm/armor deformation. Clips supplied for editing only, game control poses retained.",
+    "mask_fit_status": "Measured separate opaque mask;595 source face triangles hidden only after successful in-game mask composition.",
+    "anatomical_repair": "Nine measured local skin passes preserve all235918triangles, UVs, normals and rest surface; repair right fingers, left arm, torso, face and head roots. LeftArm rest pivot corrected with compensated inverse binds; old provider clips are excluded from the corrected body.",
+    "foot_contact": "Visual leg rotation gain0.2 plus closest-foot vertical compensation measured on the corrected GLB across21phases. Final rendered terrain isY0; contact error max4.43e-9, offset range[-0.06265468023,+0.08594130836]. Physical actor unchanged. Gait remains short/rigid, without IK, ankle leveling or anti-slide.",
+    "runtime_asset": "Corrected GLB exported, exhaustively reloaded and verified in actual Chromium WebGL gameplay; only small calibration/controller descriptors are loaded at runtime."
+  },
+  "validation": {
+    "fidelity_1_to_1_verified": false,
+    "human_testers": 0,
+    "production_published_this_pass": true,
+    "local_runtime_qa_passed": true,
+    "local_runtime_review": "docs/qa/city-hunter/visual-review.json",
+    "publication_status": "Local validation complete; this archive does not assert a new production deployment."
+  },
+  "limitations": [
+    "Unmasked face and mandibles differ from photograph; this is an approximate reconstruction, not a1:1 scan.",
+    "Only two isolated actual dreadlocks are independently articulated; main bouquet follows Head rigidly.",
+    "Wristblade roots remain fused with arm; no complete independent retraction.",
+    "The source pose remains bent and locomotion is simplified; no full animation retargeting, foot IK or anti-slide is claimed.",
+    "Other five proposed characters remain outside this75credit approval."
+  ],
+  "publication": {
+    "url": "https://yautja-hive-warriors.vercel.app",
+    "deployment_id": "dpl_2PQm3BPZaRpSHEmsVKUh6ME6Magt",
+    "state": "READY/PROMOTED",
+    "index_sha256": "24eab12d4e1e8db65a4d43209ed0f842532538ce5ffcb292ea528f335532f35f",
+    "public_unauthenticated_http_verified": true,
+    "bundles_verified": 5,
+    "model_files_verified": 12,
+    "proof": "vercel-final-public-verification.json",
+    "live_browser_status": "passed",
+    "browser_proof": "live-gameplay-report.json"
+  }
+}

@@ -1,0 +1,14 @@
+✔ legacy earned/spent honor migrates once and caller-supplied funds cannot alter the balance (1.072614ms)
+✔ a combat identity earns once, including French trophy names across persistence (0.952727ms)
+✔ settling a mission compacts deaths while preserving exact old-session replay rejection and purchases (162.247261ms)
+✔ quota failures roll back both credit and debit without inventing funds or upgrade receipts (0.343591ms)
+✔ corrupt saves, invalid amounts and unavailable storage remain finite and playable (0.312403ms)
+✔ failed combat credits remain pending once and settle after storage recovers without reopening a finished run (0.506123ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 244.640627

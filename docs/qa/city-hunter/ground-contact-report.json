@@ -1,0 +1,730 @@
+{
+  "startedAt": "2026-10-23T07:02:04.885Z",
+  "status": "passed",
+  "url": "http://127.0.0.1:4189",
+  "includeJungleAlienRegressions": false,
+  "scope": "Targeted post-fix real-game ground/contact rendering only. Full controls, cache and Jungle/Alien regressions were verified in runtime-report.json; they are not repeated here.",
+  "sourceFiles": {
+    "city_hunter": {
+      "path": "/models/city-hunter-body-corrected.glb",
+      "bytes": 42815452,
+      "sha256": "0e297a50400f885f06595f2fb59c85aed5118517a03c140f0f3aefa5288b564b"
+    },
+    "city_hunter_source": {
+      "path": "/models/city-hunter-rigged.glb",
+      "bytes": 43124896,
+      "sha256": "bd962ad79d5034d6ac5c0d7fc03e185433d0784808ffc868e597c7656e6725e7"
+    },
+    "city_hunter_biomask": {
+      "path": "/models/city-hunter-biomask.glb",
+      "bytes": 32727588,
+      "sha256": "a2450f45ee9601ba4c4b621ff8acb5f36fb7a4dd41ce89841de6ea23b6c1f3a0"
+    },
+    "city_hunter_walk_delivery": {
+      "path": "/models/city-hunter-walk.glb",
+      "bytes": 89568,
+      "sha256": "c54514bba78ddc9f87e18f9be62554be4894d83b192c73fcea4182547aad94a5"
+    },
+    "city_hunter_run_delivery": {
+      "path": "/models/city-hunter-run.glb",
+      "bytes": 78940,
+      "sha256": "4356221be2e4c6b19a31cec21a1831dd70922385027cae45d04020cafcac18dd"
+    }
+  },
+  "verifiedBuiltAssets": [],
+  "verifiedLiveFiles": [],
+  "errors": [],
+  "failedRequests": [],
+  "externalRequests": [],
+  "initial": {
+    "body": "imported",
+    "mask": "attached",
+    "asset": {
+      "key": "city_hunter",
+      "url": "/models/city-hunter-body-corrected.glb",
+      "biomask": {
+        "key": "city_hunter_biomask",
+        "url": "/models/city-hunter-biomask.glb"
+      }
+    },
+    "maskGroupFound": true,
+    "preparation": {
+      "regionsPrepared": false,
+      "hairPrepared": false,
+      "hairPieces": 0,
+      "hairMaxNeutralWorldError": 0,
+      "hairMaxRestWorldError": 0,
+      "regionError": null,
+      "hairError": null,
+      "skinFiltersPrepared": false,
+      "skinFilterPasses": 0,
+      "skinFilteredRegions": 0,
+      "skinFilteredVertices": 0,
+      "skinMaxRestWorldError": 0,
+      "skinFilterRegions": [],
+      "skinFilterError": null,
+      "rigidEquipmentPrepared": false,
+      "boneRestCorrectionsApplied": false,
+      "boneRestCorrectionError": null,
+      "boneRestCorrectionDiagnostics": null,
+      "animationsSuppressedForBoneRestCorrection": false,
+      "suppressedAnimationClips": 0,
+      "rigidEquipmentError": null
+    },
+    "surfaceInventory": {
+      "bodyTriangles": 235918,
+      "maskTriangles": 75466,
+      "bodyMeshes": 26,
+      "maskMeshes": 1,
+      "pbrMaterials": [
+        {
+          "kind": "body",
+          "name": "Material_0",
+          "color": [
+            4096,
+            4096
+          ],
+          "normal": [
+            4096,
+            4096
+          ],
+          "roughnessMetalness": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "kind": "mask",
+          "name": "Material_0",
+          "color": [
+            4096,
+            4096
+          ],
+          "normal": [
+            4096,
+            4096
+          ],
+          "roughnessMetalness": [
+            2048,
+            2048
+          ]
+        }
+      ]
+    },
+    "preparedGeometry": true,
+    "leftArmParentLocal": {
+      "position": [
+        -24.129454994679115,
+        -6.445566247060389,
+        4.8692597110073725
+      ],
+      "quaternion": [
+        -0.6978369731270365,
+        0.07851893207276399,
+        -0.12419969942063884,
+        0.701022602871282
+      ]
+    },
+    "footGrounding": {
+      "status": "applied",
+      "sourceSha256": "0e297a50400f885f06595f2fb59c85aed5118517a03c140f0f3aefa5288b564b",
+      "motionGain": 0.2,
+      "maxOffset": 0.15,
+      "restMinimumY": 1.0651243170655978e-15,
+      "regions": [
+        {
+          "regionId": "model_part0",
+          "supportVertices": 36,
+          "referencedVertices": 9194,
+          "restError": 2.4841240175987878e-15,
+          "coverageError": 1.131807918442113e-15
+        },
+        {
+          "regionId": "model_part4",
+          "supportVertices": 36,
+          "referencedVertices": 8860,
+          "restError": 2.2898349882893854e-15,
+          "coverageError": 1.0210439046088652e-15
+        }
+      ],
+      "offsetY": 1.4563261181411657e-15,
+      "minimumYBeforeOffset": -1.4563261181411657e-15,
+      "minimumYAfterOffset": 0,
+      "maxObservedAbsoluteOffset": 1.4563261181411657e-15,
+      "refusals": 0,
+      "lastError": null,
+      "lastRejectedOffsetY": null
+    },
+    "visualGroundOffsetY": 1.4563261181411657e-15,
+    "articulation": {
+      "dreadlocks": 2,
+      "simulatedSegments": 8,
+      "wristbladeActuators": 0,
+      "gauntletHinges": 0
+    },
+    "hair": [
+      {
+        "name": "model_part10",
+        "vertices": 605,
+        "triangles": 650,
+        "bones": 6,
+        "visible": true
+      },
+      {
+        "name": "model_part12",
+        "vertices": 473,
+        "triangles": 498,
+        "bones": 6,
+        "visible": true
+      }
+    ],
+    "animations": [],
+    "bodyBounds": {
+      "height": 4.31,
+      "normalizationScale": 1.790904483733148
+    },
+    "cameraEyeHeight": 3.539286582984726,
+    "accessories": {
+      "blade1": {
+        "parent": "imported-socket-rightHand",
+        "visible": false
+      },
+      "blade2": {
+        "parent": "imported-socket-rightHand",
+        "visible": false
+      },
+      "shieldMesh": {
+        "parent": "imported-socket-leftHand",
+        "visible": false
+      },
+      "secWeaponMesh": {
+        "parent": "imported-socket-leftHand",
+        "visible": false
+      },
+      "plasmaGlaiveMesh": {
+        "parent": "imported-socket-rightHand",
+        "visible": false
+      },
+      "clanMarkMesh": {
+        "parent": "imported-socket-head",
+        "visible": false
+      }
+    },
+    "cachedResources": 30,
+    "bakedIntegrity": {
+      "regionIds": [
+        "model_part0",
+        "model_part1",
+        "model_part2",
+        "model_part3",
+        "model_part4",
+        "model_part5",
+        "model_part6",
+        "model_part7",
+        "model_part8",
+        "model_part9",
+        "model_part11",
+        "model_part13",
+        "model_part14",
+        "model_part15",
+        "model_part16",
+        "model_part17",
+        "model_part18",
+        "model_part16_under_biomask",
+        "unclassified-static",
+        "model_part10",
+        "model_part12"
+      ],
+      "missingMetadata": 0,
+      "staticHair": [
+        {
+          "name": "model_part17",
+          "vertices": 91075,
+          "maxNonHeadWeight": 0
+        }
+      ],
+      "clips": 0,
+      "leftArmRest": {
+        "parent": "LeftShoulder",
+        "position": [
+          -24.129454994679115,
+          -6.445566247060389,
+          4.8692597110073725
+        ],
+        "quaternion": [
+          -0.6978369731270365,
+          0.07851893207276399,
+          -0.12419969942063884,
+          0.701022602871282
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "positionError": 0,
+        "quaternionError": 2.2098200380682442e-8,
+        "scaleError": 0
+      }
+    }
+  },
+  "locomotion": {
+    "actorWorldDisplacement": 0.31666666666666643,
+    "leftLegAngularChange": 0.09999840446831985,
+    "proceduralStrideRadians": [
+      0.5,
+      -0.5
+    ],
+    "footPhases": [
+      {
+        "rawStride": -0.5,
+        "feet": [
+          {
+            "regionId": "model_part0",
+            "minAll": 4.428505492870549e-9,
+            "minSupport": 4.428505492870549e-9
+          },
+          {
+            "regionId": "model_part4",
+            "minAll": 0.03998730059073145,
+            "minSupport": 0.03998730059073145
+          }
+        ],
+        "minimum": 4.428505492870549e-9,
+        "offsetY": 0.08594130836126357,
+        "cameraEyeHeight": 3.6252278913459883,
+        "laserLocalY": 0.08594130836126357
+      },
+      {
+        "rawStride": -0.45,
+        "feet": [
+          {
+            "regionId": "model_part0",
+            "minAll": -2.507466734247288e-10,
+            "minSupport": -2.507466734247288e-10
+          },
+          {
+            "regionId": "model_part4",
+            "minAll": 0.0381027813909782,
+            "minSupport": 0.0381027813909782
+          }
+        ],
+        "minimum": -2.507466734247288e-10,
+        "offsetY": 0.07752764488357784,
+        "cameraEyeHeight": 3.6168142278683026,
+        "laserLocalY": 0.07752764488357784
+      },
+      {
+        "rawStride": -0.4,
+        "feet": [
+          {
+            "regionId": "model_part0",
+            "minAll": 2.3766524859247795e-10,
+            "minSupport": 2.3766524859247795e-10
+          },
+          {
+            "regionId": "model_part4",
+            "minAll": 0.03375436779906815,
+            "minSupport": 0.03375436779906815
+          }
+        ],
+        "minimum": 2.3766524859247795e-10,
+        "offsetY": 0.06955293013940408,
+        "cameraEyeHeight": 3.6088395131241287,
+        "laserLocalY": 0.06955293013940408
+      },
+      {
+        "rawStride": -0.35,
+        "feet": [
+          {
+            "regionId": "model_part0",
+            "minAll": 2.360971626536035e-10,
+            "minSupport": 2.360971626536035e-10
+          },
+          {
+            "regionId": "model_part4",
+            "minAll": 0.029674892724285654,
+            "minSupport": 0.029674892724285654
+          }
+        ],
+        "minimum": 2.360971626536035e-10,
+        "offsetY": 0.061630818511134305,
+        "cameraEyeHeight": 3.600917401495859,
+        "laserLocalY": 0.061630818511134305
+      },
+      {
+        "rawStride": -0.3,
+        "feet": [
+          {
+            "regionId": "model_part0",
+            "minAll": 2.427211764910453e-10,
+            "minSupport": 2.427211764910453e-10
+          },
+          {
+            "regionId": "model_part4",
+            "minAll": 0.025589111993520496,
+            "minSupport": 0.025589111993520496
+          }
+        ],
+        "minimum": 2.427211764910453e-10,
+        "offsetY": 0.05348645009432812,
+        "cameraEyeHeight": 3.5927730330790526,
+        "laserLocalY": 0.05348645009432812
+      },
+      {
+        "rawStride": -0.25,
+        "feet": [
+          {
+            "regionId": "model_part0",
+            "minAll": 2.4932059194959777e-10,
+            "minSupport": 2.4932059194959777e-10
+          },
+          {
+            "regionId": "model_part4",
+            "minAll": 0.021497434173227945,
+            "minSupport": 0.021497434173227945
+          }
+        ],
+        "minimum": 2.4932059194959777e-10,
+        "offsetY": 0.04512063931082604,
+        "cameraEyeHeight": 3.5844072222955505,
+        "laserLocalY": 0.04512063931082604
+      },
+      {
+        "rawStride": -0.2,
+        "feet": [
+          {
+            "regionId": "model_part0",
+            "minAll": 2.558952424958072e-10,
+            "minSupport": 2.558952424958072e-10
+          },
+          {
+            "regionId": "model_part4",
+            "minAll": 0.01740026842777718,
+            "minSupport": 0.01740026842777718
+          }
+        ],
+        "minimum": 2.558952424958072e-10,
+        "offsetY": 0.036534222734732134,
+        "cameraEyeHeight": 3.5758208057194567,
+        "laserLocalY": 0.036534222734732134
+      },
+      {
+        "rawStride": -0.15,
+        "feet": [
+          {
+            "regionId": "model_part0",
+            "minAll": 2.624441428067392e-10,
+            "minSupport": 2.624441428067392e-10
+          },
+          {
+            "regionId": "model_part4",
+            "minAll": 0.013298024470328868,
+            "minSupport": 0.013298024470328868
+          }
+        ],
+        "minimum": 2.624441428067392e-10,
+        "offsetY": 0.027728059000547818,
+        "cameraEyeHeight": 3.5670146419852724,
+        "laserLocalY": 0.027728059000547818
+      },
+      {
+        "rawStride": -0.1,
+        "feet": [
+          {
+            "regionId": "model_part0",
+            "minAll": 2.6896685226263095e-10,
+            "minSupport": 2.6896685226263095e-10
+          },
+          {
+            "regionId": "model_part4",
+            "minAll": 0.009191112521859631,
+            "minSupport": 0.009191112521859631
+          }
+        ],
+        "minimum": 2.6896685226263095e-10,
+        "offsetY": 0.01870302871731251,
+        "cameraEyeHeight": 3.557989611702037,
+        "laserLocalY": 0.01870302871731251
+      },
+      {
+        "rawStride": -0.05,
+        "feet": [
+          {
+            "regionId": "model_part0",
+            "minAll": 2.754625468698313e-10,
+            "minSupport": 2.754625468698313e-10
+          },
+          {
+            "regionId": "model_part4",
+            "minAll": 0.005079943270145754,
+            "minSupport": 0.005079943270145754
+          }
+        ],
+        "minimum": 2.754625468698313e-10,
+        "offsetY": 0.00946003438053,
+        "cameraEyeHeight": 3.5487466173652544,
+        "laserLocalY": 0.00946003438053
+      },
+      {
+        "rawStride": 0,
+        "feet": [
+          {
+            "regionId": "model_part0",
+            "minAll": 2.8193085262027237e-10,
+            "minSupport": 2.8193085262027237e-10
+          },
+          {
+            "regionId": "model_part4",
+            "minAll": 0.0009649278286831615,
+            "minSupport": 0.0009649278286831615
+          }
+        ],
+        "minimum": 2.8193085262027237e-10,
+        "offsetY": 2.819326074682271e-10,
+        "cameraEyeHeight": 3.5392865832666573,
+        "laserLocalY": 2.819326074682271e-10
+      },
+      {
+        "rawStride": 0.05,
+        "feet": [
+          {
+            "regionId": "model_part0",
+            "minAll": 0.003400849141865392,
+            "minSupport": 0.003400849141865392
+          },
+          {
+            "regionId": "model_part4",
+            "minAll": -1.8701778580626494e-10,
+            "minSupport": -1.8701778580626494e-10
+          }
+        ],
+        "minimum": -1.8701778580626494e-10,
+        "offsetY": -0.006275278628105698,
+        "cameraEyeHeight": 3.533011304356619,
+        "laserLocalY": -0.006275278628105698
+      },
+      {
+        "rawStride": 0.1,
+        "feet": [
+          {
+            "regionId": "model_part0",
+            "minAll": 0.007868513829831357,
+            "minSupport": 0.007868513829831357
+          },
+          {
+            "regionId": "model_part4",
+            "minAll": -1.6163539083569045e-10,
+            "minSupport": -1.6163539083569045e-10
+          }
+        ],
+        "minimum": -1.6163539083569045e-10,
+        "offsetY": -0.011698867839855876,
+        "cameraEyeHeight": 3.5275877151448687,
+        "laserLocalY": -0.011698867839855876
+      },
+      {
+        "rawStride": 0.15,
+        "feet": [
+          {
+            "regionId": "model_part0",
+            "minAll": 0.012338729840698264,
+            "minSupport": 0.012338729840698264
+          },
+          {
+            "regionId": "model_part4",
+            "minAll": -1.679413517974293e-10,
+            "minSupport": -1.679413517974293e-10
+          }
+        ],
+        "minimum": -1.679413517974293e-10,
+        "offsetY": -0.017334042773005404,
+        "cameraEyeHeight": 3.521952540211719,
+        "laserLocalY": -0.017334042773005404
+      },
+      {
+        "rawStride": 0.2,
+        "feet": [
+          {
+            "regionId": "model_part0",
+            "minAll": 0.01681105018829639,
+            "minSupport": 0.01681105018829639
+          },
+          {
+            "regionId": "model_part4",
+            "minAll": -1.742304564511521e-10,
+            "minSupport": -1.742304564511521e-10
+          }
+        ],
+        "minimum": -1.742304564511521e-10,
+        "offsetY": -0.023180239883047724,
+        "cameraEyeHeight": 3.516106343101677,
+        "laserLocalY": -0.023180239883047724
+      },
+      {
+        "rawStride": 0.25,
+        "feet": [
+          {
+            "regionId": "model_part0",
+            "minAll": 0.021285027644317916,
+            "minSupport": 0.021285027644317916
+          },
+          {
+            "regionId": "model_part4",
+            "minAll": -1.805015859002168e-10,
+            "minSupport": -1.805015859002168e-10
+          }
+        ],
+        "minimum": -1.805015859002168e-10,
+        "offsetY": -0.02923687455514819,
+        "cameraEyeHeight": 3.5100497084295763,
+        "laserLocalY": -0.02923687455514819
+      },
+      {
+        "rawStride": 0.3,
+        "feet": [
+          {
+            "regionId": "model_part0",
+            "minAll": 0.02576021481474402,
+            "minSupport": 0.02576021481474402
+          },
+          {
+            "regionId": "model_part4",
+            "minAll": -1.8675533342005224e-10,
+            "minSupport": -1.8675533342005224e-10
+          }
+        ],
+        "minimum": -1.8675533342005224e-10,
+        "offsetY": -0.035503341130888044,
+        "cameraEyeHeight": 3.503783241853837,
+        "laserLocalY": -0.035503341130888044
+      },
+      {
+        "rawStride": 0.35,
+        "feet": [
+          {
+            "regionId": "model_part0",
+            "minAll": 0.03023616418458748,
+            "minSupport": 0.03023616418458748
+          },
+          {
+            "regionId": "model_part4",
+            "minAll": -1.929899504093946e-10,
+            "minSupport": -1.929899504093946e-10
+          }
+        ],
+        "minimum": -1.929899504093946e-10,
+        "offsetY": -0.04197901296882722,
+        "cameraEyeHeight": 3.4973075700158973,
+        "laserLocalY": -0.04197901296882722
+      },
+      {
+        "rawStride": 0.4,
+        "feet": [
+          {
+            "regionId": "model_part0",
+            "minAll": 0.03471242816264045,
+            "minSupport": 0.03471242816264045
+          },
+          {
+            "regionId": "model_part4",
+            "minAll": -1.9920551319607682e-10,
+            "minSupport": -1.9920551319607682e-10
+          }
+        ],
+        "minimum": -1.9920551319607682e-10,
+        "offsetY": -0.04866324250717951,
+        "cameraEyeHeight": 3.490623340477545,
+        "laserLocalY": -0.04866324250717951
+      },
+      {
+        "rawStride": 0.45,
+        "feet": [
+          {
+            "regionId": "model_part0",
+            "minAll": 0.039161067119693777,
+            "minSupport": 0.039161067119693777
+          },
+          {
+            "regionId": "model_part4",
+            "minAll": -2.054012654406634e-10,
+            "minSupport": -2.054012654406634e-10
+          }
+        ],
+        "minimum": -2.054012654406634e-10,
+        "offsetY": -0.05555536132856556,
+        "cameraEyeHeight": 3.483731221656159,
+        "laserLocalY": -0.05555536132856556
+      },
+      {
+        "rawStride": 0.5,
+        "feet": [
+          {
+            "regionId": "model_part0",
+            "minAll": 0.04338610397637728,
+            "minSupport": 0.04338610397637728
+          },
+          {
+            "regionId": "model_part4",
+            "minAll": -2.1157633978141632e-10,
+            "minSupport": -2.1157633978141632e-10
+          }
+        ],
+        "minimum": -2.1157633978141632e-10,
+        "offsetY": -0.06265468022684095,
+        "cameraEyeHeight": 3.476631902757884,
+        "laserLocalY": -0.06265468022684095
+      }
+    ],
+    "offsetRange": [
+      -0.06265468022684095,
+      0.08594130836126357
+    ],
+    "gaitState": "Real Player controllers +/-0.5, calibrated visual quaternion gain0.2, exact convex-support grounding within +/-0.15 actor units; rendered motion quality requires screenshot review.",
+    "clipPlayback": "Delivered raw Meshy walk/run clips remain editing downloads; zero clips autoplay."
+  },
+  "visibleGround": {
+    "name": "detail-tessellated-ground",
+    "vertices": 5329,
+    "minWorldY": 0,
+    "maxWorldY": 0,
+    "actorPhysicalY": 0,
+    "shaderNormalMap": true,
+    "footGrounding": {
+      "status": "applied",
+      "sourceSha256": "0e297a50400f885f06595f2fb59c85aed5118517a03c140f0f3aefa5288b564b",
+      "motionGain": 0.2,
+      "maxOffset": 0.15,
+      "restMinimumY": 1.0651243170655978e-15,
+      "regions": [
+        {
+          "regionId": "model_part0",
+          "supportVertices": 36,
+          "referencedVertices": 9194,
+          "restError": 2.4841240175987878e-15,
+          "coverageError": 1.131807918442113e-15
+        },
+        {
+          "regionId": "model_part4",
+          "supportVertices": 36,
+          "referencedVertices": 8860,
+          "restError": 2.2898349882893854e-15,
+          "coverageError": 1.0210439046088652e-15
+        }
+      ],
+      "offsetY": 2.5612522241980074e-9,
+      "minimumYBeforeOffset": -2.5612522241980074e-9,
+      "minimumYAfterOffset": 0,
+      "maxObservedAbsoluteOffset": 0.08594130836126357,
+      "refusals": 0,
+      "lastError": null,
+      "lastRejectedOffsetY": null
+    }
+  },
+  "completedAt": "2026-10-23T07:02:46.541Z",
+  "limitations": [
+    "Visual quaternion gain0.2 gives short rigid upper-leg strides, not a modern retargeted walk.",
+    "The lowest sole is planted on the combat plane; there is no per-foot IK, ankle leveling or anti-sliding.",
+    "Body bob remains0.1486game units peak-to-peak."
+  ]
+}

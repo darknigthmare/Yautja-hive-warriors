@@ -1,0 +1,7 @@
+{
+  "status": "passed",
+  "checked": 134,
+  "sourceCommit": "48b5bd5aa9d35fd3919ade38cf2aef55389bec5b",
+  "failures": [],
+  "command": "node --check each js/**/*.js"
+}

@@ -1,0 +1,98 @@
+{
+  "status": "cpu_passed_visually_improved_budget_cleanup_required",
+  "date": "2026-10-25",
+  "automated": true,
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "newMeshyCredits": 0,
+  "checks": {
+    "broadTargetedPassed": 26,
+    "broadTargetedFailed": 0,
+    "broadLog": "targeted-26-tests-v2.txt",
+    "geometryAndPBRFinite": true,
+    "cardinalLaneHalfWidth": 11,
+    "objectiveClearRadius": 10,
+    "corridorsThreeLanesPassable": true,
+    "rotatedEllipseContactVerified": true,
+    "navigationOutlineIsNotPhysicalRectangle": true,
+    "cooperativeCullingVerified": true,
+    "idempotentBuildAndCleanupVerified": true,
+    "fourCentralLandmarksPerNonInsertionSector": true,
+    "maximumSiteCoordinate": 36,
+    "uniformFeatureScale": 1.2,
+    "reservedSiteRadius": 11,
+    "architectureCasesIncluded": 8
+  },
+  "budgetsAsserted": {
+    "perSectorMaxTriangles": 14000,
+    "perSectorMaxDrawMeshes": 6,
+    "perCorridorMaxTriangles": 6000,
+    "perCorridorMaxDrawMeshes": 4,
+    "wholeNetworkAdditionalTriangles": 100000,
+    "existingVisibleTriangles": 500000,
+    "existingResidentTriangles": 1200000,
+    "existingPotentialDrawSubmissions": 230
+  },
+  "sourceFiles": {
+    "js/graphics/BattlefieldSectorDetails.js": "9a754ac97dae679e44790d20b6054667772be539c051bdf48eb105f55f5931ab",
+    "tests/battlefield-sector-details.test.js": "56c35a7fd7e06b7587c9672969d557cfe05a1578166f4bf12261aa486a829b27"
+  },
+  "limitations": [
+    "Local set design, not film-location reconstruction or scan.",
+    "Flat Y0 movement floor; roofs, minor ribs and wires are decorative rather than walkable platforms.",
+    "Environment owns all created geometry and materials; existing shared surface texture cache remains unchanged.",
+    "Render comparison and production build verification belong to separate integration QA.",
+    "No player hardware frame-rate result or human playtest claimed."
+  ],
+  "visualRevisionReason": "Two sets were displaced into foggy outer corners; eleven before/after comparisons showed insufficient visible density.",
+  "version": 2,
+  "visualRevision": {
+    "comparativePairsExamined": 11,
+    "change": "Four substantial central clusters instead of two small peripheral sets; old dressing respects reserved architecture sites; physical scale follows rendered1.2scale.",
+    "finalRenderPending": true,
+    "nextFixes": [
+      "Invisible physical proxy instead of visible black timber-stack box",
+      "Bark rather than metallic timber caps",
+      "Cooperative shared-scene potential submissions reduced from237 to229 in station"
+    ]
+  },
+  "metrics": "metrics-v2.json",
+  "frameBudgetsMeasured": {
+    "forest": {
+      "maximumSoloTriangles": 393798,
+      "maximumSoloPotentialSubmissions": 154,
+      "maximumCoopTriangles": 466218,
+      "maximumCoopPotentialSubmissions": 175
+    },
+    "hive": {
+      "maximumSoloTriangles": 94502,
+      "maximumSoloPotentialSubmissions": 214,
+      "maximumCoopTriangles": 111030,
+      "maximumCoopPotentialSubmissions": 229
+    },
+    "temple": {
+      "maximumSoloTriangles": 57254,
+      "maximumSoloPotentialSubmissions": 208,
+      "maximumCoopTriangles": 67838,
+      "maximumCoopPotentialSubmissions": 225
+    },
+    "rooftop": {
+      "maximumSoloTriangles": 74886,
+      "maximumSoloPotentialSubmissions": 187,
+      "maximumCoopTriangles": 91310,
+      "maximumCoopPotentialSubmissions": 204
+    },
+    "jungle": {
+      "maximumSoloTriangles": 304822,
+      "maximumSoloPotentialSubmissions": 151,
+      "maximumCoopTriangles": 355486,
+      "maximumCoopPotentialSubmissions": 171
+    },
+    "station": {
+      "maximumSoloTriangles": 101142,
+      "maximumSoloPotentialSubmissions": 220,
+      "maximumCoopTriangles": 117614,
+      "maximumCoopPotentialSubmissions": 237
+    }
+  }
+}

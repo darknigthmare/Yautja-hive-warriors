@@ -1,0 +1,73 @@
+✔ 34 Excel maps have distinct real layouts, actual sector/front counts and measured orthogonal alternatives (8.09761ms)
+✔ LD-01: every strategic route physically walks on the constructed map and all private resources leave once (4651.738451ms)
+✔ LD-02: every strategic route physically walks on the constructed map and all private resources leave once (2038.489426ms)
+✔ LD-03: every strategic route physically walks on the constructed map and all private resources leave once (316.216117ms)
+✔ LD-04: every strategic route physically walks on the constructed map and all private resources leave once (429.940507ms)
+✔ LD-05: every strategic route physically walks on the constructed map and all private resources leave once (610.257489ms)
+✔ LD-06: every strategic route physically walks on the constructed map and all private resources leave once (415.645926ms)
+✔ LD-07: every strategic route physically walks on the constructed map and all private resources leave once (477.236537ms)
+✔ LD-08: every strategic route physically walks on the constructed map and all private resources leave once (705.790285ms)
+✔ LD-09: every strategic route physically walks on the constructed map and all private resources leave once (645.055673ms)
+✔ LD-10: every strategic route physically walks on the constructed map and all private resources leave once (645.043792ms)
+✔ LD-11: every strategic route physically walks on the constructed map and all private resources leave once (691.76121ms)
+✔ LD-12: every strategic route physically walks on the constructed map and all private resources leave once (424.361255ms)
+✔ LD-13: every strategic route physically walks on the constructed map and all private resources leave once (670.252964ms)
+✔ LD-14: every strategic route physically walks on the constructed map and all private resources leave once (275.685743ms)
+✔ LD-15: every strategic route physically walks on the constructed map and all private resources leave once (391.324718ms)
+✔ LD-16: every strategic route physically walks on the constructed map and all private resources leave once (361.834154ms)
+✔ LD-17: every strategic route physically walks on the constructed map and all private resources leave once (297.074298ms)
+✔ LD-18: every strategic route physically walks on the constructed map and all private resources leave once (373.950482ms)
+✔ LD-19: every strategic route physically walks on the constructed map and all private resources leave once (445.817169ms)
+✔ LD-20: every strategic route physically walks on the constructed map and all private resources leave once (411.114537ms)
+✔ LD-21: every strategic route physically walks on the constructed map and all private resources leave once (717.910972ms)
+✔ LD-22: every strategic route physically walks on the constructed map and all private resources leave once (338.644675ms)
+✔ LD-23: every strategic route physically walks on the constructed map and all private resources leave once (592.908571ms)
+✔ LD-24: every strategic route physically walks on the constructed map and all private resources leave once (690.395801ms)
+✔ LD-25: every strategic route physically walks on the constructed map and all private resources leave once (792.746714ms)
+✔ LD-26: every strategic route physically walks on the constructed map and all private resources leave once (573.281636ms)
+✔ LD-27: every strategic route physically walks on the constructed map and all private resources leave once (630.793544ms)
+✔ LD-28: every strategic route physically walks on the constructed map and all private resources leave once (341.176099ms)
+✔ LD-29: every strategic route physically walks on the constructed map and all private resources leave once (911.205692ms)
+✔ LD-30: every strategic route physically walks on the constructed map and all private resources leave once (809.827762ms)
+✔ LD-31: every strategic route physically walks on the constructed map and all private resources leave once (925.022698ms)
+✔ LD-32: every strategic route physically walks on the constructed map and all private resources leave once (373.972071ms)
+✔ LD-33: every strategic route physically walks on the constructed map and all private resources leave once (982.781322ms)
+✔ LD-34: every strategic route physically walks on the constructed map and all private resources leave once (451.124253ms)
+✔ standard hunts retain their six sectors and five locked connections without tactical bypasses (0.452978ms)
+Architecture frame budget: {"type":"forest","maximumTriangles":463954,"maximumPotentialSubmissions":134}
+Architecture frame budget: {"type":"hive","maximumTriangles":108682,"maximumPotentialSubmissions":183}
+Architecture frame budget: {"type":"temple","maximumTriangles":65578,"maximumPotentialSubmissions":183}
+Architecture frame budget: {"type":"rooftop","maximumTriangles":88390,"maximumPotentialSubmissions":161}
+Architecture frame budget: {"type":"jungle","maximumTriangles":355120,"maximumPotentialSubmissions":152}
+Architecture frame budget: {"type":"station","maximumTriangles":113758,"maximumPotentialSubmissions":190}
+Architecture frame budget: {"type":"station","maximumTriangles":116846,"maximumPotentialSubmissions":219}
+Architecture frame budget: {"type":"jungle","maximumTriangles":358919,"maximumPotentialSubmissions":176}
+Architecture frame budget: {"type":"forest","maximumTriangles":466650,"maximumPotentialSubmissions":154}
+Architecture frame budget: {"type":"forest","maximumTriangles":466100,"maximumPotentialSubmissions":164}
+Architecture frame budget: {"type":"temple","maximumTriangles":65898,"maximumPotentialSubmissions":185}
+✔ forest: sector architecture has distinct silhouettes, real footprints and clear battle routes (4651.364614ms)
+✔ hive: sector architecture has distinct silhouettes, real footprints and clear battle routes (1678.631102ms)
+✔ temple: sector architecture has distinct silhouettes, real footprints and clear battle routes (134.915737ms)
+✔ rooftop: sector architecture has distinct silhouettes, real footprints and clear battle routes (185.994733ms)
+✔ jungle: sector architecture has distinct silhouettes, real footprints and clear battle routes (184.318449ms)
+✔ station: sector architecture has distinct silhouettes, real footprints and clear battle routes (169.99303ms)
+✔ station: sector architecture has distinct silhouettes, real footprints and clear battle routes (179.617511ms)
+✔ jungle: sector architecture has distinct silhouettes, real footprints and clear battle routes (182.409034ms)
+✔ forest: sector architecture has distinct silhouettes, real footprints and clear battle routes (164.7963ms)
+✔ forest: sector architecture has distinct silhouettes, real footprints and clear battle routes (191.775219ms)
+✔ temple: sector architecture has distinct silhouettes, real footprints and clear battle routes (131.654941ms)
+✔ resin cores collide as their rotated ellipse rather than a hidden rectangular wall (117.830738ms)
+✔ all static architecture resources are environment-owned and released exactly once on replay (145.292683ms)
+✔ static instancing preserves authored dimensions, per-instance colors and moving parent transforms (6.917893ms)
+✔ render distance never disables physical cover, while authored removal does (3.578051ms)
+✔ reference timers follow simulation time and cannot fire after a rebuild (0.67415ms)
+✔ operation doors really block movement and rays, reopen, and avoid fake sector completion (5316.200707ms)
+✔ civilian navigation crosses two corridor turns and reroutes around a closed flank (260.347045ms)
+ℹ tests 54
+ℹ suites 0
+ℹ pass 54
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 38599.865041

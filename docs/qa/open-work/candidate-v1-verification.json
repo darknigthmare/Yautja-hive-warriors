@@ -1,0 +1,133 @@
+{
+  "deployment_id": "dpl_F8txaubo9HpLutyincyoHS6JVA55",
+  "checked_at": "2026-10-24T02:22:23.325421+00:00",
+  "assets": [
+    {
+      "path": "/",
+      "relativePath": "index.html",
+      "bytes": 35309,
+      "sha256": "8c1e168708ac15a60124daf7d7e020182400a410a7cd9519c4e05c1591f99f78",
+      "http": {
+        "http_code": "200",
+        "content_type": "text/html; charset=utf-8",
+        "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+        "disposition": "inline",
+        "cache": "public, max-age=0, must-revalidate",
+        "nosniff": "nosniff",
+        "frame": "DENY"
+      },
+      "returncode": 0,
+      "remote_sha256": "8c1e168708ac15a60124daf7d7e020182400a410a7cd9519c4e05c1591f99f78",
+      "headers_pass": true,
+      "exact": true
+    },
+    {
+      "path": "/assets/confetti-CAXNRs-2.js",
+      "relativePath": "assets/confetti-CAXNRs-2.js",
+      "bytes": 10562,
+      "sha256": "39d247a0fb28fff8a2dc39749d26c3d3d1ddb7e70d4e81e6aace4bf55ff0832d",
+      "http": {
+        "http_code": "200",
+        "content_type": "application/javascript; charset=utf-8",
+        "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+        "disposition": "inline; filename=\"confetti-CAXNRs-2.js\"",
+        "cache": "public, max-age=31536000, immutable",
+        "nosniff": "nosniff",
+        "frame": "DENY"
+      },
+      "returncode": 0,
+      "remote_sha256": "39d247a0fb28fff8a2dc39749d26c3d3d1ddb7e70d4e81e6aace4bf55ff0832d",
+      "headers_pass": true,
+      "exact": true
+    },
+    {
+      "path": "/assets/engine-CT3M-KMT.js",
+      "relativePath": "assets/engine-CT3M-KMT.js",
+      "bytes": 553780,
+      "sha256": "99d51763bc11a977b7f63354f5fa4c5eea26e10c5bfef5ba07ce4ecf634a4270",
+      "http": {
+        "http_code": "200",
+        "content_type": "application/javascript; charset=utf-8",
+        "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+        "disposition": "inline; filename=\"engine-CT3M-KMT.js\"",
+        "cache": "public, max-age=31536000, immutable",
+        "nosniff": "nosniff",
+        "frame": "DENY"
+      },
+      "returncode": 0,
+      "remote_sha256": "99d51763bc11a977b7f63354f5fa4c5eea26e10c5bfef5ba07ce4ecf634a4270",
+      "headers_pass": true,
+      "exact": true
+    },
+    {
+      "path": "/assets/index-BGVQQVOq.css",
+      "relativePath": "assets/index-BGVQQVOq.css",
+      "bytes": 40686,
+      "sha256": "66f4687ae64ebb415a97908afd8186250ba15a508912f8a54853eccfb972f37e",
+      "http": {
+        "http_code": "200",
+        "content_type": "text/css; charset=utf-8",
+        "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+        "disposition": "inline; filename=\"index-BGVQQVOq.css\"",
+        "cache": "public, max-age=31536000, immutable",
+        "nosniff": "nosniff",
+        "frame": "DENY"
+      },
+      "returncode": 0,
+      "remote_sha256": "66f4687ae64ebb415a97908afd8186250ba15a508912f8a54853eccfb972f37e",
+      "headers_pass": true,
+      "exact": true
+    },
+    {
+      "path": "/assets/index-D4I2BnT9.js",
+      "relativePath": "assets/index-D4I2BnT9.js",
+      "bytes": 656791,
+      "sha256": "29677f2a3963f22035fb999f38bd78d8ff57bf6792aa36e2361abcef5b69c1fc",
+      "http": {
+        "http_code": "200",
+        "content_type": "application/javascript; charset=utf-8",
+        "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+        "disposition": "inline; filename=\"index-D4I2BnT9.js\"",
+        "cache": "public, max-age=31536000, immutable",
+        "nosniff": "nosniff",
+        "frame": "DENY"
+      },
+      "returncode": 0,
+      "remote_sha256": "29677f2a3963f22035fb999f38bd78d8ff57bf6792aa36e2361abcef5b69c1fc",
+      "headers_pass": true,
+      "exact": true
+    },
+    {
+      "path": "/assets/visual-effects-DVMrvtkx.js",
+      "relativePath": "assets/visual-effects-DVMrvtkx.js",
+      "bytes": 107709,
+      "sha256": "db659990735d12d74e78fc5a19adf471f8e79fdbf722ef2185d29f6b9e2da4ea",
+      "http": {
+        "http_code": "200",
+        "content_type": "application/javascript; charset=utf-8",
+        "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+        "disposition": "inline; filename=\"visual-effects-DVMrvtkx.js\"",
+        "cache": "public, max-age=31536000, immutable",
+        "nosniff": "nosniff",
+        "frame": "DENY"
+      },
+      "returncode": 0,
+      "remote_sha256": "db659990735d12d74e78fc5a19adf471f8e79fdbf722ef2185d29f6b9e2da4ea",
+      "headers_pass": true,
+      "exact": true
+    }
+  ],
+  "corrected_model_head": {
+    "http_code": "200",
+    "content_type": "model/gltf-binary",
+    "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+    "disposition": "attachment; filename=\"city-hunter-body-corrected.glb\"",
+    "cache": "public, max-age=0, must-revalidate",
+    "nosniff": "nosniff",
+    "frame": "DENY"
+  },
+  "header_pass": true,
+  "passed": true,
+  "index_sha256": "8c1e168708ac15a60124daf7d7e020182400a410a7cd9519c4e05c1591f99f78",
+  "scope": "Authenticated candidate HTTP; canonical unauthenticated verification remains separate."
+}

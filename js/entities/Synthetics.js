@@ -1,6 +1,11 @@
 /* Weyland-Yutani Combat Synthetics (Androids with Milky White Blood & Bisection AI) */
 
 import * as THREE from 'three';
+import { applyBattleUnit, despawnBattleActor, selectBattleTarget, battleHostile, moveBattleOrder, requestNPCStrike, applyBattleFormationHit, maintainBattleFormation } from '../engine/BattleActorSupport.js';
+import { recordCombatDeath } from '../engine/CombatEvents.js';
+import { createSyntheticModel } from '../graphics/SupportModels.js';
+import { disposeObject } from '../engine/SceneResources.js';
+import { selectHostileTarget, requestHostileAttack, syncHostileWarning, releaseHostileAttack } from '../engine/HostilePressure.js';
 
 export class SyntheticsManager {
   constructor(scene, audioEngine, particles) {
@@ -10,6 +15,7 @@ export class SyntheticsManager {
     this.androids = [];
     this.severedProps = [];
     this.bloodPools = [];
+    this.bloodDrops = [];
 
     this.armorMat = new THREE.MeshStandardMaterial({
       color: 0xe2e8f0, // White clean Weyland-Yutani synthetic casing
@@ -26,16 +32,18 @@ export class SyntheticsManager {
       transparent: true,
       opacity: 0.95
     });
+    this.sharedResources = new Set([this.armorMat, this.bodyMat, this.whiteBloodMat]);
   }
+
 
   spawnSquad(pos, count = 3) {
     this.clearSquad();
 
     for (let i = 0; i < count; i++) {
-      const isWorkingJoe = i % 2 === 1; // Alternate Weyland-Yutani Combat Synth and Seegson Working Joe
+      const isWorkingJoe = i % 2 === 1;
       const mesh = this.createSyntheticMesh(isWorkingJoe);
       const angle = (i / count) * Math.PI * 2;
-      mesh.position.set(pos.x + Math.cos(angle) * 16, 0, pos.z + Math.sin(angle) * 16);
+      mesh.position.set(pos.x + Math.cos(angle) * 24, 0, pos.z + Math.sin(angle) * 24);
       this.scene.add(mesh);
 
       this.androids.push({
@@ -43,132 +51,46 @@ export class SyntheticsManager {
         type: isWorkingJoe ? 'working_joe' : 'weyland_combat',
         hp: isWorkingJoe ? 340 : 280,
         maxHp: isWorkingJoe ? 340 : 280,
-        speed: isWorkingJoe ? 7.5 : 9,
-        damage: isWorkingJoe ? 34 : 22,
-        shootCooldown: 0,
+        speed: 9,
+        damage: 22,
+        shootCooldown: 2 + i * 0.35,
         isBisected: false,
-        crawlLife: 0,
-        voiceCooldown: 0
+        crawlLife: 0
       });
     }
   }
 
-  /* Chantier 7: Seegson Working Joe & Weyland Combat Synthetic (Alien: Isolation / Aliens Canon) */
+
   createSyntheticMesh(isWorkingJoe = false) {
-    const group = new THREE.Group();
-
-    const suitMat = isWorkingJoe 
-      ? new THREE.MeshStandardMaterial({ color: 0x1c1917, roughness: 0.85 }) // Seegson Dark Overalls
-      : this.armorMat;
-    const skinMat = isWorkingJoe
-      ? new THREE.MeshStandardMaterial({ color: 0xddd6fe, roughness: 0.6 }) // Rubberized synthetic pale skin
-      : this.armorMat;
-
-    // Torso with corporate logo casing
-    const torso = new THREE.Mesh(new THREE.BoxGeometry(0.9, 1.4, 0.5), suitMat);
-    torso.name = 'torso';
-    torso.position.y = 1.8;
-    group.add(torso);
-
-    if (!isWorkingJoe) {
-      // Weyland-Yutani Yellow Winged Corporate Logo (Aliens 1986 Canon 1:1)
-      const logoMat = new THREE.MeshBasicMaterial({ color: 0xeab308 });
-      const wyLogo = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.14, 0.04), logoMat);
-      wyLogo.position.set(0, 2.05, 0.28);
-      group.add(wyLogo);
-    } else {
-      // Seegson Blue triangular insignia (Alien: Isolation Canon)
-      const seegsonMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8 });
-      const patch = new THREE.Mesh(new THREE.ConeGeometry(0.18, 0.22, 3), seegsonMat);
-      patch.position.set(0.25, 2.1, 0.28);
-      group.add(patch);
-    }
-
-    // Synthetic android head
-    const head = new THREE.Mesh(new THREE.SphereGeometry(0.35, 10, 10), skinMat);
-    head.name = 'head';
-    head.position.set(0, 2.8, 0);
-    group.add(head);
-
-    if (isWorkingJoe) {
-      // Round glowing amber eyes (Alien: Isolation Canon)
-      [-0.12, 0.12].forEach(ox => {
-        const eye = new THREE.Mesh(new THREE.SphereGeometry(0.06, 6, 6), new THREE.MeshBasicMaterial({ color: 0xf59e0b }));
-        eye.position.set(ox, 2.85, 0.32);
-        group.add(eye);
-      });
-    } else {
-      // Glowing optic eye visor
-      const visor = new THREE.Mesh(
-        new THREE.BoxGeometry(0.4, 0.08, 0.1),
-        new THREE.MeshBasicMaterial({ color: 0x00d2ff })
-      );
-      visor.name = 'visor';
-      visor.position.set(0, 2.8, 0.32);
-      group.add(visor);
-    }
-
-    // Limbs sub-group
-    const legsGroup = new THREE.Group();
-    legsGroup.name = 'legs';
-    const legGeo = new THREE.CylinderGeometry(0.12, 0.1, 1.3, 6);
-    const leftLeg = new THREE.Mesh(legGeo, suitMat);
-    leftLeg.position.set(-0.3, 0.8, 0);
-    legsGroup.add(leftLeg);
-
-    const rightLeg = new THREE.Mesh(legGeo, suitMat);
-    rightLeg.position.set(0.3, 0.8, 0);
-    legsGroup.add(rightLeg);
-    group.add(legsGroup);
-
-    // Weapon (Pulse Gun for Weyland-Yutani / Heavy Hydraulic Pliers Baton for Working Joe)
-    if (isWorkingJoe) {
-      const baton = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.07, 1.1, 6), new THREE.MeshStandardMaterial({ color: 0xd97706, metalness: 0.8 }));
-      baton.rotation.x = Math.PI / 4;
-      baton.position.set(0.6, 1.8, 0.4);
-      group.add(baton);
-    } else {
-      const gun = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.2, 0.6), this.bodyMat);
-      gun.name = 'gun';
-      gun.position.set(0.6, 1.8, 0.4);
-      group.add(gun);
-    }
-
-    return group;
+    const mesh = createSyntheticModel(); mesh.userData.syntheticProfile = isWorkingJoe ? 'working_joe' : 'weyland_combat';
+    if (!isWorkingJoe) return mesh;
+    // A Seegson maintenance android has hands and a service suit, not a WY rifle.
+    const gun = mesh.getObjectByName('gun'), visor = mesh.getObjectByName('visor'), retained = new Set();
+    mesh.traverse(node => { if (!node.isMesh) return; let parent = node; while (parent && parent !== gun) parent = parent.parent; if (!parent) for (const material of Array.isArray(node.material) ? node.material : [node.material]) retained.add(material); });
+    disposeObject(gun, retained); disposeObject(visor);
+    mesh.traverse(node => { if (!node.isMesh) return; const materials = Array.isArray(node.material) ? node.material : [node.material]; for (const material of materials) { if (material.name === 'armor' || material.name === 'cloth') material.color.set(0x9b5b32); if (material.name === 'skin') material.color.set(0xd4cec0); } });
+    for (const side of [-1,1]) { const eye = new THREE.Mesh(new THREE.SphereGeometry(.027,12,8), new THREE.MeshStandardMaterial({color:0xf6b24b,emissive:0x9b4c13,emissiveIntensity:.8,roughness:.4})); eye.name = 'working-joe-eye'; eye.position.set(side*.078,3.22,.16); mesh.add(eye); }
+    return mesh;
   }
+
 
   emitWhiteSyntheticBlood(pos) {
-    if (this.audioEngine) {
-      if (this.audioEngine.playSyntheticMilkSpurt) {
-        this.audioEngine.playSyntheticMilkSpurt();
-      } else if (this.audioEngine.playSyntheticMilkySpurt) {
-        this.audioEngine.playSyntheticMilkySpurt();
-      }
-    }
-
-    for (let i = 0; i < 10; i++) {
-      const drop = new THREE.Mesh(new THREE.SphereGeometry(0.12, 6, 6), this.whiteBloodMat);
+    const count = Math.min(8, Math.max(0, 80 - this.bloodDrops.length));
+    for (let i = 0; i < count; i++) {
+      const drop = new THREE.Mesh(new THREE.SphereGeometry(0.1, 6, 6), this.whiteBloodMat);
       drop.position.copy(pos).add(new THREE.Vector3(
-        (Math.random() - 0.5) * 0.6,
-        (Math.random() - 0.5) * 0.4 + 0.3,
-        (Math.random() - 0.5) * 0.6
+        (Math.random() - 0.5) * 0.5,
+        (Math.random() - 0.5) * 0.4,
+        (Math.random() - 0.5) * 0.5
       ));
       this.scene.add(drop);
-      setTimeout(() => this.scene.remove(drop), 1200);
+      this.bloodDrops.push({ mesh: drop, life: 0.9 });
     }
-
-    // Milky white coolant puddle on the floor (Bishop Aliens 1986 Canon 1:1)
-    const puddle = new THREE.Mesh(
-      new THREE.CircleGeometry(0.7 + Math.random() * 0.5, 8),
-      this.whiteBloodMat
-    );
-    puddle.rotation.x = -Math.PI / 2;
-    puddle.position.set(pos.x + (Math.random() - 0.5) * 0.8, 0.03, pos.z + (Math.random() - 0.5) * 0.8);
-    this.scene.add(puddle);
-    setTimeout(() => this.scene.remove(puddle), 9000);
   }
 
+
   bisectSynthetic(syn) {
+    releaseHostileAttack(this, syn);
     syn.isBisected = true;
     syn.speed = 2.8; // Slow crawl
     syn.hp = 110;
@@ -238,43 +160,46 @@ export class SyntheticsManager {
     this.emitWhiteSyntheticBlood(syn.mesh.position);
   }
 
+
   update(delta, player, horde) {
+    if (!Number.isFinite(delta) || delta <= 0) return;
+    this.time = (this.time ?? 0) + delta;
+    for (let i = this.bloodDrops.length - 1; i >= 0; i--) {
+      const drop = this.bloodDrops[i];
+      drop.life -= delta;
+      drop.mesh.position.y -= delta * 1.5;
+      if (drop.life <= 0) {
+        disposeObject(drop.mesh, this.sharedResources);
+        this.bloodDrops.splice(i, 1);
+      }
+    }
     for (let i = this.androids.length - 1; i >= 0; i--) {
       const syn = this.androids[i];
+      if (syn.hp <= 0 && !syn.isBisected) this.bisectSynthetic(syn);
 
       // Bisected Crawling State update
       if (syn.isBisected) {
         syn.crawlLife -= delta;
         // Crawling heave animation
-        syn.mesh.position.y = 0.15 + Math.abs(Math.sin(Date.now() * 0.007)) * 0.06;
+        syn.mesh.position.y = 0.15 + Math.abs(Math.sin(this.time * 7)) * 0.06;
 
-        if (Math.random() < 0.04) {
+        if (Math.random() < 1 - Math.exp(-2.4 * delta)) {
           this.emitWhiteSyntheticBlood(syn.mesh.position);
-        }
-
-        // Crawling ankle grab check on player
-        if (player && syn.mesh.position.distanceTo(player.position) <= 2.2 && !player.isSyntheticAnkleGrabbed) {
-          player.isSyntheticAnkleGrabbed = true;
-          player.ankleGrabTimer = 3.5;
-          this.emitWhiteSyntheticBlood(syn.mesh.position);
-          if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
-            window.gameInstance.ui.showAnnouncement('⚠️ ANDROÏDE SECTIONNÉ GRIPPE VOS CHEVILLES ! MOBILITÉ -80% (FRAPPEZ OU EXÉCUTEZ [E]) !');
-          }
         }
 
         if (syn.crawlLife <= 0 || syn.hp <= 0) {
           // Android finally deactivates
           this.audioEngine.playSyntheticShortCircuit();
-          this.scene.remove(syn.mesh);
-          this.androids.splice(i, 1);
+          this.defeatSynthetic(syn, { cause: 'synthetic-deactivation', killerFaction: syn.lastDamageFaction });
           continue;
         }
       }
 
       // EMP Overcharge Stun Check
       if (syn.isEMPStunned) {
+        releaseHostileAttack(this, syn);
         syn.empStunTimer -= delta;
-        syn.mesh.rotation.z = Math.sin(Date.now() * 0.05) * 0.15; // Jittering malfunction glitch
+        syn.mesh.rotation.z = Math.sin(this.time * 50) * 0.15; // Jittering malfunction glitch
         if (syn.empStunTimer <= 0) {
           syn.isEMPStunned = false;
           syn.mesh.rotation.z = 0;
@@ -282,101 +207,63 @@ export class SyntheticsManager {
         continue; // Fully disabled while rebooting circuits
       }
 
-      // Target nearest Xenomorph first, or Yautja if close
-      let targetPos = null;
-      let isXeno = false;
-
-      if (horde.aliens.length > 0) {
+      let targetPlayer = selectHostileTarget(this, syn.mesh.position, player), targetPos = null, isXeno = false, npcTarget = null;
+      if(maintainBattleFormation(this,syn,delta,syn.speed))continue;
+      if (syn.battleUnitId && this.battleSimulation) {
+        const target = selectBattleTarget(this, syn, player, horde?.getActiveCombatants?.() ?? horde?.aliens ?? []);
+        if (!target) { releaseHostileAttack(this, syn); moveBattleOrder(this, syn, delta, syn.speed); continue; }
+        targetPlayer = target; targetPos = target.position; isXeno = target.isBattleNPC; npcTarget = target.isBattleNPC ? target : null;
+      } else {
         let nearestDist = Infinity;
-        horde.aliens.forEach(a => {
-          const d = syn.mesh.position.distanceTo(a.mesh.position);
-          if (d < nearestDist) {
-            nearestDist = d;
-            targetPos = a.mesh.position;
-            isXeno = true;
-          }
-        });
+        for (const alien of horde?.aliens ?? []) if (alien.hp > 0) { const d = syn.mesh.position.distanceTo(alien.mesh.position); if (d < nearestDist) { nearestDist = d; targetPos = alien.mesh.position; isXeno = true; } }
+        if (!targetPos) { if (!targetPlayer || targetPlayer.hp <= 0) { releaseHostileAttack(this, syn); continue; } targetPos = targetPlayer.position; }
       }
 
-      if (!targetPos) {
-        targetPos = player.position;
-      }
-
+      if (isXeno && (this.combatDirector?.getAttackState(syn)?.phase === 'windup' || syn._localAttackPreparation)) releaseHostileAttack(this, syn);
       const dir = targetPos.clone().sub(syn.mesh.position);
       dir.y = 0;
       const dist = dir.length();
 
-      const isJoe = syn.type === 'working_joe';
-      const stopDist = syn.isBisected ? 6.0 : (isJoe ? 2.2 : 10.0);
+      const covered = this.environment?.hasLineOfSight && !this.environment.hasLineOfSight(syn.mesh.position.clone().add(new THREE.Vector3(0, syn.isBisected ? .6 : 2, 0)), targetPos.clone().add(new THREE.Vector3(0,1.6,0)));
+      const joe = syn.type === 'working_joe';
+      const stopDist = joe ? 2.1 : syn.isBisected ? 6.0 : (isXeno ? 10.0 : 12.0);
+      syn.shootCooldown = Math.max(0, (syn.shootCooldown ?? 2) - delta);
 
-      if (dist > stopDist) {
+      if (dist > stopDist + 1e-5 || covered) {
         dir.normalize();
-        syn.mesh.position.addScaledVector(dir, syn.speed * delta);
+        syn.mesh.position.addScaledVector(dir, covered ? syn.speed * delta : Math.min(syn.speed * delta, dist - stopDist));
+        this.environment?.resolveAgentMovement?.(syn.mesh.position, targetPos, syn.speed * delta, .9);
+        releaseHostileAttack(this, syn);
         syn.mesh.rotation.y = Math.atan2(dir.x, dir.z);
       } else {
         syn.mesh.rotation.y = Math.atan2(dir.x, dir.z);
-
-        if (isJoe && !syn.isBisected) {
-          // Seegson Working Joe Relentless Melee & Industrial Grapple (Alien: Isolation Canon)
-          syn.shootCooldown -= delta;
-          if (syn.shootCooldown <= 0) {
-            syn.shootCooldown = 1.35;
-            if (isXeno) {
-              horde.checkMeleeHits({ origin: targetPos, radius: 2.2, damage: syn.damage * 1.5 });
-              if (this.audioEngine.playSlash) this.audioEngine.playSlash();
-            } else {
-              player.takeDamage(syn.damage, false, syn);
-              if (this.audioEngine.playWorkingJoeVoice) this.audioEngine.playWorkingJoeVoice();
-
-              syn.voiceTimer = (syn.voiceTimer || 0) + 1;
-              if (syn.voiceTimer % 3 === 1) {
-                const quotes = [
-                  "What are you doing?",
-                  "Tut tut, you shouldn't be here.",
-                  "Let's resolve this calmly.",
-                  "You are becoming an inconvenience.",
-                  "Always run, never walk."
-                ];
-                const quote = quotes[Math.floor(Math.random() * quotes.length)];
-                if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
-                  window.gameInstance.ui.showAnnouncement(`🔊 SEEGSON WORKING JOE : "${quote}"`);
-                }
-              }
-            }
-          }
-        } else {
-          // Shoot pulse weapon
-          syn.shootCooldown -= delta;
-          if (syn.shootCooldown <= 0) {
-            syn.shootCooldown = syn.isBisected ? 2.2 : 1.2;
-            this.audioEngine.playPulseRifleBurst();
-            if (isXeno) {
-              horde.checkMeleeHits({ origin: targetPos, radius: 1.5, damage: syn.damage });
-            } else {
-              player.takeDamage(syn.damage * 0.4, false, syn);
-            }
+        // Shoot pulse weapon
+        if (syn.shootCooldown <= 0 && (npcTarget ? requestNPCStrike(syn, npcTarget, delta, {windup: .9, recovery: 1.9}) : isXeno || requestHostileAttack(this, syn, targetPlayer, delta, { kind: joe ? 'melee' : 'ranged', windup: joe ? 1.1 : 0.9, recovery: 1.9, duration: 0.3 }))) {
+          syn.shootCooldown = syn.isBisected ? 2.6 : 1.9;
+          if (joe) this.audioEngine?.playSyntheticShortCircuit?.(); else this.audioEngine.playPulseRifleBurst();
+          if (isXeno) {
+            if (npcTarget) npcTarget.takeDamage(syn.damage); else horde.checkMeleeHits({ origin: targetPos, radius: 1.5, damage: syn.damage, killerFaction: syn.factionId ?? 'weyland_yutani', type: 'synthetic-ballistic' });
+          } else {
+            targetPlayer.takeDamage(syn.damage * .4, false, syn, { attackKind: joe ? 'grab' : 'ballistic', blockable: false, parryable: false });
           }
         }
+        syncHostileWarning(this, syn);
       }
     }
   }
 
+
   checkHits(attack) {
     const hits = [];
+    if (!attack?.origin?.isVector3 || !Number.isFinite(attack.damage) || attack.damage <= 0 || !Number.isFinite(attack.radius) || attack.radius < 0) return hits;
+    const faction = attack.killerFaction ?? this.battleSimulation?.config.playerFaction ?? 'player_clan';
     for (let i = this.androids.length - 1; i >= 0; i--) {
       const syn = this.androids[i];
+      if (this.battleSimulation && syn.factionId && !this.battleSimulation.areHostile(faction, syn.factionId)) continue;
+      if (this.environment?.hasLineOfSight && !this.environment.hasLineOfSight(attack.origin.clone().add(new THREE.Vector3(0,1.2,0)), syn.mesh.position.clone().add(new THREE.Vector3(0,1.2,0)))) continue;
       if (syn.mesh.position.distanceTo(attack.origin) <= attack.radius) {
-        syn.hp -= attack.damage;
+        syn.hp -= applyBattleFormationHit(this,syn,attack);
         this.emitWhiteSyntheticBlood(syn.mesh.position);
-        if (this.audioEngine && this.audioEngine.playSyntheticWhiteFluidLeak && Math.random() < 0.45) {
-          this.audioEngine.playSyntheticWhiteFluidLeak();
-        }
-
-        if (attack.type === 'emp' || attack.type === 'plasma' || attack.damage >= 180) {
-          syn.isEMPStunned = true;
-          syn.empStunTimer = 3.5;
-          if (this.particles) this.particles.emitSparks(syn.mesh.position, 14);
-        }
 
         if (syn.hp <= 0) {
           if (!syn.isBisected) {
@@ -386,9 +273,8 @@ export class SyntheticsManager {
           } else {
             // Terminated bisected android
             this.audioEngine.playSyntheticShortCircuit();
-            this.scene.remove(syn.mesh);
-            this.androids.splice(i, 1);
-            hits.push({ pos: syn.mesh.position.clone(), damage: attack.damage, killed: true });
+            const event = this.defeatSynthetic(syn, { cause: attack.type ?? 'melee', killerFaction: faction });
+            hits.push({ pos: syn.mesh.position.clone(), damage: attack.damage, killed: true, event });
           }
         } else {
           hits.push({ pos: syn.mesh.position.clone(), damage: attack.damage, killed: false });
@@ -398,12 +284,36 @@ export class SyntheticsManager {
     return hits;
   }
 
+
   clearSquad() {
-    this.androids.forEach(s => this.scene.remove(s.mesh));
+    this.bloodDrops.forEach(drop => disposeObject(drop.mesh, this.sharedResources));
+    this.bloodDrops = [];
+    this.androids.forEach(s => { releaseHostileAttack(this, s); disposeObject(s.mesh, this.sharedResources); });
     this.androids = [];
-    this.severedProps.forEach(p => this.scene.remove(p));
+    this.severedProps.forEach(p => disposeObject(p, this.sharedResources));
     this.severedProps = [];
-    this.bloodPools.forEach(b => this.scene.remove(b));
+    this.bloodPools.forEach(b => disposeObject(b, this.sharedResources));
     this.bloodPools = [];
   }
+  spawnBattleUnit(unit, group) {
+    const existing = this.androids.find(actor => actor.battleUnitId === unit.id); if (existing) return existing;
+    if (!['synthetic','working_joe','weyland_combat'].includes(unit.actorType)) throw new RangeError(`Unsupported detailed synthetic profile: ${unit.actorType}`);
+    const joe = unit.actorType === 'working_joe';
+    const actor = { mesh: this.createSyntheticMesh(joe), type: joe ? 'working_joe' : 'weyland_combat', speed: joe ? 7.5 : 9, damage: joe ? 34 : 22,
+      radius: .9, shootCooldown: 2, isBisected: false, crawlLife: 0, voiceCooldown: 0 };
+    this.androids.push(applyBattleUnit(this, actor, unit, group)); return actor;
+  }
+
+  despawnBattleUnit(unitOrId) { return despawnBattleActor(this, this.androids, unitOrId); }
+
+
+
+  defeatSynthetic(actor, details = {}) {
+    if (!actor) return null;
+    const event = recordCombatDeath(this, actor, { kind: actor.type ?? 'synthetic', ...details });
+    actor.hp = 0; releaseHostileAttack(this, actor); const index = this.androids.indexOf(actor); if (index >= 0) this.androids.splice(index, 1);
+    if (!actor._combatDisposed) { disposeObject(actor.mesh, this.sharedResources); actor._combatDisposed = true; } if (event) this.onDefeated?.(event); return event;
+  }
+
+
 }

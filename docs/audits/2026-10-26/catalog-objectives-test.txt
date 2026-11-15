@@ -1,0 +1,32 @@
+✔ Excel follow-up changes only column N, preserves all other ZIP members and never changes the immutable source (1682.997414ms)
+✔ completion without evidence or with a modified criterion/hash is rejected before workbook mutation (121.09651ms)
+✔ unrelated workbook edits and a missing action are preserved and rejected instead of overwritten (521.641502ms)
+✔ catalogue is reproducible from the preserved PR audit, with source rather than rendered-asset status (151.480122ms)
+✔ all 27 proposed operations allocate exactly their source budget with no extra commander, pilot, civilian or player (21.569122ms)
+✔ every initial supplied reserve group fits its announced arrival allowance and keeps exactly its allocated identities (167.139403ms)
+✔ three independent camps preserve the exact per-species allocations in the Excel rather than rounding ratios (2.348829ms)
+✔ LV-742 starts on D and the single queen occupies an existing eight-unit C group; human commanders follow their declared group (1.253227ms)
+✔ named, excluded, uncertain and noncombatant profiles cannot silently become generic army reserves (0.811228ms)
+✔ reconstructions restrict source works and do not merge Pathogen, Neomorph or PHG incarnations into universal castes (0.325414ms)
+✔ character equipment permissions distinguish Jungle, City, Feral and PHG while free play stays explicit (0.659017ms)
+✔ scene positions, cooperative players and low-detail capacity preserve immutable source records and all identities (2.844703ms)
+✔ unsupported controller, unknown references and invented budgets fail before creating an army (1.510917ms)
+✔ all 27 scenarios execute distinct physical narrative strategies instead of winning by generic front capture (180.746528ms)
+✔ E channels require proximity and prerequisites, cancel on damage/movement and freeze during pause (2.597644ms)
+✔ cooperative cargo drops where its carrier falls and is recovered once without duplicate objective credit (3.643159ms)
+✔ sabotage destroys a real reinforcement source and a negotiated truce changes only its declared relationship (6.32044ms)
+✔ a player-caused counter-offensive is warned, paused, saved and routed from an existing finite group; a truce cancels it (6.102579ms)
+✔ convoy follows the built route through its corner, can be stopped physically and causes defeat if it escapes (3.652743ms)
+✔ physical convoy routing joins indirect built corridors, reverses their polylines and rejects disconnected fronts (0.612761ms)
+✔ activation terminals open distinct real detour gates while every front remains reachable through the main routes (12.654926ms)
+✔ rescued people keep the actual leader path around two right-angle walls and expose movement context to physical navigation (3.421541ms)
+✔ defence advances only on a friendly uncontested front and sources of civilian population are conserved (8.673885ms)
+✔ save/restore preserves channels, cargo and completed outcomes without replaying side effects or accepting corrupt data (3.02959ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3223.17677

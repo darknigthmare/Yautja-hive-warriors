@@ -1,0 +1,21 @@
+{
+  "status": "failed",
+  "startedAt": "2026-10-24T02:33:34.002Z",
+  "url": "http://127.0.0.1:4198",
+  "scope": "all",
+  "automated": true,
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "conditions": "Production assets loaded through the real app. Character and creature animation are inspected in controlled paused presentation frames; this is not a human combat playthrough.",
+  "errors": [],
+  "failedRequests": [],
+  "externalRequests": [],
+  "characters": [],
+  "captures": [],
+  "indexSha256": "9fdd19169a75d324dbde0e77bddbac90167e81ca19bfb06880084246a4bad6d6",
+  "failure": {
+    "message": "delta0 cannot move a pose or gait phase\n+ actual - expected\n... Skipped lines\n\n  {\n    controlQuaternions: [\n      [\n        0.022468411729054647,\n        0,\n...\n      minimumYAfterOffset: 0,\n+     minimumYBeforeOffset: -0.017536882172481734,\n-     minimumYBeforeOffset: -0.017536882557556675,\n      motionGain: 0.2,\n+     offsetY: 0.017536882172481734,\n-     offsetY: 0.017536882557556675,\n      refusals: 0,\n      regions: [\n        {\n          coverageError: 1.131807918442113e-15,\n          referencedVertices: 9194,\n...\n    },\n+   laserOffset: 0.017536882172481734,\n-   laserOffset: 0.017536882557556675,\n    moving: true,\n    phase: 6.086835766330243,\n    runBlend: 0.999664537372097,\n    speed: 19.0000000000002,\n    stepCount: 5,\n...\n    travelledDistance: 19.00000000000002,\n+   visualGroundOffsetY: 0.017536882172481734,\n-   visualGroundOffsetY: 0.017536882557556675,\n    visualOffsetY: 0\n  }\n",
+    "stack": "AssertionError [ERR_ASSERTION]: delta0 cannot move a pose or gait phase\n+ actual - expected\n... Skipped lines\n\n  {\n    controlQuaternions: [\n      [\n        0.022468411729054647,\n        0,\n...\n      minimumYAfterOffset: 0,\n+     minimumYBeforeOffset: -0.017536882172481734,\n-     minimumYBeforeOffset: -0.017536882557556675,\n      motionGain: 0.2,\n+     offsetY: 0.017536882172481734,\n-     offsetY: 0.017536882557556675,\n      refusals: 0,\n      regions: [\n        {\n          coverageError: 1.131807918442113e-15,\n          referencedVertices: 9194,\n...\n    },\n+   laserOffset: 0.017536882172481734,\n-   laserOffset: 0.017536882557556675,\n    moving: true,\n    phase: 6.086835766330243,\n    runBlend: 0.999664537372097,\n    speed: 19.0000000000002,\n    stepCount: 5,\n...\n    travelledDistance: 19.00000000000002,\n+   visualGroundOffsetY: 0.017536882172481734,\n-   visualGroundOffsetY: 0.017536882557556675,\n    visualOffsetY: 0\n  }\n\n    at file:///workspace/qa/open-work-20261024/check-open-work.mjs:113:14"
+  },
+  "completedAt": "2026-10-24T02:33:54.528Z"
+}

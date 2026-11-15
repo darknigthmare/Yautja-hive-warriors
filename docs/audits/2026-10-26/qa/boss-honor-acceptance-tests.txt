@@ -1,0 +1,22 @@
+✔ boss IDs, contexts and attack biology are explicit; an unknown ID cannot erase an encounter (2.694279ms)
+✔ each actual boss builder is finite and normalized to its documented game-unit height (13185.947551ms)
+✔ mask reorientation is a signal: only the later physical bolt can hurt Feral (3.724416ms)
+✔ a warned bolt commits to its trajectory and a lateral dodge avoids it (1.360222ms)
+✔ boss damage routes typed counters and terminal events exactly once (0.973493ms)
+✔ pending broods, projectiles and shockwaves use simulation time and release on cleanup (0.51745ms)
+✔ a real low-health execution bypasses residual armor, and duplicate or distant requests cannot kill (0.519199ms)
+✔ a physical wall stops the Feral bolt before its target and lethal boss culls remain one death (1.295582ms)
+✔ a prepared Feral leap has an airborne arc, commits to its landing and freezes during pause (3.375331ms)
+✔ legacy earned/spent honor migrates once and caller-supplied funds cannot alter the balance (1.437536ms)
+✔ a combat identity earns once, including French trophy names across persistence (1.456767ms)
+✔ settling a mission compacts deaths while preserving exact old-session replay rejection and purchases (299.562637ms)
+✔ quota failures roll back both credit and debit without inventing funds or upgrade receipts (0.472523ms)
+✔ corrupt saves, invalid amounts and unavailable storage remain finite and playable (0.566009ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13867.495631

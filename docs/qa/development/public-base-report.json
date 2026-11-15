@@ -1,0 +1,74 @@
+{
+  "status": "passed",
+  "url": "https://yautja-hive-warriors.vercel.app",
+  "startedAt": "2026-10-25T06:34:50.051Z",
+  "automated": true,
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "errors": [],
+  "failedRequests": [],
+  "externalRequests": [],
+  "captures": [
+    "/workspace/qa/development-20261025/public-base/city-handoff.png",
+    "/workspace/qa/development-20261025/public-base/city-emp.png"
+  ],
+  "indexSha256": "9fdd19169a75d324dbde0e77bddbac90167e81ca19bfb06880084246a4bad6d6",
+  "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+  "initial": {
+    "phase": "descending",
+    "active": true,
+    "visible": false,
+    "hp": 850,
+    "maxHp": 850,
+    "energy": 100,
+    "visual": "imported",
+    "mask": "attached",
+    "mechanism": "ready",
+    "liveEnemies": 6,
+    "queued": 12
+  },
+  "handoff": {
+    "phase": "complete",
+    "active": false,
+    "visible": true,
+    "hp": 850,
+    "energy": 100,
+    "grace": null,
+    "position": [
+      0,
+      0,
+      4.2
+    ]
+  },
+  "action": {
+    "triggered": true,
+    "cooldown": 11.400000000000002,
+    "mechanism": {
+      "id": "city-left-console",
+      "amount": 1,
+      "target": 1,
+      "angle": 1.5,
+      "mode": "emp",
+      "holdRemaining": 1.1999999999999995,
+      "disposed": false
+    },
+    "pausedEqual": true,
+    "hp": 850,
+    "position": [
+      0,
+      0,
+      4.2
+    ]
+  },
+  "cleanup": {
+    "player": null,
+    "player2": null,
+    "enemies": 0,
+    "pods": 0,
+    "apc": null,
+    "decoys": 0,
+    "nuke": false,
+    "active": false
+  },
+  "completedAt": "2026-10-25T06:35:44.316Z"
+}

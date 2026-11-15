@@ -1,0 +1,169 @@
+{
+  "date": "2026-10-23",
+  "status": "passed_and_published",
+  "human_testers": 0,
+  "changes": {
+    "maps": {
+      "biomes": 6,
+      "sectors_per_map": 6,
+      "corridors_per_map": 5,
+      "sector_size": [
+        132,
+        132
+      ],
+      "world_dimensions": [
+        302,
+        642
+      ],
+      "units": "game units; some biomes rotate the plan",
+      "objectives": [
+        "12 local kills",
+        "commander",
+        "nearby relay interaction",
+        "30 local kills",
+        "commander",
+        "final boss"
+      ]
+    },
+    "combat": {
+      "insertion_grace_seconds_after_landing": 7,
+      "initial_regular_enemies": 6,
+      "reinforcements_per_batch": 4,
+      "reinforcement_interval_sim_seconds": 3,
+      "engagements_per_player": 3,
+      "simultaneous_preparations_per_player": 1,
+      "minimum_impact_gap_seconds": 0.7,
+      "acid_shared_initial_budget": 12,
+      "acid_shared_budget_per_second": 12,
+      "opening_npc_support": 0,
+      "uscm_role": "Support against hive; cannot target players by default"
+    },
+    "ui": [
+      "Persistent local objective and progress",
+      "Whole battlefield minimap and five gates",
+      "Distance/direction to the next objective",
+      "Relay interaction E or co-op Enter"
+    ]
+  },
+  "cpu": {
+    "full_suite": {
+      "tests": 269,
+      "pass": 269,
+      "fail": 0,
+      "cancelled": 0,
+      "duration_seconds": 104.872476764,
+      "log": "full-cpu-tests.log"
+    },
+    "final_intro_guard": {
+      "tests": 6,
+      "pass": 6,
+      "log": "final-combat-director-tests.log",
+      "new_case": "Introductory warriors cannot become unreachable wall stalkers."
+    },
+    "fixture_isolation": "A CPU masked-face fixture attempted the newly active shipping City asset. Initial run was stopped; fixture now injects synthetic assets and its five tests pass. No production behavior was changed for it."
+  },
+  "browser": {
+    "gameplay_initial": {
+      "tests": 6,
+      "pass": 5,
+      "fail": 1,
+      "log": "gameplay-tests.log",
+      "passed": [
+        "startup grace, responsive movement/attack and progressive reinforcements",
+        "five campaign chapters with all six zones and real final bosses",
+        "sandbox queue and completion",
+        "melee boss damage and execution distance",
+        "independent co-op and surviving hunter"
+      ],
+      "failure": "One additional paused frame was caused by six late visual-ready events; instrumentation confirmed expected invalidation. Fixture now awaits those visual promises before strict zero-repeated-render checks; no product delay/behavior changed."
+    },
+    "gameplay_final_reruns": {
+      "tests": 2,
+      "pass": 2,
+      "fail": 0,
+      "cancelled": 0,
+      "cases": [
+        "startup/survival on final introductory-enemy guard",
+        "pause/photo and cleanup with settled visuals"
+      ],
+      "late_visual_ready_events": 6,
+      "pause_measurement_ms": 350,
+      "photo_measurement_ms": 250,
+      "log": "gameplay-final-reruns.log"
+    },
+    "ui_and_campaign": {
+      "tests": 6,
+      "pass": 6,
+      "fail": 0,
+      "cancelled": 0,
+      "duration_seconds": 149.7,
+      "log": "browser-tests.log"
+    },
+    "render": {
+      "tests": 1,
+      "pass": 1,
+      "fail": 0,
+      "duration_seconds": 27.9,
+      "scope": "Three rendering presets, PNG export, independent co-op viewports",
+      "log": "render-browser-tests.log"
+    },
+    "city_battlefield_csp": {
+      "passed": true,
+      "proof": "gameplay-report.json",
+      "scope": "Actual City body/mask and six-sector HUD; controlled first3objectives, real death callbacks, collisions and proximity interaction; local co-op relay via Enter.",
+      "body_triangles": 235918,
+      "mask_triangles": 75466,
+      "independent_hair_chains": 2,
+      "grounding_refusals": 0,
+      "js_errors": 0,
+      "failed_requests": 0,
+      "external_requests": 0,
+      "mobile_width": 390,
+      "mobile_horizontal_overflow": false,
+      "screenshots": [
+        "opening-desktop.png",
+        "first-gate-closed.png"
+      ],
+      "identity_label_fix": "HUD reflects player.data.name; final City identity render passes.",
+      "final_identity_render": {
+        "passed": true,
+        "proof": "initial-rerender-gameplay-report.json",
+        "identity": "CITY HUNTER (1990)",
+        "name_equals_selected_character": true
+      }
+    },
+    "distinct_regression_cases_resolved_passed": 13,
+    "canonical_https_city_battlefield": {
+      "passed": true,
+      "proof": "live-gameplay-report.json",
+      "url": "https://yautja-hive-warriors.vercel.app",
+      "js_errors": 0,
+      "failed_requests": 0,
+      "external_requests": 0,
+      "actual_imported_city_and_mask": true,
+      "real_gate_collision_and_opening": true,
+      "relay_interaction_out_of_range_rejected": true,
+      "relay_interaction_in_range_opens_gate": true,
+      "clean_return_to_menu": true,
+      "capture": "docs/qa/battlefield-city.png"
+    }
+  },
+  "limitations": [
+    "Automated Chromium software WebGL and controlled accelerated mission traversal; no human playthrough.",
+    "The map is a six-sector connected battlefield, not a reproduction of a specific Dynasty Warriors map.",
+    "Foot locomotion remains simplified; no full sole IK or horizontal anti-slide.",
+    "No real-hardware FPS or prolonged endurance claim."
+  ],
+  "production": {
+    "url": "https://yautja-hive-warriors.vercel.app",
+    "deployment_id": "dpl_2PQm3BPZaRpSHEmsVKUh6ME6Magt",
+    "state": "READY/PROMOTED",
+    "index_sha256": "24eab12d4e1e8db65a4d43209ed0f842532538ce5ffcb292ea528f335532f35f",
+    "public_unauthenticated_http_verified": true,
+    "bundles_verified": 5,
+    "model_files_verified": 12,
+    "proof": "vercel-final-public-verification.json",
+    "live_browser_status": "passed",
+    "published_this_pass": true
+  }
+}

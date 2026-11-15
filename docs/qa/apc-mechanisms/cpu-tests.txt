@@ -1,0 +1,37 @@
+✔ M577 has four covered wheels, angular outward armor and a genuinely recessed nose (2383.942374ms)
+✔ roof turret follows a continuous rear return, lowers behind the hull and preserves an independent yaw bearing (401.50987ms)
+✔ APC deploys before shooting, aims both axes from real muzzles, recoils and preserves damage and cooldown (102.919777ms)
+✔ elevation follows high targets, respects physical stops and never fires at a dead or unreachable target (80.380357ms)
+✔ an enemy below the depression stop cannot block a reachable target or redirect its damage (37.519207ms)
+✔ APC surface detail remains finite within the existing mesh and triangle budget (46.205436ms)
+✔ carrier collision follows the hull, wheel shoulders and rotation without trapping distant or airborne actors (61.155783ms)
+✔ rear stowage blocks its real occupied height, clears after deployment and follows vehicle rotation (36.578817ms)
+✔ navigation and spawn clearance enclose every stowage pose and all firing directions (635.313118ms)
+✔ deployment timing is independent of frame rate and rejects paused or invalid time steps (61.354179ms)
+✔ environment delegates APC physics while retaining its conservative navigation outline (43.809895ms)
+✔ marine: detailed finite model stays inside its rendering budget (2814.553742ms)
+✔ flametrooper: detailed finite model stays inside its rendering budget (54.872287ms)
+✔ synthetic: detailed finite model stays inside its rendering budget (33.841806ms)
+✔ honor guard: detailed finite model stays inside its rendering budget (1567.004055ms)
+✔ hound: detailed finite model stays inside its rendering budget (38.145174ms)
+✔ APC: detailed finite model stays inside its rendering budget (172.615163ms)
+✔ dropship: detailed finite model stays inside its rendering budget (43.790876ms)
+✔ pod: detailed finite model stays inside its rendering budget (67.585887ms)
+✔ skimmer: detailed finite model stays inside its rendering budget (34.564266ms)
+✔ support actors have textured surfaces and anatomically complete silhouettes (133.691004ms)
+✔ synthetic bisection retains its named pivots and material ownership (36.455748ms)
+✔ vehicle turret and capsule hatch remain independently movable and cleanup owns every buffer (106.715372ms)
+✔ detailed support squads and persistent equipment still follow gameplay lifecycle APIs (2764.727152ms)
+✔ dropship keeps strike cancellation while replacing the box hull (22.760179ms)
+✔ citadel trophies are recognizable separate skull families with bounded buffers (733.489981ms)
+✔ sculpted faces and bodies keep adult proportions and actual facial volume (58.871601ms)
+✔ fitted marine armor covers the chest continuously without cloth clipping through (58.189169ms)
+✔ lofted anatomy and hull surfaces retain finite normals, UVs and outward winding (2.040094ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 29
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12933.902867

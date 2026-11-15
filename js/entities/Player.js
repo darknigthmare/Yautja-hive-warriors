@@ -1,19 +1,90 @@
-/* Playable Yautja 3D Mesh Generator & State Controller (Primordial 1:1 Lore Edition) */
+/* Playable Yautja: articulated surface model and combat state controller. */
 
 import * as THREE from 'three';
+import { disposeObject } from '../engine/SceneResources.js';
+import { buildHunterModel, createHunterWeaponGeometry } from '../graphics/HunterModel.js';
+import { createImportedCharacter } from '../graphics/ImportedCharacter.js';
+import { prepareImportedParts } from '../graphics/ImportedPartsPreparation.js';
+import { applyMaskedBodyRegions } from '../graphics/MaskedBodyRegions.js';
+import { getGeneratedAssetEntry, loadGeneratedAsset } from '../graphics/GeneratedAssetLibrary.js';
+import { BIOMASK_GROUP_NAME, composeCharacterWithBiomask, parseBiomaskCalibration } from '../graphics/BiomaskComposition.js';
+import { HunterLocomotion } from '../graphics/HunterLocomotion.js';
+import { installCityHunterMechanisms } from '../graphics/CityHunterMechanisms.js';
+import { CITY_HUNTER_CONSOLE } from '../graphics/CityHunterMechanismsCalibration.js';
+import { getHunterGadgetEffects } from '../graphics/HunterGadgetEffects.js';
+import { createHunterHologram } from '../graphics/HunterHologram.js';
+import { prepareImportedManeTemplate } from '../graphics/ImportedManeRig.js';
+import { installCityHunterRightGauntlet } from '../graphics/CityHunterRightGauntlet.js';
+import { CITY_HUNTER_RIGHT_GAUNTLET } from '../graphics/CityHunterRightGauntletCalibration.js';
+import { HUNTER_WEAPON_PROFILES, HUNTER_ARSENAL_PROFILES, HUNTER_ACTION_EQUIPMENT, resolveHunterLoadout } from '../data/hunterArsenal.js';
+import { hunterCombatStyle } from '../data/hunterCombatStyles.js';
+
+const REQUIRED_RIG_BONES = ['hips', 'head', 'leftArm', 'rightArm', 'leftForeArm', 'rightForeArm', 'leftHand', 'rightHand', 'leftLeg', 'rightLeg', 'leftFoot', 'rightFoot'];
+const REQUIRED_ACCESSORIES = ['blade1', 'blade2', 'shieldMesh', 'secWeaponMesh', 'plasmaGlaiveMesh', 'clanMarkMesh'];
+const SOCKETS = new Set(['leftArm', 'rightArm', 'leftHand', 'rightHand', 'head']);
+const surfaceState = material => ({ transparent: material.transparent, opacity: material.opacity,
+  roughness: material.roughness, metalness: material.metalness, depthWrite: material.depthWrite });
+
+// Calibrations are authored against the inspected GLB, never guessed from its name.
+function importedAccessoryTransforms(rig) {
+  const transforms = {};
+  for (const name of REQUIRED_ACCESSORIES) {
+    const value = rig.accessories?.[name];
+    if (!value || !SOCKETS.has(value.socket) || !Array.isArray(value.position) || value.position.length !== 3 ||
+      !Array.isArray(value.quaternion) || value.quaternion.length !== 4 || !Array.isArray(value.scale) || value.scale.length !== 3 ||
+      ![...value.position, ...value.quaternion, ...value.scale].every(Number.isFinite) || value.scale.some(scale => scale <= 0)) {
+      throw new Error(`Generated hunter requires explicit socket calibration: ${name}`);
+    }
+    const quaternion = new THREE.Quaternion(...value.quaternion);
+    if (quaternion.lengthSq() < 1e-12) throw new Error(`Generated hunter has invalid socket rotation: ${name}`);
+    transforms[name] = { socket: value.socket, position: new THREE.Vector3(...value.position), quaternion: quaternion.normalize(), scale: new THREE.Vector3(...value.scale) };
+  }
+  return transforms;
+}
 
 export class Player {
+  get gameContext() { return globalThis.window?.gameInstance ?? globalThis.window?.game ?? null; }
+
+  get cameraEyeHeight() {
+    const imported = this._importedCharacter;
+    return ((imported?.cameraEyeHeight ?? this.headMesh?.position.y ?? 3.6) +
+      (imported?.adapter.visualGroundOffsetY ?? this._proceduralMotionRoot?.position.y ?? 0)) * (this.mesh?.scale.y ?? 1);
+  }
+
   constructor(scene, charData, audioEngine, isPlayer2 = false, particles = null) {
     this.scene = scene;
     this.data = charData;
     this.audioEngine = audioEngine;
     this.isPlayer2 = isPlayer2;
     this.particles = particles;
+    this._timers = [];
+    this._effects = new Set();
+    this._ownedFxDisposers = new Map();
+    this._legacyDefeated = new WeakSet();
+    this._simulationTime = 0;
+    this._disposed = false;
+    this._generatedVisualGeneration = 0;
+    this.generatedVisualState = 'procedural';
+    this.generatedBiomaskState = 'none';
+    this.generatedMechanismsState = 'none';
+    this.generatedMechanismsError = null;
+    this.generatedRightGauntletState = 'none';
+    this.generatedRightGauntletError = null;
+    this.loadout = { primary: 'wristblades', secondary: 'smart_disc', gadgets: ['medicomp', 'bear_trap'] };
+    this.combatStyle = hunterCombatStyle(charData.id);
+    this.stamina = 100; this.maxStamina = 100; this.crowdAttackCooldown = 0;
+    this.currentAttackId = 0; this.attackWindow = null; this.lastCombatRefusal = null;
+    this.fidelityMode = 'adapted';
+    this.lastArsenalRefusal = null;
+    this.feralBoltAmmo = 12; this.feralBoltCooldown = 0;
+    this.activeWeapon = 'wristblades';
+    this.weaponProfile = { damage: 1, reach: 3.8, timing: 1 };
+    this.bearTrapCharges = 3;
 
     // Stats
     this.hp = charData.stats.hp;
     this.maxHp = charData.stats.maxHp;
-    this.moveSpeed = charData.stats.moveSpeed;
+    this.moveSpeed = charData.stats.moveSpeed * this.combatStyle.mobility;
     this.meleeDamage = charData.stats.meleeDamage;
     this.plasmaDamage = charData.stats.plasmaDamage;
     this.plasmaEnergy = 100;
@@ -51,6 +122,7 @@ export class Player {
     this.cloakShimmerTimer = 0;
     this.combiStickCooldown = 0;
     this.shurikenCooldown = 0;
+    this.smartDiscCooldown = 0;
     this.powerGloveCooldown = 0;
     this.spineWhipCooldown = 0;
     this.flechetteCooldown = 0;
@@ -107,6 +179,20 @@ export class Player {
     this.smartgunTurretRef = null;
     this.isSyntheticAnkleGrabbed = false;
     this.ankleGrabTimer = 0;
+    this.isComancheWarPaintActive = false;
+    this.comancheWarPaintTimer = 0;
+    this.isMudCoated = false;
+    this.mudCoatedTimer = 0;
+    this.isFeralClawsActive = false;
+    this.feralClawsTimer = 0;
+    this.isAncestralTrackingActive = false;
+    this.ancestralTrackingTimer = 0;
+    this.isUrsaBerserkActive = false;
+    this.ursaBerserkTimer = 0;
+    this.isKenjiReflexesActive = false;
+    this.kenjiReflexesTimer = 0;
+    this.isTorresIncendiaryActive = false;
+    this.torresIncendiaryTimer = 0;
     // v47.0 Weapon Systems
     this.isPlasmaScytheActive = false;
     this.plasmaScytheMesh = null;
@@ -161,11 +247,13 @@ export class Player {
     this.plasmaChargeTime = 0;
 
     this.mesh = this.buildYautjaMesh();
+    this.mesh.traverse(child => { if (child.isMesh) child.castShadow = true; });
     this.scene.add(this.mesh);
 
     this.laserColorHex = isPlayer2 ? 0xffaa00 : 0xff0000;
     this.laserGroup = this.buildLaserSight(this.laserColorHex);
     this.mesh.add(this.laserGroup);
+    this.locomotion = new HunterLocomotion(this);
 
     this.radius = 1.2;
 
@@ -234,228 +322,281 @@ export class Player {
     this.isMudCamouflaged = false;
     this.billyCourageTimer = 0;
     this.isBillyCourageActive = false;
+    // v60.0 Predator 2 (1990) Rooftops Systems
+    this.lightningAuraTimer = 0;
+    this.isLightningAuraActive = false;
+    this.voodooSightTimer = 0;
+    this.isVoodooSightActive = false;
+    this.flintlockKineticBuffTimer = 0;
+    this.isFlintlockKineticActive = false;
+    this.jerryLastStandTimer = 0;
+    this.isJerryLastStandActive = false;
+    this.owlfUltravioletScanTimer = 0;
+    this.isOWLFUltravioletActive = false;
+    // v61.0 Predators (2010) Game Preserve Systems
+    this.hanzoBushidoTimer = 0;
+    this.isHanzoBushidoActive = false;
+    this.neurotoxinBladeTimer = 0;
+    this.isNeurotoxinBladeActive = false;
+    this.masterHunterStalkerTimer = 0;
+    this.isMasterHunterStalkerActive = false;
+    // v63.0 The Predator (2018) & Val Verde Master Systems
+    this.isPredatorKillerNanoActive = false;
+    this.predatorKillerTimer = 0;
+    this.isDillonGritActive = false;
+    this.dillonGritTimer = 0;
+    this.isHawkinsScanActive = false;
+    this.hawkinsScanTimer = 0;
+    this.isFriendlyLoboActive = false;
+    this.friendlyLoboTimer = 0;
+    this.isFugitiveAutoAimActive = false;
+    this.fugitiveAutoAimTimer = 0;
     this.loadClanForgeUpgrades();
+    this.generatedVisualReady = this.loadGeneratedVisual();
   }
 
   applyTacticalLoadout(loadout) {
-    if (!loadout) return;
-    this.tacticalLoadout = loadout;
-
-    // 1. Primary Weapon Perks
-    if (loadout.primary === 'wristblades') {
-      this.meleeDamage *= 1.15;
-      this.attackCooldownFactor = 0.82; // Faster slicing recovery
-    } else if (loadout.primary === 'combistick') {
-      this.meleeReachMultiplier = 1.35;
-      this.meleeDamage *= 1.25;
-    } else if (loadout.primary === 'katana') {
-      this.moveSpeed *= 1.18;
-      this.meleeArcMultiplier = 1.35;
-    } else if (loadout.primary === 'alpha_sickle') {
-      this.meleeDamage *= 1.38;
-      this.dismembermentBoost = 1.5;
-    }
-
-    // 2. Secondary Weapon Perks
-    if (loadout.secondary === 'smart_disc') {
-      this.smartDiscSpeedMult = 1.3;
-    } else if (loadout.secondary === 'shuriken') {
-      this.shurikenPierceBonus = 4;
-    } else if (loadout.secondary === 'compound_bow') {
-      this.bowDamageMult = 1.4;
-    } else if (loadout.secondary === 'plasma_whip') {
-      this.whipStunDuration = 2.5;
-    }
-
-    // 3. Gadgets Perks
-    if (loadout.gadgets && Array.isArray(loadout.gadgets)) {
-      if (loadout.gadgets.includes('medicomp')) {
-        this.medicompCharges += 2; // Total 5 charges
-        this.medicompHealAmount = 550;
-      }
-      if (loadout.gadgets.includes('bear_trap')) {
-        this.bearTrapCharges = (this.bearTrapCharges || 2) + 2;
-      }
-      if (loadout.gadgets.includes('acid_solvent')) {
-        this.acidSolventCharges += 3; // Total 5 charges
-      }
-      if (loadout.gadgets.includes('nuke')) {
-        this.nukeBlastBonus = true;
-      }
-    }
+    // One loadout owner; repeated confirmations must not multiply base stats.
+    return this.applyLoadout(loadout);
   }
 
   buildYautjaMesh() {
-    const group = new THREE.Group();
-    const colors = this.data.colors;
+    return buildHunterModel(this);
+  }
 
-    const skinMat = new THREE.MeshStandardMaterial({ color: colors.skin, roughness: 0.6, metalness: 0.1 });
-    const armorMat = new THREE.MeshStandardMaterial({ color: colors.armor, metalness: 0.8, roughness: 0.3 });
-    const maskMat = new THREE.MeshStandardMaterial({ color: colors.mask, metalness: 0.9, roughness: 0.2 });
-
-    const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.9, 0.6, 2.2, 8), skinMat);
-    torso.position.y = 2.2;
-    group.add(torso);
-
-    const chestArmor = new THREE.Mesh(new THREE.BoxGeometry(1.6, 1.2, 1.2), armorMat);
-    chestArmor.position.y = 2.4;
-    group.add(chestArmor);
-
-    // Bio-Mask Head
-    this.headMesh = new THREE.Mesh(new THREE.SphereGeometry(0.65, 12, 12), maskMat);
-    this.headMesh.position.set(0, 3.6, 0.1);
-    group.add(this.headMesh);
-
-    // Clan Acid Mark Glyph on Forehead (AVP 2004 Lore - lightning bolt)
-    const clanMarkGeo = new THREE.PlaneGeometry(0.25, 0.35);
-    const clanMarkMat = new THREE.MeshBasicMaterial({ color: 0x39ff14, side: THREE.DoubleSide });
-    this.clanMarkMesh = new THREE.Mesh(clanMarkGeo, clanMarkMat);
-    this.clanMarkMesh.position.set(0, 3.8, 0.68);
-    this.clanMarkMesh.visible = false;
-    group.add(this.clanMarkMesh);
-
-    const dreadMat = new THREE.MeshStandardMaterial({ color: colors.dreads, roughness: 0.9 });
-    for (let i = -4; i <= 4; i++) {
-      const dread = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.04, 1.4, 6), dreadMat);
-      const angle = (i / 4) * Math.PI * 0.5;
-      dread.position.set(Math.sin(angle) * 0.5, 3.4, -0.4 - Math.cos(angle) * 0.2);
-      dread.rotation.x = -0.3;
-      dread.rotation.z = angle * 0.5;
-      group.add(dread);
+  /** Optional calibrated upgrade for this character's own asset. Injectable library permits fixture tests;
+   * runtime defaults to the verified same-origin asset cache. */
+  async loadGeneratedVisual(library = { getGeneratedAssetEntry, loadGeneratedAsset }) {
+    const generation = ++this._generatedVisualGeneration;
+    const assetKey = this.data.id;
+    if (this._disposed || typeof assetKey !== 'string' || !/^[a-zA-Z0-9_-]+$/.test(assetKey)) return false;
+    if (this._importedCharacter) return true;
+    let adapter = null;
+    let mechanisms = null;
+    let rightGauntlet = null;
+    let disposeComposition = null;
+    let disposePreparation = null;
+    try {
+      const entry = library.getGeneratedAssetEntry(assetKey);
+      if (!entry || entry.status !== 'verified' || entry.characterRig?.calibrated !== true) return false;
+      const rig = entry.characterRig, transforms = importedAccessoryTransforms(rig);
+      if (rig.cameraEyeHeight !== undefined && (!Number.isFinite(rig.cameraEyeHeight) || rig.cameraEyeHeight <= 0 || rig.cameraEyeHeight > (rig.height ?? 4.31))) throw new Error('Generated hunter has invalid camera eye height');
+      if (rig.laserSight && (!Array.isArray(rig.laserSight.origin) || rig.laserSight.origin.length !== 3 || !rig.laserSight.origin.every(Number.isFinite) || !Number.isFinite(rig.laserSight.radius) || rig.laserSight.radius < 0 || rig.laserSight.radius > 0.5)) throw new Error('Generated hunter has invalid laser calibration');
+      this.generatedVisualState = 'loading'; this.generatedVisualError = null;
+      const bodyTemplate = await library.loadGeneratedAsset(assetKey);
+      if (this._disposed || generation !== this._generatedVisualGeneration) return false;
+      const mane = prepareImportedManeTemplate(bodyTemplate, rig.maneRig, { sourceSha256: entry.sha256 });
+      const preparation = prepareImportedParts(mane.template, rig, { sourceSha256: entry.sha256 });
+      disposePreparation = preparation.dispose;
+      if (rig.requirePreparation === true) {
+        const checks = [
+          [rig.partRegions, 'regionsPrepared', 'regionError'],
+          [rig.partSkinFilters, 'skinFiltersPrepared', 'skinFilterError'],
+          [rig.boneRestCorrections, 'boneRestCorrectionsApplied', 'boneRestCorrectionError'],
+          [rig.splitHair, 'hairPrepared', 'hairError']
+        ];
+        for (const [descriptor, prepared, error] of checks) if (descriptor && preparation.diagnostics[prepared] !== true) {
+          throw new Error(`Generated hunter preparation failed: ${preparation.diagnostics[error] ?? prepared}`);
+        }
+      }
+      const preparedBody = preparation.gltf;
+      let gltf = preparedBody;
+      let biomask = null, biomaskState = rig.biomask ? 'unconfigured' : 'none', biomaskError = null;
+      try {
+        const calibration = parseBiomaskCalibration(rig.biomask);
+        if (calibration) {
+          if (calibration.assetKey === assetKey) throw new Error('Biomask must use its own asset key');
+          const maskEntry = library.getGeneratedAssetEntry(calibration.assetKey);
+          if (!maskEntry || maskEntry.status !== 'verified') throw new Error('Biomask asset is not verified');
+          const mask = await library.loadGeneratedAsset(calibration.assetKey);
+          if (this._disposed || generation !== this._generatedVisualGeneration) return false;
+          gltf = composeCharacterWithBiomask(gltf, mask, calibration, { headBoneName: rig.boneMap?.head });
+          disposeComposition = gltf.disposeComposition;
+          gltf = applyMaskedBodyRegions(gltf, rig.maskedBodyRegions, { sourceSha256: entry.sha256 });
+          biomask = { key: calibration.assetKey, url: maskEntry.url }; biomaskState = 'attached';
+        }
+      } catch (error) {
+        disposeComposition?.(); disposeComposition = null;
+        gltf = preparedBody; biomask = null;
+        biomaskState = 'unavailable'; biomaskError = error.message;
+      }
+      if (this._disposed || generation !== this._generatedVisualGeneration) return false;
+      // The old rendered fallback may currently be grounded below its actor.
+      // Import calibration and its laser baseline always start at visual Y0.
+      this.locomotion.resetVisualOffset();
+      const baseArticulation = preparation.articulationDescriptor;
+      const articulation = mane.articulation ? { ...(baseArticulation ?? { version: 1 }),
+        dreadlocks: [...(baseArticulation?.dreadlocks ?? []), ...mane.articulation.dreadlocks] } : baseArticulation;
+      const createAdapter = source => createImportedCharacter(this, source, { ...rig, sourceSha256: entry.sha256,
+        articulation, requireHeadPartition: true, animateWhenUncontrolled: false });
+      try { adapter = createAdapter(gltf); }
+      catch (error) {
+        if (!biomask) throw error;
+        // A malformed optional cosmetic must not suppress a valid body.
+        biomask = null; biomaskState = 'unavailable'; biomaskError = error.message;
+        adapter = createAdapter(preparedBody);
+      }
+      const missing = REQUIRED_RIG_BONES.filter(role => !adapter.bones[role]);
+      if (missing.length) throw new Error(`Generated hunter rig is incomplete: ${missing.join(', ')}`);
+      for (const [name, transform] of Object.entries(transforms)) {
+        if (!adapter.sockets[transform.socket] || adapter.diagnostics.socketFallbacks[transform.socket]) throw new Error(`Generated hunter socket is missing: ${name}/${transform.socket}`);
+      }
+      if (biomask) {
+        biomask.root = adapter.model.getObjectByName(BIOMASK_GROUP_NAME);
+        const bodyHeadCanHide = adapter.headMeshes.some(mesh => {
+          let node = mesh;
+          while (node && node !== biomask.root) node = node.parent;
+          return node !== biomask.root;
+        });
+        if (!bodyHeadCanHide) throw new Error('Generated body head cannot be hidden independently of its biomask');
+      }
+      // Rigid armour is calibrated in the same rest pose as the adapter.
+      adapter.update(0, false);
+      if (assetKey === 'city_hunter' && entry.sha256 === CITY_HUNTER_RIGHT_GAUNTLET.sourceSha256) {
+        try {
+          rightGauntlet = installCityHunterRightGauntlet(adapter, { sourceSha256: entry.sha256 });
+          this.generatedRightGauntletState = 'ready'; this.generatedRightGauntletError = null;
+        } catch (error) {
+          this.generatedRightGauntletState = 'unavailable'; this.generatedRightGauntletError = error.message;
+        }
+      }
+      if (assetKey === 'city_hunter' && entry.sha256 === CITY_HUNTER_CONSOLE.sourceSha256) {
+        try {
+          mechanisms = installCityHunterMechanisms(adapter, { sourceSha256: entry.sha256 });
+          this.generatedMechanismsState = 'ready'; this.generatedMechanismsError = null;
+        } catch (error) {
+          // Optional equipment never suppresses an otherwise verified body.
+          this.generatedMechanismsState = 'unavailable'; this.generatedMechanismsError = error.message;
+        }
+      }
+      const imported = { adapter, mechanisms, rightGauntlet, biomask, transforms, cameraEyeHeight: rig.cameraEyeHeight,
+        bakedWristblades: rig.bakedWristblades?.calibrated === true && rig.bakedWristblades.mode === 'static',
+        preparationDiagnostics: { ...preparation.diagnostics, ...(mane.diagnostics ? { mane: mane.diagnostics } : {}) },
+        laserBaseY: this.laserGroup.position.y,
+        laserStarts: [], records: [], latest: new Map(), hidden: new Map(),
+        skinMaterials: this.skinMaterials, armorMaterials: this.armorMaterials };
+      this._importedCharacter = imported; this.mesh.add(adapter.root);
+      this._gadgetEffects?.rebind();
+      if (rig.laserSight) {
+        this.laserGroup.children.forEach((line, index) => {
+          const positions = line.geometry.attributes.position;
+          imported.laserStarts.push({ positions, start: [positions.getX(0), positions.getY(0), positions.getZ(0)] });
+          const angle = index / this.laserGroup.children.length * Math.PI * 2;
+          positions.setXYZ(0, rig.laserSight.origin[0] + Math.cos(angle) * rig.laserSight.radius,
+            rig.laserSight.origin[1] + Math.sin(angle) * rig.laserSight.radius, rig.laserSight.origin[2]);
+          positions.needsUpdate = true;
+          line.geometry.computeBoundingSphere();
+        });
+      }
+      this._syncImportedAccessories();
+      this._syncWristbladeVisuals();
+      // Keep the existing joint controls and root alive for gameplay/effects.
+      // Only the existing rendered anatomy is hidden; late effects stay usable.
+      this.mesh.traverse(object => {
+        if (!object.isMesh) return;
+        let ancestor = object;
+        while (ancestor && ancestor !== adapter.root && ancestor !== this.laserGroup) ancestor = ancestor.parent;
+        if (ancestor) return;
+        imported.hidden.set(object, object.visible); object.visible = false;
+      });
+      this.skinMaterials = [...this.skinMaterials, ...adapter.skinMaterials];
+      this.armorMaterials = [...this.armorMaterials, ...adapter.armorMaterials, ...(mechanisms?.materials ?? [])];
+      for (const material of new Set([...adapter.materials, ...(mechanisms?.materials ?? [])])) {
+        if (this._uncloakedSurfaces) this._uncloakedSurfaces.set(material, surfaceState(material));
+        if (this.isCloaked) {
+          material.transparent = true; material.opacity = 0.22; material.roughness = 0.08;
+          material.metalness = 0.95; material.depthWrite = false; material.needsUpdate = true;
+        }
+      }
+      adapter.update(0, false);
+      this.laserGroup.position.y = imported.laserBaseY + (adapter.visualGroundOffsetY ?? 0);
+      this.generatedVisualState = 'imported';
+      this.generatedBiomaskState = biomaskState; this.generatedBiomaskError = biomaskError;
+      this.mesh.userData.generatedAsset = { key: assetKey, url: entry.url,
+        ...(biomask ? { biomask: { key: biomask.key, url: biomask.url } } : {}) };
+      this.scene.dispatchEvent({ type: 'visual-ready' });
+      return true;
+    } catch (error) {
+      if (this._importedCharacter?.adapter === adapter) this._removeImportedCharacter();
+      else { mechanisms?.dispose(); rightGauntlet?.dispose(); adapter?.dispose(); }
+      if (!this._disposed && generation === this._generatedVisualGeneration) {
+        this.generatedVisualState = 'procedural'; this.generatedVisualError = error.message;
+        this.generatedBiomaskState = 'none'; this.generatedBiomaskError = null;
+      }
+      return false;
+    } finally {
+      disposeComposition?.();
+      disposePreparation?.();
     }
+  }
 
-    const plasmaGeo = new THREE.CylinderGeometry(0.12, 0.15, 0.8, 8);
-    const leftCannon = new THREE.Mesh(plasmaGeo, armorMat);
-    leftCannon.rotation.x = Math.PI / 2;
-    leftCannon.position.set(-1.1, 3.4, 0.2);
-    group.add(leftCannon);
-
-    const rightCannon = new THREE.Mesh(plasmaGeo, armorMat);
-    rightCannon.rotation.x = Math.PI / 2;
-    rightCannon.position.set(1.1, 3.4, 0.2);
-    group.add(rightCannon);
-
-    const armGeo = new THREE.CylinderGeometry(0.28, 0.22, 1.6, 8);
-    this.leftArm = new THREE.Mesh(armGeo, skinMat);
-    this.leftArm.position.set(-1.2, 2.2, 0);
-    group.add(this.leftArm);
-
-    this.rightArm = new THREE.Mesh(armGeo, skinMat);
-    this.rightArm.position.set(1.2, 2.2, 0);
-    group.add(this.rightArm);
-
-    // Left Forearm: Feral Biometric Expanding Bone Fan Shield (Prey 2022 Canon 1:1)
-    const shieldGroup = new THREE.Group();
-    const shieldMat = new THREE.MeshStandardMaterial({ color: 0x3d3024, roughness: 0.4, metalness: 0.75 });
-    const shieldRimMat = new THREE.MeshBasicMaterial({ color: 0x00d2ff, side: THREE.DoubleSide });
-
-    // Central biometric hexagonal boss plate
-    const centerPlate = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 0.09, 6), shieldMat);
-    shieldGroup.add(centerPlate);
-
-    // 6 Interlocking fan-folding osteo-plates
-    for (let f = 0; f < 6; f++) {
-      const angle = (f / 6) * Math.PI * 2;
-      const blade = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.06, 0.4), shieldMat);
-      blade.position.set(Math.cos(angle) * 0.7, 0, Math.sin(angle) * 0.7);
-      blade.rotation.y = angle;
-      shieldGroup.add(blade);
+  _syncImportedAccessories() {
+    const imported = this._importedCharacter;
+    if (!imported) return;
+    for (const [name, transform] of Object.entries(imported.transforms)) {
+      const object = this[name];
+      if (!object?.isObject3D || imported.latest.get(name)?.object === object) continue;
+      const previous = imported.latest.get(name);
+      if (previous) {
+        previous.parent.add(previous.object); previous.object.position.copy(previous.position);
+        previous.object.quaternion.copy(previous.quaternion); previous.object.scale.copy(previous.scale); previous.object.visible = false;
+      }
+      const fallback = name === 'clanMarkMesh' ? this.headMesh : ['shieldMesh', 'secWeaponMesh'].includes(name) ? this.leftArm : this.rightArm;
+      const record = { object, parent: object.parent ?? fallback, position: object.position.clone(), quaternion: object.quaternion.clone(), scale: object.scale.clone() };
+      imported.records.push(record); imported.latest.set(name, record);
+      imported.adapter.sockets[transform.socket].add(object);
+      object.position.copy(transform.position); object.quaternion.copy(transform.quaternion); object.scale.copy(transform.scale);
     }
+    if (this.clanMarkMesh) this.clanMarkMesh.visible = this.isClanBranded && this.headMesh.visible;
+  }
 
-    // Glowing cyan plasma cutting edge perimeter rim
-    const energyRim = new THREE.Mesh(new THREE.RingGeometry(1.2, 1.3, 6), shieldRimMat);
-    energyRim.rotation.x = Math.PI / 2;
-    shieldGroup.add(energyRim);
+  _syncWristbladeVisuals() {
+    const articulation = this._importedCharacter?.adapter.articulation;
+    const blades = articulation?.getState().wristblades ?? [];
+    const selected = this.activeWeapon === 'wristblades';
+    for (const { id } of blades) articulation.setBladeExtension(id, selected ? 1 : 0);
+    // A calibrated native blade replaces the procedural weapon, including while
+    // it travels into its housing. Bodies without actuators keep their fallback.
+    const proceduralVisible = selected && blades.length === 0 && !this._importedCharacter?.bakedWristblades;
+    if (this.blade1) this.blade1.visible = proceduralVisible;
+    if (this.blade2) this.blade2.visible = proceduralVisible;
+  }
 
-    shieldGroup.position.set(-0.2, -0.2, 0.6);
-    shieldGroup.rotation.x = Math.PI / 2;
-    shieldGroup.visible = false;
-    this.shieldMesh = shieldGroup;
-    this.leftArm.add(this.shieldMesh);
+  // Component IDs come from the asset's calibrated articulation descriptor.
+  // A console lid and a folding shield do not share an implicit gameplay action.
+  setWristbladeExtension(id, amount) {
+    return this._importedCharacter?.adapter.articulation?.setBladeExtension(id, amount) ?? false;
+  }
 
-    const rightGauntlet = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.8, 0.5), armorMat);
-    rightGauntlet.position.set(1.2, 1.8, 0);
-    group.add(rightGauntlet);
+  setGauntletOpen(id, amount) {
+    return Boolean(this._importedCharacter?.mechanisms?.setGauntletOpen(id, amount) ||
+      this._importedCharacter?.adapter.articulation?.setGauntletOpen(id, amount));
+  }
 
-    const bladeMat = new THREE.MeshStandardMaterial({ color: 0xdddddd, metalness: 0.95, roughness: 0.1 });
-    // Dual parallel extensible wristblades (1:1 Canon Predator 1987)
-    this.blade1 = new THREE.Mesh(new THREE.BoxGeometry(0.06, 1.4, 0.02), bladeMat);
-    this.blade1.position.set(1.23, 1.8, 0.8);
-    this.blade1.rotation.x = Math.PI / 2;
-    group.add(this.blade1);
-
-    this.blade2 = new THREE.Mesh(new THREE.BoxGeometry(0.06, 1.4, 0.02), bladeMat);
-    this.blade2.position.set(1.37, 1.8, 0.8);
-    this.blade2.rotation.x = Math.PI / 2;
-    group.add(this.blade2);
-
-    this.secWeaponMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.6, 0.05, 12), bladeMat);
-    this.secWeaponMesh.position.set(-1.2, 1.8, 0.6);
-    this.secWeaponMesh.visible = false;
-    group.add(this.secWeaponMesh);
-
-    // Dual-Bladed Plasma Glaive / Naginata (AVP Clan Patriarch / Concrete Jungle Lore)
-    const glaiveGroup = new THREE.Group();
-    const shaftMat = new THREE.MeshStandardMaterial({ color: 0x3d3124, roughness: 0.5, metalness: 0.85 });
-    const plasmaBladeMat = new THREE.MeshStandardMaterial({
-      color: 0x00ffff,
-      emissive: 0x00d2ff,
-      emissiveIntensity: 1.2,
-      roughness: 0.1,
-      metalness: 0.95
-    });
-
-    const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 3.4, 8), shaftMat);
-    glaiveGroup.add(shaft);
-
-    const bladeTop = new THREE.Mesh(new THREE.BoxGeometry(0.06, 1.2, 0.22), plasmaBladeMat);
-    bladeTop.position.y = 1.9;
-    glaiveGroup.add(bladeTop);
-
-    const bladeBottom = new THREE.Mesh(new THREE.BoxGeometry(0.06, 1.2, 0.22), plasmaBladeMat);
-    bladeBottom.position.y = -1.9;
-    glaiveGroup.add(bladeBottom);
-
-    // Energy rings around center grip
-    const ringGeo = new THREE.TorusGeometry(0.09, 0.02, 6, 16);
-    const ring1 = new THREE.Mesh(ringGeo, plasmaBladeMat);
-    ring1.rotation.x = Math.PI / 2;
-    ring1.position.y = 0.4;
-    glaiveGroup.add(ring1);
-    const ring2 = new THREE.Mesh(ringGeo, plasmaBladeMat);
-    ring2.rotation.x = Math.PI / 2;
-    ring2.position.y = -0.4;
-    glaiveGroup.add(ring2);
-
-    glaiveGroup.position.set(1.4, 1.8, 0.4);
-    glaiveGroup.rotation.x = Math.PI / 2;
-    glaiveGroup.visible = false;
-    group.add(glaiveGroup);
-    this.plasmaGlaiveMesh = glaiveGroup;
-
-    const legGeo = new THREE.CylinderGeometry(0.35, 0.25, 1.8, 8);
-    this.leftLeg = new THREE.Mesh(legGeo, skinMat);
-    this.leftLeg.position.set(-0.5, 0.9, 0);
-    group.add(this.leftLeg);
-
-    this.rightLeg = new THREE.Mesh(legGeo, skinMat);
-    this.rightLeg.position.set(0.5, 0.9, 0);
-    group.add(this.rightLeg);
-
-    this.skinMaterials = [skinMat];
-    this.armorMaterials = [armorMat, maskMat];
-
-    // Chantier 4 (v46): Yautja Cyber-Hunt Bionic Exosuit Magnetic Forcefield & Cage
-    const exosuitGroup = new THREE.Group();
-    const exoMat = new THREE.MeshBasicMaterial({ color: 0x00f2fe, wireframe: true, transparent: true, opacity: 0.65 });
-    const exoPlates = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.0, 3.8, 8, 4, true), exoMat);
-    exoPlates.position.y = 2.0;
-    exosuitGroup.add(exoPlates);
-    exosuitGroup.visible = false;
-    group.add(exosuitGroup);
-    this.exosuitMesh = exosuitGroup;
-
-    return group;
+  _removeImportedCharacter() {
+    const imported = this._importedCharacter;
+    if (!imported) return;
+    for (const record of imported.records) {
+      record.parent.add(record.object); record.object.position.copy(record.position);
+      record.object.quaternion.copy(record.quaternion); record.object.scale.copy(record.scale);
+    }
+    imported.hidden.forEach((visible, object) => { object.visible = visible; });
+    for (const { positions, start } of imported.laserStarts) { positions.setXYZ(0, ...start); positions.needsUpdate = true; }
+    this.laserGroup.position.y = imported.laserBaseY;
+    this.laserGroup.children.forEach(line => line.geometry.computeBoundingSphere());
+    this.skinMaterials = imported.skinMaterials; this.armorMaterials = imported.armorMaterials;
+    for (const material of [...imported.adapter.materials, ...(imported.mechanisms?.materials ?? [])]) this._uncloakedSurfaces?.delete(material);
+    imported.mechanisms?.dispose();
+    imported.rightGauntlet?.dispose();
+    imported.adapter.dispose(); this._importedCharacter = null;
+    this._gadgetEffects?.rebind();
+    this._syncWristbladeVisuals();
+    delete this.mesh.userData.generatedAsset;
+    this.generatedVisualState = 'procedural';
+    this.generatedBiomaskState = 'none'; this.generatedBiomaskError = null;
+    this.generatedMechanismsState = 'none'; this.generatedMechanismsError = null;
+    this.generatedRightGauntletState = 'none'; this.generatedRightGauntletError = null;
+    if (!this._disposed) this.scene.dispatchEvent({ type: 'visual-ready' });
   }
 
   buildLaserSight(colorHex = 0xff0000) {
@@ -486,7 +627,7 @@ export class Player {
     const convergence = this.isChargingPlasma ? Math.max(0.015, 0.12 * (1.0 - Math.min(1.0, this.plasmaChargeTime / 0.6))) : 0.12;
 
     if (worldTargetPos) {
-      const localTarget = this.mesh.worldToLocal(worldTargetPos.clone());
+      const localTarget = this.laserGroup.worldToLocal(worldTargetPos.clone());
       for (let i = 0; i < this.laserGroup.children.length; i++) {
         const line = this.laserGroup.children[i];
         const posAttr = line.geometry.attributes.position;
@@ -507,6 +648,7 @@ export class Player {
   }
 
   throwCombiStick() {
+    if (!this.canUseArsenalEquipment('combistick')) return false;
     if (this.combiStickCooldown > 0 || this.isFacehuggerLatched) return null;
     this.combiStickCooldown = 3.5;
     this.audioEngine.playCombiStickThrow();
@@ -530,8 +672,9 @@ export class Player {
   }
 
   throwShuriken() {
+    if (!this.canUseArsenalEquipment('shuriken')) return false;
     if (this.shurikenCooldown > 0 || this.isFacehuggerLatched) return null;
-    this.shurikenCooldown = 4.0;
+    this.shurikenCooldown = HUNTER_WEAPON_PROFILES.shuriken.cooldown;
     this.audioEngine.playShurikenOpen();
 
     const isElevated = this.isPerched || this.position.y >= 2.0;
@@ -547,13 +690,14 @@ export class Player {
       startPos: startPos,
       direction: forward,
       speed: 42,
-      damage: 550,
-      maxRange: 32,
+      damage: HUNTER_WEAPON_PROFILES.shuriken.projectileDamage,
+      maxRange: HUNTER_WEAPON_PROFILES.shuriken.projectileRange,
       radius: 3.2
     };
   }
 
   triggerPowerGloveSlam(horde, synthetics, bosses) {
+    if (!this.canUseArsenalEquipment('power_glove')) return false;
     if (this.powerGloveCooldown > 0 || this.isFacehuggerLatched) return false;
     this.powerGloveCooldown = 6.0;
 
@@ -562,7 +706,7 @@ export class Player {
     // Visual ground slam punch animation
     this.rightArm.rotation.x = -Math.PI * 0.85;
     this.position.y = 0;
-    setTimeout(() => {
+    this.schedule(() => {
       this.rightArm.rotation.x = 0;
     }, 450);
 
@@ -572,11 +716,12 @@ export class Player {
     if (horde) {
       horde.checkMeleeHits(slamAttack);
       horde.aliens.forEach(a => {
+        if (!this._canDamageLegacyAlien(horde, a)) return;
         if (a.mesh.position.distanceTo(this.position) <= 12.0) {
           const knockDir = a.mesh.position.clone().sub(this.position).normalize();
           a.mesh.position.addScaledVector(knockDir, 7.5);
           a.mesh.position.y = 2.5; // Lifted into air
-          setTimeout(() => { a.mesh.position.y = 0; }, 320);
+          this.schedule(() => { a.mesh.position.y = 0; }, 320);
         }
       });
     }
@@ -597,6 +742,7 @@ export class Player {
   }
 
   triggerSpineWhipSlash(horde, synthetics, bosses) {
+    if (!this.canUseArsenalEquipment('plasma_whip')) return false;
     if (this.spineWhipCooldown > 0 || this.isFacehuggerLatched) return false;
     this.spineWhipCooldown = 3.5;
 
@@ -605,7 +751,7 @@ export class Player {
     // Visual whip lash sweep
     this.leftArm.rotation.x = -Math.PI * 0.5;
     this.leftArm.rotation.y = -Math.PI * 0.4;
-    setTimeout(() => {
+    this.schedule(() => {
       this.leftArm.rotation.x = 0;
       this.leftArm.rotation.y = 0;
     }, 380);
@@ -616,6 +762,7 @@ export class Player {
     if (horde) {
       horde.checkMeleeHits(whipAttack);
       horde.aliens.forEach(a => {
+        if (!this._canDamageLegacyAlien(horde, a)) return;
         const toPlayer = this.position.clone().sub(a.mesh.position);
         const dist = toPlayer.length();
         if (dist <= 10.5 && dist > 2.0) {
@@ -665,16 +812,17 @@ export class Player {
   }
 
   toggleShieldBlock() {
+    if (!this.isBlocking && !this.cancelAttack('guard')) return false;
     this.isBlocking = !this.isBlocking;
     if (this.shieldMesh) {
       this.shieldMesh.visible = this.isBlocking;
       if (this.isBlocking) {
         this.shieldMesh.scale.set(0.2, 0.2, 0.2);
         let s = 0.2;
-        const expandAnim = setInterval(() => {
+        const expandAnim = this.scheduleInterval(() => {
           s += 0.25;
           if (this.shieldMesh) this.shieldMesh.scale.set(s, s, s);
-          if (s >= 1.0) clearInterval(expandAnim);
+          if (s >= 1.0) this.cancelTimer(expandAnim);
         }, 20);
       }
     }
@@ -689,8 +837,9 @@ export class Player {
       this.leftArm.position.x = -0.6;
     } else {
       this.leftArm.rotation.x = 0;
-      this.leftArm.position.x = -1.2;
+      this.leftArm.position.x = this._leftArmRestX ?? -1.2;
     }
+    this._syncArsenalVisuals();
     return this.isBlocking;
   }
 
@@ -709,6 +858,7 @@ export class Player {
   }
 
   fireFlechetteNeedler() {
+    if (!this.canUseArsenalEquipment('speargun')) return false;
     this.audioEngine.playFlechetteDart();
     const origin = this.position.clone().add(new THREE.Vector3(-1.2, 2.0, 0.5));
     const forward = new THREE.Vector3(Math.sin(this.rotationY), 0, Math.cos(this.rotationY)).normalize();
@@ -722,6 +872,9 @@ export class Player {
   }
 
   throwSmartDisc(horde) {
+    if (!this.canUseArsenalEquipment('smart_disc')) return false;
+    if (this._disposed || this.hp <= 0 || this.smartDiscCooldown > 0 || this.isFacehuggerLatched) return null;
+    this.smartDiscCooldown = HUNTER_WEAPON_PROFILES.smart_disc.cooldown;
     this.audioEngine.playSmartDiscHum();
     const origin = this.position.clone().add(new THREE.Vector3(0.8, 1.8, 0.4));
     const forward = new THREE.Vector3(Math.sin(this.rotationY), 0, Math.cos(this.rotationY)).normalize();
@@ -731,7 +884,7 @@ export class Player {
     const targets = [];
     if (horde && horde.aliens) {
       const candidates = horde.aliens
-        .filter(a => a.hp > 0 && a.mesh.position.distanceTo(origin) <= 32.0)
+        .filter(a => this._canDamageLegacyAlien(horde, a) && a.mesh.position.distanceTo(origin) <= 32.0)
         .sort((a, b) => a.mesh.position.distanceTo(origin) - b.mesh.position.distanceTo(origin));
       for (let c of candidates) {
         const toAlien = c.mesh.position.clone().sub(origin).normalize();
@@ -745,13 +898,14 @@ export class Player {
       startPos: origin.clone(),
       apexPos: origin.clone().addScaledVector(forward, 28).addScaledVector(right, 7),
       waypoints: targets,
-      damage: 340,
+      damage: HUNTER_WEAPON_PROFILES.smart_disc.projectileDamage,
       speed: 42
     };
   }
 
   /* Chantier 3: Trax-Net Micro-Beacon Dart Gun (AVP 2 / Concrete Jungle Lore) */
   fireTraxNetDart(horde, synthetics, bosses) {
+    if (!this.canUseArsenalEquipment('trax_dart')) return false;
     if (this.traxNetCooldown > 0 || this.isFacehuggerLatched) return null;
     this.traxNetCooldown = 14.0; // 14s tactical cooldown
 
@@ -775,6 +929,7 @@ export class Player {
     // Check horde
     if (!bestTarget && horde && horde.aliens) {
       for (const a of horde.aliens) {
+        if (!this._canDamageLegacyAlien(horde, a)) continue;
         if (!a || a.hp <= 0 || !a.mesh) continue;
         const toA = a.mesh.position.clone().sub(this.position).normalize();
         if (forward.dot(toA) > 0.35) {
@@ -798,6 +953,7 @@ export class Player {
 
   /* Chantier 6: Plasma Glaive Rotary Spin Shield (Aliens: Fireteam Elite / Xenogenesis) */
   toggleWhirlShield(active = null) {
+    if (!this.canUseArsenalEquipment('glaive')) return false;
     if (active === null) {
       this.isWhirlShieldActive = !this.isWhirlShieldActive;
     } else {
@@ -811,6 +967,7 @@ export class Player {
   }
 
   fireNetgun(horde, synthetics) {
+    if (!this.canUseArsenalEquipment('netgun')) return false;
     this.audioEngine.playNetgunLaunch();
     const origin = this.position.clone().add(new THREE.Vector3(0.5, 2.0, 0.4));
     const forward = new THREE.Vector3(Math.sin(this.rotationY), 0, Math.cos(this.rotationY)).normalize();
@@ -821,6 +978,7 @@ export class Player {
 
     if (horde && horde.aliens) {
       horde.aliens.forEach(a => {
+        if (!this._canHitLegacyAlien(horde, a)) return;
         if (a.isNetEntangled || a.isNetgunImmune) return;
         const toAlien = a.mesh.position.clone().sub(this.position);
         toAlien.y = 0;
@@ -842,10 +1000,10 @@ export class Player {
         target.isNetEntangled = true;
         target.netTimer = 4.5;
 
-        // Chantier 6: Yautja Netgun Wall-Pinning & Diamond-Wire Guillotine Tension (Predator 2 Canon)
-        if (target.mesh && (Math.abs(target.mesh.position.x) >= 63 || Math.abs(target.mesh.position.z) >= 63 || target.mesh.position.distanceTo(new THREE.Vector3(0, 0, 0)) >= 64)) {
-          target.isPinned = true;
-          target.pinTimer = 6.0;
+        const wallStart = target.mesh.position.clone().add(new THREE.Vector3(0, 1, 0));
+        const wallEnd = wallStart.clone().addScaledVector(forward, Math.max(1, target.radius ?? 1) + .8);
+        if (this.gameContext?.env?.traceSegment?.(wallStart, wallEnd, { radius: .04 })) {
+          target.isPinned = true; target.pinTimer = 4.5;
         }
 
         // Visual expanding/tightening diamond-mesh net group
@@ -871,12 +1029,16 @@ export class Player {
         }
 
         netGroup.position.copy(target.mesh.position).add(new THREE.Vector3(0, 1.2, 0));
-        this.scene.add(netGroup);
+        this._addOwnedEffect(netGroup);
 
         // Wire tightening animation interval
         let netLife = 4.5;
-        const netAnim = setInterval(() => {
+        const netAnim = this.scheduleInterval(() => {
           netLife -= 0.1;
+          if (!this._canDamageLegacyAlien(horde, target)) {
+            target.isNetEntangled = false; target.netTimer = 0; target.isPinned = false; target.pinTimer = 0;
+            this.cancelTimer(netAnim); this._removeOwnedEffect(netGroup); return;
+          }
           if (target.mesh && target.isNetEntangled) {
             netGroup.position.copy(target.mesh.position).add(new THREE.Vector3(0, 1.2, 0));
             netGroup.scale.multiplyScalar(0.995); // Visible constriction tension
@@ -886,9 +1048,10 @@ export class Player {
               this.particles.emitAlienBloodSpurt(target.mesh.position, 2);
             }
           }
-          if (netLife <= 0 || !target.isNetEntangled || (target.hp && target.hp <= 0)) {
-            clearInterval(netAnim);
-            this.scene.remove(netGroup);
+          if (netLife <= 0 || !target.isNetEntangled || target.hp <= 0) {
+            target.isNetEntangled = false; target.netTimer = 0; target.isPinned = false; target.pinTimer = 0;
+            this.cancelTimer(netAnim);
+            this._removeOwnedEffect(netGroup);
             if (this.audioEngine && this.audioEngine.playNetgunConstrictionSlice) {
               this.audioEngine.playNetgunConstrictionSlice();
             }
@@ -903,8 +1066,10 @@ export class Player {
   }
 
   triggerGauntletEMP(horde, synthetics) {
+    if (!this.canUseArsenalEquipment('emp_mine')) return false;
     if (this.empCooldown > 0) return false;
     this.empCooldown = 12.0; // 12 second cooldown
+    this._importedCharacter?.mechanisms?.trigger('emp', 1.8);
     this.audioEngine.playGauntletEMP();
 
     const empRadius = 18.0;
@@ -924,10 +1089,11 @@ export class Player {
     // 2. Shock and paralyze Xenomorph horde
     if (horde) {
       horde.aliens.forEach(a => {
+        if (!this._canDamageLegacyAlien(horde, a)) return;
         if (a.mesh.position.distanceTo(this.position) <= empRadius) {
           a.hp -= 75;
           a.speed = Math.max(2, a.speed * 0.3); // Severe nerve disruption
-          setTimeout(() => {
+          this.schedule(() => {
             a.speed = a.type === 'facehugger' ? 17 : (a.type === 'crusher' ? 12 : 11);
           }, 4000);
         }
@@ -944,16 +1110,18 @@ export class Player {
     });
     const shockwaveMesh = new THREE.Mesh(empGeo, empMat);
     shockwaveMesh.position.copy(this.position).add(new THREE.Vector3(0, 1.5, 0));
-    this.scene.add(shockwaveMesh);
+    this._addOwnedEffect(shockwaveMesh);
+    this._effects.add(shockwaveMesh);
 
     let scale = 1.0;
-    const expandAnim = setInterval(() => {
+    const expandAnim = this.scheduleInterval(() => {
       scale += 2.2;
       shockwaveMesh.scale.set(scale, scale, scale);
       shockwaveMesh.material.opacity -= 0.08;
       if (shockwaveMesh.material.opacity <= 0 || scale >= empRadius) {
-        clearInterval(expandAnim);
-        this.scene.remove(shockwaveMesh);
+        this.cancelTimer(expandAnim);
+        disposeObject(shockwaveMesh);
+        this._effects.delete(shockwaveMesh);
       }
     }, 30);
 
@@ -973,11 +1141,12 @@ export class Player {
     const pickedTaunt = tauntLines[Math.floor(Math.random() * tauntLines.length)];
 
     horde.aliens.forEach(a => {
+        if (!this._canDamageLegacyAlien(horde, a)) return;
       if (a.mesh.position.distanceTo(lurePoint) < 30) {
         a.mesh.position.addScaledVector(lurePoint.clone().sub(a.mesh.position).normalize(), 4.0);
         // Momentary disorientation
         a.speed = Math.max(3, a.speed * 0.5);
-        setTimeout(() => {
+        this.schedule(() => {
           a.speed = a.type === 'facehugger' ? 17 : (a.type === 'crusher' ? 12 : 11);
         }, 2500);
       }
@@ -1000,34 +1169,12 @@ export class Player {
     return true;
   }
 
-  executeSpineRip() {
+  executeSpineRip(victimKind = 'human') {
     this.audioEngine.playSpineRip();
     this.audioEngine.playYautjaRoar();
     this.brandClanMark();
 
-    const spineGroup = new THREE.Group();
-    const boneMat = new THREE.MeshStandardMaterial({ color: 0xddddcc, roughness: 0.5 });
-    const bloodMat = new THREE.MeshBasicMaterial({ color: 0x880000 });
-
-    const skull = new THREE.Mesh(new THREE.SphereGeometry(0.35, 8, 8), boneMat);
-    skull.position.y = 1.6;
-    spineGroup.add(skull);
-
-    for (let v = 0; v < 8; v++) {
-      const vert = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.18, 6), v % 2 === 0 ? boneMat : bloodMat);
-      vert.position.y = 1.4 - v * 0.2;
-      spineGroup.add(vert);
-    }
-
-    this.rightArm.add(spineGroup);
-    this.rightArm.rotation.x = -Math.PI * 0.8;
-
-    setTimeout(() => {
-      this.rightArm.remove(spineGroup);
-      this.rightArm.rotation.x = 0;
-    }, 3500);
-
-    return true;
+    return getHunterGadgetEffects(this).startTrophy({ kind: victimKind });
   }
 
   triggerFacehuggerLatch() {
@@ -1092,6 +1239,8 @@ export class Player {
   }
 
   deployBearTrap(horde) {
+    if (this.bearTrapCharges <= 0) return false;
+    this.bearTrapCharges--;
     const trapAttack = { origin: this.position, radius: 10, damage: 350 };
     const hits = horde.checkMeleeHits(trapAttack);
     this.audioEngine.playSkullSnap();
@@ -1099,16 +1248,17 @@ export class Player {
   }
 
   useMedicomp() {
-    if (this.medicompCharges <= 0) return false;
+    if (this.medicompCharges <= 0 || (this.hp >= this.maxHp && this.visorAcidBurn <= 0)) return false;
     this.medicompCharges--;
+    this._importedCharacter?.mechanisms?.trigger('heal', 1.8);
     this.hp = Math.min(this.maxHp, this.hp + (this.medicompHealAmount || 450));
     this.visorAcidBurn = 0; // Medical bio-gel instantly neutralizes acid corrosion
     this.audioEngine.playMedicompCauterize();
     return true;
   }
 
-  inflictVisorAcidBurn() {
-    if (this.isBlocking || this.isPerched) return;
+  inflictVisorAcidBurn(force = false) {
+    if (!force && (this.isBlocking || this.isPerched)) return;
     this.visorAcidBurn = 1.0;
     if (this.audioEngine) {
       this.audioEngine.playVisorAcidBurn();
@@ -1118,13 +1268,14 @@ export class Player {
   useAcidSolvent(horde) {
     if (this.acidSolventCharges <= 0) return false;
     this.acidSolventCharges--;
-    horde.acidPools.forEach(pool => horde.scene.remove(pool.mesh));
+    horde.acidPools.forEach(pool => disposeObject(pool.mesh));
     horde.acidPools = [];
     this.audioEngine.playAcidSizzle();
     return true;
   }
 
   triggerFlechetteVolley(targetEnemy = null) {
+    if (!this.canUseArsenalEquipment('crossbow')) return false;
     if (this.flechetteCooldown > 0 || this.isFacehuggerLatched) return null;
     this.flechetteCooldown = 5.0;
 
@@ -1152,7 +1303,7 @@ export class Player {
 
     this.mesh.rotation.y += Math.PI * 2;
     this.rightArm.rotation.x = -Math.PI * 0.7;
-    setTimeout(() => {
+    this.schedule(() => {
       this.rightArm.rotation.x = 0;
     }, 450);
 
@@ -1167,6 +1318,7 @@ export class Player {
         type: 'heavy'
       });
       horde.aliens.forEach(a => {
+        if (!this._canDamageLegacyAlien(horde, a)) return;
         if (a && a.mesh && a.mesh.position.distanceTo(this.position) <= cleaveRadius) {
           const knockDir = a.mesh.position.clone().sub(this.position).normalize();
           a.mesh.position.addScaledVector(knockDir, 4.5);
@@ -1195,8 +1347,9 @@ export class Player {
   }
 
   fireCompoundBow() {
+    if (!this.canUseArsenalEquipment('compound_bow')) return false;
     if (this.compoundBowCooldown > 0 || this.isFacehuggerLatched) return null;
-    this.compoundBowCooldown = 4.2;
+    this.compoundBowCooldown = HUNTER_WEAPON_PROFILES.compound_bow.cooldown;
 
     this.audioEngine.playCompoundBowFire();
 
@@ -1207,44 +1360,25 @@ export class Player {
       origin,
       direction: forward,
       speed: 62,
-      damage: 520,
+      damage: HUNTER_WEAPON_PROFILES.compound_bow.projectileDamage,
       pierceRemaining: 5,
       life: 2.2
     };
   }
 
   deployHoloDecoy(scene) {
-    if (this.holoDecoyCooldown > 0 || this.isFacehuggerLatched) return null;
+    if (this._disposed || this.hp <= 0 || this.holoDecoyCooldown > 0 || this.isFacehuggerLatched) return null;
+    let projection;
+    try { projection = createHunterHologram(this); }
+    catch { return null; }
     this.holoDecoyCooldown = 16.0;
-
     this.audioEngine.playHoloDecoyDeploy();
-
-    // Create Holographic Cyan Translucent Clone Mesh
-    const decoyGroup = new THREE.Group();
-    decoyGroup.position.copy(this.position);
-    decoyGroup.rotation.y = this.rotationY;
-
-    const holoMat = new THREE.MeshBasicMaterial({
-      color: 0x00ffff,
-      transparent: true,
-      opacity: 0.6,
-      wireframe: true
-    });
-
-    const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.65, 0.45, 1.9, 8), holoMat);
-    torso.position.y = 1.9;
-    decoyGroup.add(torso);
-
-    const head = new THREE.Mesh(new THREE.SphereGeometry(0.5, 8, 8), holoMat);
-    head.position.set(0, 3.2, 0);
-    decoyGroup.add(head);
-
-    scene.add(decoyGroup);
+    scene.add(projection.mesh);
 
     const forward = new THREE.Vector3(Math.sin(this.rotationY), 0, Math.cos(this.rotationY)).normalize();
 
     return {
-      mesh: decoyGroup,
+      ...projection,
       direction: forward,
       speed: 7.5,
       life: 6.0,
@@ -1253,40 +1387,24 @@ export class Player {
   }
 
   triggerNukeSelfDestruct() {
+    if (this.canUseArsenalEquipment?.('nuke') === false) return false;
     this.audioEngine.playPredatorLaughCountdown();
-
-    // 3D Holographic Yautja Glyphs Ring over left gauntlet (1987 canon)
-    if (!this.wristNukeHoloMesh && this.leftArm) {
-      const holoGroup = new THREE.Group();
-      const ringGeo = new THREE.TorusGeometry(0.55, 0.03, 8, 24);
-      const ringMat = new THREE.MeshBasicMaterial({ color: 0xff0033, wireframe: true, transparent: true, opacity: 0.85 });
-      const ringMesh = new THREE.Mesh(ringGeo, ringMat);
-      ringMesh.rotation.x = Math.PI / 2;
-      holoGroup.add(ringMesh);
-
-      // 3 Glowing Yautja glyph prisms
-      for (let g = 0; g < 3; g++) {
-        const glyph = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.25, 3), new THREE.MeshBasicMaterial({ color: 0xff1144 }));
-        const angle = (g / 3) * Math.PI * 2;
-        glyph.position.set(Math.cos(angle) * 0.45, 0.08, Math.sin(angle) * 0.45);
-        holoGroup.add(glyph);
-      }
-      holoGroup.position.set(0, -0.6, 0.35);
-      this.leftArm.add(holoGroup);
-      this.wristNukeHoloMesh = holoGroup;
-    }
+    getHunterGadgetEffects(this).startCountdown();
 
     return { damage: 10000, radius: 60 };
   }
 
   clearNukeHoloMesh() {
+    this._gadgetEffects?.stopCountdown();
+    if (this._importedCharacter?.mechanisms?.getState().mode === 'nuke') this._importedCharacter.mechanisms.trigger('nuke', 0);
     if (this.wristNukeHoloMesh && this.leftArm) {
-      this.leftArm.remove(this.wristNukeHoloMesh);
+      disposeObject(this.wristNukeHoloMesh);
       this.wristNukeHoloMesh = null;
     }
   }
 
   triggerHybridMetamorphosis() {
+    if (!this.canUseArsenalEquipment('hybrid_mutation')) return false;
     if (this.isHybridMutated) return;
     this.isHybridMutated = true;
     this.mesh.scale.set(1.8, 1.8, 1.8);
@@ -1294,7 +1412,7 @@ export class Player {
 
     this.audioEngine.playYautjaRoar();
 
-    setTimeout(() => {
+    this.schedule(() => {
       this.isHybridMutated = false;
       this.mesh.scale.set(1.0, 1.0, 1.0);
       this.meleeDamage /= 2.0;
@@ -1302,6 +1420,7 @@ export class Player {
   }
 
   triggerPlasmaGlaive(horde, synthetics, bosses) {
+    if (!this.canUseArsenalEquipment('glaive')) return false;
     if (this.plasmaGlaiveCooldown > 0 || this.isPlasmaGlaiveActive || this.isFacehuggerLatched) return false;
     this.plasmaGlaiveCooldown = 13.0;
     this.isPlasmaGlaiveActive = true;
@@ -1313,6 +1432,7 @@ export class Player {
 
   /* Chantier 3: Yautja Ceremonial Katana Dah'dt'de Iaijutsu Ultrasonic Slash (Predators 2010 Canon) */
   performIaijutsuSlash(horde, synthetics, bosses, particles) {
+    if (!this.canUseArsenalEquipment('katana')) return false;
     if (this.iaijutsuCooldown > 0 || this.isFacehuggerLatched) return null;
     this.iaijutsuCooldown = 3.5;
 
@@ -1336,15 +1456,15 @@ export class Player {
     arcMesh.position.copy(startPos.clone().add(endPos).multiplyScalar(0.5)).add(new THREE.Vector3(0, 1.4, 0));
     arcMesh.rotation.x = Math.PI / 2;
     arcMesh.rotation.z = -this.rotationY;
-    this.scene.add(arcMesh);
+    this._addOwnedEffect(arcMesh);
 
     let fadeTimer = 0.25;
-    const fadeAnim = setInterval(() => {
+    const fadeAnim = this.scheduleInterval(() => {
       fadeTimer -= 0.05;
       arcMesh.material.opacity = fadeTimer / 0.25;
       if (fadeTimer <= 0) {
-        clearInterval(fadeAnim);
-        this.scene.remove(arcMesh);
+        this.cancelTimer(fadeAnim);
+        this._removeOwnedEffect(arcMesh);
       }
     }, 50);
 
@@ -1372,6 +1492,7 @@ export class Player {
 
   /* Chantier 5: Yautja Anti-Grav Disruptor & Levitation Field (AvP / Concrete Jungle Canon) */
   deployAntiGravDisruptor(horde, synthetics, particles) {
+    if (!this.canUseArsenalEquipment('anti_grav')) return false;
     if (this.antiGravCooldown > 0 || this.isFacehuggerLatched) return false;
     this.antiGravCooldown = 14.0;
 
@@ -1396,12 +1517,13 @@ export class Player {
     const ringMesh = new THREE.Mesh(ringGeo, ringMat);
     group.add(ringMesh);
 
-    this.scene.add(group);
+    this._addOwnedEffect(group);
 
     // Levitate and suspend Xenomorphs within 12.0m radius
     const radius = 12.0;
     if (horde && horde.aliens) {
       horde.aliens.forEach(a => {
+        if (!this._canDamageLegacyAlien(horde, a)) return;
         if (a.hp > 0 && a.mesh.position.distanceTo(this.position) <= radius) {
           a.isAirborne = true;
           a.airborneVelY = 4.2; // Float up!
@@ -1411,7 +1533,7 @@ export class Player {
     }
 
     let duration = 4.5;
-    const interval = setInterval(() => {
+    const interval = this.scheduleInterval(() => {
       duration -= 0.1;
       coreMesh.rotation.y += 0.25;
       ringMesh.rotation.z += 0.15;
@@ -1419,8 +1541,8 @@ export class Player {
       coreMesh.scale.set(pulse, pulse, pulse);
 
       if (duration <= 0) {
-        clearInterval(interval);
-        this.scene.remove(group);
+        this.cancelTimer(interval);
+        this._removeOwnedEffect(group);
       }
     }, 100);
 
@@ -1431,6 +1553,7 @@ export class Player {
   }
 
   consumeRoyalJelly() {
+    if (!this.canUseArsenalEquipment('royal_jelly')) return false;
     if (this.royalJellyFlasks <= 0 || this.isBerserkerActive || this.isFacehuggerLatched) return false;
     this.royalJellyFlasks--;
     this.isBerserkerActive = true;
@@ -1454,54 +1577,224 @@ export class Player {
     return trophy;
   }
 
-  toggleWeaponSwap() {
-    this.isSecondaryWeapon = !this.isSecondaryWeapon;
+  _addOwnedEffect(object, disposer = null, parent = this.scene) {
+    if (!object?.isObject3D) return object;
+    if (this._disposed) { if (disposer) disposer(); else disposeObject(object); return object; }
+    object.userData.playerTransientEffect = true;
+    this._effects.add(object);
+    if (disposer) this._ownedFxDisposers.set(object, disposer);
+    parent.add(object);
+    return object;
+  }
+
+  _removeOwnedEffect(object) {
+    if (!object) return;
+    if (!this._effects.has(object)) { object.removeFromParent?.(); return; }
+    this._effects.delete(object);
+    const dispose = this._ownedFxDisposers.get(object);
+    this._ownedFxDisposers.delete(object);
+    if (dispose) dispose(); else disposeObject(object);
+  }
+
+  _canDamageLegacyAlien(horde, actor) {
+    if (!actor || actor.hp <= 0) return false;
+    const simulation = horde?.battleSimulation;
+    return !simulation || !actor.factionId || simulation.areHostile(simulation.config.playerFaction, actor.factionId);
+  }
+
+  _canHitLegacyAlien(horde, actor, origin = null) {
+    if (!this._canDamageLegacyAlien(horde, actor)) return false;
+    const environment = this.gameContext?.env;
+    const visual = actor.mesh ?? actor.group;
+    if (!environment?.hasLineOfSight || !visual) return true;
+    const from = origin ?? this.position.clone().add(new THREE.Vector3(0, 2, 0));
+    const target = visual.position.clone().add(new THREE.Vector3(0, actor.type === 'facehugger' ? .2 : 1.2, 0));
+    return environment.hasLineOfSight(from, target, { radius: .03 });
+  }
+
+  _defeatLegacyAlien(horde, actor, cause) {
+    if (!actor || actor.hp > 0) return null;
+    const killerFaction = horde?.battleSimulation?.config.playerFaction ?? 'yautja';
+    if (horde?.defeatAlien) return horde.defeatAlien(actor, { cause, killerFaction });
+    // Tiny injected managers used by integrations/tests may lack the full owner.
+    // Real gameplay always uses the central manager above.
+    if (this._legacyDefeated.has(actor)) return null;
+    this._legacyDefeated.add(actor);
+    const event = horde?.recordDefeat?.(actor, { cause, killerFaction });
+    for (const key of ['aliens', 'chestbursters']) {
+      const index = horde?.[key]?.indexOf(actor) ?? -1;
+      if (index >= 0) horde[key].splice(index, 1);
+    }
+    actor.mesh?.removeFromParent();
+    if (!event && horde) horde.deadCount = (horde.deadCount ?? 0) + 1;
+    return event ?? { type: 'death', cause, killerFaction };
+  }
+
+  schedule(callback, delay, interval = 0) {
+    const timer = { callback, time: delay / 1000, interval: interval / 1000 };
+    if (!this._disposed) this._timers.push(timer);
+    return timer;
+  }
+
+  scheduleInterval(callback, delay) { return this.schedule(callback, delay, delay); }
+
+  cancelTimer(timer) {
+    const index = this._timers.indexOf(timer);
+    if (index !== -1) this._timers.splice(index, 1);
+  }
+
+  dispose() {
+    if (this._disposed) return;
+    this._disposed = true;
+    this._generatedVisualGeneration++;
+    this._timers = [];
+    this._gadgetEffects?.dispose();
+    this._gadgetEffects = null;
+    [...this._effects].forEach(effect => this._removeOwnedEffect(effect));
+    this._effects.clear(); this._ownedFxDisposers.clear();
+    this.tripwireMines.length = 0; this.activeDropshipBombs.length = 0;
+    this.activeSonicTraps.length = 0; this.activeM41AGrenades.length = 0;
+    this.locomotion.dispose();
+    this._removeImportedCharacter();
+    disposeObject(this.mesh);
+  }
+
+  applyLoadout(config = {}) {
+    const resolved = resolveHunterLoadout(this.data.id, config);
+    this.fidelityMode = resolved.fidelityMode;
+    this.loadout = { primary: resolved.primary, secondary: resolved.secondary, gadgets: resolved.gadgets };
+    this.tacticalLoadout = { ...this.loadout, fidelityMode: this.fidelityMode };
+    this.preferredSecondaryWeapon = resolved.secondary;
+    this.activePrimary = resolved.primary; this.activeSecondary = resolved.secondary;
+    this.medicompCharges = resolved.gadgets.includes('medicomp') ? 3 : 0;
+    this.acidSolventCharges = resolved.gadgets.includes('acid_solvent') ? 2 : 0;
+    this.bearTrapCharges = resolved.gadgets.includes('bear_trap') ? 3 : 0;
+    this.selectWeapon(resolved.primary, false);
+    this._syncArsenalVisuals();
+    return this.getArsenalState();
+  }
+
+  canUseArsenalEquipment(id) {
+    if (this.fidelityMode !== 'faithful') return true;
+    const reference = HUNTER_ARSENAL_PROFILES[this.data.id];
+    if (reference?.weapons.includes(id) || this.loadout.gadgets.includes(id)) return true;
+    this.lastArsenalRefusal = { equipment: id, reason: 'unattested_in_reference_kit', message: 'Équipement indisponible dans ce kit de référence.' };
+    return false;
+  }
+
+  getArsenalState() {
+    const reference = HUNTER_ARSENAL_PROFILES[this.data.id];
+    return { mode: this.fidelityMode, characterId: this.data.id, referenceKnown: Boolean(reference),
+      continuity: reference?.continuity ?? 'unspecified adaptation', fidelity1to1Verified: false,
+      weapons: [...(reference?.weapons ?? [])], gadgets: [...this.loadout.gadgets],
+      ranged: this.fidelityMode === 'faithful' ? reference?.ranged ?? null : 'plasma_caster',
+      actions: Object.entries(HUNTER_ACTION_EQUIPMENT).filter(([, equipment]) => this.fidelityMode !== 'faithful' || reference?.weapons.includes(equipment) || this.loadout.gadgets.includes(equipment)).map(([name]) => name),
+      sourceUrls: [...(reference?.sourceUrls ?? [])], lastRefusal: this.lastArsenalRefusal ? { ...this.lastArsenalRefusal } : null };
+  }
+
+  getWeaponState() {
+    const actions = { smart_disc: 'throwSmartDisc', shuriken: 'throwShuriken', compound_bow: 'fireCompoundBow', crossbow: 'fireRangedShot' };
+    const actionMethod = actions[this.activeWeapon] ?? 'lightAttack';
+    const bolt = this.activeWeapon === 'crossbow' || (this.fidelityMode === 'faithful' && this.data.id === 'feral_predator');
+    const projectile = actionMethod !== 'lightAttack';
+    const cooldowns = { smart_disc: this.smartDiscCooldown, shuriken: this.shurikenCooldown, compound_bow: this.compoundBowCooldown, crossbow: this.feralBoltCooldown };
+    return { id: this.activeWeapon, fidelityMode: this.fidelityMode, action: actionMethod === 'lightAttack' ? 'melee' : 'projectile', actionMethod,
+      damage: this.meleeDamage * this.weaponProfile.damage * this.combatStyle.damage, radius: this.weaponProfile.reach * this.combatStyle.reach * (this.meleeReachMultiplier || 1),
+      timing: this.weaponProfile.timing * (this.attackCooldownFactor || 1),
+      actionDamage: projectile ? this.weaponProfile.projectileDamage ?? this.plasmaDamage : this.meleeDamage * this.weaponProfile.damage * this.combatStyle.damage,
+      actionRange: projectile ? this.weaponProfile.projectileRange ?? null : this.weaponProfile.reach * this.combatStyle.reach * (this.meleeReachMultiplier || 1),
+      actionResource: projectile ? (this.activeWeapon === 'crossbow' ? 'bolts' : 'cooldown') : 'stamina',
+      actionCost: projectile ? (this.activeWeapon === 'crossbow' ? 1 : 0) : this.combatStyle.lightCost,
+      actionCooldown: this.weaponProfile.cooldown ?? 0, actionCooldownRemaining: cooldowns[this.activeWeapon] ?? 0,
+      boltAmmo: this.feralBoltAmmo, boltCooldown: this.feralBoltCooldown,
+      plasmaEnergy: this.plasmaEnergy, plasmaCost: bolt ? 0 : this.data.stats.plasmaEnergyCost,
+      rangedResource: bolt ? 'bolts' : 'plasma', rangedCost: bolt ? 1 : this.data.stats.plasmaEnergyCost,
+      stamina: this.stamina, lightCost: this.combatStyle.lightCost,
+      heavyCost: this.combatStyle.heavyCost * (1 + Math.min(5, this.attackComboStep) * .12) };
+  }
+
+  _syncArsenalVisuals() {
+    const referenceFeral = this.data.id === 'feral_predator' && this.fidelityMode === 'faithful';
+    if (this._plasmaCasterVisual) this._plasmaCasterVisual.visible = !referenceFeral;
+    if (this._feralFoldedShield) this._feralFoldedShield.visible = referenceFeral && this.loadout.gadgets.includes('feral_shield') && !this.isBlocking;
+    if (this.shieldMesh && this.fidelityMode === 'faithful') this.shieldMesh.visible = this.isBlocking && this.loadout.gadgets.includes('feral_shield');
+  }
+
+  fireRangedShot(isCharged = false) {
+    const bolt = (this.data.id === 'feral_predator' && this.fidelityMode === 'faithful') || this.activeWeapon === 'crossbow';
+    if (!bolt) return this.firePlasmaShot(isCharged);
+    if (this._disposed || this.hp <= 0 || this.isFacehuggerLatched || this.feralBoltAmmo <= 0 || this.feralBoltCooldown > 0 || !this.canUseArsenalEquipment('crossbow')) return null;
+    // The ranged shortcut also selects the visible physical tool, so state,
+    // held equipment and projectile admission agree.
+    if (this.activeWeapon !== 'crossbow' && !this.selectWeapon('crossbow', false)) return null;
+    this.feralBoltAmmo--; this.feralBoltCooldown = HUNTER_WEAPON_PROFILES.crossbow.cooldown;
+    this.lastArsenalRefusal = null;
+    this.audioEngine.playFlechetteVolleyLaunch?.();
+    this.mesh.updateWorldMatrix(true, true);
+    const muzzle = this.secWeaponMesh.localToWorld(new THREE.Vector3(0, 0, 1.13));
+    return { projectileKind: 'feral_bolt', position: muzzle,
+      direction: new THREE.Vector3(Math.sin(this.rotationY), 0, Math.cos(this.rotationY)),
+      damage: this.plasmaDamage, speed: 62, isCharged: false, energyCost: 0, ammoCost: 1 };
+  }
+
+  hasGadget(id) { return this.loadout.gadgets.includes(id); }
+
+  setLaserColor(color) {
+    this.laserColorHex = color;
+    this.laserGroup?.traverse(child => { if (child.material?.color) child.material.color.set(color); });
+  }
+
+  selectWeapon(id, playSound = true) {
+    const selected = HUNTER_WEAPON_PROFILES[id];
+    if (!selected || !this.canUseArsenalEquipment(id)) return false;
+    this.lastArsenalRefusal = null;
+    this.activeWeapon = id;
+    this.weaponProfile = { ...selected };
+    this.isSecondaryWeapon = id !== 'wristblades';
     this.secWeaponMesh.visible = this.isSecondaryWeapon;
-    this.blade1.visible = !this.isSecondaryWeapon;
-    if (this.blade2) this.blade2.visible = !this.isSecondaryWeapon;
-    this.audioEngine.playWeaponSwap();
+    this._syncWristbladeVisuals();
+    // Give selected melee tools a distinct silhouette without changing shared materials.
+    this.secWeaponMesh.geometry.dispose();
+    this.secWeaponMesh.geometry = createHunterWeaponGeometry(id);
+    this._syncArsenalVisuals();
+    if (playSound) this.audioEngine.playWeaponSwap();
+    return true;
+  }
+
+  toggleWeaponSwap() {
+    const alternate = this.loadout.secondary || 'smart_disc';
+    const id = this.activeWeapon === this.loadout.primary ? alternate : this.loadout.primary;
+    this.selectWeapon(id);
     return this.isSecondaryWeapon;
   }
 
   toggleCloak() {
     this.isCloaked = !this.isCloaked;
-    const opacity = this.isCloaked ? 0.22 : 1.0;
-    const transparent = this.isCloaked;
-
-    this.skinMaterials.forEach(m => {
-      m.transparent = transparent;
-      m.opacity = opacity;
+    if (!this._uncloakedSurfaces) {
+      this._uncloakedSurfaces = new Map([...this.skinMaterials, ...this.armorMaterials].map(material => [material, surfaceState(material)]));
+    }
+    for (const [material, original] of this._uncloakedSurfaces) {
       if (this.isCloaked) {
-        m.roughness = 0.1;
-        m.metalness = 0.95;
-      } else {
-        m.roughness = 0.7;
-        m.metalness = 0.1;
-      }
-    });
-
-    this.armorMaterials.forEach(m => {
-      m.transparent = transparent;
-      m.opacity = opacity;
-      if (this.isCloaked) {
-        m.roughness = 0.05;
-        m.metalness = 0.98;
-      } else {
-        m.roughness = 0.3;
-        m.metalness = 0.8;
-      }
-    });
-
+        material.transparent = true;
+        material.opacity = 0.22;
+        material.roughness = 0.08;
+        material.metalness = 0.95;
+        material.depthWrite = false;
+      } else Object.assign(material, original);
+      material.needsUpdate = true;
+    }
     return this.isCloaked;
   }
 
   move(dir, delta) {
-    if (this.isFacehuggerLatched || this.isPerched || this.isMountedSmartgun) return;
+    if (this._disposed || !Number.isFinite(delta) || delta <= 0 || this.isFacehuggerLatched || this.isPerched || this.isMountedSmartgun) return;
 
     if (dir.lengthSq() > 0) {
       dir.normalize();
       let speedMult = (this.warhornBuffTimer > 0 ? 1.4 : 1.0) * (this.isBerserkerActive ? 1.45 : 1.0);
       if (this.isExosuitActive) speedMult *= 1.25;
+      if (this.isComancheWarPaintActive) speedMult *= 1.30; // +30% Comanche War Paint Spirit Agility (Prey 2022)
+      if (this.isKenjiReflexesActive) speedMult *= 1.25; // +25% Ninja Agility (Killer of Killers 2025)
       if (this.isSyntheticAnkleGrabbed) speedMult *= 0.2;
       const moveDistance = this.moveSpeed * speedMult * delta;
       this.position.addScaledVector(dir, moveDistance);
@@ -1510,34 +1803,87 @@ export class Player {
       let diff = targetAngle - this.rotationY;
       while (diff < -Math.PI) diff += Math.PI * 2;
       while (diff > Math.PI) diff -= Math.PI * 2;
-      this.rotationY += diff * 12 * delta;
-
-      const stride = Math.sin(Date.now() * 0.015) * 0.5;
-      this.leftLeg.rotation.x = stride;
-      this.rightLeg.rotation.x = -stride;
-    } else {
-      this.leftLeg.rotation.x *= 0.8;
-      this.rightLeg.rotation.x *= 0.8;
+      this.rotationY += diff * (1 - Math.exp(-12 * delta));
     }
 
     // Verticality: Adjust elevation smoothly when traversing catwalks and ramps
     if (!this.isLeaping && !this.isPerched) {
       let groundY = 0;
-      if (window.gameInstance && window.gameInstance.env && window.gameInstance.env.getElevationAt) {
-        groundY = window.gameInstance.env.getElevationAt(this.position.x, this.position.z);
+      if (this.gameContext && this.gameContext.env && this.gameContext.env.getElevationAt) {
+        groundY = this.gameContext.env.getElevationAt(this.position.x, this.position.z, this.position.y);
       }
-      this.position.y = THREE.MathUtils.lerp(this.position.y, groundY, 18 * delta);
+      this.position.y = THREE.MathUtils.lerp(this.position.y, groundY, 1 - Math.exp(-18 * delta));
     }
 
     this.mesh.position.copy(this.position);
     this.mesh.rotation.y = this.rotationY;
   }
 
+  _spendCombatStamina(cost) {
+    if (!Number.isFinite(cost) || cost < 0 || this.stamina + 1e-9 < cost) { this.lastCombatRefusal = 'stamina'; return false; }
+    this.stamina = Math.max(0, this.stamina - cost); this.lastCombatRefusal = null; return true;
+  }
+
+  _beginCombatWindow(kind, staminaCost, oldDuration) {
+    const style = this.combatStyle, heavy = kind === 'heavy';
+    const windup = (heavy ? style.heavyWindup : style.lightWindup) * this.weaponProfile.timing;
+    const active = heavy ? style.heavyActive : style.lightActive;
+    const recovery = Math.max(.05, oldDuration - windup - active) * (heavy ? style.heavyRecovery : style.lightRecovery);
+    const duration = windup + active + recovery;
+    this.attackTimer = duration;
+    this.currentAttackId++;
+    this.attackWindow = { id: this.currentAttackId, kind, phase: 'windup', elapsed: 0, windup, active, recovery, duration, impactConsumed: false, hyperarmor: heavy && style.heavyHyperarmor };
+    const target = this.rightArm.quaternion.clone(), side = this.attackComboStep % 2 ? 1 : -1;
+    const lead = target.clone().multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), side * (heavy ? .22 : .14)));
+    const follow = target.clone().multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), -side * (heavy ? .78 : .44)));
+    const rest = this.locomotion.arms.find(arm => arm.node === this.rightArm)?.rest.clone() ?? new THREE.Quaternion();
+    this._attackArmPose = { id: this.currentAttackId, target, lead, follow, rest, applied: target.clone() };
+    return { attackId: this.currentAttackId, style: style.id, windup, hitDelay: windup + active * .5, activeDuration: active, recovery, duration, staminaCost };
+  }
+
+  _updateAttackArmPose() {
+    const pose = this._attackArmPose, window = this.attackWindow;
+    if (!this.isAttacking || !pose || pose.id !== this.currentAttackId || !window) return;
+    // A trophy, gadget or other authored action can take the arm. Only rewrite
+    // a quaternion still owned by this attack, preserving the established rule.
+    if (Math.abs(this.rightArm.quaternion.dot(pose.applied)) < 1 - 1e-9) return;
+    const smooth = value => { const t = THREE.MathUtils.clamp(value, 0, 1); return t * t * (3 - 2 * t); };
+    if (window.phase === 'windup') this.rightArm.quaternion.slerpQuaternions(pose.target, pose.lead, smooth(window.elapsed / window.windup));
+    else if (window.phase === 'active') this.rightArm.quaternion.slerpQuaternions(pose.lead, pose.follow, smooth((window.elapsed - window.windup) / window.active));
+    else if (window.phase === 'recovery') this.rightArm.quaternion.slerpQuaternions(pose.follow, pose.rest, smooth((window.elapsed - window.windup - window.active) / window.recovery));
+    pose.applied.copy(this.rightArm.quaternion);
+  }
+
+  claimAttackImpact(id) {
+    const window = this.attackWindow;
+    if (this._disposed || this.hp <= 0 || !window || id !== this.currentAttackId || window.phase === 'cancelled' || window.impactConsumed) return false;
+    window.impactConsumed = true; return true;
+  }
+
+  cancelAttack(reason = 'guard') {
+    const window = this.attackWindow;
+    if (!this.isAttacking || !window) return true;
+    if (reason === 'hit' && window.phase === 'active' && window.hyperarmor) return false;
+    if (reason !== 'hit' && window.phase === 'active') return false;
+    window.phase = 'cancelled'; this.currentAttackId++; this.attackTimer = 0; this.isAttacking = false;
+    this.rightArm.rotation.x = 0; this.rightArm.rotation.y = 0;
+    return true;
+  }
+
+  getCombatState() {
+    return { style: this.combatStyle.id, weakness: this.combatStyle.weakness, stamina: this.stamina, maxStamina: this.maxStamina,
+      crowdCooldown: this.crowdAttackCooldown, attackId: this.currentAttackId, window: this.attackWindow ? { ...this.attackWindow } : null,
+      lightChainLength: this.combatStyle.lightChainLength, lightCost: this.combatStyle.lightCost,
+      nextHeavyCost: this.combatStyle.heavyCost * (1 + Math.min(5, this.attackComboStep) * .12), lastRefusal: this.lastCombatRefusal,
+      definition: 'original_gameplay_adaptation', fidelity1to1Verified: false };
+  }
+
   lightAttack() {
-    if (this.isAttacking || this.isFacehuggerLatched) return null;
+    if (this._disposed || this.hp <= 0 || this.isAttacking || this.isBlocking || this.isFacehuggerLatched) return null;
+    if (!this._spendCombatStamina(this.combatStyle.lightCost)) return null;
     this.isAttacking = true;
-    this.attackComboStep = (this.attackComboStep % 5) + 1;
-    this.attackTimer = 0.28 * (this.attackCooldownFactor || 1.0);
+    this.attackComboStep = (this.attackComboStep % this.combatStyle.lightChainLength) + 1;
+    this.attackTimer = 0.28 * this.weaponProfile.timing * (this.attackCooldownFactor || 1);
     this.comboResetTimer = 1.4;
 
     this.audioEngine.playSlash();
@@ -1561,26 +1907,43 @@ export class Player {
       this.rightArm.rotation.y = 0.6;
     }
 
-    const baseDmg = this.isSecondaryWeapon ? this.meleeDamage * 1.3 : this.meleeDamage;
+    const baseDmg = this.meleeDamage * this.weaponProfile.damage;
     const buff = (this.warhornBuffTimer > 0 ? 1.5 : 1.0) * (this.isBerserkerActive ? 2.0 : 1.0);
     const mudMult = this.isMudCamouflaged ? 1.40 : 1.0;
     const billyMult = this.isBillyCourageActive ? 1.50 : 1.0;
+    const lightningMult = this.isLightningAuraActive ? 1.35 : 1.0;
+    const flintlockMult = this.isFlintlockKineticActive ? 1.40 : 1.0;
+    const hanzoMult = this.isHanzoBushidoActive ? 1.60 : 1.0;
+    const neuroMult = this.isNeurotoxinBladeActive ? 1.45 : 1.0;
+    const stalkerMult = this.isMasterHunterStalkerActive ? 1.50 : 1.0;
+    const nanoMult = this.isPredatorKillerNanoActive ? 1.45 : 1.0;
+    const dillonMult = this.isDillonGritActive ? 1.40 : 1.0;
+    const comancheMult = this.isComancheWarPaintActive ? 1.25 : 1.0;
+    const clawsMult = this.isFeralClawsActive ? 1.35 : 1.0;
+    const trackingMult = this.isAncestralTrackingActive ? 1.20 : 1.0;
+    const ursaMult = this.isUrsaBerserkActive ? 1.30 : 1.0;
+    const kenjiMult = this.isKenjiReflexesActive ? 1.35 : 1.0;
 
+    const window = this._beginCombatWindow('light', this.combatStyle.lightCost, this.attackTimer);
     return {
+      ...window,
       type: 'light',
       step: this.attackComboStep,
-      damage: baseDmg * (1 + this.attackComboStep * 0.18) * buff * mudMult * billyMult,
-      radius: (this.isSecondaryWeapon ? 4.8 : 3.8) * (this.meleeReachMultiplier || 1.0),
+      damage: baseDmg * this.combatStyle.damage * (1 + this.attackComboStep * 0.18) * buff * mudMult * billyMult * lightningMult * flintlockMult * hanzoMult * neuroMult * stalkerMult * nanoMult * dillonMult * comancheMult * clawsMult * trackingMult * ursaMult * kenjiMult,
+      radius: this.weaponProfile.reach * this.combatStyle.reach * (this.meleeReachMultiplier || 1.0),
       angle: (Math.PI * 0.65) * (this.meleeArcMultiplier || 1.0)
     };
   }
 
   heavyAttack() {
-    if (this.isAttacking || this.isFacehuggerLatched) return null;
-    this.isAttacking = true;
-
+    if (this._disposed || this.hp <= 0 || this.isAttacking || this.isBlocking || this.isFacehuggerLatched) return null;
     const step = this.attackComboStep;
-    const baseDmg = this.isSecondaryWeapon ? this.meleeDamage * 1.3 : this.meleeDamage;
+    if (step >= 3 && this.crowdAttackCooldown > 0) { this.lastCombatRefusal = 'crowd_cooldown'; return null; }
+    const staminaCost = this.combatStyle.heavyCost * (1 + Math.min(5, step) * .12);
+    if (!this._spendCombatStamina(staminaCost)) return null;
+    if (step >= 3) this.crowdAttackCooldown = this.combatStyle.crowdCooldown;
+    this.isAttacking = true;
+    const baseDmg = this.meleeDamage * this.weaponProfile.damage;
     const buff = (this.warhornBuffTimer > 0 ? 1.5 : 1.0) * (this.isBerserkerActive ? 2.0 : 1.0);
 
     let chargeType = 'c1';
@@ -1662,6 +2025,9 @@ export class Player {
       launchVelY = 17.0;
     }
 
+    this.attackTimer *= this.weaponProfile.timing;
+    radius *= this.weaponProfile.reach / 3.8;
+
     // Reset combo string after any Charge finisher
     this.attackComboStep = 0;
     this.comboResetTimer = 0;
@@ -1671,12 +2037,27 @@ export class Player {
 
     const mudMult = this.isMudCamouflaged ? 1.40 : 1.0;
     const billyMult = this.isBillyCourageActive ? 1.50 : 1.0;
+    const lightningMult = this.isLightningAuraActive ? 1.35 : 1.0;
+    const flintlockMult = this.isFlintlockKineticActive ? 1.40 : 1.0;
+    const hanzoMult = this.isHanzoBushidoActive ? 1.60 : 1.0;
+    const neuroMult = this.isNeurotoxinBladeActive ? 1.45 : 1.0;
+    const stalkerMult = this.isMasterHunterStalkerActive ? 1.50 : 1.0;
+    const nanoMult = this.isPredatorKillerNanoActive ? 1.45 : 1.0;
+    const dillonMult = this.isDillonGritActive ? 1.40 : 1.0;
+    const comancheMult = this.isComancheWarPaintActive ? 1.25 : 1.0;
+    const clawsMult = this.isFeralClawsActive ? 1.35 : 1.0;
+    const trackingMult = this.isAncestralTrackingActive ? 1.20 : 1.0;
+    const ursaMult = this.isUrsaBerserkActive ? 1.45 : 1.0;
+    const kenjiMult = this.isKenjiReflexesActive ? 1.30 : 1.0;
 
+    const window = this._beginCombatWindow('heavy', staminaCost, this.attackTimer);
     return {
+      ...window,
       type: chargeType,
       name: chargeName,
-      damage: baseDmg * dmgMult * buff * mudMult * billyMult,
-      radius: radius,
+      formationEffect: step === 0 ? 'line_break' : step >= 3 ? 'sweep' : 'single_target',
+      damage: baseDmg * this.combatStyle.damage * dmgMult * buff * mudMult * billyMult * lightningMult * flintlockMult * hanzoMult * neuroMult * stalkerMult * nanoMult * dillonMult * comancheMult * clawsMult * trackingMult * ursaMult * kenjiMult,
+      radius: radius * this.combatStyle.reach,
       knockback: knockback,
       isLauncher: isLauncher,
       launchVelY: launchVelY,
@@ -1687,6 +2068,7 @@ export class Player {
   }
 
   firePlasmaShot(isCharged = false) {
+    if (this._disposed || this.hp <= 0 || !this.canUseArsenalEquipment('plasma_caster')) return null;
     let energyCost = isCharged ? 35 : this.data.stats.plasmaEnergyCost;
     if (this.hasDlexTargetingHUD) {
       energyCost = Math.round(energyCost * 0.75); // 25% energy reduction
@@ -1726,6 +2108,21 @@ export class Player {
     if (this.orbitalScanTimer > 0) {
       dmg *= 1.25; // +25% critical scan boost
     }
+    if (this.isRoryTelemetryActive) {
+      dmg *= 1.35; // +35% decoded Yautja telemetry critical damage boost (The Predator 2018)
+    }
+    if (this.isOrangeFlowerActive) {
+      dmg *= 1.50; // +50% thermal stealth critical strike (Prey 2022)
+    }
+    if (this.isMudCoated) {
+      dmg *= 1.40; // +40% mud-masked ambush strike (Prey 2022)
+    }
+    if (this.isComancheWarPaintActive) {
+      dmg *= 1.25; // +25% Comanche War Paint kinetic force (Prey 2022)
+    }
+    if (this.isTorresIncendiaryActive) {
+      dmg *= 1.30; // +30% WWII Incendiary Aviator Ammo (Killer of Killers 2025)
+    }
 
     return {
       position: origin,
@@ -1743,16 +2140,20 @@ export class Player {
 
     this.audioEngine.playMusouBlast();
 
-    setTimeout(() => {
+    this.schedule(() => {
       this.isMusouActive = false;
     }, 2000);
 
     return true;
   }
 
-  takeDamage(amount, isAcid = false, attacker = null) {
+  takeDamage(amount, isAcid = false, attacker = null, attackContext = {}) {
+    if (!Number.isFinite(amount) || amount <= 0 || this._disposed) return this.hp;
+    if (!attackContext || typeof attackContext !== 'object') attackContext = {};
     // Chantier 4 & Lucas QA (v51.0): Dedicated Active Wristblade Parry Deflection [F]
-    if (this.isParrying && this.parryTimer > 0) {
+    const parryable = !isAcid && attackContext.parryable === true;
+    const blockable = !isAcid && attackContext.blockable === true && (!attackContext.blockRequiresShield || this.fidelityMode !== 'faithful' || this.loadout.gadgets.includes('feral_shield'));
+    if (this.isParrying && this.parryTimer > 0 && parryable && this._spendCombatStamina(6)) {
       this.isParrying = false;
       this.parryTimer = 0;
       this.hasParryRiposte = true;
@@ -1778,15 +2179,15 @@ export class Player {
         }
       }
 
-      if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
-        window.gameInstance.ui.showAnnouncement('⚔️ PARADE DLEX PARFAITE [F] ! CONTRE-RIPOSTE ÉCLAIR (x4 DÉGÂTS CRITIQUES) !');
+      if (this.gameContext && this.gameContext.ui && this.gameContext.ui.showAnnouncement) {
+        this.gameContext.ui.showAnnouncement('⚔️ PARADE DLEX PARFAITE [F] ! CONTRE-RIPOSTE ÉCLAIR (x4 DÉGÂTS CRITIQUES) !');
       }
       return this.hp;
     }
 
-    if (this.isBlocking || this.isPerched) {
-      if (this.parryTimer > 0) {
-        // Chantier 2: PERFECT PARRY DEFLECTION (Prey 2022 / Concrete Jungle Canon 1:1)
+    if ((this.isBlocking || this.isPerched) && blockable && this._spendCombatStamina(8)) {
+      if (this.parryTimer > 0 && parryable) {
+        // Chantier 2: PERFECT PARRY DEFLECTION (Prey 2022 / Concrete Jungle adaptation)
         this.parryTimer = 0;
         this.hasParryRiposte = true;
         this.riposteTimer = 2.2; // 2.2s window to unleash lethal riposte
@@ -1810,8 +2211,8 @@ export class Player {
           }
         }
 
-        if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
-          window.gameInstance.ui.showAnnouncement('🛡️ PARRY PARFAIT ! RIPOSTE GUAN-THWEI DISPONIBLE [CLIC GAUCHE] !');
+        if (this.gameContext && this.gameContext.ui && this.gameContext.ui.showAnnouncement) {
+          this.gameContext.ui.showAnnouncement('🛡️ PARRY PARFAIT ! RIPOSTE GUAN-THWEI DISPONIBLE [CLIC GAUCHE] !');
         }
         return this.hp;
       }
@@ -1819,14 +2220,14 @@ export class Player {
       this.audioEngine.playShieldBlock();
       return this.hp;
     }
-    if (this.isWhirlShieldActive) {
+    if (this.isWhirlShieldActive && blockable) {
       amount *= 0.10; // 90% frontal damage deflection (Aliens: Fireteam Elite rotary naginata spin)
       if (this.particles) this.particles.emitSparks(this.position, 12);
       if (this.audioEngine && this.audioEngine.playPlasmaGlaiveWhirl) {
         this.audioEngine.playPlasmaGlaiveWhirl();
       }
     }
-    if (this.isPlasmaGlaiveActive) {
+    if (this.isPlasmaGlaiveActive && blockable) {
       this.audioEngine.playPlasmaGlaiveStrike();
       return this.hp; // Plasma Glaive cyclone barrier completely deflects frontal attacks!
     }
@@ -1874,9 +2275,10 @@ export class Player {
       amount *= (this.bloodedDamageResistance || 0.85);
     }
     this.hp = Math.max(0, this.hp - amount);
+    if (amount > 0) this.cancelAttack('hit');
 
     if (isAcid && !this.isBerserkerActive) {
-      this.inflictVisorAcidBurn();
+      this.inflictVisorAcidBurn(true);
     }
 
     // Luminescent neon green Yautja bio-blood splatter
@@ -1885,6 +2287,15 @@ export class Player {
     }
 
     return this.hp;
+  }
+
+  updateDefeatedEffects(delta) {
+    if (this._disposed || this.hp > 0 || !Number.isFinite(delta) || delta <= 0) return;
+    // Co-op can continue after one hunter falls. Existing projections keep
+    // their simulation timers without reviving movement, energy or gadgets.
+    this._gadgetEffects?.update(delta);
+    this._importedCharacter?.mechanisms?.update(delta);
+    this._gadgetEffects?.rebind();
   }
 
   /* Chantier 2: Guan-Thwei Lethal Counter-Riposte (Concrete Jungle / Dark Horse Canon) */
@@ -1909,16 +2320,16 @@ export class Player {
     });
     const waveMesh = new THREE.Mesh(waveGeo, waveMat);
     waveMesh.position.copy(this.position).add(new THREE.Vector3(0, 1.2, 0));
-    this.scene.add(waveMesh);
+    this._addOwnedEffect(waveMesh);
 
     let fade = 0.25;
-    const fAnim = setInterval(() => {
+    const fAnim = this.scheduleInterval(() => {
       fade -= 0.05;
       waveMesh.scale.multiplyScalar(1.08);
       waveMesh.material.opacity = fade / 0.25;
       if (fade <= 0) {
-        clearInterval(fAnim);
-        this.scene.remove(waveMesh);
+        this.cancelTimer(fAnim);
+        this._removeOwnedEffect(waveMesh);
       }
     }, 40);
 
@@ -1947,13 +2358,46 @@ export class Player {
     return hits;
   }
 
+  _syncVisualState(delta = 0) {
+    this._gadgetEffects?.update(delta);
+    if (this._importedCharacter) {
+      this._syncImportedAccessories();
+      this._importedCharacter.adapter.update(delta, this.locomotion.state.moving);
+      this._importedCharacter.mechanisms?.update(delta);
+      this.laserGroup.position.y = this._importedCharacter.laserBaseY + (this._importedCharacter.adapter.visualGroundOffsetY ?? 0);
+    }
+    this._gadgetEffects?.rebind();
+    this._syncArsenalVisuals();
+  }
+
   update(delta, horde = null) {
+    if (this._disposed || !Number.isFinite(delta) || delta < 0) return;
+    // A paused/photo frame still propagates explicit FPS visibility and pose
+    // changes. It must not advance timers, attacks, cooldowns or resources.
+    if (delta === 0) { this._syncVisualState(0); return; }
+    this._simulationTime += delta;
+    this.feralBoltCooldown = Math.max(0, this.feralBoltCooldown - delta);
+    this.crowdAttackCooldown = Math.max(0, this.crowdAttackCooldown - delta);
+    const idleTime = this.isAttacking ? Math.max(0, delta - Math.max(0, this.attackTimer)) : delta;
+    if (!this.isBlocking && this.hp > 0) this.stamina = Math.min(this.maxStamina, this.stamina + this.combatStyle.regeneration * idleTime);
+    if (this.attackWindow && !['cancelled', 'complete'].includes(this.attackWindow.phase)) {
+      const window = this.attackWindow; window.elapsed += delta;
+      window.phase = window.elapsed < window.windup - 1e-9 ? 'windup' : window.elapsed < window.windup + window.active - 1e-9 ? 'active' : window.elapsed < window.duration - 1e-9 ? 'recovery' : 'complete';
+    }
+    this._updateLegacyStates(delta, horde, this.gameContext?.bosses, this.particles);
+    for (const timer of [...this._timers]) {
+      timer.time -= delta;
+      let ticks = 0;
+      while (timer.time <= 1e-9 && this._timers.includes(timer) && !this._disposed && ticks++ < 128) {
+        if (timer.interval > 0) timer.time += timer.interval;
+        else this.cancelTimer(timer);
+        timer.callback();
+        if (timer.interval <= 0) break;
+      }
+      if (ticks >= 128 && timer.time <= 0) timer.time = timer.interval;
+    }
     if (this.visorAcidBurn > 0) {
       this.visorAcidBurn = Math.max(0, this.visorAcidBurn - delta * 0.35);
-    }
-
-    if (this.wristNukeHoloMesh) {
-      this.wristNukeHoloMesh.rotation.y += delta * 4.5;
     }
 
     if (this.warhornBuffTimer > 0) {
@@ -1968,6 +2412,7 @@ export class Player {
       this.combiStickCooldown = Math.max(0, this.combiStickCooldown - delta);
     }
 
+    if (this.smartDiscCooldown > 0) this.smartDiscCooldown = Math.max(0, this.smartDiscCooldown - delta);
     if (this.shurikenCooldown > 0) {
       this.shurikenCooldown = Math.max(0, this.shurikenCooldown - delta);
     }
@@ -2105,8 +2550,8 @@ export class Player {
       if (this.exosuitTimer <= 0) {
         this.isExosuitActive = false;
         if (this.exosuitMesh) this.exosuitMesh.visible = false;
-        if (window.gameInstance && window.gameInstance.ui && window.gameInstance.ui.showAnnouncement) {
-          window.gameInstance.ui.showAnnouncement('🦾 EXOSQUELETTE BIONIQUE DÉSACTIVÉ : RECHARGE COMMENCÉE (45S).');
+        if (this.gameContext && this.gameContext.ui && this.gameContext.ui.showAnnouncement) {
+          this.gameContext.ui.showAnnouncement('🦾 EXOSQUELETTE BIONIQUE DÉSACTIVÉ : RECHARGE COMMENCÉE (45S).');
         }
       }
     }
@@ -2122,13 +2567,16 @@ export class Player {
 
     if (this.isLeaping) {
       let groundY = 0;
-      if (window.gameInstance && window.gameInstance.env && window.gameInstance.env.getElevationAt) {
-        groundY = window.gameInstance.env.getElevationAt(this.position.x, this.position.z);
+      if (this.gameContext && this.gameContext.env && this.gameContext.env.getElevationAt) {
+        groundY = this.gameContext.env.getElevationAt(this.position.x, this.position.z, this.position.y);
       }
 
       const grav = 36 * (this.gravityMultiplier !== undefined ? this.gravityMultiplier : 1.0);
+      const previousY = this.position.y;
       this.leapVelocityY -= grav * delta;
       this.position.y += this.leapVelocityY * delta;
+      const vertical = this.gameContext?.env?.resolveVerticalMovement?.(this.position, previousY, 2.4);
+      if (vertical?.blocked) { this.position.copy(vertical.point); this.leapVelocityY = 0; }
 
       if (this.position.y <= groundY) {
         this.position.y = groundY;
@@ -2156,9 +2604,12 @@ export class Player {
       }
     }
 
-    if (this.plasmaEnergy < this.maxPlasmaEnergy) {
+    if (this.plasmaEnergy < this.maxPlasmaEnergy && !this.isWhirlShieldActive && !this.isFlamerActive && !this.isDualPlasmaBeamActive) {
       this.plasmaEnergy = Math.min(this.maxPlasmaEnergy, this.plasmaEnergy + 15 * delta);
     }
+    this._updateAttackArmPose();
+    this.locomotion.update(delta);
+    this._syncVisualState(delta);
 
     if (this.traxNetCooldown > 0) {
       this.traxNetCooldown = Math.max(0, this.traxNetCooldown - delta);
@@ -2199,7 +2650,7 @@ export class Player {
     if (this.tripwireMineCooldown > 0) {
       this.tripwireMineCooldown = Math.max(0, this.tripwireMineCooldown - delta);
     }
-    this.updateTripwireMines(delta, horde, synthetics, window.gameInstance ? window.gameInstance.particles : null);
+    this.updateTripwireMines(delta, horde, this.gameContext?.synthetics, this.particles);
   }
 
   /* =========================================================================
@@ -2208,6 +2659,7 @@ export class Player {
 
   /* Chantier 9: Yautja Thermal Plasma Mine / Proximity Tri-Beam Tripwire */
   deployTripwireMine(scene, particles) {
+    if (!this.canUseArsenalEquipment('mines')) return false;
     if (this.tripwireMineCooldown > 0 || this.tripwireMines.length >= 3) return false;
     this.tripwireMineCooldown = 4.5;
 
@@ -2242,7 +2694,7 @@ export class Player {
       beams.push({ angle, dir: new THREE.Vector3(Math.sin(angle), 0, Math.cos(angle)) });
     }
 
-    scene.add(group);
+    this._addOwnedEffect(group);
     if (this.audioEngine && this.audioEngine.playYautjaClick) {
       this.audioEngine.playYautjaClick();
     }
@@ -2273,6 +2725,7 @@ export class Player {
 
       if (horde && horde.aliens) {
         for (const a of horde.aliens) {
+        if (!this._canDamageLegacyAlien(horde, a)) continue;
           if (!a || a.hp <= 0 || !a.mesh) continue;
           if (a.mesh.position.distanceTo(mine.pos) <= 7.0) {
             triggered = true;
@@ -2319,15 +2772,15 @@ export class Player {
           });
         }
 
-        if (window.gameInstance && window.gameInstance.triggerCameraShake) {
-          window.gameInstance.triggerCameraShake(0.7, 0.3);
+        if (this.gameContext && this.gameContext.triggerCameraShake) {
+          this.gameContext.triggerCameraShake(0.7, 0.3);
         }
 
-        if (window.gameInstance && window.gameInstance.ui) {
-          window.gameInstance.ui.showAnnouncement('💥 MINE TRIPWIRE PLASMA YAUTJA DÉTONÉE : DÉFLAGRATION 550 DÉGÂTS !');
+        if (this.gameContext && this.gameContext.ui) {
+          this.gameContext.ui.showAnnouncement('💥 MINE TRIPWIRE PLASMA YAUTJA DÉTONÉE : DÉFLAGRATION 550 DÉGÂTS !');
         }
 
-        window.gameInstance.renderer.scene.remove(mine.group);
+        this._removeOwnedEffect(mine.group);
         this.tripwireMines.splice(i, 1);
       }
     }
@@ -2335,6 +2788,7 @@ export class Player {
 
   /* Chantier 3: Smart-Disc Remote Laser Guidance & Telemetric Hover (Predator 2 / AVP 2010) */
   startSmartDiscRemoteGuidance(disc) {
+    if (!this.canUseArsenalEquipment('smart_disc')) return false;
     this.isSmartDiscGuiding = true;
     this.guidedSmartDisc = disc;
     if (this.audioEngine && this.audioEngine.playSmartDiscHoverHum) {
@@ -2356,8 +2810,9 @@ export class Player {
     this.guidedSmartDisc = null;
   }
 
-  /* Chantier 7: Yautja Burner / Incinerator Plasma Flamer Mode (AvP Lore / Dark Horse Canon 1:1) */
+  /* Chantier 7: Yautja Burner / Incinerator Plasma Flamer Mode (AvP Lore / Dark Horse adaptation) */
   togglePlasmaFlamer() {
+    if (!this.canUseArsenalEquipment('plasma_flamer')) return false;
     this.isFlamerActive = !this.isFlamerActive;
     if (this.isFlamerActive && this.audioEngine && this.audioEngine.playPlasmaFlamerStream) {
       this.audioEngine.playPlasmaFlamerStream();
@@ -2366,6 +2821,7 @@ export class Player {
   }
 
   firePlasmaFlamer(delta, horde, environment, particles) {
+    if (!this.canUseArsenalEquipment('plasma_flamer')) return false;
     if (!this.isFlamerActive || this.plasmaEnergy < 5.0 || this.isFacehuggerLatched) {
       this.isFlamerActive = false;
       return false;
@@ -2404,6 +2860,7 @@ export class Player {
     if (horde && horde.aliens) {
       for (let i = horde.aliens.length - 1; i >= 0; i--) {
         const a = horde.aliens[i];
+          if (!this._canDamageLegacyAlien(horde, a)) continue;
         if (!a || a.hp <= 0 || !a.mesh) continue;
         const toAlien = a.mesh.position.clone().sub(origin);
         const dist = toAlien.length();
@@ -2411,6 +2868,7 @@ export class Player {
           toAlien.normalize();
           const dot = forward.dot(toAlien);
           if (dot > 0.62) {
+            if (!this._canHitLegacyAlien(horde, a, origin)) continue;
             a.hp -= 110.0 * delta;
             // Catch fire effect: spark spurts
             if (particles && particles.emitSparks && Math.random() < 0.25) {
@@ -2419,12 +2877,10 @@ export class Player {
             if (a.hp <= 0) {
               if (horde.goreEngine) horde.goreEngine.spawnDismemberment(a.mesh.position, 'heavy');
               horde.spawnAcidPool(a.mesh.position);
-              this.scene.remove(a.mesh);
-              horde.aliens.splice(i, 1);
-              horde.deadCount++;
-              if (window.gameInstance) {
-                window.gameInstance.comboHits++;
-                window.gameInstance.score += 75;
+              this._defeatLegacyAlien(horde, a, 'legacy_weapon');
+              if (this.gameContext && !horde?.centralDeathScoring) {
+                this.gameContext.comboHits++;
+                this.gameContext.score += 75;
               }
             }
           }
@@ -2436,14 +2892,15 @@ export class Player {
         for (let s = horde.microSwarms.length - 1; s >= 0; s--) {
           const swarm = horde.microSwarms[s];
           if (swarm.isDead) continue;
+          if (!this._canHitLegacyAlien(horde, swarm, origin)) continue;
           if (swarm.group.position.distanceTo(origin) <= 7.5) {
             swarm.hp -= 250.0 * delta; // Super-effective against micro swarms!
             if (swarm.hp <= 0) {
               swarm.isDead = true;
-              this.scene.remove(swarm.group);
+              this._removeOwnedEffect(swarm.group);
               horde.microSwarms.splice(s, 1);
-              if (window.gameInstance && window.gameInstance.ui) {
-                window.gameInstance.ui.showAnnouncement('🔥 ESSAIM DE MICRO-XÉNOS INCINÉRÉ PAR LE BRÛLEUR PLASMA !');
+              if (this.gameContext && this.gameContext.ui) {
+                this.gameContext.ui.showAnnouncement('🔥 ESSAIM DE MICRO-XÉNOS INCINÉRÉ PAR LE BRÛLEUR PLASMA !');
               }
             }
           }
@@ -2468,6 +2925,7 @@ export class Player {
 
   /* === CHANTIER 5 (v45): Yautja Pure Energy Plasma Pistol Mode (AVP: Requiem Wolf / Predator 2) === */
   firePlasmaPistol(horde, bosses, particles, environment) {
+    if (!this.canUseArsenalEquipment('plasma_pistol')) return false;
     if (this.plasmaEnergy < 12 || this.plasmaPistolCooldown > 0) return false;
 
     this.plasmaEnergy -= 12;
@@ -2488,7 +2946,7 @@ export class Player {
 
     // Emit 3 rapid ionized azure/violet plasma burst sparks
     for (let b = 0; b < 3; b++) {
-      setTimeout(() => {
+      this.schedule(() => {
         const boltOrigin = origin.clone().addScaledVector(forward, 1.5 + b * 0.4);
         if (particles && particles.emitSparks) {
           particles.emitSparks(boltOrigin, 5);
@@ -2509,8 +2967,8 @@ export class Player {
               bosses.takeDamage(dmg, horde);
               hitTarget = true;
               if (particles && particles.emitSparks) particles.emitSparks(bosses.activeBoss.mesh.position, 8);
-              if (isCrit && window.gameInstance && window.gameInstance.ui) {
-                window.gameInstance.ui.showAnnouncement('💥 TIR CRITIQUE PISTOLET PLASMA (AVP-R) : 285 DÉGÂTS D\'ÉNERGIE PURE !');
+              if (isCrit && this.gameContext && this.gameContext.ui) {
+                this.gameContext.ui.showAnnouncement('💥 TIR CRITIQUE PISTOLET PLASMA (AVP-R) : 285 DÉGÂTS D\'ÉNERGIE PURE !');
               }
             }
           }
@@ -2520,6 +2978,7 @@ export class Player {
         if (!hitTarget && horde && horde.aliens) {
           for (let i = horde.aliens.length - 1; i >= 0; i--) {
             const a = horde.aliens[i];
+          if (!this._canDamageLegacyAlien(horde, a)) continue;
             if (!a || a.hp <= 0 || !a.mesh) continue;
             const toAlien = a.mesh.position.clone().sub(origin);
             const dist = toAlien.length();
@@ -2528,6 +2987,7 @@ export class Player {
               if (forward.dot(toAlien) > 0.88) {
                 const isCrit = Math.random() < 0.5;
                 const dmg = 95 * (isCrit ? 3.0 : 1.0);
+                if (!this._canHitLegacyAlien(horde, a, boltOrigin)) continue;
                 a.hp -= dmg;
                 hitTarget = true;
 
@@ -2536,12 +2996,10 @@ export class Player {
                 if (a.hp <= 0) {
                   if (horde.goreEngine) horde.goreEngine.spawnDismemberment(a.mesh.position, 'heavy');
                   horde.spawnAcidPool(a.mesh.position);
-                  this.scene.remove(a.mesh);
-                  horde.aliens.splice(i, 1);
-                  horde.deadCount++;
-                  if (window.gameInstance) {
-                    window.gameInstance.comboHits++;
-                    window.gameInstance.score += 85;
+                  this._defeatLegacyAlien(horde, a, 'legacy_weapon');
+                  if (this.gameContext && !horde?.centralDeathScoring) {
+                    this.gameContext.comboHits++;
+                    this.gameContext.score += 85;
                   }
                 }
                 break;
@@ -2552,7 +3010,7 @@ export class Player {
 
         // Trigger electric floor grid if bolt lands on it
         if (environment && environment.checkElectricGridInteraction) {
-          environment.checkElectricGridInteraction(boltPos, this, window.gameInstance ? window.gameInstance.ui : null, this.audioEngine, particles, horde);
+          environment.checkElectricGridInteraction(boltPos, this, this.gameContext ? this.gameContext.ui : null, this.audioEngine, particles, horde);
         }
       }, b * 85);
     }
@@ -2572,6 +3030,7 @@ export class Player {
     if (horde && horde.aliens) {
       for (let i = 0; i < horde.aliens.length; i++) {
         const a = horde.aliens[i];
+          if (!this._canDamageLegacyAlien(horde, a)) continue;
         if (!a || a.hp <= 0 || !a.mesh) continue;
         const d = this.position.distanceTo(a.mesh.position);
         if (d < minDist) {
@@ -2595,9 +3054,10 @@ export class Player {
     // Execution lift animation: lift target xeno overhead
     targetAlien.mesh.position.y = 2.4;
 
-    setTimeout(() => {
+    this.schedule(() => {
       // Seismic slam into floor
       targetAlien.mesh.position.y = 0;
+      if (!this._canDamageLegacyAlien(horde, targetAlien)) return;
       targetAlien.hp -= 260;
 
       if (this.audioEngine && this.audioEngine.playHeavySlamImpact) {
@@ -2612,6 +3072,7 @@ export class Player {
       const slamCenter = targetAlien.mesh.position.clone();
       if (horde && horde.aliens) {
         horde.aliens.forEach(otherAlien => {
+        if (!this._canDamageLegacyAlien(horde, otherAlien)) return;
           if (!otherAlien || otherAlien.hp <= 0 || !otherAlien.mesh || otherAlien === targetAlien) return;
           const dist = otherAlien.mesh.position.distanceTo(slamCenter);
           if (dist <= 5.2) {
@@ -2628,13 +3089,10 @@ export class Player {
       if (targetAlien.hp <= 0 && horde && horde.aliens) {
         if (horde.goreEngine) horde.goreEngine.spawnDismemberment(targetAlien.mesh.position, 'heavy');
         horde.spawnAcidPool(targetAlien.mesh.position);
-        this.scene.remove(targetAlien.mesh);
-        const idx = horde.aliens.indexOf(targetAlien);
-        if (idx !== -1) horde.aliens.splice(idx, 1);
-        horde.deadCount++;
-        if (window.gameInstance) {
-          window.gameInstance.comboHits += 2;
-          window.gameInstance.score += 200;
+        this._defeatLegacyAlien(horde, targetAlien, 'gauntlet_grapple');
+        if (this.gameContext && !horde?.centralDeathScoring) {
+          this.gameContext.comboHits += 2;
+          this.gameContext.score += 200;
         }
       }
 
@@ -2648,7 +3106,17 @@ export class Player {
 
   /* === CHANTIER 4 (v46): Yautja Bionic Cyber-Hunt Exosuit (Concrete Jungle / The Predator / Marvel) === */
   activateCyberExosuit(ui, particles) {
+    if (!this.canUseArsenalEquipment('cyber_exosuit')) return false;
     if (this.exosuitCooldown > 0) return false;
+
+    if (!this.exosuitMesh) {
+      const frame = new THREE.Group(); frame.name = 'cyber-exosuit-effect';
+      frame.userData.playerTransientEffect = true;
+      const material = new THREE.MeshBasicMaterial({ color: 0x00f2fe, wireframe: true, transparent: true, opacity: .65 });
+      const cage = new THREE.Mesh(new THREE.CylinderGeometry(1.05, .9, 3.8, 16, 8, true), material);
+      cage.position.y = 2; frame.add(cage); this.mesh.add(frame);
+      this.exosuitMesh = frame;
+    }
 
     this.isExosuitActive = true;
     this.exosuitTimer = 12.0;
@@ -2681,7 +3149,7 @@ export class Player {
       this.audioEngine.playGroundSlamImpact();
     }
 
-    setTimeout(() => {
+    this.schedule(() => {
       const slamCenter = this.position.clone();
       const radius = 10.5;
 
@@ -2689,6 +3157,7 @@ export class Player {
       if (horde && horde.aliens) {
         for (let i = horde.aliens.length - 1; i >= 0; i--) {
           const a = horde.aliens[i];
+          if (!this._canDamageLegacyAlien(horde, a)) continue;
           if (!a || a.hp <= 0 || !a.mesh) continue;
           const dist = a.mesh.position.distanceTo(slamCenter);
           if (dist <= radius) {
@@ -2705,12 +3174,10 @@ export class Player {
             if (a.hp <= 0) {
               if (horde.goreEngine) horde.goreEngine.spawnDismemberment(a.mesh.position, 'heavy');
               horde.spawnAcidPool(a.mesh.position);
-              this.scene.remove(a.mesh);
-              horde.aliens.splice(i, 1);
-              horde.deadCount++;
-              if (window.gameInstance) {
-                window.gameInstance.comboHits += 2;
-                window.gameInstance.score += 150;
+              this._defeatLegacyAlien(horde, a, 'legacy_weapon');
+              if (this.gameContext && !horde?.centralDeathScoring) {
+                this.gameContext.comboHits += 2;
+                this.gameContext.score += 150;
               }
             }
           }
@@ -2754,6 +3221,7 @@ export class Player {
 
   /* === CHANTIER 5 (v46): Yautja Neurotoxin Gas Canister Spray (Predator 2 / Hunting Grounds) === */
   throwNeurotoxinCanister(horde, bosses, synthetics, ui, particles, environment) {
+    if (!this.canUseArsenalEquipment('neurotoxin')) return false;
     if (this.neurotoxinCooldown > 0) return false;
 
     this.neurotoxinCooldown = 30.0;
@@ -2775,10 +3243,10 @@ export class Player {
     });
     const cloudMesh = new THREE.Mesh(cloudGeo, cloudMat);
     cloudMesh.position.copy(center);
-    this.scene.add(cloudMesh);
+    this._addOwnedEffect(cloudMesh);
 
     let gasLife = 8.0;
-    const gasInterval = setInterval(() => {
+    const gasInterval = this.scheduleInterval(() => {
       gasLife -= 0.5;
       cloudMesh.scale.multiplyScalar(1.02);
       cloudMat.opacity = Math.max(0.05, cloudMat.opacity - 0.02);
@@ -2786,6 +3254,7 @@ export class Player {
       // Slow down and damage Xenomorphs in cloud
       if (horde && horde.aliens) {
         horde.aliens.forEach(a => {
+        if (!this._canDamageLegacyAlien(horde, a)) return;
           if (!a || a.hp <= 0 || !a.mesh) return;
           if (a.mesh.position.distanceTo(center) <= 7.5) {
             a.hp -= 15; // 30 dmg per second
@@ -2808,8 +3277,8 @@ export class Player {
       }
 
       if (gasLife <= 0) {
-        clearInterval(gasInterval);
-        this.scene.remove(cloudMesh);
+        this.cancelTimer(gasInterval);
+        this._removeOwnedEffect(cloudMesh);
       }
     }, 500);
 
@@ -2863,6 +3332,7 @@ export class Player {
   }
 
   togglePlasmaScythe(ui = null) {
+    if (!this.canUseArsenalEquipment('plasma_scythe')) return false;
     this.isPlasmaScytheActive = !this.isPlasmaScytheActive;
     if (this.isPlasmaScytheActive) {
       if (!this.plasmaScytheMesh) {
@@ -2887,6 +3357,7 @@ export class Player {
   }
 
   performPlasmaScytheSlash(horde, bosses, synthetics, environment, particles) {
+    if (!this.canUseArsenalEquipment('plasma_scythe')) return false;
     if (this.plasmaEnergy < 25.0) {
       if (this.audioEngine && this.audioEngine.playGauntletGrapple) {
         this.audioEngine.playGauntletGrapple();
@@ -2902,11 +3373,11 @@ export class Player {
 
     // 360 spin animation of the player avatar
     let spin = 0;
-    const spinAnim = setInterval(() => {
+    const spinAnim = this.scheduleInterval(() => {
       spin += 0.55;
       this.mesh.rotation.y += 0.55;
       if (spin >= Math.PI * 2) {
-        clearInterval(spinAnim);
+        this.cancelTimer(spinAnim);
         this.mesh.rotation.y = this.rotationY;
       }
     }, 20);
@@ -2923,16 +3394,16 @@ export class Player {
     const ringMesh = new THREE.Mesh(ringGeo, ringMat);
     ringMesh.position.copy(this.position);
     ringMesh.position.y = 1.0;
-    this.scene.add(ringMesh);
+    this._addOwnedEffect(ringMesh);
 
     let scale = 1.0;
-    const ringInterval = setInterval(() => {
+    const ringInterval = this.scheduleInterval(() => {
       scale += 0.45;
       ringMesh.scale.set(scale, 1, scale);
       ringMesh.material.opacity -= 0.12;
       if (ringMesh.material.opacity <= 0) {
-        clearInterval(ringInterval);
-        this.scene.remove(ringMesh);
+        this.cancelTimer(ringInterval);
+        this._removeOwnedEffect(ringMesh);
       }
     }, 25);
 
@@ -2943,6 +3414,7 @@ export class Player {
     if (horde && horde.aliens) {
       for (let i = horde.aliens.length - 1; i >= 0; i--) {
         const a = horde.aliens[i];
+          if (!this._canDamageLegacyAlien(horde, a)) continue;
         if (!a || a.hp <= 0 || !a.mesh) continue;
         const d = a.mesh.position.distanceTo(this.position);
         if (d <= cleaveRadius) {
@@ -2955,12 +3427,10 @@ export class Player {
               horde.goreEngine.spawnDismemberment(a.mesh.position, 'heavy');
             }
             horde.spawnAcidPool(a.mesh.position);
-            this.scene.remove(a.mesh);
-            horde.aliens.splice(i, 1);
-            horde.deadCount++;
-            if (window.gameInstance) {
-              window.gameInstance.comboHits = (window.gameInstance.comboHits || 0) + 1;
-              window.gameInstance.score += 150;
+            this._defeatLegacyAlien(horde, a, 'legacy_weapon');
+            if (this.gameContext && !horde?.centralDeathScoring) {
+              this.gameContext.comboHits = (this.gameContext.comboHits || 0) + 1;
+              this.gameContext.score += 150;
             }
           }
         }
@@ -2994,6 +3464,7 @@ export class Player {
 
   /* === CHANTIER 5 (v47): USCM M41A Underbarrel U1 Grenade Launcher (Aliens 1986 Canon) === */
   fireM41AGrenade(ui = null) {
+    if (!this.canUseArsenalEquipment('m41a')) return false;
     if (this.m41aGrenadeCharges <= 0 || this.m41aGrenadeCooldown > 0) {
       return false;
     }
@@ -3019,7 +3490,7 @@ export class Player {
     const gMat = new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.9, roughness: 0.2 });
     const gMesh = new THREE.Mesh(gGeo, gMat);
     gMesh.position.copy(origin);
-    this.scene.add(gMesh);
+    this._addOwnedEffect(gMesh);
 
     this.activeM41AGrenades.push({
       mesh: gMesh,
@@ -3067,7 +3538,7 @@ export class Player {
 
       if (shouldDetonate) {
         const detPos = g.mesh.position.clone();
-        this.scene.remove(g.mesh);
+        this._removeOwnedEffect(g.mesh);
         this.activeM41AGrenades.splice(i, 1);
 
         if (this.audioEngine && this.audioEngine.playHeavySlamImpact) {
@@ -3079,16 +3550,16 @@ export class Player {
         const fbMat = new THREE.MeshBasicMaterial({ color: 0xf97316, transparent: true, opacity: 0.85, wireframe: true });
         const fbMesh = new THREE.Mesh(fbGeo, fbMat);
         fbMesh.position.copy(detPos);
-        this.scene.add(fbMesh);
+        this._addOwnedEffect(fbMesh);
 
         let fbScale = 1.0;
-        const fbInterval = setInterval(() => {
+        const fbInterval = this.scheduleInterval(() => {
           fbScale += 0.6;
           fbMesh.scale.set(fbScale, fbScale, fbScale);
           fbMesh.material.opacity -= 0.14;
           if (fbMesh.material.opacity <= 0) {
-            clearInterval(fbInterval);
-            this.scene.remove(fbMesh);
+            this.cancelTimer(fbInterval);
+            this._removeOwnedEffect(fbMesh);
           }
         }, 25);
 
@@ -3101,6 +3572,7 @@ export class Player {
         if (horde && horde.aliens) {
           for (let j = horde.aliens.length - 1; j >= 0; j--) {
             const al = horde.aliens[j];
+          if (!this._canDamageLegacyAlien(horde, al)) continue;
             if (!al || al.hp <= 0 || !al.mesh) continue;
             const d = al.mesh.position.distanceTo(detPos);
             if (d <= g.radius) {
@@ -3112,12 +3584,10 @@ export class Player {
                   horde.goreEngine.spawnDismemberment(al.mesh.position, 'heavy');
                 }
                 horde.spawnAcidPool(al.mesh.position);
-                this.scene.remove(al.mesh);
-                horde.aliens.splice(j, 1);
-                horde.deadCount++;
-                if (window.gameInstance) {
-                  window.gameInstance.comboHits = (window.gameInstance.comboHits || 0) + 1;
-                  window.gameInstance.score += 180;
+                this._defeatLegacyAlien(horde, al, 'legacy_weapon');
+                if (this.gameContext && !horde?.centralDeathScoring) {
+                  this.gameContext.comboHits = (this.gameContext.comboHits || 0) + 1;
+                  this.gameContext.score += 180;
                 }
               }
             }
@@ -3150,6 +3620,7 @@ export class Player {
 
   /* === CHANTIER 1 (v48): Yautja Scout Ship Stratospheric Thermal Beam Strike (AVP 2004 / Concrete Jungle) === */
   triggerScoutShipBeam(ui = null) {
+    if (!this.canUseArsenalEquipment('scout_beam')) return false;
     if (this.scoutBeamCooldown > 0 || this.activeScoutBeam) {
       if (ui && ui.showAnnouncement) {
         ui.showAnnouncement(`⏳ VAISSEAU ÉCLAIREUR YAUTJA EN RECHARGE ORBITALE (${Math.ceil(this.scoutBeamCooldown)}S)...`);
@@ -3196,7 +3667,7 @@ export class Player {
     ringMesh.position.y = 0.08;
     beamGroup.add(ringMesh);
 
-    this.scene.add(beamGroup);
+    this._addOwnedEffect(beamGroup);
 
     this.activeScoutBeam = {
       group: beamGroup,
@@ -3235,14 +3706,15 @@ export class Player {
       const slagMat = new THREE.MeshBasicMaterial({ color: 0xea580c, transparent: true, opacity: 0.75 });
       const slag = new THREE.Mesh(slagGeo, slagMat);
       slag.position.set(beam.pos.x, 0.03, beam.pos.z);
-      this.scene.add(slag);
-      setTimeout(() => this.scene.remove(slag), 4500);
+      this._addOwnedEffect(slag);
+      this.schedule(() => this._removeOwnedEffect(slag), 4500);
     }
 
     // Incinerate Xenomorphs within 3.2m radius (850 thermal dmg/s)
     if (horde && horde.aliens) {
       for (let i = horde.aliens.length - 1; i >= 0; i--) {
         const a = horde.aliens[i];
+          if (!this._canDamageLegacyAlien(horde, a)) continue;
         if (!a || a.hp <= 0 || !a.mesh) continue;
         if (a.mesh.position.distanceTo(beam.pos) <= 3.4) {
           a.hp -= 850 * delta;
@@ -3251,12 +3723,10 @@ export class Player {
           }
           if (a.hp <= 0) {
             if (horde.goreEngine) horde.goreEngine.spawnDismemberment(a.mesh.position, 'plasma');
-            this.scene.remove(a.mesh);
-            horde.aliens.splice(i, 1);
-            horde.deadCount++;
-            if (window.gameInstance) {
-              window.gameInstance.comboHits++;
-              window.gameInstance.score += 180;
+            this._defeatLegacyAlien(horde, a, 'legacy_weapon');
+            if (this.gameContext && !horde?.centralDeathScoring) {
+              this.gameContext.comboHits++;
+              this.gameContext.score += 180;
             }
           }
         }
@@ -3280,13 +3750,14 @@ export class Player {
     }
 
     if (beam.timer <= 0) {
-      this.scene.remove(beam.group);
+      this._removeOwnedEffect(beam.group);
       this.activeScoutBeam = null;
     }
   }
 
   /* === CHANTIER 3 (v48): USCM M77 Gauss / Railgun Hypersonic Rifle (Aliens: Colonial Marines / Dark Horse) === */
   fireM77GaussRifle(horde, bosses, synthetics, environment, particles, ui = null) {
+    if (!this.canUseArsenalEquipment('m77_gauss')) return false;
     if (this.m77GaussCooldown > 0) return false;
     if (this.m77GaussAmmo <= 0) {
       if (ui && ui.showAnnouncement) {
@@ -3324,8 +3795,8 @@ export class Player {
       railGroup.add(ring);
     }
 
-    this.scene.add(railGroup);
-    setTimeout(() => this.scene.remove(railGroup), 220);
+    this._addOwnedEffect(railGroup);
+    this.schedule(() => this._removeOwnedEffect(railGroup), 220);
 
     // Pierce up to 15 enemies in a 45m line (550 armor-piercing damage, ignores 100% ballistic armor)
     let piercedCount = 0;
@@ -3333,6 +3804,7 @@ export class Player {
       for (let i = horde.aliens.length - 1; i >= 0; i--) {
         if (piercedCount >= 15) break;
         const a = horde.aliens[i];
+          if (!this._canDamageLegacyAlien(horde, a)) continue;
         if (!a || a.hp <= 0 || !a.mesh) continue;
         const toEnemy = a.mesh.position.clone().sub(this.position);
         toEnemy.y = 0;
@@ -3341,6 +3813,7 @@ export class Player {
           const proj = toEnemy.dot(forward);
           const perpDist = Math.sqrt(Math.max(0, dist * dist - proj * proj));
           if (proj > 0 && perpDist <= (a.radius || 1.2) + 0.95) {
+            if (!this._canHitLegacyAlien(horde, a, origin)) continue;
             a.hp -= 550;
             piercedCount++;
             if (particles && particles.emitSparks) {
@@ -3349,12 +3822,10 @@ export class Player {
             if (a.hp <= 0) {
               if (horde.goreEngine) horde.goreEngine.spawnDismemberment(a.mesh.position, 'heavy');
               horde.spawnAcidPool(a.mesh.position);
-              this.scene.remove(a.mesh);
-              horde.aliens.splice(i, 1);
-              horde.deadCount++;
-              if (window.gameInstance) {
-                window.gameInstance.comboHits++;
-                window.gameInstance.score += 190;
+              this._defeatLegacyAlien(horde, a, 'legacy_weapon');
+              if (this.gameContext && !horde?.centralDeathScoring) {
+                this.gameContext.comboHits++;
+                this.gameContext.score += 190;
               }
             }
           }
@@ -3443,6 +3914,7 @@ export class Player {
 
   /* === CHANTIER 1 (v49.0): Yautja Heavy Maul / Sledgehammer & Seismic Earthshaker ([Shift+1] / Concrete Jungle / Hunting Grounds) === */
   performMaulEarthshaker(horde, bosses, synthetics, environment, particles, ui = null) {
+    if (!this.canUseArsenalEquipment('tri_maul')) return false;
     if (this.maulCooldown > 0) return false;
     this.maulCooldown = 14.0;
 
@@ -3479,16 +3951,16 @@ export class Player {
     maulGroup.add(ringMesh);
 
     maulGroup.position.copy(slamPos);
-    this.scene.add(maulGroup);
+    this._addOwnedEffect(maulGroup);
 
     let ringScale = 1.0;
-    const ringInterval = setInterval(() => {
+    const ringInterval = this.scheduleInterval(() => {
       ringScale += 0.75;
       ringMesh.scale.set(ringScale, 1, ringScale);
       ringMat.opacity -= 0.09;
       if (ringMat.opacity <= 0) {
-        clearInterval(ringInterval);
-        this.scene.remove(maulGroup);
+        this.cancelTimer(ringInterval);
+        this._removeOwnedEffect(maulGroup);
       }
     }, 28);
 
@@ -3503,6 +3975,7 @@ export class Player {
     if (horde && horde.aliens) {
       for (let i = horde.aliens.length - 1; i >= 0; i--) {
         const a = horde.aliens[i];
+          if (!this._canDamageLegacyAlien(horde, a)) continue;
         if (!a || a.hp <= 0 || !a.mesh) continue;
         const d = a.mesh.position.distanceTo(slamPos);
         if (d <= radius) {
@@ -3517,7 +3990,7 @@ export class Player {
           }
           a.hp -= damage;
           a.mesh.position.y += 1.4; // Launch airborne briefly
-          setTimeout(() => {
+          this.schedule(() => {
             if (a && a.mesh && !a.isFlying) a.mesh.position.y = 0;
           }, 320);
           hitCount++;
@@ -3525,12 +3998,10 @@ export class Player {
           if (a.hp <= 0) {
             if (horde.goreEngine) horde.goreEngine.spawnDismemberment(a.mesh.position, 'heavy');
             horde.spawnAcidPool(a.mesh.position);
-            this.scene.remove(a.mesh);
-            horde.aliens.splice(i, 1);
-            horde.deadCount++;
-            if (window.gameInstance) {
-              window.gameInstance.comboHits++;
-              window.gameInstance.score += 210;
+            this._defeatLegacyAlien(horde, a, 'legacy_weapon');
+            if (this.gameContext && !horde?.centralDeathScoring) {
+              this.gameContext.comboHits++;
+              this.gameContext.score += 210;
             }
           }
         }
@@ -3552,6 +4023,7 @@ export class Player {
 
   /* === CHANTIER 5 (v49.0): Tracker Predator Biomechanical Sonic Trap Mine ([Shift+T] / Predators 2010 / AVP 2010) === */
   deploySonicTrapMine(ui = null) {
+    if (!this.canUseArsenalEquipment('sonic_mine')) return false;
     if (this.sonicTrapCooldown > 0) return false;
     this.sonicTrapCooldown = 18.0;
 
@@ -3572,7 +4044,7 @@ export class Player {
 
     trapGroup.position.copy(this.position);
     trapGroup.position.y = 0;
-    this.scene.add(trapGroup);
+    this._addOwnedEffect(trapGroup);
 
     this.activeSonicTraps.push({
       mesh: trapGroup,
@@ -3605,6 +4077,7 @@ export class Player {
       if (horde && horde.aliens) {
         for (let j = 0; j < horde.aliens.length; j++) {
           const a = horde.aliens[j];
+          if (!this._canDamageLegacyAlien(horde, a)) continue;
           if (!a || a.hp <= 0 || !a.mesh) continue;
           const d = a.mesh.position.distanceTo(trap.position);
           if (d <= trap.radius && d > 1.2) {
@@ -3625,6 +4098,7 @@ export class Player {
         if (horde && horde.aliens) {
           for (let j = horde.aliens.length - 1; j >= 0; j--) {
             const a = horde.aliens[j];
+          if (!this._canDamageLegacyAlien(horde, a)) continue;
             if (!a || a.hp <= 0 || !a.mesh) continue;
             if (a.mesh.position.distanceTo(trap.position) <= 9.5) {
               a.hp -= 520;
@@ -3636,9 +4110,7 @@ export class Player {
               if (a.hp <= 0) {
                 if (horde.goreEngine) horde.goreEngine.spawnDismemberment(a.mesh.position, 'heavy');
                 horde.spawnAcidPool(a.mesh.position);
-                this.scene.remove(a.mesh);
-                horde.aliens.splice(j, 1);
-                horde.deadCount++;
+                this._defeatLegacyAlien(horde, a, 'legacy_weapon');
               }
             }
           }
@@ -3650,7 +4122,7 @@ export class Player {
           }
         }
 
-        this.scene.remove(trap.mesh);
+        this._removeOwnedEffect(trap.mesh);
         this.activeSonicTraps.splice(i, 1);
       }
     }
@@ -3658,6 +4130,7 @@ export class Player {
 
   /* === CHANTIER 7 (v49.0): Seegson High-Voltage Industrial Bolt Gun ([Shift+3] / Alien: Isolation 2014) === */
   fireSeegsonBoltGun(horde, bosses, synthetics, particles, ui = null) {
+    if (!this.canUseArsenalEquipment('seegson_bolt')) return false;
     if (this.seegsonBoltCooldown > 0 || this.seegsonBoltAmmo <= 0) return false;
     this.seegsonBoltCooldown = 1.6;
     this.seegsonBoltAmmo--;
@@ -3676,16 +4149,17 @@ export class Player {
     const spikeMesh = new THREE.Mesh(spikeGeo, spikeMat);
     spikeMesh.position.copy(startPos).add(forward.clone().multiplyScalar(19.0));
     spikeMesh.lookAt(startPos.clone().add(forward.clone().multiplyScalar(38.0)));
-    this.scene.add(spikeMesh);
+    this._addOwnedEffect(spikeMesh);
 
-    setTimeout(() => {
-      if (spikeMesh.parent) this.scene.remove(spikeMesh);
+    this.schedule(() => {
+      if (spikeMesh.parent) this._removeOwnedEffect(spikeMesh);
     }, 180);
 
     let hitTarget = false;
     if (horde && horde.aliens) {
       for (let i = horde.aliens.length - 1; i >= 0; i--) {
         const a = horde.aliens[i];
+          if (!this._canDamageLegacyAlien(horde, a)) continue;
         if (!a || a.hp <= 0 || !a.mesh) continue;
         const toEnemy = a.mesh.position.clone().sub(this.position);
         toEnemy.y = 0;
@@ -3694,6 +4168,7 @@ export class Player {
           const proj = toEnemy.dot(forward);
           const perpDist = Math.sqrt(Math.max(0, dist * dist - proj * proj));
           if (proj > 0 && perpDist <= (a.radius || 1.2) + 0.85) {
+            if (!this._canHitLegacyAlien(horde, a, null)) continue;
             a.hp -= 680;
             // Cauterizes Ancient Predalien Elder regeneration and bypasses frontal armor!
             a.regenActive = false;
@@ -3704,12 +4179,10 @@ export class Player {
             }
             if (a.hp <= 0) {
               if (horde.goreEngine) horde.goreEngine.spawnDismemberment(a.mesh.position, 'heavy');
-              this.scene.remove(a.mesh);
-              horde.aliens.splice(i, 1);
-              horde.deadCount++;
-              if (window.gameInstance) {
-                window.gameInstance.comboHits++;
-                window.gameInstance.score += 240;
+              this._defeatLegacyAlien(horde, a, 'legacy_weapon');
+              if (this.gameContext && !horde?.centralDeathScoring) {
+                this.gameContext.comboHits++;
+                this.gameContext.score += 240;
               }
             }
             break; // Single ultra-high-impact tungsten bolt
@@ -3749,30 +4222,22 @@ export class Player {
     this.position.addScaledVector(forward, 6.5);
     if (this.mesh) this.mesh.position.copy(this.position);
 
-    // Spawn transient optical cloaked after-image mesh
-    const afterImage = this.mesh.clone();
-    afterImage.position.copy(this.position).sub(forward.clone().multiplyScalar(3.0));
-    afterImage.traverse(c => {
-      if (c.isMesh && c.material) {
-        c.material = new THREE.MeshBasicMaterial({
-          color: 0x00d2ff,
-          transparent: true,
-          opacity: 0.55,
-          wireframe: true
-        });
-      }
-    });
-    this.scene.add(afterImage);
+    // Snapshot uses private geometry/skeletons; a shallow mesh.clone would borrow
+    // the live actor's skin and GPU buffers and could dispose another actor.
+    const snapshot = createHunterHologram(this);
+    const afterImage = snapshot.mesh;
+    afterImage.position.copy(this.position).addScaledVector(forward, -3);
+    this._addOwnedEffect(afterImage, () => snapshot.dispose());
 
     let op = 0.55;
-    const fade = setInterval(() => {
+    const fade = this.scheduleInterval(() => {
       op -= 0.11;
       afterImage.traverse(c => {
         if (c.isMesh && c.material) c.material.opacity = Math.max(0, op);
       });
       if (op <= 0) {
-        clearInterval(fade);
-        this.scene.remove(afterImage);
+        this.cancelTimer(fade);
+        this._removeOwnedEffect(afterImage);
       }
     }, 35);
 
@@ -3785,6 +4250,7 @@ export class Player {
 
   /* === CHANTIER 1 (v50.0): Yautja Stealth Infiltration Dropship Carpet-Bombing Protocol ([Shift + J]) === */
   callInfiltrationDropshipBombing(horde, bosses, particles, audio, ui = null) {
+    if (!this.canUseArsenalEquipment('dropship_bombing')) return false;
     if (this.dropshipBombingCooldown > 0) return false;
     this.dropshipBombingCooldown = 28.0;
 
@@ -3821,23 +4287,23 @@ export class Player {
     shipStart.y = 12.0;
     dropshipGroup.position.copy(shipStart);
     dropshipGroup.lookAt(shipStart.clone().add(forward).add(new THREE.Vector3(0, -0.15, 0)));
-    this.scene.add(dropshipGroup);
+    this._addOwnedEffect(dropshipGroup);
 
     // Dropship flyover animation
     let flyDist = 0;
-    const flyInterval = setInterval(() => {
+    const flyInterval = this.scheduleInterval(() => {
       flyDist += 3.2;
       dropshipGroup.position.addScaledVector(forward, 3.2);
       dropshipGroup.position.y += Math.sin(flyDist * 0.05) * 0.4;
       if (flyDist >= 68.0) {
-        clearInterval(flyInterval);
-        this.scene.remove(dropshipGroup);
+        this.cancelTimer(flyInterval);
+        this._removeOwnedEffect(dropshipGroup);
       }
     }, 25);
 
     // Drop 6 plasma cluster bomblets along 25m corridor
     for (let b = 1; b <= 6; b++) {
-      setTimeout(() => {
+      this.schedule(() => {
         const bombPos = startPos.clone().add(forward.clone().multiplyScalar(b * 4.2));
         bombPos.y = 0.2;
 
@@ -3846,16 +4312,16 @@ export class Player {
         const fireMat = new THREE.MeshBasicMaterial({ color: 0x00f2fe, transparent: true, opacity: 0.9 });
         const fireMesh = new THREE.Mesh(fireGeo, fireMat);
         fireMesh.position.copy(bombPos);
-        this.scene.add(fireMesh);
+        this._addOwnedEffect(fireMesh);
 
         let fScale = 1.0;
-        const fInterval = setInterval(() => {
+        const fInterval = this.scheduleInterval(() => {
           fScale += 0.4;
           fireMesh.scale.set(fScale, fScale, fScale);
           fireMat.opacity -= 0.12;
           if (fireMat.opacity <= 0) {
-            clearInterval(fInterval);
-            this.scene.remove(fireMesh);
+            this.cancelTimer(fInterval);
+            this._removeOwnedEffect(fireMesh);
           }
         }, 30);
 
@@ -3873,14 +4339,13 @@ export class Player {
         if (horde && horde.aliens) {
           for (let j = horde.aliens.length - 1; j >= 0; j--) {
             const a = horde.aliens[j];
+          if (!this._canDamageLegacyAlien(horde, a)) continue;
             if (!a || a.hp <= 0 || !a.mesh) continue;
             if (a.mesh.position.distanceTo(bombPos) <= 4.8) {
               a.hp -= 420;
               if (a.hp <= 0) {
                 if (horde.goreEngine) horde.goreEngine.spawnDismemberment(a.mesh.position, 'plasma');
-                this.scene.remove(a.mesh);
-                horde.aliens.splice(j, 1);
-                horde.deadCount++;
+                this._defeatLegacyAlien(horde, a, 'legacy_weapon');
               }
             }
           }
@@ -3902,6 +4367,7 @@ export class Player {
 
   /* === CHANTIER 6 (v50.0): Dual Plasma Casters Concentrated Overcharge Beam ([Shift + RMB / Shift+Space+RMB]) === */
   fireDualPlasmaOverchargeBeam(horde, bosses, synthetics, particles, audio, ui = null) {
+    if (!this.canUseArsenalEquipment('dual_caster')) return false;
     if (this.dualPlasmaBeamCooldown > 0 || (this.plasmaEnergy || 0) < 35) return false;
     this.dualPlasmaBeamCooldown = 16.0;
     this.plasmaEnergy = Math.max(0, (this.plasmaEnergy || 100) - 35);
@@ -3924,7 +4390,7 @@ export class Player {
       beamGroup.add(bMesh);
     });
 
-    this.mesh.add(beamGroup);
+    this._addOwnedEffect(beamGroup, null, this.mesh);
     this.dualPlasmaMeshGroup = beamGroup;
 
     if (ui && ui.showAnnouncement) {
@@ -3934,6 +4400,8 @@ export class Player {
   }
 
   updateDualPlasmaBeam(delta, horde, bosses, particles) {
+    if (this._disposed || !Number.isFinite(delta) || delta <= 0) return;
+    const audio = this.audioEngine, ui = this.gameContext?.ui;
     if (this.shadowDashCooldown > 0) this.shadowDashCooldown = Math.max(0, this.shadowDashCooldown - delta);
     if (this.shadowDashTimer > 0) {
       this.shadowDashTimer -= delta;
@@ -3952,14 +4420,14 @@ export class Player {
       if (horde && horde.aliens) {
         for (let j = horde.aliens.length - 1; j >= 0; j--) {
           const a = horde.aliens[j];
+          if (!this._canDamageLegacyAlien(horde, a)) continue;
           if (!a || a.hp <= 0 || !a.mesh) continue;
           if (a.mesh.position.distanceTo(p.pos) <= p.radius) {
+            if (!this._canHitLegacyAlien(horde, a, p.pos)) continue;
             a.hp -= p.dps * delta;
             if (a.hp <= 0) {
               if (horde.goreEngine) horde.goreEngine.spawnDismemberment(a.mesh.position, 'plasma');
-              this.scene.remove(a.mesh);
-              horde.aliens.splice(j, 1);
-              horde.deadCount++;
+              this._defeatLegacyAlien(horde, a, 'legacy_weapon');
             }
           }
         }
@@ -3980,6 +4448,7 @@ export class Player {
       if (horde && horde.aliens) {
         for (let i = horde.aliens.length - 1; i >= 0; i--) {
           const a = horde.aliens[i];
+          if (!this._canDamageLegacyAlien(horde, a)) continue;
           if (!a || a.hp <= 0 || !a.mesh) continue;
           const toXeno = a.mesh.position.clone().sub(this.position);
           toXeno.y = 0;
@@ -3988,13 +4457,12 @@ export class Player {
             const proj = toXeno.dot(forward);
             const perpDist = Math.sqrt(Math.max(0, dist * dist - proj * proj));
             if (proj > 0 && perpDist <= (a.radius || 1.2) + 1.2) {
+              if (!this._canHitLegacyAlien(horde, a, origin)) continue;
               a.hp -= 920 * delta;
               a.isFrontalShielded = false; // Melts frontal shields!
               if (a.hp <= 0) {
                 if (horde.goreEngine) horde.goreEngine.spawnDismemberment(a.mesh.position, 'plasma');
-                this.scene.remove(a.mesh);
-                horde.aliens.splice(i, 1);
-                horde.deadCount++;
+                this._defeatLegacyAlien(horde, a, 'legacy_weapon');
               }
             }
           }
@@ -4012,12 +4480,16 @@ export class Player {
       if (this.dualPlasmaBeamTimer <= 0) {
         this.isDualPlasmaBeamActive = false;
         if (this.dualPlasmaMeshGroup && this.dualPlasmaMeshGroup.parent) {
-          this.dualPlasmaMeshGroup.parent.remove(this.dualPlasmaMeshGroup);
+          this._removeOwnedEffect(this.dualPlasmaMeshGroup);
           this.dualPlasmaMeshGroup = null;
         }
       }
     }
 
+  }
+
+  _updateLegacyStates(delta, horde, bosses, particles) {
+    const audio = this.audioEngine, ui = this.gameContext?.ui;
     // === v51.0 Timers (Parry Window & Decoy Beacon) ===
     if (this.parryCooldown > 0) this.parryCooldown -= delta;
     if (this.parryTimer > 0) {
@@ -4032,11 +4504,11 @@ export class Player {
     if (this.activeDecoyBeacon) {
       this.activeDecoyBeacon.timer -= delta;
       this.activeDecoyBeacon.mesh.rotation.y += 4.0 * delta;
-      const s = 1.0 + Math.sin(Date.now() * 0.012) * 0.25;
+      const s = 1.0 + Math.sin((this._simulationTime * 1000) * 0.012) * 0.25;
       this.activeDecoyBeacon.mesh.scale.set(s, s, s);
 
       if (this.activeDecoyBeacon.timer <= 0) {
-        this.scene.remove(this.activeDecoyBeacon.mesh);
+        this._removeOwnedEffect(this.activeDecoyBeacon.mesh);
         this.activeDecoyBeacon = null;
       }
     }
@@ -4068,6 +4540,7 @@ export class Player {
         if (horde && horde.aliens) {
           for (let i = horde.aliens.length - 1; i >= 0; i--) {
             const a = horde.aliens[i];
+          if (!this._canDamageLegacyAlien(horde, a)) continue;
             if (!a || a.hp <= 0 || !a.mesh) continue;
             if (a.mesh.position.distanceTo(slamPos) <= slamRadius) {
               a.hp -= 580;
@@ -4077,9 +4550,7 @@ export class Player {
               a.mesh.position.addScaledVector(knock, 6.5);
               if (a.hp <= 0) {
                 if (horde.goreEngine) horde.goreEngine.spawnDismemberment(a.mesh.position, 'heavy');
-                this.scene.remove(a.mesh);
-                horde.aliens.splice(i, 1);
-                horde.deadCount++;
+                this._defeatLegacyAlien(horde, a, 'legacy_weapon');
                 killedCount++;
               }
             }
@@ -4121,7 +4592,7 @@ export class Player {
     if (this.cloakFlickerTimer > 0) {
       this.cloakFlickerTimer -= delta;
       if (this.mesh) {
-        const flicker = Math.sin(Date.now() * 0.05) > 0;
+        const flicker = Math.sin((this._simulationTime * 1000) * 0.05) > 0;
         this.mesh.visible = flicker;
       }
       if (this.cloakFlickerTimer <= 0 && this.mesh) {
@@ -4157,7 +4628,233 @@ export class Player {
         this.isBillyCourageActive = false;
       }
     }
+    // v60.0 Predator 2 (1990) Buff Timers
+    if (this.lightningAuraTimer > 0) {
+      this.lightningAuraTimer -= delta;
+      if (this.lightningAuraTimer <= 0) this.isLightningAuraActive = false;
+    }
+    if (this.voodooSightTimer > 0) {
+      this.voodooSightTimer -= delta;
+      if (this.voodooSightTimer <= 0) this.isVoodooSightActive = false;
+    }
+    if (this.flintlockKineticBuffTimer > 0) {
+      this.flintlockKineticBuffTimer -= delta;
+      if (this.flintlockKineticBuffTimer <= 0) this.isFlintlockKineticActive = false;
+    }
+    if (this.jerryLastStandTimer > 0) {
+      this.jerryLastStandTimer -= delta;
+      if (this.jerryLastStandTimer <= 0) this.isJerryLastStandActive = false;
+    }
+    if (this.owlfUltravioletScanTimer > 0) {
+      this.owlfUltravioletScanTimer -= delta;
+      if (this.owlfUltravioletScanTimer <= 0) this.isOWLFUltravioletActive = false;
+    }
+    // v61.0 Predators (2010) Game Preserve Buffs
+    if (this.hanzoBushidoTimer > 0) {
+      this.hanzoBushidoTimer -= delta;
+      if (this.hanzoBushidoTimer <= 0) this.isHanzoBushidoActive = false;
+    }
+    if (this.neurotoxinBladeTimer > 0) {
+      this.neurotoxinBladeTimer -= delta;
+      if (this.neurotoxinBladeTimer <= 0) this.isNeurotoxinBladeActive = false;
+    }
+    if (this.masterHunterStalkerTimer > 0) {
+      this.masterHunterStalkerTimer -= delta;
+      if (this.masterHunterStalkerTimer <= 0) this.isMasterHunterStalkerActive = false;
+    }
+    // v63.0 The Predator (2018) & Val Verde Master Timers
+    if (this.predatorKillerTimer > 0) {
+      this.predatorKillerTimer -= delta;
+      if (this.predatorKillerTimer <= 0) this.isPredatorKillerNanoActive = false;
+    }
+    if (this.dillonGritTimer > 0) {
+      this.dillonGritTimer -= delta;
+      if (this.dillonGritTimer <= 0) this.isDillonGritActive = false;
+    }
+    if (this.hawkinsScanTimer > 0) {
+      this.hawkinsScanTimer -= delta;
+      if (this.hawkinsScanTimer <= 0) this.isHawkinsScanActive = false;
+    }
+    if (this.friendlyLoboTimer > 0) {
+      this.friendlyLoboTimer -= delta;
+      if (this.friendlyLoboTimer <= 0) this.isFriendlyLoboActive = false;
+    }
+    if (this.fugitiveAutoAimTimer > 0) {
+      this.fugitiveAutoAimTimer -= delta;
+      if (this.fugitiveAutoAimTimer <= 0) this.isFugitiveAutoAimActive = false;
+    }
+    if (this.roryTelemetryTimer > 0) {
+      this.roryTelemetryTimer -= delta;
+      if (this.roryTelemetryTimer <= 0) this.isRoryTelemetryActive = false;
+    }
+    if (this.caseyDeconTimer > 0) {
+      this.caseyDeconTimer -= delta;
+      if (this.caseyDeconTimer <= 0) this.isCaseyDeconActive = false;
+    }
+    if (this.orangeFlowerTimer > 0) {
+      this.orangeFlowerTimer -= delta;
+      if (this.orangeFlowerTimer <= 0) this.isOrangeFlowerActive = false;
+    }
+    if (this.taabeWarTimer > 0) {
+      this.taabeWarTimer -= delta;
+      if (this.taabeWarTimer <= 0) this.isTaabeWarActive = false;
+    }
+    if (this.mudCoatedTimer > 0) {
+      this.mudCoatedTimer -= delta;
+      if (this.mudCoatedTimer <= 0) this.isMudCoated = false;
+    }
+    if (this.comancheWarPaintTimer > 0) {
+      this.comancheWarPaintTimer -= delta;
+      if (this.comancheWarPaintTimer <= 0) this.isComancheWarPaintActive = false;
+    }
+    if (this.feralClawsTimer > 0) {
+      this.feralClawsTimer -= delta;
+      if (this.feralClawsTimer <= 0) this.isFeralClawsActive = false;
+    }
+    if (this.ancestralTrackingTimer > 0) {
+      this.ancestralTrackingTimer -= delta;
+      if (this.ancestralTrackingTimer <= 0) this.isAncestralTrackingActive = false;
+    }
+    if (this.ursaBerserkTimer > 0) {
+      this.ursaBerserkTimer -= delta;
+      if (this.ursaBerserkTimer <= 0) this.isUrsaBerserkActive = false;
+    }
+    if (this.kenjiReflexesTimer > 0) {
+      this.kenjiReflexesTimer -= delta;
+      if (this.kenjiReflexesTimer <= 0) this.isKenjiReflexesActive = false;
+    }
+    if (this.torresIncendiaryTimer > 0) {
+      this.torresIncendiaryTimer -= delta;
+      if (this.torresIncendiaryTimer <= 0) this.isTorresIncendiaryActive = false;
+    }
     this.isOnBough = (this.position && this.position.y >= 5.0);
+  }
+
+  applyUrsaBerserk(duration = 30.0) {
+    this.ursaBerserkTimer = duration;
+    this.isUrsaBerserkActive = true;
+    this.shield = Math.min(200, (this.shield || 0) + 150);
+  }
+
+  applyKenjiReflexes(duration = 30.0) {
+    this.kenjiReflexesTimer = duration;
+    this.isKenjiReflexesActive = true;
+  }
+
+  applyTorresIncendiary(duration = 30.0) {
+    this.torresIncendiaryTimer = duration;
+    this.isTorresIncendiaryActive = true;
+    this.m77GaussAmmo = Math.min(12, (this.m77GaussAmmo || 0) + 6);
+  }
+
+  applyFeralClawsBuff(duration = 30.0) {
+    this.feralClawsTimer = duration;
+    this.isFeralClawsActive = true;
+  }
+
+  applyAncestralTrackingBuff(duration = 30.0) {
+    this.ancestralTrackingTimer = duration;
+    this.isAncestralTrackingActive = true;
+  }
+
+  applyComancheWarPaint(duration = 30.0) {
+    this.comancheWarPaintTimer = duration;
+    this.isComancheWarPaintActive = true;
+  }
+
+  applyPreyMudCamouflage(duration = 30.0) {
+    this.mudCoatedTimer = duration;
+    this.isMudCoated = true;
+    if (!this.isCloaked) this.toggleCloak();
+  }
+
+  applyOrangeFlowerBuff(duration = 35.0) {
+    this.orangeFlowerTimer = duration;
+    this.isOrangeFlowerActive = true;
+    this.isCloaked = true;
+  }
+
+  applyTaabeWarAgility(duration = 25.0) {
+    this.taabeWarTimer = duration;
+    this.isTaabeWarActive = true;
+  }
+
+  applyFriendlyLobo(duration = 35.0) {
+    this.friendlyLoboTimer = duration;
+    this.isFriendlyLoboActive = true;
+  }
+
+  applyFugitiveAutoAim(duration = 30.0) {
+    this.fugitiveAutoAimTimer = duration;
+    this.isFugitiveAutoAimActive = true;
+  }
+
+  applyRoryStarMapTelemetry(duration = 30.0) {
+    this.roryTelemetryTimer = duration;
+    this.isRoryTelemetryActive = true;
+  }
+
+  applyCaseyDeconBuff(duration = 35.0) {
+    this.caseyDeconTimer = duration;
+    this.isCaseyDeconActive = true;
+    this.hp = Math.min(this.maxHp || 100, (this.hp || 0) + 75);
+    this.shield = Math.min(200, (this.shield || 0) + 100);
+  }
+
+  applyPredatorKillerNano(duration = 30.0) {
+    this.predatorKillerTimer = duration;
+    this.isPredatorKillerNanoActive = true;
+    this.shield = Math.min(200, (this.shield || 0) + 100);
+  }
+
+  applyDillonGrit(duration = 30.0) {
+    this.dillonGritTimer = duration;
+    this.isDillonGritActive = true;
+  }
+
+  applyHawkinsScan(duration = 35.0) {
+    this.hawkinsScanTimer = duration;
+    this.isHawkinsScanActive = true;
+  }
+
+  applyMasterHunterStalker(duration = 22.0) {
+    this.masterHunterStalkerTimer = duration;
+    this.isMasterHunterStalkerActive = true;
+  }
+
+  applyHanzoBushido(duration = 35.0) {
+    this.hanzoBushidoTimer = duration;
+    this.isHanzoBushidoActive = true;
+  }
+
+  applyNeurotoxinBlade(duration = 30.0) {
+    this.neurotoxinBladeTimer = duration;
+    this.isNeurotoxinBladeActive = true;
+  }
+
+  applyJerryLastStand(duration = 30.0) {
+    this.jerryLastStandTimer = duration;
+    this.isJerryLastStandActive = true;
+  }
+
+  applyOWLFUltravioletScan(duration = 40.0) {
+    this.owlfUltravioletScanTimer = duration;
+    this.isOWLFUltravioletActive = true;
+  }
+
+  applyLightningAura(duration = 20.0) {
+    this.lightningAuraTimer = duration;
+    this.isLightningAuraActive = true;
+  }
+
+  applyVoodooSight(duration = 35.0) {
+    this.voodooSightTimer = duration;
+    this.isVoodooSightActive = true;
+  }
+
+  applyFlintlockKineticBuff(duration = 30.0) {
+    this.flintlockKineticBuffTimer = duration;
+    this.isFlintlockKineticActive = true;
   }
 
   applyBillyCourage(duration = 30.0) {
@@ -4178,6 +4875,7 @@ export class Player {
   /* === CHANTIER 1 (v51.0): Clan Weapon Forge Persistent Upgrades === */
   loadClanForgeUpgrades() {
     try {
+      if (typeof localStorage === 'undefined') return;
       const saved = localStorage.getItem('yautja_clan_forge');
       if (saved) {
         const parsed = JSON.parse(saved);
@@ -4271,7 +4969,7 @@ export class Player {
     const beaconMesh = new THREE.Mesh(beaconGeo, beaconMat);
     beaconMesh.position.copy(decoyPos);
     beaconMesh.position.y = 1.0;
-    this.scene.add(beaconMesh);
+    this._addOwnedEffect(beaconMesh);
 
     this.activeDecoyBeacon = {
       mesh: beaconMesh,
@@ -4286,6 +4984,7 @@ export class Player {
     if (horde && horde.aliens) {
       let divertedCount = 0;
       horde.aliens.forEach(a => {
+        if (!this._canDamageLegacyAlien(horde, a)) return;
         if (!a || a.hp <= 0 || a.isBoss || a.isOfficer) return;
         if (a.mesh && a.mesh.position.distanceTo(decoyPos) <= 24.0) {
           a.decoyTarget = decoyPos.clone();
@@ -4303,6 +5002,7 @@ export class Player {
 
   /* === CHANTIER 4 & LUCAS QA (v52.0): Combi-Stick Pole Vault Leap & Crater Slam Drop [Shift + Space] === */
   performCombistickPoleVault(horde, bosses, audio, particles, ui) {
+    if (!this.canUseArsenalEquipment('combistick')) return false;
     if (this.poleVaultCooldown > 0 || this.isPoleVaulting) return false;
     this.poleVaultCooldown = 6.0;
     this.isPoleVaulting = true;
@@ -4343,6 +5043,7 @@ export class Player {
     // Stun normal xenos in 14m radius for 2.2 seconds
     if (horde && horde.aliens) {
       horde.aliens.forEach(a => {
+        if (!this._canDamageLegacyAlien(horde, a)) return;
         if (a && a.mesh && a.mesh.position.distanceTo(this.position) <= 14.0) {
           if (!a.isOfficer && a.type !== 'crusher' && a.type !== 'praetorian') {
             a.isStunned = true;
@@ -4360,6 +5061,7 @@ export class Player {
 
   /* === CHANTIER 3 & LUCAS QA (v53.0): Combi-Stick 360° Cyclone Whirlblade Attack === */
   performCombistickCycloneWhirl(horde, bosses, synthetics, audio, particles, ui) {
+    if (!this.canUseArsenalEquipment('combistick')) return false;
     if (this.cycloneWhirlCooldown > 0 || this.isFacehuggerLatched) return false;
     this.cycloneWhirlCooldown = 5.0 * (this.gauntletCooldownReduction || 1.0);
     this.isCycloneWhirling = true;
@@ -4386,6 +5088,7 @@ export class Player {
     if (horde) {
       horde.checkMeleeHits(attack);
       horde.aliens.forEach(a => {
+        if (!this._canDamageLegacyAlien(horde, a)) return;
         if (a && a.mesh && a.mesh.position.distanceTo(this.position) <= 5.5) {
           const push = a.mesh.position.clone().sub(this.position).setY(0).normalize().multiplyScalar(10.0);
           a.mesh.position.add(push);
@@ -4460,6 +5163,7 @@ export class Player {
 
   /* === CHANTIER 2 & LUCAS QA (v54.0): Smart-Disc Multi-Target Lock Ricochet Trajectory === */
   performSmartDiscMultiLock(horde, bosses, synthetics, audio, particles, ui) {
+    if (!this.canUseArsenalEquipment('smart_disc')) return false;
     if (this.smartDiscMultiLockCooldown > 0 || this.isFacehuggerLatched) return false;
     this.smartDiscMultiLockCooldown = 8.0 * (this.gauntletCooldownReduction || 1.0);
 
@@ -4476,6 +5180,7 @@ export class Player {
 
     if (horde && horde.aliens) {
       for (let a of horde.aliens) {
+        if (!this._canDamageLegacyAlien(horde, a)) continue;
         if (!a || a.hp <= 0 || !a.mesh) continue;
         const toAlien = a.mesh.position.clone().sub(this.position);
         if (toAlien.length() <= 32.0 && forward.dot(toAlien.clone().normalize()) > 0.25) {
@@ -4498,7 +5203,7 @@ export class Player {
 
     let totalHits = 0;
     targets.forEach((tgt, idx) => {
-      setTimeout(() => {
+      this.schedule(() => {
         const tgtPos = tgt.mesh ? tgt.mesh.position.clone() : tgt.position.clone();
         if (tgt.takeDamage) {
           tgt.takeDamage(380);
@@ -4527,6 +5232,7 @@ export class Player {
 
   /* === CHANTIER 7 (v54.0): Burner Heavy Concentrated Plasma Cannon Blast (Aliens: Genocide) === */
   fireBurnerHeavyPlasma(horde, bosses, synthetics, particles, audio, ui) {
+    if (!this.canUseArsenalEquipment('burner_rifle')) return false;
     if (this.burnerCooldown > 0 || (this.plasmaEnergy || 0) < 30 || this.isFacehuggerLatched) return false;
     this.burnerCooldown = 3.5 * (this.gauntletCooldownReduction || 1.0);
     this.plasmaEnergy = Math.max(0, (this.plasmaEnergy || 100) - 30);
@@ -4599,6 +5305,7 @@ export class Player {
 
   /* === CHANTIER 5 & LUCAS QA (v55.0): Sniper Plasma Tri-Laser Focus Mode ([Z] / [Clic Molette]) === */
   toggleSniperPlasmaMode(camera, audio, ui) {
+    if (!this.canUseArsenalEquipment('plasma_caster')) return false;
     this.isSniperMode = !this.isSniperMode;
 
     if (camera) {
@@ -4619,7 +5326,7 @@ export class Player {
       }
     }
 
-    const reticle = document.getElementById('tri-laser-sniper-reticle');
+    const reticle = globalThis.document?.getElementById('tri-laser-sniper-reticle');
     if (reticle) {
       if (this.isSniperMode) {
         reticle.classList.remove('hidden');
@@ -4632,6 +5339,7 @@ export class Player {
   }
 
   fireSniperPlasmaLance(horde, bosses, synthetics, particles, audio, ui) {
+    if (!this.canUseArsenalEquipment('plasma_caster')) return false;
     if (this.sniperCooldown > 0) return false;
     if (this.plasmaEnergy < 35) {
       if (ui && ui.showAnnouncement) ui.showAnnouncement('❌ ÉNERGIE PLASMA INSUFFISANTE POUR LE TIR SNIPER (35 REQUIS) !');
@@ -4669,12 +5377,14 @@ export class Player {
     // Check piercing hits against horde along line
     if (horde && horde.aliens) {
       horde.aliens.forEach(alien => {
+        if (!this._canDamageLegacyAlien(horde, alien)) return;
         if (alien && alien.mesh) {
           const toAlien = alien.mesh.position.clone().sub(beamStart);
           const projDist = toAlien.dot(forward);
           if (projDist > 0 && projDist <= range) {
             const perp = toAlien.clone().subScaledVector(forward, projDist);
             if (perp.length() <= 1.8) {
+              if (!this._canHitLegacyAlien(horde, alien, null)) return;
               alien.hp -= lanceDamage;
               hitsCount++;
               if (particles && particles.emitAlienBloodSpurt) {
@@ -4723,5 +5433,3 @@ export class Player {
     return true;
   }
 }
-
-

@@ -1,0 +1,17 @@
+✔ countdown uses six simulation seconds, real remaining signs, bounded geometry and one private disposal (8.649433ms)
+✔ countdown state and display agree at30/60/120fps while restarting releases only the superseded effect (14.371508ms)
+✔ actual City hologram tracks the measured console through arm poses, actor transforms and metamorphosis scale without source changes (499.290419ms)
+✔ late imported bodies rebind active effects before anatomy hiding and keep remaining time rather than restarting (408.843364ms)
+✔ Jungle countdown follows its real mapped forearm and generic coincident joints retain a finite fallback frame (374.536788ms)
+✔ victim families produce distinct human, elongated xenomorph, royal and offspring skull silhouettes with private resources (132.789411ms)
+✔ anatomical trophy is bound to the actual City and Jungle right-hand sockets and source resources remain unchanged (606.051399ms)
+✔ trophy disposal restores only its own pose, and two players, cloaking, replacement and disposal remain independent (116.108106ms)
+✔ an execution started mid-stride returns ownership to the real locomotion controller instead of freezing an old arm swing (12.860801ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2340.296994

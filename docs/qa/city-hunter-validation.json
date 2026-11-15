@@ -1,0 +1,174 @@
+{
+  "date": "2026-10-23",
+  "status": "passed_and_published",
+  "baseline_regression": {
+    "command": "npm test",
+    "initial_tests": 206,
+    "initial_pass": 203,
+    "initial_fail": 2,
+    "initial_cancelled": 1,
+    "initial_log": "full-test.log",
+    "isolated_reruns": {
+      "tests": 3,
+      "pass": 3,
+      "delays_increased": false,
+      "game_code_changed_for_reruns": false,
+      "cases": [
+        "campaign chapter transition",
+        "co-op rendering and cleanup",
+        "co-op movement/combat and surviving hunter"
+      ]
+    },
+    "test_harness_cleanup": "Node TestContext.abort now closes Chromium and cannot be blocked by a context.close failure;4 lifecycle CPU tests pass.",
+    "limits": "The initial co-op input guard failure did not reproduce. Its precise state was not captured; resource contention alone does not prove its cause."
+  },
+  "model_generation": {
+    "paid_tasks": 5,
+    "credits_consumed": 75,
+    "balance_after": 2025,
+    "fidelity_1_to_1": false
+  },
+  "clip_playback": {
+    "tested": true,
+    "automatic_playback_enabled": false,
+    "reason": "Visible arm/armor deformation and floor penetration in real playback.",
+    "min_walk_foot_y": -0.264,
+    "min_run_foot_y": -0.283,
+    "target_height": 4.31,
+    "all_66_tracks_identical_to_full_provider_clips": true
+  },
+  "pending": [],
+  "human_testers": 0,
+  "anatomical_preparation_integration": {
+    "tests": 65,
+    "pass": 65,
+    "fail": 0,
+    "cancelled": 0,
+    "includes": [
+      "measured anatomical filters and ordered passes",
+      "explicit replacement by existing bones",
+      "late-error rollback of skin indices and weights",
+      "private resource ownership",
+      "Player and biomask composition"
+    ],
+    "log": "city-part-recovery/skin-filter-integration-tests.log",
+    "helper_sha256": "4ec53ac01b93119d38c548d85cd2eadac5f63c59ccdb8095775c22aee08ae937",
+    "scope": "Synthetic fixtures and module integration; actual City anatomy and runtime are separate gates."
+  },
+  "final_runtime_integration": {
+    "tests": 53,
+    "pass": 53,
+    "fail": 0,
+    "cancelled": 0,
+    "command": "node --test --test-concurrency=1 tests/imported-foot-grounding.test.js tests/imported-character.test.js tests/player-generated-variants.test.js tests/imported-parts-preparation.test.js tests/bone-rest-corrections.test.js",
+    "log": "final-runtime-integration.log",
+    "scope": "Module integration and synthetic fixtures; actual corrected model and rendered runtime are separate gates."
+  },
+  "actual_preparation_cpu": {
+    "passed": true,
+    "skin_passes": 9,
+    "vertices": 246007,
+    "triangles": 235918,
+    "max_normalized_rest_error": 3.051832646981115e-07,
+    "cached_resource_disposals": 0,
+    "actor_geometry_disposals": 26,
+    "proof": "city-part-recovery/torso-repair/final-production-preparation-proof.json",
+    "skin_filter_sha256": "1e494ae582e6e5ca23c16a91deade2e198690c04aae230b51ca922b2f7af670a"
+  },
+  "standalone_export": {
+    "passed": true,
+    "bytes": 42815452,
+    "sha256": "0e297a50400f885f06595f2fb59c85aed5118517a03c140f0f3aefa5288b564b",
+    "triangles": 235918,
+    "vertices": 246007,
+    "surfaces": 21,
+    "joints": 36,
+    "source_jpeg_payloads_identical": true,
+    "max_world_rest_error": 2.0214388959793666e-07,
+    "proof": "city-standalone-export/validation-report.json"
+  },
+  "additional_module_tests": {
+    "generated_asset_library": {
+      "tests": 5,
+      "pass": 5
+    },
+    "yautja_articulation": {
+      "tests": 8,
+      "pass": 8
+    }
+  },
+  "corrected_foot_contact_cpu": {
+    "passed": true,
+    "phases": 21,
+    "support_vertices": 72,
+    "hull_minimum_error": 0,
+    "maximum_contact_error": 2.56e-09,
+    "visual_offset_range": [
+      -0.06265468023,
+      0.08594130649
+    ],
+    "motion_gain": 0.2,
+    "max_allowed_offset": 0.15,
+    "physical_actor_unchanged": true,
+    "ik": false,
+    "anti_slide": false,
+    "proof": "city-runtime-review/city-foot-grounding-baked-proof.json",
+    "export_leg_weight_renormalization": {
+      "changed_values": 10,
+      "max_absolute_delta": 1.49e-08,
+      "positions_normals_uv_indices_and_bone_names_unchanged": true
+    }
+  },
+  "camera_laser_integration": {
+    "passed": true,
+    "tests_in_review_run": 12,
+    "target_lock_regression_fixed": true,
+    "proof": "player-camera-laser-integration-proof.json",
+    "visual_offsets_tested": [
+      -0.15,
+      0,
+      0.15
+    ],
+    "yaw_tested": [
+      -1.2,
+      0.7
+    ]
+  },
+  "actual_city_runtime": {
+    "passed": true,
+    "scope": "Actual Chromium WebGL source application; City controls, mask, PBR, hair, FPS, cloak, pause, attacks, cache and disposal; Jungle Hunter and Alien regressions also passed.",
+    "proof": "city-runtime-review/runtime-report.json",
+    "grounding_phases": 21,
+    "grounding_refusals": 0,
+    "maximum_world_contact_error": 4.43e-09
+  },
+  "visible_terrain_review": {
+    "passed": true,
+    "proof": "city-runtime-review/city-terrain-review.json",
+    "surface_y": [
+      0,
+      0
+    ],
+    "poses": 2,
+    "limitations": "Curved source pose and stiff short gait; closest sole point contact, not full-sole IK or anti-slide."
+  },
+  "model_archive": {
+    "file": "/workspace/city-hunter-models.zip",
+    "bytes": 112100841,
+    "entries": 52,
+    "crc_passed": true,
+    "sha256": "b136b08709f2c639accf93cc7bae48adfa0594e4d6a42188144cdf3c60e2cf77"
+  },
+  "production": {
+    "url": "https://yautja-hive-warriors.vercel.app",
+    "deployment_id": "dpl_2PQm3BPZaRpSHEmsVKUh6ME6Magt",
+    "state": "READY/PROMOTED",
+    "index_sha256": "24eab12d4e1e8db65a4d43209ed0f842532538ce5ffcb292ea528f335532f35f",
+    "public_unauthenticated_http_verified": true,
+    "bundles_verified": 5,
+    "model_files_verified": 12,
+    "proof": "vercel-final-public-verification.json",
+    "live_browser_status": "passed",
+    "browser_proof": "live-gameplay-report.json"
+  }
+}

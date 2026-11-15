@@ -1,0 +1,374 @@
+{
+  "status": "frozen_local_build_staged_without_deploying",
+  "createdAt": "2026-10-24T02:30:16.007Z",
+  "stage": "/workspace/qa/open-work-20261024/vercel-static-prebuilt-v2",
+  "output_api_version": 3,
+  "local_index_sha256": "9fdd19169a75d324dbde0e77bddbac90167e81ca19bfb06880084246a4bad6d6",
+  "staged_index_sha256": "9fdd19169a75d324dbde0e77bddbac90167e81ca19bfb06880084246a4bad6d6",
+  "static_files": 29,
+  "static_bytes": 265627030,
+  "root_vercel_output_untouched": true,
+  "routes": [
+    {
+      "src": "/(.*)",
+      "headers": {
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
+        "X-Frame-Options": "DENY",
+        "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+        "Content-Security-Policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'"
+      },
+      "continue": true
+    },
+    {
+      "src": "/models/city-hunter-body-corrected\\.glb",
+      "headers": {
+        "Content-Type": "model/gltf-binary",
+        "Content-Disposition": "attachment; filename=\"city-hunter-body-corrected.glb\""
+      },
+      "continue": true
+    },
+    {
+      "src": "/assets/(.*)",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000, immutable"
+      },
+      "continue": true
+    },
+    {
+      "handle": "filesystem"
+    }
+  ],
+  "expected_headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'"
+        }
+      ]
+    },
+    {
+      "source": "/models/city-hunter-body-corrected.glb",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "model/gltf-binary"
+        },
+        {
+          "key": "Content-Disposition",
+          "value": "attachment; filename=\"city-hunter-body-corrected.glb\""
+        }
+      ]
+    },
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
+  ],
+  "index_sha256": "9fdd19169a75d324dbde0e77bddbac90167e81ca19bfb06880084246a4bad6d6",
+  "files": [
+    {
+      "path": "/assets/confetti-CAXNRs-2.js",
+      "relativePath": "assets/confetti-CAXNRs-2.js",
+      "bytes": 10562,
+      "sha256": "39d247a0fb28fff8a2dc39749d26c3d3d1ddb7e70d4e81e6aace4bf55ff0832d"
+    },
+    {
+      "path": "/assets/engine-CT3M-KMT.js",
+      "relativePath": "assets/engine-CT3M-KMT.js",
+      "bytes": 553780,
+      "sha256": "99d51763bc11a977b7f63354f5fa4c5eea26e10c5bfef5ba07ce4ecf634a4270"
+    },
+    {
+      "path": "/assets/index-B_F9EECR.js",
+      "relativePath": "assets/index-B_F9EECR.js",
+      "bytes": 657285,
+      "sha256": "853216663afeb406644840052fe0da1dacd089f0fb02a769bf3ee813276aee8a"
+    },
+    {
+      "path": "/assets/index-BGVQQVOq.css",
+      "relativePath": "assets/index-BGVQQVOq.css",
+      "bytes": 40686,
+      "sha256": "66f4687ae64ebb415a97908afd8186250ba15a508912f8a54853eccfb972f37e"
+    },
+    {
+      "path": "/assets/visual-effects-DVMrvtkx.js",
+      "relativePath": "assets/visual-effects-DVMrvtkx.js",
+      "bytes": 107709,
+      "sha256": "db659990735d12d74e78fc5a19adf471f8e79fdbf722ef2185d29f6b9e2da4ea"
+    }
+  ],
+  "models": [
+    {
+      "path": "/models/big-chap-rigged.glb",
+      "relativePath": "models/big-chap-rigged.glb",
+      "bytes": 56951716,
+      "sha256": "202b5d7d635cdb14fcf8af430faba3207d5668f43f85d9d9dca1f81cc0d8a97e"
+    },
+    {
+      "path": "/models/big-chap-run.glb",
+      "relativePath": "models/big-chap-run.glb",
+      "bytes": 79336,
+      "sha256": "7944bc681cef08d822905b099a79963710517dd14898e0c526dcced2cf7b827d"
+    },
+    {
+      "path": "/models/big-chap-walk.glb",
+      "relativePath": "models/big-chap-walk.glb",
+      "bytes": 89968,
+      "sha256": "ae87707f9fa53e246d629c44c454ec6b58b98e0396330e9561476f43bc0e43da"
+    },
+    {
+      "path": "/models/city-hunter-biomask.glb",
+      "relativePath": "models/city-hunter-biomask.glb",
+      "bytes": 32727588,
+      "sha256": "a2450f45ee9601ba4c4b621ff8acb5f36fb7a4dd41ce89841de6ea23b6c1f3a0"
+    },
+    {
+      "path": "/models/city-hunter-body-corrected.glb",
+      "relativePath": "models/city-hunter-body-corrected.glb",
+      "bytes": 42815452,
+      "sha256": "0e297a50400f885f06595f2fb59c85aed5118517a03c140f0f3aefa5288b564b"
+    },
+    {
+      "path": "/models/city-hunter-rigged.glb",
+      "relativePath": "models/city-hunter-rigged.glb",
+      "bytes": 43124896,
+      "sha256": "bd962ad79d5034d6ac5c0d7fc03e185433d0784808ffc868e597c7656e6725e7"
+    },
+    {
+      "path": "/models/city-hunter-run.glb",
+      "relativePath": "models/city-hunter-run.glb",
+      "bytes": 78940,
+      "sha256": "4356221be2e4c6b19a31cec21a1831dd70922385027cae45d04020cafcac18dd"
+    },
+    {
+      "path": "/models/city-hunter-walk.glb",
+      "relativePath": "models/city-hunter-walk.glb",
+      "bytes": 89568,
+      "sha256": "c54514bba78ddc9f87e18f9be62554be4894d83b192c73fcea4182547aad94a5"
+    },
+    {
+      "path": "/models/jungle-hunter-biomask.glb",
+      "relativePath": "models/jungle-hunter-biomask.glb",
+      "bytes": 34211520,
+      "sha256": "a8f2cae605da72d463ace4b5fe4b9363a33c0932298158f65ca85bbe98fd1a77"
+    },
+    {
+      "path": "/models/jungle-hunter-rigged.glb",
+      "relativePath": "models/jungle-hunter-rigged.glb",
+      "bytes": 53768472,
+      "sha256": "179fe7081ad39f8cb198086d984380dd119e625c8853fa2f11bd69e08ab0be5d"
+    },
+    {
+      "path": "/models/jungle-hunter-run.glb",
+      "relativePath": "models/jungle-hunter-run.glb",
+      "bytes": 79764,
+      "sha256": "cc1053be4ea26801cf9d2e5ad148ef663373714634a1068aa2b91c14d59c49be"
+    },
+    {
+      "path": "/models/jungle-hunter-walk.glb",
+      "relativePath": "models/jungle-hunter-walk.glb",
+      "bytes": 90416,
+      "sha256": "ffd0a1b2684f3bef06d29cfc8da8fcb003190aaec121e69e673d744fe7310424"
+    }
+  ],
+  "allFiles": [
+    {
+      "path": "/assets/confetti-CAXNRs-2.js",
+      "relativePath": "assets/confetti-CAXNRs-2.js",
+      "bytes": 10562,
+      "sha256": "39d247a0fb28fff8a2dc39749d26c3d3d1ddb7e70d4e81e6aace4bf55ff0832d"
+    },
+    {
+      "path": "/assets/engine-CT3M-KMT.js",
+      "relativePath": "assets/engine-CT3M-KMT.js",
+      "bytes": 553780,
+      "sha256": "99d51763bc11a977b7f63354f5fa4c5eea26e10c5bfef5ba07ce4ecf634a4270"
+    },
+    {
+      "path": "/assets/index-B_F9EECR.js",
+      "relativePath": "assets/index-B_F9EECR.js",
+      "bytes": 657285,
+      "sha256": "853216663afeb406644840052fe0da1dacd089f0fb02a769bf3ee813276aee8a"
+    },
+    {
+      "path": "/assets/index-BGVQQVOq.css",
+      "relativePath": "assets/index-BGVQQVOq.css",
+      "bytes": 40686,
+      "sha256": "66f4687ae64ebb415a97908afd8186250ba15a508912f8a54853eccfb972f37e"
+    },
+    {
+      "path": "/assets/orbitron-latin-600-normal-75H6acHo.woff",
+      "relativePath": "assets/orbitron-latin-600-normal-75H6acHo.woff",
+      "bytes": 9036,
+      "sha256": "437d5dc397f5b1a5c3a482fa1727792c2ede4129ea3270b9e254320725d6e937"
+    },
+    {
+      "path": "/assets/orbitron-latin-600-normal-mazHmDYu.woff2",
+      "relativePath": "assets/orbitron-latin-600-normal-mazHmDYu.woff2",
+      "bytes": 6588,
+      "sha256": "585062e775d70397653192777533f65f3afb707320fcc2a4bc510470e03762e6"
+    },
+    {
+      "path": "/assets/orbitron-latin-800-normal-CQafOXEd.woff2",
+      "relativePath": "assets/orbitron-latin-800-normal-CQafOXEd.woff2",
+      "bytes": 6740,
+      "sha256": "e2591ec1ac280053b8dc647b0a7d074578a2769a96ff454fb28e4c63257436cc"
+    },
+    {
+      "path": "/assets/orbitron-latin-800-normal-P4cBi4I7.woff",
+      "relativePath": "assets/orbitron-latin-800-normal-P4cBi4I7.woff",
+      "bytes": 9000,
+      "sha256": "84672b2a73181467809b73f29c81d73d82f3d59b2c68bc2bb3a69e9567af5a61"
+    },
+    {
+      "path": "/assets/rajdhani-latin-500-normal-ByNUCHrt.woff2",
+      "relativePath": "assets/rajdhani-latin-500-normal-ByNUCHrt.woff2",
+      "bytes": 15084,
+      "sha256": "23afdb9b5b89b878fab04d80cc30bf41bb4f3f7e8be88e5f16a7cc7671cdb2dc"
+    },
+    {
+      "path": "/assets/rajdhani-latin-500-normal-DfvNI-Td.woff",
+      "relativePath": "assets/rajdhani-latin-500-normal-DfvNI-Td.woff",
+      "bytes": 11760,
+      "sha256": "74c304eefe9b39d76d634d479f20a7332efddd120fb76ab92bbefe9eb4728625"
+    },
+    {
+      "path": "/assets/rajdhani-latin-600-normal-CXCVEoA9.woff2",
+      "relativePath": "assets/rajdhani-latin-600-normal-CXCVEoA9.woff2",
+      "bytes": 15732,
+      "sha256": "433a7007e4747a02a790167a6efa2625855f013970ba49b9b739a5d3db8b2601"
+    },
+    {
+      "path": "/assets/rajdhani-latin-600-normal-Dx02qI2_.woff",
+      "relativePath": "assets/rajdhani-latin-600-normal-Dx02qI2_.woff",
+      "bytes": 12092,
+      "sha256": "9d9d900358819a2a710085a5630d9024a139ea57e9316499d6d9eb3281674f3a"
+    },
+    {
+      "path": "/assets/rajdhani-latin-700-normal-BPDUZo87.woff2",
+      "relativePath": "assets/rajdhani-latin-700-normal-BPDUZo87.woff2",
+      "bytes": 15688,
+      "sha256": "5b7e4a6f97163c2636724d4de90304fc895653dcfe64c67a7a22f26331ca5c5f"
+    },
+    {
+      "path": "/assets/rajdhani-latin-700-normal-e0Uj8ZlN.woff",
+      "relativePath": "assets/rajdhani-latin-700-normal-e0Uj8ZlN.woff",
+      "bytes": 12060,
+      "sha256": "e4e5272051a3882943fa3bdf5cda8eca8c1853ac66c1572eb90fda8608d9bd31"
+    },
+    {
+      "path": "/assets/visual-effects-DVMrvtkx.js",
+      "relativePath": "assets/visual-effects-DVMrvtkx.js",
+      "bytes": 107709,
+      "sha256": "db659990735d12d74e78fc5a19adf471f8e79fdbf722ef2185d29f6b9e2da4ea"
+    },
+    {
+      "path": "/favicon.svg",
+      "relativePath": "favicon.svg",
+      "bytes": 283,
+      "sha256": "615d9e781f5e03864a8436f2c40a411949df25e9301a04be52e3a3bfd1e9c1d6"
+    },
+    {
+      "path": "/",
+      "relativePath": "index.html",
+      "bytes": 35309,
+      "sha256": "9fdd19169a75d324dbde0e77bddbac90167e81ca19bfb06880084246a4bad6d6"
+    },
+    {
+      "path": "/models/big-chap-rigged.glb",
+      "relativePath": "models/big-chap-rigged.glb",
+      "bytes": 56951716,
+      "sha256": "202b5d7d635cdb14fcf8af430faba3207d5668f43f85d9d9dca1f81cc0d8a97e"
+    },
+    {
+      "path": "/models/big-chap-run.glb",
+      "relativePath": "models/big-chap-run.glb",
+      "bytes": 79336,
+      "sha256": "7944bc681cef08d822905b099a79963710517dd14898e0c526dcced2cf7b827d"
+    },
+    {
+      "path": "/models/big-chap-walk.glb",
+      "relativePath": "models/big-chap-walk.glb",
+      "bytes": 89968,
+      "sha256": "ae87707f9fa53e246d629c44c454ec6b58b98e0396330e9561476f43bc0e43da"
+    },
+    {
+      "path": "/models/city-hunter-biomask.glb",
+      "relativePath": "models/city-hunter-biomask.glb",
+      "bytes": 32727588,
+      "sha256": "a2450f45ee9601ba4c4b621ff8acb5f36fb7a4dd41ce89841de6ea23b6c1f3a0"
+    },
+    {
+      "path": "/models/city-hunter-body-corrected.glb",
+      "relativePath": "models/city-hunter-body-corrected.glb",
+      "bytes": 42815452,
+      "sha256": "0e297a50400f885f06595f2fb59c85aed5118517a03c140f0f3aefa5288b564b"
+    },
+    {
+      "path": "/models/city-hunter-rigged.glb",
+      "relativePath": "models/city-hunter-rigged.glb",
+      "bytes": 43124896,
+      "sha256": "bd962ad79d5034d6ac5c0d7fc03e185433d0784808ffc868e597c7656e6725e7"
+    },
+    {
+      "path": "/models/city-hunter-run.glb",
+      "relativePath": "models/city-hunter-run.glb",
+      "bytes": 78940,
+      "sha256": "4356221be2e4c6b19a31cec21a1831dd70922385027cae45d04020cafcac18dd"
+    },
+    {
+      "path": "/models/city-hunter-walk.glb",
+      "relativePath": "models/city-hunter-walk.glb",
+      "bytes": 89568,
+      "sha256": "c54514bba78ddc9f87e18f9be62554be4894d83b192c73fcea4182547aad94a5"
+    },
+    {
+      "path": "/models/jungle-hunter-biomask.glb",
+      "relativePath": "models/jungle-hunter-biomask.glb",
+      "bytes": 34211520,
+      "sha256": "a8f2cae605da72d463ace4b5fe4b9363a33c0932298158f65ca85bbe98fd1a77"
+    },
+    {
+      "path": "/models/jungle-hunter-rigged.glb",
+      "relativePath": "models/jungle-hunter-rigged.glb",
+      "bytes": 53768472,
+      "sha256": "179fe7081ad39f8cb198086d984380dd119e625c8853fa2f11bd69e08ab0be5d"
+    },
+    {
+      "path": "/models/jungle-hunter-run.glb",
+      "relativePath": "models/jungle-hunter-run.glb",
+      "bytes": 79764,
+      "sha256": "cc1053be4ea26801cf9d2e5ad148ef663373714634a1068aa2b91c14d59c49be"
+    },
+    {
+      "path": "/models/jungle-hunter-walk.glb",
+      "relativePath": "models/jungle-hunter-walk.glb",
+      "bytes": 90416,
+      "sha256": "ffd0a1b2684f3bef06d29cfc8da8fcb003190aaec121e69e673d744fe7310424"
+    }
+  ]
+}

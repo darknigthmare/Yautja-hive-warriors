@@ -1,0 +1,1100 @@
+{
+  "sourceSha256": "202b5d7d635cdb14fcf8af430faba3207d5668f43f85d9d9dca1f81cc0d8a97e",
+  "selectedVertices": 28590,
+  "bonesAdded": 9,
+  "sourceTriangles": 205259,
+  "sourceVertices": 211185,
+  "sourceGeometryAndTexturesUnchanged": true,
+  "restWorldMaximumError": 3.9145690975520526e-08,
+  "clips": {
+    "walk": {
+      "sampleCount": 33,
+      "oldTailMinimum": -0.09586413114351391,
+      "tailMinimum": 0.020744510095902183,
+      "maxJointCorrection": 0.1532370573230486,
+      "limitedFrames": 0,
+      "states": [
+        {
+          "phaseFraction": 0,
+          "phase": 0,
+          "oldTailMin": 0.0379475252772316,
+          "tailMin": 0.12723626444121358,
+          "feetMin": {
+            "left-calf-and-foot": 0.8781692914883378,
+            "right-calf-and-foot": 0.0050000000000001155
+          },
+          "groundEnvelopeMin": 0.1259388711932004,
+          "solverIterations": 0,
+          "footOffset": 0.08928873916398172,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.03125,
+          "phase": 0.19634954084936207,
+          "oldTailMin": 0.0379475252772316,
+          "tailMin": 0.12851593658923086,
+          "feetMin": {
+            "left-calf-and-foot": 0.8781692914883378,
+            "right-calf-and-foot": 0.0050000000000001155
+          },
+          "groundEnvelopeMin": 0.1274848818042965,
+          "solverIterations": 0,
+          "footOffset": 0.08928873916398172,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.0625,
+          "phase": 0.39269908169872414,
+          "oldTailMin": 0.048332780953850615,
+          "tailMin": 0.13995593533214593,
+          "feetMin": {
+            "left-calf-and-foot": 0.6056937778139958,
+            "right-calf-and-foot": 0.00500000000000006
+          },
+          "groundEnvelopeMin": 0.1385814985443201,
+          "solverIterations": 0,
+          "footOffset": 0.08949861977979129,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.09375,
+          "phase": 0.5890486225480862,
+          "oldTailMin": 0.0424737236569637,
+          "tailMin": 0.13749770576986026,
+          "feetMin": {
+            "left-calf-and-foot": 0.32740931310277477,
+            "right-calf-and-foot": 0.004999999999999782
+          },
+          "groundEnvelopeMin": 0.13511328443094597,
+          "solverIterations": 0,
+          "footOffset": 0.09248570831755276,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.125,
+          "phase": 0.7853981633974483,
+          "oldTailMin": 0.008117364174388332,
+          "tailMin": 0.10604459900364513,
+          "feetMin": {
+            "left-calf-and-foot": 0.18822653441511672,
+            "right-calf-and-foot": 0.004999999999999893
+          },
+          "groundEnvelopeMin": 0.1006315513938296,
+          "solverIterations": 0,
+          "footOffset": 0.09520296899433378,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.15625,
+          "phase": 0.9817477042468103,
+          "oldTailMin": -0.03573924246892546,
+          "tailMin": 0.05814183137426032,
+          "feetMin": {
+            "left-calf-and-foot": 0.12279755947619816,
+            "right-calf-and-foot": 0.004999999999999907
+          },
+          "groundEnvelopeMin": 0.05035926452112195,
+          "solverIterations": 0,
+          "footOffset": 0.09083565552101913,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.1875,
+          "phase": 1.1780972450961724,
+          "oldTailMin": -0.0732580143215032,
+          "tailMin": 0.027211546233914377,
+          "feetMin": {
+            "left-calf-and-foot": 0.11385865775503787,
+            "right-calf-and-foot": 0.005000000000000213
+          },
+          "groundEnvelopeMin": 0.019216562881773203,
+          "solverIterations": 1,
+          "footOffset": 0.08401706353810859,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.012594094478030568,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.21875,
+          "phase": 1.3744467859455345,
+          "oldTailMin": -0.09586413114351391,
+          "tailMin": 0.028016148947026552,
+          "feetMin": {
+            "left-calf-and-foot": 0.08925265773580768,
+            "right-calf-and-foot": 0.005000000000000157
+          },
+          "groundEnvelopeMin": 0.021922743261974267,
+          "solverIterations": 1,
+          "footOffset": 0.07600071656773705,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.04270942492895791,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.25,
+          "phase": 1.5707963267948966,
+          "oldTailMin": -0.09574140462668615,
+          "tailMin": 0.026030150144132486,
+          "feetMin": {
+            "left-calf-and-foot": 0.046931863735623885,
+            "right-calf-and-foot": 0.004999999999999852
+          },
+          "groundEnvelopeMin": 0.020879712028194865,
+          "solverIterations": 1,
+          "footOffset": 0.05803807225590477,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.05839721683566637,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.28125,
+          "phase": 1.7671458676442586,
+          "oldTailMin": -0.0901747023784961,
+          "tailMin": 0.025514345417269036,
+          "feetMin": {
+            "left-calf-and-foot": 0.0050000000000000044,
+            "right-calf-and-foot": 0.007571168923897805
+          },
+          "groundEnvelopeMin": 0.020982503732921768,
+          "solverIterations": 1,
+          "footOffset": 0.029641475658808144,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.07724531734505918,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.3125,
+          "phase": 1.9634954084936207,
+          "oldTailMin": -0.0832313529582614,
+          "tailMin": 0.024859485652859857,
+          "feetMin": {
+            "left-calf-and-foot": 0.02137311421429991,
+            "right-calf-and-foot": 0.004999999999999812
+          },
+          "groundEnvelopeMin": 0.019562008209844793,
+          "solverIterations": 2,
+          "footOffset": -0.010788481590717134,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.10367974105258297,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.34375,
+          "phase": 2.1598449493429825,
+          "oldTailMin": -0.08147634705076041,
+          "tailMin": 0.037241041721349885,
+          "feetMin": {
+            "left-calf-and-foot": 0.08325347038021502,
+            "right-calf-and-foot": 0.02978412147802595
+          },
+          "groundEnvelopeMin": 0.028407446692670008,
+          "solverIterations": 2,
+          "footOffset": -0.06483411831637524,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.1532370573230486,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.375,
+          "phase": 2.356194490192345,
+          "oldTailMin": -0.0725540383946648,
+          "tailMin": 0.023697507264093677,
+          "feetMin": {
+            "left-calf-and-foot": 0.22824048558681703,
+            "right-calf-and-foot": 0.21412019055472287
+          },
+          "groundEnvelopeMin": 0.018576636521407824,
+          "solverIterations": 2,
+          "footOffset": 0,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.08620997910234486,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.40625,
+          "phase": 2.552544031041707,
+          "oldTailMin": -0.05515045377456196,
+          "tailMin": 0.03263269681037309,
+          "feetMin": {
+            "left-calf-and-foot": 0.28596075129175974,
+            "right-calf-and-foot": 0.2965425921802314
+          },
+          "groundEnvelopeMin": 0.02715770189570426,
+          "solverIterations": 1,
+          "footOffset": 0,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.07964348923718535,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.4375,
+          "phase": 2.748893571891069,
+          "oldTailMin": -0.02636857928805613,
+          "tailMin": 0.026749795473246435,
+          "feetMin": {
+            "left-calf-and-foot": 0.320476089216718,
+            "right-calf-and-foot": 0.2935408176622082
+          },
+          "groundEnvelopeMin": 0.022441775246532944,
+          "solverIterations": 1,
+          "footOffset": 0,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.052262804972191816,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.46875,
+          "phase": 2.945243112740431,
+          "oldTailMin": 0.005721348798146325,
+          "tailMin": 0.02310423168077097,
+          "feetMin": {
+            "left-calf-and-foot": 0.34061651417521643,
+            "right-calf-and-foot": 0.23980184196843812
+          },
+          "groundEnvelopeMin": 0.020398794851918395,
+          "solverIterations": 1,
+          "footOffset": 0,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.023600630286006903,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.5,
+          "phase": 3.141592653589793,
+          "oldTailMin": 0.033224129466726295,
+          "tailMin": 0.02166114130332459,
+          "feetMin": {
+            "left-calf-and-foot": 0.3591492364334073,
+            "right-calf-and-foot": 0.18022135923695742
+          },
+          "groundEnvelopeMin": 0.019673660348302972,
+          "solverIterations": 0,
+          "footOffset": 0,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.53125,
+          "phase": 3.3379421944391554,
+          "oldTailMin": 0.05521155455023123,
+          "tailMin": 0.02111350592351018,
+          "feetMin": {
+            "left-calf-and-foot": 0.3501551402985404,
+            "right-calf-and-foot": 0.11118379800234254
+          },
+          "groundEnvelopeMin": 0.018450982705913076,
+          "solverIterations": 0,
+          "footOffset": -0.022304546402788544,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.5625,
+          "phase": 3.5342917352885173,
+          "oldTailMin": 0.065136214826363,
+          "tailMin": 0.0251355649740007,
+          "feetMin": {
+            "left-calf-and-foot": 0.3288668181719543,
+            "right-calf-and-foot": 0.046424250685642654
+          },
+          "groundEnvelopeMin": 0.020512272099442935,
+          "solverIterations": 1,
+          "footOffset": -0.05799636221371956,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.024454043910897574,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.59375,
+          "phase": 3.730641276137879,
+          "oldTailMin": 0.061207025746560506,
+          "tailMin": 0.027180133124518058,
+          "feetMin": {
+            "left-calf-and-foot": 0.34093813690763114,
+            "right-calf-and-foot": 0.026480116518561136
+          },
+          "groundEnvelopeMin": 0.021944745115731076,
+          "solverIterations": 1,
+          "footOffset": -0.06584867613955392,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.03563532630343593,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.625,
+          "phase": 3.9269908169872414,
+          "oldTailMin": 0.05893296250571285,
+          "tailMin": 0.023208996731358435,
+          "feetMin": {
+            "left-calf-and-foot": 0.37970556297497304,
+            "right-calf-and-foot": 0.06266013694809647
+          },
+          "groundEnvelopeMin": 0.018176791253347917,
+          "solverIterations": 1,
+          "footOffset": -0.04978497145340868,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.02073529052342384,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.65625,
+          "phase": 4.123340357836604,
+          "oldTailMin": 0.0463582763180943,
+          "tailMin": 0.03128569189371215,
+          "feetMin": {
+            "left-calf-and-foot": 0.46775768912148663,
+            "right-calf-and-foot": 0.14270340889666086
+          },
+          "groundEnvelopeMin": 0.024452890422339446,
+          "solverIterations": 0,
+          "footOffset": -0.005504456760852176,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.6875,
+          "phase": 4.319689898685965,
+          "oldTailMin": 0.026954381474852847,
+          "tailMin": 0.02678438902661504,
+          "feetMin": {
+            "left-calf-and-foot": 0.4899317238789441,
+            "right-calf-and-foot": 0.17500663973756414
+          },
+          "groundEnvelopeMin": 0.018737686281753065,
+          "solverIterations": 1,
+          "footOffset": 0,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.007450220926206763,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.71875,
+          "phase": 4.516039439535327,
+          "oldTailMin": 0.00017839222313260905,
+          "tailMin": 0.02614773728395442,
+          "feetMin": {
+            "left-calf-and-foot": 0.5158713537220294,
+            "right-calf-and-foot": 0.1131473427825711
+          },
+          "groundEnvelopeMin": 0.019206483778895424,
+          "solverIterations": 1,
+          "footOffset": -0.021186374010737398,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.046698119677690796,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.75,
+          "phase": 4.71238898038469,
+          "oldTailMin": -0.028881822081046043,
+          "tailMin": 0.03092948333723851,
+          "feetMin": {
+            "left-calf-and-foot": 0.5473219399459108,
+            "right-calf-and-foot": 0.014201963863206268
+          },
+          "groundEnvelopeMin": 0.02121295062840298,
+          "solverIterations": 2,
+          "footOffset": -0.06742509394545697,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.10888024618947284,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.78125,
+          "phase": 4.908738521234052,
+          "oldTailMin": -0.047855373170655476,
+          "tailMin": 0.028413651484445426,
+          "feetMin": {
+            "left-calf-and-foot": 0.7107122393008334,
+            "right-calf-and-foot": 0.005000000000000003
+          },
+          "groundEnvelopeMin": 0.021739898122521122,
+          "solverIterations": 1,
+          "footOffset": -0.014258409636753292,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.0798126863533753,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.8125,
+          "phase": 5.105088062083414,
+          "oldTailMin": -0.060978195172935165,
+          "tailMin": 0.023408905521701433,
+          "feetMin": {
+            "left-calf-and-foot": 0.9852925068428775,
+            "right-calf-and-foot": 0.0050000000000001155
+          },
+          "groundEnvelopeMin": 0.019615496973797098,
+          "solverIterations": 1,
+          "footOffset": 0.030363757517377517,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.049863703861575875,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.84375,
+          "phase": 5.301437602932776,
+          "oldTailMin": -0.05585298768566468,
+          "tailMin": 0.020744510095902183,
+          "feetMin": {
+            "left-calf-and-foot": 1.175059172920804,
+            "right-calf-and-foot": 0.0049999999999999975
+          },
+          "groundEnvelopeMin": 0.019269462099926686,
+          "solverIterations": 1,
+          "footOffset": 0.0615580930034234,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.016239796285793532,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.875,
+          "phase": 5.497787143782138,
+          "oldTailMin": -0.046397167153839035,
+          "tailMin": 0.030150113194138392,
+          "feetMin": {
+            "left-calf-and-foot": 1.197970997888339,
+            "right-calf-and-foot": 0.005000000000000102
+          },
+          "groundEnvelopeMin": 0.028121816536339234,
+          "solverIterations": 0,
+          "footOffset": 0.0789013618765545,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.90625,
+          "phase": 5.6941366846315,
+          "oldTailMin": -0.0323545454440783,
+          "tailMin": 0.05554134026233183,
+          "feetMin": {
+            "left-calf-and-foot": 1.2398799039989277,
+            "right-calf-and-foot": 0.005000000000000018
+          },
+          "groundEnvelopeMin": 0.05394335588642651,
+          "solverIterations": 0,
+          "footOffset": 0.08886080776325311,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.9375,
+          "phase": 5.890486225480862,
+          "oldTailMin": -0.009290877813964454,
+          "tailMin": 0.08375886318511289,
+          "feetMin": {
+            "left-calf-and-foot": 1.2967245874187803,
+            "right-calf-and-foot": 0.005000000000000102
+          },
+          "groundEnvelopeMin": 0.08215908810678718,
+          "solverIterations": 0,
+          "footOffset": 0.09256675019143257,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.96875,
+          "phase": 6.086835766330224,
+          "oldTailMin": 0.015671446841565094,
+          "tailMin": 0.10931162996724998,
+          "feetMin": {
+            "left-calf-and-foot": 1.1209335373316962,
+            "right-calf-and-foot": 0.004999999999999893
+          },
+          "groundEnvelopeMin": 0.1075725864630977,
+          "solverIterations": 0,
+          "footOffset": 0.09171283001284014,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 1,
+          "phase": 6.283185307179586,
+          "oldTailMin": 0.0379475252772316,
+          "tailMin": 0.13057949417729808,
+          "feetMin": {
+            "left-calf-and-foot": 0.8781692914883378,
+            "right-calf-and-foot": 0.0050000000000001155
+          },
+          "groundEnvelopeMin": 0.12895432896056946,
+          "solverIterations": 0,
+          "footOffset": 0.08928873916398172,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0,
+          "groundLimited": false
+        }
+      ],
+      "feetMinimum": 0.004999999999999782,
+      "maxAbsoluteFootOffset": 0.09520296899433378,
+      "footLimitedFrames": 0
+    },
+    "run": {
+      "sampleCount": 33,
+      "oldTailMinimum": -0.1781223391026774,
+      "tailMinimum": 0.022115801429110567,
+      "maxJointCorrection": 0.16037806846532404,
+      "limitedFrames": 0,
+      "states": [
+        {
+          "phaseFraction": 0,
+          "phase": 0,
+          "oldTailMin": -0.17466794813627085,
+          "tailMin": 0.028879819507429,
+          "feetMin": {
+            "left-calf-and-foot": 1.318703768700338,
+            "right-calf-and-foot": 0.004999999999999831
+          },
+          "groundEnvelopeMin": 0.02225220252461835,
+          "solverIterations": 2,
+          "footOffset": 0.04901156581239057,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.1391791370953343,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.03125,
+          "phase": 0.19634954084936207,
+          "oldTailMin": -0.17466794813627085,
+          "tailMin": 0.028507227144947418,
+          "feetMin": {
+            "left-calf-and-foot": 1.318703768700338,
+            "right-calf-and-foot": 0.004999999999999831
+          },
+          "groundEnvelopeMin": 0.02169491694979255,
+          "solverIterations": 2,
+          "footOffset": 0.04901156581239057,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.1375750769087638,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.0625,
+          "phase": 0.39269908169872414,
+          "oldTailMin": -0.16425778005086455,
+          "tailMin": 0.02764633242315346,
+          "feetMin": {
+            "left-calf-and-foot": 1.3415043434231955,
+            "right-calf-and-foot": 0.005000000000000147
+          },
+          "groundEnvelopeMin": 0.0217122463347469,
+          "solverIterations": 2,
+          "footOffset": 0.03555119670766812,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.1387215177988117,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.09375,
+          "phase": 0.5890486225480862,
+          "oldTailMin": -0.13752361870398017,
+          "tailMin": 0.022115801429110567,
+          "feetMin": {
+            "left-calf-and-foot": 1.3831136265862705,
+            "right-calf-and-foot": 0.005000000000000088
+          },
+          "groundEnvelopeMin": 0.018033239505641098,
+          "solverIterations": 3,
+          "footOffset": -0.022331599464005956,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.16037806846532404,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.125,
+          "phase": 0.7853981633974483,
+          "oldTailMin": -0.11131143155798676,
+          "tailMin": 0.02487423764410708,
+          "feetMin": {
+            "left-calf-and-foot": 1.0811454359447588,
+            "right-calf-and-foot": 0.14348616552835675
+          },
+          "groundEnvelopeMin": 0.023658269822918937,
+          "solverIterations": 2,
+          "footOffset": -0.005146203121579694,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.12683104927882255,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.15625,
+          "phase": 0.9817477042468103,
+          "oldTailMin": -0.08755024443611555,
+          "tailMin": 0.02326685780959202,
+          "feetMin": {
+            "left-calf-and-foot": 0.7722093239031688,
+            "right-calf-and-foot": 0.3104957427201925
+          },
+          "groundEnvelopeMin": 0.01880867123401949,
+          "solverIterations": 2,
+          "footOffset": 0,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.10027834785281473,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.1875,
+          "phase": 1.1780972450961724,
+          "oldTailMin": -0.07616894395570889,
+          "tailMin": 0.023990910847104516,
+          "feetMin": {
+            "left-calf-and-foot": 0.4979403002862176,
+            "right-calf-and-foot": 0.515790791416748
+          },
+          "groundEnvelopeMin": 0.01898793158479122,
+          "solverIterations": 2,
+          "footOffset": 0,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.09224232987556336,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.21875,
+          "phase": 1.3744467859455345,
+          "oldTailMin": -0.06706528726231663,
+          "tailMin": 0.023145885724430906,
+          "feetMin": {
+            "left-calf-and-foot": 0.3053397002333895,
+            "right-calf-and-foot": 0.7513160706393168
+          },
+          "groundEnvelopeMin": 0.01831049595076141,
+          "solverIterations": 2,
+          "footOffset": 0,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.08373332735905642,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.25,
+          "phase": 1.5707963267948966,
+          "oldTailMin": -0.05903383188633486,
+          "tailMin": 0.027263935716632454,
+          "feetMin": {
+            "left-calf-and-foot": 0.16685877828825288,
+            "right-calf-and-foot": 1.0083266934533353
+          },
+          "groundEnvelopeMin": 0.023347571650296307,
+          "solverIterations": 1,
+          "footOffset": 0,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.08,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.28125,
+          "phase": 1.7671458676442586,
+          "oldTailMin": -0.060075672553105516,
+          "tailMin": 0.023149128792339935,
+          "feetMin": {
+            "left-calf-and-foot": 0.0879465333698044,
+            "right-calf-and-foot": 1.1813965290403887
+          },
+          "groundEnvelopeMin": 0.020404878995464292,
+          "solverIterations": 2,
+          "footOffset": -0.03567426390323057,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.109899016051016,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.3125,
+          "phase": 1.9634954084936207,
+          "oldTailMin": -0.06055174224449015,
+          "tailMin": 0.023189776154943286,
+          "feetMin": {
+            "left-calf-and-foot": 0.10384398488878575,
+            "right-calf-and-foot": 1.1545637133650573
+          },
+          "groundEnvelopeMin": 0.018977241929877497,
+          "solverIterations": 2,
+          "footOffset": -0.026513924956098747,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.10360832744313477,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.34375,
+          "phase": 2.1598449493429825,
+          "oldTailMin": -0.06211090165959623,
+          "tailMin": 0.025178816451900683,
+          "feetMin": {
+            "left-calf-and-foot": 0.2296045413294558,
+            "right-calf-and-foot": 1.1446480997522583
+          },
+          "groundEnvelopeMin": 0.018288352448776315,
+          "solverIterations": 2,
+          "footOffset": 0,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.08313595559118016,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.375,
+          "phase": 2.356194490192345,
+          "oldTailMin": -0.056022174957018805,
+          "tailMin": 0.030725919455824452,
+          "feetMin": {
+            "left-calf-and-foot": 0.3455626352128833,
+            "right-calf-and-foot": 1.1266524471336838
+          },
+          "groundEnvelopeMin": 0.01827974543345865,
+          "solverIterations": 2,
+          "footOffset": 0,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.08285436295154316,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.40625,
+          "phase": 2.552544031041707,
+          "oldTailMin": -0.04740468485028985,
+          "tailMin": 0.03694829110513374,
+          "feetMin": {
+            "left-calf-and-foot": 0.4737012982187751,
+            "right-calf-and-foot": 1.1498522469073251
+          },
+          "groundEnvelopeMin": 0.018125551438183514,
+          "solverIterations": 2,
+          "footOffset": 0,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.08130824657392997,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.4375,
+          "phase": 2.748893571891069,
+          "oldTailMin": -0.0470910287009828,
+          "tailMin": 0.04344252082421549,
+          "feetMin": {
+            "left-calf-and-foot": 0.5636523968509459,
+            "right-calf-and-foot": 1.225664169624534
+          },
+          "groundEnvelopeMin": 0.018781852117155207,
+          "solverIterations": 2,
+          "footOffset": 0,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.0876979180228775,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.46875,
+          "phase": 2.945243112740431,
+          "oldTailMin": -0.05886230095836052,
+          "tailMin": 0.046161817958401054,
+          "feetMin": {
+            "left-calf-and-foot": 0.6692822598169067,
+            "right-calf-and-foot": 1.1859321841190402
+          },
+          "groundEnvelopeMin": 0.020410272420886593,
+          "solverIterations": 2,
+          "footOffset": 0,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.10167969050515585,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.5,
+          "phase": 3.141592653589793,
+          "oldTailMin": -0.07884332012062886,
+          "tailMin": 0.046583658971386374,
+          "feetMin": {
+            "left-calf-and-foot": 0.8032043411189365,
+            "right-calf-and-foot": 0.9403063963887406
+          },
+          "groundEnvelopeMin": 0.02319823483889476,
+          "solverIterations": 2,
+          "footOffset": 0,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.12142990933211303,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.53125,
+          "phase": 3.3379421944391554,
+          "oldTailMin": -0.08908818721414394,
+          "tailMin": 0.04489814221729928,
+          "feetMin": {
+            "left-calf-and-foot": 0.8934791456358392,
+            "right-calf-and-foot": 0.6996941700736647
+          },
+          "groundEnvelopeMin": 0.024740720349252322,
+          "solverIterations": 2,
+          "footOffset": 0,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.1309738898949239,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.5625,
+          "phase": 3.5342917352885173,
+          "oldTailMin": -0.0879906874556613,
+          "tailMin": 0.04291247490948548,
+          "feetMin": {
+            "left-calf-and-foot": 1.0510148490133,
+            "right-calf-and-foot": 0.4919986239440858
+          },
+          "groundEnvelopeMin": 0.024488128740418696,
+          "solverIterations": 2,
+          "footOffset": 0,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.1302262208545224,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.59375,
+          "phase": 3.730641276137879,
+          "oldTailMin": -0.0712021025621484,
+          "tailMin": 0.04084428493865068,
+          "feetMin": {
+            "left-calf-and-foot": 1.2571785090444725,
+            "right-calf-and-foot": 0.33040921218909136
+          },
+          "groundEnvelopeMin": 0.02206411150722816,
+          "solverIterations": 2,
+          "footOffset": 0,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.11474437424729197,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.625,
+          "phase": 3.9269908169872414,
+          "oldTailMin": -0.051899969428430705,
+          "tailMin": 0.04005028588101271,
+          "feetMin": {
+            "left-calf-and-foot": 1.2994381830356014,
+            "right-calf-and-foot": 0.21280546179902268
+          },
+          "groundEnvelopeMin": 0.019676819031954403,
+          "solverIterations": 2,
+          "footOffset": 0,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.0965627787073602,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.65625,
+          "phase": 4.123340357836604,
+          "oldTailMin": -0.03298497286726526,
+          "tailMin": 0.03941435605466204,
+          "feetMin": {
+            "left-calf-and-foot": 1.2910418984430825,
+            "right-calf-and-foot": 0.10149194677507711
+          },
+          "groundEnvelopeMin": 0.02056658570437476,
+          "solverIterations": 2,
+          "footOffset": -0.027869151267791298,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.10382602748454377,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.6875,
+          "phase": 4.319689898685965,
+          "oldTailMin": -0.017987633562057247,
+          "tailMin": 0.037758714579151004,
+          "feetMin": {
+            "left-calf-and-foot": 1.2364553351277219,
+            "right-calf-and-foot": 0.023828364625698817
+          },
+          "groundEnvelopeMin": 0.02234594797809907,
+          "solverIterations": 2,
+          "footOffset": -0.06653324045303059,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.12252704961434605,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.71875,
+          "phase": 4.516039439535327,
+          "oldTailMin": -0.014086176278156837,
+          "tailMin": 0.03560288120101365,
+          "feetMin": {
+            "left-calf-and-foot": 1.2605468572046605,
+            "right-calf-and-foot": 0.10367432328239023
+          },
+          "groundEnvelopeMin": 0.018567542327168774,
+          "solverIterations": 1,
+          "footOffset": -0.026611614899613365,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.08,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.75,
+          "phase": 4.71238898038469,
+          "oldTailMin": -0.017429355416636833,
+          "tailMin": 0.042272791821685,
+          "feetMin": {
+            "left-calf-and-foot": 1.2722859894490917,
+            "right-calf-and-foot": 0.19913755861208912
+          },
+          "groundEnvelopeMin": 0.026093306676018287,
+          "solverIterations": 1,
+          "footOffset": 0,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.06303482604341176,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.78125,
+          "phase": 4.908738521234052,
+          "oldTailMin": -0.03433615371631084,
+          "tailMin": 0.041379469570065205,
+          "feetMin": {
+            "left-calf-and-foot": 1.2365132647746564,
+            "right-calf-and-foot": 0.1522523178173092
+          },
+          "groundEnvelopeMin": 0.0281127215020883,
+          "solverIterations": 1,
+          "footOffset": -0.0016123317692260282,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.07730662993012573,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.8125,
+          "phase": 5.105088062083414,
+          "oldTailMin": -0.057770134211432414,
+          "tailMin": 0.029713349342682036,
+          "feetMin": {
+            "left-calf-and-foot": 1.1568830894584075,
+            "right-calf-and-foot": 0.0049999999999997755
+          },
+          "groundEnvelopeMin": 0.023302678479829735,
+          "solverIterations": 2,
+          "footOffset": -0.05300378123571315,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.13109865712015298,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.84375,
+          "phase": 5.301437602932776,
+          "oldTailMin": -0.09097597092485941,
+          "tailMin": 0.036174355801532845,
+          "feetMin": {
+            "left-calf-and-foot": 1.2528596901221116,
+            "right-calf-and-foot": 0.005000000000000122
+          },
+          "groundEnvelopeMin": 0.024237594477128106,
+          "solverIterations": 1,
+          "footOffset": 0.06734363504048291,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.059175843190971925,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.875,
+          "phase": 5.497787143782138,
+          "oldTailMin": -0.12385372177851893,
+          "tailMin": 0.03378093312964195,
+          "feetMin": {
+            "left-calf-and-foot": 1.2633926426223243,
+            "right-calf-and-foot": 0.004999999999999907
+          },
+          "groundEnvelopeMin": 0.02392536049521277,
+          "solverIterations": 1,
+          "footOffset": 0.10999801672038167,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.04760048410400946,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.90625,
+          "phase": 5.6941366846315,
+          "oldTailMin": -0.15277323275469357,
+          "tailMin": 0.035829995293146705,
+          "feetMin": {
+            "left-calf-and-foot": 1.246859335336519,
+            "right-calf-and-foot": 0.005000000000000171
+          },
+          "groundEnvelopeMin": 0.028619950474901203,
+          "solverIterations": 1,
+          "footOffset": 0.11117325071257939,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.07391755672596216,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.9375,
+          "phase": 5.890486225480862,
+          "oldTailMin": -0.17271040333731374,
+          "tailMin": 0.028411589109207214,
+          "feetMin": {
+            "left-calf-and-foot": 1.2483759518686088,
+            "right-calf-and-foot": 0.005000000000000018
+          },
+          "groundEnvelopeMin": 0.01978730826399226,
+          "solverIterations": 2,
+          "footOffset": 0.09493814078944406,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.0976493761573739,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 0.96875,
+          "phase": 6.086835766330224,
+          "oldTailMin": -0.1781223391026774,
+          "tailMin": 0.029013538411069524,
+          "feetMin": {
+            "left-calf-and-foot": 1.2840170748271742,
+            "right-calf-and-foot": 0.004999999999999949
+          },
+          "groundEnvelopeMin": 0.021741808475411434,
+          "solverIterations": 2,
+          "footOffset": 0.08244633104562657,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.11269684641011225,
+          "groundLimited": false
+        },
+        {
+          "phaseFraction": 1,
+          "phase": 6.283185307179586,
+          "oldTailMin": -0.17466777318179325,
+          "tailMin": 0.029139585392122525,
+          "feetMin": {
+            "left-calf-and-foot": 1.3187049314608135,
+            "right-calf-and-foot": 0.00500000000000006
+          },
+          "groundEnvelopeMin": 0.022795881676097567,
+          "solverIterations": 2,
+          "footOffset": 0.04901236142288829,
+          "footGroundLimited": false,
+          "maxJointCorrection": 0.1372054237467329,
+          "groundLimited": false
+        }
+      ],
+      "feetMinimum": 0.0049999999999997755,
+      "maxAbsoluteFootOffset": 0.11117325071257939,
+      "footLimitedFrames": 0
+    }
+  },
+  "limits": [
+    "World Y=0 plane, without obstacle or limb collision",
+    "Feet retain existing rigid-calf skinning; bounded visual height only, no ankle IK",
+    "Source airborne clip frames are preserved",
+    "Visual near imported LOD only; no 1:1 fidelity proof"
+  ],
+  "measurementMethod": "CPU real source GLB and real walk/run clips; all 28590 tail and all 8138 lower-leg/foot region vertices sampled",
+  "footSupportVertices": 515,
+  "maxVisualOffsetLimit": 0.18
+}

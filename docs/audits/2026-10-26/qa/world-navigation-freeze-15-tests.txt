@@ -1,0 +1,23 @@
+✔ gunnison_forest: seeking AI can skirt scenery from the perimeter to four open targets (7939.563692ms)
+✔ xenomorph_prime: seeking AI can skirt scenery from the perimeter to four open targets (4287.355927ms)
+✔ antarctic_pyramid: seeking AI can skirt scenery from the perimeter to four open targets (3023.885095ms)
+✔ la_rooftops: seeking AI can skirt scenery from the perimeter to four open targets (2194.545677ms)
+✔ val_verde_jungle: seeking AI can skirt scenery from the perimeter to four open targets (3967.076899ms)
+✔ romulus_station: seeking AI can skirt scenery from the perimeter to four open targets (1965.815916ms)
+✔ charon_rogue_base: seeking AI can skirt scenery from the perimeter to four open targets (2518.032094ms)
+✔ game_preserve_planet: seeking AI can skirt scenery from the perimeter to four open targets (3966.707815ms)
+✔ stargazer_facility: seeking AI can skirt scenery from the perimeter to four open targets (3163.379119ms)
+✔ prey_comanche_territory: seeking AI can skirt scenery from the perimeter to four open targets (3786.810245ms)
+✔ killer_of_killers_arena: seeking AI can skirt scenery from the perimeter to four open targets (2592.338323ms)
+✔ static instancing preserves authored dimensions, per-instance colors and moving parent transforms (6.651059ms)
+✔ render distance never disables physical cover, while authored removal does (2.896698ms)
+✔ operation doors really block movement and rays, reopen, and avoid fake sector completion (4636.351061ms)
+✔ civilian navigation crosses two corridor turns and reroutes around a closed flank (286.355896ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 44647.359157

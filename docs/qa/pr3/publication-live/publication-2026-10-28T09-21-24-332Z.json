@@ -1,0 +1,44 @@
+{
+  "status": "published_and_public_all_bytes_verified",
+  "startedAt": "2026-10-28T09:21:24.333Z",
+  "sourceCommit": "48b5bd5aa9d35fd3919ade38cf2aef55389bec5b",
+  "index_sha256": "124d7735003c245bc60814e6004c35ace77bd4011b31d448a6aa6c4c41dad185",
+  "build_info_sha256": "ca39fd23d605d11f8ae9810e233248ae7426a91514c8f8cc9dade4d426869b9b",
+  "stage": "/workspace/qa/pr3-20261026/vercel-static-prebuilt",
+  "promotion_executed": false,
+  "deployment_id": "dpl_9SeDzvFvnrj9KuwGY3KYBqV6Li7N",
+  "submission_attempted": false,
+  "remoteActionsExecuted": true,
+  "other_projects_changed": false,
+  "billing_changed": false,
+  "globalQa": {
+    "passed": true,
+    "cpuPassed": 653,
+    "regressionPassed": 15,
+    "runtimeChecksPassed": 12,
+    "path": "/workspace/Yautja-hive-warriors/docs/qa/pr3-validation.json",
+    "sha256": "92f7daa26872333bae9a13fd3738cdc6c29dd11a1ea20bdb15b7e450c00cbfed"
+  },
+  "sourceCommitIsAncestorOfRelease": true,
+  "localFilesVerified": 30,
+  "localModelsVerified": 12,
+  "localBundlesVerified": 5,
+  "canonical_before": {
+    "http": 200,
+    "sha256": "124d7735003c245bc60814e6004c35ace77bd4011b31d448a6aa6c4c41dad185",
+    "checkedAt": "2026-10-28T09:21:26.492Z"
+  },
+  "canonical_after": {
+    "http": 200,
+    "sha256": "124d7735003c245bc60814e6004c35ace77bd4011b31d448a6aa6c4c41dad185",
+    "checkedAt": "2026-10-28T09:21:26.617Z"
+  },
+  "publicProof": "/workspace/qa/pr3-20261026/http-public-2026-10-28T09-21-24-332Z/report.json",
+  "public_url": "https://yautja-hive-warriors.vercel.app",
+  "publicFilesVerified": 30,
+  "publicModelsVerified": 12,
+  "publicBundlesVerified": 5,
+  "buildInfoVerified": true,
+  "browserVerification": "Separate canonical browser verification is required; this script does not start Chromium or claim human QA.",
+  "updatedAt": "2026-10-28T09:21:35.854Z"
+}

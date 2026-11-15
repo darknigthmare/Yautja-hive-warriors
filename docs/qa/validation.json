@@ -1,0 +1,433 @@
+{
+  "date": "2026-10-22",
+  "qa_reviewers": {
+    "agents": 5,
+    "humans": 0
+  },
+  "full_suite": {
+    "command": "npm test",
+    "tests": 156,
+    "passed": 156,
+    "failed": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 487892.040777,
+    "log": "docs/qa/test-output.txt",
+    "log_sha256": "fb073963cee5d5ef25309f09efe41eea1154aa0e93ac2c1cb41118ecf16c17d1"
+  },
+  "critical_revalidation": {
+    "tests_passed": 5,
+    "scope": "Solo including real photo orbit/zoom and PNG download; all rendering pipelines; PBR surfaces."
+  },
+  "audit": {
+    "command": "npm audit --json",
+    "known_vulnerabilities": 0,
+    "carried_forward": false,
+    "rerun": true,
+    "evidence_date": "2026-10-22",
+    "source_report_sha256": "6a87c9f4bd21e495cc6463891ef54867fd2c9560dfd41b9fe7e8a5bfeb98fd0f",
+    "source_report": {
+      "auditReportVersion": 2,
+      "vulnerabilities": {},
+      "metadata": {
+        "vulnerabilities": {
+          "info": 0,
+          "low": 0,
+          "moderate": 0,
+          "high": 0,
+          "critical": 0,
+          "total": 0
+        },
+        "dependencies": {
+          "prod": 5,
+          "dev": 42,
+          "optional": 27,
+          "peer": 0,
+          "peerOptional": 0,
+          "total": 46
+        }
+      }
+    }
+  },
+  "graphics": {
+    "model_closeup_measurements": {
+      "hunter": {
+        "triangles": 160448,
+        "meshes": 47
+      },
+      "warrior": {
+        "triangles": 42512,
+        "meshes": 10
+      },
+      "marine": {
+        "triangles": 41004,
+        "meshes": 11
+      },
+      "queen": {
+        "triangles": 93544,
+        "meshes": 10
+      }
+    },
+    "hunter_proportions": {
+      "height": 4.31,
+      "skull_height": 0.599,
+      "heads_tall": 7.2
+    },
+    "materials": {
+      "families": 13,
+      "main_map_resolution": 2048,
+      "source_cache_budget_bytes": 234881024,
+      "note": "Raw source cache is not total GPU usage; repeated views, mipmaps, geometry, shadows and effects add to it."
+    },
+    "creature_lod": {
+      "distance_thresholds": [
+        18,
+        38
+      ],
+      "warrior_triangles": [
+        42512,
+        12742,
+        4832
+      ],
+      "queen_triangles": [
+        93544,
+        29068,
+        9732
+      ],
+      "distant_200_warriors_triangles": 966400,
+      "selection": "Nearest camera, including both co-op views, before shadow and color passes."
+    },
+    "controlled_visual_review": {
+      "stats": {
+        "hunter": {
+          "triangles": 160448,
+          "meshes": 47
+        },
+        "warrior": {
+          "triangles": 42512,
+          "meshes": 10
+        },
+        "marine": {
+          "triangles": 41004,
+          "meshes": 11
+        },
+        "queen": {
+          "triangles": 93544,
+          "meshes": 10
+        }
+      },
+      "errors": [],
+      "note": "Controlled paused model inspection with game materials and lighting; neutral stage only for close-ups."
+    },
+    "mission_capture": {
+      "errors": [],
+      "description": "Real menu launch with default mission population and HUD; waiting for normal insertion cleanup, no actor or interface hidden."
+    },
+    "hardware": "Chromium SwiftShader. High effects separately verified at small resolution; no hardware FPS measurement.",
+    "fidelity": "Procedural stylized sculptures. Exact 1:1 likeness and photorealistic production quality are not established."
+  },
+  "production_assets_sha256": {
+    "confetti-CAXNRs-2.js": "39d247a0fb28fff8a2dc39749d26c3d3d1ddb7e70d4e81e6aace4bf55ff0832d",
+    "engine-BvUM56m6.js": "59b30fb66d2487a876728493db91647ced7c980e6af3c484e59578743f2ff8fa",
+    "index-BNBPJRED.css": "8d0501a3fb74b9662c35f603822d1f8361d304dd25587006f258997a3948bb74",
+    "index-c6DI5JFs.js": "3cce1aa09ae6852e08a2ffddd31648541f776efd8ecef13965b8aa941bf5b680",
+    "visual-effects-r9wXagHX.js": "3f45470a61782ffd08482dc11de825a7b0f3aa434e64714b922918f41660c82b"
+  },
+  "captures_sha256": {
+    "after-creatures.png": "7ec2b1aee43726e67e5578fdd4f07cfa3dab551ee3a3f9c725910ee158e191be",
+    "after-environment.png": "1c601bdc1651051548b14a0ad5d7ccdefa7b1247ef6a57c6dba9d6c04f26c3a4",
+    "after-hunter.png": "dadae778594b8d72488d1a207926c7f3f2efed676271de1cc806570d1db33435",
+    "before-environment.png": "d494bc5e5313355300bdbc0e057229ba6fec19baf20ffc574e466e8a3dd43026",
+    "before-hunter.png": "288e7955e45085dbb280102731ed398593c910d380c689034c716851eb71e866",
+    "menu-desktop.png": "2fc884ff7ca7f5a0699009e46392124fc53cc33e96ad289cc5c2c0f64a167238",
+    "menu-mobile.png": "ef225f059df21aa3ba10312286be2d1656be4508e2d0dbd9e25c617e93789acc",
+    "mission.png": "01b89cdba177cc393fdeb29144f06ed2f58b522a5dd85c742da43fca92c80588",
+    "sculpt-before-creatures.png": "3db61da419045e499be4b6c2b668a8ff120e8f67b2688bffcf3e8b6f3e9b6ac7",
+    "sculpt-before-environment.png": "be7ff21104cd4126ebdf688f1dfce6e2b60bc8d06e6df376feba90665134c55a",
+    "sculpt-before-hunter.png": "6940668ab05ea6fa0f1398654859b549aab931513c47ee92e2136d5dc8c71902",
+    "sculpt-hunter-front.png": "f7bcc2261f2322972773487fddf40b3cbb301a1d5e781578fa46b61d034171dd",
+    "sculpt-hunter-head.png": "e0ab413b2d04ee0c993ac3efc85a06bf763094423e55ea0a90a6daa7e5ad926f",
+    "sculpt-hunter-profile.png": "f65284fd37b423db2c28afa4ed772883e0931da288d378f203bb8ac101a1838c",
+    "sculpt-marine-face.png": "bea239db9fbfdfcf444200155ff5ab5311a41e3dd0c250b6eae32e2dc60563cf",
+    "sculpt-marine.png": "cb1ed84fb11422ed8f469bc205efe7eb6b551bbde86347466140b39aae8f3341",
+    "sculpt-queen.png": "19db7309072161ec378320b872b77b7c88b9495c73977f92a0595145f6cf2727",
+    "sculpt-warrior-front.png": "b69ad1eaae7b970327b1404618266e4a1ee9ff4961819ae7d31087bc44495b68",
+    "sculpt-warrior-profile.png": "a93c9de4c2cf8fd1ed01ec5c5e81dc34b546657605fb7385d778cc06db4bddc9"
+  },
+  "vercel": {
+    "published": true,
+    "ready": true,
+    "status": "ready",
+    "url": "https://yautja-hive-warriors.vercel.app",
+    "http": {
+      "status": 200
+    },
+    "browser": {
+      "ok": true,
+      "errors": []
+    }
+  },
+  "graphics_evidence": {
+    "carried_forward": true,
+    "evidence_date": "2026-10-20",
+    "note": "Procedural graphic measurements and screenshots are historical. Imported model evidence is listed separately under meshy."
+  },
+  "meshy": {
+    "reference_record": "docs/meshy/reference-generation.json",
+    "packaged_reference_record_sha256": "c6e9d1be2f1daab4e520af3d80bfb5e9295114ee4f3b7aede71eeb4cd4293deb",
+    "reference_record_export": "Private working paths omitted from archive copy; task IDs and project names retained.",
+    "tasks": [
+      {
+        "model": "jungle_hunter",
+        "task_id": "01a159b4-8004-75bd-b39d-cf5184ccf13f",
+        "resource": "multi-image-to-3d",
+        "project": "20261020_142616_jungle-hunter-unmasked-referen_01a159b4",
+        "status": "SUCCEEDED",
+        "consumed_credits": 30
+      },
+      {
+        "model": "big_chap_1979",
+        "task_id": "01a16527-c3e4-77ab-a0fa-f6feb1849d8b",
+        "resource": "multi-image-to-3d",
+        "project": "20261022_194803_big-chap-1979-reference_01a16527",
+        "status": "SUCCEEDED",
+        "consumed_credits": 30
+      },
+      {
+        "model": "hunter_rig",
+        "task_id": "01a1651a-500c-757f-b9d6-8339ad63b85a",
+        "resource": "rigging",
+        "project": "20261020_142616_jungle-hunter-unmasked-referen_01a159b4",
+        "status": "SUCCEEDED",
+        "consumed_credits": 5,
+        "source_task_id": "01a159b4-8004-75bd-b39d-cf5184ccf13f"
+      },
+      {
+        "model": "jungle_hunter_biomask",
+        "task_id": "01a1651d-69e2-70dd-acdd-433cb66a0492",
+        "resource": "multi-image-to-3d",
+        "project": "20261022_193636_jungle-hunter-biomask-referenc_01a1651d",
+        "status": "SUCCEEDED",
+        "consumed_credits": 30
+      },
+      {
+        "model": "big_chap_preserved_pose",
+        "task_id": "01a16539-7fa8-7571-9421-468148325510",
+        "resource": "image-to-3d",
+        "project": "20261022_200731_big-chap-preserved-pose-refere_01a16539",
+        "status": "SUCCEEDED",
+        "consumed_credits": 30
+      },
+      {
+        "model": "alien_rig",
+        "task_id": "01a1653e-d6a2-71c3-ae3f-d71af97d1797",
+        "resource": "rigging",
+        "project": "20261022_200731_big-chap-preserved-pose-refere_01a16539",
+        "status": "SUCCEEDED",
+        "consumed_credits": 5,
+        "source_task_id": "01a16539-7fa8-7571-9421-468148325510"
+      }
+    ],
+    "historical": {
+      "record": "docs/meshy/generation-plan.json",
+      "consumed_credits": 40,
+      "tasks": [
+        {
+          "task_id": "01a1594f-b1a6-738d-bf0d-b87fffcb5000",
+          "resource": "text-to-3d",
+          "project": "20261020_123600_jungle-hunter_01a1594f",
+          "consumed_credits": 20
+        },
+        {
+          "task_id": "01a1594f-c035-7643-9e61-70bcc112def2",
+          "resource": "text-to-3d",
+          "project": "20261020_123605_xenomorph-warrior_01a1594f",
+          "consumed_credits": 20
+        }
+      ]
+    },
+    "reference_costs": {
+      "consumed_credits": 130,
+      "known_consumed_credits": 130,
+      "unknown_cost_task_ids": []
+    },
+    "combined_consumed_credits": 170,
+    "release_scope": "all_three",
+    "manifest_entries": 3,
+    "rigged_bodies": 2,
+    "rigid_biomasks": 1,
+    "active_assets": [
+      {
+        "manifest_key": "jungle_hunter",
+        "source_model": "jungle_hunter",
+        "kind": "rigged_body",
+        "url": "/models/jungle-hunter-rigged.glb",
+        "bytes": 53768472,
+        "sha256": "179fe7081ad39f8cb198086d984380dd119e625c8853fa2f11bd69e08ab0be5d",
+        "meshes": 1,
+        "triangles": 206591,
+        "skins": 1,
+        "joints": 24,
+        "skinned_nodes": 1,
+        "animations": 1,
+        "textured": true,
+        "visually_inspected": true,
+        "in_game_verified": true,
+        "rig_required": true,
+        "rig_verified": true
+      },
+      {
+        "manifest_key": "jungle_hunter_biomask",
+        "source_model": "jungle_hunter_biomask",
+        "kind": "rigid_biomask",
+        "url": "/models/jungle-hunter-biomask.glb",
+        "bytes": 34211520,
+        "sha256": "a8f2cae605da72d463ace4b5fe4b9363a33c0932298158f65ca85bbe98fd1a77",
+        "meshes": 1,
+        "triangles": 51284,
+        "skins": 0,
+        "joints": 0,
+        "skinned_nodes": 0,
+        "animations": 0,
+        "textured": true,
+        "visually_inspected": true,
+        "in_game_verified": true,
+        "rig_required": false,
+        "rig_verified": null
+      },
+      {
+        "manifest_key": "xenomorph_warrior",
+        "source_model": "big_chap_preserved_pose",
+        "kind": "rigged_body",
+        "url": "/models/big-chap-rigged.glb",
+        "bytes": 56951716,
+        "sha256": "202b5d7d635cdb14fcf8af430faba3207d5668f43f85d9d9dca1f81cc0d8a97e",
+        "meshes": 1,
+        "triangles": 205259,
+        "skins": 1,
+        "joints": 24,
+        "skinned_nodes": 1,
+        "animations": 1,
+        "textured": true,
+        "visually_inspected": true,
+        "in_game_verified": true,
+        "rig_required": true,
+        "rig_verified": true
+      }
+    ],
+    "held_assets": [],
+    "public_model_files": {
+      "public/models/big-chap-rigged.glb": {
+        "bytes": 56951716,
+        "sha256": "202b5d7d635cdb14fcf8af430faba3207d5668f43f85d9d9dca1f81cc0d8a97e",
+        "meshes": 1,
+        "triangles": 205259,
+        "skins": 1,
+        "joints": 24,
+        "skinned_nodes": 1,
+        "animations": 1,
+        "textured": true,
+        "compared_to_declared_sha256": true
+      },
+      "public/models/big-chap-run.glb": {
+        "bytes": 79336,
+        "sha256": "7944bc681cef08d822905b099a79963710517dd14898e0c526dcced2cf7b827d",
+        "meshes": 1,
+        "triangles": 288,
+        "skins": 1,
+        "joints": 24,
+        "skinned_nodes": 1,
+        "animations": 1,
+        "textured": false,
+        "compared_to_declared_sha256": true
+      },
+      "public/models/big-chap-walk.glb": {
+        "bytes": 89968,
+        "sha256": "ae87707f9fa53e246d629c44c454ec6b58b98e0396330e9561476f43bc0e43da",
+        "meshes": 1,
+        "triangles": 288,
+        "skins": 1,
+        "joints": 24,
+        "skinned_nodes": 1,
+        "animations": 1,
+        "textured": false,
+        "compared_to_declared_sha256": true
+      },
+      "public/models/jungle-hunter-biomask.glb": {
+        "bytes": 34211520,
+        "sha256": "a8f2cae605da72d463ace4b5fe4b9363a33c0932298158f65ca85bbe98fd1a77",
+        "meshes": 1,
+        "triangles": 51284,
+        "skins": 0,
+        "joints": 0,
+        "skinned_nodes": 0,
+        "animations": 0,
+        "textured": true,
+        "compared_to_declared_sha256": true
+      },
+      "public/models/jungle-hunter-rigged.glb": {
+        "bytes": 53768472,
+        "sha256": "179fe7081ad39f8cb198086d984380dd119e625c8853fa2f11bd69e08ab0be5d",
+        "meshes": 1,
+        "triangles": 206591,
+        "skins": 1,
+        "joints": 24,
+        "skinned_nodes": 1,
+        "animations": 1,
+        "textured": true,
+        "compared_to_declared_sha256": true
+      },
+      "public/models/jungle-hunter-run.glb": {
+        "bytes": 79764,
+        "sha256": "cc1053be4ea26801cf9d2e5ad148ef663373714634a1068aa2b91c14d59c49be",
+        "meshes": 1,
+        "triangles": 288,
+        "skins": 1,
+        "joints": 24,
+        "skinned_nodes": 1,
+        "animations": 1,
+        "textured": false,
+        "compared_to_declared_sha256": true
+      },
+      "public/models/jungle-hunter-walk.glb": {
+        "bytes": 90416,
+        "sha256": "ffd0a1b2684f3bef06d29cfc8da8fcb003190aaec121e69e673d744fe7310424",
+        "meshes": 1,
+        "triangles": 288,
+        "skins": 1,
+        "joints": 24,
+        "skinned_nodes": 1,
+        "animations": 1,
+        "textured": false,
+        "compared_to_declared_sha256": true
+      }
+    },
+    "exact_one_to_one_fidelity_validated": false
+  },
+  "archive": {
+    "kind": "source",
+    "includes_public_models": true,
+    "includes_dist": false,
+    "build_command": "npm ci && npm run build"
+  },
+  "audit_history": [
+    {
+      "command": "npm audit",
+      "known_vulnerabilities": 0,
+      "carried_forward": true,
+      "rerun": false,
+      "evidence_date": "2026-10-20",
+      "note": "Previous audit result retained; npm audit was not rerun for this packaging step."
+    }
+  ],
+  "qa_reviewers_evidence": {
+    "carried_forward": true,
+    "evidence_date": "2026-10-20",
+    "humans": 0
+  },
+  "critical_revalidation_evidence": {
+    "carried_forward": true,
+    "evidence_date": "2026-10-20"
+  }
+}

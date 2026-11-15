@@ -1,0 +1,45 @@
+{
+  "sourceSha256": "0e297a50400f885f06595f2fb59c85aed5118517a03c140f0f3aefa5288b564b",
+  "diagnostics": {
+    "sourceSha256": "0e297a50400f885f06595f2fb59c85aed5118517a03c140f0f3aefa5288b564b",
+    "sourceNode": "model_part11",
+    "sourceVertices": 746,
+    "sourceTriangles": 740,
+    "visibleReplacementTriangles": 740,
+    "rigidBone": "LeftForeArm",
+    "maximumWeightError": 0,
+    "closedMaxVertexError": 4.894063982104843e-8,
+    "texture": "original PBR material borrowed; source UVs copied unchanged",
+    "addedConsoleTriangles": 418,
+    "addedConsoleDrawMeshes": 4,
+    "addedMaterials": 4,
+    "housingPatch": {
+      "node": "model_part7",
+      "removedCoveredArmourTriangles": 276,
+      "skinTrianglesRemoved": 0,
+      "retainedTriangles": 1656,
+      "cacheModified": false,
+      "sourceVerticesModified": 0
+    },
+    "hingeName": "city-left-console-hinge",
+    "bladeExtractionActivated": false,
+    "interpretation": "original plate retained; hinge and electronics modelled locally, not a certified film mechanism"
+  },
+  "initialMaxVertexError": 4.894063982104843e-8,
+  "posedMaxVertexError": 4.894064171932569e-8,
+  "openState": {
+    "id": "city-left-console",
+    "amount": 1,
+    "target": 1,
+    "angle": 1.5,
+    "mode": "emp",
+    "holdRemaining": 1.4,
+    "disposed": false
+  },
+  "materialNames": [
+    "city-console-housing",
+    "city-console-contacts",
+    "city-console-display",
+    "city-console-indicators"
+  ]
+}

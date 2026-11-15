@@ -1,0 +1,343 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-23",
+  "candidate": {
+    "schemaVersion": 1,
+    "created_at": "2026-10-23T01:32:37.127449+00:00",
+    "character": "city_hunter",
+    "specific_version": "Prime1 MMPR-02UTS Unmasked Standard Portrait, Predator2(1990)",
+    "method": "Image Gen synthesis from four individually inspected source photos. Original files preserved.",
+    "authority": "Original photos remain source of truth; output is a synthetic candidate, not a1:1 scan or recovered original detail.",
+    "references": [
+      {
+        "path": "/workspace/qa/yautja-expansion-20261023/prepared/city_hunter/body/input-gray.png",
+        "dimensions": [
+          1060,
+          1500
+        ],
+        "sha256": "d77df7fd9025fb73de6dbad794c9e0376078fb3acb38e9b169a47901a43e4093"
+      },
+      {
+        "path": "/workspace/qa/yautja-expansion-20261023/references/city_hunter/images/mmpr-02uts_b090.jpg",
+        "dimensions": [
+          1060,
+          1500
+        ],
+        "sha256": "cf46c225b9ef00098a15a3f8276fd966d4c3482edf9ec4459e5ce09736996789"
+      },
+      {
+        "path": "/workspace/qa/yautja-expansion-20261023/references/city_hunter/images/mmpr-02uts_a18-01.jpg",
+        "dimensions": [
+          1500,
+          1060
+        ],
+        "sha256": "db2bc12cd7f6ae6bd3e13ba367288cc08ec9121daeaa0c2f29a5f86e4c038ed4"
+      },
+      {
+        "path": "/workspace/qa/yautja-expansion-20261023/references/city_hunter/images/mmpr-02uts_b084.jpg",
+        "dimensions": [
+          1060,
+          1500
+        ],
+        "sha256": "8e94ec5027aaa6d4b265390da4a64e1b3d2a597145c9f328e810693bea07167f"
+      }
+    ],
+    "generated_image": "/workspace/qa/yautja-expansion-20261023/generated-reference-city/city-hunter-multireference-candidate.png",
+    "original_generated_file": "/workspace/generated_images/exec-ce0e9067-0888-4bae-960f-9a97b770f143.png",
+    "generated_sha256": "9822bb739874ab5b75ba781ce61432f10c5016831cf1ae9d976cefda2e3260c6",
+    "dimensions": [
+      1024,
+      1536
+    ],
+    "prompt_file": "/workspace/qa/yautja-expansion-20261023/generated-reference-city/generation-prompt.txt",
+    "sent_to_meshy": false,
+    "exact_likeness_validated": false,
+    "classical_cutout_gate_applicable": false,
+    "review_status": "three_scoped_ai_comparisons_completed",
+    "new_meshy_cost": 0,
+    "known_unknowns": [
+      "Palm/fingers hidden behind staff in original source",
+      "Rear unmasked head and dreadlock roots not visible in verified photos",
+      "Equipment interiors and hidden attachment geometry"
+    ],
+    "ready_as_exact_reference": false,
+    "review_files": [
+      "review-face-city_reference_gate.json",
+      "review-equipment-auto_split_geometry_review.json",
+      "review-silhouette-other_yautja_references.json"
+    ],
+    "finding": "Recognizable and clearer full-body presentation, but pigmentation/netting/blade fine features and hidden palm are redrawn; original photographs remain detail authority."
+  },
+  "reviews": [
+    {
+      "schemaVersion": 1,
+      "reviewer": "/root/city_reference_gate",
+      "scope": [
+        "face",
+        "cranial_crest",
+        "mandibles",
+        "dreadlocks",
+        "hair_rings",
+        "neck"
+      ],
+      "candidate": "/workspace/qa/yautja-expansion-20261023/generated-reference-city/city-hunter-multireference-candidate.png",
+      "candidate_sha256": "9822bb739874ab5b75ba781ce61432f10c5016831cf1ae9d976cefda2e3260c6",
+      "references_opened": [
+        "/workspace/qa/yautja-expansion-20261023/references/city_hunter/images/mmpr-02uts_a08-01.jpg",
+        "/workspace/qa/yautja-expansion-20261023/references/city_hunter/images/mmpr-02uts_a18-01.jpg"
+      ],
+      "qa_crops_directory": "/workspace/qa/yautja-expansion-20261023/generated-reference-city/face-review-qa",
+      "ready_as_exact_reference": false,
+      "ready_as_exactref": false,
+      "measured_one_to_one_likeness": false,
+      "observed_preserved": [
+        "Identité City Hunter sans biomask, grand crâne à bourrelet festonné, pigments crème/rouge, mandibules ouvertes et quatre grands crocs externes reconnaissables.",
+        "La dentition centrale inférieure conserve les quatre dents principales visibles dans le gros plan a18-01 ; aucun changement de compte certain constaté.",
+        "Dreadlocks noirs avec anneaux métalliques clairs/cuivrés, col annelé noir et composition générale de a08-01 restent reconnaissables."
+      ],
+      "observable_differences": [
+        {
+          "area": "forehead_pigmentation_and_microdetail",
+          "finding": "Le réseau médian rouge et clair du front est redessiné : lignes centrales plus régulières et fines branches/ponctuations noires différemment distribuées. Le plissé et les reflets irréguliers du gros plan a18-01 ne sont pas conservés point pour point.",
+          "evidence": "Comparaison visuelle candidate-enlarged.png et a18-head.png, zone entre la crête centrale et les yeux.",
+          "implication": "Bonne apparence globale, mais le motif photographié ne peut pas être certifié identique."
+        },
+        {
+          "area": "facial_quills",
+          "finding": "Plusieurs longues soies noires devant les tempes/front latéral de a18-01 deviennent très peu lisibles ou plus courtes dans la candidate. Leur nombre exact, position et longueur ne sont plus traçables dans cette image générée.",
+          "evidence": "Parties latérales du front et dessus des yeux comparés dans les crops de tête.",
+          "implication": "Des appendices fins pourraient disparaître ou être reconstruits différemment dans un futur maillage."
+        },
+        {
+          "area": "mouth_soft_tissue",
+          "finding": "Gencive inférieure et surfaces des mandibules sont plus lissées : le modelé ridé et les petites stries visibles dans a18-01 sont atténués/remaniés. Les grandes dents sont présentes, mais cela ne conserve pas la surface anatomique exacte.",
+          "evidence": "candidate-mouth.png et a18-head-mouth.png ouverts en agrandissement QA.",
+          "implication": "Ne pas qualifier le détail anatomique de copie 1:1."
+        },
+        {
+          "area": "dreadlocks_and_metal_rings",
+          "finding": "Silhouette et anneaux reprennent le vocabulaire original, mais la position relative des anneaux clairs/cuivrés et l’espacement des mèches du côté image droite ne se superposent pas de façon démontrée aux photos. La répartition visible est une nouvelle synthèse, pas un détourage conservant chaque mèche.",
+          "evidence": "Comparaison candidate et a08-01 pour les mèches descendant devant l’épaule droite de l’image, plus gros plan a18-01.",
+          "implication": "Le nombre total des mèches, les anneaux par mèche et les racines restent non validés ; pas de preuve d’articulation indépendante."
+        },
+        {
+          "area": "neck_collar",
+          "finding": "La pile d’anneaux du cou est reconstruite avec un contour/espacement et un plissement légèrement différents, notamment sous la mandibule droite de l’image. Le gros plan source montre des anneaux plus nettement séparés ; la candidate les mélange par endroits dans une surface noire plus serrée.",
+          "evidence": "Crops tête et bouche, anneaux sous le menton, comparaison avec a18-01.",
+          "implication": "Surface et raccord au menton ne sont pas des détails photographiques conservés."
+        },
+        {
+          "area": "available_face_detail",
+          "finding": "La candidate entière mesure 1024×1536, mais sa tête utile occupe environ 240 pixels de largeur ; le gros plan original a18-01 contient plusieurs centaines de pixels supplémentaires sur cette même région. Agrandir le crop candidat ne récupère pas cette information.",
+          "evidence": "Dimensions natives et crops QA générés uniquement pour inspection, sans modification de la candidate.",
+          "implication": "Une image entière haute résolution ne constitue pas une augmentation de détail facial par rapport à la meilleure photo source."
+        }
+      ],
+      "limitations": [
+        "Pas de calibration caméra ni vues orthographiques : cette revue ne conclut pas à des écarts métriques 3D à partir de seules différences de perspective.",
+        "Aucune image ne révèle les racines complètes des dreadlocks, le scalp arrière ou les surfaces occultées.",
+        "Les gros plans QA recadrés/agrandis servent uniquement à comparer les images ; ce ne sont pas des nouvelles références source ni des retouches du candidat."
+      ],
+      "recommendation": "Conserver cette image comme essai synthétique/composite de présentation. Pour la génération géométrique de fidélité maximale, conserver les références photo validées et leur détail a18-01 ; ne pas étiqueter la candidate exactref ou 1:1. Aucun envoi Meshy pendant cette revue.",
+      "new_paid_meshy_requests": 0
+    },
+    {
+      "schemaVersion": 1,
+      "reviewer": "/root/auto_split_geometry_review",
+      "reviewed_at": "2026-10-23T01:34:11.705843+00:00",
+      "candidate": "/workspace/qa/yautja-expansion-20261023/generated-reference-city/city-hunter-multireference-candidate.png",
+      "candidate_sha256": "9822bb739874ab5b75ba781ce61432f10c5016831cf1ae9d976cefda2e3260c6",
+      "dimensions": [
+        1024,
+        1536
+      ],
+      "reference_files": [
+        {
+          "path": "/workspace/qa/yautja-expansion-20261023/references/city_hunter/images/mmpr-02uts_b084.jpg",
+          "sha256": "8e94ec5027aaa6d4b265390da4a64e1b3d2a597145c9f328e810693bea07167f"
+        },
+        {
+          "path": "/workspace/qa/yautja-expansion-20261023/references/city_hunter/images/mmpr-02uts_a08-01.jpg",
+          "sha256": "4be43a96da786ec91c300e25655157cc815ccbcd16aac79483a5b8db1230200a"
+        },
+        {
+          "path": "/workspace/qa/yautja-expansion-20261023/references/city_hunter/images/mmpr-02uts_b090.jpg",
+          "sha256": "cf46c225b9ef00098a15a3f8276fd966d4c3482edf9ec4459e5ce09736996789"
+        }
+      ],
+      "method": "Actually opened complete candidate and all three official source photos with view_image, then opened native-grid QA crops of candidate wrist/belt/console and official wrist/belt. Crops enlarged only for inspection; candidate and sources unchanged.",
+      "passed": false,
+      "pass_scope": "Strict 1:1 equipment-copy certification only. This does not reject the image as an optional synthetic visualization.",
+      "identity_city_hunter": true,
+      "major_equipment_present": true,
+      "eligible_as_verified_photographic_reference": false,
+      "checks": {
+        "two_visible_blades": true,
+        "both_blade_tips_complete": true,
+        "blades_on_anatomical_right_forearm": true,
+        "forearm_housing_present": true,
+        "hip_disc_present": true,
+        "belt_and_front_plates_present": true,
+        "pouch_present": true,
+        "left_forearm_console_present": true,
+        "asymmetric_shoulder_armor_present": true,
+        "body_netting_present": true,
+        "left_hidden_hand_matches_reference": null,
+        "internal_console_and_hinge_validated": false,
+        "exact_blade_dimensions_validated": false
+      },
+      "findings": [
+        {
+          "component": "right_wristblades",
+          "severity": "medium",
+          "observation": "Two separate silver blades and both tips remain visible, emerge from the correct bronze gauntlet and extend beside the hand. Overall extension relative to the full body appears consistent with a08-01 after scaling; no supported claim of a major shortening.",
+          "difference": "Compared with close-up b084, the stepped blade sections and S-shaped proximal transitions look thinner/smoother and less distinctly modeled in the candidate. The source close-up shows broad flat stepped sections and sharply legible recesses.",
+          "certainty": "The difference in visible edge/detail treatment is observable; exact width, section depth and length cannot be established from different camera scales/views. No numerical fidelity score or dimension claim.",
+          "action": "Keep b084 as a dedicated equipment reference; do not let this full-body synthetic image be the sole geometry source for the blades."
+        },
+        {
+          "component": "right_gauntlet_housing",
+          "severity": "medium",
+          "observation": "Two long front rails, rounded upper ends, side circuitry and paired side cylinders are retained as recognizable City Hunter features.",
+          "difference": "Fine hinge/latch marks, circuit-trace branching, pits and small etched details have been redrawn/simplified rather than copied at their original pixel positions. The synthetic fine lines should not be treated as measured mechanical paths.",
+          "action": "Use the original b084 close-up to validate any generated gauntlet geometry and texture. Housing interior, blade tracks and underside remain unverified."
+        },
+        {
+          "component": "left_hand_and_console",
+          "severity": "high_for_1to1_claim",
+          "observation": "The spear is removed and the left hand is now shown gripping empty space with visible reconstructed fingers/glove openings. The forearm console remains a closed bronze housing.",
+          "difference": "a08-01 and b090 show that palm/finger region partly covered by the spear. The newly visible palm/finger surfaces in the candidate are synthetic reconstruction, not a verified photographic match. The candidate console panel symbols/layout are also illustrative details.",
+          "action": "Do not certify these surfaces1:1. The image does not establish the console interior or opening hinge, and should not be used to claim an independently animated true console mechanism already exists."
+        },
+        {
+          "component": "hip_disc_belt_pouch_front_plates",
+          "severity": "low_to_medium",
+          "observation": "Hip disc in its carrier, pale pouch, diagonal belt straps, front rectangular buckle and hanging plate apron are all present in the expected places. No major equipment substitution detected.",
+          "difference": "Disc highlights/slot contours, front-plate engravings and small edge profiles are reinterpreted. Individual decorative marks cannot be traced as an unchanged copy of a08-01.",
+          "action": "Retain the original photographs for engraving and contour validation; current full-body image supports placement and visual identity only."
+        },
+        {
+          "component": "armor_and_netting",
+          "severity": "medium_for_surface_fidelity",
+          "observation": "Asymmetric layered shoulder armor, chest/neck plates and both layered shin guards remain recognizable; the mesh/netting covers the same broad body regions.",
+          "difference": "The generated image redraws fine net crossings, cord paths, skin-to-net intersections and armor distress. Their apparent sharpness is not evidence that the pattern is an exact reproduction.",
+          "action": "Use original close-ups and multiple angles for pattern validation. Hidden back armor, rear netting and under-armor surfaces remain unknown."
+        }
+      ],
+      "recommendation": "Candidate is a plausible high-detail City Hunter illustration with the main equipment retained. Keep it explicitly labelled synthetic and use it only alongside the original equipment photographs. It does not pass a strict1:1 equipment-copy check and cannot certify newly revealed surfaces.",
+      "evidence_viewed": [
+        "/workspace/qa/yautja-expansion-20261023/generated-reference-city/city-hunter-multireference-candidate.png",
+        "/workspace/qa/yautja-expansion-20261023/references/city_hunter/images/mmpr-02uts_b084.jpg",
+        "/workspace/qa/yautja-expansion-20261023/references/city_hunter/images/mmpr-02uts_a08-01.jpg",
+        "/workspace/qa/yautja-expansion-20261023/references/city_hunter/images/mmpr-02uts_b090.jpg",
+        "/workspace/qa/yautja-expansion-20261023/generated-reference-city/qa-equipment-review/candidate-wrist.png",
+        "/workspace/qa/yautja-expansion-20261023/generated-reference-city/qa-equipment-review/reference-wrist.png",
+        "/workspace/qa/yautja-expansion-20261023/generated-reference-city/qa-equipment-review/candidate-belt.png",
+        "/workspace/qa/yautja-expansion-20261023/generated-reference-city/qa-equipment-review/reference-belt.png",
+        "/workspace/qa/yautja-expansion-20261023/generated-reference-city/qa-equipment-review/candidate-console.png"
+      ],
+      "limitations": [
+        "Comparison concerns a synthetic2D image and promotional statue photographs, not film-costume scans or a3D model.",
+        "Different view/perspective/lighting make exact mechanical dimensions uncertain.",
+        "No candidate/source edits, paid generation, upload or application changes performed in this review."
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "reviewer": "/root/other_yautja_references",
+      "review_type": "Independent visual comparison of AI candidate against official photographic sources",
+      "files": {
+        "candidate": {
+          "path": "/workspace/qa/yautja-expansion-20261023/generated-reference-city/city-hunter-multireference-candidate.png",
+          "sha256": "9822bb739874ab5b75ba781ce61432f10c5016831cf1ae9d976cefda2e3260c6",
+          "actually_opened": true
+        },
+        "primary_photo": {
+          "path": "/workspace/qa/yautja-expansion-20261023/references/city_hunter/images/mmpr-02uts_a08-01.jpg",
+          "sha256": "4be43a96da786ec91c300e25655157cc815ccbcd16aac79483a5b8db1230200a",
+          "actually_opened": true
+        },
+        "lossless_cutout": {
+          "path": "/workspace/qa/yautja-expansion-20261023/prepared/city_hunter/body/input-gray.png",
+          "sha256": "d77df7fd9025fb73de6dbad794c9e0376078fb3acb38e9b169a47901a43e4093",
+          "actually_opened": true
+        },
+        "other_angle": {
+          "path": "/workspace/qa/yautja-expansion-20261023/references/city_hunter/images/mmpr-02uts_b090.jpg",
+          "sha256": "cf46c225b9ef00098a15a3f8276fd966d4c3482edf9ec4459e5ce09736996789",
+          "actually_opened": true
+        }
+      },
+      "comparison_method": {
+        "original_native_alpha_subject_bounds": [
+          408,
+          282,
+          827,
+          1237
+        ],
+        "candidate_manually_observed_subject_bounds": [
+          223,
+          44,
+          865,
+          1499
+        ],
+        "alignment": "Cropped to visible subject extents and uniformly scaled both silhouettes to 1280px subject height; no nonuniform warping or automatic likeness score. Compared normalized side-by-side and original native source.",
+        "analysis_previews": [
+          "/tmp/city-alignment-review.jpg",
+          "/tmp/city-limbs-review.jpg"
+        ],
+        "caveat": "Manual candidate bounds and visual analysis are approximate, not a geometry measurement."
+      },
+      "findings": [
+        {
+          "severity": "pass_with_limit",
+          "area": "overall_silhouette_and_proportions",
+          "observation": "After matching full subject height, the candidate retains the source forward stance, large unmasked head, asymmetric shoulder armor, belt/loin plates, long shin armor and two different foot orientations. The larger figure in the candidate canvas is a framing change, not by itself proof of different proportions. No obvious missing lower leg or foot is visible.",
+          "limit": "Small contour changes remain; a single photograph cannot establish hidden anatomy or measured 1:1 geometry."
+        },
+        {
+          "severity": "issue",
+          "area": "character_left_hand_viewer_right",
+          "observation": "The original hand closes around a combi-stick crossing the palm. The candidate removes that staff but redraws a more open/splayed empty grip with newly exposed dark palm/glove and shifted finger shapes. Those newly visible surfaces are not demonstrated by a08-01 or b090; the latter also holds the staff.",
+          "implication": "The hand is a synthesis, not a verified lossless removal of an external prop."
+        },
+        {
+          "severity": "issue",
+          "area": "netting_and_skin_pattern",
+          "observation": "The candidate sharpens and redraws the mesh lattice into cleaner, larger and more regular crossing lines, particularly over abdomen and upper thighs. Dark skin spotting and highlight placement also change. Individual cells/knots and skin marks no longer correspond exactly to the photographic source.",
+          "implication": "Higher apparent detail does not prove source-faithful texture fidelity; do not label this candidate photographic or 1:1."
+        },
+        {
+          "severity": "issue",
+          "area": "fine_equipment_and_hair",
+          "observation": "Broad bronze gauntlet shells, extended paired blades, shoulder plates and dreadlock flow remain recognizable, but engraving grooves, thin plate edges and some dreadlock bead/strand detail are redrawn and higher contrast. The candidate does not provide an independent rear view, scalp attachment or internal blade mechanism.",
+          "implication": "Useful as a generated front appearance candidate; insufficient for verified articulated component geometry."
+        },
+        {
+          "severity": "pass_with_limit",
+          "area": "feet_and_leg_pose",
+          "observation": "Both feet are fully inside the candidate canvas and the forward foot plus the angled farther foot follow the photographic stance. The skin/claw rendering is repainted, with more pronounced bright toe forms and crisp dark claws; there is no basis to count that as new observed anatomical detail.",
+          "limit": "Undersides originally resting on the display are still unverified. No claim of identical surface/toe geometry."
+        },
+        {
+          "severity": "pass_with_limit",
+          "area": "identity",
+          "observation": "Recognizable unmasked roaring City Hunter: ridged tan/brown forehead, open mandibles, bronze asymmetric armor, black banded dreadlocks, thigh disc and green-blue shin armor. It is not the masked head variant.",
+          "limit": "Recognizability is distinct from measured film or statue likeness."
+        }
+      ],
+      "verdict": {
+        "complete_visible_body": true,
+        "gross_source_stance_preserved": true,
+        "is_lossless_photographic_cutout": false,
+        "verified_1to1": false,
+        "approve_as_verified_fidelity_reference": false,
+        "reason": "The candidate is an AI reconstruction with a newly exposed empty hand and redrawn texture/engraving details. It can be reviewed as a synthetic appearance proposal, but does not meet the previously lossless photographic reference claim."
+      },
+      "paid_operations": 0,
+      "assets_modified": false
+    }
+  ],
+  "mesh_generation_submitted": false,
+  "decision": "Keep synthesis as supplemental presentation only; retain original photographs for detail and classical native cutouts as validated inputs. Do not label candidate1:1."
+}

@@ -1,0 +1,121 @@
+{
+  "status": "passed",
+  "startedAt": "2026-10-25T07:39:51.449Z",
+  "errors": [],
+  "failedRequests": [],
+  "captures": [
+    "public-final-live-city-detailed-decoy.png",
+    "public-final-live-city-wrist-countdown.png",
+    "public-final-live-city-queen-trophy.png"
+  ],
+  "automated": true,
+  "humanTesters": 0,
+  "externalRequests": [],
+  "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+  "indexSha256": "8683a627c08e1c2647913aa29dc375df8cdde08c69da18895981de2b5c5fae6f",
+  "initial": {
+    "hp": 850,
+    "maxHp": 850,
+    "energy": 100,
+    "visible": false,
+    "visual": "imported",
+    "mask": "attached"
+  },
+  "handoff": {
+    "hp": 850,
+    "energy": 100,
+    "visible": true,
+    "phase": "complete",
+    "grace": 7
+  },
+  "route": {
+    "visited": [
+      "insertion",
+      "approach",
+      "relay",
+      "foundry"
+    ],
+    "completed": [
+      "insertion",
+      "approach",
+      "relay"
+    ],
+    "openGates": [
+      "gate-insertion-approach",
+      "gate-approach-relay",
+      "gate-relay-foundry"
+    ],
+    "boss": null
+  },
+  "sector4": {
+    "sector": 3,
+    "clusters": 4,
+    "diagnostics": {
+      "triangles": 7464,
+      "drawMeshes": 5,
+      "modelledPieces": 114,
+      "colliders": 20,
+      "floorY": 0
+    },
+    "apc": true,
+    "hp": 800.7279999999989
+  },
+  "decoy": {
+    "sourceKind": "imported",
+    "sourceAssetKey": "city_hunter",
+    "snapshotPose": true,
+    "visibleMeshes": 26,
+    "visibleTriangles": 310789,
+    "totalTriangles": 315050,
+    "geometryBytes": 29624868,
+    "ownedGeometries": 39,
+    "ownedMaterials": 2,
+    "privateSkeletons": 26,
+    "sharedSourceGeometries": 0,
+    "copiedTextures": 0,
+    "restoredHeads": 0,
+    "preservedHiddenHeads": 1,
+    "elapsed": 0,
+    "disposed": false
+  },
+  "countdown": {
+    "disposed": false,
+    "countdown": {
+      "remainingSeconds": 5.4,
+      "displaySeconds": 6,
+      "elapsed": 0.6,
+      "anchor": "measured-city-console",
+      "anchorObjectName": "city-left-console-board"
+    },
+    "trophy": null
+  },
+  "pause": {
+    "paused": true,
+    "equal": true
+  },
+  "trophy": {
+    "state": {
+      "disposed": false,
+      "countdown": null,
+      "trophy": {
+        "elapsed": 0.1,
+        "remainingSeconds": 3.4,
+        "anchor": "imported-right-hand",
+        "anchorObjectName": "imported-socket-rightHand",
+        "family": "queen",
+        "victimKind": "predalien_queen"
+      }
+    },
+    "family": "queen"
+  },
+  "cleanup": {
+    "decoys": 0,
+    "ghostDisposed": true,
+    "player": null,
+    "active": false
+  },
+  "completedAt": "2026-10-25T07:40:26.968Z",
+  "conditions": "Published production build verified by SHA and CSP; controlled Player-method visual presentation after actual sector progression. Not a human playthrough or 1:1 certification.",
+  "fidelity1to1Verified": false,
+  "original_artifact": "/workspace/qa/development-20261025/public-final/report.json"
+}

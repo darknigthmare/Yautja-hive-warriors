@@ -1,0 +1,128 @@
+✔ production: self-hosted startup tolerates damaged saved data (7878.97724ms)
+✔ menus: every modal closes cleanly, settings persist, keyboard focus is visible (13660.530213ms)
+Browser failure state: {"state":{"playing":true,"paused":false,"hp":1150,"latched":false,"photo":false,"position":[0,4.499999991717513,-0.9000000000000004],"screens":["in-game-hud"]},"errors":[],"failedRequests":[]}
+✖ solo: selected loadout, movement, pause, photo, defeat, replay and cleanup (44215.633022ms)
+✔ campaign: a boss victory advances the chapter and loads its actual arena (54597.384545ms)
+✔ coop: two players render at correct aspect and share pause/cleanup (77113.587176ms)
+✔ mobile: 390px menus have no horizontal overflow and remain navigable (7741.27945ms)
+Insertion phase checks: {"initial":{"phase":"descending","active":true,"progress":0,"elapsed":0,"visible":false,"position":[0,0,0],"hatchOpening":0,"hp":1000,"directorTime":0,"pending":12,"bladeFrontMax":0.9792598715668803,"enemies":[[2.9724590786421894,0,-33.86981675512576],[20.68693986918521,0,26.9824112867756],[-33.48026394269398,0,-5.922155547395355],[38.9483359390932,0,2.006770434190495],[-8.826501108747966,0,32.834324695008895],[-15.670887361849378,0,-30.17322139401475]]},"input":{"attacking":false,"blocking":false,"photo":false,"wheel":false,"mounted":false},"pausedBefore":{"phase":"descending","active":true,"progress":0,"elapsed":0,"visible":false,"position":[0,0,0],"hatchOpening":0,"hp":1000,"directorTime":0,"pending":12,"bladeFrontMax":0.9792598715668803,"enemies":[[2.9724590786421894,0,-33.86981675512576],[20.68693986918521,0,26.9824112867756],[-33.48026394269398,0,-5.922155547395355],[38.9483359390932,0,2.006770434190495],[-8.826501108747966,0,32.834324695008895],[-15.670887361849378,0,-30.17322139401475]]},"pausedAfter":{"phase":"descending","active":true,"progress":0,"elapsed":0,"visible":false,"position":[0,0,0],"hatchOpening":0,"hp":1000,"directorTime":0,"pending":12,"bladeFrontMax":0.9792598715668803,"enemies":[[2.9724590786421894,0,-33.86981675512576],[20.68693986918521,0,26.9824112867756],[-33.48026394269398,0,-5.922155547395355],[38.9483359390932,0,2.006770434190495],[-8.826501108747966,0,32.834324695008895],[-15.670887361849378,0,-30.17322139401475]]},"settled":{"phase":"settling","active":true,"progress":0.23333333333333303,"elapsed":1.1083333333333318,"visible":false,"position":[0,0,0],"hatchOpening":0,"hp":1000,"directorTime":0,"pending":12,"bladeFrontMax":0.9792598715668803,"enemies":[[2.9724590786421894,0,-33.86981675512576],[20.68693986918521,0,26.9824112867756],[-33.48026394269398,0,-5.922155547395355],[38.9483359390932,0,2.006770434190495],[-8.826501108747966,0,32.834324695008895],[-15.670887361849378,0,-30.17322139401475]]},"openingStart":{"phase":"opening","active":true,"progress":0.3175438596491222,"elapsed":1.5083333333333304,"visible":true,"position":[0,0,0],"hatchOpening":0.00009870873784926508,"hp":1000,"directorTime":0,"pending":12,"bladeFrontMax":0.9792598715668803,"enemies":[[2.9724590786421894,0,-33.86981675512576],[20.68693986918521,0,26.9824112867756],[-33.48026394269398,0,-5.922155547395355],[38.9483359390932,0,2.006770434190495],[-8.826501108747966,0,32.834324695008895],[-15.670887361849378,0,-30.17322139401475]]},"openingMid":{"phase":"opening","active":true,"progress":0.41228070175438536,"elapsed":1.9583333333333304,"visible":true,"position":[0,0,0],"hatchOpening":0.23657826919542999,"hp":1000,"directorTime":0,"pending":12,"bladeFrontMax":0.9792598715668803,"enemies":[[2.9724590786421894,0,-33.86981675512576],[20.68693986918521,0,26.9824112867756],[-33.48026394269398,0,-5.922155547395355],[38.9483359390932,0,2.006770434190495],[-8.826501108747966,0,32.834324695008895],[-15.670887361849378,0,-30.17322139401475]]},"exitStart":{"phase":"exiting","active":true,"progress":0.6228070175438583,"elapsed":2.958333333333327,"visible":true,"position":[0,0,0.0002692282045415589],"hatchOpening":1,"hp":1000,"directorTime":0,"pending":12,"bladeFrontMax":0.9797319020665249,"enemies":[[2.9724590786421894,0,-33.86981675512576],[20.68693986918521,0,26.9824112867756],[-33.48026394269398,0,-5.922155547395355],[38.9483359390932,0,2.006770434190495],[-8.826501108747966,0,32.834324695008895],[-15.670887361849378,0,-30.17322139401475]]},"exitMid":{"phase":"exiting","active":true,"progress":0.7596491228070161,"elapsed":3.6083333333333267,"visible":true,"position":[0,0,1.2744954799191979],"hatchOpening":1,"hp":1000,"directorTime":0,"pending":12,"bladeFrontMax":3.231832331127009,"enemies":[[2.9724590786421894,0,-33.86981675512576],[20.68693986918521,0,26.9824112867756],[-33.48026394269398,0,-5.922155547395355],[38.9483359390932,0,2.006770434190495],[-8.826501108747966,0,32.834324695008895],[-15.670887361849378,0,-30.17322139401475]]},"complete":{"phase":"complete","active":false,"progress":1,"elapsed":4.75,"visible":true,"position":[0,0,4.2],"hatchOpening":1,"hp":1000,"directorTime":0,"pending":12,"bladeFrontMax":6.0413130760192875,"enemies":[[2.9724590786421894,0,-33.86981675512576],[20.68693986918521,0,26.9824112867756],[-33.48026394269398,0,-5.922155547395355],[38.9483359390932,0,2.006770434190495],[-8.826501108747966,0,32.834324695008895],[-15.670887361849378,0,-30.17322139401475]]},"graceRemaining":7}
+✔ insertion hides hunters until touchdown, opens occupied capsules and survives pause, co-op and replay (19657.301036ms)
+✔ connected battlefield leaves time to act before reinforcements and keeps combat responsive (46608.584523ms)
+Relay defense state checks: {"target":8,"beforeActivation":{"entered":true,"completed":false,"kills":0,"defenseKills":0,"commanderDefeated":false,"bossDefeated":false,"interacted":false,"relayPhase":"awaiting-activation","active":1,"queued":10,"gate":false,"objective":"Réactivez le relais de surveillance — APPROCHEZ ET INTERAGISSEZ · CONTRE-ATTAQUE : 8 ENNEMIS"},"activated":{"entered":true,"completed":false,"kills":0,"defenseKills":0,"commanderDefeated":false,"bossDefeated":false,"interacted":true,"relayPhase":"counterattack","active":1,"queued":22,"gate":false,"objective":"Repoussez la contre-attaque du relais : 0/8"},"firstBatchWait":0.1,"partial":{"entered":true,"completed":false,"kills":0,"defenseKills":1,"commanderDefeated":false,"bossDefeated":false,"interacted":true,"relayPhase":"counterattack","active":0,"queued":22,"gate":false,"objective":"Repoussez la contre-attaque du relais : 1/8"},"complete":{"entered":true,"completed":true,"kills":0,"defenseKills":8,"commanderDefeated":false,"bossDefeated":false,"interacted":true,"relayPhase":"secured","active":1,"queued":0,"gate":true,"objective":"PASSAGE OUVERT — REJOIGNEZ Gorge des chasseurs"},"missionAlive":true}
+✖ relay activation keeps its gate locked until the real counterattack is defeated (31774.099599ms)
+✖ campaign advances through five real maps and finishes after the final boss (73502.687643ms)
+Paused visual settlement: {"promises":6,"readyEvents":[{"paused":true,"frame":45,"needsRender":true},{"paused":true,"frame":45,"needsRender":true},{"paused":true,"frame":45,"needsRender":true},{"paused":true,"frame":45,"needsRender":true},{"paused":true,"frame":45,"needsRender":true},{"paused":true,"frame":46,"needsRender":true}]}
+✖ pause and photo mode freeze mission tasks; menu return cancels effects and timers (102313.414097ms)
+✔ sandbox honors the enemy slider and can be completed without spawning another boss (47023.995482ms)
+✖ melee damages bosses and a close-range trophy execution records a real final victory and releases its visual (50576.272528ms)
+✖ co-op has independent movement and combat and continues while one hunter survives (58948.397489ms)
+✔ production rendering presets compile, export an image and preserve independent co-op viewports (33916.969789ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 9
+ℹ fail 6
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 671180.554862
+
+✖ failing tests:
+
+test at tests/browser.test.mjs:173:1
+✖ solo: selected loadout, movement, pause, photo, defeat, replay and cleanup (44215.633022ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(await page.evaluate(() => window.game.photoMode.isActive))
+  
+      at file:///workspace/Yautja-hive-warriors/tests/browser.test.mjs:193:12
+      at async withGame (file:///workspace/Yautja-hive-warriors/tests/browser.test.mjs:82:5)
+      at async TestContext.<anonymous> (file:///workspace/Yautja-hive-warriors/tests/browser.test.mjs:174:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/gameplay.test.mjs:227:1
+✖ relay activation keeps its gate locked until the real counterattack is defeated (31774.099599ms)
+  AssertionError [ERR_ASSERTION]: Activation retains grace and delayed reinforcement cadence
+      at TestContext.<anonymous> (file:///workspace/Yautja-hive-warriors/tests/gameplay.test.mjs:294:12)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/gameplay.test.mjs:305:1
+✖ campaign advances through five real maps and finishes after the final boss (73502.687643ms)
+  page.evaluate: Error: Blocked battlefield route before 0,0,4.5
+      at moveTo (eval at evaluate (:370:30), <anonymous>:17:66)
+      at eval (eval at evaluate (:370:30), <anonymous>:34:9)
+      at UtilityScript.evaluate (<anonymous>:372:16)
+      at UtilityScript.<anonymous> (<anonymous>:1:44)
+      at reachBattlefieldSector (/workspace/Yautja-hive-warriors/tests/helpers/complete-battlefield.mjs:8:15)
+      at async defeatFinalBattlefieldEncounter (/workspace/Yautja-hive-warriors/tests/helpers/complete-battlefield.mjs:92:17)
+      at async TestContext.<anonymous> (/workspace/Yautja-hive-warriors/tests/gameplay.test.mjs:314:21) {
+    log: []
+  }
+
+test at tests/gameplay.test.mjs:333:1
+✖ pause and photo mode freeze mission tasks; menu return cancels effects and timers (102313.414097ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/Yautja-hive-warriors/tests/gameplay.test.mjs:374:12)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/gameplay.test.mjs:417:1
+✖ melee damages bosses and a close-range trophy execution records a real final victory and releases its visual (50576.272528ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(results.meleeDamage > 0)
+  
+      at TestContext.<anonymous> (file:///workspace/Yautja-hive-warriors/tests/gameplay.test.mjs:455:12)
+      at runNextTicks (node:internal/process/task_queues:65:5)
+      at process.processImmediate (node:internal/timers:502:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/gameplay.test.mjs:476:1
+✖ co-op has independent movement and combat and continues while one hunter survives (58948.397489ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/Yautja-hive-warriors/tests/gameplay.test.mjs:503:12)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

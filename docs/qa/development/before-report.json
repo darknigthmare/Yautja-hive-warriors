@@ -1,0 +1,527 @@
+{
+  "phase": "before",
+  "status": "passed",
+  "startedAt": "2026-10-25T06:25:27.051Z",
+  "automated": true,
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "conditions": "Controlled local production-asset views; actual objective completion/travel for routes. Actors and HUD hidden only for architectural presentation frames. No human playthrough.",
+  "errors": [],
+  "failedRequests": [],
+  "captures": [
+    {
+      "name": "forest-sector-2",
+      "path": "before-forest-sector-2.png",
+      "camera": [
+        63,
+        51,
+        -109
+      ],
+      "target": [
+        0,
+        2,
+        -170
+      ],
+      "currentSector": "approach",
+      "level": "gunnison_forest",
+      "frame": {
+        "target": [
+          0,
+          2,
+          -170
+        ],
+        "offset": [
+          63,
+          49,
+          61
+        ],
+        "architecture": true
+      },
+      "original_path": "/workspace/qa/development-20261025/before-forest-sector-2.png"
+    },
+    {
+      "name": "forest-corridor",
+      "path": "before-forest-corridor.png",
+      "camera": [
+        23,
+        16,
+        -65
+      ],
+      "target": [
+        0,
+        3,
+        -85
+      ],
+      "currentSector": "approach",
+      "level": "gunnison_forest",
+      "frame": {
+        "target": [
+          0,
+          3,
+          -85
+        ],
+        "offset": [
+          23,
+          13,
+          20
+        ],
+        "architecture": true
+      },
+      "original_path": "/workspace/qa/development-20261025/before-forest-corridor.png"
+    },
+    {
+      "name": "forest-sector-3",
+      "path": "before-forest-sector-3.png",
+      "camera": [
+        233,
+        51,
+        -109
+      ],
+      "target": [
+        170,
+        2,
+        -170
+      ],
+      "currentSector": "relay",
+      "level": "gunnison_forest",
+      "frame": {
+        "target": [
+          170,
+          2,
+          -170
+        ],
+        "offset": [
+          63,
+          49,
+          61
+        ],
+        "architecture": true
+      },
+      "original_path": "/workspace/qa/development-20261025/before-forest-sector-3.png"
+    },
+    {
+      "name": "forest-sector-4",
+      "path": "before-forest-sector-4.png",
+      "camera": [
+        233,
+        51,
+        -279
+      ],
+      "target": [
+        170,
+        2,
+        -340
+      ],
+      "currentSector": "foundry",
+      "level": "gunnison_forest",
+      "frame": {
+        "target": [
+          170,
+          2,
+          -340
+        ],
+        "offset": [
+          63,
+          49,
+          61
+        ],
+        "architecture": true
+      },
+      "original_path": "/workspace/qa/development-20261025/before-forest-sector-4.png"
+    },
+    {
+      "name": "forest-sector-5",
+      "path": "before-forest-sector-5.png",
+      "camera": [
+        63,
+        51,
+        -279
+      ],
+      "target": [
+        0,
+        2,
+        -340
+      ],
+      "currentSector": "command",
+      "level": "gunnison_forest",
+      "frame": {
+        "target": [
+          0,
+          2,
+          -340
+        ],
+        "offset": [
+          63,
+          49,
+          61
+        ],
+        "architecture": true
+      },
+      "original_path": "/workspace/qa/development-20261025/before-forest-sector-5.png"
+    },
+    {
+      "name": "forest-sector-6",
+      "path": "before-forest-sector-6.png",
+      "camera": [
+        63,
+        51,
+        -449
+      ],
+      "target": [
+        0,
+        2,
+        -510
+      ],
+      "currentSector": "nest",
+      "level": "gunnison_forest",
+      "frame": {
+        "target": [
+          0,
+          2,
+          -510
+        ],
+        "offset": [
+          63,
+          49,
+          61
+        ],
+        "architecture": true
+      },
+      "original_path": "/workspace/qa/development-20261025/before-forest-sector-6.png"
+    },
+    {
+      "name": "xenomorph_prime-sector-4",
+      "path": "before-xenomorph_prime-sector-4.png",
+      "camera": [
+        403,
+        51,
+        -109
+      ],
+      "target": [
+        340,
+        2,
+        -170
+      ],
+      "currentSector": "foundry",
+      "level": "xenomorph_prime",
+      "frame": {
+        "target": [
+          340,
+          2,
+          -170
+        ],
+        "offset": [
+          63,
+          49,
+          61
+        ],
+        "architecture": true
+      },
+      "original_path": "/workspace/qa/development-20261025/before-xenomorph_prime-sector-4.png"
+    },
+    {
+      "name": "antarctic_pyramid-sector-4",
+      "path": "before-antarctic_pyramid-sector-4.png",
+      "camera": [
+        -107,
+        51,
+        -279
+      ],
+      "target": [
+        -170,
+        2,
+        -340
+      ],
+      "currentSector": "foundry",
+      "level": "antarctic_pyramid",
+      "frame": {
+        "target": [
+          -170,
+          2,
+          -340
+        ],
+        "offset": [
+          63,
+          49,
+          61
+        ],
+        "architecture": true
+      },
+      "original_path": "/workspace/qa/development-20261025/before-antarctic_pyramid-sector-4.png"
+    },
+    {
+      "name": "romulus_station-sector-4",
+      "path": "before-romulus_station-sector-4.png",
+      "camera": [
+        403,
+        51,
+        231
+      ],
+      "target": [
+        340,
+        2,
+        170
+      ],
+      "currentSector": "foundry",
+      "level": "romulus_station",
+      "frame": {
+        "target": [
+          340,
+          2,
+          170
+        ],
+        "offset": [
+          63,
+          49,
+          61
+        ],
+        "architecture": true
+      },
+      "original_path": "/workspace/qa/development-20261025/before-romulus_station-sector-4.png"
+    },
+    {
+      "name": "city-holographic-decoy",
+      "path": "before-city-holographic-decoy.png",
+      "camera": [
+        8,
+        5.1,
+        11.2
+      ],
+      "target": [
+        3,
+        2.1,
+        4.2
+      ],
+      "currentSector": "insertion",
+      "level": "gunnison_forest",
+      "frame": {
+        "target": [
+          3,
+          2.1,
+          4.2
+        ],
+        "offset": [
+          5,
+          3,
+          7
+        ],
+        "architecture": false
+      },
+      "original_path": "/workspace/qa/development-20261025/before-city-holographic-decoy.png"
+    },
+    {
+      "name": "city-nuke-offset",
+      "path": "before-city-nuke-offset.png",
+      "camera": [
+        4,
+        4,
+        9.2
+      ],
+      "target": [
+        0,
+        2.5,
+        4.2
+      ],
+      "currentSector": "insertion",
+      "level": "gunnison_forest",
+      "frame": {
+        "target": [
+          0,
+          2.5,
+          4.2
+        ],
+        "offset": [
+          4,
+          1.5,
+          5
+        ],
+        "architecture": false
+      },
+      "original_path": "/workspace/qa/development-20261025/before-city-nuke-offset.png"
+    }
+  ],
+  "indexSha256": "9fdd19169a75d324dbde0e77bddbac90167e81ca19bfb06880084246a4bad6d6",
+  "routes": [
+    {
+      "level": "forest",
+      "sector": 1,
+      "visited": [
+        "insertion",
+        "approach"
+      ],
+      "completed": [
+        "insertion"
+      ],
+      "openGates": [
+        "gate-insertion-approach"
+      ],
+      "boss": null
+    },
+    {
+      "level": "forest",
+      "sector": 2,
+      "visited": [
+        "approach",
+        "relay"
+      ],
+      "completed": [
+        "insertion",
+        "approach"
+      ],
+      "openGates": [
+        "gate-insertion-approach",
+        "gate-approach-relay"
+      ],
+      "boss": null
+    },
+    {
+      "level": "forest",
+      "sector": 3,
+      "visited": [
+        "relay",
+        "foundry"
+      ],
+      "completed": [
+        "insertion",
+        "approach",
+        "relay"
+      ],
+      "openGates": [
+        "gate-insertion-approach",
+        "gate-approach-relay",
+        "gate-relay-foundry"
+      ],
+      "boss": null
+    },
+    {
+      "level": "forest",
+      "sector": 4,
+      "visited": [
+        "foundry",
+        "command"
+      ],
+      "completed": [
+        "insertion",
+        "approach",
+        "relay",
+        "foundry"
+      ],
+      "openGates": [
+        "gate-insertion-approach",
+        "gate-approach-relay",
+        "gate-relay-foundry",
+        "gate-foundry-command"
+      ],
+      "boss": null
+    },
+    {
+      "level": "forest",
+      "sector": 5,
+      "visited": [
+        "command",
+        "nest"
+      ],
+      "completed": [
+        "insertion",
+        "approach",
+        "relay",
+        "foundry",
+        "command"
+      ],
+      "openGates": [
+        "gate-insertion-approach",
+        "gate-approach-relay",
+        "gate-relay-foundry",
+        "gate-foundry-command",
+        "gate-command-nest"
+      ],
+      "boss": "predalien_queen"
+    },
+    {
+      "level": "xenomorph_prime",
+      "sector": 3,
+      "visited": [
+        "insertion",
+        "approach",
+        "relay",
+        "foundry"
+      ],
+      "completed": [
+        "insertion",
+        "approach",
+        "relay"
+      ],
+      "openGates": [
+        "gate-insertion-approach",
+        "gate-approach-relay",
+        "gate-relay-foundry"
+      ],
+      "boss": null
+    },
+    {
+      "level": "antarctic_pyramid",
+      "sector": 3,
+      "visited": [
+        "insertion",
+        "approach",
+        "relay",
+        "foundry"
+      ],
+      "completed": [
+        "insertion",
+        "approach",
+        "relay"
+      ],
+      "openGates": [
+        "gate-insertion-approach",
+        "gate-approach-relay",
+        "gate-relay-foundry"
+      ],
+      "boss": null
+    },
+    {
+      "level": "romulus_station",
+      "sector": 3,
+      "visited": [
+        "insertion",
+        "approach",
+        "relay",
+        "foundry"
+      ],
+      "completed": [
+        "insertion",
+        "approach",
+        "relay"
+      ],
+      "openGates": [
+        "gate-insertion-approach",
+        "gate-approach-relay",
+        "gate-relay-foundry"
+      ],
+      "boss": null
+    }
+  ],
+  "decoy": {
+    "meshes": 2,
+    "triangles": 144,
+    "life": 6,
+    "speed": 7.5
+  },
+  "nuke": {
+    "effectParent": "left-shoulder-joint",
+    "effectWorld": [
+      -0.66,
+      2.83,
+      4.55
+    ],
+    "consoleWorld": [
+      1.335878143104985e-07,
+      2.0924451327175575e-07,
+      4.200000009358283
+    ],
+    "distance": 2.9269436252618934,
+    "measurementReference": "Distance to consoleRoot transform origin, not the calibrated control-face center; this value must not be used as the wrist alignment error."
+  },
+  "completedAt": "2026-10-25T06:26:59.946Z",
+  "original_artifact": "/workspace/qa/development-20261025/before-report.json"
+}

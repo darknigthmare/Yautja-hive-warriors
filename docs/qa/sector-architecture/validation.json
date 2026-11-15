@@ -1,0 +1,92 @@
+{
+  "status": "cpu_passed_awaiting_final_build_render_qa",
+  "date": "2026-10-25",
+  "automated": true,
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "newMeshyCredits": 0,
+  "checks": {
+    "broadTargetedPassed": 26,
+    "broadTargetedFailed": 0,
+    "broadLog": "targeted-26-tests-v3.txt",
+    "geometryAndPBRFinite": true,
+    "cardinalLaneHalfWidth": 11,
+    "objectiveClearRadius": 10,
+    "corridorsThreeLanesPassable": true,
+    "rotatedEllipseContactVerified": true,
+    "navigationOutlineIsNotPhysicalRectangle": true,
+    "cooperativeCullingVerified": true,
+    "idempotentBuildAndCleanupVerified": true,
+    "fourCentralLandmarksPerNonInsertionSector": true,
+    "maximumSiteCoordinate": 36,
+    "uniformFeatureScale": 1.2,
+    "reservedSiteRadius": 11,
+    "architectureCasesIncluded": 8,
+    "cooperativeFramesWithClosedBarriers": true,
+    "maximumCooperativePotentialSubmissions": 229,
+    "maximumCooperativeVisibleTriangles": 465786
+  },
+  "budgetsAsserted": {
+    "perSectorMaxTriangles": 14000,
+    "perSectorMaxDrawMeshes": 6,
+    "perCorridorMaxTriangles": 6000,
+    "perCorridorMaxDrawMeshes": 4,
+    "wholeNetworkAdditionalTriangles": 100000,
+    "existingVisibleTriangles": 500000,
+    "existingResidentTriangles": 1200000,
+    "existingPotentialDrawSubmissions": 230
+  },
+  "sourceFiles": {
+    "js/graphics/BattlefieldSectorDetails.js": "8faec7f8bf8821ed2eb1b809bc4292c2ec797c7653823a1b602c33e279e3e39e",
+    "js/entities/Environment.js": "f46f44a75c352edbffb9ef667c62de494f42fcc1213e4a38f79c41457b709895",
+    "tests/battlefield-sector-details.test.js": "1ac1da35e9f50e6bdf54af83392dedd10c18ef893b8ee3e1d4a08a568adc3c5f"
+  },
+  "limitations": [
+    "Local set design, not film-location reconstruction or scan.",
+    "Flat Y0 movement floor; roofs, minor ribs and wires are decorative rather than walkable platforms.",
+    "Environment owns all created geometry and materials; existing shared surface texture cache remains unchanged.",
+    "Render comparison and production build verification belong to separate integration QA.",
+    "No player hardware frame-rate result or human playtest claimed."
+  ],
+  "visualRevisionReason": "Two sets were displaced into foggy outer corners; eleven before/after comparisons showed insufficient visible density.",
+  "version": 3,
+  "visualRevision": {
+    "comparativePairsExamined": 11,
+    "densityRevisionReviewedByQa": true,
+    "previousDensityFailure": "Only two small sets displaced to far corners",
+    "densityChange": "Four substantial central clusters, uniformscale1.2; old dressing respects reserved architecture sites",
+    "finalFixes": [
+      "Physical timber proxy is not a visible black box",
+      "Wood caps use bark rather than metallic material",
+      "Redundant legacy masts/floor seams removed and station corridor material batched for cooperative budget229"
+    ],
+    "finalRenderPending": true
+  },
+  "metrics": "metrics-v3.json",
+  "frameBudgetsMeasured": {
+    "forest": {
+      "maximumVisibleTriangles": 465786,
+      "maximumPotentialSubmissions": 171
+    },
+    "hive": {
+      "maximumVisibleTriangles": 110598,
+      "maximumPotentialSubmissions": 225
+    },
+    "temple": {
+      "maximumVisibleTriangles": 67406,
+      "maximumPotentialSubmissions": 221
+    },
+    "rooftop": {
+      "maximumVisibleTriangles": 89150,
+      "maximumPotentialSubmissions": 199
+    },
+    "jungle": {
+      "maximumVisibleTriangles": 355054,
+      "maximumPotentialSubmissions": 167
+    },
+    "station": {
+      "maximumVisibleTriangles": 115454,
+      "maximumPotentialSubmissions": 229
+    }
+  }
+}

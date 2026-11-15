@@ -1,0 +1,849 @@
+{
+  "status": "passed",
+  "startedAt": "2026-10-25T07:29:36.514Z",
+  "automated": true,
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "distanceUnits": "Game world units",
+  "conditions": "Controlled production-asset integration and visual checks. Scripted combat/travel is not human QA; projections freeze a pose and animate scanlines only.",
+  "errors": [],
+  "failedRequests": [],
+  "externalRequests": [],
+  "captures": [
+    "detailed-city_hunter-projection-fps-cloak.png",
+    "detailed-jungle_hunter-projection-fps-cloak.png",
+    "detailed-wolf_predator-projection-fps-cloak.png",
+    "two-hunter-private-projections.png",
+    "projection-survives-source-reload.png",
+    "city-countdown-facing-calibrated-plane.png",
+    "queen-trophy-held-at-imported-hand.png",
+    "queen-trophy-isolated-private-geometry.png",
+    "queen-trophy-after-gpu-cloak.png",
+    "queen-trophy-after-gpu-uncloak.png"
+  ],
+  "holograms": [
+    {
+      "id": "city_hunter",
+      "sourceState": "imported",
+      "diagnostics": {
+        "sourceKind": "imported",
+        "sourceAssetKey": "city_hunter",
+        "snapshotPose": true,
+        "visibleMeshes": 26,
+        "visibleTriangles": 310789,
+        "totalTriangles": 315050,
+        "geometryBytes": 29624868,
+        "ownedGeometries": 39,
+        "ownedMaterials": 2,
+        "privateSkeletons": 26,
+        "sharedSourceGeometries": 0,
+        "copiedTextures": 0,
+        "restoredHeads": 10,
+        "preservedHiddenHeads": 1,
+        "elapsed": 0,
+        "disposed": false
+      },
+      "hiddenHeads": 11,
+      "sourceStillCloaked": true,
+      "privateBuffers": true,
+      "privateMaterials": true,
+      "privateBones": true,
+      "poseUnchanged": true,
+      "life": {
+        "before": {
+          "life": 6,
+          "position": [
+            3,
+            0,
+            4.2
+          ],
+          "elapsed": 0
+        },
+        "after": {
+          "life": 5.75,
+          "position": [
+            3,
+            0,
+            6.075
+          ],
+          "elapsed": 0.25
+        },
+        "pausedEqual": true,
+        "remaining": 0,
+        "disposed": true,
+        "ownedGeometries": 39,
+        "ownedMaterials": 2,
+        "boneTextures": 25,
+        "geometryDisposals": 39,
+        "materialDisposals": 2,
+        "boneTextureDisposals": 25,
+        "sourceGeometryDisposals": 0,
+        "sourceMaterialDisposals": 0,
+        "geometryDisposalsAfterRepeat": 39
+      }
+    },
+    {
+      "id": "jungle_hunter",
+      "sourceState": "imported",
+      "diagnostics": {
+        "sourceKind": "imported",
+        "sourceAssetKey": "jungle_hunter",
+        "snapshotPose": true,
+        "visibleMeshes": 7,
+        "visibleTriangles": 258313,
+        "totalTriangles": 260709,
+        "geometryBytes": 34572608,
+        "ownedGeometries": 12,
+        "ownedMaterials": 2,
+        "privateSkeletons": 2,
+        "sharedSourceGeometries": 0,
+        "copiedTextures": 0,
+        "restoredHeads": 4,
+        "preservedHiddenHeads": 0,
+        "elapsed": 0,
+        "disposed": false
+      },
+      "hiddenHeads": 4,
+      "sourceStillCloaked": true,
+      "privateBuffers": true,
+      "privateMaterials": true,
+      "privateBones": true,
+      "poseUnchanged": true,
+      "life": {
+        "before": {
+          "life": 6,
+          "position": [
+            3,
+            0,
+            4.2
+          ],
+          "elapsed": 0
+        },
+        "after": {
+          "life": 5.75,
+          "position": [
+            3,
+            0,
+            6.075
+          ],
+          "elapsed": 0.25
+        },
+        "pausedEqual": true,
+        "remaining": 0,
+        "disposed": true,
+        "ownedGeometries": 12,
+        "ownedMaterials": 2,
+        "boneTextures": 2,
+        "geometryDisposals": 12,
+        "materialDisposals": 2,
+        "boneTextureDisposals": 2,
+        "sourceGeometryDisposals": 0,
+        "sourceMaterialDisposals": 0,
+        "geometryDisposalsAfterRepeat": 12
+      }
+    },
+    {
+      "id": "wolf_predator",
+      "sourceState": "procedural",
+      "diagnostics": {
+        "sourceKind": "procedural",
+        "sourceAssetKey": "wolf_predator",
+        "snapshotPose": true,
+        "visibleMeshes": 42,
+        "visibleTriangles": 165236,
+        "totalTriangles": 167632,
+        "geometryBytes": 15940608,
+        "ownedGeometries": 47,
+        "ownedMaterials": 2,
+        "privateSkeletons": 0,
+        "sharedSourceGeometries": 0,
+        "copiedTextures": 0,
+        "restoredHeads": 1,
+        "preservedHiddenHeads": 0,
+        "elapsed": 0,
+        "disposed": false
+      },
+      "hiddenHeads": 1,
+      "sourceStillCloaked": true,
+      "privateBuffers": true,
+      "privateMaterials": true,
+      "privateBones": true,
+      "poseUnchanged": true,
+      "life": {
+        "before": {
+          "life": 6,
+          "position": [
+            3,
+            0,
+            4.2
+          ],
+          "elapsed": 0
+        },
+        "after": {
+          "life": 5.75,
+          "position": [
+            3,
+            0,
+            6.075
+          ],
+          "elapsed": 0.25
+        },
+        "pausedEqual": true,
+        "remaining": 0,
+        "disposed": true,
+        "ownedGeometries": 47,
+        "ownedMaterials": 2,
+        "boneTextures": 0,
+        "geometryDisposals": 47,
+        "materialDisposals": 2,
+        "boneTextureDisposals": 0,
+        "sourceGeometryDisposals": 0,
+        "sourceMaterialDisposals": 0,
+        "geometryDisposalsAfterRepeat": 47
+      }
+    }
+  ],
+  "indexSha256": "8683a627c08e1c2647913aa29dc375df8cdde08c69da18895981de2b5c5fae6f",
+  "rooftopRoute": {
+    "visited": [
+      "insertion",
+      "approach",
+      "relay",
+      "foundry",
+      "command",
+      "nest"
+    ],
+    "completed": [
+      "insertion",
+      "approach",
+      "relay",
+      "foundry",
+      "command"
+    ],
+    "openGates": [
+      "gate-insertion-approach",
+      "gate-approach-relay",
+      "gate-relay-foundry",
+      "gate-foundry-command",
+      "gate-command-nest"
+    ],
+    "boss": "predalien"
+  },
+  "architecture": {
+    "roots": [
+      {
+        "name": "battlefield-sector-architecture-approach",
+        "role": "rooftop-approach",
+        "triangles": 10544,
+        "drawMeshes": 4,
+        "modelledPieces": 188,
+        "colliders": 8,
+        "floorY": 0,
+        "sites": [
+          {
+            "x": -25,
+            "z": -25,
+            "radius": 11,
+            "scale": 1.2,
+            "quadrant": 0
+          },
+          {
+            "x": 25,
+            "z": -25,
+            "radius": 11,
+            "scale": 1.2,
+            "quadrant": 1
+          },
+          {
+            "x": -25,
+            "z": 25,
+            "radius": 11,
+            "scale": 1.2,
+            "quadrant": 2
+          },
+          {
+            "x": 25,
+            "z": 25,
+            "radius": 11,
+            "scale": 1.2,
+            "quadrant": 3
+          }
+        ]
+      },
+      {
+        "name": "battlefield-sector-architecture-relay",
+        "role": "rooftop-relay",
+        "triangles": 9864,
+        "drawMeshes": 4,
+        "modelledPieces": 152,
+        "colliders": 8,
+        "floorY": 0,
+        "sites": [
+          {
+            "x": -25,
+            "z": -25,
+            "radius": 11,
+            "scale": 1.2,
+            "quadrant": 0
+          },
+          {
+            "x": 32,
+            "z": -32,
+            "radius": 11,
+            "scale": 1.2,
+            "quadrant": 1
+          },
+          {
+            "x": -25,
+            "z": 25,
+            "radius": 11,
+            "scale": 1.2,
+            "quadrant": 2
+          },
+          {
+            "x": 25,
+            "z": 25,
+            "radius": 11,
+            "scale": 1.2,
+            "quadrant": 3
+          }
+        ]
+      },
+      {
+        "name": "battlefield-sector-architecture-foundry",
+        "role": "rooftop-foundry",
+        "triangles": 10544,
+        "drawMeshes": 4,
+        "modelledPieces": 188,
+        "colliders": 8,
+        "floorY": 0,
+        "sites": [
+          {
+            "x": -25,
+            "z": -25,
+            "radius": 11,
+            "scale": 1.2,
+            "quadrant": 0
+          },
+          {
+            "x": 25,
+            "z": -25,
+            "radius": 11,
+            "scale": 1.2,
+            "quadrant": 1
+          },
+          {
+            "x": -25,
+            "z": 25,
+            "radius": 11,
+            "scale": 1.2,
+            "quadrant": 2
+          },
+          {
+            "x": 25,
+            "z": 25,
+            "radius": 11,
+            "scale": 1.2,
+            "quadrant": 3
+          }
+        ]
+      },
+      {
+        "name": "battlefield-sector-architecture-command",
+        "role": "rooftop-command",
+        "triangles": 11480,
+        "drawMeshes": 4,
+        "modelledPieces": 202,
+        "colliders": 10,
+        "floorY": 0,
+        "sites": [
+          {
+            "x": -25,
+            "z": -25,
+            "radius": 11,
+            "scale": 1.2,
+            "quadrant": 0
+          },
+          {
+            "x": 25,
+            "z": -25,
+            "radius": 11,
+            "scale": 1.2,
+            "quadrant": 1
+          },
+          {
+            "x": -25,
+            "z": 25,
+            "radius": 11,
+            "scale": 1.2,
+            "quadrant": 2
+          },
+          {
+            "x": 25,
+            "z": 25,
+            "radius": 11,
+            "scale": 1.2,
+            "quadrant": 3
+          }
+        ]
+      },
+      {
+        "name": "battlefield-sector-architecture-nest",
+        "role": "rooftop-nest",
+        "triangles": 10336,
+        "drawMeshes": 5,
+        "modelledPieces": 144,
+        "colliders": 16,
+        "floorY": 0,
+        "sites": [
+          {
+            "x": -25,
+            "z": -25,
+            "radius": 11,
+            "scale": 1.2,
+            "quadrant": 0
+          },
+          {
+            "x": 25,
+            "z": -25,
+            "radius": 11,
+            "scale": 1.2,
+            "quadrant": 1
+          },
+          {
+            "x": -25,
+            "z": 25,
+            "radius": 11,
+            "scale": 1.2,
+            "quadrant": 2
+          },
+          {
+            "x": 25,
+            "z": 25,
+            "radius": 11,
+            "scale": 1.2,
+            "quadrant": 3
+          }
+        ]
+      },
+      {
+        "name": "battlefield-corridor-architecture-corridor-insertion-approach",
+        "role": null,
+        "triangles": 1392,
+        "drawMeshes": 4,
+        "modelledPieces": 52,
+        "colliders": 4,
+        "floorY": 0,
+        "sites": []
+      },
+      {
+        "name": "battlefield-corridor-architecture-corridor-approach-relay",
+        "role": null,
+        "triangles": 1392,
+        "drawMeshes": 4,
+        "modelledPieces": 52,
+        "colliders": 4,
+        "floorY": 0,
+        "sites": []
+      },
+      {
+        "name": "battlefield-corridor-architecture-corridor-relay-foundry",
+        "role": null,
+        "triangles": 1392,
+        "drawMeshes": 4,
+        "modelledPieces": 52,
+        "colliders": 4,
+        "floorY": 0,
+        "sites": []
+      },
+      {
+        "name": "battlefield-corridor-architecture-corridor-foundry-command",
+        "role": null,
+        "triangles": 1392,
+        "drawMeshes": 4,
+        "modelledPieces": 52,
+        "colliders": 4,
+        "floorY": 0,
+        "sites": []
+      },
+      {
+        "name": "battlefield-corridor-architecture-corridor-command-nest",
+        "role": null,
+        "triangles": 1392,
+        "drawMeshes": 4,
+        "modelledPieces": 52,
+        "colliders": 4,
+        "floorY": 0,
+        "sites": []
+      }
+    ],
+    "uniqueGeometries": 41,
+    "geometryRegistryComplete": true,
+    "safeSpawns": 24,
+    "coop": {
+      "insertion": true,
+      "nest": true,
+      "relay": false
+    },
+    "disposal": {
+      "counts": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "detached": true
+    }
+  },
+  "checkpoint": "coop-projections",
+  "coop": {
+    "independent": true,
+    "sourceKinds": [
+      "imported",
+      "procedural"
+    ],
+    "privateMaterials": true,
+    "privateGeometries": true,
+    "privateBones": true,
+    "cleanup": {
+      "decoys": 0,
+      "disposed": true,
+      "detached": true
+    }
+  },
+  "sourceReload": {
+    "loaded": true,
+    "source": "imported",
+    "mask": "attached",
+    "ghostDisposed": false,
+    "geometryReleases": 0,
+    "samePose": true,
+    "sourceKind": "imported",
+    "cleanup": {
+      "disposed": true,
+      "geometryReleases": 39,
+      "geometries": 39
+    }
+  },
+  "countdown": {
+    "poses": [
+      {
+        "angle": 0,
+        "scale": 1,
+        "error": 4.440892098500626e-16,
+        "planeDistance": 0.11999999999999982,
+        "state": {
+          "remainingSeconds": 6,
+          "displaySeconds": 6,
+          "elapsed": 0,
+          "anchor": "measured-city-console",
+          "anchorObjectName": "city-left-console-board"
+        }
+      },
+      {
+        "angle": 0.45,
+        "scale": 1,
+        "error": 0,
+        "planeDistance": 0.12000000000000013,
+        "state": {
+          "remainingSeconds": 6,
+          "displaySeconds": 6,
+          "elapsed": 0,
+          "anchor": "measured-city-console",
+          "anchorObjectName": "city-left-console-board"
+        }
+      },
+      {
+        "angle": -0.4,
+        "scale": 1,
+        "error": 0,
+        "planeDistance": 0.12000000000000001,
+        "state": {
+          "remainingSeconds": 6,
+          "displaySeconds": 6,
+          "elapsed": 0,
+          "anchor": "measured-city-console",
+          "anchorObjectName": "city-left-console-board"
+        }
+      },
+      {
+        "angle": 0.35,
+        "scale": 1.8,
+        "error": 2.9790409838967277e-15,
+        "planeDistance": 0.21600000000000188,
+        "state": {
+          "remainingSeconds": 6,
+          "displaySeconds": 6,
+          "elapsed": 0,
+          "anchor": "measured-city-console",
+          "anchorObjectName": "city-left-console-board"
+        }
+      }
+    ],
+    "before": {
+      "disposed": false,
+      "countdown": {
+        "remainingSeconds": 6,
+        "displaySeconds": 6,
+        "elapsed": 0,
+        "anchor": "measured-city-console",
+        "anchorObjectName": "city-left-console-board"
+      },
+      "trophy": null
+    },
+    "paused": {
+      "disposed": false,
+      "countdown": {
+        "remainingSeconds": 6,
+        "displaySeconds": 6,
+        "elapsed": 0,
+        "anchor": "measured-city-console",
+        "anchorObjectName": "city-left-console-board"
+      },
+      "trophy": null
+    },
+    "second": {
+      "disposed": false,
+      "countdown": {
+        "remainingSeconds": 5,
+        "displaySeconds": 5,
+        "elapsed": 1,
+        "anchor": "measured-city-console",
+        "anchorObjectName": "city-left-console-board"
+      },
+      "trophy": null
+    },
+    "cleanup": {
+      "stillThere": true,
+      "ended": null,
+      "detached": true,
+      "counts": {
+        "geometry": 4,
+        "material": 3,
+        "texture": 1
+      },
+      "expected": {
+        "geometry": 4,
+        "material": 3,
+        "texture": 1
+      }
+    }
+  },
+  "trophy": {
+    "state": {
+      "elapsed": 0.15,
+      "remainingSeconds": 3.35,
+      "anchor": "imported-right-hand",
+      "anchorObjectName": "imported-socket-rightHand",
+      "family": "queen",
+      "victimKind": "predalien_queen"
+    },
+    "family": "queen",
+    "handError": 0,
+    "cloak": {
+      "before": [
+        {
+          "version": 0,
+          "transparent": false
+        },
+        {
+          "version": 0,
+          "transparent": false
+        },
+        {
+          "version": 0,
+          "transparent": false
+        }
+      ],
+      "after": [
+        {
+          "version": 1,
+          "transparent": true,
+          "opacity": 0.22,
+          "depthWrite": false
+        },
+        {
+          "version": 1,
+          "transparent": true,
+          "opacity": 0.22,
+          "depthWrite": false
+        },
+        {
+          "version": 1,
+          "transparent": true,
+          "opacity": 0.22,
+          "depthWrite": false
+        }
+      ]
+    },
+    "uncloak": [
+      {
+        "versionAdvanced": true,
+        "transparent": false,
+        "opacity": 1,
+        "depthWrite": true
+      },
+      {
+        "versionAdvanced": true,
+        "transparent": false,
+        "opacity": 1,
+        "depthWrite": true
+      },
+      {
+        "versionAdvanced": true,
+        "transparent": false,
+        "opacity": 1,
+        "depthWrite": true
+      }
+    ],
+    "cleanup": {
+      "pausedEqual": true,
+      "stillThere": true,
+      "ended": null,
+      "detached": true,
+      "counts": {
+        "geometry": 4,
+        "material": 3
+      },
+      "expected": {
+        "geometry": 4,
+        "material": 3
+      }
+    }
+  },
+  "defeatedCountdown": {
+    "rejected": true,
+    "ghostCooldown": 0,
+    "hp": 0,
+    "p2Alive": true,
+    "positionBefore": [
+      0,
+      0,
+      4.2
+    ],
+    "positionAfter": [
+      0,
+      0,
+      4.2
+    ],
+    "energyBefore": 100,
+    "energyAfter": 100,
+    "pausedEqual": true,
+    "samples": [
+      {
+        "time": 1.001,
+        "hud": 5,
+        "state": {
+          "remainingSeconds": 4.9990000000000006,
+          "displaySeconds": 5,
+          "elapsed": 1.001,
+          "anchor": "measured-city-console",
+          "anchorObjectName": "city-left-console-board"
+        }
+      },
+      {
+        "time": 2.001,
+        "hud": 4,
+        "state": {
+          "remainingSeconds": 3.998999999999999,
+          "displaySeconds": 4,
+          "elapsed": 2.001000000000001,
+          "anchor": "measured-city-console",
+          "anchorObjectName": "city-left-console-board"
+        }
+      },
+      {
+        "time": 3.001,
+        "hud": 3,
+        "state": {
+          "remainingSeconds": 2.9989999999999983,
+          "displaySeconds": 3,
+          "elapsed": 3.0010000000000017,
+          "anchor": "measured-city-console",
+          "anchorObjectName": "city-left-console-board"
+        }
+      },
+      {
+        "time": 4.001,
+        "hud": 2,
+        "state": {
+          "remainingSeconds": 1.998999999999998,
+          "displaySeconds": 2,
+          "elapsed": 4.001000000000002,
+          "anchor": "measured-city-console",
+          "anchorObjectName": "city-left-console-board"
+        }
+      },
+      {
+        "time": 5.001,
+        "hud": 1,
+        "state": {
+          "remainingSeconds": 0.9990000000000014,
+          "displaySeconds": 1,
+          "elapsed": 5.000999999999999,
+          "anchor": "measured-city-console",
+          "anchorObjectName": "city-left-console-board"
+        }
+      },
+      {
+        "time": 6.001,
+        "hud": 0,
+        "state": null
+      }
+    ],
+    "finalState": null,
+    "modalHidden": true,
+    "nukeCountingDown": false,
+    "isPlaying": true
+  },
+  "cleanup": {
+    "player": null,
+    "player2": null,
+    "decoys": 0,
+    "controller": {
+      "disposed": true,
+      "countdown": null,
+      "trophy": null
+    },
+    "active": false
+  },
+  "completedAt": "2026-10-25T07:32:16.633Z",
+  "original_artifact": "/workspace/qa/development-20261025/runtime-report.json"
+}

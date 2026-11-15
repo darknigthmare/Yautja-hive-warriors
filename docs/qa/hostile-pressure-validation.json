@@ -1,0 +1,38 @@
+{
+  "date": "2026-10-23",
+  "scope": "USCM, synthetics, bosses and Bad Blood use the shared CombatDirector; no browser or human testing is claimed by this report.",
+  "status": "cpu_pass_runtime_review_pending",
+  "changes": {
+    "uscm": "Support against the hive by default; holds cover instead of targeting a player who cannot attack these soldiers. Explicit hostileToPlayers opt-in remains available for future encounter code.",
+    "fire_cadence": "Simulation-time cooldowns replace per-render-frame random firing probabilities.",
+    "synthetics": "Ranged attacks reserve a shared turn and prepare for0.9seconds; nearest living cooperative target is selected. EMP, bisection, death and cleanup release reservations.",
+    "bosses": "Passive45/65HP-per-second body contact removed. Contact strikes and signatures prepare before one impact, then recover. A three-pod embryo volley can damage each player at most once.",
+    "bad_blood": "A blade strike prepares for0.9seconds; plasma prepares for1.1seconds. The rush stops during preparation.",
+    "warnings": "An orange preparation ring precedes reserved attacks, remains at worldY0.035 for scaled actors, and owns disposable private resources. This is a preparation cue, not a precise damage-area outline."
+  },
+  "targeted_tests": {
+    "command": "node --test --test-concurrency=1 tests/hostile-pressure.test.js",
+    "tests": 6,
+    "pass": 6,
+    "fail": 0,
+    "log": "/workspace/qa/yautja-expansion-20261023/hostile-pressure-tests.log",
+    "covers": [
+      "Six seconds of close multi-faction contact during a seven-second startup grace produces no damage; actual windup precedes the first hit.",
+      "A single player never faces simultaneous faction windups or stacked same-step impacts; hostiles still damage after the opening.",
+      "USCM only damages hive targets by default.",
+      "Ten-second fire counts remain within one shot at10fps,60fps and120fps.",
+      "Synthetics choose the nearest living cooperative player and transfer after death.",
+      "Three overlapping embryo pods cannot produce three damage events.",
+      "Scaled, vertically animated actors keep warning rings on the combat plane.",
+      "Cleanup removes scene resources and all shared attack reservations."
+    ]
+  },
+  "existing_regressions": {
+    "command": "node --test --test-concurrency=1 tests/systems.test.js tests/support-visual.test.js tests/creature-visual.test.js",
+    "tests": 49,
+    "pass": 49,
+    "fail": 0,
+    "log": "/workspace/qa/yautja-expansion-20261023/hostile-existing-regressions.log"
+  },
+  "human_testers": 0
+}

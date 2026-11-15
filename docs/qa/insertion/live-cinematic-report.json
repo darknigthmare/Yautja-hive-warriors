@@ -1,0 +1,643 @@
+{
+  "status": "passed",
+  "startedAt": "2026-10-23T21:58:17.769Z",
+  "scope": "Production build, actual imported hunter body/mask, real simulation-clock insertion sampled in controlled paused frames. Automated QA; no human playthrough or 1:1 certification.",
+  "url": "https://yautja-hive-warriors.vercel.app",
+  "live": true,
+  "characterScope": "City Hunter imported body/mask and Wolf procedural co-op",
+  "states": [
+    {
+      "name": "city-descending",
+      "phase": "descending",
+      "elapsed": 0.55,
+      "active": true,
+      "opening": 0,
+      "pods": 1,
+      "actors": [
+        {
+          "character": "CITY HUNTER (1990)",
+          "visible": false,
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "imported": "imported",
+          "mask": "attached",
+          "bladeFrontMax": null,
+          "hp": 850,
+          "maxHp": 850
+        }
+      ],
+      "podPositions": [
+        [
+          0,
+          25.226892457611434,
+          0
+        ]
+      ],
+      "doorAngles": [
+        [
+          0,
+          0
+        ]
+      ],
+      "director": {
+        "time": 0,
+        "grace": 8
+      },
+      "hostileCount": 6,
+      "queued": 12,
+      "camera": [
+        8,
+        32.726892457611434,
+        14
+      ],
+      "render": {
+        "calls": 117,
+        "triangles": 425352
+      },
+      "statusText": "DÉPLOIEMENT\n        INSERTION ORBITALE\n        Capsule en approche · Commandes après la sortie"
+    },
+    {
+      "name": "city-touchdown",
+      "phase": "settling",
+      "elapsed": 1.2,
+      "active": true,
+      "opening": 0,
+      "pods": 1,
+      "actors": [
+        {
+          "character": "CITY HUNTER (1990)",
+          "visible": false,
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "imported": "imported",
+          "mask": "attached",
+          "bladeFrontMax": null,
+          "hp": 850,
+          "maxHp": 850
+        }
+      ],
+      "podPositions": [
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "doorAngles": [
+        [
+          0,
+          0
+        ]
+      ],
+      "director": {
+        "time": 0,
+        "grace": 8
+      },
+      "hostileCount": 6,
+      "queued": 12,
+      "camera": [
+        8,
+        7.5,
+        14
+      ],
+      "render": {
+        "calls": 144,
+        "triangles": 458788
+      },
+      "statusText": "DÉPLOIEMENT\n        CONTACT AU SOL\n        Stabilisation de la capsule · Commandes après la sortie"
+    },
+    {
+      "name": "city-unlocking",
+      "phase": "opening",
+      "elapsed": 1.5001,
+      "active": true,
+      "opening": 1.4268071671652114e-8,
+      "pods": 1,
+      "actors": [
+        {
+          "character": "CITY HUNTER (1990)",
+          "visible": true,
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "imported": "imported",
+          "mask": "attached",
+          "bladeFrontMax": null,
+          "hp": 850,
+          "maxHp": 850
+        }
+      ],
+      "podPositions": [
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "doorAngles": [
+        [
+          -2.8015293215346825e-8,
+          2.8015293215346825e-8
+        ]
+      ],
+      "director": {
+        "time": 0,
+        "grace": 8
+      },
+      "hostileCount": 6,
+      "queued": 12,
+      "camera": [
+        8,
+        7.5,
+        14
+      ],
+      "render": {
+        "calls": 155,
+        "triangles": 769145
+      },
+      "statusText": "DÉPLOIEMENT\n        OUVERTURE DE LA CAPSULE\n        Déverrouillage des portes · Commandes après la sortie"
+    },
+    {
+      "name": "city-opening",
+      "phase": "opening",
+      "elapsed": 2.225,
+      "active": true,
+      "opening": 0.5000000000000001,
+      "pods": 1,
+      "actors": [
+        {
+          "character": "CITY HUNTER (1990)",
+          "visible": true,
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "imported": "imported",
+          "mask": "attached",
+          "bladeFrontMax": null,
+          "hp": 850,
+          "maxHp": 850
+        }
+      ],
+      "podPositions": [
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "doorAngles": [
+        [
+          -0.9817477042468106,
+          0.9817477042468106
+        ]
+      ],
+      "director": {
+        "time": 0,
+        "grace": 8
+      },
+      "hostileCount": 6,
+      "queued": 12,
+      "camera": [
+        8,
+        7.5,
+        14
+      ],
+      "render": {
+        "calls": 155,
+        "triangles": 769145
+      },
+      "statusText": "DÉPLOIEMENT\n        OUVERTURE DE LA CAPSULE\n        Déverrouillage des portes · Commandes après la sortie"
+    },
+    {
+      "name": "city-exiting",
+      "phase": "exiting",
+      "elapsed": 3.85,
+      "active": true,
+      "opening": 1,
+      "pods": 1,
+      "actors": [
+        {
+          "character": "CITY HUNTER (1990)",
+          "visible": true,
+          "position": [
+            0,
+            0,
+            2.0999999999999996
+          ],
+          "imported": "imported",
+          "mask": "attached",
+          "bladeFrontMax": null,
+          "hp": 850,
+          "maxHp": 850
+        }
+      ],
+      "podPositions": [
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "doorAngles": [
+        [
+          -1.9634954084936207,
+          1.9634954084936207
+        ]
+      ],
+      "director": {
+        "time": 0,
+        "grace": 8
+      },
+      "hostileCount": 6,
+      "queued": 12,
+      "camera": [
+        8,
+        7.3,
+        16.1
+      ],
+      "render": {
+        "calls": 158,
+        "triangles": 771729
+      },
+      "statusText": "DÉPLOIEMENT\n        DÉPLOIEMENT DU CHASSEUR\n        Sortie de la capsule · Commandes après la sortie"
+    },
+    {
+      "name": "city-complete",
+      "phase": "complete",
+      "elapsed": 4.75,
+      "active": false,
+      "opening": 1,
+      "pods": 1,
+      "actors": [
+        {
+          "character": "CITY HUNTER (1990)",
+          "visible": true,
+          "position": [
+            0,
+            0,
+            4.2
+          ],
+          "imported": "imported",
+          "mask": "attached",
+          "bladeFrontMax": null,
+          "hp": 850,
+          "maxHp": 850
+        }
+      ],
+      "podPositions": [
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "doorAngles": [
+        [
+          -1.9634954084936207,
+          1.9634954084936207
+        ]
+      ],
+      "director": {
+        "time": 0,
+        "grace": 7
+      },
+      "hostileCount": 6,
+      "queued": 12,
+      "camera": [
+        8,
+        7,
+        17.2
+      ],
+      "render": {
+        "calls": 162,
+        "triangles": 772309
+      },
+      "statusText": "DÉPLOIEMENT\n        DÉPLOIEMENT DU CHASSEUR\n        Sortie de la capsule · Commandes après la sortie"
+    },
+    {
+      "name": "coop-touchdown",
+      "phase": "settling",
+      "elapsed": 1.2,
+      "active": true,
+      "opening": 0,
+      "pods": 2,
+      "actors": [
+        {
+          "character": "CITY HUNTER (1990)",
+          "visible": false,
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "imported": "imported",
+          "mask": "attached",
+          "bladeFrontMax": null,
+          "hp": 850,
+          "maxHp": 850
+        },
+        {
+          "character": "WOLF PREDATOR (AVP REQUIEM)",
+          "visible": false,
+          "position": [
+            6,
+            0,
+            0
+          ],
+          "imported": "procedural",
+          "mask": "none",
+          "bladeFrontMax": 0.9792598715668803,
+          "hp": 1150,
+          "maxHp": 1150
+        }
+      ],
+      "podPositions": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          6,
+          0,
+          0
+        ]
+      ],
+      "doorAngles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "director": {
+        "time": 0,
+        "grace": 8
+      },
+      "hostileCount": 6,
+      "queued": 12,
+      "camera": [
+        8,
+        7.5,
+        14
+      ],
+      "render": {
+        "calls": 139,
+        "triangles": 669021
+      },
+      "statusText": "DÉPLOIEMENT\n        CONTACT AU SOL\n        Stabilisation de la capsule · Commandes après la sortie"
+    },
+    {
+      "name": "coop-unlocking",
+      "phase": "opening",
+      "elapsed": 1.5001,
+      "active": true,
+      "opening": 1.4268071671652114e-8,
+      "pods": 2,
+      "actors": [
+        {
+          "character": "CITY HUNTER (1990)",
+          "visible": true,
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "imported": "imported",
+          "mask": "attached",
+          "bladeFrontMax": null,
+          "hp": 850,
+          "maxHp": 850
+        },
+        {
+          "character": "WOLF PREDATOR (AVP REQUIEM)",
+          "visible": true,
+          "position": [
+            6,
+            0,
+            0
+          ],
+          "imported": "procedural",
+          "mask": "none",
+          "bladeFrontMax": 0.9792598715668803,
+          "hp": 1150,
+          "maxHp": 1150
+        }
+      ],
+      "podPositions": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          6,
+          0,
+          0
+        ]
+      ],
+      "doorAngles": [
+        [
+          -2.8015293215346825e-8,
+          2.8015293215346825e-8
+        ],
+        [
+          -2.8015293215346825e-8,
+          2.8015293215346825e-8
+        ]
+      ],
+      "director": {
+        "time": 0,
+        "grace": 8
+      },
+      "hostileCount": 6,
+      "queued": 12,
+      "camera": [
+        8,
+        7.5,
+        14
+      ],
+      "render": {
+        "calls": 177,
+        "triangles": 1144182
+      },
+      "statusText": "DÉPLOIEMENT\n        OUVERTURE DE LA CAPSULE\n        Déverrouillage des portes · Commandes après la sortie"
+    },
+    {
+      "name": "coop-opening",
+      "phase": "opening",
+      "elapsed": 2.225,
+      "active": true,
+      "opening": 0.5000000000000001,
+      "pods": 2,
+      "actors": [
+        {
+          "character": "CITY HUNTER (1990)",
+          "visible": true,
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "imported": "imported",
+          "mask": "attached",
+          "bladeFrontMax": null,
+          "hp": 850,
+          "maxHp": 850
+        },
+        {
+          "character": "WOLF PREDATOR (AVP REQUIEM)",
+          "visible": true,
+          "position": [
+            6,
+            0,
+            0
+          ],
+          "imported": "procedural",
+          "mask": "none",
+          "bladeFrontMax": 0.9792598715668803,
+          "hp": 1150,
+          "maxHp": 1150
+        }
+      ],
+      "podPositions": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          6,
+          0,
+          0
+        ]
+      ],
+      "doorAngles": [
+        [
+          -0.9817477042468106,
+          0.9817477042468106
+        ],
+        [
+          -0.9817477042468106,
+          0.9817477042468106
+        ]
+      ],
+      "director": {
+        "time": 0,
+        "grace": 8
+      },
+      "hostileCount": 6,
+      "queued": 12,
+      "camera": [
+        8,
+        7.5,
+        14
+      ],
+      "render": {
+        "calls": 177,
+        "triangles": 1144182
+      },
+      "statusText": "DÉPLOIEMENT\n        OUVERTURE DE LA CAPSULE\n        Déverrouillage des portes · Commandes après la sortie"
+    },
+    {
+      "name": "coop-exiting",
+      "phase": "exiting",
+      "elapsed": 3.85,
+      "active": true,
+      "opening": 1,
+      "pods": 2,
+      "actors": [
+        {
+          "character": "CITY HUNTER (1990)",
+          "visible": true,
+          "position": [
+            0,
+            0,
+            2.0999999999999996
+          ],
+          "imported": "imported",
+          "mask": "attached",
+          "bladeFrontMax": null,
+          "hp": 850,
+          "maxHp": 850
+        },
+        {
+          "character": "WOLF PREDATOR (AVP REQUIEM)",
+          "visible": true,
+          "position": [
+            6,
+            0,
+            2.0999999999999996
+          ],
+          "imported": "procedural",
+          "mask": "none",
+          "bladeFrontMax": 3.941313076019287,
+          "hp": 1150,
+          "maxHp": 1150
+        }
+      ],
+      "podPositions": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          6,
+          0,
+          0
+        ]
+      ],
+      "doorAngles": [
+        [
+          -1.9634954084936207,
+          1.9634954084936207
+        ],
+        [
+          -1.9634954084936207,
+          1.9634954084936207
+        ]
+      ],
+      "director": {
+        "time": 0,
+        "grace": 8
+      },
+      "hostileCount": 6,
+      "queued": 12,
+      "camera": [
+        8,
+        7.3,
+        16.1
+      ],
+      "render": {
+        "calls": 177,
+        "triangles": 1144182
+      },
+      "statusText": "DÉPLOIEMENT\n        DÉPLOIEMENT DU CHASSEUR\n        Sortie de la capsule · Commandes après la sortie"
+    }
+  ],
+  "errors": [],
+  "failedRequests": [],
+  "externalRequests": [],
+  "indexSha256": "d9839d93a06fd01e82c7efb49cefc46a4105a4406f65f451afdf7106f5e010db",
+  "cleanup": {
+    "player": null,
+    "player2": null,
+    "pods": 0,
+    "active": false
+  },
+  "completedAt": "2026-10-23T21:59:15.634Z"
+}

@@ -1,0 +1,3371 @@
+{
+  "startedAt": "2026-10-23T06:57:45.608Z",
+  "status": "passed",
+  "url": "http://127.0.0.1:4189",
+  "includeJungleAlienRegressions": true,
+  "scope": "Actual source application in Chromium WebGL, local Vite server; separate production build/CSP/deployment checks required.",
+  "sourceFiles": {
+    "city_hunter": {
+      "path": "/models/city-hunter-body-corrected.glb",
+      "bytes": 42815452,
+      "sha256": "0e297a50400f885f06595f2fb59c85aed5118517a03c140f0f3aefa5288b564b"
+    },
+    "city_hunter_source": {
+      "path": "/models/city-hunter-rigged.glb",
+      "bytes": 43124896,
+      "sha256": "bd962ad79d5034d6ac5c0d7fc03e185433d0784808ffc868e597c7656e6725e7"
+    },
+    "city_hunter_biomask": {
+      "path": "/models/city-hunter-biomask.glb",
+      "bytes": 32727588,
+      "sha256": "a2450f45ee9601ba4c4b621ff8acb5f36fb7a4dd41ce89841de6ea23b6c1f3a0"
+    },
+    "city_hunter_walk_delivery": {
+      "path": "/models/city-hunter-walk.glb",
+      "bytes": 89568,
+      "sha256": "c54514bba78ddc9f87e18f9be62554be4894d83b192c73fcea4182547aad94a5"
+    },
+    "city_hunter_run_delivery": {
+      "path": "/models/city-hunter-run.glb",
+      "bytes": 78940,
+      "sha256": "4356221be2e4c6b19a31cec21a1831dd70922385027cae45d04020cafcac18dd"
+    }
+  },
+  "verifiedBuiltAssets": [],
+  "verifiedLiveFiles": [],
+  "errors": [],
+  "failedRequests": [],
+  "externalRequests": [],
+  "initial": {
+    "body": "imported",
+    "mask": "attached",
+    "asset": {
+      "key": "city_hunter",
+      "url": "/models/city-hunter-body-corrected.glb",
+      "biomask": {
+        "key": "city_hunter_biomask",
+        "url": "/models/city-hunter-biomask.glb"
+      }
+    },
+    "maskGroupFound": true,
+    "preparation": {
+      "regionsPrepared": false,
+      "hairPrepared": false,
+      "hairPieces": 0,
+      "hairMaxNeutralWorldError": 0,
+      "hairMaxRestWorldError": 0,
+      "regionError": null,
+      "hairError": null,
+      "skinFiltersPrepared": false,
+      "skinFilterPasses": 0,
+      "skinFilteredRegions": 0,
+      "skinFilteredVertices": 0,
+      "skinMaxRestWorldError": 0,
+      "skinFilterRegions": [],
+      "skinFilterError": null,
+      "rigidEquipmentPrepared": false,
+      "boneRestCorrectionsApplied": false,
+      "boneRestCorrectionError": null,
+      "boneRestCorrectionDiagnostics": null,
+      "animationsSuppressedForBoneRestCorrection": false,
+      "suppressedAnimationClips": 0,
+      "rigidEquipmentError": null
+    },
+    "surfaceInventory": {
+      "bodyTriangles": 235918,
+      "maskTriangles": 75466,
+      "bodyMeshes": 26,
+      "maskMeshes": 1,
+      "pbrMaterials": [
+        {
+          "kind": "body",
+          "name": "Material_0",
+          "color": [
+            4096,
+            4096
+          ],
+          "normal": [
+            4096,
+            4096
+          ],
+          "roughnessMetalness": [
+            2048,
+            2048
+          ]
+        },
+        {
+          "kind": "mask",
+          "name": "Material_0",
+          "color": [
+            4096,
+            4096
+          ],
+          "normal": [
+            4096,
+            4096
+          ],
+          "roughnessMetalness": [
+            2048,
+            2048
+          ]
+        }
+      ]
+    },
+    "preparedGeometry": true,
+    "leftArmParentLocal": {
+      "position": [
+        -24.129454994679115,
+        -6.445566247060389,
+        4.8692597110073725
+      ],
+      "quaternion": [
+        -0.6978369731270365,
+        0.07851893207276399,
+        -0.12419969942063884,
+        0.701022602871282
+      ]
+    },
+    "footGrounding": {
+      "status": "applied",
+      "sourceSha256": "0e297a50400f885f06595f2fb59c85aed5118517a03c140f0f3aefa5288b564b",
+      "motionGain": 0.2,
+      "maxOffset": 0.15,
+      "restMinimumY": 1.0651243170655978e-15,
+      "regions": [
+        {
+          "regionId": "model_part0",
+          "supportVertices": 36,
+          "referencedVertices": 9194,
+          "restError": 2.4841240175987878e-15,
+          "coverageError": 1.131807918442113e-15
+        },
+        {
+          "regionId": "model_part4",
+          "supportVertices": 36,
+          "referencedVertices": 8860,
+          "restError": 2.2898349882893854e-15,
+          "coverageError": 1.0210439046088652e-15
+        }
+      ],
+      "offsetY": 1.4563261181411657e-15,
+      "minimumYBeforeOffset": -1.4563261181411657e-15,
+      "minimumYAfterOffset": 0,
+      "maxObservedAbsoluteOffset": 1.4563261181411657e-15,
+      "refusals": 0,
+      "lastError": null,
+      "lastRejectedOffsetY": null
+    },
+    "visualGroundOffsetY": 1.4563261181411657e-15,
+    "articulation": {
+      "dreadlocks": 2,
+      "simulatedSegments": 8,
+      "wristbladeActuators": 0,
+      "gauntletHinges": 0
+    },
+    "hair": [
+      {
+        "name": "model_part10",
+        "vertices": 605,
+        "triangles": 650,
+        "bones": 6,
+        "visible": true
+      },
+      {
+        "name": "model_part12",
+        "vertices": 473,
+        "triangles": 498,
+        "bones": 6,
+        "visible": true
+      }
+    ],
+    "animations": [],
+    "bodyBounds": {
+      "height": 4.31,
+      "normalizationScale": 1.790904483733148
+    },
+    "cameraEyeHeight": 3.539286582984726,
+    "accessories": {
+      "blade1": {
+        "parent": "imported-socket-rightHand",
+        "visible": false
+      },
+      "blade2": {
+        "parent": "imported-socket-rightHand",
+        "visible": false
+      },
+      "shieldMesh": {
+        "parent": "imported-socket-leftHand",
+        "visible": false
+      },
+      "secWeaponMesh": {
+        "parent": "imported-socket-leftHand",
+        "visible": false
+      },
+      "plasmaGlaiveMesh": {
+        "parent": "imported-socket-rightHand",
+        "visible": false
+      },
+      "clanMarkMesh": {
+        "parent": "imported-socket-head",
+        "visible": false
+      }
+    },
+    "cachedResources": 30,
+    "bakedIntegrity": {
+      "regionIds": [
+        "model_part0",
+        "model_part1",
+        "model_part2",
+        "model_part3",
+        "model_part4",
+        "model_part5",
+        "model_part6",
+        "model_part7",
+        "model_part8",
+        "model_part9",
+        "model_part11",
+        "model_part13",
+        "model_part14",
+        "model_part15",
+        "model_part16",
+        "model_part17",
+        "model_part18",
+        "model_part16_under_biomask",
+        "unclassified-static",
+        "model_part10",
+        "model_part12"
+      ],
+      "missingMetadata": 0,
+      "staticHair": [
+        {
+          "name": "model_part17",
+          "vertices": 91075,
+          "maxNonHeadWeight": 0
+        }
+      ],
+      "clips": 0,
+      "leftArmRest": {
+        "parent": "LeftShoulder",
+        "position": [
+          -24.129454994679115,
+          -6.445566247060389,
+          4.8692597110073725
+        ],
+        "quaternion": [
+          -0.6978369731270365,
+          0.07851893207276399,
+          -0.12419969942063884,
+          0.701022602871282
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "positionError": 0,
+        "quaternionError": 2.2098200380682442e-8,
+        "scaleError": 0
+      }
+    }
+  },
+  "cloak": {
+    "activeMaterials": 2,
+    "restoredExactly": true,
+    "pbrMapsRetained": true
+  },
+  "hair": {
+    "pieces": [
+      {
+        "name": "model_part10",
+        "maxCapError": 7.793734002518813e-15,
+        "maxLag": 0.12533934568816132,
+        "deformedVertices": 529,
+        "totalVertices": 605
+      },
+      {
+        "name": "model_part12",
+        "maxCapError": 9.101120538054984e-15,
+        "maxLag": 0.11991039707875631,
+        "deformedVertices": 399,
+        "totalVertices": 473
+      }
+    ],
+    "resetMaxWorldError": 0,
+    "scope": "Two measured meshes only; other dreadlocks remain static."
+  },
+  "fps": {
+    "hidden": {
+      "firstPerson": true,
+      "headControl": false,
+      "allHeadMeshesHidden": true,
+      "hairActive": false
+    },
+    "restored": {
+      "firstPerson": false,
+      "exactOriginalHeadVisibility": true,
+      "hairActive": true
+    },
+    "headMeshes": 11
+  },
+  "pause": {
+    "gamePaused": true,
+    "bonesUnchanged": true,
+    "positionUnchanged": true
+  },
+  "locomotion": {
+    "actorWorldDisplacement": 0.31666666666666643,
+    "leftLegAngularChange": 0.09999840446831985,
+    "proceduralStrideRadians": [
+      0.5,
+      -0.5
+    ],
+    "footPhases": [
+      {
+        "rawStride": -0.5,
+        "feet": [
+          {
+            "regionId": "model_part0",
+            "minAll": 4.428505478992761e-9,
+            "minSupport": 4.428505478992761e-9
+          },
+          {
+            "regionId": "model_part4",
+            "minAll": 0.03998730059073145,
+            "minSupport": 0.03998730059073145
+          }
+        ],
+        "minimum": 4.428505478992761e-9,
+        "offsetY": 0.08594130836126347,
+        "cameraEyeHeight": 3.6252278913459883,
+        "laserLocalY": 0.08594130836126347
+      },
+      {
+        "rawStride": -0.45,
+        "feet": [
+          {
+            "regionId": "model_part0",
+            "minAll": -2.50746659546941e-10,
+            "minSupport": -2.50746659546941e-10
+          },
+          {
+            "regionId": "model_part4",
+            "minAll": 0.03810278139097822,
+            "minSupport": 0.03810278139097822
+          }
+        ],
+        "minimum": -2.50746659546941e-10,
+        "offsetY": 0.07752764488357775,
+        "cameraEyeHeight": 3.616814227868302,
+        "laserLocalY": 0.07752764488357775
+      },
+      {
+        "rawStride": -0.4,
+        "feet": [
+          {
+            "regionId": "model_part0",
+            "minAll": 2.376648045032681e-10,
+            "minSupport": 2.376648045032681e-10
+          },
+          {
+            "regionId": "model_part4",
+            "minAll": 0.03375436779906771,
+            "minSupport": 0.03375436779906771
+          }
+        ],
+        "minimum": 2.376648045032681e-10,
+        "offsetY": 0.06955293013940396,
+        "cameraEyeHeight": 3.6088395131241287,
+        "laserLocalY": 0.06955293013940396
+      },
+      {
+        "rawStride": -0.35,
+        "feet": [
+          {
+            "regionId": "model_part0",
+            "minAll": 2.360975928650255e-10,
+            "minSupport": 2.360975928650255e-10
+          },
+          {
+            "regionId": "model_part4",
+            "minAll": 0.02967489272428609,
+            "minSupport": 0.02967489272428609
+          }
+        ],
+        "minimum": 2.360975928650255e-10,
+        "offsetY": 0.06163081851113462,
+        "cameraEyeHeight": 3.600917401495859,
+        "laserLocalY": 0.06163081851113462
+      },
+      {
+        "rawStride": -0.3,
+        "feet": [
+          {
+            "regionId": "model_part0",
+            "minAll": 2.427211695521514e-10,
+            "minSupport": 2.427211695521514e-10
+          },
+          {
+            "regionId": "model_part4",
+            "minAll": 0.025589111993520493,
+            "minSupport": 0.025589111993520493
+          }
+        ],
+        "minimum": 2.427211695521514e-10,
+        "offsetY": 0.053486450094328,
+        "cameraEyeHeight": 3.5927730330790526,
+        "laserLocalY": 0.053486450094328
+      },
+      {
+        "rawStride": -0.25,
+        "feet": [
+          {
+            "regionId": "model_part0",
+            "minAll": 2.4932059194959777e-10,
+            "minSupport": 2.4932059194959777e-10
+          },
+          {
+            "regionId": "model_part4",
+            "minAll": 0.021497434173227945,
+            "minSupport": 0.021497434173227945
+          }
+        ],
+        "minimum": 2.4932059194959777e-10,
+        "offsetY": 0.04512063931082593,
+        "cameraEyeHeight": 3.5844072222955505,
+        "laserLocalY": 0.04512063931082593
+      },
+      {
+        "rawStride": -0.2,
+        "feet": [
+          {
+            "regionId": "model_part0",
+            "minAll": 2.5589479146770344e-10,
+            "minSupport": 2.5589479146770344e-10
+          },
+          {
+            "regionId": "model_part4",
+            "minAll": 0.01740026842777674,
+            "minSupport": 0.01740026842777674
+          }
+        ],
+        "minimum": 2.5589479146770344e-10,
+        "offsetY": 0.03653422273473202,
+        "cameraEyeHeight": 3.5758208057194567,
+        "laserLocalY": 0.03653422273473202
+      },
+      {
+        "rawStride": -0.15,
+        "feet": [
+          {
+            "regionId": "model_part0",
+            "minAll": 2.624441462761862e-10,
+            "minSupport": 2.624441462761862e-10
+          },
+          {
+            "regionId": "model_part4",
+            "minAll": 0.013298024470328872,
+            "minSupport": 0.013298024470328872
+          }
+        ],
+        "minimum": 2.624441462761862e-10,
+        "offsetY": 0.027728059000548148,
+        "cameraEyeHeight": 3.567014641985273,
+        "laserLocalY": 0.027728059000548148
+      },
+      {
+        "rawStride": -0.1,
+        "feet": [
+          {
+            "regionId": "model_part0",
+            "minAll": 2.689668557320779e-10,
+            "minSupport": 2.689668557320779e-10
+          },
+          {
+            "regionId": "model_part4",
+            "minAll": 0.009191112521859637,
+            "minSupport": 0.009191112521859637
+          }
+        ],
+        "minimum": 2.689668557320779e-10,
+        "offsetY": 0.018703028717312838,
+        "cameraEyeHeight": 3.5579896117020375,
+        "laserLocalY": 0.018703028717312838
+      },
+      {
+        "rawStride": -0.05,
+        "feet": [
+          {
+            "regionId": "model_part0",
+            "minAll": 2.7546299095904114e-10,
+            "minSupport": 2.7546299095904114e-10
+          },
+          {
+            "regionId": "model_part4",
+            "minAll": 0.005079943270146199,
+            "minSupport": 0.005079943270146199
+          }
+        ],
+        "minimum": 2.7546299095904114e-10,
+        "offsetY": 0.009460034380530322,
+        "cameraEyeHeight": 3.548746617365255,
+        "laserLocalY": 0.009460034380530322
+      },
+      {
+        "rawStride": 0,
+        "feet": [
+          {
+            "regionId": "model_part0",
+            "minAll": 2.8193085262027403e-10,
+            "minSupport": 2.8193085262027403e-10
+          },
+          {
+            "regionId": "model_part4",
+            "minAll": 0.0009649278286831613,
+            "minSupport": 0.0009649278286831613
+          }
+        ],
+        "minimum": 2.8193085262027403e-10,
+        "offsetY": 2.819324860375838e-10,
+        "cameraEyeHeight": 3.5392865832666573,
+        "laserLocalY": 2.819324860375838e-10
+      },
+      {
+        "rawStride": 0.05,
+        "feet": [
+          {
+            "regionId": "model_part0",
+            "minAll": 0.003400849141865392,
+            "minSupport": 0.003400849141865392
+          },
+          {
+            "regionId": "model_part4",
+            "minAll": -1.870177875409884e-10,
+            "minSupport": -1.870177875409884e-10
+          }
+        ],
+        "minimum": -1.870177875409884e-10,
+        "offsetY": -0.0062752786281058195,
+        "cameraEyeHeight": 3.5330113043566187,
+        "laserLocalY": -0.0062752786281058195
+      },
+      {
+        "rawStride": 0.1,
+        "feet": [
+          {
+            "regionId": "model_part0",
+            "minAll": 0.007868513829830913,
+            "minSupport": 0.007868513829830913
+          },
+          {
+            "regionId": "model_part4",
+            "minAll": -1.616358349249003e-10,
+            "minSupport": -1.616358349249003e-10
+          }
+        ],
+        "minimum": -1.616358349249003e-10,
+        "offsetY": -0.011698867839855994,
+        "cameraEyeHeight": 3.5275877151448687,
+        "laserLocalY": -0.011698867839855994
+      },
+      {
+        "rawStride": 0.15,
+        "feet": [
+          {
+            "regionId": "model_part0",
+            "minAll": 0.012338729840698708,
+            "minSupport": 0.012338729840698708
+          },
+          {
+            "regionId": "model_part4",
+            "minAll": -1.6794090770821946e-10,
+            "minSupport": -1.6794090770821946e-10
+          }
+        ],
+        "minimum": -1.6794090770821946e-10,
+        "offsetY": -0.017334042773005078,
+        "cameraEyeHeight": 3.5219525402117196,
+        "laserLocalY": -0.017334042773005078
+      },
+      {
+        "rawStride": 0.2,
+        "feet": [
+          {
+            "regionId": "model_part0",
+            "minAll": 0.016811050188296386,
+            "minSupport": 0.016811050188296386
+          },
+          {
+            "regionId": "model_part4",
+            "minAll": -1.7423045298170514e-10,
+            "minSupport": -1.7423045298170514e-10
+          }
+        ],
+        "minimum": -1.7423045298170514e-10,
+        "offsetY": -0.023180239883047845,
+        "cameraEyeHeight": 3.516106343101677,
+        "laserLocalY": -0.023180239883047845
+      },
+      {
+        "rawStride": 0.25,
+        "feet": [
+          {
+            "regionId": "model_part0",
+            "minAll": 0.021285027644317923,
+            "minSupport": 0.021285027644317923
+          },
+          {
+            "regionId": "model_part4",
+            "minAll": -1.8050158243076986e-10,
+            "minSupport": -1.8050158243076986e-10
+          }
+        ],
+        "minimum": -1.8050158243076986e-10,
+        "offsetY": -0.029236874555148316,
+        "cameraEyeHeight": 3.5100497084295763,
+        "laserLocalY": -0.029236874555148316
+      },
+      {
+        "rawStride": 0.3,
+        "feet": [
+          {
+            "regionId": "model_part0",
+            "minAll": 0.025760214814744012,
+            "minSupport": 0.025760214814744012
+          },
+          {
+            "regionId": "model_part4",
+            "minAll": -1.8675533342005224e-10,
+            "minSupport": -1.8675533342005224e-10
+          }
+        ],
+        "minimum": -1.8675533342005224e-10,
+        "offsetY": -0.03550334113088817,
+        "cameraEyeHeight": 3.5037832418538364,
+        "laserLocalY": -0.03550334113088817
+      },
+      {
+        "rawStride": 0.35,
+        "feet": [
+          {
+            "regionId": "model_part0",
+            "minAll": 0.030236164184587043,
+            "minSupport": 0.030236164184587043
+          },
+          {
+            "regionId": "model_part4",
+            "minAll": -1.9299039449860445e-10,
+            "minSupport": -1.9299039449860445e-10
+          }
+        ],
+        "minimum": -1.9299039449860445e-10,
+        "offsetY": -0.04197901296882734,
+        "cameraEyeHeight": 3.4973075700158973,
+        "laserLocalY": -0.04197901296882734
+      },
+      {
+        "rawStride": 0.4,
+        "feet": [
+          {
+            "regionId": "model_part0",
+            "minAll": 0.03471242816264045,
+            "minSupport": 0.03471242816264045
+          },
+          {
+            "regionId": "model_part4",
+            "minAll": -1.9920550625718292e-10,
+            "minSupport": -1.9920550625718292e-10
+          }
+        ],
+        "minimum": -1.9920550625718292e-10,
+        "offsetY": -0.048663242507179176,
+        "cameraEyeHeight": 3.4906233404775455,
+        "laserLocalY": -0.048663242507179176
+      },
+      {
+        "rawStride": 0.45,
+        "feet": [
+          {
+            "regionId": "model_part0",
+            "minAll": 0.039161067119694214,
+            "minSupport": 0.039161067119694214
+          },
+          {
+            "regionId": "model_part4",
+            "minAll": -2.0540082829034745e-10,
+            "minSupport": -2.0540082829034745e-10
+          }
+        ],
+        "minimum": -2.0540082829034745e-10,
+        "offsetY": -0.055555361328565235,
+        "cameraEyeHeight": 3.4837312216561593,
+        "laserLocalY": -0.055555361328565235
+      },
+      {
+        "rawStride": 0.5,
+        "feet": [
+          {
+            "regionId": "model_part0",
+            "minAll": 0.04338610397637728,
+            "minSupport": 0.04338610397637728
+          },
+          {
+            "regionId": "model_part4",
+            "minAll": -2.1157632590362851e-10,
+            "minSupport": -2.1157632590362851e-10
+          }
+        ],
+        "minimum": -2.1157632590362851e-10,
+        "offsetY": -0.06265468022684106,
+        "cameraEyeHeight": 3.476631902757884,
+        "laserLocalY": -0.06265468022684106
+      }
+    ],
+    "offsetRange": [
+      -0.06265468022684106,
+      0.08594130836126347
+    ],
+    "gaitState": "Real Player controllers +/-0.5, calibrated visual quaternion gain0.2, exact convex-support grounding within +/-0.15 actor units; rendered motion quality requires screenshot review.",
+    "clipPlayback": "Delivered raw Meshy walk/run clips remain editing downloads; zero clips autoplay."
+  },
+  "weapons": {
+    "states": [
+      {
+        "weapon": "smart_disc",
+        "active": "smart_disc",
+        "proceduralBlades": [
+          false,
+          false
+        ],
+        "importedVisible": true
+      },
+      {
+        "weapon": "wristblades",
+        "active": "wristblades",
+        "proceduralBlades": [
+          false,
+          false
+        ],
+        "importedVisible": true
+      }
+    ],
+    "wristbladeActuators": 0,
+    "limit": "Original baked wristblades remain visible/static; no independent retraction claimed."
+  },
+  "shieldBlock": {
+    "blocking": true,
+    "shieldVisible": true,
+    "controlPosition": [
+      -0.6,
+      3.43,
+      0
+    ],
+    "controlQuaternion": [
+      -0.5877852522924731,
+      0,
+      0,
+      0.8090169943749475
+    ],
+    "leftHandWorldDisplacement": 0.9467498018329553,
+    "leftArmSkin": [
+      {
+        "regionId": "model_part15",
+        "meshName": "model_part15",
+        "visible": true,
+        "wholeRegion": {
+          "vertices": 8592,
+          "maxWorldMotion": 1.0053886062655373,
+          "maxDeviationFromRigidReference": 5.742223160021105e-7,
+          "edgeLengthRatios": {
+            "edges": 16672,
+            "min": 0.9995145247233548,
+            "median": 0.9999999941001935,
+            "p95": 1.000031361024155,
+            "p99": 1.0000722840322267,
+            "max": 1.0003856818770573,
+            "maxAbsoluteEdgeLengthChange": 0.0000011059255781570299,
+            "degenerateRestEdges": 0
+          }
+        },
+        "selections": {
+          "handDominantAfterRepair": {
+            "vertices": 5,
+            "maxWorldMotion": 0.9216842656525288,
+            "maxDeviationFromRigidReference": 5.549642543100218e-7,
+            "edgeLengthRatios": {
+              "edges": 2,
+              "min": 0.9999951241617748,
+              "median": 0.9999951241617748,
+              "p95": 0.9999951241617748,
+              "p99": 0.9999951241617748,
+              "max": 1.0000107537131278,
+              "maxAbsoluteEdgeLengthChange": 3.1715663079481815e-7,
+              "degenerateRestEdges": 0
+            }
+          },
+          "handHasAnyWeightAfterRepair": {
+            "vertices": 3044,
+            "maxWorldMotion": 1.0053886062655373,
+            "maxDeviationFromRigidReference": 5.55098635871253e-7,
+            "edgeLengthRatios": {
+              "edges": 5793,
+              "min": 0.9995145247233548,
+              "median": 1.000000009445247,
+              "p95": 1.000034258829044,
+              "p99": 1.0000725755725122,
+              "max": 1.0002955206919242,
+              "maxAbsoluteEdgeLengthChange": 0.0000011059255781570299,
+              "degenerateRestEdges": 0
+            }
+          },
+          "foreArmOrHandHasAnyWeightAfterRepair": {
+            "vertices": 6986,
+            "maxWorldMotion": 1.0053886062655373,
+            "maxDeviationFromRigidReference": 5.742223160021105e-7,
+            "edgeLengthRatios": {
+              "edges": 13660,
+              "min": 0.9995145247233548,
+              "median": 1.0000000041735715,
+              "p95": 1.0000354521944759,
+              "p99": 1.000076415449231,
+              "max": 1.0003856818770573,
+              "maxAbsoluteEdgeLengthChange": 0.0000011059255781570299,
+              "degenerateRestEdges": 0
+            }
+          }
+        },
+        "interpretation": "Descriptive strain and weight-based selections after repair. No anatomical hand-only segmentation or shoulder stiffness threshold is asserted."
+      }
+    ],
+    "cuffSurfaces": [
+      {
+        "regionId": "model_part7",
+        "meshName": "model_part7",
+        "visible": true,
+        "wholeRegion": {
+          "vertices": 1953,
+          "maxWorldMotion": 1.0305109437585767,
+          "maxDeviationFromRigidReference": 7.377764055609925e-15,
+          "edgeLengthRatios": {
+            "edges": 3689,
+            "min": 0.9999999435406074,
+            "median": 0.999999999505614,
+            "p95": 1.0000000749728877,
+            "p99": 1.00000009199451,
+            "max": 1.0000000978316805,
+            "maxAbsoluteEdgeLengthChange": 5.633725042031301e-9,
+            "degenerateRestEdges": 0
+          }
+        },
+        "selections": {
+          "handDominantAfterRepair": {
+            "vertices": 0,
+            "maxWorldMotion": 0,
+            "maxDeviationFromRigidReference": 0,
+            "edgeLengthRatios": {
+              "edges": 0,
+              "min": null,
+              "median": null,
+              "p95": null,
+              "p99": null,
+              "max": null,
+              "maxAbsoluteEdgeLengthChange": 0,
+              "degenerateRestEdges": 0
+            }
+          },
+          "handHasAnyWeightAfterRepair": {
+            "vertices": 0,
+            "maxWorldMotion": 0,
+            "maxDeviationFromRigidReference": 0,
+            "edgeLengthRatios": {
+              "edges": 0,
+              "min": null,
+              "median": null,
+              "p95": null,
+              "p99": null,
+              "max": null,
+              "maxAbsoluteEdgeLengthChange": 0,
+              "degenerateRestEdges": 0
+            }
+          },
+          "foreArmOrHandHasAnyWeightAfterRepair": {
+            "vertices": 1953,
+            "maxWorldMotion": 1.0305109437585767,
+            "maxDeviationFromRigidReference": 7.377764055609925e-15,
+            "edgeLengthRatios": {
+              "edges": 3689,
+              "min": 0.9999999435406074,
+              "median": 0.999999999505614,
+              "p95": 1.0000000749728877,
+              "p99": 1.00000009199451,
+              "max": 1.0000000978316805,
+              "maxAbsoluteEdgeLengthChange": 5.633725042031301e-9,
+              "degenerateRestEdges": 0
+            }
+          }
+        },
+        "interpretation": "Descriptive strain and weight-based selections after repair. No anatomical hand-only segmentation or shoulder stiffness threshold is asserted."
+      },
+      {
+        "regionId": "model_part11",
+        "meshName": "model_part11",
+        "visible": true,
+        "wholeRegion": {
+          "vertices": 746,
+          "maxWorldMotion": 1.0925611355884193,
+          "maxDeviationFromRigidReference": 7.229248575812844e-15,
+          "edgeLengthRatios": {
+            "edges": 1431,
+            "min": 0.9999999436161899,
+            "median": 1.0000000067327266,
+            "p95": 1.0000000733753651,
+            "p99": 1.000000089979744,
+            "max": 1.0000000970890632,
+            "maxAbsoluteEdgeLengthChange": 6.880441091872136e-9,
+            "degenerateRestEdges": 0
+          }
+        },
+        "selections": {
+          "handDominantAfterRepair": {
+            "vertices": 0,
+            "maxWorldMotion": 0,
+            "maxDeviationFromRigidReference": 0,
+            "edgeLengthRatios": {
+              "edges": 0,
+              "min": null,
+              "median": null,
+              "p95": null,
+              "p99": null,
+              "max": null,
+              "maxAbsoluteEdgeLengthChange": 0,
+              "degenerateRestEdges": 0
+            }
+          },
+          "handHasAnyWeightAfterRepair": {
+            "vertices": 0,
+            "maxWorldMotion": 0,
+            "maxDeviationFromRigidReference": 0,
+            "edgeLengthRatios": {
+              "edges": 0,
+              "min": null,
+              "median": null,
+              "p95": null,
+              "p99": null,
+              "max": null,
+              "maxAbsoluteEdgeLengthChange": 0,
+              "degenerateRestEdges": 0
+            }
+          },
+          "foreArmOrHandHasAnyWeightAfterRepair": {
+            "vertices": 746,
+            "maxWorldMotion": 1.0925611355884193,
+            "maxDeviationFromRigidReference": 7.229248575812844e-15,
+            "edgeLengthRatios": {
+              "edges": 1431,
+              "min": 0.9999999436161899,
+              "median": 1.0000000067327266,
+              "p95": 1.0000000733753651,
+              "p99": 1.000000089979744,
+              "max": 1.0000000970890632,
+              "maxAbsoluteEdgeLengthChange": 6.880441091872136e-9,
+              "degenerateRestEdges": 0
+            }
+          }
+        },
+        "interpretation": "Descriptive strain and weight-based selections after repair. No anatomical hand-only segmentation or shoulder stiffness threshold is asserted."
+      }
+    ],
+    "cuffSeams": {
+      "method": "Cross-region vertices actually coincident in world rest pose; no inferred weld or shoulder rigidity assumption.",
+      "restCoincidenceTolerance": 0.000001,
+      "pairs": 230,
+      "groups": [
+        {
+          "regions": "model_part15 / model_part7",
+          "pairs": 230,
+          "maxRestGap": 0,
+          "maxPosedGap": 0,
+          "maxGapGrowth": 0,
+          "p95PosedGap": 0
+        }
+      ]
+    },
+    "thresholdPolicy": "Arm/shoulder strain is descriptive. The shoulder is allowed to articulate; rigid cuff behavior is inspected separately.",
+    "restore": {
+      "blocking": false,
+      "shieldVisibleRestored": true,
+      "controlPositionError": 0,
+      "controlAngularError": 0,
+      "controlQuaternionComponentError": 0,
+      "cuffSeams": {
+        "method": "Cross-region vertices actually coincident in world rest pose; no inferred weld or shoulder rigidity assumption.",
+        "restCoincidenceTolerance": 0.000001,
+        "pairs": 230,
+        "groups": [
+          {
+            "regions": "model_part15 / model_part7",
+            "pairs": 230,
+            "maxRestGap": 0,
+            "maxPosedGap": 0,
+            "maxGapGrowth": 0,
+            "p95PosedGap": 0
+          }
+        ]
+      },
+      "maxWorldRestorationError": 0,
+      "surfaces": [
+        {
+          "regionId": "model_part7",
+          "meshName": "model_part7",
+          "visible": true,
+          "wholeRegion": {
+            "vertices": 1953,
+            "maxWorldMotion": 0,
+            "maxDeviationFromRigidReference": 0,
+            "edgeLengthRatios": {
+              "edges": 3689,
+              "min": 1,
+              "median": 1,
+              "p95": 1,
+              "p99": 1,
+              "max": 1,
+              "maxAbsoluteEdgeLengthChange": 0,
+              "degenerateRestEdges": 0
+            }
+          },
+          "selections": {
+            "handDominantAfterRepair": {
+              "vertices": 0,
+              "maxWorldMotion": 0,
+              "maxDeviationFromRigidReference": 0,
+              "edgeLengthRatios": {
+                "edges": 0,
+                "min": null,
+                "median": null,
+                "p95": null,
+                "p99": null,
+                "max": null,
+                "maxAbsoluteEdgeLengthChange": 0,
+                "degenerateRestEdges": 0
+              }
+            },
+            "handHasAnyWeightAfterRepair": {
+              "vertices": 0,
+              "maxWorldMotion": 0,
+              "maxDeviationFromRigidReference": 0,
+              "edgeLengthRatios": {
+                "edges": 0,
+                "min": null,
+                "median": null,
+                "p95": null,
+                "p99": null,
+                "max": null,
+                "maxAbsoluteEdgeLengthChange": 0,
+                "degenerateRestEdges": 0
+              }
+            },
+            "foreArmOrHandHasAnyWeightAfterRepair": {
+              "vertices": 1953,
+              "maxWorldMotion": 0,
+              "maxDeviationFromRigidReference": 0,
+              "edgeLengthRatios": {
+                "edges": 3689,
+                "min": 1,
+                "median": 1,
+                "p95": 1,
+                "p99": 1,
+                "max": 1,
+                "maxAbsoluteEdgeLengthChange": 0,
+                "degenerateRestEdges": 0
+              }
+            }
+          },
+          "interpretation": "Descriptive strain and weight-based selections after repair. No anatomical hand-only segmentation or shoulder stiffness threshold is asserted."
+        },
+        {
+          "regionId": "model_part11",
+          "meshName": "model_part11",
+          "visible": true,
+          "wholeRegion": {
+            "vertices": 746,
+            "maxWorldMotion": 0,
+            "maxDeviationFromRigidReference": 0,
+            "edgeLengthRatios": {
+              "edges": 1431,
+              "min": 1,
+              "median": 1,
+              "p95": 1,
+              "p99": 1,
+              "max": 1,
+              "maxAbsoluteEdgeLengthChange": 0,
+              "degenerateRestEdges": 0
+            }
+          },
+          "selections": {
+            "handDominantAfterRepair": {
+              "vertices": 0,
+              "maxWorldMotion": 0,
+              "maxDeviationFromRigidReference": 0,
+              "edgeLengthRatios": {
+                "edges": 0,
+                "min": null,
+                "median": null,
+                "p95": null,
+                "p99": null,
+                "max": null,
+                "maxAbsoluteEdgeLengthChange": 0,
+                "degenerateRestEdges": 0
+              }
+            },
+            "handHasAnyWeightAfterRepair": {
+              "vertices": 0,
+              "maxWorldMotion": 0,
+              "maxDeviationFromRigidReference": 0,
+              "edgeLengthRatios": {
+                "edges": 0,
+                "min": null,
+                "median": null,
+                "p95": null,
+                "p99": null,
+                "max": null,
+                "maxAbsoluteEdgeLengthChange": 0,
+                "degenerateRestEdges": 0
+              }
+            },
+            "foreArmOrHandHasAnyWeightAfterRepair": {
+              "vertices": 746,
+              "maxWorldMotion": 0,
+              "maxDeviationFromRigidReference": 0,
+              "edgeLengthRatios": {
+                "edges": 1431,
+                "min": 1,
+                "median": 1,
+                "p95": 1,
+                "p99": 1,
+                "max": 1,
+                "maxAbsoluteEdgeLengthChange": 0,
+                "degenerateRestEdges": 0
+              }
+            }
+          },
+          "interpretation": "Descriptive strain and weight-based selections after repair. No anatomical hand-only segmentation or shoulder stiffness threshold is asserted."
+        },
+        {
+          "regionId": "model_part15",
+          "meshName": "model_part15",
+          "visible": true,
+          "wholeRegion": {
+            "vertices": 8592,
+            "maxWorldMotion": 0,
+            "maxDeviationFromRigidReference": 0,
+            "edgeLengthRatios": {
+              "edges": 16672,
+              "min": 1,
+              "median": 1,
+              "p95": 1,
+              "p99": 1,
+              "max": 1,
+              "maxAbsoluteEdgeLengthChange": 0,
+              "degenerateRestEdges": 0
+            }
+          },
+          "selections": {
+            "handDominantAfterRepair": {
+              "vertices": 5,
+              "maxWorldMotion": 0,
+              "maxDeviationFromRigidReference": 0,
+              "edgeLengthRatios": {
+                "edges": 2,
+                "min": 1,
+                "median": 1,
+                "p95": 1,
+                "p99": 1,
+                "max": 1,
+                "maxAbsoluteEdgeLengthChange": 0,
+                "degenerateRestEdges": 0
+              }
+            },
+            "handHasAnyWeightAfterRepair": {
+              "vertices": 3044,
+              "maxWorldMotion": 0,
+              "maxDeviationFromRigidReference": 0,
+              "edgeLengthRatios": {
+                "edges": 5793,
+                "min": 1,
+                "median": 1,
+                "p95": 1,
+                "p99": 1,
+                "max": 1,
+                "maxAbsoluteEdgeLengthChange": 0,
+                "degenerateRestEdges": 0
+              }
+            },
+            "foreArmOrHandHasAnyWeightAfterRepair": {
+              "vertices": 6986,
+              "maxWorldMotion": 0,
+              "maxDeviationFromRigidReference": 0,
+              "edgeLengthRatios": {
+                "edges": 13660,
+                "min": 1,
+                "median": 1,
+                "p95": 1,
+                "p99": 1,
+                "max": 1,
+                "maxAbsoluteEdgeLengthChange": 0,
+                "degenerateRestEdges": 0
+              }
+            }
+          },
+          "interpretation": "Descriptive strain and weight-based selections after repair. No anatomical hand-only segmentation or shoulder stiffness threshold is asserted."
+        }
+      ]
+    }
+  },
+  "attacks": [
+    {
+      "action": "light",
+      "comboStep": 1,
+      "intermediateRealComboSteps": [],
+      "rightArmAngularChange": 1.770546160243511,
+      "rightHandWorldDisplacement": 1.8548554628777887,
+      "handSentinel": {
+        "regionId": "model_part1",
+        "compactVertexIndices": [
+          4766,
+          4767
+        ],
+        "restWorldLength": 0.0056031093648466505,
+        "posedWorldLength": 0.005603109944743787,
+        "edgeLengthRatio": 1.0000001034955948,
+        "maxWorldDeviationFromHand": 3.972054645195637e-15,
+        "evidence": "Measured hand edge previously stretched by a foreign RightUpLeg influence. Both vertices are expected to follow RightHand after the anatomical repair; this is not an arbitrary shoulder rigidity test."
+      },
+      "rightArmAndWeightBasedHandStrain": [
+        {
+          "regionId": "model_part1",
+          "meshName": "model_part1",
+          "visible": true,
+          "wholeRegion": {
+            "vertices": 6566,
+            "maxWorldMotion": 2.5443574476646478,
+            "maxDeviationFromRigidReference": 0.09460120983926641,
+            "edgeLengthRatios": {
+              "edges": 12729,
+              "min": 0.48965192635900856,
+              "median": 1.0000000207227044,
+              "p95": 1.0185768058186884,
+              "p99": 1.1864451685093442,
+              "max": 1.4593497082875442,
+              "maxAbsoluteEdgeLengthChange": 0.03387554460473556,
+              "degenerateRestEdges": 0
+            }
+          },
+          "selections": {
+            "handDominantAfterRepair": {
+              "vertices": 3829,
+              "maxWorldMotion": 2.5443574476646478,
+              "maxDeviationFromRigidReference": 7.319036485448145e-7,
+              "edgeLengthRatios": {
+                "edges": 7248,
+                "min": 0.9995572802821638,
+                "median": 1.0000000198459849,
+                "p95": 1.0000228121986778,
+                "p99": 1.0000595978425992,
+                "max": 1.000317971986108,
+                "maxAbsoluteEdgeLengthChange": 0.0000012862855902464124,
+                "degenerateRestEdges": 0
+              }
+            },
+            "handHasAnyWeightAfterRepair": {
+              "vertices": 5155,
+              "maxWorldMotion": 2.5443574476646478,
+              "maxDeviationFromRigidReference": 8.94841193802469e-7,
+              "edgeLengthRatios": {
+                "edges": 9746,
+                "min": 0.9994782830921088,
+                "median": 1.0000000208581958,
+                "p95": 1.0000341331431641,
+                "p99": 1.000080433113928,
+                "max": 1.0003637316241543,
+                "maxAbsoluteEdgeLengthChange": 0.0000012964093027475337,
+                "degenerateRestEdges": 0
+              }
+            },
+            "foreArmOrHandHasAnyWeightAfterRepair": {
+              "vertices": 5873,
+              "maxWorldMotion": 2.5443574476646478,
+              "maxDeviationFromRigidReference": 0.036540874145822626,
+              "edgeLengthRatios": {
+                "edges": 11297,
+                "min": 0.9270054423200422,
+                "median": 1.0000000239428861,
+                "p95": 1.000040525586664,
+                "p99": 1.0256340648653794,
+                "max": 1.3713679153935228,
+                "maxAbsoluteEdgeLengthChange": 0.026215578660765265,
+                "degenerateRestEdges": 0
+              }
+            }
+          },
+          "interpretation": "Descriptive strain and weight-based selections after repair. No anatomical hand-only segmentation or shoulder stiffness threshold is asserted."
+        },
+        {
+          "regionId": "model_part2",
+          "meshName": "model_part2",
+          "visible": true,
+          "wholeRegion": {
+            "vertices": 2746,
+            "maxWorldMotion": 1.8918893774129009,
+            "maxDeviationFromRigidReference": 9.75814960183122e-7,
+            "edgeLengthRatios": {
+              "edges": 5145,
+              "min": 0.9996807050882889,
+              "median": 1.0000000388633266,
+              "p95": 1.0000474225037899,
+              "p99": 1.0001043014213098,
+              "max": 1.0003491708692354,
+              "maxAbsoluteEdgeLengthChange": 0.0000014583150800290962,
+              "degenerateRestEdges": 0
+            }
+          },
+          "selections": {
+            "handDominantAfterRepair": {
+              "vertices": 166,
+              "maxWorldMotion": 1.8918893774129009,
+              "maxDeviationFromRigidReference": 8.132304660126437e-7,
+              "edgeLengthRatios": {
+                "edges": 244,
+                "min": 0.9998948482475849,
+                "median": 0.9999996723102539,
+                "p95": 1.000038468841267,
+                "p99": 1.0000707654094945,
+                "max": 1.0001380368134385,
+                "maxAbsoluteEdgeLengthChange": 0.0000010010950570443072,
+                "degenerateRestEdges": 0
+              }
+            },
+            "handHasAnyWeightAfterRepair": {
+              "vertices": 2095,
+              "maxWorldMotion": 1.8918893774129009,
+              "maxDeviationFromRigidReference": 9.75814960183122e-7,
+              "edgeLengthRatios": {
+                "edges": 3848,
+                "min": 0.9996807050882889,
+                "median": 1.0000000448620188,
+                "p95": 1.000049296522043,
+                "p99": 1.0001043014213098,
+                "max": 1.0003491708692354,
+                "maxAbsoluteEdgeLengthChange": 0.0000014583150800290962,
+                "degenerateRestEdges": 0
+              }
+            },
+            "foreArmOrHandHasAnyWeightAfterRepair": {
+              "vertices": 2746,
+              "maxWorldMotion": 1.8918893774129009,
+              "maxDeviationFromRigidReference": 9.75814960183122e-7,
+              "edgeLengthRatios": {
+                "edges": 5145,
+                "min": 0.9996807050882889,
+                "median": 1.0000000388633266,
+                "p95": 1.0000474225037899,
+                "p99": 1.0001043014213098,
+                "max": 1.0003491708692354,
+                "maxAbsoluteEdgeLengthChange": 0.0000014583150800290962,
+                "degenerateRestEdges": 0
+              }
+            }
+          },
+          "interpretation": "Descriptive strain and weight-based selections after repair. No anatomical hand-only segmentation or shoulder stiffness threshold is asserted."
+        },
+        {
+          "regionId": "model_part8",
+          "meshName": "model_part8",
+          "visible": true,
+          "wholeRegion": {
+            "vertices": 331,
+            "maxWorldMotion": 1.762151918476339,
+            "maxDeviationFromRigidReference": 7.319347155722734e-7,
+            "edgeLengthRatios": {
+              "edges": 646,
+              "min": 0.9997646100145583,
+              "median": 1.0000000110073766,
+              "p95": 1.000058263390431,
+              "p99": 1.000179750866069,
+              "max": 1.0004651097516106,
+              "maxAbsoluteEdgeLengthChange": 0.000001096866041275929,
+              "degenerateRestEdges": 0
+            }
+          },
+          "selections": {
+            "handDominantAfterRepair": {
+              "vertices": 26,
+              "maxWorldMotion": 1.762151918476339,
+              "maxDeviationFromRigidReference": 6.506497001618872e-7,
+              "edgeLengthRatios": {
+                "edges": 49,
+                "min": 0.9998949465358136,
+                "median": 1.0000000065821415,
+                "p95": 1.0000334618389601,
+                "p99": 1.00006230834538,
+                "max": 1.0001561138474682,
+                "maxAbsoluteEdgeLengthChange": 0.0000010597580279341282,
+                "degenerateRestEdges": 0
+              }
+            },
+            "handHasAnyWeightAfterRepair": {
+              "vertices": 287,
+              "maxWorldMotion": 1.762151918476339,
+              "maxDeviationFromRigidReference": 7.319347155722734e-7,
+              "edgeLengthRatios": {
+                "edges": 570,
+                "min": 0.9997646100145583,
+                "median": 1.0000000036093266,
+                "p95": 1.0000574018858217,
+                "p99": 1.000179750866069,
+                "max": 1.0004651097516106,
+                "maxAbsoluteEdgeLengthChange": 0.000001096866041275929,
+                "degenerateRestEdges": 0
+              }
+            },
+            "foreArmOrHandHasAnyWeightAfterRepair": {
+              "vertices": 331,
+              "maxWorldMotion": 1.762151918476339,
+              "maxDeviationFromRigidReference": 7.319347155722734e-7,
+              "edgeLengthRatios": {
+                "edges": 646,
+                "min": 0.9997646100145583,
+                "median": 1.0000000110073766,
+                "p95": 1.000058263390431,
+                "p99": 1.000179750866069,
+                "max": 1.0004651097516106,
+                "maxAbsoluteEdgeLengthChange": 0.000001096866041275929,
+                "degenerateRestEdges": 0
+              }
+            }
+          },
+          "interpretation": "Descriptive strain and weight-based selections after repair. No anatomical hand-only segmentation or shoulder stiffness threshold is asserted."
+        },
+        {
+          "regionId": "model_part9",
+          "meshName": "model_part9",
+          "visible": true,
+          "wholeRegion": {
+            "vertices": 177,
+            "maxWorldMotion": 1.762151918476339,
+            "maxDeviationFromRigidReference": 8.945797556028144e-7,
+            "edgeLengthRatios": {
+              "edges": 353,
+              "min": 0.999889007689138,
+              "median": 0.9999999970057575,
+              "p95": 1.0000332529250344,
+              "p99": 1.0000573611307246,
+              "max": 1.0001161964637053,
+              "maxAbsoluteEdgeLengthChange": 9.053234235750773e-7,
+              "degenerateRestEdges": 0
+            }
+          },
+          "selections": {
+            "handDominantAfterRepair": {
+              "vertices": 27,
+              "maxWorldMotion": 1.762151918476339,
+              "maxDeviationFromRigidReference": 6.506497001618872e-7,
+              "edgeLengthRatios": {
+                "edges": 30,
+                "min": 0.9999570623892526,
+                "median": 0.9999999970057575,
+                "p95": 1.0000184130144192,
+                "p99": 1.0000359566175125,
+                "max": 1.0000430105788383,
+                "maxAbsoluteEdgeLengthChange": 6.483264693851742e-7,
+                "degenerateRestEdges": 0
+              }
+            },
+            "handHasAnyWeightAfterRepair": {
+              "vertices": 152,
+              "maxWorldMotion": 1.762151918476339,
+              "maxDeviationFromRigidReference": 8.945797556028144e-7,
+              "edgeLengthRatios": {
+                "edges": 306,
+                "min": 0.999889007689138,
+                "median": 1.0000000069165522,
+                "p95": 1.0000261352213895,
+                "p99": 1.0000561030421782,
+                "max": 1.0001161964637053,
+                "maxAbsoluteEdgeLengthChange": 9.053234235750773e-7,
+                "degenerateRestEdges": 0
+              }
+            },
+            "foreArmOrHandHasAnyWeightAfterRepair": {
+              "vertices": 177,
+              "maxWorldMotion": 1.762151918476339,
+              "maxDeviationFromRigidReference": 8.945797556028144e-7,
+              "edgeLengthRatios": {
+                "edges": 353,
+                "min": 0.999889007689138,
+                "median": 0.9999999970057575,
+                "p95": 1.0000332529250344,
+                "p99": 1.0000573611307246,
+                "max": 1.0001161964637053,
+                "maxAbsoluteEdgeLengthChange": 9.053234235750773e-7,
+                "degenerateRestEdges": 0
+              }
+            }
+          },
+          "interpretation": "Descriptive strain and weight-based selections after repair. No anatomical hand-only segmentation or shoulder stiffness threshold is asserted."
+        }
+      ],
+      "rightCuffSeams": {
+        "method": "Cross-region vertices actually coincident in world rest pose; no inferred weld or shoulder rigidity assumption.",
+        "restCoincidenceTolerance": 0.000001,
+        "pairs": 493,
+        "groups": [
+          {
+            "regions": "model_part1 / model_part2",
+            "pairs": 403,
+            "maxRestGap": 4.232517402140327e-8,
+            "maxPosedGap": 4.3234222756392157e-8,
+            "maxGapGrowth": 9.090487349888853e-10,
+            "p95PosedGap": 0
+          },
+          {
+            "regions": "model_part8 / model_part9",
+            "pairs": 90,
+            "maxRestGap": 0,
+            "maxPosedGap": 0,
+            "maxGapGrowth": 0,
+            "p95PosedGap": 0
+          }
+        ]
+      },
+      "proceduralBlades": [
+        false,
+        false
+      ],
+      "headSurface": {
+        "regionPrefix": "model_part16",
+        "includesHiddenCoveredSurfaces": true,
+        "worldTolerance": 0.000001,
+        "checkedVertices": 12099,
+        "maxWorldError": 5.687116766346677e-15,
+        "surfaces": [
+          {
+            "regionId": "model_part16",
+            "meshName": "model_part16",
+            "visible": true,
+            "triangles": 11917,
+            "attributeVertices": 11456,
+            "checkedReferencedVertices": 11456,
+            "maxWorldSurfaceErrorFromHeadRigidMotion": 5.687116766346677e-15,
+            "maxHeadLocalSurfaceError": 2.3437142008433856e-13,
+            "violatingVertices": 0
+          },
+          {
+            "regionId": "model_part16_under_biomask",
+            "meshName": "model_part16_under_biomask",
+            "visible": false,
+            "triangles": 595,
+            "attributeVertices": 643,
+            "checkedReferencedVertices": 643,
+            "maxWorldSurfaceErrorFromHeadRigidMotion": 5.329070518200751e-15,
+            "maxHeadLocalSurfaceError": 2.5421149729252077e-13,
+            "violatingVertices": 0
+          }
+        ]
+      },
+      "restore": {
+        "isAttacking": false,
+        "maxWorldRestorationError": 8.881784197001252e-16,
+        "surfaces": [
+          {
+            "regionId": "model_part1",
+            "meshName": "model_part1",
+            "visible": true,
+            "wholeRegion": {
+              "vertices": 6566,
+              "maxWorldMotion": 8.881784197001252e-16,
+              "maxDeviationFromRigidReference": 8.881784197001252e-16,
+              "edgeLengthRatios": {
+                "edges": 12729,
+                "min": 0.9999999999998362,
+                "median": 1,
+                "p95": 1.0000000000000047,
+                "p99": 1.000000000000033,
+                "max": 1.000000000000209,
+                "maxAbsoluteEdgeLengthChange": 8.708311849403572e-16,
+                "degenerateRestEdges": 0
+              }
+            },
+            "selections": {
+              "handDominantAfterRepair": {
+                "vertices": 3829,
+                "maxWorldMotion": 8.881784197001252e-16,
+                "maxDeviationFromRigidReference": 8.881784197001252e-16,
+                "edgeLengthRatios": {
+                  "edges": 7248,
+                  "min": 0.9999999999998942,
+                  "median": 1,
+                  "p95": 1,
+                  "p99": 1.0000000000000184,
+                  "max": 1.0000000000001297,
+                  "maxAbsoluteEdgeLengthChange": 8.708311849403572e-16,
+                  "degenerateRestEdges": 0
+                }
+              },
+              "handHasAnyWeightAfterRepair": {
+                "vertices": 5155,
+                "maxWorldMotion": 8.881784197001252e-16,
+                "maxDeviationFromRigidReference": 8.881784197001252e-16,
+                "edgeLengthRatios": {
+                  "edges": 9746,
+                  "min": 0.9999999999998747,
+                  "median": 1,
+                  "p95": 1,
+                  "p99": 1.000000000000033,
+                  "max": 1.000000000000209,
+                  "maxAbsoluteEdgeLengthChange": 8.708311849403572e-16,
+                  "degenerateRestEdges": 0
+                }
+              },
+              "foreArmOrHandHasAnyWeightAfterRepair": {
+                "vertices": 5873,
+                "maxWorldMotion": 8.881784197001252e-16,
+                "maxDeviationFromRigidReference": 8.881784197001252e-16,
+                "edgeLengthRatios": {
+                  "edges": 11297,
+                  "min": 0.9999999999998362,
+                  "median": 1,
+                  "p95": 1.0000000000000029,
+                  "p99": 1.000000000000033,
+                  "max": 1.000000000000209,
+                  "maxAbsoluteEdgeLengthChange": 8.708311849403572e-16,
+                  "degenerateRestEdges": 0
+                }
+              }
+            },
+            "interpretation": "Descriptive strain and weight-based selections after repair. No anatomical hand-only segmentation or shoulder stiffness threshold is asserted."
+          },
+          {
+            "regionId": "model_part2",
+            "meshName": "model_part2",
+            "visible": true,
+            "wholeRegion": {
+              "vertices": 2746,
+              "maxWorldMotion": 8.881784197001252e-16,
+              "maxDeviationFromRigidReference": 8.881784197001252e-16,
+              "edgeLengthRatios": {
+                "edges": 5145,
+                "min": 0.9999999999997917,
+                "median": 1,
+                "p95": 1.0000000000000175,
+                "p99": 1.0000000000000442,
+                "max": 1.0000000000001903,
+                "maxAbsoluteEdgeLengthChange": 6.713379852030243e-16,
+                "degenerateRestEdges": 0
+              }
+            },
+            "selections": {
+              "handDominantAfterRepair": {
+                "vertices": 166,
+                "maxWorldMotion": 8.881784197001252e-16,
+                "maxDeviationFromRigidReference": 8.881784197001252e-16,
+                "edgeLengthRatios": {
+                  "edges": 244,
+                  "min": 0.999999999999935,
+                  "median": 1,
+                  "p95": 1.0000000000000084,
+                  "p99": 1.000000000000023,
+                  "max": 1.0000000000000462,
+                  "maxAbsoluteEdgeLengthChange": 6.713379852030243e-16,
+                  "degenerateRestEdges": 0
+                }
+              },
+              "handHasAnyWeightAfterRepair": {
+                "vertices": 2095,
+                "maxWorldMotion": 8.881784197001252e-16,
+                "maxDeviationFromRigidReference": 8.881784197001252e-16,
+                "edgeLengthRatios": {
+                  "edges": 3848,
+                  "min": 0.9999999999997917,
+                  "median": 1,
+                  "p95": 1.0000000000000193,
+                  "p99": 1.0000000000000457,
+                  "max": 1.000000000000156,
+                  "maxAbsoluteEdgeLengthChange": 6.713379852030243e-16,
+                  "degenerateRestEdges": 0
+                }
+              },
+              "foreArmOrHandHasAnyWeightAfterRepair": {
+                "vertices": 2746,
+                "maxWorldMotion": 8.881784197001252e-16,
+                "maxDeviationFromRigidReference": 8.881784197001252e-16,
+                "edgeLengthRatios": {
+                  "edges": 5145,
+                  "min": 0.9999999999997917,
+                  "median": 1,
+                  "p95": 1.0000000000000175,
+                  "p99": 1.0000000000000442,
+                  "max": 1.0000000000001903,
+                  "maxAbsoluteEdgeLengthChange": 6.713379852030243e-16,
+                  "degenerateRestEdges": 0
+                }
+              }
+            },
+            "interpretation": "Descriptive strain and weight-based selections after repair. No anatomical hand-only segmentation or shoulder stiffness threshold is asserted."
+          },
+          {
+            "regionId": "model_part8",
+            "meshName": "model_part8",
+            "visible": true,
+            "wholeRegion": {
+              "vertices": 331,
+              "maxWorldMotion": 8.881784197001252e-16,
+              "maxDeviationFromRigidReference": 8.881784197001252e-16,
+              "edgeLengthRatios": {
+                "edges": 646,
+                "min": 0.9999999999998569,
+                "median": 1,
+                "p95": 1.00000000000002,
+                "p99": 1.0000000000000664,
+                "max": 1.0000000000000804,
+                "maxAbsoluteEdgeLengthChange": 4.440892098500626e-16,
+                "degenerateRestEdges": 0
+              }
+            },
+            "selections": {
+              "handDominantAfterRepair": {
+                "vertices": 26,
+                "maxWorldMotion": 8.881784197001252e-16,
+                "maxDeviationFromRigidReference": 8.881784197001252e-16,
+                "edgeLengthRatios": {
+                  "edges": 49,
+                  "min": 0.9999999999999625,
+                  "median": 1,
+                  "p95": 1,
+                  "p99": 1.0000000000000389,
+                  "max": 1.0000000000000708,
+                  "maxAbsoluteEdgeLengthChange": 4.440892098500626e-16,
+                  "degenerateRestEdges": 0
+                }
+              },
+              "handHasAnyWeightAfterRepair": {
+                "vertices": 287,
+                "maxWorldMotion": 8.881784197001252e-16,
+                "maxDeviationFromRigidReference": 8.881784197001252e-16,
+                "edgeLengthRatios": {
+                  "edges": 570,
+                  "min": 0.9999999999998569,
+                  "median": 1,
+                  "p95": 1.0000000000000246,
+                  "p99": 1.0000000000000664,
+                  "max": 1.0000000000000804,
+                  "maxAbsoluteEdgeLengthChange": 4.440892098500626e-16,
+                  "degenerateRestEdges": 0
+                }
+              },
+              "foreArmOrHandHasAnyWeightAfterRepair": {
+                "vertices": 331,
+                "maxWorldMotion": 8.881784197001252e-16,
+                "maxDeviationFromRigidReference": 8.881784197001252e-16,
+                "edgeLengthRatios": {
+                  "edges": 646,
+                  "min": 0.9999999999998569,
+                  "median": 1,
+                  "p95": 1.00000000000002,
+                  "p99": 1.0000000000000664,
+                  "max": 1.0000000000000804,
+                  "maxAbsoluteEdgeLengthChange": 4.440892098500626e-16,
+                  "degenerateRestEdges": 0
+                }
+              }
+            },
+            "interpretation": "Descriptive strain and weight-based selections after repair. No anatomical hand-only segmentation or shoulder stiffness threshold is asserted."
+          },
+          {
+            "regionId": "model_part9",
+            "meshName": "model_part9",
+            "visible": true,
+            "wholeRegion": {
+              "vertices": 177,
+              "maxWorldMotion": 8.881784197001252e-16,
+              "maxDeviationFromRigidReference": 8.881784197001252e-16,
+              "edgeLengthRatios": {
+                "edges": 353,
+                "min": 0.9999999999999263,
+                "median": 1,
+                "p95": 1.000000000000013,
+                "p99": 1.000000000000032,
+                "max": 1.000000000000152,
+                "maxAbsoluteEdgeLengthChange": 4.423544863740858e-16,
+                "degenerateRestEdges": 0
+              }
+            },
+            "selections": {
+              "handDominantAfterRepair": {
+                "vertices": 27,
+                "maxWorldMotion": 8.881784197001252e-16,
+                "maxDeviationFromRigidReference": 8.881784197001252e-16,
+                "edgeLengthRatios": {
+                  "edges": 30,
+                  "min": 0.9999999999999816,
+                  "median": 1,
+                  "p95": 1,
+                  "p99": 1.000000000000004,
+                  "max": 1.000000000000004,
+                  "maxAbsoluteEdgeLengthChange": 3.2959746043559335e-16,
+                  "degenerateRestEdges": 0
+                }
+              },
+              "handHasAnyWeightAfterRepair": {
+                "vertices": 152,
+                "maxWorldMotion": 8.881784197001252e-16,
+                "maxDeviationFromRigidReference": 8.881784197001252e-16,
+                "edgeLengthRatios": {
+                  "edges": 306,
+                  "min": 0.9999999999999263,
+                  "median": 1,
+                  "p95": 1.000000000000013,
+                  "p99": 1.000000000000032,
+                  "max": 1.000000000000152,
+                  "maxAbsoluteEdgeLengthChange": 4.423544863740858e-16,
+                  "degenerateRestEdges": 0
+                }
+              },
+              "foreArmOrHandHasAnyWeightAfterRepair": {
+                "vertices": 177,
+                "maxWorldMotion": 8.881784197001252e-16,
+                "maxDeviationFromRigidReference": 8.881784197001252e-16,
+                "edgeLengthRatios": {
+                  "edges": 353,
+                  "min": 0.9999999999999263,
+                  "median": 1,
+                  "p95": 1.000000000000013,
+                  "p99": 1.000000000000032,
+                  "max": 1.000000000000152,
+                  "maxAbsoluteEdgeLengthChange": 4.423544863740858e-16,
+                  "degenerateRestEdges": 0
+                }
+              }
+            },
+            "interpretation": "Descriptive strain and weight-based selections after repair. No anatomical hand-only segmentation or shoulder stiffness threshold is asserted."
+          }
+        ],
+        "cuffSeams": {
+          "method": "Cross-region vertices actually coincident in world rest pose; no inferred weld or shoulder rigidity assumption.",
+          "restCoincidenceTolerance": 0.000001,
+          "pairs": 493,
+          "groups": [
+            {
+              "regions": "model_part1 / model_part2",
+              "pairs": 403,
+              "maxRestGap": 4.232517402140327e-8,
+              "maxPosedGap": 4.232517402140327e-8,
+              "maxGapGrowth": 0,
+              "p95PosedGap": 0
+            },
+            {
+              "regions": "model_part8 / model_part9",
+              "pairs": 90,
+              "maxRestGap": 0,
+              "maxPosedGap": 0,
+              "maxGapGrowth": 0,
+              "p95PosedGap": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "action": "light",
+      "comboStep": 5,
+      "intermediateRealComboSteps": [
+        2,
+        3,
+        4
+      ],
+      "rightArmAngularChange": 2.393056328777438,
+      "rightHandWorldDisplacement": 2.23118347918349,
+      "handSentinel": {
+        "regionId": "model_part1",
+        "compactVertexIndices": [
+          4766,
+          4767
+        ],
+        "restWorldLength": 0.0056031093648466505,
+        "posedWorldLength": 0.005603109832356525,
+        "edgeLengthRatio": 1.000000083437578,
+        "maxWorldDeviationFromHand": 4.440892098500626e-15,
+        "evidence": "Measured hand edge previously stretched by a foreign RightUpLeg influence. Both vertices are expected to follow RightHand after the anatomical repair; this is not an arbitrary shoulder rigidity test."
+      },
+      "rightArmAndWeightBasedHandStrain": [
+        {
+          "regionId": "model_part1",
+          "meshName": "model_part1",
+          "visible": true,
+          "wholeRegion": {
+            "vertices": 6566,
+            "maxWorldMotion": 3.0643671827954795,
+            "maxDeviationFromRigidReference": 0.11570220272344593,
+            "edgeLengthRatios": {
+              "edges": 12729,
+              "min": 0.3942821846019281,
+              "median": 1.0000000089135619,
+              "p95": 1.0239242318592385,
+              "p99": 1.2225966125952255,
+              "max": 1.5751121503289434,
+              "maxAbsoluteEdgeLengthChange": 0.04142502373689237,
+              "degenerateRestEdges": 0
+            }
+          },
+          "selections": {
+            "handDominantAfterRepair": {
+              "vertices": 3829,
+              "maxWorldMotion": 3.0643671827954795,
+              "maxDeviationFromRigidReference": 7.688674506519444e-7,
+              "edgeLengthRatios": {
+                "edges": 7248,
+                "min": 0.9994897037300052,
+                "median": 1.000000009774492,
+                "p95": 1.0000226987260386,
+                "p99": 1.0000641664946952,
+                "max": 1.0004040838800905,
+                "maxAbsoluteEdgeLengthChange": 0.0000013323703411585036,
+                "degenerateRestEdges": 0
+              }
+            },
+            "handHasAnyWeightAfterRepair": {
+              "vertices": 5155,
+              "maxWorldMotion": 3.0643671827954795,
+              "maxDeviationFromRigidReference": 9.400404836722264e-7,
+              "edgeLengthRatios": {
+                "edges": 9746,
+                "min": 0.9992912533820385,
+                "median": 1.000000009916731,
+                "p95": 1.0000315775830024,
+                "p99": 1.0000813398899935,
+                "max": 1.0005016809584655,
+                "maxAbsoluteEdgeLengthChange": 0.0000013980657587262663,
+                "degenerateRestEdges": 0
+              }
+            },
+            "foreArmOrHandHasAnyWeightAfterRepair": {
+              "vertices": 5873,
+              "maxWorldMotion": 3.0643671827954795,
+              "maxDeviationFromRigidReference": 0.043678055611788676,
+              "edgeLengthRatios": {
+                "edges": 11297,
+                "min": 0.8841063506305787,
+                "median": 1.0000000108039677,
+                "p95": 1.0000381151817543,
+                "p99": 1.0262557859625527,
+                "max": 1.4419582653959326,
+                "maxAbsoluteEdgeLengthChange": 0.031013511304195468,
+                "degenerateRestEdges": 0
+              }
+            }
+          },
+          "interpretation": "Descriptive strain and weight-based selections after repair. No anatomical hand-only segmentation or shoulder stiffness threshold is asserted."
+        },
+        {
+          "regionId": "model_part2",
+          "meshName": "model_part2",
+          "visible": true,
+          "wholeRegion": {
+            "vertices": 2746,
+            "maxWorldMotion": 2.2740794464731007,
+            "maxDeviationFromRigidReference": 0.0000010251006958142373,
+            "edgeLengthRatios": {
+              "edges": 5145,
+              "min": 0.9996585816568874,
+              "median": 1.0000000100611077,
+              "p95": 1.0000435056706463,
+              "p99": 1.0001116559722973,
+              "max": 1.0003676594378508,
+              "maxAbsoluteEdgeLengthChange": 0.000001400192267651812,
+              "degenerateRestEdges": 0
+            }
+          },
+          "selections": {
+            "handDominantAfterRepair": {
+              "vertices": 166,
+              "maxWorldMotion": 2.2740794464731007,
+              "maxDeviationFromRigidReference": 8.542901447365266e-7,
+              "edgeLengthRatios": {
+                "edges": 244,
+                "min": 0.9998830612669865,
+                "median": 0.9999999723602117,
+                "p95": 1.000036654921079,
+                "p99": 1.0000669587608755,
+                "max": 1.0001660546473614,
+                "maxAbsoluteEdgeLengthChange": 0.0000010375504522174006,
+                "degenerateRestEdges": 0
+              }
+            },
+            "handHasAnyWeightAfterRepair": {
+              "vertices": 2095,
+              "maxWorldMotion": 2.2740794464731007,
+              "maxDeviationFromRigidReference": 0.0000010251006958142373,
+              "edgeLengthRatios": {
+                "edges": 3848,
+                "min": 0.9996585816568874,
+                "median": 1.0000000136756446,
+                "p95": 1.0000452911479012,
+                "p99": 1.0001117683640854,
+                "max": 1.0003676594378508,
+                "maxAbsoluteEdgeLengthChange": 0.000001400192267651812,
+                "degenerateRestEdges": 0
+              }
+            },
+            "foreArmOrHandHasAnyWeightAfterRepair": {
+              "vertices": 2746,
+              "maxWorldMotion": 2.2740794464731007,
+              "maxDeviationFromRigidReference": 0.0000010251006958142373,
+              "edgeLengthRatios": {
+                "edges": 5145,
+                "min": 0.9996585816568874,
+                "median": 1.0000000100611077,
+                "p95": 1.0000435056706463,
+                "p99": 1.0001116559722973,
+                "max": 1.0003676594378508,
+                "maxAbsoluteEdgeLengthChange": 0.000001400192267651812,
+                "degenerateRestEdges": 0
+              }
+            }
+          },
+          "interpretation": "Descriptive strain and weight-based selections after repair. No anatomical hand-only segmentation or shoulder stiffness threshold is asserted."
+        },
+        {
+          "regionId": "model_part8",
+          "meshName": "model_part8",
+          "visible": true,
+          "wholeRegion": {
+            "vertices": 331,
+            "maxWorldMotion": 2.124916153859564,
+            "maxDeviationFromRigidReference": 7.689000261890511e-7,
+            "edgeLengthRatios": {
+              "edges": 646,
+              "min": 0.999799151675017,
+              "median": 0.9999999800499219,
+              "p95": 1.0000519475748493,
+              "p99": 1.0001438251184773,
+              "max": 1.0003804801498741,
+              "maxAbsoluteEdgeLengthChange": 0.0000011587572699943427,
+              "degenerateRestEdges": 0
+            }
+          },
+          "selections": {
+            "handDominantAfterRepair": {
+              "vertices": 26,
+              "maxWorldMotion": 2.124916153859564,
+              "maxDeviationFromRigidReference": 6.835393923469319e-7,
+              "edgeLengthRatios": {
+                "edges": 49,
+                "min": 0.9998982381417354,
+                "median": 1.0000000256131893,
+                "p95": 1.000038423404005,
+                "p99": 1.0000708299017558,
+                "max": 1.0001311236692856,
+                "maxAbsoluteEdgeLengthChange": 8.901155370338518e-7,
+                "degenerateRestEdges": 0
+              }
+            },
+            "handHasAnyWeightAfterRepair": {
+              "vertices": 287,
+              "maxWorldMotion": 2.124916153859564,
+              "maxDeviationFromRigidReference": 7.689000261890511e-7,
+              "edgeLengthRatios": {
+                "edges": 570,
+                "min": 0.999799151675017,
+                "median": 0.9999999714432319,
+                "p95": 1.0000449785485344,
+                "p99": 1.0001438251184773,
+                "max": 1.0003804801498741,
+                "maxAbsoluteEdgeLengthChange": 0.0000011587572699943427,
+                "degenerateRestEdges": 0
+              }
+            },
+            "foreArmOrHandHasAnyWeightAfterRepair": {
+              "vertices": 331,
+              "maxWorldMotion": 2.124916153859564,
+              "maxDeviationFromRigidReference": 7.689000261890511e-7,
+              "edgeLengthRatios": {
+                "edges": 646,
+                "min": 0.999799151675017,
+                "median": 0.9999999800499219,
+                "p95": 1.0000519475748493,
+                "p99": 1.0001438251184773,
+                "max": 1.0003804801498741,
+                "maxAbsoluteEdgeLengthChange": 0.0000011587572699943427,
+                "degenerateRestEdges": 0
+              }
+            }
+          },
+          "interpretation": "Descriptive strain and weight-based selections after repair. No anatomical hand-only segmentation or shoulder stiffness threshold is asserted."
+        },
+        {
+          "regionId": "model_part9",
+          "meshName": "model_part9",
+          "visible": true,
+          "wholeRegion": {
+            "vertices": 177,
+            "maxWorldMotion": 2.124916153859564,
+            "maxDeviationFromRigidReference": 9.396328245136458e-7,
+            "edgeLengthRatios": {
+              "edges": 353,
+              "min": 0.9999300366212857,
+              "median": 0.9999999529097773,
+              "p95": 1.000023296469719,
+              "p99": 1.0000609022685212,
+              "max": 1.000082540810104,
+              "maxAbsoluteEdgeLengthChange": 8.759230208897628e-7,
+              "degenerateRestEdges": 0
+            }
+          },
+          "selections": {
+            "handDominantAfterRepair": {
+              "vertices": 27,
+              "maxWorldMotion": 2.124916153859564,
+              "maxDeviationFromRigidReference": 6.835393923469319e-7,
+              "edgeLengthRatios": {
+                "edges": 30,
+                "min": 0.9999579952899523,
+                "median": 1.0000000278558392,
+                "p95": 1.00002116706677,
+                "p99": 1.000038145507213,
+                "max": 1.0000392812617656,
+                "maxAbsoluteEdgeLengthChange": 6.342403521923667e-7,
+                "degenerateRestEdges": 0
+              }
+            },
+            "handHasAnyWeightAfterRepair": {
+              "vertices": 152,
+              "maxWorldMotion": 2.124916153859564,
+              "maxDeviationFromRigidReference": 9.396328245136458e-7,
+              "edgeLengthRatios": {
+                "edges": 306,
+                "min": 0.9999300366212857,
+                "median": 0.9999999677946665,
+                "p95": 1.00002116706677,
+                "p99": 1.0000469151785045,
+                "max": 1.000082540810104,
+                "maxAbsoluteEdgeLengthChange": 8.568197552259738e-7,
+                "degenerateRestEdges": 0
+              }
+            },
+            "foreArmOrHandHasAnyWeightAfterRepair": {
+              "vertices": 177,
+              "maxWorldMotion": 2.124916153859564,
+              "maxDeviationFromRigidReference": 9.396328245136458e-7,
+              "edgeLengthRatios": {
+                "edges": 353,
+                "min": 0.9999300366212857,
+                "median": 0.9999999529097773,
+                "p95": 1.000023296469719,
+                "p99": 1.0000609022685212,
+                "max": 1.000082540810104,
+                "maxAbsoluteEdgeLengthChange": 8.759230208897628e-7,
+                "degenerateRestEdges": 0
+              }
+            }
+          },
+          "interpretation": "Descriptive strain and weight-based selections after repair. No anatomical hand-only segmentation or shoulder stiffness threshold is asserted."
+        }
+      ],
+      "rightCuffSeams": {
+        "method": "Cross-region vertices actually coincident in world rest pose; no inferred weld or shoulder rigidity assumption.",
+        "restCoincidenceTolerance": 0.000001,
+        "pairs": 493,
+        "groups": [
+          {
+            "regions": "model_part1 / model_part2",
+            "pairs": 403,
+            "maxRestGap": 4.232517402140327e-8,
+            "maxPosedGap": 4.265785321402636e-8,
+            "maxGapGrowth": 3.326791926230882e-10,
+            "p95PosedGap": 0
+          },
+          {
+            "regions": "model_part8 / model_part9",
+            "pairs": 90,
+            "maxRestGap": 0,
+            "maxPosedGap": 0,
+            "maxGapGrowth": 0,
+            "p95PosedGap": 0
+          }
+        ]
+      },
+      "proceduralBlades": [
+        false,
+        false
+      ],
+      "headSurface": {
+        "regionPrefix": "model_part16",
+        "includesHiddenCoveredSurfaces": true,
+        "worldTolerance": 0.000001,
+        "checkedVertices": 12099,
+        "maxWorldError": 5.687116766346677e-15,
+        "surfaces": [
+          {
+            "regionId": "model_part16",
+            "meshName": "model_part16",
+            "visible": true,
+            "triangles": 11917,
+            "attributeVertices": 11456,
+            "checkedReferencedVertices": 11456,
+            "maxWorldSurfaceErrorFromHeadRigidMotion": 5.687116766346677e-15,
+            "maxHeadLocalSurfaceError": 0,
+            "violatingVertices": 0
+          },
+          {
+            "regionId": "model_part16_under_biomask",
+            "meshName": "model_part16_under_biomask",
+            "visible": false,
+            "triangles": 595,
+            "attributeVertices": 643,
+            "checkedReferencedVertices": 643,
+            "maxWorldSurfaceErrorFromHeadRigidMotion": 5.687116766346677e-15,
+            "maxHeadLocalSurfaceError": 0,
+            "violatingVertices": 0
+          }
+        ]
+      },
+      "restore": {
+        "isAttacking": false,
+        "maxWorldRestorationError": 4.440892098500626e-16,
+        "surfaces": [
+          {
+            "regionId": "model_part1",
+            "meshName": "model_part1",
+            "visible": true,
+            "wholeRegion": {
+              "vertices": 6566,
+              "maxWorldMotion": 4.440892098500626e-16,
+              "maxDeviationFromRigidReference": 4.440892098500626e-16,
+              "edgeLengthRatios": {
+                "edges": 12729,
+                "min": 0.9999999999998745,
+                "median": 1,
+                "p95": 1.00000000000001,
+                "p99": 1.0000000000000289,
+                "max": 1.0000000000001876,
+                "maxAbsoluteEdgeLengthChange": 4.440892098500626e-16,
+                "degenerateRestEdges": 0
+              }
+            },
+            "selections": {
+              "handDominantAfterRepair": {
+                "vertices": 3829,
+                "maxWorldMotion": 4.440892098500626e-16,
+                "maxDeviationFromRigidReference": 4.440892098500626e-16,
+                "edgeLengthRatios": {
+                  "edges": 7248,
+                  "min": 0.9999999999998745,
+                  "median": 1,
+                  "p95": 1.0000000000000162,
+                  "p99": 1.0000000000000366,
+                  "max": 1.0000000000001876,
+                  "maxAbsoluteEdgeLengthChange": 4.440892098500626e-16,
+                  "degenerateRestEdges": 0
+                }
+              },
+              "handHasAnyWeightAfterRepair": {
+                "vertices": 5155,
+                "maxWorldMotion": 4.440892098500626e-16,
+                "maxDeviationFromRigidReference": 4.440892098500626e-16,
+                "edgeLengthRatios": {
+                  "edges": 9746,
+                  "min": 0.9999999999998745,
+                  "median": 1,
+                  "p95": 1.0000000000000133,
+                  "p99": 1.000000000000033,
+                  "max": 1.0000000000001876,
+                  "maxAbsoluteEdgeLengthChange": 4.440892098500626e-16,
+                  "degenerateRestEdges": 0
+                }
+              },
+              "foreArmOrHandHasAnyWeightAfterRepair": {
+                "vertices": 5873,
+                "maxWorldMotion": 4.440892098500626e-16,
+                "maxDeviationFromRigidReference": 4.440892098500626e-16,
+                "edgeLengthRatios": {
+                  "edges": 11297,
+                  "min": 0.9999999999998745,
+                  "median": 1,
+                  "p95": 1.0000000000000115,
+                  "p99": 1.0000000000000309,
+                  "max": 1.0000000000001876,
+                  "maxAbsoluteEdgeLengthChange": 4.440892098500626e-16,
+                  "degenerateRestEdges": 0
+                }
+              }
+            },
+            "interpretation": "Descriptive strain and weight-based selections after repair. No anatomical hand-only segmentation or shoulder stiffness threshold is asserted."
+          },
+          {
+            "regionId": "model_part2",
+            "meshName": "model_part2",
+            "visible": true,
+            "wholeRegion": {
+              "vertices": 2746,
+              "maxWorldMotion": 4.440892098500626e-16,
+              "maxDeviationFromRigidReference": 4.440892098500626e-16,
+              "edgeLengthRatios": {
+                "edges": 5145,
+                "min": 0.9999999999999905,
+                "median": 1,
+                "p95": 1,
+                "p99": 1,
+                "max": 1.0000000000000313,
+                "maxAbsoluteEdgeLengthChange": 3.712308238590367e-16,
+                "degenerateRestEdges": 0
+              }
+            },
+            "selections": {
+              "handDominantAfterRepair": {
+                "vertices": 166,
+                "maxWorldMotion": 4.440892098500626e-16,
+                "maxDeviationFromRigidReference": 4.440892098500626e-16,
+                "edgeLengthRatios": {
+                  "edges": 244,
+                  "min": 0.9999999999999905,
+                  "median": 1,
+                  "p95": 1.0000000000000069,
+                  "p99": 1.000000000000021,
+                  "max": 1.0000000000000313,
+                  "maxAbsoluteEdgeLengthChange": 3.712308238590367e-16,
+                  "degenerateRestEdges": 0
+                }
+              },
+              "handHasAnyWeightAfterRepair": {
+                "vertices": 2095,
+                "maxWorldMotion": 4.440892098500626e-16,
+                "maxDeviationFromRigidReference": 4.440892098500626e-16,
+                "edgeLengthRatios": {
+                  "edges": 3848,
+                  "min": 0.9999999999999905,
+                  "median": 1,
+                  "p95": 1,
+                  "p99": 1,
+                  "max": 1.0000000000000313,
+                  "maxAbsoluteEdgeLengthChange": 3.712308238590367e-16,
+                  "degenerateRestEdges": 0
+                }
+              },
+              "foreArmOrHandHasAnyWeightAfterRepair": {
+                "vertices": 2746,
+                "maxWorldMotion": 4.440892098500626e-16,
+                "maxDeviationFromRigidReference": 4.440892098500626e-16,
+                "edgeLengthRatios": {
+                  "edges": 5145,
+                  "min": 0.9999999999999905,
+                  "median": 1,
+                  "p95": 1,
+                  "p99": 1,
+                  "max": 1.0000000000000313,
+                  "maxAbsoluteEdgeLengthChange": 3.712308238590367e-16,
+                  "degenerateRestEdges": 0
+                }
+              }
+            },
+            "interpretation": "Descriptive strain and weight-based selections after repair. No anatomical hand-only segmentation or shoulder stiffness threshold is asserted."
+          },
+          {
+            "regionId": "model_part8",
+            "meshName": "model_part8",
+            "visible": true,
+            "wholeRegion": {
+              "vertices": 331,
+              "maxWorldMotion": 0,
+              "maxDeviationFromRigidReference": 0,
+              "edgeLengthRatios": {
+                "edges": 646,
+                "min": 1,
+                "median": 1,
+                "p95": 1,
+                "p99": 1,
+                "max": 1,
+                "maxAbsoluteEdgeLengthChange": 0,
+                "degenerateRestEdges": 0
+              }
+            },
+            "selections": {
+              "handDominantAfterRepair": {
+                "vertices": 26,
+                "maxWorldMotion": 0,
+                "maxDeviationFromRigidReference": 0,
+                "edgeLengthRatios": {
+                  "edges": 49,
+                  "min": 1,
+                  "median": 1,
+                  "p95": 1,
+                  "p99": 1,
+                  "max": 1,
+                  "maxAbsoluteEdgeLengthChange": 0,
+                  "degenerateRestEdges": 0
+                }
+              },
+              "handHasAnyWeightAfterRepair": {
+                "vertices": 287,
+                "maxWorldMotion": 0,
+                "maxDeviationFromRigidReference": 0,
+                "edgeLengthRatios": {
+                  "edges": 570,
+                  "min": 1,
+                  "median": 1,
+                  "p95": 1,
+                  "p99": 1,
+                  "max": 1,
+                  "maxAbsoluteEdgeLengthChange": 0,
+                  "degenerateRestEdges": 0
+                }
+              },
+              "foreArmOrHandHasAnyWeightAfterRepair": {
+                "vertices": 331,
+                "maxWorldMotion": 0,
+                "maxDeviationFromRigidReference": 0,
+                "edgeLengthRatios": {
+                  "edges": 646,
+                  "min": 1,
+                  "median": 1,
+                  "p95": 1,
+                  "p99": 1,
+                  "max": 1,
+                  "maxAbsoluteEdgeLengthChange": 0,
+                  "degenerateRestEdges": 0
+                }
+              }
+            },
+            "interpretation": "Descriptive strain and weight-based selections after repair. No anatomical hand-only segmentation or shoulder stiffness threshold is asserted."
+          },
+          {
+            "regionId": "model_part9",
+            "meshName": "model_part9",
+            "visible": true,
+            "wholeRegion": {
+              "vertices": 177,
+              "maxWorldMotion": 0,
+              "maxDeviationFromRigidReference": 0,
+              "edgeLengthRatios": {
+                "edges": 353,
+                "min": 1,
+                "median": 1,
+                "p95": 1,
+                "p99": 1,
+                "max": 1,
+                "maxAbsoluteEdgeLengthChange": 0,
+                "degenerateRestEdges": 0
+              }
+            },
+            "selections": {
+              "handDominantAfterRepair": {
+                "vertices": 27,
+                "maxWorldMotion": 0,
+                "maxDeviationFromRigidReference": 0,
+                "edgeLengthRatios": {
+                  "edges": 30,
+                  "min": 1,
+                  "median": 1,
+                  "p95": 1,
+                  "p99": 1,
+                  "max": 1,
+                  "maxAbsoluteEdgeLengthChange": 0,
+                  "degenerateRestEdges": 0
+                }
+              },
+              "handHasAnyWeightAfterRepair": {
+                "vertices": 152,
+                "maxWorldMotion": 0,
+                "maxDeviationFromRigidReference": 0,
+                "edgeLengthRatios": {
+                  "edges": 306,
+                  "min": 1,
+                  "median": 1,
+                  "p95": 1,
+                  "p99": 1,
+                  "max": 1,
+                  "maxAbsoluteEdgeLengthChange": 0,
+                  "degenerateRestEdges": 0
+                }
+              },
+              "foreArmOrHandHasAnyWeightAfterRepair": {
+                "vertices": 177,
+                "maxWorldMotion": 0,
+                "maxDeviationFromRigidReference": 0,
+                "edgeLengthRatios": {
+                  "edges": 353,
+                  "min": 1,
+                  "median": 1,
+                  "p95": 1,
+                  "p99": 1,
+                  "max": 1,
+                  "maxAbsoluteEdgeLengthChange": 0,
+                  "degenerateRestEdges": 0
+                }
+              }
+            },
+            "interpretation": "Descriptive strain and weight-based selections after repair. No anatomical hand-only segmentation or shoulder stiffness threshold is asserted."
+          }
+        ],
+        "cuffSeams": {
+          "method": "Cross-region vertices actually coincident in world rest pose; no inferred weld or shoulder rigidity assumption.",
+          "restCoincidenceTolerance": 0.000001,
+          "pairs": 493,
+          "groups": [
+            {
+              "regions": "model_part1 / model_part2",
+              "pairs": 403,
+              "maxRestGap": 4.232517402140327e-8,
+              "maxPosedGap": 4.232517402140327e-8,
+              "maxGapGrowth": 0,
+              "p95PosedGap": 0
+            },
+            {
+              "regions": "model_part8 / model_part9",
+              "pairs": 90,
+              "maxRestGap": 0,
+              "maxPosedGap": 0,
+              "maxGapGrowth": 0,
+              "p95PosedGap": 0
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "attack": {
+    "action": "light",
+    "comboStep": 1,
+    "intermediateRealComboSteps": [],
+    "rightArmAngularChange": 1.770546160243511,
+    "rightHandWorldDisplacement": 1.8548554628777887,
+    "handSentinel": {
+      "regionId": "model_part1",
+      "compactVertexIndices": [
+        4766,
+        4767
+      ],
+      "restWorldLength": 0.0056031093648466505,
+      "posedWorldLength": 0.005603109944743787,
+      "edgeLengthRatio": 1.0000001034955948,
+      "maxWorldDeviationFromHand": 3.972054645195637e-15,
+      "evidence": "Measured hand edge previously stretched by a foreign RightUpLeg influence. Both vertices are expected to follow RightHand after the anatomical repair; this is not an arbitrary shoulder rigidity test."
+    },
+    "rightArmAndWeightBasedHandStrain": [
+      {
+        "regionId": "model_part1",
+        "meshName": "model_part1",
+        "visible": true,
+        "wholeRegion": {
+          "vertices": 6566,
+          "maxWorldMotion": 2.5443574476646478,
+          "maxDeviationFromRigidReference": 0.09460120983926641,
+          "edgeLengthRatios": {
+            "edges": 12729,
+            "min": 0.48965192635900856,
+            "median": 1.0000000207227044,
+            "p95": 1.0185768058186884,
+            "p99": 1.1864451685093442,
+            "max": 1.4593497082875442,
+            "maxAbsoluteEdgeLengthChange": 0.03387554460473556,
+            "degenerateRestEdges": 0
+          }
+        },
+        "selections": {
+          "handDominantAfterRepair": {
+            "vertices": 3829,
+            "maxWorldMotion": 2.5443574476646478,
+            "maxDeviationFromRigidReference": 7.319036485448145e-7,
+            "edgeLengthRatios": {
+              "edges": 7248,
+              "min": 0.9995572802821638,
+              "median": 1.0000000198459849,
+              "p95": 1.0000228121986778,
+              "p99": 1.0000595978425992,
+              "max": 1.000317971986108,
+              "maxAbsoluteEdgeLengthChange": 0.0000012862855902464124,
+              "degenerateRestEdges": 0
+            }
+          },
+          "handHasAnyWeightAfterRepair": {
+            "vertices": 5155,
+            "maxWorldMotion": 2.5443574476646478,
+            "maxDeviationFromRigidReference": 8.94841193802469e-7,
+            "edgeLengthRatios": {
+              "edges": 9746,
+              "min": 0.9994782830921088,
+              "median": 1.0000000208581958,
+              "p95": 1.0000341331431641,
+              "p99": 1.000080433113928,
+              "max": 1.0003637316241543,
+              "maxAbsoluteEdgeLengthChange": 0.0000012964093027475337,
+              "degenerateRestEdges": 0
+            }
+          },
+          "foreArmOrHandHasAnyWeightAfterRepair": {
+            "vertices": 5873,
+            "maxWorldMotion": 2.5443574476646478,
+            "maxDeviationFromRigidReference": 0.036540874145822626,
+            "edgeLengthRatios": {
+              "edges": 11297,
+              "min": 0.9270054423200422,
+              "median": 1.0000000239428861,
+              "p95": 1.000040525586664,
+              "p99": 1.0256340648653794,
+              "max": 1.3713679153935228,
+              "maxAbsoluteEdgeLengthChange": 0.026215578660765265,
+              "degenerateRestEdges": 0
+            }
+          }
+        },
+        "interpretation": "Descriptive strain and weight-based selections after repair. No anatomical hand-only segmentation or shoulder stiffness threshold is asserted."
+      },
+      {
+        "regionId": "model_part2",
+        "meshName": "model_part2",
+        "visible": true,
+        "wholeRegion": {
+          "vertices": 2746,
+          "maxWorldMotion": 1.8918893774129009,
+          "maxDeviationFromRigidReference": 9.75814960183122e-7,
+          "edgeLengthRatios": {
+            "edges": 5145,
+            "min": 0.9996807050882889,
+            "median": 1.0000000388633266,
+            "p95": 1.0000474225037899,
+            "p99": 1.0001043014213098,
+            "max": 1.0003491708692354,
+            "maxAbsoluteEdgeLengthChange": 0.0000014583150800290962,
+            "degenerateRestEdges": 0
+          }
+        },
+        "selections": {
+          "handDominantAfterRepair": {
+            "vertices": 166,
+            "maxWorldMotion": 1.8918893774129009,
+            "maxDeviationFromRigidReference": 8.132304660126437e-7,
+            "edgeLengthRatios": {
+              "edges": 244,
+              "min": 0.9998948482475849,
+              "median": 0.9999996723102539,
+              "p95": 1.000038468841267,
+              "p99": 1.0000707654094945,
+              "max": 1.0001380368134385,
+              "maxAbsoluteEdgeLengthChange": 0.0000010010950570443072,
+              "degenerateRestEdges": 0
+            }
+          },
+          "handHasAnyWeightAfterRepair": {
+            "vertices": 2095,
+            "maxWorldMotion": 1.8918893774129009,
+            "maxDeviationFromRigidReference": 9.75814960183122e-7,
+            "edgeLengthRatios": {
+              "edges": 3848,
+              "min": 0.9996807050882889,
+              "median": 1.0000000448620188,
+              "p95": 1.000049296522043,
+              "p99": 1.0001043014213098,
+              "max": 1.0003491708692354,
+              "maxAbsoluteEdgeLengthChange": 0.0000014583150800290962,
+              "degenerateRestEdges": 0
+            }
+          },
+          "foreArmOrHandHasAnyWeightAfterRepair": {
+            "vertices": 2746,
+            "maxWorldMotion": 1.8918893774129009,
+            "maxDeviationFromRigidReference": 9.75814960183122e-7,
+            "edgeLengthRatios": {
+              "edges": 5145,
+              "min": 0.9996807050882889,
+              "median": 1.0000000388633266,
+              "p95": 1.0000474225037899,
+              "p99": 1.0001043014213098,
+              "max": 1.0003491708692354,
+              "maxAbsoluteEdgeLengthChange": 0.0000014583150800290962,
+              "degenerateRestEdges": 0
+            }
+          }
+        },
+        "interpretation": "Descriptive strain and weight-based selections after repair. No anatomical hand-only segmentation or shoulder stiffness threshold is asserted."
+      },
+      {
+        "regionId": "model_part8",
+        "meshName": "model_part8",
+        "visible": true,
+        "wholeRegion": {
+          "vertices": 331,
+          "maxWorldMotion": 1.762151918476339,
+          "maxDeviationFromRigidReference": 7.319347155722734e-7,
+          "edgeLengthRatios": {
+            "edges": 646,
+            "min": 0.9997646100145583,
+            "median": 1.0000000110073766,
+            "p95": 1.000058263390431,
+            "p99": 1.000179750866069,
+            "max": 1.0004651097516106,
+            "maxAbsoluteEdgeLengthChange": 0.000001096866041275929,
+            "degenerateRestEdges": 0
+          }
+        },
+        "selections": {
+          "handDominantAfterRepair": {
+            "vertices": 26,
+            "maxWorldMotion": 1.762151918476339,
+            "maxDeviationFromRigidReference": 6.506497001618872e-7,
+            "edgeLengthRatios": {
+              "edges": 49,
+              "min": 0.9998949465358136,
+              "median": 1.0000000065821415,
+              "p95": 1.0000334618389601,
+              "p99": 1.00006230834538,
+              "max": 1.0001561138474682,
+              "maxAbsoluteEdgeLengthChange": 0.0000010597580279341282,
+              "degenerateRestEdges": 0
+            }
+          },
+          "handHasAnyWeightAfterRepair": {
+            "vertices": 287,
+            "maxWorldMotion": 1.762151918476339,
+            "maxDeviationFromRigidReference": 7.319347155722734e-7,
+            "edgeLengthRatios": {
+              "edges": 570,
+              "min": 0.9997646100145583,
+              "median": 1.0000000036093266,
+              "p95": 1.0000574018858217,
+              "p99": 1.000179750866069,
+              "max": 1.0004651097516106,
+              "maxAbsoluteEdgeLengthChange": 0.000001096866041275929,
+              "degenerateRestEdges": 0
+            }
+          },
+          "foreArmOrHandHasAnyWeightAfterRepair": {
+            "vertices": 331,
+            "maxWorldMotion": 1.762151918476339,
+            "maxDeviationFromRigidReference": 7.319347155722734e-7,
+            "edgeLengthRatios": {
+              "edges": 646,
+              "min": 0.9997646100145583,
+              "median": 1.0000000110073766,
+              "p95": 1.000058263390431,
+              "p99": 1.000179750866069,
+              "max": 1.0004651097516106,
+              "maxAbsoluteEdgeLengthChange": 0.000001096866041275929,
+              "degenerateRestEdges": 0
+            }
+          }
+        },
+        "interpretation": "Descriptive strain and weight-based selections after repair. No anatomical hand-only segmentation or shoulder stiffness threshold is asserted."
+      },
+      {
+        "regionId": "model_part9",
+        "meshName": "model_part9",
+        "visible": true,
+        "wholeRegion": {
+          "vertices": 177,
+          "maxWorldMotion": 1.762151918476339,
+          "maxDeviationFromRigidReference": 8.945797556028144e-7,
+          "edgeLengthRatios": {
+            "edges": 353,
+            "min": 0.999889007689138,
+            "median": 0.9999999970057575,
+            "p95": 1.0000332529250344,
+            "p99": 1.0000573611307246,
+            "max": 1.0001161964637053,
+            "maxAbsoluteEdgeLengthChange": 9.053234235750773e-7,
+            "degenerateRestEdges": 0
+          }
+        },
+        "selections": {
+          "handDominantAfterRepair": {
+            "vertices": 27,
+            "maxWorldMotion": 1.762151918476339,
+            "maxDeviationFromRigidReference": 6.506497001618872e-7,
+            "edgeLengthRatios": {
+              "edges": 30,
+              "min": 0.9999570623892526,
+              "median": 0.9999999970057575,
+              "p95": 1.0000184130144192,
+              "p99": 1.0000359566175125,
+              "max": 1.0000430105788383,
+              "maxAbsoluteEdgeLengthChange": 6.483264693851742e-7,
+              "degenerateRestEdges": 0
+            }
+          },
+          "handHasAnyWeightAfterRepair": {
+            "vertices": 152,
+            "maxWorldMotion": 1.762151918476339,
+            "maxDeviationFromRigidReference": 8.945797556028144e-7,
+            "edgeLengthRatios": {
+              "edges": 306,
+              "min": 0.999889007689138,
+              "median": 1.0000000069165522,
+              "p95": 1.0000261352213895,
+              "p99": 1.0000561030421782,
+              "max": 1.0001161964637053,
+              "maxAbsoluteEdgeLengthChange": 9.053234235750773e-7,
+              "degenerateRestEdges": 0
+            }
+          },
+          "foreArmOrHandHasAnyWeightAfterRepair": {
+            "vertices": 177,
+            "maxWorldMotion": 1.762151918476339,
+            "maxDeviationFromRigidReference": 8.945797556028144e-7,
+            "edgeLengthRatios": {
+              "edges": 353,
+              "min": 0.999889007689138,
+              "median": 0.9999999970057575,
+              "p95": 1.0000332529250344,
+              "p99": 1.0000573611307246,
+              "max": 1.0001161964637053,
+              "maxAbsoluteEdgeLengthChange": 9.053234235750773e-7,
+              "degenerateRestEdges": 0
+            }
+          }
+        },
+        "interpretation": "Descriptive strain and weight-based selections after repair. No anatomical hand-only segmentation or shoulder stiffness threshold is asserted."
+      }
+    ],
+    "rightCuffSeams": {
+      "method": "Cross-region vertices actually coincident in world rest pose; no inferred weld or shoulder rigidity assumption.",
+      "restCoincidenceTolerance": 0.000001,
+      "pairs": 493,
+      "groups": [
+        {
+          "regions": "model_part1 / model_part2",
+          "pairs": 403,
+          "maxRestGap": 4.232517402140327e-8,
+          "maxPosedGap": 4.3234222756392157e-8,
+          "maxGapGrowth": 9.090487349888853e-10,
+          "p95PosedGap": 0
+        },
+        {
+          "regions": "model_part8 / model_part9",
+          "pairs": 90,
+          "maxRestGap": 0,
+          "maxPosedGap": 0,
+          "maxGapGrowth": 0,
+          "p95PosedGap": 0
+        }
+      ]
+    },
+    "proceduralBlades": [
+      false,
+      false
+    ],
+    "headSurface": {
+      "regionPrefix": "model_part16",
+      "includesHiddenCoveredSurfaces": true,
+      "worldTolerance": 0.000001,
+      "checkedVertices": 12099,
+      "maxWorldError": 5.687116766346677e-15,
+      "surfaces": [
+        {
+          "regionId": "model_part16",
+          "meshName": "model_part16",
+          "visible": true,
+          "triangles": 11917,
+          "attributeVertices": 11456,
+          "checkedReferencedVertices": 11456,
+          "maxWorldSurfaceErrorFromHeadRigidMotion": 5.687116766346677e-15,
+          "maxHeadLocalSurfaceError": 2.3437142008433856e-13,
+          "violatingVertices": 0
+        },
+        {
+          "regionId": "model_part16_under_biomask",
+          "meshName": "model_part16_under_biomask",
+          "visible": false,
+          "triangles": 595,
+          "attributeVertices": 643,
+          "checkedReferencedVertices": 643,
+          "maxWorldSurfaceErrorFromHeadRigidMotion": 5.329070518200751e-15,
+          "maxHeadLocalSurfaceError": 2.5421149729252077e-13,
+          "violatingVertices": 0
+        }
+      ]
+    },
+    "restore": {
+      "isAttacking": false,
+      "maxWorldRestorationError": 8.881784197001252e-16,
+      "surfaces": [
+        {
+          "regionId": "model_part1",
+          "meshName": "model_part1",
+          "visible": true,
+          "wholeRegion": {
+            "vertices": 6566,
+            "maxWorldMotion": 8.881784197001252e-16,
+            "maxDeviationFromRigidReference": 8.881784197001252e-16,
+            "edgeLengthRatios": {
+              "edges": 12729,
+              "min": 0.9999999999998362,
+              "median": 1,
+              "p95": 1.0000000000000047,
+              "p99": 1.000000000000033,
+              "max": 1.000000000000209,
+              "maxAbsoluteEdgeLengthChange": 8.708311849403572e-16,
+              "degenerateRestEdges": 0
+            }
+          },
+          "selections": {
+            "handDominantAfterRepair": {
+              "vertices": 3829,
+              "maxWorldMotion": 8.881784197001252e-16,
+              "maxDeviationFromRigidReference": 8.881784197001252e-16,
+              "edgeLengthRatios": {
+                "edges": 7248,
+                "min": 0.9999999999998942,
+                "median": 1,
+                "p95": 1,
+                "p99": 1.0000000000000184,
+                "max": 1.0000000000001297,
+                "maxAbsoluteEdgeLengthChange": 8.708311849403572e-16,
+                "degenerateRestEdges": 0
+              }
+            },
+            "handHasAnyWeightAfterRepair": {
+              "vertices": 5155,
+              "maxWorldMotion": 8.881784197001252e-16,
+              "maxDeviationFromRigidReference": 8.881784197001252e-16,
+              "edgeLengthRatios": {
+                "edges": 9746,
+                "min": 0.9999999999998747,
+                "median": 1,
+                "p95": 1,
+                "p99": 1.000000000000033,
+                "max": 1.000000000000209,
+                "maxAbsoluteEdgeLengthChange": 8.708311849403572e-16,
+                "degenerateRestEdges": 0
+              }
+            },
+            "foreArmOrHandHasAnyWeightAfterRepair": {
+              "vertices": 5873,
+              "maxWorldMotion": 8.881784197001252e-16,
+              "maxDeviationFromRigidReference": 8.881784197001252e-16,
+              "edgeLengthRatios": {
+                "edges": 11297,
+                "min": 0.9999999999998362,
+                "median": 1,
+                "p95": 1.0000000000000029,
+                "p99": 1.000000000000033,
+                "max": 1.000000000000209,
+                "maxAbsoluteEdgeLengthChange": 8.708311849403572e-16,
+                "degenerateRestEdges": 0
+              }
+            }
+          },
+          "interpretation": "Descriptive strain and weight-based selections after repair. No anatomical hand-only segmentation or shoulder stiffness threshold is asserted."
+        },
+        {
+          "regionId": "model_part2",
+          "meshName": "model_part2",
+          "visible": true,
+          "wholeRegion": {
+            "vertices": 2746,
+            "maxWorldMotion": 8.881784197001252e-16,
+            "maxDeviationFromRigidReference": 8.881784197001252e-16,
+            "edgeLengthRatios": {
+              "edges": 5145,
+              "min": 0.9999999999997917,
+              "median": 1,
+              "p95": 1.0000000000000175,
+              "p99": 1.0000000000000442,
+              "max": 1.0000000000001903,
+              "maxAbsoluteEdgeLengthChange": 6.713379852030243e-16,
+              "degenerateRestEdges": 0
+            }
+          },
+          "selections": {
+            "handDominantAfterRepair": {
+              "vertices": 166,
+              "maxWorldMotion": 8.881784197001252e-16,
+              "maxDeviationFromRigidReference": 8.881784197001252e-16,
+              "edgeLengthRatios": {
+                "edges": 244,
+                "min": 0.999999999999935,
+                "median": 1,
+                "p95": 1.0000000000000084,
+                "p99": 1.000000000000023,
+                "max": 1.0000000000000462,
+                "maxAbsoluteEdgeLengthChange": 6.713379852030243e-16,
+                "degenerateRestEdges": 0
+              }
+            },
+            "handHasAnyWeightAfterRepair": {
+              "vertices": 2095,
+              "maxWorldMotion": 8.881784197001252e-16,
+              "maxDeviationFromRigidReference": 8.881784197001252e-16,
+              "edgeLengthRatios": {
+                "edges": 3848,
+                "min": 0.9999999999997917,
+                "median": 1,
+                "p95": 1.0000000000000193,
+                "p99": 1.0000000000000457,
+                "max": 1.000000000000156,
+                "maxAbsoluteEdgeLengthChange": 6.713379852030243e-16,
+                "degenerateRestEdges": 0
+              }
+            },
+            "foreArmOrHandHasAnyWeightAfterRepair": {
+              "vertices": 2746,
+              "maxWorldMotion": 8.881784197001252e-16,
+              "maxDeviationFromRigidReference": 8.881784197001252e-16,
+              "edgeLengthRatios": {
+                "edges": 5145,
+                "min": 0.9999999999997917,
+                "median": 1,
+                "p95": 1.0000000000000175,
+                "p99": 1.0000000000000442,
+                "max": 1.0000000000001903,
+                "maxAbsoluteEdgeLengthChange": 6.713379852030243e-16,
+                "degenerateRestEdges": 0
+              }
+            }
+          },
+          "interpretation": "Descriptive strain and weight-based selections after repair. No anatomical hand-only segmentation or shoulder stiffness threshold is asserted."
+        },
+        {
+          "regionId": "model_part8",
+          "meshName": "model_part8",
+          "visible": true,
+          "wholeRegion": {
+            "vertices": 331,
+            "maxWorldMotion": 8.881784197001252e-16,
+            "maxDeviationFromRigidReference": 8.881784197001252e-16,
+            "edgeLengthRatios": {
+              "edges": 646,
+              "min": 0.9999999999998569,
+              "median": 1,
+              "p95": 1.00000000000002,
+              "p99": 1.0000000000000664,
+              "max": 1.0000000000000804,
+              "maxAbsoluteEdgeLengthChange": 4.440892098500626e-16,
+              "degenerateRestEdges": 0
+            }
+          },
+          "selections": {
+            "handDominantAfterRepair": {
+              "vertices": 26,
+              "maxWorldMotion": 8.881784197001252e-16,
+              "maxDeviationFromRigidReference": 8.881784197001252e-16,
+              "edgeLengthRatios": {
+                "edges": 49,
+                "min": 0.9999999999999625,
+                "median": 1,
+                "p95": 1,
+                "p99": 1.0000000000000389,
+                "max": 1.0000000000000708,
+                "maxAbsoluteEdgeLengthChange": 4.440892098500626e-16,
+                "degenerateRestEdges": 0
+              }
+            },
+            "handHasAnyWeightAfterRepair": {
+              "vertices": 287,
+              "maxWorldMotion": 8.881784197001252e-16,
+              "maxDeviationFromRigidReference": 8.881784197001252e-16,
+              "edgeLengthRatios": {
+                "edges": 570,
+                "min": 0.9999999999998569,
+                "median": 1,
+                "p95": 1.0000000000000246,
+                "p99": 1.0000000000000664,
+                "max": 1.0000000000000804,
+                "maxAbsoluteEdgeLengthChange": 4.440892098500626e-16,
+                "degenerateRestEdges": 0
+              }
+            },
+            "foreArmOrHandHasAnyWeightAfterRepair": {
+              "vertices": 331,
+              "maxWorldMotion": 8.881784197001252e-16,
+              "maxDeviationFromRigidReference": 8.881784197001252e-16,
+              "edgeLengthRatios": {
+                "edges": 646,
+                "min": 0.9999999999998569,
+                "median": 1,
+                "p95": 1.00000000000002,
+                "p99": 1.0000000000000664,
+                "max": 1.0000000000000804,
+                "maxAbsoluteEdgeLengthChange": 4.440892098500626e-16,
+                "degenerateRestEdges": 0
+              }
+            }
+          },
+          "interpretation": "Descriptive strain and weight-based selections after repair. No anatomical hand-only segmentation or shoulder stiffness threshold is asserted."
+        },
+        {
+          "regionId": "model_part9",
+          "meshName": "model_part9",
+          "visible": true,
+          "wholeRegion": {
+            "vertices": 177,
+            "maxWorldMotion": 8.881784197001252e-16,
+            "maxDeviationFromRigidReference": 8.881784197001252e-16,
+            "edgeLengthRatios": {
+              "edges": 353,
+              "min": 0.9999999999999263,
+              "median": 1,
+              "p95": 1.000000000000013,
+              "p99": 1.000000000000032,
+              "max": 1.000000000000152,
+              "maxAbsoluteEdgeLengthChange": 4.423544863740858e-16,
+              "degenerateRestEdges": 0
+            }
+          },
+          "selections": {
+            "handDominantAfterRepair": {
+              "vertices": 27,
+              "maxWorldMotion": 8.881784197001252e-16,
+              "maxDeviationFromRigidReference": 8.881784197001252e-16,
+              "edgeLengthRatios": {
+                "edges": 30,
+                "min": 0.9999999999999816,
+                "median": 1,
+                "p95": 1,
+                "p99": 1.000000000000004,
+                "max": 1.000000000000004,
+                "maxAbsoluteEdgeLengthChange": 3.2959746043559335e-16,
+                "degenerateRestEdges": 0
+              }
+            },
+            "handHasAnyWeightAfterRepair": {
+              "vertices": 152,
+              "maxWorldMotion": 8.881784197001252e-16,
+              "maxDeviationFromRigidReference": 8.881784197001252e-16,
+              "edgeLengthRatios": {
+                "edges": 306,
+                "min": 0.9999999999999263,
+                "median": 1,
+                "p95": 1.000000000000013,
+                "p99": 1.000000000000032,
+                "max": 1.000000000000152,
+                "maxAbsoluteEdgeLengthChange": 4.423544863740858e-16,
+                "degenerateRestEdges": 0
+              }
+            },
+            "foreArmOrHandHasAnyWeightAfterRepair": {
+              "vertices": 177,
+              "maxWorldMotion": 8.881784197001252e-16,
+              "maxDeviationFromRigidReference": 8.881784197001252e-16,
+              "edgeLengthRatios": {
+                "edges": 353,
+                "min": 0.9999999999999263,
+                "median": 1,
+                "p95": 1.000000000000013,
+                "p99": 1.000000000000032,
+                "max": 1.000000000000152,
+                "maxAbsoluteEdgeLengthChange": 4.423544863740858e-16,
+                "degenerateRestEdges": 0
+              }
+            }
+          },
+          "interpretation": "Descriptive strain and weight-based selections after repair. No anatomical hand-only segmentation or shoulder stiffness threshold is asserted."
+        }
+      ],
+      "cuffSeams": {
+        "method": "Cross-region vertices actually coincident in world rest pose; no inferred weld or shoulder rigidity assumption.",
+        "restCoincidenceTolerance": 0.000001,
+        "pairs": 493,
+        "groups": [
+          {
+            "regions": "model_part1 / model_part2",
+            "pairs": 403,
+            "maxRestGap": 4.232517402140327e-8,
+            "maxPosedGap": 4.232517402140327e-8,
+            "maxGapGrowth": 0,
+            "p95PosedGap": 0
+          },
+          {
+            "regions": "model_part8 / model_part9",
+            "pairs": 90,
+            "maxRestGap": 0,
+            "maxPosedGap": 0,
+            "maxGapGrowth": 0,
+            "p95PosedGap": 0
+          }
+        ]
+      }
+    }
+  },
+  "instances": {
+    "secondInstanceImported": true,
+    "privateMaterials": true,
+    "privateHairSkeletons": true,
+    "privateHairGeometry": true,
+    "secondArticulation": {
+      "dreadlocks": 2,
+      "simulatedSegments": 8,
+      "wristbladeActuators": 0,
+      "gauntletHinges": 0
+    },
+    "cloakIsolated": true,
+    "cachedDisposals": 0,
+    "cacheResourceObservation": "source geometry/material/texture disposal event listeners"
+  },
+  "alienRegression": {
+    "state": "ready",
+    "visualSource": "generated-rigged",
+    "rootVisible": true,
+    "skinCorrections": "big-chap-v2-tail-lower-legs-rigid-20261022"
+  },
+  "reuse": {
+    "state": "imported",
+    "mask": "attached",
+    "hair": 2,
+    "cachedDisposals": 0
+  },
+  "jungleRegression": {
+    "state": "imported",
+    "mask": "attached",
+    "asset": {
+      "key": "jungle_hunter",
+      "url": "/models/jungle-hunter-rigged.glb",
+      "biomask": {
+        "key": "jungle_hunter_biomask",
+        "url": "/models/jungle-hunter-biomask.glb"
+      }
+    },
+    "articulation": null,
+    "optionalPreparation": {
+      "regionsPrepared": false,
+      "hairPrepared": false,
+      "hairPieces": 0,
+      "hairMaxNeutralWorldError": 0,
+      "hairMaxRestWorldError": 0,
+      "regionError": null,
+      "hairError": null,
+      "skinFiltersPrepared": false,
+      "skinFilterPasses": 0,
+      "skinFilteredRegions": 0,
+      "skinFilteredVertices": 0,
+      "skinMaxRestWorldError": 0,
+      "skinFilterRegions": [],
+      "skinFilterError": null,
+      "rigidEquipmentPrepared": false,
+      "boneRestCorrectionsApplied": false,
+      "boneRestCorrectionError": null,
+      "boneRestCorrectionDiagnostics": null,
+      "animationsSuppressedForBoneRestCorrection": false,
+      "suppressedAnimationClips": 0,
+      "rigidEquipmentError": null
+    }
+  },
+  "cacheImmutability": {
+    "observable": true,
+    "beforeFirstPlayer": {
+      "body": {
+        "sha256": "9e4ccf36ab987491d09a7361acf6d48bfaef88f3217f1a351f82b1ca5b977619",
+        "components": {
+          "nodes": "5abf8151bf593ba3f1f22afe283a1e125b7a0b0a63986716ab35085f63e01b42",
+          "geometryStates": "dc431136a42ce43993b10a00c56921da1d33ce81327b32e79a2237043363df75",
+          "materialStates": "3e360f380b7696067483068fb84df55c6ddecf0cff6133d396b60ba87b24124b",
+          "textureStates": "2791f312d0c316778577ce91c791e5a19046d15af759438e310a9e46f30203f5",
+          "skeletonStates": "5632b34f8a974e3464ef3408c84db1f2389f567952cb7e378e7938981170314e",
+          "animationStates": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "nodes": 61,
+        "geometries": 21,
+        "materials": 1,
+        "textures": 3,
+        "skeletons": 21,
+        "bufferBytes": 19167636
+      },
+      "mask": {
+        "sha256": "d00bfd096a245d6579840a771b8cffa2929fab9608bfcf4583b6f422333f2044",
+        "components": {
+          "nodes": "e4560f5c324728b3e2474de406c17f4b9c4f22ca3868ae262d616518320f836e",
+          "geometryStates": "7f5c6446be69ee35631b9521d4a59122345d67291747ada64e7694c14c14bda9",
+          "materialStates": "3e360f380b7696067483068fb84df55c6ddecf0cff6133d396b60ba87b24124b",
+          "textureStates": "f7e5e7b9bf3c7ffa7de43b90efde59ee8622980b0a77e2e35f9fb4eb677b0f32",
+          "skeletonStates": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "animationStates": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "nodes": 2,
+        "geometries": 1,
+        "materials": 1,
+        "textures": 3,
+        "skeletons": 0,
+        "bufferBytes": 3313624
+      }
+    },
+    "afterAttacksCloakDisposalAndReplay": {
+      "body": {
+        "sha256": "9e4ccf36ab987491d09a7361acf6d48bfaef88f3217f1a351f82b1ca5b977619",
+        "components": {
+          "nodes": "5abf8151bf593ba3f1f22afe283a1e125b7a0b0a63986716ab35085f63e01b42",
+          "geometryStates": "dc431136a42ce43993b10a00c56921da1d33ce81327b32e79a2237043363df75",
+          "materialStates": "3e360f380b7696067483068fb84df55c6ddecf0cff6133d396b60ba87b24124b",
+          "textureStates": "2791f312d0c316778577ce91c791e5a19046d15af759438e310a9e46f30203f5",
+          "skeletonStates": "5632b34f8a974e3464ef3408c84db1f2389f567952cb7e378e7938981170314e",
+          "animationStates": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "nodes": 61,
+        "geometries": 21,
+        "materials": 1,
+        "textures": 3,
+        "skeletons": 21,
+        "bufferBytes": 19167636
+      },
+      "mask": {
+        "sha256": "d00bfd096a245d6579840a771b8cffa2929fab9608bfcf4583b6f422333f2044",
+        "components": {
+          "nodes": "e4560f5c324728b3e2474de406c17f4b9c4f22ca3868ae262d616518320f836e",
+          "geometryStates": "7f5c6446be69ee35631b9521d4a59122345d67291747ada64e7694c14c14bda9",
+          "materialStates": "3e360f380b7696067483068fb84df55c6ddecf0cff6133d396b60ba87b24124b",
+          "textureStates": "f7e5e7b9bf3c7ffa7de43b90efde59ee8622980b0a77e2e35f9fb4eb677b0f32",
+          "skeletonStates": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "animationStates": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "nodes": 2,
+        "geometries": 1,
+        "materials": 1,
+        "textures": 3,
+        "skeletons": 0,
+        "bufferBytes": 3313624
+      }
+    },
+    "unchanged": true,
+    "disposeEvents": 0
+  },
+  "modelResponses": [
+    {
+      "path": "/models/city-hunter-body-corrected.glb",
+      "status": 200
+    },
+    {
+      "path": "/models/city-hunter-biomask.glb",
+      "status": 200
+    },
+    {
+      "path": "/models/big-chap-rigged.glb",
+      "status": 200
+    },
+    {
+      "path": "/models/big-chap-walk.glb",
+      "status": 200
+    },
+    {
+      "path": "/models/big-chap-run.glb",
+      "status": 200
+    },
+    {
+      "path": "/models/jungle-hunter-rigged.glb",
+      "status": 200
+    },
+    {
+      "path": "/models/jungle-hunter-walk.glb",
+      "status": 200
+    },
+    {
+      "path": "/models/jungle-hunter-run.glb",
+      "status": 200
+    },
+    {
+      "path": "/models/jungle-hunter-biomask.glb",
+      "status": 200
+    }
+  ],
+  "sourceFilesUnchanged": true,
+  "completedAt": "2026-10-23T06:58:56.371Z",
+  "limitations": [
+    "Visual screenshots require independent review; passing this harness does not certify likeness1:1 or animation aesthetics.",
+    "Only two measured hair pieces deform independently.",
+    "Baked wristblades remain fixed, with no complete separate blade actuator.",
+    "Source application checked locally; this is not a production deploy proof."
+  ]
+}

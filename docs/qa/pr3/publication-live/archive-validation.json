@@ -1,0 +1,27 @@
+{
+  "status": "passed_local_archive_checks",
+  "protected_before": {
+    "runtime_fingerprint": "8e45634c13e3d51b1d706bdc387b1b5c43fc82e65f34b959a999530b8c75a423",
+    "runtime_files": 139,
+    "dist_files": 30,
+    "index_sha256": "124d7735003c245bc60814e6004c35ace77bd4011b31d448a6aa6c4c41dad185",
+    "build_info_sha256": "ca39fd23d605d11f8ae9810e233248ae7426a91514c8f8cc9dade4d426869b9b"
+  },
+  "protected_after": {
+    "runtime_fingerprint": "8e45634c13e3d51b1d706bdc387b1b5c43fc82e65f34b959a999530b8c75a423",
+    "runtime_files": 139,
+    "dist_files": 30,
+    "index_sha256": "124d7735003c245bc60814e6004c35ace77bd4011b31d448a6aa6c4c41dad185",
+    "build_info_sha256": "ca39fd23d605d11f8ae9810e233248ae7426a91514c8f8cc9dade4d426869b9b"
+  },
+  "exact_copy_files": 39,
+  "candidate_http_files": 30,
+  "public_http_files": 30,
+  "canonical_browser_checks": 21,
+  "qa_report_sha256": "932ea7b564bd0f30f94009340d611aa00f63a0f4cec12b34a6e64dde73f4a014",
+  "qa_pin_matches": true,
+  "runtime_or_dist_changed": false,
+  "git_executed": false,
+  "build_executed": false,
+  "remote_requests_executed": false
+}

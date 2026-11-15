@@ -1,6 +1,9 @@
 /* Yautja Spiked Hell-Hounds (Hunting Beasts - Predators 2010 Lore) */
 
 import * as THREE from 'three';
+import { createHoundModel } from '../graphics/SupportModels.js';
+import { createSurfaceMaterial } from '../graphics/SurfaceLibrary.js';
+import { disposeObject } from '../engine/SceneResources.js';
 
 export class HellHoundsManager {
   constructor(scene, audioEngine) {
@@ -9,12 +12,12 @@ export class HellHoundsManager {
     this.hounds = [];
     this.isActive = false;
 
-    this.skinMat = new THREE.MeshStandardMaterial({
+    this.skinMat = createSurfaceMaterial('leather', {
       color: 0x4a3a2a, // Leathery reptilian hide
       roughness: 0.6,
       metalness: 0.2
     });
-    this.spikeMat = new THREE.MeshStandardMaterial({
+    this.spikeMat = createSurfaceMaterial('chitin', {
       color: 0x221810, // Dark chitinous quills
       roughness: 0.3,
       metalness: 0.8
@@ -45,62 +48,17 @@ export class HellHoundsManager {
   }
 
   createHellHoundMesh() {
-    const group = new THREE.Group();
-
-    // Quadrupedal muscular torso
-    const torso = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.0, 2.4), this.skinMat);
-    torso.position.y = 1.0;
-    group.add(torso);
-
-    // Ferocious armored canine skull
-    const head = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.7, 1.2), this.skinMat);
-    head.position.set(0, 1.3, 1.4);
-    group.add(head);
-
-    // Protruding dorsal spikes & horns (Predators 2010 hallmark)
-    for (let i = -3; i <= 3; i++) {
-      const spike = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.9, 5), this.spikeMat);
-      spike.position.set(0, 1.7, i * 0.3);
-      spike.rotation.x = -Math.PI / 4;
-      group.add(spike);
-
-      // Flank quills
-      const leftQuill = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.7, 5), this.spikeMat);
-      leftQuill.position.set(-0.6, 1.4, i * 0.3);
-      leftQuill.rotation.z = Math.PI / 3;
-      group.add(leftQuill);
-
-      const rightQuill = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.7, 5), this.spikeMat);
-      rightQuill.position.set(0.6, 1.4, i * 0.3);
-      rightQuill.rotation.z = -Math.PI / 3;
-      group.add(rightQuill);
-    }
-
-    // 4 Muscular limbs
-    const legGeo = new THREE.CylinderGeometry(0.18, 0.12, 1.0, 6);
-    const fl = new THREE.Mesh(legGeo, this.skinMat);
-    fl.position.set(-0.5, 0.5, 0.8);
-    group.add(fl);
-
-    const fr = new THREE.Mesh(legGeo, this.skinMat);
-    fr.position.set(0.5, 0.5, 0.8);
-    group.add(fr);
-
-    const bl = new THREE.Mesh(legGeo, this.skinMat);
-    bl.position.set(-0.5, 0.5, -0.8);
-    group.add(bl);
-
-    const br = new THREE.Mesh(legGeo, this.skinMat);
-    br.position.set(0.5, 0.5, -0.8);
-    group.add(br);
-
-    return group;
+    return createHoundModel(this.skinMat, this.spikeMat);
   }
 
   update(delta, player, horde) {
     if (!this.isActive || this.hounds.length === 0) return;
 
     this.hounds.forEach((hound, idx) => {
+      if (hound.pounceLife > 0) {
+        hound.pounceLife -= delta;
+        if (hound.pounceLife <= 0) hound.mesh.position.y = 0;
+      }
       // Find nearest Xenomorph to attack
       let target = null;
       let nearestDist = Infinity;
@@ -129,7 +87,7 @@ export class HellHoundsManager {
               this.audioEngine.playHoundSnarl();
             }
             hound.mesh.position.y = 1.2; // Quick pounce leap
-            setTimeout(() => { if (hound.mesh) hound.mesh.position.y = 0; }, 180);
+            hound.pounceLife = 0.18;
 
             target.hp -= hound.damage * 1.5;
             if (target.hp <= 0) {
@@ -158,7 +116,7 @@ export class HellHoundsManager {
   }
 
   dismissPack() {
-    this.hounds.forEach(h => this.scene.remove(h.mesh));
+    this.hounds.forEach(h => disposeObject(h.mesh, new Set([this.skinMat, this.spikeMat])));
     this.hounds = [];
     this.isActive = false;
   }

@@ -1,6 +1,7 @@
 /* Yautja Mothership Orbital Plasma Strike Engine */
 
 import * as THREE from 'three';
+import { disposeObject } from './SceneResources.js';
 
 export class OrbitalStrikeManager {
   constructor(scene, audioEngine) {
@@ -81,11 +82,17 @@ export class OrbitalStrikeManager {
       }
     });
 
-    if (bossManager.activeBoss) {
+    if (bossManager.activeBoss && bossManager.activeBoss.mesh.position.distanceTo(targetPos) <= strikeAttack.radius) {
       bossManager.takeDamage(2000);
     }
 
     return true;
+  }
+
+  clear() {
+    disposeObject(this.activeBeam?.mesh);
+    this.activeBeam = null;
+    this.cooldown = 0;
   }
 
   update(delta) {
@@ -96,7 +103,7 @@ export class OrbitalStrikeManager {
     if (this.activeBeam) {
       this.activeBeam.life -= delta;
       if (this.activeBeam.life <= 0) {
-        this.scene.remove(this.activeBeam.mesh);
+        disposeObject(this.activeBeam.mesh);
         this.activeBeam = null;
       } else {
         const opacity = Math.max(0, this.activeBeam.life / 2.2);

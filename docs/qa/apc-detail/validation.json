@@ -1,0 +1,58 @@
+{
+  "status": "model_and_mechanisms_passed",
+  "date": "2026-10-24",
+  "automated": true,
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "newMeshyCredits": 0,
+  "model": {
+    "trianglesIncludingHiddenFlash": 27578,
+    "meshesIncludingHiddenFlash": 14,
+    "visibleSceneTrianglesWithFloor": 27532,
+    "visibleSceneDrawCallsWithFloor": 14,
+    "minimumY": 0.0024999999441206455
+  },
+  "source": {
+    "page": "https://necaonline.com/2015/11/cinemachines-die-cast-collectibles-series-1-assortment/",
+    "photo": "https://necaonline.com/wp-content/uploads/2015/11/1300x-M577.jpg",
+    "photoSha256": "a36ea706eea8a0c55d7d30714b1eed18fc628b8a9311dbc9fa9686fd5a45cf8e",
+    "viewed": true,
+    "scope": "Single licensed-miniature promotional photograph including close-ups. Not a prop scan or measured orthographic reference."
+  },
+  "checks": {
+    "dedicatedPassed": 6,
+    "dedicatedFailed": 0,
+    "legacyTargetedPassed": 2,
+    "legacyTargetedFailed": 0,
+    "renderErrors": [],
+    "captures": [
+      "apc-quarter.png",
+      "apc-front.png",
+      "apc-rear.png",
+      "apc-stowed.png",
+      "apc-aimed.png"
+    ],
+    "environmentIntegration": "Exact APC collision delegated through EnvironmentManager, including center-side clearance, wheel shoulders, elevated turret, airborne actors, three rotations and idempotence."
+  },
+  "mechanics": {
+    "turretRailTravel": 1.35,
+    "deploymentSeconds": 0.95,
+    "recoilDistance": 0.15,
+    "frontTurretMaxYaw": 0.55,
+    "damagePerBurst": 240,
+    "damageRadius": 3.5,
+    "reloadSeconds": 1.1,
+    "collision": "Vehicle-space hull and wheel boxes, circle contact, rotation, narrow roof obstacle, distant-actor rejection; mutates and returns input position"
+  },
+  "sourceFiles": {
+    "js/graphics/APCModel.js": "b3ef4caac39519fdfe9b48453903b8bb8a5091040345a27745f1a0090f74680b",
+    "js/entities/APCVehicle.js": "1a29a6567e70aeb152620670c2d756ef528b06f283007d6bda94e99aa6639692",
+    "tests/apc-detail.test.js": "19d122c1b35bb26e1fdd520d51285cb4f4b58d3d8805c4f08f323f0aa00808c3"
+  },
+  "limitations": [
+    "Local interpretation; exact1:1 fidelity not established",
+    "Limited roof-slide deployment rather than full rear stowage for dropship boarding",
+    "Interior, rolling suspension and damageable mechanical subparts remain simplified",
+    "Isolated rendering checks do not demonstrate player hardware frame rate"
+  ]
+}

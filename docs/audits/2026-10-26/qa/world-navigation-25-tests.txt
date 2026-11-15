@@ -1,0 +1,33 @@
+✔ relay furniture has a real approach, finite textured details and bounded batched geometry (4603.920288ms)
+✔ relay signal and segmented progress follow actual objective phases without recoloring world trim (164.153654ms)
+✔ gunnison_forest: described, decorated, deterministic and navigable (4683.890263ms)
+✔ xenomorph_prime: described, decorated, deterministic and navigable (1720.987766ms)
+✔ antarctic_pyramid: described, decorated, deterministic and navigable (243.637904ms)
+✔ la_rooftops: described, decorated, deterministic and navigable (285.624679ms)
+✔ val_verde_jungle: described, decorated, deterministic and navigable (242.892733ms)
+✔ romulus_station: described, decorated, deterministic and navigable (325.616347ms)
+✔ charon_rogue_base: described, decorated, deterministic and navigable (316.293082ms)
+✔ game_preserve_planet: described, decorated, deterministic and navigable (261.02031ms)
+✔ stargazer_facility: described, decorated, deterministic and navigable (281.482866ms)
+✔ prey_comanche_territory: described, decorated, deterministic and navigable (268.142264ms)
+✔ killer_of_killers_arena: described, decorated, deterministic and navigable (212.641905ms)
+✔ solid scenery collision handles exact centers, corners, rotations and jumping (0.360705ms)
+✔ gunnison_forest: seeking AI can skirt scenery from the perimeter to four open targets (3736.874557ms)
+✔ xenomorph_prime: seeking AI can skirt scenery from the perimeter to four open targets (2445.921911ms)
+✔ antarctic_pyramid: seeking AI can skirt scenery from the perimeter to four open targets (3009.867887ms)
+✔ la_rooftops: seeking AI can skirt scenery from the perimeter to four open targets (1872.257113ms)
+✔ val_verde_jungle: seeking AI can skirt scenery from the perimeter to four open targets (3980.036886ms)
+✔ romulus_station: seeking AI can skirt scenery from the perimeter to four open targets (1698.895352ms)
+✔ charon_rogue_base: seeking AI can skirt scenery from the perimeter to four open targets (2304.154592ms)
+✔ game_preserve_planet: seeking AI can skirt scenery from the perimeter to four open targets (4529.805861ms)
+✔ stargazer_facility: seeking AI can skirt scenery from the perimeter to four open targets (5869.780366ms)
+✔ prey_comanche_territory: seeking AI can skirt scenery from the perimeter to four open targets (3779.736931ms)
+✔ killer_of_killers_arena: seeking AI can skirt scenery from the perimeter to four open targets (2688.884096ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 49968.811489

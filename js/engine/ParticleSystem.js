@@ -1,12 +1,16 @@
 /* 3D Particle Emitter System (Blood, Acid, Plasma Sparks & Damage Popups) */
 
 import * as THREE from 'three';
+import { disposeObject } from './SceneResources.js';
 
 export class ParticleSystem {
   constructor(scene) {
     this.scene = scene;
     this.particles = [];
     this.popups = [];
+    this.decals = [];
+    this.maxParticles = 500;
+    this.maxDecals = 40;
 
     // Shared Particle Geometries & Materials
     this.bloodGeo = new THREE.SphereGeometry(0.12, 4, 4);
@@ -15,11 +19,14 @@ export class ParticleSystem {
     // Luminescent neon phosphorescent bio-fluid with high emission
     this.yautjaBloodMat = new THREE.MeshBasicMaterial({ color: 0x1aff00 });
     this.sparkMat = new THREE.MeshBasicMaterial({ color: 0x00ffff });
+    this.goldMat = new THREE.MeshBasicMaterial({ color: 0xffaa00 });
+    this.steamMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.65 });
   }
 
   emitBlood(pos, count = 12, isAcid = true) {
     const mat = isAcid ? this.acidMat : this.yautjaBloodMat;
 
+    count = Math.min(count, Math.max(0, this.maxParticles - this.particles.length));
     for (let i = 0; i < count; i++) {
       const mesh = new THREE.Mesh(this.bloodGeo, mat);
       mesh.position.copy(pos).add(new THREE.Vector3(
@@ -45,9 +52,9 @@ export class ParticleSystem {
   }
 
   emitYautjaPhosphorBlood(pos, count = 15) {
+    count = Math.min(count, Math.max(0, this.maxParticles - this.particles.length));
     for (let i = 0; i < count; i++) {
-      const dropGeo = new THREE.SphereGeometry(0.14, 5, 5);
-      const mesh = new THREE.Mesh(dropGeo, this.yautjaBloodMat);
+      const mesh = new THREE.Mesh(this.bloodGeo, this.yautjaBloodMat);
       mesh.position.copy(pos).add(new THREE.Vector3(
         (Math.random() - 0.5) * 0.5,
         1.5 + (Math.random() - 0.5) * 0.5,
@@ -82,21 +89,11 @@ export class ParticleSystem {
     stain.position.set(pos.x + (Math.random() - 0.5) * 0.8, 0.03, pos.z + (Math.random() - 0.5) * 0.8);
     this.scene.add(stain);
 
-    setTimeout(() => {
-      let op = 0.85;
-      const fade = setInterval(() => {
-        op -= 0.05;
-        if (op <= 0) {
-          clearInterval(fade);
-          this.scene.remove(stain);
-        } else {
-          stain.material.opacity = op;
-        }
-      }, 100);
-    }, 8000);
+    this.addDecal([stain], 8, 1.7);
   }
 
   emitSparks(pos, count = 10) {
+    count = Math.min(count, Math.max(0, this.maxParticles - this.particles.length));
     for (let i = 0; i < count; i++) {
       const mesh = new THREE.Mesh(this.bloodGeo, this.sparkMat);
       mesh.position.copy(pos);
@@ -118,8 +115,9 @@ export class ParticleSystem {
   }
 
   emitGoldRageSparks(pos, count = 20) {
-    const goldMat = new THREE.MeshBasicMaterial({ color: 0xffaa00 });
-    const geo = new THREE.SphereGeometry(0.12, 4, 4);
+    const goldMat = this.goldMat;
+    const geo = this.bloodGeo;
+    count = Math.min(count, Math.max(0, this.maxParticles - this.particles.length));
     for (let i = 0; i < count; i++) {
       const mesh = new THREE.Mesh(geo, goldMat);
       mesh.position.copy(pos).add(new THREE.Vector3(
@@ -143,8 +141,9 @@ export class ParticleSystem {
   }
 
   emitMedicompSteam(pos, count = 22) {
-    const steamMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.65 });
-    const geo = new THREE.SphereGeometry(0.18, 6, 6);
+    const steamMat = this.steamMat;
+    const geo = this.bloodGeo;
+    count = Math.min(count, Math.max(0, this.maxParticles - this.particles.length));
     for (let i = 0; i < count; i++) {
       const mesh = new THREE.Mesh(geo, steamMat);
       mesh.position.copy(pos).add(new THREE.Vector3(
@@ -168,8 +167,9 @@ export class ParticleSystem {
   }
 
   emitCloakSparkFlicker(pos, count = 15) {
-    const sparkMat = new THREE.MeshBasicMaterial({ color: 0x00ffff });
-    const geo = new THREE.SphereGeometry(0.08, 4, 4);
+    const sparkMat = this.sparkMat;
+    const geo = this.bloodGeo;
+    count = Math.min(count, Math.max(0, this.maxParticles - this.particles.length));
     for (let i = 0; i < count; i++) {
       const mesh = new THREE.Mesh(geo, sparkMat);
       mesh.position.copy(pos).add(new THREE.Vector3(
@@ -193,11 +193,14 @@ export class ParticleSystem {
   }
 
   spawnDamagePopup(pos, damageAmount, isCrit = false) {
+    if (this.popups.length >= 50) return;
+    const layer = document.getElementById('ui-layer');
+    if (!layer) return;
     const div = document.createElement('div');
     div.className = `damage-popup ${isCrit ? 'crit' : ''}`;
     div.innerText = Math.ceil(damageAmount);
 
-    document.getElementById('ui-layer').appendChild(div);
+    layer.appendChild(div);
 
     this.popups.push({
       element: div,
@@ -227,23 +230,36 @@ export class ParticleSystem {
     core.position.set(pos.x, 0.025, pos.z);
     this.scene.add(core);
 
-    setTimeout(() => {
-      let op = 0.85;
-      const fade = setInterval(() => {
-        op -= 0.04;
-        if (op <= 0) {
-          clearInterval(fade);
-          this.scene.remove(scorch);
-          this.scene.remove(core);
-        } else {
-          scorch.material.opacity = op;
-          core.material.opacity = op;
-        }
-      }, 100);
-    }, 7000);
+    this.addDecal([scorch, core], 7, 2.2);
+  }
+
+  addDecal(meshes, hold, fade) {
+    while (this.decals.length >= this.maxDecals) {
+      this.decals.shift().meshes.forEach(mesh => disposeObject(mesh));
+    }
+    this.decals.push({ meshes, hold, fade, life: hold + fade });
+  }
+
+  clear() {
+    this.particles.forEach(p => this.scene.remove(p.mesh));
+    this.particles = [];
+    this.popups.forEach(p => p.element.remove());
+    this.popups = [];
+    this.decals.forEach(decal => decal.meshes.forEach(mesh => disposeObject(mesh)));
+    this.decals = [];
   }
 
   update(delta, camera) {
+    for (let i = this.decals.length - 1; i >= 0; i--) {
+      const decal = this.decals[i];
+      decal.life -= delta;
+      if (decal.life <= 0) {
+        decal.meshes.forEach(mesh => disposeObject(mesh));
+        this.decals.splice(i, 1);
+      } else if (decal.life < decal.fade) {
+        decal.meshes.forEach(mesh => { mesh.material.opacity = (decal.life / decal.fade) * 0.85; });
+      }
+    }
     // Update 3D Physics Particles
     for (let i = this.particles.length - 1; i >= 0; i--) {
       const p = this.particles[i];
@@ -280,6 +296,7 @@ export class ParticleSystem {
       const x = (screenVector.x * 0.5 + 0.5) * window.innerWidth;
       const y = (-(screenVector.y * 0.5) + 0.5) * window.innerHeight;
 
+      pop.element.style.display = screenVector.z < -1 || screenVector.z > 1 ? 'none' : '';
       pop.element.style.left = `${x}px`;
       pop.element.style.top = `${y}px`;
       pop.element.style.opacity = (pop.life / pop.maxLife).toString();

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "scope": "AUD-114 clean installs/builds reproducibility, two local clones",
+  "status": "passed",
+  "files": {
+    "README.md": "27a5c92171799991064a00f073f75c7cda1507e4b2141b5d91435dfc688c368f",
+    "build-a.txt": "49468d3e1d71de320a729852674146634f7e036be1515d8c576111544a941739",
+    "build-b.txt": "bae4a2c743cdeaa2fcbc84a3b78cc06cbe55b8b62cb3a1848961da3c98f3433c",
+    "clone-a.txt": "9e97bb33705cf9eb161891f4f8b4c76a6c8641048c2882242ae60e9f683dfd2f",
+    "clone-b.txt": "5667192ba56d6cae6fc095862c367bd3ac5aedfa3c9fdcfdab2fcaeee0060d6a",
+    "install-a.txt": "159209e8e0e0986ebabe5285de41d910659e01368ed4b696ebb814da68f131f4",
+    "install-b.txt": "8367da773f8c8902b78aeab383418b130d199dd455e68dec12036d673addf517",
+    "report.json": "7807fc7e52068c31f6829eb60c4a7275da3e9e1558121515101377816c701a5e",
+    "run-reproduction.py": "86914a36723b1b7473bde2ca957aa4dcb28962a3befeb3c892419184fd8d8f9e",
+    "runner.txt": "410c61efb52db4d8ec211bb53245078ad967708844c66ca3ca21a271a9095956"
+  }
+}

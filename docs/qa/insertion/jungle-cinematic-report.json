@@ -1,0 +1,127 @@
+{
+  "status": "passed",
+  "startedAt": "2026-10-23T21:55:20.177Z",
+  "scope": "Production build, actual imported hunter body/mask, real simulation-clock insertion sampled in controlled paused frames. Automated QA; no human playthrough or 1:1 certification.",
+  "url": "http://127.0.0.1:4196",
+  "live": false,
+  "characterScope": "Jungle Hunter imported body/mask",
+  "states": [
+    {
+      "name": "jungle-unlocking",
+      "phase": "opening",
+      "elapsed": 1.5001,
+      "active": true,
+      "opening": 1.4268071671652114e-8,
+      "pods": 1,
+      "actors": [
+        {
+          "character": "JUNGLE HUNTER (1987)",
+          "visible": true,
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "imported": "imported",
+          "mask": "attached",
+          "bladeFrontMax": -0.286953401883585,
+          "hp": 1000,
+          "maxHp": 1000
+        }
+      ],
+      "podPositions": [
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "doorAngles": [
+        [
+          -2.8015293215346825e-8,
+          2.8015293215346825e-8
+        ]
+      ],
+      "director": {
+        "time": 0,
+        "grace": 8
+      },
+      "hostileCount": 6,
+      "queued": 12,
+      "camera": [
+        8,
+        7.5,
+        14
+      ],
+      "render": {
+        "calls": 136,
+        "triangles": 716669
+      },
+      "statusText": "DÉPLOIEMENT\n        OUVERTURE DE LA CAPSULE\n        Déverrouillage des portes · Commandes après la sortie"
+    },
+    {
+      "name": "jungle-exiting",
+      "phase": "exiting",
+      "elapsed": 3.85,
+      "active": true,
+      "opening": 1,
+      "pods": 1,
+      "actors": [
+        {
+          "character": "JUNGLE HUNTER (1987)",
+          "visible": true,
+          "position": [
+            0,
+            0,
+            2.0999999999999996
+          ],
+          "imported": "imported",
+          "mask": "attached",
+          "bladeFrontMax": 2.3123285866403256,
+          "hp": 1000,
+          "maxHp": 1000
+        }
+      ],
+      "podPositions": [
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "doorAngles": [
+        [
+          -1.9634954084936207,
+          1.9634954084936207
+        ]
+      ],
+      "director": {
+        "time": 0,
+        "grace": 8
+      },
+      "hostileCount": 6,
+      "queued": 12,
+      "camera": [
+        8,
+        7.3,
+        16.1
+      ],
+      "render": {
+        "calls": 139,
+        "triangles": 719253
+      },
+      "statusText": "DÉPLOIEMENT\n        DÉPLOIEMENT DU CHASSEUR\n        Sortie de la capsule · Commandes après la sortie"
+    }
+  ],
+  "errors": [],
+  "failedRequests": [],
+  "externalRequests": [],
+  "indexSha256": "d9839d93a06fd01e82c7efb49cefc46a4105a4406f65f451afdf7106f5e010db",
+  "cleanup": {
+    "player": null,
+    "player2": null,
+    "pods": 0,
+    "active": false
+  },
+  "completedAt": "2026-10-23T21:55:46.976Z"
+}

@@ -1,0 +1,34 @@
+✔ gunnison_forest: a large connected map has locked physical corridors, safe spawns and a complete route (4757.794695ms)
+✔ xenomorph_prime: a large connected map has locked physical corridors, safe spawns and a complete route (1737.353242ms)
+✔ antarctic_pyramid: a large connected map has locked physical corridors, safe spawns and a complete route (360.908925ms)
+✔ la_rooftops: a large connected map has locked physical corridors, safe spawns and a complete route (310.258725ms)
+✔ val_verde_jungle: a large connected map has locked physical corridors, safe spawns and a complete route (272.819518ms)
+✔ romulus_station: a large connected map has locked physical corridors, safe spawns and a complete route (288.12111ms)
+✔ forest: sector architecture has distinct silhouettes, real footprints and clear battle routes (4540.443301ms)
+✔ hive: sector architecture has distinct silhouettes, real footprints and clear battle routes (1652.568871ms)
+✔ temple: sector architecture has distinct silhouettes, real footprints and clear battle routes (119.735993ms)
+✔ rooftop: sector architecture has distinct silhouettes, real footprints and clear battle routes (163.497349ms)
+✔ jungle: sector architecture has distinct silhouettes, real footprints and clear battle routes (121.052587ms)
+✔ station: sector architecture has distinct silhouettes, real footprints and clear battle routes (129.053624ms)
+✔ resin cores collide as their rotated ellipse rather than a hidden rectangular wall (104.727802ms)
+✔ all static architecture resources are environment-owned and released exactly once on replay (149.288802ms)
+✔ gunnison_forest: textured environment stays inside its rendering budget (4909.978907ms)
+✔ xenomorph_prime: textured environment stays inside its rendering budget (1764.954775ms)
+✔ antarctic_pyramid: textured environment stays inside its rendering budget (125.097255ms)
+✔ la_rooftops: textured environment stays inside its rendering budget (134.920054ms)
+✔ val_verde_jungle: textured environment stays inside its rendering budget (132.67211ms)
+✔ romulus_station: textured environment stays inside its rendering budget (123.941643ms)
+✔ forest canopies and undergrowth share geometry instead of creating a mesh per leaf (301.294736ms)
+✔ skyline window instances stay attached to their actual building facades (136.643814ms)
+✔ roads, annuli, landing cap and terrain share isotropic five-metre texture density (136.276434ms)
+✔ botanical models have attached small blades, curved stems, and smooth sculpted stones (133.539845ms)
+✔ forest trails blend their irregular edges and the fabricated pad has a single visible cap (126.483589ms)
+✔ beveled temple obelisks expose their outside surfaces with front-face culling (0.357258ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 26
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 23162.029648

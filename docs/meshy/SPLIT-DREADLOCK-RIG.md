@@ -1,0 +1,19 @@
+Le module `js/graphics/SplitDreadlockRig.js` transforme en mémoire une pièce de cheveux explicitement mesurée en `SkinnedMesh`, avec des chaînes d’os et de vrais poids. Il ne télécharge, ne génère et n’exporte aucun modèle. Aucun manifeste du jeu n’active ce prototype.
+
+`createSplitDreadlockRig(sourceMesh, descriptor)` renvoie un clone non attaché, son ancre, les chaînes et un `articulationDescriptor` compatible avec `YautjaArticulation`. Les courbes sont exprimées dans les coordonnées locales de la géométrie originale. Pour un bouquet, chaque chaîne doit déclarer ses indices de sommets ; le module ne déduit pas les mèches à partir d’un angle ou d’un nom de pièce. Une seule pièce isolée peut utiliser `allVertices:true`.
+
+Les sommets du cap déclarés dans `rootVertices` restent rigides sur l’ancre. Les sommets non sélectionnés restent également rigides. Les autres sont pondérés par projection sur les segments de leur courbe, avec un fondu de racine facultatif. Une chaîne doit effectivement influencer au moins deux os non terminaux présents dans des triangles rendus. Des os sans surface pondérée sont refusés.
+
+Le clone garde les positions, triangles, attributs de surface, groupes, matrice locale et `matrixAutoUpdate` de la pièce. Seuls les attributs `skinIndex`/`skinWeight` et les os sont ajoutés. Les poids et les os sont privés par instance. Les matériaux et textures restent partagés : le module ne les modifie et ne les détruit pas. La géométrie et le squelette qu’il crée sont détruits une fois lors de `dispose()`.
+
+L’appelant remplace la pièce originale par `rig.mesh`, la rattache au vrai point d’ancrage de tête et ajoute `rig.articulationDescriptor.dreadlocks` au descripteur de l’acteur. Disposer d’abord le contrôleur physique, ensuite les rigs de cheveux, puis l’assembly qui possède ses propres clones de matériaux et de géométrie.
+
+Le fichier `jungle-hunter-split-hair-prototype.json` contient deux courbes mesurées sur le GLB Auto Split de SHA-256 `7b1cb2975b2143d6082ef0236b69ab64d668ad67343e00f826641b6d4397d3b9` : `model_part2` et `model_part3`. Les points sont les centres de bandes transversales de leurs sommets natifs ; les caps correspondent à la bande supérieure de 4 %. Le fichier est une calibration de prototype, pas une entrée de manifeste vérifiée.
+
+La pièce 2 est un fragment court coupé sous le scalp ; sa courbe ne certifie pas une mèche anatomique complète. La pièce 3 est une pièce longue isolée. Les autres bouquets restent statiques, en attente de régions et courbes vérifiées. Aucun cuir chevelu complet, collision tête/épaules, transfert de textures ou fidélité 1:1 n’est certifié par ce travail.
+
+Une capture WebGL réelle du GLB a vérifié 589 sommets pondérés au total, dont 26 sommets de cap entièrement fixes. Après un déplacement de l’ancre de 0,12 unité, 563 sommets de surface se déforment au-delà du mouvement rigide. Les retards maximaux mesurés sont 0,0406 et 0,0847 unité ; l’erreur des caps vaut zéro, et l’erreur de repos/restitution reste inférieure à 3 × 10⁻⁸ unité. Ces valeurs décrivent ce mouvement de test ; ce ne sont pas des scores de qualité visuelle ou des performances matérielles.
+
+Preuves locales : `/workspace/qa/yautja-expansion-20261023/hair-rig-demo/` (`capture.mjs`, `report.json`, vues `rest.png`, `inertia.png`, `reset.png` et vues isolées). Les captures ont été réellement ouvertes et montrent la pièce longue cyan se déformer tandis que son cap reste fixé. La courte pièce verte est partiellement cachée dans l’assemblage ; les vues isolées permettent de l’examiner.
+
+Validation : six tests ciblés du module et huit tests existants de `YautjaArticulation` passent. Ils couvrent pose neutre, matrices sous un parent transformé, conservation des surfaces, mouvement des vrais sommets, ancrage, chaînes indépendantes, instances, destruction et refus des sélections ambiguës ou non rendues.

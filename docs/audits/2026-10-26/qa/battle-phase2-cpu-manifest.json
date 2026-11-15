@@ -1,0 +1,28 @@
+{
+  "createdAt": "2026-10-26T12:51:20.542321+00:00",
+  "scope": "CPU component and integration contracts; simulated clock, no browser victory or hardware certification",
+  "humanTesters": 0,
+  "gpuSessions": 0,
+  "nodeVersion": "v24.19.0",
+  "testCommand": "node --max-old-space-size=2048 --test --test-concurrency=1 tests/battle-simulation.test.js tests/battle-campaign-record.test.js tests/battle-intel.test.js tests/clan-recognition.test.js tests/operation-objectives.test.js tests/formation-companions.test.js",
+  "checksums": {
+    "js/battlefield/BattleSimulation.js": "39ee580b46dfbc457b053c34fc791bdb5a9a86596acaa08045f1fd3b25f87393",
+    "js/battlefield/BattlefieldOperation.js": "bb791a03f13a72e9e4b1d50c235d3b32aaae4e006abc9ae5111c48a67ab17a8b",
+    "js/battlefield/BattleIntel.js": "6eadaf1dd9687d16cfebfdf8051840b930b9c2ddcf85f3914f7644c1fd07baa5",
+    "js/battlefield/BattleCampaignRecord.js": "ec647d260c92ac652dc65599e0dd8b0fb958e6613db95ffea75822fa7b82e913",
+    "js/battlefield/ClanRecognition.js": "9561b735c15f14b0774da76893dad7e6a08264c4d1102651a0ff7971595390df",
+    "js/battlefield/FormationTactics.js": "99cb3ef2d487c08e8443ea8cfd90363b1fda1444f74e49e2db8c3f2254d3c600",
+    "js/battlefield/CompanionLoadouts.js": "15faf165496010f5ac947bfc9be65b743426d5cf80dd80fb113a47156c46ddeb",
+    "js/battlefield/HiveConflictScenario.js": "82adf738b2ca4fd5f4a4858a7f2bc2985c58787f90d480484f42d5fd8e72689d",
+    "js/battlefield/OperationObjectives.js": "32547f8e0a1aea94d9d4f0f3cb58d84fe1fab87ed59955b06423c6745053298e",
+    "js/battlefield/OperationObjectiveSpecs.js": "4a2edacf2301378af50d4a81370219846dd938579ddc98c598482fed9352192d",
+    "js/data/BattleCatalog.js": "c71cf54211dea0846af89c0cb373030fc65a561cc9e00f242b5d6b47b6d149ed",
+    "tests/battle-simulation.test.js": "c9b0ca46dea0b06535369600020524f6c9ae547a8a8da475f4a7062c2ee9debb",
+    "tests/battle-intel.test.js": "e296f2698eb4187efdd7e6a436a4a1f0cac2f60be0015e82debd84872377c27f",
+    "tests/battle-campaign-record.test.js": "eb414523304542af2fb95158dd87548bf7b61dbaf110bf00f4ecc244f5f18830",
+    "tests/clan-recognition.test.js": "4edda96fd1f04df8f1de2ff80b147bdca529922804fdde172898b03165143536",
+    "tests/operation-objectives.test.js": "1cfb82b6bbbd89f144a9d65106a686d872030890cb8ef822673fe9c2a0f35a0e",
+    "tests/formation-companions.test.js": "afae2167125f3607bdcd10618b073c7391090a39cd2437eabf7fe9280cf9bf3e",
+    "docs/audits/2026-10-26/qa/battle-phase2-cpu-tests.txt": "253dd0459363940cbda18b26305719462644fc1d9df768fffa235e718ca1141c"
+  }
+}

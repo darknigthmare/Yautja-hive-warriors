@@ -1,0 +1,1809 @@
+{
+  "version": 2,
+  "automated": true,
+  "humanTesters": 0,
+  "fidelity1to1Verified": false,
+  "units": "Game-world units, not physical scale",
+  "levels": [
+    {
+      "level": "gunnison_forest",
+      "type": "forest",
+      "visibleTriangles": 393798,
+      "residentTriangles": 770546,
+      "potentialDrawSubmissions": 154,
+      "sectors": [
+        {
+          "id": "approach",
+          "triangles": 8792,
+          "drawMeshes": 5,
+          "modelledPieces": 132,
+          "colliders": 26,
+          "floorY": 0,
+          "sites": [
+            {
+              "x": -25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 0
+            },
+            {
+              "x": 25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 1
+            },
+            {
+              "x": -25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 2
+            },
+            {
+              "x": 25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 3
+            }
+          ]
+        },
+        {
+          "id": "relay",
+          "triangles": 9544,
+          "drawMeshes": 5,
+          "modelledPieces": 132,
+          "colliders": 20,
+          "floorY": 0,
+          "sites": [
+            {
+              "x": -25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 0
+            },
+            {
+              "x": 32,
+              "z": -32,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 1
+            },
+            {
+              "x": -25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 2
+            },
+            {
+              "x": 25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 3
+            }
+          ]
+        },
+        {
+          "id": "foundry",
+          "triangles": 7680,
+          "drawMeshes": 5,
+          "modelledPieces": 116,
+          "colliders": 20,
+          "floorY": 0,
+          "sites": [
+            {
+              "x": -25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 0
+            },
+            {
+              "x": 25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 1
+            },
+            {
+              "x": -25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 2
+            },
+            {
+              "x": 25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 3
+            }
+          ]
+        },
+        {
+          "id": "command",
+          "triangles": 10284,
+          "drawMeshes": 5,
+          "modelledPieces": 146,
+          "colliders": 28,
+          "floorY": 0,
+          "sites": [
+            {
+              "x": -25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 0
+            },
+            {
+              "x": 25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 1
+            },
+            {
+              "x": -25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 2
+            },
+            {
+              "x": 25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 3
+            }
+          ]
+        },
+        {
+          "id": "nest",
+          "triangles": 10784,
+          "drawMeshes": 4,
+          "modelledPieces": 96,
+          "colliders": 16,
+          "floorY": 0,
+          "sites": [
+            {
+              "x": -25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 0
+            },
+            {
+              "x": 25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 1
+            },
+            {
+              "x": -25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 2
+            },
+            {
+              "x": 25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 3
+            }
+          ]
+        }
+      ],
+      "corridors": [
+        {
+          "id": "corridor-insertion-approach",
+          "triangles": 1416,
+          "drawMeshes": 4,
+          "modelledPieces": 54,
+          "colliders": 4,
+          "floorY": 0
+        },
+        {
+          "id": "corridor-approach-relay",
+          "triangles": 1416,
+          "drawMeshes": 4,
+          "modelledPieces": 54,
+          "colliders": 4,
+          "floorY": 0
+        },
+        {
+          "id": "corridor-relay-foundry",
+          "triangles": 1416,
+          "drawMeshes": 4,
+          "modelledPieces": 54,
+          "colliders": 4,
+          "floorY": 0
+        },
+        {
+          "id": "corridor-foundry-command",
+          "triangles": 1416,
+          "drawMeshes": 4,
+          "modelledPieces": 54,
+          "colliders": 4,
+          "floorY": 0
+        },
+        {
+          "id": "corridor-command-nest",
+          "triangles": 1416,
+          "drawMeshes": 4,
+          "modelledPieces": 54,
+          "colliders": 4,
+          "floorY": 0
+        }
+      ],
+      "activeSectorFrames": [
+        {
+          "sector": "insertion",
+          "triangles": 393798,
+          "calls": 154
+        },
+        {
+          "sector": "approach",
+          "triangles": 100686,
+          "calls": 102
+        },
+        {
+          "sector": "relay",
+          "triangles": 87218,
+          "calls": 102
+        },
+        {
+          "sector": "foundry",
+          "triangles": 86438,
+          "calls": 102
+        },
+        {
+          "sector": "command",
+          "triangles": 102178,
+          "calls": 102
+        },
+        {
+          "sector": "nest",
+          "triangles": 94694,
+          "calls": 97
+        }
+      ],
+      "coopFrames": [
+        {
+          "secondSector": "approach",
+          "triangles": 463310,
+          "calls": 171
+        },
+        {
+          "secondSector": "relay",
+          "triangles": 451258,
+          "calls": 175
+        },
+        {
+          "secondSector": "foundry",
+          "triangles": 450478,
+          "calls": 175
+        },
+        {
+          "secondSector": "command",
+          "triangles": 466218,
+          "calls": 175
+        },
+        {
+          "secondSector": "nest",
+          "triangles": 458734,
+          "calls": 170
+        }
+      ]
+    },
+    {
+      "level": "xenomorph_prime",
+      "type": "hive",
+      "visibleTriangles": 94502,
+      "residentTriangles": 178118,
+      "potentialDrawSubmissions": 214,
+      "sectors": [
+        {
+          "id": "approach",
+          "triangles": 10784,
+          "drawMeshes": 4,
+          "modelledPieces": 96,
+          "colliders": 16,
+          "floorY": 0,
+          "sites": [
+            {
+              "x": -25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 0
+            },
+            {
+              "x": 25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 1
+            },
+            {
+              "x": -25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 2
+            },
+            {
+              "x": 25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 3
+            }
+          ]
+        },
+        {
+          "id": "relay",
+          "triangles": 10784,
+          "drawMeshes": 4,
+          "modelledPieces": 96,
+          "colliders": 16,
+          "floorY": 0,
+          "sites": [
+            {
+              "x": -25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 0
+            },
+            {
+              "x": 25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 1
+            },
+            {
+              "x": -25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 2
+            },
+            {
+              "x": 32,
+              "z": 32,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 3
+            }
+          ]
+        },
+        {
+          "id": "foundry",
+          "triangles": 10784,
+          "drawMeshes": 4,
+          "modelledPieces": 96,
+          "colliders": 16,
+          "floorY": 0,
+          "sites": [
+            {
+              "x": -25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 0
+            },
+            {
+              "x": 25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 1
+            },
+            {
+              "x": -25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 2
+            },
+            {
+              "x": 25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 3
+            }
+          ]
+        },
+        {
+          "id": "command",
+          "triangles": 10784,
+          "drawMeshes": 4,
+          "modelledPieces": 96,
+          "colliders": 16,
+          "floorY": 0,
+          "sites": [
+            {
+              "x": -25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 0
+            },
+            {
+              "x": 25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 1
+            },
+            {
+              "x": -25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 2
+            },
+            {
+              "x": 25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 3
+            }
+          ]
+        },
+        {
+          "id": "nest",
+          "triangles": 10784,
+          "drawMeshes": 4,
+          "modelledPieces": 96,
+          "colliders": 16,
+          "floorY": 0,
+          "sites": [
+            {
+              "x": -25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 0
+            },
+            {
+              "x": 25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 1
+            },
+            {
+              "x": -25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 2
+            },
+            {
+              "x": 25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 3
+            }
+          ]
+        }
+      ],
+      "corridors": [
+        {
+          "id": "corridor-insertion-approach",
+          "triangles": 1536,
+          "drawMeshes": 3,
+          "modelledPieces": 36,
+          "colliders": 4,
+          "floorY": 0
+        },
+        {
+          "id": "corridor-approach-relay",
+          "triangles": 1536,
+          "drawMeshes": 3,
+          "modelledPieces": 36,
+          "colliders": 4,
+          "floorY": 0
+        },
+        {
+          "id": "corridor-relay-foundry",
+          "triangles": 1536,
+          "drawMeshes": 3,
+          "modelledPieces": 36,
+          "colliders": 4,
+          "floorY": 0
+        },
+        {
+          "id": "corridor-foundry-command",
+          "triangles": 1536,
+          "drawMeshes": 3,
+          "modelledPieces": 36,
+          "colliders": 4,
+          "floorY": 0
+        },
+        {
+          "id": "corridor-command-nest",
+          "triangles": 1536,
+          "drawMeshes": 3,
+          "modelledPieces": 36,
+          "colliders": 4,
+          "floorY": 0
+        }
+      ],
+      "activeSectorFrames": [
+        {
+          "sector": "insertion",
+          "triangles": 94502,
+          "calls": 214
+        },
+        {
+          "sector": "approach",
+          "triangles": 46286,
+          "calls": 96
+        },
+        {
+          "sector": "relay",
+          "triangles": 46286,
+          "calls": 96
+        },
+        {
+          "sector": "foundry",
+          "triangles": 46286,
+          "calls": 96
+        },
+        {
+          "sector": "command",
+          "triangles": 46286,
+          "calls": 96
+        },
+        {
+          "sector": "nest",
+          "triangles": 44750,
+          "calls": 93
+        }
+      ],
+      "coopFrames": [
+        {
+          "secondSector": "approach",
+          "triangles": 109494,
+          "calls": 226
+        },
+        {
+          "secondSector": "relay",
+          "triangles": 111030,
+          "calls": 229
+        },
+        {
+          "secondSector": "foundry",
+          "triangles": 111030,
+          "calls": 229
+        },
+        {
+          "secondSector": "command",
+          "triangles": 111030,
+          "calls": 229
+        },
+        {
+          "secondSector": "nest",
+          "triangles": 109494,
+          "calls": 226
+        }
+      ]
+    },
+    {
+      "level": "antarctic_pyramid",
+      "type": "temple",
+      "visibleTriangles": 57254,
+      "residentTriangles": 112490,
+      "potentialDrawSubmissions": 208,
+      "sectors": [
+        {
+          "id": "approach",
+          "triangles": 6192,
+          "drawMeshes": 4,
+          "modelledPieces": 196,
+          "colliders": 20,
+          "floorY": 0,
+          "sites": [
+            {
+              "x": -25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 0
+            },
+            {
+              "x": 25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 1
+            },
+            {
+              "x": -25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 2
+            },
+            {
+              "x": 25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 3
+            }
+          ]
+        },
+        {
+          "id": "relay",
+          "triangles": 6192,
+          "drawMeshes": 4,
+          "modelledPieces": 196,
+          "colliders": 20,
+          "floorY": 0,
+          "sites": [
+            {
+              "x": -25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 0
+            },
+            {
+              "x": 25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 1
+            },
+            {
+              "x": -36,
+              "z": 32,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 2
+            },
+            {
+              "x": 25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 3
+            }
+          ]
+        },
+        {
+          "id": "foundry",
+          "triangles": 6744,
+          "drawMeshes": 4,
+          "modelledPieces": 146,
+          "colliders": 18,
+          "floorY": 0,
+          "sites": [
+            {
+              "x": -25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 0
+            },
+            {
+              "x": 25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 1
+            },
+            {
+              "x": -25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 2
+            },
+            {
+              "x": 25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 3
+            }
+          ]
+        },
+        {
+          "id": "command",
+          "triangles": 6192,
+          "drawMeshes": 4,
+          "modelledPieces": 196,
+          "colliders": 20,
+          "floorY": 0,
+          "sites": [
+            {
+              "x": -25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 0
+            },
+            {
+              "x": 25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 1
+            },
+            {
+              "x": -25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 2
+            },
+            {
+              "x": 25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 3
+            }
+          ]
+        },
+        {
+          "id": "nest",
+          "triangles": 6192,
+          "drawMeshes": 4,
+          "modelledPieces": 196,
+          "colliders": 20,
+          "floorY": 0,
+          "sites": [
+            {
+              "x": -25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 0
+            },
+            {
+              "x": 25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 1
+            },
+            {
+              "x": -25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 2
+            },
+            {
+              "x": 25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 3
+            }
+          ]
+        }
+      ],
+      "corridors": [
+        {
+          "id": "corridor-insertion-approach",
+          "triangles": 1416,
+          "drawMeshes": 4,
+          "modelledPieces": 54,
+          "colliders": 4,
+          "floorY": 0
+        },
+        {
+          "id": "corridor-approach-relay",
+          "triangles": 1416,
+          "drawMeshes": 4,
+          "modelledPieces": 54,
+          "colliders": 4,
+          "floorY": 0
+        },
+        {
+          "id": "corridor-relay-foundry",
+          "triangles": 1416,
+          "drawMeshes": 4,
+          "modelledPieces": 54,
+          "colliders": 4,
+          "floorY": 0
+        },
+        {
+          "id": "corridor-foundry-command",
+          "triangles": 1416,
+          "drawMeshes": 4,
+          "modelledPieces": 54,
+          "colliders": 4,
+          "floorY": 0
+        },
+        {
+          "id": "corridor-command-nest",
+          "triangles": 1416,
+          "drawMeshes": 4,
+          "modelledPieces": 54,
+          "colliders": 4,
+          "floorY": 0
+        }
+      ],
+      "activeSectorFrames": [
+        {
+          "sector": "insertion",
+          "triangles": 57254,
+          "calls": 208
+        },
+        {
+          "sector": "approach",
+          "triangles": 39790,
+          "calls": 98
+        },
+        {
+          "sector": "relay",
+          "triangles": 39790,
+          "calls": 98
+        },
+        {
+          "sector": "foundry",
+          "triangles": 40342,
+          "calls": 98
+        },
+        {
+          "sector": "command",
+          "triangles": 39790,
+          "calls": 98
+        },
+        {
+          "sector": "nest",
+          "triangles": 38374,
+          "calls": 94
+        }
+      ],
+      "coopFrames": [
+        {
+          "secondSector": "approach",
+          "triangles": 65870,
+          "calls": 221
+        },
+        {
+          "secondSector": "relay",
+          "triangles": 67286,
+          "calls": 225
+        },
+        {
+          "secondSector": "foundry",
+          "triangles": 67838,
+          "calls": 225
+        },
+        {
+          "secondSector": "command",
+          "triangles": 67286,
+          "calls": 225
+        },
+        {
+          "secondSector": "nest",
+          "triangles": 65870,
+          "calls": 221
+        }
+      ]
+    },
+    {
+      "level": "la_rooftops",
+      "type": "rooftop",
+      "visibleTriangles": 74886,
+      "residentTriangles": 170362,
+      "potentialDrawSubmissions": 187,
+      "sectors": [
+        {
+          "id": "approach",
+          "triangles": 10544,
+          "drawMeshes": 4,
+          "modelledPieces": 188,
+          "colliders": 8,
+          "floorY": 0,
+          "sites": [
+            {
+              "x": -25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 0
+            },
+            {
+              "x": 25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 1
+            },
+            {
+              "x": -25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 2
+            },
+            {
+              "x": 25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 3
+            }
+          ]
+        },
+        {
+          "id": "relay",
+          "triangles": 9864,
+          "drawMeshes": 4,
+          "modelledPieces": 152,
+          "colliders": 8,
+          "floorY": 0,
+          "sites": [
+            {
+              "x": -25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 0
+            },
+            {
+              "x": 32,
+              "z": -32,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 1
+            },
+            {
+              "x": -25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 2
+            },
+            {
+              "x": 25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 3
+            }
+          ]
+        },
+        {
+          "id": "foundry",
+          "triangles": 10544,
+          "drawMeshes": 4,
+          "modelledPieces": 188,
+          "colliders": 8,
+          "floorY": 0,
+          "sites": [
+            {
+              "x": -25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 0
+            },
+            {
+              "x": 25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 1
+            },
+            {
+              "x": -25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 2
+            },
+            {
+              "x": 25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 3
+            }
+          ]
+        },
+        {
+          "id": "command",
+          "triangles": 11480,
+          "drawMeshes": 4,
+          "modelledPieces": 202,
+          "colliders": 10,
+          "floorY": 0,
+          "sites": [
+            {
+              "x": -25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 0
+            },
+            {
+              "x": 25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 1
+            },
+            {
+              "x": -25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 2
+            },
+            {
+              "x": 25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 3
+            }
+          ]
+        },
+        {
+          "id": "nest",
+          "triangles": 10336,
+          "drawMeshes": 5,
+          "modelledPieces": 144,
+          "colliders": 16,
+          "floorY": 0,
+          "sites": [
+            {
+              "x": -25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 0
+            },
+            {
+              "x": 25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 1
+            },
+            {
+              "x": -25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 2
+            },
+            {
+              "x": 25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 3
+            }
+          ]
+        }
+      ],
+      "corridors": [
+        {
+          "id": "corridor-insertion-approach",
+          "triangles": 1392,
+          "drawMeshes": 4,
+          "modelledPieces": 52,
+          "colliders": 4,
+          "floorY": 0
+        },
+        {
+          "id": "corridor-approach-relay",
+          "triangles": 1392,
+          "drawMeshes": 4,
+          "modelledPieces": 52,
+          "colliders": 4,
+          "floorY": 0
+        },
+        {
+          "id": "corridor-relay-foundry",
+          "triangles": 1392,
+          "drawMeshes": 4,
+          "modelledPieces": 52,
+          "colliders": 4,
+          "floorY": 0
+        },
+        {
+          "id": "corridor-foundry-command",
+          "triangles": 1392,
+          "drawMeshes": 4,
+          "modelledPieces": 52,
+          "colliders": 4,
+          "floorY": 0
+        },
+        {
+          "id": "corridor-command-nest",
+          "triangles": 1392,
+          "drawMeshes": 4,
+          "modelledPieces": 52,
+          "colliders": 4,
+          "floorY": 0
+        }
+      ],
+      "activeSectorFrames": [
+        {
+          "sector": "insertion",
+          "triangles": 74886,
+          "calls": 187
+        },
+        {
+          "sector": "approach",
+          "triangles": 45246,
+          "calls": 98
+        },
+        {
+          "sector": "relay",
+          "triangles": 44566,
+          "calls": 98
+        },
+        {
+          "sector": "foundry",
+          "triangles": 45246,
+          "calls": 98
+        },
+        {
+          "sector": "command",
+          "triangles": 46182,
+          "calls": 98
+        },
+        {
+          "sector": "nest",
+          "triangles": 43646,
+          "calls": 95
+        }
+      ],
+      "coopFrames": [
+        {
+          "secondSector": "approach",
+          "triangles": 88982,
+          "calls": 200
+        },
+        {
+          "secondSector": "relay",
+          "triangles": 89694,
+          "calls": 204
+        },
+        {
+          "secondSector": "foundry",
+          "triangles": 90374,
+          "calls": 204
+        },
+        {
+          "secondSector": "command",
+          "triangles": 91310,
+          "calls": 204
+        },
+        {
+          "secondSector": "nest",
+          "triangles": 88774,
+          "calls": 201
+        }
+      ]
+    },
+    {
+      "level": "val_verde_jungle",
+      "type": "jungle",
+      "visibleTriangles": 304822,
+      "residentTriangles": 578018,
+      "potentialDrawSubmissions": 151,
+      "sectors": [
+        {
+          "id": "approach",
+          "triangles": 6192,
+          "drawMeshes": 4,
+          "modelledPieces": 196,
+          "colliders": 20,
+          "floorY": 0,
+          "sites": [
+            {
+              "x": -25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 0
+            },
+            {
+              "x": 25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 1
+            },
+            {
+              "x": -25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 2
+            },
+            {
+              "x": 25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 3
+            }
+          ]
+        },
+        {
+          "id": "relay",
+          "triangles": 6192,
+          "drawMeshes": 4,
+          "modelledPieces": 196,
+          "colliders": 20,
+          "floorY": 0,
+          "sites": [
+            {
+              "x": -25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 0
+            },
+            {
+              "x": 25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 1
+            },
+            {
+              "x": -25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 2
+            },
+            {
+              "x": 32,
+              "z": 32,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 3
+            }
+          ]
+        },
+        {
+          "id": "foundry",
+          "triangles": 6744,
+          "drawMeshes": 4,
+          "modelledPieces": 146,
+          "colliders": 18,
+          "floorY": 0,
+          "sites": [
+            {
+              "x": -25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 0
+            },
+            {
+              "x": 25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 1
+            },
+            {
+              "x": -25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 2
+            },
+            {
+              "x": 25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 3
+            }
+          ]
+        },
+        {
+          "id": "command",
+          "triangles": 6192,
+          "drawMeshes": 4,
+          "modelledPieces": 196,
+          "colliders": 20,
+          "floorY": 0,
+          "sites": [
+            {
+              "x": -25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 0
+            },
+            {
+              "x": 25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 1
+            },
+            {
+              "x": -25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 2
+            },
+            {
+              "x": 25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 3
+            }
+          ]
+        },
+        {
+          "id": "nest",
+          "triangles": 10784,
+          "drawMeshes": 4,
+          "modelledPieces": 96,
+          "colliders": 16,
+          "floorY": 0,
+          "sites": [
+            {
+              "x": -25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 0
+            },
+            {
+              "x": 25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 1
+            },
+            {
+              "x": -25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 2
+            },
+            {
+              "x": 25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 3
+            }
+          ]
+        }
+      ],
+      "corridors": [
+        {
+          "id": "corridor-insertion-approach",
+          "triangles": 1416,
+          "drawMeshes": 4,
+          "modelledPieces": 54,
+          "colliders": 4,
+          "floorY": 0
+        },
+        {
+          "id": "corridor-approach-relay",
+          "triangles": 1416,
+          "drawMeshes": 4,
+          "modelledPieces": 54,
+          "colliders": 4,
+          "floorY": 0
+        },
+        {
+          "id": "corridor-relay-foundry",
+          "triangles": 1416,
+          "drawMeshes": 4,
+          "modelledPieces": 54,
+          "colliders": 4,
+          "floorY": 0
+        },
+        {
+          "id": "corridor-foundry-command",
+          "triangles": 1416,
+          "drawMeshes": 4,
+          "modelledPieces": 54,
+          "colliders": 4,
+          "floorY": 0
+        },
+        {
+          "id": "corridor-command-nest",
+          "triangles": 1416,
+          "drawMeshes": 4,
+          "modelledPieces": 54,
+          "colliders": 4,
+          "floorY": 0
+        }
+      ],
+      "activeSectorFrames": [
+        {
+          "sector": "insertion",
+          "triangles": 304822,
+          "calls": 151
+        },
+        {
+          "sector": "approach",
+          "triangles": 80422,
+          "calls": 101
+        },
+        {
+          "sector": "relay",
+          "triangles": 76062,
+          "calls": 101
+        },
+        {
+          "sector": "foundry",
+          "triangles": 72254,
+          "calls": 101
+        },
+        {
+          "sector": "command",
+          "triangles": 80422,
+          "calls": 101
+        },
+        {
+          "sector": "nest",
+          "triangles": 79238,
+          "calls": 97
+        }
+      ],
+      "coopFrames": [
+        {
+          "secondSector": "approach",
+          "triangles": 354070,
+          "calls": 167
+        },
+        {
+          "secondSector": "relay",
+          "triangles": 351126,
+          "calls": 171
+        },
+        {
+          "secondSector": "foundry",
+          "triangles": 347318,
+          "calls": 171
+        },
+        {
+          "secondSector": "command",
+          "triangles": 355486,
+          "calls": 171
+        },
+        {
+          "secondSector": "nest",
+          "triangles": 354302,
+          "calls": 167
+        }
+      ]
+    },
+    {
+      "level": "romulus_station",
+      "type": "station",
+      "visibleTriangles": 101142,
+      "residentTriangles": 179938,
+      "potentialDrawSubmissions": 220,
+      "sectors": [
+        {
+          "id": "approach",
+          "triangles": 10544,
+          "drawMeshes": 4,
+          "modelledPieces": 188,
+          "colliders": 8,
+          "floorY": 0,
+          "sites": [
+            {
+              "x": -25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 0
+            },
+            {
+              "x": 25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 1
+            },
+            {
+              "x": -25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 2
+            },
+            {
+              "x": 25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 3
+            }
+          ]
+        },
+        {
+          "id": "relay",
+          "triangles": 9864,
+          "drawMeshes": 4,
+          "modelledPieces": 152,
+          "colliders": 8,
+          "floorY": 0,
+          "sites": [
+            {
+              "x": -25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 0
+            },
+            {
+              "x": 25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 1
+            },
+            {
+              "x": -25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 2
+            },
+            {
+              "x": 32,
+              "z": 32,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 3
+            }
+          ]
+        },
+        {
+          "id": "foundry",
+          "triangles": 10544,
+          "drawMeshes": 4,
+          "modelledPieces": 188,
+          "colliders": 8,
+          "floorY": 0,
+          "sites": [
+            {
+              "x": -25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 0
+            },
+            {
+              "x": 25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 1
+            },
+            {
+              "x": -25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 2
+            },
+            {
+              "x": 25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 3
+            }
+          ]
+        },
+        {
+          "id": "command",
+          "triangles": 11480,
+          "drawMeshes": 4,
+          "modelledPieces": 202,
+          "colliders": 10,
+          "floorY": 0,
+          "sites": [
+            {
+              "x": -25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 0
+            },
+            {
+              "x": 25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 1
+            },
+            {
+              "x": -25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 2
+            },
+            {
+              "x": 25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 3
+            }
+          ]
+        },
+        {
+          "id": "nest",
+          "triangles": 10336,
+          "drawMeshes": 5,
+          "modelledPieces": 144,
+          "colliders": 16,
+          "floorY": 0,
+          "sites": [
+            {
+              "x": -25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 0
+            },
+            {
+              "x": 25,
+              "z": -25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 1
+            },
+            {
+              "x": -25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 2
+            },
+            {
+              "x": 25,
+              "z": 25,
+              "radius": 11,
+              "scale": 1.2,
+              "quadrant": 3
+            }
+          ]
+        }
+      ],
+      "corridors": [
+        {
+          "id": "corridor-insertion-approach",
+          "triangles": 1416,
+          "drawMeshes": 4,
+          "modelledPieces": 54,
+          "colliders": 4,
+          "floorY": 0
+        },
+        {
+          "id": "corridor-approach-relay",
+          "triangles": 1416,
+          "drawMeshes": 4,
+          "modelledPieces": 54,
+          "colliders": 4,
+          "floorY": 0
+        },
+        {
+          "id": "corridor-relay-foundry",
+          "triangles": 1416,
+          "drawMeshes": 4,
+          "modelledPieces": 54,
+          "colliders": 4,
+          "floorY": 0
+        },
+        {
+          "id": "corridor-foundry-command",
+          "triangles": 1416,
+          "drawMeshes": 4,
+          "modelledPieces": 54,
+          "colliders": 4,
+          "floorY": 0
+        },
+        {
+          "id": "corridor-command-nest",
+          "triangles": 1416,
+          "drawMeshes": 4,
+          "modelledPieces": 54,
+          "colliders": 4,
+          "floorY": 0
+        }
+      ],
+      "activeSectorFrames": [
+        {
+          "sector": "insertion",
+          "triangles": 101142,
+          "calls": 220
+        },
+        {
+          "sector": "approach",
+          "triangles": 45294,
+          "calls": 98
+        },
+        {
+          "sector": "relay",
+          "triangles": 44614,
+          "calls": 98
+        },
+        {
+          "sector": "foundry",
+          "triangles": 45294,
+          "calls": 98
+        },
+        {
+          "sector": "command",
+          "triangles": 46230,
+          "calls": 98
+        },
+        {
+          "sector": "nest",
+          "triangles": 43670,
+          "calls": 95
+        }
+      ],
+      "coopFrames": [
+        {
+          "secondSector": "approach",
+          "triangles": 115262,
+          "calls": 233
+        },
+        {
+          "secondSector": "relay",
+          "triangles": 115998,
+          "calls": 237
+        },
+        {
+          "secondSector": "foundry",
+          "triangles": 116678,
+          "calls": 237
+        },
+        {
+          "secondSector": "command",
+          "triangles": 117614,
+          "calls": 237
+        },
+        {
+          "secondSector": "nest",
+          "triangles": 115054,
+          "calls": 234
+        }
+      ]
+    }
+  ]
+}
