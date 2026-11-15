@@ -4154,3 +4154,72 @@ body:not(.hud-detailed) #wrist-ecg-holoscan.is-critical{display:block!important;
 
 .hud-support-status{position:absolute;left:50%;bottom:3.6rem;transform:translateX(-50%);max-width:76vw;padding:.3rem .65rem;border:1px solid #487075;background:#07121bd9;color:#c5e1d9;font-size:.65rem;line-height:1.4;text-align:center;pointer-events:none}
 @media(max-width:720px){.hud-support-status{bottom:4.8rem;max-width:92vw;width:92vw;font-size:.56rem;padding:.2rem}}
+
+/* ===== Spec 003 — cinematic presentation ===== */
+.boot-sequence { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; background: #030306; color: #f1f5f9; transition: opacity .45s ease; cursor: pointer; }
+.boot-sequence[hidden] { display: none; }
+.boot-sequence.leaving { opacity: 0; pointer-events: none; }
+.boot-sequence[data-stage="title"] { background: radial-gradient(ellipse at 30% 60%, rgba(3, 3, 6, .25) 0%, rgba(3, 3, 6, .82) 75%); }
+.boot-stage { grid-area: 1 / 1; display: flex; flex-direction: column; align-items: center; gap: 14px; opacity: 0; transform: scale(.98); transition: opacity .6s ease, transform 1.2s ease; pointer-events: none; text-align: center; padding: 0 16px; }
+.boot-stage.active { opacity: 1; transform: none; pointer-events: auto; }
+.boot-countdown { font-size: clamp(3rem, 10vw, 7rem); letter-spacing: .4em; color: #ff3b1f; text-shadow: 0 0 18px rgba(255, 50, 20, .9), 0 0 60px rgba(255, 30, 10, .5); font-family: serif; }
+.boot-scan { width: min(420px, 80vw); height: 2px; background: rgba(255, 60, 30, .15); overflow: hidden; }
+.boot-scan span { display: block; height: 100%; width: calc(var(--boot-progress, 0) * 100%); background: #ff3b1f; box-shadow: 0 0 12px #ff3b1f; transition: width .28s linear; }
+.boot-countdown + .boot-scan span { width: 100%; animation: boot-scan 2.2s linear forwards; }
+@keyframes boot-scan { from { width: 0; } to { width: 100%; } }
+.boot-status { font-family: 'Orbitron', sans-serif; font-size: .78rem; letter-spacing: .5em; color: #c9a14a; }
+.boot-credit-line { font-family: 'Orbitron', sans-serif; letter-spacing: .6em; font-size: .85rem; color: #9aa7b8; }
+.boot-author { font-family: 'Orbitron', sans-serif; font-weight: 800; font-size: clamp(1.8rem, 6vw, 3.4rem); letter-spacing: .25em; color: #fff; text-shadow: 0 0 24px rgba(80, 200, 255, .55); }
+.boot-notice { max-width: 560px; font-size: .9rem; line-height: 1.5; color: #8794a6; }
+.boot-game-title { font-family: 'Orbitron', sans-serif; font-weight: 800; font-size: clamp(2.6rem, 9vw, 6.4rem); letter-spacing: .12em; line-height: 1; color: #fff; text-shadow: 0 0 40px rgba(80, 200, 255, .55); animation: boot-title-in 2.4s ease both; }
+.boot-game-title span { display: block; color: #ff3b1f; text-shadow: 0 0 30px rgba(255, 50, 20, .7); }
+@keyframes boot-title-in { from { letter-spacing: .6em; opacity: 0; filter: blur(6px); } to { letter-spacing: .12em; opacity: 1; filter: none; } }
+.boot-press { margin-top: 26px; background: none; border: 1px solid rgba(255, 196, 90, .5); color: #ffc45a; font-family: 'Orbitron', sans-serif; letter-spacing: .4em; padding: 12px 26px; cursor: pointer; animation: boot-pulse 1.8s ease-in-out infinite; }
+.boot-press:focus-visible { outline: 2px solid #ffc45a; outline-offset: 4px; }
+@keyframes boot-pulse { 50% { opacity: .35; box-shadow: 0 0 22px rgba(255, 196, 90, .35); } }
+.boot-fan-footer, .menu-fan-notice { font-size: .78rem; letter-spacing: .08em; color: #8794a6; }
+.boot-fan-footer { position: fixed; bottom: 18px; left: 0; right: 0; }
+.boot-skip { position: fixed; right: 20px; bottom: 16px; font-size: .75rem; letter-spacing: .2em; color: #5c6878; }
+.boot-sequence[data-stage="title"] .boot-skip { display: none; }
+
+/* Live menu backdrop: the scene shows through; content moves left so the diorama stays visible. */
+.menu-backdrop { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.menu-backdrop[hidden] { display: none; }
+.menu-glyph-rain { width: 100%; height: 100%; display: block; background: #040306; }
+.menu-image-slide { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transform: scale(1.08); transition: opacity 2.4s ease, transform 12s linear; }
+.menu-image-slide.visible { opacity: 1; transform: scale(1); }
+body.menu-backdrop-live #main-menu { background: linear-gradient(90deg, rgba(3, 5, 10, .88) 0%, rgba(3, 5, 10, .55) 42%, rgba(3, 5, 10, .05) 72%); }
+body.menu-backdrop-live[data-menu-backdrop="glyphs"] #main-menu { background: radial-gradient(ellipse at center, rgba(3, 5, 10, .45), rgba(3, 5, 10, .85)); }
+body.menu-backdrop-live #main-menu .menu-background-gradient { display: none; }
+@media (min-width: 1100px) {
+  /* A compact left column leaves the right half of the screen to the live scene. */
+  body.menu-backdrop-live:not([data-menu-backdrop="glyphs"]) #main-menu .menu-content { grid-template-columns: minmax(0, 520px); align-content: center; gap: 22px; max-width: none; padding-left: 5vw; }
+  body.menu-backdrop-live:not([data-menu-backdrop="glyphs"]) #main-menu .logo-box { padding: 0; }
+  body.menu-backdrop-live:not([data-menu-backdrop="glyphs"]) #main-menu .yautja-glyph-banner { margin-bottom: 14px; }
+  body.menu-backdrop-live:not([data-menu-backdrop="glyphs"]) #main-menu .menu-eyebrow { margin-top: 14px; }
+  body.menu-backdrop-live:not([data-menu-backdrop="glyphs"]) #main-menu .subtitle { font-size: 1rem; margin-bottom: 0; }
+  body.menu-backdrop-live:not([data-menu-backdrop="glyphs"]) #main-menu .menu-intel,
+  body.menu-backdrop-live:not([data-menu-backdrop="glyphs"]) #main-menu .desktop-hint { display: none; }
+  body.menu-backdrop-live:not([data-menu-backdrop="glyphs"]) #main-menu .menu-actions button { min-height: 54px; padding: 12px 16px; }
+  body.menu-backdrop-live:not([data-menu-backdrop="glyphs"]) #main-menu .menu-actions .btn-primary { min-height: 74px; }
+  body.menu-backdrop-live:not([data-menu-backdrop="glyphs"]) #main-menu .menu-actions .btn-secondary { background: rgba(10, 18, 20, .72); backdrop-filter: blur(4px); }
+}
+/* The title screen stands alone: the menu behind it waits. */
+body.boot-active #main-menu .menu-content { visibility: hidden; }
+
+/* Panel transitions and staggered menu entrance. */
+.ui-screen:not(.hidden):not(#in-game-hud):not(#photo-mode-hud) { animation: screen-in .32s ease-out both; }
+@keyframes screen-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+#main-menu:not(.hidden) .menu-actions > button { animation: menu-button-in .45s ease-out both; }
+#main-menu:not(.hidden) .menu-actions > button:nth-child(2) { animation-delay: .04s; } #main-menu:not(.hidden) .menu-actions > button:nth-child(3) { animation-delay: .08s; }
+#main-menu:not(.hidden) .menu-actions > button:nth-child(4) { animation-delay: .12s; } #main-menu:not(.hidden) .menu-actions > button:nth-child(5) { animation-delay: .16s; }
+#main-menu:not(.hidden) .menu-actions > button:nth-child(6) { animation-delay: .2s; } #main-menu:not(.hidden) .menu-actions > button:nth-child(7) { animation-delay: .24s; }
+#main-menu:not(.hidden) .menu-actions > button:nth-child(8) { animation-delay: .28s; } #main-menu:not(.hidden) .menu-actions > button:nth-child(9) { animation-delay: .32s; }
+@keyframes menu-button-in { from { opacity: 0; transform: translateX(-16px); } to { opacity: 1; transform: none; } }
+.menu-actions > button { transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
+.menu-actions > button:hover, .menu-actions > button:focus-visible { transform: translateX(6px); box-shadow: -4px 0 0 #ff3b1f, 0 0 24px rgba(255, 59, 31, .25); }
+
+body.reduced-motion .ui-screen, body.reduced-motion .menu-actions > button, body.reduced-motion .boot-game-title, body.reduced-motion .boot-press { animation: none !important; transition: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  .ui-screen, .menu-actions > button, .boot-game-title, .boot-press, .boot-stage, .menu-image-slide { animation: none !important; transition: none !important; }
+}

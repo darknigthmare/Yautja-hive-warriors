@@ -44,7 +44,7 @@ after(async () => {
   }
 });
 
-async function withGame(signal, run, { viewport = { width: 1366, height: 900 }, corruptStorage = false } = {}) {
+async function withGame(signal, run, { viewport = { width: 1366, height: 900 }, corruptStorage = false, path = '' } = {}) {
   const installedChromium = process.env.CHROMIUM_PATH || (existsSync('/usr/bin/chromium') ? '/usr/bin/chromium' : undefined);
   const cleanup = createBrowserCleanup(signal); activeSessions.add(cleanup);
   let page;
@@ -76,7 +76,7 @@ async function withGame(signal, run, { viewport = { width: 1366, height: 900 }, 
       localStorage.setItem('yautja_skulls', '-100');
       localStorage.setItem('yautja_max_combo', 'Infinity');
     });
-    const response = await page.goto(baseURL, { waitUntil: 'networkidle' });
+    const response = await page.goto(baseURL + path, { waitUntil: 'networkidle' });
     assert.equal(response.status(), 200);
     await page.waitForFunction(() => Boolean(window.game));
     await run(page);
@@ -294,4 +294,30 @@ test('mobile: 390px menus have no horizontal overflow and remain navigable', { t
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
     assert.ok(await page.locator('#btn-confirm-loadout').isVisible());
   }, { viewport: { width: 390, height: 844 } });
+});
+
+test('presentation: the intro skips on a key, the menu backdrop rotates and nothing of it runs during play', { timeout: 180000 }, async t => {
+  await withGame(t.signal, async page => {
+    const boot = () => page.evaluate(() => ({ hidden: document.getElementById('boot-sequence').hidden, stage: document.getElementById('boot-sequence').dataset.stage }));
+    const first = await boot();
+    assert.equal(first.hidden, false, 'the intro plays when asked for with ?intro=1');
+    assert.ok(['glyphs', 'credit', 'title'].includes(first.stage));
+    assert.match(await page.locator('#boot-sequence').innerText(), /fan game project by Darknigthmare/i);
+    await page.keyboard.press('Space');
+    await page.waitForFunction(() => document.getElementById('boot-sequence').dataset.stage === 'title');
+    await page.keyboard.press('Space');
+    await page.waitForFunction(() => document.getElementById('boot-sequence').hidden);
+    await screen(page, 'main-menu');
+    const menu = await page.evaluate(() => ({ cue: window.game.music.cue, audio: window.game.audio.ctx?.state, active: window.game.menuBackdrop.active, style: document.body.dataset.menuBackdrop }));
+    assert.equal(menu.cue, 'menu'); assert.equal(menu.audio, 'running'); assert.equal(menu.active, true);
+    await page.goto(page.url().replace('?intro=1', ''), { waitUntil: 'networkidle' });
+    await page.waitForFunction(() => window.game?.menuBackdrop?.choice);
+    assert.equal(await page.evaluate(() => document.getElementById('boot-sequence').hidden), true, 'automation skips the intro without ?intro=1');
+    assert.notEqual(await page.evaluate(() => document.body.dataset.menuBackdrop), menu.style, 'each arrival shows another backdrop');
+    await launchHunt(page);
+    const play = await page.evaluate(() => ({ active: window.game.menuBackdrop.active, scene: Boolean(window.game.menuBackdrop.scene), layer: Boolean(document.querySelector('.menu-backdrop')), ambient: window.game.ambient.biome, cue: window.game.music.cue }));
+    assert.deepEqual({ active: play.active, scene: play.scene, layer: play.layer }, { active: false, scene: false, layer: false }, 'the menu scene is disposed during play');
+    assert.equal(play.cue === 'explore' || play.cue === 'combat' || play.cue === 'boss', true);
+    assert.ok(play.ambient, 'the biome ambience runs during play');
+  }, { path: '?intro=1' });
 });

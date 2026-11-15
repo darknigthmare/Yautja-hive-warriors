@@ -69,6 +69,27 @@
     <div id="wheel-items-container"></div>
   </div>
 
+  <!-- STARTUP SEQUENCE (spec 003): glyph countdown, fan credit and notice, title screen -->
+  <div id="boot-sequence" class="boot-sequence" hidden>
+    <section class="boot-stage boot-glyphs" data-stage="glyphs" aria-hidden="true">
+      <div class="boot-countdown"></div>
+      <div class="boot-scan"><span></span></div>
+      <p class="boot-status">PROTOCOLE DE CHASSE · INITIALISATION</p>
+    </section>
+    <section class="boot-stage boot-credit" data-stage="credit">
+      <p class="boot-credit-line">A FAN GAME PROJECT BY</p>
+      <p class="boot-author">DARKNIGTHMARE</p>
+      <p class="boot-notice">Projet de fan non officiel, gratuit et non commercial. Non affilié aux ayants droit des franchises Predator et Alien, dont les noms et univers appartiennent à leurs propriétaires.</p>
+    </section>
+    <section class="boot-stage boot-title" data-stage="title" aria-labelledby="boot-title-heading">
+      <div class="yautja-glyph-banner">YAUTJA // PROTOCOLE DE CHASSE</div>
+      <h1 id="boot-title-heading" class="boot-game-title">HIVE <span>WARRIORS</span></h1>
+      <button type="button" class="boot-press">APPUYEZ SUR UNE TOUCHE</button>
+      <p class="boot-fan-footer">A fan game project by Darknigthmare · projet de fan non officiel</p>
+    </section>
+    <p class="boot-skip" aria-hidden="true">Une touche pour passer</p>
+  </div>
+
   <div id="ui-layer">
 
     <!-- MAIN MENU SCREEN -->
@@ -80,6 +101,7 @@
           <h1 class="game-title">HIVE<br><span>WARRIORS</span></h1>
           <p class="menu-eyebrow">LE CLAN VOUS ATTEND</p><p class="subtitle">Une planète hostile. Une ruche sans fin.<br>Choisissez votre chasseur et imposez votre loi.</p>
           <div class="menu-intel"><span>01 <b>CHOISISSEZ</b></span><span>02 <b>ÉQUIPEZ</b></span><span>03 <b>CHASSEZ</b></span></div>
+          <p class="menu-fan-notice">A fan game project by Darknigthmare · projet de fan non officiel</p>
           <p class="desktop-hint">Clavier & souris · ZQSD / WASD pour se déplacer · Échap pour la pause</p><p class="mobile-notice">Jeu conçu pour clavier et souris. Sur mobile, explorez les chasseurs et les arènes ; jouez sur ordinateur.</p>
         </div>
 
@@ -1746,6 +1768,9 @@
             <label for="setting-volume">VOLUME AUDIO <output id="setting-volume-value">30 %</output></label>
             <input id="setting-volume" type="range" min="0" max="100" value="30" aria-describedby="volume-help">
             <p id="volume-help">Réglez à 0 pour couper le son.</p>
+            <label for="setting-music-volume">MUSIQUE <output id="setting-music-volume-value">60 %</output></label>
+            <input id="setting-music-volume" type="range" min="0" max="100" value="60">
+            <label>Cinématiques<select id="setting-cinematics"><option value="full">Complètes (passables d’une touche)</option><option value="short">Courtes · écran titre seulement</option><option value="off">Désactivées</option></select></label>
             <label class="toggle-setting"><input id="setting-reduced-motion" type="checkbox"> Réduire les animations de l’interface</label>
             <label>Palette de la carte<select id="setting-map-palette"><option value="default">Standard</option><option value="accessible">Contrastes accessibles</option><option value="monochrome">Monochrome · formes et lettres</option></select></label>
             <label class="toggle-setting"><input id="setting-marker-symbols" type="checkbox" checked> Symboles de relation indépendants des couleurs</label>

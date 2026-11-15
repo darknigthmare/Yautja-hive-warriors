@@ -231,6 +231,17 @@ export class UIManager {
         window.game?.audio.setVolume(value);
       });
     }
+    const musicVolume = document.getElementById('setting-music-volume'), musicOutput = document.getElementById('setting-music-volume-value');
+    if (musicVolume) {
+      musicVolume.value = String(Math.round(Math.min(1, readStoredNumber('yautja_music_volume', .6)) * 100));
+      if (musicOutput) musicOutput.textContent = `${musicVolume.value} %`;
+      musicVolume.addEventListener('input', () => { if (musicOutput) musicOutput.textContent = `${musicVolume.value} %`; window.game?.music?.setVolume(Number(musicVolume.value) / 100) ?? writeStored('yautja_music_volume', Number(musicVolume.value) / 100); });
+    }
+    const cinematics = document.getElementById('setting-cinematics');
+    if (cinematics) {
+      const saved = readStored('yautja_cinematics', 'full'); cinematics.value = ['full', 'short', 'off'].includes(saved) ? saved : 'full';
+      cinematics.addEventListener('change', () => writeStored('yautja_cinematics', cinematics.value));
+    }
     const reducedMotion = document.getElementById('setting-reduced-motion');
     if (reducedMotion) {
       reducedMotion.checked = readStored('yautja_reduced_motion', String(matchMedia('(prefers-reduced-motion: reduce)').matches)) === 'true';

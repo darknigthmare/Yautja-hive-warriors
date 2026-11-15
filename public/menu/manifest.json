@@ -1,0 +1,5 @@
+{
+  "version": 1,
+  "note": "Vos images de fond du menu (jpg, png, webp, avif) déposées dans public/menu/. Le style « images » rejoint l’alternance dès qu’une image est listée.",
+  "images": []
+}

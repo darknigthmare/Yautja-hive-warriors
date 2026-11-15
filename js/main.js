@@ -81,6 +81,10 @@ import { FaunaEncounter } from './engine/FaunaEncounter.js';
 import { AscensionShipHub, SHIP_LEVEL } from './engine/AscensionShipHub.js';
 import { CloudSaves } from './engine/CloudSaves.js';
 import { decorateCompanion } from './graphics/PackMarks.js';
+import { MusicDirector } from './engine/MusicDirector.js';
+import { AmbientSoundscape, ambientBiomeFor } from './engine/AmbientSoundscape.js';
+import { MenuBackdrop } from './graphics/MenuBackdrop.js';
+import { BootSequence } from './ui/BootSequence.js';
 
 class GameApp {
   constructor() {
@@ -235,8 +239,53 @@ class GameApp {
     canvas?.addEventListener('mousedown', () => { if (this.mouseCamera.active(this.isCoOp) && this.isPlaying && !this.isPaused && document.pointerLockElement !== canvas) canvas.requestPointerLock?.(); });
     document.addEventListener('mousemove', event => { if (document.pointerLockElement === canvas) this.mouseCamera.onMouseMove(event.movementX); });
     this.setupEventListeners();
+    this.setupPresentation();
     this.lastTime = performance.now();
     this.animate();
+  }
+
+  /** Spec 003: startup sequence, rotating menu backdrop, music and ambient sound. */
+  setupPresentation() {
+    this.music = new MusicDirector(this.audio);
+    this.ambient = new AmbientSoundscape(this.audio);
+    this.menuBackdrop = new MenuBackdrop({ renderer: this.renderer, host: this.ui.mainMenu, hunterCount: CHARACTERS_DATA.length,
+      createHunter: (scene, index) => new Player(scene, CHARACTERS_DATA[index % CHARACTERS_DATA.length], this.audio, false, null),
+      reducedMotion: () => document.body.classList.contains('reduced-motion') });
+    this._backdropNeedsRotation = true;
+    // Audio can only start after a user gesture; the first one also starts the pending cue.
+    const unlock = () => { this.audio.init(); if (this.music.cue) this.music.play(this.music.cue, { fade: 2 }) || null; };
+    addEventListener('pointerdown', unlock, { capture: true, once: true }); addEventListener('keydown', unlock, { capture: true, once: true });
+    document.addEventListener('ui-screen-change', event => this.onPresentationScreen(event.detail.screen));
+    this.onPresentationScreen(this.ui.mainMenu.classList.contains('hidden') ? null : 'main-menu');
+    this.boot = new BootSequence({
+      onTitle: () => this.music.play('title'),
+      onEnter: ({ interacted }) => { if (interacted) unlock(); this.music.play('menu'); if (!this.isPlaying) this.ui.showScreen(this.ui.mainMenu); }
+    });
+    this.bootFinished = this.boot.start();
+  }
+
+  onPresentationScreen(screen) {
+    if (!this.menuBackdrop) return;
+    if (screen === 'main-menu' && !this.isPlaying) {
+      if (this._backdropNeedsRotation) { this._backdropNeedsRotation = false; this.menuBackdrop.rotate().then(() => { if (!this.isPlaying && !this.ui.mainMenu.classList.contains('hidden')) this.menuBackdrop.show(); }); }
+      else this.menuBackdrop.show();
+      if (!this.boot || this.boot.done) this.music.play('menu');
+    } else if (screen === 'in-game-hud') {
+      // Nothing of the menu stays alive during play (spec 003, SC-003).
+      this.menuBackdrop.dispose(); this._backdropNeedsRotation = true;
+    } else this.menuBackdrop.hide();
+  }
+
+  /** Danger drives the music: layers follow nearby enemies; a sustained fight or a boss changes the cue. */
+  updateMusicDanger(delta, nearCount) {
+    if (!this.music || this.shipHub) return;
+    this._musicCalm = nearCount >= 6 ? 0 : (this._musicCalm ?? 0) + delta;
+    this._musicHeat = nearCount >= 6 ? (this._musicHeat ?? 0) + delta : 0;
+    const boss = Boolean(this.bosses?.activeBoss && this.bosses.activeBoss.hp > 0);
+    if (boss) this.music.play('boss');
+    else if (this._musicHeat > 2.5) this.music.play('combat');
+    else if (this._musicCalm > 9 && this.music.cue !== 'explore') this.music.play('explore', { fade: 4 });
+    this.music.setIntensity(boss ? 1 : Math.min(1, nearCount / 10 + (this.closestEnemyDist < 12 ? .25 : 0)));
   }
 
   setupOperationSelection() {
@@ -1405,6 +1454,7 @@ class GameApp {
     this.motionTrackerTimer = 0;
     this.closestEnemyDist = Infinity;
     this.audio.stopBackgroundMusic();
+    this.ambient?.stop();
     this.audio.stopThermalHum();
     this.clearHumanWeaponCaches();
     this.allies.clearSquad();
@@ -2136,7 +2186,9 @@ class GameApp {
     this.battlefieldMorale = 50.0;
     this.shiftBattlefieldMorale(0);
 
-    this.audio.startBackgroundMusic();
+    this.music?.play(this.shipHub ? 'hub' : 'explore');
+    this._musicCalm = 0; this._musicHeat = 0;
+    this.ambient?.start(this.shipHub ? 'ship' : ambientBiomeFor(this.ui.selectedLevel?.id));
     this.ui.showScreen(this.ui.inGameHud);
     this.ui.showCombo(0);
     this.ui.updateHUD(this.player, this.horde, this.bosses, this.waveIndex, this.totalWaves, this.score,{secondaryPlayer:this.player2,waveLabel:this.shipHub?'À BORD — ENTRE DEUX CHASSES':undefined,supports:this.missionMode?.startsWith('ascension')?null:{apc:this.apc.getSupportState(),cheyenne:this.dropship.getSupportState()}});
@@ -4330,12 +4382,14 @@ class GameApp {
     }
 
     // USCM M314 Motion Tracker Proximity Sonar Ping
-    let nearestDist = Infinity;
+    let nearestDist = Infinity, nearCount = 0;
     this.horde.aliens.forEach(a => {
       const d = a.mesh.position.distanceTo(this.player.position);
       if (d < nearestDist) nearestDist = d;
+      if (d < 25 && a.hp > 0 && !a.isFleeing) nearCount++;
     });
     this.closestEnemyDist = nearestDist;
+    this.updateMusicDanger(delta, nearCount);
 
     if (nearestDist < 25.0) {
       // Cadence accelerates as enemies close in: from 1.2s at 25m down to 0.18s at 3m
@@ -5413,6 +5467,7 @@ class GameApp {
 
   endGame(isVictory) {
     if (!this.isPlaying) return;
+    this.music?.play(isVictory ? 'victory' : 'defeat', { fade: .8 }); this.ambient?.stop();
     if (this.missionMode === 'ascension_rite' && isVictory && this.ascensionProgress.completeRite() && (this.syncAscensionToCloud?.(), true))
     { this.ui.showAnnouncement(`LA MARQUE EST À TOI. ${this.ascensionProgress.triad().join(' et ')} et toi êtes Blooded : le canon d'épaule est désormais le tien.`); this.ui.legendaryChronicles = true; this.ui.initLevelSelect?.(); }
     if (this.missionMode === 'ascension' && isVictory) {
@@ -5782,7 +5837,9 @@ class GameApp {
     // Frozen scenes need no repeated GPU work. Resize, quality and photo-camera
     // changes invalidate a frame; active combat keeps rendering every frame.
     const sceneIsMoving = this.isPlaying && !this.isPaused && !this.photoMode.isActive && !this.weaponWheel.isOpen;
-    if (sceneIsMoving || this.renderer.needsRender) this.renderer.render();
+    // The menu backdrop owns the canvas only while the main menu or title is shown.
+    if (!this.isPlaying && this.menuBackdrop?.active) this.menuBackdrop.render(delta);
+    else if (sceneIsMoving || this.renderer.needsRender) this.renderer.render();
   }
 }
 
