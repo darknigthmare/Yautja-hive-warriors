@@ -3,7 +3,7 @@
  "titre": "Passage entre combat proche et simulation distante",
  "source": "docs/audits/2026-10-26/Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.xlsx#Validation!REC-005",
  "dateExecution": "2026-11-14",
- "commit": "5f49d03787abe4a8c395459d402e31564fb5289b",
+ "commit": "cbd06d2427fe7679dbc1bf083a75a3acf965db5d",
  "sourcesJsNonCommitees": [],
  "graine": {
   "configuration": "rec-005-fixture (aucun aléa)",
