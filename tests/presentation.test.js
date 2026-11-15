@@ -36,3 +36,14 @@ test('startup stages follow the Cinématiques setting and automation skips them 
   assert.deepEqual(bootStages('full', { automated: true }), []);
   assert.deepEqual(bootStages('full', { automated: true, forced: true }), ['glyphs', 'credit', 'title']);
 });
+
+test('every world has a loading card and progress counts only the models requested since the screen opened', async () => {
+  const { loadingCard, LOADING_TIPS } = await import('../js/data/LoadingLore.js');
+  const { loadingProgress } = await import('../js/ui/LoadingScreen.js');
+  for (const level of LEVELS_DATA) { const card = loadingCard(level.id, { seed: 3 }); assert.ok(card.lore?.lines.length >= 2 && card.lore.tag, level.id); assert.ok(LOADING_TIPS.includes(card.tip)); }
+  assert.match(loadingCard('val_verde_jungle', { shipHub: true }).lore.tag, /LAME PATIENTE/);
+  const baseline = { requested: 4, settled: 4 };
+  assert.equal(loadingProgress({ requested: 4, settled: 4 }, baseline, 0), .85, 'models cached by the menu count as loaded');
+  assert.equal(loadingProgress({ requested: 8, settled: 6 }, baseline, 8), .5 * .85 + .15);
+  assert.equal(loadingProgress({ requested: 8, settled: 8 }, baseline, 30), 1);
+});

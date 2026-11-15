@@ -17,6 +17,8 @@ export function collectGeneratedResources(gltf, retained = new Set()) {
 
 export function createGeneratedAssetLibrary(manifest, loader = new GLTFLoader()) {
   const pending = new Map();
+  // Loading screens read real progress: requests started and settled since the page opened.
+  const progress = { requested: 0, settled: 0 };
   const isLocalModel = url => typeof url === 'string' && /^\/models\/[a-zA-Z0-9_./-]+\.glb$/.test(url) && !url.includes('..');
   const getGeneratedAssetEntry = key => {
     const entry = Object.hasOwn(manifest, key) ? manifest[key] : null;
@@ -56,13 +58,17 @@ export function createGeneratedAssetLibrary(manifest, loader = new GLTFLoader())
         pending.delete(key);
         throw error;
       });
+      progress.requested++;
+      request.then(() => { progress.settled++; }, () => { progress.settled++; });
       pending.set(key, request);
     }
     return pending.get(key);
   };
-  return { getGeneratedAssetEntry, loadGeneratedAsset };
+  const assetLoadProgress = () => ({ ...progress });
+  return { getGeneratedAssetEntry, loadGeneratedAsset, assetLoadProgress };
 }
 
 const library = createGeneratedAssetLibrary(GENERATED_ASSETS);
 export const getGeneratedAssetEntry = library.getGeneratedAssetEntry;
 export const loadGeneratedAsset = library.loadGeneratedAsset;
+export const assetLoadProgress = library.assetLoadProgress;

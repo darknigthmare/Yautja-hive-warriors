@@ -85,6 +85,8 @@ import { MusicDirector } from './engine/MusicDirector.js';
 import { AmbientSoundscape, ambientBiomeFor } from './engine/AmbientSoundscape.js';
 import { MenuBackdrop } from './graphics/MenuBackdrop.js';
 import { BootSequence } from './ui/BootSequence.js';
+import { LoadingScreen } from './ui/LoadingScreen.js';
+import { assetLoadProgress } from './graphics/GeneratedAssetLibrary.js';
 
 class GameApp {
   constructor() {
@@ -145,7 +147,7 @@ class GameApp {
 
     this.loadoutScreen = new LoadoutScreen((loadoutConfig) => {
       this.activeLoadout = loadoutConfig;
-      this.startMission();
+      this.launchWithLoading(() => this.startMission());
     });
 
     this.sandbox = new SandboxEditor((config) => this.startSandboxMission(config));
@@ -247,6 +249,7 @@ class GameApp {
   /** Spec 003: startup sequence, rotating menu backdrop, music and ambient sound. */
   setupPresentation() {
     this.music = new MusicDirector(this.audio);
+    this.loading = new LoadingScreen({ progressSource: assetLoadProgress });
     this.ambient = new AmbientSoundscape(this.audio);
     this.menuBackdrop = new MenuBackdrop({ renderer: this.renderer, host: this.ui.mainMenu, hunterCount: CHARACTERS_DATA.length,
       createHunter: (scene, index) => new Player(scene, CHARACTERS_DATA[index % CHARACTERS_DATA.length], this.audio, false, null),
@@ -262,6 +265,27 @@ class GameApp {
       onEnter: ({ interacted }) => { if (interacted) unlock(); this.music.play('menu'); if (!this.isPlaying) this.ui.showScreen(this.ui.mainMenu); }
     });
     this.bootFinished = this.boot.start();
+  }
+
+  /** Shows the loading screen first, so it paints before the synchronous world build. */
+  async launchWithLoading(start) {
+    const level = this.ui.selectedLevel;
+    this.loading?.begin({ levelId: level?.id, levelName: level?.name ?? '', shipHub: this.missionMode === 'ascension_hub' });
+    this.music?.play('loading', { fade: .8 });
+    await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    if (start() === false) this.loading?.end();
+  }
+
+  /** Mission time stays frozen until models are loaded and shaders warmed behind the screen. */
+  beginLoadingHold() {
+    const level = this.ui.selectedLevel, cue = this.shipHub ? 'hub' : 'explore';
+    if (!this.loading?.begin({ levelId: level?.id, levelName: level?.name ?? '', shipHub: Boolean(this.shipHub) })) { this.music?.play(cue); return; }
+    // Automation steps the simulation itself and is never held (spec 003); players are.
+    this.loadingHold = !this.loading.automated; const run = this._loadingRun = (this._loadingRun ?? 0) + 1;
+    this.loading.waitUntilReady().then(() => {
+      if (run !== this._loadingRun) return;
+      this.loadingHold = false; this.loading.end(); this.music?.play(cue);
+    });
   }
 
   onPresentationScreen(screen) {
@@ -1455,6 +1479,7 @@ class GameApp {
     this.closestEnemyDist = Infinity;
     this.audio.stopBackgroundMusic();
     this.ambient?.stop();
+    this.loadingHold = false; this._loadingRun = (this._loadingRun ?? 0) + 1; if (!this._launching) this.loading?.end();
     this.audio.stopThermalHum();
     this.clearHumanWeaponCaches();
     this.allies.clearSquad();
@@ -2044,7 +2069,9 @@ class GameApp {
       return false;
     }
     this.isPlaying = false;
-    this.clearMissionState();
+    // The loading screen opens before any model is requested, so its progress counts them all.
+    this._launching = true; this.clearMissionState(); this._launching = false;
+    this.loading?.begin({ levelId: this.ui.selectedLevel?.id, levelName: this.ui.selectedLevel?.name ?? '', shipHub: this.missionMode === 'ascension_hub' });
     this.missionRun = `mission-${globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.floor(Math.random() * 1e9)}`}`;
     this.rewardSessionId=this.missionRun;
     this.combatEvents.reset(this.missionRun);
@@ -2186,10 +2213,10 @@ class GameApp {
     this.battlefieldMorale = 50.0;
     this.shiftBattlefieldMorale(0);
 
-    this.music?.play(this.shipHub ? 'hub' : 'explore');
     this._musicCalm = 0; this._musicHeat = 0;
     this.ambient?.start(this.shipHub ? 'ship' : ambientBiomeFor(this.ui.selectedLevel?.id));
     this.ui.showScreen(this.ui.inGameHud);
+    this.beginLoadingHold();
     this.ui.showCombo(0);
     this.ui.updateHUD(this.player, this.horde, this.bosses, this.waveIndex, this.totalWaves, this.score,{secondaryPlayer:this.player2,waveLabel:this.shipHub?'À BORD — ENTRE DEUX CHASSES':undefined,supports:this.missionMode?.startsWith('ascension')?null:{apc:this.apc.getSupportState(),cheyenne:this.dropship.getSupportState()}});
     this.ui.updateBattlefieldHUD(this.battlefieldProgression, this.env.battlefieldLayout, this.player, this.combatDirector, [this.player, this.player2].filter(Boolean));
@@ -3594,6 +3621,7 @@ class GameApp {
 
   update(delta) {
     if (!this.isPlaying || !this.player || this.isPaused) return;
+    if (this.loadingHold) return;
 
     if (this.photoMode.isActive || this.weaponWheel.isOpen) return;
 

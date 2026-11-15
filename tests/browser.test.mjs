@@ -315,6 +315,7 @@ test('presentation: the intro skips on a key, the menu backdrop rotates and noth
     assert.equal(await page.evaluate(() => document.getElementById('boot-sequence').hidden), true, 'automation skips the intro without ?intro=1');
     assert.notEqual(await page.evaluate(() => document.body.dataset.menuBackdrop), menu.style, 'each arrival shows another backdrop');
     await launchHunt(page);
+    await page.waitForFunction(() => !window.game.loadingHold && document.getElementById('loading-screen').hidden, null, { timeout: 30000 });
     const play = await page.evaluate(() => ({ active: window.game.menuBackdrop.active, scene: Boolean(window.game.menuBackdrop.scene), layer: Boolean(document.querySelector('.menu-backdrop')), ambient: window.game.ambient.biome, cue: window.game.music.cue }));
     assert.deepEqual({ active: play.active, scene: play.scene, layer: play.layer }, { active: false, scene: false, layer: false }, 'the menu scene is disposed during play');
     assert.equal(play.cue === 'explore' || play.cue === 'combat' || play.cue === 'boss', true);

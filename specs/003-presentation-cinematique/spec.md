@@ -2,7 +2,7 @@
 
 **Feature Branch**: `claude/fervent-volta-hmhdfw` (aucune branche dédiée)
 **Created**: 2026-11-15
-**Status**: Étape 1 (démarrage, menu, musique, ambiances) livrée le 15 nov. 2026 ; étapes 2 à 4 à venir
+**Status**: Étapes 1 (démarrage, menu, musique, ambiances) et 2 (écrans de chargement) livrées le 15 nov. 2026 ; étapes 3 et 4 à venir
 **Input**: demande de l’auteur du 15/11/2026, « rendre le jeu plus fluide et cinématique : les intel, les outros, l’avant-menu, l’écran d’accueil, le menu principal, les écrans de chargement, des animations, des décors ».
 
 ## Décisions de l’auteur (15/11/2026)
@@ -37,7 +37,14 @@ L’ouverture de la page montre l’avant-menu, puis l’écran titre « APPUYEZ
 
 **Test indépendant** : avec `?intro=1`, voir l’avant-menu, le passer avec une touche et arriver au menu. Recharger fait changer le style de fond. Une mission lancée arrête la scène du menu.
 
-### US2 — Écrans de chargement (P2)
+### US2 — Écrans de chargement (P2) · livrée
+
+**Livré** :
+- Le monde se construit derrière un voile flouté, ce qui préchauffe aussi les ombres.
+- La barre suit les modèles réellement demandés depuis l'ouverture de l'écran.
+- La fiche du monde (repère, lore original, mention d'adaptation) est accompagnée d'un conseil tiré des vraies commandes.
+- Le temps de mission est gelé jusqu'à ce que tout soit prêt, avec un plafond de 14 s.
+- Sous automatisation, rien n'est gelé, sauf avec `?intro=1`.
 
 Entre la préparation et la mission, un écran montre :
 - la progression réelle du chargement des modèles ;

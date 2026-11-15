@@ -1,6 +1,8 @@
 /** Exercise the real cinematic update path before tests start issuing combat
  * inputs. Advancing simulation avoids depending on WebGL frame rate in CI. */
 export async function finishMissionInsertion(page) {
+  // The loading screen holds mission time until its world is ready (spec 003).
+  await page.waitForFunction(() => !window.game?.loadingHold, null, { timeout: 60000 });
   return page.evaluate(() => {
     const g = window.game;
     if (!g?.isPlaying || !g.player) throw new Error('Insertion requires a running mission');

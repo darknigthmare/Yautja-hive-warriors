@@ -90,6 +90,18 @@
     <p class="boot-skip" aria-hidden="true">Une touche pour passer</p>
   </div>
 
+  <!-- LOADING SCREEN (spec 003, US2): real progress, world lore, a tip -->
+  <div id="loading-screen" class="loading-screen" hidden role="status" aria-live="polite">
+    <div class="loading-frame">
+      <p class="loading-tag"></p>
+      <h2 class="loading-world"></h2>
+      <div class="loading-lore"></div>
+      <div class="loading-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div>
+      <p class="loading-status"></p>
+      <p class="loading-tip"></p>
+    </div>
+  </div>
+
   <div id="ui-layer">
 
     <!-- MAIN MENU SCREEN -->
