@@ -3,10 +3,8 @@
  "titre": "Conservation des effectifs et catégories d'entités",
  "source": "docs/audits/2026-10-26/Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.xlsx#Validation!REC-004",
  "dateExecution": "2026-11-14",
- "commit": "f709212c120cf8a365b883fa2d47f002b5f4e1bb",
- "sourcesJsNonCommitees": [
-  " M js/battlefield/BattleSimulation.js"
- ],
+ "commit": "adbdc9ff9b37a78cd0dacd2b2ba7bf676bbc94f4",
+ "sourcesJsNonCommitees": [],
  "graine": {
   "mapSeed": 0,
   "pasSimulation": 0.25,

@@ -5,7 +5,7 @@
   "resultatAttenduClasseur": "Chaque groupe confirme, exécute ou refuse avec une raison compréhensible. Les alliés peuvent sécuriser un objectif sans présence du joueur; un soutien n'abandonne pas systématiquement sa tâche pour poursuivre une cible isolée.",
   "preuveAConserverClasseur": "Vidéo avec statut des ordres; destinations et trajets; objectifs accomplis sans joueur; motifs de refus.",
   "date": "2026-11-14",
-  "commit": "f709212c120cf8a365b883fa2d47f002b5f4e1bb",
+  "commit": "adbdc9ff9b37a78cd0dacd2b2ba7bf676bbc94f4",
   "branche": "claude/fervent-volta-hmhdfw",
   "preuveVideo": "non produite — preuve par journal de simulation",
   "graine": {

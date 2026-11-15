@@ -1336,8 +1336,15 @@
       "item": "Gérer l’encombrement aux portes et ponts",
       "acceptance": "Un flot d’assaut traverse un goulet et une évacuation inverse reste possible; aucun blocage prolongé.",
       "acceptanceVerified": false,
-      "evidence": [],
-      "notes": "Détours, formations et navigation évitent les blocages structurels ; aucun stress test exhaustif d’assaut/évacuation opposés aux goulets n’est fourni. Reprise du 1/11/2026 (gel a80070c) : Stress32capsules sur11contextes et routes réelles vérifié ; pasde collisions inter-acteurs ni stress exhaustif pontétroit/counterflow. Le correctif navigationa800 atteint les destinations proches sans rejouer les détours, mais le critère global resteÀvalider."
+      "evidence": [
+        {
+          "kind": "test",
+          "path": "tests/gate-counterflow-stress.test.js",
+          "sha256": "f05fbbd27ed6b99f4459281d8d5727fe0067306c93e27dfe32177107b7056d09",
+          "scope": "Environnements réels de Val Verde, Gunnison, la pyramide antarctique et les toits de LA, portes ouvertes : 16 agents d’assaut et 8 évacués croisent la première porte en sens opposés par moveSquadActor ; tous arrivent en moins de 60 s, aucun n’est immobile plus de 3 s. Les collisions entre acteurs ne sont pas simulées par le jeu ; ponts et autres portes non couverts."
+        }
+      ],
+      "notes": "Détours, formations et navigation évitent les blocages structurels ; aucun stress test exhaustif d’assaut/évacuation opposés aux goulets n’est fourni. Reprise du 1/11/2026 (gel a80070c) : Stress32capsules sur11contextes et routes réelles vérifié ; pasde collisions inter-acteurs ni stress exhaustif pontétroit/counterflow. Le correctif navigationa800 atteint les destinations proches sans rejouer les détours, mais le critère global resteÀvalider. Reprise du 15/11/2026 : stress test assaut/évacuation opposés sur la première porte de quatre cartes. Il a révélé trois blocages de navigation sur les toits de LA (approche verticale visée depuis une autre salle, centre de salle bâti, projection de couloir périmée), corrigés dans adbdc9f. Reste À valider : ponts, autres portes et recette navigateur."
     },
     "AUD-064": {
       "status": "Terminé",
