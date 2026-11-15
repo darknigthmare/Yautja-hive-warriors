@@ -1,47 +1,30 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import * as THREE from 'three';
-import { EnvironmentManager } from '../js/entities/Environment.js';
-import { LEVELS_DATA } from '../js/data/levelsData.js';
-import { moveSquadActor } from '../js/engine/FactionSquadRoles.js';
+import { buildBattlefield, corridorCounterflow, routeCounterflow, strategicRoutes } from '../scripts/lib/counterflow-stress.mjs';
 
-/* AUD-063: an assault crosses a gate while an evacuation goes the other way, on the real built
- * corridors and colliders. Every agent must arrive and none may stay stuck. Actor-to-actor
- * collision is not simulated by the game, so this measures geometry, gates and lanes only. Agents move
- * through moveSquadActor, the same step the faction squads use in play. */
-function stress(levelId, { assault = 16, evacuation = 8, radius = .75, speed = 8, seconds = 60 } = {}) {
-  const env = new EnvironmentManager(new THREE.Scene());
-  env.buildLevelEnvironment({ ...LEVELS_DATA.find(level => level.id === levelId), battlefield: true });
-  const layout = env.battlefieldLayout;
-  for (const gate of layout.gates) env.openGate?.(gate.id);
-  const [from, to] = layout.sectors, a = new THREE.Vector3(from.center[0], 0, from.center[1]), b = new THREE.Vector3(to.center[0], 0, to.center[1]);
-  const spawn = (origin, goal, count, side) => Array.from({ length: count }, (_, index) => {
-    const position = origin.clone().add(new THREE.Vector3(((index % 4) - 1.5) * 3, 0, Math.floor(index / 4) * 3 * side));
-    env.resolveMovement(position, radius);
-    const actor = { mesh: { position, rotation: { y: 0 } }, radius };
-    return { position, actor, goal, arrivedAt: null, still: 0, worstStill: 0 };
-  });
-  const manager = { environment: env };
-  const agents = [...spawn(a, b, assault, 1), ...spawn(b, a, evacuation, -1)], dt = 1 / 15;
-  for (let step = 0; step < seconds / dt && agents.some(agent => agent.arrivedAt === null); step++) {
-    for (const agent of agents) {
-      if (agent.arrivedAt !== null) continue;
-      if (agent.position.distanceTo(agent.goal) < 6) { agent.arrivedAt = step * dt; continue; }
-      const previous = agent.position.clone();
-      moveSquadActor(manager, agent.actor, agent.goal, dt, speed);
-      const moved = agent.position.distanceTo(previous);
-      agent.still = moved < .02 ? agent.still + dt : 0; agent.worstStill = Math.max(agent.worstStill, agent.still);
-    }
-  }
-  return { agents, gates: layout.gates.length, corridor: layout.corridors[0]?.id };
+/* AUD-063: an assault crosses a choke point while an evacuation goes the other way on the real
+ * built level. Every agent must arrive and none may stay stuck. The full sweep over every gate and
+ * route of every map is scripts/qa-counterflow-stress.mjs; these cases keep its regressions. */
+function assertFlow(result, label) {
+  assert.deepEqual(result.stuck, [], `${label}: every agent arrives within ${result.limitSeconds} s`);
+  assert.ok(result.worstStill < 3, `${label}: no agent stands still more than 3 s (worst ${result.worstStill} s)`);
 }
 
 for (const levelId of ['val_verde_jungle', 'gunnison_forest', 'antarctic_pyramid', 'la_rooftops']) {
   test(`${levelId}: an assault and an opposite evacuation both cross the first gate without a lasting block`, () => {
-    const { agents } = stress(levelId);
-    const stuck = agents.filter(agent => agent.arrivedAt === null);
-    assert.deepEqual(stuck.map(agent => agent.position.toArray().map(value => +value.toFixed(1))), [], 'every agent arrives within 60 s');
-    const worst = Math.max(...agents.map(agent => agent.worstStill));
-    assert.ok(worst < 3, `no agent stands still more than 3 s (worst ${worst.toFixed(2)} s)`);
+    const env = buildBattlefield(levelId);
+    assertFlow(corridorCounterflow(env, env.battlefieldLayout.corridors[0]), levelId);
+  });
+}
+
+/* Strategic fronts: a flank that overlaps the main corridor line (LA rooftops), an L-shaped outer
+ * route through several rooms (Val Verde), and the LD-01 raised bridge. */
+for (const [levelId, mapId, routeSuffix] of [['la_rooftops', undefined, '-flank'], ['val_verde_jungle', undefined, '-outer'], ['gunnison_forest', 'LD-01', '-flank']]) {
+  test(`${levelId}${mapId ? ` ${mapId}` : ''}: opposite columns complete the ${routeSuffix.slice(1)} route through its tactical gate`, () => {
+    const env = buildBattlefield(levelId, { mapId, strategicMode: true });
+    const route = strategicRoutes(env).find(item => item.id.endsWith(routeSuffix));
+    const result = routeCounterflow(env, route, { assault: 4, evacuation: 2 });
+    assertFlow(result, route.id);
+    if (env.tacticalBridges.size) assert.ok(result.highest > 2.5, 'the column crosses the raised bridge deck, not the gap');
   });
 }

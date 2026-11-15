@@ -980,6 +980,13 @@ export class EnvironmentManager extends ReferenceEnvironmentMechanisms {
     return position;
   }
 
+  /** A target in another room (or outside every room) is reached by the planned route, not a straight seek. */
+  _otherRoom(position, target) {
+    if (!this.battlefieldLayout) return false;
+    const here = this.getSectorAt(position)?.id;
+    return !here || here !== this.getSectorAt(target)?.id;
+  }
+
   resolveAgentMovementXZ(position, target, stepDistance, radius = 0.65) {
     const attemptX = position.x, attemptZ = position.z;
     let blocker = null;
@@ -1003,7 +1010,7 @@ export class EnvironmentManager extends ReferenceEnvironmentMechanisms {
         blocker = collider;
       }
     }
-    if (target && Number.isFinite(stepDistance) && stepDistance > 0 && (blocker || this.acidTrenches.length || this.navigation.actorPaths.has(position) || this.navigation.nearTrafficCorridor(position) || referenceAccessWaypoint(this, position, target))) {
+    if (target && Number.isFinite(stepDistance) && stepDistance > 0 && (blocker || this.acidTrenches.length || this.navigation.actorPaths.has(position) || this.navigation.nearTrafficCorridor(position) || referenceAccessWaypoint(this, position, target) || this._otherRoom(position, target))) {
       // The seek caller has already advanced once toward its target. Recover
       // that origin, then consume this step along the persistent planned path.
       const direction = new THREE.Vector3(target.x - attemptX, 0, target.z - attemptZ).normalize();

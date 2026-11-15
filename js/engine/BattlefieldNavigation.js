@@ -196,19 +196,36 @@ export class BattlefieldNavigation {
       if (!layout.strategicMode || route.open === false || route.physicalGateIds.some(id => !environment.isGateOpen(id))) continue;
       line(route.waypoints);
     }
+    // A route line can pass through room centers and other route corners.
+    // Split it there so a walker in such a room can join it at that node.
+    for (let index = segments.length - 1; index >= 0; index--) {
+      const [a, b] = segments[index], p = nodes.get(a), q = nodes.get(b), delta = q.clone().sub(p), length = delta.length();
+      const inner = [...nodes.keys()].filter(id => id !== a && id !== b).map(id => {
+        const t = nodes.get(id).clone().sub(p).dot(delta) / (length * length);
+        return { id, t, off: distance(nodes.get(id), p.clone().addScaledVector(delta, t)) };
+      }).filter(item => item.t > 1e-6 && item.t < 1 - 1e-6 && item.off < .5).sort((x, y) => x.t - y.t);
+      if (!inner.length) continue;
+      const chain = [a, ...inner.map(item => item.id), b];
+      edges.get(a).delete(b); edges.get(b).delete(a);
+      segments.splice(index, 1, ...chain.slice(1).map((id, i) => [chain[i], id]));
+      for (let i = 1; i < chain.length; i++) connect(chain[i - 1], chain[i]);
+    }
     const attach = (point, id) => {
       nodes.set(id, point.clone()); edges.set(id, new Set());
       const room = environment.getSectorAt(point);
       if (room) { connect(id, add(room.center)); return; }
-      let nearest = null, best = Infinity;
+      // A flank can overlap a corridor line. Join every segment the point
+      // lies on, not only the first nearest one, or the route doubles back.
+      const near = [];
       for (const [a, b] of segments) {
         const p = nodes.get(a), q = nodes.get(b), delta = q.clone().sub(p);
         const t = THREE.MathUtils.clamp(point.clone().sub(p).dot(delta) / delta.lengthSq(), 0, 1);
-        const projection = p.clone().addScaledVector(delta, t), d = distance(point, projection);
-        if (d < best) { best = d; nearest = { a, b, projection }; }
+        const projection = p.clone().addScaledVector(delta, t);
+        near.push({ a, b, projection, d: distance(point, projection) });
       }
-      if (nearest && best <= layout.corridorWidth) {
-        const projection = add([nearest.projection.x, nearest.projection.z]); connect(id, projection); connect(projection, nearest.a); connect(projection, nearest.b);
+      const best = Math.min(Infinity, ...near.map(item => item.d));
+      if (best <= layout.corridorWidth) for (const item of near.filter(item => item.d <= best + .5)) {
+        const projection = add([item.projection.x, item.projection.z]); connect(id, projection); connect(projection, item.a); connect(projection, item.b);
       }
     };
     attach(from, '@start'); attach(target, '@goal');
@@ -358,6 +375,13 @@ export class BattlefieldNavigation {
     return null;
   }
 
+  /** A partial advance counts only if it actually leaves the room; a clear stretch
+   * that ends against the room's own wall would make the walker oscillate. */
+  _leavesRoom(from, point, radius, navigable, room) {
+    const ahead = this._clearToward(from, point, radius, navigable);
+    return ahead && this.environment.getSectorAt(ahead)?.id !== room.id ? ahead : null;
+  }
+
   waypoint(from, target, radius = .65) {
     if (!from || !target || ![from.x, from.z, target.x, target.z].every(Number.isFinite)) return null;
     this._refreshObstacleCache();
@@ -381,7 +405,7 @@ export class BattlefieldNavigation {
       const room = environment.getSectorAt(from);
       if (room && path.length > 1 && path[0].x === room.center[0] && path[0].z === room.center[1] &&
           (floorSegment(environment, from, path[1], radius) && clearSegment(environment, from, path[1], radius) ||
-           this._clearToward(from, path[1], radius, navigable))) path.shift();
+           this._leavesRoom(from, path[1], radius, navigable, room))) path.shift();
       // Outside a room the cached route starts at the walker's projection on the
       // corridor line, taken where it was planned. Never walk back to a point
       // already passed on the way to the next one.
@@ -404,7 +428,7 @@ export class BattlefieldNavigation {
     // strategic segment to its farthest physically clear point instead.
     const here = environment.getSectorAt(from);
     if (here && environment.getSectorAt(goal)?.id !== here.id) {
-      const point = this._clearToward(from, goal, radius, navigable);
+      const point = this._leavesRoom(from, goal, radius, navigable, here);
       if (point) { this.actorPaths.delete(from); return point; }
     }
     const signature = `${Math.round(goal.x)},${Math.round(goal.z)},${Math.round(from.y)},${environment.openGates.size},${this.usingVerticalAccess ? 1 : 0}`;
