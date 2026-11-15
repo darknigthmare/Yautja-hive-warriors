@@ -348,6 +348,16 @@ export class BattlefieldNavigation {
     return null;
   }
 
+  /** Farthest physically clear point (at least 4 m away) on the straight segment toward a point. */
+  _clearToward(from, point, radius, navigable) {
+    const length = distance(from, point);
+    for (let along = length - 2; along >= 4; along -= 2) {
+      const candidate = from.clone().lerp(point, along / length);
+      if (navigable(candidate)) return candidate;
+    }
+    return null;
+  }
+
   waypoint(from, target, radius = .65) {
     if (!from || !target || ![from.x, from.z, target.x, target.z].every(Number.isFinite)) return null;
     this._refreshObstacleCache();
@@ -370,7 +380,12 @@ export class BattlefieldNavigation {
       // ramp foot. Advance only when the next actual route segment is safe.
       const room = environment.getSectorAt(from);
       if (room && path.length > 1 && path[0].x === room.center[0] && path[0].z === room.center[1] &&
-          floorSegment(environment, from, path[1], radius) && clearSegment(environment, from, path[1], radius)) path.shift();
+          (floorSegment(environment, from, path[1], radius) && clearSegment(environment, from, path[1], radius) ||
+           this._clearToward(from, path[1], radius, navigable))) path.shift();
+      // Outside a room the cached route starts at the walker's projection on the
+      // corridor line, taken where it was planned. Never walk back to a point
+      // already passed on the way to the next one.
+      while (!room && path.length > 1 && distance(from, path[1]) < distance(path[0], path[1])) path.shift();
       goal = path.find(point => distance(point, from) > 1.5) ?? target;
       // A follower already inside the room need not return to its exact center
       // each frame. Advance past centers only while the real floor connects
@@ -384,6 +399,14 @@ export class BattlefieldNavigation {
     const flow = this.trafficWaypoint(from, goal, radius);
     if (flow) { this.actorPaths.delete(from); return flow; }
     if (navigable(goal)) { this.actorPaths.delete(from); return goal.clone(); }
+    // The next room's center can itself be built over (a raised pad). The
+    // room-local grid cannot reach into another room, so advance along the
+    // strategic segment to its farthest physically clear point instead.
+    const here = environment.getSectorAt(from);
+    if (here && environment.getSectorAt(goal)?.id !== here.id) {
+      const point = this._clearToward(from, goal, radius, navigable);
+      if (point) { this.actorPaths.delete(from); return point; }
+    }
     const signature = `${Math.round(goal.x)},${Math.round(goal.z)},${Math.round(from.y)},${environment.openGates.size},${this.usingVerticalAccess ? 1 : 0}`;
     let cached = this.actorPaths.get(from);
     if (!cached || cached.signature !== signature || !cached.points.length) {

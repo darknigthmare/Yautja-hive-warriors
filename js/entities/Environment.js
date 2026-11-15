@@ -1092,7 +1092,10 @@ export class EnvironmentManager extends ReferenceEnvironmentMechanisms {
   getVerticalNavigationTarget(position, target) { return referenceAccessWaypoint(this, position, target); }
   getNavigationWaypoint(position, target, radius = .65) {
     const access = referenceAccessWaypoint(this, position, target);
-    this.navigation.usingVerticalAccess = !!access;
+    // A deck access in another room is reached by the ordinary room-to-room
+    // route, gate lanes included; the vertical approach applies on arrival.
+    const here = this.getSectorAt(position)?.id, there = access ? this.getSectorAt(access)?.id : null;
+    this.navigation.usingVerticalAccess = !!access && (!there || here === there);
     try { return this.navigation.waypoint(position, access ?? target, radius); }
     finally { this.navigation.usingVerticalAccess = false; }
   }
