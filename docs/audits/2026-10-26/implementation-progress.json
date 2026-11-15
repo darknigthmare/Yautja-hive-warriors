@@ -1340,11 +1340,23 @@
         {
           "kind": "test",
           "path": "tests/gate-counterflow-stress.test.js",
-          "sha256": "f05fbbd27ed6b99f4459281d8d5727fe0067306c93e27dfe32177107b7056d09",
-          "scope": "Environnements réels de Val Verde, Gunnison, la pyramide antarctique et les toits de LA, portes ouvertes : 16 agents d’assaut et 8 évacués croisent la première porte en sens opposés par moveSquadActor ; tous arrivent en moins de 60 s, aucun n’est immobile plus de 3 s. Les collisions entre acteurs ne sont pas simulées par le jeu ; ponts et autres portes non couverts."
+          "sha256": "4ffd67df2de4972989e67f9cdb7a34d14a70b8dfa5ca6c50490b8e1bcff9f0aa",
+          "scope": "Première porte de quatre cartes (16 assaillants, 8 évacués en sens opposés) et trois routes stratégiques (flanc des toits de LA superposé au couloir, route extérieure en L de Val Verde, pont surélevé LD-01) par moveSquadActor sur les niveaux construits ; tous arrivent, aucun immobile 3 s. Les deux routes échouent sur l’ancien code."
+        },
+        {
+          "kind": "test",
+          "path": "docs/qa/counterflow-stress-20261115/sweep.json",
+          "sha256": "5b4c1f05dfb7f0c18107ea8d9dff704a8465d73a8fe3ad4d5ff6d1f47b75714a",
+          "scope": "Balayage complet sur a1a03e8 (scripts/qa-counterflow-stress.mjs) : les 55 couloirs à porte des 11 niveaux et les 24 routes de flanc/extérieures en mode fronts, pont LD-01 compris ; 79 cas, 24 agents chacun, 0 échec. Collisions entre acteurs non simulées par le jeu, donc non mesurées."
+        },
+        {
+          "kind": "measurement",
+          "path": "docs/qa/counterflow-stress-20261115/steering-cpu.json",
+          "sha256": "8a24cad4e9e36171fc570bfa1cfa92d99a1485572e4a2862e7183f89a9e1013b",
+          "scope": "CPU de pilotage de 32 escouades entre salles, avant/après sur le même conteneur : Val Verde ≈47,5 → ≈8,7 ms par pas, Romulus inchangé ≈4,9 ms. Hors navigateur ; ni temps d’image ni GPU."
         }
       ],
-      "notes": "Détours, formations et navigation évitent les blocages structurels ; aucun stress test exhaustif d’assaut/évacuation opposés aux goulets n’est fourni. Reprise du 1/11/2026 (gel a80070c) : Stress32capsules sur11contextes et routes réelles vérifié ; pasde collisions inter-acteurs ni stress exhaustif pontétroit/counterflow. Le correctif navigationa800 atteint les destinations proches sans rejouer les détours, mais le critère global resteÀvalider. Reprise du 15/11/2026 : stress test assaut/évacuation opposés sur la première porte de quatre cartes. Il a révélé trois blocages de navigation sur les toits de LA (approche verticale visée depuis une autre salle, centre de salle bâti, projection de couloir périmée), corrigés dans adbdc9f. Reste À valider : ponts, autres portes et recette navigateur."
+      "notes": "Détours, formations et navigation évitent les blocages structurels ; aucun stress test exhaustif d’assaut/évacuation opposés aux goulets n’est fourni. Reprise du 1/11/2026 (gel a80070c) : Stress32capsules sur11contextes et routes réelles vérifié ; pasde collisions inter-acteurs ni stress exhaustif pontétroit/counterflow. Le correctif navigationa800 atteint les destinations proches sans rejouer les détours, mais le critère global resteÀvalider. Reprise du 15/11/2026 : stress test assaut/évacuation opposés sur la première porte de quatre cartes. Il a révélé trois blocages de navigation sur les toits de LA (approche verticale visée depuis une autre salle, centre de salle bâti, projection de couloir périmée), corrigés dans adbdc9f. Reste À valider : ponts, autres portes et recette navigateur. Suite du 15/11/2026 : balayage de toutes les portes et routes stratégiques (79 cas, 0 échec sur a1a03e8) après correction de quatre défauts de routage entre salles en mode fronts. Reste À valider : collisions entre acteurs absentes du jeu, recette navigateur avec combat."
     },
     "AUD-064": {
       "status": "Terminé",

@@ -1,0 +1,10 @@
+{
+ "action": "AUD-063",
+ "date": "2026-11-15",
+ "question": "Cross-room squad steering now consults the planned route every step: does it cost CPU?",
+ "method": "docs/qa/counterflow-stress-20261115/steering-cpu-bench.mjs: 32 squad actors ordered two rooms away, 600 moveSquadActor steps at 1/60 s, median of 5 runs, ms of CPU per step for all 32. Node 22, same container, run twice alternately before/after.",
+ "before": { "commit": "adbdc9ff9b37a78cd0dacd2b2ba7bf676bbc94f4", "runs": [{ "val_verde_jungle": 47.183, "romulus_station": 4.956 }, { "val_verde_jungle": 47.873, "romulus_station": 4.965 }] },
+ "after": { "commit": "a1a03e829b3d3e8353ddc96d8322303dbfd55909", "runs": [{ "val_verde_jungle": 8.782, "romulus_station": 4.883 }, { "val_verde_jungle": 8.649, "romulus_station": 4.905 }] },
+ "reading": "No added cost. Before the fix, actors oscillating against room walls recomputed local paths; after, they follow the planned route. Steering CPU only, outside the browser: not a frame time, GPU time or hardware capacity measurement.",
+ "limits": "Two levels; no rendering, combat or simulation load; one container."
+}
