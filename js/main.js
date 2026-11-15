@@ -349,6 +349,27 @@ class GameApp {
     } else this.menuBackdrop.hide();
   }
 
+  /** Boss trophy kill: a letterboxed real-time orbit around the hunter and its prey (spec 003, US4).
+   * Only the camera moves; the execution itself is already resolved. Solo, and never under automation. */
+  startKillCam(player, victim) {
+    if (this.isCoOp || this.cinematicPolicy() === 'off' || !victim?.mesh) return;
+    // Centred nearer the hunter; the sweep starts from the current, unobstructed camera side.
+    const center = player.position.clone().lerp(victim.mesh.position, .35);
+    const offset = this.renderer.camera.position.clone().sub(center);
+    this.killCam = { center, startedAt: performance.now(), duration: this.cinematicPolicy() === 'short' ? 1.4 : 2.6, angle: Math.atan2(offset.x, offset.z), radius: Math.min(11, Math.max(7, Math.hypot(offset.x, offset.z) * .6)) };
+    document.body.classList.add('killcam');
+  }
+
+  updateKillCam() {
+    const cam = this.killCam, progress = (performance.now() - cam.startedAt) / 1000 / cam.duration;
+    if (progress >= 1 || !this.player) { this.killCam = null; document.body.classList.remove('killcam'); return false; }
+    const eased = 1 - (1 - progress) ** 2, angle = cam.angle + eased * Math.PI * .65, anchor = cam.center.clone().add(new THREE.Vector3(0, 2.2, 0));
+    const wanted = cam.center.clone().add(new THREE.Vector3(Math.sin(angle) * cam.radius, 3 + Math.sin(progress * Math.PI) * 1.5, Math.cos(angle) * cam.radius));
+    this.renderer.camera.position.copy(resolveThirdPersonCamera(anchor, wanted, this.env, { radius: cameraNearPlaneRadius(this.renderer.camera) }).position);
+    this.renderer.camera.lookAt(anchor);
+    return true;
+  }
+
   /** Danger drives the music: layers follow nearby enemies; a sustained fight or a boss changes the cue. */
   updateMusicDanger(delta, nearCount) {
     if (!this.music || this.shipHub) return;
@@ -1528,6 +1549,7 @@ class GameApp {
     this.closestEnemyDist = Infinity;
     this.audio.stopBackgroundMusic();
     this.ambient?.stop();
+    this.killCam = null; document.body.classList.remove('killcam');
     this.loadingHold = false; this._loadingRun = (this._loadingRun ?? 0) + 1; if (!this._launching) this.loading?.end();
     this.audio.stopThermalHum();
     this.clearHumanWeaponCaches();
@@ -3251,6 +3273,7 @@ class GameApp {
         this.audio.playExecutionBulletTimeWhoosh();
       }
       this.triggerCameraFovSurge(48, 1.5);
+      this.startKillCam?.(player, victim);
 
       const jellyBeforeTrophy = player.royalJellyFlasks;
       const bType = victim.type || 'queen';
@@ -3982,8 +4005,10 @@ class GameApp {
       }
     }
 
-    // Camera positioning: First-Person Bio-Mask vs 3rd Person
-    if (this.isFirstPerson) {
+    // Camera positioning: kill camera, First-Person Bio-Mask or 3rd Person
+    if (this.killCam && this.updateKillCam()) {
+      // The kill camera owns the shot until it ends (spec 003, US4).
+    } else if (this.isFirstPerson) {
       const eyeHeight = this.player.cameraEyeHeight ?? this.player.headMesh?.position.y ?? 3.6;
       const eyePos = this.player.position.clone().add(new THREE.Vector3(0, eyeHeight, 0.2));
       this.renderer.camera.position.lerp(eyePos, 1 - Math.exp(-15 * delta));
@@ -4010,7 +4035,7 @@ class GameApp {
     }
 
     // Apply Musou FOV Surge & Elastic Snapback
-    if(!this.isFirstPerson){const anchor=this.player.position.clone().add(new THREE.Vector3(0,2,0));this.renderer.camera.position.copy(resolveThirdPersonCamera(anchor,this.renderer.camera.position,this.env,{radius:cameraNearPlaneRadius(this.renderer.camera)}).position);this.renderer.camera.lookAt(anchor);}
+    if(!this.isFirstPerson&&!this.killCam){const anchor=this.player.position.clone().add(new THREE.Vector3(0,2,0));this.renderer.camera.position.copy(resolveThirdPersonCamera(anchor,this.renderer.camera.position,this.env,{radius:cameraNearPlaneRadius(this.renderer.camera)}).position);this.renderer.camera.lookAt(anchor);}
     if(this.player2){const anchor=this.player2.position.clone().add(new THREE.Vector3(0,2,0));this.renderer.cameraP2.position.copy(resolveThirdPersonCamera(anchor,this.renderer.cameraP2.position,this.env,{radius:cameraNearPlaneRadius(this.renderer.cameraP2)}).position);this.renderer.cameraP2.lookAt(anchor);}
 
     if (this.cameraFovTimer > 0) {

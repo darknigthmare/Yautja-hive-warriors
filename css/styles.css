@@ -4278,3 +4278,9 @@ body.cinematic-playing #in-game-hud, body.cinematic-playing #insertion-status { 
 .cinematic-skip-progress { display: block; height: 100%; width: 0; background: #ffc45a; }
 body.reduced-motion .credits-roll { animation-duration: 40s; }
 @media (prefers-reduced-motion: reduce) { .letterbox, .cinematic-title, .cinematic-subtitle, .cinematic-comms { transition: none; } }
+
+/* Boss trophy kill camera (spec 003, US4): letterbox bars over the live game. */
+body::before, body::after { content: ''; position: fixed; left: 0; right: 0; height: 0; background: #000; z-index: 57; pointer-events: none; transition: height .35s ease; }
+body::before { top: 0; } body::after { bottom: 0; }
+body.killcam::before, body.killcam::after { height: 10vh; }
+body.killcam #in-game-hud { opacity: .25; transition: opacity .3s ease; }

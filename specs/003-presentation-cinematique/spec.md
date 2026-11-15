@@ -75,7 +75,15 @@ Entre la préparation et la mission, un écran montre :
 - **Après la mission** : une séquence de victoire ou de défaite avant le bilan.
 - **Fin de campagne** : épilogue et crédits.
 
-### US4 — Animations et décors en jeu (P4)
+### US4 — Animations et décors en jeu (P4) · en cours
+
+**Livré** : caméra de mise à mort du boss.
+- Orbite en temps réel autour du chasseur et de sa proie, avec bandes noires et HUD atténué.
+- Bornée contre les parois par la collision caméra existante.
+- Seule la caméra bouge ; l'exécution est déjà résolue.
+- Désactivée en coopération, sous automatisation et avec « Cinématiques : désactivées ».
+
+**Reste** : vie ambiante des cartes (faune, météo, lumières, débris).
 
 - Vie ambiante des cartes : faune, météo, lumières, débris.
 - Caméra cinématique de mise à mort du boss, avec bandes noires.
