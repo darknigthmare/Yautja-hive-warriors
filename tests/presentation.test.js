@@ -73,3 +73,23 @@ test('typed comms reveal at a readable pace', async () => {
   const { typedLength } = await import('../js/engine/CinematicDirector.js');
   assert.equal(typedLength('abcdef', 0), 0); assert.equal(typedLength('abcdef', .1), 3); assert.equal(typedLength('abcdef', 10), 6);
 });
+
+test('ambient life is decoration only, follows the biome and lifts its flock when fighting comes close', async () => {
+  const THREE = await import('three');
+  const { AmbientLife, AMBIENT_LIFE, flockResponse } = await import('../js/graphics/AmbientLife.js');
+  const scene = new THREE.Scene(), life = new AmbientLife(scene);
+  const layout = { sectors: [{ bounds: { minX: -66, maxX: 66, minZ: -66, maxZ: 66 } }] };
+  for (const biome of Object.keys(AMBIENT_LIFE)) { life.start(biome, { layout }); life.update(1 / 30, new THREE.Vector3(), .5); }
+  life.start('jungle', { layout });
+  const root = scene.getObjectByName('ambient-life');
+  assert.equal(root.userData.decorationOnly, true);
+  let meshes = 0; root.traverse(node => { if (node.isMesh || node.isPoints) meshes++; });
+  assert.ok(meshes <= 3, 'a few draw calls');
+  const height = () => { const m = new THREE.Matrix4(); scene.getObjectByName('ambient-birds').getMatrixAt(0, m); return new THREE.Vector3().setFromMatrixPosition(m).y; };
+  for (let i = 0; i < 30; i++) life.update(1 / 30, new THREE.Vector3(), 0);
+  const calm = height();
+  for (let i = 0; i < 120; i++) life.update(1 / 30, new THREE.Vector3(), 1);
+  assert.ok(height() > calm + 10, 'the flock climbs away from a fight');
+  assert.deepEqual(flockResponse(0), { lift: 0, spread: 1 });
+  life.clear(); assert.equal(scene.getObjectByName('ambient-life'), undefined, 'cleared with the mission');
+});

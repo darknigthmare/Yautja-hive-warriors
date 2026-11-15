@@ -84,6 +84,7 @@ import { decorateCompanion } from './graphics/PackMarks.js';
 import { MusicDirector } from './engine/MusicDirector.js';
 import { AmbientSoundscape, ambientBiomeFor } from './engine/AmbientSoundscape.js';
 import { MenuBackdrop } from './graphics/MenuBackdrop.js';
+import { AmbientLife } from './graphics/AmbientLife.js';
 import { BootSequence } from './ui/BootSequence.js';
 import { LoadingScreen } from './ui/LoadingScreen.js';
 import { CinematicDirector, CameraPaths } from './engine/CinematicDirector.js';
@@ -255,6 +256,7 @@ class GameApp {
     this.loading = new LoadingScreen({ progressSource: assetLoadProgress });
     this.cinematic = new CinematicDirector({ audio: this.audio });
     this.ambient = new AmbientSoundscape(this.audio);
+    this.ambientLife = new AmbientLife(this.renderer.scene);
     this.menuBackdrop = new MenuBackdrop({ renderer: this.renderer, host: this.ui.mainMenu, hunterCount: CHARACTERS_DATA.length,
       createHunter: (scene, index) => new Player(scene, CHARACTERS_DATA[index % CHARACTERS_DATA.length], this.audio, false, null),
       reducedMotion: () => document.body.classList.contains('reduced-motion') });
@@ -379,7 +381,8 @@ class GameApp {
     if (boss) this.music.play('boss');
     else if (this._musicHeat > 2.5) this.music.play('combat');
     else if (this._musicCalm > 9 && this.music.cue !== 'explore') this.music.play('explore', { fade: 4 });
-    this.music.setIntensity(boss ? 1 : Math.min(1, nearCount / 10 + (this.closestEnemyDist < 12 ? .25 : 0)));
+    this._musicDanger = boss ? 1 : Math.min(1, nearCount / 10 + (this.closestEnemyDist < 12 ? .25 : 0));
+    this.music.setIntensity(this._musicDanger);
   }
 
   setupOperationSelection() {
@@ -1549,6 +1552,7 @@ class GameApp {
     this.closestEnemyDist = Infinity;
     this.audio.stopBackgroundMusic();
     this.ambient?.stop();
+    this.ambientLife?.clear();
     this.killCam = null; document.body.classList.remove('killcam');
     this.loadingHold = false; this._loadingRun = (this._loadingRun ?? 0) + 1; if (!this._launching) this.loading?.end();
     this.audio.stopThermalHum();
@@ -2286,6 +2290,7 @@ class GameApp {
 
     this._musicCalm = 0; this._musicHeat = 0;
     this.ambient?.start(this.shipHub ? 'ship' : ambientBiomeFor(this.ui.selectedLevel?.id));
+    this.ambientLife?.start(this.shipHub ? 'ship' : ambientBiomeFor(this.ui.selectedLevel?.id), { layout: this.env.battlefieldLayout, focus: this.player.position, reducedMotion: document.body.classList.contains('reduced-motion') });
     this.ui.showScreen(this.ui.inGameHud);
     this.beginLoadingHold();
     this.ui.showCombo(0);
@@ -3952,6 +3957,7 @@ class GameApp {
     this.player.mesh.position.copy(this.player.position);
     this.orbital.update(delta);
     if (this.weather) this.weather.update(delta, this.player ? this.player.position : null, this.renderer, this.audio, this.horde);
+    this.ambientLife?.update(delta, this.player?.position, this._musicDanger ?? 0);
     if (this.env) this.env.update(delta, this.horde, this.audio, this.player);
     const tacticalPrompt=document.getElementById('tactical-world-prompt'),tacticalText=this.env.getTacticalWorldPrompt?.(this.player);
     tacticalPrompt?.classList.toggle('hidden',!tacticalText);if(tacticalPrompt&&tacticalText)tacticalPrompt.textContent=tacticalText;

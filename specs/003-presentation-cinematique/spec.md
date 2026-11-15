@@ -2,7 +2,7 @@
 
 **Feature Branch**: `claude/fervent-volta-hmhdfw` (aucune branche dédiée)
 **Created**: 2026-11-15
-**Status**: Étapes 1 à 3 (démarrage, menu, musique, chargement, intel, outros, crédits) livrées le 15 nov. 2026 ; étape 4 (animations et décors en jeu) à venir
+**Status**: Étapes 1 à 4 livrées le 15 nov. 2026 (démarrage, menu, musique et ambiances, chargement, intel, outros, crédits, caméra de mise à mort, vie ambiante) ; une revue visuelle sur machine réelle reste à faire par l’auteur
 **Input**: demande de l’auteur du 15/11/2026, « rendre le jeu plus fluide et cinématique : les intel, les outros, l’avant-menu, l’écran d’accueil, le menu principal, les écrans de chargement, des animations, des décors ».
 
 ## Décisions de l’auteur (15/11/2026)
@@ -83,7 +83,18 @@ Entre la préparation et la mission, un écran montre :
 - Seule la caméra bouge ; l'exécution est déjà résolue.
 - Désactivée en coopération, sous automatisation et avec « Cinématiques : désactivées ».
 
-**Reste** : vie ambiante des cartes (faune, météo, lumières, débris).
+**Livré (vie ambiante, décor seulement)** :
+- **Jungle et plaines** : vols d'oiseaux à basse altitude, dans le champ de la caméra, qui s'élèvent et s'écartent quand le combat approche, plus des lucioles autour du chasseur.
+- **Gunnison** : chauves-souris.
+- **Toits de LA** : projecteurs balayant le ciel et balises rouges aux portes et objectifs.
+- **Stations** : balises d'urgence qui clignotent aux portes et objectifs.
+- **Garanties** :
+  - Rien de tout cela ne collisionne, n'est ciblable, compté ou suivi par le traqueur.
+  - Cette vie ambiante n'est jamais confondue avec la faune réelle de l'Ascension.
+  - Elle coûte trois ou quatre appels de dessin et disparaît avec la mission.
+- Pluie, neige, spores, brumes, éclairs et vapeur existaient déjà (`WeatherSystem`).
+
+**Limite** : la caméra à la troisième personne ne voit qu'une trentaine de mètres autour du chasseur. Les effets de ciel ressortent surtout dans les cinématiques et en vue subjective.
 
 - Vie ambiante des cartes : faune, météo, lumières, débris.
 - Caméra cinématique de mise à mort du boss, avec bandes noires.
