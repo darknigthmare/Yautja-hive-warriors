@@ -3,7 +3,7 @@
  "titre": "Deux joueurs sur des fronts séparés",
  "source": "docs/audits/2026-10-26/Yautja_Hive_Warriors_Audit_Dynasty_Warriors_2026-10-26.xlsx#Validation!REC-023",
  "dateExecution": "2026-11-14",
- "commit": "adbdc9ff9b37a78cd0dacd2b2ba7bf676bbc94f4",
+ "commit": "a1a03e829b3d3e8353ddc96d8322303dbfd55909",
  "sourcesJsNonCommitees": [],
  "graine": {
   "operation": "AFF-14",
