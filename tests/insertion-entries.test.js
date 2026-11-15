@@ -73,3 +73,15 @@ test('the scout ship hovers clear of a tall hunter and leaves; the beam neither 
   assert.equal(pod.group.userData.insertionPod.detail.filmPropFidelity1to1Verified, false);
   disposeObject(pod.group);
 });
+
+test('impact dust spreads during the sequence, not only after it', () => {
+  const scene = new THREE.Scene(), insertion = new DropPodEntrance(scene, null, null, { effects: new InsertionEffects(scene) });
+  insertion.triggerDrop(new THREE.Vector3(), null, { players: [fakePlayer()], entry: 'pod', biome: 'jungle', cinematic: true });
+  while (insertion.elapsed < INSERTION_TIMING.descending + .5) insertion.update(1 / 60);
+  assert.equal(insertion.isActive, true);
+  let farthest = 0;
+  scene.traverse(node => { if (node.name === 'insertion-particles') { const a = node.geometry.attributes.position.array; for (let i = 0; i < a.length; i += 3) farthest = Math.max(farthest, Math.hypot(a[i], a[i + 2])); } });
+  assert.ok(farthest > 2, `dust reached ${farthest.toFixed(2)} m from the pod`);
+  assert.ok(scene.getObjectByName('impact-crater') && scene.getObjectByName('impact-shockwave').scale.x > 2, 'crater laid and shockwave expanding');
+  insertion.clear();
+});

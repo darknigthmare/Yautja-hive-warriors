@@ -245,6 +245,8 @@ export class DropPodEntrance {
   update(delta) {
     if (!Number.isFinite(delta) || delta <= 0 || !this.pods.length) return;
     let remainder = delta;
+    // Dust, shockwave and debris animate during the sequence too, not only after it.
+    if (this.cinematic) this.effects.tick(delta);
     if (this.isActive) {
       const generation = this._generation;
       const step = Math.min(delta, SEQUENCE_END - this.elapsed);
@@ -276,7 +278,6 @@ export class DropPodEntrance {
       if (generation !== this._generation) return;
       remainder -= step;
     }
-    if (this.cinematic) this.effects.tick(delta);
     if (remainder <= 0) return;
     this.lingerLife -= remainder;
     // The scout ship leaves once its hunter is down; the beam switches off.

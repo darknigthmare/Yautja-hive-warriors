@@ -28,6 +28,20 @@ const glowTexture = (() => {
   };
 })();
 
+const scorchTexture = (() => {
+  let texture = null;
+  return () => {
+    if (texture || !globalThis.document?.createElement) return texture;
+    // RingGeometry UVs map the ring's square bounds: radial fall-off from the inner edge.
+    const canvas = document.createElement('canvas'); canvas.width = canvas.height = 128;
+    const g = canvas.getContext?.('2d'); if (!g) return null;
+    const gradient = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+    gradient.addColorStop(0, '#fff'); gradient.addColorStop(.5, '#ddd'); gradient.addColorStop(.75, '#777'); gradient.addColorStop(1, '#000');
+    g.fillStyle = gradient; g.fillRect(0, 0, 128, 128);
+    return (texture = new THREE.CanvasTexture(canvas));
+  };
+})();
+
 export class InsertionEffects {
   constructor(scene, audio = null, { onShake = null, reducedFlashes = () => false } = {}) {
     this.scene = scene; this.audio = audio; this.onShake = onShake; this.reducedFlashes = reducedFlashes;
@@ -93,12 +107,13 @@ export class InsertionEffects {
     const state = this.records.get(record); if (!state || state.impacted) return; state.impacted = true;
     const at = record.targetPosition.clone(), color = IMPACT_DUST[state.biome] ?? IMPACT_DUST.plains;
     if (state.entry === 'pod') {
-      const crater = new THREE.Mesh(new THREE.CircleGeometry(4.2, 40), new THREE.MeshBasicMaterial({ color: 0x0d0b09, map: glowTexture(), transparent: true, opacity: .75, depthWrite: false }));
-      crater.rotation.x = -Math.PI / 2; crater.position.copy(at).add(new THREE.Vector3(0, .03, 0)); crater.name = 'impact-crater'; this.root.add(crater);
+      // A scorched ring around the pod: darkest just outside the hull, fading by 4.6 m.
+      const crater = new THREE.Mesh(new THREE.RingGeometry(1.6, 4.6, 48), new THREE.MeshBasicMaterial({ color: 0x0d0b09, alphaMap: scorchTexture(), transparent: true, opacity: .85, depthWrite: false }));
+      crater.rotation.x = -Math.PI / 2; crater.position.copy(at).add(new THREE.Vector3(0, .12, 0)); crater.renderOrder = 2; crater.name = 'impact-crater'; this.root.add(crater);
     }
     if (state.entry !== 'scout') {
-      const wave = new THREE.Mesh(new THREE.RingGeometry(.8, 1.4, 48), new THREE.MeshBasicMaterial({ color: state.entry === 'beam' ? 0x8fdcff : 0xffd2a0, transparent: true, opacity: .8, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide }));
-      wave.rotation.x = -Math.PI / 2; wave.position.copy(at).add(new THREE.Vector3(0, .08, 0)); wave.name = 'impact-shockwave'; this.root.add(wave);
+      const wave = new THREE.Mesh(new THREE.RingGeometry(.92, 1.08, 64), new THREE.MeshBasicMaterial({ color: state.entry === 'beam' ? 0x8fdcff : 0xffd2a0, transparent: true, opacity: .8, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide }));
+      wave.rotation.x = -Math.PI / 2; wave.position.copy(at).add(new THREE.Vector3(0, .25, 0)); wave.renderOrder = 3; wave.name = 'impact-shockwave'; this.root.add(wave);
       this.bursts.push({ kind: 'wave', mesh: wave, life: 0, max: .9 });
     }
     this.bursts.push({ kind: 'points', ...this._dust(at, color, state.entry === 'scout' ? 120 : 220, state.entry === 'scout' ? 9 : 14), life: 0, max: 2.4 });

@@ -3713,7 +3713,10 @@ class GameApp {
       const target = this.dropPod.getCameraTarget?.(index) ?? (index ? this.player2 : this.player).position;
       const focus = this._insertionCameraFocus[index] ??= target.clone();
       focus.lerp(target, alpha);
-      const position = focus.clone().add(new THREE.Vector3(8, 5, 14));
+      // In cinematic mode the landing is framed low and wide, so the tail blades, the crater
+      // and the shockwave read; the plain sequence keeps its original boom.
+      const boom = !this.dropPod.cinematic ? [8, 5, 14] : this.dropPod.phase === 'descending' ? [9, 4, 15] : this.dropPod.phase === 'settling' ? [12, 2.2, 13] : [9, 3, 11];
+      const position = focus.clone().add(new THREE.Vector3(...boom));
       cameras[index].position.lerp(position, alpha);
       // The cinematic uses the same physical boom as normal follow. Resolve
       // after smoothing, independently for each capsule, without hiding props.

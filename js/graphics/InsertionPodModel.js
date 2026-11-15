@@ -235,7 +235,8 @@ export function buildInsertionPodModel(Assembly) {
   const blade = tailBladeGeometry();
   for (const angle of [Math.PI, Math.PI / 3, -Math.PI / 3]) {
     const copy = blade.clone(); copy.rotateY(-Math.PI / 2 + angle);
-    shell.add(copy, armor, [Math.sin(angle) * 1.8, 0, Math.cos(angle) * 1.6]);
+    // Lighter, silvery metal: in the 2004 frame the blades read paler than the hull.
+    shell.add(copy, trim, [Math.sin(angle) * 1.8, 0, Math.cos(angle) * 1.6]);
   }
   blade.dispose();
   for (const side of [-1, 1]) {
