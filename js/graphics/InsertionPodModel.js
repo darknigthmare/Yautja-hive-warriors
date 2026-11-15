@@ -1,7 +1,11 @@
 /* An occupied insertion capsule needs a real hollow shell. The two leaves are
  * separate rigid parts, with their origins on the visible vertical hinges.
- * Dimensions are in game units; this is an original interpretation of a Yautja
- * insertion craft, not a scanned or certified replica of a film prop. */
+ * Silhouette after the Yautja drop pod seen in Alien vs. Predator (2004), frame
+ * avp2004-bluray-271 (AvP Galaxy, "Drop Pod"): a long dark gunmetal hull with
+ * lengthwise ribs, three large curved blade "wings" at its tail and three red
+ * thruster lights between them. One frame shows neither its interior, its
+ * opening nor its landing posture: standing upright on its blades, the split
+ * front hatch and the cabin are game adaptations. Not a certified 1:1 replica. */
 import * as THREE from 'three';
 import { createSurfaceMaterial } from './SurfaceLibrary.js';
 import { loftGeometry, sweptLimb } from './SupportSculpt.js';
@@ -165,19 +169,37 @@ function recessedGlyphs(parts, material, x, y, z, side = 1) {
   }
 }
 
+// One of the three curved tail blades. In the plane (u = outward from the hull,
+// v = height), the root runs up the hull and the pointed tip touches the ground,
+// so the landed pod stands on its blades. Thin, with a bevelled edge.
+function tailBladeGeometry() {
+  const shape = new THREE.Shape();
+  shape.moveTo(0, .45);
+  shape.quadraticCurveTo(.22, 1.6, 0, 2.75);
+  shape.quadraticCurveTo(.62, 1.9, .9, .05);
+  shape.quadraticCurveTo(.42, .2, 0, .45);
+  const geometry = new THREE.ExtrudeGeometry(shape, { depth: .07, bevelEnabled: true, bevelSegments: 2, bevelSize: .025, bevelThickness: .02, curveSegments: 18 });
+  geometry.translate(0, 0, -.035);
+  return geometry;
+}
+
 export function buildInsertionPodModel(Assembly) {
-  const armor = createSurfaceMaterial('armor', { color: 0x596360, finish: 'painted', repeat: [2, 2] });
-  const dark = createSurfaceMaterial('metal', { color: 0x242b2b, finish: 'matte', repeat: [2, 3] });
-  const trim = createSurfaceMaterial('metal', { color: 0x989b91, finish: 'bare', repeat: [2, 2] });
+  // Dark gunmetal with a cold sheen, as the hull reads in the 2004 frame.
+  const armor = createSurfaceMaterial('armor', { color: 0x3a4146, finish: 'painted', repeat: [2, 2] });
+  const dark = createSurfaceMaterial('metal', { color: 0x1b2023, finish: 'matte', repeat: [2, 3] });
+  const trim = createSurfaceMaterial('metal', { color: 0x8a9196, finish: 'bare', repeat: [2, 2] });
   const cradle = createSurfaceMaterial('leather', { color: 0x252c2b, metalness: 0.08, roughness: 0.88, repeat: [2, 3] });
-  const indicator = new THREE.MeshStandardMaterial({ color: 0x945532, emissive: 0xc26b36, emissiveIntensity: .67, roughness: 0.56, metalness: 0.05 });
+  // Red, like the three thruster lights of the film pod; shared by cabin indicators.
+  const indicator = new THREE.MeshStandardMaterial({ color: 0x8a1f16, emissive: 0xff2a14, emissiveIntensity: .67, roughness: 0.56, metalness: 0.05 });
   for (const [name, material] of Object.entries({ armor, dark, trim, cradle, indicator })) material.name = `capsule-${name}`;
   const shell = new Assembly('orbital-capsule-hull');
   shell.add(cavityShell(), armor);
   // A solid crown above the clear head opening joins the cut shell, while the
   // tapered base is behind the sill and never fills the cabin with a cylinder.
-  shell.add(loftGeometry(CROWN_PROFILE.map(([y, x, z]) => [y, x * .975, z * .975]), { radial: 24, rows: 24 }), dark);
-  for (let panel = 0; panel < 9; panel++) shell.add(crownPanelGeometry(panel, 9), armor);
+  // The nose is the visible outer surface at full size, no longer a backing
+  // shrunk behind the removed crown petals.
+  shell.add(loftGeometry(CROWN_PROFILE, { radial: 40, rows: 28 }), armor);
+  // The film pod's nose is a smooth ribbed taper: no separated crown petals.
   const collar = new THREE.TorusGeometry(1.64, .027, 6, 56); collar.rotateX(Math.PI / 2); collar.scale(1, 1, .86);
   shell.add(collar, trim, [0, 5.065, 0]);
   shell.add(loftGeometry([[-0.14, 1.52, 1.35], [-0.07, 1.82, 1.6], [0, 1.83, 1.6]], { radial: 56, rows: 6 }), dark);
@@ -204,8 +226,18 @@ export function buildInsertionPodModel(Assembly) {
     const x = Math.sin(angle) * 1.46, z = Math.cos(angle) * 1.33;
     shell.cylinder(dark, [x, 0.27, z], [0.21, 0.27], 0.32, [0, 0, 0], 28);
     shell.add(new THREE.TorusGeometry(0.20, 0.045, 8, 28), trim, [x, 0.12, z], [1, 1, 1], [Math.PI / 2, 0, 0]);
+    // The red glow sits deep in the well, behind the lip: a lit nozzle, not a disk on top.
+    shell.cylinder(indicator, [x, 0.2, z], [0.15, 0.15], 0.02, [0, 0, 0], 24);
     exhausts.push(new THREE.Vector3(x, 0.03, z));
   }
+  // Three tail blades, 120° apart, one straight behind; the two others stand clear
+  // of the hatch leaves' swing and of a second pod six units away.
+  const blade = tailBladeGeometry();
+  for (const angle of [Math.PI, Math.PI / 3, -Math.PI / 3]) {
+    const copy = blade.clone(); copy.rotateY(-Math.PI / 2 + angle);
+    shell.add(copy, armor, [Math.sin(angle) * 1.8, 0, Math.cos(angle) * 1.6]);
+  }
+  blade.dispose();
   for (const side of [-1, 1]) {
     // Hinge barrels, locking receivers and an open stasis cradle. Padding is
     // behind the standing occupant; no solid seat intersects the exit path.
@@ -253,8 +285,9 @@ export function buildInsertionPodModel(Assembly) {
     door.add(hinge); hinges.push(hinge);
   }
   const actuators = hatchActuators(group, hinges, trim);
-  group.userData.insertionPod = { clearHeight: 4.65, clearWidth: 2.9, interpretation: 'yautja-inspired-hollow-capsule', version: 3,
-    detail: { crownPanels: 9, independentHatchLeaves: 2, telescopicActuators: 2, actuatorSections: 8, pressureHullClosed: true, filmPropFidelity1to1Verified: false } };
+  group.userData.insertionPod = { clearHeight: 4.65, clearWidth: 2.9, interpretation: 'avp-2004-drop-pod-silhouette-adaptation', version: 4,
+    reference: 'Alien vs. Predator (2004), frame avp2004-bluray-271, AvP Galaxy spacecraft page',
+    detail: { tailBlades: 3, redThrusters: 3, independentHatchLeaves: 2, telescopicActuators: 2, actuatorSections: 8, pressureHullClosed: true, filmPropFidelity1to1Verified: false } };
   let previousOpening = NaN;
   const updateOpening = value => {
     const opening = clamp01(value);

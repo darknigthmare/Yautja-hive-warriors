@@ -1,6 +1,7 @@
 /* Orbital insertion is one simulation-clock sequence, including the handoff to play. */
 import * as THREE from 'three';
 import { createDropPodModel } from '../graphics/SupportModels.js';
+import { createScoutShipModel, createBeamModel } from '../graphics/InsertionVariants.js';
 import { disposeObject } from '../engine/SceneResources.js';
 
 export const INSERTION_TIMING = Object.freeze({ descending: 1.1, settling: 0.4, opening: 1.45, exiting: 1.8, linger: 20, fade: 1 });
@@ -15,8 +16,10 @@ const smooth = value => { const t = clamp(value); return t * t * (3 - 2 * t); };
 const localPosition = (value, fallback) => value?.isVector3 ? value.clone() : Array.isArray(value) ? new THREE.Vector3(...value) : new THREE.Vector3(...fallback);
 
 export class DropPodEntrance {
-  constructor(scene, audioEngine, particles, { modelFactory = createDropPodModel } = {}) {
+  constructor(scene, audioEngine, particles, { modelFactory = createDropPodModel, effects = null } = {}) {
     this.scene = scene;
+    this.effects = effects;
+    this.entry = 'pod';
     this.audioEngine = audioEngine;
     this.particles = particles;
     this.modelFactory = modelFactory;
@@ -42,8 +45,14 @@ export class DropPodEntrance {
     return range ? clamp((this.elapsed - range[0]) / (range[1] - range[0])) : this.phase === 'complete' ? 1 : 0;
   }
 
-  triggerDrop(targetPos, onComplete, { players = [], rotationY = 0 } = {}) {
+  /** entry: 'pod' (AVP 2004 drop pod), 'scout' (Wolf's ship, Requiem) or 'beam' (2004 mothership).
+   * cinematic: effects and the cloaked exit; off, the sequence is the plain gameplay one. */
+  triggerDrop(targetPos, onComplete, { players = [], rotationY = 0, entry = 'pod', biome = 'plains', cinematic = false } = {}) {
     this.clear();
+    this.entry = ['pod', 'scout', 'beam'].includes(entry) ? entry : 'pod';
+    this.cinematic = Boolean(cinematic) && Boolean(this.effects);
+    if (this.cinematic) this.effects.begin();
+    const factory = this.entry === 'scout' ? createScoutShipModel : this.entry === 'beam' ? createBeamModel : this.modelFactory;
     const actors = [...new Set(players.filter(player => player?.mesh && player?.position))];
     const firstPosition = actors[0]?.position.clone() ?? targetPos.clone();
     const heading = Number.isFinite(rotationY) ? rotationY : 0;
@@ -63,8 +72,8 @@ export class DropPodEntrance {
         }
       }
       origins.push(targetPosition);
-      const model = this.modelFactory();
-      model.group.position.copy(targetPosition).addScaledVector(UP, 60);
+      const model = factory();
+      model.group.position.copy(targetPosition).addScaledVector(UP, model.anchored ? 0 : 60);
       model.group.rotation.y = heading;
       this.scene.add(model.group);
       const record = { model, group: model.group, player, targetPosition, heading, sparkBudget: 0,
@@ -77,6 +86,7 @@ export class DropPodEntrance {
         player.mesh.visible = false;
       }
       this.pods.push(record);
+      if (this.cinematic) this.effects.attach(record, { entry: this.entry, biome });
     }
     this.podMesh = this.pods[0].group;
     this.doorMesh = this.pods[0].model.door ?? null;
@@ -99,7 +109,7 @@ export class DropPodEntrance {
     if (this.phase === 'exiting' || this.phase === 'complete') {
       return (record.player?.position ?? this._worldPoint(record, record.exitPosition)).clone().add(new THREE.Vector3(0, 2.3, 0));
     }
-    return record.group.position.clone().add(new THREE.Vector3(0, 2.5, 0));
+    return record.group.position.clone().add(new THREE.Vector3(0, record.model.cameraHeight ?? 2.5, 0));
   }
 
   _worldPoint(record, local) { return local.clone().applyAxisAngle(UP, record.heading).add(record.targetPosition); }
@@ -109,7 +119,7 @@ export class DropPodEntrance {
   resolveMovement(position, radius = 0.8) {
     if (!position?.isVector3 || !Number.isFinite(radius) || radius < 0 || this.elapsed < DESCENT_END) return position;
     for (const record of this.pods) {
-      if (position.y > record.targetPosition.y + 6.9) continue;
+      if (record.model.noCollision || position.y > record.targetPosition.y + 6.9) continue;
       const local = position.clone().sub(record.targetPosition).applyAxisAngle(UP, -record.heading);
       const sourceProfile = record.model.collisionProfile;
       const profile = sourceProfile ? { radiusX: sourceProfile.shellRadiusX, radiusZ: sourceProfile.shellRadiusZ,
@@ -180,14 +190,16 @@ export class DropPodEntrance {
       const fall = clamp(t / DESCENT_END);
       record.group.position.copy(record.targetPosition);
       // Constant approach followed by a short braking curve, ending exactly at the floor.
-      if (t < DESCENT_END) record.group.position.y += 60 * Math.pow(1 - fall, 1.25);
+      // The mothership's beam does not fall: it is light from the sky.
+      if (t < DESCENT_END && !record.model.anchored) record.group.position.y += 60 * Math.pow(1 - fall, 1.25);
       if (this.phase === 'settling') {
         const settle = (t - DESCENT_END) / INSERTION_TIMING.settling;
         record.group.rotation.z = Math.sin(settle * Math.PI * 4) * 0.018 * (1 - settle);
       } else record.group.rotation.z = 0;
       const setOpening = record.model.updateOpening ?? record.model.setOpening;
       setOpening?.call(record.model, this.openingProgress);
-      if (this.phase === 'descending') {
+      if (this.cinematic) this.effects.update(record, { phase: this.phase, fall, opening: this.openingProgress, delta, sinceImpact: Math.max(0, t - DESCENT_END) });
+      if (this.phase === 'descending' && !record.model.anchored) {
         record.sparkBudget += delta * 24;
         const sparks = Math.floor(record.sparkBudget);
         if (sparks > 0) { this.particles?.emitSparks?.(record.group.position, sparks); record.sparkBudget -= sparks; }
@@ -202,12 +214,21 @@ export class DropPodEntrance {
       // Reveal the landed occupant behind the closed leaves as they begin to
       // open, so the cabin never appears empty before a sudden body pop-in.
       record.player.mesh.visible = t >= SETTLE_END && record.original.visible;
+      // The hunter leaves cloaked, as in the films, and drops the cloak once clear.
+      if (this.cinematic && t >= SETTLE_END && !record.cloakTried) {
+        record.cloakTried = true;
+        if (!record.player.isCloaked && record.player.kitLocks?.cloak !== true) record.cloaked = record.player.toggleCloak?.() === true;
+      }
+      if (record.cloaked && t >= SEQUENCE_END - .3 && record.player.isCloaked) {
+        record.player.toggleCloak(); record.cloaked = false; this.effects?.decloak(record.player.position);
+      }
       this._animatePlayer(record, t >= OPEN_END && t < SEQUENCE_END, exitProgress, delta);
     }
   }
 
   _restorePlayer(record, cancelled = false) {
     if (!record.player || !record.owned) return;
+    if (record.cloaked && record.player.isCloaked) { record.player.toggleCloak(); record.cloaked = false; }
     this._animatePlayer(record, false, 0, 0);
     const player = record.player;
     player.mesh.visible = record.original.visible;
@@ -232,7 +253,10 @@ export class DropPodEntrance {
       if (!this._impactPlayed && this.elapsed >= DESCENT_END) {
         this._impactPlayed = true;
         this.audioEngine?.playDropPodImpact?.();
-        for (const record of this.pods) this.particles?.emitSparks?.(record.targetPosition, 12);
+        for (const record of this.pods) {
+          if (!record.model.anchored) this.particles?.emitSparks?.(record.targetPosition, 12);
+          if (this.cinematic) this.effects.impact(record);
+        }
       }
       if (!this._openingPlayed && this.elapsed >= SETTLE_END) {
         this._openingPlayed = true;
@@ -252,8 +276,14 @@ export class DropPodEntrance {
       if (generation !== this._generation) return;
       remainder -= step;
     }
+    if (this.cinematic) this.effects.tick(delta);
     if (remainder <= 0) return;
     this.lingerLife -= remainder;
+    // The scout ship leaves once its hunter is down; the beam switches off.
+    for (const record of this.pods) {
+      record.model.updateDeparture?.(INSERTION_TIMING.linger - this.lingerLife);
+      record.model.setPower?.(0);
+    }
     if (this.lingerLife > 0) return;
     const fade = clamp(-this.lingerLife / INSERTION_TIMING.fade);
     for (const record of this.pods) record.group.traverse(object => {
@@ -271,6 +301,7 @@ export class DropPodEntrance {
 
   clear() {
     this._generation++;
+    this.effects?.clear();
     this.isActive = false;
     this.isLanding = false;
     this.onComplete = null;

@@ -59,6 +59,7 @@ import { ColonialMarinesManager } from './entities/ColonialMarines.js';
 import { SyntheticsManager } from './entities/Synthetics.js';
 import { BadBloodManager } from './entities/BadBloodEncounter.js';
 import { HellHoundsManager } from './entities/HellHounds.js';
+import { InsertionEffects } from './entities/InsertionEffects.js';
 import { DropPodEntrance } from './entities/DropPodEntrance.js';
 import { CheyenneDropship } from './entities/CheyenneDropship.js';
 import { APCVehicle } from './entities/APCVehicle.js';
@@ -132,7 +133,9 @@ class GameApp {
     this.battlefield = null;
     this.battlefieldProgression = null;
     this.hellHounds = new HellHoundsManager(this.renderer.scene, this.audio);
-    this.dropPod = new DropPodEntrance(this.renderer.scene, this.audio, this.particles);
+    this.dropPod = new DropPodEntrance(this.renderer.scene, this.audio, this.particles, {
+      effects: new InsertionEffects(this.renderer.scene, this.audio, { onShake: (intensity, duration) => this.triggerCameraShake(intensity, duration),
+        reducedFlashes: () => document.body.classList.contains('reduced-flashes') }) });
     this.dropship = new CheyenneDropship(this.renderer.scene, this.audio, this.particles);
     this.apc = new APCVehicle(this.renderer.scene, this.audio, this.particles);
     this.horde.supportTargetsProvider = () => this.getSupportCombatants();
@@ -295,6 +298,20 @@ class GameApp {
       if (run !== this._loadingRun) return;
       this.loadingHold = false; this.music?.play(cue);
     });
+  }
+
+  /** How the hunter arrives. Gunnison (AVP: Requiem) uses Wolf's scout ship; the Antarctic
+   * pyramid (AVP 2004) the drop pod; other worlds rotate between the three entries.
+   * Automation keeps the drop pod, whose cabin the gameplay tests inspect. */
+  insertionEntry() {
+    if (this.cinematicPolicy?.() === 'off') return 'pod';
+    const level = this.ui.selectedLevel?.id;
+    if (level === 'gunnison_forest') return 'scout';
+    if (level === 'antarctic_pyramid') return 'pod';
+    const entries = ['pod', 'scout', 'beam'];
+    let index = 0;
+    try { index = (Number(localStorage.getItem('yautja-insertion-entry-v1')) + 1) % 3 || 0; localStorage.setItem('yautja-insertion-entry-v1', String(index)); } catch {}
+    return entries[index];
   }
 
   /** 'full', 'short' or 'off'. Automation sees none unless the page asks with ?intro=1. */
@@ -2248,7 +2265,8 @@ class GameApp {
       this.updateInsertionStatus();
       const provenance=hunterEncounterProvenance(this.ui.selectedChar.id,this.preparedBossEncounter?.bossType);
       this.ui.showAnnouncement(provenance??'INSERTION TERMINÉE — OUVERTURE FURTIVE : FRAPPEZ DANS LE DOS AVANT D’ÊTRE REPÉRÉ. [CLIC] FRAPPER · [C] PARER');
-    }, { players: [this.player, this.player2].filter(Boolean) });
+    }, { players: [this.player, this.player2].filter(Boolean), entry: this.insertionEntry(), biome: ambientBiomeFor(this.ui.selectedLevel?.id),
+      cinematic: this.cinematicPolicy?.() !== 'off' });
 
     // The Unblooded has no skimmer (spec 002); other modes keep it.
     if (!this.missionMode?.startsWith('ascension')) this.skimmer.spawnAt(this.player.position.clone().add(new THREE.Vector3(-9, 0, 8)));
@@ -3661,7 +3679,17 @@ class GameApp {
       this._insertionPhase = null;
       return;
     }
-    const phases = {
+    const phases = this.dropPod.entry === 'scout' ? {
+      descending: ['ENTRÉE ATMOSPHÉRIQUE', 'Vaisseau éclaireur en approche'],
+      settling: ['VOL STATIONNAIRE', 'Stabilisation au-dessus de la zone'],
+      opening: ['OUVERTURE DE LA SOUTE', 'Libération des verrous'],
+      exiting: ['DÉPLOIEMENT DU CHASSEUR', 'Saut depuis la soute'],
+    } : this.dropPod.entry === 'beam' ? {
+      descending: ['FAISCEAU DU VAISSEAU-MÈRE', 'Verrouillage de la zone'],
+      settling: ['FAISCEAU STABILISÉ', 'Puissance maximale'],
+      opening: ['DESCENTE DANS LE FAISCEAU', 'Chasseur en transit'],
+      exiting: ['DÉPLOIEMENT DU CHASSEUR', 'Contact au sol'],
+    } : {
       descending: ['INSERTION ORBITALE', 'Capsule en approche'],
       settling: ['CONTACT AU SOL', 'Stabilisation de la capsule'],
       opening: ['OUVERTURE DE LA CAPSULE', 'Déverrouillage des portes'],

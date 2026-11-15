@@ -20,13 +20,19 @@ test('capsule details preserve the measured exterior, cabin handoff and physical
     assert.deepEqual(pod.collisionProfile, baseline.collisionProfile);
     assert.deepEqual(pod.seatPosition.toArray(), baseline.seat);
     assert.deepEqual(pod.exitPosition.toArray(), baseline.exit);
+    // Version 4 (AVP 2004 silhouette) adds three tail blades: the exterior grows
+    // sideways and backwards, while the cabin, hatch and collision contract above
+    // stay those of the measured baseline. The width keeps two co-op pods apart.
     for (const [opening, reference] of [[0, baseline.closed], [1, baseline.opened]]) {
       pod.updateOpening(opening); pod.group.updateMatrixWorld(true);
       const box = new THREE.Box3().setFromObject(pod.group);
-      assert.deepEqual(box.min.toArray(), reference.min);
-      assert.deepEqual(box.max.toArray(), reference.max);
+      assert.ok(box.max.x < 2.45 && box.min.x > -2.45, `width ${box.min.x}..${box.max.x}`);
+      assert.equal(box.min.y, reference.min[1]); assert.equal(box.max.y, reference.max[1]);
+      near(box.max.z, reference.max[2], `front at opening ${opening}`);
+      assert.ok(box.min.z < reference.min[2], 'the rear blade reaches behind the hull');
     }
-    assert.equal(pod.group.userData.insertionPod.interpretation, 'yautja-inspired-hollow-capsule');
+    assert.equal(pod.group.userData.insertionPod.interpretation, 'avp-2004-drop-pod-silhouette-adaptation');
+    assert.equal(pod.group.userData.insertionPod.detail.tailBlades, 3);
     assert.equal(pod.group.userData.insertionPod.detail.filmPropFidelity1to1Verified, false);
   } finally { disposeObject(pod.group); }
 });
