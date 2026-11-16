@@ -2306,7 +2306,7 @@ class GameApp {
     this.battlefieldMorale = 50.0;
     this.shiftBattlefieldMorale(0);
 
-    this._musicCalm = 0; this._musicHeat = 0;
+    this._musicCalm = 0; this._musicHeat = 0; this.music?.setWorld(this.ui.selectedLevel?.id);
     this.ambient?.start(this.shipHub ? 'ship' : ambientBiomeFor(this.ui.selectedLevel?.id));
     this.ambientLife?.start(this.shipHub ? 'ship' : ambientBiomeFor(this.ui.selectedLevel?.id), { layout: this.env.battlefieldLayout, focus: this.player.position, reducedMotion: document.body.classList.contains('reduced-motion') });
     this.ui.showScreen(this.ui.inGameHud);

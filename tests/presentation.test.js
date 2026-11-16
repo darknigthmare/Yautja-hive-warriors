@@ -93,3 +93,11 @@ test('ambient life is decoration only, follows the biome and lifts its flock whe
   assert.deepEqual(flockResponse(0), { lift: 0, spread: 1 });
   life.clear(); assert.equal(scene.getObjectByName('ambient-life'), undefined, 'cleared with the mission');
 });
+
+test('each world has its own musical variation and every voice belongs to a layer', async () => {
+  const { WORLD_VARIATIONS, MUSIC_CUES } = await import('../js/engine/MusicDirector.js');
+  for (const level of LEVELS_DATA) assert.ok(WORLD_VARIATIONS[level.id], level.id);
+  const signatures = new Set(Object.values(WORLD_VARIATIONS).map(v => `${v.transpose}/${v.accents.join(',')}`));
+  assert.equal(signatures.size, Object.keys(WORLD_VARIATIONS).length, 'no two worlds share a variation');
+  for (const cue of Object.values(MUSIC_CUES)) for (const voice of cue.voices) assert.ok(['pad', 'horn', 'choir', 'arp', 'clicks', 'pulse', 'metal', 'drums', 'bass', 'snare', 'brass'].includes(voice), voice);
+});

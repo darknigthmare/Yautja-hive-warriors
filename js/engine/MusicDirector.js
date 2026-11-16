@@ -1,4 +1,8 @@
 /* Music for every moment of the game (spec 003, FR-003). Each named cue is an original procedural
+ * score in the spirit of the films' scores (military snare, low brass ostinatos, tribal drums,
+ * tense strings, the hunter's clicks), as the author asked on 16 Nov 2026, without reproducing
+ * any film melody or theme: the melodies, rhythms and harmonies here are original.
+ * Each named cue is an original procedural
  * score built from WebAudio voices, organized in three layers (calm, tension, combat) mixed by
  * danger. A file listed in public/audio/music/manifest.json replaces the procedural cue of the
  * same name, whole or per layer, so the author's own tracks drop in without code. */
@@ -9,20 +13,31 @@ const PHRYGIAN = [0, 1, 3, 5, 7, 8, 10], AEOLIAN = [0, 2, 3, 5, 7, 8, 10], HIJAZ
 
 /** Tempo in BPM, root as a MIDI note, a scale, a four-bar chord walk (scale degrees), and which voices play. */
 export const MUSIC_CUES = Object.freeze({
-  title:    { tempo: 64,  root: 38, scale: PHRYGIAN, chords: [0, 0, 5, 1], voices: ['pad', 'horn', 'clicks'], loop: true, intensity: .25 },
+  title:    { tempo: 64,  root: 38, scale: PHRYGIAN, chords: [0, 0, 5, 1], voices: ['pad', 'horn', 'clicks', 'choir', 'metal'], loop: true, intensity: .25 },
   menu:     { tempo: 72,  root: 40, scale: AEOLIAN,  chords: [0, 5, 3, 4], voices: ['pad', 'arp', 'clicks', 'pulse'], loop: true, intensity: .3 },
   loading:  { tempo: 80,  root: 40, scale: PHRYGIAN, chords: [0, 1, 0, 6], voices: ['pad', 'pulse', 'clicks'], loop: true, intensity: .4 },
   briefing: { tempo: 76,  root: 37, scale: HIJAZ,    chords: [0, 1, 4, 0], voices: ['pad', 'pulse', 'clicks', 'arp'], loop: true, intensity: .45 },
   hub:      { tempo: 60,  root: 36, scale: AEOLIAN,  chords: [0, 3, 5, 4], voices: ['pad', 'horn'], loop: true, intensity: .15 },
-  explore:  { tempo: 84,  root: 38, scale: PHRYGIAN, chords: [0, 0, 1, 0], voices: ['pad', 'pulse', 'clicks', 'drums', 'bass'], loop: true, intensity: .35 },
-  combat:   { tempo: 116, root: 38, scale: PHRYGIAN, chords: [0, 1, 0, 6], voices: ['pad', 'clicks', 'drums', 'bass', 'arp'], loop: true, intensity: .85 },
-  boss:     { tempo: 124, root: 36, scale: HIJAZ,    chords: [0, 1, 4, 1], voices: ['pad', 'horn', 'drums', 'bass', 'clicks'], loop: true, intensity: 1 },
-  victory:  { tempo: 92,  root: 43, scale: AEOLIAN,  chords: [0, 5, 6, 0], voices: ['pad', 'horn', 'drums'], loop: false, bars: 4, intensity: .7 },
+  explore:  { tempo: 84,  root: 38, scale: PHRYGIAN, chords: [0, 0, 1, 0], voices: ['pad', 'pulse', 'clicks', 'drums', 'bass', 'metal', 'snare'], loop: true, intensity: .35 },
+  combat:   { tempo: 116, root: 38, scale: PHRYGIAN, chords: [0, 1, 0, 6], voices: ['pad', 'clicks', 'drums', 'bass', 'arp', 'snare', 'brass'], loop: true, intensity: .85 },
+  boss:     { tempo: 124, root: 36, scale: HIJAZ,    chords: [0, 1, 4, 1], voices: ['pad', 'horn', 'drums', 'bass', 'clicks', 'snare', 'brass', 'choir', 'metal'], loop: true, intensity: 1 },
+  victory:  { tempo: 92,  root: 43, scale: AEOLIAN,  chords: [0, 5, 6, 0], voices: ['pad', 'horn', 'drums', 'brass', 'snare', 'choir'], loop: false, bars: 4, intensity: .7 },
   defeat:   { tempo: 54,  root: 35, scale: PHRYGIAN, chords: [0, 6, 5, 1], voices: ['pad', 'horn'], loop: false, bars: 4, intensity: .2 }
 });
 
 /** Which layer each voice belongs to: the calm bed, the tension pulse, the combat drive. */
-const VOICE_LAYER = { pad: 'calm', horn: 'calm', arp: 'tension', clicks: 'tension', pulse: 'tension', drums: 'combat', bass: 'combat' };
+const VOICE_LAYER = { pad: 'calm', horn: 'calm', choir: 'calm', arp: 'tension', clicks: 'tension', pulse: 'tension', metal: 'tension', drums: 'combat', bass: 'combat', snare: 'combat', brass: 'combat' };
+
+/** Per-world variation: a transposition and a rhythmic accent set, so each map has its own colour. */
+export const WORLD_VARIATIONS = Object.freeze({
+  val_verde_jungle: { transpose: 0, accents: [0, 3, 6, 10, 12] }, gunnison_forest: { transpose: -2, accents: [0, 4, 7, 10, 14] },
+  antarctic_pyramid: { transpose: -3, accents: [0, 6, 8, 11] }, la_rooftops: { transpose: 2, accents: [0, 2, 6, 9, 12, 14] },
+  xenomorph_prime: { transpose: -5, accents: [0, 3, 7, 11, 13] }, romulus_station: { transpose: 1, accents: [0, 5, 8, 12] },
+  charon_rogue_base: { transpose: -1, accents: [0, 3, 8, 11, 14] }, game_preserve_planet: { transpose: 3, accents: [0, 3, 6, 9, 12] },
+  stargazer_facility: { transpose: -4, accents: [0, 4, 6, 10, 12] }, prey_comanche_territory: { transpose: 5, accents: [0, 6, 9, 12] },
+  killer_of_killers_arena: { transpose: -6, accents: [0, 2, 5, 8, 11, 14] }
+});
+const DEFAULT_VARIATION = Object.freeze({ transpose: 0, accents: [0, 3, 6, 10, 12] });
 
 /** Layer gains for a danger level from 0 to 1: the bed always sounds, tension then combat enter. */
 export function layerMix(intensity) {
@@ -87,6 +102,9 @@ export class MusicDirector {
     return this.volume;
   }
 
+  /** Selects the current world's variation; it applies from the next cue that starts. */
+  setWorld(levelId) { this.variation = WORLD_VARIATIONS[levelId] ?? DEFAULT_VARIATION; return this.variation; }
+
   /** Crossfades to a cue. The same cue already playing is left alone. */
   play(cue, { fade = 1.6 } = {}) {
     if (!Object.hasOwn(MUSIC_CUES, cue)) return false;
@@ -98,7 +116,8 @@ export class MusicDirector {
     const now = this.ctx.currentTime, out = this.ctx.createGain();
     out.gain.setValueAtTime(0, now); out.gain.linearRampToValueAtTime(1, now + fade); out.connect(bus);
     const layers = Object.fromEntries(MUSIC_LAYERS.map(layer => { const gain = this.ctx.createGain(); gain.connect(out); return [layer, gain]; }));
-    this.current = { cue, out, layers, sources: [], startedAt: now, nextStep: now + .05, step: 0, procedural: true, definition: MUSIC_CUES[cue] };
+    const base = MUSIC_CUES[cue], variation = ['explore', 'combat', 'boss'].includes(cue) ? (this.variation ?? DEFAULT_VARIATION) : DEFAULT_VARIATION;
+    this.current = { cue, out, layers, sources: [], startedAt: now, nextStep: now + .05, step: 0, procedural: true, definition: { ...base, root: base.root + variation.transpose, accents: variation.accents } };
     this._applyMix(0);
     if (previous) this._release(previous, fade);
     this._startFiles(this.current);
@@ -189,6 +208,12 @@ export class MusicDirector {
     if (voices.has('pulse') && (beat === 0 || beat === 3)) this._thump(layer('pulse'), 52, at, .5);
     if (voices.has('drums') && [0, 6, 8, 11, 14].includes(beat)) this._thump(layer('drums'), beat === 0 || beat === 8 ? 72 : 96, at, beat === 0 ? 1 : .65, true);
     if (voices.has('bass') && beat % 2 === 0) this._bass(layer('bass'), note(beat === 6 || beat === 14 ? 1 : 0), at, sixteenth * 1.6);
+    // Military snare: accents on the world's pattern, a short roll closing every second bar.
+    if (voices.has('snare') && (d.accents.includes(beat) || (bar % 2 === 1 && beat >= 13))) this._snare(layer('snare'), at, beat >= 13 ? .55 : .9);
+    // Low brass ostinato stabs on the same accents, a fifth above on the last one.
+    if (voices.has('brass') && d.accents.includes(beat)) this._brass(layer('brass'), note(beat === d.accents.at(-1) ? 4 : 0), at, sixteenth * 2.2);
+    if (voices.has('choir') && beat === 0 && bar % 2 === 1) this._choir(layer('choir'), [note(0) + 12, note(4) + 12], at, sixteenth * 30);
+    if (voices.has('metal') && beat === 8 && (step >> 4) % 2 === 0) this._metal(layer('metal'), at);
   }
 
   _env(gain, at, peak, attack, release) {
@@ -243,6 +268,38 @@ export class MusicDirector {
     const osc = this.ctx.createOscillator(), filter = this.ctx.createBiquadFilter(), gain = this.ctx.createGain();
     osc.type = 'sawtooth'; osc.frequency.value = midiHz(midi - 12); filter.type = 'lowpass'; filter.frequency.setValueAtTime(600, at); filter.frequency.exponentialRampToValueAtTime(140, at + length);
     this._env(gain, at, .07, .01, length); osc.connect(filter); filter.connect(gain); gain.connect(target); osc.start(at); osc.stop(at + length + .05);
+  }
+
+  _snare(target, at, level) {
+    const source = this.ctx.createBufferSource(), filter = this.ctx.createBiquadFilter(), gain = this.ctx.createGain();
+    source.buffer = this.noise; filter.type = 'highpass'; filter.frequency.value = 1800; this._env(gain, at, .14 * level, .002, .12);
+    source.connect(filter); filter.connect(gain); gain.connect(target); source.start(at, Math.random() * .5, .15);
+    const body = this.ctx.createOscillator(), bodyGain = this.ctx.createGain(); body.type = 'triangle'; body.frequency.setValueAtTime(220, at); body.frequency.exponentialRampToValueAtTime(140, at + .05);
+    this._env(bodyGain, at, .08 * level, .002, .07); body.connect(bodyGain); bodyGain.connect(target); body.start(at); body.stop(at + .1);
+  }
+
+  _brass(target, midi, at, length) {
+    const filter = this.ctx.createBiquadFilter(), gain = this.ctx.createGain();
+    filter.type = 'lowpass'; filter.Q.value = 2; filter.frequency.setValueAtTime(300, at); filter.frequency.linearRampToValueAtTime(1400, at + .06); filter.frequency.exponentialRampToValueAtTime(400, at + length);
+    this._env(gain, at, .075, .02, length); filter.connect(gain); gain.connect(target);
+    for (const detune of [-9, 9]) { const osc = this.ctx.createOscillator(); osc.type = 'sawtooth'; osc.frequency.value = midiHz(midi - 12); osc.detune.value = detune; osc.connect(filter); osc.start(at); osc.stop(at + length + .05); }
+  }
+
+  /** A wordless "ah": two formant bands over detuned saws. */
+  _choir(target, notes, at, length) {
+    const gain = this.ctx.createGain(); gain.gain.setValueAtTime(0, at); gain.gain.linearRampToValueAtTime(.05, at + length * .3); gain.gain.linearRampToValueAtTime(0, at + length); gain.connect(target);
+    for (const formant of [730, 1090]) {
+      const band = this.ctx.createBiquadFilter(); band.type = 'bandpass'; band.frequency.value = formant; band.Q.value = 6; band.connect(gain);
+      for (const midi of notes) for (const detune of [-12, 0, 12]) { const osc = this.ctx.createOscillator(); osc.type = 'sawtooth'; osc.frequency.value = midiHz(midi); osc.detune.value = detune; osc.connect(band); osc.start(at); osc.stop(at + length + .1); }
+    }
+  }
+
+  /** An anvil-like metal hit: inharmonic partials ringing out. */
+  _metal(target, at) {
+    for (const [ratio, level] of [[1, .05], [2.76, .03], [5.4, .02], [8.93, .012]]) {
+      const osc = this.ctx.createOscillator(), gain = this.ctx.createGain(); osc.type = 'sine'; osc.frequency.value = 420 * ratio;
+      this._env(gain, at, level, .002, 1.4 / ratio ** .3); osc.connect(gain); gain.connect(target); osc.start(at); osc.stop(at + 1.6);
+    }
   }
 
   dispose() { this.stop({ fade: .2 }); if (this.timer) clearInterval(this.timer); this.timer = null; }

@@ -1,5 +1,11 @@
 # Commande musicale : créer les pistes avec Google Flow Music
 
+> **Mise à jour du 16 novembre 2026.** L'auteur souhaite rester proche des bandes originales des films. Les thèmes eux-mêmes ne peuvent pas être reproduits : ce sont des œuvres protégées.
+>
+> La partition procédurale reprend donc l'esprit des films sans en copier aucune mélodie, aucun rythme ni aucune harmonie : caisse claire militaire, ostinatos de cuivres graves, tambours tribaux, chœur sans paroles, frappes métalliques et cliquetis du chasseur.
+>
+> Chaque monde a sa propre transposition et ses propres accents. Les prompts ci-dessous suivent la même règle : ils décrivent un style et ne citent aucune œuvre.
+
 Ce document accompagne la spécification 003 (présentation cinématique). Le jeu joue déjà une partition procédurale originale pour chaque moment. Vos pistes la remplacent repère par repère, sans toucher au code : il suffit de déposer le fichier et de le déclarer dans le manifeste.
 
 ## 1. Où déposer les fichiers
