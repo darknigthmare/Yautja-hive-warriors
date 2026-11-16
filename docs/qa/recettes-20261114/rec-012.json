@@ -4,7 +4,7 @@
   "perimetre": "Coutures, portes et continuité physique",
   "terrainPilote": "createOperationScene({operationId:'pilot'}) + AFF-06 (LD-18) ; contrôle AFF-14 (LD-23)",
   "seed": 0,
-  "commit": "6b436cd4c52f01d91225cf789ff0d1ffee02b765",
+  "commit": "c55ade0c6e99ea57d3f96e7b1739fb7cda102449",
   "date": "2026-11-14",
   "commande": "node --test tests/recette-rec-012.test.js",
   "preuveVideo": "non produite — preuve par journal",
