@@ -6820,5 +6820,187 @@ export const GENERATED_ASSETS = Object.freeze({
       "fidelity_1_to_1_verified": false
     },
     "assembly_note": "Raw provider rig plus calibrated local skin repair. A measured 28,590-vertex tail uses nine private weighted joints and bounded floor contact. Four additional measured ankle/toe joints articulate 5,081 vertices within the 8,138 reviewed lower-leg/foot vertices, preserving rigid collars and UV seams. Real clip rotations drive bounded joint motion; 1,953 exact supports provide visual contact compensation while preserving airborne phases. No planted-foot IK or horizontal anti-slide; foot anatomy remains simplified. Source GLB, rest surfaces, UVs and textures unchanged."
+  },
+  "feral_predator": {
+    "status": "verified",
+    "type": "character",
+    "url": "/models/feral-predator-rigged.glb",
+    "sha256": "adb114db0c37697e6c2e2a48e91121413fd65b7592e0d0ee8306c5995dd82ca8",
+    "resource": "rigging",
+    "task_id": "01a1e281-ee65-7151-b41f-d7c66528acef",
+    "source_task_id": "01a1e27d-b841-71dd-bfd7-ec8ca24cd965",
+    "characterRig": {
+      "calibrated": true,
+      "height": 4.31,
+      "forwardAxis": "+z",
+      "boneMap": {
+        "hips": "Hips",
+        "head": "Head",
+        "leftArm": "LeftArm",
+        "rightArm": "RightArm",
+        "leftForeArm": "LeftForeArm",
+        "rightForeArm": "RightForeArm",
+        "leftHand": "LeftHand",
+        "rightHand": "RightHand",
+        "leftLeg": "LeftUpLeg",
+        "rightLeg": "RightUpLeg",
+        "leftFoot": "LeftFoot",
+        "rightFoot": "RightFoot"
+      },
+      "poseOffsets": {
+        "leftArm": [
+          -0.10822911737206792,
+          -2.9619717151208036e-8,
+          -0.31503511252160904,
+          0.9428888301680762
+        ],
+        "rightArm": [
+          -0.08218577850611786,
+          6.826195741993502e-8,
+          0.3861316813687786,
+          0.9187754310693153
+        ]
+      },
+      "accessories": {
+        "blade1": {
+          "socket": "rightHand",
+          "position": [
+            2.6806552173527223,
+            -5.454721424569968,
+            10.917626719733107
+          ],
+          "quaternion": [
+            -0.041506804884691544,
+            0.8624830945271451,
+            0.5043728218060118,
+            0.0028550973147430533
+          ],
+          "scale": [
+            22.969840206529533,
+            22.96983290659955,
+            22.969833052028203
+          ]
+        },
+        "blade2": {
+          "socket": "rightHand",
+          "position": [
+            -2.9147563336866327,
+            -5.840561578871785,
+            10.65488056130964
+          ],
+          "quaternion": [
+            -0.041506804884691544,
+            0.8624830945271451,
+            0.5043728218060118,
+            0.0028550973147430533
+          ],
+          "scale": [
+            22.969840206529533,
+            22.96983290659955,
+            22.969833052028203
+          ]
+        },
+        "shieldMesh": {
+          "socket": "leftHand",
+          "position": [
+            5.767995700328722,
+            -4.6930944489606645,
+            16.147815416773966
+          ],
+          "quaternion": [
+            0.15496759986683703,
+            0.29850349077094973,
+            0.9395864539432642,
+            -0.0637024631689992
+          ],
+          "scale": [
+            51.04410690192715,
+            51.04407512939145,
+            51.04407764427742
+          ]
+        },
+        "secWeaponMesh": {
+          "socket": "leftHand",
+          "position": [
+            1.5679054313611651,
+            8.242611523599038,
+            5.17552905061126
+          ],
+          "quaternion": [
+            0.15496759986683703,
+            0.29850349077094973,
+            0.9395864539432642,
+            -0.0637024631689992
+          ],
+          "scale": [
+            51.04410690192715,
+            51.04407512939145,
+            51.04407764427742
+          ]
+        },
+        "plasmaGlaiveMesh": {
+          "socket": "rightHand",
+          "position": [
+            -0.7597305306676319,
+            6.258472826644194,
+            6.98865034837759
+          ],
+          "quaternion": [
+            -0.03136862172477495,
+            0.2532222034698939,
+            0.9665130868064533,
+            -0.02733092336641233
+          ],
+          "scale": [
+            51.04408934784341,
+            51.04407344895156,
+            51.04407312577678
+          ]
+        },
+        "clanMarkMesh": {
+          "socket": "head",
+          "position": [
+            -0.12332512324888434,
+            29.862644822026994,
+            28.550950614444787
+          ],
+          "quaternion": [
+            -0.42946253450806454,
+            -0.0027094923646970603,
+            0.04397770682545782,
+            0.9020091746262123
+          ],
+          "scale": [
+            51.044086952324655,
+            51.044073513541726,
+            51.04407294039788
+          ]
+        }
+      },
+      "cameraEyeHeight": 3.8376651470827396,
+      "laserSight": {
+        "origin": [
+          0.394024,
+          4.025615,
+          0.372731
+        ],
+        "radius": 0.025
+      }
+    },
+    "animationUrls": {
+      "walk": "/models/feral-predator-walk.glb",
+      "run": "/models/feral-predator-run.glb"
+    },
+    "animationSha256": {
+      "walk": "6a48d4494508eb622bfc368feab2d35e9279295d5f7a243df0a9500ab8e2503e",
+      "run": "6fa0bc9c985a188a23fd53c6874b88181ae8a749e7cf8d6047fd98dbed00dd1a"
+    },
+    "validation": {
+      "visually_inspected": true,
+      "rig_verified": true,
+      "in_game_verified": true,
+      "fidelity_1_to_1_verified": false
+    },
+    "assembly_note": "Meshy image-to-3d (A-pose) from Prime 1 Studio MMPR-07 front view; diorama slab removed locally (61,901 -> 42,963 triangles, textures unchanged); Meshy meshyrig rig. Socket, pose and eye calibration start from jungle_hunter (same 24-bone template) and are checked in game. See docs/meshy/HUNTERS-20261116.md."
   }
 });
